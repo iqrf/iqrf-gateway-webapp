@@ -1,0 +1,4 @@
+app/config/config.local.neon
+# Composer
+vendor/
+composer.lock
