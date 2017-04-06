@@ -1,24 +1,38 @@
 <?php
 
+/**
+ * Copyright 2017 MICRORISC s.r.o.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 namespace App\Presenters;
 
 use Nette;
 
+/**
+ * Error 4xx presenter
+ */
+class Error4xxPresenter extends Nette\Application\UI\Presenter {
 
-class Error4xxPresenter extends Nette\Application\UI\Presenter
-{
-
-	public function startup()
-	{
+	public function startup() {
 		parent::startup();
 		if (!$this->getRequest()->isMethod(Nette\Application\Request::FORWARD)) {
 			$this->error();
 		}
 	}
 
-
-	public function renderDefault(Nette\Application\BadRequestException $exception)
-	{
+	public function renderDefault(Nette\Application\BadRequestException $exception) {
 		// load template 403.latte or 404.latte or ... 4xx.latte
 		$file = __DIR__ . "/templates/Error/{$exception->getCode()}.latte";
 		$this->template->setFile(is_file($file) ? $file : __DIR__ . '/templates/Error/4xx.latte');
