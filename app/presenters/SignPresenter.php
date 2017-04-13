@@ -32,10 +32,10 @@ class SignPresenter extends Nette\Application\UI\Presenter {
 	 */
 	protected function createComponentSignInForm() {
 		$form = new Form;
-		$form->addText('username', 'Username:')->setRequired('Prosím vyplňte své uživatelské jméno.');
-		$form->addPassword('password', 'Password:')->setRequired('Prosím vyplňte své heslo.');
+		$form->addText('username', 'Username:')->setRequired('Please enter your username.');
+		$form->addPassword('password', 'Password:')->setRequired('Please enter your password.');
 		$form->addSubmit('send', 'Sign in');
-		$form->addProtection('Vypršel časový limit, odešlete formulář znovu');
+		$form->addProtection('Timeout expired, resubmit the form.');
 		$form->onSuccess[] = [$this, 'signInFormSucceeded'];
 		return $form;
 	}
@@ -50,7 +50,8 @@ class SignPresenter extends Nette\Application\UI\Presenter {
 			$this->getUser()->login($values->username, $values->password);
 			$this->redirect('Homepage:');
 		} catch (Nette\Security\AuthenticationException $e) {
-			$form->addError('Nesprávné přihlašovací jméno nebo heslo.');
+			$form->addError('The username or password you entered is incorrect.');
+			$this->flashMessage('The username or password you entered is incorrect.', 'alert-danger');
 		}
 	}
 
