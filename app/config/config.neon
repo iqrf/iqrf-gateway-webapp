@@ -12,7 +12,9 @@ session:
 	expiration: 14 days
 
 services:
+	- App\Model\ConfigManager(%configDir%)
 	- App\Forms\FormFactory
+	- App\Forms\ConfigComponentsFormFactory
 	- App\Forms\SignInFormFactory
 	router: App\RouterFactory::createRouter
 
