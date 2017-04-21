@@ -16,17 +16,21 @@
  * limitations under the License.
  */
 
-namespace App\Presenters;
+namespace App\Forms;
 
-/**
- * Homepage presenter
- */
-class HomepagePresenter extends BasePresenter {
+use Nette;
+use Nette\Application\UI\Form;
 
-	public function renderDefault() {
-		if (!$this->user->isLoggedIn()) {
-			$this->redirect('Sign:in');
-		}
+class FormFactory {
+
+	use Nette\SmartObject;
+
+	/**
+	 * @return Form
+	 */
+	public function create() {
+		$form = new Form;
+		return $form;
 	}
 
 }

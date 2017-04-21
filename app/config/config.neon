@@ -1,4 +1,7 @@
 parameters:
+	configDir: '/etc/iqrf-daemon'
+	initSystem: 'systemd'
+	sudo: true
 
 application:
 	errorPresenter: Error
@@ -9,6 +12,8 @@ session:
 	expiration: 14 days
 
 services:
+	- App\Forms\FormFactory
+	- App\Forms\SignInFormFactory
 	router: App\RouterFactory::createRouter
 
 security:

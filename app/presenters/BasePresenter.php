@@ -18,15 +18,11 @@
 
 namespace App\Presenters;
 
-/**
- * Homepage presenter
- */
-class HomepagePresenter extends BasePresenter {
+use Nette\Application\UI\Presenter;
 
-	public function renderDefault() {
-		if (!$this->user->isLoggedIn()) {
-			$this->redirect('Sign:in');
-		}
-	}
+/**
+ * Base presenter for all application presenters.
+ */
+abstract class BasePresenter extends Presenter {
 
 }
