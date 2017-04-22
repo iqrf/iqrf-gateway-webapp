@@ -15,14 +15,9 @@
 *}
 
 {block content}
-<h1 n:block=title>Configuration</h1>
-<div class='list-group'>
-	<a n:href='Config:components' class='list-group-item'>
-		<header class='list-group-item-heading'>Components</header>
-		<p class='list-group-item-text'>Enable or disable components.</p>
-	</a>
-	<a n:href='Config:udp' class='list-group-item'>
-		<header class='list-group-item-heading'>UDP Interface</header>
-		<p class='list-group-item-text'>IQRF UDP interface settings.</p>
-	</a>
+<h1 n:block=title>UDP</h1>
+<div class='panel panel-default'>
+	<div class='panel-body'>
+		{control configUdpForm}
+	</div>
 </div>

@@ -33,6 +33,13 @@ class ConfigPresenter extends BasePresenter {
 	public $configComponentsFactory;
 
 	/**
+	 * @var Forms\ConfigUdpFormFactory
+	 * @inject
+	 */
+	public $configUdpFactory;
+
+
+	/**
 	 * @var ConfigManager
 	 * @inject
 	 */
@@ -51,10 +58,19 @@ class ConfigPresenter extends BasePresenter {
 
 	/**
 	 * Create components form
-	 * @return Form Sign in form
+	 * @return Form Components form
 	 */
 	protected function createComponentConfigComponentsForm() {
 		$formFactory = $this->configComponentsFactory;
+		return $formFactory->create($this);
+	}
+
+	/**
+	 * Create UDP form
+	 * @return Form UDP form
+	 */
+	protected function createComponentConfigUdpForm() {
+		$formFactory = $this->configUdpFactory;
 		return $formFactory->create($this);
 	}
 

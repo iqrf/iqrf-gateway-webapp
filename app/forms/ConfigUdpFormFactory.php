@@ -20,11 +20,11 @@ namespace App\Forms;
 
 use Nette;
 use Nette\Application\UI\Form;
-
 use App\Presenters\ConfigPresenter;
 use App\Model\ConfigManager;
+use Tracy\Debugger;
 
-class ConfigComponentsFormFactory {
+class ConfigUdpFormFactory {
 
 	use Nette\SmartObject;
 
@@ -46,21 +46,22 @@ class ConfigComponentsFormFactory {
 	}
 
 	/**
-	 * Create components configuration form
+	 * Create UDP configuration form
 	 * @param ConfigPresenter $presenter
-	 * @return Form Components configuration form
+	 * @return Form UDP configuration form
 	 */
 	public function create(ConfigPresenter $presenter) {
 		$form = $this->factory->create();
-		$components = $this->configManager->read('config')['Components'];
-		foreach ($components as $component) {
-			$form->addCheckbox($component['ComponentName'], $component['ComponentName'])
-					->setDefaultValue($component['Enabled']);
-		}
+		$data = $this->configManager->read('UdpMessaging')['Instances'][0];
+		Debugger::barDump($data);
+		$properties = $data['Properties'];
+		$form->addCheckbox('Enabled', 'Enabled')->setDefaultValue($data['Enabled']);
+		$form->addInteger('RemotePort', 'RemotePort')->setDefaultValue($properties['RemotePort']);
+		$form->addInteger('LocalPort', 'LocalPort')->setDefaultValue($properties['LocalPort']);
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('Timeout expired, resubmit the form.');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
-			$this->configManager->saveComponents($values);
+			$this->configManager->saveUdp($values);
 			$presenter->redirect('Config:');
 		};
 
