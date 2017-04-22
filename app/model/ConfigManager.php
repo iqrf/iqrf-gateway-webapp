@@ -22,7 +22,6 @@ use Nette;
 use Nette\Utils\Finder;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
-use Tracy\Debugger;
 
 class ConfigManager {
 
@@ -70,7 +69,6 @@ class ConfigManager {
 		$array['Name'] = 'UdpMessaging';
 		$array['Enabled'] = $udp['Enabled'];
 		$array['Properties'] = ['RemotePort' => $udp['RemotePort'], 'LocalPort' => $udp['LocalPort']];
-		Debugger::barDump($array);
 		return $array;
 	}
 
@@ -82,7 +80,6 @@ class ConfigManager {
 	}
 
 	public function saveUdp($udp) {
-		Debugger::barDump($udp);
 		$file = $this->configDir . '/UdpMessaging.json';
 		$json = Json::decode(FileSystem::read($file), Json::FORCE_ARRAY);
 		$json['Instances'][0] = $this->parseUdp($udp);

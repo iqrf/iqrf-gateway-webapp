@@ -22,7 +22,6 @@ use Nette;
 use Nette\Application\UI\Form;
 use App\Presenters\ConfigPresenter;
 use App\Model\ConfigManager;
-use Tracy\Debugger;
 
 class ConfigUdpFormFactory {
 
@@ -53,7 +52,6 @@ class ConfigUdpFormFactory {
 	public function create(ConfigPresenter $presenter) {
 		$form = $this->factory->create();
 		$data = $this->configManager->read('UdpMessaging')['Instances'][0];
-		Debugger::barDump($data);
 		$properties = $data['Properties'];
 		$form->addCheckbox('Enabled', 'Enabled')->setDefaultValue($data['Enabled']);
 		$form->addInteger('RemotePort', 'RemotePort')->setDefaultValue($properties['RemotePort']);
