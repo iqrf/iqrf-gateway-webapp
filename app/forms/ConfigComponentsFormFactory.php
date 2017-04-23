@@ -20,7 +20,6 @@ namespace App\Forms;
 
 use Nette;
 use Nette\Application\UI\Form;
-
 use App\Presenters\ConfigPresenter;
 use App\Model\ConfigManager;
 

@@ -53,6 +53,7 @@ class ConfigUdpFormFactory {
 		$form = $this->factory->create();
 		$data = $this->configManager->read('UdpMessaging')['Instances'][0];
 		$properties = $data['Properties'];
+		$form->addText('Name', 'Name')->setDefaultValue($data['Name']);
 		$form->addCheckbox('Enabled', 'Enabled')->setDefaultValue($data['Enabled']);
 		$form->addInteger('RemotePort', 'RemotePort')->setDefaultValue($properties['RemotePort']);
 		$form->addInteger('LocalPort', 'LocalPort')->setDefaultValue($properties['LocalPort']);
@@ -60,7 +61,7 @@ class ConfigUdpFormFactory {
 		$form->addProtection('Timeout expired, resubmit the form.');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
 			$this->configManager->saveUdp($values);
-			$presenter->redirect('Config:');
+			$presenter->redirect('Config:default');
 		};
 
 		return $form;

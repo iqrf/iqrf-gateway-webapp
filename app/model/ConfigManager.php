@@ -19,6 +19,7 @@
 namespace App\Model;
 
 use Nette;
+use Nette\Utils\ArrayHash;
 use Nette\Utils\Finder;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
@@ -64,12 +65,22 @@ class ConfigManager {
 		return $array;
 	}
 
-	protected function parseUdp($udp) {
-		$array = [];
-		$array['Name'] = 'UdpMessaging';
-		$array['Enabled'] = $udp['Enabled'];
-		$array['Properties'] = ['RemotePort' => $udp['RemotePort'], 'LocalPort' => $udp['LocalPort']];
-		return $array;
+	/**
+	 * Parse interfaces
+	 * @param array $interfaces
+	 * @param ArrayHash $update
+	 * @param int $id
+	 * @return array
+	 */
+	protected function parseInstances(array $interfaces, ArrayHash $update, int $id) {
+		$interface = [];
+		$interface['Name'] = $update['Name'];
+		unset($update['Name']);
+		$interface['Enabled'] = $update['Enabled'];
+		unset($update['Enabled']);
+		$interface['Properties'] = (array) $update;
+		$interfaces[$id] = $interface;
+		return $interfaces;
 	}
 
 	public function saveComponents($components) {
@@ -79,10 +90,17 @@ class ConfigManager {
 		FileSystem::write($file, Json::encode($json, Json::PRETTY));
 	}
 
+	public function saveMqtt($mqtt, $id) {
+		$file = $this->configDir . '/MqttMessaging.json';
+		$json = Json::decode(FileSystem::read($file), Json::FORCE_ARRAY);
+		$json['Instances'] = $this->parseInstances($json['Instances'], $mqtt, $id);
+		FileSystem::write($file, Json::encode($json, Json::PRETTY));
+	}
+
 	public function saveUdp($udp) {
 		$file = $this->configDir . '/UdpMessaging.json';
 		$json = Json::decode(FileSystem::read($file), Json::FORCE_ARRAY);
-		$json['Instances'][0] = $this->parseUdp($udp);
+		$json['Instances'] = $this->parseInstances($json['Instances'], $udp, 0);
 		FileSystem::write($file, Json::encode($json, Json::PRETTY));
 	}
 

@@ -33,17 +33,28 @@ class ConfigPresenter extends BasePresenter {
 	public $configComponentsFactory;
 
 	/**
+	 * @var Forms\ConfigMqttFormFactory
+	 * @inject
+	 */
+	public $configMqttFactory;
+
+	/**
 	 * @var Forms\ConfigUdpFormFactory
 	 * @inject
 	 */
 	public $configUdpFactory;
-
 
 	/**
 	 * @var ConfigManager
 	 * @inject
 	 */
 	private $configManager;
+
+	/**
+	 * @persistent
+	 * @var int
+	 */
+	public $id;
 
 	/**
 	 * @param ConfigManager $configManager
@@ -53,7 +64,20 @@ class ConfigPresenter extends BasePresenter {
 	}
 
 	public function renderDefault() {
+		if (!$this->user->isLoggedIn()) {
+			$this->redirect('Sign:in');
+		}
+	}
 
+	public function renderMqtt($id) {
+		if (!$this->user->isLoggedIn()) {
+			$this->redirect('Sign:in');
+		}
+		$this->template->id = $id;
+		$this->id = $id;
+		if (!$id) {
+			$this->template->instances = $this->configManager->read('MqttMessaging')['Instances'];
+		}
 	}
 
 	/**
@@ -61,8 +85,21 @@ class ConfigPresenter extends BasePresenter {
 	 * @return Form Components form
 	 */
 	protected function createComponentConfigComponentsForm() {
-		$formFactory = $this->configComponentsFactory;
-		return $formFactory->create($this);
+		if (!$this->user->isLoggedIn()) {
+			$this->redirect('Sign:in');
+		}
+		return $this->configComponentsFactory->create($this);
+	}
+
+	/**
+	 * Create components form
+	 * @return Form Components form
+	 */
+	protected function createComponentConfigMqttForm() {
+		if (!$this->user->isLoggedIn()) {
+			$this->redirect('Sign:in');
+		}
+		return $this->configMqttFactory->create($this);
 	}
 
 	/**
@@ -70,8 +107,10 @@ class ConfigPresenter extends BasePresenter {
 	 * @return Form UDP form
 	 */
 	protected function createComponentConfigUdpForm() {
-		$formFactory = $this->configUdpFactory;
-		return $formFactory->create($this);
+		if (!$this->user->isLoggedIn()) {
+			$this->redirect('Sign:in');
+		}
+		return $this->configUdpFactory->create($this);
 	}
 
 }
