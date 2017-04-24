@@ -3,8 +3,6 @@ php:
   - 5.6
   - 7.0
   - 7.1
-  - nightly
-  - hhvm
 env:
   - PHP_BIN=php
   - PHP_BIN=php-cgi
@@ -15,29 +13,29 @@ matrix:
   exclude:
     - php: hhvm
       env: PHP_BIN=php-cgi
-#  include:
-#    - php: 7.0
-#      env: PHP_BIN=phpdbg COVERAGE="--coverage ./coverage/clover.xml --coverage-src ./src"
+  include:
+    - php: 7.0
+      env: PHP_BIN=phpdbg COVERAGE="--coverage ./coverage/clover.xml --coverage-src ./src"
 before_script:
   # Update Composer
   - composer self-update
   - composer install --dev
   # Install Nette Tester
-  #- travis_retry composer update --no-interaction --prefer-dist $dependencies
+  - composer update --no-interaction
   # Install Nette Code checker
-  - travis_retry composer create-project nette/code-checker temp/code-checker --no-interaction
+  - composer create-project nette/code-checker temp/code-checker --no-interaction
   # Create directory for Coveralls files
-  #- mkdir -p coverage
+  - mkdir -p coverage
 script:
   # Nette Tester
-  #- vendor/bin/tester -p $PHP_BIN ./tests -s $COVERAGE
+  - vendor/bin/tester -p $PHP_BIN  -c ./tests/php.ini -s $COVERAGE ./tests
   # Nette Code checker
   - php temp/code-checker/src/code-checker.php -l --short-arrays
-#after_success:
-#  - 'if [ "$COVERAGE" != "" ]; then php vendor/bin/coveralls -v; fi;'
-#after_failure:
-#   Print *.actual content
-#  - 'for i in $(find ./tests -name \*.actual); do echo "--- $i"; cat $i; echo; echo; done'
+after_success:
+  - 'if [ "$COVERAGE" != "" ]; then php vendor/bin/coveralls -v; fi;'
+after_failure:
+   Print *.actual content
+  - 'for i in $(find ./tests -name \*.actual); do echo "--- $i"; cat $i; echo; echo; done'
 sudo: false
 cache:
   directories:
