@@ -28,7 +28,7 @@ before_script:
   - mkdir -p coverage
 script:
   # Nette Tester
-  - vendor/bin/tester -p $PHP_BIN  -c ./tests/php.ini -s $COVERAGE ./tests
+  - vendor/bin/tester -p $PHP_BIN -s $COVERAGE ./tests
   # Nette Code checker
   - php temp/code-checker/src/code-checker.php -l --short-arrays
 after_success:

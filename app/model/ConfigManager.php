@@ -57,7 +57,7 @@ class ConfigManager {
 		return $fileNames;
 	}
 
-	protected function parseComponents($components) {
+	public function parseComponents($components) {
 		$array = [];
 		foreach ($components as $component => $enabled) {
 			array_push($array, ['ComponentName' => $component, 'Enabled' => $enabled]);
@@ -72,7 +72,7 @@ class ConfigManager {
 	 * @param int $id
 	 * @return array
 	 */
-	protected function parseInstances(array $interfaces, ArrayHash $update, int $id) {
+	public function parseInstances(array $interfaces, ArrayHash $update, int $id) {
 		$interface = [];
 		$interface['Name'] = $update['Name'];
 		unset($update['Name']);
