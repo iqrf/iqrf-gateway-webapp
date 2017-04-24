@@ -3,6 +3,7 @@
 require __DIR__ . '/../vendor/autoload.php';
 
 Tester\Environment::setup();
+date_default_timezone_set('Europe/Prague');
 
 $configurator = new Nette\Configurator;
 $configurator->setDebugMode(FALSE);

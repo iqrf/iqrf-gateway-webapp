@@ -15,7 +15,7 @@ matrix:
       env: PHP_BIN=php-cgi
   include:
     - php: 7.0
-      env: PHP_BIN=phpdbg COVERAGE="--coverage ./coverage/clover.xml --coverage-src ./src"
+      env: PHP_BIN=phpdbg COVERAGE="--coverage ./coverage/clover.xml --coverage-src ./app"
 before_script:
   # Update Composer
   - composer self-update
