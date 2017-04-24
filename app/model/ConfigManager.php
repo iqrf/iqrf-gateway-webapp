@@ -42,7 +42,7 @@ class ConfigManager {
 		$this->configDir = $configDir;
 	}
 
-	public function read(string $name) {
+	public function read($name) {
 		$json = FileSystem::read($this->configDir . '/' . $name . '.json');
 		return Json::decode($json, Json::FORCE_ARRAY);
 	}
