@@ -1,6 +1,7 @@
 # iqrf-daemon-webapp
 
 [![Build Status](https://travis-ci.org/iqrfsdk/iqrf-daemon-webapp.svg?branch=master)](https://travis-ci.org/iqrfsdk/iqrf-daemon-webapp)
+[![Code Coverage](https://codecov.io/gh/iqrfsdk/iqrf-daemon-webapp/branch/master/graph/badge.svg)](https://codecov.io/gh/iqrfsdk/iqrf-daemon-webapp)
 [![Apache License](https://img.shields.io/badge/license-APACHE2-blue.svg)](LICENSE)
 
 This is web application for iqrf-daemon configuration.
