@@ -15,6 +15,7 @@ services:
 	- App\Model\ConfigManager(%configDir%)
 	- App\Forms\FormFactory
 	- App\Forms\ConfigComponentsFormFactory
+	- App\Forms\ConfigIqrfFormFactory
 	- App\Forms\ConfigMqttFormFactory
 	- App\Forms\ConfigUdpFormFactory
 	- App\Forms\SignInFormFactory

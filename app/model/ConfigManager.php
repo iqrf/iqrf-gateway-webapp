@@ -80,6 +80,11 @@ class ConfigManager {
 		FileSystem::write($file, Json::encode($json, Json::PRETTY));
 	}
 
+	public function saveIqrf($iqrf) {
+		$file = $this->configDir . '/IqrfInterface.json';
+		FileSystem::write($file, Json::encode($iqrf, Json::PRETTY));
+	}
+
 	public function saveMqtt($mqtt, $id) {
 		$file = $this->configDir . '/MqttMessaging.json';
 		$json = Json::decode(FileSystem::read($file), Json::FORCE_ARRAY);

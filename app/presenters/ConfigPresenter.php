@@ -33,6 +33,12 @@ class ConfigPresenter extends BasePresenter {
 	public $configComponentsFactory;
 
 	/**
+	 * @var Forms\ConfigIqrfFormFactory
+	 * @inject
+	 */
+	public $configIqrfFactory;
+
+	/**
 	 * @var Forms\ConfigMqttFormFactory
 	 * @inject
 	 */
@@ -92,8 +98,19 @@ class ConfigPresenter extends BasePresenter {
 	}
 
 	/**
-	 * Create components form
-	 * @return Form Components form
+	 * Create IQRF interface form
+	 * @return Form IQRF interface form
+	 */
+	protected function createComponentConfigIqrfForm() {
+		if (!$this->user->isLoggedIn()) {
+			$this->redirect('Sign:in');
+		}
+		return $this->configIqrfFactory->create($this);
+	}
+
+	/**
+	 * Create MQTT interface form
+	 * @return Form MQTT interface form
 	 */
 	protected function createComponentConfigMqttForm() {
 		if (!$this->user->isLoggedIn()) {
@@ -103,8 +120,8 @@ class ConfigPresenter extends BasePresenter {
 	}
 
 	/**
-	 * Create UDP form
-	 * @return Form UDP form
+	 * Create UDP interface form
+	 * @return Form UDP interface form
 	 */
 	protected function createComponentConfigUdpForm() {
 		if (!$this->user->isLoggedIn()) {
