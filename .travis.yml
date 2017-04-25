@@ -15,8 +15,8 @@ matrix:
       env: PHP_BIN=php-cgi
   include:
     - php: 7.0
-      env: PHP_BIN=phpdbg COVERAGE="--coverage ./coverage/clover.xml --coverage-src ./app"
-before_script:
+      env: PHP_BIN=phpdbg COVERAGE="--coverage ./coverage.xml --coverage-src ./app"
+install:
   # Update Composer
   - composer self-update
   - composer install --dev
@@ -24,15 +24,15 @@ before_script:
   - composer update --no-interaction
   # Install Nette Code checker
   - composer create-project nette/code-checker temp/code-checker --no-interaction
-  # Create directory for Coveralls files
-  - mkdir -p coverage
+  # Install codecov client
+  - 'if [ "$COVERAGE" != "" ]; then pip install codecov; fi;'
 script:
   # Nette Tester
   - vendor/bin/tester -p $PHP_BIN -s $COVERAGE ./tests
   # Nette Code checker
   - php temp/code-checker/src/code-checker.php -l --short-arrays
 after_success:
-  - 'if [ "$COVERAGE" != "" ]; then php vendor/bin/coveralls -v; fi;'
+  - 'if [ "$COVERAGE" != "" ]; then codecov; fi;'
 after_failure:
    Print *.actual content
   - 'for i in $(find ./tests -name \*.actual); do echo "--- $i"; cat $i; echo; echo; done'

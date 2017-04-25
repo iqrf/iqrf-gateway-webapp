@@ -38,7 +38,7 @@ class ConfigManager {
 	 * Constructor
 	 * @param string $configDir Directory with configuration files
 	 */
-	public function __construct(string $configDir) {
+	public function __construct($configDir) {
 		$this->configDir = $configDir;
 	}
 
@@ -72,7 +72,7 @@ class ConfigManager {
 	 * @param int $id
 	 * @return array
 	 */
-	public function parseInstances(array $interfaces, ArrayHash $update, int $id) {
+	public function parseInstances(array $interfaces, ArrayHash $update, $id) {
 		$interface = [];
 		$interface['Name'] = $update['Name'];
 		unset($update['Name']);
