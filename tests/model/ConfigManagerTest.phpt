@@ -23,6 +23,51 @@ class ConfigManagerTest extends TestCase {
 
 	/**
 	 * @test
+	 * Test function to parse configuration of Components
+	 */
+	public function testRead() {
+		$path = __DIR__ . '/../configuration/';
+		$configManager = new ConfigManager($path);
+		$result = [
+			'Configuration' => 'v0.0',
+			'ConfigurationDir' => 'configuration',
+			'WatchDogTimeoutMilis' => 10000,
+			'Components' => [
+				[
+					"ComponentName" => "TracerFile",
+					"Enabled" => true
+				], [
+					"ComponentName" => "IqrfInterface",
+					"Enabled" => true
+				], [
+					"ComponentName" => "UdpMessaging",
+					"Enabled" => true
+				], [
+					"ComponentName" => "MqttMessaging",
+					"Enabled" => true
+				], [
+					"ComponentName" => "MqMessaging",
+					"Enabled" => true
+				], [
+					"ComponentName" => "Scheduler",
+					"Enabled" => true
+				], [
+					"ComponentName" => "SimpleSerializer",
+					"Enabled" => true
+				], [
+					"ComponentName" => "JsonSerializer",
+					"Enabled" => true
+				], [
+					"ComponentName" => "BaseService",
+					"Enabled" => true
+				]
+			]
+		];
+		Assert::equal($result, $configManager->read('config'));
+	}
+
+	/**
+	 * @test
 	 * Test function to parse configuration of Instances
 	 */
 	public function testParseInstances() {
@@ -149,7 +194,7 @@ class ConfigManagerTest extends TestCase {
 
 	/**
 	 * @test
-	 * Test function to parse configuration of Instances
+	 * Test function to parse configuration of Components
 	 */
 	public function testParseComponents() {
 		$path = __DIR__ . '/../configuration/';

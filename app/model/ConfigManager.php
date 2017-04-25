@@ -47,16 +47,6 @@ class ConfigManager {
 		return Json::decode($json, Json::FORCE_ARRAY);
 	}
 
-	public function getAll() {
-		$fileNames = [];
-		foreach (Finder::findFiles('*.json')->in($this->configDir) as $path => $file) {
-			array_push($fileNames, str_replace($this->configDir . '/', '', $path));
-			echo $path; // $path je řetězec s názvem souboru včetně cesty
-			echo $file; // $file je objektem SplFileInfo
-		}
-		return $fileNames;
-	}
-
 	public function parseComponents($components) {
 		$array = [];
 		foreach ($components as $component => $enabled) {
