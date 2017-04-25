@@ -35,8 +35,7 @@
 		"tracy/tracy": "^2.4"
 	},
 	"require-dev": {
-		"nette/tester": "^1.7",
-		"satooshi/php-coveralls": "^1.0"
+		"nette/tester": "^1.7"
 	},
 	"support": {
 		"email": "ondracek.roman@centrum.cz",

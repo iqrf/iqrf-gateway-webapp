@@ -25,7 +25,7 @@ install:
   # Install Nette Code checker
   - composer create-project nette/code-checker temp/code-checker --no-interaction
   # Install codecov client
-  - 'if [ "$COVERAGE" != "" ]; then pip install codecov; fi;'
+  - 'if [ "$COVERAGE" != "" ]; then sudo pip3 install codecov; fi;'
 script:
   # Nette Tester
   - vendor/bin/tester -p $PHP_BIN -s $COVERAGE ./tests
@@ -36,7 +36,7 @@ after_success:
 after_failure:
    Print *.actual content
   - 'for i in $(find ./tests -name \*.actual); do echo "--- $i"; cat $i; echo; echo; done'
-sudo: false
+sudo: true
 cache:
   directories:
     - $HOME/.composer/cache
