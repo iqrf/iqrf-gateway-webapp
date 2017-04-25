@@ -24,15 +24,13 @@ install:
   - composer update --no-interaction
   # Install Nette Code checker
   - composer create-project nette/code-checker temp/code-checker --no-interaction
-  # Install codecov client
-  - 'if [ "$COVERAGE" != "" ]; then bash <(curl -s https://codecov.io/bash); fi;'
 script:
   # Nette Tester
   - vendor/bin/tester -p $PHP_BIN -s $COVERAGE ./tests
   # Nette Code checker
   - php temp/code-checker/src/code-checker.php -l --short-arrays
 after_success:
-  - 'if [ "$COVERAGE" != "" ]; then codecov; fi;'
+  - 'if [ "$COVERAGE" != "" ]; then bash <(curl -s https://codecov.io/bash); fi;'
 after_failure:
    Print *.actual content
   - 'for i in $(find ./tests -name \*.actual); do echo "--- $i"; cat $i; echo; echo; done'
