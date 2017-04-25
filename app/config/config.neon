@@ -17,6 +17,7 @@ services:
 	- App\Forms\ConfigComponentsFormFactory
 	- App\Forms\ConfigIqrfFormFactory
 	- App\Forms\ConfigMqttFormFactory
+	- App\Forms\ConfigTracerFormFactory
 	- App\Forms\ConfigUdpFormFactory
 	- App\Forms\SignInFormFactory
 	router: App\RouterFactory::createRouter

@@ -92,6 +92,11 @@ class ConfigManager {
 		FileSystem::write($file, Json::encode($json, Json::PRETTY));
 	}
 
+	public function saveTracer($iqrf) {
+		$file = $this->configDir . '/TracerFile.json';
+		FileSystem::write($file, Json::encode($iqrf, Json::PRETTY));
+	}
+
 	public function saveUdp($udp) {
 		$file = $this->configDir . '/UdpMessaging.json';
 		$json = Json::decode(FileSystem::read($file), Json::FORCE_ARRAY);

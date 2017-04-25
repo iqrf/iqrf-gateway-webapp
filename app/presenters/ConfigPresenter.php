@@ -45,6 +45,13 @@ class ConfigPresenter extends BasePresenter {
 	public $configMqttFactory;
 
 	/**
+	 * @var Forms\ConfigTracerFormFactory
+	 * @inject
+	 */
+	public $configTracerFactory;
+
+
+	/**
 	 * @var Forms\ConfigUdpFormFactory
 	 * @inject
 	 */
@@ -117,6 +124,17 @@ class ConfigPresenter extends BasePresenter {
 			$this->redirect('Sign:in');
 		}
 		return $this->configMqttFactory->create($this);
+	}
+
+	/**
+	 * Create Tracer form
+	 * @return Form Tracer form
+	 */
+	protected function createComponentConfigTracerForm() {
+		if (!$this->user->isLoggedIn()) {
+			$this->redirect('Sign:in');
+		}
+		return $this->configTracerFactory->create($this);
 	}
 
 	/**
