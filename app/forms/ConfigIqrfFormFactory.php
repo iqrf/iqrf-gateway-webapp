@@ -56,7 +56,7 @@ class ConfigIqrfFormFactory {
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('Timeout expired, resubmit the form.');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
-			$this->configManager->saveIqrf($values);
+			$this->configManager->write('IqrfInterface', $values);
 			$presenter->redirect('Config:default');
 		};
 

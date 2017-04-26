@@ -46,6 +46,11 @@ class ConfigManager {
 		return Json::decode($json, Json::FORCE_ARRAY);
 	}
 
+	public function write($name, $array) {
+		$fileName = $this->configDir . '/' . $name . '.json';
+		FileSystem::write($fileName, Json::encode($array, Json::PRETTY));
+	}
+
 	public function parseComponents($components) {
 		$array = [];
 		foreach ($components as $component => $enabled) {
@@ -73,27 +78,15 @@ class ConfigManager {
 	}
 
 	public function saveComponents($components) {
-		$file = $this->configDir . '/config.json';
-		$json = Json::decode(FileSystem::read($file), Json::FORCE_ARRAY);
+		$json = $this->read('config');
 		$json['Components'] = $this->parseComponents($components);
-		FileSystem::write($file, Json::encode($json, Json::PRETTY));
+		$this->write('config', $json);
 	}
 
 	public function saveInstances($fileName, ArrayHash $array, $id = 0) {
-		$file = $this->configDir . '/' . $fileName . '.json';
-		$json = Json::decode(FileSystem::read($file), Json::FORCE_ARRAY);
+		$json = $this->read($fileName);
 		$json['Instances'] = $this->parseInstances($json['Instances'], $array, $id);
-		FileSystem::write($file, Json::encode($json, Json::PRETTY));
-	}
-
-	public function saveIqrf($iqrf) {
-		$file = $this->configDir . '/IqrfInterface.json';
-		FileSystem::write($file, Json::encode($iqrf, Json::PRETTY));
-	}
-
-	public function saveTracer($iqrf) {
-		$file = $this->configDir . '/TracerFile.json';
-		FileSystem::write($file, Json::encode($iqrf, Json::PRETTY));
+		$this->write($fileName, $json);
 	}
 
 }
