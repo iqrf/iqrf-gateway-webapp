@@ -85,6 +85,13 @@ class ConfigManager {
 		FileSystem::write($file, Json::encode($iqrf, Json::PRETTY));
 	}
 
+	public function saveMq($mqtt) {
+		$file = $this->configDir . '/MqMessaging.json';
+		$json = Json::decode(FileSystem::read($file), Json::FORCE_ARRAY);
+		$json['Instances'] = $this->parseInstances($json['Instances'], $mqtt, 0);
+		FileSystem::write($file, Json::encode($json, Json::PRETTY));
+	}
+
 	public function saveMqtt($mqtt, $id) {
 		$file = $this->configDir . '/MqttMessaging.json';
 		$json = Json::decode(FileSystem::read($file), Json::FORCE_ARRAY);

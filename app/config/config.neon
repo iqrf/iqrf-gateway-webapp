@@ -16,6 +16,7 @@ services:
 	- App\Forms\FormFactory
 	- App\Forms\ConfigComponentsFormFactory
 	- App\Forms\ConfigIqrfFormFactory
+	- App\Forms\ConfigMqFormFactory
 	- App\Forms\ConfigMqttFormFactory
 	- App\Forms\ConfigTracerFormFactory
 	- App\Forms\ConfigUdpFormFactory

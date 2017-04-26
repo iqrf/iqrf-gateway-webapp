@@ -39,6 +39,12 @@ class ConfigPresenter extends BasePresenter {
 	public $configIqrfFactory;
 
 	/**
+	 * @var Forms\ConfigMqFormFactory
+	 * @inject
+	 */
+	public $configMqFactory;
+
+	/**
 	 * @var Forms\ConfigMqttFormFactory
 	 * @inject
 	 */
@@ -113,6 +119,17 @@ class ConfigPresenter extends BasePresenter {
 			$this->redirect('Sign:in');
 		}
 		return $this->configIqrfFactory->create($this);
+	}
+
+	/**
+	 * Create MQ interface form
+	 * @return Form MQ interface form
+	 */
+	protected function createComponentConfigMqForm() {
+		if (!$this->user->isLoggedIn()) {
+			$this->redirect('Sign:in');
+		}
+		return $this->configMqFactory->create($this);
 	}
 
 	/**
