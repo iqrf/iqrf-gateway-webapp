@@ -52,7 +52,8 @@ class ConfigMqttFormFactory {
 	public function create(ConfigPresenter $presenter) {
 		$id = $presenter->id;
 		$form = $this->factory->create();
-		$instances = $this->configManager->read('MqttMessaging')['Instances'];
+		$fileName = 'MqttMessaging';
+		$instances = $this->configManager->read($fileName)['Instances'];
 		$data = $instances[$id];
 		$properties = $data['Properties'];
 		$form->addText('Name', 'Name')->setDefaultValue($data['Name']);
@@ -78,8 +79,8 @@ class ConfigMqttFormFactory {
 		$form->addCheckbox('EnableServerCertAuth', 'EnableServerCertAuth')->setDefaultValue($properties['EnableServerCertAuth']);
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('Timeout expired, resubmit the form.');
-		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $id) {
-			$this->configManager->saveMqtt($values, $id);
+		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $fileName, $id) {
+			$this->configManager->saveInstances($fileName, $values, $id);
 			$presenter->redirect('Config:default');
 		};
 

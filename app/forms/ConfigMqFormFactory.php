@@ -51,7 +51,8 @@ class ConfigMqFormFactory {
 	 */
 	public function create(ConfigPresenter $presenter) {
 		$form = $this->factory->create();
-		$instances = $this->configManager->read('MqMessaging')['Instances'];
+		$fileName = 'MqMessaging';
+		$instances = $this->configManager->read($fileName)['Instances'];
 		$data = $instances[0];
 		$properties = $data['Properties'];
 		$form->addText('Name', 'Name')->setDefaultValue($data['Name']);
@@ -60,8 +61,8 @@ class ConfigMqFormFactory {
 		$form->addText('RemoteMqName', 'RemoteMqName')->setDefaultValue($properties['RemoteMqName']);
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('Timeout expired, resubmit the form.');
-		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
-			$this->configManager->saveMq($values);
+		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $fileName) {
+			$this->configManager->saveInstances($fileName, $values);
 			$presenter->redirect('Config:default');
 		};
 

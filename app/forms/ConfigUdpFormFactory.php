@@ -51,7 +51,8 @@ class ConfigUdpFormFactory {
 	 */
 	public function create(ConfigPresenter $presenter) {
 		$form = $this->factory->create();
-		$data = $this->configManager->read('UdpMessaging')['Instances'][0];
+		$fileName = 'UdpMessaging';
+		$data = $this->configManager->read($fileName)['Instances'][0];
 		$properties = $data['Properties'];
 		$form->addText('Name', 'Name')->setDefaultValue($data['Name']);
 		$form->addCheckbox('Enabled', 'Enabled')->setDefaultValue($data['Enabled']);
@@ -59,8 +60,8 @@ class ConfigUdpFormFactory {
 		$form->addInteger('LocalPort', 'LocalPort')->setDefaultValue($properties['LocalPort']);
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('Timeout expired, resubmit the form.');
-		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
-			$this->configManager->saveUdp($values);
+		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $fileName) {
+			$this->configManager->saveInstances($fileName, $values);
 			$presenter->redirect('Config:default');
 		};
 
