@@ -33,6 +33,12 @@ class ConfigPresenter extends BasePresenter {
 	public $configComponentsFactory;
 
 	/**
+	 * @var Forms\ConfigIqrfAppFormFactory
+	 * @inject
+	 */
+	public $configIqrfAppFactory;
+
+	/**
 	 * @var Forms\ConfigIqrfFormFactory
 	 * @inject
 	 */
@@ -108,6 +114,17 @@ class ConfigPresenter extends BasePresenter {
 			$this->redirect('Sign:in');
 		}
 		return $this->configComponentsFactory->create($this);
+	}
+
+	/**
+	 * Create IQRF app form
+	 * @return Form IQRF app form
+	 */
+	protected function createComponentConfigIqrfAppForm() {
+		if (!$this->user->isLoggedIn()) {
+			$this->redirect('Sign:in');
+		}
+		return $this->configIqrfAppFactory->create($this);
 	}
 
 	/**
