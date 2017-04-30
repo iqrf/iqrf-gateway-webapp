@@ -41,16 +41,31 @@ class ConfigManager {
 		$this->configDir = $configDir;
 	}
 
+	/**
+	 * Read JSON file and decode JSON to array
+	 * @param string $name File name (without .json)
+	 * @return array
+	 */
 	public function read($name) {
 		$json = FileSystem::read($this->configDir . '/' . $name . '.json');
 		return Json::decode($json, Json::FORCE_ARRAY);
 	}
 
+	/**
+	 * Encode JSON from array and write JSON file
+	 * @param string $name File name (without .json)
+	 * @param array $array JSON array
+	 */
 	public function write($name, $array) {
 		$fileName = $this->configDir . '/' . $name . '.json';
 		FileSystem::write($fileName, Json::encode($array, Json::PRETTY));
 	}
 
+	/**
+	 * Parse components
+	 * @param array $components
+	 * @return array
+	 */
 	public function parseComponents($components) {
 		$array = [];
 		foreach ($components as $component => $enabled) {
@@ -69,20 +84,30 @@ class ConfigManager {
 	public function parseInstances(array $interfaces, ArrayHash $update, $id) {
 		$interface = [];
 		$interface['Name'] = $update['Name'];
-		unset($update['Name']);
 		$interface['Enabled'] = $update['Enabled'];
+		unset($update['Name']);
 		unset($update['Enabled']);
 		$interface['Properties'] = (array) $update;
 		$interfaces[$id] = $interface;
 		return $interfaces;
 	}
 
+	/**
+	 * Save components setting
+	 * @param array $components Components settings
+	 */
 	public function saveComponents($components) {
 		$json = $this->read('config');
 		$json['Components'] = $this->parseComponents($components);
 		$this->write('config', $json);
 	}
 
+	/**
+	 * Save Instances setting
+	 * @param string $fileName File name (without .json)
+	 * @param ArrayHash $array Instance settings
+	 * @param int $id Instance ID
+	 */
 	public function saveInstances($fileName, ArrayHash $array, $id = 0) {
 		$json = $this->read($fileName);
 		$json['Instances'] = $this->parseInstances($json['Instances'], $array, $id);
