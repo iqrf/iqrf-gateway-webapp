@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TEST: App\Model\ConfigManager
+ * TEST: App\Forms\FormFactory
  * @phpVersion >= 5.6
  * @testCase
  */
