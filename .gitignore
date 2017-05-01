@@ -2,3 +2,9 @@ app/config/config.local.neon
 # Composer
 vendor/
 composer.lock
+# NetBeans IDE
+nbproject/
+# Nette Tester
+tests/output/
+tests/*/output/
+tests/configuration-test
