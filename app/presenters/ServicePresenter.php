@@ -43,7 +43,7 @@ class ServicePresenter extends BasePresenter {
 			$this->redirect('Sign:in');
 		}
 	}
-	
+
 	public function actionStart() {
 		if (!$this->user->isLoggedIn()) {
 			$this->redirect('Sign:in');
@@ -53,7 +53,7 @@ class ServicePresenter extends BasePresenter {
 		$this->redirect('Service:default');
 		$this->setView('default');
 	}
-	
+
 	public function actionStop() {
 		if (!$this->user->isLoggedIn()) {
 			$this->redirect('Sign:in');
@@ -63,7 +63,7 @@ class ServicePresenter extends BasePresenter {
 		$this->redirect('Service:default');
 		$this->setView('default');
 	}
-	
+
 	public function actionRestart() {
 		if (!$this->user->isLoggedIn()) {
 			$this->redirect('Sign:in');
@@ -74,7 +74,6 @@ class ServicePresenter extends BasePresenter {
 		$this->setView('default');
 	}
 
-	
 	public function renderStatus() {
 		if (!$this->user->isLoggedIn()) {
 			$this->redirect('Sign:in');
@@ -82,4 +81,5 @@ class ServicePresenter extends BasePresenter {
 		$status = $this->serviceManager->getStatus();
 		$this->template->status = $status;
 	}
+
 }
