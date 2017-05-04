@@ -1,6 +1,6 @@
 parameters:
 	configDir: '/etc/iqrf-daemon'
-	initSystem: 'systemd'
+	initDaemon: 'systemd'
 	sudo: true
 
 application:
@@ -13,6 +13,7 @@ session:
 
 services:
 	- App\Model\ConfigManager(%configDir%)
+	- App\Model\ServiceManager(%initDaemon%, %sudo%)
 	- App\Forms\FormFactory
 	- App\Forms\ConfigComponentsFormFactory
 	- App\Forms\ConfigIqrfAppFormFactory
