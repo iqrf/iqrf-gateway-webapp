@@ -15,18 +15,10 @@
 *}
 
 {block content}
-<h1 n:block=title>Dashboard</h1>
+<h1 n:block=title>IQRF App</h1>
 <div class='list-group'>
-	<a n:href='Config:default' class='list-group-item'>
-		<header class='list-group-item-heading'>Configuration</header>
-		<p class='list-group-item-text'>Edit configuration.</p>
-	</a>
-	<a n:href='Service:default' class='list-group-item'>
-		<header class='list-group-item-heading'>Service</header>
-		<p class='list-group-item-text'>Control service.</p>
-	</a>
-	<a n:href='IqrfApp:default' class='list-group-item'>
-		<header class='list-group-item-heading'>IQRF App</header>
-		<p class='list-group-item-text'>Control IQRF App.</p>
+	<a n:href='IqrfApp:sendRaw' class='list-group-item'>
+		<header class='list-group-item-heading'>Send RAW IQRF packet</header>
+		<p class='list-group-item-text'>Send RAW IQRF packet.</p>
 	</a>
 </div>

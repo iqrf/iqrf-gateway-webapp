@@ -15,18 +15,19 @@
 *}
 
 {block content}
-<h1 n:block=title>Dashboard</h1>
-<div class='list-group'>
-	<a n:href='Config:default' class='list-group-item'>
-		<header class='list-group-item-heading'>Configuration</header>
-		<p class='list-group-item-text'>Edit configuration.</p>
-	</a>
-	<a n:href='Service:default' class='list-group-item'>
-		<header class='list-group-item-heading'>Service</header>
-		<p class='list-group-item-text'>Control service.</p>
-	</a>
-	<a n:href='IqrfApp:default' class='list-group-item'>
-		<header class='list-group-item-heading'>IQRF App</header>
-		<p class='list-group-item-text'>Control IQRF App.</p>
-	</a>
+<h1 n:block=title>Send RAW packet</h1>
+<div class='panel panel-default'>
+	<div class='panel-body'>
+		{control iqrfAppSendRawForm}
+	</div>
 </div>
+{ifset $response}
+	<h2>Response</h2>
+	<div class='panel panel-default'>
+		<div class='panel-body'>
+			{snippet responseChange}
+				{$response|breaklines}
+			{/snippet}
+		</div>
+	</div>
+{/ifset}

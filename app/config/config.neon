@@ -13,6 +13,7 @@ session:
 
 services:
 	- App\Model\ConfigManager(%configDir%)
+	- App\Model\IqrfAppManager(%sudo%)
 	- App\Model\ServiceManager(%initDaemon%, %sudo%)
 	- App\Forms\FormFactory
 	- App\Forms\ConfigComponentsFormFactory
@@ -22,6 +23,7 @@ services:
 	- App\Forms\ConfigMqttFormFactory
 	- App\Forms\ConfigTracerFormFactory
 	- App\Forms\ConfigUdpFormFactory
+	- App\Forms\IqrfAppSendRawFormFactory
 	- App\Forms\SignInFormFactory
 	router: App\RouterFactory::createRouter
 
