@@ -58,7 +58,7 @@ class IqrfAppSendRawFormFactory {
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
 			$packet = $values['packet'];
 			if ($this->iqrfAppManager->validatePacket($packet)) {
-				$response = $this->iqrfAppManager->sendRaw($values['packet']);
+				$response = $this->iqrfAppManager->sendRaw($packet);
 				$presenter->handleShowResponse($response);
 				Debugger::barDump('OK');
 			}
