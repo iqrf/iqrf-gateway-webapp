@@ -12,9 +12,10 @@ session:
 	expiration: 14 days
 
 services:
+	- App\Model\CommandManager(%sudo%)
 	- App\Model\ConfigManager(%configDir%)
-	- App\Model\IqrfAppManager(%sudo%)
-	- App\Model\ServiceManager(%initDaemon%, %sudo%)
+	- App\Model\IqrfAppManager
+	- App\Model\ServiceManager(%initDaemon%)
 	- App\Forms\FormFactory
 	- App\Forms\ConfigComponentsFormFactory
 	- App\Forms\ConfigIqrfAppFormFactory

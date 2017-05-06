@@ -18,44 +18,37 @@
 
 namespace App\Model;
 
-use App\Model\CommandManager;
 use Nette;
+use Nette\Utils\Strings;
 
-class IqrfAppManager {
+class CommandManager {
 
 	use Nette\SmartObject;
 
 	/**
-	 * @var CommandManager
+	 * @var bool
 	 * @inject
 	 */
-	private $commandManager;
+	private $sudo;
 
 	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command Manager
+	 * @param bool $sudo Sudo required
 	 */
-	public function __construct(CommandManager $commandManager) {
-		$this->commandManager = $commandManager;
+	public function __construct($sudo) {
+		$this->sudo = $sudo;
 	}
 
 	/**
-	 * Send RAW IQRF packet
-	 * @param string $packet RAW IQRF packet
+	 * Execute shell command and return output
+	 * @param string $cmd Command to execute
+	 * @param bool $needSudo
+	 * @return Output
 	 */
-	public function sendRaw($packet) {
-		$cmd = 'iqrfapp raw ' . $packet;
-		return $this->commandManager->send($cmd);
-	}
-
-	/**
-	 * Validate raw IQRF packet
-	 * @param string $packet Raw IQRF packet
-	 * @return bool Status
-	 */
-	public function validatePacket($packet) {
-		$pattern = '/^([0-9a-fA-F]{1,2}(\.|\ )){1,64}[0-9a-fA-F]{1,2}$/';
-		return (bool) preg_match($pattern, $packet);
+	public function send($cmd, $needSudo = false) {
+		$command = $this->sudo && $needSudo ? 'sudo ' : '';
+		$command .= $cmd;
+		return Strings::trim(shell_exec($command));
 	}
 
 }

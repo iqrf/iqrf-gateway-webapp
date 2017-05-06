@@ -5,6 +5,7 @@
  * @phpVersion >= 5.6
  * @testCase
  */
+use App\Model\CommandManager;
 use App\Model\IqrfAppManager;
 use Nette\DI\Container;
 use Tester\Assert;
@@ -25,7 +26,8 @@ class IqrfAppManagerTest extends TestCase {
 	 * Test function to validation of raw IQRF packet
 	 */
 	public function testValidatePacket() {
-		$iqrfAppManager = new IqrfAppManager(false);
+		$commandManager = new CommandManager(false);
+		$iqrfAppManager = new IqrfAppManager($commandManager);
 		$packet0 = '01.00.06.03.ff.ff';
 		$packet1 = '01 00 06 03 ff ff';
 		$packet2 = ';01.00.06.03.ff.ff';
