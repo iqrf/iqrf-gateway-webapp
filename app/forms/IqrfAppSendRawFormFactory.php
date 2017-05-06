@@ -56,12 +56,13 @@ class IqrfAppSendRawFormFactory {
 		$form->addSubmit('send', 'Send');
 		$form->addProtection('Timeout expired, resubmit the form.');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
-			Debugger::barDump($values['packet']);
-			$response = $this->iqrfAppManager->sendRaw($values['packet']);
-			Debugger::barDump($response);
-			$presenter->handleShowResponse($response);
+			$packet = $values['packet'];
+			if ($this->iqrfAppManager->validatePacket($packet)) {
+				$response = $this->iqrfAppManager->sendRaw($values['packet']);
+				$presenter->handleShowResponse($response);
+				Debugger::barDump('OK');
+			}
 		};
-
 		return $form;
 	}
 

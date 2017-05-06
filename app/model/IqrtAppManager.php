@@ -49,4 +49,14 @@ class IqrfAppManager {
 		return shell_exec($cmd);
 	}
 
+	/**
+	 * Validate raw IQRF packet
+	 * @param string $packet Raw IQRF packet
+	 * @return bool Status
+	 */
+	public function validatePacket($packet) {
+		$pattern = '/^([0-9a-fA-F]{1,2}(\.|\ )){1,64}[0-9a-fA-F]{1,2}$/';
+		return preg_match($pattern, $packet);
+	}
+
 }
