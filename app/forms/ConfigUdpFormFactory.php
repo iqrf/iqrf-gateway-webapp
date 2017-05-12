@@ -18,10 +18,12 @@
 
 namespace App\Forms;
 
+use App\Model\ConfigManager;
+use App\Model\ConfigParser;
+use App\Presenters\ConfigPresenter;
+
 use Nette;
 use Nette\Application\UI\Form;
-use App\Presenters\ConfigPresenter;
-use App\Model\ConfigManager;
 
 class ConfigUdpFormFactory {
 
@@ -34,14 +36,21 @@ class ConfigUdpFormFactory {
 	private $configManager;
 
 	/**
+	 * @var ConfigParser
+	 * @inject
+	 */
+	private $configParser;
+
+	/**
 	 * @var FormFactory
 	 * @inject
 	 */
 	private $factory;
 
-	public function __construct(FormFactory $factory, ConfigManager $configManager) {
+	public function __construct(FormFactory $factory, ConfigManager $configManager, ConfigParser $configParser) {
 		$this->factory = $factory;
 		$this->configManager = $configManager;
+		$this->configParser = $configParser;
 	}
 
 	/**
@@ -52,13 +61,13 @@ class ConfigUdpFormFactory {
 	public function create(ConfigPresenter $presenter) {
 		$form = $this->factory->create();
 		$fileName = 'UdpMessaging';
-		$data = $this->configManager->read($fileName)['Instances'][0];
-		$properties = $data['Properties'];
-		$form->addText('Name', 'Name')->setDefaultValue($data['Name']);
-		$form->addCheckbox('Enabled', 'Enabled')->setDefaultValue($data['Enabled']);
-		$form->addInteger('RemotePort', 'RemotePort')->setDefaultValue($properties['RemotePort']);
-		$form->addInteger('LocalPort', 'LocalPort')->setDefaultValue($properties['LocalPort']);
+		$json = $this->configManager->read($fileName);
+		$form->addText('Name', 'Name');
+		$form->addCheckbox('Enabled', 'Enabled');
+		$form->addInteger('RemotePort', 'RemotePort');
+		$form->addInteger('LocalPort', 'LocalPort');
 		$form->addSubmit('save', 'Save');
+		$form->setDefaults($this->configParser->instancesToForm($json));
 		$form->addProtection('Timeout expired, resubmit the form.');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $fileName) {
 			$this->configManager->saveInstances($fileName, $values);

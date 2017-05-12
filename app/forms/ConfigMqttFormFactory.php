@@ -18,10 +18,12 @@
 
 namespace App\Forms;
 
+use App\Model\ConfigManager;
+use App\Model\ConfigParser;
+use App\Presenters\ConfigPresenter;
+
 use Nette;
 use Nette\Application\UI\Form;
-use App\Presenters\ConfigPresenter;
-use App\Model\ConfigManager;
 
 class ConfigMqttFormFactory {
 
@@ -34,14 +36,21 @@ class ConfigMqttFormFactory {
 	private $configManager;
 
 	/**
+	 * @var ConfigParser
+	 * @inject
+	 */
+	private $configParser;
+
+	/**
 	 * @var FormFactory
 	 * @inject
 	 */
 	private $factory;
 
-	public function __construct(FormFactory $factory, ConfigManager $configManager) {
+	public function __construct(FormFactory $factory, ConfigManager $configManager, ConfigParser $configParser) {
 		$this->factory = $factory;
 		$this->configManager = $configManager;
+		$this->configParser = $configParser;
 	}
 
 	/**
@@ -53,31 +62,30 @@ class ConfigMqttFormFactory {
 		$id = $presenter->id;
 		$form = $this->factory->create();
 		$fileName = 'MqttMessaging';
-		$instances = $this->configManager->read($fileName)['Instances'];
-		$data = $instances[$id];
-		$properties = $data['Properties'];
-		$form->addText('Name', 'Name')->setDefaultValue($data['Name']);
-		$form->addCheckbox('Enabled', 'Enabled')->setDefaultValue($data['Enabled']);
-		$form->addText('BrokerAddr', 'Broker address')->setDefaultValue($properties['BrokerAddr']);
-		$form->addText('ClientId', 'Client ID')->setDefaultValue($properties['ClientId']);
-		$form->addInteger('Persistence', 'Persistence')->setDefaultValue($properties['Persistence']);
-		$form->addInteger('Qos', 'QoS')->setDefaultValue($properties['Qos'])->addRule(Form::RANGE, 'QoS 0-2', [0, 2]);
-		$form->addText('TopicRequest', 'TopicRequest')->setDefaultValue($properties['TopicRequest']);
-		$form->addText('TopicResponse', 'TopicResponse')->setDefaultValue($properties['TopicResponse']);
-		$form->addText('User', 'User')->setDefaultValue($properties['User']);
-		$form->addPassword('Password', 'Password')->setDefaultValue($properties['Password']);
-		$form->addCheckbox('EnabledSSL', 'Enabled TLS')->setDefaultValue($properties['EnabledSSL']);
-		$form->addInteger('KeepAliveInterval', 'Keep alive interval')->setDefaultValue($properties['KeepAliveInterval']);
-		$form->addInteger('ConnectTimeout', 'Connection timeout')->setDefaultValue($properties['ConnectTimeout']);
-		$form->addInteger('MinReconnect', 'Min reconnect')->setDefaultValue($properties['MinReconnect']);
-		$form->addInteger('MaxReconnect', 'Max reconnect')->setDefaultValue($properties['MaxReconnect']);
-		$form->addText('TrustStore', 'TrustStore')->setDefaultValue($properties['TrustStore']);
-		$form->addText('KeyStore', 'KeyStore')->setDefaultValue($properties['KeyStore']);
-		$form->addText('PrivateKey', 'PrivateKey')->setDefaultValue($properties['PrivateKey']);
-		$form->addPassword('PrivateKeyPassword', 'PrivateKeyPassword')->setDefaultValue($properties['PrivateKeyPassword']);
-		$form->addText('EnabledCipherSuites', 'EnabledCipherSuites')->setDefaultValue($properties['EnabledCipherSuites']);
-		$form->addCheckbox('EnableServerCertAuth', 'EnableServerCertAuth')->setDefaultValue($properties['EnableServerCertAuth']);
+		$json = $this->configManager->read($fileName);
+		$form->addText('Name', 'Name');
+		$form->addCheckbox('Enabled', 'Enabled');
+		$form->addText('BrokerAddr', 'Broker address');
+		$form->addText('ClientId', 'Client ID');
+		$form->addInteger('Persistence', 'Persistence');
+		$form->addInteger('Qos', 'QoS')->addRule(Form::RANGE, 'QoS 0-2', [0, 2]);
+		$form->addText('TopicRequest', 'TopicRequest');
+		$form->addText('TopicResponse', 'TopicResponse');
+		$form->addText('User', 'User');
+		$form->addPassword('Password', 'Password');
+		$form->addCheckbox('EnabledSSL', 'Enabled TLS');
+		$form->addInteger('KeepAliveInterval', 'Keep alive interval');
+		$form->addInteger('ConnectTimeout', 'Connection timeout');
+		$form->addInteger('MinReconnect', 'Min reconnect');
+		$form->addInteger('MaxReconnect', 'Max reconnect');
+		$form->addText('TrustStore', 'TrustStore');
+		$form->addText('KeyStore', 'KeyStore');
+		$form->addText('PrivateKey', 'PrivateKey');
+		$form->addPassword('PrivateKeyPassword', 'PrivateKeyPassword');
+		$form->addText('EnabledCipherSuites', 'EnabledCipherSuites');
+		$form->addCheckbox('EnableServerCertAuth', 'EnableServerCertAuth');
 		$form->addSubmit('save', 'Save');
+		$form->setDefaults($this->configParser->instancesToForm($json, $id));
 		$form->addProtection('Timeout expired, resubmit the form.');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $fileName, $id) {
 			$this->configManager->saveInstances($fileName, $values, $id);

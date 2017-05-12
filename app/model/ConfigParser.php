@@ -33,15 +33,23 @@ class ConfigParser {
 		return $array;
 	}
 
-	public function instancesToJson(array $interfaces, ArrayHash $update, $id) {
-		$interface = [];
-		$interface['Name'] = $update['Name'];
-		$interface['Enabled'] = $update['Enabled'];
+	public function instancesToJson(array $instances, ArrayHash $update, $id) {
+		$instance = [];
+		$instance['Name'] = $update['Name'];
+		$instance['Enabled'] = $update['Enabled'];
 		unset($update['Name']);
 		unset($update['Enabled']);
-		$interface['Properties'] = (array) $update;
-		$interfaces[$id] = $interface;
-		return $interfaces;
+		$instance['Properties'] = (array) $update;
+		$instances[$id] = $instance;
+		return $instances;
+	}
+
+	public function instancesToForm(array $json, $id = 0) {
+		$data = $json['Instances'][$id];
+		$instance = $data['Properties'];
+		$instance['Name'] = $data['Name'];
+		$instance['Enabled'] = $data['Enabled'];
+		return $instance;
 	}
 
 }
