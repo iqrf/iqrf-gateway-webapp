@@ -18,6 +18,7 @@
 
 namespace App\Model;
 
+use App\Model\ConfigParser;
 use Nette;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\FileSystem;
@@ -34,11 +35,18 @@ class ConfigManager {
 	private $configDir;
 
 	/**
+	 * @var ConfigParser
+	 * @inject
+	 */
+	private $configParser;
+
+	/**
 	 * Constructor
 	 * @param string $configDir Directory with configuration files
 	 */
-	public function __construct($configDir) {
+	public function __construct($configDir, ConfigParser $configParser) {
 		$this->configDir = $configDir;
+		$this->configParser = $configParser;
 	}
 
 	/**
@@ -62,43 +70,12 @@ class ConfigManager {
 	}
 
 	/**
-	 * Parse components
-	 * @param array $components
-	 * @return array
-	 */
-	public function parseComponents($components) {
-		$array = [];
-		foreach ($components as $component => $enabled) {
-			array_push($array, ['ComponentName' => $component, 'Enabled' => $enabled]);
-		}
-		return $array;
-	}
-
-	/**
-	 * Parse interfaces
-	 * @param array $interfaces
-	 * @param ArrayHash $update
-	 * @param int $id
-	 * @return array
-	 */
-	public function parseInstances(array $interfaces, ArrayHash $update, $id) {
-		$interface = [];
-		$interface['Name'] = $update['Name'];
-		$interface['Enabled'] = $update['Enabled'];
-		unset($update['Name']);
-		unset($update['Enabled']);
-		$interface['Properties'] = (array) $update;
-		$interfaces[$id] = $interface;
-		return $interfaces;
-	}
-
-	/**
 	 * Save components setting
 	 * @param array $components Components settings
 	 */
 	public function saveComponents($components) {
 		$json = $this->read('config');
-		$json['Components'] = $this->parseComponents($components);
+		$json['Components'] = $this->configParser->componentsToJson($components);
 		$this->write('config', $json);
 	}
 
@@ -110,7 +87,7 @@ class ConfigManager {
 	 */
 	public function saveInstances($fileName, ArrayHash $array, $id = 0) {
 		$json = $this->read($fileName);
-		$json['Instances'] = $this->parseInstances($json['Instances'], $array, $id);
+		$json['Instances'] = $this->configParser->instancesToJson($json['Instances'], $array, $id);
 		$this->write($fileName, $json);
 	}
 
