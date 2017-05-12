@@ -41,7 +41,7 @@
 				<div id='navbar' class='navbar-collapse collapse'>
 					<ul class='nav navbar-nav'>
 						<li><a href='/'>Home</a></li>
-						<li><a n:href='GwInfo:default' n:if='$user->loggedIn'>GW Info</a></li>
+						<li n:if='$user->loggedIn'><a n:href='GwInfo:default'>GW Info</a></li>
 						<li class='dropdown' n:if='$user->loggedIn'>
 							<a n:href='Config:default' class="dropdown-toggle" data-toggle="dropdown" role="button">Configuration <span class="caret"></span></a>
 							<ul class="dropdown-menu">
@@ -54,12 +54,12 @@
 								<li><a n:href='Config:tracer'>Tracer file</a></li>
 							</ul>
 						</li>
-						<li><a n:href='Service:default' n:if='$user->loggedIn'>Service</a></li>
-						<li><a n:href='IqrfApp:default' n:if='$user->loggedIn'>IqrfApp</a></li>
+						<li n:if='$user->loggedIn'><a n:href='Service:default'>Service</a></li>
+						<li n:if='$user->loggedIn'><a n:href='IqrfApp:default'>IqrfApp</a></li>
 					</ul>
 					<ul class='nav navbar-nav navbar-right'>
-						<li><a n:href='Sign:in' n:if='!$user->loggedIn'>Sign in</a></li>
-						<li><a n:href='Sign:out' n:if='$user->loggedIn'>Sign out</a></li>
+						<li n:if='!$user->loggedIn'><a n:href='Sign:in'>Sign in</a></li>
+						<li n:if='$user->loggedIn'><a n:href='Sign:out'>Sign out</a></li>
 					</ul>
 				</div>
 			</div>
