@@ -18,11 +18,11 @@
 
 namespace App\Forms;
 
+use App\Model\IqrfAppManager;
+use App\Presenters\IqrfAppPresenter;
+
 use Nette;
 use Nette\Application\UI\Form;
-use App\Presenters\IqrfAppPresenter;
-use App\Model\IqrfAppManager;
-use Tracy\Debugger;
 
 class IqrfAppSendRawFormFactory {
 
@@ -60,7 +60,6 @@ class IqrfAppSendRawFormFactory {
 			if ($this->iqrfAppManager->validatePacket($packet)) {
 				$response = $this->iqrfAppManager->sendRaw($packet);
 				$presenter->handleShowResponse($response);
-				Debugger::barDump('OK');
 			}
 		};
 		return $form;

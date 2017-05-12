@@ -18,10 +18,11 @@
 
 namespace App\Forms;
 
+use App\Model\ConfigManager;
+use App\Presenters\ConfigPresenter;
+
 use Nette;
 use Nette\Application\UI\Form;
-use App\Presenters\ConfigPresenter;
-use App\Model\ConfigManager;
 
 class ConfigTracerFormFactory {
 
@@ -51,12 +52,13 @@ class ConfigTracerFormFactory {
 	 */
 	public function create(ConfigPresenter $presenter) {
 		$form = $this->factory->create();
-		$data = $this->configManager->read('TracerFile');
+		$json = $this->configManager->read('TracerFile');
 		$items = ['err' => 'Error', 'war' => 'Warning', 'inf' => 'Info', 'dbg' => 'Debug'];
-		$form->addText('TraceFileName', 'TraceFileName')->setDefaultValue($data['TraceFileName']);
-		$form->addInteger('TraceFileSize', 'TraceFileSize')->setDefaultValue($data['TraceFileSize']);
-		$form->addSelect('VerbosityLevel', 'VerbosityLevel', $items)->setDefaultValue($data['VerbosityLevel']);
+		$form->addText('TraceFileName', 'TraceFileName');
+		$form->addInteger('TraceFileSize', 'TraceFileSize');
+		$form->addSelect('VerbosityLevel', 'VerbosityLevel', $items);
 		$form->addSubmit('save', 'Save');
+		$form->setDefaults($json);
 		$form->addProtection('Timeout expired, resubmit the form.');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
 			$this->configManager->write('TracerFile', $values);

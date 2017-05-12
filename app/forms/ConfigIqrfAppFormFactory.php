@@ -18,10 +18,11 @@
 
 namespace App\Forms;
 
+use App\Model\ConfigManager;
+use App\Presenters\ConfigPresenter;
+
 use Nette;
 use Nette\Application\UI\Form;
-use App\Presenters\ConfigPresenter;
-use App\Model\ConfigManager;
 
 class ConfigIqrfAppFormFactory {
 
@@ -51,16 +52,16 @@ class ConfigIqrfAppFormFactory {
 	 */
 	public function create(ConfigPresenter $presenter) {
 		$form = $this->factory->create();
-		$data = $this->configManager->read('iqrfapp');
-		$form->addText('LocalMqName', 'LocalMqName')->setDefaultValue($data['LocalMqName']);
-		$form->addText('RemoteMqName', 'RemoteMqName')->setDefaultValue($data['RemoteMqName']);
+		$json = $this->configManager->read('iqrfapp');
+		$form->addText('LocalMqName', 'LocalMqName');
+		$form->addText('RemoteMqName', 'RemoteMqName');
 		$form->addSubmit('save', 'Save');
+		$form->setDefaults($json);
 		$form->addProtection('Timeout expired, resubmit the form.');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
 			$this->configManager->write('iqrfapp', $values);
 			$presenter->redirect('Config:default');
 		};
-
 		return $form;
 	}
 

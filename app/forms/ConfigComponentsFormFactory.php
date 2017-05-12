@@ -18,10 +18,11 @@
 
 namespace App\Forms;
 
+use App\Model\ConfigManager;
+use App\Presenters\ConfigPresenter;
+
 use Nette;
 use Nette\Application\UI\Form;
-use App\Presenters\ConfigPresenter;
-use App\Model\ConfigManager;
 
 class ConfigComponentsFormFactory {
 
@@ -62,7 +63,6 @@ class ConfigComponentsFormFactory {
 			$this->configManager->saveComponents($values);
 			$presenter->redirect('Config:');
 		};
-
 		return $form;
 	}
 
