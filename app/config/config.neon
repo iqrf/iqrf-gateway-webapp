@@ -11,7 +11,7 @@ application:
 		*: App\*Module\Presenters\*Presenter
 
 extensions:
-    gettextTranslator: GettextTranslator\DI\Extension
+	gettextTranslator: GettextTranslator\DI\Extension
 
 gettextTranslator:
 	# default language (en or cs)
