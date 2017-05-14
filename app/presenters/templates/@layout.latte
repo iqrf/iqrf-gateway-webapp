@@ -40,26 +40,26 @@
 				</div>
 				<div id='navbar' class='navbar-collapse collapse'>
 					<ul class='nav navbar-nav'>
-						<li><a href='/'>Home</a></li>
-						<li n:if='$user->loggedIn'><a n:href='GwInfo:default'>GW Info</a></li>
+						<li><a href='/'>{_"Home"}</a></li>
+						<li n:if='$user->loggedIn'><a n:href='GwInfo:default'>{_"GW Info"}</a></li>
 						<li class='dropdown' n:if='$user->loggedIn'>
-							<a n:href='Config:default' class="dropdown-toggle" data-toggle="dropdown" role="button">Configuration <span class="caret"></span></a>
+							<a n:href='Config:default' class="dropdown-toggle" data-toggle="dropdown" role="button">{_"Configuration"} <span class="caret"></span></a>
 							<ul class="dropdown-menu">
-								<li><a n:href='Config:components'>Components</a></li>
-								<li><a n:href='Config:iqrfApp'>IQRF App</a></li>
-								<li><a n:href='Config:iqrf'>IQRF Interface</a></li>
-								<li><a n:href='Config:mq'>MQ Interface</a></li>
-								<li><a n:href='Config:mqtt'>MQTT Interface</a></li>
-								<li><a n:href='Config:udp'>UDP Interface</a></li>
-								<li><a n:href='Config:tracer'>Tracer file</a></li>
+								<li><a n:href='Config:components'>{_"Components"}</a></li>
+								<li><a n:href='Config:iqrfApp'>{_"IQRF App"}</a></li>
+								<li><a n:href='Config:iqrf'>{_"IQRF interface"}</a></li>
+								<li><a n:href='Config:mq'>{_"MQ interface"}</a></li>
+								<li><a n:href='Config:mqtt'>{_"MQTT interface"}</a></li>
+								<li><a n:href='Config:udp'>{_"UDP interface"}</a></li>
+								<li><a n:href='Config:tracer'>{_"Tracer file"}</a></li>
 							</ul>
 						</li>
-						<li n:if='$user->loggedIn'><a n:href='Service:default'>Service</a></li>
-						<li n:if='$user->loggedIn'><a n:href='IqrfApp:default'>IqrfApp</a></li>
+						<li n:if='$user->loggedIn'><a n:href='Service:default'>{_"Service"}</a></li>
+						<li n:if='$user->loggedIn'><a n:href='IqrfApp:default'>{_"IQRF App"}</a></li>
 					</ul>
 					<ul class='nav navbar-nav navbar-right'>
-						<li n:if='!$user->loggedIn'><a n:href='Sign:in'>Sign in</a></li>
-						<li n:if='$user->loggedIn'><a n:href='Sign:out'>Sign out</a></li>
+						<li n:if='!$user->loggedIn'><a n:href='Sign:in'>{_"Sign in"}</a></li>
+						<li n:if='$user->loggedIn'><a n:href='Sign:out'>{_"Sign out"}</a></li>
 					</ul>
 				</div>
 			</div>

@@ -18,11 +18,37 @@
 
 namespace App\Presenters;
 
+use GettextTranslator\Gettext;
 use Nette\Application\UI\Presenter;
 
 /**
  * Base presenter for all application presenters.
  */
 abstract class BasePresenter extends Presenter {
+
+	/** @persistent */
+	public $lang;
+
+	/** @var Gettext */
+	protected $translator;
+
+	/**
+	 * @param Gettext
+	 */
+	public function injectTranslator(Gettext $translator) {
+		$this->translator = $translator;
+	}
+
+	public function createTemplate($class = NULL) {
+		$template = parent::createTemplate($class);
+		// if not set, the default language will be used
+		if (!isset($this->lang)) {
+			$this->lang = $this->translator->getLang();
+		} else {
+			$this->translator->setLang($this->lang);
+		}
+		$template->setTranslator($this->translator);
+		return $template;
+	}
 
 }

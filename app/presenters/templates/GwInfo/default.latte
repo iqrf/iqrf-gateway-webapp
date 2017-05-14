@@ -15,12 +15,12 @@
 *}
 
 {block content}
-<h1 n:block=title>Gateway Info</h1>
+<h1 n:block=title>{_"Gateway Info"}</h1>
 <div class='panel panel-default'>
 	<div class='panel-body'>
 		<table class='table'>
 			<tr>
-				<th>IP addresses</th>
+				<th>{_"IP addresses"}</th>
 				<td>
 						{foreach $ipAddresses as $ipAddress}
 							<p>{$ipAddress}</p>
@@ -28,7 +28,7 @@
 				</td>
 			</tr>
 			<tr>
-				<th>MAC addresses</th>
+				<th>{_"MAC addresses"}</th>
 				<td>
 						{foreach $macAddresses as $macAddress}
 							<p>{$macAddress}</p>
@@ -36,7 +36,7 @@
 				</td>
 			</tr>
 			<tr>
-				<th>Hostname</th>
+				<th>{_"Hostname"}</th>
 				<td>{$hostname}</td>
 			</tr>
 		</table>

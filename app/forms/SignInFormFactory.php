@@ -18,6 +18,8 @@
 
 namespace App\Forms;
 
+use GettextTranslator\Gettext;
+
 use Nette;
 use Nette\Application\UI\Form;
 use Nette\Security\AuthenticationException;
@@ -33,8 +35,15 @@ class SignInFormFactory {
 	/** @var User */
 	private $user;
 
-	public function __construct(FormFactory $factory, User $user) {
+	/**
+	 * @var Gettext
+	 * @inject
+	 */
+	private $translator;
+
+	public function __construct(FormFactory $factory, User $user, Gettext $translator) {
 		$this->factory = $factory;
+		$this->translator = $translator;
 		$this->user = $user;
 	}
 
@@ -45,6 +54,7 @@ class SignInFormFactory {
 	 */
 	public function create(callable $onSuccess) {
 		$form = $this->factory->create();
+		$form->setTranslator($this->translator);
 		$form->addText('username', 'Username:')->setRequired('Please enter your username.');
 		$form->addPassword('password', 'Password:')->setRequired('Please enter your password.');
 		$form->addCheckbox('remember', 'Keep me signed in');

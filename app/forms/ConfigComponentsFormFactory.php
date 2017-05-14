@@ -21,6 +21,8 @@ namespace App\Forms;
 use App\Model\ConfigManager;
 use App\Presenters\ConfigPresenter;
 
+use GettextTranslator\Gettext;
+
 use Nette;
 use Nette\Application\UI\Form;
 
@@ -40,9 +42,16 @@ class ConfigComponentsFormFactory {
 	 */
 	private $factory;
 
-	public function __construct(FormFactory $factory, ConfigManager $configManager) {
+	/**
+	 * @var Gettext
+	 * @inject
+	 */
+	private $translator;
+
+	public function __construct(FormFactory $factory, ConfigManager $configManager, Gettext $translator) {
 		$this->factory = $factory;
 		$this->configManager = $configManager;
+		$this->translator = $translator;
 	}
 
 	/**
@@ -52,6 +61,7 @@ class ConfigComponentsFormFactory {
 	 */
 	public function create(ConfigPresenter $presenter) {
 		$form = $this->factory->create();
+		$form->setTranslator($this->translator);
 		$components = $this->configManager->read('config')['Components'];
 		foreach ($components as $component) {
 			$form->addCheckbox($component['ComponentName'], $component['ComponentName'])

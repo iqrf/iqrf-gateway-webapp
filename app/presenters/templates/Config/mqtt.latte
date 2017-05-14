@@ -15,7 +15,7 @@
 *}
 
 {block content}
-<h1 n:block=title>MQTT</h1>
+<h1 n:block=title>{_"MQTT interface"}</h1>
 <div class='panel panel-default'>
 	<div class='panel-body'>
 		{if $id != NULL}
@@ -24,12 +24,12 @@
 			<table class='table table-striped'>
 				<thead>
 					<tr>
-						<th>Name</th>
-						<th>Broker</th>
-						<th>Client ID</th>
-						<th>TLS</th>
-						<th>Enabled</th>
-						<th>Edit</th>
+						<th>{_"Name"}</th>
+						<th>{_"Broker"}</th>
+						<th>{_"Client ID"}</th>
+						<th>{_"TLS"}</th>
+						<th>{_"Enabled"}</th>
+						<th>{_"Edit"}</th>
 					</tr>
 				</thead>
 				<tbody>

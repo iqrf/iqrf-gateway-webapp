@@ -21,6 +21,8 @@ namespace App\Forms;
 use App\Model\IqrfAppManager;
 use App\Presenters\IqrfAppPresenter;
 
+use GettextTranslator\Gettext;
+
 use Nette;
 use Nette\Application\UI\Form;
 
@@ -40,9 +42,16 @@ class IqrfAppSendRawFormFactory {
 	 */
 	private $factory;
 
-	public function __construct(FormFactory $factory, IqrfAppManager $iqrfAppManager) {
+	/**
+	 * @var Gettext
+	 * @inject
+	 */
+	private $translator;
+
+	public function __construct(FormFactory $factory, IqrfAppManager $iqrfAppManager, Gettext $translator) {
 		$this->factory = $factory;
 		$this->iqrfAppManager = $iqrfAppManager;
+		$this->translator = $translator;
 	}
 
 	/**
@@ -52,7 +61,8 @@ class IqrfAppSendRawFormFactory {
 	 */
 	public function create(IqrfAppPresenter $presenter) {
 		$form = $this->factory->create();
-		$form->addText('packet', 'RAW IQRF packet');
+		$form->setTranslator($this->translator);
+		$form->addText('packet', 'Raw IQRF packet');
 		$form->addSubmit('send', 'Send');
 		$form->addProtection('Timeout expired, resubmit the form.');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {

@@ -1,0 +1,162 @@
+# Gettext keys exported by GettextTranslator and Translation Panel
+# Created: 2017-05-14 17:57:15
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2017-05-14 19:30+0100\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=((n==1) ? 0 : (n>=2 && n<=4 ? 1 : 2));\n"
+"Project-Id-Version: IQRF Daemon webapp\n"
+"POT-Creation-Date: \n"
+"Last-Translator: Roman Ondráček <ondracek.roman@centrum.cz>\n"
+"Language-Team: \n"
+"X-Generator: Poedit 1.5.4\n"
+"Language: cs\n"
+
+msgid "Components"
+msgstr "Komponenty"
+
+msgid "Configuration"
+msgstr "Konfigurace"
+
+msgid "Control IQRF App."
+msgstr "Ovládat IQRF App"
+
+msgid "Control service."
+msgstr "Ovládat službu"
+
+msgid "Edit"
+msgstr "Upravit"
+
+msgid "Edit configuration."
+msgstr "Upravit konfiguraci."
+
+msgid "Enable or disable components."
+msgstr "Povolit či zakázat komponenty."
+
+msgid "GW Info"
+msgstr "Informace o GW"
+
+msgid "GW info"
+msgstr "Informace o GW"
+
+msgid "Gateway Info"
+msgstr "Informace o GW"
+
+msgid "Get status of IQRF Daemon service."
+msgstr "Získat stav služby IQRF daemonu."
+
+msgid "Hostname"
+msgstr "Hostname"
+
+msgid "IP addresses"
+msgstr "IP adresy"
+
+msgid "IQRF App"
+msgstr "IQRF App"
+
+msgid "IQRF App settings."
+msgstr "Nastavení aplikace IQRF App."
+
+msgid "IQRF interface"
+msgstr "IQRF rozhraní"
+
+msgid "IQRF UDP interface settings."
+msgstr "Nastavení IQRF UDP rozhraní."
+
+msgid "IQRF interface settings."
+msgstr "Nastavení IQRF rozhraní."
+
+msgid "MAC addresses"
+msgstr "MAC adresy"
+
+msgid "MQ interface"
+msgstr "MQ rozhraní"
+
+msgid "MQ interface settings."
+msgstr "Nastavení MQ rozhraní."
+
+msgid "MQTT interface"
+msgstr "MQTT rozhraní"
+
+msgid "MQTT interface settings."
+msgstr "Nastavení MQTT rozhraní."
+
+msgid "Password:"
+msgstr "Heslo:"
+
+msgid "Raw IQRF packet"
+msgstr "Raw IQRF packet"
+
+msgid "Remember me"
+msgstr "Pamatovat si mě"
+
+msgid "Response"
+msgstr "Odpověď"
+
+msgid "Restart"
+msgstr "Restartovat"
+
+msgid "Restart IQRF Daemon service."
+msgstr "Restartovat službu IQRF daemonu."
+
+msgid "Save"
+msgstr "Uložit"
+
+msgid "Send"
+msgstr "Odeslat"
+
+msgid "Send Raw IQRF packet"
+msgstr "Odeslat raw IQRF packet"
+
+msgid "Send Raw IQRF packet."
+msgstr "Odeslat raw IQRF packet."
+
+msgid "Send raw IQRF packet"
+msgstr "Odeslat raw IQRF packet"
+
+msgid "Service"
+msgstr "Služba"
+
+msgid "Show gateway info."
+msgstr "Zobrazit informace o GW"
+
+msgid "Sign in"
+msgstr "Přihlásit se"
+
+msgid "Sign in to another account"
+msgstr "Přihlásit se pod jiným účtem"
+
+msgid "Sign out"
+msgstr "Odhlásit se"
+
+msgid "Start"
+msgstr "Spustit"
+
+msgid "Start IQRF Daemon service."
+msgstr "Spustit službu IQRF daemonu."
+
+msgid "Status"
+msgstr "Stav služby"
+
+msgid "Status of service"
+msgstr "Stav služby"
+
+msgid "Stop"
+msgstr "Zastavit"
+
+msgid "Stop IQRF Daemon service."
+msgstr "Zastavit službu IQRF daemonu."
+
+msgid "UDP interface"
+msgstr "UDP rozhraní"
+
+msgid "Username:"
+msgstr "Uživatelské jméno:"
+
+msgid "You have been signed out"
+msgstr "Byli jste odhlášeni"
+
+msgid "TLS"
+msgstr "TLS"

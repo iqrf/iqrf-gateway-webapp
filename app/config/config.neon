@@ -1,12 +1,26 @@
 parameters:
+	# directory with iqrf-daemon's configuration files
 	configDir: '/etc/iqrf-daemon'
+	# init deamon used in out system (e.g. systemd)
 	initDaemon: 'systemd'
-	sudo: true
+	sudo: false
 
 application:
 	errorPresenter: Error
 	mapping:
 		*: App\*Module\Presenters\*Presenter
+
+extensions:
+    gettextTranslator: GettextTranslator\DI\Extension
+
+gettextTranslator:
+	# default language (en or cs)
+	lang: en
+	files:
+		- %appDir%/locale
+	# optional with defaults
+	layout: horizontal # or: vertical
+	height: 450
 
 session:
 	expiration: 14 days
