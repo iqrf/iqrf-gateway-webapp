@@ -39,9 +39,7 @@ class GwInfoPresenter extends BasePresenter {
 	}
 
 	public function renderDefault() {
-		if (!$this->user->isLoggedIn()) {
-			$this->redirect('Sign:in');
-		}
+		$this->onlyForAdmins();
 		$this->template->ipAddresses = $this->gwInfoManager->getIpAddresses();
 		$this->template->macAddresses = $this->gwInfoManager->getMacAddresses();
 		$this->template->hostname = $this->gwInfoManager->getHostname();

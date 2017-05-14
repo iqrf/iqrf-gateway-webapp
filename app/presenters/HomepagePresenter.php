@@ -24,9 +24,7 @@ namespace App\Presenters;
 class HomepagePresenter extends BasePresenter {
 
 	public function renderDefault() {
-		if (!$this->user->isLoggedIn()) {
-			$this->redirect('Sign:in');
-		}
+		$this->onlyForAdmins();
 	}
 
 }

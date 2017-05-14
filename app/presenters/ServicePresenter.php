@@ -39,15 +39,11 @@ class ServicePresenter extends BasePresenter {
 	}
 
 	public function renderDefault() {
-		if (!$this->user->isLoggedIn()) {
-			$this->redirect('Sign:in');
-		}
+		$this->onlyForAdmins();
 	}
 
 	public function actionStart() {
-		if (!$this->user->isLoggedIn()) {
-			$this->redirect('Sign:in');
-		}
+		$this->onlyForAdmins();
 		$this->serviceManager->start();
 		$this->flashMessage('IQRF Daemon has been started.', 'info');
 		$this->redirect('Service:default');
@@ -55,9 +51,7 @@ class ServicePresenter extends BasePresenter {
 	}
 
 	public function actionStop() {
-		if (!$this->user->isLoggedIn()) {
-			$this->redirect('Sign:in');
-		}
+		$this->onlyForAdmins();
 		$this->serviceManager->stop();
 		$this->flashMessage('IQRF Daemon has been stopped.', 'info');
 		$this->redirect('Service:default');
@@ -65,9 +59,7 @@ class ServicePresenter extends BasePresenter {
 	}
 
 	public function actionRestart() {
-		if (!$this->user->isLoggedIn()) {
-			$this->redirect('Sign:in');
-		}
+		$this->onlyForAdmins();
 		$this->serviceManager->restart();
 		$this->flashMessage('IQRF Daemon has been restarted.', 'info');
 		$this->redirect('Service:default');
@@ -75,9 +67,7 @@ class ServicePresenter extends BasePresenter {
 	}
 
 	public function renderStatus() {
-		if (!$this->user->isLoggedIn()) {
-			$this->redirect('Sign:in');
-		}
+		$this->onlyForAdmins();
 		$status = $this->serviceManager->getStatus();
 		$this->template->status = $status;
 	}

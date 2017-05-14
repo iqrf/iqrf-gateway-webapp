@@ -33,6 +33,15 @@ abstract class BasePresenter extends Presenter {
 	protected $translator;
 
 	/**
+	 * Only for administrators
+	 */
+	public function onlyForAdmins() {
+		if (!$this->user->isLoggedIn()) {
+			$this->redirect('Sign:in');
+		}
+	}
+
+	/**
 	 * @param Gettext
 	 */
 	public function injectTranslator(Gettext $translator) {

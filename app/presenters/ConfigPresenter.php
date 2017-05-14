@@ -89,15 +89,11 @@ class ConfigPresenter extends BasePresenter {
 	}
 
 	public function renderDefault() {
-		if (!$this->user->isLoggedIn()) {
-			$this->redirect('Sign:in');
-		}
+		$this->onlyForAdmins();
 	}
 
 	public function renderMqtt($id) {
-		if (!$this->user->isLoggedIn()) {
-			$this->redirect('Sign:in');
-		}
+		$this->onlyForAdmins();
 		$this->template->id = $id;
 		$this->id = $id;
 		if (!$id) {
@@ -110,9 +106,7 @@ class ConfigPresenter extends BasePresenter {
 	 * @return Form Components form
 	 */
 	protected function createComponentConfigComponentsForm() {
-		if (!$this->user->isLoggedIn()) {
-			$this->redirect('Sign:in');
-		}
+		$this->onlyForAdmins();
 		return $this->configComponentsFactory->create($this);
 	}
 
@@ -121,9 +115,7 @@ class ConfigPresenter extends BasePresenter {
 	 * @return Form IQRF app form
 	 */
 	protected function createComponentConfigIqrfAppForm() {
-		if (!$this->user->isLoggedIn()) {
-			$this->redirect('Sign:in');
-		}
+		$this->onlyForAdmins();
 		return $this->configIqrfAppFactory->create($this);
 	}
 
@@ -132,9 +124,7 @@ class ConfigPresenter extends BasePresenter {
 	 * @return Form IQRF interface form
 	 */
 	protected function createComponentConfigIqrfForm() {
-		if (!$this->user->isLoggedIn()) {
-			$this->redirect('Sign:in');
-		}
+		$this->onlyForAdmins();
 		return $this->configIqrfFactory->create($this);
 	}
 
@@ -143,9 +133,7 @@ class ConfigPresenter extends BasePresenter {
 	 * @return Form MQ interface form
 	 */
 	protected function createComponentConfigMqForm() {
-		if (!$this->user->isLoggedIn()) {
-			$this->redirect('Sign:in');
-		}
+		$this->onlyForAdmins();
 		return $this->configMqFactory->create($this);
 	}
 
@@ -154,9 +142,7 @@ class ConfigPresenter extends BasePresenter {
 	 * @return Form MQTT interface form
 	 */
 	protected function createComponentConfigMqttForm() {
-		if (!$this->user->isLoggedIn()) {
-			$this->redirect('Sign:in');
-		}
+		$this->onlyForAdmins();
 		return $this->configMqttFactory->create($this);
 	}
 
@@ -165,9 +151,7 @@ class ConfigPresenter extends BasePresenter {
 	 * @return Form Tracer form
 	 */
 	protected function createComponentConfigTracerForm() {
-		if (!$this->user->isLoggedIn()) {
-			$this->redirect('Sign:in');
-		}
+		$this->onlyForAdmins();
 		return $this->configTracerFactory->create($this);
 	}
 
@@ -176,9 +160,7 @@ class ConfigPresenter extends BasePresenter {
 	 * @return Form UDP interface form
 	 */
 	protected function createComponentConfigUdpForm() {
-		if (!$this->user->isLoggedIn()) {
-			$this->redirect('Sign:in');
-		}
+		$this->onlyForAdmins();
 		return $this->configUdpFactory->create($this);
 	}
 
