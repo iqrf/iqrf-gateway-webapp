@@ -22,8 +22,6 @@ use App\Model\ConfigManager;
 use App\Model\ConfigParser;
 use App\Presenters\ConfigPresenter;
 
-use GettextTranslator\Gettext;
-
 use Nette;
 use Nette\Application\UI\Form;
 
@@ -49,17 +47,10 @@ class ConfigMqFormFactory {
 	 */
 	private $factory;
 
-	/**
-	 * @var Gettext
-	 * @inject
-	 */
-	private $translator;
-
-	public function __construct(FormFactory $factory, ConfigManager $configManager, ConfigParser $configParser, Gettext $translator) {
+	public function __construct(FormFactory $factory, ConfigManager $configManager, ConfigParser $configParser) {
 		$this->factory = $factory;
 		$this->configManager = $configManager;
 		$this->configParser = $configParser;
-		$this->translator = $translator;
 	}
 
 	/**
@@ -69,7 +60,6 @@ class ConfigMqFormFactory {
 	 */
 	public function create(ConfigPresenter $presenter) {
 		$form = $this->factory->create();
-		$form->setTranslator($this->translator);
 		$fileName = 'MqMessaging';
 		$json = $this->configManager->read($fileName);
 		$form->addText('Name', 'Name');

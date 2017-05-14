@@ -21,8 +21,6 @@ namespace App\Forms;
 use App\Model\ConfigManager;
 use App\Presenters\ConfigPresenter;
 
-use GettextTranslator\Gettext;
-
 use Nette;
 use Nette\Application\UI\Form;
 
@@ -42,16 +40,9 @@ class ConfigTracerFormFactory {
 	 */
 	private $factory;
 
-	/**
-	 * @var Gettext
-	 * @inject
-	 */
-	private $translator;
-
-	public function __construct(FormFactory $factory, ConfigManager $configManager, Gettext $translator) {
+	public function __construct(FormFactory $factory, ConfigManager $configManager) {
 		$this->factory = $factory;
 		$this->configManager = $configManager;
-		$this->translator = $translator;
 	}
 
 	/**
@@ -61,7 +52,6 @@ class ConfigTracerFormFactory {
 	 */
 	public function create(ConfigPresenter $presenter) {
 		$form = $this->factory->create();
-		$form->setTranslator($this->translator);
 		$json = $this->configManager->read('TracerFile');
 		$items = ['err' => 'Error', 'war' => 'Warning', 'inf' => 'Info', 'dbg' => 'Debug'];
 		$form->addText('TraceFileName', 'TraceFileName');

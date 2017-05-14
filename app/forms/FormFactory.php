@@ -18,6 +18,8 @@
 
 namespace App\Forms;
 
+use GettextTranslator\Gettext;
+
 use Nette;
 use Nette\Application\UI\Form;
 
@@ -26,10 +28,21 @@ class FormFactory {
 	use Nette\SmartObject;
 
 	/**
+	 * @var Gettext
+	 * @inject
+	 */
+	private $translator;
+
+	public function __construct(Gettext $translator) {
+		$this->translator = $translator;
+	}
+
+	/**
 	 * @return Form
 	 */
 	public function create() {
 		$form = new Form;
+		$form->setTranslator($this->translator);
 		return $form;
 	}
 
