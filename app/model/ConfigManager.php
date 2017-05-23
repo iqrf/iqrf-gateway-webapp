@@ -66,7 +66,7 @@ class ConfigManager {
 	 */
 	public function write($name, $array) {
 		$fileName = $this->configDir . '/' . $name . '.json';
-		FileSystem::write($fileName, Json::encode($array, Json::PRETTY));
+		FileSystem::write($fileName, Json::encode($array, Json::PRETTY), NULL);
 	}
 
 	/**
