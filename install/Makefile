@@ -28,4 +28,4 @@ install:
 install-deps:
 	apt-get update
 	# Install nginx and php5
-	apt-get install php5 php5-common php5-fpm php5-curl php5-json nginx-full
+	apt-get install php5 php5-common php5-fpm php5-curl php5-json php5-sqlite nginx-full
