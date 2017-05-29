@@ -40,8 +40,8 @@ sed 's/;cgi\.fix_pathinfo=1/cgi\.fix_pathinfo=0/g' /etc/php5/fpm/php.ini > /etc/
 # Fix owner for directory
 chown -R www-data:www-data ${WEBAPP_DIRECTORY}
 # Add user web-data to sudo
-if ! grep -q "www-data   ALL=(ALL:ALL) ALL   NOPASSWD: ALLD" "${SUDOERS_FILE}"; then
-	echo "www-data   ALL=(ALL:ALL) ALL   NOPASSWD: ALLD" >> "${SUDOERS_FILE}"
+if ! grep  -q "www-data ALL=(ALL) NOPASSWD:ALL" "${SUDOERS_FILE}"; then
+	echo "www-data ALL=(ALL) NOPASSWD:ALL" >> "${SUDOERS_FILE}"
 fi
 # Restart sudo
 service sudo restart
