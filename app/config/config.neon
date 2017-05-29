@@ -3,7 +3,7 @@ parameters:
 	configDir: '/etc/iqrf-daemon'
 	# init deamon used in out system (e.g. systemd)
 	initDaemon: 'systemd'
-	sudo: false
+	sudo: true
 
 application:
 	errorPresenter: Error
