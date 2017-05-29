@@ -92,7 +92,7 @@ class ConfigPresenter extends BasePresenter {
 		$this->onlyForAdmins();
 	}
 
-	public function renderMqtt($id) {
+	public function renderMqtt($id = NULL) {
 		$this->onlyForAdmins();
 		$this->template->id = $id;
 		$this->id = $id;
