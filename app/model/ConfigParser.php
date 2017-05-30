@@ -52,4 +52,24 @@ class ConfigParser {
 		return $instance;
 	}
 
+	public function schedulerToJson(array $scheduler, ArrayHash $update, $id) {
+		$data = [];
+		$data['service'] = $update['service'];
+		$data['time'] = $update['time'];
+		unset($update['service']);
+		unset($update['time']);
+		$data['TasksJson'] = (array) $update;
+		$scheduler[$id] = $data;
+		return $scheduler;
+	}
+
+	public function schedulerToForm(array $json, $id = 0) {
+		$data = $json['TasksJson'][$id];
+		$scheduler = [];
+		$scheduler['time'] = $data['time'];
+		$scheduler['service'] = $data['service'];
+		$scheduler += $data['message'];
+		return $scheduler;
+	}
+
 }

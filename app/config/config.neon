@@ -38,6 +38,7 @@ services:
 	- App\Forms\ConfigIqrfFormFactory
 	- App\Forms\ConfigMqFormFactory
 	- App\Forms\ConfigMqttFormFactory
+	- App\Forms\ConfigSchedulerFormFactory
 	- App\Forms\ConfigTracerFormFactory
 	- App\Forms\ConfigUdpFormFactory
 	- App\Forms\IqrfAppSendRawFormFactory

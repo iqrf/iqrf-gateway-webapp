@@ -57,11 +57,16 @@ class ConfigPresenter extends BasePresenter {
 	public $configMqttFactory;
 
 	/**
+	 * @var Forms\ConfigSchedulerFormFactory
+	 * @inject
+	 */
+	public $configSchedulerFactory;
+
+	/**
 	 * @var Forms\ConfigTracerFormFactory
 	 * @inject
 	 */
 	public $configTracerFactory;
-
 
 	/**
 	 * @var Forms\ConfigUdpFormFactory
@@ -98,6 +103,15 @@ class ConfigPresenter extends BasePresenter {
 		$this->id = $id;
 		if (!$id) {
 			$this->template->instances = $this->configManager->read('MqttMessaging')['Instances'];
+		}
+	}
+
+	public function renderScheduler($id = NULL) {
+		$this->onlyForAdmins();
+		$this->template->id = $id;
+		$this->id = $id;
+		if (!$id) {
+			$this->template->tasks = $this->configManager->read('Scheduler')['TasksJson'];
 		}
 	}
 
@@ -144,6 +158,15 @@ class ConfigPresenter extends BasePresenter {
 	protected function createComponentConfigMqttForm() {
 		$this->onlyForAdmins();
 		return $this->configMqttFactory->create($this);
+	}
+
+	/**
+	 * Create Scheduler form
+	 * @return Form Scheduler form
+	 */
+	protected function createComponentConfigSchedulerForm() {
+		$this->onlyForAdmins();
+		return $this->configSchedulerFactory->create($this);
 	}
 
 	/**

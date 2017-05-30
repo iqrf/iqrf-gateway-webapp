@@ -91,4 +91,16 @@ class ConfigManager {
 		$this->write($fileName, $json);
 	}
 
+	/**
+	 * Save scheduler setting
+	 * @param ArrayHash $array Scheduler settings
+	 * @param int $id Scheduler ID
+	 */
+	public function saveScheduler(ArrayHash $array, $id = 0) {
+		$fileName = 'Scheduler';
+		$json = $this->read($fileName);
+		$json['TasksJson'] = $this->configParser->schedulerToJson($json, $array, $id);
+		$this->write($fileName, $json);
+	}
+
 }
