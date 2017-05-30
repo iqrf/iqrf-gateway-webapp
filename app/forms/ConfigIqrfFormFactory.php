@@ -54,6 +54,7 @@ class ConfigIqrfFormFactory {
 		$form = $this->factory->create();
 		$json = $this->configManager->read('IqrfInterface');
 		$form->addText('IqrfInterface', 'IqrfInterface');
+		$form->addInteger('DpaHandlerTimeout', 'DpaHandlerTimeout');
 		$form->addSubmit('save', 'Save');
 		$form->setDefaults($json);
 		$form->addProtection('Timeout expired, resubmit the form.');
