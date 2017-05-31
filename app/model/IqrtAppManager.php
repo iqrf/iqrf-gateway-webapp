@@ -45,7 +45,7 @@ class IqrfAppManager {
 	 */
 	public function sendRaw($packet) {
 		$cmd = 'iqrfapp raw ' . $packet;
-		return $this->commandManager->send($cmd);
+		return $this->commandManager->send($cmd, true);
 	}
 
 	/**
