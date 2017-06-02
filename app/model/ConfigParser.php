@@ -68,7 +68,14 @@ class ConfigParser {
 		$scheduler = [];
 		$scheduler['time'] = $data['time'];
 		$scheduler['service'] = $data['service'];
-		$scheduler += $data['message'];
+		if (array_key_exists('sensors', $data['message'])) {
+			$sensors = implode(PHP_EOL, $data['message']['sensors']);
+			unset($scheduler['message']['sensors']);
+			$scheduler += $data['message'];
+			$scheduler['sensors'] = $sensors;
+		} else {
+			$scheduler += $data['message'];
+		}
 		return $scheduler;
 	}
 

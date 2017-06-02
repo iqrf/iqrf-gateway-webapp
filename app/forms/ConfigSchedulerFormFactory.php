@@ -63,9 +63,14 @@ class ConfigSchedulerFormFactory {
 		$fileName = 'Scheduler';
 		$json = $this->configManager->read($fileName);
 		$defaults = $this->configParser->schedulerToForm($json, $id);
-		foreach ($defaults as $value => $key) {
-			$form->addText($value, $value);
+		foreach ($defaults as $key => $value) {
+			if ($key === 'sensors') {
+				$form->addTextArea('sensors', 'sensors');
+			} else {
+				$form->addText($key, $key);
+			}
 		}
+		$form->addSubmit('save', 'Save');
 		$form->setDefaults($defaults);
 		$form->addProtection('Timeout expired, resubmit the form.');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $fileName, $id) {
