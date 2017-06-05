@@ -396,6 +396,128 @@ class ConfigParserTest extends TestCase {
 		Assert::equal($array, $configParser->schedulerToForm($json, 0));
 	}
 
+	/**
+	 * @test
+	 * Test function to parse configuration of Scheduler
+	 */
+	public function testSchedulerToJson() {
+		$path = __DIR__ . '/../configuration/';
+		$configParser = new ConfigParser($path);
+		$updateArray = [
+			"time" => "*/5 * * * * * *",
+			"service" => "BaseServiceForMQTT1",
+			"ctype" => "dpa",
+			"type" => "std-sen",
+			"nadr" => "0",
+			"cmd" => "READ",
+			"hwpid" => "ffff",
+			"sensors" => "Temperature1\nCO2_1\nHumidity1"
+		];
+		$json = [
+			"Tasks" => [],
+			"TasksJson" => [
+				[
+					"service" => "BaseServiceForMQTT1",
+					"time" => "*/5 * * * * * *",
+					"message" => [
+						"ctype" => "dpa",
+						"type" => "std-sen",
+						"nadr" => "1",
+						"cmd" => "READ",
+						"hwpid" => "ffff",
+						"sensors" => [
+							"Temperature1",
+							"CO2_1",
+							"Humidity1"
+						]
+					]
+				], [
+					"time" => "*/5 1 * * * * *",
+					"service" => "BaseServiceForMQTT1",
+					"message" => [
+						"ctype" => "dpa",
+						"type" => "std-per-ledg",
+						"nadr" => "1",
+						"cmd" => "PULSE",
+						"hwpid" => "ffff",
+						"timeout" => 200,
+						"msgid" => "",
+						"request" => ".",
+						"request_ts" => "",
+						"response" => ".",
+						"response_ts" => "",
+						"confirmation" => ".",
+						"confirmation_ts" => "",
+						"rcode" => "",
+						"dpaval" => ""
+					]
+				], [
+					"time" => "*/5 1 * * * * *",
+					"service" => "BaseServiceForMQTT1",
+					"message" => [
+						"ctype" => "dpa",
+						"type" => "raw",
+						"request" => "01.00.06.03.ff.ff"
+					]
+				], [
+					"time" => "*/5 1 * * * * *",
+					"service" => "BaseServiceForMQTT1",
+					"message" => [
+						"ctype" => "dpa",
+						"type" => "raw-hdp",
+						"nadr" => "1",
+						"pnum" => "06",
+						"pcmd" => "3"
+					]
+				], [
+					"time" => "*/5 1 * * * * *",
+					"service" => "BaseServiceForMQTT1",
+					"message" => [
+						"ctype" => "dpa",
+						"type" => "raw-hdp",
+						"msgid" => "1",
+						"timeout" => 1000,
+						"nadr" => "00",
+						"pnum" => "0d",
+						"pcmd" => "00",
+						"hwpid" => "ffff",
+						"req_data" => "c0.00.00",
+						"request" => ".",
+						"request_ts" => "",
+						"confirmation" => ".",
+						"confirmation_ts" => "",
+						"response" => ".",
+						"response_ts" => ""
+					]
+				], [
+					"time" => "*/5 1 * * * * *",
+					"service" => "BaseServiceForMQTT1",
+					"message" => [
+						"ctype" => "dpa",
+						"type" => "std-per-frc",
+						"msgid" => "1",
+						"timeout" => 5000,
+						"cmd" => "SEND",
+						"hwpid" => "ffff",
+						"frc_type" => "GET_BYTE",
+						"frc_user" => 0,
+						"user_data" => "00.00",
+						"request" => ".",
+						"request_ts" => "",
+						"confirmation" => ".",
+						"confirmation_ts" => "",
+						"response" => ".",
+						"response_ts" => ""
+					]
+				]
+			]
+		];
+		$result = $json;
+		$result['TasksJson'][0]['message']['nadr'] = '0';
+		$update = ArrayHash::from($updateArray);
+		Assert::equal($result, $configParser->schedulerToJson($json, $update, 0));
+	}
+
 }
 
 $test = new ConfigParserTest($container);

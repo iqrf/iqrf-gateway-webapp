@@ -58,8 +58,13 @@ class ConfigParser {
 		$data['time'] = $update['time'];
 		unset($update['service']);
 		unset($update['time']);
-		$data['TasksJson'] = (array) $update;
-		$scheduler[$id] = $data;
+		if (array_key_exists('sensors', $update)) {
+			$sensors = explode(PHP_EOL, $update['sensors']);
+			unset($update['sensors']);
+			$update['sensors'] = $sensors;
+		}
+		$data['message'] = (array) $update;
+		$scheduler['TasksJson'][$id] = $data;
 		return $scheduler;
 	}
 
