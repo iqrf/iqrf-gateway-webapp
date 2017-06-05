@@ -96,6 +96,61 @@ class ConfigManagerTest extends TestCase {
 
 	/**
 	 * @test
+	 * Test function to parse configuration of Base services
+	 */
+	public function testSaveBaseService() {
+		$path = __DIR__ . '/../configuration-test/';
+		$fileName = 'BaseService';
+		$configParser = new ConfigParser();
+		$configManager = new ConfigManager($path, $configParser);
+		$array = [
+			"Name" => "BaseServiceForMQ",
+			"Messaging" => "MqMessaging",
+			"Serializers" => [
+				"JsonSerializer"
+			],
+			"Properties" => [
+			]
+		];
+		$json = [
+			"Implements" => "IService",
+			"Instances" => [
+				[
+					"Name" => "BaseServiceForMQ",
+					"Messaging" => "MqMessaging",
+					"Serializers" => [
+						"SimpleSerializer",
+						"JsonSerializer"
+					],
+					"Properties" => [
+					]
+				], [
+					"Name" => "BaseServiceForMQTT1",
+					"Messaging" => "MqttMessaging1",
+					"Serializers" => [
+						"JsonSerializer"
+					],
+					"Properties" => [
+					]
+				], [
+					"Name" => "BaseServiceForMQTT2",
+					"Messaging" => "MqttMessaging2",
+					"Serializers" => [
+						"JsonSerializer"
+					],
+					"Properties" => [
+					]
+				]
+			]
+		];
+		$configManager->write($fileName, $json);
+		$json['Instances'][0]['Serializers'] = ['JsonSerializer'];
+		$configManager->saveBaseService(ArrayHash::from($array), 0);
+		Assert::equal($json, $configManager->read($fileName));
+	}
+
+	/**
+	 * @test
 	 * Test function to save configuration of Components
 	 */
 	public function testSaveComponents() {

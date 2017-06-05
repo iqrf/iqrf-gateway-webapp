@@ -33,21 +33,28 @@ class ConfigParser {
 		return $array;
 	}
 
-	public function baseServiceToJson(array $instances, ArrayHash $update, $id) {
-		$instance = [];
-		$instance['Name'] = $update['Name'];
-		$instance['Messaging'] = $update['Messaging'];
-		$instance['Serializers'] = (array) $update['Serializers'];
-		$instances['Instances'][$id] = $instance;
-		return $instances;
+	public function baseServiceToJson(array $services, ArrayHash $update, $id) {
+		$service = [];
+		$service['Name'] = $update['Name'];
+		$service['Messaging'] = $update['Messaging'];
+		$service['Serializers'] = array_values((array) $update['Serializers']);
+		if (isset($update['Properties'])) {
+			$service['Properties'] = (array) $update['Properties'];
+		} else {
+			$service['Properties'] = [];
+		}
+		
+		$services['Instances'][$id] = $service;
+		return $services;
 	}
 
 	public function baseServiceToForm(array $json, $id = 0) {
 		$data = $json['Instances'][$id];
-		$instance['Name'] = $data['Name'];
-		$instance['Messaging'] = $data['Messaging'];
-		$instance += $data;
-		return $instance;
+		$service = [];
+		$service['Name'] = $data['Name'];
+		$service['Messaging'] = $data['Messaging'];
+		$service['Serializers'] = (array) $data['Serializers'];
+		return $service;
 	}
 
 	public function instancesToJson(array $instances, ArrayHash $update, $id) {

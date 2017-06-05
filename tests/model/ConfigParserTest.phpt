@@ -23,6 +23,110 @@ class ConfigParserTest extends TestCase {
 
 	/**
 	 * @test
+	 * Test function to parse configuration of Scheduler
+	 */
+	public function testBaseServiceToForm() {
+		$path = __DIR__ . '/../configuration/';
+		$configParser = new ConfigParser($path);
+		$array = [
+			"Name" => "BaseServiceForMQ",
+			"Messaging" => "MqMessaging",
+			"Serializers" => [
+				"SimpleSerializer",
+				"JsonSerializer"
+			]
+		];
+
+		$json = [
+			"Implements" => "IService",
+			"Instances" => [
+				[
+					"Name" => "BaseServiceForMQ",
+					"Messaging" => "MqMessaging",
+					"Serializers" => [
+						"SimpleSerializer",
+						"JsonSerializer"
+					],
+					"Properties" => [
+					]
+				], [
+					"Name" => "BaseServiceForMQTT1",
+					"Messaging" => "MqttMessaging1",
+					"Serializers" => [
+						"JsonSerializer"
+					],
+					"Properties" => [
+					]
+				], [
+					"Name" => "BaseServiceForMQTT2",
+					"Messaging" => "MqttMessaging2",
+					"Serializers" => [
+						"JsonSerializer"
+					],
+					"Properties" => [
+					]
+				]
+			]
+		];
+		Assert::equal($array, $configParser->baseServiceToForm($json, 0));
+	}
+
+	/**
+	 * @test
+	 * Test function to parse configuration of Scheduler
+	 */
+	public function testBaseServiceToJson() {
+		$path = __DIR__ . '/../configuration/';
+		$configParser = new ConfigParser($path);
+		$updateArray = [
+			"Name" => "BaseServiceForMQ1",
+			"Messaging" => "MqMessaging",
+			"Serializers" => [
+				"SimpleSerializer",
+				"JsonSerializer"
+			],
+			"Properties" => [
+			]
+		];
+		$json = [
+			"Implements" => "IService",
+			"Instances" => [
+				[
+					"Name" => "BaseServiceForMQ",
+					"Messaging" => "MqMessaging",
+					"Serializers" => [
+						"SimpleSerializer",
+						"JsonSerializer"
+					],
+					"Properties" => [
+					]
+				], [
+					"Name" => "BaseServiceForMQTT1",
+					"Messaging" => "MqttMessaging1",
+					"Serializers" => [
+						"JsonSerializer"
+					],
+					"Properties" => [
+					]
+				], [
+					"Name" => "BaseServiceForMQTT2",
+					"Messaging" => "MqttMessaging2",
+					"Serializers" => [
+						"JsonSerializer"
+					],
+					"Properties" => [
+					]
+				]
+			]
+		];
+		$result = $json;
+		$result['Instances'][0]['Name'] = 'BaseServiceForMQ1';
+		$update = ArrayHash::from($updateArray);
+		Assert::equal($result, $configParser->baseServiceToJson($json, $update, 0));
+	}
+
+	/**
+	 * @test
 	 * Test function to parse configuration of Instances
 	 */
 	public function testInstancesToJson() {
