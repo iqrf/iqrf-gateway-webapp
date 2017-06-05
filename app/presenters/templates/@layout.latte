@@ -15,7 +15,7 @@
 *}
 
 <!DOCTYPE html>
-<html lang='en'>
+<html>
 	<head>
 		<meta charset='utf-8'>
 		<meta http-equiv='X-UA-Compatible' content='IE=edge'>
@@ -45,6 +45,7 @@
 						<li class='dropdown' n:if='$user->loggedIn'>
 							<a n:href='Config:default' class="dropdown-toggle" data-toggle="dropdown" role="button">{_"Configuration"} <span class="caret"></span></a>
 							<ul class="dropdown-menu">
+								<li><a n:href='Config:baseServices'>{_"Base services"}</a></li>
 								<li><a n:href='Config:components'>{_"Components"}</a></li>
 								<li><a n:href='Config:iqrfApp'>{_"IQRF App"}</a></li>
 								<li><a n:href='Config:iqrf'>{_"IQRF interface"}</a></li>

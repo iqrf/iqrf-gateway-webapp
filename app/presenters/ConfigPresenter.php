@@ -27,6 +27,12 @@ use App\Forms;
 class ConfigPresenter extends BasePresenter {
 
 	/**
+	 * @var Forms\ConfigBaseServiceFormFactory
+	 * @inject
+	 */
+	public $configBaseServiceFactory;
+
+	/**
 	 * @var Forms\ConfigComponentsFormFactory
 	 * @inject
 	 */
@@ -97,6 +103,15 @@ class ConfigPresenter extends BasePresenter {
 		$this->onlyForAdmins();
 	}
 
+	public function renderBaseService($id = NULL) {
+		$this->onlyForAdmins();
+		$this->template->id = $id;
+		$this->id = $id;
+		if (!$id) {
+			$this->template->services = $this->configManager->read('BaseService')['Instances'];
+		}
+	}
+
 	public function renderMqtt($id = NULL) {
 		$this->onlyForAdmins();
 		$this->template->id = $id;
@@ -113,6 +128,15 @@ class ConfigPresenter extends BasePresenter {
 		if (!$id) {
 			$this->template->tasks = $this->configManager->read('Scheduler')['TasksJson'];
 		}
+	}
+
+	/**
+	 * Create Base service form
+	 * @return Form Bse service form
+	 */
+	protected function createComponentConfigBaseServiceForm() {
+		$this->onlyForAdmins();
+		return $this->configBaseServiceFactory->create($this);
 	}
 
 	/**

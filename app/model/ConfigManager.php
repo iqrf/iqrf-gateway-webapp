@@ -70,13 +70,26 @@ class ConfigManager {
 	}
 
 	/**
+	 * Save Base service setting
+	 * @param ArrayHash $array Base service settings
+	 * @param int $id Base service ID
+	 */
+	public function saveBaseService(ArrayHash $array, $id = 0) {
+		$fileName = 'BaseService';
+		$json = $this->read($fileName);
+		$json = $this->configParser->baseServiceToJson($json, $array, $id);
+		$this->write($fileName, $json);
+	}
+
+	/**
 	 * Save components setting
 	 * @param array $components Components settings
 	 */
 	public function saveComponents($components) {
-		$json = $this->read('config');
+		$fileName = 'config';
+		$json = $this->read($fileName);
 		$json['Components'] = $this->configParser->componentsToJson($components);
-		$this->write('config', $json);
+		$this->write($fileName, $json);
 	}
 
 	/**

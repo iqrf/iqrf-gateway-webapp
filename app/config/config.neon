@@ -33,6 +33,7 @@ services:
 	- App\Model\IqrfAppManager
 	- App\Model\ServiceManager(%initDaemon%)
 	- App\Forms\FormFactory
+	- App\Forms\ConfigBaseServiceFormFactory
 	- App\Forms\ConfigComponentsFormFactory
 	- App\Forms\ConfigIqrfAppFormFactory
 	- App\Forms\ConfigIqrfFormFactory

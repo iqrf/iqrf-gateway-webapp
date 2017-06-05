@@ -17,6 +17,10 @@
 {block content}
 <h1 n:block=title>{_"Configuration"}</h1>
 <div class='list-group'>
+	<a n:href='Config:baseService' class='list-group-item'>
+		<header class='list-group-item-heading'>{_"Base services"}</header>
+		<p class='list-group-item-text'>{_"Base services settings."}</p>
+	</a>
 	<a n:href='Config:components' class='list-group-item'>
 		<header class='list-group-item-heading'>{_"Components"}</header>
 		<p class='list-group-item-text'>{_"Enable or disable components."}</p>

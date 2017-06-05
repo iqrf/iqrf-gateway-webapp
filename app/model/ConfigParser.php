@@ -33,6 +33,23 @@ class ConfigParser {
 		return $array;
 	}
 
+	public function baseServiceToJson(array $instances, ArrayHash $update, $id) {
+		$instance = [];
+		$instance['Name'] = $update['Name'];
+		$instance['Messaging'] = $update['Messaging'];
+		$instance['Serializers'] = (array) $update['Serializers'];
+		$instances['Instances'][$id] = $instance;
+		return $instances;
+	}
+
+	public function baseServiceToForm(array $json, $id = 0) {
+		$data = $json['Instances'][$id];
+		$instance['Name'] = $data['Name'];
+		$instance['Messaging'] = $data['Messaging'];
+		$instance += $data;
+		return $instance;
+	}
+
 	public function instancesToJson(array $instances, ArrayHash $update, $id) {
 		$instance = [];
 		$instance['Name'] = $update['Name'];
