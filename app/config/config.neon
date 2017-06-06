@@ -12,6 +12,7 @@ application:
 
 extensions:
 	gettextTranslator: GettextTranslator\DI\Extension
+	extendedFormMacros: Instante\ExtendedFormMacros\DI\ExtendedFormMacrosExtension
 
 gettextTranslator:
 	# default language (en or cs)
@@ -45,6 +46,7 @@ services:
 	- App\Forms\IqrfAppSendRawFormFactory
 	- App\Forms\SignInFormFactory
 	router: App\RouterFactory::createRouter
+	formFactory: Instante\Bootstrap3Renderer\BootstrapFormFactory
 
 security:
 	users:

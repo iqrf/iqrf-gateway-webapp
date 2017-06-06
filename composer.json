@@ -33,7 +33,8 @@
 		"nette/utils": "^2.4",
 		"latte/latte": "^2.4",
 		"tracy/tracy": "^2.4",
-		"salamek/gettexttranslator": "^1.3"
+		"salamek/gettexttranslator": "^1.3",
+		"instante/bootstrap-3-renderer": "^2.0"
 	},
 	"require-dev": {
 		"nette/tester": "^1.7"
