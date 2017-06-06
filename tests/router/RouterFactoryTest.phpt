@@ -30,7 +30,7 @@ class RouterFactoryTest extends TestCase {
 		$routeList = RouterFactory::createRouter();
 		Assert::type(Routers\RouteList::class, $routeList);
 		Assert::same('', $routeList->getModule());
-		Assert::same(['<presenter>/<action>[/<id>]'], array_map(function (Routers\Route $route) {
+		Assert::same(['[<lang [a-z]{2}>/]<presenter>/<action>[/<id>]'], array_map(function (Routers\Route $route) {
 					return $route->getMask();
 				}, (array) $routeList->getIterator()));
 	}
