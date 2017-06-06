@@ -59,7 +59,7 @@ class ConfigMqttFormFactory {
 	 * @return Form MQTT configuration form
 	 */
 	public function create(ConfigPresenter $presenter) {
-		$id = $presenter->id;
+		$id = $presenter->getParameter('id');
 		$form = $this->factory->create();
 		$fileName = 'MqttMessaging';
 		$json = $this->configManager->read($fileName);

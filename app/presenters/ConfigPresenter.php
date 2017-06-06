@@ -87,12 +87,6 @@ class ConfigPresenter extends BasePresenter {
 	private $configManager;
 
 	/**
-	 * @persistent
-	 * @var int
-	 */
-	public $id;
-
-	/**
 	 * @param ConfigManager $configManager
 	 */
 	public function __construct(ConfigManager $configManager) {
@@ -106,7 +100,6 @@ class ConfigPresenter extends BasePresenter {
 	public function renderBaseService($id = NULL) {
 		$this->onlyForAdmins();
 		$this->template->id = $id;
-		$this->id = $id;
 		if (!$id) {
 			$this->template->services = $this->configManager->read('BaseService')['Instances'];
 		}
@@ -115,7 +108,6 @@ class ConfigPresenter extends BasePresenter {
 	public function renderMqtt($id = NULL) {
 		$this->onlyForAdmins();
 		$this->template->id = $id;
-		$this->id = $id;
 		if (!$id) {
 			$this->template->instances = $this->configManager->read('MqttMessaging')['Instances'];
 		}
@@ -124,7 +116,6 @@ class ConfigPresenter extends BasePresenter {
 	public function renderScheduler($id = NULL) {
 		$this->onlyForAdmins();
 		$this->template->id = $id;
-		$this->id = $id;
 		if (!$id) {
 			$this->template->tasks = $this->configManager->read('Scheduler')['TasksJson'];
 		}

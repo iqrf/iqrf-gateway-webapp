@@ -58,7 +58,7 @@ class ConfigSchedulerFormFactory {
 	 * @return Form Scheduler configuration form
 	 */
 	public function create(ConfigPresenter $presenter) {
-		$id = $presenter->id;
+		$id = $presenter->getParameter('id');
 		$form = $this->factory->create();
 		$fileName = 'Scheduler';
 		$json = $this->configManager->read($fileName);
