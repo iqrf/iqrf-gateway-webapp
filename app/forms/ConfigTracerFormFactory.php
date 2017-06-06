@@ -62,7 +62,7 @@ class ConfigTracerFormFactory {
 		$form->addProtection('Timeout expired, resubmit the form.');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
 			$this->configManager->write('TracerFile', $values);
-			$presenter->redirect('Config:default');
+			$presenter->redirect('Config:tracer', ['id' => null]);
 		};
 
 		return $form;

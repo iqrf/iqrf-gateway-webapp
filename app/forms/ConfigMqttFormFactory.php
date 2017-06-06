@@ -89,7 +89,7 @@ class ConfigMqttFormFactory {
 		$form->addProtection('Timeout expired, resubmit the form.');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $fileName, $id) {
 			$this->configManager->saveInstances($fileName, $values, $id);
-			$presenter->redirect('Config:default');
+			$presenter->redirect('Config:mqtt', ['id' => null]);
 		};
 
 		return $form;

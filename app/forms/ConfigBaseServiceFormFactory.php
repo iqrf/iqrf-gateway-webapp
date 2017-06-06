@@ -71,7 +71,7 @@ class ConfigBaseServiceFormFactory {
 		$form->addProtection('Timeout expired, resubmit the form.');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $id) {
 			$this->configManager->saveBaseService($values, $id);
-			$presenter->redirect('Config:default');
+			$presenter->redirect('Config:baseService', ['id' => null]);
 		};
 
 		return $form;
