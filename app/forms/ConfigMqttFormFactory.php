@@ -72,7 +72,7 @@ class ConfigMqttFormFactory {
 		$form->addText('TopicRequest', 'TopicRequest');
 		$form->addText('TopicResponse', 'TopicResponse');
 		$form->addText('User', 'User');
-		$form->addPassword('Password', 'Password');
+		$form->addText('Password', 'Password');
 		$form->addCheckbox('EnabledSSL', 'EnabledSSL');
 		$form->addInteger('KeepAliveInterval', 'KeepAliveInterval');
 		$form->addInteger('ConnectTimeout', 'ConnectTimeout');

@@ -28,7 +28,7 @@ class FormFactory {
 	use Nette\SmartObject;
 
 	/**
-	 * @var IFormFactory 
+	 * @var IFormFactory
 	 * @inject
 	 */
 	public $iFormFactory;
