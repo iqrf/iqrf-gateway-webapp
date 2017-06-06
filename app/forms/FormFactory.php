@@ -27,7 +27,7 @@ class FormFactory {
 
 	use Nette\SmartObject;
 
-	/** 
+	/**
 	 * @var IFormFactory 
 	 * @inject
 	 */
