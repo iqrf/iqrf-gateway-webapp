@@ -78,8 +78,8 @@ class ConfigParser {
 
 	public function schedulerToJson(array $scheduler, ArrayHash $update, $id) {
 		$data = [];
-		$data['service'] = $update['service'];
 		$data['time'] = $update['time'];
+		$data['service'] = $update['service'];
 		unset($update['service']);
 		unset($update['time']);
 		if (array_key_exists('sensors', $update)) {
