@@ -63,12 +63,13 @@ class ConfigMqttFormFactory {
 		$form = $this->factory->create();
 		$fileName = 'MqttMessaging';
 		$json = $this->configManager->read($fileName);
+		$qos = ['QoS 0 - At most once', 'QoS 1 - At least once', 'QoS 2 - Exactly once'];
 		$form->addText('Name', 'Name');
 		$form->addCheckbox('Enabled', 'Enabled');
 		$form->addText('BrokerAddr', 'BrokerAddr');
 		$form->addText('ClientId', 'ClientId');
 		$form->addInteger('Persistence', 'Persistence');
-		$form->addInteger('Qos', 'QoS')->addRule(Form::RANGE, 'QoS 0-2', [0, 2]);
+		$form->addSelect('Qos', 'QoS', $qos);
 		$form->addText('TopicRequest', 'TopicRequest');
 		$form->addText('TopicResponse', 'TopicResponse');
 		$form->addText('User', 'User');
