@@ -21,6 +21,17 @@
 		{control iqrfAppSendRawForm}
 	</div>
 </div>
+<h2>Macros</h2>
+<div class='panel panel-default'>
+	<div class='panel-body'>
+		{foreach $macros as $macro}
+			<h3>{$macro['Name']}</h3>
+			{foreach $macro['Macros'] as $item}
+				<a class="btn btn-default" role="button" onclick="document.getElementById('frm-iqrfAppSendRawForm-packet').value ={$item['Packet']}">{$item['Name']}</a>
+			{/foreach}
+		{/foreach}
+	</div>
+</div>
 {ifset $response}
 	<h2>{_"Response"}</h2>
 	<div class='panel panel-default'>

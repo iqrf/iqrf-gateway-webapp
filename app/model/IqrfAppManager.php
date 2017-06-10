@@ -54,7 +54,7 @@ class IqrfAppManager {
 	 * @return bool Status
 	 */
 	public function validatePacket($packet) {
-		$pattern = '/^([0-9a-fA-F]{1,2}(\.|\ )){1,64}[0-9a-fA-F]{1,2}$/';
+		$pattern = '/^([0-9a-fA-F]{1,2}(\.|\ )){1,64}[0-9a-fA-F]{1,2}(\.|)$/';
 		return (bool) preg_match($pattern, $packet);
 	}
 

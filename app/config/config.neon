@@ -4,6 +4,8 @@ parameters:
 	# init deamon used in out system (e.g. systemd)
 	initDaemon: 'systemd'
 	sudo: true
+	# path to IQRF IDE macros
+	macroPath: '../iqrf/DPA-macros_170601.iqrfmcr'
 
 application:
 	errorPresenter: Error
@@ -32,6 +34,7 @@ services:
 	- App\Model\ConfigParser
 	- App\Model\GwInfoManager
 	- App\Model\IqrfAppManager
+	- App\Model\IqrfMacroManager(%macroPath%)
 	- App\Model\ServiceManager(%initDaemon%)
 	- App\Forms\FormFactory
 	- App\Forms\ConfigBaseServiceFormFactory

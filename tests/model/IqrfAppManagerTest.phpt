@@ -30,18 +30,22 @@ class IqrfAppManagerTest extends TestCase {
 		$iqrfAppManager = new IqrfAppManager($commandManager);
 		$packet0 = '01.00.06.03.ff.ff';
 		$packet1 = '01 00 06 03 ff ff';
-		$packet2 = ';01.00.06.03.ff.ff';
-		$packet3 = ';01 00 06 03 ff ff';
-		$packet4 = '01.00.06.03.ff.ff;';
-		$packet5 = '01 00 06 03 ff ff;';
-		$packet6 = '; echo Test > test.log';
+		$packet2 = '01.00.06.03.ff.ff.';
+		$packet3 = '01 00 06 03 ff ff.';
+		$packet4 = ';01.00.06.03.ff.ff';
+		$packet5 = ';01 00 06 03 ff ff';
+		$packet6 = '01.00.06.03.ff.ff;';
+		$packet7 = '01 00 06 03 ff ff;';
+		$packet8 = '; echo Test > test.log';
 		Assert::true($iqrfAppManager->validatePacket($packet0), 'Valid packet with dots.');
 		Assert::true($iqrfAppManager->validatePacket($packet1), 'Valid packet with spaces.');
-		Assert::false($iqrfAppManager->validatePacket($packet2), 'Invalid packet with dots.');
-		Assert::false($iqrfAppManager->validatePacket($packet3), 'Invalid packet with spaces.');
+		Assert::true($iqrfAppManager->validatePacket($packet2), 'Valid packet with dots.');
+		Assert::true($iqrfAppManager->validatePacket($packet3), 'Valid packet with spaces.');
 		Assert::false($iqrfAppManager->validatePacket($packet4), 'Invalid packet with dots.');
 		Assert::false($iqrfAppManager->validatePacket($packet5), 'Invalid packet with spaces.');
-		Assert::false($iqrfAppManager->validatePacket($packet6), 'Invalid packet.');
+		Assert::false($iqrfAppManager->validatePacket($packet6), 'Invalid packet with dots.');
+		Assert::false($iqrfAppManager->validatePacket($packet7), 'Invalid packet with spaces.');
+		Assert::false($iqrfAppManager->validatePacket($packet8), 'Invalid packet.');
 	}
 
 }

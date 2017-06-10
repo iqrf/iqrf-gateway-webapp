@@ -20,6 +20,9 @@ namespace App\Presenters;
 
 use App\Forms;
 use App\Model\IqrfAppManager;
+use App\Model\IqrfMacroManager;
+
+use Tracy\Debugger;
 
 /**
  * Service presenter
@@ -39,16 +42,30 @@ class IqrfAppPresenter extends BasePresenter {
 	private $iqrfAppManager;
 
 	/**
+	 * @var IqrfMacroManager
+	 * @inject
+	 */
+	private $iqrfMacroManager;
+
+	/**
 	 * @param IqrfAppManager $iqrfAppManager
 	 */
-	public function __construct(IqrfAppManager $iqrfAppManager) {
+	public function __construct(IqrfAppManager $iqrfAppManager, IqrfMacroManager $iqrfMacroManager) {
 		$this->iqrfAppManager = $iqrfAppManager;
+		$this->iqrfMacroManager = $iqrfMacroManager;
 	}
 
 	public function renderDefault() {
 		if (!$this->user->isLoggedIn()) {
 			$this->redirect('Sign:in');
 		}
+	}
+
+	public function renderSendRaw() {
+		if (!$this->user->isLoggedIn()) {
+			$this->redirect('Sign:in');
+		}
+		$this->template->macros = $this->iqrfMacroManager->read();
 	}
 
 	public function handleShowResponse($response) {
