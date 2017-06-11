@@ -19,6 +19,7 @@
 namespace App\Presenters;
 
 use App\Model\GwInfoManager;
+use App\Model\IqrfAppManager;
 
 /**
  * Gateway Info presenter
@@ -32,10 +33,17 @@ class GwInfoPresenter extends BasePresenter {
 	private $gwInfoManager;
 
 	/**
+	 * @var IqrfAppManager
+	 * @inject
+	 */
+	private $iqrfAppManager;
+
+	/**
 	 * @param GwInfoManager $gwInfoManager
 	 */
-	public function __construct(GwInfoManager $gwInfoManager) {
+	public function __construct(GwInfoManager $gwInfoManager, IqrfAppManager $iqrfAppManager) {
 		$this->gwInfoManager = $gwInfoManager;
+		$this->iqrfAppManager = $iqrfAppManager;
 	}
 
 	public function renderDefault() {
@@ -43,6 +51,8 @@ class GwInfoPresenter extends BasePresenter {
 		$this->template->ipAddresses = $this->gwInfoManager->getIpAddresses();
 		$this->template->macAddresses = $this->gwInfoManager->getMacAddresses();
 		$this->template->hostname = $this->gwInfoManager->getHostname();
+		$response = $this->iqrfAppManager->sendRaw('00.00.02.00.FF.FF');
+		$this->template->module = $this->iqrfAppManager->parseOsReadInfo(explode(' ', $response)[1]);
 	}
 
 }

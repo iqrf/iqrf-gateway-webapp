@@ -22,22 +22,32 @@
 			<tr>
 				<th>{_"IP addresses"}</th>
 				<td>
-						{foreach $ipAddresses as $ipAddress}
-							<p>{$ipAddress}</p>
-						{/foreach}
+					{foreach $ipAddresses as $ipAddress}
+						<p>{$ipAddress}</p>
+					{/foreach}
 				</td>
 			</tr>
 			<tr>
 				<th>{_"MAC addresses"}</th>
 				<td>
-						{foreach $macAddresses as $macAddress}
-							<p>{$macAddress}</p>
-						{/foreach}
+					{foreach $macAddresses as $macAddress}
+						<p>{$macAddress}</p>
+					{/foreach}
 				</td>
 			</tr>
 			<tr>
 				<th>{_"Hostname"}</th>
 				<td>{$hostname}</td>
+			</tr>
+			<tr>
+				<th>{_"TR info"}</th>
+				<td>
+					<p><strong>Module type:</strong> {$module['TrType']}</p>
+					<p><strong>MCU type:</strong> {$module['McuType']}</p>
+					<p><strong>MID:</strong> {$module['ModuleId']}</p>
+					<p><strong>OS:</strong> {$module['OsVersion']} ({$module['OsBuild']})</p>
+					<p><strong>Supply Voltage:</strong> {$module['SupplyVoltage']} V</p>
+				</td>
 			</tr>
 		</table>
 	</div>

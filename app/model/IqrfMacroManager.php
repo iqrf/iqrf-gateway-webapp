@@ -78,7 +78,7 @@ class IqrfMacroManager {
 							$macros[$id]['Macros'][$macroId]['Packet'] = $array[$i];
 							break;
 						case 2:
-							$macros[$id]['Macros'][$macroId]['Enabled'] = $array[$i];
+							$macros[$id]['Macros'][$macroId]['Enabled'] = $array[$i] === 'True' ? true : false;
 							break;
 					}
 			}
