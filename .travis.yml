@@ -22,7 +22,7 @@ install:
   - 'if [[ "$CODE_CHECKER" = true ]]; then composer create-project nette/code-checker temp/code-checker --no-interaction; fi;'
 script:
   # Nette Code checker
-  - 'if [[ "$CODE_CHECKER" = true ]]; then php temp/code-checker/src/code-checker.php -l --short-arrays; fi;'
+  - 'if [[ "$CODE_CHECKER" = true ]]; then php temp/code-checker/src/code-checker.php -l --short-arrays -i "tests/model/data/macros-ascii.txt"; fi;'
   # Nette Tester
   - vendor/bin/tester -p $PHP_BIN -s $COVERAGE ./tests
 after_success:

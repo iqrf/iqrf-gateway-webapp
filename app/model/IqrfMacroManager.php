@@ -45,8 +45,13 @@ class IqrfMacroManager {
 		return $array;
 	}
 
-	public function parseMacros($base16) {
-		$string = $this->hex2ascii($base16);
+	/**
+	 * Parse data from HEX to array
+	 * @param string $hex Data in HEX
+	 * @return array Data in array
+	 */
+	public function parseMacros($hex) {
+		$string = $this->hex2ascii($hex);
 		$array = explode("\r\n", $string);
 		for ($i = 0; $i < 3; $i++) {
 			array_shift($array);
@@ -59,25 +64,27 @@ class IqrfMacroManager {
 		$keys = array_keys($array);
 		for ($i = 0; $i < end($keys); $i++) {
 			$id = floor($i / 63);
-			switch ($i % 63) {
+			$cat = $i % 63;
+			switch ($cat) {
 				case 0:
 					$macros[$id]['Name'] = $array[$i];
 					break;
 				case 1:
-					$macros[$id]['Enabled'] = $array[$i];
+					$macros[$id]['Enabled'] = $array[$i] === 'True' ? true : false;
 					break;
 				case 2:
 					break;
 				default:
-					$macroId = (floor(($i - 3) / 5)) % 12;
-					switch ((($i - 3) - (63 * $id)) % 5) {
-						case 0:
+					$macroId = floor(($i - 3 - ($id * 63)) / 5);
+					$macro = (($i - ($id * 63)) - 2) % 5;
+					switch ($macro) {
+						case 1:
 							$macros[$id]['Macros'][$macroId]['Name'] = $array[$i];
 							break;
-						case 1:
+						case 2:
 							$macros[$id]['Macros'][$macroId]['Packet'] = $array[$i];
 							break;
-						case 2:
+						case 3:
 							$macros[$id]['Macros'][$macroId]['Enabled'] = $array[$i] === 'True' ? true : false;
 							break;
 					}
@@ -86,6 +93,11 @@ class IqrfMacroManager {
 		return $macros;
 	}
 
+	/**
+	 * Convert data from HEX to ASCII
+	 * @param string $hex Data in HEX
+	 * @return string Data in ASCII
+	 */
 	public function hex2ascii($hex) {
 		$string = '';
 		for ($i = 0; $i < strlen($hex); $i += 2) {

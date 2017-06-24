@@ -1,0 +1,633 @@
+0
+0
+10
+Coordinator
+True
+0
+Get number of Nodes
+00.00.00.00.FF.FF.
+True
+0
+False
+Get bonded Nodes
+00.00.00.02.FF.FF.
+True
+0
+False
+Get discovered Nodes
+00.00.00.01.FF.FF.
+True
+0
+False
+Authorize node
+00.00.00.0D.FF.FF.05.00.00.
+True
+0
+False
+Bond new Node
+00.00.00.04.FF.FF.00.00.
+True
+0
+False
+Remove bonded Node
+00.00.00.05.FF.FF.01.
+True
+0
+True
+Re-bond Node
+00.00.00.06.FF.FF.01.
+True
+0
+False
+Clear all bonds
+00.00.00.03.FF.FF.
+True
+0
+True
+Run discovery
+00.00.00.07.FF.FF.07.00.
+True
+0
+False
+Set hops
+00.00.00.09.FF.FF.FF.FF.
+True
+0
+False
+DPA params: testing
+00.00.00.08.FF.FF.0C.
+True
+0
+False
+DPA params: normal
+00.00.00.08.FF.FF.00.
+True
+0
+False
+Node
+True
+1
+Read NTW info
+00.01.01.00.FF.FF.
+True
+0
+False
+Remove bond
+00.01.01.01.FF.FF.
+True
+0
+True
+M3
+
+False
+0
+False
+M4
+
+False
+0
+False
+Enable prebonding
+00.01.01.04.FF.FF.07.01.00.00.00.00.
+True
+0
+False
+Read prebonded MID
+00.01.01.02.FF.FF.
+True
+0
+False
+Clear prebonded MID
+00.01.01.03.FF.FF.
+True
+0
+False
+M8
+
+False
+0
+False
+M9
+
+False
+0
+False
+M10
+
+False
+0
+False
+M11
+
+False
+0
+False
+M12
+
+False
+0
+False
+OS, Peripheral info
+True
+2
+Read info
+00.00.02.00.FF.FF.
+True
+0
+False
+Reset
+00.00.02.01.FF.FF.
+True
+0
+False
+Run RFPGM
+00.00.02.03.FF.FF.
+True
+0
+False
+Sleep
+00.01.02.04.FF.FF.00.00.00.
+True
+0
+False
+Read HWP configuration
+00.01.02.02.FF.FF.
+True
+0
+False
+M6
+
+False
+0
+False
+M7
+
+False
+0
+False
+M8
+
+False
+0
+False
+Peripheral enumeration
+00.00.FF.3F.FF.FF.
+True
+0
+False
+Get peripheral information
+00.00.00.3F.FF.FF.
+True
+0
+False
+Get information for more peripherals
+00.00.FF.00.FF.FF.
+True
+0
+False
+M12
+
+False
+0
+False
+Memories
+True
+3
+EEPROM read
+00.00.03.00.FF.FF.00.05.
+True
+0
+False
+EEPROM write
+00.00.03.01.FF.FF.00.01.02.03.04.05.
+True
+0
+False
+M3
+
+False
+0
+False
+M4
+
+False
+0
+False
+EEEPROM read
+00.00.04.02.FF.FF.00.00.10.
+True
+0
+False
+EEEPROM write
+00.00.04.03.FF.FF.00.00.00.01.02.03.04.05.06.07.08.09.0A.0B.0C.0D.0E.0F.
+True
+0
+False
+M7
+
+False
+0
+False
+M8
+
+False
+0
+False
+RAM read
+00.00.05.00.FF.FF.00.05.
+True
+0
+False
+RAM write
+00.00.05.01.FF.FF.00.01.02.03.04.05.
+True
+0
+False
+M11
+
+False
+0
+False
+M12
+
+False
+0
+False
+I/O pins
+True
+4
+Set all pins: OUTs
+00.01.09.00.FF.FF.00.21.00.01.10.00.02.FC.00.
+True
+0
+False
+Set all pins: LOW
+00.01.09.01.FF.FF.00.21.00.01.10.00.02.FC.00.
+True
+0
+False
+Set all pins: HIGH
+00.01.09.01.FF.FF.00.21.21.01.10.10.02.FC.FC.
+True
+0
+False
+M4
+
+False
+0
+False
+Set all pins: INs
+00.01.09.00.FF.FF.00.21.21.01.10.10.02.FC.FC.
+True
+0
+False
+Set pin C1: LOW
+00.01.09.01.FF.FF.00.01.00.
+True
+0
+False
+Set pin C1: HIGH
+00.01.09.01.FF.FF.00.01.01.
+True
+0
+False
+Pulse 1s on C1 pin
+00.01.09.01.FF.FF.00.01.01.FF.E8.03.00.01.00.
+True
+0
+False
+Get pins state
+00.01.09.02.FF.FF.
+True
+0
+False
+Play DDC-IO-01
+00.01.09.01.FF.FF.02.04.04.FF.96.00.00.01.01.FF.96.00.00.20.20.01.10.10.02.40.40.FF.96.00.02.08.08.FF.96.00.02.10.10.FF.96.00.02.A0.A0.FF.E8.03.00.21.00.01.10.00.02.FC.00.
+True
+0
+False
+DDC-RE-01: RE1 pulse 1s
+00.01.09.01.FF.FF.02.04.04.FF.E8.03.02.04.00.
+True
+0
+False
+DDC-RE-01: RE2 pulse 1s
+00.01.09.01.FF.FF.02.A0.A0.FF.E8.03.02.A0.00.
+True
+0
+False
+Temp, UART, SPI
+True
+5
+Get temperature
+00.01.0A.00.FF.FF.
+True
+0
+False
+M2
+
+False
+0
+False
+M3
+
+False
+0
+False
+M4
+
+False
+0
+False
+Open UART: 9600
+00.01.0C.00.FF.FF.03.
+True
+0
+False
+Close UART
+00.01.0C.01.FF.FF.
+True
+0
+False
+Write UART
+00.01.0C.02.FF.FF.FF.48.65.6C.6C.6F.
+True
+0
+False
+Write/read UART
+00.01.0C.02.FF.FF.0A.48.65.6C.6C.6F.
+True
+0
+False
+Write SPI
+00.01.08.00.FF.FF.FF.48.65.6C.6C.6F.
+True
+0
+False
+Write/read SPI
+00.01.08.00.FF.FF.0A.48.65.6C.6C.6F.
+True
+0
+False
+M11
+
+False
+0
+False
+M12
+
+False
+0
+False
+FRC
+True
+6
+2b: Prebonding
+00.00.0D.00.FF.FF.00.00.00.
+True
+0
+False
+2b: Acknowledged broadcast
+00.00.0D.00.FF.FF.02.05.06.03.FF.FF.
+True
+0
+False
+Selective LEDR on
+00.00.0D.02.FF.FF.02.3E.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.05.06.01.FF.FF.
+True
+0
+False
+Extra result
+00.00.0D.01.FF.FF.
+True
+0
+False
+2b: UART/SPI data
+00.00.0D.00.FF.FF.01.00.00.
+True
+0
+False
+M6
+
+False
+0
+False
+Selective LEDR off
+00.00.0D.02.FF.FF.02.3E.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.05.06.00.FF.FF.
+True
+0
+False
+Set FRC response time 2560 ms
+00.00.0D.03.FF.FF.40.
+True
+0
+False
+1B: Temperature
+00.00.0D.00.FF.FF.80.00.00.
+True
+0
+False
+1B: Acknowledged broadcast
+00.00.0D.00.FF.FF.81.05.06.03.FF.FF.
+True
+0
+False
+M11
+
+False
+0
+False
+M12
+
+False
+0
+False
+LED, PWM
+True
+7
+Set LEDR on
+00.00.06.01.FF.FF.
+True
+0
+False
+Set LEDG on
+00.00.07.01.FF.FF.
+True
+0
+False
+Pulse LEDR
+00.00.06.03.FF.FF.
+True
+0
+False
+Stop PWM
+00.01.0B.00.FF.FF.00.00.00.
+True
+0
+False
+Set LEDR off
+00.00.06.00.FF.FF.
+True
+0
+False
+Set LEDG off
+00.00.07.00.FF.FF.
+True
+0
+False
+Pulse LEDG
+00.00.07.03.FF.FF.
+True
+0
+False
+PWM: 1kHz, 50%
+00.01.0B.00.FF.FF.02.7D.40.
+True
+0
+False
+Get LEDR state
+00.00.06.02.FF.FF.
+True
+0
+False
+Get LEDG state
+00.00.07.02.FF.FF.
+True
+0
+False
+M11
+
+False
+0
+False
+PWM: 1kHz, 70%
+00.01.0B.00.FF.FF.22.7D.57.
+True
+0
+False
+Autonetwork embedded
+True
+8
+[C] EEPROM config
+00.00.03.01.FF.FF.00.07.08.03.00.
+True
+0
+True
+Start autonetwork process
+00.00.05.01.FF.FF.00.0A.
+True
+0
+False
+Stop autonetwork process
+00.00.05.01.FF.FF.00.80.
+True
+0
+False
+M4
+
+False
+0
+False
+M5
+
+False
+0
+False
+M6
+
+False
+0
+False
+M7
+
+False
+0
+False
+M8
+
+False
+0
+False
+M9
+
+False
+0
+False
+M10
+
+False
+0
+False
+M11
+
+False
+0
+False
+M12
+
+False
+0
+False
+IoT Starter KIT
+True
+9
+SE-all-data
+00.01.5E.01.FF.FF.FF.FF.FF.FF.
+True
+0
+False
+FRC-temperature 2B
+00.00.0D.00.FF.FF.E0.5E.01.00.00.
+True
+0
+False
+FRC-photoresistor
+00.00.0D.00.FF.FF.90.5E.81.00.00.
+True
+0
+False
+FRC-potentiometer
+00.00.0D.00.FF.FF.90.5E.81.01.00.
+True
+0
+False
+RE1-off,RE2-off
+00.02.4B.00.FF.FF.0C.00.00.00.00.00.
+True
+0
+False
+RE1-on,RE2-on
+00.02.4B.00.FF.FF.0C.00.00.00.01.01.
+True
+0
+False
+RE1-on,RE2-off
+00.02.4B.00.FF.FF.0C.00.00.00.01.00.
+True
+0
+False
+RE1-off,RE2-on
+00.02.4B.00.FF.FF.0C.00.00.00.00.01.
+True
+0
+False
+RE1-on
+00.02.4B.00.FF.FF.04.00.00.00.01.
+True
+0
+False
+RE1-off
+00.02.4B.00.FF.FF.04.00.00.00.00.
+True
+0
+False
+RE1-on 1s
+00.02.4B.00.FF.FF.04.00.00.00.81.
+True
+0
+False
+RE2-on 2s
+00.02.4B.00.FF.FF.08.00.00.00.82.
+True
+0
+False
