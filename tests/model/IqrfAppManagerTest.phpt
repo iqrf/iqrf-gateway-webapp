@@ -48,6 +48,29 @@ class IqrfAppManagerTest extends TestCase {
 		Assert::false($iqrfAppManager->validatePacket($packet8), 'Invalid packet.');
 	}
 
+	/**
+	 * @test
+	 * Test function to parse OS read info
+	 */
+	public function testParseOsReadInfo() {
+		$commandManager = new CommandManager(false);
+		$iqrfAppManager = new IqrfAppManager($commandManager);
+		$packet = '00.00.02.80.00.00.00.00.05.a4.00.81.38.24.79.08.00.28.00.f0';
+		$array = $iqrfAppManager->parseOsReadInfo($packet);
+		$expected = [
+			'ModuleId' => '8100A405',
+			'OsVersion' => '3.08D',
+			'TrType' => 'DCTR-72D',
+			'McuType' => 'PIC16F1938',
+			'OsBuild' => '7908',
+			'Rssi' => '00',
+			'SupplyVoltage' => '3.00',
+			'Flags' => '00',
+			'SlotLimits' => 'f0',
+		];
+		Assert::equal($expected, $array);
+	}
+
 }
 
 $test = new IqrfAppManagerTest($container);
