@@ -27,7 +27,7 @@
 		{foreach $macros as $macro}
 			<h3>{$macro['Name']}</h3>
 			{foreach $macro['Macros'] as $item}
-				<a class="btn btn-default" role="button" onclick="document.getElementById('frm-iqrfAppSendRawForm-packet').value ={$item['Packet']}">{$item['Name']}</a>
+				<a n:if="$item['Enabled']" class="btn btn-default" role="button" onclick="document.getElementById('frm-iqrfAppSendRawForm-packet').value ={$item['Packet']}">{$item['Name']}</a>
 			{/foreach}
 		{/foreach}
 	</div>
