@@ -25,6 +25,11 @@ class ConfigParser {
 
 	use Nette\SmartObject;
 
+	/**
+	 * Convert array from Components configuration form to JSON
+	 * @param array $components Components configuration form array
+	 * @return array JSON array
+	 */
 	public function componentsToJson($components) {
 		$array = [];
 		foreach ($components as $component => $enabled) {
@@ -33,6 +38,13 @@ class ConfigParser {
 		return $array;
 	}
 
+	/**
+	 * Convert array from Base Service configuration form to JSON
+	 * @param array $services Base Service JSON array
+	 * @param ArrayHash $update Changed settings
+	 * @param int $id Base Service ID
+	 * @return array JSON array
+	 */
 	public function baseServiceToJson(array $services, ArrayHash $update, $id) {
 		$service = [];
 		$service['Name'] = $update['Name'];
@@ -48,6 +60,12 @@ class ConfigParser {
 		return $services;
 	}
 
+	/**
+	 * Convert JSON array to Base Service configuration form
+	 * @param array $json Base Service JSON array
+	 * @param int $id Base Service ID
+	 * @return array Array for form
+	 */
 	public function baseServiceToForm(array $json, $id = 0) {
 		$data = $json['Instances'][$id];
 		$service = [];
@@ -57,6 +75,13 @@ class ConfigParser {
 		return $service;
 	}
 
+	/**
+	 * Convert array from Interfaces configuration form to JSON
+	 * @param array $instances Original Instances JSON array
+	 * @param ArrayHash $update Changed settings
+	 * @param int $id Interface ID
+	 * @return array JSON array
+	 */
 	public function instancesToJson(array $instances, ArrayHash $update, $id) {
 		$instance = [];
 		$instance['Name'] = $update['Name'];
@@ -68,6 +93,12 @@ class ConfigParser {
 		return $instances;
 	}
 
+	/**
+	 * Convert Instances configuration form array to JSON array
+	 * @param array $json Interfaces JSON array
+	 * @param int $id Interface ID
+	 * @return array Array for form
+	 */
 	public function instancesToForm(array $json, $id = 0) {
 		$data = $json['Instances'][$id];
 		$instance = $data['Properties'];
@@ -76,6 +107,13 @@ class ConfigParser {
 		return $instance;
 	}
 
+	/**
+	 * Convert Scheduler configuration form array to JSON array
+	 * @param array $scheduler Original Scheduler JSON array
+	 * @param ArrayHash $update Changed settings
+	 * @param int $id Scheduler ID
+	 * @return array JSON array
+	 */
 	public function schedulerToJson(array $scheduler, ArrayHash $update, $id) {
 		$data = [];
 		$data['time'] = $update['time'];
@@ -92,6 +130,12 @@ class ConfigParser {
 		return $scheduler;
 	}
 
+	/**
+	 * Convert Scheduler JSON array to Scheduler configuration form array
+	 * @param array $json Scheduler JSON array
+	 * @param int $id Scheduler ID
+	 * @return array Array for form
+	 */
 	public function schedulerToForm(array $json, $id = 0) {
 		$data = $json['TasksJson'][$id];
 		$scheduler = [];

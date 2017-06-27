@@ -41,6 +41,7 @@ class GwInfoManager {
 
 	/**
 	 * Get IPv4 and IPv6 addresses of the gateway
+	 * @return array IPv4 and IPv6 addresses
 	 */
 	public function getIpAddresses() {
 		$cmd = 'hostname -I';
@@ -49,6 +50,7 @@ class GwInfoManager {
 
 	/**
 	 * Get MAC addresses of the gateway
+	 * @return array MAC addresses array
 	 */
 	public function getMacAddresses() {
 		$cmd = 'cat /sys/class/net/*/address';
@@ -57,9 +59,11 @@ class GwInfoManager {
 
 	/**
 	 * Get hostname of the gateway
+	 * @return string Hostname
 	 */
 	public function getHostname() {
 		$cmd = 'hostname -f';
 		return $this->commandManager->send($cmd);
 	}
+
 }
