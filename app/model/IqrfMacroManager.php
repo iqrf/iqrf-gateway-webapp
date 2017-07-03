@@ -19,7 +19,6 @@
 namespace App\Model;
 
 use Nette;
-use Tracy\Debugger;
 
 class IqrfMacroManager {
 
@@ -39,6 +38,10 @@ class IqrfMacroManager {
 		$this->path = $path;
 	}
 
+	/**
+	 * Read .ini file and parse macros from IQRF IDE
+	 * @return array
+	 */
 	public function read() {
 		$config = parse_ini_file($this->path, true)['Macro'];
 		$array = $this->parseMacros($config['Macros']);
@@ -56,38 +59,23 @@ class IqrfMacroManager {
 		for ($i = 0; $i < 3; $i++) {
 			array_shift($array);
 		}
-		return $this->parseMacro($array);
-	}
-
-	public function parseMacro($array) {
 		$macros = [];
 		$keys = array_keys($array);
 		for ($i = 0; $i < end($keys); $i++) {
-			$id = floor($i / 63);
-			$cat = $i % 63;
-			switch ($cat) {
-				case 0:
-					$macros[$id]['Name'] = $array[$i];
-					break;
-				case 1:
-					$macros[$id]['Enabled'] = $array[$i] === 'True' ? true : false;
-					break;
-				case 2:
-					break;
-				default:
-					$macroId = floor(($i - 3 - ($id * 63)) / 5);
-					$macro = (($i - ($id * 63)) - 2) % 5;
-					switch ($macro) {
-						case 1:
-							$macros[$id]['Macros'][$macroId]['Name'] = $array[$i];
-							break;
-						case 2:
-							$macros[$id]['Macros'][$macroId]['Packet'] = $array[$i];
-							break;
-						case 3:
-							$macros[$id]['Macros'][$macroId]['Enabled'] = $array[$i] === 'True' ? true : false;
-							break;
-					}
+			$category = $i % 63;
+			$categoryId = floor($i / 63);
+			$macro = (($i - ($categoryId * 63)) - 2) % 5;
+			$macroId = floor(($i - 3 - ($categoryId * 63)) / 5);
+			if ($category === 0) {
+				$macros[$categoryId]['Name'] = $array[$i];
+			} elseif ($category === 1) {
+				$macros[$categoryId]['Enabled'] = $array[$i] === 'True' ? true : false;
+			} elseif ($macro === 1) {
+				$macros[$categoryId]['Macros'][$macroId]['Name'] = $array[$i];
+			} elseif ($macro === 2) {
+				$macros[$categoryId]['Macros'][$macroId]['Packet'] = $array[$i];
+			} elseif ($macro === 3) {
+				$macros[$categoryId]['Macros'][$macroId]['Enabled'] = $array[$i] === 'True' ? true : false;
 			}
 		}
 		return $macros;
