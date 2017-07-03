@@ -38,7 +38,7 @@
 	},
 	"require-dev": {
 		"nette/tester": "^1.7",
-		"mockery/mockery": "dev-master"
+		"mockery/mockery": "1.0.0-alpha1"
 	},
 	"support": {
 		"email": "ondracek.roman@centrum.cz",
