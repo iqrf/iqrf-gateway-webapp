@@ -7,6 +7,7 @@
  */
 use App\Model\CommandManager;
 use App\Model\IqrfAppManager;
+use Mockery;
 use Nette\DI\Container;
 use Tester\Assert;
 use Tester\TestCase;
@@ -61,6 +62,19 @@ class IqrfAppManagerTest extends TestCase {
 			'SlotLimits' => 'f0',
 		];
 		Assert::equal($expected, $array);
+	}
+
+	/**
+	 * @test
+	 * Test function to send RAW IQRF packet
+	 */
+	public function testSendRaw() {
+		$packet = '01.00.06.03.ff.ff';
+		$expected = 'sudo iqrfapp raw ' . $packet;
+		$commandManager = Mockery::mock('App\Model\CommandManager');
+		$commandManager->shouldReceive('send')->with('iqrfapp raw ' . $packet, true)->andReturn($expected);
+		$iqrfAppManager = new IqrfAppManager($commandManager);
+		Assert::equal($expected, $iqrfAppManager->sendRaw($packet));
 	}
 
 }
