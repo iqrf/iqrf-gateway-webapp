@@ -63,8 +63,8 @@ def install_debian(version):
 def install_ubuntu(version):
 	send_command("apt-get update")
 	if version == "16.04" or version == "xenial" or version == "xerus":
-		# Install sudo, nginx php7.0 and composer
-		send_command("apt-get install -y sudo php7.0 php7.0-common php7.0-fpm php7.0-curl php7.0-json php7.0-sqlite composer nginx-full")
+		# Install sudo, nginx php7.0, composer and zip
+		send_command("apt-get install -y sudo php7.0 php7.0-common php7.0-fpm php7.0-curl php7.0-json php7.0-sqlite php7.0-mbstring composer nginx-full zip unzip")
 		chmod_daemon_dir()
 		install_php_app(WEBAPP_DIRECTORY)
 		disable_default_nginx_virtualhost()
