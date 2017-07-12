@@ -22,7 +22,9 @@ else
 	rm -rf ${WEBAPP_DIRECTORY}/temp/cache
 fi
 # Download composer
-cd ${WEBAPP_DIRECTORY}/install/ && bash install-composer.sh
+if [ ! -d "${WEBAPP_DIRECTORY}/instal/composer.phar" ]; then
+	cd ${WEBAPP_DIRECTORY}/install/ && bash install-composer.sh
+fi
 # Download php dependencies
 cd ${WEBAPP_DIRECTORY} && php install/composer.phar install
 # Disable default virtualhost
@@ -30,7 +32,7 @@ if [ -f /etc/nginx/sites-enabled/default ]; then
 	rm /etc/nginx/sites-enabled/default
 fi
 # Copy virtualhost
-cp ${WEBAPP_DIRECTORY}/install/nginx/iqrf-daemon-webapp.localhost /etc/nginx/sites-available/iqrf-daemon-webapp.localhost
+cp -u ${WEBAPP_DIRECTORY}/install/nginx/iqrf-daemon-webapp_php5.localhost /etc/nginx/sites-available/iqrf-daemon-webapp.localhost
 # Enable virtualhost
 if [ ! -f /etc/nginx/sites-enabled/iqrf-daemon-webapp.localhost ]; then
 	ln -s /etc/nginx/sites-available/iqrf-daemon-webapp.localhost /etc/nginx/sites-enabled/iqrf-daemon-webapp.localhost
