@@ -34,8 +34,8 @@ def install_debian(version):
 		# Install sudo, nginx and php5
 		send_command("apt-get install -y sudo php5 php5-common php5-fpm php5-curl php5-json php5-sqlite nginx-full")
 		# Install composer
-		send_command("bash ./install.composer.sh")
-		send_command("mv composer.phar /usb/bin/composer")
+		send_command("bash ./install-composer.sh")
+		send_command("mv composer.phar /usr/bin/composer")
 		chmod_daemon_dir()
 		install_php_app(WEBAPP_DIRECTORY)
 		disable_default_nginx_virtualhost()
@@ -104,11 +104,11 @@ def disable_default_nginx_virtualhost(nginx_dir="/etc/nginx"):
 		os.remove(virtualhost)
 
 def create_webapp_nginx_virtualhost(virtualhost, nginx_dir="/etc/nginx"):
-	nginx_virtualhost = nginx_dir + "/sites-available/iqrf-daemon-webapp.localhost"
-	send_command("cp -u nginx/" + virtualhost + " " + nginx_virtualhost)
-	if not os.path.exists(nginx_virtualhost): 
-		send_command("ln -s " + nginx_virtualhost + " " + nginx_dir + 
-			     "/sites-enabled/iqrf-daemon-webapp.localhost")
+	available_virtualhost = nginx_dir + "/sites-available/iqrf-daemon-webapp.localhost"
+	enabled_virtualhost = nginx_dir + "/sites-enabled/iqrf-daemon-webapp.localhost"
+	send_command("cp -u nginx/" + virtualhost + " " + available_virtualhost)
+	if not os.path.lexists(enabled_virtualhost): 
+		send_command("ln -s " + available_virtualhost + " " + enabled_virtualhost)
 
 def fix_php_fpm_config(config_file):
 	send_command("sed 's/;cgi\\.fix_pathinfo=1/cgi\\.fix_pathinfo=0/g' " + config_file + " > " + config_file)
@@ -121,7 +121,7 @@ def enable_sudo(sudoers_file=SUDOERS_FILE):
 			if line.strip() == sudoers:
 				found = True
 	if not found:
-		send_command("echo " + sudoers + " >> " + sudoers_file)
+		send_command("echo \"" + sudoers + "\" >> " + sudoers_file)
 	
 def restart_service(name):
 	send_command("systemctl restart " + name)
