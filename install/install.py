@@ -87,8 +87,7 @@ def install_php_app(dir, use_git=True):
 		send_command("rm -rf " + dir + "/temp/cache")
 		if use_git:
 			send_command("cd " + dir + " ; git pull origin")
-		else:
-			send_command("cd " + dir + " ; composer update")
+		send_command("cd " + dir + " ; composer update")
 
 
 def chmod_daemon_dir(dir_name="/etc/iqrf-daemon"):
@@ -122,9 +121,9 @@ def enable_sudo(sudoers_file=SUDOERS_FILE):
 				found = True
 	if not found:
 		send_command("echo \"" + sudoers + "\" >> " + sudoers_file)
-	
+
 def restart_service(name):
-	send_command("systemctl restart " + name)
+	send_command("systemctl restart " + name + ".service")
 
 if __name__ == "__main__":
 	main()
