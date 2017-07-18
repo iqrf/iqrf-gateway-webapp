@@ -33,7 +33,6 @@ class ConfigManager {
 	 * @inject
 	 */
 	private $configDir;
-
 	/**
 	 * @var ConfigParser
 	 * @inject
@@ -43,6 +42,7 @@ class ConfigManager {
 	/**
 	 * Constructor
 	 * @param string $configDir Directory with configuration files
+	 * @param ConfigParser $configParser
 	 */
 	public function __construct($configDir, ConfigParser $configParser) {
 		$this->configDir = $configDir;
@@ -76,8 +76,7 @@ class ConfigManager {
 	 */
 	public function saveBaseService(ArrayHash $array, $id = 0) {
 		$fileName = 'BaseService';
-		$json = $this->read($fileName);
-		$json = $this->configParser->baseServiceToJson($json, $array, $id);
+		$json = $this->configParser->baseServiceToJson($this->read($fileName), $array, $id);
 		$this->write($fileName, $json);
 	}
 
@@ -111,8 +110,7 @@ class ConfigManager {
 	 */
 	public function saveScheduler(ArrayHash $array, $id = 0) {
 		$fileName = 'Scheduler';
-		$json = $this->read($fileName);
-		$json = $this->configParser->schedulerToJson($json, $array, $id);
+		$json = $this->configParser->schedulerToJson($this->read($fileName), $array, $id);
 		$this->write($fileName, $json);
 	}
 
