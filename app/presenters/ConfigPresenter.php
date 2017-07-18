@@ -19,6 +19,7 @@
 namespace App\Presenters;
 
 use App\Model\ConfigManager;
+use App\Model\InterfaceManager;
 use App\Forms;
 
 /**
@@ -87,10 +88,18 @@ class ConfigPresenter extends BasePresenter {
 	private $configManager;
 
 	/**
+	 * @var InterfaceManager
+	 * @inject
+	 */
+	private $interfaceManager;
+
+	/**
+	 * Constructor
 	 * @param ConfigManager $configManager
 	 */
-	public function __construct(ConfigManager $configManager) {
+	public function __construct(ConfigManager $configManager, InterfaceManager $interfaceManager) {
 		$this->configManager = $configManager;
+		$this->interfaceManager = $interfaceManager;
 	}
 
 	public function renderDefault() {
@@ -103,6 +112,11 @@ class ConfigPresenter extends BasePresenter {
 		if (!$id) {
 			$this->template->services = $this->configManager->read('BaseService')['Instances'];
 		}
+	}
+
+	public function renderIqrf() {
+		$this->onlyForAdmins();
+		$this->template->interfaces = $this->interfaceManager->createInterfaceList();
 	}
 
 	public function renderMqtt($id = NULL) {

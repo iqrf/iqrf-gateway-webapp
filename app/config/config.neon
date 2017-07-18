@@ -33,6 +33,7 @@ services:
 	- App\Model\ConfigManager(%configDir%)
 	- App\Model\ConfigParser
 	- App\Model\GwInfoManager
+	- App\Model\InterfaceManager
 	- App\Model\IqrfAppManager
 	- App\Model\IqrfMacroManager(%macroPath%)
 	- App\Model\ServiceManager(%initDaemon%)
