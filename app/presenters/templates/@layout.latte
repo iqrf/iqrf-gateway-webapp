@@ -45,15 +45,15 @@
 						<li class='dropdown' n:if='$user->loggedIn'>
 							<a n:href='Config:default' class="dropdown-toggle" data-toggle="dropdown" role="button">{_"Configuration"} <span class="caret"></span></a>
 							<ul class="dropdown-menu">
-								<li><a n:href='Config:baseService'>{_"Base services"}</a></li>
 								<li><a n:href='Config:components'>{_"Components"}</a></li>
-								<li><a n:href='Config:iqrfApp'>{_"IQRF App"}</a></li>
-								<li><a n:href='Config:iqrf'>{_"IQRF interface"}</a></li>
-								<li><a n:href='Config:mq'>{_"MQ interface"}</a></li>
-								<li><a n:href='Config:mqtt'>{_"MQTT interface"}</a></li>
-								<li><a n:href='Config:udp'>{_"UDP interface"}</a></li>
-								<li><a n:href='Config:scheduler'>{_"Scheduler"}</a></li>
 								<li><a n:href='Config:tracer'>{_"Tracer file"}</a></li>
+								<li><a n:href='Config:iqrf'>{_"IQRF interface"}</a></li>
+								<li><a n:href='Config:udp'>{_"UDP interface"}</a></li>
+								<li><a n:href='Config:mqtt'>{_"MQTT interface"}</a></li>
+								<li><a n:href='Config:mq'>{_"MQ interface"}</a></li>
+								<li><a n:href='Config:scheduler'>{_"Scheduler"}</a></li>
+								<li><a n:href='Config:baseService'>{_"Base services"}</a></li>
+								<li><a n:href='Config:iqrfApp'>{_"IQRF App"}</a></li>
 							</ul>
 						</li>
 						<li n:if='$user->loggedIn'><a n:href='Service:default'>{_"Service"}</a></li>
