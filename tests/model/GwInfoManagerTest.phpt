@@ -38,10 +38,10 @@ class GwInfoManagerTest extends TestCase {
 	 */
 	public function testGetMacAddresses() {
 		$commandManager = \Mockery::mock('App\Model\CommandManager');
-		$output = '01:02:03:04:05:06' . PHP_EOL . '00:00:00:00:00:00';
-		$commandManager->shouldReceive('send')->with('cat /sys/class/net/*/address')->andReturn($output);
+		$commandManager->shouldReceive('send')->with("ls /sys/class/net | awk '{ print $0 }'", true)->andReturn('eth0' . PHP_EOL . 'lo');
+		$commandManager->shouldReceive('send')->with('cat /sys/class/net/eth0/address', true)->andReturn('01:02:03:04:05:06');
 		$gwInfoManager = new GwInfoManager($commandManager);
-		Assert::same(['01:02:03:04:05:06', '00:00:00:00:00:00'], $gwInfoManager->getMacAddresses());
+		Assert::same(['eth0' => '01:02:03:04:05:06'], $gwInfoManager->getMacAddresses());
 	}
 
 	/**

@@ -30,8 +30,8 @@
 			<tr>
 				<th>{_"MAC addresses"}</th>
 				<td>
-					{foreach $macAddresses as $macAddress}
-						<p>{$macAddress}</p>
+					{foreach $macAddresses as $interface =>$macAddress}
+						<p><strong>{$interface}:</strong> {$macAddress}</p>
 					{/foreach}
 				</td>
 			</tr>

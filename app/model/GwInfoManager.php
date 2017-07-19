@@ -53,8 +53,16 @@ class GwInfoManager {
 	 * @return array MAC addresses array
 	 */
 	public function getMacAddresses() {
-		$cmd = 'cat /sys/class/net/*/address';
-		return explode("\n", $this->commandManager->send($cmd));
+		$addresses = [];
+		$lsInterfaces = $this->commandManager->send("ls /sys/class/net | awk '{ print $0 }'", true);
+		$interfaces = explode(PHP_EOL, $lsInterfaces);
+		foreach ($interfaces as $interface) {
+			if ($interface !== 'lo') {
+				$cmd = 'cat /sys/class/net/' . $interface . '/address';
+				$addresses[$interface] = $this->commandManager->send($cmd, true);
+			}
+		}
+		return $addresses;
 	}
 
 	/**
