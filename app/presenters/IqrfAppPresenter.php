@@ -59,12 +59,6 @@ class IqrfAppPresenter extends BasePresenter {
 		if (!$this->user->isLoggedIn()) {
 			$this->redirect('Sign:in');
 		}
-	}
-
-	public function renderSendRaw() {
-		if (!$this->user->isLoggedIn()) {
-			$this->redirect('Sign:in');
-		}
 		$this->template->macros = $this->iqrfMacroManager->read();
 	}
 
