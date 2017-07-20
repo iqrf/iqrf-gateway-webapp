@@ -22,14 +22,24 @@
 	</div>
 </div>
 {ifset $response}
-	<h2>{_"Response"}</h2>
-	<div class='panel panel-default'>
-		<div class='panel-body'>
-			{snippet responseChange}
+	{snippet responseChange}
+		<h2>{_"Response"}</h2>
+		<div class='panel panel-default'>
+			<div class='panel-body'>
 				{$response|breaklines}
-			{/snippet}
+			</div>
 		</div>
-	</div>
+		{ifset $parsedResponse}
+			<h2>{_"Parsed response"}</h2>
+			<div class='panel panel-default'>
+				<div class='panel-body'>
+					{foreach $parsedResponse as $key => $value}
+						<p><strong>{_$key}:</strong> {$value}</p>
+					{/foreach}
+				</div>
+			</div>
+		{/ifset}
+	{/snippet}
 {/ifset}
 <h2>{_"Macros"}</h2>
 <div class='panel panel-default'>

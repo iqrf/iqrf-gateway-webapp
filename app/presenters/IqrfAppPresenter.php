@@ -22,8 +22,6 @@ use App\Forms;
 use App\Model\IqrfAppManager;
 use App\Model\IqrfMacroManager;
 
-use Tracy\Debugger;
-
 /**
  * Service presenter
  */
@@ -64,6 +62,7 @@ class IqrfAppPresenter extends BasePresenter {
 
 	public function handleShowResponse($response) {
 		$this->template->response = $response;
+		$this->template->parsedResponse = $this->iqrfAppManager->parseResponse($response);
 		$this->redrawControl('responseChange');
 	}
 

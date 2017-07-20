@@ -59,6 +59,29 @@ class IqrfAppManager {
 	}
 
 	/**
+	 * Parse DPA response
+	 * @param string $response
+	 * @return arayay
+	 * @throws Exception
+	 */
+	public function parseResponse($response) {
+		$output = explode(' ', $response);
+		$packet = $output[1];
+		$data = explode('.', $packet);
+		$status = end($output);
+		if ($status !== 'STATUS_NO_ERROR') {
+			return null;
+			// throw new Exception();
+		}
+		$pnum = $data[2];
+		$pcmd = $data[3];
+		if ($pnum == '02' && $pcmd == '80') {
+			return $this->parseOsReadInfo($packet);
+		}
+		return null;
+	}
+
+	/**
 	 * Parse response to DPA OS read info request
 	 * @param string $packet
 	 * @return Information about DCTR module
@@ -109,7 +132,7 @@ class IqrfAppManager {
 		}
 		$data['OsBuild'] = $packetArray[14] . $packetArray[15];
 		$data['Rssi'] = $packetArray[16];
-		$data['SupplyVoltage'] = number_format((261.12 / (127 - hexdec($packetArray[17]))), 2, '.', '');
+		$data['SupplyVoltage'] = number_format((261.12 / (127 - hexdec($packetArray[17]))), 2, '.', '') . ' V';
 		$data['Flags'] = $packetArray[18];
 		$data['SlotLimits'] = $packetArray[19];
 		return $data;
