@@ -66,19 +66,41 @@ class IqrfAppManager {
 	 */
 	public function parseResponse($response) {
 		$output = explode(' ', $response);
-		$packet = $output[1];
-		$data = explode('.', $packet);
 		$status = end($output);
 		if ($status !== 'STATUS_NO_ERROR') {
 			return null;
 			// throw new Exception();
 		}
+		$packet = $output[1];
+		if (empty($packet)) {
+			return null;
+			// throw new Exception();
+		}
+		$data = explode('.', $packet);
 		$pnum = $data[2];
 		$pcmd = $data[3];
+		if ($pnum == '00' && ($pcmd == '81' || $pcmd == '82')) {
+			return $this->parseCoordinatorGetNodes($packet);
+		}
 		if ($pnum == '02' && $pcmd == '80') {
 			return $this->parseOsReadInfo($packet);
 		}
 		return null;
+	}
+
+	public function parseCoordinatorGetNodes($packet) {
+		\Tracy\Debugger::barDump($packet, "Packet");
+		$data = [];
+		$packetArray = explode('.', $packet);
+		if ($packetArray[3] === '81') {
+			$type = 'DiscoveredNodes';
+		} elseif ($packetArray[3] === '82') {
+			$type = 'BondedNodes';
+		}
+		for ($i = 0; $i < 24; $i += 2) {
+			$data[$type][$i / 2] = str_split(str_pad(strrev(base_convert($packetArray[9 + $i] . $packetArray[8 + $i], 16, 2)), 20, "0"));
+		}
+		return $data;
 	}
 
 	/**
