@@ -60,8 +60,8 @@ class IqrfAppManager {
 
 	/**
 	 * Parse DPA response
-	 * @param string $response
-	 * @return arayay
+	 * @param string $response DPA packet response
+	 * @return array Parsed response in array
 	 * @throws Exception
 	 */
 	public function parseResponse($response) {
@@ -88,8 +88,12 @@ class IqrfAppManager {
 		return null;
 	}
 
+	/**
+	 * Parse response to DPA Coordinator - "Get bonded nodes" and "Get discovered nodes" request
+	 * @param string $packet DPA packet response
+	 * @return Information about DCTR module
+	 */
 	public function parseCoordinatorGetNodes($packet) {
-		\Tracy\Debugger::barDump($packet, "Packet");
 		$data = [];
 		$packetArray = explode('.', $packet);
 		if ($packetArray[3] === '81') {
@@ -104,8 +108,8 @@ class IqrfAppManager {
 	}
 
 	/**
-	 * Parse response to DPA OS read info request
-	 * @param string $packet
+	 * Parse response to DPA OS - "Read info" request
+	 * @param string $packet DPA packet response
 	 * @return Information about DCTR module
 	 */
 	public function parseOsReadInfo($packet) {
