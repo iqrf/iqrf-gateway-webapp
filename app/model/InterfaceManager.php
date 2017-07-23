@@ -24,6 +24,7 @@ use Nette;
 class InterfaceManager {
 
 	use Nette\SmartObject;
+
 	/**
 	 * @var CommandManager
 	 * @inject
@@ -37,7 +38,6 @@ class InterfaceManager {
 	public function __construct(CommandManager $commandManager) {
 		$this->commandManager = $commandManager;
 	}
-
 
 	/**
 	 * Create list of SPI and USB CDC interfaces available in the system

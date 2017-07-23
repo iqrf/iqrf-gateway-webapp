@@ -18,9 +18,9 @@
 
 namespace App\Forms;
 
+use App\Forms\FormFactory;
 use App\Model\ConfigManager;
 use App\Presenters\ConfigPresenter;
-
 use Nette;
 use Nette\Application\UI\Form;
 
@@ -40,6 +40,11 @@ class ConfigComponentsFormFactory {
 	 */
 	private $factory;
 
+	/**
+	 * Constructor
+	 * @param FormFactory $factory
+	 * @param ConfigManager $configManager
+	 */
 	public function __construct(FormFactory $factory, ConfigManager $configManager) {
 		$this->factory = $factory;
 		$this->configManager = $configManager;
@@ -55,7 +60,7 @@ class ConfigComponentsFormFactory {
 		$components = $this->configManager->read('config')['Components'];
 		foreach ($components as $component) {
 			$form->addCheckbox($component['ComponentName'], $component['ComponentName'])
-					->setDefaultValue($component['Enabled']);
+				->setDefaultValue($component['Enabled']);
 		}
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('Timeout expired, resubmit the form.');

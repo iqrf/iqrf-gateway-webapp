@@ -23,6 +23,9 @@ namespace App\Presenters;
  */
 class HomepagePresenter extends BasePresenter {
 
+	/**
+	 * Render default page
+	 */
 	public function renderDefault() {
 		$this->onlyForAdmins();
 	}

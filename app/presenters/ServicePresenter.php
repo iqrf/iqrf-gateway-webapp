@@ -38,10 +38,16 @@ class ServicePresenter extends BasePresenter {
 		$this->serviceManager = $serviceManager;
 	}
 
+	/**
+	 * Render disambiguation
+	 */
 	public function renderDefault() {
 		$this->onlyForAdmins();
 	}
 
+	/**
+	 * Start iqrf-daemon service
+	 */
 	public function actionStart() {
 		$this->onlyForAdmins();
 		$this->serviceManager->start();
@@ -50,6 +56,9 @@ class ServicePresenter extends BasePresenter {
 		$this->setView('default');
 	}
 
+	/**
+	 * Stop iqrf-daemon service
+	 */
 	public function actionStop() {
 		$this->onlyForAdmins();
 		$this->serviceManager->stop();
@@ -58,6 +67,9 @@ class ServicePresenter extends BasePresenter {
 		$this->setView('default');
 	}
 
+	/**
+	 * Restart iqrf-daemon service
+	 */
 	public function actionRestart() {
 		$this->onlyForAdmins();
 		$this->serviceManager->restart();
@@ -66,6 +78,9 @@ class ServicePresenter extends BasePresenter {
 		$this->setView('default');
 	}
 
+	/**
+	 * Render status page of iqrf-daemon service
+	 */
 	public function renderStatus() {
 		$this->onlyForAdmins();
 		$status = $this->serviceManager->getStatus();

@@ -31,55 +31,55 @@ class ConfigPresenter extends BasePresenter {
 	 * @var Forms\ConfigBaseServiceFormFactory
 	 * @inject
 	 */
-	public $configBaseServiceFactory;
+	public $baseServiceFactory;
 
 	/**
 	 * @var Forms\ConfigComponentsFormFactory
 	 * @inject
 	 */
-	public $configComponentsFactory;
+	public $componentsFactory;
 
 	/**
 	 * @var Forms\ConfigIqrfAppFormFactory
 	 * @inject
 	 */
-	public $configIqrfAppFactory;
+	public $iqrfAppFactory;
 
 	/**
 	 * @var Forms\ConfigIqrfFormFactory
 	 * @inject
 	 */
-	public $configIqrfFactory;
+	public $iqrfFactory;
 
 	/**
 	 * @var Forms\ConfigMqFormFactory
 	 * @inject
 	 */
-	public $configMqFactory;
+	public $mqFactory;
 
 	/**
 	 * @var Forms\ConfigMqttFormFactory
 	 * @inject
 	 */
-	public $configMqttFactory;
+	public $mqttFactory;
 
 	/**
 	 * @var Forms\ConfigSchedulerFormFactory
 	 * @inject
 	 */
-	public $configSchedulerFactory;
+	public $schedulerFactory;
 
 	/**
 	 * @var Forms\ConfigTracerFormFactory
 	 * @inject
 	 */
-	public $configTracerFactory;
+	public $tracerFactory;
 
 	/**
 	 * @var Forms\ConfigUdpFormFactory
 	 * @inject
 	 */
-	public $configUdpFactory;
+	public $udpFactory;
 
 	/**
 	 * @var ConfigManager
@@ -96,16 +96,24 @@ class ConfigPresenter extends BasePresenter {
 	/**
 	 * Constructor
 	 * @param ConfigManager $configManager
+	 * @param InterfaceManager $interfaceManager
 	 */
 	public function __construct(ConfigManager $configManager, InterfaceManager $interfaceManager) {
 		$this->configManager = $configManager;
 		$this->interfaceManager = $interfaceManager;
 	}
 
+	/**
+	 * Render default page
+	 */
 	public function renderDefault() {
 		$this->onlyForAdmins();
 	}
 
+	/**
+	 * Render base service page
+	 * @param int $id Id of base service
+	 */
 	public function renderBaseService($id = NULL) {
 		$this->onlyForAdmins();
 		$this->template->id = $id;
@@ -114,11 +122,18 @@ class ConfigPresenter extends BasePresenter {
 		}
 	}
 
+	/**
+	 * Render IQRF page
+	 */
 	public function renderIqrf() {
 		$this->onlyForAdmins();
 		$this->template->interfaces = $this->interfaceManager->createInterfaceList();
 	}
 
+	/**
+	 * Render MQTT page
+	 * @param int $id ID of MQTT interface
+	 */
 	public function renderMqtt($id = NULL) {
 		$this->onlyForAdmins();
 		$this->template->id = $id;
@@ -127,6 +142,10 @@ class ConfigPresenter extends BasePresenter {
 		}
 	}
 
+	/**
+	 * Render scheduler page
+	 * @param int $id ID of task
+	 */
 	public function renderScheduler($id = NULL) {
 		$this->onlyForAdmins();
 		$this->template->id = $id;
@@ -141,7 +160,7 @@ class ConfigPresenter extends BasePresenter {
 	 */
 	protected function createComponentConfigBaseServiceForm() {
 		$this->onlyForAdmins();
-		return $this->configBaseServiceFactory->create($this);
+		return $this->baseServiceFactory->create($this);
 	}
 
 	/**
@@ -150,7 +169,7 @@ class ConfigPresenter extends BasePresenter {
 	 */
 	protected function createComponentConfigComponentsForm() {
 		$this->onlyForAdmins();
-		return $this->configComponentsFactory->create($this);
+		return $this->componentsFactory->create($this);
 	}
 
 	/**
@@ -159,7 +178,7 @@ class ConfigPresenter extends BasePresenter {
 	 */
 	protected function createComponentConfigIqrfAppForm() {
 		$this->onlyForAdmins();
-		return $this->configIqrfAppFactory->create($this);
+		return $this->iqrfAppFactory->create($this);
 	}
 
 	/**
@@ -168,7 +187,7 @@ class ConfigPresenter extends BasePresenter {
 	 */
 	protected function createComponentConfigIqrfForm() {
 		$this->onlyForAdmins();
-		return $this->configIqrfFactory->create($this);
+		return $this->iqrfFactory->create($this);
 	}
 
 	/**
@@ -177,7 +196,7 @@ class ConfigPresenter extends BasePresenter {
 	 */
 	protected function createComponentConfigMqForm() {
 		$this->onlyForAdmins();
-		return $this->configMqFactory->create($this);
+		return $this->mqFactory->create($this);
 	}
 
 	/**
@@ -186,7 +205,7 @@ class ConfigPresenter extends BasePresenter {
 	 */
 	protected function createComponentConfigMqttForm() {
 		$this->onlyForAdmins();
-		return $this->configMqttFactory->create($this);
+		return $this->mqttFactory->create($this);
 	}
 
 	/**
@@ -195,7 +214,7 @@ class ConfigPresenter extends BasePresenter {
 	 */
 	protected function createComponentConfigSchedulerForm() {
 		$this->onlyForAdmins();
-		return $this->configSchedulerFactory->create($this);
+		return $this->schedulerFactory->create($this);
 	}
 
 	/**
@@ -204,7 +223,7 @@ class ConfigPresenter extends BasePresenter {
 	 */
 	protected function createComponentConfigTracerForm() {
 		$this->onlyForAdmins();
-		return $this->configTracerFactory->create($this);
+		return $this->tracerFactory->create($this);
 	}
 
 	/**
@@ -213,7 +232,7 @@ class ConfigPresenter extends BasePresenter {
 	 */
 	protected function createComponentConfigUdpForm() {
 		$this->onlyForAdmins();
-		return $this->configUdpFactory->create($this);
+		return $this->udpFactory->create($this);
 	}
 
 }

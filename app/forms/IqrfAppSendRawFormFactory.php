@@ -18,9 +18,9 @@
 
 namespace App\Forms;
 
+use App\Forms\FormFactory;
 use App\Model\IqrfAppManager;
 use App\Presenters\IqrfAppPresenter;
-
 use Nette;
 use Nette\Application\UI\Form;
 
@@ -40,6 +40,11 @@ class IqrfAppSendRawFormFactory {
 	 */
 	private $factory;
 
+	/**
+	 * Constructor
+	 * @param FormFactory $factory
+	 * @param IqrfAppManager $iqrfAppManager
+	 */
 	public function __construct(FormFactory $factory, IqrfAppManager $iqrfAppManager) {
 		$this->factory = $factory;
 		$this->iqrfAppManager = $iqrfAppManager;

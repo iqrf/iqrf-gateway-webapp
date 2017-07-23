@@ -18,6 +18,7 @@
 
 namespace App\Forms;
 
+use App\Forms\FormFactory;
 use App\Model\ConfigManager;
 use App\Model\ConfigParser;
 use App\Presenters\ConfigPresenter;
@@ -46,6 +47,12 @@ class ConfigSchedulerFormFactory {
 	 */
 	private $factory;
 
+	/**
+	 * Constructor
+	 * @param FormFactory $factory
+	 * @param ConfigManager $configManager
+	 * @param ConfigParser $configParser
+	 */
 	public function __construct(FormFactory $factory, ConfigManager $configManager, ConfigParser $configParser) {
 		$this->factory = $factory;
 		$this->configManager = $configManager;
@@ -79,7 +86,6 @@ class ConfigSchedulerFormFactory {
 			$this->configManager->saveScheduler($values, $id);
 			$presenter->redirect('Config:scheduler', ['id' => null]);
 		};
-
 		return $form;
 	}
 

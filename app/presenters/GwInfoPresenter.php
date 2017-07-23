@@ -39,13 +39,18 @@ class GwInfoPresenter extends BasePresenter {
 	private $iqrfAppManager;
 
 	/**
+	 * Constructor
 	 * @param GwInfoManager $gwInfoManager
+	 * @param IqrfAppManager $iqrfAppManager
 	 */
 	public function __construct(GwInfoManager $gwInfoManager, IqrfAppManager $iqrfAppManager) {
 		$this->gwInfoManager = $gwInfoManager;
 		$this->iqrfAppManager = $iqrfAppManager;
 	}
 
+	/**
+	 * Render default page
+	 */
 	public function renderDefault() {
 		$this->onlyForAdmins();
 		$this->template->ipAddresses = $this->gwInfoManager->getIpAddresses();

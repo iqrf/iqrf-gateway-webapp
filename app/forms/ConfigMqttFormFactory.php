@@ -18,10 +18,10 @@
 
 namespace App\Forms;
 
+use App\Forms\FormFactory;
 use App\Model\ConfigManager;
 use App\Model\ConfigParser;
 use App\Presenters\ConfigPresenter;
-
 use Nette;
 use Nette\Application\UI\Form;
 
@@ -47,6 +47,12 @@ class ConfigMqttFormFactory {
 	 */
 	private $factory;
 
+	/**
+	 * Constructor
+	 * @param FormFactory $factory
+	 * @param ConfigManager $configManager
+	 * @param ConfigParser $configParser
+	 */
 	public function __construct(FormFactory $factory, ConfigManager $configManager, ConfigParser $configParser) {
 		$this->factory = $factory;
 		$this->configManager = $configManager;
@@ -92,7 +98,6 @@ class ConfigMqttFormFactory {
 			$this->configManager->saveInstances($fileName, $values, $id);
 			$presenter->redirect('Config:mqtt', ['id' => null]);
 		};
-
 		return $form;
 	}
 

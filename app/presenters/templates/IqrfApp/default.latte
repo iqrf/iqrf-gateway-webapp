@@ -39,16 +39,16 @@
 							<table class="table table-striped">
 								<tr>
 									<th></th>
-									{for $i = 0; $i <20; $i++}
+										{for $i = 0; $i <20; $i++}
 										<th>{$i|padLeft:2, '0'}</th>
-									{/for}
+										{/for}
 								</tr>
 								{foreach $packet as $key => $value}
 									<tr>
 										<th>{$key * 20}</th>
-										{foreach $value as $status}
-											<td><span class="glyphicon glyphicon-{$status ? ok : remove}" style="color: {$status ? green : red}" aria-hidden="true"></span></td>
-										{/foreach}
+											{foreach $value as $status}
+												<td><span class="glyphicon glyphicon-{$status ? ok : remove}" style="color: {$status ? green : red}" aria-hidden="true"></span></td>
+											{/foreach}
 
 									</tr>
                                                                 {/foreach}

@@ -26,7 +26,10 @@ use Nette\Application\UI\Presenter;
  */
 abstract class BasePresenter extends Presenter {
 
-	/** @persistent */
+	/**
+	 * @persistent
+	 * @var string
+	 */
 	public $lang;
 
 	/** @var Gettext */
@@ -42,6 +45,7 @@ abstract class BasePresenter extends Presenter {
 	}
 
 	/**
+	 * Inject translator service
 	 * @param Gettext
 	 */
 	public function injectTranslator(Gettext $translator) {

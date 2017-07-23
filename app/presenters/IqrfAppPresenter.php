@@ -46,13 +46,18 @@ class IqrfAppPresenter extends BasePresenter {
 	private $iqrfMacroManager;
 
 	/**
+	 * Constructor
 	 * @param IqrfAppManager $iqrfAppManager
+	 * @param IqrfMacroManager $iqrfMacroManager
 	 */
 	public function __construct(IqrfAppManager $iqrfAppManager, IqrfMacroManager $iqrfMacroManager) {
 		$this->iqrfAppManager = $iqrfAppManager;
 		$this->iqrfMacroManager = $iqrfMacroManager;
 	}
 
+	/**
+	 * Render default page
+	 */
 	public function renderDefault() {
 		if (!$this->user->isLoggedIn()) {
 			$this->redirect('Sign:in');
@@ -60,12 +65,20 @@ class IqrfAppPresenter extends BasePresenter {
 		$this->template->macros = $this->iqrfMacroManager->read();
 	}
 
+	/**
+	 * AJAX handler for showing DPA response
+	 * @param string $response DPA response
+	 */
 	public function handleShowResponse($response) {
 		$this->template->response = $response;
 		$this->template->parsedResponse = $this->iqrfAppManager->parseResponse($response);
 		$this->redrawControl('responseChange');
 	}
 
+	/**
+	 * Create send raw DPA packet form
+	 * @return \Nette\Application\UI\Form
+	 */
 	protected function createComponentIqrfAppSendRawForm() {
 		if (!$this->user->isLoggedIn()) {
 			$this->redirect('Sign:in');

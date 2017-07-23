@@ -39,6 +39,11 @@ class FormFactory {
 	 */
 	private $translator;
 
+	/**
+	 * Constructor
+	 * @param Gettext $translator
+	 * @param IFormFactory $iFormFactory
+	 */
 	public function __construct(Gettext $translator, IFormFactory $iFormFactory) {
 		$this->iFormFactory = $iFormFactory;
 		$this->translator = $translator;

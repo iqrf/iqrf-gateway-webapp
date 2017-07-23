@@ -18,6 +18,7 @@
 
 namespace App\Forms;
 
+use App\Forms\FormFactory;
 use Nette;
 use Nette\Application\UI\Form;
 use Nette\Security\AuthenticationException;
@@ -33,6 +34,11 @@ class SignInFormFactory {
 	/** @var User */
 	private $user;
 
+	/**
+	 * Constructor
+	 * @param FormFactory $factory
+	 * @param User $user
+	 */
 	public function __construct(FormFactory $factory, User $user) {
 		$this->factory = $factory;
 		$this->user = $user;
@@ -60,7 +66,6 @@ class SignInFormFactory {
 			}
 			$onSuccess();
 		};
-
 		return $form;
 	}
 

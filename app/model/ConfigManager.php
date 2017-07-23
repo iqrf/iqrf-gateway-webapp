@@ -33,6 +33,7 @@ class ConfigManager {
 	 * @inject
 	 */
 	private $configDir;
+
 	/**
 	 * @var ConfigParser
 	 * @inject
