@@ -35,26 +35,22 @@
 				<div class='panel-body'>
 					{foreach $parsedResponse as $type => $packet}
 						{if $type === 'DiscoveredNodes' || $type === 'BondedNodes'}
-							<h3>{$type}</h3>
+							<h3>{_$type}</h3>
 							<table class="table table-striped">
 								<tr>
 									<th></th>
-										{for $i = 0; $i <20; $i++}
-										<th>{$i|padLeft:2, '0'}</th>
-										{/for}
+									<th n:for="$i = 0; $i <20; $i++">{$i|padLeft:2, '0'}</th>
 								</tr>
-								{foreach $packet as $key => $value}
-									<tr>
-										<th>{$key * 20}</th>
-											{foreach $value as $status}
-												<td><span class="glyphicon glyphicon-{$status ? ok : remove}" style="color: {$status ? green : red}" aria-hidden="true"></span></td>
-											{/foreach}
+								<tr n:foreach="$packet as $key => $value">
+									<th>{$key * 20}</th>
+									<td n:foreach="$value as $status">
+										<span class="glyphicon glyphicon-{$status ? ok : remove}" style="color: {$status ? green : red}" aria-hidden="true"></span>
+									</td>
 
-									</tr>
-                                                                {/foreach}
+								</tr>
 							</table>
 						{else}
-							<p><strong>{_$key}:</strong> {$value}</p>
+							<p><strong>{_$type}:</strong> {$packet}</p>
 						{/if}
 					{/foreach}
 				</div>

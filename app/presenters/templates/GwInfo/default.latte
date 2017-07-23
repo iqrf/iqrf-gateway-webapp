@@ -22,17 +22,13 @@
 			<tr>
 				<th>{_"IP addresses"}</th>
 				<td>
-					{foreach $ipAddresses as $ipAddress}
-						<p>{$ipAddress}</p>
-					{/foreach}
+					<p n:foreach="$ipAddresses as $ipAddress">{$ipAddress}</p>
 				</td>
 			</tr>
 			<tr>
 				<th>{_"MAC addresses"}</th>
 				<td>
-					{foreach $macAddresses as $interface =>$macAddress}
-						<p><strong>{$interface}:</strong> {$macAddress}</p>
-					{/foreach}
+					<p n:foreach="$macAddresses as $interface => $macAddress"><strong>{$interface}:</strong> {$macAddress}</p>
 				</td>
 			</tr>
 			<tr>
