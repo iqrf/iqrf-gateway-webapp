@@ -63,7 +63,7 @@ class ConfigSchedulerFormFactory {
 		$fileName = 'Scheduler';
 		$json = $this->configManager->read($fileName);
 		$defaults = $this->configParser->schedulerToForm($json, $id);
-		foreach ($defaults as $key => $value) {
+		foreach (array_keys($defaults) as $key) {
 			if ($key === 'sensors') {
 				$form->addTextArea($key, $key);
 			} elseif ($key === 'timeout') {
