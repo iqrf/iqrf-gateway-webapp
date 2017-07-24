@@ -57,7 +57,7 @@ class IqrfAppSendRawFormFactory {
 	 */
 	public function create(IqrfAppPresenter $presenter) {
 		$form = $this->factory->create();
-		$form->addText('packet', 'Raw IQRF packet');
+		$form->addText('packet', 'Raw IQRF packet')->setRequired();
 		$form->addSubmit('send', 'Send');
 		$form->addProtection('Timeout expired, resubmit the form.');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {

@@ -58,8 +58,8 @@ class ConfigIqrfAppFormFactory {
 	public function create(ConfigPresenter $presenter) {
 		$form = $this->factory->create();
 		$json = $this->configManager->read('iqrfapp');
-		$form->addText('LocalMqName', 'LocalMqName');
-		$form->addText('RemoteMqName', 'RemoteMqName');
+		$form->addText('LocalMqName', 'LocalMqName')->setRequired();
+		$form->addText('RemoteMqName', 'RemoteMqName')->setRequired();
 		$form->addSubmit('save', 'Save');
 		$form->setDefaults($json);
 		$form->addProtection('Timeout expired, resubmit the form.');

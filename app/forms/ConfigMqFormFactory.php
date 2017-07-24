@@ -68,10 +68,10 @@ class ConfigMqFormFactory {
 		$form = $this->factory->create();
 		$fileName = 'MqMessaging';
 		$json = $this->configManager->read($fileName);
-		$form->addText('Name', 'Name');
+		$form->addText('Name', 'Name')->setRequired();
 		$form->addCheckbox('Enabled', 'Enabled');
-		$form->addText('LocalMqName', 'LocalMqName');
-		$form->addText('RemoteMqName', 'RemoteMqName');
+		$form->addText('LocalMqName', 'LocalMqName')->setRequired();
+		$form->addText('RemoteMqName', 'RemoteMqName')->setRequired();
 		$form->addSubmit('save', 'Save');
 		$form->setDefaults($this->configParser->instancesToForm($json));
 		$form->addProtection('Timeout expired, resubmit the form.');

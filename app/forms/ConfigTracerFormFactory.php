@@ -57,7 +57,8 @@ class ConfigTracerFormFactory {
 	 */
 	public function create(ConfigPresenter $presenter) {
 		$form = $this->factory->create();
-		$json = $this->configManager->read('TracerFile');
+		$fileName = 'TracerFile';
+		$json = $this->configManager->read($fileName);
 		$items = ['err' => 'Error', 'war' => 'Warning', 'inf' => 'Info', 'dbg' => 'Debug'];
 		$form->addText('TraceFileName', 'TraceFileName');
 		$form->addInteger('TraceFileSize', 'TraceFileSize');
@@ -65,8 +66,8 @@ class ConfigTracerFormFactory {
 		$form->addSubmit('save', 'Save');
 		$form->setDefaults($json);
 		$form->addProtection('Timeout expired, resubmit the form.');
-		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
-			$this->configManager->write('TracerFile', $values);
+		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $fileName) {
+			$this->configManager->write($fileName, $values);
 			$presenter->redirect('Config:default');
 		};
 		return $form;

@@ -70,9 +70,9 @@ class ConfigBaseServiceFormFactory {
 		$fileName = 'BaseService';
 		$json = $this->configManager->read($fileName);
 		$serializers = ['SimpleSerializer' => 'SimpleSerializer', 'JsonSerializer' => 'JsonSerializer'];
-		$form->addText('Name', 'Name');
-		$form->addText('Messaging', 'Messaging');
-		$form->addCheckboxList('Serializers', 'Serializers', $serializers);
+		$form->addText('Name', 'Name')->setRequired();
+		$form->addText('Messaging', 'Messaging')->setRequired();
+		$form->addCheckboxList('Serializers', 'Serializers', $serializers)->setRequired();
 		$form->addSubmit('save', 'Save');
 		$form->setDefaults($this->configParser->baseServiceToForm($json, $id));
 		$form->addProtection('Timeout expired, resubmit the form.');

@@ -68,10 +68,10 @@ class ConfigUdpFormFactory {
 		$form = $this->factory->create();
 		$fileName = 'UdpMessaging';
 		$json = $this->configManager->read($fileName);
-		$form->addText('Name', 'Name');
+		$form->addText('Name', 'Name')->setRequired();
 		$form->addCheckbox('Enabled', 'Enabled');
-		$form->addInteger('RemotePort', 'RemotePort');
-		$form->addInteger('LocalPort', 'LocalPort');
+		$form->addInteger('RemotePort', 'RemotePort')->setRequired();
+		$form->addInteger('LocalPort', 'LocalPort')->setRequired();
 		$form->addSubmit('save', 'Save');
 		$form->setDefaults($this->configParser->instancesToForm($json));
 		$form->addProtection('Timeout expired, resubmit the form.');

@@ -58,8 +58,9 @@ class ConfigIqrfFormFactory {
 	public function create(ConfigPresenter $presenter) {
 		$form = $this->factory->create();
 		$json = $this->configManager->read('IqrfInterface');
-		$form->addText('IqrfInterface', 'IqrfInterface');
-		$form->addInteger('DpaHandlerTimeout', 'DpaHandlerTimeout')->addRule(Form::MIN, 'DPA Handler timeout must be bigger than 0.', 0);
+		$form->addText('IqrfInterface', 'IqrfInterface')->setRequired();
+		$form->addInteger('DpaHandlerTimeout', 'DpaHandlerTimeout')->setRequired()
+			->addRule(Form::MIN, 'DPA Handler timeout must be bigger than 0.', 0);
 		$form->addSubmit('save', 'Save');
 		$form->setDefaults($json);
 		$form->addProtection('Timeout expired, resubmit the form.');
