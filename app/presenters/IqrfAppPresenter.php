@@ -59,27 +59,21 @@ class IqrfAppPresenter extends BasePresenter {
 	 * Render default page
 	 */
 	public function renderDefault() {
-		if (!$this->user->isLoggedIn()) {
-			$this->redirect('Sign:in');
-		}
+		$this->onlyForAdmins();
 	}
 
 	/**
 	 * Render change operational mode page
 	 */
 	public function renderChangeMode() {
-		if (!$this->user->isLoggedIn()) {
-			$this->redirect('Sign:in');
-		}
+		$this->onlyForAdmins();
 	}
 
 	/**
 	 * Render send raw DPA packet page
 	 */
 	public function renderSendRaw() {
-		if (!$this->user->isLoggedIn()) {
-			$this->redirect('Sign:in');
-		}
+		$this->onlyForAdmins();
 		$this->template->macros = $this->iqrfMacroManager->read();
 	}
 
@@ -134,9 +128,7 @@ class IqrfAppPresenter extends BasePresenter {
 	 * @return \Nette\Application\UI\Form
 	 */
 	protected function createComponentIqrfAppSendRawForm() {
-		if (!$this->user->isLoggedIn()) {
-			$this->redirect('Sign:in');
-		}
+		$this->onlyForAdmins();
 		return $this->iqrfAppSendRawFactory->create($this);
 	}
 
