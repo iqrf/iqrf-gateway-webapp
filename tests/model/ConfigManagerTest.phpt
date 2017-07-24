@@ -34,6 +34,7 @@ class ConfigManagerTest extends TestCase {
 			'Configuration' => 'v0.0',
 			'ConfigurationDir' => 'configuration',
 			'WatchDogTimeoutMilis' => 10000,
+			'Mode' => 'operational',
 			'Components' => [
 				[
 					"ComponentName" => "TracerFile",
