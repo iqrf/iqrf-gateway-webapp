@@ -15,7 +15,13 @@
 *}
 
 {block content}
-<h1 n:block=title>{_"Components"}</h1>
+<h1 n:block=title>{_"Main configuration"}</h1>
+<div class='panel panel-default'>
+	<div class='panel-body'>
+		{control configMainForm}
+	</div>
+</div>
+<h2>{_"Components"}</h2>
 <div class='panel panel-default'>
 	<div class='panel-body'>
 		{control configComponentsForm}

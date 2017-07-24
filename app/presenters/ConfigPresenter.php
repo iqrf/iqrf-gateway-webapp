@@ -52,6 +52,12 @@ class ConfigPresenter extends BasePresenter {
 	public $iqrfFactory;
 
 	/**
+	 * @var Forms\ConfigMainFormFactory
+	 * @inject
+	 */
+	public $mainFactory;
+
+	/**
 	 * @var Forms\ConfigMqFormFactory
 	 * @inject
 	 */
@@ -188,6 +194,15 @@ class ConfigPresenter extends BasePresenter {
 	protected function createComponentConfigIqrfForm() {
 		$this->onlyForAdmins();
 		return $this->iqrfFactory->create($this);
+	}
+
+	/**
+	 * Create Main daemon settings form
+	 * @return Form Main daemon settings form
+	 */
+	protected function createComponentConfigMainForm() {
+		$this->onlyForAdmins();
+		return $this->mainFactory->create($this);
 	}
 
 	/**

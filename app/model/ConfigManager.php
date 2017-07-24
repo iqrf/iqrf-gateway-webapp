@@ -105,6 +105,16 @@ class ConfigManager {
 	}
 
 	/**
+	 * Save Main daemon configuration
+	 * @param ArrayHash $array Main settings
+	 */
+	public function saveMain(ArrayHash $array) {
+		$fileName = 'config';
+		$json = $this->read($fileName);
+		$this->write($fileName, array_merge($json, (array) $array));
+	}
+
+	/**
 	 * Save scheduler setting
 	 * @param ArrayHash $array Scheduler settings
 	 * @param int $id Scheduler ID
