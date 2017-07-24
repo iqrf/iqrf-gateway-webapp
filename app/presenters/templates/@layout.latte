@@ -57,8 +57,8 @@
 							</ul>
 						</li>
 						<li n:if='$user->loggedIn'><a n:href='Service:default'>{_"Service"}</a></li>
-						<li n:if='$user->loggedIn'>
-							<a n:href='IqrfApp:default'>{_"IQRF App"}</a>
+						<li class='dropdown' n:if='$user->loggedIn'>
+							<a n:href='IqrfApp:default' class="dropdown-toggle" data-toggle="dropdown" role="button">{_"IQRF App"} <span class="caret"></span></a>
 							<ul class="dropdown-menu">
 								<li><a n:href='IqrfApp:sendRaw'>{_"Send Raw IQRF packet"}</a></li>
 								<li><a n:href='IqrfApp:changeMode'>{_"Change IQRF Daemon mode"}</a></li>
