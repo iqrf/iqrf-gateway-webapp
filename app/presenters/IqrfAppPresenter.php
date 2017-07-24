@@ -62,7 +62,61 @@ class IqrfAppPresenter extends BasePresenter {
 		if (!$this->user->isLoggedIn()) {
 			$this->redirect('Sign:in');
 		}
+	}
+
+	/**
+	 * Render change operational mode page
+	 */
+	public function renderChangeMode() {
+		if (!$this->user->isLoggedIn()) {
+			$this->redirect('Sign:in');
+		}
+	}
+
+	/**
+	 * Render send raw DPA packet page
+	 */
+	public function renderSendRaw() {
+		if (!$this->user->isLoggedIn()) {
+			$this->redirect('Sign:in');
+		}
 		$this->template->macros = $this->iqrfMacroManager->read();
+	}
+
+	/**
+	 * Change IQRF Daemon mode to Forwarding mode
+	 */
+	public function actionModeForwarding() {
+		$this->onlyForAdmins();
+		$mode = 'forwarding';
+		$this->iqrfAppManager->changeOperationMode($mode);
+		$this->flashMessage('IQRF Daemon mode has been been changed to ' . $mode . ' mode.', 'info');
+		$this->redirect('IqrfApp:changeMode');
+		$this->setView('changeMode');
+	}
+
+	/**
+	 * Change IQRF Daemon mode to Operational mode
+	 */
+	public function actionModeOperational() {
+		$this->onlyForAdmins();
+		$mode = 'operational';
+		$this->iqrfAppManager->changeOperationMode($mode);
+		$this->flashMessage('IQRF Daemon mode has been been changed to ' . $mode . ' mode.', 'info');
+		$this->redirect('IqrfApp:changeMode');
+		$this->setView('changeMode');
+	}
+
+	/**
+	 * Change IQRF Daemon mode to Service mode
+	 */
+	public function actionModeService() {
+		$this->onlyForAdmins();
+		$mode = 'service';
+		$this->iqrfAppManager->changeOperationMode($mode);
+		$this->flashMessage('IQRF Daemon mode has been been changed to ' . $mode . ' mode.', 'info');
+		$this->redirect('IqrfApp:changeMode');
+		$this->setView('changeMode');
 	}
 
 	/**

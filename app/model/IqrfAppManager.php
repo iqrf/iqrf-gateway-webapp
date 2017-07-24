@@ -49,6 +49,19 @@ class IqrfAppManager {
 	}
 
 	/**
+	 * Change iqrf-daemon operation mode
+	 * @param string $mode iqrf-daemon operation mode
+	 * @return string
+	 */
+	public function changeOperationMode($mode) {
+		$modes = ['forwarding', 'operational', 'service'];
+		if (in_array($mode, $modes, true)) {
+			$cmd = 'iqrfapp "{\"ctype\": \"conf\",\"type\": \"mode\",\"cmd\": \"' . $mode . '\"}"';
+			return $this->commandManager->send($cmd, true);
+		}
+	}
+
+	/**
 	 * Validate raw IQRF packet
 	 * @param string $packet Raw IQRF packet
 	 * @return bool Status

@@ -15,57 +15,14 @@
 *}
 
 {block content}
-<h1 n:block=title>{_"Send raw IQRF packet"}</h1>
-<div class='panel panel-default'>
-	<div class='panel-body'>
-		{control iqrfAppSendRawForm}
-	</div>
-</div>
-{ifset $response}
-	{snippet responseChange}
-		<h2>{_"Response"}</h2>
-		<div class='panel panel-default'>
-			<div class='panel-body'>
-				{$response|breaklines}
-			</div>
-		</div>
-		{ifset $parsedResponse}
-			<h2>{_"Parsed response"}</h2>
-			<div class='panel panel-default'>
-				<div class='panel-body'>
-					{foreach $parsedResponse as $type => $packet}
-						{if $type === 'DiscoveredNodes' || $type === 'BondedNodes'}
-							<h3>{_$type}</h3>
-							<table class="table table-striped">
-								<tr>
-									<th></th>
-									<th n:for="$i = 0; $i <20; $i++">{$i|padLeft:2, '0'}</th>
-								</tr>
-								<tr n:foreach="$packet as $key => $value">
-									<th>{$key * 20}</th>
-									<td n:foreach="$value as $status">
-										<span class="glyphicon glyphicon-{$status ? ok : remove}" style="color: {$status ? green : red}" aria-hidden="true"></span>
-									</td>
-
-								</tr>
-							</table>
-						{else}
-							<p><strong>{_$type}:</strong> {$packet}</p>
-						{/if}
-					{/foreach}
-				</div>
-			</div>
-		{/ifset}
-	{/snippet}
-{/ifset}
-<h2>{_"Macros"}</h2>
-<div class='panel panel-default'>
-	<div class='panel-body'>
-		{foreach $macros as $macro}
-			<h3>{$macro['Name']}</h3>
-			{foreach $macro['Macros'] as $item}
-				<a n:if="$item['Enabled']" class="btn btn-default" role="button" onclick="document.getElementById('frm-iqrfAppSendRawForm-packet').value ={$item['Packet']}">{$item['Name']}</a>
-			{/foreach}
-		{/foreach}
-	</div>
+<h1 n:block=title>{_"IQRF App"}</h1>
+<div class='list-group'>
+	<a n:href='IqrfApp:sendRaw' class='list-group-item'>
+		<header class='list-group-item-heading'>{_"Send Raw IQRF packet"}</header>
+		<p class='list-group-item-text'>{_"Send Raw IQRF packet."}</p>
+	</a>
+	<a n:href='IqrfApp:changeMode' class='list-group-item'>
+		<header class='list-group-item-heading'>{_"Change IQRF Daemon mode"}</header>
+		<p class='list-group-item-text'>{_"Change IQRF Daemon mode."}</p>
+	</a>
 </div>

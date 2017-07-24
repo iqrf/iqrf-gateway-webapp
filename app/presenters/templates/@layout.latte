@@ -57,7 +57,13 @@
 							</ul>
 						</li>
 						<li n:if='$user->loggedIn'><a n:href='Service:default'>{_"Service"}</a></li>
-						<li n:if='$user->loggedIn'><a n:href='IqrfApp:default'>{_"IQRF App"}</a></li>
+						<li n:if='$user->loggedIn'>
+							<a n:href='IqrfApp:default'>{_"IQRF App"}</a>
+							<ul class="dropdown-menu">
+								<li><a n:href='IqrfApp:sendRaw'>{_"Send Raw IQRF packet"}</a></li>
+								<li><a n:href='IqrfApp:changeMode'>{_"Change IQRF Daemon mode"}</a></li>
+							</ul>
+						</li>
 					</ul>
 					<ul class='nav navbar-nav navbar-right'>
 						<li>
