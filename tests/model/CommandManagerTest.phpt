@@ -5,6 +5,9 @@
  * @phpVersion >= 5.6
  * @testCase
  */
+
+namespace Test\Model;
+
 use App\Model\CommandManager;
 use Nette\DI\Container;
 use Tester\Assert;

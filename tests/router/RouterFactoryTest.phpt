@@ -5,8 +5,12 @@
  * @phpVersion >= 5.6
  * @testCase
  */
+
+namespace Test\Router;
+
 use App\RouterFactory;
-use Nette\Application\Routers;
+use Nette\Application\Routers\Route;
+use Nette\Application\Routers\RouteList;
 use Nette\DI\Container;
 use Tester\Assert;
 use Tester\TestCase;
@@ -26,13 +30,13 @@ class RouterFactoryTest extends TestCase {
 	 * Test function to create a router
 	 */
 	public function testCreateRouter() {
-		/** @var Routers\RouteList $routeList */
+		/** @var RouteList $routeList */
 		$routeList = RouterFactory::createRouter();
-		Assert::type(Routers\RouteList::class, $routeList);
+		Assert::type(RouteList::class, $routeList);
 		Assert::same('', $routeList->getModule());
-		Assert::same(['[<lang [a-z]{2}>/]<presenter>/<action>[/<id>]'], array_map(function (Routers\Route $route) {
-					return $route->getMask();
-				}, (array) $routeList->getIterator()));
+		Assert::same(['[<lang [a-z]{2}>/]<presenter>/<action>[/<id>]'], array_map(function (Route $route) {
+				return $route->getMask();
+			}, (array) $routeList->getIterator()));
 	}
 
 }

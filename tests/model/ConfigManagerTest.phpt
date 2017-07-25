@@ -5,6 +5,9 @@
  * @phpVersion >= 5.6
  * @testCase
  */
+
+namespace Test\Model;
+
 use App\Model\ConfigManager;
 use App\Model\ConfigParser;
 use Nette\DI\Container;

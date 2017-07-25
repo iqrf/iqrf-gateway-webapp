@@ -5,6 +5,9 @@
  * @phpVersion >= 5.6
  * @testCase
  */
+
+namespace Test\Model;
+
 use App\Model\CommandManager;
 use App\Model\IqrfAppManager;
 use Nette\DI\Container;
