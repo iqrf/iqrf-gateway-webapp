@@ -43,7 +43,7 @@ class CommandManager {
 	 * Execute shell command and return output
 	 * @param string $cmd Command to execute
 	 * @param bool $needSudo
-	 * @return Output
+	 * @return string Output
 	 */
 	public function send($cmd, $needSudo = false) {
 		$command = $this->sudo && $needSudo ? 'sudo ' : '';

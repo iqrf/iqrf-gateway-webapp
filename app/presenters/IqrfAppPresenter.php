@@ -21,6 +21,7 @@ namespace App\Presenters;
 use App\Forms;
 use App\Model\IqrfAppManager;
 use App\Model\IqrfMacroManager;
+use Nette\Application\UI\Form;
 
 /**
  * Service presenter
@@ -84,7 +85,7 @@ class IqrfAppPresenter extends BasePresenter {
 		$this->onlyForAdmins();
 		$mode = 'forwarding';
 		$this->iqrfAppManager->changeOperationMode($mode);
-		$this->flashMessage('IQRF Daemon mode has been been changed to ' . $mode . ' mode.', 'info');
+		$this->flashMessage('IQRF Daemon mode has been changed to ' . $mode . ' mode.', 'info');
 		$this->redirect('IqrfApp:changeMode');
 		$this->setView('changeMode');
 	}
@@ -96,7 +97,7 @@ class IqrfAppPresenter extends BasePresenter {
 		$this->onlyForAdmins();
 		$mode = 'operational';
 		$this->iqrfAppManager->changeOperationMode($mode);
-		$this->flashMessage('IQRF Daemon mode has been been changed to ' . $mode . ' mode.', 'info');
+		$this->flashMessage('IQRF Daemon mode has been changed to ' . $mode . ' mode.', 'info');
 		$this->redirect('IqrfApp:changeMode');
 		$this->setView('changeMode');
 	}
@@ -108,7 +109,7 @@ class IqrfAppPresenter extends BasePresenter {
 		$this->onlyForAdmins();
 		$mode = 'service';
 		$this->iqrfAppManager->changeOperationMode($mode);
-		$this->flashMessage('IQRF Daemon mode has been been changed to ' . $mode . ' mode.', 'info');
+		$this->flashMessage('IQRF Daemon mode has been changed to ' . $mode . ' mode.', 'info');
 		$this->redirect('IqrfApp:changeMode');
 		$this->setView('changeMode');
 	}
@@ -125,7 +126,7 @@ class IqrfAppPresenter extends BasePresenter {
 
 	/**
 	 * Create send raw DPA packet form
-	 * @return \Nette\Application\UI\Form
+	 * @return Form
 	 */
 	protected function createComponentIqrfAppSendRawForm() {
 		$this->onlyForAdmins();

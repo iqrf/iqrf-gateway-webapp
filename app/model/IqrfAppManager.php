@@ -104,7 +104,7 @@ class IqrfAppManager {
 	/**
 	 * Parse response to DPA Coordinator - "Get bonded nodes" and "Get discovered nodes" request
 	 * @param string $packet DPA packet response
-	 * @return Information about DCTR module
+	 * @return string Information about DCTR module
 	 */
 	public function parseCoordinatorGetNodes($packet) {
 		$data = [];
@@ -123,7 +123,7 @@ class IqrfAppManager {
 	/**
 	 * Parse response to DPA OS - "Read info" request
 	 * @param string $packet DPA packet response
-	 * @return Information about DCTR module
+	 * @return string Information about DCTR module
 	 */
 	public function parseOsReadInfo($packet) {
 		$data = [];
