@@ -104,7 +104,11 @@ class ConfigParser {
 	 * @return array Array for form
 	 */
 	public function instancesToForm(array $json, $id = 0) {
-		$data = $json['Instances'][$id];
+		$instances = $json['Instances'];
+		if ($id > count($instances)) {
+			return [];
+		}
+		$data = $instances[$id];
 		$instance = $data['Properties'];
 		$instance['Name'] = $data['Name'];
 		$instance['Enabled'] = $data['Enabled'];
