@@ -55,7 +55,6 @@ class ConfigParser {
 		} else {
 			$service['Properties'] = [];
 		}
-
 		$services['Instances'][$id] = $service;
 		return $services;
 	}

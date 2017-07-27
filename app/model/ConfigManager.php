@@ -71,6 +71,18 @@ class ConfigManager {
 	}
 
 	/**
+	 * Delete Base service setting
+	 * @param int $id Base service ID
+	 */
+	public function deleteBaseService($id) {
+		$fileName = 'BaseService';
+		$json = $this->read($fileName);
+		unset($json['Instances'][$id]);
+		$json['Instances'] = array_values($json['Instances']);
+		$this->write($fileName, $json);
+	}
+
+	/**
 	 * Save Base service setting
 	 * @param ArrayHash $array Base service settings
 	 * @param int $id Base service ID

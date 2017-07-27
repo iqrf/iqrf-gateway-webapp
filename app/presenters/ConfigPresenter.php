@@ -21,6 +21,7 @@ namespace App\Presenters;
 use App\Model\ConfigManager;
 use App\Model\InterfaceManager;
 use App\Forms;
+use Nette\Utils\ArrayHash;
 
 /**
  * Configuration presenter
@@ -158,6 +159,17 @@ class ConfigPresenter extends BasePresenter {
 		if (!$id) {
 			$this->template->tasks = $this->configManager->read('Scheduler')['TasksJson'];
 		}
+	}
+
+	/**
+	 * Delete Base service
+	 * @param int $id
+	 */
+	public function actionBaseServiceDelete($id) {
+		$this->onlyForAdmins();
+		$this->configManager->deleteBaseService($id);
+		$this->redirect('Config:baseService', ['id' => null]);
+		$this->setView('baseService');
 	}
 
 	/**
