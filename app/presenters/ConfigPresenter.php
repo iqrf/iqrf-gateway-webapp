@@ -21,7 +21,6 @@ namespace App\Presenters;
 use App\Model\ConfigManager;
 use App\Model\InterfaceManager;
 use App\Forms;
-use Nette\Utils\ArrayHash;
 
 /**
  * Configuration presenter
@@ -170,6 +169,28 @@ class ConfigPresenter extends BasePresenter {
 		$this->configManager->deleteBaseService($id);
 		$this->redirect('Config:baseService', ['id' => null]);
 		$this->setView('baseService');
+	}
+
+	/**
+	 * Delete MQTT interface
+	 * @param int $id
+	 */
+	public function actionMqttDelete($id) {
+		$this->onlyForAdmins();
+		$this->configManager->deleteInstances('MqttMessaging' ,$id);
+		$this->redirect('Config:mqtt', ['id' => null]);
+		$this->setView('mqtt');
+	}
+
+	/**
+	 * Delete Scheduler task
+	 * @param int $id
+	 */
+	public function actionSchedulerDelete($id) {
+		$this->onlyForAdmins();
+		$this->configManager->deleteScheduler($id);
+		$this->redirect('Config:scheduler', ['id' => null]);
+		$this->setView('scheduler');
 	}
 
 	/**

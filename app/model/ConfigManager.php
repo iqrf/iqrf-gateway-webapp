@@ -83,6 +83,30 @@ class ConfigManager {
 	}
 
 	/**
+	 * Delete Instances setting
+	 * @param string $fileName File name (without .json)
+	 * @param int $id Instance ID
+	 */
+	public function deleteInstances($fileName, $id) {
+		$json = $this->read($fileName);
+		unset($json['Instances'][$id]);
+		$json['Instances'] = array_values($json['Instances']);
+		$this->write($fileName, $json);
+	}
+
+	/**
+	 * Delete scheduler setting
+	 * @param int $id Scheduler ID
+	 */
+	public function deleteScheduler($id) {
+		$fileName = 'Scheduler';
+		$json = $this->read($fileName);
+		unset($json['TasksJson'][$id]);
+		$json['TasksJson'] = array_values($json['TasksJson']);
+		$this->write($fileName, $json);
+	}
+
+	/**
 	 * Save Base service setting
 	 * @param ArrayHash $array Base service settings
 	 * @param int $id Base service ID
