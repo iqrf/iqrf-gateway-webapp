@@ -67,7 +67,11 @@ class ConfigParser {
 	 * @return array Array for form
 	 */
 	public function baseServiceToForm(array $json, $id = 0) {
-		$data = $json['Instances'][$id];
+		$instances = $json['Instances'];
+		if ($id > count($instances)) {
+			return [];
+		}
+		$data = $instances[$id];
 		$service = [];
 		$service['Name'] = $data['Name'];
 		$service['Messaging'] = $data['Messaging'];
