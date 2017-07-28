@@ -27,10 +27,10 @@ class ConfigParser {
 
 	/**
 	 * Convert array from Components configuration form to JSON
-	 * @param array $components Components configuration form array
+	 * @param ArrayHash $components Components configuration form array
 	 * @return array JSON array
 	 */
-	public function componentsToJson($components) {
+	public function componentsToJson(ArrayHash $components) {
 		$array = [];
 		foreach ($components as $component => $enabled) {
 			array_push($array, ['ComponentName' => $component, 'Enabled' => $enabled]);

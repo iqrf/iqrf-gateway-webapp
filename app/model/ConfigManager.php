@@ -119,9 +119,9 @@ class ConfigManager {
 
 	/**
 	 * Save components setting
-	 * @param array $components Components settings
+	 * @param ArrayHash $components Components settings
 	 */
-	public function saveComponents($components) {
+	public function saveComponents(ArrayHash $components) {
 		$fileName = 'config';
 		$json = $this->read($fileName);
 		$json['Components'] = $this->configParser->componentsToJson($components);
