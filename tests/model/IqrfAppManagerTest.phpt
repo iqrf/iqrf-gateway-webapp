@@ -109,10 +109,10 @@ class IqrfAppManagerTest extends TestCase {
 		$arrayIoTKitSe = $iqrfAppManager->parseResponse($packetIoTKitSe);
 		Assert::null($arrayIoTKitSe);
 		$packetEmpty0 = 'raw STATUS_NO_ERROR';
-		$arrayEmpty0 = $iqrfAppManager->parseResponse($packetEmpty);
+		$arrayEmpty0 = $iqrfAppManager->parseResponse($packetEmpty0);
 		Assert::null($arrayEmpty0);
 		$packetEmpty1 = 'raw  STATUS_NO_ERROR';
-		$arrayEmpty1 = $iqrfAppManager->parseResponse($packetEmpty);
+		$arrayEmpty1 = $iqrfAppManager->parseResponse($packetEmpty1);
 		Assert::null($arrayEmpty1);
 	}
 
@@ -180,6 +180,28 @@ class IqrfAppManagerTest extends TestCase {
 			'SlotLimits' => 'f0',
 		];
 		Assert::equal($expected, $array);
+	}
+
+	/**
+	 * @test
+	 * Test function to change iqrf-daemon operation mode
+	 */
+	public function testChangeOperationMode() {
+		$modesSuccess = ['forwarding', 'operational', 'service'];
+		$outputSuccess = [
+			'iqrfapp "{\"ctype\": \"conf\",\"type\": \"mode\",\"cmd\": \"forwarding\"}"',
+			'iqrfapp "{\"ctype\": \"conf\",\"type\": \"mode\",\"cmd\": \"operational\"}"',
+			'iqrfapp "{\"ctype\": \"conf\",\"type\": \"mode\",\"cmd\": \"service\"}"'
+		];
+		$commandManager = \Mockery::mock('App\Model\CommandManager');
+		foreach ($outputSuccess as $output) {
+			$commandManager->shouldReceive('send')->with($output, true)->andReturn(true);
+		}
+		$iqrfAppManager = new IqrfAppManager($commandManager);
+		foreach ($modesSuccess as $mode) {
+			Assert::true($iqrfAppManager->changeOperationMode($mode));
+		}
+		Assert::null($iqrfAppManager->changeOperationMode('invalid'));
 	}
 
 	/**
