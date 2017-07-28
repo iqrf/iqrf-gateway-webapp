@@ -44,6 +44,7 @@ class ConfigParserTest extends TestCase {
 
 		$json = Json::decode(FileSystem::read(__DIR__ . '/../configuration/BaseService.json'), Json::FORCE_ARRAY);
 		Assert::equal($expected, $configParser->baseServiceToForm($json, 0));
+		Assert::equal([], $configParser->baseServiceToForm($json, 10));
 	}
 
 	/**
@@ -53,7 +54,8 @@ class ConfigParserTest extends TestCase {
 	public function testBaseServiceToJson() {
 		$path = __DIR__ . '/../configuration/';
 		$configParser = new ConfigParser($path);
-		$updateArray = [
+		$json = Json::decode(FileSystem::read(__DIR__ . '/../configuration/BaseService.json'), Json::FORCE_ARRAY);
+		$update = [
 			"Name" => "BaseServiceForMQ1",
 			"Messaging" => "MqMessaging",
 			"Serializers" => [
@@ -63,11 +65,12 @@ class ConfigParserTest extends TestCase {
 			"Properties" => [
 			]
 		];
-		$json = Json::decode(FileSystem::read(__DIR__ . '/../configuration/BaseService.json'), Json::FORCE_ARRAY);
 		$expected = $json;
 		$expected['Instances'][0]['Name'] = 'BaseServiceForMQ1';
-		$update = ArrayHash::from($updateArray);
-		Assert::equal($expected, $configParser->baseServiceToJson($json, $update, 0));
+		Assert::equal($expected, $configParser->baseServiceToJson($json, ArrayHash::from($update), 0));
+		unset($update['Properties']);
+		$expected['Instances'][0]['Properties'] = [];
+		Assert::equal($expected, $configParser->baseServiceToJson($json, ArrayHash::from($update), 0));
 	}
 
 	/**
@@ -78,7 +81,7 @@ class ConfigParserTest extends TestCase {
 		$path = __DIR__ . '/../configuration/';
 		$configParser = new ConfigParser($path);
 		$instances = Json::decode(FileSystem::read(__DIR__ . '/../configuration/MqttMessaging.json'), Json::FORCE_ARRAY)['Instances'];
-		$updateArray = [
+		$update = [
 			"Name" => "MqttMessaging2",
 			"Enabled" => false,
 			"BrokerAddr" => "tcp://iot.eclipse.org:1883",
@@ -94,66 +97,16 @@ class ConfigParserTest extends TestCase {
 			"ConnectTimeout" => 5,
 			"MinReconnect" => 1,
 			"MaxReconnect" => 64,
-			"TrustStore" => "/etc/letsencrypt/live/mqtt.example.com/chain.pem",
-			"KeyStore" => "/etc/letsencrypt/live/mqtt.example.com/cert.pem",
-			"PrivateKey" => "/etc/letsencrypt/live/mqtt.example.com/privkey.pem",
+			"TrustStore" => "server-ca.crt",
+			"KeyStore" => "client.pem",
+			"PrivateKey" => "client-privatekey.pem",
 			"PrivateKeyPassword" => "",
 			"EnabledCipherSuites" => "",
 			"EnableServerCertAuth" => true
 		];
-		$expected = [
-			[
-				"Name" => "MqttMessaging1",
-				"Enabled" => true,
-				"Properties" => [
-					"BrokerAddr" => "tcp://127.0.0.1:1883",
-					"ClientId" => "IqrfDpaMessaging1",
-					"Persistence" => 1,
-					"Qos" => 1,
-					"TopicRequest" => "Iqrf/DpaRequest",
-					"TopicResponse" => "Iqrf/DpaResponse",
-					"User" => "",
-					"Password" => "",
-					"EnabledSSL" => false,
-					"KeepAliveInterval" => 20,
-					"ConnectTimeout" => 5,
-					"MinReconnect" => 1,
-					"MaxReconnect" => 64,
-					"TrustStore" => "server-ca.crt",
-					"KeyStore" => "client.pem",
-					"PrivateKey" => "client-privatekey.pem",
-					"PrivateKeyPassword" => "",
-					"EnabledCipherSuites" => "",
-					"EnableServerCertAuth" => true
-				]
-			], [
-				"Name" => "MqttMessaging2",
-				"Enabled" => false,
-				"Properties" => [
-					"BrokerAddr" => "tcp://iot.eclipse.org:1883",
-					"ClientId" => "IqrfDpaMessaging2",
-					"Persistence" => 1,
-					"Qos" => 1,
-					"TopicRequest" => "Iqrf/DpaRequest",
-					"TopicResponse" => "Iqrf/DpaResponse",
-					"User" => "",
-					"Password" => "",
-					"EnabledSSL" => true,
-					"KeepAliveInterval" => 20,
-					"ConnectTimeout" => 5,
-					"MinReconnect" => 1,
-					"MaxReconnect" => 64,
-					"TrustStore" => "/etc/letsencrypt/live/mqtt.example.com/chain.pem",
-					"KeyStore" => "/etc/letsencrypt/live/mqtt.example.com/cert.pem",
-					"PrivateKey" => "/etc/letsencrypt/live/mqtt.example.com/privkey.pem",
-					"PrivateKeyPassword" => "",
-					"EnabledCipherSuites" => "",
-					"EnableServerCertAuth" => true
-				]
-			]
-		];
-		$update = ArrayHash::from($updateArray);
-		Assert::equal($expected, $configParser->instancesToJson($instances, $update, 1));
+		$expected = $instances;
+		$expected[1]['Properties']['EnabledSSL'] = true;
+		Assert::equal($expected, $configParser->instancesToJson($instances, ArrayHash::from($update), 1));
 	}
 
 	/**
@@ -188,6 +141,7 @@ class ConfigParserTest extends TestCase {
 		];
 		$json = Json::decode(FileSystem::read(__DIR__ . '/../configuration/MqttMessaging.json'), Json::FORCE_ARRAY);
 		Assert::equal($expected, $configParser->instancesToForm($json, 1));
+		Assert::equal([], $configParser->instancesToForm($json, 10));
 	}
 
 	/**
@@ -231,6 +185,7 @@ class ConfigParserTest extends TestCase {
 		];
 		$json = Json::decode(FileSystem::read(__DIR__ . '/../configuration/Scheduler.json'), Json::FORCE_ARRAY);
 		Assert::equal($expected, $configParser->schedulerToForm($json, 0));
+		Assert::equal([], $configParser->schedulerToForm($json, 10));
 	}
 
 	/**

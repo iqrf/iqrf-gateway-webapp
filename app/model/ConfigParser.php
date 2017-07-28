@@ -144,7 +144,11 @@ class ConfigParser {
 	 * @return array Array for form
 	 */
 	public function schedulerToForm(array $json, $id = 0) {
-		$data = $json['TasksJson'][$id];
+		$tasks = $json['TasksJson'];
+		if ($id > count($tasks)) {
+			return [];
+		}
+		$data = $tasks[$id];
 		$scheduler = [];
 		$scheduler['time'] = $data['time'];
 		$scheduler['service'] = $data['service'];
