@@ -29,10 +29,11 @@ class GwInfoManagerTest extends TestCase {
 	 */
 	public function testGetIpAddresses() {
 		$commandManager = \Mockery::mock('App\Model\CommandManager');
-		$output = '192.168.1.100 fda9:d95:d5b1::64';
-		$commandManager->shouldReceive('send')->with('hostname -I')->andReturn($output);
+		$commandManager->shouldReceive('send')->with("ls /sys/class/net | awk '{ print $0 }'", true)->andReturn('eth0' . PHP_EOL . 'lo');
+		$cmd = 'ip a s eth0 | grep inet | grep global | awk \'{print $2}\'';
+		$commandManager->shouldReceive('send')->with($cmd, true)->andReturn('192.168.1.100' . PHP_EOL . 'fda9:d95:d5b1::64');
 		$gwInfoManager = new GwInfoManager($commandManager);
-		Assert::same(['192.168.1.100', 'fda9:d95:d5b1::64'], $gwInfoManager->getIpAddresses());
+		Assert::same(['eth0' => ['192.168.1.100', 'fda9:d95:d5b1::64']], $gwInfoManager->getIpAddresses());
 	}
 
 	/**

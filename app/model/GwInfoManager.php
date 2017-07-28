@@ -44,8 +44,16 @@ class GwInfoManager {
 	 * @return array IPv4 and IPv6 addresses
 	 */
 	public function getIpAddresses() {
-		$cmd = 'hostname -I';
-		return explode(' ', $this->commandManager->send($cmd));
+		$addresses = [];
+		$lsInterfaces = $this->commandManager->send("ls /sys/class/net | awk '{ print $0 }'", true);
+		$interfaces = explode(PHP_EOL, $lsInterfaces);
+		foreach ($interfaces as $interface) {
+			if ($interface !== 'lo') {
+				$cmd = 'ip a s ' . $interface . ' | grep inet | grep global | awk \'{print $2}\'';
+				$addresses[$interface] = explode(PHP_EOL, $this->commandManager->send($cmd, true));
+			}
+		}
+		return $addresses;
 	}
 
 	/**
