@@ -18,22 +18,30 @@
 <h1 n:block=title>{_"Gateway Info"}</h1>
 <div class='panel panel-default'>
 	<div class='panel-body'>
-		<table class='table'>
+		<table class='table table-striped'>
 			<tr>
 				<th>{_"IP addresses"}</th>
 				<td>
-					{foreach $ipAddresses as $interface => $addresses}
-						<strong>{$interface}:</strong>
-						<ul>
-							<li n:ifcontent n:foreach="$addresses as $ipAddress">{$ipAddress}</li>
-						</ul>
-					{/foreach}
+					<dl class="dl-horizontal">
+						{foreach $ipAddresses as $interface => $addresses}
+							<dt>{$interface}:</dt>
+							<dd>
+								{foreach $addresses as $ipAddress}
+									{$ipAddress} {sep}<br>{/sep}
+								{/foreach}
+							</dd>
+						{/foreach}
+					</dl>
 				</td>
 			</tr>
 			<tr>
 				<th>{_"MAC addresses"}</th>
 				<td>
-					<p n:foreach="$macAddresses as $interface => $macAddress"><strong>{$interface}:</strong> {$macAddress}</p>
+					<dl class="dl-horizontal">
+						{foreach $macAddresses as $interface => $macAddress}
+							<dt>{$interface}:</dt><dd>{$macAddress}</dd>
+						{/foreach}
+					</dl>
 				</td>
 			</tr>
 			<tr>
@@ -43,11 +51,13 @@
 			<tr>
 				<th>{_"TR info"}</th>
 				<td>
-					<p><strong>{_"Module type:"}</strong> {$module['TrType']}</p>
-					<p><strong>{_"MCU type:"}</strong> {$module['McuType']}</p>
-					<p><strong>{_"MID:"}</strong> {$module['ModuleId']}</p>
-					<p><strong>{_"OS:"}</strong> {$module['OsVersion']} ({$module['OsBuild']})</p>
-					<p><strong>{_"Supply Voltage:"}</strong> {$module['SupplyVoltage']}</p>
+					<dl class="dl-horizontal">
+						<dt>{_"Module type:"}</dt><dd>{$module['TrType']}</dd>
+						<dt>{_"MCU type:"}</dt><dd>{$module['McuType']}</dd>
+						<dt>{_"MID:"}</dt><dd>{$module['ModuleId']}</dd>
+						<dt>{_"OS:"}</dt><dd>{$module['OsVersion']} ({$module['OsBuild']})</dd>
+						<dt>{_"Supply Voltage:"}</dt><dd>{$module['SupplyVoltage']}</dd>
+					</dl>
 				</td>
 			</tr>
 		</table>
