@@ -162,7 +162,7 @@ def create_nginx_virtualhost(virtualhost, nginx_dir="/etc/nginx"):
 	available_virtualhost = nginx_dir + "/sites-available/" + virtualhost_name
 	enabled_virtualhost = nginx_dir + "/sites-enabled/" + virtualhost_name
 	send_command("cp -u nginx/" + virtualhost + " " + available_virtualhost)
-	if not os.path.lexists(enabled_virtualhost): 
+	if not os.path.lexists(enabled_virtualhost):
 		send_command("ln -s " + available_virtualhost + " " + enabled_virtualhost)
 
 def fix_php_fpm_config(config_file):
