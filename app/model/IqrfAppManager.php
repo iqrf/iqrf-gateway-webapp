@@ -85,7 +85,7 @@ class IqrfAppManager {
 			// throw new Exception();
 		}
 		$packet = $output[1];
-		if (empty($packet)) {
+		if (empty($packet) || count($output) === 2) {
 			return null;
 			// throw new Exception();
 		}

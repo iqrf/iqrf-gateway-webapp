@@ -105,6 +105,15 @@ class IqrfAppManagerTest extends TestCase {
 		$packetLedrOn = 'raw 01.00.06.81.02.00.00.33 STATUS_NO_ERROR';
 		$arrayLedrOn = $iqrfAppManager->parseResponse($packetLedrOn);
 		Assert::null($arrayLedrOn);
+		$packetIoTKitSe = 'raw 00.00.5e.81.00.00.03.00 ERROR_PNUM';
+		$arrayIoTKitSe = $iqrfAppManager->parseResponse($packetIoTKitSe);
+		Assert::null($arrayIoTKitSe);
+		$packetEmpty0 = 'raw STATUS_NO_ERROR';
+		$arrayEmpty0 = $iqrfAppManager->parseResponse($packetEmpty);
+		Assert::null($arrayEmpty0);
+		$packetEmpty1 = 'raw  STATUS_NO_ERROR';
+		$arrayEmpty1 = $iqrfAppManager->parseResponse($packetEmpty);
+		Assert::null($arrayEmpty1);
 	}
 
 	/**
