@@ -22,12 +22,12 @@
 			<tr>
 				<th>{_"IP addresses"}</th>
 				<td>
-					<p n:foreach="$ipAddresses as $interface => $addresses">
+					{foreach $ipAddresses as $interface => $addresses}
 						<strong>{$interface}:</strong>
-					<ul>
-						<li n:foreach="$addresses as $ipAddress">{$ipAddress}</li>
-					</ul>
-					</p>
+						<ul>
+							<li n:ifcontent n:foreach="$addresses as $ipAddress">{$ipAddress}</li>
+						</ul>
+					{/foreach}
 				</td>
 			</tr>
 			<tr>
