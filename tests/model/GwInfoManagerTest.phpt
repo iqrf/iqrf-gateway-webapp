@@ -30,9 +30,9 @@ class GwInfoManagerTest extends TestCase {
 	public function testGetIpAddresses() {
 		$commandManager = \Mockery::mock('App\Model\CommandManager');
 		$commandManager->shouldReceive('send')->with("ls /sys/class/net | awk '{ print $0 }'", true)->andReturn('eth0' . PHP_EOL . 'wlan0' . PHP_EOL . 'lo');
-		$cmdEth0 = 'ip a s eth0 | grep inet | grep global | awk \'{print $2}\'';
+		$cmdEth0 = 'ip a s eth0 | grep inet | grep global | grep -v temporary | awk \'{print $2}\'';
 		$commandManager->shouldReceive('send')->with($cmdEth0, true)->andReturn('192.168.1.100' . PHP_EOL . 'fda9:d95:d5b1::64');
-		$cmdWlan0 = 'ip a s wlan0 | grep inet | grep global | awk \'{print $2}\'';
+		$cmdWlan0 = 'ip a s wlan0 | grep inet | grep global | grep -v temporary | awk \'{print $2}\'';
 		$commandManager->shouldReceive('send')->with($cmdWlan0, true)->andReturn('');
 		$gwInfoManager = new GwInfoManager($commandManager);
 		Assert::same(['eth0' => ['192.168.1.100', 'fda9:d95:d5b1::64']], $gwInfoManager->getIpAddresses());
