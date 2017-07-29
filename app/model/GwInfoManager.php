@@ -49,7 +49,7 @@ class GwInfoManager {
 		$interfaces = explode(PHP_EOL, $lsInterfaces);
 		foreach ($interfaces as $interface) {
 			if ($interface !== 'lo') {
-				$cmd = 'ip a s ' . $interface . ' | grep inet | grep global | awk \'{print $2}\'';
+				$cmd = 'ip a s ' . $interface . ' | grep inet | grep global | grep -v temporary | awk \'{print $2}\'';
 				$output = $this->commandManager->send($cmd, true);
 				if (!empty($output)) {
 					$addresses[$interface] = explode(PHP_EOL, $output);
