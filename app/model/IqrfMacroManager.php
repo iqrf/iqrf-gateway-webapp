@@ -54,14 +54,12 @@ class IqrfMacroManager {
 	 * @return array Data in array
 	 */
 	public function parseMacros($hex) {
-		$string = $this->hex2ascii($hex);
-		$array = explode("\r\n", $string);
+		$array = explode("\r\n", $this->hex2ascii($hex));
 		for ($i = 0; $i < 3; $i++) {
 			array_shift($array);
 		}
 		$macros = [];
-		$keys = array_keys($array);
-		for ($i = 0; $i < end($keys); $i++) {
+		for ($i = 0; $i < count($array) - 1; $i++) {
 			$category = $i % 63;
 			$categoryId = floor($i / 63);
 			$macro = (($i - ($categoryId * 63)) - 2) % 5;
@@ -69,13 +67,13 @@ class IqrfMacroManager {
 			if ($category === 0) {
 				$macros[$categoryId]['Name'] = $array[$i];
 			} elseif ($category === 1) {
-				$macros[$categoryId]['Enabled'] = $array[$i] === 'True' ? true : false;
+				$macros[$categoryId]['Enabled'] = $array[$i] === 'True';
 			} elseif ($macro === 1) {
 				$macros[$categoryId]['Macros'][$macroId]['Name'] = $array[$i];
 			} elseif ($macro === 2) {
 				$macros[$categoryId]['Macros'][$macroId]['Packet'] = $array[$i];
 			} elseif ($macro === 3) {
-				$macros[$categoryId]['Macros'][$macroId]['Enabled'] = $array[$i] === 'True' ? true : false;
+				$macros[$categoryId]['Macros'][$macroId]['Enabled'] = $array[$i] === 'True';
 			}
 		}
 		return $macros;
