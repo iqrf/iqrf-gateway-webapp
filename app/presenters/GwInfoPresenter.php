@@ -65,7 +65,7 @@ class GwInfoPresenter extends BasePresenter {
 		$this->template->macAddresses = $this->gwInfoManager->getMacAddresses();
 		$this->template->hostname = $this->gwInfoManager->getHostname();
 		$response = $this->iqrfAppManager->sendRaw('00.00.02.00.FF.FF');
-		$this->template->module = $this->iqrfAppParser->parseOsReadInfo(explode(' ', $response)[1]);
+		$this->template->module = $this->iqrfAppParser->parseResponse($response);
 	}
 
 }
