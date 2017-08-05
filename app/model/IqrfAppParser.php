@@ -80,48 +80,20 @@ class IqrfAppParser {
 	 */
 	public function parseOsReadInfo($packet) {
 		$data = [];
+		$trTypes = [0 => '52D', 1 => '58D-RJ', 2 => '72D', 3 => '53D', 8 => '54D', 9 => '55D', 10 => '56D', 11 => '76D'];
+		$mcuTypes = [3 => 'PIC16F886', 4 => 'PIC16F1938'];
 		$packetArray = explode('.', $packet);
 		$data['ModuleId'] = strtoupper($packetArray[11] . $packetArray[10] . $packetArray[9] . $packetArray[8]);
 		$data['OsVersion'] = (hexdec($packetArray[12]) >> 4) . '.0' . (hexdec($packetArray[12]) & 0x0f) . 'D';
 		$data['TrType'] = (hexdec($packetArray[11]) & 0x80) ? 'DCTR-' : 'TR-';
-		switch (hexdec($packetArray[13]) >> 4) {
-			case 0:
-				$data['TrType'] .= '52D';
-				break;
-			case 1:
-				$data['TrType'] .= '58D-RJ';
-				break;
-			case 2:
-				$data['TrType'] .= '72D';
-				break;
-			case 3:
-				$data['TrType'] .= '53D';
-				break;
-			case 8:
-				$data['TrType'] .= '54D';
-				break;
-			case 9:
-				$data['TrType'] .= '55D';
-				break;
-			case 10:
-				$data['TrType'] .= '56D';
-				break;
-			case 11:
-				$data['TrType'] .= '76D';
-				break;
-			default:
-				$data['TrType'] = 'UNKNOWN';
+		$trType = hexdec($packetArray[13]) >> 4;
+		if (array_key_exists($trType, $trTypes)) {
+			$data['TrType'] .= $trTypes[$trType];
+		} else {
+			$data['TrType'] = 'UNKNOWN';
 		}
-		switch (hexdec($packetArray[13]) & 7) {
-			case 3:
-				$data['McuType'] = 'PIC16F886';
-				break;
-			case 4:
-				$data['McuType'] = 'PIC16F1938';
-				break;
-			default:
-				$data['McuType'] = 'UNKNOWN';
-		}
+		$mcuType = hexdec($packetArray[13]) & 7;
+		$data['McuType'] = array_key_exists($mcuType, $mcuTypes) ? $mcuTypes[$mcuType] : 'UNKNOWN';
 		$data['OsBuild'] = $packetArray[14] . $packetArray[15];
 		$data['Rssi'] = $packetArray[16];
 		$data['SupplyVoltage'] = number_format((261.12 / (127 - hexdec($packetArray[17]))), 2, '.', '') . ' V';
