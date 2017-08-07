@@ -18,9 +18,9 @@
 
 namespace App\Presenters;
 
+use App\Forms;
 use App\Model\ConfigManager;
 use App\Model\InterfaceManager;
-use App\Forms;
 
 /**
  * Configuration presenter
@@ -118,7 +118,7 @@ class ConfigPresenter extends BasePresenter {
 
 	/**
 	 * Render base service page
-	 * @param int $id Id of base service
+	 * @param int $id ID of Base service
 	 */
 	public function renderBaseService($id = NULL) {
 		$this->onlyForAdmins();
@@ -162,7 +162,7 @@ class ConfigPresenter extends BasePresenter {
 
 	/**
 	 * Delete Base service
-	 * @param int $id
+	 * @param int $id ID of Base service
 	 */
 	public function actionBaseServiceDelete($id) {
 		$this->onlyForAdmins();
@@ -173,7 +173,7 @@ class ConfigPresenter extends BasePresenter {
 
 	/**
 	 * Delete MQTT interface
-	 * @param int $id
+	 * @param int $id ID of MQTT interface
 	 */
 	public function actionMqttDelete($id) {
 		$this->onlyForAdmins();
@@ -184,7 +184,7 @@ class ConfigPresenter extends BasePresenter {
 
 	/**
 	 * Delete Scheduler task
-	 * @param int $id
+	 * @param int $id ID of task
 	 */
 	public function actionSchedulerDelete($id) {
 		$this->onlyForAdmins();
@@ -195,7 +195,7 @@ class ConfigPresenter extends BasePresenter {
 
 	/**
 	 * Create Base service form
-	 * @return Form Bse service form
+	 * @return Form Base service form
 	 */
 	protected function createComponentConfigBaseServiceForm() {
 		$this->onlyForAdmins();

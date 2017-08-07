@@ -18,15 +18,18 @@
 
 namespace App\Presenters;
 
+use App\Forms\SignInFormFactory;
 use Nette\Application\UI\Form;
-use App\Forms;
 
 /**
  * Sign in/out presenter
  */
 class SignPresenter extends BasePresenter {
 
-	/** @var Forms\SignInFormFactory @inject */
+	/**
+	 * @var SignInFormFactory
+	 * @inject
+	 */
 	public $signInFactory;
 
 	/**

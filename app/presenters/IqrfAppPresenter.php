@@ -18,7 +18,7 @@
 
 namespace App\Presenters;
 
-use App\Forms;
+use App\Forms\IqrfAppSendRawFormFactory;
 use App\Model\IqrfAppManager;
 use App\Model\IqrfAppParser;
 use App\Model\IqrfMacroManager;
@@ -30,7 +30,7 @@ use Nette\Application\UI\Form;
 class IqrfAppPresenter extends BasePresenter {
 
 	/**
-	 * @var Forms\IqrfAppSendRawFormFactory
+	 * @var IqrfAppSendRawFormFactory
 	 * @inject
 	 */
 	public $iqrfAppSendRawFactory;
