@@ -44,7 +44,7 @@
 								<tr n:foreach="$packet as $key => $value">
 									<th>{$key * 20}</th>
 									<td n:foreach="$value as $status">
-										<span class="glyphicon glyphicon-{$status ? ok : remove}" style="color: {$status ? green : red}" aria-hidden="true"></span>
+										<span n:nonce class="glyphicon glyphicon-{$status ? ok : remove}" style="color: {$status ? green : red}" aria-hidden="true"></span>
 									</td>
 
 								</tr>

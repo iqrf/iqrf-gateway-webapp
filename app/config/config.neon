@@ -54,6 +54,23 @@ services:
 	router: App\RouterFactory::createRouter
 	formFactory: Instante\Bootstrap3Renderer\BootstrapFormFactory
 
+http:
+	csp:
+		frame-ancestors: none
+		form-action: self
+		script-src: [
+			# for browsers that support CSP3
+			nonce
+			# for browsers that support CSP2
+			self, 'code.jquery.com', 'maxcdn.bootstrapcdn.com', 'nette.github.io'
+		]
+		style-src: [
+			# for browsers that support CSP3
+			#nonce
+			# for browsers that support CSP2
+			'unsafe-inline', self, 'maxcdn.bootstrapcdn.com'
+		]
+
 security:
 	users:
 		admin: iqrf  # user 'admin', password 'iqrf'
