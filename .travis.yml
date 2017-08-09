@@ -6,33 +6,36 @@ php:
 env:
   - PHP_BIN=php
   - PHP_BIN=php-cgi
-matrix:
-  include:
-    - php: 7.0
-      env: PHP_BIN=phpdbg CODE_CHECKER=true
-    - php: 7.0
-      env: PHP_BIN=phpdbg COVERAGE="--coverage ./coverage.xml --coverage-src ./app"
 install:
   # Update Composer
-  - composer self-update
-  - composer install
+  - travis_retry composer self-update
+  - travis_retry composer install
   # Install Nette Tester
-  - composer update --no-interaction
-  # Install Nette Code checker
-  - 'if [[ "$CODE_CHECKER" = true ]]; then composer create-project nette/code-checker temp/code-checker --no-interaction; fi;'
+  - travis_retry composer update --no-interaction
 script:
-  # Nette Code checker
-  - 'if [[ "$CODE_CHECKER" = true ]]; then php temp/code-checker/src/code-checker.php -l --short-arrays -i "tests/model/data/macros-ascii.expected"; fi;'
   # Nette Tester
-  - vendor/bin/tester -p $PHP_BIN -s $COVERAGE ./tests
-after_success:
-  # Nette Code checker
-  - 'if [[ "$COVERAGE" != "" ]]; then bash <(curl -s https://codecov.io/bash); fi;'
+  - vendor/bin/tester -p $PHP_BIN -s ./tests
 after_failure:
   # Print *.actual content
   - 'for i in $(find ./tests -name \*.actual); do echo "--- $i"; cat $i; echo; echo; done'
-sudo: required
-dist: trusty
+jobs:
+  include:
+    - stage: Code Standard Checker
+      php: 7.1
+      install:
+        # Install Nette Code Checker
+        - travis_retry composer create-project nette/code-checker temp/code-checker --no-interaction
+      script:
+        - php temp/code-checker/src/code-checker.php -l --short-arrays -i "tests/model/data/macros-ascii.expected"
+    - stage: Code Coverage
+      php: 7.1
+      script:
+        - vendor/bin/tester -p phpdbg -s --coverage ./coverage.xml --coverage-src ./app ./tests
+      after_script:
+        - bash <(curl -s https://codecov.io/bash)
+  allow_failures:
+    - stage: Code Coverage
+sudo: false
 cache:
   directories:
     - $HOME/.composer/cache
