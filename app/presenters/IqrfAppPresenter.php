@@ -31,25 +31,21 @@ class IqrfAppPresenter extends BasePresenter {
 
 	/**
 	 * @var IqrfAppSendRawFormFactory
-	 * @inject
 	 */
-	public $iqrfAppSendRawFactory;
+	private $sendRawFactory;
 
 	/**
 	 * @var IqrfAppManager
-	 * @inject
 	 */
 	private $iqrfAppManager;
 
 	/**
 	 * @var IqrfAppParser
-	 * @inject
 	 */
 	private $iqrfAppParser;
 
 	/**
 	 * @var IqrfMacroManager
-	 * @inject
 	 */
 	private $iqrfMacroManager;
 
@@ -58,11 +54,13 @@ class IqrfAppPresenter extends BasePresenter {
 	 * @param IqrfAppManager $manager
 	 * @param IqrfAppParser $parser
 	 * @param IqrfMacroManager $macroManager
+	 * @param IqrfAppSendRawFormFactory $formFactory
 	 */
-	public function __construct(IqrfAppManager $manager, IqrfAppParser $parser, IqrfMacroManager $macroManager) {
+	public function __construct(IqrfAppManager $manager, IqrfAppParser $parser, IqrfMacroManager $macroManager, IqrfAppSendRawFormFactory $formFactory) {
 		$this->iqrfAppManager = $manager;
 		$this->iqrfAppParser = $parser;
 		$this->iqrfMacroManager = $macroManager;
+		$this->sendRawFactory = $formFactory;
 	}
 
 	/**
@@ -139,7 +137,7 @@ class IqrfAppPresenter extends BasePresenter {
 	 */
 	protected function createComponentIqrfAppSendRawForm() {
 		$this->onlyForAdmins();
-		return $this->iqrfAppSendRawFactory->create($this);
+		return $this->sendRawFactory->create($this);
 	}
 
 }

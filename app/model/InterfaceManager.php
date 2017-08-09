@@ -27,7 +27,6 @@ class InterfaceManager {
 
 	/**
 	 * @var CommandManager
-	 * @inject
 	 */
 	private $commandManager;
 

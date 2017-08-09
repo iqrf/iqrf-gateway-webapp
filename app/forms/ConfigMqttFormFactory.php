@@ -31,19 +31,16 @@ class ConfigMqttFormFactory {
 
 	/**
 	 * @var ConfigManager
-	 * @inject
 	 */
 	private $configManager;
 
 	/**
 	 * @var ConfigParser
-	 * @inject
 	 */
 	private $configParser;
 
 	/**
 	 * @var FormFactory
-	 * @inject
 	 */
 	private $factory;
 

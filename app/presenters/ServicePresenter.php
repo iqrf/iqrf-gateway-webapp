@@ -27,7 +27,6 @@ class ServicePresenter extends BasePresenter {
 
 	/**
 	 * @var ServiceManager
-	 * @inject
 	 */
 	private $serviceManager;
 

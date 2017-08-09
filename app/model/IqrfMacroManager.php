@@ -26,7 +26,6 @@ class IqrfMacroManager {
 
 	/**
 	 * @var string
-	 * @inject
 	 */
 	private $path;
 

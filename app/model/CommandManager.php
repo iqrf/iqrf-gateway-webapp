@@ -27,7 +27,6 @@ class CommandManager {
 
 	/**
 	 * @var bool
-	 * @inject
 	 */
 	private $sudo;
 

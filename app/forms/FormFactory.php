@@ -29,13 +29,11 @@ class FormFactory {
 
 	/**
 	 * @var IFormFactory
-	 * @inject
 	 */
 	public $iFormFactory;
 
 	/**
 	 * @var Gettext
-	 * @inject
 	 */
 	private $translator;
 

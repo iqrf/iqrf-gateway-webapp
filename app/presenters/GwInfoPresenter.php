@@ -29,19 +29,16 @@ class GwInfoPresenter extends BasePresenter {
 
 	/**
 	 * @var GwInfoManager
-	 * @inject
 	 */
 	private $gwInfoManager;
 
 	/**
 	 * @var IqrfAppManager
-	 * @inject
 	 */
 	private $iqrfAppManager;
 
 	/**
 	 * @var IqrfAppParser
-	 * @inject
 	 */
 	private $iqrfAppParser;
 

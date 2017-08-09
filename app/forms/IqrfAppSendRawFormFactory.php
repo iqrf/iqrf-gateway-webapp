@@ -30,13 +30,11 @@ class IqrfAppSendRawFormFactory {
 
 	/**
 	 * @var IqrfAppManager
-	 * @inject
 	 */
 	private $iqrfAppManager;
 
 	/**
 	 * @var FormFactory
-	 * @inject
 	 */
 	private $factory;
 

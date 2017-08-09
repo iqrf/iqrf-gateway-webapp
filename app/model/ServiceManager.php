@@ -28,13 +28,11 @@ class ServiceManager {
 
 	/**
 	 * @var string
-	 * @inject
 	 */
 	private $initDaemon;
 
 	/**
 	 * @var CommandManager
-	 * @inject
 	 */
 	private $commandManager;
 

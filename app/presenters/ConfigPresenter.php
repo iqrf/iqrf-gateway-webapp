@@ -89,13 +89,11 @@ class ConfigPresenter extends BasePresenter {
 
 	/**
 	 * @var ConfigManager
-	 * @inject
 	 */
 	private $configManager;
 
 	/**
 	 * @var InterfaceManager
-	 * @inject
 	 */
 	private $interfaceManager;
 

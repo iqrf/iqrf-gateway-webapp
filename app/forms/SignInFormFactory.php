@@ -28,10 +28,14 @@ class SignInFormFactory {
 
 	use Nette\SmartObject;
 
-	/** @var FormFactory */
+	/**
+	 * @var FormFactory
+	 */
 	private $factory;
 
-	/** @var User */
+	/**
+	 * @var User
+	 */
 	private $user;
 
 	/**

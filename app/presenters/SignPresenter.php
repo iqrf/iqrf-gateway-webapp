@@ -28,10 +28,17 @@ class SignPresenter extends BasePresenter {
 
 	/**
 	 * @var SignInFormFactory
-	 * @inject
 	 */
-	public $signInFactory;
+	private $signInFactory;
 
+	/**
+	 * Constructor
+	 * @param SignInFormFactory $signInFactory
+	 */
+	public function __construct(SignInFormFactory $signInFactory) {
+		$this->signInFactory = $signInFactory;
+	}
+	
 	/**
 	 * User sign in
 	 */

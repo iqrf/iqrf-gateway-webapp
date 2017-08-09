@@ -27,7 +27,6 @@ class IqrfAppManager {
 
 	/**
 	 * @var CommandManager
-	 * @inject
 	 */
 	private $commandManager;
 

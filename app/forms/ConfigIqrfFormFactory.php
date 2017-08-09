@@ -30,13 +30,11 @@ class ConfigIqrfFormFactory {
 
 	/**
 	 * @var ConfigManager
-	 * @inject
 	 */
 	private $configManager;
 
 	/**
 	 * @var FormFactory
-	 * @inject
 	 */
 	private $factory;
 

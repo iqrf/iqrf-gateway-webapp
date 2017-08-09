@@ -27,7 +27,6 @@ class GwInfoManager {
 
 	/**
 	 * @var CommandManager
-	 * @inject
 	 */
 	private $commandManager;
 
