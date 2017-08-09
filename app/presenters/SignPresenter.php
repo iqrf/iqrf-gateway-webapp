@@ -38,7 +38,7 @@ class SignPresenter extends BasePresenter {
 	public function __construct(SignInFormFactory $signInFactory) {
 		$this->signInFactory = $signInFactory;
 	}
-	
+
 	/**
 	 * User sign in
 	 */
