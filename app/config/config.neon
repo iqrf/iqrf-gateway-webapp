@@ -51,7 +51,7 @@ services:
 	- App\Forms\ConfigUdpFormFactory
 	- App\Forms\IqrfAppSendRawFormFactory
 	- App\Forms\SignInFormFactory
-	router: App\RouterFactory::createRouter
+	router: App\Router\RouterFactory::createRouter
 	formFactory: Instante\Bootstrap3Renderer\BootstrapFormFactory
 
 http:

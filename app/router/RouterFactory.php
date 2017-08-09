@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-namespace App;
+namespace App\Router;
 
 use Nette;
 use Nette\Application\Routers\RouteList;
