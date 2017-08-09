@@ -8,7 +8,7 @@
 
 namespace Test\Router;
 
-use App\RouterFactory;
+use App\Router\RouterFactory;
 use Nette\Application\Routers\Route;
 use Nette\Application\Routers\RouteList;
 use Nette\DI\Container;
