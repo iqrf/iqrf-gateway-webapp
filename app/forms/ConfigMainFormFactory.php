@@ -20,7 +20,7 @@ namespace App\Forms;
 
 use App\Forms\FormFactory;
 use App\Model\ConfigManager;
-use App\Presenters\ConfigPresenter;
+use App\ConfigModule\Presenters\MainPresenter;
 use Nette;
 use Nette\Application\UI\Form;
 
@@ -50,10 +50,10 @@ class ConfigMainFormFactory {
 
 	/**
 	 * Create Tracer configuration form
-	 * @param ConfigPresenter $presenter
+	 * @param MainPresenter $presenter
 	 * @return Form Tracer configuration form
 	 */
-	public function create(ConfigPresenter $presenter) {
+	public function create(MainPresenter $presenter) {
 		$form = $this->factory->create();
 		$json = $this->configManager->read('config');
 		$items = ['forwarding' => 'Forwarding', 'operational' => 'Operational', 'service' => 'Service'];
@@ -66,7 +66,7 @@ class ConfigMainFormFactory {
 		$form->addProtection('Timeout expired, resubmit the form.');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
 			$this->configManager->saveMain($values);
-			$presenter->redirect('Config:default');
+			$presenter->redirect('Homepage:default');
 		};
 		return $form;
 	}

@@ -21,7 +21,7 @@ namespace App\Forms;
 use App\Forms\FormFactory;
 use App\Model\ConfigManager;
 use App\Model\ConfigParser;
-use App\Presenters\ConfigPresenter;
+use App\ConfigModule\Presenters\SchedulerPresenter;
 use Nette;
 use Nette\Application\UI\Form;
 
@@ -58,10 +58,10 @@ class ConfigSchedulerFormFactory {
 
 	/**
 	 * Create Scheduler configuration form
-	 * @param ConfigPresenter $presenter
+	 * @param SchedulerPresenter $presenter
 	 * @return Form Scheduler configuration form
 	 */
-	public function create(ConfigPresenter $presenter) {
+	public function create(SchedulerPresenter $presenter) {
 		$id = $presenter->getParameter('id');
 		$form = $this->factory->create();
 		$fileName = 'Scheduler';
@@ -81,7 +81,7 @@ class ConfigSchedulerFormFactory {
 		$form->addProtection('Timeout expired, resubmit the form.');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $id) {
 			$this->configManager->saveScheduler($values, $id);
-			$presenter->redirect('Config:scheduler', ['id' => null]);
+			$presenter->redirect('Scheduler:default');
 		};
 		return $form;
 	}

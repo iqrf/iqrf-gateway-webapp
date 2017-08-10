@@ -21,7 +21,7 @@ namespace App\Forms;
 use App\Forms\FormFactory;
 use App\Model\ConfigManager;
 use App\Model\ConfigParser;
-use App\Presenters\ConfigPresenter;
+use App\ConfigModule\Presenters\BaseServicePresenter;
 use Nette;
 use Nette\Application\UI\Form;
 
@@ -58,10 +58,10 @@ class ConfigBaseServiceFormFactory {
 
 	/**
 	 * Create MQTT configuration form
-	 * @param ConfigPresenter $presenter
+	 * @param BaseServicePresenter $presenter
 	 * @return Form MQTT configuration form
 	 */
-	public function create(ConfigPresenter $presenter) {
+	public function create(BaseServicePresenter $presenter) {
 		$id = $presenter->getParameter('id');
 		$form = $this->factory->create();
 		$fileName = 'BaseService';
@@ -75,7 +75,7 @@ class ConfigBaseServiceFormFactory {
 		$form->addProtection('Timeout expired, resubmit the form.');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $id) {
 			$this->configManager->saveBaseService($values, $id);
-			$presenter->redirect('Config:baseService', ['id' => null]);
+			$presenter->redirect('BaseService:default');
 		};
 		return $form;
 	}

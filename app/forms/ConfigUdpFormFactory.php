@@ -21,7 +21,7 @@ namespace App\Forms;
 use App\Forms\FormFactory;
 use App\Model\ConfigManager;
 use App\Model\ConfigParser;
-use App\Presenters\ConfigPresenter;
+use App\ConfigModule\Presenters\UdpPresenter;
 use Nette;
 use Nette\Application\UI\Form;
 
@@ -58,10 +58,10 @@ class ConfigUdpFormFactory {
 
 	/**
 	 * Create UDP configuration form
-	 * @param ConfigPresenter $presenter
+	 * @param UdpPresenter $presenter
 	 * @return Form UDP configuration form
 	 */
-	public function create(ConfigPresenter $presenter) {
+	public function create(UdpPresenter $presenter) {
 		$form = $this->factory->create();
 		$fileName = 'UdpMessaging';
 		$json = $this->configManager->read($fileName);
@@ -74,7 +74,7 @@ class ConfigUdpFormFactory {
 		$form->addProtection('Timeout expired, resubmit the form.');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $fileName) {
 			$this->configManager->saveInstances($fileName, $values);
-			$presenter->redirect('Config:default');
+			$presenter->redirect('Homepage:default');
 		};
 		return $form;
 	}

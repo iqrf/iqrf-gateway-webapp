@@ -20,7 +20,7 @@ namespace App\Forms;
 
 use App\Forms\FormFactory;
 use App\Model\IqrfAppManager;
-use App\Presenters\IqrfAppPresenter;
+use App\IqrfAppModule\Presenters\SendRawPresenter;
 use Nette;
 use Nette\Application\UI\Form;
 
@@ -50,10 +50,10 @@ class IqrfAppSendRawFormFactory {
 
 	/**
 	 * Create IQRF App send RAW packet form
-	 * @param IqrfAppPresenter $presenter
+	 * @param SendRawPresenter $presenter
 	 * @return Form IQRF App send RAW packet form
 	 */
-	public function create(IqrfAppPresenter $presenter) {
+	public function create(SendRawPresenter $presenter) {
 		$form = $this->factory->create();
 		$form->addText('packet', 'Raw IQRF packet')->setRequired();
 		$form->addSubmit('send', 'Send');

@@ -31,7 +31,16 @@ class RouterFactory {
 	 * @return Nette\Application\IRouter
 	 */
 	public static function createRouter() {
-		$router = new RouteList;
+		$router = new RouteList();
+		$config = new RouteList('Config');
+		$config[] = new Route('[<lang [a-z]{2}>/]config/<presenter>/<action>[/<id>]', 'Homepage:default');
+		$router[] = $config;
+		$iqrfApp = new RouteList('IqrfApp');
+		$iqrfApp[] = new Route('[<lang [a-z]{2}>/]iqrfapp/<presenter>/<action>', 'Homepage:default');
+		$router[] = $iqrfApp;
+		$service = new RouteList('Service');
+		$service[] = new Route('[<lang [a-z]{2}>/]service/<presenter>/<action>', 'Control:default');
+		$router[] = $service;
 		$router[] = new Route('[<lang [a-z]{2}>/]<presenter>/<action>[/<id>]', 'Homepage:default');
 		return $router;
 	}

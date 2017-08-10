@@ -40,7 +40,7 @@ abstract class BasePresenter extends Presenter {
 	 */
 	public function onlyForAdmins() {
 		if (!$this->user->isLoggedIn()) {
-			$this->redirect('Sign:in');
+			$this->redirect(':Sign:in');
 		}
 	}
 

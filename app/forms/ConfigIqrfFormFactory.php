@@ -20,7 +20,7 @@ namespace App\Forms;
 
 use App\Forms\FormFactory;
 use App\Model\ConfigManager;
-use App\Presenters\ConfigPresenter;
+use App\ConfigModule\Presenters\IqrfPresenter;
 use Nette;
 use Nette\Application\UI\Form;
 
@@ -50,10 +50,10 @@ class ConfigIqrfFormFactory {
 
 	/**
 	 * Create IQRF configuration form
-	 * @param ConfigPresenter $presenter
+	 * @param IqrfPresenter $presenter
 	 * @return Form IQRF configuration form
 	 */
-	public function create(ConfigPresenter $presenter) {
+	public function create(IqrfPresenter $presenter) {
 		$form = $this->factory->create();
 		$json = $this->configManager->read('IqrfInterface');
 		$form->addText('IqrfInterface', 'IqrfInterface')->setRequired();
@@ -64,7 +64,7 @@ class ConfigIqrfFormFactory {
 		$form->addProtection('Timeout expired, resubmit the form.');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
 			$this->configManager->write('IqrfInterface', $values);
-			$presenter->redirect('Config:default');
+			$presenter->redirect('Homepage:default');
 		};
 		return $form;
 	}

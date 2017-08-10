@@ -21,7 +21,7 @@ namespace App\Forms;
 use App\Forms\FormFactory;
 use App\Model\ConfigManager;
 use App\Model\ConfigParser;
-use App\Presenters\ConfigPresenter;
+use App\ConfigModule\Presenters\MqttPresenter;
 use Nette;
 use Nette\Application\UI\Form;
 
@@ -58,10 +58,10 @@ class ConfigMqttFormFactory {
 
 	/**
 	 * Create MQTT configuration form
-	 * @param ConfigPresenter $presenter
+	 * @param MqttPresenter $presenter
 	 * @return Form MQTT configuration form
 	 */
-	public function create(ConfigPresenter $presenter) {
+	public function create(MqttPresenter $presenter) {
 		$id = $presenter->getParameter('id');
 		$form = $this->factory->create();
 		$fileName = 'MqttMessaging';
@@ -93,7 +93,7 @@ class ConfigMqttFormFactory {
 		$form->addProtection('Timeout expired, resubmit the form.');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $fileName, $id) {
 			$this->configManager->saveInstances($fileName, $values, $id);
-			$presenter->redirect('Config:mqtt', ['id' => null]);
+			$presenter->redirect('Mqtt:default');
 		};
 		return $form;
 	}

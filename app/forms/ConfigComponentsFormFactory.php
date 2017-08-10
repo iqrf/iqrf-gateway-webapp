@@ -20,7 +20,7 @@ namespace App\Forms;
 
 use App\Forms\FormFactory;
 use App\Model\ConfigManager;
-use App\Presenters\ConfigPresenter;
+use App\ConfigModule\Presenters\MainPresenter;
 use Nette;
 use Nette\Application\UI\Form;
 
@@ -50,10 +50,10 @@ class ConfigComponentsFormFactory {
 
 	/**
 	 * Create components configuration form
-	 * @param ConfigPresenter $presenter
+	 * @param MainPresenter $presenter
 	 * @return Form Components configuration form
 	 */
-	public function create(ConfigPresenter $presenter) {
+	public function create(MainPresenter $presenter) {
 		$form = $this->factory->create();
 		$components = $this->configManager->read('config')['Components'];
 		foreach ($components as $component) {
@@ -64,7 +64,7 @@ class ConfigComponentsFormFactory {
 		$form->addProtection('Timeout expired, resubmit the form.');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
 			$this->configManager->saveComponents($values);
-			$presenter->redirect('Config:');
+			$presenter->redirect('Homepage:default');
 		};
 		return $form;
 	}

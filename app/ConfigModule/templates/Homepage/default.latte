@@ -1,0 +1,56 @@
+{**
+ * Copyright 2017 MICRORISC s.r.o.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*}
+
+{block content}
+<h1 n:block=title>{_"Configuration"}</h1>
+<div class='list-group'>
+	<a n:href='Main:default' class='list-group-item'>
+		<header class='list-group-item-heading'>{_"Main configuration"}</header>
+		<p class='list-group-item-text'>{_"Main configuration of IQRF Daemon."}</p>
+	</a>
+	<a n:href='Tracer:default' class='list-group-item'>
+		<header class='list-group-item-heading'>{_"Tracer file"}</header>
+		<p class='list-group-item-text'>{_"Tracer file settings."}</p>
+	</a>
+	<a n:href='Iqrf:default' class='list-group-item'>
+		<header class='list-group-item-heading'>{_"IQRF interface"}</header>
+		<p class='list-group-item-text'>{_"IQRF interface settings."}</p>
+	</a>
+	<a n:href='Udp:default' class='list-group-item'>
+		<header class='list-group-item-heading'>{_"UDP interface"}</header>
+		<p class='list-group-item-text'>{_"IQRF UDP interface settings."}</p>
+	</a>
+	<a n:href='Mqtt:default' class='list-group-item'>
+		<header class='list-group-item-heading'>{_"MQTT interface"}</header>
+		<p class='list-group-item-text'>{_"MQTT interface settings."}</p>
+	</a>
+	<a n:href='Mq:default' class='list-group-item'>
+		<header class='list-group-item-heading'>{_"MQ interface"}</header>
+		<p class='list-group-item-text'>{_"MQ interface settings."}</p>
+	</a>
+	<a n:href='Scheduler:default' class='list-group-item'>
+		<header class='list-group-item-heading'>{_"Scheduler"}</header>
+		<p class='list-group-item-text'>{_"Scheduler settings."}</p>
+	</a>
+	<a n:href='BaseService:default' class='list-group-item'>
+		<header class='list-group-item-heading'>{_"Base services"}</header>
+		<p class='list-group-item-text'>{_"Base services settings."}</p>
+	</a>
+	<a n:href='IqrfApp:default' class='list-group-item'>
+		<header class='list-group-item-heading'>{_"IQRF App"}</header>
+		<p class='list-group-item-text'>{_"IQRF App settings."}</p>
+	</a>
+</div>

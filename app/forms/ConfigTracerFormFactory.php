@@ -20,7 +20,7 @@ namespace App\Forms;
 
 use App\Forms\FormFactory;
 use App\Model\ConfigManager;
-use App\Presenters\ConfigPresenter;
+use App\ConfigModule\Presenters\TracerPresenter;
 use Nette;
 use Nette\Application\UI\Form;
 
@@ -50,10 +50,10 @@ class ConfigTracerFormFactory {
 
 	/**
 	 * Create Tracer configuration form
-	 * @param ConfigPresenter $presenter
+	 * @param TracerPresenter $presenter
 	 * @return Form Tracer configuration form
 	 */
-	public function create(ConfigPresenter $presenter) {
+	public function create(TracerPresenter $presenter) {
 		$form = $this->factory->create();
 		$fileName = 'TracerFile';
 		$json = $this->configManager->read($fileName);
@@ -66,7 +66,7 @@ class ConfigTracerFormFactory {
 		$form->addProtection('Timeout expired, resubmit the form.');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $fileName) {
 			$this->configManager->write($fileName, $values);
-			$presenter->redirect('Config:default');
+			$presenter->redirect('Homepage:default');
 		};
 		return $form;
 	}
