@@ -29,17 +29,17 @@ class IqrfPresenter extends BasePresenter {
 	 * @var ConfigIqrfFormFactory
 	 */
 	private $formFactory;
-	
+
 	/**
 	 * @var ConfigManager
 	 */
 	private $configManager;
-	
+
 	/**
 	 * @var InterfaceManager
 	 */
 	private $interfaceManager;
-	
+
 	/**
 	 * Constructor
 	 * @param ConfigIqrfFormFactory $formFactory
@@ -51,7 +51,7 @@ class IqrfPresenter extends BasePresenter {
 		$this->formFactory = $formFactory;
 		$this->interfaceManager = $interfaceManager;
 	}
-	
+
 	/**
 	 * Render IQRF interface configurator
 	 */
@@ -59,7 +59,7 @@ class IqrfPresenter extends BasePresenter {
 		$this->onlyForAdmins();
 		$this->template->interfaces = $this->interfaceManager->createInterfaceList();
 	}
-	
+
 
 	/**
 	 * Create IQRF interface form

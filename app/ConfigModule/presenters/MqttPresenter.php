@@ -28,12 +28,12 @@ class MqttPresenter extends BasePresenter {
 	 * @var ConfigMqttFormFactory
 	 */
 	private $formFactory;
-	
+
 	/**
 	 * @var ConfigManager
 	 */
 	private $configManager;
-	
+
 	/**
 	 * Constructor
 	 * @param ConfigMqttFormFactory $formFactory
@@ -43,7 +43,7 @@ class MqttPresenter extends BasePresenter {
 		$this->configManager = $configManager;
 		$this->formFactory = $formFactory;
 	}
-	
+
 	/**
 	 * Render list of MQTT interfaces
 	 */
@@ -51,7 +51,7 @@ class MqttPresenter extends BasePresenter {
 		$this->onlyForAdmins();
 		$this->template->instances = $this->configManager->read('MqttMessaging')['Instances'];
 	}
-	
+
 	/**
 	 * Edit MQTT interface
 	 * @param int $id ID of MQTT interface

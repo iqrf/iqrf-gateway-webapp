@@ -28,12 +28,12 @@ class BaseServicePresenter extends BasePresenter {
 	 * @var ConfigBaseServiceFormFactory
 	 */
 	private $formFactory;
-	
+
 	/**
 	 * @var ConfigManager
 	 */
 	private $configManager;
-	
+
 	/**
 	 * Constructor
 	 * @param ConfigBaseServiceFormFactory $formFactory
@@ -43,7 +43,7 @@ class BaseServicePresenter extends BasePresenter {
 		$this->configManager = $configManager;
 		$this->formFactory = $formFactory;
 	}
-	
+
 	/**
 	 * Render list of Base services
 	 */
@@ -51,7 +51,7 @@ class BaseServicePresenter extends BasePresenter {
 		$this->onlyForAdmins();
 		$this->template->services = $this->configManager->read('BaseService')['Instances'];
 	}
-	
+
 	/**
 	 * Edit Base service
 	 * @param int $id ID of Base service

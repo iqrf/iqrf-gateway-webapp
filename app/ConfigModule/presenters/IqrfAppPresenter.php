@@ -28,12 +28,12 @@ class IqrfAppPresenter extends BasePresenter {
 	 * @var ConfigIqrfAppFormFactory
 	 */
 	private $formFactory;
-	
+
 	/**
 	 * @var ConfigManager
 	 */
 	private $configManager;
-	
+
 	/**
 	 * Constructor
 	 * @param ConfigIqrfAppFormFactory $formFactory
@@ -43,14 +43,14 @@ class IqrfAppPresenter extends BasePresenter {
 		$this->configManager = $configManager;
 		$this->formFactory = $formFactory;
 	}
-	
+
 	/**
 	 *
 	 */
 	public function renderDefault() {
 		$this->onlyForAdmins();
 	}
-	
+
 
 	/**
 	 * Create MQ interface form

@@ -28,12 +28,12 @@ class MqPresenter extends BasePresenter {
 	 * @var ConfigMqFormFactory
 	 */
 	private $formFactory;
-	
+
 	/**
 	 * @var ConfigManager
 	 */
 	private $configManager;
-	
+
 	/**
 	 * Constructor
 	 * @param ConfigMqFormFactory $formFactory
@@ -43,14 +43,14 @@ class MqPresenter extends BasePresenter {
 		$this->configManager = $configManager;
 		$this->formFactory = $formFactory;
 	}
-	
+
 	/**
 	 *
 	 */
 	public function renderDefault() {
 		$this->onlyForAdmins();
 	}
-	
+
 
 	/**
 	 * Create MQ interface form

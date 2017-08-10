@@ -28,12 +28,12 @@ class UdpPresenter extends BasePresenter {
 	 * @var ConfigUdpFormFactory
 	 */
 	private $formFactory;
-	
+
 	/**
 	 * @var ConfigManager
 	 */
 	private $configManager;
-	
+
 	/**
 	 * Constructor
 	 * @param ConfigUdpFormFactory $formFactory
@@ -43,14 +43,14 @@ class UdpPresenter extends BasePresenter {
 		$this->configManager = $configManager;
 		$this->formFactory = $formFactory;
 	}
-	
+
 	/**
 	 *
 	 */
 	public function renderDefault() {
 		$this->onlyForAdmins();
 	}
-	
+
 
 	/**
 	 * Create MQ interface form

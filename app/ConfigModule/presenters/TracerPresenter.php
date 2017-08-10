@@ -28,12 +28,12 @@ class TracerPresenter extends BasePresenter {
 	 * @var ConfigTracerFormFactory
 	 */
 	private $formFactory;
-	
+
 	/**
 	 * @var ConfigManager
 	 */
 	private $configManager;
-	
+
 	/**
 	 * Constructor
 	 * @param ConfigTracerFormFactory $formFactory
@@ -43,14 +43,14 @@ class TracerPresenter extends BasePresenter {
 		$this->configManager = $configManager;
 		$this->formFactory = $formFactory;
 	}
-	
+
 	/**
 	 *
 	 */
 	public function renderDefault() {
 		$this->onlyForAdmins();
 	}
-	
+
 
 	/**
 	 * Create MQ interface form

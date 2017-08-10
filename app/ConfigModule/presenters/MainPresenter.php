@@ -29,7 +29,7 @@ class MainPresenter extends BasePresenter {
 	 * @var ConfigComponentsFormFactory
 	 */
 	private $componentsFactory;
-	
+
 	/**
 	 * @var ConfigMainFormFactory
 	 */

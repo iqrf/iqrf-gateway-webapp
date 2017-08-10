@@ -28,12 +28,12 @@ class SchedulerPresenter extends BasePresenter {
 	 * @var ConfigSchedulerFormFactory
 	 */
 	private $formFactory;
-	
+
 	/**
 	 * @var ConfigManager
 	 */
 	private $configManager;
-	
+
 	/**
 	 * Constructor
 	 * @param ConfigSchedulerFormFactory $formFactory
@@ -43,7 +43,7 @@ class SchedulerPresenter extends BasePresenter {
 		$this->configManager = $configManager;
 		$this->formFactory = $formFactory;
 	}
-	
+
 	/**
 	 * Render list tasks in scheduler
 	 */
@@ -51,7 +51,7 @@ class SchedulerPresenter extends BasePresenter {
 		$this->onlyForAdmins();
 		$this->template->tasks = $this->configManager->read('Scheduler')['TasksJson'];
 	}
-	
+
 	/**
 	 * Edit task in scheduler
 	 * @param int $id ID of MQTT interface
