@@ -1,20 +1,20 @@
 <?php
 
 /**
- * TEST: App\Model\IqrfAppParser
+ * TEST: App\IqrfAppModule\Model\IqrfAppParser
  * @phpVersion >= 5.6
  * @testCase
  */
 
-namespace Test\Model;
+namespace Test\IqrfAppModule\Model;
 
 use App\Model\CommandManager;
-use App\Model\IqrfAppParser;
+use App\IqrfAppModule\Model\IqrfAppParser;
 use Nette\DI\Container;
 use Tester\Assert;
 use Tester\TestCase;
 
-$container = require __DIR__ . '/../bootstrap.php';
+$container = require __DIR__ . '/../../bootstrap.php';
 
 class IqrfAppParserTest extends TestCase {
 

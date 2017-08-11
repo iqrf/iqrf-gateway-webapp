@@ -1,19 +1,20 @@
 <?php
 
 /**
- * TEST: App\Model\ServiceManager
+ * TEST: App\ServiceModule\Model\ServiceManager
  * @phpVersion >= 5.6
  * @testCase
  */
 
-namespace Test\Model;
+namespace Test\ServiceModule\Model;
 
-use App\Model\ServiceManager;
+use App\Model\CommandManager;
+use App\ServiceModule\Model\ServiceManager;
 use Nette\DI\Container;
 use Tester\Assert;
 use Tester\TestCase;
 
-$container = require __DIR__ . '/../bootstrap.php';
+$container = require __DIR__ . '/../../bootstrap.php';
 
 class ServiceManagerTest extends TestCase {
 
@@ -28,7 +29,7 @@ class ServiceManagerTest extends TestCase {
 	 * Test function to start iqrf-daemon service
 	 */
 	public function testStart() {
-		$commandManager = \Mockery::mock('App\Model\CommandManager');
+		$commandManager = \Mockery::mock(CommandManager::class);
 		$commandManager->shouldReceive('send')->with('systemctl start iqrf-daemon.service', true)->andReturn(true);
 		$serviceManager = new ServiceManager('systemd', $commandManager);
 		Assert::true($serviceManager->start());
@@ -39,7 +40,7 @@ class ServiceManagerTest extends TestCase {
 	 * Test function to stop iqrf-daemon service
 	 */
 	public function testStop() {
-		$commandManager = \Mockery::mock('App\Model\CommandManager');
+		$commandManager = \Mockery::mock(CommandManager::class);
 		$commandManager->shouldReceive('send')->with('systemctl stop iqrf-daemon.service', true)->andReturn(true);
 		$serviceManager = new ServiceManager('systemd', $commandManager);
 		Assert::true($serviceManager->stop());
@@ -50,7 +51,7 @@ class ServiceManagerTest extends TestCase {
 	 * Test function to restart iqrf-daemon service
 	 */
 	public function testRestart() {
-		$commandManager = \Mockery::mock('App\Model\CommandManager');
+		$commandManager = \Mockery::mock(CommandManager::class);
 		$commandManager->shouldReceive('send')->with('systemctl restart iqrf-daemon.service', true)->andReturn(true);
 		$serviceManager = new ServiceManager('systemd', $commandManager);
 		Assert::true($serviceManager->restart());
@@ -61,7 +62,7 @@ class ServiceManagerTest extends TestCase {
 	 * Test function to get status of iqrf-daemon service
 	 */
 	public function testGetStatus() {
-		$commandManager = \Mockery::mock('App\Model\CommandManager');
+		$commandManager = \Mockery::mock(CommandManager::class);
 		$commandManager->shouldReceive('send')->with('systemctl status iqrf-daemon.service', true)->andReturn(true);
 		$serviceManager = new ServiceManager('systemd', $commandManager);
 		Assert::true($serviceManager->getStatus());

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-namespace App\Model;
+namespace App\ServiceModule\Model;
 
 use App\Model\CommandManager;
 use Nette;

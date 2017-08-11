@@ -1,21 +1,21 @@
 <?php
 
 /**
- * TEST: App\Model\IqrfMacroManager
+ * TEST: App\IqrfAppModule\Model\IqrfMacroManager
  * @phpVersion >= 5.6
  * @testCase
  */
 
-namespace Test\Model;
+namespace Test\IqrfAppModule\Model;
 
-use App\Model\IqrfMacroManager;
+use App\IqrfAppModule\Model\IqrfMacroManager;
 use Nette\DI\Container;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
 use Tester\Assert;
 use Tester\TestCase;
 
-$container = require __DIR__ . '/../bootstrap.php';
+$container = require __DIR__ . '/../../bootstrap.php';
 
 class IqrfMacroManagerTest extends TestCase {
 
@@ -24,7 +24,7 @@ class IqrfMacroManagerTest extends TestCase {
 	/**
 	 * @var string File name of IQRF IDE Macros
 	 */
-	private $macroFileName = __DIR__ . '/../../iqrf/DPA-macros_170601.iqrfmcr';
+	private $macroFileName = __DIR__ . '/../../../iqrf/DPA-macros_170601.iqrfmcr';
 
 	/**
 	 * @var string IQRF IDE macros in HEX

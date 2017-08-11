@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-namespace App\Model;
+namespace App\IqrfAppModule\Model;
 
 use Nette;
 

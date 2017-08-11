@@ -8,6 +8,7 @@
 
 namespace Test\Model;
 
+use App\Model\CommandManager;
 use App\Model\InterfaceManager;
 use Nette\DI\Container;
 use Tester\Assert;
@@ -28,7 +29,7 @@ class InterfaceManagerTest extends TestCase {
 	 * Test function to get list of SPI and USB CDC interfaces available in the system
 	 */
 	public function testCreateInterfaceList() {
-		$commandManager = \Mockery::mock('App\Model\CommandManager');
+		$commandManager = \Mockery::mock(CommandManager::class);
 		$outputCdc = '/dev/ttyACM0' . PHP_EOL . '/dev/ttyACM1';
 		$outputSpi = '/dev/spidev0.0' . PHP_EOL . '/dev/spidev0.1' . PHP_EOL . '/dev/spidev1.0' . PHP_EOL . '/dev/spidev1.1';
 		$commandManager->shouldReceive('send')->with("ls /dev/ttyACM* | awk '{ print $0 }'", true)->andReturn($outputCdc);

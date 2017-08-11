@@ -34,10 +34,10 @@ services:
 	- App\Model\ConfigParser
 	- App\Model\GwInfoManager
 	- App\Model\InterfaceManager
-	- App\Model\IqrfAppManager
-	- App\Model\IqrfAppParser
-	- App\Model\IqrfMacroManager(%macroPath%)
-	- App\Model\ServiceManager(%initDaemon%)
+	- App\IqrfAppModule\Model\IqrfAppManager
+	- App\IqrfAppModule\Model\IqrfAppParser
+	- App\IqrfAppModule\Model\IqrfMacroManager(%macroPath%)
+	- App\ServiceModule\Model\ServiceManager(%initDaemon%)
 	- App\Forms\FormFactory
 	- App\ConfigModule\Forms\ConfigBaseServiceFormFactory
 	- App\ConfigModule\Forms\ConfigComponentsFormFactory

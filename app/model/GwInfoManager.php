@@ -19,6 +19,8 @@
 namespace App\Model;
 
 use App\Model\CommandManager;
+use App\IqrfAppModule\Model\IqrfAppManager;
+use App\IqrfAppModule\Model\IqrfAppParser;
 use Nette;
 
 class GwInfoManager {
@@ -31,11 +33,25 @@ class GwInfoManager {
 	private $commandManager;
 
 	/**
-	 * Constructor
-	 * @param CommandManager $commandManager Command Manager
+	 * @var IqrfAppManager
 	 */
-	public function __construct(CommandManager $commandManager) {
+	private $iqrfAppManager;
+
+	/**
+	 * @var IqrfAppParser
+	 */
+	private $iqrfAppParser;
+
+	/**
+	 * Constructor
+	 * @param CommandManager $commandManager
+	 * @param IqrfAppManager $iqrfAppManager
+	 * @param IqrfAppParser $iqrfAppParser
+	 */
+	public function __construct(CommandManager $commandManager, IqrfAppManager $iqrfAppManager, IqrfAppParser $iqrfAppParser) {
 		$this->commandManager = $commandManager;
+		$this->iqrfAppManager = $iqrfAppManager;
+		$this->iqrfAppParser = $iqrfAppParser;
 	}
 
 	/**
@@ -82,6 +98,15 @@ class GwInfoManager {
 	public function getHostname() {
 		$cmd = 'hostname -f';
 		return $this->commandManager->send($cmd);
+	}
+	
+	/**
+	 * Get information about the Coordinator
+	 * @return array Information about the Coordinator
+	 */
+	public function getCoordinatorInfo() {
+		$response = $this->iqrfAppManager->sendRaw('00.00.02.00.FF.FF');
+		return $this->iqrfAppParser->parseResponse($response);
 	}
 
 }

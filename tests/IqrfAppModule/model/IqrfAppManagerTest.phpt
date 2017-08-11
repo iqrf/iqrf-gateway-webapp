@@ -1,20 +1,20 @@
 <?php
 
 /**
- * TEST: App\Model\IqrfAppManager
+ * TEST: App\IqrfAppModule\Model\IqrfAppManager
  * @phpVersion >= 5.6
  * @testCase
  */
 
-namespace Test\Model;
+namespace Test\IqrfAppModule\Model;
 
 use App\Model\CommandManager;
-use App\Model\IqrfAppManager;
+use App\IqrfAppModule\Model\IqrfAppManager;
 use Nette\DI\Container;
 use Tester\Assert;
 use Tester\TestCase;
 
-$container = require __DIR__ . '/../bootstrap.php';
+$container = require __DIR__ . '/../../bootstrap.php';
 
 class IqrfAppManagerTest extends TestCase {
 
@@ -58,7 +58,7 @@ class IqrfAppManagerTest extends TestCase {
 			'iqrfapp "{\"ctype\": \"conf\",\"type\": \"mode\",\"cmd\": \"operational\"}"',
 			'iqrfapp "{\"ctype\": \"conf\",\"type\": \"mode\",\"cmd\": \"service\"}"'
 		];
-		$commandManager = \Mockery::mock('App\Model\CommandManager');
+		$commandManager = \Mockery::mock(CommandManager::class);
 		foreach ($outputSuccess as $output) {
 			$commandManager->shouldReceive('send')->with($output, true)->andReturn(true);
 		}
@@ -76,7 +76,7 @@ class IqrfAppManagerTest extends TestCase {
 	public function testSendRaw() {
 		$packet = '01.00.06.03.ff.ff';
 		$expected = 'sudo iqrfapp raw ' . $packet;
-		$commandManager = \Mockery::mock('App\Model\CommandManager');
+		$commandManager = \Mockery::mock(CommandManager::class);
 		$commandManager->shouldReceive('send')->with('iqrfapp raw ' . $packet, true)->andReturn($expected);
 		$iqrfAppManager = new IqrfAppManager($commandManager);
 		Assert::equal($expected, $iqrfAppManager->sendRaw($packet));

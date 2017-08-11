@@ -18,7 +18,7 @@
 
 namespace App\IqrfAppModule\Presenters;
 
-use App\Model\IqrfAppManager;
+use App\IqrfAppModule\Model\IqrfAppManager;
 use App\Presenters\BasePresenter;
 
 /**

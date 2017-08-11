@@ -19,9 +19,9 @@
 namespace App\IqrfAppModule\Presenters;
 
 use App\IqrfAppModule\Forms\IqrfAppSendRawFormFactory;
-use App\Model\IqrfAppManager;
-use App\Model\IqrfAppParser;
-use App\Model\IqrfMacroManager;
+use App\IqrfAppModule\Model\IqrfAppManager;
+use App\IqrfAppModule\Model\IqrfAppParser;
+use App\IqrfAppModule\Model\IqrfMacroManager;
 use App\Presenters\BasePresenter;
 use Nette\Application\UI\Form;
 

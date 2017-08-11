@@ -19,7 +19,7 @@
 namespace App\IqrfAppModule\Forms;
 
 use App\Forms\FormFactory;
-use App\Model\IqrfAppManager;
+use App\IqrfAppModule\Model\IqrfAppManager;
 use App\IqrfAppModule\Presenters\SendRawPresenter;
 use Nette;
 use Nette\Application\UI\Form;
