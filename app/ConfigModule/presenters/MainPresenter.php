@@ -20,8 +20,8 @@ namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\ConfigComponentsFormFactory;
 use App\ConfigModule\Forms\ConfigMainFormFactory;
-use App\Presenters\BasePresenter;
 use App\Model\ConfigManager;
+use App\Presenters\BasePresenter;
 
 class MainPresenter extends BasePresenter {
 

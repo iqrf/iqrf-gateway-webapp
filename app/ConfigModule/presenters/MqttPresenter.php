@@ -19,8 +19,8 @@
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\ConfigMqttFormFactory;
-use App\Presenters\BasePresenter;
 use App\Model\ConfigManager;
+use App\Presenters\BasePresenter;
 
 class MqttPresenter extends BasePresenter {
 
@@ -67,7 +67,7 @@ class MqttPresenter extends BasePresenter {
 	 */
 	public function actionDelete($id) {
 		$this->onlyForAdmins();
-		$this->configManager->deleteInstances('MqttMessaging' ,$id);
+		$this->configManager->deleteInstances('MqttMessaging', $id);
 		$this->redirect('Mqtt:default');
 		$this->setView('default');
 	}

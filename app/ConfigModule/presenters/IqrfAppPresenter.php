@@ -19,8 +19,8 @@
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\ConfigIqrfAppFormFactory;
-use App\Presenters\BasePresenter;
 use App\Model\ConfigManager;
+use App\Presenters\BasePresenter;
 
 class IqrfAppPresenter extends BasePresenter {
 
@@ -50,7 +50,6 @@ class IqrfAppPresenter extends BasePresenter {
 	public function renderDefault() {
 		$this->onlyForAdmins();
 	}
-
 
 	/**
 	 * Create MQ interface form

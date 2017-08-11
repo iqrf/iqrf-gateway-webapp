@@ -18,8 +18,8 @@
 
 namespace App\ServiceModule\Presenters;
 
-use App\ServiceModule\Model\ServiceManager;
 use App\Presenters\BasePresenter;
+use App\ServiceModule\Model\ServiceManager;
 
 /**
  * Service presenter

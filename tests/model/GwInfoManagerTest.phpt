@@ -8,10 +8,10 @@
 
 namespace Test\Model;
 
-use App\Model\CommandManager;
-use App\Model\GwInfoManager;
 use App\IqrfAppModule\Model\IqrfAppManager;
 use App\IqrfAppModule\Model\IqrfAppParser;
+use App\Model\CommandManager;
+use App\Model\GwInfoManager;
 use Nette\DI\Container;
 use Tester\Assert;
 use Tester\TestCase;

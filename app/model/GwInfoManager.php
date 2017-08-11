@@ -18,9 +18,9 @@
 
 namespace App\Model;
 
-use App\Model\CommandManager;
 use App\IqrfAppModule\Model\IqrfAppManager;
 use App\IqrfAppModule\Model\IqrfAppParser;
+use App\Model\CommandManager;
 use Nette;
 
 class GwInfoManager {
@@ -99,7 +99,7 @@ class GwInfoManager {
 		$cmd = 'hostname -f';
 		return $this->commandManager->send($cmd);
 	}
-	
+
 	/**
 	 * Get information about the Coordinator
 	 * @return array Information about the Coordinator

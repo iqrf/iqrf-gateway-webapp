@@ -29,16 +29,6 @@ session:
 	expiration: 14 days
 
 services:
-	- App\Model\CommandManager(%sudo%)
-	- App\Model\ConfigManager(%configDir%)
-	- App\Model\ConfigParser
-	- App\Model\GwInfoManager
-	- App\Model\InterfaceManager
-	- App\IqrfAppModule\Model\IqrfAppManager
-	- App\IqrfAppModule\Model\IqrfAppParser
-	- App\IqrfAppModule\Model\IqrfMacroManager(%macroPath%)
-	- App\ServiceModule\Model\ServiceManager(%initDaemon%)
-	- App\Forms\FormFactory
 	- App\ConfigModule\Forms\ConfigBaseServiceFormFactory
 	- App\ConfigModule\Forms\ConfigComponentsFormFactory
 	- App\ConfigModule\Forms\ConfigIqrfAppFormFactory
@@ -49,8 +39,18 @@ services:
 	- App\ConfigModule\Forms\ConfigSchedulerFormFactory
 	- App\ConfigModule\Forms\ConfigTracerFormFactory
 	- App\ConfigModule\Forms\ConfigUdpFormFactory
-	- App\IqrfAppModule\Forms\IqrfAppSendRawFormFactory
+	- App\Forms\FormFactory
 	- App\Forms\SignInFormFactory
+	- App\IqrfAppModule\Forms\IqrfAppSendRawFormFactory
+	- App\IqrfAppModule\Model\IqrfAppManager
+	- App\IqrfAppModule\Model\IqrfAppParser
+	- App\IqrfAppModule\Model\IqrfMacroManager(%macroPath%)
+	- App\Model\CommandManager(%sudo%)
+	- App\Model\ConfigManager(%configDir%)
+	- App\Model\ConfigParser
+	- App\Model\GwInfoManager
+	- App\Model\InterfaceManager
+	- App\ServiceModule\Model\ServiceManager(%initDaemon%)
 	router: App\Router\RouterFactory::createRouter
 	formFactory: Instante\Bootstrap3Renderer\BootstrapFormFactory
 

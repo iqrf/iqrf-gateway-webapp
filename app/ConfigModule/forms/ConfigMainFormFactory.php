@@ -18,9 +18,9 @@
 
 namespace App\ConfigModule\Forms;
 
+use App\ConfigModule\Presenters\MainPresenter;
 use App\Forms\FormFactory;
 use App\Model\ConfigManager;
-use App\ConfigModule\Presenters\MainPresenter;
 use Nette;
 use Nette\Application\UI\Form;
 

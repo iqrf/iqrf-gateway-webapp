@@ -19,8 +19,8 @@
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\ConfigBaseServiceFormFactory;
-use App\Presenters\BasePresenter;
 use App\Model\ConfigManager;
+use App\Presenters\BasePresenter;
 
 class BaseServicePresenter extends BasePresenter {
 

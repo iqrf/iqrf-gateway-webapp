@@ -18,10 +18,10 @@
 
 namespace App\ConfigModule\Forms;
 
+use App\ConfigModule\Presenters\MqttPresenter;
 use App\Forms\FormFactory;
 use App\Model\ConfigManager;
 use App\Model\ConfigParser;
-use App\ConfigModule\Presenters\MqttPresenter;
 use Nette;
 use Nette\Application\UI\Form;
 

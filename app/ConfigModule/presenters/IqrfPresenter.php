@@ -19,9 +19,9 @@
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\ConfigIqrfFormFactory;
-use App\Presenters\BasePresenter;
 use App\Model\ConfigManager;
 use App\Model\InterfaceManager;
+use App\Presenters\BasePresenter;
 
 class IqrfPresenter extends BasePresenter {
 
@@ -59,7 +59,6 @@ class IqrfPresenter extends BasePresenter {
 		$this->onlyForAdmins();
 		$this->template->interfaces = $this->interfaceManager->createInterfaceList();
 	}
-
 
 	/**
 	 * Create IQRF interface form

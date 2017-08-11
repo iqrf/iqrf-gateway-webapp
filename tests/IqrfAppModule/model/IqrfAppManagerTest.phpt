@@ -8,8 +8,8 @@
 
 namespace Test\IqrfAppModule\Model;
 
-use App\Model\CommandManager;
 use App\IqrfAppModule\Model\IqrfAppManager;
+use App\Model\CommandManager;
 use Nette\DI\Container;
 use Tester\Assert;
 use Tester\TestCase;

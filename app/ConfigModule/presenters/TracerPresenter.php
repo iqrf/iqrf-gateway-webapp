@@ -19,8 +19,8 @@
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\ConfigTracerFormFactory;
-use App\Presenters\BasePresenter;
 use App\Model\ConfigManager;
+use App\Presenters\BasePresenter;
 
 class TracerPresenter extends BasePresenter {
 
@@ -50,7 +50,6 @@ class TracerPresenter extends BasePresenter {
 	public function renderDefault() {
 		$this->onlyForAdmins();
 	}
-
 
 	/**
 	 * Create MQ interface form
