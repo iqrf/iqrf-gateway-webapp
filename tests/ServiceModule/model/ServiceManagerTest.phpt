@@ -11,6 +11,7 @@ namespace Test\ServiceModule\Model;
 use App\Model\CommandManager;
 use App\ServiceModule\Model\ServiceManager;
 use Nette\DI\Container;
+use Nette\NotImplementedException;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -33,6 +34,10 @@ class ServiceManagerTest extends TestCase {
 		$commandManager->shouldReceive('send')->with('systemctl start iqrf-daemon.service', true)->andReturn(true);
 		$serviceManager = new ServiceManager('systemd', $commandManager);
 		Assert::true($serviceManager->start());
+		Assert::exception(function () use ($commandManager) {
+			$serviceManager = new ServiceManager('unknown', $commandManager);
+			$serviceManager->start();
+		}, NotImplementedException::class);
 	}
 
 	/**
@@ -44,6 +49,10 @@ class ServiceManagerTest extends TestCase {
 		$commandManager->shouldReceive('send')->with('systemctl stop iqrf-daemon.service', true)->andReturn(true);
 		$serviceManager = new ServiceManager('systemd', $commandManager);
 		Assert::true($serviceManager->stop());
+		Assert::exception(function () use ($commandManager) {
+			$serviceManager = new ServiceManager('unknown', $commandManager);
+			$serviceManager->stop();
+		}, NotImplementedException::class);
 	}
 
 	/**
@@ -55,6 +64,10 @@ class ServiceManagerTest extends TestCase {
 		$commandManager->shouldReceive('send')->with('systemctl restart iqrf-daemon.service', true)->andReturn(true);
 		$serviceManager = new ServiceManager('systemd', $commandManager);
 		Assert::true($serviceManager->restart());
+		Assert::exception(function () use ($commandManager) {
+			$serviceManager = new ServiceManager('unknown', $commandManager);
+			$serviceManager->restart();
+		}, NotImplementedException::class);
 	}
 
 	/**
@@ -66,6 +79,10 @@ class ServiceManagerTest extends TestCase {
 		$commandManager->shouldReceive('send')->with('systemctl status iqrf-daemon.service', true)->andReturn(true);
 		$serviceManager = new ServiceManager('systemd', $commandManager);
 		Assert::true($serviceManager->getStatus());
+		Assert::exception(function () use ($commandManager) {
+			$serviceManager = new ServiceManager('unknown', $commandManager);
+			$serviceManager->getStatus();
+		}, NotImplementedException::class);
 	}
 
 }
