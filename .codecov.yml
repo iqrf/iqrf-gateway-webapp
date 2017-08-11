@@ -1,2 +1,4 @@
 ignore:
     - "app/forms/"
+    - "app/ConfigModule/forms/"
+    - "app/IqrfAppModule/forms/"
