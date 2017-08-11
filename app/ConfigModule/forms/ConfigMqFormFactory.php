@@ -16,16 +16,16 @@
  * limitations under the License.
  */
 
-namespace App\Forms;
+namespace App\ConfigModule\Forms;
 
 use App\Forms\FormFactory;
 use App\Model\ConfigManager;
 use App\Model\ConfigParser;
-use App\ConfigModule\Presenters\UdpPresenter;
+use App\ConfigModule\Presenters\MqPresenter;
 use Nette;
 use Nette\Application\UI\Form;
 
-class ConfigUdpFormFactory {
+class ConfigMqFormFactory {
 
 	use Nette\SmartObject;
 
@@ -57,18 +57,18 @@ class ConfigUdpFormFactory {
 	}
 
 	/**
-	 * Create UDP configuration form
-	 * @param UdpPresenter $presenter
-	 * @return Form UDP configuration form
+	 * Create MQTT configuration form
+	 * @param MqPresenter $presenter
+	 * @return Form MQTT configuration form
 	 */
-	public function create(UdpPresenter $presenter) {
+	public function create(MqPresenter $presenter) {
 		$form = $this->factory->create();
-		$fileName = 'UdpMessaging';
+		$fileName = 'MqMessaging';
 		$json = $this->configManager->read($fileName);
 		$form->addText('Name', 'Name')->setRequired();
 		$form->addCheckbox('Enabled', 'Enabled');
-		$form->addInteger('RemotePort', 'RemotePort')->setRequired();
-		$form->addInteger('LocalPort', 'LocalPort')->setRequired();
+		$form->addText('LocalMqName', 'LocalMqName')->setRequired();
+		$form->addText('RemoteMqName', 'RemoteMqName')->setRequired();
 		$form->addSubmit('save', 'Save');
 		$form->setDefaults($this->configParser->instancesToForm($json));
 		$form->addProtection('Timeout expired, resubmit the form.');

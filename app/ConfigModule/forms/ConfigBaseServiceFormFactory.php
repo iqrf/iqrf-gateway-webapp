@@ -16,15 +16,16 @@
  * limitations under the License.
  */
 
-namespace App\Forms;
+namespace App\ConfigModule\Forms;
 
 use App\Forms\FormFactory;
 use App\Model\ConfigManager;
-use App\ConfigModule\Presenters\TracerPresenter;
+use App\Model\ConfigParser;
+use App\ConfigModule\Presenters\BaseServicePresenter;
 use Nette;
 use Nette\Application\UI\Form;
 
-class ConfigTracerFormFactory {
+class ConfigBaseServiceFormFactory {
 
 	use Nette\SmartObject;
 
@@ -32,6 +33,11 @@ class ConfigTracerFormFactory {
 	 * @var ConfigManager
 	 */
 	private $configManager;
+
+	/**
+	 * @var ConfigParser
+	 */
+	private $configParser;
 
 	/**
 	 * @var FormFactory
@@ -42,31 +48,34 @@ class ConfigTracerFormFactory {
 	 * Constructor
 	 * @param FormFactory $factory
 	 * @param ConfigManager $configManager
+	 * @param ConfigParser $configParser
 	 */
-	public function __construct(FormFactory $factory, ConfigManager $configManager) {
+	public function __construct(FormFactory $factory, ConfigManager $configManager, ConfigParser $configParser) {
 		$this->factory = $factory;
 		$this->configManager = $configManager;
+		$this->configParser = $configParser;
 	}
 
 	/**
-	 * Create Tracer configuration form
-	 * @param TracerPresenter $presenter
-	 * @return Form Tracer configuration form
+	 * Create MQTT configuration form
+	 * @param BaseServicePresenter $presenter
+	 * @return Form MQTT configuration form
 	 */
-	public function create(TracerPresenter $presenter) {
+	public function create(BaseServicePresenter $presenter) {
+		$id = $presenter->getParameter('id');
 		$form = $this->factory->create();
-		$fileName = 'TracerFile';
+		$fileName = 'BaseService';
 		$json = $this->configManager->read($fileName);
-		$items = ['err' => 'Error', 'war' => 'Warning', 'inf' => 'Info', 'dbg' => 'Debug'];
-		$form->addText('TraceFileName', 'TraceFileName');
-		$form->addInteger('TraceFileSize', 'TraceFileSize');
-		$form->addSelect('VerbosityLevel', 'VerbosityLevel', $items);
+		$serializers = ['SimpleSerializer' => 'SimpleSerializer', 'JsonSerializer' => 'JsonSerializer'];
+		$form->addText('Name', 'Name')->setRequired();
+		$form->addText('Messaging', 'Messaging')->setRequired();
+		$form->addCheckboxList('Serializers', 'Serializers', $serializers)->setRequired();
 		$form->addSubmit('save', 'Save');
-		$form->setDefaults($json);
+		$form->setDefaults($this->configParser->baseServiceToForm($json, $id));
 		$form->addProtection('Timeout expired, resubmit the form.');
-		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $fileName) {
-			$this->configManager->write($fileName, $values);
-			$presenter->redirect('Homepage:default');
+		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $id) {
+			$this->configManager->saveBaseService($values, $id);
+			$presenter->redirect('BaseService:default');
 		};
 		return $form;
 	}

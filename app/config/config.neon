@@ -39,17 +39,17 @@ services:
 	- App\Model\IqrfMacroManager(%macroPath%)
 	- App\Model\ServiceManager(%initDaemon%)
 	- App\Forms\FormFactory
-	- App\Forms\ConfigBaseServiceFormFactory
-	- App\Forms\ConfigComponentsFormFactory
-	- App\Forms\ConfigIqrfAppFormFactory
-	- App\Forms\ConfigIqrfFormFactory
-	- App\Forms\ConfigMainFormFactory
-	- App\Forms\ConfigMqFormFactory
-	- App\Forms\ConfigMqttFormFactory
-	- App\Forms\ConfigSchedulerFormFactory
-	- App\Forms\ConfigTracerFormFactory
-	- App\Forms\ConfigUdpFormFactory
-	- App\Forms\IqrfAppSendRawFormFactory
+	- App\ConfigModule\Forms\ConfigBaseServiceFormFactory
+	- App\ConfigModule\Forms\ConfigComponentsFormFactory
+	- App\ConfigModule\Forms\ConfigIqrfAppFormFactory
+	- App\ConfigModule\Forms\ConfigIqrfFormFactory
+	- App\ConfigModule\Forms\ConfigMainFormFactory
+	- App\ConfigModule\Forms\ConfigMqFormFactory
+	- App\ConfigModule\Forms\ConfigMqttFormFactory
+	- App\ConfigModule\Forms\ConfigSchedulerFormFactory
+	- App\ConfigModule\Forms\ConfigTracerFormFactory
+	- App\ConfigModule\Forms\ConfigUdpFormFactory
+	- App\IqrfAppModule\Forms\IqrfAppSendRawFormFactory
 	- App\Forms\SignInFormFactory
 	router: App\Router\RouterFactory::createRouter
 	formFactory: Instante\Bootstrap3Renderer\BootstrapFormFactory

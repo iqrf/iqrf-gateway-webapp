@@ -18,7 +18,7 @@
 
 namespace App\ConfigModule\Presenters;
 
-use App\Forms\ConfigUdpFormFactory;
+use App\ConfigModule\Forms\ConfigUdpFormFactory;
 use App\Presenters\BasePresenter;
 use App\Model\ConfigManager;
 

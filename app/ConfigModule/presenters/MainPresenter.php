@@ -18,8 +18,8 @@
 
 namespace App\ConfigModule\Presenters;
 
-use App\Forms\ConfigComponentsFormFactory;
-use App\Forms\ConfigMainFormFactory;
+use App\ConfigModule\Forms\ConfigComponentsFormFactory;
+use App\ConfigModule\Forms\ConfigMainFormFactory;
 use App\Presenters\BasePresenter;
 use App\Model\ConfigManager;
 

@@ -18,7 +18,7 @@
 
 namespace App\ConfigModule\Presenters;
 
-use App\Forms\ConfigMqttFormFactory;
+use App\ConfigModule\Forms\ConfigMqttFormFactory;
 use App\Presenters\BasePresenter;
 use App\Model\ConfigManager;
 

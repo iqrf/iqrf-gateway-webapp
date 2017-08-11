@@ -18,7 +18,7 @@
 
 namespace App\IqrfAppModule\Presenters;
 
-use App\Forms\IqrfAppSendRawFormFactory;
+use App\IqrfAppModule\Forms\IqrfAppSendRawFormFactory;
 use App\Model\IqrfAppManager;
 use App\Model\IqrfAppParser;
 use App\Model\IqrfMacroManager;

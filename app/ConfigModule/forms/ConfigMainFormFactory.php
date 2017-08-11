@@ -16,22 +16,22 @@
  * limitations under the License.
  */
 
-namespace App\Forms;
+namespace App\ConfigModule\Forms;
 
 use App\Forms\FormFactory;
-use App\Model\IqrfAppManager;
-use App\IqrfAppModule\Presenters\SendRawPresenter;
+use App\Model\ConfigManager;
+use App\ConfigModule\Presenters\MainPresenter;
 use Nette;
 use Nette\Application\UI\Form;
 
-class IqrfAppSendRawFormFactory {
+class ConfigMainFormFactory {
 
 	use Nette\SmartObject;
 
 	/**
-	 * @var IqrfAppManager
+	 * @var ConfigManager
 	 */
-	private $iqrfAppManager;
+	private $configManager;
 
 	/**
 	 * @var FormFactory
@@ -41,29 +41,32 @@ class IqrfAppSendRawFormFactory {
 	/**
 	 * Constructor
 	 * @param FormFactory $factory
-	 * @param IqrfAppManager $iqrfAppManager
+	 * @param ConfigManager $configManager
 	 */
-	public function __construct(FormFactory $factory, IqrfAppManager $iqrfAppManager) {
+	public function __construct(FormFactory $factory, ConfigManager $configManager) {
 		$this->factory = $factory;
-		$this->iqrfAppManager = $iqrfAppManager;
+		$this->configManager = $configManager;
 	}
 
 	/**
-	 * Create IQRF App send RAW packet form
-	 * @param SendRawPresenter $presenter
-	 * @return Form IQRF App send RAW packet form
+	 * Create Tracer configuration form
+	 * @param MainPresenter $presenter
+	 * @return Form Tracer configuration form
 	 */
-	public function create(SendRawPresenter $presenter) {
+	public function create(MainPresenter $presenter) {
 		$form = $this->factory->create();
-		$form->addText('packet', 'Raw IQRF packet')->setRequired();
-		$form->addSubmit('send', 'Send');
+		$json = $this->configManager->read('config');
+		$items = ['forwarding' => 'Forwarding', 'operational' => 'Operational', 'service' => 'Service'];
+		$form->addText('Configuration', 'Configuration');
+		$form->addText('ConfigurationDir', 'ConfigurationDir');
+		$form->addInteger('WatchDogTimeoutMilis', 'WatchDogTimeoutMilis');
+		$form->addSelect('Mode', 'Mode', $items);
+		$form->addSubmit('save', 'Save');
+		$form->setDefaults($json);
 		$form->addProtection('Timeout expired, resubmit the form.');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
-			$packet = $values['packet'];
-			if ($this->iqrfAppManager->validatePacket($packet)) {
-				$response = $this->iqrfAppManager->sendRaw($packet);
-				$presenter->handleShowResponse($response);
-			}
+			$this->configManager->saveMain($values);
+			$presenter->redirect('Homepage:default');
 		};
 		return $form;
 	}

@@ -16,15 +16,15 @@
  * limitations under the License.
  */
 
-namespace App\Forms;
+namespace App\ConfigModule\Forms;
 
 use App\Forms\FormFactory;
 use App\Model\ConfigManager;
-use App\ConfigModule\Presenters\MainPresenter;
+use App\ConfigModule\Presenters\TracerPresenter;
 use Nette;
 use Nette\Application\UI\Form;
 
-class ConfigMainFormFactory {
+class ConfigTracerFormFactory {
 
 	use Nette\SmartObject;
 
@@ -50,22 +50,22 @@ class ConfigMainFormFactory {
 
 	/**
 	 * Create Tracer configuration form
-	 * @param MainPresenter $presenter
+	 * @param TracerPresenter $presenter
 	 * @return Form Tracer configuration form
 	 */
-	public function create(MainPresenter $presenter) {
+	public function create(TracerPresenter $presenter) {
 		$form = $this->factory->create();
-		$json = $this->configManager->read('config');
-		$items = ['forwarding' => 'Forwarding', 'operational' => 'Operational', 'service' => 'Service'];
-		$form->addText('Configuration', 'Configuration');
-		$form->addText('ConfigurationDir', 'ConfigurationDir');
-		$form->addInteger('WatchDogTimeoutMilis', 'WatchDogTimeoutMilis');
-		$form->addSelect('Mode', 'Mode', $items);
+		$fileName = 'TracerFile';
+		$json = $this->configManager->read($fileName);
+		$items = ['err' => 'Error', 'war' => 'Warning', 'inf' => 'Info', 'dbg' => 'Debug'];
+		$form->addText('TraceFileName', 'TraceFileName');
+		$form->addInteger('TraceFileSize', 'TraceFileSize');
+		$form->addSelect('VerbosityLevel', 'VerbosityLevel', $items);
 		$form->addSubmit('save', 'Save');
 		$form->setDefaults($json);
 		$form->addProtection('Timeout expired, resubmit the form.');
-		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
-			$this->configManager->saveMain($values);
+		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $fileName) {
+			$this->configManager->write($fileName, $values);
 			$presenter->redirect('Homepage:default');
 		};
 		return $form;

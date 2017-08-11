@@ -18,7 +18,7 @@
 
 namespace App\ConfigModule\Presenters;
 
-use App\Forms\ConfigSchedulerFormFactory;
+use App\ConfigModule\Forms\ConfigSchedulerFormFactory;
 use App\Presenters\BasePresenter;
 use App\Model\ConfigManager;
 

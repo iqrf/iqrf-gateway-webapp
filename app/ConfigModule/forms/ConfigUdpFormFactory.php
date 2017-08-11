@@ -16,15 +16,16 @@
  * limitations under the License.
  */
 
-namespace App\Forms;
+namespace App\ConfigModule\Forms;
 
 use App\Forms\FormFactory;
 use App\Model\ConfigManager;
-use App\ConfigModule\Presenters\IqrfAppPresenter;
+use App\Model\ConfigParser;
+use App\ConfigModule\Presenters\UdpPresenter;
 use Nette;
 use Nette\Application\UI\Form;
 
-class ConfigIqrfAppFormFactory {
+class ConfigUdpFormFactory {
 
 	use Nette\SmartObject;
 
@@ -32,6 +33,11 @@ class ConfigIqrfAppFormFactory {
 	 * @var ConfigManager
 	 */
 	private $configManager;
+
+	/**
+	 * @var ConfigParser
+	 */
+	private $configParser;
 
 	/**
 	 * @var FormFactory
@@ -42,27 +48,32 @@ class ConfigIqrfAppFormFactory {
 	 * Constructor
 	 * @param FormFactory $factory
 	 * @param ConfigManager $configManager
+	 * @param ConfigParser $configParser
 	 */
-	public function __construct(FormFactory $factory, ConfigManager $configManager) {
+	public function __construct(FormFactory $factory, ConfigManager $configManager, ConfigParser $configParser) {
 		$this->factory = $factory;
 		$this->configManager = $configManager;
+		$this->configParser = $configParser;
 	}
 
 	/**
-	 * Create IQRF configuration form
-	 * @param IqrfAppPresenter $presenter
-	 * @return Form IQRF configuration form
+	 * Create UDP configuration form
+	 * @param UdpPresenter $presenter
+	 * @return Form UDP configuration form
 	 */
-	public function create(IqrfAppPresenter $presenter) {
+	public function create(UdpPresenter $presenter) {
 		$form = $this->factory->create();
-		$json = $this->configManager->read('iqrfapp');
-		$form->addText('LocalMqName', 'LocalMqName')->setRequired();
-		$form->addText('RemoteMqName', 'RemoteMqName')->setRequired();
+		$fileName = 'UdpMessaging';
+		$json = $this->configManager->read($fileName);
+		$form->addText('Name', 'Name')->setRequired();
+		$form->addCheckbox('Enabled', 'Enabled');
+		$form->addInteger('RemotePort', 'RemotePort')->setRequired();
+		$form->addInteger('LocalPort', 'LocalPort')->setRequired();
 		$form->addSubmit('save', 'Save');
-		$form->setDefaults($json);
+		$form->setDefaults($this->configParser->instancesToForm($json));
 		$form->addProtection('Timeout expired, resubmit the form.');
-		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
-			$this->configManager->write('iqrfapp', $values);
+		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $fileName) {
+			$this->configManager->saveInstances($fileName, $values);
 			$presenter->redirect('Homepage:default');
 		};
 		return $form;

@@ -16,16 +16,15 @@
  * limitations under the License.
  */
 
-namespace App\Forms;
+namespace App\ConfigModule\Forms;
 
 use App\Forms\FormFactory;
 use App\Model\ConfigManager;
-use App\Model\ConfigParser;
-use App\ConfigModule\Presenters\MqPresenter;
+use App\ConfigModule\Presenters\MainPresenter;
 use Nette;
 use Nette\Application\UI\Form;
 
-class ConfigMqFormFactory {
+class ConfigComponentsFormFactory {
 
 	use Nette\SmartObject;
 
@@ -33,11 +32,6 @@ class ConfigMqFormFactory {
 	 * @var ConfigManager
 	 */
 	private $configManager;
-
-	/**
-	 * @var ConfigParser
-	 */
-	private $configParser;
 
 	/**
 	 * @var FormFactory
@@ -48,32 +42,28 @@ class ConfigMqFormFactory {
 	 * Constructor
 	 * @param FormFactory $factory
 	 * @param ConfigManager $configManager
-	 * @param ConfigParser $configParser
 	 */
-	public function __construct(FormFactory $factory, ConfigManager $configManager, ConfigParser $configParser) {
+	public function __construct(FormFactory $factory, ConfigManager $configManager) {
 		$this->factory = $factory;
 		$this->configManager = $configManager;
-		$this->configParser = $configParser;
 	}
 
 	/**
-	 * Create MQTT configuration form
-	 * @param MqPresenter $presenter
-	 * @return Form MQTT configuration form
+	 * Create components configuration form
+	 * @param MainPresenter $presenter
+	 * @return Form Components configuration form
 	 */
-	public function create(MqPresenter $presenter) {
+	public function create(MainPresenter $presenter) {
 		$form = $this->factory->create();
-		$fileName = 'MqMessaging';
-		$json = $this->configManager->read($fileName);
-		$form->addText('Name', 'Name')->setRequired();
-		$form->addCheckbox('Enabled', 'Enabled');
-		$form->addText('LocalMqName', 'LocalMqName')->setRequired();
-		$form->addText('RemoteMqName', 'RemoteMqName')->setRequired();
+		$components = $this->configManager->read('config')['Components'];
+		foreach ($components as $component) {
+			$form->addCheckbox($component['ComponentName'], $component['ComponentName'])
+				->setDefaultValue($component['Enabled']);
+		}
 		$form->addSubmit('save', 'Save');
-		$form->setDefaults($this->configParser->instancesToForm($json));
 		$form->addProtection('Timeout expired, resubmit the form.');
-		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $fileName) {
-			$this->configManager->saveInstances($fileName, $values);
+		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
+			$this->configManager->saveComponents($values);
 			$presenter->redirect('Homepage:default');
 		};
 		return $form;

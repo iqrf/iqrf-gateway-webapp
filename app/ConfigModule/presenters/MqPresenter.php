@@ -18,7 +18,7 @@
 
 namespace App\ConfigModule\Presenters;
 
-use App\Forms\ConfigMqFormFactory;
+use App\ConfigModule\Forms\ConfigMqFormFactory;
 use App\Presenters\BasePresenter;
 use App\Model\ConfigManager;
 

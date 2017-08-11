@@ -16,15 +16,15 @@
  * limitations under the License.
  */
 
-namespace App\Forms;
+namespace App\ConfigModule\Forms;
 
 use App\Forms\FormFactory;
 use App\Model\ConfigManager;
-use App\ConfigModule\Presenters\MainPresenter;
+use App\ConfigModule\Presenters\IqrfPresenter;
 use Nette;
 use Nette\Application\UI\Form;
 
-class ConfigComponentsFormFactory {
+class ConfigIqrfFormFactory {
 
 	use Nette\SmartObject;
 
@@ -49,21 +49,21 @@ class ConfigComponentsFormFactory {
 	}
 
 	/**
-	 * Create components configuration form
-	 * @param MainPresenter $presenter
-	 * @return Form Components configuration form
+	 * Create IQRF configuration form
+	 * @param IqrfPresenter $presenter
+	 * @return Form IQRF configuration form
 	 */
-	public function create(MainPresenter $presenter) {
+	public function create(IqrfPresenter $presenter) {
 		$form = $this->factory->create();
-		$components = $this->configManager->read('config')['Components'];
-		foreach ($components as $component) {
-			$form->addCheckbox($component['ComponentName'], $component['ComponentName'])
-				->setDefaultValue($component['Enabled']);
-		}
+		$json = $this->configManager->read('IqrfInterface');
+		$form->addText('IqrfInterface', 'IqrfInterface')->setRequired();
+		$form->addInteger('DpaHandlerTimeout', 'DpaHandlerTimeout')->setRequired()
+			->addRule(Form::MIN, 'DPA Handler timeout must be bigger than 0.', 0);
 		$form->addSubmit('save', 'Save');
+		$form->setDefaults($json);
 		$form->addProtection('Timeout expired, resubmit the form.');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
-			$this->configManager->saveComponents($values);
+			$this->configManager->write('IqrfInterface', $values);
 			$presenter->redirect('Homepage:default');
 		};
 		return $form;

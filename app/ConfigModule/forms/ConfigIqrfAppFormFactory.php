@@ -16,15 +16,15 @@
  * limitations under the License.
  */
 
-namespace App\Forms;
+namespace App\ConfigModule\Forms;
 
 use App\Forms\FormFactory;
 use App\Model\ConfigManager;
-use App\ConfigModule\Presenters\IqrfPresenter;
+use App\ConfigModule\Presenters\IqrfAppPresenter;
 use Nette;
 use Nette\Application\UI\Form;
 
-class ConfigIqrfFormFactory {
+class ConfigIqrfAppFormFactory {
 
 	use Nette\SmartObject;
 
@@ -50,20 +50,19 @@ class ConfigIqrfFormFactory {
 
 	/**
 	 * Create IQRF configuration form
-	 * @param IqrfPresenter $presenter
+	 * @param IqrfAppPresenter $presenter
 	 * @return Form IQRF configuration form
 	 */
-	public function create(IqrfPresenter $presenter) {
+	public function create(IqrfAppPresenter $presenter) {
 		$form = $this->factory->create();
-		$json = $this->configManager->read('IqrfInterface');
-		$form->addText('IqrfInterface', 'IqrfInterface')->setRequired();
-		$form->addInteger('DpaHandlerTimeout', 'DpaHandlerTimeout')->setRequired()
-			->addRule(Form::MIN, 'DPA Handler timeout must be bigger than 0.', 0);
+		$json = $this->configManager->read('iqrfapp');
+		$form->addText('LocalMqName', 'LocalMqName')->setRequired();
+		$form->addText('RemoteMqName', 'RemoteMqName')->setRequired();
 		$form->addSubmit('save', 'Save');
 		$form->setDefaults($json);
 		$form->addProtection('Timeout expired, resubmit the form.');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
-			$this->configManager->write('IqrfInterface', $values);
+			$this->configManager->write('iqrfapp', $values);
 			$presenter->redirect('Homepage:default');
 		};
 		return $form;

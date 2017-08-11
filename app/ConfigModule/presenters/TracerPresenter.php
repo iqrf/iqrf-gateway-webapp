@@ -18,7 +18,7 @@
 
 namespace App\ConfigModule\Presenters;
 
-use App\Forms\ConfigTracerFormFactory;
+use App\ConfigModule\Forms\ConfigTracerFormFactory;
 use App\Presenters\BasePresenter;
 use App\Model\ConfigManager;
 

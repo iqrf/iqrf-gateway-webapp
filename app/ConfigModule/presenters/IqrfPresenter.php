@@ -18,7 +18,7 @@
 
 namespace App\ConfigModule\Presenters;
 
-use App\Forms\ConfigIqrfFormFactory;
+use App\ConfigModule\Forms\ConfigIqrfFormFactory;
 use App\Presenters\BasePresenter;
 use App\Model\ConfigManager;
 use App\Model\InterfaceManager;
