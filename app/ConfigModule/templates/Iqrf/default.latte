@@ -27,13 +27,13 @@
 		{if !empty($interfaces['cdc'])}
 			<h3>USB CDC</h3>
 			{foreach $interfaces['cdc'] as $interface}
-				<a class="btn btn-default" role="button" onclick="document.getElementById('frm-configIqrfForm-IqrfInterface').value = {$interface}">{$interface}</a>
+				<a class="btn btn-default btn-port" role="button" data-port="{$interface}">{$interface}</a>
 			{/foreach}
 		{/if}
 		{if !empty($interfaces['spi'])}
 			<h3>SPI</h3>
 			{foreach $interfaces['spi'] as $interface}
-				<a class="btn btn-default" role="button" onclick="document.getElementById('frm-configIqrfForm-IqrfInterface').value = {$interface}">{$interface}</a>
+				<a class="btn btn-default btn-port" role="button" data-port="{$interface}">{$interface}</a>
 			{/foreach}
 		{/if}
 	</div>
