@@ -20,65 +20,32 @@ namespace App\IqrfAppModule\Model;
 
 use Nette;
 
-class IqrfAppParser {
+class OsParser {
 
 	use Nette\SmartObject;
 
 	/**
-	 * Parse DPA response
-	 * @param string $response DPA packet response
-	 * @return array Parsed response in array
-	 * @throws Exception
+	 * Parse DPA OS response
+	 * @param string $packet DPA packet
+	 * @return array
 	 */
-	public function parseResponse($response) {
-		$output = explode(' ', $response);
-		$status = end($output);
-		if ($status !== 'STATUS_NO_ERROR') {
-			return null;
-			// throw new Exception();
-		}
-		$packet = $output[1];
-		if (empty($packet) || count($output) === 2) {
-			return null;
-			// throw new Exception();
-		}
+	public function parse($packet) {
 		$data = explode('.', $packet);
-		$pnum = $data[2];
 		$pcmd = $data[3];
-		if ($pnum == '00' && ($pcmd == '81' || $pcmd == '82')) {
-			return $this->parseCoordinatorGetNodes($packet);
+		switch ($pcmd) {
+			case '80':
+				return $this->parseReadInfo($packet);
+			default:
+				break;
 		}
-		if ($pnum == '02' && $pcmd == '80') {
-			return $this->parseOsReadInfo($packet);
-		}
-		return null;
-	}
-
-	/**
-	 * Parse response to DPA Coordinator - "Get bonded nodes" and "Get discovered nodes" request
-	 * @param string $packet DPA packet response
-	 * @return string Information about DCTR module
-	 */
-	public function parseCoordinatorGetNodes($packet) {
-		$data = [];
-		$packetArray = explode('.', $packet);
-		if ($packetArray[3] === '81') {
-			$type = 'DiscoveredNodes';
-		} elseif ($packetArray[3] === '82') {
-			$type = 'BondedNodes';
-		}
-		for ($i = 0; $i < 24; $i += 2) {
-			$data[$type][$i / 2] = str_split(str_pad(strrev(base_convert($packetArray[9 + $i] . $packetArray[8 + $i], 16, 2)), 20, "0"));
-		}
-		return $data;
 	}
 
 	/**
 	 * Parse response to DPA OS - "Read info" request
 	 * @param string $packet DPA packet response
-	 * @return string Information about DCTR module
+	 * @return array Information about DCTR module
 	 */
-	public function parseOsReadInfo($packet) {
+	public function parseReadInfo($packet) {
 		$data = [];
 		$trTypes = [0 => '52D', 1 => '58D-RJ', 2 => '72D', 3 => '53D', 8 => '54D', 9 => '55D', 10 => '56D', 11 => '76D'];
 		$mcuTypes = [3 => 'PIC16F886', 4 => 'PIC16F1938'];

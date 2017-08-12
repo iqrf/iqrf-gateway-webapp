@@ -18,6 +18,8 @@
 
 namespace App\IqrfAppModule\Model;
 
+use App\IqrfAppModule\Model\CoordinatorParser;
+use App\IqrfAppModule\Model\OsParser;
 use App\Model\CommandManager;
 use Nette;
 
@@ -31,11 +33,25 @@ class IqrfAppManager {
 	private $commandManager;
 
 	/**
+	 * @var CoordinatorParser
+	 */
+	private $coordinatorParser;
+
+	/**
+	 * @var OsParser
+	 */
+	private $osParser;
+
+	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command Manager
+	 * @param CoordinatorParser $coordinatorParser
+	 * @param OsParser $osParser
 	 */
-	public function __construct(CommandManager $commandManager) {
+	public function __construct(CommandManager $commandManager, CoordinatorParser $coordinatorParser, OsParser $osParser) {
 		$this->commandManager = $commandManager;
+		$this->coordinatorParser = $coordinatorParser;
+		$this->osParser = $osParser;
 	}
 
 	/**
@@ -68,6 +84,35 @@ class IqrfAppManager {
 	public function validatePacket($packet) {
 		$pattern = '/^([0-9a-fA-F]{1,2}(\.|\ )){1,64}[0-9a-fA-F]{1,2}(\.|)$/';
 		return (bool) preg_match($pattern, $packet);
+	}
+
+	/**
+	 * Parse DPA response
+	 * @param string $response DPA packet response
+	 * @return array Parsed response in array
+	 * @throws Exception
+	 */
+	public function parseResponse($response) {
+		$output = explode(' ', $response);
+		$status = end($output);
+		if ($status !== 'STATUS_NO_ERROR') {
+			return null;
+			// throw new Exception();
+		}
+		$packet = $output[1];
+		if (empty($packet) || count($output) === 2) {
+			return null;
+			// throw new Exception();
+		}
+		$pnum = explode('.', $packet)[2];
+		switch ($pnum) {
+			case '00':
+				return $this->coordinatorParser->parse($packet);
+			case '02':
+				return $this->osParser->parse($packet);
+			default:
+				return null;
+		}
 	}
 
 }

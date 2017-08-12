@@ -20,7 +20,6 @@ namespace App\IqrfAppModule\Presenters;
 
 use App\IqrfAppModule\Forms\IqrfAppSendRawFormFactory;
 use App\IqrfAppModule\Model\IqrfAppManager;
-use App\IqrfAppModule\Model\IqrfAppParser;
 use App\IqrfAppModule\Model\IqrfMacroManager;
 use App\Presenters\BasePresenter;
 use Nette\Application\UI\Form;
@@ -41,11 +40,6 @@ class SendRawPresenter extends BasePresenter {
 	private $iqrfAppManager;
 
 	/**
-	 * @var IqrfAppParser
-	 */
-	private $iqrfAppParser;
-
-	/**
 	 * @var IqrfMacroManager
 	 */
 	private $iqrfMacroManager;
@@ -53,13 +47,11 @@ class SendRawPresenter extends BasePresenter {
 	/**
 	 * Constructor
 	 * @param IqrfAppManager $manager
-	 * @param IqrfAppParser $parser
 	 * @param IqrfMacroManager $macroManager
 	 * @param IqrfAppSendRawFormFactory $formFactory
 	 */
-	public function __construct(IqrfAppManager $manager, IqrfAppParser $parser, IqrfMacroManager $macroManager, IqrfAppSendRawFormFactory $formFactory) {
+	public function __construct(IqrfAppManager $manager, IqrfMacroManager $macroManager, IqrfAppSendRawFormFactory $formFactory) {
 		$this->iqrfAppManager = $manager;
-		$this->iqrfAppParser = $parser;
 		$this->iqrfMacroManager = $macroManager;
 		$this->sendRawFactory = $formFactory;
 	}
@@ -78,7 +70,7 @@ class SendRawPresenter extends BasePresenter {
 	 */
 	public function handleShowResponse($response) {
 		$this->template->response = $response;
-		$this->template->parsedResponse = $this->iqrfAppParser->parseResponse($response);
+		$this->template->parsedResponse = $this->iqrfAppManager->parseResponse($response);
 		$this->redrawControl('responseChange');
 	}
 

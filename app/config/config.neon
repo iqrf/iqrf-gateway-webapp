@@ -42,9 +42,10 @@ services:
 	- App\Forms\FormFactory
 	- App\Forms\SignInFormFactory
 	- App\IqrfAppModule\Forms\IqrfAppSendRawFormFactory
+	- App\IqrfAppModule\Model\CoordinatorParser
 	- App\IqrfAppModule\Model\IqrfAppManager
-	- App\IqrfAppModule\Model\IqrfAppParser
 	- App\IqrfAppModule\Model\IqrfMacroManager(%macroPath%)
+	- App\IqrfAppModule\Model\OsParser
 	- App\Model\CommandManager(%sudo%)
 	- App\Model\ConfigManager(%configDir%)
 	- App\Model\ConfigParser

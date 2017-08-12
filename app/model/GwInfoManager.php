@@ -19,7 +19,6 @@
 namespace App\Model;
 
 use App\IqrfAppModule\Model\IqrfAppManager;
-use App\IqrfAppModule\Model\IqrfAppParser;
 use App\Model\CommandManager;
 use Nette;
 
@@ -38,20 +37,13 @@ class GwInfoManager {
 	private $iqrfAppManager;
 
 	/**
-	 * @var IqrfAppParser
-	 */
-	private $iqrfAppParser;
-
-	/**
 	 * Constructor
 	 * @param CommandManager $commandManager
 	 * @param IqrfAppManager $iqrfAppManager
-	 * @param IqrfAppParser $iqrfAppParser
 	 */
-	public function __construct(CommandManager $commandManager, IqrfAppManager $iqrfAppManager, IqrfAppParser $iqrfAppParser) {
+	public function __construct(CommandManager $commandManager, IqrfAppManager $iqrfAppManager) {
 		$this->commandManager = $commandManager;
 		$this->iqrfAppManager = $iqrfAppManager;
-		$this->iqrfAppParser = $iqrfAppParser;
 	}
 
 	/**
@@ -106,7 +98,7 @@ class GwInfoManager {
 	 */
 	public function getCoordinatorInfo() {
 		$response = $this->iqrfAppManager->sendRaw('00.00.02.00.FF.FF');
-		return $this->iqrfAppParser->parseResponse($response);
+		return $this->iqrfAppManager->parseResponse($response);
 	}
 
 }

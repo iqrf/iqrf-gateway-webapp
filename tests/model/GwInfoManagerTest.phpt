@@ -8,8 +8,9 @@
 
 namespace Test\Model;
 
+use App\IqrfAppModule\Model\CoordinatorParser;
 use App\IqrfAppModule\Model\IqrfAppManager;
-use App\IqrfAppModule\Model\IqrfAppParser;
+use App\IqrfAppModule\Model\OsParser;
 use App\Model\CommandManager;
 use App\Model\GwInfoManager;
 use Nette\DI\Container;
@@ -20,8 +21,15 @@ $container = require __DIR__ . '/../bootstrap.php';
 
 class GwInfoManagerTest extends TestCase {
 
+	/**
+	 * @var Container
+	 */
 	private $container;
 
+	/**
+	 * Constructor
+	 * @param Container $container
+	 */
 	function __construct(Container $container) {
 		$this->container = $container;
 	}
@@ -37,9 +45,10 @@ class GwInfoManagerTest extends TestCase {
 		$commandManager->shouldReceive('send')->with($cmdEth0, true)->andReturn('192.168.1.100' . PHP_EOL . 'fda9:d95:d5b1::64');
 		$cmdWlan0 = 'ip a s wlan0 | grep inet | grep global | grep -v temporary | awk \'{print $2}\'';
 		$commandManager->shouldReceive('send')->with($cmdWlan0, true)->andReturn('');
-		$iqrfAppManager = new IqrfAppManager($commandManager);
-		$iqrfAppParser = new IqrfAppParser();
-		$gwInfoManager = new GwInfoManager($commandManager, $iqrfAppManager, $iqrfAppParser);
+		$coordinatorParser = new CoordinatorParser();
+		$osParser = new OsParser();
+		$iqrfAppManager = new IqrfAppManager($commandManager, $coordinatorParser, $osParser);
+		$gwInfoManager = new GwInfoManager($commandManager, $iqrfAppManager);
 		Assert::same(['eth0' => ['192.168.1.100', 'fda9:d95:d5b1::64']], $gwInfoManager->getIpAddresses());
 	}
 
@@ -51,9 +60,10 @@ class GwInfoManagerTest extends TestCase {
 		$commandManager = \Mockery::mock(CommandManager::class);
 		$commandManager->shouldReceive('send')->with("ls /sys/class/net | awk '{ print $0 }'", true)->andReturn('eth0' . PHP_EOL . 'lo');
 		$commandManager->shouldReceive('send')->with('cat /sys/class/net/eth0/address', true)->andReturn('01:02:03:04:05:06');
-		$iqrfAppManager = new IqrfAppManager($commandManager);
-		$iqrfAppParser = new IqrfAppParser();
-		$gwInfoManager = new GwInfoManager($commandManager, $iqrfAppManager, $iqrfAppParser);
+		$coordinatorParser = new CoordinatorParser();
+		$osParser = new OsParser();
+		$iqrfAppManager = new IqrfAppManager($commandManager, $coordinatorParser, $osParser);
+		$gwInfoManager = new GwInfoManager($commandManager, $iqrfAppManager);
 		Assert::same(['eth0' => '01:02:03:04:05:06'], $gwInfoManager->getMacAddresses());
 	}
 
@@ -62,12 +72,13 @@ class GwInfoManagerTest extends TestCase {
 	 * Test function to get hostname of the gateway
 	 */
 	public function testGetHostname() {
-		$commandManager = \Mockery::mock('App\Model\CommandManager');
+		$commandManager = \Mockery::mock(CommandManager::class);
 		$output = 'gateway';
 		$commandManager->shouldReceive('send')->with('hostname -f')->andReturn($output);
-		$iqrfAppManager = new IqrfAppManager($commandManager);
-		$iqrfAppParser = new IqrfAppParser();
-		$gwInfoManager = new GwInfoManager($commandManager, $iqrfAppManager, $iqrfAppParser);
+		$coordinatorParser = new CoordinatorParser();
+		$osParser = new OsParser();
+		$iqrfAppManager = new IqrfAppManager($commandManager, $coordinatorParser, $osParser);
+		$gwInfoManager = new GwInfoManager($commandManager, $iqrfAppManager);
 		Assert::same($output, $gwInfoManager->getHostname());
 	}
 
@@ -78,9 +89,10 @@ class GwInfoManagerTest extends TestCase {
 	public function testGetCoordinatorInfo() {
 		$commandManager = \Mockery::mock(CommandManager::class);
 		$commandManager->shouldReceive('send')->with('iqrfapp raw 00.00.02.00.FF.FF', true)->andReturn(null);
-		$iqrfAppManager = new IqrfAppManager($commandManager);
-		$iqrfAppParser = new IqrfAppParser();
-		$gwInfoManager = new GwInfoManager($commandManager, $iqrfAppManager, $iqrfAppParser);
+		$coordinatorParser = new CoordinatorParser();
+		$osParser = new OsParser();
+		$iqrfAppManager = new IqrfAppManager($commandManager, $coordinatorParser, $osParser);
+		$gwInfoManager = new GwInfoManager($commandManager, $iqrfAppManager);
 		Assert::null($gwInfoManager->getCoordinatorInfo());
 	}
 
