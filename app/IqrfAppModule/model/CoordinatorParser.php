@@ -36,8 +36,6 @@ class CoordinatorParser {
 				return $this->parseGetNodes($packet);
 			case '82':
 				return $this->parseGetNodes($packet);
-			default:
-				break;
 		}
 	}
 

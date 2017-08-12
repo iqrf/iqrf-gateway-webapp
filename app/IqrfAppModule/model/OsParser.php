@@ -35,8 +35,6 @@ class OsParser {
 		switch ($pcmd) {
 			case '80':
 				return $this->parseReadInfo($packet);
-			default:
-				break;
 		}
 	}
 
@@ -52,10 +50,9 @@ class OsParser {
 		$packetArray = explode('.', $packet);
 		$data['ModuleId'] = strtoupper($packetArray[11] . $packetArray[10] . $packetArray[9] . $packetArray[8]);
 		$data['OsVersion'] = (hexdec($packetArray[12]) >> 4) . '.0' . (hexdec($packetArray[12]) & 0x0f) . 'D';
-		$data['TrType'] = (hexdec($packetArray[11]) & 0x80) ? 'DCTR-' : 'TR-';
 		$trType = hexdec($packetArray[13]) >> 4;
 		if (array_key_exists($trType, $trTypes)) {
-			$data['TrType'] .= $trTypes[$trType];
+			$data['TrType'] = ((hexdec($packetArray[11]) & 0x80) ? 'DCTR-' : 'TR-') . $trTypes[$trType];
 		} else {
 			$data['TrType'] = 'UNKNOWN';
 		}

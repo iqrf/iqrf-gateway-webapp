@@ -64,6 +64,11 @@ class OsParserTest extends TestCase {
 		$osParser = new OsParser();
 		$array = $osParser->parseReadInfo($this->packetOsInfo);
 		Assert::equal($this->expectedOsInfo, $array);
+		$failPacket = preg_replace('/\.24\./', '\.ff\.', $this->packetOsInfo);
+		$failArray = $osParser->parseReadInfo($failPacket);
+		$failExpected = $this->expectedOsInfo;
+		$failExpected['TrType'] = $failExpected['McuType'] = 'UNKNOWN';
+		Assert::equal($failExpected, $failArray);
 	}
 
 }
