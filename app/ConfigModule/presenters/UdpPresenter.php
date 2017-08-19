@@ -19,7 +19,6 @@
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\ConfigUdpFormFactory;
-use App\Model\ConfigManager;
 use App\Presenters\BasePresenter;
 
 class UdpPresenter extends BasePresenter {
@@ -30,30 +29,23 @@ class UdpPresenter extends BasePresenter {
 	private $formFactory;
 
 	/**
-	 * @var ConfigManager
-	 */
-	private $configManager;
-
-	/**
 	 * Constructor
 	 * @param ConfigUdpFormFactory $formFactory
-	 * @param ConfigManager $configManager
 	 */
-	public function __construct(ConfigUdpFormFactory $formFactory, ConfigManager $configManager) {
-		$this->configManager = $configManager;
+	public function __construct(ConfigUdpFormFactory $formFactory) {
 		$this->formFactory = $formFactory;
 	}
 
 	/**
-	 *
+	 * Render UDP interface configurator
 	 */
 	public function renderDefault() {
 		$this->onlyForAdmins();
 	}
 
 	/**
-	 * Create MQ interface form
-	 * @return Form MQ interface form
+	 * Create UDP interface form
+	 * @return Form UDP interface form
 	 */
 	protected function createComponentConfigUdpForm() {
 		$this->onlyForAdmins();

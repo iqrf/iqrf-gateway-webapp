@@ -18,9 +18,9 @@
 
 namespace App\ConfigModule\Forms;
 
+use App\ConfigModule\Model\ComponentManager;
 use App\ConfigModule\Presenters\MainPresenter;
 use App\Forms\FormFactory;
-use App\Model\ConfigManager;
 use Nette;
 use Nette\Application\UI\Form;
 
@@ -29,9 +29,9 @@ class ConfigComponentsFormFactory {
 	use Nette\SmartObject;
 
 	/**
-	 * @var ConfigManager
+	 * @var ComponentManager
 	 */
-	private $configManager;
+	private $manager;
 
 	/**
 	 * @var FormFactory
@@ -40,12 +40,12 @@ class ConfigComponentsFormFactory {
 
 	/**
 	 * Constructor
+	 * @param ComponentManager $manager
 	 * @param FormFactory $factory
-	 * @param ConfigManager $configManager
 	 */
-	public function __construct(FormFactory $factory, ConfigManager $configManager) {
+	public function __construct(ComponentManager $manager, FormFactory $factory) {
+		$this->manager = $manager;
 		$this->factory = $factory;
-		$this->configManager = $configManager;
 	}
 
 	/**
@@ -55,15 +55,15 @@ class ConfigComponentsFormFactory {
 	 */
 	public function create(MainPresenter $presenter) {
 		$form = $this->factory->create();
-		$components = $this->configManager->read('config')['Components'];
+		$components = $this->manager->load()['Components'];
 		foreach ($components as $component) {
 			$form->addCheckbox($component['ComponentName'], $component['ComponentName'])
-				->setDefaultValue($component['Enabled']);
+					->setDefaultValue($component['Enabled']);
 		}
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('Timeout expired, resubmit the form.');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
-			$this->configManager->saveComponents($values);
+			$this->manager->save($values);
 			$presenter->redirect('Homepage:default');
 		};
 		return $form;

@@ -19,7 +19,6 @@
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\ConfigIqrfAppFormFactory;
-use App\Model\ConfigManager;
 use App\Presenters\BasePresenter;
 
 class IqrfAppPresenter extends BasePresenter {
@@ -30,30 +29,23 @@ class IqrfAppPresenter extends BasePresenter {
 	private $formFactory;
 
 	/**
-	 * @var ConfigManager
-	 */
-	private $configManager;
-
-	/**
 	 * Constructor
 	 * @param ConfigIqrfAppFormFactory $formFactory
-	 * @param ConfigManager $configManager
 	 */
-	public function __construct(ConfigIqrfAppFormFactory $formFactory, ConfigManager $configManager) {
-		$this->configManager = $configManager;
+	public function __construct(ConfigIqrfAppFormFactory $formFactory) {
 		$this->formFactory = $formFactory;
 	}
 
 	/**
-	 *
+	 * Render IqrfApp configurator
 	 */
 	public function renderDefault() {
 		$this->onlyForAdmins();
 	}
 
 	/**
-	 * Create MQ interface form
-	 * @return Form MQ interface form
+	 * Create IqrfApp form
+	 * @return Form IqrfApp form
 	 */
 	protected function createComponentConfigIqrfAppForm() {
 		$this->onlyForAdmins();

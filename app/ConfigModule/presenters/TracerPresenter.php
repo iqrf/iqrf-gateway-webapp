@@ -19,7 +19,6 @@
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\ConfigTracerFormFactory;
-use App\Model\ConfigManager;
 use App\Presenters\BasePresenter;
 
 class TracerPresenter extends BasePresenter {
@@ -30,30 +29,23 @@ class TracerPresenter extends BasePresenter {
 	private $formFactory;
 
 	/**
-	 * @var ConfigManager
-	 */
-	private $configManager;
-
-	/**
 	 * Constructor
 	 * @param ConfigTracerFormFactory $formFactory
-	 * @param ConfigManager $configManager
 	 */
-	public function __construct(ConfigTracerFormFactory $formFactory, ConfigManager $configManager) {
-		$this->configManager = $configManager;
+	public function __construct(ConfigTracerFormFactory $formFactory) {
 		$this->formFactory = $formFactory;
 	}
 
 	/**
-	 *
+	 * Render Tracer configurator
 	 */
 	public function renderDefault() {
 		$this->onlyForAdmins();
 	}
 
 	/**
-	 * Create MQ interface form
-	 * @return Form MQ interface form
+	 * Create Tracer form
+	 * @return Form Tracer form
 	 */
 	protected function createComponentConfigTracerForm() {
 		$this->onlyForAdmins();

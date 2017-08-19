@@ -7,4 +7,5 @@ nbproject/
 # Nette Tester
 tests/output/
 tests/*/output/
+tests/*/*/output/
 tests/configuration-test

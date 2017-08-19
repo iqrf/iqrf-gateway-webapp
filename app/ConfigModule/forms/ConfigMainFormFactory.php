@@ -18,6 +18,7 @@
 
 namespace App\ConfigModule\Forms;
 
+use App\ConfigModule\Model\MainManager;
 use App\ConfigModule\Presenters\MainPresenter;
 use App\Forms\FormFactory;
 use App\Model\ConfigManager;
@@ -29,9 +30,9 @@ class ConfigMainFormFactory {
 	use Nette\SmartObject;
 
 	/**
-	 * @var ConfigManager
+	 * @var MainManager
 	 */
-	private $configManager;
+	private $manager;
 
 	/**
 	 * @var FormFactory
@@ -41,11 +42,11 @@ class ConfigMainFormFactory {
 	/**
 	 * Constructor
 	 * @param FormFactory $factory
-	 * @param ConfigManager $configManager
+	 * @param MainManager $manager
 	 */
-	public function __construct(FormFactory $factory, ConfigManager $configManager) {
+	public function __construct(FormFactory $factory, MainManager $manager) {
+		$this->manager = $manager;
 		$this->factory = $factory;
-		$this->configManager = $configManager;
 	}
 
 	/**
@@ -55,17 +56,16 @@ class ConfigMainFormFactory {
 	 */
 	public function create(MainPresenter $presenter) {
 		$form = $this->factory->create();
-		$json = $this->configManager->read('config');
 		$items = ['forwarding' => 'Forwarding', 'operational' => 'Operational', 'service' => 'Service'];
 		$form->addText('Configuration', 'Configuration');
 		$form->addText('ConfigurationDir', 'ConfigurationDir');
 		$form->addInteger('WatchDogTimeoutMilis', 'WatchDogTimeoutMilis');
 		$form->addSelect('Mode', 'Mode', $items);
 		$form->addSubmit('save', 'Save');
-		$form->setDefaults($json);
+		$form->setDefaults($this->manager->load());
 		$form->addProtection('Timeout expired, resubmit the form.');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
-			$this->configManager->saveMain($values);
+			$this->manager->save($values);
 			$presenter->redirect('Homepage:default');
 		};
 		return $form;

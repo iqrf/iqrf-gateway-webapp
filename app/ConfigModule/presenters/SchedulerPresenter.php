@@ -18,8 +18,8 @@
 
 namespace App\ConfigModule\Presenters;
 
+use App\ConfigModule\Model\SchedulerManager;
 use App\ConfigModule\Forms\ConfigSchedulerFormFactory;
-use App\Model\ConfigManager;
 use App\Presenters\BasePresenter;
 
 class SchedulerPresenter extends BasePresenter {
@@ -30,16 +30,16 @@ class SchedulerPresenter extends BasePresenter {
 	private $formFactory;
 
 	/**
-	 * @var ConfigManager
+	 * @var SchedulerManager
 	 */
 	private $configManager;
 
 	/**
 	 * Constructor
 	 * @param ConfigSchedulerFormFactory $formFactory
-	 * @param ConfigManager $configManager
+	 * @param SchedulerManager $configManager
 	 */
-	public function __construct(ConfigSchedulerFormFactory $formFactory, ConfigManager $configManager) {
+	public function __construct(ConfigSchedulerFormFactory $formFactory, SchedulerManager $configManager) {
 		$this->configManager = $configManager;
 		$this->formFactory = $formFactory;
 	}
@@ -49,7 +49,7 @@ class SchedulerPresenter extends BasePresenter {
 	 */
 	public function renderDefault() {
 		$this->onlyForAdmins();
-		$this->template->tasks = $this->configManager->read('Scheduler')['TasksJson'];
+		$this->template->tasks = $this->configManager->getTasks();
 	}
 
 	/**
@@ -67,7 +67,7 @@ class SchedulerPresenter extends BasePresenter {
 	 */
 	public function actionDelete($id) {
 		$this->onlyForAdmins();
-		$this->configManager->deleteScheduler($id);
+		$this->configManager->delete($id);
 		$this->redirect('Scheduler:default');
 		$this->setView('default');
 	}

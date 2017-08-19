@@ -19,7 +19,6 @@
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\ConfigMqFormFactory;
-use App\Model\ConfigManager;
 use App\Presenters\BasePresenter;
 
 class MqPresenter extends BasePresenter {
@@ -30,22 +29,15 @@ class MqPresenter extends BasePresenter {
 	private $formFactory;
 
 	/**
-	 * @var ConfigManager
-	 */
-	private $configManager;
-
-	/**
 	 * Constructor
 	 * @param ConfigMqFormFactory $formFactory
-	 * @param ConfigManager $configManager
 	 */
-	public function __construct(ConfigMqFormFactory $formFactory, ConfigManager $configManager) {
-		$this->configManager = $configManager;
+	public function __construct(ConfigMqFormFactory $formFactory) {
 		$this->formFactory = $formFactory;
 	}
 
 	/**
-	 *
+	 * Render MQ interface configurator
 	 */
 	public function renderDefault() {
 		$this->onlyForAdmins();

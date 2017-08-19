@@ -18,10 +18,9 @@
 
 namespace App\ConfigModule\Forms;
 
+use App\ConfigModule\Model\InstanceManager;
 use App\ConfigModule\Presenters\MqttPresenter;
 use App\Forms\FormFactory;
-use App\Model\ConfigManager;
-use App\Model\ConfigParser;
 use Nette;
 use Nette\Application\UI\Form;
 
@@ -30,14 +29,9 @@ class ConfigMqttFormFactory {
 	use Nette\SmartObject;
 
 	/**
-	 * @var ConfigManager
+	 * @var InstanceManager
 	 */
-	private $configManager;
-
-	/**
-	 * @var ConfigParser
-	 */
-	private $configParser;
+	private $manager;
 
 	/**
 	 * @var FormFactory
@@ -46,14 +40,12 @@ class ConfigMqttFormFactory {
 
 	/**
 	 * Constructor
+	 * @param InstanceManager $manager
 	 * @param FormFactory $factory
-	 * @param ConfigManager $configManager
-	 * @param ConfigParser $configParser
 	 */
-	public function __construct(FormFactory $factory, ConfigManager $configManager, ConfigParser $configParser) {
+	public function __construct(InstanceManager $manager, FormFactory $factory) {
+		$this->manager = $manager;
 		$this->factory = $factory;
-		$this->configManager = $configManager;
-		$this->configParser = $configParser;
 	}
 
 	/**
@@ -65,7 +57,6 @@ class ConfigMqttFormFactory {
 		$id = $presenter->getParameter('id');
 		$form = $this->factory->create();
 		$fileName = 'MqttMessaging';
-		$json = $this->configManager->read($fileName);
 		$qos = ['QoS 0 - At most once', 'QoS 1 - At least once', 'QoS 2 - Exactly once'];
 		$form->addText('Name', 'Name')->setRequired();
 		$form->addCheckbox('Enabled', 'Enabled');
@@ -89,10 +80,10 @@ class ConfigMqttFormFactory {
 		$form->addText('EnabledCipherSuites', 'EnabledCipherSuites');
 		$form->addCheckbox('EnableServerCertAuth', 'EnableServerCertAuth');
 		$form->addSubmit('save', 'Save');
-		$form->setDefaults($this->configParser->instancesToForm($json, $id));
+		$form->setDefaults($this->manager->load($fileName, $id));
 		$form->addProtection('Timeout expired, resubmit the form.');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $fileName, $id) {
-			$this->configManager->saveInstances($fileName, $values, $id);
+			$this->manager->save($fileName, $values, $id);
 			$presenter->redirect('Mqtt:default');
 		};
 		return $form;

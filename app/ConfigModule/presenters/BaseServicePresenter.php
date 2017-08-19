@@ -18,8 +18,8 @@
 
 namespace App\ConfigModule\Presenters;
 
+use App\ConfigModule\Model\BaseServiceManager;
 use App\ConfigModule\Forms\ConfigBaseServiceFormFactory;
-use App\Model\ConfigManager;
 use App\Presenters\BasePresenter;
 
 class BaseServicePresenter extends BasePresenter {
@@ -30,16 +30,16 @@ class BaseServicePresenter extends BasePresenter {
 	private $formFactory;
 
 	/**
-	 * @var ConfigManager
+	 * @var BaseServiceManager
 	 */
 	private $configManager;
 
 	/**
 	 * Constructor
+	 * @param BaseServiceManager $configManager
 	 * @param ConfigBaseServiceFormFactory $formFactory
-	 * @param ConfigManager $configManager
 	 */
-	public function __construct(ConfigBaseServiceFormFactory $formFactory, ConfigManager $configManager) {
+	public function __construct(BaseServiceManager $configManager, ConfigBaseServiceFormFactory $formFactory) {
 		$this->configManager = $configManager;
 		$this->formFactory = $formFactory;
 	}
@@ -49,7 +49,7 @@ class BaseServicePresenter extends BasePresenter {
 	 */
 	public function renderDefault() {
 		$this->onlyForAdmins();
-		$this->template->services = $this->configManager->read('BaseService')['Instances'];
+		$this->template->services = $this->configManager->getServices();
 	}
 
 	/**
@@ -67,7 +67,7 @@ class BaseServicePresenter extends BasePresenter {
 	 */
 	public function actionDelete($id) {
 		$this->onlyForAdmins();
-		$this->configManager->deleteBaseService($id);
+		$this->configManager->delete($id);
 		$this->redirect('BaseService:default');
 		$this->setView('baseService');
 	}

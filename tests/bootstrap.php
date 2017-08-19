@@ -6,7 +6,7 @@ Tester\Environment::setup();
 date_default_timezone_set('Europe/Prague');
 
 $configurator = new Nette\Configurator;
-$configurator->setDebugMode(FALSE);
+$configurator->setDebugMode(false);
 $configurator->setTempDirectory(__DIR__ . '/../temp');
 $configurator->createRobotLoader()->addDirectory(__DIR__ . '/../app')->register();
 $configurator->addConfig(__DIR__ . '/../app/config/config.neon');

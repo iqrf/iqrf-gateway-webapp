@@ -20,7 +20,6 @@ namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\ConfigComponentsFormFactory;
 use App\ConfigModule\Forms\ConfigMainFormFactory;
-use App\Model\ConfigManager;
 use App\Presenters\BasePresenter;
 
 class MainPresenter extends BasePresenter {
@@ -36,20 +35,13 @@ class MainPresenter extends BasePresenter {
 	private $mainFactory;
 
 	/**
-	 * @var ConfigManager
-	 */
-	private $configManager;
-
-	/**
 	 * Constructor
 	 * @param ConfigComponentsFormFactory $componentsFactory
 	 * @param ConfigMainFormFactory $mainFactory
-	 * @param ConfigManager $configManager
 	 */
-	public function __construct(ConfigComponentsFormFactory $componentsFactory, ConfigMainFormFactory $mainFactory, ConfigManager $configManager) {
+	public function __construct(ConfigComponentsFormFactory $componentsFactory, ConfigMainFormFactory $mainFactory) {
 		$this->componentsFactory = $componentsFactory;
 		$this->mainFactory = $mainFactory;
-		$this->configManager = $configManager;
 	}
 
 	/**

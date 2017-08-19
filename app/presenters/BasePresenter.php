@@ -52,7 +52,7 @@ abstract class BasePresenter extends Presenter {
 		$this->translator = $translator;
 	}
 
-	public function createTemplate($class = NULL) {
+	public function createTemplate($class = null) {
 		$template = parent::createTemplate($class);
 		// if not set, the default language will be used
 		if (!isset($this->lang)) {

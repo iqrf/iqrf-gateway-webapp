@@ -22,7 +22,7 @@ class IqrfAppManagerTest extends TestCase {
 
 	private $container;
 
-	function __construct(Container $container) {
+	public function __construct(Container $container) {
 		$this->container = $container;
 	}
 
@@ -37,11 +37,11 @@ class IqrfAppManagerTest extends TestCase {
 		$iqrfAppManager = new IqrfAppManager($commandManager, $coordinatorParser, $osParser);
 		$validPackets = [
 			'01.00.06.03.ff.ff', '01 00 06 03 ff ff',
-			'01.00.06.03.ff.ff.', '01 00 06 03 ff ff.'
+			'01.00.06.03.ff.ff.', '01 00 06 03 ff ff.',
 		];
 		$invalidPackets = [
 			';01.00.06.03.ff.ff', ';01 00 06 03 ff ff', '01.00.06.03.ff.ff;',
-			'01 00 06 03 ff ff;', '; echo Test > test.log'
+			'01 00 06 03 ff ff;', '; echo Test > test.log',
 		];
 		foreach ($validPackets as $packet) {
 			Assert::true($iqrfAppManager->validatePacket($packet));
@@ -60,7 +60,7 @@ class IqrfAppManagerTest extends TestCase {
 		$outputSuccess = [
 			'iqrfapp "{\"ctype\": \"conf\",\"type\": \"mode\",\"cmd\": \"forwarding\"}"',
 			'iqrfapp "{\"ctype\": \"conf\",\"type\": \"mode\",\"cmd\": \"operational\"}"',
-			'iqrfapp "{\"ctype\": \"conf\",\"type\": \"mode\",\"cmd\": \"service\"}"'
+			'iqrfapp "{\"ctype\": \"conf\",\"type\": \"mode\",\"cmd\": \"service\"}"',
 		];
 		$commandManager = \Mockery::mock(CommandManager::class);
 		foreach ($outputSuccess as $output) {
@@ -115,7 +115,7 @@ class IqrfAppManagerTest extends TestCase {
 				['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
 				['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
 				['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-			]
+			],
 		];
 		Assert::equal($expectedCoordinatorBonded, $arrayCoordinatorBonded);
 		$packetCoordinatorBondedDiscovered = 'raw 00.00.00.81.00.00.00.31.3c.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00 STATUS_NO_ERROR';
@@ -134,7 +134,7 @@ class IqrfAppManagerTest extends TestCase {
 				['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
 				['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
 				['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-			]
+			],
 		];
 		Assert::equal($expectedCoordinatorDiscovered, $arrayCoordinatorDiscovered);
 		$packetOsRead = 'raw 00.00.02.80.00.00.00.00.05.a4.00.81.38.24.79.08.00.28.00.f0 STATUS_NO_ERROR';

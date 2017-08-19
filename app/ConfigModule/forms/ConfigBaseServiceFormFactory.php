@@ -18,10 +18,9 @@
 
 namespace App\ConfigModule\Forms;
 
+use App\ConfigModule\Model\BaseServiceManager;
 use App\ConfigModule\Presenters\BaseServicePresenter;
 use App\Forms\FormFactory;
-use App\Model\ConfigManager;
-use App\Model\ConfigParser;
 use Nette;
 use Nette\Application\UI\Form;
 
@@ -30,14 +29,9 @@ class ConfigBaseServiceFormFactory {
 	use Nette\SmartObject;
 
 	/**
-	 * @var ConfigManager
+	 * @var BaseServiceManager
 	 */
-	private $configManager;
-
-	/**
-	 * @var ConfigParser
-	 */
-	private $configParser;
+	private $manager;
 
 	/**
 	 * @var FormFactory
@@ -46,14 +40,12 @@ class ConfigBaseServiceFormFactory {
 
 	/**
 	 * Constructor
+	 * @param BaseServiceManager $manager
 	 * @param FormFactory $factory
-	 * @param ConfigManager $configManager
-	 * @param ConfigParser $configParser
 	 */
-	public function __construct(FormFactory $factory, ConfigManager $configManager, ConfigParser $configParser) {
+	public function __construct(BaseServiceManager $manager, FormFactory $factory) {
+		$this->manager = $manager;
 		$this->factory = $factory;
-		$this->configManager = $configManager;
-		$this->configParser = $configParser;
 	}
 
 	/**
@@ -64,17 +56,15 @@ class ConfigBaseServiceFormFactory {
 	public function create(BaseServicePresenter $presenter) {
 		$id = $presenter->getParameter('id');
 		$form = $this->factory->create();
-		$fileName = 'BaseService';
-		$json = $this->configManager->read($fileName);
 		$serializers = ['SimpleSerializer' => 'SimpleSerializer', 'JsonSerializer' => 'JsonSerializer'];
 		$form->addText('Name', 'Name')->setRequired();
 		$form->addText('Messaging', 'Messaging')->setRequired();
 		$form->addCheckboxList('Serializers', 'Serializers', $serializers)->setRequired();
 		$form->addSubmit('save', 'Save');
-		$form->setDefaults($this->configParser->baseServiceToForm($json, $id));
+		$form->setDefaults($this->manager->load($id));
 		$form->addProtection('Timeout expired, resubmit the form.');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $id) {
-			$this->configManager->saveBaseService($values, $id);
+			$this->manager->save($values, $id);
 			$presenter->redirect('BaseService:default');
 		};
 		return $form;

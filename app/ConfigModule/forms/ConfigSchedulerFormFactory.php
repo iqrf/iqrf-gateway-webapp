@@ -18,10 +18,9 @@
 
 namespace App\ConfigModule\Forms;
 
+use App\ConfigModule\Model\SchedulerManager;
 use App\ConfigModule\Presenters\SchedulerPresenter;
 use App\Forms\FormFactory;
-use App\Model\ConfigManager;
-use App\Model\ConfigParser;
 use Nette;
 use Nette\Application\UI\Form;
 
@@ -30,14 +29,9 @@ class ConfigSchedulerFormFactory {
 	use Nette\SmartObject;
 
 	/**
-	 * @var ConfigManager
+	 * @var SchedulerManager
 	 */
-	private $configManager;
-
-	/**
-	 * @var ConfigParser
-	 */
-	private $configParser;
+	private $manager;
 
 	/**
 	 * @var FormFactory
@@ -47,13 +41,11 @@ class ConfigSchedulerFormFactory {
 	/**
 	 * Constructor
 	 * @param FormFactory $factory
-	 * @param ConfigManager $configManager
-	 * @param ConfigParser $configParser
+	 * @param SchedulerManager $manager
 	 */
-	public function __construct(FormFactory $factory, ConfigManager $configManager, ConfigParser $configParser) {
+	public function __construct(FormFactory $factory, SchedulerManager $manager) {
+		$this->manager = $manager;
 		$this->factory = $factory;
-		$this->configManager = $configManager;
-		$this->configParser = $configParser;
 	}
 
 	/**
@@ -64,9 +56,7 @@ class ConfigSchedulerFormFactory {
 	public function create(SchedulerPresenter $presenter) {
 		$id = $presenter->getParameter('id');
 		$form = $this->factory->create();
-		$fileName = 'Scheduler';
-		$json = $this->configManager->read($fileName);
-		$defaults = $this->configParser->schedulerToForm($json, $id);
+		$defaults = $this->manager->load($id);
 		foreach (array_keys($defaults) as $key) {
 			if ($key === 'sensors') {
 				$form->addTextArea($key, $key);
@@ -80,7 +70,7 @@ class ConfigSchedulerFormFactory {
 		$form->setDefaults($defaults);
 		$form->addProtection('Timeout expired, resubmit the form.');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $id) {
-			$this->configManager->saveScheduler($values, $id);
+			$this->manager->save($values, $id);
 			$presenter->redirect('Scheduler:default');
 		};
 		return $form;

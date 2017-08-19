@@ -18,9 +18,9 @@
 
 namespace App\ConfigModule\Forms;
 
+use App\ConfigModule\Model\GenericManager;
 use App\ConfigModule\Presenters\TracerPresenter;
 use App\Forms\FormFactory;
-use App\Model\ConfigManager;
 use Nette;
 use Nette\Application\UI\Form;
 
@@ -29,9 +29,9 @@ class ConfigTracerFormFactory {
 	use Nette\SmartObject;
 
 	/**
-	 * @var ConfigManager
+	 * @var GenericManager
 	 */
-	private $configManager;
+	private $manager;
 
 	/**
 	 * @var FormFactory
@@ -41,11 +41,11 @@ class ConfigTracerFormFactory {
 	/**
 	 * Constructor
 	 * @param FormFactory $factory
-	 * @param ConfigManager $configManager
+	 * @param GenericManager $manager
 	 */
-	public function __construct(FormFactory $factory, ConfigManager $configManager) {
+	public function __construct(FormFactory $factory, GenericManager $manager) {
 		$this->factory = $factory;
-		$this->configManager = $configManager;
+		$this->manager = $manager;
 	}
 
 	/**
@@ -56,16 +56,15 @@ class ConfigTracerFormFactory {
 	public function create(TracerPresenter $presenter) {
 		$form = $this->factory->create();
 		$fileName = 'TracerFile';
-		$json = $this->configManager->read($fileName);
 		$items = ['err' => 'Error', 'war' => 'Warning', 'inf' => 'Info', 'dbg' => 'Debug'];
 		$form->addText('TraceFileName', 'TraceFileName');
 		$form->addInteger('TraceFileSize', 'TraceFileSize');
 		$form->addSelect('VerbosityLevel', 'VerbosityLevel', $items);
 		$form->addSubmit('save', 'Save');
-		$form->setDefaults($json);
+		$form->setDefaults($this->manager->load($fileName));
 		$form->addProtection('Timeout expired, resubmit the form.');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $fileName) {
-			$this->configManager->write($fileName, $values);
+			$this->manager->save($fileName, $values);
 			$presenter->redirect('Homepage:default');
 		};
 		return $form;

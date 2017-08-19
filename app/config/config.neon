@@ -39,6 +39,12 @@ services:
 	- App\ConfigModule\Forms\ConfigSchedulerFormFactory
 	- App\ConfigModule\Forms\ConfigTracerFormFactory
 	- App\ConfigModule\Forms\ConfigUdpFormFactory
+	- App\ConfigModule\Model\BaseServiceManager
+	- App\ConfigModule\Model\ComponentManager
+	- App\ConfigModule\Model\GenericManager
+	- App\ConfigModule\Model\InstanceManager
+	- App\ConfigModule\Model\MainManager
+	- App\ConfigModule\Model\SchedulerManager
 	- App\Forms\FormFactory
 	- App\Forms\SignInFormFactory
 	- App\IqrfAppModule\Forms\IqrfAppSendRawFormFactory
@@ -47,10 +53,9 @@ services:
 	- App\IqrfAppModule\Model\IqrfMacroManager(%macroPath%)
 	- App\IqrfAppModule\Model\OsParser
 	- App\Model\CommandManager(%sudo%)
-	- App\Model\ConfigManager(%configDir%)
-	- App\Model\ConfigParser
 	- App\Model\GwInfoManager
 	- App\Model\InterfaceManager
+	- App\Model\JsonFileManager(%configDir%)
 	- App\ServiceModule\Model\ServiceManager(%initDaemon%)
 	router: App\Router\RouterFactory::createRouter
 	formFactory: Instante\Bootstrap3Renderer\BootstrapFormFactory

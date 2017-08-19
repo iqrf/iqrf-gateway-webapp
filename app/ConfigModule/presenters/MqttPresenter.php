@@ -18,8 +18,8 @@
 
 namespace App\ConfigModule\Presenters;
 
+use App\ConfigModule\Model\InstanceManager;
 use App\ConfigModule\Forms\ConfigMqttFormFactory;
-use App\Model\ConfigManager;
 use App\Presenters\BasePresenter;
 
 class MqttPresenter extends BasePresenter {
@@ -30,16 +30,21 @@ class MqttPresenter extends BasePresenter {
 	private $formFactory;
 
 	/**
-	 * @var ConfigManager
+	 * @var InstanceManager
 	 */
 	private $configManager;
 
 	/**
+	 * @var string
+	 */
+	private $fileName = 'MqttMessaging';
+
+	/**
 	 * Constructor
 	 * @param ConfigMqttFormFactory $formFactory
-	 * @param ConfigManager $configManager
+	 * @param InstanceManager $configManager
 	 */
-	public function __construct(ConfigMqttFormFactory $formFactory, ConfigManager $configManager) {
+	public function __construct(ConfigMqttFormFactory $formFactory, InstanceManager $configManager) {
 		$this->configManager = $configManager;
 		$this->formFactory = $formFactory;
 	}
@@ -49,7 +54,7 @@ class MqttPresenter extends BasePresenter {
 	 */
 	public function renderDefault() {
 		$this->onlyForAdmins();
-		$this->template->instances = $this->configManager->read('MqttMessaging')['Instances'];
+		$this->template->instances = $this->configManager->getInstances($this->fileName);
 	}
 
 	/**
@@ -67,7 +72,7 @@ class MqttPresenter extends BasePresenter {
 	 */
 	public function actionDelete($id) {
 		$this->onlyForAdmins();
-		$this->configManager->deleteInstances('MqttMessaging', $id);
+		$this->configManager->delete($this->fileName, $id);
 		$this->redirect('Mqtt:default');
 		$this->setView('default');
 	}

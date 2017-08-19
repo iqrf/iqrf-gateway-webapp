@@ -18,10 +18,9 @@
 
 namespace App\ConfigModule\Forms;
 
+use App\ConfigModule\Model\InstanceManager;
 use App\ConfigModule\Presenters\UdpPresenter;
 use App\Forms\FormFactory;
-use App\Model\ConfigManager;
-use App\Model\ConfigParser;
 use Nette;
 use Nette\Application\UI\Form;
 
@@ -30,14 +29,9 @@ class ConfigUdpFormFactory {
 	use Nette\SmartObject;
 
 	/**
-	 * @var ConfigManager
+	 * @var InstanceManager
 	 */
-	private $configManager;
-
-	/**
-	 * @var ConfigParser
-	 */
-	private $configParser;
+	private $manager;
 
 	/**
 	 * @var FormFactory
@@ -46,14 +40,12 @@ class ConfigUdpFormFactory {
 
 	/**
 	 * Constructor
+	 * @param InstanceManager $manager
 	 * @param FormFactory $factory
-	 * @param ConfigManager $configManager
-	 * @param ConfigParser $configParser
 	 */
-	public function __construct(FormFactory $factory, ConfigManager $configManager, ConfigParser $configParser) {
+	public function __construct(InstanceManager $manager, FormFactory $factory) {
+		$this->manager = $manager;
 		$this->factory = $factory;
-		$this->configManager = $configManager;
-		$this->configParser = $configParser;
 	}
 
 	/**
@@ -64,16 +56,15 @@ class ConfigUdpFormFactory {
 	public function create(UdpPresenter $presenter) {
 		$form = $this->factory->create();
 		$fileName = 'UdpMessaging';
-		$json = $this->configManager->read($fileName);
 		$form->addText('Name', 'Name')->setRequired();
 		$form->addCheckbox('Enabled', 'Enabled');
 		$form->addInteger('RemotePort', 'RemotePort')->setRequired();
 		$form->addInteger('LocalPort', 'LocalPort')->setRequired();
 		$form->addSubmit('save', 'Save');
-		$form->setDefaults($this->configParser->instancesToForm($json));
+		$form->setDefaults($this->manager->load($fileName));
 		$form->addProtection('Timeout expired, resubmit the form.');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $fileName) {
-			$this->configManager->saveInstances($fileName, $values);
+			$this->manager->save($fileName, $values);
 			$presenter->redirect('Homepage:default');
 		};
 		return $form;
