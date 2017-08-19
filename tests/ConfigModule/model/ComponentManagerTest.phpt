@@ -68,7 +68,7 @@ class ComponentManagerTest extends TestCase {
 			'BaseService' => true,
 		];
 		$expected = Json::decode(FileSystem::read($this->path . $this->fileName . '.json'), Json::FORCE_ARRAY);
-		$fileManager->write('config', $expected);
+		$fileManager->write($this->fileName, $expected);
 		$expected['Components'][0]['Enabled'] = false;
 		$manager->save(ArrayHash::from($array));
 		Assert::equal($expected, $fileManager->read($this->fileName));

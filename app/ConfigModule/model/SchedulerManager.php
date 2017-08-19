@@ -32,6 +32,11 @@ class SchedulerManager {
 	private $fileManager;
 
 	/**
+	 * @var string
+	 */
+	private $fileName = 'Scheduler';
+
+	/**
 	 * Constructor
 	 * @param JsonFileManager $fileManager
 	 */
@@ -44,16 +49,14 @@ class SchedulerManager {
 	 * @param int $id Task ID
 	 */
 	public function delete($id) {
-		$fileName = 'Scheduler';
-		$json = $this->fileManager->read($fileName);
+		$json = $this->fileManager->read($this->fileName);
 		unset($json['TasksJson'][$id]);
 		$json['TasksJson'] = array_values($json['TasksJson']);
-		$this->fileManager->write($fileName, $json);
+		$this->fileManager->write($this->fileName, $json);
 	}
 
 	public function getTasks() {
-		$fileName = 'Scheduler';
-		$json = $this->fileManager->read($fileName);
+		$json = $this->fileManager->read($this->fileName);
 		return $json['TasksJson'];
 	}
 
@@ -63,8 +66,7 @@ class SchedulerManager {
 	 * @return array Array for form
 	 */
 	public function load($id = 0) {
-		$fileName = 'Scheduler';
-		$json = $this->fileManager->read($fileName);
+		$json = $this->fileManager->read($this->fileName);
 		$tasks = $json['TasksJson'];
 		if ($id > count($tasks)) {
 			return [];
@@ -90,9 +92,8 @@ class SchedulerManager {
 	 * @param int $id Task ID
 	 */
 	public function save(ArrayHash $array, $id = 0) {
-		$fileName = 'Scheduler';
-		$json = $this->saveJson($this->fileManager->read($fileName), $array, $id);
-		$this->fileManager->write($fileName, $json);
+		$json = $this->saveJson($this->fileManager->read($this->fileName), $array, $id);
+		$this->fileManager->write($this->fileName, $json);
 	}
 
 	/**

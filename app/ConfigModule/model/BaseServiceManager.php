@@ -32,6 +32,11 @@ class BaseServiceManager {
 	private $fileManager;
 
 	/**
+	 * @var string
+	 */
+	private $fileName = 'BaseService';
+
+	/**
 	 * Constructor
 	 * @param JsonFileManager $fileManager
 	 */
@@ -44,11 +49,10 @@ class BaseServiceManager {
 	 * @param int $id Base service ID
 	 */
 	public function delete($id) {
-		$fileName = 'BaseService';
-		$json = $this->fileManager->read($fileName);
+		$json = $this->fileManager->read($this->fileName);
 		unset($json['Instances'][$id]);
 		$json['Instances'] = array_values($json['Instances']);
-		$this->fileManager->write($fileName, $json);
+		$this->fileManager->write($this->fileName, $json);
 	}
 
 	/**
@@ -56,8 +60,7 @@ class BaseServiceManager {
 	 * @return array Base services
 	 */
 	public function getServices() {
-		$fileName = 'BaseService';
-		$json = $this->fileManager->read($fileName);
+		$json = $this->fileManager->read($this->fileName);
 		return $json['Instances'];
 	}
 
@@ -67,8 +70,7 @@ class BaseServiceManager {
 	 * @return array Array for form
 	 */
 	public function load($id = 0) {
-		$fileName = 'BaseService';
-		$json = $this->fileManager->read($fileName);
+		$json = $this->fileManager->read($this->fileName);
 		$instances = $json['Instances'];
 		if ($id > count($instances)) {
 			return [];
@@ -87,9 +89,8 @@ class BaseServiceManager {
 	 * @param int $id Base service ID
 	 */
 	public function save(ArrayHash $array, $id = 0) {
-		$fileName = 'BaseService';
-		$json = $this->saveJson($this->fileManager->read($fileName), $array, $id);
-		$this->fileManager->write($fileName, $json);
+		$json = $this->saveJson($this->fileManager->read($this->fileName), $array, $id);
+		$this->fileManager->write($this->fileName, $json);
 	}
 
 	/**

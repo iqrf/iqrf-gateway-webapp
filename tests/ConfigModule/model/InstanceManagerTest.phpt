@@ -127,7 +127,7 @@ class InstanceManagerTest extends TestCase {
 	public function testSaveJson() {
 		$fileManager = new JsonFileManager($this->path);
 		$manager = new InstanceManager($fileManager);
-		$instances = Json::decode(FileSystem::read($this->path . 'MqttMessaging.json'), Json::FORCE_ARRAY)['Instances'];
+		$instances = Json::decode(FileSystem::read($this->path . $this->fileName . '.json'), Json::FORCE_ARRAY)['Instances'];
 		$update = [
 			'Name' => 'MqttMessaging2',
 			'Enabled' => false,

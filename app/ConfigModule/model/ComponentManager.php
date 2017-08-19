@@ -32,6 +32,11 @@ class ComponentManager {
 	private $fileManager;
 
 	/**
+	 * @var string
+	 */
+	private $fileName = 'config';
+
+	/**
 	 * Constructor
 	 * @param JsonFileManager $fileManager
 	 */
@@ -44,8 +49,7 @@ class ComponentManager {
 	 * @return array Array for form
 	 */
 	public function load() {
-		$fileName = 'config';
-		$json = $this->fileManager->read($fileName);
+		$json = $this->fileManager->read($this->fileName);
 		return $json;
 	}
 
@@ -54,10 +58,9 @@ class ComponentManager {
 	 * @param ArrayHash $components Components settings
 	 */
 	public function save(ArrayHash $components) {
-		$fileName = 'config';
-		$json = $this->fileManager->read($fileName);
+		$json = $this->fileManager->read($this->fileName);
 		$json['Components'] = $this->saveJson($components);
-		$this->fileManager->write($fileName, $json);
+		$this->fileManager->write($this->fileName, $json);
 	}
 
 	/**

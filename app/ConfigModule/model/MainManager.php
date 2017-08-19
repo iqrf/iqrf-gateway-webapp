@@ -32,6 +32,11 @@ class MainManager {
 	private $fileManager;
 
 	/**
+	 * @var string
+	 */
+	private $fileName = 'config';
+
+	/**
 	 * Constructor
 	 * @param JsonFileManager $fileManager
 	 */
@@ -44,8 +49,7 @@ class MainManager {
 	 * @return array Array for form
 	 */
 	public function load() {
-		$fileName = 'config';
-		$json = $this->fileManager->read($fileName);
+		$json = $this->fileManager->read($this->fileName);
 		return $json;
 	}
 
@@ -54,9 +58,8 @@ class MainManager {
 	 * @param ArrayHash $array Main settings
 	 */
 	public function save(ArrayHash $array) {
-		$fileName = 'config';
-		$json = $this->fileManager->read($fileName);
-		$this->fileManager->write($fileName, array_merge($json, (array) $array));
+		$json = $this->fileManager->read($this->fileName);
+		$this->fileManager->write($this->fileName, array_merge($json, (array) $array));
 	}
 
 }
