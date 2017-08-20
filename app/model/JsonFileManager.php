@@ -55,7 +55,7 @@ class JsonFileManager {
 	 * @param array $array JSON array
 	 */
 	public function write($name, $array) {
-		$fileName = $this->configDir . '/' . $name . '.json';
+		$fileName = 'nette.safe://' . $this->configDir . '/' . $name . '.json';
 		FileSystem::write($fileName, Json::encode($array, Json::PRETTY), null);
 	}
 
