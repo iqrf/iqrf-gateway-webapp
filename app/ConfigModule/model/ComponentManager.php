@@ -50,7 +50,7 @@ class ComponentManager {
 	 */
 	public function load() {
 		$json = $this->fileManager->read($this->fileName);
-		return $json;
+		return $json['Components'];
 	}
 
 	/**

@@ -25,6 +25,25 @@ class SchedulerManagerTest extends TestCase {
 	 * @var Container
 	 */
 	private $container;
+	
+	/**
+	 * @var array
+	 */
+	private $array = [
+		'time' => '*/5 * * * * * *',
+		'service' => 'BaseServiceForMQTT1',
+		'ctype' => 'dpa',
+		'type' => 'std-sen',
+		'nadr' => '1',
+		'cmd' => 'READ',
+		'hwpid' => 'ffff',
+		'sensors' => 'Temperature1' . PHP_EOL . 'CO2_1' . PHP_EOL . 'Humidity1',
+	];
+
+	/**
+	 * @var string
+	 */
+	private $fileName = 'Scheduler';
 
 	/**
 	 * @var string
@@ -46,22 +65,37 @@ class SchedulerManagerTest extends TestCase {
 
 	/**
 	 * @test
+	 * Test function to delete configuration of Scheduler
+	 */
+	public function testDelete() {
+		$fileManager = new JsonFileManager($this->pathTest);
+		$manager = new SchedulerManager($fileManager);
+		$expected = Json::decode(FileSystem::read($this->path . $this->fileName . '.json'), Json::FORCE_ARRAY);
+		$fileManager->write($this->fileName, $expected);
+		unset($expected['TasksJson'][5]);
+		$manager->delete(5);
+		Assert::equal($expected, $fileManager->read($this->fileName));
+	}
+
+	/**
+	 * @test
+	 * Test function to get tasks
+	 */
+	public function testGetTasks() {
+		$fileManager = new JsonFileManager($this->path);
+		$manager = new SchedulerManager($fileManager);
+		$expected = $fileManager->read($this->fileName)['TasksJson'];
+		Assert::equal($expected, $manager->getTasks());
+	}
+
+	/**
+	 * @test
 	 * Test function to parse configuration of Scheduler
 	 */
 	public function testLoad() {
 		$fileManager = new JsonFileManager($this->path);
 		$manager = new SchedulerManager($fileManager);
-		$expected = [
-			'time' => '*/5 * * * * * *',
-			'service' => 'BaseServiceForMQTT1',
-			'ctype' => 'dpa',
-			'type' => 'std-sen',
-			'nadr' => '1',
-			'cmd' => 'READ',
-			'hwpid' => 'ffff',
-			'sensors' => "Temperature1\nCO2_1\nHumidity1",
-		];
-		Assert::equal($expected, $manager->load(0));
+		Assert::equal($this->array, $manager->load(0));
 		Assert::equal([], $manager->load(10));
 	}
 
@@ -72,22 +106,13 @@ class SchedulerManagerTest extends TestCase {
 	public function testSave() {
 		$fileManager = new JsonFileManager($this->pathTest);
 		$manager = new SchedulerManager($fileManager);
-		$fileName = 'Scheduler';
-		$array = [
-			'time' => '*/5 * * * * * *',
-			'service' => 'BaseServiceForMQTT1',
-			'ctype' => 'dpa',
-			'type' => 'std-sen',
-			'nadr' => '0',
-			'cmd' => 'READ',
-			'hwpid' => 'ffff',
-			'sensors' => 'Temperature1' . PHP_EOL . 'CO2_1' . PHP_EOL . 'Humidity1',
-		];
-		$expected = Json::decode(FileSystem::read($this->path . 'Scheduler.json'), Json::FORCE_ARRAY);
-		$fileManager->write($fileName, $expected);
+		$array = $this->array;
+		$array['nadr'] = '0';
+		$expected = Json::decode(FileSystem::read($this->path . $this->fileName . '.json'), Json::FORCE_ARRAY);
+		$fileManager->write($this->fileName, $expected);
 		$expected['TasksJson'][0]['message']['nadr'] = '0';
 		$manager->save(ArrayHash::from($array), 0);
-		Assert::equal($expected, $fileManager->read($fileName));
+		Assert::equal($expected, $fileManager->read($this->fileName));
 	}
 
 	/**
@@ -97,17 +122,9 @@ class SchedulerManagerTest extends TestCase {
 	public function testSaveJson() {
 		$fileManager = new JsonFileManager($this->path);
 		$manager = new SchedulerManager($fileManager);
-		$updateArray = [
-			'time' => '*/5 * * * * * *',
-			'service' => 'BaseServiceForMQTT1',
-			'ctype' => 'dpa',
-			'type' => 'std-sen',
-			'nadr' => '0',
-			'cmd' => 'READ',
-			'hwpid' => 'ffff',
-			'sensors' => "Temperature1\nCO2_1\nHumidity1",
-		];
-		$json = Json::decode(FileSystem::read($this->path . 'Scheduler.json'), Json::FORCE_ARRAY);
+		$updateArray = $this->array;
+		$updateArray['nadr'] = '0';
+		$json = Json::decode(FileSystem::read($this->path . $this->fileName . '.json'), Json::FORCE_ARRAY);
 		$expected = $json;
 		$expected['TasksJson'][0]['message']['nadr'] = '0';
 		$update = ArrayHash::from($updateArray);

@@ -55,7 +55,7 @@ class ConfigComponentsFormFactory {
 	 */
 	public function create(MainPresenter $presenter) {
 		$form = $this->factory->create();
-		$components = $this->manager->load()['Components'];
+		$components = $this->manager->load();
 		foreach ($components as $component) {
 			$form->addCheckbox($component['ComponentName'], $component['ComponentName'])
 					->setDefaultValue($component['Enabled']);

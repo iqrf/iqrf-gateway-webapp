@@ -21,7 +21,6 @@ namespace App\ConfigModule\Forms;
 use App\ConfigModule\Model\MainManager;
 use App\ConfigModule\Presenters\MainPresenter;
 use App\Forms\FormFactory;
-use App\Model\ConfigManager;
 use Nette;
 use Nette\Application\UI\Form;
 

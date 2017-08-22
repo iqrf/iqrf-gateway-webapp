@@ -51,6 +51,18 @@ class ComponentManagerTest extends TestCase {
 
 	/**
 	 * @test
+	 * Test function to load configuration of Components
+	 */
+	public function testLoad() {
+		$fileManager = new JsonFileManager($this->path);
+		$manager = new ComponentManager($fileManager);
+		$json = Json::decode(FileSystem::read($this->path . $this->fileName . '.json'), Json::FORCE_ARRAY);
+		$expected = $json['Components'];
+		Assert::equal($expected, $manager->load());
+	}
+
+	/**
+	 * @test
 	 * Test function to save configuration of Components
 	 */
 	public function testSave() {
