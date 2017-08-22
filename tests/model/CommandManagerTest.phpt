@@ -17,8 +17,15 @@ $container = require __DIR__ . '/../bootstrap.php';
 
 class CommandManagerTest extends TestCase {
 
+	/**
+	 * @var Container
+	 */
 	private $container;
 
+	/**
+	 * Constructor
+	 * @param Container $container
+	 */
 	public function __construct(Container $container) {
 		$this->container = $container;
 	}

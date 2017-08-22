@@ -20,8 +20,15 @@ $container = require __DIR__ . '/../../bootstrap.php';
 
 class IqrfAppManagerTest extends TestCase {
 
+	/**
+	 * @var Container
+	 */
 	private $container;
 
+	/**
+	 * Constructor
+	 * @param Container $container
+	 */
 	public function __construct(Container $container) {
 		$this->container = $container;
 	}
@@ -36,12 +43,17 @@ class IqrfAppManagerTest extends TestCase {
 		$osParser = new OsParser();
 		$iqrfAppManager = new IqrfAppManager($commandManager, $coordinatorParser, $osParser);
 		$validPackets = [
-			'01.00.06.03.ff.ff', '01 00 06 03 ff ff',
-			'01.00.06.03.ff.ff.', '01 00 06 03 ff ff.',
+			'01.00.06.03.ff.ff',
+			'01 00 06 03 ff ff',
+			'01.00.06.03.ff.ff.',
+			'01 00 06 03 ff ff.',
 		];
 		$invalidPackets = [
-			';01.00.06.03.ff.ff', ';01 00 06 03 ff ff', '01.00.06.03.ff.ff;',
-			'01 00 06 03 ff ff;', '; echo Test > test.log',
+			';01.00.06.03.ff.ff',
+			';01 00 06 03 ff ff',
+			'01.00.06.03.ff.ff;',
+			'01 00 06 03 ff ff;',
+			'; echo Test > test.log',
 		];
 		foreach ($validPackets as $packet) {
 			Assert::true($iqrfAppManager->validatePacket($packet));
@@ -140,10 +152,14 @@ class IqrfAppManagerTest extends TestCase {
 		$packetOsRead = 'raw 00.00.02.80.00.00.00.00.05.a4.00.81.38.24.79.08.00.28.00.f0 STATUS_NO_ERROR';
 		$arrayOsRead = $iqrfAppManager->parseResponse($packetOsRead);
 		$expectedOsRead = [
-			'ModuleId' => '8100A405', 'OsVersion' => '3.08D',
-			'TrType' => 'DCTR-72D', 'McuType' => 'PIC16F1938',
-			'OsBuild' => '7908', 'Rssi' => '00',
-			'SupplyVoltage' => '3.00 V', 'Flags' => '00',
+			'ModuleId' => '8100A405',
+			'OsVersion' => '3.08D',
+			'TrType' => 'DCTR-72D',
+			'McuType' => 'PIC16F1938',
+			'OsBuild' => '7908',
+			'Rssi' => '00',
+			'SupplyVoltage' => '3.00 V',
+			'Flags' => '00',
 			'SlotLimits' => 'f0',
 		];
 		Assert::equal($expectedOsRead, $arrayOsRead);

@@ -25,7 +25,7 @@ class SchedulerManagerTest extends TestCase {
 	 * @var Container
 	 */
 	private $container;
-	
+
 	/**
 	 * @var array
 	 */

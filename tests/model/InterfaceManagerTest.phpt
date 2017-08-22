@@ -18,8 +18,15 @@ $container = require __DIR__ . '/../bootstrap.php';
 
 class InterfaceManagerTest extends TestCase {
 
+	/**
+	 * @var Container
+	 */
 	private $container;
 
+	/**
+	 * Constructor
+	 * @param Container $container
+	 */
 	public function __construct(Container $container) {
 		$this->container = $container;
 	}
@@ -35,7 +42,10 @@ class InterfaceManagerTest extends TestCase {
 		$commandManager->shouldReceive('send')->with("ls /dev/ttyACM* | awk '{ print $0 }'", true)->andReturn($outputCdc);
 		$commandManager->shouldReceive('send')->with("ls /dev/spidev* | awk '{ print $0 }'", true)->andReturn($outputSpi);
 		$interfaceManager = new InterfaceManager($commandManager);
-		$expected = ['cdc' => ['/dev/ttyACM0', '/dev/ttyACM1'], 'spi' => ['/dev/spidev0.0', '/dev/spidev0.1', '/dev/spidev1.0', '/dev/spidev1.1']];
+		$expected = [
+			'cdc' => ['/dev/ttyACM0', '/dev/ttyACM1'],
+			'spi' => ['/dev/spidev0.0', '/dev/spidev0.1', '/dev/spidev1.0', '/dev/spidev1.1']
+		];
 		Assert::same($expected, $interfaceManager->createInterfaceList());
 	}
 

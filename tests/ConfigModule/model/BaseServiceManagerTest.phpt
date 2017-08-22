@@ -40,30 +40,30 @@ class BaseServiceManagerTest extends TestCase {
 	 * @var string
 	 */
 	private $pathTest = __DIR__ . '/../../configuration-test/';
-	
+
 	/**
 	 * @var array
 	 */
 	private $services = [
-			[
-				'Name' => 'BaseServiceForMQ',
-				'Messaging' => 'MqMessaging',
-				'Serializers' => ['SimpleSerializer', 'JsonSerializer'],
-				'Properties' => [],
-			],
-			[
-				'Name' => 'BaseServiceForMQTT1',
-				'Messaging' => 'MqttMessaging1',
-				'Serializers' => ['JsonSerializer'],
-				'Properties' => [],
-			],
-			[
-				'Name' => 'BaseServiceForMQTT2',
-				'Messaging' => 'MqttMessaging2',
-				'Serializers' => ['JsonSerializer'],
-				'Properties' => [],
-			],
-		];
+		[
+			'Name' => 'BaseServiceForMQ',
+			'Messaging' => 'MqMessaging',
+			'Serializers' => ['SimpleSerializer', 'JsonSerializer'],
+			'Properties' => [],
+		],
+		[
+			'Name' => 'BaseServiceForMQTT1',
+			'Messaging' => 'MqttMessaging1',
+			'Serializers' => ['JsonSerializer'],
+			'Properties' => [],
+		],
+		[
+			'Name' => 'BaseServiceForMQTT2',
+			'Messaging' => 'MqttMessaging2',
+			'Serializers' => ['JsonSerializer'],
+			'Properties' => [],
+		],
+	];
 
 	/**
 	 * Constructor
@@ -96,7 +96,7 @@ class BaseServiceManagerTest extends TestCase {
 		$manager = new BaseServiceManager($fileManager);
 		Assert::equal($this->services, $manager->getServices());
 	}
-	
+
 	/**
 	 * @test
 	 * Test function to parse configuration of Scheduler

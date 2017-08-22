@@ -71,7 +71,7 @@ class GenericManagerTest extends TestCase {
 			'TraceFileName' => '',
 			'TraceFileSize' => 0,
 			'VerbosityLevel' => 'err'
-			];
+		];
 		$expected = Json::decode(FileSystem::read($this->path . $this->fileName . '.json'), Json::FORCE_ARRAY);
 		$fileManager->write($this->fileName, $expected);
 		$expected['VerbosityLevel'] = 'err';

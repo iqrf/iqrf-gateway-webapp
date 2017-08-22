@@ -31,10 +31,14 @@ class OsParserTest extends TestCase {
 	 * @var array Expected OS Read info parsed response
 	 */
 	private $expectedOsInfo = [
-		'ModuleId' => '8100A405', 'OsVersion' => '3.08D',
-		'TrType' => 'DCTR-72D', 'McuType' => 'PIC16F1938',
-		'OsBuild' => '7908', 'Rssi' => '00',
-		'SupplyVoltage' => '3.00 V', 'Flags' => '00',
+		'ModuleId' => '8100A405',
+		'OsVersion' => '3.08D',
+		'TrType' => 'DCTR-72D',
+		'McuType' => 'PIC16F1938',
+		'OsBuild' => '7908',
+		'Rssi' => '00',
+		'SupplyVoltage' => '3.00 V',
+		'Flags' => '00',
 		'SlotLimits' => 'f0',
 	];
 
