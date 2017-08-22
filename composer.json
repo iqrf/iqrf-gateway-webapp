@@ -27,7 +27,7 @@
 		"nette/mail": "^2.4",
 		"nette/neon": "^2.4",
 		"nette/php-generator": "^2.4",
-		"nette/robot-loader": "^2.4",
+		"nette/robot-loader": "^3.0",
 		"nette/safe-stream": "^2.3",
 		"nette/security": "^2.4",
 		"nette/utils": "^2.4",
@@ -37,7 +37,7 @@
 		"instante/bootstrap-3-renderer": "^2.0"
 	},
 	"require-dev": {
-		"nette/tester": "^1.7",
+		"nette/tester": "^2.0",
 		"mockery/mockery": "1.0.0-alpha1"
 	},
 	"support": {
