@@ -65,6 +65,36 @@ class SchedulerManagerTest extends TestCase {
 
 	/**
 	 * @test
+	 * Test function to add configuration of Scheduler
+	 */
+	public function testAdd() {
+		$fileManager = new JsonFileManager($this->pathTest);
+		$manager = new SchedulerManager($fileManager);
+		$expected = Json::decode(FileSystem::read($this->path . $this->fileName . '.json'), Json::FORCE_ARRAY);
+		$fileManager->write($this->fileName, $expected);
+		$manager->add('raw');
+		$task = [
+			'time' => '',
+			'service' => '',
+			'message' => [
+				'ctype' => 'dpa',
+				'type' => 'raw',
+				'msgid' => '',
+				'timeout' => 0,
+				'request' => '',
+				'request_ts' => '',
+				'confirmation' => '',
+				'confirmation_ts' => '',
+				'response' => '',
+				'respons_ts' => '',
+			],
+		];
+		array_push($expected['TasksJson'], $task);
+		Assert::equal($expected, $fileManager->read($this->fileName));
+	}
+
+	/**
+	 * @test
 	 * Test function to delete configuration of Scheduler
 	 */
 	public function testDelete() {
@@ -75,6 +105,17 @@ class SchedulerManagerTest extends TestCase {
 		unset($expected['TasksJson'][5]);
 		$manager->delete(5);
 		Assert::equal($expected, $fileManager->read($this->fileName));
+	}
+
+	/**
+	 * @test
+	 * Test function to get last ID
+	 */
+	public function testGetLastId() {
+		$fileManager = new JsonFileManager($this->path);
+		$manager = new SchedulerManager($fileManager);
+		$expected = count($fileManager->read($this->fileName)['TasksJson']) - 1;
+		Assert::equal($expected, $manager->getLastId());
 	}
 
 	/**

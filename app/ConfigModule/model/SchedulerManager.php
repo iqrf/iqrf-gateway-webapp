@@ -45,6 +45,19 @@ class SchedulerManager {
 	}
 
 	/**
+	 * Add task
+	 * @param string $type Task type
+	 */
+	public function add($type) {
+		$json = $this->fileManager->read($this->fileName);
+		$taskManager = new JsonFileManager(__DIR__ . '/../json');
+		$tasks = $taskManager->read($this->fileName);
+		$task = array_key_exists($type, $tasks) ? $tasks[$type] : null;
+		array_push($json['TasksJson'], $task);
+		$this->fileManager->write($this->fileName, $json);
+	}
+
+	/**
 	 * Delete task
 	 * @param int $id Task ID
 	 */
@@ -55,6 +68,21 @@ class SchedulerManager {
 		$this->fileManager->write($this->fileName, $json);
 	}
 
+	/**
+	 * Get last ID
+	 * @return int Last ID in array
+	 */
+	public function getLastId() {
+		$json = $this->fileManager->read($this->fileName);
+		$tasks = $json['TasksJson'];
+		end($tasks);
+		return key($tasks);
+	}
+
+	/**
+	 * Get tasks in Scheduler
+	 * @return array Tasks
+	 */
 	public function getTasks() {
 		$json = $this->fileManager->read($this->fileName);
 		return $json['TasksJson'];

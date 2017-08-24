@@ -1,0 +1,146 @@
+{
+	"raw": {
+		"time": "",
+		"service": "",
+		"message": {
+			"ctype": "dpa",
+			"type": "raw",
+			"msgid": "",
+			"timeout": 0,
+			"request": "",
+			"request_ts": "",
+			"confirmation": "",
+			"confirmation_ts": "",
+			"response": "",
+			"respons_ts": ""
+		}
+	},
+	"raw-hdp": {
+		"time": "",
+		"service": "",
+		"message": {
+			"ctype": "dpa",
+			"type": "raw-hdp",
+			"msgid": "",
+			"timeout": 0,
+			"nadr": "",
+			"pnum": "",
+			"pcmd": "",
+			"hwpid": "",
+			"rcode": "",
+			"req_data": "",
+			"request": "",
+			"request_ts": "",
+			"confirmation": "",
+			"confirmation_ts": "",
+			"response": "",
+			"response_ts": ""
+		}
+	},
+	"std-per-thermometer": {
+		"time": "",
+		"service": "",
+		"message": {
+			"ctype": "dpa",
+			"type": "std-per-thermometer",
+			"msgid": "",
+			"timeout": 0,
+			"nadr": "",
+			"cmd": "read",
+			"hwpid": "",
+			"rcode": "",
+			"request": "",
+			"request_ts": "",
+			"confirmation": "",
+			"confirmation_ts": "",
+			"response": "",
+			"response_ts": ""
+		}
+	},
+	"std-per-ledg": {
+		"time": "",
+		"service": "",
+		"message": {
+			"ctype": "dpa",
+			"type": "std-per-ledg",
+			"msgid": "",
+			"timeout": 0,
+			"nadr": "",
+			"cmd": "",
+			"hwpid": "",
+			"rcode": "",
+			"request": "",
+			"request_ts": "",
+			"confirmation": "",
+			"confirmation_ts": "",
+			"response": "",
+			"response_ts": ""
+		}
+	},
+	"std-per-ledr": {
+		"time": "",
+		"service": "",
+		"message": {
+			"ctype": "dpa",
+			"type": "std-per-ledr",
+			"msgid": "",
+			"timeout": 0,
+			"nadr": "",
+			"cmd": "",
+			"hwpid": "",
+			"rcode": "",
+			"request": "",
+			"request_ts": "",
+			"confirmation": "",
+			"confirmation_ts": "",
+			"response": "",
+			"response_ts": ""
+		}
+	},
+	"std-per-frc": {
+		"time": "",
+		"service": "",
+		"message": {
+			"ctype": "dpa",
+			"type": "std-per-frc",
+			"msgid": "",
+			"timeout": 0,
+			"cmd": "",
+			"hwpid": "",
+			"rcode": "",
+			"frc_cmd": "",
+			"frc_type": "",
+			"frc_user": "",
+			"user_data": "",
+			"request": "",
+			"request_ts": "",
+			"confirmation": "",
+			"confirmation_ts": "",
+			"response": "",
+			"response_ts": ""
+		}
+	},
+	"std-per-io": {
+		"time": "",
+		"service": "",
+		"message": {
+			"ctype": "dpa",
+			"type": "std-per-io",
+			"msgid": "",
+			"timeout": 0,
+			"nadr": "",
+			"cmd": "",
+			"hwpid": "",
+			"rcode": "",
+			"port": "",
+			"bit": "",
+			"inp": "",
+			"request": "",
+			"request_ts": "",
+			"confirmation": "",
+			"confirmation_ts": "",
+			"response": "",
+			"response_ts": ""
+		}
+	}
+}

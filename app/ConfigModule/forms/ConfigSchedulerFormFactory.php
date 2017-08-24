@@ -57,13 +57,43 @@ class ConfigSchedulerFormFactory {
 		$id = $presenter->getParameter('id');
 		$form = $this->factory->create();
 		$defaults = $this->manager->load($id);
+		$types = [
+			'raw' => 'raw',
+			'raw-hdp' => 'raw-hdp',
+			'std-per-thermometer' => 'std-per-thermometer',
+			'std-per-ledg' => 'std-per-ledg',
+			'std-per-ledr' => 'std-per-ledr',
+			'std-per-frc' => 'std-per-frc',
+			'std-per-io' => 'std-per-io',
+			'std-sen' => 'std-sen',
+		];
 		foreach (array_keys($defaults) as $key) {
-			if ($key === 'sensors') {
-				$form->addTextArea($key, $key);
-			} elseif ($key === 'timeout') {
-				$form->addInteger($key, $key);
-			} else {
-				$form->addText($key, $key);
+			switch ($key) {
+				case 'hwpid':
+					$form->addText($key, $key)
+							->setRequired(false)
+							->addRule(Form::PATTERN, 'It has to contain hexadecimal number - ' . $key, '[0-9A-Fa-f]{4}')
+							->addRule(Form::MAX_LENGTH, 'It has to have maximal length of 4 chars.', 4);
+					break;
+				case 'pcmd':
+				case 'pnum':
+				case 'nadr':
+					$form->addText($key, $key)
+							->setRequired(false)
+							->addRule(Form::PATTERN, 'It has to contain hexadecimal number - ' . $key, '[0-9A-Fa-f]{1,2}')
+							->addRule(Form::MAX_LENGTH, 'It has to have maximal length of 2 chars.', 2);
+					break;
+				case 'sensors':
+					$form->addTextArea($key, $key);
+					break;
+				case 'timeout':
+					$form->addInteger($key, $key);
+					break;
+				case 'type':
+					$form->addSelect($key, $key, $types)->setRequired();
+					break;
+				default:
+					$form->addText($key, $key);
 			}
 		}
 		$form->addSubmit('save', 'Save');

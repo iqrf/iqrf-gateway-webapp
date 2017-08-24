@@ -62,8 +62,19 @@ class SchedulerPresenter extends BasePresenter {
 	}
 
 	/**
+	 * Add new task to scheduler
+	 * @param string $type
+	 */
+	public function actionAdd($type) {
+		$this->onlyForAdmins();
+		$this->configManager->add($type);
+		$this->redirect('Scheduler:edit', ['id' => $this->configManager->getLastId()]);
+		$this->setView('default');
+	}
+
+	/**
 	 * Delete task in scheduler
-	 * @param int $id ID of MQTT interface
+	 * @param int $id ID of task in Scheduler
 	 */
 	public function actionDelete($id) {
 		$this->onlyForAdmins();
@@ -73,8 +84,8 @@ class SchedulerPresenter extends BasePresenter {
 	}
 
 	/**
-	 * Create MQTT interface form
-	 * @return Form MQTT interface form
+	 * Create Edit task form
+	 * @return Form Edit task form
 	 */
 	protected function createComponentConfigSchedulerForm() {
 		$this->onlyForAdmins();
