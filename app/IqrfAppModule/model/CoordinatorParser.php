@@ -54,8 +54,8 @@ class CoordinatorParser {
 		} elseif ($pcmd === '82') {
 			$type = 'BondedNodes';
 		}
-		for ($i = 0; $i < 24; $i += 2) {
-			$data[$type][$i / 2] = str_split(str_pad(strrev(base_convert($packetArray[9 + $i] . $packetArray[8 + $i], 16, 2)), 20, '0'));
+		for ($i = 0; $i < 30; $i += 2) {
+			$data[$type][$i / 2] = str_split(str_pad(strrev(base_convert($packetArray[9 + $i] . $packetArray[8 + $i], 16, 2)), 16, '0'));
 		}
 		return $data;
 	}
