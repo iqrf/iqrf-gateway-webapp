@@ -57,9 +57,11 @@ class ConfigIqrfFormFactory {
 	public function create(IqrfPresenter $presenter) {
 		$form = $this->factory->create();
 		$fileName = 'IqrfInterface';
+		$communicationModes = ['STD' => 'STD', 'LP' => 'LP'];
 		$form->addText('IqrfInterface', 'IqrfInterface')->setRequired();
 		$form->addInteger('DpaHandlerTimeout', 'DpaHandlerTimeout')->setRequired()
 				->addRule(Form::MIN, 'DPA Handler timeout must be bigger than 0.', 0);
+		$form->addSelect('CommunicationMode', 'CommunicationMode', $communicationModes);
 		$form->addSubmit('save', 'Save');
 		$form->setDefaults($this->manager->load($fileName));
 		$form->addProtection('Timeout expired, resubmit the form.');
