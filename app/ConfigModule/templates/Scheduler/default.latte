@@ -25,7 +25,6 @@
 					<th>{_"Time"}</th>
 					<th>{_"Service"}</th>
 					<th>{_"Type"}</th>
-					<th>{_"NADR"}</th>
 					<th>{_"Request"}</th>
 					<th>{_"Edit"}</th>
 					<th>{_"Remove"}</th>
@@ -33,39 +32,17 @@
 			</thead>
 			<tbody>
 				<tr n:foreach="$tasks as $task">
-					{var $message = $task['message']}
-					{var $id = (array_keys($tasks, $task, TRUE)[0])}
 					<td>{$task['time']}</td>
 					<td>{$task['service']}</td>
-					<td>{$message['ctype']} | {$message['type']}</td>
+					<td>{$task['type']}</td>
+					<td>{$task['request']}</td>
 					<td>
-						{if $message['type'] === 'raw'}
-							{$message['request']|substr:0, 2}
-						{elseif $message['type'] === 'std-per-frc'}
-							00
-						{else}
-							{$message['nadr']|padLeft:2, '0'}
-						{/if}
-					</td>
-					<td>
-						{if $message['type'] === 'raw'}
-							{$message['request']}
-						{elseif $message['type'] === 'raw-hdp'}
-							{var $nadr = ($message['nadr']|padLeft:2, '0'). '.00'}
-							{var $pnum = ($message['pnum']|padLeft:2, '0')}
-							{var $pcmd = ($message['pcmd']|padLeft:2, '0')}
-							{var $hwpid = (isset($message['hwpid']) ? $message['hwpid'] : 'ffff')}
-							{var $data = (isset($message['req_data']) ? $message['req_data'] : '')}
-							{$nadr}.{$pnum}.{$pcmd}.{$hwpid}.{$data}
-						{/if}
-					</td>
-					<td>
-						<a n:href="Scheduler:edit $id">
+						<a n:href="Scheduler:edit $task['id']">
 							<span class='glyphicon glyphicon-pencil' aria-hidden='true'></span>
 						</a>
 					</td>
 					<td>
-						<a n:href="Scheduler:delete $id">
+						<a n:href="Scheduler:delete $task['id']">
 							<span class='glyphicon glyphicon-remove' aria-hidden='true'></span>
 						</a>
 					</td>

@@ -125,7 +125,45 @@ class SchedulerManagerTest extends TestCase {
 	public function testGetTasks() {
 		$fileManager = new JsonFileManager($this->path);
 		$manager = new SchedulerManager($fileManager);
-		$expected = $fileManager->read($this->fileName)['TasksJson'];
+		$expected = [
+			[
+				"time" => "*/5 * * * * * *",
+				"service" => "BaseServiceForMQTT1",
+				"type" => "dpa | std-sen",
+				"request" => null,
+				"id" => 0,
+			], [
+				"time" => "*/5 1 * * * * *",
+				"service" => "BaseServiceForMQTT1",
+				"type" => "dpa | std-per-ledg",
+				"request" => "01.00.07.03.ffff",
+				"id" => 1,
+			], [
+				"time" => "*/5 1 * * * * *",
+				"service" => "BaseServiceForMQTT1",
+				"type" => "dpa | raw",
+				"request" => "01.00.06.03.ff.ff",
+				"id" => 2,
+			], [
+				"time" => "*/5 1 * * * * *",
+				"service" => "BaseServiceForMQTT1",
+				"type" => "dpa | raw-hdp",
+				"request" => "01.00.06.03.ffff",
+				"id" => 3,
+			], [
+				"time" => "*/5 1 * * * * *",
+				"service" => "BaseServiceForMQTT1",
+				"type" => "dpa | raw-hdp",
+				"request" => "00.00.0d.00.ffff.c0.00.00",
+				"id" => 4,
+			], [
+				"time" => "*/5 1 * * * * *",
+				"service" => "BaseServiceForMQTT1",
+				"type" => "dpa | std-per-frc",
+				"request" => "00.00.0d.00.ffff",
+				"id" => 5,
+			]
+		];
 		Assert::equal($expected, $manager->getTasks());
 	}
 

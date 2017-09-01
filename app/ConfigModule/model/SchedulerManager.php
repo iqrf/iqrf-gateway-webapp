@@ -22,6 +22,7 @@ namespace App\ConfigModule\Model;
 use App\Model\JsonFileManager;
 use Nette;
 use Nette\Utils\ArrayHash;
+use Nette\Utils\Strings;
 
 class SchedulerManager {
 
@@ -36,6 +37,53 @@ class SchedulerManager {
 	 * @var string
 	 */
 	private $fileName = 'Scheduler';
+
+	/**
+	 * @var array
+	 */
+	private $commands = [
+		'std-per-io' => [
+			'pnum' => '09',
+			'pcmd' => [
+				'direction' => '00',
+				'set' => '01',
+				'get' => '02',
+			],
+		],
+		'std-per-frc' => [
+			'pnum' => '0d',
+			'pcmd' => [
+				'send' => '00',
+				'extraresult' => '01',
+				'send_selective' => '02',
+				'set_params' => '03',
+			],
+		],
+		'std-per-ledg' => [
+			'pnum' => '07',
+			'pcmd' => [
+				'off' => '00',
+				'on' => '01',
+				'get' => '02',
+				'pulse' => '03',
+			],
+		],
+		'std-per-ledr' => [
+			'pnum' => '06',
+			'pcmd' => [
+				'off' => '00',
+				'on' => '01',
+				'get' => '02',
+				'pulse' => '03',
+			],
+		],
+		'std-per-thermometer' => [
+			'pnum' => '0a',
+			'pcmd' => [
+				'read' => '00',
+			],
+		],
+	];
 
 	/**
 	 * Constructor
@@ -81,12 +129,71 @@ class SchedulerManager {
 	}
 
 	/**
+	 * Get DPA request from JSON
+	 * @param array $data JSON
+	 * @return string
+	 */
+	public function getRequest(array $data) {
+		if ($data['type'] === 'raw') {
+			return $data['request'];
+		}
+		$nadr = (empty($data['nadr']) ? '00' : Strings::padLeft($data['nadr'], 2, '0')) . '.00.';
+		$hwpid = (isset($data['hwpid']) ? $data['hwpid'] : 'ffff');
+		switch ($data['type']) {
+			case 'raw-hdp':
+				$pnum = Strings::padLeft($data['pnum'], 2, '0') . '.';
+				$pcmd = Strings::padLeft($data['pcmd'], 2, '0') . '.';
+				$pdata = (isset($data['req_data']) ? '.' . $data['req_data'] : '');
+				return $nadr . $pnum . $pcmd . $hwpid . $pdata;
+			case 'std-per-frc':
+				$command = $this->commands['std-per-frc'];
+				$pnum = $command['pnum'] . '.';
+				$cmd = strtolower($data['cmd']);
+				$pcmd = $command['pcmd'][$cmd] . '.';
+				return $nadr . $pnum . $pcmd . $hwpid;
+			case 'std-per-io':
+				$command = $this->commands['std-per-io'];
+				$pnum = $command['pnum'] . '.';
+				$cmd = strtolower($data['cmd']);
+				$pcmd = $command['pcmd'][$cmd] . '.';
+				return $nadr . $pnum . $pcmd . $hwpid;
+			case 'std-per-ledg':
+				$command = $this->commands['std-per-ledg'];
+				$pnum = $command['pnum'] . '.';
+				$cmd = strtolower($data['cmd']);
+				$pcmd = $command['pcmd'][$cmd] . '.';
+				return $nadr . $pnum . $pcmd . $hwpid;
+			case 'std-per-ledr':
+				$command = $this->commands['std-per-ledr'];
+				$pnum = $command['pnum'] . '.';
+				$cmd = strtolower($data['cmd']);
+				$pcmd = $command['pcmd'][$cmd] . '.';
+				return $nadr . $pnum . $pcmd . $hwpid;
+			case 'std-per-thermometer':
+				$command = $this->commands['std-per-thermometer'];
+				$pnum = $command['pnum'] . '.';
+				$cmd = strtolower($data['cmd']);
+				$pcmd = $command['pcmd'][$cmd] . '.';
+				return $nadr . $pnum . $pcmd . $hwpid;
+		}
+	}
+
+	/**
 	 * Get tasks in Scheduler
 	 * @return array Tasks
 	 */
 	public function getTasks() {
-		$json = $this->fileManager->read($this->fileName);
-		return $json['TasksJson'];
+		$jsonTasks = $this->fileManager->read($this->fileName)['TasksJson'];
+		$tasks = [];
+		foreach ($jsonTasks as $json) {
+			$task['time'] = $json['time'];
+			$task['service'] = $json['service'];
+			$task['type'] = $json['message']['ctype'] . ' | ' . $json['message']['type'];
+			$task['request'] = $this->getRequest($json['message']);
+			$task['id'] = array_keys($jsonTasks, $json, true)[0];
+			array_push($tasks, $task);
+		}
+		return $tasks;
 	}
 
 	/**
