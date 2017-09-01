@@ -146,31 +146,11 @@ class SchedulerManager {
 				$pdata = (isset($data['req_data']) ? '.' . $data['req_data'] : '');
 				return $nadr . $pnum . $pcmd . $hwpid . $pdata;
 			case 'std-per-frc':
-				$command = $this->commands['std-per-frc'];
-				$pnum = $command['pnum'] . '.';
-				$cmd = strtolower($data['cmd']);
-				$pcmd = $command['pcmd'][$cmd] . '.';
-				return $nadr . $pnum . $pcmd . $hwpid;
 			case 'std-per-io':
-				$command = $this->commands['std-per-io'];
-				$pnum = $command['pnum'] . '.';
-				$cmd = strtolower($data['cmd']);
-				$pcmd = $command['pcmd'][$cmd] . '.';
-				return $nadr . $pnum . $pcmd . $hwpid;
 			case 'std-per-ledg':
-				$command = $this->commands['std-per-ledg'];
-				$pnum = $command['pnum'] . '.';
-				$cmd = strtolower($data['cmd']);
-				$pcmd = $command['pcmd'][$cmd] . '.';
-				return $nadr . $pnum . $pcmd . $hwpid;
 			case 'std-per-ledr':
-				$command = $this->commands['std-per-ledr'];
-				$pnum = $command['pnum'] . '.';
-				$cmd = strtolower($data['cmd']);
-				$pcmd = $command['pcmd'][$cmd] . '.';
-				return $nadr . $pnum . $pcmd . $hwpid;
 			case 'std-per-thermometer':
-				$command = $this->commands['std-per-thermometer'];
+				$command = $this->commands[$data['type']];
 				$pnum = $command['pnum'] . '.';
 				$cmd = strtolower($data['cmd']);
 				$pcmd = $command['pcmd'][$cmd] . '.';
