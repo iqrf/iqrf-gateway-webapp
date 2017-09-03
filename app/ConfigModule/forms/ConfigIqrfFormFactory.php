@@ -19,7 +19,7 @@
 
 namespace App\ConfigModule\Forms;
 
-use App\ConfigModule\Model\GenericManager;
+use App\ConfigModule\Model\IqrfManager;
 use App\ConfigModule\Presenters\IqrfPresenter;
 use App\Forms\FormFactory;
 use Nette;
@@ -30,7 +30,7 @@ class ConfigIqrfFormFactory {
 	use Nette\SmartObject;
 
 	/**
-	 * @var GenericManager
+	 * @var IqrfManager
 	 */
 	private $manager;
 
@@ -42,9 +42,9 @@ class ConfigIqrfFormFactory {
 	/**
 	 * Constructor
 	 * @param FormFactory $factory
-	 * @param GenericManager $manager
+	 * @param IqrfManager $manager
 	 */
-	public function __construct(FormFactory $factory, GenericManager $manager) {
+	public function __construct(FormFactory $factory, IqrfManager $manager) {
 		$this->factory = $factory;
 		$this->manager = $manager;
 	}
@@ -56,17 +56,16 @@ class ConfigIqrfFormFactory {
 	 */
 	public function create(IqrfPresenter $presenter) {
 		$form = $this->factory->create();
-		$fileName = 'IqrfInterface';
 		$communicationModes = ['STD' => 'STD', 'LP' => 'LP'];
 		$form->addText('IqrfInterface', 'IqrfInterface')->setRequired();
 		$form->addInteger('DpaHandlerTimeout', 'DpaHandlerTimeout')->setRequired()
 				->addRule(Form::MIN, 'DPA Handler timeout must be bigger than 0.', 0);
 		$form->addSelect('CommunicationMode', 'CommunicationMode', $communicationModes);
 		$form->addSubmit('save', 'Save');
-		$form->setDefaults($this->manager->load($fileName));
+		$form->setDefaults($this->manager->load());
 		$form->addProtection('Timeout expired, resubmit the form.');
-		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $fileName) {
-			$this->manager->save($fileName, $values);
+		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
+			$this->manager->save($values);
 			$presenter->redirect('Homepage:default');
 		};
 		return $form;

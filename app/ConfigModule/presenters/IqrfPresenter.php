@@ -20,7 +20,7 @@
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\ConfigIqrfFormFactory;
-use App\Model\InterfaceManager;
+use App\ConfigModule\Model\IqrfManager;
 use App\Presenters\BasePresenter;
 
 class IqrfPresenter extends BasePresenter {
@@ -31,18 +31,18 @@ class IqrfPresenter extends BasePresenter {
 	private $formFactory;
 
 	/**
-	 * @var InterfaceManager
+	 * @var IqrfManager
 	 */
-	private $interfaceManager;
+	private $iqrfManager;
 
 	/**
 	 * Constructor
 	 * @param ConfigIqrfFormFactory $formFactory
-	 * @param InterfaceManager $interfaceManager
+	 * @param IqrfManager $iqrfManager
 	 */
-	public function __construct(ConfigIqrfFormFactory $formFactory, InterfaceManager $interfaceManager) {
+	public function __construct(ConfigIqrfFormFactory $formFactory, IqrfManager $iqrfManager) {
 		$this->formFactory = $formFactory;
-		$this->interfaceManager = $interfaceManager;
+		$this->iqrfManager = $iqrfManager;
 	}
 
 	/**
@@ -50,7 +50,7 @@ class IqrfPresenter extends BasePresenter {
 	 */
 	public function renderDefault() {
 		$this->onlyForAdmins();
-		$this->template->interfaces = $this->interfaceManager->createInterfaceList();
+		$this->template->interfaces = $this->iqrfManager->getInterfaces();
 	}
 
 	/**

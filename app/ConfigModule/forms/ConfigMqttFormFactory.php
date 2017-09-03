@@ -77,7 +77,7 @@ class ConfigMqttFormFactory {
 		$form->addText('TrustStore', 'TrustStore');
 		$form->addText('KeyStore', 'KeyStore');
 		$form->addText('PrivateKey', 'PrivateKey');
-		$form->addPassword('PrivateKeyPassword', 'PrivateKeyPassword');
+		$form->addText('PrivateKeyPassword', 'PrivateKeyPassword');
 		$form->addText('EnabledCipherSuites', 'EnabledCipherSuites');
 		$form->addCheckbox('EnableServerCertAuth', 'EnableServerCertAuth');
 		$form->addSubmit('save', 'Save');
