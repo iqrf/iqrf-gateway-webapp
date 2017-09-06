@@ -34,7 +34,7 @@ class SchedulerManager {
 	private $fileManager;
 
 	/**
-	 * @var string
+	 * @var string File name (without .json)
 	 */
 	private $fileName = 'Scheduler';
 
@@ -131,7 +131,7 @@ class SchedulerManager {
 	/**
 	 * Get DPA request from JSON
 	 * @param array $data JSON
-	 * @return string
+	 * @return string DPA request
 	 */
 	public function getRequest(array $data) {
 		if ($data['type'] === 'raw') {

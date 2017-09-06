@@ -37,9 +37,9 @@ class IqrfManager {
 	 * @var JsonFileManager
 	 */
 	private $fileManager;
-	
+
 	/**
-	 * @var string
+	 * @var string File name (without .json)
 	 */
 	private $fileName = 'IqrfInterface';
 

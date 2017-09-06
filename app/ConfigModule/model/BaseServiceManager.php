@@ -33,7 +33,7 @@ class BaseServiceManager {
 	private $fileManager;
 
 	/**
-	 * @var string
+	 * @var string File name (without .json)
 	 */
 	private $fileName = 'BaseService';
 
