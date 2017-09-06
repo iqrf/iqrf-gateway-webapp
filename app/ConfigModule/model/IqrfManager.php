@@ -37,6 +37,11 @@ class IqrfManager {
 	 * @var JsonFileManager
 	 */
 	private $fileManager;
+	
+	/**
+	 * @var string
+	 */
+	private $fileName = 'IqrfInterface';
 
 	/**
 	 * Constructor
@@ -53,8 +58,7 @@ class IqrfManager {
 	 * @return array Array for form
 	 */
 	public function load() {
-		$fileName = 'IqrfInterface';
-		return $this->fileManager->read($fileName);
+		return $this->fileManager->read($this->fileName);
 	}
 
 	/**
@@ -62,8 +66,7 @@ class IqrfManager {
 	 * @param ArrayHash $array Settings
 	 */
 	public function save(ArrayHash $array) {
-		$fileName = 'IqrfInterface';
-		$this->fileManager->write($fileName, $array);
+		$this->fileManager->write($this->fileName, $array);
 	}
 
 	/**
