@@ -1,8 +1,12 @@
 FROM php:7.1
 
+MAINTAINER Roman Ondráček <roman.ondracek@iqrf.com>
 LABEL maintainer="roman.ondracek@iqrf.com"
 
-RUN apt-get update && apt-get install -y git wget
+RUN apt-get update \
+ && apt-get install --no-install-recommends -y git wget \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /var/www/html
 
