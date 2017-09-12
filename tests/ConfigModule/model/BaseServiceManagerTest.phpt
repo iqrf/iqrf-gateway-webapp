@@ -49,19 +49,19 @@ class BaseServiceManagerTest extends TestCase {
 			'Name' => 'BaseServiceForMQ',
 			'Messaging' => 'MqMessaging',
 			'Serializers' => ['SimpleSerializer', 'JsonSerializer'],
-			'Properties' => [],
+			'Properties' => ['AsyncDpaMessage' => false],
 		],
 		[
 			'Name' => 'BaseServiceForMQTT1',
 			'Messaging' => 'MqttMessaging1',
 			'Serializers' => ['JsonSerializer'],
-			'Properties' => [],
+			'Properties' => ['AsyncDpaMessage' => true],
 		],
 		[
 			'Name' => 'BaseServiceForMQTT2',
 			'Messaging' => 'MqttMessaging2',
 			'Serializers' => ['JsonSerializer'],
-			'Properties' => [],
+			'Properties' => ['AsyncDpaMessage' => true],
 		],
 	];
 
@@ -105,7 +105,6 @@ class BaseServiceManagerTest extends TestCase {
 		$fileManager = new JsonFileManager($this->path);
 		$manager = new BaseServiceManager($fileManager);
 		$expected = $this->services[0];
-		unset($expected['Properties']);
 		Assert::equal($expected, $manager->load(0));
 		Assert::equal([], $manager->load(10));
 	}

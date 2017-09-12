@@ -81,6 +81,11 @@ class BaseServiceManager {
 		$service['Name'] = $data['Name'];
 		$service['Messaging'] = $data['Messaging'];
 		$service['Serializers'] = (array) $data['Serializers'];
+		if (!empty($data['Properties'])) {
+			$service['Properties'] = (array) $data['Properties'];
+		} else {
+			$service['Properties']['AsyncDpaMessage'] = false;
+		}
 		return $service;
 	}
 

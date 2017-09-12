@@ -9,6 +9,7 @@
 				"JsonSerializer"
 			],
 			"Properties": {
+				"AsyncDpaMessage": false
 			}
 		},
 		{
@@ -18,6 +19,7 @@
 				"JsonSerializer"
 			],
 			"Properties": {
+				"AsyncDpaMessage": true
 			}
 		},
 		{
@@ -27,6 +29,7 @@
 				"JsonSerializer"
 			],
 			"Properties": {
+				"AsyncDpaMessage": true
 			}
 		}
 	]

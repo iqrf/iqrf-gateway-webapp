@@ -57,10 +57,15 @@ class ConfigBaseServiceFormFactory {
 	public function create(BaseServicePresenter $presenter) {
 		$id = $presenter->getParameter('id');
 		$form = $this->factory->create();
-		$serializers = ['SimpleSerializer' => 'SimpleSerializer', 'JsonSerializer' => 'JsonSerializer'];
+		$serializers = [
+			'SimpleSerializer' => 'SimpleSerializer',
+			'JsonSerializer' => 'JsonSerializer',
+		];
 		$form->addText('Name', 'Name')->setRequired();
 		$form->addText('Messaging', 'Messaging')->setRequired();
 		$form->addCheckboxList('Serializers', 'Serializers', $serializers)->setRequired();
+		$prop = $form->addContainer('Properties');
+		$prop->addCheckbox('AsyncDpaMessage', 'AsyncDpaMessage');
 		$form->addSubmit('save', 'Save');
 		$form->setDefaults($this->manager->load($id));
 		$form->addProtection('Timeout expired, resubmit the form.');
