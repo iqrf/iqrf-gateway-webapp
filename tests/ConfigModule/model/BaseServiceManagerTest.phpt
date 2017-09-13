@@ -12,8 +12,6 @@ use App\ConfigModule\Model\BaseServiceManager;
 use App\Model\JsonFileManager;
 use Nette\DI\Container;
 use Nette\Utils\ArrayHash;
-use Nette\Utils\FileSystem;
-use Nette\Utils\Json;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -25,6 +23,16 @@ class BaseServiceManagerTest extends TestCase {
 	 * @var Container
 	 */
 	private $container;
+
+	/**
+	 * @var JsonFileManager
+	 */
+	private $fileManager;
+
+	/**
+	 * @var JsonFileManager
+	 */
+	private $fileManagerTemp;
 
 	/**
 	 * @var string
@@ -74,17 +82,24 @@ class BaseServiceManagerTest extends TestCase {
 	}
 
 	/**
+	 * Set up test environment
+	 */
+	public function setUp() {
+		$this->fileManager = new JsonFileManager($this->path);
+		$this->fileManagerTemp = new JsonFileManager($this->pathTest);
+	}
+
+	/**
 	 * @test
 	 * Test function to delete configuration of Base services
 	 */
 	public function testDelete() {
-		$fileManager = new JsonFileManager($this->pathTest);
-		$manager = new BaseServiceManager($fileManager);
-		$expected = Json::decode(FileSystem::read($this->path . $this->fileName . '.json'), Json::FORCE_ARRAY);
-		$fileManager->write($this->fileName, $expected);
+		$manager = new BaseServiceManager($this->fileManagerTemp);
+		$expected = $this->fileManager->read($this->fileName);
+		$this->fileManagerTemp->write($this->fileName, $expected);
 		unset($expected['Instances'][2]);
 		$manager->delete(2);
-		Assert::equal($expected, $fileManager->read($this->fileName));
+		Assert::equal($expected, $this->fileManagerTemp->read($this->fileName));
 	}
 
 	/**
@@ -92,8 +107,7 @@ class BaseServiceManagerTest extends TestCase {
 	 * Test function to get list of Base services
 	 */
 	public function testGetServices() {
-		$fileManager = new JsonFileManager($this->path);
-		$manager = new BaseServiceManager($fileManager);
+		$manager = new BaseServiceManager($this->fileManager);
 		Assert::equal($this->services, $manager->getServices());
 	}
 
@@ -102,8 +116,7 @@ class BaseServiceManagerTest extends TestCase {
 	 * Test function to parse configuration of Scheduler
 	 */
 	public function testLoad() {
-		$fileManager = new JsonFileManager($this->path);
-		$manager = new BaseServiceManager($fileManager);
+		$manager = new BaseServiceManager($this->fileManager);
 		$expected = $this->services[0];
 		Assert::equal($expected, $manager->load(0));
 		Assert::equal([], $manager->load(10));
@@ -114,15 +127,14 @@ class BaseServiceManagerTest extends TestCase {
 	 * Test function to parse configuration of Base services
 	 */
 	public function testSave() {
-		$fileManager = new JsonFileManager($this->pathTest);
-		$manager = new BaseServiceManager($fileManager);
+		$manager = new BaseServiceManager($this->fileManagerTemp);
 		$array = $this->services[0];
 		$array['Serializers'] = ['JsonSerializer'];
-		$expected = Json::decode(FileSystem::read($this->path . $this->fileName . '.json'), Json::FORCE_ARRAY);
-		$fileManager->write($this->fileName, $expected);
+		$expected = $this->fileManager->read($this->fileName);
+		$this->fileManagerTemp->write($this->fileName, $expected);
 		$expected['Instances'][0]['Serializers'] = ['JsonSerializer'];
 		$manager->save(ArrayHash::from($array), 0);
-		Assert::equal($expected, $fileManager->read($this->fileName));
+		Assert::equal($expected, $this->fileManagerTemp->read($this->fileName));
 	}
 
 	/**
@@ -130,9 +142,8 @@ class BaseServiceManagerTest extends TestCase {
 	 * Test function to parse configuration of Scheduler
 	 */
 	public function testSaveJson() {
-		$fileManager = new JsonFileManager($this->path);
-		$manager = new BaseServiceManager($fileManager);
-		$json = Json::decode(FileSystem::read($this->path . $this->fileName . '.json'), Json::FORCE_ARRAY);
+		$manager = new BaseServiceManager($this->fileManager);
+		$json = $this->fileManager->read($this->fileName);
 		$update = $this->services[0];
 		$update['Name'] = 'BaseServiceForMQ1';
 		$expected = $json;

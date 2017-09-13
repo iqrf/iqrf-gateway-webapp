@@ -12,8 +12,6 @@ use App\ConfigModule\Model\ComponentManager;
 use App\Model\JsonFileManager;
 use Nette\DI\Container;
 use Nette\Utils\ArrayHash;
-use Nette\Utils\FileSystem;
-use Nette\Utils\Json;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -25,6 +23,16 @@ class ComponentManagerTest extends TestCase {
 	 * @var Container
 	 */
 	private $container;
+
+	/**
+	 * @var JsonFileManager
+	 */
+	private $fileManager;
+
+	/**
+	 * @var JsonFileManager
+	 */
+	private $fileManagerTemp;
 
 	/**
 	 * @var string
@@ -50,13 +58,20 @@ class ComponentManagerTest extends TestCase {
 	}
 
 	/**
+	 * Set up test environment
+	 */
+	public function setUp() {
+		$this->fileManager = new JsonFileManager($this->path);
+		$this->fileManagerTemp = new JsonFileManager($this->pathTest);
+	}
+
+	/**
 	 * @test
 	 * Test function to load configuration of Components
 	 */
 	public function testLoad() {
-		$fileManager = new JsonFileManager($this->path);
-		$manager = new ComponentManager($fileManager);
-		$json = Json::decode(FileSystem::read($this->path . $this->fileName . '.json'), Json::FORCE_ARRAY);
+		$manager = new ComponentManager($this->fileManager);
+		$json = $this->fileManager->read($this->fileName);
 		$expected = $json['Components'];
 		Assert::equal($expected, $manager->load());
 	}
@@ -66,8 +81,7 @@ class ComponentManagerTest extends TestCase {
 	 * Test function to save configuration of Components
 	 */
 	public function testSave() {
-		$fileManager = new JsonFileManager($this->pathTest);
-		$manager = new ComponentManager($fileManager);
+		$manager = new ComponentManager($this->fileManagerTemp);
 		$array = [
 			'TracerFile' => false,
 			'IqrfInterface' => true,
@@ -79,11 +93,11 @@ class ComponentManagerTest extends TestCase {
 			'JsonSerializer' => true,
 			'BaseService' => true,
 		];
-		$expected = Json::decode(FileSystem::read($this->path . $this->fileName . '.json'), Json::FORCE_ARRAY);
-		$fileManager->write($this->fileName, $expected);
+		$expected = $this->fileManager->read($this->fileName);
+		$this->fileManagerTemp->write($this->fileName, $expected);
 		$expected['Components'][0]['Enabled'] = false;
 		$manager->save(ArrayHash::from($array));
-		Assert::equal($expected, $fileManager->read($this->fileName));
+		Assert::equal($expected, $this->fileManagerTemp->read($this->fileName));
 	}
 
 	/**
@@ -91,8 +105,7 @@ class ComponentManagerTest extends TestCase {
 	 * Test function to parse configuration of Components
 	 */
 	public function testSaveJson() {
-		$fileManager = new JsonFileManager($this->path);
-		$manager = new ComponentManager($fileManager);
+		$manager = new ComponentManager($this->fileManager);
 		$array = [
 			'TracerFile' => true,
 			'IqrfInterface' => true,
@@ -104,7 +117,7 @@ class ComponentManagerTest extends TestCase {
 			'JsonSerializer' => true,
 			'BaseService' => true,
 		];
-		$expected = Json::decode(FileSystem::read($this->path . $this->fileName . '.json'), Json::FORCE_ARRAY)['Components'];
+		$expected = $this->fileManager->read($this->fileName)['Components'];
 		Assert::equal($expected, $manager->saveJson(ArrayHash::from($array)));
 	}
 

@@ -25,12 +25,12 @@ class GwInfoManagerTest extends TestCase {
 	 * @var Container
 	 */
 	private $container;
-	
+
 	/**
 	 * @var CoordinatorParser
 	 */
 	private $coordinatorParser;
-	
+
 	/**
 	 * @var OsParser
 	 */
@@ -51,7 +51,7 @@ class GwInfoManagerTest extends TestCase {
 		$this->coordinatorParser = new CoordinatorParser();
 		$this->osParser = new OsParser();
 	}
-	
+
 	/**
 	 * @test
 	 * Test function to get IPv4 and IPv6 addresses of the gateway

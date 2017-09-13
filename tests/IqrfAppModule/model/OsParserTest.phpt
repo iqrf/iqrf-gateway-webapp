@@ -23,6 +23,11 @@ class OsParserTest extends TestCase {
 	private $container;
 
 	/**
+	 * @var OsParser
+	 */
+	private $parser;
+
+	/**
 	 * @var string OS Read info packet
 	 */
 	private $packetOsInfo = '00.00.02.80.00.00.00.00.05.a4.00.81.38.24.79.08.00.28.00.f0';
@@ -51,12 +56,18 @@ class OsParserTest extends TestCase {
 	}
 
 	/**
+	 * Set up test environment
+	 */
+	public function setUp() {
+		$this->parser = new OsParser();
+	}
+
+	/**
 	 * @test
 	 * Test function to parse DPA response
 	 */
 	public function testParse() {
-		$osParser = new OsParser();
-		$array = $osParser->parse($this->packetOsInfo);
+		$array = $this->parser->parse($this->packetOsInfo);
 		Assert::equal($this->expectedOsInfo, $array);
 	}
 
@@ -65,11 +76,10 @@ class OsParserTest extends TestCase {
 	 * Test function to parse response to DPA OS - "Read info" request
 	 */
 	public function testParseReadInfo() {
-		$osParser = new OsParser();
-		$array = $osParser->parseReadInfo($this->packetOsInfo);
+		$array = $this->parser->parseReadInfo($this->packetOsInfo);
 		Assert::equal($this->expectedOsInfo, $array);
 		$failPacket = preg_replace('/\.24\./', '\.ff\.', $this->packetOsInfo);
-		$failArray = $osParser->parseReadInfo($failPacket);
+		$failArray = $this->parser->parseReadInfo($failPacket);
 		$failExpected = $this->expectedOsInfo;
 		$failExpected['TrType'] = $failExpected['McuType'] = 'UNKNOWN';
 		Assert::equal($failExpected, $failArray);

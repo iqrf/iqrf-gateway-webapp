@@ -13,8 +13,6 @@ use App\ConfigModule\Model\IqrfManager;
 use App\Model\JsonFileManager;
 use Nette\DI\Container;
 use Nette\Utils\ArrayHash;
-use Nette\Utils\FileSystem;
-use Nette\Utils\Json;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -26,6 +24,21 @@ class IqrfManagerTest extends TestCase {
 	 * @var Container
 	 */
 	private $container;
+
+	/**
+	 * @var CommandManager
+	 */
+	private $commandManager;
+
+	/**
+	 * @var JsonFileManager
+	 */
+	private $fileManager;
+
+	/**
+	 * @var JsonFileManager
+	 */
+	private $fileManagerTemp;
 
 	/**
 	 * @var string
@@ -51,14 +64,21 @@ class IqrfManagerTest extends TestCase {
 	}
 
 	/**
+	 * Set up test environment
+	 */
+	public function setUp() {
+		$this->commandManager = new CommandManager(false);
+		$this->fileManager = new JsonFileManager($this->path);
+		$this->fileManagerTemp = new JsonFileManager($this->pathTest);
+	}
+
+	/**
 	 * @test
 	 * Test function to load main configuration of daemon
 	 */
 	public function testLoad() {
-		$commandManager = new CommandManager(false);
-		$fileManager = new JsonFileManager($this->path);
-		$manager = new IqrfManager($commandManager, $fileManager);
-		$expected = Json::decode(FileSystem::read($this->path . $this->fileName . '.json'), Json::FORCE_ARRAY);
+		$manager = new IqrfManager($this->commandManager, $this->fileManager);
+		$expected = $this->fileManager->read($this->fileName);
 		Assert::equal($expected, $manager->load());
 	}
 
@@ -67,19 +87,17 @@ class IqrfManagerTest extends TestCase {
 	 * Test function to save main configuration of daemon
 	 */
 	public function testSave() {
-		$commandManager = new CommandManager(false);
-		$fileManager = new JsonFileManager($this->path);
-		$manager = new IqrfManager($commandManager, $fileManager);
+		$manager = new IqrfManager($this->commandManager, $this->fileManagerTemp);
 		$array = [
 			'IqrfInterface' => 'COM6',
 			'DpaHandlerTimeout' => 500,
 			'CommunicationMode' => 'LP',
 		];
-		$expected = Json::decode(FileSystem::read($this->path . $this->fileName . '.json'), Json::FORCE_ARRAY);
-		$fileManager->write($this->fileName, $expected);
+		$expected = $this->fileManager->read($this->fileName);
+		$this->fileManagerTemp->write($this->fileName, $expected);
 		$expected['CommunicationMode'] = 'LP';
 		$manager->save(ArrayHash::from($array));
-		Assert::equal($expected, $fileManager->read($this->fileName));
+		Assert::equal($expected, $this->fileManagerTemp->read($this->fileName));
 	}
 
 	/**
@@ -90,10 +108,9 @@ class IqrfManagerTest extends TestCase {
 		$commandManager = \Mockery::mock(CommandManager::class);
 		$outputCdc = '/dev/ttyACM0' . PHP_EOL . '/dev/ttyACM1';
 		$outputSpi = '/dev/spidev0.0' . PHP_EOL . '/dev/spidev0.1' . PHP_EOL . '/dev/spidev1.0' . PHP_EOL . '/dev/spidev1.1';
-		$commandManager->shouldReceive('send')->with("ls /dev/ttyACM* | awk '{ print $0 }'", true)->andReturn($outputCdc);
-		$commandManager->shouldReceive('send')->with("ls /dev/spidev* | awk '{ print $0 }'", true)->andReturn($outputSpi);
-		$fileManager = new JsonFileManager($this->path);
-		$manager = new IqrfManager($commandManager, $fileManager);
+		$commandManager->shouldReceive('send')->with('ls /dev/ttyACM* | awk \'{ print $0 }\'', true)->andReturn($outputCdc);
+		$commandManager->shouldReceive('send')->with('ls /dev/spidev* | awk \'{ print $0 }\'', true)->andReturn($outputSpi);
+		$manager = new IqrfManager($commandManager, $this->fileManager);
 		$expected = [
 			'cdc' => ['/dev/ttyACM0', '/dev/ttyACM1'],
 			'spi' => ['/dev/spidev0.0', '/dev/spidev0.1', '/dev/spidev1.0', '/dev/spidev1.1']
@@ -108,9 +125,8 @@ class IqrfManagerTest extends TestCase {
 	public function testGetCdcInterfaces() {
 		$commandManager = \Mockery::mock(CommandManager::class);
 		$output = '/dev/ttyACM0' . PHP_EOL . '/dev/ttyACM1';
-		$commandManager->shouldReceive('send')->with("ls /dev/ttyACM* | awk '{ print $0 }'", true)->andReturn($output);
-		$fileManager = new JsonFileManager($this->path);
-		$manager = new IqrfManager($commandManager, $fileManager);
+		$commandManager->shouldReceive('send')->with('ls /dev/ttyACM* | awk \'{ print $0 }\'', true)->andReturn($output);
+		$manager = new IqrfManager($commandManager, $this->fileManager);
 		$expected = ['/dev/ttyACM0', '/dev/ttyACM1'];
 		Assert::same($expected, $manager->getCdcInterfaces());
 	}
@@ -122,9 +138,8 @@ class IqrfManagerTest extends TestCase {
 	public function testGetSpiInterfaces() {
 		$commandManager = \Mockery::mock(CommandManager::class);
 		$output = '/dev/spidev0.0' . PHP_EOL . '/dev/spidev0.1' . PHP_EOL . '/dev/spidev1.0' . PHP_EOL . '/dev/spidev1.1';
-		$commandManager->shouldReceive('send')->with("ls /dev/spidev* | awk '{ print $0 }'", true)->andReturn($output);
-		$fileManager = new JsonFileManager($this->path);
-		$manager = new IqrfManager($commandManager, $fileManager);
+		$commandManager->shouldReceive('send')->with('ls /dev/spidev* | awk \'{ print $0 }\'', true)->andReturn($output);
+		$manager = new IqrfManager($commandManager, $this->fileManager);
 		$expected = ['/dev/spidev0.0', '/dev/spidev0.1', '/dev/spidev1.0', '/dev/spidev1.1'];
 		Assert::same($expected, $manager->getSpiInterfaces());
 	}

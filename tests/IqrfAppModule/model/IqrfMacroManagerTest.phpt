@@ -25,6 +25,11 @@ class IqrfMacroManagerTest extends TestCase {
 	private $container;
 
 	/**
+	 * @var IqrfMacroManager
+	 */
+	private $manager;
+
+	/**
 	 * @var string File name of IQRF IDE Macros
 	 */
 	private $macroFileName = __DIR__ . '/../../../iqrf/DPA-macros_170601.iqrfmcr';
@@ -43,12 +48,18 @@ class IqrfMacroManagerTest extends TestCase {
 	}
 
 	/**
+	 * Set up test environment
+	 */
+	public function setUp() {
+		$this->manager = new IqrfMacroManager($this->macroFileName);
+	}
+
+	/**
 	 * @test
 	 * Test function to convert HEX to ASCII
 	 */
 	public function testHex2Ascii() {
-		$iqrfMacroManager = new IqrfMacroManager($this->macroFileName);
-		$ascii = $iqrfMacroManager->hex2ascii($this->hex);
+		$ascii = $this->manager->hex2ascii($this->hex);
 		$expected = FileSystem::read(__DIR__ . '/data/macros-ascii.expected');
 		Assert::equal($expected, $ascii);
 	}
@@ -58,8 +69,7 @@ class IqrfMacroManagerTest extends TestCase {
 	 * Test function to parse hex of macros
 	 */
 	public function testParseMacros() {
-		$iqrfMacroManager = new IqrfMacroManager($this->macroFileName);
-		$macros = $iqrfMacroManager->parseMacros($this->hex);
+		$macros = $this->manager->parseMacros($this->hex);
 		$expected = Json::decode(FileSystem::read(__DIR__ . '/data/iqrf-ide-macros.json'), Json::FORCE_ARRAY);
 		Assert::equal($expected, $macros);
 	}
@@ -69,8 +79,7 @@ class IqrfMacroManagerTest extends TestCase {
 	 * Test function to read IQRF IDE macros
 	 */
 	public function testRead() {
-		$iqrfMacroManager = new IqrfMacroManager($this->macroFileName);
-		$macros = $iqrfMacroManager->read();
+		$macros = $this->manager->read();
 		$expected = Json::decode(FileSystem::read(__DIR__ . '/data/iqrf-ide-macros.json'), Json::FORCE_ARRAY);
 		Assert::equal($expected, $macros);
 	}

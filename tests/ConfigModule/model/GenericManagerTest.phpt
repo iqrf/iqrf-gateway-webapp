@@ -12,8 +12,6 @@ use App\ConfigModule\Model\GenericManager;
 use App\Model\JsonFileManager;
 use Nette\DI\Container;
 use Nette\Utils\ArrayHash;
-use Nette\Utils\FileSystem;
-use Nette\Utils\Json;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -25,6 +23,16 @@ class GenericManagerTest extends TestCase {
 	 * @var Container
 	 */
 	private $container;
+
+	/**
+	 * @var JsonFileManager
+	 */
+	private $fileManager;
+
+	/**
+	 * @var JsonFileManager
+	 */
+	private $fileManagerTemp;
 
 	/**
 	 * @var string
@@ -50,13 +58,20 @@ class GenericManagerTest extends TestCase {
 	}
 
 	/**
+	 * Set up test environment
+	 */
+	public function setUp() {
+		$this->fileManager = new JsonFileManager($this->path);
+		$this->fileManagerTemp = new JsonFileManager($this->pathTest);
+	}
+
+	/**
 	 * @test
 	 * Test function to load main configuration of daemon
 	 */
 	public function testLoad() {
-		$fileManager = new JsonFileManager($this->path);
-		$manager = new GenericManager($fileManager);
-		$expected = Json::decode(FileSystem::read($this->path . $this->fileName . '.json'), Json::FORCE_ARRAY);
+		$manager = new GenericManager($this->fileManager);
+		$expected = $this->fileManager->read($this->fileName);
 		Assert::equal($expected, $manager->load($this->fileName));
 	}
 
@@ -65,18 +80,17 @@ class GenericManagerTest extends TestCase {
 	 * Test function to save main configuration of daemon
 	 */
 	public function testSave() {
-		$fileManager = new JsonFileManager($this->pathTest);
-		$manager = new GenericManager($fileManager);
+		$manager = new GenericManager($this->fileManagerTemp);
 		$array = [
 			'TraceFileName' => '',
 			'TraceFileSize' => 0,
 			'VerbosityLevel' => 'err'
 		];
-		$expected = Json::decode(FileSystem::read($this->path . $this->fileName . '.json'), Json::FORCE_ARRAY);
-		$fileManager->write($this->fileName, $expected);
+		$expected = $this->fileManager->read($this->fileName);
+		$this->fileManagerTemp->write($this->fileName, $expected);
 		$expected['VerbosityLevel'] = 'err';
 		$manager->save($this->fileName, ArrayHash::from($array));
-		Assert::equal($expected, $fileManager->read($this->fileName));
+		Assert::equal($expected, $this->fileManagerTemp->read($this->fileName));
 	}
 
 }

@@ -26,6 +26,21 @@ class IqrfAppManagerTest extends TestCase {
 	private $container;
 
 	/**
+	 * @var CommandManager
+	 */
+	private $commandManager;
+
+	/**
+	 * @var CoordinatorParser
+	 */
+	private $coordinatorParser;
+
+	/**
+	 * @var OsParser
+	 */
+	private $osParser;
+
+	/**
 	 * Constructor
 	 * @param Container $container
 	 */
@@ -34,14 +49,20 @@ class IqrfAppManagerTest extends TestCase {
 	}
 
 	/**
+	 * Set up test environment
+	 */
+	public function setUp() {
+		$this->commandManager = new CommandManager(false);
+		$this->coordinatorParser = new CoordinatorParser();
+		$this->osParser = new OsParser();
+	}
+
+	/**
 	 * @test
 	 * Test function to validation of raw IQRF packet
 	 */
 	public function testValidatePacket() {
-		$commandManager = new CommandManager(false);
-		$coordinatorParser = new CoordinatorParser();
-		$osParser = new OsParser();
-		$iqrfAppManager = new IqrfAppManager($commandManager, $coordinatorParser, $osParser);
+		$iqrfAppManager = new IqrfAppManager($this->commandManager, $this->coordinatorParser, $this->osParser);
 		$validPackets = [
 			'01.00.06.03.ff.ff',
 			'01 00 06 03 ff ff',
@@ -78,9 +99,7 @@ class IqrfAppManagerTest extends TestCase {
 		foreach ($outputSuccess as $output) {
 			$commandManager->shouldReceive('send')->with($output, true)->andReturn(true);
 		}
-		$coordinatorParser = new CoordinatorParser();
-		$osParser = new OsParser();
-		$iqrfAppManager = new IqrfAppManager($commandManager, $coordinatorParser, $osParser);
+		$iqrfAppManager = new IqrfAppManager($commandManager, $this->coordinatorParser, $this->osParser);
 		foreach ($modesSuccess as $mode) {
 			Assert::true($iqrfAppManager->changeOperationMode($mode));
 		}
@@ -96,9 +115,7 @@ class IqrfAppManagerTest extends TestCase {
 		$expected = 'sudo iqrfapp raw ' . $packet;
 		$commandManager = \Mockery::mock(CommandManager::class);
 		$commandManager->shouldReceive('send')->with('iqrfapp raw ' . $packet, true)->andReturn($expected);
-		$coordinatorParser = new CoordinatorParser();
-		$osParser = new OsParser();
-		$iqrfAppManager = new IqrfAppManager($commandManager, $coordinatorParser, $osParser);
+		$iqrfAppManager = new IqrfAppManager($commandManager, $this->coordinatorParser, $this->osParser);
 		Assert::equal($expected, $iqrfAppManager->sendRaw($packet));
 	}
 
@@ -107,10 +124,7 @@ class IqrfAppManagerTest extends TestCase {
 	 * Test function to parse DPA response
 	 */
 	public function testParseResponse() {
-		$commandManager = new CommandManager(false);
-		$coordinatorParser = new CoordinatorParser();
-		$osParser = new OsParser();
-		$iqrfAppManager = new IqrfAppManager($commandManager, $coordinatorParser, $osParser);
+		$iqrfAppManager = new IqrfAppManager($this->commandManager, $this->coordinatorParser, $this->osParser);
 		$packetCoordinatorBonded = 'raw 00.00.00.82.00.00.00.31.3e.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00 STATUS_NO_ERROR';
 		$arrayCoordinatorBonded = $iqrfAppManager->parseResponse($packetCoordinatorBonded);
 		$expectedCoordinatorBonded = [

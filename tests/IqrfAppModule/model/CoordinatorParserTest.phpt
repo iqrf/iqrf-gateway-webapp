@@ -23,6 +23,11 @@ class CoordinatorParserTest extends TestCase {
 	private $container;
 
 	/**
+	 * @var CoordinatorParser
+	 */
+	private $parser;
+
+	/**
 	 * @var string Coordinator Get Bonded nodes packet
 	 */
 	private $packetBonded = '00.00.00.82.00.00.00.31.3e.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00';
@@ -87,14 +92,20 @@ class CoordinatorParserTest extends TestCase {
 	}
 
 	/**
+	 * Set up test environment
+	 */
+	public function setUp() {
+		$this->parser = new CoordinatorParser();
+	}
+
+	/**
 	 * @test
 	 * Test function to parse DPA response
 	 */
 	public function testParse() {
-		$coordinatorParser = new CoordinatorParser();
-		$arrayBonded = $coordinatorParser->parse($this->packetBonded);
+		$arrayBonded = $this->parser->parse($this->packetBonded);
 		Assert::equal($this->expectedBonded, $arrayBonded);
-		$arrayDiscovered = $coordinatorParser->parse($this->packetDiscovered);
+		$arrayDiscovered = $this->parser->parse($this->packetDiscovered);
 		Assert::equal($this->expectedDiscovered, $arrayDiscovered);
 	}
 
@@ -103,10 +114,9 @@ class CoordinatorParserTest extends TestCase {
 	 * Test function to parse response to DPA Coordinator - "Get bonded nodes" and "Get discovered nodes" request
 	 */
 	public function testParseGetNodes() {
-		$coordinatorParser = new CoordinatorParser();
-		$arrayBonded = $coordinatorParser->parseGetNodes($this->packetBonded);
+		$arrayBonded = $this->parser->parseGetNodes($this->packetBonded);
 		Assert::equal($this->expectedBonded, $arrayBonded);
-		$arrayDiscovered = $coordinatorParser->parseGetNodes($this->packetDiscovered);
+		$arrayDiscovered = $this->parser->parseGetNodes($this->packetDiscovered);
 		Assert::equal($this->expectedDiscovered, $arrayDiscovered);
 	}
 
