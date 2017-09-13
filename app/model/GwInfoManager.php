@@ -53,15 +53,16 @@ class GwInfoManager {
 	 */
 	public function getIpAddresses() {
 		$addresses = [];
-		$lsInterfaces = $this->commandManager->send("ls /sys/class/net | awk '{ print $0 }'", true);
+		$lsInterfaces = $this->commandManager->send('ls /sys/class/net | awk \'{ print $0 }\'', true);
 		$interfaces = explode(PHP_EOL, $lsInterfaces);
 		foreach ($interfaces as $interface) {
-			if ($interface !== 'lo') {
-				$cmd = 'ip a s ' . $interface . ' | grep inet | grep global | grep -v temporary | awk \'{print $2}\'';
-				$output = $this->commandManager->send($cmd, true);
-				if (!empty($output)) {
-					$addresses[$interface] = explode(PHP_EOL, $output);
-				}
+			if ($interface === 'lo') {
+				continue;
+			}
+			$cmd = 'ip a s ' . $interface . ' | grep inet | grep global | grep -v temporary | awk \'{print $2}\'';
+			$output = $this->commandManager->send($cmd, true);
+			if (!empty($output)) {
+				$addresses[$interface] = explode(PHP_EOL, $output);
 			}
 		}
 		return $addresses;
@@ -73,15 +74,36 @@ class GwInfoManager {
 	 */
 	public function getMacAddresses() {
 		$addresses = [];
-		$lsInterfaces = $this->commandManager->send("ls /sys/class/net | awk '{ print $0 }'", true);
+		$lsInterfaces = $this->commandManager->send('ls /sys/class/net | awk \'{ print $0 }\'', true);
 		$interfaces = explode(PHP_EOL, $lsInterfaces);
 		foreach ($interfaces as $interface) {
-			if ($interface !== 'lo') {
-				$cmd = 'cat /sys/class/net/' . $interface . '/address';
-				$addresses[$interface] = $this->commandManager->send($cmd, true);
+			if ($interface === 'lo') {
+				continue;
 			}
+			$cmd = 'cat /sys/class/net/' . $interface . '/address';
+			$addresses[$interface] = $this->commandManager->send($cmd, true);
 		}
 		return $addresses;
+	}
+
+	/**
+	 * Get version of the daemon
+	 * @return string IQRF Daemon version
+	 */
+	public function getDaemonVersion() {
+		$cmd = 'apt-cache madison iqrf-daemon | awk \'{ print $3 }\'';
+		$daemonExistence = $this->commandManager->commandExist('iqrfapp');
+		if (!$daemonExistence) {
+			return 'none';
+		}
+		$aptCacheExistence = $this->commandManager->commandExist('apt-cache');
+		if ($aptCacheExistence) {
+			$result = $this->commandManager->send($cmd);
+		}
+		if (!empty($result)) {
+			return $result;
+		}
+		return 'unknown';
 	}
 
 	/**

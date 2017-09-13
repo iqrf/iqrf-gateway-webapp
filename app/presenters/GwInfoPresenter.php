@@ -48,6 +48,7 @@ class GwInfoPresenter extends BasePresenter {
 		$this->template->macAddresses = $this->gwInfoManager->getMacAddresses();
 		$this->template->hostname = $this->gwInfoManager->getHostname();
 		$this->template->module = $this->gwInfoManager->getCoordinatorInfo();
+		$this->template->daemonVersion = $this->gwInfoManager->getDaemonVersion();
 	}
 
 }

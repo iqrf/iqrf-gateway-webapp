@@ -23,6 +23,11 @@ class CommandManagerTest extends TestCase {
 	private $container;
 
 	/**
+	 * @var CommandManager
+	 */
+	private $manager;
+
+	/**
 	 * Constructor
 	 * @param Container $container
 	 */
@@ -31,12 +36,27 @@ class CommandManagerTest extends TestCase {
 	}
 
 	/**
+	 * Set up test environment
+	 */
+	public function setUp() {
+		$this->manager = new CommandManager(false);
+	}
+
+	/**
 	 * @test
 	 * Test function to execute a shell command
 	 */
 	public function testSend() {
-		$manager = new CommandManager(false);
-		Assert::same('OK', $manager->send('echo "OK"'));
+		Assert::same('OK', $this->manager->send('echo "OK"'));
+	}
+
+	/**
+	 * @test
+	 * Test function to check the existence of a command
+	 */
+	public function testCommandExist() {
+		Assert::true($this->manager->commandExist('echo'));
+		Assert::false($this->manager->commandExist('sndikasdhisdbajdbas'));
 	}
 
 }

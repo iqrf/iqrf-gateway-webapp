@@ -51,4 +51,13 @@ class CommandManager {
 		return Strings::trim(shell_exec($command));
 	}
 
+	/**
+	 * Check the existence of a command
+	 * @param string $cmd Command
+	 * @return bool
+	 */
+	public function commandExist($cmd) {
+		return !empty($this->send('which ' . $cmd));
+	}
+
 }

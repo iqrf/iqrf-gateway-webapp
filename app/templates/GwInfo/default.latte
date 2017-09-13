@@ -21,6 +21,14 @@
 	<div class='panel-body'>
 		<table class='table table-striped'>
 			<tr>
+				<th>{_"IQRF Daemon version"}</th>
+				<td>{$daemonVersion}</td>
+			</tr>
+			<tr>
+				<th>{_"Hostname"}</th>
+				<td>{$hostname}</td>
+			</tr>
+			<tr>
 				<th>{_"IP addresses"}</th>
 				<td>
 					<dl class="dl-horizontal">
@@ -44,10 +52,6 @@
 						{/foreach}
 					</dl>
 				</td>
-			</tr>
-			<tr>
-				<th>{_"Hostname"}</th>
-				<td>{$hostname}</td>
 			</tr>
 			<tr>
 				<th>{_"TR info"}</th>
