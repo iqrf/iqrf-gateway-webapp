@@ -58,16 +58,19 @@ class IqrfAppManager {
 	/**
 	 * Send RAW IQRF packet
 	 * @param string $packet RAW IQRF packet
+	 * @param int $timeout DPA timeout in milliseconds
+	 * @return string DPA response
 	 */
-	public function sendRaw($packet) {
-		$cmd = 'iqrfapp raw ' . $packet;
+	public function sendRaw($packet, $timeout) {
+		$cmd = 'iqrfapp "{\"ctype\":\"dpa\",\"type\":\"raw\",\"msgid\":\"1\",'
+				. '\"timeout\":' . $timeout . ',\"request\":\"' . $packet . '\"}"';
 		return $this->commandManager->send($cmd, true);
 	}
 
 	/**
 	 * Change iqrf-daemon operation mode
 	 * @param string $mode iqrf-daemon operation mode
-	 * @return string
+	 * @return string Response
 	 */
 	public function changeOperationMode($mode) {
 		$modes = ['forwarding', 'operational', 'service'];

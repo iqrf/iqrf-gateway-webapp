@@ -100,7 +100,8 @@ class GwInfoManagerTest extends TestCase {
 	 */
 	public function testGetCoordinatorInfo() {
 		$commandManager = \Mockery::mock(CommandManager::class);
-		$commandManager->shouldReceive('send')->with('iqrfapp raw 00.00.02.00.FF.FF', true)->andReturn(null);
+		$cmd = 'iqrfapp "{\"ctype\":\"dpa\",\"type\":\"raw\",\"msgid\":\"1\",\"timeout\":1000,\"request\":\"00.00.02.00.FF.FF\"}"';
+		$commandManager->shouldReceive('send')->with($cmd, true)->andReturn(null);
 		$iqrfAppManager = new IqrfAppManager($commandManager, $this->coordinatorParser, $this->osParser);
 		$gwInfoManager = new GwInfoManager($commandManager, $iqrfAppManager);
 		Assert::null($gwInfoManager->getCoordinatorInfo());

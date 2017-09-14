@@ -112,11 +112,14 @@ class IqrfAppManagerTest extends TestCase {
 	 */
 	public function testSendRaw() {
 		$packet = '01.00.06.03.ff.ff';
-		$expected = 'sudo iqrfapp raw ' . $packet;
+		$timeout = 1000;
+		$cmd = 'iqrfapp "{\"ctype\":\"dpa\",\"type\":\"raw\",\"msgid\":\"1\",'
+				. '\"timeout\":' . $timeout . ',\"request\":\"' . $packet . '\"}"';
+		$expected = 'sudo ' . $cmd;
 		$commandManager = \Mockery::mock(CommandManager::class);
-		$commandManager->shouldReceive('send')->with('iqrfapp raw ' . $packet, true)->andReturn($expected);
+		$commandManager->shouldReceive('send')->with($cmd, true)->andReturn($expected);
 		$iqrfAppManager = new IqrfAppManager($commandManager, $this->coordinatorParser, $this->osParser);
-		Assert::equal($expected, $iqrfAppManager->sendRaw($packet));
+		Assert::equal($expected, $iqrfAppManager->sendRaw($packet, $timeout));
 	}
 
 	/**

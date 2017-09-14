@@ -31,7 +31,7 @@ class IqrfAppSendRawFormFactory {
 	/**
 	 * @var IqrfAppManager
 	 */
-	private $iqrfAppManager;
+	private $manager;
 
 	/**
 	 * @var FormFactory
@@ -41,11 +41,11 @@ class IqrfAppSendRawFormFactory {
 	/**
 	 * Constructor
 	 * @param FormFactory $factory
-	 * @param IqrfAppManager $iqrfAppManager
+	 * @param IqrfAppManager $manager
 	 */
-	public function __construct(FormFactory $factory, IqrfAppManager $iqrfAppManager) {
+	public function __construct(FormFactory $factory, IqrfAppManager $manager) {
 		$this->factory = $factory;
-		$this->iqrfAppManager = $iqrfAppManager;
+		$this->manager = $manager;
 	}
 
 	/**
@@ -56,12 +56,15 @@ class IqrfAppSendRawFormFactory {
 	public function create(SendRawPresenter $presenter) {
 		$form = $this->factory->create();
 		$form->addText('packet', 'Raw IQRF packet')->setRequired();
+		$form->addText('timeout', 'DPA timeout (ms)')->setRequired()
+				->setDefaultValue(1000);
 		$form->addSubmit('send', 'Send');
 		$form->addProtection('Timeout expired, resubmit the form.');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
 			$packet = $values['packet'];
-			if ($this->iqrfAppManager->validatePacket($packet)) {
-				$response = $this->iqrfAppManager->sendRaw($packet);
+			$timeout = $values['timeout'];
+			if ($this->manager->validatePacket($packet)) {
+				$response = $this->manager->sendRaw($packet, $timeout);
 				$presenter->handleShowResponse($response);
 			}
 		};
