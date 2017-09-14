@@ -64,7 +64,7 @@ class ControlPresenter extends BasePresenter {
 		$this->onlyForAdmins();
 		$this->serviceManager->stop();
 		$this->flashMessage('IQRF Daemon has been stopped.', 'info');
-		$this->redirect('Service:default');
+		$this->redirect('Control:default');
 		$this->setView('default');
 	}
 
@@ -75,7 +75,7 @@ class ControlPresenter extends BasePresenter {
 		$this->onlyForAdmins();
 		$this->serviceManager->restart();
 		$this->flashMessage('IQRF Daemon has been restarted.', 'info');
-		$this->redirect('Service:default');
+		$this->redirect('Control:default');
 		$this->setView('default');
 	}
 
