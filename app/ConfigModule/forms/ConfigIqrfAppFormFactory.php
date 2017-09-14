@@ -59,6 +59,7 @@ class ConfigIqrfAppFormFactory {
 		$fileName = 'iqrfapp';
 		$form->addText('LocalMqName', 'LocalMqName')->setRequired();
 		$form->addText('RemoteMqName', 'RemoteMqName')->setRequired();
+		$form->addInteger('DefaultTimeout', 'DefaultTimeout')->setRequired();
 		$form->addSubmit('save', 'Save');
 		$form->setDefaults($this->manager->load($fileName));
 		$form->addProtection('Timeout expired, resubmit the form.');
