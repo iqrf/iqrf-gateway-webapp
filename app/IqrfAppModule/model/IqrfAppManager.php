@@ -98,11 +98,15 @@ class IqrfAppManager {
 	 * @throws Exception
 	 */
 	public function parseResponse($jsonResponse) {
+		if (empty($jsonResponse)) {
+			return null;
+			// throw new \Exception();
+		}
 		$reponse = Json::decode($jsonResponse, Json::FORCE_ARRAY);
 		$status = $reponse['status'];
 		if ($status !== 'STATUS_NO_ERROR') {
 			return null;
-			// throw new Exception();
+			// throw new \Exception();
 		}
 		$packet = $reponse['response'];
 		$pnum = explode('.', $packet)[2];
