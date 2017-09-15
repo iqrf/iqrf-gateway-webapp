@@ -23,6 +23,7 @@ use App\IqrfAppModule\Model\CoordinatorParser;
 use App\IqrfAppModule\Model\OsParser;
 use App\Model\CommandManager;
 use Nette;
+use Nette\Utils\Json;
 
 class IqrfAppManager {
 
@@ -92,22 +93,18 @@ class IqrfAppManager {
 
 	/**
 	 * Parse DPA response
-	 * @param string $response DPA packet response
+	 * @param string $jsonResponse JSON DPA response
 	 * @return array Parsed response in array
 	 * @throws Exception
 	 */
-	public function parseResponse($response) {
-		$output = explode(' ', $response);
-		$status = end($output);
+	public function parseResponse($jsonResponse) {
+		$reponse = Json::decode($jsonResponse, Json::FORCE_ARRAY);
+		$status = $reponse['status'];
 		if ($status !== 'STATUS_NO_ERROR') {
 			return null;
 			// throw new Exception();
 		}
-		$packet = $output[1];
-		if (empty($packet) || count($output) === 2) {
-			return null;
-			// throw new Exception();
-		}
+		$packet = $reponse['response'];
 		$pnum = explode('.', $packet)[2];
 		switch ($pnum) {
 			case '00':

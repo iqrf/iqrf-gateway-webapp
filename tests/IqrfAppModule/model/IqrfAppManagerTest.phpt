@@ -12,6 +12,7 @@ use App\IqrfAppModule\Model\CoordinatorParser;
 use App\IqrfAppModule\Model\IqrfAppManager;
 use App\IqrfAppModule\Model\OsParser;
 use App\Model\CommandManager;
+use App\Model\FileManager;
 use Nette\DI\Container;
 use Tester\Assert;
 use Tester\TestCase;
@@ -29,6 +30,11 @@ class IqrfAppManagerTest extends TestCase {
 	 * @var CommandManager
 	 */
 	private $commandManager;
+
+	/**
+	 * @var FileManager
+	 */
+	private $fileManager;
 
 	/**
 	 * @var CoordinatorParser
@@ -53,6 +59,7 @@ class IqrfAppManagerTest extends TestCase {
 	 */
 	public function setUp() {
 		$this->commandManager = new CommandManager(false);
+		$this->fileManager = new FileManager(__DIR__ . '/data/');
 		$this->coordinatorParser = new CoordinatorParser();
 		$this->osParser = new OsParser();
 	}
@@ -128,8 +135,8 @@ class IqrfAppManagerTest extends TestCase {
 	 */
 	public function testParseResponse() {
 		$iqrfAppManager = new IqrfAppManager($this->commandManager, $this->coordinatorParser, $this->osParser);
-		$packetCoordinatorBonded = 'raw 00.00.00.82.00.00.00.31.3e.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00 STATUS_NO_ERROR';
-		$arrayCoordinatorBonded = $iqrfAppManager->parseResponse($packetCoordinatorBonded);
+		$responseCoordinatorBonded = $this->fileManager->read('response-coordinator-bonded.json');
+		$arrayCoordinatorBonded = $iqrfAppManager->parseResponse($responseCoordinatorBonded);
 		$expectedCoordinatorBonded = [
 			'BondedNodes' => [
 				['0', '1', '1', '1', '1', '1', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
@@ -150,8 +157,8 @@ class IqrfAppManagerTest extends TestCase {
 			],
 		];
 		Assert::equal($expectedCoordinatorBonded, $arrayCoordinatorBonded);
-		$packetCoordinatorBondedDiscovered = 'raw 00.00.00.81.00.00.00.31.3c.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00 STATUS_NO_ERROR';
-		$arrayCoordinatorDiscovered = $iqrfAppManager->parseResponse($packetCoordinatorBondedDiscovered);
+		$responseCoordinatorBondedDiscovered = $this->fileManager->read('response-coordinator-discovered.json');
+		$arrayCoordinatorDiscovered = $iqrfAppManager->parseResponse($responseCoordinatorBondedDiscovered);
 		$expectedCoordinatorDiscovered = [
 			'DiscoveredNodes' => [
 				['0', '0', '1', '1', '1', '1', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
@@ -172,8 +179,8 @@ class IqrfAppManagerTest extends TestCase {
 			],
 		];
 		Assert::equal($expectedCoordinatorDiscovered, $arrayCoordinatorDiscovered);
-		$packetOsRead = 'raw 00.00.02.80.00.00.00.00.05.a4.00.81.38.24.79.08.00.28.00.f0 STATUS_NO_ERROR';
-		$arrayOsRead = $iqrfAppManager->parseResponse($packetOsRead);
+		$responseOsRead = $this->fileManager->read('response-os-read.json');
+		$arrayOsRead = $iqrfAppManager->parseResponse($responseOsRead);
 		$expectedOsRead = [
 			'ModuleId' => '8100A405',
 			'OsVersion' => '3.08D',
@@ -186,18 +193,12 @@ class IqrfAppManagerTest extends TestCase {
 			'SlotLimits' => 'f0',
 		];
 		Assert::equal($expectedOsRead, $arrayOsRead);
-		$packetLedrOn = 'raw 01.00.06.81.02.00.00.33 STATUS_NO_ERROR';
+		$packetLedrOn = $this->fileManager->read('response-ledr-on.json');
 		$arrayLedrOn = $iqrfAppManager->parseResponse($packetLedrOn);
 		Assert::null($arrayLedrOn);
 		$packetIoTKitSe = 'raw 00.00.5e.81.00.00.03.00 ERROR_PNUM';
 		$arrayIoTKitSe = $iqrfAppManager->parseResponse($packetIoTKitSe);
 		Assert::null($arrayIoTKitSe);
-		$packetEmpty0 = 'raw STATUS_NO_ERROR';
-		$arrayEmpty0 = $iqrfAppManager->parseResponse($packetEmpty0);
-		Assert::null($arrayEmpty0);
-		$packetEmpty1 = 'raw  STATUS_NO_ERROR';
-		$arrayEmpty1 = $iqrfAppManager->parseResponse($packetEmpty1);
-		Assert::null($arrayEmpty1);
 	}
 
 }
