@@ -20,38 +20,42 @@
 namespace App\Model;
 
 use Nette;
-use Nette\Utils\Json;
+use Nette\Utils\FileSystem;
 
-class JsonFileManager extends FileManager {
+class FileManager {
 
 	use Nette\SmartObject;
 
 	/**
+	 * @var string
+	 */
+	private $configDir;
+
+	/**
 	 * Constructor
-	 * @param string $configDir Directory with configuration files
+	 * @param string $configDir Directory with files
 	 */
 	public function __construct($configDir) {
-		parent::__construct($configDir);
+		$this->configDir = $configDir;
 	}
 
 	/**
-	 * Read JSON file and decode JSON to array
-	 * @param string $fileName File name (without .json)
-	 * @return array
+	 * Read file
+	 * @param string $fileName File name
+	 * @return string File content
 	 */
 	public function read($fileName) {
-		$file = parent::read($fileName . '.json');
-		return Json::decode($file, Json::FORCE_ARRAY);
+		return FileSystem::read($this->configDir . '/' . $fileName);
 	}
 
 	/**
 	 * Encode JSON from array and write JSON file
-	 * @param string $name File name (without .json)
-	 * @param array $array JSON array
+	 * @param string $fileName File name
+	 * @param array $content File content
 	 */
-	public function write($name, $array) {
-		$json = Json::encode($array, Json::PRETTY);
-		parent::write($name . '.json', $json);
+	public function write($fileName, $content) {
+		$fileName = 'nette.safe://' . $this->configDir . '/' . $fileName;
+		FileSystem::write($fileName, $content, null);
 	}
 
 }

@@ -54,6 +54,7 @@ services:
 	- App\IqrfAppModule\Model\IqrfMacroManager(%macroPath%)
 	- App\IqrfAppModule\Model\OsParser
 	- App\Model\CommandManager(%sudo%)
+	- App\Model\FileManager(%configDir%)
 	- App\Model\GwInfoManager
 	- App\Model\JsonFileManager(%configDir%)
 	- App\ServiceModule\Model\ServiceManager(%initDaemon%)
