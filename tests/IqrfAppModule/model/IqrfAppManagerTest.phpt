@@ -196,9 +196,11 @@ class IqrfAppManagerTest extends TestCase {
 		$packetLedrOn = $this->fileManager->read('response-ledr-on.json');
 		$arrayLedrOn = $iqrfAppManager->parseResponse($packetLedrOn);
 		Assert::null($arrayLedrOn);
-		$packetIoTKitSe = 'raw 00.00.5e.81.00.00.03.00 ERROR_PNUM';
+		$packetIoTKitSe = $this->fileManager->read('response-error.json');
 		$arrayIoTKitSe = $iqrfAppManager->parseResponse($packetIoTKitSe);
 		Assert::null($arrayIoTKitSe);
+		$emptyResponse = $iqrfAppManager->parseResponse('');
+		Assert::null($emptyResponse);
 	}
 
 }
