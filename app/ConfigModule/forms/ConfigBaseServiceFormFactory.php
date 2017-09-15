@@ -65,7 +65,7 @@ class ConfigBaseServiceFormFactory {
 		$form->addText('Messaging', 'Messaging')->setRequired();
 		$form->addCheckboxList('Serializers', 'Serializers', $serializers)->setRequired();
 		$prop = $form->addContainer('Properties');
-		$prop->addCheckbox('AsyncDpaMessage', 'AsyncDpaMessage');
+		$prop->addCheckbox('AsyncDpaResponse', 'AsyncDpaResponse');
 		$form->addSubmit('save', 'Save');
 		$form->setDefaults($this->manager->load($id));
 		$form->addProtection('Timeout expired, resubmit the form.');

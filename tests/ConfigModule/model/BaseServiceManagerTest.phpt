@@ -57,19 +57,19 @@ class BaseServiceManagerTest extends TestCase {
 			'Name' => 'BaseServiceForMQ',
 			'Messaging' => 'MqMessaging',
 			'Serializers' => ['SimpleSerializer', 'JsonSerializer'],
-			'Properties' => ['AsyncDpaMessage' => false],
+			'Properties' => ['AsyncDpaResponse' => false],
 		],
 		[
 			'Name' => 'BaseServiceForMQTT1',
 			'Messaging' => 'MqttMessaging1',
 			'Serializers' => ['JsonSerializer'],
-			'Properties' => ['AsyncDpaMessage' => true],
+			'Properties' => ['AsyncDpaResponse' => true],
 		],
 		[
 			'Name' => 'BaseServiceForMQTT2',
 			'Messaging' => 'MqttMessaging2',
 			'Serializers' => ['JsonSerializer'],
-			'Properties' => ['AsyncDpaMessage' => true],
+			'Properties' => ['AsyncDpaResponse' => true],
 		],
 	];
 
