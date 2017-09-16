@@ -98,17 +98,17 @@ class IqrfAppManager {
 	 * @throws Exception
 	 */
 	public function parseResponse($jsonResponse) {
-		if (empty($jsonResponse)) {
+		if (empty($jsonResponse) || $jsonResponse === 'Timeout') {
 			return null;
 			// throw new \Exception();
 		}
-		$reponse = Json::decode($jsonResponse, Json::FORCE_ARRAY);
-		$status = $reponse['status'];
+		$response = Json::decode(str_replace('Received: ', '', $jsonResponse), Json::FORCE_ARRAY);
+		$status = $response['status'];
 		if ($status !== 'STATUS_NO_ERROR') {
 			return null;
 			// throw new \Exception();
 		}
-		$packet = $reponse['response'];
+		$packet = $response['response'];
 		$pnum = explode('.', $packet)[2];
 		switch ($pnum) {
 			case '00':
