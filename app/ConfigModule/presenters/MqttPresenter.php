@@ -21,9 +21,15 @@ namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Model\InstanceManager;
 use App\ConfigModule\Forms\ConfigMqttFormFactory;
+use App\ConfigModule\Forms\ConfigMqttAzureFormFactory;
 use App\Presenters\BasePresenter;
 
 class MqttPresenter extends BasePresenter {
+
+	/**
+	 * @var ConfigMqttAzureFormFactory
+	 */
+	private $azureFormFactory;
 
 	/**
 	 * @var ConfigMqttFormFactory
@@ -45,7 +51,8 @@ class MqttPresenter extends BasePresenter {
 	 * @param ConfigMqttFormFactory $formFactory
 	 * @param InstanceManager $configManager
 	 */
-	public function __construct(ConfigMqttFormFactory $formFactory, InstanceManager $configManager) {
+	public function __construct(ConfigMqttFormFactory $formFactory, ConfigMqttAzureFormFactory $azureFormFactory, InstanceManager $configManager) {
+		$this->azureFormFactory = $azureFormFactory;
 		$this->configManager = $configManager;
 		$this->formFactory = $formFactory;
 	}
@@ -85,6 +92,15 @@ class MqttPresenter extends BasePresenter {
 	protected function createComponentConfigMqttForm() {
 		$this->onlyForAdmins();
 		return $this->formFactory->create($this);
+	}
+
+	/**
+	 * Create MQTT interface form
+	 * @return Form MQTT interface form
+	 */
+	protected function createComponentConfigMqttAzureForm() {
+		$this->onlyForAdmins();
+		return $this->azureFormFactory->create($this);
 	}
 
 }
