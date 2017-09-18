@@ -49,7 +49,8 @@
 				</tr>
 			</tbody>
 		</table>
-		{var $taskTypes = ['raw', 'raw-hdp', 'std-per-thermometer', 'std-per-ledg', 'std-per-ledr', 'std-per-frc', 'std-per-io']}
+		{*var $taskTypes = ['raw', 'raw-hdp', 'std-per-thermometer', 'std-per-ledg', 'std-per-ledr', 'std-per-frc', 'std-per-io']*}
+		{var $taskTypes = ['raw', 'raw-hdp']}
 		<div class="btn-group" role="group" aria-label="add" n:foreach="$taskTypes as $type">
 			<a class="btn btn-success" n:href="Scheduler:add type => $type" role="button">Add {$type}</a>
 		</div>
