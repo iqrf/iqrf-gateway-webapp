@@ -48,4 +48,12 @@ class LogPresenter extends BasePresenter {
 		$this->template->log = $this->manager->load();
 	}
 
+	/**
+	 * Download action
+	 */
+	public function actionDownload() {
+		$this->onlyForAdmins();
+		$this->sendResponse($this->manager->download());
+	}
+
 }

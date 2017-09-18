@@ -20,6 +20,7 @@
 namespace App\GatewayModule\Model;
 
 use Nette;
+use Nette\Application\Responses\FileResponse;
 use Nette\Utils\FileSystem;
 
 class LogManager {
@@ -45,6 +46,17 @@ class LogManager {
 	 */
 	public function load() {
 		return FileSystem::read($this->path);
+	}
+
+	/**
+	 * Download lof iqrf-daemon
+	 * @return FileResponse HTTP response with the log
+	 */
+	public function download() {
+		$fileName = 'iqrf-daemon.log';
+		$contentType = 'text/plain';
+		$response = new FileResponse($this->path, $fileName, $contentType, true);
+		return $response;
 	}
 
 }
