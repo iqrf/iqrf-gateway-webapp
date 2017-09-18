@@ -25,19 +25,28 @@
 					<th>{_"Name"}</th>
 					<th>{_"Messaging"}</th>
 					<th>{_"Serializers"}</th>
+					<th>{_"Async messaging"}</th>
 					<th>{_"Edit"}</th>
 					<th>{_"Remove"}</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr n:foreach="$services as $service">
-					{var $id = (array_keys($services, $service, TRUE)[0])}
+					{var $id = (array_keys($services, $service, true)[0])}
+					{ifset $service['Properties']['AsyncDpaMessage']}
+						{var $async = ($service['Properties']['AsyncDpaMessage'] ? 'ok' : 'remove')}
+					{else}
+						{var $async = 'remove'}
+					{/ifset}
 					<td>{$service['Name']}</td>
 					<td>{$service['Messaging']}</td>
 					<td>
 						{foreach $service['Serializers'] as $serializer}
 							{$serializer}{sep}, {/sep}
 						{/foreach}
+					</td>
+					<td>
+						<span class='glyphicon glyphicon-{_$async}' aria-hidden='true'></span>
 					</td>
 					<td>
 						<a n:href="BaseService:edit $id">
