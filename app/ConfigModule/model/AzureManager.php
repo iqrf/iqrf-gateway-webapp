@@ -34,7 +34,8 @@ class AzureManager {
 	 */
 	public function createMqttInterface($connectionString) {
 		$data = $this->parseConnectionString($connectionString);
-		$token = $this->generateSasToken($data['HostName'], $data['SharedAccessKey']);
+		$endpoint = $data['HostName'] . '/devices/' . $data['DeviceId'];
+		$token = $this->generateSasToken($endpoint, $data['SharedAccessKey']);
 		$interface = [
 			'Name' => 'MqttMessagingAzure',
 			'Enabled' => true,
@@ -91,8 +92,12 @@ class AzureManager {
 	 * @return array Values from the connection string
 	 */
 	public function parseConnectionString($connectionString) {
+		$connectionString = trim($connectionString, " =\t\n\r\0\x0B");
 		$data = [];
-		parse_str(str_replace(";", "&", $connectionString), $data);
+		foreach (explode(';', $connectionString) as $i) {
+			$j = explode('=', $i);
+			$data[$j[0]] = $j[1];
+		}
 		return $data;
 	}
 
