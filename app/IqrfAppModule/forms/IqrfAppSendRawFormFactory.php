@@ -55,7 +55,7 @@ class IqrfAppSendRawFormFactory {
 	 */
 	public function create(SendRawPresenter $presenter) {
 		$form = $this->factory->create();
-		$form->addText('packet', 'Raw IQRF packet')->setRequired();
+		$form->addText('packet', 'DPA packet')->setRequired();
 		$form->addText('timeout', 'DPA timeout (ms)')->setRequired()
 				->setDefaultValue(1000);
 		$form->addSubmit('send', 'Send');
