@@ -4,6 +4,8 @@ parameters:
 	# init deamon used in out system (e.g. systemd)
 	initDaemon: 'systemd'
 	sudo: true
+	# path to iqrf-daemon log
+	logPath: '/var/log/iqrf-daemon.log'
 	# path to IQRF IDE macros
 	macroPath: '../iqrf/DPA-macros_170601.iqrfmcr'
 
@@ -48,6 +50,8 @@ services:
 	- App\ConfigModule\Model\InstanceManager
 	- App\ConfigModule\Model\MainManager
 	- App\ConfigModule\Model\SchedulerManager
+	- App\GatewayModule\Model\InfoManager
+	- App\GatewayModule\Model\LogManager(%logPath%)
 	- App\Forms\FormFactory
 	- App\Forms\SignInFormFactory
 	- App\IqrfAppModule\Forms\IqrfAppSendRawFormFactory
@@ -57,7 +61,6 @@ services:
 	- App\IqrfAppModule\Model\OsParser
 	- App\Model\CommandManager(%sudo%)
 	- App\Model\FileManager(%configDir%)
-	- App\Model\GwInfoManager
 	- App\Model\JsonFileManager(%configDir%)
 	- App\ServiceModule\Model\ServiceManager(%initDaemon%)
 	router: App\Router\RouterFactory::createRouter

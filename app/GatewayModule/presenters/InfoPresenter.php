@@ -17,26 +17,27 @@
  * limitations under the License.
  */
 
-namespace App\Presenters;
+namespace App\GatewayModule\Presenters;
 
-use App\Model\GwInfoManager;
+use App\GatewayModule\Model\InfoManager;
+use App\Presenters\BasePresenter;
 
 /**
  * Gateway Info presenter
  */
-class GwInfoPresenter extends BasePresenter {
+class InfoPresenter extends BasePresenter {
 
 	/**
 	 * @var GwInfoManager
 	 */
-	private $gwInfoManager;
+	private $infoManager;
 
 	/**
 	 * Constructor
-	 * @param GwInfoManager $gwInfoManager
+	 * @param InfoManager $infoManager
 	 */
-	public function __construct(GwInfoManager $gwInfoManager) {
-		$this->gwInfoManager = $gwInfoManager;
+	public function __construct(InfoManager $infoManager) {
+		$this->infoManager = $infoManager;
 	}
 
 	/**
@@ -44,11 +45,11 @@ class GwInfoPresenter extends BasePresenter {
 	 */
 	public function renderDefault() {
 		$this->onlyForAdmins();
-		$this->template->ipAddresses = $this->gwInfoManager->getIpAddresses();
-		$this->template->macAddresses = $this->gwInfoManager->getMacAddresses();
-		$this->template->hostname = $this->gwInfoManager->getHostname();
-		$this->template->module = $this->gwInfoManager->getCoordinatorInfo();
-		$this->template->daemonVersion = $this->gwInfoManager->getDaemonVersion();
+		$this->template->ipAddresses = $this->infoManager->getIpAddresses();
+		$this->template->macAddresses = $this->infoManager->getMacAddresses();
+		$this->template->hostname = $this->infoManager->getHostname();
+		$this->template->module = $this->infoManager->getCoordinatorInfo();
+		$this->template->daemonVersion = $this->infoManager->getDaemonVersion();
 	}
 
 }

@@ -41,6 +41,7 @@ class RouterFactoryTest extends TestCase {
 		$routeList = RouterFactory::createRouter();
 		$expected = [
 			['Config:' => '[<lang [a-z]{2}>/]config/<presenter>/<action>[/<id>]'],
+			['Gateway:' => '[<lang [a-z]{2}>/]gateway/<presenter>/<action>'],
 			['IqrfApp:' => '[<lang [a-z]{2}>/]iqrfapp/<presenter>/<action>'],
 			['Service:' => '[<lang [a-z]{2}>/]service/<presenter>/<action>'],
 			'[<lang [a-z]{2}>/]<presenter>/<action>[/<id>]',

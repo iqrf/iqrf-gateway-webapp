@@ -42,8 +42,16 @@
 				<div id='navbar' class='navbar-collapse collapse'>
 					<ul class='nav navbar-nav'>
 						<li><a n:href=':Homepage:default'>{_"Home"}</a></li>
-						<li n:if='$user->loggedIn'><a n:href=':GwInfo:default'>{_"GW Info"}</a></li>
-						<li class='dropdown' n:if='$user->loggedIn'>
+						<li n:if='$user->loggedIn' class='dropdown'>
+							<a n:href=':Gateway:Info:default' class="dropdown-toggle" data-toggle="dropdown" role="button">
+								{_"GW Info"} <span class="caret"></span>
+							</a>
+							<ul class="dropdown-menu">
+								<li><a n:href=':Gateway:Info:default'>{_"GW Info"}</a></li>
+								<li><a n:href=':Gateway:Log:default'>{_"Daemon log"}</a></li>
+							</ul>
+						</li>
+						<li n:if='$user->loggedIn' class='dropdown'>
 							<a n:href=':Config:Homepage:default' class="dropdown-toggle" data-toggle="dropdown" role="button">
 								{_"Configuration"} <span class="caret"></span>
 							</a>
@@ -60,7 +68,7 @@
 							</ul>
 						</li>
 						<li n:if='$user->loggedIn'><a n:href=':Service:Control:default'>{_"Service"}</a></li>
-						<li class='dropdown' n:if='$user->loggedIn'>
+						<li n:if='$user->loggedIn' class='dropdown'>
 							<a n:href=':IqrfApp:Homepage:default' class="dropdown-toggle" data-toggle="dropdown" role="button">
 								{_"IQRF App"} <span class="caret"></span>
 							</a>

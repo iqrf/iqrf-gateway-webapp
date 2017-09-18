@@ -109,6 +109,10 @@ class IqrfAppManager {
 			// throw new \Exception();
 		}
 		$packet = $response['response'];
+		if (empty($packet)) {
+			return null;
+			// throw new \Exception();
+		}
 		$pnum = explode('.', $packet)[2];
 		switch ($pnum) {
 			case '00':

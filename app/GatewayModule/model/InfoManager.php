@@ -17,13 +17,13 @@
  * limitations under the License.
  */
 
-namespace App\Model;
+namespace App\GatewayModule\Model;
 
 use App\IqrfAppModule\Model\IqrfAppManager;
 use App\Model\CommandManager;
 use Nette;
 
-class GwInfoManager {
+class InfoManager {
 
 	use Nette\SmartObject;
 
