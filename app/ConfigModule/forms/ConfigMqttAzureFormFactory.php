@@ -63,7 +63,7 @@ class ConfigMqttAzureFormFactory {
 	public function create(MqttPresenter $presenter) {
 		$form = $this->factory->create();
 		$fileName = 'MqttMessaging';
-		$id = count($this->manager->getInstances($fileName)) + 1;
+		$id = count($this->manager->getInstances($fileName));
 		$form->addText('ConnectionString', 'ConnectionString')->setRequired();
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('Timeout expired, resubmit the form.');
