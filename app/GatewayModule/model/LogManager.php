@@ -25,7 +25,7 @@ use Nette\Utils\FileSystem;
 class LogManager {
 
 	use Nette\SmartObject;
-	
+
 	/**
 	 * @var string
 	 */

@@ -84,7 +84,7 @@ class BaseServiceManager {
 		if (!empty($data['Properties'])) {
 			$service['Properties'] = (array) $data['Properties'];
 		} else {
-			$service['Properties']['AsyncDpaResponse'] = false;
+			$service['Properties']['AsyncDpaMessage'] = false;
 		}
 		return $service;
 	}
