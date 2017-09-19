@@ -62,11 +62,15 @@
 <h2>{_"Macros"}</h2>
 <div class='panel panel-default'>
 	<div class='panel-body'>
-		{foreach $macros as $macro}
-			<h3>{$macro['Name']}</h3>
-			{foreach $macro['Macros'] as $item}
-				<a n:if="$item['Enabled']" class="btn btn-default btn-packet" role="button" data-packet='{$item['Packet']}'>{$item['Name']}</a>
-			{/foreach}
-		{/foreach}
+		<div class="btn-toolbar" role="toolbar">
+			<div n:foreach="$macros as $macro" class="btn-group">
+				<button type="button" class="btn btn-primary btn-block dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					{$macro['Name']} <span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu">
+					<li n:foreach="$macro['Macros'] as $item"><a n:if="$item['Enabled']" class='btn-packet' data-packet='{$item['Packet']}'>{$item['Name']}</a></li>
+				</ul>
+			</div>
+		</div>
 	</div>
 </div>
