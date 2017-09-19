@@ -71,12 +71,27 @@ class IqrfMacroManager {
 			} elseif ($macro === 1) {
 				$macros[$categoryId]['Macros'][$macroId]['Name'] = $value;
 			} elseif ($macro === 2) {
-				$macros[$categoryId]['Macros'][$macroId]['Packet'] = $value;
+				$macros[$categoryId]['Macros'][$macroId]['Packet'] = $this->fixPacket($value);
 			} elseif ($macro === 3) {
 				$macros[$categoryId]['Macros'][$macroId]['Enabled'] = $value === 'True';
 			}
 		}
 		return $macros;
+	}
+
+	/**
+	 * Fix DPA packet
+	 * @param string $packet DPA packet
+	 * @return string Fixed DPA packet
+	 */
+	public function fixPacket($packet) {
+		$data = explode('.', trim($packet, '.'));
+		$tmp0 = array_shift($data);
+		$tmp1 = array_shift($data);
+		array_unshift($data, $tmp0);
+		array_unshift($data, $tmp1);
+		$fixedPacket = trim(implode('.', $data), '.');
+		return $fixedPacket;
 	}
 
 	/**
