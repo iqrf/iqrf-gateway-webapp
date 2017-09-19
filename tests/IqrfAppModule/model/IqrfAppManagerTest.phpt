@@ -121,7 +121,9 @@ class IqrfAppManagerTest extends TestCase {
 		$packet = '01.00.06.03.ff.ff';
 		$timeout = 1000;
 		$cmd = 'iqrfapp "{\"ctype\":\"dpa\",\"type\":\"raw\",\"msgid\":\"1\",'
-				. '\"timeout\":' . $timeout . ',\"request\":\"' . $packet . '\"}"';
+				. '\"timeout\":' . $timeout . ',\"request\":\"' . $packet . '\",'
+				. '\"request_ts\":\"\",\"confirmation\":\"\",\"confirmation_ts\":\"\",'
+				. '\"response\":\"\",\"response_ts\":\"\"}"';
 		$expected = 'sudo ' . $cmd;
 		$commandManager = \Mockery::mock(CommandManager::class);
 		$commandManager->shouldReceive('send')->with($cmd, true)->andReturn($expected);

@@ -100,7 +100,10 @@ class InfoManagerTest extends TestCase {
 	 */
 	public function testGetCoordinatorInfo() {
 		$commandManager = \Mockery::mock(CommandManager::class);
-		$cmd = 'iqrfapp "{\"ctype\":\"dpa\",\"type\":\"raw\",\"msgid\":\"1\",\"timeout\":1000,\"request\":\"00.00.02.00.FF.FF\"}"';
+		$cmd = 'iqrfapp "{\"ctype\":\"dpa\",\"type\":\"raw\",\"msgid\":\"1\",'
+				. '\"timeout\":1000,\"request\":\"00.00.02.00.FF.FF\",'
+				. '\"request_ts\":\"\",\"confirmation\":\"\",\"confirmation_ts\":\"\",'
+				. '\"response\":\"\",\"response_ts\":\"\"}"';
 		$commandManager->shouldReceive('send')->with($cmd, true)->andReturn(null);
 		$iqrfAppManager = new IqrfAppManager($commandManager, $this->coordinatorParser, $this->osParser);
 		$gwInfoManager = new InfoManager($commandManager, $iqrfAppManager);

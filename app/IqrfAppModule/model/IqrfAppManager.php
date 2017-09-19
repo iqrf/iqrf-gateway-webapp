@@ -63,8 +63,11 @@ class IqrfAppManager {
 	 * @return string DPA response
 	 */
 	public function sendRaw($packet, $timeout) {
-		$cmd = 'iqrfapp "{\"ctype\":\"dpa\",\"type\":\"raw\",\"msgid\":\"1\",'
-				. '\"timeout\":' . $timeout . ',\"request\":\"' . $packet . '\"}"';
+		$cmd = 'iqrfapp "{\"ctype\":\"dpa\",\"type\":\"raw\",\"msgid\":\"1\",';
+		$cmd .= !empty($timeout) ? '\"timeout\":' . $timeout . ',' : '';
+		$cmd .= '\"request\":\"' . $packet . '\",\"request_ts\":\"\",'
+				. '\"confirmation\":\"\",\"confirmation_ts\":\"\",'
+				. '\"response\":\"\",\"response_ts\":\"\"}"';
 		return $this->commandManager->send($cmd, true);
 	}
 
