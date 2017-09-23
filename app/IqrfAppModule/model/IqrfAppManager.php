@@ -57,6 +57,16 @@ class IqrfAppManager {
 	}
 
 	/**
+	 * Send JSON request to iqrfapp
+	 * @param array $array JSON request on array
+	 * @return string JSON response
+	 */
+	public function sendCommand($array) {
+		$cmd = 'iqrfapp "' . str_replace('"', '\\"', Json::encode($array)) . '"';
+		return $this->commandManager->send($cmd, true);
+	}
+
+	/**
 	 * Send RAW IQRF packet
 	 * @param string $packet RAW IQRF packet
 	 * @param int $timeout DPA timeout in milliseconds
@@ -78,10 +88,9 @@ class IqrfAppManager {
 		if (empty($timeout)) {
 			unset($array['timeout']);
 		}
-		$cmd = 'iqrfapp "' . str_replace('"', '\\"', Json::encode($array)) . '"';
 		$data = [
 			'request' => Json::encode($array, Json::PRETTY),
-			'response' => str_replace('Received: ', '', $this->commandManager->send($cmd, true)),
+			'response' => str_replace('Received: ', '', $this->sendCommand($array)),
 		];
 		return $data;
 	}
@@ -102,8 +111,7 @@ class IqrfAppManager {
 			'type' => 'mode',
 			'cmd' => $mode,
 		];
-		$cmd = 'iqrfapp "' . str_replace('"', '\\"', Json::encode($array)) . '"';
-		return $this->commandManager->send($cmd, true);
+		return $this->sendCommand($array);
 	}
 
 	/**
