@@ -38,51 +38,5 @@
 	</div>
 </div>
 {ifset $json}
-	{snippet responseChange}
-		{ifset $parsedResponse}
-			<h2>{_"Parsed response"}</h2>
-			<div class='panel panel-default'>
-				<div class='panel-body'>
-					{foreach $parsedResponse as $type => $packet}
-						{if $type === 'DiscoveredNodes' || $type === 'BondedNodes'}
-							<h3>{_$type}</h3>
-							<table class="table table-striped">
-								<tr>
-									<th>&nbsp;</th>
-									<th n:for="$i = 0; $i <16; $i++">{dechex($i)|upper}</th>
-								</tr>
-								<tr n:foreach="$packet as $key => $value">
-									<th>{dechex($key)|upper}0</th>
-									<td n:foreach="$value as $status">
-										<span n:nonce class="glyphicon glyphicon-{$status ? 'ok' : 'remove'}" style="color: {$status ? 'green' : 'red'}" aria-hidden="true"></span>
-									</td>
-
-								</tr>
-							</table>
-						{else}
-							<p><strong>{_$type}:</strong> {$packet}</p>
-						{/if}
-					{/foreach}
-				</div>
-			</div>
-		{/ifset}
-		<div class="row">
-			<div class="col-xs-6">
-				<h2>{_"Request"}</h2>
-				<div class='panel panel-default'>
-					<div class='panel-body'>
-						<pre>{$json['request']}</pre>
-					</div>
-				</div>
-			</div>
-			<div class="col-xs-6">
-				<h2>{_"Response"}</h2>
-				<div class='panel panel-default'>
-					<div class='panel-body'>
-						<pre>{$json['response']}</pre>
-					</div>
-				</div>
-			</div>
-		</div>
-    {/snippet}
+	{include 'response.latte', json => $json}
 {/ifset}
