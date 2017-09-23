@@ -62,13 +62,28 @@ class IqrfAppManager {
 	 * @param int $timeout DPA timeout in milliseconds
 	 * @return string DPA response
 	 */
-	public function sendRaw($packet, $timeout) {
-		$cmd = 'iqrfapp "{\"ctype\":\"dpa\",\"type\":\"raw\",\"msgid\":\"1\",';
-		$cmd .= !empty($timeout) ? '\"timeout\":' . $timeout . ',' : '';
-		$cmd .= '\"request\":\"' . $packet . '\",\"request_ts\":\"\",'
-				. '\"confirmation\":\"\",\"confirmation_ts\":\"\",'
-				. '\"response\":\"\",\"response_ts\":\"\"}"';
-		return $this->commandManager->send($cmd, true);
+	public function sendRaw($packet, $timeout = null) {
+		$array = [
+			'ctype' => 'dpa',
+			'type' => 'raw',
+			'msgid' => '1',
+			'timeout' => (int) $timeout,
+			'request' => $packet,
+			'request_ts' => '',
+			'confirmation' => '',
+			'confirmation_ts' => '',
+			'response' => '',
+			'response_ts' => '',
+		];
+		if (empty($timeout)) {
+			unset($array['timeout']);
+		}
+		$cmd = 'iqrfapp "' . str_replace('"', '\\"', Json::encode($array)) . '"';
+		$data = [
+			'request' => Json::encode($array, Json::PRETTY),
+			'response' => str_replace('Received: ', '', $this->commandManager->send($cmd, true)),
+		];
+		return $data;
 	}
 
 	/**
@@ -78,10 +93,17 @@ class IqrfAppManager {
 	 */
 	public function changeOperationMode($mode) {
 		$modes = ['forwarding', 'operational', 'service'];
-		if (in_array($mode, $modes, true)) {
-			$cmd = 'iqrfapp "{\"ctype\": \"conf\",\"type\": \"mode\",\"cmd\": \"' . $mode . '\"}"';
-			return $this->commandManager->send($cmd, true);
+		if (!in_array($mode, $modes, true)) {
+			return null;
+			// throw new \Exception();
 		}
+		$array = [
+			'ctype' => 'conf',
+			'type' => 'mode',
+			'cmd' => $mode,
+		];
+		$cmd = 'iqrfapp "' . str_replace('"', '\\"', Json::encode($array)) . '"';
+		return $this->commandManager->send($cmd, true);
 	}
 
 	/**
@@ -96,16 +118,17 @@ class IqrfAppManager {
 
 	/**
 	 * Parse DPA response
-	 * @param string $jsonResponse JSON DPA response
+	 * @param string $json JSON DPA response
 	 * @return array Parsed response in array
 	 * @throws Exception
 	 */
-	public function parseResponse($jsonResponse) {
+	public function parseResponse($json) {
+		$jsonResponse = $json['response'];
 		if (empty($jsonResponse) || $jsonResponse === 'Timeout') {
 			return null;
 			// throw new \Exception();
 		}
-		$response = Json::decode(str_replace('Received: ', '', $jsonResponse), Json::FORCE_ARRAY);
+		$response = Json::decode($jsonResponse, Json::FORCE_ARRAY);
 		$status = $response['status'];
 		if ($status !== 'STATUS_NO_ERROR') {
 			return null;

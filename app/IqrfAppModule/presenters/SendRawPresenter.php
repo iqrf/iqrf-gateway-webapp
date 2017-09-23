@@ -70,7 +70,7 @@ class SendRawPresenter extends BasePresenter {
 	 * @param string $response DPA response
 	 */
 	public function handleShowResponse($response) {
-		$this->template->response = $response;
+		$this->template->json = $response;
 		$this->template->parsedResponse = $this->iqrfAppManager->parseResponse($response);
 		$this->redrawControl('responseChange');
 	}

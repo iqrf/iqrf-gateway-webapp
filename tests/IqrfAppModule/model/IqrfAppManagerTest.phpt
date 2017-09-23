@@ -98,9 +98,9 @@ class IqrfAppManagerTest extends TestCase {
 	public function testChangeOperationMode() {
 		$modesSuccess = ['forwarding', 'operational', 'service'];
 		$outputSuccess = [
-			'iqrfapp "{\"ctype\": \"conf\",\"type\": \"mode\",\"cmd\": \"forwarding\"}"',
-			'iqrfapp "{\"ctype\": \"conf\",\"type\": \"mode\",\"cmd\": \"operational\"}"',
-			'iqrfapp "{\"ctype\": \"conf\",\"type\": \"mode\",\"cmd\": \"service\"}"',
+			'iqrfapp "{\"ctype\":\"conf\",\"type\":\"mode\",\"cmd\":\"forwarding\"}"',
+			'iqrfapp "{\"ctype\":\"conf\",\"type\":\"mode\",\"cmd\":\"operational\"}"',
+			'iqrfapp "{\"ctype\":\"conf\",\"type\":\"mode\",\"cmd\":\"service\"}"',
 		];
 		$commandManager = \Mockery::mock(CommandManager::class);
 		foreach ($outputSuccess as $output) {
@@ -124,11 +124,13 @@ class IqrfAppManagerTest extends TestCase {
 				. '\"timeout\":' . $timeout . ',\"request\":\"' . $packet . '\",'
 				. '\"request_ts\":\"\",\"confirmation\":\"\",\"confirmation_ts\":\"\",'
 				. '\"response\":\"\",\"response_ts\":\"\"}"';
-		$expected = 'sudo ' . $cmd;
+		$expected['response'] = 'sudo ' . $cmd;
 		$commandManager = \Mockery::mock(CommandManager::class);
-		$commandManager->shouldReceive('send')->with($cmd, true)->andReturn($expected);
+		$commandManager->shouldReceive('send')->with($cmd, true)->andReturn('sudo ' . $cmd);
 		$iqrfAppManager = new IqrfAppManager($commandManager, $this->coordinatorParser, $this->osParser);
-		Assert::equal($expected, $iqrfAppManager->sendRaw($packet, $timeout));
+		$actual = $iqrfAppManager->sendRaw($packet, $timeout);
+		unset($actual['request']);
+		Assert::equal($expected, $actual);
 	}
 
 	/**
@@ -137,7 +139,7 @@ class IqrfAppManagerTest extends TestCase {
 	 */
 	public function testParseResponse() {
 		$iqrfAppManager = new IqrfAppManager($this->commandManager, $this->coordinatorParser, $this->osParser);
-		$responseCoordinatorBonded = $this->fileManager->read('response-coordinator-bonded.json');
+		$responseCoordinatorBonded['response'] = $this->fileManager->read('response-coordinator-bonded.json');
 		$arrayCoordinatorBonded = $iqrfAppManager->parseResponse($responseCoordinatorBonded);
 		$expectedCoordinatorBonded = [
 			'BondedNodes' => [
@@ -159,7 +161,7 @@ class IqrfAppManagerTest extends TestCase {
 			],
 		];
 		Assert::equal($expectedCoordinatorBonded, $arrayCoordinatorBonded);
-		$responseCoordinatorBondedDiscovered = $this->fileManager->read('response-coordinator-discovered.json');
+		$responseCoordinatorBondedDiscovered['response'] = $this->fileManager->read('response-coordinator-discovered.json');
 		$arrayCoordinatorDiscovered = $iqrfAppManager->parseResponse($responseCoordinatorBondedDiscovered);
 		$expectedCoordinatorDiscovered = [
 			'DiscoveredNodes' => [
@@ -181,7 +183,7 @@ class IqrfAppManagerTest extends TestCase {
 			],
 		];
 		Assert::equal($expectedCoordinatorDiscovered, $arrayCoordinatorDiscovered);
-		$responseOsRead = $this->fileManager->read('response-os-read.json');
+		$responseOsRead['response'] = $this->fileManager->read('response-os-read.json');
 		$arrayOsRead = $iqrfAppManager->parseResponse($responseOsRead);
 		$expectedOsRead = [
 			'ModuleId' => '8100A405',
@@ -195,13 +197,13 @@ class IqrfAppManagerTest extends TestCase {
 			'SlotLimits' => 'f0',
 		];
 		Assert::equal($expectedOsRead, $arrayOsRead);
-		$packetLedrOn = $this->fileManager->read('response-ledr-on.json');
+		$packetLedrOn['response'] = $this->fileManager->read('response-ledr-on.json');
 		$arrayLedrOn = $iqrfAppManager->parseResponse($packetLedrOn);
 		Assert::null($arrayLedrOn);
-		$packetIoTKitSe = $this->fileManager->read('response-error.json');
+		$packetIoTKitSe['response'] = $this->fileManager->read('response-error.json');
 		$arrayIoTKitSe = $iqrfAppManager->parseResponse($packetIoTKitSe);
 		Assert::null($arrayIoTKitSe);
-		$emptyResponse = $iqrfAppManager->parseResponse('');
+		$emptyResponse = $iqrfAppManager->parseResponse(['response' => '']);
 		Assert::null($emptyResponse);
 	}
 
