@@ -31,38 +31,31 @@
 			<tr>
 				<th>{_"IP addresses"}</th>
 				<td>
-					<dl class="dl-horizontal">
-						{foreach $ipAddresses as $interface => $addresses}
-							<dt>{$interface}:</dt>
-							<dd>
-								{foreach $addresses as $ipAddress}
-									{$ipAddress} {sep}<br>{/sep}
-								{/foreach}
-							</dd>
+					{foreach $ipAddresses as $interface => $addresses}
+						<strong>{$interface}:</strong>
+						{foreach $addresses as $ipAddress}
+							{$ipAddress}{sep}, {/sep}
 						{/foreach}
-					</dl>
+						{sep}<br>{/sep}
+					{/foreach}
 				</td>
 			</tr>
 			<tr>
 				<th>{_"MAC addresses"}</th>
 				<td>
-					<dl class="dl-horizontal">
-						{foreach $macAddresses as $interface => $macAddress}
-							<dt>{$interface}:</dt><dd>{$macAddress}</dd>
-						{/foreach}
-					</dl>
+					{foreach $macAddresses as $interface => $macAddress}
+						<strong>{$interface}:</strong> {$macAddress}{sep}<br>{/sep}
+					{/foreach}
 				</td>
 			</tr>
 			<tr>
 				<th>{_"TR info"}</th>
 				<td>
-					<dl class="dl-horizontal">
-						<dt>{_"Module type:"}</dt><dd>{$module['TrType']}</dd>
-						<dt>{_"MCU type:"}</dt><dd>{$module['McuType']}</dd>
-						<dt>{_"MID:"}</dt><dd>{$module['ModuleId']}</dd>
-						<dt>{_"OS:"}</dt><dd>{$module['OsVersion']} ({$module['OsBuild']})</dd>
-						<dt>{_"Supply Voltage:"}</dt><dd>{$module['SupplyVoltage']}</dd>
-					</dl>
+					<strong>{_"Module type:"}</strong> {$module['TrType']}<br>
+					<strong>{_"MCU type:"}</strong> {$module['McuType']}<br>
+					<strong>{_"MID:"}</strong> {$module['ModuleId']}<br>
+					<strong>{_"OS:"}</strong> {$module['OsVersion']} ({$module['OsBuild']})<br>
+					<strong>{_"Supply Voltage:"}</strong> {$module['SupplyVoltage']}
 				</td>
 			</tr>
 		</table>
