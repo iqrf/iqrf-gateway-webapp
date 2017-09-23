@@ -13,6 +13,7 @@ use App\IqrfAppModule\Model\CoordinatorParser;
 use App\IqrfAppModule\Model\IqrfAppManager;
 use App\IqrfAppModule\Model\OsParser;
 use App\Model\CommandManager;
+use DateTime;
 use Nette\DI\Container;
 use Tester\Assert;
 use Tester\TestCase;
@@ -100,8 +101,9 @@ class InfoManagerTest extends TestCase {
 	 */
 	public function testGetCoordinatorInfo() {
 		$commandManager = \Mockery::mock(CommandManager::class);
-		$cmd = 'iqrfapp "{\"ctype\":\"dpa\",\"type\":\"raw\",\"msgid\":\"1\",'
-				. '\"timeout\":1000,\"request\":\"00.00.02.00.FF.FF\",'
+		$now = new DateTime();
+		$cmd = 'iqrfapp "{\"ctype\":\"dpa\",\"type\":\"raw\",\"msgid\":\"'
+				. $now->getTimestamp() . '\",\"request\":\"00.00.02.00.FF.FF\",'
 				. '\"request_ts\":\"\",\"confirmation\":\"\",\"confirmation_ts\":\"\",'
 				. '\"response\":\"\",\"response_ts\":\"\"}"';
 		$commandManager->shouldReceive('send')->with($cmd, true)->andReturn(null);

@@ -13,6 +13,7 @@ use App\IqrfAppModule\Model\IqrfAppManager;
 use App\IqrfAppModule\Model\OsParser;
 use App\Model\CommandManager;
 use App\Model\FileManager;
+use DateTime;
 use Nette\DI\Container;
 use Tester\Assert;
 use Tester\TestCase;
@@ -120,8 +121,9 @@ class IqrfAppManagerTest extends TestCase {
 	public function testSendRaw() {
 		$packet = '01.00.06.03.ff.ff';
 		$timeout = 1000;
-		$cmd = 'iqrfapp "{\"ctype\":\"dpa\",\"type\":\"raw\",\"msgid\":\"1\",'
-				. '\"timeout\":' . $timeout . ',\"request\":\"' . $packet . '\",'
+		$now = new DateTime();
+		$cmd = 'iqrfapp "{\"ctype\":\"dpa\",\"type\":\"raw\",\"msgid\":\"' . $now->getTimestamp()
+				. '\",\"timeout\":' . $timeout . ',\"request\":\"' . $packet . '\",'
 				. '\"request_ts\":\"\",\"confirmation\":\"\",\"confirmation_ts\":\"\",'
 				. '\"response\":\"\",\"response_ts\":\"\"}"';
 		$expected['response'] = 'sudo ' . $cmd;

@@ -22,6 +22,7 @@ namespace App\IqrfAppModule\Model;
 use App\IqrfAppModule\Model\CoordinatorParser;
 use App\IqrfAppModule\Model\OsParser;
 use App\Model\CommandManager;
+use DateTime;
 use Nette;
 use Nette\Utils\Json;
 
@@ -73,10 +74,11 @@ class IqrfAppManager {
 	 * @return string DPA response
 	 */
 	public function sendRaw($packet, $timeout = null) {
+		$now = new DateTime();
 		$array = [
 			'ctype' => 'dpa',
 			'type' => 'raw',
-			'msgid' => '1',
+			'msgid' => (string) $now->getTimestamp(),
 			'timeout' => (int) $timeout,
 			'request' => $packet,
 			'request_ts' => '',

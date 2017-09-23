@@ -120,7 +120,7 @@ class InfoManager {
 	 * @return array Information about the Coordinator
 	 */
 	public function getCoordinatorInfo() {
-		$response = $this->iqrfAppManager->sendRaw('00.00.02.00.FF.FF', 1000);
+		$response = $this->iqrfAppManager->sendRaw('00.00.02.00.FF.FF');
 		return $this->iqrfAppManager->parseResponse($response);
 	}
 
