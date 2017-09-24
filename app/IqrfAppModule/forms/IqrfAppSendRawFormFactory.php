@@ -56,13 +56,15 @@ class IqrfAppSendRawFormFactory {
 	public function create(SendRawPresenter $presenter) {
 		$form = $this->factory->create();
 		$form->addText('packet', 'DPA packet')->setRequired();
+		$form->addCheckbox('timeoutEnabled', 'Set own DPA timeout')->setDefaultValue(true);
 		$form->addText('timeout', 'DPA timeout (ms)')->setRequired()
-				->setDefaultValue(1000);
+				->setDefaultValue(1000)
+				->addConditionOn($form['timeoutEnabled'], Form::EQUAL, true);
 		$form->addSubmit('send', 'Send');
 		$form->addProtection('Timeout expired, resubmit the form.');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
 			$packet = $values['packet'];
-			$timeout = $values['timeout'];
+			$timeout = $values['timeoutEnabled'] ? $values['timeout'] : null;
 			if ($this->manager->validatePacket($packet)) {
 				$response = $this->manager->sendRaw($packet, $timeout);
 				$presenter->handleShowResponse($response);
