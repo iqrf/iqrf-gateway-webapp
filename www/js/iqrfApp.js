@@ -1,9 +1,42 @@
-$(".btn-packet").click(function () {
-	$("#frm-iqrfAppSendRawForm-packet").val($(this).data("packet"));
-});
+/**
+ * Copyright 2017 MICRORISC s.r.o.
+ * Copyright 2017 IQRF Tech s.r.o.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+// Select IQRF interface port from list
 $(".btn-port").click(function () {
 	$("#frm-configIqrfForm-IqrfInterface").val($(this).data("port"));
 });
+
+// Select DPA packet form list of macros from IQRF IDE
+$(".btn-packet").click(function () {
+	var packet = fixPacket($(this).data("packet"));
+	$("#frm-iqrfAppSendRawForm-packet").val(packet);
+	console.log(validatePacket(packet));
+	setTimeout(parsePacket(packet));
+});
+
+$("#frm-iqrfAppSendRawForm-packet").keypress(function () {
+	var packet = fixPacket($(this).val());
+	if (validatePacket(packet)) {
+		setTimeout(parsePacket(packet));
+	} else {
+		$("#frm-iqrfAppSendRawForm-timeout").prop('disabled', true);
+	}
+});
+
 $('#frm-iqrfAppSendRawForm-timeoutEnabled').click(function () {
 	if ($(this).is(':checked')) {
 		$("#frm-iqrfAppSendRawForm-timeout").prop('disabled', false);
@@ -11,3 +44,72 @@ $('#frm-iqrfAppSendRawForm-timeoutEnabled').click(function () {
 		$("#frm-iqrfAppSendRawForm-timeout").prop('disabled', true);
 	}
 });
+
+/**
+ * Fix DPA packet
+ * @param {string} packet DPA packet to fix
+ * @returns {string} Fixed DPA packet
+ */
+function fixPacket(packet) {
+	var arr = packet.split(".");
+	var nadrLo = arr.shift();
+	var nadrHi = arr.shift();
+	if (nadrHi === "00" && nadrLo !== "00") {
+		arr.unshift(nadrLo, nadrHi);
+	} else {
+		arr.unshift(nadrHi, nadrLo);
+	}
+	return arr.join(".");
+}
+
+/**
+ * Parse DPA packet
+ * @param {string} packet DPA packet to parse
+ * @returns {array} Parsed DPA packet
+ */
+function parsePacket(packet) {
+	var arr = packet.split(".");
+	var parsed = {
+		nadrLo: arr.shift(),
+		nadrHi: arr.shift(),
+		pnum: arr.shift(),
+		pcmd: arr.shift(),
+		hwpidLo: arr.shift(),
+		hwpidHi: arr.shift(),
+		pdata: (arr.join(".")).split(".")
+	};
+	return parsed;
+}
+
+/**
+ * Set DPA timeout
+ * @param {array} packet Parsed DPA packet
+ */
+function setTimeout(packet) {
+	var timeout = null;
+	if (packet.pnum === "00" && packet.pcmd === "04") {
+		timeout = 12000;
+	} else if (packet.pnum === "00" && packet.pcmd === "07") {
+		timeout = 0;
+	} else if (packet.pnum === "0D" && packet.pcmd === "00") {
+		timeout = 6000;
+	}
+	if (timeout === null) {
+		$('#frm-iqrfAppSendRawForm-timeoutEnabled').prop('checked', false);
+		$("#frm-iqrfAppSendRawForm-timeout").prop('disabled', true);
+	} else {
+		$('#frm-iqrfAppSendRawForm-timeoutEnabled').prop('checked', true);
+		$("#frm-iqrfAppSendRawForm-timeout").prop('disabled', false);
+		$("#frm-iqrfAppSendRawForm-timeout").val(timeout);
+	}
+}
+
+/**
+ * Validate DPA packet
+ * @param {string} packet
+ * @returns {Boolean}
+ */
+function validatePacket(packet) {
+	var re = /^([0-9a-fA-F]{1,2}\.){4,62}[0-9a-fA-F]{1,2}(\.|)$/i;
+	return packet.match(re) !== null;
+}

@@ -73,11 +73,11 @@ class IqrfAppManagerTest extends TestCase {
 		$iqrfAppManager = new IqrfAppManager($this->commandManager, $this->coordinatorParser, $this->osParser);
 		$validPackets = [
 			'01.00.06.03.ff.ff',
-			'01 00 06 03 ff ff',
 			'01.00.06.03.ff.ff.',
-			'01 00 06 03 ff ff.',
 		];
 		$invalidPackets = [
+			'01 00 06 03 ff ff',
+			'01 00 06 03 ff ff.',
 			';01.00.06.03.ff.ff',
 			';01 00 06 03 ff ff',
 			'01.00.06.03.ff.ff;',

@@ -71,12 +71,12 @@
 		"Macros": [
 			{
 				"Name": "Read NTW info",
-				"Packet": "01.00.01.00.FF.FF",
+				"Packet": "00.01.01.00.FF.FF",
 				"Enabled": true
 			},
 			{
 				"Name": "Remove bond",
-				"Packet": "01.00.01.01.FF.FF",
+				"Packet": "00.01.01.01.FF.FF",
 				"Enabled": true
 			},
 			{
@@ -91,17 +91,17 @@
 			},
 			{
 				"Name": "Enable prebonding",
-				"Packet": "01.00.01.04.FF.FF.07.01.00.00.00.00",
+				"Packet": "00.01.01.04.FF.FF.07.01.00.00.00.00",
 				"Enabled": true
 			},
 			{
 				"Name": "Read prebonded MID",
-				"Packet": "01.00.01.02.FF.FF",
+				"Packet": "00.01.01.02.FF.FF",
 				"Enabled": true
 			},
 			{
 				"Name": "Clear prebonded MID",
-				"Packet": "01.00.01.03.FF.FF",
+				"Packet": "00.01.01.03.FF.FF",
 				"Enabled": true
 			},
 			{
@@ -152,12 +152,12 @@
 			},
 			{
 				"Name": "Sleep",
-				"Packet": "01.00.02.04.FF.FF.00.00.00",
+				"Packet": "00.01.02.04.FF.FF.00.00.00",
 				"Enabled": true
 			},
 			{
 				"Name": "Read HWP configuration",
-				"Packet": "01.00.02.02.FF.FF",
+				"Packet": "00.01.02.02.FF.FF",
 				"Enabled": true
 			},
 			{
@@ -269,17 +269,17 @@
 		"Macros": [
 			{
 				"Name": "Set all pins: OUTs",
-				"Packet": "01.00.09.00.FF.FF.00.21.00.01.10.00.02.FC.00",
+				"Packet": "00.01.09.00.FF.FF.00.21.00.01.10.00.02.FC.00",
 				"Enabled": true
 			},
 			{
 				"Name": "Set all pins: LOW",
-				"Packet": "01.00.09.01.FF.FF.00.21.00.01.10.00.02.FC.00",
+				"Packet": "00.01.09.01.FF.FF.00.21.00.01.10.00.02.FC.00",
 				"Enabled": true
 			},
 			{
 				"Name": "Set all pins: HIGH",
-				"Packet": "01.00.09.01.FF.FF.00.21.21.01.10.10.02.FC.FC",
+				"Packet": "00.01.09.01.FF.FF.00.21.21.01.10.10.02.FC.FC",
 				"Enabled": true
 			},
 			{
@@ -289,42 +289,42 @@
 			},
 			{
 				"Name": "Set all pins: INs",
-				"Packet": "01.00.09.00.FF.FF.00.21.21.01.10.10.02.FC.FC",
+				"Packet": "00.01.09.00.FF.FF.00.21.21.01.10.10.02.FC.FC",
 				"Enabled": true
 			},
 			{
 				"Name": "Set pin C1: LOW",
-				"Packet": "01.00.09.01.FF.FF.00.01.00",
+				"Packet": "00.01.09.01.FF.FF.00.01.00",
 				"Enabled": true
 			},
 			{
 				"Name": "Set pin C1: HIGH",
-				"Packet": "01.00.09.01.FF.FF.00.01.01",
+				"Packet": "00.01.09.01.FF.FF.00.01.01",
 				"Enabled": true
 			},
 			{
 				"Name": "Pulse 1s on C1 pin",
-				"Packet": "01.00.09.01.FF.FF.00.01.01.FF.E8.03.00.01.00",
+				"Packet": "00.01.09.01.FF.FF.00.01.01.FF.E8.03.00.01.00",
 				"Enabled": true
 			},
 			{
 				"Name": "Get pins state",
-				"Packet": "01.00.09.02.FF.FF",
+				"Packet": "00.01.09.02.FF.FF",
 				"Enabled": true
 			},
 			{
 				"Name": "Play DDC-IO-01",
-				"Packet": "01.00.09.01.FF.FF.02.04.04.FF.96.00.00.01.01.FF.96.00.00.20.20.01.10.10.02.40.40.FF.96.00.02.08.08.FF.96.00.02.10.10.FF.96.00.02.A0.A0.FF.E8.03.00.21.00.01.10.00.02.FC.00",
+				"Packet": "00.01.09.01.FF.FF.02.04.04.FF.96.00.00.01.01.FF.96.00.00.20.20.01.10.10.02.40.40.FF.96.00.02.08.08.FF.96.00.02.10.10.FF.96.00.02.A0.A0.FF.E8.03.00.21.00.01.10.00.02.FC.00",
 				"Enabled": true
 			},
 			{
 				"Name": "DDC-RE-01: RE1 pulse 1s",
-				"Packet": "01.00.09.01.FF.FF.02.04.04.FF.E8.03.02.04.00",
+				"Packet": "00.01.09.01.FF.FF.02.04.04.FF.E8.03.02.04.00",
 				"Enabled": true
 			},
 			{
 				"Name": "DDC-RE-01: RE2 pulse 1s",
-				"Packet": "01.00.09.01.FF.FF.02.A0.A0.FF.E8.03.02.A0.00",
+				"Packet": "00.01.09.01.FF.FF.02.A0.A0.FF.E8.03.02.A0.00",
 				"Enabled": true
 			}
 		]
@@ -335,7 +335,7 @@
 		"Macros": [
 			{
 				"Name": "Get temperature",
-				"Packet": "01.00.0A.00.FF.FF",
+				"Packet": "00.01.0A.00.FF.FF",
 				"Enabled": true
 			},
 			{
@@ -355,32 +355,32 @@
 			},
 			{
 				"Name": "Open UART: 9600",
-				"Packet": "01.00.0C.00.FF.FF.03",
+				"Packet": "00.01.0C.00.FF.FF.03",
 				"Enabled": true
 			},
 			{
 				"Name": "Close UART",
-				"Packet": "01.00.0C.01.FF.FF",
+				"Packet": "00.01.0C.01.FF.FF",
 				"Enabled": true
 			},
 			{
 				"Name": "Write UART",
-				"Packet": "01.00.0C.02.FF.FF.FF.48.65.6C.6C.6F",
+				"Packet": "00.01.0C.02.FF.FF.FF.48.65.6C.6C.6F",
 				"Enabled": true
 			},
 			{
 				"Name": "Write\/read UART",
-				"Packet": "01.00.0C.02.FF.FF.0A.48.65.6C.6C.6F",
+				"Packet": "00.01.0C.02.FF.FF.0A.48.65.6C.6C.6F",
 				"Enabled": true
 			},
 			{
 				"Name": "Write SPI",
-				"Packet": "01.00.08.00.FF.FF.FF.48.65.6C.6C.6F",
+				"Packet": "00.01.08.00.FF.FF.FF.48.65.6C.6C.6F",
 				"Enabled": true
 			},
 			{
 				"Name": "Write\/read SPI",
-				"Packet": "01.00.08.00.FF.FF.0A.48.65.6C.6C.6F",
+				"Packet": "00.01.08.00.FF.FF.0A.48.65.6C.6C.6F",
 				"Enabled": true
 			},
 			{
@@ -482,7 +482,7 @@
 			},
 			{
 				"Name": "Stop PWM",
-				"Packet": "01.00.0B.00.FF.FF.00.00.00",
+				"Packet": "00.01.0B.00.FF.FF.00.00.00",
 				"Enabled": true
 			},
 			{
@@ -502,7 +502,7 @@
 			},
 			{
 				"Name": "PWM: 1kHz, 50%",
-				"Packet": "01.00.0B.00.FF.FF.02.7D.40",
+				"Packet": "00.01.0B.00.FF.FF.02.7D.40",
 				"Enabled": true
 			},
 			{
@@ -522,7 +522,7 @@
 			},
 			{
 				"Name": "PWM: 1kHz, 70%",
-				"Packet": "01.00.0B.00.FF.FF.22.7D.57",
+				"Packet": "00.01.0B.00.FF.FF.22.7D.57",
 				"Enabled": true
 			}
 		]
@@ -599,7 +599,7 @@
 		"Macros": [
 			{
 				"Name": "SE-all-data",
-				"Packet": "01.00.5E.01.FF.FF.FF.FF.FF.FF",
+				"Packet": "00.01.5E.01.FF.FF.FF.FF.FF.FF",
 				"Enabled": true
 			},
 			{
@@ -619,42 +619,42 @@
 			},
 			{
 				"Name": "RE1-off,RE2-off",
-				"Packet": "02.00.4B.00.FF.FF.0C.00.00.00.00.00",
+				"Packet": "00.02.4B.00.FF.FF.0C.00.00.00.00.00",
 				"Enabled": true
 			},
 			{
 				"Name": "RE1-on,RE2-on",
-				"Packet": "02.00.4B.00.FF.FF.0C.00.00.00.01.01",
+				"Packet": "00.02.4B.00.FF.FF.0C.00.00.00.01.01",
 				"Enabled": true
 			},
 			{
 				"Name": "RE1-on,RE2-off",
-				"Packet": "02.00.4B.00.FF.FF.0C.00.00.00.01.00",
+				"Packet": "00.02.4B.00.FF.FF.0C.00.00.00.01.00",
 				"Enabled": true
 			},
 			{
 				"Name": "RE1-off,RE2-on",
-				"Packet": "02.00.4B.00.FF.FF.0C.00.00.00.00.01",
+				"Packet": "00.02.4B.00.FF.FF.0C.00.00.00.00.01",
 				"Enabled": true
 			},
 			{
 				"Name": "RE1-on",
-				"Packet": "02.00.4B.00.FF.FF.04.00.00.00.01",
+				"Packet": "00.02.4B.00.FF.FF.04.00.00.00.01",
 				"Enabled": true
 			},
 			{
 				"Name": "RE1-off",
-				"Packet": "02.00.4B.00.FF.FF.04.00.00.00.00",
+				"Packet": "00.02.4B.00.FF.FF.04.00.00.00.00",
 				"Enabled": true
 			},
 			{
 				"Name": "RE1-on 1s",
-				"Packet": "02.00.4B.00.FF.FF.04.00.00.00.81",
+				"Packet": "00.02.4B.00.FF.FF.04.00.00.00.81",
 				"Enabled": true
 			},
 			{
 				"Name": "RE2-on 2s",
-				"Packet": "02.00.4B.00.FF.FF.08.00.00.00.82",
+				"Packet": "00.02.4B.00.FF.FF.08.00.00.00.82",
 				"Enabled": true
 			}
 		]
