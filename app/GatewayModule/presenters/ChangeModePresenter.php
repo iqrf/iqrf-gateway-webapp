@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-namespace App\IqrfAppModule\Presenters;
+namespace App\GatewayModule\Presenters;
 
 use App\IqrfAppModule\Model\IqrfAppManager;
 use App\Presenters\BasePresenter;
@@ -48,37 +48,37 @@ class ChangeModePresenter extends BasePresenter {
 	}
 
 	/**
-	 * Change IQRF Daemon mode to Forwarding mode
+	 * Change gateway mode to Forwarding mode
 	 */
 	public function actionForwarding() {
 		$this->onlyForAdmins();
 		$mode = 'forwarding';
 		$this->iqrfAppManager->changeOperationMode($mode);
-		$this->flashMessage('IQRF Daemon mode has been changed to ' . $mode . ' mode.', 'info');
+		$this->flashMessage('Gateway mode has been changed to ' . $mode . ' mode.', 'info');
 		$this->redirect('ChangeMode:default');
 		$this->setView('default');
 	}
 
 	/**
-	 * Change IQRF Daemon mode to Operational mode
+	 * Change gateway mode to Operational mode
 	 */
 	public function actionOperational() {
 		$this->onlyForAdmins();
 		$mode = 'operational';
 		$this->iqrfAppManager->changeOperationMode($mode);
-		$this->flashMessage('IQRF Daemon mode has been changed to ' . $mode . ' mode.', 'info');
+		$this->flashMessage('Gateway mode has been changed to ' . $mode . ' mode.', 'info');
 		$this->redirect('ChangeMode:default');
 		$this->setView('default');
 	}
 
 	/**
-	 * Change IQRF Daemon mode to Service mode
+	 * Change gateway mode to Service mode
 	 */
 	public function actionService() {
 		$this->onlyForAdmins();
 		$mode = 'service';
 		$this->iqrfAppManager->changeOperationMode($mode);
-		$this->flashMessage('IQRF Daemon mode has been changed to ' . $mode . ' mode.', 'info');
+		$this->flashMessage('Gateway mode has been changed to ' . $mode . ' mode.', 'info');
 		$this->redirect('ChangeMode:default');
 		$this->setView('default');
 	}
