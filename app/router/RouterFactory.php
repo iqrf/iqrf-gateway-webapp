@@ -40,7 +40,7 @@ class RouterFactory {
 		$gateway[] = new Route('[<lang [a-z]{2}>/]gateway/<presenter>/<action>', 'Info:default');
 		$router[] = $gateway;
 		$iqrfApp = new RouteList('IqrfApp');
-		$iqrfApp[] = new Route('[<lang [a-z]{2}>/]iqrfapp/<presenter>/<action>', 'Homepage:default');
+		$iqrfApp[] = new Route('[<lang [a-z]{2}>/]iqrfnet/<presenter>/<action>', 'Homepage:default');
 		$router[] = $iqrfApp;
 		$service = new RouteList('Service');
 		$service[] = new Route('[<lang [a-z]{2}>/]service/<presenter>/<action>', 'Control:default');

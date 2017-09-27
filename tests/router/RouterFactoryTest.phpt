@@ -42,7 +42,7 @@ class RouterFactoryTest extends TestCase {
 		$expected = [
 			['Config:' => '[<lang [a-z]{2}>/]config/<presenter>/<action>[/<id>]'],
 			['Gateway:' => '[<lang [a-z]{2}>/]gateway/<presenter>/<action>'],
-			['IqrfApp:' => '[<lang [a-z]{2}>/]iqrfapp/<presenter>/<action>'],
+			['IqrfApp:' => '[<lang [a-z]{2}>/]iqrfnet/<presenter>/<action>'],
 			['Service:' => '[<lang [a-z]{2}>/]service/<presenter>/<action>'],
 			'[<lang [a-z]{2}>/]<presenter>/<action>[/<id>]',
 		];
