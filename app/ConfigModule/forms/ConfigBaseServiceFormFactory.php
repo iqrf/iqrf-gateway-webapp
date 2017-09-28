@@ -58,8 +58,8 @@ class ConfigBaseServiceFormFactory {
 		$id = $presenter->getParameter('id');
 		$form = $this->factory->create();
 		$serializers = [
-			'SimpleSerializer' => 'SimpleSerializer',
 			'JsonSerializer' => 'JsonSerializer',
+			'SimpleSerializer' => 'SimpleSerializer',
 		];
 		$form->addText('Name', 'Name')->setRequired();
 		$form->addText('Messaging', 'Messaging')->setRequired();
