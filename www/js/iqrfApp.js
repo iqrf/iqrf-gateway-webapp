@@ -23,20 +23,16 @@ $(".btn-port").click(function () {
 // Select DPA packet form list of macros from IQRF IDE
 $(".btn-packet").click(function () {
 	var packet = fixPacket($(this).data("packet"));
-	$("#frm-iqrfAppSendRawForm-packet").val(packet);
-	console.log(validatePacket(packet));
-	setTimeout(parsePacket(packet));
+	setPacket(packet);
 });
 
+// Validate and fix DPA packet and set DPA timeout
 $("#frm-iqrfAppSendRawForm-packet").keypress(function () {
 	var packet = fixPacket($(this).val());
-	if (validatePacket(packet)) {
-		setTimeout(parsePacket(packet));
-	} else {
-		$("#frm-iqrfAppSendRawForm-timeout").prop('disabled', true);
-	}
+	setPacket(packet);
 });
 
+// Enable or disable DPA timeout
 $('#frm-iqrfAppSendRawForm-timeoutEnabled').click(function () {
 	if ($(this).is(':checked')) {
 		$("#frm-iqrfAppSendRawForm-timeout").prop('disabled', false);
@@ -82,6 +78,19 @@ function parsePacket(packet) {
 }
 
 /**
+ * Set DPA packet
+ * @param {string} packet DPA packet to set
+ */
+function setPacket(packet) {
+	if (validatePacket(packet)) {
+		setTimeout(parsePacket(packet));
+		$("#frm-iqrfAppSendRawForm-packet").val(packet);
+	} else {
+		$("#frm-iqrfAppSendRawForm-timeout").prop('disabled', true);
+	}
+}
+
+/**
  * Set DPA timeout
  * @param {array} packet Parsed DPA packet
  */
@@ -106,8 +115,8 @@ function setTimeout(packet) {
 
 /**
  * Validate DPA packet
- * @param {string} packet
- * @returns {Boolean}
+ * @param {string} packet DPA packet to validate
+ * @returns {Boolean} Is valid DPA packet?
  */
 function validatePacket(packet) {
 	var re = /^([0-9a-fA-F]{1,2}\.){4,62}[0-9a-fA-F]{1,2}(\.|)$/i;
