@@ -1,0 +1,33 @@
+{**
+ * Copyright 2017 MICRORISC s.r.o.
+ * Copyright 2017 IQRF Tech s.r.o.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*}
+
+{block content}
+<h1 n:block=title>{_"Gateway"}</h1>
+<div class='list-group'>
+	<a n:href='Info:default' class='list-group-item'>
+		<header class='list-group-item-heading'>{_"Gateway Info"}</header>
+		<p class='list-group-item-text'>{_"Show infromation about this gateway."}</p>
+	</a>
+	<a n:href='Info:default' class='list-group-item'>
+		<header class='list-group-item-heading'>{_"IQRF Daemon log"}</header>
+		<p class='list-group-item-text'>{_"Show log of the iqrf-daemon."}</p>
+	</a>
+	<a n:href='ChangeMode:default' class='list-group-item'>
+		<header class='list-group-item-heading'>{_"Change GW mode"}</header>
+		<p class='list-group-item-text'>{_"Change gateway mode."}</p>
+	</a>
+</div>

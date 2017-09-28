@@ -1,4 +1,7 @@
-{**
+<?php
+
+/**
+ * Copyright 2017 MICRORISC s.r.o.
  * Copyright 2017 IQRF Tech s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,15 +15,22 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*}
+ */
 
-{block content}
-<h1 n:block=title>{_"IQRF Daemon log"}</h1>
-<div class='panel panel-default'>
-	<div class='panel-body'>
-		<a class="btn btn-primary" n:href="Log:download" role="button">Download</a>
-		<br/><br/>
-		<pre>{$log}</pre>
-		<a class="btn btn-primary" n:href="Log:download" role="button">Download</a>
-	</div>
-</div>
+namespace App\GatewayModule\Presenters;
+
+use App\Presenters\BasePresenter;
+
+/**
+ * Service presenter
+ */
+class HomepagePresenter extends BasePresenter {
+
+	/**
+	 * Render default page
+	 */
+	public function renderDefault() {
+		$this->onlyForAdmins();
+	}
+
+}
