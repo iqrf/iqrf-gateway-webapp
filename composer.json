@@ -1,7 +1,7 @@
 {
 	"name": "iqrfsdk/iqrf-daemon-webapp",
 	"description": "IQRF Daemon web application",
-	"version": "0.5.0",
+	"version": "0.8.0",
 	"type": "project",
 	"keywords": ["nette", "iqrf", "iqrf-daemon"],
 	"homepage": "https://github.com/iqrfsdk/iqrf-daemon-webapp",
@@ -44,6 +44,12 @@
 		"email": "ondracek.roman@centrum.cz",
 		"issues": "https://github.com/iqrfsdk/iqrf-daemon-webapp/issues",
 		"source": "https://github.com/iqrfsdk/iqrf-daemon-webapp"
+	},
+	"archive": {
+		"exclude": [
+			"/docker/",
+			"/install/"
+		]
 	},
 	"minimum-stability": "alpha"
 }
