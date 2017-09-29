@@ -26,6 +26,7 @@ import subprocess
 ARGS = argparse.ArgumentParser(description="IQRF daemon webapp installer.")
 ARGS.add_argument("-d", "--dist", action="store", dest="dist", required=True, type=str, help="The used linux distribution.")
 ARGS.add_argument("-v", "--ver", action="store", dest="ver", required=True, type=str, help="The version of used linux distribution.")
+ARGS.add_argument("-s", "--stability", action="store", dest="stability", default="stable", type=str, help="The stability of the iqrf-daemon-webapp.")
 
 WEBSERVER_DIRECTORY = "/var/www"
 WEBAPP_DIRECTORY = WEBSERVER_DIRECTORY + "/iqrf-daemon-webapp"
@@ -47,13 +48,14 @@ def main():
 	args = ARGS.parse_args()
 	dist = args.dist.lower()
 	ver = args.ver.lower()
+	stability = args.stability.lower()
 
 	if dist == "debian" or dist == "raspbian":
-		install_debian(ver)
+		install_debian(ver, stability)
 	elif dist == "ubuntu":
-		install_ubuntu(ver)
+		install_ubuntu(ver, stability)
 
-def install_debian(version):
+def install_debian(version, stability="stable"):
 	"""
 	Install iqrf-daemon-webapp on Debian
 	@param version Version of Debain
@@ -66,7 +68,10 @@ def install_debian(version):
 		send_command("bash ./install-composer.sh")
 		send_command("mv composer.phar /usr/bin/composer")
 		chmod_dir()
-		install_php_app(WEBAPP_DIRECTORY)
+		if stability == "dev":
+			install_php_app(WEBAPP_DIRECTORY, True)
+		else:
+			install_php_app(WEBAPP_DIRECTORY, False)
 		disable_default_nginx_virtualhost()
 		create_nginx_virtualhost("iqrf-daemon-webapp_php5.localhost")
 		fix_php_fpm_config("/etc/php5/fpm/php.ini")
@@ -79,7 +84,10 @@ def install_debian(version):
 		# Install sudo, nginx php7.0, composer and zip
 		send_command("apt-get install -y sudo php7.0 php7.0-common php7.0-fpm php7.0-curl php7.0-json php7.0-sqlite php7.0-mbstring composer nginx-full zip unzip")
 		chmod_dir()
-		install_php_app(WEBAPP_DIRECTORY)
+		if stability == "dev":
+			install_php_app(WEBAPP_DIRECTORY, True)
+		else:
+			install_php_app(WEBAPP_DIRECTORY, False)
 		disable_default_nginx_virtualhost()
 		create_nginx_virtualhost("iqrf-daemon-webapp_php7-0.localhost")
 		fix_php_fpm_config("/etc/php/7.0/fpm/php.ini")
@@ -89,7 +97,7 @@ def install_debian(version):
 		restart_service("php7.0-fpm")
 		restart_service("nginx")
 
-def install_ubuntu(version):
+def install_ubuntu(version, stability="stable"):
 	"""
 	Install iqrf-daemon-webapp on Ubuntu
 	@param version Version of Ubuntu
@@ -99,7 +107,10 @@ def install_ubuntu(version):
 		# Install sudo, nginx php7.0, composer and zip
 		send_command("apt-get install -y sudo php7.0 php7.0-common php7.0-fpm php7.0-curl php7.0-json php7.0-sqlite php7.0-mbstring composer nginx-full zip unzip")
 		chmod_dir()
-		install_php_app(WEBAPP_DIRECTORY)
+		if stability == "dev":
+			install_php_app(WEBAPP_DIRECTORY, True)
+		else:
+			install_php_app(WEBAPP_DIRECTORY, False)
 		disable_default_nginx_virtualhost()
 		create_nginx_virtualhost("iqrf-daemon-webapp_php7-0.localhost")
 		fix_php_fpm_config("/etc/php/7.0/fpm/php.ini")
