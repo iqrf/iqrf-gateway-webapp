@@ -57,15 +57,16 @@ class ConfigUdpFormFactory {
 	public function create(UdpPresenter $presenter) {
 		$form = $this->factory->create();
 		$fileName = 'UdpMessaging';
+		$this->manager->setFileName($fileName);
 		$form->addText('Name', 'Name')->setRequired();
 		$form->addCheckbox('Enabled', 'Enabled');
 		$form->addInteger('RemotePort', 'RemotePort')->setRequired();
 		$form->addInteger('LocalPort', 'LocalPort')->setRequired();
 		$form->addSubmit('save', 'Save');
-		$form->setDefaults($this->manager->load($fileName));
+		$form->setDefaults($this->manager->load());
 		$form->addProtection('Timeout expired, resubmit the form.');
-		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $fileName) {
-			$this->manager->save($fileName, $values);
+		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
+			$this->manager->save($values);
 			$presenter->redirect('Homepage:default');
 		};
 		return $form;

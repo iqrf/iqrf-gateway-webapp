@@ -98,10 +98,11 @@ class InstanceManagerTest extends TestCase {
 	 */
 	public function testDelete() {
 		$manager = new InstanceManager($this->fileManagerTemp);
+		$manager->setFileName($this->fileName);
 		$expected = $this->fileManager->read($this->fileName);
 		$this->fileManagerTemp->write($this->fileName, $expected);
 		unset($expected['Instances'][1]);
-		$manager->delete($this->fileName, 1);
+		$manager->delete(1);
 		Assert::equal($expected, $this->fileManagerTemp->read($this->fileName));
 	}
 
@@ -111,8 +112,9 @@ class InstanceManagerTest extends TestCase {
 	 */
 	public function testGetInstances() {
 		$manager = new InstanceManager($this->fileManager);
+		$manager->setFileName($this->fileName);
 		$expected = $this->fileManager->read($this->fileName)['Instances'];
-		Assert::equal($expected, $manager->getInstances($this->fileName));
+		Assert::equal($expected, $manager->getInstances());
 	}
 
 	/**
@@ -121,8 +123,9 @@ class InstanceManagerTest extends TestCase {
 	 */
 	public function testLoad() {
 		$manager = new InstanceManager($this->fileManager);
-		Assert::equal($this->array, $manager->load($this->fileName, 1));
-		Assert::equal([], $manager->load($this->fileName, 10));
+		$manager->setFileName($this->fileName);
+		Assert::equal($this->array, $manager->load(1));
+		Assert::equal([], $manager->load(10));
 	}
 
 	/**
@@ -131,12 +134,13 @@ class InstanceManagerTest extends TestCase {
 	 */
 	public function testSave() {
 		$manager = new InstanceManager($this->fileManagerTemp);
+		$manager->setFileName($this->fileName);
 		$array = $this->array;
 		$array['EnabledSSL'] = true;
 		$expected = $this->fileManager->read($this->fileName);
 		$this->fileManagerTemp->write($this->fileName, $expected);
 		$expected['Instances'][1]['Properties']['EnabledSSL'] = true;
-		$manager->save($this->fileName, ArrayHash::from($array), 1);
+		$manager->save(ArrayHash::from($array), 1);
 		Assert::equal($expected, $this->fileManagerTemp->read($this->fileName));
 	}
 
@@ -146,6 +150,7 @@ class InstanceManagerTest extends TestCase {
 	 */
 	public function testSaveJson() {
 		$manager = new InstanceManager($this->fileManager);
+		$manager->setFileName($this->fileName);
 		$instances = $this->fileManager->read($this->fileName)['Instances'];
 		$array = $this->array;
 		$array['EnabledSSL'] = true;

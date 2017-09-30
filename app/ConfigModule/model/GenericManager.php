@@ -33,6 +33,12 @@ class GenericManager {
 	private $fileManager;
 
 	/**
+	 *
+	 * @var string File name (without .json)
+	 */
+	private $fileName;
+
+	/**
 	 * Constructor
 	 * @param JsonFileManager $fileManager
 	 */
@@ -42,20 +48,26 @@ class GenericManager {
 
 	/**
 	 * Load configuration
-	 * @param string $fileName File name (without .json)
 	 * @return array Array for form
 	 */
-	public function load($fileName) {
-		return $this->fileManager->read($fileName);
+	public function load() {
+		return $this->fileManager->read($this->fileName);
 	}
 
 	/**
 	 * Save configuration
-	 * @param string $fileName File name (without .json)
 	 * @param ArrayHash $array Settings
 	 */
-	public function save($fileName, ArrayHash $array) {
-		$this->fileManager->write($fileName, $array);
+	public function save(ArrayHash $array) {
+		$this->fileManager->write($this->fileName, $array);
+	}
+
+	/**
+	 * Set file name
+	 * @param string $fileName File name (without .json)
+	 */
+	public function setFileName($fileName) {
+		$this->fileName = $fileName;
 	}
 
 }

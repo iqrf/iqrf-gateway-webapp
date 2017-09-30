@@ -57,15 +57,16 @@ class ConfigTracerFormFactory {
 	public function create(TracerPresenter $presenter) {
 		$form = $this->factory->create();
 		$fileName = 'TracerFile';
+		$this->manager->setFileName($fileName);
 		$items = ['err' => 'Error', 'war' => 'Warning', 'inf' => 'Info', 'dbg' => 'Debug'];
 		$form->addText('TraceFileName', 'TraceFileName');
 		$form->addInteger('TraceFileSize', 'TraceFileSize');
 		$form->addSelect('VerbosityLevel', 'VerbosityLevel', $items);
 		$form->addSubmit('save', 'Save');
-		$form->setDefaults($this->manager->load($fileName));
+		$form->setDefaults($this->manager->load());
 		$form->addProtection('Timeout expired, resubmit the form.');
-		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $fileName) {
-			$this->manager->save($fileName, $values);
+		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
+			$this->manager->save($values);
 			$presenter->redirect('Homepage:default');
 		};
 		return $form;

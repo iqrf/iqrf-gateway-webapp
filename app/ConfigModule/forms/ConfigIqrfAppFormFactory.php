@@ -57,14 +57,15 @@ class ConfigIqrfAppFormFactory {
 	public function create(IqrfAppPresenter $presenter) {
 		$form = $this->factory->create();
 		$fileName = 'iqrfapp';
+		$this->manager->setFileName($fileName);
 		$form->addText('LocalMqName', 'LocalMqName')->setRequired();
 		$form->addText('RemoteMqName', 'RemoteMqName')->setRequired();
 		$form->addInteger('DefaultTimeout', 'DefaultTimeout')->setRequired();
 		$form->addSubmit('save', 'Save');
-		$form->setDefaults($this->manager->load($fileName));
+		$form->setDefaults($this->manager->load());
 		$form->addProtection('Timeout expired, resubmit the form.');
-		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $fileName) {
-			$this->manager->save($fileName, $values);
+		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
+			$this->manager->save($values);
 			$presenter->redirect('Homepage:default');
 		};
 		return $form;

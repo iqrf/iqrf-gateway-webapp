@@ -71,8 +71,9 @@ class GenericManagerTest extends TestCase {
 	 */
 	public function testLoad() {
 		$manager = new GenericManager($this->fileManager);
+		$manager->setFileName($this->fileName);
 		$expected = $this->fileManager->read($this->fileName);
-		Assert::equal($expected, $manager->load($this->fileName));
+		Assert::equal($expected, $manager->load());
 	}
 
 	/**
@@ -81,6 +82,7 @@ class GenericManagerTest extends TestCase {
 	 */
 	public function testSave() {
 		$manager = new GenericManager($this->fileManagerTemp);
+		$manager->setFileName($this->fileName);
 		$array = [
 			'TraceFileName' => '',
 			'TraceFileSize' => 0,
@@ -89,7 +91,7 @@ class GenericManagerTest extends TestCase {
 		$expected = $this->fileManager->read($this->fileName);
 		$this->fileManagerTemp->write($this->fileName, $expected);
 		$expected['VerbosityLevel'] = 'err';
-		$manager->save($this->fileName, ArrayHash::from($array));
+		$manager->save(ArrayHash::from($array));
 		Assert::equal($expected, $this->fileManagerTemp->read($this->fileName));
 	}
 

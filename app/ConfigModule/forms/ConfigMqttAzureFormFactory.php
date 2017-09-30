@@ -63,13 +63,14 @@ class ConfigMqttAzureFormFactory {
 	public function create(MqttPresenter $presenter) {
 		$form = $this->factory->create();
 		$fileName = 'MqttMessaging';
-		$id = count($this->manager->getInstances($fileName));
+		$this->manager->setFileName($fileName);
+		$id = count($this->manager->getInstances());
 		$form->addText('ConnectionString', 'ConnectionString')->setRequired();
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('Timeout expired, resubmit the form.');
-		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $fileName, $id) {
+		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $id) {
 			$settings = $this->azure->createMqttInterface($values['ConnectionString']);
-			$this->manager->save($fileName, $settings, $id);
+			$this->manager->save($settings, $id);
 			$presenter->redirect('Mqtt:default');
 		};
 		return $form;

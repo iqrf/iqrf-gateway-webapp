@@ -55,6 +55,7 @@ class MqttPresenter extends BasePresenter {
 		$this->azureFormFactory = $azureFormFactory;
 		$this->configManager = $configManager;
 		$this->formFactory = $formFactory;
+		$this->configManager->setFileName($this->fileName);
 	}
 
 	/**
@@ -62,7 +63,7 @@ class MqttPresenter extends BasePresenter {
 	 */
 	public function renderDefault() {
 		$this->onlyForAdmins();
-		$this->template->instances = $this->configManager->getInstances($this->fileName);
+		$this->template->instances = $this->configManager->getInstances();
 	}
 
 	/**

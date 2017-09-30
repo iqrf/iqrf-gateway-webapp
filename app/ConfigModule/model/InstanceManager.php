@@ -33,6 +33,12 @@ class InstanceManager {
 	private $fileManager;
 
 	/**
+	 *
+	 * @var string File name (without .json)
+	 */
+	private $fileName;
+
+	/**
 	 * Constructor
 	 * @param JsonFileManager $fileManager
 	 */
@@ -42,34 +48,31 @@ class InstanceManager {
 
 	/**
 	 * Delete Instances setting
-	 * @param string $fileName File name (without .json)
 	 * @param int $id Instance ID
 	 */
-	public function delete($fileName, $id) {
-		$json = $this->fileManager->read($fileName);
+	public function delete($id) {
+		$json = $this->fileManager->read($this->fileName);
 		unset($json['Instances'][$id]);
 		$json['Instances'] = array_values($json['Instances']);
-		$this->fileManager->write($fileName, $json);
+		$this->fileManager->write($this->fileName, $json);
 	}
 
 	/**
 	 * Get list of Instances
-	 * @param string $fileName File name (without .json)
 	 * @return array Instances
 	 */
-	public function getInstances($fileName) {
-		$json = $this->fileManager->read($fileName);
+	public function getInstances() {
+		$json = $this->fileManager->read($this->fileName);
 		return $json['Instances'];
 	}
 
 	/**
 	 * Convert Instances configuration form array to JSON array
-	 * @param string $fileName File name (without .json)
 	 * @param int $id Interface ID
 	 * @return array Array for form
 	 */
-	public function load($fileName, $id = 0) {
-		$json = $this->fileManager->read($fileName);
+	public function load($id = 0) {
+		$json = $this->fileManager->read($this->fileName);
 		$instances = $json['Instances'];
 		if ($id > count($instances)) {
 			return [];
@@ -83,14 +86,13 @@ class InstanceManager {
 
 	/**
 	 * Save Instances setting
-	 * @param string $fileName File name (without .json)
 	 * @param ArrayHash $array Instance settings
 	 * @param int $id Instance ID
 	 */
-	public function save($fileName, ArrayHash $array, $id = 0) {
-		$json = $this->fileManager->read($fileName);
+	public function save(ArrayHash $array, $id = 0) {
+		$json = $this->fileManager->read($this->fileName);
 		$json['Instances'] = $this->saveJson($json['Instances'], $array, $id);
-		$this->fileManager->write($fileName, $json);
+		$this->fileManager->write($this->fileName, $json);
 	}
 
 	/**
@@ -108,6 +110,14 @@ class InstanceManager {
 		$instance['Properties'] = (array) $update;
 		$instances[$id] = $instance;
 		return $instances;
+	}
+
+	/**
+	 * Set file name
+	 * @param string $fileName File name (without .json)
+	 */
+	public function setFileName($fileName) {
+		$this->fileName = $fileName;
 	}
 
 }

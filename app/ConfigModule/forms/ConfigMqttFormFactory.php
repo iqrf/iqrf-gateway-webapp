@@ -58,6 +58,7 @@ class ConfigMqttFormFactory {
 		$id = $presenter->getParameter('id');
 		$form = $this->factory->create();
 		$fileName = 'MqttMessaging';
+		$this->manager->setFileName($fileName);
 		$qos = ['QoS 0 - At most once', 'QoS 1 - At least once', 'QoS 2 - Exactly once'];
 		$form->addText('Name', 'Name')->setRequired();
 		$form->addCheckbox('Enabled', 'Enabled');
@@ -81,10 +82,10 @@ class ConfigMqttFormFactory {
 		$form->addText('EnabledCipherSuites', 'EnabledCipherSuites');
 		$form->addCheckbox('EnableServerCertAuth', 'EnableServerCertAuth');
 		$form->addSubmit('save', 'Save');
-		$form->setDefaults($this->manager->load($fileName, $id));
+		$form->setDefaults($this->manager->load($id));
 		$form->addProtection('Timeout expired, resubmit the form.');
-		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $fileName, $id) {
-			$this->manager->save($fileName, $values, $id);
+		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $id) {
+			$this->manager->save($values, $id);
 			$presenter->redirect('Mqtt:default');
 		};
 		return $form;
