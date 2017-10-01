@@ -31,18 +31,18 @@ session:
 	expiration: 14 days
 
 services:
+	- App\CloudModule\Forms\CloudAzureMqttFormFactory
+	- App\CloudModule\Model\AzureManager
 	- App\ConfigModule\Forms\ConfigBaseServiceFormFactory
 	- App\ConfigModule\Forms\ConfigComponentsFormFactory
 	- App\ConfigModule\Forms\ConfigIqrfAppFormFactory
 	- App\ConfigModule\Forms\ConfigIqrfFormFactory
 	- App\ConfigModule\Forms\ConfigMainFormFactory
 	- App\ConfigModule\Forms\ConfigMqFormFactory
-	- App\ConfigModule\Forms\ConfigMqttAzureFormFactory
 	- App\ConfigModule\Forms\ConfigMqttFormFactory
 	- App\ConfigModule\Forms\ConfigSchedulerFormFactory
 	- App\ConfigModule\Forms\ConfigTracerFormFactory
 	- App\ConfigModule\Forms\ConfigUdpFormFactory
-	- App\ConfigModule\Model\AzureManager
 	- App\ConfigModule\Model\BaseServiceManager
 	- App\ConfigModule\Model\ComponentManager
 	- App\ConfigModule\Model\GenericManager

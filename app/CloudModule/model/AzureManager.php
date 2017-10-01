@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-namespace App\ConfigModule\Model;
+namespace App\CloudModule\Model;
 
 use DateInterval;
 use DateTime;
@@ -92,9 +92,9 @@ class AzureManager {
 	 * @return array Values from the connection string
 	 */
 	public function parseConnectionString($connectionString) {
-		$connectionString = trim($connectionString, " =\t\n\r\0\x0B");
+		$connection = trim($connectionString, " =\t\n\r\0\x0B");
 		$data = [];
-		foreach (explode(';', $connectionString) as $i) {
+		foreach (explode(';', $connection) as $i) {
 			$j = explode('=', $i);
 			$data[$j[0]] = $j[1];
 		}

@@ -33,6 +33,9 @@ class RouterFactory {
 	 */
 	public static function createRouter() {
 		$router = new RouteList();
+		$cloud = new RouteList('Cloud');
+		$cloud[] = new Route('[<lang [a-z]{2}>/]cloud/<presenter>/<action>[/<id>]', 'Homepage:default');
+		$router[] = $cloud;
 		$config = new RouteList('Config');
 		$config[] = new Route('[<lang [a-z]{2}>/]config/<presenter>/<action>[/<id>]', 'Homepage:default');
 		$router[] = $config;

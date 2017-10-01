@@ -16,16 +16,16 @@
  * limitations under the License.
  */
 
-namespace App\ConfigModule\Forms;
+namespace App\CloudModule\Forms;
 
-use App\ConfigModule\Model\AzureManager;
+use App\CloudModule\Model\AzureManager;
+use App\CloudModule\Presenters\AzurePresenter;
 use App\ConfigModule\Model\InstanceManager;
-use App\ConfigModule\Presenters\MqttPresenter;
 use App\Forms\FormFactory;
 use Nette;
 use Nette\Application\UI\Form;
 
-class ConfigMqttAzureFormFactory {
+class CloudAzureMqttFormFactory {
 
 	use Nette\SmartObject;
 
@@ -57,10 +57,10 @@ class ConfigMqttAzureFormFactory {
 
 	/**
 	 * Create MQTT configuration form
-	 * @param MqttPresenter $presenter
+	 * @param AzurePresenter $presenter
 	 * @return Form MQTT configuration form
 	 */
-	public function create(MqttPresenter $presenter) {
+	public function create(AzurePresenter $presenter) {
 		$form = $this->factory->create();
 		$fileName = 'MqttMessaging';
 		$this->manager->setFileName($fileName);
