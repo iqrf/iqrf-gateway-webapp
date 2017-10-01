@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.org/iqrfsdk/iqrf-daemon-webapp.svg?branch=master)](https://travis-ci.org/iqrfsdk/iqrf-daemon-webapp)
 [![Code Coverage](https://codecov.io/gh/iqrfsdk/iqrf-daemon-webapp/branch/master/graph/badge.svg)](https://codecov.io/gh/iqrfsdk/iqrf-daemon-webapp)
 [![Downloads this Month](https://img.shields.io/packagist/dm/iqrfsdk/iqrf-daemon-webapp.svg)](https://packagist.org/packages/iqrfsdk/iqrf-daemon-webapp)
+[![Join the chat at https://gitter.im/iqrfsdk/iqrf-daemon-webapp](https://badges.gitter.im/iqrfsdk/iqrf-daemon-webapp.svg)](https://gitter.im/iqrfsdk/iqrf-daemon-webapp)
 [![Apache License](https://img.shields.io/badge/license-APACHE2-blue.svg)](LICENSE)
 
 This is web application for iqrf-daemon configuration.
