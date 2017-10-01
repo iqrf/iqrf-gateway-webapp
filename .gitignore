@@ -1,9 +1,12 @@
+# Local application configuration
 app/config/config.local.neon
 # Composer
 vendor/
 composer.lock
 # NetBeans IDE
 nbproject/
+# PhpStorm IDE
+.idea/
 # Nette Tester
 tests/output/
 tests/*/output/
