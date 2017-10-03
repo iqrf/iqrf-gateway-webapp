@@ -74,7 +74,7 @@ class MqttPresenter extends BasePresenter {
 	 */
 	public function actionDelete($id) {
 		$this->onlyForAdmins();
-		$this->configManager->delete($this->fileName, $id);
+		$this->configManager->delete($id);
 		$this->redirect('Mqtt:default');
 		$this->setView('default');
 	}

@@ -74,7 +74,7 @@ class MqPresenter extends BasePresenter {
 	 */
 	public function actionDelete($id) {
 		$this->onlyForAdmins();
-		$this->configManager->delete($this->fileName, $id);
+		$this->configManager->delete($id);
 		$this->redirect('Mq:default');
 		$this->setView('default');
 	}
