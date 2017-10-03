@@ -1,7 +1,7 @@
 {
 	"name": "iqrfsdk/iqrf-daemon-webapp",
 	"description": "IQRF Daemon web application",
-	"version": "0.8.0",
+	"version": "0.8.1",
 	"type": "project",
 	"keywords": ["nette", "iqrf", "iqrf-daemon"],
 	"homepage": "https://github.com/iqrfsdk/iqrf-daemon-webapp",
