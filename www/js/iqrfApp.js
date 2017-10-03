@@ -57,15 +57,16 @@ function parsePacket(packet) {
  * @returns {Boolean} Is valid DPA packet?
  */
 function validatePacket(packet) {
-	var re = new RegExp(/^([0-9a-fA-F]{1,2}\.){4,62}[0-9a-fA-F]{1,2}(\.|)$/, 'i');
+	var re = new RegExp(/^([0-9a-fA-F]{1,2}\.){4,62}[0-9a-fA-F]{1,2}(\.|)$/, "i");
 	return packet.match(re) !== null;
 }
 
 /**
- * Set DPA timeout
+ * Detect timeout from parsed DPA packet
  * @param {array} packet Parsed DPA packet
+ * @returns {Number}
  */
-function setTimeout(packet) {
+function detectTimeout(packet) {
 	var timeout = null;
 	if (packet.pnum === "00" && packet.pcmd === "04") {
 		timeout = 12000;
@@ -74,6 +75,15 @@ function setTimeout(packet) {
 	} else if (packet.pnum === "0D" && packet.pcmd === "00") {
 		timeout = 6000;
 	}
+	return timeout;
+}
+
+/**
+ * Set DPA timeout
+ * @param {array} packet Parsed DPA packet
+ */
+function setTimeout(packet) {
+	var timeout = detectTimeout(packet);
 	if (timeout === null) {
 		$("#frm-iqrfAppSendRawForm-timeoutEnabled").prop("checked", false);
 		$("#frm-iqrfAppSendRawForm-timeout").prop("disabled", true);
@@ -83,7 +93,6 @@ function setTimeout(packet) {
 		$("#frm-iqrfAppSendRawForm-timeout").val(timeout);
 	}
 }
-
 
 /**
  * Set DPA packet
