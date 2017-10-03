@@ -30,11 +30,6 @@ class AzurePresenter extends BasePresenter {
 	private $formFactory;
 
 	/**
-	 * @var string
-	 */
-	private $fileName = 'MqttMessaging';
-
-	/**
 	 * Constructor
 	 * @param CloudAzureMqttFormFactory $formFactory
 	 */
