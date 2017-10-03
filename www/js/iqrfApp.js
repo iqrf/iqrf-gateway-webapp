@@ -15,32 +15,6 @@
  * limitations under the License.
  */
 
-// Select IQRF interface port from list
-$(".btn-port").click(function () {
-	$("#frm-configIqrfForm-IqrfInterface").val($(this).data("port"));
-});
-
-// Select DPA packet form list of macros from IQRF IDE
-$(".btn-packet").click(function () {
-	var packet = fixPacket($(this).data("packet"));
-	setPacket(packet);
-});
-
-// Validate and fix DPA packet and set DPA timeout
-$("#frm-iqrfAppSendRawForm-packet").keypress(function () {
-	var packet = fixPacket($(this).val());
-	setPacket(packet);
-});
-
-// Enable or disable DPA timeout
-$('#frm-iqrfAppSendRawForm-timeoutEnabled').click(function () {
-	if ($(this).is(':checked')) {
-		$("#frm-iqrfAppSendRawForm-timeout").prop('disabled', false);
-	} else {
-		$("#frm-iqrfAppSendRawForm-timeout").prop('disabled', true);
-	}
-});
-
 /**
  * Fix DPA packet
  * @param {string} packet DPA packet to fix
@@ -78,16 +52,13 @@ function parsePacket(packet) {
 }
 
 /**
- * Set DPA packet
- * @param {string} packet DPA packet to set
+ * Validate DPA packet
+ * @param {string} packet DPA packet to validate
+ * @returns {Boolean} Is valid DPA packet?
  */
-function setPacket(packet) {
-	if (validatePacket(packet)) {
-		setTimeout(parsePacket(packet));
-		$("#frm-iqrfAppSendRawForm-packet").val(packet);
-	} else {
-		$("#frm-iqrfAppSendRawForm-timeout").prop('disabled', true);
-	}
+function validatePacket(packet) {
+	var re = new RegExp(/^([0-9a-fA-F]{1,2}\.){4,62}[0-9a-fA-F]{1,2}(\.|)$/, 'i');
+	return packet.match(re) !== null;
 }
 
 /**
@@ -104,21 +75,51 @@ function setTimeout(packet) {
 		timeout = 6000;
 	}
 	if (timeout === null) {
-		$('#frm-iqrfAppSendRawForm-timeoutEnabled').prop('checked', false);
-		$("#frm-iqrfAppSendRawForm-timeout").prop('disabled', true);
+		$("#frm-iqrfAppSendRawForm-timeoutEnabled").prop("checked", false);
+		$("#frm-iqrfAppSendRawForm-timeout").prop("disabled", true);
 	} else {
-		$('#frm-iqrfAppSendRawForm-timeoutEnabled').prop('checked', true);
-		$("#frm-iqrfAppSendRawForm-timeout").prop('disabled', false);
+		$("#frm-iqrfAppSendRawForm-timeoutEnabled").prop("checked", true);
+		$("#frm-iqrfAppSendRawForm-timeout").prop("disabled", false);
 		$("#frm-iqrfAppSendRawForm-timeout").val(timeout);
 	}
 }
 
+
 /**
- * Validate DPA packet
- * @param {string} packet DPA packet to validate
- * @returns {Boolean} Is valid DPA packet?
+ * Set DPA packet
+ * @param {string} packet DPA packet to set
  */
-function validatePacket(packet) {
-	var re = /^([0-9a-fA-F]{1,2}\.){4,62}[0-9a-fA-F]{1,2}(\.|)$/i;
-	return packet.match(re) !== null;
+function setPacket(packet) {
+	if (validatePacket(packet)) {
+		setTimeout(parsePacket(packet));
+		$("#frm-iqrfAppSendRawForm-packet").val(packet);
+	} else {
+		$("#frm-iqrfAppSendRawForm-timeout").prop("disabled", true);
+	}
 }
+
+// Select IQRF interface port from list
+$(".btn-port").click(function () {
+	$("#frm-configIqrfForm-IqrfInterface").val($(this).data("port"));
+});
+
+// Select DPA packet form list of macros from IQRF IDE
+$(".btn-packet").click(function () {
+	var packet = fixPacket($(this).data("packet"));
+	setPacket(packet);
+});
+
+// Validate and fix DPA packet and set DPA timeout
+$("#frm-iqrfAppSendRawForm-packet").keypress(function () {
+	var packet = fixPacket($(this).val());
+	setPacket(packet);
+});
+
+// Enable or disable DPA timeout
+$("#frm-iqrfAppSendRawForm-timeoutEnabled").click(function () {
+	if ($(this).is(":checked")) {
+		$("#frm-iqrfAppSendRawForm-timeout").prop("disabled", false);
+	} else {
+		$("#frm-iqrfAppSendRawForm-timeout").prop("disabled", true);
+	}
+});
