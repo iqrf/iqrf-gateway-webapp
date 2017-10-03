@@ -55,6 +55,7 @@ class ConfigMqFormFactory {
 	 * @return Form MQTT configuration form
 	 */
 	public function create(MqPresenter $presenter) {
+		$id = $presenter->getParameter('id');
 		$form = $this->factory->create();
 		$fileName = 'MqMessaging';
 		$this->manager->setFileName($fileName);
@@ -63,11 +64,11 @@ class ConfigMqFormFactory {
 		$form->addText('LocalMqName', 'LocalMqName')->setRequired();
 		$form->addText('RemoteMqName', 'RemoteMqName')->setRequired();
 		$form->addSubmit('save', 'Save');
-		$form->setDefaults($this->manager->load());
+		$form->setDefaults($this->manager->load($id));
 		$form->addProtection('Timeout expired, resubmit the form.');
-		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
-			$this->manager->save($values);
-			$presenter->redirect('Homepage:default');
+		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $id) {
+			$this->manager->save($values, $id);
+			$presenter->redirect('Mq:default');
 		};
 		return $form;
 	}

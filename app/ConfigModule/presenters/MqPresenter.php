@@ -19,6 +19,7 @@
 
 namespace App\ConfigModule\Presenters;
 
+use App\ConfigModule\Model\InstanceManager;
 use App\ConfigModule\Forms\ConfigMqFormFactory;
 use App\Presenters\BasePresenter;
 
@@ -30,18 +31,52 @@ class MqPresenter extends BasePresenter {
 	private $formFactory;
 
 	/**
+	 * @var InstanceManager
+	 */
+	private $configManager;
+
+	/**
+	 * @var string
+	 */
+	private $fileName = 'MqMessaging';
+
+	/**
 	 * Constructor
 	 * @param ConfigMqFormFactory $formFactory
+	 * @param InstanceManager $configManager
 	 */
-	public function __construct(ConfigMqFormFactory $formFactory) {
+	public function __construct(ConfigMqFormFactory $formFactory, InstanceManager $configManager) {
+		$this->configManager = $configManager;
 		$this->formFactory = $formFactory;
+		$this->configManager->setFileName($this->fileName);
 	}
 
 	/**
-	 * Render MQ interface configurator
+	 * Render list of MQ interfaces
 	 */
 	public function renderDefault() {
 		$this->onlyForAdmins();
+		$this->template->instances = $this->configManager->getInstances();
+	}
+
+	/**
+	 * Edit MQ interface
+	 * @param int $id ID of MQ interface
+	 */
+	public function renderEdit($id) {
+		$this->onlyForAdmins();
+		$this->template->id = $id;
+	}
+
+	/**
+	 * Delete MQ interface
+	 * @param int $id ID of MQ interface
+	 */
+	public function actionDelete($id) {
+		$this->onlyForAdmins();
+		$this->configManager->delete($this->fileName, $id);
+		$this->redirect('Mq:default');
+		$this->setView('default');
 	}
 
 	/**
