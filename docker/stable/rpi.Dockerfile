@@ -1,4 +1,4 @@
-FROM resin/rpi-raspbian:latest
+FROM resin/rpi-raspbian:stretch
 
 MAINTAINER Roman Ondráček <roman.ondracek@iqrf.com>
 LABEL maintainer="roman.ondracek@iqrf.com"
