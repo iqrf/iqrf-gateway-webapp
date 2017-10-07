@@ -11,7 +11,7 @@ RUN apt-get update \
 WORKDIR /var/www/iqrf-daemon-webapp
 
 RUN git clone https://github.com/iqrfsdk/iqrf-daemon-webapp .
-RUN php composer install
+RUN composer install
 RUN sed -i 's/sudo\:\ true/sudo\:\ false/g' app/config/config.neon
 RUN sed -i "s/initDaemon: 'systemd'/initDaemon: 'docker'/g" app/config/config.neon
 
