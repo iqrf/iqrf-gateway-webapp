@@ -53,6 +53,9 @@ class ServiceManager {
 	 */
 	public function start() {
 		switch ($this->initDaemon) {
+			case 'docker-supervisor':
+				$cmd = 'supervisorctl start iqrf-daemon';
+				break;
 			case 'systemd':
 				$cmd = 'systemctl start iqrf-daemon.service';
 				break;
@@ -68,6 +71,9 @@ class ServiceManager {
 	 */
 	public function stop() {
 		switch ($this->initDaemon) {
+			case 'docker-supervisor':
+				$cmd = 'supervisorctl stop iqrf-daemon';
+				break;
 			case 'systemd':
 				$cmd = 'systemctl stop iqrf-daemon.service';
 				break;
@@ -83,6 +89,9 @@ class ServiceManager {
 	 */
 	public function restart() {
 		switch ($this->initDaemon) {
+			case 'docker-supervisor':
+				$cmd = 'supervisorctl restart iqrf-daemon';
+				break;
 			case 'systemd':
 				$cmd = 'systemctl restart iqrf-daemon.service';
 				break;
@@ -98,6 +107,9 @@ class ServiceManager {
 	 */
 	public function getStatus() {
 		switch ($this->initDaemon) {
+			case 'docker-supervisor':
+				$cmd = 'supervisorctl status iqrf-daemon';
+				break;
 			case 'systemd':
 				$cmd = 'systemctl status iqrf-daemon.service';
 				break;

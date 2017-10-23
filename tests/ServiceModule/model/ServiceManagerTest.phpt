@@ -32,11 +32,14 @@ class ServiceManagerTest extends TestCase {
 	public function testStart() {
 		$commandManager = \Mockery::mock(CommandManager::class);
 		$commandManager->shouldReceive('send')->with('systemctl start iqrf-daemon.service', true)->andReturn(true);
-		$serviceManager = new ServiceManager('systemd', $commandManager);
-		Assert::true($serviceManager->start());
+		$commandManager->shouldReceive('send')->with('supervisorctl start iqrf-daemon', true)->andReturn(true);
+		$managerSystemD = new ServiceManager('systemd', $commandManager);
+		Assert::true($managerSystemD->start());
+		$managerDockerSupervisor = new ServiceManager('docker-supervisor', $commandManager);
+		Assert::true($managerDockerSupervisor->start());
 		Assert::exception(function () use ($commandManager) {
-			$serviceManager = new ServiceManager('unknown', $commandManager);
-			$serviceManager->start();
+			$managerUnknown = new ServiceManager('unknown', $commandManager);
+			$managerUnknown->start();
 		}, NotImplementedException::class);
 	}
 
@@ -47,11 +50,14 @@ class ServiceManagerTest extends TestCase {
 	public function testStop() {
 		$commandManager = \Mockery::mock(CommandManager::class);
 		$commandManager->shouldReceive('send')->with('systemctl stop iqrf-daemon.service', true)->andReturn(true);
-		$serviceManager = new ServiceManager('systemd', $commandManager);
-		Assert::true($serviceManager->stop());
+		$commandManager->shouldReceive('send')->with('supervisorctl stop iqrf-daemon', true)->andReturn(true);
+		$managerSystemD = new ServiceManager('systemd', $commandManager);
+		Assert::true($managerSystemD->stop());
+		$managerDockerSupervisor = new ServiceManager('docker-supervisor', $commandManager);
+		Assert::true($managerDockerSupervisor->stop());
 		Assert::exception(function () use ($commandManager) {
-			$serviceManager = new ServiceManager('unknown', $commandManager);
-			$serviceManager->stop();
+			$managerUnknown = new ServiceManager('unknown', $commandManager);
+			$managerUnknown->stop();
 		}, NotImplementedException::class);
 	}
 
@@ -62,11 +68,14 @@ class ServiceManagerTest extends TestCase {
 	public function testRestart() {
 		$commandManager = \Mockery::mock(CommandManager::class);
 		$commandManager->shouldReceive('send')->with('systemctl restart iqrf-daemon.service', true)->andReturn(true);
-		$serviceManager = new ServiceManager('systemd', $commandManager);
-		Assert::true($serviceManager->restart());
+		$commandManager->shouldReceive('send')->with('supervisorctl restart iqrf-daemon', true)->andReturn(true);
+		$managerSystemD = new ServiceManager('systemd', $commandManager);
+		Assert::true($managerSystemD->restart());
+		$managerDockerSupervisor = new ServiceManager('docker-supervisor', $commandManager);
+		Assert::true($managerDockerSupervisor->restart());
 		Assert::exception(function () use ($commandManager) {
-			$serviceManager = new ServiceManager('unknown', $commandManager);
-			$serviceManager->restart();
+			$managerUnknown = new ServiceManager('unknown', $commandManager);
+			$managerUnknown->restart();
 		}, NotImplementedException::class);
 	}
 
@@ -77,11 +86,14 @@ class ServiceManagerTest extends TestCase {
 	public function testGetStatus() {
 		$commandManager = \Mockery::mock(CommandManager::class);
 		$commandManager->shouldReceive('send')->with('systemctl status iqrf-daemon.service', true)->andReturn(true);
-		$serviceManager = new ServiceManager('systemd', $commandManager);
-		Assert::true($serviceManager->getStatus());
+		$commandManager->shouldReceive('send')->with('supervisorctl status iqrf-daemon', true)->andReturn(true);
+		$managerSystemD = new ServiceManager('systemd', $commandManager);
+		Assert::true($managerSystemD->getStatus());
+		$managerDockerSupervisor = new ServiceManager('docker-supervisor', $commandManager);
+		Assert::true($managerDockerSupervisor->getStatus());
 		Assert::exception(function () use ($commandManager) {
-			$serviceManager = new ServiceManager('unknown', $commandManager);
-			$serviceManager->getStatus();
+			$managerUnknown = new ServiceManager('unknown', $commandManager);
+			$managerUnknown->getStatus();
 		}, NotImplementedException::class);
 	}
 
