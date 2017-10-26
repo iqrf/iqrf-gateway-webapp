@@ -1,0 +1,6 @@
+services:
+	- App\IqrfAppModule\Forms\IqrfAppSendRawFormFactory
+	- App\IqrfAppModule\Model\CoordinatorParser
+	- App\IqrfAppModule\Model\IqrfAppManager
+	- App\IqrfAppModule\Model\IqrfMacroManager(%macroPath%)
+	- App\IqrfAppModule\Model\OsParser

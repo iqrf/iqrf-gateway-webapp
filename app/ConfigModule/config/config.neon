@@ -1,0 +1,18 @@
+services:
+	- App\ConfigModule\Forms\ConfigBaseServiceFormFactory
+	- App\ConfigModule\Forms\ConfigComponentsFormFactory
+	- App\ConfigModule\Forms\ConfigIqrfAppFormFactory
+	- App\ConfigModule\Forms\ConfigIqrfFormFactory
+	- App\ConfigModule\Forms\ConfigMainFormFactory
+	- App\ConfigModule\Forms\ConfigMqFormFactory
+	- App\ConfigModule\Forms\ConfigMqttFormFactory
+	- App\ConfigModule\Forms\ConfigSchedulerFormFactory
+	- App\ConfigModule\Forms\ConfigTracerFormFactory
+	- App\ConfigModule\Forms\ConfigUdpFormFactory
+	- App\ConfigModule\Model\BaseServiceManager
+	- App\ConfigModule\Model\ComponentManager
+	- App\ConfigModule\Model\GenericManager
+	- App\ConfigModule\Model\IqrfManager
+	- App\ConfigModule\Model\InstanceManager
+	- App\ConfigModule\Model\MainManager
+	- App\ConfigModule\Model\SchedulerManager

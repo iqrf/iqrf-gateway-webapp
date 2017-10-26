@@ -1,0 +1,3 @@
+services:
+	- App\CloudModule\Forms\CloudAzureMqttFormFactory
+	- App\CloudModule\Model\AzureManager

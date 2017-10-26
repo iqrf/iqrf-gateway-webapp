@@ -31,38 +31,11 @@ session:
 	expiration: 14 days
 
 services:
-	- App\CloudModule\Forms\CloudAzureMqttFormFactory
-	- App\CloudModule\Model\AzureManager
-	- App\ConfigModule\Forms\ConfigBaseServiceFormFactory
-	- App\ConfigModule\Forms\ConfigComponentsFormFactory
-	- App\ConfigModule\Forms\ConfigIqrfAppFormFactory
-	- App\ConfigModule\Forms\ConfigIqrfFormFactory
-	- App\ConfigModule\Forms\ConfigMainFormFactory
-	- App\ConfigModule\Forms\ConfigMqFormFactory
-	- App\ConfigModule\Forms\ConfigMqttFormFactory
-	- App\ConfigModule\Forms\ConfigSchedulerFormFactory
-	- App\ConfigModule\Forms\ConfigTracerFormFactory
-	- App\ConfigModule\Forms\ConfigUdpFormFactory
-	- App\ConfigModule\Model\BaseServiceManager
-	- App\ConfigModule\Model\ComponentManager
-	- App\ConfigModule\Model\GenericManager
-	- App\ConfigModule\Model\IqrfManager
-	- App\ConfigModule\Model\InstanceManager
-	- App\ConfigModule\Model\MainManager
-	- App\ConfigModule\Model\SchedulerManager
-	- App\GatewayModule\Model\InfoManager
-	- App\GatewayModule\Model\LogManager(%logPath%)
 	- App\Forms\FormFactory
 	- App\Forms\SignInFormFactory
-	- App\IqrfAppModule\Forms\IqrfAppSendRawFormFactory
-	- App\IqrfAppModule\Model\CoordinatorParser
-	- App\IqrfAppModule\Model\IqrfAppManager
-	- App\IqrfAppModule\Model\IqrfMacroManager(%macroPath%)
-	- App\IqrfAppModule\Model\OsParser
 	- App\Model\CommandManager(%sudo%)
 	- App\Model\FileManager(%configDir%)
 	- App\Model\JsonFileManager(%configDir%)
-	- App\ServiceModule\Model\ServiceManager(%initDaemon%)
 	router: App\Router\RouterFactory::createRouter
 	formFactory: Instante\Bootstrap3Renderer\BootstrapFormFactory
 
@@ -86,3 +59,10 @@ http:
 security:
 	users:
 		admin: iqrf  # user 'admin', password 'iqrf'
+
+includes:
+	- ../CloudModule/config/config.neon
+	- ../ConfigModule/config/config.neon
+	- ../GatewayModule/config/config.neon
+	- ../IqrfAppModule/config/config.neon
+	- ../ServiceModule/config/config.neon
