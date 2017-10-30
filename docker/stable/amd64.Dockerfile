@@ -14,6 +14,6 @@ RUN composer create-project iqrfsdk/iqrf-daemon-webapp .
 RUN sed -i 's/sudo\:\ true/sudo\:\ false/g' app/config/config.neon
 RUN sed -i "s/initDaemon: 'systemd'/initDaemon: 'docker'/g" app/config/config.neon
 
-CMD [ "php", "-S", "[::]:8080", "-t", "/var/www/iqrf-daemon-webapp/" ]
+CMD [ "php", "-S", "[::]:8080", "-t", "/var/www/iqrf-daemon-webapp/www/" ]
 
 EXPOSE 8080

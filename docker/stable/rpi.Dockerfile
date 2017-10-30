@@ -18,6 +18,6 @@ RUN sed -i "s/initDaemon: 'systemd'/initDaemon: 'docker'/g" app/config/config.ne
 
 RUN [ "cross-build-end" ]
 
-CMD [ "php", "-S", "[::]:8080", "-t", "/var/www/iqrf-daemon-webapp/" ]
+CMD [ "php", "-S", "[::]:8080", "-t", "/var/www/iqrf-daemon-webapp/www/" ]
 
 EXPOSE 8080
