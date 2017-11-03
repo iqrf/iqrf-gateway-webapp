@@ -19,10 +19,16 @@
 
 namespace App\IqrfAppModule\Model;
 
+/**
+ * The exception that indicates empty JSON DPA or DPA response
+ */
 class EmptyResponseException extends \Exception {
-	
+
 }
 
+/**
+ * The exception that indicates invalid gateway operational mode
+ */
 class InvalidOperationModeException extends \Exception {
-	
+
 }
