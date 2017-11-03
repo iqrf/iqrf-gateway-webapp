@@ -20,6 +20,8 @@
 namespace App\IqrfAppModule\Model;
 
 use App\IqrfAppModule\Model\CoordinatorParser;
+use App\IqrfAppModule\Model\EmptyResponseException;
+use App\IqrfAppModule\Model\InvalidOperationModeException;
 use App\IqrfAppModule\Model\OsParser;
 use App\Model\CommandManager;
 use DateTime;
@@ -71,7 +73,7 @@ class IqrfAppManager {
 	 * Send RAW IQRF packet
 	 * @param string $packet RAW IQRF packet
 	 * @param int $timeout DPA timeout in milliseconds
-	 * @return string DPA response
+	 * @return array DPA request and response
 	 */
 	public function sendRaw($packet, $timeout = null) {
 		$now = new DateTime();
@@ -101,12 +103,12 @@ class IqrfAppManager {
 	 * Change iqrf-daemon operation mode
 	 * @param string $mode iqrf-daemon operation mode
 	 * @return string Response
+	 * @throws InvalidOperationModeException
 	 */
 	public function changeOperationMode($mode) {
 		$modes = ['forwarding', 'operational', 'service'];
 		if (!in_array($mode, $modes, true)) {
-			return null;
-			// throw new \Exception();
+			throw new InvalidOperationModeException();
 		}
 		$array = [
 			'ctype' => 'conf',
@@ -130,24 +132,22 @@ class IqrfAppManager {
 	 * Parse DPA response
 	 * @param string $json JSON DPA response
 	 * @return array Parsed response in array
-	 * @throws Exception
+	 * @throws EmptyResponseException
 	 */
 	public function parseResponse($json) {
 		$jsonResponse = $json['response'];
 		if (empty($jsonResponse) || $jsonResponse === 'Timeout') {
-			return null;
-			// throw new \Exception();
+			throw new EmptyResponseException();
 		}
 		$response = Json::decode($jsonResponse, Json::FORCE_ARRAY);
 		$status = $response['status'];
 		if ($status !== 'STATUS_NO_ERROR') {
 			return null;
-			// throw new \Exception();
+			// TODO: throw own exception
 		}
 		$packet = $response['response'];
 		if (empty($packet)) {
-			return null;
-			// throw new \Exception();
+			throw new EmptyResponseException();
 		}
 		$pnum = explode('.', $packet)[2];
 		switch ($pnum) {

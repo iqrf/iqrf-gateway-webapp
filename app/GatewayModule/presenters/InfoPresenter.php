@@ -20,7 +20,9 @@
 namespace App\GatewayModule\Presenters;
 
 use App\GatewayModule\Model\InfoManager;
+use App\IqrfAppModule\Model\EmptyResponseException;
 use App\Presenters\BasePresenter;
+use Tracy\Debugger;
 
 /**
  * Gateway Info presenter
@@ -48,8 +50,12 @@ class InfoPresenter extends BasePresenter {
 		$this->template->ipAddresses = $this->infoManager->getIpAddresses();
 		$this->template->macAddresses = $this->infoManager->getMacAddresses();
 		$this->template->hostname = $this->infoManager->getHostname();
-		$this->template->module = $this->infoManager->getCoordinatorInfo();
 		$this->template->daemonVersion = $this->infoManager->getDaemonVersion();
+		try {
+			$this->template->module = $this->infoManager->getCoordinatorInfo();
+		} catch (EmptyResponseException $e) {
+			Debugger::log('Cannot get information about the Coordinator.');
+		}
 	}
 
 }

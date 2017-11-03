@@ -10,6 +10,7 @@ namespace Test\Model;
 
 use App\GatewayModule\Model\InfoManager;
 use App\IqrfAppModule\Model\CoordinatorParser;
+use App\IqrfAppModule\Model\EmptyResponseException;
 use App\IqrfAppModule\Model\IqrfAppManager;
 use App\IqrfAppModule\Model\OsParser;
 use App\Model\CommandManager;
@@ -109,7 +110,9 @@ class InfoManagerTest extends TestCase {
 		$commandManager->shouldReceive('send')->with($cmd, true)->andReturn(null);
 		$iqrfAppManager = new IqrfAppManager($commandManager, $this->coordinatorParser, $this->osParser);
 		$gwInfoManager = new InfoManager($commandManager, $iqrfAppManager);
-		Assert::null($gwInfoManager->getCoordinatorInfo());
+		Assert::exception(function() use ($gwInfoManager) {
+			$gwInfoManager->getCoordinatorInfo();
+		}, EmptyResponseException::class);
 	}
 
 	/**

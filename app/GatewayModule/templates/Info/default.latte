@@ -51,11 +51,15 @@
 			<tr>
 				<th>{_"TR info"}</th>
 				<td>
-					<strong>{_"Module type:"}</strong> {$module['TrType']}<br>
-					<strong>{_"MCU type:"}</strong> {$module['McuType']}<br>
-					<strong>{_"MID:"}</strong> {$module['ModuleId']}<br>
-					<strong>{_"OS:"}</strong> {$module['OsVersion']} ({$module['OsBuild']})<br>
-					<strong>{_"Supply Voltage:"}</strong> {$module['SupplyVoltage']}
+					{ifset $module}
+						<strong>{_"Module type:"}</strong> {$module['TrType']}<br>
+						<strong>{_"MCU type:"}</strong> {$module['McuType']}<br>
+						<strong>{_"MID:"}</strong> {$module['ModuleId']}<br>
+						<strong>{_"OS:"}</strong> {$module['OsVersion']} ({$module['OsBuild']})<br>
+						<strong>{_"Supply Voltage:"}</strong> {$module['SupplyVoltage']}
+					{else}
+						{_}Cannot get information about the Coordinator{/_}
+					{/ifset}
 				</td>
 			</tr>
 		</table>

@@ -9,6 +9,8 @@
 namespace Test\IqrfAppModule\Model;
 
 use App\IqrfAppModule\Model\CoordinatorParser;
+use App\IqrfAppModule\Model\EmptyResponseException;
+use App\IqrfAppModule\Model\InvalidOperationModeException;
 use App\IqrfAppModule\Model\IqrfAppManager;
 use App\IqrfAppModule\Model\OsParser;
 use App\Model\CommandManager;
@@ -111,7 +113,9 @@ class IqrfAppManagerTest extends TestCase {
 		foreach ($modesSuccess as $mode) {
 			Assert::true($iqrfAppManager->changeOperationMode($mode));
 		}
-		Assert::null($iqrfAppManager->changeOperationMode('invalid'));
+		Assert::exception(function() use ($iqrfAppManager) {
+			$iqrfAppManager->changeOperationMode('invalid');
+		}, InvalidOperationModeException::class);
 	}
 
 	/**
@@ -205,8 +209,9 @@ class IqrfAppManagerTest extends TestCase {
 		$packetIoTKitSe['response'] = $this->fileManager->read('response-error.json');
 		$arrayIoTKitSe = $iqrfAppManager->parseResponse($packetIoTKitSe);
 		Assert::null($arrayIoTKitSe);
-		$emptyResponse = $iqrfAppManager->parseResponse(['response' => '']);
-		Assert::null($emptyResponse);
+		Assert::exception(function () use ($iqrfAppManager) {
+			$iqrfAppManager->parseResponse(['response' => '']);
+		}, EmptyResponseException::class);
 	}
 
 }
