@@ -16,14 +16,11 @@
 *}
 
 {block content}
-<h1 n:block=title>{_"IQRF Net"}</h1>
-<div class='list-group'>
-	<a n:href='SendRaw:default' class='list-group-item'>
-		<header class='list-group-item-heading'>{_"Send DPA packet"}</header>
-		<p class='list-group-item-text'>{_"Send DPA packet."}</p>
-	</a>
-	<a n:href='Network:default' class='list-group-item'>
-		<header class='list-group-item-heading'>{_"IQMESH Network Manager"}</header>
-		<p class='list-group-item-text'>{_"IQMESH Network Manager."}</p>
-	</a>
+<h1 n:block=title>{_"IQMESH Network Manager"}</h1>
+<h2>Bond node</h2>
+<div class='panel panel-default'>
+	<div class='panel-body'>
+		{control iqrfNetBondNodeForm}
+	</div>
 </div>
+

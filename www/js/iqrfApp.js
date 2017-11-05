@@ -132,3 +132,12 @@ $("#frm-iqrfAppSendRawForm-timeoutEnabled").click(function () {
 		$("#frm-iqrfAppSendRawForm-timeout").prop("disabled", true);
 	}
 });
+
+// Enable or disable auto addressing in bonding new nodes
+$("#frm-iqrfNetBondNodeForm-autoAddress").click(function () {
+	if ($(this).is(":checked")) {
+		$("#frm-iqrfNetBondNodeForm-address").prop("disabled", true);
+	} else {
+		$("#frm-iqrfNetBondNodeForm-address").prop("disabled", false);
+	}
+});
