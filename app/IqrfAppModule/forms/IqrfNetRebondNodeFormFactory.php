@@ -23,7 +23,7 @@ use App\IqrfAppModule\Model\IqrfNetManager;
 use Nette;
 use Nette\Application\UI\Form;
 
-class IqrfNetBondNodeFormFactory {
+class IqrfNetRebondNodeFormFactory {
 
 	use Nette\SmartObject;
 
@@ -48,21 +48,17 @@ class IqrfNetBondNodeFormFactory {
 	}
 
 	/**
-	 * Create IQMESH bond new node form
-	 * @return Form IQMESH bond new node form
+	 * Create IQMESH rebond node form
+	 * @return Form IQMESH rebond node form
 	 */
 	public function create() {
 		$form = $this->factory->create();
-		$form->addCheckbox('autoAddress', 'Auto address')
-				->setDefaultValue(true);
 		$form->addText('address', 'Address (HEX)')->setDefaultValue('01')
-				->addConditionOn($form['autoAddress'], Form::EQUAL, false)
 				->setRequired();
-		$form->addSubmit('send', 'Bond Node');
+		$form->addSubmit('send', 'Rebond Node');
 		$form->addProtection('Timeout expired, resubmit the form.');
 		$form->onSuccess[] = function (Form $form, $values) {
-			$address = $values['autoAddress'] ? '00' : $values['address'];
-			$this->manager->bondNode($address);
+			$this->manager->rebondNode($values['address']);
 		};
 		return $form;
 	}

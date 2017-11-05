@@ -20,6 +20,8 @@
 namespace App\IqrfAppModule\Presenters;
 
 use App\IqrfAppModule\Forms\IqrfNetBondNodeFormFactory;
+use App\IqrfAppModule\Forms\IqrfNetRebondNodeFormFactory;
+use App\IqrfAppModule\Forms\IqrfNetRemoveNodeFormFactory;
 use App\Presenters\BasePresenter;
 
 /**
@@ -31,15 +33,29 @@ class NetworkPresenter extends BasePresenter {
 	 * @var IqrfNetBondNodeFormFactory
 	 */
 	private $bondNodeForm;
-	
+
+	/**
+	 * @var IqrfNetRebondNodeFormFactory
+	 */
+	private $rebondNodeForm;
+
+	/**
+	 * @var IqrfNetRemoveNodeFormFactory
+	 */
+	private $removeNodeForm;
+
 	/**
 	 * Constructor
 	 * @param IqrfNetBondNodeFormFactory $bondNodeForm
+	 * @param IqrfNetRebondNodeFormFactory $rebondNodeForm
+	 * @param IqrfNetRemoveNodeFormFactory $removeNodeForm
 	 */
-	public function __construct(IqrfNetBondNodeFormFactory $bondNodeForm) {
+	public function __construct(IqrfNetBondNodeFormFactory $bondNodeForm, IqrfNetRebondNodeFormFactory $rebondNodeForm, IqrfNetRemoveNodeFormFactory $removeNodeForm) {
 		$this->bondNodeForm = $bondNodeForm;
+		$this->rebondNodeForm = $rebondNodeForm;
+		$this->removeNodeForm = $removeNodeForm;
 	}
-	
+
 	/**
 	 * Render default page
 	 */
@@ -48,12 +64,30 @@ class NetworkPresenter extends BasePresenter {
 	}
 
 	/**
-	 * Create bond node form form
-	 * @return Form
+	 * Create bond node form
+	 * @return Form bond node form
 	 */
 	protected function createComponentIqrfNetBondNodeForm() {
 		$this->onlyForAdmins();
 		return $this->bondNodeForm->create($this);
+	}
+
+	/**
+	 * Create rebond node form
+	 * @return Form rebond node form
+	 */
+	protected function createComponentIqrfNetRebondNodeForm() {
+		$this->onlyForAdmins();
+		return $this->rebondNodeForm->create($this);
+	}
+
+	/**
+	 * Create remove node form
+	 * @return Form bond node form
+	 */
+	protected function createComponentIqrfNetRemoveNodeForm() {
+		$this->onlyForAdmins();
+		return $this->removeNodeForm->create($this);
 	}
 
 }
