@@ -40,7 +40,7 @@ class IqrfNetManager {
 	}
 
 	/**
-	 * This command bonds a new node by the coordinator. 
+	 * This command bonds a new node by the coordinator.
 	 * There is a maximum approx. 12 s blocking delay when this function is called.
 	 * @param string $address A requested address for the bonded node. The address must not be used (bonded) yet. If this parameter equals to 0, then the 1 free address is assigned to the node.
 	 * @return array DPA request and response
@@ -60,7 +60,7 @@ class IqrfNetManager {
 		$packet = '00.00.00.05.ff.ff.' . $address;
 		return $this->iqrfAppManager->sendRaw($packet);
 	}
-	
+
 	/**
 	 * Puts specified node back to the list of bonded nodes in the coordinator memory.
 	 * @param string $address Number of bonded network nodes
