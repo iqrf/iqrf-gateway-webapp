@@ -9,9 +9,9 @@
 namespace Test\ServiceModule\Model;
 
 use App\Model\CommandManager;
+use App\ServiceModule\Model\NotSupportedInitSystemException;
 use App\ServiceModule\Model\ServiceManager;
 use Nette\DI\Container;
-use Nette\NotImplementedException;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -40,7 +40,7 @@ class ServiceManagerTest extends TestCase {
 		Assert::exception(function () use ($commandManager) {
 			$managerUnknown = new ServiceManager('unknown', $commandManager);
 			$managerUnknown->start();
-		}, NotImplementedException::class);
+		}, NotSupportedInitSystemException::class);
 	}
 
 	/**
@@ -58,7 +58,7 @@ class ServiceManagerTest extends TestCase {
 		Assert::exception(function () use ($commandManager) {
 			$managerUnknown = new ServiceManager('unknown', $commandManager);
 			$managerUnknown->stop();
-		}, NotImplementedException::class);
+		}, NotSupportedInitSystemException::class);
 	}
 
 	/**
@@ -76,7 +76,7 @@ class ServiceManagerTest extends TestCase {
 		Assert::exception(function () use ($commandManager) {
 			$managerUnknown = new ServiceManager('unknown', $commandManager);
 			$managerUnknown->restart();
-		}, NotImplementedException::class);
+		}, NotSupportedInitSystemException::class);
 	}
 
 	/**
@@ -94,7 +94,7 @@ class ServiceManagerTest extends TestCase {
 		Assert::exception(function () use ($commandManager) {
 			$managerUnknown = new ServiceManager('unknown', $commandManager);
 			$managerUnknown->getStatus();
-		}, NotImplementedException::class);
+		}, NotSupportedInitSystemException::class);
 	}
 
 }

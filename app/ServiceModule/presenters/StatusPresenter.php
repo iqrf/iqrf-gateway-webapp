@@ -20,6 +20,7 @@
 namespace App\ServiceModule\Presenters;
 
 use App\Presenters\BasePresenter;
+use App\ServiceModule\Model\NotSupportedInitSystemException;
 use App\ServiceModule\Model\ServiceManager;
 
 /**
@@ -44,8 +45,14 @@ class StatusPresenter extends BasePresenter {
 	 */
 	public function renderDefault() {
 		$this->onlyForAdmins();
-		$status = $this->serviceManager->getStatus();
-		$this->template->status = $status;
+		try {
+			$status = $this->serviceManager->getStatus();
+			$this->template->status = $status;
+		} catch (NotSupportedInitSystemException $ex) {
+			$this->flashMessage('Not supported init system is used.', 'danger');
+			$this->redirect('Control:default');
+			$this->setView('default');
+		}
 	}
 
 }

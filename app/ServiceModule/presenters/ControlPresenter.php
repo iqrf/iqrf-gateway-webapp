@@ -20,6 +20,7 @@
 namespace App\ServiceModule\Presenters;
 
 use App\Presenters\BasePresenter;
+use App\ServiceModule\Model\NotSupportedInitSystemException;
 use App\ServiceModule\Model\ServiceManager;
 
 /**
@@ -51,10 +52,15 @@ class ControlPresenter extends BasePresenter {
 	 */
 	public function actionStart() {
 		$this->onlyForAdmins();
-		$this->serviceManager->start();
-		$this->flashMessage('IQRF Daemon has been started.', 'info');
-		$this->redirect('Control:default');
-		$this->setView('default');
+		try {
+			$this->serviceManager->start();
+			$this->flashMessage('IQRF Daemon has been started.', 'info');
+		} catch (NotSupportedInitSystemException $ex) {
+			$this->flashMessage('Not supported init system is used.', 'danger');
+		} finally {
+			$this->redirect('Control:default');
+			$this->setView('default');
+		}
 	}
 
 	/**
@@ -62,10 +68,15 @@ class ControlPresenter extends BasePresenter {
 	 */
 	public function actionStop() {
 		$this->onlyForAdmins();
-		$this->serviceManager->stop();
-		$this->flashMessage('IQRF Daemon has been stopped.', 'info');
-		$this->redirect('Control:default');
-		$this->setView('default');
+		try {
+			$this->serviceManager->stop();
+			$this->flashMessage('IQRF Daemon has been stopped.', 'info');
+		} catch (NotSupportedInitSystemException $ex) {
+			$this->flashMessage('Not supported init system is used.', 'danger');
+		} finally {
+			$this->redirect('Control:default');
+			$this->setView('default');
+		}
 	}
 
 	/**
@@ -73,10 +84,15 @@ class ControlPresenter extends BasePresenter {
 	 */
 	public function actionRestart() {
 		$this->onlyForAdmins();
-		$this->serviceManager->restart();
-		$this->flashMessage('IQRF Daemon has been restarted.', 'info');
-		$this->redirect('Control:default');
-		$this->setView('default');
+		try {
+			$this->serviceManager->restart();
+			$this->flashMessage('IQRF Daemon has been restarted.', 'info');
+		} catch (NotSupportedInitSystemException $ex) {
+			$this->flashMessage('Not supported init system is used.', 'danger');
+		} finally {
+			$this->redirect('Control:default');
+			$this->setView('default');
+		}
 	}
 
 }

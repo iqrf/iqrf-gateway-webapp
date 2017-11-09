@@ -20,8 +20,8 @@
 namespace App\ServiceModule\Model;
 
 use App\Model\CommandManager;
+use App\ServiceModule\Model\NotSupportedInitSystemException;
 use Nette;
-use Nette\NotImplementedException;
 
 class ServiceManager {
 
@@ -49,7 +49,7 @@ class ServiceManager {
 
 	/**
 	 * Start IQRF daemon
-	 * @throws NotImplementedException
+	 * @throws NotSupportedInitSystemException
 	 */
 	public function start() {
 		switch ($this->initDaemon) {
@@ -60,14 +60,14 @@ class ServiceManager {
 				$cmd = 'systemctl start iqrf-daemon.service';
 				break;
 			default:
-				throw new NotImplementedException();
+				throw new NotSupportedInitSystemException();
 		}
 		return $this->commandManager->send($cmd, true);
 	}
 
 	/**
 	 * Stop IQRF daemon
-	 * @throws NotImplementedException
+	 * @throws NotSupportedInitSystemException
 	 */
 	public function stop() {
 		switch ($this->initDaemon) {
@@ -78,14 +78,14 @@ class ServiceManager {
 				$cmd = 'systemctl stop iqrf-daemon.service';
 				break;
 			default:
-				throw new NotImplementedException();
+				throw new NotSupportedInitSystemException();
 		}
 		return $this->commandManager->send($cmd, true);
 	}
 
 	/**
 	 * Retart IQRF daemon
-	 * @throws NotImplementedException
+	 * @throws NotSupportedInitSystemException
 	 */
 	public function restart() {
 		switch ($this->initDaemon) {
@@ -96,14 +96,14 @@ class ServiceManager {
 				$cmd = 'systemctl restart iqrf-daemon.service';
 				break;
 			default:
-				throw new NotImplementedException();
+				throw new NotSupportedInitSystemException();
 		}
 		return $this->commandManager->send($cmd, true);
 	}
 
 	/**
 	 * Get status of IQRF daemon
-	 * @throws NotImplementedException
+	 * @throws NotSupportedInitSystemException
 	 */
 	public function getStatus() {
 		switch ($this->initDaemon) {
@@ -114,7 +114,7 @@ class ServiceManager {
 				$cmd = 'systemctl status iqrf-daemon.service';
 				break;
 			default:
-				throw new NotImplementedException();
+				throw new NotSupportedInitSystemException();
 		}
 		return $this->commandManager->send($cmd, true);
 	}
