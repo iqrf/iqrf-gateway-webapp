@@ -57,6 +57,7 @@ class IqrfNetBondNodeFormFactory {
 				->setDefaultValue(true);
 		$form->addText('address', 'Address (HEX)')->setDefaultValue('01')
 				->addConditionOn($form['autoAddress'], Form::EQUAL, false)
+				->addRule(Form::PATTERN, 'Enter valid address.', '[0-9a-fA-F]{1,2}')
 				->setRequired();
 		$form->addSubmit('send', 'Bond Node');
 		$form->addProtection('Timeout expired, resubmit the form.');

@@ -54,6 +54,7 @@ class IqrfNetRebondNodeFormFactory {
 	public function create() {
 		$form = $this->factory->create();
 		$form->addText('address', 'Address (HEX)')->setDefaultValue('01')
+				->addRule(Form::PATTERN, 'Enter valid address.', '[0-9a-fA-F]{1,2}')
 				->setRequired();
 		$form->addSubmit('send', 'Rebond Node');
 		$form->addProtection('Timeout expired, resubmit the form.');
