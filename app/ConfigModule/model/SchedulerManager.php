@@ -143,7 +143,13 @@ class SchedulerManager {
 			case 'raw-hdp':
 				$pnum = Strings::padLeft($data['pnum'], 2, '0') . '.';
 				$pcmd = Strings::padLeft($data['pcmd'], 2, '0') . '.';
-				$pdata = (isset($data['req_data']) ? '.' . $data['req_data'] : '');
+				if (isset($data['req_data'])) {
+					$pdata = '.' . $data['req_data'];
+				} else if (isset($data['rdata'])) {
+					$pdata = '.' . $data['rdata'];
+				} else {
+					$pdata = '';
+				}
 				return $nadr . $pnum . $pcmd . $hwpid . $pdata;
 			case 'std-per-frc':
 			case 'std-per-io':

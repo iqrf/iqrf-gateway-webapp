@@ -72,7 +72,7 @@
 				"pnum": "0d",
 				"pcmd": "00",
 				"hwpid": "ffff",
-				"req_data": "c0.00.00",
+				"rdata": "c0.00.00",
 				"request": ".",
 				"request_ts": "",
 				"confirmation": ".",
