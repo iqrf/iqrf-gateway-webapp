@@ -1,0 +1,15 @@
+source:
+    - "app"
+    - "tests"
+destination: "docs"
+title: "IQRF Daemon webapp"
+baseUrl: "https://docs.iqrfsdk.org/iqrf-daemon-webapp/"
+accessLevels:
+    - "public"
+    - "protected"
+    - "private"
+internal: "yes"
+php: "yes"
+tree: "yes"
+deprecated: "yes"
+todo: "yes"
