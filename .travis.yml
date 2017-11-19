@@ -14,7 +14,7 @@ install:
   - travis_retry composer update --no-interaction
 script:
   # Nette Tester
-  - vendor/bin/tester -p $PHP_BIN -s ./tests
+  - travis_retry vendor/bin/tester -p $PHP_BIN -s ./tests
 after_failure:
   # Print *.actual content
   - 'for i in $(find ./tests -name \*.actual); do echo "--- $i"; cat $i; echo; echo; done'
@@ -24,13 +24,13 @@ jobs:
       php: 7.1
       install:
         # Install Nette Code Checker
-        - travis_retry composer create-project nette/code-checker temp/code-checker --no-interaction
+        - travis_retry composer install-cs
       script:
-        - php temp/code-checker/src/code-checker.php -l --short-arrays -i "tests/model/data/macros-ascii.expected"
+        - composer check-cs
     - stage: Code Coverage
       php: 7.1
       script:
-        - vendor/bin/tester -p phpdbg -s --coverage ./coverage.xml --coverage-src ./app ./tests
+        - travis_retry vendor/bin/tester -p phpdbg -s --coverage ./coverage.xml --coverage-src ./app ./tests
       after_script:
         - bash <(curl -s https://codecov.io/bash)
   allow_failures:

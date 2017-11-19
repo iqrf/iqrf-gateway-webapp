@@ -53,6 +53,9 @@
 		]
 	},
 	"scripts": {
+		"install-cs": "composer create-project nette/code-checker temp/code-checker --no-interaction",
+		"check-cs": "php temp/code-checker/code-checker -l --short-arrays -i \"tests/model/data/macros-ascii.expected\" -i \"docs/\" -i \"tests/configuration-test/\"",
+		"fix-cs": "php temp/code-checker/code-checker -f -l --short-arrays -i \"tests/model/data/macros-ascii.expected\" -i \"docs/\" -i \"tests/configuration-test/\"",
 		"gen-docs": "vendor/bin/apigen generate --config apigen.yml"
 	},
 	"minimum-stability": "alpha"
