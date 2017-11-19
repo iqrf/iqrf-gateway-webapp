@@ -15,14 +15,9 @@
 *}
 
 {block content}
-<h1 n:block=title>{_"Clouds"}</h1>
-<div class='list-group'>
-	<a n:href='Azure:default' class='list-group-item'>
-		<header class='list-group-item-heading'>{_"Microsoft Azure configuration"}</header>
-		<p class='list-group-item-text'>{_"Configuration of Microsoft Azure IoT Hub."}</p>
-	</a>
-	<a n:href='InteliGlue:default' class='list-group-item'>
-		<header class='list-group-item-heading'>{_"InteliGlue configuration"}</header>
-		<p class='list-group-item-text'>{_"Configuration of Inteliments InteliGlue."}</p>
-	</a>
+<h1 n:block=title>{_"Add new MQTT interface"}</h1>
+<div class='panel panel-default'>
+	<div class='panel-body'>
+		{control cloudInteliGlueMqttForm}
+	</div>
 </div>

@@ -1,3 +1,5 @@
 services:
 	- App\CloudModule\Forms\CloudAzureMqttFormFactory
+	- App\CloudModule\Forms\CloudInteliGlueMqttFormFactory
 	- App\CloudModule\Model\AzureManager
+	- App\CloudModule\Model\InteliGlueManager

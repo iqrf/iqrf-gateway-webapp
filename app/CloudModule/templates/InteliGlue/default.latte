@@ -15,14 +15,10 @@
 *}
 
 {block content}
-<h1 n:block=title>{_"Clouds"}</h1>
+<h1 n:block=title>{_"InteliGlue configuration"}</h1>
 <div class='list-group'>
-	<a n:href='Azure:default' class='list-group-item'>
-		<header class='list-group-item-heading'>{_"Microsoft Azure configuration"}</header>
-		<p class='list-group-item-text'>{_"Configuration of Microsoft Azure IoT Hub."}</p>
-	</a>
-	<a n:href='InteliGlue:default' class='list-group-item'>
-		<header class='list-group-item-heading'>{_"InteliGlue configuration"}</header>
-		<p class='list-group-item-text'>{_"Configuration of Inteliments InteliGlue."}</p>
+	<a n:href='InteliGlue:addMqtt' class='list-group-item'>
+		<header class='list-group-item-heading'>{_"Add MQTT interface"}</header>
+		<p class='list-group-item-text'>{_"Add MQTT interface."}</p>
 	</a>
 </div>
