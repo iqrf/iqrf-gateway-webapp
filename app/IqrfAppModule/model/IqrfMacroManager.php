@@ -29,7 +29,7 @@ class IqrfMacroManager {
 	use Nette\SmartObject;
 
 	/**
-	 * @var string Path to IQRF IDE Macro file 
+	 * @var string Path to IQRF IDE Macro file
 	 */
 	private $path;
 
