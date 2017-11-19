@@ -25,6 +25,9 @@ use Nette\Application\UI\Form;
 use Nette\Security\AuthenticationException;
 use Nette\Security\User;
 
+/**
+ * Sign in form factory.
+ */
 class SignInFormFactory {
 
 	use Nette\SmartObject;

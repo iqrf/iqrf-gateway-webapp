@@ -21,12 +21,15 @@ namespace App\IqrfAppModule\Model;
 
 use Nette;
 
+/**
+ * Tool for parsing IQRF IDE macros.
+ */
 class IqrfMacroManager {
 
 	use Nette\SmartObject;
 
 	/**
-	 * @var string
+	 * @var string Path to IQRF IDE Macro file 
 	 */
 	private $path;
 

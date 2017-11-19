@@ -24,6 +24,9 @@ use Instante\ExtendedFormMacros\IFormFactory;
 use Nette;
 use Nette\Application\UI\Form;
 
+/**
+ * Form factory.
+ */
 class FormFactory {
 
 	use Nette\SmartObject;

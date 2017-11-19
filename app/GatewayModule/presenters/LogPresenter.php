@@ -23,7 +23,7 @@ use App\GatewayModule\Model\LogManager;
 use App\Presenters\BasePresenter;
 
 /**
- * Gateway Info presenter
+ * IQRF Daemon's log presenter
  */
 class LogPresenter extends BasePresenter {
 

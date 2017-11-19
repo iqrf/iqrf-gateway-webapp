@@ -23,12 +23,15 @@ use Nette;
 use Nette\Application\Responses\FileResponse;
 use Nette\Utils\FileSystem;
 
+/**
+ * Tool for downloading and reading IQRF Daemon's log file
+ */
 class LogManager {
 
 	use Nette\SmartObject;
 
 	/**
-	 * @var string
+	 * @var string Path to IQRF Daemon's log file
 	 */
 	private $path;
 

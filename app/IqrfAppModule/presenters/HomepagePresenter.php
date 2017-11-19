@@ -22,7 +22,7 @@ namespace App\IqrfAppModule\Presenters;
 use App\Presenters\BasePresenter;
 
 /**
- * Service presenter
+ * Homepage presenter
  */
 class HomepagePresenter extends BasePresenter {
 

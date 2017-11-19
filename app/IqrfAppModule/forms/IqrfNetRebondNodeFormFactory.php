@@ -23,6 +23,9 @@ use App\IqrfAppModule\Model\IqrfNetManager;
 use Nette;
 use Nette\Application\UI\Form;
 
+/**
+ * Rebond node form factory.
+ */
 class IqrfNetRebondNodeFormFactory {
 
 	use Nette\SmartObject;

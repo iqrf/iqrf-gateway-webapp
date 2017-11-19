@@ -26,7 +26,7 @@ use App\Presenters\BasePresenter;
 use Nette\Application\UI\Form;
 
 /**
- * Service presenter
+ * Send raw DPA packet presenter
  */
 class SendRawPresenter extends BasePresenter {
 

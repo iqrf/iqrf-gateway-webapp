@@ -21,6 +21,9 @@ namespace App\IqrfAppModule\Model;
 
 use Nette;
 
+/**
+ * Parser for DPA OS responses
+ */
 class OsParser {
 
 	use Nette\SmartObject;

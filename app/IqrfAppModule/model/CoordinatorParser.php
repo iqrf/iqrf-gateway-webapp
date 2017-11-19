@@ -21,6 +21,9 @@ namespace App\IqrfAppModule\Model;
 
 use Nette;
 
+/**
+ * Parser for DPA Coordinator responses.
+ */
 class CoordinatorParser {
 
 	use Nette\SmartObject;

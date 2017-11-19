@@ -23,6 +23,9 @@ use App\IqrfAppModule\Model\IqrfNetManager;
 use Nette;
 use Nette\Application\UI\Form;
 
+/**
+ * Remove node form factory.
+ */
 class IqrfNetRemoveNodeFormFactory {
 
 	use Nette\SmartObject;

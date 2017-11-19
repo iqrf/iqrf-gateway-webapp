@@ -24,7 +24,7 @@ use App\ServiceModule\Model\NotSupportedInitSystemException;
 use App\ServiceModule\Model\ServiceManager;
 
 /**
- * Service presenter
+ * Service control presenter.
  */
 class ControlPresenter extends BasePresenter {
 
@@ -34,6 +34,7 @@ class ControlPresenter extends BasePresenter {
 	private $serviceManager;
 
 	/**
+	 * Constructor.
 	 * @param ServiceManager $serviceManager
 	 */
 	public function __construct(ServiceManager $serviceManager) {

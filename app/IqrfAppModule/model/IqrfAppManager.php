@@ -28,30 +28,33 @@ use DateTime;
 use Nette;
 use Nette\Utils\Json;
 
+/**
+ * Tool for contoling iqrfapp.
+ */
 class IqrfAppManager {
 
 	use Nette\SmartObject;
 
 	/**
-	 * @var CommandManager
+	 * @var CommandManager Command manager
 	 */
 	private $commandManager;
 
 	/**
-	 * @var CoordinatorParser
+	 * @var CoordinatorParser Parser for DPA Coordinator responses
 	 */
 	private $coordinatorParser;
 
 	/**
-	 * @var OsParser
+	 * @var OsParser Parser for DPA OS responses
 	 */
 	private $osParser;
 
 	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command Manager
-	 * @param CoordinatorParser $coordinatorParser
-	 * @param OsParser $osParser
+	 * @param CommandManager $commandManager Command manager
+	 * @param CoordinatorParser $coordinatorParser Parser for DPA Coordinator responses
+	 * @param OsParser $osParser Parser for DPA OS responses
 	 */
 	public function __construct(CommandManager $commandManager, CoordinatorParser $coordinatorParser, OsParser $osParser) {
 		$this->commandManager = $commandManager;

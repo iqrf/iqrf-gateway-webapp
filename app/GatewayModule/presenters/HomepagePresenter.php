@@ -22,7 +22,7 @@ namespace App\GatewayModule\Presenters;
 use App\Presenters\BasePresenter;
 
 /**
- * Service presenter
+ * Homepage presenter
  */
 class HomepagePresenter extends BasePresenter {
 

@@ -23,24 +23,27 @@ use App\Model\CommandManager;
 use App\ServiceModule\Model\NotSupportedInitSystemException;
 use Nette;
 
+/**
+ * Tool for managing services.
+ */
 class ServiceManager {
 
 	use Nette\SmartObject;
 
 	/**
-	 * @var string
+	 * @var string Init daemon
 	 */
 	private $initDaemon;
 
 	/**
-	 * @var CommandManager
+	 * @var CommandManager Command Manager
 	 */
 	private $commandManager;
 
 	/**
 	 * Constructor
 	 * @param string $initDaemon Init daemon
-	 * @param CommandManager $commandManager Command Managerd
+	 * @param CommandManager $commandManager Command manager
 	 */
 	public function __construct($initDaemon, CommandManager $commandManager) {
 		$this->initDaemon = $initDaemon;

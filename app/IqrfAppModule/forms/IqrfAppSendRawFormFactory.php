@@ -25,6 +25,9 @@ use App\IqrfAppModule\Presenters\SendRawPresenter;
 use Nette;
 use Nette\Application\UI\Form;
 
+/**
+ * Send raw DPA packet form factory.
+ */
 class IqrfAppSendRawFormFactory {
 
 	use Nette\SmartObject;

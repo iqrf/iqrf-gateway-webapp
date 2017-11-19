@@ -32,7 +32,6 @@ class InteliGlueManager {
 	 */
 	private $caPath = '/etc/iqrf-daemon/certs/inteliments-ca.crt';
 
-
 	/**
 	 * Create MQTT interface
 	 * @param ArrayHash $values Values from form
@@ -65,7 +64,7 @@ class InteliGlueManager {
 		];
 		return ArrayHash::from($interface);
 	}
-	
+
 	/**
 	 * Download root CA certificate
 	 */

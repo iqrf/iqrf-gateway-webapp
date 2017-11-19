@@ -23,12 +23,15 @@ use App\IqrfAppModule\Model\IqrfAppManager;
 use App\Model\CommandManager;
 use Nette;
 
+/**
+ * Tool for getting information about this gateway
+ */
 class InfoManager {
 
 	use Nette\SmartObject;
 
 	/**
-	 * @var CommandManager
+	 * @var CommandManager Command manager
 	 */
 	private $commandManager;
 
@@ -39,7 +42,7 @@ class InfoManager {
 
 	/**
 	 * Constructor
-	 * @param CommandManager $commandManager
+	 * @param CommandManager $commandManager Command manager
 	 * @param IqrfAppManager $iqrfAppManager
 	 */
 	public function __construct(CommandManager $commandManager, IqrfAppManager $iqrfAppManager) {

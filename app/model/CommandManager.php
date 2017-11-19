@@ -22,6 +22,9 @@ namespace App\Model;
 use Nette;
 use Nette\Utils\Strings;
 
+/**
+ * Tool for executing commands.
+ */
 class CommandManager {
 
 	use Nette\SmartObject;

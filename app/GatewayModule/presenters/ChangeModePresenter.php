@@ -23,7 +23,7 @@ use App\IqrfAppModule\Model\IqrfAppManager;
 use App\Presenters\BasePresenter;
 
 /**
- * Service presenter
+ * Change operational mode presenter
  */
 class ChangeModePresenter extends BasePresenter {
 

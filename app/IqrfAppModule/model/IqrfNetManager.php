@@ -22,6 +22,9 @@ namespace App\IqrfAppModule\Model;
 use App\IqrfAppModule\Model\IqrfAppManager;
 use Nette;
 
+/**
+ * Tool for managing IQMESH network.
+ */
 class IqrfNetManager {
 
 	use Nette\SmartObject;

@@ -22,6 +22,9 @@ namespace App\Model;
 use Nette;
 use Nette\Utils\FileSystem;
 
+/**
+ * Tool for reading and writing text files.
+ */
 class FileManager {
 
 	use Nette\SmartObject;

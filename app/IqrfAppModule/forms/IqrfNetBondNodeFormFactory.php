@@ -23,6 +23,9 @@ use App\IqrfAppModule\Model\IqrfNetManager;
 use Nette;
 use Nette\Application\UI\Form;
 
+/**
+ * Bond new node form factory.
+ */
 class IqrfNetBondNodeFormFactory {
 
 	use Nette\SmartObject;
