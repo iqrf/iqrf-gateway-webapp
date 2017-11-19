@@ -71,7 +71,7 @@ class CloudAzureMqttFormFactory {
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $id) {
 			$settings = $this->azure->createMqttInterface($values['ConnectionString']);
 			$this->manager->save($settings, $id);
-			$presenter->redirect('Mqtt:default');
+			$presenter->redirect(':Config:Mqtt:default');
 		};
 		return $form;
 	}
