@@ -126,17 +126,24 @@ def install_php_app(directory, use_git=True):
 	@param directory Directory to install iqrf-daemon-webapp
 	@param use_git Download iqrf-daemon-webapp from git
 	"""
-	if not os.path.isdir(directory):
-		if use_git:
+	if use_git:
+		if not os.path.isdir(directory):
+			send_command("cd " + directory + "/../ ; git clone https://github.com/iqrfsdk/iqrf-daemon-webapp")
+			send_command("cd " + directory + " ; composer install")
+		elif not os.path.isdir(directory + "/.git"):
+			send_command("rm -rf " + directory)
 			send_command("cd " + directory + "/../ ; git clone https://github.com/iqrfsdk/iqrf-daemon-webapp")
 			send_command("cd " + directory + " ; composer install")
 		else:
-			send_command("cd " + directory + "/../ ; composer create-project iqrfsdk/iqrf-daemon-webapp")
-	else:
-		send_command("rm -rf " + directory + "/temp/cache")
-		if use_git:
+			send_command("rm -rf " + directory + "/temp/cache")
 			send_command("cd " + directory + " ; git pull origin")
-		send_command("cd " + directory + " ; composer update")
+			send_command("cd " + directory + " ; composer update")
+	else:
+		if not os.path.isdir(directory):
+			send_command("cd " + directory + "/../ ; composer create-project iqrfsdk/iqrf-daemon-webapp")
+		else:
+			send_command("rm -rf " + directory + "/temp/cache")
+			send_command("cd " + directory + " ; composer update")
 
 
 def chmod_dir(directory="/etc/iqrf-daemon"):
