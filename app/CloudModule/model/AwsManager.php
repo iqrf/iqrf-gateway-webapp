@@ -21,10 +21,13 @@ namespace App\CloudModule\Model;
 use Nette;
 use Nette\Utils\ArrayHash;
 
+/**
+ * Tool for managing Amazon AWS IoT
+ */
 class AwsManager {
 
 	use Nette\SmartObject;
-	
+
 	/**
 	 * @var string Path to certificates
 	 */
@@ -63,7 +66,7 @@ class AwsManager {
 		];
 		return ArrayHash::from($interface);
 	}
-	
+
 	/**
 	 * Create paths for root CA certificate, certificate and private key
 	 * @return array Paths for root CA certificate, certificate and private key
@@ -75,7 +78,7 @@ class AwsManager {
 		$paths['key'] = $this->path . $timestamp . '-aws.key';
 		return $paths;
 	}
-	
+
 	/**
 	 * Upload root CA certificate, certificate and private key
 	 * @param ArrayHash $values FOrm values

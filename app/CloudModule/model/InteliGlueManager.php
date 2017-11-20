@@ -23,6 +23,9 @@ use Nette;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\FileSystem;
 
+/**
+ * Tool for managing Inteliments InteliGlue
+ */
 class InteliGlueManager {
 
 	use Nette\SmartObject;
