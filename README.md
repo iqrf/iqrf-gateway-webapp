@@ -12,6 +12,14 @@ This is web application for iqrf-daemon configuration.
 
 See the installation guide [here](INSTALL.md).
 
+### Default login credentials
+
+Default login credentials:
+- username: `admin`
+- password: `iqrf`
+
+You can change it in the [configuration file](app/config/config.neon).
+
 ## Requirements
 
 PHP 5.6 or higher. To check whether server configuration meets the minimum requirements for [Nette Framework](https://doc.nette.org/2.4/requirements).
