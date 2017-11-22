@@ -46,6 +46,15 @@ class BaseServiceManager {
 	}
 
 	/**
+	 * Add new Base service
+	 * @param ArrayHash $array Base service settings
+	 */
+	public function add(ArrayHash $array) {
+		$id = count($this->getServices());
+		$this->save($array, $id);
+	}
+
+	/**
 	 * Delete Base service setting
 	 * @param int $id Base service ID
 	 */

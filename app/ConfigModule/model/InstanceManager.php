@@ -47,7 +47,16 @@ class InstanceManager {
 	}
 
 	/**
-	 * Delete Instances setting
+	 * Add new Instance
+	 * @param ArrayHash $array Instance's settings
+	 */
+	public function add(ArrayHash $array) {
+		$id = count($this->getInstances());
+		$this->save($array, $id);
+	}
+
+	/**
+	 * Delete Instance setting
 	 * @param int $id Instance ID
 	 */
 	public function delete($id) {
