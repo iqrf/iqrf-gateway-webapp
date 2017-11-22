@@ -4,6 +4,8 @@ parameters:
 	# init deamon used in out system (e.g. systemd)
 	initDaemon: 'systemd'
 	sudo: true
+	# enable IQRF GW mode
+	iqrf-gw: false
 	# path to iqrf-daemon log
 	logPath: '/var/log/iqrf-daemon.log'
 	# path to IQRF IDE macros

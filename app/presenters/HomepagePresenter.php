@@ -29,6 +29,7 @@ class HomepagePresenter extends BasePresenter {
 	 */
 	public function renderDefault() {
 		$this->onlyForAdmins();
+		$this->template->iqrfGw = $this->context->parameters['iqrf-gw'];
 	}
 
 }
