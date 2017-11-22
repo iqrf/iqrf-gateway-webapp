@@ -55,6 +55,19 @@ class IqrfNetManager {
 	}
 
 	/**
+	 * Runs IQMESH discovery process.
+	 * The time when the response is delivered depends highly on the number of network devices, the network topology, and RF mode, thus, it is not predictable. It can take from a few seconds to many minutes.
+	 * @param string $txPower TX Power used for discovery.
+	 * @param string $maxAddress Nonzero value specifies maximum node address to be part of the discovery process. This feature allows splitting all node devices into two parts: [1] devices having an address from 1 to MaxAddr will be part of the discovery process thus they become routers, [2] devices having an address from MaxAddr+1 to 239 will not be routers. See IQRF OS documentation for more information. The value of this parameter is ignored at demo version. A value 5 is always used instead.
+	 * @return array DPA request and response
+	 */
+	public function discovery($txPower = '00', $maxAddress = '00') {
+		$packet = '00.00.00.07.ff.ff.' . $txPower . '.' . $maxAddress;
+		$timeout = 0;
+		return $this->iqrfAppManager->sendRaw($packet, $timeout);
+	}
+
+	/**
 	 * Removes already bonded node from the list of bonded nodes at coordinator memory.
 	 * @param string $address Address of the node to remove the bond to
 	 * @return array DPA request and response

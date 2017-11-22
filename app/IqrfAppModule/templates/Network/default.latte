@@ -17,6 +17,7 @@
 
 {block content}
 <h1 n:block=title>{_"IQMESH Network Manager"}</h1>
+<h2>{_"Bonding"}</h2>
 <div class='panel panel-default'>
 	<div class='panel-body'>
 		<div class="col-sm-4">
@@ -31,5 +32,12 @@
 			<h2>Remove node</h2>
 			{control iqrfNetRemoveNodeForm}
 		</div>
+	</div>
+</div>
+
+<h2>{_"Discovery"}</h2>
+<div class='panel panel-default'>
+	<div class='panel-body'>
+		{control iqrfNetDiscoveryForm}
 	</div>
 </div>
