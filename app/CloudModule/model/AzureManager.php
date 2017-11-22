@@ -31,6 +31,11 @@ class AzureManager {
 	use Nette\SmartObject;
 
 	/**
+	 * @var string MQTT interface name
+	 */
+	private $interfaceName = 'MqttMessagingAzure';
+
+	/**
 	 * Create MQTT interface from MS Azure IoT Hub Connection string
 	 * @param string $connectionString MS Azure IoT Hub Connection string
 	 * @return ArrayHash MQTT interface
@@ -40,7 +45,7 @@ class AzureManager {
 		$endpoint = $data['HostName'] . '/devices/' . $data['DeviceId'];
 		$token = $this->generateSasToken($endpoint, $data['SharedAccessKey']);
 		$interface = [
-			'Name' => 'MqttMessagingAzure',
+			'Name' => $this->interfaceName,
 			'Enabled' => true,
 			'BrokerAddr' => 'ssl://' . $data['HostName'] . ':8883',
 			'ClientId' => $data['DeviceId'],
@@ -63,6 +68,20 @@ class AzureManager {
 			'EnableServerCertAuth' => false
 		];
 		return ArrayHash::from($interface);
+	}
+
+	/**
+	 * Create base service
+	 * @return ArrayHash Base service
+	 */
+	public function createBaseService() {
+		$baseService = [
+			'Name' => 'BaseServiceForMQTTAzure',
+			'Messaging' => $this->interfaceName,
+			'Serializers' => ['JsonSerializer'],
+			'Properties' => ['AsyncDpaMessage' => true],
+		];
+		return ArrayHash::from($baseService);
 	}
 
 	/**

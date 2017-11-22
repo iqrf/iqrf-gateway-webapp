@@ -36,6 +36,11 @@ class InteliGlueManager {
 	private $caPath = '/etc/iqrf-daemon/certs/inteliments-ca.crt';
 
 	/**
+	 * @var string MQTT interface name
+	 */
+	private $interfaceName = 'MqttMessagingInteliGlue';
+
+	/**
 	 * Create MQTT interface
 	 * @param ArrayHash $values Values from form
 	 * @return ArrayHash MQTT interface
@@ -43,7 +48,7 @@ class InteliGlueManager {
 	public function createMqttInterface(ArrayHash $values) {
 		$this->downloadCaCertificate();
 		$interface = [
-			'Name' => 'MqttMessagingInteliGlue',
+			'Name' => $this->interfaceName,
 			'Enabled' => true,
 			'BrokerAddr' => 'ssl://mqtt.inteliglue.io:' . $values['assignedPort'],
 			'ClientId' => $values['clientId'],
@@ -66,6 +71,20 @@ class InteliGlueManager {
 			'EnableServerCertAuth' => false
 		];
 		return ArrayHash::from($interface);
+	}
+
+	/**
+	 * Create base service
+	 * @return ArrayHash Base service
+	 */
+	public function createBaseService() {
+		$baseService = [
+			'Name' => 'BaseServiceForMQTTInteliGlue',
+			'Messaging' => $this->interfaceName,
+			'Serializers' => ['JsonSerializer'],
+			'Properties' => ['AsyncDpaMessage' => true],
+		];
+		return ArrayHash::from($baseService);
 	}
 
 	/**

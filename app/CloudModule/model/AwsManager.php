@@ -34,6 +34,11 @@ class AwsManager {
 	private $path = '/etc/iqrf-daemon/certs/';
 
 	/**
+	 * @var string MQTT interface name
+	 */
+	private $interfaceName = 'MqttMessagingAws';
+
+	/**
 	 * Create MQTT interface
 	 * @param ArrayHash $values Values from form
 	 * @return ArrayHash MQTT interface
@@ -42,7 +47,7 @@ class AwsManager {
 		$paths = $this->createPaths();
 		$this->uploadCertsAndKey($values, $paths);
 		$interface = [
-			'Name' => 'MqttMessagingAws',
+			'Name' => $this->interfaceName,
 			'Enabled' => true,
 			'BrokerAddr' => 'ssl://' . $values['endpoint'] . ':8883',
 			'ClientId' => 'IqrfDpaMessaging1',
@@ -65,6 +70,20 @@ class AwsManager {
 			'EnableServerCertAuth' => false
 		];
 		return ArrayHash::from($interface);
+	}
+
+	/**
+	 * Create base service
+	 * @return ArrayHash Base service
+	 */
+	public function createBaseService() {
+		$baseService = [
+			'Name' => 'BaseServiceForMQTTAws',
+			'Messaging' => $this->interfaceName,
+			'Serializers' => ['JsonSerializer'],
+			'Properties' => ['AsyncDpaMessage' => true],
+		];
+		return ArrayHash::from($baseService);
 	}
 
 	/**

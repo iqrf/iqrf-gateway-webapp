@@ -20,6 +20,7 @@ namespace App\CloudModule\Forms;
 
 use App\CloudModule\Model\AwsManager;
 use App\CloudModule\Presenters\AwsPresenter;
+use App\ConfigModule\Model\BaseServiceManager;
 use App\ConfigModule\Model\InstanceManager;
 use App\Forms\FormFactory;
 use Nette;
@@ -32,7 +33,12 @@ class CloudAwsMqttFormFactory {
 	/**
 	 * @var AwsManager
 	 */
-	private $aws;
+	private $cloudManager;
+
+	/**
+	 * @var BaseServiceManager
+	 */
+	private $baseService;
 
 	/**
 	 * @var InstanceManager
@@ -47,11 +53,13 @@ class CloudAwsMqttFormFactory {
 	/**
 	 * Constructor
 	 * @param AwsManager $aws
+	 * @param BaseServiceManager $baseService
 	 * @param InstanceManager $manager
 	 * @param FormFactory $factory
 	 */
-	public function __construct(AwsManager $aws, InstanceManager $manager, FormFactory $factory) {
-		$this->aws = $aws;
+	public function __construct(AwsManager $aws, BaseServiceManager $baseService, InstanceManager $manager, FormFactory $factory) {
+		$this->cloudManager = $aws;
+		$this->baseService = $baseService;
 		$this->manager = $manager;
 		$this->factory = $factory;
 	}
@@ -65,16 +73,17 @@ class CloudAwsMqttFormFactory {
 		$form = $this->factory->create();
 		$fileName = 'MqttMessaging';
 		$this->manager->setFileName($fileName);
-		$id = count($this->manager->getInstances());
 		$form->addText('endpoint', 'Endpoint')->setRequired();
 		$form->addUpload('caCert', 'Root CA certificate')->setRequired();
 		$form->addUpload('cert', 'Certificate')->setRequired();
 		$form->addUpload('key', 'Private key')->setRequired();
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('Timeout expired, resubmit the form.');
-		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $id) {
-			$settings = $this->aws->createMqttInterface($values);
-			$this->manager->save($settings, $id);
+		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
+			$settings = $this->cloudManager->createMqttInterface($values);
+			$baseService = $this->cloudManager->createBaseService();
+			$this->baseService->add($baseService);
+			$this->manager->add($settings);
 			$presenter->redirect(':Config:Mqtt:default');
 		};
 		return $form;

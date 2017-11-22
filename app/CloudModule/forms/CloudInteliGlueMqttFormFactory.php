@@ -20,6 +20,7 @@ namespace App\CloudModule\Forms;
 
 use App\CloudModule\Model\InteliGlueManager;
 use App\CloudModule\Presenters\InteliGluePresenter;
+use App\ConfigModule\Model\BaseServiceManager;
 use App\ConfigModule\Model\InstanceManager;
 use App\Forms\FormFactory;
 use Nette;
@@ -32,7 +33,12 @@ class CloudInteliGlueMqttFormFactory {
 	/**
 	 * @var InteliGlueManager
 	 */
-	private $inteliGlue;
+	private $cloudManager;
+
+	/**
+	 * @var BaseServiceManager
+	 */
+	private $baseService;
 
 	/**
 	 * @var InstanceManager
@@ -46,11 +52,14 @@ class CloudInteliGlueMqttFormFactory {
 
 	/**
 	 * Constructor
+	 * @param BaseServiceManager $baseService
+	 * @param InteliGlueManager $inteliGlue
 	 * @param InstanceManager $manager
 	 * @param FormFactory $factory
 	 */
-	public function __construct(InteliGlueManager $inteliGlue, InstanceManager $manager, FormFactory $factory) {
-		$this->inteliGlue = $inteliGlue;
+	public function __construct(BaseServiceManager $baseService, InteliGlueManager $inteliGlue, InstanceManager $manager, FormFactory $factory) {
+		$this->baseService = $baseService;
+		$this->cloudManager = $inteliGlue;
 		$this->manager = $manager;
 		$this->factory = $factory;
 	}
@@ -64,7 +73,6 @@ class CloudInteliGlueMqttFormFactory {
 		$form = $this->factory->create();
 		$fileName = 'MqttMessaging';
 		$this->manager->setFileName($fileName);
-		$id = count($this->manager->getInstances());
 		$form->addText('rootTopic', 'Root Topic')->setRequired();
 		$form->addInteger('assignedPort', 'AssignedPort')->setRequired()->setDefaultValue(1883)
 				->addRule(Form::RANGE, 'Port have to be in range from 0 to 65535', [0, 65535]);
@@ -72,9 +80,11 @@ class CloudInteliGlueMqttFormFactory {
 		$form->addText('password', 'Password')->setRequired();
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('Timeout expired, resubmit the form.');
-		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $id) {
-			$settings = $this->inteliGlue->createMqttInterface($values);
-			$this->manager->save($settings, $id);
+		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
+			$settings = $this->cloudManager->createMqttInterface($values);
+			$baseService = $this->cloudManager->createBaseService();
+			$this->baseService->add($baseService);
+			$this->manager->add($settings);
 			$presenter->redirect(':Config:Mqtt:default');
 		};
 		return $form;

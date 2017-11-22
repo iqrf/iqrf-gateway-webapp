@@ -20,6 +20,7 @@ namespace App\CloudModule\Forms;
 
 use App\CloudModule\Model\AzureManager;
 use App\CloudModule\Presenters\AzurePresenter;
+use App\ConfigModule\Model\BaseServiceManager;
 use App\ConfigModule\Model\InstanceManager;
 use App\Forms\FormFactory;
 use Nette;
@@ -32,7 +33,12 @@ class CloudAzureMqttFormFactory {
 	/**
 	 * @var AzureManager
 	 */
-	private $azure;
+	private $cloudManager;
+
+	/**
+	 * @var BaseServiceManager
+	 */
+	private $baseService;
 
 	/**
 	 * @var InstanceManager
@@ -46,11 +52,14 @@ class CloudAzureMqttFormFactory {
 
 	/**
 	 * Constructor
+	 * @param AzureManager $azure
+	 * @param BaseServiceManager $baseService
 	 * @param InstanceManager $manager
 	 * @param FormFactory $factory
 	 */
-	public function __construct(AzureManager $azure, InstanceManager $manager, FormFactory $factory) {
-		$this->azure = $azure;
+	public function __construct(AzureManager $azure, BaseServiceManager $baseService, InstanceManager $manager, FormFactory $factory) {
+		$this->cloudManager = $azure;
+		$this->baseService = $baseService;
 		$this->manager = $manager;
 		$this->factory = $factory;
 	}
@@ -64,13 +73,14 @@ class CloudAzureMqttFormFactory {
 		$form = $this->factory->create();
 		$fileName = 'MqttMessaging';
 		$this->manager->setFileName($fileName);
-		$id = count($this->manager->getInstances());
 		$form->addText('ConnectionString', 'ConnectionString')->setRequired();
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('Timeout expired, resubmit the form.');
-		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $id) {
-			$settings = $this->azure->createMqttInterface($values['ConnectionString']);
-			$this->manager->save($settings, $id);
+		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
+			$settings = $this->cloudManager->createMqttInterface($values['ConnectionString']);
+			$baseService = $this->cloudManager->createBaseService();
+			$this->baseService->add($baseService);
+			$this->manager->add($settings);
 			$presenter->redirect(':Config:Mqtt:default');
 		};
 		return $form;
