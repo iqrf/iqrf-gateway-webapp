@@ -57,10 +57,12 @@ class ConfigIqrfAppFormFactory {
 	public function create(IqrfAppPresenter $presenter) {
 		$form = $this->factory->create();
 		$fileName = 'iqrfapp';
+		$items = ['err' => 'Error', 'war' => 'Warning', 'inf' => 'Info', 'dbg' => 'Debug'];
 		$this->manager->setFileName($fileName);
 		$form->addText('LocalMqName', 'LocalMqName')->setRequired();
 		$form->addText('RemoteMqName', 'RemoteMqName')->setRequired();
 		$form->addInteger('DefaultTimeout', 'DefaultTimeout')->setRequired();
+		$form->addSelect('VerbosityLevel', 'VerbosityLevel', $items);
 		$form->addSubmit('save', 'Save');
 		$form->setDefaults($this->manager->load());
 		$form->addProtection('Timeout expired, resubmit the form.');
