@@ -50,7 +50,7 @@ class InteliGlueManager {
 		$interface = [
 			'Name' => $this->interfaceName,
 			'Enabled' => true,
-			'BrokerAddr' => 'ssl://mqtt.inteliglue.io:' . $values['assignedPort'],
+			'BrokerAddr' => 'ssl://mqtt.inteliglue.com:' . $values['assignedPort'],
 			'ClientId' => $values['clientId'],
 			'Persistence' => 1,
 			'Qos' => 0,
@@ -92,7 +92,7 @@ class InteliGlueManager {
 	 */
 	public function downloadCaCertificate() {
 		$client = new Client();
-		$caCertUrl = 'https://inteliments.com/file?id=KMuMDITKU%2fsW9URIb5VlAQ%3d%3d&ext=crt';
+		$caCertUrl = 'https://inteliments.com/static/docs/inteliglue/downloads/DST_Root_CA_X3.pem.txt';
 		$caCert = $client->request('GET', $caCertUrl)->getBody();
 		FileSystem::write($this->caPath, $caCert);
 	}
