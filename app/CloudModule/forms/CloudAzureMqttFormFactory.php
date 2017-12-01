@@ -26,36 +26,39 @@ use App\Forms\FormFactory;
 use Nette;
 use Nette\Application\UI\Form;
 
+/**
+ * Form for creating MQTT instance and Base service from Microsoft Azure IoT Hub Connection String for Device
+ */
 class CloudAzureMqttFormFactory {
 
 	use Nette\SmartObject;
 
 	/**
-	 * @var AzureManager
+	 * @var AzureManager Microsoft Azure IoT Hub manager
 	 */
 	private $cloudManager;
 
 	/**
-	 * @var BaseServiceManager
+	 * @var BaseServiceManager Base service manager
 	 */
 	private $baseService;
 
 	/**
-	 * @var InstanceManager
+	 * @var InstanceManager MQTT instance manager
 	 */
 	private $manager;
 
 	/**
-	 * @var FormFactory
+	 * @var FormFactory Generic form factory
 	 */
 	private $factory;
 
 	/**
 	 * Constructor
-	 * @param AzureManager $azure
-	 * @param BaseServiceManager $baseService
-	 * @param InstanceManager $manager
-	 * @param FormFactory $factory
+	 * @param AzureManager $azure Microsoft Azure IoT Hub manager
+	 * @param BaseServiceManager $baseService Base service manager
+	 * @param InstanceManager $manager MQTT instance manager
+	 * @param FormFactory $factory Generic form factory
 	 */
 	public function __construct(AzureManager $azure, BaseServiceManager $baseService, InstanceManager $manager, FormFactory $factory) {
 		$this->cloudManager = $azure;
@@ -73,7 +76,7 @@ class CloudAzureMqttFormFactory {
 		$form = $this->factory->create();
 		$fileName = 'MqttMessaging';
 		$this->manager->setFileName($fileName);
-		$form->addText('ConnectionString', 'ConnectionString')->setRequired();
+		$form->addText('ConnectionString', 'IoT Hub Connection String for Device')->setRequired();
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('Timeout expired, resubmit the form.');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
