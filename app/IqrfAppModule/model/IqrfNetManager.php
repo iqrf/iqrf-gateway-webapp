@@ -43,6 +43,16 @@ class IqrfNetManager {
 	}
 
 	/**
+	 * The command removes all nodes from the list of bonded nodes at coordinator memory.
+	 * It actually destroys the network from the coordinator point of view.
+	 * @return array DPA request and response
+	 */
+	public function clearAllBonds() {
+		$packet = '00.00.00.03.ff.ff';
+		return $this->iqrfAppManager->sendRaw($packet);
+	}
+
+	/**
 	 * This command bonds a new node by the coordinator.
 	 * There is a maximum approx. 12 s blocking delay when this function is called.
 	 * @param string $address A requested address for the bonded node. The address must not be used (bonded) yet. If this parameter equals to 0, then the 1 free address is assigned to the node.
