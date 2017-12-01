@@ -21,6 +21,9 @@ namespace App\GatewayModule\Presenters;
 
 use App\GatewayModule\Model\LogManager;
 use App\Presenters\BasePresenter;
+use Nette\Application\BadRequestException;
+use Nette\IOException;
+use Tracy\Debugger;
 
 /**
  * IQRF Daemon's log presenter
@@ -45,7 +48,11 @@ class LogPresenter extends BasePresenter {
 	 */
 	public function renderDefault() {
 		$this->onlyForAdmins();
-		$this->template->log = $this->manager->load();
+		try {
+			$this->template->log = $this->manager->load();
+		} catch (IOException $e) {
+			Debugger::log('Cannot read log file.');
+		}
 	}
 
 	/**
@@ -53,7 +60,13 @@ class LogPresenter extends BasePresenter {
 	 */
 	public function actionDownload() {
 		$this->onlyForAdmins();
-		$this->sendResponse($this->manager->download());
+		try {
+			$this->sendResponse($this->manager->download());
+		} catch (BadRequestException $e) {
+			Debugger::log('Cannot read log file.');
+			$this->redirect('Log:default');
+			$this->setView('default');
+		}
 	}
 
 }
