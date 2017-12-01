@@ -94,15 +94,12 @@ class InfoManager {
 	 * @return string IQRF Daemon version
 	 */
 	public function getDaemonVersion() {
-		$cmd = 'apt-cache madison iqrf-daemon | awk \'{ print $3 }\'';
-		$daemonExistence = $this->commandManager->commandExist('iqrfapp');
+		$cmd = 'iqrf_startup version';
+		$daemonExistence = $this->commandManager->commandExist('iqrf_startup');
 		if (!$daemonExistence) {
 			return 'none';
 		}
-		$aptCacheExistence = $this->commandManager->commandExist('apt-cache');
-		if ($aptCacheExistence) {
-			$result = $this->commandManager->send($cmd);
-		}
+		$result = $this->commandManager->send($cmd);
 		if (!empty($result)) {
 			return $result;
 		}

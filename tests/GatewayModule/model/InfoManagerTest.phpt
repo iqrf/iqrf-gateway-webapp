@@ -122,20 +122,19 @@ class InfoManagerTest extends TestCase {
 	public function testGetDaemonVersion() {
 		$version = '0.7.0-1';
 		$commandManager0 = \Mockery::mock(CommandManager::class);
-		$commandManager0->shouldReceive('commandExist')->with('iqrfapp')->andReturn(false);
+		$commandManager0->shouldReceive('commandExist')->with('iqrf_startup')->andReturn(false);
 		$iqrfAppManager0 = new IqrfAppManager($commandManager0, $this->coordinatorParser, $this->osParser);
 		$gwInfoManager0 = new InfoManager($commandManager0, $iqrfAppManager0);
 		Assert::same('none', $gwInfoManager0->getDaemonVersion());
 		$commandManager1 = \Mockery::mock(CommandManager::class);
-		$commandManager1->shouldReceive('commandExist')->with('iqrfapp')->andReturn(true);
-		$commandManager1->shouldReceive('commandExist')->with('apt-cache')->andReturn(true);
-		$commandManager1->shouldReceive('send')->with('apt-cache madison iqrf-daemon | awk \'{ print $3 }\'')->andReturn($version);
+		$commandManager1->shouldReceive('commandExist')->with('iqrf_startup')->andReturn(true);
+		$commandManager1->shouldReceive('send')->with('iqrf_startup version')->andReturn($version);
 		$iqrfAppManager1 = new IqrfAppManager($commandManager1, $this->coordinatorParser, $this->osParser);
 		$gwInfoManager1 = new InfoManager($commandManager1, $iqrfAppManager1);
 		Assert::same($version, $gwInfoManager1->getDaemonVersion());
 		$commandManager2 = \Mockery::mock(CommandManager::class);
-		$commandManager2->shouldReceive('commandExist')->with('iqrfapp')->andReturn(true);
-		$commandManager2->shouldReceive('commandExist')->with('apt-cache')->andReturn(false);
+		$commandManager2->shouldReceive('commandExist')->with('iqrf_startup')->andReturn(true);
+		$commandManager2->shouldReceive('send')->with('iqrf_startup version');
 		$iqrfAppManager2 = new IqrfAppManager($commandManager2, $this->coordinatorParser, $this->osParser);
 		$gwInfoManager2 = new InfoManager($commandManager2, $iqrfAppManager2);
 		Assert::same('unknown', $gwInfoManager2->getDaemonVersion());
