@@ -19,6 +19,7 @@ application:
 extensions:
 	gettextTranslator: GettextTranslator\DI\Extension
 	extendedFormMacros: Instante\ExtendedFormMacros\DI\ExtendedFormMacrosExtension
+	sentryLogger: Salamek\RavenNette\DI\SentryLoggerExtension
 
 gettextTranslator:
 	# default language (en or cs)
@@ -28,6 +29,10 @@ gettextTranslator:
 	# optional with defaults
 	layout: horizontal # or: vertical
 	height: 450
+
+sentryLogger:
+	dsn: 'http://fa0c82acd2db40bdae660f9f01a8c400:34a69b195929416dbe97a7cd76aacf24@iqrfsdk.org:9000/2'
+	inDebug: true
 
 session:
 	expiration: 14 days
