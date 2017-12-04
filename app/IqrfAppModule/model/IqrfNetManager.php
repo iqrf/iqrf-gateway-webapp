@@ -21,6 +21,7 @@ namespace App\IqrfAppModule\Model;
 
 use App\IqrfAppModule\Model\IqrfAppManager;
 use Nette;
+use Nette\Utils\Strings;
 
 /**
  * Tool for managing IQMESH network.
@@ -72,7 +73,8 @@ class IqrfNetManager {
 	 * @return array DPA request and response
 	 */
 	public function discovery($txPower = '00', $maxAddress = '00') {
-		$packet = '00.00.00.07.ff.ff.' . $txPower . '.' . $maxAddress;
+		$packet = '00.00.00.07.ff.ff.' . Strings::padLeft($txPower, 2, '0')
+				. '.' . dechex($maxAddress);
 		$timeout = 0;
 		return $this->iqrfAppManager->sendRaw($packet, $timeout);
 	}
