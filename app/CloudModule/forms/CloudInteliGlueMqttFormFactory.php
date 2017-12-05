@@ -25,6 +25,7 @@ use App\ConfigModule\Model\InstanceManager;
 use App\Forms\FormFactory;
 use Nette;
 use Nette\Application\UI\Form;
+use Nette\IOException;
 
 class CloudInteliGlueMqttFormFactory {
 
@@ -81,11 +82,15 @@ class CloudInteliGlueMqttFormFactory {
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('Timeout expired, resubmit the form.');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
-			$settings = $this->cloudManager->createMqttInterface($values);
-			$baseService = $this->cloudManager->createBaseService();
-			$this->baseService->add($baseService);
-			$this->manager->add($settings);
-			$presenter->redirect(':Config:Mqtt:default');
+			try {
+				$settings = $this->cloudManager->createMqttInterface($values);
+				$baseService = $this->cloudManager->createBaseService();
+				$this->baseService->add($baseService);
+				$this->manager->add($settings);
+				$presenter->redirect(':Config:Mqtt:default');
+			} catch (IOException $e) {
+				$presenter->flashMessage('IQRF Daemon\'s configuration files not found.', 'danger');
+			}
 		};
 		return $form;
 	}
