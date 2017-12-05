@@ -20,11 +20,13 @@ namespace App\CloudModule\Forms;
 
 use App\CloudModule\Model\AzureManager;
 use App\CloudModule\Presenters\AzurePresenter;
+use App\CloudModule\Model\InvalidConnectionString;
 use App\ConfigModule\Model\BaseServiceManager;
 use App\ConfigModule\Model\InstanceManager;
 use App\Forms\FormFactory;
 use Nette;
 use Nette\Application\UI\Form;
+use Nette\IOException;
 
 /**
  * Form for creating MQTT instance and Base service from Microsoft Azure IoT Hub Connection String for Device
@@ -80,11 +82,17 @@ class CloudAzureMqttFormFactory {
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('Timeout expired, resubmit the form.');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
-			$settings = $this->cloudManager->createMqttInterface($values['ConnectionString']);
-			$baseService = $this->cloudManager->createBaseService();
-			$this->baseService->add($baseService);
-			$this->manager->add($settings);
-			$presenter->redirect(':Config:Mqtt:default');
+			try {
+				$settings = $this->cloudManager->createMqttInterface($values['ConnectionString']);
+				$baseService = $this->cloudManager->createBaseService();
+				$this->baseService->add($baseService);
+				$this->manager->add($settings);
+				$presenter->redirect(':Config:Mqtt:default');
+			} catch (InvalidConnectionString $e) {
+				$presenter->flashMessage('Invalid MS Azure IoT Hub connection string for device.', 'danger');
+			} catch (IOException $e) {
+				$presenter->flashMessage('IQRF Daemon\'s configuration files not found.', 'danger');
+			}
 		};
 		return $form;
 	}
