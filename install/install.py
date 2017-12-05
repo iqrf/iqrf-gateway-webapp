@@ -144,6 +144,8 @@ def install_php_app(directory, use_git=True):
 		else:
 			send_command("rm -rf " + directory + "/temp/cache")
 			send_command("cd " + directory + " ; composer update")
+	send_command("chmod 777 log/")
+	send_command("chmod 777 temp/")
 
 
 def chmod_dir(directory="/etc/iqrf-daemon"):
