@@ -41,6 +41,7 @@ class AzureManager {
 	 * @return ArrayHash MQTT interface
 	 */
 	public function createMqttInterface($connectionString) {
+		$this->checkConnectionString($connectionString);
 		$data = $this->parseConnectionString($connectionString);
 		$endpoint = $data['HostName'] . '/devices/' . $data['DeviceId'];
 		$token = $this->generateSasToken($endpoint, $data['SharedAccessKey']);
@@ -82,6 +83,20 @@ class AzureManager {
 			'Properties' => ['AsyncDpaMessage' => true],
 		];
 		return ArrayHash::from($baseService);
+	}
+
+	/**
+	 * Validate MS Azure IoT Hub Connection String for devices
+	 * @param string $connectionString MS Azure IoT Hub Connection String
+	 * @throws InvalidConnectionString
+	 */
+	public function checkConnectionString($connectionString) {
+		$data = $this->parseConnectionString($connectionString);
+		if (!isset($data['DeviceId']) ||
+				!isset($data['HostName']) ||
+				!isset($data['SharedAccessKey'])) {
+			throw new InvalidConnectionString();
+		}
 	}
 
 	/**

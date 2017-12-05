@@ -5,3 +5,4 @@ services:
 	- App\CloudModule\Model\AwsManager
 	- App\CloudModule\Model\AzureManager
 	- App\CloudModule\Model\InteliGlueManager
+	- App\CloudModule\Model\InvalidConnectionString
