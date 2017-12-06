@@ -27,6 +27,7 @@ use App\Model\CommandManager;
 use DateTime;
 use Nette;
 use Nette\Utils\Json;
+use Tracy\Debugger;
 
 /**
  * Tool for contoling iqrfapp.
@@ -92,13 +93,14 @@ class IqrfAppManager {
 			'response' => '',
 			'response_ts' => '',
 		];
-		if (empty($timeout)) {
+		if (!isset($timeout)) {
 			unset($array['timeout']);
 		}
 		$data = [
 			'request' => Json::encode($array, Json::PRETTY),
 			'response' => str_replace('Received: ', '', $this->sendCommand($array)),
 		];
+		Debugger::barDump($data, 'iqrfapp');
 		return $data;
 	}
 
