@@ -96,12 +96,25 @@ class IqrfAppManager {
 		if (!isset($timeout)) {
 			unset($array['timeout']);
 		}
+		// Workaround to fix mismatched msgid
+		$this->readOnly(200);
 		$data = [
 			'request' => Json::encode($array, Json::PRETTY),
 			'response' => str_replace('Received: ', '', $this->sendCommand($array)),
 		];
 		Debugger::barDump($data, 'iqrfapp');
 		return $data;
+	}
+
+	/**
+	 * Read only (async) DPA packet
+	 * @param int $timeout DPA timeout in milliseconds
+	 * @return string JSON response
+	 */
+	public function readOnly($timeout = null) {
+		$cmd = 'iqrfapp readonly';
+		$cmd .= isset($timeout) ? 'timeout ' . $timeout : '';
+		return $this->commandManager->send($cmd, true);
 	}
 
 	/**
