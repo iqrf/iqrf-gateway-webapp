@@ -56,7 +56,7 @@ class IqrfNetDiscoveryFormFactory {
 	 */
 	public function create() {
 		$form = $this->factory->create();
-		$form->addInteger('txPower', 'TX Power')->setDefaultValue(5)
+		$form->addInteger('txPower', 'TX Power')->setDefaultValue(6)
 				->addRule(Form::RANGE, 'TX Power have to be integer from 0 to 7.', [0,7])
 				->setRequired();
 		$form->addInteger('maxNode', 'Max. Node Address')->setDefaultValue(239)
