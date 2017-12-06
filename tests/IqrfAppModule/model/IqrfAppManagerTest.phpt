@@ -126,12 +126,14 @@ class IqrfAppManagerTest extends TestCase {
 		$packet = '01.00.06.03.ff.ff';
 		$timeout = 1000;
 		$now = new DateTime();
+		$cmdRead = 'iqrfapp readonly timeout 200';
 		$cmd = 'iqrfapp "{\"ctype\":\"dpa\",\"type\":\"raw\",\"msgid\":\"' . $now->getTimestamp()
 				. '\",\"timeout\":' . $timeout . ',\"request\":\"' . $packet . '\",'
 				. '\"request_ts\":\"\",\"confirmation\":\"\",\"confirmation_ts\":\"\",'
 				. '\"response\":\"\",\"response_ts\":\"\"}"';
 		$expected['response'] = 'sudo ' . $cmd;
 		$commandManager = \Mockery::mock(CommandManager::class);
+		$commandManager->shouldReceive('send')->with($cmdRead, true)->andReturn('sudo ' . $cmdRead);
 		$commandManager->shouldReceive('send')->with($cmd, true)->andReturn('sudo ' . $cmd);
 		$iqrfAppManager = new IqrfAppManager($commandManager, $this->coordinatorParser, $this->osParser);
 		$actual = $iqrfAppManager->sendRaw($packet, $timeout);

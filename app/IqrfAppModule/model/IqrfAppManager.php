@@ -113,7 +113,7 @@ class IqrfAppManager {
 	 */
 	public function readOnly($timeout = null) {
 		$cmd = 'iqrfapp readonly';
-		$cmd .= isset($timeout) ? 'timeout ' . $timeout : '';
+		$cmd .= isset($timeout) ? ' timeout ' . $timeout : '';
 		return $this->commandManager->send($cmd, true);
 	}
 
