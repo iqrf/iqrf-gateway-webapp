@@ -2,6 +2,7 @@
 
 /**
  * TEST: App\Model\InfoManager
+ * @covers App\Model\InfoManager
  * @phpVersion >= 5.6
  * @testCase
  */

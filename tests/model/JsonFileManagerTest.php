@@ -2,6 +2,7 @@
 
 /**
  * TEST: App\Model\JsonFileManager
+ * @covers App\Model\JsonFileManager
  * @phpVersion >= 5.6
  * @testCase
  */

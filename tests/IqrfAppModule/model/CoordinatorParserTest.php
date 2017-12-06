@@ -2,6 +2,7 @@
 
 /**
  * TEST: App\IqrfAppModule\Model\CoordinatorParser
+ * @covers App\IqrfAppModule\Model\CoordinatorParser
  * @phpVersion >= 5.6
  * @testCase
  */

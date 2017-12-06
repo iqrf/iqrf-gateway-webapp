@@ -2,6 +2,7 @@
 
 /**
  * TEST: App\ConfigModule\Model\InstanceManager
+ * @covers App\ConfigModule\Model\InstanceManager
  * @phpVersion >= 5.6
  * @testCase
  */

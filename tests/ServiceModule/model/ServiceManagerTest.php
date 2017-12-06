@@ -2,6 +2,7 @@
 
 /**
  * TEST: App\ServiceModule\Model\ServiceManager
+ * @covers App\ServiceModule\Model\ServiceManager
  * @phpVersion >= 5.6
  * @testCase
  */

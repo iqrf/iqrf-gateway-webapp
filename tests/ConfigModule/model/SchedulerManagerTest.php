@@ -2,6 +2,7 @@
 
 /**
  * TEST: App\ConfigModule\Model\SchedulerManager
+ * @covers App\ConfigModule\Model\SchedulerManager
  * @phpVersion >= 5.6
  * @testCase
  */

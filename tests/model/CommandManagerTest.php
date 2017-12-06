@@ -2,6 +2,7 @@
 
 /**
  * TEST: App\Model\CommandManager
+ * @covers App\Model\CommandManager
  * @phpVersion >= 5.6
  * @testCase
  */

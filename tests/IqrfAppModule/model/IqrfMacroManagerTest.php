@@ -2,6 +2,7 @@
 
 /**
  * TEST: App\IqrfAppModule\Model\IqrfMacroManager
+ * @covers App\IqrfAppModule\Model\IqrfMacroManager
  * @phpVersion >= 5.6
  * @testCase
  */

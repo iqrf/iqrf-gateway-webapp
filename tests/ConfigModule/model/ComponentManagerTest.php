@@ -2,6 +2,7 @@
 
 /**
  * TEST: App\ConfigModule\Model\ComponentManager
+ * @covers App\ConfigModule\Model\ComponentManager
  * @phpVersion >= 5.6
  * @testCase
  */

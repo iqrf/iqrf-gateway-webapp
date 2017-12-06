@@ -2,6 +2,7 @@
 
 /**
  * TEST: App\ConfigModule\Model\BaseServiceManager
+ * @covers App\ConfigModule\Model\BaseServiceManager
  * @phpVersion >= 5.6
  * @testCase
  */

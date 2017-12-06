@@ -1,7 +1,8 @@
 <?php
 
 /**
- * TEST: App\RouterFactory
+ * TEST: App\Router\RouterFactory
+ * @covers App\Router\RouterFactory
  * @phpVersion >= 5.6
  * @testCase
  */

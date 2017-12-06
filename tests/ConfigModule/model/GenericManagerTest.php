@@ -2,6 +2,7 @@
 
 /**
  * TEST: App\ConfigModule\Model\GenericManager
+ * @covers App\ConfigModule\Model\GenericManager
  * @phpVersion >= 5.6
  * @testCase
  */
