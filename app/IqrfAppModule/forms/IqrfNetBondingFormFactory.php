@@ -62,9 +62,10 @@ class IqrfNetBondingFormFactory {
 				->addConditionOn($form['autoAddress'], Form::EQUAL, false)
 				->addRule(Form::PATTERN, 'Enter valid address.', '[0-9a-fA-F]{1,2}')
 				->setRequired();
-		$form->addSubmit('bond', 'Bond Node')->onClick[] = [$this, 'bond'];
-		$form->addSubmit('rebond', 'Rebond Node')->onClick[] = [$this, 'rebond'];
-		$form->addSubmit('remove', 'Remove Node')->onClick[] = [$this, 'remove'];
+		$form->addSubmit('bond', 'Bond Node')->onClick[] = [$this, 'bondNode'];
+		$form->addSubmit('rebond', 'Rebond Node')->onClick[] = [$this, 'rebondNode'];
+		$form->addSubmit('remove', 'Remove Node')->onClick[] = [$this, 'removeNode'];
+		$form->addSubmit('clear', 'Clear All Bonds')->onClick[] = [$this, 'clearAllBonds'];
 		$form->addProtection('Timeout expired, resubmit the form.');
 		return $form;
 	}
@@ -73,17 +74,25 @@ class IqrfNetBondingFormFactory {
 	 * Bond new node
 	 * @param SubmitButton $button Submit button for bonding
 	 */
-	public function bond(SubmitButton $button) {
+	public function bondNode(SubmitButton $button) {
 		$values = $button->getForm()->getValues();
 		$address = $values['autoAddress'] ? '00' : $values['address'];
 		$this->manager->bondNode($address);
 	}
 
 	/**
+	 * Clear all bonds
+	 * @param SubmitButton $button Submit button for cleaning all bonds
+	 */
+	public function clearAllBonds(SubmitButton $button) {
+		$this->manager->clearAllBonds();
+	}
+	
+	/**
 	 * Rebond node
 	 * @param SubmitButton $button Submit button for rebonding
 	 */
-	public function rebond(SubmitButton $button) {
+	public function rebondNode(SubmitButton $button) {
 		$values = $button->getForm()->getValues();
 		$this->manager->rebondNode($values['address']);
 	}
@@ -92,7 +101,7 @@ class IqrfNetBondingFormFactory {
 	 * Remove node
 	 * @param SubmitButton $button Submit button for removing node
 	 */
-	public function remove(SubmitButton $button) {
+	public function removeNode(SubmitButton $button) {
 		$values = $button->getForm()->getValues();
 		$this->manager->removeNode($values['address']);
 	}
