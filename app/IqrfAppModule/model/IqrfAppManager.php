@@ -69,7 +69,7 @@ class IqrfAppManager {
 	 * @return string JSON response
 	 */
 	public function sendCommand($array) {
-		$cmd = 'iqrfapp "' . str_replace('"', '\\"', Json::encode($array)) . '"';
+		$cmd = 'iqrfapp "' . str_replace('"', '\\"', Json::encode($array)) . '" > /dev/null 2>&1';
 		return $this->commandManager->send($cmd, true);
 	}
 
