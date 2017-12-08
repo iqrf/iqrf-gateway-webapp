@@ -47,7 +47,7 @@ class CloudAwsMqttFormFactory {
 	private $manager;
 
 	/**
-	 * @var FormFactory
+	 * @var FormFactory Generic form factory
 	 */
 	private $factory;
 
@@ -56,7 +56,7 @@ class CloudAwsMqttFormFactory {
 	 * @param AwsManager $aws
 	 * @param BaseServiceManager $baseService
 	 * @param InstanceManager $manager
-	 * @param FormFactory $factory
+	 * @param FormFactory $factory Generic form factory
 	 */
 	public function __construct(AwsManager $aws, BaseServiceManager $baseService, InstanceManager $manager, FormFactory $factory) {
 		$this->cloudManager = $aws;

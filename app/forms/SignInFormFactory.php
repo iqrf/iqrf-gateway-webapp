@@ -33,7 +33,7 @@ class SignInFormFactory {
 	use Nette\SmartObject;
 
 	/**
-	 * @var FormFactory
+	 * @var FormFactory Generic form factory
 	 */
 	private $factory;
 
@@ -44,7 +44,7 @@ class SignInFormFactory {
 
 	/**
 	 * Constructor
-	 * @param FormFactory $factory
+	 * @param FormFactory $factory Generic form factory
 	 * @param User $user
 	 */
 	public function __construct(FormFactory $factory, User $user) {

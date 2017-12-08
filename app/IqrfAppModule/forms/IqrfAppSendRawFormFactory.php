@@ -38,13 +38,13 @@ class IqrfAppSendRawFormFactory {
 	private $manager;
 
 	/**
-	 * @var FormFactory
+	 * @var FormFactory Generic form factory
 	 */
 	private $factory;
 
 	/**
 	 * Constructor
-	 * @param FormFactory $factory
+	 * @param FormFactory $factory Generic form factory
 	 * @param IqrfAppManager $manager
 	 */
 	public function __construct(FormFactory $factory, IqrfAppManager $manager) {

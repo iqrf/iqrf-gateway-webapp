@@ -35,13 +35,13 @@ class ConfigIqrfFormFactory {
 	private $manager;
 
 	/**
-	 * @var FormFactory
+	 * @var FormFactory Generic form factory
 	 */
 	private $factory;
 
 	/**
 	 * Constructor
-	 * @param FormFactory $factory
+	 * @param FormFactory $factory Generic form factory
 	 * @param IqrfManager $manager
 	 */
 	public function __construct(FormFactory $factory, IqrfManager $manager) {

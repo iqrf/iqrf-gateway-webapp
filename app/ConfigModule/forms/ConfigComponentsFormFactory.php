@@ -35,14 +35,14 @@ class ConfigComponentsFormFactory {
 	private $manager;
 
 	/**
-	 * @var FormFactory
+	 * @var FormFactory Generic form factory
 	 */
 	private $factory;
 
 	/**
 	 * Constructor
 	 * @param ComponentManager $manager
-	 * @param FormFactory $factory
+	 * @param FormFactory $factory Generic form factory
 	 */
 	public function __construct(ComponentManager $manager, FormFactory $factory) {
 		$this->manager = $manager;

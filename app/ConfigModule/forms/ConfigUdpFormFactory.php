@@ -35,14 +35,14 @@ class ConfigUdpFormFactory {
 	private $manager;
 
 	/**
-	 * @var FormFactory
+	 * @var FormFactory Generic form factory
 	 */
 	private $factory;
 
 	/**
 	 * Constructor
 	 * @param InstanceManager $manager
-	 * @param FormFactory $factory
+	 * @param FormFactory $factory Generic form factory
 	 */
 	public function __construct(InstanceManager $manager, FormFactory $factory) {
 		$this->manager = $manager;

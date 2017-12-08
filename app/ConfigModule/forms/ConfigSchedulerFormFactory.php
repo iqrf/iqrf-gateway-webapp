@@ -35,13 +35,13 @@ class ConfigSchedulerFormFactory {
 	private $manager;
 
 	/**
-	 * @var FormFactory
+	 * @var FormFactory Generic form factory
 	 */
 	private $factory;
 
 	/**
 	 * Constructor
-	 * @param FormFactory $factory
+	 * @param FormFactory $factory Generic form factory
 	 * @param SchedulerManager $manager
 	 */
 	public function __construct(FormFactory $factory, SchedulerManager $manager) {

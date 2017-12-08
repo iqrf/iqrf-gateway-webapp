@@ -47,7 +47,7 @@ class CloudInteliGlueMqttFormFactory {
 	private $manager;
 
 	/**
-	 * @var FormFactory
+	 * @var FormFactory Generic form factory
 	 */
 	private $factory;
 
@@ -56,7 +56,7 @@ class CloudInteliGlueMqttFormFactory {
 	 * @param BaseServiceManager $baseService
 	 * @param InteliGlueManager $inteliGlue
 	 * @param InstanceManager $manager
-	 * @param FormFactory $factory
+	 * @param FormFactory $factory Generic form factory
 	 */
 	public function __construct(BaseServiceManager $baseService, InteliGlueManager $inteliGlue, InstanceManager $manager, FormFactory $factory) {
 		$this->baseService = $baseService;

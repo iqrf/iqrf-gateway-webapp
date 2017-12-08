@@ -36,13 +36,13 @@ class IqrfNetBondNodeFormFactory {
 	private $manager;
 
 	/**
-	 * @var FormFactory
+	 * @var FormFactory Generic form factory
 	 */
 	private $factory;
 
 	/**
 	 * Constructor
-	 * @param FormFactory $factory
+	 * @param FormFactory $factory Generic form factory
 	 * @param IqrfNetManager $manager
 	 */
 	public function __construct(FormFactory $factory, IqrfNetManager $manager) {
