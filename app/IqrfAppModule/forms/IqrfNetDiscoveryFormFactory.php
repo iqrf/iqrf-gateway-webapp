@@ -24,14 +24,14 @@ use Nette;
 use Nette\Application\UI\Form;
 
 /**
- * Discovery form factory.
+ * IQMESH Discovery form factory.
  */
 class IqrfNetDiscoveryFormFactory {
 
 	use Nette\SmartObject;
 
 	/**
-	 * @var IqrfNetManager
+	 * @var IqrfNetManager IQMESH Network manager
 	 */
 	private $manager;
 
@@ -43,7 +43,7 @@ class IqrfNetDiscoveryFormFactory {
 	/**
 	 * Constructor
 	 * @param FormFactory $factory Generic form factory
-	 * @param IqrfNetManager $manager
+	 * @param IqrfNetManager $manager IQMESH Network manager
 	 */
 	public function __construct(FormFactory $factory, IqrfNetManager $manager) {
 		$this->factory = $factory;

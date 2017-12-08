@@ -44,7 +44,7 @@ class IqrfNetBondingFormFactory {
 	/**
 	 * Constructor
 	 * @param FormFactory $factory Generic form factory
-	 * @param IqrfNetManager $manager
+	 * @param IqrfNetManager $manager IQMESH Network manager
 	 */
 	public function __construct(FormFactory $factory, IqrfNetManager $manager) {
 		$this->factory = $factory;
@@ -87,7 +87,7 @@ class IqrfNetBondingFormFactory {
 	public function clearAllBonds(SubmitButton $button) {
 		$this->manager->clearAllBonds();
 	}
-	
+
 	/**
 	 * Rebond node
 	 * @param SubmitButton $button Submit button for rebonding

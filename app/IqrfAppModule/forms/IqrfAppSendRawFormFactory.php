@@ -33,7 +33,7 @@ class IqrfAppSendRawFormFactory {
 	use Nette\SmartObject;
 
 	/**
-	 * @var IqrfAppManager
+	 * @var IqrfAppManager Manager for communicating with iqrfapp
 	 */
 	private $manager;
 
@@ -45,7 +45,7 @@ class IqrfAppSendRawFormFactory {
 	/**
 	 * Constructor
 	 * @param FormFactory $factory Generic form factory
-	 * @param IqrfAppManager $manager
+	 * @param IqrfAppManager $manager Manager for communicating with iqrfapp
 	 */
 	public function __construct(FormFactory $factory, IqrfAppManager $manager) {
 		$this->factory = $factory;
@@ -54,7 +54,7 @@ class IqrfAppSendRawFormFactory {
 
 	/**
 	 * Create IQRF App send RAW packet form
-	 * @param SendRawPresenter $presenter
+	 * @param SendRawPresenter $presenter IQRF Send DPA war packet presenter
 	 * @return Form IQRF App send RAW packet form
 	 */
 	public function create(SendRawPresenter $presenter) {
