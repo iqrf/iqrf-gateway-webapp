@@ -31,7 +31,7 @@ gettextTranslator:
 	height: 450
 
 sentryLogger:
-	dsn: 'http://fa0c82acd2db40bdae660f9f01a8c400:34a69b195929416dbe97a7cd76aacf24@sentry.iqrfsdk.org/2'
+	dsn: 'https://fa0c82acd2db40bdae660f9f01a8c400:34a69b195929416dbe97a7cd76aacf24@sentry.iqrfsdk.org/2'
 	inDebug: true
 
 session:
