@@ -141,7 +141,7 @@ $("#frm-iqrfNetBondingForm-autoAddress").click(function () {
 		$("#frm-iqrfNetBondingForm-remove").prop("disabled", true);
 	} else {
 		$("#frm-iqrfNetBondingForm-address").prop("disabled", false);
-		$("#frm-iqrfNetBondingForm-rebond").prop("disabled", true);
-		$("#frm-iqrfNetBondingForm-remove").prop("disabled", true);
+		$("#frm-iqrfNetBondingForm-rebond").prop("disabled", false);
+		$("#frm-iqrfNetBondingForm-remove").prop("disabled", false);
 	}
 });
