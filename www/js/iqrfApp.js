@@ -134,10 +134,14 @@ $("#frm-iqrfAppSendRawForm-timeoutEnabled").click(function () {
 });
 
 // Enable or disable auto addressing in bonding new nodes
-$("#frm-iqrfNetBondNodeForm-autoAddress").click(function () {
+$("#frm-iqrfNetBondingForm-autoAddress").click(function () {
 	if ($(this).is(":checked")) {
-		$("#frm-iqrfNetBondNodeForm-address").prop("disabled", true);
+		$("#frm-iqrfNetBondingForm-address").prop("disabled", true);
+		$("#frm-iqrfNetBondingForm-rebond").prop("disabled", true);
+		$("#frm-iqrfNetBondingForm-remove").prop("disabled", true);
 	} else {
-		$("#frm-iqrfNetBondNodeForm-address").prop("disabled", false);
+		$("#frm-iqrfNetBondingForm-address").prop("disabled", false);
+		$("#frm-iqrfNetBondingForm-rebond").prop("disabled", true);
+		$("#frm-iqrfNetBondingForm-remove").prop("disabled", true);
 	}
 });

@@ -20,6 +20,7 @@
 namespace App\IqrfAppModule\Presenters;
 
 use App\IqrfAppModule\Forms\IqrfNetBondNodeFormFactory;
+use App\IqrfAppModule\Forms\IqrfNetBondingFormFactory;
 use App\IqrfAppModule\Forms\IqrfNetDiscoveryFormFactory;
 use App\IqrfAppModule\Forms\IqrfNetRebondNodeFormFactory;
 use App\IqrfAppModule\Forms\IqrfNetRemoveNodeFormFactory;
@@ -31,9 +32,9 @@ use App\Presenters\BasePresenter;
 class NetworkPresenter extends BasePresenter {
 
 	/**
-	 * @var IqrfNetBondNodeFormFactory
+	 * @var IqrfNetBondingFormFactory
 	 */
-	private $bondNodeForm;
+	private $bondingForm;
 
 	/**
 	 *
@@ -42,27 +43,13 @@ class NetworkPresenter extends BasePresenter {
 	private $discoveryForm;
 
 	/**
-	 * @var IqrfNetRebondNodeFormFactory
-	 */
-	private $rebondNodeForm;
-
-	/**
-	 * @var IqrfNetRemoveNodeFormFactory
-	 */
-	private $removeNodeForm;
-
-	/**
 	 * Constructor
-	 * @param IqrfNetBondNodeFormFactory $bondNodeForm
-	 * @param IqrfNetDiscoveryFormFactory $discoveryDorm
-	 * @param IqrfNetRebondNodeFormFactory $rebondNodeForm
-	 * @param IqrfNetRemoveNodeFormFactory $removeNodeForm
+	 * @param IqrfNetBondingFormFactory $bondingForm
+	 * @param IqrfNetDiscoveryFormFactory $discoveryForm
 	 */
-	public function __construct(IqrfNetBondNodeFormFactory $bondNodeForm, IqrfNetDiscoveryFormFactory $discoveryDorm, IqrfNetRebondNodeFormFactory $rebondNodeForm, IqrfNetRemoveNodeFormFactory $removeNodeForm) {
-		$this->bondNodeForm = $bondNodeForm;
-		$this->discoveryForm = $discoveryDorm;
-		$this->rebondNodeForm = $rebondNodeForm;
-		$this->removeNodeForm = $removeNodeForm;
+	public function __construct(IqrfNetBondingFormFactory $bondingForm, IqrfNetDiscoveryFormFactory $discoveryForm) {
+		$this->bondingForm = $bondingForm;
+		$this->discoveryForm = $discoveryForm;
 	}
 
 	/**
@@ -73,12 +60,12 @@ class NetworkPresenter extends BasePresenter {
 	}
 
 	/**
-	 * Create bond node form
-	 * @return Form bond node form
+	 * Create IQMESH Bonding form
+	 * @return Form IQMESH Bonding form
 	 */
-	protected function createComponentIqrfNetBondNodeForm() {
+	protected function createComponentIqrfNetBondingForm() {
 		$this->onlyForAdmins();
-		return $this->bondNodeForm->create($this);
+		return $this->bondingForm->create($this);
 	}
 
 	/**
@@ -88,24 +75,6 @@ class NetworkPresenter extends BasePresenter {
 	protected function createComponentIqrfNetDiscoveryForm() {
 		$this->onlyForAdmins();
 		return $this->discoveryForm->create($this);
-	}
-
-	/**
-	 * Create rebond node form
-	 * @return Form rebond node form
-	 */
-	protected function createComponentIqrfNetRebondNodeForm() {
-		$this->onlyForAdmins();
-		return $this->rebondNodeForm->create($this);
-	}
-
-	/**
-	 * Create remove node form
-	 * @return Form bond node form
-	 */
-	protected function createComponentIqrfNetRemoveNodeForm() {
-		$this->onlyForAdmins();
-		return $this->removeNodeForm->create($this);
 	}
 
 }

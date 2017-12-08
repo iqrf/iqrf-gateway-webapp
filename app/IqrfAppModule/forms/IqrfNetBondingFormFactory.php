@@ -22,16 +22,17 @@ use App\Forms\FormFactory;
 use App\IqrfAppModule\Model\IqrfNetManager;
 use Nette;
 use Nette\Application\UI\Form;
+use Nette\Forms\Controls\SubmitButton;
 
 /**
- * Bond new node form factory.
+ * IQMESH Bonding form factory.
  */
-class IqrfNetBondNodeFormFactory {
+class IqrfNetBondingFormFactory {
 
 	use Nette\SmartObject;
 
 	/**
-	 * @var IqrfNetManager
+	 * @var IqrfNetManager IQMESH Network manager
 	 */
 	private $manager;
 
@@ -51,24 +52,49 @@ class IqrfNetBondNodeFormFactory {
 	}
 
 	/**
-	 * Create IQMESH bond new node form
-	 * @return Form IQMESH bond new node form
+	 * Create IQMESH bonding form
+	 * @return Form IQMESH bonding form
 	 */
 	public function create() {
 		$form = $this->factory->create();
-		$form->addCheckbox('autoAddress', 'Auto address')
-				->setDefaultValue(true);
+		$form->addCheckbox('autoAddress', 'Auto address');
 		$form->addText('address', 'Address (HEX)')->setDefaultValue('01')
 				->addConditionOn($form['autoAddress'], Form::EQUAL, false)
 				->addRule(Form::PATTERN, 'Enter valid address.', '[0-9a-fA-F]{1,2}')
 				->setRequired();
-		$form->addSubmit('send', 'Bond Node');
+		$form->addSubmit('bond', 'Bond Node')->onClick[] = [$this, 'bond'];
+		$form->addSubmit('rebond', 'Rebond Node')->onClick[] = [$this, 'rebond'];
+		$form->addSubmit('remove', 'Remove Node')->onClick[] = [$this, 'remove'];
 		$form->addProtection('Timeout expired, resubmit the form.');
-		$form->onSuccess[] = function (Form $form, $values) {
-			$address = $values['autoAddress'] ? '00' : $values['address'];
-			$this->manager->bondNode($address);
-		};
 		return $form;
+	}
+
+	/**
+	 * Bond new node
+	 * @param SubmitButton $button Submit button for bonding
+	 */
+	public function bond(SubmitButton $button) {
+		$values = $button->getForm()->getValues();
+		$address = $values['autoAddress'] ? '00' : $values['address'];
+		$this->manager->bondNode($address);
+	}
+
+	/**
+	 * Rebond node
+	 * @param SubmitButton $button Submit button for rebonding
+	 */
+	public function rebond(SubmitButton $button) {
+		$values = $button->getForm()->getValues();
+		$this->manager->rebondNode($values['address']);
+	}
+
+	/**
+	 * Remove node
+	 * @param SubmitButton $button Submit button for removing node
+	 */
+	public function remove(SubmitButton $button) {
+		$values = $button->getForm()->getValues();
+		$this->manager->removeNode($values['address']);
 	}
 
 }

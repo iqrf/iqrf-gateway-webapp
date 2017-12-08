@@ -17,27 +17,30 @@
 
 {block content}
 <h1 n:block=title>{_"IQMESH Network Manager"}</h1>
-<h2>{_"Bonding"}</h2>
-<div class='panel panel-default'>
-	<div class='panel-body'>
-		<div class="col-sm-4">
-			<h2>Bond node</h2>
-			{control iqrfNetBondNodeForm}
-		</div>
-		<div class="col-sm-4">
-			<h2>Rebond node</h2>
-			{control iqrfNetRebondNodeForm}
-		</div>
-		<div class="col-sm-4">
-			<h2>Remove node</h2>
-			{control iqrfNetRemoveNodeForm}
+<div class="col-sm-6">
+	<h2>{_"Bonding"}</h2>
+	<div class='panel panel-default'>
+		<div class='panel-body'>
+			<form n:name=iqrfNetBondingForm class=form>
+				<label n:name=address for='address'>{_"Address:"}</label>
+				<input n:name=address class='form-control'>
+				<div class='checkbox'>
+					<label n:name=autoAddress for='autoAddress'>
+						<input n:name=autoAddress type='checkbox'> {_"Auto address"}
+					</label>
+				</div>
+				<input n:name=bond id='frm-iqrfNetBondingForm-bond' class='btn btn-primary'>
+				<input n:name=rebond id='frm-iqrfNetBondingForm-rebond' class='btn btn-primary'>
+				<input n:name=remove id='frm-iqrfNetBondingForm-remove' class='btn btn-primary'>
+			</form>
 		</div>
 	</div>
 </div>
-
-<h2>{_"Discovery"}</h2>
-<div class='panel panel-default'>
-	<div class='panel-body'>
-		{control iqrfNetDiscoveryForm}
+<div class="col-sm-6">
+	<h2>{_"Discovery"}</h2>
+	<div class='panel panel-default'>
+		<div class='panel-body'>
+			{control iqrfNetDiscoveryForm}
+		</div>
 	</div>
 </div>

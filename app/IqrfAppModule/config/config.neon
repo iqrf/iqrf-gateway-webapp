@@ -1,9 +1,7 @@
 services:
 	- App\IqrfAppModule\Forms\IqrfAppSendRawFormFactory
-	- App\IqrfAppModule\Forms\IqrfNetBondNodeFormFactory
+	- App\IqrfAppModule\Forms\IqrfNetBondingFormFactory
 	- App\IqrfAppModule\Forms\IqrfNetDiscoveryFormFactory
-	- App\IqrfAppModule\Forms\IqrfNetRebondNodeFormFactory
-	- App\IqrfAppModule\Forms\IqrfNetRemoveNodeFormFactory
 	- App\IqrfAppModule\Model\CoordinatorParser
 	- App\IqrfAppModule\Model\IqrfAppManager
 	- App\IqrfAppModule\Model\IqrfMacroManager(%macroPath%)
