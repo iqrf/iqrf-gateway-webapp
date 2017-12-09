@@ -1,8 +1,10 @@
 services:
 	- App\CloudModule\Forms\CloudAwsMqttFormFactory
 	- App\CloudModule\Forms\CloudAzureMqttFormFactory
+	- App\CloudModule\Forms\CloudBluemixMqttFormFactory
 	- App\CloudModule\Forms\CloudInteliGlueMqttFormFactory
 	- App\CloudModule\Model\AwsManager
 	- App\CloudModule\Model\AzureManager
+	- App\CloudModule\Model\BluemixManager
 	- App\CloudModule\Model\InteliGlueManager
 	- App\CloudModule\Model\InvalidConnectionString
