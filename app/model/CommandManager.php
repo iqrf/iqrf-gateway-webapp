@@ -21,6 +21,7 @@ namespace App\Model;
 
 use Nette;
 use Nette\Utils\Strings;
+use Tracy\Debugger;
 
 /**
  * Tool for executing commands.
@@ -33,6 +34,15 @@ class CommandManager {
 	 * @var bool
 	 */
 	private $sudo;
+
+	/**
+	 * @var array An indexed array where the key represents the descriptor number and the value represents how PHP will pass that descriptor to the child process. 0 is stdin, 1 is stdout, while 2 is stderr.
+	 */
+	private $descriptorspec = [
+		0 => ['pipe', 'r'], // stdin is a pipe that the child will read from
+		1 => ['pipe', 'w'], // stdout is a pipe that the child will write to
+		2 => ['pipe', 'w'] // stderr is a pipe that the child will write to
+	];
 
 	/**
 	 * Constructor
@@ -51,7 +61,20 @@ class CommandManager {
 	public function send($cmd, $needSudo = false) {
 		$command = $this->sudo && $needSudo ? 'sudo ' : '';
 		$command .= $cmd;
-		return Strings::trim(shell_exec($command));
+		$output['command'] = $command;
+		$process = proc_open($command, $this->descriptorspec, $pipes);
+		if (is_resource($process)) {
+			fclose($pipes[0]);
+			$output['stdout'] = stream_get_contents($pipes[1]);
+			fclose($pipes[1]);
+			$output['stderr'] = stream_get_contents($pipes[2]);
+			fclose($pipes[2]);
+			// It is important that you close any pipes before calling
+			// proc_close in order to avoid a deadlock
+			$output['returnValue'] = proc_close($process);
+		}
+		Debugger::barDump($output, 'Command manager');
+		return Strings::trim($output['stdout']);
 	}
 
 	/**
