@@ -128,14 +128,37 @@ class IqrfAppManagerTest extends TestCase {
 		$timeout = 1000;
 		$now = new DateTime();
 		$cmdRead = 'iqrfapp readonly timeout 200';
-		$cmd = 'iqrfapp "{\"ctype\":\"dpa\",\"type\":\"raw\",\"msgid\":\"' . $now->getTimestamp()
+		$cmd = 'iqrfapp "{\"ctype\":\"dpa\",\"type\":\"raw\",\"msgid\":\"' . $now->getTimestamp() . ''
 				. '\",\"timeout\":' . $timeout . ',\"request\":\"' . $packet . '\",'
 				. '\"request_ts\":\"\",\"confirmation\":\"\",\"confirmation_ts\":\"\",'
 				. '\"response\":\"\",\"response_ts\":\"\"}"';
-		$expected['response'] = 'sudo ' . $cmd;
+		$iqrfapp = 'Received: {
+    "ctype": "dpa",
+    "type": "raw",
+    "msgid": ' . $now->getTimestamp() . ',
+    "request": "' . $packet . '",
+    "request_ts": "2017-12-09T20:56:03.110923",
+    "confirmation": "",
+    "confirmation_ts": "",
+    "response": "01.00.06.83.00.00.00.00",
+    "response_ts": "2017-12-09T20:56:03.137869",
+    "status": "STATUS_NO_ERROR"
+}';
+		$expected['response'] = '{
+    "ctype": "dpa",
+    "type": "raw",
+    "msgid": ' . $now->getTimestamp() . ',
+    "request": "' . $packet . '",
+    "request_ts": "2017-12-09T20:56:03.110923",
+    "confirmation": "",
+    "confirmation_ts": "",
+    "response": "01.00.06.83.00.00.00.00",
+    "response_ts": "2017-12-09T20:56:03.137869",
+    "status": "STATUS_NO_ERROR"
+}';
 		$commandManager = \Mockery::mock(CommandManager::class);
-		$commandManager->shouldReceive('send')->with($cmdRead, true)->andReturn('sudo ' . $cmdRead);
-		$commandManager->shouldReceive('send')->with($cmd, true)->andReturn('sudo ' . $cmd);
+		$commandManager->shouldReceive('send')->with($cmdRead, true)->andReturn(null);
+		$commandManager->shouldReceive('send')->with($cmd, true)->andReturn($iqrfapp);
 		$iqrfAppManager = new IqrfAppManager($commandManager, $this->coordinatorParser, $this->osParser);
 		$actual = $iqrfAppManager->sendRaw($packet, $timeout);
 		unset($actual['request']);
