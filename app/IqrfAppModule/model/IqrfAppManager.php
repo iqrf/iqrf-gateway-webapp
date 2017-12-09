@@ -98,9 +98,10 @@ class IqrfAppManager {
 		}
 		// Workaround to fix mismatched msgid
 		$this->readOnly(200);
+		preg_match('/Received: {(.*?)\}/s', $this->sendCommand($array), $output);
 		$data = [
 			'request' => Json::encode($array, Json::PRETTY),
-			'response' => str_replace('Received: ', '', $this->sendCommand($array)),
+			'response' => str_replace('Received: ', '', $output[0]),
 		];
 		Debugger::barDump($data, 'iqrfapp');
 		return $data;
