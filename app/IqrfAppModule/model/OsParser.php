@@ -63,7 +63,7 @@ class OsParser {
 		$mcuType = hexdec($packetArray[13]) & 7;
 		$data['McuType'] = array_key_exists($mcuType, $mcuTypes) ? $mcuTypes[$mcuType] : 'UNKNOWN';
 		$data['OsBuild'] = $packetArray[14] . $packetArray[15];
-		$data['Rssi'] = $packetArray[16];
+		$data['Rssi'] = hexdec($packetArray[16]) - 130;
 		$data['SupplyVoltage'] = number_format((261.12 / (127 - hexdec($packetArray[17]))), 2, '.', '') . ' V';
 		$data['Flags'] = $packetArray[18];
 		$data['SlotLimits'] = $packetArray[19];
