@@ -38,7 +38,8 @@ sentryLogger:
 			- Nette\Application\BadRequestException
 			- Nette\Application\ForbiddenRequestException
 			- Nette\Application\AbortException
-	
+		tags:
+			php_version: %php_version%
 
 session:
 	expiration: 14 days
