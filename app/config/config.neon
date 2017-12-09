@@ -33,6 +33,12 @@ gettextTranslator:
 sentryLogger:
 	dsn: 'https://fa0c82acd2db40bdae660f9f01a8c400:34a69b195929416dbe97a7cd76aacf24@sentry.iqrfsdk.org/2'
 	inDebug: true
+	options:
+		exclude:
+			- Nette\Application\BadRequestException
+			- Nette\Application\ForbiddenRequestException
+			- Nette\Application\AbortException
+	
 
 session:
 	expiration: 14 days
