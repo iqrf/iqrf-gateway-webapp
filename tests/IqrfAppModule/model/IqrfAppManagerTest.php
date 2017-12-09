@@ -102,9 +102,9 @@ class IqrfAppManagerTest extends TestCase {
 	public function testChangeOperationMode() {
 		$modesSuccess = ['forwarding', 'operational', 'service'];
 		$outputSuccess = [
-			'iqrfapp "{\"ctype\":\"conf\",\"type\":\"mode\",\"cmd\":\"forwarding\"}" > /dev/null 2>&1',
-			'iqrfapp "{\"ctype\":\"conf\",\"type\":\"mode\",\"cmd\":\"operational\"}" > /dev/null 2>&1',
-			'iqrfapp "{\"ctype\":\"conf\",\"type\":\"mode\",\"cmd\":\"service\"}" > /dev/null 2>&1',
+			'iqrfapp "{\"ctype\":\"conf\",\"type\":\"mode\",\"cmd\":\"forwarding\"}"',
+			'iqrfapp "{\"ctype\":\"conf\",\"type\":\"mode\",\"cmd\":\"operational\"}"',
+			'iqrfapp "{\"ctype\":\"conf\",\"type\":\"mode\",\"cmd\":\"service\"}"',
 		];
 		$commandManager = \Mockery::mock(CommandManager::class);
 		foreach ($outputSuccess as $output) {
@@ -131,7 +131,7 @@ class IqrfAppManagerTest extends TestCase {
 		$cmd = 'iqrfapp "{\"ctype\":\"dpa\",\"type\":\"raw\",\"msgid\":\"' . $now->getTimestamp()
 				. '\",\"timeout\":' . $timeout . ',\"request\":\"' . $packet . '\",'
 				. '\"request_ts\":\"\",\"confirmation\":\"\",\"confirmation_ts\":\"\",'
-				. '\"response\":\"\",\"response_ts\":\"\"}" > /dev/null 2>&1';
+				. '\"response\":\"\",\"response_ts\":\"\"}"';
 		$expected['response'] = 'sudo ' . $cmd;
 		$commandManager = \Mockery::mock(CommandManager::class);
 		$commandManager->shouldReceive('send')->with($cmdRead, true)->andReturn('sudo ' . $cmdRead);
