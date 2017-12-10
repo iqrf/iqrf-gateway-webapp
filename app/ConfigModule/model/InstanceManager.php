@@ -83,7 +83,7 @@ class InstanceManager {
 	public function load($id = 0) {
 		$json = $this->fileManager->read($this->fileName);
 		$instances = $json['Instances'];
-		if ($id > count($instances)) {
+		if ($id >= count($instances)) {
 			return [];
 		}
 		$data = $instances[$id];
