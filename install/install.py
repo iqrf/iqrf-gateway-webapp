@@ -191,7 +191,7 @@ def fix_php_fpm_config(config_file):
 	Fix PHP configuration
 	@param config_file Path to PHP configuration file
 	"""
-	send_command("sed 's/;cgi\\.fix_pathinfo=1/cgi\\.fix_pathinfo=0/g' " + config_file + " > " + config_file)
+	send_command("sed -i 's/;cgi\.fix_pathinfo=1/cgi\.fix_pathinfo=0/g' " + config_file)
 
 def enable_sudo(sudoers_file=SUDOERS_FILE, user="www-data"):
 	"""
