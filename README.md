@@ -22,7 +22,7 @@ You can change it in the [configuration file](app/config/config.neon).
 
 ## Requirements
 
-PHP 5.6 or higher. To check whether server configuration meets the minimum requirements for [Nette Framework](https://doc.nette.org/2.4/requirements).
+PHP 7.0 or higher. To check whether server configuration meets the minimum requirements for [Nette Framework](https://doc.nette.org/2.4/requirements).
 
 ### Web server
 
