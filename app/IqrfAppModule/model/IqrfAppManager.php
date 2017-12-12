@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+declare(strict_types=1);
+
 namespace App\IqrfAppModule\Model;
 
 use App\IqrfAppModule\Model\CoordinatorParser;
@@ -68,7 +70,7 @@ class IqrfAppManager {
 	 * @param array $array JSON request on array
 	 * @return string JSON response
 	 */
-	public function sendCommand($array) {
+	public function sendCommand(array $array) {
 		$cmd = 'iqrfapp "' . str_replace('"', '\\"', Json::encode($array)) . '"';
 		return $this->commandManager->send($cmd, true);
 	}
@@ -79,7 +81,7 @@ class IqrfAppManager {
 	 * @param int $timeout DPA timeout in milliseconds
 	 * @return array DPA request and response
 	 */
-	public function sendRaw($packet, $timeout = null) {
+	public function sendRaw(string $packet, int $timeout = null) {
 		$now = new DateTime();
 		$array = [
 			'ctype' => 'dpa',
@@ -98,7 +100,11 @@ class IqrfAppManager {
 		}
 		// Workaround to fix mismatched msgid
 		$this->readOnly(200);
-		preg_match('/Received: {(.*?)\}/s', $this->sendCommand($array), $output);
+		$commandOutput = $this->sendCommand($array);
+		if (empty($commandOutput)) {
+			throw new EmptyResponseException();
+		}
+		preg_match('/Received: {(.*?)\}/s', $commandOutput, $output);
 		$response = !empty($output) ? str_replace('Received: ', '', $output[0]) : null;
 		$data = [
 			'request' => Json::encode($array, Json::PRETTY),
@@ -113,7 +119,7 @@ class IqrfAppManager {
 	 * @param int $timeout DPA timeout in milliseconds
 	 * @return string JSON response
 	 */
-	public function readOnly($timeout = null) {
+	public function readOnly(int $timeout = null) {
 		$cmd = 'iqrfapp readonly';
 		$cmd .= isset($timeout) ? ' timeout ' . $timeout : '';
 		return $this->commandManager->send($cmd, true);
@@ -125,7 +131,7 @@ class IqrfAppManager {
 	 * @return string Response
 	 * @throws InvalidOperationModeException
 	 */
-	public function changeOperationMode($mode) {
+	public function changeOperationMode(string $mode) {
 		$modes = ['forwarding', 'operational', 'service'];
 		if (!in_array($mode, $modes, true)) {
 			throw new InvalidOperationModeException();
@@ -143,7 +149,7 @@ class IqrfAppManager {
 	 * @param string $packet Raw IQRF packet
 	 * @return bool Status
 	 */
-	public function validatePacket($packet) {
+	public function validatePacket(string $packet) {
 		$pattern = '/^([0-9a-fA-F]{1,2}\.){4,62}[0-9a-fA-F]{1,2}(\.|)$/';
 		return (bool) preg_match($pattern, $packet);
 	}
@@ -154,7 +160,7 @@ class IqrfAppManager {
 	 * @return array Parsed response in array
 	 * @throws EmptyResponseException
 	 */
-	public function parseResponse($json) {
+	public function parseResponse(array $json) {
 		$jsonResponse = $json['response'];
 		if (empty($jsonResponse) || $jsonResponse === 'Timeout') {
 			throw new EmptyResponseException();

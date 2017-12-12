@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+declare(strict_types=1);
+
 namespace App\IqrfAppModule\Model;
 
 use App\IqrfAppModule\Model\IqrfAppManager;
@@ -59,7 +61,7 @@ class IqrfNetManager {
 	 * @param string $address A requested address for the bonded node. The address must not be used (bonded) yet. If this parameter equals to 0, then the 1 free address is assigned to the node.
 	 * @return array DPA request and response
 	 */
-	public function bondNode($address = '00') {
+	public function bondNode(string $address = '00') {
 		$packet = '00.00.00.04.ff.ff.' . $address . '.00';
 		$timeout = 12000;
 		return $this->iqrfAppManager->sendRaw($packet, $timeout);
@@ -72,7 +74,7 @@ class IqrfNetManager {
 	 * @param string $maxAddress Nonzero value specifies maximum node address to be part of the discovery process. This feature allows splitting all node devices into two parts: [1] devices having an address from 1 to MaxAddr will be part of the discovery process thus they become routers, [2] devices having an address from MaxAddr+1 to 239 will not be routers. See IQRF OS documentation for more information. The value of this parameter is ignored at demo version. A value 5 is always used instead.
 	 * @return array DPA request and response
 	 */
-	public function discovery($txPower = '00', $maxAddress = '00') {
+	public function discovery(string $txPower = '00', string $maxAddress = '00') {
 		$packet = '00.00.00.07.ff.ff.' . Strings::padLeft($txPower, 2, '0')
 				. '.' . dechex($maxAddress);
 		$timeout = 0;
@@ -84,7 +86,7 @@ class IqrfNetManager {
 	 * @param string $address Address of the node to remove the bond to
 	 * @return array DPA request and response
 	 */
-	public function removeNode($address) {
+	public function removeNode(string $address) {
 		$packet = '00.00.00.05.ff.ff.' . $address;
 		return $this->iqrfAppManager->sendRaw($packet);
 	}
@@ -94,7 +96,7 @@ class IqrfNetManager {
 	 * @param string $address Number of bonded network nodes
 	 * @return array DPA request and response
 	 */
-	public function rebondNode($address) {
+	public function rebondNode(string $address) {
 		$packet = '00.00.00.06.ff.ff.' . $address;
 		return $this->iqrfAppManager->sendRaw($packet);
 	}

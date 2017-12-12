@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+declare(strict_types=1);
+
 namespace App\IqrfAppModule\Presenters;
 
 use App\IqrfAppModule\Forms\IqrfAppSendRawFormFactory;
@@ -69,7 +71,7 @@ class SendRawPresenter extends BasePresenter {
 	 * AJAX handler for showing DPA response
 	 * @param string $response DPA response
 	 */
-	public function handleShowResponse($response) {
+	public function handleShowResponse(string $response) {
 		$this->template->json = $response;
 		$this->template->parsedResponse = $this->iqrfAppManager->parseResponse($response);
 		$this->redrawControl('responseChange');

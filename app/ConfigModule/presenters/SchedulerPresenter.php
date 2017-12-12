@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+declare(strict_types=1);
+
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Model\SchedulerManager;
@@ -57,7 +59,7 @@ class SchedulerPresenter extends BasePresenter {
 	 * Edit task in scheduler
 	 * @param int $id ID of MQTT interface
 	 */
-	public function renderEdit($id) {
+	public function renderEdit(int $id) {
 		$this->onlyForAdmins();
 		$this->template->id = $id;
 	}
@@ -66,7 +68,7 @@ class SchedulerPresenter extends BasePresenter {
 	 * Add new task to scheduler
 	 * @param string $type
 	 */
-	public function actionAdd($type) {
+	public function actionAdd(string $type) {
 		$this->onlyForAdmins();
 		$this->configManager->add($type);
 		$this->redirect('Scheduler:edit', ['id' => $this->configManager->getLastId()]);
@@ -77,7 +79,7 @@ class SchedulerPresenter extends BasePresenter {
 	 * Delete task in scheduler
 	 * @param int $id ID of task in Scheduler
 	 */
-	public function actionDelete($id) {
+	public function actionDelete(int $id) {
 		$this->onlyForAdmins();
 		$this->configManager->delete($id);
 		$this->redirect('Scheduler:default');

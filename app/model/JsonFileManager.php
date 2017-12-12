@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+declare(strict_types=1);
+
 namespace App\Model;
 
 use Nette;
@@ -33,7 +35,7 @@ class JsonFileManager extends FileManager {
 	 * Constructor
 	 * @param string $configDir Directory with configuration files
 	 */
-	public function __construct($configDir) {
+	public function __construct(string $configDir) {
 		parent::__construct($configDir);
 	}
 
@@ -42,7 +44,7 @@ class JsonFileManager extends FileManager {
 	 * @param string $fileName File name (without .json)
 	 * @return array
 	 */
-	public function read($fileName) {
+	public function read(string $fileName) {
 		$file = parent::read($fileName . '.json');
 		return Json::decode($file, Json::FORCE_ARRAY);
 	}
@@ -52,7 +54,7 @@ class JsonFileManager extends FileManager {
 	 * @param string $name File name (without .json)
 	 * @param array $array JSON array
 	 */
-	public function write($name, $array) {
+	public function write(string $name, $array) {
 		$json = Json::encode($array, Json::PRETTY);
 		parent::write($name . '.json', $json);
 	}

@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+declare(strict_types=1);
+
 namespace App\ConfigModule\Model;
 
 use App\Model\JsonFileManager;
@@ -97,7 +99,7 @@ class SchedulerManager {
 	 * Add task
 	 * @param string $type Task type
 	 */
-	public function add($type) {
+	public function add(string $type) {
 		$json = $this->fileManager->read($this->fileName);
 		$taskManager = new JsonFileManager(__DIR__ . '/../json');
 		$tasks = $taskManager->read($this->fileName);
@@ -110,7 +112,7 @@ class SchedulerManager {
 	 * Delete task
 	 * @param int $id Task ID
 	 */
-	public function delete($id) {
+	public function delete(int $id) {
 		$json = $this->fileManager->read($this->fileName);
 		unset($json['TasksJson'][$id]);
 		$json['TasksJson'] = array_values($json['TasksJson']);
@@ -187,7 +189,7 @@ class SchedulerManager {
 	 * @param int $id Task ID
 	 * @return array Array for form
 	 */
-	public function load($id = 0) {
+	public function load(int $id = 0) {
 		$json = $this->fileManager->read($this->fileName);
 		$tasks = $json['TasksJson'];
 		if ($id > count($tasks)) {
@@ -213,7 +215,7 @@ class SchedulerManager {
 	 * @param ArrayHash $array Scheduler settings
 	 * @param int $id Task ID
 	 */
-	public function save(ArrayHash $array, $id = 0) {
+	public function save(ArrayHash $array, int $id = 0) {
 		$json = $this->saveJson($this->fileManager->read($this->fileName), $array, $id);
 		$this->fileManager->write($this->fileName, $json);
 	}
@@ -225,7 +227,7 @@ class SchedulerManager {
 	 * @param int $id Task ID
 	 * @return array JSON array
 	 */
-	public function saveJson(array $scheduler, ArrayHash $update, $id) {
+	public function saveJson(array $scheduler, ArrayHash $update, int $id) {
 		$data = [];
 		$data['time'] = $update['time'];
 		$data['service'] = $update['service'];

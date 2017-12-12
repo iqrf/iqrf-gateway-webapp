@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+declare(strict_types=1);
+
 namespace App\IqrfAppModule\Model;
 
 use Nette;
@@ -33,7 +35,7 @@ class OsParser {
 	 * @param string $packet DPA packet
 	 * @return array
 	 */
-	public function parse($packet) {
+	public function parse(string $packet) {
 		$data = explode('.', $packet);
 		$pcmd = $data[3];
 		switch ($pcmd) {
@@ -47,7 +49,7 @@ class OsParser {
 	 * @param string $packet DPA packet response
 	 * @return array Information about DCTR module
 	 */
-	public function parseReadInfo($packet) {
+	public function parseReadInfo(string $packet) {
 		$data = [];
 		$trTypes = [0 => '52D', 1 => '58D-RJ', 2 => '72D', 3 => '53D', 8 => '54D', 9 => '55D', 10 => '56D', 11 => '76D'];
 		$mcuTypes = [3 => 'PIC16F886', 4 => 'PIC16F1938'];

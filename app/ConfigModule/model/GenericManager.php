@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+declare(strict_types=1);
+
 namespace App\ConfigModule\Model;
 
 use App\Model\JsonFileManager;
@@ -66,7 +68,7 @@ class GenericManager {
 	 * Set file name
 	 * @param string $fileName File name (without .json)
 	 */
-	public function setFileName($fileName) {
+	public function setFileName(string $fileName) {
 		$this->fileName = $fileName;
 	}
 

@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+declare(strict_types=1);
+
 namespace App\GatewayModule\Model;
 
 use Nette;
@@ -39,7 +41,7 @@ class LogManager {
 	 * Constructor
 	 * @param string $path Path to iqrf-daemon log
 	 */
-	public function __construct($path) {
+	public function __construct(string $path) {
 		$this->path = $path;
 	}
 

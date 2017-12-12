@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+declare(strict_types=1);
+
 namespace App\ConfigModule\Forms;
 
 use App\ConfigModule\Model\SchedulerManager;
@@ -55,7 +57,7 @@ class ConfigSchedulerFormFactory {
 	 * @return Form Scheduler configuration form
 	 */
 	public function create(SchedulerPresenter $presenter) {
-		$id = $presenter->getParameter('id');
+		$id = intval($presenter->getParameter('id'));
 		$form = $this->factory->create();
 		$defaults = $this->manager->load($id);
 		$types = [

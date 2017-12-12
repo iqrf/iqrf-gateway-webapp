@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+declare(strict_types=1);
+
 namespace App\ServiceModule\Model;
 
 use App\Model\CommandManager;
@@ -45,7 +47,7 @@ class ServiceManager {
 	 * @param string $initDaemon Init daemon
 	 * @param CommandManager $commandManager Command manager
 	 */
-	public function __construct($initDaemon, CommandManager $commandManager) {
+	public function __construct(string $initDaemon, CommandManager $commandManager) {
 		$this->initDaemon = $initDaemon;
 		$this->commandManager = $commandManager;
 	}

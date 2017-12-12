@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+declare(strict_types=1);
+
 namespace App\IqrfAppModule\Model;
 
 use Nette;
@@ -37,7 +39,7 @@ class IqrfMacroManager {
 	 * Constructor
 	 * @param string $path Path to IQRF IDE MAcro file
 	 */
-	public function __construct($path) {
+	public function __construct(string $path) {
 		$this->path = $path;
 	}
 
@@ -56,7 +58,7 @@ class IqrfMacroManager {
 	 * @param string $hex Data in HEX
 	 * @return array Data in array
 	 */
-	public function parseMacros($hex) {
+	public function parseMacros(string $hex) {
 		$array = explode("\r\n", trim($this->hex2ascii($hex)));
 		for ($i = 0; $i < 3; $i++) {
 			array_shift($array);
@@ -87,7 +89,7 @@ class IqrfMacroManager {
 	 * @param string $hex Data in HEX
 	 * @return string Data in ASCII
 	 */
-	public function hex2ascii($hex) {
+	public function hex2ascii(string $hex) {
 		$string = '';
 		for ($i = 0; $i < strlen($hex); $i += 2) {
 			$string .= chr(hexdec(substr($hex, $i, 2)));

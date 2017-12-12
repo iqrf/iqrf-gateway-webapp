@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+declare(strict_types=1);
+
 namespace App\ConfigModule\Forms;
 
 use App\ConfigModule\Model\InstanceManager;
@@ -55,7 +57,7 @@ class ConfigMqFormFactory {
 	 * @return Form MQTT configuration form
 	 */
 	public function create(MqPresenter $presenter) {
-		$id = $presenter->getParameter('id');
+		$id = intval($presenter->getParameter('id'));
 		$form = $this->factory->create();
 		$fileName = 'MqMessaging';
 		$this->manager->setFileName($fileName);

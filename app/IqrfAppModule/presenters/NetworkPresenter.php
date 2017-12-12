@@ -17,13 +17,12 @@
  * limitations under the License.
  */
 
+declare(strict_types=1);
+
 namespace App\IqrfAppModule\Presenters;
 
-use App\IqrfAppModule\Forms\IqrfNetBondNodeFormFactory;
 use App\IqrfAppModule\Forms\IqrfNetBondingFormFactory;
 use App\IqrfAppModule\Forms\IqrfNetDiscoveryFormFactory;
-use App\IqrfAppModule\Forms\IqrfNetRebondNodeFormFactory;
-use App\IqrfAppModule\Forms\IqrfNetRemoveNodeFormFactory;
 use App\Presenters\BasePresenter;
 
 /**

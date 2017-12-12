@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+declare(strict_types=1);
+
 namespace App\IqrfAppModule\Model;
 
 use Nette;
@@ -33,7 +35,7 @@ class CoordinatorParser {
 	 * @param string $packet DPA packet
 	 * @return array
 	 */
-	public function parse($packet) {
+	public function parse(string $packet) {
 		$pcmd = explode('.', $packet)[3];
 		switch ($pcmd) {
 			case '81':
@@ -48,7 +50,7 @@ class CoordinatorParser {
 	 * @param string $packet DPA packet response
 	 * @return array Bonded XOR discovered nodes
 	 */
-	public function parseGetNodes($packet) {
+	public function parseGetNodes(string $packet) {
 		$data = [];
 		$packetArray = explode('.', $packet);
 		$pcmd = $packetArray[3];

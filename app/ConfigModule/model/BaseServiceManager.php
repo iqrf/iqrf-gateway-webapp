@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+declare(strict_types=1);
+
 namespace App\ConfigModule\Model;
 
 use App\Model\JsonFileManager;
@@ -58,7 +60,7 @@ class BaseServiceManager {
 	 * Delete Base service setting
 	 * @param int $id Base service ID
 	 */
-	public function delete($id) {
+	public function delete(int $id) {
 		$json = $this->fileManager->read($this->fileName);
 		unset($json['Instances'][$id]);
 		$json['Instances'] = array_values($json['Instances']);
@@ -79,7 +81,7 @@ class BaseServiceManager {
 	 * @param int $id Base Service ID
 	 * @return array Array for form
 	 */
-	public function load($id = 0) {
+	public function load(int $id = 0) {
 		$json = $this->fileManager->read($this->fileName);
 		$instances = $json['Instances'];
 		if ($id >= count($instances)) {
@@ -103,7 +105,7 @@ class BaseServiceManager {
 	 * @param ArrayHash $array Base service settings
 	 * @param int $id Base service ID
 	 */
-	public function save(ArrayHash $array, $id = 0) {
+	public function save(ArrayHash $array, int $id = 0) {
 		$json = $this->saveJson($this->fileManager->read($this->fileName), $array, $id);
 		$this->fileManager->write($this->fileName, $json);
 	}
@@ -115,7 +117,7 @@ class BaseServiceManager {
 	 * @param int $id Base Service ID
 	 * @return array JSON array
 	 */
-	public function saveJson(array $services, ArrayHash $update, $id) {
+	public function saveJson(array $services, ArrayHash $update, int $id) {
 		$service = [];
 		$service['Name'] = $update['Name'];
 		$service['Messaging'] = $update['Messaging'];

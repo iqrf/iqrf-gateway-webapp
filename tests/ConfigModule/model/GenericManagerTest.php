@@ -7,6 +7,8 @@
  * @testCase
  */
 
+declare(strict_types=1);
+
 namespace Test\ConfigModule\Model;
 
 use App\ConfigModule\Model\GenericManager;

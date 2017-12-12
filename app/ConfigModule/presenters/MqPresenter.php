@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+declare(strict_types=1);
+
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Model\InstanceManager;
@@ -63,7 +65,7 @@ class MqPresenter extends BasePresenter {
 	 * Edit MQ interface
 	 * @param int $id ID of MQ interface
 	 */
-	public function renderEdit($id) {
+	public function renderEdit(int $id) {
 		$this->onlyForAdmins();
 		$this->template->id = $id;
 	}
@@ -72,7 +74,7 @@ class MqPresenter extends BasePresenter {
 	 * Delete MQ interface
 	 * @param int $id ID of MQ interface
 	 */
-	public function actionDelete($id) {
+	public function actionDelete(int $id) {
 		$this->onlyForAdmins();
 		$this->configManager->delete($id);
 		$this->redirect('Mq:default');

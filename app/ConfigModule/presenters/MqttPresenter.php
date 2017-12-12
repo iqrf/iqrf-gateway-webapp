@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+declare(strict_types=1);
+
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Model\InstanceManager;
@@ -63,7 +65,7 @@ class MqttPresenter extends BasePresenter {
 	 * Edit MQTT interface
 	 * @param int $id ID of MQTT interface
 	 */
-	public function renderEdit($id) {
+	public function renderEdit(int $id) {
 		$this->onlyForAdmins();
 		$this->template->id = $id;
 	}
@@ -72,7 +74,7 @@ class MqttPresenter extends BasePresenter {
 	 * Delete MQTT interface
 	 * @param int $id ID of MQTT interface
 	 */
-	public function actionDelete($id) {
+	public function actionDelete(int $id) {
 		$this->onlyForAdmins();
 		$this->configManager->delete($id);
 		$this->redirect('Mqtt:default');

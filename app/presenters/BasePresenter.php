@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+declare(strict_types=1);
+
 namespace App\Presenters;
 
 use GettextTranslator\Gettext;
@@ -29,7 +31,7 @@ abstract class BasePresenter extends Presenter {
 
 	/**
 	 * @persistent
-	 * @var string
+	 * @var string Language
 	 */
 	public $lang;
 

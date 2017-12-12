@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+declare(strict_types=1);
+
 namespace App\ConfigModule\Model;
 
 use App\Model\JsonFileManager;
@@ -59,7 +61,7 @@ class InstanceManager {
 	 * Delete Instance setting
 	 * @param int $id Instance ID
 	 */
-	public function delete($id) {
+	public function delete(int $id) {
 		$json = $this->fileManager->read($this->fileName);
 		unset($json['Instances'][$id]);
 		$json['Instances'] = array_values($json['Instances']);
@@ -80,7 +82,7 @@ class InstanceManager {
 	 * @param int $id Interface ID
 	 * @return array Array for form
 	 */
-	public function load($id = 0) {
+	public function load(int $id = 0) {
 		$json = $this->fileManager->read($this->fileName);
 		$instances = $json['Instances'];
 		if ($id >= count($instances)) {
@@ -98,7 +100,7 @@ class InstanceManager {
 	 * @param ArrayHash $array Instance settings
 	 * @param int $id Instance ID
 	 */
-	public function save(ArrayHash $array, $id = 0) {
+	public function save(ArrayHash $array, int $id = 0) {
 		$json = $this->fileManager->read($this->fileName);
 		$json['Instances'] = $this->saveJson($json['Instances'], $array, $id);
 		$this->fileManager->write($this->fileName, $json);
@@ -111,7 +113,7 @@ class InstanceManager {
 	 * @param int $id Interface ID
 	 * @return array JSON array
 	 */
-	public function saveJson(array $instances, ArrayHash $update, $id) {
+	public function saveJson(array $instances, ArrayHash $update, int $id) {
 		$instance = [];
 		$instance['Name'] = $update['Name'];
 		$instance['Enabled'] = $update['Enabled'];
@@ -125,7 +127,7 @@ class InstanceManager {
 	 * Set file name
 	 * @param string $fileName File name (without .json)
 	 */
-	public function setFileName($fileName) {
+	public function setFileName(string $fileName) {
 		$this->fileName = $fileName;
 	}
 

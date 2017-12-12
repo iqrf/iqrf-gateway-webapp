@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+declare(strict_types=1);
+
 namespace App\ConfigModule\Forms;
 
 use App\ConfigModule\Model\MainManager;

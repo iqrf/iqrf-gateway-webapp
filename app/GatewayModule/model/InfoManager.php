@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+declare(strict_types=1);
+
 namespace App\GatewayModule\Model;
 
 use App\IqrfAppModule\Model\IqrfAppManager;

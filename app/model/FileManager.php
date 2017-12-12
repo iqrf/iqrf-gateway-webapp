@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+declare(strict_types=1);
+
 namespace App\Model;
 
 use Nette;
@@ -38,7 +40,7 @@ class FileManager {
 	 * Constructor
 	 * @param string $configDir Directory with files
 	 */
-	public function __construct($configDir) {
+	public function __construct(string $configDir) {
 		$this->configDir = $configDir;
 	}
 
@@ -47,7 +49,7 @@ class FileManager {
 	 * @param string $fileName File name
 	 * @return string File content
 	 */
-	public function read($fileName) {
+	public function read(string $fileName) {
 		return FileSystem::read($this->configDir . '/' . $fileName);
 	}
 
@@ -56,7 +58,7 @@ class FileManager {
 	 * @param string $fileName File name
 	 * @param array $content File content
 	 */
-	public function write($fileName, $content) {
+	public function write(string $fileName, $content) {
 		$fileName = 'nette.safe://' . $this->configDir . '/' . $fileName;
 		FileSystem::write($fileName, $content, null);
 	}

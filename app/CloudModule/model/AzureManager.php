@@ -16,6 +16,8 @@
  * limitations under the License.
  */
 
+declare(strict_types=1);
+
 namespace App\CloudModule\Model;
 
 use DateInterval;
@@ -40,7 +42,7 @@ class AzureManager {
 	 * @param string $connectionString MS Azure IoT Hub Connection string
 	 * @return ArrayHash MQTT interface
 	 */
-	public function createMqttInterface($connectionString) {
+	public function createMqttInterface(string $connectionString) {
 		$this->checkConnectionString($connectionString);
 		$data = $this->parseConnectionString($connectionString);
 		$endpoint = $data['HostName'] . '/devices/' . $data['DeviceId'];
@@ -90,7 +92,7 @@ class AzureManager {
 	 * @param string $connectionString MS Azure IoT Hub Connection String
 	 * @throws InvalidConnectionString
 	 */
-	public function checkConnectionString($connectionString) {
+	public function checkConnectionString(string $connectionString) {
 		$data = $this->parseConnectionString($connectionString);
 		if (!isset($data['DeviceId']) ||
 				!isset($data['HostName']) ||
@@ -107,7 +109,7 @@ class AzureManager {
 	 * @param int $expiresInMins Expiration in minutes
 	 * @return string MS Azure Shared access signature token
 	 */
-	public function generateSasToken($resourceUri, $signingKey, $policyName = null, $expiresInMins = 525600) {
+	public function generateSasToken(string $resourceUri, string $signingKey, string $policyName = null, int $expiresInMins = 525600) {
 		$now = new DateTime();
 		$expires = new DateInterval('PT' . $expiresInMins . 'M');
 		$ttl = $now->add($expires)->getTimestamp();
@@ -128,7 +130,7 @@ class AzureManager {
 	 * @param string $connectionString MS Azure IoT Hub Connection string
 	 * @return array Values from the connection string
 	 */
-	public function parseConnectionString($connectionString) {
+	public function parseConnectionString(string $connectionString) {
 		$connection = trim($connectionString, " =\t\n\r\0\x0B");
 		$data = [];
 		foreach (explode(';', $connection) as $i) {

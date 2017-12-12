@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+declare(strict_types=1);
+
 namespace App\Model;
 
 use Nette;
@@ -48,7 +50,7 @@ class CommandManager {
 	 * Constructor
 	 * @param bool $sudo Sudo required
 	 */
-	public function __construct($sudo) {
+	public function __construct(bool $sudo) {
 		$this->sudo = $sudo;
 	}
 
@@ -58,7 +60,7 @@ class CommandManager {
 	 * @param bool $needSudo
 	 * @return string Output
 	 */
-	public function send($cmd, $needSudo = false) {
+	public function send(string $cmd, bool $needSudo = false) {
 		$command = $this->sudo && $needSudo ? 'sudo ' : '';
 		$command .= $cmd;
 		$output['command'] = $command;
@@ -82,7 +84,7 @@ class CommandManager {
 	 * @param string $cmd Command
 	 * @return bool
 	 */
-	public function commandExist($cmd) {
+	public function commandExist(string $cmd) {
 		return !empty($this->send('which ' . $cmd));
 	}
 

@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+declare(strict_types=1);
+
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Model\BaseServiceManager;
@@ -57,7 +59,7 @@ class BaseServicePresenter extends BasePresenter {
 	 * Edit Base service
 	 * @param int $id ID of Base service
 	 */
-	public function renderEdit($id) {
+	public function renderEdit(int $id) {
 		$this->onlyForAdmins();
 		$this->template->id = $id;
 	}
@@ -66,7 +68,7 @@ class BaseServicePresenter extends BasePresenter {
 	 * Delete Base service
 	 * @param int $id ID of Base service
 	 */
-	public function actionDelete($id) {
+	public function actionDelete(int $id) {
 		$this->onlyForAdmins();
 		$this->configManager->delete($id);
 		$this->redirect('BaseService:default');
