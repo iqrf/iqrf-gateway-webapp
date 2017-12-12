@@ -2,7 +2,7 @@ source:
     - "app"
     - "tests"
 destination: "docs"
-title: "IQRF Daemon webapp"
+title: "IQRF Gateway Daemon webapp"
 baseUrl: "https://docs.iqrfsdk.org/iqrf-daemon-webapp/"
 accessLevels:
     - "public"

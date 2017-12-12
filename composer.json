@@ -1,6 +1,6 @@
 {
 	"name": "iqrfsdk/iqrf-daemon-webapp",
-	"description": "IQRF Daemon web application",
+	"description": "IQRF Gateway Daemon web application",
 	"version": "1.0.0",
 	"type": "project",
 	"keywords": ["nette", "iqrf", "iqrf-daemon"],
