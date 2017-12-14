@@ -51,7 +51,7 @@ class MainManager {
 	 * Convert Main configuration form array to JSON array
 	 * @return array Array for form
 	 */
-	public function load() {
+	public function load(): array {
 		$json = $this->fileManager->read($this->fileName);
 		return $json;
 	}

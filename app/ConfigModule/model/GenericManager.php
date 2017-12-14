@@ -52,7 +52,7 @@ class GenericManager {
 	 * Load configuration
 	 * @return array Array for form
 	 */
-	public function load() {
+	public function load(): array {
 		return $this->fileManager->read($this->fileName);
 	}
 

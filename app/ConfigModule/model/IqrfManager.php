@@ -59,7 +59,7 @@ class IqrfManager {
 	 * Load configuration
 	 * @return array Array for form
 	 */
-	public function load() {
+	public function load(): array {
 		return $this->fileManager->read($this->fileName);
 	}
 
@@ -75,7 +75,7 @@ class IqrfManager {
 	 * Create list of SPI and USB CDC interfaces available in the system
 	 * @return array SPI and USB CDC interfaces available in the system
 	 */
-	public function getInterfaces() {
+	public function getInterfaces(): array {
 		$interfaces = [];
 		$interfaces['cdc'] = $this->getCdcInterfaces();
 		$interfaces['spi'] = $this->getSpiInterfaces();

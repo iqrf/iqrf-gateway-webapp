@@ -71,7 +71,7 @@ class BaseServiceManager {
 	 * Get list of Base services
 	 * @return array Base services
 	 */
-	public function getServices() {
+	public function getServices(): array {
 		$json = $this->fileManager->read($this->fileName);
 		return $json['Instances'];
 	}
@@ -81,7 +81,7 @@ class BaseServiceManager {
 	 * @param int $id Base Service ID
 	 * @return array Array for form
 	 */
-	public function load(int $id = 0) {
+	public function load(int $id = 0): array {
 		$json = $this->fileManager->read($this->fileName);
 		$instances = $json['Instances'];
 		if ($id >= count($instances)) {
@@ -117,7 +117,7 @@ class BaseServiceManager {
 	 * @param int $id Base Service ID
 	 * @return array JSON array
 	 */
-	public function saveJson(array $services, ArrayHash $update, int $id) {
+	public function saveJson(array $services, ArrayHash $update, int $id): array {
 		$service = [];
 		$service['Name'] = $update['Name'];
 		$service['Messaging'] = $update['Messaging'];

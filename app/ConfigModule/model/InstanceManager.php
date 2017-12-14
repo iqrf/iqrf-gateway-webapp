@@ -72,7 +72,7 @@ class InstanceManager {
 	 * Get list of Instances
 	 * @return array Instances
 	 */
-	public function getInstances() {
+	public function getInstances(): array {
 		$json = $this->fileManager->read($this->fileName);
 		return $json['Instances'];
 	}
@@ -82,7 +82,7 @@ class InstanceManager {
 	 * @param int $id Interface ID
 	 * @return array Array for form
 	 */
-	public function load(int $id = 0) {
+	public function load(int $id = 0): array {
 		$json = $this->fileManager->read($this->fileName);
 		$instances = $json['Instances'];
 		if ($id >= count($instances)) {
@@ -113,7 +113,7 @@ class InstanceManager {
 	 * @param int $id Interface ID
 	 * @return array JSON array
 	 */
-	public function saveJson(array $instances, ArrayHash $update, int $id) {
+	public function saveJson(array $instances, ArrayHash $update, int $id): array {
 		$instance = [];
 		$instance['Name'] = $update['Name'];
 		$instance['Enabled'] = $update['Enabled'];

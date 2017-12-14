@@ -51,7 +51,7 @@ class ComponentManager {
 	 * Convert Main configuration form array to JSON array
 	 * @return array Array for form
 	 */
-	public function load() {
+	public function load(): array {
 		$json = $this->fileManager->read($this->fileName);
 		return $json['Components'];
 	}
@@ -71,7 +71,7 @@ class ComponentManager {
 	 * @param ArrayHash $components Components configuration form array
 	 * @return array JSON array
 	 */
-	public function saveJson(ArrayHash $components) {
+	public function saveJson(ArrayHash $components): array {
 		$array = [];
 		foreach ($components as $component => $enabled) {
 			array_push($array, ['ComponentName' => $component, 'Enabled' => $enabled]);

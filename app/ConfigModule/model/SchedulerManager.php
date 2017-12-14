@@ -123,7 +123,7 @@ class SchedulerManager {
 	 * Get last ID
 	 * @return int Last ID in array
 	 */
-	public function getLastId() {
+	public function getLastId(): int {
 		$json = $this->fileManager->read($this->fileName);
 		$tasks = $json['TasksJson'];
 		end($tasks);
@@ -170,7 +170,7 @@ class SchedulerManager {
 	 * Get tasks in Scheduler
 	 * @return array Tasks
 	 */
-	public function getTasks() {
+	public function getTasks(): array {
 		$jsonTasks = $this->fileManager->read($this->fileName)['TasksJson'];
 		$tasks = [];
 		foreach ($jsonTasks as $json) {
@@ -189,7 +189,7 @@ class SchedulerManager {
 	 * @param int $id Task ID
 	 * @return array Array for form
 	 */
-	public function load(int $id = 0) {
+	public function load(int $id = 0): array {
 		$json = $this->fileManager->read($this->fileName);
 		$tasks = $json['TasksJson'];
 		if ($id > count($tasks)) {
@@ -227,7 +227,7 @@ class SchedulerManager {
 	 * @param int $id Task ID
 	 * @return array JSON array
 	 */
-	public function saveJson(array $scheduler, ArrayHash $update, int $id) {
+	public function saveJson(array $scheduler, ArrayHash $update, int $id): array {
 		$data = [];
 		$data['time'] = $update['time'];
 		$data['service'] = $update['service'];
