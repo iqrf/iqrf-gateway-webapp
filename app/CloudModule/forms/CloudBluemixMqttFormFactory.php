@@ -72,7 +72,7 @@ class CloudBluemixMqttFormFactory {
 	 * @param BluemixPresenter $presenter
 	 * @return Form MQTT configuration form
 	 */
-	public function create(BluemixPresenter $presenter) {
+	public function create(BluemixPresenter $presenter): Form {
 		$form = $this->factory->create();
 		$fileName = 'MqttMessaging';
 		$this->manager->setFileName($fileName);

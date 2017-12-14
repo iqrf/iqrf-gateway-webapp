@@ -56,7 +56,7 @@ class ConfigMainFormFactory {
 	 * @param MainPresenter $presenter
 	 * @return Form Tracer configuration form
 	 */
-	public function create(MainPresenter $presenter) {
+	public function create(MainPresenter $presenter): Form {
 		$form = $this->factory->create();
 		$items = ['forwarding' => 'Forwarding', 'operational' => 'Operational', 'service' => 'Service'];
 		$form->addText('Configuration', 'Configuration');

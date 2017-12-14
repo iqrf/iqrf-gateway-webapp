@@ -72,7 +72,7 @@ class CloudAwsMqttFormFactory {
 	 * @param AwsPresenter $presenter
 	 * @return Form MQTT configuration form
 	 */
-	public function create(AwsPresenter $presenter) {
+	public function create(AwsPresenter $presenter): Form {
 		$form = $this->factory->create();
 		$fileName = 'MqttMessaging';
 		$this->manager->setFileName($fileName);

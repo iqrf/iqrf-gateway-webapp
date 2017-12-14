@@ -56,7 +56,7 @@ class FormFactory {
 	/**
 	 * @return Form
 	 */
-	public function create() {
+	public function create(): Form {
 		$form = $this->iFormFactory->create();
 		$form->setTranslator($this->translator);
 		return $form;

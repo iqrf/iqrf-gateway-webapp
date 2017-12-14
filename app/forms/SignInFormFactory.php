@@ -56,10 +56,10 @@ class SignInFormFactory {
 
 	/**
 	 * Create sign in form
-	 * @param App\Forms\callable $onSuccess
+	 * @param callable $onSuccess
 	 * @return Form Sign in form
 	 */
-	public function create(callable $onSuccess) {
+	public function create(callable $onSuccess): Form {
 		$form = $this->factory->create();
 		$form->addText('username', 'Username:')->setRequired('Please enter your username.');
 		$form->addPassword('password', 'Password:')->setRequired('Please enter your password.');

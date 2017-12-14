@@ -56,7 +56,7 @@ class ConfigIqrfAppFormFactory {
 	 * @param IqrfAppPresenter $presenter
 	 * @return Form IQRF configuration form
 	 */
-	public function create(IqrfAppPresenter $presenter) {
+	public function create(IqrfAppPresenter $presenter): Form {
 		$form = $this->factory->create();
 		$fileName = 'iqrfapp';
 		$items = ['err' => 'Error', 'war' => 'Warning', 'inf' => 'Info', 'dbg' => 'Debug'];

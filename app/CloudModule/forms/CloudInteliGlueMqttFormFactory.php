@@ -72,7 +72,7 @@ class CloudInteliGlueMqttFormFactory {
 	 * @param InteliGluePresenter $presenter
 	 * @return Form MQTT configuration form
 	 */
-	public function create(InteliGluePresenter $presenter) {
+	public function create(InteliGluePresenter $presenter): Form {
 		$form = $this->factory->create();
 		$fileName = 'MqttMessaging';
 		$this->manager->setFileName($fileName);

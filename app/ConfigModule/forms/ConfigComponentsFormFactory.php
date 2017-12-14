@@ -56,7 +56,7 @@ class ConfigComponentsFormFactory {
 	 * @param MainPresenter $presenter
 	 * @return Form Components configuration form
 	 */
-	public function create(MainPresenter $presenter) {
+	public function create(MainPresenter $presenter): Form {
 		$form = $this->factory->create();
 		$components = $this->manager->load();
 		foreach ($components as $component) {

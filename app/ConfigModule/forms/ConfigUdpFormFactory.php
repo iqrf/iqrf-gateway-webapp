@@ -56,7 +56,7 @@ class ConfigUdpFormFactory {
 	 * @param UdpPresenter $presenter
 	 * @return Form UDP configuration form
 	 */
-	public function create(UdpPresenter $presenter) {
+	public function create(UdpPresenter $presenter): Form {
 		$form = $this->factory->create();
 		$fileName = 'UdpMessaging';
 		$this->manager->setFileName($fileName);

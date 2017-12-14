@@ -56,7 +56,7 @@ class ConfigBaseServiceFormFactory {
 	 * @param BaseServicePresenter $presenter
 	 * @return Form MQTT configuration form
 	 */
-	public function create(BaseServicePresenter $presenter) {
+	public function create(BaseServicePresenter $presenter): Form {
 		$id = intval($presenter->getParameter('id'));
 		$form = $this->factory->create();
 		$serializers = [

@@ -57,7 +57,7 @@ class IqrfNetBondingFormFactory {
 	 * Create IQMESH bonding form
 	 * @return Form IQMESH bonding form
 	 */
-	public function create() {
+	public function create(): Form {
 		$form = $this->factory->create();
 		$form->addCheckbox('autoAddress', 'Auto address');
 		$form->addText('address', 'Address (HEX)')->setDefaultValue('01')

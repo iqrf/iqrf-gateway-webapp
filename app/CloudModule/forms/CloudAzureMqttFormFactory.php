@@ -76,7 +76,7 @@ class CloudAzureMqttFormFactory {
 	 * @param AzurePresenter $presenter
 	 * @return Form MQTT configuration form
 	 */
-	public function create(AzurePresenter $presenter) {
+	public function create(AzurePresenter $presenter): Form {
 		$form = $this->factory->create();
 		$fileName = 'MqttMessaging';
 		$this->manager->setFileName($fileName);

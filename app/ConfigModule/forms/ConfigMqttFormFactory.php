@@ -56,7 +56,7 @@ class ConfigMqttFormFactory {
 	 * @param MqttPresenter $presenter
 	 * @return Form MQTT configuration form
 	 */
-	public function create(MqttPresenter $presenter) {
+	public function create(MqttPresenter $presenter): Form {
 		$id = intval($presenter->getParameter('id'));
 		$form = $this->factory->create();
 		$fileName = 'MqttMessaging';

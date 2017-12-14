@@ -56,7 +56,7 @@ class IqrfNetDiscoveryFormFactory {
 	 * Create Discovery form
 	 * @return Form IQMESH discovery form
 	 */
-	public function create() {
+	public function create(): Form {
 		$form = $this->factory->create();
 		$form->addInteger('txPower', 'TX Power')->setDefaultValue(6)
 				->addRule(Form::RANGE, 'TX Power have to be integer from 0 to 7.', [0,7])

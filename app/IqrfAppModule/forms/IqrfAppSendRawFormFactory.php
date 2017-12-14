@@ -59,7 +59,7 @@ class IqrfAppSendRawFormFactory {
 	 * @param SendRawPresenter $presenter IQRF Send DPA war packet presenter
 	 * @return Form IQRF App send RAW packet form
 	 */
-	public function create(SendRawPresenter $presenter) {
+	public function create(SendRawPresenter $presenter): Form {
 		$form = $this->factory->create();
 		$form->addText('packet', 'DPA packet')->setRequired();
 		$form->addCheckbox('timeoutEnabled', 'Set own DPA timeout')

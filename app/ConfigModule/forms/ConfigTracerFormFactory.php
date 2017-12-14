@@ -56,7 +56,7 @@ class ConfigTracerFormFactory {
 	 * @param TracerPresenter $presenter
 	 * @return Form Tracer configuration form
 	 */
-	public function create(TracerPresenter $presenter) {
+	public function create(TracerPresenter $presenter): Form {
 		$form = $this->factory->create();
 		$fileName = 'TracerFile';
 		$this->manager->setFileName($fileName);

@@ -56,7 +56,7 @@ class ConfigIqrfFormFactory {
 	 * @param IqrfPresenter $presenter
 	 * @return Form IQRF configuration form
 	 */
-	public function create(IqrfPresenter $presenter) {
+	public function create(IqrfPresenter $presenter): Form {
 		$form = $this->factory->create();
 		$communicationModes = ['STD' => 'STD', 'LP' => 'LP'];
 		$form->addText('IqrfInterface', 'IqrfInterface')->setRequired();

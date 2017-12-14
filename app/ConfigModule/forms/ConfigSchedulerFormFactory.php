@@ -56,7 +56,7 @@ class ConfigSchedulerFormFactory {
 	 * @param SchedulerPresenter $presenter
 	 * @return Form Scheduler configuration form
 	 */
-	public function create(SchedulerPresenter $presenter) {
+	public function create(SchedulerPresenter $presenter): Form {
 		$id = intval($presenter->getParameter('id'));
 		$form = $this->factory->create();
 		$defaults = $this->manager->load($id);
