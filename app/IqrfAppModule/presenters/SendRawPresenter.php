@@ -68,12 +68,12 @@ class SendRawPresenter extends BasePresenter {
 	}
 
 	/**
-	 * AJAX handler for showing DPA response
-	 * @param string $response DPA response
+	 * AJAX handler for showing DPA request and response
+	 * @param array $data DPA request and response
 	 */
-	public function handleShowResponse(string $response) {
-		$this->template->json = $response;
-		$this->template->parsedResponse = $this->iqrfAppManager->parseResponse($response);
+	public function handleShowResponse(array $data) {
+		$this->template->json = $data;
+		$this->template->parsedResponse = $this->iqrfAppManager->parseResponse($data);
 		$this->redrawControl('responseChange');
 	}
 
