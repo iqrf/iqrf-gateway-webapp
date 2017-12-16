@@ -13,11 +13,6 @@ $configurator->setDebugMode(false);
 $configurator->setTempDirectory(__DIR__ . '/../temp');
 $configurator->createRobotLoader()->addDirectory(__DIR__ . '/../app')->register();
 $configurator->addConfig(__DIR__ . '/../app/config/config.neon');
-$configurator->addParameters(
-		[
-			'php_version' => phpversion(),
-		]
-);
 
 $container = $configurator->createContainer();
 return $container;

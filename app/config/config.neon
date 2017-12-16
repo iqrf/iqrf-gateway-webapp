@@ -10,6 +10,9 @@ parameters:
 	logPath: '/var/log/iqrf-daemon.log'
 	# path to IQRF IDE macros
 	macroPath: '../iqrf/DPA-macros_170601.iqrfmcr'
+	# Sentry configuration
+	sentry:
+		dsn: 'https://fa0c82acd2db40bdae660f9f01a8c400:34a69b195929416dbe97a7cd76aacf24@sentry.iqrfsdk.org/2'
 
 application:
 	errorPresenter: Error
@@ -19,7 +22,7 @@ application:
 extensions:
 	gettextTranslator: GettextTranslator\DI\Extension
 	extendedFormMacros: Instante\ExtendedFormMacros\DI\ExtendedFormMacrosExtension
-	sentryLogger: Salamek\RavenNette\DI\SentryLoggerExtension
+	monolog: Kdyby\Monolog\DI\MonologExtension
 
 gettextTranslator:
 	# default language (en or cs)
@@ -30,16 +33,17 @@ gettextTranslator:
 	layout: horizontal # or: vertical
 	height: 450
 
-sentryLogger:
-	dsn: 'https://fa0c82acd2db40bdae660f9f01a8c400:34a69b195929416dbe97a7cd76aacf24@sentry.iqrfsdk.org/2'
-	inDebug: true
-	options:
-		exclude:
-			- Nette\Application\BadRequestException
-			- Nette\Application\ForbiddenRequestException
-			- Nette\Application\AbortException
-		tags:
-			php_version: %php_version%
+monolog:
+	name: iqrf-daemon-webapp
+	hookToTracy: true
+	registerFallback: true
+	usePriorityProcessor: true
+	handlers:
+		raven: Monolog\Handler\RavenHandler(Raven_Client(%sentry.dsn%))
+	processors:
+		- Monolog\Processor\GitProcessor
+		- Monolog\Processor\WebProcessor
+		- Kdyby\Monolog\Processor\PriorityProcessor
 
 session:
 	expiration: 14 days
@@ -73,6 +77,10 @@ http:
 security:
 	users:
 		admin: iqrf  # user 'admin', password 'iqrf'
+
+tracy:
+	email: 'roman.ondracek@iqrf.com'
+	strictMode: true
 
 includes:
 	- ../CloudModule/config/config.neon
