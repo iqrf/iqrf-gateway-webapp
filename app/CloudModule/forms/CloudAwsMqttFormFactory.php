@@ -28,23 +28,27 @@ use App\Forms\FormFactory;
 use Nette;
 use Nette\Application\UI\Form;
 use Nette\IOException;
+use Nette\Utils\ArrayHash;
 
+/**
+ * Form for creating MQTT instance and Base service for Amazon AWS IoT
+ */
 class CloudAwsMqttFormFactory {
 
 	use Nette\SmartObject;
 
 	/**
-	 * @var AwsManager
+	 * @var AwsManager Amazon AWS IoT manager
 	 */
 	private $cloudManager;
 
 	/**
-	 * @var BaseServiceManager
+	 * @var BaseServiceManager Base service manager
 	 */
 	private $baseService;
 
 	/**
-	 * @var InstanceManager
+	 * @var InstanceManager MQTT instance manager
 	 */
 	private $manager;
 
@@ -55,9 +59,9 @@ class CloudAwsMqttFormFactory {
 
 	/**
 	 * Constructor
-	 * @param AwsManager $aws
-	 * @param BaseServiceManager $baseService
-	 * @param InstanceManager $manager
+	 * @param AwsManager $aws Amazon AWS IoT manager
+	 * @param BaseServiceManager $baseService Base service manager\n
+	 * @param InstanceManager $manager MQTT instance manager
 	 * @param FormFactory $factory Generic form factory
 	 */
 	public function __construct(AwsManager $aws, BaseServiceManager $baseService, InstanceManager $manager, FormFactory $factory) {
@@ -69,7 +73,7 @@ class CloudAwsMqttFormFactory {
 
 	/**
 	 * Create MQTT configuration form
-	 * @param AwsPresenter $presenter
+	 * @param AwsPresenter $presenter Amazon AWS IoT presenter
 	 * @return Form MQTT configuration form
 	 */
 	public function create(AwsPresenter $presenter): Form {
@@ -83,17 +87,26 @@ class CloudAwsMqttFormFactory {
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('Timeout expired, resubmit the form.');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
-			try {
-				$settings = $this->cloudManager->createMqttInterface($values);
-				$baseService = $this->cloudManager->createBaseService();
-				$this->baseService->add($baseService);
-				$this->manager->add($settings);
-				$presenter->redirect(':Config:Mqtt:default');
-			} catch (IOException $e) {
-				$presenter->flashMessage('IQRF Daemon\'s configuration files not found.', 'danger');
-			}
+			$this->onSuccess($values, $presenter);
 		};
 		return $form;
+	}
+
+	/**
+	 * Create the base service and MQTT interface
+	 * @param ArrayHash $values Values from the form
+	 * @param AwsPresenter $presenter Amazon AWS IoT presenter
+	 */
+	public function onSuccess(ArrayHash $values, AwsPresenter $presenter) {
+		try {
+			$mqttInterface = $this->cloudManager->createMqttInterface($values);
+			$baseService = $this->cloudManager->createBaseService();
+			$this->baseService->add($baseService);
+			$this->manager->add($mqttInterface);
+			$presenter->redirect(':Config:Mqtt:default');
+		} catch (IOException $e) {
+			$presenter->flashMessage('IQRF Daemon\'s configuration files not found.', 'danger');
+		}
 	}
 
 }

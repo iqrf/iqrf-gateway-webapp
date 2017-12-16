@@ -28,23 +28,27 @@ use App\Forms\FormFactory;
 use Nette;
 use Nette\Application\UI\Form;
 use Nette\IOException;
+use Nette\Utils\ArrayHash;
 
+/**
+ * Form for creating MQTT instance and Base service for Inteliments InteliGlue
+ */
 class CloudInteliGlueMqttFormFactory {
 
 	use Nette\SmartObject;
 
 	/**
-	 * @var InteliGlueManager
+	 * @var InteliGlueManager Inteliments InteliGlue manager
 	 */
 	private $cloudManager;
 
 	/**
-	 * @var BaseServiceManager
+	 * @var BaseServiceManager Base service manager
 	 */
 	private $baseService;
 
 	/**
-	 * @var InstanceManager
+	 * @var InstanceManager MQTT instance manager
 	 */
 	private $manager;
 
@@ -55,9 +59,9 @@ class CloudInteliGlueMqttFormFactory {
 
 	/**
 	 * Constructor
-	 * @param BaseServiceManager $baseService
-	 * @param InteliGlueManager $inteliGlue
-	 * @param InstanceManager $manager
+	 * @param BaseServiceManager $baseService Base service manager\n
+	 * @param InteliGlueManager $inteliGlue Inteliments InteliGlue manager
+	 * @param InstanceManager $manager MQTT instance manager
 	 * @param FormFactory $factory Generic form factory
 	 */
 	public function __construct(BaseServiceManager $baseService, InteliGlueManager $inteliGlue, InstanceManager $manager, FormFactory $factory) {
@@ -69,7 +73,7 @@ class CloudInteliGlueMqttFormFactory {
 
 	/**
 	 * Create MQTT configuration form
-	 * @param InteliGluePresenter $presenter
+	 * @param InteliGluePresenter $presenter Inteliments InteliGlue presenter
 	 * @return Form MQTT configuration form
 	 */
 	public function create(InteliGluePresenter $presenter): Form {
@@ -84,17 +88,26 @@ class CloudInteliGlueMqttFormFactory {
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('Timeout expired, resubmit the form.');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
-			try {
-				$settings = $this->cloudManager->createMqttInterface($values);
-				$baseService = $this->cloudManager->createBaseService();
-				$this->baseService->add($baseService);
-				$this->manager->add($settings);
-				$presenter->redirect(':Config:Mqtt:default');
-			} catch (IOException $e) {
-				$presenter->flashMessage('IQRF Daemon\'s configuration files not found.', 'danger');
-			}
+			$this->onSuccess($values, $presenter);
 		};
 		return $form;
+	}
+
+	/**
+	 * Create the base service and MQTT interface
+	 * @param ArrayHash $values Values from the form
+	 * @param InteliGluePresenter $presenter Inteliments InteliGlue presenter
+	 */
+	public function onSuccess(ArrayHash $values, InteliGluePresenter $presenter) {
+		try {
+			$settings = $this->cloudManager->createMqttInterface($values);
+			$baseService = $this->cloudManager->createBaseService();
+			$this->baseService->add($baseService);
+			$this->manager->add($settings);
+			$presenter->redirect(':Config:Mqtt:default');
+		} catch (IOException $e) {
+			$presenter->flashMessage('IQRF Daemon\'s configuration files not found.', 'danger');
+		}
 	}
 
 }

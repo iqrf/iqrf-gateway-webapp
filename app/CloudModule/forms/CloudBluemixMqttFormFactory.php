@@ -28,23 +28,27 @@ use App\Forms\FormFactory;
 use Nette;
 use Nette\Application\UI\Form;
 use Nette\IOException;
+use Nette\Utils\ArrayHash;
 
+/**
+ * Form for creating MQTT instance and Base service for IBM Bluemíx
+ */
 class CloudBluemixMqttFormFactory {
 
 	use Nette\SmartObject;
 
 	/**
-	 * @var BluemixManager
+	 * @var BluemixManager IBM Bluemix manager
 	 */
 	private $cloudManager;
 
 	/**
-	 * @var BaseServiceManager
+	 * @var BaseServiceManager Base service manager
 	 */
 	private $baseService;
 
 	/**
-	 * @var InstanceManager
+	 * @var InstanceManager MQTT instance manager
 	 */
 	private $manager;
 
@@ -55,9 +59,9 @@ class CloudBluemixMqttFormFactory {
 
 	/**
 	 * Constructor
-	 * @param BluemixManager $bluemix
-	 * @param BaseServiceManager $baseService
-	 * @param InstanceManager $manager
+	 * @param BluemixManager $bluemix IBM Bluemix manager
+	 * @param BaseServiceManager $baseService Base service manager\n
+	 * @param InstanceManager $manager MQTT instance manager
 	 * @param FormFactory $factory Generic form factory
 	 */
 	public function __construct(BluemixManager $bluemix, BaseServiceManager $baseService, InstanceManager $manager, FormFactory $factory) {
@@ -69,7 +73,7 @@ class CloudBluemixMqttFormFactory {
 
 	/**
 	 * Create MQTT configuration form
-	 * @param BluemixPresenter $presenter
+	 * @param BluemixPresenter $presenter IBM Bluemix presenter
 	 * @return Form MQTT configuration form
 	 */
 	public function create(BluemixPresenter $presenter): Form {
@@ -84,17 +88,26 @@ class CloudBluemixMqttFormFactory {
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('Timeout expired, resubmit the form.');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
-			try {
-				$settings = $this->cloudManager->createMqttInterface($values);
-				$baseService = $this->cloudManager->createBaseService();
-				$this->baseService->add($baseService);
-				$this->manager->add($settings);
-				$presenter->redirect(':Config:Mqtt:default');
-			} catch (IOException $e) {
-				$presenter->flashMessage('IQRF Daemon\'s configuration files not found.', 'danger');
-			}
+			$this->onSuccess($values, $presenter);
 		};
 		return $form;
+	}
+
+	/**
+	 * Create the base service and MQTT interface
+	 * @param ArrayHash $values Values from the form
+	 * @param BluemixPresenter $presenter IBM Bluemix presenter
+	 */
+	public function onSuccess(ArrayHash $values, BluemixPresenter $presenter) {
+		try {
+			$settings = $this->cloudManager->createMqttInterface($values);
+			$baseService = $this->cloudManager->createBaseService();
+			$this->baseService->add($baseService);
+			$this->manager->add($settings);
+			$presenter->redirect(':Config:Mqtt:default');
+		} catch (IOException $e) {
+			$presenter->flashMessage('IQRF Daemon\'s configuration files not found.', 'danger');
+		}
 	}
 
 }

@@ -29,6 +29,7 @@ use App\Forms\FormFactory;
 use Nette;
 use Nette\Application\UI\Form;
 use Nette\IOException;
+use Nette\Utils\ArrayHash;
 
 /**
  * Form for creating MQTT instance and Base service from Microsoft Azure IoT Hub Connection String for Device
@@ -73,7 +74,7 @@ class CloudAzureMqttFormFactory {
 
 	/**
 	 * Create MQTT configuration form
-	 * @param AzurePresenter $presenter
+	 * @param AzurePresenter $presenter MS Azure presenter
 	 * @return Form MQTT configuration form
 	 */
 	public function create(AzurePresenter $presenter): Form {
@@ -84,19 +85,28 @@ class CloudAzureMqttFormFactory {
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('Timeout expired, resubmit the form.');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
-			try {
-				$settings = $this->cloudManager->createMqttInterface($values['ConnectionString']);
-				$baseService = $this->cloudManager->createBaseService();
-				$this->baseService->add($baseService);
-				$this->manager->add($settings);
-				$presenter->redirect(':Config:Mqtt:default');
-			} catch (InvalidConnectionString $e) {
-				$presenter->flashMessage('Invalid MS Azure IoT Hub connection string for device.', 'danger');
-			} catch (IOException $e) {
-				$presenter->flashMessage('IQRF Daemon\'s configuration files not found.', 'danger');
-			}
+			$this->onSuccess($values, $presenter);
 		};
 		return $form;
+	}
+
+	/**
+	 * Create the base service and MQTT interface
+	 * @param ArrayHash $values Values from the form
+	 * @param AzurePresenter $presenter MS Azure presenter
+	 */
+	public function onSuccess(ArrayHash $values, AzurePresenter $presenter) {
+		try {
+			$settings = $this->cloudManager->createMqttInterface($values['ConnectionString']);
+			$baseService = $this->cloudManager->createBaseService();
+			$this->baseService->add($baseService);
+			$this->manager->add($settings);
+			$presenter->redirect(':Config:Mqtt:default');
+		} catch (InvalidConnectionString $e) {
+			$presenter->flashMessage('Invalid MS Azure IoT Hub connection string for device.', 'danger');
+		} catch (IOException $e) {
+			$presenter->flashMessage('IQRF Daemon\'s configuration files not found.', 'danger');
+		}
 	}
 
 }
