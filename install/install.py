@@ -62,8 +62,15 @@ def install_debian(version, stability="stable"):
 	"""
 	send_command("apt-get update")
 	if version == "8" or version == "jessie" or version == "oldstable":
-		# Install sudo, nginx and php5
-		send_command("apt-get install -y sudo php5 php5-common php5-fpm php5-curl php5-json php5-sqlite nginx-full")
+		# Install support for HTTPS repositories
+		send_command("apt-get install apt-transport-https lsb-release ca-certificates")
+		# Download PGP key for PHP 7.0 repository
+		send_command("wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg")
+		# Add PHP 7.0 repository
+		send_command("sh -c 'echo \"deb https://packages.sury.org/php/ $(lsb_release -sc) main\" > /etc/apt/sources.list.d/php.list'")
+		send_command("apt-get update")
+		# Install sudo, nginx and php7.0
+		send_command("apt-get install -y sudo php7.0 php7.0-common php7.0-fpm php7.0-curl php7.0-json php7.0-sqlite php7.0-mbstring nginx-full zip unzip")
 		# Install composer
 		send_command("bash ./install-composer.sh")
 		send_command("mv composer.phar /usr/bin/composer")
@@ -73,12 +80,11 @@ def install_debian(version, stability="stable"):
 		else:
 			install_php_app(WEBAPP_DIRECTORY, False)
 		disable_default_nginx_virtualhost()
-		create_nginx_virtualhost("iqrf-daemon-webapp_php5.localhost")
-		fix_php_fpm_config("/etc/php5/fpm/php.ini")
-		chown_dir(WEBAPP_DIRECTORY)
+		create_nginx_virtualhost("iqrf-daemon-webapp_php7-0.localhost")
+		fix_php_fpm_config("/etc/php/7.0/fpm/php.ini")
 		enable_sudo()
 		restart_service("sudo")
-		restart_service("php5-fpm")
+		restart_service("php7.0-fpm")
 		restart_service("nginx")
 	elif version == "9" or version == "stretch" or version == "stable":
 		# Install sudo, nginx php7.0, composer and zip
