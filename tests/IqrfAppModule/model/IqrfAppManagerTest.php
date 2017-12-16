@@ -224,7 +224,7 @@ class IqrfAppManagerTest extends TestCase {
 			'OsVersion' => '3.08D',
 			'TrType' => 'DCTR-72D',
 			'McuType' => 'PIC16F1938',
-			'OsBuild' => '7908',
+			'OsBuild' => '0879',
 			'Rssi' => -130,
 			'SupplyVoltage' => '3.00 V',
 			'Flags' => '00',
