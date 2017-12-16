@@ -36,7 +36,8 @@
 		"salamek/gettexttranslator": "^1.3",
 		"instante/bootstrap-3-renderer": "^2.0",
 		"guzzlehttp/guzzle": "^6.3",
-		"salamek/raven-nette": "^1.3"
+		"kdyby/monolog": "^1.3",
+		"sentry/sentry": "^1.8"
 	},
 	"require-dev": {
 		"nette/tester": "^2.0",
