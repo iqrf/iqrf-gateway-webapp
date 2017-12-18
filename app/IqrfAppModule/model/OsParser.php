@@ -49,9 +49,9 @@ class OsParser {
 	 * @param string $packet DPA packet response
 	 * @return array Information about DCTR module
 	 */
-	public function parseReadInfo(string $packet) {
+	public function parseReadInfo(string $packet): array {
 		$data = [];
-		$trTypes = [0 => '52D', 1 => '58D-RJ', 2 => '72D', 3 => '53D', 8 => '54D', 9 => '55D', 10 => '56D', 11 => '76D'];
+		$trTypes = [0 => '52D', 1 => '58D-RJ', 2 => '72D', 3 => '53D', 4 => '78D', 8 => '54D', 9 => '55D', 10 => '56D', 11 => '76D', 12 => '77D', 13 => '75D'];
 		$mcuTypes = [3 => 'PIC16F886', 4 => 'PIC16F1938'];
 		$packetArray = explode('.', $packet);
 		$data['ModuleId'] = strtoupper($packetArray[11] . $packetArray[10] . $packetArray[9] . $packetArray[8]);
