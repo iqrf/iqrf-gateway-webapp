@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace App\Forms;
 
-use GettextTranslator\Gettext;
+use Kdyby\Translation\Translator;
 use Instante\ExtendedFormMacros\IFormFactory;
 use Nette;
 use Nette\Application\UI\Form;
@@ -39,16 +39,16 @@ class FormFactory {
 	public $iFormFactory;
 
 	/**
-	 * @var Gettext
+	 * @var Translator Translator
 	 */
 	private $translator;
 
 	/**
 	 * Constructor
-	 * @param Gettext $translator
+	 * @param Translator $translator Translator
 	 * @param IFormFactory $iFormFactory
 	 */
-	public function __construct(Gettext $translator, IFormFactory $iFormFactory) {
+	public function __construct(Translator $translator, IFormFactory $iFormFactory) {
 		$this->iFormFactory = $iFormFactory;
 		$this->translator = $translator;
 	}
