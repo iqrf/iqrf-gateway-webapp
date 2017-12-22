@@ -16,7 +16,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 declare(strict_types=1);
 
 namespace App\IqrfAppModule\Model;
@@ -81,14 +80,14 @@ class IqrfAppManager {
 	 * @param int $timeout DPA timeout in milliseconds
 	 * @return array DPA request and response
 	 */
-	public function sendRaw(string $packet, int $timeout = null) {
+	public function sendRaw(string $packet, int $timeout = null): array {
 		$now = new DateTime();
 		$array = [
 			'ctype' => 'dpa',
 			'type' => 'raw',
 			'msgid' => (string) $now->getTimestamp(),
 			'timeout' => (int) $timeout,
-			'request' => $packet,
+			'request' => $this->fixPacket($packet),
 			'request_ts' => '',
 			'confirmation' => '',
 			'confirmation_ts' => '',
@@ -145,13 +144,29 @@ class IqrfAppManager {
 	}
 
 	/**
-	 * Validate raw IQRF packet
-	 * @param string $packet Raw IQRF packet
+	 * Validate DPA packet
+	 * @param string $packet DPA packet to validate
 	 * @return bool Status
 	 */
-	public function validatePacket(string $packet) {
+	public function validatePacket(string $packet): bool {
 		$pattern = '/^([0-9a-fA-F]{1,2}\.){4,62}[0-9a-fA-F]{1,2}(\.|)$/';
 		return (bool) preg_match($pattern, $packet);
+	}
+
+	/**
+	 * Fix DPA packet
+	 * @param string $packet DPA packet to fix
+	 * @return string Fixed DPA packet
+	 */
+	public function fixPacket(string $packet): string {
+		$data = explode('.', trim($packet, '.'));
+		$nadrLo = $data[1];
+		$nadrHi = $data[0];
+		if ($nadrHi === '00' && $nadrLo !== '00') {
+			$data[0] = $nadrLo;
+			$data[1] = $nadrHi;
+		}
+		return implode('.', $data);
 	}
 
 	/**

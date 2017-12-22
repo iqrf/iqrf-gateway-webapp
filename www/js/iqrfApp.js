@@ -16,23 +16,6 @@
  */
 
 /**
- * Fix DPA packet
- * @param {string} packet DPA packet to fix
- * @returns {string} Fixed DPA packet
- */
-function fixPacket(packet) {
-	var arr = packet.split(".");
-	var nadrLo = arr.shift();
-	var nadrHi = arr.shift();
-	if (nadrHi === "00" && nadrLo !== "00") {
-		arr.unshift(nadrLo, nadrHi);
-	} else {
-		arr.unshift(nadrHi, nadrLo);
-	}
-	return arr.join(".");
-}
-
-/**
  * Parse DPA packet
  * @param {string} packet DPA packet to parse
  * @returns {array} Parsed DPA packet
@@ -114,14 +97,12 @@ $(".btn-port").click(function () {
 
 // Select DPA packet form list of macros from IQRF IDE
 $(".btn-packet").click(function () {
-	var packet = fixPacket($(this).data("packet"));
-	setPacket(packet);
+	setPacket($(this).data("packet"));
 });
 
 // Validate and fix DPA packet and set DPA timeout
 $("#frm-iqrfAppSendRawForm-packet").keypress(function () {
-	var packet = fixPacket($(this).val());
-	setPacket(packet);
+	setPacket($(this).val());
 });
 
 // Enable or disable DPA timeout
