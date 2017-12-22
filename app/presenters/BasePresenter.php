@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace App\Presenters;
 
-use GettextTranslator\Gettext;
+use Kdyby\Translation\Translator;
 use Nette\Application\UI\Presenter;
 
 /**
@@ -35,7 +35,7 @@ abstract class BasePresenter extends Presenter {
 	 */
 	public $lang;
 
-	/** @var Gettext */
+	/** @var Translator Translator */
 	protected $translator;
 
 	/**
@@ -49,20 +49,14 @@ abstract class BasePresenter extends Presenter {
 
 	/**
 	 * Inject translator service
-	 * @param Gettext
+	 * @param Translator Translator
 	 */
-	public function injectTranslator(Gettext $translator) {
+	public function injectTranslator(Translator $translator) {
 		$this->translator = $translator;
 	}
 
 	public function createTemplate($class = null) {
 		$template = parent::createTemplate($class);
-		// if not set, the default language will be used
-		if (!isset($this->lang)) {
-			$this->lang = $this->translator->getLang();
-		} else {
-			$this->translator->setLang($this->lang);
-		}
 		$template->setTranslator($this->translator);
 		return $template;
 	}

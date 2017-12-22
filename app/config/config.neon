@@ -20,18 +20,13 @@ application:
 		*: App\*Module\Presenters\*Presenter
 
 extensions:
-	gettextTranslator: GettextTranslator\DI\Extension
 	extendedFormMacros: Instante\ExtendedFormMacros\DI\ExtendedFormMacrosExtension
 	monolog: Kdyby\Monolog\DI\MonologExtension
+	translation: Kdyby\Translation\DI\TranslationExtension
 
-gettextTranslator:
-	# default language (en or cs)
-	lang: en
-	files:
-		- %appDir%/locale
-	# optional with defaults
-	layout: horizontal # or: vertical
-	height: 450
+translation:
+	default: en
+	fallback: [en]
 
 monolog:
 	name: iqrf-daemon-webapp
