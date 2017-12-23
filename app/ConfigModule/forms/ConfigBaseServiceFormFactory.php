@@ -16,12 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 declare(strict_types=1);
 
 namespace App\ConfigModule\Forms;
 
 use App\ConfigModule\Model\BaseServiceManager;
+use App\ConfigModule\Model\InstanceManager;
 use App\ConfigModule\Presenters\BaseServicePresenter;
 use App\Forms\FormFactory;
 use Nette;
@@ -32,7 +32,12 @@ class ConfigBaseServiceFormFactory {
 	use Nette\SmartObject;
 
 	/**
-	 * @var BaseServiceManager
+	 * @var InstanceManager Instances manager
+	 */
+	private $instanceManager;
+
+	/**
+	 * @var BaseServiceManager Base service manager
 	 */
 	private $manager;
 
@@ -46,9 +51,10 @@ class ConfigBaseServiceFormFactory {
 	 * @param BaseServiceManager $manager
 	 * @param FormFactory $factory Generic form factory
 	 */
-	public function __construct(BaseServiceManager $manager, FormFactory $factory) {
+	public function __construct(BaseServiceManager $manager, FormFactory $factory, InstanceManager $instanceManager) {
 		$this->manager = $manager;
 		$this->factory = $factory;
+		$this->instanceManager = $instanceManager;
 	}
 
 	/**
@@ -63,8 +69,13 @@ class ConfigBaseServiceFormFactory {
 			'JsonSerializer' => 'JsonSerializer',
 			'SimpleSerializer' => 'SimpleSerializer',
 		];
+		$this->instanceManager->setFileName('MqMessaging');
+		$mqInstances = $this->instanceManager->getInstancesNames();
+		$this->instanceManager->setFileName('MqttMessaging');
+		$mqttInstances = $this->instanceManager->getInstancesNames();
+		$instances = array_merge($mqInstances, $mqttInstances);
 		$form->addText('Name', 'Name')->setRequired();
-		$form->addText('Messaging', 'Messaging')->setRequired();
+		$form->addSelect('Messaging', 'Messaging', $instances)->setRequired()->setTranslator();
 		$form->addCheckboxList('Serializers', 'Serializers', $serializers)->setRequired();
 		$prop = $form->addContainer('Properties');
 		$prop->addCheckbox('AsyncDpaMessage', 'AsyncDpaMessage');

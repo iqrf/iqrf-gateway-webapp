@@ -16,7 +16,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 declare(strict_types=1);
 
 namespace App\ConfigModule\Model;
@@ -75,6 +74,19 @@ class InstanceManager {
 	public function getInstances(): array {
 		$json = $this->fileManager->read($this->fileName);
 		return $json['Instances'];
+	}
+
+	/**
+	 * Get list of names of Instances
+	 * @return array Names of instances
+	 */
+	public function getInstancesNames(): array {
+		$instances = $this->getInstances();
+		$data = [];
+		foreach ($instances as $instance) {
+			$data[$instance['Name']] = $instance['Name'];
+		}
+		return $data;
 	}
 
 	/**

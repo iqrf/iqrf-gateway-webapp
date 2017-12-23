@@ -78,6 +78,14 @@ class InstanceManagerTest extends TestCase {
 	 * @var string
 	 */
 	private $pathTest = __DIR__ . '/../../configuration-test/';
+	
+	/**
+	 * @var array Names of instances
+	 */
+	private $instancesNames = [
+		'MqttMessaging1' => 'MqttMessaging1',
+		'MqttMessaging2' => 'MqttMessaging2',
+	];
 
 	/**
 	 * Constructor
@@ -111,7 +119,7 @@ class InstanceManagerTest extends TestCase {
 
 	/**
 	 * @test
-	 * Test function to parse configuration of Scheduler
+	 * Test function to get list of instancesr
 	 */
 	public function testGetInstances() {
 		$manager = new InstanceManager($this->fileManager);
@@ -122,7 +130,17 @@ class InstanceManagerTest extends TestCase {
 
 	/**
 	 * @test
-	 * Test function to parse configuration of Scheduler
+	 * Test function to get list of names of instances
+	 */
+	public function testGetInstancesNames() {
+		$manager = new InstanceManager($this->fileManager);
+		$manager->setFileName($this->fileName);
+		Assert::equal($this->instancesNames, $manager->getInstancesNames());
+	}
+
+	/**
+	 * @test
+	 * Test function to parse configuration of Instances
 	 */
 	public function testLoad() {
 		$manager = new InstanceManager($this->fileManager);
@@ -133,7 +151,7 @@ class InstanceManagerTest extends TestCase {
 
 	/**
 	 * @test
-	 * Test function to parse configuration of Instances
+	 * Test function to save configuration of Instances
 	 */
 	public function testSave() {
 		$manager = new InstanceManager($this->fileManagerTemp);
