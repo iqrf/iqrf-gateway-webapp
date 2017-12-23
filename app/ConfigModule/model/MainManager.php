@@ -16,7 +16,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 declare(strict_types=1);
 
 namespace App\ConfigModule\Model;
@@ -30,7 +29,7 @@ class MainManager {
 	use Nette\SmartObject;
 
 	/**
-	 * @var JsonFileManager
+	 * @var JsonFileManager JSON file manager
 	 */
 	private $fileManager;
 
@@ -41,7 +40,7 @@ class MainManager {
 
 	/**
 	 * Constructor
-	 * @param JsonFileManager $fileManager
+	 * @param JsonFileManager $fileManager JSON file manager
 	 */
 	public function __construct(JsonFileManager $fileManager) {
 		$this->fileManager = $fileManager;

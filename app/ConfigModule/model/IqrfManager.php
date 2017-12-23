@@ -16,7 +16,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 declare(strict_types=1);
 
 namespace App\ConfigModule\Model;
@@ -36,7 +35,7 @@ class IqrfManager {
 	private $commandManager;
 
 	/**
-	 * @var JsonFileManager
+	 * @var JsonFileManager JSON file manager
 	 */
 	private $fileManager;
 
@@ -48,7 +47,7 @@ class IqrfManager {
 	/**
 	 * Constructor
 	 * @param CommandManager $commandManager
-	 * @param JsonFileManager $fileManager
+	 * @param JsonFileManager $fileManager JSON file manager
 	 */
 	public function __construct(CommandManager $commandManager, JsonFileManager $fileManager) {
 		$this->commandManager = $commandManager;

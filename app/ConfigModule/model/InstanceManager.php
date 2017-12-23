@@ -29,7 +29,7 @@ class InstanceManager {
 	use Nette\SmartObject;
 
 	/**
-	 * @var JsonFileManager
+	 * @var JsonFileManager JSON file manager
 	 */
 	private $fileManager;
 
@@ -41,7 +41,7 @@ class InstanceManager {
 
 	/**
 	 * Constructor
-	 * @param JsonFileManager $fileManager
+	 * @param JsonFileManager $fileManager JSON file manager
 	 */
 	public function __construct(JsonFileManager $fileManager) {
 		$this->fileManager = $fileManager;
