@@ -16,7 +16,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 declare(strict_types=1);
 
 namespace App\ConfigModule\Model;
@@ -74,6 +73,19 @@ class BaseServiceManager {
 	public function getServices(): array {
 		$json = $this->fileManager->read($this->fileName);
 		return $json['Instances'];
+	}
+
+	/**
+	 * Get list of names of Base Services
+	 * @return array Names of Base services
+	 */
+	public function getServicesNames(): array {
+		$instances = $this->getServices();
+		$data = [];
+		foreach ($instances as $instance) {
+			$data[$instance['Name']] = $instance['Name'];
+		}
+		return $data;
 	}
 
 	/**

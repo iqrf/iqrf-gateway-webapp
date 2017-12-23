@@ -16,11 +16,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 declare(strict_types=1);
 
 namespace App\ConfigModule\Forms;
 
+use App\ConfigModule\Model\BaseServiceManager;
 use App\ConfigModule\Model\SchedulerManager;
 use App\ConfigModule\Presenters\SchedulerPresenter;
 use App\Forms\FormFactory;
@@ -32,7 +32,12 @@ class ConfigSchedulerFormFactory {
 	use Nette\SmartObject;
 
 	/**
-	 * @var SchedulerManager
+	 * @var BaseServiceManager Base service manager
+	 */
+	private $baseService;
+
+	/**
+	 * @var SchedulerManager Scheduler manager
 	 */
 	private $manager;
 
@@ -44,11 +49,12 @@ class ConfigSchedulerFormFactory {
 	/**
 	 * Constructor
 	 * @param FormFactory $factory Generic form factory
-	 * @param SchedulerManager $manager
+	 * @param SchedulerManager $manager Scheduler manager
 	 */
-	public function __construct(FormFactory $factory, SchedulerManager $manager) {
+	public function __construct(FormFactory $factory, SchedulerManager $manager, BaseServiceManager $baseService) {
 		$this->manager = $manager;
 		$this->factory = $factory;
+		$this->baseService = $baseService;
 	}
 
 	/**
@@ -94,6 +100,9 @@ class ConfigSchedulerFormFactory {
 					break;
 				case 'type':
 					$form->addSelect($key, $key, $types)->setRequired();
+					break;
+				case 'service':
+					$form->addSelect($key, $key, $this->baseService->getServicesNames())->setRequired();
 					break;
 				default:
 					$form->addText($key, $key);

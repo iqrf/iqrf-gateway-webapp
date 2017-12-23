@@ -6,7 +6,6 @@
  * @phpVersion >= 5.6
  * @testCase
  */
-
 declare(strict_types=1);
 
 namespace Test\ConfigModule\Model;
@@ -77,6 +76,15 @@ class BaseServiceManagerTest extends TestCase {
 	];
 
 	/**
+	 * @var array
+	 */
+	private $servicesNames = [
+		'BaseServiceForMQ' => 'BaseServiceForMQ',
+		'BaseServiceForMQTT1' => 'BaseServiceForMQTT1',
+		'BaseServiceForMQTT2' => 'BaseServiceForMQTT2',
+	];
+
+	/**
 	 * Constructor
 	 * @param Container $container
 	 */
@@ -112,6 +120,15 @@ class BaseServiceManagerTest extends TestCase {
 	public function testGetServices() {
 		$manager = new BaseServiceManager($this->fileManager);
 		Assert::equal($this->services, $manager->getServices());
+	}
+
+	/**
+	 * @test
+	 * Test function to get list of names of Base services
+	 */
+	public function testGetServicesNames() {
+		$manager = new BaseServiceManager($this->fileManager);
+		Assert::equal($this->servicesNames, $manager->getServicesNames());
 	}
 
 	/**
