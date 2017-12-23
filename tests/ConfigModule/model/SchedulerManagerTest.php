@@ -6,7 +6,6 @@
  * @phpVersion >= 5.6
  * @testCase
  */
-
 declare(strict_types=1);
 
 namespace Test\ConfigModule\Model;
@@ -23,17 +22,17 @@ $container = require __DIR__ . '/../../bootstrap.php';
 class SchedulerManagerTest extends TestCase {
 
 	/**
-	 * @var Container
+	 * @var Container Nette Tester Container
 	 */
 	private $container;
 
 	/**
-	 * @var JsonFileManager
+	 * @var JsonFileManager JSON file manager
 	 */
 	private $fileManager;
 
 	/**
-	 * @var JsonFileManager
+	 * @var JsonFileManager JSON file manager
 	 */
 	private $fileManagerTemp;
 
@@ -52,23 +51,23 @@ class SchedulerManagerTest extends TestCase {
 	];
 
 	/**
-	 * @var string
+	 * @var string File name (without .json)
 	 */
 	private $fileName = 'Scheduler';
 
 	/**
-	 * @var string
+	 * @var string Directory with configuration files
 	 */
 	private $path = __DIR__ . '/../../configuration/';
 
 	/**
-	 * @var string
+	 * @var string Testing directory with configuration files
 	 */
 	private $pathTest = __DIR__ . '/../../configuration-test/';
 
 	/**
 	 * Constructor
-	 * @param Container $container
+	 * @param Container $container Nette Tester Container
 	 */
 	public function __construct(Container $container) {
 		$this->container = $container;
@@ -184,7 +183,7 @@ class SchedulerManagerTest extends TestCase {
 
 	/**
 	 * @test
-	 * Test function to parse configuration of Scheduler
+	 * Test function to load configuration of Scheduler
 	 */
 	public function testLoad() {
 		$manager = new SchedulerManager($this->fileManager);
@@ -194,7 +193,7 @@ class SchedulerManagerTest extends TestCase {
 
 	/**
 	 * @test
-	 * Test function to parse configuration of Scheduler
+	 * Test function to save configuration of Scheduler
 	 */
 	public function testSave() {
 		$manager = new SchedulerManager($this->fileManagerTemp);

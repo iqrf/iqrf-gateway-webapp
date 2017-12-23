@@ -6,7 +6,6 @@
  * @phpVersion >= 5.6
  * @testCase
  */
-
 declare(strict_types=1);
 
 namespace Test\IqrfAppModule\Model;
@@ -21,12 +20,12 @@ $container = require __DIR__ . '/../../bootstrap.php';
 class OsParserTest extends TestCase {
 
 	/**
-	 * @var Container
+	 * @var Container Nette Tester Container
 	 */
 	private $container;
 
 	/**
-	 * @var OsParser
+	 * @var OsParser DPA OS response parser
 	 */
 	private $parser;
 
@@ -52,7 +51,7 @@ class OsParserTest extends TestCase {
 
 	/**
 	 * Constructor
-	 * @param Container $container
+	 * @param Container $container Nette Tester Container
 	 */
 	public function __construct(Container $container) {
 		$this->container = $container;

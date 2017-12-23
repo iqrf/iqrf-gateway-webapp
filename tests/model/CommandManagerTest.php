@@ -6,7 +6,6 @@
  * @phpVersion >= 5.6
  * @testCase
  */
-
 declare(strict_types=1);
 
 namespace Test\Model;
@@ -21,18 +20,18 @@ $container = require __DIR__ . '/../bootstrap.php';
 class CommandManagerTest extends TestCase {
 
 	/**
-	 * @var Container
+	 * @var Container Nette Tester Container
 	 */
 	private $container;
 
 	/**
-	 * @var CommandManager
+	 * @var CommandManager Command manager
 	 */
 	private $manager;
 
 	/**
 	 * Constructor
-	 * @param Container $container
+	 * @param Container $container Nette Tester Container
 	 */
 	public function __construct(Container $container) {
 		$this->container = $container;

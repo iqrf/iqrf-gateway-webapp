@@ -6,7 +6,6 @@
  * @phpVersion >= 5.6
  * @testCase
  */
-
 declare(strict_types=1);
 
 namespace Test\Model;
@@ -23,18 +22,18 @@ $container = require __DIR__ . '/../bootstrap.php';
 class JsonFileManagerTest extends TestCase {
 
 	/**
-	 * @var Container
+	 * @var Container Nette Tester Container
 	 */
 	private $container;
 
 	/**
-	 * @var string
+	 * @var string Directory with configuration files
 	 */
 	private $path = __DIR__ . '/../configuration/';
 
 	/**
 	 * Constructor
-	 * @param Container $container
+	 * @param Container $container Nette Tester Container
 	 */
 	public function __construct(Container $container) {
 		$this->container = $container;

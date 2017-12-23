@@ -6,7 +6,6 @@
  * @phpVersion >= 5.6
  * @testCase
  */
-
 declare(strict_types=1);
 
 namespace Test\ServiceModule\Model;
@@ -22,8 +21,15 @@ $container = require __DIR__ . '/../../bootstrap.php';
 
 class ServiceManagerTest extends TestCase {
 
+	/**
+	 * @var Container Nette Tester Container
+	 */
 	private $container;
 
+	/**
+	 * Constructor
+	 * @param Container $container Nette Tester Container
+	 */
 	public function __construct(Container $container) {
 		$this->container = $container;
 	}

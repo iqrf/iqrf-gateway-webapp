@@ -22,32 +22,32 @@ $container = require __DIR__ . '/../../bootstrap.php';
 class BaseServiceManagerTest extends TestCase {
 
 	/**
-	 * @var Container
+	 * @var Container Nette Tester Container
 	 */
 	private $container;
 
 	/**
-	 * @var JsonFileManager
+	 * @var JsonFileManager JSON file manager
 	 */
 	private $fileManager;
 
 	/**
-	 * @var JsonFileManager
+	 * @var JsonFileManager JSON file manager
 	 */
 	private $fileManagerTemp;
 
 	/**
-	 * @var string
+	 * @var string File name (without .json)
 	 */
 	private $fileName = 'BaseService';
 
 	/**
-	 * @var string
+	 * @var string Directory with configuration files
 	 */
 	private $path = __DIR__ . '/../../configuration/';
 
 	/**
-	 * @var string
+	 * @var string Testing directory with configuration files
 	 */
 	private $pathTest = __DIR__ . '/../../configuration-test/';
 
@@ -86,7 +86,7 @@ class BaseServiceManagerTest extends TestCase {
 
 	/**
 	 * Constructor
-	 * @param Container $container
+	 * @param Container $container Nette Tester Container
 	 */
 	public function __construct(Container $container) {
 		$this->container = $container;
