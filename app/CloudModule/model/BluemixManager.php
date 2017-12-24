@@ -20,8 +20,10 @@ declare(strict_types=1);
 
 namespace App\CloudModule\Model;
 
+use GuzzleHttp\Client;
 use Nette;
 use Nette\Utils\ArrayHash;
+use Nette\Utils\FileSystem;
 
 /**
  * Tool for managing IBM Bluemix
@@ -29,6 +31,11 @@ use Nette\Utils\ArrayHash;
 class BluemixManager {
 
 	use Nette\SmartObject;
+
+	/**
+	 * @var string Path to root CA certificate
+	 */
+	private $caPath = '/etc/iqrf-daemon/certs/bluemix-ca.crt';
 
 	/**
 	 * @var string Path to certificates
@@ -46,10 +53,11 @@ class BluemixManager {
 	 * @return ArrayHash MQTT interface
 	 */
 	public function createMqttInterface(ArrayHash $values) {
+		$this->downloadCaCertificate();
 		$interface = [
 			'Name' => $this->interfaceName,
 			'Enabled' => true,
-			'BrokerAddr' => 'tcp://' . $values['organizationId'] . '.messaging.internetofthings.ibmcloud.com:1883',
+			'BrokerAddr' => 'ssl://' . $values['organizationId'] . '.messaging.internetofthings.ibmcloud.com:8883',
 			'ClientId' => 'd:' . $values['organizationId'] . ':' . $values['deviceType'] . ':' . $values['deviceId'],
 			'Persistence' => 1,
 			'Qos' => 0,
@@ -57,12 +65,12 @@ class BluemixManager {
 			'TopicResponse' => 'iot-2/evt/' . $values['eventId'] . '/fmt/json',
 			'User' => 'use-token-auth',
 			'Password' => $values['token'],
-			'EnabledSSL' => false,
+			'EnabledSSL' => true,
 			'KeepAliveInterval' => 20,
 			'ConnectTimeout' => 5,
 			'MinReconnect' => 1,
 			'MaxReconnect' => 64,
-			'TrustStore' => '',
+			'TrustStore' => $this->caPath,
 			'KeyStore' => '',
 			'PrivateKey' => '',
 			'PrivateKeyPassword' => '',
@@ -84,6 +92,16 @@ class BluemixManager {
 			'Properties' => ['AsyncDpaMessage' => true],
 		];
 		return ArrayHash::from($baseService);
+	}
+
+	/**
+	 * Download root CA certificate
+	 */
+	public function downloadCaCertificate() {
+		$client = new Client();
+		$caCertUrl = 'https://raw.githubusercontent.com/ibm-watson-iot/iot-python/master/src/ibmiotf/messaging.pem';
+		$caCert = $client->request('GET', $caCertUrl)->getBody();
+		FileSystem::write($this->caPath, $caCert);
 	}
 
 }
