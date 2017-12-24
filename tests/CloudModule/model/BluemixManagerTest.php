@@ -1,8 +1,8 @@
 <?php
 
 /**
- * TEST: App\CloudModule\Model\InteliGlueManager
- * @covers App\CloudModule\Model\InteliGlueManager
+ * TEST: App\CloudModule\Model\BluemixManager
+ * @covers App\CloudModule\Model\BluemixManager
  * @phpVersion >= 5.6
  * @testCase
  */
@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace Test\ServiceModule\Model;
 
-use App\CloudModule\Model\InteliGlueManager;
+use App\CloudModule\Model\BluemixManager;
 use Nette\DI\Container;
 use Nette\Utils\ArrayHash;
 use Tester\Assert;
@@ -18,7 +18,7 @@ use Tester\TestCase;
 
 $container = require __DIR__ . '/../../bootstrap.php';
 
-class InteliGlueManagerTest extends TestCase {
+class BluemixManagerTest extends TestCase {
 
 	/**
 	 * @var Container Nette Tester Container
@@ -26,7 +26,7 @@ class InteliGlueManagerTest extends TestCase {
 	private $container;
 
 	/**
-	 * @var InteliGlueManager Inteliments InteliGlue manager
+	 * @var BluemixManager Amazon AWS IoT manager
 	 */
 	private $manager;
 
@@ -34,10 +34,11 @@ class InteliGlueManagerTest extends TestCase {
 	 * @var array Values from Inteliments InteliGlue form
 	 */
 	private $formValues = [
-		'assignedPort' => 1234,
-		'clientId' => 'client1234',
-		'password' => 'pass1234',
-		'rootTopic' => 'root',
+		'deviceId' => 'gw00',
+		'deviceType' => 'gateway',
+		'eventId' => 'event1234',
+		'organizationId' => 'org1234',
+		'token' => 'token1234',
 	];
 
 	/**
@@ -52,7 +53,7 @@ class InteliGlueManagerTest extends TestCase {
 	 * Set up test environment
 	 */
 	public function setUp() {
-		$this->manager = \Mockery::mock(InteliGlueManager::class)->makePartial();
+		$this->manager = \Mockery::mock(BluemixManager::class)->makePartial();
 		$this->manager->shouldReceive('downloadCaCertificate')->andReturn(null);
 	}
 
@@ -63,22 +64,22 @@ class InteliGlueManagerTest extends TestCase {
 	public function testCreateMqttInterface() {
 		$values = ArrayHash::from($this->formValues);
 		$mqtt = [
-			'Name' => 'MqttMessagingInteliGlue',
+			'Name' => 'MqttMessagingBluemix',
 			'Enabled' => true,
-			'BrokerAddr' => 'ssl://mqtt.inteliglue.com:1234',
-			'ClientId' => 'client1234',
+			'BrokerAddr' => 'ssl://org1234.messaging.internetofthings.ibmcloud.com:8883',
+			'ClientId' => 'd:org1234:gateway:gw00',
 			'Persistence' => 1,
 			'Qos' => 0,
-			'TopicRequest' => 'root/Iqrf/DpaRequest',
-			'TopicResponse' => 'root/Iqrf/DpaResponse',
-			'User' => 'client1234',
-			'Password' => 'pass1234',
+			'TopicRequest' => 'iot-2/cmd/event1234/fmt/json',
+			'TopicResponse' => 'iot-2/evt/event1234/fmt/json',
+			'User' => 'use-token-auth',
+			'Password' => 'token1234',
 			'EnabledSSL' => true,
 			'KeepAliveInterval' => 20,
 			'ConnectTimeout' => 5,
 			'MinReconnect' => 1,
 			'MaxReconnect' => 64,
-			'TrustStore' => '/etc/iqrf-daemon/certs/inteliments-ca.crt',
+			'TrustStore' => '/etc/iqrf-daemon/certs/bluemix-ca.crt',
 			'KeyStore' => '',
 			'PrivateKey' => '',
 			'PrivateKeyPassword' => '',
@@ -94,8 +95,8 @@ class InteliGlueManagerTest extends TestCase {
 	 */
 	public function testCreateBaseService() {
 		$mqtt = [
-			'Name' => 'BaseServiceForMQTTInteliGlue',
-			'Messaging' => 'MqttMessagingInteliGlue',
+			'Name' => 'BaseServiceForMQTTBluemix',
+			'Messaging' => 'MqttMessagingBluemix',
 			'Serializers' => ['JsonSerializer'],
 			'Properties' => ['AsyncDpaMessage' => true],
 		];
@@ -108,5 +109,5 @@ class InteliGlueManagerTest extends TestCase {
 
 }
 
-$test = new InteliGlueManagerTest($container);
+$test = new BluemixManagerTest($container);
 $test->run();
