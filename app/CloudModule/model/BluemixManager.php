@@ -38,11 +38,6 @@ class BluemixManager {
 	private $caPath = '/etc/iqrf-daemon/certs/bluemix-ca.crt';
 
 	/**
-	 * @var string Path to certificates
-	 */
-	private $path = '/etc/iqrf-daemon/certs/';
-
-	/**
 	 * @var string MQTT interface name
 	 */
 	private $interfaceName = 'MqttMessagingBluemix';
