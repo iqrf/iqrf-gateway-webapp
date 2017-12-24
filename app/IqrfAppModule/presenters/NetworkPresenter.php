@@ -16,7 +16,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 declare(strict_types=1);
 
 namespace App\IqrfAppModule\Presenters;
@@ -24,6 +23,7 @@ namespace App\IqrfAppModule\Presenters;
 use App\IqrfAppModule\Forms\IqrfNetBondingFormFactory;
 use App\IqrfAppModule\Forms\IqrfNetDiscoveryFormFactory;
 use App\Presenters\BasePresenter;
+use Nette\Application\UI\Form;
 
 /**
  * IQMESH Network Manager presenter
@@ -31,20 +31,19 @@ use App\Presenters\BasePresenter;
 class NetworkPresenter extends BasePresenter {
 
 	/**
-	 * @var IqrfNetBondingFormFactory
+	 * @var IqrfNetBondingFormFactory IQMESH Bonding form
 	 */
 	private $bondingForm;
 
 	/**
-	 *
-	 * @var IqrfNetDiscoveryFormFactory
+	 * @var IqrfNetDiscoveryFormFactory IQMESH Discovery form
 	 */
 	private $discoveryForm;
 
 	/**
 	 * Constructor
-	 * @param IqrfNetBondingFormFactory $bondingForm
-	 * @param IqrfNetDiscoveryFormFactory $discoveryForm
+	 * @param IqrfNetBondingFormFactory $bondingForm IQMESH Bonding form
+	 * @param IqrfNetDiscoveryFormFactory $discoveryForm IQMESH Discovery form
 	 */
 	public function __construct(IqrfNetBondingFormFactory $bondingForm, IqrfNetDiscoveryFormFactory $discoveryForm) {
 		$this->bondingForm = $bondingForm;
@@ -62,7 +61,7 @@ class NetworkPresenter extends BasePresenter {
 	 * Create IQMESH Bonding form
 	 * @return Form IQMESH Bonding form
 	 */
-	protected function createComponentIqrfNetBondingForm() {
+	protected function createComponentIqrfNetBondingForm(): Form {
 		$this->onlyForAdmins();
 		return $this->bondingForm->create($this);
 	}
@@ -71,7 +70,7 @@ class NetworkPresenter extends BasePresenter {
 	 * Create IQMESH Discovery form
 	 * @return Form IQMESH Discovery form
 	 */
-	protected function createComponentIqrfNetDiscoveryForm() {
+	protected function createComponentIqrfNetDiscoveryForm(): Form {
 		$this->onlyForAdmins();
 		return $this->discoveryForm->create($this);
 	}

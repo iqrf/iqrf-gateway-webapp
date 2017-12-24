@@ -16,7 +16,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 declare(strict_types=1);
 
 namespace App\IqrfAppModule\Model;
@@ -33,7 +32,7 @@ class CoordinatorParser {
 	/**
 	 * Parse DPA Coordinator response
 	 * @param string $packet DPA packet
-	 * @return array
+	 * @return array Parsed data
 	 */
 	public function parse(string $packet) {
 		$pcmd = explode('.', $packet)[3];
@@ -50,7 +49,7 @@ class CoordinatorParser {
 	 * @param string $packet DPA packet response
 	 * @return array Bonded XOR discovered nodes
 	 */
-	public function parseGetNodes(string $packet) {
+	public function parseGetNodes(string $packet): array {
 		$data = [];
 		$packetArray = explode('.', $packet);
 		$pcmd = $packetArray[3];

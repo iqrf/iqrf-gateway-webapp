@@ -16,7 +16,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 declare(strict_types=1);
 
 namespace App\IqrfAppModule\Model;
@@ -47,7 +46,7 @@ class IqrfMacroManager {
 	 * Read .ini file and parse macros from IQRF IDE
 	 * @return array
 	 */
-	public function read() {
+	public function read(): array {
 		$config = parse_ini_file($this->path, true)['Macro'];
 		$array = $this->parseMacros($config['Macros']);
 		return $array;
@@ -58,7 +57,7 @@ class IqrfMacroManager {
 	 * @param string $hex Data in HEX
 	 * @return array Data in array
 	 */
-	public function parseMacros(string $hex) {
+	public function parseMacros(string $hex): array {
 		$array = explode("\r\n", trim($this->hex2ascii($hex)));
 		for ($i = 0; $i < 3; $i++) {
 			array_shift($array);
@@ -89,7 +88,7 @@ class IqrfMacroManager {
 	 * @param string $hex Data in HEX
 	 * @return string Data in ASCII
 	 */
-	public function hex2ascii(string $hex) {
+	public function hex2ascii(string $hex): string {
 		$string = '';
 		for ($i = 0; $i < strlen($hex); $i += 2) {
 			$string .= chr(hexdec(substr($hex, $i, 2)));

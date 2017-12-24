@@ -16,7 +16,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 declare(strict_types=1);
 
 namespace App\IqrfAppModule\Model;
@@ -33,7 +32,7 @@ class OsParser {
 	/**
 	 * Parse DPA OS response
 	 * @param string $packet DPA packet
-	 * @return array
+	 * @return array Parsed data
 	 */
 	public function parse(string $packet) {
 		$data = explode('.', $packet);

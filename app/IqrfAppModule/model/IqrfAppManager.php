@@ -31,7 +31,7 @@ use Nette\Utils\Json;
 use Tracy\Debugger;
 
 /**
- * Tool for contoling iqrfapp.
+ * Tool for controlling iqrfapp.
  */
 class IqrfAppManager {
 

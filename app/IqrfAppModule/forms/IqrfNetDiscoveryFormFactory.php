@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 declare(strict_types=1);
 
 namespace App\IqrfAppModule\Forms;
@@ -24,6 +23,7 @@ use App\Forms\FormFactory;
 use App\IqrfAppModule\Model\IqrfNetManager;
 use Nette;
 use Nette\Application\UI\Form;
+use Nette\Utils\ArrayHash;
 
 /**
  * IQMESH Discovery form factory.
@@ -59,17 +59,24 @@ class IqrfNetDiscoveryFormFactory {
 	public function create(): Form {
 		$form = $this->factory->create();
 		$form->addInteger('txPower', 'TX Power')->setDefaultValue(6)
-				->addRule(Form::RANGE, 'TX Power have to be integer from 0 to 7.', [0,7])
+				->addRule(Form::RANGE, 'TX Power have to be integer from 0 to 7.', [0, 7])
 				->setRequired();
 		$form->addInteger('maxNode', 'Max. Node Address')->setDefaultValue(239)
-				->addRule(Form::RANGE, 'Max. Node Address have to be integer form 0 to 239.', [0,239])
+				->addRule(Form::RANGE, 'Max. Node Address have to be integer form 0 to 239.', [0, 239])
 				->setRequired();
 		$form->addSubmit('send', 'Discovery');
 		$form->addProtection('Timeout expired, resubmit the form.');
-		$form->onSuccess[] = function (Form $form, $values) {
-			$this->manager->discovery($values['txPower'], $values['maxNode']);
-		};
+		$form->onSuccess[] = [$this, 'onSuccess'];
 		return $form;
+	}
+
+	/**
+	 * Run Discovery
+	 * @param Form $form IQMESH discovery form
+	 * @param ArrayHash $values Values from IQMESH discovery form
+	 */
+	public function onSuccess(Form $form, ArrayHash $values) {
+		$this->manager->discovery($values['txPower'], dechex($values['maxNode']));
 	}
 
 }

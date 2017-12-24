@@ -16,7 +16,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 declare(strict_types=1);
 
 namespace App\IqrfAppModule\Presenters;
@@ -33,25 +32,25 @@ use Nette\Application\UI\Form;
 class SendRawPresenter extends BasePresenter {
 
 	/**
-	 * @var IqrfAppSendRawFormFactory
+	 * @var IqrfAppSendRawFormFactory Send raw DPA packet form
 	 */
 	private $sendRawFactory;
 
 	/**
-	 * @var IqrfAppManager
+	 * @var IqrfAppManager iqrfapp Manager
 	 */
 	private $iqrfAppManager;
 
 	/**
-	 * @var IqrfMacroManager
+	 * @var IqrfMacroManager IQRF IDE Macros manager
 	 */
 	private $iqrfMacroManager;
 
 	/**
 	 * Constructor
-	 * @param IqrfAppManager $manager
-	 * @param IqrfMacroManager $macroManager
-	 * @param IqrfAppSendRawFormFactory $formFactory
+	 * @param IqrfAppManager $manager iqrfapp Manager
+	 * @param IqrfMacroManager $macroManager IQRF IDE Macros manager
+	 * @param IqrfAppSendRawFormFactory $formFactory Send raw DPA packet form
 	 */
 	public function __construct(IqrfAppManager $manager, IqrfMacroManager $macroManager, IqrfAppSendRawFormFactory $formFactory) {
 		$this->iqrfAppManager = $manager;
@@ -79,9 +78,9 @@ class SendRawPresenter extends BasePresenter {
 
 	/**
 	 * Create send raw DPA packet form
-	 * @return Form
+	 * @return Form Send raw DPA packet form
 	 */
-	protected function createComponentIqrfAppSendRawForm() {
+	protected function createComponentIqrfAppSendRawForm(): Form {
 		$this->onlyForAdmins();
 		return $this->sendRawFactory->create($this);
 	}
