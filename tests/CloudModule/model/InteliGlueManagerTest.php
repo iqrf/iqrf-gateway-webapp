@@ -52,7 +52,8 @@ class InteliGlueManagerTest extends TestCase {
 	 * Set up test environment
 	 */
 	public function setUp() {
-		$this->manager = new InteliGlueManager();
+		$this->manager = \Mockery::mock(InteliGlueManager::class)->makePartial();
+		$this->manager->shouldReceive('downloadCaCertificate')->andReturn(null);
 	}
 
 	/**
