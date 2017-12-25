@@ -95,7 +95,7 @@ class AwsManager {
 	public function createPaths() {
 		$timestamp = (new \DateTime())->format(\DateTime::ISO8601);
 		$path = $this->path . $timestamp;
-		$paths['caCert'] = $path . 'aws-ca.crt';
+		$paths['caCert'] = $path . '-aws-ca.crt';
 		$paths['cert'] = $path . '-aws.crt';
 		$paths['key'] = $path . '-aws.key';
 		return $paths;
