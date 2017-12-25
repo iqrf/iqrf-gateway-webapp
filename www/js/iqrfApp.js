@@ -114,6 +114,15 @@ $("#frm-iqrfAppSendRawForm-timeoutEnabled").click(function () {
 	}
 });
 
+// Enable or disable overwrite NADR
+$("#frm-iqrfAppSendRawForm-overwriteAddress").click(function () {
+	if ($(this).is(":checked")) {
+		$("#frm-iqrfAppSendRawForm-address").prop("disabled", false);
+	} else {
+		$("#frm-iqrfAppSendRawForm-address").prop("disabled", true);
+	}
+});
+
 // Enable or disable auto addressing in bonding new nodes
 $("#frm-iqrfNetBondingForm-autoAddress").click(function () {
 	if ($(this).is(":checked")) {

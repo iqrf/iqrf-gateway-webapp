@@ -28,6 +28,7 @@ use App\Model\CommandManager;
 use DateTime;
 use Nette;
 use Nette\Utils\Json;
+use Nette\Utils\Strings;
 use Tracy\Debugger;
 
 /**
@@ -154,6 +155,18 @@ class IqrfAppManager {
 	}
 
 	/**
+	 * Update NADR in DPA packet
+	 * @param string $packet DPA packet to modify
+	 * @param string $nadr NADR
+	 * @return string Modified DPA packet
+	 */
+	public function updateNadr(string $packet, string $nadr): string {
+		$data = explode('.', $this->fixPacket($packet));
+		$data[1] = Strings::padLeft($nadr, 2, '0');
+		return implode('.', $data);
+	}
+
+	/**
 	 * Fix DPA packet
 	 * @param string $packet DPA packet to fix
 	 * @return string Fixed DPA packet
@@ -166,7 +179,7 @@ class IqrfAppManager {
 			$data[0] = $nadrLo;
 			$data[1] = $nadrHi;
 		}
-		return implode('.', $data);
+		return Strings::lower(implode('.', $data));
 	}
 
 	/**

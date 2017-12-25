@@ -19,7 +19,39 @@
 <h1 n:block=title>{_"Send DPA packet"}</h1>
 <div class='panel panel-default'>
 	<div class='panel-body'>
-		{control iqrfAppSendRawForm}
+		<form n:name=iqrfAppSendRawForm class=form>
+			<label n:name=packet for='packet'>{_"DPA packet"}</label>
+			<input n:name=packet class='form-control'>
+			<div class='row'>
+				<div class='col-md-6'>
+					<div class="form-group">
+						<div class="checkbox">
+							<label n:name=overwriteAddress for='overwriteAddress'>
+								<input n:name=overwriteAddress type="checkbox">Set own NADR
+							</label>
+						</div>
+					</div>
+					<div class="form-group">
+						<label n:name=address for="address">Custom NADR</label>
+						<input n:name=address type="text" class="form-control">
+					</div>
+				</div>
+				<div class='col-md-6'>
+					<div class="form-group">
+						<div class="checkbox">
+							<label n:name=timeoutEnabled for='timeoutEnabled'>
+								<input n:name=timeoutEnabled type="checkbox">Set own DPA timeout
+							</label>
+						</div>
+					</div>
+					<div class="form-group">
+						<label n:name=timeout for="timeout">DPA timeout (ms)</label>
+						<input n:name=timeout type="text" class="form-control">
+					</div>
+				</div>
+			</div>
+			<input n:name=send class='btn btn-primary navbar-btn'>
+		</form>
 	</div>
 </div>
 <h2>{_"Macros"}</h2>
