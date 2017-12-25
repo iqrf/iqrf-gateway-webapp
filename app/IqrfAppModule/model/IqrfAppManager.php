@@ -162,8 +162,8 @@ class IqrfAppManager {
 	 */
 	public function updateNadr(string $packet, string $nadr): string {
 		$data = explode('.', $this->fixPacket($packet));
-		$data[1] = Strings::padLeft($nadr, 2, '0');
-		return implode('.', $data);
+		$data[0] = Strings::padLeft($nadr, 2, '0');
+		return Strings::lower(implode('.', $data));
 	}
 
 	/**

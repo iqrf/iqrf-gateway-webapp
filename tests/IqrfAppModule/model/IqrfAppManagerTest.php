@@ -98,6 +98,18 @@ class IqrfAppManagerTest extends TestCase {
 
 	/**
 	 * @test
+	 * Test function to update NADR in raw DPA packet
+	 */
+	public function testUpdateNadr() {
+		$iqrfAppManager = new IqrfAppManager($this->commandManager, $this->coordinatorParser, $this->osParser);
+		$packet = '01.00.06.03.ff.ff';
+		$nadr = 'F';
+		$expected = '0f.00.06.03.ff.ff';
+		Assert::same($expected, $iqrfAppManager->updateNadr($packet, $nadr));
+	}
+
+	/**
+	 * @test
 	 * Test function to change iqrf-daemon operation mode
 	 */
 	public function testChangeOperationMode() {
