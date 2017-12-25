@@ -81,7 +81,6 @@ class CloudAwsMqttFormFactory {
 		$fileName = 'MqttMessaging';
 		$this->manager->setFileName($fileName);
 		$form->addText('endpoint', 'Endpoint')->setRequired();
-		$form->addUpload('caCert', 'Root CA certificate')->setRequired();
 		$form->addUpload('cert', 'Certificate')->setRequired();
 		$form->addUpload('key', 'Private key')->setRequired();
 		$form->addSubmit('save', 'Save');

@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 declare(strict_types=1);
 
 namespace App\CloudModule\Model;
@@ -47,6 +46,7 @@ class AwsManager {
 	 */
 	public function createMqttInterface(ArrayHash $values) {
 		$paths = $this->createPaths();
+		$this->downloadCaCertificate();
 		$this->uploadCertsAndKey($values, $paths);
 		$interface = [
 			'Name' => $this->interfaceName,
@@ -64,7 +64,7 @@ class AwsManager {
 			'ConnectTimeout' => 5,
 			'MinReconnect' => 1,
 			'MaxReconnect' => 64,
-			'TrustStore' => $paths['caCert'],
+			'TrustStore' => $this->path . 'aws-ca.crt',
 			'KeyStore' => $paths['cert'],
 			'PrivateKey' => $paths['key'],
 			'PrivateKeyPassword' => '',
@@ -95,7 +95,6 @@ class AwsManager {
 	public function createPaths() {
 		$timestamp = (new \DateTime())->format(\DateTime::ISO8601);
 		$path = $this->path . $timestamp;
-		$paths['caCert'] = $path . '-aws-ca.crt';
 		$paths['cert'] = $path . '-aws.crt';
 		$paths['key'] = $path . '-aws.key';
 		return $paths;
@@ -107,18 +106,24 @@ class AwsManager {
 	 * @param array $paths Paths for root CA certificate, certificate and private key
 	 */
 	public function uploadCertsAndKey(ArrayHash $values, array $paths) {
-		$caCert = $values['caCert'];
 		$cert = $values['cert'];
 		$key = $values['key'];
-		if ($caCert->isOk()) {
-			$caCert->move($paths['caCert']);
-		}
 		if ($cert->isOk()) {
 			$cert->move($paths['cert']);
 		}
 		if ($key->isOk()) {
 			$key->move($paths['key']);
 		}
+	}
+
+	/**
+	 * Download root CA certificate
+	 */
+	public function downloadCaCertificate() {
+		$client = new Client();
+		$caCertUrl = 'https://www.symantec.com/content/en/us/enterprise/verisign/roots/VeriSign-Class%203-Public-Primary-Certification-Authority-G5.pem';
+		$caCert = $client->request('GET', $caCertUrl)->getBody();
+		FileSystem::write($this->path . 'aws-ca.crt', $caCert);
 	}
 
 }

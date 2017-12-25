@@ -50,6 +50,7 @@ class AwsManagerTest extends TestCase {
 	 */
 	public function setUp() {
 		$this->manager = \Mockery::mock(AwsManager::class)->makePartial();
+		$this->manager->shouldReceive('downloadCaCertificate')->andReturn(null);
 		$this->manager->shouldReceive('uploadCertsAndKey')->andReturn(null);
 	}
 
@@ -76,7 +77,7 @@ class AwsManagerTest extends TestCase {
 			'ConnectTimeout' => 5,
 			'MinReconnect' => 1,
 			'MaxReconnect' => 64,
-			'TrustStore' => '/etc/iqrf-daemon/certs/' . $timestamp . '-aws-ca.crt',
+			'TrustStore' => '/etc/iqrf-daemon/certs/aws-ca.crt',
 			'KeyStore' => '/etc/iqrf-daemon/certs/' . $timestamp . '-aws.crt',
 			'PrivateKey' => '/etc/iqrf-daemon/certs/' . $timestamp . '-aws.key',
 			'PrivateKeyPassword' => '',
@@ -112,7 +113,6 @@ class AwsManagerTest extends TestCase {
 		$timestamp = (new \DateTime())->format(\DateTime::ISO8601);
 		$actual = $this->manager->createPaths();
 		$paths = [
-			'caCert' => '/etc/iqrf-daemon/certs/' . $timestamp . '-aws-ca.crt',
 			'cert' => '/etc/iqrf-daemon/certs/' . $timestamp . '-aws.crt',
 			'key' => '/etc/iqrf-daemon/certs/' . $timestamp . '-aws.key',
 		];
