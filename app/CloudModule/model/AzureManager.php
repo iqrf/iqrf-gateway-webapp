@@ -26,7 +26,7 @@ use Nette;
 use Nette\Utils\ArrayHash;
 
 /**
- * Tool form managing Azure IoT Hub
+ * Tool for managing Azure IoT Hub
  */
 class AzureManager {
 

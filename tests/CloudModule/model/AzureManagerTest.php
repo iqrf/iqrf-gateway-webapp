@@ -11,7 +11,9 @@ declare(strict_types=1);
 namespace Test\ServiceModule\Model;
 
 use App\CloudModule\Model\AzureManager;
+use App\CloudModule\Model\InvalidConnectionString;
 use Nette\DI\Container;
+use Nette\Utils\ArrayHash;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -30,6 +32,11 @@ class AzureManagerTest extends TestCase {
 	private $manager;
 
 	/**
+	 * @var string MS Azure IoT Hub connection string for the device
+	 */
+	private $connectionString = 'HostName=iqrf.azure-devices.net;DeviceId=IQRFGW;SharedAccessKey=1234567890abcdefghijklmnopqrstuvwxyzABCDEFG=';
+
+	/**
 	 * Constructor
 	 * @param Container $container Nette Tester Container
 	 */
@@ -41,7 +48,39 @@ class AzureManagerTest extends TestCase {
 	 * Set up test environment
 	 */
 	public function setUp() {
-		$this->manager = new AzureManager();
+		$this->manager = \Mockery::mock(AzureManager::class)->makePartial();
+		$this->manager->shouldReceive('generateSasToken')->andReturn('generatedSasToken');
+	}
+
+	/**
+	 * @test
+	 * Test function to create MQTT interface
+	 */
+	public function testCreateMqttInterface() {
+		$mqtt = [
+			'Name' => 'MqttMessagingAzure',
+			'Enabled' => true,
+			'BrokerAddr' => 'ssl://iqrf.azure-devices.net:8883',
+			'ClientId' => 'IQRFGW',
+			'Persistence' => 1,
+			'Qos' => 0,
+			'TopicRequest' => 'devices/IQRFGW/messages/devicebound/#',
+			'TopicResponse' => 'devices/IQRFGW/messages/events/',
+			'User' => 'iqrf.azure-devices.net/IQRFGW',
+			'Password' => 'generatedSasToken',
+			'EnabledSSL' => true,
+			'KeepAliveInterval' => 20,
+			'ConnectTimeout' => 5,
+			'MinReconnect' => 1,
+			'MaxReconnect' => 64,
+			'TrustStore' => '',
+			'KeyStore' => '',
+			'PrivateKey' => '',
+			'PrivateKeyPassword' => '',
+			'EnabledCipherSuites' => '',
+			'EnableServerCertAuth' => false
+		];
+		Assert::same($mqtt, iterator_to_array($this->manager->createMqttInterface($this->connectionString)));
 	}
 
 	/**
@@ -60,6 +99,31 @@ class AzureManagerTest extends TestCase {
 		Assert::same($mqtt['Properties'], iterator_to_array($actual['Properties']));
 		unset($actual['Serializers'], $actual['Properties'], $mqtt['Serializers'], $mqtt['Properties']);
 		Assert::same($mqtt, iterator_to_array($actual));
+	}
+
+	/**
+	 * @test
+	 * Test function to check the connection string
+	 */
+	public function testCheckConnectionString() {
+		Assert::null($this->manager->checkConnectionString($this->connectionString));
+		$invalidString = 'HostName=iqrf.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=1234567890abcdefghijklmnopqrstuvwxyzABCDEFG=';
+		Assert::exception(function() use ($invalidString) {
+			$this->manager->checkConnectionString($invalidString);
+		}, InvalidConnectionString::class);
+	}
+
+	/**
+	 * @test
+	 * Test function to parse the connection string
+	 */
+	public function testParseConnectionString() {
+		$expected = [
+			'HostName' => 'iqrf.azure-devices.net',
+			'DeviceId' => 'IQRFGW',
+			'SharedAccessKey' => '1234567890abcdefghijklmnopqrstuvwxyzABCDEFG',
+		];
+		Assert::same($expected, $this->manager->parseConnectionString($this->connectionString));
 	}
 
 }
