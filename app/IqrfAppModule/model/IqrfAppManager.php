@@ -64,7 +64,7 @@ class IqrfAppManager {
 	 * @param CommandManager $commandManager Command manager
 	 * @param CoordinatorParser $coordinatorParser Parser for DPA Coordinator responses
 	 * @param OsParser $osParser Parser for DPA OS responses
-	 * @param $enumParser Parse for DPA Enumeration responses
+	 * @param EnumerationParser $enumParser Parser for DPA Enumeration responses
 	 */
 	public function __construct(CommandManager $commandManager, CoordinatorParser $coordinatorParser, OsParser $osParser, EnumerationParser $enumParser) {
 		$this->commandManager = $commandManager;
@@ -205,9 +205,9 @@ class IqrfAppManager {
 		$status = $response['status'];
 		if ($status !== 'STATUS_NO_ERROR') {
 			return null;
-			// TODO: throw own exception
+			/** @todo throw own exception */
 		}
-		$packet = $response['response'];
+		$packet = $this->fixPacket($response['response']);
 		if (empty($packet)) {
 			throw new EmptyResponseException();
 		}
@@ -217,7 +217,7 @@ class IqrfAppManager {
 				return $this->coordinatorParser->parse($packet);
 			case '02':
 				return $this->osParser->parse($packet);
-			case 'FF':
+			case 'ff':
 				return $this->enumParser->parse($packet);
 			default:
 				return null;

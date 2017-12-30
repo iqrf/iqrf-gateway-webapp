@@ -34,9 +34,10 @@ class EnumerationParser {
 	 * @return array Parsed data
 	 */
 	public function parse(string $packet) {
+		$packet = strtolower($packet);
 		$pcmd = explode('.', $packet)[3];
 		switch ($pcmd) {
-			case 'BF':
+			case 'bf':
 				return $this->parsePeripheralEnumeration($packet);
 		}
 	}
