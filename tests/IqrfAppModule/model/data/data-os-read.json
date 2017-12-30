@@ -1,0 +1,11 @@
+{
+	"ModuleId": "8100A405",
+	"OsVersion": "3.08D",
+	"TrType": "DCTR-72D",
+	"McuType": "PIC16F1938",
+	"OsBuild": "0879",
+	"Rssi": "-130 dBm",
+	"SupplyVoltage": "3.00 V",
+	"Flags": "00",
+	"SlotLimits": "f0"
+}

@@ -12,11 +12,13 @@ namespace Test\IqrfAppModule\Model;
 
 use App\IqrfAppModule\Model\CoordinatorParser;
 use App\IqrfAppModule\Model\EmptyResponseException;
+use App\IqrfAppModule\Model\EnumerationParser;
 use App\IqrfAppModule\Model\InvalidOperationModeException;
 use App\IqrfAppModule\Model\IqrfAppManager;
 use App\IqrfAppModule\Model\OsParser;
 use App\Model\CommandManager;
 use App\Model\FileManager;
+use App\Model\JsonFileManager;
 use DateTime;
 use Nette\DI\Container;
 use Tester\Assert;
@@ -42,9 +44,19 @@ class IqrfAppManagerTest extends TestCase {
 	private $fileManager;
 
 	/**
+	 * @var JsonFileManager JSON file manager
+	 */
+	private $jsonFileManager;
+
+	/**
 	 * @var CoordinatorParser DPA Coordinator response parser
 	 */
 	private $coordinatorParser;
+
+	/**
+	 * @var EnumerationParser DPA Enumeration response parser
+	 */
+	private $enumParser;
 
 	/**
 	 * @var OsParser DPA OS response parser
@@ -65,7 +77,9 @@ class IqrfAppManagerTest extends TestCase {
 	public function setUp() {
 		$this->commandManager = new CommandManager(false);
 		$this->fileManager = new FileManager(__DIR__ . '/data/');
+		$this->jsonFileManager = new JsonFileManager(__DIR__ . '/data/');
 		$this->coordinatorParser = new CoordinatorParser();
+		$this->enumParser = new EnumerationParser();
 		$this->osParser = new OsParser();
 	}
 
@@ -74,7 +88,7 @@ class IqrfAppManagerTest extends TestCase {
 	 * Test function to validation of raw IQRF packet
 	 */
 	public function testValidatePacket() {
-		$iqrfAppManager = new IqrfAppManager($this->commandManager, $this->coordinatorParser, $this->osParser);
+		$iqrfAppManager = new IqrfAppManager($this->commandManager, $this->coordinatorParser, $this->osParser, $this->enumParser);
 		$validPackets = [
 			'01.00.06.03.ff.ff',
 			'01.00.06.03.ff.ff.',
@@ -101,7 +115,7 @@ class IqrfAppManagerTest extends TestCase {
 	 * Test function to update NADR in raw DPA packet
 	 */
 	public function testUpdateNadr() {
-		$iqrfAppManager = new IqrfAppManager($this->commandManager, $this->coordinatorParser, $this->osParser);
+		$iqrfAppManager = new IqrfAppManager($this->commandManager, $this->coordinatorParser, $this->osParser, $this->enumParser);
 		$packet = '01.00.06.03.ff.ff';
 		$nadr = 'F';
 		$expected = '0f.00.06.03.ff.ff';
@@ -123,7 +137,7 @@ class IqrfAppManagerTest extends TestCase {
 		foreach ($outputSuccess as $output) {
 			$commandManager->shouldReceive('send')->with($output, true)->andReturn(true);
 		}
-		$iqrfAppManager = new IqrfAppManager($commandManager, $this->coordinatorParser, $this->osParser);
+		$iqrfAppManager = new IqrfAppManager($commandManager, $this->coordinatorParser, $this->osParser, $this->enumParser);
 		foreach ($modesSuccess as $mode) {
 			Assert::true($iqrfAppManager->changeOperationMode($mode));
 		}
@@ -172,7 +186,7 @@ class IqrfAppManagerTest extends TestCase {
 		$commandManager = \Mockery::mock(CommandManager::class);
 		$commandManager->shouldReceive('send')->with($cmdRead, true)->andReturn(null);
 		$commandManager->shouldReceive('send')->with($cmd, true)->andReturn($iqrfapp);
-		$iqrfAppManager = new IqrfAppManager($commandManager, $this->coordinatorParser, $this->osParser);
+		$iqrfAppManager = new IqrfAppManager($commandManager, $this->coordinatorParser, $this->osParser, $this->enumParser);
 		$actual = $iqrfAppManager->sendRaw($packet, $timeout);
 		unset($actual['request']);
 		Assert::equal($expected, $actual);
@@ -183,65 +197,23 @@ class IqrfAppManagerTest extends TestCase {
 	 * Test function to parse DPA response
 	 */
 	public function testParseResponse() {
-		$iqrfAppManager = new IqrfAppManager($this->commandManager, $this->coordinatorParser, $this->osParser);
+		$iqrfAppManager = new IqrfAppManager($this->commandManager, $this->coordinatorParser, $this->osParser, $this->enumParser);
 		$responseCoordinatorBonded['response'] = $this->fileManager->read('response-coordinator-bonded.json');
 		$arrayCoordinatorBonded = $iqrfAppManager->parseResponse($responseCoordinatorBonded);
-		$expectedCoordinatorBonded = [
-			'BondedNodes' => [
-				['0', '1', '1', '1', '1', '1', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-				['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-				['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-				['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-				['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-				['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-				['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-				['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-				['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-				['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-				['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-				['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-				['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-				['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-				['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-			],
-		];
+		$expectedCoordinatorBonded = $this->jsonFileManager->read('data-coordinator-bonded');
 		Assert::equal($expectedCoordinatorBonded, $arrayCoordinatorBonded);
 		$responseCoordinatorBondedDiscovered['response'] = $this->fileManager->read('response-coordinator-discovered.json');
 		$arrayCoordinatorDiscovered = $iqrfAppManager->parseResponse($responseCoordinatorBondedDiscovered);
-		$expectedCoordinatorDiscovered = [
-			'DiscoveredNodes' => [
-				['0', '0', '1', '1', '1', '1', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-				['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-				['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-				['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-				['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-				['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-				['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-				['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-				['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-				['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-				['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-				['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-				['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-				['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-				['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-			],
-		];
+		$expectedCoordinatorDiscovered = $this->jsonFileManager->read('data-coordinator-discovered');
 		Assert::equal($expectedCoordinatorDiscovered, $arrayCoordinatorDiscovered);
 		$responseOsRead['response'] = $this->fileManager->read('response-os-read.json');
 		$arrayOsRead = $iqrfAppManager->parseResponse($responseOsRead);
-		$expectedOsRead = [
-			'ModuleId' => '8100A405',
-			'OsVersion' => '3.08D',
-			'TrType' => 'DCTR-72D',
-			'McuType' => 'PIC16F1938',
-			'OsBuild' => '0879',
-			'Rssi' => '-130 dBm',
-			'SupplyVoltage' => '3.00 V',
-			'Flags' => '00',
-			'SlotLimits' => 'f0',
-		];
+		$expectedOsRead = $this->jsonFileManager->read('data-os-read');
 		Assert::equal($expectedOsRead, $arrayOsRead);
+		$responseEnumeration['response'] = $this->fileManager->read('response-enumeration.json');
+		$arrayEnumeration = $iqrfAppManager->parseResponse($responseEnumeration);
+		$expectedEnumeration = $this->jsonFileManager->read('data-enumeration');
+		Assert::equal($expectedEnumeration, $arrayEnumeration);
 		$packetLedrOn['response'] = $this->fileManager->read('response-ledr-on.json');
 		$arrayLedrOn = $iqrfAppManager->parseResponse($packetLedrOn);
 		Assert::null($arrayLedrOn);

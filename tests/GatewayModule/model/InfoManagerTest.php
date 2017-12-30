@@ -13,6 +13,7 @@ namespace Test\Model;
 use App\GatewayModule\Model\InfoManager;
 use App\IqrfAppModule\Model\CoordinatorParser;
 use App\IqrfAppModule\Model\EmptyResponseException;
+use App\IqrfAppModule\Model\EnumerationParser;
 use App\IqrfAppModule\Model\IqrfAppManager;
 use App\IqrfAppModule\Model\OsParser;
 use App\Model\CommandManager;
@@ -36,6 +37,11 @@ class InfoManagerTest extends TestCase {
 	private $coordinatorParser;
 
 	/**
+	 * @var EnumerationParser DPA Enumeration response parser
+	 */
+	private $enumParser;
+
+	/**
 	 * @var OsParser DPA OS response parser
 	 */
 	private $osParser;
@@ -53,6 +59,7 @@ class InfoManagerTest extends TestCase {
 	 */
 	public function setUp() {
 		$this->coordinatorParser = new CoordinatorParser();
+		$this->enumParser = new EnumerationParser();
 		$this->osParser = new OsParser();
 	}
 
@@ -67,7 +74,7 @@ class InfoManagerTest extends TestCase {
 		$commandManager->shouldReceive('send')->with($cmdEth0, true)->andReturn('192.168.1.100' . PHP_EOL . 'fda9:d95:d5b1::64');
 		$cmdWlan0 = 'ip a s wlan0 | grep inet | grep global | grep -v temporary | awk \'{print $2}\'';
 		$commandManager->shouldReceive('send')->with($cmdWlan0, true)->andReturn('');
-		$iqrfAppManager = new IqrfAppManager($commandManager, $this->coordinatorParser, $this->osParser);
+		$iqrfAppManager = new IqrfAppManager($commandManager, $this->coordinatorParser, $this->osParser, $this->enumParser);
 		$gwInfoManager = new InfoManager($commandManager, $iqrfAppManager);
 		Assert::same(['eth0' => ['192.168.1.100', 'fda9:d95:d5b1::64']], $gwInfoManager->getIpAddresses());
 	}
@@ -80,7 +87,7 @@ class InfoManagerTest extends TestCase {
 		$commandManager = \Mockery::mock(CommandManager::class);
 		$commandManager->shouldReceive('send')->with('ls /sys/class/net | awk \'{ print $0 }\'', true)->andReturn('eth0' . PHP_EOL . 'lo');
 		$commandManager->shouldReceive('send')->with('cat /sys/class/net/eth0/address', true)->andReturn('01:02:03:04:05:06');
-		$iqrfAppManager = new IqrfAppManager($commandManager, $this->coordinatorParser, $this->osParser);
+		$iqrfAppManager = new IqrfAppManager($commandManager, $this->coordinatorParser, $this->osParser, $this->enumParser);
 		$gwInfoManager = new InfoManager($commandManager, $iqrfAppManager);
 		Assert::same(['eth0' => '01:02:03:04:05:06'], $gwInfoManager->getMacAddresses());
 	}
@@ -93,7 +100,7 @@ class InfoManagerTest extends TestCase {
 		$commandManager = \Mockery::mock(CommandManager::class);
 		$output = 'gateway';
 		$commandManager->shouldReceive('send')->with('hostname -f')->andReturn($output);
-		$iqrfAppManager = new IqrfAppManager($commandManager, $this->coordinatorParser, $this->osParser);
+		$iqrfAppManager = new IqrfAppManager($commandManager, $this->coordinatorParser, $this->osParser, $this->enumParser);
 		$gwInfoManager = new InfoManager($commandManager, $iqrfAppManager);
 		Assert::same($output, $gwInfoManager->getHostname());
 	}
@@ -112,7 +119,7 @@ class InfoManagerTest extends TestCase {
 				. '\"response\":\"\",\"response_ts\":\"\"}"';
 		$commandManager->shouldReceive('send')->with($cmdRead, true)->andReturn('sudo ' . $cmdRead);
 		$commandManager->shouldReceive('send')->with($cmd, true)->andReturn(null);
-		$iqrfAppManager = new IqrfAppManager($commandManager, $this->coordinatorParser, $this->osParser);
+		$iqrfAppManager = new IqrfAppManager($commandManager, $this->coordinatorParser, $this->osParser, $this->enumParser);
 		$gwInfoManager = new InfoManager($commandManager, $iqrfAppManager);
 		Assert::exception(function() use ($gwInfoManager) {
 			$gwInfoManager->getCoordinatorInfo();
@@ -127,19 +134,19 @@ class InfoManagerTest extends TestCase {
 		$version = '0.7.0-1';
 		$commandManager0 = \Mockery::mock(CommandManager::class);
 		$commandManager0->shouldReceive('commandExist')->with('iqrf_startup')->andReturn(false);
-		$iqrfAppManager0 = new IqrfAppManager($commandManager0, $this->coordinatorParser, $this->osParser);
+		$iqrfAppManager0 = new IqrfAppManager($commandManager0, $this->coordinatorParser, $this->osParser, $this->enumParser);
 		$gwInfoManager0 = new InfoManager($commandManager0, $iqrfAppManager0);
 		Assert::same('none', $gwInfoManager0->getDaemonVersion());
 		$commandManager1 = \Mockery::mock(CommandManager::class);
 		$commandManager1->shouldReceive('commandExist')->with('iqrf_startup')->andReturn(true);
 		$commandManager1->shouldReceive('send')->with('iqrf_startup version')->andReturn($version);
-		$iqrfAppManager1 = new IqrfAppManager($commandManager1, $this->coordinatorParser, $this->osParser);
+		$iqrfAppManager1 = new IqrfAppManager($commandManager1, $this->coordinatorParser, $this->osParser, $this->enumParser);
 		$gwInfoManager1 = new InfoManager($commandManager1, $iqrfAppManager1);
 		Assert::same($version, $gwInfoManager1->getDaemonVersion());
 		$commandManager2 = \Mockery::mock(CommandManager::class);
 		$commandManager2->shouldReceive('commandExist')->with('iqrf_startup')->andReturn(true);
 		$commandManager2->shouldReceive('send')->with('iqrf_startup version');
-		$iqrfAppManager2 = new IqrfAppManager($commandManager2, $this->coordinatorParser, $this->osParser);
+		$iqrfAppManager2 = new IqrfAppManager($commandManager2, $this->coordinatorParser, $this->osParser, $this->enumParser);
 		$gwInfoManager2 = new InfoManager($commandManager2, $iqrfAppManager2);
 		Assert::same('unknown', $gwInfoManager2->getDaemonVersion());
 	}

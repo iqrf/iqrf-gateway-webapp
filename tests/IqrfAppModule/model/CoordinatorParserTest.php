@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Test\IqrfAppModule\Model;
 
 use App\IqrfAppModule\Model\CoordinatorParser;
+use App\Model\JsonFileManager;
 use Nette\DI\Container;
 use Tester\Assert;
 use Tester\TestCase;
@@ -25,6 +26,11 @@ class CoordinatorParserTest extends TestCase {
 	private $container;
 
 	/**
+	 * @var JsonFileManager JSON file manager
+	 */
+	private $jsonFileManager;
+
+	/**
 	 * @var CoordinatorParser DPA Coordinator response parser
 	 */
 	private $parser;
@@ -32,58 +38,22 @@ class CoordinatorParserTest extends TestCase {
 	/**
 	 * @var string Coordinator Get Bonded nodes packet
 	 */
-	private $packetBonded = '00.00.00.82.00.00.00.31.3e.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00';
+	private $packetBonded;
 
 	/**
 	 * @var string Coordinator Get Discovered nodes packet
 	 */
-	private $packetDiscovered = '00.00.00.81.00.00.00.31.3c.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00';
+	private $packetDiscovered;
 
 	/**
 	 * @var array Expected Coordinator Get Bonded nodes parsed packet
 	 */
-	private $expectedBonded = [
-		'BondedNodes' => [
-			['0', '1', '1', '1', '1', '1', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-			['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-			['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-			['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-			['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-			['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-			['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-			['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-			['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-			['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-			['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-			['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-			['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-			['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-			['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-		],
-	];
+	private $expectedBonded;
 
 	/**
 	 * @var array Expected Coordinator Get Discovered nodes parsed packet
 	 */
-	private $expectedDiscovered = [
-		'DiscoveredNodes' => [
-			['0', '0', '1', '1', '1', '1', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-			['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-			['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-			['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-			['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-			['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-			['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-			['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-			['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-			['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-			['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-			['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-			['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-			['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-			['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
-		],
-	];
+	private $expectedDiscovered;
 
 	/**
 	 * Constructor
@@ -98,6 +68,11 @@ class CoordinatorParserTest extends TestCase {
 	 */
 	public function setUp() {
 		$this->parser = new CoordinatorParser();
+		$this->jsonFileManager = new JsonFileManager(__DIR__ . '/data/');
+		$this->packetBonded = $this->jsonFileManager->read('response-coordinator-bonded')['response'];
+		$this->packetDiscovered = $this->jsonFileManager->read('response-coordinator-discovered')['response'];
+		$this->expectedBonded = $this->jsonFileManager->read('data-coordinator-bonded');
+		$this->expectedDiscovered = $this->jsonFileManager->read('data-coordinator-discovered');
 	}
 
 	/**

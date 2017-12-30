@@ -22,6 +22,7 @@ namespace App\IqrfAppModule\Model;
 
 use App\IqrfAppModule\Model\CoordinatorParser;
 use App\IqrfAppModule\Model\EmptyResponseException;
+use App\IqrfAppModule\Model\EnumerationParser;
 use App\IqrfAppModule\Model\InvalidOperationModeException;
 use App\IqrfAppModule\Model\OsParser;
 use App\Model\CommandManager;
@@ -49,6 +50,11 @@ class IqrfAppManager {
 	private $coordinatorParser;
 
 	/**
+	 * @var EnumerationParser Parser for DPA Enumeration responses
+	 */
+	private $enumParser;
+
+	/**
 	 * @var OsParser Parser for DPA OS responses
 	 */
 	private $osParser;
@@ -58,10 +64,12 @@ class IqrfAppManager {
 	 * @param CommandManager $commandManager Command manager
 	 * @param CoordinatorParser $coordinatorParser Parser for DPA Coordinator responses
 	 * @param OsParser $osParser Parser for DPA OS responses
+	 * @param $enumParser Parse for DPA Enumeration responses
 	 */
-	public function __construct(CommandManager $commandManager, CoordinatorParser $coordinatorParser, OsParser $osParser) {
+	public function __construct(CommandManager $commandManager, CoordinatorParser $coordinatorParser, OsParser $osParser, EnumerationParser $enumParser) {
 		$this->commandManager = $commandManager;
 		$this->coordinatorParser = $coordinatorParser;
+		$this->enumParser = $enumParser;
 		$this->osParser = $osParser;
 	}
 
@@ -173,11 +181,11 @@ class IqrfAppManager {
 	 */
 	public function fixPacket(string $packet): string {
 		$data = explode('.', trim($packet, '.'));
-		$nadrLo = $data[1];
-		$nadrHi = $data[0];
-		if ($nadrHi === '00' && $nadrLo !== '00') {
-			$data[0] = $nadrLo;
-			$data[1] = $nadrHi;
+		$nadrLo = $data[0];
+		$nadrHi = $data[1];
+		if ($nadrHi !== '00' && $nadrLo === '00') {
+			$data[1] = $nadrLo;
+			$data[0] = $nadrHi;
 		}
 		return Strings::lower(implode('.', $data));
 	}
@@ -209,6 +217,8 @@ class IqrfAppManager {
 				return $this->coordinatorParser->parse($packet);
 			case '02':
 				return $this->osParser->parse($packet);
+			case 'FF':
+				return $this->enumParser->parse($packet);
 			default:
 				return null;
 		}

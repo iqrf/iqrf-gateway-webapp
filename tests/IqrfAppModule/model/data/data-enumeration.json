@@ -1,0 +1,18 @@
+{
+	"DpaVer": "3.01",
+	"PerNr": 1,
+	"EmbeddedPers": [
+		"NODE",
+		"OS",
+		"EEPROM",
+		"EEEPROM",
+		"RAM",
+		"LEDR",
+		"LEDG",
+		"IO",
+		"Thermometer"
+	],
+	"HWPID": "00.02",
+	"HWPIDver": "0.00",
+	"RfMode": "STD"
+}

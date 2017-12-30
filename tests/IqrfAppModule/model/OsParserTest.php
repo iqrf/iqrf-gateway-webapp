@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Test\IqrfAppModule\Model;
 
 use App\IqrfAppModule\Model\OsParser;
+use App\Model\JsonFileManager;
 use Nette\DI\Container;
 use Tester\Assert;
 use Tester\TestCase;
@@ -25,6 +26,11 @@ class OsParserTest extends TestCase {
 	private $container;
 
 	/**
+	 * @var JsonFileManager JSON file manager
+	 */
+	private $jsonFileManager;
+
+	/**
 	 * @var OsParser DPA OS response parser
 	 */
 	private $parser;
@@ -32,22 +38,12 @@ class OsParserTest extends TestCase {
 	/**
 	 * @var string OS Read info packet
 	 */
-	private $packetOsInfo = '00.00.02.80.00.00.00.00.05.a4.00.81.38.24.79.08.00.28.00.f0';
+	private $packetOsInfo;
 
 	/**
 	 * @var array Expected OS Read info parsed response
 	 */
-	private $expectedOsInfo = [
-		'ModuleId' => '8100A405',
-		'OsVersion' => '3.08D',
-		'TrType' => 'DCTR-72D',
-		'McuType' => 'PIC16F1938',
-		'OsBuild' => '0879',
-		'Rssi' => '-130 dBm',
-		'SupplyVoltage' => '3.00 V',
-		'Flags' => '00',
-		'SlotLimits' => 'f0',
-	];
+	private $expectedOsInfo;
 
 	/**
 	 * Constructor
@@ -62,6 +58,9 @@ class OsParserTest extends TestCase {
 	 */
 	public function setUp() {
 		$this->parser = new OsParser();
+		$this->jsonFileManager = new JsonFileManager(__DIR__ . '/data/');
+		$this->packetOsInfo= $this->jsonFileManager->read('response-os-read')['response'];
+		$this->expectedOsInfo = $this->jsonFileManager->read('data-os-read');
 	}
 
 	/**
