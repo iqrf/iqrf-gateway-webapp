@@ -36,6 +36,8 @@
 
 							</tr>
 						</table>
+					{elseif $type === 'EmbeddedPers'}
+						<p><strong>{_$type}:</strong> {foreach $packet as $per} {$per} {sep}, {/sep} {/foreach}</p>
 					{else}
 						<p><strong>{_$type}:</strong> {$packet}</p>
 					{/if}
