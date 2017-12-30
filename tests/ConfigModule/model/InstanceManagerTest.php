@@ -3,7 +3,7 @@
 /**
  * TEST: App\ConfigModule\Model\InstanceManager
  * @covers App\ConfigModule\Model\InstanceManager
- * @phpVersion >= 5.6
+ * @phpVersion >= 7.0
  * @testCase
  */
 declare(strict_types=1);

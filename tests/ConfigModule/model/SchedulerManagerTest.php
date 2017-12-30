@@ -3,7 +3,7 @@
 /**
  * TEST: App\ConfigModule\Model\SchedulerManager
  * @covers App\ConfigModule\Model\SchedulerManager
- * @phpVersion >= 5.6
+ * @phpVersion >= 7.0
  * @testCase
  */
 declare(strict_types=1);

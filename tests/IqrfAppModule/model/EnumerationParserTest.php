@@ -1,9 +1,9 @@
 <?php
 
 /**
- * TEST: App\IqrfAppModule\Model\IqrfAppParser
- * @covers App\IqrfAppModule\Model\IqrfAppParser
- * @phpVersion >= 5.6
+ * TEST: App\IqrfAppModule\Model\EnumerationParser
+ * @covers App\IqrfAppModule\Model\EnumerationParser
+ * @phpVersion >= 7.0
  * @testCase
  */
 declare(strict_types=1);
@@ -80,7 +80,7 @@ class EnumerationParserTest extends TestCase {
 		$array = $this->parser->parsePeripheralEnumeration($this->packetEnumeration);
 		Assert::equal($this->expectedEnumeration, $array);
 	}
-	
+
 	/**
 	 * @test
 	 * Test function to get embedded peripherals

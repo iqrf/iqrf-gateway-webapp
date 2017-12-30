@@ -3,22 +3,15 @@
 /**
  * TEST: App\IqrfAppModule\Model\IqrfNetManager
  * @covers App\IqrfAppModule\Model\IqrfNetManager
- * @phpVersion >= 5.6
+ * @phpVersion >= 7.0
  * @testCase
  */
 declare(strict_types=1);
 
 namespace Test\IqrfAppModule\Model;
 
-use App\IqrfAppModule\Model\CoordinatorParser;
-use App\IqrfAppModule\Model\EmptyResponseException;
-use App\IqrfAppModule\Model\InvalidOperationModeException;
 use App\IqrfAppModule\Model\IqrfAppManager;
 use App\IqrfAppModule\Model\IqrfNetManager;
-use App\IqrfAppModule\Model\OsParser;
-use App\Model\CommandManager;
-use App\Model\FileManager;
-use DateTime;
 use Nette\DI\Container;
 use Tester\Assert;
 use Tester\TestCase;

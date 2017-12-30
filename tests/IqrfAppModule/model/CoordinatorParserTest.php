@@ -3,7 +3,7 @@
 /**
  * TEST: App\IqrfAppModule\Model\CoordinatorParser
  * @covers App\IqrfAppModule\Model\CoordinatorParser
- * @phpVersion >= 5.6
+ * @phpVersion >= 7.0
  * @testCase
  */
 declare(strict_types=1);

@@ -1,9 +1,9 @@
 <?php
 
 /**
- * TEST: App\IqrfAppModule\Model\IqrfAppParser
- * @covers App\IqrfAppModule\Model\IqrfAppParser
- * @phpVersion >= 5.6
+ * TEST: App\IqrfAppModule\Model\OsParser
+ * @covers App\IqrfAppModule\Model\OsParser
+ * @phpVersion >= 7.0
  * @testCase
  */
 declare(strict_types=1);

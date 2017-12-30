@@ -3,7 +3,7 @@
 /**
  * TEST: App\Model\InfoManager
  * @covers App\Model\InfoManager
- * @phpVersion >= 5.6
+ * @phpVersion >= 7.0
  * @testCase
  */
 declare(strict_types=1);

@@ -3,7 +3,7 @@
 /**
  * TEST: App\ConfigModule\Model\IqrfManager
  * @covers App\ConfigModule\Model\IqrfManager
- * @phpVersion >= 5.6
+ * @phpVersion >= 7.0
  * @testCase
  */
 declare(strict_types=1);
