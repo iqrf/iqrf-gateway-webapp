@@ -81,7 +81,7 @@ class CloudInteliGlueMqttFormFactory {
 		$fileName = 'MqttMessaging';
 		$this->manager->setFileName($fileName);
 		$form->addText('rootTopic', 'Root Topic')->setRequired();
-		$form->addInteger('assignedPort', 'AssignedPort')->setRequired()->setDefaultValue(1883)
+		$form->addInteger('assignedPort', 'AssignedPort')->setRequired()
 				->addRule(Form::RANGE, 'Port have to be in range from 0 to 65535', [0, 65535]);
 		$form->addText('clientId', 'ClientId')->setRequired();
 		$form->addText('password', 'Password')->setRequired();
