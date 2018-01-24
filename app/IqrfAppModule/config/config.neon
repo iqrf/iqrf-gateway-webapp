@@ -2,9 +2,11 @@ services:
 	- App\IqrfAppModule\Forms\IqrfAppSendRawFormFactory
 	- App\IqrfAppModule\Forms\IqrfNetBondingFormFactory
 	- App\IqrfAppModule\Forms\IqrfNetDiscoveryFormFactory
+	- App\IqrfAppModule\Forms\IqrfNetAccessPasswordFormFactory
 	- App\IqrfAppModule\Model\CoordinatorParser
 	- App\IqrfAppModule\Model\EnumerationParser
 	- App\IqrfAppModule\Model\IqrfAppManager
 	- App\IqrfAppModule\Model\IqrfMacroManager(%macroPath%)
 	- App\IqrfAppModule\Model\IqrfNetManager
 	- App\IqrfAppModule\Model\OsParser
+
