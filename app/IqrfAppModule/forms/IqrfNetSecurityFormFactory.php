@@ -69,7 +69,7 @@ class IqrfNetSecurityFormFactory {
 				->addConditionOn($form['format'], Form::EQUAL, 'ASCII')
 				->addRule(Form::MAX_LENGTH, 'It has to have maximal length of 16 chars.', 16)
 				->elseCondition($form['format'], Form::EQUAL, 'HEX')
-				->addRule(Form::PATTERN, 'It has to contain hexadecimal number', '[0-9A-Fa-f]{1,2}')
+				->addRule(Form::PATTERN, 'It has to contain hexadecimal number', '[0-9A-Fa-f]{0,32}')
 				->addRule(Form::MAX_LENGTH, 'It has to have maximal length of 32 chars.', 32);
 		$form->addSubmit('setAccessPassword', 'Set Access Password')->onClick[] = [$this, 'accessPasword'];
 		$form->addSubmit('setUserKey', 'Set User Key')->onClick[] = [$this, 'userKey'];
