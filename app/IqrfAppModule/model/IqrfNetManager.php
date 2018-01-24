@@ -99,21 +99,24 @@ class IqrfNetManager {
 		$packet = '00.00.00.06.ff.ff.' . Strings::padLeft($address, 2, '0');
 		return $this->iqrfAppManager->sendRaw($packet);
 	}
-  
-  /**
+
+	/**
 	 * Set Access password for applications using network communication.
-	 * @param string $apassword - new access password (can be ASCII or HEX format)
-	 * @param string $inputFormat - determines in which format the password is entered
+	 * @param string $password New access password (can be ASCII or HEX format)
+	 * @param string $inputFormat Determines in which format the password is entered
 	 * @return array DPA request and response
 	 */
-  public function accessPasword(string $apassword = '',string $inputFormat = 'ASCII' ){
-     $packet = '00.00.02.06.ff.ff.00.';
-     if ($inputFormat == "ASCII"){
-       $packet = $packet . chunk_split(Strings::padLeft(implode(unpack("H*", $apassword)),32,'0'),2,".");
-     }else{
-       $packet = $packet . chunk_split(Strings::padLeft($inputFormat, 32, '0'),2,".");
-     }
-     return $this->iqrfAppManager->sendRaw($packet);
-  }
+	public function setAccessPassword(string $password = '', string $inputFormat = 'ASCII') {
+		$packet = '00.00.02.06.ff.ff.00.';
+		if ($inputFormat === 'ASCII') {
+			$data = implode(unpack('H*', $password));
+		} elseif ($inputFormat === 'HEX') {
+			$data = $password;
+		} else {
+			throw new UnsupportedInputFormatException();
+		}
+		$dataToSend = $packet . Strings::lower(chunk_split(Strings::padLeft($data, 32, '0'), 2, '.'));
+		return $this->iqrfAppManager->sendRaw($dataToSend);
+	}
 
 }

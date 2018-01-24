@@ -9,4 +9,3 @@ services:
 	- App\IqrfAppModule\Model\IqrfMacroManager(%macroPath%)
 	- App\IqrfAppModule\Model\IqrfNetManager
 	- App\IqrfAppModule\Model\OsParser
-

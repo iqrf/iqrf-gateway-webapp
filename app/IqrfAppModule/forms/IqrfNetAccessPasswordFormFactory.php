@@ -26,7 +26,7 @@ use Nette\Application\UI\Form;
 use Nette\Forms\Controls\SubmitButton;
 
 /**
- * IQMESH Bonding form factory.
+ * IQMESH Access password form factory.
  */
 class IqrfNetAccessPasswordFormFactory {
 
@@ -53,24 +53,25 @@ class IqrfNetAccessPasswordFormFactory {
 	}
 
 	/**
-	 * Create IQMESH bonding form
-	 * @return Form IQMESH bonding form
+	 * Create IQMESH Access password form
+	 * @return Form IQMESH Access password form
 	 */
 	public function create(): Form {
 		$form = $this->factory->create();
-		$form->addSelect('inputformat', 'Input format', [
-        'ASCII' => 'ASCII',
-        'HEX' => 'HEX',
-    ]);
-    $form['inputformat']->setDefaultValue('ASCII');
-		$form->addText('apassword', 'Password')
-         ->setRequired(false)
-         ->addConditionOn($form['inputformat'], Form::EQUAL, 'ASCII')
-            ->addRule(Form::MAX_LENGTH,'It has to have maximal length of 16 chars.', 16)
-         ->elseCondition($form['inputformat'], Form::EQUAL, 'HEX')   
-            ->addRule(Form::PATTERN, 'It has to contain hexadecimal number', '[0-9A-Fa-f]{1,2}')
-            ->addRule(Form::MAX_LENGTH,'It has to have maximal length of 32 chars.', 32) ;
-		$form->addSubmit('setaccesspassword', 'set Access Password')->onClick[] = [$this, 'accessPasword'];
+		$inputFormats = [
+			'ASCII' => 'ASCII',
+			'HEX' => 'HEX',
+		];
+		$form->addSelect('format', 'Input format', $inputFormats)
+				->setDefaultValue('ASCII');
+		$form->addText('password', 'Access password')
+				->setRequired(false)
+				->addConditionOn($form['format'], Form::EQUAL, 'ASCII')
+				->addRule(Form::MAX_LENGTH, 'It has to have maximal length of 16 chars.', 16)
+				->elseCondition($form['format'], Form::EQUAL, 'HEX')
+				->addRule(Form::PATTERN, 'It has to contain hexadecimal number', '[0-9A-Fa-f]{1,2}')
+				->addRule(Form::MAX_LENGTH, 'It has to have maximal length of 32 chars.', 32);
+		$form->addSubmit('send', 'Set Access Password')->onClick[] = [$this, 'accessPasword'];
 		$form->addProtection('Timeout expired, resubmit the form.');
 		return $form;
 	}
@@ -81,9 +82,7 @@ class IqrfNetAccessPasswordFormFactory {
 	 */
 	public function accessPasword(SubmitButton $button) {
 		$values = $button->getForm()->getValues();
-		$this->manager->accessPasword($values['apassword']);
+		$this->manager->setAccessPassword($values['password']);
 	}
-
-
 
 }

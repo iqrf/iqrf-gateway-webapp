@@ -41,20 +41,21 @@ class NetworkPresenter extends BasePresenter {
 	 */
 	private $discoveryForm;
 
-  /**
-	 * @var IqrfNetAccessPasswordFormFactory IQMESH set AccessPassword form
+	/**
+	 * @var IqrfNetAccessPasswordFormFactory IQMESH Access Password form
 	 */
 	private $accesspasswordForm;
-  
+
 	/**
 	 * Constructor
 	 * @param IqrfNetBondingFormFactory $bondingForm IQMESH Bonding form
 	 * @param IqrfNetDiscoveryFormFactory $discoveryForm IQMESH Discovery form
+	 * @param IqrfNetAccessPasswordFormFactory $accesspasswordForm IQMESH Access password form
 	 */
 	public function __construct(IqrfNetBondingFormFactory $bondingForm, IqrfNetDiscoveryFormFactory $discoveryForm, IqrfNetAccessPasswordFormFactory $accesspasswordForm) {
 		$this->bondingForm = $bondingForm;
 		$this->discoveryForm = $discoveryForm;
-    $this->accesspasswordForm = $accesspasswordForm;
+		$this->accesspasswordForm = $accesspasswordForm;
 	}
 
 	/**
@@ -81,14 +82,14 @@ class NetworkPresenter extends BasePresenter {
 		$this->onlyForAdmins();
 		return $this->discoveryForm->create($this);
 	}
-  
-  /**
-	 * Create IQMESH set AccessPassword form
-	 * @return Form IQMESH AccessPassword form
+
+	/**
+	 * Create IQMESH Access Password form
+	 * @return Form IQMESH Access Password form
 	 */
 	protected function createComponentIqrfNetAccessPasswordForm(): Form {
 		$this->onlyForAdmins();
-	  return $this->accesspasswordForm->create($this);
+		return $this->accesspasswordForm->create($this);
 	}
 
 }
