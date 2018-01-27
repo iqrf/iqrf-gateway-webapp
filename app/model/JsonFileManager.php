@@ -44,7 +44,7 @@ class JsonFileManager extends FileManager {
 	 * @param string $fileName File name (without .json)
 	 * @return array
 	 */
-	public function read(string $fileName) {
+	public function read(string $fileName): array {
 		$file = parent::read($fileName . '.json');
 		return Json::decode($file, Json::FORCE_ARRAY);
 	}

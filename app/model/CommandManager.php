@@ -84,7 +84,7 @@ class CommandManager {
 	 * @param string $cmd Command
 	 * @return bool
 	 */
-	public function commandExist(string $cmd) {
+	public function commandExist(string $cmd): bool {
 		return !empty($this->send('which ' . $cmd));
 	}
 
