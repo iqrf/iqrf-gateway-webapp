@@ -27,13 +27,13 @@ use App\Presenters\BasePresenter;
 class TracerPresenter extends BasePresenter {
 
 	/**
-	 * @var ConfigTracerFormFactory
+	 * @var ConfigTracerFormFactory Daemon's tracer configuration form factory
 	 */
 	private $formFactory;
 
 	/**
 	 * Constructor
-	 * @param ConfigTracerFormFactory $formFactory
+	 * @param ConfigTracerFormFactory $formFactory Daemon's tracer configuration form factory
 	 */
 	public function __construct(ConfigTracerFormFactory $formFactory) {
 		$this->formFactory = $formFactory;

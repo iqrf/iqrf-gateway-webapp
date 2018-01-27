@@ -28,7 +28,7 @@ use App\Presenters\BasePresenter;
 class SchedulerPresenter extends BasePresenter {
 
 	/**
-	 * @var ConfigSchedulerFormFactory
+	 * @var ConfigSchedulerFormFactory Scheduler configuration form factory
 	 */
 	private $formFactory;
 
@@ -40,7 +40,7 @@ class SchedulerPresenter extends BasePresenter {
 	/**
 	 * Constructor
 	 * @param ConfigSchedulerFormFactory $formFactory
-	 * @param SchedulerManager $configManager
+	 * @param SchedulerManager $configManager Scheduler configuration form factory
 	 */
 	public function __construct(ConfigSchedulerFormFactory $formFactory, SchedulerManager $configManager) {
 		$this->configManager = $configManager;

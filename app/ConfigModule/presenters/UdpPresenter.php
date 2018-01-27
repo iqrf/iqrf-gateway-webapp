@@ -27,13 +27,13 @@ use App\Presenters\BasePresenter;
 class UdpPresenter extends BasePresenter {
 
 	/**
-	 * @var ConfigUdpFormFactory
+	 * @var ConfigUdpFormFactory UDP interface configuration form factory
 	 */
 	private $formFactory;
 
 	/**
 	 * Constructor
-	 * @param ConfigUdpFormFactory $formFactory
+	 * @param ConfigUdpFormFactory $formFactory UDP interface configuration form factory
 	 */
 	public function __construct(ConfigUdpFormFactory $formFactory) {
 		$this->formFactory = $formFactory;

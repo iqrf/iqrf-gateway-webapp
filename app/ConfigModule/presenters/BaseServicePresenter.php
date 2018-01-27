@@ -28,19 +28,19 @@ use App\Presenters\BasePresenter;
 class BaseServicePresenter extends BasePresenter {
 
 	/**
-	 * @var ConfigBaseServiceFormFactory
+	 * @var ConfigBaseServiceFormFactory Base service configuration form factory
 	 */
 	private $formFactory;
 
 	/**
-	 * @var BaseServiceManager
+	 * @var BaseServiceManager Base service manager
 	 */
 	private $configManager;
 
 	/**
 	 * Constructor
-	 * @param BaseServiceManager $configManager
-	 * @param ConfigBaseServiceFormFactory $formFactory
+	 * @param BaseServiceManager $configManager Base service manager
+	 * @param ConfigBaseServiceFormFactory $formFactory Base service configuration form factory
 	 */
 	public function __construct(BaseServiceManager $configManager, ConfigBaseServiceFormFactory $formFactory) {
 		$this->configManager = $configManager;

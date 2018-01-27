@@ -28,19 +28,19 @@ use App\Presenters\BasePresenter;
 class MainPresenter extends BasePresenter {
 
 	/**
-	 * @var ConfigComponentsFormFactory
+	 * @var ConfigComponentsFormFactory Daemon's components configuration form factory
 	 */
 	private $componentsFactory;
 
 	/**
-	 * @var ConfigMainFormFactory
+	 * @var ConfigMainFormFactory Daemon's main configuration form factory
 	 */
 	private $mainFactory;
 
 	/**
 	 * Constructor
-	 * @param ConfigComponentsFormFactory $componentsFactory
-	 * @param ConfigMainFormFactory $mainFactory
+	 * @param ConfigComponentsFormFactory $componentsFactory Daemon's components configuration form factory
+	 * @param ConfigMainFormFactory $mainFactory Daemon's main configuration form factory
 	 */
 	public function __construct(ConfigComponentsFormFactory $componentsFactory, ConfigMainFormFactory $mainFactory) {
 		$this->componentsFactory = $componentsFactory;

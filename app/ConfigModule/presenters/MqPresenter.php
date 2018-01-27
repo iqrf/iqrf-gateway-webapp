@@ -28,24 +28,24 @@ use App\Presenters\BasePresenter;
 class MqPresenter extends BasePresenter {
 
 	/**
-	 * @var ConfigMqFormFactory
+	 * @var ConfigMqFormFactory MQ inteface configuration form factory
 	 */
 	private $formFactory;
 
 	/**
-	 * @var InstanceManager
+	 * @var InstanceManager Interface instance manager
 	 */
 	private $configManager;
 
 	/**
-	 * @var string
+	 * @var string File name (without .json)
 	 */
 	private $fileName = 'MqMessaging';
 
 	/**
 	 * Constructor
-	 * @param ConfigMqFormFactory $formFactory
-	 * @param InstanceManager $configManager
+	 * @param ConfigMqFormFactory $formFactory MQ interface configuration form factory
+	 * @param InstanceManager $configManager Interface instance manager
 	 */
 	public function __construct(ConfigMqFormFactory $formFactory, InstanceManager $configManager) {
 		$this->configManager = $configManager;

@@ -28,24 +28,24 @@ use App\Presenters\BasePresenter;
 class MqttPresenter extends BasePresenter {
 
 	/**
-	 * @var ConfigMqttFormFactory
+	 * @var ConfigMqttFormFactory MQTT interface configuration form factory
 	 */
 	private $formFactory;
 
 	/**
-	 * @var InstanceManager
+	 * @var InstanceManager Interface instance manager
 	 */
 	private $configManager;
 
 	/**
-	 * @var string
+	 * @var string File name (without .json)
 	 */
 	private $fileName = 'MqttMessaging';
 
 	/**
 	 * Constructor
-	 * @param ConfigMqttFormFactory $formFactory
-	 * @param InstanceManager $configManager
+	 * @param ConfigMqttFormFactory $formFactory MQTT interface configuration form factory
+	 * @param InstanceManager $configManager Interface instance manager
 	 */
 	public function __construct(ConfigMqttFormFactory $formFactory, InstanceManager $configManager) {
 		$this->configManager = $configManager;

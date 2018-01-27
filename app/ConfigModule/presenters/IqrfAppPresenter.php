@@ -27,13 +27,13 @@ use App\Presenters\BasePresenter;
 class IqrfAppPresenter extends BasePresenter {
 
 	/**
-	 * @var ConfigIqrfAppFormFactory
+	 * @var ConfigIqrfAppFormFactory iqrfapp configuration form factory
 	 */
 	private $formFactory;
 
 	/**
 	 * Constructor
-	 * @param ConfigIqrfAppFormFactory $formFactory
+	 * @param ConfigIqrfAppFormFactory $formFactory iqrfapp configuration form factory
 	 */
 	public function __construct(ConfigIqrfAppFormFactory $formFactory) {
 		$this->formFactory = $formFactory;
