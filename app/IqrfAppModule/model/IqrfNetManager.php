@@ -106,8 +106,15 @@ class IqrfNetManager {
 	 * @param string $inputFormat Determines in which format the password is entered
 	 * @return array DPA request and response
 	 */
-	public function setAccessPassword(string $password = '', string $inputFormat = 'ASCII') {
-		$packet = '00.00.02.06.ff.ff.00.';
+	public function setSecurity(string $password = '', string $inputFormat = 'ASCII', string $type = 'accessPassword') {
+		$packet = '00.00.02.06.ff.ff.';
+		if ($type === 'accessPassword') {
+			$packet .= '00.';
+		} else if ($type === 'userKey') {
+			$packet .= '01.';
+		} else {
+			throw new UnsupportedSecurityTypeException();
+		}
 		if ($inputFormat === 'ASCII') {
 			$data = implode(unpack('H*', $password));
 		} elseif ($inputFormat === 'HEX') {

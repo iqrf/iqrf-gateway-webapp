@@ -26,9 +26,9 @@ use Nette\Application\UI\Form;
 use Nette\Forms\Controls\SubmitButton;
 
 /**
- * IQMESH Access password form factory.
+ * IQMESH Security form factory.
  */
-class IqrfNetAccessPasswordFormFactory {
+class IqrfNetSecurityFormFactory {
 
 	use Nette\SmartObject;
 
@@ -64,25 +64,35 @@ class IqrfNetAccessPasswordFormFactory {
 		];
 		$form->addSelect('format', 'Input format', $inputFormats)
 				->setDefaultValue('ASCII');
-		$form->addText('password', 'Access password')
+		$form->addText('password', 'Password')
 				->setRequired(false)
 				->addConditionOn($form['format'], Form::EQUAL, 'ASCII')
 				->addRule(Form::MAX_LENGTH, 'It has to have maximal length of 16 chars.', 16)
 				->elseCondition($form['format'], Form::EQUAL, 'HEX')
 				->addRule(Form::PATTERN, 'It has to contain hexadecimal number', '[0-9A-Fa-f]{1,2}')
 				->addRule(Form::MAX_LENGTH, 'It has to have maximal length of 32 chars.', 32);
-		$form->addSubmit('send', 'Set Access Password')->onClick[] = [$this, 'accessPasword'];
+		$form->addSubmit('setAccessPassword', 'Set Access Password')->onClick[] = [$this, 'accessPasword'];
+		$form->addSubmit('setUserKey', 'Set User Key')->onClick[] = [$this, 'userKey'];
 		$form->addProtection('Timeout expired, resubmit the form.');
 		return $form;
 	}
 
 	/**
-	 * Bond new node
-	 * @param SubmitButton $button Submit button for bonding
+	 * Set IQMESH Access Password
+	 * @param SubmitButton $button Submit button for setting Access Password
 	 */
 	public function accessPasword(SubmitButton $button) {
 		$values = $button->getForm()->getValues();
-		$this->manager->setAccessPassword($values['password']);
+		$this->manager->setSecurity($values['password'], $values['format'], 'accessPassword');
+	}
+
+	/**
+	 * Set IQMESH User Key
+	 * @param SubmitButton $button Submit button for setting User Key
+	 */
+	public function userKey(SubmitButton $button) {
+		$values = $button->getForm()->getValues();
+		$this->manager->setSecurity($values['password'], $values['format'], 'userKey');
 	}
 
 }

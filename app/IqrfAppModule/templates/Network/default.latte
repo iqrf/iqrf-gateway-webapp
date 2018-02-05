@@ -17,24 +17,6 @@
 
 {block content}
 <h1 n:block=title>{_"IQMESH Network Manager"}</h1>
-<div class=' row'>
-	<div class="col-sm-6">
-		<h2>{_"Access Password"}</h2>
-		<div class='panel panel-default'>
-			<div class='panel-body'>
-				{control iqrfNetAccessPasswordForm}
-			</div>
-		</div>
-	</div>
-	<div class="col-sm-6">
-		<h2>{_"RF channel"}</h2>
-		<div class='panel panel-default'>
-			<div class='panel-body'>
-
-			</div>
-		</div>
-	</div>
-</div>
 <div class="col-sm-6">
 	<h2>{_"Bonding"}</h2>
 	<div class='panel panel-default'>
@@ -60,6 +42,22 @@
 	<div class='panel panel-default'>
 		<div class='panel-body'>
 			{control iqrfNetDiscoveryForm}
+		</div>
+	</div>
+</div>
+<div class="col-sm-6">
+	<h2>{_"Security"}</h2>
+	<div class='panel panel-default'>
+		<div class='panel-body'>
+			{control iqrfNetSecurityForm}
+		</div>
+	</div>
+</div>
+<div class="col-sm-6">
+	<h2>{_"RF channel"}</h2>
+	<div class='panel panel-default'>
+		<div class='panel-body'>
+
 		</div>
 	</div>
 </div>

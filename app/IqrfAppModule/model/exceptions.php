@@ -40,3 +40,10 @@ class InvalidOperationModeException extends \Exception {
 class UnsupportedInputFormatException extends \Exception {
 
 }
+
+/**
+ * The exception that indicates unsupported security type
+ */
+class UnsupportedSecurityTypeException extends \Exception {
+
+}
