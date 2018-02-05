@@ -76,17 +76,18 @@ class IqrfAppSendRawFormFactory {
 		$form->addSubmit('send', 'Send');
 		$form->addProtection('Timeout expired, resubmit the form.');
 		$form->onSuccess[] = function (Form $form, ArrayHash $values) use ($presenter) {
-			$this->onSuccess($values, $presenter);
+			$this->onSuccess($form, $values, $presenter);
 		};
 		return $form;
 	}
 
 	/**
 	 * Send raw DPA packet
+	 * @param Form $form IQRF App send RAW packet form
 	 * @param ArrayHash $values Values from form
 	 * @param SendRawPresenter $presenter IQRF Send DPA raw packet presenter
 	 */
-	public function onSuccess(ArrayHash $values, SendRawPresenter $presenter) {
+	public function onSuccess(Form $form, ArrayHash $values, SendRawPresenter $presenter) {
 		$packet = $values['packet'];
 		$timeout = $values['timeoutEnabled'] ? $values['timeout'] : null;
 		if ($this->manager->validatePacket($packet)) {
@@ -96,6 +97,9 @@ class IqrfAppSendRawFormFactory {
 			}
 			$response = $this->manager->sendRaw($packet, $timeout);
 			$presenter->handleShowResponse($response);
+		} else {
+			$form->addError('Invalid DPA packet.');
+			$presenter->flashMessage('Invalid DPA packet.', 'danger');
 		}
 	}
 
