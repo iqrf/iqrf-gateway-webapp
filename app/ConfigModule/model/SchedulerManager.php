@@ -119,6 +119,16 @@ class SchedulerManager {
 	}
 
 	/**
+	 * Fix HWPID format
+	 * @param string $hwpid HWPID to fix
+	 * @return string Fixed HWPID
+	 */
+	public function fixHwpid(string $hwpid): string {
+		$data = str_split($hwpid, 2);
+		return $data[1] . '.' . $data[0];
+	}
+
+	/**
 	 * Get last ID
 	 * @return int Last ID in array
 	 */
@@ -139,7 +149,7 @@ class SchedulerManager {
 			return $data['request'];
 		}
 		$nadr = (empty($data['nadr']) ? '00' : Strings::padLeft($data['nadr'], 2, '0')) . '.00.';
-		$hwpid = (isset($data['hwpid']) ? $data['hwpid'] : 'ffff');
+		$hwpid = (isset($data['hwpid']) ? $this->fixHwpid($data['hwpid']) : 'ff.ff');
 		switch ($data['type']) {
 			case 'raw-hdp':
 				$pnum = Strings::padLeft($data['pnum'], 2, '0') . '.';

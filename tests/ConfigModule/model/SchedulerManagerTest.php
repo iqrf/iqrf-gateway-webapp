@@ -125,6 +125,15 @@ class SchedulerManagerTest extends TestCase {
 
 	/**
 	 * @test
+	 * Test function to fix HWPID format
+	 */
+	public function testFixHwpid() {
+		$manager = new SchedulerManager($this->fileManagerTemp);
+		Assert::equal('01.00', $manager->fixHwpid('0001'));
+	}
+
+	/**
+	 * @test
 	 * Test function to get last ID
 	 */
 	public function testGetLastId() {
@@ -150,7 +159,7 @@ class SchedulerManagerTest extends TestCase {
 				'time' => '*/5 1 * * * * *',
 				'service' => 'BaseServiceForMQTT1',
 				'type' => 'dpa | std-per-ledg',
-				'request' => '01.00.07.03.ffff',
+				'request' => '01.00.07.03.ff.ff',
 				'id' => 1,
 			], [
 				'time' => '*/5 1 * * * * *',
@@ -162,19 +171,19 @@ class SchedulerManagerTest extends TestCase {
 				'time' => '*/5 1 * * * * *',
 				'service' => 'BaseServiceForMQTT1',
 				'type' => 'dpa | raw-hdp',
-				'request' => '01.00.06.03.ffff',
+				'request' => '01.00.06.03.ff.ff',
 				'id' => 3,
 			], [
 				'time' => '*/5 1 * * * * *',
 				'service' => 'BaseServiceForMQTT1',
 				'type' => 'dpa | raw-hdp',
-				'request' => '00.00.0d.00.ffff.c0.00.00',
+				'request' => '00.00.0d.00.ff.ff.c0.00.00',
 				'id' => 4,
 			], [
 				'time' => '*/5 1 * * * * *',
 				'service' => 'BaseServiceForMQTT1',
 				'type' => 'dpa | std-per-frc',
-				'request' => '00.00.0d.00.ffff',
+				'request' => '00.00.0d.00.ff.ff',
 				'id' => 5,
 			]
 		];
