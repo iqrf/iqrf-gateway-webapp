@@ -100,4 +100,30 @@ class IqrfNetManager {
 		return $this->iqrfAppManager->sendRaw($packet);
 	}
 
+	/**
+	 * Set Access password for applications using network communication.
+	 * @param string $password New access password (can be ASCII or HEX format)
+	 * @param string $inputFormat Determines in which format the password is entered
+	 * @return array DPA request and response
+	 */
+	public function setSecurity(string $password = '', string $inputFormat = 'ASCII', string $type = 'accessPassword') {
+		$packet = '00.00.02.06.ff.ff.';
+		if ($type === 'accessPassword') {
+			$packet .= '00.';
+		} else if ($type === 'userKey') {
+			$packet .= '01.';
+		} else {
+			throw new UnsupportedSecurityTypeException();
+		}
+		if ($inputFormat === 'ASCII') {
+			$data = implode(unpack('H*', $password));
+		} elseif ($inputFormat === 'HEX') {
+			$data = $password;
+		} else {
+			throw new UnsupportedInputFormatException();
+		}
+		$dataToSend = $packet . Strings::lower(chunk_split(Strings::padLeft($data, 32, '0'), 2, '.'));
+		return $this->iqrfAppManager->sendRaw($dataToSend);
+	}
+
 }

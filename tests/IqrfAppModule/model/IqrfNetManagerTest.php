@@ -12,6 +12,8 @@ namespace Test\IqrfAppModule\Model;
 
 use App\IqrfAppModule\Model\IqrfAppManager;
 use App\IqrfAppModule\Model\IqrfNetManager;
+use App\IqrfAppModule\Model\UnsupportedInputFormatException;
+use App\IqrfAppModule\Model\UnsupportedSecurityTypeException;
 use Nette\DI\Container;
 use Tester\Assert;
 use Tester\TestCase;
@@ -104,6 +106,38 @@ class IqrfNetManagerTest extends TestCase {
 		$this->iqrfAppManager->shouldReceive('sendRaw')->with($packet)->andReturn([true]);
 		$iqrfNetManager = new IqrfNetManager($this->iqrfAppManager);
 		Assert::same([true], $iqrfNetManager->removeNode('10'));
+	}
+
+	/**
+	 * @test
+	 * Test function to set IQMESH Security (Access Password and User Key)
+	 */
+	public function testSetSecurity() {
+		$packet0 = '00.00.02.06.ff.ff.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.';
+		$packet1 = '00.00.02.06.ff.ff.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.de.ad.';
+		$packet2 = '00.00.02.06.ff.ff.00.00.00.00.00.00.00.00.00.00.00.00.00.44.45.41.44.';
+		$packet3 = '00.00.02.06.ff.ff.01.00.00.00.00.00.00.00.00.00.00.00.00.00.00.de.ad.';
+		$packet4 = '00.00.02.06.ff.ff.01.00.00.00.00.00.00.00.00.00.00.00.00.44.45.41.44.';
+		$this->iqrfAppManager->shouldReceive('sendRaw')->with($packet0)->andReturn([0]);
+		$this->iqrfAppManager->shouldReceive('sendRaw')->with($packet1)->andReturn([1]);
+		$this->iqrfAppManager->shouldReceive('sendRaw')->with($packet2)->andReturn([2]);
+		$this->iqrfAppManager->shouldReceive('sendRaw')->with($packet3)->andReturn([3]);
+		$this->iqrfAppManager->shouldReceive('sendRaw')->with($packet4)->andReturn([4]);
+		$iqrfNetManager = new IqrfNetManager($this->iqrfAppManager);
+		Assert::same([0], $iqrfNetManager->setSecurity());
+		Assert::same([1], $iqrfNetManager->setSecurity('DEAD', 'HEX'));
+		Assert::same([2], $iqrfNetManager->setSecurity('DEAD', 'ASCII'));
+		Assert::same([3], $iqrfNetManager->setSecurity('DEAD', 'HEX', 'userKey'));
+		Assert::same([4], $iqrfNetManager->setSecurity('DEAD', 'ASCII', 'userKey'));
+		Assert::exception(function() use ($iqrfNetManager) {
+			$iqrfNetManager->setSecurity('DEAD', 'DEAD');
+		}, UnsupportedInputFormatException::class);
+		Assert::exception(function() use ($iqrfNetManager) {
+			$iqrfNetManager->setSecurity('DEAD', 'DEAD', 'userKey');
+		}, UnsupportedInputFormatException::class);
+		Assert::exception(function() use ($iqrfNetManager) {
+			$iqrfNetManager->setSecurity('DEAD', 'ASCII', 'fooBar');
+		}, UnsupportedSecurityTypeException::class);
 	}
 
 }

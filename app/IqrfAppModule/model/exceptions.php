@@ -33,3 +33,17 @@ class EmptyResponseException extends \Exception {
 class InvalidOperationModeException extends \Exception {
 
 }
+
+/**
+ * The exception that indicates unsupported input format
+ */
+class UnsupportedInputFormatException extends \Exception {
+
+}
+
+/**
+ * The exception that indicates unsupported security type
+ */
+class UnsupportedSecurityTypeException extends \Exception {
+
+}
