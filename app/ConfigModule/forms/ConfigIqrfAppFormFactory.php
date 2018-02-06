@@ -58,8 +58,10 @@ class ConfigIqrfAppFormFactory {
 	 */
 	public function create(IqrfAppPresenter $presenter): Form {
 		$form = $this->factory->create();
+		$form->setTranslator($form->getTranslator()->domain('config.iqrfappForm'));
 		$fileName = 'iqrfapp';
-		$items = ['err' => 'Error', 'war' => 'Warning', 'inf' => 'Info', 'dbg' => 'Debug'];
+		$items = ['err' => 'VerbosityLevels.Error', 'war' => 'VerbosityLevels.Warning',
+			'inf' => 'VerbosityLevels.Info', 'dbg' => 'VerbosityLevels.Debug'];
 		$this->manager->setFileName($fileName);
 		$form->addText('LocalMqName', 'LocalMqName')->setRequired();
 		$form->addText('RemoteMqName', 'RemoteMqName')->setRequired();

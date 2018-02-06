@@ -1,0 +1,14 @@
+title: Gateway
+
+info:
+	title: Gateway Info
+	description: Show infromation about this gateway.
+
+log:
+	title: IQRF Daemon log
+	description: Show log of the iqrf-daemon.
+	download: Download
+
+mode:
+	title: Change gateway mode
+	description: Change gateway mode.

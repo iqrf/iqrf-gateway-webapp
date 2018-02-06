@@ -1,0 +1,132 @@
+title: Configuration
+
+baseServiceForm:
+	Name: Name
+	Messaging: Messaging
+	Serializers: Serializers
+	JsonSerializer: JSON serializer
+	SimpleSerializer: Simple serializer
+	AsyncDpaMessage: Enabled Async DPA messages
+	Save: Save
+
+componentsForm:
+	title: Components
+	BaseService: Base service
+	TracerFile: Tracer file
+	IqrfInterface: IQRF interface
+	UdpMessaging: UDP messaging
+	MqttMessaging: MQTT messaging
+	MqMessaging: MQ messaging
+	Scheduler: Scheduler
+	JsonSerializer: JSON serializer
+	SimpleSerializer: Simple serializer
+	Save: Save
+
+iqrfappForm:
+	title: IQRF App
+	LocalMqName: Local MQ name
+	RemoteMqName: Remote MQ name
+	DefaultTimeout: Default timeout
+	VerbosityLevel: Verbosity level
+	VerbosityLevels:
+		Error: Error
+		Warning: Warning
+		Info: Info
+		Debug: Debug
+	Save: Save
+
+iqrfForm:
+	title: IQRF interface
+	IqrfInterface: IQRF interface
+	DpaHandlerTimeout: DPA Handler timeout
+	CommunicationMode: Communication mode
+	CommunicationModes:
+		LP: LP
+		STD: STD
+	Save: Save
+	availableInterfaces: Available interfaces
+	interfaces:
+		usb: USB CDC
+		spi: SPI
+
+mainForm:
+	title: Main configuration
+	Configuration: Configuration version
+	ConfigurationDir: Configuration directory
+	WatchDogTimeoutMilis: WatchDog timeout in ms
+	Mode: Operational mode
+	Modes:
+		Forwarding: Forwarding
+		Operational: Operational
+		Service: Service
+	Save: Save
+
+mqForm:
+	Name: Name
+	Enabled: Enabled
+	LocalMqName: Local MQ name
+	RemoteMqName: Remote MQ name
+	Save: Save
+
+mqttForm:
+	Name: Name
+	Enabled: Enabled
+	BrokerAddr: Broker address
+	ClientId: Client ID
+	Persistence: Persistence
+	QoS: QoS
+	TopicRequest: Topic for requests
+	TopicResponse: Topic for responses
+	User: User
+	Password: Password
+	EnabledSSL: Enabled TLS
+	KeepAliveInterval: Keep alive interval
+	ConnectTimeout: Connection timeout
+	MinReconnect: Minimal count of reconnects
+	MaxReconnect: Maximal count of reconnects
+	TrustStore: CA certificate
+	KeyStore: Certificate
+	PrivateKey: Private key
+	PrivateKeyPassword: Private key password
+	EnabledCipherSuites: Enabled cipher suites
+	EnableServerCertAuth: Enable server certificate authentication
+	Save: Save
+
+schedulerForm:
+	time: Time
+	service: Base service
+	ctype: Category
+	type: Type of the DPA message
+	request: DPA request
+	request_ts: DPA request timestamp
+	response: DPA response
+	response_ts: DPA response timestamp
+	confirmation: DPA confirmation
+	confirmation_ts: DPA confirmation timestamp
+	nadr: NADR
+	cmd: Command
+	pnum: PNUM
+	pcmd: PCMD
+	hwpid: HWPID
+	timeout: Timeout
+	msgid: Message ID
+	sensors: Sensors
+	Save: Save
+
+tracerForm:
+	TraceFileName: Tracer file name
+	TraceFileSize: Tracer file size
+	VerbosityLevel: Verbosity level
+	VerbosityLevels:
+		Error: Error
+		Warning: Warning
+		Info: Info
+		Debug: Debug
+	Save: Save
+
+udpForm:
+	Name: Name
+	Enabled: Enabled
+	RemotePort: Remote port
+	LocalPort: Local port
+	Save: Save

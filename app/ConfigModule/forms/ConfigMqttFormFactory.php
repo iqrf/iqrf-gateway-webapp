@@ -59,6 +59,7 @@ class ConfigMqttFormFactory {
 	public function create(MqttPresenter $presenter): Form {
 		$id = intval($presenter->getParameter('id'));
 		$form = $this->factory->create();
+		$form->setTranslator($form->getTranslator()->domain('config.mqttForm'));
 		$fileName = 'MqttMessaging';
 		$this->manager->setFileName($fileName);
 		$qos = ['QoS 0 - At most once', 'QoS 1 - At least once', 'QoS 2 - Exactly once'];

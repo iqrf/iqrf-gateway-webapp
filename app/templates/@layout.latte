@@ -44,28 +44,28 @@
 						<li><a n:href=':Homepage:default'>{_"Dashboard"}</a></li>
 						<li n:if='$user->loggedIn' class='dropdown'>
 							<a n:href=':Gateway:Homepage:default' class="dropdown-toggle" data-toggle="dropdown" role="button">
-								{_"Gateway"} <span class="caret"></span>
+								{_gateway.title} <span class="caret"></span>
 							</a>
 							<ul class="dropdown-menu">
-								<li><a n:href=':Gateway:Info:default'>{_"GW Info"}</a></li>
-								<li><a n:href=':Gateway:Log:default'>{_"Daemon log"}</a></li>
-								<li><a n:href=':Gateway:ChangeMode:default'>{_"Change GW mode"}</a></li>
+								<li><a n:href=':Gateway:Info:default'>{_gateway.info.title}</a></li>
+								<li><a n:href=':Gateway:Log:default'>{_gateway.log.title}</a></li>
+								<li><a n:href=':Gateway:ChangeMode:default'>{_gateway.mode.title}</a></li>
 							</ul>
 						</li>
 						<li n:if='$user->loggedIn' class='dropdown'>
 							<a n:href=':Config:Homepage:default' class="dropdown-toggle" data-toggle="dropdown" role="button">
-								{_"Configuration"} <span class="caret"></span>
+								{_config.title} <span class="caret"></span>
 							</a>
 							<ul class="dropdown-menu">
-								<li><a n:href=':Config:Main:default'>{_"Main configuration"}</a></li>
+								<li><a n:href=':Config:Main:default'>{_config.mainForm.title}</a></li>
 								<li><a n:href=':Config:Tracer:default'>{_"Tracer file"}</a></li>
-								<li><a n:href=':Config:Iqrf:default'>{_"IQRF interface"}</a></li>
+								<li><a n:href=':Config:Iqrf:default'>{_config.iqrfForm.title}</a></li>
 								<li><a n:href=':Config:Udp:default'>{_"UDP interface"}</a></li>
 								<li><a n:href=':Config:Mqtt:default'>{_"MQTT interface"}</a></li>
 								<li><a n:href=':Config:Mq:default'>{_"MQ interface"}</a></li>
 								<li><a n:href=':Config:Scheduler:default'>{_"Scheduler"}</a></li>
 								<li><a n:href=':Config:BaseService:default'>{_"Base services"}</a></li>
-								<li><a n:href=':Config:IqrfApp:default'>{_"IQRF App"}</a></li>
+								<li><a n:href=':Config:IqrfApp:default'>{_config.iqrfappForm.title}</a></li>
 							</ul>
 						</li>
 						<li n:if='$user->loggedIn'><a n:href=':Service:Control:default'>{_"Service"}</a></li>
@@ -80,7 +80,7 @@
 						</li>
 						<li n:if='$user->loggedIn' class='dropdown'>
 							<a n:href=':Cloud:Homepage:default' class="dropdown-toggle" data-toggle="dropdown" role="button">
-								{_"Clouds"} <span class="caret"></span>
+								{_cloud.title} <span class="caret"></span>
 							</a>
 							<ul class="dropdown-menu">
 								<li><a n:href=':Cloud:Aws:default'>{_"Amazon AWS"}</a></li>

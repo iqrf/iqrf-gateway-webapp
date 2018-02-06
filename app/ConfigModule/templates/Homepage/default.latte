@@ -16,10 +16,10 @@
 *}
 
 {block content}
-<h1 n:block=title>{_"Configuration"}</h1>
+<h1 n:block=title>{_config.title}</h1>
 <div class='list-group'>
 	<a n:href='Main:default' class='list-group-item'>
-		<header class='list-group-item-heading'>{_"Main configuration"}</header>
+		<header class='list-group-item-heading'>{_config.mainForm.title}</header>
 		<p class='list-group-item-text'>{_"Main configuration of IQRF Daemon."}</p>
 	</a>
 	<a n:href='Tracer:default' class='list-group-item'>
@@ -27,7 +27,7 @@
 		<p class='list-group-item-text'>{_"Tracer file settings."}</p>
 	</a>
 	<a n:href='Iqrf:default' class='list-group-item'>
-		<header class='list-group-item-heading'>{_"IQRF interface"}</header>
+		<header class='list-group-item-heading'>{_config.iqrfForm.title}</header>
 		<p class='list-group-item-text'>{_"IQRF interface settings."}</p>
 	</a>
 	<a n:href='Udp:default' class='list-group-item'>
@@ -51,7 +51,7 @@
 		<p class='list-group-item-text'>{_"Base services settings."}</p>
 	</a>
 	<a n:href='IqrfApp:default' class='list-group-item'>
-		<header class='list-group-item-heading'>{_"IQRF App"}</header>
+		<header class='list-group-item-heading'>{_config.iqrfForm.title}</header>
 		<p class='list-group-item-text'>{_"IQRF App settings."}</p>
 	</a>
 </div>

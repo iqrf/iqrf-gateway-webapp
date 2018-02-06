@@ -65,6 +65,7 @@ class ConfigSchedulerFormFactory {
 	public function create(SchedulerPresenter $presenter): Form {
 		$id = intval($presenter->getParameter('id'));
 		$form = $this->factory->create();
+		$form->setTranslator($form->getTranslator()->domain('config.schedulerForm'));
 		$defaults = $this->manager->load($id);
 		$types = [
 			'raw' => 'raw',

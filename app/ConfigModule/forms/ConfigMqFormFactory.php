@@ -59,6 +59,7 @@ class ConfigMqFormFactory {
 	public function create(MqPresenter $presenter): Form {
 		$id = intval($presenter->getParameter('id'));
 		$form = $this->factory->create();
+		$form->setTranslator($form->getTranslator()->domain('config.mqForm'));
 		$fileName = 'MqMessaging';
 		$this->manager->setFileName($fileName);
 		$form->addText('Name', 'Name')->setRequired();

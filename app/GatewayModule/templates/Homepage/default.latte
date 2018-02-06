@@ -16,18 +16,18 @@
 *}
 
 {block content}
-<h1 n:block=title>{_"Gateway"}</h1>
+<h1 n:block=title>{_gateway.title}</h1>
 <div class='list-group'>
 	<a n:href='Info:default' class='list-group-item'>
-		<header class='list-group-item-heading'>{_"Gateway Info"}</header>
-		<p class='list-group-item-text'>{_"Show infromation about this gateway."}</p>
+		<header class='list-group-item-heading'>{_gateway.info.title}</header>
+		<p class='list-group-item-text'>{_gateway.info.description}</p>
 	</a>
-	<a n:href='Info:default' class='list-group-item'>
-		<header class='list-group-item-heading'>{_"IQRF Daemon log"}</header>
-		<p class='list-group-item-text'>{_"Show log of the iqrf-daemon."}</p>
+	<a n:href='Log:default' class='list-group-item'>
+		<header class='list-group-item-heading'>{_gateway.log.title}</header>
+		<p class='list-group-item-text'>{_gateway.log.description}</p>
 	</a>
 	<a n:href='ChangeMode:default' class='list-group-item'>
-		<header class='list-group-item-heading'>{_"Change GW mode"}</header>
-		<p class='list-group-item-text'>{_"Change gateway mode."}</p>
+		<header class='list-group-item-heading'>{_gateway.mode.title}</header>
+		<p class='list-group-item-text'>{_gateway.mode.description}</p>
 	</a>
 </div>

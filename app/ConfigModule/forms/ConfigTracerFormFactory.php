@@ -16,7 +16,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 declare(strict_types=1);
 
 namespace App\ConfigModule\Forms;
@@ -58,9 +57,11 @@ class ConfigTracerFormFactory {
 	 */
 	public function create(TracerPresenter $presenter): Form {
 		$form = $this->factory->create();
+		$form->setTranslator($form->getTranslator()->domain('config.tracerForm'));
 		$fileName = 'TracerFile';
 		$this->manager->setFileName($fileName);
-		$items = ['err' => 'Error', 'war' => 'Warning', 'inf' => 'Info', 'dbg' => 'Debug'];
+		$items = ['err' => 'VerbosityLevels.Error', 'war' => 'VerbosityLevels.Warning',
+			'inf' => 'VerbosityLevels.Info', 'dbg' => 'VerbosityLevels.Debug'];
 		$form->addText('TraceFileName', 'TraceFileName');
 		$form->addInteger('TraceFileSize', 'TraceFileSize');
 		$form->addSelect('VerbosityLevel', 'VerbosityLevel', $items);

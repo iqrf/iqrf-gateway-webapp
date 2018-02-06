@@ -16,7 +16,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 declare(strict_types=1);
 
 namespace App\ConfigModule\Forms;
@@ -58,6 +57,7 @@ class ConfigUdpFormFactory {
 	 */
 	public function create(UdpPresenter $presenter): Form {
 		$form = $this->factory->create();
+		$form->setTranslator($form->getTranslator()->domain('config.udpForm'));
 		$fileName = 'UdpMessaging';
 		$this->manager->setFileName($fileName);
 		$form->addText('Name', 'Name')->setRequired();

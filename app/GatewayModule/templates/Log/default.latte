@@ -15,14 +15,14 @@
 *}
 
 {block content}
-<h1 n:block=title>{_"IQRF Daemon log"}</h1>
+<h1 n:block=title>{_gateway.log.title}</h1>
 <div class='panel panel-default'>
 	<div class='panel-body'>
 		{ifset $log}
-			<a class="btn btn-primary" n:href="Log:download" role="button">Download</a>
+			<a class="btn btn-primary" n:href="Log:download" role="button">{_gateway.log.download}</a>
 			<br/><br/>
 			<pre>{$log}</pre>
-			<a class="btn btn-primary" n:href="Log:download" role="button">Download</a>
+			<a class="btn btn-primary" n:href="Log:download" role="button">{_gateway.log.download}</a>
 		{else}
 			Cannot read log file.
 		{/ifset}

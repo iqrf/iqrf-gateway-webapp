@@ -58,7 +58,8 @@ class ConfigMainFormFactory {
 	 */
 	public function create(MainPresenter $presenter): Form {
 		$form = $this->factory->create();
-		$items = ['forwarding' => 'Forwarding', 'operational' => 'Operational', 'service' => 'Service'];
+		$form->setTranslator($form->getTranslator()->domain('config.mainForm'));
+		$items = ['forwarding' => 'Modes.Forwarding', 'operational' => 'Modes.Operational', 'service' => 'Modes.Service'];
 		$form->addText('Configuration', 'Configuration');
 		$form->addText('ConfigurationDir', 'ConfigurationDir');
 		$form->addInteger('WatchDogTimeoutMilis', 'WatchDogTimeoutMilis');
