@@ -126,4 +126,25 @@ class IqrfNetManager {
 		return $this->iqrfAppManager->sendRaw($dataToSend);
 	}
 
+	/**
+	 * The command read HWP configuration
+	 * @return array DPA request and response
+	 */
+	public function readHwpConfiguration(): array {
+		$packet = '00.00.02.02.ff.ff.';
+		return $this->iqrfAppManager->sendRaw($packet);
+	}
+
+	/**
+	 * Write HWP configuration byte
+	 * @param string $address Address of the item at configuration memory block.
+	 * @param string $value Value of the configuration item to write.
+	 * @param string $mask Specifies bits of the configuration byte to be modified by the corresponding bits of the Value parameter. Only bits that are set at the Mask will be written to the configuration byte i.e. when Mask equals to 0xFF then the whole Value will be written to the configuration byte. For example, when Mask equals to 0x12 then only bit.1 and bit.4 from Value will be written to the configuration byte.
+	 * @return array DPA request and response
+	 */
+	public function writeHwpConfigurationByte(string $address, string $value, string $mask = 'ff'): array {
+		$packet = '00.00.02.09.ff.ff.' . $address . '.' . $value . '.' . $mask;
+		return $this->iqrfAppManager->sendRaw($packet);
+	}
+
 }

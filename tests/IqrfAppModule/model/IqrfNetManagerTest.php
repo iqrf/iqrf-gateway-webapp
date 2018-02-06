@@ -140,6 +140,28 @@ class IqrfNetManagerTest extends TestCase {
 		}, UnsupportedSecurityTypeException::class);
 	}
 
+	/**
+	 * @test
+	 * Test function to read HWP configuration
+	 */
+	public function testReadHwpConfiguration() {
+		$packet = '00.00.02.02.ff.ff.';
+		$this->iqrfAppManager->shouldReceive('sendRaw')->with($packet)->andReturn([true]);
+		$iqrfNetManager = new IqrfNetManager($this->iqrfAppManager);
+		Assert::same([true], $iqrfNetManager->readHwpConfiguration());
+	}
+
+	/**
+	 * @test
+	 * Test function to write HWP configuration byte
+	 */
+	public function testWriteHwpConfigurationByte() {
+		$packet = '00.00.02.09.ff.ff.06.34.ff';
+		$this->iqrfAppManager->shouldReceive('sendRaw')->with($packet)->andReturn([true]);
+		$iqrfNetManager = new IqrfNetManager($this->iqrfAppManager);
+		Assert::same([true], $iqrfNetManager->writeHwpConfigurationByte('06', '34'));
+	}
+
 }
 
 $test = new IqrfNetManagerTest($container);
