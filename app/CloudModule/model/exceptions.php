@@ -15,14 +15,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 declare(strict_types=1);
 
 namespace App\CloudModule\Model;
 
 /**
- * The exception that indicates invalid MS Azure IoT Hub connection string
+ * The exception that indicates an invalid MS Azure IoT Hub connection string
  */
 class InvalidConnectionString extends \Exception {
+
+}
+
+/**
+ * The exception that indicates an invalid issuer of a Certificate
+ */
+class InvalidIssuerOfCertificate extends \Exception {
+
+}
+
+/**
+ * The exception that indicates an invalid private key for a certificate
+ */
+class InvalidPrivateKeyForCertificate extends \Exception {
 
 }

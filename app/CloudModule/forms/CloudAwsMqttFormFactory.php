@@ -15,13 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 declare(strict_types=1);
 
 namespace App\CloudModule\Forms;
 
 use App\CloudModule\Model\AwsManager;
 use App\CloudModule\Presenters\AwsPresenter;
+use App\CloudModule\Model\InvalidIssuerOfCertificate;
+use App\CloudModule\Model\InvalidPrivateKeyForCertificate;
 use App\ConfigModule\Model\BaseServiceManager;
 use App\ConfigModule\Model\InstanceManager;
 use App\Forms\FormFactory;
@@ -103,8 +104,16 @@ class CloudAwsMqttFormFactory {
 			$this->baseService->add($baseService);
 			$this->manager->add($mqttInterface);
 			$presenter->redirect(':Config:Mqtt:default');
-		} catch (IOException $e) {
-			$presenter->flashMessage('IQRF Daemon\'s configuration files not found.', 'danger');
+		} catch (\Exception $e) {
+			if ($e instanceof InvalidPrivateKeyForCertificate) {
+				$presenter->flashMessage('The private key doesn\'t corespond to the certificate.', 'danger');
+			} else if ($e instanceof InvalidIssuerOfCertificate) {
+				$presenter->flashMessage('The issuer of the certificate doesn\'t cerespond to the CA certificate.', 'danger');
+			} else if ($e instanceof IOException) {
+				$presenter->flashMessage('IQRF Daemon\'s configuration files not found.', 'danger');
+			} else {
+				throw $e;
+			}
 		}
 	}
 

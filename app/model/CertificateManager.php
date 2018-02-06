@@ -21,7 +21,6 @@ declare(strict_types=1);
 namespace App\Model;
 
 use Nette;
-use Nette\Utils\FileSystem;
 
 /**
  * Tool for managing certificates.
@@ -32,37 +31,35 @@ class CertificateManager {
 
 	/**
 	 * Checks if a certificate coresponds to a CA certificate
-	 * @param string $caCertPath Path to CA certificate
-	 * @param string $certPath Path to certificate
+	 * @param string $caCertificate CA certificate
+	 * @param string $certificate Certificate
 	 * @return bool
 	 */
-	public function checkIssuer(string $caCertPath, string $certPath): bool {
-		$caCert = openssl_x509_parse(FileSystem::read($caCertPath));
-		$cert = openssl_x509_parse(FileSystem::read($certPath));
+	public function checkIssuer(string $caCertificate, string $certificate): bool {
+		$caCert = openssl_x509_parse($caCertificate);
+		$cert = openssl_x509_parse($certificate);
 		return $caCert['subject'] === $cert['issuer'];
 	}
 
 	/**
 	 * Check if a private key corresponds to a certificate
-	 * @param string $certPath Path to certificate
-	 * @param string $pKeyPath Path to private key
+	 * @param string $cert Certificate
+	 * @param string $pKey Private key
 	 * @param string $passphrase Passphrase for private key
 	 * @return bool
 	 */
-	public function checkPrivateKey(string $certPath, string $pKeyPath, string $passphrase = ''): bool {
-		$cert = FileSystem::read($certPath);
-		$pKey = $this->getPrivateKey($pKeyPath, $passphrase);
-		return openssl_x509_check_private_key($cert, $pKey);
+	public function checkPrivateKey(string $cert, string $pKey, string $passphrase = ''): bool {
+		$key = $this->getPrivateKey($pKey, $passphrase);
+		return openssl_x509_check_private_key($cert, $key);
 	}
 
 	/**
 	 * Gets private key
-	 * @param string $path Path to private key
+	 * @param string $key Private key
 	 * @param string $passphrase Passphrase for private key
 	 * @return type Parsed private key or false
 	 */
-	public function getPrivateKey(string $path, string $passphrase = '') {
-		$key = FileSystem::read($path);
+	public function getPrivateKey(string $key, string $passphrase = '') {
 		return openssl_pkey_get_private($key, $passphrase);
 	}
 
