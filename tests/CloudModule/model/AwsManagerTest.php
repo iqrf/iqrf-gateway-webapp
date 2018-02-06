@@ -51,6 +51,7 @@ class AwsManagerTest extends TestCase {
 	public function setUp() {
 		$this->manager = \Mockery::mock(AwsManager::class)->makePartial();
 		$this->manager->shouldReceive('downloadCaCertificate')->andReturn(null);
+		$this->manager->shouldReceive('checkCertificate')->andReturn(null);
 		$this->manager->shouldReceive('uploadCertsAndKey')->andReturn(null);
 	}
 
