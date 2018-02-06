@@ -51,6 +51,7 @@ session:
 services:
 	- App\Forms\FormFactory
 	- App\Forms\SignInFormFactory
+	- App\Model\CertificateManager
 	- App\Model\CommandManager(%sudo%)
 	- App\Model\FileManager(%configDir%)
 	- App\Model\JsonFileManager(%configDir%)
