@@ -30,17 +30,10 @@ use Nette\Application\UI\Form;
 class SignPresenter extends BasePresenter {
 
 	/**
-	 * @var SignInFormFactory
+	 * @var SignInFormFactory Sign in form factory
+	 * @inject
 	 */
-	private $signInFactory;
-
-	/**
-	 * Constructor
-	 * @param SignInFormFactory $signInFactory
-	 */
-	public function __construct(SignInFormFactory $signInFactory) {
-		$this->signInFactory = $signInFactory;
-	}
+	public $signInFactory;
 
 	/**
 	 * User sign in

@@ -33,8 +33,9 @@ class SendRawPresenter extends BasePresenter {
 
 	/**
 	 * @var IqrfAppSendRawFormFactory Send raw DPA packet form
+	 * @inject
 	 */
-	private $sendRawFactory;
+	public $sendRawFactory;
 
 	/**
 	 * @var IqrfAppManager iqrfapp Manager
@@ -50,12 +51,10 @@ class SendRawPresenter extends BasePresenter {
 	 * Constructor
 	 * @param IqrfAppManager $manager iqrfapp Manager
 	 * @param IqrfMacroManager $macroManager IQRF IDE Macros manager
-	 * @param IqrfAppSendRawFormFactory $formFactory Send raw DPA packet form
 	 */
-	public function __construct(IqrfAppManager $manager, IqrfMacroManager $macroManager, IqrfAppSendRawFormFactory $formFactory) {
+	public function __construct(IqrfAppManager $manager, IqrfMacroManager $macroManager) {
 		$this->iqrfAppManager = $manager;
 		$this->iqrfMacroManager = $macroManager;
-		$this->sendRawFactory = $formFactory;
 	}
 
 	/**

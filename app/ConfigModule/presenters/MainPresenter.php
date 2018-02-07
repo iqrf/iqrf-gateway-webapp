@@ -16,7 +16,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 declare(strict_types=1);
 
 namespace App\ConfigModule\Presenters;
@@ -29,23 +28,15 @@ class MainPresenter extends BasePresenter {
 
 	/**
 	 * @var ConfigComponentsFormFactory Daemon's components configuration form factory
+	 * @inject
 	 */
-	private $componentsFactory;
+	public $componentsFactory;
 
 	/**
 	 * @var ConfigMainFormFactory Daemon's main configuration form factory
+	 * @inject
 	 */
-	private $mainFactory;
-
-	/**
-	 * Constructor
-	 * @param ConfigComponentsFormFactory $componentsFactory Daemon's components configuration form factory
-	 * @param ConfigMainFormFactory $mainFactory Daemon's main configuration form factory
-	 */
-	public function __construct(ConfigComponentsFormFactory $componentsFactory, ConfigMainFormFactory $mainFactory) {
-		$this->componentsFactory = $componentsFactory;
-		$this->mainFactory = $mainFactory;
-	}
+	public $mainFactory;
 
 	/**
 	 * Render Main configurator

@@ -16,7 +16,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 declare(strict_types=1);
 
 namespace App\CloudModule\Presenters;
@@ -27,17 +26,10 @@ use App\Presenters\BasePresenter;
 class BluemixPresenter extends BasePresenter {
 
 	/**
-	 * @var CloudBluemixMqttFormFactory
+	 * @var CloudBluemixMqttFormFactory IBM Bluemix form factory
+	 * @inject
 	 */
-	private $formFactory;
-
-	/**
-	 * Constructor
-	 * @param CloudBluemixMqttFormFactory $formFactory
-	 */
-	public function __construct(CloudBluemixMqttFormFactory $formFactory) {
-		$this->formFactory = $formFactory;
-	}
+	public $formFactory;
 
 	/**
 	 * Render default page

@@ -16,7 +16,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 declare(strict_types=1);
 
 namespace App\ConfigModule\Presenters;
@@ -28,16 +27,9 @@ class UdpPresenter extends BasePresenter {
 
 	/**
 	 * @var ConfigUdpFormFactory UDP interface configuration form factory
+	 * @inject
 	 */
-	private $formFactory;
-
-	/**
-	 * Constructor
-	 * @param ConfigUdpFormFactory $formFactory UDP interface configuration form factory
-	 */
-	public function __construct(ConfigUdpFormFactory $formFactory) {
-		$this->formFactory = $formFactory;
-	}
+	public $formFactory;
 
 	/**
 	 * Render UDP interface configurator

@@ -16,7 +16,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 declare(strict_types=1);
 
 namespace App\ConfigModule\Presenters;
@@ -28,16 +27,9 @@ class TracerPresenter extends BasePresenter {
 
 	/**
 	 * @var ConfigTracerFormFactory Daemon's tracer configuration form factory
+	 * @inject
 	 */
-	private $formFactory;
-
-	/**
-	 * Constructor
-	 * @param ConfigTracerFormFactory $formFactory Daemon's tracer configuration form factory
-	 */
-	public function __construct(ConfigTracerFormFactory $formFactory) {
-		$this->formFactory = $formFactory;
-	}
+	public $formFactory;
 
 	/**
 	 * Render Tracer configurator

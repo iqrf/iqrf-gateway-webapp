@@ -16,7 +16,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 declare(strict_types=1);
 
 namespace App\ConfigModule\Presenters;
@@ -29,8 +28,9 @@ class SchedulerPresenter extends BasePresenter {
 
 	/**
 	 * @var ConfigSchedulerFormFactory Scheduler configuration form factory
+	 * @inject
 	 */
-	private $formFactory;
+	public $formFactory;
 
 	/**
 	 * @var SchedulerManager
@@ -39,12 +39,10 @@ class SchedulerPresenter extends BasePresenter {
 
 	/**
 	 * Constructor
-	 * @param ConfigSchedulerFormFactory $formFactory
-	 * @param SchedulerManager $configManager Scheduler configuration form factory
+	 * @param SchedulerManager $configManager
 	 */
-	public function __construct(ConfigSchedulerFormFactory $formFactory, SchedulerManager $configManager) {
+	public function __construct(SchedulerManager $configManager) {
 		$this->configManager = $configManager;
-		$this->formFactory = $formFactory;
 	}
 
 	/**

@@ -33,30 +33,21 @@ class NetworkPresenter extends BasePresenter {
 
 	/**
 	 * @var IqrfNetBondingFormFactory IQMESH Bonding form
+	 * @inject
 	 */
-	private $bondingForm;
+	public $bondingForm;
 
 	/**
 	 * @var IqrfNetDiscoveryFormFactory IQMESH Discovery form
+	 * @inject
 	 */
-	private $discoveryForm;
+	public $discoveryForm;
 
 	/**
 	 * @var IqrfNetSecurityFormFactory IQMESH Access Password form
+	 * @inject
 	 */
-	private $securityForm;
-
-	/**
-	 * Constructor
-	 * @param IqrfNetBondingFormFactory $bondingForm IQMESH Bonding form
-	 * @param IqrfNetDiscoveryFormFactory $discoveryForm IQMESH Discovery form
-	 * @param IqrfNetSecurityFormFactory $securityForm IQMESH Security form
-	 */
-	public function __construct(IqrfNetBondingFormFactory $bondingForm, IqrfNetDiscoveryFormFactory $discoveryForm, IqrfNetSecurityFormFactory $securityForm) {
-		$this->bondingForm = $bondingForm;
-		$this->discoveryForm = $discoveryForm;
-		$this->securityForm = $securityForm;
-	}
+	public $securityForm;
 
 	/**
 	 * Render default page

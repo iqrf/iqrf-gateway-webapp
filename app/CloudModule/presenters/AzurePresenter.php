@@ -16,7 +16,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 declare(strict_types=1);
 
 namespace App\CloudModule\Presenters;
@@ -27,17 +26,10 @@ use App\Presenters\BasePresenter;
 class AzurePresenter extends BasePresenter {
 
 	/**
-	 * @var CloudAzureMqttFormFactory
+	 * @var CloudAzureMqttFormFactory MS Azure IoT Hub form factory
+	 * @inject
 	 */
-	private $formFactory;
-
-	/**
-	 * Constructor
-	 * @param CloudAzureMqttFormFactory $formFactory
-	 */
-	public function __construct(CloudAzureMqttFormFactory $formFactory) {
-		$this->formFactory = $formFactory;
-	}
+	public $formFactory;
 
 	/**
 	 * Render default page
