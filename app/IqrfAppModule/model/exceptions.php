@@ -35,6 +35,13 @@ class InvalidOperationModeException extends \Exception {
 }
 
 /**
+ * The exception that indicates invalid RF channel type
+ */
+class InvalidRfChannelTypeException extends \Exception {
+
+}
+
+/**
  * The exception that indicates unsupported input format
  */
 class UnsupportedInputFormatException extends \Exception {

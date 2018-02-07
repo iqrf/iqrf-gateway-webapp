@@ -26,9 +26,9 @@ use Nette\Application\UI\Form;
 use Nette\Forms\Controls\SubmitButton;
 
 /**
- * IQMESH Security form factory.
+ * IQMESH RF form factory.
  */
-class IqrfNetSecurityFormFactory {
+class IqrfNetRfFormFactory {
 
 	use Nette\SmartObject;
 
@@ -58,41 +58,41 @@ class IqrfNetSecurityFormFactory {
 	 */
 	public function create(): Form {
 		$form = $this->factory->create();
-		$inputFormats = [
-			'ASCII' => 'ASCII',
-			'HEX' => 'HEX',
+		$rfBands = [
+			'443 MHz' => '443 MHz',
+			'868 MHz' => '868 MHz',
+			'916 MHz' => '916 MHz',
 		];
-		$form->addSelect('format', 'Input format', $inputFormats)
-				->setDefaultValue('ASCII');
-		$form->addText('password', 'Password')
-				->setRequired(false)
-				->addConditionOn($form['format'], Form::EQUAL, 'ASCII')
-				->addRule(Form::MAX_LENGTH, 'It has to have maximal length of 16 chars.', 16)
-				->elseCondition($form['format'], Form::EQUAL, 'HEX')
-				->addRule(Form::PATTERN, 'It has to contain hexadecimal number', '[0-9A-Fa-f]{0,32}')
-				->addRule(Form::MAX_LENGTH, 'It has to have maximal length of 32 chars.', 32);
-		$form->addSubmit('setAccessPassword', 'Set Access Password')->onClick[] = [$this, 'accessPasword'];
-		$form->addSubmit('setUserKey', 'Set User Key')->onClick[] = [$this, 'userKey'];
+		$types = [
+			IqrfNetManager::MAIN_RF_CHANNEL_A => 'Main Channel A',
+			IqrfNetManager::MAIN_RF_CHANNEL_B => 'Main Channel B',
+			IqrfNetManager::ALTERNATIVE_RF_CHANNEL_A => 'Alternative Channel A',
+			IqrfNetManager::ALTERNATIVE_RF_CHANNEL_B => 'Alternative Channel B',
+		];
+		$rfBand = $this->manager->readHwpConfiguration()['rfBand'] ?? '868 MHz';
+		$form->addSelect('rfBand', 'RF Band', $rfBands)->setDisabled()
+				->setDefaultValue($rfBand);
+		$form->addInteger('rfChannel', 'RF Channel')
+				->setRequired(true)
+				->addConditionOn($form['rfBand'], Form::EQUAL, '443 MHz')
+				->addRule(Form::RANGE, 'RF Channel has to be in range from 0 to 16.', [0, 16])
+				->elseCondition($form['rfBand'], Form::EQUAL, '868 MHz')
+				->addRule(Form::RANGE, 'RF Channel has to be in range from 0 to 67.', [0, 67])
+				->elseCondition($form['rfBand'], Form::EQUAL, '916 MHz')
+				->addRule(Form::RANGE, 'RF Channel has to be in range from 0 to 255.', [0, 255]);
+		$form->addSelect('type', 'RF Channel type', $types);
+		$form->addSubmit('set', 'Set')->onClick[] = [$this, 'setChannel'];
 		$form->addProtection('Timeout expired, resubmit the form.');
 		return $form;
 	}
 
 	/**
-	 * Set IQMESH Access Password
-	 * @param SubmitButton $button Submit button for setting Access Password
+	 * Set RF channel
+	 * @param SubmitButton $button Submit button for setting RF channel
 	 */
-	public function accessPasword(SubmitButton $button) {
+	public function setChannel(SubmitButton $button) {
 		$values = $button->getForm()->getValues();
-		$this->manager->setSecurity($values['password'], $values['format'], IqrfNetManager::SECURITY_ACCESS_PASSOWRD);
-	}
-
-	/**
-	 * Set IQMESH User Key
-	 * @param SubmitButton $button Submit button for setting User Key
-	 */
-	public function userKey(SubmitButton $button) {
-		$values = $button->getForm()->getValues();
-		$this->manager->setSecurity($values['password'], $values['format'], IqrfNetManager::SECURITY_USER_KEY);
+		$this->manager->setRfChannel($values['rfChannel'], strval($values['type']));
 	}
 
 }

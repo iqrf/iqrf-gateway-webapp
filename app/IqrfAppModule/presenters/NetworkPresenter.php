@@ -22,6 +22,7 @@ namespace App\IqrfAppModule\Presenters;
 
 use App\IqrfAppModule\Forms\IqrfNetBondingFormFactory;
 use App\IqrfAppModule\Forms\IqrfNetDiscoveryFormFactory;
+use App\IqrfAppModule\Forms\IqrfNetRfFormFactory;
 use App\IqrfAppModule\Forms\IqrfNetSecurityFormFactory;
 use App\Presenters\BasePresenter;
 use Nette\Application\UI\Form;
@@ -44,7 +45,13 @@ class NetworkPresenter extends BasePresenter {
 	public $discoveryForm;
 
 	/**
-	 * @var IqrfNetSecurityFormFactory IQMESH Access Password form
+	 * @var IqrfNetRfFormFactory IQMESH RF form
+	 * @inject
+	 */
+	public $rfForm;
+
+	/**
+	 * @var IqrfNetSecurityFormFactory IQMESH Security form
 	 * @inject
 	 */
 	public $securityForm;
@@ -75,8 +82,17 @@ class NetworkPresenter extends BasePresenter {
 	}
 
 	/**
-	 * Create IQMESH Access Password form
-	 * @return Form IQMESH Access Password form
+	 * Create IQMESH RF form
+	 * @return Form IQMESH RF form
+	 */
+	protected function createComponentIqrfNetRfForm(): Form {
+		$this->onlyForAdmins();
+		return $this->rfForm->create($this);
+	}
+
+	/**
+	 * Create IQMESH Security form
+	 * @return Form IQMESH Security form
 	 */
 	protected function createComponentIqrfNetSecurityForm(): Form {
 		$this->onlyForAdmins();

@@ -32,6 +32,46 @@ class IqrfNetManager {
 	use Nette\SmartObject;
 
 	/**
+	 * Alternative RF channel A
+	 */
+	const ALTERNATIVE_RF_CHANNEL_A = '06';
+
+	/**
+	 * Alternative RF channel B
+	 */
+	const ALTERNATIVE_RF_CHANNEL_B = '07';
+
+	/**
+	 * Main RF channel A
+	 */
+	const MAIN_RF_CHANNEL_A = '11';
+
+	/**
+	 * Main RF channel B
+	 */
+	const MAIN_RF_CHANNEL_B = '12';
+
+	/**
+	 * ASCII datat format
+	 */
+	const DATA_FORMAT_ASCII = 'ASCII';
+
+	/**
+	 * HEX data format
+	 */
+	const DATA_FORMAT_HEX = 'HEX';
+
+	/**
+	 * IQMESH Security Access password
+	 */
+	const SECURITY_ACCESS_PASSOWRD = 'accessPassword';
+
+	/**
+	 * IQMESH SEcurity User key
+	 */
+	const SECURITY_USER_KEY = 'userKey';
+
+	/**
 	 * @var IqrfAppManager iqrfapp manager
 	 */
 	private $iqrfAppManager;
@@ -106,18 +146,18 @@ class IqrfNetManager {
 	 * @param string $inputFormat Determines in which format the password is entered
 	 * @return array DPA request and response
 	 */
-	public function setSecurity(string $password = '', string $inputFormat = 'ASCII', string $type = 'accessPassword') {
+	public function setSecurity(string $password = '', string $inputFormat = self::DATA_FORMAT_ASCII, string $type = self::SECURITY_ACCESS_PASSOWRD) {
 		$packet = '00.00.02.06.ff.ff.';
-		if ($type === 'accessPassword') {
+		if ($type === self::SECURITY_ACCESS_PASSOWRD) {
 			$packet .= '00.';
-		} else if ($type === 'userKey') {
+		} else if ($type === self::SECURITY_USER_KEY) {
 			$packet .= '01.';
 		} else {
 			throw new UnsupportedSecurityTypeException();
 		}
-		if ($inputFormat === 'ASCII') {
+		if ($inputFormat === self::DATA_FORMAT_ASCII) {
 			$data = implode(unpack('H*', $password));
-		} elseif ($inputFormat === 'HEX') {
+		} elseif ($inputFormat === self::DATA_FORMAT_HEX) {
 			$data = $password;
 		} else {
 			throw new UnsupportedInputFormatException();
@@ -128,11 +168,12 @@ class IqrfNetManager {
 
 	/**
 	 * The command read HWP configuration
-	 * @return array DPA request and response
+	 * @return array|null DPA request and response
 	 */
-	public function readHwpConfiguration(): array {
+	public function readHwpConfiguration() {
 		$packet = '00.00.02.02.ff.ff.';
-		return $this->iqrfAppManager->sendRaw($packet);
+		$response = $this->iqrfAppManager->sendRaw($packet);
+		return $this->iqrfAppManager->parseResponse($response);
 	}
 
 	/**
@@ -145,6 +186,22 @@ class IqrfNetManager {
 	public function writeHwpConfigurationByte(string $address, string $value, string $mask = 'ff'): array {
 		$packet = '00.00.02.09.ff.ff.' . $address . '.' . $value . '.' . $mask;
 		return $this->iqrfAppManager->sendRaw($packet);
+	}
+
+	/**
+	 * Set RF channel
+	 * @param int $channel RF channel ID
+	 * @param string $type RF channel type
+	 * @return array DPA request and response
+	 * @throws InvalidRfChannelTypeException
+	 */
+	public function setRfChannel(int $channel, string $type): array {
+		$types = ['11', '12', '06', '07',];
+		if (!in_array($type, $types)) {
+			throw new InvalidRfChannelTypeException();
+		}
+		$rfChannel = Strings::padLeft(dechex($channel), 2, '0');
+		return $this->writeHwpConfigurationByte($type, $rfChannel);
 	}
 
 }

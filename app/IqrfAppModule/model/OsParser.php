@@ -21,6 +21,7 @@ declare(strict_types=1);
 namespace App\IqrfAppModule\Model;
 
 use Nette;
+use Nette\Utils\Strings;
 
 /**
  * Parser for DPA OS responses
@@ -68,6 +69,32 @@ class OsParser {
 		$data['SupplyVoltage'] = number_format((261.12 / (127 - hexdec($packetArray[17]))), 2, '.', '') . ' V';
 		$data['Flags'] = $packetArray[18];
 		$data['SlotLimits'] = $packetArray[19];
+		return $data;
+	}
+
+	/**
+	 * Get RF band from HWP configuration
+	 * @param string $byte Undocumented byte from HWP configuration
+	 * @return array RF band
+	 */
+	public function getRfBand(string $byte): array {
+		$bands = ['00' => '868 MHz', '01' => '916 MHz', '10' => '433 MHz'];
+		$bit = Strings::substring(Strings::padLeft(base_convert($byte, 16, 2), 8, '0'), 6, 2);
+		return $bands[$bit];
+	}
+
+	/**
+	 * Parse response to DPA OS - "Read HWP configuration" request
+	 * @param string $packet DPA packet response
+	 * @return array HWP configuration
+	 */
+	public function parseHwpConfiguration(string $packet) {
+		$data = [];
+		$packetArray = explode('.', $packet);
+		$data['checksum'] = $packetArray[8];
+		$data['configuration'] = array_slice($packetArray, 9, 31);
+		$data['rfpgm'] = $packetArray[40];
+		$data['rfBand'] = $this->getRfBand($packetArray[41]);
 		return $data;
 	}
 

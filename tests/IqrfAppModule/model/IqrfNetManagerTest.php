@@ -162,6 +162,26 @@ class IqrfNetManagerTest extends TestCase {
 		Assert::same([true], $iqrfNetManager->writeHwpConfigurationByte('06', '34'));
 	}
 
+	/**
+	 * @test
+	 * Test function to write HWP configuration byte
+	 */
+	public function testSetRfChannel() {
+		$packet0 = '00.00.02.09.ff.ff.11.34.ff';
+		$packet1 = '00.00.02.09.ff.ff.12.40.ff';
+		$packet2 = '00.00.02.09.ff.ff.06.1a.ff';
+		$packet3 = '00.00.02.09.ff.ff.07.20.ff';
+		$this->iqrfAppManager->shouldReceive('sendRaw')->with($packet0)->andReturn([0]);
+		$this->iqrfAppManager->shouldReceive('sendRaw')->with($packet1)->andReturn([1]);
+		$this->iqrfAppManager->shouldReceive('sendRaw')->with($packet2)->andReturn([2]);
+		$this->iqrfAppManager->shouldReceive('sendRaw')->with($packet3)->andReturn([3]);
+		$iqrfNetManager = new IqrfNetManager($this->iqrfAppManager);
+		Assert::same([0], $iqrfNetManager->setRfChannel(52, IqrfNetManager::MAIN_RF_CHANNEL_A));
+		Assert::same([1], $iqrfNetManager->setRfChannel(64, IqrfNetManager::MAIN_RF_CHANNEL_B));
+		Assert::same([2], $iqrfNetManager->setRfChannel(26, IqrfNetManager::ALTERNATIVE_RF_CHANNEL_A));
+		Assert::same([3], $iqrfNetManager->setRfChannel(32, IqrfNetManager::ALTERNATIVE_RF_CHANNEL_B));
+	}
+
 }
 
 $test = new IqrfNetManagerTest($container);

@@ -2,6 +2,7 @@ services:
 	- App\IqrfAppModule\Forms\IqrfAppSendRawFormFactory
 	- App\IqrfAppModule\Forms\IqrfNetBondingFormFactory
 	- App\IqrfAppModule\Forms\IqrfNetDiscoveryFormFactory
+	- App\IqrfAppModule\Forms\IqrfNetRfFormFactory
 	- App\IqrfAppModule\Forms\IqrfNetSecurityFormFactory
 	- App\IqrfAppModule\Model\CoordinatorParser
 	- App\IqrfAppModule\Model\EnumerationParser
