@@ -146,7 +146,8 @@ class IqrfNetManagerTest extends TestCase {
 	 */
 	public function testReadHwpConfiguration() {
 		$packet = '00.00.02.02.ff.ff.';
-		$this->iqrfAppManager->shouldReceive('sendRaw')->with($packet)->andReturn([true]);
+		$this->iqrfAppManager->shouldReceive('sendRaw')->with($packet)->andReturn(['response']);
+		$this->iqrfAppManager->shouldReceive('parseResponse')->with(['response'])->andReturn([true]);
 		$iqrfNetManager = new IqrfNetManager($this->iqrfAppManager);
 		Assert::same([true], $iqrfNetManager->readHwpConfiguration());
 	}
