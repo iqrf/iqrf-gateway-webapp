@@ -13,8 +13,10 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*}
 
+ * @param string   $basePath web base path
+ * @param array    $flashes  flash messages
+*}
 <!DOCTYPE html>
 <html>
 	<head>
@@ -24,89 +26,81 @@
 		<meta name='description' content='Web configurator for iqrf-daemon'>
 		<meta name='author' content='IQRF Tech.r.o.'>
 		<title>{ifset title}{include title|stripHtml|trim} | {/ifset}IQRF Gateway</title>
-		<link n:nonce rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' integrity='sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u' crossorigin='anonymous'>
-		<link n:nonce rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css' integrity='sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp' crossorigin='anonymous'>
+    <link rel="stylesheet" href="{$basePath}/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{$basePath}/css/iqrfdaemon.css">
 	</head>
 	<body n:nonce style='background-color: #ECF0F1;'>
-		<nav class='navbar navbar-default'>
-			<div class='container'>
-				<div class='navbar-header'>
-					<button type='button' class='navbar-toggle collapsed' data-toggle='collapse' data-target='#navbar' aria-expanded='false' aria-controls='navbar'>
-						<span class='sr-only'>Toggle navigation</span>
-						<span class='icon-bar'></span>
-						<span class='icon-bar'></span>
-						<span class='icon-bar'></span>
-					</button>
-					<a class='navbar-brand' n:href=':Homepage:default'>IQRF Gateway</a>
-				</div>
-				<div id='navbar' class='navbar-collapse collapse'>
-					<ul class='nav navbar-nav'>
-						<li><a n:href=':Homepage:default'>{_"Dashboard"}</a></li>
-						<li n:if='$user->loggedIn' class='dropdown'>
-							<a n:href=':Gateway:Homepage:default' class="dropdown-toggle" data-toggle="dropdown" role="button">
-								{_"Gateway"} <span class="caret"></span>
-							</a>
-							<ul class="dropdown-menu">
-								<li><a n:href=':Gateway:Info:default'>{_"GW Info"}</a></li>
-								<li><a n:href=':Gateway:Log:default'>{_"Daemon log"}</a></li>
-								<li><a n:href=':Gateway:ChangeMode:default'>{_"Change GW mode"}</a></li>
-							</ul>
-						</li>
-						<li n:if='$user->loggedIn' class='dropdown'>
-							<a n:href=':Config:Homepage:default' class="dropdown-toggle" data-toggle="dropdown" role="button">
-								{_"Configuration"} <span class="caret"></span>
-							</a>
-							<ul class="dropdown-menu">
-								<li><a n:href=':Config:Main:default'>{_"Main configuration"}</a></li>
-								<li><a n:href=':Config:Tracer:default'>{_"Tracer file"}</a></li>
-								<li><a n:href=':Config:Iqrf:default'>{_"IQRF interface"}</a></li>
-								<li><a n:href=':Config:Udp:default'>{_"UDP interface"}</a></li>
-								<li><a n:href=':Config:Mqtt:default'>{_"MQTT interface"}</a></li>
-								<li><a n:href=':Config:Mq:default'>{_"MQ interface"}</a></li>
-								<li><a n:href=':Config:Scheduler:default'>{_"Scheduler"}</a></li>
-								<li><a n:href=':Config:BaseService:default'>{_"Base services"}</a></li>
-								<li><a n:href=':Config:IqrfApp:default'>{_"IQRF App"}</a></li>
-							</ul>
-						</li>
-						<li n:if='$user->loggedIn'><a n:href=':Service:Control:default'>{_"Service"}</a></li>
-						<li n:if='$user->loggedIn' class='dropdown'>
-							<a n:href=':IqrfApp:Homepage:default' class="dropdown-toggle" data-toggle="dropdown" role="button">
-								{_"IQRF Net"} <span class="caret"></span>
-							</a>
-							<ul class="dropdown-menu">
-								<li><a n:href=':IqrfApp:SendRaw:default'>{_"Send DPA packet"}</a></li>
-								<li><a n:href=':IqrfApp:Network:default'>{_"IQMESH Network Manager"}</a></li>
-							</ul>
-						</li>
-						<li n:if='$user->loggedIn' class='dropdown'>
-							<a n:href=':Cloud:Homepage:default' class="dropdown-toggle" data-toggle="dropdown" role="button">
-								{_"Clouds"} <span class="caret"></span>
-							</a>
-							<ul class="dropdown-menu">
-								<li><a n:href=':Cloud:Aws:default'>{_"Amazon AWS"}</a></li>
-								<li><a n:href=':Cloud:Azure:default'>{_"Microsoft Azure"}</a></li>
-								<li><a n:href=':Cloud:Bluemix:default'>{_"IBM Bluemix"}</a></li>
-								<li><a n:href=':Cloud:InteliGlue:default'>{_"Inteliments InteliGlue"}</a></li>
-							</ul>
-						</li>
-					</ul>
-					<ul class='nav navbar-nav navbar-right'>
-						<li>
-							<a href='#' class="dropdown-toggle" data-toggle="dropdown" role="button">
-								{_"Language"} <span class="caret"></span>
-							</a>
-							<ul class="dropdown-menu">
-								{*<li><a n:href='this lang => cs'>{_"Czech"}</a></li>*}
-								<li><a n:href='this lang => en'>{_"English"}</a></li>
-							</ul>
-						</li>
-						<li n:if='!$user->loggedIn'><a n:href=':Sign:in'>{_"Sign in"}</a></li>
-						<li n:if='$user->loggedIn'><a n:href=':Sign:out'>{_"Sign out"}</a></li>
-					</ul>
-				</div>
-			</div>
-		</nav>
-		<div class='container theme-showcase' role='main'>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light rounded">
+        <div class="container">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample10" aria-controls="navbarsExample10" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarsExample10">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+              <a class="nav-link" n:href=':Homepage:default'>IQRF Gateway</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" n:href=':Homepage:default'>{_"Dashboard"}</a>
+            </li>
+            <li class="nav-item dropdown" n:if='$user->loggedIn'>
+              <a class="nav-link dropdown-toggle" n:href=':Gateway:Homepage:default' id="dropdown10" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{_"Gateway"}</a>
+              <div class="dropdown-menu" aria-labelledby="dropdown10">
+                <a class="dropdown-item" n:href=':Gateway:Info:default'>{_"GW Info"}</a>
+                <a class="dropdown-item" n:href=':Gateway:Log:default'>{_"Daemon log"}</a>
+                <a class="dropdown-item" n:href=':Gateway:ChangeMode:default'>{_"Change GW mode"}</a>
+              </div>
+            </li>
+            <li class="nav-item dropdown" n:if='$user->loggedIn'>
+              <a class="nav-link dropdown-toggle" n:href=':Config:Homepage:default' id="dropdown11" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{_"Configuration"}</a>
+              <div class="dropdown-menu" aria-labelledby="dropdown11">
+                <a class="dropdown-item" n:href=':Config:Main:default'>{_"Main configuration"}</a>
+                <a class="dropdown-item" n:href=':Config:Tracer:default'>{_"Tracer file"}</a>
+                <a class="dropdown-item" n:href=':Config:Iqrf:default'>{_"IQRF interface"}</a>
+                <a class="dropdown-item" n:href=':Config:Udp:default'>{_"UDP interface"}</a>
+                <a class="dropdown-item" n:href=':Config:Mqtt:default'>{_"MQTT interface"}</a>
+                <a class="dropdown-item" n:href=':Config:Mq:default'>{_"MQ interface"}</a>
+                <a class="dropdown-item" n:href=':Config:Scheduler:default'>{_"Scheduler"}</a>
+                <a class="dropdown-item" n:href=':Config:BaseService:default'>{_"Base services"}</a>
+                <a class="dropdown-item" n:href=':Config:IqrfApp:default'>{_"IQRF App"}</a>
+              </div>
+            </li>
+            <li class="nav-item" n:if='$user->loggedIn'>
+              <a class="nav-link" n:href=':Service:Control:default'>{_"Service"}</a></li>
+            </li>
+            <li class="nav-item dropdown" n:if='$user->loggedIn'>
+              <a class="nav-link dropdown-toggle" n:href=':IqrfApp:Homepage:default' id="dropdown12" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{_"IQRF Net"} </a>
+              <div class="dropdown-menu" aria-labelledby="dropdown12">
+                <a class="dropdown-item" n:href=':IqrfApp:SendRaw:default'>{_"Send DPA packet"}</a>
+                <a class="dropdown-item" n:href=':IqrfApp:Network:default'>{_"IQMESH Network Manager"}</a>
+              </div>
+            </li>
+            <li class="nav-item dropdown" n:if='$user->loggedIn'>
+              <a class="nav-link dropdown-toggle" n:href=':Cloud:Homepage:default' id="dropdown13" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{_"Clouds"} </a>
+              <div class="dropdown-menu" aria-labelledby="dropdown13">
+                <a class="dropdown-item" n:href=':Cloud:Aws:default'>{_"Amazon AWS"}</a>
+                <a class="dropdown-item" n:href=':Cloud:Azure:default'>{_"Microsoft Azure"}</a>
+                <a class="dropdown-item" n:href=':Cloud:Bluemix:default'>{_"IBM Bluemix"}</a>
+                <a class="dropdown-item" n:href=':Cloud:InteliGlue:default'>{_"Inteliments InteliGlue"}</a>
+              </div>
+            </li>
+          </ul>
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item dropdown" n:if='$user->loggedIn'>
+              <a class="nav-link dropdown-toggle" href='#' id="dropdown14" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{_"Language"} </a>
+              <div class="dropdown-menu" aria-labelledby="dropdown14">
+                {*<a class="dropdown-item" n:href='this lang => cs'>{_"Czech"}</a>*}
+                <a class="dropdown-item" n:href='this lang => en'>{_"English"}</a>
+              </div>
+            </li>  
+						<li class="nav-item" n:if='!$user->loggedIn'><a n:href=':Sign:in' class="nav-link">{_"Sign in"}</a></li>
+						<li class="nav-item" n:if='$user->loggedIn'><a n:href=':Sign:out' class="nav-link">{_"Sign out"}</a></li>
+          </ul>
+        </div>
+      </nav>
+
+		<div class='container padding20' role='main'>
 			<div n:foreach='$flashes as $flash' class='alert alert-{$flash->type} alert-dismissible' role='alert'>
 				<button type='button' class='close' data-dismiss='alert' aria-label='Close'>
 					<span aria-hidden='true'>&times;</span>
@@ -116,8 +110,8 @@
 			{include content}
 		</div>
 		{block scripts}
-		<script n:nonce src='https://code.jquery.com/jquery-3.2.1.min.js' integrity='sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=' crossorigin='anonymous'></script>
-		<script n:nonce src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js' integrity='sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa' crossorigin='anonymous'></script>
+		<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 		<script n:nonce src='https://nette.github.io/resources/js/netteForms.min.js'></script>
 		<script n:nonce src='/js/iqrfApp.js'></script>
 		{/block}

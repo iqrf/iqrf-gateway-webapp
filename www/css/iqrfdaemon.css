@@ -1,0 +1,10 @@
+/* CSS Document */
+a:link{color:#707070;}
+a:visited{color:#707070;}
+a.list-group-item{color:#555; }
+a.list-group-item:focus{color:#555;text-decoration:none;background-color:#f5f5f5}
+a.list-group-item .list-group-item-heading{color:#333}
+a.list-group-item:focus,a.list-group-item:hover{color:#555;text-decoration:none;background-color:#f5f5f5}
+.list-group{padding-left:0;margin-bottom:20px; background-color:#fff;}
+.whiteb{background-color:#fff;border-style:solid;border-radius:5px;border-color:#555;border-width:1px; padding:10px;}
+.padding20{padding-top:20px;}
