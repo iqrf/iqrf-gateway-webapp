@@ -16,27 +16,31 @@
 *}
 
 {block content}
-<div class='panel panel-default'>
-	<div class='panel-heading'>
-		<h1 n:block=title class='panel-title'>{_"Sign in"}</h1>
+<div class='card'>
+	<div class='card-header'>
+		<h1 n:block=title class='card-title'>{_"Sign in"}</h1>
 	</div>
-	<div class='panel-body'>
+	<div class='card-body'>
 		<form n:name=signInForm class=form>
-			<label n:name=username for='username'>{_"Username:"}</label>
-			<div class='input-group'>
-				<span class='input-group-addon glyphicon glyphicon-user' id='username'></span>
-				<input n:name=username class='form-control'>
-			</div>
-			<label n:name=password for='password'>{_"Password:"}</label>
-			<div class='input-group'>
-				<span class='input-group-addon glyphicon glyphicon-lock' id='password'></span>
-				<input n:name=password class='form-control'>
-			</div>
-			<div class='checkbox'>
-				<label n:name=remember for='remember'>
-					<input n:name=remember type='checkbox'> {_"Remember me"}
-				</label>
-			</div>
+      <label n:name=username for='username'>{_"Username:"}</label>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class='input-group-text glyphicon glyphicon-user' id='username'></span>
+        </div>
+        <input type="text" n:name=username class="form-control"  >
+      </div>
+      <label n:name=password for='password'>{_"Password:"}</label>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class='input-group-addon input-group-text glyphicon glyphicon-lock' id='password'></span>
+        </div>
+        <input type="text" n:name=password  class="form-control"  >
+      </div>
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" n:name=remember>
+        <label class="form-check-label" for="remember">{_"Remember me"}</label>
+      </div>
+
 			<input n:name=send class='btn btn-primary navbar-btn'>
 		</form>
 	</div>

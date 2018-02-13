@@ -16,8 +16,8 @@
 
 {block content}
 <h1 n:block=title>{_"IQRF Daemon log"}</h1>
-<div class='panel panel-default'>
-	<div class='panel-body'>
+<div class='card'>
+	<div class='card-body'>
 		{ifset $log}
 			<a class="btn btn-primary" n:href="Log:download" role="button">Download</a>
 			<br/><br/>

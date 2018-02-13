@@ -19,16 +19,16 @@
 <h1 n:block=title>{_"IQMESH Network Manager"}</h1>
 <div class="col-sm-6">
 	<h2>{_"Bonding"}</h2>
-	<div class='panel panel-default'>
-		<div class='panel-body'>
+	<div class='card'>
+		<div class='card'>
 			<form n:name=iqrfNetBondingForm class=form>
 				<label n:name=address for='address'>{_"Address"}</label>
 				<input n:name=address class='form-control'>
-				<div class='checkbox'>
-					<label n:name=autoAddress for='autoAddress'>
-						<input n:name=autoAddress type='checkbox'> {_"Auto address"}
-					</label>
-				</div>
+        <div class="form-check">
+          <input type="checkbox" class="form-check-input" n:name=autoAddress>
+          <label class="form-check-label" for='autoAddress'>{_"Auto address"}</label>
+        </div>
+
 				<input n:name=bond id='frm-iqrfNetBondingForm-bond' class='btn btn-primary'>
 				<input n:name=rebond id='frm-iqrfNetBondingForm-rebond' class='btn btn-primary'>
 				<input n:name=remove id='frm-iqrfNetBondingForm-remove' class='btn btn-primary'>
@@ -39,25 +39,25 @@
 </div>
 <div class="col-sm-6">
 	<h2>{_"Discovery"}</h2>
-	<div class='panel panel-default'>
-		<div class='panel-body'>
+	<div class='card'>
+		<div class='card-body'>
 			{control iqrfNetDiscoveryForm}
 		</div>
 	</div>
 </div>
 <div class="col-sm-6">
 	<h2>{_"Security"}</h2>
-	<div class='panel panel-default'>
-		<div class='panel-body'>
+	<div class='card'>
+		<div class='card-body'>
 			{control iqrfNetSecurityForm}
 		</div>
 	</div>
 </div>
 <div class="col-sm-6">
 	<h2>{_"RF settings"}</h2>
-	<div class='panel panel-default'>
-		<div class='panel-body'>
-			{control iqrfNetRfForm}
+	<div class='card'>
+		<div class='card-body'>
+			<!--{control iqrfNetRfForm}-->
 		</div>
 	</div>
 </div>

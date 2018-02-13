@@ -18,8 +18,8 @@
 {snippet responseChange}
 	{ifset $parsedResponse}
 		<h2>{_"Parsed response"}</h2>
-		<div class='panel panel-default'>
-			<div class='panel-body'>
+		<div class='card'>
+			<div class='card-body'>
 				{foreach $parsedResponse as $type => $packet}
 					{if $type === 'DiscoveredNodes' || $type === 'BondedNodes'}
 						<h3>{_$type}</h3>
@@ -48,16 +48,16 @@
 	<div class="row">
 		<div class="col-xs-6">
 			<h2>{_"Request"}</h2>
-			<div class='panel panel-default'>
-				<div class='panel-body'>
+			<div class='card'>
+				<div class='card-body'>
 					<pre>{$json['request']}</pre>
 				</div>
 			</div>
 		</div>
 		<div class="col-xs-6">
 			<h2>{_"Response"}</h2>
-			<div class='panel panel-default'>
-				<div class='panel-body'>
+			<div class='card'>
+				<div class='card-body'>
 					<pre>{$json['response']}</pre>
 				</div>
 			</div>

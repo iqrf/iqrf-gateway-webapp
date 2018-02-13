@@ -17,8 +17,8 @@
 
 {block content}
 <h1 n:block=title>{_"Send DPA packet"}</h1>
-<div class='panel panel-default'>
-	<div class='panel-body'>
+<div class='card'>
+	<div class='card-body'>
 		<form n:name=iqrfAppSendRawForm class=form>
 			<label n:name=packet for='packet'>{_"DPA packet"}</label>
 			<input n:name=packet class='form-control'>
@@ -38,11 +38,10 @@
 				</div>
 				<div class='col-md-6'>
 					<div class="form-group">
-						<div class="checkbox">
-							<label n:name=timeoutEnabled for='timeoutEnabled'>
-								<input n:name=timeoutEnabled type="checkbox">Set own DPA timeout
-							</label>
-						</div>
+						<div class="form-check">
+              <input type="checkbox" class="form-check-input" n:name=timeoutEnabled>
+              <label class="form-check-label" for='timeoutEnabled'>Set own DPA timeout</label>
+            </div>
 					</div>
 					<div class="form-group">
 						<label n:name=timeout for="timeout">DPA timeout (ms)</label>
@@ -55,16 +54,21 @@
 	</div>
 </div>
 <h2>{_"Macros"}</h2>
-<div class='panel panel-default'>
-	<div class='panel-body'>
+<div class='card'>
+	<div class='card-body'>
 		<div class="btn-toolbar" role="toolbar">
+      {var $i = 13}
 			<div n:foreach="$macros as $macro" class="btn-group">
-				<button type="button" class="btn btn-primary btn-block dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				<button type="button" class="btn btn-primary btn-block dropdown-toggle" id="dropdown{$i}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					{$macro['Name']} <span class="caret"></span>
 				</button>
-				<ul class="dropdown-menu">
-					<li n:foreach="$macro['Macros'] as $item"><a n:if="$item['Enabled']" class='btn-packet' data-packet='{$item['Packet']}'>{$item['Name']}</a></li>
-				</ul>
+				<div class="dropdown-menu" aria-labelledby="dropdown{$i}">
+          {foreach $macro['Macros'] as $item}
+          <a n:if="$item['Enabled']" class='btn-packet dropdown-item ' data-packet='{$item['Packet']}'>{$item['Name']}</a>
+          {/foreach}
+        </div>
+
+        {var $i = $i +1}
 			</div>
 		</div>
 	</div>

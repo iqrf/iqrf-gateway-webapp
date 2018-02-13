@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace App\Forms;
 
 use GettextTranslator\Gettext;
-use Instante\ExtendedFormMacros\IFormFactory;
+use Czubehead\BootstrapForms\BootstrapForm;
 use Nette;
 use Nette\Application\UI\Form;
 
@@ -48,8 +48,8 @@ class FormFactory {
 	 * @param Gettext $translator
 	 * @param IFormFactory $iFormFactory
 	 */
-	public function __construct(Gettext $translator, IFormFactory $iFormFactory) {
-		$this->iFormFactory = $iFormFactory;
+	public function __construct(Gettext $translator) {
+		//$this->iFormFactory = $iFormFactory;
 		$this->translator = $translator;
 	}
 
@@ -57,8 +57,9 @@ class FormFactory {
 	 * @return Form
 	 */
 	public function create(): Form {
-		$form = $this->iFormFactory->create();
-		$form->setTranslator($this->translator);
+		//$form = $this->iFormFactory->create();
+		$form = new BootstrapForm;
+    $form->setTranslator($this->translator);
 		return $form;
 	}
 

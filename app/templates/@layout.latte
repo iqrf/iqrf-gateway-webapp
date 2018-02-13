@@ -27,6 +27,7 @@
 		<meta name='author' content='IQRF Tech.r.o.'>
 		<title>{ifset title}{include title|stripHtml|trim} | {/ifset}IQRF Gateway</title>
     <link rel="stylesheet" href="{$basePath}/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{$basePath}/css/glyphicons.css">
     <link rel="stylesheet" href="{$basePath}/css/iqrfdaemon.css">
 	</head>
 	<body n:nonce style='background-color: #ECF0F1;'>
@@ -111,7 +112,8 @@
 		</div>
 		{block scripts}
 		<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="{$basePath}/js/popper.min.js" ></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" crossorigin="anonymous"></script>
 		<script n:nonce src='https://nette.github.io/resources/js/netteForms.min.js'></script>
 		<script n:nonce src='/js/iqrfApp.js'></script>
 		{/block}

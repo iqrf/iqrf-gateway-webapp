@@ -17,14 +17,14 @@
 
 {block content}
 <h1 n:block=title>{_"IQRF interface"}</h1>
-<div class='panel panel-default'>
-	<div class='panel-body'>
+<div class='card'>
+	<div class='card-body'>
 		{control configIqrfForm}
 	</div>
 </div>
 <h2>{_"Available interfaces"}</h2>
-<div class='panel panel-default'>
-	<div class='panel-body'>
+<div class='card'>
+	<div class='card-body'>
 		{if !empty($interfaces['cdc'])}
 			<h3>USB CDC</h3>
 			{foreach $interfaces['cdc'] as $interface}

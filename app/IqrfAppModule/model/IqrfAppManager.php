@@ -110,7 +110,7 @@ class IqrfAppManager {
 		$this->readOnly(200);
 		$commandOutput = $this->sendCommand($array);
 		if (empty($commandOutput)) {
-			throw new EmptyResponseException();
+			//throw new EmptyResponseException();
 		}
 		preg_match('/Received: {(.*?)\}/s', $commandOutput, $output);
 		$response = !empty($output) ? str_replace('Received: ', '', $output[0]) : null;
