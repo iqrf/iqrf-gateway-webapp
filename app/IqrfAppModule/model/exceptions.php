@@ -42,6 +42,27 @@ class InvalidRfChannelTypeException extends \Exception {
 }
 
 /**
+ * The exception that indicates invalid RF LP timeout
+ */
+class InvalidRfLpTimeoutException extends \Exception {
+
+}
+
+/**
+ * The exception that indicates invalid RF output power
+ */
+class InvalidRfOutputPowerException extends \Exception {
+
+}
+
+/**
+ * The exception that indicates invalid RF signal filter
+ */
+class InvalidRfSignalFilterException extends \Exception {
+
+}
+
+/**
  * The exception that indicates unsupported input format
  */
 class UnsupportedInputFormatException extends \Exception {

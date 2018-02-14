@@ -12,6 +12,10 @@ namespace Test\IqrfAppModule\Model;
 
 use App\IqrfAppModule\Model\IqrfAppManager;
 use App\IqrfAppModule\Model\IqrfNetManager;
+use App\IqrfAppModule\Model\InvalidRfChannelTypeException;
+use App\IqrfAppModule\Model\InvalidRfLpTimeoutException;
+use App\IqrfAppModule\Model\InvalidRfOutputPowerException;
+use App\IqrfAppModule\Model\InvalidRfSignalFilterException;
 use App\IqrfAppModule\Model\UnsupportedInputFormatException;
 use App\IqrfAppModule\Model\UnsupportedSecurityTypeException;
 use Nette\DI\Container;
@@ -165,7 +169,7 @@ class IqrfNetManagerTest extends TestCase {
 
 	/**
 	 * @test
-	 * Test function to write HWP configuration byte
+	 * Test function to set RF channel
 	 */
 	public function testSetRfChannel() {
 		$packet0 = '00.00.02.09.ff.ff.11.34.ff';
@@ -181,6 +185,69 @@ class IqrfNetManagerTest extends TestCase {
 		Assert::same([1], $iqrfNetManager->setRfChannel(64, IqrfNetManager::MAIN_RF_CHANNEL_B));
 		Assert::same([2], $iqrfNetManager->setRfChannel(26, IqrfNetManager::ALTERNATIVE_RF_CHANNEL_A));
 		Assert::same([3], $iqrfNetManager->setRfChannel(32, IqrfNetManager::ALTERNATIVE_RF_CHANNEL_B));
+		Assert::exception(function() use ($iqrfNetManager) {
+			$iqrfNetManager->setRfChannel(52, 'test');
+		}, InvalidRfChannelTypeException::class);
+	}
+
+	/**
+	 * @test
+	 * Test function to set RF LP timeout
+	 */
+	public function testSetRfLpTimeout() {
+		$packet0 = '00.00.02.09.ff.ff.0a.01.ff';
+		$packet1 = '00.00.02.09.ff.ff.0a.ff.ff';
+		$this->iqrfAppManager->shouldReceive('sendRaw')->with($packet0)->andReturn([0]);
+		$this->iqrfAppManager->shouldReceive('sendRaw')->with($packet1)->andReturn([1]);
+		$iqrfNetManager = new IqrfNetManager($this->iqrfAppManager);
+		Assert::same([0], $iqrfNetManager->setRfLpTimeout(1));
+		Assert::same([1], $iqrfNetManager->setRfLpTimeout(255));
+		Assert::exception(function() use ($iqrfNetManager) {
+			$iqrfNetManager->setRfLpTimeout(0);
+		}, InvalidRfLpTimeoutException::class);
+		Assert::exception(function() use ($iqrfNetManager) {
+			$iqrfNetManager->setRfLpTimeout(256);
+		}, InvalidRfLpTimeoutException::class);
+	}
+
+	/**
+	 * @test
+	 * Test function to set RF output power
+	 */
+	public function testSetRfOutputPower() {
+		$packet0 = '00.00.02.09.ff.ff.08.00.ff';
+		$packet1 = '00.00.02.09.ff.ff.08.07.ff';
+		$this->iqrfAppManager->shouldReceive('sendRaw')->with($packet0)->andReturn([0]);
+		$this->iqrfAppManager->shouldReceive('sendRaw')->with($packet1)->andReturn([1]);
+		$iqrfNetManager = new IqrfNetManager($this->iqrfAppManager);
+		Assert::same([0], $iqrfNetManager->setRfOutputPower(0));
+		Assert::same([1], $iqrfNetManager->setRfOutputPower(7));
+		Assert::exception(function() use ($iqrfNetManager) {
+			$iqrfNetManager->setRfOutputPower(-1);
+		}, InvalidRfOutputPowerException::class);
+		Assert::exception(function() use ($iqrfNetManager) {
+			$iqrfNetManager->setRfOutputPower(8);
+		}, InvalidRfOutputPowerException::class);
+	}
+
+	/**
+	 * @test
+	 * Test function to set RF signal filter
+	 */
+	public function testSetRfSignalFilter() {
+		$packet0 = '00.00.02.09.ff.ff.09.00.ff';
+		$packet1 = '00.00.02.09.ff.ff.09.40.ff';
+		$this->iqrfAppManager->shouldReceive('sendRaw')->with($packet0)->andReturn([0]);
+		$this->iqrfAppManager->shouldReceive('sendRaw')->with($packet1)->andReturn([1]);
+		$iqrfNetManager = new IqrfNetManager($this->iqrfAppManager);
+		Assert::same([0], $iqrfNetManager->setRfSignalFilter(0));
+		Assert::same([1], $iqrfNetManager->setRfSignalFilter(64));
+		Assert::exception(function() use ($iqrfNetManager) {
+			$iqrfNetManager->setRfSignalFilter(-1);
+		}, InvalidRfSignalFilterException::class);
+		Assert::exception(function() use ($iqrfNetManager) {
+			$iqrfNetManager->setRfSignalFilter(65);
+		}, InvalidRfSignalFilterException::class);
 	}
 
 }

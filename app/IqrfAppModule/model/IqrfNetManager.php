@@ -204,4 +204,46 @@ class IqrfNetManager {
 		return $this->writeHwpConfigurationByte($type, $rfChannel);
 	}
 
+	/**
+	 * Set RF LP timeout
+	 * @param int $timeout RF LP timeout
+	 * @return type DPA request and response
+	 * @throws InvalidRfLpTimeoutException
+	 */
+	public function setRfLpTimeout(int $timeout) {
+		if ($timeout < 1 || $timeout > 255) {
+			throw new InvalidRfLpTimeoutException();
+		}
+		$rfTimeout = Strings::padLeft(dechex($timeout), 2, '0');
+		return $this->writeHwpConfigurationByte('0a', $rfTimeout);
+	}
+
+	/**
+	 * Set RF output power
+	 * @param int $power RF output power
+	 * @return array DPA request and response
+	 * @throws InvalidRfOutputPowerException
+	 */
+	public function setRfOutputPower(int $power): array {
+		if ($power < 0 || $power > 7) {
+			throw new InvalidRfOutputPowerException();
+		}
+		$rfPower = Strings::padLeft($power, 2, '0');
+		return $this->writeHwpConfigurationByte('08', $rfPower);
+	}
+
+	/**
+	 * Set RF signal filter
+	 * @param int $filter RF signal filter
+	 * @return array DPA request and response
+	 * @throws InvalidRfSignalFilterException
+	 */
+	public function setRfSignalFilter(int $filter): array {
+		if ($filter < 0 || $filter > 64) {
+			throw new InvalidRfSignalFilterException();
+		}
+		$rfFilter = Strings::padLeft(dechex($filter), 2, '0');
+		return $this->writeHwpConfigurationByte('09', $rfFilter);
+	}
+
 }
