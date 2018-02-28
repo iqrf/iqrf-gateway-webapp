@@ -12,7 +12,7 @@ parameters:
 	macroPath: '../iqrf/DPA-macros_170601.iqrfmcr'
 	# Sentry configuration
 	sentry:
-		dsn: 'https://fa0c82acd2db40bdae660f9f01a8c400:34a69b195929416dbe97a7cd76aacf24@sentry.iqrfsdk.org/2'
+		dsn: 'https://da0cff92d85f4cd0aa5f0ea3b90ddffd:83a01f9c90014d9e8b186bd23a6a3d3f@sentry.iqrfsdk.org/2'
 
 application:
 	errorPresenter: Error
