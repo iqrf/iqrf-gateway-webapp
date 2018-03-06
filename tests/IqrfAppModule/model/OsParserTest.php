@@ -59,7 +59,7 @@ class OsParserTest extends TestCase {
 	public function setUp() {
 		$this->parser = new OsParser();
 		$this->jsonFileManager = new JsonFileManager(__DIR__ . '/data/');
-		$this->packetOsInfo= $this->jsonFileManager->read('response-os-read')['response'];
+		$this->packetOsInfo = $this->jsonFileManager->read('response-os-read')['response'];
 		$this->expectedOsInfo = $this->jsonFileManager->read('data-os-read');
 	}
 
@@ -84,6 +84,47 @@ class OsParserTest extends TestCase {
 		$failExpected = $this->expectedOsInfo;
 		$failExpected['TrType'] = $failExpected['McuType'] = 'UNKNOWN';
 		Assert::equal($failExpected, $failArray);
+	}
+
+	/**
+	 * @test
+	 * Test function to get RF band from HWP configuration
+	 */
+	public function testGetRfBand() {
+		Assert::equal('868 MHz', $this->parser->getRfBand('30'));
+		Assert::equal('916 MHz', $this->parser->getRfBand('31'));
+		Assert::equal('433 MHz', $this->parser->getRfBand('32'));
+	}
+
+	/**
+	 * @test
+	 * Test function to parse response to DPA OS - "Read HWP configuration" request
+	 */
+	public function testParseHwpConfiguration() {
+		$packet = '00.00.02.82.00.00.00.00.b1.c9.12.34.34.36.00.34.33.34.32.37.34.34.34.34.34.36.00.34.34.34.34.34.34.34.34.34.34.34.37.34.c3.30';
+		$actual = $this->parser->parseHwpConfiguration($packet);
+		$expected = [
+			'checksum' => 'b1',
+			'configuration' => [
+				'c9', '12', '34', '34', '36', '00', '34', '33', '34', '32', '37',
+				'34', '34', '34', '34', '34', '36', '00', '34', '34', '34', '34',
+				'34', '34', '34', '34', '34', '34', '34', '37', '34',
+			],
+			'parsedConfiguration' => [
+				'checksum' => 'fd',
+				'mainChannelA' => 2,
+				'mainChannelB' => 52,
+				'secondChannelA' => 52,
+				'secondChannelB' => 0,
+				'rfOutputPower' => 7,
+				'rxSignalFilter' => 0,
+				'rfLpTimeout' => 6,
+				'baudRate' => 9600,
+			],
+			'rfpgm' => 'c3',
+			'rfBand' => '868 MHz',
+		];
+		Assert::same($expected, $actual);
 	}
 
 }

@@ -75,24 +75,50 @@ class OsParser {
 	/**
 	 * Get RF band from HWP configuration
 	 * @param string $byte Undocumented byte from HWP configuration
-	 * @return array RF band
+	 * @return string RF band
 	 */
-	public function getRfBand(string $byte): array {
+	public function getRfBand(string $byte): string {
 		$bands = ['00' => '868 MHz', '01' => '916 MHz', '10' => '433 MHz'];
 		$bit = Strings::substring(Strings::padLeft(base_convert($byte, 16, 2), 8, '0'), 6, 2);
 		return $bands[$bit];
 	}
 
 	/**
+	 * Parse TR configuration
+	 * @param array $config HWP configuration
+	 * @return array TR configuration
+	 */
+	public function parseTrConfiguration(array $config): array {
+		$data = [];
+		$configFixed = [];
+		$baudRates = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400];
+		foreach ($config as $key => $value) {
+			$configFixed[$key] = hexdec($value) ^ 0x34;
+		}
+		$data['checksum'] = dechex($configFixed[0]);
+		$data['mainChannelA'] = $configFixed[16];
+		$data['mainChannelB'] = $configFixed[17];
+		$data['secondChannelA'] = $configFixed[5];
+		$data['secondChannelB'] = $configFixed[6];
+		$data['rfOutputPower'] = $configFixed[7];
+		$data['rxSignalFilter'] = $configFixed[8];
+		$data['rfLpTimeout'] = $configFixed[9];
+		$data['baudRate'] = $baudRates[$configFixed[10]];
+		return $data;
+	}
+	
+	/**
 	 * Parse response to DPA OS - "Read HWP configuration" request
 	 * @param string $packet DPA packet response
 	 * @return array HWP configuration
 	 */
-	public function parseHwpConfiguration(string $packet) {
+	public function parseHwpConfiguration(string $packet): array {
 		$data = [];
 		$packetArray = explode('.', $packet);
 		$data['checksum'] = $packetArray[8];
-		$data['configuration'] = array_slice($packetArray, 9, 31);
+		$config = array_slice($packetArray, 9, 31);
+		$data['configuration'] = $config;
+		$data['parsedConfiguration'] = $this->parseTrConfiguration($config);
 		$data['rfpgm'] = $packetArray[40];
 		$data['rfBand'] = $this->getRfBand($packetArray[41]);
 		return $data;
