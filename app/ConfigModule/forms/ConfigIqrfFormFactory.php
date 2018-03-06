@@ -63,6 +63,12 @@ class ConfigIqrfFormFactory {
 		$form->addInteger('DpaHandlerTimeout', 'DpaHandlerTimeout')->setRequired()
 				->addRule(Form::MIN, 'DPA Handler timeout must be bigger than 0.', 0);
 		$form->addSelect('CommunicationMode', 'CommunicationMode', $communicationModes);
+		$spi = $form->addContainer('spi');
+		$spi->addInteger('resetGpioPin', 'resetGpioPin');
+		$spi->addInteger('spiCe0GpioPin', 'spiCe0GpioPin');
+		$spi->addInteger('spiMisoGpioPin', 'spiMisoGpioPin');
+		$spi->addInteger('spiMosiGpioPin', 'spiMosiGpioPin');
+		$spi->addInteger('spiClkGpioPin', 'spiClkGpioPin');
 		$form->addSubmit('save', 'Save');
 		$form->setDefaults($this->manager->load());
 		$form->addProtection('Timeout expired, resubmit the form.');
