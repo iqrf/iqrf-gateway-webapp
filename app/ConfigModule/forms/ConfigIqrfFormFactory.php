@@ -64,7 +64,7 @@ class ConfigIqrfFormFactory {
 				->addRule(Form::MIN, 'DPA Handler timeout must be bigger than 0.', 0);
 		$form->addSelect('CommunicationMode', 'CommunicationMode', $communicationModes);
 		$spi = $form->addContainer('spi');
-		$spi->addInteger('resetGpioPin', 'resetGpioPin');
+		$spi->addInteger('enableGpioPin', 'enableGpioPin');
 		$spi->addInteger('spiCe0GpioPin', 'spiCe0GpioPin');
 		$spi->addInteger('spiMisoGpioPin', 'spiMisoGpioPin');
 		$spi->addInteger('spiMosiGpioPin', 'spiMosiGpioPin');
