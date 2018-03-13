@@ -60,7 +60,7 @@ class IqrfManager {
 	 */
 	public function load(): array {
 		$array = $this->fileManager->read($this->fileName);
-		$keys = ['resetGpioPin', 'spiCe0GpioPin', 'spiMisoGpioPin', 'spiMosiGpioPin', 'spiClkGpioPin',];
+		$keys = ['enableGpioPin', 'spiCe0GpioPin', 'spiMisoGpioPin', 'spiMosiGpioPin', 'spiClkGpioPin',];
 		foreach ($array as $key => $value) {
 			if (in_array($key, $keys)) {
 				$array['spi'][$key] = $value;

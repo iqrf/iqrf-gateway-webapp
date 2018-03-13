@@ -95,7 +95,7 @@ class IqrfManagerTest extends TestCase {
 			'DpaHandlerTimeout' => 500,
 			'CommunicationMode' => 'LP',
 			'spi' => [
-				'resetGpioPin' => null,
+				'enableGpioPin' => null,
 				'spiCe0GpioPin' => null,
 				'spiMisoGpioPin' => null,
 				'spiMosiGpioPin' => null,

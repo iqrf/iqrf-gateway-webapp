@@ -106,7 +106,7 @@ class OsParser {
 		$data['baudRate'] = $baudRates[$configFixed[10]];
 		return $data;
 	}
-	
+
 	/**
 	 * Parse response to DPA OS - "Read HWP configuration" request
 	 * @param string $packet DPA packet response
