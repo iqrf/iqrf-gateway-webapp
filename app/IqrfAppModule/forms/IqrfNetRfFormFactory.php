@@ -20,6 +20,7 @@ declare(strict_types=1);
 namespace App\IqrfAppModule\Forms;
 
 use App\Forms\FormFactory;
+use App\IqrfAppModule\Model\EmptyResponseException;
 use App\IqrfAppModule\Model\IqrfNetManager;
 use Nette;
 use Nette\Application\UI\Form;
@@ -43,6 +44,11 @@ class IqrfNetRfFormFactory {
 	private $factory;
 
 	/**
+	 * @var string RF Band
+	 */
+	private $rfBand;
+
+	/**
 	 * Constructor
 	 * @param FormFactory $factory Generic form factory
 	 * @param IqrfNetManager $manager IQMESH Network manager
@@ -62,6 +68,7 @@ class IqrfNetRfFormFactory {
 			'443 MHz' => '443 MHz',
 			'868 MHz' => '868 MHz',
 			'916 MHz' => '916 MHz',
+			'ERROR' => 'ERROR',
 		];
 		$types = [
 			IqrfNetManager::MAIN_RF_CHANNEL_A => 'Main Channel A',
@@ -69,9 +76,13 @@ class IqrfNetRfFormFactory {
 			IqrfNetManager::ALTERNATIVE_RF_CHANNEL_A => 'Alternative Channel A',
 			IqrfNetManager::ALTERNATIVE_RF_CHANNEL_B => 'Alternative Channel B',
 		];
-		$rfBand = $this->manager->readHwpConfiguration()['rfBand'] ?? '868 MHz';
+		try {
+			$this->rfBand = $this->manager->readHwpConfiguration()['rfBand'] ?? 'ERROR';
+		} catch (EmptyResponseException $e) {
+			$this->rfBand = 'ERROR';
+		}
 		$form->addSelect('rfBand', 'RF Band', $rfBands)->setDisabled()
-				->setDefaultValue($rfBand);
+				->setDefaultValue($this->rfBand);
 		$form->addInteger('rfChannel', 'RF Channel')
 				->setRequired(true)
 				->addConditionOn($form['rfBand'], Form::EQUAL, '443 MHz')
@@ -91,8 +102,13 @@ class IqrfNetRfFormFactory {
 	 * @param SubmitButton $button Submit button for setting RF channel
 	 */
 	public function setChannel(SubmitButton $button) {
-		$values = $button->getForm()->getValues();
-		$this->manager->setRfChannel($values['rfChannel'], strval($values['type']));
+		$form = $button->getForm();
+		$values = $form->getValues();
+		if ($this->rfBand === 'ERROR') {
+			$form->addError('Invalid RF Band.');
+		} else {
+			$this->manager->setRfChannel($values['rfChannel'], strval($values['type']));
+		}
 	}
 
 }
