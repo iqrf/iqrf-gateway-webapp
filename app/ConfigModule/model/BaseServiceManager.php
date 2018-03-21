@@ -83,7 +83,7 @@ class BaseServiceManager {
 		$instances = $this->getServices();
 		$data = [];
 		foreach ($instances as $instance) {
-			$data[$instance['Name']] = $instance['Name'];
+			$data[] = $instance['Name'];
 		}
 		return $data;
 	}

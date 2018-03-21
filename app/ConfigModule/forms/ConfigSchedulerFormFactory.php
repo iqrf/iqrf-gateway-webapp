@@ -67,15 +67,11 @@ class ConfigSchedulerFormFactory {
 		$form = $this->factory->create();
 		$defaults = $this->manager->load($id);
 		$types = [
-			'raw' => 'raw',
-			'raw-hdp' => 'raw-hdp',
-			'std-per-thermometer' => 'std-per-thermometer',
-			'std-per-ledg' => 'std-per-ledg',
-			'std-per-ledr' => 'std-per-ledr',
-			'std-per-frc' => 'std-per-frc',
-			'std-per-io' => 'std-per-io',
-			'std-sen' => 'std-sen',
+			'raw', 'raw-hdp', 'std-per-thermometer', 'std-per-ledg',
+			'std-per-ledr', 'std-per-frc', 'std-per-io', 'std-sen',
 		];
+		$baseServices = $this->baseService->getServicesNames();
+		$baseService = $defaults['service'];
 		foreach (array_keys($defaults) as $key) {
 			switch ($key) {
 				case 'hwpid':
@@ -99,14 +95,19 @@ class ConfigSchedulerFormFactory {
 					$form->addInteger($key, $key);
 					break;
 				case 'type':
-					$form->addSelect($key, $key, $types)->setRequired();
+					$form->addSelect($key, $key)->setItems($types, false)
+							->setRequired();
 					break;
 				case 'service':
-					$form->addSelect($key, $key, $this->baseService->getServicesNames())->setRequired();
+					$form->addSelect($key, $key)->setItems($baseServices, false)
+							->setPrompt('Select Base service')->setRequired();
 					break;
 				default:
 					$form->addText($key, $key);
 			}
+		}
+		if (!in_array($baseService, $baseServices)) {
+			unset($defaults['service']);
 		}
 		$form->addSubmit('save', 'Save');
 		$form->setDefaults($defaults);

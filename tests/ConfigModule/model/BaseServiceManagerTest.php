@@ -79,9 +79,7 @@ class BaseServiceManagerTest extends TestCase {
 	 * @var array
 	 */
 	private $servicesNames = [
-		'BaseServiceForMQ' => 'BaseServiceForMQ',
-		'BaseServiceForMQTT1' => 'BaseServiceForMQTT1',
-		'BaseServiceForMQTT2' => 'BaseServiceForMQTT2',
+		'BaseServiceForMQ', 'BaseServiceForMQTT1', 'BaseServiceForMQTT2',
 	];
 
 	/**
