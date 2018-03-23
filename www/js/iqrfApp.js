@@ -40,7 +40,7 @@ function parsePacket(packet) {
  * @returns {Boolean} Is valid DPA packet?
  */
 function validatePacket(packet) {
-	var re = new RegExp(/^([0-9a-fA-F]{1,2}\.){4,62}[0-9a-fA-F]{1,2}(\.|)$/, "i");
+	var re = new RegExp("^([0-9a-fA-F]{1,2}\.){4,62}[0-9a-fA-F]{1,2}(\.|)$", "i");
 	return packet.match(re) !== null;
 }
 
