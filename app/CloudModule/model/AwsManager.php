@@ -110,14 +110,10 @@ class AwsManager {
 	 * @param ArrayHash $values Form values
 	 */
 	public function checkCertificate(ArrayHash $values) {
-		$caCert = FileSystem::read($this->path . 'aws-ca.crt');
 		$cert = $values['cert']->getContents();
 		$pKey = $values['key']->getContents();
 		if (!$this->certManager->checkPrivateKey($cert, $pKey)) {
 			throw new InvalidPrivateKeyForCertificate();
-		}
-		if (!$this->certManager->checkIssuer($caCert, $cert)) {
-			throw new InvalidIssuerOfCertificate();
 		}
 	}
 

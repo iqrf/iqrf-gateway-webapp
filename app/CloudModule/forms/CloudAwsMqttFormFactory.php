@@ -107,8 +107,6 @@ class CloudAwsMqttFormFactory {
 		} catch (\Exception $e) {
 			if ($e instanceof InvalidPrivateKeyForCertificate) {
 				$presenter->flashMessage('The private key doesn\'t corespond to the certificate.', 'danger');
-			} else if ($e instanceof InvalidIssuerOfCertificate) {
-				$presenter->flashMessage('The issuer of the certificate doesn\'t cerespond to the CA certificate.', 'danger');
 			} else if ($e instanceof IOException) {
 				$presenter->flashMessage('IQRF Daemon\'s configuration files not found.', 'danger');
 			} else {
