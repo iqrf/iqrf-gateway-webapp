@@ -41,6 +41,8 @@ class OsParser {
 		switch ($pcmd) {
 			case '80':
 				return $this->parseReadInfo($packet);
+			case '82':
+				return $this->parseHwpConfiguration($packet);
 		}
 	}
 
