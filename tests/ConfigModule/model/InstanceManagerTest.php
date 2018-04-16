@@ -82,8 +82,7 @@ class InstanceManagerTest extends TestCase {
 	 * @var array Names of instances
 	 */
 	private $instancesNames = [
-		'MqttMessaging1' => 'MqttMessaging1',
-		'MqttMessaging2' => 'MqttMessaging2',
+		'MqttMessaging1', 'MqttMessaging2',
 	];
 
 	/**
