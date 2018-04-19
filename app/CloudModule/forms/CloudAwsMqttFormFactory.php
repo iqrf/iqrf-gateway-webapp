@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright 2017 IQRF Tech s.r.o.
+ * Copyright 2017-2018 IQRF Tech s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,19 +15,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\CloudModule\Forms;
 
 use App\CloudModule\Model\AwsManager;
 use App\CloudModule\Presenters\AwsPresenter;
-use App\CloudModule\Model\InvalidIssuerOfCertificate;
 use App\CloudModule\Model\InvalidPrivateKeyForCertificate;
 use App\ConfigModule\Model\BaseServiceManager;
 use App\ConfigModule\Model\InstanceManager;
 use App\Forms\FormFactory;
+use App\ServiceModule\Model\ServiceManager;
 use Nette;
 use Nette\Application\UI\Form;
+use Nette\Forms\Controls\SubmitButton;
 use Nette\IOException;
 use Nette\Utils\ArrayHash;
 
@@ -59,17 +60,24 @@ class CloudAwsMqttFormFactory {
 	private $factory;
 
 	/**
+	 * @var ServiceManager Service manager
+	 */
+	private $serviceManager;
+
+	/**
 	 * Constructor
 	 * @param AwsManager $aws Amazon AWS IoT manager
 	 * @param BaseServiceManager $baseService Base service manager\n
 	 * @param InstanceManager $manager MQTT instance manager
 	 * @param FormFactory $factory Generic form factory
+	 * @param ServiceManager $serviceManager Service manager
 	 */
-	public function __construct(AwsManager $aws, BaseServiceManager $baseService, InstanceManager $manager, FormFactory $factory) {
+	public function __construct(AwsManager $aws, BaseServiceManager $baseService, InstanceManager $manager, FormFactory $factory, ServiceManager $serviceManager) {
 		$this->cloudManager = $aws;
 		$this->baseService = $baseService;
 		$this->manager = $manager;
 		$this->factory = $factory;
+		$this->serviceManager = $serviceManager;
 	}
 
 	/**
@@ -84,11 +92,17 @@ class CloudAwsMqttFormFactory {
 		$form->addText('endpoint', 'Endpoint')->setRequired();
 		$form->addUpload('cert', 'Certificate')->setRequired();
 		$form->addUpload('key', 'Private key')->setRequired();
-		$form->addSubmit('save', 'Save');
-		$form->addProtection('Timeout expired, resubmit the form.');
-		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
-			$this->onSuccess($values, $presenter);
+		$form->addSubmit('save', 'Save')
+				->onClick[] = function (SubmitButton $button) use ($presenter) {
+			$values = $button->getForm()->getValues();
+			$this->save($values, $presenter);
 		};
+		$form->addSubmit('save_restart', 'Save and restart')
+				->onClick[] = function (SubmitButton $button) use ($presenter) {
+			$values = $button->getForm()->getValues();
+			$this->save($values, $presenter, true);
+		};
+		$form->addProtection('Timeout expired, resubmit the form.');
 		return $form;
 	}
 
@@ -96,14 +110,14 @@ class CloudAwsMqttFormFactory {
 	 * Create the base service and MQTT interface
 	 * @param ArrayHash $values Values from the form
 	 * @param AwsPresenter $presenter Amazon AWS IoT presenter
+	 * @param bool $needRestart Is restart needed?
 	 */
-	public function onSuccess(ArrayHash $values, AwsPresenter $presenter) {
+	public function save(ArrayHash $values, AwsPresenter $presenter, bool $needRestart = false) {
 		try {
 			$mqttInterface = $this->cloudManager->createMqttInterface($values);
 			$baseService = $this->cloudManager->createBaseService();
 			$this->baseService->add($baseService);
 			$this->manager->add($mqttInterface);
-			$presenter->redirect(':Config:Mqtt:default');
 		} catch (\Exception $e) {
 			if ($e instanceof InvalidPrivateKeyForCertificate) {
 				$presenter->flashMessage('The private key doesn\'t corespond to the certificate.', 'danger');
@@ -113,6 +127,15 @@ class CloudAwsMqttFormFactory {
 				throw $e;
 			}
 		}
+		if ($needRestart) {
+			try {
+				$this->serviceManager->restart();
+				$presenter->flashMessage('IQRF Daemon has been restarted.', 'info');
+			} catch (NotSupportedInitSystemException $e) {
+				$presenter->flashMessage('Not supported init system is used.', 'danger');
+			}
+		}
+		$presenter->redirect(':Config:Mqtt:default');
 	}
 
 }
