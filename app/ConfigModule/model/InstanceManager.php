@@ -68,6 +68,21 @@ class InstanceManager {
 	}
 
 	/**
+	 * Delete Instance setting
+	 * @param string $name Instance name
+	 */
+	public function deleteByName(string $name) {
+		$json = $this->fileManager->read($this->fileName);
+		foreach ($json['Instances'] as $key => $instance) {
+			if ($instance['Name'] === $name) {
+				unset($json['Instances'][$key]);
+			}
+		}
+		$json['Instances'] = array_values($json['Instances']);
+		$this->fileManager->write($this->fileName, $json);
+	}
+
+	/**
 	 * Get list of Instances
 	 * @return array Instances
 	 */

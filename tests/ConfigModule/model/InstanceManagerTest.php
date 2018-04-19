@@ -117,6 +117,20 @@ class InstanceManagerTest extends TestCase {
 
 	/**
 	 * @test
+	 * Test function to delete configuration of Instances
+	 */
+	public function testDeleteByName() {
+		$manager = new InstanceManager($this->fileManagerTemp);
+		$manager->setFileName($this->fileName);
+		$expected = $this->fileManager->read($this->fileName);
+		$this->fileManagerTemp->write($this->fileName, $expected);
+		unset($expected['Instances'][1]);
+		$manager->deleteByName('MqttMessaging2');
+		Assert::equal($expected, $this->fileManagerTemp->read($this->fileName));
+	}
+
+	/**
+	 * @test
 	 * Test function to get list of instancesr
 	 */
 	public function testGetInstances() {

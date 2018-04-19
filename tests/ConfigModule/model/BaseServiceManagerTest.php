@@ -113,6 +113,19 @@ class BaseServiceManagerTest extends TestCase {
 
 	/**
 	 * @test
+	 * Test function to delete configuration of Base services
+	 */
+	public function testDeleteByName() {
+		$manager = new BaseServiceManager($this->fileManagerTemp);
+		$expected = $this->fileManager->read($this->fileName);
+		$this->fileManagerTemp->write($this->fileName, $expected);
+		unset($expected['Instances'][2]);
+		$manager->deleteByName('BaseServiceForMQTT2');
+		Assert::equal($expected, $this->fileManagerTemp->read($this->fileName));
+	}
+
+	/**
+	 * @test
 	 * Test function to get list of Base services
 	 */
 	public function testGetServices() {
