@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Test\ConfigModule\Model;
 
+use App\ConfigModule\Model\BaseServiceManager;
 use App\ConfigModule\Model\InstanceManager;
 use App\Model\JsonFileManager;
 use Nette\DI\Container;
@@ -35,6 +36,11 @@ class InstanceManagerTest extends TestCase {
 	 * @var JsonFileManager JSON file manager
 	 */
 	private $fileManagerTemp;
+
+	/**
+	 * @var BaseServiceManager Base service manager
+	 */
+	private $baseServiceManager;
 
 	/**
 	 * @var array
@@ -99,6 +105,7 @@ class InstanceManagerTest extends TestCase {
 	public function setUp() {
 		$this->fileManager = new JsonFileManager($this->path);
 		$this->fileManagerTemp = new JsonFileManager($this->pathTest);
+		$this->baseServiceManager = new BaseServiceManager($this->fileManagerTemp);
 	}
 
 	/**
@@ -106,13 +113,15 @@ class InstanceManagerTest extends TestCase {
 	 * Test function to delete configuration of Instances
 	 */
 	public function testDelete() {
-		$manager = new InstanceManager($this->fileManagerTemp);
+		$manager = new InstanceManager($this->fileManagerTemp, $this->baseServiceManager);
 		$manager->setFileName($this->fileName);
 		$expected = $this->fileManager->read($this->fileName);
+		$expectedBaseServices = $this->baseServiceManager->getServices();
 		$this->fileManagerTemp->write($this->fileName, $expected);
-		unset($expected['Instances'][1]);
+		unset($expected['Instances'][1], $expectedBaseServices[2]);
 		$manager->delete(1);
 		Assert::equal($expected, $this->fileManagerTemp->read($this->fileName));
+		Assert::equal($expectedBaseServices, $this->baseServiceManager->getServices());
 	}
 
 	/**
@@ -120,13 +129,15 @@ class InstanceManagerTest extends TestCase {
 	 * Test function to delete configuration of Instances
 	 */
 	public function testDeleteByName() {
-		$manager = new InstanceManager($this->fileManagerTemp);
+		$manager = new InstanceManager($this->fileManagerTemp, $this->baseServiceManager);
 		$manager->setFileName($this->fileName);
 		$expected = $this->fileManager->read($this->fileName);
+		$expectedBaseServices = $this->baseServiceManager->getServices();
 		$this->fileManagerTemp->write($this->fileName, $expected);
-		unset($expected['Instances'][1]);
+		unset($expected['Instances'][1], $expectedBaseServices[2]);
 		$manager->deleteByName('MqttMessaging2');
 		Assert::equal($expected, $this->fileManagerTemp->read($this->fileName));
+		Assert::equal($expectedBaseServices, $this->baseServiceManager->getServices());
 	}
 
 	/**
@@ -134,7 +145,7 @@ class InstanceManagerTest extends TestCase {
 	 * Test function to get list of instancesr
 	 */
 	public function testGetInstances() {
-		$manager = new InstanceManager($this->fileManager);
+		$manager = new InstanceManager($this->fileManager, $this->baseServiceManager);
 		$manager->setFileName($this->fileName);
 		$expected = $this->fileManager->read($this->fileName)['Instances'];
 		Assert::equal($expected, $manager->getInstances());
@@ -145,7 +156,7 @@ class InstanceManagerTest extends TestCase {
 	 * Test function to get list of names of instances
 	 */
 	public function testGetInstancesNames() {
-		$manager = new InstanceManager($this->fileManager);
+		$manager = new InstanceManager($this->fileManager, $this->baseServiceManager);
 		$manager->setFileName($this->fileName);
 		Assert::equal($this->instancesNames, $manager->getInstancesNames());
 	}
@@ -155,7 +166,7 @@ class InstanceManagerTest extends TestCase {
 	 * Test function to parse configuration of Instances
 	 */
 	public function testLoad() {
-		$manager = new InstanceManager($this->fileManager);
+		$manager = new InstanceManager($this->fileManager, $this->baseServiceManager);
 		$manager->setFileName($this->fileName);
 		Assert::equal($this->array, $manager->load(1));
 		Assert::equal([], $manager->load(10));
@@ -166,7 +177,7 @@ class InstanceManagerTest extends TestCase {
 	 * Test function to save configuration of Instances
 	 */
 	public function testSave() {
-		$manager = new InstanceManager($this->fileManagerTemp);
+		$manager = new InstanceManager($this->fileManagerTemp, $this->baseServiceManager);
 		$manager->setFileName($this->fileName);
 		$array = $this->array;
 		$array['EnabledSSL'] = true;
@@ -182,7 +193,7 @@ class InstanceManagerTest extends TestCase {
 	 * Test function to parse configuration of Instances
 	 */
 	public function testSaveJson() {
-		$manager = new InstanceManager($this->fileManager);
+		$manager = new InstanceManager($this->fileManager, $this->baseServiceManager);
 		$manager->setFileName($this->fileName);
 		$instances = $this->fileManager->read($this->fileName)['Instances'];
 		$array = $this->array;

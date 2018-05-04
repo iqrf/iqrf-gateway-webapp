@@ -69,6 +69,21 @@ class BaseServiceManager {
 
 	/**
 	 * Delete Base Service setting
+	 * @param string $name MQ or MQTT instance's name
+	 */
+	public function deleteByInstanceName(string $name) {
+		$json = $this->fileManager->read($this->fileName);
+		foreach ($json['Instances'] as $key => $instance) {
+			if ($instance['Messaging'] === $name) {
+				unset($json['Instances'][$key]);
+			}
+		}
+		$json['Instances'] = array_values($json['Instances']);
+		$this->fileManager->write($this->fileName, $json);
+	}
+
+	/**
+	 * Delete Base Service setting
 	 * @param string $name Base service name
 	 */
 	public function deleteByName(string $name) {
