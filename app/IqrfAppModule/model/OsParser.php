@@ -80,8 +80,8 @@ class OsParser {
 	 * @return string RF band
 	 */
 	public function getRfBand(string $byte): string {
-		$bands = ['00' => '868 MHz', '01' => '916 MHz', '10' => '433 MHz'];
-		$bit = Strings::substring(Strings::padLeft(base_convert($byte, 16, 2), 8, '0'), 6, 2);
+		$bands = ['868 MHz', '916 MHz', '433 MHz'];
+		$bit = base_convert($byte, 16, 2) & 0x3;
 		return $bands[$bit];
 	}
 
