@@ -115,10 +115,10 @@ class CloudBluemixMqttFormFactory {
 	 */
 	public function save(ArrayHash $values, InteliGluePresenter $presenter, bool $needRestart = false) {
 		try {
-			$$mqttInterface = $this->cloudManager->createMqttInterface($values);
+			$mqttInterface = $this->cloudManager->createMqttInterface($values);
 			$baseService = $this->cloudManager->createBaseService();
 			$this->baseService->add($baseService);
-			$this->manager->add($$mqttInterface);
+			$this->manager->add($mqttInterface);
 		} catch (IOException $e) {
 			$presenter->flashMessage('IQRF Daemon\'s configuration files not found.', 'danger');
 		}
