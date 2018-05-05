@@ -53,6 +53,7 @@ class InfoPresenter extends BasePresenter {
 		$this->template->macAddresses = $this->infoManager->getMacAddresses();
 		$this->template->hostname = $this->infoManager->getHostname();
 		$this->template->daemonVersion = $this->infoManager->getDaemonVersion();
+		$this->template->webAppVersion = $this->infoManager->getWebAppVersion();
 		try {
 			$this->template->module = $this->infoManager->getCoordinatorInfo();
 		} catch (EmptyResponseException $e) {
