@@ -16,14 +16,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 declare(strict_types=1);
 
 namespace App\GatewayModule\Presenters;
 
+use App\GatewayModule\Model\DiagnosticsManager;
 use App\GatewayModule\Model\InfoManager;
 use App\IqrfAppModule\Model\EmptyResponseException;
 use App\Presenters\BasePresenter;
+use Nette\Application\BadRequestException;
 use Tracy\Debugger;
 
 /**
@@ -32,15 +33,22 @@ use Tracy\Debugger;
 class InfoPresenter extends BasePresenter {
 
 	/**
-	 * @var GwInfoManager
+	 * @var DiagnosticsManager GW Diagnostic manager
+	 */
+	private $diagnosticsManager;
+
+	/**
+	 * @var InfoManager GW Info manager
 	 */
 	private $infoManager;
 
 	/**
 	 * Constructor
-	 * @param InfoManager $infoManager
+	 * @param InfoManager $infoManager GW Info manager
+	 * @param DiagnosticsManager $diagnosticsManager GW Diagnostic manager
 	 */
-	public function __construct(InfoManager $infoManager) {
+	public function __construct(InfoManager $infoManager, DiagnosticsManager $diagnosticsManager) {
+		$this->diagnosticsManager = $diagnosticsManager;
 		$this->infoManager = $infoManager;
 	}
 
@@ -58,6 +66,20 @@ class InfoPresenter extends BasePresenter {
 			$this->template->module = $this->infoManager->getCoordinatorInfo();
 		} catch (EmptyResponseException $e) {
 			Debugger::log('Cannot get information about the Coordinator.');
+		}
+	}
+
+	/**
+	 * Download action
+	 */
+	public function actionDownload() {
+		$this->onlyForAdmins();
+		try {
+			$this->sendResponse($this->diagnosticsManager->download());
+		} catch (BadRequestException $e) {
+			Debugger::log('Cannot read zip archive with diagnostic data.');
+			$this->redirect('Info:default');
+			$this->setView('default');
 		}
 	}
 

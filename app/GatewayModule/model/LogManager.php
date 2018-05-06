@@ -54,7 +54,7 @@ class LogManager {
 	}
 
 	/**
-	 * Download lof iqrf-daemon
+	 * Download log of iqrf-daemon
 	 * @return FileResponse HTTP response with the log
 	 */
 	public function download() {
