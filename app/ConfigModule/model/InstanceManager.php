@@ -110,7 +110,7 @@ class InstanceManager {
 		$instances = $this->getInstances();
 		$data = [];
 		foreach ($instances as $instance) {
-			$data[] = $instance['Name'];
+			$data[$instance['Name']] = $instance['Name'];
 		}
 		return $data;
 	}
