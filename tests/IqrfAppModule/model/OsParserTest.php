@@ -36,6 +36,16 @@ class OsParserTest extends TestCase {
 	private $parser;
 
 	/**
+	 * @var string OS Read HWP configuration packet
+	 */
+	private $packetHwpConfiguration;
+
+	/**
+	 * @var array Expected OS Read HWP configuration parsed response
+	 */
+	private $expectedHwpConfiguration;
+
+	/**
 	 * @var string OS Read info packet
 	 */
 	private $packetOsInfo;
@@ -59,7 +69,9 @@ class OsParserTest extends TestCase {
 	public function setUp() {
 		$this->parser = new OsParser();
 		$this->jsonFileManager = new JsonFileManager(__DIR__ . '/data/');
+		$this->packetHwpConfiguration = $this->jsonFileManager->read('response-os-hwp-config')['response'];
 		$this->packetOsInfo = $this->jsonFileManager->read('response-os-read')['response'];
+		$this->expectedHwpConfiguration = $this->jsonFileManager->read('data-os-hwp-config');
 		$this->expectedOsInfo = $this->jsonFileManager->read('data-os-read');
 	}
 
@@ -68,8 +80,10 @@ class OsParserTest extends TestCase {
 	 * Test function to parse DPA response
 	 */
 	public function testParse() {
-		$array = $this->parser->parse($this->packetOsInfo);
-		Assert::equal($this->expectedOsInfo, $array);
+		$arrayInfo = $this->parser->parse($this->packetOsInfo);
+		Assert::equal($this->expectedOsInfo, $arrayInfo);
+		$arrayConfig = $this->parser->parse($this->packetHwpConfiguration);
+		Assert::equal($this->expectedHwpConfiguration, $arrayConfig);
 	}
 
 	/**
@@ -101,30 +115,8 @@ class OsParserTest extends TestCase {
 	 * Test function to parse response to DPA OS - "Read HWP configuration" request
 	 */
 	public function testParseHwpConfiguration() {
-		$packet = '00.00.02.82.00.00.00.00.b1.c9.12.34.34.36.00.34.33.34.32.37.34.34.34.34.34.36.00.34.34.34.34.34.34.34.34.34.34.34.37.34.c3.30';
-		$actual = $this->parser->parseHwpConfiguration($packet);
-		$expected = [
-			'checksum' => 'b1',
-			'configuration' => [
-				'c9', '12', '34', '34', '36', '00', '34', '33', '34', '32', '37',
-				'34', '34', '34', '34', '34', '36', '00', '34', '34', '34', '34',
-				'34', '34', '34', '34', '34', '34', '34', '37', '34',
-			],
-			'parsedConfiguration' => [
-				'checksum' => 'fd',
-				'mainChannelA' => 2,
-				'mainChannelB' => 52,
-				'secondChannelA' => 52,
-				'secondChannelB' => 0,
-				'rfOutputPower' => 7,
-				'rxSignalFilter' => 0,
-				'rfLpTimeout' => 6,
-				'baudRate' => 9600,
-			],
-			'rfpgm' => 'c3',
-			'rfBand' => '868 MHz',
-		];
-		Assert::same($expected, $actual);
+		$actual = $this->parser->parseHwpConfiguration($this->packetHwpConfiguration);
+		Assert::same($this->expectedHwpConfiguration, $actual);
 	}
 
 }

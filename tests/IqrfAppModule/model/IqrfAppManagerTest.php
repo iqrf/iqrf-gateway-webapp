@@ -124,6 +124,17 @@ class IqrfAppManagerTest extends TestCase {
 
 	/**
 	 * @test
+	 * Test function to fix NADR in raw DPA packet
+	 */
+	public function testFixPacket() {
+		$iqrfAppManager = new IqrfAppManager($this->commandManager, $this->coordinatorParser, $this->osParser, $this->enumParser);
+		$packet = '00.01.06.03.ff.ff';
+		$expected = '01.00.06.03.ff.ff';
+		Assert::same($expected, $iqrfAppManager->fixPacket($packet));
+	}
+
+	/**
+	 * @test
 	 * Test function to change iqrf-daemon operation mode
 	 */
 	public function testChangeOperationMode() {
@@ -222,6 +233,9 @@ class IqrfAppManagerTest extends TestCase {
 		Assert::null($arrayIoTKitSe);
 		Assert::exception(function () use ($iqrfAppManager) {
 			$iqrfAppManager->parseResponse(['response' => '']);
+		}, EmptyResponseException::class);
+		Assert::exception(function () use ($iqrfAppManager) {
+			$iqrfAppManager->parseResponse(['response' => '{"response": "","status":"STATUS_NO_ERROR"}']);
 		}, EmptyResponseException::class);
 	}
 
