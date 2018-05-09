@@ -11,8 +11,11 @@ declare(strict_types=1);
 namespace Test\ServiceModule\Model;
 
 use App\CloudModule\Model\AwsManager;
+use App\CloudModule\Model\InvalidPrivateKeyForCertificate;
+use App\Model\CertificateManager;
 use Nette\DI\Container;
 use Nette\Utils\ArrayHash;
+use Nette\Http\FileUpload;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -104,6 +107,46 @@ class AwsManagerTest extends TestCase {
 		Assert::same($mqtt['Properties'], iterator_to_array($actual['Properties']));
 		unset($actual['Serializers'], $actual['Properties'], $mqtt['Serializers'], $mqtt['Properties']);
 		Assert::same($mqtt, iterator_to_array($actual));
+	}
+
+	/**
+	 * @test
+	 * Test function to check a certificate and a private key
+	 */
+	public function testCheckCertificate() {
+		$certManager = new CertificateManager();
+		$manager = new AwsManager($certManager);
+		$certFile0 = __DIR__ . '/../../model/certs/cert0.pem';
+		$certValue0 = [
+			'name' => 'cert0.pem',
+			'type' => 'text/plain',
+			'tmp_name' => $certFile0,
+			'error' => UPLOAD_ERR_OK,
+			'size' => filesize($certFile0),
+		];
+		$pKeyFile0 = __DIR__ . '/../../model/certs/pkey0.key';
+		$pKeyValue0 = [
+			'name' => 'pkey0.key',
+			'type' => 'text/plain',
+			'tmp_name' => $pKeyFile0,
+			'error' => UPLOAD_ERR_OK,
+			'size' => filesize($pKeyFile0),
+		];
+		$array['cert'] = new FileUpload($certValue0);
+		$array['key'] = new FileUpload($pKeyValue0);
+		Assert::null($manager->checkCertificate(ArrayHash::from($array)));
+		Assert::exception(function () use ($manager, $array) {
+			$pKeyFile = __DIR__ . '/../../model/certs/pkey1.key';
+			$pKeyValue = [
+				'name' => 'pkey1.key',
+				'type' => 'text/plain',
+				'tmp_name' => $pKeyFile,
+				'error' => UPLOAD_ERR_OK,
+				'size' => filesize($pKeyFile),
+			];
+			$array['key'] = new FileUpload($pKeyValue);
+			$manager->checkCertificate(ArrayHash::from($array));
+		}, InvalidPrivateKeyForCertificate::class);
 	}
 
 	/**
