@@ -58,8 +58,8 @@ class InstanceManager {
 	 * @param ArrayHash $array Instance's settings
 	 */
 	public function add(ArrayHash $array) {
-		$id = count($this->getInstances());
 		$this->deleteByName($array['Name']);
+		$id = count($this->getInstances());
 		$this->save($array, $id);
 	}
 

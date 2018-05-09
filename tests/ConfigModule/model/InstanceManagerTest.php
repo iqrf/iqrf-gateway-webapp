@@ -112,6 +112,19 @@ class InstanceManagerTest extends TestCase {
 
 	/**
 	 * @test
+	 * Test function to add configuration of Instances
+	 */
+	public function testAdd() {
+		$manager = new InstanceManager($this->fileManagerTemp, $this->baseServiceManager);
+		$manager->setFileName($this->fileName);
+		$expected = $this->fileManager->read($this->fileName);
+		$this->fileManagerTemp->write($this->fileName, $expected);
+		$manager->add(ArrayHash::from($this->array));
+		Assert::equal($expected, $this->fileManagerTemp->read($this->fileName));
+	}
+
+	/**
+	 * @test
 	 * Test function to delete configuration of Instances
 	 */
 	public function testDelete() {

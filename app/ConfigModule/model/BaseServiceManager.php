@@ -51,8 +51,8 @@ class BaseServiceManager {
 	 * @param ArrayHash $array Base service settings
 	 */
 	public function add(ArrayHash $array) {
-		$id = count($this->getServices());
 		$this->deleteByName($array['Name']);
+		$id = count($this->getServices());
 		$this->save($array, $id);
 	}
 
