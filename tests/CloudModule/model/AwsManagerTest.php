@@ -16,6 +16,7 @@ use App\Model\CertificateManager;
 use Nette\DI\Container;
 use Nette\Utils\ArrayHash;
 use Nette\Http\FileUpload;
+use Nette\Utils\FileSystem;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -116,24 +117,24 @@ class AwsManagerTest extends TestCase {
 	public function testCheckCertificate() {
 		$certManager = new CertificateManager();
 		$manager = new AwsManager($certManager);
-		$certFile0 = __DIR__ . '/../../model/certs/cert0.pem';
-		$certValue0 = [
+		$certFile = __DIR__ . '/../../model/certs/cert0.pem';
+		$certValue = [
 			'name' => 'cert0.pem',
 			'type' => 'text/plain',
-			'tmp_name' => $certFile0,
+			'tmp_name' => $certFile,
 			'error' => UPLOAD_ERR_OK,
-			'size' => filesize($certFile0),
+			'size' => filesize($certFile),
 		];
-		$pKeyFile0 = __DIR__ . '/../../model/certs/pkey0.key';
-		$pKeyValue0 = [
+		$pKeyFile = __DIR__ . '/../../model/certs/pkey0.key';
+		$pKeyValue = [
 			'name' => 'pkey0.key',
 			'type' => 'text/plain',
-			'tmp_name' => $pKeyFile0,
+			'tmp_name' => $pKeyFile,
 			'error' => UPLOAD_ERR_OK,
-			'size' => filesize($pKeyFile0),
+			'size' => filesize($pKeyFile),
 		];
-		$array['cert'] = new FileUpload($certValue0);
-		$array['key'] = new FileUpload($pKeyValue0);
+		$array['cert'] = new FileUpload($certValue);
+		$array['key'] = new FileUpload($pKeyValue);
 		Assert::null($manager->checkCertificate(ArrayHash::from($array)));
 		Assert::exception(function () use ($manager, $array) {
 			$pKeyFile = __DIR__ . '/../../model/certs/pkey1.key';
@@ -161,6 +162,40 @@ class AwsManagerTest extends TestCase {
 			'key' => '/etc/iqrf-daemon/certs/' . $timestamp . '-aws.key',
 		];
 		Assert::same($paths, $actual);
+	}
+
+	/**
+	 * @test
+	 * Test function to upload root CA certificate, certificate and private key
+	 */
+	public function testUploadCertsAndKey() {
+		$certManager = new CertificateManager();
+		$manager = new AwsManager($certManager);
+		$certFile = __DIR__ . '/certs/cert0.pem';
+		$pKeyFile = __DIR__ . '/certs/pkey0.key';
+		FileSystem::copy(__DIR__ . '/../../model/certs/cert0.pem', $certFile);
+		FileSystem::copy(__DIR__ . '/../../model/certs/pkey0.key', $pKeyFile);
+		$certValue = [
+			'name' => 'cert0.pem',
+			'type' => 'text/plain',
+			'tmp_name' => $certFile,
+			'error' => UPLOAD_ERR_OK,
+			'size' => filesize($certFile),
+		];
+		$pKeyValue = [
+			'name' => 'pkey0.key',
+			'type' => 'text/plain',
+			'tmp_name' => $pKeyFile,
+			'error' => UPLOAD_ERR_OK,
+			'size' => filesize($pKeyFile),
+		];
+		$array['cert'] = new FileUpload($certValue);
+		$array['key'] = new FileUpload($pKeyValue);
+		$paths = [
+			'cert' => __DIR__ . '/certs/cert.pem',
+			'key' => __DIR__ . '/certs/pKey.key',
+		];
+		Assert::null($manager->uploadCertsAndKey(ArrayHash::from($array), $paths));
 	}
 
 }
