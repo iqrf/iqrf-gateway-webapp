@@ -29,7 +29,6 @@
 				"JsonSerializer"
 			],
 			"Properties": {
-				"AsyncDpaMessage": true
 			}
 		}
 	]

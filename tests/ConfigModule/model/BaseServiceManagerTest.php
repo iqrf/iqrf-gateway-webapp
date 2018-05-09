@@ -71,7 +71,7 @@ class BaseServiceManagerTest extends TestCase {
 			'Name' => 'BaseServiceForMQTT2',
 			'Messaging' => 'MqttMessaging2',
 			'Serializers' => ['JsonSerializer'],
-			'Properties' => ['AsyncDpaMessage' => true],
+			'Properties' => [],
 		],
 	];
 
@@ -96,6 +96,27 @@ class BaseServiceManagerTest extends TestCase {
 	public function setUp() {
 		$this->fileManager = new JsonFileManager($this->path);
 		$this->fileManagerTemp = new JsonFileManager($this->pathTest);
+	}
+
+	/**
+	 * @test
+	 * Test function to add configuration of Base services
+	 */
+	public function testAdd() {
+		$array = [
+			'Name' => 'BaseServiceForMQTT3',
+			'Messaging' => 'MqttMessaging3',
+			'Serializers' => [
+				'JsonSerializer'
+			],
+			'Properties' => []
+		];
+		$manager = new BaseServiceManager($this->fileManagerTemp);
+		$expected = $this->fileManager->read($this->fileName);
+		$this->fileManagerTemp->write($this->fileName, $expected);
+		$expected['Instances'][] = $array;
+		$manager->add(ArrayHash::from($array));
+		Assert::equal($expected, $this->fileManagerTemp->read($this->fileName));
 	}
 
 	/**
@@ -161,8 +182,11 @@ class BaseServiceManagerTest extends TestCase {
 	 */
 	public function testLoad() {
 		$manager = new BaseServiceManager($this->fileManager);
-		$expected = $this->services[0];
-		Assert::equal($expected, $manager->load(0));
+		$expected0 = $this->services[0];
+		Assert::equal($expected0, $manager->load(0));
+		$expected2 = $this->services[2];
+		$expected2['Properties'] = ['AsyncDpaMessage' => false];
+		Assert::equal($expected2, $manager->load(2));
 		Assert::equal([], $manager->load(10));
 	}
 

@@ -107,6 +107,7 @@ class InstanceManagerTest extends TestCase {
 		$this->fileManager = new JsonFileManager($this->path);
 		$this->fileManagerTemp = new JsonFileManager($this->pathTest);
 		$this->baseServiceManager = new BaseServiceManager($this->fileManagerTemp);
+		$this->fileManagerTemp->write('BaseService', $this->fileManager->read('BaseService'));
 	}
 
 	/**
