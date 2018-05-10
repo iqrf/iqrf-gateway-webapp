@@ -112,7 +112,7 @@ class AzureManager {
 	public function generateSasToken(string $resourceUri, string $signingKey, string $policyName = null, int $expiresInMins = 525600) {
 		$now = new DateTime();
 		$expires = new DateInterval('PT' . $expiresInMins . 'M');
-		$ttl = $now->add($expires)->getTimestamp();
+		$ttl = intdiv($now->add($expires)->getTimestamp(), 60) * 60;
 		$encodedResourceUri = urlencode($resourceUri);
 		$toSign = $encodedResourceUri . "\n" . $ttl;
 		$hmac = hash_hmac('sha256', $toSign, base64_decode($signingKey), true);

@@ -115,6 +115,22 @@ class AzureManagerTest extends TestCase {
 
 	/**
 	 * @test
+	 * Test function to generate shared access signature token
+	 */
+	public function testGenerateSasToken() {
+		$resourceUri = 'iqrf.azure-devices.net/devices/iqrfGwTest';
+		$signingKey = '1234567890abcdefghijklmnopqrstuvwxyzABCDEFG';
+		$policyName = null;
+		$expiresInMins = intdiv((new \DateTime('2018-05-10T11:00:00'))->getTimestamp(), 60) -
+				intdiv((new \DateTime())->getTimestamp(), 60) + 5256000;
+		$manager = new AzureManager();
+		$actual = $manager->generateSasToken($resourceUri, $signingKey, $policyName, $expiresInMins);
+		$expected = 'SharedAccessSignature sr=iqrf.azure-devices.net%2Fdevices%2FiqrfGwTest&sig=loSMVo4aSTBFh6psEwJcSInBGo%2BSD3noiFSHbgQuSMo%3D&se=1841302800';
+		Assert::same($expected, $actual);
+	}
+
+	/**
+	 * @test
 	 * Test function to parse the connection string
 	 */
 	public function testParseConnectionString() {
