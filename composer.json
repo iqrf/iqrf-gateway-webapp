@@ -1,7 +1,7 @@
 {
 	"name": "iqrfsdk/iqrf-daemon-webapp",
 	"description": "IQRF Gateway Daemon web application",
-	"version": "1.0.0",
+	"version": "1.1.2",
 	"type": "project",
 	"keywords": ["nette", "iqrf", "iqrf-daemon"],
 	"homepage": "https://github.com/iqrfsdk/iqrf-daemon-webapp",
@@ -10,7 +10,7 @@
 		{
 			"name": "Roman Ondráček",
 			"homepage": "https://romanondracek.cz/",
-			"email": "ondracek.roman@centrum.cz",
+			"email": "roman.ondracek@iqrf.com",
 			"role": "developer"
 		}
 	],
@@ -41,11 +41,10 @@
 	},
 	"require-dev": {
 		"nette/tester": "^2.0",
-		"mockery/mockery": "^1.0",
-		"apigen/apigen": "^4.1"
+		"mockery/mockery": "^1.0"
 	},
 	"support": {
-		"email": "ondracek.roman@centrum.cz",
+		"email": "roman.ondracek@iqrf.com",
 		"issues": "https://github.com/iqrfsdk/iqrf-daemon-webapp/issues",
 		"source": "https://github.com/iqrfsdk/iqrf-daemon-webapp"
 	},
@@ -58,8 +57,7 @@
 	"scripts": {
 		"install-cs": "composer create-project nette/code-checker temp/code-checker --no-interaction",
 		"check-cs": "php temp/code-checker/code-checker -l --short-arrays -i \"tests/model/data/macros-ascii.expected\" -i \"docs/\" -i \"tests/configuration-test/\"",
-		"fix-cs": "php temp/code-checker/code-checker -f -l --short-arrays -i \"tests/model/data/macros-ascii.expected\" -i \"docs/\" -i \"tests/configuration-test/\"",
-		"gen-docs": "vendor/bin/apigen generate --config apigen.yml"
+		"fix-cs": "php temp/code-checker/code-checker -f -l --short-arrays -i \"tests/model/data/macros-ascii.expected\" -i \"docs/\" -i \"tests/configuration-test/\""
 	},
 	"minimum-stability": "alpha"
 }

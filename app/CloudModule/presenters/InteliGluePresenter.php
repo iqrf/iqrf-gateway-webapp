@@ -2,7 +2,7 @@
 
 /**
  * Copyright 2017 MICRORISC s.r.o.
- * Copyright 2017 IQRF Tech s.r.o.
+ * Copyright 2017-2018 IQRF Tech s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 declare(strict_types=1);
 
 namespace App\CloudModule\Presenters;
@@ -27,17 +26,10 @@ use App\Presenters\BasePresenter;
 class InteliGluePresenter extends BasePresenter {
 
 	/**
-	 * @var CloudInteliGlueMqttFormFactory
+	 * @var CloudInteliGlueMqttFormFactory Inteliments InteliGlue form factory
+	 * @inject
 	 */
-	private $formFactory;
-
-	/**
-	 * Constructor
-	 * @param CloudInteliGlueMqttFormFactory $formFactory
-	 */
-	public function __construct(CloudInteliGlueMqttFormFactory $formFactory) {
-		$this->formFactory = $formFactory;
-	}
+	public $formFactory;
 
 	/**
 	 * Render default page

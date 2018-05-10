@@ -2,7 +2,7 @@
 
 /**
  * Copyright 2017 MICRORISC s.r.o.
- * Copyright 2017 IQRF Tech s.r.o.
+ * Copyright 2017-2018 IQRF Tech s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,8 @@ namespace App\IqrfAppModule\Presenters;
 
 use App\IqrfAppModule\Forms\IqrfNetBondingFormFactory;
 use App\IqrfAppModule\Forms\IqrfNetDiscoveryFormFactory;
+use App\IqrfAppModule\Forms\IqrfNetRfFormFactory;
+use App\IqrfAppModule\Forms\IqrfNetSecurityFormFactory;
 use App\Presenters\BasePresenter;
 use Nette\Application\UI\Form;
 
@@ -32,23 +34,27 @@ class NetworkPresenter extends BasePresenter {
 
 	/**
 	 * @var IqrfNetBondingFormFactory IQMESH Bonding form
+	 * @inject
 	 */
-	private $bondingForm;
+	public $bondingForm;
 
 	/**
 	 * @var IqrfNetDiscoveryFormFactory IQMESH Discovery form
+	 * @inject
 	 */
-	private $discoveryForm;
+	public $discoveryForm;
 
 	/**
-	 * Constructor
-	 * @param IqrfNetBondingFormFactory $bondingForm IQMESH Bonding form
-	 * @param IqrfNetDiscoveryFormFactory $discoveryForm IQMESH Discovery form
+	 * @var IqrfNetRfFormFactory IQMESH RF form
+	 * @inject
 	 */
-	public function __construct(IqrfNetBondingFormFactory $bondingForm, IqrfNetDiscoveryFormFactory $discoveryForm) {
-		$this->bondingForm = $bondingForm;
-		$this->discoveryForm = $discoveryForm;
-	}
+	public $rfForm;
+
+	/**
+	 * @var IqrfNetSecurityFormFactory IQMESH Security form
+	 * @inject
+	 */
+	public $securityForm;
 
 	/**
 	 * Render default page
@@ -73,6 +79,24 @@ class NetworkPresenter extends BasePresenter {
 	protected function createComponentIqrfNetDiscoveryForm(): Form {
 		$this->onlyForAdmins();
 		return $this->discoveryForm->create($this);
+	}
+
+	/**
+	 * Create IQMESH RF form
+	 * @return Form IQMESH RF form
+	 */
+	protected function createComponentIqrfNetRfForm(): Form {
+		$this->onlyForAdmins();
+		return $this->rfForm->create($this);
+	}
+
+	/**
+	 * Create IQMESH Security form
+	 * @return Form IQMESH Security form
+	 */
+	protected function createComponentIqrfNetSecurityForm(): Form {
+		$this->onlyForAdmins();
+		return $this->securityForm->create($this);
 	}
 
 }

@@ -1,5 +1,5 @@
 {**
- * Copyright 2017 IQRF Tech s.r.o.
+ * Copyright 2017-2018 IQRF Tech s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,9 @@
 *}
 
 {block content}
-<h1 n:block=title>{_"Amazon AWS configuration"}</h1>
-<div class='list-group'>
-	<a n:href='Aws:addMqtt' class='list-group-item'>
-		<header class='list-group-item-heading'>{_"Add MQTT interface"}</header>
-		<p class='list-group-item-text'>{_"Add MQTT interface."}</p>
-	</a>
+<h1 n:block=title>{_"Add a new MQTT connection into Amazon AWS IoT"}</h1>
+<div class='panel panel-default'>
+	<div class='panel-body'>
+		{control cloudAwsMqttForm}
+	</div>
 </div>

@@ -2,7 +2,7 @@
 
 /**
  * Copyright 2017 MICRORISC s.r.o.
- * Copyright 2017 IQRF Tech s.r.o.
+ * Copyright 2017-2018 IQRF Tech s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 declare(strict_types=1);
 
 namespace App\ConfigModule\Presenters;
@@ -29,8 +28,9 @@ class MqPresenter extends BasePresenter {
 
 	/**
 	 * @var ConfigMqFormFactory MQ inteface configuration form factory
+	 * @inject
 	 */
-	private $formFactory;
+	public $formFactory;
 
 	/**
 	 * @var InstanceManager Interface instance manager
@@ -44,12 +44,10 @@ class MqPresenter extends BasePresenter {
 
 	/**
 	 * Constructor
-	 * @param ConfigMqFormFactory $formFactory MQ interface configuration form factory
 	 * @param InstanceManager $configManager Interface instance manager
 	 */
-	public function __construct(ConfigMqFormFactory $formFactory, InstanceManager $configManager) {
+	public function __construct(InstanceManager $configManager) {
 		$this->configManager = $configManager;
-		$this->formFactory = $formFactory;
 		$this->configManager->setFileName($this->fileName);
 	}
 

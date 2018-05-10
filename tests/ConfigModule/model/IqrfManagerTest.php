@@ -94,6 +94,13 @@ class IqrfManagerTest extends TestCase {
 			'IqrfInterface' => 'COM6',
 			'DpaHandlerTimeout' => 500,
 			'CommunicationMode' => 'LP',
+			'spi' => [
+				'enableGpioPin' => null,
+				'spiCe0GpioPin' => null,
+				'spiMisoGpioPin' => null,
+				'spiMosiGpioPin' => null,
+				'spiClkGpioPin' => null,
+			],
 		];
 		$expected = $this->fileManager->read($this->fileName);
 		$this->fileManagerTemp->write($this->fileName, $expected);

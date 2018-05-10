@@ -2,7 +2,7 @@
 
 /**
  * Copyright 2017 MICRORISC s.r.o.
- * Copyright 2017 IQRF Tech s.r.o.
+ * Copyright 2017-2018 IQRF Tech s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ declare(strict_types=1);
 namespace App\IqrfAppModule\Model;
 
 use Nette;
+use Nette\Utils\Strings;
 
 /**
  * Parser for DPA OS responses
@@ -40,6 +41,8 @@ class OsParser {
 		switch ($pcmd) {
 			case '80':
 				return $this->parseReadInfo($packet);
+			case '82':
+				return $this->parseHwpConfiguration($packet);
 		}
 	}
 
@@ -68,6 +71,58 @@ class OsParser {
 		$data['SupplyVoltage'] = number_format((261.12 / (127 - hexdec($packetArray[17]))), 2, '.', '') . ' V';
 		$data['Flags'] = $packetArray[18];
 		$data['SlotLimits'] = $packetArray[19];
+		return $data;
+	}
+
+	/**
+	 * Get RF band from HWP configuration
+	 * @param string $byte Undocumented byte from HWP configuration
+	 * @return string RF band
+	 */
+	public function getRfBand(string $byte): string {
+		$bands = ['868 MHz', '916 MHz', '433 MHz'];
+		$bit = base_convert($byte, 16, 2) & 0x3;
+		return $bands[$bit];
+	}
+
+	/**
+	 * Parse TR configuration
+	 * @param array $config HWP configuration
+	 * @return array TR configuration
+	 */
+	public function parseTrConfiguration(array $config): array {
+		$data = [];
+		$configFixed = [];
+		$baudRates = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400];
+		foreach ($config as $key => $value) {
+			$configFixed[$key] = hexdec($value) ^ 0x34;
+		}
+		$data['checksum'] = dechex($configFixed[0]);
+		$data['mainChannelA'] = $configFixed[16];
+		$data['mainChannelB'] = $configFixed[17];
+		$data['secondChannelA'] = $configFixed[5];
+		$data['secondChannelB'] = $configFixed[6];
+		$data['rfOutputPower'] = $configFixed[7];
+		$data['rxSignalFilter'] = $configFixed[8];
+		$data['rfLpTimeout'] = $configFixed[9];
+		$data['baudRate'] = $baudRates[$configFixed[10]];
+		return $data;
+	}
+
+	/**
+	 * Parse response to DPA OS - "Read HWP configuration" request
+	 * @param string $packet DPA packet response
+	 * @return array HWP configuration
+	 */
+	public function parseHwpConfiguration(string $packet): array {
+		$data = [];
+		$packetArray = explode('.', $packet);
+		$data['checksum'] = $packetArray[8];
+		$config = array_slice($packetArray, 9, 31);
+		$data['configuration'] = $config;
+		$data['parsedConfiguration'] = $this->parseTrConfiguration($config);
+		$data['rfpgm'] = $packetArray[40];
+		$data['rfBand'] = $this->getRfBand($packetArray[41]);
 		return $data;
 	}
 

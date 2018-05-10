@@ -2,7 +2,7 @@
 
 /**
  * Copyright 2017 MICRORISC s.r.o.
- * Copyright 2017 IQRF Tech s.r.o.
+ * Copyright 2017-2018 IQRF Tech s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,17 +30,10 @@ use Nette\Application\UI\Form;
 class SignPresenter extends BasePresenter {
 
 	/**
-	 * @var SignInFormFactory
+	 * @var SignInFormFactory Sign in form factory
+	 * @inject
 	 */
-	private $signInFactory;
-
-	/**
-	 * Constructor
-	 * @param SignInFormFactory $signInFactory
-	 */
-	public function __construct(SignInFormFactory $signInFactory) {
-		$this->signInFactory = $signInFactory;
-	}
+	public $signInFactory;
 
 	/**
 	 * User sign in

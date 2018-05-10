@@ -11,8 +11,12 @@ declare(strict_types=1);
 namespace Test\ServiceModule\Model;
 
 use App\CloudModule\Model\AwsManager;
+use App\CloudModule\Model\InvalidPrivateKeyForCertificate;
+use App\Model\CertificateManager;
 use Nette\DI\Container;
 use Nette\Utils\ArrayHash;
+use Nette\Http\FileUpload;
+use Nette\Utils\FileSystem;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -51,6 +55,7 @@ class AwsManagerTest extends TestCase {
 	public function setUp() {
 		$this->manager = \Mockery::mock(AwsManager::class)->makePartial();
 		$this->manager->shouldReceive('downloadCaCertificate')->andReturn(null);
+		$this->manager->shouldReceive('checkCertificate')->andReturn(null);
 		$this->manager->shouldReceive('uploadCertsAndKey')->andReturn(null);
 	}
 
@@ -107,6 +112,46 @@ class AwsManagerTest extends TestCase {
 
 	/**
 	 * @test
+	 * Test function to check a certificate and a private key
+	 */
+	public function testCheckCertificate() {
+		$certManager = new CertificateManager();
+		$manager = new AwsManager($certManager);
+		$certFile = __DIR__ . '/../../model/certs/cert0.pem';
+		$certValue = [
+			'name' => 'cert0.pem',
+			'type' => 'text/plain',
+			'tmp_name' => $certFile,
+			'error' => UPLOAD_ERR_OK,
+			'size' => filesize($certFile),
+		];
+		$pKeyFile = __DIR__ . '/../../model/certs/pkey0.key';
+		$pKeyValue = [
+			'name' => 'pkey0.key',
+			'type' => 'text/plain',
+			'tmp_name' => $pKeyFile,
+			'error' => UPLOAD_ERR_OK,
+			'size' => filesize($pKeyFile),
+		];
+		$array['cert'] = new FileUpload($certValue);
+		$array['key'] = new FileUpload($pKeyValue);
+		Assert::null($manager->checkCertificate(ArrayHash::from($array)));
+		Assert::exception(function () use ($manager, $array) {
+			$pKeyFile = __DIR__ . '/../../model/certs/pkey1.key';
+			$pKeyValue = [
+				'name' => 'pkey1.key',
+				'type' => 'text/plain',
+				'tmp_name' => $pKeyFile,
+				'error' => UPLOAD_ERR_OK,
+				'size' => filesize($pKeyFile),
+			];
+			$array['key'] = new FileUpload($pKeyValue);
+			$manager->checkCertificate(ArrayHash::from($array));
+		}, InvalidPrivateKeyForCertificate::class);
+	}
+
+	/**
+	 * @test
 	 * Test function to create paths for certificates
 	 */
 	public function testCreatePaths() {
@@ -117,6 +162,40 @@ class AwsManagerTest extends TestCase {
 			'key' => '/etc/iqrf-daemon/certs/' . $timestamp . '-aws.key',
 		];
 		Assert::same($paths, $actual);
+	}
+
+	/**
+	 * @test
+	 * Test function to upload root CA certificate, certificate and private key
+	 */
+	public function testUploadCertsAndKey() {
+		$certManager = new CertificateManager();
+		$manager = new AwsManager($certManager);
+		$certFile = __DIR__ . '/certs/cert0.pem';
+		$pKeyFile = __DIR__ . '/certs/pkey0.key';
+		FileSystem::copy(__DIR__ . '/../../model/certs/cert0.pem', $certFile);
+		FileSystem::copy(__DIR__ . '/../../model/certs/pkey0.key', $pKeyFile);
+		$certValue = [
+			'name' => 'cert0.pem',
+			'type' => 'text/plain',
+			'tmp_name' => $certFile,
+			'error' => UPLOAD_ERR_OK,
+			'size' => filesize($certFile),
+		];
+		$pKeyValue = [
+			'name' => 'pkey0.key',
+			'type' => 'text/plain',
+			'tmp_name' => $pKeyFile,
+			'error' => UPLOAD_ERR_OK,
+			'size' => filesize($pKeyFile),
+		];
+		$array['cert'] = new FileUpload($certValue);
+		$array['key'] = new FileUpload($pKeyValue);
+		$paths = [
+			'cert' => __DIR__ . '/certs/cert.pem',
+			'key' => __DIR__ . '/certs/pKey.key',
+		];
+		Assert::null($manager->uploadCertsAndKey(ArrayHash::from($array), $paths));
 	}
 
 }

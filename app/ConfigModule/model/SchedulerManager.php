@@ -2,7 +2,7 @@
 
 /**
  * Copyright 2017 MICRORISC s.r.o.
- * Copyright 2017 IQRF Tech s.r.o.
+ * Copyright 2017-2018 IQRF Tech s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -149,7 +149,7 @@ class SchedulerManager {
 			return $data['request'];
 		}
 		$nadr = (empty($data['nadr']) ? '00' : Strings::padLeft($data['nadr'], 2, '0')) . '.00.';
-		$hwpid = (isset($data['hwpid']) ? $this->fixHwpid($data['hwpid']) : 'ff.ff');
+		$hwpid = (!empty($data['hwpid']) ? $this->fixHwpid($data['hwpid']) : 'ff.ff');
 		switch ($data['type']) {
 			case 'raw-hdp':
 				$pnum = Strings::padLeft($data['pnum'], 2, '0') . '.';

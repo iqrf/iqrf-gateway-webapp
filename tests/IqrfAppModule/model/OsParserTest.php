@@ -36,6 +36,16 @@ class OsParserTest extends TestCase {
 	private $parser;
 
 	/**
+	 * @var string OS Read HWP configuration packet
+	 */
+	private $packetHwpConfiguration;
+
+	/**
+	 * @var array Expected OS Read HWP configuration parsed response
+	 */
+	private $expectedHwpConfiguration;
+
+	/**
 	 * @var string OS Read info packet
 	 */
 	private $packetOsInfo;
@@ -59,7 +69,9 @@ class OsParserTest extends TestCase {
 	public function setUp() {
 		$this->parser = new OsParser();
 		$this->jsonFileManager = new JsonFileManager(__DIR__ . '/data/');
-		$this->packetOsInfo= $this->jsonFileManager->read('response-os-read')['response'];
+		$this->packetHwpConfiguration = $this->jsonFileManager->read('response-os-hwp-config')['response'];
+		$this->packetOsInfo = $this->jsonFileManager->read('response-os-read')['response'];
+		$this->expectedHwpConfiguration = $this->jsonFileManager->read('data-os-hwp-config');
 		$this->expectedOsInfo = $this->jsonFileManager->read('data-os-read');
 	}
 
@@ -68,8 +80,10 @@ class OsParserTest extends TestCase {
 	 * Test function to parse DPA response
 	 */
 	public function testParse() {
-		$array = $this->parser->parse($this->packetOsInfo);
-		Assert::equal($this->expectedOsInfo, $array);
+		$arrayInfo = $this->parser->parse($this->packetOsInfo);
+		Assert::equal($this->expectedOsInfo, $arrayInfo);
+		$arrayConfig = $this->parser->parse($this->packetHwpConfiguration);
+		Assert::equal($this->expectedHwpConfiguration, $arrayConfig);
 	}
 
 	/**
@@ -84,6 +98,25 @@ class OsParserTest extends TestCase {
 		$failExpected = $this->expectedOsInfo;
 		$failExpected['TrType'] = $failExpected['McuType'] = 'UNKNOWN';
 		Assert::equal($failExpected, $failArray);
+	}
+
+	/**
+	 * @test
+	 * Test function to get RF band from HWP configuration
+	 */
+	public function testGetRfBand() {
+		Assert::equal('868 MHz', $this->parser->getRfBand('30'));
+		Assert::equal('916 MHz', $this->parser->getRfBand('31'));
+		Assert::equal('433 MHz', $this->parser->getRfBand('32'));
+	}
+
+	/**
+	 * @test
+	 * Test function to parse response to DPA OS - "Read HWP configuration" request
+	 */
+	public function testParseHwpConfiguration() {
+		$actual = $this->parser->parseHwpConfiguration($this->packetHwpConfiguration);
+		Assert::same($this->expectedHwpConfiguration, $actual);
 	}
 
 }

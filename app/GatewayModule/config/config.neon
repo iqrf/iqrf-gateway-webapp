@@ -1,3 +1,4 @@
 services:
+	- App\GatewayModule\Model\DiagnosticsManager
 	- App\GatewayModule\Model\InfoManager
 	- App\GatewayModule\Model\LogManager(%logPath%)

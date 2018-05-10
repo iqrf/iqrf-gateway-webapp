@@ -2,7 +2,7 @@
 
 /**
  * Copyright 2017 MICRORISC s.r.o.
- * Copyright 2017 IQRF Tech s.r.o.
+ * Copyright 2017-2018 IQRF Tech s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,6 +64,12 @@ class ConfigIqrfFormFactory {
 		$form->addInteger('DpaHandlerTimeout', 'DpaHandlerTimeout')->setRequired()
 				->addRule(Form::MIN, 'DPA Handler timeout must be bigger than 0.', 0);
 		$form->addSelect('CommunicationMode', 'CommunicationMode', $communicationModes);
+		$spi = $form->addContainer('spi');
+		$spi->addInteger('enableGpioPin', 'enableGpioPin');
+		$spi->addInteger('spiCe0GpioPin', 'spiCe0GpioPin');
+		$spi->addInteger('spiMisoGpioPin', 'spiMisoGpioPin');
+		$spi->addInteger('spiMosiGpioPin', 'spiMosiGpioPin');
+		$spi->addInteger('spiClkGpioPin', 'spiClkGpioPin');
 		$form->addSubmit('save', 'Save');
 		$form->setDefaults($this->manager->load());
 		$form->addProtection('Timeout expired, resubmit the form.');

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright 2017 IQRF Tech s.r.o.
+ * Copyright 2017-2018 IQRF Tech s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,11 @@ declare(strict_types=1);
 
 namespace App\CloudModule\Model;
 
+use App\Model\CertificateManager;
+use GuzzleHttp\Client;
 use Nette;
 use Nette\Utils\ArrayHash;
+use Nette\Utils\FileSystem;
 
 /**
  * Tool for managing Amazon AWS IoT
@@ -28,6 +31,11 @@ use Nette\Utils\ArrayHash;
 class AwsManager {
 
 	use Nette\SmartObject;
+
+	/**
+	 * @var CertificateManager manager for certificates
+	 */
+	private $certManager;
 
 	/**
 	 * @var string Path to certificates
@@ -40,6 +48,14 @@ class AwsManager {
 	private $interfaceName = 'MqttMessagingAws';
 
 	/**
+	 * Constructor
+	 * @param CertificateManager $certManager Manager for certificates
+	 */
+	public function __construct(CertificateManager $certManager) {
+		$this->certManager = $certManager;
+	}
+
+	/**
 	 * Create MQTT interface
 	 * @param ArrayHash $values Values from form
 	 * @return ArrayHash MQTT interface
@@ -47,6 +63,7 @@ class AwsManager {
 	public function createMqttInterface(ArrayHash $values) {
 		$paths = $this->createPaths();
 		$this->downloadCaCertificate();
+		$this->checkCertificate($values);
 		$this->uploadCertsAndKey($values, $paths);
 		$interface = [
 			'Name' => $this->interfaceName,
@@ -89,6 +106,18 @@ class AwsManager {
 	}
 
 	/**
+	 * Check a certificate and a private key
+	 * @param ArrayHash $values Form values
+	 */
+	public function checkCertificate(ArrayHash $values) {
+		$cert = $values['cert']->getContents();
+		$pKey = $values['key']->getContents();
+		if (!$this->certManager->checkPrivateKey($cert, $pKey)) {
+			throw new InvalidPrivateKeyForCertificate();
+		}
+	}
+
+	/**
 	 * Create paths for root CA certificate, certificate and private key
 	 * @return array Paths for root CA certificate, certificate and private key
 	 */
@@ -102,7 +131,7 @@ class AwsManager {
 
 	/**
 	 * Upload root CA certificate, certificate and private key
-	 * @param ArrayHash $values FOrm values
+	 * @param ArrayHash $values Form values
 	 * @param array $paths Paths for root CA certificate, certificate and private key
 	 */
 	public function uploadCertsAndKey(ArrayHash $values, array $paths) {

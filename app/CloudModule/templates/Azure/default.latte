@@ -1,5 +1,5 @@
 {**
- * Copyright 2017 IQRF Tech s.r.o.
+ * Copyright 2017-2018 IQRF Tech s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,9 @@
 *}
 
 {block content}
-<h1 n:block=title>{_"Azure configuration"}</h1>
-<div class='list-group'>
-	<a n:href='Azure:addMqtt' class='list-group-item'>
-		<header class='list-group-item-heading'>{_"Add MQTT interface"}</header>
-		<p class='list-group-item-text'>{_"Add MQTT interface via device's connection string."}</p>
-	</a>
+<h1 n:block=title>{_"Add a new MQTT connection into Azure IoT hub"}</h1>
+<div class='panel panel-default'>
+	<div class='panel-body'>
+		{control cloudAzureMqttForm}
+	</div>
 </div>

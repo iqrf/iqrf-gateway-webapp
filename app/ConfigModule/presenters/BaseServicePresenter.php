@@ -2,7 +2,7 @@
 
 /**
  * Copyright 2017 MICRORISC s.r.o.
- * Copyright 2017 IQRF Tech s.r.o.
+ * Copyright 2017-2018 IQRF Tech s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 declare(strict_types=1);
 
 namespace App\ConfigModule\Presenters;
@@ -29,8 +28,9 @@ class BaseServicePresenter extends BasePresenter {
 
 	/**
 	 * @var ConfigBaseServiceFormFactory Base service configuration form factory
+	 * @inject
 	 */
-	private $formFactory;
+	public $formFactory;
 
 	/**
 	 * @var BaseServiceManager Base service manager
@@ -40,11 +40,9 @@ class BaseServicePresenter extends BasePresenter {
 	/**
 	 * Constructor
 	 * @param BaseServiceManager $configManager Base service manager
-	 * @param ConfigBaseServiceFormFactory $formFactory Base service configuration form factory
 	 */
-	public function __construct(BaseServiceManager $configManager, ConfigBaseServiceFormFactory $formFactory) {
+	public function __construct(BaseServiceManager $configManager) {
 		$this->configManager = $configManager;
-		$this->formFactory = $formFactory;
 	}
 
 	/**

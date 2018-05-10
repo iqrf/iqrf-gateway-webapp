@@ -2,7 +2,7 @@
 
 /**
  * Copyright 2017 MICRORISC s.r.o.
- * Copyright 2017 IQRF Tech s.r.o.
+ * Copyright 2017-2018 IQRF Tech s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,46 @@ use Nette\Utils\Strings;
 class IqrfNetManager {
 
 	use Nette\SmartObject;
+
+	/**
+	 * Alternative RF channel A
+	 */
+	const ALTERNATIVE_RF_CHANNEL_A = '06';
+
+	/**
+	 * Alternative RF channel B
+	 */
+	const ALTERNATIVE_RF_CHANNEL_B = '07';
+
+	/**
+	 * Main RF channel A
+	 */
+	const MAIN_RF_CHANNEL_A = '11';
+
+	/**
+	 * Main RF channel B
+	 */
+	const MAIN_RF_CHANNEL_B = '12';
+
+	/**
+	 * ASCII datat format
+	 */
+	const DATA_FORMAT_ASCII = 'ASCII';
+
+	/**
+	 * HEX data format
+	 */
+	const DATA_FORMAT_HEX = 'HEX';
+
+	/**
+	 * IQMESH Security Access password
+	 */
+	const SECURITY_ACCESS_PASSOWRD = 'accessPassword';
+
+	/**
+	 * IQMESH SEcurity User key
+	 */
+	const SECURITY_USER_KEY = 'userKey';
 
 	/**
 	 * @var IqrfAppManager iqrfapp manager
@@ -98,6 +138,112 @@ class IqrfNetManager {
 	public function rebondNode(string $address): array {
 		$packet = '00.00.00.06.ff.ff.' . Strings::padLeft($address, 2, '0');
 		return $this->iqrfAppManager->sendRaw($packet);
+	}
+
+	/**
+	 * Set Access password for applications using network communication.
+	 * @param string $password New access password (can be ASCII or HEX format)
+	 * @param string $inputFormat Determines in which format the password is entered
+	 * @return array DPA request and response
+	 */
+	public function setSecurity(string $password = '', string $inputFormat = self::DATA_FORMAT_ASCII, string $type = self::SECURITY_ACCESS_PASSOWRD) {
+		$packet = '00.00.02.06.ff.ff.';
+		if ($type === self::SECURITY_ACCESS_PASSOWRD) {
+			$packet .= '00.';
+		} else if ($type === self::SECURITY_USER_KEY) {
+			$packet .= '01.';
+		} else {
+			throw new UnsupportedSecurityTypeException();
+		}
+		if ($inputFormat === self::DATA_FORMAT_ASCII) {
+			$data = implode(unpack('H*', $password));
+		} elseif ($inputFormat === self::DATA_FORMAT_HEX) {
+			$data = $password;
+		} else {
+			throw new UnsupportedInputFormatException();
+		}
+		$dataToSend = $packet . Strings::lower(chunk_split(Strings::padLeft($data, 32, '0'), 2, '.'));
+		return $this->iqrfAppManager->sendRaw($dataToSend);
+	}
+
+	/**
+	 * The command read HWP configuration
+	 * @return array|null DPA request and response
+	 */
+	public function readHwpConfiguration() {
+		$packet = '00.00.02.02.ff.ff.';
+		$response = $this->iqrfAppManager->sendRaw($packet);
+		return $this->iqrfAppManager->parseResponse($response);
+	}
+
+	/**
+	 * Write HWP configuration byte
+	 * @param string $address Address of the item at configuration memory block.
+	 * @param string $value Value of the configuration item to write.
+	 * @param string $mask Specifies bits of the configuration byte to be modified by the corresponding bits of the Value parameter. Only bits that are set at the Mask will be written to the configuration byte i.e. when Mask equals to 0xFF then the whole Value will be written to the configuration byte. For example, when Mask equals to 0x12 then only bit.1 and bit.4 from Value will be written to the configuration byte.
+	 * @return array DPA request and response
+	 */
+	public function writeHwpConfigurationByte(string $address, string $value, string $mask = 'ff'): array {
+		$packet = '00.00.02.09.ff.ff.' . $address . '.' . $value . '.' . $mask;
+		return $this->iqrfAppManager->sendRaw($packet);
+	}
+
+	/**
+	 * Set RF channel
+	 * @param int $channel RF channel ID
+	 * @param string $type RF channel type
+	 * @return array DPA request and response
+	 * @throws InvalidRfChannelTypeException
+	 */
+	public function setRfChannel(int $channel, string $type): array {
+		$types = ['11', '12', '06', '07',];
+		if (!in_array($type, $types)) {
+			throw new InvalidRfChannelTypeException();
+		}
+		$rfChannel = Strings::padLeft(dechex($channel), 2, '0');
+		return $this->writeHwpConfigurationByte($type, $rfChannel);
+	}
+
+	/**
+	 * Set RF LP timeout
+	 * @param int $timeout RF LP timeout
+	 * @return type DPA request and response
+	 * @throws InvalidRfLpTimeoutException
+	 */
+	public function setRfLpTimeout(int $timeout) {
+		if ($timeout < 1 || $timeout > 255) {
+			throw new InvalidRfLpTimeoutException();
+		}
+		$rfTimeout = Strings::padLeft(dechex($timeout), 2, '0');
+		return $this->writeHwpConfigurationByte('0a', $rfTimeout);
+	}
+
+	/**
+	 * Set RF output power
+	 * @param int $power RF output power
+	 * @return array DPA request and response
+	 * @throws InvalidRfOutputPowerException
+	 */
+	public function setRfOutputPower(int $power): array {
+		if ($power < 0 || $power > 7) {
+			throw new InvalidRfOutputPowerException();
+		}
+		$rfPower = Strings::padLeft($power, 2, '0');
+		return $this->writeHwpConfigurationByte('08', $rfPower);
+	}
+
+	/**
+	 * Set RF signal filter
+	 * @param int $filter RF signal filter
+	 * @return array DPA request and response
+	 * @throws InvalidRfSignalFilterException
+	 */
+	public function setRfSignalFilter(int $filter): array {
+		if ($filter < 0 || $filter > 64) {
+			throw new InvalidRfSignalFilterException();
+		}
+		$rfFilter = Strings::padLeft(dechex($filter), 2, '0');
+		return $this->writeHwpConfigurationByte('09', $rfFilter);
 	}
 
 }

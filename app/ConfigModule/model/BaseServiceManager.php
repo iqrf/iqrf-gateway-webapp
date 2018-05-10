@@ -2,7 +2,7 @@
 
 /**
  * Copyright 2017 MICRORISC s.r.o.
- * Copyright 2017 IQRF Tech s.r.o.
+ * Copyright 2017-2018 IQRF Tech s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,6 +51,7 @@ class BaseServiceManager {
 	 * @param ArrayHash $array Base service settings
 	 */
 	public function add(ArrayHash $array) {
+		$this->deleteByName($array['Name']);
 		$id = count($this->getServices());
 		$this->save($array, $id);
 	}
@@ -62,6 +63,36 @@ class BaseServiceManager {
 	public function delete(int $id) {
 		$json = $this->fileManager->read($this->fileName);
 		unset($json['Instances'][$id]);
+		$json['Instances'] = array_values($json['Instances']);
+		$this->fileManager->write($this->fileName, $json);
+	}
+
+	/**
+	 * Delete Base Service setting
+	 * @param string $name MQ or MQTT instance's name
+	 */
+	public function deleteByInstanceName(string $name) {
+		$json = $this->fileManager->read($this->fileName);
+		foreach ($json['Instances'] as $key => $instance) {
+			if ($instance['Messaging'] === $name) {
+				unset($json['Instances'][$key]);
+			}
+		}
+		$json['Instances'] = array_values($json['Instances']);
+		$this->fileManager->write($this->fileName, $json);
+	}
+
+	/**
+	 * Delete Base Service setting
+	 * @param string $name Base service name
+	 */
+	public function deleteByName(string $name) {
+		$json = $this->fileManager->read($this->fileName);
+		foreach ($json['Instances'] as $key => $instance) {
+			if ($instance['Name'] === $name) {
+				unset($json['Instances'][$key]);
+			}
+		}
 		$json['Instances'] = array_values($json['Instances']);
 		$this->fileManager->write($this->fileName, $json);
 	}
@@ -83,7 +114,7 @@ class BaseServiceManager {
 		$instances = $this->getServices();
 		$data = [];
 		foreach ($instances as $instance) {
-			$data[$instance['Name']] = $instance['Name'];
+			$data[] = $instance['Name'];
 		}
 		return $data;
 	}

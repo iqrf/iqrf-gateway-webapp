@@ -2,7 +2,7 @@
 
 /**
  * Copyright 2017 MICRORISC s.r.o.
- * Copyright 2017 IQRF Tech s.r.o.
+ * Copyright 2017-2018 IQRF Tech s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 declare(strict_types=1);
 
 namespace App\GatewayModule\Model;
 
 use App\IqrfAppModule\Model\IqrfAppManager;
 use App\Model\CommandManager;
+use App\Model\JsonFileManager;
 use Nette;
 
 /**
@@ -38,18 +38,24 @@ class InfoManager {
 	private $commandManager;
 
 	/**
-	 * @var IqrfAppManager
+	 * @var IqrfAppManager IqrfApp manager
 	 */
 	private $iqrfAppManager;
 
 	/**
+	 * @var JsonFileManager JSON file manager
+	 */
+	private $jsonFileManager;
+
+	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
-	 * @param IqrfAppManager $iqrfAppManager
+	 * @param IqrfAppManager $iqrfAppManager IqrfApp manager
 	 */
 	public function __construct(CommandManager $commandManager, IqrfAppManager $iqrfAppManager) {
 		$this->commandManager = $commandManager;
 		$this->iqrfAppManager = $iqrfAppManager;
+		$this->jsonFileManager = new JsonFileManager(__DIR__ . '/../../../');
 	}
 
 	/**
@@ -124,6 +130,21 @@ class InfoManager {
 	public function getCoordinatorInfo() {
 		$response = $this->iqrfAppManager->sendRaw('00.00.02.00.FF.FF');
 		return $this->iqrfAppManager->parseResponse($response);
+	}
+
+	/**
+	 * Get current version of this wab application
+	 * @return string Version of this web application
+	 */
+	public function getWebAppVersion() {
+		$composer = $this->jsonFileManager->read('composer')['version'];
+		if ($this->commandManager->commandExist('git')) {
+			$branches = $this->commandManager->send('git branch -v --no-abbrev');
+			if (preg_match('{^\* (.+?)\s+([a-f0-9]{40})(?:\s|$)}m', $branches, $matches)) {
+				return $composer . ' (' . $matches[1] . ' - ' . $matches[2] . ')';
+			}
+		}
+		return $composer;
 	}
 
 }

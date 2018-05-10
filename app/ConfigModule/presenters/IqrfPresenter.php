@@ -2,7 +2,7 @@
 
 /**
  * Copyright 2017 MICRORISC s.r.o.
- * Copyright 2017 IQRF Tech s.r.o.
+ * Copyright 2017-2018 IQRF Tech s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 declare(strict_types=1);
 
 namespace App\ConfigModule\Presenters;
@@ -29,8 +28,9 @@ class IqrfPresenter extends BasePresenter {
 
 	/**
 	 * @var ConfigIqrfFormFactory IQRF interface configuration form factory
+	 * @inject
 	 */
-	private $formFactory;
+	public $formFactory;
 
 	/**
 	 * @var IqrfManager IQRF interface manager
@@ -39,11 +39,9 @@ class IqrfPresenter extends BasePresenter {
 
 	/**
 	 * Constructor
-	 * @param ConfigIqrfFormFactory $formFactory IQRF interface configuration form factory
 	 * @param IqrfManager $iqrfManager IQRF interface manager
 	 */
-	public function __construct(ConfigIqrfFormFactory $formFactory, IqrfManager $iqrfManager) {
-		$this->formFactory = $formFactory;
+	public function __construct(IqrfManager $iqrfManager) {
 		$this->iqrfManager = $iqrfManager;
 	}
 

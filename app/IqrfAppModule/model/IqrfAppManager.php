@@ -2,7 +2,7 @@
 
 /**
  * Copyright 2017 MICRORISC s.r.o.
- * Copyright 2017 IQRF Tech s.r.o.
+ * Copyright 2017-2018 IQRF Tech s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -207,18 +207,19 @@ class IqrfAppManager {
 			return null;
 			/** @todo throw own exception */
 		}
-		$packet = $this->fixPacket($response['response']);
+		$packet = $response['response'];
 		if (empty($packet)) {
 			throw new EmptyResponseException();
 		}
-		$pnum = explode('.', $packet)[2];
+		$fixedPacket = $this->fixPacket($packet);
+		$pnum = explode('.', $fixedPacket)[2];
 		switch ($pnum) {
 			case '00':
-				return $this->coordinatorParser->parse($packet);
+				return $this->coordinatorParser->parse($fixedPacket);
 			case '02':
-				return $this->osParser->parse($packet);
+				return $this->osParser->parse($fixedPacket);
 			case 'ff':
-				return $this->enumParser->parse($packet);
+				return $this->enumParser->parse($fixedPacket);
 			default:
 				return null;
 		}

@@ -2,7 +2,7 @@
 
 /**
  * Copyright 2017 MICRORISC s.r.o.
- * Copyright 2017 IQRF Tech s.r.o.
+ * Copyright 2017-2018 IQRF Tech s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,5 +31,47 @@ class EmptyResponseException extends \Exception {
  * The exception that indicates invalid gateway operational mode
  */
 class InvalidOperationModeException extends \Exception {
+
+}
+
+/**
+ * The exception that indicates invalid RF channel type
+ */
+class InvalidRfChannelTypeException extends \Exception {
+
+}
+
+/**
+ * The exception that indicates invalid RF LP timeout
+ */
+class InvalidRfLpTimeoutException extends \Exception {
+
+}
+
+/**
+ * The exception that indicates invalid RF output power
+ */
+class InvalidRfOutputPowerException extends \Exception {
+
+}
+
+/**
+ * The exception that indicates invalid RF signal filter
+ */
+class InvalidRfSignalFilterException extends \Exception {
+
+}
+
+/**
+ * The exception that indicates unsupported input format
+ */
+class UnsupportedInputFormatException extends \Exception {
+
+}
+
+/**
+ * The exception that indicates unsupported security type
+ */
+class UnsupportedSecurityTypeException extends \Exception {
 
 }

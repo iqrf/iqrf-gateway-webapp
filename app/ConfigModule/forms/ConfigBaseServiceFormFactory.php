@@ -2,7 +2,7 @@
 
 /**
  * Copyright 2017 MICRORISC s.r.o.
- * Copyright 2017 IQRF Tech s.r.o.
+ * Copyright 2017-2018 IQRF Tech s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\ConfigModule\Forms;
 
@@ -66,22 +66,29 @@ class ConfigBaseServiceFormFactory {
 		$id = intval($presenter->getParameter('id'));
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('config.baseServiceForm'));
+		$defaults = $this->manager->load($id);
 		$serializers = [
 			'JsonSerializer' => 'JsonSerializer',
 			'SimpleSerializer' => 'SimpleSerializer',
 		];
+		$instance = $defaults['Messaging'] ?? null;
 		$this->instanceManager->setFileName('MqMessaging');
 		$mqInstances = $this->instanceManager->getInstancesNames();
 		$this->instanceManager->setFileName('MqttMessaging');
 		$mqttInstances = $this->instanceManager->getInstancesNames();
 		$instances = array_merge($mqInstances, $mqttInstances);
 		$form->addText('Name', 'Name')->setRequired();
-		$form->addSelect('Messaging', 'Messaging', $instances)->setRequired()->setTranslator();
-		$form->addCheckboxList('Serializers', 'Serializers', $serializers)->setRequired();
+		$form->addSelect('Messaging', 'Messaging')->setItems($instances, true)
+				->setPrompt('Select Messaging')->setRequired()->setTranslator();
+		$form->addCheckboxList('Serializers', 'Serializers', $serializers)
+				->setRequired();
 		$prop = $form->addContainer('Properties');
 		$prop->addCheckbox('AsyncDpaMessage', 'AsyncDpaMessage');
 		$form->addSubmit('save', 'Save');
-		$form->setDefaults($this->manager->load($id));
+		if (!in_array($instance, $instances)) {
+			unset($defaults['Messaging']);
+		}
+		$form->setDefaults($defaults);
 		$form->addProtection('Timeout expired, resubmit the form.');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $id) {
 			$this->manager->save($values, $id);

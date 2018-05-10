@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright 2017 IQRF Tech s.r.o.
+ * Copyright 2017-2018 IQRF Tech s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\CloudModule\Forms;
 
@@ -26,8 +25,10 @@ use App\CloudModule\Model\InvalidConnectionString;
 use App\ConfigModule\Model\BaseServiceManager;
 use App\ConfigModule\Model\InstanceManager;
 use App\Forms\FormFactory;
+use App\ServiceModule\Model\ServiceManager;
 use Nette;
 use Nette\Application\UI\Form;
+use Nette\Forms\Controls\SubmitButton;
 use Nette\IOException;
 use Nette\Utils\ArrayHash;
 
@@ -59,17 +60,24 @@ class CloudAzureMqttFormFactory {
 	private $factory;
 
 	/**
+	 * @var ServiceManager Service manager
+	 */
+	private $serviceManager;
+
+	/**
 	 * Constructor
 	 * @param AzureManager $azure Microsoft Azure IoT Hub manager
 	 * @param BaseServiceManager $baseService Base service manager
 	 * @param InstanceManager $manager MQTT instance manager
 	 * @param FormFactory $factory Generic form factory
+	 * @param ServiceManager $serviceManager Service manager
 	 */
-	public function __construct(AzureManager $azure, BaseServiceManager $baseService, InstanceManager $manager, FormFactory $factory) {
+	public function __construct(AzureManager $azure, BaseServiceManager $baseService, InstanceManager $manager, FormFactory $factory, ServiceManager $serviceManager) {
 		$this->cloudManager = $azure;
 		$this->baseService = $baseService;
 		$this->manager = $manager;
 		$this->factory = $factory;
+		$this->serviceManager = $serviceManager;
 	}
 
 	/**
@@ -82,11 +90,17 @@ class CloudAzureMqttFormFactory {
 		$fileName = 'MqttMessaging';
 		$this->manager->setFileName($fileName);
 		$form->addText('ConnectionString', 'IoT Hub Connection String for Device')->setRequired();
-		$form->addSubmit('save', 'Save');
-		$form->addProtection('Timeout expired, resubmit the form.');
-		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
-			$this->onSuccess($values, $presenter);
+		$form->addSubmit('save', 'Save')
+				->onClick[] = function (SubmitButton $button) use ($presenter) {
+			$values = $button->getForm()->getValues();
+			$this->save($values, $presenter);
 		};
+		$form->addSubmit('save_restart', 'Save and restart')
+				->onClick[] = function (SubmitButton $button) use ($presenter) {
+			$values = $button->getForm()->getValues();
+			$this->save($values, $presenter, true);
+		};
+		$form->addProtection('Timeout expired, resubmit the form.');
 		return $form;
 	}
 
@@ -94,19 +108,32 @@ class CloudAzureMqttFormFactory {
 	 * Create the base service and MQTT interface
 	 * @param ArrayHash $values Values from the form
 	 * @param AzurePresenter $presenter MS Azure presenter
+	 * @param bool $needRestart Is restart needed?
 	 */
-	public function onSuccess(ArrayHash $values, AzurePresenter $presenter) {
+	public function save(ArrayHash $values, AzurePresenter $presenter, bool $needRestart = false) {
 		try {
-			$settings = $this->cloudManager->createMqttInterface($values['ConnectionString']);
+			$mqttInterface = $this->cloudManager->createMqttInterface($values['ConnectionString']);
 			$baseService = $this->cloudManager->createBaseService();
 			$this->baseService->add($baseService);
-			$this->manager->add($settings);
-			$presenter->redirect(':Config:Mqtt:default');
-		} catch (InvalidConnectionString $e) {
-			$presenter->flashMessage('Invalid MS Azure IoT Hub connection string for device.', 'danger');
-		} catch (IOException $e) {
-			$presenter->flashMessage('IQRF Daemon\'s configuration files not found.', 'danger');
+			$this->manager->add($mqttInterface);
+		} catch (\Exception $e) {
+			if ($e instanceof InvalidConnectionString) {
+				$presenter->flashMessage('Invalid MS Azure IoT Hub connection string for device.', 'danger');
+			} else if ($e instanceof IOException) {
+				$presenter->flashMessage('IQRF Daemon\'s configuration files not found.', 'danger');
+			} else {
+				throw $e;
+			}
 		}
+		if ($needRestart) {
+			try {
+				$this->serviceManager->restart();
+				$presenter->flashMessage('IQRF Daemon has been restarted.', 'info');
+			} catch (NotSupportedInitSystemException $e) {
+				$presenter->flashMessage('Not supported init system is used.', 'danger');
+			}
+		}
+		$presenter->redirect(':Config:Mqtt:default');
 	}
 
 }

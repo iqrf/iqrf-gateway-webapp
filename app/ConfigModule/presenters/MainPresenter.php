@@ -2,7 +2,7 @@
 
 /**
  * Copyright 2017 MICRORISC s.r.o.
- * Copyright 2017 IQRF Tech s.r.o.
+ * Copyright 2017-2018 IQRF Tech s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 declare(strict_types=1);
 
 namespace App\ConfigModule\Presenters;
@@ -29,23 +28,15 @@ class MainPresenter extends BasePresenter {
 
 	/**
 	 * @var ConfigComponentsFormFactory Daemon's components configuration form factory
+	 * @inject
 	 */
-	private $componentsFactory;
+	public $componentsFactory;
 
 	/**
 	 * @var ConfigMainFormFactory Daemon's main configuration form factory
+	 * @inject
 	 */
-	private $mainFactory;
-
-	/**
-	 * Constructor
-	 * @param ConfigComponentsFormFactory $componentsFactory Daemon's components configuration form factory
-	 * @param ConfigMainFormFactory $mainFactory Daemon's main configuration form factory
-	 */
-	public function __construct(ConfigComponentsFormFactory $componentsFactory, ConfigMainFormFactory $mainFactory) {
-		$this->componentsFactory = $componentsFactory;
-		$this->mainFactory = $mainFactory;
-	}
+	public $mainFactory;
 
 	/**
 	 * Render Main configurator

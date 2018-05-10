@@ -1,6 +1,6 @@
 /**
  * Copyright 2017 MICRORISC s.r.o.
- * Copyright 2017 IQRF Tech s.r.o.
+ * Copyright 2017-2018 IQRF Tech s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ function parsePacket(packet) {
  * @returns {Boolean} Is valid DPA packet?
  */
 function validatePacket(packet) {
-	var re = new RegExp(/^([0-9a-fA-F]{1,2}\.){4,62}[0-9a-fA-F]{1,2}(\.|)$/, "i");
+	var re = new RegExp("^([0-9a-fA-F]{1,2}\.){4,62}[0-9a-fA-F]{1,2}(\.|)$", "i");
 	return packet.match(re) !== null;
 }
 

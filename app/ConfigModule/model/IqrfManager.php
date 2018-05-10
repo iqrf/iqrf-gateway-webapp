@@ -2,7 +2,7 @@
 
 /**
  * Copyright 2017 MICRORISC s.r.o.
- * Copyright 2017 IQRF Tech s.r.o.
+ * Copyright 2017-2018 IQRF Tech s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,7 +59,15 @@ class IqrfManager {
 	 * @return array Array for form
 	 */
 	public function load(): array {
-		return $this->fileManager->read($this->fileName);
+		$array = $this->fileManager->read($this->fileName);
+		$keys = ['enableGpioPin', 'spiCe0GpioPin', 'spiMisoGpioPin', 'spiMosiGpioPin', 'spiClkGpioPin',];
+		foreach ($array as $key => $value) {
+			if (in_array($key, $keys)) {
+				$array['spi'][$key] = $value;
+				unset($array[$key]);
+			}
+		}
+		return $array;
 	}
 
 	/**
@@ -67,6 +75,12 @@ class IqrfManager {
 	 * @param ArrayHash $array Settings
 	 */
 	public function save(ArrayHash $array) {
+		foreach ($array['spi'] as $key => $value) {
+			if (isset($value)) {
+				$array[$key] = $value;
+			}
+		}
+		unset($array['spi']);
 		$this->fileManager->write($this->fileName, $array);
 	}
 

@@ -2,7 +2,7 @@
 
 /**
  * Copyright 2017 MICRORISC s.r.o.
- * Copyright 2017 IQRF Tech s.r.o.
+ * Copyright 2017-2018 IQRF Tech s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace App\ConfigModule\Model;
 
+use App\ConfigModule\Model\BaseServiceManager;
 use App\Model\JsonFileManager;
 use Nette;
 use Nette\Utils\ArrayHash;
@@ -34,17 +35,22 @@ class InstanceManager {
 	private $fileManager;
 
 	/**
-	 *
 	 * @var string File name (without .json)
 	 */
 	private $fileName;
 
 	/**
+	 * @var BaseServiceManager Base service manager
+	 */
+	private $baseServiceManager;
+
+	/**
 	 * Constructor
 	 * @param JsonFileManager $fileManager JSON file manager
 	 */
-	public function __construct(JsonFileManager $fileManager) {
+	public function __construct(JsonFileManager $fileManager, BaseServiceManager $baseServiceManager) {
 		$this->fileManager = $fileManager;
+		$this->baseServiceManager = $baseServiceManager;
 	}
 
 	/**
@@ -52,6 +58,7 @@ class InstanceManager {
 	 * @param ArrayHash $array Instance's settings
 	 */
 	public function add(ArrayHash $array) {
+		$this->deleteByName($array['Name']);
 		$id = count($this->getInstances());
 		$this->save($array, $id);
 	}
@@ -62,7 +69,26 @@ class InstanceManager {
 	 */
 	public function delete(int $id) {
 		$json = $this->fileManager->read($this->fileName);
+		$instanceName = $json['Instances'][$id]['Name'];
+		$this->baseServiceManager->deleteByInstanceName($instanceName);
 		unset($json['Instances'][$id]);
+		$json['Instances'] = array_values($json['Instances']);
+		$this->fileManager->write($this->fileName, $json);
+	}
+
+	/**
+	 * Delete Instance setting
+	 * @param string $name Instance name
+	 */
+	public function deleteByName(string $name) {
+		$json = $this->fileManager->read($this->fileName);
+		foreach ($json['Instances'] as $key => $instance) {
+			if ($instance['Name'] === $name) {
+				$instanceName = $json['Instances'][$key]['Name'];
+				$this->baseServiceManager->deleteByInstanceName($instanceName);
+				unset($json['Instances'][$key]);
+			}
+		}
 		$json['Instances'] = array_values($json['Instances']);
 		$this->fileManager->write($this->fileName, $json);
 	}
