@@ -17,7 +17,7 @@ before_script:
 .test_template: &test_template
     stage: test
     script:
-        - vendor/bin/tester -p phpdbg -s ./tests
+        - vendor/bin/tester -p phpdbg -C -s ./tests
     tags:
         - linux
         - amd64
