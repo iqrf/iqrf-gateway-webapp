@@ -1,3 +1,5 @@
+image: debian:testing
+
 stages:
     - test
     - coding-style
@@ -7,34 +9,31 @@ cache:
         - vendor/
 
 before_script:
-    - apt-get update -yqq
-    - apt-get install -yqq git libmcrypt-dev libpq-dev libcurl4-gnutls-dev libicu-dev libvpx-dev libjpeg-dev libpng-dev libxpm-dev zlib1g-dev libfreetype6-dev libxml2-dev libexpat1-dev libbz2-dev libgmp3-dev libldap2-dev unixodbc-dev libsqlite3-dev libaspell-dev libsnmp-dev libpcre3-dev libtidy-dev
-    - docker-php-ext-install mbstring mcrypt pdo_pgsql curl json intl gd xml zip bz2 opcache
-    - pecl install xdebug
-    - docker-php-ext-enable xdebug
+    - apt-get update -y
+    - apt-get install --no-install-recommends -y git php7.1 php7.1-common php7.1-curl php7.1-json php7.1-phpdbg php7.1-mbstring php7.1-sqlite php7.1-zip unzip
     - curl -sS https://getcomposer.org/installer | php
     - php composer.phar install
 
-test:php7.0:
-    image: php:7.0
+.test_template: &test_template
     stage: test
     script:
         - vendor/bin/tester -p phpdbg -s ./tests
     tags:
         - linux
         - amd64
+
+test:php7.0:
+    before_script:
+        - apt-get update -y
+        - apt-get install --no-install-recommends -y git php7.0 php7.0-common php7.0-curl php7.0-json php7.0-phpdbg php7.0-mbstring php7.0-sqlite php7.0-zip unzip
+        - curl -sS https://getcomposer.org/installer | php
+        - php composer.phar install
+    <<: *test_template
 
 test:php7.1:
-    image: php:7.1
-    stage: test
-    script:
-        - vendor/bin/tester -p phpdbg -s ./tests
-    tags:
-        - linux
-        - amd64
+    <<: *test_template
 
 coding-style:
-    image: php:7.1
     stage: coding-style
     script:
         - php composer.phar install-cs
