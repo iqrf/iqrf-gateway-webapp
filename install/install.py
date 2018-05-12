@@ -70,7 +70,7 @@ def install_debian(version, stability="stable"):
 		send_command("sh -c 'echo \"deb https://packages.sury.org/php/ $(lsb_release -sc) main\" > /etc/apt/sources.list.d/php.list'")
 		send_command("apt-get update")
 		# Install sudo, nginx and php7.0
-		send_command("apt-get install -y sudo php7.0 php7.0-common php7.0-fpm php7.0-curl php7.0-json php7.0-sqlite php7.0-mbstring nginx-full zip unzip")
+		send_command("apt-get install -y sudo php7.0 php7.0-common php7.0-fpm php7.0-curl php7.0-json php7.0-sqlite php7.0-mbstring php7.0-zip nginx-full zip unzip")
 		# Install composer
 		send_command("bash ./install-composer.sh")
 		send_command("mv composer.phar /usr/bin/composer")
@@ -88,7 +88,7 @@ def install_debian(version, stability="stable"):
 		restart_service("nginx")
 	elif version == "9" or version == "stretch" or version == "stable":
 		# Install sudo, nginx php7.0, composer and zip
-		send_command("apt-get install -y sudo php7.0 php7.0-common php7.0-fpm php7.0-curl php7.0-json php7.0-sqlite php7.0-mbstring composer nginx-full zip unzip")
+		send_command("apt-get install -y sudo php7.0 php7.0-common php7.0-fpm php7.0-curl php7.0-json php7.0-sqlite php7.0-mbstring php7.0-zip composer nginx-full zip unzip")
 		chmod_dir()
 		if stability == "dev":
 			install_php_app(WEBAPP_DIRECTORY, True)
@@ -111,7 +111,7 @@ def install_ubuntu(version, stability="stable"):
 	send_command("apt-get update")
 	if version == "16.04" or version == "xenial" or version == "xerus":
 		# Install sudo, nginx php7.0, composer and zip
-		send_command("apt-get install -y sudo php7.0 php7.0-common php7.0-fpm php7.0-curl php7.0-json php7.0-sqlite php7.0-mbstring composer nginx-full zip unzip")
+		send_command("apt-get install -y sudo php7.0 php7.0-common php7.0-fpm php7.0-curl php7.0-json php7.0-sqlite php7.0-mbstring php7.0-zip composer nginx-full zip unzip")
 		chmod_dir()
 		if stability == "dev":
 			install_php_app(WEBAPP_DIRECTORY, True)
