@@ -59,6 +59,7 @@ class InfoPresenter extends BasePresenter {
 		$this->onlyForAdmins();
 		$this->template->ipAddresses = $this->infoManager->getIpAddresses();
 		$this->template->macAddresses = $this->infoManager->getMacAddresses();
+		$this->template->board = $this->infoManager->getBoard();
 		$this->template->hostname = $this->infoManager->getHostname();
 		$this->template->daemonVersion = $this->infoManager->getDaemonVersion();
 		$this->template->webAppVersion = $this->infoManager->getWebAppVersion();

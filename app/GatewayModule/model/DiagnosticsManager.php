@@ -72,6 +72,7 @@ class DiagnosticsManager {
 
 	public function addInfo() {
 		$array = [];
+		$array['board'] = $this->infoManager->getBoard();
 		$array['daemonVersion'] = $this->infoManager->getDaemonVersion();
 		$array['webappVersion'] = $this->infoManager->getWebAppVersion();
 		$array['coordinator'] = $this->infoManager->getCoordinatorInfo();

@@ -65,6 +65,26 @@ class InfoManagerTest extends TestCase {
 
 	/**
 	 * @test
+	 * Test function to get board info
+	 */
+	public function testGetBoard() {
+		$commandManager0 = \Mockery::mock(CommandManager::class);
+		$commandManager0->shouldReceive('send')->with('cat /proc/device-tree/name', true)->andReturn('Raspberry Pi 2 Model B Rev 1.1');
+		$iqrfAppManager0 = new IqrfAppManager($commandManager0, $this->coordinatorParser, $this->osParser, $this->enumParser);
+		$gwInfoManager0 = new InfoManager($commandManager0, $iqrfAppManager0);
+		Assert::same('Raspberry Pi 2 Model B Rev 1.1', $gwInfoManager0->getBoard());
+		$commandManager1 = \Mockery::mock(CommandManager::class);
+		$commandManager1->shouldReceive('send')->with('cat /proc/device-tree/name', true)->andReturn(null);
+		$commandManager1->shouldReceive('send')->with('cat /sys/class/dmi/id/board_vendor', true)->andReturn('AAEON');
+		$commandManager1->shouldReceive('send')->with('cat /sys/class/dmi/id/board_name', true)->andReturn('UP-APL01');
+		$commandManager1->shouldReceive('send')->with('cat /sys/class/dmi/id/board_version', true)->andReturn('V0.4');
+		$iqrfAppManager1 = new IqrfAppManager($commandManager1, $this->coordinatorParser, $this->osParser, $this->enumParser);
+		$gwInfoManager1 = new InfoManager($commandManager1, $iqrfAppManager1);
+		Assert::same('AAEON UP-APL01 (V0.4)', $gwInfoManager1->getBoard());
+	}
+
+	/**
+	 * @test
 	 * Test function to get IPv4 and IPv6 addresses of the gateway
 	 */
 	public function testGetIpAddresses() {
