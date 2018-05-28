@@ -98,6 +98,16 @@ class DiagnosticsManager {
 	}
 
 	/**
+	 * Add information about services
+	 */
+	public function addServices() {
+		if ($this->commandManager->commandExist('systemctl')) {
+			$output = $this->commandManager->send('systemctl list-units --type=service', true);
+			$this->zipManager->addFileFromText('services.log', $output);
+		}
+	}
+
+	/**
 	 * Add information about available SPI interfaces
 	 */
 	public function addSpi() {
@@ -109,8 +119,10 @@ class DiagnosticsManager {
 	 * Add information from lsusb about USB gateways and programmers
 	 */
 	public function addUsb() {
-		$output = $this->commandManager->send('lsusb -v -d 1de6:', true);
-		$this->zipManager->addFileFromText('lsusb.log', $output);
+		if ($this->commandManager->commandExist('lsusb')) {
+			$output = $this->commandManager->send('lsusb -v -d 1de6:', true);
+			$this->zipManager->addFileFromText('lsusb.log', $output);
+		}
 	}
 
 	/**
@@ -123,6 +135,7 @@ class DiagnosticsManager {
 		$this->addDaemonLog();
 		$this->addDmesg();
 		$this->addInfo();
+		$this->addServices();
 		$this->addSpi();
 		$this->addUsb();
 		$this->zipManager->close();
