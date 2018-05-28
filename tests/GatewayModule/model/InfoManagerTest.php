@@ -91,7 +91,7 @@ class InfoManagerTest extends TestCase {
 		$gwInfoManager0 = new InfoManager($commandManager0, $iqrfAppManager0);
 		Assert::same('Raspberry Pi 2 Model B Rev 1.1', $gwInfoManager0->getBoard());
 		$commandManager1 = \Mockery::mock(CommandManager::class);
-		$commandManager1->shouldReceive('send')->with($this->commands['deviceTreeName'], true)->andReturn(null);
+		$commandManager1->shouldReceive('send')->with($this->commands['deviceTreeName'], true);
 		$commandManager1->shouldReceive('send')->with($this->commands['dmiBoardVendor'], true)->andReturn('AAEON');
 		$commandManager1->shouldReceive('send')->with($this->commands['dmiBoardName'], true)->andReturn('UP-APL01');
 		$commandManager1->shouldReceive('send')->with($this->commands['dmiBoardVersion'], true)->andReturn('V0.4');
@@ -99,10 +99,10 @@ class InfoManagerTest extends TestCase {
 		$gwInfoManager1 = new InfoManager($commandManager1, $iqrfAppManager1);
 		Assert::same('AAEON UP-APL01 (V0.4)', $gwInfoManager1->getBoard());
 		$commandManager2 = \Mockery::mock(CommandManager::class);
-		$commandManager2->shouldReceive('send')->with($this->commands['deviceTreeName'], true)->andReturn(null);
-		$commandManager2->shouldReceive('send')->with($this->commands['dmiBoardVendor'], true)->andReturn(null);
-		$commandManager2->shouldReceive('send')->with($this->commands['dmiBoardName'], true)->andReturn(null);
-		$commandManager2->shouldReceive('send')->with($this->commands['dmiBoardVersion'], true)->andReturn(null);
+		$commandManager2->shouldReceive('send')->with($this->commands['deviceTreeName'], true);
+		$commandManager2->shouldReceive('send')->with($this->commands['dmiBoardVendor'], true);
+		$commandManager2->shouldReceive('send')->with($this->commands['dmiBoardName'], true);
+		$commandManager2->shouldReceive('send')->with($this->commands['dmiBoardVersion'], true);
 		$iqrfAppManager2 = new IqrfAppManager($commandManager2, $this->coordinatorParser, $this->osParser, $this->enumParser);
 		$gwInfoManager2 = new InfoManager($commandManager2, $iqrfAppManager2);
 		Assert::same('UNKNOWN', $gwInfoManager2->getBoard());
@@ -171,7 +171,7 @@ class InfoManagerTest extends TestCase {
 		Assert::same($expected, $gwInfoManager0->getCoordinatorInfo());
 		$commandManager1 = \Mockery::mock(CommandManager::class);
 		$commandManager1->shouldReceive('send')->with($cmdRead, true)->andReturn('Timeout');
-		$commandManager1->shouldReceive('send')->with($cmd, true)->andReturn(null);
+		$commandManager1->shouldReceive('send')->with($cmd, true);
 		$iqrfAppManager1 = new IqrfAppManager($commandManager1, $this->coordinatorParser, $this->osParser, $this->enumParser);
 		$gwInfoManager1 = new InfoManager($commandManager1, $iqrfAppManager1);
 		Assert::exception(function() use ($gwInfoManager1) {

@@ -98,6 +98,22 @@ class DiagnosticsManager {
 	}
 
 	/**
+	 * Add information about available SPI interfaces
+	 */
+	public function addSpi() {
+		$output = $this->commandManager->send('ls /dev/spidev*', true);
+		$this->zipManager->addFileFromText('spidev.log', $output);
+	}
+
+	/**
+	 * Add information from lsusb about USB gateways and programmers
+	 */
+	public function addUsb() {
+		$output = $this->commandManager->send('lsusb -v -d 1de6:', true);
+		$this->zipManager->addFileFromText('lsusb.log', $output);
+	}
+
+	/**
 	 * Download a diagnostic data
 	 * @return FileResponse HTTP response with the diagnostic data
 	 */
@@ -107,6 +123,8 @@ class DiagnosticsManager {
 		$this->addDaemonLog();
 		$this->addDmesg();
 		$this->addInfo();
+		$this->addSpi();
+		$this->addUsb();
 		$this->zipManager->close();
 		$response = new FileResponse($this->path, $fileName, $contentType, true);
 		return $response;
