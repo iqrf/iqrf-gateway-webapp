@@ -83,10 +83,17 @@ class DiagnosticsManager {
 	}
 
 	/**
+	 * Add configuration of IQRF Gateway Daemon
+	 */
+	public function addConfiguration() {
+		$this->zipManager->addFolder('/etc/iqrf-daemon/', 'configuration');
+	}
+
+	/**
 	 * Add log of IQRF Gateway daemon
 	 */
 	public function addDaemonLog() {
-		$this->zipManager->addFile('/var/log/iqrf-daemon.log', 'iqrf-daemon.log');
+		$this->zipManager->addFile('/var/log/iqrf-daemon.log', 'logs/iqrf-daemon.log');
 	}
 
 	/**
@@ -112,7 +119,9 @@ class DiagnosticsManager {
 	 */
 	public function addSpi() {
 		$output = $this->commandManager->send('ls /dev/spidev*', true);
-		$this->zipManager->addFileFromText('spidev.log', $output);
+		if (!empty($output)) {
+			$this->zipManager->addFileFromText('spidev.log', $output);
+		}
 	}
 
 	/**
@@ -121,8 +130,18 @@ class DiagnosticsManager {
 	public function addUsb() {
 		if ($this->commandManager->commandExist('lsusb')) {
 			$output = $this->commandManager->send('lsusb -v -d 1de6:', true);
-			$this->zipManager->addFileFromText('lsusb.log', $output);
+			if (!empty($output)) {
+				$this->zipManager->addFileFromText('lsusb.log', $output);
+			}
 		}
+	}
+
+	/**
+	 * Add log of IQRF Gateway daemon webapp
+	 */
+	public function addWebappLog() {
+		$logDir = __DIR__ . '/../../../log/';
+		$this->zipManager->addFolder($logDir, 'logs/iqrf-daemon-webapp');
 	}
 
 	/**
@@ -130,14 +149,17 @@ class DiagnosticsManager {
 	 * @return FileResponse HTTP response with the diagnostic data
 	 */
 	public function download() {
-		$fileName = 'iqrf-gateway-diagnostics.zip';
+		$now = new \DateTime();
+		$fileName = 'iqrf-gateway-diagnostics_' .$now->format('c') .'.zip';
 		$contentType = 'application/zip';
+		$this->addConfiguration();
 		$this->addDaemonLog();
 		$this->addDmesg();
 		$this->addInfo();
 		$this->addServices();
 		$this->addSpi();
 		$this->addUsb();
+		$this->addWebappLog();
 		$this->zipManager->close();
 		$response = new FileResponse($this->path, $fileName, $contentType, true);
 		return $response;
