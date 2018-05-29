@@ -58,7 +58,7 @@ class ConfigComponentsFormFactory {
 	 */
 	public function create(MainPresenter $presenter): Form {
 		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('config.componentsForm'));
+		$form->setTranslator($form->getTranslator()->domain('config.components.form'));
 		$components = $this->manager->load();
 		foreach ($components as $component) {
 			$form->addCheckbox($component['ComponentName'], $component['ComponentName'])

@@ -205,18 +205,10 @@ class SchedulerManager {
 			return [];
 		}
 		$data = $tasks[$id];
-		$scheduler = [];
-		$scheduler['time'] = $data['time'];
-		$scheduler['service'] = $data['service'];
 		if (array_key_exists('sensors', $data['message'])) {
-			$sensors = implode(PHP_EOL, $data['message']['sensors']);
-			unset($scheduler['message']['sensors']);
-			$scheduler += $data['message'];
-			$scheduler['sensors'] = $sensors;
-		} else {
-			$scheduler += $data['message'];
+			$data['message']['sensors'] = implode(PHP_EOL, $data['message']['sensors']);
 		}
-		return $scheduler;
+		return $data;
 	}
 
 	/**
@@ -237,17 +229,10 @@ class SchedulerManager {
 	 * @return array JSON array
 	 */
 	public function saveJson(array $scheduler, ArrayHash $update, int $id): array {
-		$data = [];
-		$data['time'] = $update['time'];
-		$data['service'] = $update['service'];
-		unset($update['service'], $update['time']);
 		if (array_key_exists('sensors', $update)) {
-			$sensors = explode(PHP_EOL, $update['sensors']);
-			unset($update['sensors']);
-			$update['sensors'] = $sensors;
+			$update['sensors'] = explode(PHP_EOL, $update['sensors']);
 		}
-		$data['message'] = (array) $update;
-		$scheduler['TasksJson'][$id] = $data;
+		$scheduler['TasksJson'][$id] = (array) $update;
 		return $scheduler;
 	}
 

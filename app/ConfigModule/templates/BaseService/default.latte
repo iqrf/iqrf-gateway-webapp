@@ -16,18 +16,18 @@
 *}
 
 {block content}
-<h1 n:block=title>{_"Base services"}</h1>
+<h1 n:block=title>{_config.baseService.title}</h1>
 <div class='panel panel-default'>
 	<div class='panel-body'>
 		<table class='table table-striped'>
 			<thead>
 				<tr>
-					<th>{_"Name"}</th>
-					<th>{_"Messaging"}</th>
-					<th>{_"Serializers"}</th>
-					<th>{_"Async messaging"}</th>
-					<th>{_"Edit"}</th>
-					<th>{_"Remove"}</th>
+					<th>{_config.baseService.form.Name}</th>
+					<th>{_config.baseService.form.Messaging}</th>
+					<th>{_config.baseService.form.Serializers}</th>
+					<th>{_config.baseService.form.AsyncDpaMessage}</th>
+					<th>{_config.baseService.Edit}</th>
+					<th>{_config.baseService.Remove}</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -42,7 +42,7 @@
 					<td>{$service['Messaging']}</td>
 					<td>
 						{foreach $service['Serializers'] as $serializer}
-							{$serializer}{sep}, {/sep}
+							{_'config.baseService.form.'.$serializer}{sep}, {/sep}
 						{/foreach}
 					</td>
 					<td>

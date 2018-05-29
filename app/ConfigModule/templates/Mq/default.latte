@@ -16,18 +16,18 @@
 *}
 
 {block content}
-<h1 n:block=title>{_"MQ interface"}</h1>
+<h1 n:block=title>{_config.mq.title}</h1>
 <div class='panel panel-default'>
 	<div class='panel-body'>
 		<table class='table table-striped'>
 			<thead>
 				<tr>
-					<th>{_"Name"}</th>
-					<th>{_"Local MQ name"}</th>
-					<th>{_"Remote MQ name ID"}</th>
-					<th>{_"Enabled"}</th>
-					<th>{_"Edit"}</th>
-					<th>{_"Remove"}</th>
+					<th>{_config.mq.form.Name}</th>
+					<th>{_config.mq.form.LocalMqName}</th>
+					<th>{_config.mq.form.RemoteMqName}</th>
+					<th>{_config.mq.form.Enabled}</th>
+					<th>{_config.mq.Edit}</th>
+					<th>{_config.mq.Remove}</th>
 				</tr>
 			</thead>
 			<tbody>

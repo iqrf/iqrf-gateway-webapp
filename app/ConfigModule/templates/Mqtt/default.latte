@@ -16,19 +16,19 @@
 *}
 
 {block content}
-<h1 n:block=title>{_"MQTT interface"}</h1>
+<h1 n:block=title>{_config.mqtt.title}</h1>
 <div class='panel panel-default'>
 	<div class='panel-body'>
 		<table class='table table-striped'>
 			<thead>
 				<tr>
-					<th>{_"Name"}</th>
-					<th>{_"Broker"}</th>
-					<th>{_"Client ID"}</th>
-					<th>{_"TLS"}</th>
-					<th>{_"Enabled"}</th>
-					<th>{_"Edit"}</th>
-					<th>{_"Remove"}</th>
+					<th>{_config.mqtt.form.Name}</th>
+					<th>{_config.mqtt.form.BrokerAddr}</th>
+					<th>{_config.mqtt.form.ClientId}</th>
+					<th>{_config.mqtt.form.EnabledSSL}</th>
+					<th>{_config.mqtt.form.Enabled}</th>
+					<th>{_config.mqtt.Edit}</th>
+					<th>{_config.mqtt.Remove}</th>
 				</tr>
 			</thead>
 			<tbody>

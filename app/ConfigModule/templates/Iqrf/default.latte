@@ -16,23 +16,23 @@
 *}
 
 {block content}
-<h1 n:block=title>{_config.iqrfForm.title}</h1>
+<h1 n:block=title>{_config.iqrf.title}</h1>
 <div class='panel panel-default'>
 	<div class='panel-body'>
 		{control configIqrfForm}
 	</div>
 </div>
-<h2>{_config.iqrfForm.availableInterfaces}</h2>
+<h2>{_config.iqrf.availableInterfaces}</h2>
 <div class='panel panel-default'>
 	<div class='panel-body'>
 		{if !empty($interfaces['cdc'])}
-			<h3>{_config.interfaces.usb}</h3>
+			<h3>{_config.iqrf.interfaces.usb}</h3>
 			{foreach $interfaces['cdc'] as $interface}
 				<a class="btn btn-default btn-port" role="button" data-port="{$interface}">{$interface}</a>
 			{/foreach}
 		{/if}
 		{if !empty($interfaces['spi'])}
-			<h3>{_config.interfaces.spi}</h3>
+			<h3>{_config.iqrf.interfaces.spi}</h3>
 			{foreach $interfaces['spi'] as $interface}
 				<a class="btn btn-default btn-port" role="button" data-port="{$interface}">{$interface}</a>
 			{/foreach}

@@ -58,7 +58,7 @@ class ConfigIqrfAppFormFactory {
 	 */
 	public function create(IqrfAppPresenter $presenter): Form {
 		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('config.iqrfappForm'));
+		$form->setTranslator($form->getTranslator()->domain('config.iqrfapp.form'));
 		$fileName = 'iqrfapp';
 		$items = ['err' => 'VerbosityLevels.Error', 'war' => 'VerbosityLevels.Warning',
 			'inf' => 'VerbosityLevels.Info', 'dbg' => 'VerbosityLevels.Debug'];

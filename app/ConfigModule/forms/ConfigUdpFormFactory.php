@@ -57,7 +57,7 @@ class ConfigUdpFormFactory {
 	 */
 	public function create(UdpPresenter $presenter): Form {
 		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('config.udpForm'));
+		$form->setTranslator($form->getTranslator()->domain('config.udp.form'));
 		$fileName = 'UdpMessaging';
 		$this->manager->setFileName($fileName);
 		$form->addText('Name', 'Name')->setRequired();

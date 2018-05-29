@@ -31,23 +31,23 @@
 		<p class='list-group-item-text'>{_service.description}</p>
 	</a>
 	<a n:href=':IqrfApp:Homepage:default' class='list-group-item'>
-		<header class='list-group-item-heading'>{_"IQRF Net"}</header>
-		<p class='list-group-item-text'>{_"Control IQRF network."}</p>
+		<header class='list-group-item-heading'>{_iqrfapp.title}</header>
+		<p class='list-group-item-text'>{_iqrfapp.description}</p>
 	</a>
 	<a n:href=':Cloud:Homepage:default' class='list-group-item'>
 		<header class='list-group-item-heading'>{_cloud.title}</header>
 		<p class='list-group-item-text'>{_cloud.description}</p>
 	</a>
 	<a n:if='$iqrfGw' href='/node-red/' class='list-group-item'>
-		<header class='list-group-item-heading'>{_"Node RED"}</header>
-		<p class='list-group-item-text'>{_"Open Nede RED workflow."}</p>
+		<header class='list-group-item-heading'>{_core.node-red.title}</header>
+		<p class='list-group-item-text'>{_core.node-red.description}</p>
 	</a>
 	<a n:if='$iqrfGw' href='/node-red/ui/' class='list-group-item'>
-		<header class='list-group-item-heading'>{_"Node RED Dashboard"}</header>
-		<p class='list-group-item-text'>{_"Open Nede RED Dashboard."}</p>
+		<header class='list-group-item-heading'>{_core.node-red-dashboard.title}</header>
+		<p class='list-group-item-text'>{_core.node-red-dashboard.description}</p>
 	</a>
 	<a n:if='$iqrfGw' href='/supervisor/' class='list-group-item'>
-		<header class='list-group-item-heading'>{_"Supervisor"}</header>
-		<p class='list-group-item-text'>{_"Open Supervisor Dashboard."}</p>
+		<header class='list-group-item-heading'>{_core.supervisor.title}</header>
+		<p class='list-group-item-text'>{_core.supervisor.description}</p>
 	</a>
 </div>

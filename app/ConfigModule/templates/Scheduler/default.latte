@@ -16,18 +16,18 @@
 *}
 
 {block content}
-<h1 n:block=title>{_"Scheduler"}</h1>
+<h1 n:block=title>{_config.scheduler.title}</h1>
 <div class='panel panel-default'>
 	<div class='panel-body'>
 		<table class='table table-striped'>
 			<thead>
 				<tr>
-					<th>{_"Time"}</th>
-					<th>{_"Service"}</th>
-					<th>{_"Type"}</th>
-					<th>{_"Request"}</th>
-					<th>{_"Edit"}</th>
-					<th>{_"Remove"}</th>
+					<th>{_config.scheduler.form.time}</th>
+					<th>{_config.scheduler.form.service}</th>
+					<th>{_config.scheduler.form.type}</th>
+					<th>{_config.scheduler.form.request}</th>
+					<th>{_config.scheduler.Edit}</th>
+					<th>{_config.scheduler.Remove}</th>
 				</tr>
 			</thead>
 			<tbody>

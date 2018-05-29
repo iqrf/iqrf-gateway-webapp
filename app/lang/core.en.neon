@@ -21,3 +21,15 @@ signIn:
 signOut:
 	title: You have been signed out
 	message: Sign in to another account
+
+node-red:
+	title: Node RED
+	description: Open Nede RED workflow.
+
+node-red-dashboard:
+	title: Node RED Dashboard
+	description: Open Nede RED Dashboard.
+
+supervisor:
+	title: Supervisor
+	description: Open Supervisor Dashboard.

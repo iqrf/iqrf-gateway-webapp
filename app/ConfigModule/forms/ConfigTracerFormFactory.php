@@ -57,7 +57,7 @@ class ConfigTracerFormFactory {
 	 */
 	public function create(TracerPresenter $presenter): Form {
 		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('config.tracerForm'));
+		$form->setTranslator($form->getTranslator()->domain('config.tracer.form'));
 		$fileName = 'TracerFile';
 		$this->manager->setFileName($fileName);
 		$items = ['err' => 'VerbosityLevels.Error', 'war' => 'VerbosityLevels.Warning',

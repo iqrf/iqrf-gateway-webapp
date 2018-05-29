@@ -57,25 +57,25 @@
 								{_config.title} <span class="caret"></span>
 							</a>
 							<ul class="dropdown-menu">
-								<li><a n:href=':Config:Main:default'>{_config.mainForm.title}</a></li>
-								<li><a n:href=':Config:Tracer:default'>{_"Tracer file"}</a></li>
-								<li><a n:href=':Config:Iqrf:default'>{_config.iqrfForm.title}</a></li>
-								<li><a n:href=':Config:Udp:default'>{_"UDP interface"}</a></li>
-								<li><a n:href=':Config:Mqtt:default'>{_"MQTT interface"}</a></li>
-								<li><a n:href=':Config:Mq:default'>{_"MQ interface"}</a></li>
-								<li><a n:href=':Config:Scheduler:default'>{_"Scheduler"}</a></li>
-								<li><a n:href=':Config:BaseService:default'>{_"Base services"}</a></li>
-								<li><a n:href=':Config:IqrfApp:default'>{_config.iqrfappForm.title}</a></li>
+								<li><a n:href=':Config:Main:default'>{_config.main.title}</a></li>
+								<li><a n:href=':Config:Tracer:default'>{_config.tracer.title}</a></li>
+								<li><a n:href=':Config:Iqrf:default'>{_config.iqrf.title}</a></li>
+								<li><a n:href=':Config:Udp:default'>{_config.udp.title}</a></li>
+								<li><a n:href=':Config:Mqtt:default'>{_config.mqtt.title}</a></li>
+								<li><a n:href=':Config:Mq:default'>{_config.mq.title}</a></li>
+								<li><a n:href=':Config:Scheduler:default'>{_config.scheduler.title}</a></li>
+								<li><a n:href=':Config:BaseService:default'>{_config.baseService.title}</a></li>
+								<li><a n:href=':Config:IqrfApp:default'>{_config.iqrfapp.title}</a></li>
 							</ul>
 						</li>
 						<li n:if='$user->loggedIn'><a n:href=':Service:Control:default'>{_service.title}</a></li>
 						<li n:if='$user->loggedIn' class='dropdown'>
 							<a n:href=':IqrfApp:Homepage:default' class="dropdown-toggle" data-toggle="dropdown" role="button">
-								{_"IQRF Net"} <span class="caret"></span>
+								{_iqrfapp.title} <span class="caret"></span>
 							</a>
 							<ul class="dropdown-menu">
-								<li><a n:href=':IqrfApp:SendRaw:default'>{_"Send DPA packet"}</a></li>
-								<li><a n:href=':IqrfApp:Network:default'>{_"IQMESH Network Manager"}</a></li>
+								<li><a n:href=':IqrfApp:SendRaw:default'>{_iqrfapp.send-packet.title}</a></li>
+								<li><a n:href=':IqrfApp:Network:default'>{_iqrfapp.network-manager.title}</a></li>
 							</ul>
 						</li>
 						<li n:if='$user->loggedIn' class='dropdown'>

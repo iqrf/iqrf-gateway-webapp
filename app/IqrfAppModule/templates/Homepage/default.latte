@@ -16,14 +16,14 @@
 *}
 
 {block content}
-<h1 n:block=title>{_"IQRF Net"}</h1>
+<h1 n:block=title>{_iqrfapp.title}</h1>
 <div class='list-group'>
 	<a n:href='SendRaw:default' class='list-group-item'>
-		<header class='list-group-item-heading'>{_"Send DPA packet"}</header>
-		<p class='list-group-item-text'>{_"Send DPA packet."}</p>
+		<header class='list-group-item-heading'>{_iqrfapp.send-packet.title}</header>
+		<p class='list-group-item-text'>{_iqrfapp.send-packet.description}</p>
 	</a>
 	<a n:href='Network:default' class='list-group-item'>
-		<header class='list-group-item-heading'>{_"IQMESH Network Manager"}</header>
-		<p class='list-group-item-text'>{_"IQMESH Network Manager."}</p>
+		<header class='list-group-item-heading'>{_iqrfapp.network-manager.title}</header>
+		<p class='list-group-item-text'>{_iqrfapp.network-manager.description}</p>
 	</a>
 </div>

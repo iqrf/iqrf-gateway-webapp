@@ -58,7 +58,7 @@ class ConfigMainFormFactory {
 	 */
 	public function create(MainPresenter $presenter): Form {
 		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('config.mainForm'));
+		$form->setTranslator($form->getTranslator()->domain('config.main.form'));
 		$items = ['forwarding' => 'Modes.Forwarding', 'operational' => 'Modes.Operational', 'service' => 'Modes.Service'];
 		$form->addText('Configuration', 'Configuration');
 		$form->addText('ConfigurationDir', 'ConfigurationDir');

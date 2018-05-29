@@ -65,7 +65,7 @@ class ConfigBaseServiceFormFactory {
 	public function create(BaseServicePresenter $presenter): Form {
 		$id = intval($presenter->getParameter('id'));
 		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('config.baseServiceForm'));
+		$form->setTranslator($form->getTranslator()->domain('config.baseService.form'));
 		$defaults = $this->manager->load($id);
 		$serializers = [
 			'JsonSerializer' => 'JsonSerializer',

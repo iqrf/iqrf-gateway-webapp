@@ -65,18 +65,28 @@ class ConfigSchedulerFormFactory {
 	public function create(SchedulerPresenter $presenter): Form {
 		$id = intval($presenter->getParameter('id'));
 		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('config.schedulerForm'));
+		$translator = $form->getTranslator();
+		$form->setTranslator($translator->domain('config.scheduler.form'));
 		$defaults = $this->manager->load($id);
 		$types = [
 			'raw', 'raw-hdp', 'std-per-thermometer', 'std-per-ledg',
 			'std-per-ledr', 'std-per-frc', 'std-per-io', 'std-sen',
 		];
+		foreach ($types as $key => $type) {
+			unset($types[$key]);
+			$types[$type] = 'types.' . $type;
+		}
 		$baseServices = $this->baseService->getServicesNames();
 		$baseService = $defaults['service'];
-		foreach (array_keys($defaults) as $key) {
+		$form->addText('time', 'time');
+		$form->addSelect('service', 'config.scheduler.form.service')
+				->setItems($baseServices, false)->setTranslator($translator)
+				->setPrompt('Select Base service')->setRequired();
+		$message = $form->addContainer('message');
+		foreach (array_keys($defaults['message']) as $key) {
 			switch ($key) {
 				case 'hwpid':
-					$form->addText($key, $key)
+					$message->addText($key, $key)
 							->setRequired(false)
 							->addRule(Form::PATTERN, 'It has to contain hexadecimal number - ' . $key, '[0-9A-Fa-f]{4}')
 							->addRule(Form::MAX_LENGTH, 'It has to have maximal length of 4 chars.', 4);
@@ -84,27 +94,22 @@ class ConfigSchedulerFormFactory {
 				case 'pcmd':
 				case 'pnum':
 				case 'nadr':
-					$form->addText($key, $key)
+					$message->addText($key, $key)
 							->setRequired(false)
 							->addRule(Form::PATTERN, 'It has to contain hexadecimal number - ' . $key, '[0-9A-Fa-f]{1,2}')
 							->addRule(Form::MAX_LENGTH, 'It has to have maximal length of 2 chars.', 2);
 					break;
 				case 'sensors':
-					$form->addTextArea($key, $key);
+					$message->addTextArea($key, $key);
 					break;
 				case 'timeout':
-					$form->addInteger($key, $key);
+					$message->addInteger($key, $key);
 					break;
 				case 'type':
-					$form->addSelect($key, $key)->setItems($types, false)
-							->setRequired();
-					break;
-				case 'service':
-					$form->addSelect($key, $key)->setItems($baseServices, false)
-							->setPrompt('Select Base service')->setRequired();
+					$message->addSelect($key, $key)->setItems($types)->setRequired();
 					break;
 				default:
-					$form->addText($key, $key);
+					$message->addText($key, $key);
 			}
 		}
 		if (!in_array($baseService, $baseServices)) {
