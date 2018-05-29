@@ -87,17 +87,18 @@ class CloudAwsMqttFormFactory {
 	 */
 	public function create(AwsPresenter $presenter): Form {
 		$form = $this->factory->create();
+		$form->setTranslator($form->getTranslator()->domain('cloud.amazonAws.form'));
 		$fileName = 'MqttMessaging';
 		$this->manager->setFileName($fileName);
-		$form->addText('endpoint', 'Endpoint')->setRequired();
-		$form->addUpload('cert', 'Certificate')->setRequired();
-		$form->addUpload('key', 'Private key')->setRequired();
-		$form->addSubmit('save', 'Save')
+		$form->addText('endpoint', 'endpoint')->setRequired();
+		$form->addUpload('cert', 'certificate')->setRequired();
+		$form->addUpload('key', 'pkey')->setRequired();
+		$form->addSubmit('save', 'save')
 				->onClick[] = function (SubmitButton $button) use ($presenter) {
 			$values = $button->getForm()->getValues();
 			$this->save($values, $presenter);
 		};
-		$form->addSubmit('save_restart', 'Save and restart')
+		$form->addSubmit('save_restart', 'save_restart')
 				->onClick[] = function (SubmitButton $button) use ($presenter) {
 			$values = $button->getForm()->getValues();
 			$this->save($values, $presenter, true);

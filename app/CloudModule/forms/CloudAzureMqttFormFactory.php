@@ -87,15 +87,16 @@ class CloudAzureMqttFormFactory {
 	 */
 	public function create(AzurePresenter $presenter): Form {
 		$form = $this->factory->create();
+		$form->setTranslator($form->getTranslator()->domain('cloud.msAzure.form'));
 		$fileName = 'MqttMessaging';
 		$this->manager->setFileName($fileName);
-		$form->addText('ConnectionString', 'IoT Hub Connection String for Device')->setRequired();
-		$form->addSubmit('save', 'Save')
+		$form->addText('ConnectionString', 'connectionString')->setRequired();
+		$form->addSubmit('save', 'save')
 				->onClick[] = function (SubmitButton $button) use ($presenter) {
 			$values = $button->getForm()->getValues();
 			$this->save($values, $presenter);
 		};
-		$form->addSubmit('save_restart', 'Save and restart')
+		$form->addSubmit('save_restart', 'save_restart')
 				->onClick[] = function (SubmitButton $button) use ($presenter) {
 			$values = $button->getForm()->getValues();
 			$this->save($values, $presenter, true);

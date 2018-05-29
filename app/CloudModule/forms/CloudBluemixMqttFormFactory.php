@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\CloudModule\Forms;
 
@@ -86,19 +86,20 @@ class CloudBluemixMqttFormFactory {
 	 */
 	public function create(BluemixPresenter $presenter): Form {
 		$form = $this->factory->create();
+		$form->setTranslator($form->getTranslator()->domain('cloud.ibmBluemix.form'));
 		$fileName = 'MqttMessaging';
 		$this->manager->setFileName($fileName);
-		$form->addText('organizationId', 'Organization ID')->setRequired();
-		$form->addText('deviceType', 'Device Type')->setRequired();
-		$form->addText('deviceId', 'Device ID')->setRequired();
-		$form->addText('token', 'Authentication Token')->setRequired();
-		$form->addText('eventId', 'Command and event ID')->setRequired()->setDefaultValue('iqrf');
-		$form->addSubmit('save', 'Save')
+		$form->addText('organizationId', 'organizationId')->setRequired();
+		$form->addText('deviceType', 'deviceType')->setRequired();
+		$form->addText('deviceId', 'deviceId')->setRequired();
+		$form->addText('token', 'token')->setRequired();
+		$form->addText('eventId', 'eventId')->setRequired()->setDefaultValue('iqrf');
+		$form->addSubmit('save', 'save')
 				->onClick[] = function (SubmitButton $button) use ($presenter) {
 			$values = $button->getForm()->getValues();
 			$this->save($values, $presenter);
 		};
-		$form->addSubmit('save_restart', 'Save and restart')
+		$form->addSubmit('save_restart', 'save_restart')
 				->onClick[] = function (SubmitButton $button) use ($presenter) {
 			$values = $button->getForm()->getValues();
 			$this->save($values, $presenter, true);

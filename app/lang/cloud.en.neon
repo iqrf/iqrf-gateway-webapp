@@ -1,1 +1,47 @@
 title: Clouds
+description: Control cloud services.
+
+amazonAws:
+	title: Amazon AWS IoT
+	description: Add a new MQTT connection into Amazon AWS IoT.
+	form:
+		title: Add a new MQTT connection into Amazon AWS IoT
+		endpoint: Endpoint
+		certificate: Certificate
+		pkey: Private key
+		save: Save
+		save_restart: Save and restart
+
+ibmBluemix:
+	title: IBM Bluemix
+	description: Add a new MQTT connection into IBM Bluemix.
+	form:
+		title: Add a new MQTT connection into IBM Bluemix
+		organizationId: Organization ID
+		deviceType: Device Type
+		deviceId: Device ID
+		token: Authentication Token
+		eventId: Command and event ID
+		save: Save
+		save_restart: Save and restart
+
+intelimentsInteliGlue:
+	title: Inteliments InteliGlue
+	description: Add a new MQTT connection into Inteliments InteliGlue.
+	form:
+		title: Add a new MQTT connection into Inteliments InteliGlue
+		rootTopic: Root Topic
+		assignedPort: Assigned Port
+		clientId: Client ID
+		password: Password
+		save: Save
+		save_restart: Save and restart
+
+msAzure:
+	title: Microsoft Azure IoT hub
+	description: Add a new MQTT connection into Microsoft Azure IoT Hub.
+	form:
+		title: Add a new MQTT connection into Azure IoT hub
+		connectionString: IoT Hub Connection String for Device
+		save: Save
+		save_restart: Save and restart

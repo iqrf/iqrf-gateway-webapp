@@ -86,19 +86,20 @@ class CloudInteliGlueMqttFormFactory {
 	 */
 	public function create(InteliGluePresenter $presenter): Form {
 		$form = $this->factory->create();
+		$form->setTranslator($form->getTranslator()->domain('cloud.intelimentsInteliGlue.form'));
 		$fileName = 'MqttMessaging';
 		$this->manager->setFileName($fileName);
-		$form->addText('rootTopic', 'Root Topic')->setRequired();
-		$form->addInteger('assignedPort', 'AssignedPort')->setRequired()
+		$form->addText('rootTopic', 'rootTopic')->setRequired();
+		$form->addInteger('assignedPort', 'assignedPort')->setRequired()
 				->addRule(Form::RANGE, 'Port have to be in range from 0 to 65535', [0, 65535]);
-		$form->addText('clientId', 'ClientId')->setRequired();
-		$form->addText('password', 'Password')->setRequired();
-		$form->addSubmit('save', 'Save')
+		$form->addText('clientId', 'clientId')->setRequired();
+		$form->addText('password', 'password')->setRequired();
+		$form->addSubmit('save', 'save')
 				->onClick[] = function (SubmitButton $button) use ($presenter) {
 			$values = $button->getForm()->getValues();
 			$this->save($values, $presenter);
 		};
-		$form->addSubmit('save_restart', 'Save and restart')
+		$form->addSubmit('save_restart', 'save_restart')
 				->onClick[] = function (SubmitButton $button) use ($presenter) {
 			$values = $button->getForm()->getValues();
 			$this->save($values, $presenter, true);
