@@ -42,12 +42,14 @@ class SchedulerManagerTest extends TestCase {
 	private $array = [
 		'time' => '*/5 * * * * * *',
 		'service' => 'BaseServiceForMQTT1',
-		'ctype' => 'dpa',
-		'type' => 'std-sen',
-		'nadr' => '1',
-		'cmd' => 'READ',
-		'hwpid' => 'ffff',
-		'sensors' => 'Temperature1' . PHP_EOL . 'CO2_1' . PHP_EOL . 'Humidity1',
+		'message' => [
+			'ctype' => 'dpa',
+			'type' => 'std-sen',
+			'nadr' => '1',
+			'cmd' => 'READ',
+			'hwpid' => 'ffff',
+			'sensors' => 'Temperature1' . PHP_EOL . 'CO2_1' . PHP_EOL . 'Humidity1',
+		],
 	];
 
 	/**
@@ -207,7 +209,7 @@ class SchedulerManagerTest extends TestCase {
 	public function testSave() {
 		$manager = new SchedulerManager($this->fileManagerTemp);
 		$array = $this->array;
-		$array['nadr'] = '0';
+		$array['message']['nadr'] = '0';
 		$expected = $this->fileManager->read($this->fileName);
 		$this->fileManagerTemp->write($this->fileName, $expected);
 		$expected['TasksJson'][0]['message']['nadr'] = '0';
@@ -222,7 +224,7 @@ class SchedulerManagerTest extends TestCase {
 	public function testSaveJson() {
 		$manager = new SchedulerManager($this->fileManager);
 		$updateArray = $this->array;
-		$updateArray['nadr'] = '0';
+		$updateArray['message']['nadr'] = '0';
 		$json = $this->fileManager->read($this->fileName);
 		$expected = $json;
 		$expected['TasksJson'][0]['message']['nadr'] = '0';

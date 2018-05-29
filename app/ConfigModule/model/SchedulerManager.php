@@ -229,9 +229,10 @@ class SchedulerManager {
 	 * @return array JSON array
 	 */
 	public function saveJson(array $scheduler, ArrayHash $update, int $id): array {
-		if (array_key_exists('sensors', $update)) {
-			$update['sensors'] = explode(PHP_EOL, $update['sensors']);
+		if (array_key_exists('sensors', $update['message'])) {
+			$update['message']['sensors'] = explode(PHP_EOL, $update['message']['sensors']);
 		}
+		$update['message'] = (array) $update['message'];
 		$scheduler['TasksJson'][$id] = (array) $update;
 		return $scheduler;
 	}
