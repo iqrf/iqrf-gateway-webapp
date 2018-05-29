@@ -72,6 +72,7 @@ class DiagnosticsManager {
 
 	public function addInfo() {
 		$array = [];
+		$array['board'] = $this->infoManager->getBoard();
 		$array['daemonVersion'] = $this->infoManager->getDaemonVersion();
 		$array['webappVersion'] = $this->infoManager->getWebAppVersion();
 		$array['coordinator'] = $this->infoManager->getCoordinatorInfo();
@@ -82,10 +83,17 @@ class DiagnosticsManager {
 	}
 
 	/**
+	 * Add configuration of IQRF Gateway Daemon
+	 */
+	public function addConfiguration() {
+		$this->zipManager->addFolder('/etc/iqrf-daemon/', 'configuration');
+	}
+
+	/**
 	 * Add log of IQRF Gateway daemon
 	 */
 	public function addDaemonLog() {
-		$this->zipManager->addFile('/var/log/iqrf-daemon.log', 'iqrf-daemon.log');
+		$this->zipManager->addFile('/var/log/iqrf-daemon.log', 'logs/iqrf-daemon.log');
 	}
 
 	/**
@@ -97,15 +105,61 @@ class DiagnosticsManager {
 	}
 
 	/**
+	 * Add information about services
+	 */
+	public function addServices() {
+		if ($this->commandManager->commandExist('systemctl')) {
+			$output = $this->commandManager->send('systemctl list-units --type=service', true);
+			$this->zipManager->addFileFromText('services.log', $output);
+		}
+	}
+
+	/**
+	 * Add information about available SPI interfaces
+	 */
+	public function addSpi() {
+		$output = $this->commandManager->send('ls /dev/spidev*', true);
+		if (!empty($output)) {
+			$this->zipManager->addFileFromText('spidev.log', $output);
+		}
+	}
+
+	/**
+	 * Add information from lsusb about USB gateways and programmers
+	 */
+	public function addUsb() {
+		if ($this->commandManager->commandExist('lsusb')) {
+			$output = $this->commandManager->send('lsusb -v -d 1de6:', true);
+			if (!empty($output)) {
+				$this->zipManager->addFileFromText('lsusb.log', $output);
+			}
+		}
+	}
+
+	/**
+	 * Add log of IQRF Gateway daemon webapp
+	 */
+	public function addWebappLog() {
+		$logDir = __DIR__ . '/../../../log/';
+		$this->zipManager->addFolder($logDir, 'logs/iqrf-daemon-webapp');
+	}
+
+	/**
 	 * Download a diagnostic data
 	 * @return FileResponse HTTP response with the diagnostic data
 	 */
 	public function download() {
-		$fileName = 'iqrf-gateway-diagnostics.zip';
+		$now = new \DateTime();
+		$fileName = 'iqrf-gateway-diagnostics_' .$now->format('c') .'.zip';
 		$contentType = 'application/zip';
+		$this->addConfiguration();
 		$this->addDaemonLog();
 		$this->addDmesg();
 		$this->addInfo();
+		$this->addServices();
+		$this->addSpi();
+		$this->addUsb();
+		$this->addWebappLog();
 		$this->zipManager->close();
 		$response = new FileResponse($this->path, $fileName, $contentType, true);
 		return $response;

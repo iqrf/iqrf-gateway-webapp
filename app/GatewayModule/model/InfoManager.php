@@ -59,6 +59,24 @@ class InfoManager {
 	}
 
 	/**
+	 * Get board's vendor, name and version
+	 * @return string Board's vendor, name and version
+	 */
+	public function getBoard() {
+		$deviceTree = $this->commandManager->send('cat /proc/device-tree/name', true);
+		if (!empty($deviceTree)) {
+			return $deviceTree;
+		}
+		$dmiBoardVendor = $this->commandManager->send('cat /sys/class/dmi/id/board_vendor', true);
+		$dmiBoardName = $this->commandManager->send('cat /sys/class/dmi/id/board_name', true);
+		$dmiBoardVersion = $this->commandManager->send('cat /sys/class/dmi/id/board_version', true);
+		if (!empty($dmiBoardName) && !empty($dmiBoardVendor) && !empty($dmiBoardVersion)) {
+			return $dmiBoardVendor . ' ' . $dmiBoardName . ' (' . $dmiBoardVersion . ')';
+		}
+		return 'UNKNOWN';
+	}
+
+	/**
 	 * Get IPv4 and IPv6 addresses of the gateway
 	 * @return array IPv4 and IPv6 addresses
 	 */

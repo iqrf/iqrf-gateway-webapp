@@ -21,6 +21,7 @@ namespace App\Model;
 
 use Nette;
 use Nette\Utils\Json;
+use Nette\Utils\Finder;
 
 /**
  * Tool for creating a new zip archive
@@ -40,13 +41,13 @@ class ZipArchiveManager {
 	 */
 	public function __construct(string $path) {
 		$this->zip = new \ZipArchive();
-		$this->zip->open($path, \ZipArchive::CREATE);
+		$this->zip->open($path, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
 	}
 
 	/**
 	 * Add a file to a ZIP archive from the given path
 	 * @param string $path The path to the file to add
-	 * @param string $filename FIle name in the archive
+	 * @param string $filename File name in the archive
 	 */
 	public function addFile(string $path, string $filename) {
 		$this->zip->addFile($path, $filename);
@@ -59,6 +60,23 @@ class ZipArchiveManager {
 	 */
 	public function addFileFromText(string $filename, string $content) {
 		$this->zip->addFromString($filename, $content);
+	}
+
+	/**
+	 * Add a folder to a ZIP archive from the given path
+	 * @param string $path The path to the folder to add
+	 * @param string $folderName Folder name in the archive
+	 */
+	public function addFolder(string $path, string $folderName) {
+		$this->zip->addEmptyDir($folderName);
+		$files = Finder::findFiles('*')->in($path);
+		foreach ($files as $file => $fileObject) {
+			$this->addFile($file, $folderName . '/' . basename($file));
+		}
+		$folders = Finder::findDirectories('*')->in($path);
+		foreach ($folders as $folder => $folderObject) {
+			$this->addFolder($folder, $folderName . '/' . basename($folder));
+		}
 	}
 
 	/**

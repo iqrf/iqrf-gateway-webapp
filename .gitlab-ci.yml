@@ -1,0 +1,41 @@
+image: debian:testing
+
+stages:
+    - test
+    - coding-style
+
+cache:
+    paths:
+        - vendor/
+
+before_script:
+    - apt-get update -y
+    - apt-get install --no-install-recommends -y ca-certificates composer curl git php7.1 php7.1-common php7.1-cgi php7.1-cli php7.1-curl php7.1-json php7.1-phpdbg php7.1-mbstring php7.1-sqlite php7.1-zip unzip
+    - composer install
+
+.test_template: &test_template
+    stage: test
+    script:
+        - vendor/bin/tester -p phpdbg -C -s ./tests
+    tags:
+        - linux
+        - amd64
+
+test:php7.0:
+    before_script:
+        - apt-get update -y
+        - apt-get install --no-install-recommends -y ca-certificates composer curl git php7.0 php7.0-common php7.0-cgi php7.0-cli php7.0-curl php7.0-json php7.0-phpdbg php7.0-mbstring php7.0-sqlite php7.0-zip unzip
+        - composer install
+    <<: *test_template
+
+test:php7.1:
+    <<: *test_template
+
+coding-style:
+    stage: coding-style
+    script:
+        - composer install-cs
+        - composer check-cs
+    tags:
+        - linux
+        - amd64
