@@ -1,0 +1,23 @@
+title: IQRF Gateway
+
+dashboard: Dashboard
+
+languages:
+	title: Language
+	cs: Czech
+	en: English
+
+sign:
+	in: Sign in
+	out: Sign out
+
+signIn:
+	title: Sign in
+	username: Username
+	password: Password
+	remember: Keep me signed in
+	send: Sign in
+
+signOut:
+	title: You have been signed out
+	message: Sign in to another account

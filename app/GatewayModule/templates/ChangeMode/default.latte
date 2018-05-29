@@ -16,18 +16,18 @@
 *}
 
 {block content}
-<h1 n:block=title>{_"Change GW mode"}</h1>
+<h1 n:block=title>{_gateway.mode.title}</h1>
 <div class='list-group'>
 	<a n:href='ChangeMode:operational' class='list-group-item'>
-		<header class='list-group-item-heading'>{_"Operational mode"}</header>
-		<p class='list-group-item-text'>{_"Change IQRF Daemon mode to operational mode."}</p>
+		<header class='list-group-item-heading'>{_gateway.mode.modes.operational.title}</header>
+		<p class='list-group-item-text'>{_gateway.mode.modes.operational.description}</p>
 	</a>
 	<a n:href='ChangeMode:service' class='list-group-item'>
-		<header class='list-group-item-heading'>{_"Service mode"}</header>
-		<p class='list-group-item-text'>{_"Change IQRF Daemon mode to service mode."}</p>
+		<header class='list-group-item-heading'>{_gateway.mode.modes.service.title}</header>
+		<p class='list-group-item-text'>{_gateway.mode.modes.service.description}</p>
 	</a>
 	<a n:href='ChangeMode:forwarding' class='list-group-item'>
-		<header class='list-group-item-heading'>{_"Forwarding mode"}</header>
-		<p class='list-group-item-text'>{_"Change IQRF Daemon mode to forwarding mode."}</p>
+		<header class='list-group-item-heading'>{_gateway.mode.modes.forwarding.title}</header>
+		<p class='list-group-item-text'>{_gateway.mode.modes.forwarding.description}</p>
 	</a>
 </div>

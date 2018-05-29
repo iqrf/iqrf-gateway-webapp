@@ -16,7 +16,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 declare(strict_types=1);
 
 namespace App\ServiceModule\Presenters;
@@ -52,7 +51,7 @@ class StatusPresenter extends BasePresenter {
 			$status = $this->serviceManager->getStatus();
 			$this->template->status = $status;
 		} catch (NotSupportedInitSystemException $ex) {
-			$this->flashMessage('Not supported init system is used.', 'danger');
+			$this->flashMessage('gateway.errors.unsupportedInit', 'danger');
 			$this->redirect('Control:default');
 			$this->setView('default');
 		}

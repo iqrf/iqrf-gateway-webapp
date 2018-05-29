@@ -3,6 +3,20 @@ title: Gateway
 info:
 	title: Gateway Info
 	description: Show infromation about this gateway.
+	board: Board
+	version:
+		iqrf-gw-daemon: IQRF Gateway Daemon
+		iqrf-gw-webapp: IQRF Gateway Daemon webapp
+	hostname: Hostname
+	addresses:
+		ip: IP addresses
+		mac: MAC addresses
+	tr:
+		title: TR info
+		error: Cannot get information about the Coordinator
+
+diagnostics:
+	download: Download diagnostics
 
 log:
 	title: IQRF Daemon log
@@ -12,3 +26,13 @@ log:
 mode:
 	title: Change gateway mode
 	description: Change gateway mode.
+	modes:
+		operational:
+			title: Operational mode
+			description: Change IQRF Daemon mode to operational mode.
+		service:
+			title: Service mode
+			description: Change IQRF Daemon mode to service mode.
+		forwarding:
+			title: Forwarding mode
+			description: Change IQRF Daemon mode to forwarding mode.

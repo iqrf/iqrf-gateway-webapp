@@ -16,7 +16,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 declare(strict_types=1);
 
 namespace App\ServiceModule\Presenters;
@@ -57,9 +56,9 @@ class ControlPresenter extends BasePresenter {
 		$this->onlyForAdmins();
 		try {
 			$this->serviceManager->start();
-			$this->flashMessage('IQRF Daemon has been started.', 'info');
+			$this->flashMessage('service.actions.start.message', 'info');
 		} catch (NotSupportedInitSystemException $ex) {
-			$this->flashMessage('Not supported init system is used.', 'danger');
+			$this->flashMessage('gateway.errors.unsupportedInit', 'danger');
 		} finally {
 			$this->redirect('Control:default');
 			$this->setView('default');
@@ -73,9 +72,9 @@ class ControlPresenter extends BasePresenter {
 		$this->onlyForAdmins();
 		try {
 			$this->serviceManager->stop();
-			$this->flashMessage('IQRF Daemon has been stopped.', 'info');
+			$this->flashMessage('service.actions.stop.message', 'info');
 		} catch (NotSupportedInitSystemException $ex) {
-			$this->flashMessage('Not supported init system is used.', 'danger');
+			$this->flashMessage('gateway.errors.unsupportedInit', 'danger');
 		} finally {
 			$this->redirect('Control:default');
 			$this->setView('default');
@@ -89,9 +88,9 @@ class ControlPresenter extends BasePresenter {
 		$this->onlyForAdmins();
 		try {
 			$this->serviceManager->restart();
-			$this->flashMessage('IQRF Daemon has been restarted.', 'info');
+			$this->flashMessage('service.actions.restart.message', 'info');
 		} catch (NotSupportedInitSystemException $ex) {
-			$this->flashMessage('Not supported init system is used.', 'danger');
+			$this->flashMessage('gateway.errors.unsupportedInit', 'danger');
 		} finally {
 			$this->redirect('Control:default');
 			$this->setView('default');

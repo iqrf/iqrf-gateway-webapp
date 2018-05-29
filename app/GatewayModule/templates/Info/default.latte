@@ -21,23 +21,23 @@
 	<div class='panel-body'>
 		<table class='table table-striped'>
 			<tr>
-				<th>{_"Board"}</th>
+				<th>{_gateway.info.board}</th>
 				<td>{$board}</td>
 			</tr>
 			<tr>
-				<th>{_"IQRF Gateway Daemon"}</th>
+				<th>{_gateway.info.version.iqrf-gw-daemon}</th>
 				<td>{$daemonVersion}</td>
 			</tr>
 			<tr>
-				<th>{_"IQRF Gateway Daemon webapp"}</th>
+				<th>{_gateway.info.version.iqrf-gw-webapp}</th>
 				<td>{$webAppVersion}</td>
 			</tr>
 			<tr>
-				<th>{_"Hostname"}</th>
+				<th>{_gateway.info.hostname}</th>
 				<td>{$hostname}</td>
 			</tr>
 			<tr>
-				<th>{_"IP addresses"}</th>
+				<th>{_gateway.info.addresses.ip}</th>
 				<td>
 					{foreach $ipAddresses as $interface => $addresses}
 						<strong>{$interface}:</strong>
@@ -49,7 +49,7 @@
 				</td>
 			</tr>
 			<tr>
-				<th>{_"MAC addresses"}</th>
+				<th>{_gateway.info.addresses.mac}</th>
 				<td>
 					{foreach $macAddresses as $interface => $macAddress}
 						<strong>{$interface}:</strong> {$macAddress}{sep}<br>{/sep}
@@ -57,7 +57,7 @@
 				</td>
 			</tr>
 			<tr>
-				<th>{_"TR info"}</th>
+				<th>{_gateway.info.tr.title}</th>
 				<td>
 					{ifset $module}
 						<strong>{_"Module type:"}</strong> {$module['TrType']}<br>
@@ -66,11 +66,11 @@
 						<strong>{_"OS:"}</strong> {$module['OsVersion']} ({$module['OsBuild']})<br>
 						<strong>{_"Supply Voltage:"}</strong> {$module['SupplyVoltage']}
 					{else}
-						{_}Cannot get information about the Coordinator{/_}
+						{_gateway.info.tr.error}
 					{/ifset}
 				</td>
 			</tr>
 		</table>
-		<a class="btn btn-primary" n:href="Info:download" role="button">Diagnostics download</a>
+		<a class="btn btn-primary" n:href="Info:download" role="button">{_gateway.diagnostics.download}</a>
 	</div>
 </div>

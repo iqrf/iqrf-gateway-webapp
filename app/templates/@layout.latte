@@ -37,11 +37,11 @@
 						<span class='icon-bar'></span>
 						<span class='icon-bar'></span>
 					</button>
-					<a class='navbar-brand' n:href=':Homepage:default'>IQRF Gateway</a>
+					<a class='navbar-brand' n:href=':Homepage:default'>{_core.title}</a>
 				</div>
 				<div id='navbar' class='navbar-collapse collapse'>
 					<ul class='nav navbar-nav'>
-						<li><a n:href=':Homepage:default'>{_"Dashboard"}</a></li>
+						<li><a n:href=':Homepage:default'>{_core.dashboard}</a></li>
 						<li n:if='$user->loggedIn' class='dropdown'>
 							<a n:href=':Gateway:Homepage:default' class="dropdown-toggle" data-toggle="dropdown" role="button">
 								{_gateway.title} <span class="caret"></span>
@@ -68,7 +68,7 @@
 								<li><a n:href=':Config:IqrfApp:default'>{_config.iqrfappForm.title}</a></li>
 							</ul>
 						</li>
-						<li n:if='$user->loggedIn'><a n:href=':Service:Control:default'>{_"Service"}</a></li>
+						<li n:if='$user->loggedIn'><a n:href=':Service:Control:default'>{_service.title}</a></li>
 						<li n:if='$user->loggedIn' class='dropdown'>
 							<a n:href=':IqrfApp:Homepage:default' class="dropdown-toggle" data-toggle="dropdown" role="button">
 								{_"IQRF Net"} <span class="caret"></span>
@@ -93,15 +93,15 @@
 					<ul class='nav navbar-nav navbar-right'>
 						<li>
 							<a href='#' class="dropdown-toggle" data-toggle="dropdown" role="button">
-								{_"Language"} <span class="caret"></span>
+								{_core.languages.title} <span class="caret"></span>
 							</a>
 							<ul class="dropdown-menu">
-								{*<li><a n:href='this lang => cs'>{_"Czech"}</a></li>*}
-								<li><a n:href='this lang => en'>{_"English"}</a></li>
+								{*<li><a n:href='this lang => cs'>{_core.languages.cs}</a></li>*}
+								<li><a n:href='this lang => en'>{_core.languages.en}</a></li>
 							</ul>
 						</li>
-						<li n:if='!$user->loggedIn'><a n:href=':Sign:in'>{_"Sign in"}</a></li>
-						<li n:if='$user->loggedIn'><a n:href=':Sign:out'>{_"Sign out"}</a></li>
+						<li n:if='!$user->loggedIn'><a n:href=':Sign:in'>{_core.sign.in}</a></li>
+						<li n:if='$user->loggedIn'><a n:href=':Sign:out'>{_core.sign.out}</a></li>
 					</ul>
 				</div>
 			</div>

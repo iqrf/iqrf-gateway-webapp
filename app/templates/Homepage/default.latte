@@ -16,19 +16,19 @@
 *}
 
 {block content}
-<h1 n:block=title>{_"Dashboard"}</h1>
+<h1 n:block=title>{_core.dashboard}</h1>
 <div class='list-group'>
 	<a n:href=':Gateway:Info:default' class='list-group-item'>
-		<header class='list-group-item-heading'>{_"Gateway"}</header>
-		<p class='list-group-item-text'>{_"Show information about gateway."}</p>
+		<header class='list-group-item-heading'>{_gateway.title}</header>
+		<p class='list-group-item-text'>{_gateway.info.description}</p>
 	</a>
 	<a n:href=':Config:Homepage:default' class='list-group-item'>
-		<header class='list-group-item-heading'>{_"Configuration"}</header>
-		<p class='list-group-item-text'>{_"Edit configuration."}</p>
+		<header class='list-group-item-heading'>{_config.title}</header>
+		<p class='list-group-item-text'>{_config.description}</p>
 	</a>
 	<a n:href=':Service:Control:default' class='list-group-item'>
-		<header class='list-group-item-heading'>{_"Service"}</header>
-		<p class='list-group-item-text'>{_"Control daemon service."}</p>
+		<header class='list-group-item-heading'>{_service.title}</header>
+		<p class='list-group-item-text'>{_service.description}</p>
 	</a>
 	<a n:href=':IqrfApp:Homepage:default' class='list-group-item'>
 		<header class='list-group-item-heading'>{_"IQRF Net"}</header>

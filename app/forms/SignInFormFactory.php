@@ -61,10 +61,11 @@ class SignInFormFactory {
 	 */
 	public function create(callable $onSuccess): Form {
 		$form = $this->factory->create();
-		$form->addText('username', 'Username:')->setRequired('Please enter your username.');
-		$form->addPassword('password', 'Password:')->setRequired('Please enter your password.');
-		$form->addCheckbox('remember', 'Keep me signed in');
-		$form->addSubmit('send', 'Sign in');
+		$form->setTranslator($form->getTranslator()->domain('core.signIn'));
+		$form->addText('username', 'username')->setRequired('Please enter your username.');
+		$form->addPassword('password', 'password')->setRequired('Please enter your password.');
+		$form->addCheckbox('remember', 'remember');
+		$form->addSubmit('send', 'send');
 		$form->addProtection('Timeout expired, resubmit the form.');
 		$form->onSuccess[] = function (Form $form, $values) use ($onSuccess) {
 			try {

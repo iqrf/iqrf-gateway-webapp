@@ -16,22 +16,22 @@
 *}
 
 {block content}
-<h1 n:block=title>{_"Service"}</h1>
+<h1 n:block=title>{_service.title}</h1>
 <div class='list-group'>
 	<a n:href='Control:start' class='list-group-item'>
-		<header class='list-group-item-heading'>{_"Start"}</header>
-		<p class='list-group-item-text'>{_"Start IQRF Daemon service."}</p>
+		<header class='list-group-item-heading'>{_service.actions.start.title}</header>
+		<p class='list-group-item-text'>{_service.actions.restart.description}</p>
 	</a>
 	<a n:href='Control:stop' class='list-group-item'>
-		<header class='list-group-item-heading'>{_"Stop"}</header>
-		<p class='list-group-item-text'>{_"Stop IQRF Daemon service."}</p>
+		<header class='list-group-item-heading'>{_service.actions.stop.title}</header>
+		<p class='list-group-item-text'>{_service.actions.restart.description}</p>
 	</a>
 	<a n:href='Control:restart' class='list-group-item'>
-		<header class='list-group-item-heading'>{_"Restart"}</header>
-		<p class='list-group-item-text'>{_"Restart IQRF Daemon service."}</p>
+		<header class='list-group-item-heading'>{_service.actions.restart.title}</header>
+		<p class='list-group-item-text'>{_service.actions.restart.description}</p>
 	</a>
 	<a n:href='Status:default' class='list-group-item'>
-		<header class='list-group-item-heading'>{_"Status"}</header>
-		<p class='list-group-item-text'>{_"Get status of IQRF Daemon service."}</p>
+		<header class='list-group-item-heading'>{_service.actions.status.title}</header>
+		<p class='list-group-item-text'>{_service.actions.status.description}</p>
 	</a>
 </div>
