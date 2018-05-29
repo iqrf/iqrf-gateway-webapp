@@ -1,0 +1,31 @@
+title: IQRF Net
+description: Control IQRF network.
+
+send-packet:
+	title: Send DPA packet
+	description: Send DPA packet.
+	packet: DPA packet
+	overwriteAddress: Set own NADR
+	customAddress: Custom NADR
+	overwriteTimeout: Set own DPA timeout
+	customTimeout: 'DPA timeout (ms)'
+	parsed-response: Parsed response
+	response: Response
+	request: Request
+
+macros:
+	title: Macros
+
+network-manager:
+	title: IQMESH Network Manager
+	description: IQMESH Network Manager.
+	bonding:
+		title: Bonding
+		address: Address
+		autoAddress: Auto address
+	discovery:
+		title: Discovery
+	security:
+		title: Security
+	rf-settings:
+		title: RF settings
