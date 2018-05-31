@@ -2,6 +2,7 @@ language: php
 php:
   - 7.0
   - 7.1
+  - 7.2
 env:
   - PHP_BIN=php
   - PHP_BIN=php-cgi
@@ -19,6 +20,12 @@ after_failure:
   - 'for i in $(find ./tests -name \*.actual); do echo "--- $i"; cat $i; echo; echo; done'
 jobs:
   include:
+    - stage: Code Coverage
+      php: 7.1
+      script:
+        - travis_retry vendor/bin/tester -p phpdbg -s --coverage ./coverage.xml --coverage-src ./app ./tests
+      after_script:
+        - bash <(curl -s https://codecov.io/bash)
     - stage: Code Standard Checker
       php: 7.1
       install:
@@ -26,12 +33,6 @@ jobs:
         - travis_retry composer install-cs
       script:
         - composer check-cs
-    - stage: Code Coverage
-      php: 7.1
-      script:
-        - travis_retry vendor/bin/tester -p phpdbg -s --coverage ./coverage.xml --coverage-src ./app ./tests
-      after_script:
-        - bash <(curl -s https://codecov.io/bash)
   allow_failures:
     - stage: Code Coverage
 sudo: false
