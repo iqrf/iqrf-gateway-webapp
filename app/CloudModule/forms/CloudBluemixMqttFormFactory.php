@@ -114,7 +114,7 @@ class CloudBluemixMqttFormFactory {
 	 * @param BluemixPresenter $presenter IBM Bluemix presenter
 	 * @param bool $needRestart Is restart needed?
 	 */
-	public function save(ArrayHash $values, InteliGluePresenter $presenter, bool $needRestart = false) {
+	public function save(ArrayHash $values, BluemixPresenter $presenter, bool $needRestart = false) {
 		try {
 			$mqttInterface = $this->cloudManager->createMqttInterface($values);
 			$baseService = $this->cloudManager->createBaseService();
