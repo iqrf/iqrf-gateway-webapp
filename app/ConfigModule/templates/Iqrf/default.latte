@@ -39,3 +39,19 @@
 		{/if}
 	</div>
 </div>
+<h2>{_config.iqrfSpi.title}</h2>
+<div class='panel panel-default'>
+	<div class='panel-body'>
+		{control configIqrfSpiForm}
+	</div>
+</div>
+<h2>{_config.iqrfSpi.availableSpiMappings}</h2>
+<div class='panel panel-default'>
+	<div class='panel-body'>
+		<h3>{_config.iqrfSpi.boards}</h3>
+		{foreach $spiPins as $board => $spiPin}
+			<a class="btn btn-default btn-spiPin" role="button" {foreach $spiPin as $pinName => $pin} data-{$pinName}={$pin}{/foreach}>{$board}</a>
+		{/foreach}
+		{dump $spiPins}
+	</div>
+</div>

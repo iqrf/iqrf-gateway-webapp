@@ -21,16 +21,29 @@ declare(strict_types=1);
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\ConfigIqrfFormFactory;
+use App\ConfigModule\Forms\ConfigIqrfSpiFormFactory;
 use App\ConfigModule\Model\IqrfManager;
 use App\Presenters\BasePresenter;
+use App\Model\JsonFileManager;
 
 class IqrfPresenter extends BasePresenter {
+
+	/**
+	 * @var JsonFileManager JSON file manager
+	 */
+	private $fileManager;
 
 	/**
 	 * @var ConfigIqrfFormFactory IQRF interface configuration form factory
 	 * @inject
 	 */
 	public $formFactory;
+
+	/**
+	 * @var ConfigIqrfSpiFormFactory IQRF SPI configuration form factory
+	 * @inject
+	 */
+	public $spiFormFactory;
 
 	/**
 	 * @var IqrfManager IQRF interface manager
@@ -43,6 +56,7 @@ class IqrfPresenter extends BasePresenter {
 	 */
 	public function __construct(IqrfManager $iqrfManager) {
 		$this->iqrfManager = $iqrfManager;
+		$this->fileManager = new JsonFileManager(__DIR__ . '/../json/');
 	}
 
 	/**
@@ -51,6 +65,7 @@ class IqrfPresenter extends BasePresenter {
 	public function renderDefault() {
 		$this->onlyForAdmins();
 		$this->template->interfaces = $this->iqrfManager->getInterfaces();
+		$this->template->spiPins = $this->fileManager->read('SpiPins');
 	}
 
 	/**
@@ -60,6 +75,15 @@ class IqrfPresenter extends BasePresenter {
 	protected function createComponentConfigIqrfForm() {
 		$this->onlyForAdmins();
 		return $this->formFactory->create($this);
+	}
+
+	/**
+	 * Create IQRF SPI interface form
+	 * @return Form IQRF SPI interface form
+	 */
+	protected function createComponentConfigIqrfSpiForm() {
+		$this->onlyForAdmins();
+		return $this->spiFormFactory->create($this);
 	}
 
 }

@@ -3,6 +3,7 @@ services:
 	- App\ConfigModule\Forms\ConfigComponentsFormFactory
 	- App\ConfigModule\Forms\ConfigIqrfAppFormFactory
 	- App\ConfigModule\Forms\ConfigIqrfFormFactory
+	- App\ConfigModule\Forms\ConfigIqrfSpiFormFactory
 	- App\ConfigModule\Forms\ConfigMainFormFactory
 	- App\ConfigModule\Forms\ConfigMqFormFactory
 	- App\ConfigModule\Forms\ConfigMqttFormFactory

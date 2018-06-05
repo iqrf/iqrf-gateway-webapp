@@ -27,7 +27,7 @@ use App\Forms\FormFactory;
 use Nette;
 use Nette\Application\UI\Form;
 
-class ConfigIqrfFormFactory {
+class ConfigIqrfSpiFormFactory {
 
 	use Nette\SmartObject;
 
@@ -52,18 +52,18 @@ class ConfigIqrfFormFactory {
 	}
 
 	/**
-	 * Create IQRF configuration form
+	 * Create IQRF SPI configuration form
 	 * @param IqrfPresenter $presenter
 	 * @return Form IQRF configuration form
 	 */
 	public function create(IqrfPresenter $presenter): Form {
 		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('config.iqrf.form'));
-		$communicationModes = ['STD' => 'CommunicationModes.STD', 'LP' => 'CommunicationModes.LP'];
-		$form->addText('IqrfInterface', 'IqrfInterface')->setRequired();
-		$form->addInteger('DpaHandlerTimeout', 'DpaHandlerTimeout')->setRequired()
-				->addRule(Form::MIN, 'DPA Handler timeout must be bigger than 0.', 0);
-		$form->addSelect('CommunicationMode', 'CommunicationMode', $communicationModes);
+		$form->setTranslator($form->getTranslator()->domain('config.iqrfSpi.form'));
+		$form->addInteger('enableGpioPin', 'enableGpioPin');
+		$form->addInteger('spiCe0GpioPin', 'spiCe0GpioPin');
+		$form->addInteger('spiMisoGpioPin', 'spiMisoGpioPin');
+		$form->addInteger('spiMosiGpioPin', 'spiMosiGpioPin');
+		$form->addInteger('spiClkGpioPin', 'spiClkGpioPin');
 		$form->addSubmit('save', 'Save');
 		$form->setDefaults($this->manager->load());
 		$form->addProtection('Timeout expired, resubmit the form.');

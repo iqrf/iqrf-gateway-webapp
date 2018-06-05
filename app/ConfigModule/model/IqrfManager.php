@@ -59,15 +59,7 @@ class IqrfManager {
 	 * @return array Array for form
 	 */
 	public function load(): array {
-		$array = $this->fileManager->read($this->fileName);
-		$keys = ['enableGpioPin', 'spiCe0GpioPin', 'spiMisoGpioPin', 'spiMosiGpioPin', 'spiClkGpioPin',];
-		foreach ($array as $key => $value) {
-			if (in_array($key, $keys)) {
-				$array['spi'][$key] = $value;
-				unset($array[$key]);
-			}
-		}
-		return $array;
+		return $this->fileManager->read($this->fileName);
 	}
 
 	/**
@@ -75,13 +67,14 @@ class IqrfManager {
 	 * @param ArrayHash $array Settings
 	 */
 	public function save(ArrayHash $array) {
-		foreach ($array['spi'] as $key => $value) {
-			if (isset($value)) {
-				$array[$key] = $value;
+		$json = $this->fileManager->read($this->fileName);
+		$spiKeys = ['enableGpioPin', 'spiCe0GpioPin', 'spiMisoGpioPin', 'spiMosiGpioPin', 'spiClkGpioPin',];
+		foreach ($array as $key => $value) {
+			if (!isset($value) && in_array($key, $spiKeys)) {
+				unset($array[$key]);
 			}
 		}
-		unset($array['spi']);
-		$this->fileManager->write($this->fileName, $array);
+		$this->fileManager->write($this->fileName, array_merge($json, (array) $array));
 	}
 
 	/**

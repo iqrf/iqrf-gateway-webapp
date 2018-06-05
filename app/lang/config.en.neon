@@ -68,6 +68,18 @@ iqrf:
 		usb: USB CDC
 		spi: SPI
 
+iqrfSpi:
+	title: SPI mapping
+	form:
+		enableGpioPin: Enable GPIO pin
+		spiCe0GpioPin: SPI CE0 GPIO pin
+		spiMisoGpioPin: SPI MISO GPIO pin
+		spiMosiGpioPin: SPI MOSI GPIO pin
+		spiClkGpioPin: SPI CLK GPIO pin
+		Save: Save
+	availableSpiMappings: Available SPI mappings
+	boards: Boards
+
 main:
 	title: Main configuration
 	description: Main configuration of IQRF Daemon.

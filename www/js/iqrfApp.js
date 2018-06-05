@@ -95,6 +95,15 @@ $(".btn-port").click(function () {
 	$("#frm-configIqrfForm-IqrfInterface").val($(this).data("port"));
 });
 
+// Select SPI pins from list of supported boards
+$(".btn-spiPin").click(function() {
+	$("#frm-configIqrfSpiForm-enableGpioPin").val($(this).data("enablegpio"));
+	$("#frm-configIqrfSpiForm-spiCe0GpioPin").val($(this).data("ce0gpio"));
+	$("#frm-configIqrfSpiForm-spiMisoGpioPin").val($(this).data("misogpio"));
+	$("#frm-configIqrfSpiForm-spiMosiGpioPin").val($(this).data("mosigpio"));
+	$("#frm-configIqrfSpiForm-spiClkGpioPin").val($(this).data("sclkgpio"));
+});
+
 // Select DPA packet form list of macros from IQRF IDE
 $(".btn-packet").click(function () {
 	setPacket($(this).data("packet"));
