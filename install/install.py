@@ -145,11 +145,9 @@ def install_php_app(directory, use_git=True):
 			send_command("cd " + directory + " ; git pull origin")
 			send_command("cd " + directory + " ; composer update")
 	else:
-		if not os.path.isdir(directory):
-			send_command("cd " + directory + "/../ ; composer create-project iqrfsdk/iqrf-daemon-webapp")
-		else:
-			send_command("rm -rf " + directory + "/temp/cache")
-			send_command("cd " + directory + " ; composer update")
+		if os.path.isdir(directory):
+			send_command("cd " + directory + "/../ ; rm -rf iqrf-daemon-webapp")
+		send_command("cd " + directory + "/../ ; composer create-project iqrfsdk/iqrf-daemon-webapp")
 	send_command("chmod 777 log/")
 	send_command("chmod 777 temp/")
 
