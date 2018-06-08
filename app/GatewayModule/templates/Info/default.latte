@@ -60,11 +60,11 @@
 				<th>{_gateway.info.tr.title}</th>
 				<td>
 					{ifset $module}
-						<strong>{_gateway.tr.moduleType}:</strong> {$module['TrType']}<br>
-						<strong>{_gateway.tr.mcuType}:</strong> {$module['McuType']}<br>
-						<strong>{_gateway.tr.moduleId}:</strong> {$module['ModuleId']}<br>
-						<strong>{_gateway.tr.os}:</strong> {$module['OsVersion']} ({$module['OsBuild']})<br>
-						<strong>{_gateway.tr.voltage}:</strong> {$module['SupplyVoltage']}
+						<strong>{_gateway.info.tr.moduleType}:</strong> {$module['TrType']}<br>
+						<strong>{_gateway.info.tr.mcuType}:</strong> {$module['McuType']}<br>
+						<strong>{_gateway.info.tr.moduleId}:</strong> {$module['ModuleId']}<br>
+						<strong>{_gateway.info.tr.os}:</strong> {$module['OsVersion']} ({$module['OsBuild']})<br>
+						<strong>{_gateway.info.tr.voltage}:</strong> {$module['SupplyVoltage']}
 					{else}
 						{_gateway.info.tr.error}
 					{/ifset}
