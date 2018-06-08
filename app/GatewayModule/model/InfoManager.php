@@ -159,10 +159,10 @@ class InfoManager {
 		if ($this->commandManager->commandExist('git')) {
 			$branches = $this->commandManager->send('git branch -v --no-abbrev');
 			if (preg_match('{^\* (.+?)\s+([a-f0-9]{40})(?:\s|$)}m', $branches, $matches)) {
-				return $composer . ' (' . $matches[1] . ' - ' . $matches[2] . ')';
+				return 'v' . $composer . ' (' . $matches[1] . ' - ' . $matches[2] . ')';
 			}
 		}
-		return $composer;
+		return 'v' . $composer;
 	}
 
 }
