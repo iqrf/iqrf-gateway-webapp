@@ -126,9 +126,9 @@ class CloudBluemixMqttFormFactory {
 		if ($needRestart) {
 			try {
 				$this->serviceManager->restart();
-				$presenter->flashMessage('IQRF Daemon has been restarted.', 'info');
+				$presenter->flashMessage('service.actions.restart.message', 'info');
 			} catch (NotSupportedInitSystemException $e) {
-				$presenter->flashMessage('Not supported init system is used.', 'danger');
+				$presenter->flashMessage('service.errors.unsupportedInit', 'danger');
 			}
 		}
 		$presenter->redirect(':Config:Mqtt:default');

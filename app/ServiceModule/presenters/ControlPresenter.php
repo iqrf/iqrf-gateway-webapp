@@ -58,7 +58,7 @@ class ControlPresenter extends BasePresenter {
 			$this->serviceManager->start();
 			$this->flashMessage('service.actions.start.message', 'info');
 		} catch (NotSupportedInitSystemException $ex) {
-			$this->flashMessage('gateway.errors.unsupportedInit', 'danger');
+			$this->flashMessage('service.errors.unsupportedInit', 'danger');
 		} finally {
 			$this->redirect('Control:default');
 			$this->setView('default');
@@ -74,7 +74,7 @@ class ControlPresenter extends BasePresenter {
 			$this->serviceManager->stop();
 			$this->flashMessage('service.actions.stop.message', 'info');
 		} catch (NotSupportedInitSystemException $ex) {
-			$this->flashMessage('gateway.errors.unsupportedInit', 'danger');
+			$this->flashMessage('service.errors.unsupportedInit', 'danger');
 		} finally {
 			$this->redirect('Control:default');
 			$this->setView('default');
@@ -90,7 +90,7 @@ class ControlPresenter extends BasePresenter {
 			$this->serviceManager->restart();
 			$this->flashMessage('service.actions.restart.message', 'info');
 		} catch (NotSupportedInitSystemException $ex) {
-			$this->flashMessage('gateway.errors.unsupportedInit', 'danger');
+			$this->flashMessage('service.errors.unsupportedInit', 'danger');
 		} finally {
 			$this->redirect('Control:default');
 			$this->setView('default');
