@@ -16,4 +16,5 @@ RUN apt-get update \
     php7.2 php7.2-common php7.2-cgi php7.2-cli php7.2-curl php7.2-json php7.2-phpdbg php7.2-mbstring php7.2-sqlite php7.2-zip \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/* \
- && gem install --no-ri --no-rdoc fpm
+ && gem install --no-ri --no-rdoc fpm \
+ && update-alternatives --set php /usr/bin/php7.0
