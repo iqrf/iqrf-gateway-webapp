@@ -21,6 +21,7 @@ declare(strict_types=1);
 namespace App\IqrfAppModule\Forms;
 
 use App\Forms\FormFactory;
+use App\IqrfAppModule\Model\EmptyResponseException;
 use App\IqrfAppModule\Model\IqrfAppManager;
 use App\IqrfAppModule\Presenters\SendRawPresenter;
 use Nette;
@@ -95,11 +96,18 @@ class IqrfAppSendRawFormFactory {
 				$nadr = $values['address'];
 				$packet = $this->manager->updateNadr($packet, $nadr);
 			}
-			$response = $this->manager->sendRaw($packet, $timeout);
-			$presenter->handleShowResponse($response);
+			try {
+				$response = $this->manager->sendRaw($packet, $timeout);
+				$presenter->handleShowResponse($response);
+			} catch (EmptyResponseException $e) {
+				$message = 'No response from IQRF Gateway Daemon.';
+				$form->addError($message);
+				$presenter->flashMessage($message, 'danger');
+			}
 		} else {
-			$form->addError('Invalid DPA packet.');
-			$presenter->flashMessage('Invalid DPA packet.', 'danger');
+			$message = 'Invalid DPA packet.';
+			$form->addError($message);
+			$presenter->flashMessage($message, 'danger');
 		}
 	}
 
