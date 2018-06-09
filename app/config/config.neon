@@ -61,13 +61,13 @@ http:
 			# for browsers that support CSP3
 			nonce
 			# for browsers that support CSP2
-			self, 'code.jquery.com', 'maxcdn.bootstrapcdn.com', 'nette.github.io'
+			self
 		]
 		style-src: [
 			# for browsers that support CSP3
 			#nonce
 			# for browsers that support CSP2
-			'unsafe-inline', self, 'maxcdn.bootstrapcdn.com'
+			self, 'unsafe-inline'
 		]
 
 security:
