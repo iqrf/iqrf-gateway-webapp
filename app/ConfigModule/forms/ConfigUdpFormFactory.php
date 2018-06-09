@@ -60,13 +60,13 @@ class ConfigUdpFormFactory {
 		$form->setTranslator($form->getTranslator()->domain('config.udp.form'));
 		$fileName = 'UdpMessaging';
 		$this->manager->setFileName($fileName);
-		$form->addText('Name', 'Name')->setRequired();
+		$form->addText('Name', 'Name')->setRequired('messages.Name');
 		$form->addCheckbox('Enabled', 'Enabled');
-		$form->addInteger('RemotePort', 'RemotePort')->setRequired();
-		$form->addInteger('LocalPort', 'LocalPort')->setRequired();
+		$form->addInteger('RemotePort', 'RemotePort')->setRequired('messages.RemotePort');
+		$form->addInteger('LocalPort', 'LocalPort')->setRequired('messages.LocalPort');
 		$form->addSubmit('save', 'Save');
 		$form->setDefaults($this->manager->load());
-		$form->addProtection('Timeout expired, resubmit the form.');
+		$form->addProtection('core.errors.form-timeout');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
 			$this->manager->save($values);
 			$presenter->redirect('Homepage:default');

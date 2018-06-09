@@ -60,13 +60,13 @@ class ConfigIqrfFormFactory {
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('config.iqrf.form'));
 		$communicationModes = ['STD' => 'CommunicationModes.STD', 'LP' => 'CommunicationModes.LP'];
-		$form->addText('IqrfInterface', 'IqrfInterface')->setRequired();
-		$form->addInteger('DpaHandlerTimeout', 'DpaHandlerTimeout')->setRequired()
-				->addRule(Form::MIN, 'DPA Handler timeout must be bigger than 0.', 0);
+		$form->addText('IqrfInterface', 'IqrfInterface')->setRequired('messages.IqrfInterface');
+		$form->addInteger('DpaHandlerTimeout', 'DpaHandlerTimeout')->setRequired('messages.DpaHandlerTimeout')
+				->addRule(Form::MIN, 'messages.DpaHandlerTimeout-rule', 0);
 		$form->addSelect('CommunicationMode', 'CommunicationMode', $communicationModes);
 		$form->addSubmit('save', 'Save');
 		$form->setDefaults($this->manager->load());
-		$form->addProtection('Timeout expired, resubmit the form.');
+		$form->addProtection('core.errors.form-timeout');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
 			$this->manager->save($values);
 			$presenter->redirect('Homepage:default');

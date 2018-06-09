@@ -62,17 +62,17 @@ class SignInFormFactory {
 	public function create(callable $onSuccess): Form {
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('core.signIn'));
-		$form->addText('username', 'username')->setRequired('Please enter your username.');
-		$form->addPassword('password', 'password')->setRequired('Please enter your password.');
+		$form->addText('username', 'username')->setRequired('messages.username');
+		$form->addPassword('password', 'password')->setRequired('messages.password');
 		$form->addCheckbox('remember', 'remember');
 		$form->addSubmit('send', 'send');
-		$form->addProtection('Timeout expired, resubmit the form.');
+		$form->addProtection('core.errors.form-timeout');
 		$form->onSuccess[] = function (Form $form, $values) use ($onSuccess) {
 			try {
 				$this->user->setExpiration($values->remember ? '14 days' : '20 minutes');
 				$this->user->login($values->username, $values->password);
 			} catch (AuthenticationException $e) {
-				$form->addError('The username or password you entered is incorrect.');
+				$form->addError('core.errors.incorrect-username-password');
 				return;
 			}
 			$onSuccess();

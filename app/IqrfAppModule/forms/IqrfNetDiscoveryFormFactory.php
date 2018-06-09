@@ -58,14 +58,15 @@ class IqrfNetDiscoveryFormFactory {
 	 */
 	public function create(): Form {
 		$form = $this->factory->create();
-		$form->addInteger('txPower', 'TX Power')->setDefaultValue(6)
-				->addRule(Form::RANGE, 'TX Power have to be integer from 0 to 7.', [0, 7])
-				->setRequired();
-		$form->addInteger('maxNode', 'Max. Node Address')->setDefaultValue(239)
-				->addRule(Form::RANGE, 'Max. Node Address have to be integer form 0 to 239.', [0, 239])
-				->setRequired();
-		$form->addSubmit('send', 'Discovery');
-		$form->addProtection('Timeout expired, resubmit the form.');
+		$form->setTranslator($form->getTranslator()->domain('iqrfapp.network-manager.discovery'));
+		$form->addInteger('txPower', 'txPower')->setDefaultValue(6)
+				->addRule(Form::RANGE, 'messages.txPower', [0, 7])
+				->setRequired('messages.txPower');
+		$form->addInteger('maxNode', 'maxNodeAddress')->setDefaultValue(239)
+				->addRule(Form::RANGE, 'messages.maxNodeAddress', [0, 239])
+				->setRequired('messages.maxNodeAddress');
+		$form->addSubmit('send', 'send');
+		$form->addProtection('core.errors.form-timeout');
 		$form->onSuccess[] = [$this, 'onSuccess'];
 		return $form;
 	}

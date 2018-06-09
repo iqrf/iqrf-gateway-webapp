@@ -9,9 +9,14 @@ baseService:
 		Name: Name
 		Messaging: Messaging
 		Serializers: Serializers
-		JsonSerializer: JSON serializer
-		SimpleSerializer: Simple serializer
+		serializers:
+			JsonSerializer: JSON serializer
+			SimpleSerializer: Simple serializer
 		AsyncDpaMessage: Enabled Async DPA messages
+		messages:
+			Name: Please enter name of Base service.
+			Messaging: Please select messaging.
+			Serializers: Please select serializer.
 		Save: Save
 	Edit: Edit
 	Remove: Remove
@@ -44,6 +49,10 @@ iqrfapp:
 			Warning: Warning
 			Info: Info
 			Debug: Debug
+		messages:
+			LocalMqName: Please enter local MQ name.
+			RemoteMqName: Please enter remote MQ name.
+			DefaultTimeout: Please enter default timeout.
 		Save: Save
 
 iqrf:
@@ -57,11 +66,10 @@ iqrf:
 		CommunicationModes:
 			LP: LP
 			STD: STD
-		enableGpioPin: Enable GPIO pin
-		spiCe0GpioPin: SPI CE0 GPIO pin
-		spiMisoGpioPin: SPI MISO GPIO pin
-		spiMosiGpioPin: SPI MOSI GPIO pin
-		spiClkGpioPin: SPI CLK GPIO pin
+		messages:
+			IqrfInterface: Please enter IQRF interface.
+			DpaHandlerTimeout: Please enter default DPA Handler timeout.
+			DpaHandlerTimeout-rule: DPA Handler timeout must be bigger than 0.
 		Save: Save
 	availableInterfaces: Available interfaces
 	interfaces:
@@ -103,6 +111,10 @@ mq:
 		Enabled: Enabled
 		LocalMqName: Local MQ name
 		RemoteMqName: Remote MQ name
+		messages:
+			Name: Please enter name of MQ interface.
+			LocalMqName: Please enter local MQ name.
+			RemoteMqName: Please enter remote MQ name.
 		Save: Save
 	Edit: Edit
 	Remove: Remove
@@ -137,6 +149,12 @@ mqtt:
 		PrivateKeyPassword: Private key password
 		EnabledCipherSuites: Enabled cipher suites
 		EnableServerCertAuth: Enable server certificate authentication
+		messages:
+			Name: Please enter name of MQTT interface.
+			BrokerAddr: Please enter address of MQTT broker.
+			ClientId: Please enter client ID.
+			TopicRequest: Please enter topic for requests.
+			TopicResponse: Please enter topic for responses.
 		Save: Save
 	Edit: Edit
 	Remove: Remove
@@ -173,6 +191,14 @@ scheduler:
 		timeout: Timeout
 		msgid: Message ID
 		sensors: Sensors
+		rcode: Response code
+		dpaval: DPA value
+		messages:
+			service: Please select base service.
+			service-prompt: Select Base service
+			hwpid-rule: HWPID has to contain hexadecimal number of maximal length of 4 chars.
+			nadr-rule: NADR has to contain hexadecimal number of maximal length of 2 chars.
+			type: Please select type of the DPA message.
 		Save: Save
 	Edit: Edit
 	Remove: Remove
@@ -199,4 +225,8 @@ udp:
 		Enabled: Enabled
 		RemotePort: Remote port
 		LocalPort: Local port
+		messages:
+			Name: Please enter name of UDP interface.
+			RemotePort: Please enter remote port.
+			LocalPort: Please enter local port.
 		Save: Save

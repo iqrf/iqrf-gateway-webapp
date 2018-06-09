@@ -62,13 +62,13 @@ class ConfigMqFormFactory {
 		$form->setTranslator($form->getTranslator()->domain('config.mq.form'));
 		$fileName = 'MqMessaging';
 		$this->manager->setFileName($fileName);
-		$form->addText('Name', 'Name')->setRequired();
+		$form->addText('Name', 'Name')->setRequired('messages.Name');
 		$form->addCheckbox('Enabled', 'Enabled');
-		$form->addText('LocalMqName', 'LocalMqName')->setRequired();
-		$form->addText('RemoteMqName', 'RemoteMqName')->setRequired();
+		$form->addText('LocalMqName', 'LocalMqName')->setRequired('messages.LocalMqName');
+		$form->addText('RemoteMqName', 'RemoteMqName')->setRequired('messages.RemoteMqName');
 		$form->addSubmit('save', 'Save');
 		$form->setDefaults($this->manager->load($id));
-		$form->addProtection('Timeout expired, resubmit the form.');
+		$form->addProtection('core.errors.form-timeout');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $id) {
 			$this->manager->save($values, $id);
 			$presenter->redirect('Mq:default');

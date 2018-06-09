@@ -68,8 +68,8 @@ class ConfigBaseServiceFormFactory {
 		$form->setTranslator($form->getTranslator()->domain('config.baseService.form'));
 		$defaults = $this->manager->load($id);
 		$serializers = [
-			'JsonSerializer' => 'JsonSerializer',
-			'SimpleSerializer' => 'SimpleSerializer',
+			'JsonSerializer' => 'serializers.JsonSerializer',
+			'SimpleSerializer' => 'serializers.SimpleSerializer',
 		];
 		$instance = $defaults['Messaging'] ?? null;
 		$this->instanceManager->setFileName('MqMessaging');
@@ -77,11 +77,12 @@ class ConfigBaseServiceFormFactory {
 		$this->instanceManager->setFileName('MqttMessaging');
 		$mqttInstances = $this->instanceManager->getInstancesNames();
 		$instances = array_merge($mqInstances, $mqttInstances);
-		$form->addText('Name', 'Name')->setRequired();
+		$form->addText('Name', 'Name')->setRequired('messages.Name');
 		$form->addSelect('Messaging', 'Messaging')->setItems($instances, true)
-				->setPrompt('Select Messaging')->setRequired()->setTranslator();
+				->setPrompt('Select Messaging')->setTranslator()
+				->setRequired('messages.Messaging');
 		$form->addCheckboxList('Serializers', 'Serializers', $serializers)
-				->setRequired();
+				->setRequired('messages.Serializers');
 		$prop = $form->addContainer('Properties');
 		$prop->addCheckbox('AsyncDpaMessage', 'AsyncDpaMessage');
 		$form->addSubmit('save', 'Save');
@@ -89,7 +90,7 @@ class ConfigBaseServiceFormFactory {
 			unset($defaults['Messaging']);
 		}
 		$form->setDefaults($defaults);
-		$form->addProtection('Timeout expired, resubmit the form.');
+		$form->addProtection('core.errors.form-timeout');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $id) {
 			$this->manager->save($values, $id);
 			$presenter->redirect('BaseService:default');

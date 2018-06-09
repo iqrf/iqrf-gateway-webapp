@@ -101,7 +101,7 @@ class CloudAzureMqttFormFactory {
 			$values = $button->getForm()->getValues();
 			$this->save($values, $presenter, true);
 		};
-		$form->addProtection('Timeout expired, resubmit the form.');
+		$form->addProtection('core.errors.form-timeout');
 		return $form;
 	}
 

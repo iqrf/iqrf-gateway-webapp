@@ -2,6 +2,9 @@ title: IQRF Gateway
 
 dashboard: Dashboard
 
+navigation:
+	toogle: Toggle navigation
+
 languages:
 	title: Language
 	cs: Czech
@@ -17,6 +20,9 @@ signIn:
 	password: Password
 	remember: Keep me signed in
 	send: Sign in
+	messages:
+		username: Please enter your username.
+		password: Please enter your password.
 
 signOut:
 	title: You have been signed out
@@ -33,3 +39,7 @@ node-red-dashboard:
 supervisor:
 	title: Supervisor
 	description: Open Supervisor Dashboard.
+
+errors:
+	form-timeout: 'Timeout expired, resubmit the form.'
+	incorrect-username-password: The username or password you entered is incorrect.

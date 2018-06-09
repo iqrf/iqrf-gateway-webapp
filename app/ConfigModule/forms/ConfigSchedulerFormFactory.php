@@ -81,23 +81,24 @@ class ConfigSchedulerFormFactory {
 		$form->addText('time', 'time');
 		$form->addSelect('service', 'config.scheduler.form.service')
 				->setItems($baseServices, false)->setTranslator($translator)
-				->setPrompt('Select Base service')->setRequired();
+				->setPrompt('config.scheduler.form.messages.service-prompt')
+				->setRequired('messages.service');
 		$message = $form->addContainer('message');
 		foreach (array_keys($defaults['message']) as $key) {
 			switch ($key) {
 				case 'hwpid':
 					$message->addText($key, $key)
 							->setRequired(false)
-							->addRule(Form::PATTERN, 'It has to contain hexadecimal number - ' . $key, '[0-9A-Fa-f]{4}')
-							->addRule(Form::MAX_LENGTH, 'It has to have maximal length of 4 chars.', 4);
+							->addRule(Form::PATTERN, 'messages.hwpid-rule', '[0-9A-Fa-f]{4}')
+							->addRule(Form::MAX_LENGTH, 'messages.hwpid-rule', 4);
 					break;
 				case 'pcmd':
 				case 'pnum':
 				case 'nadr':
 					$message->addText($key, $key)
 							->setRequired(false)
-							->addRule(Form::PATTERN, 'It has to contain hexadecimal number - ' . $key, '[0-9A-Fa-f]{1,2}')
-							->addRule(Form::MAX_LENGTH, 'It has to have maximal length of 2 chars.', 2);
+							->addRule(Form::PATTERN, 'messages.nadr-rule', '[0-9A-Fa-f]{1,2}')
+							->addRule(Form::MAX_LENGTH, 'messages.nadr-rule', 2);
 					break;
 				case 'sensors':
 					$message->addTextArea($key, $key);
@@ -106,7 +107,8 @@ class ConfigSchedulerFormFactory {
 					$message->addInteger($key, $key);
 					break;
 				case 'type':
-					$message->addSelect($key, $key)->setItems($types)->setRequired();
+					$message->addSelect($key, $key)->setItems($types)
+						->setRequired('messages.type');
 					break;
 				default:
 					$message->addText($key, $key);
@@ -117,7 +119,7 @@ class ConfigSchedulerFormFactory {
 		}
 		$form->addSubmit('save', 'Save');
 		$form->setDefaults($defaults);
-		$form->addProtection('Timeout expired, resubmit the form.');
+		$form->addProtection('core.errors.form-timeout');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $id) {
 			$this->manager->save($values, $id);
 			$presenter->redirect('Scheduler:default');

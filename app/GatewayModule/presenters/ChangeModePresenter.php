@@ -56,7 +56,7 @@ class ChangeModePresenter extends BasePresenter {
 		$this->onlyForAdmins();
 		$mode = 'forwarding';
 		$this->iqrfAppManager->changeOperationMode($mode);
-		$this->flashMessage('Gateway mode has been changed to ' . $mode . ' mode.', 'info');
+		$this->flashMessage('gateway.mode.modes.' . $mode . '.message', 'info');
 		$this->redirect('ChangeMode:default');
 		$this->setView('default');
 	}
@@ -68,7 +68,7 @@ class ChangeModePresenter extends BasePresenter {
 		$this->onlyForAdmins();
 		$mode = 'operational';
 		$this->iqrfAppManager->changeOperationMode($mode);
-		$this->flashMessage('Gateway mode has been changed to ' . $mode . ' mode.', 'info');
+		$this->flashMessage('gateway.mode.modes.' . $mode . '.message', 'info');
 		$this->redirect('ChangeMode:default');
 		$this->setView('default');
 	}
@@ -80,7 +80,7 @@ class ChangeModePresenter extends BasePresenter {
 		$this->onlyForAdmins();
 		$mode = 'service';
 		$this->iqrfAppManager->changeOperationMode($mode);
-		$this->flashMessage('Gateway mode has been changed to ' . $mode . ' mode.', 'info');
+		$this->flashMessage('gateway.mode.modes.' . $mode . '.message', 'info');
 		$this->redirect('ChangeMode:default');
 		$this->setView('default');
 	}

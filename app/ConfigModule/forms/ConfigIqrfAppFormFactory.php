@@ -63,13 +63,13 @@ class ConfigIqrfAppFormFactory {
 		$items = ['err' => 'VerbosityLevels.Error', 'war' => 'VerbosityLevels.Warning',
 			'inf' => 'VerbosityLevels.Info', 'dbg' => 'VerbosityLevels.Debug'];
 		$this->manager->setFileName($fileName);
-		$form->addText('LocalMqName', 'LocalMqName')->setRequired();
-		$form->addText('RemoteMqName', 'RemoteMqName')->setRequired();
-		$form->addInteger('DefaultTimeout', 'DefaultTimeout')->setRequired();
+		$form->addText('LocalMqName', 'LocalMqName')->setRequired('messages.LocalMqName');
+		$form->addText('RemoteMqName', 'RemoteMqName')->setRequired('messages.RemoteMqName');
+		$form->addInteger('DefaultTimeout', 'DefaultTimeout')->setRequired('messages.DefaultTimeout');
 		$form->addSelect('VerbosityLevel', 'VerbosityLevel', $items);
 		$form->addSubmit('save', 'Save');
 		$form->setDefaults($this->manager->load());
-		$form->addProtection('Timeout expired, resubmit the form.');
+		$form->addProtection('core.errors.form-timeout');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
 			$this->manager->save($values);
 			$presenter->redirect('Homepage:default');

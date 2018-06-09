@@ -58,16 +58,17 @@ class IqrfNetBondingFormFactory {
 	 */
 	public function create(): Form {
 		$form = $this->factory->create();
-		$form->addCheckbox('autoAddress', 'Auto address');
-		$form->addText('address', 'Address (HEX)')->setDefaultValue('01')
+		$form->setTranslator($form->getTranslator()->domain('iqrfapp.network-manager.bonding'));
+		$form->addCheckbox('autoAddress', 'autoAddress');
+		$form->addText('address', 'address')->setDefaultValue('01')
 				->addConditionOn($form['autoAddress'], Form::EQUAL, false)
-				->addRule(Form::PATTERN, 'Enter valid address.', '[0-9a-fA-F]{1,2}')
-				->setRequired();
-		$form->addSubmit('bond', 'Bond Node')->onClick[] = [$this, 'bondNode'];
-		$form->addSubmit('rebond', 'Rebond Node')->onClick[] = [$this, 'rebondNode'];
-		$form->addSubmit('remove', 'Remove Node')->onClick[] = [$this, 'removeNode'];
-		$form->addSubmit('clear', 'Clear All Bonds')->onClick[] = [$this, 'clearAllBonds'];
-		$form->addProtection('Timeout expired, resubmit the form.');
+				->addRule(Form::PATTERN, 'messages.address', '[0-9a-fA-F]{1,2}')
+				->setRequired('messages.address');
+		$form->addSubmit('bond', 'bondNode')->onClick[] = [$this, 'bondNode'];
+		$form->addSubmit('rebond', 'rebondNode')->onClick[] = [$this, 'rebondNode'];
+		$form->addSubmit('remove', 'removeNode')->onClick[] = [$this, 'removeNode'];
+		$form->addSubmit('clear', 'clearAllBonds')->onClick[] = [$this, 'clearAllBonds'];
+		$form->addProtection('core.errors.form-timeout');
 		return $form;
 	}
 

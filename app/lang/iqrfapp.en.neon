@@ -9,6 +9,11 @@ send-packet:
 	customAddress: Custom NADR
 	overwriteTimeout: Set own DPA timeout
 	customTimeout: 'DPA timeout (ms)'
+	messages:
+		address-length: It has to have maximal length of 2 chars.
+		address-rule: It has to contain hexadecimal number - NADR.
+		packet: Please enter DPA packet.
+	send: Send
 	parsed-response: Parsed response
 	response: Response
 	request: Request
@@ -21,11 +26,53 @@ network-manager:
 	description: IQMESH Network Manager.
 	bonding:
 		title: Bonding
-		address: Address
+		address: 'Address (HEX)'
 		autoAddress: Auto address
+		messages:
+			address: Enter valid address.
+		bondNode: Bond Node
+		rebondNode: Rebond Node
+		removeNode: Remove Node
+		clearAllBonds: Clear All Bonds
 	discovery:
 		title: Discovery
-	security:
-		title: Security
+		txPower: TX Power
+		maxNodeAddress: Max. Node Address
+		messages:
+			txPower: TX Power have to be integer from 0 to 7.
+			maxNodeAddress: Max. Node Address have to be integer form 0 to 239.
+		send: Discovery
 	rf-settings:
 		title: RF settings
+		rfBand: RF Band
+		rfBands:
+			'443': 443 MHz
+			'868': 868 MHz
+			'916': 916 MHz
+			error: ERROR
+		rfChannel: RF Channel
+		rfChannelType: RF Channel Type
+		rfChannelTypes:
+			main-a: Main Channel A
+			main-b: Main Channel B
+			alternative-a: Alternative Channel A
+			alternative-b: Alternative Channel B
+		messages:
+			rfChannel: Please enter RF channel.
+			rfChannel443: RF Channel has to be in range from 0 to 16.
+			rfChannel868: RF Channel has to be in range from 0 to 67.
+			rfChannel916: RF Channel has to be in range from 0 to 255.
+		set: Set
+	security:
+		title: Security
+		input-format: Input format
+		input-formats:
+			ascii: ASCII
+			hex: HEX
+		password: Password
+		setAccessPassword: Set Access Password
+		setUserKey: Set User Key
+		messages:
+			ascii-password-length: It has to have maximal length of 16 chars.
+			hex-password-format: It has to contain hexadecimal number.
+			hex-password-length: It has to have maximal length of 32 chars.

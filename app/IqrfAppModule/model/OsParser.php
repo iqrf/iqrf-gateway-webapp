@@ -21,7 +21,6 @@ declare(strict_types=1);
 namespace App\IqrfAppModule\Model;
 
 use Nette;
-use Nette\Utils\Strings;
 
 /**
  * Parser for DPA OS responses

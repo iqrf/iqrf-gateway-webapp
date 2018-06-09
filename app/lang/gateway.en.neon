@@ -35,9 +35,15 @@ mode:
 		operational:
 			title: Operational mode
 			description: Change IQRF Daemon mode to operational mode.
+			message: Gateway mode has been changed to operational mode.
 		service:
 			title: Service mode
 			description: Change IQRF Daemon mode to service mode.
+			message: Gateway mode has been changed to service mode.
 		forwarding:
 			title: Forwarding mode
 			description: Change IQRF Daemon mode to forwarding mode.
+			message: Gateway mode has been changed to forwarding mode.
+
+errors:
+	log-read: Cannot read log file.

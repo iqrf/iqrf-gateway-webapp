@@ -16,7 +16,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 declare(strict_types=1);
 
 namespace App\ConfigModule\Forms;
@@ -63,14 +62,18 @@ class ConfigMqttFormFactory {
 		$fileName = 'MqttMessaging';
 		$this->manager->setFileName($fileName);
 		$qos = ['QoSes.QoS0', 'QoSes.QoS1', 'QoSes.QoS2'];
-		$form->addText('Name', 'Name')->setRequired();
+		$form->addText('Name', 'Name')->setRequired('messages.Name');
 		$form->addCheckbox('Enabled', 'Enabled');
-		$form->addText('BrokerAddr', 'BrokerAddr')->setRequired();
-		$form->addText('ClientId', 'ClientId')->setRequired();
+		$form->addText('BrokerAddr', 'BrokerAddr')
+				->setRequired('messages.BrokerAddr');
+		$form->addText('ClientId', 'ClientId')
+				->setRequired('messages.ClientId');
 		$form->addInteger('Persistence', 'Persistence');
 		$form->addSelect('Qos', 'QoS', $qos);
-		$form->addText('TopicRequest', 'TopicRequest')->setRequired();
-		$form->addText('TopicResponse', 'TopicResponse')->setRequired();
+		$form->addText('TopicRequest', 'TopicRequest')
+				->setRequired('messages.TopicRequest');
+		$form->addText('TopicResponse', 'TopicResponse')
+				->setRequired('messages.TopicResponse');
 		$form->addText('User', 'User');
 		$form->addText('Password', 'Password');
 		$form->addCheckbox('EnabledSSL', 'EnabledSSL');
@@ -86,7 +89,7 @@ class ConfigMqttFormFactory {
 		$form->addCheckbox('EnableServerCertAuth', 'EnableServerCertAuth');
 		$form->addSubmit('save', 'Save');
 		$form->setDefaults($this->manager->load($id));
-		$form->addProtection('Timeout expired, resubmit the form.');
+		$form->addProtection('core.errors.form-timeout');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $id) {
 			$this->manager->save($values, $id);
 			$presenter->redirect('Mqtt:default');

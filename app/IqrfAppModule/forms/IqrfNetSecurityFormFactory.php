@@ -58,22 +58,23 @@ class IqrfNetSecurityFormFactory {
 	 */
 	public function create(): Form {
 		$form = $this->factory->create();
+		$form->setTranslator($form->getTranslator()->domain('iqrfapp.network-manager.security'));
 		$inputFormats = [
-			'ASCII' => 'ASCII',
-			'HEX' => 'HEX',
+			'ASCII' => 'input-formats.ascii',
+			'HEX' => 'input-formats.hex',
 		];
-		$form->addSelect('format', 'Input format', $inputFormats)
+		$form->addSelect('format', 'input-format', $inputFormats)
 				->setDefaultValue('ASCII');
-		$form->addText('password', 'Password')
+		$form->addText('password', 'password')
 				->setRequired(false)
 				->addConditionOn($form['format'], Form::EQUAL, 'ASCII')
-				->addRule(Form::MAX_LENGTH, 'It has to have maximal length of 16 chars.', 16)
+				->addRule(Form::MAX_LENGTH, 'messages.ascii-password-length', 16)
 				->elseCondition($form['format'], Form::EQUAL, 'HEX')
-				->addRule(Form::PATTERN, 'It has to contain hexadecimal number', '[0-9A-Fa-f]{0,32}')
-				->addRule(Form::MAX_LENGTH, 'It has to have maximal length of 32 chars.', 32);
-		$form->addSubmit('setAccessPassword', 'Set Access Password')->onClick[] = [$this, 'accessPasword'];
-		$form->addSubmit('setUserKey', 'Set User Key')->onClick[] = [$this, 'userKey'];
-		$form->addProtection('Timeout expired, resubmit the form.');
+				->addRule(Form::PATTERN, 'messages.hex-password-format', '[0-9A-Fa-f]{0,32}')
+				->addRule(Form::MAX_LENGTH, 'messages.hex-password-length', 32);
+		$form->addSubmit('setAccessPassword', 'setAccessPassword')->onClick[] = [$this, 'accessPasword'];
+		$form->addSubmit('setUserKey', 'setUserKey')->onClick[] = [$this, 'userKey'];
+		$form->addProtection('core.errors.form-timeout');
 		return $form;
 	}
 

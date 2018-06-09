@@ -24,7 +24,7 @@
 			<pre>{$log}</pre>
 			<a class="btn btn-primary" n:href="Log:download" role="button">{_gateway.log.download}</a>
 		{else}
-			Cannot read log file.
+			{_gateway.errors.log-read}
 		{/ifset}
 	</div>
 </div>

@@ -67,7 +67,7 @@ class ConfigTracerFormFactory {
 		$form->addSelect('VerbosityLevel', 'VerbosityLevel', $items);
 		$form->addSubmit('save', 'Save');
 		$form->setDefaults($this->manager->load());
-		$form->addProtection('Timeout expired, resubmit the form.');
+		$form->addProtection('core.errors.form-timeout');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
 			$this->manager->save($values);
 			$presenter->redirect('Homepage:default');

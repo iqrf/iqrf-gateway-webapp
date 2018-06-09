@@ -64,36 +64,37 @@ class IqrfNetRfFormFactory {
 	 */
 	public function create(): Form {
 		$form = $this->factory->create();
+		$form->setTranslator($form->getTranslator()->domain('iqrfapp.network-manager.rf-settings'));
 		$rfBands = [
-			'443 MHz' => '443 MHz',
-			'868 MHz' => '868 MHz',
-			'916 MHz' => '916 MHz',
-			'ERROR' => 'ERROR',
+			'443 MHz' => 'rfBands.443',
+			'868 MHz' => 'rfBands.868',
+			'916 MHz' => 'rfBands.916',
+			'ERROR' => 'rfBands.error',
 		];
 		$types = [
-			IqrfNetManager::MAIN_RF_CHANNEL_A => 'Main Channel A',
-			IqrfNetManager::MAIN_RF_CHANNEL_B => 'Main Channel B',
-			IqrfNetManager::ALTERNATIVE_RF_CHANNEL_A => 'Alternative Channel A',
-			IqrfNetManager::ALTERNATIVE_RF_CHANNEL_B => 'Alternative Channel B',
+			IqrfNetManager::MAIN_RF_CHANNEL_A => 'rfChannelTypes.main-a',
+			IqrfNetManager::MAIN_RF_CHANNEL_B => 'rfChannelTypes.main-b',
+			IqrfNetManager::ALTERNATIVE_RF_CHANNEL_A => 'rfChannelTypes.alternative-a',
+			IqrfNetManager::ALTERNATIVE_RF_CHANNEL_B => 'rfChannelTypes.alternative-b',
 		];
 		try {
 			$this->rfBand = $this->manager->readHwpConfiguration()['rfBand'] ?? 'ERROR';
 		} catch (EmptyResponseException $e) {
 			$this->rfBand = 'ERROR';
 		}
-		$form->addSelect('rfBand', 'RF Band', $rfBands)->setDisabled()
+		$form->addSelect('rfBand', 'rfBand', $rfBands)->setDisabled()
 				->setDefaultValue($this->rfBand);
-		$form->addInteger('rfChannel', 'RF Channel')
-				->setRequired(true)
+		$form->addInteger('rfChannel', 'rfChannel')
+				->setRequired('messages.rfChannel')
 				->addConditionOn($form['rfBand'], Form::EQUAL, '443 MHz')
-				->addRule(Form::RANGE, 'RF Channel has to be in range from 0 to 16.', [0, 16])
+				->addRule(Form::RANGE, 'messages.rfChannel443', [0, 16])
 				->elseCondition($form['rfBand'], Form::EQUAL, '868 MHz')
-				->addRule(Form::RANGE, 'RF Channel has to be in range from 0 to 67.', [0, 67])
+				->addRule(Form::RANGE, 'messages.rfChannel868', [0, 67])
 				->elseCondition($form['rfBand'], Form::EQUAL, '916 MHz')
-				->addRule(Form::RANGE, 'RF Channel has to be in range from 0 to 255.', [0, 255]);
-		$form->addSelect('type', 'RF Channel type', $types);
-		$form->addSubmit('set', 'Set')->onClick[] = [$this, 'setChannel'];
-		$form->addProtection('Timeout expired, resubmit the form.');
+				->addRule(Form::RANGE, 'messages.rfChannel916', [0, 255]);
+		$form->addSelect('type', 'rfChannelType', $types);
+		$form->addSubmit('set', 'set')->onClick[] = [$this, 'setChannel'];
+		$form->addProtection('core.errors.form-timeout');
 		return $form;
 	}
 

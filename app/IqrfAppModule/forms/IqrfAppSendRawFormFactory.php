@@ -62,20 +62,21 @@ class IqrfAppSendRawFormFactory {
 	 */
 	public function create(SendRawPresenter $presenter): Form {
 		$form = $this->factory->create();
-		$form->addText('packet', 'DPA packet')->setRequired();
-		$form->addCheckbox('overwriteAddress', 'Set own NADR')
+		$form->setTranslator($form->getTranslator()->domain('iqrfapp.send-packet'));
+		$form->addText('packet', 'packet')->setRequired('messages.packet');
+		$form->addCheckbox('overwriteAddress', 'overwriteAddress')
 				->setDefaultValue(false);
-		$form->addText('address', 'NADR')->setDefaultValue('00')->setRequired(false)
-				->addRule(Form::PATTERN, 'It has to contain hexadecimal number - NADR', '[0-9A-Fa-f]{1,2}')
-				->addRule(Form::MAX_LENGTH, 'It has to have maximal length of 2 chars.', 2)
+		$form->addText('address', 'customAddress')->setDefaultValue('00')->setRequired(false)
+				->addRule(Form::PATTERN, 'messages.address-rule', '[0-9A-Fa-f]{1,2}')
+				->addRule(Form::MAX_LENGTH, 'messages.address-length', 2)
 				->addConditionOn($form['overwriteAddress'], Form::EQUAL, true);
-		$form->addCheckbox('timeoutEnabled', 'Set own DPA timeout')
+		$form->addCheckbox('timeoutEnabled', 'overwriteTimeout')
 				->setDefaultValue(true);
-		$form->addInteger('timeout', 'DPA timeout (ms)')->setDefaultValue(1000)
+		$form->addInteger('timeout', 'customTimeout')->setDefaultValue(1000)
 				->addConditionOn($form['timeoutEnabled'], Form::EQUAL, true)
-				->setRequired();
-		$form->addSubmit('send', 'Send');
-		$form->addProtection('Timeout expired, resubmit the form.');
+				->setRequired('customTimeout');
+		$form->addSubmit('send', 'send');
+		$form->addProtection('core.errors.form-timeout');
 		$form->onSuccess[] = function (Form $form, ArrayHash $values) use ($presenter) {
 			$this->onSuccess($form, $values, $presenter);
 		};
