@@ -54,19 +54,34 @@ class DiagnosticsManager {
 	private $zipManager;
 
 	/**
+	 * @var string Path to a directory with IQRF Gateway Daemon's configuration
+	 */
+	private $confDir;
+
+	/**
+	 * @var string Path to a log file of IQRF Gateway Daemon
+	 */
+	private $logPath;
+
+	/**
 	 * @var string Path to ZIP archive
 	 */
 	private $path = '/tmp/iqrf-daemon-webapp.zip';
 
 	/**
 	 * Constructor
+	 * @param string $confDir Path to a directory with IQRF Gateway Daemon's configuration
+	 * @param string $logFile Path to a log file of IQRF Gateway Daemon
 	 * @param CommandManager $commandManager Command manager
 	 * @param IqrfAppManager $iqrfAppManager IqrfApp manager
+	 * @param InfoManager $infoManager Gateway Info manager
 	 */
-	public function __construct(CommandManager $commandManager, IqrfAppManager $iqrfAppManager, InfoManager $infoManager) {
+	public function __construct(string $confDir, string $logFile, CommandManager $commandManager, IqrfAppManager $iqrfAppManager, InfoManager $infoManager) {
 		$this->commandManager = $commandManager;
 		$this->iqrfAppManager = $iqrfAppManager;
 		$this->infoManager = $infoManager;
+		$this->confDir = $confDir;
+		$this->logPath = $logFile;
 		$this->zipManager = new ZipArchiveManager($this->path);
 	}
 
@@ -86,14 +101,14 @@ class DiagnosticsManager {
 	 * Add configuration of IQRF Gateway Daemon
 	 */
 	public function addConfiguration() {
-		$this->zipManager->addFolder('/etc/iqrf-daemon/', 'configuration');
+		$this->zipManager->addFolder($this->confDir, 'configuration');
 	}
 
 	/**
 	 * Add log of IQRF Gateway daemon
 	 */
 	public function addDaemonLog() {
-		$this->zipManager->addFile('/var/log/iqrf-daemon.log', 'logs/iqrf-daemon.log');
+		$this->zipManager->addFile($this->logPath, 'logs/iqrf-daemon.log');
 	}
 
 	/**
@@ -150,7 +165,7 @@ class DiagnosticsManager {
 	 */
 	public function download() {
 		$now = new \DateTime();
-		$fileName = 'iqrf-gateway-diagnostics_' .$now->format('c') .'.zip';
+		$fileName = 'iqrf-gateway-diagnostics_' . $now->format('c') . '.zip';
 		$contentType = 'application/zip';
 		$this->addConfiguration();
 		$this->addDaemonLog();
