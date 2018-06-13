@@ -6,7 +6,7 @@ stages:
 
 cache:
     paths:
-        - vendor/
+        - "$HOME/.composer/cache"
 
 .test_template: &test_template
     stage: test
