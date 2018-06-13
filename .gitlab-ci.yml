@@ -5,16 +5,16 @@ stages:
     - coding-style
 
 variables:
-       COMPOSER_CACHE_DIR: cache/composer
+       COMPOSER_CACHE_DIR: temp/composer/cache
 
 cache:
     paths:
-        - cache/composer
+        - temp/composer/cache
 
 .test_template: &test_template
     stage: test
     before_script:
-        - composer install
+        - composer install --no-progress
     tags:
         - linux
         - amd64
