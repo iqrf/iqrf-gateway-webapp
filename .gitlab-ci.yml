@@ -5,11 +5,11 @@ stages:
     - coding-style
 
 variables:
-       COMPOSER_CACHE_DIR: /cache/composer
+       COMPOSER_CACHE_DIR: cache/composer
 
 cache:
     paths:
-        - /cache/composer
+        - cache/composer
 
 .test_template: &test_template
     stage: test
