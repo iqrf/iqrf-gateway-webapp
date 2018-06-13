@@ -93,7 +93,7 @@ class ZipArchiveManager {
 	/**
 	 * Check if file or files exist in the archive
 	 * @param string|array|ArrayHash $var File(s) to check
-	 * @return boolean Is file exist 
+	 * @return boolean Is file exist
 	 */
 	public function exist($var) {
 		if (is_string($var)) {

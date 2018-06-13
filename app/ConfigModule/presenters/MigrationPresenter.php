@@ -36,7 +36,7 @@ class MigrationPresenter extends BasePresenter {
 	 * @var MigrationManager
 	 */
 	private $migrationManager;
-	
+
 	/**
 	 * Constructor
 	 * @param MigrationManager $migrationManager
@@ -44,7 +44,7 @@ class MigrationPresenter extends BasePresenter {
 	public function __construct(MigrationManager $migrationManager) {
 		$this->migrationManager = $migrationManager;
 	}
-	
+
 	/**
 	 * Render migration page
 	 */
