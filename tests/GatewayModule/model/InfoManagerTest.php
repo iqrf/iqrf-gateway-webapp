@@ -53,7 +53,7 @@ class InfoManagerTest extends TestCase {
 	 */
 	private $commands = [
 		'daemonVersion1' => 'iqrf_startup version',
-		'deviceTreeName' => 'cat /proc/device-tree/name',
+		'deviceTreeName' => 'cat /proc/device-tree/model',
 		'dmiBoardName' => 'cat /sys/class/dmi/id/board_name',
 		'dmiBoardVendor' => 'cat /sys/class/dmi/id/board_vendor',
 		'dmiBoardVersion' => 'cat /sys/class/dmi/id/board_version',
