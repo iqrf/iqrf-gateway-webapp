@@ -66,7 +66,6 @@ class SignInFormFactory {
 		$form->addPassword('password', 'password')->setRequired('messages.password');
 		$form->addCheckbox('remember', 'remember');
 		$form->addSubmit('send', 'send');
-		$form->addProtection('core.errors.form-timeout');
 		$form->onSuccess[] = function (Form $form, $values) use ($onSuccess) {
 			try {
 				$this->user->setExpiration($values->remember ? '14 days' : '20 minutes');
