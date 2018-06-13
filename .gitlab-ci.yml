@@ -4,9 +4,12 @@ stages:
     - test
     - coding-style
 
+variables:
+       COMPOSER_CACHE_DIR: /cache/composer
+
 cache:
     paths:
-        - "$HOME/.composer/cache"
+        - /cache/composer
 
 .test_template: &test_template
     stage: test
