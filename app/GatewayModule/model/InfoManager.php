@@ -63,7 +63,7 @@ class InfoManager {
 	 * @return string Board's vendor, name and version
 	 */
 	public function getBoard() {
-		$deviceTree = $this->commandManager->send('cat /proc/device-tree/name', true);
+		$deviceTree = $this->commandManager->send('cat /proc/device-tree/model', true);
 		if (!empty($deviceTree)) {
 			return $deviceTree;
 		}
