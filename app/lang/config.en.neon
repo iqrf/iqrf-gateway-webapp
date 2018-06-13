@@ -102,6 +102,20 @@ main:
 			Service: Service
 		Save: Save
 
+migration:
+	title: Configuration migration
+	description: "Migration of IQRF Gateway Daemon's configuration"
+	export: Export configuration
+	import: Import configuration
+	configuration: "IQRF Gateway Daemon's configuration to import"
+	messages:
+		configuration: "Please select a ZIP archive with IQRF Gateway Daemon's configuration to import."
+		importedConfig: "IQRF Gateway Daemon's configuration has been imported."
+	errors:
+		incompleteConfig: The ZIP archive contains incomplete configuration.
+		invalidFormat: Uploaded invalid file format.
+		readConfig: Cannot read zip archive with a configuration.
+
 mq:
 	title: MQ interface
 	description: MQ interface settings.

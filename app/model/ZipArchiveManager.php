@@ -20,6 +20,7 @@ declare(strict_types=1);
 namespace App\Model;
 
 use Nette;
+use Nette\Utils\ArrayHash;
 use Nette\Utils\Json;
 use Nette\Utils\Finder;
 
@@ -39,9 +40,9 @@ class ZipArchiveManager {
 	 * Constructor
 	 * @param string $path Path of a new zip archive
 	 */
-	public function __construct(string $path) {
+	public function __construct(string $path, int $flags = \ZipArchive::CREATE | \ZipArchive::OVERWRITE) {
 		$this->zip = new \ZipArchive();
-		$this->zip->open($path, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
+		$this->zip->open($path, $flags);
 	}
 
 	/**
@@ -87,6 +88,33 @@ class ZipArchiveManager {
 	public function addJsonFromArray(string $filename, array $jsonData) {
 		$json = Json::encode($jsonData, Json::PRETTY);
 		$this->zip->addFromString($filename, $json);
+	}
+
+	/**
+	 * Check if file or files exist in the archive
+	 * @param string|array|ArrayHash $var File(s) to check
+	 * @return boolean Is file exist 
+	 */
+	public function exist($var) {
+		if (is_string($var)) {
+			return ($this->zip->locateName($var, \ZipArchive::FL_NOCASE | \ZipArchive::FL_NODIR)) !== false;
+		} elseif (is_array($var) || (is_object($var) && $var instanceof ArrayHash)) {
+			foreach ($var as $file) {
+				$result = $this->zip->locateName($file, \ZipArchive::FL_NOCASE | \ZipArchive::FL_NODIR);
+				if ($result === false) {
+					return false;
+				}
+			}
+			return true;
+		}
+	}
+
+	/**
+	 * Extract the archive contents
+	 * @param string $destinationPath Path to location where to extract the files
+	 */
+	public function extract(string $destinationPath) {
+		$this->zip->extractTo($destinationPath);
 	}
 
 	/**
