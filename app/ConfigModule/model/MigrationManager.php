@@ -101,7 +101,12 @@ class MigrationManager {
 				FileSystem::delete($this->path);
 				throw new IncompleteConfiguration();
 			}
+			$posixUser = posix_getpwuid(posix_geteuid());
 			$this->commandManager->send('rm -rf ' . $this->configDirectory, true);
+			$this->commandManager->send('mkdir ' . $this->configDirectory, true);
+			$owner = $posixUser['name'] . ':' . posix_getgrgid($posixUser['gid'])['name'];
+			$this->commandManager->send('chown ' . $owner . ' ' . $this->configDirectory, true);
+			$this->commandManager->send('chown -R ' . $owner . ' ' . $this->configDirectory, true);
 			$zipManager->extract($this->configDirectory);
 			$zipManager->close();
 			FileSystem::delete($this->path);
