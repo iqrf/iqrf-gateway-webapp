@@ -21,6 +21,7 @@ namespace App\ConfigModule\Model;
 
 use App\ConfigModule\Model\IncompleteConfiguration;
 use App\ConfigModule\Model\InvalidConfigurationFormat;
+use App\Model\CommandManager;
 use App\Model\ZipArchiveManager;
 use Nette;
 use Nette\Application\Responses\FileResponse;
@@ -33,6 +34,11 @@ use Nette\Utils\FileSystem;
 class MigrationManager {
 
 	use Nette\SmartObject;
+
+	/**
+	 * @var CommandManager Command manager
+	 */
+	private $commandManager;
 
 	/**
 	 * @var ZipArchiveManager ZIP archive manager
@@ -52,10 +58,12 @@ class MigrationManager {
 	/**
 	 * Constructor
 	 * @param string $configDirectory Path to a directory with a configuration of IQRF Gateway Daemon
+	 * @param CommandManager $commandManager Command manager
 	 */
-	public function __construct(string $configDirectory) {
+	public function __construct(string $configDirectory, CommandManager $commandManager) {
 		$this->configDirectory = $configDirectory;
 		$this->zipManager = new ZipArchiveManager($this->path);
+		$this->commandManager = $commandManager;
 	}
 
 	/**
@@ -93,7 +101,7 @@ class MigrationManager {
 				FileSystem::delete($this->path);
 				throw new IncompleteConfiguration();
 			}
-			FileSystem::delete($this->configDirectory);
+			$this->commandManager->send('rm -rf ' . $this->configDirectory, true);
 			$zipManager->extract($this->configDirectory);
 			$zipManager->close();
 			FileSystem::delete($this->path);
