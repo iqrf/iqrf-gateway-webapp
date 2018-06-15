@@ -1,5 +1,0 @@
-{
-	"IqrfInterface": "COM6",
-	"DpaHandlerTimeout": 500,
-	"CommunicationMode": "LP"
-}
