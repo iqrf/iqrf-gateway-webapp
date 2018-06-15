@@ -5,6 +5,7 @@
  * @covers App\ConfigModule\Model\IqrfManager
  * @phpVersion >= 7.0
  * @testCase
+ * @skip
  */
 declare(strict_types=1);
 
