@@ -20,17 +20,10 @@ declare(strict_types=1);
 
 namespace App\ConfigModule\Presenters;
 
-use App\ConfigModule\Forms\ConfigComponentsFormFactory;
 use App\ConfigModule\Forms\ConfigMainFormFactory;
 use App\Presenters\BasePresenter;
 
 class MainPresenter extends BasePresenter {
-
-	/**
-	 * @var ConfigComponentsFormFactory Daemon's components configuration form factory
-	 * @inject
-	 */
-	public $componentsFactory;
 
 	/**
 	 * @var ConfigMainFormFactory Daemon's main configuration form factory
@@ -43,15 +36,6 @@ class MainPresenter extends BasePresenter {
 	 */
 	public function renderDefault() {
 		$this->onlyForAdmins();
-	}
-
-	/**
-	 * Create components form
-	 * @return Form Components form
-	 */
-	protected function createComponentConfigComponentsForm() {
-		$this->onlyForAdmins();
-		return $this->componentsFactory->create($this);
 	}
 
 	/**

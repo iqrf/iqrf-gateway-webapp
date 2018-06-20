@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace App\ConfigModule\Forms;
 
 use App\ConfigModule\Model\ComponentManager;
-use App\ConfigModule\Presenters\MainPresenter;
+use App\ConfigModule\Presenters\ComponentPresenter;
 use App\Forms\FormFactory;
 use Nette;
 use Nette\Application\UI\Form;
@@ -53,21 +53,23 @@ class ConfigComponentsFormFactory {
 
 	/**
 	 * Create components configuration form
-	 * @param MainPresenter $presenter
+	 * @param ComponentPresenter $presenter
 	 * @return Form Components configuration form
 	 */
-	public function create(MainPresenter $presenter): Form {
+	public function create(ComponentPresenter $presenter): Form {
+		$id = intval($presenter->getParameter('id'));
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('config.components.form'));
-		$components = $this->manager->load();
-		foreach ($components as $component) {
-			$form->addCheckbox($component['ComponentName'], $component['ComponentName'])
-					->setDefaultValue($component['Enabled']);
-		}
+		$form->addText('name', 'name')->setRequired('messages.name');
+		$form->addText('libraryPath', 'libraryPath');
+		$form->addText('libraryName', 'libraryName')->setRequired('messages.libraryName');
+		$form->addCheckbox('enabled', 'enabled');
+		$form->addInteger('startlevel', 'startlevel')->setRequired('messages.startLevel');
 		$form->addSubmit('save', 'Save');
+		$form->setDefaults($this->manager->loadComponent($id));
 		$form->addProtection('core.errors.form-timeout');
-		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
-			$this->manager->save($values);
+		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $id) {
+			$this->manager->save($values, $id);
 			$presenter->redirect('Homepage:default');
 		};
 		return $form;

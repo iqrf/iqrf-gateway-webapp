@@ -1,6 +1,6 @@
 parameters:
 	# directory with iqrf-daemon's configuration files
-	configDir: '/etc/iqrf-daemon'
+	configDir: '/etc/iqrfgd2'
 	# init deamon used in out system (e.g. systemd)
 	initDaemon: 'systemd'
 	sudo: true

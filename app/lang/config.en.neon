@@ -23,17 +23,17 @@ baseService:
 
 components:
 	title: Components
+	description: Manage components.
 	form:
-		BaseService: Base service
-		TracerFile: Tracer file
-		IqrfInterface: IQRF interface
-		UdpMessaging: UDP messaging
-		MqttMessaging: MQTT messaging
-		MqMessaging: MQ messaging
-		Scheduler: Scheduler
-		JsonSerializer: JSON serializer
-		SimpleSerializer: Simple serializer
+		title: Edit component
+		name: Name
+		libraryPath: Library path
+		libraryName: Library name
+		enabled: Enabled
+		startlevel: Start level
 		Save: Save
+	Edit: Edit
+	Remove: Remove
 
 iqrfapp:
 	title: IQRF App

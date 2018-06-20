@@ -47,35 +47,55 @@ class ComponentManager {
 	}
 
 	/**
-	 * Convert Main configuration form array to JSON array
+	 * Add new component
+	 * @param ArrayHash $array Component's settings
+	 */
+	public function add(ArrayHash $array) {
+		$this->deleteByName($array['Name']);
+		$id = count($this->getInstances());
+		$this->save($array, $id);
+	}
+
+	/**
+	 * Delete a component
+	 * @param int $id Component ID
+	 */
+	public function delete(int $id) {
+		$json = $this->fileManager->read($this->fileName);
+		unset($json['components'][$id]);
+		$json['components'] = array_values($json['components']);
+		$this->fileManager->write($this->fileName, $json);
+	}
+
+	/**
+	 * Load a component from main configuration JSON
 	 * @return array Array for form
 	 */
-	public function load(): array {
+	public function loadComponent(int $id): array {
+		$json = $this->loadComponents();
+		if (array_key_exists($id, $json)) {
+			return $json[$id];
+		}
+		return [];
+	}
+
+	/**
+	 * Load components from main configuration JSON
+	 * @return array Array for form
+	 */
+	public function loadComponents(): array {
 		$json = $this->fileManager->read($this->fileName);
-		return $json['Components'];
+		return $json['components'];
 	}
 
 	/**
 	 * Save components setting
 	 * @param ArrayHash $components Components settings
 	 */
-	public function save(ArrayHash $components) {
+	public function save(ArrayHash $components, int $id) {
 		$json = $this->fileManager->read($this->fileName);
-		$json['Components'] = $this->saveJson($components);
+		$json['components'][$id] = (array) $components;
 		$this->fileManager->write($this->fileName, $json);
-	}
-
-	/**
-	 * Convert array from Components configuration form to JSON
-	 * @param ArrayHash $components Components configuration form array
-	 * @return array JSON array
-	 */
-	public function saveJson(ArrayHash $components): array {
-		$array = [];
-		foreach ($components as $component => $enabled) {
-			array_push($array, ['ComponentName' => $component, 'Enabled' => $enabled]);
-		}
-		return $array;
 	}
 
 }

@@ -5,7 +5,6 @@
  * @covers App\ConfigModule\Model\ComponentManager
  * @phpVersion >= 7.0
  * @testCase
- * @skip
  */
 declare(strict_types=1);
 
@@ -72,11 +71,23 @@ class ComponentManagerTest extends TestCase {
 	 * @test
 	 * Test function to load configuration of Components
 	 */
-	public function testLoad() {
+	public function testLoadComponents() {
 		$manager = new ComponentManager($this->fileManager);
 		$json = $this->fileManager->read($this->fileName);
-		$expected = $json['Components'];
-		Assert::equal($expected, $manager->load());
+		$expected = $json['components'];
+		Assert::equal($expected, $manager->loadComponents());
+	}
+
+	/**
+	 * @test
+	 * Test function to load configuration of Components
+	 */
+	public function testLoadComponent() {
+		$manager = new ComponentManager($this->fileManager);
+		$json = $this->fileManager->read($this->fileName);
+		$expected = $json['components'][0];
+		Assert::equal($expected, $manager->loadComponent(0));
+		Assert::equal([], $manager->loadComponent(100));
 	}
 
 	/**
@@ -86,42 +97,17 @@ class ComponentManagerTest extends TestCase {
 	public function testSave() {
 		$manager = new ComponentManager($this->fileManagerTemp);
 		$array = [
-			'TracerFile' => false,
-			'IqrfInterface' => true,
-			'UdpMessaging' => true,
-			'MqttMessaging' => true,
-			'MqMessaging' => true,
-			'Scheduler' => true,
-			'SimpleSerializer' => true,
-			'JsonSerializer' => true,
-			'BaseService' => true,
+			'name' => 'iqrf::Scheduler',
+			'libraryPath' => '',
+			'libraryName' => 'Scheduler',
+			'enabled' => false,
+			'startlevel' => 1,
 		];
 		$expected = $this->fileManager->read($this->fileName);
 		$this->fileManagerTemp->write($this->fileName, $expected);
-		$expected['Components'][0]['Enabled'] = false;
-		$manager->save(ArrayHash::from($array));
+		$expected['components'][7]['enabled'] = false;
+		$manager->save(ArrayHash::from($array),7);
 		Assert::equal($expected, $this->fileManagerTemp->read($this->fileName));
-	}
-
-	/**
-	 * @test
-	 * Test function to parse configuration of Components
-	 */
-	public function testSaveJson() {
-		$manager = new ComponentManager($this->fileManager);
-		$array = [
-			'TracerFile' => true,
-			'IqrfInterface' => true,
-			'UdpMessaging' => true,
-			'MqttMessaging' => true,
-			'MqMessaging' => true,
-			'Scheduler' => true,
-			'SimpleSerializer' => true,
-			'JsonSerializer' => true,
-			'BaseService' => true,
-		];
-		$expected = $this->fileManager->read($this->fileName)['Components'];
-		Assert::equal($expected, $manager->saveJson(ArrayHash::from($array)));
 	}
 
 }
