@@ -1,4 +1,4 @@
 {
-  "component": "iqrf::LegacyApiSupport",
-  "instance": "LegacyApiSupport-instance1"
+	"component": "iqrf::LegacyApiSupport",
+	"instance": "LegacyApiSupport-instance1"
 }
