@@ -5,7 +5,6 @@
  * @covers App\ConfigModule\Model\GenericManager
  * @phpVersion >= 7.0
  * @testCase
- * @skip
  */
 declare(strict_types=1);
 
@@ -40,7 +39,7 @@ class GenericManagerTest extends TestCase {
 	/**
 	 * @var string File name (without .json)
 	 */
-	private $fileName = 'TracerFile';
+	private $fileName = 'iqrf__MqttMessaging1';
 
 	/**
 	 * @var string Directory with configuration files
@@ -70,6 +69,16 @@ class GenericManagerTest extends TestCase {
 
 	/**
 	 * @test
+	 * Test function to get component's instances
+	 */
+	public function testGetInstances() {
+		$manager = new GenericManager($this->fileManager);
+		$expected = ['iqrf__MqttMessaging1', 'iqrf__MqttMessaging2',];
+		Assert::equal($expected, $manager->getInstances('iqrf::MqttMessaging'));
+	}
+
+	/**
+	 * @test
 	 * Test function to load main configuration of daemon
 	 */
 	public function testLoad() {
@@ -87,13 +96,32 @@ class GenericManagerTest extends TestCase {
 		$manager = new GenericManager($this->fileManagerTemp);
 		$manager->setFileName($this->fileName);
 		$array = [
-			'TraceFileName' => '',
-			'TraceFileSize' => 0,
-			'VerbosityLevel' => 'err'
+			'component' => 'iqrf::MqttMessaging',
+			'instance' => 'MqttMessaging1',
+			'BrokerAddr' => 'tcp://127.0.0.1:1883',
+			'ClientId' => 'IqrfDpaMessaging1',
+			'Persistence' => 1,
+			'Qos' => 1,
+			'TopicRequest' => 'Iqrf/DpaRequest',
+			'TopicResponse' => 'Iqrf/DpaResponse',
+			'User' => '',
+			'Password' => '',
+			'EnabledSSL' => false,
+			'KeepAliveInterval' => 20,
+			'ConnectTimeout' => 5,
+			'MinReconnect' => 1,
+			'MaxReconnect' => 64,
+			'TrustStore' => 'server-ca.crt',
+			'KeyStore' => 'client.pem',
+			'PrivateKey' => 'client-privatekey.pem',
+			'PrivateKeyPassword' => '',
+			'EnabledCipherSuites' => '',
+			'EnableServerCertAuth' => true,
+			'acceptAsyncMsg' => true,
 		];
 		$expected = $this->fileManager->read($this->fileName);
 		$this->fileManagerTemp->write($this->fileName, $expected);
-		$expected['VerbosityLevel'] = 'err';
+		$expected['acceptAsyncMsg'] = true;
 		$manager->save(ArrayHash::from($array));
 		Assert::equal($expected, $this->fileManagerTemp->read($this->fileName));
 	}

@@ -23,6 +23,8 @@ namespace App\ConfigModule\Model;
 use App\Model\JsonFileManager;
 use Nette;
 use Nette\Utils\ArrayHash;
+use Nette\Utils\Finder;
+use Nette\Utils\Strings;
 
 class GenericManager {
 
@@ -69,6 +71,24 @@ class GenericManager {
 	 */
 	public function setFileName(string $fileName) {
 		$this->fileName = $fileName;
+	}
+
+	/**
+	 * Get component's instamces
+	 * @param string $component Component name
+	 * @return array Files with instances of components
+	 */
+	public function getInstances(string $component): array {
+		$dir = $this->fileManager->getDirectory();
+		$instances = [];
+		foreach (Finder::findFiles('*.json')->exclude('config.json')->from($dir) as $file) {
+			$fileName = Strings::replace($file->getFilename(), '/.json$/', '');
+			$json = $this->fileManager->read($fileName);
+			if (array_key_exists('component', $json) && $json['component'] === $component) {
+				$instances[] = $fileName;
+			}
+		}
+		return $instances;
 	}
 
 }

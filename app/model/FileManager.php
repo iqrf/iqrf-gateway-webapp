@@ -16,7 +16,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 declare(strict_types=1);
 
 namespace App\Model;
@@ -42,6 +41,14 @@ class FileManager {
 	 */
 	public function __construct(string $configDir) {
 		$this->configDir = $configDir;
+	}
+
+	/**
+	 * Return directory with files
+	 * @return string Directory with files
+	 */
+	public function getDirectory(): string {
+		return $this->configDir;
 	}
 
 	/**
