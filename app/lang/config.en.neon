@@ -92,14 +92,13 @@ main:
 	title: Main configuration
 	description: Main configuration of IQRF Daemon.
 	form:
-		Configuration: Configuration version
-		ConfigurationDir: Configuration directory
-		WatchDogTimeoutMilis: WatchDog timeout in ms
-		Mode: Operational mode
-		Modes:
-			Forwarding: Forwarding
-			Operational: Operational
-			Service: Service
+		applicationName: Application Name
+		resourceDir: Resource directory
+		dataDir: Data directory
+		cacheDir: Cache directory
+		userDir: User directory
+		configurationDir: Configuration directory
+		deploymentDir: Deployment directory
 		Save: Save
 
 migration:

@@ -59,11 +59,13 @@ class ConfigMainFormFactory {
 	public function create(MainPresenter $presenter): Form {
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('config.main.form'));
-		$items = ['forwarding' => 'Modes.Forwarding', 'operational' => 'Modes.Operational', 'service' => 'Modes.Service'];
-		$form->addText('Configuration', 'Configuration');
-		$form->addText('ConfigurationDir', 'ConfigurationDir');
-		$form->addInteger('WatchDogTimeoutMilis', 'WatchDogTimeoutMilis');
-		$form->addSelect('Mode', 'Mode', $items);
+		$form->addText('applicationName', 'applicationName');
+		$form->addText('resourceDir', 'resourceDir');
+		$form->addText('dataDir', 'dataDir');
+		$form->addText('cacheDir', 'cacheDir');
+		$form->addText('userDir', 'userDir');
+		$form->addText('configurationDir', 'configurationDir');
+		$form->addText('deploymentDir', 'deploymentDir');
 		$form->addSubmit('save', 'Save');
 		$form->setDefaults($this->manager->load());
 		$form->addProtection('core.errors.form-timeout');

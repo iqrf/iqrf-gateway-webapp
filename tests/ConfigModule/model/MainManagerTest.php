@@ -5,7 +5,6 @@
  * @covers App\ConfigModule\Model\MainManager
  * @phpVersion >= 7.0
  * @testCase
- * @skip
  */
 declare(strict_types=1);
 
@@ -85,13 +84,17 @@ class MainManagerTest extends TestCase {
 	public function testSave() {
 		$manager = new MainManager($this->fileManagerTemp);
 		$array = [
-			'Configuration' => 'v0.0',
-			'ConfigurationDir' => '/etc/iqrf-daemon',
-			'WatchDogTimeoutMilis' => 10000,
+			'applicationName' => 'IqrfGatewayDaemon',
+			'resourceDir' => '',
+			'dataDir' => '/usr/share/iqrfgd2',
+			'cacheDir' => '/var/cache/iqrfgd2',
+			'userDir' => '',
+			'configurationDir' => '/etc/iqrf-daemon',
+			'deploymentDir' => '/usr/lib/iqrfgd2',
 		];
 		$expected = $this->fileManager->read($this->fileName);
 		$this->fileManagerTemp->write($this->fileName, $expected);
-		$expected['ConfigurationDir'] = '/etc/iqrf-daemon';
+		$expected['configurationDir'] = '/etc/iqrf-daemon';
 		$manager->save(ArrayHash::from($array));
 		Assert::equal($expected, $this->fileManagerTemp->read($this->fileName));
 	}
