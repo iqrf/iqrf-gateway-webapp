@@ -21,8 +21,6 @@ namespace App\CloudModule\Forms;
 
 use App\CloudModule\Model\InteliGlueManager;
 use App\CloudModule\Presenters\InteliGluePresenter;
-use App\ConfigModule\Model\BaseServiceManager;
-use App\ConfigModule\Model\InstanceManager;
 use App\Forms\FormFactory;
 use App\ServiceModule\Model\ServiceManager;
 use Nette;
@@ -44,16 +42,6 @@ class CloudInteliGlueMqttFormFactory {
 	private $cloudManager;
 
 	/**
-	 * @var BaseServiceManager Base service manager
-	 */
-	private $baseService;
-
-	/**
-	 * @var InstanceManager MQTT instance manager
-	 */
-	private $manager;
-
-	/**
 	 * @var FormFactory Generic form factory
 	 */
 	private $factory;
@@ -65,16 +53,12 @@ class CloudInteliGlueMqttFormFactory {
 
 	/**
 	 * Constructor
-	 * @param BaseServiceManager $baseService Base service manager\n
 	 * @param InteliGlueManager $inteliGlue Inteliments InteliGlue manager
-	 * @param InstanceManager $manager MQTT instance manager
 	 * @param FormFactory $factory Generic form factory
 	 * @param ServiceManager $serviceManager Service manager
 	 */
-	public function __construct(BaseServiceManager $baseService, InteliGlueManager $inteliGlue, InstanceManager $manager, FormFactory $factory, ServiceManager $serviceManager) {
-		$this->baseService = $baseService;
+	public function __construct(InteliGlueManager $inteliGlue, FormFactory $factory, ServiceManager $serviceManager) {
 		$this->cloudManager = $inteliGlue;
-		$this->manager = $manager;
 		$this->factory = $factory;
 		$this->serviceManager = $serviceManager;
 	}
@@ -87,8 +71,6 @@ class CloudInteliGlueMqttFormFactory {
 	public function create(InteliGluePresenter $presenter): Form {
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('cloud.intelimentsInteliGlue.form'));
-		$fileName = 'MqttMessaging';
-		$this->manager->setFileName($fileName);
 		$form->addText('rootTopic', 'rootTopic')->setRequired();
 		$form->addInteger('assignedPort', 'assignedPort')->setRequired()
 				->addRule(Form::RANGE, 'Port have to be in range from 0 to 65535', [0, 65535]);
@@ -116,10 +98,7 @@ class CloudInteliGlueMqttFormFactory {
 	 */
 	public function save(ArrayHash $values, InteliGluePresenter $presenter, bool $needRestart = false) {
 		try {
-			$settings = $this->cloudManager->createMqttInterface($values);
-			$baseService = $this->cloudManager->createBaseService();
-			$this->baseService->add($baseService);
-			$this->manager->add($settings);
+			$this->cloudManager->createMqttInterface($values);
 		} catch (IOException $e) {
 			$presenter->flashMessage('IQRF Daemon\'s configuration files not found.', 'danger');
 		}

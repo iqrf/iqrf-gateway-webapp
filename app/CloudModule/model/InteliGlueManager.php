@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace App\CloudModule\Model;
 
+use App\ConfigModule\Model\GenericManager;
 use GuzzleHttp\Client;
 use Nette;
 use Nette\Utils\ArrayHash;
@@ -38,9 +39,22 @@ class InteliGlueManager {
 	private $caPath = '/etc/iqrf-daemon/certs/inteliments-ca.crt';
 
 	/**
+	 * @var GenericManager Generic configuration manager
+	 */
+	private $configManager;
+
+	/**
 	 * @var string MQTT interface name
 	 */
 	private $interfaceName = 'MqttMessagingInteliGlue';
+
+	/**
+	 * Constructor
+	 * @param GenericManager $configManager Generic config manager
+	 */
+	public function __construct(GenericManager $configManager) {
+		$this->configManager = $configManager;
+	}
 
 	/**
 	 * Create MQTT interface
@@ -49,9 +63,10 @@ class InteliGlueManager {
 	 */
 	public function createMqttInterface(ArrayHash $values) {
 		$this->downloadCaCertificate();
+		$this->configManager->setComponent('iqrf::MqttMessaging');
+		$this->configManager->setFileName($this->interfaceName);
 		$interface = [
-			'Name' => $this->interfaceName,
-			'Enabled' => true,
+			'instance' => $this->interfaceName,
 			'BrokerAddr' => 'ssl://mqtt.inteliglue.com:' . $values['assignedPort'],
 			'ClientId' => $values['clientId'],
 			'Persistence' => 1,
@@ -70,9 +85,10 @@ class InteliGlueManager {
 			'PrivateKey' => '',
 			'PrivateKeyPassword' => '',
 			'EnabledCipherSuites' => '',
-			'EnableServerCertAuth' => false
+			'EnableServerCertAuth' => false,
+			'acceptAsyncMsg' => false,
 		];
-		return ArrayHash::from($interface);
+		$this->configManager->save(ArrayHash::from($interface));
 	}
 
 	/**

@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace App\CloudModule\Model;
 
+use App\ConfigModule\Model\GenericManager;
 use DateInterval;
 use DateTime;
 use Nette;
@@ -33,9 +34,22 @@ class AzureManager {
 	use Nette\SmartObject;
 
 	/**
+	 * @var GenericManager Generic configuration manager
+	 */
+	private $configManager;
+
+	/**
 	 * @var string MQTT interface name
 	 */
 	private $interfaceName = 'MqttMessagingAzure';
+
+	/**
+	 * Constructor
+	 * @param GenericManager $configManager Generic config manager
+	 */
+	public function __construct(GenericManager $configManager) {
+		$this->configManager = $configManager;
+	}
 
 	/**
 	 * Create MQTT interface from MS Azure IoT Hub Connection string
@@ -47,9 +61,10 @@ class AzureManager {
 		$data = $this->parseConnectionString($connectionString);
 		$endpoint = $data['HostName'] . '/devices/' . $data['DeviceId'];
 		$token = $this->generateSasToken($endpoint, $data['SharedAccessKey']);
+		$this->configManager->setComponent('iqrf::MqttMessaging');
+		$this->configManager->setFileName($this->interfaceName);
 		$interface = [
-			'Name' => $this->interfaceName,
-			'Enabled' => true,
+			'instance' => $this->interfaceName,
 			'BrokerAddr' => 'ssl://' . $data['HostName'] . ':8883',
 			'ClientId' => $data['DeviceId'],
 			'Persistence' => 1,
@@ -68,23 +83,10 @@ class AzureManager {
 			'PrivateKey' => '',
 			'PrivateKeyPassword' => '',
 			'EnabledCipherSuites' => '',
-			'EnableServerCertAuth' => false
+			'EnableServerCertAuth' => false,
+			'acceptAsyncMsg' => false,
 		];
-		return ArrayHash::from($interface);
-	}
-
-	/**
-	 * Create base service
-	 * @return ArrayHash Base service
-	 */
-	public function createBaseService() {
-		$baseService = [
-			'Name' => 'BaseServiceForMQTTAzure',
-			'Messaging' => $this->interfaceName,
-			'Serializers' => ['JsonSerializer'],
-			'Properties' => ['AsyncDpaMessage' => true],
-		];
-		return ArrayHash::from($baseService);
+		$this->configManager->save(ArrayHash::from($interface));
 	}
 
 	/**

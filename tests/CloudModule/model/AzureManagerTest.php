@@ -12,8 +12,9 @@ namespace Test\ServiceModule\Model;
 
 use App\CloudModule\Model\AzureManager;
 use App\CloudModule\Model\InvalidConnectionString;
+use App\ConfigModule\Model\GenericManager;
+use App\Model\JsonFileManager;
 use Nette\DI\Container;
-use Nette\Utils\ArrayHash;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -22,9 +23,19 @@ $container = require __DIR__ . '/../../bootstrap.php';
 class AzureManagerTest extends TestCase {
 
 	/**
+	 * @var GenericManager Generic configuration manager
+	 */
+	private $configManager;
+
+	/**
 	 * @var Container Nette Tester Container
 	 */
 	private $container;
+
+	/**
+	 * @var JsonFileManager JSON file manager
+	 */
+	private $fileManager;
 
 	/**
 	 * @var AzureManager MS Azure IoT hub manager
@@ -35,6 +46,11 @@ class AzureManagerTest extends TestCase {
 	 * @var string MS Azure IoT Hub connection string for the device
 	 */
 	private $connectionString = 'HostName=iqrf.azure-devices.net;DeviceId=IQRFGW;SharedAccessKey=1234567890abcdefghijklmnopqrstuvwxyzABCDEFG=';
+
+	/**
+	 * @var string Testing directory with configuration files
+	 */
+	private $pathTest = __DIR__ . '/../../configuration-test/';
 
 	/**
 	 * Constructor
@@ -48,7 +64,9 @@ class AzureManagerTest extends TestCase {
 	 * Set up test environment
 	 */
 	public function setUp() {
-		$this->manager = \Mockery::mock(AzureManager::class)->makePartial();
+		$this->fileManager = new JsonFileManager($this->pathTest);
+		$this->configManager = new GenericManager($this->fileManager);
+		$this->manager = \Mockery::mock(AzureManager::class, [$this->configManager])->makePartial();
 		$this->manager->shouldReceive('generateSasToken')->andReturn('generatedSasToken');
 	}
 
@@ -58,8 +76,8 @@ class AzureManagerTest extends TestCase {
 	 */
 	public function testCreateMqttInterface() {
 		$mqtt = [
-			'Name' => 'MqttMessagingAzure',
-			'Enabled' => true,
+			'component' => 'iqrf::MqttMessaging',
+			'instance' => 'MqttMessagingAzure',
 			'BrokerAddr' => 'ssl://iqrf.azure-devices.net:8883',
 			'ClientId' => 'IQRFGW',
 			'Persistence' => 1,
@@ -78,27 +96,11 @@ class AzureManagerTest extends TestCase {
 			'PrivateKey' => '',
 			'PrivateKeyPassword' => '',
 			'EnabledCipherSuites' => '',
-			'EnableServerCertAuth' => false
+			'EnableServerCertAuth' => false,
+			'acceptAsyncMsg' => false,
 		];
-		Assert::same($mqtt, iterator_to_array($this->manager->createMqttInterface($this->connectionString)));
-	}
-
-	/**
-	 * @test
-	 * Test function to create Base service
-	 */
-	public function testCreateBaseService() {
-		$mqtt = [
-			'Name' => 'BaseServiceForMQTTAzure',
-			'Messaging' => 'MqttMessagingAzure',
-			'Serializers' => ['JsonSerializer'],
-			'Properties' => ['AsyncDpaMessage' => true],
-		];
-		$actual = $this->manager->createBaseService();
-		Assert::same($mqtt['Serializers'], iterator_to_array($actual['Serializers']));
-		Assert::same($mqtt['Properties'], iterator_to_array($actual['Properties']));
-		unset($actual['Serializers'], $actual['Properties'], $mqtt['Serializers'], $mqtt['Properties']);
-		Assert::same($mqtt, iterator_to_array($actual));
+		$this->manager->createMqttInterface($this->connectionString);
+		Assert::same($mqtt, $this->fileManager->read('MqttMessagingAzure'));
 	}
 
 	/**
@@ -123,7 +125,7 @@ class AzureManagerTest extends TestCase {
 		$policyName = null;
 		$expiresInMins = intdiv((new \DateTime('2018-05-10T11:00:00'))->getTimestamp(), 60) -
 				intdiv((new \DateTime())->getTimestamp(), 60) + 5256000;
-		$manager = new AzureManager();
+		$manager = new AzureManager($this->configManager);
 		$actual = $manager->generateSasToken($resourceUri, $signingKey, $policyName, $expiresInMins);
 		$expected = 'SharedAccessSignature sr=iqrf.azure-devices.net%2Fdevices%2FiqrfGwTest&sig=loSMVo4aSTBFh6psEwJcSInBGo%2BSD3noiFSHbgQuSMo%3D&se=1841302800';
 		Assert::same($expected, $actual);

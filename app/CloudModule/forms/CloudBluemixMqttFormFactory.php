@@ -21,8 +21,6 @@ namespace App\CloudModule\Forms;
 
 use App\CloudModule\Model\BluemixManager;
 use App\CloudModule\Presenters\BluemixPresenter;
-use App\ConfigModule\Model\BaseServiceManager;
-use App\ConfigModule\Model\InstanceManager;
 use App\Forms\FormFactory;
 use App\ServiceModule\Model\ServiceManager;
 use Nette;
@@ -44,16 +42,6 @@ class CloudBluemixMqttFormFactory {
 	private $cloudManager;
 
 	/**
-	 * @var BaseServiceManager Base service manager
-	 */
-	private $baseService;
-
-	/**
-	 * @var InstanceManager MQTT instance manager
-	 */
-	private $manager;
-
-	/**
 	 * @var FormFactory Generic form factory
 	 */
 	private $factory;
@@ -66,15 +54,11 @@ class CloudBluemixMqttFormFactory {
 	/**
 	 * Constructor
 	 * @param BluemixManager $bluemix IBM Bluemix manager
-	 * @param BaseServiceManager $baseService Base service manager\n
-	 * @param InstanceManager $manager MQTT instance manager
 	 * @param FormFactory $factory Generic form factory
 	 * @param ServiceManager $serviceManager Service manager
 	 */
-	public function __construct(BluemixManager $bluemix, BaseServiceManager $baseService, InstanceManager $manager, FormFactory $factory, ServiceManager $serviceManager) {
+	public function __construct(BluemixManager $bluemix, FormFactory $factory, ServiceManager $serviceManager) {
 		$this->cloudManager = $bluemix;
-		$this->baseService = $baseService;
-		$this->manager = $manager;
 		$this->factory = $factory;
 		$this->serviceManager = $serviceManager;
 	}
@@ -87,8 +71,6 @@ class CloudBluemixMqttFormFactory {
 	public function create(BluemixPresenter $presenter): Form {
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('cloud.ibmBluemix.form'));
-		$fileName = 'MqttMessaging';
-		$this->manager->setFileName($fileName);
 		$form->addText('organizationId', 'organizationId')->setRequired();
 		$form->addText('deviceType', 'deviceType')->setRequired();
 		$form->addText('deviceId', 'deviceId')->setRequired();
@@ -116,10 +98,7 @@ class CloudBluemixMqttFormFactory {
 	 */
 	public function save(ArrayHash $values, BluemixPresenter $presenter, bool $needRestart = false) {
 		try {
-			$mqttInterface = $this->cloudManager->createMqttInterface($values);
-			$baseService = $this->cloudManager->createBaseService();
-			$this->baseService->add($baseService);
-			$this->manager->add($mqttInterface);
+			$this->cloudManager->createMqttInterface($values);
 		} catch (IOException $e) {
 			$presenter->flashMessage('IQRF Daemon\'s configuration files not found.', 'danger');
 		}

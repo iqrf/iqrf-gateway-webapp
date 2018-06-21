@@ -11,6 +11,8 @@ declare(strict_types=1);
 namespace Test\ServiceModule\Model;
 
 use App\CloudModule\Model\InteliGlueManager;
+use App\ConfigModule\Model\GenericManager;
+use App\Model\JsonFileManager;
 use Nette\DI\Container;
 use Nette\Utils\ArrayHash;
 use Tester\Assert;
@@ -21,9 +23,19 @@ $container = require __DIR__ . '/../../bootstrap.php';
 class InteliGlueManagerTest extends TestCase {
 
 	/**
+	 * @var GenericManager Generic configuration manager
+	 */
+	private $configManager;
+
+	/**
 	 * @var Container Nette Tester Container
 	 */
 	private $container;
+
+	/**
+	 * @var JsonFileManager JSON file manager
+	 */
+	private $fileManager;
 
 	/**
 	 * @var InteliGlueManager Inteliments InteliGlue manager
@@ -41,6 +53,11 @@ class InteliGlueManagerTest extends TestCase {
 	];
 
 	/**
+	 * @var string Testing directory with configuration files
+	 */
+	private $pathTest = __DIR__ . '/../../configuration-test/';
+
+	/**
 	 * Constructor
 	 * @param Container $container Nette Tester Container
 	 */
@@ -52,7 +69,9 @@ class InteliGlueManagerTest extends TestCase {
 	 * Set up test environment
 	 */
 	public function setUp() {
-		$this->manager = \Mockery::mock(InteliGlueManager::class)->makePartial();
+		$this->fileManager = new JsonFileManager($this->pathTest);
+		$this->configManager = new GenericManager($this->fileManager);
+		$this->manager = \Mockery::mock(InteliGlueManager::class, [$this->configManager])->makePartial();
 		$this->manager->shouldReceive('downloadCaCertificate')->andReturn(null);
 	}
 
@@ -63,8 +82,8 @@ class InteliGlueManagerTest extends TestCase {
 	public function testCreateMqttInterface() {
 		$values = ArrayHash::from($this->formValues);
 		$mqtt = [
-			'Name' => 'MqttMessagingInteliGlue',
-			'Enabled' => true,
+			'component' => 'iqrf::MqttMessaging',
+			'instance' => 'MqttMessagingInteliGlue',
 			'BrokerAddr' => 'ssl://mqtt.inteliglue.com:1234',
 			'ClientId' => 'client1234',
 			'Persistence' => 1,
@@ -83,27 +102,11 @@ class InteliGlueManagerTest extends TestCase {
 			'PrivateKey' => '',
 			'PrivateKeyPassword' => '',
 			'EnabledCipherSuites' => '',
-			'EnableServerCertAuth' => false
+			'EnableServerCertAuth' => false,
+			'acceptAsyncMsg' => false,
 		];
-		Assert::same($mqtt, iterator_to_array($this->manager->createMqttInterface($values)));
-	}
-
-	/**
-	 * @test
-	 * Test function to create Base service
-	 */
-	public function testCreateBaseService() {
-		$mqtt = [
-			'Name' => 'BaseServiceForMQTTInteliGlue',
-			'Messaging' => 'MqttMessagingInteliGlue',
-			'Serializers' => ['JsonSerializer'],
-			'Properties' => ['AsyncDpaMessage' => true],
-		];
-		$actual = $this->manager->createBaseService();
-		Assert::same($mqtt['Serializers'], iterator_to_array($actual['Serializers']));
-		Assert::same($mqtt['Properties'], iterator_to_array($actual['Properties']));
-		unset($actual['Serializers'], $actual['Properties'], $mqtt['Serializers'], $mqtt['Properties']);
-		Assert::same($mqtt, iterator_to_array($actual));
+		$this->manager->createMqttInterface($values);
+		Assert::same($mqtt, $this->fileManager->read('MqttMessagingInteliGlue'));
 	}
 
 }

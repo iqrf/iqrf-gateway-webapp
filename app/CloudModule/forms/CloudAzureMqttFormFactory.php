@@ -22,8 +22,6 @@ namespace App\CloudModule\Forms;
 use App\CloudModule\Model\AzureManager;
 use App\CloudModule\Presenters\AzurePresenter;
 use App\CloudModule\Model\InvalidConnectionString;
-use App\ConfigModule\Model\BaseServiceManager;
-use App\ConfigModule\Model\InstanceManager;
 use App\Forms\FormFactory;
 use App\ServiceModule\Model\ServiceManager;
 use Nette;
@@ -45,16 +43,6 @@ class CloudAzureMqttFormFactory {
 	private $cloudManager;
 
 	/**
-	 * @var BaseServiceManager Base service manager
-	 */
-	private $baseService;
-
-	/**
-	 * @var InstanceManager MQTT instance manager
-	 */
-	private $manager;
-
-	/**
 	 * @var FormFactory Generic form factory
 	 */
 	private $factory;
@@ -67,15 +55,11 @@ class CloudAzureMqttFormFactory {
 	/**
 	 * Constructor
 	 * @param AzureManager $azure Microsoft Azure IoT Hub manager
-	 * @param BaseServiceManager $baseService Base service manager
-	 * @param InstanceManager $manager MQTT instance manager
 	 * @param FormFactory $factory Generic form factory
 	 * @param ServiceManager $serviceManager Service manager
 	 */
-	public function __construct(AzureManager $azure, BaseServiceManager $baseService, InstanceManager $manager, FormFactory $factory, ServiceManager $serviceManager) {
+	public function __construct(AzureManager $azure, FormFactory $factory, ServiceManager $serviceManager) {
 		$this->cloudManager = $azure;
-		$this->baseService = $baseService;
-		$this->manager = $manager;
 		$this->factory = $factory;
 		$this->serviceManager = $serviceManager;
 	}
@@ -88,8 +72,6 @@ class CloudAzureMqttFormFactory {
 	public function create(AzurePresenter $presenter): Form {
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('cloud.msAzure.form'));
-		$fileName = 'MqttMessaging';
-		$this->manager->setFileName($fileName);
 		$form->addText('ConnectionString', 'connectionString')->setRequired();
 		$form->addSubmit('save', 'save')
 				->onClick[] = function (SubmitButton $button) use ($presenter) {
@@ -113,10 +95,7 @@ class CloudAzureMqttFormFactory {
 	 */
 	public function save(ArrayHash $values, AzurePresenter $presenter, bool $needRestart = false) {
 		try {
-			$mqttInterface = $this->cloudManager->createMqttInterface($values['ConnectionString']);
-			$baseService = $this->cloudManager->createBaseService();
-			$this->baseService->add($baseService);
-			$this->manager->add($mqttInterface);
+			$this->cloudManager->createMqttInterface($values['ConnectionString']);
 		} catch (\Exception $e) {
 			if ($e instanceof InvalidConnectionString) {
 				$presenter->flashMessage('Invalid MS Azure IoT Hub connection string for device.', 'danger');

@@ -19,6 +19,7 @@ declare(strict_types=1);
 
 namespace App\CloudModule\Model;
 
+use App\ConfigModule\Model\GenericManager;
 use App\Model\CertificateManager;
 use GuzzleHttp\Client;
 use Nette;
@@ -31,6 +32,11 @@ use Nette\Utils\FileSystem;
 class AwsManager {
 
 	use Nette\SmartObject;
+
+	/**
+	 * @var GenericManager Generic configuration manager
+	 */
+	private $configManager;
 
 	/**
 	 * @var CertificateManager manager for certificates
@@ -50,9 +56,11 @@ class AwsManager {
 	/**
 	 * Constructor
 	 * @param CertificateManager $certManager Manager for certificates
+	 * @param GenericManager $configManager Generic config manager
 	 */
-	public function __construct(CertificateManager $certManager) {
+	public function __construct(CertificateManager $certManager, Genericmanager $configManager) {
 		$this->certManager = $certManager;
+		$this->configManager = $configManager;
 	}
 
 	/**
@@ -65,9 +73,10 @@ class AwsManager {
 		$this->downloadCaCertificate();
 		$this->checkCertificate($values);
 		$this->uploadCertsAndKey($values, $paths);
+		$this->configManager->setComponent('iqrf::MqttMessaging');
+		$this->configManager->setFileName($this->interfaceName);
 		$interface = [
-			'Name' => $this->interfaceName,
-			'Enabled' => true,
+			'instance' => $this->interfaceName,
 			'BrokerAddr' => 'ssl://' . $values['endpoint'] . ':8883',
 			'ClientId' => 'IqrfDpaMessaging1',
 			'Persistence' => 1,
@@ -86,23 +95,10 @@ class AwsManager {
 			'PrivateKey' => $paths['key'],
 			'PrivateKeyPassword' => '',
 			'EnabledCipherSuites' => '',
-			'EnableServerCertAuth' => false
+			'EnableServerCertAuth' => false,
+			'acceptAsyncMsg' => false,
 		];
-		return ArrayHash::from($interface);
-	}
-
-	/**
-	 * Create base service
-	 * @return ArrayHash Base service
-	 */
-	public function createBaseService() {
-		$baseService = [
-			'Name' => 'BaseServiceForMQTTAws',
-			'Messaging' => $this->interfaceName,
-			'Serializers' => ['JsonSerializer'],
-			'Properties' => ['AsyncDpaMessage' => true],
-		];
-		return ArrayHash::from($baseService);
+		$this->configManager->save(ArrayHash::from($interface));
 	}
 
 	/**

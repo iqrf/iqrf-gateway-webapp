@@ -15,15 +15,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\CloudModule\Forms;
 
 use App\CloudModule\Model\AwsManager;
 use App\CloudModule\Presenters\AwsPresenter;
 use App\CloudModule\Model\InvalidPrivateKeyForCertificate;
-use App\ConfigModule\Model\BaseServiceManager;
-use App\ConfigModule\Model\InstanceManager;
 use App\Forms\FormFactory;
 use App\ServiceModule\Model\ServiceManager;
 use Nette;
@@ -45,16 +43,6 @@ class CloudAwsMqttFormFactory {
 	private $cloudManager;
 
 	/**
-	 * @var BaseServiceManager Base service manager
-	 */
-	private $baseService;
-
-	/**
-	 * @var InstanceManager MQTT instance manager
-	 */
-	private $manager;
-
-	/**
 	 * @var FormFactory Generic form factory
 	 */
 	private $factory;
@@ -67,15 +55,11 @@ class CloudAwsMqttFormFactory {
 	/**
 	 * Constructor
 	 * @param AwsManager $aws Amazon AWS IoT manager
-	 * @param BaseServiceManager $baseService Base service manager\n
-	 * @param InstanceManager $manager MQTT instance manager
 	 * @param FormFactory $factory Generic form factory
 	 * @param ServiceManager $serviceManager Service manager
 	 */
-	public function __construct(AwsManager $aws, BaseServiceManager $baseService, InstanceManager $manager, FormFactory $factory, ServiceManager $serviceManager) {
+	public function __construct(AwsManager $aws, FormFactory $factory, ServiceManager $serviceManager) {
 		$this->cloudManager = $aws;
-		$this->baseService = $baseService;
-		$this->manager = $manager;
 		$this->factory = $factory;
 		$this->serviceManager = $serviceManager;
 	}
@@ -88,8 +72,6 @@ class CloudAwsMqttFormFactory {
 	public function create(AwsPresenter $presenter): Form {
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('cloud.amazonAws.form'));
-		$fileName = 'MqttMessaging';
-		$this->manager->setFileName($fileName);
 		$form->addText('endpoint', 'endpoint')->setRequired();
 		$form->addUpload('cert', 'certificate')->setRequired();
 		$form->addUpload('key', 'pkey')->setRequired();
@@ -115,10 +97,7 @@ class CloudAwsMqttFormFactory {
 	 */
 	public function save(ArrayHash $values, AwsPresenter $presenter, bool $needRestart = false) {
 		try {
-			$mqttInterface = $this->cloudManager->createMqttInterface($values);
-			$baseService = $this->cloudManager->createBaseService();
-			$this->baseService->add($baseService);
-			$this->manager->add($mqttInterface);
+			$this->cloudManager->createMqttInterface($values);
 		} catch (\Exception $e) {
 			if ($e instanceof InvalidPrivateKeyForCertificate) {
 				$presenter->flashMessage('The private key doesn\'t corespond to the certificate.', 'danger');
