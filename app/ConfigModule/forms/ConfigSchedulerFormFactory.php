@@ -20,7 +20,6 @@ declare(strict_types=1);
 
 namespace App\ConfigModule\Forms;
 
-use App\ConfigModule\Model\BaseServiceManager;
 use App\ConfigModule\Model\SchedulerManager;
 use App\ConfigModule\Presenters\SchedulerPresenter;
 use App\Forms\FormFactory;
@@ -30,11 +29,6 @@ use Nette\Application\UI\Form;
 class ConfigSchedulerFormFactory {
 
 	use Nette\SmartObject;
-
-	/**
-	 * @var BaseServiceManager Base service manager
-	 */
-	private $baseService;
 
 	/**
 	 * @var SchedulerManager Scheduler manager
@@ -51,10 +45,9 @@ class ConfigSchedulerFormFactory {
 	 * @param FormFactory $factory Generic form factory
 	 * @param SchedulerManager $manager Scheduler manager
 	 */
-	public function __construct(FormFactory $factory, SchedulerManager $manager, BaseServiceManager $baseService) {
+	public function __construct(FormFactory $factory, SchedulerManager $manager) {
 		$this->manager = $manager;
 		$this->factory = $factory;
-		$this->baseService = $baseService;
 	}
 
 	/**
@@ -76,11 +69,9 @@ class ConfigSchedulerFormFactory {
 			unset($types[$key]);
 			$types[$type] = 'types.' . $type;
 		}
-		$baseServices = $this->baseService->getServicesNames();
-		$baseService = $defaults['service'];
 		$form->addText('time', 'time');
 		$form->addSelect('service', 'config.scheduler.form.service')
-				->setItems($baseServices, false)->setTranslator($translator)
+				->setItems([], false)->setTranslator($translator)
 				->setPrompt('config.scheduler.form.messages.service-prompt')
 				->setRequired('messages.service');
 		$message = $form->addContainer('message');
@@ -113,9 +104,6 @@ class ConfigSchedulerFormFactory {
 				default:
 					$message->addText($key, $key);
 			}
-		}
-		if (!in_array($baseService, $baseServices)) {
-			unset($defaults['service']);
 		}
 		$form->addSubmit('save', 'Save');
 		$form->setDefaults($defaults);

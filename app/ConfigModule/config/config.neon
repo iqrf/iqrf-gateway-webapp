@@ -1,5 +1,4 @@
 services:
-	- App\ConfigModule\Forms\ConfigBaseServiceFormFactory
 	- App\ConfigModule\Forms\ConfigComponentsFormFactory
 	- App\ConfigModule\Forms\ConfigIqrfAppFormFactory
 	- App\ConfigModule\Forms\ConfigIqrfFormFactory
@@ -11,7 +10,6 @@ services:
 	- App\ConfigModule\Forms\ConfigSchedulerFormFactory
 	- App\ConfigModule\Forms\ConfigTracerFormFactory
 	- App\ConfigModule\Forms\ConfigUdpFormFactory
-	- App\ConfigModule\Model\BaseServiceManager
 	- App\ConfigModule\Model\ComponentManager
 	- App\ConfigModule\Model\GenericManager
 	- App\ConfigModule\Model\IqrfManager

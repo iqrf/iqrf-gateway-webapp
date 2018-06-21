@@ -1,26 +1,6 @@
 title: Configuration
 description: Edit configuration.
 
-baseService:
-	title: Base services
-	description: Base services settings.
-	form:
-		title: Edit Base service
-		Name: Name
-		Messaging: Messaging
-		Serializers: Serializers
-		serializers:
-			JsonSerializer: JSON serializer
-			SimpleSerializer: Simple serializer
-		AsyncDpaMessage: Enabled Async DPA messages
-		messages:
-			Name: Please enter name of Base service.
-			Messaging: Please select messaging.
-			Serializers: Please select serializer.
-		Save: Save
-	Edit: Edit
-	Remove: Remove
-
 components:
 	title: Components
 	description: Manage components.
@@ -123,7 +103,7 @@ mq:
 		instance: Name of instance
 		LocalMqName: Local MQ name
 		RemoteMqName: Remote MQ name
-		acceptAsyncMsg: Accept Asnc messages
+		acceptAsyncMsg: Accept Async messages
 		messages:
 			instance: Please enter name of MQ instance.
 			LocalMqName: Please enter local MQ name.
@@ -162,7 +142,7 @@ mqtt:
 		PrivateKeyPassword: Private key password
 		EnabledCipherSuites: Enabled cipher suites
 		EnableServerCertAuth: Enable server certificate authentication
-		acceptAsyncMsg: Accept Asnc messages
+		acceptAsyncMsg: Accept Async messages
 		messages:
 			instance: Please enter name of MQTT instance.
 			BrokerAddr: Please enter address of MQTT broker.
