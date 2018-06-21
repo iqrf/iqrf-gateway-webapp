@@ -73,8 +73,9 @@ class GenericManagerTest extends TestCase {
 	 */
 	public function testGetInstances() {
 		$manager = new GenericManager($this->fileManager);
+		$manager->setComponent('iqrf::MqttMessaging');
 		$expected = ['iqrf__MqttMessaging1', 'iqrf__MqttMessaging2',];
-		Assert::equal($expected, $manager->getInstances('iqrf::MqttMessaging'));
+		Assert::equal($expected, $manager->getInstanceFiles('iqrf::MqttMessaging'));
 	}
 
 	/**
@@ -94,9 +95,9 @@ class GenericManagerTest extends TestCase {
 	 */
 	public function testSave() {
 		$manager = new GenericManager($this->fileManagerTemp);
+		$manager->setComponent('iqrf::MqttMessaging');
 		$manager->setFileName($this->fileName);
 		$array = [
-			'component' => 'iqrf::MqttMessaging',
 			'instance' => 'MqttMessaging1',
 			'BrokerAddr' => 'tcp://127.0.0.1:1883',
 			'ClientId' => 'IqrfDpaMessaging1',

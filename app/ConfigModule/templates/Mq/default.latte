@@ -22,24 +22,23 @@
 		<table class='table table-striped'>
 			<thead>
 				<tr>
-					<th>{_config.mq.form.Name}</th>
+					<th>{_config.mq.form.instance}</th>
 					<th>{_config.mq.form.LocalMqName}</th>
 					<th>{_config.mq.form.RemoteMqName}</th>
-					<th>{_config.mq.form.Enabled}</th>
+					<th>{_config.mq.form.acceptAsyncMsg}</th>
 					<th>{_config.mq.Edit}</th>
 					<th>{_config.mq.Remove}</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr n:foreach="$instances as $instance">
-					{var $properties = $instance['Properties']}
-					{var $enabled = ($instance['Enabled'] ? ok : remove)}
-					{var $id = (array_keys($instances, $instance, TRUE)[0])}
-					<td>{$instance['Name']}</td>
-					<td>{$properties['LocalMqName']}</td>
-					<td>{$properties['RemoteMqName']}</td>
+					{var $acceptAsyncMsg = ($instance['acceptAsyncMsg'] ? ok : remove)}
+					{var $id = (array_keys($instances, $instance, true)[0])}
+					<td>{$instance['instance']}</td>
+					<td>{$instance['LocalMqName']}</td>
+					<td>{$instance['RemoteMqName']}</td>
 					<td>
-						<span class='glyphicon glyphicon-{_$enabled}' aria-hidden='true'></span>
+						<span class='glyphicon glyphicon-{_$acceptAsyncMsg}' aria-hidden='true'></span>
 					</td>
 					<td>
 						<a n:href="Mq:edit $id">

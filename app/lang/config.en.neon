@@ -120,10 +120,11 @@ mq:
 	description: MQ interface settings.
 	form:
 		title: Edit MQ interface
-		Name: Name
+		instance: Name of instance
 		Enabled: Enabled
 		LocalMqName: Local MQ name
 		RemoteMqName: Remote MQ name
+		acceptAsyncMsg: Accept Asnc messages
 		messages:
 			Name: Please enter name of MQ interface.
 			LocalMqName: Please enter local MQ name.

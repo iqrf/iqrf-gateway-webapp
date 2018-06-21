@@ -22,6 +22,7 @@ namespace App\ConfigModule\Model;
 
 use App\Model\JsonFileManager;
 use Nette;
+use Nette\Utils\Arrays;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Finder;
 use Nette\Utils\Strings;
@@ -29,6 +30,11 @@ use Nette\Utils\Strings;
 class GenericManager {
 
 	use Nette\SmartObject;
+
+	/**
+	 * @var string Component type
+	 */
+	private $component;
 
 	/**
 	 * @var JsonFileManager JSON file manager
@@ -50,7 +56,14 @@ class GenericManager {
 	}
 
 	/**
-	 * Load configuration
+	 * Delete a configuration
+	 */
+	public function delete() {
+		$this->fileManager->delete($this->fileName);
+	}
+
+	/**
+	 * Load a configuration
 	 * @return array Array for form
 	 */
 	public function load(): array {
@@ -62,7 +75,17 @@ class GenericManager {
 	 * @param ArrayHash $array Settings
 	 */
 	public function save(ArrayHash $array) {
-		$this->fileManager->write($this->fileName, $array);
+		$component = ['component' => $this->component];
+		$settings = Arrays::mergeTree($component, (array) $array);
+		$this->fileManager->write($this->fileName, ArrayHash::from($settings));
+	}
+
+	/**
+	 * Set component type
+	 * @param string $component Component name
+	 */
+	public function setComponent(string $component) {
+		$this->component = $component;
 	}
 
 	/**
@@ -74,17 +97,32 @@ class GenericManager {
 	}
 
 	/**
-	 * Get component's instamces
-	 * @param string $component Component name
-	 * @return array Files with instances of components
+	 * Get component's instance
+	 * @return array Component's instances
 	 */
-	public function getInstances(string $component): array {
+	public function getInstances(): array {
+		$files = $this->getInstanceFiles();
+		$instances = [];
+		foreach ($files as $file) {
+			$this->fileName = $file;
+			$instances[] = $this->load();
+		}
+		return $instances;
+	}
+
+	/**
+	 * Get component's instance files
+	 * @return array Files with component's instances
+	 */
+	public function getInstanceFiles(): array {
 		$dir = $this->fileManager->getDirectory();
 		$instances = [];
 		foreach (Finder::findFiles('*.json')->exclude('config.json')->from($dir) as $file) {
-			$fileName = Strings::replace($file->getFilename(), '/.json$/', '');
+			$fileName = Strings::replace($file->getRealPath(), ['~^' . realpath($dir) . '/~', '/.json$/'], '');
+			var_dump($fileName);
 			$json = $this->fileManager->read($fileName);
-			if (array_key_exists('component', $json) && $json['component'] === $component) {
+			var_dump($json['component']);
+			if (array_key_exists('component', $json) && $json['component'] === $this->component) {
 				$instances[] = $fileName;
 			}
 		}

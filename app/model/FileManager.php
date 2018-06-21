@@ -52,6 +52,14 @@ class FileManager {
 	}
 
 	/**
+	 * Delete a file
+	 * @param string $fileName File name
+	 */
+	public function delete(string $fileName) {
+		FileSystem::delete($this->configDir . '/' . $fileName);
+	}
+
+	/**
 	 * Read file
 	 * @param string $fileName File name
 	 * @return string File content

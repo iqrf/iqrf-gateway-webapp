@@ -16,7 +16,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 declare(strict_types=1);
 
 namespace App\Model;
@@ -37,6 +36,14 @@ class JsonFileManager extends FileManager {
 	 */
 	public function __construct(string $configDir) {
 		parent::__construct($configDir);
+	}
+
+	/**
+	 * Delete a JSON file
+	 * @param string $fileName File name
+	 */
+	public function delete(string $fileName) {
+		parent::delete($fileName . '.json');
 	}
 
 	/**

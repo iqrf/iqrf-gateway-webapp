@@ -20,7 +20,7 @@ declare(strict_types=1);
 
 namespace App\ConfigModule\Presenters;
 
-use App\ConfigModule\Model\InstanceManager;
+use App\ConfigModule\Model\GenericManager;
 use App\ConfigModule\Forms\ConfigMqFormFactory;
 use App\Presenters\BasePresenter;
 
@@ -33,22 +33,17 @@ class MqPresenter extends BasePresenter {
 	public $formFactory;
 
 	/**
-	 * @var InstanceManager Interface instance manager
+	 * @var GenericManager Generic manager
 	 */
 	private $configManager;
 
 	/**
-	 * @var string File name (without .json)
-	 */
-	private $fileName = 'MqMessaging';
-
-	/**
 	 * Constructor
-	 * @param InstanceManager $configManager Interface instance manager
+	 * @param GenericManager $configManager Interface instance manager
 	 */
-	public function __construct(InstanceManager $configManager) {
+	public function __construct(GenericManager $configManager) {
 		$this->configManager = $configManager;
-		$this->configManager->setFileName($this->fileName);
+		$this->configManager->setComponent('iqrf::MqMessaging');
 	}
 
 	/**
@@ -74,7 +69,9 @@ class MqPresenter extends BasePresenter {
 	 */
 	public function actionDelete(int $id) {
 		$this->onlyForAdmins();
-		$this->configManager->delete($id);
+		$fileName = $this->configManager->getInstanceFiles()[$id];
+		$this->configManager->setFileName($fileName);
+		$this->configManager->delete();
 		$this->redirect('Mq:default');
 		$this->setView('default');
 	}
