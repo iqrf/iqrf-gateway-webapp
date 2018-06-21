@@ -20,7 +20,7 @@ declare(strict_types=1);
 
 namespace App\ConfigModule\Forms;
 
-use App\ConfigModule\Model\InstanceManager;
+use App\ConfigModule\Model\GenericManager;
 use App\ConfigModule\Presenters\MqttPresenter;
 use App\Forms\FormFactory;
 use Nette;
@@ -31,7 +31,7 @@ class ConfigMqttFormFactory {
 	use Nette\SmartObject;
 
 	/**
-	 * @var InstanceManager
+	 * @var GenericManager
 	 */
 	private $manager;
 
@@ -42,10 +42,10 @@ class ConfigMqttFormFactory {
 
 	/**
 	 * Constructor
-	 * @param InstanceManager $manager
+	 * @param GenericManager $manager
 	 * @param FormFactory $factory Generic form factory
 	 */
-	public function __construct(InstanceManager $manager, FormFactory $factory) {
+	public function __construct(GenericManager $manager, FormFactory $factory) {
 		$this->manager = $manager;
 		$this->factory = $factory;
 	}
@@ -57,13 +57,13 @@ class ConfigMqttFormFactory {
 	 */
 	public function create(MqttPresenter $presenter): Form {
 		$id = intval($presenter->getParameter('id'));
+		$this->manager->setComponent('iqrf::MqttMessaging');
+		$instances = $this->manager->getInstanceFiles();
+		$instanceExist = array_key_exists($id, $instances);
+		$qos = ['QoSes.QoS0', 'QoSes.QoS1', 'QoSes.QoS2'];
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('config.mqtt.form'));
-		$fileName = 'MqttMessaging';
-		$this->manager->setFileName($fileName);
-		$qos = ['QoSes.QoS0', 'QoSes.QoS1', 'QoSes.QoS2'];
-		$form->addText('Name', 'Name')->setRequired('messages.Name');
-		$form->addCheckbox('Enabled', 'Enabled');
+		$form->addText('instance', 'instance')->setRequired('messages.instance');
 		$form->addText('BrokerAddr', 'BrokerAddr')
 				->setRequired('messages.BrokerAddr');
 		$form->addText('ClientId', 'ClientId')
@@ -87,11 +87,18 @@ class ConfigMqttFormFactory {
 		$form->addText('PrivateKeyPassword', 'PrivateKeyPassword');
 		$form->addText('EnabledCipherSuites', 'EnabledCipherSuites');
 		$form->addCheckbox('EnableServerCertAuth', 'EnableServerCertAuth');
+		$form->addCheckbox('acceptAsyncMsg', 'acceptAsyncMsg');
 		$form->addSubmit('save', 'Save');
-		$form->setDefaults($this->manager->load($id));
 		$form->addProtection('core.errors.form-timeout');
-		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $id) {
-			$this->manager->save($values, $id);
+		if ($instanceExist) {
+			$this->manager->setFileName($instances[$id]);
+			$form->setDefaults($this->manager->load());
+		}
+		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $instanceExist) {
+			if (!$instanceExist) {
+				$this->manager->setFileName('iqrf__' . $values['instance']);
+			}
+			$this->manager->save($values);
 			$presenter->redirect('Mqtt:default');
 		};
 		return $form;

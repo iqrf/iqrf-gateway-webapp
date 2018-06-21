@@ -121,12 +121,11 @@ mq:
 	form:
 		title: Edit MQ interface
 		instance: Name of instance
-		Enabled: Enabled
 		LocalMqName: Local MQ name
 		RemoteMqName: Remote MQ name
 		acceptAsyncMsg: Accept Asnc messages
 		messages:
-			Name: Please enter name of MQ interface.
+			instance: Please enter name of MQ instance.
 			LocalMqName: Please enter local MQ name.
 			RemoteMqName: Please enter remote MQ name.
 		Save: Save
@@ -138,7 +137,7 @@ mqtt:
 	description: MQTT interface settings.
 	form:
 		title: Edit MQTT interface
-		Name: Name
+		instance: Name of instance
 		Enabled: Enabled
 		BrokerAddr: Broker address
 		ClientId: Client ID
@@ -163,8 +162,9 @@ mqtt:
 		PrivateKeyPassword: Private key password
 		EnabledCipherSuites: Enabled cipher suites
 		EnableServerCertAuth: Enable server certificate authentication
+		acceptAsyncMsg: Accept Asnc messages
 		messages:
-			Name: Please enter name of MQTT interface.
+			instance: Please enter name of MQTT instance.
 			BrokerAddr: Please enter address of MQTT broker.
 			ClientId: Please enter client ID.
 			TopicRequest: Please enter topic for requests.

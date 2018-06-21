@@ -22,29 +22,28 @@
 		<table class='table table-striped'>
 			<thead>
 				<tr>
-					<th>{_config.mqtt.form.Name}</th>
+					<th>{_config.mqtt.form.instance}</th>
 					<th>{_config.mqtt.form.BrokerAddr}</th>
 					<th>{_config.mqtt.form.ClientId}</th>
 					<th>{_config.mqtt.form.EnabledSSL}</th>
-					<th>{_config.mqtt.form.Enabled}</th>
+					<th>{_config.mqtt.form.acceptAsyncMsg}</th>
 					<th>{_config.mqtt.Edit}</th>
 					<th>{_config.mqtt.Remove}</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr n:foreach="$instances as $instance">
-					{var $properties = $instance['Properties']}
-					{var $enabledSsl = ($properties['EnabledSSL'] ? ok : remove)}
-					{var $enabled = ($instance['Enabled'] ? ok : remove)}
+					{var $acceptAsyncMsg = ($instance['acceptAsyncMsg'] ? ok : remove)}
+					{var $enabledSsl = ($instance['EnabledSSL'] ? ok : remove)}
 					{var $id = (array_keys($instances, $instance, TRUE)[0])}
-					<td>{$instance['Name']}</td>
-					<td>{$properties['BrokerAddr']}</td>
-					<td>{$properties['ClientId']}</td>
+					<td>{$instance['instance']}</td>
+					<td>{$instance['BrokerAddr']}</td>
+					<td>{$instance['ClientId']}</td>
 					<td>
 						<span class='glyphicon glyphicon-{_$enabledSsl}' aria-hidden='true'></span>
 					</td>
 					<td>
-						<span class='glyphicon glyphicon-{_$enabled}' aria-hidden='true'></span>
+						<span class='glyphicon glyphicon-{_$acceptAsyncMsg}' aria-hidden='true'></span>
 					</td>
 					<td>
 						<a n:href="Mqtt:edit $id">

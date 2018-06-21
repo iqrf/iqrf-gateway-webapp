@@ -119,9 +119,7 @@ class GenericManager {
 		$instances = [];
 		foreach (Finder::findFiles('*.json')->exclude('config.json')->from($dir) as $file) {
 			$fileName = Strings::replace($file->getRealPath(), ['~^' . realpath($dir) . '/~', '/.json$/'], '');
-			var_dump($fileName);
 			$json = $this->fileManager->read($fileName);
-			var_dump($json['component']);
 			if (array_key_exists('component', $json) && $json['component'] === $this->component) {
 				$instances[] = $fileName;
 			}
