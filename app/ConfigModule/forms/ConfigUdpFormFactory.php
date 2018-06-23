@@ -64,7 +64,6 @@ class ConfigUdpFormFactory {
 		$form->addInteger('RemotePort', 'RemotePort')->setRequired('messages.RemotePort');
 		$form->addInteger('LocalPort', 'LocalPort')->setRequired('messages.LocalPort');
 		$form->addSubmit('save', 'Save');
-		$form->setDefaults($this->manager->getInstances()[0]);
 		$form->addProtection('core.errors.form-timeout');
 		$form->setDefaults($this->manager->load());
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {

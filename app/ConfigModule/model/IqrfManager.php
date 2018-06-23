@@ -21,9 +21,7 @@ declare(strict_types=1);
 namespace App\ConfigModule\Model;
 
 use App\Model\CommandManager;
-use App\Model\JsonFileManager;
 use Nette;
-use Nette\Utils\ArrayHash;
 
 class IqrfManager {
 
@@ -35,57 +33,11 @@ class IqrfManager {
 	private $commandManager;
 
 	/**
-	 * @var JsonFileManager JSON file manager
-	 */
-	private $fileManager;
-
-	/**
-	 * @var string File name (without .json)
-	 */
-	private $fileName = 'IqrfInterface';
-
-	/**
 	 * Constructor
-	 * @param CommandManager $commandManager
-	 * @param JsonFileManager $fileManager JSON file manager
+	 * @param CommandManager $commandManager Command manager
 	 */
-	public function __construct(CommandManager $commandManager, JsonFileManager $fileManager) {
+	public function __construct(CommandManager $commandManager) {
 		$this->commandManager = $commandManager;
-		$this->fileManager = $fileManager;
-	}
-
-	/**
-	 * Load configuration
-	 * @return array Array for form
-	 */
-	public function load(): array {
-		return $this->fileManager->read($this->fileName);
-	}
-
-	/**
-	 * Save configuration
-	 * @param ArrayHash $array Settings
-	 */
-	public function save(ArrayHash $array) {
-		$json = $this->fileManager->read($this->fileName);
-		$spiKeys = ['enableGpioPin', 'spiCe0GpioPin', 'spiMisoGpioPin', 'spiMosiGpioPin', 'spiClkGpioPin',];
-		foreach ($array as $key => $value) {
-			if (!isset($value) && in_array($key, $spiKeys)) {
-				unset($array[$key]);
-			}
-		}
-		$this->fileManager->write($this->fileName, array_merge($json, (array) $array));
-	}
-
-	/**
-	 * Create list of SPI and USB CDC interfaces available in the system
-	 * @return array SPI and USB CDC interfaces available in the system
-	 */
-	public function getInterfaces(): array {
-		$interfaces = [];
-		$interfaces['cdc'] = $this->getCdcInterfaces();
-		$interfaces['spi'] = $this->getSpiInterfaces();
-		return $interfaces;
 	}
 
 	/**

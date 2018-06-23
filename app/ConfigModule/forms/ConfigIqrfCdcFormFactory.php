@@ -1,8 +1,7 @@
 <?php
 
 /**
- * Copyright 2017 MICRORISC s.r.o.
- * Copyright 2017-2018 IQRF Tech s.r.o.
+ * Copyright 2018 IQRF Tech s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,18 +20,18 @@ declare(strict_types=1);
 
 namespace App\ConfigModule\Forms;
 
-use App\ConfigModule\Model\IqrfManager;
+use App\ConfigModule\Model\GenericManager;
 use App\ConfigModule\Presenters\IqrfPresenter;
 use App\Forms\FormFactory;
 use Nette;
 use Nette\Application\UI\Form;
 
-class ConfigIqrfFormFactory {
+class ConfigIqrfCdcFormFactory {
 
 	use Nette\SmartObject;
 
 	/**
-	 * @var IqrfManager
+	 * @var GenericManager Generic config manager
 	 */
 	private $manager;
 
@@ -44,29 +43,28 @@ class ConfigIqrfFormFactory {
 	/**
 	 * Constructor
 	 * @param FormFactory $factory Generic form factory
-	 * @param IqrfManager $manager
+	 * @param GenericManager $manager Generic config manager
 	 */
-	public function __construct(FormFactory $factory, IqrfManager $manager) {
+	public function __construct(FormFactory $factory, GenericManager $manager) {
 		$this->factory = $factory;
 		$this->manager = $manager;
 	}
 
 	/**
-	 * Create IQRF configuration form
+	 * Create IQRF SPI configuration form
 	 * @param IqrfPresenter $presenter
 	 * @return Form IQRF configuration form
 	 */
 	public function create(IqrfPresenter $presenter): Form {
 		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('config.iqrf.form'));
-		$communicationModes = ['STD' => 'CommunicationModes.STD', 'LP' => 'CommunicationModes.LP'];
+		$form->setTranslator($form->getTranslator()->domain('config.iqrfSpi.form'));
+		$this->manager->setComponent('iqrf::IqrfCdc');
+		$this->manager->setFileName($this->manager->getInstanceFiles()[0]);
+		$form->addText('instance', 'instance')->setRequired('messages.instance');
 		$form->addText('IqrfInterface', 'IqrfInterface')->setRequired('messages.IqrfInterface');
-		$form->addInteger('DpaHandlerTimeout', 'DpaHandlerTimeout')->setRequired('messages.DpaHandlerTimeout')
-				->addRule(Form::MIN, 'messages.DpaHandlerTimeout-rule', 0);
-		$form->addSelect('CommunicationMode', 'CommunicationMode', $communicationModes);
 		$form->addSubmit('save', 'Save');
-		$form->setDefaults($this->manager->load());
 		$form->addProtection('core.errors.form-timeout');
+		$form->setDefaults($this->manager->load());
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
 			$this->manager->save($values);
 			$presenter->redirect('Homepage:default');

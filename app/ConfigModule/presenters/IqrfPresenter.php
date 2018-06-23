@@ -20,7 +20,8 @@ declare(strict_types=1);
 
 namespace App\ConfigModule\Presenters;
 
-use App\ConfigModule\Forms\ConfigIqrfFormFactory;
+use App\ConfigModule\Forms\ConfigIqrfCdcFormFactory;
+use App\ConfigModule\Forms\ConfigIqrfDpaFormFactory;
 use App\ConfigModule\Forms\ConfigIqrfSpiFormFactory;
 use App\ConfigModule\Model\IqrfManager;
 use App\Presenters\BasePresenter;
@@ -34,13 +35,19 @@ class IqrfPresenter extends BasePresenter {
 	private $fileManager;
 
 	/**
-	 * @var ConfigIqrfFormFactory IQRF interface configuration form factory
+	 * @var ConfigIqrfCdcFormFactory IQRF CDC interface configuration form factory
 	 * @inject
 	 */
-	public $formFactory;
+	public $cdcFormFactory;
 
 	/**
-	 * @var ConfigIqrfSpiFormFactory IQRF SPI configuration form factory
+	 * @var ConfigIqrfDpaFormFactory IQRF DPA interface configuration form factory
+	 * @inject
+	 */
+	public $dpaFormFactory;
+
+	/**
+	 * @var ConfigIqrfSpiFormFactory IQRF SPI interface configuration form factory
 	 * @inject
 	 */
 	public $spiFormFactory;
@@ -64,17 +71,27 @@ class IqrfPresenter extends BasePresenter {
 	 */
 	public function renderDefault() {
 		$this->onlyForAdmins();
-		$this->template->interfaces = $this->iqrfManager->getInterfaces();
+		$this->template->cdcInterfaces = $this->iqrfManager->getCdcInterfaces();
+		$this->template->spiInterfaces = $this->iqrfManager->getSpiInterfaces();
 		$this->template->spiPins = $this->fileManager->read('SpiPins');
 	}
 
 	/**
-	 * Create IQRF interface form
-	 * @return Form IQRF interface form
+	 * Create IQRF CDC interface form
+	 * @return Form IQRF CDC interface form
 	 */
-	protected function createComponentConfigIqrfForm() {
+	protected function createComponentConfigIqrfCdcForm() {
 		$this->onlyForAdmins();
-		return $this->formFactory->create($this);
+		return $this->cdcFormFactory->create($this);
+	}
+
+	/**
+	 * Create IQRF DPA interface form
+	 * @return Form IQRF DPA interface form
+	 */
+	protected function createComponentConfigIqrfDpaForm() {
+		$this->onlyForAdmins();
+		return $this->dpaFormFactory->create($this);
 	}
 
 	/**

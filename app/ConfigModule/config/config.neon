@@ -1,6 +1,7 @@
 services:
 	- App\ConfigModule\Forms\ConfigComponentsFormFactory
-	- App\ConfigModule\Forms\ConfigIqrfFormFactory
+	- App\ConfigModule\Forms\ConfigIqrfCdcFormFactory
+	- App\ConfigModule\Forms\ConfigIqrfDpaFormFactory
 	- App\ConfigModule\Forms\ConfigIqrfSpiFormFactory
 	- App\ConfigModule\Forms\ConfigMainFormFactory
 	- App\ConfigModule\Forms\ConfigMigrationFormFactory

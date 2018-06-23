@@ -18,16 +18,31 @@ components:
 iqrf:
 	title: IQRF interface
 	description: IQRF interface settings.
+
+iqrfCdc:
+	title: IQRF CDC
 	form:
-		title: IQRF interface
-		IqrfInterface: IQRF interface
+		instance: Name of instance
+		IqrfInterface: IQRF CDC interface
+		messages:
+			instance: Please enter name of IQRF CDC instance.
+			IqrfInterface: Please enter IQRF CDC interface.
+		Save: Save
+	mapping:
+		title: Available USB CDC mappings
+		interfaces: Interfaces
+
+iqrfDpa:
+	title: IQRF DPA interface
+	form:
+		instance: Name of instance
 		DpaHandlerTimeout: DPA Handler timeout
 		CommunicationMode: Communication mode
 		CommunicationModes:
 			LP: LP
 			STD: STD
 		messages:
-			IqrfInterface: Please enter IQRF interface.
+			instance: Please enter name of IQRF DPA instance.
 			DpaHandlerTimeout: Please enter default DPA Handler timeout.
 			DpaHandlerTimeout-rule: DPA Handler timeout must be bigger than 0.
 		Save: Save
@@ -37,16 +52,23 @@ iqrf:
 		spi: SPI
 
 iqrfSpi:
-	title: SPI mapping
+	title: IQRF SPI
 	form:
+		instance: Name of instance
+		IqrfInterface: IQRF SPI interface
 		enableGpioPin: Enable GPIO pin
 		spiCe0GpioPin: SPI CE0 GPIO pin
 		spiMisoGpioPin: SPI MISO GPIO pin
 		spiMosiGpioPin: SPI MOSI GPIO pin
 		spiClkGpioPin: SPI CLK GPIO pin
+		messages:
+			instance: Please enter name of IQRF SPI instance.
+			IqrfInterface: Please enter IQRF SPI interface.
 		Save: Save
-	availableSpiMappings: Available SPI mappings
-	boards: Boards
+	mapping:
+		title: Available SPI mappings
+		boards: Boards
+		interfaces: Interfaces
 
 main:
 	title: Main configuration

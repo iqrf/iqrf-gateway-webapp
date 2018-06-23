@@ -17,23 +17,24 @@
 
 {block content}
 <h1 n:block=title>{_config.iqrf.title}</h1>
+<h2>{_config.iqrfDpa.title}</h2>
 <div class='panel panel-default'>
 	<div class='panel-body'>
-		{control configIqrfForm}
+		{control configIqrfDpaForm}
 	</div>
 </div>
-<h2>{_config.iqrf.availableInterfaces}</h2>
+<h2>{_config.iqrfCdc.title}</h2>
 <div class='panel panel-default'>
 	<div class='panel-body'>
-		{if !empty($interfaces['cdc'])}
-			<h3>{_config.iqrf.interfaces.usb}</h3>
-			{foreach $interfaces['cdc'] as $interface}
-				<a class="btn btn-default btn-port" role="button" data-port="{$interface}">{$interface}</a>
-			{/foreach}
-		{/if}
-		{if !empty($interfaces['spi'])}
-			<h3>{_config.iqrf.interfaces.spi}</h3>
-			{foreach $interfaces['spi'] as $interface}
+		{control configIqrfCdcForm}
+	</div>
+</div>
+<h2>{_config.iqrfCdc.mapping.title}</h2>
+<div class='panel panel-default'>
+	<div class='panel-body'>
+		<h3>{_config.iqrfSpi.mapping.interfaces}</h3>
+		{if !empty($cdcInterfaces)}
+			{foreach $cdcInterfaces as $interface}
 				<a class="btn btn-default btn-port" role="button" data-port="{$interface}">{$interface}</a>
 			{/foreach}
 		{/if}
@@ -45,13 +46,24 @@
 		{control configIqrfSpiForm}
 	</div>
 </div>
-<h2>{_config.iqrfSpi.availableSpiMappings}</h2>
+<h2>{_config.iqrfSpi.mapping.title}</h2>
 <div class='panel panel-default'>
 	<div class='panel-body'>
-		<h3>{_config.iqrfSpi.boards}</h3>
-		{foreach $spiPins as $board => $spiPin}
-			<a class="btn btn-default btn-spiPin" role="button" {foreach $spiPin as $pinName => $pin} data-{$pinName}={$pin}{/foreach}>{$board}</a>
-		{/foreach}
-		{dump $spiPins}
+		<div class='row'>
+			<div class='col-md-6'>
+				<h3>{_config.iqrfSpi.mapping.boards}</h3>
+				{foreach $spiPins as $board => $spiPin}
+					<a class="btn btn-default btn-spiPin" role="button" {foreach $spiPin as $pinName => $pin} data-{$pinName}={$pin}{/foreach}>{$board}</a>
+				{/foreach}
+			</div>
+			<div class='col-md-6'>
+				<h3>{_config.iqrfSpi.mapping.interfaces}</h3>
+				{if !empty($spiInterfaces)}
+					{foreach $spiInterfaces as $interface}
+						<a class="btn btn-default btn-port" role="button" data-port="{$interface}">{$interface}</a>
+					{/foreach}
+				{/if}
+			</div>
+		</div>
 	</div>
 </div>

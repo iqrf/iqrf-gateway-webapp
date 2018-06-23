@@ -26,7 +26,7 @@ use App\Forms\FormFactory;
 use Nette;
 use Nette\Application\UI\Form;
 
-class ConfigIqrfSpiFormFactory {
+class ConfigIqrfDpaFormFactory {
 
 	use Nette\SmartObject;
 
@@ -51,25 +51,23 @@ class ConfigIqrfSpiFormFactory {
 	}
 
 	/**
-	 * Create IQRF SPI configuration form
+	 * Create IQRF configuration form
 	 * @param IqrfPresenter $presenter
 	 * @return Form IQRF configuration form
 	 */
 	public function create(IqrfPresenter $presenter): Form {
 		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('config.iqrfSpi.form'));
-		$this->manager->setComponent('iqrf::IqrfSpi');
+		$form->setTranslator($form->getTranslator()->domain('config.iqrfDpa.form'));
+		$communicationModes = ['STD' => 'CommunicationModes.STD', 'LP' => 'CommunicationModes.LP'];
+		$this->manager->setComponent('iqrf::IqrfDpa');
 		$this->manager->setFileName($this->manager->getInstanceFiles()[0]);
 		$form->addText('instance', 'instance')->setRequired('messages.instance');
-		$form->addText('IqrfInterface', 'IqrfInterface')->setRequired('messages.IqrfInterface');
-		$form->addInteger('enableGpioPin', 'enableGpioPin');
-		$form->addInteger('spiCe0GpioPin', 'spiCe0GpioPin');
-		$form->addInteger('spiMisoGpioPin', 'spiMisoGpioPin');
-		$form->addInteger('spiMosiGpioPin', 'spiMosiGpioPin');
-		$form->addInteger('spiClkGpioPin', 'spiClkGpioPin');
+		$form->addInteger('DpaHandlerTimeout', 'DpaHandlerTimeout')->setRequired('messages.DpaHandlerTimeout')
+				->addRule(Form::MIN, 'messages.DpaHandlerTimeout-rule', 0);
+		$form->addSelect('CommunicationMode', 'CommunicationMode', $communicationModes);
 		$form->addSubmit('save', 'Save');
-		$form->addProtection('core.errors.form-timeout');
 		$form->setDefaults($this->manager->load());
+		$form->addProtection('core.errors.form-timeout');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
 			$this->manager->save($values);
 			$presenter->redirect('Homepage:default');
