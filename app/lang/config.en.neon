@@ -15,26 +15,6 @@ components:
 	Edit: Edit
 	Remove: Remove
 
-iqrfapp:
-	title: IQRF App
-	description: IQRF App settings.
-	form:
-		title: IQRF App
-		LocalMqName: Local MQ name
-		RemoteMqName: Remote MQ name
-		DefaultTimeout: Default timeout
-		VerbosityLevel: Verbosity level
-		VerbosityLevels:
-			Error: Error
-			Warning: Warning
-			Info: Info
-			Debug: Debug
-		messages:
-			LocalMqName: Please enter local MQ name.
-			RemoteMqName: Please enter remote MQ name.
-			DefaultTimeout: Please enter default timeout.
-		Save: Save
-
 iqrf:
 	title: IQRF interface
 	description: IQRF interface settings.
