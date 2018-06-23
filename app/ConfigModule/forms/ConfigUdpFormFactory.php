@@ -20,7 +20,7 @@ declare(strict_types=1);
 
 namespace App\ConfigModule\Forms;
 
-use App\ConfigModule\Model\InstanceManager;
+use App\ConfigModule\Model\GenericManager;
 use App\ConfigModule\Presenters\UdpPresenter;
 use App\Forms\FormFactory;
 use Nette;
@@ -31,7 +31,7 @@ class ConfigUdpFormFactory {
 	use Nette\SmartObject;
 
 	/**
-	 * @var InstanceManager
+	 * @var GenericManager Generic config manager
 	 */
 	private $manager;
 
@@ -42,10 +42,10 @@ class ConfigUdpFormFactory {
 
 	/**
 	 * Constructor
-	 * @param InstanceManager $manager
+	 * @param GenericManager $manager
 	 * @param FormFactory $factory Generic form factory
 	 */
-	public function __construct(InstanceManager $manager, FormFactory $factory) {
+	public function __construct(GenericManager $manager, FormFactory $factory) {
 		$this->manager = $manager;
 		$this->factory = $factory;
 	}
@@ -58,15 +58,15 @@ class ConfigUdpFormFactory {
 	public function create(UdpPresenter $presenter): Form {
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('config.udp.form'));
-		$fileName = 'UdpMessaging';
-		$this->manager->setFileName($fileName);
-		$form->addText('Name', 'Name')->setRequired('messages.Name');
-		$form->addCheckbox('Enabled', 'Enabled');
+		$this->manager->setComponent('iqrf::UdpMessaging');
+		$this->manager->setFileName($this->manager->getInstanceFiles()[0]);
+		$form->addText('instance', 'instance')->setRequired('messages.instance');
 		$form->addInteger('RemotePort', 'RemotePort')->setRequired('messages.RemotePort');
 		$form->addInteger('LocalPort', 'LocalPort')->setRequired('messages.LocalPort');
 		$form->addSubmit('save', 'Save');
-		$form->setDefaults($this->manager->load());
+		$form->setDefaults($this->manager->getInstances()[0]);
 		$form->addProtection('core.errors.form-timeout');
+		$form->setDefaults($this->manager->load());
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
 			$this->manager->save($values);
 			$presenter->redirect('Homepage:default');

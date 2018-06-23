@@ -118,7 +118,6 @@ mqtt:
 	form:
 		title: Edit MQTT interface
 		instance: Name of instance
-		Enabled: Enabled
 		BrokerAddr: Broker address
 		ClientId: Client ID
 		Persistence: Persistence
@@ -215,12 +214,11 @@ udp:
 	title: UDP interface
 	description: IQRF UDP interface settings.
 	form:
-		Name: Name
-		Enabled: Enabled
+		instance: Name of instance
 		RemotePort: Remote port
 		LocalPort: Local port
 		messages:
-			Name: Please enter name of UDP interface.
+			instance: Please enter name of UDP interface.
 			RemotePort: Please enter remote port.
 			LocalPort: Please enter local port.
 		Save: Save

@@ -14,7 +14,6 @@ services:
 	- App\ConfigModule\Model\GenericManager
 	- App\ConfigModule\Model\IqrfManager
 	- App\ConfigModule\Model\IncompleteConfiguration
-	- App\ConfigModule\Model\InstanceManager
 	- App\ConfigModule\Model\MainManager
 	- App\ConfigModule\Model\MigrationManager(%configDir%)
 	- App\ConfigModule\Model\SchedulerManager
