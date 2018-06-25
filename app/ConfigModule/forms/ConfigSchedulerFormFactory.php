@@ -61,9 +61,11 @@ class ConfigSchedulerFormFactory {
 		$translator = $form->getTranslator();
 		$form->setTranslator($translator->domain('config.scheduler.form'));
 		$defaults = $this->manager->load($id);
+		$cTypes = [
+			'dpa' => 'cTypes.dpa',
+		];
 		$types = [
-			'raw', 'raw-hdp', 'std-per-thermometer', 'std-per-ledg',
-			'std-per-ledr', 'std-per-frc', 'std-per-io', 'std-sen',
+			'raw', 'raw-hdp',
 		];
 		foreach ($types as $key => $type) {
 			unset($types[$key]);
@@ -71,40 +73,48 @@ class ConfigSchedulerFormFactory {
 		}
 		$form->addText('time', 'time');
 		$form->addSelect('service', 'config.scheduler.form.service')
-				->setItems([], false)->setTranslator($translator)
+				->setItems(['SchedulerMessaging'], false)->setTranslator($translator)
 				->setPrompt('config.scheduler.form.messages.service-prompt')
-				->setRequired('messages.service');
-		$message = $form->addContainer('message');
-		foreach (array_keys($defaults['message']) as $key) {
-			switch ($key) {
-				case 'hwpid':
-					$message->addText($key, $key)
-							->setRequired(false)
-							->addRule(Form::PATTERN, 'messages.hwpid-rule', '[0-9A-Fa-f]{4}')
-							->addRule(Form::MAX_LENGTH, 'messages.hwpid-rule', 4);
-					break;
-				case 'pcmd':
-				case 'pnum':
-				case 'nadr':
-					$message->addText($key, $key)
-							->setRequired(false)
-							->addRule(Form::PATTERN, 'messages.nadr-rule', '[0-9A-Fa-f]{1,2}')
-							->addRule(Form::MAX_LENGTH, 'messages.nadr-rule', 2);
-					break;
-				case 'sensors':
-					$message->addTextArea($key, $key);
-					break;
-				case 'timeout':
-					$message->addInteger($key, $key);
-					break;
-				case 'type':
-					$message->addSelect($key, $key)->setItems($types)
-						->setRequired('messages.type');
-					break;
-				default:
-					$message->addText($key, $key);
-			}
+				->setRequired('messages.service')->checkDefaultValue(false);
+		$task = $form->addContainer('task');
+		$task->addSelect('messaging', 'config.scheduler.form.messaging')
+				->setItems(['WebsocketMessaging'], false)->setTranslator($translator)
+				->setPrompt('config.scheduler.form.messages.messaging-prompt')
+				->setRequired('messages.messaging')->checkDefaultValue(false);
+		$message = $task->addContainer('message');
+		$message->addSelect('ctype', 'ctype', $cTypes)
+				->setPrompt('messages.ctype-prompt')
+				->setRequired('messages.ctype')->checkDefaultValue(false);
+		$message->addSelect('type', 'type', $types)
+				->setPrompt('messages.type-prompt')
+				->setRequired('messages.type')->checkDefaultValue(false);
+		switch ($defaults['task']['message']['type']) {
+			case 'raw-hdp':
+				$message->addText('nadr', 'nadr')->setRequired('messages.nadr')
+						->addRule(Form::PATTERN, 'messages.nadr-rule', '[0-9A-Fa-f]{1,2}')
+						->addRule(Form::MAX_LENGTH, 'messages.nadr-rule', 2);
+				$message->addText('pnum', 'pnum')->setRequired('messages.pnum')
+						->addRule(Form::PATTERN, 'messages.pnum-rule', '[0-9A-Fa-f]{1,2}')
+						->addRule(Form::MAX_LENGTH, 'messages.pnum-rule', 2);
+				$message->addText('pcmd', 'pcmd')->setRequired('messages.pcmd')
+						->addRule(Form::PATTERN, 'messages.pcmd-rule', '[0-9A-Fa-f]{1,2}')
+						->addRule(Form::MAX_LENGTH, 'messages.pcmd-rule', 2);
+				$message->addText('hwpid', 'hwpid')->setRequired(false)
+						->addRule(Form::PATTERN, 'messages.hwpid-rule', '[0-9A-Fa-f]{4}')
+						->addRule(Form::MAX_LENGTH, 'messages.hwpid-rule', 4);
+				$message->addText('rcode', 'rcode');
+				$message->addText('rdata', 'rdata');
+				break;
+			default:
+				break;
 		}
+		$message->addInteger('timeout', 'timeout');
+		$message->addText('request', 'request');
+		$message->addText('request_ts', 'request_ts');
+		$message->addText('confirmation', 'confirmation');
+		$message->addText('confirmation_ts', 'confirmation_ts');
+		$message->addText('response', 'response');
+		$message->addText('response_ts', 'response_ts');
 		$form->addSubmit('save', 'Save');
 		$form->setDefaults($defaults);
 		$form->addProtection('core.errors.form-timeout');

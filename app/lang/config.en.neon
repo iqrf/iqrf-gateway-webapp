@@ -160,18 +160,15 @@ scheduler:
 	form:
 		title: Edit task
 		time: Time
-		service: Base service
+		service: Service
+		messaging: Messaging
 		ctype: Category
+		cTypes:
+			dpa: DPA
 		type: Type of the DPA message
 		types:
 			raw: Raw
 			raw-hdp: Raw HDP
-			std-per-thermometer: Standard peripheral - Thermometer
-			std-per-ledg: Standard peripheral - Green LED
-			std-per-ledr: Standard peripheral - Red LED
-			std-per-frc: Standard peripheral - FRC
-			std-per-io: Standard peripheral - IO
-			std-sen: Standard sensor
 		request: DPA request
 		request_ts: DPA request timestamp
 		response: DPA response
@@ -189,11 +186,16 @@ scheduler:
 		rcode: Response code
 		dpaval: DPA value
 		messages:
-			service: Please select base service.
-			service-prompt: Select Base service
+			ctype: Please select category of message.
+			ctype-prompt: Select category of message
 			hwpid-rule: HWPID has to contain hexadecimal number of maximal length of 4 chars.
 			nadr-rule: NADR has to contain hexadecimal number of maximal length of 2 chars.
+			messaging: Please select messaging.
+			messaging-prompt: Select messaging
+			service: Please select service.
+			service-prompt: Select service
 			type: Please select type of the DPA message.
+			type-prompt: Select message type
 		Save: Save
 	Edit: Edit
 	Remove: Remove
