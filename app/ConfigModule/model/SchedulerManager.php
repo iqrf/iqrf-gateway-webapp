@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace App\ConfigModule\Model;
 
+use App\ConfigModule\Model\GenericManager;
 use App\ConfigModule\Model\MainManager;
 use App\Model\JsonFileManager;
 use Nette;
@@ -29,6 +30,11 @@ use Nette\Utils\Strings;
 class SchedulerManager {
 
 	use Nette\SmartObject;
+
+	/**
+	 * @var GenericManager Generic config manager
+	 */
+	private $genericConfigManager;
 
 	/**
 	 * @var MainManager Main configuration manager
@@ -47,10 +53,12 @@ class SchedulerManager {
 
 	/**
 	 * Constructor
-	 * @param MainMamanager $mainConfigManager Main configuration manager
+	 * @param MainMamanager $mainManager Main configuration manager
+	 * @param GenericManager $genericManager Generic configuration manager
 	 */
-	public function __construct(MainManager $mainConfigManager) {
-		$this->mainConfigManager = $mainConfigManager;
+	public function __construct(MainManager $mainManager, GenericManager $genericManager) {
+		$this->genericConfigManager = $genericManager;
+		$this->mainConfigManager = $mainManager;
 		$path = $this->mainConfigManager->load()['cacheDir'] . '/Scheduler';
 		$this->fileManager = new JsonFileManager($path);
 	}
@@ -124,6 +132,37 @@ class SchedulerManager {
 				}
 				return $nadr . $pnum . $pcmd . $hwpid . $pdata;
 		}
+	}
+
+	/**
+	 * Get available messagings
+	 * @return array Available messagings
+	 */
+	public function getMessagings(): array {
+		$components = [
+			'iqrf::MqMessaging', 'iqrf::MqttMessaging', 'iqrf::WebsocketMessaging'
+		];
+		$messagings = [];
+		foreach ($components as $components) {
+			$this->genericConfigManager->setComponent($components);
+			foreach ($this->genericConfigManager->getInstances() as $instance) {
+				$messagings[] = $instance['instance'];
+			}
+		}
+		return $messagings;
+	}
+
+	/**
+	 * Get scheduler's services
+	 * @return array Scheduler's services
+	 */
+	public function getServices(): array {
+		$services = [];
+		$this->genericConfigManager->setComponent('iqrf::Scheduler');
+		foreach ($this->genericConfigManager->getInstances() as $instance) {
+			$services[] = $instance['instance'];
+		}
+		return $services;
 	}
 
 	/**

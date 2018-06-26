@@ -73,12 +73,14 @@ class ConfigSchedulerFormFactory {
 		}
 		$form->addText('time', 'time');
 		$form->addSelect('service', 'config.scheduler.form.service')
-				->setItems(['SchedulerMessaging'], false)->setTranslator($translator)
+				->setItems($this->manager->getServices(), false)
+				->setTranslator($translator)
 				->setPrompt('config.scheduler.form.messages.service-prompt')
 				->setRequired('messages.service')->checkDefaultValue(false);
 		$task = $form->addContainer('task');
 		$task->addSelect('messaging', 'config.scheduler.form.messaging')
-				->setItems(['WebsocketMessaging'], false)->setTranslator($translator)
+				->setItems($this->manager->getMessagings(), false)
+				->setTranslator($translator)
 				->setPrompt('config.scheduler.form.messages.messaging-prompt')
 				->setRequired('messages.messaging')->checkDefaultValue(false);
 		$message = $task->addContainer('message');
