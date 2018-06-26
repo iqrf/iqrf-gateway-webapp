@@ -5,7 +5,6 @@
  * @covers App\Model\JsonFileManager
  * @phpVersion >= 7.0
  * @testCase
- * @skip
  */
 declare(strict_types=1);
 
@@ -56,9 +55,9 @@ class JsonFileManagerTest extends TestCase {
 	 */
 	public function testWrite() {
 		$path = __DIR__ . '/../configuration-test/';
-		$fileName = 'MqMessaging-test';
+		$fileName = 'config-test';
 		$configManager = new JsonFileManager($path);
-		$expected = Json::decode(FileSystem::read($this->path . 'MqMessaging.json'), Json::FORCE_ARRAY);
+		$expected = Json::decode(FileSystem::read($this->path . 'config.json'), Json::FORCE_ARRAY);
 		$configManager->write($fileName, $expected);
 		Assert::equal($expected, $configManager->read($fileName));
 	}
