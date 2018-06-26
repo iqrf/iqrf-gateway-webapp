@@ -154,6 +154,16 @@ mqtt:
 	Edit: Edit
 	Remove: Remove
 
+ota-upload:
+	title: IQRF OTA upload service
+	form:
+		instance: Name of instance
+		uploadPath: Path to a directory with files to upload
+		messages:
+			instance: Please enter name of OTA upload service instance.
+			uploadPath: Please enter path to a directory with files to upload.
+		Save: Save
+
 scheduler:
 	title: Scheduler
 	description: Scheduler settings.

@@ -23,6 +23,7 @@ namespace App\ConfigModule\Presenters;
 use App\ConfigModule\Forms\ConfigIqrfCdcFormFactory;
 use App\ConfigModule\Forms\ConfigIqrfDpaFormFactory;
 use App\ConfigModule\Forms\ConfigIqrfSpiFormFactory;
+use App\ConfigModule\Forms\ConfigOtaUploadFormFactory;
 use App\ConfigModule\Model\IqrfManager;
 use App\Presenters\BasePresenter;
 use App\Model\JsonFileManager;
@@ -45,6 +46,12 @@ class IqrfPresenter extends BasePresenter {
 	 * @inject
 	 */
 	public $dpaFormFactory;
+
+	/**
+	 * @var ConfigOtaUploadFormFactory IQRF OTA upload service configuration form factory
+	 * @inject
+	 */
+	public $otaFormFactory;
 
 	/**
 	 * @var ConfigIqrfSpiFormFactory IQRF SPI interface configuration form factory
@@ -101,6 +108,15 @@ class IqrfPresenter extends BasePresenter {
 	protected function createComponentConfigIqrfSpiForm() {
 		$this->onlyForAdmins();
 		return $this->spiFormFactory->create($this);
+	}
+
+	/**
+	 * Create IQRF OTA upload service form
+	 * @return Form IQRF OTA upload service form
+	 */
+	protected function createComponentConfigOtaUploadForm() {
+		$this->onlyForAdmins();
+		return $this->otaFormFactory->create($this);
 	}
 
 }
