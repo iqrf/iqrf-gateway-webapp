@@ -230,3 +230,24 @@ udp:
 			RemotePort: Please enter remote port.
 			LocalPort: Please enter local port.
 		Save: Save
+
+websocket:
+	title: Websocket interface
+	description: IQRF Websocket interface settings.
+	messaging:
+		title: Websocket messaging
+		form:
+			instance: Name of instance
+			acceptAsyncMsg: Accept Async messages
+			messages:
+				instance: Please enter name of websocket messaging.
+			Save: Save
+	service:
+		title: Websocket service
+		form:
+			instance: Name of instance
+			WebsocketPort: Websocket port
+			messages:
+				instance: Please enter name of Websocket service.
+				WebsocketPort: Please enter port of websocket service.
+			Save: Save
