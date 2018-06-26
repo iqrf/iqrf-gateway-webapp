@@ -188,7 +188,7 @@ class SchedulerManagerTest extends TestCase {
 	 */
 	public function testGetServices() {
 		$manager = new SchedulerManager($this->mainConfigManager, $this->genericConfigManager);
-		$expected = ['iqrf::Scheduler-Instance'];
+		$expected = ['SchedulerMessaging'];
 		Assert::same($expected, $manager->getServices());
 	}
 

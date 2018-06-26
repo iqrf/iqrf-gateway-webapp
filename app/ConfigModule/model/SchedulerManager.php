@@ -158,7 +158,7 @@ class SchedulerManager {
 	 */
 	public function getServices(): array {
 		$services = [];
-		$this->genericConfigManager->setComponent('iqrf::Scheduler');
+		$this->genericConfigManager->setComponent('iqrf::SchedulerMessaging');
 		foreach ($this->genericConfigManager->getInstances() as $instance) {
 			$services[] = $instance['instance'];
 		}
