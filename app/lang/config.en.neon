@@ -204,9 +204,13 @@ tracer:
 	title: Tracer file
 	description: Tracer file settings.
 	form:
-		TraceFileName: Tracer file name
-		TraceFileSize: Tracer file size
-		VerbosityLevel: Verbosity level
+		instance: Instance name
+		path: Path to directory with logs
+		filename: File name
+		maxSizeMB: Maximal size in MB
+		timestampFiles: Enable timestamp files
+		channel: Verbosity channel
+		level: Verbosity level
 		VerbosityLevels:
 			Error: Error
 			Warning: Warning

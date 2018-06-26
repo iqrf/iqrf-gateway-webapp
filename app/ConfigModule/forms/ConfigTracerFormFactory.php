@@ -25,6 +25,7 @@ use App\ConfigModule\Presenters\TracerPresenter;
 use App\Forms\FormFactory;
 use Nette;
 use Nette\Application\UI\Form;
+use Nette\Utils\Strings;
 
 class ConfigTracerFormFactory {
 
@@ -58,15 +59,26 @@ class ConfigTracerFormFactory {
 	public function create(TracerPresenter $presenter): Form {
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('config.tracer.form'));
-		$fileName = 'TracerFile';
-		$this->manager->setFileName($fileName);
+		$this->manager->setComponent('shape::TraceFileService');
+		$this->manager->setFileName($this->manager->getInstanceFiles()[0]);
+		$defaults = $this->manager->load();
 		$items = ['err' => 'VerbosityLevels.Error', 'war' => 'VerbosityLevels.Warning',
 			'inf' => 'VerbosityLevels.Info', 'dbg' => 'VerbosityLevels.Debug'];
-		$form->addText('TraceFileName', 'TraceFileName');
-		$form->addInteger('TraceFileSize', 'TraceFileSize');
-		$form->addSelect('VerbosityLevel', 'VerbosityLevel', $items);
+		$form->addText('instance', 'instance');
+		$form->addText('path', 'path');
+		$form->addText('filename', 'filename');
+		$form->addInteger('maxSizeMB', 'maxSizeMB');
+		$form->addCheckbox('timestampFiles', 'timestampFiles');
+		$verbosityLevels = $form->addContainer('VerbosityLevels');
+		foreach ($defaults['VerbosityLevels'] as $id => $verbosityLevel) {
+			$container = $verbosityLevels->addContainer($id);
+			$container->addInteger('channel', 'channel');
+			$container->addSelect('level', 'level', $items)
+					->setDefaultValue(Strings::lower($verbosityLevel['level']));
+			unset($defaults['VerbosityLevels'][$id]['level']);
+		}
 		$form->addSubmit('save', 'Save');
-		$form->setDefaults($this->manager->load());
+		$form->setDefaults($defaults);
 		$form->addProtection('core.errors.form-timeout');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
 			$this->manager->save($values);
