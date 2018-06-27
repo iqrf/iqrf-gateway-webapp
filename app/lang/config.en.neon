@@ -70,6 +70,18 @@ iqrfSpi:
 		boards: Boards
 		interfaces: Interfaces
 
+js-cache:
+	title: JS cache
+	description: JS cache for drivers.
+	form:
+		instance: Name of instance
+		urlRepo: IQRF Repository URL
+		checkPeriodSec: Check period in seconds
+		messages:
+			instance: Please enter name of IQRF SPI instance.
+			urlRepo: Please enter IQRF Repository URL.
+		Save: Save
+
 main:
 	title: Main configuration
 	description: Main configuration of IQRF Daemon.

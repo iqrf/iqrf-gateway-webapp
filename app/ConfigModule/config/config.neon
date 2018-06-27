@@ -3,6 +3,7 @@ services:
 	- App\ConfigModule\Forms\ConfigIqrfCdcFormFactory
 	- App\ConfigModule\Forms\ConfigIqrfDpaFormFactory
 	- App\ConfigModule\Forms\ConfigIqrfSpiFormFactory
+	- App\ConfigModule\Forms\ConfigJsCacheFormFactory
 	- App\ConfigModule\Forms\ConfigMainFormFactory
 	- App\ConfigModule\Forms\ConfigMigrationFormFactory
 	- App\ConfigModule\Forms\ConfigMqFormFactory
