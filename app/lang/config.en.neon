@@ -82,6 +82,27 @@ js-cache:
 			urlRepo: Please enter IQRF Repository URL.
 		Save: Save
 
+json:
+	title: JSON
+	description: JSON
+
+json-dpa-api-raw:
+	title: JSON DPA API Raw
+	form:
+		instance: Name of instance
+		asyncDpaMessage: Async DPA message
+		messages:
+			instance: Please enter name of JSON Splitter instance.
+		Save: Save
+
+json-splitter:
+	title: JSON Splitter
+	form:
+		instance: Name of instance
+		validateJsonResponse: Validate JSON response
+		messages:
+			instance: Please enter name of JSON Splitter instance.
+		Save: Save
 main:
 	title: Main configuration
 	description: Main configuration of IQRF Daemon.
