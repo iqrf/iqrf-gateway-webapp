@@ -23,11 +23,13 @@ import fileinput
 import os
 import subprocess
 
-ARGS = argparse.ArgumentParser(description="IQRF daemon webapp installer.")
+ARGS = argparse.ArgumentParser(description="IQRF Gateway Daemon webapp installer.")
+ARGS.add_argument("-b", "--branch", action="store", dest="branch", default="stable", type=str, help="The used git branch.")
 ARGS.add_argument("-d", "--dist", action="store", dest="dist", required=True, type=str, help="The used linux distribution.")
 ARGS.add_argument("-v", "--ver", action="store", dest="ver", required=True, type=str, help="The version of used linux distribution.")
-ARGS.add_argument("-s", "--stability", action="store", dest="stability", default="stable", type=str, help="The stability of the iqrf-daemon-webapp.")
+ARGS.add_argument("-s", "--stability", action="store", dest="stability", default="stable", type=str, help="The stability of the IQRF Gateway Daemon webapp.")
 
+GIT_REPOSOTORY = "https://github.com/iqrfsdk/iqrf-daemon-webapp"
 WEBSERVER_DIRECTORY = "/var/www"
 WEBAPP_DIRECTORY = WEBSERVER_DIRECTORY + "/iqrf-daemon-webapp"
 SUDOERS_FILE = "/etc/sudoers"
@@ -38,27 +40,33 @@ def send_command(cmd):
 	@param cmd Command to exec
 	@return string Output
 	"""
-	print(cmd)
-	return subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).stdout.read()
+	print("# " + cmd)
+	output = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).stdout.read()
+	if output != b'':
+		print(output.decode(encoding='UTF-8'))
+	return output
 
 def main():
 	"""
 	Main program function
 	"""
 	args = ARGS.parse_args()
+	branch = args.branch
 	dist = args.dist.lower()
 	ver = args.ver.lower()
 	stability = args.stability.lower()
 
 	if dist == "debian" or dist == "raspbian":
-		install_debian(ver, stability)
+		install_debian(ver, stability, branch)
 	elif dist == "ubuntu":
-		install_ubuntu(ver, stability)
+		install_ubuntu(ver, stability, branch)
 
-def install_debian(version, stability="stable"):
+def install_debian(version, stability="stable", branch=None):
 	"""
-	Install iqrf-daemon-webapp on Debian
+	Install IQRF Gateway Daemon webapp on Debian
 	@param version Version of Debain
+	@param stability Stability of the IQRF Gateway Daemon webapp
+	@param branch Used git branch
 	"""
 	send_command("apt-get update")
 	if version == "8" or version == "jessie" or version == "oldstable":
@@ -75,10 +83,7 @@ def install_debian(version, stability="stable"):
 		send_command("bash ./install-composer.sh")
 		send_command("mv composer.phar /usr/bin/composer")
 		chmod_dir()
-		if stability == "dev":
-			install_php_app(WEBAPP_DIRECTORY, True)
-		else:
-			install_php_app(WEBAPP_DIRECTORY, False)
+		install_webapp(stability, branch)
 		disable_default_nginx_virtualhost()
 		create_nginx_virtualhost("iqrf-daemon-webapp_php7-0.localhost")
 		fix_php_fpm_config("/etc/php/7.0/fpm/php.ini")
@@ -90,10 +95,7 @@ def install_debian(version, stability="stable"):
 		# Install sudo, nginx php7.0, composer and zip
 		send_command("apt-get install -y sudo php7.0 php7.0-common php7.0-fpm php7.0-curl php7.0-json php7.0-sqlite php7.0-mbstring php7.0-zip composer nginx-full zip unzip")
 		chmod_dir()
-		if stability == "dev":
-			install_php_app(WEBAPP_DIRECTORY, True)
-		else:
-			install_php_app(WEBAPP_DIRECTORY, False)
+		install_webapp(stability, branch)
 		disable_default_nginx_virtualhost()
 		create_nginx_virtualhost("iqrf-daemon-webapp_php7-0.localhost")
 		fix_php_fpm_config("/etc/php/7.0/fpm/php.ini")
@@ -103,9 +105,9 @@ def install_debian(version, stability="stable"):
 		restart_service("php7.0-fpm")
 		restart_service("nginx")
 
-def install_ubuntu(version, stability="stable"):
+def install_ubuntu(version, stability="stable", branch=None):
 	"""
-	Install iqrf-daemon-webapp on Ubuntu
+	Install IQRF Gateway Daemon webapp on Ubuntu
 	@param version Version of Ubuntu
 	"""
 	send_command("apt-get update")
@@ -113,10 +115,7 @@ def install_ubuntu(version, stability="stable"):
 		# Install sudo, nginx php7.0, composer and zip
 		send_command("apt-get install -y sudo php7.0 php7.0-common php7.0-fpm php7.0-curl php7.0-json php7.0-sqlite php7.0-mbstring php7.0-zip composer nginx-full zip unzip")
 		chmod_dir()
-		if stability == "dev":
-			install_php_app(WEBAPP_DIRECTORY, True)
-		else:
-			install_php_app(WEBAPP_DIRECTORY, False)
+		install_webapp(stability, branch)
 		disable_default_nginx_virtualhost()
 		create_nginx_virtualhost("iqrf-daemon-webapp_php7-0.localhost")
 		fix_php_fpm_config("/etc/php/7.0/fpm/php.ini")
@@ -126,23 +125,43 @@ def install_ubuntu(version, stability="stable"):
 		restart_service("php7.0-fpm")
 		restart_service("nginx")
 
-def install_php_app(directory, use_git=True):
+def install_webapp(stability, branch):
 	"""
-	Install iqrf-daemon-webapp
-	@param directory Directory to install iqrf-daemon-webapp
-	@param use_git Download iqrf-daemon-webapp from git
+	Install IQRF Gateway Daemon webapp
+	@param stability Stability of the IQRF Gateway Daemon webapp
+	@param branch Git branch
+	"""
+	if stability == "dev":
+		install_php_app(WEBAPP_DIRECTORY, True, branch)
+	elif stability == "stable" and (branch != "master" or branch != None):
+		install_php_app(WEBAPP_DIRECTORY, True, branch)
+	else:
+		install_php_app(WEBAPP_DIRECTORY, False, branch)
+
+def install_php_app(directory, use_git=True, branch=None):
+	"""
+	Install IQRF Gateway Daemon webapp
+	@param directory Directory to install IQRF Gateway Daemon webapp
+	@param use_git Download IQRF Gateway Daemon webapp from git
+	@param branch Git branch
 	"""
 	if use_git:
-		if not os.path.isdir(directory):
-			send_command("cd " + directory + "/../ ; git clone https://github.com/iqrfsdk/iqrf-daemon-webapp")
+		if os.path.isdir(directory) and os.path.isdir(directory + "/.git"):
+			send_command("cd " + directory + "/../ ; git clone " + GIT_REPOSOTORY)
+			if branch != None:
+				send_command("cd " + directory + " ; git checkout " + branch)
 			send_command("cd " + directory + " ; composer install")
-		elif not os.path.isdir(directory + "/.git"):
+		elif os.path.isdir(directory) and not os.path.isdir(directory + "/.git"):
 			send_command("rm -rf " + directory)
-			send_command("cd " + directory + "/../ ; git clone https://github.com/iqrfsdk/iqrf-daemon-webapp")
+			send_command("cd " + directory + "/../ ; git clone " + GIT_REPOSOTORY)
+			if branch != None:
+				send_command("cd " + directory + " ; git checkout " + branch)
 			send_command("cd " + directory + " ; composer install")
 		else:
 			send_command("rm -rf " + directory + "/temp/cache")
 			send_command("cd " + directory + " ; git pull origin")
+			if branch != None:
+				send_command("cd " + directory + " ; git checkout " + branch)
 			send_command("cd " + directory + " ; composer update")
 	else:
 		if os.path.isdir(directory):

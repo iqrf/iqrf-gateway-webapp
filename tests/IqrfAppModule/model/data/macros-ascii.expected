@@ -19,8 +19,8 @@ Get discovered Nodes
 True
 0
 False
-Authorize node
-00.00.00.0D.FF.FF.05.00.00.
+Authorize bond
+00.00.00.0D.FF.FF.00.00.00.00.00.
 True
 0
 False
@@ -442,7 +442,7 @@ M12
 False
 0
 False
-LED, PWM
+LED
 True
 7
 Set LEDR on
@@ -460,9 +460,9 @@ Pulse LEDR
 True
 0
 False
-Stop PWM
-00.01.0B.00.FF.FF.00.00.00.
-True
+M4
+
+False
 0
 False
 Set LEDR off
@@ -480,9 +480,9 @@ Pulse LEDG
 True
 0
 False
-PWM: 1kHz, 50%
-00.01.0B.00.FF.FF.02.7D.40.
-True
+M8
+
+False
 0
 False
 Get LEDR state
@@ -500,9 +500,9 @@ M11
 False
 0
 False
-PWM: 1kHz, 70%
-00.01.0B.00.FF.FF.22.7D.57.
-True
+M12
+
+False
 0
 False
 Autonetwork embedded

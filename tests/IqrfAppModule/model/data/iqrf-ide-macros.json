@@ -19,8 +19,8 @@
 				"Enabled": true
 			},
 			{
-				"Name": "Authorize node",
-				"Packet": "00.00.00.0D.FF.FF.05.00.00",
+				"Name": "Authorize bond",
+				"Packet": "00.00.00.0D.FF.FF.00.00.00.00.00",
 				"Enabled": true
 			},
 			{
@@ -462,7 +462,7 @@
 		]
 	},
 	{
-		"Name": "LED, PWM",
+		"Name": "LED",
 		"Enabled": true,
 		"Macros": [
 			{
@@ -481,9 +481,9 @@
 				"Enabled": true
 			},
 			{
-				"Name": "Stop PWM",
-				"Packet": "00.01.0B.00.FF.FF.00.00.00",
-				"Enabled": true
+				"Name": "M4",
+				"Packet": "",
+				"Enabled": false
 			},
 			{
 				"Name": "Set LEDR off",
@@ -501,9 +501,9 @@
 				"Enabled": true
 			},
 			{
-				"Name": "PWM: 1kHz, 50%",
-				"Packet": "00.01.0B.00.FF.FF.02.7D.40",
-				"Enabled": true
+				"Name": "M8",
+				"Packet": "",
+				"Enabled": false
 			},
 			{
 				"Name": "Get LEDR state",
@@ -521,9 +521,9 @@
 				"Enabled": false
 			},
 			{
-				"Name": "PWM: 1kHz, 70%",
-				"Packet": "00.01.0B.00.FF.FF.22.7D.57",
-				"Enabled": true
+				"Name": "M12",
+				"Packet": "",
+				"Enabled": false
 			}
 		]
 	},
