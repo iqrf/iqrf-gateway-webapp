@@ -37,6 +37,11 @@ class ServiceManager {
 	private $initDaemon;
 
 	/**
+	 * @var string Name of service
+	 */
+	private $serviceName = 'iqrfgd2';
+
+	/**
 	 * @var CommandManager Command Manager
 	 */
 	private $commandManager;
@@ -58,10 +63,10 @@ class ServiceManager {
 	public function start() {
 		switch ($this->initDaemon) {
 			case 'docker-supervisor':
-				$cmd = 'supervisorctl start iqrf-daemon';
+				$cmd = 'supervisorctl start ' . $this->serviceName;
 				break;
 			case 'systemd':
-				$cmd = 'systemctl start iqrf-daemon.service';
+				$cmd = 'systemctl start ' . $this->serviceName . '.service';
 				break;
 			default:
 				throw new NotSupportedInitSystemException();
@@ -76,10 +81,10 @@ class ServiceManager {
 	public function stop() {
 		switch ($this->initDaemon) {
 			case 'docker-supervisor':
-				$cmd = 'supervisorctl stop iqrf-daemon';
+				$cmd = 'supervisorctl stop ' . $this->serviceName;
 				break;
 			case 'systemd':
-				$cmd = 'systemctl stop iqrf-daemon.service';
+				$cmd = 'systemctl stop ' . $this->serviceName . '.service';
 				break;
 			default:
 				throw new NotSupportedInitSystemException();
@@ -94,10 +99,10 @@ class ServiceManager {
 	public function restart() {
 		switch ($this->initDaemon) {
 			case 'docker-supervisor':
-				$cmd = 'supervisorctl restart iqrf-daemon';
+				$cmd = 'supervisorctl restart ' . $this->serviceName;
 				break;
 			case 'systemd':
-				$cmd = 'systemctl restart iqrf-daemon.service';
+				$cmd = 'systemctl restart ' . $this->serviceName . '.service';
 				break;
 			default:
 				throw new NotSupportedInitSystemException();
@@ -112,10 +117,10 @@ class ServiceManager {
 	public function getStatus() {
 		switch ($this->initDaemon) {
 			case 'docker-supervisor':
-				$cmd = 'supervisorctl status iqrf-daemon';
+				$cmd = 'supervisorctl status ' . $this->serviceName;
 				break;
 			case 'systemd':
-				$cmd = 'systemctl status iqrf-daemon.service';
+				$cmd = 'systemctl status ' . $this->serviceName . '.service';
 				break;
 			default:
 				throw new NotSupportedInitSystemException();
