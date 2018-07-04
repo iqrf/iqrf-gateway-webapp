@@ -96,28 +96,28 @@
 			"libraryPath": "",
 			"libraryName": "MqMessaging",
 			"enabled": true,
-			"startlevel": 0
+			"startlevel": 10
 		},
 		{
 			"name": "iqrf::MqttMessaging",
 			"libraryPath": "",
 			"libraryName": "MqttMessaging",
 			"enabled": true,
-			"startlevel": 0
+			"startlevel": 10
 		},
 		{
 			"name": "iqrf::WebsocketMessaging",
 			"libraryPath": "",
 			"libraryName": "WebsocketMessaging",
 			"enabled": true,
-			"startlevel": 0
+			"startlevel": 10
 		},
 		{
 			"name": "iqrf::UdpMessaging",
 			"libraryPath": "",
 			"libraryName": "UdpMessaging",
 			"enabled": true,
-			"startlevel": 0
+			"startlevel": 10
 		},
 		{
 			"name": "iqrf::Ide4Counterpart",
@@ -169,12 +169,27 @@
 			"startlevel": 2
 		},
 		{
+			"name": "iqrf::JsRenderDuktape",
+			"libraryPath": "",
+			"libraryName": "JsRenderDuktape",
+			"enabled": true,
+			"startlevel": 2
+		},
+		{
 			"name": "iqrf::JsonDpaApiIqrfStandard",
 			"libraryPath": "",
 			"libraryName": "JsonDpaApiIqrfStandard",
 			"enabled": true,
 			"startlevel": 3
 		},
+		{
+			"name": "iqrf::JsonDpaApiIqrfStdExt",
+			"libraryPath": "",
+			"libraryName": "JsonDpaApiIqrfStdExt",
+			"enabled": true,
+			"startlevel": 3
+		},
+
 		{
 			"name": "iqrf::WriteTrConfService",
 			"libraryPath": "",
@@ -207,6 +222,13 @@
 			"name": "iqrf::BondNodeLocalService",
 			"libraryPath": "",
 			"libraryName": "BondNodeLocalService",
+			"enabled": true,
+			"startlevel": 3
+		},
+		{
+			"name": "iqrf::EnumerateDeviceService",
+			"libraryPath": "",
+			"libraryName": "EnumerateDeviceService",
 			"enabled": true,
 			"startlevel": 3
 		}
