@@ -12,7 +12,6 @@ services:
 	- App\ConfigModule\Forms\ConfigMqttFormFactory
 	- App\ConfigModule\Forms\ConfigOtaUploadFormFactory
 	- App\ConfigModule\Forms\ConfigSchedulerFormFactory
-	- App\ConfigModule\Forms\ConfigTracerFormFactory
 	- App\ConfigModule\Forms\ConfigUdpFormFactory
 	- App\ConfigModule\Forms\ConfigWebsocketMessagingFormFactory
 	- App\ConfigModule\Forms\ConfigWebsocketServiceFormFactory
