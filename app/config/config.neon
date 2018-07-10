@@ -50,6 +50,7 @@ services:
 	- App\Model\CommandManager(%sudo%)
 	- App\Model\FileManager(%configDir%)
 	- App\Model\JsonFileManager(%configDir%)
+	- App\Model\VersionManager
 	router: App\Router\RouterFactory::createRouter
 	formFactory: Instante\Bootstrap3Renderer\BootstrapFormFactory
 

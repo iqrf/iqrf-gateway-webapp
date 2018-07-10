@@ -16,11 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\Presenters;
 
+use App\Model\VersionManager;
+use Kdyby\Translation\Phrase;
 use Kdyby\Translation\Translator;
 use Nette\Application\UI\Presenter;
 
@@ -35,8 +36,16 @@ abstract class BasePresenter extends Presenter {
 	 */
 	public $lang;
 
-	/** @var Translator Translator */
+	/**
+	 * @var Translator Translator
+	 */
 	protected $translator;
+
+	/**
+	 * @var VersionManager Version manager
+	 * @inject
+	 */
+	public $versionManager;
 
 	/**
 	 * Only for administrators
@@ -44,6 +53,18 @@ abstract class BasePresenter extends Presenter {
 	public function onlyForAdmins() {
 		if (!$this->user->isLoggedIn()) {
 			$this->redirect(':Sign:in');
+		}
+	}
+
+	/**
+	 * After template render
+	 */
+	public function afterRender() {
+		parent::afterRender();
+		if ($this->versionManager->availableWebappUpdate()) {
+			$version = ['version' => $this->versionManager->getCurrentWebapp()];
+			$phrase = new Phrase('core.update.available-webapp', null, $version);
+			$this->flashMessage($phrase, 'danger');
 		}
 	}
 
