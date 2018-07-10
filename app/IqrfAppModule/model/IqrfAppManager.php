@@ -208,6 +208,13 @@ class IqrfAppManager {
 			/** @todo throw own exception */
 		}
 		$packet = $response['response'];
+		if (array_key_exists('request', $json)) {
+			$request = Json::decode($json['request'], Json::FORCE_ARRAY);
+			$requestNadr = explode('.', Strings::lower($request['request'])[0]);
+			if (empty($packet) && $requestNadr !== 'ff') {
+				return null;
+			}
+		}
 		if (empty($packet)) {
 			throw new EmptyResponseException();
 		}

@@ -231,6 +231,9 @@ class IqrfAppManagerTest extends TestCase {
 		$packetIoTKitSe['response'] = $this->fileManager->read('response-error.json');
 		$arrayIoTKitSe = $iqrfAppManager->parseResponse($packetIoTKitSe);
 		Assert::null($arrayIoTKitSe);
+		$packetBroadcast['request'] = $this->fileManager->read('request-broadcast.json');
+		$packetBroadcast['response'] = $this->fileManager->read('response-broadcast.json');
+		Assert::null($iqrfAppManager->parseResponse($packetBroadcast));
 		Assert::exception(function () use ($iqrfAppManager) {
 			$iqrfAppManager->parseResponse(['response' => '']);
 		}, EmptyResponseException::class);
