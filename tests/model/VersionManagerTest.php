@@ -87,13 +87,13 @@ class VersionManagerTest extends TestCase {
 		$commandManager0 = \Mockery::mock(CommandManager::class);
 		$commandManager0->shouldReceive('commandExist')->with('git')->andReturn(false);
 		$versionManager0 = new VersionManager($commandManager0);
-		Assert::same($this->currentVersion, $versionManager0->getInstalledWebapp());
+		Assert::same('v' . $this->currentVersion, $versionManager0->getInstalledWebapp());
 		$gitBranches = '* master                 733d45340cbb2565fd068ca3257ad39a5e46f963 Add a notification to an update webapp to newer stable version';
 		$commandManager1 = \Mockery::mock(CommandManager::class);
 		$commandManager1->shouldReceive('commandExist')->with('git')->andReturn(true);
 		$commandManager1->shouldReceive('send')->with('git branch -v --no-abbrev')->andReturn($gitBranches);
 		$versionManager1 = new VersionManager($commandManager1);
-		Assert::same($this->currentVersion . ' (master - 733d45340cbb2565fd068ca3257ad39a5e46f963)', $versionManager1->getInstalledWebapp());
+		Assert::same('v' . $this->currentVersion . ' (master - 733d45340cbb2565fd068ca3257ad39a5e46f963)', $versionManager1->getInstalledWebapp());
 	}
 
 }
