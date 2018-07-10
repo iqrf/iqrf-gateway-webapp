@@ -48,7 +48,7 @@ class InfoManagerTest extends TestCase {
 	 * @var OsParser DPA OS response parser
 	 */
 	private $osParser;
-	
+
 	/**
 	 * @var VersionManager Version manager
 	 */

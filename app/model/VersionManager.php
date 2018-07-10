@@ -52,7 +52,7 @@ class VersionManager {
 	}
 
 	/**
-	 * Check if is available an update for the webapp?
+	 * Check if an update is available for the webapp
 	 * @return bool Is available an update for the webapp?
 	 */
 	public function availableWebappUpdate() {
