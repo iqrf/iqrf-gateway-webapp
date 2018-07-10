@@ -57,7 +57,7 @@ class ConfigIqrfCdcFormFactory {
 	 */
 	public function create(IqrfPresenter $presenter): Form {
 		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('config.iqrfSpi.form'));
+		$form->setTranslator($form->getTranslator()->domain('config.iqrfCdc.form'));
 		$this->manager->setComponent('iqrf::IqrfCdc');
 		$this->manager->setFileName($this->manager->getInstanceFiles()[0]);
 		$form->addText('instance', 'instance')->setRequired('messages.instance');
