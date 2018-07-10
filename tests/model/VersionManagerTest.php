@@ -33,7 +33,7 @@ class VersionManagerTest extends TestCase {
 	/**
 	 * @var string Current version of the webapp
 	 */
-	private $currentVersion = '1.1.5';
+	private $currentVersion = '1.1.6';
 
 	/**
 	 * @var VersionManager Version manager
@@ -76,7 +76,7 @@ class VersionManagerTest extends TestCase {
 	 * Test function to get the current stable version of the webapp
 	 */
 	public function testGetCurrentWebapp() {
-		Assert::same('1.1.5', $this->manager->getCurrentWebapp());
+		Assert::same($this->currentVersion, $this->manager->getCurrentWebapp());
 	}
 
 	/**
