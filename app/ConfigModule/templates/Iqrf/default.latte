@@ -35,7 +35,7 @@
 		<h3>{_config.iqrfSpi.mapping.interfaces}</h3>
 		{if !empty($cdcInterfaces)}
 			{foreach $cdcInterfaces as $interface}
-				<a class="btn btn-default btn-port" role="button" data-port="{$interface}">{$interface}</a>
+				<a class="btn btn-default btn-cdc-port" role="button" data-port="{$interface}">{$interface}</a>
 			{/foreach}
 		{/if}
 	</div>
@@ -60,7 +60,7 @@
 				<h3>{_config.iqrfSpi.mapping.interfaces}</h3>
 				{if !empty($spiInterfaces)}
 					{foreach $spiInterfaces as $interface}
-						<a class="btn btn-default btn-port" role="button" data-port="{$interface}">{$interface}</a>
+						<a class="btn btn-default btn-spi-port" role="button" data-port="{$interface}">{$interface}</a>
 					{/foreach}
 				{/if}
 			</div>

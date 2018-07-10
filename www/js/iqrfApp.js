@@ -90,9 +90,14 @@ function setPacket(packet) {
 	}
 }
 
-// Select IQRF interface port from list
-$(".btn-port").click(function () {
-	$("#frm-configIqrfForm-IqrfInterface").val($(this).data("port"));
+// Select IQRF CDC interface port from list
+$(".btn-cdc-port").click(function () {
+	$("#frm-configIqrfCdcForm-IqrfInterface").val($(this).data("port"));
+});
+
+// Select IQRF SPI interface port from list
+$(".btn-spi-port").click(function () {
+	$("#frm-configIqrfSpiForm-IqrfInterface").val($(this).data("port"));
 });
 
 // Select SPI pins from list of supported boards
