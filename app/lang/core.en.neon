@@ -40,6 +40,9 @@ supervisor:
 	title: Supervisor
 	description: Open Supervisor Dashboard.
 
+update:
+	available-webapp: 'There is an available update of the webapp to the version %version%.'
+
 errors:
 	form-timeout: 'Timeout expired, resubmit the form.'
 	incorrect-username-password: The username or password you entered is incorrect.
