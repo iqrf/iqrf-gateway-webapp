@@ -78,7 +78,7 @@ class VersionManager {
 	public function getInstalledWebapp(bool $verbose = true) {
 		$composer = $this->jsonFileManager->read('composer')['version'];
 		if ($verbose) {
-			$composer = 'v ' . $composer;
+			$composer = 'v' . $composer;
 		}
 		if ($verbose && $this->commandManager->commandExist('git')) {
 			$branches = $this->commandManager->send('git branch -v --no-abbrev');
