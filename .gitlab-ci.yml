@@ -46,6 +46,8 @@ coding-style:
 
 phpstan:
     stage: coding-style
+    before_script:
+        - composer install --no-progress
     script:
         - composer phpstan
     tags:

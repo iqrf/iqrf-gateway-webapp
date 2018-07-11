@@ -33,7 +33,7 @@ jobs:
         - travis_retry composer install-cs
       script:
         - composer check-cs
-    - stage: PHPStan
+    - stage: Static Analysis
       php: 7.1
       script:
         - composer phpstan
