@@ -92,20 +92,6 @@ class InteliGlueManager {
 	}
 
 	/**
-	 * Create base service
-	 * @return ArrayHash Base service
-	 */
-	public function createBaseService() {
-		$baseService = [
-			'Name' => 'BaseServiceForMQTTInteliGlue',
-			'Messaging' => $this->interfaceName,
-			'Serializers' => ['JsonSerializer'],
-			'Properties' => ['AsyncDpaMessage' => true],
-		];
-		return ArrayHash::from($baseService);
-	}
-
-	/**
 	 * Download root CA certificate
 	 */
 	public function downloadCaCertificate() {
