@@ -16,12 +16,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\ConfigMainFormFactory;
 use App\Presenters\BasePresenter;
+use Nette\Application\UI\Form;
 
 class MainPresenter extends BasePresenter {
 
@@ -42,7 +43,7 @@ class MainPresenter extends BasePresenter {
 	 * Create Main daemon settings form
 	 * @return Form Main daemon settings form
 	 */
-	protected function createComponentConfigMainForm() {
+	protected function createComponentConfigMainForm(): Form {
 		$this->onlyForAdmins();
 		return $this->mainFactory->create($this);
 	}

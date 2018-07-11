@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\ConfigModule\Model;
 
@@ -46,7 +46,7 @@ class MigrationManager {
 	private $zipManager;
 
 	/**
-	 * @var type string Path to a directory with a configuration of IQRF Gateway Daemon
+	 * @var string Path to a directory with a configuration of IQRF Gateway Daemon
 	 */
 	private $configDirectory;
 

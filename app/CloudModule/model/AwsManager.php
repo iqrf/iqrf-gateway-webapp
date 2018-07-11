@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\CloudModule\Model;
 
@@ -120,6 +120,7 @@ class AwsManager {
 	public function createPaths() {
 		$timestamp = (new \DateTime())->format(\DateTime::ISO8601);
 		$path = $this->path . $timestamp;
+		$paths = [];
 		$paths['cert'] = $path . '-aws.crt';
 		$paths['key'] = $path . '-aws.key';
 		return $paths;

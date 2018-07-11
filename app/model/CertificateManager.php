@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\Model;
 
@@ -57,7 +57,7 @@ class CertificateManager {
 	 * Gets private key
 	 * @param string $key Private key
 	 * @param string $passphrase Passphrase for private key
-	 * @return type Parsed private key or false
+	 * @return string|false Parsed private key or false
 	 */
 	public function getPrivateKey(string $key, string $passphrase = '') {
 		return openssl_pkey_get_private($key, $passphrase);

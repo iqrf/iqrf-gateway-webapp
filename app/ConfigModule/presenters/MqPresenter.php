@@ -16,13 +16,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Model\GenericManager;
 use App\ConfigModule\Forms\ConfigMqFormFactory;
 use App\Presenters\BasePresenter;
+use Nette\Application\UI\Form;
 
 class MqPresenter extends BasePresenter {
 
@@ -44,6 +45,7 @@ class MqPresenter extends BasePresenter {
 	public function __construct(GenericManager $configManager) {
 		$this->configManager = $configManager;
 		$this->configManager->setComponent('iqrf::MqMessaging');
+		parent::__construct();
 	}
 
 	/**
@@ -80,7 +82,7 @@ class MqPresenter extends BasePresenter {
 	 * Create MQ interface form
 	 * @return Form MQ interface form
 	 */
-	protected function createComponentConfigMqForm() {
+	protected function createComponentConfigMqForm(): Form {
 		$this->onlyForAdmins();
 		return $this->formFactory->create($this);
 	}

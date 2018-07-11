@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\IqrfAppModule\Model;
 
@@ -207,7 +207,7 @@ class IqrfNetManager {
 	/**
 	 * Set RF LP timeout
 	 * @param int $timeout RF LP timeout
-	 * @return type DPA request and response
+	 * @return array DPA request and response
 	 * @throws InvalidRfLpTimeoutException
 	 */
 	public function setRfLpTimeout(int $timeout) {

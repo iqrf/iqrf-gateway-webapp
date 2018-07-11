@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\ConfigModule\Presenters;
 
@@ -27,6 +27,7 @@ use App\ConfigModule\Forms\ConfigOtaUploadFormFactory;
 use App\ConfigModule\Model\IqrfManager;
 use App\Presenters\BasePresenter;
 use App\Model\JsonFileManager;
+use Nette\Application\UI\Form;
 
 class IqrfPresenter extends BasePresenter {
 
@@ -71,6 +72,7 @@ class IqrfPresenter extends BasePresenter {
 	public function __construct(IqrfManager $iqrfManager) {
 		$this->iqrfManager = $iqrfManager;
 		$this->fileManager = new JsonFileManager(__DIR__ . '/../json/');
+		parent::__construct();
 	}
 
 	/**
@@ -96,7 +98,7 @@ class IqrfPresenter extends BasePresenter {
 	 * Create IQRF DPA interface form
 	 * @return Form IQRF DPA interface form
 	 */
-	protected function createComponentConfigIqrfDpaForm() {
+	protected function createComponentConfigIqrfDpaForm(): Form {
 		$this->onlyForAdmins();
 		return $this->dpaFormFactory->create($this);
 	}
@@ -105,7 +107,7 @@ class IqrfPresenter extends BasePresenter {
 	 * Create IQRF SPI interface form
 	 * @return Form IQRF SPI interface form
 	 */
-	protected function createComponentConfigIqrfSpiForm() {
+	protected function createComponentConfigIqrfSpiForm(): Form {
 		$this->onlyForAdmins();
 		return $this->spiFormFactory->create($this);
 	}
@@ -114,7 +116,7 @@ class IqrfPresenter extends BasePresenter {
 	 * Create IQRF OTA upload service form
 	 * @return Form IQRF OTA upload service form
 	 */
-	protected function createComponentConfigOtaUploadForm() {
+	protected function createComponentConfigOtaUploadForm(): Form {
 		$this->onlyForAdmins();
 		return $this->otaFormFactory->create($this);
 	}

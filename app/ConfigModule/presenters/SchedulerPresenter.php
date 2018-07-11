@@ -16,13 +16,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Model\SchedulerManager;
 use App\ConfigModule\Forms\ConfigSchedulerFormFactory;
 use App\Presenters\BasePresenter;
+use Nette\Application\UI\Form;
 
 class SchedulerPresenter extends BasePresenter {
 
@@ -43,6 +44,7 @@ class SchedulerPresenter extends BasePresenter {
 	 */
 	public function __construct(SchedulerManager $configManager) {
 		$this->configManager = $configManager;
+		parent::__construct();
 	}
 
 	/**
@@ -88,7 +90,7 @@ class SchedulerPresenter extends BasePresenter {
 	 * Create Edit task form
 	 * @return Form Edit task form
 	 */
-	protected function createComponentConfigSchedulerForm() {
+	protected function createComponentConfigSchedulerForm(): Form {
 		$this->onlyForAdmins();
 		return $this->formFactory->create($this);
 	}

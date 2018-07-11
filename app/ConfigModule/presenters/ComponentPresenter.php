@@ -16,13 +16,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\ConfigComponentsFormFactory;
 use App\ConfigModule\Model\ComponentManager;
 use App\Presenters\BasePresenter;
+use Nette\Application\UI\Form;
 
 class ComponentPresenter extends BasePresenter {
 
@@ -43,6 +44,7 @@ class ComponentPresenter extends BasePresenter {
 	 */
 	public function __construct(ComponentManager $componentManager) {
 		$this->configManager = $componentManager;
+		parent::__construct();
 	}
 
 	/**
@@ -77,7 +79,7 @@ class ComponentPresenter extends BasePresenter {
 	 * Create components form
 	 * @return Form Components form
 	 */
-	protected function createComponentConfigComponentsForm() {
+	protected function createComponentConfigComponentsForm(): Form {
 		$this->onlyForAdmins();
 		return $this->componentsFactory->create($this);
 	}

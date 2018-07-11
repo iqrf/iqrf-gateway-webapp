@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\IqrfAppModule\Model;
 
@@ -53,6 +53,7 @@ class CoordinatorParser {
 		$data = [];
 		$packetArray = explode('.', $packet);
 		$pcmd = $packetArray[3];
+		$type = 'UnknownType';
 		if ($pcmd === '81') {
 			$type = 'DiscoveredNodes';
 		} elseif ($pcmd === '82') {

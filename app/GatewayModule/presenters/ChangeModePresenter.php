@@ -16,8 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\GatewayModule\Presenters;
 
@@ -40,6 +39,7 @@ class ChangeModePresenter extends BasePresenter {
 	 */
 	public function __construct(IqrfAppManager $iqrfAppManager) {
 		$this->iqrfAppManager = $iqrfAppManager;
+		parent::__construct();
 	}
 
 	/**

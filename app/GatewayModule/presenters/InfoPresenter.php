@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\GatewayModule\Presenters;
 
@@ -50,6 +50,7 @@ class InfoPresenter extends BasePresenter {
 	public function __construct(InfoManager $infoManager, DiagnosticsManager $diagnosticsManager) {
 		$this->diagnosticsManager = $diagnosticsManager;
 		$this->infoManager = $infoManager;
+		parent::__construct();
 	}
 
 	/**

@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\IqrfAppModule\Presenters;
 
@@ -55,6 +55,7 @@ class SendRawPresenter extends BasePresenter {
 	public function __construct(IqrfAppManager $manager, IqrfMacroManager $macroManager) {
 		$this->iqrfAppManager = $manager;
 		$this->iqrfMacroManager = $macroManager;
+		parent::__construct();
 	}
 
 	/**

@@ -15,13 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\CloudModule\Forms;
 
 use App\CloudModule\Model\BluemixManager;
 use App\CloudModule\Presenters\BluemixPresenter;
 use App\Forms\FormFactory;
+use App\ServiceModule\Model\NotSupportedInitSystemException;
 use App\ServiceModule\Model\ServiceManager;
 use Nette;
 use Nette\Application\UI\Form;
@@ -95,6 +96,8 @@ class CloudBluemixMqttFormFactory {
 	 * @param ArrayHash $values Values from the form
 	 * @param BluemixPresenter $presenter IBM Bluemix presenter
 	 * @param bool $needRestart Is restart needed?
+	 * @throws IOException Nette IO exception
+	 * @throws NotSupportedInitSystemException Not supported init system exception
 	 */
 	public function save(ArrayHash $values, BluemixPresenter $presenter, bool $needRestart = false) {
 		try {

@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\ServiceModule\Presenters;
 
@@ -40,6 +40,7 @@ class ControlPresenter extends BasePresenter {
 	 */
 	public function __construct(ServiceManager $serviceManager) {
 		$this->serviceManager = $serviceManager;
+		parent::__construct();
 	}
 
 	/**

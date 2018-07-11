@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\CloudModule\Forms;
 
@@ -23,6 +23,7 @@ use App\CloudModule\Model\AwsManager;
 use App\CloudModule\Presenters\AwsPresenter;
 use App\CloudModule\Model\InvalidPrivateKeyForCertificate;
 use App\Forms\FormFactory;
+use App\ServiceModule\Model\NotSupportedInitSystemException;
 use App\ServiceModule\Model\ServiceManager;
 use Nette;
 use Nette\Application\UI\Form;
@@ -94,6 +95,9 @@ class CloudAwsMqttFormFactory {
 	 * @param ArrayHash $values Values from the form
 	 * @param AwsPresenter $presenter Amazon AWS IoT presenter
 	 * @param bool $needRestart Is restart needed?
+	 * @throws InvalidPrivateKeyForCertificate Invalid the private key for the certificate exception
+	 * @throws IOException Nette IO exception
+	 * @throws NotSupportedInitSystemException Not supported init system exception
 	 */
 	public function save(ArrayHash $values, AwsPresenter $presenter, bool $needRestart = false) {
 		try {

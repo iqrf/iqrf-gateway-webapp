@@ -23,6 +23,7 @@ use App\CloudModule\Model\AzureManager;
 use App\CloudModule\Presenters\AzurePresenter;
 use App\CloudModule\Model\InvalidConnectionString;
 use App\Forms\FormFactory;
+use App\ServiceModule\Model\NotSupportedInitSystemException;
 use App\ServiceModule\Model\ServiceManager;
 use Nette;
 use Nette\Application\UI\Form;
@@ -92,6 +93,9 @@ class CloudAzureMqttFormFactory {
 	 * @param ArrayHash $values Values from the form
 	 * @param AzurePresenter $presenter MS Azure presenter
 	 * @param bool $needRestart Is restart needed?
+	 * @throws InvalidConnectionString Invalid the connection string exception
+	 * @throws IOException Nette IO exception
+	 * @throws NotSupportedInitSystemException Not supported init system exception
 	 */
 	public function save(ArrayHash $values, AzurePresenter $presenter, bool $needRestart = false) {
 		try {

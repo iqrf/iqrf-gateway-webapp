@@ -16,12 +16,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\CloudModule\Presenters;
 
 use App\CloudModule\Forms\CloudBluemixMqttFormFactory;
 use App\Presenters\BasePresenter;
+use Nette\Application\UI\Form;
 
 class BluemixPresenter extends BasePresenter {
 
@@ -42,7 +43,7 @@ class BluemixPresenter extends BasePresenter {
 	 * Create MQTT interface form
 	 * @return Form MQTT interface form
 	 */
-	protected function createComponentCloudBluemixMqttForm() {
+	protected function createComponentCloudBluemixMqttForm(): Form {
 		$this->onlyForAdmins();
 		return $this->formFactory->create($this);
 	}

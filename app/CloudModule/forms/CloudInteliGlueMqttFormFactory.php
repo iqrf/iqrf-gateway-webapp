@@ -22,6 +22,7 @@ namespace App\CloudModule\Forms;
 use App\CloudModule\Model\InteliGlueManager;
 use App\CloudModule\Presenters\InteliGluePresenter;
 use App\Forms\FormFactory;
+use App\ServiceModule\Model\NotSupportedInitSystemException;
 use App\ServiceModule\Model\ServiceManager;
 use Nette;
 use Nette\Application\UI\Form;
@@ -95,6 +96,8 @@ class CloudInteliGlueMqttFormFactory {
 	 * @param ArrayHash $values Values from the form
 	 * @param InteliGluePresenter $presenter Inteliments InteliGlue presenter
 	 * @param bool $needRestart Is restart needed?
+	 * @throws IOException Nette IO exception
+	 * @throws NotSupportedInitSystemException Not supported init system exception
 	 */
 	public function save(ArrayHash $values, InteliGluePresenter $presenter, bool $needRestart = false) {
 		try {

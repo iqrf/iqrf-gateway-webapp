@@ -16,12 +16,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\ConfigUdpFormFactory;
 use App\Presenters\BasePresenter;
+use Nette\Application\UI\Form;
 
 class UdpPresenter extends BasePresenter {
 
@@ -42,7 +43,7 @@ class UdpPresenter extends BasePresenter {
 	 * Create UDP interface form
 	 * @return Form UDP interface form
 	 */
-	protected function createComponentConfigUdpForm() {
+	protected function createComponentConfigUdpForm(): Form {
 		$this->onlyForAdmins();
 		return $this->formFactory->create($this);
 	}

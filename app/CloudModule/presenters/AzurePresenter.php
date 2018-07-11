@@ -16,12 +16,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\CloudModule\Presenters;
 
 use App\CloudModule\Forms\CloudAzureMqttFormFactory;
 use App\Presenters\BasePresenter;
+use Nette\Application\UI\Form;
 
 class AzurePresenter extends BasePresenter {
 
@@ -42,7 +43,7 @@ class AzurePresenter extends BasePresenter {
 	 * Create MQTT interface form
 	 * @return Form MQTT interface form
 	 */
-	protected function createComponentCloudAzureMqttForm() {
+	protected function createComponentCloudAzureMqttForm(): Form {
 		$this->onlyForAdmins();
 		return $this->formFactory->create($this);
 	}

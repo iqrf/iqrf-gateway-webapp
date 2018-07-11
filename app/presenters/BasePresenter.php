@@ -76,8 +76,8 @@ abstract class BasePresenter extends Presenter {
 		$this->translator = $translator;
 	}
 
-	public function createTemplate($class = null) {
-		$template = parent::createTemplate($class);
+	public function createTemplate() {
+		$template = parent::createTemplate();
 		$template->setTranslator($this->translator);
 		return $template;
 	}

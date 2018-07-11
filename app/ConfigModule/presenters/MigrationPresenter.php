@@ -16,13 +16,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\ConfigMigrationFormFactory;
 use App\ConfigModule\Model\MigrationManager;
 use App\Presenters\BasePresenter;
+use Nette\Application\BadRequestException;
+use Nette\Application\UI\Form;
+use Tracy\Debugger;
 
 class MigrationPresenter extends BasePresenter {
 
@@ -43,6 +46,7 @@ class MigrationPresenter extends BasePresenter {
 	 */
 	public function __construct(MigrationManager $migrationManager) {
 		$this->migrationManager = $migrationManager;
+		parent::__construct();
 	}
 
 	/**
@@ -71,7 +75,7 @@ class MigrationPresenter extends BasePresenter {
 	 * Create configuration import form
 	 * @return Form Configuration import form
 	 */
-	protected function createComponentConfigImportForm() {
+	protected function createComponentConfigImportForm(): Form {
 		$this->onlyForAdmins();
 		return $this->formFactory->create($this);
 	}

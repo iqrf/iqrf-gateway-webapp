@@ -15,13 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\ConfigWebsocketMessagingFormFactory;
 use App\ConfigModule\Forms\ConfigWebsocketServiceFormFactory;
 use App\Presenters\BasePresenter;
+use Nette\Application\UI\Form;
 
 class WebsocketPresenter extends BasePresenter {
 
@@ -48,7 +49,7 @@ class WebsocketPresenter extends BasePresenter {
 	 * Create websocket messaging form
 	 * @return Form Websocket messaging form
 	 */
-	protected function createComponentConfigWebsocketMessagingForm() {
+	protected function createComponentConfigWebsocketMessagingForm(): Form {
 		$this->onlyForAdmins();
 		return $this->messagingFormFactory->create($this);
 	}
@@ -57,7 +58,7 @@ class WebsocketPresenter extends BasePresenter {
 	 * Create websocket service form
 	 * @return Form Websocket service form
 	 */
-	protected function createComponentConfigWebsocketServiceForm() {
+	protected function createComponentConfigWebsocketServiceForm(): Form {
 		$this->onlyForAdmins();
 		return $this->serviceFormFactory->create($this);
 	}

@@ -15,12 +15,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\ConfigJsCacheFormFactory;
 use App\Presenters\BasePresenter;
+use Nette\Application\UI\Form;
 
 class JsCachePresenter extends BasePresenter {
 
@@ -41,7 +42,7 @@ class JsCachePresenter extends BasePresenter {
 	 * Create JS cache settings form
 	 * @return Form JS cache settings form
 	 */
-	protected function createComponentConfigJsCacheForm() {
+	protected function createComponentConfigJsCacheForm(): Form {
 		$this->onlyForAdmins();
 		return $this->formFactory->create($this);
 	}

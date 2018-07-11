@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\ConfigModule\Model;
 
@@ -51,8 +51,7 @@ class ComponentManager {
 	 * @param ArrayHash $array Component's settings
 	 */
 	public function add(ArrayHash $array) {
-		$this->deleteByName($array['Name']);
-		$id = count($this->getInstances());
+		$id = count($this->loadComponents());
 		$this->save($array, $id);
 	}
 

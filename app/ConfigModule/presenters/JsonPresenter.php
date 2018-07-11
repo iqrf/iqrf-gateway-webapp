@@ -15,13 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\ConfigJsonSplitterFormFactory;
 use App\ConfigModule\Forms\ConfigJsonDpaApiRawFormFactory;
 use App\Presenters\BasePresenter;
+use Nette\Application\UI\Form;
 
 class JsonPresenter extends BasePresenter {
 
@@ -48,7 +49,7 @@ class JsonPresenter extends BasePresenter {
 	 * Create JSON DPA API Raw settings form
 	 * @return Form JSON DPA API Raw settings form
 	 */
-	protected function createComponentConfigJsonSplitterForm() {
+	protected function createComponentConfigJsonSplitterForm(): Form {
 		$this->onlyForAdmins();
 		return $this->splitterFactory->create($this);
 	}
@@ -57,7 +58,7 @@ class JsonPresenter extends BasePresenter {
 	 * Create JSON splitter settings form
 	 * @return Form JSON splitter settings form
 	 */
-	protected function createComponentConfigJsonDpaApiRawForm() {
+	protected function createComponentConfigJsonDpaApiRawForm(): Form {
 		$this->onlyForAdmins();
 		return $this->dpaApiRawFactory->create($this);
 	}
