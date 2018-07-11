@@ -27,7 +27,7 @@
 		"nette/mail": "^2.4",
 		"nette/neon": "^2.4",
 		"nette/php-generator": "^2.6",
-		"nette/robot-loader": "^2.4",
+		"nette/robot-loader": "^3.0",
 		"nette/safe-stream": "^2.3",
 		"nette/security": "^2.4",
 		"nette/utils": "^2.4",
@@ -41,7 +41,13 @@
 	},
 	"require-dev": {
 		"nette/tester": "^2.0",
-		"mockery/mockery": "^1.0"
+		"mockery/mockery": "^1.0",
+		"phpstan/phpstan": "^0.9",
+		"phpstan/phpstan-nette": "^0.9",
+		"phpstan/phpstan-strict-rules": "^0.9"
+	},
+	"autoload-dev": {
+		"classmap": ["app", "tests"]
 	},
 	"support": {
 		"email": "roman.ondracek@iqrf.com",
@@ -57,7 +63,8 @@
 	"scripts": {
 		"install-cs": "composer create-project nette/code-checker temp/code-checker --no-interaction",
 		"check-cs": "php temp/code-checker/code-checker -l --short-arrays -i \"tests/model/data/macros-ascii.expected\" -i \"docs/\" -i \"tests/configuration-test/\"",
-		"fix-cs": "php temp/code-checker/code-checker -f -l --short-arrays -i \"tests/model/data/macros-ascii.expected\" -i \"docs/\" -i \"tests/configuration-test/\""
+		"fix-cs": "php temp/code-checker/code-checker -f -l --short-arrays -i \"tests/model/data/macros-ascii.expected\" -i \"docs/\" -i \"tests/configuration-test/\"",
+		"phpstan": "vendor/bin/phpstan analyse -l 1 app tests"
 	},
 	"minimum-stability": "alpha"
 }

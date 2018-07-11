@@ -33,6 +33,10 @@ jobs:
         - travis_retry composer install-cs
       script:
         - composer check-cs
+    - stage: PHPStan
+      php: 7.1
+      script:
+        - composer phpstan
   allow_failures:
     - stage: Code Coverage
 sudo: false

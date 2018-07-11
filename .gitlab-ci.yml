@@ -43,3 +43,11 @@ coding-style:
     tags:
         - linux
         - amd64
+
+phpstan:
+    stage: coding-style
+    script:
+        - composer phpstan
+    tags:
+        - linux
+        - amd64
