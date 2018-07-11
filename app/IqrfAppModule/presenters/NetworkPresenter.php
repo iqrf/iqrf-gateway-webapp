@@ -25,7 +25,7 @@ use App\IqrfAppModule\Forms\IqrfNetDiscoveryFormFactory;
 use App\IqrfAppModule\Forms\IqrfNetRfFormFactory;
 use App\IqrfAppModule\Forms\IqrfNetSecurityFormFactory;
 use App\Presenters\BasePresenter;
-use Nette\Application\UI\Form;
+use Nette\Forms\Form;
 
 /**
  * IQMESH Network Manager presenter
@@ -69,7 +69,7 @@ class NetworkPresenter extends BasePresenter {
 	 */
 	protected function createComponentIqrfNetBondingForm(): Form {
 		$this->onlyForAdmins();
-		return $this->bondingForm->create($this);
+		return $this->bondingForm->create();
 	}
 
 	/**
@@ -78,7 +78,7 @@ class NetworkPresenter extends BasePresenter {
 	 */
 	protected function createComponentIqrfNetDiscoveryForm(): Form {
 		$this->onlyForAdmins();
-		return $this->discoveryForm->create($this);
+		return $this->discoveryForm->create();
 	}
 
 	/**
@@ -87,7 +87,7 @@ class NetworkPresenter extends BasePresenter {
 	 */
 	protected function createComponentIqrfNetRfForm(): Form {
 		$this->onlyForAdmins();
-		return $this->rfForm->create($this);
+		return $this->rfForm->create();
 	}
 
 	/**
@@ -96,7 +96,7 @@ class NetworkPresenter extends BasePresenter {
 	 */
 	protected function createComponentIqrfNetSecurityForm(): Form {
 		$this->onlyForAdmins();
-		return $this->securityForm->create($this);
+		return $this->securityForm->create();
 	}
 
 }

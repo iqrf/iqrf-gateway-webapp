@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace App\Presenters;
 
 use App\Forms\SignInFormFactory;
-use Nette\Application\UI\Form;
+use Nette\Forms\Form;
 
 /**
  * Sign in/out presenter

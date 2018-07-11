@@ -27,7 +27,7 @@ use App\ConfigModule\Forms\ConfigOtaUploadFormFactory;
 use App\ConfigModule\Model\IqrfManager;
 use App\Presenters\BasePresenter;
 use App\Model\JsonFileManager;
-use Nette\Application\UI\Form;
+use Nette\Forms\Form;
 
 class IqrfPresenter extends BasePresenter {
 

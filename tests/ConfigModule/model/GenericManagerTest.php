@@ -75,7 +75,7 @@ class GenericManagerTest extends TestCase {
 		$manager = new GenericManager($this->fileManager);
 		$manager->setComponent('iqrf::MqttMessaging');
 		$expected = ['iqrf__MqttMessaging1', 'iqrf__MqttMessaging2',];
-		Assert::equal($expected, $manager->getInstanceFiles('iqrf::MqttMessaging'));
+		Assert::equal($expected, $manager->getInstanceFiles());
 	}
 
 	/**

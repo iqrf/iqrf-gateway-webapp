@@ -21,7 +21,7 @@ namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\ConfigJsCacheFormFactory;
 use App\Presenters\BasePresenter;
-use Nette\Application\UI\Form;
+use Nette\Forms\Form;
 
 class JsCachePresenter extends BasePresenter {
 

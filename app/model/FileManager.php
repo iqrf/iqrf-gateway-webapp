@@ -71,7 +71,7 @@ class FileManager {
 	/**
 	 * Encode JSON from array and write JSON file
 	 * @param string $fileName File name
-	 * @param array $content File content
+	 * @param string $content File content
 	 */
 	public function write(string $fileName, $content) {
 		$fileName = 'nette.safe://' . $this->configDir . '/' . $fileName;

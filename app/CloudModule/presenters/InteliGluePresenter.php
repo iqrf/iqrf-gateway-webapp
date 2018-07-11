@@ -22,7 +22,7 @@ namespace App\CloudModule\Presenters;
 
 use App\CloudModule\Forms\CloudInteliGlueMqttFormFactory;
 use App\Presenters\BasePresenter;
-use Nette\Application\UI\Form;
+use Nette\Forms\Form;
 
 class InteliGluePresenter extends BasePresenter {
 

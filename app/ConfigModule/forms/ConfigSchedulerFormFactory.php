@@ -24,7 +24,7 @@ use App\ConfigModule\Model\SchedulerManager;
 use App\ConfigModule\Presenters\SchedulerPresenter;
 use App\Forms\FormFactory;
 use Nette;
-use Nette\Application\UI\Form;
+use Nette\Forms\Form;
 
 class ConfigSchedulerFormFactory {
 

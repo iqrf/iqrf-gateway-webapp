@@ -192,8 +192,8 @@ class IqrfAppManager {
 
 	/**
 	 * Parse DPA response
-	 * @param string $json JSON DPA response
-	 * @return array Parsed response in array
+	 * @param array $json JSON DPA response
+	 * @return array|null Parsed response in array
 	 * @throws EmptyResponseException
 	 */
 	public function parseResponse(array $json) {

@@ -24,7 +24,7 @@ use App\IqrfAppModule\Forms\IqrfAppSendRawFormFactory;
 use App\IqrfAppModule\Model\IqrfAppManager;
 use App\IqrfAppModule\Model\IqrfMacroManager;
 use App\Presenters\BasePresenter;
-use Nette\Application\UI\Form;
+use Nette\Forms\Form;
 
 /**
  * Send raw DPA packet presenter

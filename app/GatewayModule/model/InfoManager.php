@@ -59,11 +59,11 @@ class InfoManager {
 	 * @param IqrfAppManager $iqrfAppManager IqrfApp manager
 	 * @param VersionManager $versionManager Version manager
 	 */
-	public function __construct(CommandManager $commandManager, IqrfAppManager $iqrfAppManager, VersionManager $versionMananger) {
+	public function __construct(CommandManager $commandManager, IqrfAppManager $iqrfAppManager, VersionManager $versionManager) {
 		$this->commandManager = $commandManager;
 		$this->iqrfAppManager = $iqrfAppManager;
 		$this->jsonFileManager = new JsonFileManager(__DIR__ . '/../../../');
-		$this->versionManager = $versionMananger;
+		$this->versionManager = $versionManager;
 	}
 
 	/**

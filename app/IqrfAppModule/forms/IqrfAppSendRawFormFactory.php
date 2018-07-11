@@ -25,7 +25,7 @@ use App\IqrfAppModule\Model\EmptyResponseException;
 use App\IqrfAppModule\Model\IqrfAppManager;
 use App\IqrfAppModule\Presenters\SendRawPresenter;
 use Nette;
-use Nette\Application\UI\Form;
+use Nette\Forms\Form;
 use Nette\Utils\ArrayHash;
 
 /**

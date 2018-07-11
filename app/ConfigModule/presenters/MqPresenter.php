@@ -23,7 +23,7 @@ namespace App\ConfigModule\Presenters;
 use App\ConfigModule\Model\GenericManager;
 use App\ConfigModule\Forms\ConfigMqFormFactory;
 use App\Presenters\BasePresenter;
-use Nette\Application\UI\Form;
+use Nette\Forms\Form;
 
 class MqPresenter extends BasePresenter {
 

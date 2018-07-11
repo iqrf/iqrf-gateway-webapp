@@ -53,7 +53,7 @@ class SchedulerManager {
 
 	/**
 	 * Constructor
-	 * @param MainMamanager $mainManager Main configuration manager
+	 * @param MainManager $mainManager Main configuration manager
 	 * @param GenericManager $genericManager Generic configuration manager
 	 */
 	public function __construct(MainManager $mainManager, GenericManager $genericManager) {

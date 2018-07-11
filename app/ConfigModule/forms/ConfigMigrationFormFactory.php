@@ -26,7 +26,7 @@ use App\ConfigModule\Model\MigrationManager;
 use App\ConfigModule\Presenters\MigrationPresenter;
 use App\Forms\FormFactory;
 use Nette;
-use Nette\Application\UI\Form;
+use Nette\Forms\Form;
 
 class ConfigMigrationFormFactory {
 

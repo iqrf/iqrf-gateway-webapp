@@ -23,7 +23,7 @@ use App\Forms\FormFactory;
 use App\IqrfAppModule\Model\EmptyResponseException;
 use App\IqrfAppModule\Model\IqrfNetManager;
 use Nette;
-use Nette\Application\UI\Form;
+use Nette\Forms\Form;
 use Nette\Forms\Controls\SubmitButton;
 
 /**

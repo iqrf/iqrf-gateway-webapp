@@ -22,7 +22,7 @@ namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\ConfigMainFormFactory;
 use App\Presenters\BasePresenter;
-use Nette\Application\UI\Form;
+use Nette\Forms\Form;
 
 class MainPresenter extends BasePresenter {
 

@@ -24,7 +24,7 @@ namespace App\Forms;
 use Kdyby\Translation\Translator;
 use Instante\ExtendedFormMacros\IFormFactory;
 use Nette;
-use Nette\Application\UI\Form;
+use Nette\Forms\Form;
 
 /**
  * Form factory.

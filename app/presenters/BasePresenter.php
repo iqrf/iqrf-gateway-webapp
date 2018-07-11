@@ -70,7 +70,7 @@ abstract class BasePresenter extends Presenter {
 
 	/**
 	 * Inject translator service
-	 * @param Translator Translator
+	 * @param Translator $translator Translator
 	 */
 	public function injectTranslator(Translator $translator) {
 		$this->translator = $translator;

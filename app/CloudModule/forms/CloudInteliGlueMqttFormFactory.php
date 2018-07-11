@@ -25,7 +25,7 @@ use App\Forms\FormFactory;
 use App\ServiceModule\Model\NotSupportedInitSystemException;
 use App\ServiceModule\Model\ServiceManager;
 use Nette;
-use Nette\Application\UI\Form;
+use Nette\Forms\Form;
 use Nette\Forms\Controls\SubmitButton;
 use Nette\IOException;
 use Nette\Utils\ArrayHash;

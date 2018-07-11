@@ -22,7 +22,7 @@ namespace App\CloudModule\Presenters;
 
 use App\CloudModule\Forms\CloudAzureMqttFormFactory;
 use App\Presenters\BasePresenter;
-use Nette\Application\UI\Form;
+use Nette\Forms\Form;
 
 class AzurePresenter extends BasePresenter {
 

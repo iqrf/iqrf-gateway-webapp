@@ -22,7 +22,7 @@ namespace App\CloudModule\Presenters;
 
 use App\CloudModule\Forms\CloudAwsMqttFormFactory;
 use App\Presenters\BasePresenter;
-use Nette\Application\UI\Form;
+use Nette\Forms\Form;
 
 class AwsPresenter extends BasePresenter {
 

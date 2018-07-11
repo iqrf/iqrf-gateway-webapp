@@ -25,7 +25,7 @@ use App\ConfigModule\Model\MainManager;
 use App\ConfigModule\Presenters\MainPresenter;
 use App\Forms\FormFactory;
 use Nette;
-use Nette\Application\UI\Form;
+use Nette\Forms\Form;
 
 class ConfigMainFormFactory {
 

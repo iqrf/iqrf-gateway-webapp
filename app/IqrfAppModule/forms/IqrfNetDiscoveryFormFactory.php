@@ -22,7 +22,7 @@ namespace App\IqrfAppModule\Forms;
 use App\Forms\FormFactory;
 use App\IqrfAppModule\Model\IqrfNetManager;
 use Nette;
-use Nette\Application\UI\Form;
+use Nette\Forms\Form;
 use Nette\Utils\ArrayHash;
 
 /**

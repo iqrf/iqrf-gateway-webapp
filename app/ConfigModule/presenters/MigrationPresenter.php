@@ -24,7 +24,7 @@ use App\ConfigModule\Forms\ConfigMigrationFormFactory;
 use App\ConfigModule\Model\MigrationManager;
 use App\Presenters\BasePresenter;
 use Nette\Application\BadRequestException;
-use Nette\Application\UI\Form;
+use Nette\Forms\Form;
 use Tracy\Debugger;
 
 class MigrationPresenter extends BasePresenter {

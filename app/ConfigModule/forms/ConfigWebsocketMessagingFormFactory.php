@@ -23,7 +23,7 @@ use App\ConfigModule\Model\GenericManager;
 use App\ConfigModule\Presenters\WebsocketPresenter;
 use App\Forms\FormFactory;
 use Nette;
-use Nette\Application\UI\Form;
+use Nette\Forms\Form;
 
 class ConfigWebsocketMessagingFormFactory {
 

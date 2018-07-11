@@ -22,7 +22,7 @@ namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\ConfigUdpFormFactory;
 use App\Presenters\BasePresenter;
-use Nette\Application\UI\Form;
+use Nette\Forms\Form;
 
 class UdpPresenter extends BasePresenter {
 

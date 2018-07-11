@@ -23,7 +23,7 @@ namespace App\Forms;
 
 use App\Forms\FormFactory;
 use Nette;
-use Nette\Application\UI\Form;
+use Nette\Forms\Form;
 use Nette\Security\AuthenticationException;
 use Nette\Security\User;
 
