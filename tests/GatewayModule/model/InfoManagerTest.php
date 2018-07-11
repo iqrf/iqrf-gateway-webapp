@@ -1,12 +1,12 @@
 <?php
 
 /**
- * TEST: App\Model\InfoManager
- * @covers App\Model\InfoManager
+ * TEST: App\GatewayModule\Model\InfoManager
+ * @covers App\GatewayModule\Model\InfoManager
  * @phpVersion >= 7.0
  * @testCase
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Test\Model;
 
@@ -58,7 +58,7 @@ class InfoManagerTest extends TestCase {
 	 * @var array Mocked commands
 	 */
 	private $commands = [
-		'daemonVersion1' => 'iqrf_startup version',
+		'daemonVersion' => 'iqrfgd2 version',
 		'deviceTreeName' => 'cat /proc/device-tree/model',
 		'dmiBoardName' => 'cat /sys/class/dmi/id/board_name',
 		'dmiBoardVendor' => 'cat /sys/class/dmi/id/board_vendor',
@@ -192,21 +192,21 @@ class InfoManagerTest extends TestCase {
 	 * Test function to get version of the daemon
 	 */
 	public function testGetDaemonVersion() {
-		$version = '0.7.0-1';
+		$version = 'v2.0.0dev 2018-07-04T10:30:51';
 		$commandManager0 = \Mockery::mock(CommandManager::class);
-		$commandManager0->shouldReceive('commandExist')->with('iqrf_startup')->andReturn(false);
+		$commandManager0->shouldReceive('commandExist')->with('iqrfgd2')->andReturn(false);
 		$iqrfAppManager0 = new IqrfAppManager($commandManager0, $this->coordinatorParser, $this->osParser, $this->enumParser);
 		$gwInfoManager0 = new InfoManager($commandManager0, $iqrfAppManager0, $this->versionManager);
 		Assert::same('none', $gwInfoManager0->getDaemonVersion());
 		$commandManager1 = \Mockery::mock(CommandManager::class);
-		$commandManager1->shouldReceive('commandExist')->with('iqrf_startup')->andReturn(true);
-		$commandManager1->shouldReceive('send')->with($this->commands['daemonVersion1'])->andReturn($version);
+		$commandManager1->shouldReceive('commandExist')->with('iqrfgd2')->andReturn(true);
+		$commandManager1->shouldReceive('send')->with($this->commands['daemonVersion'])->andReturn($version);
 		$iqrfAppManager1 = new IqrfAppManager($commandManager1, $this->coordinatorParser, $this->osParser, $this->enumParser);
 		$gwInfoManager1 = new InfoManager($commandManager1, $iqrfAppManager1, $this->versionManager);
 		Assert::same($version, $gwInfoManager1->getDaemonVersion());
 		$commandManager2 = \Mockery::mock(CommandManager::class);
-		$commandManager2->shouldReceive('commandExist')->with('iqrf_startup')->andReturn(true);
-		$commandManager2->shouldReceive('send')->with($this->commands['daemonVersion1']);
+		$commandManager2->shouldReceive('commandExist')->with('iqrfgd2')->andReturn(true);
+		$commandManager2->shouldReceive('send')->with($this->commands['daemonVersion']);
 		$iqrfAppManager2 = new IqrfAppManager($commandManager2, $this->coordinatorParser, $this->osParser, $this->enumParser);
 		$gwInfoManager2 = new InfoManager($commandManager2, $iqrfAppManager2, $this->versionManager);
 		Assert::same('unknown', $gwInfoManager2->getDaemonVersion());
@@ -217,12 +217,13 @@ class InfoManagerTest extends TestCase {
 	 * Test function to get version of the webapp
 	 */
 	public function testGetWebAppVersion() {
+		$version = 'v1.1.6';
 		$commandManager0 = \Mockery::mock(CommandManager::class);
 		$commandManager0->shouldReceive('commandExist')->with('git')->andReturn(false);
 		$iqrfAppManager0 = new IqrfAppManager($commandManager0, $this->coordinatorParser, $this->osParser, $this->enumParser);
 		$versionManager0 = new VersionManager($commandManager0);
 		$gwInfoManager0 = new InfoManager($commandManager0, $iqrfAppManager0, $versionManager0);
-		Assert::same('v1.1.5', $gwInfoManager0->getWebAppVersion());
+		Assert::same($version, $gwInfoManager0->getWebAppVersion());
 		$gitBranches = '* master                 733d45340cbb2565fd068ca3257ad39a5e46f963 Add a notification to an update webapp to newer stable version';
 		$commandManager1 = \Mockery::mock(CommandManager::class);
 		$commandManager1->shouldReceive('commandExist')->with('git')->andReturn(true);
@@ -230,8 +231,9 @@ class InfoManagerTest extends TestCase {
 		$iqrfAppManager1 = new IqrfAppManager($commandManager1, $this->coordinatorParser, $this->osParser, $this->enumParser);
 		$versionManager1 = new VersionManager($commandManager1);
 		$gwInfoManager1 = new InfoManager($commandManager1, $iqrfAppManager1, $versionManager1);
-		Assert::same('v1.1.5 (master - 733d45340cbb2565fd068ca3257ad39a5e46f963)', $gwInfoManager1->getWebAppVersion());
+		Assert::same($version . ' (master - 733d45340cbb2565fd068ca3257ad39a5e46f963)', $gwInfoManager1->getWebAppVersion());
 	}
+
 }
 
 $test = new InfoManagerTest($container);

@@ -128,8 +128,8 @@ class InfoManager {
 	 * @return string IQRF Daemon version
 	 */
 	public function getDaemonVersion() {
-		$cmd = 'iqrf_startup version';
-		$daemonExistence = $this->commandManager->commandExist('iqrf_startup');
+		$cmd = 'iqrfgd2 version';
+		$daemonExistence = $this->commandManager->commandExist('iqrfgd2');
 		if (!$daemonExistence) {
 			return 'none';
 		}

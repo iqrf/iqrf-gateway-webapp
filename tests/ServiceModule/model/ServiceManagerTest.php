@@ -36,12 +36,12 @@ class ServiceManagerTest extends TestCase {
 
 	/**
 	 * @test
-	 * Test function to start iqrf-daemon service
+	 * Test function to start iqrfgd2 service
 	 */
 	public function testStart() {
 		$commandManager = \Mockery::mock(CommandManager::class);
-		$commandManager->shouldReceive('send')->with('systemctl start iqrf-daemon.service', true)->andReturn(true);
-		$commandManager->shouldReceive('send')->with('supervisorctl start iqrf-daemon', true)->andReturn(true);
+		$commandManager->shouldReceive('send')->with('systemctl start iqrfgd2.service', true)->andReturn(true);
+		$commandManager->shouldReceive('send')->with('supervisorctl start iqrfgd2', true)->andReturn(true);
 		$managerSystemD = new ServiceManager('systemd', $commandManager);
 		Assert::true($managerSystemD->start());
 		$managerDockerSupervisor = new ServiceManager('docker-supervisor', $commandManager);
@@ -54,12 +54,12 @@ class ServiceManagerTest extends TestCase {
 
 	/**
 	 * @test
-	 * Test function to stop iqrf-daemon service
+	 * Test function to stop iqrfgd2 service
 	 */
 	public function testStop() {
 		$commandManager = \Mockery::mock(CommandManager::class);
-		$commandManager->shouldReceive('send')->with('systemctl stop iqrf-daemon.service', true)->andReturn(true);
-		$commandManager->shouldReceive('send')->with('supervisorctl stop iqrf-daemon', true)->andReturn(true);
+		$commandManager->shouldReceive('send')->with('systemctl stop iqrfgd2.service', true)->andReturn(true);
+		$commandManager->shouldReceive('send')->with('supervisorctl stop iqrfgd2', true)->andReturn(true);
 		$managerSystemD = new ServiceManager('systemd', $commandManager);
 		Assert::true($managerSystemD->stop());
 		$managerDockerSupervisor = new ServiceManager('docker-supervisor', $commandManager);
@@ -72,12 +72,12 @@ class ServiceManagerTest extends TestCase {
 
 	/**
 	 * @test
-	 * Test function to restart iqrf-daemon service
+	 * Test function to restart iqrfgd2 service
 	 */
 	public function testRestart() {
 		$commandManager = \Mockery::mock(CommandManager::class);
-		$commandManager->shouldReceive('send')->with('systemctl restart iqrf-daemon.service', true)->andReturn(true);
-		$commandManager->shouldReceive('send')->with('supervisorctl restart iqrf-daemon', true)->andReturn(true);
+		$commandManager->shouldReceive('send')->with('systemctl restart iqrfgd2.service', true)->andReturn(true);
+		$commandManager->shouldReceive('send')->with('supervisorctl restart iqrfgd2', true)->andReturn(true);
 		$managerSystemD = new ServiceManager('systemd', $commandManager);
 		Assert::true($managerSystemD->restart());
 		$managerDockerSupervisor = new ServiceManager('docker-supervisor', $commandManager);
@@ -90,12 +90,12 @@ class ServiceManagerTest extends TestCase {
 
 	/**
 	 * @test
-	 * Test function to get status of iqrf-daemon service
+	 * Test function to get status of iqrfgd2 service
 	 */
 	public function testGetStatus() {
 		$commandManager = \Mockery::mock(CommandManager::class);
-		$commandManager->shouldReceive('send')->with('systemctl status iqrf-daemon.service', true)->andReturn(true);
-		$commandManager->shouldReceive('send')->with('supervisorctl status iqrf-daemon', true)->andReturn(true);
+		$commandManager->shouldReceive('send')->with('systemctl status iqrfgd2.service', true)->andReturn(true);
+		$commandManager->shouldReceive('send')->with('supervisorctl status iqrfgd2', true)->andReturn(true);
 		$managerSystemD = new ServiceManager('systemd', $commandManager);
 		Assert::true($managerSystemD->getStatus());
 		$managerDockerSupervisor = new ServiceManager('docker-supervisor', $commandManager);
