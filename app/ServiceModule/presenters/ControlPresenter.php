@@ -30,13 +30,13 @@ use App\ServiceModule\Model\ServiceManager;
 class ControlPresenter extends ProtectedPresenter {
 
 	/**
-	 * @var ServiceManager
+	 * @var ServiceManager Service manager
 	 */
 	private $serviceManager;
 
 	/**
 	 * Constructor.
-	 * @param ServiceManager $serviceManager
+	 * @param ServiceManager $serviceManager Service manager
 	 */
 	public function __construct(ServiceManager $serviceManager) {
 		$this->serviceManager = $serviceManager;
@@ -47,39 +47,41 @@ class ControlPresenter extends ProtectedPresenter {
 	 * Start iqrf-daemon service
 	 */
 	public function actionStart() {
-		try {
-			$this->serviceManager->start();
-			$this->flashMessage('service.actions.start.message', 'info');
-		} catch (NotSupportedInitSystemException $ex) {
-			$this->flashMessage('service.errors.unsupportedInit', 'danger');
-		} finally {
-			$this->redirect('Control:default');
-			$this->setView('default');
-		}
+		$this->action('start');
 	}
 
 	/**
 	 * Stop iqrf-daemon service
 	 */
 	public function actionStop() {
-		try {
-			$this->serviceManager->stop();
-			$this->flashMessage('service.actions.stop.message', 'info');
-		} catch (NotSupportedInitSystemException $ex) {
-			$this->flashMessage('service.errors.unsupportedInit', 'danger');
-		} finally {
-			$this->redirect('Control:default');
-			$this->setView('default');
-		}
+		$this->action('stop');
 	}
 
 	/**
 	 * Restart iqrf-daemon service
 	 */
 	public function actionRestart() {
+		$this->action('restart');
+	}
+
+	/**
+	 * Start, stop or restart IQRF Gateway Daemon's service
+	 * @param string $action Type of action (start/stop/restart)
+	 */
+	private function action(string $action) {
 		try {
-			$this->serviceManager->restart();
-			$this->flashMessage('service.actions.restart.message', 'info');
+			switch ($action) {
+				case 'start':
+					$this->serviceManager->start();
+					break;
+				case 'stop':
+					$this->serviceManager->stop();
+					break;
+				case 'restart':
+					$this->serviceManager->restart();
+					break;
+			}
+			$this->flashMessage('service.actions.' . $action . '.message', 'success');
 		} catch (NotSupportedInitSystemException $ex) {
 			$this->flashMessage('service.errors.unsupportedInit', 'danger');
 		} finally {
