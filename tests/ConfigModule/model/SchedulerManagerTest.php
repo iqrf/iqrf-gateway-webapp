@@ -6,7 +6,7 @@
  * @phpVersion >= 7.0
  * @testCase
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Test\ConfigModule\Model;
 
@@ -178,7 +178,11 @@ class SchedulerManagerTest extends TestCase {
 	 */
 	public function testGetMessagings() {
 		$manager = new SchedulerManager($this->mainConfigManager, $this->genericConfigManager);
-		$expected = ['MqMessaging', 'MqttMessaging1', 'MqttMessaging2', 'WebsocketMessaging'];
+		$expected = [
+			'config.mq.title' => ['MqMessaging',],
+			'config.mqtt.title' => ['MqttMessaging1', 'MqttMessaging2',],
+			'config.websocket.title' => ['WebsocketMessaging',],
+		];
 		Assert::same($expected, $manager->getMessagings());
 	}
 

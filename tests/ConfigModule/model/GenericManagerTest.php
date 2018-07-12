@@ -80,6 +80,20 @@ class GenericManagerTest extends TestCase {
 
 	/**
 	 * @test
+	 * Test function to get avaiable messagings
+	 */
+	public function testGetMessagings() {
+		$manager = new GenericManager($this->fileManager);
+		$expected = [
+			'config.mq.title' => ['MqMessaging',],
+			'config.mqtt.title' => ['MqttMessaging1', 'MqttMessaging2',],
+			'config.websocket.title' => ['WebsocketMessaging',],
+		];
+		Assert::same($expected, $manager->getMessagings());
+	}
+
+	/**
+	 * @test
 	 * Test function to load main configuration of daemon
 	 */
 	public function testLoad() {

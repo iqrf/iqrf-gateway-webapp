@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\ConfigModule\Model;
 
@@ -125,6 +125,25 @@ class GenericManager {
 			}
 		}
 		return $instances;
+	}
+
+	/**
+	 * Get available messagings
+	 * @return array Available messagings
+	 */
+	public function getMessagings(): array {
+		$components = [
+			'mq' => 'iqrf::MqMessaging', 'mqtt' => 'iqrf::MqttMessaging',
+			'websocket' => 'iqrf::WebsocketMessaging'
+		];
+		$messagings = [];
+		foreach ($components as $name => $component) {
+			$this->setComponent($component);
+			foreach ($this->getInstances() as $instance) {
+				$messagings['config.' . $name . '.title'][] = $instance['instance'];
+			}
+		}
+		return $messagings;
 	}
 
 }

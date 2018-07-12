@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\ConfigModule\Model;
 
@@ -123,10 +123,8 @@ class SchedulerManager {
 			case 'raw-hdp':
 				$pnum = Strings::padLeft($data['pnum'], 2, '0') . '.';
 				$pcmd = Strings::padLeft($data['pcmd'], 2, '0') . '.';
-				if (!empty($data['req_data'])) {
-					$pdata = '.' . $data['req_data'];
-				} else if (!empty($data['rdata'])) {
-					$pdata = '.' . $data['rdata'];
+				if (!empty($data['rdata'])) {
+					$pdata = '.' . Strings::padLeft($data['rdata'], 2, '0');
 				} else {
 					$pdata = '';
 				}
@@ -139,17 +137,7 @@ class SchedulerManager {
 	 * @return array Available messagings
 	 */
 	public function getMessagings(): array {
-		$components = [
-			'iqrf::MqMessaging', 'iqrf::MqttMessaging', 'iqrf::WebsocketMessaging'
-		];
-		$messagings = [];
-		foreach ($components as $components) {
-			$this->genericConfigManager->setComponent($components);
-			foreach ($this->genericConfigManager->getInstances() as $instance) {
-				$messagings[] = $instance['instance'];
-			}
-		}
-		return $messagings;
+		return $this->genericConfigManager->getMessagings();
 	}
 
 	/**
