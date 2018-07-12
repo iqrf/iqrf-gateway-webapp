@@ -134,7 +134,7 @@ class GenericManager {
 	public function getMessagings(): array {
 		$components = [
 			'mq' => 'iqrf::MqMessaging', 'mqtt' => 'iqrf::MqttMessaging',
-			'websocket' => 'iqrf::WebsocketMessaging'
+			'udp' => 'iqrf::UdpMessaging', 'websocket' => 'iqrf::WebsocketMessaging'
 		];
 		$messagings = [];
 		foreach ($components as $name => $component) {

@@ -22,6 +22,7 @@ namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\ConfigIqrfCdcFormFactory;
 use App\ConfigModule\Forms\ConfigIqrfDpaFormFactory;
+use App\ConfigModule\Forms\ConfigIqrfIde4FormFactory;
 use App\ConfigModule\Forms\ConfigIqrfSpiFormFactory;
 use App\ConfigModule\Forms\ConfigOtaUploadFormFactory;
 use App\ConfigModule\Model\IqrfManager;
@@ -47,6 +48,12 @@ class IqrfPresenter extends ProtectedPresenter {
 	 * @inject
 	 */
 	public $dpaFormFactory;
+
+	/**
+	 * @var ConfigIqrfIde4FormFactory IQRF IDE 4 counterpart form factory
+	 * @inject
+	 */
+	public $ide4FormFactory;
 
 	/**
 	 * @var ConfigOtaUploadFormFactory IQRF OTA upload service configuration form factory
@@ -98,6 +105,14 @@ class IqrfPresenter extends ProtectedPresenter {
 	 */
 	protected function createComponentConfigIqrfDpaForm(): Form {
 		return $this->dpaFormFactory->create($this);
+	}
+
+	/**
+	 * Create IQRF IDE 4 counterpart form
+	 * @return Form IQRF IDE 4 counterpart form
+	 */
+	protected function createComponentConfigIqrfIde4Form(): Form {
+		return $this->ide4FormFactory->create($this);
 	}
 
 	/**

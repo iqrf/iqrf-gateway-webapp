@@ -181,6 +181,7 @@ class SchedulerManagerTest extends TestCase {
 		$expected = [
 			'config.mq.title' => ['MqMessaging',],
 			'config.mqtt.title' => ['MqttMessaging1', 'MqttMessaging2',],
+			'config.udp.title' => ['UdpMessaging',],
 			'config.websocket.title' => ['WebsocketMessaging',],
 		];
 		Assert::same($expected, $manager->getMessagings());

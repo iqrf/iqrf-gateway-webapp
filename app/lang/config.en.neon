@@ -51,6 +51,20 @@ iqrfDpa:
 		usb: USB CDC
 		spi: SPI
 
+iqrfIde4:
+	title: IQRF IDE4 Counterpart
+	form:
+		instance: Name of instance
+		requiredInterface:
+			name: Name of required interface
+			instance: Name of required interface instance
+		messages:
+			instance: Please enter name of IQRF IDE4 Counterpart instance.
+			requiredInterface:
+				name: Please enter name of required interface.
+				instance: Please enter name of required interface instance.
+		Save: Save
+
 iqrfSpi:
 	title: IQRF SPI
 	form:
