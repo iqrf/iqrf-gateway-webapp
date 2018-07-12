@@ -48,15 +48,6 @@ abstract class BasePresenter extends Presenter {
 	public $versionManager;
 
 	/**
-	 * Only for administrators
-	 */
-	public function onlyForAdmins() {
-		if (!$this->user->isLoggedIn()) {
-			$this->redirect(':Sign:in');
-		}
-	}
-
-	/**
 	 * After template render
 	 */
 	public function afterRender() {

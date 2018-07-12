@@ -22,10 +22,10 @@ namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Model\SchedulerManager;
 use App\ConfigModule\Forms\ConfigSchedulerFormFactory;
-use App\Presenters\BasePresenter;
+use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
-class SchedulerPresenter extends BasePresenter {
+class SchedulerPresenter extends ProtectedPresenter {
 
 	/**
 	 * @var ConfigSchedulerFormFactory Scheduler configuration form factory
@@ -51,7 +51,6 @@ class SchedulerPresenter extends BasePresenter {
 	 * Render list tasks in scheduler
 	 */
 	public function renderDefault() {
-		$this->onlyForAdmins();
 		$this->template->tasks = $this->configManager->getTasks();
 	}
 
@@ -60,7 +59,6 @@ class SchedulerPresenter extends BasePresenter {
 	 * @param int $id ID of MQTT interface
 	 */
 	public function renderEdit(int $id) {
-		$this->onlyForAdmins();
 		$this->template->id = $id;
 	}
 
@@ -69,7 +67,6 @@ class SchedulerPresenter extends BasePresenter {
 	 * @param string $type
 	 */
 	public function actionAdd(string $type) {
-		$this->onlyForAdmins();
 		$this->configManager->add($type);
 		$this->redirect('Scheduler:edit', ['id' => $this->configManager->getLastId()]);
 		$this->setView('default');
@@ -80,7 +77,6 @@ class SchedulerPresenter extends BasePresenter {
 	 * @param int $id ID of task in Scheduler
 	 */
 	public function actionDelete(int $id) {
-		$this->onlyForAdmins();
 		$this->configManager->delete($id);
 		$this->redirect('Scheduler:default');
 		$this->setView('default');
@@ -91,7 +87,6 @@ class SchedulerPresenter extends BasePresenter {
 	 * @return Form Edit task form
 	 */
 	protected function createComponentConfigSchedulerForm(): Form {
-		$this->onlyForAdmins();
 		return $this->formFactory->create($this);
 	}
 

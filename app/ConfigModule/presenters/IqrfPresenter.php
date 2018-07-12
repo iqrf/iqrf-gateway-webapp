@@ -25,11 +25,11 @@ use App\ConfigModule\Forms\ConfigIqrfDpaFormFactory;
 use App\ConfigModule\Forms\ConfigIqrfSpiFormFactory;
 use App\ConfigModule\Forms\ConfigOtaUploadFormFactory;
 use App\ConfigModule\Model\IqrfManager;
-use App\Presenters\BasePresenter;
+use App\Presenters\ProtectedPresenter;
 use App\Model\JsonFileManager;
 use Nette\Forms\Form;
 
-class IqrfPresenter extends BasePresenter {
+class IqrfPresenter extends ProtectedPresenter {
 
 	/**
 	 * @var JsonFileManager JSON file manager
@@ -79,7 +79,6 @@ class IqrfPresenter extends BasePresenter {
 	 * Render IQRF interface configurator
 	 */
 	public function renderDefault() {
-		$this->onlyForAdmins();
 		$this->template->cdcInterfaces = $this->iqrfManager->getCdcInterfaces();
 		$this->template->spiInterfaces = $this->iqrfManager->getSpiInterfaces();
 		$this->template->spiPins = $this->fileManager->read('SpiPins');
@@ -90,7 +89,6 @@ class IqrfPresenter extends BasePresenter {
 	 * @return Form IQRF CDC interface form
 	 */
 	protected function createComponentConfigIqrfCdcForm() {
-		$this->onlyForAdmins();
 		return $this->cdcFormFactory->create($this);
 	}
 
@@ -99,7 +97,6 @@ class IqrfPresenter extends BasePresenter {
 	 * @return Form IQRF DPA interface form
 	 */
 	protected function createComponentConfigIqrfDpaForm(): Form {
-		$this->onlyForAdmins();
 		return $this->dpaFormFactory->create($this);
 	}
 
@@ -108,7 +105,6 @@ class IqrfPresenter extends BasePresenter {
 	 * @return Form IQRF SPI interface form
 	 */
 	protected function createComponentConfigIqrfSpiForm(): Form {
-		$this->onlyForAdmins();
 		return $this->spiFormFactory->create($this);
 	}
 
@@ -117,7 +113,6 @@ class IqrfPresenter extends BasePresenter {
 	 * @return Form IQRF OTA upload service form
 	 */
 	protected function createComponentConfigOtaUploadForm(): Form {
-		$this->onlyForAdmins();
 		return $this->otaFormFactory->create($this);
 	}
 

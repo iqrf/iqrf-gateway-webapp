@@ -20,15 +20,8 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Presenters;
 
-use App\Presenters\BasePresenter;
+use App\Presenters\ProtectedPresenter;
 
-class HomepagePresenter extends BasePresenter {
-
-	/**
-	 * Render disambiguation
-	 */
-	public function renderDefault() {
-		$this->onlyForAdmins();
-	}
+class HomepagePresenter extends ProtectedPresenter {
 
 }

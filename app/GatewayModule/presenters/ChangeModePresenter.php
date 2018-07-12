@@ -21,12 +21,12 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Presenters;
 
 use App\IqrfAppModule\Model\IqrfAppManager;
-use App\Presenters\BasePresenter;
+use App\Presenters\ProtectedPresenter;
 
 /**
  * Change operational mode presenter
  */
-class ChangeModePresenter extends BasePresenter {
+class ChangeModePresenter extends ProtectedPresenter {
 
 	/**
 	 * @var IqrfAppManager
@@ -43,17 +43,9 @@ class ChangeModePresenter extends BasePresenter {
 	}
 
 	/**
-	 * Render default page
-	 */
-	public function renderDefault() {
-		$this->onlyForAdmins();
-	}
-
-	/**
 	 * Change gateway mode to Forwarding mode
 	 */
 	public function actionForwarding() {
-		$this->onlyForAdmins();
 		$mode = 'forwarding';
 		$this->iqrfAppManager->changeOperationMode($mode);
 		$this->flashMessage('gateway.mode.modes.' . $mode . '.message', 'info');
@@ -65,7 +57,6 @@ class ChangeModePresenter extends BasePresenter {
 	 * Change gateway mode to Operational mode
 	 */
 	public function actionOperational() {
-		$this->onlyForAdmins();
 		$mode = 'operational';
 		$this->iqrfAppManager->changeOperationMode($mode);
 		$this->flashMessage('gateway.mode.modes.' . $mode . '.message', 'info');
@@ -77,7 +68,6 @@ class ChangeModePresenter extends BasePresenter {
 	 * Change gateway mode to Service mode
 	 */
 	public function actionService() {
-		$this->onlyForAdmins();
 		$mode = 'service';
 		$this->iqrfAppManager->changeOperationMode($mode);
 		$this->flashMessage('gateway.mode.modes.' . $mode . '.message', 'info');

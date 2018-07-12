@@ -22,10 +22,10 @@ namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\ConfigComponentsFormFactory;
 use App\ConfigModule\Model\ComponentManager;
-use App\Presenters\BasePresenter;
+use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
-class ComponentPresenter extends BasePresenter {
+class ComponentPresenter extends ProtectedPresenter {
 
 	/**
 	 * @var ComponentManager Component manager
@@ -51,7 +51,6 @@ class ComponentPresenter extends BasePresenter {
 	 * Render Main configurator
 	 */
 	public function renderDefault() {
-		$this->onlyForAdmins();
 		$this->template->components = $this->configManager->loadComponents();
 	}
 
@@ -60,7 +59,6 @@ class ComponentPresenter extends BasePresenter {
 	 * @param int $id ID of MQTT interface
 	 */
 	public function renderEdit(int $id) {
-		$this->onlyForAdmins();
 		$this->template->id = $id;
 	}
 
@@ -69,7 +67,6 @@ class ComponentPresenter extends BasePresenter {
 	 * @param int $id ID of MQTT interface
 	 */
 	public function actionDelete(int $id) {
-		$this->onlyForAdmins();
 		$this->configManager->delete($id);
 		$this->redirect('Component:default');
 		$this->setView('default');
@@ -80,7 +77,6 @@ class ComponentPresenter extends BasePresenter {
 	 * @return Form Components form
 	 */
 	protected function createComponentConfigComponentsForm(): Form {
-		$this->onlyForAdmins();
 		return $this->componentsFactory->create($this);
 	}
 

@@ -21,10 +21,10 @@ declare(strict_types = 1);
 namespace App\CloudModule\Presenters;
 
 use App\CloudModule\Forms\CloudInteliGlueMqttFormFactory;
-use App\Presenters\BasePresenter;
+use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
-class InteliGluePresenter extends BasePresenter {
+class InteliGluePresenter extends ProtectedPresenter {
 
 	/**
 	 * @var CloudInteliGlueMqttFormFactory Inteliments InteliGlue form factory
@@ -33,18 +33,10 @@ class InteliGluePresenter extends BasePresenter {
 	public $formFactory;
 
 	/**
-	 * Render default page
-	 */
-	public function renderDefault() {
-		$this->onlyForAdmins();
-	}
-
-	/**
 	 * Create MQTT interface form
 	 * @return Form MQTT interface form
 	 */
 	protected function createComponentCloudInteliGlueMqttForm(): Form {
-		$this->onlyForAdmins();
 		return $this->formFactory->create($this);
 	}
 

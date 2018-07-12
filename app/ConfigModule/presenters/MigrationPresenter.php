@@ -22,12 +22,12 @@ namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\ConfigMigrationFormFactory;
 use App\ConfigModule\Model\MigrationManager;
-use App\Presenters\BasePresenter;
+use App\Presenters\ProtectedPresenter;
 use Nette\Application\BadRequestException;
 use Nette\Forms\Form;
 use Tracy\Debugger;
 
-class MigrationPresenter extends BasePresenter {
+class MigrationPresenter extends ProtectedPresenter {
 
 	/**
 	 * @var ConfigMigrationFormFactory Configuration import form factory
@@ -50,17 +50,9 @@ class MigrationPresenter extends BasePresenter {
 	}
 
 	/**
-	 * Render migration page
-	 */
-	public function renderDefault() {
-		$this->onlyForAdmins();
-	}
-
-	/**
 	 * Export action
 	 */
 	public function actionExport() {
-		$this->onlyForAdmins();
 		try {
 			$this->sendResponse($this->migrationManager->download());
 		} catch (BadRequestException $e) {
@@ -76,7 +68,6 @@ class MigrationPresenter extends BasePresenter {
 	 * @return Form Configuration import form
 	 */
 	protected function createComponentConfigImportForm(): Form {
-		$this->onlyForAdmins();
 		return $this->formFactory->create($this);
 	}
 

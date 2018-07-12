@@ -23,13 +23,13 @@ namespace App\IqrfAppModule\Presenters;
 use App\IqrfAppModule\Forms\IqrfAppSendRawFormFactory;
 use App\IqrfAppModule\Model\IqrfAppManager;
 use App\IqrfAppModule\Model\IqrfMacroManager;
-use App\Presenters\BasePresenter;
+use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
 /**
  * Send raw DPA packet presenter
  */
-class SendRawPresenter extends BasePresenter {
+class SendRawPresenter extends ProtectedPresenter {
 
 	/**
 	 * @var IqrfAppSendRawFormFactory Send raw DPA packet form
@@ -62,7 +62,6 @@ class SendRawPresenter extends BasePresenter {
 	 * Render send raw DPA packet page
 	 */
 	public function renderDefault() {
-		$this->onlyForAdmins();
 		$this->template->macros = $this->iqrfMacroManager->read();
 	}
 
@@ -81,7 +80,6 @@ class SendRawPresenter extends BasePresenter {
 	 * @return Form Send raw DPA packet form
 	 */
 	protected function createComponentIqrfAppSendRawForm(): Form {
-		$this->onlyForAdmins();
 		return $this->sendRawFactory->create($this);
 	}
 

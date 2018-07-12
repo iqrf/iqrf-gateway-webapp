@@ -22,10 +22,10 @@ namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Model\GenericManager;
 use App\ConfigModule\Forms\ConfigMqttFormFactory;
-use App\Presenters\BasePresenter;
+use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
-class MqttPresenter extends BasePresenter {
+class MqttPresenter extends ProtectedPresenter {
 
 	/**
 	 * @var ConfigMqttFormFactory MQTT interface configuration form factory
@@ -52,7 +52,6 @@ class MqttPresenter extends BasePresenter {
 	 * Render list of MQTT interfaces
 	 */
 	public function renderDefault() {
-		$this->onlyForAdmins();
 		$this->template->instances = $this->configManager->getInstances();
 	}
 
@@ -61,7 +60,6 @@ class MqttPresenter extends BasePresenter {
 	 * @param int $id ID of MQTT interface
 	 */
 	public function renderEdit(int $id) {
-		$this->onlyForAdmins();
 		$this->template->id = $id;
 	}
 
@@ -70,7 +68,6 @@ class MqttPresenter extends BasePresenter {
 	 * @param int $id ID of MQTT interface
 	 */
 	public function actionDelete(int $id) {
-		$this->onlyForAdmins();
 		$fileName = $this->configManager->getInstanceFiles()[$id];
 		$this->configManager->setFileName($fileName);
 		$this->configManager->delete();
@@ -83,7 +80,6 @@ class MqttPresenter extends BasePresenter {
 	 * @return Form MQTT interface form
 	 */
 	protected function createComponentConfigMqttForm(): Form {
-		$this->onlyForAdmins();
 		return $this->formFactory->create($this);
 	}
 

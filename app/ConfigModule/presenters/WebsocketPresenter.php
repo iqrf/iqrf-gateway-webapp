@@ -21,10 +21,10 @@ namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\ConfigWebsocketMessagingFormFactory;
 use App\ConfigModule\Forms\ConfigWebsocketServiceFormFactory;
-use App\Presenters\BasePresenter;
+use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
-class WebsocketPresenter extends BasePresenter {
+class WebsocketPresenter extends ProtectedPresenter {
 
 	/**
 	 * @var ConfigWebsocketMessagingFormFactory Websocket messaging configuration form factory
@@ -39,18 +39,10 @@ class WebsocketPresenter extends BasePresenter {
 	public $serviceFormFactory;
 
 	/**
-	 * Render websocket interface configurator
-	 */
-	public function renderDefault() {
-		$this->onlyForAdmins();
-	}
-
-	/**
 	 * Create websocket messaging form
 	 * @return Form Websocket messaging form
 	 */
 	protected function createComponentConfigWebsocketMessagingForm(): Form {
-		$this->onlyForAdmins();
 		return $this->messagingFormFactory->create($this);
 	}
 
@@ -59,7 +51,6 @@ class WebsocketPresenter extends BasePresenter {
 	 * @return Form Websocket service form
 	 */
 	protected function createComponentConfigWebsocketServiceForm(): Form {
-		$this->onlyForAdmins();
 		return $this->serviceFormFactory->create($this);
 	}
 

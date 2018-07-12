@@ -21,10 +21,10 @@ declare(strict_types = 1);
 namespace App\CloudModule\Presenters;
 
 use App\CloudModule\Forms\CloudBluemixMqttFormFactory;
-use App\Presenters\BasePresenter;
+use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
-class BluemixPresenter extends BasePresenter {
+class BluemixPresenter extends ProtectedPresenter {
 
 	/**
 	 * @var CloudBluemixMqttFormFactory IBM Bluemix form factory
@@ -33,18 +33,10 @@ class BluemixPresenter extends BasePresenter {
 	public $formFactory;
 
 	/**
-	 * Render default page
-	 */
-	public function renderDefault() {
-		$this->onlyForAdmins();
-	}
-
-	/**
 	 * Create MQTT interface form
 	 * @return Form MQTT interface form
 	 */
 	protected function createComponentCloudBluemixMqttForm(): Form {
-		$this->onlyForAdmins();
 		return $this->formFactory->create($this);
 	}
 

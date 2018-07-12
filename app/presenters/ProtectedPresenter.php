@@ -18,26 +18,20 @@
  */
 declare(strict_types = 1);
 
-namespace App\CloudModule\Presenters;
+namespace App\Presenters;
 
-use App\CloudModule\Forms\CloudAwsMqttFormFactory;
-use App\Presenters\ProtectedPresenter;
-use Nette\Forms\Form;
+use App\Presenters\BasePresenter;
 
-class AwsPresenter extends ProtectedPresenter {
+/**
+ * Protected presenter for protected application presenters.
+ */
+abstract class ProtectedPresenter extends BasePresenter {
 
-	/**
-	 * @var CloudAwsMqttFormFactory Amazon AWS IoT form factory
-	 * @inject
-	 */
-	public $formFactory;
-
-	/**
-	 * Create MQTT interface form
-	 * @return Form MQTT interface form
-	 */
-	protected function createComponentCloudAwsMqttForm(): Form {
-		return $this->formFactory->create($this);
+	protected function startup() {
+		parent::startup();
+		if (!$this->user->isLoggedIn()) {
+			$this->redirect(':Sign:in');
+		}
 	}
 
 }

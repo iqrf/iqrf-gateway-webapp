@@ -16,21 +16,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\Presenters;
 
 /**
  * Homepage presenter
  */
-class HomepagePresenter extends BasePresenter {
+class HomepagePresenter extends ProtectedPresenter {
 
 	/**
 	 * Render default page
 	 */
 	public function renderDefault() {
-		$this->onlyForAdmins();
 		$this->template->iqrfGw = $this->context->parameters['iqrf-gw'];
 	}
 

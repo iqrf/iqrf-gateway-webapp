@@ -20,10 +20,10 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\ConfigJsCacheFormFactory;
-use App\Presenters\BasePresenter;
+use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
-class JsCachePresenter extends BasePresenter {
+class JsCachePresenter extends ProtectedPresenter {
 
 	/**
 	 * @var ConfigJsCacheFormFactory Daemon's main configuration form factory
@@ -32,18 +32,10 @@ class JsCachePresenter extends BasePresenter {
 	public $formFactory;
 
 	/**
-	 * Render JS cache configurator
-	 */
-	public function renderDefault() {
-		$this->onlyForAdmins();
-	}
-
-	/**
 	 * Create JS cache settings form
 	 * @return Form JS cache settings form
 	 */
 	protected function createComponentConfigJsCacheForm(): Form {
-		$this->onlyForAdmins();
 		return $this->formFactory->create($this);
 	}
 

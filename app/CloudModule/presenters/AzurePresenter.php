@@ -21,10 +21,10 @@ declare(strict_types = 1);
 namespace App\CloudModule\Presenters;
 
 use App\CloudModule\Forms\CloudAzureMqttFormFactory;
-use App\Presenters\BasePresenter;
+use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
-class AzurePresenter extends BasePresenter {
+class AzurePresenter extends ProtectedPresenter {
 
 	/**
 	 * @var CloudAzureMqttFormFactory MS Azure IoT Hub form factory
@@ -33,18 +33,10 @@ class AzurePresenter extends BasePresenter {
 	public $formFactory;
 
 	/**
-	 * Render default page
-	 */
-	public function renderDefault() {
-		$this->onlyForAdmins();
-	}
-
-	/**
 	 * Create MQTT interface form
 	 * @return Form MQTT interface form
 	 */
 	protected function createComponentCloudAzureMqttForm(): Form {
-		$this->onlyForAdmins();
 		return $this->formFactory->create($this);
 	}
 

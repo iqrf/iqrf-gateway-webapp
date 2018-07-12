@@ -20,14 +20,14 @@ declare(strict_types = 1);
 
 namespace App\ServiceModule\Presenters;
 
-use App\Presenters\BasePresenter;
+use App\Presenters\ProtectedPresenter;
 use App\ServiceModule\Model\NotSupportedInitSystemException;
 use App\ServiceModule\Model\ServiceManager;
 
 /**
  * Service control presenter.
  */
-class ControlPresenter extends BasePresenter {
+class ControlPresenter extends ProtectedPresenter {
 
 	/**
 	 * @var ServiceManager
@@ -44,17 +44,9 @@ class ControlPresenter extends BasePresenter {
 	}
 
 	/**
-	 * Render disambiguation
-	 */
-	public function renderDefault() {
-		$this->onlyForAdmins();
-	}
-
-	/**
 	 * Start iqrf-daemon service
 	 */
 	public function actionStart() {
-		$this->onlyForAdmins();
 		try {
 			$this->serviceManager->start();
 			$this->flashMessage('service.actions.start.message', 'info');
@@ -70,7 +62,6 @@ class ControlPresenter extends BasePresenter {
 	 * Stop iqrf-daemon service
 	 */
 	public function actionStop() {
-		$this->onlyForAdmins();
 		try {
 			$this->serviceManager->stop();
 			$this->flashMessage('service.actions.stop.message', 'info');
@@ -86,7 +77,6 @@ class ControlPresenter extends BasePresenter {
 	 * Restart iqrf-daemon service
 	 */
 	public function actionRestart() {
-		$this->onlyForAdmins();
 		try {
 			$this->serviceManager->restart();
 			$this->flashMessage('service.actions.restart.message', 'info');

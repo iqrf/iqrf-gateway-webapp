@@ -21,10 +21,10 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\ConfigUdpFormFactory;
-use App\Presenters\BasePresenter;
+use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
-class UdpPresenter extends BasePresenter {
+class UdpPresenter extends ProtectedPresenter {
 
 	/**
 	 * @var ConfigUdpFormFactory UDP interface configuration form factory
@@ -33,18 +33,10 @@ class UdpPresenter extends BasePresenter {
 	public $formFactory;
 
 	/**
-	 * Render UDP interface configurator
-	 */
-	public function renderDefault() {
-		$this->onlyForAdmins();
-	}
-
-	/**
 	 * Create UDP interface form
 	 * @return Form UDP interface form
 	 */
 	protected function createComponentConfigUdpForm(): Form {
-		$this->onlyForAdmins();
 		return $this->formFactory->create($this);
 	}
 

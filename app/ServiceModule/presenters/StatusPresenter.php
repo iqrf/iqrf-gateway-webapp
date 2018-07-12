@@ -20,14 +20,14 @@ declare(strict_types = 1);
 
 namespace App\ServiceModule\Presenters;
 
-use App\Presenters\BasePresenter;
+use App\Presenters\ProtectedPresenter;
 use App\ServiceModule\Model\NotSupportedInitSystemException;
 use App\ServiceModule\Model\ServiceManager;
 
 /**
  * Service status presenter.
  */
-class StatusPresenter extends BasePresenter {
+class StatusPresenter extends ProtectedPresenter {
 
 	/**
 	 * @var ServiceManager
@@ -47,7 +47,6 @@ class StatusPresenter extends BasePresenter {
 	 * Render disambiguation
 	 */
 	public function renderDefault() {
-		$this->onlyForAdmins();
 		try {
 			$status = $this->serviceManager->getStatus();
 			$this->template->status = $status;

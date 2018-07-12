@@ -16,23 +16,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\GatewayModule\Presenters;
 
-use App\Presenters\BasePresenter;
+use App\Presenters\ProtectedPresenter;
 
 /**
  * Homepage presenter
  */
-class HomepagePresenter extends BasePresenter {
-
-	/**
-	 * Render default page
-	 */
-	public function renderDefault() {
-		$this->onlyForAdmins();
-	}
+class HomepagePresenter extends ProtectedPresenter {
 
 }

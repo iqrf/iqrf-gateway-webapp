@@ -21,10 +21,10 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\ConfigMainFormFactory;
-use App\Presenters\BasePresenter;
+use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
-class MainPresenter extends BasePresenter {
+class MainPresenter extends ProtectedPresenter {
 
 	/**
 	 * @var ConfigMainFormFactory Daemon's main configuration form factory
@@ -33,18 +33,10 @@ class MainPresenter extends BasePresenter {
 	public $mainFactory;
 
 	/**
-	 * Render Main configurator
-	 */
-	public function renderDefault() {
-		$this->onlyForAdmins();
-	}
-
-	/**
 	 * Create Main daemon settings form
 	 * @return Form Main daemon settings form
 	 */
 	protected function createComponentConfigMainForm(): Form {
-		$this->onlyForAdmins();
 		return $this->mainFactory->create($this);
 	}
 

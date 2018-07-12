@@ -23,14 +23,14 @@ namespace App\GatewayModule\Presenters;
 use App\GatewayModule\Model\DiagnosticsManager;
 use App\GatewayModule\Model\InfoManager;
 use App\IqrfAppModule\Model\EmptyResponseException;
-use App\Presenters\BasePresenter;
+use App\Presenters\ProtectedPresenter;
 use Nette\Application\BadRequestException;
 use Tracy\Debugger;
 
 /**
  * Gateway Info presenter
  */
-class InfoPresenter extends BasePresenter {
+class InfoPresenter extends ProtectedPresenter {
 
 	/**
 	 * @var DiagnosticsManager GW Diagnostic manager
@@ -57,7 +57,6 @@ class InfoPresenter extends BasePresenter {
 	 * Render default page
 	 */
 	public function renderDefault() {
-		$this->onlyForAdmins();
 		$this->template->ipAddresses = $this->infoManager->getIpAddresses();
 		$this->template->macAddresses = $this->infoManager->getMacAddresses();
 		$this->template->board = $this->infoManager->getBoard();
@@ -75,7 +74,6 @@ class InfoPresenter extends BasePresenter {
 	 * Download action
 	 */
 	public function actionDownload() {
-		$this->onlyForAdmins();
 		try {
 			$this->sendResponse($this->diagnosticsManager->download());
 		} catch (BadRequestException $e) {

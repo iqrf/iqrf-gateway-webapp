@@ -21,10 +21,10 @@ namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\ConfigJsonSplitterFormFactory;
 use App\ConfigModule\Forms\ConfigJsonDpaApiRawFormFactory;
-use App\Presenters\BasePresenter;
+use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
-class JsonPresenter extends BasePresenter {
+class JsonPresenter extends ProtectedPresenter {
 
 	/**
 	 * @var ConfigJsonSplitterFormFactory JSON Splitter form factory
@@ -39,18 +39,10 @@ class JsonPresenter extends BasePresenter {
 	public $dpaApiRawFactory;
 
 	/**
-	 * Render JSON configurator
-	 */
-	public function renderDefault() {
-		$this->onlyForAdmins();
-	}
-
-	/**
 	 * Create JSON DPA API Raw settings form
 	 * @return Form JSON DPA API Raw settings form
 	 */
 	protected function createComponentConfigJsonSplitterForm(): Form {
-		$this->onlyForAdmins();
 		return $this->splitterFactory->create($this);
 	}
 
@@ -59,7 +51,6 @@ class JsonPresenter extends BasePresenter {
 	 * @return Form JSON splitter settings form
 	 */
 	protected function createComponentConfigJsonDpaApiRawForm(): Form {
-		$this->onlyForAdmins();
 		return $this->dpaApiRawFactory->create($this);
 	}
 

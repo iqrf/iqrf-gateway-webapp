@@ -21,7 +21,7 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Presenters;
 
 use App\GatewayModule\Model\LogManager;
-use App\Presenters\BasePresenter;
+use App\Presenters\ProtectedPresenter;
 use Nette\Application\BadRequestException;
 use Nette\IOException;
 use Tracy\Debugger;
@@ -29,7 +29,7 @@ use Tracy\Debugger;
 /**
  * IQRF Daemon's log presenter
  */
-class LogPresenter extends BasePresenter {
+class LogPresenter extends ProtectedPresenter {
 
 	/**
 	 * @var LogManager
@@ -49,7 +49,6 @@ class LogPresenter extends BasePresenter {
 	 * Render default page
 	 */
 	public function renderDefault() {
-		$this->onlyForAdmins();
 		try {
 			$this->template->log = $this->manager->load();
 		} catch (IOException $e) {
@@ -61,7 +60,6 @@ class LogPresenter extends BasePresenter {
 	 * Download action
 	 */
 	public function actionDownload() {
-		$this->onlyForAdmins();
 		try {
 			$this->sendResponse($this->manager->download());
 		} catch (BadRequestException $e) {
