@@ -42,7 +42,7 @@
 						<p><strong>{_$type}:</strong> {foreach $packet as $cfg}{$cfg}{sep}.{/sep}{/foreach}</p>
 					{elseif $type === 'parsedConfiguration'}
 						<p><strong>{_$type}:</strong> <ul style="list-style-type:none">{foreach $packet as $name => $cfg}<li><strong>{_$name}:</strong> {$cfg}</li>{/foreach}</ul></p>
-					{else}
+							{else}
 						<p><strong>{_$type}:</strong> {$packet}</p>
 					{/if}
 				{/foreach}

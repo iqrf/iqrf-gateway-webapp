@@ -1,6 +1,7 @@
 <?php
 
 /**
+ * Copyright 2017 MICRORISC s.r.o.
  * Copyright 2017-2018 IQRF Tech s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
