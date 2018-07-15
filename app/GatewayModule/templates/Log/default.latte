@@ -19,10 +19,24 @@
 <h1 n:block=title>{_gateway.log.title}</h1>
 <div class='panel panel-default'>
 	<div class='panel-body'>
-		{ifset $log}
-			<a class="btn btn-primary" n:href="Log:download" role="button">{_gateway.log.download}</a>
-			<br/><br/>
-			<pre>{$log}</pre>
+		{ifset $logs}
+			<a class="btn btn-primary" n:href="Log:download" role="button">{_gateway.log.download}</a><br/><br/>
+			{var $i = 1}
+			<div class="panel-group" id="logs" role="tablist" aria-multiselectable="true">
+				{foreach $logs as $fileName => $log}
+					<div class="panel panel-default">
+						<div class="panel-heading" role="tab" id="heading{$i}">
+								<a class="panel-title" role="button" data-toggle="collapse" data-parent="#logs" href="#collapse{$i}" aria-expanded="false" aria-controls="collapse{$i}">
+									{$fileName}
+								</a>
+						</div>
+						<div id="collapse{$i}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading{$i}">
+							<div class="panel-body"><pre>{$log}</pre></div>
+						</div>
+					</div>
+					{var $i += 1}
+				{/foreach}
+				</div>
 			<a class="btn btn-primary" n:href="Log:download" role="button">{_gateway.log.download}</a>
 		{else}
 			{_gateway.errors.log-read}

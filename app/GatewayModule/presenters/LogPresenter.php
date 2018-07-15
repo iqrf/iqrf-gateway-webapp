@@ -50,7 +50,7 @@ class LogPresenter extends ProtectedPresenter {
 	 */
 	public function renderDefault() {
 		try {
-			$this->template->log = $this->manager->load();
+			$this->template->logs = $this->manager->load();
 		} catch (IOException $e) {
 			Debugger::log('Cannot read log file.');
 		}

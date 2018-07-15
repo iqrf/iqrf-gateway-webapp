@@ -60,9 +60,9 @@ class DiagnosticsManager {
 	private $confDir;
 
 	/**
-	 * @var string Path to a log file of IQRF Gateway Daemon
+	 * @var string Path to a directory with log files of IQRF Gateway Daemon
 	 */
-	private $logPath;
+	private $logDir;
 
 	/**
 	 * @var string Path to ZIP archive
@@ -72,17 +72,17 @@ class DiagnosticsManager {
 	/**
 	 * Constructor
 	 * @param string $confDir Path to a directory with IQRF Gateway Daemon's configuration
-	 * @param string $logFile Path to a log file of IQRF Gateway Daemon
+	 * @param string $logDir Path to a directory with log files of IQRF Gateway Daemon
 	 * @param CommandManager $commandManager Command manager
 	 * @param IqrfAppManager $iqrfAppManager IqrfApp manager
 	 * @param InfoManager $infoManager Gateway Info manager
 	 */
-	public function __construct(string $confDir, string $logFile, CommandManager $commandManager, IqrfAppManager $iqrfAppManager, InfoManager $infoManager) {
+	public function __construct(string $confDir, string $logDir, CommandManager $commandManager, IqrfAppManager $iqrfAppManager, InfoManager $infoManager) {
 		$this->commandManager = $commandManager;
 		$this->iqrfAppManager = $iqrfAppManager;
 		$this->infoManager = $infoManager;
 		$this->confDir = $confDir;
-		$this->logPath = $logFile;
+		$this->logDir = $logDir;
 		$this->zipManager = new ZipArchiveManager($this->path);
 	}
 
@@ -109,7 +109,7 @@ class DiagnosticsManager {
 	 * Add log of IQRF Gateway daemon
 	 */
 	public function addDaemonLog() {
-		$this->zipManager->addFile($this->logPath, 'logs/iqrf-daemon.log');
+		$this->zipManager->addFolder($this->logDir, 'logs/iqrf-gateway-daemon');
 	}
 
 	/**

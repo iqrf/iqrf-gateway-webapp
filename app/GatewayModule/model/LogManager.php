@@ -20,45 +20,63 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Model;
 
+use App\Model\ZipArchiveManager;
 use Nette;
 use Nette\Application\Responses\FileResponse;
 use Nette\Utils\FileSystem;
+use Nette\Utils\Finder;
+use Nette\Utils\Strings;
 
 /**
- * Tool for downloading and reading IQRF Daemon's log file
+ * Tool for downloading and reading IQRF Daemon's log files
  */
 class LogManager {
 
 	use Nette\SmartObject;
 
 	/**
-	 * @var string Path to IQRF Daemon's log file
+	 * @var string Path to a directory with log files of IQRF Gateway Daemon
 	 */
-	private $path;
+	private $logDir;
+
+	/**
+	 * @var string Path to ZIP archive
+	 */
+	private $path = '/tmp/iqrf-daemon-gateway-logs.zip';
 
 	/**
 	 * Constructor
-	 * @param string $path Path to iqrf-daemon log
+	 * @param string $logDir Path to a directory with log files of IQRF Gateway Daemon
 	 */
-	public function __construct(string $path) {
-		$this->path = $path;
+	public function __construct(string $logDir) {
+		$this->logDir = $logDir;
 	}
 
 	/**
-	 * Load log of iqrf-daemon
+	 * Load logs of iqrf-daemon
 	 * @return string iqrf-daemon log
 	 */
 	public function load() {
-		return FileSystem::read($this->path);
+		$logFiles = [];
+		foreach (Finder::findFiles('*-iqrf-gateway-daemon.log')->from($this->logDir) as $file) {
+			$fileName = Strings::replace($file->getRealPath(), ['~^' . realpath($this->logDir) . '/~', '/-iqrf-gateway-daemon.log$/'], '');
+			$logFiles[$fileName] = FileSystem::read($file);
+		}
+		krsort($logFiles);
+		return $logFiles;
 	}
 
 	/**
-	 * Download log of iqrf-daemon
-	 * @return FileResponse HTTP response with the log
+	 * Download logs of iqrf-daemon
+	 * @return FileResponse HTTP response with the logs
 	 */
-	public function download() {
-		$fileName = 'iqrf-daemon.log';
-		$contentType = 'text/plain';
+	public function download(): FileResponse {
+		$zipManager = new ZipArchiveManager($this->path);
+		$zipManager->addFolder($this->logDir, '');
+		$now = new \DateTime();
+		$fileName = 'iqrf-gateway-daemon-logs' . $now->format('c') . '.zip';
+		$contentType = 'application/zip';
+		$zipManager->close();
 		$response = new FileResponse($this->path, $fileName, $contentType, true);
 		return $response;
 	}
