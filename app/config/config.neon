@@ -7,7 +7,7 @@ parameters:
 	# enable IQRF GW mode
 	iqrf-gw: false
 	# path to iqrf-daemon log
-	logDir: '/var/log/iqrfgd2/'
+	daemonLogDir: '/var/log/iqrfgd2/'
 	# path to IQRF IDE macros
 	macroPath: '../iqrf/DPA-macros_180517.iqrfmcr'
 	# Sentry configuration
