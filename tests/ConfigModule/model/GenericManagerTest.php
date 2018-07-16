@@ -6,12 +6,13 @@
  * @phpVersion >= 7.0
  * @testCase
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Test\ConfigModule\Model;
 
 use App\ConfigModule\Model\GenericManager;
 use App\Model\JsonFileManager;
+use App\Model\JsonSchemaManager;
 use Nette\DI\Container;
 use Nette\Utils\ArrayHash;
 use Tester\Assert;
@@ -52,6 +53,16 @@ class GenericManagerTest extends TestCase {
 	private $pathTest = __DIR__ . '/../../configuration-test/';
 
 	/**
+	 * @var JsonSchemaManager JSON schema manager
+	 */
+	private $schemaManager;
+
+	/**
+	 * @var string Directory with JSON schemas
+	 */
+	private $schemaPath = __DIR__ . '/../../jsonschema/';
+
+	/**
 	 * Constructor
 	 * @param Container $container Nette Tester Container
 	 */
@@ -65,6 +76,7 @@ class GenericManagerTest extends TestCase {
 	public function setUp() {
 		$this->fileManager = new JsonFileManager($this->path);
 		$this->fileManagerTemp = new JsonFileManager($this->pathTest);
+		$this->schemaManager = new JsonSchemaManager($this->schemaPath);
 	}
 
 	/**
@@ -72,7 +84,7 @@ class GenericManagerTest extends TestCase {
 	 * Test function to get component's instances
 	 */
 	public function testGetInstances() {
-		$manager = new GenericManager($this->fileManager);
+		$manager = new GenericManager($this->fileManager, $this->schemaManager);
 		$manager->setComponent('iqrf::MqttMessaging');
 		$expected = ['iqrf__MqttMessaging1', 'iqrf__MqttMessaging2',];
 		Assert::equal($expected, $manager->getInstanceFiles());
@@ -83,7 +95,7 @@ class GenericManagerTest extends TestCase {
 	 * Test function to get avaiable messagings
 	 */
 	public function testGetMessagings() {
-		$manager = new GenericManager($this->fileManager);
+		$manager = new GenericManager($this->fileManager, $this->schemaManager);
 		$expected = [
 			'config.mq.title' => ['MqMessaging',],
 			'config.mqtt.title' => ['MqttMessaging1', 'MqttMessaging2',],
@@ -98,7 +110,7 @@ class GenericManagerTest extends TestCase {
 	 * Test function to load main configuration of daemon
 	 */
 	public function testLoad() {
-		$manager = new GenericManager($this->fileManager);
+		$manager = new GenericManager($this->fileManager, $this->schemaManager);
 		$manager->setFileName($this->fileName);
 		$expected = $this->fileManager->read($this->fileName);
 		Assert::equal($expected, $manager->load());
@@ -109,7 +121,7 @@ class GenericManagerTest extends TestCase {
 	 * Test function to save main configuration of daemon
 	 */
 	public function testSave() {
-		$manager = new GenericManager($this->fileManagerTemp);
+		$manager = new GenericManager($this->fileManagerTemp, $this->schemaManager);
 		$manager->setComponent('iqrf::MqttMessaging');
 		$manager->setFileName($this->fileName);
 		$array = [

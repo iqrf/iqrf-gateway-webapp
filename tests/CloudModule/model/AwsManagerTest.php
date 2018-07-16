@@ -6,7 +6,7 @@
  * @phpVersion >= 7.0
  * @testCase
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Test\ServiceModule\Model;
 
@@ -15,6 +15,7 @@ use App\CloudModule\Model\InvalidPrivateKeyForCertificate;
 use App\ConfigModule\Model\GenericManager;
 use App\Model\CertificateManager;
 use App\Model\JsonFileManager;
+use App\Model\JsonSchemaManager;
 use Nette\DI\Container;
 use Nette\Utils\ArrayHash;
 use Nette\Http\FileUpload;
@@ -64,6 +65,11 @@ class AwsManagerTest extends TestCase {
 	private $pathTest = __DIR__ . '/../../configuration-test/';
 
 	/**
+	 * @var string Directory with JSON schemas
+	 */
+	private $schemaPath = __DIR__ . '/../../jsonschema/';
+
+	/**
 	 * Constructor
 	 * @param Container $container Nette Tester Container
 	 */
@@ -77,7 +83,8 @@ class AwsManagerTest extends TestCase {
 	public function setUp() {
 		$this->fileManager = new JsonFileManager($this->pathTest);
 		$this->certManager = new CertificateManager();
-		$this->configManager = new GenericManager($this->fileManager);
+		$schemaManager = new JsonSchemaManager($this->schemaPath);
+		$this->configManager = new GenericManager($this->fileManager, $schemaManager);
 		$this->manager = \Mockery::mock(AwsManager::class, [$this->certManager, $this->configManager])->makePartial();
 		$this->manager->shouldReceive('downloadCaCertificate')->andReturn(null);
 		$this->manager->shouldReceive('checkCertificate')->andReturn(null);

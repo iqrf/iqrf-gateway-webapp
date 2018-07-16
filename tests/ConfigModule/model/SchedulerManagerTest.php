@@ -14,6 +14,7 @@ use App\ConfigModule\Model\GenericManager;
 use App\ConfigModule\Model\MainManager;
 use App\ConfigModule\Model\SchedulerManager;
 use App\Model\JsonFileManager;
+use App\Model\JsonSchemaManager;
 use Nette\DI\Container;
 use Nette\Utils\ArrayHash;
 use Tester\Assert;
@@ -86,6 +87,11 @@ class SchedulerManagerTest extends TestCase {
 	private $pathTest = __DIR__ . '/../../configuration-test/Scheduler/';
 
 	/**
+	 * @var string Directory with JSON schemas
+	 */
+	private $schemaPath = __DIR__ . '/../../jsonschema/';
+
+	/**
 	 * Constructor
 	 * @param Container $container Nette Tester Container
 	 */
@@ -100,7 +106,8 @@ class SchedulerManagerTest extends TestCase {
 		$this->fileManager = new JsonFileManager($this->path);
 		$this->fileManagerTemp = new JsonFileManager($this->pathTest);
 		$fileManager = new JsonFileManager(realpath($this->path . '/../'));
-		$this->genericConfigManager = new GenericManager($fileManager);
+		$schemaManager = new JsonSchemaManager($this->schemaPath);
+		$this->genericConfigManager = new GenericManager($fileManager, $schemaManager);
 		$this->mainConfigManager = \Mockery::mock(MainManager::class);
 		$configuration = [
 			'cacheDir' => realpath($this->pathTest . '/../'),

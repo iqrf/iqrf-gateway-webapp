@@ -1,15 +1,19 @@
 parameters:
-	# directory with iqrf-daemon's configuration files
-	configDir: '/etc/iqrfgd2'
 	# init deamon used in out system (e.g. systemd)
 	initDaemon: 'systemd'
 	sudo: true
 	# enable IQRF GW mode
 	iqrf-gw: false
-	# path to iqrf-daemon log
-	daemonLogDir: '/var/log/iqrfgd2/'
 	# path to IQRF IDE macros
 	macroPath: '../iqrf/DPA-macros_180517.iqrfmcr'
+	# Daemon configuration
+	daemon:
+		# Path to directory with IQRF Gateway Daemon's configuration files
+		configDir: '/etc/iqrfgd2/'
+		# Path to directory with IQRF Gateway Daemon's logs
+		logDir: '/var/log/iqrfgd2/'
+		# Path to directory with IQRF Gateway Daemon's JSON schemas
+		schemaDir: '/etc/iqrfgd2/jsonschema/'
 	# Sentry configuration
 	sentry:
 		dsn: 'https://da0cff92d85f4cd0aa5f0ea3b90ddffd:83a01f9c90014d9e8b186bd23a6a3d3f@sentry.iqrfsdk.org/2'
@@ -48,8 +52,11 @@ services:
 	- App\Forms\SignInFormFactory
 	- App\Model\CertificateManager
 	- App\Model\CommandManager(%sudo%)
-	- App\Model\FileManager(%configDir%)
-	- App\Model\JsonFileManager(%configDir%)
+	- App\Model\FileManager(%daemon.configDir%)
+	- App\Model\JsonFileManager(%daemon.configDir%)
+	jsonSchemaManager:
+		factory: App\Model\JsonSchemaManager(%daemon.schemaDir%)
+		autowired: self
 	- App\Model\VersionManager
 	router: App\Router\RouterFactory::createRouter
 	formFactory: Instante\Bootstrap3Renderer\BootstrapFormFactory

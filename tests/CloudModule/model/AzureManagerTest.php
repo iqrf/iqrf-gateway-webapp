@@ -6,7 +6,7 @@
  * @phpVersion >= 7.0
  * @testCase
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Test\ServiceModule\Model;
 
@@ -14,6 +14,7 @@ use App\CloudModule\Model\AzureManager;
 use App\CloudModule\Model\InvalidConnectionString;
 use App\ConfigModule\Model\GenericManager;
 use App\Model\JsonFileManager;
+use App\Model\JsonSchemaManager;
 use Nette\DI\Container;
 use Tester\Assert;
 use Tester\TestCase;
@@ -53,6 +54,11 @@ class AzureManagerTest extends TestCase {
 	private $pathTest = __DIR__ . '/../../configuration-test/';
 
 	/**
+	 * @var string Directory with JSON schemas
+	 */
+	private $schemaPath = __DIR__ . '/../../jsonschema/';
+
+	/**
 	 * Constructor
 	 * @param Container $container Nette Tester Container
 	 */
@@ -65,7 +71,8 @@ class AzureManagerTest extends TestCase {
 	 */
 	public function setUp() {
 		$this->fileManager = new JsonFileManager($this->pathTest);
-		$this->configManager = new GenericManager($this->fileManager);
+		$schemaManager = new JsonSchemaManager($this->schemaPath);
+		$this->configManager = new GenericManager($this->fileManager, $schemaManager);
 		$this->manager = \Mockery::mock(AzureManager::class, [$this->configManager])->makePartial();
 		$this->manager->shouldReceive('generateSasToken')->andReturn('generatedSasToken');
 	}

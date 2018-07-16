@@ -1,0 +1,76 @@
+<?php
+
+/**
+ * Copyright 2017 MICRORISC s.r.o.
+ * Copyright 2017-2018 IQRF Tech s.r.o.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+declare(strict_types = 1);
+
+namespace App\Model;
+
+use App\Model\InvalidJson;
+use JsonSchema\Validator;
+use Nette;
+use Nette\Utils\Strings;
+use Tracy\Debugger;
+
+/**
+ * Tool for reading and validationg JSON schemas.
+ */
+class JsonSchemaManager extends JsonFileManager {
+
+	use Nette\SmartObject;
+
+	/**
+	 * @var string JSON Schema file name
+	 */
+	private $schema;
+
+	/**
+	 * Constructor
+	 * @param string $configDir Directory with JSON schemas
+	 */
+	public function __construct(string $configDir) {
+		parent::__construct($configDir);
+	}
+
+	/**
+	 * Set file name of JSON schema from component name
+	 * @param string $component Component name
+	 */
+	public function setSchemaFromComponent(string $component) {
+		$this->schema = 'schema__' . Strings::replace($component, '~::~', '__');
+	}
+
+	/**
+	 * Validate JSON
+	 * @param array $json JSON to validate
+	 */
+	public function validate(array $json) {
+		$schema = parent::read($this->schema);
+		$schema['type'] = 'array';
+		$validator = new Validator();
+		$validator->validate($json, $schema);
+		if (!$validator->isValid()) {
+			$errorMsg = 'JSON does not validate. Violations:';
+			foreach ($validator->getErrors() as $error) {
+				$errorMsg .= PHP_EOL . '[' . $error['property'] . '] ' . $error['message'];
+			}
+			Debugger::log($errorMsg, 'jsonSchema');
+			throw new InvalidJson();
+		}
+	}
+
+}

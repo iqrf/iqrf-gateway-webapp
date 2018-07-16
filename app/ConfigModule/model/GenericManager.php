@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Model;
 
 use App\Model\JsonFileManager;
+use App\Model\JsonSchemaManager;
 use Nette;
 use Nette\Utils\Arrays;
 use Nette\Utils\ArrayHash;
@@ -42,17 +43,23 @@ class GenericManager {
 	private $fileManager;
 
 	/**
-	 *
 	 * @var string File name (without .json)
 	 */
 	private $fileName;
 
 	/**
+	 * @var JsonSchemaManager JSON schema manager
+	 */
+	private $schemaManager;
+
+	/**
 	 * Constructor
 	 * @param JsonFileManager $fileManager JSON file manager
+	 * @param JsonSchemaManager $schemaManager JSON schema manager
 	 */
-	public function __construct(JsonFileManager $fileManager) {
+	public function __construct(JsonFileManager $fileManager, JsonSchemaManager $schemaManager) {
 		$this->fileManager = $fileManager;
+		$this->schemaManager = $schemaManager;
 	}
 
 	/**
@@ -77,6 +84,7 @@ class GenericManager {
 	public function save(ArrayHash $array) {
 		$component = ['component' => $this->component];
 		$settings = Arrays::mergeTree($component, (array) $array);
+		$this->schemaManager->validate($settings);
 		$this->fileManager->write($this->fileName, ArrayHash::from($settings));
 	}
 
@@ -86,6 +94,7 @@ class GenericManager {
 	 */
 	public function setComponent(string $component) {
 		$this->component = $component;
+		$this->schemaManager->setSchemaFromComponent($component);
 	}
 
 	/**

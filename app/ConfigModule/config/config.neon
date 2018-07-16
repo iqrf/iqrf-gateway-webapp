@@ -21,5 +21,5 @@ services:
 	- App\ConfigModule\Model\IqrfManager
 	- App\ConfigModule\Model\IncompleteConfiguration
 	- App\ConfigModule\Model\MainManager
-	- App\ConfigModule\Model\MigrationManager(%configDir%)
+	- App\ConfigModule\Model\MigrationManager(%daemon.configDir%)
 	- App\ConfigModule\Model\SchedulerManager
