@@ -70,7 +70,7 @@ class ConfigMigrationFormFactory {
 				$presenter->redirect('Homepage:default');
 			} catch (\Exception $e) {
 				if ($e instanceof IncompleteConfiguration) {
-					$presenter->flashMessage('config.migration.errors.incompleteConfig', 'danger');
+					$presenter->flashMessage('config.migration.errors.invalidConfig', 'danger');
 				} else if ($e instanceof InvalidConfigurationFormat) {
 					$presenter->flashMessage('config.migration.errors.invalidFormat', 'danger');
 				} else {

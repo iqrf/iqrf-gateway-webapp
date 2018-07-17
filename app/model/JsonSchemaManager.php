@@ -68,14 +68,6 @@ class JsonSchemaManager extends JsonFileManager {
 	 */
 	public function validate(\stdClass $json) {
 		$schema = parent::read($this->schema);
-//		$schema['type'] = 'array';
-//		if (array_key_exists('RequiredInterfaces', $schema['properties'])) {
-//			$schema['properties']['RequiredInterfaces']['items']['type'] = 'array';
-//			$schema['properties']['RequiredInterfaces']['items']['properties']['target']['type'] = 'array';
-//		}
-//		if (array_key_exists('VerbosityLevels', $schema['properties'])) {
-//			$schema['properties']['VerbosityLevels']['items']['type'] = 'array';
-//		}
 		$validator = new Validator();
 		$validator->validate($json, $schema);
 		if (!$validator->isValid()) {

@@ -140,7 +140,7 @@ migration:
 		configuration: "Please select a ZIP archive with IQRF Gateway Daemon's configuration to import."
 		importedConfig: "IQRF Gateway Daemon's configuration has been imported."
 	errors:
-		incompleteConfig: The ZIP archive contains incomplete configuration.
+		invalidConfig: The ZIP archive contains invalid configuration.
 		invalidFormat: Uploaded invalid file format.
 		readConfig: Cannot read zip archive with a configuration.
 
