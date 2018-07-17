@@ -23,11 +23,16 @@ namespace App\ConfigModule\Model;
 use App\ConfigModule\Model\IncompleteConfiguration;
 use App\ConfigModule\Model\InvalidConfigurationFormat;
 use App\Model\CommandManager;
+use App\Model\InvalidJson;
+use App\Model\JsonSchemaManager;
+use App\Model\NonExistingJsonSchema;
 use App\Model\ZipArchiveManager;
 use Nette;
 use Nette\Application\Responses\FileResponse;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\FileSystem;
+use Nette\Utils\Json;
+use Nette\Utils\Strings;
 
 /**
  * Tool for migrationg configuration
@@ -40,6 +45,11 @@ class MigrationManager {
 	 * @var CommandManager Command manager
 	 */
 	private $commandManager;
+
+	/**
+	 * @var JsonSchemaManager JSON schema manager
+	 */
+	private $schemaManager;
 
 	/**
 	 * @var ZipArchiveManager ZIP archive manager
@@ -60,11 +70,13 @@ class MigrationManager {
 	 * Constructor
 	 * @param string $configDirectory Path to a directory with a configuration of IQRF Gateway Daemon
 	 * @param CommandManager $commandManager Command manager
+	 * @param JsonSchemaManager $schemaManager JSON schema manager
 	 */
-	public function __construct(string $configDirectory, CommandManager $commandManager) {
+	public function __construct(string $configDirectory, CommandManager $commandManager, JsonSchemaManager $schemaManager) {
 		$this->configDirectory = $configDirectory;
 		$this->zipManager = new ZipArchiveManager($this->path);
 		$this->commandManager = $commandManager;
+		$this->schemaManager = $schemaManager;
 	}
 
 	/**
@@ -93,25 +105,56 @@ class MigrationManager {
 			}
 			$zip->move($this->path);
 			$zipManager = new ZipArchiveManager($this->path, \ZipArchive::CREATE);
-			$files = ['BaseService.json', 'config.json', 'iqrfapp.json',
-				'IqrfInterface.json', 'JsonSerializer.json', 'MqMessaging.json',
-				'MqttMessaging.json', 'Scheduler.json', 'SimpleSerializer.json',
-				'TracerFile.json', 'UdpMessaging.json'];
-			if (!$zipManager->exist($files)) {
+			if (!$this->validate($zipManager)) {
 				$zipManager->close();
 				FileSystem::delete($this->path);
 				throw new IncompleteConfiguration();
 			}
-			$posixUser = posix_getpwuid(posix_geteuid());
 			$this->commandManager->send('rm -rf ' . $this->configDirectory, true);
 			$this->commandManager->send('mkdir ' . $this->configDirectory, true);
-			$owner = $posixUser['name'] . ':' . posix_getgrgid($posixUser['gid'])['name'];
-			$this->commandManager->send('chown ' . $owner . ' ' . $this->configDirectory, true);
-			$this->commandManager->send('chown -R ' . $owner . ' ' . $this->configDirectory, true);
+			$this->changeOwner();
 			$zipManager->extract($this->configDirectory);
 			$zipManager->close();
 			FileSystem::delete($this->path);
 		}
+	}
+
+	/**
+	 * Change ownership of directory for JSON configuration files of IQRF Gateway Daemon
+	 */
+	private function changeOwner() {
+		$posixUser = posix_getpwuid(posix_geteuid());
+		$owner = $posixUser['name'] . ':' . posix_getgrgid($posixUser['gid'])['name'];
+		$this->commandManager->send('chown ' . $owner . ' ' . $this->configDirectory, true);
+		$this->commandManager->send('chown -R ' . $owner . ' ' . $this->configDirectory, true);
+	}
+
+	/**
+	 * Validate JSON configuration files for IQRF Gateway Daemon
+	 * @param ZipArchiveManager $zipManager ZIP Archive manager
+	 * @return bool Are JSON files valid?:
+	 */
+	public function validate(ZipArchiveManager $zipManager): bool {
+		foreach ($zipManager->listFiles() as $file) {
+			if (!Strings::match($file, '~^[a-zA-Z0-9]+\_\_[a-zA-Z0-9]+\.json$~')) {
+				continue;
+			}
+			$json = Json::decode($zipManager->openFile($file));
+			if (!array_key_exists('component', $json)) {
+				continue;
+			}
+			try {
+				$this->schemaManager->setSchemaFromComponent($json->component);
+			} catch (NonExistingJsonSchema $e) {
+				continue;
+			}
+			try {
+				$this->schemaManager->validate($json);
+			} catch (InvalidJson $e) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 }

@@ -84,7 +84,7 @@ class GenericManager {
 	public function save(ArrayHash $array) {
 		$component = ['component' => $this->component];
 		$settings = Arrays::mergeTree($component, (array) $array);
-		$this->schemaManager->validate($settings);
+		$this->schemaManager->validate(ArrayHash::from($settings));
 		$this->fileManager->write($this->fileName, ArrayHash::from($settings));
 	}
 

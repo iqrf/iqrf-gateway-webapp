@@ -23,6 +23,13 @@ namespace App\Model;
 /**
  * The exception that indicates an invalid JSON
  */
-class InvalidJson extends \Exception {
+class InvalidJson extends \InvalidArgumentException {
+
+}
+
+/**
+ * The exception that indicates non-existing JSON schema
+ */
+class NonExistingJsonSchema extends \InvalidArgumentException {
 
 }

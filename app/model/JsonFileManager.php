@@ -47,6 +47,15 @@ class JsonFileManager extends FileManager {
 	}
 
 	/**
+	 * Check if file exists
+	 * @param string $fileName File name
+	 * @return bool Is file exists?
+	 */
+	public function exists(string $fileName): bool {
+		return parent::exists($fileName . '.json');
+	}
+
+	/**
 	 * Read JSON file and decode JSON to array
 	 * @param string $fileName File name (without .json)
 	 * @return array

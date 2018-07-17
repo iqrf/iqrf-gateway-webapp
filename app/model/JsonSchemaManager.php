@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\Model;
 
 use App\Model\InvalidJson;
+use App\Model\NonExistingJsonSchema;
 use JsonSchema\Validator;
 use Nette;
 use Nette\Utils\Strings;
@@ -51,26 +52,41 @@ class JsonSchemaManager extends JsonFileManager {
 	 * @param string $component Component name
 	 */
 	public function setSchemaFromComponent(string $component) {
-		$this->schema = 'schema__' . Strings::replace($component, '~::~', '__');
+		$schema = 'schema__' . Strings::replace($component, '~::~', '__');
+		if (parent::exists($schema)) {
+			$this->schema = $schema;
+		} else {
+			$errorMsg = 'Non-existing JSON schema ' . $schema . '.';
+			Debugger::log($errorMsg, 'jsonSchema');
+			throw new NonExistingJsonSchema();
+		}
 	}
 
 	/**
 	 * Validate JSON
-	 * @param array $json JSON to validate
+	 * @param \stdClass $json JSON to validate
 	 */
-	public function validate(array $json) {
+	public function validate(\stdClass $json) {
 		$schema = parent::read($this->schema);
-		$schema['type'] = 'array';
+//		$schema['type'] = 'array';
+//		if (array_key_exists('RequiredInterfaces', $schema['properties'])) {
+//			$schema['properties']['RequiredInterfaces']['items']['type'] = 'array';
+//			$schema['properties']['RequiredInterfaces']['items']['properties']['target']['type'] = 'array';
+//		}
+//		if (array_key_exists('VerbosityLevels', $schema['properties'])) {
+//			$schema['properties']['VerbosityLevels']['items']['type'] = 'array';
+//		}
 		$validator = new Validator();
 		$validator->validate($json, $schema);
 		if (!$validator->isValid()) {
-			$errorMsg = 'JSON does not validate. Violations:';
+			$errorMsg = 'JSON does not validate. JSON schema: ' . $this->schema . ' Violations:';
 			foreach ($validator->getErrors() as $error) {
 				$errorMsg .= PHP_EOL . '[' . $error['property'] . '] ' . $error['message'];
 			}
 			Debugger::log($errorMsg, 'jsonSchema');
 			throw new InvalidJson();
 		}
+		return true;
 	}
 
 }

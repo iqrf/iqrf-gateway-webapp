@@ -24,6 +24,7 @@ use Nette;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Json;
 use Nette\Utils\Finder;
+use Nette\Utils\Strings;
 
 /**
  * Tool for creating a new zip archive
@@ -116,6 +117,22 @@ class ZipArchiveManager {
 	 */
 	public function extract(string $destinationPath) {
 		$this->zip->extractTo($destinationPath);
+	}
+
+	/**
+	 * List files in the archive
+	 * @return array List of files in the archive
+	 */
+	public function listFiles() {
+		$files = [];
+		for ($i = 0; $i < $this->zip->numFiles; $i++) {
+			$files[] = Strings::trim($this->zip->statIndex($i)['name'], '/');
+		}
+		return $files;
+	}
+
+	public function openFile(string $fileName) {
+		return $this->zip->getFromName('/' . $fileName);
 	}
 
 	/**

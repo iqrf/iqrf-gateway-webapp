@@ -60,6 +60,15 @@ class FileManager {
 	}
 
 	/**
+	 * Check if file exists
+	 * @param string $fileName File name
+	 * @return bool Is file exists?
+	 */
+	public function exists(string $fileName): bool {
+		return file_exists($this->configDir . '/' . $fileName);
+	}
+
+	/**
 	 * Read file
 	 * @param string $fileName File name
 	 * @return string File content
