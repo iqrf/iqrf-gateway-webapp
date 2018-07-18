@@ -22,10 +22,16 @@ namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\ConfigWebsocketMessagingFormFactory;
 use App\ConfigModule\Forms\ConfigWebsocketServiceFormFactory;
+use App\ConfigModule\Model\GenericManager;
 use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
 class WebsocketPresenter extends ProtectedPresenter {
+
+	/**
+	 * @var GenericManager Generic manager
+	 */
+	private $configManager;
 
 	/**
 	 * @var ConfigWebsocketMessagingFormFactory Websocket messaging configuration form factory
@@ -38,6 +44,69 @@ class WebsocketPresenter extends ProtectedPresenter {
 	 * @inject
 	 */
 	public $serviceFormFactory;
+
+	/**
+	 * Constructor
+	 * @param GenericManager $configManager Interface instance manager
+	 */
+	public function __construct(GenericManager $configManager) {
+		$this->configManager = $configManager;
+		parent::__construct();
+	}
+
+	/**
+	 * Render list of Websocket interfaces
+	 */
+	public function renderDefault() {
+		$this->configManager->setComponent('iqrf::WebsocketMessaging');
+		$this->template->messagings = $this->configManager->getInstances();
+		$this->configManager->setComponent('shape::WebsocketService');
+		$this->template->services = $this->configManager->getInstances();
+	}
+
+	/**
+	 * Edit Websocket messaging
+	 * @param int $id ID of websocket messaging
+	 */
+	public function renderEditMessaging(int $id) {
+		$this->configManager->setComponent('iqrf::MqMessaging');
+		$this->template->id = $id;
+	}
+
+	/**
+	 * Edit Websocket service
+	 * @param int $id ID of websocket service
+	 */
+	public function renderEditService(int $id) {
+		$this->configManager->setComponent('shape::WebsocketService');
+		$this->template->id = $id;
+	}
+
+	/**
+	 * Delete Websocket messaging
+	 * @param int $id ID of websocket messaging
+	 */
+	public function actionDeleteMessaging(int $id) {
+		$this->configManager->setComponent('iqrf::MqMessaging');
+		$fileName = $this->configManager->getInstanceFiles()[$id];
+		$this->configManager->setFileName($fileName);
+		$this->configManager->delete();
+		$this->redirect('Websocket:default');
+		$this->setView('default');
+	}
+
+	/**
+	 * Delete Websocket service
+	 * @param int $id ID of websocket service
+	 */
+	public function actionDeleteService(int $id) {
+		$this->configManager->setComponent('shape::WebsocketService');
+		$fileName = $this->configManager->getInstanceFiles()[$id];
+		$this->configManager->setFileName($fileName);
+		$this->configManager->delete();
+		$this->redirect('Websocket:default');
+		$this->setView('default');
+	}
 
 	/**
 	 * Create websocket messaging form
