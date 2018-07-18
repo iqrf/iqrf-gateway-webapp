@@ -69,7 +69,7 @@ class ConfigComponentsFormFactory {
 		$form->addProtection('core.errors.form-timeout');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $id) {
 			$this->manager->save($values, $id);
-			$presenter->redirect('Homepage:default');
+			$presenter->redirect('Component:default');
 		};
 		return $form;
 	}
