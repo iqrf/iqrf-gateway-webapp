@@ -70,6 +70,7 @@ class ConfigMainFormFactory {
 		$form->addProtection('core.errors.form-timeout');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
 			$this->manager->save($values);
+			$presenter->flashMessage('config.messages.success', 'success');
 			$presenter->redirect('Homepage:default');
 		};
 		return $form;

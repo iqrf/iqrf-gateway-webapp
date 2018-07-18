@@ -56,17 +56,26 @@ class ConfigWebsocketMessagingFormFactory {
 	 * @return Form Websocket messaging configuration form
 	 */
 	public function create(WebsocketPresenter $presenter): Form {
+		$id = intval($presenter->getParameter('id'));
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('config.websocket.messaging.form'));
 		$this->manager->setComponent('iqrf::WebsocketMessaging');
-		$this->manager->setFileName($this->manager->getInstanceFiles()[0]);
+		$instances = $this->manager->getInstanceFiles();
+		$instanceExist = array_key_exists($id, $instances);
 		$form->addText('instance', 'instance')->setRequired('messages.instance');
 		$form->addCheckbox('acceptAsyncMsg', 'acceptAsyncMsg');
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');
-		$form->setDefaults($this->manager->load());
-		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
+		if ($instanceExist) {
+			$this->manager->setFileName($instances[$id]);
+			$form->setDefaults($this->manager->load());
+		}
+		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $instanceExist) {
+			if (!$instanceExist) {
+				$this->manager->setFileName('iqrf__' . $values['instance']);
+			}
 			$this->manager->save($values);
+			$presenter->flashMessage('config.messages.success', 'success');
 			$presenter->redirect('Homepage:default');
 		};
 		return $form;

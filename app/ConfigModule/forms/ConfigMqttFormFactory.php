@@ -99,6 +99,7 @@ class ConfigMqttFormFactory {
 				$this->manager->setFileName('iqrf__' . $values['instance']);
 			}
 			$this->manager->save($values);
+			$presenter->flashMessage('config.messages.success', 'success');
 			$presenter->redirect('Mqtt:default');
 		};
 		return $form;

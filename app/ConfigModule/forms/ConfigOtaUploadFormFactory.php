@@ -67,6 +67,7 @@ class ConfigOtaUploadFormFactory {
 		$form->setDefaults($this->manager->load());
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
 			$this->manager->save($values);
+			$presenter->flashMessage('config.messages.success', 'success');
 			$presenter->redirect('Iqrf:default');
 		};
 		return $form;

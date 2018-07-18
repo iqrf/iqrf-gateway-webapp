@@ -122,6 +122,7 @@ class ConfigSchedulerFormFactory {
 		$form->addProtection('core.errors.form-timeout');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $id) {
 			$this->manager->save($values, $id);
+			$presenter->flashMessage('config.messages.success', 'success');
 			$presenter->redirect('Scheduler:default');
 		};
 		return $form;

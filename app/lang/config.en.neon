@@ -5,6 +5,9 @@ actions:
 	Edit: Edit
 	Remove: Remove
 
+messages:
+	success: The configuration has been saved successfully.
+
 components:
 	title: Components
 	description: Manage components.
