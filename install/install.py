@@ -85,26 +85,30 @@ def install_debian(version, stability="stable", branch=None):
 		send_command("mv composer.phar /usr/bin/composer")
 		chmod_daemon_dir()
 		install_webapp(stability, branch)
+		fix_php_fpm_config("/etc/php/7.0/fpm/php.ini", "php7.0-fpm")
 		disable_default_nginx_virtualhost()
 		create_nginx_virtualhost("iqrf-daemon-webapp_php7-0.localhost")
-		fix_php_fpm_config("/etc/php/7.0/fpm/php.ini")
 		enable_sudo()
-		restart_service("sudo")
-		restart_service("php7.0-fpm")
-		restart_service("nginx")
 	elif version == "9" or version == "stretch" or version == "stable":
 		# Install sudo, nginx php7.0, composer and zip
 		send_command("apt-get install -y sudo php7.0 php7.0-common php7.0-fpm php7.0-curl php7.0-json php7.0-sqlite php7.0-mbstring php7.0-zip composer nginx-full zip unzip")
 		chmod_daemon_dir()
 		install_webapp(stability, branch)
+		fix_php_fpm_config("/etc/php/7.0/fpm/php.ini", "php7.0-fpm")
 		disable_default_nginx_virtualhost()
 		create_nginx_virtualhost("iqrf-daemon-webapp_php7-0.localhost")
-		fix_php_fpm_config("/etc/php/7.0/fpm/php.ini")
 		chown_dir(WEBAPP_DIRECTORY)
 		enable_sudo()
-		restart_service("sudo")
-		restart_service("php7.0-fpm")
-		restart_service("nginx")
+	elif version == "10" or version == "buster" or version == "testing":
+		# Install sudo, nginx php7.2, composer and zip
+		send_command("apt-get install -y sudo php7.2 php7.2-common php7.2-fpm php7.2-curl php7.2-json php7.2-sqlite php7.2-mbstring php7.2-zip composer nginx-full zip unzip")
+		chmod_daemon_dir()
+		install_webapp(stability, branch)
+		fix_php_fpm_config("/etc/php/7.2/fpm/php.ini", "php7.2-fpm")
+		disable_default_nginx_virtualhost()
+		create_nginx_virtualhost("iqrf-daemon-webapp_php7-2.localhost")
+		chown_dir(WEBAPP_DIRECTORY)
+		enable_sudo()
 
 def install_ubuntu(version, stability="stable", branch=None):
 	"""
@@ -112,19 +116,26 @@ def install_ubuntu(version, stability="stable", branch=None):
 	@param version Version of Ubuntu
 	"""
 	send_command("apt-get update")
-	if version == "16.04" or version == "xenial" or version == "xerus":
+	if version == "16.04" or version == "xenial":
 		# Install sudo, nginx php7.0, composer and zip
 		send_command("apt-get install -y sudo php7.0 php7.0-common php7.0-fpm php7.0-curl php7.0-json php7.0-sqlite php7.0-mbstring php7.0-zip composer nginx-full zip unzip")
 		chmod_daemon_dir()
 		install_webapp(stability, branch)
+		fix_php_fpm_config("/etc/php/7.0/fpm/php.ini", "php7.0-fpm")
 		disable_default_nginx_virtualhost()
 		create_nginx_virtualhost("iqrf-daemon-webapp_php7-0.localhost")
-		fix_php_fpm_config("/etc/php/7.0/fpm/php.ini")
 		chown_dir(WEBAPP_DIRECTORY)
 		enable_sudo()
-		restart_service("sudo")
-		restart_service("php7.0-fpm")
-		restart_service("nginx")
+	elif version == "18.04" or version == "bionic":
+		# Install sudo, nginx php7.2, composer and zip
+		send_command("apt-get install -y sudo php7.2 php7.2-common php7.2-fpm php7.2-curl php7.2-json php7.2-sqlite php7.2-mbstring php7.2-zip composer nginx-full zip unzip")
+		chmod_daemon_dir()
+		install_webapp(stability, branch)
+		fix_php_fpm_config("/etc/php/7.2/fpm/php.ini", "php7.2-fpm")
+		disable_default_nginx_virtualhost()
+		create_nginx_virtualhost("iqrf-daemon-webapp_php7-2.localhost")
+		chown_dir(WEBAPP_DIRECTORY)
+		enable_sudo()
 
 def install_webapp(stability, branch):
 	"""
@@ -205,13 +216,16 @@ def create_nginx_virtualhost(virtualhost, nginx_dir="/etc/nginx"):
 	send_command("cp -u nginx/" + virtualhost + " " + available_virtualhost)
 	if not os.path.lexists(enabled_virtualhost):
 		send_command("ln -s " + available_virtualhost + " " + enabled_virtualhost)
+	restart_service("nginx")
 
-def fix_php_fpm_config(config_file):
+def fix_php_fpm_config(config_file, service=None):
 	"""
 	Fix PHP configuration
 	@param config_file Path to PHP configuration file
+	@param service Name of PHP FPM service
 	"""
 	send_command("sed -i 's/;cgi\.fix_pathinfo=1/cgi\.fix_pathinfo=0/g' " + config_file)
+	restart_service(service)
 
 def enable_sudo(sudoers_file=SUDOERS_FILE, user="www-data"):
 	"""
@@ -227,6 +241,7 @@ def enable_sudo(sudoers_file=SUDOERS_FILE, user="www-data"):
 				found = True
 	if not found:
 		send_command("echo \"" + sudoers + "\" >> " + sudoers_file)
+		restart_service("sudo")
 
 def restart_service(name):
 	"""
