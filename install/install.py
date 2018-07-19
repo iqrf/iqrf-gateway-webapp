@@ -29,9 +29,10 @@ ARGS.add_argument("-d", "--dist", action="store", dest="dist", required=True, ty
 ARGS.add_argument("-v", "--ver", action="store", dest="ver", required=True, type=str, help="The version of used linux distribution.")
 ARGS.add_argument("-s", "--stability", action="store", dest="stability", default="stable", type=str, help="The stability of the IQRF Gateway Daemon webapp.")
 
+DAEMON_DIRECTORY = "/etc/iqrfgd2/"
 GIT_REPOSOTORY = "https://github.com/iqrfsdk/iqrf-daemon-webapp"
-WEBSERVER_DIRECTORY = "/var/www"
-WEBAPP_DIRECTORY = WEBSERVER_DIRECTORY + "/iqrf-daemon-webapp"
+WEBSERVER_DIRECTORY = "/var/www/"
+WEBAPP_DIRECTORY = WEBSERVER_DIRECTORY + "iqrf-daemon-webapp/"
 SUDOERS_FILE = "/etc/sudoers"
 
 def send_command(cmd):
@@ -82,7 +83,7 @@ def install_debian(version, stability="stable", branch=None):
 		# Install composer
 		send_command("bash ./install-composer.sh")
 		send_command("mv composer.phar /usr/bin/composer")
-		chmod_dir()
+		chmod_daemon_dir()
 		install_webapp(stability, branch)
 		disable_default_nginx_virtualhost()
 		create_nginx_virtualhost("iqrf-daemon-webapp_php7-0.localhost")
@@ -94,7 +95,7 @@ def install_debian(version, stability="stable", branch=None):
 	elif version == "9" or version == "stretch" or version == "stable":
 		# Install sudo, nginx php7.0, composer and zip
 		send_command("apt-get install -y sudo php7.0 php7.0-common php7.0-fpm php7.0-curl php7.0-json php7.0-sqlite php7.0-mbstring php7.0-zip composer nginx-full zip unzip")
-		chmod_dir()
+		chmod_daemon_dir()
 		install_webapp(stability, branch)
 		disable_default_nginx_virtualhost()
 		create_nginx_virtualhost("iqrf-daemon-webapp_php7-0.localhost")
@@ -114,7 +115,7 @@ def install_ubuntu(version, stability="stable", branch=None):
 	if version == "16.04" or version == "xenial" or version == "xerus":
 		# Install sudo, nginx php7.0, composer and zip
 		send_command("apt-get install -y sudo php7.0 php7.0-common php7.0-fpm php7.0-curl php7.0-json php7.0-sqlite php7.0-mbstring php7.0-zip composer nginx-full zip unzip")
-		chmod_dir()
+		chmod_daemon_dir()
 		install_webapp(stability, branch)
 		disable_default_nginx_virtualhost()
 		create_nginx_virtualhost("iqrf-daemon-webapp_php7-0.localhost")
@@ -132,8 +133,8 @@ def install_webapp(stability, branch):
 	@param branch Git branch
 	"""
 	if stability == "dev":
-		install_php_app(WEBAPP_DIRECTORY, True, branch)
-	elif stability == "stable" and (branch != "master" or branch != None):
+		install_php_app(WEBAPP_DIRECTORY, True, "master")
+	elif stability == "stable" and (branch != "stable" or branch != None):
 		install_php_app(WEBAPP_DIRECTORY, True, branch)
 	else:
 		install_php_app(WEBAPP_DIRECTORY, False, branch)
@@ -146,38 +147,34 @@ def install_php_app(directory, use_git=True, branch=None):
 	@param branch Git branch
 	"""
 	if use_git:
-		if os.path.isdir(directory) and os.path.isdir(directory + "/.git"):
-			send_command("cd " + directory + "/../ ; git clone " + GIT_REPOSOTORY)
-			if branch != None:
-				send_command("cd " + directory + " ; git checkout " + branch)
-			send_command("cd " + directory + " ; composer install")
-		elif os.path.isdir(directory) and not os.path.isdir(directory + "/.git"):
-			send_command("rm -rf " + directory)
-			send_command("cd " + directory + "/../ ; git clone " + GIT_REPOSOTORY)
-			if branch != None:
-				send_command("cd " + directory + " ; git checkout " + branch)
-			send_command("cd " + directory + " ; composer install")
+		if os.path.isdir(directory):
+			if os.path.isdir(directory + "/.git"):
+				send_command("rm -rf " + directory + "/temp/cache")
+				send_command("cd " + directory + " ; git pull origin")
+			else:
+				send_command("rm -rf " + directory)
+				send_command("cd " + directory + "/../ ; git clone " + GIT_REPOSOTORY)
 		else:
-			send_command("rm -rf " + directory + "/temp/cache")
-			send_command("cd " + directory + " ; git pull origin")
-			if branch != None:
-				send_command("cd " + directory + " ; git checkout " + branch)
-			send_command("cd " + directory + " ; composer update")
+			send_command("cd " + directory + "/../ ; git clone " + GIT_REPOSOTORY)
+		if branch != None:
+			send_command("cd " + directory + " ; git checkout " + branch)
+		send_command("cd " + directory + " ; composer install")
+		send_command("cd " + directory + " ; composer update")
 	else:
 		if os.path.isdir(directory):
-			send_command("cd " + directory + "/../ ; rm -rf iqrf-daemon-webapp")
-		send_command("cd " + directory + "/../ ; composer create-project iqrfsdk/iqrf-daemon-webapp")
+			send_command("cd " + directory + "../ ; rm -rf iqrf-daemon-webapp")
+		send_command("cd " + directory + "../ ; composer create-project iqrfsdk/iqrf-daemon-webapp")
 	send_command("chmod 777 log/")
 	send_command("chmod 777 temp/")
 
 
-def chmod_dir(directory="/etc/iqrf-daemon"):
+def chmod_daemon_dir():
 	"""
-	Change mode of directory
-	@param directory Directory
+	Change mode of directory with IQRF Gateway Daemon
 	"""
-	send_command("chmod -R 666 " + directory)
-	send_command("chmod 777 " + directory)
+	send_command("chmod -R 666 " + DAEMON_DIRECTORY)
+	send_command("chmod 777 " + DAEMON_DIRECTORY)
+	send_command("chmod 777 " + DAEMON_DIRECTORY + "/jsonschema/")
 
 def chown_dir(directory, new_owner="www-data"):
 	"""
@@ -187,7 +184,7 @@ def chown_dir(directory, new_owner="www-data"):
 	"""
 	send_command("chown -R " + new_owner + ":" + new_owner + " " + directory)
 
-def disable_default_nginx_virtualhost(nginx_dir="/etc/nginx"):
+def disable_default_nginx_virtualhost(nginx_dir="/etc/nginx/"):
 	"""
 	Disable default nginx virtualhost
 	@param nginx_dir Directory with configuration files for nginx
