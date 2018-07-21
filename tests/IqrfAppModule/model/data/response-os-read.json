@@ -1,9 +1,12 @@
 {
 	"ctype": "dpa",
 	"type": "raw",
-	"msgid": "1",
-	"timeout": 1000,
+	"msgid": "1532190869",
 	"request": "00.00.02.00.ff.ff",
-	"response": "00.00.02.80.00.00.00.00.05.a4.00.81.38.24.79.08.00.28.00.f0",
+	"request_ts": "2018-07-21T18:34:29.565504",
+	"confirmation": "",
+	"confirmation_ts": "",
+	"response": "00.00.02.80.00.00.00.00.dc.3c.10.81.42.24.b8.08.00.28.00.31",
+	"response_ts": "2018-07-21T18:34:29.599374",
 	"status": "STATUS_NO_ERROR"
 }

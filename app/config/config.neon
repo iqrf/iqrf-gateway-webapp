@@ -14,6 +14,8 @@ parameters:
 		logDir: '/var/log/iqrfgd2/'
 		# Path to directory with IQRF Gateway Daemon's JSON schemas
 		schemaDir: '/etc/iqrfgd2/jsonschema/'
+		# URL to IQRF Gateway Daemon's WebSocket server
+		wsServer: 'ws://localhost:1338'
 	# Sentry configuration
 	sentry:
 		dsn: 'https://da0cff92d85f4cd0aa5f0ea3b90ddffd:83a01f9c90014d9e8b186bd23a6a3d3f@sentry.iqrfsdk.org/2'

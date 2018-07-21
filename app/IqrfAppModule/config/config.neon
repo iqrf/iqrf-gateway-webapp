@@ -6,7 +6,7 @@ services:
 	- App\IqrfAppModule\Forms\IqrfNetSecurityFormFactory
 	- App\IqrfAppModule\Model\CoordinatorParser
 	- App\IqrfAppModule\Model\EnumerationParser
-	- App\IqrfAppModule\Model\IqrfAppManager
+	- App\IqrfAppModule\Model\IqrfAppManager(%daemon.wsServer%)
 	- App\IqrfAppModule\Model\IqrfMacroManager(%macroPath%)
 	- App\IqrfAppModule\Model\IqrfNetManager
 	- App\IqrfAppModule\Model\OsParser

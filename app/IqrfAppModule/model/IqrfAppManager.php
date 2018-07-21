@@ -30,6 +30,9 @@ use DateTime;
 use Nette;
 use Nette\Utils\Json;
 use Nette\Utils\Strings;
+use Ratchet\Client as WebSocketClient;
+use Ratchet\RFC6455\Messaging as WebSocketMessaging;
+use React\EventLoop;
 use Tracy\Debugger;
 
 /**
@@ -38,11 +41,6 @@ use Tracy\Debugger;
 class IqrfAppManager {
 
 	use Nette\SmartObject;
-
-	/**
-	 * @var CommandManager Command manager
-	 */
-	private $commandManager;
 
 	/**
 	 * @var CoordinatorParser Parser for DPA Coordinator responses
@@ -60,27 +58,61 @@ class IqrfAppManager {
 	private $osParser;
 
 	/**
+	 * @var string URL to IQRF Gateway Daemon's WebSocket server
+	 */
+	private $wsServer;
+
+	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param string $wsServer URL to IQRF Gateway Daemon's WebSocket server
 	 * @param CoordinatorParser $coordinatorParser Parser for DPA Coordinator responses
 	 * @param OsParser $osParser Parser for DPA OS responses
 	 * @param EnumerationParser $enumParser Parser for DPA Enumeration responses
 	 */
-	public function __construct(CommandManager $commandManager, CoordinatorParser $coordinatorParser, OsParser $osParser, EnumerationParser $enumParser) {
-		$this->commandManager = $commandManager;
+	public function __construct(string $wsServer, CoordinatorParser $coordinatorParser, OsParser $osParser, EnumerationParser $enumParser) {
 		$this->coordinatorParser = $coordinatorParser;
 		$this->enumParser = $enumParser;
 		$this->osParser = $osParser;
+		$this->wsServer = $wsServer;
 	}
 
 	/**
-	 * Send JSON request to iqrfapp
-	 * @param array $array JSON request on array
+	 * Send JSON request to IQRF Gateway Daemon via WebSocket
+	 * @param array $array JSON request in array
 	 * @return string JSON response
 	 */
 	public function sendCommand(array $array) {
-		$cmd = 'iqrfapp "' . str_replace('"', '\\"', Json::encode($array)) . '"';
-		return $this->commandManager->send($cmd, true);
+		$loop = EventLoop\Factory::create();
+		$connector = new WebSocketClient\Connector($loop);
+		$connection = $connector($this->wsServer);
+		$runHasBeenCalled = false;
+		$wait = true;
+		$loop->addTimer(EventLoop\Timer\Timer::MIN_INTERVAL, function () use (&$runHasBeenCalled) {
+			$runHasBeenCalled = true;
+		});
+		register_shutdown_function(function() use ($loop, &$runHasBeenCalled) {
+			if (!$runHasBeenCalled) {
+				$loop->run();
+			}
+		});
+		$resolved = null;
+		$connection->then(function (WebSocketClient\WebSocket $conn) use (&$resolved, &$wait, $loop, $array) {
+			$conn->send(Json::encode($array));
+			$conn->on('message', function (WebSocketMessaging\MessageInterface $msg) use (&$resolved, &$wait, $loop, $conn) {
+				$resolved = $msg;
+				$conn->close();
+				$wait = false;
+				$loop->stop();
+			});
+		}, function ($e) use (&$wait, $loop) {
+			Debugger::log($e->getMessage(), 'websocket');
+			$wait = false;
+			$loop->stop();
+		});
+		while ($wait) {
+			$loop->run();
+		}
+		return (string) $resolved;
 	}
 
 	/**
@@ -106,31 +138,16 @@ class IqrfAppManager {
 		if (!isset($timeout)) {
 			unset($array['timeout']);
 		}
-		// Workaround to fix mismatched msgid
-		$this->readOnly(200);
-		$commandOutput = $this->sendCommand($array);
-		if (empty($commandOutput)) {
+		$response = $this->sendCommand($array);
+		if (empty($response)) {
 			throw new EmptyResponseException();
 		}
-		preg_match('/Received: {(.*?)\}/s', $commandOutput, $output);
-		$response = !empty($output) ? str_replace('Received: ', '', $output[0]) : null;
 		$data = [
 			'request' => Json::encode($array, Json::PRETTY),
 			'response' => $response,
 		];
 		Debugger::barDump($data, 'iqrfapp');
 		return $data;
-	}
-
-	/**
-	 * Read only (async) DPA packet
-	 * @param int $timeout DPA timeout in milliseconds
-	 * @return string JSON response
-	 */
-	public function readOnly(int $timeout = null) {
-		$cmd = 'iqrfapp readonly';
-		$cmd .= isset($timeout) ? ' timeout ' . $timeout : '';
-		return $this->commandManager->send($cmd, true);
 	}
 
 	/**
@@ -198,7 +215,7 @@ class IqrfAppManager {
 	 */
 	public function parseResponse(array $json) {
 		$jsonResponse = $json['response'];
-		if (empty($jsonResponse) || $jsonResponse === 'Timeout') {
+		if (empty($jsonResponse)) {
 			throw new EmptyResponseException();
 		}
 		$response = Json::decode($jsonResponse, Json::FORCE_ARRAY);
