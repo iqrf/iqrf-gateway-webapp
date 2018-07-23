@@ -138,14 +138,11 @@ class IqrfAppManagerTest extends TestCase {
 	 */
 	public function testChangeOperationMode() {
 		$modesSuccess = ['forwarding', 'operational', 'service'];
-		$outputSuccess = [
-			'{"ctype":"conf","type":"mode","cmd":"forwarding"}',
-			'{"ctype":"conf","type":"mode","cmd":"operational"}',
-			'{"ctype":"conf","type":"mode","cmd":"service"}',
-		];
 		$iqrfAppManager = new IqrfAppManager($this->wsServer, $this->coordinatorParser, $this->osParser, $this->enumParser);
-		foreach ($modesSuccess as $key => $mode) {
-			Assert::same($outputSuccess[$key], $iqrfAppManager->changeOperationMode($mode));
+		$now = new DateTime();
+		$format = '{"mType":"mngDaemon_Mode","data":{"msgId":"' . $now->getTimestamp() . '","req":{"operMode":"%s"}},"returnVerbose":true}';
+		foreach ($modesSuccess as $mode) {
+			Assert::same(sprintf($format, $mode), $iqrfAppManager->changeOperationMode($mode));
 		}
 		Assert::exception(function() use ($iqrfAppManager) {
 			$iqrfAppManager->changeOperationMode('invalid');

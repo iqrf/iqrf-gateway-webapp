@@ -159,10 +159,16 @@ class IqrfAppManager {
 		if (!in_array($mode, $modes, true)) {
 			throw new InvalidOperationModeException();
 		}
+		$now = new DateTime();
 		$array = [
-			'ctype' => 'conf',
-			'type' => 'mode',
-			'cmd' => $mode,
+			'mType' => 'mngDaemon_Mode',
+			'data' => [
+				'msgId' => (string) $now->getTimestamp(),
+				'req' => [
+					'operMode' => $mode,
+				],
+			],
+			'returnVerbose' => true,
 		];
 		return $this->sendCommand($array);
 	}
@@ -237,7 +243,6 @@ class IqrfAppManager {
 			throw new EmptyResponseException();
 		}
 		$pnum = explode('.', $packet)[2];
-		var_dump($pnum);
 		switch ($pnum) {
 			case '00':
 				return $this->coordinatorParser->parse($packet);
