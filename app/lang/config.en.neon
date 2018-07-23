@@ -89,9 +89,9 @@ iqrfSpi:
 		boards: Boards
 		interfaces: Interfaces
 
-js-cache:
-	title: JS cache
-	description: JS cache for drivers.
+iqrfRepository:
+	title: IQRF Repository
+	description: "Manage IQRF Repository's settings."
 	form:
 		instance: Name of instance
 		urlRepo: IQRF Repository URL

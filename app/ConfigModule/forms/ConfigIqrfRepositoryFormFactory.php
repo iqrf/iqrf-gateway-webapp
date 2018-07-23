@@ -21,12 +21,12 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Forms;
 
 use App\ConfigModule\Model\GenericManager;
-use App\ConfigModule\Presenters\JsCachePresenter;
+use App\ConfigModule\Presenters\IqrfRepositoryPresenter;
 use App\Forms\FormFactory;
 use Nette;
 use Nette\Forms\Form;
 
-class ConfigJsCacheFormFactory {
+class ConfigIqrfRepositoryFormFactory {
 
 	use Nette\SmartObject;
 
@@ -51,13 +51,13 @@ class ConfigJsCacheFormFactory {
 	}
 
 	/**
-	 * Create JS cache service configuration form
-	 * @param JsCachePresenter $presenter
-	 * @return Form JS cache configuration form
+	 * Create IQRF Repository configuration form
+	 * @param IqrfRepositoryPresenter $presenter
+	 * @return Form IQRF Repository configuration form
 	 */
-	public function create(JsCachePresenter $presenter): Form {
+	public function create(IqrfRepositoryPresenter $presenter): Form {
 		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('config.js-cache.form'));
+		$form->setTranslator($form->getTranslator()->domain('config.iqrfRepository.form'));
 		$this->manager->setComponent('iqrf::JsCache');
 		$this->manager->setFileName($this->manager->getInstanceFiles()[0]);
 		$form->addText('instance', 'instance')->setRequired('messages.instance');

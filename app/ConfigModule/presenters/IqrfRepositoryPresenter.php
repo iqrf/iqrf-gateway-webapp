@@ -20,23 +20,23 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Presenters;
 
-use App\ConfigModule\Forms\ConfigJsCacheFormFactory;
+use App\ConfigModule\Forms\ConfigIqrfRepositoryFormFactory;
 use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
-class JsCachePresenter extends ProtectedPresenter {
+class IqrfRepositoryPresenter extends ProtectedPresenter {
 
 	/**
-	 * @var ConfigJsCacheFormFactory Daemon's main configuration form factory
+	 * @var ConfigIqrfRepositoryFormFactory IQRF Repository configuration form factory
 	 * @inject
 	 */
 	public $formFactory;
 
 	/**
-	 * Create JS cache settings form
-	 * @return Form JS cache settings form
+	 * Create IQRF Repository settings form
+	 * @return Form IQRF Repository settings form
 	 */
-	protected function createComponentConfigJsCacheForm(): Form {
+	protected function createComponentConfigIqrfRepositoryForm(): Form {
 		return $this->formFactory->create($this);
 	}
 
