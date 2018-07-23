@@ -14,7 +14,7 @@ install:
   - travis_retry composer update --no-interaction
 script:
   # Nette Tester
-  - travis_retry vendor/bin/tester -p $PHP_BIN -s ./tests
+  - travis_retry vendor/bin/tester -p $PHP_BIN -c ./tests/php.ini -s ./tests
 after_failure:
   # Print *.actual content
   - 'for i in $(find ./tests -name \*.actual); do echo "--- $i"; cat $i; echo; echo; done'
@@ -23,7 +23,7 @@ jobs:
     - stage: Code Coverage
       php: 7.1
       script:
-        - travis_retry vendor/bin/tester -p phpdbg -s --coverage ./coverage.xml --coverage-src ./app ./tests
+        - travis_retry vendor/bin/tester -p phpdbg -c ./tests/php.ini -s --coverage ./coverage.xml --coverage-src ./app ./tests
       after_script:
         - bash <(curl -s https://codecov.io/bash)
     - stage: Code Standard Checker
