@@ -62,7 +62,7 @@ class ConfigJsCacheFormFactory {
 		$this->manager->setFileName($this->manager->getInstanceFiles()[0]);
 		$form->addText('instance', 'instance')->setRequired('messages.instance');
 		$form->addText('urlRepo', 'urlRepo')->setRequired('messages.urlRepo');
-		$form->addInteger('checkPeriodSec', 'checkPeriodSec');
+		$form->addInteger('checkPeriodInMinutes', 'checkPeriodInMinutes');
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');
 		$form->setDefaults($this->manager->load());
