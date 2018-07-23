@@ -29,6 +29,7 @@ ARGS.add_argument("-d", "--dist", action="store", dest="dist", required=True, ty
 ARGS.add_argument("-v", "--ver", action="store", dest="ver", required=True, type=str, help="The version of used linux distribution.")
 ARGS.add_argument("-s", "--stability", action="store", dest="stability", default="stable", type=str, help="The stability of the IQRF Gateway Daemon webapp.")
 
+DAEMON_DIRECTORY = "/etc/iqrfgd2/"
 GIT_REPOSOTORY = "https://github.com/iqrfsdk/iqrf-daemon-webapp"
 WEBSERVER_DIRECTORY = "/var/www/"
 WEBAPP_DIRECTORY = WEBSERVER_DIRECTORY + "iqrf-daemon-webapp/"
@@ -143,11 +144,11 @@ def install_webapp(stability, branch):
 	@param branch Git branch
 	"""
 	if stability == "dev":
-		install_php_app(WEBAPP_DIRECTORY, True, "master-v1")
-	elif stability == "stable":
-		install_php_app(WEBAPP_DIRECTORY, True, "stable-v1")
-	else:
+		install_php_app(WEBAPP_DIRECTORY, True, "master")
+	elif stability == "stable" and (branch != "stable" or branch != None):
 		install_php_app(WEBAPP_DIRECTORY, True, branch)
+	else:
+		install_php_app(WEBAPP_DIRECTORY, False, branch)
 
 def install_php_app(directory, use_git=True, branch=None):
 	"""
@@ -178,13 +179,13 @@ def install_php_app(directory, use_git=True, branch=None):
 	send_command("chmod 777 temp/")
 
 
-def chmod_dir(directory="/etc/iqrf-daemon"):
+def chmod_daemon_dir():
 	"""
-	Change mode of directory
-	@param directory Directory
+	Change mode of directory with IQRF Gateway Daemon
 	"""
-	send_command("chmod -R 666 " + directory)
-	send_command("chmod 777 " + directory)
+	send_command("chmod -R 666 " + DAEMON_DIRECTORY)
+	send_command("chmod 777 " + DAEMON_DIRECTORY)
+	send_command("chmod 777 " + DAEMON_DIRECTORY + "/jsonschema/")
 
 def chown_dir(directory, new_owner="www-data"):
 	"""
