@@ -1,12 +1,10 @@
 {
-	"ctype": "dpa",
-	"type": "raw",
-	"msgid": "1530618137",
-	"request": "ff.00.06.03.ff.ff",
-	"request_ts": "2018-07-03T13:42:17.462944",
-	"confirmation": "ff.00.06.03.ff.ff.ff.00.02.04.00",
-	"confirmation_ts": "2018-07-03T13:42:17.488220",
-	"response": "",
-	"response_ts": "",
-	"status": "STATUS_NO_ERROR"
+	"mType": "iqrfRaw",
+	"data": {
+		"msgId": "1",
+		"rsp": {
+			"rData": "ff.00.06.03.ff.ff"
+		},
+		"status": 0
+	}
 }

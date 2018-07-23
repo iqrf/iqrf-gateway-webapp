@@ -69,8 +69,8 @@ class OsParserTest extends TestCase {
 	public function setUp() {
 		$this->parser = new OsParser();
 		$this->jsonFileManager = new JsonFileManager(__DIR__ . '/data/');
-		$this->packetHwpConfiguration = $this->jsonFileManager->read('response-os-hwp-config')['response'];
-		$this->packetOsInfo = $this->jsonFileManager->read('response-os-read')['response'];
+		$this->packetHwpConfiguration = $this->jsonFileManager->read('response-os-hwp-config')['data']['rsp']['rData'];
+		$this->packetOsInfo = $this->jsonFileManager->read('response-os-read')['data']['rsp']['rData'];
 		$this->expectedHwpConfiguration = $this->jsonFileManager->read('data-os-hwp-config');
 		$this->expectedOsInfo = $this->jsonFileManager->read('data-os-read');
 	}

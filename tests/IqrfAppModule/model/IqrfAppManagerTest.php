@@ -160,15 +160,14 @@ class IqrfAppManagerTest extends TestCase {
 		$packet = '01.00.06.03.ff.ff';
 		$now = new DateTime();
 		$array = [
-			'ctype' => 'dpa',
-			'type' => 'raw',
-			'msgid' => (string) $now->getTimestamp(),
-			'request' => $packet,
-			'request_ts' => '',
-			'confirmation' => '',
-			'confirmation_ts' => '',
-			'response' => '',
-			'response_ts' => '',
+			'mType' => 'iqrfRaw',
+			'data' => [
+				'msgId' => (string) $now->getTimestamp(),
+				'req' => [
+					'rData' => $packet,
+				],
+			],
+			'returnVerbose' => true,
 		];
 		$expected = [
 			'request' => Json::encode($array, Json::PRETTY),
@@ -185,35 +184,26 @@ class IqrfAppManagerTest extends TestCase {
 	public function testParseResponse() {
 		$iqrfAppManager = new IqrfAppManager($this->wsServer, $this->coordinatorParser, $this->osParser, $this->enumParser);
 		$responseCoordinatorBonded['response'] = $this->fileManager->read('response-coordinator-bonded.json');
-		$arrayCoordinatorBonded = $iqrfAppManager->parseResponse($responseCoordinatorBonded);
 		$expectedCoordinatorBonded = $this->jsonFileManager->read('data-coordinator-bonded');
-		Assert::equal($expectedCoordinatorBonded, $arrayCoordinatorBonded);
-		$responseCoordinatorBondedDiscovered['response'] = $this->fileManager->read('response-coordinator-discovered.json');
-		$arrayCoordinatorDiscovered = $iqrfAppManager->parseResponse($responseCoordinatorBondedDiscovered);
+		Assert::equal($expectedCoordinatorBonded, $iqrfAppManager->parseResponse($responseCoordinatorBonded));
+		$responseCoordinatorDiscovered['response'] = $this->fileManager->read('response-coordinator-discovered.json');
 		$expectedCoordinatorDiscovered = $this->jsonFileManager->read('data-coordinator-discovered');
-		Assert::equal($expectedCoordinatorDiscovered, $arrayCoordinatorDiscovered);
+		Assert::equal($expectedCoordinatorDiscovered, $iqrfAppManager->parseResponse($responseCoordinatorDiscovered));
 		$responseOsRead['response'] = $this->fileManager->read('response-os-read.json');
-		$arrayOsRead = $iqrfAppManager->parseResponse($responseOsRead);
 		$expectedOsRead = $this->jsonFileManager->read('data-os-read');
-		Assert::equal($expectedOsRead, $arrayOsRead);
+		Assert::equal($expectedOsRead, $iqrfAppManager->parseResponse($responseOsRead));
 		$responseEnumeration['response'] = $this->fileManager->read('response-enumeration.json');
-		$arrayEnumeration = $iqrfAppManager->parseResponse($responseEnumeration);
 		$expectedEnumeration = $this->jsonFileManager->read('data-enumeration');
-		Assert::equal($expectedEnumeration, $arrayEnumeration);
+		Assert::equal($expectedEnumeration, $iqrfAppManager->parseResponse($responseEnumeration));
 		$packetLedrOn['response'] = $this->fileManager->read('response-ledr-on.json');
-		$arrayLedrOn = $iqrfAppManager->parseResponse($packetLedrOn);
-		Assert::null($arrayLedrOn);
+		Assert::null($iqrfAppManager->parseResponse($packetLedrOn));
 		$packetIoTKitSe['response'] = $this->fileManager->read('response-error.json');
-		$arrayIoTKitSe = $iqrfAppManager->parseResponse($packetIoTKitSe);
-		Assert::null($arrayIoTKitSe);
+		Assert::null($iqrfAppManager->parseResponse($packetIoTKitSe));
 		$packetBroadcast['request'] = $this->fileManager->read('request-broadcast.json');
 		$packetBroadcast['response'] = $this->fileManager->read('response-broadcast.json');
 		Assert::null($iqrfAppManager->parseResponse($packetBroadcast));
 		Assert::exception(function () use ($iqrfAppManager) {
 			$iqrfAppManager->parseResponse(['response' => '']);
-		}, EmptyResponseException::class);
-		Assert::exception(function () use ($iqrfAppManager) {
-			$iqrfAppManager->parseResponse(['response' => '{"response": "","status":"STATUS_NO_ERROR"}']);
 		}, EmptyResponseException::class);
 	}
 

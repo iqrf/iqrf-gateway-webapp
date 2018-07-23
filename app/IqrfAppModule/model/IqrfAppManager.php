@@ -25,7 +25,6 @@ use App\IqrfAppModule\Model\EmptyResponseException;
 use App\IqrfAppModule\Model\EnumerationParser;
 use App\IqrfAppModule\Model\InvalidOperationModeException;
 use App\IqrfAppModule\Model\OsParser;
-use App\Model\CommandManager;
 use DateTime;
 use Nette;
 use Nette\Utils\Json;
@@ -124,19 +123,18 @@ class IqrfAppManager {
 	public function sendRaw(string $packet, int $timeout = null): array {
 		$now = new DateTime();
 		$array = [
-			'ctype' => 'dpa',
-			'type' => 'raw',
-			'msgid' => (string) $now->getTimestamp(),
-			'timeout' => (int) $timeout,
-			'request' => $this->fixPacket($packet),
-			'request_ts' => '',
-			'confirmation' => '',
-			'confirmation_ts' => '',
-			'response' => '',
-			'response_ts' => '',
+			'mType' => 'iqrfRaw',
+			'data' => [
+				'msgId' => (string) $now->getTimestamp(),
+				'timeout' => (int) $timeout,
+				'req' => [
+					'rData' => $this->fixPacket($packet),
+				],
+			],
+			'returnVerbose' => true,
 		];
 		if (!isset($timeout)) {
-			unset($array['timeout']);
+			unset($array['data']['timeout']);
 		}
 		$response = $this->sendCommand($array);
 		if (empty($response)) {
@@ -218,32 +216,35 @@ class IqrfAppManager {
 		if (empty($jsonResponse)) {
 			throw new EmptyResponseException();
 		}
-		$response = Json::decode($jsonResponse, Json::FORCE_ARRAY);
+		$response = Json::decode($jsonResponse, Json::FORCE_ARRAY)['data'];
 		$status = $response['status'];
-		if ($status !== 'STATUS_NO_ERROR') {
+		if ($status !== 0) {
 			return null;
 			/** @todo throw own exception */
 		}
-		$packet = $response['response'];
+		$packet = Strings::lower($response['rsp']['rData']);
 		if (array_key_exists('request', $json)) {
 			$request = Json::decode($json['request'], Json::FORCE_ARRAY);
-			$requestNadr = explode('.', Strings::lower($request['request'])[0]);
-			if (empty($packet) && $requestNadr !== 'ff') {
+			$requestPacket = Strings::lower($request['data']['req']['rData']);
+			$requestNadr = explode('.', $requestPacket)[0];
+			Debugger::barDump($requestPacket);
+			Debugger::barDump($requestNadr);
+			if (empty($packet) && $requestNadr === 'ff') {
 				return null;
 			}
 		}
 		if (empty($packet)) {
 			throw new EmptyResponseException();
 		}
-		$fixedPacket = $this->fixPacket($packet);
-		$pnum = explode('.', $fixedPacket)[2];
+		$pnum = explode('.', $packet)[2];
+		var_dump($pnum);
 		switch ($pnum) {
 			case '00':
-				return $this->coordinatorParser->parse($fixedPacket);
+				return $this->coordinatorParser->parse($packet);
 			case '02':
-				return $this->osParser->parse($fixedPacket);
+				return $this->osParser->parse($packet);
 			case 'ff':
-				return $this->enumParser->parse($fixedPacket);
+				return $this->enumParser->parse($packet);
 			default:
 				return null;
 		}

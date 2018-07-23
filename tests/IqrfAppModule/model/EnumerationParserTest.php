@@ -59,7 +59,7 @@ class EnumerationParserTest extends TestCase {
 	public function setUp() {
 		$this->parser = new EnumerationParser();
 		$this->jsonFileManager = new JsonFileManager(__DIR__ . '/data/');
-		$this->packetEnumeration = $this->jsonFileManager->read('response-enumeration')['response'];
+		$this->packetEnumeration = $this->jsonFileManager->read('response-enumeration')['data']['rsp']['rData'];
 		$this->expectedEnumeration = $this->jsonFileManager->read('data-enumeration');
 	}
 

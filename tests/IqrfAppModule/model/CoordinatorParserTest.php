@@ -69,8 +69,8 @@ class CoordinatorParserTest extends TestCase {
 	public function setUp() {
 		$this->parser = new CoordinatorParser();
 		$this->jsonFileManager = new JsonFileManager(__DIR__ . '/data/');
-		$this->packetBonded = $this->jsonFileManager->read('response-coordinator-bonded')['response'];
-		$this->packetDiscovered = $this->jsonFileManager->read('response-coordinator-discovered')['response'];
+		$this->packetBonded = $this->jsonFileManager->read('response-coordinator-bonded')['data']['rsp']['rData'];
+		$this->packetDiscovered = $this->jsonFileManager->read('response-coordinator-discovered')['data']['rsp']['rData'];
 		$this->expectedBonded = $this->jsonFileManager->read('data-coordinator-bonded');
 		$this->expectedDiscovered = $this->jsonFileManager->read('data-coordinator-discovered');
 	}

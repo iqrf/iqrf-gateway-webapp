@@ -1,9 +1,10 @@
 {
-	"ctype": "dpa",
-	"type": "raw",
-	"msgid": "1",
-	"timeout": 1000,
-	"request": "00.00.00.02.ff.ff",
-	"response": "",
-	"status": "ERROR_PROMISE_TIMEOUT"
+	"mType": "iqrfRaw",
+	"data": {
+		"msgId": "1",
+		"rsp": {
+			"rData": "00.00.00.02.ff.ff"
+		},
+		"status": -1
+	}
 }
