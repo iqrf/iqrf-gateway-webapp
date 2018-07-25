@@ -20,12 +20,22 @@ components:
 		startlevel: Start level
 		Save: Save
 
-iqrf:
-	title: IQRF interface
-	description: IQRF interface settings.
+iqmesh:
+	title: IQMESH services
+	description: Manage IQMESH services.
+	otaUpload:
+		title: IQRF OTA upload service
+		form:
+			instance: Name of instance
+			uploadPath: Path to a directory with files to upload
+			messages:
+				instance: Please enter name of OTA upload service instance.
+				uploadPath: Please enter path to a directory with files to upload.
+			Save: Save
 
 iqrfCdc:
-	title: IQRF CDC
+	title: IQRF CDC interface
+	description: IQRF CDC interface settings.
 	form:
 		instance: Name of instance
 		IqrfInterface: IQRF CDC interface
@@ -39,6 +49,7 @@ iqrfCdc:
 
 iqrfDpa:
 	title: IQRF DPA interface
+	description: IQRF DPA interface settings.
 	form:
 		instance: Name of instance
 		DpaHandlerTimeout: DPA Handler timeout
@@ -56,22 +67,21 @@ iqrfDpa:
 		usb: USB CDC
 		spi: SPI
 
-iqrfIde4:
-	title: IQRF IDE4 Counterpart
+iqrfRepository:
+	title: IQRF Repository
+	description: "Manage IQRF Repository's settings."
 	form:
 		instance: Name of instance
-		requiredInterface:
-			name: Name of required interface
-			instance: Name of required interface instance
+		urlRepo: IQRF Repository URL
+		checkPeriodInMinutes: Check period in minutes
 		messages:
-			instance: Please enter name of IQRF IDE4 Counterpart instance.
-			requiredInterface:
-				name: Please enter name of required interface.
-				instance: Please enter name of required interface instance.
+			instance: Please enter name of IQRF SPI instance.
+			urlRepo: Please enter IQRF Repository URL.
 		Save: Save
 
 iqrfSpi:
-	title: IQRF SPI
+	title: IQRF SPI interface
+	description: IQRF SPI interface settings.
 	form:
 		instance: Name of instance
 		IqrfInterface: IQRF SPI interface
@@ -89,24 +99,9 @@ iqrfSpi:
 		boards: Boards
 		interfaces: Interfaces
 
-iqrfRepository:
-	title: IQRF Repository
-	description: "Manage IQRF Repository's settings."
-	form:
-		instance: Name of instance
-		urlRepo: IQRF Repository URL
-		checkPeriodInMinutes: Check period in minutes
-		messages:
-			instance: Please enter name of IQRF SPI instance.
-			urlRepo: Please enter IQRF Repository URL.
-		Save: Save
-
-json:
-	title: JSON
-	description: JSON
-
-json-dpa-api-raw:
-	title: JSON DPA API Raw
+jsonRawApi:
+	title: JSON Raw API
+	description: JSON Raw API settings.
 	form:
 		instance: Name of instance
 		asyncDpaMessage: Async DPA message
@@ -114,8 +109,9 @@ json-dpa-api-raw:
 			instance: Please enter name of JSON Splitter instance.
 		Save: Save
 
-json-splitter:
+jsonSplitter:
 	title: JSON Splitter
+	description: JSON Splitter settings.
 	form:
 		instance: Name of instance
 		validateJsonResponse: Validate JSON response
@@ -200,16 +196,6 @@ mqtt:
 			ClientId: Please enter client ID.
 			TopicRequest: Please enter topic for requests.
 			TopicResponse: Please enter topic for responses.
-		Save: Save
-
-ota-upload:
-	title: IQRF OTA upload service
-	form:
-		instance: Name of instance
-		uploadPath: Path to a directory with files to upload
-		messages:
-			instance: Please enter name of OTA upload service instance.
-			uploadPath: Please enter path to a directory with files to upload.
 		Save: Save
 
 scheduler:

@@ -21,7 +21,7 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Forms;
 
 use App\ConfigModule\Model\GenericManager;
-use App\ConfigModule\Presenters\IqrfPresenter;
+use App\ConfigModule\Presenters\IqmeshPresenter;
 use App\Forms\FormFactory;
 use Nette;
 use Nette\Forms\Form;
@@ -52,12 +52,12 @@ class ConfigOtaUploadFormFactory {
 
 	/**
 	 * Create OTA upload service configuration form
-	 * @param IqrfPresenter $presenter
+	 * @param IqmeshPresenter $presenter
 	 * @return Form OTA upload configuration form
 	 */
-	public function create(IqrfPresenter $presenter): Form {
+	public function create(IqmeshPresenter $presenter): Form {
 		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('config.ota-upload.form'));
+		$form->setTranslator($form->getTranslator()->domain('config.iqmesh.otaUpload.form'));
 		$this->manager->setComponent('iqrf::OtaUploadService');
 		$this->manager->setFileName($this->manager->getInstanceFiles()[0]);
 		$form->addText('instance', 'instance')->setRequired('messages.instance');
@@ -68,7 +68,7 @@ class ConfigOtaUploadFormFactory {
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
 			$this->manager->save($values);
 			$presenter->flashMessage('config.messages.success', 'success');
-			$presenter->redirect('Iqrf:default');
+			$presenter->redirect('Homepage:default');
 		};
 		return $form;
 	}

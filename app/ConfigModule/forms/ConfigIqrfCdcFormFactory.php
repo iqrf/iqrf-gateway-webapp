@@ -21,7 +21,7 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Forms;
 
 use App\ConfigModule\Model\GenericManager;
-use App\ConfigModule\Presenters\IqrfPresenter;
+use App\ConfigModule\Presenters\IqrfCdcPresenter;
 use App\Forms\FormFactory;
 use Nette;
 use Nette\Forms\Form;
@@ -52,10 +52,10 @@ class ConfigIqrfCdcFormFactory {
 
 	/**
 	 * Create IQRF SPI configuration form
-	 * @param IqrfPresenter $presenter
-	 * @return Form IQRF configuration form
+	 * @param IqrfCdcPresenter $presenter
+	 * @return Form IQRF CDC interface configuration form
 	 */
-	public function create(IqrfPresenter $presenter): Form {
+	public function create(IqrfCdcPresenter $presenter): Form {
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('config.iqrfCdc.form'));
 		$this->manager->setComponent('iqrf::IqrfCdc');
@@ -68,7 +68,7 @@ class ConfigIqrfCdcFormFactory {
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
 			$this->manager->save($values);
 			$presenter->flashMessage('config.messages.success', 'success');
-			$presenter->redirect('Iqrf:default');
+			$presenter->redirect('Homepage:default');
 		};
 		return $form;
 	}

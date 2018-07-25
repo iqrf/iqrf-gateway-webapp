@@ -21,7 +21,7 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Forms;
 
 use App\ConfigModule\Model\GenericManager;
-use App\ConfigModule\Presenters\IqrfPresenter;
+use App\ConfigModule\Presenters\IqrfDpaPresenter;
 use App\Forms\FormFactory;
 use Nette;
 use Nette\Forms\Form;
@@ -52,10 +52,10 @@ class ConfigIqrfDpaFormFactory {
 
 	/**
 	 * Create IQRF configuration form
-	 * @param IqrfPresenter $presenter
-	 * @return Form IQRF configuration form
+	 * @param IqrfDpaPresenter $presenter
+	 * @return Form IQRF DPA interface configuration form
 	 */
-	public function create(IqrfPresenter $presenter): Form {
+	public function create(IqrfDpaPresenter $presenter): Form {
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('config.iqrfDpa.form'));
 		$communicationModes = ['STD' => 'CommunicationModes.STD', 'LP' => 'CommunicationModes.LP'];
@@ -71,7 +71,7 @@ class ConfigIqrfDpaFormFactory {
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
 			$this->manager->save($values);
 			$presenter->flashMessage('config.messages.success', 'success');
-			$presenter->redirect('Iqrf:default');
+			$presenter->redirect('Homepage:default');
 		};
 		return $form;
 	}

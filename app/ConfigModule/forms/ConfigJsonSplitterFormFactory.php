@@ -21,7 +21,7 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Forms;
 
 use App\ConfigModule\Model\GenericManager;
-use App\ConfigModule\Presenters\JsonPresenter;
+use App\ConfigModule\Presenters\JsonSplitterPresenter;
 use App\Forms\FormFactory;
 use Nette;
 use Nette\Forms\Form;
@@ -52,12 +52,12 @@ class ConfigJsonSplitterFormFactory {
 
 	/**
 	 * Create JSON splitter service configuration form
-	 * @param JsonPresenter $presenter JSON settings presenter
+	 * @param JsonSplitterPresenter $presenter JSON Splitter settings presenter
 	 * @return Form JSON splitter configuration form
 	 */
-	public function create(JsonPresenter $presenter): Form {
+	public function create(JsonSplitterPresenter $presenter): Form {
 		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('config.json-splitter.form'));
+		$form->setTranslator($form->getTranslator()->domain('config.jsonSplitter.form'));
 		$this->manager->setComponent('iqrf::JsonSplitter');
 		$this->manager->setFileName($this->manager->getInstanceFiles()[0]);
 		$form->addText('instance', 'instance')->setRequired('messages.instance');

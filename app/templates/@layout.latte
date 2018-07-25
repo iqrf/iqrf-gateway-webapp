@@ -59,14 +59,18 @@
 							<ul class="dropdown-menu">
 								<li><a n:href=':Config:Main:default'>{_config.main.title}</a></li>
 								<li><a n:href=':Config:Component:default'>{_config.components.title}</a></li>
-								<li><a n:href=':Config:Iqrf:default'>{_config.iqrf.title}</a></li>
+								<li><a n:href=':Config:IqrfSpi:default'>{_config.iqrfSpi.title}</a></li>
+								<li><a n:href=':Config:IqrfCdc:default'>{_config.iqrfCdc.title}</a></li>
+								<li><a n:href=':Config:IqrfDpa:default'>{_config.iqrfDpa.title}</a></li>
+								<li><a n:href=':Config:IqrfRepository:default'>{_config.iqrfRepository.title}</a></li>
+								<li><a n:href=':Config:Iqmesh:default'>{_config.iqmesh.title}</a></li>
 								<li><a n:href=':Config:Mqtt:default'>{_config.mqtt.title}</a></li>
+								<li><a n:href=':Config:Websocket:default'>{_config.websocket.title}</a></li>
 								<li><a n:href=':Config:Mq:default'>{_config.mq.title}</a></li>
 								<li><a n:href=':Config:Udp:default'>{_config.udp.title}</a></li>
-								<li><a n:href=':Config:Websocket:default'>{_config.websocket.title}</a></li>
+								<li><a n:href=':Config:JsonRawApi:default'>{_config.jsonRawApi.title}</a></li>
+								<li><a n:href=':Config:JsonSplitter:default'>{_config.jsonSplitter.title}</a></li>
 								<li><a n:href=':Config:Scheduler:default'>{_config.scheduler.title}</a></li>
-								<li><a n:href=':Config:IqrfRepository:default'>{_config.iqrfRepository.title}</a></li>
-								<li><a n:href=':Config:Json:default'>{_config.json.title}</a></li>
 							</ul>
 						</li>
 						<li n:if='$user->loggedIn'><a n:href=':Service:Control:default'>{_service.title}</a></li>

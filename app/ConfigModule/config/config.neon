@@ -2,7 +2,6 @@ services:
 	- App\ConfigModule\Forms\ConfigComponentsFormFactory
 	- App\ConfigModule\Forms\ConfigIqrfCdcFormFactory
 	- App\ConfigModule\Forms\ConfigIqrfDpaFormFactory
-	- App\ConfigModule\Forms\ConfigIqrfIde4FormFactory
 	- App\ConfigModule\Forms\ConfigIqrfRepositoryFormFactory
 	- App\ConfigModule\Forms\ConfigIqrfSpiFormFactory
 	- App\ConfigModule\Forms\ConfigJsonSplitterFormFactory

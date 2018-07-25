@@ -21,7 +21,7 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Forms;
 
 use App\ConfigModule\Model\GenericManager;
-use App\ConfigModule\Presenters\JsonPresenter;
+use App\ConfigModule\Presenters\JsonRawApiPresenter;
 use App\Forms\FormFactory;
 use Nette;
 use Nette\Forms\Form;
@@ -52,12 +52,12 @@ class ConfigJsonDpaApiRawFormFactory {
 
 	/**
 	 * Create JSON splitter service configuration form
-	 * @param JsonPresenter $presenter JSON settings presenter
+	 * @param JsonRawApiPresenter $presenter JSON settings presenter
 	 * @return Form JSON splitter configuration form
 	 */
-	public function create(JsonPresenter $presenter): Form {
+	public function create(JsonRawApiPresenter $presenter): Form {
 		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('config.json-dpa-api-raw.form'));
+		$form->setTranslator($form->getTranslator()->domain('config.jsonRawApi.form'));
 		$this->manager->setComponent('iqrf::JsonDpaApiRaw');
 		$this->manager->setFileName($this->manager->getInstanceFiles()[0]);
 		$form->addText('instance', 'instance')->setRequired('messages.instance');
