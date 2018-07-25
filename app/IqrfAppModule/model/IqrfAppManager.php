@@ -32,6 +32,7 @@ use Nette\Utils\Strings;
 use Ratchet\Client as WebSocketClient;
 use Ratchet\RFC6455\Messaging as WebSocketMessaging;
 use React\EventLoop;
+use React\Socket as ReactSocket;
 use Tracy\Debugger;
 
 /**
@@ -82,25 +83,30 @@ class IqrfAppManager {
 	 */
 	public function sendCommand(array $array) {
 		$loop = EventLoop\Factory::create();
-		$connector = new WebSocketClient\Connector($loop);
+		$reactConnector = new ReactSocket\Connector($loop, ['timeout' => 15]);
+		$connector = new WebSocketClient\Connector($loop, $reactConnector);
 		$connection = $connector($this->wsServer);
-		$runHasBeenCalled = false;
 		$wait = true;
-		$loop->addTimer(EventLoop\Timer\Timer::MIN_INTERVAL, function () use (&$runHasBeenCalled) {
-			$runHasBeenCalled = true;
-		});
-		register_shutdown_function(function() use ($loop, &$runHasBeenCalled) {
-			if (!$runHasBeenCalled) {
-				$loop->run();
-			}
+		$attempts = 2;
+		$loop->addTimer(25.0, function () use ($loop, &$wait) {
+			$wait = false;
+			$loop->stop();
 		});
 		$resolved = null;
-		$connection->then(function (WebSocketClient\WebSocket $conn) use (&$resolved, &$wait, $loop, $array) {
+		$connection->then(function (WebSocketClient\WebSocket $conn) use (&$resolved, &$wait, &$attempts, $loop, $array) {
 			$conn->send(Json::encode($array));
-			$conn->on('message', function (WebSocketMessaging\MessageInterface $msg) use (&$resolved, &$wait, $loop, $conn) {
-				$resolved = $msg;
+			$conn->on('message', function (WebSocketMessaging\MessageInterface $msg) use (&$resolved, &$wait, &$attempts, $loop, $conn, $array) {
+				$json = Json::decode((string) $msg, Json::FORCE_ARRAY);
+				$correctMsgId = $array['data']['msgId'] === $json['data']['msgId'];
+				if ($correctMsgId) {
+					$resolved = $msg;
+					$wait = false;
+				} else if (!$correctMsgId && $attempts > 0) {
+					$attempts--;
+				} else {
+					$wait = false;
+				}
 				$conn->close();
-				$wait = false;
 				$loop->stop();
 			});
 		}, function ($e) use (&$wait, $loop) {
