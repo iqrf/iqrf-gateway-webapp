@@ -1,6 +1,9 @@
 title: Clouds
 description: Control cloud services.
 
+messages:
+	success: The new connection to the cloud service has been created successfully.
+
 amazonAws:
 	title: Amazon AWS IoT
 	description: Add a new MQTT connection into Amazon AWS IoT.
@@ -11,6 +14,8 @@ amazonAws:
 		pkey: Private key
 		save: Save
 		save_restart: Save and restart
+	messages:
+		mismatchedCrtAndKey: The private key does not corespond to the certificate.
 
 ibmBluemix:
 	title: IBM Bluemix
@@ -45,3 +50,5 @@ msAzure:
 		connectionString: IoT Hub Connection String for Device
 		save: Save
 		save_restart: Save and restart
+	messages:
+		invalidConnectionString: Invalid MS Azure IoT Hub connection string for device.

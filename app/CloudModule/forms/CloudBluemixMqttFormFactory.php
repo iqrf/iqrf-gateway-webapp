@@ -103,6 +103,8 @@ class CloudBluemixMqttFormFactory {
 	public function save(ArrayHash $values, BluemixPresenter $presenter, bool $needRestart = false) {
 		try {
 			$this->cloudManager->createMqttInterface($values);
+			$presenter->flashMessage('cloud.messages.success', 'success');
+			$presenter->redirect(':Config:Mqtt:default');
 		} catch (IOException $e) {
 			$presenter->flashMessage('config.messages.writeFailure', 'danger');
 		}
@@ -114,7 +116,6 @@ class CloudBluemixMqttFormFactory {
 				$presenter->flashMessage('service.errors.unsupportedInit', 'danger');
 			}
 		}
-		$presenter->redirect(':Config:Mqtt:default');
 	}
 
 }

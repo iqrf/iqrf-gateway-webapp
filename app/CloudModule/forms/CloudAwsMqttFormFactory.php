@@ -103,9 +103,11 @@ class CloudAwsMqttFormFactory {
 	public function save(ArrayHash $values, AwsPresenter $presenter, bool $needRestart = false) {
 		try {
 			$this->cloudManager->createMqttInterface($values);
+			$presenter->flashMessage('cloud.messages.success', 'success');
+			$presenter->redirect(':Config:Mqtt:default');
 		} catch (\Exception $e) {
 			if ($e instanceof InvalidPrivateKeyForCertificate) {
-				$presenter->flashMessage('The private key doesn\'t corespond to the certificate.', 'danger');
+				$presenter->flashMessage('cloud.amazonAws.messages.mismatchedCrtAndKey', 'danger');
 			} else if ($e instanceof IOException) {
 				$presenter->flashMessage('config.messages.writeFailure', 'danger');
 			} else {
@@ -120,7 +122,6 @@ class CloudAwsMqttFormFactory {
 				$presenter->flashMessage('service.errors.unsupportedInit', 'danger');
 			}
 		}
-		$presenter->redirect(':Config:Mqtt:default');
 	}
 
 }

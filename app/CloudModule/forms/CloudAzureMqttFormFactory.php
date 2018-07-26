@@ -101,9 +101,11 @@ class CloudAzureMqttFormFactory {
 	public function save(ArrayHash $values, AzurePresenter $presenter, bool $needRestart = false) {
 		try {
 			$this->cloudManager->createMqttInterface($values['ConnectionString']);
+			$presenter->flashMessage('cloud.messages.success', 'success');
+			$presenter->redirect(':Config:Mqtt:default');
 		} catch (\Exception $e) {
 			if ($e instanceof InvalidConnectionString) {
-				$presenter->flashMessage('Invalid MS Azure IoT Hub connection string for device.', 'danger');
+				$presenter->flashMessage('cloud.msAzure.messages.invalidConnectionString', 'danger');
 			} else if ($e instanceof IOException) {
 				$presenter->flashMessage('config.messages.writeFailure', 'danger');
 			} else {
@@ -118,7 +120,6 @@ class CloudAzureMqttFormFactory {
 				$presenter->flashMessage('service.errors.unsupportedInit', 'danger');
 			}
 		}
-		$presenter->redirect(':Config:Mqtt:default');
 	}
 
 }

@@ -137,7 +137,11 @@ class AzureManager {
 		$data = [];
 		foreach (explode(';', $connection) as $i) {
 			$j = explode('=', $i);
-			$data[$j[0]] = $j[1];
+			if (isset($j[0]) && isset($j[1])) {
+				$data[$j[0]] = $j[1];
+			} else {
+				throw new InvalidConnectionString();
+			}
 		}
 		return $data;
 	}

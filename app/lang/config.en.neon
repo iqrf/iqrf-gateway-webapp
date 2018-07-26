@@ -7,7 +7,7 @@ actions:
 
 messages:
 	success: The configuration has been saved successfully.
-	writeFailure: The configuration has not been saved because the webapp is unable to write the configuration file. 
+	writeFailure: The configuration has not been saved because the webapp is unable to write the configuration file.
 
 components:
 	title: Components
