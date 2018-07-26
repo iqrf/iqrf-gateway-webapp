@@ -27,6 +27,7 @@ use App\ConfigModule\Presenters\MigrationPresenter;
 use App\Forms\FormFactory;
 use Nette;
 use Nette\Forms\Form;
+use Nette\IOException;
 
 class ConfigMigrationFormFactory {
 
@@ -67,15 +68,21 @@ class ConfigMigrationFormFactory {
 			try {
 				$this->manager->upload($values);
 				$presenter->flashMessage('config.migration.messages.importedConfig', 'success');
-				$presenter->redirect('Homepage:default');
 			} catch (\Exception $e) {
 				if ($e instanceof IncompleteConfiguration) {
 					$presenter->flashMessage('config.migration.errors.invalidConfig', 'danger');
 				} else if ($e instanceof InvalidConfigurationFormat) {
 					$presenter->flashMessage('config.migration.errors.invalidFormat', 'danger');
+				} else if ($e instanceof IOException) {
+					/**
+					 * @todo Custom error message.
+					 */
+					$presenter->flashMessage('config.messages.writeFailure', 'danger');
 				} else {
 					throw $e;
 				}
+			} finally {
+				$presenter->redirect('Homepage:default');
 			}
 		};
 		return $form;

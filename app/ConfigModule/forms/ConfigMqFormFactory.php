@@ -25,6 +25,7 @@ use App\ConfigModule\Presenters\MqPresenter;
 use App\Forms\FormFactory;
 use Nette;
 use Nette\Forms\Form;
+use Nette\IOException;
 
 class ConfigMqFormFactory {
 
@@ -76,9 +77,14 @@ class ConfigMqFormFactory {
 			if (!$instanceExist) {
 				$this->manager->setFileName('iqrf__' . $values['instance']);
 			}
-			$this->manager->save($values);
-			$presenter->flashMessage('config.messages.success', 'success');
-			$presenter->redirect('Mq:default');
+			try {
+				$this->manager->save($values);
+				$presenter->flashMessage('config.messages.success', 'success');
+			} catch (IOException $e) {
+				$presenter->flashMessage('config.messages.writeFailure', 'danger');
+			} finally {
+				$presenter->redirect('Mq:default');
+			}
 		};
 		return $form;
 	}

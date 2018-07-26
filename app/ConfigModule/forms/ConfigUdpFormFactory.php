@@ -67,9 +67,14 @@ class ConfigUdpFormFactory {
 		$form->addProtection('core.errors.form-timeout');
 		$form->setDefaults($this->manager->load());
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
+			try {
 			$this->manager->save($values);
 			$presenter->flashMessage('config.messages.success', 'success');
-			$presenter->redirect('Homepage:default');
+			} catch (IOException $e) {
+				$presenter->flashMessage('config.messages.writeFailure', 'danger');
+			} finally {
+				$presenter->redirect('Homepage:default');
+			}
 		};
 		return $form;
 	}

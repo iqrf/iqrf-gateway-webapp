@@ -25,6 +25,7 @@ use App\ConfigModule\Presenters\MqttPresenter;
 use App\Forms\FormFactory;
 use Nette;
 use Nette\Forms\Form;
+use Nette\IOException;
 
 class ConfigMqttFormFactory {
 
@@ -98,9 +99,14 @@ class ConfigMqttFormFactory {
 			if (!$instanceExist) {
 				$this->manager->setFileName('iqrf__' . $values['instance']);
 			}
-			$this->manager->save($values);
-			$presenter->flashMessage('config.messages.success', 'success');
-			$presenter->redirect('Mqtt:default');
+			try {
+				$this->manager->save($values);
+				$presenter->flashMessage('config.messages.success', 'success');
+			} catch (IOException $e) {
+				$presenter->flashMessage('config.messages.writeFailure', 'danger');
+			} finally {
+				$presenter->redirect('Mqtt:default');
+			}
 		};
 		return $form;
 	}

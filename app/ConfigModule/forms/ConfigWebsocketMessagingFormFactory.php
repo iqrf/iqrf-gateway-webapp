@@ -25,6 +25,7 @@ use App\ConfigModule\Presenters\WebsocketPresenter;
 use App\Forms\FormFactory;
 use Nette;
 use Nette\Forms\Form;
+use Nette\IOException;
 
 class ConfigWebsocketMessagingFormFactory {
 
@@ -74,9 +75,14 @@ class ConfigWebsocketMessagingFormFactory {
 			if (!$instanceExist) {
 				$this->manager->setFileName('iqrf__' . $values['instance']);
 			}
-			$this->manager->save($values);
-			$presenter->flashMessage('config.messages.success', 'success');
-			$presenter->redirect('Homepage:default');
+			try {
+				$this->manager->save($values);
+				$presenter->flashMessage('config.messages.success', 'success');
+			} catch (IOException $e) {
+				$presenter->flashMessage('config.messages.writeFailure', 'danger');
+			} finally {
+				$presenter->redirect('Homepage:default');
+			}
 		};
 		return $form;
 	}

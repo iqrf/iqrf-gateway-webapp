@@ -105,7 +105,7 @@ class CloudAzureMqttFormFactory {
 			if ($e instanceof InvalidConnectionString) {
 				$presenter->flashMessage('Invalid MS Azure IoT Hub connection string for device.', 'danger');
 			} else if ($e instanceof IOException) {
-				$presenter->flashMessage('IQRF Daemon\'s configuration files not found.', 'danger');
+				$presenter->flashMessage('config.messages.writeFailure', 'danger');
 			} else {
 				throw $e;
 			}

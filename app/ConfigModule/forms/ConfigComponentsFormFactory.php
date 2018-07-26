@@ -25,6 +25,7 @@ use App\ConfigModule\Presenters\ComponentPresenter;
 use App\Forms\FormFactory;
 use Nette;
 use Nette\Forms\Form;
+use Nette\IOException;
 
 class ConfigComponentsFormFactory {
 
@@ -68,9 +69,14 @@ class ConfigComponentsFormFactory {
 		$form->setDefaults($this->manager->loadComponent($id));
 		$form->addProtection('core.errors.form-timeout');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $id) {
-			$this->manager->save($values, $id);
-			$presenter->flashMessage('config.messages.success', 'success');
-			$presenter->redirect('Component:default');
+			try {
+				$this->manager->save($values, $id);
+				$presenter->flashMessage('config.messages.success', 'success');
+			} catch (IOException $e) {
+				$presenter->flashMessage('config.messages.writeFailure', 'danger');
+			} finally {
+				$presenter->redirect('Component:default');
+			}
 		};
 		return $form;
 	}

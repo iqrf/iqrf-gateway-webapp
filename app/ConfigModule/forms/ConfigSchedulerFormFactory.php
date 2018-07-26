@@ -25,6 +25,7 @@ use App\ConfigModule\Presenters\SchedulerPresenter;
 use App\Forms\FormFactory;
 use Nette;
 use Nette\Forms\Form;
+use Nette\IOException;
 
 class ConfigSchedulerFormFactory {
 
@@ -121,9 +122,14 @@ class ConfigSchedulerFormFactory {
 		$form->setDefaults($defaults);
 		$form->addProtection('core.errors.form-timeout');
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $id) {
-			$this->manager->save($values, $id);
-			$presenter->flashMessage('config.messages.success', 'success');
-			$presenter->redirect('Scheduler:default');
+			try {
+				$this->manager->save($values, $id);
+				$presenter->flashMessage('config.messages.success', 'success');
+			} catch (IOException $e) {
+				$presenter->flashMessage('config.messages.writeFailure', 'danger');
+			} finally {
+				$presenter->redirect('Scheduler:default');
+			}
 		};
 		return $form;
 	}

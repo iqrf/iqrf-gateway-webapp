@@ -25,6 +25,7 @@ use App\ConfigModule\Presenters\IqmeshPresenter;
 use App\Forms\FormFactory;
 use Nette;
 use Nette\Forms\Form;
+use Nette\IOException;
 
 class ConfigOtaUploadFormFactory {
 
@@ -66,9 +67,14 @@ class ConfigOtaUploadFormFactory {
 		$form->addProtection('core.errors.form-timeout');
 		$form->setDefaults($this->manager->load());
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
-			$this->manager->save($values);
-			$presenter->flashMessage('config.messages.success', 'success');
-			$presenter->redirect('Homepage:default');
+			try {
+				$this->manager->save($values);
+				$presenter->flashMessage('config.messages.success', 'success');
+			} catch (IOException $e) {
+				$presenter->flashMessage('config.messages.writeFailure', 'danger');
+			} finally {
+				$presenter->redirect('Homepage:default');
+			}
 		};
 		return $form;
 	}

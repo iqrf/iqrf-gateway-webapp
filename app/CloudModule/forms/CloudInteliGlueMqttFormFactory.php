@@ -104,7 +104,7 @@ class CloudInteliGlueMqttFormFactory {
 		try {
 			$this->cloudManager->createMqttInterface($values);
 		} catch (IOException $e) {
-			$presenter->flashMessage('IQRF Daemon\'s configuration files not found.', 'danger');
+			$presenter->flashMessage('config.messages.writeFailure', 'danger');
 		}
 		if ($needRestart) {
 			try {
