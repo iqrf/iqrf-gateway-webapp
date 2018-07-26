@@ -12,15 +12,14 @@ namespace Test\Model;
 
 use App\GatewayModule\Model\InfoManager;
 use App\IqrfAppModule\Model\CoordinatorParser;
-use App\IqrfAppModule\Model\EmptyResponseException;
 use App\IqrfAppModule\Model\EnumerationParser;
 use App\IqrfAppModule\Model\IqrfAppManager;
+use App\IqrfAppModule\Model\MessageIdManager;
 use App\IqrfAppModule\Model\OsParser;
 use App\Model\CommandManager;
 use App\Model\FileManager;
 use App\Model\JsonFileManager;
 use App\Model\VersionManager;
-use DateTime;
 use Nette\DI\Container;
 use Tester\Assert;
 use Tester\TestCase;
@@ -40,9 +39,19 @@ class InfoManagerTest extends TestCase {
 	private $coordinatorParser;
 
 	/**
+	 * @var IqrfAppManager IQRF App manager
+	 */
+	private $iqrfAppManager;
+
+	/**
 	 * @var EnumerationParser DPA Enumeration response parser
 	 */
 	private $enumParser;
+
+	/**
+	 * @var MessageIdManager Message ID manager
+	 */
+	private $msgIdManager;
 
 	/**
 	 * @var OsParser DPA OS response parser
@@ -89,8 +98,10 @@ class InfoManagerTest extends TestCase {
 	public function setUp() {
 		$this->coordinatorParser = new CoordinatorParser();
 		$this->enumParser = new EnumerationParser();
+		$this->msgIdManager = new MessageIdManager();
 		$this->osParser = new OsParser();
 		$this->versionManager = new VersionManager(new CommandManager(false));
+		$this->iqrfAppManager = new IqrfAppManager($this->wsServer, $this->coordinatorParser, $this->osParser, $this->enumParser, $this->msgIdManager);
 	}
 
 	/**
@@ -100,24 +111,21 @@ class InfoManagerTest extends TestCase {
 	public function testGetBoard() {
 		$commandManager0 = \Mockery::mock(CommandManager::class);
 		$commandManager0->shouldReceive('send')->with($this->commands['deviceTreeName'], true)->andReturn('Raspberry Pi 2 Model B Rev 1.1');
-		$iqrfAppManager0 = new IqrfAppManager($this->wsServer, $this->coordinatorParser, $this->osParser, $this->enumParser);
-		$gwInfoManager0 = new InfoManager($commandManager0, $iqrfAppManager0, $this->versionManager);
+		$gwInfoManager0 = new InfoManager($commandManager0, $this->iqrfAppManager, $this->versionManager);
 		Assert::same('Raspberry Pi 2 Model B Rev 1.1', $gwInfoManager0->getBoard());
 		$commandManager1 = \Mockery::mock(CommandManager::class);
 		$commandManager1->shouldReceive('send')->with($this->commands['deviceTreeName'], true);
 		$commandManager1->shouldReceive('send')->with($this->commands['dmiBoardVendor'], true)->andReturn('AAEON');
 		$commandManager1->shouldReceive('send')->with($this->commands['dmiBoardName'], true)->andReturn('UP-APL01');
 		$commandManager1->shouldReceive('send')->with($this->commands['dmiBoardVersion'], true)->andReturn('V0.4');
-		$iqrfAppManager1 = new IqrfAppManager($this->wsServer, $this->coordinatorParser, $this->osParser, $this->enumParser);
-		$gwInfoManager1 = new InfoManager($commandManager1, $iqrfAppManager1, $this->versionManager);
+		$gwInfoManager1 = new InfoManager($commandManager1, $this->iqrfAppManager, $this->versionManager);
 		Assert::same('AAEON UP-APL01 (V0.4)', $gwInfoManager1->getBoard());
 		$commandManager2 = \Mockery::mock(CommandManager::class);
 		$commandManager2->shouldReceive('send')->with($this->commands['deviceTreeName'], true);
 		$commandManager2->shouldReceive('send')->with($this->commands['dmiBoardVendor'], true);
 		$commandManager2->shouldReceive('send')->with($this->commands['dmiBoardName'], true);
 		$commandManager2->shouldReceive('send')->with($this->commands['dmiBoardVersion'], true);
-		$iqrfAppManager2 = new IqrfAppManager($this->wsServer, $this->coordinatorParser, $this->osParser, $this->enumParser);
-		$gwInfoManager2 = new InfoManager($commandManager2, $iqrfAppManager2, $this->versionManager);
+		$gwInfoManager2 = new InfoManager($commandManager2, $this->iqrfAppManager, $this->versionManager);
 		Assert::same('UNKNOWN', $gwInfoManager2->getBoard());
 	}
 
@@ -130,8 +138,7 @@ class InfoManagerTest extends TestCase {
 		$commandManager->shouldReceive('send')->with($this->commands['networkAdapters'], true)->andReturn('eth0' . PHP_EOL . 'wlan0' . PHP_EOL . 'lo');
 		$commandManager->shouldReceive('send')->with($this->commands['ipAddressesEth0'], true)->andReturn('192.168.1.100' . PHP_EOL . 'fda9:d95:d5b1::64');
 		$commandManager->shouldReceive('send')->with($this->commands['ipAddressesWlan0'], true)->andReturn('');
-		$iqrfAppManager = new IqrfAppManager($this->wsServer, $this->coordinatorParser, $this->osParser, $this->enumParser);
-		$gwInfoManager = new InfoManager($commandManager, $iqrfAppManager, $this->versionManager);
+		$gwInfoManager = new InfoManager($commandManager, $this->iqrfAppManager, $this->versionManager);
 		Assert::same(['eth0' => ['192.168.1.100', 'fda9:d95:d5b1::64']], $gwInfoManager->getIpAddresses());
 	}
 
@@ -143,8 +150,7 @@ class InfoManagerTest extends TestCase {
 		$commandManager = \Mockery::mock(CommandManager::class);
 		$commandManager->shouldReceive('send')->with($this->commands['networkAdapters'], true)->andReturn('eth0' . PHP_EOL . 'lo');
 		$commandManager->shouldReceive('send')->with($this->commands['macAddresses'], true)->andReturn('01:02:03:04:05:06');
-		$iqrfAppManager = new IqrfAppManager($this->wsServer, $this->coordinatorParser, $this->osParser, $this->enumParser);
-		$gwInfoManager = new InfoManager($commandManager, $iqrfAppManager, $this->versionManager);
+		$gwInfoManager = new InfoManager($commandManager, $this->iqrfAppManager, $this->versionManager);
 		Assert::same(['eth0' => '01:02:03:04:05:06'], $gwInfoManager->getMacAddresses());
 	}
 
@@ -156,8 +162,7 @@ class InfoManagerTest extends TestCase {
 		$commandManager = \Mockery::mock(CommandManager::class);
 		$output = 'gateway';
 		$commandManager->shouldReceive('send')->with('hostname -f')->andReturn($output);
-		$iqrfAppManager = new IqrfAppManager($this->wsServer, $this->coordinatorParser, $this->osParser, $this->enumParser);
-		$gwInfoManager = new InfoManager($commandManager, $iqrfAppManager, $this->versionManager);
+		$gwInfoManager = new InfoManager($commandManager, $this->iqrfAppManager, $this->versionManager);
 		Assert::same($output, $gwInfoManager->getHostname());
 	}
 
@@ -187,20 +192,17 @@ class InfoManagerTest extends TestCase {
 		$version = 'v2.0.0dev 2018-07-04T10:30:51';
 		$commandManager0 = \Mockery::mock(CommandManager::class);
 		$commandManager0->shouldReceive('commandExist')->with('iqrfgd2')->andReturn(false);
-		$iqrfAppManager0 = new IqrfAppManager($this->wsServer, $this->coordinatorParser, $this->osParser, $this->enumParser);
-		$gwInfoManager0 = new InfoManager($commandManager0, $iqrfAppManager0, $this->versionManager);
+		$gwInfoManager0 = new InfoManager($commandManager0, $this->iqrfAppManager, $this->versionManager);
 		Assert::same('none', $gwInfoManager0->getDaemonVersion());
 		$commandManager1 = \Mockery::mock(CommandManager::class);
 		$commandManager1->shouldReceive('commandExist')->with('iqrfgd2')->andReturn(true);
 		$commandManager1->shouldReceive('send')->with($this->commands['daemonVersion'])->andReturn($version);
-		$iqrfAppManager1 = new IqrfAppManager($this->wsServer, $this->coordinatorParser, $this->osParser, $this->enumParser);
-		$gwInfoManager1 = new InfoManager($commandManager1, $iqrfAppManager1, $this->versionManager);
+		$gwInfoManager1 = new InfoManager($commandManager1, $this->iqrfAppManager, $this->versionManager);
 		Assert::same($version, $gwInfoManager1->getDaemonVersion());
 		$commandManager2 = \Mockery::mock(CommandManager::class);
 		$commandManager2->shouldReceive('commandExist')->with('iqrfgd2')->andReturn(true);
 		$commandManager2->shouldReceive('send')->with($this->commands['daemonVersion']);
-		$iqrfAppManager2 = new IqrfAppManager($this->wsServer, $this->coordinatorParser, $this->osParser, $this->enumParser);
-		$gwInfoManager2 = new InfoManager($commandManager2, $iqrfAppManager2, $this->versionManager);
+		$gwInfoManager2 = new InfoManager($commandManager2, $this->iqrfAppManager, $this->versionManager);
 		Assert::same('unknown', $gwInfoManager2->getDaemonVersion());
 	}
 
@@ -212,17 +214,15 @@ class InfoManagerTest extends TestCase {
 		$version = 'v1.1.6';
 		$commandManager0 = \Mockery::mock(CommandManager::class);
 		$commandManager0->shouldReceive('commandExist')->with('git')->andReturn(false);
-		$iqrfAppManager0 = new IqrfAppManager($this->wsServer, $this->coordinatorParser, $this->osParser, $this->enumParser);
 		$versionManager0 = new VersionManager($commandManager0);
-		$gwInfoManager0 = new InfoManager($commandManager0, $iqrfAppManager0, $versionManager0);
+		$gwInfoManager0 = new InfoManager($commandManager0, $this->iqrfAppManager, $versionManager0);
 		Assert::same($version, $gwInfoManager0->getWebAppVersion());
 		$gitBranches = '* master                 733d45340cbb2565fd068ca3257ad39a5e46f963 Add a notification to an update webapp to newer stable version';
 		$commandManager1 = \Mockery::mock(CommandManager::class);
 		$commandManager1->shouldReceive('commandExist')->with('git')->andReturn(true);
 		$commandManager1->shouldReceive('send')->with($this->commands['gitBranches'])->andReturn($gitBranches);
-		$iqrfAppManager1 = new IqrfAppManager($this->wsServer, $this->coordinatorParser, $this->osParser, $this->enumParser);
 		$versionManager1 = new VersionManager($commandManager1);
-		$gwInfoManager1 = new InfoManager($commandManager1, $iqrfAppManager1, $versionManager1);
+		$gwInfoManager1 = new InfoManager($commandManager1, $this->iqrfAppManager, $versionManager1);
 		Assert::same($version . ' (master - 733d45340cbb2565fd068ca3257ad39a5e46f963)', $gwInfoManager1->getWebAppVersion());
 	}
 

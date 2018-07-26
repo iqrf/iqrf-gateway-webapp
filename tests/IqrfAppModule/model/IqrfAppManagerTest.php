@@ -15,10 +15,10 @@ use App\IqrfAppModule\Model\EmptyResponseException;
 use App\IqrfAppModule\Model\EnumerationParser;
 use App\IqrfAppModule\Model\InvalidOperationModeException;
 use App\IqrfAppModule\Model\IqrfAppManager;
+use App\IqrfAppModule\Model\MessageIdManager;
 use App\IqrfAppModule\Model\OsParser;
 use App\Model\FileManager;
 use App\Model\JsonFileManager;
-use DateTime;
 use Nette\DI\Container;
 use Nette\Utils\Json;
 use Tester\Assert;
@@ -32,6 +32,11 @@ class IqrfAppManagerTest extends TestCase {
 	 * @var Container Nette Tester Container
 	 */
 	private $container;
+
+	/**
+	 * @var IqrfAppManager IQRF App manager
+	 */
+	private $iqrfAppManager;
 
 	/**
 	 * @var FileManager Text file manager
@@ -52,6 +57,11 @@ class IqrfAppManagerTest extends TestCase {
 	 * @var EnumerationParser DPA Enumeration response parser
 	 */
 	private $enumParser;
+
+	/**
+	 * @var MessageIdManager Message ID manager
+	 */
+	private $msgIdManager;
 
 	/**
 	 * @var OsParser DPA OS response parser
@@ -79,7 +89,10 @@ class IqrfAppManagerTest extends TestCase {
 		$this->jsonFileManager = new JsonFileManager(__DIR__ . '/data/');
 		$this->coordinatorParser = new CoordinatorParser();
 		$this->enumParser = new EnumerationParser();
+		$this->msgIdManager = \Mockery::mock(MessageIdManager::class);
+		$this->msgIdManager->shouldReceive('generate')->andReturn('1');
 		$this->osParser = new OsParser();
+		$this->iqrfAppManager = new IqrfAppManager($this->wsServer, $this->coordinatorParser, $this->osParser, $this->enumParser, $this->msgIdManager);
 	}
 
 	/**
@@ -87,7 +100,6 @@ class IqrfAppManagerTest extends TestCase {
 	 * Test function to validation of raw IQRF packet
 	 */
 	public function testValidatePacket() {
-		$iqrfAppManager = new IqrfAppManager($this->wsServer, $this->coordinatorParser, $this->osParser, $this->enumParser);
 		$validPackets = [
 			'01.00.06.03.ff.ff',
 			'01.00.06.03.ff.ff.',
@@ -102,10 +114,10 @@ class IqrfAppManagerTest extends TestCase {
 			'; echo Test > test.log',
 		];
 		foreach ($validPackets as $packet) {
-			Assert::true($iqrfAppManager->validatePacket($packet));
+			Assert::true($this->iqrfAppManager->validatePacket($packet));
 		}
 		foreach ($invalidPackets as $packet) {
-			Assert::false($iqrfAppManager->validatePacket($packet));
+			Assert::false($this->iqrfAppManager->validatePacket($packet));
 		}
 	}
 
@@ -114,11 +126,10 @@ class IqrfAppManagerTest extends TestCase {
 	 * Test function to update NADR in raw DPA packet
 	 */
 	public function testUpdateNadr() {
-		$iqrfAppManager = new IqrfAppManager($this->wsServer, $this->coordinatorParser, $this->osParser, $this->enumParser);
 		$packet = '01.00.06.03.ff.ff';
 		$nadr = 'F';
 		$expected = '0f.00.06.03.ff.ff';
-		Assert::same($expected, $iqrfAppManager->updateNadr($packet, $nadr));
+		Assert::same($expected, $this->iqrfAppManager->updateNadr($packet, $nadr));
 	}
 
 	/**
@@ -126,10 +137,9 @@ class IqrfAppManagerTest extends TestCase {
 	 * Test function to fix NADR in raw DPA packet
 	 */
 	public function testFixPacket() {
-		$iqrfAppManager = new IqrfAppManager($this->wsServer, $this->coordinatorParser, $this->osParser, $this->enumParser);
 		$packet = '00.01.06.03.ff.ff';
 		$expected = '01.00.06.03.ff.ff';
-		Assert::same($expected, $iqrfAppManager->fixPacket($packet));
+		Assert::same($expected, $this->iqrfAppManager->fixPacket($packet));
 	}
 
 	/**
@@ -138,14 +148,12 @@ class IqrfAppManagerTest extends TestCase {
 	 */
 	public function testChangeOperationMode() {
 		$modesSuccess = ['forwarding', 'operational', 'service'];
-		$iqrfAppManager = new IqrfAppManager($this->wsServer, $this->coordinatorParser, $this->osParser, $this->enumParser);
-		$now = new DateTime();
-		$format = '{"mType":"mngDaemon_Mode","data":{"msgId":"' . $now->getTimestamp() . '","req":{"operMode":"%s"}},"returnVerbose":true}';
+		$format = '{"mType":"mngDaemon_Mode","data":{"msgId":"1","req":{"operMode":"%s"}},"returnVerbose":true}';
 		foreach ($modesSuccess as $mode) {
-			Assert::same(sprintf($format, $mode), $iqrfAppManager->changeOperationMode($mode));
+			Assert::same(sprintf($format, $mode), $this->iqrfAppManager->changeOperationMode($mode));
 		}
-		Assert::exception(function() use ($iqrfAppManager) {
-			$iqrfAppManager->changeOperationMode('invalid');
+		Assert::exception(function() {
+			$this->iqrfAppManager->changeOperationMode('invalid');
 		}, InvalidOperationModeException::class);
 	}
 
@@ -155,11 +163,10 @@ class IqrfAppManagerTest extends TestCase {
 	 */
 	public function testSendRaw() {
 		$packet = '01.00.06.03.ff.ff';
-		$now = new DateTime();
 		$array = [
 			'mType' => 'iqrfRaw',
 			'data' => [
-				'msgId' => (string) $now->getTimestamp(),
+				'msgId' => '1',
 				'req' => [
 					'rData' => $packet,
 				],
@@ -170,8 +177,7 @@ class IqrfAppManagerTest extends TestCase {
 			'request' => Json::encode($array, Json::PRETTY),
 			'response' => Json::encode($array),
 		];
-		$iqrfAppManager = new IqrfAppManager($this->wsServer, $this->coordinatorParser, $this->osParser, $this->enumParser);
-		Assert::equal($expected, $iqrfAppManager->sendRaw($packet));
+		Assert::equal($expected, $this->iqrfAppManager->sendRaw($packet));
 	}
 
 	/**
@@ -179,28 +185,27 @@ class IqrfAppManagerTest extends TestCase {
 	 * Test function to parse DPA response
 	 */
 	public function testParseResponse() {
-		$iqrfAppManager = new IqrfAppManager($this->wsServer, $this->coordinatorParser, $this->osParser, $this->enumParser);
 		$responseCoordinatorBonded['response'] = $this->fileManager->read('response-coordinator-bonded.json');
 		$expectedCoordinatorBonded = $this->jsonFileManager->read('data-coordinator-bonded');
-		Assert::equal($expectedCoordinatorBonded, $iqrfAppManager->parseResponse($responseCoordinatorBonded));
+		Assert::equal($expectedCoordinatorBonded, $this->iqrfAppManager->parseResponse($responseCoordinatorBonded));
 		$responseCoordinatorDiscovered['response'] = $this->fileManager->read('response-coordinator-discovered.json');
 		$expectedCoordinatorDiscovered = $this->jsonFileManager->read('data-coordinator-discovered');
-		Assert::equal($expectedCoordinatorDiscovered, $iqrfAppManager->parseResponse($responseCoordinatorDiscovered));
+		Assert::equal($expectedCoordinatorDiscovered, $this->iqrfAppManager->parseResponse($responseCoordinatorDiscovered));
 		$responseOsRead['response'] = $this->fileManager->read('response-os-read.json');
 		$expectedOsRead = $this->jsonFileManager->read('data-os-read');
-		Assert::equal($expectedOsRead, $iqrfAppManager->parseResponse($responseOsRead));
+		Assert::equal($expectedOsRead, $this->iqrfAppManager->parseResponse($responseOsRead));
 		$responseEnumeration['response'] = $this->fileManager->read('response-enumeration.json');
 		$expectedEnumeration = $this->jsonFileManager->read('data-enumeration');
-		Assert::equal($expectedEnumeration, $iqrfAppManager->parseResponse($responseEnumeration));
+		Assert::equal($expectedEnumeration, $this->iqrfAppManager->parseResponse($responseEnumeration));
 		$packetLedrOn['response'] = $this->fileManager->read('response-ledr-on.json');
-		Assert::null($iqrfAppManager->parseResponse($packetLedrOn));
+		Assert::null($this->iqrfAppManager->parseResponse($packetLedrOn));
 		$packetIoTKitSe['response'] = $this->fileManager->read('response-error.json');
-		Assert::null($iqrfAppManager->parseResponse($packetIoTKitSe));
+		Assert::null($this->iqrfAppManager->parseResponse($packetIoTKitSe));
 		$packetBroadcast['request'] = $this->fileManager->read('request-broadcast.json');
 		$packetBroadcast['response'] = $this->fileManager->read('response-broadcast.json');
-		Assert::null($iqrfAppManager->parseResponse($packetBroadcast));
-		Assert::exception(function () use ($iqrfAppManager) {
-			$iqrfAppManager->parseResponse(['response' => '']);
+		Assert::null($this->iqrfAppManager->parseResponse($packetBroadcast));
+		Assert::exception(function () {
+			$this->iqrfAppManager->parseResponse(['response' => '']);
 		}, EmptyResponseException::class);
 	}
 

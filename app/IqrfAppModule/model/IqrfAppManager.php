@@ -24,8 +24,8 @@ use App\IqrfAppModule\Model\CoordinatorParser;
 use App\IqrfAppModule\Model\EmptyResponseException;
 use App\IqrfAppModule\Model\EnumerationParser;
 use App\IqrfAppModule\Model\InvalidOperationModeException;
+use App\IqrfAppModule\Model\MessageIdManager;
 use App\IqrfAppModule\Model\OsParser;
-use DateTime;
 use Nette;
 use Nette\Utils\Json;
 use Nette\Utils\Strings;
@@ -53,6 +53,11 @@ class IqrfAppManager {
 	private $enumParser;
 
 	/**
+	 * @var MessageIdManager Message ID manager
+	 */
+	private $msgIdManager;
+
+	/**
 	 * @var OsParser Parser for DPA OS responses
 	 */
 	private $osParser;
@@ -68,11 +73,13 @@ class IqrfAppManager {
 	 * @param CoordinatorParser $coordinatorParser Parser for DPA Coordinator responses
 	 * @param OsParser $osParser Parser for DPA OS responses
 	 * @param EnumerationParser $enumParser Parser for DPA Enumeration responses
+	 * @param MessageIdManager $msgIdManager Message ID manager
 	 */
-	public function __construct(string $wsServer, CoordinatorParser $coordinatorParser, OsParser $osParser, EnumerationParser $enumParser) {
+	public function __construct(string $wsServer, CoordinatorParser $coordinatorParser, OsParser $osParser, EnumerationParser $enumParser, MessageIdManager $msgIdManager) {
 		$this->coordinatorParser = $coordinatorParser;
 		$this->enumParser = $enumParser;
 		$this->osParser = $osParser;
+		$this->msgIdManager = $msgIdManager;
 		$this->wsServer = $wsServer;
 	}
 
@@ -127,11 +134,10 @@ class IqrfAppManager {
 	 * @return array DPA request and response
 	 */
 	public function sendRaw(string $packet, int $timeout = null): array {
-		$now = new DateTime();
 		$array = [
 			'mType' => 'iqrfRaw',
 			'data' => [
-				'msgId' => (string) $now->getTimestamp(),
+				'msgId' => $this->msgIdManager->generate(),
 				'timeout' => (int) $timeout,
 				'req' => [
 					'rData' => $this->fixPacket($packet),
@@ -165,11 +171,10 @@ class IqrfAppManager {
 		if (!in_array($mode, $modes, true)) {
 			throw new InvalidOperationModeException();
 		}
-		$now = new DateTime();
 		$array = [
 			'mType' => 'mngDaemon_Mode',
 			'data' => [
-				'msgId' => (string) $now->getTimestamp(),
+				'msgId' => $this->msgIdManager->generate(),
 				'req' => [
 					'operMode' => $mode,
 				],

@@ -9,4 +9,5 @@ services:
 	- App\IqrfAppModule\Model\IqrfAppManager(%daemon.wsServer%)
 	- App\IqrfAppModule\Model\IqrfMacroManager(%macroPath%)
 	- App\IqrfAppModule\Model\IqrfNetManager
+	- App\IqrfAppModule\Model\MessageIdManager
 	- App\IqrfAppModule\Model\OsParser
