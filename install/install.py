@@ -29,9 +29,10 @@ ARGS.add_argument("-d", "--dist", action="store", dest="dist", required=True, ty
 ARGS.add_argument("-v", "--ver", action="store", dest="ver", required=True, type=str, help="The version of used linux distribution.")
 ARGS.add_argument("-s", "--stability", action="store", dest="stability", default="stable", type=str, help="The stability of the IQRF Gateway Daemon webapp.")
 
-GIT_REPOSOTORY = "https://github.com/iqrfsdk/iqrf-daemon-webapp"
+DAEMON_DIRECTORY = "/etc/iqrfgd2/"
+GIT_REPOSOTORY = "https://github.com/iqrfsdk/iqrf-gateway-webapp"
 WEBSERVER_DIRECTORY = "/var/www/"
-WEBAPP_DIRECTORY = WEBSERVER_DIRECTORY + "iqrf-daemon-webapp/"
+WEBAPP_DIRECTORY = WEBSERVER_DIRECTORY + "iqrf-gateway-webapp/"
 SUDOERS_FILE = "/etc/sudoers"
 
 def send_command(cmd):
@@ -86,7 +87,7 @@ def install_debian(version, stability="stable", branch=None):
 		install_webapp(stability, branch)
 		fix_php_fpm_config("/etc/php/7.0/fpm/php.ini", "php7.0-fpm")
 		disable_default_nginx_virtualhost()
-		create_nginx_virtualhost("iqrf-daemon-webapp_php7-0.localhost")
+		create_nginx_virtualhost("iqrf-gateway-webapp_php7-0.localhost")
 		enable_sudo()
 	elif version == "9" or version == "stretch" or version == "stable":
 		# Install sudo, nginx php7.0, composer and zip
@@ -95,7 +96,7 @@ def install_debian(version, stability="stable", branch=None):
 		install_webapp(stability, branch)
 		fix_php_fpm_config("/etc/php/7.0/fpm/php.ini", "php7.0-fpm")
 		disable_default_nginx_virtualhost()
-		create_nginx_virtualhost("iqrf-daemon-webapp_php7-0.localhost")
+		create_nginx_virtualhost("iqrf-gateway-webapp_php7-0.localhost")
 		chown_dir(WEBAPP_DIRECTORY)
 		enable_sudo()
 	elif version == "10" or version == "buster" or version == "testing":
@@ -105,7 +106,7 @@ def install_debian(version, stability="stable", branch=None):
 		install_webapp(stability, branch)
 		fix_php_fpm_config("/etc/php/7.2/fpm/php.ini", "php7.2-fpm")
 		disable_default_nginx_virtualhost()
-		create_nginx_virtualhost("iqrf-daemon-webapp_php7-2.localhost")
+		create_nginx_virtualhost("iqrf-gateway-webapp_php7-2.localhost")
 		chown_dir(WEBAPP_DIRECTORY)
 		enable_sudo()
 
@@ -122,7 +123,7 @@ def install_ubuntu(version, stability="stable", branch=None):
 		install_webapp(stability, branch)
 		fix_php_fpm_config("/etc/php/7.0/fpm/php.ini", "php7.0-fpm")
 		disable_default_nginx_virtualhost()
-		create_nginx_virtualhost("iqrf-daemon-webapp_php7-0.localhost")
+		create_nginx_virtualhost("iqrf-gateway-webapp_php7-0.localhost")
 		chown_dir(WEBAPP_DIRECTORY)
 		enable_sudo()
 	elif version == "18.04" or version == "bionic":
@@ -132,7 +133,7 @@ def install_ubuntu(version, stability="stable", branch=None):
 		install_webapp(stability, branch)
 		fix_php_fpm_config("/etc/php/7.2/fpm/php.ini", "php7.2-fpm")
 		disable_default_nginx_virtualhost()
-		create_nginx_virtualhost("iqrf-daemon-webapp_php7-2.localhost")
+		create_nginx_virtualhost("iqrf-gateway-webapp_php7-2.localhost")
 		chown_dir(WEBAPP_DIRECTORY)
 		enable_sudo()
 
@@ -143,11 +144,11 @@ def install_webapp(stability, branch):
 	@param branch Git branch
 	"""
 	if stability == "dev":
-		install_php_app(WEBAPP_DIRECTORY, True, "master-v1")
-	elif stability == "stable":
-		install_php_app(WEBAPP_DIRECTORY, True, "stable-v1")
-	else:
+		install_php_app(WEBAPP_DIRECTORY, True, "master")
+	elif stability == "stable" and (branch != "stable" or branch != None):
 		install_php_app(WEBAPP_DIRECTORY, True, branch)
+	else:
+		install_php_app(WEBAPP_DIRECTORY, False, branch)
 
 def install_php_app(directory, use_git=True, branch=None):
 	"""
@@ -172,19 +173,19 @@ def install_php_app(directory, use_git=True, branch=None):
 		send_command("cd " + directory + " ; composer update")
 	else:
 		if os.path.isdir(directory):
-			send_command("cd " + directory + "../ ; rm -rf iqrf-daemon-webapp")
-		send_command("cd " + directory + "../ ; composer create-project iqrfsdk/iqrf-daemon-webapp")
+			send_command("cd " + directory + "../ ; rm -rf iqrf-gateway-webapp")
+		send_command("cd " + directory + "../ ; composer create-project iqrfsdk/iqrf-gateway-webapp")
 	send_command("chmod 777 log/")
 	send_command("chmod 777 temp/")
 
 
-def chmod_dir(directory="/etc/iqrf-daemon"):
+def chmod_daemon_dir():
 	"""
-	Change mode of directory
-	@param directory Directory
+	Change mode of directory with IQRF Gateway Daemon
 	"""
-	send_command("chmod -R 666 " + directory)
-	send_command("chmod 777 " + directory)
+	send_command("chmod -R 666 " + DAEMON_DIRECTORY)
+	send_command("chmod 777 " + DAEMON_DIRECTORY)
+	send_command("chmod 777 " + DAEMON_DIRECTORY + "/jsonschema/")
 
 def chown_dir(directory, new_owner="www-data"):
 	"""
@@ -209,7 +210,7 @@ def create_nginx_virtualhost(virtualhost, nginx_dir="/etc/nginx"):
 	@param virtualhost Path to file with virtualhost configuration
 	@param nginx_dir Directory with configuration files for nginx
 	"""
-	virtualhost_name = "iqrf-daemon-webapp.localhost"
+	virtualhost_name = "iqrf-gateway-webapp.localhost"
 	available_virtualhost = nginx_dir + "/sites-available/" + virtualhost_name
 	enabled_virtualhost = nginx_dir + "/sites-enabled/" + virtualhost_name
 	send_command("cp -u nginx/" + virtualhost + " " + available_virtualhost)

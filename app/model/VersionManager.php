@@ -65,7 +65,7 @@ class VersionManager {
 	 */
 	public function getCurrentWebapp() {
 		$client = new Client();
-		$composerUrl = 'https://raw.githubusercontent.com/iqrfsdk/iqrf-daemon-webapp/stable/composer.json';
+		$composerUrl = 'https://raw.githubusercontent.com/iqrfsdk/iqrf-gateway-webapp/stable/composer.json';
 		$composerJson = $client->request('GET', $composerUrl)->getBody()->getContents();
 		return Json::decode($composerJson, Json::FORCE_ARRAY)['version'];
 	}

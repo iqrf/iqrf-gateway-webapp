@@ -67,7 +67,7 @@ class DiagnosticsManager {
 	/**
 	 * @var string Path to ZIP archive
 	 */
-	private $path = '/tmp/iqrf-daemon-webapp.zip';
+	private $path = '/tmp/iqrf-gateway-webapp.zip';
 
 	/**
 	 * Constructor
@@ -157,7 +157,7 @@ class DiagnosticsManager {
 	 */
 	public function addWebappLog() {
 		$logDir = __DIR__ . '/../../../log/';
-		$this->zipManager->addFolder($logDir, 'logs/iqrf-daemon-webapp');
+		$this->zipManager->addFolder($logDir, 'logs/iqrf-gateway-webapp');
 	}
 
 	/**

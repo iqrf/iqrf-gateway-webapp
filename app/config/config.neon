@@ -35,7 +35,7 @@ translation:
 	fallback: [en]
 
 monolog:
-	name: iqrf-daemon-webapp
+	name: iqrf-gateway-webapp
 	hookToTracy: true
 	registerFallback: true
 	usePriorityProcessor: true

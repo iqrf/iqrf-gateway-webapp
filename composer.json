@@ -1,10 +1,10 @@
 {
-	"name": "iqrfsdk/iqrf-daemon-webapp",
+	"name": "iqrfsdk/iqrf-gateway-webapp",
 	"description": "IQRF Gateway Daemon web application",
-	"version": "1.1.6",
+	"version": "2.0.0-dev",
 	"type": "project",
 	"keywords": ["nette", "iqrf", "iqrf-daemon"],
-	"homepage": "https://github.com/iqrfsdk/iqrf-daemon-webapp",
+	"homepage": "https://github.com/iqrfsdk/iqrf-gateway-webapp",
 	"license": "Apache-2.0",
 	"authors": [
 		{
@@ -53,8 +53,8 @@
 	},
 	"support": {
 		"email": "roman.ondracek@iqrf.com",
-		"issues": "https://github.com/iqrfsdk/iqrf-daemon-webapp/issues",
-		"source": "https://github.com/iqrfsdk/iqrf-daemon-webapp"
+		"issues": "https://github.com/iqrfsdk/iqrf-gateway-webapp/issues",
+		"source": "https://github.com/iqrfsdk/iqrf-gateway-webapp"
 	},
 	"archive": {
 		"exclude": [
