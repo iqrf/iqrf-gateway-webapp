@@ -79,7 +79,7 @@ def install_debian(version, stability="stable", branch=None):
 		send_command("sh -c 'echo \"deb https://packages.sury.org/php/ $(lsb_release -sc) main\" > /etc/apt/sources.list.d/php.list'")
 		send_command("apt-get update")
 		# Install sudo, nginx and php7.0
-		send_command("apt-get install -y sudo php7.0 php7.0-common php7.0-fpm php7.0-curl php7.0-json php7.0-sqlite php7.0-mbstring php7.0-zip nginx-full zip unzip")
+		send_command("apt-get install -y sudo php7.0 php7.0-common php7.0-fpm php7.0-curl php7.0-json php7.0-sqlite3 php7.0-mbstring php7.0-zip nginx-full zip unzip")
 		# Install composer
 		send_command("bash ./install-composer.sh")
 		send_command("mv composer.phar /usr/bin/composer")
@@ -91,7 +91,7 @@ def install_debian(version, stability="stable", branch=None):
 		enable_sudo()
 	elif version == "9" or version == "stretch" or version == "stable":
 		# Install sudo, nginx php7.0, composer and zip
-		send_command("apt-get install -y sudo php7.0 php7.0-common php7.0-fpm php7.0-curl php7.0-json php7.0-sqlite php7.0-mbstring php7.0-zip composer nginx-full zip unzip")
+		send_command("apt-get install -y sudo php7.0 php7.0-common php7.0-fpm php7.0-curl php7.0-json php7.0-sqlite3 php7.0-mbstring php7.0-zip composer nginx-full zip unzip")
 		chmod_daemon_dir()
 		install_webapp(stability, branch)
 		fix_php_fpm_config("/etc/php/7.0/fpm/php.ini", "php7.0-fpm")
@@ -101,7 +101,7 @@ def install_debian(version, stability="stable", branch=None):
 		enable_sudo()
 	elif version == "10" or version == "buster" or version == "testing":
 		# Install sudo, nginx php7.2, composer and zip
-		send_command("apt-get install -y sudo php7.2 php7.2-common php7.2-fpm php7.2-curl php7.2-json php7.2-sqlite php7.2-mbstring php7.2-zip composer nginx-full zip unzip")
+		send_command("apt-get install -y sudo php7.2 php7.2-common php7.2-fpm php7.2-curl php7.2-json php7.2-sqlite3 php7.2-mbstring php7.2-zip composer nginx-full zip unzip")
 		chmod_daemon_dir()
 		install_webapp(stability, branch)
 		fix_php_fpm_config("/etc/php/7.2/fpm/php.ini", "php7.2-fpm")
@@ -118,7 +118,7 @@ def install_ubuntu(version, stability="stable", branch=None):
 	send_command("apt-get update")
 	if version == "16.04" or version == "xenial":
 		# Install sudo, nginx php7.0, composer and zip
-		send_command("apt-get install -y sudo php7.0 php7.0-common php7.0-fpm php7.0-curl php7.0-json php7.0-sqlite php7.0-mbstring php7.0-zip composer nginx-full zip unzip")
+		send_command("apt-get install -y sudo php7.0 php7.0-common php7.0-fpm php7.0-curl php7.0-json php7.0-sqlite3 php7.0-mbstring php7.0-zip composer nginx-full zip unzip")
 		chmod_daemon_dir()
 		install_webapp(stability, branch)
 		fix_php_fpm_config("/etc/php/7.0/fpm/php.ini", "php7.0-fpm")
@@ -128,7 +128,7 @@ def install_ubuntu(version, stability="stable", branch=None):
 		enable_sudo()
 	elif version == "18.04" or version == "bionic":
 		# Install sudo, nginx php7.2, composer and zip
-		send_command("apt-get install -y sudo php7.2 php7.2-common php7.2-fpm php7.2-curl php7.2-json php7.2-sqlite php7.2-mbstring php7.2-zip composer nginx-full zip unzip")
+		send_command("apt-get install -y sudo php7.2 php7.2-common php7.2-fpm php7.2-curl php7.2-json php7.2-sqlite3 php7.2-mbstring php7.2-zip composer nginx-full zip unzip")
 		chmod_daemon_dir()
 		install_webapp(stability, branch)
 		fix_php_fpm_config("/etc/php/7.2/fpm/php.ini", "php7.2-fpm")

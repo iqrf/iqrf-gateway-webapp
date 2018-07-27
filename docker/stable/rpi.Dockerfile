@@ -6,7 +6,7 @@ LABEL maintainer="roman.ondracek@iqrf.com"
 RUN [ "cross-build-start" ]
 
 RUN apt-get update \
- && apt-get install --no-install-recommends -y composer git php7.0 php7.0-common php7.0-curl php7.0-fpm php7.0-json php7.0-mbstring php7.0-sqlite php7.0-zip unzip \
+ && apt-get install --no-install-recommends -y composer git php7.0 php7.0-common php7.0-curl php7.0-fpm php7.0-json php7.0-mbstring php7.0-sqlite3 php7.0-zip unzip \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
