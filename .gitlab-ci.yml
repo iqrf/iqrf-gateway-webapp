@@ -1,4 +1,4 @@
-image: iqrfsdk/iqrf-daemon-webapp:tests
+image: iqrfsdk/iqrf-gateway-webapp:tests
 
 stages:
     - test
@@ -38,6 +38,14 @@ test:php7.2:
         - composer install --no-progress
     script:
         - vendor/bin/tester -p phpdbg7.2 -c ./tests/php.ini -s ./tests
+    <<: *test_template
+
+test:php7.3:
+    before_script:
+        - update-alternatives --set php /usr/bin/php7.3
+        - composer install --no-progress
+    script:
+        - vendor/bin/tester -p phpdbg7.3 -c ./tests/php.ini -s ./tests
     <<: *test_template
 
 coding-style:
