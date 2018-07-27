@@ -21,6 +21,8 @@ declare(strict_types = 1);
 namespace App\Presenters;
 
 use App\Forms\ChangePasswordFormFactory;
+use App\Forms\ChangeUserTypeFormFactory;
+use Nette\Forms\Form;
 
 /**
  * Profile presenter
@@ -31,14 +33,28 @@ class ProfilePresenter extends ProtectedPresenter {
 	 * @var ChangePasswordFormFactory Change password form factory
 	 * @inject
 	 */
-	public $changePassworfFormFactory;
+	public $changePasswordFormFactory;
+
+	/**
+	 * @var ChangeUserTypeFormFactory Change user type form factory
+	 * @inject
+	 */
+	public $changeUserTypeFormFactory;
 
 	/**
 	 * Create change password form
 	 * @return Form Change password form
 	 */
 	protected function createComponentChangePasswordForm() {
-		return $this->changePassworfFormFactory->create($this);
+		return $this->changePasswordFormFactory->create($this);
+	}
+
+	/**
+	 * Create change user type form
+	 * @return Form Change user type form
+	 */
+	protected function createComponentChangeUserTypeForm() {
+		return $this->changeUserTypeFormFactory->create($this);
 	}
 
 }

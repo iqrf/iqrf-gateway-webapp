@@ -55,6 +55,18 @@ changePassword:
 			invalidOldPassword: The old password is mismatched.
 		change: Change password
 
+changeUserType:
+	title: Change user type
+	form:
+		userType: User type
+		userTypes:
+			normal: Normal user
+			power: Power user
+		messages:
+			userType: Please select user type.
+			success: The user type has been changed successfully.
+		change: Change user type
+
 update:
 	available-webapp: 'There is an available update of the webapp to the version %version%.'
 

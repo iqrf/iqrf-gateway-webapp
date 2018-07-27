@@ -98,7 +98,7 @@ class UserManager {
 	 * @param string $userType New User type
 	 */
 	public function changeUserType(int $userId, string $userType) {
-		$this->table->where('id', $userId)->update(['usewrType' => $userType]);
+		$this->table->where('id', $userId)->update(['user_type' => $userType]);
 	}
 
 	/**

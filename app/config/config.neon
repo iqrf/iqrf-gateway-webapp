@@ -55,6 +55,7 @@ session:
 
 services:
 	- App\Forms\ChangePasswordFormFactory
+	- App\Forms\ChangeUserTypeFormFactory
 	- App\Forms\FormFactory
 	- App\Forms\SignInFormFactory
 	authenticator: App\Model\AppAuthenticator
