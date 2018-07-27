@@ -63,7 +63,7 @@ class LogManager {
 			$logFiles[$fileName] = FileSystem::read($file);
 		}
 		krsort($logFiles);
-		return $logFiles;
+		return reset($logFiles);
 	}
 
 	/**
