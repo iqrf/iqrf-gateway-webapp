@@ -74,9 +74,10 @@ class UserManager {
 		if (!password_verify($oldPassword, $row->password)) {
 			throw new InvalidPassword();
 		}
-		$this->table->where('id', $userId)->update(['password' => $newPassword]);
+		$data = ['password' => password_hash($newPassword, PASSWORD_DEFAULT)];
+		$this->table->where('id', $userId)->update($data);
 	}
-	
+
 	/**
 	 * Change username
 	 * @param int $userId User ID
@@ -99,7 +100,7 @@ class UserManager {
 	public function changeUserType(int $userId, string $userType) {
 		$this->table->where('id', $userId)->update(['usewrType' => $userType]);
 	}
-	
+
 	/**
 	 * Delete User
 	 * @param int $userId User ID

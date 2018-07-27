@@ -27,7 +27,7 @@ application:
 		*: App\*Module\Presenters\*Presenter
 
 database:
-    dsn: 'sqlite:%appDir%/db/database.db'
+	dsn: 'sqlite:%appDir%/db/database.db'
 
 extensions:
 	extendedFormMacros: Instante\ExtendedFormMacros\DI\ExtendedFormMacrosExtension
@@ -54,6 +54,7 @@ session:
 	expiration: 14 days
 
 services:
+	- App\Forms\ChangePasswordFormFactory
 	- App\Forms\FormFactory
 	- App\Forms\SignInFormFactory
 	authenticator: App\Model\AppAuthenticator
@@ -64,6 +65,7 @@ services:
 	jsonSchemaManager:
 		factory: App\Model\JsonSchemaManager(%daemon.schemaDir%)
 		autowired: self
+	- App\Model\UserManager
 	- App\Model\VersionManager
 	router: App\Router\RouterFactory::createRouter
 	formFactory: Instante\Bootstrap3Renderer\BootstrapFormFactory
