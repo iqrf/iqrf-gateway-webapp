@@ -94,6 +94,16 @@
 								<li><a n:href=':Cloud:InteliGlue:default'>{_cloud.intelimentsInteliGlue.title}</a></li>
 							</ul>
 						</li>
+						<li n:if='$user->loggedIn && $iqrfGw' class='dropdown'>
+							<a href='/node-red/' class="dropdown-toggle" data-toggle="dropdown" role="button">
+								{_core.node-red.title} <span class="caret"></span>
+							</a>
+							<ul class="dropdown-menu">
+								<li><a href='/node-red/'>{_core.node-red.title}</a></li>
+								<li><a href='/node-red/ui/'>{_core.node-red-dashboard.title}</a></li>
+							</ul>
+						</li>
+						<li n:if='$user->loggedIn && $supervisord'><a href='/supervisor/'>{_core.supervisor.title}</a></li>
 					</ul>
 					<ul class='nav navbar-nav navbar-right'>
 						<li>

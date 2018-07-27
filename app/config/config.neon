@@ -4,6 +4,7 @@ parameters:
 	sudo: true
 	# enable IQRF GW mode
 	iqrf-gw: false
+	supervisord: false
 	# path to IQRF IDE macros
 	macroPath: '../iqrf/DPA-macros_180517.iqrfmcr'
 	# Daemon configuration

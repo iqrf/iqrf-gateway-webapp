@@ -25,11 +25,4 @@ namespace App\Presenters;
  */
 class HomepagePresenter extends ProtectedPresenter {
 
-	/**
-	 * Render default page
-	 */
-	public function renderDefault() {
-		$this->template->iqrfGw = $this->context->parameters['iqrf-gw'];
-	}
-
 }

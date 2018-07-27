@@ -57,6 +57,8 @@ abstract class BasePresenter extends Presenter {
 			$phrase = new Phrase('core.update.available-webapp', null, $version);
 			$this->flashMessage($phrase, 'danger');
 		}
+		$this->template->iqrfGw = $this->context->parameters['iqrf-gw'];
+		$this->template->supervisord = $this->context->parameters['supervisord'];
 	}
 
 	/**
