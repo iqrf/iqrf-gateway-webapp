@@ -12,17 +12,18 @@ languages:
 
 sign:
 	in: Sign in
+	inForm:
+		title: Sign in
+		username: Username
+		password: Password
+		remember: Keep me signed in
+		send: Sign in
+		messages:
+			username: Please enter your username.
+			password: Please enter your password.
+			incorrectUsernameOrPassword: The username or password you entered is incorrect.
+			success: You have been signed in successfully.
 	out: Sign out
-
-signIn:
-	title: Sign in
-	username: Username
-	password: Password
-	remember: Keep me signed in
-	send: Sign in
-	messages:
-		username: Please enter your username.
-		password: Please enter your password.
 
 signOut:
 	title: You have been signed out
@@ -72,4 +73,3 @@ update:
 
 errors:
 	form-timeout: 'Timeout expired, resubmit the form.'
-	incorrect-username-password: The username or password you entered is incorrect.

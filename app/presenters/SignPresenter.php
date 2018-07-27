@@ -48,9 +48,7 @@ class SignPresenter extends BasePresenter {
 	 * @return Form Sign in form
 	 */
 	protected function createComponentSignInForm() {
-		return $this->signInFactory->create(function () {
-					$this->redirect('Homepage:');
-				});
+		return $this->signInFactory->create($this);
 	}
 
 	/**

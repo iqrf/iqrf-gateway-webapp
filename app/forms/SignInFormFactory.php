@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\Forms;
 
 use App\Forms\FormFactory;
+use App\Presenters\SignPresenter;
 use Nette;
 use Nette\Forms\Form;
 use Nette\Security\AuthenticationException;
@@ -39,14 +40,14 @@ class SignInFormFactory {
 	private $factory;
 
 	/**
-	 * @var User
+	 * @var User User object
 	 */
 	private $user;
 
 	/**
 	 * Constructor
 	 * @param FormFactory $factory Generic form factory
-	 * @param User $user
+	 * @param User $user User object
 	 */
 	public function __construct(FormFactory $factory, User $user) {
 		$this->factory = $factory;
@@ -55,25 +56,25 @@ class SignInFormFactory {
 
 	/**
 	 * Create sign in form
-	 * @param callable $onSuccess
+	 * @param SignPresenter $presenter Sign presenter
 	 * @return Form Sign in form
 	 */
-	public function create(callable $onSuccess): Form {
+	public function create(SignPresenter $presenter): Form {
 		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('core.signIn'));
+		$form->setTranslator($form->getTranslator()->domain('core.sign.inForm'));
 		$form->addText('username', 'username')->setRequired('messages.username');
 		$form->addPassword('password', 'password')->setRequired('messages.password');
 		$form->addCheckbox('remember', 'remember');
 		$form->addSubmit('send', 'send');
-		$form->onSuccess[] = function (Form $form, $values) use ($onSuccess) {
+		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
 			try {
 				$this->user->setExpiration($values->remember ? '14 days' : '20 minutes');
 				$this->user->login($values->username, $values->password);
+				$presenter->flashMessage('core.sign.inForm.messages.success', 'success');
+				$presenter->redirect('Homepage:default');
 			} catch (AuthenticationException $e) {
-				$form->addError('core.errors.incorrect-username-password');
-				return;
+				$presenter->flashMessage('core.sign.inForm.messages.incorrectUsernameOrPassword', 'danger');
 			}
-			$onSuccess();
 		};
 		return $form;
 	}
