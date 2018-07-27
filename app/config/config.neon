@@ -26,6 +26,9 @@ application:
 	mapping:
 		*: App\*Module\Presenters\*Presenter
 
+database:
+    dsn: 'sqlite:%appDir%/db/database.db'
+
 extensions:
 	extendedFormMacros: Instante\ExtendedFormMacros\DI\ExtendedFormMacrosExtension
 	monolog: Kdyby\Monolog\DI\MonologExtension
@@ -53,6 +56,7 @@ session:
 services:
 	- App\Forms\FormFactory
 	- App\Forms\SignInFormFactory
+	authenticator: App\Model\AppAuthenticator
 	- App\Model\CertificateManager
 	- App\Model\CommandManager(%sudo%)
 	- App\Model\FileManager(%daemon.configDir%)
@@ -80,10 +84,6 @@ http:
 			# for browsers that support CSP2
 			self, 'unsafe-inline'
 		]
-
-security:
-	users:
-		admin: iqrf  # user 'admin', password 'iqrf'
 
 tracy:
 	email: 'roman.ondracek@iqrf.com'

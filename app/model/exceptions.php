@@ -28,8 +28,22 @@ class InvalidJson extends \InvalidArgumentException {
 }
 
 /**
+ * The exception that indicates an invalid password
+ */
+class InvalidPassword extends \InvalidArgumentException {
+
+}
+
+/**
  * The exception that indicates non-existing JSON schema
  */
 class NonExistingJsonSchema extends \InvalidArgumentException {
+
+}
+
+/**
+ * The exception that indicates that the user with that username already exists.
+ */
+class UsernameAlreadyExists extends \InvalidArgumentException {
 
 }
