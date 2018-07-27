@@ -58,6 +58,18 @@ iqrfDpa:
 		CommunicationModes:
 			LP: LP
 			STD: STD
+		BondedNodes: Bonded nodes
+		DiscoveredNodes: Discovered nodes
+		ResponseTime: Response time
+		ResponseTimes:
+			k40Ms: k40Ms
+			k360Ms: k360Ms
+			k680Ms: k680Ms
+			k1320Ms: k1320Ms
+			k2600Ms: k2600Ms
+			k5160Ms: k5160Ms
+			k10280Ms: k10280Ms
+			k20620Ms: k20620Ms
 		messages:
 			instance: Please enter name of IQRF DPA instance.
 			DpaHandlerTimeout: Please enter default DPA Handler timeout.
