@@ -55,9 +55,10 @@ session:
 
 services:
 	- App\Forms\ChangePasswordFormFactory
-	- App\Forms\ChangeUserTypeFormFactory
 	- App\Forms\FormFactory
 	- App\Forms\SignInFormFactory
+	- App\Forms\UserAddFormFactory
+	- App\Forms\UserEditFormFactory
 	authenticator: App\Model\AppAuthenticator
 	- App\Model\CertificateManager
 	- App\Model\CommandManager(%sudo%)

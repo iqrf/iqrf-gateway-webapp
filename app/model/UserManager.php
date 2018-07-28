@@ -25,6 +25,7 @@ use App\Model\UsernameAlreadyExists;
 use Nette;
 use Nette\Database\Context;
 use Nette\Database\Table\Selection;
+use Nette\Database\Table\ActiveRow;
 
 /**
  * Tool for managing users.
@@ -53,15 +54,6 @@ class UserManager {
 	}
 
 	/**
-	 * Change user's language
-	 * @param int $userId User ID
-	 * @param string $language New user's language
-	 */
-	public function changeLanguage(int $userId, string $language) {
-		$this->table->where('id', $userId)->update(['language' => $language]);
-	}
-
-	/**
 	 * Change user's password
 	 * @param int $userId User ID
 	 * @param string $oldPassword Old password
@@ -79,34 +71,41 @@ class UserManager {
 	}
 
 	/**
-	 * Change username
-	 * @param int $userId User ID
-	 * @param string $newUsername New username
-	 * @throws UsernameAlreadyExists
-	 */
-	public function changeUsername(int $userId, string $newUsername) {
-		$row = $this->table->where('username', $newUsername)->fetch();
-		if ($row) {
-			throw new UsernameAlreadyExists();
-		}
-		$this->table->where('id', $userId)->update(['username' => $newUsername]);
-	}
-
-	/**
-	 * Change User type
-	 * @param int $userId User ID
-	 * @param string $userType New User type
-	 */
-	public function changeUserType(int $userId, string $userType) {
-		$this->table->where('id', $userId)->update(['user_type' => $userType]);
-	}
-
-	/**
 	 * Delete User
 	 * @param int $userId User ID
 	 */
 	public function delete(int $userId) {
 		$this->table->where('id', $userId)->delete();
+	}
+
+	/**
+	 * Edit user
+	 * @param int $userId User ID
+	 * @param string $username New username
+	 * @param string $userType New user type
+	 * @param string $language New user's language
+	 * @throws UsernameAlreadyExists
+	 */
+	public function edit(int $userId, string $username, string $userType, string $language) {
+		$row = $this->table->where('username', $username)->fetch();
+		if ($row && $row['id'] !== $userId) {
+			throw new UsernameAlreadyExists();
+		}
+		$data = [
+			'username' => $username,
+			'user_type' => $userType,
+			'language' => $language,
+		];
+		$this->table->where('id', $userId)->update($data);
+	}
+
+	/**
+	 * Get infromation about user
+	 * @param int $userId User ID
+	 * @return ActiveRow|false Information about user or false
+	 */
+	public function getInfo(int $userId) {
+		return $this->table->get($userId);
 	}
 
 	/**

@@ -1,6 +1,4 @@
-<?php
-
-/**
+{**
  * Copyright 2017 MICRORISC s.r.o.
  * Copyright 2017-2018 IQRF Tech s.r.o.
  *
@@ -15,31 +13,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-declare(strict_types = 1);
+*}
 
-namespace App\Presenters;
-
-use App\Forms\ChangePasswordFormFactory;
-use Nette\Forms\Form;
-
-/**
- * Profile presenter
- */
-class ProfilePresenter extends ProtectedPresenter {
-
-	/**
-	 * @var ChangePasswordFormFactory Change password form factory
-	 * @inject
-	 */
-	public $changePasswordFormFactory;
-
-	/**
-	 * Create change password form
-	 * @return Form Change password form
-	 */
-	protected function createComponentChangePasswordForm() {
-		return $this->changePasswordFormFactory->create($this);
-	}
-
-}
+{block content}
+<h1 n:block=title>{_core.user.edit.title}</h1>
+<div class='panel panel-default'>
+	<div class='panel-body'>
+		{control userEditForm}
+	</div>
+</div>

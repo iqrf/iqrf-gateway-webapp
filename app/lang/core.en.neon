@@ -56,17 +56,31 @@ changePassword:
 			invalidOldPassword: The old password is mismatched.
 		change: Change password
 
-changeUserType:
-	title: Change user type
+user:
+	title: User manager
+	description: Manage users of this webapp.
+	add:
+		title: Add a new user
+	edit:
+		title: Edit an existing user
 	form:
+		id: User ID
+		username: User name
+		password: Password
 		userType: User type
 		userTypes:
 			normal: Normal user
 			power: Power user
+		language: Language
+		languages:
+			en: English
+		add: Add
+		edit: Edit
 		messages:
-			userType: Please select user type.
-			success: The user type has been changed successfully.
-		change: Change user type
+			successAdd: User %username% has been added successfully.
+			successDelete: User %username% has been deleted succesfully.
+			successEdit: Used %username% has been edited succesfully.
+			usernameAlreadyExists: Username is already used.
 
 update:
 	available-webapp: 'There is an available update of the webapp to the version %version%.'
