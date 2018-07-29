@@ -68,17 +68,20 @@ class IqrfAppManager {
 	private $wsServer;
 
 	/**
+	 * @var array DPA parsers
+	 */
+	private $parsers = [
+		CoordinatorParser::class,
+		EnumerationParser::class,
+		OsParser::class,
+	];
+
+	/**
 	 * Constructor
 	 * @param string $wsServer URL to IQRF Gateway Daemon's WebSocket server
-	 * @param CoordinatorParser $coordinatorParser Parser for DPA Coordinator responses
-	 * @param OsParser $osParser Parser for DPA OS responses
-	 * @param EnumerationParser $enumParser Parser for DPA Enumeration responses
 	 * @param MessageIdManager $msgIdManager Message ID manager
 	 */
-	public function __construct(string $wsServer, CoordinatorParser $coordinatorParser, OsParser $osParser, EnumerationParser $enumParser, MessageIdManager $msgIdManager) {
-		$this->coordinatorParser = $coordinatorParser;
-		$this->enumParser = $enumParser;
-		$this->osParser = $osParser;
+	public function __construct(string $wsServer, MessageIdManager $msgIdManager) {
 		$this->msgIdManager = $msgIdManager;
 		$this->wsServer = $wsServer;
 	}
@@ -253,16 +256,11 @@ class IqrfAppManager {
 		if (empty($packet)) {
 			throw new EmptyResponseException();
 		}
-		$pnum = explode('.', $packet)[2];
-		switch ($pnum) {
-			case '00':
-				return $this->coordinatorParser->parse($packet);
-			case '02':
-				return $this->osParser->parse($packet);
-			case 'ff':
-				return $this->enumParser->parse($packet);
-			default:
-				return null;
+		foreach ($this->parsers as $parser) {
+			$parsedData = (new $parser)->parse($packet);
+			if ($parsedData !== null) {
+				return $parsedData;
+			}
 		}
 	}
 

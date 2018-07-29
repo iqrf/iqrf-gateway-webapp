@@ -10,13 +10,10 @@ declare(strict_types = 1);
 
 namespace Test\IqrfAppModule\Model;
 
-use App\IqrfAppModule\Model\CoordinatorParser;
 use App\IqrfAppModule\Model\EmptyResponseException;
-use App\IqrfAppModule\Model\EnumerationParser;
 use App\IqrfAppModule\Model\InvalidOperationModeException;
 use App\IqrfAppModule\Model\IqrfAppManager;
 use App\IqrfAppModule\Model\MessageIdManager;
-use App\IqrfAppModule\Model\OsParser;
 use App\Model\FileManager;
 use App\Model\JsonFileManager;
 use Nette\DI\Container;
@@ -49,24 +46,9 @@ class IqrfAppManagerTest extends TestCase {
 	private $jsonFileManager;
 
 	/**
-	 * @var CoordinatorParser DPA Coordinator response parser
-	 */
-	private $coordinatorParser;
-
-	/**
-	 * @var EnumerationParser DPA Enumeration response parser
-	 */
-	private $enumParser;
-
-	/**
 	 * @var MessageIdManager Message ID manager
 	 */
 	private $msgIdManager;
-
-	/**
-	 * @var OsParser DPA OS response parser
-	 */
-	private $osParser;
 
 	/**
 	 * @var string URL to IQRF Gateway Daemon's WebSocket server
@@ -87,12 +69,9 @@ class IqrfAppManagerTest extends TestCase {
 	public function setUp() {
 		$this->fileManager = new FileManager(__DIR__ . '/data/');
 		$this->jsonFileManager = new JsonFileManager(__DIR__ . '/data/');
-		$this->coordinatorParser = new CoordinatorParser();
-		$this->enumParser = new EnumerationParser();
 		$this->msgIdManager = \Mockery::mock(MessageIdManager::class);
 		$this->msgIdManager->shouldReceive('generate')->andReturn('1');
-		$this->osParser = new OsParser();
-		$this->iqrfAppManager = new IqrfAppManager($this->wsServer, $this->coordinatorParser, $this->osParser, $this->enumParser, $this->msgIdManager);
+		$this->iqrfAppManager = new IqrfAppManager($this->wsServer, $this->msgIdManager);
 	}
 
 	/**

@@ -25,22 +25,29 @@ use Nette;
 /**
  * Parser for DPA Coordinator responses.
  */
-class CoordinatorParser {
+class CoordinatorParser implements IParser {
 
 	use Nette\SmartObject;
 
 	/**
 	 * Parse DPA Coordinator response
 	 * @param string $packet DPA packet
-	 * @return array Parsed data
+	 * @return array|null Parsed data
 	 */
 	public function parse(string $packet) {
-		$pcmd = explode('.', $packet)[3];
+		$data = explode('.', $packet);
+		$pnum = $data[2];
+		if ($pnum !== '00') {
+			return null;
+		}
+		$pcmd = $data[3];
 		switch ($pcmd) {
 			case '81':
 				return $this->parseGetNodes($packet);
 			case '82':
 				return $this->parseGetNodes($packet);
+			default:
+				return null;
 		}
 	}
 

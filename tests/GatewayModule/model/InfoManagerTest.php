@@ -34,29 +34,14 @@ class InfoManagerTest extends TestCase {
 	private $container;
 
 	/**
-	 * @var CoordinatorParser DPA Coordinator response parser
-	 */
-	private $coordinatorParser;
-
-	/**
 	 * @var IqrfAppManager IQRF App manager
 	 */
 	private $iqrfAppManager;
 
 	/**
-	 * @var EnumerationParser DPA Enumeration response parser
-	 */
-	private $enumParser;
-
-	/**
 	 * @var MessageIdManager Message ID manager
 	 */
 	private $msgIdManager;
-
-	/**
-	 * @var OsParser DPA OS response parser
-	 */
-	private $osParser;
 
 	/**
 	 * @var VersionManager Version manager
@@ -96,12 +81,9 @@ class InfoManagerTest extends TestCase {
 	 * Set up test environment
 	 */
 	public function setUp() {
-		$this->coordinatorParser = new CoordinatorParser();
-		$this->enumParser = new EnumerationParser();
 		$this->msgIdManager = new MessageIdManager();
-		$this->osParser = new OsParser();
 		$this->versionManager = new VersionManager(new CommandManager(false));
-		$this->iqrfAppManager = new IqrfAppManager($this->wsServer, $this->coordinatorParser, $this->osParser, $this->enumParser, $this->msgIdManager);
+		$this->iqrfAppManager = new IqrfAppManager($this->wsServer, $this->msgIdManager);
 	}
 
 	/**

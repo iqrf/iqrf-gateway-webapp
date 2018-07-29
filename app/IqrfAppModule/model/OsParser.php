@@ -25,23 +25,29 @@ use Nette;
 /**
  * Parser for DPA OS responses
  */
-class OsParser {
+class OsParser implements IParser {
 
 	use Nette\SmartObject;
 
 	/**
 	 * Parse DPA OS response
 	 * @param string $packet DPA packet
-	 * @return array Parsed data
+	 * @return array|null Parsed data
 	 */
 	public function parse(string $packet) {
 		$data = explode('.', $packet);
+		$pnum = $data[2];
+		if ($pnum !== '02') {
+			return null;
+		}
 		$pcmd = $data[3];
 		switch ($pcmd) {
 			case '80':
 				return $this->parseReadInfo($packet);
 			case '82':
 				return $this->parseHwpConfiguration($packet);
+			default:
+				return null;
 		}
 	}
 

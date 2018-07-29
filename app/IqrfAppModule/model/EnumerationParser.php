@@ -25,21 +25,27 @@ use Nette;
 /**
  * Parser for DPA Enumeration responses.
  */
-class EnumerationParser {
+class EnumerationParser implements IParser {
 
 	use Nette\SmartObject;
 
 	/**
 	 * Parse DPA Coordinator response
 	 * @param string $packet DPA packet
-	 * @return array Parsed data
+	 * @return array|null Parsed data
 	 */
 	public function parse(string $packet) {
-		$packet = strtolower($packet);
-		$pcmd = explode('.', $packet)[3];
+		$data = explode('.', $packet);
+		$pnum = $data[2];
+		if ($pnum !== 'ff') {
+			return null;
+		}
+		$pcmd = $data[3];
 		switch ($pcmd) {
 			case 'bf':
 				return $this->parsePeripheralEnumeration($packet);
+			default:
+				return null;
 		}
 	}
 
