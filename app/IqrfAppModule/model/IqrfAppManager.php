@@ -43,24 +43,9 @@ class IqrfAppManager {
 	use Nette\SmartObject;
 
 	/**
-	 * @var CoordinatorParser Parser for DPA Coordinator responses
-	 */
-	private $coordinatorParser;
-
-	/**
-	 * @var EnumerationParser Parser for DPA Enumeration responses
-	 */
-	private $enumParser;
-
-	/**
 	 * @var MessageIdManager Message ID manager
 	 */
 	private $msgIdManager;
-
-	/**
-	 * @var OsParser Parser for DPA OS responses
-	 */
-	private $osParser;
 
 	/**
 	 * @var string URL to IQRF Gateway Daemon's WebSocket server
@@ -247,8 +232,6 @@ class IqrfAppManager {
 			$request = Json::decode($json['request'], Json::FORCE_ARRAY);
 			$requestPacket = Strings::lower($request['data']['req']['rData']);
 			$requestNadr = explode('.', $requestPacket)[0];
-			Debugger::barDump($requestPacket);
-			Debugger::barDump($requestNadr);
 			if (empty($packet) && $requestNadr === 'ff') {
 				return null;
 			}
