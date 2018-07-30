@@ -147,12 +147,23 @@ class GenericManager {
 		];
 		$messagings = [];
 		foreach ($components as $name => $component) {
-			$this->setComponent($component);
-			foreach ($this->getInstances() as $instance) {
-				$messagings['config.' . $name . '.title'][] = $instance['instance'];
-			}
+			$messagings['config.' . $name . '.title'] = $this->getComponentInstances($component);
 		}
 		return $messagings;
+	}
+
+	/**
+	 * Get available instances of component
+	 * @param string $component Component
+	 * @return array Available instances of component
+	 */
+	public function getComponentInstances(string $component): array {
+		$instances = [];
+		$this->setComponent($component);
+		foreach ($this->getInstances() as $instance) {
+			$instances[] = $instance['instance'];
+		}
+		return $instances;
 	}
 
 }

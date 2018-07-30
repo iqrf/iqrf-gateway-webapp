@@ -20,9 +20,11 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Presenters;
 
+use App\ConfigModule\Forms\ConfigWebsocketFormFactory;
 use App\ConfigModule\Forms\ConfigWebsocketMessagingFormFactory;
 use App\ConfigModule\Forms\ConfigWebsocketServiceFormFactory;
 use App\ConfigModule\Model\GenericManager;
+use App\ConfigModule\Model\WebsocketManager;
 use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
@@ -32,6 +34,17 @@ class WebsocketPresenter extends ProtectedPresenter {
 	 * @var GenericManager Generic manager
 	 */
 	private $configManager;
+
+	/**
+	 * @var WebsocketManager Websocket manager
+	 */
+	private $websocketManager;
+
+	/**
+	 * @var ConfigWebsocketFormFactory Websocket instance configuration form factory
+	 * @inject
+	 */
+	public $basicFormFactory;
 
 	/**
 	 * @var ConfigWebsocketMessagingFormFactory Websocket messaging configuration form factory
@@ -47,10 +60,12 @@ class WebsocketPresenter extends ProtectedPresenter {
 
 	/**
 	 * Constructor
-	 * @param GenericManager $configManager Interface instance manager
+	 * @param GenericManager $configManager Generic configuration manager
+	 * @param WebsocketManager $websocketManager Websocket configuration manager
 	 */
-	public function __construct(GenericManager $configManager) {
+	public function __construct(GenericManager $configManager, WebsocketManager $websocketManager) {
 		$this->configManager = $configManager;
+		$this->websocketManager = $websocketManager;
 		parent::__construct();
 	}
 
@@ -62,6 +77,15 @@ class WebsocketPresenter extends ProtectedPresenter {
 		$this->template->messagings = $this->configManager->getInstances();
 		$this->configManager->setComponent('shape::WebsocketService');
 		$this->template->services = $this->configManager->getInstances();
+		$this->template->interfaces = $this->websocketManager->getInstances();
+	}
+
+	/**
+	 * Edit Websocket interface
+	 * @param int $id ID of websocket interface
+	 */
+	public function renderEdit(int $id) {
+		$this->template->id = $id;
 	}
 
 	/**
@@ -80,6 +104,16 @@ class WebsocketPresenter extends ProtectedPresenter {
 	public function renderEditService(int $id) {
 		$this->configManager->setComponent('shape::WebsocketService');
 		$this->template->id = $id;
+	}
+
+	/**
+	 * Delete Websocket interface
+	 * @param int $id ID of websocket interface
+	 */
+	public function actionDelete(int $id) {
+		$this->websocketManager->delete($id);
+		$this->redirect('Websocket:default');
+		$this->setView('default');
 	}
 
 	/**
@@ -106,6 +140,14 @@ class WebsocketPresenter extends ProtectedPresenter {
 		$this->configManager->delete();
 		$this->redirect('Websocket:default');
 		$this->setView('default');
+	}
+
+	/**
+	 * Create websocket interface form
+	 * @return Form Websocket interface form
+	 */
+	protected function createComponentConfigWebsocketForm(): Form {
+		return $this->basicFormFactory->create($this);
 	}
 
 	/**

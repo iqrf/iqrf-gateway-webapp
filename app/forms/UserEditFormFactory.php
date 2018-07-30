@@ -78,6 +78,9 @@ class UserEditFormFactory {
 		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $id) {
 			try {
 				$this->userManager->edit($id, $values['username'], $values['user_type'], $values['language']);
+				if ($presenter->user->id === $id) {
+					$presenter->user->logout();
+				}
 				$message = $form->getTranslator()->translate('messages.successEdit', ['username' => $values['username']]);
 				$presenter->flashMessage($message, 'success');
 				$presenter->redirect('User:default');

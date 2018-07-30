@@ -279,6 +279,9 @@ websocket:
 			title: Edit websocket messaging
 			instance: Name of instance
 			acceptAsyncMsg: Accept Async messages
+			requiredInterface:
+				name: Required interface name
+				instance: Required websocket service
 			messages:
 				instance: Please enter name of websocket messaging.
 			Save: Save

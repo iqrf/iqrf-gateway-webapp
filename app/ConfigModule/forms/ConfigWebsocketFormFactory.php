@@ -20,19 +20,19 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Forms;
 
-use App\ConfigModule\Model\GenericManager;
+use App\ConfigModule\Model\WebsocketManager;
 use App\ConfigModule\Presenters\WebsocketPresenter;
 use App\Forms\FormFactory;
 use Nette;
 use Nette\Forms\Form;
 use Nette\IOException;
 
-class ConfigWebsocketServiceFormFactory {
+class ConfigWebsocketFormFactory {
 
 	use Nette\SmartObject;
 
 	/**
-	 * @var GenericManager Generic configuration manager
+	 * @var WebsocketManager Websocket configuration manager
 	 */
 	private $manager;
 
@@ -43,45 +43,39 @@ class ConfigWebsocketServiceFormFactory {
 
 	/**
 	 * Constructor
-	 * @param GenericManager $manager Generic configuration manager
+	 * @param WebsocketManager $manager Websocket configuration manager
 	 * @param FormFactory $factory Generic form factory
 	 */
-	public function __construct(GenericManager $manager, FormFactory $factory) {
+	public function __construct(WebsocketManager $manager, FormFactory $factory) {
 		$this->manager = $manager;
 		$this->factory = $factory;
 	}
 
 	/**
-	 * Create websocket service configuration form
+	 * Create websocket configuration form
 	 * @param WebsocketPresenter $presenter Websocket presenter
-	 * @return Form Websocket service configuration form
+	 * @return Form Websocket configuration form
 	 */
 	public function create(WebsocketPresenter $presenter): Form {
 		$id = intval($presenter->getParameter('id'));
 		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('config.websocket.service.form'));
-		$this->manager->setComponent('shape::WebsocketService');
-		$instances = $this->manager->getInstanceFiles();
-		$instanceExist = array_key_exists($id, $instances);
-		$form->addText('instance', 'instance')->setRequired('messages.instance');
-		$form->addInteger('WebsocketPort', 'WebsocketPort')->setRequired('messages.WebsocketPort');
+		$translator = $form->getTranslator();
+		$form->setTranslator($translator->domain('config.websocket.form'));
+		$form->addInteger('port', 'port')->setRequired('messages.port');
+		$form->addCheckbox('acceptAsyncMsg', 'acceptAsyncMsg');
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');
-		if ($instanceExist) {
-			$this->manager->setFileName($instances[$id]);
-			$form->setDefaults($this->manager->load());
+		if (array_key_exists($id, $this->manager->getInstanceFiles('iqrf::WebsocketMessaging'))) {
+			$form->setDefaults($this->manager->load($id));
 		}
-		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $instanceExist) {
-			if (!$instanceExist) {
-				$this->manager->setFileName('shape__' . $values['instance']);
-			}
+		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
 			try {
 				$this->manager->save($values);
 				$presenter->flashMessage('config.messages.success', 'success');
 			} catch (IOException $e) {
 				$presenter->flashMessage('config.messages.writeFailure', 'danger');
 			} finally {
-				$presenter->redirect('Homepage:default');
+				$presenter->redirect('Websocket:default');
 			}
 		};
 		return $form;
