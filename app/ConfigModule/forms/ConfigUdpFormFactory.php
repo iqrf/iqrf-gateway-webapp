@@ -57,24 +57,36 @@ class ConfigUdpFormFactory {
 	 * @return Form UDP configuration form
 	 */
 	public function create(UdpPresenter $presenter): Form {
+		$id = intval($presenter->getParameter('id'));
+		$this->manager->setComponent('iqrf::UdpMessaging');
+		$instances = $this->manager->getInstanceFiles();
+		$instanceExist = array_key_exists($id, $instances);
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('config.udp.form'));
-		$this->manager->setComponent('iqrf::UdpMessaging');
-		$this->manager->setFileName($this->manager->getInstanceFiles()[0]);
 		$form->addText('instance', 'instance')->setRequired('messages.instance');
 		$form->addInteger('RemotePort', 'RemotePort')->setRequired('messages.RemotePort');
 		$form->addInteger('LocalPort', 'LocalPort')->setRequired('messages.LocalPort');
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');
-		$form->setDefaults($this->manager->load());
-		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
+		if ($instanceExist) {
+			$this->manager->setFileName($instances[$id]);
+			$form->setDefaults($this->manager->load());
+		}
+		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $instanceExist) {
+			if (!$instanceExist && count($this->manager->getInstanceFiles()) >= 1) {
+				$presenter->flashMessage('config.messages.multipleInstancesFailure', 'danger');
+				$presenter->redirect('Udp:default');
+			}
+			if (!$instanceExist) {
+				$this->manager->setFileName('iqrf__' . $values['instance']);
+			}
 			try {
-			$this->manager->save($values);
-			$presenter->flashMessage('config.messages.success', 'success');
+				$this->manager->save($values);
+				$presenter->flashMessage('config.messages.success', 'success');
 			} catch (IOException $e) {
 				$presenter->flashMessage('config.messages.writeFailure', 'danger');
 			} finally {
-				$presenter->redirect('Homepage:default');
+				$presenter->redirect('Udp:default');
 			}
 		};
 		return $form;

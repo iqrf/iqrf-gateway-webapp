@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\ConfigUdpFormFactory;
+use App\ConfigModule\Model\GenericManager;
 use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
@@ -31,6 +32,48 @@ class UdpPresenter extends ProtectedPresenter {
 	 * @inject
 	 */
 	public $formFactory;
+
+	/**
+	 * @var GenericManager Generic manager
+	 */
+	private $configManager;
+
+	/**
+	 * Constructor
+	 * @param GenericManager $configManager Generic manager
+	 */
+	public function __construct(GenericManager $configManager) {
+		$this->configManager = $configManager;
+		$this->configManager->setComponent('iqrf::UdpMessaging');
+		parent::__construct();
+	}
+
+	/**
+	 * Render list of UDP interfaces
+	 */
+	public function renderDefault() {
+		$this->template->instances = $this->configManager->getInstances();
+	}
+
+	/**
+	 * Edit UDP interface
+	 * @param int $id ID of UDP interface
+	 */
+	public function renderEdit(int $id) {
+		$this->template->id = $id;
+	}
+
+	/**
+	 * Delete UDP interface
+	 * @param int $id ID of UDP interface
+	 */
+	public function actionDelete(int $id) {
+		$fileName = $this->configManager->getInstanceFiles()[$id];
+		$this->configManager->setFileName($fileName);
+		$this->configManager->delete();
+		$this->redirect('Udp:default');
+		$this->setView('default');
+	}
 
 	/**
 	 * Create UDP interface form

@@ -6,6 +6,7 @@ actions:
 	Remove: Remove
 
 messages:
+	multipleInstancesFailure: This component has to have one instance maximally.
 	success: The configuration has been saved successfully.
 	writeFailure: The configuration has not been saved because the webapp is unable to write the configuration file.
 
@@ -259,6 +260,7 @@ udp:
 	title: UDP interface
 	description: IQRF UDP interface settings.
 	form:
+		title: Edit UDP interface
 		instance: Name of instance
 		RemotePort: Remote port
 		LocalPort: Local port
