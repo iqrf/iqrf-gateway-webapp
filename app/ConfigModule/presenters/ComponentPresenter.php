@@ -67,7 +67,9 @@ class ComponentPresenter extends ProtectedPresenter {
 	 * @param int $id ID of MQTT interface
 	 */
 	public function actionDelete(int $id) {
-		$this->configManager->delete($id);
+		if ($this->user->isInRole('power')) {
+			$this->configManager->delete($id);
+		}
 		$this->redirect('Component:default');
 		$this->setView('default');
 	}
