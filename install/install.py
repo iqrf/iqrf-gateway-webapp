@@ -185,7 +185,7 @@ def chmod_daemon_dir():
 	"""
 	send_command("chmod -R 666 " + DAEMON_DIRECTORY)
 	send_command("chmod 777 " + DAEMON_DIRECTORY)
-	send_command("chmod 777 " + DAEMON_DIRECTORY + "/jsonschema/")
+	send_command("chmod 777 " + DAEMON_DIRECTORY + "/cfgSchemas/")
 
 def chown_dir(directory, new_owner="www-data"):
 	"""
