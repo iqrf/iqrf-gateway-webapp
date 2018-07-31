@@ -40,6 +40,12 @@ class SignInFormFactory {
 	private $factory;
 
 	/**
+	 *
+	 * @var SignPresenter Sign (in|out) presenter
+	 */
+	private $presenter;
+
+	/**
 	 * @var User User object
 	 */
 	private $user;
@@ -56,7 +62,7 @@ class SignInFormFactory {
 
 	/**
 	 * Create sign in form
-	 * @param SignPresenter $presenter Sign presenter
+	 * @param SignPresenter $presenter Sign (in|out) presenter
 	 * @return Form Sign in form
 	 */
 	public function create(SignPresenter $presenter): Form {
@@ -66,17 +72,24 @@ class SignInFormFactory {
 		$form->addPassword('password', 'password')->setRequired('messages.password');
 		$form->addCheckbox('remember', 'remember');
 		$form->addSubmit('send', 'send');
-		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
-			try {
-				$this->user->setExpiration($values->remember ? '14 days' : '20 minutes');
-				$this->user->login($values->username, $values->password);
-				$presenter->flashMessage('core.sign.inForm.messages.success', 'success');
-				$presenter->redirect('Homepage:default');
-			} catch (AuthenticationException $e) {
-				$presenter->flashMessage('core.sign.inForm.messages.incorrectUsernameOrPassword', 'danger');
-			}
-		};
+		$form->onSuccess[] = [$this, 'signIn'];
 		return $form;
+	}
+
+	/**
+	 * Sign in user
+	 * @param Form $form Sign in form
+	 */
+	public function signIn(Form $form) {
+		$values = $form->getValues();
+		try {
+			$this->user->setExpiration($values->remember ? '14 days' : '20 minutes');
+			$this->user->login($values->username, $values->password);
+			$this->presenter->flashMessage('core.sign.inForm.messages.success', 'success');
+			$this->presenter->redirect('Homepage:default');
+		} catch (AuthenticationException $e) {
+			$this->presenter->flashMessage('core.sign.inForm.messages.incorrectUsernameOrPassword', 'danger');
+		}
 	}
 
 }

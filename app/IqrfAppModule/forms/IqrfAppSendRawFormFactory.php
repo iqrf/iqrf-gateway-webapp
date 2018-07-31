@@ -26,7 +26,6 @@ use App\IqrfAppModule\Model\IqrfAppManager;
 use App\IqrfAppModule\Presenters\SendRawPresenter;
 use Nette;
 use Nette\Forms\Form;
-use Nette\Utils\ArrayHash;
 
 /**
  * Send raw DPA packet form factory.
@@ -44,6 +43,11 @@ class IqrfAppSendRawFormFactory {
 	 * @var FormFactory Generic form factory
 	 */
 	private $factory;
+
+	/**
+	 * @var SendRawPresenter IQRF Send DPA raw packet presenter
+	 */
+	private $presenter;
 
 	/**
 	 * Constructor
@@ -77,19 +81,16 @@ class IqrfAppSendRawFormFactory {
 				->setRequired('customTimeout');
 		$form->addSubmit('send', 'send');
 		$form->addProtection('core.errors.form-timeout');
-		$form->onSuccess[] = function (Form $form, ArrayHash $values) use ($presenter) {
-			$this->onSuccess($form, $values, $presenter);
-		};
+		$form->onSuccess[] = [$this, 'onSuccess'];
 		return $form;
 	}
 
 	/**
 	 * Send raw DPA packet
 	 * @param Form $form IQRF App send RAW packet form
-	 * @param ArrayHash $values Values from form
-	 * @param SendRawPresenter $presenter IQRF Send DPA raw packet presenter
 	 */
-	public function onSuccess(Form $form, ArrayHash $values, SendRawPresenter $presenter) {
+	public function onSuccess(Form $form) {
+		$values = $form->getValues();
 		$packet = $values['packet'];
 		$timeout = $values['timeoutEnabled'] ? $values['timeout'] : null;
 		if ($this->manager->validatePacket($packet)) {
@@ -99,16 +100,16 @@ class IqrfAppSendRawFormFactory {
 			}
 			try {
 				$response = $this->manager->sendRaw($packet, $timeout);
-				$presenter->handleShowResponse($response);
+				$this->presenter->handleShowResponse($response);
 			} catch (EmptyResponseException $e) {
 				$message = 'No response from IQRF Gateway Daemon.';
 				$form->addError($message);
-				$presenter->flashMessage($message, 'danger');
+				$this->presenter->flashMessage($message, 'danger');
 			}
 		} else {
 			$message = 'Invalid DPA packet.';
 			$form->addError($message);
-			$presenter->flashMessage($message, 'danger');
+			$this->presenter->flashMessage($message, 'danger');
 		}
 	}
 

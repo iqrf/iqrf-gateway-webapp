@@ -40,6 +40,16 @@ class UserEditFormFactory {
 	private $factory;
 
 	/**
+	 * @var int User ID
+	 */
+	private $id;
+
+	/**
+	 * @var UserPresenter User manager presenter
+	 */
+	private $presenter;
+
+	/**
 	 * @var UserManager User manager
 	 */
 	private $userManager;
@@ -60,6 +70,8 @@ class UserEditFormFactory {
 	 * @return Form Edit an existing user form
 	 */
 	public function create(UserPresenter $presenter): Form {
+		$this->presenter = $presenter;
+		$this->id = intval($presenter->getParameter('id'));
 		$userTypes = [
 			'normal' => 'userTypes.normal',
 			'power' => 'userTypes.power'
@@ -67,32 +79,34 @@ class UserEditFormFactory {
 		$languages = [
 			'en' => 'languages.en',
 		];
-		$id = intval($presenter->getParameter('id'));
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('core.user.form'));
 		$form->addText('username', 'username')->setRequired('messages.username');
 		$form->addSelect('user_type', 'userType', $userTypes);
 		$form->addSelect('language', 'language', $languages);
-		$form->setDefaults($this->userManager->getInfo($id));
+		$form->setDefaults($this->userManager->getInfo($this->id));
 		$form->addSubmit('edit', 'edit');
-		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $id) {
-			try {
-				$this->userManager->edit($id, $values['username'], $values['user_type'], $values['language']);
-				if ($presenter->user->id === $id) {
-					$presenter->user->logout();
-				}
-				$message = $form->getTranslator()->translate('messages.successEdit', ['username' => $values['username']]);
-				$presenter->flashMessage($message, 'success');
-				$presenter->redirect('User:default');
-			} catch (\Exception $e) {
-				if ($e instanceof UsernameAlreadyExists) {
-					$presenter->flashMessage('core.user.form.messages.usernameAlreadyExists', 'danger');
-				} else {
-					throw $e;
-				}
-			}
-		};
+		$form->onSuccess[] = [$this, 'save'];
 		return $form;
+	}
+
+	/**
+	 * Save user info
+	 * @param Form $form Edit an existing user form
+	 */
+	public function save(Form $form) {
+		$values = $form->getValues();
+		try {
+			$this->userManager->edit($this->id, $values['username'], $values['user_type'], $values['language']);
+			if ($this->presenter->user->id === $this->id) {
+				$this->presenter->user->logout();
+			}
+			$message = $form->getTranslator()->translate('messages.successEdit', ['username' => $values['username']]);
+			$this->presenter->flashMessage($message, 'success');
+			$this->presenter->redirect('User:default');
+		} catch (UsernameAlreadyExists $e) {
+			$this->presenter->flashMessage('core.user.form.messages.usernameAlreadyExists', 'danger');
+		}
 	}
 
 }

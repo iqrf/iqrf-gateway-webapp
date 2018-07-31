@@ -40,6 +40,11 @@ class UserAddFormFactory {
 	private $factory;
 
 	/**
+	 * @var UserPresenter User manager presenter
+	 */
+	private $presenter;
+
+	/**
 	 * @var UserManager User manager
 	 */
 	private $userManager;
@@ -60,6 +65,7 @@ class UserAddFormFactory {
 	 * @return Form Register a new user form
 	 */
 	public function create(UserPresenter $presenter): Form {
+		$this->presenter = $presenter;
 		$userTypes = [
 			'normal' => 'userTypes.normal',
 			'power' => 'userTypes.power'
@@ -74,21 +80,24 @@ class UserAddFormFactory {
 		$form->addSelect('userType', 'userType', $userTypes);
 		$form->addSelect('language', 'language', $languages);
 		$form->addSubmit('add', 'add');
-		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
-			try {
-				$this->userManager->register($values['username'], $values['password'], $values['userType'], $values['language']);
-				$message = $form->getTranslator()->translate('messages.successAdd', ['username' => $values['username']]);
-				$presenter->flashMessage($message, 'success');
-				$presenter->redirect('User:default');
-			} catch (\Exception $e) {
-				if ($e instanceof UsernameAlreadyExists) {
-					$presenter->flashMessage('core.user.form.messages.usernameAlreadyExists', 'danger');
-				} else {
-					throw $e;
-				}
-			}
-		};
+		$form->onSuccess[] = [$this, 'add'];
 		return $form;
+	}
+
+	/**
+	 * Add a new user form
+	 * @param Form $form Register a new user form
+	 */
+	public function add(Form $form) {
+		$values = $form->getValues();
+		try {
+			$this->userManager->register($values['username'], $values['password'], $values['userType'], $values['language']);
+			$message = $form->getTranslator()->translate('messages.successAdd', ['username' => $values['username']]);
+			$this->presenter->flashMessage($message, 'success');
+			$this->presenter->redirect('User:default');
+		} catch (UsernameAlreadyExists $e) {
+			$this->presenter->flashMessage('core.user.form.messages.usernameAlreadyExists', 'danger');
+		}
 	}
 
 }

@@ -46,6 +46,11 @@ class ChangePasswordFormFactory {
 	private $userManager;
 
 	/**
+	 * @var ProfilePresenter User's profile presenter
+	 */
+	private $presenter;
+
+	/**
 	 * @var User
 	 */
 	private $user;
@@ -53,7 +58,7 @@ class ChangePasswordFormFactory {
 	/**
 	 * Constructor
 	 * @param FormFactory $factory Generic form factory
-	 * @param User $user
+	 * @param User $user User
 	 */
 	public function __construct(FormFactory $factory, UserManager $userManager, User $user) {
 		$this->factory = $factory;
@@ -63,31 +68,35 @@ class ChangePasswordFormFactory {
 
 	/**
 	 * Create change password form
-	 * @param ProfilePresenter Profile presenter
+	 * @param ProfilePresenter User's profile presenter
 	 * @return Form Change password form
 	 */
 	public function create(ProfilePresenter $presenter): Form {
+		$this->presenter = $presenter;
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('core.changePassword.form'));
 		$form->addPassword('oldPassword', 'oldPassword')->setRequired('messages.oldPassword');
 		$form->addPassword('newPassword', 'newPassword')->setRequired('messages.newPassword');
 		$form->addSubmit('change', 'change');
-		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
-			try {
-				$userId = $this->user->getId();
-				$this->userManager->changePassword($userId, $values['oldPassword'], $values['newPassword']);
-				$this->user->logout();
-				$presenter->flashMessage('core.changePassword.form.messages.success', 'success');
-				$presenter->redirect('Sign:in');
-			} catch (\Exception $e) {
-				if ($e instanceof InvalidPassword) {
-					$presenter->flashMessage('core.changePassword.form.messages.invalidOldPassword', 'danger');
-				} else {
-					throw $e;
-				}
-			}
-		};
+		$form->onSuccess[] = [$this, 'change'];
 		return $form;
+	}
+
+	/**
+	 * Change user's password
+	 * @param Form $form Change password form
+	 */
+	public function change(Form $form) {
+		$values = $form->getValues();
+		try {
+			$userId = $this->user->getId();
+			$this->userManager->changePassword($userId, $values['oldPassword'], $values['newPassword']);
+			$this->user->logout();
+			$this->presenter->flashMessage('core.changePassword.form.messages.success', 'success');
+			$this->presenter->redirect('Sign:in');
+		} catch (InvalidPassword $e) {
+			$this->presenter->flashMessage('core.changePassword.form.messages.invalidOldPassword', 'danger');
+		}
 	}
 
 }
