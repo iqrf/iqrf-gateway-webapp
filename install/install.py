@@ -161,7 +161,6 @@ def install_php_app(directory, use_git=True, branch=None):
 		if os.path.isdir(directory):
 			if os.path.isdir(directory + "/.git"):
 				send_command("rm -rf " + directory + "/temp/cache")
-				send_command("cd " + directory + " ; git pull origin")
 			else:
 				send_command("rm -rf " + directory)
 				send_command("cd " + directory + "/../ ; git clone " + GIT_REPOSOTORY)
@@ -169,6 +168,7 @@ def install_php_app(directory, use_git=True, branch=None):
 			send_command("cd " + directory + "/../ ; git clone " + GIT_REPOSOTORY)
 		if branch != None:
 			send_command("cd " + directory + " ; git checkout " + branch)
+			send_command("cd " + directory + " ; git pull origin")
 		send_command("cd " + directory + " ; composer install")
 		send_command("cd " + directory + " ; composer update")
 	else:
@@ -210,6 +210,11 @@ def create_nginx_virtualhost(virtualhost, nginx_dir="/etc/nginx"):
 	@param virtualhost Path to file with virtualhost configuration
 	@param nginx_dir Directory with configuration files for nginx
 	"""
+	old_virtualhost_name = "iqrf-daemon-webapp.localhost"
+	old_available_virtualhost = nginx_dir + "/sites-available/" + old_virtualhost_name
+	old_enabled_virtualhost = nginx_dir + "/sites-enabled/" + old_virtualhost_name
+	if os.path.exists(old_enabled_virtualhost):
+		send_command("rm " + old_available_virtualhost + " " + old_enabled_virtualhost)
 	virtualhost_name = "iqrf-gateway-webapp.localhost"
 	available_virtualhost = nginx_dir + "/sites-available/" + virtualhost_name
 	enabled_virtualhost = nginx_dir + "/sites-enabled/" + virtualhost_name
