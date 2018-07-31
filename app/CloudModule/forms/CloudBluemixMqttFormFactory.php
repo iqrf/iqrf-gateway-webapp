@@ -23,16 +23,16 @@ namespace App\CloudModule\Forms;
 use App\CloudModule\Model\BluemixManager;
 use App\CloudModule\Presenters\BluemixPresenter;
 use App\Forms\FormFactory;
+use App\Model\NonExistingJsonSchema;
 use App\ServiceModule\Model\NotSupportedInitSystemException;
 use App\ServiceModule\Model\ServiceManager;
 use Nette;
 use Nette\Forms\Form;
 use Nette\Forms\Controls\SubmitButton;
 use Nette\IOException;
-use Nette\Utils\ArrayHash;
 
 /**
- * Form for creating MQTT instance and Base service for IBM Bluemíx
+ * Form for creating MQTT instance for IBM Bluemíx
  */
 class CloudBluemixMqttFormFactory {
 
@@ -47,6 +47,11 @@ class CloudBluemixMqttFormFactory {
 	 * @var FormFactory Generic form factory
 	 */
 	private $factory;
+
+	/**
+	 * @var BluemixPresenter IBM Bluemix presenter
+	 */
+	private $presenter;
 
 	/**
 	 * @var ServiceManager Service manager
@@ -71,6 +76,7 @@ class CloudBluemixMqttFormFactory {
 	 * @return Form MQTT configuration form
 	 */
 	public function create(BluemixPresenter $presenter): Form {
+		$this->presenter = $presenter;
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('cloud.ibmBluemix.form'));
 		$form->addText('organizationId', 'organizationId')->setRequired();
@@ -79,41 +85,41 @@ class CloudBluemixMqttFormFactory {
 		$form->addText('token', 'token')->setRequired();
 		$form->addText('eventId', 'eventId')->setRequired()->setDefaultValue('iqrf');
 		$form->addSubmit('save', 'save')
-				->onClick[] = function (SubmitButton $button) use ($presenter) {
-			$values = $button->getForm()->getValues();
-			$this->save($values, $presenter);
+				->onClick[] = function (SubmitButton $button) {
+			$this->save($button);
 		};
 		$form->addSubmit('save_restart', 'save_restart')
-				->onClick[] = function (SubmitButton $button) use ($presenter) {
-			$values = $button->getForm()->getValues();
-			$this->save($values, $presenter, true);
+				->onClick[] = function (SubmitButton $button) {
+			$this->save($button, true);
 		};
 		$form->addProtection('core.errors.form-timeout');
 		return $form;
 	}
 
 	/**
-	 * Create the base service and MQTT interface
-	 * @param ArrayHash $values Values from the form
-	 * @param BluemixPresenter $presenter IBM Bluemix presenter
+	 * Create the MQTT interface
+	 * @param SubmitButton $button Form's submit button
 	 * @param bool $needRestart Is restart needed?
-	 * @throws IOException Nette IO exception
-	 * @throws NotSupportedInitSystemException Not supported init system exception
 	 */
-	public function save(ArrayHash $values, BluemixPresenter $presenter, bool $needRestart = false) {
+	public function save(SubmitButton $button, bool $needRestart = false) {
+		$values = $button->getForm()->getValues();
 		try {
 			$this->cloudManager->createMqttInterface($values);
-			$presenter->flashMessage('cloud.messages.success', 'success');
-			$presenter->redirect(':Config:Mqtt:default');
-		} catch (IOException $e) {
-			$presenter->flashMessage('config.messages.writeFailure', 'danger');
+			$this->presenter->flashMessage('cloud.messages.success', 'success');
+			$this->presenter->redirect(':Config:Mqtt:default');
+		} catch (\Exception $e) {
+			if ($e instanceof NonExistingJsonSchema) {
+				$this->presenter->flashMessage('config.messages.nonExistingJsonSchema', 'danger');
+			} else if ($e instanceof IOException) {
+				$this->presenter->flashMessage('config.messages.writeFailure', 'danger');
+			}
 		}
 		if ($needRestart) {
 			try {
 				$this->serviceManager->restart();
-				$presenter->flashMessage('service.actions.restart.message', 'info');
+				$this->presenter->flashMessage('service.actions.restart.message', 'info');
 			} catch (NotSupportedInitSystemException $e) {
-				$presenter->flashMessage('service.errors.unsupportedInit', 'danger');
+				$this->presenter->flashMessage('service.errors.unsupportedInit', 'danger');
 			}
 		}
 	}

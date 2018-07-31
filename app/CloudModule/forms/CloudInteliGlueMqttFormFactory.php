@@ -23,6 +23,7 @@ namespace App\CloudModule\Forms;
 use App\CloudModule\Model\InteliGlueManager;
 use App\CloudModule\Presenters\InteliGluePresenter;
 use App\Forms\FormFactory;
+use App\Model\NonExistingJsonSchema;
 use App\ServiceModule\Model\NotSupportedInitSystemException;
 use App\ServiceModule\Model\ServiceManager;
 use Nette;
@@ -32,7 +33,7 @@ use Nette\IOException;
 use Nette\Utils\ArrayHash;
 
 /**
- * Form for creating MQTT instance and Base service for Inteliments InteliGlue
+ * Form for creating MQTT instance for Inteliments InteliGlue
  */
 class CloudInteliGlueMqttFormFactory {
 
@@ -47,6 +48,11 @@ class CloudInteliGlueMqttFormFactory {
 	 * @var FormFactory Generic form factory
 	 */
 	private $factory;
+
+	/**
+	 * @var InteliGluePresenter Inteliments InteliGlue presenter
+	 */
+	private $presenter;
 
 	/**
 	 * @var ServiceManager Service manager
@@ -71,6 +77,7 @@ class CloudInteliGlueMqttFormFactory {
 	 * @return Form MQTT configuration form
 	 */
 	public function create(InteliGluePresenter $presenter): Form {
+		$this->presenter = $presenter;
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('cloud.intelimentsInteliGlue.form'));
 		$form->addText('rootTopic', 'rootTopic')->setRequired();
@@ -93,20 +100,21 @@ class CloudInteliGlueMqttFormFactory {
 	}
 
 	/**
-	 * Create the base service and MQTT interface
-	 * @param ArrayHash $values Values from the form
-	 * @param InteliGluePresenter $presenter Inteliments InteliGlue presenter
+	 * Create the MQTT interface
+	 * @param SubmitButton $button Form's submit button
 	 * @param bool $needRestart Is restart needed?
-	 * @throws IOException Nette IO exception
-	 * @throws NotSupportedInitSystemException Not supported init system exception
 	 */
 	public function save(ArrayHash $values, InteliGluePresenter $presenter, bool $needRestart = false) {
 		try {
 			$this->cloudManager->createMqttInterface($values);
 			$presenter->flashMessage('cloud.messages.success', 'success');
 			$presenter->redirect(':Config:Mqtt:default');
-		} catch (IOException $e) {
-			$presenter->flashMessage('config.messages.writeFailure', 'danger');
+		} catch (\Exception $e) {
+			if ($e instanceof NonExistingJsonSchema) {
+				$this->presenter->flashMessage('config.messages.nonExistingJsonSchema', 'danger');
+			} else if ($e instanceof IOException) {
+				$this->presenter->flashMessage('config.messages.writeFailure', 'danger');
+			}
 		}
 		if ($needRestart) {
 			try {

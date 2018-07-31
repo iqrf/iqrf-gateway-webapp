@@ -24,16 +24,16 @@ use App\CloudModule\Model\AwsManager;
 use App\CloudModule\Presenters\AwsPresenter;
 use App\CloudModule\Model\InvalidPrivateKeyForCertificate;
 use App\Forms\FormFactory;
+use App\Model\NonExistingJsonSchema;
 use App\ServiceModule\Model\NotSupportedInitSystemException;
 use App\ServiceModule\Model\ServiceManager;
 use Nette;
 use Nette\Forms\Form;
 use Nette\Forms\Controls\SubmitButton;
 use Nette\IOException;
-use Nette\Utils\ArrayHash;
 
 /**
- * Form for creating MQTT instance and Base service for Amazon AWS IoT
+ * Form for creating MQTT instance for Amazon AWS IoT
  */
 class CloudAwsMqttFormFactory {
 
@@ -48,6 +48,11 @@ class CloudAwsMqttFormFactory {
 	 * @var FormFactory Generic form factory
 	 */
 	private $factory;
+
+	/**
+	 * @var AwsPresenter Amazon AWS IoT presenter
+	 */
+	private $presenter;
 
 	/**
 	 * @var ServiceManager Service manager
@@ -72,44 +77,42 @@ class CloudAwsMqttFormFactory {
 	 * @return Form MQTT configuration form
 	 */
 	public function create(AwsPresenter $presenter): Form {
+		$this->presenter = $presenter;
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('cloud.amazonAws.form'));
 		$form->addText('endpoint', 'endpoint')->setRequired();
 		$form->addUpload('cert', 'certificate')->setRequired();
 		$form->addUpload('key', 'pkey')->setRequired();
 		$form->addSubmit('save', 'save')
-				->onClick[] = function (SubmitButton $button) use ($presenter) {
-			$values = $button->getForm()->getValues();
-			$this->save($values, $presenter);
+				->onClick[] = function (SubmitButton $button) {
+			$this->save($button);
 		};
 		$form->addSubmit('save_restart', 'save_restart')
-				->onClick[] = function (SubmitButton $button) use ($presenter) {
-			$values = $button->getForm()->getValues();
-			$this->save($values, $presenter, true);
+				->onClick[] = function (SubmitButton $button) {
+			$this->save($button, true);
 		};
 		$form->addProtection('core.errors.form-timeout');
 		return $form;
 	}
 
 	/**
-	 * Create the base service and MQTT interface
-	 * @param ArrayHash $values Values from the form
-	 * @param AwsPresenter $presenter Amazon AWS IoT presenter
+	 * Create the MQTT interface
+	 * @param SubmitButton $button Form's sumbit button
 	 * @param bool $needRestart Is restart needed?
-	 * @throws InvalidPrivateKeyForCertificate Invalid the private key for the certificate exception
-	 * @throws IOException Nette IO exception
-	 * @throws NotSupportedInitSystemException Not supported init system exception
 	 */
-	public function save(ArrayHash $values, AwsPresenter $presenter, bool $needRestart = false) {
+	public function save(SubmitButton $button, bool $needRestart = false) {
+		$values = $button->getForm()->getValues();
 		try {
 			$this->cloudManager->createMqttInterface($values);
-			$presenter->flashMessage('cloud.messages.success', 'success');
-			$presenter->redirect(':Config:Mqtt:default');
+			$this->presenter->flashMessage('cloud.messages.success', 'success');
+			$this->presenter->redirect(':Config:Mqtt:default');
 		} catch (\Exception $e) {
 			if ($e instanceof InvalidPrivateKeyForCertificate) {
-				$presenter->flashMessage('cloud.amazonAws.messages.mismatchedCrtAndKey', 'danger');
+				$this->presenter->flashMessage('cloud.amazonAws.messages.mismatchedCrtAndKey', 'danger');
+			} else if ($e instanceof NonExistingJsonSchema) {
+				$this->presenter->flashMessage('config.messages.nonExistingJsonSchema', 'danger');
 			} else if ($e instanceof IOException) {
-				$presenter->flashMessage('config.messages.writeFailure', 'danger');
+				$this->presenter->flashMessage('config.messages.writeFailure', 'danger');
 			} else {
 				throw $e;
 			}
@@ -117,9 +120,9 @@ class CloudAwsMqttFormFactory {
 		if ($needRestart) {
 			try {
 				$this->serviceManager->restart();
-				$presenter->flashMessage('service.actions.restart.message', 'info');
+				$this->presenter->flashMessage('service.actions.restart.message', 'info');
 			} catch (NotSupportedInitSystemException $e) {
-				$presenter->flashMessage('service.errors.unsupportedInit', 'danger');
+				$this->presenter->flashMessage('service.errors.unsupportedInit', 'danger');
 			}
 		}
 	}

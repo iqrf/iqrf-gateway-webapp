@@ -23,6 +23,7 @@ namespace App\ConfigModule\Forms;
 use App\ConfigModule\Model\MainManager;
 use App\ConfigModule\Presenters\MainPresenter;
 use App\Forms\FormFactory;
+use App\Model\NonExistingJsonSchema;
 use Nette;
 use Nette\Forms\Form;
 use Nette\IOException;
@@ -87,8 +88,12 @@ class ConfigMainFormFactory {
 		try {
 			$this->manager->save($form->getValues());
 			$this->presenter->flashMessage('config.messages.success', 'success');
-		} catch (IOException $e) {
-			$this->presenter->flashMessage('config.messages.writeFailure', 'danger');
+		} catch (\Exception $e) {
+			if ($e instanceof NonExistingJsonSchema) {
+				$this->presenter->flashMessage('config.messages.nonExistingJsonSchema', 'danger');
+			} else if ($e instanceof IOException) {
+				$this->presenter->flashMessage('config.messages.writeFailure', 'danger');
+			}
 		} finally {
 			$this->presenter->redirect('Homepage:default');
 		}

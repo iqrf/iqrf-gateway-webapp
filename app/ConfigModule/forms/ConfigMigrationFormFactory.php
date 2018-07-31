@@ -25,6 +25,7 @@ use App\ConfigModule\Model\InvalidConfigurationFormat;
 use App\ConfigModule\Model\MigrationManager;
 use App\ConfigModule\Presenters\MigrationPresenter;
 use App\Forms\FormFactory;
+use App\Model\NonExistingJsonSchema;
 use Nette;
 use Nette\Forms\Form;
 use Nette\IOException;
@@ -87,6 +88,8 @@ class ConfigMigrationFormFactory {
 				$this->presenter->flashMessage('config.migration.errors.invalidConfig', 'danger');
 			} else if ($e instanceof InvalidConfigurationFormat) {
 				$this->presenter->flashMessage('config.migration.errors.invalidFormat', 'danger');
+			} else if ($e instanceof NonExistingJsonSchema) {
+				$this->presenter->flashMessage('config.messages.nonExistingJsonSchema', 'danger');
 			} else if ($e instanceof IOException) {
 				/**
 				 * @todo Custom error message.

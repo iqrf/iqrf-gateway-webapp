@@ -7,6 +7,7 @@ actions:
 
 messages:
 	multipleInstancesFailure: This component has to have one instance maximally.
+	nonExistingJsonSchema: The configuration has not been saved because the corresponding JSON schema not found.
 	success: The configuration has been saved successfully.
 	writeFailure: The configuration has not been saved because the webapp is unable to write the configuration file.
 

@@ -24,16 +24,16 @@ use App\CloudModule\Model\AzureManager;
 use App\CloudModule\Presenters\AzurePresenter;
 use App\CloudModule\Model\InvalidConnectionString;
 use App\Forms\FormFactory;
+use App\Model\NonExistingJsonSchema;
 use App\ServiceModule\Model\NotSupportedInitSystemException;
 use App\ServiceModule\Model\ServiceManager;
 use Nette;
 use Nette\Forms\Form;
 use Nette\Forms\Controls\SubmitButton;
 use Nette\IOException;
-use Nette\Utils\ArrayHash;
 
 /**
- * Form for creating MQTT instance and Base service from Microsoft Azure IoT Hub Connection String for Device
+ * Form for creating MQTT instance from Microsoft Azure IoT Hub Connection String for Device
  */
 class CloudAzureMqttFormFactory {
 
@@ -48,6 +48,11 @@ class CloudAzureMqttFormFactory {
 	 * @var FormFactory Generic form factory
 	 */
 	private $factory;
+
+	/**
+	 * @var AzurePresenter MS Azure IoT presenter
+	 */
+	private $presenter;
 
 	/**
 	 * @var ServiceManager Service manager
@@ -72,42 +77,40 @@ class CloudAzureMqttFormFactory {
 	 * @return Form MQTT configuration form
 	 */
 	public function create(AzurePresenter $presenter): Form {
+		$this->presenter = $presenter;
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('cloud.msAzure.form'));
 		$form->addText('ConnectionString', 'connectionString')->setRequired();
 		$form->addSubmit('save', 'save')
-				->onClick[] = function (SubmitButton $button) use ($presenter) {
-			$values = $button->getForm()->getValues();
-			$this->save($values, $presenter);
+				->onClick[] = function (SubmitButton $button) {
+			$this->save($button);
 		};
 		$form->addSubmit('save_restart', 'save_restart')
-				->onClick[] = function (SubmitButton $button) use ($presenter) {
-			$values = $button->getForm()->getValues();
-			$this->save($values, $presenter, true);
+				->onClick[] = function (SubmitButton $button) {
+			$this->save($button, true);
 		};
 		$form->addProtection('core.errors.form-timeout');
 		return $form;
 	}
 
 	/**
-	 * Create the base service and MQTT interface
-	 * @param ArrayHash $values Values from the form
-	 * @param AzurePresenter $presenter MS Azure presenter
+	 * Create the MQTT interface
+	 * @param SubmitButton $button Form's sumbit button
 	 * @param bool $needRestart Is restart needed?
-	 * @throws InvalidConnectionString Invalid the connection string exception
-	 * @throws IOException Nette IO exception
-	 * @throws NotSupportedInitSystemException Not supported init system exception
 	 */
-	public function save(ArrayHash $values, AzurePresenter $presenter, bool $needRestart = false) {
+	public function save(SubmitButton $button, bool $needRestart = false) {
+		$values = $button->getForm()->getValues();
 		try {
 			$this->cloudManager->createMqttInterface($values['ConnectionString']);
-			$presenter->flashMessage('cloud.messages.success', 'success');
-			$presenter->redirect(':Config:Mqtt:default');
+			$this->presenter->flashMessage('cloud.messages.success', 'success');
+			$this->presenter->redirect(':Config:Mqtt:default');
 		} catch (\Exception $e) {
 			if ($e instanceof InvalidConnectionString) {
-				$presenter->flashMessage('cloud.msAzure.messages.invalidConnectionString', 'danger');
+				$this->presenter->flashMessage('cloud.msAzure.messages.invalidConnectionString', 'danger');
+			} else if ($e instanceof NonExistingJsonSchema) {
+				$this->presenter->flashMessage('config.messages.nonExistingJsonSchema', 'danger');
 			} else if ($e instanceof IOException) {
-				$presenter->flashMessage('config.messages.writeFailure', 'danger');
+				$this->presenter->flashMessage('config.messages.writeFailure', 'danger');
 			} else {
 				throw $e;
 			}
@@ -115,9 +118,9 @@ class CloudAzureMqttFormFactory {
 		if ($needRestart) {
 			try {
 				$this->serviceManager->restart();
-				$presenter->flashMessage('service.actions.restart.message', 'info');
+				$this->presenter->flashMessage('service.actions.restart.message', 'info');
 			} catch (NotSupportedInitSystemException $e) {
-				$presenter->flashMessage('service.errors.unsupportedInit', 'danger');
+				$this->presenter->flashMessage('service.errors.unsupportedInit', 'danger');
 			}
 		}
 	}
