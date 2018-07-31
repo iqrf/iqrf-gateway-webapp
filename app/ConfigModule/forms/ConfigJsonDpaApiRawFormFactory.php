@@ -42,6 +42,11 @@ class ConfigJsonDpaApiRawFormFactory {
 	private $factory;
 
 	/**
+	 * @var JsonRawApiPresenter JSON Raw API configuration presenter
+	 */
+	private $presenter;
+
+	/**
 	 * Constructor
 	 * @param GenericManager $manager Generic configuration manager
 	 * @param FormFactory $factory Generic form factory
@@ -49,34 +54,41 @@ class ConfigJsonDpaApiRawFormFactory {
 	public function __construct(GenericManager $manager, FormFactory $factory) {
 		$this->manager = $manager;
 		$this->factory = $factory;
+		$this->manager->setComponent('iqrf::JsonDpaApiRaw');
 	}
 
 	/**
 	 * Create JSON splitter service configuration form
-	 * @param JsonRawApiPresenter $presenter JSON settings presenter
+	 * @param JsonRawApiPresenter $presenter JSON Raw API configuration presenter
 	 * @return Form JSON splitter configuration form
 	 */
 	public function create(JsonRawApiPresenter $presenter): Form {
+		$this->presenter = $presenter;
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('config.jsonRawApi.form'));
-		$this->manager->setComponent('iqrf::JsonDpaApiRaw');
 		$this->manager->setFileName($this->manager->getInstanceFiles()[0]);
 		$form->addText('instance', 'instance')->setRequired('messages.instance');
 		$form->addCheckbox('asyncDpaMessage', 'asyncDpaMessage');
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');
 		$form->setDefaults($this->manager->load());
-		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
-			try {
-				$this->manager->save($values);
-				$presenter->flashMessage('config.messages.success', 'success');
-			} catch (IOException $e) {
-				$presenter->flashMessage('config.messages.writeFailure', 'danger');
-			} finally {
-				$presenter->redirect('Homepage:default');
-			}
-		};
+		$form->onSuccess[] = [$this, 'save'];
 		return $form;
+	}
+
+	/**
+	 * Save JSON Raw API configuration
+	 * @param Form $form JSON Raw API configuration form
+	 */
+	public function save(Form $form) {
+		try {
+			$this->manager->save($form->getValues());
+			$this->presenter->flashMessage('config.messages.success', 'success');
+		} catch (IOException $e) {
+			$this->presenter->flashMessage('config.messages.writeFailure', 'danger');
+		} finally {
+			$this->presenter->redirect('Homepage:default');
+		}
 	}
 
 }

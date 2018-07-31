@@ -34,7 +34,7 @@ class ConfigMigrationFormFactory {
 	use Nette\SmartObject;
 
 	/**
-	 * @var MigrationManager
+	 * @var MigrationManager Configuration migration manager
 	 */
 	private $manager;
 
@@ -44,9 +44,14 @@ class ConfigMigrationFormFactory {
 	private $factory;
 
 	/**
+	 * @var MigrationPresenter Configuration migration presenter
+	 */
+	private $presenter;
+
+	/**
 	 * Constructor
 	 * @param FormFactory $factory Generic form factory
-	 * @param MigrationManager $manager
+	 * @param MigrationManager $manager Configuration migration manager
 	 */
 	public function __construct(FormFactory $factory, MigrationManager $manager) {
 		$this->factory = $factory;
@@ -54,38 +59,45 @@ class ConfigMigrationFormFactory {
 	}
 
 	/**
-	 * Create IQRF configuration form
-	 * @param MigrationPresenter $presenter
+	 * Create configuration migration form
+	 * @param MigrationPresenter $presenter COnfiguration migration presenter
 	 * @return Form Migration configuration form
 	 */
 	public function create(MigrationPresenter $presenter): Form {
+		$this->presenter = $presenter;
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('config.migration'));
 		$form->addUpload('configuration', 'configuration')->setRequired('messages.configuration');
 		$form->addSubmit('import', 'import');
 		$form->addProtection('core.errors.form-timeout');
-		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
-			try {
-				$this->manager->upload($values);
-				$presenter->flashMessage('config.migration.messages.importedConfig', 'success');
-			} catch (\Exception $e) {
-				if ($e instanceof IncompleteConfiguration) {
-					$presenter->flashMessage('config.migration.errors.invalidConfig', 'danger');
-				} else if ($e instanceof InvalidConfigurationFormat) {
-					$presenter->flashMessage('config.migration.errors.invalidFormat', 'danger');
-				} else if ($e instanceof IOException) {
-					/**
-					 * @todo Custom error message.
-					 */
-					$presenter->flashMessage('config.messages.writeFailure', 'danger');
-				} else {
-					throw $e;
-				}
-			} finally {
-				$presenter->redirect('Homepage:default');
-			}
-		};
+		$form->onSuccess[] = [$this, 'import'];
 		return $form;
+	}
+
+	/**
+	 * Import a configuration
+	 * @param Form $form Configuration migration form
+	 */
+	public function import(Form $form) {
+		try {
+			$this->manager->upload($form->getValues());
+			$this->presenter->flashMessage('config.migration.messages.importedConfig', 'success');
+		} catch (\Exception $e) {
+			if ($e instanceof IncompleteConfiguration) {
+				$this->presenter->flashMessage('config.migration.errors.invalidConfig', 'danger');
+			} else if ($e instanceof InvalidConfigurationFormat) {
+				$this->presenter->flashMessage('config.migration.errors.invalidFormat', 'danger');
+			} else if ($e instanceof IOException) {
+				/**
+				 * @todo Custom error message.
+				 */
+				$$this->presenter->flashMessage('config.messages.writeFailure', 'danger');
+			} else {
+				throw $e;
+			}
+		} finally {
+			$this->presenter->redirect('Homepage:default');
+		}
 	}
 
 }

@@ -42,6 +42,11 @@ class ConfigOtaUploadFormFactory {
 	private $factory;
 
 	/**
+	 * @var IqmeshPresenter IQMESH services configuration presenter
+	 */
+	private $presenter;
+
+	/**
 	 * Constructor
 	 * @param GenericManager $manager Generic configuration manager
 	 * @param FormFactory $factory Generic form factory
@@ -49,34 +54,41 @@ class ConfigOtaUploadFormFactory {
 	public function __construct(GenericManager $manager, FormFactory $factory) {
 		$this->manager = $manager;
 		$this->factory = $factory;
+		$this->manager->setComponent('iqrf::OtaUploadService');
 	}
 
 	/**
 	 * Create OTA upload service configuration form
-	 * @param IqmeshPresenter $presenter
+	 * @param IqmeshPresenter $presenter IQMESH services configuration presenter
 	 * @return Form OTA upload configuration form
 	 */
 	public function create(IqmeshPresenter $presenter): Form {
+		$this->presenter = $presenter;
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('config.iqmesh.otaUpload.form'));
-		$this->manager->setComponent('iqrf::OtaUploadService');
 		$this->manager->setFileName($this->manager->getInstanceFiles()[0]);
 		$form->addText('instance', 'instance')->setRequired('messages.instance');
 		$form->addText('uploadPath', 'uploadPath')->setRequired('messages.uploadPath');
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');
 		$form->setDefaults($this->manager->load());
-		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
-			try {
-				$this->manager->save($values);
-				$presenter->flashMessage('config.messages.success', 'success');
-			} catch (IOException $e) {
-				$presenter->flashMessage('config.messages.writeFailure', 'danger');
-			} finally {
-				$presenter->redirect('Homepage:default');
-			}
-		};
+		$form->onSuccess[] = [$this, 'save'];
 		return $form;
+	}
+
+	/**
+	 * Save OTA upload configuration
+	 * @param Form $form OTA upload configuration form
+	 */
+	public function save(Form $form) {
+		try {
+			$this->manager->save($form->getValues());
+			$this->presenter->flashMessage('config.messages.success', 'success');
+		} catch (IOException $e) {
+			$this->presenter->flashMessage('config.messages.writeFailure', 'danger');
+		} finally {
+			$this->presenter->redirect('Homepage:default');
+		}
 	}
 
 }

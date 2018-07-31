@@ -32,7 +32,7 @@ class ConfigMainFormFactory {
 	use Nette\SmartObject;
 
 	/**
-	 * @var MainManager
+	 * @var MainManager Main configuration manager
 	 */
 	private $manager;
 
@@ -42,9 +42,14 @@ class ConfigMainFormFactory {
 	private $factory;
 
 	/**
+	 * @var MainPresenter Main configuration presenter
+	 */
+	private $presenter;
+
+	/**
 	 * Constructor
 	 * @param FormFactory $factory Generic form factory
-	 * @param MainManager $manager
+	 * @param MainManager $manager Main configuration manager
 	 */
 	public function __construct(FormFactory $factory, MainManager $manager) {
 		$this->manager = $manager;
@@ -57,6 +62,7 @@ class ConfigMainFormFactory {
 	 * @return Form Tracer configuration form
 	 */
 	public function create(MainPresenter $presenter): Form {
+		$this->presenter = $presenter;
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('config.main.form'));
 		$form->addText('applicationName', 'applicationName');
@@ -69,17 +75,23 @@ class ConfigMainFormFactory {
 		$form->addSubmit('save', 'Save');
 		$form->setDefaults($this->manager->load());
 		$form->addProtection('core.errors.form-timeout');
-		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
-			try {
-				$this->manager->save($values);
-				$presenter->flashMessage('config.messages.success', 'success');
-			} catch (IOException $e) {
-				$presenter->flashMessage('config.messages.writeFailure', 'danger');
-			} finally {
-				$presenter->redirect('Homepage:default');
-			}
-		};
+		$form->onSuccess[] = [$this, 'save'];
 		return $form;
+	}
+
+	/**
+	 * Save main configuration
+	 * @param Form $form Main configuration form
+	 */
+	public function save(Form $form) {
+		try {
+			$this->manager->save($form->getValues());
+			$this->presenter->flashMessage('config.messages.success', 'success');
+		} catch (IOException $e) {
+			$this->presenter->flashMessage('config.messages.writeFailure', 'danger');
+		} finally {
+			$this->presenter->redirect('Homepage:default');
+		}
 	}
 
 }

@@ -32,7 +32,7 @@ class ConfigComponentsFormFactory {
 	use Nette\SmartObject;
 
 	/**
-	 * @var ComponentManager
+	 * @var ComponentManager Component configuration manager
 	 */
 	private $manager;
 
@@ -40,6 +40,16 @@ class ConfigComponentsFormFactory {
 	 * @var FormFactory Generic form factory
 	 */
 	private $factory;
+
+	/**
+	 * @var int Component ID
+	 */
+	private $id;
+
+	/**
+	 * @var ComponentPresenter Component presenter
+	 */
+	private $presenter;
 
 	/**
 	 * Constructor
@@ -53,11 +63,12 @@ class ConfigComponentsFormFactory {
 
 	/**
 	 * Create components configuration form
-	 * @param ComponentPresenter $presenter
+	 * @param ComponentPresenter $presenter Component presenter
 	 * @return Form Components configuration form
 	 */
 	public function create(ComponentPresenter $presenter): Form {
-		$id = intval($presenter->getParameter('id'));
+		$this->presenter = $presenter;
+		$this->id = intval($presenter->getParameter('id'));
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('config.components.form'));
 		$form->addText('name', 'name')->setRequired('messages.name');
@@ -66,19 +77,25 @@ class ConfigComponentsFormFactory {
 		$form->addCheckbox('enabled', 'enabled');
 		$form->addInteger('startlevel', 'startlevel')->setRequired('messages.startLevel');
 		$form->addSubmit('save', 'Save');
-		$form->setDefaults($this->manager->loadComponent($id));
+		$form->setDefaults($this->manager->loadComponent($this->id));
 		$form->addProtection('core.errors.form-timeout');
-		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $id) {
-			try {
-				$this->manager->save($values, $id);
-				$presenter->flashMessage('config.messages.success', 'success');
-			} catch (IOException $e) {
-				$presenter->flashMessage('config.messages.writeFailure', 'danger');
-			} finally {
-				$presenter->redirect('Component:default');
-			}
-		};
+		$form->onSuccess[] = [$this, 'save'];
 		return $form;
+	}
+
+	/**
+	 * Save component configuration
+	 * @param Form $form Component configuration form
+	 */
+	public function save(Form $form) {
+		try {
+			$this->manager->save($form->getValues(), $this->id);
+			$this->presenter->flashMessage('config.messages.success', 'success');
+		} catch (IOException $e) {
+			$this->presenter->flashMessage('config.messages.writeFailure', 'danger');
+		} finally {
+			$this->presenter->redirect('Component:default');
+		}
 	}
 
 }

@@ -32,7 +32,7 @@ class ConfigMqttFormFactory {
 	use Nette\SmartObject;
 
 	/**
-	 * @var GenericManager
+	 * @var GenericManager Generic configuration manager
 	 */
 	private $manager;
 
@@ -42,25 +42,40 @@ class ConfigMqttFormFactory {
 	private $factory;
 
 	/**
+	 * @var int MQTT interface ID
+	 */
+	private $id;
+
+	/**
+	 * @var array Files with MQTT interface instances
+	 */
+	private $instances;
+
+	/**
+	 * @var MqttPresenter MQTT interface presenter
+	 */
+	private $presenter;
+
+	/**
 	 * Constructor
-	 * @param GenericManager $manager
+	 * @param GenericManager $manager Generic configuration manager
 	 * @param FormFactory $factory Generic form factory
 	 */
 	public function __construct(GenericManager $manager, FormFactory $factory) {
 		$this->manager = $manager;
 		$this->factory = $factory;
+		$this->manager->setComponent('iqrf::MqttMessaging');
+		$this->instances = $this->manager->getInstanceFiles();
 	}
 
 	/**
-	 * Create MQTT configuration form
-	 * @param MqttPresenter $presenter
-	 * @return Form MQTT configuration form
+	 * Create MQTT interface configuration form
+	 * @param MqttPresenter $presenter MQTT interface presenter
+	 * @return Form MQTT interface configuration form
 	 */
 	public function create(MqttPresenter $presenter): Form {
-		$id = intval($presenter->getParameter('id'));
-		$this->manager->setComponent('iqrf::MqttMessaging');
-		$instances = $this->manager->getInstanceFiles();
-		$instanceExist = array_key_exists($id, $instances);
+		$this->presenter = $presenter;
+		$this->id = intval($presenter->getParameter('id'));
 		$qos = ['QoSes.QoS0', 'QoSes.QoS1', 'QoSes.QoS2'];
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('config.mqtt.form'));
@@ -91,24 +106,39 @@ class ConfigMqttFormFactory {
 		$form->addCheckbox('acceptAsyncMsg', 'acceptAsyncMsg');
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');
-		if ($instanceExist) {
-			$this->manager->setFileName($instances[$id]);
+		if ($this->isExists()) {
+			$this->manager->setFileName($this->instances[$this->id]);
 			$form->setDefaults($this->manager->load());
 		}
-		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $instanceExist) {
-			if (!$instanceExist) {
-				$this->manager->setFileName('iqrf__' . $values['instance']);
-			}
-			try {
-				$this->manager->save($values);
-				$presenter->flashMessage('config.messages.success', 'success');
-			} catch (IOException $e) {
-				$presenter->flashMessage('config.messages.writeFailure', 'danger');
-			} finally {
-				$presenter->redirect('Mqtt:default');
-			}
-		};
+		$form->onSuccess[] = [$this, 'save'];
 		return $form;
+	}
+
+	/**
+	 * Check if instance exists
+	 * @return bool Is instance exists?
+	 */
+	public function isExists(): bool {
+		return array_key_exists($this->id, $this->instances);
+	}
+
+	/**
+	 * Save MQTT configuration
+	 * @param Form $form MQTT interface configuration form
+	 */
+	public function save(Form $form) {
+		$values = $form->getValues();
+		if (!$this->isExists()) {
+			$this->manager->setFileName('iqrf__' . $values['instance']);
+		}
+		try {
+			$this->manager->save($values);
+			$this->presenter->flashMessage('config.messages.success', 'success');
+		} catch (IOException $e) {
+			$this->presenter->flashMessage('config.messages.writeFailure', 'danger');
+		} finally {
+			$this->presenter->redirect('Mqtt:default');
+		}
 	}
 
 }

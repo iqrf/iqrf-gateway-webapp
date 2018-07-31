@@ -42,6 +42,16 @@ class ConfigWebsocketFormFactory {
 	private $factory;
 
 	/**
+	 * @var int Websocket interface ID
+	 */
+	private $id;
+
+	/**
+	 * @var WebsocketPresenter Websocket interface presenter
+	 */
+	private $presenter;
+
+	/**
 	 * Constructor
 	 * @param WebsocketManager $manager Websocket configuration manager
 	 * @param FormFactory $factory Generic form factory
@@ -57,7 +67,8 @@ class ConfigWebsocketFormFactory {
 	 * @return Form Websocket configuration form
 	 */
 	public function create(WebsocketPresenter $presenter): Form {
-		$id = intval($presenter->getParameter('id'));
+		$this->presenter = $presenter;
+		$this->id = intval($presenter->getParameter('id'));
 		$form = $this->factory->create();
 		$translator = $form->getTranslator();
 		$form->setTranslator($translator->domain('config.websocket.form'));
@@ -65,20 +76,26 @@ class ConfigWebsocketFormFactory {
 		$form->addCheckbox('acceptAsyncMsg', 'acceptAsyncMsg');
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');
-		if (array_key_exists($id, $this->manager->getInstanceFiles('iqrf::WebsocketMessaging'))) {
-			$form->setDefaults($this->manager->load($id));
+		if (array_key_exists($this->id, $this->manager->getInstanceFiles('iqrf::WebsocketMessaging'))) {
+			$form->setDefaults($this->manager->load($this->id));
 		}
-		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
-			try {
-				$this->manager->save($values);
-				$presenter->flashMessage('config.messages.success', 'success');
-			} catch (IOException $e) {
-				$presenter->flashMessage('config.messages.writeFailure', 'danger');
-			} finally {
-				$presenter->redirect('Websocket:default');
-			}
-		};
+		$form->onSuccess[] = [$this, 'save'];
 		return $form;
+	}
+
+	/**
+	 * Save websocket interface configuration
+	 * @param Form $form Websocket configuration form
+	 */
+	public function save(Form $form) {
+		try {
+			$this->manager->save($form->getValues());
+			$this->presenter->flashMessage('config.messages.success', 'success');
+		} catch (IOException $e) {
+			$this->presenter->flashMessage('config.messages.writeFailure', 'danger');
+		} finally {
+			$this->presenter->redirect('Websocket:default');
+		}
 	}
 
 }

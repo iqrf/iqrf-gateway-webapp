@@ -42,6 +42,11 @@ class ConfigIqrfDpaFormFactory {
 	private $factory;
 
 	/**
+	 * @var IqrfDpaPresenter IQRF DPA configuration presenter
+	 */
+	private $presenter;
+
+	/**
 	 * Constructor
 	 * @param FormFactory $factory Generic form factory
 	 * @param GenericManager $manager Generic config manager
@@ -49,14 +54,16 @@ class ConfigIqrfDpaFormFactory {
 	public function __construct(FormFactory $factory, GenericManager $manager) {
 		$this->factory = $factory;
 		$this->manager = $manager;
+		$this->manager->setComponent('iqrf::IqrfDpa');
 	}
 
 	/**
-	 * Create IQRF configuration form
-	 * @param IqrfDpaPresenter $presenter
+	 * Create IQRF DPA configuration form
+	 * @param IqrfDpaPresenter $presenter IQRF DPA configuration presenter
 	 * @return Form IQRF DPA interface configuration form
 	 */
 	public function create(IqrfDpaPresenter $presenter): Form {
+		$this->presenter = $presenter;
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('config.iqrfDpa.form'));
 		$communicationModes = ['STD' => 'CommunicationModes.STD', 'LP' => 'CommunicationModes.LP'];
@@ -66,7 +73,6 @@ class ConfigIqrfDpaFormFactory {
 			unset($responseTimes[$key]);
 			$responseTimes[$time] = 'ResponseTimes.' . $time;
 		}
-		$this->manager->setComponent('iqrf::IqrfDpa');
 		$this->manager->setFileName($this->manager->getInstanceFiles()[0]);
 		$form->addText('instance', 'instance')->setRequired('messages.instance');
 		$form->addInteger('DpaHandlerTimeout', 'DpaHandlerTimeout')->setRequired('messages.DpaHandlerTimeout')
@@ -78,17 +84,23 @@ class ConfigIqrfDpaFormFactory {
 		$form->addSubmit('save', 'Save');
 		$form->setDefaults($this->manager->load());
 		$form->addProtection('core.errors.form-timeout');
-		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
-			try {
-				$this->manager->save($values);
-				$presenter->flashMessage('config.messages.success', 'success');
-			} catch (IOException $e) {
-				$presenter->flashMessage('config.messages.writeFailure', 'danger');
-			} finally {
-				$presenter->redirect('Homepage:default');
-			}
-		};
+		$form->onSuccess[] = [$this, 'save'];
 		return $form;
+	}
+
+	/**
+	 * Save IQRF DPA configuration
+	 * @param Form $form IQRF DPA configuration form
+	 */
+	public function save(Form $form) {
+		try {
+			$this->manager->save($form->getValues());
+			$this->presenter->flashMessage('config.messages.success', 'success');
+		} catch (IOException $e) {
+			$this->presenter->flashMessage('config.messages.writeFailure', 'danger');
+		} finally {
+			$this->presenter->redirect('Homepage:default');
+		}
 	}
 
 }

@@ -42,6 +42,11 @@ class ConfigJsonSplitterFormFactory {
 	private $factory;
 
 	/**
+	 * @var JsonSplitterPresenter JSON Splitter configuration presenter
+	 */
+	private $presenter;
+
+	/**
 	 * Constructor
 	 * @param GenericManager $manager Generic configuration manager
 	 * @param FormFactory $factory Generic form factory
@@ -49,6 +54,7 @@ class ConfigJsonSplitterFormFactory {
 	public function __construct(GenericManager $manager, FormFactory $factory) {
 		$this->manager = $manager;
 		$this->factory = $factory;
+		$this->manager->setComponent('iqrf::JsonSplitter');
 	}
 
 	/**
@@ -57,26 +63,32 @@ class ConfigJsonSplitterFormFactory {
 	 * @return Form JSON splitter configuration form
 	 */
 	public function create(JsonSplitterPresenter $presenter): Form {
+		$this->presenter = $presenter;
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('config.jsonSplitter.form'));
-		$this->manager->setComponent('iqrf::JsonSplitter');
 		$this->manager->setFileName($this->manager->getInstanceFiles()[0]);
 		$form->addText('instance', 'instance')->setRequired('messages.instance');
 		$form->addCheckbox('validateJsonResponse', 'validateJsonResponse');
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');
 		$form->setDefaults($this->manager->load());
-		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
-			try {
-				$this->manager->save($values);
-				$presenter->flashMessage('config.messages.success', 'success');
-			} catch (IOException $e) {
-				$presenter->flashMessage('config.messages.writeFailure', 'danger');
-			} finally {
-				$presenter->redirect('Homepage:default');
-			}
-		};
+		$form->onSuccess[] = [$this, 'save'];
 		return $form;
+	}
+
+	/**
+	 * Save JSON Splitter configuration
+	 * @param Form $form JSON Splitter configuration form
+	 */
+	public function save(Form $form) {
+		try {
+			$this->manager->save($form->getValues());
+			$this->presenter->flashMessage('config.messages.success', 'success');
+		} catch (IOException $e) {
+			$this->presenter->flashMessage('config.messages.writeFailure', 'danger');
+		} finally {
+			$this->presenter->redirect('Homepage:default');
+		}
 	}
 
 }

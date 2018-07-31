@@ -42,6 +42,16 @@ class ConfigSchedulerFormFactory {
 	private $factory;
 
 	/**
+	 * @var int Event ID
+	 */
+	private $id;
+
+	/**
+	 * @var SchedulerPresenter Scheduler presenter
+	 */
+	private $presenter;
+
+	/**
 	 * Constructor
 	 * @param FormFactory $factory Generic form factory
 	 * @param SchedulerManager $manager Scheduler manager
@@ -53,15 +63,16 @@ class ConfigSchedulerFormFactory {
 
 	/**
 	 * Create Scheduler configuration form
-	 * @param SchedulerPresenter $presenter
+	 * @param SchedulerPresenter $presenter Scheduler presenter
 	 * @return Form Scheduler configuration form
 	 */
 	public function create(SchedulerPresenter $presenter): Form {
-		$id = intval($presenter->getParameter('id'));
+		$this->presenter = $presenter;
+		$this->id = intval($presenter->getParameter('id'));
 		$form = $this->factory->create();
 		$translator = $form->getTranslator();
 		$form->setTranslator($translator->domain('config.scheduler.form'));
-		$defaults = $this->manager->load($id);
+		$defaults = $this->manager->load($this->id);
 		$cTypes = [
 			'dpa' => 'cTypes.dpa',
 		];
@@ -121,17 +132,23 @@ class ConfigSchedulerFormFactory {
 		$form->addSubmit('save', 'Save');
 		$form->setDefaults($defaults);
 		$form->addProtection('core.errors.form-timeout');
-		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $id) {
-			try {
-				$this->manager->save($values, $id);
-				$presenter->flashMessage('config.messages.success', 'success');
-			} catch (IOException $e) {
-				$presenter->flashMessage('config.messages.writeFailure', 'danger');
-			} finally {
-				$presenter->redirect('Scheduler:default');
-			}
-		};
+		$form->onSuccess[] = [$this, 'save'];
 		return $form;
+	}
+
+	/**
+	 * Save scheduler's event configuration
+	 * @param Form $form Scheduler's event configuration fore
+	 */
+	public function save(Form $form) {
+		try {
+			$this->manager->save($form->getValues(), $this->id);
+			$this->presenter->flashMessage('config.messages.success', 'success');
+		} catch (IOException $e) {
+			$this->presenter->flashMessage('config.messages.writeFailure', 'danger');
+		} finally {
+			$this->presenter->redirect('Scheduler:default');
+		}
 	}
 
 }

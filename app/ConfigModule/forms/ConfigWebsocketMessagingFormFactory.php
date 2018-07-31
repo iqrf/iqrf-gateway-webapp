@@ -42,6 +42,21 @@ class ConfigWebsocketMessagingFormFactory {
 	private $factory;
 
 	/**
+	 * @var array Files with websocket messaging services
+	 */
+	private $instances;
+
+	/**
+	 * @var int Websocket messaging ID
+	 */
+	private $id;
+
+	/**
+	 * @var WebsocketPresenter Websocket interface presenter
+	 */
+	private $presenter;
+
+	/**
 	 * Constructor
 	 * @param GenericManager $manager Generic configuration manager
 	 * @param FormFactory $factory Generic form factory
@@ -49,6 +64,8 @@ class ConfigWebsocketMessagingFormFactory {
 	public function __construct(GenericManager $manager, FormFactory $factory) {
 		$this->manager = $manager;
 		$this->factory = $factory;
+		$this->manager->setComponent('iqrf::WebsocketMessaging');
+		$this->instances = $this->manager->getInstanceFiles();
 	}
 
 	/**
@@ -57,15 +74,13 @@ class ConfigWebsocketMessagingFormFactory {
 	 * @return Form Websocket messaging configuration form
 	 */
 	public function create(WebsocketPresenter $presenter): Form {
-		$id = intval($presenter->getParameter('id'));
+		$this->presenter = $presenter;
+		$this->id = intval($presenter->getParameter('id'));
 		$form = $this->factory->create();
 		$translator = $form->getTranslator();
 		$form->setTranslator($translator->domain('config.websocket.messaging.form'));
-		$this->manager->setComponent('iqrf::WebsocketMessaging');
-		$instances = $this->manager->getInstanceFiles();
-		$instanceExist = array_key_exists($id, $instances);
-		if ($instanceExist) {
-			$this->manager->setFileName($instances[$id]);
+		if ($this->isExists()) {
+			$this->manager->setFileName($this->instances[$this->id]);
 			$defaults = $this->manager->load();
 		} else {
 			$defaults = ['RequiredInterfaces' => [['name' => 'shape::IWebsocketService', 'target' => ['instance' => '']]]];
@@ -87,23 +102,38 @@ class ConfigWebsocketMessagingFormFactory {
 		}
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');
-		if ($instanceExist) {
+		if ($this->isExists()) {
 			$form->setDefaults($defaults);
 		}
-		$form->onSuccess[] = function (Form $form, $values) use ($presenter, $instanceExist) {
-			if (!$instanceExist) {
-				$this->manager->setFileName('iqrf__' . $values['instance']);
-			}
-			try {
-				$this->manager->save($values);
-				$presenter->flashMessage('config.messages.success', 'success');
-			} catch (IOException $e) {
-				$presenter->flashMessage('config.messages.writeFailure', 'danger');
-			} finally {
-				$presenter->redirect('Websocket:default');
-			}
-		};
+		$form->onSuccess[] = [$this, 'save'];
 		return $form;
+	}
+
+	/**
+	 * Check if instance exists
+	 * @return bool Is instance exists?
+	 */
+	public function isExists(): bool {
+		return array_key_exists($this->id, $this->instances);
+	}
+
+	/**
+	 * Save websocket messaging configuration
+	 * @param Form $form Websocket messaging configuration form
+	 */
+	public function save(Form $form) {
+		$values = $form->getValues();
+		if (!$this->isExists()) {
+			$this->manager->setFileName('iqrf__' . $values['instance']);
+		}
+		try {
+			$this->manager->save($values);
+			$this->presenter->flashMessage('config.messages.success', 'success');
+		} catch (IOException $e) {
+			$this->presenter->flashMessage('config.messages.writeFailure', 'danger');
+		} finally {
+			$this->presenter->redirect('Websocket:default');
+		}
 	}
 
 }
