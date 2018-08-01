@@ -66,6 +66,7 @@ class SignInFormFactory {
 	 * @return Form Sign in form
 	 */
 	public function create(SignPresenter $presenter): Form {
+		$this->presenter = $presenter;
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('core.sign.inForm'));
 		$form->addText('username', 'username')->setRequired('messages.username');
