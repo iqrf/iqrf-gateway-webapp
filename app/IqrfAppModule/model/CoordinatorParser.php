@@ -46,9 +46,24 @@ class CoordinatorParser implements IParser {
 				return $this->parseGetNodes($packet);
 			case '82':
 				return $this->parseGetNodes($packet);
+			case '84':
+				return $this->parseBondNode($packet);
 			default:
 				return null;
 		}
+	}
+
+	/**
+	 * Parse response to DPA Coordinator - "Bond node" request
+	 * @param string $packet DPA packet response
+	 * @return array Bonded node
+	 */
+	public function parseBondNode(string $packet): array {
+		$data = [];
+		$packetArray = explode('.', $packet);
+		$data['bondAddr'] = $packetArray[8];
+		$data['devNr'] = $packetArray[9];
+		return $data;
 	}
 
 	/**
