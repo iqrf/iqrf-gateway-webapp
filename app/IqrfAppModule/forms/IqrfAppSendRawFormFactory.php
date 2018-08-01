@@ -22,6 +22,7 @@ namespace App\IqrfAppModule\Forms;
 
 use App\Forms\FormFactory;
 use App\IqrfAppModule\Model\EmptyResponseException;
+use App\IqrfAppModule\Model\DpaErrorException;
 use App\IqrfAppModule\Model\IqrfAppManager;
 use App\IqrfAppModule\Presenters\SendRawPresenter;
 use Nette;
@@ -65,6 +66,7 @@ class IqrfAppSendRawFormFactory {
 	 * @return Form IQRF App send RAW packet form
 	 */
 	public function create(SendRawPresenter $presenter): Form {
+		$this->presenter = $presenter;
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('iqrfapp.send-packet'));
 		$form->addText('packet', 'packet')->setRequired('messages.packet');
@@ -101,10 +103,15 @@ class IqrfAppSendRawFormFactory {
 			try {
 				$response = $this->manager->sendRaw($packet, $timeout);
 				$this->presenter->handleShowResponse($response);
-			} catch (EmptyResponseException $e) {
-				$message = 'No response from IQRF Gateway Daemon.';
-				$form->addError($message);
-				$this->presenter->flashMessage($message, 'danger');
+			} catch (\Exception $e) {
+				if ($e instanceof EmptyResponseException ||
+						$e instanceof DpaErrorException) {
+					$message = 'No response from IQRF Gateway Daemon.';
+					$form->addError($message);
+					$this->presenter->flashMessage($message, 'danger');
+				} else {
+					throw $e;
+				}
 			}
 		} else {
 			$message = 'Invalid DPA packet.';

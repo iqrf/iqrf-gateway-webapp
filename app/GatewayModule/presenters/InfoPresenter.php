@@ -23,6 +23,7 @@ namespace App\GatewayModule\Presenters;
 use App\GatewayModule\Model\DiagnosticsManager;
 use App\GatewayModule\Model\InfoManager;
 use App\IqrfAppModule\Model\EmptyResponseException;
+use App\IqrfAppModule\Model\DpaErrorException;
 use App\Presenters\ProtectedPresenter;
 use Nette\Application\BadRequestException;
 use Tracy\Debugger;
@@ -65,8 +66,12 @@ class InfoPresenter extends ProtectedPresenter {
 		$this->template->webAppVersion = $this->infoManager->getWebAppVersion();
 		try {
 			$this->template->module = $this->infoManager->getCoordinatorInfo();
-		} catch (EmptyResponseException $e) {
-			Debugger::log('Cannot get information about the Coordinator.');
+		} catch (\Exception $e) {
+			if ($e instanceof EmptyResponseException || $e instanceof DpaErrorException) {
+				$this->presenter->flashMessage('Cannot get information about the Coordinator.', 'danger');
+			} else {
+				throw $e;
+			}
 		}
 	}
 

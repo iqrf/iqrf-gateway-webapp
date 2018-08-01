@@ -217,22 +217,11 @@ class IqrfAppManager {
 	 * @throws EmptyResponseException
 	 */
 	public function parseResponse(array $json) {
-		$jsonResponse = $json['response'];
-		if (empty($jsonResponse)) {
-			throw new EmptyResponseException();
-		}
-		$response = Json::decode($jsonResponse, Json::FORCE_ARRAY)['data'];
-		$status = $response['status'];
-		if ($status !== 0) {
-			return null;
-			/** @todo throw own exception */
-		}
-		$packet = Strings::lower($response['rsp']['rData']);
+		$this->checkStatus($json);
+		$packet = $this->getPacket($json, 'response');
 		if (array_key_exists('request', $json)) {
-			$request = Json::decode($json['request'], Json::FORCE_ARRAY);
-			$requestPacket = Strings::lower($request['data']['req']['rData']);
-			$requestNadr = explode('.', $requestPacket)[0];
-			if (empty($packet) && $requestNadr === 'ff') {
+			$nadr = explode('.', $this->getPacket($json, 'request'))[0];
+			if (empty($packet) && $nadr === 'ff') {
 				return null;
 			}
 		}
@@ -245,6 +234,44 @@ class IqrfAppManager {
 				return $parsedData;
 			}
 		}
+	}
+
+	public function checkStatus(array $json) {
+		$status = Json::decode($json['response'], Json::FORCE_ARRAY)['data']['status'];
+		switch ($status) {
+			case -8: throw new ExclusiveAccessException();
+			case -7: throw new BadResponseException();
+			case -6: throw new BadRequestException();
+			case -5: throw new InterfaceBusyException();
+			case -4: throw new InterfaceErrorException();
+			case -3: throw new AbortedException();
+			case -2: throw new InterfaceQueueFullException();
+			case -1: throw new TimeoutException();
+			case 0: break;
+			case 1: throw new GeneralFailureException();
+			case 2: throw new IncorrectPcmdException();
+			case 3: throw new IncorrectPnumException();
+			case 4: throw new IncorrectAddressException();
+			case 5: throw new IncorrectDataLengthException();
+			case 6: throw new IncorrectDataException();
+			case 7: throw new IncorrectHwpidUsedException();
+			case 8: throw new IncorrectNadrException();
+			case 9: throw new CustomHandlerConsumedInterfaceDataException();
+			case 10: throw new MissingCustomDpaHandlerException();
+			default: throw new UserErrorException();
+		}
+	}
+
+	/**
+	 * Get a DPA packet from JSON DPA request and reponse
+	 * @param array $json JSON DPA request and response
+	 * @param string $type Data type (request|response)
+	 * @return string DPA packet
+	 */
+	public function getPacket(array $json, string $type): string {
+		$array = Json::decode($json[$type], Json::FORCE_ARRAY);
+		$param = $type === 'request' ? 'req' : 'rsp';
+		return Strings::lower($array['data'][$param]['rData']);
 	}
 
 }

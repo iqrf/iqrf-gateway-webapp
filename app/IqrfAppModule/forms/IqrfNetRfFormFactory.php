@@ -22,7 +22,9 @@ namespace App\IqrfAppModule\Forms;
 
 use App\Forms\FormFactory;
 use App\IqrfAppModule\Model\EmptyResponseException;
+use App\IqrfAppModule\Model\DpaErrorException;
 use App\IqrfAppModule\Model\IqrfNetManager;
+use App\IqrfAppModule\Presenters\NetworkPresenter;
 use Nette;
 use Nette\Forms\Form;
 use Nette\Forms\Controls\SubmitButton;
@@ -50,6 +52,11 @@ class IqrfNetRfFormFactory {
 	private $rfBand;
 
 	/**
+	 * @var NetworkPresenter IQMESH Network presenter
+	 */
+	private $presenter;
+
+	/**
 	 * Constructor
 	 * @param FormFactory $factory Generic form factory
 	 * @param IqrfNetManager $manager IQMESH Network manager
@@ -61,9 +68,11 @@ class IqrfNetRfFormFactory {
 
 	/**
 	 * Create IQMESH Access password form
+	 * @param NetworkPresenter $presenter IQMESH Network presenter
 	 * @return Form IQMESH Access password form
 	 */
-	public function create(): Form {
+	public function create(NetworkPresenter $presenter): Form {
+		$this->presenter = $presenter;
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('iqrfapp.network-manager.rf-settings'));
 		$rfBands = [
@@ -80,8 +89,13 @@ class IqrfNetRfFormFactory {
 		];
 		try {
 			$this->rfBand = $this->manager->readHwpConfiguration()['rfBand'] ?? 'ERROR';
-		} catch (EmptyResponseException $e) {
-			$this->rfBand = 'ERROR';
+		} catch (\Exception $e) {
+			if ($e instanceof EmptyResponseException ||
+					$e instanceof DpaErrorException) {
+				$this->rfBand = 'ERROR';
+			} else {
+				throw $e;
+			}
 		}
 		$form->addSelect('rfBand', 'rfBand', $rfBands)->setDisabled()
 				->setDefaultValue($this->rfBand);
@@ -109,7 +123,18 @@ class IqrfNetRfFormFactory {
 		if ($this->rfBand === 'ERROR') {
 			$form->addError('Invalid RF Band.');
 		} else {
-			$this->manager->setRfChannel($values['rfChannel'], strval($values['type']));
+			try {
+				$this->manager->setRfChannel($values['rfChannel'], strval($values['type']));
+			} catch (\Exception $e) {
+				if ($e instanceof EmptyResponseException ||
+						$e instanceof DpaErrorException) {
+					$message = 'No response from IQRF Gateway Daemon.';
+					$form->addError($message);
+					$this->presenter->flashMessage($message, 'danger');
+				} else {
+					throw $e;
+				}
+			}
 		}
 	}
 

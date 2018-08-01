@@ -21,7 +21,10 @@ declare(strict_types = 1);
 namespace App\IqrfAppModule\Forms;
 
 use App\Forms\FormFactory;
+use App\IqrfAppModule\Model\EmptyResponseException;
+use App\IqrfAppModule\Model\DpaErrorException;
 use App\IqrfAppModule\Model\IqrfNetManager;
+use App\IqrfAppModule\Presenters\NetworkPresenter;
 use Nette;
 use Nette\Forms\Form;
 use Nette\Forms\Controls\SubmitButton;
@@ -44,6 +47,11 @@ class IqrfNetSecurityFormFactory {
 	private $factory;
 
 	/**
+	 * @var NetworkPresenter IQMESH Network presenter
+	 */
+	private $presenter;
+
+	/**
 	 * Constructor
 	 * @param FormFactory $factory Generic form factory
 	 * @param IqrfNetManager $manager IQMESH Network manager
@@ -55,9 +63,11 @@ class IqrfNetSecurityFormFactory {
 
 	/**
 	 * Create IQMESH Access password form
+	 * @param NetworkPresenter $presenter IQMESH Network presenter
 	 * @return Form IQMESH Access password form
 	 */
-	public function create(): Form {
+	public function create(NetworkPresenter $presenter): Form {
+		$this->presenter = $presenter;
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('iqrfapp.network-manager.security'));
 		$inputFormats = [
@@ -85,7 +95,18 @@ class IqrfNetSecurityFormFactory {
 	 */
 	public function accessPasword(SubmitButton $button) {
 		$values = $button->getForm()->getValues();
-		$this->manager->setSecurity($values['password'], $values['format'], IqrfNetManager::SECURITY_ACCESS_PASSOWRD);
+		try {
+			$this->manager->setSecurity($values['password'], $values['format'], IqrfNetManager::SECURITY_ACCESS_PASSOWRD);
+		} catch (\Exception $e) {
+			if ($e instanceof EmptyResponseException ||
+					$e instanceof DpaErrorException) {
+				$message = 'No response from IQRF Gateway Daemon.';
+				$button->addError($message);
+				$this->presenter->flashMessage($message, 'danger');
+			} else {
+				throw $e;
+			}
+		}
 	}
 
 	/**
@@ -94,7 +115,18 @@ class IqrfNetSecurityFormFactory {
 	 */
 	public function userKey(SubmitButton $button) {
 		$values = $button->getForm()->getValues();
-		$this->manager->setSecurity($values['password'], $values['format'], IqrfNetManager::SECURITY_USER_KEY);
+		try {
+			$this->manager->setSecurity($values['password'], $values['format'], IqrfNetManager::SECURITY_USER_KEY);
+		} catch (\Exception $e) {
+			if ($e instanceof EmptyResponseException ||
+					$e instanceof DpaErrorException) {
+				$message = 'No response from IQRF Gateway Daemon.';
+				$button->addError($message);
+				$this->presenter->flashMessage($message, 'danger');
+			} else {
+				throw $e;
+			}
+		}
 	}
 
 }

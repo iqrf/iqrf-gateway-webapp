@@ -21,7 +21,10 @@ declare(strict_types = 1);
 namespace App\IqrfAppModule\Forms;
 
 use App\Forms\FormFactory;
+use App\IqrfAppModule\Model\EmptyResponseException;
+use App\IqrfAppModule\Model\DpaErrorException;
 use App\IqrfAppModule\Model\IqrfNetManager;
+use App\IqrfAppModule\Presenters\NetworkPresenter;
 use Nette;
 use Nette\Forms\Form;
 use Nette\Forms\Controls\SubmitButton;
@@ -44,6 +47,11 @@ class IqrfNetBondingFormFactory {
 	private $factory;
 
 	/**
+	 * @var NetworkPresenter IQMESH Network presenter
+	 */
+	private $presenter;
+
+	/**
 	 * Constructor
 	 * @param FormFactory $factory Generic form factory
 	 * @param IqrfNetManager $manager IQMESH Network manager
@@ -55,9 +63,11 @@ class IqrfNetBondingFormFactory {
 
 	/**
 	 * Create IQMESH bonding form
+	 * @param NetworkPresenter $presenter IQMESH Network presenter
 	 * @return Form IQMESH bonding form
 	 */
-	public function create(): Form {
+	public function create(NetworkPresenter $presenter): Form {
+		$this->presenter = $presenter;
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('iqrfapp.network-manager.bonding'));
 		$form->addCheckbox('autoAddress', 'autoAddress');
@@ -80,7 +90,18 @@ class IqrfNetBondingFormFactory {
 	public function bondNode(SubmitButton $button) {
 		$values = $button->getForm()->getValues();
 		$address = $values['autoAddress'] ? '00' : $values['address'];
-		$this->manager->bondNode($address);
+		try {
+			$this->manager->bondNode($address);
+		} catch (\Exception $e) {
+			if ($e instanceof EmptyResponseException ||
+					$e instanceof DpaErrorException) {
+				$message = 'No response from IQRF Gateway Daemon.';
+				$button->addError($message);
+				$this->presenter->flashMessage($message, 'danger');
+			} else {
+				throw $e;
+			}
+		}
 	}
 
 	/**
@@ -88,7 +109,18 @@ class IqrfNetBondingFormFactory {
 	 * @param SubmitButton $button Submit button for cleaning all bonds
 	 */
 	public function clearAllBonds(SubmitButton $button) {
-		$this->manager->clearAllBonds();
+		try {
+			$this->manager->clearAllBonds();
+		} catch (\Exception $e) {
+			if ($e instanceof EmptyResponseException ||
+					$e instanceof DpaErrorException) {
+				$message = 'No response from IQRF Gateway Daemon.';
+				$button->addError($message);
+				$this->presenter->flashMessage($message, 'danger');
+			} else {
+				throw $e;
+			}
+		}
 	}
 
 	/**
@@ -97,7 +129,18 @@ class IqrfNetBondingFormFactory {
 	 */
 	public function rebondNode(SubmitButton $button) {
 		$values = $button->getForm()->getValues();
-		$this->manager->rebondNode($values['address']);
+		try {
+			$this->manager->rebondNode($values['address']);
+		} catch (\Exception $e) {
+			if ($e instanceof EmptyResponseException ||
+					$e instanceof DpaErrorException) {
+				$message = 'No response from IQRF Gateway Daemon.';
+				$button->addError($message);
+				$this->presenter->flashMessage($message, 'danger');
+			} else {
+				throw $e;
+			}
+		}
 	}
 
 	/**
@@ -106,7 +149,18 @@ class IqrfNetBondingFormFactory {
 	 */
 	public function removeNode(SubmitButton $button) {
 		$values = $button->getForm()->getValues();
-		$this->manager->removeNode($values['address']);
+		try {
+			$this->manager->removeNode($values['address']);
+		} catch (\Exception $e) {
+			if ($e instanceof EmptyResponseException ||
+					$e instanceof DpaErrorException) {
+				$message = 'No response from IQRF Gateway Daemon.';
+				$button->addError($message);
+				$this->presenter->flashMessage($message, 'danger');
+			} else {
+				throw $e;
+			}
+		}
 	}
 
 }

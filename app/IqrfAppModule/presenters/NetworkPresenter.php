@@ -61,7 +61,7 @@ class NetworkPresenter extends ProtectedPresenter {
 	 * @return Form IQMESH Bonding form
 	 */
 	protected function createComponentIqrfNetBondingForm(): Form {
-		return $this->bondingForm->create();
+		return $this->bondingForm->create($this);
 	}
 
 	/**
@@ -69,7 +69,7 @@ class NetworkPresenter extends ProtectedPresenter {
 	 * @return Form IQMESH Discovery form
 	 */
 	protected function createComponentIqrfNetDiscoveryForm(): Form {
-		return $this->discoveryForm->create();
+		return $this->discoveryForm->create($this);
 	}
 
 	/**
@@ -77,7 +77,7 @@ class NetworkPresenter extends ProtectedPresenter {
 	 * @return Form IQMESH RF form
 	 */
 	protected function createComponentIqrfNetRfForm(): Form {
-		return $this->rfForm->create();
+		return $this->rfForm->create($this);
 	}
 
 	/**
@@ -85,7 +85,7 @@ class NetworkPresenter extends ProtectedPresenter {
 	 * @return Form IQMESH Security form
 	 */
 	protected function createComponentIqrfNetSecurityForm(): Form {
-		return $this->securityForm->create();
+		return $this->securityForm->create($this);
 	}
 
 }

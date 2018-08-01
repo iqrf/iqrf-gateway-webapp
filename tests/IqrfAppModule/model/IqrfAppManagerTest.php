@@ -10,10 +10,10 @@ declare(strict_types = 1);
 
 namespace Test\IqrfAppModule\Model;
 
-use App\IqrfAppModule\Model\EmptyResponseException;
 use App\IqrfAppModule\Model\InvalidOperationModeException;
 use App\IqrfAppModule\Model\IqrfAppManager;
 use App\IqrfAppModule\Model\MessageIdManager;
+use App\IqrfAppModule\Model\TimeoutException;
 use App\Model\FileManager;
 use App\Model\JsonFileManager;
 use Nette\DI\Container;
@@ -178,14 +178,13 @@ class IqrfAppManagerTest extends TestCase {
 		Assert::equal($expectedEnumeration, $this->iqrfAppManager->parseResponse($responseEnumeration));
 		$packetLedrOn['response'] = $this->fileManager->read('response-ledr-on.json');
 		Assert::null($this->iqrfAppManager->parseResponse($packetLedrOn));
-		$packetIoTKitSe['response'] = $this->fileManager->read('response-error.json');
-		Assert::null($this->iqrfAppManager->parseResponse($packetIoTKitSe));
 		$packetBroadcast['request'] = $this->fileManager->read('request-broadcast.json');
 		$packetBroadcast['response'] = $this->fileManager->read('response-broadcast.json');
 		Assert::null($this->iqrfAppManager->parseResponse($packetBroadcast));
 		Assert::exception(function () {
-			$this->iqrfAppManager->parseResponse(['response' => '']);
-		}, EmptyResponseException::class);
+			$timeout['response'] = $this->fileManager->read('response-error.json');
+			$this->iqrfAppManager->parseResponse($timeout);
+		}, TimeoutException::class);
 	}
 
 }
