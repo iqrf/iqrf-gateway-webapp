@@ -170,7 +170,7 @@ class GenericManager {
 	/**
 	 * Get an instance file name with the property
 	 * @param string $type Property type
-	 * @param type $value Property value
+	 * @param mixed $value Property value
 	 * @return string Instance file name
 	 */
 	public function getInstanceByProperty(string $type, $value) {
@@ -186,7 +186,7 @@ class GenericManager {
 
 	/**
 	 * Fix a required interfaces in the configuration
-	 * @param array $configuration Configuration
+	 * @param array $configuration Configuration to fix
 	 * @return array Configuration with a fixed required interfaces
 	 */
 	public function fixRequiredInterfaces(array $configuration) :array {
