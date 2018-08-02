@@ -74,7 +74,8 @@ class GenericManager {
 	 * @return array Array for form
 	 */
 	public function load(): array {
-		return $this->fileManager->read($this->fileName);
+		$configuration = $this->fileManager->read($this->fileName);
+		return $this->fixRequiredInterfaces($configuration);
 	}
 
 	/**
@@ -164,6 +165,45 @@ class GenericManager {
 			$instances[] = $instance['instance'];
 		}
 		return $instances;
+	}
+
+	/**
+	 * Get an instance file name with the property
+	 * @param string $type Property type
+	 * @param type $value Property value
+	 * @return string Instance file name
+	 */
+	public function getInstanceByProperty(string $type, $value) {
+		$dir = $this->fileManager->getDirectory();
+		foreach (Finder::findFiles('*.json')->exclude('config.json')->from($dir) as $file) {
+			$fileName = Strings::replace($file->getRealPath(), ['~^' . realpath($dir) . '/~', '/.json$/'], '');
+			$json = $this->fileManager->read($fileName);
+			if (array_key_exists($type, $json) && $json[$type] === $value) {
+				return $fileName;
+			}
+		}
+	}
+
+	/**
+	 * Fix a required interfaces in the configuration
+	 * @param array $configuration Configuration
+	 * @return array Configuration with a fixed required interfaces
+	 */
+	public function fixRequiredInterfaces(array $configuration) :array {
+		if (!array_key_exists('RequiredInterfaces', $configuration)) {
+			return $configuration;
+		}
+		$requiredInterfaces = $configuration['RequiredInterfaces'];
+		foreach ($requiredInterfaces as $id => $requiredInterface) {
+			if (!array_key_exists('instance', $requiredInterface['target'])) {
+				$value = reset($requiredInterface['target']);
+				$property = key($requiredInterface['target']);
+				$instanceFileName = $this->getInstanceByProperty($property, $value);
+				$instanceName = $this->fileManager->read($instanceFileName)['instance'];
+				$configuration['RequiredInterfaces'][$id]['target']['instance'] = $instanceName;
+			}
+		}
+		return $configuration;
 	}
 
 }

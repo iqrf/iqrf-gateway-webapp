@@ -51,6 +51,11 @@ class WebsocketManager {
 	private $fileNames;
 
 	/**
+	 * @var GenericManager Generic configuration manager
+	 */
+	private $genericManager;
+
+	/**
 	 * @var array Websocket instances
 	 */
 	private $instances;
@@ -62,10 +67,12 @@ class WebsocketManager {
 
 	/**
 	 * Constructor
+	 * @param GenericManager $genericManager Generic configuration manager
 	 * @param JsonFileManager $fileManager JSON file manager
 	 * @param JsonSchemaManager $schemaManager JSON schema manager
 	 */
-	public function __construct(JsonFileManager $fileManager, JsonSchemaManager $schemaManager) {
+	public function __construct(GenericManager $genericManager, JsonFileManager $fileManager, JsonSchemaManager $schemaManager) {
+		$this->genericManager = $genericManager;
 		$this->fileManager = $fileManager;
 		$this->schemaManager = $schemaManager;
 	}
@@ -76,7 +83,7 @@ class WebsocketManager {
 	public function delete(int $id) {
 		$instances = $this->getInstanceFiles($this->components['messaging']);
 		$this->fileNames['messaging'] = Arrays::pick($instances, $id);
-		$messaging = $this->fileManager->read($this->fileNames['messaging']);
+		$messaging = $this->read($this->fileNames['messaging']);
 		$serviceInsatnce = $messaging['RequiredInterfaces'][0]['target']['instance'];
 		$this->fileNames['service'] = $this->getServiceFile($serviceInsatnce);
 		$this->fileManager->delete($this->fileNames['messaging']);
@@ -90,10 +97,10 @@ class WebsocketManager {
 	public function load(int $id): array {
 		$instances = $this->getInstanceFiles($this->components['messaging']);
 		$this->fileNames['messaging'] = Arrays::pick($instances, $id);
-		$messaging = $this->fileManager->read($this->fileNames['messaging']);
+		$messaging = $this->read($this->fileNames['messaging']);
 		$serviceInsatnce = $messaging['RequiredInterfaces'][0]['target']['instance'];
 		$this->fileNames['service'] = $this->getServiceFile($serviceInsatnce);
-		$service = $this->fileManager->read($this->fileNames['service']);
+		$service = $this->read($this->fileNames['service']);
 		$this->instances = [
 			'messaging' => $messaging['instance'],
 			'service' => $service['instance'],
@@ -105,6 +112,16 @@ class WebsocketManager {
 			'port' => $service['WebsocketPort'],
 		];
 		return $array;
+	}
+
+	/**
+	 * Read a configuration
+	 * @param string $fileName File name (without .json)
+	 * @return array Parsed configuration
+	 */
+	private function read(string $fileName): array {
+		$configuration = $this->fileManager->read($fileName);
+		return $this->genericManager->fixRequiredInterfaces($configuration);
 	}
 
 	/**
@@ -167,7 +184,7 @@ class WebsocketManager {
 		$instances = [];
 		foreach (Finder::findFiles('*.json')->exclude('config.json')->from($dir) as $file) {
 			$fileName = Strings::replace($file->getRealPath(), ['~^' . realpath($dir) . '/~', '/.json$/'], '');
-			$json = $this->fileManager->read($fileName);
+			$json = $this->read($fileName);
 			if (Arrays::pick($json, 'component', null) === $component) {
 				$instances[] = $fileName;
 			}
@@ -176,14 +193,14 @@ class WebsocketManager {
 	}
 
 	/**
-	 * Get websocket service file name vy instance name
+	 * Get websocket service file name by instance name
 	 * @param string $instanceName Instance name
 	 * @return string|null Websocket service file name
 	 */
 	public function getServiceFile(string $instanceName) {
 		$services = $this->getInstanceFiles($this->components['service']);
 		foreach ($services as $service) {
-			$json = $this->fileManager->read($service);
+			$json = $this->read($service);
 			if (Arrays::pick($json, 'instance') === $instanceName) {
 				return $service;
 			}
