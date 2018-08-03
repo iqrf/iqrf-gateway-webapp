@@ -28,6 +28,9 @@ use Nette;
 use Nette\Forms\Form;
 use Nette\IOException;
 
+/**
+ * UDP interface configuration form factory
+ */
 class ConfigUdpFormFactory {
 
 	use Nette\SmartObject;

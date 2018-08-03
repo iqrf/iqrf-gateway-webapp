@@ -25,22 +25,25 @@ use App\ConfigModule\Forms\ConfigSchedulerFormFactory;
 use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
+/**
+ * Scheduler configuration presenter
+ */
 class SchedulerPresenter extends ProtectedPresenter {
 
 	/**
-	 * @var ConfigSchedulerFormFactory Scheduler configuration form factory
+	 * @var ConfigSchedulerFormFactory Scheduler's task configuration form factory
 	 * @inject
 	 */
 	public $formFactory;
 
 	/**
-	 * @var SchedulerManager
+	 * @var SchedulerManager Scheduler's task manager
 	 */
 	private $configManager;
 
 	/**
 	 * Constructor
-	 * @param SchedulerManager $configManager
+	 * @param SchedulerManager $configManager Scheduler's task manager
 	 */
 	public function __construct(SchedulerManager $configManager) {
 		$this->configManager = $configManager;
@@ -56,7 +59,7 @@ class SchedulerPresenter extends ProtectedPresenter {
 
 	/**
 	 * Edit task in scheduler
-	 * @param int $id ID of MQTT interface
+	 * @param int $id ID of task in Scheduler
 	 */
 	public function renderEdit(int $id) {
 		$this->template->id = $id;

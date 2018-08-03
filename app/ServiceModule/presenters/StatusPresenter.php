@@ -25,18 +25,18 @@ use App\ServiceModule\Model\NotSupportedInitSystemException;
 use App\ServiceModule\Model\ServiceManager;
 
 /**
- * Service status presenter.
+ * Service status presenter
  */
 class StatusPresenter extends ProtectedPresenter {
 
 	/**
-	 * @var ServiceManager
+	 * @var ServiceManager Service manager
 	 */
 	private $serviceManager;
 
 	/**
 	 * Constructor.
-	 * @param ServiceManager $serviceManager
+	 * @param ServiceManager $serviceManager Service manager
 	 */
 	public function __construct(ServiceManager $serviceManager) {
 		$this->serviceManager = $serviceManager;
@@ -44,7 +44,7 @@ class StatusPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Render disambiguation
+	 * Render IQRF Gateway Daemon's service status
 	 */
 	public function renderDefault() {
 		try {

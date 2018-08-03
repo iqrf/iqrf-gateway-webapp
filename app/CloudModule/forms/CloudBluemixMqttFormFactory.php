@@ -32,7 +32,7 @@ use Nette\Forms\Controls\SubmitButton;
 use Nette\IOException;
 
 /**
- * Form for creating MQTT instance for IBM Bluemíx
+ * Form for creating MQTT connection into IBM Bluemíx
  */
 class CloudBluemixMqttFormFactory {
 

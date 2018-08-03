@@ -28,6 +28,9 @@ use Nette\Utils\ArrayHash;
 use Nette\Utils\Finder;
 use Nette\Utils\Strings;
 
+/**
+ * Generic configuration form factory
+ */
 class GenericManager {
 
 	use Nette\SmartObject;

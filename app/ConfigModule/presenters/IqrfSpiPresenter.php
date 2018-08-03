@@ -26,6 +26,9 @@ use App\Presenters\ProtectedPresenter;
 use App\Model\JsonFileManager;
 use Nette\Forms\Form;
 
+/**
+ * IQRF SPI interface configuration presenter
+ */
 class IqrfSpiPresenter extends ProtectedPresenter {
 
 	/**
@@ -55,7 +58,7 @@ class IqrfSpiPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Render IQRF interface configurator
+	 * Render IQRF SPI interface configurator
 	 */
 	public function renderDefault() {
 		$this->template->spiInterfaces = $this->iqrfManager->getSpiInterfaces();
@@ -63,8 +66,8 @@ class IqrfSpiPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Create IQRF SPI interface form
-	 * @return Form IQRF SPI interface form
+	 * Create IQRF SPI interface configuration form
+	 * @return Form IQRF SPI interface configuration form
 	 */
 	protected function createComponentConfigIqrfSpiForm(): Form {
 		return $this->spiFormFactory->create($this);

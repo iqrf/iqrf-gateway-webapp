@@ -27,6 +27,9 @@ use Nette;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Strings;
 
+/**
+ * Scheduler configuration manager
+ */
 class SchedulerManager {
 
 	use Nette\SmartObject;

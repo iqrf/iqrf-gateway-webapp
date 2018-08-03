@@ -27,18 +27,18 @@ use Nette\IOException;
 use Tracy\Debugger;
 
 /**
- * IQRF Daemon's log presenter
+ * IQRF Gateway Daemon's log presenter
  */
 class LogPresenter extends ProtectedPresenter {
 
 	/**
-	 * @var LogManager
+	 * @var LogManager IQRF Gateway Daemon's log manager
 	 */
 	private $manager;
 
 	/**
 	 * Constructor
-	 * @param LogManager $manager
+	 * @param LogManager $manager IQRF Gateway Daemon's log manager
 	 */
 	public function __construct(LogManager $manager) {
 		$this->manager = $manager;
@@ -46,7 +46,7 @@ class LogPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Render default page
+	 * Render the latest IQRF Gateway Daemon's log
 	 */
 	public function renderDefault() {
 		try {
@@ -57,7 +57,7 @@ class LogPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Download action
+	 * Download an archive with IQRF Gateway Daemon's logs action
 	 */
 	public function actionDownload() {
 		try {

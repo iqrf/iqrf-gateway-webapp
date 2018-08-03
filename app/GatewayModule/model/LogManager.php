@@ -53,8 +53,8 @@ class LogManager {
 	}
 
 	/**
-	 * Load logs of iqrf-daemon
-	 * @return string iqrf-daemon log
+	 * Load logs of IQRF Gateway Daemon
+	 * @return string IQRF Gateway Daemon's log
 	 */
 	public function load() {
 		$logFiles = [];
@@ -67,7 +67,7 @@ class LogManager {
 	}
 
 	/**
-	 * Download logs of iqrf-daemon
+	 * Download logs of IQRF Gateway Daemon
 	 * @return FileResponse HTTP response with the logs
 	 */
 	public function download(): FileResponse {

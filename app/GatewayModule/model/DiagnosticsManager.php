@@ -30,7 +30,7 @@ use Nette;
 use Nette\Application\Responses\FileResponse;
 
 /**
- * Tool for getting information about this gateway
+ * Gateway diagnostics tool
  */
 class DiagnosticsManager {
 

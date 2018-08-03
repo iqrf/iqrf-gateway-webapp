@@ -144,6 +144,7 @@ class IqrfNetManager {
 	 * Set Access password for applications using network communication.
 	 * @param string $password New access password (can be ASCII or HEX format)
 	 * @param string $inputFormat Determines in which format the password is entered
+	 * @param string $type Security type (access password or user key)
 	 * @return array DPA request and response
 	 */
 	public function setSecurity(string $password = '', string $inputFormat = self::DATA_FORMAT_ASCII, string $type = self::SECURITY_ACCESS_PASSOWRD) {

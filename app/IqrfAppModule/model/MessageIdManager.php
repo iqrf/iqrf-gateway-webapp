@@ -23,16 +23,18 @@ namespace App\IqrfAppModule\Model;
 use DateTime;
 
 /**
- * Tool for a message ID manager
+ * Tool for a message ID generation
  */
 class MessageIdManager {
 
 	/**
-	 *
 	 * @var DateTime Representation of date and time
 	 */
 	private $dateTime;
 
+	/**
+	 * Constructor
+	 */
 	public function __construct() {
 		$this->dateTime = new DateTime();
 	}

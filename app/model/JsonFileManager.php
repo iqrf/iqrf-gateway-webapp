@@ -24,7 +24,7 @@ use Nette;
 use Nette\Utils\Json;
 
 /**
- * Tool for reading and writing JSON files.
+ * Tool for reading and writing JSON files
  */
 class JsonFileManager extends FileManager {
 

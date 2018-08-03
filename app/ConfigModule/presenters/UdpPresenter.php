@@ -25,6 +25,9 @@ use App\ConfigModule\Model\GenericManager;
 use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
+/**
+ * UDP interface configuration presenter
+ */
 class UdpPresenter extends ProtectedPresenter {
 
 	/**
@@ -76,8 +79,8 @@ class UdpPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Create UDP interface form
-	 * @return Form UDP interface form
+	 * Create UDP interface configuration form
+	 * @return Form UDP interface configuration form
 	 */
 	protected function createComponentConfigUdpForm(): Form {
 		return $this->formFactory->create($this);

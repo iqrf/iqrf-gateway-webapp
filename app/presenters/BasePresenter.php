@@ -23,10 +23,11 @@ namespace App\Presenters;
 use App\Model\VersionManager;
 use Kdyby\Translation\Phrase;
 use Kdyby\Translation\Translator;
+use Nette\Application\UI\ITemplate;
 use Nette\Application\UI\Presenter;
 
 /**
- * Base presenter for all application presenters.
+ * Base presenter for all application presenters
  */
 abstract class BasePresenter extends Presenter {
 
@@ -69,6 +70,10 @@ abstract class BasePresenter extends Presenter {
 		$this->translator = $translator;
 	}
 
+	/**
+	 * Create an template
+	 * @return ITemplate Template
+	 */
 	public function createTemplate() {
 		$template = parent::createTemplate();
 		$template->setTranslator($this->translator);

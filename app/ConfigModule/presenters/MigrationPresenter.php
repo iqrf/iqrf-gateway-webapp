@@ -27,6 +27,9 @@ use Nette\Application\BadRequestException;
 use Nette\Forms\Form;
 use Tracy\Debugger;
 
+/**
+ * Confoguration migration presenter
+ */
 class MigrationPresenter extends ProtectedPresenter {
 
 	/**
@@ -36,13 +39,13 @@ class MigrationPresenter extends ProtectedPresenter {
 	public $formFactory;
 
 	/**
-	 * @var MigrationManager
+	 * @var MigrationManager Configuration migration manager
 	 */
 	private $migrationManager;
 
 	/**
 	 * Constructor
-	 * @param MigrationManager $migrationManager
+	 * @param MigrationManager $migrationManager Configuration migration manager
 	 */
 	public function __construct(MigrationManager $migrationManager) {
 		$this->migrationManager = $migrationManager;
@@ -50,7 +53,7 @@ class MigrationPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Export action
+	 * Export a configuration action
 	 */
 	public function actionExport() {
 		try {

@@ -24,6 +24,9 @@ use App\Model\JsonFileManager;
 use Nette;
 use Nette\Utils\ArrayHash;
 
+/**
+ * Component configuration manager
+ */
 class ComponentManager {
 
 	use Nette\SmartObject;
@@ -68,6 +71,7 @@ class ComponentManager {
 
 	/**
 	 * Load a component from main configuration JSON
+	 * @param int $id Component ID
 	 * @return array Array for form
 	 */
 	public function loadComponent(int $id): array {
@@ -90,6 +94,7 @@ class ComponentManager {
 	/**
 	 * Save components setting
 	 * @param ArrayHash $components Components settings
+	 * @param int $id Component ID
 	 */
 	public function save(ArrayHash $components, int $id) {
 		$json = $this->fileManager->read($this->fileName);

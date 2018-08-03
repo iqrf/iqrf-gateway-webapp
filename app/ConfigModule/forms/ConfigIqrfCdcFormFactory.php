@@ -28,6 +28,9 @@ use Nette;
 use Nette\Forms\Form;
 use Nette\IOException;
 
+/**
+ * IQRF CDC configuration form factory
+ */
 class ConfigIqrfCdcFormFactory {
 
 	use Nette\SmartObject;

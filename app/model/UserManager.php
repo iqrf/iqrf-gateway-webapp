@@ -28,7 +28,7 @@ use Nette\Database\Table\Selection;
 use Nette\Database\Table\ActiveRow;
 
 /**
- * Tool for managing users.
+ * Tool for managing users
  */
 class UserManager {
 

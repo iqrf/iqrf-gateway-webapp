@@ -24,17 +24,20 @@ use App\ConfigModule\Forms\ConfigMainFormFactory;
 use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
+/**
+ * Main daemon configuration presenter
+ */
 class MainPresenter extends ProtectedPresenter {
 
 	/**
-	 * @var ConfigMainFormFactory Daemon's main configuration form factory
+	 * @var ConfigMainFormFactory Main daemon's configuration form factory
 	 * @inject
 	 */
 	public $mainFactory;
 
 	/**
-	 * Create Main daemon settings form
-	 * @return Form Main daemon settings form
+	 * Create Main daemon's configuration form
+	 * @return Form Main daemon's configuration form
 	 */
 	protected function createComponentConfigMainForm(): Form {
 		return $this->mainFactory->create($this);

@@ -25,7 +25,7 @@ use App\ServiceModule\Model\NotSupportedInitSystemException;
 use Nette;
 
 /**
- * Tool for managing services.
+ * Tool for managing services
  */
 class ServiceManager {
 
@@ -57,7 +57,7 @@ class ServiceManager {
 	}
 
 	/**
-	 * Start IQRF daemon
+	 * Start IQRF Gateway Daemon
 	 * @throws NotSupportedInitSystemException
 	 */
 	public function start() {
@@ -75,7 +75,7 @@ class ServiceManager {
 	}
 
 	/**
-	 * Stop IQRF daemon
+	 * Stop IQRF Gateway Daemon
 	 * @throws NotSupportedInitSystemException
 	 */
 	public function stop() {
@@ -93,7 +93,7 @@ class ServiceManager {
 	}
 
 	/**
-	 * Retart IQRF daemon
+	 * Retart IQRF Gateway Daemon
 	 * @throws NotSupportedInitSystemException
 	 */
 	public function restart() {
@@ -111,7 +111,7 @@ class ServiceManager {
 	}
 
 	/**
-	 * Get status of IQRF daemon
+	 * Get status of IQRF Gateway Daemon
 	 * @throws NotSupportedInitSystemException
 	 */
 	public function getStatus() {

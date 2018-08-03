@@ -22,6 +22,9 @@ namespace App\CloudModule\Presenters;
 
 use App\Presenters\ProtectedPresenter;
 
+/**
+ * Cloud disambiguation presenter
+ */
 class HomepagePresenter extends ProtectedPresenter {
 
 }

@@ -23,7 +23,7 @@ namespace App\GatewayModule\Presenters;
 use App\Presenters\ProtectedPresenter;
 
 /**
- * Homepage presenter
+ * Gateway disambiguation presenter
  */
 class HomepagePresenter extends ProtectedPresenter {
 

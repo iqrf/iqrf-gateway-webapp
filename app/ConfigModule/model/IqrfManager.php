@@ -23,12 +23,15 @@ namespace App\ConfigModule\Model;
 use App\Model\CommandManager;
 use Nette;
 
+/**
+ * IQRF CDC/SPI interface manager
+ */
 class IqrfManager {
 
 	use Nette\SmartObject;
 
 	/**
-	 * @var CommandManager
+	 * @var CommandManager Command manager
 	 */
 	private $commandManager;
 

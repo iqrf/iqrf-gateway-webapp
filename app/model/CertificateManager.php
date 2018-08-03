@@ -23,7 +23,7 @@ namespace App\Model;
 use Nette;
 
 /**
- * Tool for managing certificates.
+ * Tool for managing certificates
  */
 class CertificateManager {
 
@@ -33,7 +33,7 @@ class CertificateManager {
 	 * Checks if a certificate coresponds to a CA certificate
 	 * @param string $caCertificate CA certificate
 	 * @param string $certificate Certificate
-	 * @return bool
+	 * @return bool Is a certificate coresponds to a CA certificate?
 	 */
 	public function checkIssuer(string $caCertificate, string $certificate): bool {
 		$caCert = openssl_x509_parse($caCertificate);
@@ -46,7 +46,7 @@ class CertificateManager {
 	 * @param string $cert Certificate
 	 * @param string $pKey Private key
 	 * @param string $passphrase Passphrase for private key
-	 * @return bool
+	 * @return bool Is a private key corresponds to a certificate?
 	 */
 	public function checkPrivateKey(string $cert, string $pKey, string $passphrase = ''): bool {
 		$key = $this->getPrivateKey($pKey, $passphrase);

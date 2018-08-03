@@ -24,6 +24,9 @@ use App\CloudModule\Forms\CloudInteliGlueMqttFormFactory;
 use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
+/**
+ * Inteliments InteliGlue presenter
+ */
 class InteliGluePresenter extends ProtectedPresenter {
 
 	/**

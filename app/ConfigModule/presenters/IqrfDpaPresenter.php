@@ -24,6 +24,9 @@ use App\ConfigModule\Forms\ConfigIqrfDpaFormFactory;
 use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
+/**
+ * IQRF DPA interface configuration presenter
+ */
 class IqrfDpaPresenter extends ProtectedPresenter {
 
 	/**
@@ -33,8 +36,8 @@ class IqrfDpaPresenter extends ProtectedPresenter {
 	public $dpaFormFactory;
 
 	/**
-	 * Create IQRF DPA interface form
-	 * @return Form IQRF DPA interface form
+	 * Create IQRF DPA configuration interface form
+	 * @return Form IQRF DPA configuration interface form
 	 */
 	protected function createComponentConfigIqrfDpaForm(): Form {
 		return $this->dpaFormFactory->create($this);

@@ -28,6 +28,9 @@ use Nette;
 use Nette\Forms\Form;
 use Nette\IOException;
 
+/**
+ * Websocket messaging configuration form factory
+ */
 class ConfigWebsocketMessagingFormFactory {
 
 	use Nette\SmartObject;
@@ -43,7 +46,7 @@ class ConfigWebsocketMessagingFormFactory {
 	private $factory;
 
 	/**
-	 * @var array Files with websocket messaging services
+	 * @var array Files with websocket messaging instances
 	 */
 	private $instances;
 
@@ -71,7 +74,7 @@ class ConfigWebsocketMessagingFormFactory {
 
 	/**
 	 * Create websocket messaging configuration form
-	 * @param WebsocketPresenter $presenter
+	 * @param WebsocketPresenter $presenter Websocket interface presenter
 	 * @return Form Websocket messaging configuration form
 	 */
 	public function create(WebsocketPresenter $presenter): Form {

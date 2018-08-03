@@ -45,13 +45,13 @@ class NetworkPresenter extends ProtectedPresenter {
 	public $discoveryForm;
 
 	/**
-	 * @var IqrfNetRfFormFactory IQMESH RF form
+	 * @var IqrfNetRfFormFactory IQMESH RF configuration form
 	 * @inject
 	 */
 	public $rfForm;
 
 	/**
-	 * @var IqrfNetSecurityFormFactory IQMESH Security form
+	 * @var IqrfNetSecurityFormFactory IQMESH Security configuration form
 	 * @inject
 	 */
 	public $securityForm;
@@ -73,16 +73,16 @@ class NetworkPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Create IQMESH RF form
-	 * @return Form IQMESH RF form
+	 * Create IQMESH RF configuration form
+	 * @return Form IQMESH RF configuration form
 	 */
 	protected function createComponentIqrfNetRfForm(): Form {
 		return $this->rfForm->create($this);
 	}
 
 	/**
-	 * Create IQMESH Security form
-	 * @return Form IQMESH Security form
+	 * Create IQMESH Security configuration form
+	 * @return Form IQMESH Security configuration form
 	 */
 	protected function createComponentIqrfNetSecurityForm(): Form {
 		return $this->securityForm->create($this);

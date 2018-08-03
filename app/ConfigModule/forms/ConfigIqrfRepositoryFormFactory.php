@@ -28,6 +28,9 @@ use Nette;
 use Nette\Forms\Form;
 use Nette\IOException;
 
+/**
+ * IQRF Repository form factory
+ */
 class ConfigIqrfRepositoryFormFactory {
 
 	use Nette\SmartObject;

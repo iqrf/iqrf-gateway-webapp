@@ -26,6 +26,9 @@ use Nette;
 use Nette\Utils\Arrays;
 use Nette\Utils\ArrayHash;
 
+/**
+ * Websocket configuration manager
+ */
 class WebsocketManager {
 
 	use Nette\SmartObject;
@@ -77,9 +80,11 @@ class WebsocketManager {
 
 	/**
 	 * Delete a configuration
+	 * @param int $id Websocket interface ID
 	 */
 	public function delete(int $id) {
-		$instances = $this->genericManager->getInstanceFiles($this->components['messaging']);
+		$this->genericManager->setComponent($this->components['messaging']);
+		$instances = $this->genericManager->getInstanceFiles();
 		$this->fileNames['messaging'] = Arrays::pick($instances, $id);
 		$messaging = $this->read($this->fileNames['messaging']);
 		$serviceInsatnce = $messaging['RequiredInterfaces'][0]['target']['instance'];
@@ -90,10 +95,12 @@ class WebsocketManager {
 
 	/**
 	 * Load a configuration
+	 * @param int $id Websocket interface ID
 	 * @return array Array for form
 	 */
 	public function load(int $id): array {
-		$instances = $this->genericManager->getInstanceFiles($this->components['messaging']);
+		$this->genericManager->setComponent($this->components['messaging']);
+		$instances = $this->genericManager->getInstanceFiles();
 		$this->fileNames['messaging'] = Arrays::pick($instances, $id);
 		$messaging = $this->read($this->fileNames['messaging']);
 		$serviceInsatnce = $messaging['RequiredInterfaces'][0]['target']['instance'];
@@ -147,6 +154,20 @@ class WebsocketManager {
 	}
 
 	/**
+	 * Get websocket instances
+	 * @return array Websocket instances
+	 */
+	public function getInstances(): array {
+		$this->genericManager->setComponent($this->components['messaging']);
+		$files = $this->genericManager->getInstanceFiles();
+		$instances = [];
+		foreach (array_keys($files) as $id) {
+			$instances[] = $this->load($id);
+		}
+		return $instances;
+	}
+
+	/**
 	 * Create a messaging configuration
 	 * @param array $values Values from form
 	 * @param array $instances Names of messaging and service instances
@@ -188,7 +209,8 @@ class WebsocketManager {
 	 * @return string|null Websocket service file name
 	 */
 	public function getServiceFile(string $instanceName) {
-		$services = $this->genericManager->getInstanceFiles($this->components['service']);
+		$this->genericManager->setComponent($this->components['service']);
+		$services = $this->genericManager->getInstanceFiles();
 		foreach ($services as $service) {
 			$json = $this->read($service);
 			if (Arrays::pick($json, 'instance') === $instanceName) {

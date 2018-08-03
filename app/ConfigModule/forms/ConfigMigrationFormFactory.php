@@ -30,6 +30,9 @@ use Nette;
 use Nette\Forms\Form;
 use Nette\IOException;
 
+/**
+ * Configuration migration form factory
+ */
 class ConfigMigrationFormFactory {
 
 	use Nette\SmartObject;
@@ -61,8 +64,8 @@ class ConfigMigrationFormFactory {
 
 	/**
 	 * Create configuration migration form
-	 * @param MigrationPresenter $presenter COnfiguration migration presenter
-	 * @return Form Migration configuration form
+	 * @param MigrationPresenter $presenter Configuration migration presenter
+	 * @return Form Configuration migration form
 	 */
 	public function create(MigrationPresenter $presenter): Form {
 		$this->presenter = $presenter;

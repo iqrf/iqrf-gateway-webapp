@@ -28,6 +28,9 @@ use Nette;
 use Nette\Forms\Form;
 use Nette\IOException;
 
+/**
+ * IQRF DPA configuration form factory
+ */
 class ConfigIqrfDpaFormFactory {
 
 	use Nette\SmartObject;

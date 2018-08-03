@@ -28,7 +28,7 @@ use Nette\Security\AuthenticationException;
 use Nette\Security\User;
 
 /**
- * Sign in form factory.
+ * Sign in form factory
  */
 class SignInFormFactory {
 

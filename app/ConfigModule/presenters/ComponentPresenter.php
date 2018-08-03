@@ -25,6 +25,9 @@ use App\ConfigModule\Model\ComponentManager;
 use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
+/**
+ * Component configuration presenter
+ */
 class ComponentPresenter extends ProtectedPresenter {
 
 	/**
@@ -48,23 +51,23 @@ class ComponentPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Render Main configurator
+	 * Render list of components
 	 */
 	public function renderDefault() {
 		$this->template->components = $this->configManager->loadComponents();
 	}
 
 	/**
-	 * Edit MQTT interface
-	 * @param int $id ID of MQTT interface
+	 * Edit component
+	 * @param int $id Component ID
 	 */
 	public function renderEdit(int $id) {
 		$this->template->id = $id;
 	}
 
 	/**
-	 * Delete MQTT interface
-	 * @param int $id ID of MQTT interface
+	 * Delete component
+	 * @param int $id Component ID
 	 */
 	public function actionDelete(int $id) {
 		if ($this->user->isInRole('power')) {

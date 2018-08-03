@@ -24,6 +24,9 @@ use App\ConfigModule\Forms\ConfigJsonSplitterFormFactory;
 use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
+/**
+ * JSON Splitter configuration presenter
+ */
 class JsonSplitterPresenter extends ProtectedPresenter {
 
 	/**

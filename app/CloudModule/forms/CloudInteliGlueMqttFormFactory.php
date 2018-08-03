@@ -33,7 +33,7 @@ use Nette\IOException;
 use Nette\Utils\ArrayHash;
 
 /**
- * Form for creating MQTT instance for Inteliments InteliGlue
+ * Form for creating MQTT connection into Inteliments InteliGlue
  */
 class CloudInteliGlueMqttFormFactory {
 
@@ -86,14 +86,12 @@ class CloudInteliGlueMqttFormFactory {
 		$form->addText('clientId', 'clientId')->setRequired();
 		$form->addText('password', 'password')->setRequired();
 		$form->addSubmit('save', 'save')
-				->onClick[] = function (SubmitButton $button) use ($presenter) {
-			$values = $button->getForm()->getValues();
-			$this->save($values, $presenter);
+				->onClick[] = function (SubmitButton $button) {
+			$this->save($button);
 		};
 		$form->addSubmit('save_restart', 'save_restart')
-				->onClick[] = function (SubmitButton $button) use ($presenter) {
-			$values = $button->getForm()->getValues();
-			$this->save($values, $presenter, true);
+				->onClick[] = function (SubmitButton $button) {
+			$this->save($button, true);
 		};
 		$form->addProtection('core.errors.form-timeout');
 		return $form;
@@ -104,11 +102,12 @@ class CloudInteliGlueMqttFormFactory {
 	 * @param SubmitButton $button Form's submit button
 	 * @param bool $needRestart Is restart needed?
 	 */
-	public function save(ArrayHash $values, InteliGluePresenter $presenter, bool $needRestart = false) {
+	public function save(SubmitButton $button, bool $needRestart = false) {
+		$values = $button->getForm()->getValues();
 		try {
 			$this->cloudManager->createMqttInterface($values);
-			$presenter->flashMessage('cloud.messages.success', 'success');
-			$presenter->redirect(':Config:Mqtt:default');
+			$this->presenter->flashMessage('cloud.messages.success', 'success');
+			$this->presenter->redirect(':Config:Mqtt:default');
 		} catch (\Exception $e) {
 			if ($e instanceof NonExistingJsonSchema) {
 				$this->presenter->flashMessage('config.messages.nonExistingJsonSchema', 'danger');
@@ -119,9 +118,9 @@ class CloudInteliGlueMqttFormFactory {
 		if ($needRestart) {
 			try {
 				$this->serviceManager->restart();
-				$presenter->flashMessage('service.actions.restart.message', 'info');
+				$this->presenter->flashMessage('service.actions.restart.message', 'info');
 			} catch (NotSupportedInitSystemException $e) {
-				$presenter->flashMessage('service.errors.unsupportedInit', 'danger');
+				$this->presenter->flashMessage('service.errors.unsupportedInit', 'danger');
 			}
 		}
 	}

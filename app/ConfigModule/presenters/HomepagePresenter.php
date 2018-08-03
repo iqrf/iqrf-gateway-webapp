@@ -22,6 +22,9 @@ namespace App\ConfigModule\Presenters;
 
 use App\Presenters\ProtectedPresenter;
 
+/**
+ * Configuration disambiguation presenter
+ */
 class HomepagePresenter extends ProtectedPresenter {
 
 }

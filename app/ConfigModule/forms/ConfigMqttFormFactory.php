@@ -28,6 +28,9 @@ use Nette;
 use Nette\Forms\Form;
 use Nette\IOException;
 
+/**
+ * MQTT interface configuration form factory
+ */
 class ConfigMqttFormFactory {
 
 	use Nette\SmartObject;

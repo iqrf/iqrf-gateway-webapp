@@ -25,6 +25,9 @@ use App\ConfigModule\Forms\ConfigMqFormFactory;
 use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
+/**
+ * MQ interface configuration presenter
+ */
 class MqPresenter extends ProtectedPresenter {
 
 	/**
@@ -40,7 +43,7 @@ class MqPresenter extends ProtectedPresenter {
 
 	/**
 	 * Constructor
-	 * @param GenericManager $configManager Interface instance manager
+	 * @param GenericManager $configManager Generic instance manager
 	 */
 	public function __construct(GenericManager $configManager) {
 		$this->configManager = $configManager;
@@ -76,8 +79,8 @@ class MqPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Create MQ interface form
-	 * @return Form MQ interface form
+	 * Create MQ interface configuration form
+	 * @return Form MQ interface configuration form
 	 */
 	protected function createComponentConfigMqForm(): Form {
 		return $this->formFactory->create($this);

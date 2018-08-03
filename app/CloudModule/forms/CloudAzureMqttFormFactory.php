@@ -33,7 +33,7 @@ use Nette\Forms\Controls\SubmitButton;
 use Nette\IOException;
 
 /**
- * Form for creating MQTT instance from Microsoft Azure IoT Hub Connection String for Device
+ * Form for creating MQTT connection into Microsoft Azure IoT Hub
  */
 class CloudAzureMqttFormFactory {
 

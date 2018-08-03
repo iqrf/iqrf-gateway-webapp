@@ -24,6 +24,9 @@ use App\ConfigModule\Forms\ConfigJsonDpaApiRawFormFactory;
 use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
+/**
+ * JSON Raw API configuration presenter
+ */
 class JsonRawApiPresenter extends ProtectedPresenter {
 
 	/**

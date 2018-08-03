@@ -24,6 +24,9 @@ use App\Model\JsonFileManager;
 use Nette;
 use Nette\Utils\ArrayHash;
 
+/**
+ * Main configuration form factory
+ */
 class MainManager {
 
 	use Nette\SmartObject;

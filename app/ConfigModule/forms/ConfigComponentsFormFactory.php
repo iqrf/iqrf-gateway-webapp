@@ -28,6 +28,9 @@ use Nette;
 use Nette\Forms\Form;
 use Nette\IOException;
 
+/**
+ * Component configuration form factory
+ */
 class ConfigComponentsFormFactory {
 
 	use Nette\SmartObject;
@@ -54,7 +57,7 @@ class ConfigComponentsFormFactory {
 
 	/**
 	 * Constructor
-	 * @param ComponentManager $manager
+	 * @param ComponentManager $manager Generic configuration manager
 	 * @param FormFactory $factory Generic form factory
 	 */
 	public function __construct(ComponentManager $manager, FormFactory $factory) {

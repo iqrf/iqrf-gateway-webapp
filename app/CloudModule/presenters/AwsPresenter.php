@@ -24,6 +24,9 @@ use App\CloudModule\Forms\CloudAwsMqttFormFactory;
 use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
+/**
+ * Amazon AWS IoT presenter
+ */
 class AwsPresenter extends ProtectedPresenter {
 
 	/**

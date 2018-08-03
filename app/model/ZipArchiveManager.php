@@ -34,13 +34,14 @@ class ZipArchiveManager {
 	use Nette\SmartObject;
 
 	/**
-	 * @var \ZipArchive
+	 * @var \ZipArchive ZIP archive
 	 */
 	private $zip;
 
 	/**
 	 * Constructor
 	 * @param string $path Path of a new zip archive
+	 * @param int $flags The mode to use to open the archive
 	 */
 	public function __construct(string $path, int $flags = \ZipArchive::CREATE | \ZipArchive::OVERWRITE) {
 		$this->zip = new \ZipArchive();
@@ -131,6 +132,11 @@ class ZipArchiveManager {
 		return $files;
 	}
 
+	/**
+	 * Open file in the archive
+	 * @param string $fileName File name
+	 * @return mixed Content of file
+	 */
 	public function openFile(string $fileName) {
 		return $this->zip->getFromName('/' . $fileName);
 	}

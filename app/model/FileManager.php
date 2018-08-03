@@ -26,23 +26,23 @@ use Nette\Utils\FileSystem;
 use Tracy\Debugger;
 
 /**
- * Tool for reading and writing text files.
+ * Tool for reading and writing text files
  */
 class FileManager {
 
 	use Nette\SmartObject;
 
 	/**
-	 * @var string
+	 * @var string Directory with files
 	 */
-	private $configDir;
+	private $directory;
 
 	/**
 	 * Constructor
-	 * @param string $configDir Directory with files
+	 * @param string $directory Directory with files
 	 */
-	public function __construct(string $configDir) {
-		$this->configDir = $configDir;
+	public function __construct(string $directory) {
+		$this->directory = $directory;
 	}
 
 	/**
@@ -50,7 +50,7 @@ class FileManager {
 	 * @return string Directory with files
 	 */
 	public function getDirectory(): string {
-		return $this->configDir;
+		return $this->directory;
 	}
 
 	/**
@@ -59,7 +59,7 @@ class FileManager {
 	 */
 	public function delete(string $fileName) {
 		try {
-			FileSystem::delete($this->configDir . '/' . $fileName);
+			FileSystem::delete($this->directory . '/' . $fileName);
 		} catch (IOException $e) {
 			Debugger::log($e->getMessage(), 'fileManager');
 			throw $e;
@@ -72,7 +72,7 @@ class FileManager {
 	 * @return bool Is file exists?
 	 */
 	public function exists(string $fileName): bool {
-		return file_exists($this->configDir . '/' . $fileName);
+		return file_exists($this->directory . '/' . $fileName);
 	}
 
 	/**
@@ -82,7 +82,7 @@ class FileManager {
 	 */
 	public function read(string $fileName) {
 		try {
-			return FileSystem::read($this->configDir . '/' . $fileName);
+			return FileSystem::read($this->directory . '/' . $fileName);
 		} catch (IOException $e) {
 			Debugger::log($e->getMessage(), 'fileManager');
 			throw $e;
@@ -95,7 +95,7 @@ class FileManager {
 	 * @param string $content File content
 	 */
 	public function write(string $fileName, $content) {
-		$fileName = 'nette.safe://' . $this->configDir . '/' . $fileName;
+		$fileName = 'nette.safe://' . $this->directory . '/' . $fileName;
 		try {
 			FileSystem::write($fileName, $content, null);
 		} catch (IOException $e) {

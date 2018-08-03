@@ -21,7 +21,7 @@ declare(strict_types = 1);
 namespace App\Presenters;
 
 /**
- * Homepage presenter
+ * Core disambiguation presenter
  */
 class HomepagePresenter extends ProtectedPresenter {
 

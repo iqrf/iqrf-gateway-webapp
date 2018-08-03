@@ -23,10 +23,13 @@ namespace App\Presenters;
 use App\Presenters\BasePresenter;
 
 /**
- * Protected presenter for protected application presenters.
+ * Protected presenter for protected application presenters
  */
 abstract class ProtectedPresenter extends BasePresenter {
 
+	/**
+	 * Start up an protected presenter
+	 */
 	protected function startup() {
 		parent::startup();
 		if (!$this->user->isLoggedIn()) {

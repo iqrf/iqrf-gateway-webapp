@@ -28,6 +28,9 @@ use Nette;
 use Nette\Forms\Form;
 use Nette\IOException;
 
+/**
+ * Scheduler's task configuration form factory
+ */
 class ConfigSchedulerFormFactory {
 
 	use Nette\SmartObject;
@@ -43,7 +46,7 @@ class ConfigSchedulerFormFactory {
 	private $factory;
 
 	/**
-	 * @var int Event ID
+	 * @var int Scheduler's task ID
 	 */
 	private $id;
 
@@ -63,9 +66,9 @@ class ConfigSchedulerFormFactory {
 	}
 
 	/**
-	 * Create Scheduler configuration form
+	 * Create Scheduler's task configuration form
 	 * @param SchedulerPresenter $presenter Scheduler presenter
-	 * @return Form Scheduler configuration form
+	 * @return Form Scheduler's task configuration form
 	 */
 	public function create(SchedulerPresenter $presenter): Form {
 		$this->presenter = $presenter;
@@ -138,8 +141,8 @@ class ConfigSchedulerFormFactory {
 	}
 
 	/**
-	 * Save scheduler's event configuration
-	 * @param Form $form Scheduler's event configuration fore
+	 * Save scheduler's task configuration
+	 * @param Form $form Scheduler's task configuration fore
 	 */
 	public function save(Form $form) {
 		try {

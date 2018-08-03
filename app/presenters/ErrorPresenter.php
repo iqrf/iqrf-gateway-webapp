@@ -36,12 +36,14 @@ class ErrorPresenter implements IPresenter {
 
 	use Nette\SmartObject;
 
-	/** @var ILogger */
+	/**
+	 * @var ILogger Logger
+	 */
 	private $logger;
 
 	/**
 	 * Constructor
-	 * @param ILogger $logger
+	 * @param ILogger $logger Logger
 	 */
 	public function __construct(ILogger $logger) {
 		$this->logger = $logger;

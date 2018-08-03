@@ -25,14 +25,14 @@ use Nette\Utils\Strings;
 use Tracy\Debugger;
 
 /**
- * Tool for executing commands.
+ * Tool for executing commands
  */
 class CommandManager {
 
 	use Nette\SmartObject;
 
 	/**
-	 * @var bool
+	 * @var bool Is sudo required?
 	 */
 	private $sudo;
 
@@ -47,7 +47,7 @@ class CommandManager {
 
 	/**
 	 * Constructor
-	 * @param bool $sudo Sudo required
+	 * @param bool $sudo Is sudo required?
 	 */
 	public function __construct(bool $sudo) {
 		$this->sudo = $sudo;

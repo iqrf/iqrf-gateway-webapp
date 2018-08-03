@@ -24,6 +24,9 @@ use App\ConfigModule\Forms\ConfigIqrfRepositoryFormFactory;
 use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
+/**
+ * IQRF Repository configuration presenter
+ */
 class IqrfRepositoryPresenter extends ProtectedPresenter {
 
 	/**
@@ -33,8 +36,8 @@ class IqrfRepositoryPresenter extends ProtectedPresenter {
 	public $formFactory;
 
 	/**
-	 * Create IQRF Repository settings form
-	 * @return Form IQRF Repository settings form
+	 * Create IQRF Repository configuration form
+	 * @return Form IQRF Repository configuration form
 	 */
 	protected function createComponentConfigIqrfRepositoryForm(): Form {
 		return $this->formFactory->create($this);

@@ -28,6 +28,9 @@ use Nette;
 use Nette\Forms\Form;
 use Nette\IOException;
 
+/**
+ * JSON Splitter form factory
+ */
 class ConfigJsonSplitterFormFactory {
 
 	use Nette\SmartObject;

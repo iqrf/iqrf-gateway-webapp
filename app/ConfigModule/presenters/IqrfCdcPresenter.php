@@ -25,6 +25,9 @@ use App\ConfigModule\Model\IqrfManager;
 use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
+/**
+ * IQRF CDC configuration presenter
+ */
 class IqrfCdcPresenter extends ProtectedPresenter {
 
 	/**
@@ -48,15 +51,15 @@ class IqrfCdcPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Render IQRF interface configurator
+	 * Render IQRF CDC interface configurator
 	 */
 	public function renderDefault() {
 		$this->template->cdcInterfaces = $this->iqrfManager->getCdcInterfaces();
 	}
 
 	/**
-	 * Create IQRF CDC interface form
-	 * @return Form IQRF CDC interface form
+	 * Create IQRF CDC interface configuration form
+	 * @return Form IQRF CDC interface configuration form
 	 */
 	protected function createComponentConfigIqrfCdcForm() {
 		return $this->cdcFormFactory->create($this);

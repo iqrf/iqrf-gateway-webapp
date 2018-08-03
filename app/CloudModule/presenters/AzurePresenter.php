@@ -24,6 +24,9 @@ use App\CloudModule\Forms\CloudAzureMqttFormFactory;
 use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
+/**
+ * Microsoft Azure IoT Hub presenter
+ */
 class AzurePresenter extends ProtectedPresenter {
 
 	/**

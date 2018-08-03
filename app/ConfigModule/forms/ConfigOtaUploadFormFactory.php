@@ -28,6 +28,9 @@ use Nette;
 use Nette\Forms\Form;
 use Nette\IOException;
 
+/**
+ * OTA upload configuration form factory
+ */
 class ConfigOtaUploadFormFactory {
 
 	use Nette\SmartObject;

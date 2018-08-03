@@ -28,7 +28,7 @@ use Nette;
 use Nette\Forms\Form;
 
 /**
- * Register a new user form factory.
+ * Register a new user form factory
  */
 class UserAddFormFactory {
 

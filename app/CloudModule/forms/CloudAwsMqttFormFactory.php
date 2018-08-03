@@ -33,7 +33,7 @@ use Nette\Forms\Controls\SubmitButton;
 use Nette\IOException;
 
 /**
- * Form for creating MQTT instance for Amazon AWS IoT
+ * Form for creating MQTT connection into Amazon AWS IoT
  */
 class CloudAwsMqttFormFactory {
 

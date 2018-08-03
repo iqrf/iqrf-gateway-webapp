@@ -29,7 +29,7 @@ use Nette\Forms\Form;
 use Nette\Security\User;
 
 /**
- * Change password form factory.
+ * Change password form factory
  */
 class ChangePasswordFormFactory {
 
@@ -51,13 +51,14 @@ class ChangePasswordFormFactory {
 	private $presenter;
 
 	/**
-	 * @var User
+	 * @var User User
 	 */
 	private $user;
 
 	/**
 	 * Constructor
 	 * @param FormFactory $factory Generic form factory
+	 * @param UserManager $userManager User manager
 	 * @param User $user User
 	 */
 	public function __construct(FormFactory $factory, UserManager $userManager, User $user) {

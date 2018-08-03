@@ -28,6 +28,9 @@ use Nette;
 use Nette\Forms\Form;
 use Nette\IOException;
 
+/**
+ * JSON Raw API configuration form factory
+ */
 class ConfigJsonDpaApiRawFormFactory {
 
 	use Nette\SmartObject;
@@ -59,9 +62,9 @@ class ConfigJsonDpaApiRawFormFactory {
 	}
 
 	/**
-	 * Create JSON splitter service configuration form
+	 * Create JSON Raw API configuration form
 	 * @param JsonRawApiPresenter $presenter JSON Raw API configuration presenter
-	 * @return Form JSON splitter configuration form
+	 * @return Form JSON Raw API configuration form
 	 */
 	public function create(JsonRawApiPresenter $presenter): Form {
 		$this->presenter = $presenter;

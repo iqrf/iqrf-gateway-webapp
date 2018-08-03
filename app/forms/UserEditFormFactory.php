@@ -28,7 +28,7 @@ use Nette;
 use Nette\Forms\Form;
 
 /**
- * Edit an existring user form factory.
+ * Edit an existring user form factory
  */
 class UserEditFormFactory {
 

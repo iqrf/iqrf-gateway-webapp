@@ -28,6 +28,9 @@ use Nette;
 use Nette\Forms\Form;
 use Nette\IOException;
 
+/**
+ * Websocket service configuration service form factory
+ */
 class ConfigWebsocketServiceFormFactory {
 
 	use Nette\SmartObject;

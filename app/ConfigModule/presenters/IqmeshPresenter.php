@@ -24,6 +24,9 @@ use App\ConfigModule\Forms\ConfigOtaUploadFormFactory;
 use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
+/**
+ * IQMESH services configuration presenter
+ */
 class IqmeshPresenter extends ProtectedPresenter {
 
 	/**

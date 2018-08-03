@@ -35,7 +35,7 @@ class ControlPresenter extends ProtectedPresenter {
 	private $serviceManager;
 
 	/**
-	 * Constructor.
+	 * Constructor
 	 * @param ServiceManager $serviceManager Service manager
 	 */
 	public function __construct(ServiceManager $serviceManager) {
@@ -44,21 +44,21 @@ class ControlPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Start iqrf-daemon service
+	 * Start IQRF Gateway Daemon's service
 	 */
 	public function actionStart() {
 		$this->action('start');
 	}
 
 	/**
-	 * Stop iqrf-daemon service
+	 * Stop IQRF Gateway Daemon's service
 	 */
 	public function actionStop() {
 		$this->action('stop');
 	}
 
 	/**
-	 * Restart iqrf-daemon service
+	 * Restart IQRF Gateway Daemon's service
 	 */
 	public function actionRestart() {
 		$this->action('restart');

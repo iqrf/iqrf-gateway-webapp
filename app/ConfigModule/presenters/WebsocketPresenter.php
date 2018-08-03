@@ -28,6 +28,9 @@ use App\ConfigModule\Model\WebsocketManager;
 use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
+/**
+ * Websocket interface configuration presenter
+ */
 class WebsocketPresenter extends ProtectedPresenter {
 
 	/**

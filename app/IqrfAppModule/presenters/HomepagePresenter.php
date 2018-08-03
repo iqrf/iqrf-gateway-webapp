@@ -23,7 +23,7 @@ namespace App\IqrfAppModule\Presenters;
 use App\Presenters\ProtectedPresenter;
 
 /**
- * Homepage presenter
+ * IQRF Network disambiguation presenter
  */
 class HomepagePresenter extends ProtectedPresenter {
 

@@ -28,6 +28,9 @@ use Nette;
 use Nette\Forms\Form;
 use Nette\IOException;
 
+/**
+ * MQ interface configuration form factory
+ */
 class ConfigMqFormFactory {
 
 	use Nette\SmartObject;

@@ -24,6 +24,9 @@ use Nette;
 use Nette\Application\Routers\Route;
 use Nette\Application\Routers\RouteList;
 
+/**
+ * Router factory
+ */
 class RouterFactory {
 
 	use Nette\StaticClass;

@@ -28,6 +28,9 @@ use Nette;
 use Nette\Forms\Form;
 use Nette\IOException;
 
+/**
+ * IQRF SPI configuration form factory
+ */
 class ConfigIqrfSpiFormFactory {
 
 	use Nette\SmartObject;

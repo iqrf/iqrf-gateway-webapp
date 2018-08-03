@@ -236,6 +236,29 @@ class IqrfAppManager {
 		}
 	}
 
+	/**
+	 * Chack status from JSON DPA response
+	 * @param array $json JSON DPA request and response
+	 * @throws ExclusiveAccessException
+	 * @throws BadResponseException
+	 * @throws BadRequestException
+	 * @throws InterfaceBusyException
+	 * @throws InterfaceErrorException
+	 * @throws AbortedException
+	 * @throws InterfaceQueueFullException
+	 * @throws TimeoutException
+	 * @throws GeneralFailureException
+	 * @throws IncorrectPcmdException
+	 * @throws IncorrectPnumException
+	 * @throws IncorrectAddressException
+	 * @throws IncorrectDataLengthException
+	 * @throws IncorrectDataException
+	 * @throws IncorrectHwpidUsedException
+	 * @throws IncorrectNadrException
+	 * @throws CustomHandlerConsumedInterfaceDataException
+	 * @throws MissingCustomDpaHandlerException
+	 * @throws UserErrorException
+	 */
 	public function checkStatus(array $json) {
 		$status = Json::decode($json['response'], Json::FORCE_ARRAY)['data']['status'];
 		switch ($status) {

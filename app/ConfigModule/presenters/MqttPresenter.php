@@ -25,6 +25,9 @@ use App\ConfigModule\Forms\ConfigMqttFormFactory;
 use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
+/**
+ * MQTT interface configuration presenter
+ */
 class MqttPresenter extends ProtectedPresenter {
 
 	/**
@@ -40,7 +43,7 @@ class MqttPresenter extends ProtectedPresenter {
 
 	/**
 	 * Constructor
-	 * @param GenericManager $configManager Interface instance manager
+	 * @param GenericManager $configManager Generic instance manager
 	 */
 	public function __construct(GenericManager $configManager) {
 		$this->configManager = $configManager;
@@ -76,8 +79,8 @@ class MqttPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Create MQTT interface form
-	 * @return Form MQTT interface form
+	 * Create MQTT interface configuration form
+	 * @return Form MQTT interface configuration form
 	 */
 	protected function createComponentConfigMqttForm(): Form {
 		return $this->formFactory->create($this);

@@ -24,6 +24,9 @@ use App\CloudModule\Forms\CloudBluemixMqttFormFactory;
 use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
+/**
+ * IBM Bluemix presenter
+ */
 class BluemixPresenter extends ProtectedPresenter {
 
 	/**

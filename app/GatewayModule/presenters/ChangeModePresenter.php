@@ -29,13 +29,13 @@ use App\Presenters\ProtectedPresenter;
 class ChangeModePresenter extends ProtectedPresenter {
 
 	/**
-	 * @var IqrfAppManager
+	 * @var IqrfAppManager IQRF App manager
 	 */
 	private $iqrfAppManager;
 
 	/**
 	 * Constructor
-	 * @param IqrfAppManager $iqrfAppManager
+	 * @param IqrfAppManager $iqrfAppManager IQRF App manager
 	 */
 	public function __construct(IqrfAppManager $iqrfAppManager) {
 		$this->iqrfAppManager = $iqrfAppManager;
@@ -46,29 +46,28 @@ class ChangeModePresenter extends ProtectedPresenter {
 	 * Change gateway mode to Forwarding mode
 	 */
 	public function actionForwarding() {
-		$mode = 'forwarding';
-		$this->iqrfAppManager->changeOperationMode($mode);
-		$this->flashMessage('gateway.mode.modes.' . $mode . '.message', 'info');
-		$this->redirect('ChangeMode:default');
-		$this->setView('default');
+		$this->changeMode('forwarding');
 	}
 
 	/**
 	 * Change gateway mode to Operational mode
 	 */
 	public function actionOperational() {
-		$mode = 'operational';
-		$this->iqrfAppManager->changeOperationMode($mode);
-		$this->flashMessage('gateway.mode.modes.' . $mode . '.message', 'info');
-		$this->redirect('ChangeMode:default');
-		$this->setView('default');
+		$this->changeMode('operational');
 	}
 
 	/**
 	 * Change gateway mode to Service mode
 	 */
 	public function actionService() {
-		$mode = 'service';
+		$this->changeMode('service');
+	}
+
+	/**
+	 * Change gateway mode
+	 * @param string $mode Gateway mode
+	 */
+	private function changeMode(string $mode) {
 		$this->iqrfAppManager->changeOperationMode($mode);
 		$this->flashMessage('gateway.mode.modes.' . $mode . '.message', 'info');
 		$this->redirect('ChangeMode:default');

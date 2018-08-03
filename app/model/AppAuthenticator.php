@@ -27,7 +27,7 @@ use Nette\Security\IAuthenticator;
 use Nette\Security\Identity;
 
 /**
- * Custom Authenticator.
+ * Custom Authenticator
  */
 class AppAuthenticator implements IAuthenticator {
 

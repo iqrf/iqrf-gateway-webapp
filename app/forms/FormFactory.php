@@ -26,14 +26,14 @@ use Nette;
 use Nette\Forms\Form;
 
 /**
- * Form factory.
+ * Generic form factory
  */
 class FormFactory {
 
 	use Nette\SmartObject;
 
 	/**
-	 * @var IFormFactory
+	 * @var IFormFactory Form factory interface
 	 */
 	public $iFormFactory;
 
@@ -45,7 +45,7 @@ class FormFactory {
 	/**
 	 * Constructor
 	 * @param Translator $translator Translator
-	 * @param IFormFactory $iFormFactory
+	 * @param IFormFactory $iFormFactory Form factory interface
 	 */
 	public function __construct(Translator $translator, IFormFactory $iFormFactory) {
 		$this->iFormFactory = $iFormFactory;
@@ -53,7 +53,8 @@ class FormFactory {
 	}
 
 	/**
-	 * @return Form
+	 * Create a form and set the translator
+	 * @return Form Form
 	 */
 	public function create(): Form {
 		$form = $this->iFormFactory->create();

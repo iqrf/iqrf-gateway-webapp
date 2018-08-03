@@ -28,6 +28,9 @@ use Nette;
 use Nette\Forms\Form;
 use Nette\IOException;
 
+/**
+ * Main configuration form factory
+ */
 class ConfigMainFormFactory {
 
 	use Nette\SmartObject;
@@ -58,9 +61,9 @@ class ConfigMainFormFactory {
 	}
 
 	/**
-	 * Create Tracer configuration form
-	 * @param MainPresenter $presenter
-	 * @return Form Tracer configuration form
+	 * Create main configuration form
+	 * @param MainPresenter $presenter Main configuration presenter
+	 * @return Form Main configuration form
 	 */
 	public function create(MainPresenter $presenter): Form {
 		$this->presenter = $presenter;
