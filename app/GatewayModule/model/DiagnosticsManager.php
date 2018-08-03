@@ -20,6 +20,8 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Model;
 
+use App\IqrfAppModule\Model\DpaErrorException;
+use App\IqrfAppModule\Model\EmptyResponseException;
 use App\IqrfAppModule\Model\IqrfAppManager;
 use App\GatewayModule\Model\InfoManager;
 use App\Model\CommandManager;
@@ -86,12 +88,21 @@ class DiagnosticsManager {
 		$this->zipManager = new ZipArchiveManager($this->path);
 	}
 
+	/**
+	 * Add basic information about the gateway
+	 */
 	public function addInfo() {
 		$array = [];
 		$array['board'] = $this->infoManager->getBoard();
 		$array['daemonVersion'] = $this->infoManager->getDaemonVersion();
 		$array['webappVersion'] = $this->infoManager->getWebAppVersion();
-		$array['coordinator'] = $this->infoManager->getCoordinatorInfo();
+		try {
+			$array['coordinator'] = $this->infoManager->getCoordinatorInfo();
+		} catch (\Exception $e) {
+			if (!($e instanceof EmptyResponseException || $e instanceof DpaErrorException)) {
+				throw $e;
+			}
+		}
 		$array['hostname'] = $this->infoManager->getHostname();
 		$array['uname'] = $this->commandManager->send('uname -a', true);
 		$array['uptime'] = $this->commandManager->send('uptime -p', true);
