@@ -1,9 +1,10 @@
-# iqrf-gateway-webapp
+# IQRF Gateway Webapp
 
 [![Build Status](https://travis-ci.org/iqrfsdk/iqrf-gateway-webapp.svg?branch=master)](https://travis-ci.org/iqrfsdk/iqrf-gateway-webapp)
 [![Code Coverage](https://codecov.io/gh/iqrfsdk/iqrf-gateway-webapp/branch/master/graph/badge.svg)](https://codecov.io/gh/iqrfsdk/iqrf-gateway-webapp)
 [![Downloads this Month](https://img.shields.io/packagist/dm/iqrfsdk/iqrf-gateway-webapp.svg)](https://packagist.org/packages/iqrfsdk/iqrf-gateway-webapp)
 [![Apache License](https://img.shields.io/badge/license-APACHE2-blue.svg)](LICENSE)
+[![API documentation](https://img.shields.io/badge/docs-api-brightgreen.svg)](https://apidocs.iqrfsdk.org/iqrf-gateway-webapp/)
 
 This is web application for iqrf-daemon configuration.
 
