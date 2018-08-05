@@ -39,6 +39,15 @@ class WebsocketPresenter extends ProtectedPresenter {
 	private $configManager;
 
 	/**
+	 * @var array Websocket components
+	 */
+	private $components = [
+		'messaging' => 'iqrf::WebsocketMessaging',
+		'oldService' => 'shape::WebsocketService',
+		'service' => 'shape::WebsocketCppService',
+	];
+
+	/**
 	 * @var WebsocketManager Websocket manager
 	 */
 	private $websocketManager;
@@ -76,9 +85,9 @@ class WebsocketPresenter extends ProtectedPresenter {
 	 * Render list of Websocket interfaces
 	 */
 	public function renderDefault() {
-		$this->configManager->setComponent('iqrf::WebsocketMessaging');
+		$this->configManager->setComponent($this->components['messaging']);
 		$this->template->messagings = $this->configManager->getInstances();
-		$this->configManager->setComponent('shape::WebsocketService');
+		$this->configManager->setComponent($this->components['service']);
 		$this->template->services = $this->configManager->getInstances();
 		$this->template->interfaces = $this->websocketManager->getInstances();
 	}
@@ -96,7 +105,7 @@ class WebsocketPresenter extends ProtectedPresenter {
 	 * @param int $id ID of websocket messaging
 	 */
 	public function renderEditMessaging(int $id) {
-		$this->configManager->setComponent('iqrf::MqMessaging');
+		$this->configManager->setComponent($this->components['messaging']);
 		$this->template->id = $id;
 	}
 
@@ -105,7 +114,7 @@ class WebsocketPresenter extends ProtectedPresenter {
 	 * @param int $id ID of websocket service
 	 */
 	public function renderEditService(int $id) {
-		$this->configManager->setComponent('shape::WebsocketService');
+		$this->configManager->setComponent($this->components['service']);
 		$this->template->id = $id;
 	}
 
@@ -124,7 +133,7 @@ class WebsocketPresenter extends ProtectedPresenter {
 	 * @param int $id ID of websocket messaging
 	 */
 	public function actionDeleteMessaging(int $id) {
-		$this->configManager->setComponent('iqrf::MqMessaging');
+		$this->configManager->setComponent($this->components['messaging']);
 		$fileName = $this->configManager->getInstanceFiles()[$id];
 		$this->configManager->setFileName($fileName);
 		$this->configManager->delete();
@@ -137,7 +146,7 @@ class WebsocketPresenter extends ProtectedPresenter {
 	 * @param int $id ID of websocket service
 	 */
 	public function actionDeleteService(int $id) {
-		$this->configManager->setComponent('shape::WebsocketService');
+		$this->configManager->setComponent($this->components['service']);
 		$fileName = $this->configManager->getInstanceFiles()[$id];
 		$this->configManager->setFileName($fileName);
 		$this->configManager->delete();

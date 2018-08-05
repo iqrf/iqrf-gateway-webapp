@@ -68,7 +68,7 @@ class ConfigWebsocketServiceFormFactory {
 	public function __construct(GenericManager $manager, FormFactory $factory) {
 		$this->manager = $manager;
 		$this->factory = $factory;
-		$this->manager->setComponent('shape::WebsocketService');
+		$this->manager->setComponent('shape::WebsocketCppService');
 		$this->instances = $this->manager->getInstanceFiles();
 	}
 

@@ -80,7 +80,7 @@ class ConfigWebsocketFormFactory {
 		$form->addCheckbox('acceptAsyncMsg', 'acceptAsyncMsg');
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');
-		if (array_key_exists($this->id, $this->manager->getInstanceFiles('iqrf::WebsocketMessaging'))) {
+		if (array_key_exists($this->id, $this->manager->getInstances())) {
 			$form->setDefaults($this->manager->load($this->id));
 		}
 		$form->onSuccess[] = [$this, 'save'];
@@ -93,7 +93,7 @@ class ConfigWebsocketFormFactory {
 	 */
 	public function save(Form $form) {
 		try {
-			$this->manager->save($form->getValues());
+			$this->manager->save($form->getValues(true));
 			$this->presenter->flashMessage('config.messages.success', 'success');
 		} catch (\Exception $e) {
 			if ($e instanceof NonExistingJsonSchema) {

@@ -38,7 +38,8 @@ class WebsocketManager {
 	 */
 	private $components = [
 		'messaging' => 'iqrf::WebsocketMessaging',
-		'service' => 'shape::WebsocketService',
+		'oldService' => 'shape::WebsocketService',
+		'service' => 'shape::WebsocketCppService',
 	];
 
 	/**
@@ -131,13 +132,13 @@ class WebsocketManager {
 
 	/**
 	 * Save configuration
-	 * @param ArrayHash $array Websocket settings
+	 * @param array $array Websocket settings
 	 */
-	public function save(ArrayHash $array) {
+	public function save(array $array) {
 		$timestamp = (new \DateTime())->getTimestamp();
 		$instances = [
 			'messaging' => $this->instances['messaging'] ?? 'WebsocketMessaging' . $timestamp,
-			'service' => $this->instances['service'] ?? 'WebsocketService' . $timestamp,
+			'service' => $this->instances['service'] ?? 'WebsocketCppService' . $timestamp,
 		];
 		$settings = [
 			'messaging' => $this->createMessaging($array, $instances),
@@ -209,8 +210,11 @@ class WebsocketManager {
 	 * @return string|null Websocket service file name
 	 */
 	public function getServiceFile(string $instanceName) {
+		$this->genericManager->setComponent($this->components['oldService']);
+		$oldServices = $this->genericManager->getInstanceFiles();
 		$this->genericManager->setComponent($this->components['service']);
-		$services = $this->genericManager->getInstanceFiles();
+		$newServices = $this->genericManager->getInstanceFiles();
+		$services = array_merge($oldServices, $newServices);
 		foreach ($services as $service) {
 			$json = $this->read($service);
 			if (Arrays::pick($json, 'instance') === $instanceName) {
