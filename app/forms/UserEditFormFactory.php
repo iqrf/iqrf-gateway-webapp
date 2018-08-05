@@ -66,7 +66,7 @@ class UserEditFormFactory {
 
 	/**
 	 * Create edit and existing user form
-	 * @param UserPresenter User manager presenter
+	 * @param UserPresenter $presenter User manager presenter
 	 * @return Form Edit an existing user form
 	 */
 	public function create(UserPresenter $presenter): Form {

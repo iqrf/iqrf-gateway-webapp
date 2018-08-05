@@ -144,7 +144,7 @@ class MigrationManager {
 				continue;
 			}
 			try {
-				$this->schemaManager->setSchemaFromComponent($json->component);
+				$this->schemaManager->setSchemaFromComponent($json['component']);
 			} catch (NonExistingJsonSchema $e) {
 				continue;
 			}

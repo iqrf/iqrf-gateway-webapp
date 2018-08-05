@@ -46,7 +46,7 @@ class ChangePasswordFormFactory {
 	private $userManager;
 
 	/**
-	 * @var ProfilePresenter User's profile presenter
+	 * @var ProfilePresenter User profile presenter
 	 */
 	private $presenter;
 
@@ -69,7 +69,7 @@ class ChangePasswordFormFactory {
 
 	/**
 	 * Create change password form
-	 * @param ProfilePresenter User's profile presenter
+	 * @param ProfilePresenter $presenter User profile presenter
 	 * @return Form Change password form
 	 */
 	public function create(ProfilePresenter $presenter): Form {

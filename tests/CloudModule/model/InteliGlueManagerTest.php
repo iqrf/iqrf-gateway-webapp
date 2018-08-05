@@ -39,7 +39,7 @@ class InteliGlueManagerTest extends TestCase {
 	private $fileManager;
 
 	/**
-	 * @var InteliGlueManager Inteliments InteliGlue manager
+	 * @var \Mockery\Mock Mocked Inteliments InteliGlue manager
 	 */
 	private $manager;
 

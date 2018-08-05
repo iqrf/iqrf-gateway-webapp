@@ -39,7 +39,7 @@ class AzureManagerTest extends TestCase {
 	private $fileManager;
 
 	/**
-	 * @var AzureManager MS Azure IoT hub manager
+	 * @var \Mockery\Mock Mocked MS Azure IoT hub manager
 	 */
 	private $manager;
 

@@ -39,12 +39,12 @@ class BluemixManagerTest extends TestCase {
 	private $fileManager;
 
 	/**
-	 * @var BluemixManager Amazon AWS IoT manager
+	 * @var \Mockery\Mock Mocked IBM Bluemix manager
 	 */
 	private $manager;
 
 	/**
-	 * @var array Values from Inteliments InteliGlue form
+	 * @var array Values from IBM Bluemix form
 	 */
 	private $formValues = [
 		'deviceId' => 'gw00',

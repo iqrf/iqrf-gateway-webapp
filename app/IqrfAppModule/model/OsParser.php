@@ -86,7 +86,7 @@ class OsParser implements IParser {
 	 */
 	public function getRfBand(string $byte): string {
 		$bands = ['868 MHz', '916 MHz', '433 MHz'];
-		$bit = base_convert($byte, 16, 2) & 0x3;
+		$bit = intval(base_convert($byte, 16, 2)) & 0x3;
 		return $bands[$bit];
 	}
 

@@ -59,7 +59,6 @@ class UserManager {
 	 * @param string $oldPassword Old password
 	 * @param string $newPassword New password
 	 * @throws InvalidPassword
-	 * @throws MismatchedPasswords
 	 */
 	public function changePassword(int $userId, string $oldPassword, string $newPassword) {
 		$row = $this->table->where('id', $userId)->fetch();

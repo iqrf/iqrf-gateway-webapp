@@ -32,7 +32,7 @@ class IqrfNetManagerTest extends TestCase {
 	private $container;
 
 	/**
-	 * @var IqrfAppManager iqrfapp manager
+	 * @var \Mockery\MockInterface Mocked IQRF App manager
 	 */
 	private $iqrfAppManager;
 

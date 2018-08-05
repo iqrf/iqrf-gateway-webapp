@@ -48,12 +48,12 @@ class AwsManagerTest extends TestCase {
 	private $fileManager;
 
 	/**
-	 * @var AwsManager Amazon AWS IoT manager
+	 * @var \Mockery\Mock Mocked Amazon AWS IoT manager
 	 */
 	private $manager;
 
 	/**
-	 * @var array Values from Inteliments InteliGlue form
+	 * @var array Values from Amazon AWS IoT form
 	 */
 	private $formValues = [
 		'endpoint' => 'localhost',

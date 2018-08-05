@@ -35,7 +35,7 @@ class SchedulerManagerTest extends TestCase {
 	private $genericConfigManager;
 
 	/**
-	 * @var MainManager Main configuration manager
+	 * @var \Mockery\MockInterface Mocked main configuration manager
 	 */
 	private $mainConfigManager;
 

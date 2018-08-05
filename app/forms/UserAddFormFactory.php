@@ -61,7 +61,7 @@ class UserAddFormFactory {
 
 	/**
 	 * Create register a new user form
-	 * @param UserPresenter User manager presenter
+	 * @param UserPresenter $presenter User manager presenter
 	 * @return Form Register a new user form
 	 */
 	public function create(UserPresenter $presenter): Form {

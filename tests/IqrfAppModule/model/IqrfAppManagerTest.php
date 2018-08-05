@@ -46,7 +46,7 @@ class IqrfAppManagerTest extends TestCase {
 	private $jsonFileManager;
 
 	/**
-	 * @var MessageIdManager Message ID manager
+	 * @var \Mockery\MockInterface Mocked message ID manager
 	 */
 	private $msgIdManager;
 
