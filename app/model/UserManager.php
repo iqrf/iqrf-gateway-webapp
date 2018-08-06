@@ -62,7 +62,7 @@ class UserManager {
 	 */
 	public function changePassword(int $userId, string $oldPassword, string $newPassword) {
 		$row = $this->table->where('id', $userId)->fetch();
-		if (!password_verify($oldPassword, $row->password)) {
+		if (!password_verify($oldPassword, $row['password'])) {
 			throw new InvalidPassword();
 		}
 		$data = ['password' => password_hash($newPassword, PASSWORD_DEFAULT)];

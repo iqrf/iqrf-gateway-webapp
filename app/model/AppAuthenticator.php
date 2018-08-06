@@ -58,11 +58,11 @@ class AppAuthenticator implements IAuthenticator {
 		if (!$row) {
 			throw new AuthenticationException('User not found.');
 		}
-		if (!password_verify($password, $row->password)) {
+		if (!password_verify($password, $row['password'])) {
 			throw new AuthenticationException('Invalid password.');
 		}
-		$data = ['username' => $row->username, 'language' => $row->language];
-		return new Identity($row->id, $row->user_type, $data);
+		$data = ['username' => $row['username'], 'language' => $row['language']];
+		return new Identity($row['id'], $row['user_type'], $data);
 	}
 
 }
