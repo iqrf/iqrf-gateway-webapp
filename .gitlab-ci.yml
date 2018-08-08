@@ -50,8 +50,10 @@ test:php7.3:
 
 coding-style:
     stage: coding-style
-    script:
+    before_script:
+        - update-alternatives --set php /usr/bin/php7.2
         - composer install-cs
+    script:
         - composer check-cs
     tags:
         - linux
@@ -60,6 +62,7 @@ coding-style:
 phpstan:
     stage: coding-style
     before_script:
+        - update-alternatives --set php /usr/bin/php7.2
         - composer install --no-progress
     script:
         - composer phpstan
