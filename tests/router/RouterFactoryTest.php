@@ -6,7 +6,7 @@
  * @phpVersion >= 7.0
  * @testCase
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Test\Router;
 
@@ -55,9 +55,10 @@ class RouterFactoryTest extends TestCase {
 					if ($type instanceof Route) {
 						return $type->getMask();
 					} elseif ($type instanceof RouteList) {
-						return [$type->getModule() => array_map(function ($route) {
-										return $route->getMask();
-									}, (array) $type->getIterator())[0]];
+						$routeMask = array_map(function ($route) {
+							return $route->getMask();
+						}, (array) $type->getIterator());
+						return [$type->getModule() => reset($routeMask)];
 					}
 				}, (array) $routeList->getIterator()));
 	}

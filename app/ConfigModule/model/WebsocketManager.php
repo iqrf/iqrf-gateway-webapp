@@ -150,8 +150,8 @@ class WebsocketManager {
 		}
 		$messagingFileName = $this->fileNames['messaging'] ?? 'iqrf__' . $instances['messaging'];
 		$serviceFileName = $this->fileNames['service'] ?? 'shape__' . $instances['service'];
-		$this->fileManager->write($messagingFileName, ArrayHash::from($settings['messaging']));
-		$this->fileManager->write($serviceFileName, ArrayHash::from($settings['service']));
+		$this->fileManager->write($messagingFileName, $settings['messaging']);
+		$this->fileManager->write($serviceFileName, $settings['service']);
 	}
 
 	/**

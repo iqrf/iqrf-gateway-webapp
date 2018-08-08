@@ -44,7 +44,7 @@ class MessageIdManager {
 	 * @return string Message ID
 	 */
 	public function generate(): string {
-		return (string) $this->dateTime->getTimestamp();
+		return strval($this->dateTime->getTimestamp());
 	}
 
 }

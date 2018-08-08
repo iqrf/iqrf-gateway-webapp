@@ -108,7 +108,7 @@ class SchedulerManager {
 		$json = $this->fileManager->read($this->fileName);
 		$tasks = $json['TasksJson'];
 		end($tasks);
-		return key($tasks);
+		return intval(key($tasks));
 	}
 
 	/**

@@ -149,7 +149,7 @@ class MigrationManager {
 				continue;
 			}
 			try {
-				$this->schemaManager->validate($json);
+				$this->schemaManager->validate((object) $json);
 			} catch (InvalidJson $e) {
 				return false;
 			}

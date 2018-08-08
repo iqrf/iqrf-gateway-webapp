@@ -104,7 +104,7 @@ class ZipArchiveManager {
 		} elseif (is_array($var) || (is_object($var) && $var instanceof ArrayHash)) {
 			foreach ($var as $file) {
 				$result = $this->zip->locateName($file, \ZipArchive::FL_NOCASE | \ZipArchive::FL_NODIR);
-				if ($result === false) {
+				if (!is_integer($result)) {
 					return false;
 				}
 			}

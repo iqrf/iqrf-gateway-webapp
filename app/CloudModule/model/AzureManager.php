@@ -117,7 +117,8 @@ class AzureManager {
 		$ttl = intdiv($now->add($expires)->getTimestamp(), 60) * 60;
 		$encodedResourceUri = urlencode($resourceUri);
 		$toSign = $encodedResourceUri . "\n" . $ttl;
-		$hmac = hash_hmac('sha256', $toSign, base64_decode($signingKey, true), true);
+		$key = strval(base64_decode($signingKey, true));
+		$hmac = hash_hmac('sha256', $toSign, $key, true);
 		$signature = urlencode(base64_encode($hmac));
 		$token = 'SharedAccessSignature sr=' . $encodedResourceUri . '&sig='
 				. $signature . '&se=' . $ttl;

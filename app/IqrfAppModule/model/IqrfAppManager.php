@@ -91,7 +91,7 @@ class IqrfAppManager {
 		$connection->then(function (WebSocketClient\WebSocket $conn) use (&$resolved, &$wait, &$attempts, $loop, $array) {
 			$conn->send(Json::encode($array));
 			$conn->on('message', function (WebSocketMessaging\MessageInterface $msg) use (&$resolved, &$wait, &$attempts, $loop, $conn, $array) {
-				$json = Json::decode((string) $msg, Json::FORCE_ARRAY);
+				$json = Json::decode(strval($msg), Json::FORCE_ARRAY);
 				$correctMsgId = $array['data']['msgId'] === $json['data']['msgId'];
 				if ($correctMsgId) {
 					$resolved = $msg;
@@ -112,7 +112,7 @@ class IqrfAppManager {
 		while ($wait) {
 			$loop->run();
 		}
-		return (string) $resolved;
+		return strval($resolved);
 	}
 
 	/**

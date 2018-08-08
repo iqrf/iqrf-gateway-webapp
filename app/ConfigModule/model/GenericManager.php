@@ -89,7 +89,7 @@ class GenericManager {
 		$component = ['component' => $this->component];
 		$settings = Arrays::mergeTree($component, (array) $array);
 		$this->schemaManager->validate(ArrayHash::from($settings));
-		$this->fileManager->write($this->fileName, ArrayHash::from($settings));
+		$this->fileManager->write($this->fileName, $settings);
 	}
 
 	/**
@@ -200,7 +200,7 @@ class GenericManager {
 		foreach ($requiredInterfaces as $id => $requiredInterface) {
 			if (!array_key_exists('instance', $requiredInterface['target'])) {
 				$value = reset($requiredInterface['target']);
-				$property = key($requiredInterface['target']);
+				$property = strval(key($requiredInterface['target']));
 				$instanceFileName = $this->getInstanceByProperty($property, $value);
 				$instanceName = $this->fileManager->read($instanceFileName)['instance'];
 				$configuration['RequiredInterfaces'][$id]['target']['instance'] = $instanceName;
