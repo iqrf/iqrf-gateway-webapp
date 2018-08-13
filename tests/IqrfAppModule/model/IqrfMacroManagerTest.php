@@ -6,7 +6,7 @@
  * @phpVersion >= 7.0
  * @testCase
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Test\IqrfAppModule\Model;
 
@@ -57,7 +57,6 @@ class IqrfMacroManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to convert HEX to ASCII
 	 */
 	public function testHex2Ascii() {
@@ -67,7 +66,6 @@ class IqrfMacroManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to parse hex of macros
 	 */
 	public function testParseMacros() {
@@ -77,7 +75,6 @@ class IqrfMacroManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to read IQRF IDE macros
 	 */
 	public function testRead() {

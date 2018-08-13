@@ -6,7 +6,7 @@
  * @phpVersion >= 7.0
  * @testCase
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Test\Model;
 
@@ -25,6 +25,7 @@ class JsonFileManagerTest extends TestCase {
 	 * @var Container Nette Tester Container
 	 */
 	private $container;
+	* @test
 
 	/**
 	 * @var string Directory with configuration files
@@ -40,7 +41,6 @@ class JsonFileManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to read configuration file
 	 */
 	public function testRead() {
@@ -50,7 +50,6 @@ class JsonFileManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to write configuration file
 	 */
 	public function testWrite() {

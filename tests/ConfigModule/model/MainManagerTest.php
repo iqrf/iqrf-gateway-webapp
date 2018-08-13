@@ -6,7 +6,7 @@
  * @phpVersion >= 7.0
  * @testCase
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Test\ConfigModule\Model;
 
@@ -68,7 +68,6 @@ class MainManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to load main configuration of daemon
 	 */
 	public function testLoad() {
@@ -78,7 +77,6 @@ class MainManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to save main configuration of daemon
 	 */
 	public function testSave() {

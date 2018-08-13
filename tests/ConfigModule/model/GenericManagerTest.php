@@ -80,7 +80,6 @@ class GenericManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to get component's instances
 	 */
 	public function testGetInstances() {
@@ -91,7 +90,6 @@ class GenericManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to get avaiable messagings
 	 */
 	public function testGetMessagings() {
@@ -106,7 +104,6 @@ class GenericManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to load main configuration of daemon
 	 */
 	public function testLoad() {
@@ -117,7 +114,6 @@ class GenericManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to save main configuration of daemon
 	 */
 	public function testSave() {

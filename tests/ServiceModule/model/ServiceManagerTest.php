@@ -6,7 +6,7 @@
  * @phpVersion >= 7.0
  * @testCase
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Test\ServiceModule\Model;
 
@@ -35,7 +35,6 @@ class ServiceManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to start iqrfgd2 service
 	 */
 	public function testStart() {
@@ -53,7 +52,6 @@ class ServiceManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to stop iqrfgd2 service
 	 */
 	public function testStop() {
@@ -71,7 +69,6 @@ class ServiceManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to restart iqrfgd2 service
 	 */
 	public function testRestart() {
@@ -89,7 +86,6 @@ class ServiceManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to get status of iqrfgd2 service
 	 */
 	public function testGetStatus() {

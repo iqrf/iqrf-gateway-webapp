@@ -6,7 +6,7 @@
  * @phpVersion >= 7.0
  * @testCase
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Test\ConfigModule\Model;
 
@@ -68,7 +68,6 @@ class ComponentManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to load configuration of Components
 	 */
 	public function testLoadComponents() {
@@ -79,7 +78,6 @@ class ComponentManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to load configuration of Components
 	 */
 	public function testLoadComponent() {
@@ -91,7 +89,6 @@ class ComponentManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to save configuration of Components
 	 */
 	public function testSave() {
@@ -106,7 +103,7 @@ class ComponentManagerTest extends TestCase {
 		$expected = $this->fileManager->read($this->fileName);
 		$this->fileManagerTemp->write($this->fileName, $expected);
 		$expected['components'][7]['enabled'] = false;
-		$manager->save(ArrayHash::from($array),7);
+		$manager->save(ArrayHash::from($array), 7);
 		Assert::equal($expected, $this->fileManagerTemp->read($this->fileName));
 	}
 

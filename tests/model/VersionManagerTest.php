@@ -57,7 +57,6 @@ class VersionManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to check if an update is available for the webapp
 	 */
 	public function testAvailableWebappUpdate() {
@@ -72,7 +71,6 @@ class VersionManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to get the current stable version of the webapp
 	 */
 	public function testGetCurrentWebapp() {
@@ -80,7 +78,6 @@ class VersionManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to get version of the webapp
 	 */
 	public function testGetInstalledWebapp() {

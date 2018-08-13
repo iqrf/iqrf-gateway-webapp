@@ -6,7 +6,7 @@
  * @phpVersion >= 7.0
  * @testCase
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Test\IqrfAppModule\Model;
 
@@ -76,7 +76,6 @@ class CoordinatorParserTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to parse DPA response
 	 */
 	public function testParse() {
@@ -87,7 +86,6 @@ class CoordinatorParserTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to parse response to DPA Coordinator - "Get bonded nodes" and "Get discovered nodes" request
 	 */
 	public function testParseGetNodes() {

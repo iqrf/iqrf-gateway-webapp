@@ -75,7 +75,6 @@ class IqrfAppManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to validation of raw IQRF packet
 	 */
 	public function testValidatePacket() {
@@ -101,7 +100,6 @@ class IqrfAppManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to update NADR in raw DPA packet
 	 */
 	public function testUpdateNadr() {
@@ -112,7 +110,6 @@ class IqrfAppManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to fix NADR in raw DPA packet
 	 */
 	public function testFixPacket() {
@@ -122,7 +119,6 @@ class IqrfAppManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to change iqrf-daemon operation mode
 	 */
 	public function testChangeOperationMode() {
@@ -137,7 +133,6 @@ class IqrfAppManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to send RAW IQRF packet
 	 */
 	public function testSendRaw() {
@@ -160,7 +155,6 @@ class IqrfAppManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to parse DPA response
 	 */
 	public function testParseResponse() {

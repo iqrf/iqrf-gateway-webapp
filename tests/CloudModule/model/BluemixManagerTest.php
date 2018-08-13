@@ -84,7 +84,6 @@ class BluemixManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to create MQTT interface
 	 */
 	public function testCreateMqttInterface() {

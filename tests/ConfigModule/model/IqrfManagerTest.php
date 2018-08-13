@@ -6,7 +6,7 @@
  * @phpVersion >= 7.0
  * @testCase
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Test\ConfigModule\Model;
 
@@ -46,7 +46,6 @@ class IqrfManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to get list of SPI and USB CDC interfaces available in the system
 	 */
 	public function testGetCdcInterfaces() {
@@ -59,7 +58,6 @@ class IqrfManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to get list of SPI and USB CDC interfaces available in the system
 	 */
 	public function testGetSpiInterfaces() {

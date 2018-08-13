@@ -6,7 +6,7 @@
  * @phpVersion >= 7.0
  * @testCase
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Test\Model;
 
@@ -45,7 +45,6 @@ class CommandManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to execute a shell command
 	 */
 	public function testSend() {
@@ -53,7 +52,6 @@ class CommandManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to check the existence of a command
 	 */
 	public function testCommandExist() {

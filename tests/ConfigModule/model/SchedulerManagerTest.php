@@ -117,7 +117,6 @@ class SchedulerManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to add configuration of Scheduler
 	 */
 	public function testAdd() {
@@ -148,7 +147,6 @@ class SchedulerManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to delete configuration of Scheduler
 	 */
 	public function testDelete() {
@@ -161,7 +159,6 @@ class SchedulerManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to fix HWPID format
 	 */
 	public function testFixHwpid() {
@@ -170,7 +167,6 @@ class SchedulerManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to get last ID
 	 */
 	public function testGetLastId() {
@@ -180,7 +176,6 @@ class SchedulerManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to get avaiable messagings
 	 */
 	public function testGetMessagings() {
@@ -195,7 +190,6 @@ class SchedulerManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to get scheduler's services
 	 */
 	public function testGetServices() {
@@ -205,7 +199,6 @@ class SchedulerManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to get tasks
 	 */
 	public function testGetTasks() {
@@ -231,7 +224,6 @@ class SchedulerManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to load configuration of Scheduler
 	 */
 	public function testLoad() {
@@ -241,7 +233,6 @@ class SchedulerManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to save configuration of Scheduler
 	 */
 	public function testSave() {
@@ -256,7 +247,6 @@ class SchedulerManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to parse configuration of Scheduler
 	 */
 	public function testSaveJson() {

@@ -6,7 +6,7 @@
  * @phpVersion >= 7.0
  * @testCase
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Test\IqrfAppModule\Model;
 
@@ -52,7 +52,6 @@ class IqrfNetManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to clear all bonds
 	 */
 	public function testClearAllBonds() {
@@ -63,7 +62,6 @@ class IqrfNetManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to bond new node
 	 */
 	public function testBondNode() {
@@ -77,7 +75,6 @@ class IqrfNetManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to discovery IQMESH Network
 	 */
 	public function testDiscovery() {
@@ -91,7 +88,6 @@ class IqrfNetManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to rebond node
 	 */
 	public function testRebondNode() {
@@ -102,7 +98,6 @@ class IqrfNetManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to removenode
 	 */
 	public function testRemoveNode() {
@@ -113,7 +108,6 @@ class IqrfNetManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to set IQMESH Security (Access Password and User Key)
 	 */
 	public function testSetSecurity() {
@@ -145,7 +139,6 @@ class IqrfNetManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to read HWP configuration
 	 */
 	public function testReadHwpConfiguration() {
@@ -157,7 +150,6 @@ class IqrfNetManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to write HWP configuration byte
 	 */
 	public function testWriteHwpConfigurationByte() {
@@ -168,7 +160,6 @@ class IqrfNetManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to set RF channel
 	 */
 	public function testSetRfChannel() {
@@ -191,7 +182,6 @@ class IqrfNetManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to set RF LP timeout
 	 */
 	public function testSetRfLpTimeout() {
@@ -211,7 +201,6 @@ class IqrfNetManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to set RF output power
 	 */
 	public function testSetRfOutputPower() {
@@ -231,7 +220,6 @@ class IqrfNetManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to set RF signal filter
 	 */
 	public function testSetRfSignalFilter() {

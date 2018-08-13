@@ -6,7 +6,7 @@
  * @phpVersion >= 7.0
  * @testCase
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Test\IqrfAppModule\Model;
 
@@ -64,7 +64,6 @@ class EnumerationParserTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to parse DPA response
 	 */
 	public function testParse() {
@@ -73,7 +72,6 @@ class EnumerationParserTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to parse response to DPA Enumeration request
 	 */
 	public function testParsePeripheralEnumeration() {
@@ -82,7 +80,6 @@ class EnumerationParserTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to get embedded peripherals
 	 */
 	public function testGetEmbeddedPers() {

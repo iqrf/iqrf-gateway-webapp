@@ -6,7 +6,7 @@
  * @phpVersion >= 7.0
  * @testCase
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Test\Model;
 
@@ -63,7 +63,6 @@ class CertificateManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to check issuer of certificate
 	 */
 	public function testCheckIssuer() {
@@ -73,7 +72,6 @@ class CertificateManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to check private key of certificate
 	 */
 	public function testCheckPrivateKey() {

@@ -78,7 +78,6 @@ class AzureManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to create MQTT interface
 	 */
 	public function testCreateMqttInterface() {
@@ -111,7 +110,6 @@ class AzureManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to check the connection string
 	 */
 	public function testCheckConnectionString() {
@@ -123,7 +121,6 @@ class AzureManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to generate shared access signature token
 	 */
 	public function testGenerateSasToken() {
@@ -139,7 +136,6 @@ class AzureManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to parse the connection string
 	 */
 	public function testParseConnectionString() {

@@ -11,11 +11,8 @@ declare(strict_types = 1);
 namespace Test\Model;
 
 use App\GatewayModule\Model\InfoManager;
-use App\IqrfAppModule\Model\CoordinatorParser;
-use App\IqrfAppModule\Model\EnumerationParser;
 use App\IqrfAppModule\Model\IqrfAppManager;
 use App\IqrfAppModule\Model\MessageIdManager;
-use App\IqrfAppModule\Model\OsParser;
 use App\Model\CommandManager;
 use App\Model\FileManager;
 use App\Model\JsonFileManager;
@@ -87,7 +84,6 @@ class InfoManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to get board info
 	 */
 	public function testGetBoard() {
@@ -112,7 +108,6 @@ class InfoManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to get IPv4 and IPv6 addresses of the gateway
 	 */
 	public function testGetIpAddresses() {
@@ -125,7 +120,6 @@ class InfoManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to get MAC addresses of the gateway
 	 */
 	public function testGetMacAddresses() {
@@ -137,7 +131,6 @@ class InfoManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to get hostname of the gateway
 	 */
 	public function testGetHostname() {
@@ -149,7 +142,6 @@ class InfoManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to get information about the Coordinator
 	 */
 	public function testGetCoordinatorInfo() {
@@ -167,7 +159,6 @@ class InfoManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to get version of the daemon
 	 */
 	public function testGetDaemonVersion() {
@@ -189,7 +180,6 @@ class InfoManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to get version of the webapp
 	 */
 	public function testGetWebAppVersion() {

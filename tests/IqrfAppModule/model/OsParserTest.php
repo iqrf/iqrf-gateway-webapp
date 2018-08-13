@@ -6,7 +6,7 @@
  * @phpVersion >= 7.0
  * @testCase
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Test\IqrfAppModule\Model;
 
@@ -76,7 +76,6 @@ class OsParserTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to parse DPA response
 	 */
 	public function testParse() {
@@ -87,7 +86,6 @@ class OsParserTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to parse response to DPA OS - "Read info" request
 	 */
 	public function testParseReadInfo() {
@@ -101,7 +99,6 @@ class OsParserTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to get RF band from HWP configuration
 	 */
 	public function testGetRfBand() {
@@ -111,7 +108,6 @@ class OsParserTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to parse response to DPA OS - "Read HWP configuration" request
 	 */
 	public function testParseHwpConfiguration() {

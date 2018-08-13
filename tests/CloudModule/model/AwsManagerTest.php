@@ -92,7 +92,6 @@ class AwsManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to create MQTT interface
 	 */
 	public function testCreateMqttInterface() {
@@ -127,7 +126,6 @@ class AwsManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to check a certificate and a private key
 	 */
 	public function testCheckCertificate() {
@@ -166,7 +164,6 @@ class AwsManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to create paths for certificates
 	 */
 	public function testCreatePaths() {
@@ -180,7 +177,6 @@ class AwsManagerTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to upload root CA certificate, certificate and private key
 	 */
 	public function testUploadCertsAndKey() {
