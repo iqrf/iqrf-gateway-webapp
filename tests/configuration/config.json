@@ -36,9 +36,9 @@
 			"startlevel": -2
 		},
 		{
-			"name": "shape::WebsocketService",
+			"name": "shape::WebsocketCppService",
 			"libraryPath": "",
-			"libraryName": "WebsocketService",
+			"libraryName": "WebsocketCppService",
 			"enabled": true,
 			"startlevel": 0
 		},
@@ -48,13 +48,6 @@
 			"libraryName": "CppRestService",
 			"enabled": true,
 			"startlevel": -1
-		},
-		{
-			"name": "iqrf::DaemonController",
-			"libraryPath": "",
-			"libraryName": "DaemonController",
-			"enabled": true,
-			"startlevel": 1
 		},
 		{
 			"name": "iqrf::Scheduler",
@@ -120,9 +113,9 @@
 			"startlevel": 10
 		},
 		{
-			"name": "iqrf::Ide4Counterpart",
+			"name": "iqrf::IdeCounterpart",
 			"libraryPath": "",
-			"libraryName": "Ide4Counterpart",
+			"libraryName": "IdeCounterpart",
 			"enabled": true,
 			"startlevel": 0
 		},
@@ -138,7 +131,7 @@
 			"libraryPath": "",
 			"libraryName": "SchedulerMessaging",
 			"enabled": true,
-			"startlevel": 2
+			"startlevel": 10
 		},
 		{
 			"name": "iqrf::JsonDpaApiRaw",
