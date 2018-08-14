@@ -203,6 +203,7 @@ class GenericManager {
 				$property = strval(key($requiredInterface['target']));
 				$instanceFileName = $this->getInstanceByProperty($property, $value);
 				$instanceName = $this->fileManager->read($instanceFileName)['instance'];
+				unset($configuration['RequiredInterfaces'][$id]['target']);
 				$configuration['RequiredInterfaces'][$id]['target']['instance'] = $instanceName;
 			}
 		}

@@ -112,6 +112,7 @@ class GenericManagerTest extends TestCase {
 		$expected = $this->fileManager->read('iqrf__WebsocketMessaging');
 		$configuration = $expected;
 		$expected['RequiredInterfaces'][0]['target']['instance'] = 'WebsocketService';
+		unset($expected['RequiredInterfaces'][0]['target']['WebsocketPort']);
 		Assert::same($expected, $this->manager->fixRequiredInterfaces($configuration));
 	}
 
