@@ -21,9 +21,7 @@ declare(strict_types = 1);
 namespace App\Model;
 
 use Nette;
-use Nette\IOException;
 use Nette\Utils\FileSystem;
-use Tracy\Debugger;
 
 /**
  * Tool for reading and writing text files
@@ -58,12 +56,7 @@ class FileManager {
 	 * @param string $fileName File name
 	 */
 	public function delete(string $fileName) {
-		try {
-			FileSystem::delete($this->directory . '/' . $fileName);
-		} catch (IOException $e) {
-			Debugger::log($e->getMessage(), 'fileManager');
-			throw $e;
-		}
+		FileSystem::delete($this->directory . '/' . $fileName);
 	}
 
 	/**
@@ -81,12 +74,7 @@ class FileManager {
 	 * @return string File content
 	 */
 	public function read(string $fileName) {
-		try {
-			return FileSystem::read($this->directory . '/' . $fileName);
-		} catch (IOException $e) {
-			Debugger::log($e->getMessage(), 'fileManager');
-			throw $e;
-		}
+		return FileSystem::read($this->directory . '/' . $fileName);
 	}
 
 	/**
@@ -96,12 +84,7 @@ class FileManager {
 	 */
 	public function write(string $fileName, $content) {
 		$fileName = 'nette.safe://' . $this->directory . '/' . $fileName;
-		try {
-			FileSystem::write($fileName, $content, null);
-		} catch (IOException $e) {
-			Debugger::log($e->getMessage(), 'fileManager');
-			throw $e;
-		}
+		FileSystem::write($fileName, $content, null);
 	}
 
 }

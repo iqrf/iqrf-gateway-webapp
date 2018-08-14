@@ -25,7 +25,6 @@ use App\Model\NonExistingJsonSchema;
 use JsonSchema\Validator;
 use Nette;
 use Nette\Utils\Strings;
-use Tracy\Debugger;
 
 /**
  * Tool for reading and validationg JSON schemas.
@@ -56,9 +55,8 @@ class JsonSchemaManager extends JsonFileManager {
 		if (parent::exists($schema)) {
 			$this->schema = $schema;
 		} else {
-			$errorMsg = 'Non-existing JSON schema ' . $schema . '.';
-			Debugger::log($errorMsg, 'jsonSchema');
-			throw new NonExistingJsonSchema();
+			$message = 'Non-existing JSON schema ' . $schema . '.';
+			throw new NonExistingJsonSchema($message);
 		}
 	}
 
@@ -71,12 +69,11 @@ class JsonSchemaManager extends JsonFileManager {
 		$validator = new Validator();
 		$validator->validate($json, $schema);
 		if (!$validator->isValid()) {
-			$errorMsg = 'JSON does not validate. JSON schema: ' . $this->schema . ' Violations:';
+			$message = 'JSON does not validate. JSON schema: ' . $this->schema . ' Violations:';
 			foreach ($validator->getErrors() as $error) {
-				$errorMsg .= PHP_EOL . '[' . $error['property'] . '] ' . $error['message'];
+				$message .= PHP_EOL . '[' . $error['property'] . '] ' . $error['message'];
 			}
-			Debugger::log($errorMsg, 'jsonSchema');
-			throw new InvalidJson();
+			throw new InvalidJson($message);
 		}
 		return true;
 	}

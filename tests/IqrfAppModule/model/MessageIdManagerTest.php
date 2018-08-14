@@ -34,7 +34,7 @@ class MessageIdManagerTest extends TestCase {
 	public function __construct(Container $container) {
 		$this->container = $container;
 	}
-	
+
 	/**
 	 * Test function to generate message ID
 	 */
@@ -43,7 +43,7 @@ class MessageIdManagerTest extends TestCase {
 		$manager = new MessageIdManager();
 		Assert::same($expected, $manager->generate());
 	}
-	
+
 }
 
 
