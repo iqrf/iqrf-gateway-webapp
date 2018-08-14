@@ -23,7 +23,7 @@ namespace App\Forms;
 use App\Forms\FormFactory;
 use App\Presenters\UserPresenter;
 use App\Model\UserManager;
-use App\Model\UsernameAlreadyExists;
+use App\Model\UsernameAlreadyExistsException;
 use Nette;
 use Nette\Forms\Form;
 
@@ -95,7 +95,7 @@ class UserAddFormFactory {
 			$message = $form->getTranslator()->translate('messages.successAdd', ['username' => $values['username']]);
 			$this->presenter->flashMessage($message, 'success');
 			$this->presenter->redirect('User:default');
-		} catch (UsernameAlreadyExists $e) {
+		} catch (UsernameAlreadyExistsException $e) {
 			$this->presenter->flashMessage('core.user.form.messages.usernameAlreadyExists', 'danger');
 		}
 	}

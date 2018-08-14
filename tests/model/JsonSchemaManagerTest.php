@@ -10,10 +10,10 @@ declare(strict_types = 1);
 
 namespace Test\Model;
 
-use App\Model\InvalidJson;
+use App\Model\InvalidJsonException;
 use App\Model\JsonFileManager;
 use App\Model\JsonSchemaManager;
-use App\Model\NonExistingJsonSchema;
+use App\Model\NonExistingJsonSchemaException;
 use Nette\DI\Container;
 use Tester\Assert;
 use Tester\TestCase;
@@ -73,7 +73,7 @@ class JsonSchemaManagerTest extends TestCase {
 		Assert::null($this->manager->setSchemaFromComponent('iqrf::MqttMessaging'));
 		Assert::exception(function () {
 			$this->manager->setSchemaFromComponent('nonsense');
-		}, NonExistingJsonSchema::class);
+		}, NonExistingJsonSchemaException::class);
 	}
 
 	/**
@@ -86,7 +86,7 @@ class JsonSchemaManagerTest extends TestCase {
 		Assert::exception(function () {
 			$json = (object) $this->fileManager->read('iqrf__MqMessaging');
 			$this->manager->validate($json);
-		}, InvalidJson::class);
+		}, InvalidJsonException::class);
 	}
 
 }

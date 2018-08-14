@@ -24,7 +24,7 @@ use App\CloudModule\Model\AzureManager;
 use App\CloudModule\Presenters\AzurePresenter;
 use App\CloudModule\Model\InvalidConnectionString;
 use App\Forms\FormFactory;
-use App\Model\NonExistingJsonSchema;
+use App\Model\NonExistingJsonSchemaException;
 use App\ServiceModule\Model\NotSupportedInitSystemException;
 use App\ServiceModule\Model\ServiceManager;
 use Nette;
@@ -107,7 +107,7 @@ class CloudAzureMqttFormFactory {
 		} catch (\Exception $e) {
 			if ($e instanceof InvalidConnectionString) {
 				$this->presenter->flashMessage('cloud.msAzure.messages.invalidConnectionString', 'danger');
-			} else if ($e instanceof NonExistingJsonSchema) {
+			} else if ($e instanceof NonExistingJsonSchemaException) {
 				$this->presenter->flashMessage('config.messages.nonExistingJsonSchema', 'danger');
 			} else if ($e instanceof IOException) {
 				$this->presenter->flashMessage('config.messages.writeFailure', 'danger');

@@ -20,8 +20,8 @@ declare(strict_types = 1);
 
 namespace App\Model;
 
-use App\Model\InvalidJson;
-use App\Model\NonExistingJsonSchema;
+use App\Model\InvalidJsonException;
+use App\Model\NonExistingJsonSchemaException;
 use JsonSchema\Validator;
 use Nette;
 use Nette\Utils\Strings;
@@ -56,7 +56,7 @@ class JsonSchemaManager extends JsonFileManager {
 			$this->schema = $schema;
 		} else {
 			$message = 'Non-existing JSON schema ' . $schema . '.';
-			throw new NonExistingJsonSchema($message);
+			throw new NonExistingJsonSchemaException($message);
 		}
 	}
 
@@ -73,7 +73,7 @@ class JsonSchemaManager extends JsonFileManager {
 			foreach ($validator->getErrors() as $error) {
 				$message .= PHP_EOL . '[' . $error['property'] . '] ' . $error['message'];
 			}
-			throw new InvalidJson($message);
+			throw new InvalidJsonException($message);
 		}
 		return true;
 	}

@@ -22,7 +22,7 @@ namespace App\Forms;
 
 use App\Forms\FormFactory;
 use App\Presenters\ProfilePresenter;
-use App\Model\InvalidPassword;
+use App\Model\InvalidPasswordException;
 use App\Model\UserManager;
 use Nette;
 use Nette\Forms\Form;
@@ -95,7 +95,7 @@ class ChangePasswordFormFactory {
 			$this->user->logout();
 			$this->presenter->flashMessage('core.changePassword.form.messages.success', 'success');
 			$this->presenter->redirect('Sign:in');
-		} catch (InvalidPassword $e) {
+		} catch (InvalidPasswordException $e) {
 			$this->presenter->flashMessage('core.changePassword.form.messages.invalidOldPassword', 'danger');
 		}
 	}

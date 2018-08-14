@@ -23,7 +23,7 @@ namespace App\CloudModule\Forms;
 use App\CloudModule\Model\BluemixManager;
 use App\CloudModule\Presenters\BluemixPresenter;
 use App\Forms\FormFactory;
-use App\Model\NonExistingJsonSchema;
+use App\Model\NonExistingJsonSchemaException;
 use App\ServiceModule\Model\NotSupportedInitSystemException;
 use App\ServiceModule\Model\ServiceManager;
 use Nette;
@@ -108,7 +108,7 @@ class CloudBluemixMqttFormFactory {
 			$this->presenter->flashMessage('cloud.messages.success', 'success');
 			$this->presenter->redirect(':Config:Mqtt:default');
 		} catch (\Exception $e) {
-			if ($e instanceof NonExistingJsonSchema) {
+			if ($e instanceof NonExistingJsonSchemaException) {
 				$this->presenter->flashMessage('config.messages.nonExistingJsonSchema', 'danger');
 			} else if ($e instanceof IOException) {
 				$this->presenter->flashMessage('config.messages.writeFailure', 'danger');

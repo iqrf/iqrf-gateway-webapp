@@ -23,27 +23,27 @@ namespace App\Model;
 /**
  * The exception that indicates an invalid JSON
  */
-class InvalidJson extends \InvalidArgumentException {
+class InvalidJsonException extends \InvalidArgumentException {
 
 }
 
 /**
  * The exception that indicates an invalid password
  */
-class InvalidPassword extends \InvalidArgumentException {
+class InvalidPasswordException extends \InvalidArgumentException {
 
 }
 
 /**
  * The exception that indicates non-existing JSON schema
  */
-class NonExistingJsonSchema extends \InvalidArgumentException {
+class NonExistingJsonSchemaException extends \InvalidArgumentException {
 
 }
 
 /**
  * The exception that indicates that the user with that username already exists.
  */
-class UsernameAlreadyExists extends \InvalidArgumentException {
+class UsernameAlreadyExistsException extends \InvalidArgumentException {
 
 }

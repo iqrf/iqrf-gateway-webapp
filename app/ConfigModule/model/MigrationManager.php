@@ -23,9 +23,9 @@ namespace App\ConfigModule\Model;
 use App\ConfigModule\Model\IncompleteConfiguration;
 use App\ConfigModule\Model\InvalidConfigurationFormat;
 use App\Model\CommandManager;
-use App\Model\InvalidJson;
+use App\Model\InvalidJsonException;
 use App\Model\JsonSchemaManager;
-use App\Model\NonExistingJsonSchema;
+use App\Model\NonExistingJsonSchemaException;
 use App\Model\ZipArchiveManager;
 use Nette;
 use Nette\Application\Responses\FileResponse;
@@ -145,12 +145,12 @@ class MigrationManager {
 			}
 			try {
 				$this->schemaManager->setSchemaFromComponent($json['component']);
-			} catch (NonExistingJsonSchema $e) {
+			} catch (NonExistingJsonSchemaException $e) {
 				continue;
 			}
 			try {
 				$this->schemaManager->validate((object) $json);
-			} catch (InvalidJson $e) {
+			} catch (InvalidJsonException $e) {
 				return false;
 			}
 		}

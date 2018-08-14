@@ -20,8 +20,8 @@ declare(strict_types = 1);
 
 namespace App\Model;
 
-use App\Model\InvalidPassword;
-use App\Model\UsernameAlreadyExists;
+use App\Model\InvalidPasswordException;
+use App\Model\UsernameAlreadyExistsException;
 use Nette;
 use Nette\Database\Context;
 use Nette\Database\Table\Selection;
@@ -58,12 +58,12 @@ class UserManager {
 	 * @param int $userId User ID
 	 * @param string $oldPassword Old password
 	 * @param string $newPassword New password
-	 * @throws InvalidPassword
+	 * @throws InvalidPasswordException
 	 */
 	public function changePassword(int $userId, string $oldPassword, string $newPassword) {
 		$row = $this->table->where('id', $userId)->fetch();
 		if (!password_verify($oldPassword, $row['password'])) {
-			throw new InvalidPassword();
+			throw new InvalidPasswordException();
 		}
 		$data = ['password' => password_hash($newPassword, PASSWORD_DEFAULT)];
 		$this->table->where('id', $userId)->update($data);
@@ -83,12 +83,12 @@ class UserManager {
 	 * @param string $username New username
 	 * @param string $userType New user type
 	 * @param string $language New user's language
-	 * @throws UsernameAlreadyExists
+	 * @throws UsernameAlreadyExistsException
 	 */
 	public function edit(int $userId, string $username, string $userType, string $language) {
 		$row = $this->table->where('username', $username)->fetch();
 		if ($row && $row['id'] !== $userId) {
-			throw new UsernameAlreadyExists();
+			throw new UsernameAlreadyExistsException();
 		}
 		$data = [
 			'username' => $username,
@@ -113,12 +113,12 @@ class UserManager {
 	 * @param string $password Password
 	 * @param string $userType User type
 	 * @param string $language User's language
-	 * @throws UsernameAlreadyExists
+	 * @throws UsernameAlreadyExistsException
 	 */
 	public function register(string $username, string $password, string $userType, string $language) {
 		$row = $this->table->where('username', $username)->fetch();
 		if ($row) {
-			throw new UsernameAlreadyExists();
+			throw new UsernameAlreadyExistsException();
 		}
 		$data = [
 			'username' => $username,

@@ -23,7 +23,7 @@ namespace App\ConfigModule\Forms;
 use App\ConfigModule\Model\GenericManager;
 use App\ConfigModule\Presenters\UdpPresenter;
 use App\Forms\FormFactory;
-use App\Model\NonExistingJsonSchema;
+use App\Model\NonExistingJsonSchemaException;
 use Nette;
 use Nette\Forms\Form;
 use Nette\IOException;
@@ -121,7 +121,7 @@ class ConfigUdpFormFactory {
 			$this->manager->save($values);
 			$this->presenter->flashMessage('config.messages.success', 'success');
 		} catch (\Exception $e) {
-			if ($e instanceof NonExistingJsonSchema) {
+			if ($e instanceof NonExistingJsonSchemaException) {
 				$this->presenter->flashMessage('config.messages.nonExistingJsonSchema', 'danger');
 			} else if ($e instanceof IOException) {
 				$this->presenter->flashMessage('config.messages.writeFailure', 'danger');
