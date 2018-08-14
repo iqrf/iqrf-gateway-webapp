@@ -230,7 +230,7 @@ class IqrfAppManager {
 		}
 		foreach ($this->parsers as $parser) {
 			$parsedData = (new $parser)->parse($packet);
-			if ($parsedData !== null) {
+			if (isset($parsedData)) {
 				return $parsedData;
 			}
 		}

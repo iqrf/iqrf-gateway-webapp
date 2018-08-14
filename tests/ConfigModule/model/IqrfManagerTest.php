@@ -18,6 +18,9 @@ use Tester\TestCase;
 
 $container = require __DIR__ . '/../../bootstrap.php';
 
+/**
+ * Tests for IQRF interface manager
+ */
 class IqrfManagerTest extends TestCase {
 
 	/**
@@ -26,23 +29,11 @@ class IqrfManagerTest extends TestCase {
 	private $container;
 
 	/**
-	 * @var CommandManager Command manager
-	 */
-	private $commandManager;
-
-	/**
 	 * Constructor
 	 * @param Container $container Nette Tester Container
 	 */
 	public function __construct(Container $container) {
 		$this->container = $container;
-	}
-
-	/**
-	 * Set up test environment
-	 */
-	public function setUp() {
-		$this->commandManager = new CommandManager(false);
 	}
 
 	/**

@@ -19,6 +19,9 @@ use Tester\TestCase;
 
 $container = require __DIR__ . '/../../bootstrap.php';
 
+/**
+ * Tests for service manager
+ */
 class ServiceManagerTest extends TestCase {
 
 	/**

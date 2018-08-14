@@ -18,6 +18,9 @@ use Tester\TestCase;
 
 $container = require __DIR__ . '/../../bootstrap.php';
 
+/**
+ * Tests for parser of DPA OS responses
+ */
 class OsParserTest extends TestCase {
 
 	/**
@@ -26,34 +29,19 @@ class OsParserTest extends TestCase {
 	private $container;
 
 	/**
-	 * @var JsonFileManager JSON file manager
-	 */
-	private $jsonFileManager;
-
-	/**
 	 * @var OsParser DPA OS response parser
 	 */
 	private $parser;
 
 	/**
-	 * @var string OS Read HWP configuration packet
+	 * @var string[] DPA packets
 	 */
-	private $packetHwpConfiguration;
+	private $packet;
 
 	/**
-	 * @var array Expected OS Read HWP configuration parsed response
+	 * @var array Expected parsed responses
 	 */
-	private $expectedHwpConfiguration;
-
-	/**
-	 * @var string OS Read info packet
-	 */
-	private $packetOsInfo;
-
-	/**
-	 * @var array Expected OS Read info parsed response
-	 */
-	private $expectedOsInfo;
+	private $expected;
 
 	/**
 	 * Constructor
@@ -68,34 +56,30 @@ class OsParserTest extends TestCase {
 	 */
 	public function setUp() {
 		$this->parser = new OsParser();
-		$this->jsonFileManager = new JsonFileManager(__DIR__ . '/data/');
-		$this->packetHwpConfiguration = $this->jsonFileManager->read('response-os-hwp-config')['data']['rsp']['rData'];
-		$this->packetOsInfo = $this->jsonFileManager->read('response-os-read')['data']['rsp']['rData'];
-		$this->expectedHwpConfiguration = $this->jsonFileManager->read('data-os-hwp-config');
-		$this->expectedOsInfo = $this->jsonFileManager->read('data-os-read');
+		$jsonFileManager = new JsonFileManager(__DIR__ . '/data/');
+		$this->packet['hwpConfiguration'] = $jsonFileManager->read('response-os-hwp-config')['data']['rsp']['rData'];
+		$this->packet['osInfo'] = $jsonFileManager->read('response-os-read')['data']['rsp']['rData'];
+		$this->expected['hwpConfiguration'] = $jsonFileManager->read('data-os-hwp-config');
+		$this->expected['osInfo'] = $jsonFileManager->read('data-os-read');
 	}
 
 	/**
 	 * Test function to parse DPA response
 	 */
 	public function testParse() {
-		$arrayInfo = $this->parser->parse($this->packetOsInfo);
-		Assert::equal($this->expectedOsInfo, $arrayInfo);
-		$arrayConfig = $this->parser->parse($this->packetHwpConfiguration);
-		Assert::equal($this->expectedHwpConfiguration, $arrayConfig);
+		Assert::equal($this->expected['osInfo'], $this->parser->parse($this->packet['osInfo']));
+		Assert::equal($this->expected['hwpConfiguration'], $this->parser->parse($this->packet['hwpConfiguration']));
 	}
 
 	/**
 	 * Test function to parse response to DPA OS - "Read info" request
 	 */
 	public function testParseReadInfo() {
-		$array = $this->parser->parseReadInfo($this->packetOsInfo);
-		Assert::equal($this->expectedOsInfo, $array);
-		$failPacket = preg_replace('/\.24\./', '\.ff\.', $this->packetOsInfo);
-		$failArray = $this->parser->parseReadInfo($failPacket);
-		$failExpected = $this->expectedOsInfo;
+		Assert::equal($this->expected['osInfo'], $this->parser->parseReadInfo($this->packet['osInfo']));
+		$failPacket = preg_replace('/\.24\./', '\.ff\.', $this->packet['osInfo']);
+		$failExpected = $this->expected['osInfo'];
 		$failExpected['TrType'] = $failExpected['McuType'] = 'UNKNOWN';
-		Assert::equal($failExpected, $failArray);
+		Assert::equal($failExpected, $this->parser->parseReadInfo($failPacket));
 	}
 
 	/**
@@ -111,8 +95,8 @@ class OsParserTest extends TestCase {
 	 * Test function to parse response to DPA OS - "Read HWP configuration" request
 	 */
 	public function testParseHwpConfiguration() {
-		$actual = $this->parser->parseHwpConfiguration($this->packetHwpConfiguration);
-		Assert::same($this->expectedHwpConfiguration, $actual);
+		$actual = $this->parser->parseHwpConfiguration($this->packet['hwpConfiguration']);
+		Assert::same($this->expected['hwpConfiguration'], $actual);
 	}
 
 }

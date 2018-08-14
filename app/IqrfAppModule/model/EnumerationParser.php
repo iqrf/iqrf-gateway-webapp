@@ -44,8 +44,6 @@ class EnumerationParser implements IParser {
 		switch ($pcmd) {
 			case 'bf':
 				return $this->parsePeripheralEnumeration($packet);
-			default:
-				return null;
 		}
 	}
 

@@ -21,12 +21,10 @@ use Tester\TestCase;
 
 $container = require __DIR__ . '/../../bootstrap.php';
 
+/**
+ * Tests for IBM Bluemix manager
+ */
 class BluemixManagerTest extends TestCase {
-
-	/**
-	 * @var GenericManager Generic configuration manager
-	 */
-	private $configManager;
 
 	/**
 	 * @var Container Nette Tester Container
@@ -78,8 +76,8 @@ class BluemixManagerTest extends TestCase {
 	public function setUp() {
 		$this->fileManager = new JsonFileManager($this->pathTest);
 		$schemaManager = new JsonSchemaManager($this->schemaPath);
-		$this->configManager = new GenericManager($this->fileManager, $schemaManager);
-		$this->manager = \Mockery::mock(BluemixManager::class, [$this->configManager])->makePartial();
+		$configManager = new GenericManager($this->fileManager, $schemaManager);
+		$this->manager = \Mockery::mock(BluemixManager::class, [$configManager])->makePartial();
 		$this->manager->shouldReceive('downloadCaCertificate')->andReturn(null);
 	}
 

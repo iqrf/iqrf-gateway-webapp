@@ -23,6 +23,9 @@ use Tester\TestCase;
 
 $container = require __DIR__ . '/../../bootstrap.php';
 
+/**
+ * Tests for IQRF App manager
+ */
 class IqrfAppManagerTest extends TestCase {
 
 	/**

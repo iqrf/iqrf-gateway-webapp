@@ -18,6 +18,9 @@ use Tester\TestCase;
 
 $container = require __DIR__ . '/../bootstrap.php';
 
+/**
+ * Tests for certificate manager
+ */
 class CertificateManagerTest extends TestCase {
 
 	/**

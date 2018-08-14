@@ -19,6 +19,9 @@ use Tester\TestCase;
 
 $container = require __DIR__ . '/../../bootstrap.php';
 
+/**
+ * Tests for component configuration manager
+ */
 class ComponentManagerTest extends TestCase {
 
 	/**
@@ -34,12 +37,22 @@ class ComponentManagerTest extends TestCase {
 	/**
 	 * @var JsonFileManager JSON file manager
 	 */
-	private $fileManagerTemp;
+	private $fileManagerTest;
 
 	/**
 	 * @var string File name (without .json)
 	 */
 	private $fileName = 'config';
+
+	/**
+	 * @var ComponentManager Componenct configuration manager
+	 */
+	private $manager;
+
+	/**
+	 * @var ComponentManager Component configuration manager
+	 */
+	private $managerTest;
 
 	/**
 	 * @var string Directory with configuration files
@@ -64,35 +77,63 @@ class ComponentManagerTest extends TestCase {
 	 */
 	public function setUp() {
 		$this->fileManager = new JsonFileManager($this->path);
-		$this->fileManagerTemp = new JsonFileManager($this->pathTest);
+		$this->fileManagerTest = new JsonFileManager($this->pathTest);
+		$this->manager = new ComponentManager($this->fileManager);
+		$this->managerTest = new ComponentManager($this->fileManagerTest);
 	}
 
 	/**
-	 * Test function to load configuration of Components
+	 * The function to add a new component
+	 */
+	public function testAdd() {
+		$expected = $this->fileManager->read($this->fileName);
+		$this->fileManagerTest->write($this->fileName, $expected);
+		$array = [
+			'name' => 'test::Test',
+			'libraryPath' => '',
+			'libraryName' => 'Test',
+			'enabled' => false,
+			'startlevel' => 100,
+		];
+		$expected['components'][] = $array;
+		$this->managerTest->add(ArrayHash::from($array));
+		Assert::same($expected['components'], $this->managerTest->loadComponents());
+	}
+
+	/**
+	 * Test function to delete the component
+	 */
+	public function testDelete() {
+		$expected = $this->fileManager->read($this->fileName);
+		$this->fileManagerTest->write($this->fileName, $expected);
+		unset($expected['components'][30]);
+		$this->managerTest->delete(30);
+		Assert::same($expected['components'], $this->managerTest->loadComponents());
+	}
+
+	/**
+	 * Test function to load configuration of components
 	 */
 	public function testLoadComponents() {
-		$manager = new ComponentManager($this->fileManager);
 		$json = $this->fileManager->read($this->fileName);
 		$expected = $json['components'];
-		Assert::equal($expected, $manager->loadComponents());
+		Assert::equal($expected, $this->manager->loadComponents());
 	}
 
 	/**
-	 * Test function to load configuration of Components
+	 * Test function to load configuration of components
 	 */
 	public function testLoadComponent() {
-		$manager = new ComponentManager($this->fileManager);
 		$json = $this->fileManager->read($this->fileName);
 		$expected = $json['components'][0];
-		Assert::equal($expected, $manager->loadComponent(0));
-		Assert::equal([], $manager->loadComponent(100));
+		Assert::equal($expected, $this->manager->loadComponent(0));
+		Assert::equal([], $this->manager->loadComponent(100));
 	}
 
 	/**
-	 * Test function to save configuration of Components
+	 * Test function to save configuration of components
 	 */
 	public function testSave() {
-		$manager = new ComponentManager($this->fileManagerTemp);
 		$array = [
 			'name' => 'iqrf::Scheduler',
 			'libraryPath' => '',
@@ -101,10 +142,10 @@ class ComponentManagerTest extends TestCase {
 			'startlevel' => 1,
 		];
 		$expected = $this->fileManager->read($this->fileName);
-		$this->fileManagerTemp->write($this->fileName, $expected);
-		$expected['components'][7]['enabled'] = false;
-		$manager->save(ArrayHash::from($array), 7);
-		Assert::equal($expected, $this->fileManagerTemp->read($this->fileName));
+		$this->fileManagerTest->write($this->fileName, $expected);
+		$expected['components'][6]['enabled'] = false;
+		$this->managerTest->save(ArrayHash::from($array), 6);
+		Assert::equal($expected, $this->fileManagerTest->read($this->fileName));
 	}
 
 }

@@ -22,22 +22,15 @@ use Tester\TestCase;
 
 $container = require __DIR__ . '/../../bootstrap.php';
 
+/**
+ * Tests for scheduler's task configuration manager
+ */
 class SchedulerManagerTest extends TestCase {
 
 	/**
 	 * @var Container Nette Tester Container
 	 */
 	private $container;
-
-	/**
-	 * @var GenericManager Generic configuration manager
-	 */
-	private $genericConfigManager;
-
-	/**
-	 * @var \Mockery\MockInterface Mocked main configuration manager
-	 */
-	private $mainConfigManager;
 
 	/**
 	 * @var JsonFileManager JSON file manager
@@ -47,10 +40,15 @@ class SchedulerManagerTest extends TestCase {
 	/**
 	 * @var JsonFileManager JSON file manager
 	 */
-	private $fileManagerTemp;
+	private $fileManagerTest;
 
 	/**
-	 * @var array
+	 * @var SchedulerManager Scheduler's task configuration manager
+	 */
+	private $manager;
+
+	/**
+	 * @var array Scheduler's task settings
 	 */
 	private $array = [
 		'time' => '*/5 * 1 * * * *',
@@ -104,26 +102,24 @@ class SchedulerManagerTest extends TestCase {
 	 */
 	public function setUp() {
 		$this->fileManager = new JsonFileManager($this->path);
-		$this->fileManagerTemp = new JsonFileManager($this->pathTest);
+		$this->fileManagerTest = new JsonFileManager($this->pathTest);
 		$fileManager = new JsonFileManager(realpath($this->path . '/../'));
 		$schemaManager = new JsonSchemaManager($this->schemaPath);
-		$this->genericConfigManager = new GenericManager($fileManager, $schemaManager);
-		$this->mainConfigManager = \Mockery::mock(MainManager::class);
-		$configuration = [
-			'cacheDir' => realpath($this->pathTest . '/../'),
-		];
-		$this->mainConfigManager->shouldReceive('load')->andReturn($configuration);
-		$this->fileManagerTemp->write($this->fileName, $this->fileManager->read($this->fileName));
+		$genericConfigManager = new GenericManager($fileManager, $schemaManager);
+		$configuration = ['cacheDir' => realpath($this->pathTest . '/../'),];
+		$mainConfigManager = \Mockery::mock(MainManager::class);
+		$mainConfigManager->shouldReceive('load')->andReturn($configuration);
+		$this->fileManagerTest->write($this->fileName, $this->fileManager->read($this->fileName));
+		$this->manager = new SchedulerManager($mainConfigManager, $genericConfigManager);
 	}
 
 	/**
 	 * Test function to add configuration of Scheduler
 	 */
 	public function testAdd() {
-		$manager = new SchedulerManager($this->mainConfigManager, $this->genericConfigManager);
 		$expected = $this->fileManager->read($this->fileName);
-		$this->fileManagerTemp->write($this->fileName, $expected);
-		$manager->add('raw');
+		$this->fileManagerTest->write($this->fileName, $expected);
+		$this->manager->add('raw');
 		$task = [
 			'time' => '',
 			'service' => '',
@@ -143,66 +139,63 @@ class SchedulerManagerTest extends TestCase {
 				],],
 		];
 		array_push($expected['TasksJson'], $task);
-		Assert::equal($expected, $this->fileManagerTemp->read($this->fileName));
+		Assert::equal($expected, $this->fileManagerTest->read($this->fileName));
 	}
 
 	/**
 	 * Test function to delete configuration of Scheduler
 	 */
 	public function testDelete() {
-		$manager = new SchedulerManager($this->mainConfigManager, $this->genericConfigManager);
 		$expected = $this->fileManager->read($this->fileName);
-		$this->fileManagerTemp->write($this->fileName, $expected);
+		$this->fileManagerTest->write($this->fileName, $expected);
 		unset($expected['TasksJson'][5]);
-		$manager->delete(5);
-		Assert::equal($expected, $this->fileManagerTemp->read($this->fileName));
+		$this->manager->delete(5);
+		Assert::equal($expected, $this->fileManagerTest->read($this->fileName));
 	}
 
 	/**
 	 * Test function to fix HWPID format
 	 */
 	public function testFixHwpid() {
-		$manager = new SchedulerManager($this->mainConfigManager, $this->genericConfigManager);
-		Assert::equal('01.00', $manager->fixHwpid('0001'));
+		Assert::equal('01.00', $this->manager->fixHwpid('0001'));
 	}
 
 	/**
 	 * Test function to get last ID
 	 */
 	public function testGetLastId() {
-		$manager = new SchedulerManager($this->mainConfigManager, $this->genericConfigManager);
 		$expected = count($this->fileManager->read($this->fileName)['TasksJson']) - 1;
-		Assert::equal($expected, $manager->getLastId());
+		Assert::equal($expected, $this->manager->getLastId());
 	}
 
 	/**
 	 * Test function to get avaiable messagings
 	 */
 	public function testGetMessagings() {
-		$manager = new SchedulerManager($this->mainConfigManager, $this->genericConfigManager);
 		$expected = [
 			'config.mq.title' => ['MqMessaging',],
-			'config.mqtt.title' => ['MqttMessaging1', 'MqttMessaging2',],
+			'config.mqtt.title' => ['MqttMessaging',],
 			'config.udp.title' => ['UdpMessaging',],
-			'config.websocket.title' => ['WebsocketMessaging',],
+			'config.websocket.title' => [
+				'WebsocketMessaging', 'WebsocketMessagingMobileApp',
+				'WebsocketMessagingWebApp',
+			],
 		];
-		Assert::same($expected, $manager->getMessagings());
+		Assert::same($expected, $this->manager->getMessagings());
 	}
 
 	/**
 	 * Test function to get scheduler's services
 	 */
 	public function testGetServices() {
-		$manager = new SchedulerManager($this->mainConfigManager, $this->genericConfigManager);
 		$expected = ['SchedulerMessaging'];
-		Assert::same($expected, $manager->getServices());
+		Assert::same($expected, $this->manager->getServices());
 	}
 
 	/**
 	 * Test function to get tasks
 	 */
 	public function testGetTasks() {
-		$manager = new SchedulerManager($this->mainConfigManager, $this->genericConfigManager);
 		$expected = [
 			[
 				'time' => '*/5 * 1 * * * *',
@@ -220,44 +213,41 @@ class SchedulerManagerTest extends TestCase {
 				'id' => 1,
 			],
 		];
-		Assert::equal($expected, $manager->getTasks());
+		Assert::equal($expected, $this->manager->getTasks());
 	}
 
 	/**
 	 * Test function to load configuration of Scheduler
 	 */
 	public function testLoad() {
-		$manager = new SchedulerManager($this->mainConfigManager, $this->genericConfigManager);
-		Assert::equal($this->array, $manager->load(0));
-		Assert::equal([], $manager->load(10));
+		Assert::equal($this->array, $this->manager->load(0));
+		Assert::equal([], $this->manager->load(10));
 	}
 
 	/**
 	 * Test function to save configuration of Scheduler
 	 */
 	public function testSave() {
-		$manager = new SchedulerManager($this->mainConfigManager, $this->genericConfigManager);
 		$array = $this->array;
 		$array['message']['nadr'] = '0';
 		$expected = $this->fileManager->read($this->fileName);
-		$this->fileManagerTemp->write($this->fileName, $expected);
+		$this->fileManagerTest->write($this->fileName, $expected);
 		$expected['TasksJson'][0]['message']['nadr'] = '0';
-		$manager->save(ArrayHash::from($array), 0);
-		Assert::equal($expected, $this->fileManagerTemp->read($this->fileName));
+		$this->manager->save(ArrayHash::from($array), 0);
+		Assert::equal($expected, $this->fileManagerTest->read($this->fileName));
 	}
 
 	/**
 	 * Test function to parse configuration of Scheduler
 	 */
 	public function testSaveJson() {
-		$manager = new SchedulerManager($this->mainConfigManager, $this->genericConfigManager);
 		$updateArray = $this->array;
 		$updateArray['task']['message']['msgid'] = '2';
 		$json = $this->fileManager->read($this->fileName);
 		$expected = $json;
 		$expected['TasksJson'][0]['task']['message']['msgid'] = '2';
 		$update = ArrayHash::from($updateArray);
-		Assert::equal($expected, $manager->saveJson($json, $update, 0));
+		Assert::equal($expected, $this->manager->saveJson($json, $update, 0));
 	}
 
 }

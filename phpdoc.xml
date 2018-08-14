@@ -21,5 +21,6 @@
 	</transformations>
 	<files>
 		<directory>app/</directory>
+                <directory>tests/</directory>
 	</files>
 </phpdoc>

@@ -19,6 +19,9 @@ use Tester\TestCase;
 
 $container = require __DIR__ . '/../bootstrap.php';
 
+/**
+ * Tests for router factory
+ */
 class RouterFactoryTest extends TestCase {
 
 	/**
@@ -35,7 +38,6 @@ class RouterFactoryTest extends TestCase {
 	}
 
 	/**
-	 * @test
 	 * Test function to create a router
 	 */
 	public function testCreateRouter() {

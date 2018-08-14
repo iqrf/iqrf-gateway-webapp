@@ -18,17 +18,15 @@ use Tester\TestCase;
 
 $container = require __DIR__ . '/../../bootstrap.php';
 
+/**
+ * Tests for parser of DPA Enumeration responses
+ */
 class EnumerationParserTest extends TestCase {
 
 	/**
 	 * @var Container Nette Tester Container
 	 */
 	private $container;
-
-	/**
-	 * @var JsonFileManager JSON file manager
-	 */
-	private $jsonFileManager;
 
 	/**
 	 * @var EnumerationParser DPA Enumeration response parser
@@ -38,12 +36,12 @@ class EnumerationParserTest extends TestCase {
 	/**
 	 * @var string Enumeration packet
 	 */
-	private $packetEnumeration;
+	private $packet;
 
 	/**
 	 * @var array Expected Enumeration parsed response
 	 */
-	private $expectedEnumeration;
+	private $expected;
 
 	/**
 	 * Constructor
@@ -58,33 +56,33 @@ class EnumerationParserTest extends TestCase {
 	 */
 	public function setUp() {
 		$this->parser = new EnumerationParser();
-		$this->jsonFileManager = new JsonFileManager(__DIR__ . '/data/');
-		$this->packetEnumeration = $this->jsonFileManager->read('response-enumeration')['data']['rsp']['rData'];
-		$this->expectedEnumeration = $this->jsonFileManager->read('data-enumeration');
+		$jsonFileManager = new JsonFileManager(__DIR__ . '/data/');
+		$this->packet = $jsonFileManager->read('response-enumeration')['data']['rsp']['rData'];
+		$this->expected = $jsonFileManager->read('data-enumeration');
 	}
 
 	/**
 	 * Test function to parse DPA response
 	 */
 	public function testParse() {
-		$array = $this->parser->parse($this->packetEnumeration);
-		Assert::equal($this->expectedEnumeration, $array);
+		$actual = $this->parser->parse($this->packet);
+		Assert::equal($this->expected, $actual);
 	}
 
 	/**
 	 * Test function to parse response to DPA Enumeration request
 	 */
 	public function testParsePeripheralEnumeration() {
-		$array = $this->parser->parsePeripheralEnumeration($this->packetEnumeration);
-		Assert::equal($this->expectedEnumeration, $array);
+		$actual = $this->parser->parsePeripheralEnumeration($this->packet);
+		Assert::equal($this->expected, $actual);
 	}
 
 	/**
 	 * Test function to get embedded peripherals
 	 */
 	public function testGetEmbeddedPers() {
-		$array = $this->parser->getEmbeddedPers($this->packetEnumeration);
-		Assert::equal($this->expectedEnumeration['EmbeddedPers'], $array);
+		$actual = $this->parser->getEmbeddedPers($this->packet);
+		Assert::equal($this->expected['EmbeddedPers'], $actual);
 	}
 
 }

@@ -25,17 +25,10 @@ use Tester\TestCase;
 
 $container = require __DIR__ . '/../../bootstrap.php';
 
+/**
+ * Tests for Amazon AWS IoT
+ */
 class AwsManagerTest extends TestCase {
-
-	/**
-	 * @var CertificateManager Certificate manager
-	 */
-	private $certManager;
-
-	/**
-	 * @var GenericManager Generic configuration manager
-	 */
-	private $configManager;
 
 	/**
 	 * @var Container Nette Tester Container
@@ -48,9 +41,14 @@ class AwsManagerTest extends TestCase {
 	private $fileManager;
 
 	/**
-	 * @var \Mockery\Mock Mocked Amazon AWS IoT manager
+	 * @var AwsManager Amazon AWS IoT manager
 	 */
 	private $manager;
+
+	/**
+	 * @var \Mockery\Mock Mocked Amazon AWS IoT manager
+	 */
+	private $mockedManager;
 
 	/**
 	 * @var array Values from Amazon AWS IoT form
@@ -82,13 +80,41 @@ class AwsManagerTest extends TestCase {
 	 */
 	public function setUp() {
 		$this->fileManager = new JsonFileManager($this->pathTest);
-		$this->certManager = new CertificateManager();
+		$certManager = new CertificateManager();
 		$schemaManager = new JsonSchemaManager($this->schemaPath);
-		$this->configManager = new GenericManager($this->fileManager, $schemaManager);
-		$this->manager = \Mockery::mock(AwsManager::class, [$this->certManager, $this->configManager])->makePartial();
-		$this->manager->shouldReceive('downloadCaCertificate')->andReturn(null);
-		$this->manager->shouldReceive('checkCertificate')->andReturn(null);
-		$this->manager->shouldReceive('uploadCertsAndKey')->andReturn(null);
+		$configManager = new GenericManager($this->fileManager, $schemaManager);
+		$this->manager = new AwsManager($certManager, $configManager);
+		$this->mockedManager = \Mockery::mock(AwsManager::class, [$certManager, $configManager])->makePartial();
+		$this->mockedManager->shouldReceive('downloadCaCertificate')->andReturn(null);
+		$this->mockedManager->shouldReceive('checkCertificate')->andReturn(null);
+		$this->mockedManager->shouldReceive('uploadCertsAndKey')->andReturn(null);
+	}
+
+	/**
+	 * Mock uploaded certificate and private key
+	 * @param string $path Path to certificate and private key
+	 * @return array Mocked uploaded certificate and private key
+	 */
+	public function mockUploadedFiles(string $path) {
+		$certFile = $path . '/cert0.pem';
+		$certValue = [
+			'name' => 'cert0.pem',
+			'type' => 'text/plain',
+			'tmp_name' => $certFile,
+			'error' => UPLOAD_ERR_OK,
+			'size' => filesize($certFile),
+		];
+		$pKeyFile = $path . '/pkey0.key';
+		$pKeyValue = [
+			'name' => 'pkey0.key',
+			'type' => 'text/plain',
+			'tmp_name' => $pKeyFile,
+			'error' => UPLOAD_ERR_OK,
+			'size' => filesize($pKeyFile),
+		];
+		$array['cert'] = new FileUpload($certValue);
+		$array['key'] = new FileUpload($pKeyValue);
+		return $array;
 	}
 
 	/**
@@ -121,7 +147,7 @@ class AwsManagerTest extends TestCase {
 			'EnableServerCertAuth' => false,
 			'acceptAsyncMsg' => false,
 		];
-		$this->manager->createMqttInterface($values);
+		$this->mockedManager->createMqttInterface($values);
 		Assert::same($mqtt, $this->fileManager->read('MqttMessagingAws'));
 	}
 
@@ -129,27 +155,9 @@ class AwsManagerTest extends TestCase {
 	 * Test function to check a certificate and a private key
 	 */
 	public function testCheckCertificate() {
-		$manager = new AwsManager($this->certManager, $this->configManager);
-		$certFile = __DIR__ . '/../../model/certs/cert0.pem';
-		$certValue = [
-			'name' => 'cert0.pem',
-			'type' => 'text/plain',
-			'tmp_name' => $certFile,
-			'error' => UPLOAD_ERR_OK,
-			'size' => filesize($certFile),
-		];
-		$pKeyFile = __DIR__ . '/../../model/certs/pkey0.key';
-		$pKeyValue = [
-			'name' => 'pkey0.key',
-			'type' => 'text/plain',
-			'tmp_name' => $pKeyFile,
-			'error' => UPLOAD_ERR_OK,
-			'size' => filesize($pKeyFile),
-		];
-		$array['cert'] = new FileUpload($certValue);
-		$array['key'] = new FileUpload($pKeyValue);
-		Assert::null($manager->checkCertificate(ArrayHash::from($array)));
-		Assert::exception(function () use ($manager, $array) {
+		$array = $this->mockUploadedFiles(__DIR__ . '/../../model/certs/');
+		Assert::null($this->manager->checkCertificate(ArrayHash::from($array)));
+		Assert::exception(function () use ($array) {
 			$pKeyFile = __DIR__ . '/../../model/certs/pkey1.key';
 			$pKeyValue = [
 				'name' => 'pkey1.key',
@@ -159,7 +167,7 @@ class AwsManagerTest extends TestCase {
 				'size' => filesize($pKeyFile),
 			];
 			$array['key'] = new FileUpload($pKeyValue);
-			$manager->checkCertificate(ArrayHash::from($array));
+			$this->manager->checkCertificate(ArrayHash::from($array));
 		}, InvalidPrivateKeyForCertificate::class);
 	}
 
@@ -168,7 +176,7 @@ class AwsManagerTest extends TestCase {
 	 */
 	public function testCreatePaths() {
 		$timestamp = (new \DateTime())->format(\DateTime::ISO8601);
-		$actual = $this->manager->createPaths();
+		$actual = $this->mockedManager->createPaths();
 		$paths = [
 			'cert' => '/etc/iqrf-daemon/certs/' . $timestamp . '-aws.crt',
 			'key' => '/etc/iqrf-daemon/certs/' . $timestamp . '-aws.key',
@@ -180,32 +188,16 @@ class AwsManagerTest extends TestCase {
 	 * Test function to upload root CA certificate, certificate and private key
 	 */
 	public function testUploadCertsAndKey() {
-		$manager = new AwsManager($this->certManager, $this->configManager);
 		$certFile = __DIR__ . '/certs/cert0.pem';
 		$pKeyFile = __DIR__ . '/certs/pkey0.key';
 		FileSystem::copy(__DIR__ . '/../../model/certs/cert0.pem', $certFile);
 		FileSystem::copy(__DIR__ . '/../../model/certs/pkey0.key', $pKeyFile);
-		$certValue = [
-			'name' => 'cert0.pem',
-			'type' => 'text/plain',
-			'tmp_name' => $certFile,
-			'error' => UPLOAD_ERR_OK,
-			'size' => filesize($certFile),
-		];
-		$pKeyValue = [
-			'name' => 'pkey0.key',
-			'type' => 'text/plain',
-			'tmp_name' => $pKeyFile,
-			'error' => UPLOAD_ERR_OK,
-			'size' => filesize($pKeyFile),
-		];
-		$array['cert'] = new FileUpload($certValue);
-		$array['key'] = new FileUpload($pKeyValue);
+		$array = $this->mockUploadedFiles(__DIR__ . '/certs/');
 		$paths = [
 			'cert' => __DIR__ . '/certs/cert.pem',
 			'key' => __DIR__ . '/certs/pKey.key',
 		];
-		Assert::null($manager->uploadCertsAndKey(ArrayHash::from($array), $paths));
+		Assert::null($this->manager->uploadCertsAndKey(ArrayHash::from($array), $paths));
 	}
 
 }

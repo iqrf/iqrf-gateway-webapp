@@ -23,6 +23,9 @@ use Tester\TestCase;
 
 $container = require __DIR__ . '/../../bootstrap.php';
 
+/**
+ * Tests for Gateway info manager
+ */
 class InfoManagerTest extends TestCase {
 
 	/**
@@ -34,11 +37,6 @@ class InfoManagerTest extends TestCase {
 	 * @var IqrfAppManager IQRF App manager
 	 */
 	private $iqrfAppManager;
-
-	/**
-	 * @var MessageIdManager Message ID manager
-	 */
-	private $msgIdManager;
 
 	/**
 	 * @var VersionManager Version manager
@@ -78,9 +76,9 @@ class InfoManagerTest extends TestCase {
 	 * Set up test environment
 	 */
 	public function setUp() {
-		$this->msgIdManager = new MessageIdManager();
+		$msgIdManager = new MessageIdManager();
 		$this->versionManager = new VersionManager(new CommandManager(false));
-		$this->iqrfAppManager = new IqrfAppManager($this->wsServer, $this->msgIdManager);
+		$this->iqrfAppManager = new IqrfAppManager($this->wsServer, $msgIdManager);
 	}
 
 	/**

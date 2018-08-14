@@ -18,6 +18,9 @@ use Tester\TestCase;
 
 $container = require __DIR__ . '/../../bootstrap.php';
 
+/**
+ * Tests for parser for of Coordinator responses
+ */
 class CoordinatorParserTest extends TestCase {
 
 	/**
@@ -26,34 +29,19 @@ class CoordinatorParserTest extends TestCase {
 	private $container;
 
 	/**
-	 * @var JsonFileManager JSON file manager
-	 */
-	private $jsonFileManager;
-
-	/**
 	 * @var CoordinatorParser DPA Coordinator response parser
 	 */
 	private $parser;
 
 	/**
-	 * @var string Coordinator Get Bonded nodes packet
+	 * @var string[] DPA packets
 	 */
-	private $packetBonded;
+	private $packet = [];
 
 	/**
-	 * @var string Coordinator Get Discovered nodes packet
+	 * @var array Expected parsed information
 	 */
-	private $packetDiscovered;
-
-	/**
-	 * @var array Expected Coordinator Get Bonded nodes parsed packet
-	 */
-	private $expectedBonded;
-
-	/**
-	 * @var array Expected Coordinator Get Discovered nodes parsed packet
-	 */
-	private $expectedDiscovered;
+	private $expected;
 
 	/**
 	 * Constructor
@@ -68,31 +56,29 @@ class CoordinatorParserTest extends TestCase {
 	 */
 	public function setUp() {
 		$this->parser = new CoordinatorParser();
-		$this->jsonFileManager = new JsonFileManager(__DIR__ . '/data/');
-		$this->packetBonded = $this->jsonFileManager->read('response-coordinator-bonded')['data']['rsp']['rData'];
-		$this->packetDiscovered = $this->jsonFileManager->read('response-coordinator-discovered')['data']['rsp']['rData'];
-		$this->expectedBonded = $this->jsonFileManager->read('data-coordinator-bonded');
-		$this->expectedDiscovered = $this->jsonFileManager->read('data-coordinator-discovered');
+		$jsonFileManager = new JsonFileManager(__DIR__ . '/data/');
+		$this->packet['bonded'] = $jsonFileManager->read('response-coordinator-bonded')['data']['rsp']['rData'];
+		$this->packet['discovered'] = $jsonFileManager->read('response-coordinator-discovered')['data']['rsp']['rData'];
+		$this->expected['bonded'] = $jsonFileManager->read('data-coordinator-bonded');
+		$this->expected['discovered'] = $jsonFileManager->read('data-coordinator-discovered');
 	}
 
 	/**
 	 * Test function to parse DPA response
 	 */
 	public function testParse() {
-		$arrayBonded = $this->parser->parse($this->packetBonded);
-		Assert::equal($this->expectedBonded, $arrayBonded);
-		$arrayDiscovered = $this->parser->parse($this->packetDiscovered);
-		Assert::equal($this->expectedDiscovered, $arrayDiscovered);
+		Assert::equal($this->expected['bonded'], $this->parser->parse($this->packet['bonded']));
+		Assert::equal($this->expected['discovered'], $this->parser->parse($this->packet['discovered']));
 	}
 
 	/**
 	 * Test function to parse response to DPA Coordinator - "Get bonded nodes" and "Get discovered nodes" request
 	 */
 	public function testParseGetNodes() {
-		$arrayBonded = $this->parser->parseGetNodes($this->packetBonded);
-		Assert::equal($this->expectedBonded, $arrayBonded);
-		$arrayDiscovered = $this->parser->parseGetNodes($this->packetDiscovered);
-		Assert::equal($this->expectedDiscovered, $arrayDiscovered);
+		$actualBonded = $this->parser->parseGetNodes($this->packet['bonded']);
+		Assert::equal($this->expected['bonded'], $actualBonded);
+		$actualDiscovered = $this->parser->parseGetNodes($this->packet['discovered']);
+		Assert::equal($this->expected['discovered'], $actualDiscovered);
 	}
 
 }

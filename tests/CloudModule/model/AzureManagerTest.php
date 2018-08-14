@@ -21,12 +21,10 @@ use Tester\TestCase;
 
 $container = require __DIR__ . '/../../bootstrap.php';
 
+/**
+ * Test for MS Azure IoT Hub manager
+ */
 class AzureManagerTest extends TestCase {
-
-	/**
-	 * @var GenericManager Generic configuration manager
-	 */
-	private $configManager;
 
 	/**
 	 * @var Container Nette Tester Container
@@ -39,9 +37,14 @@ class AzureManagerTest extends TestCase {
 	private $fileManager;
 
 	/**
-	 * @var \Mockery\Mock Mocked MS Azure IoT hub manager
+	 * @var AzureManager MS Azure IoT Hub manager
 	 */
 	private $manager;
+
+	/**
+	 * @var \Mockery\Mock Mocked MS Azure IoT hub manager
+	 */
+	private $mockedManager;
 
 	/**
 	 * @var string MS Azure IoT Hub connection string for the device
@@ -72,9 +75,10 @@ class AzureManagerTest extends TestCase {
 	public function setUp() {
 		$this->fileManager = new JsonFileManager($this->pathTest);
 		$schemaManager = new JsonSchemaManager($this->schemaPath);
-		$this->configManager = new GenericManager($this->fileManager, $schemaManager);
-		$this->manager = \Mockery::mock(AzureManager::class, [$this->configManager])->makePartial();
-		$this->manager->shouldReceive('generateSasToken')->andReturn('generatedSasToken');
+		$configManager = new GenericManager($this->fileManager, $schemaManager);
+		$this->manager = new AzureManager($configManager);
+		$this->mockedManager = \Mockery::mock(AzureManager::class, [$configManager])->makePartial();
+		$this->mockedManager->shouldReceive('generateSasToken')->andReturn('generatedSasToken');
 	}
 
 	/**
@@ -105,7 +109,7 @@ class AzureManagerTest extends TestCase {
 			'EnableServerCertAuth' => false,
 			'acceptAsyncMsg' => false,
 		];
-		$this->manager->createMqttInterface($this->connectionString);
+		$this->mockedManager->createMqttInterface($this->connectionString);
 		Assert::same($mqtt, $this->fileManager->read('MqttMessagingAzure'));
 	}
 
@@ -113,10 +117,10 @@ class AzureManagerTest extends TestCase {
 	 * Test function to check the connection string
 	 */
 	public function testCheckConnectionString() {
-		Assert::null($this->manager->checkConnectionString($this->connectionString));
+		Assert::null($this->mockedManager->checkConnectionString($this->connectionString));
 		$invalidString = 'HostName=iqrf.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=1234567890abcdefghijklmnopqrstuvwxyzABCDEFG=';
 		Assert::exception(function() use ($invalidString) {
-			$this->manager->checkConnectionString($invalidString);
+			$this->mockedManager->checkConnectionString($invalidString);
 		}, InvalidConnectionString::class);
 	}
 
@@ -129,8 +133,7 @@ class AzureManagerTest extends TestCase {
 		$policyName = null;
 		$expiresInMins = intdiv((new \DateTime('2018-05-10T11:00:00'))->getTimestamp(), 60) -
 				intdiv((new \DateTime())->getTimestamp(), 60) + 5256000;
-		$manager = new AzureManager($this->configManager);
-		$actual = $manager->generateSasToken($resourceUri, $signingKey, $policyName, $expiresInMins);
+		$actual = $this->manager->generateSasToken($resourceUri, $signingKey, $policyName, $expiresInMins);
 		$expected = 'SharedAccessSignature sr=iqrf.azure-devices.net%2Fdevices%2FiqrfGwTest&sig=loSMVo4aSTBFh6psEwJcSInBGo%2BSD3noiFSHbgQuSMo%3D&se=1841302800';
 		Assert::same($expected, $actual);
 	}
@@ -144,7 +147,7 @@ class AzureManagerTest extends TestCase {
 			'DeviceId' => 'IQRFGW',
 			'SharedAccessKey' => '1234567890abcdefghijklmnopqrstuvwxyzABCDEFG',
 		];
-		Assert::same($expected, $this->manager->parseConnectionString($this->connectionString));
+		Assert::same($expected, $this->mockedManager->parseConnectionString($this->connectionString));
 	}
 
 }

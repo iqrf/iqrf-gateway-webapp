@@ -46,8 +46,6 @@ class OsParser implements IParser {
 				return $this->parseReadInfo($packet);
 			case '82':
 				return $this->parseHwpConfiguration($packet);
-			default:
-				return null;
 		}
 	}
 

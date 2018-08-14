@@ -19,6 +19,9 @@ use Tester\TestCase;
 
 $container = require __DIR__ . '/../../bootstrap.php';
 
+/**
+ * Tests for IQRF IDE macro manager
+ */
 class IqrfMacroManagerTest extends TestCase {
 
 	/**
@@ -60,27 +63,24 @@ class IqrfMacroManagerTest extends TestCase {
 	 * Test function to convert HEX to ASCII
 	 */
 	public function testHex2Ascii() {
-		$ascii = $this->manager->hex2ascii($this->hex);
 		$expected = FileSystem::read(__DIR__ . '/data/macros-ascii.expected');
-		Assert::equal($expected, $ascii);
+		Assert::equal($expected, $this->manager->hex2ascii($this->hex));
 	}
 
 	/**
 	 * Test function to parse hex of macros
 	 */
 	public function testParseMacros() {
-		$macros = $this->manager->parseMacros($this->hex);
 		$expected = Json::decode(FileSystem::read(__DIR__ . '/data/iqrf-ide-macros.json'), Json::FORCE_ARRAY);
-		Assert::equal($expected, $macros);
+		Assert::equal($expected, $this->manager->parseMacros($this->hex));
 	}
 
 	/**
 	 * Test function to read IQRF IDE macros
 	 */
 	public function testRead() {
-		$macros = $this->manager->read();
 		$expected = Json::decode(FileSystem::read(__DIR__ . '/data/iqrf-ide-macros.json'), Json::FORCE_ARRAY);
-		Assert::equal($expected, $macros);
+		Assert::equal($expected, $this->manager->read());
 	}
 
 }

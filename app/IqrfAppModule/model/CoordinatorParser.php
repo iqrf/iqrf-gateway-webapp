@@ -48,8 +48,6 @@ class CoordinatorParser implements IParser {
 				return $this->parseGetNodes($packet);
 			case '84':
 				return $this->parseBondNode($packet);
-			default:
-				return null;
 		}
 	}
 

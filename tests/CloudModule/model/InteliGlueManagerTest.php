@@ -21,12 +21,10 @@ use Tester\TestCase;
 
 $container = require __DIR__ . '/../../bootstrap.php';
 
+/**
+ * Tests for Inteliment InteliGlue manager
+ */
 class InteliGlueManagerTest extends TestCase {
-
-	/**
-	 * @var GenericManager Generic configuration manager
-	 */
-	private $configManager;
 
 	/**
 	 * @var Container Nette Tester Container
@@ -77,8 +75,8 @@ class InteliGlueManagerTest extends TestCase {
 	public function setUp() {
 		$this->fileManager = new JsonFileManager($this->pathTest);
 		$schemaManager = new JsonSchemaManager($this->schemaPath);
-		$this->configManager = new GenericManager($this->fileManager, $schemaManager);
-		$this->manager = \Mockery::mock(InteliGlueManager::class, [$this->configManager])->makePartial();
+		$configManager = new GenericManager($this->fileManager, $schemaManager);
+		$this->manager = \Mockery::mock(InteliGlueManager::class, [$configManager])->makePartial();
 		$this->manager->shouldReceive('downloadCaCertificate')->andReturn(null);
 	}
 
