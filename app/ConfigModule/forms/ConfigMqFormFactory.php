@@ -20,30 +20,19 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Forms;
 
+use App\ConfigModule\Forms\GenericConfigFormFactory;
 use App\ConfigModule\Model\GenericManager;
 use App\ConfigModule\Presenters\MqPresenter;
 use App\Forms\FormFactory;
-use App\Model\NonExistingJsonSchemaException;
 use Nette;
 use Nette\Forms\Form;
-use Nette\IOException;
 
 /**
  * MQ interface configuration form factory
  */
-class ConfigMqFormFactory {
+class ConfigMqFormFactory extends GenericConfigFormFactory {
 
 	use Nette\SmartObject;
-
-	/**
-	 * @var GenericManager Generic configuration manager
-	 */
-	private $manager;
-
-	/**
-	 * @var FormFactory Generic form factory
-	 */
-	private $factory;
 
 	/**
 	 * @var int MQ interface ID
@@ -56,20 +45,15 @@ class ConfigMqFormFactory {
 	private $instances;
 
 	/**
-	 * @var MqPresenter MQ interface presenter
-	 */
-	private $presenter;
-
-	/**
 	 * Constructor
 	 * @param GenericManager $manager Generic configuration manager
 	 * @param FormFactory $factory Generic form factory
 	 */
 	public function __construct(GenericManager $manager, FormFactory $factory) {
-		$this->manager = $manager;
-		$this->factory = $factory;
+		parent::__construct($manager, $factory);
 		$this->manager->setComponent('iqrf::MqMessaging');
 		$this->instances = $this->manager->getInstanceFiles();
+		$this->redirect = 'Mq:default';
 	}
 
 	/**
@@ -102,26 +86,6 @@ class ConfigMqFormFactory {
 	 */
 	public function isExists(): bool {
 		return array_key_exists($this->id, $this->instances);
-	}
-
-	/**
-	 * Sace MQ interface configuration
-	 * @param Form $form MQ interface configuration form
-	 */
-	public function save(Form $form) {
-		$values = $form->getValues();
-		try {
-			$this->manager->save($values);
-			$this->presenter->flashMessage('config.messages.success', 'success');
-		} catch (\Exception $e) {
-			if ($e instanceof NonExistingJsonSchemaException) {
-				$this->presenter->flashMessage('config.messages.nonExistingJsonSchema', 'danger');
-			} else if ($e instanceof IOException) {
-				$this->presenter->flashMessage('config.messages.writeFailure', 'danger');
-			}
-		} finally {
-			$this->presenter->redirect('Mq:default');
-		}
 	}
 
 }

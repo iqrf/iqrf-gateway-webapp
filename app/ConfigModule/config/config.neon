@@ -16,6 +16,7 @@ services:
 	- App\ConfigModule\Forms\ConfigWebsocketFormFactory
 	- App\ConfigModule\Forms\ConfigWebsocketMessagingFormFactory
 	- App\ConfigModule\Forms\ConfigWebsocketServiceFormFactory
+	- App\ConfigModule\Forms\GenericConfigFormFactory
 	- App\ConfigModule\Model\ComponentManager
 	- App\ConfigModule\Model\GenericManager
 	- App\ConfigModule\Model\IqrfManager

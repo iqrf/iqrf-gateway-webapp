@@ -20,35 +20,19 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Forms;
 
+use App\ConfigModule\Forms\GenericConfigFormFactory;
 use App\ConfigModule\Model\GenericManager;
 use App\ConfigModule\Presenters\IqrfSpiPresenter;
 use App\Forms\FormFactory;
-use App\Model\NonExistingJsonSchemaException;
 use Nette;
 use Nette\Forms\Form;
-use Nette\IOException;
 
 /**
  * IQRF SPI configuration form factory
  */
-class ConfigIqrfSpiFormFactory {
+class ConfigIqrfSpiFormFactory extends GenericConfigFormFactory {
 
 	use Nette\SmartObject;
-
-	/**
-	 * @var GenericManager Generic config manager
-	 */
-	private $manager;
-
-	/**
-	 * @var FormFactory Generic form factory
-	 */
-	private $factory;
-
-	/**
-	 * @var IqrfSpiPresenter IQRF SPI configuration presenter
-	 */
-	private $presenter;
 
 	/**
 	 * Constructor
@@ -56,8 +40,7 @@ class ConfigIqrfSpiFormFactory {
 	 * @param GenericManager $manager Generic config manager
 	 */
 	public function __construct(FormFactory $factory, GenericManager $manager) {
-		$this->factory = $factory;
-		$this->manager = $manager;
+		parent::__construct($manager, $factory);
 		$this->manager->setComponent('iqrf::IqrfSpi');
 	}
 
@@ -83,25 +66,6 @@ class ConfigIqrfSpiFormFactory {
 		$form->setDefaults($this->manager->load());
 		$form->onSuccess[] = [$this, 'save'];
 		return $form;
-	}
-
-	/**
-	 * Save IQRF SPI configuration
-	 * @param Form $form IQRF SPI configuration form
-	 */
-	public function save(Form $form) {
-		try {
-			$this->manager->save($form->getValues());
-			$this->presenter->flashMessage('config.messages.success', 'success');
-		} catch (\Exception $e) {
-			if ($e instanceof NonExistingJsonSchemaException) {
-				$this->presenter->flashMessage('config.messages.nonExistingJsonSchema', 'danger');
-			} else if ($e instanceof IOException) {
-				$this->presenter->flashMessage('config.messages.writeFailure', 'danger');
-			}
-		} finally {
-			$this->presenter->redirect('Homepage:default');
-		}
 	}
 
 }

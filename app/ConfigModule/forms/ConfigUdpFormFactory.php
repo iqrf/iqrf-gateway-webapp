@@ -20,33 +20,21 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Forms;
 
+use App\ConfigModule\Forms\GenericConfigFormFactory;
 use App\ConfigModule\Model\GenericManager;
 use App\ConfigModule\Presenters\UdpPresenter;
 use App\Forms\FormFactory;
-use App\Model\NonExistingJsonSchemaException;
 use Nette;
 use Nette\Forms\Form;
-use Nette\IOException;
 
 /**
  * UDP interface configuration form factory
  */
-class ConfigUdpFormFactory {
+class ConfigUdpFormFactory extends GenericConfigFormFactory {
 
 	use Nette\SmartObject;
 
 	/**
-	 * @var GenericManager Generic config manager
-	 */
-	private $manager;
-
-	/**
-	 * @var FormFactory Generic form factory
-	 */
-	private $factory;
-
-	/**
-	 *
 	 * @var array Files with UDP interface instances
 	 */
 	private $instances;
@@ -57,20 +45,15 @@ class ConfigUdpFormFactory {
 	private $id;
 
 	/**
-	 * @var UdpPresenter UDP interface presenter
-	 */
-	private $presenter;
-
-	/**
 	 * Constructor
 	 * @param GenericManager $manager Generic configuration manager
 	 * @param FormFactory $factory Generic form factory
 	 */
 	public function __construct(GenericManager $manager, FormFactory $factory) {
-		$this->manager = $manager;
-		$this->factory = $factory;
+		parent::__construct($manager, $factory);
 		$this->manager->setComponent('iqrf::UdpMessaging');
 		$this->instances = $this->manager->getInstanceFiles();
+		$this->redirect = 'Udp:default';
 	}
 
 	/**
@@ -109,23 +92,11 @@ class ConfigUdpFormFactory {
 	 * @param Form $form IDP interface configuration form
 	 */
 	public function save(Form $form) {
-		$values = $form->getValues();
 		if (!$this->isExists() && count($this->instances) >= 1) {
 			$this->presenter->flashMessage('config.messages.multipleInstancesFailure', 'danger');
 			$this->presenter->redirect('Udp:default');
 		}
-		try {
-			$this->manager->save($values);
-			$this->presenter->flashMessage('config.messages.success', 'success');
-		} catch (\Exception $e) {
-			if ($e instanceof NonExistingJsonSchemaException) {
-				$this->presenter->flashMessage('config.messages.nonExistingJsonSchema', 'danger');
-			} else if ($e instanceof IOException) {
-				$this->presenter->flashMessage('config.messages.writeFailure', 'danger');
-			}
-		} finally {
-			$this->presenter->redirect('Udp:default');
-		}
+		parent::save($form);
 	}
 
 }

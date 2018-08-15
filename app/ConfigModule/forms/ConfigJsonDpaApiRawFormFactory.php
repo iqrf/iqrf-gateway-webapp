@@ -20,35 +20,19 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Forms;
 
+use App\ConfigModule\Forms\GenericConfigFormFactory;
 use App\ConfigModule\Model\GenericManager;
 use App\ConfigModule\Presenters\JsonRawApiPresenter;
 use App\Forms\FormFactory;
-use App\Model\NonExistingJsonSchemaException;
 use Nette;
 use Nette\Forms\Form;
-use Nette\IOException;
 
 /**
  * JSON Raw API configuration form factory
  */
-class ConfigJsonDpaApiRawFormFactory {
+class ConfigJsonDpaApiRawFormFactory extends GenericConfigFormFactory {
 
 	use Nette\SmartObject;
-
-	/**
-	 * @var GenericManager Generic configuration manager
-	 */
-	private $manager;
-
-	/**
-	 * @var FormFactory Generic form factory
-	 */
-	private $factory;
-
-	/**
-	 * @var JsonRawApiPresenter JSON Raw API configuration presenter
-	 */
-	private $presenter;
 
 	/**
 	 * Constructor
@@ -56,8 +40,7 @@ class ConfigJsonDpaApiRawFormFactory {
 	 * @param FormFactory $factory Generic form factory
 	 */
 	public function __construct(GenericManager $manager, FormFactory $factory) {
-		$this->manager = $manager;
-		$this->factory = $factory;
+		parent::__construct($manager, $factory);
 		$this->manager->setComponent('iqrf::JsonDpaApiRaw');
 	}
 
@@ -78,25 +61,6 @@ class ConfigJsonDpaApiRawFormFactory {
 		$form->setDefaults($this->manager->load());
 		$form->onSuccess[] = [$this, 'save'];
 		return $form;
-	}
-
-	/**
-	 * Save JSON Raw API configuration
-	 * @param Form $form JSON Raw API configuration form
-	 */
-	public function save(Form $form) {
-		try {
-			$this->manager->save($form->getValues());
-			$this->presenter->flashMessage('config.messages.success', 'success');
-		} catch (\Exception $e) {
-			if ($e instanceof NonExistingJsonSchemaException) {
-				$this->presenter->flashMessage('config.messages.nonExistingJsonSchema', 'danger');
-			} else if ($e instanceof IOException) {
-				$this->presenter->flashMessage('config.messages.writeFailure', 'danger');
-			}
-		} finally {
-			$this->presenter->redirect('Homepage:default');
-		}
 	}
 
 }

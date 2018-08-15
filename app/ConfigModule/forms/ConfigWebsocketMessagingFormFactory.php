@@ -20,30 +20,19 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Forms;
 
+use App\ConfigModule\Forms\GenericConfigFormFactory;
 use App\ConfigModule\Model\GenericManager;
 use App\ConfigModule\Presenters\WebsocketPresenter;
 use App\Forms\FormFactory;
-use App\Model\NonExistingJsonSchemaException;
 use Nette;
 use Nette\Forms\Form;
-use Nette\IOException;
 
 /**
  * Websocket messaging configuration form factory
  */
-class ConfigWebsocketMessagingFormFactory {
+class ConfigWebsocketMessagingFormFactory extends GenericConfigFormFactory {
 
 	use Nette\SmartObject;
-
-	/**
-	 * @var GenericManager Generic configuration manager
-	 */
-	private $manager;
-
-	/**
-	 * @var FormFactory Generic form factory
-	 */
-	private $factory;
 
 	/**
 	 * @var array Files with websocket messaging instances
@@ -56,20 +45,15 @@ class ConfigWebsocketMessagingFormFactory {
 	private $id;
 
 	/**
-	 * @var WebsocketPresenter Websocket interface presenter
-	 */
-	private $presenter;
-
-	/**
 	 * Constructor
 	 * @param GenericManager $manager Generic configuration manager
 	 * @param FormFactory $factory Generic form factory
 	 */
 	public function __construct(GenericManager $manager, FormFactory $factory) {
-		$this->manager = $manager;
-		$this->factory = $factory;
+		parent::__construct($manager, $factory);
 		$this->manager->setComponent('iqrf::WebsocketMessaging');
 		$this->instances = $this->manager->getInstanceFiles();
+		$this->redirect = 'Websocket:default';
 	}
 
 	/**
@@ -119,26 +103,6 @@ class ConfigWebsocketMessagingFormFactory {
 	 */
 	public function isExists(): bool {
 		return array_key_exists($this->id, $this->instances);
-	}
-
-	/**
-	 * Save websocket messaging configuration
-	 * @param Form $form Websocket messaging configuration form
-	 */
-	public function save(Form $form) {
-		$values = $form->getValues();
-		try {
-			$this->manager->save($values);
-			$this->presenter->flashMessage('config.messages.success', 'success');
-		} catch (\Exception $e) {
-			if ($e instanceof NonExistingJsonSchemaException) {
-				$this->presenter->flashMessage('config.messages.nonExistingJsonSchema', 'danger');
-			} else if ($e instanceof IOException) {
-				$this->presenter->flashMessage('config.messages.writeFailure', 'danger');
-			}
-		} finally {
-			$this->presenter->redirect('Websocket:default');
-		}
 	}
 
 }
