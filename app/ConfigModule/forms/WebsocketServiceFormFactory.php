@@ -22,27 +22,27 @@ namespace App\ConfigModule\Forms;
 
 use App\ConfigModule\Forms\GenericConfigFormFactory;
 use App\ConfigModule\Model\GenericManager;
-use App\ConfigModule\Presenters\UdpPresenter;
+use App\ConfigModule\Presenters\WebsocketPresenter;
 use App\Forms\FormFactory;
 use Nette;
 use Nette\Forms\Form;
 
 /**
- * UDP interface configuration form factory
+ * Websocket service configuration service form factory
  */
-class ConfigUdpFormFactory extends GenericConfigFormFactory {
+class WebsocketServiceFormFactory extends GenericConfigFormFactory {
 
 	use Nette\SmartObject;
 
 	/**
-	 * @var array Files with UDP interface instances
-	 */
-	private $instances;
-
-	/**
-	 * @var int UDP interface ID
+	 * @var int Websocket service ID
 	 */
 	private $id;
+
+	/**
+	 * @var array Files with websocket service instances
+	 */
+	private $instances;
 
 	/**
 	 * Constructor
@@ -51,24 +51,23 @@ class ConfigUdpFormFactory extends GenericConfigFormFactory {
 	 */
 	public function __construct(GenericManager $manager, FormFactory $factory) {
 		parent::__construct($manager, $factory);
-		$this->manager->setComponent('iqrf::UdpMessaging');
+		$this->manager->setComponent('shape::WebsocketCppService');
 		$this->instances = $this->manager->getInstanceFiles();
-		$this->redirect = 'Udp:default';
+		$this->redirect = 'Websocket:default';
 	}
 
 	/**
-	 * Create UDP interface configuration form
-	 * @param UdpPresenter $presenter UDP interface presenter
-	 * @return Form UDP interface configuration form
+	 * Create websocket service configuration form
+	 * @param WebsocketPresenter $presenter Websocket interface presenter
+	 * @return Form Websocket service configuration form
 	 */
-	public function create(UdpPresenter $presenter): Form {
+	public function create(WebsocketPresenter $presenter): Form {
 		$this->presenter = $presenter;
 		$this->id = intval($presenter->getParameter('id'));
 		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('config.udp.form'));
+		$form->setTranslator($form->getTranslator()->domain('config.websocket.service.form'));
 		$form->addText('instance', 'instance')->setRequired('messages.instance');
-		$form->addInteger('RemotePort', 'RemotePort')->setRequired('messages.RemotePort');
-		$form->addInteger('LocalPort', 'LocalPort')->setRequired('messages.LocalPort');
+		$form->addInteger('WebsocketPort', 'WebsocketPort')->setRequired('messages.WebsocketPort');
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');
 		if ($this->isExists()) {
@@ -85,18 +84,6 @@ class ConfigUdpFormFactory extends GenericConfigFormFactory {
 	 */
 	public function isExists(): bool {
 		return array_key_exists($this->id, $this->instances);
-	}
-
-	/**
-	 * Save UDP interface configuration
-	 * @param Form $form IDP interface configuration form
-	 */
-	public function save(Form $form) {
-		if (!$this->isExists() && count($this->instances) >= 1) {
-			$this->presenter->flashMessage('config.messages.multipleInstancesFailure', 'danger');
-			$this->presenter->redirect('Udp:default');
-		}
-		parent::save($form);
 	}
 
 }

@@ -30,7 +30,7 @@ use Nette\Forms\Form;
 /**
  * JSON Raw API configuration form factory
  */
-class ConfigJsonDpaApiRawFormFactory extends GenericConfigFormFactory {
+class JsonDpaApiRawFormFactory extends GenericConfigFormFactory {
 
 	use Nette\SmartObject;
 

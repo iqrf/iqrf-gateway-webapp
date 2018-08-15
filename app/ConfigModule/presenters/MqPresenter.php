@@ -21,7 +21,7 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Model\GenericManager;
-use App\ConfigModule\Forms\ConfigMqFormFactory;
+use App\ConfigModule\Forms\MqFormFactory;
 use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
@@ -31,7 +31,7 @@ use Nette\Forms\Form;
 class MqPresenter extends ProtectedPresenter {
 
 	/**
-	 * @var ConfigMqFormFactory MQ inteface configuration form factory
+	 * @var MqFormFactory MQ inteface configuration form factory
 	 * @inject
 	 */
 	public $formFactory;

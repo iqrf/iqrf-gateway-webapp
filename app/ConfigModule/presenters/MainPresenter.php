@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Presenters;
 
-use App\ConfigModule\Forms\ConfigMainFormFactory;
+use App\ConfigModule\Forms\MainFormFactory;
 use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
@@ -30,7 +30,7 @@ use Nette\Forms\Form;
 class MainPresenter extends ProtectedPresenter {
 
 	/**
-	 * @var ConfigMainFormFactory Main daemon's configuration form factory
+	 * @var MainFormFactory Main daemon's configuration form factory
 	 * @inject
 	 */
 	public $mainFactory;

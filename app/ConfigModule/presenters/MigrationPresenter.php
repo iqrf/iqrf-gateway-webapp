@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Presenters;
 
-use App\ConfigModule\Forms\ConfigMigrationFormFactory;
+use App\ConfigModule\Forms\MigrationFormFactory;
 use App\ConfigModule\Model\MigrationManager;
 use App\Presenters\ProtectedPresenter;
 use Nette\Application\BadRequestException;
@@ -33,7 +33,7 @@ use Tracy\Debugger;
 class MigrationPresenter extends ProtectedPresenter {
 
 	/**
-	 * @var ConfigMigrationFormFactory Configuration import form factory
+	 * @var MigrationFormFactory Configuration import form factory
 	 * @inject
 	 */
 	public $formFactory;

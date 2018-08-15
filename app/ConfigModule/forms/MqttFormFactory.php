@@ -30,7 +30,7 @@ use Nette\Forms\Form;
 /**
  * MQTT interface configuration form factory
  */
-class ConfigMqttFormFactory extends GenericConfigFormFactory {
+class MqttFormFactory extends GenericConfigFormFactory {
 
 	use Nette\SmartObject;
 

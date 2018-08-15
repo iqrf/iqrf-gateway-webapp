@@ -22,40 +22,45 @@ namespace App\ConfigModule\Forms;
 
 use App\ConfigModule\Forms\GenericConfigFormFactory;
 use App\ConfigModule\Model\GenericManager;
-use App\ConfigModule\Presenters\IqmeshPresenter;
+use App\ConfigModule\Presenters\IqrfSpiPresenter;
 use App\Forms\FormFactory;
 use Nette;
 use Nette\Forms\Form;
 
 /**
- * OTA upload configuration form factory
+ * IQRF SPI configuration form factory
  */
-class ConfigOtaUploadFormFactory extends GenericConfigFormFactory {
+class IqrfSpiFormFactory extends GenericConfigFormFactory {
 
 	use Nette\SmartObject;
 
 	/**
 	 * Constructor
-	 * @param GenericManager $manager Generic configuration manager
 	 * @param FormFactory $factory Generic form factory
+	 * @param GenericManager $manager Generic config manager
 	 */
-	public function __construct(GenericManager $manager, FormFactory $factory) {
+	public function __construct(FormFactory $factory, GenericManager $manager) {
 		parent::__construct($manager, $factory);
-		$this->manager->setComponent('iqrf::OtaUploadService');
+		$this->manager->setComponent('iqrf::IqrfSpi');
 	}
 
 	/**
-	 * Create OTA upload service configuration form
-	 * @param IqmeshPresenter $presenter IQMESH services configuration presenter
-	 * @return Form OTA upload configuration form
+	 * Create IQRF SPI configuration form
+	 * @param IqrfSpiPresenter $presenter IQRF SPI configuration presenter
+	 * @return Form IQRF SPI interface configuration form
 	 */
-	public function create(IqmeshPresenter $presenter): Form {
+	public function create(IqrfSpiPresenter $presenter): Form {
 		$this->presenter = $presenter;
 		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('config.iqmesh.otaUpload.form'));
+		$form->setTranslator($form->getTranslator()->domain('config.iqrfSpi.form'));
 		$this->manager->setFileName($this->manager->getInstanceFiles()[0]);
 		$form->addText('instance', 'instance')->setRequired('messages.instance');
-		$form->addText('uploadPath', 'uploadPath')->setRequired('messages.uploadPath');
+		$form->addText('IqrfInterface', 'IqrfInterface')->setRequired('messages.IqrfInterface');
+		$form->addInteger('enableGpioPin', 'enableGpioPin');
+		$form->addInteger('spiCe0GpioPin', 'spiCe0GpioPin');
+		$form->addInteger('spiMisoGpioPin', 'spiMisoGpioPin');
+		$form->addInteger('spiMosiGpioPin', 'spiMosiGpioPin');
+		$form->addInteger('spiClkGpioPin', 'spiClkGpioPin');
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');
 		$form->setDefaults($this->manager->load());

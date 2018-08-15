@@ -22,17 +22,27 @@ namespace App\ConfigModule\Forms;
 
 use App\ConfigModule\Forms\GenericConfigFormFactory;
 use App\ConfigModule\Model\GenericManager;
-use App\ConfigModule\Presenters\JsonSplitterPresenter;
+use App\ConfigModule\Presenters\MqPresenter;
 use App\Forms\FormFactory;
 use Nette;
 use Nette\Forms\Form;
 
 /**
- * JSON Splitter form factory
+ * MQ interface configuration form factory
  */
-class ConfigJsonSplitterFormFactory extends GenericConfigFormFactory {
+class MqFormFactory extends GenericConfigFormFactory {
 
 	use Nette\SmartObject;
+
+	/**
+	 * @var int MQ interface ID
+	 */
+	private $id;
+
+	/**
+	 * @var array Files with MQ interface instances
+	 */
+	private $instances;
 
 	/**
 	 * Constructor
@@ -41,26 +51,41 @@ class ConfigJsonSplitterFormFactory extends GenericConfigFormFactory {
 	 */
 	public function __construct(GenericManager $manager, FormFactory $factory) {
 		parent::__construct($manager, $factory);
-		$this->manager->setComponent('iqrf::JsonSplitter');
+		$this->manager->setComponent('iqrf::MqMessaging');
+		$this->instances = $this->manager->getInstanceFiles();
+		$this->redirect = 'Mq:default';
 	}
 
 	/**
-	 * Create JSON splitter service configuration form
-	 * @param JsonSplitterPresenter $presenter JSON Splitter settings presenter
-	 * @return Form JSON splitter configuration form
+	 * Create MQ interface configuration form
+	 * @param MqPresenter $presenter MQ interface presenter
+	 * @return Form MQ interface configuration form
 	 */
-	public function create(JsonSplitterPresenter $presenter): Form {
+	public function create(MqPresenter $presenter): Form {
 		$this->presenter = $presenter;
+		$this->id = intval($presenter->getParameter('id'));
 		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('config.jsonSplitter.form'));
-		$this->manager->setFileName($this->manager->getInstanceFiles()[0]);
+		$form->setTranslator($form->getTranslator()->domain('config.mq.form'));
 		$form->addText('instance', 'instance')->setRequired('messages.instance');
-		$form->addCheckbox('validateJsonResponse', 'validateJsonResponse');
+		$form->addText('LocalMqName', 'LocalMqName')->setRequired('messages.LocalMqName');
+		$form->addText('RemoteMqName', 'RemoteMqName')->setRequired('messages.RemoteMqName');
+		$form->addCheckbox('acceptAsyncMsg', 'acceptAsyncMsg');
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');
-		$form->setDefaults($this->manager->load());
+		if ($this->isExists()) {
+			$this->manager->setFileName($this->instances[$this->id]);
+			$form->setDefaults($this->manager->load());
+		}
 		$form->onSuccess[] = [$this, 'save'];
 		return $form;
+	}
+
+	/**
+	 * Check if instance exists
+	 * @return bool Is instance exists?
+	 */
+	public function isExists(): bool {
+		return array_key_exists($this->id, $this->instances);
 	}
 
 }

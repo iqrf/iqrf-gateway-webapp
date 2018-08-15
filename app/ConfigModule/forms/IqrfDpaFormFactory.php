@@ -30,7 +30,7 @@ use Nette\Forms\Form;
 /**
  * IQRF DPA configuration form factory
  */
-class ConfigIqrfDpaFormFactory extends GenericConfigFormFactory {
+class IqrfDpaFormFactory extends GenericConfigFormFactory {
 
 	use Nette\SmartObject;
 

@@ -22,45 +22,40 @@ namespace App\ConfigModule\Forms;
 
 use App\ConfigModule\Forms\GenericConfigFormFactory;
 use App\ConfigModule\Model\GenericManager;
-use App\ConfigModule\Presenters\IqrfSpiPresenter;
+use App\ConfigModule\Presenters\JsonSplitterPresenter;
 use App\Forms\FormFactory;
 use Nette;
 use Nette\Forms\Form;
 
 /**
- * IQRF SPI configuration form factory
+ * JSON Splitter form factory
  */
-class ConfigIqrfSpiFormFactory extends GenericConfigFormFactory {
+class JsonSplitterFormFactory extends GenericConfigFormFactory {
 
 	use Nette\SmartObject;
 
 	/**
 	 * Constructor
+	 * @param GenericManager $manager Generic configuration manager
 	 * @param FormFactory $factory Generic form factory
-	 * @param GenericManager $manager Generic config manager
 	 */
-	public function __construct(FormFactory $factory, GenericManager $manager) {
+	public function __construct(GenericManager $manager, FormFactory $factory) {
 		parent::__construct($manager, $factory);
-		$this->manager->setComponent('iqrf::IqrfSpi');
+		$this->manager->setComponent('iqrf::JsonSplitter');
 	}
 
 	/**
-	 * Create IQRF SPI configuration form
-	 * @param IqrfSpiPresenter $presenter IQRF SPI configuration presenter
-	 * @return Form IQRF SPI interface configuration form
+	 * Create JSON splitter service configuration form
+	 * @param JsonSplitterPresenter $presenter JSON Splitter settings presenter
+	 * @return Form JSON splitter configuration form
 	 */
-	public function create(IqrfSpiPresenter $presenter): Form {
+	public function create(JsonSplitterPresenter $presenter): Form {
 		$this->presenter = $presenter;
 		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('config.iqrfSpi.form'));
+		$form->setTranslator($form->getTranslator()->domain('config.jsonSplitter.form'));
 		$this->manager->setFileName($this->manager->getInstanceFiles()[0]);
 		$form->addText('instance', 'instance')->setRequired('messages.instance');
-		$form->addText('IqrfInterface', 'IqrfInterface')->setRequired('messages.IqrfInterface');
-		$form->addInteger('enableGpioPin', 'enableGpioPin');
-		$form->addInteger('spiCe0GpioPin', 'spiCe0GpioPin');
-		$form->addInteger('spiMisoGpioPin', 'spiMisoGpioPin');
-		$form->addInteger('spiMosiGpioPin', 'spiMosiGpioPin');
-		$form->addInteger('spiClkGpioPin', 'spiClkGpioPin');
+		$form->addCheckbox('validateJsonResponse', 'validateJsonResponse');
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');
 		$form->setDefaults($this->manager->load());

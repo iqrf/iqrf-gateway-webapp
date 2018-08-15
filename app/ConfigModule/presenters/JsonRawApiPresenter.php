@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Presenters;
 
-use App\ConfigModule\Forms\ConfigJsonDpaApiRawFormFactory;
+use App\ConfigModule\Forms\JsonDpaApiRawFormFactory;
 use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
@@ -30,7 +30,7 @@ use Nette\Forms\Form;
 class JsonRawApiPresenter extends ProtectedPresenter {
 
 	/**
-	 * @var ConfigJsonDpaApiRawFormFactory JSON Raw API form factory
+	 * @var JsonDpaApiRawFormFactory JSON Raw API form factory
 	 * @inject
 	 */
 	public $formFactory;

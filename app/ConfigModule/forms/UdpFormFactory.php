@@ -22,25 +22,25 @@ namespace App\ConfigModule\Forms;
 
 use App\ConfigModule\Forms\GenericConfigFormFactory;
 use App\ConfigModule\Model\GenericManager;
-use App\ConfigModule\Presenters\WebsocketPresenter;
+use App\ConfigModule\Presenters\UdpPresenter;
 use App\Forms\FormFactory;
 use Nette;
 use Nette\Forms\Form;
 
 /**
- * Websocket messaging configuration form factory
+ * UDP interface configuration form factory
  */
-class ConfigWebsocketMessagingFormFactory extends GenericConfigFormFactory {
+class UdpFormFactory extends GenericConfigFormFactory {
 
 	use Nette\SmartObject;
 
 	/**
-	 * @var array Files with websocket messaging instances
+	 * @var array Files with UDP interface instances
 	 */
 	private $instances;
 
 	/**
-	 * @var int Websocket messaging ID
+	 * @var int UDP interface ID
 	 */
 	private $id;
 
@@ -51,47 +51,29 @@ class ConfigWebsocketMessagingFormFactory extends GenericConfigFormFactory {
 	 */
 	public function __construct(GenericManager $manager, FormFactory $factory) {
 		parent::__construct($manager, $factory);
-		$this->manager->setComponent('iqrf::WebsocketMessaging');
+		$this->manager->setComponent('iqrf::UdpMessaging');
 		$this->instances = $this->manager->getInstanceFiles();
-		$this->redirect = 'Websocket:default';
+		$this->redirect = 'Udp:default';
 	}
 
 	/**
-	 * Create websocket messaging configuration form
-	 * @param WebsocketPresenter $presenter Websocket interface presenter
-	 * @return Form Websocket messaging configuration form
+	 * Create UDP interface configuration form
+	 * @param UdpPresenter $presenter UDP interface presenter
+	 * @return Form UDP interface configuration form
 	 */
-	public function create(WebsocketPresenter $presenter): Form {
+	public function create(UdpPresenter $presenter): Form {
 		$this->presenter = $presenter;
 		$this->id = intval($presenter->getParameter('id'));
 		$form = $this->factory->create();
-		$translator = $form->getTranslator();
-		$form->setTranslator($translator->domain('config.websocket.messaging.form'));
-		if ($this->isExists()) {
-			$this->manager->setFileName($this->instances[$this->id]);
-			$defaults = $this->manager->load();
-		} else {
-			$defaults = ['RequiredInterfaces' => [['name' => 'shape::IWebsocketService', 'target' => ['instance' => '']]]];
-		}
+		$form->setTranslator($form->getTranslator()->domain('config.udp.form'));
 		$form->addText('instance', 'instance')->setRequired('messages.instance');
-		$form->addCheckbox('acceptAsyncMsg', 'acceptAsyncMsg');
-		$requiredInterfaces = $form->addContainer('RequiredInterfaces');
-		foreach ($defaults['RequiredInterfaces'] as $id => $requiredInterface) {
-			$container = $requiredInterfaces->addContainer($id);
-			$container->addSelect('name', 'config.websocket.messaging.form.requiredInterface.name')
-					->setItems(['shape::IWebsocketService',], false)
-					->setTranslator($translator)
-					->setRequired('messages.requiredInterface.name');
-			$target = $container->addContainer('target');
-			$target->addSelect('instance', 'config.websocket.messaging.form.requiredInterface.instance')
-					->setItems($this->manager->getComponentInstances('shape::WebsocketService'), false)
-					->setTranslator($translator)
-					->setRequired('messages.requiredInterface.instance');
-		}
+		$form->addInteger('RemotePort', 'RemotePort')->setRequired('messages.RemotePort');
+		$form->addInteger('LocalPort', 'LocalPort')->setRequired('messages.LocalPort');
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');
 		if ($this->isExists()) {
-			$form->setDefaults($defaults);
+			$this->manager->setFileName($this->instances[$this->id]);
+			$form->setDefaults($this->manager->load());
 		}
 		$form->onSuccess[] = [$this, 'save'];
 		return $form;
@@ -103,6 +85,18 @@ class ConfigWebsocketMessagingFormFactory extends GenericConfigFormFactory {
 	 */
 	public function isExists(): bool {
 		return array_key_exists($this->id, $this->instances);
+	}
+
+	/**
+	 * Save UDP interface configuration
+	 * @param Form $form IDP interface configuration form
+	 */
+	public function save(Form $form) {
+		if (!$this->isExists() && count($this->instances) >= 1) {
+			$this->presenter->flashMessage('config.messages.multipleInstancesFailure', 'danger');
+			$this->presenter->redirect('Udp:default');
+		}
+		parent::save($form);
 	}
 
 }

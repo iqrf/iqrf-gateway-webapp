@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Presenters;
 
-use App\ConfigModule\Forms\ConfigUdpFormFactory;
+use App\ConfigModule\Forms\UdpFormFactory;
 use App\ConfigModule\Model\GenericManager;
 use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
@@ -31,7 +31,7 @@ use Nette\Forms\Form;
 class UdpPresenter extends ProtectedPresenter {
 
 	/**
-	 * @var ConfigUdpFormFactory UDP interface configuration form factory
+	 * @var UdpFormFactory UDP interface configuration form factory
 	 * @inject
 	 */
 	public $formFactory;

@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Presenters;
 
-use App\ConfigModule\Forms\ConfigOtaUploadFormFactory;
+use App\ConfigModule\Forms\OtaUploadFormFactory;
 use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
@@ -30,7 +30,7 @@ use Nette\Forms\Form;
 class IqmeshPresenter extends ProtectedPresenter {
 
 	/**
-	 * @var ConfigOtaUploadFormFactory IQRF OTA upload service configuration form factory
+	 * @var OtaUploadFormFactory IQRF OTA upload service configuration form factory
 	 * @inject
 	 */
 	public $otaFormFactory;

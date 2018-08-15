@@ -21,7 +21,7 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Model\SchedulerManager;
-use App\ConfigModule\Forms\ConfigSchedulerFormFactory;
+use App\ConfigModule\Forms\SchedulerFormFactory;
 use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
@@ -31,7 +31,7 @@ use Nette\Forms\Form;
 class SchedulerPresenter extends ProtectedPresenter {
 
 	/**
-	 * @var ConfigSchedulerFormFactory Scheduler's task configuration form factory
+	 * @var SchedulerFormFactory Scheduler's task configuration form factory
 	 * @inject
 	 */
 	public $formFactory;

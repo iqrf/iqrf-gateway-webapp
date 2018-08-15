@@ -28,21 +28,21 @@ use Nette;
 use Nette\Forms\Form;
 
 /**
- * Websocket service configuration service form factory
+ * Websocket messaging configuration form factory
  */
-class ConfigWebsocketServiceFormFactory extends GenericConfigFormFactory {
+class WebsocketMessagingFormFactory extends GenericConfigFormFactory {
 
 	use Nette\SmartObject;
 
 	/**
-	 * @var int Websocket service ID
-	 */
-	private $id;
-
-	/**
-	 * @var array Files with websocket service instances
+	 * @var array Files with websocket messaging instances
 	 */
 	private $instances;
+
+	/**
+	 * @var int Websocket messaging ID
+	 */
+	private $id;
 
 	/**
 	 * Constructor
@@ -51,28 +51,47 @@ class ConfigWebsocketServiceFormFactory extends GenericConfigFormFactory {
 	 */
 	public function __construct(GenericManager $manager, FormFactory $factory) {
 		parent::__construct($manager, $factory);
-		$this->manager->setComponent('shape::WebsocketCppService');
+		$this->manager->setComponent('iqrf::WebsocketMessaging');
 		$this->instances = $this->manager->getInstanceFiles();
 		$this->redirect = 'Websocket:default';
 	}
 
 	/**
-	 * Create websocket service configuration form
+	 * Create websocket messaging configuration form
 	 * @param WebsocketPresenter $presenter Websocket interface presenter
-	 * @return Form Websocket service configuration form
+	 * @return Form Websocket messaging configuration form
 	 */
 	public function create(WebsocketPresenter $presenter): Form {
 		$this->presenter = $presenter;
 		$this->id = intval($presenter->getParameter('id'));
 		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('config.websocket.service.form'));
+		$translator = $form->getTranslator();
+		$form->setTranslator($translator->domain('config.websocket.messaging.form'));
+		if ($this->isExists()) {
+			$this->manager->setFileName($this->instances[$this->id]);
+			$defaults = $this->manager->load();
+		} else {
+			$defaults = ['RequiredInterfaces' => [['name' => 'shape::IWebsocketService', 'target' => ['instance' => '']]]];
+		}
 		$form->addText('instance', 'instance')->setRequired('messages.instance');
-		$form->addInteger('WebsocketPort', 'WebsocketPort')->setRequired('messages.WebsocketPort');
+		$form->addCheckbox('acceptAsyncMsg', 'acceptAsyncMsg');
+		$requiredInterfaces = $form->addContainer('RequiredInterfaces');
+		foreach ($defaults['RequiredInterfaces'] as $id => $requiredInterface) {
+			$container = $requiredInterfaces->addContainer($id);
+			$container->addSelect('name', 'config.websocket.messaging.form.requiredInterface.name')
+					->setItems(['shape::IWebsocketService',], false)
+					->setTranslator($translator)
+					->setRequired('messages.requiredInterface.name');
+			$target = $container->addContainer('target');
+			$target->addSelect('instance', 'config.websocket.messaging.form.requiredInterface.instance')
+					->setItems($this->manager->getComponentInstances('shape::WebsocketService'), false)
+					->setTranslator($translator)
+					->setRequired('messages.requiredInterface.instance');
+		}
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');
 		if ($this->isExists()) {
-			$this->manager->setFileName($this->instances[$this->id]);
-			$form->setDefaults($this->manager->load());
+			$form->setDefaults($defaults);
 		}
 		$form->onSuccess[] = [$this, 'save'];
 		return $form;

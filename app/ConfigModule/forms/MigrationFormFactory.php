@@ -33,7 +33,7 @@ use Nette\IOException;
 /**
  * Configuration migration form factory
  */
-class ConfigMigrationFormFactory {
+class MigrationFormFactory {
 
 	use Nette\SmartObject;
 

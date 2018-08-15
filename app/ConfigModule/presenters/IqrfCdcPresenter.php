@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Presenters;
 
-use App\ConfigModule\Forms\ConfigIqrfCdcFormFactory;
+use App\ConfigModule\Forms\IqrfCdcFormFactory;
 use App\ConfigModule\Model\IqrfManager;
 use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
@@ -31,7 +31,7 @@ use Nette\Forms\Form;
 class IqrfCdcPresenter extends ProtectedPresenter {
 
 	/**
-	 * @var ConfigIqrfCdcFormFactory IQRF CDC interface configuration form factory
+	 * @var IqrfCdcFormFactory IQRF CDC interface configuration form factory
 	 * @inject
 	 */
 	public $cdcFormFactory;

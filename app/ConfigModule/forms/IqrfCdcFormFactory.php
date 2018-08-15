@@ -30,7 +30,7 @@ use Nette\Forms\Form;
 /**
  * IQRF CDC configuration form factory
  */
-class ConfigIqrfCdcFormFactory extends GenericConfigFormFactory {
+class IqrfCdcFormFactory extends GenericConfigFormFactory {
 
 	use Nette\SmartObject;
 

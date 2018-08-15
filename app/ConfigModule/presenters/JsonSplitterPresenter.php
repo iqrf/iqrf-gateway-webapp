@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Presenters;
 
-use App\ConfigModule\Forms\ConfigJsonSplitterFormFactory;
+use App\ConfigModule\Forms\JsonSplitterFormFactory;
 use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
@@ -30,7 +30,7 @@ use Nette\Forms\Form;
 class JsonSplitterPresenter extends ProtectedPresenter {
 
 	/**
-	 * @var ConfigJsonSplitterFormFactory JSON Splitter form factory
+	 * @var JsonSplitterFormFactory JSON Splitter form factory
 	 * @inject
 	 */
 	public $formFactory;

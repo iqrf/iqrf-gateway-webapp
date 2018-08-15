@@ -31,7 +31,7 @@ use Nette\IOException;
 /**
  * Main configuration form factory
  */
-class ConfigMainFormFactory {
+class MainFormFactory {
 
 	use Nette\SmartObject;
 

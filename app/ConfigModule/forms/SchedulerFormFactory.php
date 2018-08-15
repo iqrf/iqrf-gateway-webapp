@@ -31,7 +31,7 @@ use Nette\IOException;
 /**
  * Scheduler's task configuration form factory
  */
-class ConfigSchedulerFormFactory {
+class SchedulerFormFactory {
 
 	use Nette\SmartObject;
 

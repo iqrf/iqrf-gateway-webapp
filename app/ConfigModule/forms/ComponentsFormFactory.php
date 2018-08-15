@@ -20,8 +20,8 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Forms;
 
-use App\ConfigModule\Model\WebsocketManager;
-use App\ConfigModule\Presenters\WebsocketPresenter;
+use App\ConfigModule\Model\ComponentManager;
+use App\ConfigModule\Presenters\ComponentPresenter;
 use App\Forms\FormFactory;
 use App\Model\NonExistingJsonSchemaException;
 use Nette;
@@ -29,14 +29,14 @@ use Nette\Forms\Form;
 use Nette\IOException;
 
 /**
- * Websocket interface configuration form factory
+ * Component configuration form factory
  */
-class ConfigWebsocketFormFactory {
+class ComponentsFormFactory {
 
 	use Nette\SmartObject;
 
 	/**
-	 * @var WebsocketManager Websocket configuration manager
+	 * @var ComponentManager Component configuration manager
 	 */
 	private $manager;
 
@@ -46,54 +46,54 @@ class ConfigWebsocketFormFactory {
 	private $factory;
 
 	/**
-	 * @var int Websocket interface ID
+	 * @var int Component ID
 	 */
 	private $id;
 
 	/**
-	 * @var WebsocketPresenter Websocket interface presenter
+	 * @var ComponentPresenter Component presenter
 	 */
 	private $presenter;
 
 	/**
 	 * Constructor
-	 * @param WebsocketManager $manager Websocket configuration manager
+	 * @param ComponentManager $manager Generic configuration manager
 	 * @param FormFactory $factory Generic form factory
 	 */
-	public function __construct(WebsocketManager $manager, FormFactory $factory) {
+	public function __construct(ComponentManager $manager, FormFactory $factory) {
 		$this->manager = $manager;
 		$this->factory = $factory;
 	}
 
 	/**
-	 * Create websocket interface configuration form
-	 * @param WebsocketPresenter $presenter Websocket presenter
-	 * @return Form Websocket interface configuration form
+	 * Create components configuration form
+	 * @param ComponentPresenter $presenter Component presenter
+	 * @return Form Components configuration form
 	 */
-	public function create(WebsocketPresenter $presenter): Form {
+	public function create(ComponentPresenter $presenter): Form {
 		$this->presenter = $presenter;
 		$this->id = intval($presenter->getParameter('id'));
 		$form = $this->factory->create();
-		$translator = $form->getTranslator();
-		$form->setTranslator($translator->domain('config.websocket.form'));
-		$form->addInteger('port', 'port')->setRequired('messages.port');
-		$form->addCheckbox('acceptAsyncMsg', 'acceptAsyncMsg');
+		$form->setTranslator($form->getTranslator()->domain('config.components.form'));
+		$form->addText('name', 'name')->setRequired('messages.name');
+		$form->addText('libraryPath', 'libraryPath');
+		$form->addText('libraryName', 'libraryName')->setRequired('messages.libraryName');
+		$form->addCheckbox('enabled', 'enabled');
+		$form->addInteger('startlevel', 'startlevel')->setRequired('messages.startLevel');
 		$form->addSubmit('save', 'Save');
+		$form->setDefaults($this->manager->loadComponent($this->id));
 		$form->addProtection('core.errors.form-timeout');
-		if (array_key_exists($this->id, $this->manager->getInstances())) {
-			$form->setDefaults($this->manager->load($this->id));
-		}
 		$form->onSuccess[] = [$this, 'save'];
 		return $form;
 	}
 
 	/**
-	 * Save websocket interface configuration
-	 * @param Form $form Websocket interface configuration form
+	 * Save component configuration
+	 * @param Form $form Component configuration form
 	 */
 	public function save(Form $form) {
 		try {
-			$this->manager->save($form->getValues(true));
+			$this->manager->save($form->getValues(), $this->id);
 			$this->presenter->flashMessage('config.messages.success', 'success');
 		} catch (\Exception $e) {
 			if ($e instanceof NonExistingJsonSchemaException) {
@@ -102,7 +102,7 @@ class ConfigWebsocketFormFactory {
 				$this->presenter->flashMessage('config.messages.writeFailure', 'danger');
 			}
 		} finally {
-			$this->presenter->redirect('Websocket:default');
+			$this->presenter->redirect('Component:default');
 		}
 	}
 

@@ -22,27 +22,17 @@ namespace App\ConfigModule\Forms;
 
 use App\ConfigModule\Forms\GenericConfigFormFactory;
 use App\ConfigModule\Model\GenericManager;
-use App\ConfigModule\Presenters\MqPresenter;
+use App\ConfigModule\Presenters\IqmeshPresenter;
 use App\Forms\FormFactory;
 use Nette;
 use Nette\Forms\Form;
 
 /**
- * MQ interface configuration form factory
+ * OTA upload configuration form factory
  */
-class ConfigMqFormFactory extends GenericConfigFormFactory {
+class OtaUploadFormFactory extends GenericConfigFormFactory {
 
 	use Nette\SmartObject;
-
-	/**
-	 * @var int MQ interface ID
-	 */
-	private $id;
-
-	/**
-	 * @var array Files with MQ interface instances
-	 */
-	private $instances;
 
 	/**
 	 * Constructor
@@ -51,41 +41,26 @@ class ConfigMqFormFactory extends GenericConfigFormFactory {
 	 */
 	public function __construct(GenericManager $manager, FormFactory $factory) {
 		parent::__construct($manager, $factory);
-		$this->manager->setComponent('iqrf::MqMessaging');
-		$this->instances = $this->manager->getInstanceFiles();
-		$this->redirect = 'Mq:default';
+		$this->manager->setComponent('iqrf::OtaUploadService');
 	}
 
 	/**
-	 * Create MQ interface configuration form
-	 * @param MqPresenter $presenter MQ interface presenter
-	 * @return Form MQ interface configuration form
+	 * Create OTA upload service configuration form
+	 * @param IqmeshPresenter $presenter IQMESH services configuration presenter
+	 * @return Form OTA upload configuration form
 	 */
-	public function create(MqPresenter $presenter): Form {
+	public function create(IqmeshPresenter $presenter): Form {
 		$this->presenter = $presenter;
-		$this->id = intval($presenter->getParameter('id'));
 		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('config.mq.form'));
+		$form->setTranslator($form->getTranslator()->domain('config.iqmesh.otaUpload.form'));
+		$this->manager->setFileName($this->manager->getInstanceFiles()[0]);
 		$form->addText('instance', 'instance')->setRequired('messages.instance');
-		$form->addText('LocalMqName', 'LocalMqName')->setRequired('messages.LocalMqName');
-		$form->addText('RemoteMqName', 'RemoteMqName')->setRequired('messages.RemoteMqName');
-		$form->addCheckbox('acceptAsyncMsg', 'acceptAsyncMsg');
+		$form->addText('uploadPath', 'uploadPath')->setRequired('messages.uploadPath');
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');
-		if ($this->isExists()) {
-			$this->manager->setFileName($this->instances[$this->id]);
-			$form->setDefaults($this->manager->load());
-		}
+		$form->setDefaults($this->manager->load());
 		$form->onSuccess[] = [$this, 'save'];
 		return $form;
-	}
-
-	/**
-	 * Check if instance exists
-	 * @return bool Is instance exists?
-	 */
-	public function isExists(): bool {
-		return array_key_exists($this->id, $this->instances);
 	}
 
 }

@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Presenters;
 
-use App\ConfigModule\Forms\ConfigIqrfRepositoryFormFactory;
+use App\ConfigModule\Forms\IqrfRepositoryFormFactory;
 use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
@@ -30,7 +30,7 @@ use Nette\Forms\Form;
 class IqrfRepositoryPresenter extends ProtectedPresenter {
 
 	/**
-	 * @var ConfigIqrfRepositoryFormFactory IQRF Repository configuration form factory
+	 * @var IqrfRepositoryFormFactory IQRF Repository configuration form factory
 	 * @inject
 	 */
 	public $formFactory;

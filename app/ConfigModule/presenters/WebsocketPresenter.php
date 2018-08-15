@@ -20,9 +20,9 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Presenters;
 
-use App\ConfigModule\Forms\ConfigWebsocketFormFactory;
-use App\ConfigModule\Forms\ConfigWebsocketMessagingFormFactory;
-use App\ConfigModule\Forms\ConfigWebsocketServiceFormFactory;
+use App\ConfigModule\Forms\WebsocketFormFactory;
+use App\ConfigModule\Forms\WebsocketMessagingFormFactory;
+use App\ConfigModule\Forms\WebsocketServiceFormFactory;
 use App\ConfigModule\Model\GenericManager;
 use App\ConfigModule\Model\WebsocketManager;
 use App\Presenters\ProtectedPresenter;
@@ -53,19 +53,19 @@ class WebsocketPresenter extends ProtectedPresenter {
 	private $websocketManager;
 
 	/**
-	 * @var ConfigWebsocketFormFactory Websocket instance configuration form factory
+	 * @var WebsocketFormFactory Websocket instance configuration form factory
 	 * @inject
 	 */
 	public $basicFormFactory;
 
 	/**
-	 * @var ConfigWebsocketMessagingFormFactory Websocket messaging configuration form factory
+	 * @var WebsocketMessagingFormFactory Websocket messaging configuration form factory
 	 * @inject
 	 */
 	public $messagingFormFactory;
 
 	/**
-	 * @var ConfigWebsocketServiceFormFactory Websocket service configuration form factory
+	 * @var WebsocketServiceFormFactory Websocket service configuration form factory
 	 * @inject
 	 */
 	public $serviceFormFactory;

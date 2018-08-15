@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Presenters;
 
-use App\ConfigModule\Forms\ConfigIqrfSpiFormFactory;
+use App\ConfigModule\Forms\IqrfSpiFormFactory;
 use App\ConfigModule\Model\IqrfManager;
 use App\Presenters\ProtectedPresenter;
 use App\Model\JsonFileManager;
@@ -37,7 +37,7 @@ class IqrfSpiPresenter extends ProtectedPresenter {
 	private $fileManager;
 
 	/**
-	 * @var ConfigIqrfSpiFormFactory IQRF SPI interface configuration form factory
+	 * @var IqrfSpiFormFactory IQRF SPI interface configuration form factory
 	 * @inject
 	 */
 	public $spiFormFactory;

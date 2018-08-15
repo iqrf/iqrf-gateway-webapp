@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Presenters;
 
-use App\ConfigModule\Forms\ConfigIqrfDpaFormFactory;
+use App\ConfigModule\Forms\IqrfDpaFormFactory;
 use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
@@ -30,7 +30,7 @@ use Nette\Forms\Form;
 class IqrfDpaPresenter extends ProtectedPresenter {
 
 	/**
-	 * @var ConfigIqrfDpaFormFactory IQRF DPA interface configuration form factory
+	 * @var IqrfDpaFormFactory IQRF DPA interface configuration form factory
 	 * @inject
 	 */
 	public $dpaFormFactory;
