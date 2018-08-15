@@ -24,7 +24,6 @@ use App\ConfigModule\Model\GenericManager;
 use App\ConfigModule\Model\MainManager;
 use App\Model\JsonFileManager;
 use Nette;
-use Nette\Utils\ArrayHash;
 use Nette\Utils\Strings;
 
 /**
@@ -192,10 +191,10 @@ class SchedulerManager {
 
 	/**
 	 * Save scheduler setting
-	 * @param ArrayHash $array Scheduler settings
+	 * @param array $array Scheduler settings
 	 * @param int $id Task ID
 	 */
-	public function save(ArrayHash $array, int $id = 0) {
+	public function save(array $array, int $id = 0) {
 		$json = $this->saveJson($this->fileManager->read($this->fileName), $array, $id);
 		$this->fileManager->write($this->fileName, $json);
 	}
@@ -203,14 +202,12 @@ class SchedulerManager {
 	/**
 	 * Convert Task configuration form array to JSON array
 	 * @param array $scheduler Original Task JSON array
-	 * @param ArrayHash $update Changed settings
+	 * @param array $update Changed settings
 	 * @param int $id Task ID
 	 * @return array JSON array
 	 */
-	public function saveJson(array $scheduler, ArrayHash $update, int $id): array {
-		$update['task']['message'] = (array) $update['task']['message'];
-		$update['task'] = (array) $update['task'];
-		$scheduler['TasksJson'][$id] = (array) $update;
+	public function saveJson(array $scheduler, array $update, int $id): array {
+		$scheduler['TasksJson'][$id] = $update;
 		return $scheduler;
 	}
 

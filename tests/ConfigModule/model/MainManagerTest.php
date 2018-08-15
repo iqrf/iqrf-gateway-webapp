@@ -13,7 +13,6 @@ namespace Test\ConfigModule\Model;
 use App\ConfigModule\Model\MainManager;
 use App\Model\JsonFileManager;
 use Nette\DI\Container;
-use Nette\Utils\ArrayHash;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -96,7 +95,7 @@ class MainManagerTest extends TestCase {
 		$expected = $this->fileManager->read($this->fileName);
 		$this->fileManagerTest->write($this->fileName, $expected);
 		$expected['configurationDir'] = '/etc/iqrf-daemon';
-		$manager->save(ArrayHash::from($array));
+		$manager->save($array);
 		Assert::equal($expected, $this->fileManagerTest->read($this->fileName));
 	}
 

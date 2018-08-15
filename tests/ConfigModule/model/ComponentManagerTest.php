@@ -96,7 +96,7 @@ class ComponentManagerTest extends TestCase {
 			'startlevel' => 100,
 		];
 		$expected['components'][] = $array;
-		$this->managerTest->add(ArrayHash::from($array));
+		$this->managerTest->add($array);
 		Assert::same($expected['components'], $this->managerTest->loadComponents());
 	}
 
@@ -144,7 +144,7 @@ class ComponentManagerTest extends TestCase {
 		$expected = $this->fileManager->read($this->fileName);
 		$this->fileManagerTest->write($this->fileName, $expected);
 		$expected['components'][6]['enabled'] = false;
-		$this->managerTest->save(ArrayHash::from($array), 6);
+		$this->managerTest->save($array, 6);
 		Assert::equal($expected, $this->fileManagerTest->read($this->fileName));
 	}
 

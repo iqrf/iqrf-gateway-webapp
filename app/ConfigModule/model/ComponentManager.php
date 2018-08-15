@@ -51,9 +51,9 @@ class ComponentManager {
 
 	/**
 	 * Add new component
-	 * @param ArrayHash $array Component's settings
+	 * @param array $array Component's settings
 	 */
-	public function add(ArrayHash $array) {
+	public function add(array $array) {
 		$id = count($this->loadComponents());
 		$this->save($array, $id);
 	}
@@ -93,12 +93,12 @@ class ComponentManager {
 
 	/**
 	 * Save components setting
-	 * @param ArrayHash $components Components settings
+	 * @param array $components Components settings
 	 * @param int $id Component ID
 	 */
-	public function save(ArrayHash $components, int $id) {
+	public function save(array $components, int $id) {
 		$json = $this->fileManager->read($this->fileName);
-		$json['components'][$id] = (array) $components;
+		$json['components'][$id] = $components;
 		$this->fileManager->write($this->fileName, $json);
 	}
 

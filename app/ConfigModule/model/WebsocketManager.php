@@ -24,7 +24,6 @@ use App\Model\JsonFileManager;
 use App\Model\JsonSchemaManager;
 use Nette;
 use Nette\Utils\Arrays;
-use Nette\Utils\ArrayHash;
 
 /**
  * Websocket configuration manager

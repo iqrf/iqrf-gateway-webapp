@@ -15,7 +15,6 @@ use App\ConfigModule\Model\GenericManager;
 use App\Model\JsonFileManager;
 use App\Model\JsonSchemaManager;
 use Nette\DI\Container;
-use Nette\Utils\ArrayHash;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -85,7 +84,6 @@ class BluemixManagerTest extends TestCase {
 	 * Test function to create MQTT interface
 	 */
 	public function testCreateMqttInterface() {
-		$values = ArrayHash::from($this->formValues);
 		$mqtt = [
 			'component' => 'iqrf::MqttMessaging',
 			'instance' => 'MqttMessagingBluemix',
@@ -110,7 +108,7 @@ class BluemixManagerTest extends TestCase {
 			'EnableServerCertAuth' => false,
 			'acceptAsyncMsg' => false,
 		];
-		$this->manager->createMqttInterface($values);
+		$this->manager->createMqttInterface($this->formValues);
 		Assert::same($mqtt, $this->fileManager->read('MqttMessagingBluemix'));
 	}
 

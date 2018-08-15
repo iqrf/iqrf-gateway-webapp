@@ -84,7 +84,7 @@ class MigrationFormFactory {
 	 */
 	public function import(Form $form) {
 		try {
-			$this->manager->upload($form->getValues());
+			$this->manager->upload($form->getValues(true));
 			$this->presenter->flashMessage('config.migration.messages.importedConfig', 'success');
 		} catch (\Exception $e) {
 			if ($e instanceof IncompleteConfiguration) {

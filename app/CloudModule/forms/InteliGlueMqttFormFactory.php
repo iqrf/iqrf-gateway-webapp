@@ -102,7 +102,7 @@ class InteliGlueMqttFormFactory {
 	 * @param bool $needRestart Is restart needed?
 	 */
 	public function save(SubmitButton $button, bool $needRestart = false) {
-		$values = $button->getForm()->getValues();
+		$values = $button->getForm()->getValues(true);
 		try {
 			$this->cloudManager->createMqttInterface($values);
 			$this->presenter->flashMessage('cloud.messages.success', 'success');

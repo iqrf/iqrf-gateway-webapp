@@ -83,17 +83,16 @@ class GenericManager {
 
 	/**
 	 * Save configuration
-	 * @param ArrayHash $array Settings
+	 * @param array $array Settings
 	 */
-	public function save(ArrayHash $array) {
-		$configuration = (array) $array;
+	public function save(array $array) {
 		if (!isset($this->fileName)) {
-			$this->generateFileName($configuration);
+			$this->generateFileName($array);
 		}
 		$component = ['component' => $this->component];
-		$settings = Arrays::mergeTree($component, $configuration);
-		$this->schemaManager->validate(ArrayHash::from($settings));
-		$this->fileManager->write($this->fileName, $settings);
+		$configuration = Arrays::mergeTree($component, $array);
+		$this->schemaManager->validate(ArrayHash::from($configuration));
+		$this->fileManager->write($this->fileName, $configuration);
 	}
 
 	/**

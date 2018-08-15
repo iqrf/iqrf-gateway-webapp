@@ -14,7 +14,6 @@ use App\ConfigModule\Model\GenericManager;
 use App\Model\JsonFileManager;
 use App\Model\JsonSchemaManager;
 use Nette\DI\Container;
-use Nette\Utils\ArrayHash;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -199,7 +198,7 @@ class GenericManagerTest extends TestCase {
 		$expected = $this->fileManager->read($this->fileName);
 		$this->fileManagerTest->write($this->fileName, $expected);
 		$expected['acceptAsyncMsg'] = true;
-		$this->managerTest->save(ArrayHash::from($array));
+		$this->managerTest->save($array);
 		Assert::equal($expected, $this->fileManagerTest->read($this->fileName));
 	}
 

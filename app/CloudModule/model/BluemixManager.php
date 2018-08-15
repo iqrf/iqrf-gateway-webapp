@@ -23,7 +23,6 @@ namespace App\CloudModule\Model;
 use App\ConfigModule\Model\GenericManager;
 use GuzzleHttp\Client;
 use Nette;
-use Nette\Utils\ArrayHash;
 use Nette\Utils\FileSystem;
 
 /**
@@ -58,10 +57,9 @@ class BluemixManager {
 
 	/**
 	 * Create MQTT interface
-	 * @param ArrayHash $values Values from form
-	 * @return ArrayHash MQTT interface
+	 * @param array $values Values from form
 	 */
-	public function createMqttInterface(ArrayHash $values) {
+	public function createMqttInterface(array $values) {
 		$this->downloadCaCertificate();
 		$this->configManager->setComponent('iqrf::MqttMessaging');
 		$this->configManager->setFileName($this->interfaceName);
@@ -88,7 +86,7 @@ class BluemixManager {
 			'EnableServerCertAuth' => false,
 			'acceptAsyncMsg' => false,
 		];
-		$this->configManager->save(ArrayHash::from($interface));
+		$this->configManager->save($interface);
 	}
 
 	/**

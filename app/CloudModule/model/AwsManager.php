@@ -24,7 +24,6 @@ use App\ConfigModule\Model\GenericManager;
 use App\Model\CertificateManager;
 use GuzzleHttp\Client;
 use Nette;
-use Nette\Utils\ArrayHash;
 use Nette\Utils\FileSystem;
 
 /**
@@ -66,10 +65,9 @@ class AwsManager {
 
 	/**
 	 * Create MQTT interface
-	 * @param ArrayHash $values Values from form
-	 * @return ArrayHash MQTT interface
+	 * @param array $values Values from form
 	 */
-	public function createMqttInterface(ArrayHash $values) {
+	public function createMqttInterface(array $values) {
 		$paths = $this->createPaths();
 		$this->downloadCaCertificate();
 		$this->checkCertificate($values);
@@ -99,14 +97,14 @@ class AwsManager {
 			'EnableServerCertAuth' => false,
 			'acceptAsyncMsg' => false,
 		];
-		$this->configManager->save(ArrayHash::from($interface));
+		$this->configManager->save($interface);
 	}
 
 	/**
 	 * Check a certificate and a private key
-	 * @param ArrayHash $values Form values
+	 * @param array $values Form values
 	 */
-	public function checkCertificate(ArrayHash $values) {
+	public function checkCertificate(array $values) {
 		$cert = $values['cert']->getContents();
 		$pKey = $values['key']->getContents();
 		if (!$this->certManager->checkPrivateKey($cert, $pKey)) {
@@ -129,10 +127,10 @@ class AwsManager {
 
 	/**
 	 * Upload root CA certificate, certificate and private key
-	 * @param ArrayHash $values Form values
+	 * @param array $values Form values
 	 * @param array $paths Paths for root CA certificate, certificate and private key
 	 */
-	public function uploadCertsAndKey(ArrayHash $values, array $paths) {
+	public function uploadCertsAndKey(array $values, array $paths) {
 		$cert = $values['cert'];
 		$key = $values['key'];
 		if ($cert->isOk()) {

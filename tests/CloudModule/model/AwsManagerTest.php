@@ -17,7 +17,6 @@ use App\Model\CertificateManager;
 use App\Model\JsonFileManager;
 use App\Model\JsonSchemaManager;
 use Nette\DI\Container;
-use Nette\Utils\ArrayHash;
 use Nette\Http\FileUpload;
 use Nette\Utils\FileSystem;
 use Tester\Assert;
@@ -122,7 +121,6 @@ class AwsManagerTest extends TestCase {
 	 */
 	public function testCreateMqttInterface() {
 		$timestamp = (new \DateTime())->format(\DateTime::ISO8601);
-		$values = ArrayHash::from($this->formValues);
 		$mqtt = [
 			'component' => 'iqrf::MqttMessaging',
 			'instance' => 'MqttMessagingAws',
@@ -147,7 +145,7 @@ class AwsManagerTest extends TestCase {
 			'EnableServerCertAuth' => false,
 			'acceptAsyncMsg' => false,
 		];
-		$this->mockedManager->createMqttInterface($values);
+		$this->mockedManager->createMqttInterface($this->formValues);
 		Assert::same($mqtt, $this->fileManager->read('MqttMessagingAws'));
 	}
 
@@ -156,7 +154,7 @@ class AwsManagerTest extends TestCase {
 	 */
 	public function testCheckCertificate() {
 		$array = $this->mockUploadedFiles(__DIR__ . '/../../model/certs/');
-		Assert::null($this->manager->checkCertificate(ArrayHash::from($array)));
+		Assert::null($this->manager->checkCertificate($array));
 		Assert::exception(function () use ($array) {
 			$pKeyFile = __DIR__ . '/../../model/certs/pkey1.key';
 			$pKeyValue = [
@@ -167,7 +165,7 @@ class AwsManagerTest extends TestCase {
 				'size' => filesize($pKeyFile),
 			];
 			$array['key'] = new FileUpload($pKeyValue);
-			$this->manager->checkCertificate(ArrayHash::from($array));
+			$this->manager->checkCertificate($array);
 		}, InvalidPrivateKeyForCertificate::class);
 	}
 
@@ -197,7 +195,7 @@ class AwsManagerTest extends TestCase {
 			'cert' => __DIR__ . '/certs/cert.pem',
 			'key' => __DIR__ . '/certs/pKey.key',
 		];
-		Assert::null($this->manager->uploadCertsAndKey(ArrayHash::from($array), $paths));
+		Assert::null($this->manager->uploadCertsAndKey($array, $paths));
 	}
 
 }

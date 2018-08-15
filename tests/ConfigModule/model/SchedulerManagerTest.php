@@ -16,7 +16,6 @@ use App\ConfigModule\Model\SchedulerManager;
 use App\Model\JsonFileManager;
 use App\Model\JsonSchemaManager;
 use Nette\DI\Container;
-use Nette\Utils\ArrayHash;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -233,7 +232,7 @@ class SchedulerManagerTest extends TestCase {
 		$expected = $this->fileManager->read($this->fileName);
 		$this->fileManagerTest->write($this->fileName, $expected);
 		$expected['TasksJson'][0]['message']['nadr'] = '0';
-		$this->manager->save(ArrayHash::from($array), 0);
+		$this->manager->save($array, 0);
 		Assert::equal($expected, $this->fileManagerTest->read($this->fileName));
 	}
 
@@ -241,12 +240,11 @@ class SchedulerManagerTest extends TestCase {
 	 * Test function to parse configuration of Scheduler
 	 */
 	public function testSaveJson() {
-		$updateArray = $this->array;
-		$updateArray['task']['message']['msgid'] = '2';
+		$update = $this->array;
+		$update['task']['message']['msgid'] = '2';
 		$json = $this->fileManager->read($this->fileName);
 		$expected = $json;
 		$expected['TasksJson'][0]['task']['message']['msgid'] = '2';
-		$update = ArrayHash::from($updateArray);
 		Assert::equal($expected, $this->manager->saveJson($json, $update, 0));
 	}
 

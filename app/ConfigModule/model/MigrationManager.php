@@ -95,9 +95,9 @@ class MigrationManager {
 
 	/**
 	 * Upload a configuration
-	 * @param ArrayHash $formValues Values from form
+	 * @param array $formValues Values from form
 	 */
-	public function upload(ArrayHash $formValues) {
+	public function upload(array $formValues) {
 		$zip = $formValues['configuration'];
 		if ($zip->isOk()) {
 			if ($zip->getContentType() !== 'application/zip') {
@@ -149,7 +149,7 @@ class MigrationManager {
 				continue;
 			}
 			try {
-				$this->schemaManager->validate((object) $json);
+				$this->schemaManager->validate(ArrayHash::from($json));
 			} catch (InvalidJsonException $e) {
 				return false;
 			}

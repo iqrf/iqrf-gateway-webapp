@@ -22,7 +22,6 @@ namespace App\ConfigModule\Model;
 
 use App\Model\JsonFileManager;
 use Nette;
-use Nette\Utils\ArrayHash;
 
 /**
  * Main configuration form factory
@@ -60,11 +59,11 @@ class MainManager {
 
 	/**
 	 * Save Main daemon configuration
-	 * @param ArrayHash $array Main settings
+	 * @param array $array Main settings
 	 */
-	public function save(ArrayHash $array) {
+	public function save(array $array) {
 		$json = $this->fileManager->read($this->fileName);
-		$this->fileManager->write($this->fileName, array_merge($json, (array) $array));
+		$this->fileManager->write($this->fileName, array_merge($json, $array));
 	}
 
 }

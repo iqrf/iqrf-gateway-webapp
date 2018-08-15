@@ -24,7 +24,6 @@ use App\ConfigModule\Model\GenericManager;
 use DateInterval;
 use DateTime;
 use Nette;
-use Nette\Utils\ArrayHash;
 
 /**
  * Tool for managing Azure IoT Hub
@@ -54,7 +53,6 @@ class AzureManager {
 	/**
 	 * Create MQTT interface from MS Azure IoT Hub Connection string
 	 * @param string $connectionString MS Azure IoT Hub Connection string
-	 * @return ArrayHash MQTT interface
 	 */
 	public function createMqttInterface(string $connectionString) {
 		$this->checkConnectionString($connectionString);
@@ -86,7 +84,7 @@ class AzureManager {
 			'EnableServerCertAuth' => false,
 			'acceptAsyncMsg' => false,
 		];
-		$this->configManager->save(ArrayHash::from($interface));
+		$this->configManager->save($interface);
 	}
 
 	/**
