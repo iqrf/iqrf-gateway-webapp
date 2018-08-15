@@ -27,12 +27,12 @@ use App\IqrfAppModule\Model\IqrfNetManager;
 use App\IqrfAppModule\Presenters\NetworkPresenter;
 use Nette;
 use Nette\Forms\Form;
-use Nette\Forms\Controls\SubmitButton;
+use Nette\Utils\ArrayHash;
 
 /**
- * IQMESH Security form factory.
+ * IQMESH Discovery form factory.
  */
-class IqrfNetSecurityFormFactory {
+class DiscoveryFormFactory {
 
 	use Nette\SmartObject;
 
@@ -62,66 +62,39 @@ class IqrfNetSecurityFormFactory {
 	}
 
 	/**
-	 * Create IQMESH Access password form
+	 * Create Discovery form
 	 * @param NetworkPresenter $presenter IQMESH Network presenter
-	 * @return Form IQMESH Access password form
+	 * @return Form IQMESH discovery form
 	 */
 	public function create(NetworkPresenter $presenter): Form {
 		$this->presenter = $presenter;
 		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('iqrfapp.network-manager.security'));
-		$inputFormats = [
-			'ASCII' => 'input-formats.ascii',
-			'HEX' => 'input-formats.hex',
-		];
-		$form->addSelect('format', 'input-format', $inputFormats)
-				->setDefaultValue('ASCII');
-		$form->addText('password', 'password')
-				->setRequired(false)
-				->addConditionOn($form['format'], Form::EQUAL, 'ASCII')
-				->addRule(Form::MAX_LENGTH, 'messages.ascii-password-length', 16)
-				->elseCondition($form['format'], Form::EQUAL, 'HEX')
-				->addRule(Form::PATTERN, 'messages.hex-password-format', '[0-9A-Fa-f]{0,32}')
-				->addRule(Form::MAX_LENGTH, 'messages.hex-password-length', 32);
-		$form->addSubmit('setAccessPassword', 'setAccessPassword')->onClick[] = [$this, 'accessPasword'];
-		$form->addSubmit('setUserKey', 'setUserKey')->onClick[] = [$this, 'userKey'];
+		$form->setTranslator($form->getTranslator()->domain('iqrfapp.network-manager.discovery'));
+		$form->addInteger('txPower', 'txPower')->setDefaultValue(6)
+				->addRule(Form::RANGE, 'messages.txPower', [0, 7])
+				->setRequired('messages.txPower');
+		$form->addInteger('maxNode', 'maxNodeAddress')->setDefaultValue(239)
+				->addRule(Form::RANGE, 'messages.maxNodeAddress', [0, 239])
+				->setRequired('messages.maxNodeAddress');
+		$form->addSubmit('send', 'send');
 		$form->addProtection('core.errors.form-timeout');
+		$form->onSuccess[] = [$this, 'onSuccess'];
 		return $form;
 	}
 
 	/**
-	 * Set IQMESH Access Password
-	 * @param SubmitButton $button Submit button for setting Access Password
+	 * Run Discovery
+	 * @param Form $form IQMESH discovery form
+	 * @param ArrayHash $values Values from IQMESH discovery form
 	 */
-	public function accessPasword(SubmitButton $button) {
-		$values = $button->getForm()->getValues();
+	public function onSuccess(Form $form, ArrayHash $values) {
 		try {
-			$this->manager->setSecurity($values['password'], $values['format'], IqrfNetManager::SECURITY_ACCESS_PASSOWRD);
+			$this->manager->discovery($values['txPower'], dechex($values['maxNode']));
 		} catch (\Exception $e) {
 			if ($e instanceof EmptyResponseException ||
 					$e instanceof DpaErrorException) {
 				$message = 'No response from IQRF Gateway Daemon.';
-				$button->addError($message);
-				$this->presenter->flashMessage($message, 'danger');
-			} else {
-				throw $e;
-			}
-		}
-	}
-
-	/**
-	 * Set IQMESH User Key
-	 * @param SubmitButton $button Submit button for setting User Key
-	 */
-	public function userKey(SubmitButton $button) {
-		$values = $button->getForm()->getValues();
-		try {
-			$this->manager->setSecurity($values['password'], $values['format'], IqrfNetManager::SECURITY_USER_KEY);
-		} catch (\Exception $e) {
-			if ($e instanceof EmptyResponseException ||
-					$e instanceof DpaErrorException) {
-				$message = 'No response from IQRF Gateway Daemon.';
-				$button->addError($message);
+				$form->addError($message);
 				$this->presenter->flashMessage($message, 'danger');
 			} else {
 				throw $e;

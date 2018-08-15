@@ -20,9 +20,9 @@ declare(strict_types = 1);
 
 namespace App\CloudModule\Forms;
 
-use App\CloudModule\Model\AwsManager;
-use App\CloudModule\Presenters\AwsPresenter;
-use App\CloudModule\Model\InvalidPrivateKeyForCertificate;
+use App\CloudModule\Model\AzureManager;
+use App\CloudModule\Presenters\AzurePresenter;
+use App\CloudModule\Model\InvalidConnectionString;
 use App\Forms\FormFactory;
 use App\Model\NonExistingJsonSchemaException;
 use App\ServiceModule\Model\NotSupportedInitSystemException;
@@ -33,14 +33,14 @@ use Nette\Forms\Controls\SubmitButton;
 use Nette\IOException;
 
 /**
- * Form for creating MQTT connection into Amazon AWS IoT
+ * Form for creating MQTT connection into Microsoft Azure IoT Hub
  */
-class CloudAwsMqttFormFactory {
+class AzureMqttFormFactory {
 
 	use Nette\SmartObject;
 
 	/**
-	 * @var AwsManager Amazon AWS IoT manager
+	 * @var AzureManager Microsoft Azure IoT Hub manager
 	 */
 	private $cloudManager;
 
@@ -50,7 +50,7 @@ class CloudAwsMqttFormFactory {
 	private $factory;
 
 	/**
-	 * @var AwsPresenter Amazon AWS IoT presenter
+	 * @var AzurePresenter MS Azure IoT presenter
 	 */
 	private $presenter;
 
@@ -61,28 +61,26 @@ class CloudAwsMqttFormFactory {
 
 	/**
 	 * Constructor
-	 * @param AwsManager $aws Amazon AWS IoT manager
+	 * @param AzureManager $azure Microsoft Azure IoT Hub manager
 	 * @param FormFactory $factory Generic form factory
 	 * @param ServiceManager $serviceManager Service manager
 	 */
-	public function __construct(AwsManager $aws, FormFactory $factory, ServiceManager $serviceManager) {
-		$this->cloudManager = $aws;
+	public function __construct(AzureManager $azure, FormFactory $factory, ServiceManager $serviceManager) {
+		$this->cloudManager = $azure;
 		$this->factory = $factory;
 		$this->serviceManager = $serviceManager;
 	}
 
 	/**
 	 * Create MQTT configuration form
-	 * @param AwsPresenter $presenter Amazon AWS IoT presenter
+	 * @param AzurePresenter $presenter MS Azure presenter
 	 * @return Form MQTT configuration form
 	 */
-	public function create(AwsPresenter $presenter): Form {
+	public function create(AzurePresenter $presenter): Form {
 		$this->presenter = $presenter;
 		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('cloud.amazonAws.form'));
-		$form->addText('endpoint', 'endpoint')->setRequired();
-		$form->addUpload('cert', 'certificate')->setRequired();
-		$form->addUpload('key', 'pkey')->setRequired();
+		$form->setTranslator($form->getTranslator()->domain('cloud.msAzure.form'));
+		$form->addText('ConnectionString', 'connectionString')->setRequired();
 		$form->addSubmit('save', 'save')
 				->onClick[] = function (SubmitButton $button) {
 			$this->save($button);
@@ -103,12 +101,12 @@ class CloudAwsMqttFormFactory {
 	public function save(SubmitButton $button, bool $needRestart = false) {
 		$values = $button->getForm()->getValues();
 		try {
-			$this->cloudManager->createMqttInterface($values);
+			$this->cloudManager->createMqttInterface($values['ConnectionString']);
 			$this->presenter->flashMessage('cloud.messages.success', 'success');
 			$this->presenter->redirect(':Config:Mqtt:default');
 		} catch (\Exception $e) {
-			if ($e instanceof InvalidPrivateKeyForCertificate) {
-				$this->presenter->flashMessage('cloud.amazonAws.messages.mismatchedCrtAndKey', 'danger');
+			if ($e instanceof InvalidConnectionString) {
+				$this->presenter->flashMessage('cloud.msAzure.messages.invalidConnectionString', 'danger');
 			} else if ($e instanceof NonExistingJsonSchemaException) {
 				$this->presenter->flashMessage('config.messages.nonExistingJsonSchema', 'danger');
 			} else if ($e instanceof IOException) {

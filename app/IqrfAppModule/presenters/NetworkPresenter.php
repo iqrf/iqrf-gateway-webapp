@@ -20,10 +20,10 @@ declare(strict_types = 1);
 
 namespace App\IqrfAppModule\Presenters;
 
-use App\IqrfAppModule\Forms\IqrfNetBondingFormFactory;
-use App\IqrfAppModule\Forms\IqrfNetDiscoveryFormFactory;
-use App\IqrfAppModule\Forms\IqrfNetRfFormFactory;
-use App\IqrfAppModule\Forms\IqrfNetSecurityFormFactory;
+use App\IqrfAppModule\Forms\BondingFormFactory;
+use App\IqrfAppModule\Forms\DiscoveryFormFactory;
+use App\IqrfAppModule\Forms\RfFormFactory;
+use App\IqrfAppModule\Forms\SecurityFormFactory;
 use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
@@ -33,25 +33,25 @@ use Nette\Forms\Form;
 class NetworkPresenter extends ProtectedPresenter {
 
 	/**
-	 * @var IqrfNetBondingFormFactory IQMESH Bonding form
+	 * @var BondingFormFactory IQMESH Bonding form
 	 * @inject
 	 */
 	public $bondingForm;
 
 	/**
-	 * @var IqrfNetDiscoveryFormFactory IQMESH Discovery form
+	 * @var DiscoveryFormFactory IQMESH Discovery form
 	 * @inject
 	 */
 	public $discoveryForm;
 
 	/**
-	 * @var IqrfNetRfFormFactory IQMESH RF configuration form
+	 * @var RfFormFactory IQMESH RF configuration form
 	 * @inject
 	 */
 	public $rfForm;
 
 	/**
-	 * @var IqrfNetSecurityFormFactory IQMESH Security configuration form
+	 * @var SecurityFormFactory IQMESH Security configuration form
 	 * @inject
 	 */
 	public $securityForm;

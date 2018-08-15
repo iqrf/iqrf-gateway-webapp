@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\CloudModule\Presenters;
 
-use App\CloudModule\Forms\CloudInteliGlueMqttFormFactory;
+use App\CloudModule\Forms\InteliGlueMqttFormFactory;
 use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
@@ -30,7 +30,7 @@ use Nette\Forms\Form;
 class InteliGluePresenter extends ProtectedPresenter {
 
 	/**
-	 * @var CloudInteliGlueMqttFormFactory Inteliments InteliGlue form factory
+	 * @var InteliGlueMqttFormFactory Inteliments InteliGlue form factory
 	 * @inject
 	 */
 	public $formFactory;

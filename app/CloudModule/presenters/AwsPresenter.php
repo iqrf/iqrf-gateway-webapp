@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\CloudModule\Presenters;
 
-use App\CloudModule\Forms\CloudAwsMqttFormFactory;
+use App\CloudModule\Forms\AwsMqttFormFactory;
 use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
@@ -30,7 +30,7 @@ use Nette\Forms\Form;
 class AwsPresenter extends ProtectedPresenter {
 
 	/**
-	 * @var CloudAwsMqttFormFactory Amazon AWS IoT form factory
+	 * @var AwsMqttFormFactory Amazon AWS IoT form factory
 	 * @inject
 	 */
 	public $formFactory;

@@ -1,8 +1,8 @@
 services:
-	- App\CloudModule\Forms\CloudAwsMqttFormFactory
-	- App\CloudModule\Forms\CloudAzureMqttFormFactory
-	- App\CloudModule\Forms\CloudBluemixMqttFormFactory
-	- App\CloudModule\Forms\CloudInteliGlueMqttFormFactory
+	- App\CloudModule\Forms\AwsMqttFormFactory
+	- App\CloudModule\Forms\AzureMqttFormFactory
+	- App\CloudModule\Forms\BluemixMqttFormFactory
+	- App\CloudModule\Forms\InteliGlueMqttFormFactory
 	- App\CloudModule\Model\AwsManager
 	- App\CloudModule\Model\AzureManager
 	- App\CloudModule\Model\BluemixManager

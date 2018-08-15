@@ -20,9 +20,8 @@ declare(strict_types = 1);
 
 namespace App\CloudModule\Forms;
 
-use App\CloudModule\Model\AzureManager;
-use App\CloudModule\Presenters\AzurePresenter;
-use App\CloudModule\Model\InvalidConnectionString;
+use App\CloudModule\Model\InteliGlueManager;
+use App\CloudModule\Presenters\InteliGluePresenter;
 use App\Forms\FormFactory;
 use App\Model\NonExistingJsonSchemaException;
 use App\ServiceModule\Model\NotSupportedInitSystemException;
@@ -33,14 +32,14 @@ use Nette\Forms\Controls\SubmitButton;
 use Nette\IOException;
 
 /**
- * Form for creating MQTT connection into Microsoft Azure IoT Hub
+ * Form for creating MQTT connection into Inteliments InteliGlue
  */
-class CloudAzureMqttFormFactory {
+class InteliGlueMqttFormFactory {
 
 	use Nette\SmartObject;
 
 	/**
-	 * @var AzureManager Microsoft Azure IoT Hub manager
+	 * @var InteliGlueManager Inteliments InteliGlue manager
 	 */
 	private $cloudManager;
 
@@ -50,7 +49,7 @@ class CloudAzureMqttFormFactory {
 	private $factory;
 
 	/**
-	 * @var AzurePresenter MS Azure IoT presenter
+	 * @var InteliGluePresenter Inteliments InteliGlue presenter
 	 */
 	private $presenter;
 
@@ -61,26 +60,30 @@ class CloudAzureMqttFormFactory {
 
 	/**
 	 * Constructor
-	 * @param AzureManager $azure Microsoft Azure IoT Hub manager
+	 * @param InteliGlueManager $inteliGlue Inteliments InteliGlue manager
 	 * @param FormFactory $factory Generic form factory
 	 * @param ServiceManager $serviceManager Service manager
 	 */
-	public function __construct(AzureManager $azure, FormFactory $factory, ServiceManager $serviceManager) {
-		$this->cloudManager = $azure;
+	public function __construct(InteliGlueManager $inteliGlue, FormFactory $factory, ServiceManager $serviceManager) {
+		$this->cloudManager = $inteliGlue;
 		$this->factory = $factory;
 		$this->serviceManager = $serviceManager;
 	}
 
 	/**
 	 * Create MQTT configuration form
-	 * @param AzurePresenter $presenter MS Azure presenter
+	 * @param InteliGluePresenter $presenter Inteliments InteliGlue presenter
 	 * @return Form MQTT configuration form
 	 */
-	public function create(AzurePresenter $presenter): Form {
+	public function create(InteliGluePresenter $presenter): Form {
 		$this->presenter = $presenter;
 		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('cloud.msAzure.form'));
-		$form->addText('ConnectionString', 'connectionString')->setRequired();
+		$form->setTranslator($form->getTranslator()->domain('cloud.intelimentsInteliGlue.form'));
+		$form->addText('rootTopic', 'rootTopic')->setRequired();
+		$form->addInteger('assignedPort', 'assignedPort')->setRequired()
+				->addRule(Form::RANGE, 'Port have to be in range from 0 to 65535', [0, 65535]);
+		$form->addText('clientId', 'clientId')->setRequired();
+		$form->addText('password', 'password')->setRequired();
 		$form->addSubmit('save', 'save')
 				->onClick[] = function (SubmitButton $button) {
 			$this->save($button);
@@ -95,24 +98,20 @@ class CloudAzureMqttFormFactory {
 
 	/**
 	 * Create the MQTT interface
-	 * @param SubmitButton $button Form's sumbit button
+	 * @param SubmitButton $button Form's submit button
 	 * @param bool $needRestart Is restart needed?
 	 */
 	public function save(SubmitButton $button, bool $needRestart = false) {
 		$values = $button->getForm()->getValues();
 		try {
-			$this->cloudManager->createMqttInterface($values['ConnectionString']);
+			$this->cloudManager->createMqttInterface($values);
 			$this->presenter->flashMessage('cloud.messages.success', 'success');
 			$this->presenter->redirect(':Config:Mqtt:default');
 		} catch (\Exception $e) {
-			if ($e instanceof InvalidConnectionString) {
-				$this->presenter->flashMessage('cloud.msAzure.messages.invalidConnectionString', 'danger');
-			} else if ($e instanceof NonExistingJsonSchemaException) {
+			if ($e instanceof NonExistingJsonSchemaException) {
 				$this->presenter->flashMessage('config.messages.nonExistingJsonSchema', 'danger');
 			} else if ($e instanceof IOException) {
 				$this->presenter->flashMessage('config.messages.writeFailure', 'danger');
-			} else {
-				throw $e;
 			}
 		}
 		if ($needRestart) {

@@ -32,7 +32,7 @@ use Nette\Forms\Controls\SubmitButton;
 /**
  * IQMESH RF form factory.
  */
-class IqrfNetRfFormFactory {
+class RfFormFactory {
 
 	use Nette\SmartObject;
 

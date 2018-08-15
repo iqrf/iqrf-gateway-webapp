@@ -32,7 +32,7 @@ use Nette\Forms\Controls\SubmitButton;
 /**
  * IQMESH Bonding form factory.
  */
-class IqrfNetBondingFormFactory {
+class BondingFormFactory {
 
 	use Nette\SmartObject;
 

@@ -31,7 +31,7 @@ use Nette\Forms\Form;
 /**
  * Send raw DPA packet form factory.
  */
-class IqrfAppSendRawFormFactory {
+class SendRawFormFactory {
 
 	use Nette\SmartObject;
 

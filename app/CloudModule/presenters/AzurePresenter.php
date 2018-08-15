@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\CloudModule\Presenters;
 
-use App\CloudModule\Forms\CloudAzureMqttFormFactory;
+use App\CloudModule\Forms\AzureMqttFormFactory;
 use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
@@ -30,7 +30,7 @@ use Nette\Forms\Form;
 class AzurePresenter extends ProtectedPresenter {
 
 	/**
-	 * @var CloudAzureMqttFormFactory MS Azure IoT Hub form factory
+	 * @var AzureMqttFormFactory MS Azure IoT Hub form factory
 	 * @inject
 	 */
 	public $formFactory;

@@ -20,8 +20,9 @@ declare(strict_types = 1);
 
 namespace App\CloudModule\Forms;
 
-use App\CloudModule\Model\BluemixManager;
-use App\CloudModule\Presenters\BluemixPresenter;
+use App\CloudModule\Model\AwsManager;
+use App\CloudModule\Presenters\AwsPresenter;
+use App\CloudModule\Model\InvalidPrivateKeyForCertificate;
 use App\Forms\FormFactory;
 use App\Model\NonExistingJsonSchemaException;
 use App\ServiceModule\Model\NotSupportedInitSystemException;
@@ -32,14 +33,14 @@ use Nette\Forms\Controls\SubmitButton;
 use Nette\IOException;
 
 /**
- * Form for creating MQTT connection into IBM Bluemíx
+ * Form for creating MQTT connection into Amazon AWS IoT
  */
-class CloudBluemixMqttFormFactory {
+class AwsMqttFormFactory {
 
 	use Nette\SmartObject;
 
 	/**
-	 * @var BluemixManager IBM Bluemix manager
+	 * @var AwsManager Amazon AWS IoT manager
 	 */
 	private $cloudManager;
 
@@ -49,7 +50,7 @@ class CloudBluemixMqttFormFactory {
 	private $factory;
 
 	/**
-	 * @var BluemixPresenter IBM Bluemix presenter
+	 * @var AwsPresenter Amazon AWS IoT presenter
 	 */
 	private $presenter;
 
@@ -60,30 +61,28 @@ class CloudBluemixMqttFormFactory {
 
 	/**
 	 * Constructor
-	 * @param BluemixManager $bluemix IBM Bluemix manager
+	 * @param AwsManager $aws Amazon AWS IoT manager
 	 * @param FormFactory $factory Generic form factory
 	 * @param ServiceManager $serviceManager Service manager
 	 */
-	public function __construct(BluemixManager $bluemix, FormFactory $factory, ServiceManager $serviceManager) {
-		$this->cloudManager = $bluemix;
+	public function __construct(AwsManager $aws, FormFactory $factory, ServiceManager $serviceManager) {
+		$this->cloudManager = $aws;
 		$this->factory = $factory;
 		$this->serviceManager = $serviceManager;
 	}
 
 	/**
 	 * Create MQTT configuration form
-	 * @param BluemixPresenter $presenter IBM Bluemix presenter
+	 * @param AwsPresenter $presenter Amazon AWS IoT presenter
 	 * @return Form MQTT configuration form
 	 */
-	public function create(BluemixPresenter $presenter): Form {
+	public function create(AwsPresenter $presenter): Form {
 		$this->presenter = $presenter;
 		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('cloud.ibmBluemix.form'));
-		$form->addText('organizationId', 'organizationId')->setRequired();
-		$form->addText('deviceType', 'deviceType')->setRequired();
-		$form->addText('deviceId', 'deviceId')->setRequired();
-		$form->addText('token', 'token')->setRequired();
-		$form->addText('eventId', 'eventId')->setRequired()->setDefaultValue('iqrf');
+		$form->setTranslator($form->getTranslator()->domain('cloud.amazonAws.form'));
+		$form->addText('endpoint', 'endpoint')->setRequired();
+		$form->addUpload('cert', 'certificate')->setRequired();
+		$form->addUpload('key', 'pkey')->setRequired();
 		$form->addSubmit('save', 'save')
 				->onClick[] = function (SubmitButton $button) {
 			$this->save($button);
@@ -98,7 +97,7 @@ class CloudBluemixMqttFormFactory {
 
 	/**
 	 * Create the MQTT interface
-	 * @param SubmitButton $button Form's submit button
+	 * @param SubmitButton $button Form's sumbit button
 	 * @param bool $needRestart Is restart needed?
 	 */
 	public function save(SubmitButton $button, bool $needRestart = false) {
@@ -108,10 +107,14 @@ class CloudBluemixMqttFormFactory {
 			$this->presenter->flashMessage('cloud.messages.success', 'success');
 			$this->presenter->redirect(':Config:Mqtt:default');
 		} catch (\Exception $e) {
-			if ($e instanceof NonExistingJsonSchemaException) {
+			if ($e instanceof InvalidPrivateKeyForCertificate) {
+				$this->presenter->flashMessage('cloud.amazonAws.messages.mismatchedCrtAndKey', 'danger');
+			} else if ($e instanceof NonExistingJsonSchemaException) {
 				$this->presenter->flashMessage('config.messages.nonExistingJsonSchema', 'danger');
 			} else if ($e instanceof IOException) {
 				$this->presenter->flashMessage('config.messages.writeFailure', 'danger');
+			} else {
+				throw $e;
 			}
 		}
 		if ($needRestart) {

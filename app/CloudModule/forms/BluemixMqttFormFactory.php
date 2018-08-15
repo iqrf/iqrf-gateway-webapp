@@ -20,8 +20,8 @@ declare(strict_types = 1);
 
 namespace App\CloudModule\Forms;
 
-use App\CloudModule\Model\InteliGlueManager;
-use App\CloudModule\Presenters\InteliGluePresenter;
+use App\CloudModule\Model\BluemixManager;
+use App\CloudModule\Presenters\BluemixPresenter;
 use App\Forms\FormFactory;
 use App\Model\NonExistingJsonSchemaException;
 use App\ServiceModule\Model\NotSupportedInitSystemException;
@@ -30,17 +30,16 @@ use Nette;
 use Nette\Forms\Form;
 use Nette\Forms\Controls\SubmitButton;
 use Nette\IOException;
-use Nette\Utils\ArrayHash;
 
 /**
- * Form for creating MQTT connection into Inteliments InteliGlue
+ * Form for creating MQTT connection into IBM Bluemíx
  */
-class CloudInteliGlueMqttFormFactory {
+class BluemixMqttFormFactory {
 
 	use Nette\SmartObject;
 
 	/**
-	 * @var InteliGlueManager Inteliments InteliGlue manager
+	 * @var BluemixManager IBM Bluemix manager
 	 */
 	private $cloudManager;
 
@@ -50,7 +49,7 @@ class CloudInteliGlueMqttFormFactory {
 	private $factory;
 
 	/**
-	 * @var InteliGluePresenter Inteliments InteliGlue presenter
+	 * @var BluemixPresenter IBM Bluemix presenter
 	 */
 	private $presenter;
 
@@ -61,30 +60,30 @@ class CloudInteliGlueMqttFormFactory {
 
 	/**
 	 * Constructor
-	 * @param InteliGlueManager $inteliGlue Inteliments InteliGlue manager
+	 * @param BluemixManager $bluemix IBM Bluemix manager
 	 * @param FormFactory $factory Generic form factory
 	 * @param ServiceManager $serviceManager Service manager
 	 */
-	public function __construct(InteliGlueManager $inteliGlue, FormFactory $factory, ServiceManager $serviceManager) {
-		$this->cloudManager = $inteliGlue;
+	public function __construct(BluemixManager $bluemix, FormFactory $factory, ServiceManager $serviceManager) {
+		$this->cloudManager = $bluemix;
 		$this->factory = $factory;
 		$this->serviceManager = $serviceManager;
 	}
 
 	/**
 	 * Create MQTT configuration form
-	 * @param InteliGluePresenter $presenter Inteliments InteliGlue presenter
+	 * @param BluemixPresenter $presenter IBM Bluemix presenter
 	 * @return Form MQTT configuration form
 	 */
-	public function create(InteliGluePresenter $presenter): Form {
+	public function create(BluemixPresenter $presenter): Form {
 		$this->presenter = $presenter;
 		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('cloud.intelimentsInteliGlue.form'));
-		$form->addText('rootTopic', 'rootTopic')->setRequired();
-		$form->addInteger('assignedPort', 'assignedPort')->setRequired()
-				->addRule(Form::RANGE, 'Port have to be in range from 0 to 65535', [0, 65535]);
-		$form->addText('clientId', 'clientId')->setRequired();
-		$form->addText('password', 'password')->setRequired();
+		$form->setTranslator($form->getTranslator()->domain('cloud.ibmBluemix.form'));
+		$form->addText('organizationId', 'organizationId')->setRequired();
+		$form->addText('deviceType', 'deviceType')->setRequired();
+		$form->addText('deviceId', 'deviceId')->setRequired();
+		$form->addText('token', 'token')->setRequired();
+		$form->addText('eventId', 'eventId')->setRequired()->setDefaultValue('iqrf');
 		$form->addSubmit('save', 'save')
 				->onClick[] = function (SubmitButton $button) {
 			$this->save($button);
