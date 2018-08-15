@@ -110,9 +110,6 @@ class ConfigMqFormFactory {
 	 */
 	public function save(Form $form) {
 		$values = $form->getValues();
-		if (!$this->isExists()) {
-			$this->manager->setFileName('iqrf__' . $values['instance']);
-		}
 		try {
 			$this->manager->save($values);
 			$this->presenter->flashMessage('config.messages.success', 'success');

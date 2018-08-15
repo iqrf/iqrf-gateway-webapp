@@ -58,7 +58,7 @@ class JsonFileManager extends FileManager {
 	/**
 	 * Read JSON file and decode JSON to array
 	 * @param string $fileName File name (without .json)
-	 * @return array
+	 * @return array JSON data in array
 	 */
 	public function read(string $fileName): array {
 		$file = parent::read($fileName . '.json');
@@ -68,7 +68,7 @@ class JsonFileManager extends FileManager {
 	/**
 	 * Encode JSON from array and write JSON file
 	 * @param string $name File name (without .json)
-	 * @param array $array JSON array
+	 * @param array $array JSON data in array
 	 */
 	public function write(string $name, $array) {
 		$json = Json::encode($array, Json::PRETTY);

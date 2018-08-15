@@ -86,8 +86,12 @@ class GenericManager {
 	 * @param ArrayHash $array Settings
 	 */
 	public function save(ArrayHash $array) {
+		$configuration = (array) $array;
+		if (!isset($this->fileName)) {
+			$this->generateFileName($configuration);
+		}
 		$component = ['component' => $this->component];
-		$settings = Arrays::mergeTree($component, (array) $array);
+		$settings = Arrays::mergeTree($component, $configuration);
 		$this->schemaManager->validate(ArrayHash::from($settings));
 		$this->fileManager->write($this->fileName, $settings);
 	}
@@ -99,6 +103,14 @@ class GenericManager {
 	public function setComponent(string $component) {
 		$this->component = $component;
 		$this->schemaManager->setSchemaFromComponent($component);
+	}
+
+	/**
+	 * Get file name
+	 * @return string File name (without .json)
+	 */
+	public function getFileName(): string {
+		return $this->fileName;
 	}
 
 	/**
@@ -192,7 +204,7 @@ class GenericManager {
 	 * @param array $configuration Configuration to fix
 	 * @return array Configuration with a fixed required interfaces
 	 */
-	public function fixRequiredInterfaces(array $configuration) :array {
+	public function fixRequiredInterfaces(array $configuration): array {
 		if (!array_key_exists('RequiredInterfaces', $configuration)) {
 			return $configuration;
 		}
@@ -208,6 +220,15 @@ class GenericManager {
 			}
 		}
 		return $configuration;
+	}
+
+	/**
+	 * Generate a configuration file name
+	 * @param array $array Configuration from form
+	 */
+	public function generateFileName(array $array) {
+		$prefix = explode('::', $this->component)[0];
+		$this->fileName = $prefix . '__' . $array['instance'];
 	}
 
 }

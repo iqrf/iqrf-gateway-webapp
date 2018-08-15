@@ -117,6 +117,16 @@ class GenericManagerTest extends TestCase {
 	}
 
 	/**
+	 * Test function to generate a file name
+	 */
+	public function testGenerateFileName() {
+		$this->manager->setComponent($this->component);
+		$array = $this->fileManager->read($this->fileName);
+		$this->manager->generateFileName($array);
+		Assert::equal($this->fileName, $this->manager->getFileName());
+	}
+
+	/**
 	 * Test function to get instance by it's property
 	 */
 	public function testGetInstanceByProperty() {
@@ -163,7 +173,6 @@ class GenericManagerTest extends TestCase {
 	 */
 	public function testSave() {
 		$this->managerTest->setComponent($this->component);
-		$this->managerTest->setFileName($this->fileName);
 		$array = [
 			'instance' => 'MqttMessaging',
 			'BrokerAddr' => 'tcp://127.0.0.1:1883',

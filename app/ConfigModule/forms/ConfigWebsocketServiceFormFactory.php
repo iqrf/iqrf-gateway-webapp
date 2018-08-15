@@ -108,9 +108,6 @@ class ConfigWebsocketServiceFormFactory {
 	 */
 	public function save(Form $form) {
 		$values = $form->getValues();
-		if (!$this->isExists()) {
-			$this->manager->setFileName('shape__' . $values['instance']);
-		}
 		try {
 			$this->manager->save($values);
 			$this->presenter->flashMessage('config.messages.success', 'success');
