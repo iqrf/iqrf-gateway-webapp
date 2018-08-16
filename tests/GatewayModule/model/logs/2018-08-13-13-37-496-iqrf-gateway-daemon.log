@@ -1,0 +1,1455 @@
+13-08-2018 13:37:13.10709 INF 0  main.cpp:48 main() 
+============================================================================
+DAEMON_VERSION="2.0.0-beta" BUILD_TIMESTAMP="2018-08-05T10:01:58" 
+
+Copyright 2015 - 2017 MICRORISC s.r.o.
+Copyright 2018 IQRF Tech s.r.o.
+============================================================================
+
+13-08-2018 13:37:13.10749 DBG 0  ConfigurationManager.cpp:40 ConfigurationManager() 
+[ENTER] 
+13-08-2018 13:37:13.10758 DBG 0  ConfigurationManager.cpp:41 ConfigurationManager() 
+[LEAVE] 
+13-08-2018 13:37:13.10765 DBG 0  ComponentManager.cpp:442 init() 
+[ENTER] time="1534160232" 
+13-08-2018 13:37:13.10773 INF 0  ComponentManager.cpp:492 init() 
+m_applicationName="IqrfGatewayDaemon" 
+13-08-2018 13:37:13.10780 INF 0  ComponentManager.cpp:493 init() 
+m_resourceDir="" 
+13-08-2018 13:37:13.10787 INF 0  ComponentManager.cpp:494 init() 
+m_dataDir="/usr/share/iqrfgd2" 
+13-08-2018 13:37:13.10794 INF 0  ComponentManager.cpp:495 init() 
+m_cacheDir="/var/cache/iqrfgd2" 
+13-08-2018 13:37:13.10801 INF 0  ComponentManager.cpp:496 init() 
+m_userDir="" 
+13-08-2018 13:37:13.10807 INF 0  ComponentManager.cpp:497 init() 
+m_configurationDir="/etc/iqrfgd2" 
+13-08-2018 13:37:13.10814 INF 0  ComponentManager.cpp:498 init() 
+m_deploymentDir="/usr/lib/iqrfgd2" 
+13-08-2018 13:37:13.10821 DBG 0  ConfigurationManager.cpp:213 loadConfigurationSchemes() 
+[ENTER] 
+13-08-2018 13:37:13.10828 DBG 0  ConfigurationManager.cpp:217 loadConfigurationSchemes() 
+Loading configuration schemas from: schemasDir="/etc/iqrfgd2/cfgSchemas" 
+13-08-2018 13:37:13.10835 DBG 0  ConfigurationManager.cpp:257 loadConfigurationSchemes() 
+[LEAVE] 
+13-08-2018 13:37:13.10843 DBG 0  ConfigurationManager.cpp:263 loadExistingConfigurations() 
+[ENTER] 
+13-08-2018 13:37:13.10850 DBG 0  ConfigurationManager.cpp:269 loadExistingConfigurations() 
+Checking file: fname="/etc/iqrfgd2/config.json" 
+13-08-2018 13:37:13.10857 DBG 0  Configuration.cpp:101 parse() 
+[ENTER] fname="/etc/iqrfgd2/config.json" 
+13-08-2018 13:37:13.10864 WAR 0  Configuration.cpp:112 parse() 
+Throwing std::logic_error: Property ".instance" not found
+13-08-2018 13:37:13.10871 WAR 0  Configuration.cpp:116 parse() 
+Caught std::exception: Property ".instance" not found
+Missing mandatory property: CONFIG_INSTANCE_STR="instance"  when parsing: fname="/etc/iqrfgd2/config.json" 
+13-08-2018 13:37:13.10878 WAR 0  Configuration.cpp:120 parse() 
+Throwing std::logic_error: Property ".component" not found
+13-08-2018 13:37:13.10885 WAR 0  Configuration.cpp:124 parse() 
+Caught std::exception: Property ".component" not found
+Missing mandatory property: CONFIG_COMPONENT_STR="component"  when parsing: fname="/etc/iqrfgd2/config.json" 
+13-08-2018 13:37:13.10892 DBG 0  Configuration.cpp:126 parse() 
+[ENTER] 
+13-08-2018 13:37:13.10899 DBG 0  ConfigurationManager.cpp:269 loadExistingConfigurations() 
+Checking file: fname="/etc/iqrfgd2/config.json.dpkg-old" 
+13-08-2018 13:37:13.10906 DBG 0  Configuration.cpp:101 parse() 
+[ENTER] fname="/etc/iqrfgd2/config.json.dpkg-old" 
+13-08-2018 13:37:13.10913 WAR 0  Configuration.cpp:112 parse() 
+Throwing std::logic_error: Property ".instance" not found
+13-08-2018 13:37:13.10920 WAR 0  Configuration.cpp:116 parse() 
+Caught std::exception: Property ".instance" not found
+Missing mandatory property: CONFIG_INSTANCE_STR="instance"  when parsing: fname="/etc/iqrfgd2/config.json.dpkg-old" 
+13-08-2018 13:37:13.10927 WAR 0  Configuration.cpp:120 parse() 
+Throwing std::logic_error: Property ".component" not found
+13-08-2018 13:37:13.10934 WAR 0  Configuration.cpp:124 parse() 
+Caught std::exception: Property ".component" not found
+Missing mandatory property: CONFIG_COMPONENT_STR="component"  when parsing: fname="/etc/iqrfgd2/config.json.dpkg-old" 
+13-08-2018 13:37:13.10941 DBG 0  Configuration.cpp:126 parse() 
+[ENTER] 
+13-08-2018 13:37:13.10948 WAR 0  ConfigurationManager.cpp:282 loadExistingConfigurations() 
+Throwing std::logic_error: Cannot insert probably duplicit configuration id: id="" file="/etc/iqrfgd2/config.json.dpkg-old" 
+13-08-2018 13:37:13.10955 WAR 0  ConfigurationManager.cpp:289 loadExistingConfigurations() 
+Caught std::exception: Cannot insert probably duplicit configuration id: id="" file="/etc/iqrfgd2/config.json.dpkg-old" 
+
+13-08-2018 13:37:13.10976 DBG 0  ConfigurationManager.cpp:269 loadExistingConfigurations() 
+Checking file: fname="/etc/iqrfgd2/iqrf__BondNodeLocalService.json" 
+13-08-2018 13:37:13.10984 DBG 0  Configuration.cpp:101 parse() 
+[ENTER] fname="/etc/iqrfgd2/iqrf__BondNodeLocalService.json" 
+13-08-2018 13:37:13.10991 DBG 0  Configuration.cpp:126 parse() 
+[ENTER] 
+13-08-2018 13:37:13.10998 DBG 0  Configuration.cpp:137 validate() 
+[ENTER] 
+13-08-2018 13:37:13.11007 DBG 0  Configuration.cpp:157 validate() 
+[LEAVE] 
+13-08-2018 13:37:13.11014 DBG 0  ConfigurationManager.cpp:269 loadExistingConfigurations() 
+Checking file: fname="/etc/iqrfgd2/iqrf__EnumerateDeviceService.json" 
+13-08-2018 13:37:13.11022 DBG 0  Configuration.cpp:101 parse() 
+[ENTER] fname="/etc/iqrfgd2/iqrf__EnumerateDeviceService.json" 
+13-08-2018 13:37:13.11029 DBG 0  Configuration.cpp:126 parse() 
+[ENTER] 
+13-08-2018 13:37:13.11036 DBG 0  Configuration.cpp:137 validate() 
+[ENTER] 
+13-08-2018 13:37:13.11043 DBG 0  Configuration.cpp:157 validate() 
+[LEAVE] 
+13-08-2018 13:37:13.11050 DBG 0  ConfigurationManager.cpp:269 loadExistingConfigurations() 
+Checking file: fname="/etc/iqrfgd2/iqrf__IdeCounterpart.json" 
+13-08-2018 13:37:13.11057 DBG 0  Configuration.cpp:101 parse() 
+[ENTER] fname="/etc/iqrfgd2/iqrf__IdeCounterpart.json" 
+13-08-2018 13:37:13.11064 DBG 0  Configuration.cpp:126 parse() 
+[ENTER] 
+13-08-2018 13:37:13.11071 DBG 0  ConfigurationManager.cpp:269 loadExistingConfigurations() 
+Checking file: fname="/etc/iqrfgd2/iqrf__IqrfCdc.json" 
+13-08-2018 13:37:13.11078 DBG 0  Configuration.cpp:101 parse() 
+[ENTER] fname="/etc/iqrfgd2/iqrf__IqrfCdc.json" 
+13-08-2018 13:37:13.11085 DBG 0  Configuration.cpp:126 parse() 
+[ENTER] 
+13-08-2018 13:37:13.11092 DBG 0  Configuration.cpp:137 validate() 
+[ENTER] 
+13-08-2018 13:37:13.11099 DBG 0  Configuration.cpp:157 validate() 
+[LEAVE] 
+13-08-2018 13:37:13.11106 DBG 0  ConfigurationManager.cpp:269 loadExistingConfigurations() 
+Checking file: fname="/etc/iqrfgd2/iqrf__IqrfDpa.json" 
+13-08-2018 13:37:13.11113 DBG 0  Configuration.cpp:101 parse() 
+[ENTER] fname="/etc/iqrfgd2/iqrf__IqrfDpa.json" 
+13-08-2018 13:37:13.11120 DBG 0  Configuration.cpp:126 parse() 
+[ENTER] 
+13-08-2018 13:37:13.11127 DBG 0  Configuration.cpp:137 validate() 
+[ENTER] 
+13-08-2018 13:37:13.11134 DBG 0  Configuration.cpp:157 validate() 
+[LEAVE] 
+13-08-2018 13:37:13.11141 DBG 0  ConfigurationManager.cpp:269 loadExistingConfigurations() 
+Checking file: fname="/etc/iqrfgd2/iqrf__IqrfSpi.json" 
+13-08-2018 13:37:13.11148 DBG 0  Configuration.cpp:101 parse() 
+[ENTER] fname="/etc/iqrfgd2/iqrf__IqrfSpi.json" 
+13-08-2018 13:37:13.11155 DBG 0  Configuration.cpp:126 parse() 
+[ENTER] 
+13-08-2018 13:37:13.11162 DBG 0  Configuration.cpp:137 validate() 
+[ENTER] 
+13-08-2018 13:37:13.11169 DBG 0  Configuration.cpp:157 validate() 
+[LEAVE] 
+13-08-2018 13:37:13.11176 DBG 0  ConfigurationManager.cpp:269 loadExistingConfigurations() 
+Checking file: fname="/etc/iqrfgd2/iqrf__JsCache.json" 
+13-08-2018 13:37:13.11183 DBG 0  Configuration.cpp:101 parse() 
+[ENTER] fname="/etc/iqrfgd2/iqrf__JsCache.json" 
+13-08-2018 13:37:13.11190 DBG 0  Configuration.cpp:126 parse() 
+[ENTER] 
+13-08-2018 13:37:13.11197 DBG 0  Configuration.cpp:137 validate() 
+[ENTER] 
+13-08-2018 13:37:13.11204 DBG 0  Configuration.cpp:157 validate() 
+[LEAVE] 
+13-08-2018 13:37:13.11211 DBG 0  ConfigurationManager.cpp:269 loadExistingConfigurations() 
+Checking file: fname="/etc/iqrfgd2/iqrf__JsRenderDuktape.json" 
+13-08-2018 13:37:13.11218 DBG 0  Configuration.cpp:101 parse() 
+[ENTER] fname="/etc/iqrfgd2/iqrf__JsRenderDuktape.json" 
+13-08-2018 13:37:13.11225 DBG 0  Configuration.cpp:126 parse() 
+[ENTER] 
+13-08-2018 13:37:13.11232 DBG 0  ConfigurationManager.cpp:269 loadExistingConfigurations() 
+Checking file: fname="/etc/iqrfgd2/iqrf__JsonCfgApi.json" 
+13-08-2018 13:37:13.11239 DBG 0  Configuration.cpp:101 parse() 
+[ENTER] fname="/etc/iqrfgd2/iqrf__JsonCfgApi.json" 
+13-08-2018 13:37:13.11249 DBG 0  Configuration.cpp:126 parse() 
+[ENTER] 
+13-08-2018 13:37:13.11256 DBG 0  Configuration.cpp:137 validate() 
+[ENTER] 
+13-08-2018 13:37:13.11263 DBG 0  Configuration.cpp:157 validate() 
+[LEAVE] 
+13-08-2018 13:37:13.11270 DBG 0  ConfigurationManager.cpp:269 loadExistingConfigurations() 
+Checking file: fname="/etc/iqrfgd2/iqrf__JsonDpaApiIqrfStandard.json" 
+13-08-2018 13:37:13.11277 DBG 0  Configuration.cpp:101 parse() 
+[ENTER] fname="/etc/iqrfgd2/iqrf__JsonDpaApiIqrfStandard.json" 
+13-08-2018 13:37:13.11284 DBG 0  Configuration.cpp:126 parse() 
+[ENTER] 
+13-08-2018 13:37:13.11291 DBG 0  Configuration.cpp:137 validate() 
+[ENTER] 
+13-08-2018 13:37:13.11298 DBG 0  Configuration.cpp:157 validate() 
+[LEAVE] 
+13-08-2018 13:37:13.11305 DBG 0  ConfigurationManager.cpp:269 loadExistingConfigurations() 
+Checking file: fname="/etc/iqrfgd2/iqrf__JsonDpaApiIqrfStdExt.json" 
+13-08-2018 13:37:13.11312 DBG 0  Configuration.cpp:101 parse() 
+[ENTER] fname="/etc/iqrfgd2/iqrf__JsonDpaApiIqrfStdExt.json" 
+13-08-2018 13:37:13.11319 DBG 0  Configuration.cpp:126 parse() 
+[ENTER] 
+13-08-2018 13:37:13.11325 DBG 0  ConfigurationManager.cpp:269 loadExistingConfigurations() 
+Checking file: fname="/etc/iqrfgd2/iqrf__JsonDpaApiRaw.json" 
+13-08-2018 13:37:13.11332 DBG 0  Configuration.cpp:101 parse() 
+[ENTER] fname="/etc/iqrfgd2/iqrf__JsonDpaApiRaw.json" 
+13-08-2018 13:37:13.11339 DBG 0  Configuration.cpp:126 parse() 
+[ENTER] 
+13-08-2018 13:37:13.11346 DBG 0  Configuration.cpp:137 validate() 
+[ENTER] 
+13-08-2018 13:37:13.11353 DBG 0  Configuration.cpp:157 validate() 
+[LEAVE] 
+13-08-2018 13:37:13.11360 DBG 0  ConfigurationManager.cpp:269 loadExistingConfigurations() 
+Checking file: fname="/etc/iqrfgd2/iqrf__JsonMngApi.json" 
+13-08-2018 13:37:13.11367 DBG 0  Configuration.cpp:101 parse() 
+[ENTER] fname="/etc/iqrfgd2/iqrf__JsonMngApi.json" 
+13-08-2018 13:37:13.11374 DBG 0  Configuration.cpp:126 parse() 
+[ENTER] 
+13-08-2018 13:37:13.11381 DBG 0  Configuration.cpp:137 validate() 
+[ENTER] 
+13-08-2018 13:37:13.11388 DBG 0  Configuration.cpp:157 validate() 
+[LEAVE] 
+13-08-2018 13:37:13.11395 DBG 0  ConfigurationManager.cpp:269 loadExistingConfigurations() 
+Checking file: fname="/etc/iqrfgd2/iqrf__JsonSplitter.json" 
+13-08-2018 13:37:13.11402 DBG 0  Configuration.cpp:101 parse() 
+[ENTER] fname="/etc/iqrfgd2/iqrf__JsonSplitter.json" 
+13-08-2018 13:37:13.11409 DBG 0  Configuration.cpp:126 parse() 
+[ENTER] 
+13-08-2018 13:37:13.11416 DBG 0  Configuration.cpp:137 validate() 
+[ENTER] 
+13-08-2018 13:37:13.11423 DBG 0  Configuration.cpp:157 validate() 
+[LEAVE] 
+13-08-2018 13:37:13.11430 DBG 0  ConfigurationManager.cpp:269 loadExistingConfigurations() 
+Checking file: fname="/etc/iqrfgd2/iqrf__LegacyApiSupport.json" 
+13-08-2018 13:37:13.11437 DBG 0  Configuration.cpp:101 parse() 
+[ENTER] fname="/etc/iqrfgd2/iqrf__LegacyApiSupport.json" 
+13-08-2018 13:37:13.11444 DBG 0  Configuration.cpp:126 parse() 
+[ENTER] 
+13-08-2018 13:37:13.11451 DBG 0  Configuration.cpp:137 validate() 
+[ENTER] 
+13-08-2018 13:37:13.11458 DBG 0  Configuration.cpp:157 validate() 
+[LEAVE] 
+13-08-2018 13:37:13.11465 DBG 0  ConfigurationManager.cpp:269 loadExistingConfigurations() 
+Checking file: fname="/etc/iqrfgd2/iqrf__MqMessaging.json" 
+13-08-2018 13:37:13.11471 DBG 0  Configuration.cpp:101 parse() 
+[ENTER] fname="/etc/iqrfgd2/iqrf__MqMessaging.json" 
+13-08-2018 13:37:13.11478 DBG 0  Configuration.cpp:126 parse() 
+[ENTER] 
+13-08-2018 13:37:13.11485 DBG 0  Configuration.cpp:137 validate() 
+[ENTER] 
+13-08-2018 13:37:13.11492 DBG 0  Configuration.cpp:157 validate() 
+[LEAVE] 
+13-08-2018 13:37:13.11499 DBG 0  ConfigurationManager.cpp:269 loadExistingConfigurations() 
+Checking file: fname="/etc/iqrfgd2/iqrf__MqttMessaging.json" 
+13-08-2018 13:37:13.11506 DBG 0  Configuration.cpp:101 parse() 
+[ENTER] fname="/etc/iqrfgd2/iqrf__MqttMessaging.json" 
+13-08-2018 13:37:13.11513 DBG 0  Configuration.cpp:126 parse() 
+[ENTER] 
+13-08-2018 13:37:13.11520 DBG 0  Configuration.cpp:137 validate() 
+[ENTER] 
+13-08-2018 13:37:13.11527 DBG 0  Configuration.cpp:157 validate() 
+[LEAVE] 
+13-08-2018 13:37:13.11534 DBG 0  ConfigurationManager.cpp:269 loadExistingConfigurations() 
+Checking file: fname="/etc/iqrfgd2/iqrf__OtaUploadService.json" 
+13-08-2018 13:37:13.11544 DBG 0  Configuration.cpp:101 parse() 
+[ENTER] fname="/etc/iqrfgd2/iqrf__OtaUploadService.json" 
+13-08-2018 13:37:13.11551 DBG 0  Configuration.cpp:126 parse() 
+[ENTER] 
+13-08-2018 13:37:13.11558 DBG 0  Configuration.cpp:137 validate() 
+[ENTER] 
+13-08-2018 13:37:13.11565 DBG 0  Configuration.cpp:157 validate() 
+[LEAVE] 
+13-08-2018 13:37:13.11572 DBG 0  ConfigurationManager.cpp:269 loadExistingConfigurations() 
+Checking file: fname="/etc/iqrfgd2/iqrf__ReadTrConfService.json" 
+13-08-2018 13:37:13.11579 DBG 0  Configuration.cpp:101 parse() 
+[ENTER] fname="/etc/iqrfgd2/iqrf__ReadTrConfService.json" 
+13-08-2018 13:37:13.11586 DBG 0  Configuration.cpp:126 parse() 
+[ENTER] 
+13-08-2018 13:37:13.11592 DBG 0  Configuration.cpp:137 validate() 
+[ENTER] 
+13-08-2018 13:37:13.11599 DBG 0  Configuration.cpp:157 validate() 
+[LEAVE] 
+13-08-2018 13:37:13.11606 DBG 0  ConfigurationManager.cpp:269 loadExistingConfigurations() 
+Checking file: fname="/etc/iqrfgd2/iqrf__Scheduler.json" 
+13-08-2018 13:37:13.11613 DBG 0  Configuration.cpp:101 parse() 
+[ENTER] fname="/etc/iqrfgd2/iqrf__Scheduler.json" 
+13-08-2018 13:37:13.11620 DBG 0  Configuration.cpp:126 parse() 
+[ENTER] 
+13-08-2018 13:37:13.11627 DBG 0  Configuration.cpp:137 validate() 
+[ENTER] 
+13-08-2018 13:37:13.11634 DBG 0  Configuration.cpp:157 validate() 
+[LEAVE] 
+13-08-2018 13:37:13.11641 DBG 0  ConfigurationManager.cpp:269 loadExistingConfigurations() 
+Checking file: fname="/etc/iqrfgd2/iqrf__SchedulerMessaging.json" 
+13-08-2018 13:37:13.11648 DBG 0  Configuration.cpp:101 parse() 
+[ENTER] fname="/etc/iqrfgd2/iqrf__SchedulerMessaging.json" 
+13-08-2018 13:37:13.11655 DBG 0  Configuration.cpp:126 parse() 
+[ENTER] 
+13-08-2018 13:37:13.11662 DBG 0  Configuration.cpp:137 validate() 
+[ENTER] 
+13-08-2018 13:37:13.11669 DBG 0  Configuration.cpp:157 validate() 
+[LEAVE] 
+13-08-2018 13:37:13.11676 DBG 0  ConfigurationManager.cpp:269 loadExistingConfigurations() 
+Checking file: fname="/etc/iqrfgd2/iqrf__SmartConnectService.json" 
+13-08-2018 13:37:13.11683 DBG 0  Configuration.cpp:101 parse() 
+[ENTER] fname="/etc/iqrfgd2/iqrf__SmartConnectService.json" 
+13-08-2018 13:37:13.11690 DBG 0  Configuration.cpp:126 parse() 
+[ENTER] 
+13-08-2018 13:37:13.11696 DBG 0  Configuration.cpp:137 validate() 
+[ENTER] 
+13-08-2018 13:37:13.11703 DBG 0  Configuration.cpp:157 validate() 
+[LEAVE] 
+13-08-2018 13:37:13.11710 DBG 0  ConfigurationManager.cpp:269 loadExistingConfigurations() 
+Checking file: fname="/etc/iqrfgd2/iqrf__UdpMessaging.json" 
+13-08-2018 13:37:13.11717 DBG 0  Configuration.cpp:101 parse() 
+[ENTER] fname="/etc/iqrfgd2/iqrf__UdpMessaging.json" 
+13-08-2018 13:37:13.11724 DBG 0  Configuration.cpp:126 parse() 
+[ENTER] 
+13-08-2018 13:37:13.11731 DBG 0  Configuration.cpp:137 validate() 
+[ENTER] 
+13-08-2018 13:37:13.11738 DBG 0  Configuration.cpp:157 validate() 
+[LEAVE] 
+13-08-2018 13:37:13.11745 DBG 0  ConfigurationManager.cpp:269 loadExistingConfigurations() 
+Checking file: fname="/etc/iqrfgd2/iqrf__WebsocketMessaging.json" 
+13-08-2018 13:37:13.11752 DBG 0  Configuration.cpp:101 parse() 
+[ENTER] fname="/etc/iqrfgd2/iqrf__WebsocketMessaging.json" 
+13-08-2018 13:37:13.11759 DBG 0  Configuration.cpp:126 parse() 
+[ENTER] 
+13-08-2018 13:37:13.11766 DBG 0  Configuration.cpp:137 validate() 
+[ENTER] 
+13-08-2018 13:37:13.11773 WAR 0  Configuration.cpp:154 validate() 
+Throwing std::logic_error: Invalid configuration: schema="#/properties/RequiredInterfaces" keyword="type" message="#/RequiredInterfaces" 
+13-08-2018 13:37:13.11780 WAR 0  ConfigurationManager.cpp:289 loadExistingConfigurations() 
+Caught std::exception: Invalid configuration: schema="#/properties/RequiredInterfaces" keyword="type" message="#/RequiredInterfaces" 
+
+13-08-2018 13:37:13.11787 DBG 0  ConfigurationManager.cpp:269 loadExistingConfigurations() 
+Checking file: fname="/etc/iqrfgd2/iqrf__WebsocketMessagingMobileApp.json" 
+13-08-2018 13:37:13.11794 DBG 0  Configuration.cpp:101 parse() 
+[ENTER] fname="/etc/iqrfgd2/iqrf__WebsocketMessagingMobileApp.json" 
+13-08-2018 13:37:13.11803 DBG 0  Configuration.cpp:126 parse() 
+[ENTER] 
+13-08-2018 13:37:13.11810 DBG 0  Configuration.cpp:137 validate() 
+[ENTER] 
+13-08-2018 13:37:13.11817 DBG 0  Configuration.cpp:157 validate() 
+[LEAVE] 
+13-08-2018 13:37:13.11824 DBG 0  ConfigurationManager.cpp:269 loadExistingConfigurations() 
+Checking file: fname="/etc/iqrfgd2/iqrf__WebsocketMessagingWebApp.json" 
+13-08-2018 13:37:13.11831 DBG 0  Configuration.cpp:101 parse() 
+[ENTER] fname="/etc/iqrfgd2/iqrf__WebsocketMessagingWebApp.json" 
+13-08-2018 13:37:13.11838 DBG 0  Configuration.cpp:126 parse() 
+[ENTER] 
+13-08-2018 13:37:13.11845 DBG 0  Configuration.cpp:137 validate() 
+[ENTER] 
+13-08-2018 13:37:13.11852 DBG 0  Configuration.cpp:157 validate() 
+[LEAVE] 
+13-08-2018 13:37:13.11859 DBG 0  ConfigurationManager.cpp:269 loadExistingConfigurations() 
+Checking file: fname="/etc/iqrfgd2/iqrf__WriteTrConfService.json" 
+13-08-2018 13:37:13.11866 DBG 0  Configuration.cpp:101 parse() 
+[ENTER] fname="/etc/iqrfgd2/iqrf__WriteTrConfService.json" 
+13-08-2018 13:37:13.11873 DBG 0  Configuration.cpp:126 parse() 
+[ENTER] 
+13-08-2018 13:37:13.11880 DBG 0  Configuration.cpp:137 validate() 
+[ENTER] 
+13-08-2018 13:37:13.11887 DBG 0  Configuration.cpp:157 validate() 
+[LEAVE] 
+13-08-2018 13:37:13.11893 DBG 0  ConfigurationManager.cpp:269 loadExistingConfigurations() 
+Checking file: fname="/etc/iqrfgd2/shape__ConfigurationService.json" 
+13-08-2018 13:37:13.11900 DBG 0  Configuration.cpp:101 parse() 
+[ENTER] fname="/etc/iqrfgd2/shape__ConfigurationService.json" 
+13-08-2018 13:37:13.11907 DBG 0  Configuration.cpp:126 parse() 
+[ENTER] 
+13-08-2018 13:37:13.11914 DBG 0  Configuration.cpp:137 validate() 
+[ENTER] 
+13-08-2018 13:37:13.11921 DBG 0  Configuration.cpp:157 validate() 
+[LEAVE] 
+13-08-2018 13:37:13.11928 DBG 0  ConfigurationManager.cpp:269 loadExistingConfigurations() 
+Checking file: fname="/etc/iqrfgd2/shape__CppRestService.json" 
+13-08-2018 13:37:13.11935 DBG 0  Configuration.cpp:101 parse() 
+[ENTER] fname="/etc/iqrfgd2/shape__CppRestService.json" 
+13-08-2018 13:37:13.11942 DBG 0  Configuration.cpp:126 parse() 
+[ENTER] 
+13-08-2018 13:37:13.11949 DBG 0  Configuration.cpp:137 validate() 
+[ENTER] 
+13-08-2018 13:37:13.11956 DBG 0  Configuration.cpp:157 validate() 
+[LEAVE] 
+13-08-2018 13:37:13.11963 DBG 0  ConfigurationManager.cpp:269 loadExistingConfigurations() 
+Checking file: fname="/etc/iqrfgd2/shape__LauncherService.json" 
+13-08-2018 13:37:13.11970 DBG 0  Configuration.cpp:101 parse() 
+[ENTER] fname="/etc/iqrfgd2/shape__LauncherService.json" 
+13-08-2018 13:37:13.11977 DBG 0  Configuration.cpp:126 parse() 
+[ENTER] 
+13-08-2018 13:37:13.11984 DBG 0  Configuration.cpp:137 validate() 
+[ENTER] 
+13-08-2018 13:37:13.11990 DBG 0  Configuration.cpp:157 validate() 
+[LEAVE] 
+13-08-2018 13:37:13.11997 DBG 0  ConfigurationManager.cpp:269 loadExistingConfigurations() 
+Checking file: fname="/etc/iqrfgd2/shape__TraceFileService.json" 
+13-08-2018 13:37:13.12004 DBG 0  Configuration.cpp:101 parse() 
+[ENTER] fname="/etc/iqrfgd2/shape__TraceFileService.json" 
+13-08-2018 13:37:13.12011 DBG 0  Configuration.cpp:126 parse() 
+[ENTER] 
+13-08-2018 13:37:13.12018 DBG 0  Configuration.cpp:137 validate() 
+[ENTER] 
+13-08-2018 13:37:13.12025 DBG 0  Configuration.cpp:157 validate() 
+[LEAVE] 
+13-08-2018 13:37:13.12032 DBG 0  ConfigurationManager.cpp:269 loadExistingConfigurations() 
+Checking file: fname="/etc/iqrfgd2/shape__TraceFileService_JsCache.json" 
+13-08-2018 13:37:13.12039 DBG 0  Configuration.cpp:101 parse() 
+[ENTER] fname="/etc/iqrfgd2/shape__TraceFileService_JsCache.json" 
+13-08-2018 13:37:13.12046 DBG 0  Configuration.cpp:126 parse() 
+[ENTER] 
+13-08-2018 13:37:13.12053 DBG 0  Configuration.cpp:137 validate() 
+[ENTER] 
+13-08-2018 13:37:13.12060 DBG 0  Configuration.cpp:157 validate() 
+[LEAVE] 
+13-08-2018 13:37:13.12067 DBG 0  ConfigurationManager.cpp:269 loadExistingConfigurations() 
+Checking file: fname="/etc/iqrfgd2/shape__TraceFormatService.json" 
+13-08-2018 13:37:13.12074 DBG 0  Configuration.cpp:101 parse() 
+[ENTER] fname="/etc/iqrfgd2/shape__TraceFormatService.json" 
+13-08-2018 13:37:13.12083 DBG 0  Configuration.cpp:126 parse() 
+[ENTER] 
+13-08-2018 13:37:13.12090 DBG 0  Configuration.cpp:137 validate() 
+[ENTER] 
+13-08-2018 13:37:13.12097 DBG 0  Configuration.cpp:157 validate() 
+[LEAVE] 
+13-08-2018 13:37:13.12104 DBG 0  ConfigurationManager.cpp:269 loadExistingConfigurations() 
+Checking file: fname="/etc/iqrfgd2/shape__WebsocketCppServiceMobileApp.json" 
+13-08-2018 13:37:13.12111 DBG 0  Configuration.cpp:101 parse() 
+[ENTER] fname="/etc/iqrfgd2/shape__WebsocketCppServiceMobileApp.json" 
+13-08-2018 13:37:13.12118 DBG 0  Configuration.cpp:126 parse() 
+[ENTER] 
+13-08-2018 13:37:13.12125 DBG 0  Configuration.cpp:137 validate() 
+[ENTER] 
+13-08-2018 13:37:13.12132 DBG 0  Configuration.cpp:157 validate() 
+[LEAVE] 
+13-08-2018 13:37:13.12139 DBG 0  ConfigurationManager.cpp:269 loadExistingConfigurations() 
+Checking file: fname="/etc/iqrfgd2/shape__WebsocketCppServiceWebApp.json" 
+13-08-2018 13:37:13.12146 DBG 0  Configuration.cpp:101 parse() 
+[ENTER] fname="/etc/iqrfgd2/shape__WebsocketCppServiceWebApp.json" 
+13-08-2018 13:37:13.12153 DBG 0  Configuration.cpp:126 parse() 
+[ENTER] 
+13-08-2018 13:37:13.12160 DBG 0  Configuration.cpp:137 validate() 
+[ENTER] 
+13-08-2018 13:37:13.12167 DBG 0  Configuration.cpp:157 validate() 
+[LEAVE] 
+13-08-2018 13:37:13.12174 DBG 0  ConfigurationManager.cpp:269 loadExistingConfigurations() 
+Checking file: fname="/etc/iqrfgd2/shape__WebsocketService.json" 
+13-08-2018 13:37:13.12181 DBG 0  Configuration.cpp:101 parse() 
+[ENTER] fname="/etc/iqrfgd2/shape__WebsocketService.json" 
+13-08-2018 13:37:13.12188 DBG 0  Configuration.cpp:126 parse() 
+[ENTER] 
+13-08-2018 13:37:13.12195 DBG 0  Configuration.cpp:137 validate() 
+[ENTER] 
+13-08-2018 13:37:13.12202 DBG 0  Configuration.cpp:157 validate() 
+[LEAVE] 
+13-08-2018 13:37:13.12209 DBG 0  ConfigurationManager.cpp:269 loadExistingConfigurations() 
+Checking file: fname="/etc/iqrfgd2/shape__WebsocketService.json.bak" 
+13-08-2018 13:37:13.12216 DBG 0  Configuration.cpp:101 parse() 
+[ENTER] fname="/etc/iqrfgd2/shape__WebsocketService.json.bak" 
+13-08-2018 13:37:13.12223 DBG 0  Configuration.cpp:126 parse() 
+[ENTER] 
+13-08-2018 13:37:13.12230 DBG 0  Configuration.cpp:137 validate() 
+[ENTER] 
+13-08-2018 13:37:13.12237 DBG 0  Configuration.cpp:157 validate() 
+[LEAVE] 
+13-08-2018 13:37:13.12244 WAR 0  ConfigurationManager.cpp:282 loadExistingConfigurations() 
+Throwing std::logic_error: Cannot insert probably duplicit configuration id: id="WebsocketService" file="/etc/iqrfgd2/shape__WebsocketService.json.bak" 
+13-08-2018 13:37:13.12251 WAR 0  ConfigurationManager.cpp:289 loadExistingConfigurations() 
+Caught std::exception: Cannot insert probably duplicit configuration id: id="WebsocketService" file="/etc/iqrfgd2/shape__WebsocketService.json.bak" 
+
+13-08-2018 13:37:13.12258 DBG 0  ConfigurationManager.cpp:293 loadExistingConfigurations() 
+[LEAVE] 
+13-08-2018 13:37:13.12265 DBG 0  ComponentManager.cpp:213 createComponent() 
+[ENTER] componentName="shape::TraceFormatService" libraryPath="" libraryName="TraceFormatService" startLvl="-4" 
+13-08-2018 13:37:13.12272 INF 0  ComponentManager.cpp:214 createComponent() 
+Creating component: componentName="shape::TraceFormatService" 
+13-08-2018 13:37:13.12279 DBG 0  Component.cpp:83 Component() 
+[ENTER] componentName="shape::TraceFormatService" libraryPath="" libraryName="TraceFormatService" deploymentDir="/usr/lib/iqrfgd2" 
+13-08-2018 13:37:13.12286 DBG 0  LibLoader.cpp:49 LibLoader() 
+[ENTER] libraryPath="/usr/lib/iqrfgd2" libraryName="TraceFormatService" 
+13-08-2018 13:37:13.12293 DBG 0  LibLoader.cpp:65 LibLoader() 
+[LEAVE] 
+13-08-2018 13:37:13.12300 DBG 0  Component.cpp:95 Component() 
+[LEAVE] 
+13-08-2018 13:37:13.12307 DBG 0  ComponentManager.cpp:244 createComponent() 
+[LEAVE] componentName="shape::TraceFormatService" 
+13-08-2018 13:37:13.12314 DBG 0  ComponentManager.cpp:213 createComponent() 
+[ENTER] componentName="shape::TraceFileService" libraryPath="" libraryName="TraceFileService" startLvl="-3" 
+13-08-2018 13:37:13.12321 INF 0  ComponentManager.cpp:214 createComponent() 
+Creating component: componentName="shape::TraceFileService" 
+13-08-2018 13:37:13.12330 DBG 0  Component.cpp:83 Component() 
+[ENTER] componentName="shape::TraceFileService" libraryPath="" libraryName="TraceFileService" deploymentDir="/usr/lib/iqrfgd2" 
+13-08-2018 13:37:13.12338 DBG 0  LibLoader.cpp:49 LibLoader() 
+[ENTER] libraryPath="/usr/lib/iqrfgd2" libraryName="TraceFileService" 
+13-08-2018 13:37:13.12345 DBG 0  LibLoader.cpp:65 LibLoader() 
+[LEAVE] 
+13-08-2018 13:37:13.12352 DBG 0  Component.cpp:95 Component() 
+[LEAVE] 
+13-08-2018 13:37:13.12359 DBG 0  ComponentManager.cpp:244 createComponent() 
+[LEAVE] componentName="shape::TraceFileService" 
+13-08-2018 13:37:13.12365 DBG 0  ComponentManager.cpp:213 createComponent() 
+[ENTER] componentName="shape::ConfigurationService" libraryPath="" libraryName="" startLvl="-2" 
+13-08-2018 13:37:13.12372 INF 0  ComponentManager.cpp:214 createComponent() 
+Creating component: componentName="shape::ConfigurationService" 
+13-08-2018 13:37:13.12379 DBG 0  Component.cpp:83 Component() 
+[ENTER] componentName="shape::ConfigurationService" libraryPath="" libraryName="" deploymentDir="/usr/lib/iqrfgd2" 
+13-08-2018 13:37:13.12386 DBG 0  Component.cpp:95 Component() 
+[LEAVE] 
+13-08-2018 13:37:13.12393 DBG 0  ComponentManager.cpp:244 createComponent() 
+[LEAVE] componentName="shape::ConfigurationService" 
+13-08-2018 13:37:13.12400 DBG 0  ComponentManager.cpp:213 createComponent() 
+[ENTER] componentName="shape::LauncherService" libraryPath="" libraryName="" startLvl="-2" 
+13-08-2018 13:37:13.12407 INF 0  ComponentManager.cpp:214 createComponent() 
+Creating component: componentName="shape::LauncherService" 
+13-08-2018 13:37:13.12414 DBG 0  Component.cpp:83 Component() 
+[ENTER] componentName="shape::LauncherService" libraryPath="" libraryName="" deploymentDir="/usr/lib/iqrfgd2" 
+13-08-2018 13:37:13.12421 DBG 0  Component.cpp:95 Component() 
+[LEAVE] 
+13-08-2018 13:37:13.12428 DBG 0  ComponentManager.cpp:244 createComponent() 
+[LEAVE] componentName="shape::LauncherService" 
+13-08-2018 13:37:13.12435 DBG 0  ComponentManager.cpp:213 createComponent() 
+[ENTER] componentName="shape::CppRestService" libraryPath="" libraryName="CppRestService" startLvl="-1" 
+13-08-2018 13:37:13.12442 INF 0  ComponentManager.cpp:214 createComponent() 
+Creating component: componentName="shape::CppRestService" 
+13-08-2018 13:37:13.12449 DBG 0  Component.cpp:83 Component() 
+[ENTER] componentName="shape::CppRestService" libraryPath="" libraryName="CppRestService" deploymentDir="/usr/lib/iqrfgd2" 
+13-08-2018 13:37:13.12456 DBG 0  LibLoader.cpp:49 LibLoader() 
+[ENTER] libraryPath="/usr/lib/iqrfgd2" libraryName="CppRestService" 
+13-08-2018 13:37:13.12463 DBG 0  LibLoader.cpp:65 LibLoader() 
+[LEAVE] 
+13-08-2018 13:37:13.12470 DBG 0  Component.cpp:95 Component() 
+[LEAVE] 
+13-08-2018 13:37:13.12477 DBG 0  ComponentManager.cpp:244 createComponent() 
+[LEAVE] componentName="shape::CppRestService" 
+13-08-2018 13:37:13.12484 DBG 0  ComponentManager.cpp:213 createComponent() 
+[ENTER] componentName="shape::WebsocketCppService" libraryPath="" libraryName="WebsocketCppService" startLvl="0" 
+13-08-2018 13:37:13.12491 INF 0  ComponentManager.cpp:214 createComponent() 
+Creating component: componentName="shape::WebsocketCppService" 
+13-08-2018 13:37:13.12498 DBG 0  Component.cpp:83 Component() 
+[ENTER] componentName="shape::WebsocketCppService" libraryPath="" libraryName="WebsocketCppService" deploymentDir="/usr/lib/iqrfgd2" 
+13-08-2018 13:37:13.12505 DBG 0  LibLoader.cpp:49 LibLoader() 
+[ENTER] libraryPath="/usr/lib/iqrfgd2" libraryName="WebsocketCppService" 
+13-08-2018 13:37:13.12511 DBG 0  LibLoader.cpp:65 LibLoader() 
+[LEAVE] 
+13-08-2018 13:37:13.12519 DBG 0  Component.cpp:95 Component() 
+[LEAVE] 
+13-08-2018 13:37:13.12525 DBG 0  ComponentManager.cpp:244 createComponent() 
+[LEAVE] componentName="shape::WebsocketCppService" 
+13-08-2018 13:37:13.12532 DBG 0  ComponentManager.cpp:213 createComponent() 
+[ENTER] componentName="iqrf::IqrfSpi" libraryPath="" libraryName="IqrfSpi" startLvl="0" 
+13-08-2018 13:37:13.12542 INF 0  ComponentManager.cpp:214 createComponent() 
+Creating component: componentName="iqrf::IqrfSpi" 
+13-08-2018 13:37:13.12549 DBG 0  Component.cpp:83 Component() 
+[ENTER] componentName="iqrf::IqrfSpi" libraryPath="" libraryName="IqrfSpi" deploymentDir="/usr/lib/iqrfgd2" 
+13-08-2018 13:37:13.12556 DBG 0  LibLoader.cpp:49 LibLoader() 
+[ENTER] libraryPath="/usr/lib/iqrfgd2" libraryName="IqrfSpi" 
+13-08-2018 13:37:13.12563 DBG 0  LibLoader.cpp:65 LibLoader() 
+[LEAVE] 
+13-08-2018 13:37:13.12570 DBG 0  Component.cpp:95 Component() 
+[LEAVE] 
+13-08-2018 13:37:13.12577 DBG 0  ComponentManager.cpp:244 createComponent() 
+[LEAVE] componentName="iqrf::IqrfSpi" 
+13-08-2018 13:37:13.12584 DBG 0  ComponentManager.cpp:213 createComponent() 
+[ENTER] componentName="iqrf::IqrfDpa" libraryPath="" libraryName="IqrfDpa" startLvl="0" 
+13-08-2018 13:37:13.12591 INF 0  ComponentManager.cpp:214 createComponent() 
+Creating component: componentName="iqrf::IqrfDpa" 
+13-08-2018 13:37:13.12598 DBG 0  Component.cpp:83 Component() 
+[ENTER] componentName="iqrf::IqrfDpa" libraryPath="" libraryName="IqrfDpa" deploymentDir="/usr/lib/iqrfgd2" 
+13-08-2018 13:37:13.12605 DBG 0  LibLoader.cpp:49 LibLoader() 
+[ENTER] libraryPath="/usr/lib/iqrfgd2" libraryName="IqrfDpa" 
+13-08-2018 13:37:13.12612 DBG 0  LibLoader.cpp:65 LibLoader() 
+[LEAVE] 
+13-08-2018 13:37:13.12619 DBG 0  Component.cpp:95 Component() 
+[LEAVE] 
+13-08-2018 13:37:13.12626 DBG 0  ComponentManager.cpp:244 createComponent() 
+[LEAVE] componentName="iqrf::IqrfDpa" 
+13-08-2018 13:37:13.12633 DBG 0  ComponentManager.cpp:213 createComponent() 
+[ENTER] componentName="iqrf::LegacyApiSupport" libraryPath="" libraryName="LegacyApiSupport" startLvl="0" 
+13-08-2018 13:37:13.12640 INF 0  ComponentManager.cpp:214 createComponent() 
+Creating component: componentName="iqrf::LegacyApiSupport" 
+13-08-2018 13:37:13.12647 DBG 0  Component.cpp:83 Component() 
+[ENTER] componentName="iqrf::LegacyApiSupport" libraryPath="" libraryName="LegacyApiSupport" deploymentDir="/usr/lib/iqrfgd2" 
+13-08-2018 13:37:13.12654 DBG 0  LibLoader.cpp:49 LibLoader() 
+[ENTER] libraryPath="/usr/lib/iqrfgd2" libraryName="LegacyApiSupport" 
+13-08-2018 13:37:13.12661 DBG 0  LibLoader.cpp:65 LibLoader() 
+[LEAVE] 
+13-08-2018 13:37:13.12667 DBG 0  Component.cpp:95 Component() 
+[LEAVE] 
+13-08-2018 13:37:13.12674 DBG 0  ComponentManager.cpp:244 createComponent() 
+[LEAVE] componentName="iqrf::LegacyApiSupport" 
+13-08-2018 13:37:13.12686 DBG 0  ComponentManager.cpp:213 createComponent() 
+[ENTER] componentName="iqrf::IdeCounterpart" libraryPath="" libraryName="IdeCounterpart" startLvl="0" 
+13-08-2018 13:37:13.12705 INF 0  ComponentManager.cpp:214 createComponent() 
+Creating component: componentName="iqrf::IdeCounterpart" 
+13-08-2018 13:37:13.12714 DBG 0  Component.cpp:83 Component() 
+[ENTER] componentName="iqrf::IdeCounterpart" libraryPath="" libraryName="IdeCounterpart" deploymentDir="/usr/lib/iqrfgd2" 
+13-08-2018 13:37:13.12729 DBG 0  LibLoader.cpp:49 LibLoader() 
+[ENTER] libraryPath="/usr/lib/iqrfgd2" libraryName="IdeCounterpart" 
+13-08-2018 13:37:13.12746 DBG 0  LibLoader.cpp:65 LibLoader() 
+[LEAVE] 
+13-08-2018 13:37:13.12753 DBG 0  Component.cpp:95 Component() 
+[LEAVE] 
+13-08-2018 13:37:13.12759 DBG 0  ComponentManager.cpp:244 createComponent() 
+[LEAVE] componentName="iqrf::IdeCounterpart" 
+13-08-2018 13:37:13.12766 DBG 0  ComponentManager.cpp:213 createComponent() 
+[ENTER] componentName="iqrf::Scheduler" libraryPath="" libraryName="Scheduler" startLvl="1" 
+13-08-2018 13:37:13.12773 INF 0  ComponentManager.cpp:214 createComponent() 
+Creating component: componentName="iqrf::Scheduler" 
+13-08-2018 13:37:13.12780 DBG 0  Component.cpp:83 Component() 
+[ENTER] componentName="iqrf::Scheduler" libraryPath="" libraryName="Scheduler" deploymentDir="/usr/lib/iqrfgd2" 
+13-08-2018 13:37:13.12787 DBG 0  LibLoader.cpp:49 LibLoader() 
+[ENTER] libraryPath="/usr/lib/iqrfgd2" libraryName="Scheduler" 
+13-08-2018 13:37:13.12794 DBG 0  LibLoader.cpp:65 LibLoader() 
+[LEAVE] 
+13-08-2018 13:37:13.12801 DBG 0  Component.cpp:95 Component() 
+[LEAVE] 
+13-08-2018 13:37:13.12811 DBG 0  ComponentManager.cpp:244 createComponent() 
+[LEAVE] componentName="iqrf::Scheduler" 
+13-08-2018 13:37:13.12818 DBG 0  ComponentManager.cpp:213 createComponent() 
+[ENTER] componentName="iqrf::JsonSplitter" libraryPath="" libraryName="JsonSplitter" startLvl="1" 
+13-08-2018 13:37:13.12825 INF 0  ComponentManager.cpp:214 createComponent() 
+Creating component: componentName="iqrf::JsonSplitter" 
+13-08-2018 13:37:13.12832 DBG 0  Component.cpp:83 Component() 
+[ENTER] componentName="iqrf::JsonSplitter" libraryPath="" libraryName="JsonSplitter" deploymentDir="/usr/lib/iqrfgd2" 
+13-08-2018 13:37:13.12839 DBG 0  LibLoader.cpp:49 LibLoader() 
+[ENTER] libraryPath="/usr/lib/iqrfgd2" libraryName="JsonSplitter" 
+13-08-2018 13:37:13.12846 DBG 0  LibLoader.cpp:65 LibLoader() 
+[LEAVE] 
+13-08-2018 13:37:13.12853 DBG 0  Component.cpp:95 Component() 
+[LEAVE] 
+13-08-2018 13:37:13.12860 DBG 0  ComponentManager.cpp:244 createComponent() 
+[LEAVE] componentName="iqrf::JsonSplitter" 
+13-08-2018 13:37:13.12867 DBG 0  ComponentManager.cpp:213 createComponent() 
+[ENTER] componentName="iqrf::JsonDpaApiRaw" libraryPath="" libraryName="JsonDpaApiRaw" startLvl="2" 
+13-08-2018 13:37:13.12874 INF 0  ComponentManager.cpp:214 createComponent() 
+Creating component: componentName="iqrf::JsonDpaApiRaw" 
+13-08-2018 13:37:13.12881 DBG 0  Component.cpp:83 Component() 
+[ENTER] componentName="iqrf::JsonDpaApiRaw" libraryPath="" libraryName="JsonDpaApiRaw" deploymentDir="/usr/lib/iqrfgd2" 
+13-08-2018 13:37:13.12888 DBG 0  LibLoader.cpp:49 LibLoader() 
+[ENTER] libraryPath="/usr/lib/iqrfgd2" libraryName="JsonDpaApiRaw" 
+13-08-2018 13:37:13.12895 DBG 0  LibLoader.cpp:65 LibLoader() 
+[LEAVE] 
+13-08-2018 13:37:13.12901 DBG 0  Component.cpp:95 Component() 
+[LEAVE] 
+13-08-2018 13:37:13.12908 DBG 0  ComponentManager.cpp:244 createComponent() 
+[LEAVE] componentName="iqrf::JsonDpaApiRaw" 
+13-08-2018 13:37:13.12915 DBG 0  ComponentManager.cpp:213 createComponent() 
+[ENTER] componentName="iqrf::JsonMngApi" libraryPath="" libraryName="JsonMngApi" startLvl="2" 
+13-08-2018 13:37:13.12922 INF 0  ComponentManager.cpp:214 createComponent() 
+Creating component: componentName="iqrf::JsonMngApi" 
+13-08-2018 13:37:13.12929 DBG 0  Component.cpp:83 Component() 
+[ENTER] componentName="iqrf::JsonMngApi" libraryPath="" libraryName="JsonMngApi" deploymentDir="/usr/lib/iqrfgd2" 
+13-08-2018 13:37:13.12946 DBG 0  LibLoader.cpp:49 LibLoader() 
+[ENTER] libraryPath="/usr/lib/iqrfgd2" libraryName="JsonMngApi" 
+13-08-2018 13:37:13.12953 DBG 0  LibLoader.cpp:65 LibLoader() 
+[LEAVE] 
+13-08-2018 13:37:13.12969 DBG 0  Component.cpp:95 Component() 
+[LEAVE] 
+13-08-2018 13:37:13.12976 DBG 0  ComponentManager.cpp:244 createComponent() 
+[LEAVE] componentName="iqrf::JsonMngApi" 
+13-08-2018 13:37:13.12983 DBG 0  ComponentManager.cpp:213 createComponent() 
+[ENTER] componentName="iqrf::JsonCfgApi" libraryPath="" libraryName="JsonCfgApi" startLvl="2" 
+13-08-2018 13:37:13.12990 INF 0  ComponentManager.cpp:214 createComponent() 
+Creating component: componentName="iqrf::JsonCfgApi" 
+13-08-2018 13:37:13.12997 DBG 0  Component.cpp:83 Component() 
+[ENTER] componentName="iqrf::JsonCfgApi" libraryPath="" libraryName="JsonCfgApi" deploymentDir="/usr/lib/iqrfgd2" 
+13-08-2018 13:37:13.13004 DBG 0  LibLoader.cpp:49 LibLoader() 
+[ENTER] libraryPath="/usr/lib/iqrfgd2" libraryName="JsonCfgApi" 
+13-08-2018 13:37:13.13011 DBG 0  LibLoader.cpp:65 LibLoader() 
+[LEAVE] 
+13-08-2018 13:37:13.13018 DBG 0  Component.cpp:95 Component() 
+[LEAVE] 
+13-08-2018 13:37:13.13025 DBG 0  ComponentManager.cpp:244 createComponent() 
+[LEAVE] componentName="iqrf::JsonCfgApi" 
+13-08-2018 13:37:13.13032 DBG 0  ComponentManager.cpp:213 createComponent() 
+[ENTER] componentName="iqrf::JsCache" libraryPath="" libraryName="JsCache" startLvl="2" 
+13-08-2018 13:37:13.13039 INF 0  ComponentManager.cpp:214 createComponent() 
+Creating component: componentName="iqrf::JsCache" 
+13-08-2018 13:37:13.13046 DBG 0  Component.cpp:83 Component() 
+[ENTER] componentName="iqrf::JsCache" libraryPath="" libraryName="JsCache" deploymentDir="/usr/lib/iqrfgd2" 
+13-08-2018 13:37:13.13055 DBG 0  LibLoader.cpp:49 LibLoader() 
+[ENTER] libraryPath="/usr/lib/iqrfgd2" libraryName="JsCache" 
+13-08-2018 13:37:13.13062 DBG 0  LibLoader.cpp:65 LibLoader() 
+[LEAVE] 
+13-08-2018 13:37:13.13069 DBG 0  Component.cpp:95 Component() 
+[LEAVE] 
+13-08-2018 13:37:13.13076 DBG 0  ComponentManager.cpp:244 createComponent() 
+[LEAVE] componentName="iqrf::JsCache" 
+13-08-2018 13:37:13.13083 DBG 0  ComponentManager.cpp:213 createComponent() 
+[ENTER] componentName="iqrf::JsRenderDuktape" libraryPath="" libraryName="JsRenderDuktape" startLvl="2" 
+13-08-2018 13:37:13.13090 INF 0  ComponentManager.cpp:214 createComponent() 
+Creating component: componentName="iqrf::JsRenderDuktape" 
+13-08-2018 13:37:13.13097 DBG 0  Component.cpp:83 Component() 
+[ENTER] componentName="iqrf::JsRenderDuktape" libraryPath="" libraryName="JsRenderDuktape" deploymentDir="/usr/lib/iqrfgd2" 
+13-08-2018 13:37:13.13104 DBG 0  LibLoader.cpp:49 LibLoader() 
+[ENTER] libraryPath="/usr/lib/iqrfgd2" libraryName="JsRenderDuktape" 
+13-08-2018 13:37:13.13111 DBG 0  LibLoader.cpp:65 LibLoader() 
+[LEAVE] 
+13-08-2018 13:37:13.13118 DBG 0  Component.cpp:95 Component() 
+[LEAVE] 
+13-08-2018 13:37:13.13125 DBG 0  ComponentManager.cpp:244 createComponent() 
+[LEAVE] componentName="iqrf::JsRenderDuktape" 
+13-08-2018 13:37:13.13131 DBG 0  ComponentManager.cpp:213 createComponent() 
+[ENTER] componentName="iqrf::JsonDpaApiIqrfStandard" libraryPath="" libraryName="JsonDpaApiIqrfStandard" startLvl="3" 
+13-08-2018 13:37:13.13138 INF 0  ComponentManager.cpp:214 createComponent() 
+Creating component: componentName="iqrf::JsonDpaApiIqrfStandard" 
+13-08-2018 13:37:13.13145 DBG 0  Component.cpp:83 Component() 
+[ENTER] componentName="iqrf::JsonDpaApiIqrfStandard" libraryPath="" libraryName="JsonDpaApiIqrfStandard" deploymentDir="/usr/lib/iqrfgd2" 
+13-08-2018 13:37:13.13152 DBG 0  LibLoader.cpp:49 LibLoader() 
+[ENTER] libraryPath="/usr/lib/iqrfgd2" libraryName="JsonDpaApiIqrfStandard" 
+13-08-2018 13:37:13.13159 DBG 0  LibLoader.cpp:65 LibLoader() 
+[LEAVE] 
+13-08-2018 13:37:13.13166 DBG 0  Component.cpp:95 Component() 
+[LEAVE] 
+13-08-2018 13:37:13.13173 DBG 0  ComponentManager.cpp:244 createComponent() 
+[LEAVE] componentName="iqrf::JsonDpaApiIqrfStandard" 
+13-08-2018 13:37:13.13180 DBG 0  ComponentManager.cpp:213 createComponent() 
+[ENTER] componentName="iqrf::JsonDpaApiIqrfStdExt" libraryPath="" libraryName="JsonDpaApiIqrfStdExt" startLvl="3" 
+13-08-2018 13:37:13.13187 INF 0  ComponentManager.cpp:214 createComponent() 
+Creating component: componentName="iqrf::JsonDpaApiIqrfStdExt" 
+13-08-2018 13:37:13.13194 DBG 0  Component.cpp:83 Component() 
+[ENTER] componentName="iqrf::JsonDpaApiIqrfStdExt" libraryPath="" libraryName="JsonDpaApiIqrfStdExt" deploymentDir="/usr/lib/iqrfgd2" 
+13-08-2018 13:37:13.13201 DBG 0  LibLoader.cpp:49 LibLoader() 
+[ENTER] libraryPath="/usr/lib/iqrfgd2" libraryName="JsonDpaApiIqrfStdExt" 
+13-08-2018 13:37:13.13208 DBG 0  LibLoader.cpp:65 LibLoader() 
+[LEAVE] 
+13-08-2018 13:37:13.13215 DBG 0  Component.cpp:95 Component() 
+[LEAVE] 
+13-08-2018 13:37:13.13222 DBG 0  ComponentManager.cpp:244 createComponent() 
+[LEAVE] componentName="iqrf::JsonDpaApiIqrfStdExt" 
+13-08-2018 13:37:13.13229 DBG 0  ComponentManager.cpp:213 createComponent() 
+[ENTER] componentName="iqrf::WriteTrConfService" libraryPath="" libraryName="WriteTrConfService" startLvl="3" 
+13-08-2018 13:37:13.13235 INF 0  ComponentManager.cpp:214 createComponent() 
+Creating component: componentName="iqrf::WriteTrConfService" 
+13-08-2018 13:37:13.13242 DBG 0  Component.cpp:83 Component() 
+[ENTER] componentName="iqrf::WriteTrConfService" libraryPath="" libraryName="WriteTrConfService" deploymentDir="/usr/lib/iqrfgd2" 
+13-08-2018 13:37:13.13249 DBG 0  LibLoader.cpp:49 LibLoader() 
+[ENTER] libraryPath="/usr/lib/iqrfgd2" libraryName="WriteTrConfService" 
+13-08-2018 13:37:13.13256 DBG 0  LibLoader.cpp:65 LibLoader() 
+[LEAVE] 
+13-08-2018 13:37:13.13263 DBG 0  Component.cpp:95 Component() 
+[LEAVE] 
+13-08-2018 13:37:13.13270 DBG 0  ComponentManager.cpp:244 createComponent() 
+[LEAVE] componentName="iqrf::WriteTrConfService" 
+13-08-2018 13:37:13.13279 DBG 0  ComponentManager.cpp:213 createComponent() 
+[ENTER] componentName="iqrf::ReadTrConfService" libraryPath="" libraryName="ReadTrConfService" startLvl="3" 
+13-08-2018 13:37:13.13286 INF 0  ComponentManager.cpp:214 createComponent() 
+Creating component: componentName="iqrf::ReadTrConfService" 
+13-08-2018 13:37:13.13293 DBG 0  Component.cpp:83 Component() 
+[ENTER] componentName="iqrf::ReadTrConfService" libraryPath="" libraryName="ReadTrConfService" deploymentDir="/usr/lib/iqrfgd2" 
+13-08-2018 13:37:13.13300 DBG 0  LibLoader.cpp:49 LibLoader() 
+[ENTER] libraryPath="/usr/lib/iqrfgd2" libraryName="ReadTrConfService" 
+13-08-2018 13:37:13.13307 DBG 0  LibLoader.cpp:65 LibLoader() 
+[LEAVE] 
+13-08-2018 13:37:13.13314 DBG 0  Component.cpp:95 Component() 
+[LEAVE] 
+13-08-2018 13:37:13.13321 DBG 0  ComponentManager.cpp:244 createComponent() 
+[LEAVE] componentName="iqrf::ReadTrConfService" 
+13-08-2018 13:37:13.13328 DBG 0  ComponentManager.cpp:213 createComponent() 
+[ENTER] componentName="iqrf::OtaUploadService" libraryPath="" libraryName="OtaUploadService" startLvl="3" 
+13-08-2018 13:37:13.13335 INF 0  ComponentManager.cpp:214 createComponent() 
+Creating component: componentName="iqrf::OtaUploadService" 
+13-08-2018 13:37:13.13342 DBG 0  Component.cpp:83 Component() 
+[ENTER] componentName="iqrf::OtaUploadService" libraryPath="" libraryName="OtaUploadService" deploymentDir="/usr/lib/iqrfgd2" 
+13-08-2018 13:37:13.13349 DBG 0  LibLoader.cpp:49 LibLoader() 
+[ENTER] libraryPath="/usr/lib/iqrfgd2" libraryName="OtaUploadService" 
+13-08-2018 13:37:13.13356 DBG 0  LibLoader.cpp:65 LibLoader() 
+[LEAVE] 
+13-08-2018 13:37:13.13363 DBG 0  Component.cpp:95 Component() 
+[LEAVE] 
+13-08-2018 13:37:13.13370 DBG 0  ComponentManager.cpp:244 createComponent() 
+[LEAVE] componentName="iqrf::OtaUploadService" 
+13-08-2018 13:37:13.13377 DBG 0  ComponentManager.cpp:213 createComponent() 
+[ENTER] componentName="iqrf::SmartConnectService" libraryPath="" libraryName="SmartConnectService" startLvl="3" 
+13-08-2018 13:37:13.13384 INF 0  ComponentManager.cpp:214 createComponent() 
+Creating component: componentName="iqrf::SmartConnectService" 
+13-08-2018 13:37:13.13391 DBG 0  Component.cpp:83 Component() 
+[ENTER] componentName="iqrf::SmartConnectService" libraryPath="" libraryName="SmartConnectService" deploymentDir="/usr/lib/iqrfgd2" 
+13-08-2018 13:37:13.13398 DBG 0  LibLoader.cpp:49 LibLoader() 
+[ENTER] libraryPath="/usr/lib/iqrfgd2" libraryName="SmartConnectService" 
+13-08-2018 13:37:13.13405 DBG 0  LibLoader.cpp:65 LibLoader() 
+[LEAVE] 
+13-08-2018 13:37:13.13412 DBG 0  Component.cpp:95 Component() 
+[LEAVE] 
+13-08-2018 13:37:13.13419 DBG 0  ComponentManager.cpp:244 createComponent() 
+[LEAVE] componentName="iqrf::SmartConnectService" 
+13-08-2018 13:37:13.13426 DBG 0  ComponentManager.cpp:213 createComponent() 
+[ENTER] componentName="iqrf::BondNodeLocalService" libraryPath="" libraryName="BondNodeLocalService" startLvl="3" 
+13-08-2018 13:37:13.13433 INF 0  ComponentManager.cpp:214 createComponent() 
+Creating component: componentName="iqrf::BondNodeLocalService" 
+13-08-2018 13:37:13.13440 DBG 0  Component.cpp:83 Component() 
+[ENTER] componentName="iqrf::BondNodeLocalService" libraryPath="" libraryName="BondNodeLocalService" deploymentDir="/usr/lib/iqrfgd2" 
+13-08-2018 13:37:13.13447 DBG 0  LibLoader.cpp:49 LibLoader() 
+[ENTER] libraryPath="/usr/lib/iqrfgd2" libraryName="BondNodeLocalService" 
+13-08-2018 13:37:13.13454 DBG 0  LibLoader.cpp:65 LibLoader() 
+[LEAVE] 
+13-08-2018 13:37:13.13460 DBG 0  Component.cpp:95 Component() 
+[LEAVE] 
+13-08-2018 13:37:13.13467 DBG 0  ComponentManager.cpp:244 createComponent() 
+[LEAVE] componentName="iqrf::BondNodeLocalService" 
+13-08-2018 13:37:13.13474 DBG 0  ComponentManager.cpp:213 createComponent() 
+[ENTER] componentName="iqrf::EnumerateDeviceService" libraryPath="" libraryName="EnumerateDeviceService" startLvl="3" 
+13-08-2018 13:37:13.13481 INF 0  ComponentManager.cpp:214 createComponent() 
+Creating component: componentName="iqrf::EnumerateDeviceService" 
+13-08-2018 13:37:13.13488 DBG 0  Component.cpp:83 Component() 
+[ENTER] componentName="iqrf::EnumerateDeviceService" libraryPath="" libraryName="EnumerateDeviceService" deploymentDir="/usr/lib/iqrfgd2" 
+13-08-2018 13:37:13.13497 DBG 0  LibLoader.cpp:49 LibLoader() 
+[ENTER] libraryPath="/usr/lib/iqrfgd2" libraryName="EnumerateDeviceService" 
+13-08-2018 13:37:13.13504 DBG 0  LibLoader.cpp:65 LibLoader() 
+[LEAVE] 
+13-08-2018 13:37:13.13511 DBG 0  Component.cpp:95 Component() 
+[LEAVE] 
+13-08-2018 13:37:13.13518 DBG 0  ComponentManager.cpp:244 createComponent() 
+[LEAVE] componentName="iqrf::EnumerateDeviceService" 
+13-08-2018 13:37:13.13525 DBG 0  ComponentManager.cpp:213 createComponent() 
+[ENTER] componentName="iqrf::MqMessaging" libraryPath="" libraryName="MqMessaging" startLvl="10" 
+13-08-2018 13:37:13.13532 INF 0  ComponentManager.cpp:214 createComponent() 
+Creating component: componentName="iqrf::MqMessaging" 
+13-08-2018 13:37:13.13539 DBG 0  Component.cpp:83 Component() 
+[ENTER] componentName="iqrf::MqMessaging" libraryPath="" libraryName="MqMessaging" deploymentDir="/usr/lib/iqrfgd2" 
+13-08-2018 13:37:13.13546 DBG 0  LibLoader.cpp:49 LibLoader() 
+[ENTER] libraryPath="/usr/lib/iqrfgd2" libraryName="MqMessaging" 
+13-08-2018 13:37:13.13553 DBG 0  LibLoader.cpp:65 LibLoader() 
+[LEAVE] 
+13-08-2018 13:37:13.13560 DBG 0  Component.cpp:95 Component() 
+[LEAVE] 
+13-08-2018 13:37:13.13567 DBG 0  ComponentManager.cpp:244 createComponent() 
+[LEAVE] componentName="iqrf::MqMessaging" 
+13-08-2018 13:37:13.13574 DBG 0  ComponentManager.cpp:213 createComponent() 
+[ENTER] componentName="iqrf::MqttMessaging" libraryPath="" libraryName="MqttMessaging" startLvl="10" 
+13-08-2018 13:37:13.13581 INF 0  ComponentManager.cpp:214 createComponent() 
+Creating component: componentName="iqrf::MqttMessaging" 
+13-08-2018 13:37:13.13588 DBG 0  Component.cpp:83 Component() 
+[ENTER] componentName="iqrf::MqttMessaging" libraryPath="" libraryName="MqttMessaging" deploymentDir="/usr/lib/iqrfgd2" 
+13-08-2018 13:37:13.13595 DBG 0  LibLoader.cpp:49 LibLoader() 
+[ENTER] libraryPath="/usr/lib/iqrfgd2" libraryName="MqttMessaging" 
+13-08-2018 13:37:13.13602 DBG 0  LibLoader.cpp:65 LibLoader() 
+[LEAVE] 
+13-08-2018 13:37:13.13609 DBG 0  Component.cpp:95 Component() 
+[LEAVE] 
+13-08-2018 13:37:13.13616 DBG 0  ComponentManager.cpp:244 createComponent() 
+[LEAVE] componentName="iqrf::MqttMessaging" 
+13-08-2018 13:37:13.13623 DBG 0  ComponentManager.cpp:213 createComponent() 
+[ENTER] componentName="iqrf::WebsocketMessaging" libraryPath="" libraryName="WebsocketMessaging" startLvl="10" 
+13-08-2018 13:37:13.13630 INF 0  ComponentManager.cpp:214 createComponent() 
+Creating component: componentName="iqrf::WebsocketMessaging" 
+13-08-2018 13:37:13.13637 DBG 0  Component.cpp:83 Component() 
+[ENTER] componentName="iqrf::WebsocketMessaging" libraryPath="" libraryName="WebsocketMessaging" deploymentDir="/usr/lib/iqrfgd2" 
+13-08-2018 13:37:13.13644 DBG 0  LibLoader.cpp:49 LibLoader() 
+[ENTER] libraryPath="/usr/lib/iqrfgd2" libraryName="WebsocketMessaging" 
+13-08-2018 13:37:13.13651 DBG 0  LibLoader.cpp:65 LibLoader() 
+[LEAVE] 
+13-08-2018 13:37:13.13658 DBG 0  Component.cpp:95 Component() 
+[LEAVE] 
+13-08-2018 13:37:13.13664 DBG 0  ComponentManager.cpp:244 createComponent() 
+[LEAVE] componentName="iqrf::WebsocketMessaging" 
+13-08-2018 13:37:13.13671 DBG 0  ComponentManager.cpp:213 createComponent() 
+[ENTER] componentName="iqrf::UdpMessaging" libraryPath="" libraryName="UdpMessaging" startLvl="10" 
+13-08-2018 13:37:13.13678 INF 0  ComponentManager.cpp:214 createComponent() 
+Creating component: componentName="iqrf::UdpMessaging" 
+13-08-2018 13:37:13.13685 DBG 0  Component.cpp:83 Component() 
+[ENTER] componentName="iqrf::UdpMessaging" libraryPath="" libraryName="UdpMessaging" deploymentDir="/usr/lib/iqrfgd2" 
+13-08-2018 13:37:13.13692 DBG 0  LibLoader.cpp:49 LibLoader() 
+[ENTER] libraryPath="/usr/lib/iqrfgd2" libraryName="UdpMessaging" 
+13-08-2018 13:37:13.13699 DBG 0  LibLoader.cpp:65 LibLoader() 
+[LEAVE] 
+13-08-2018 13:37:13.13706 DBG 0  Component.cpp:95 Component() 
+[LEAVE] 
+13-08-2018 13:37:13.13713 DBG 0  ComponentManager.cpp:244 createComponent() 
+[LEAVE] componentName="iqrf::UdpMessaging" 
+13-08-2018 13:37:13.13724 DBG 0  ComponentManager.cpp:213 createComponent() 
+[ENTER] componentName="iqrf::SchedulerMessaging" libraryPath="" libraryName="SchedulerMessaging" startLvl="10" 
+13-08-2018 13:37:13.13731 INF 0  ComponentManager.cpp:214 createComponent() 
+Creating component: componentName="iqrf::SchedulerMessaging" 
+13-08-2018 13:37:13.13738 DBG 0  Component.cpp:83 Component() 
+[ENTER] componentName="iqrf::SchedulerMessaging" libraryPath="" libraryName="SchedulerMessaging" deploymentDir="/usr/lib/iqrfgd2" 
+13-08-2018 13:37:13.13745 DBG 0  LibLoader.cpp:49 LibLoader() 
+[ENTER] libraryPath="/usr/lib/iqrfgd2" libraryName="SchedulerMessaging" 
+13-08-2018 13:37:13.13752 DBG 0  LibLoader.cpp:65 LibLoader() 
+[LEAVE] 
+13-08-2018 13:37:13.13758 DBG 0  Component.cpp:95 Component() 
+[LEAVE] 
+13-08-2018 13:37:13.13765 DBG 0  ComponentManager.cpp:244 createComponent() 
+[LEAVE] componentName="iqrf::SchedulerMessaging" 
+13-08-2018 13:37:13.13772 DBG 0  ComponentManager.cpp:541 init() 
+[LEAVE] 
+13-08-2018 13:37:13.13790 DBG 0  ComponentManager.cpp:250 startComponents() 
+[ENTER] 
+13-08-2018 13:37:13.13797 DBG 0  Component.cpp:204 startInstances() 
+[ENTER] m_componentName="shape::TraceFormatService" m_state="CLOSED" 
+13-08-2018 13:37:13.13804 DBG 0  Component.cpp:119 openLibrary() 
+[ENTER] m_componentName="shape::TraceFormatService" m_state="CLOSED" 
+13-08-2018 13:37:13.13811 DBG 0  LibLoader.cpp:117 openLibrary() 
+[ENTER] m_libraryPath="/usr/lib/iqrfgd2/" m_libraryName="libTraceFormatService.so" 
+13-08-2018 13:37:13.13818 DBG 0  LibLoader.cpp:126 openLibrary() 
+[LEAVE] 
+13-08-2018 13:37:13.13834 DBG 0  Component.cpp:134 openLibrary() 
+Calling: functionName="get_component_shape__TraceFormatService" 
+13-08-2018 13:37:13.13841 INF 0  Component.cpp:114 setState() 
+m_componentName="shape::TraceFormatService" m_state="OPENED" 
+13-08-2018 13:37:13.13858 DBG 0  Component.cpp:179 openLibrary() 
+[LEAVE] m_componentName="shape::TraceFormatService" m_state="OPENED" 
+13-08-2018 13:37:13.13874 INF 0  Component.cpp:114 setState() 
+m_componentName="shape::TraceFormatService" m_state="STARTING" 
+13-08-2018 13:37:13.13881 DBG 0  ConfigurationManager.cpp:52 registerComponent() 
+[ENTER] componentName="shape::TraceFormatService" 
+13-08-2018 13:37:13.13888 DBG 0  Component.cpp:272 updateInstance() 
+[ENTER] m_componentName="shape::TraceFormatService" id="shape::TraceFormatService-Standard" 
+13-08-2018 13:37:13.13895 DBG 0  ComponentInstance.cpp:85 ComponentInstance() 
+[ENTER] instanceName="shape::TraceFormatService-Standard" 
+13-08-2018 13:37:13.13912 INF 0  ComponentInstance.cpp:120 ComponentInstance() 
+Property ".RequiredInterfaces" not found
+13-08-2018 13:37:13.13919 DBG 0  ComponentInstance.cpp:271 checkActivate() 
+[ENTER] instanceName="shape::TraceFormatService-Standard" 
+13-08-2018 13:37:13.13935 DBG 0  ComponentManager.cpp:295 addProvidedInterface() 
+[ENTER] *providedInterface="ProvidedInterface="shape::ITraceFormatService" ProviderName="shape::TraceFormatService-Standard" " 
+13-08-2018 13:37:13.13942 INF 0  ComponentManager.cpp:297 addProvidedInterface() 
+Add provided interface: shape::ITraceFormatService
+13-08-2018 13:37:13.13959 DBG 0  ComponentManager.cpp:322 addProvidedInterface() 
+[LEAVE] 
+13-08-2018 13:37:13.13966 DBG 0  ComponentInstance.cpp:307 checkActivate() 
+[LEAVE] instanceName="shape::TraceFormatService-Standard" 
+13-08-2018 13:37:13.13982 DBG 0  ComponentInstance.cpp:157 ComponentInstance() 
+[LEAVE] instanceName="shape::TraceFormatService-Standard" 
+13-08-2018 13:37:13.13988 DBG 0  Component.cpp:305 updateInstance() 
+Created instance for configuration: instId="shape::TraceFormatService-Standard" 
+13-08-2018 13:37:13.14006 DBG 0  Component.cpp:313 updateInstance() 
+[LEAVE] instId="shape::TraceFormatService-Standard" 
+13-08-2018 13:37:13.14023 DBG 0  ConfigurationManager.cpp:71 registerComponent() 
+[LEAVE] 
+13-08-2018 13:37:13.14039 INF 0  Component.cpp:114 setState() 
+m_componentName="shape::TraceFormatService" m_state="STARTED" 
+13-08-2018 13:37:13.14058 DBG 0  Component.cpp:230 startInstances() 
+[LEAVE] m_componentName="shape::TraceFormatService" m_state="STARTED" 
+13-08-2018 13:37:13.14065 DBG 0  Component.cpp:204 startInstances() 
+[ENTER] m_componentName="shape::TraceFileService" m_state="CLOSED" 
+13-08-2018 13:37:13.14082 DBG 0  Component.cpp:119 openLibrary() 
+[ENTER] m_componentName="shape::TraceFileService" m_state="CLOSED" 
+13-08-2018 13:37:13.14099 DBG 0  LibLoader.cpp:117 openLibrary() 
+[ENTER] m_libraryPath="/usr/lib/iqrfgd2/" m_libraryName="libTraceFileService.so" 
+13-08-2018 13:37:13.14106 DBG 0  LibLoader.cpp:126 openLibrary() 
+[LEAVE] 
+13-08-2018 13:37:13.14122 DBG 0  Component.cpp:134 openLibrary() 
+Calling: functionName="get_component_shape__TraceFileService" 
+13-08-2018 13:37:13.14129 INF 0  Component.cpp:114 setState() 
+m_componentName="shape::TraceFileService" m_state="OPENED" 
+13-08-2018 13:37:13.14145 DBG 0  Component.cpp:179 openLibrary() 
+[LEAVE] m_componentName="shape::TraceFileService" m_state="OPENED" 
+13-08-2018 13:37:13.14162 INF 0  Component.cpp:114 setState() 
+m_componentName="shape::TraceFileService" m_state="STARTING" 
+13-08-2018 13:37:13.14179 DBG 0  ConfigurationManager.cpp:52 registerComponent() 
+[ENTER] componentName="shape::TraceFileService" 
+13-08-2018 13:37:13.14186 DBG 0  Component.cpp:272 updateInstance() 
+[ENTER] m_componentName="shape::TraceFileService" id="shape::TraceFileService-JsCache" 
+13-08-2018 13:37:13.14194 DBG 0  ComponentInstance.cpp:85 ComponentInstance() 
+[ENTER] instanceName="shape::TraceFileService-JsCache" 
+13-08-2018 13:37:13.14210 INF 0  ComponentInstance.cpp:120 ComponentInstance() 
+Property ".RequiredInterfaces" not found
+13-08-2018 13:37:13.14226 DBG 0  RequiredInterface.cpp:34 RequiredInterface() 
+[ENTER] RequiredInterface="shape::ITraceFormatService" RequirerInstance="shape::TraceFileService-JsCache" 
+13-08-2018 13:37:13.14244 DBG 0  RequiredInterface.cpp:35 RequiredInterface() 
+[LEAVE] 
+13-08-2018 13:37:13.14251 DBG 0  ComponentManager.cpp:398 addRequiredInterface() 
+[ENTER] *requiredInterface="RequiredInterface="shape::ITraceFormatService" RequirerInstance="shape::TraceFileService-JsCache" " 
+13-08-2018 13:37:13.14268 DBG 0  RequiredInterface.cpp:96 attachProvidedInterface() 
+[ENTER] *providedInterface="ProvidedInterface="shape::ITraceFormatService" ProviderName="shape::TraceFormatService-Standard" " 
+13-08-2018 13:37:13.14275 DBG 0  ComponentInstance.cpp:271 checkActivate() 
+[ENTER] instanceName="shape::TraceFileService-JsCache" 
+13-08-2018 13:37:13.14290 DBG 0  ComponentInstance.cpp:307 checkActivate() 
+[LEAVE] instanceName="shape::TraceFileService-JsCache" 
+13-08-2018 13:37:13.14309 DBG 0  RequiredInterface.cpp:103 attachProvidedInterface() 
+[LEAVE] 
+13-08-2018 13:37:13.14316 DBG 0  ComponentManager.cpp:416 addRequiredInterface() 
+[LEAVE] 
+13-08-2018 13:37:13.14323 DBG 0  ComponentInstance.cpp:271 checkActivate() 
+[ENTER] instanceName="shape::TraceFileService-JsCache" 
+13-08-2018 13:37:13.14340 DBG 0  ComponentManager.cpp:295 addProvidedInterface() 
+[ENTER] *providedInterface="ProvidedInterface="shape::ITraceService" ProviderName="shape::TraceFileService-JsCache" " 
+13-08-2018 13:37:13.14347 INF 0  ComponentManager.cpp:297 addProvidedInterface() 
+Add provided interface: shape::ITraceService
+13-08-2018 13:37:13.14354 DBG 0  ComponentManager.cpp:322 addProvidedInterface() 
+[LEAVE] 
+13-08-2018 13:37:13.14362 DBG 0  ComponentInstance.cpp:307 checkActivate() 
+[LEAVE] instanceName="shape::TraceFileService-JsCache" 
+13-08-2018 13:37:13.14369 DBG 0  ComponentInstance.cpp:157 ComponentInstance() 
+[LEAVE] instanceName="shape::TraceFileService-JsCache" 
+13-08-2018 13:37:13.14385 DBG 0  Component.cpp:305 updateInstance() 
+Created instance for configuration: instId="shape::TraceFileService-JsCache" 
+13-08-2018 13:37:13.14392 DBG 0  Component.cpp:313 updateInstance() 
+[LEAVE] instId="shape::TraceFileService-JsCache" 
+13-08-2018 13:37:13.14409 DBG 0  Component.cpp:272 updateInstance() 
+[ENTER] m_componentName="shape::TraceFileService" id="shape::TraceFileService-daemon1" 
+13-08-2018 13:37:13.14416 DBG 0  ComponentInstance.cpp:85 ComponentInstance() 
+[ENTER] instanceName="shape::TraceFileService-daemon1" 
+13-08-2018 13:37:13.14425 INF 0  ComponentInstance.cpp:120 ComponentInstance() 
+Property ".RequiredInterfaces" not found
+13-08-2018 13:37:13.14432 DBG 0  RequiredInterface.cpp:34 RequiredInterface() 
+[ENTER] RequiredInterface="shape::ITraceFormatService" RequirerInstance="shape::TraceFileService-daemon1" 
+13-08-2018 13:37:13.14439 DBG 0  RequiredInterface.cpp:35 RequiredInterface() 
+[LEAVE] 
+13-08-2018 13:37:13.14446 DBG 0  ComponentManager.cpp:398 addRequiredInterface() 
+[ENTER] *requiredInterface="RequiredInterface="shape::ITraceFormatService" RequirerInstance="shape::TraceFileService-daemon1" " 
+13-08-2018 13:37:13.14453 DBG 0  RequiredInterface.cpp:96 attachProvidedInterface() 
+[ENTER] *providedInterface="ProvidedInterface="shape::ITraceFormatService" ProviderName="shape::TraceFormatService-Standard" " 
+13-08-2018 13:37:13.14460 DBG 0  ComponentInstance.cpp:271 checkActivate() 
+[ENTER] instanceName="shape::TraceFileService-daemon1" 
+13-08-2018 13:37:13.14467 DBG 0  ComponentInstance.cpp:307 checkActivate() 
+[LEAVE] instanceName="shape::TraceFileService-daemon1" 
+13-08-2018 13:37:13.14482 DBG 0  RequiredInterface.cpp:103 attachProvidedInterface() 
+[LEAVE] 
+13-08-2018 13:37:13.14489 DBG 0  ComponentManager.cpp:416 addRequiredInterface() 
+[LEAVE] 
+13-08-2018 13:37:13.14497 DBG 0  ComponentInstance.cpp:271 checkActivate() 
+[ENTER] instanceName="shape::TraceFileService-daemon1" 
+13-08-2018 13:37:13.14504 DBG 0  ComponentManager.cpp:295 addProvidedInterface() 
+[ENTER] *providedInterface="ProvidedInterface="shape::ITraceService" ProviderName="shape::TraceFileService-daemon1" " 
+13-08-2018 13:37:13.14512 INF 0  ComponentManager.cpp:297 addProvidedInterface() 
+Add provided interface: shape::ITraceService
+13-08-2018 13:37:13.14519 DBG 0  ComponentManager.cpp:322 addProvidedInterface() 
+[LEAVE] 
+13-08-2018 13:37:13.14526 DBG 0  ComponentInstance.cpp:307 checkActivate() 
+[LEAVE] instanceName="shape::TraceFileService-daemon1" 
+13-08-2018 13:37:13.14534 DBG 0  ComponentInstance.cpp:157 ComponentInstance() 
+[LEAVE] instanceName="shape::TraceFileService-daemon1" 
+13-08-2018 13:37:13.14541 DBG 0  Component.cpp:305 updateInstance() 
+Created instance for configuration: instId="shape::TraceFileService-daemon1" 
+13-08-2018 13:37:13.14549 DBG 0  Component.cpp:313 updateInstance() 
+[LEAVE] instId="shape::TraceFileService-daemon1" 
+13-08-2018 13:37:13.14556 DBG 0  ConfigurationManager.cpp:71 registerComponent() 
+[LEAVE] 
+13-08-2018 13:37:13.14563 INF 0  Component.cpp:114 setState() 
+m_componentName="shape::TraceFileService" m_state="STARTED" 
+13-08-2018 13:37:13.14571 DBG 0  Component.cpp:230 startInstances() 
+[LEAVE] m_componentName="shape::TraceFileService" m_state="STARTED" 
+13-08-2018 13:37:13.14578 DBG 0  Component.cpp:204 startInstances() 
+[ENTER] m_componentName="shape::ConfigurationService" m_state="CLOSED" 
+13-08-2018 13:37:13.14586 DBG 0  Component.cpp:119 openLibrary() 
+[ENTER] m_componentName="shape::ConfigurationService" m_state="CLOSED" 
+13-08-2018 13:37:13.14593 INF 0  Component.cpp:114 setState() 
+m_componentName="shape::ConfigurationService" m_state="OPENED" 
+13-08-2018 13:37:13.14600 DBG 0  Component.cpp:179 openLibrary() 
+[LEAVE] m_componentName="shape::ConfigurationService" m_state="OPENED" 
+13-08-2018 13:37:13.14608 INF 0  Component.cpp:114 setState() 
+m_componentName="shape::ConfigurationService" m_state="STARTING" 
+13-08-2018 13:37:13.14615 DBG 0  ConfigurationManager.cpp:52 registerComponent() 
+[ENTER] componentName="shape::ConfigurationService" 
+13-08-2018 13:37:13.14623 DBG 0  Component.cpp:272 updateInstance() 
+[ENTER] m_componentName="shape::ConfigurationService" id="shape::ConfigurationService-1" 
+13-08-2018 13:37:13.14630 DBG 0  ComponentInstance.cpp:85 ComponentInstance() 
+[ENTER] instanceName="shape::ConfigurationService-1" 
+13-08-2018 13:37:13.14637 INF 0  ComponentInstance.cpp:120 ComponentInstance() 
+Property ".RequiredInterfaces" not found
+13-08-2018 13:37:13.14645 DBG 0  RequiredInterface.cpp:34 RequiredInterface() 
+[ENTER] RequiredInterface="shape::ITraceService" RequirerInstance="shape::ConfigurationService-1" 
+13-08-2018 13:37:13.14655 DBG 0  RequiredInterface.cpp:35 RequiredInterface() 
+[LEAVE] 
+13-08-2018 13:37:13.14662 DBG 0  ComponentManager.cpp:398 addRequiredInterface() 
+[ENTER] *requiredInterface="RequiredInterface="shape::ITraceService" RequirerInstance="shape::ConfigurationService-1" " 
+13-08-2018 13:37:13.14670 DBG 0  RequiredInterface.cpp:96 attachProvidedInterface() 
+[ENTER] *providedInterface="ProvidedInterface="shape::ITraceService" ProviderName="shape::TraceFileService-JsCache" " 
+13-08-2018 13:37:13.14677 DBG 0  ComponentInstance.cpp:271 checkActivate() 
+[ENTER] instanceName="shape::ConfigurationService-1" 
+13-08-2018 13:37:13.14684 DBG 0  ComponentInstance.cpp:307 checkActivate() 
+[LEAVE] instanceName="shape::ConfigurationService-1" 
+13-08-2018 13:37:13.14692 DBG 0  RequiredInterface.cpp:103 attachProvidedInterface() 
+[LEAVE] 
+13-08-2018 13:37:13.14699 DBG 0  RequiredInterface.cpp:96 attachProvidedInterface() 
+[ENTER] *providedInterface="ProvidedInterface="shape::ITraceService" ProviderName="shape::TraceFileService-daemon1" " 
+13-08-2018 13:37:13.14707 DBG 0  ComponentInstance.cpp:271 checkActivate() 
+[ENTER] instanceName="shape::ConfigurationService-1" 
+13-08-2018 13:37:13.14714 DBG 0  ComponentInstance.cpp:307 checkActivate() 
+[LEAVE] instanceName="shape::ConfigurationService-1" 
+13-08-2018 13:37:13.14721 DBG 0  RequiredInterface.cpp:103 attachProvidedInterface() 
+[LEAVE] 
+13-08-2018 13:37:13.14729 DBG 0  ComponentManager.cpp:416 addRequiredInterface() 
+[LEAVE] 
+13-08-2018 13:37:13.14736 DBG 0  ComponentInstance.cpp:271 checkActivate() 
+[ENTER] instanceName="shape::ConfigurationService-1" 
+13-08-2018 13:37:13.14743 DBG 0  ConfigurationService.cpp:64 activate() 
+[ENTER] 
+13-08-2018 13:37:13.14751 INF 0  ConfigurationService.cpp:65 activate() 
+
+******************************
+ConfigurationService::activate()
+******************************
+13-08-2018 13:37:13.14758 DBG 0  ConfigurationService.cpp:66 activate() 
+[LEAVE] 
+13-08-2018 13:37:13.14766 DBG 0  ComponentManager.cpp:295 addProvidedInterface() 
+[ENTER] *providedInterface="ProvidedInterface="shape::IConfigurationService" ProviderName="shape::ConfigurationService-1" " 
+13-08-2018 13:37:13.14773 INF 0  ComponentManager.cpp:297 addProvidedInterface() 
+Add provided interface: shape::IConfigurationService
+13-08-2018 13:37:13.14781 DBG 0  ComponentManager.cpp:322 addProvidedInterface() 
+[LEAVE] 
+13-08-2018 13:37:13.14788 DBG 0  ComponentInstance.cpp:307 checkActivate() 
+[LEAVE] instanceName="shape::ConfigurationService-1" 
+13-08-2018 13:37:13.14795 DBG 0  ComponentInstance.cpp:157 ComponentInstance() 
+[LEAVE] instanceName="shape::ConfigurationService-1" 
+13-08-2018 13:37:13.14803 DBG 0  Component.cpp:305 updateInstance() 
+Created instance for configuration: instId="shape::ConfigurationService-1" 
+13-08-2018 13:37:13.14810 DBG 0  Component.cpp:313 updateInstance() 
+[LEAVE] instId="shape::ConfigurationService-1" 
+13-08-2018 13:37:13.14817 DBG 0  ConfigurationManager.cpp:71 registerComponent() 
+[LEAVE] 
+13-08-2018 13:37:13.14825 INF 0  Component.cpp:114 setState() 
+m_componentName="shape::ConfigurationService" m_state="STARTED" 
+13-08-2018 13:37:13.14832 DBG 0  Component.cpp:230 startInstances() 
+[LEAVE] m_componentName="shape::ConfigurationService" m_state="STARTED" 
+13-08-2018 13:37:13.14840 DBG 0  Component.cpp:204 startInstances() 
+[ENTER] m_componentName="shape::LauncherService" m_state="CLOSED" 
+13-08-2018 13:37:13.14847 DBG 0  Component.cpp:119 openLibrary() 
+[ENTER] m_componentName="shape::LauncherService" m_state="CLOSED" 
+13-08-2018 13:37:13.14854 INF 0  Component.cpp:114 setState() 
+m_componentName="shape::LauncherService" m_state="OPENED" 
+13-08-2018 13:37:13.14862 DBG 0  Component.cpp:179 openLibrary() 
+[LEAVE] m_componentName="shape::LauncherService" m_state="OPENED" 
+13-08-2018 13:37:13.14869 INF 0  Component.cpp:114 setState() 
+m_componentName="shape::LauncherService" m_state="STARTING" 
+13-08-2018 13:37:13.14876 DBG 0  ConfigurationManager.cpp:52 registerComponent() 
+[ENTER] componentName="shape::LauncherService" 
+13-08-2018 13:37:13.14886 DBG 0  Component.cpp:272 updateInstance() 
+[ENTER] m_componentName="shape::LauncherService" id="shape::LauncherService" 
+13-08-2018 13:37:13.14894 DBG 0  ComponentInstance.cpp:85 ComponentInstance() 
+[ENTER] instanceName="shape::LauncherService" 
+13-08-2018 13:37:13.14901 INF 0  ComponentInstance.cpp:120 ComponentInstance() 
+Property ".RequiredInterfaces" not found
+13-08-2018 13:37:13.14909 DBG 0  RequiredInterface.cpp:34 RequiredInterface() 
+[ENTER] RequiredInterface="shape::ITraceService" RequirerInstance="shape::LauncherService" 
+13-08-2018 13:37:13.14916 DBG 0  RequiredInterface.cpp:35 RequiredInterface() 
+[LEAVE] 
+13-08-2018 13:37:13.14924 DBG 0  ComponentManager.cpp:398 addRequiredInterface() 
+[ENTER] *requiredInterface="RequiredInterface="shape::ITraceService" RequirerInstance="shape::LauncherService" " 
+13-08-2018 13:37:13.14931 DBG 0  RequiredInterface.cpp:96 attachProvidedInterface() 
+[ENTER] *providedInterface="ProvidedInterface="shape::ITraceService" ProviderName="shape::TraceFileService-JsCache" " 
+13-08-2018 13:37:13.14939 DBG 0  LauncherService.cpp:65 attachInterface() 
+[ENTER] iface="0x560c9d26eed0" 
+13-08-2018 13:37:13.14960 DBG 0  LauncherService.cpp:71 attachInterface() 
+[LEAVE] 
+13-08-2018 13:37:13.14969 DBG 0  ComponentInstance.cpp:271 checkActivate() 
+[ENTER] instanceName="shape::LauncherService" 
+13-08-2018 13:37:13.14978 DBG 0  ComponentInstance.cpp:307 checkActivate() 
+[LEAVE] instanceName="shape::LauncherService" 
+13-08-2018 13:37:13.14986 DBG 0  RequiredInterface.cpp:103 attachProvidedInterface() 
+[LEAVE] 
+13-08-2018 13:37:13.14995 DBG 0  ComponentManager.cpp:416 addRequiredInterface() 
+[LEAVE] 
+13-08-2018 13:37:13.15004 DBG 0  ComponentInstance.cpp:271 checkActivate() 
+[ENTER] instanceName="shape::LauncherService" 
+13-08-2018 13:37:13.15013 DBG 0  LauncherService.cpp:47 activate() 
+[ENTER] 
+13-08-2018 13:37:13.15022 INF 0  LauncherService.cpp:48 activate() 
+
+******************************
+LauncherService::activate()
+******************************
+13-08-2018 13:37:13.15031 DBG 0  LauncherService.cpp:49 activate() 
+[LEAVE] 
+13-08-2018 13:37:13.15040 DBG 0  ComponentManager.cpp:295 addProvidedInterface() 
+[ENTER] *providedInterface="ProvidedInterface="shape::ILaunchService" ProviderName="shape::LauncherService" " 
+13-08-2018 13:37:13.15049 INF 0  ComponentManager.cpp:297 addProvidedInterface() 
+Add provided interface: shape::ILaunchService
+13-08-2018 13:37:13.15060 DBG 0  ComponentManager.cpp:322 addProvidedInterface() 
+[LEAVE] 
+13-08-2018 13:37:13.15069 DBG 0  ComponentInstance.cpp:307 checkActivate() 
+[LEAVE] instanceName="shape::LauncherService" 
+13-08-2018 13:37:13.15077 DBG 0  ComponentInstance.cpp:157 ComponentInstance() 
+[LEAVE] instanceName="shape::LauncherService" 
+13-08-2018 13:37:13.15088 DBG 0  Component.cpp:305 updateInstance() 
+Created instance for configuration: instId="shape::LauncherService" 
+13-08-2018 13:37:13.15097 DBG 0  Component.cpp:313 updateInstance() 
+[LEAVE] instId="shape::LauncherService" 
+13-08-2018 13:37:13.15105 DBG 0  ConfigurationManager.cpp:71 registerComponent() 
+[LEAVE] 
+13-08-2018 13:37:13.15114 INF 0  Component.cpp:114 setState() 
+m_componentName="shape::LauncherService" m_state="STARTED" 
+13-08-2018 13:37:13.15124 DBG 0  Component.cpp:230 startInstances() 
+[LEAVE] m_componentName="shape::LauncherService" m_state="STARTED" 
+13-08-2018 13:37:13.15133 DBG 0  Component.cpp:204 startInstances() 
+[ENTER] m_componentName="shape::CppRestService" m_state="CLOSED" 
+13-08-2018 13:37:13.15142 DBG 0  Component.cpp:119 openLibrary() 
+[ENTER] m_componentName="shape::CppRestService" m_state="CLOSED" 
+13-08-2018 13:37:13.15151 DBG 0  LibLoader.cpp:117 openLibrary() 
+[ENTER] m_libraryPath="/usr/lib/iqrfgd2/" m_libraryName="libCppRestService.so" 
+13-08-2018 13:37:13.28243 DBG 0  LibLoader.cpp:126 openLibrary() 
+[LEAVE] 
+13-08-2018 13:37:13.28268 DBG 0  Component.cpp:134 openLibrary() 
+Calling: functionName="get_component_shape__CppRestService" 
+13-08-2018 13:37:13.28335 INF 0  Component.cpp:114 setState() 
+m_componentName="shape::CppRestService" m_state="OPENED" 
+13-08-2018 13:37:13.28352 DBG 0  Component.cpp:179 openLibrary() 
+[LEAVE] m_componentName="shape::CppRestService" m_state="OPENED" 
+13-08-2018 13:37:13.28361 INF 0  Component.cpp:114 setState() 
+m_componentName="shape::CppRestService" m_state="STARTING" 
+13-08-2018 13:37:13.28369 DBG 0  ConfigurationManager.cpp:52 registerComponent() 
+[ENTER] componentName="shape::CppRestService" 
+13-08-2018 13:37:13.28381 DBG 0  Component.cpp:272 updateInstance() 
+[ENTER] m_componentName="shape::CppRestService" id="CppRestService" 
+13-08-2018 13:37:13.28393 DBG 0  ComponentInstance.cpp:85 ComponentInstance() 
+[ENTER] instanceName="CppRestService" 
+13-08-2018 13:37:13.28416 INF 0  ComponentInstance.cpp:120 ComponentInstance() 
+Property ".RequiredInterfaces" not found
+13-08-2018 13:37:13.28428 DBG 0  RequiredInterface.cpp:34 RequiredInterface() 
+[ENTER] RequiredInterface="shape::ITraceService" RequirerInstance="CppRestService" 
+13-08-2018 13:37:13.28436 DBG 0  RequiredInterface.cpp:35 RequiredInterface() 
+[LEAVE] 
+13-08-2018 13:37:13.28447 DBG 0  ComponentManager.cpp:398 addRequiredInterface() 
+[ENTER] *requiredInterface="RequiredInterface="shape::ITraceService" RequirerInstance="CppRestService" " 
+13-08-2018 13:37:13.28459 DBG 0  RequiredInterface.cpp:96 attachProvidedInterface() 
+[ENTER] *providedInterface="ProvidedInterface="shape::ITraceService" ProviderName="shape::TraceFileService-JsCache" " 
+13-08-2018 13:37:13.28473 DBG 0  ComponentInstance.cpp:271 checkActivate() 
+[ENTER] instanceName="CppRestService" 
+13-08-2018 13:37:13.28482 DBG 0  ComponentInstance.cpp:307 checkActivate() 
+[LEAVE] instanceName="CppRestService" 
+13-08-2018 13:37:13.28490 DBG 0  RequiredInterface.cpp:103 attachProvidedInterface() 
+[LEAVE] 
+13-08-2018 13:37:13.28499 DBG 0  RequiredInterface.cpp:96 attachProvidedInterface() 
+[ENTER] *providedInterface="ProvidedInterface="shape::ITraceService" ProviderName="shape::TraceFileService-daemon1" " 
+13-08-2018 13:37:13.28508 DBG 0  ComponentInstance.cpp:271 checkActivate() 
+[ENTER] instanceName="CppRestService" 
+13-08-2018 13:37:13.28516 DBG 0  ComponentInstance.cpp:307 checkActivate() 
+[LEAVE] instanceName="CppRestService" 
+13-08-2018 13:37:13.28524 DBG 0  RequiredInterface.cpp:103 attachProvidedInterface() 
+[LEAVE] 
+13-08-2018 13:37:13.28532 DBG 0  ComponentManager.cpp:416 addRequiredInterface() 
+[LEAVE] 
+13-08-2018 13:37:13.28541 DBG 0  ComponentInstance.cpp:271 checkActivate() 
+[ENTER] instanceName="CppRestService" 
+13-08-2018 13:37:13.28559 INF 0  CppRestService.cpp:130 activate() 
+
+******************************
+CppRestService instance activate
+******************************
+13-08-2018 13:37:13.28573 DBG 0  ComponentManager.cpp:295 addProvidedInterface() 
+[ENTER] *providedInterface="ProvidedInterface="shape::IRestApiService" ProviderName="CppRestService" " 
+13-08-2018 13:37:13.28581 INF 0  ComponentManager.cpp:297 addProvidedInterface() 
+Add provided interface: shape::IRestApiService
+13-08-2018 13:37:13.28591 DBG 0  ComponentManager.cpp:322 addProvidedInterface() 
+[LEAVE] 
+13-08-2018 13:37:13.28600 DBG 0  ComponentInstance.cpp:307 checkActivate() 
+[LEAVE] instanceName="CppRestService" 
+13-08-2018 13:37:13.28608 DBG 0  ComponentInstance.cpp:157 ComponentInstance() 
+[LEAVE] instanceName="CppRestService" 
+13-08-2018 13:37:13.28618 DBG 0  Component.cpp:305 updateInstance() 
+Created instance for configuration: instId="CppRestService" 
+13-08-2018 13:37:13.28627 DBG 0  Component.cpp:313 updateInstance() 
+[LEAVE] instId="CppRestService" 
+13-08-2018 13:37:13.28635 DBG 0  ConfigurationManager.cpp:71 registerComponent() 
+[LEAVE] 
+13-08-2018 13:37:13.28644 INF 0  Component.cpp:114 setState() 
+m_componentName="shape::CppRestService" m_state="STARTED" 
+13-08-2018 13:37:13.28652 DBG 0  Component.cpp:230 startInstances() 
+[LEAVE] m_componentName="shape::CppRestService" m_state="STARTED" 
+13-08-2018 13:37:13.28661 DBG 0  Component.cpp:204 startInstances() 
+[ENTER] m_componentName="shape::WebsocketCppService" m_state="CLOSED" 
+13-08-2018 13:37:13.28686 DBG 0  Component.cpp:119 openLibrary() 
+[ENTER] m_componentName="shape::WebsocketCppService" m_state="CLOSED" 
+13-08-2018 13:37:13.28698 DBG 0  LibLoader.cpp:117 openLibrary() 
+[ENTER] m_libraryPath="/usr/lib/iqrfgd2/" m_libraryName="libWebsocketCppService.so" 
+13-08-2018 13:37:13.28729 WAR 0  LibLoader.cpp:123 openLibrary() 
+Throwing std::logic_error: Error load: errnoStr="/usr/lib/iqrfgd2/libWebsocketCppService.so: cannot open shared object file: No such file or directory" m_libraryPathFile="/usr/lib/iqrfgd2/libWebsocketCppService.so" 
+13-08-2018 13:37:13.28764 WAR 0  ComponentManager.cpp:583 run() 
+Caught std::exception: Error load: errnoStr="/usr/lib/iqrfgd2/libWebsocketCppService.so: cannot open shared object file: No such file or directory" m_libraryPathFile="/usr/lib/iqrfgd2/libWebsocketCppService.so" 
+Stopped
+13-08-2018 13:37:13.29117 DBG 0  ComponentManager.cpp:272 eraseComponents() 
+[ENTER] 
+13-08-2018 13:37:13.29132 DBG 0  Component.cpp:235 stopInstances() 
+[ENTER] m_componentName="iqrf::SchedulerMessaging" m_state="CLOSED" 
+13-08-2018 13:37:13.29141 DBG 0  Component.cpp:249 stopInstances() 
+[LEAVE] m_componentName="iqrf::SchedulerMessaging" m_state="CLOSED" 
+13-08-2018 13:37:13.29150 DBG 0  Component.cpp:184 closeLibrary() 
+[ENTER] m_componentName="iqrf::SchedulerMessaging" m_state="CLOSED" 
+13-08-2018 13:37:13.29159 DBG 0  Component.cpp:199 closeLibrary() 
+[LEAVE] m_componentName="iqrf::SchedulerMessaging" m_state="CLOSED" 
+13-08-2018 13:37:13.29171 DBG 0  Component.cpp:235 stopInstances() 
+[ENTER] m_componentName="iqrf::UdpMessaging" m_state="CLOSED" 
+13-08-2018 13:37:13.29180 DBG 0  Component.cpp:249 stopInstances() 
+[LEAVE] m_componentName="iqrf::UdpMessaging" m_state="CLOSED" 
+13-08-2018 13:37:13.29188 DBG 0  Component.cpp:184 closeLibrary() 
+[ENTER] m_componentName="iqrf::UdpMessaging" m_state="CLOSED" 
+13-08-2018 13:37:13.29197 DBG 0  Component.cpp:199 closeLibrary() 
+[LEAVE] m_componentName="iqrf::UdpMessaging" m_state="CLOSED" 
+13-08-2018 13:37:13.29206 DBG 0  Component.cpp:235 stopInstances() 
+[ENTER] m_componentName="iqrf::WebsocketMessaging" m_state="CLOSED" 
+13-08-2018 13:37:13.29215 DBG 0  Component.cpp:249 stopInstances() 
+[LEAVE] m_componentName="iqrf::WebsocketMessaging" m_state="CLOSED" 
+13-08-2018 13:37:13.29224 DBG 0  Component.cpp:184 closeLibrary() 
+[ENTER] m_componentName="iqrf::WebsocketMessaging" m_state="CLOSED" 
+13-08-2018 13:37:13.29232 DBG 0  Component.cpp:199 closeLibrary() 
+[LEAVE] m_componentName="iqrf::WebsocketMessaging" m_state="CLOSED" 
+13-08-2018 13:37:13.29241 DBG 0  Component.cpp:235 stopInstances() 
+[ENTER] m_componentName="iqrf::MqttMessaging" m_state="CLOSED" 
+13-08-2018 13:37:13.29250 DBG 0  Component.cpp:249 stopInstances() 
+[LEAVE] m_componentName="iqrf::MqttMessaging" m_state="CLOSED" 
+13-08-2018 13:37:13.29259 DBG 0  Component.cpp:184 closeLibrary() 
+[ENTER] m_componentName="iqrf::MqttMessaging" m_state="CLOSED" 
+13-08-2018 13:37:13.29267 DBG 0  Component.cpp:199 closeLibrary() 
+[LEAVE] m_componentName="iqrf::MqttMessaging" m_state="CLOSED" 
+13-08-2018 13:37:13.29276 DBG 0  Component.cpp:235 stopInstances() 
+[ENTER] m_componentName="iqrf::MqMessaging" m_state="CLOSED" 
+13-08-2018 13:37:13.29285 DBG 0  Component.cpp:249 stopInstances() 
+[LEAVE] m_componentName="iqrf::MqMessaging" m_state="CLOSED" 
+13-08-2018 13:37:13.29294 DBG 0  Component.cpp:184 closeLibrary() 
+[ENTER] m_componentName="iqrf::MqMessaging" m_state="CLOSED" 
+13-08-2018 13:37:13.29303 DBG 0  Component.cpp:199 closeLibrary() 
+[LEAVE] m_componentName="iqrf::MqMessaging" m_state="CLOSED" 
+13-08-2018 13:37:13.29312 DBG 0  Component.cpp:235 stopInstances() 
+[ENTER] m_componentName="iqrf::EnumerateDeviceService" m_state="CLOSED" 
+13-08-2018 13:37:13.29320 DBG 0  Component.cpp:249 stopInstances() 
+[LEAVE] m_componentName="iqrf::EnumerateDeviceService" m_state="CLOSED" 
+13-08-2018 13:37:13.29329 DBG 0  Component.cpp:184 closeLibrary() 
+[ENTER] m_componentName="iqrf::EnumerateDeviceService" m_state="CLOSED" 
+13-08-2018 13:37:13.29338 DBG 0  Component.cpp:199 closeLibrary() 
+[LEAVE] m_componentName="iqrf::EnumerateDeviceService" m_state="CLOSED" 
+13-08-2018 13:37:13.29351 DBG 0  Component.cpp:235 stopInstances() 
+[ENTER] m_componentName="iqrf::BondNodeLocalService" m_state="CLOSED" 
+13-08-2018 13:37:13.29360 DBG 0  Component.cpp:249 stopInstances() 
+[LEAVE] m_componentName="iqrf::BondNodeLocalService" m_state="CLOSED" 
+13-08-2018 13:37:13.29369 DBG 0  Component.cpp:184 closeLibrary() 
+[ENTER] m_componentName="iqrf::BondNodeLocalService" m_state="CLOSED" 
+13-08-2018 13:37:13.29378 DBG 0  Component.cpp:199 closeLibrary() 
+[LEAVE] m_componentName="iqrf::BondNodeLocalService" m_state="CLOSED" 
+13-08-2018 13:37:13.29387 DBG 0  Component.cpp:235 stopInstances() 
+[ENTER] m_componentName="iqrf::SmartConnectService" m_state="CLOSED" 
+13-08-2018 13:37:13.29395 DBG 0  Component.cpp:249 stopInstances() 
+[LEAVE] m_componentName="iqrf::SmartConnectService" m_state="CLOSED" 
+13-08-2018 13:37:13.29404 DBG 0  Component.cpp:184 closeLibrary() 
+[ENTER] m_componentName="iqrf::SmartConnectService" m_state="CLOSED" 
+13-08-2018 13:37:13.29413 DBG 0  Component.cpp:199 closeLibrary() 
+[LEAVE] m_componentName="iqrf::SmartConnectService" m_state="CLOSED" 
+13-08-2018 13:37:13.29422 DBG 0  Component.cpp:235 stopInstances() 
+[ENTER] m_componentName="iqrf::OtaUploadService" m_state="CLOSED" 
+13-08-2018 13:37:13.29430 DBG 0  Component.cpp:249 stopInstances() 
+[LEAVE] m_componentName="iqrf::OtaUploadService" m_state="CLOSED" 
+13-08-2018 13:37:13.29439 DBG 0  Component.cpp:184 closeLibrary() 
+[ENTER] m_componentName="iqrf::OtaUploadService" m_state="CLOSED" 
+13-08-2018 13:37:13.29448 DBG 0  Component.cpp:199 closeLibrary() 
+[LEAVE] m_componentName="iqrf::OtaUploadService" m_state="CLOSED" 
+13-08-2018 13:37:13.29457 DBG 0  Component.cpp:235 stopInstances() 
+[ENTER] m_componentName="iqrf::ReadTrConfService" m_state="CLOSED" 
+13-08-2018 13:37:13.29465 DBG 0  Component.cpp:249 stopInstances() 
+[LEAVE] m_componentName="iqrf::ReadTrConfService" m_state="CLOSED" 
+13-08-2018 13:37:13.29474 DBG 0  Component.cpp:184 closeLibrary() 
+[ENTER] m_componentName="iqrf::ReadTrConfService" m_state="CLOSED" 
+13-08-2018 13:37:13.29483 DBG 0  Component.cpp:199 closeLibrary() 
+[LEAVE] m_componentName="iqrf::ReadTrConfService" m_state="CLOSED" 
+13-08-2018 13:37:13.29491 DBG 0  Component.cpp:235 stopInstances() 
+[ENTER] m_componentName="iqrf::WriteTrConfService" m_state="CLOSED" 
+13-08-2018 13:37:13.29500 DBG 0  Component.cpp:249 stopInstances() 
+[LEAVE] m_componentName="iqrf::WriteTrConfService" m_state="CLOSED" 
+13-08-2018 13:37:13.29509 DBG 0  Component.cpp:184 closeLibrary() 
+[ENTER] m_componentName="iqrf::WriteTrConfService" m_state="CLOSED" 
+13-08-2018 13:37:13.29517 DBG 0  Component.cpp:199 closeLibrary() 
+[LEAVE] m_componentName="iqrf::WriteTrConfService" m_state="CLOSED" 
+13-08-2018 13:37:13.29526 DBG 0  Component.cpp:235 stopInstances() 
+[ENTER] m_componentName="iqrf::JsonDpaApiIqrfStdExt" m_state="CLOSED" 
+13-08-2018 13:37:13.29535 DBG 0  Component.cpp:249 stopInstances() 
+[LEAVE] m_componentName="iqrf::JsonDpaApiIqrfStdExt" m_state="CLOSED" 
+13-08-2018 13:37:13.29544 DBG 0  Component.cpp:184 closeLibrary() 
+[ENTER] m_componentName="iqrf::JsonDpaApiIqrfStdExt" m_state="CLOSED" 
+13-08-2018 13:37:13.29552 DBG 0  Component.cpp:199 closeLibrary() 
+[LEAVE] m_componentName="iqrf::JsonDpaApiIqrfStdExt" m_state="CLOSED" 
+13-08-2018 13:37:13.29561 DBG 0  Component.cpp:235 stopInstances() 
+[ENTER] m_componentName="iqrf::JsonDpaApiIqrfStandard" m_state="CLOSED" 
+13-08-2018 13:37:13.29570 DBG 0  Component.cpp:249 stopInstances() 
+[LEAVE] m_componentName="iqrf::JsonDpaApiIqrfStandard" m_state="CLOSED" 
+13-08-2018 13:37:13.29579 DBG 0  Component.cpp:184 closeLibrary() 
+[ENTER] m_componentName="iqrf::JsonDpaApiIqrfStandard" m_state="CLOSED" 
+13-08-2018 13:37:13.29587 DBG 0  Component.cpp:199 closeLibrary() 
+[LEAVE] m_componentName="iqrf::JsonDpaApiIqrfStandard" m_state="CLOSED" 
+13-08-2018 13:37:13.29596 DBG 0  Component.cpp:235 stopInstances() 
+[ENTER] m_componentName="iqrf::JsRenderDuktape" m_state="CLOSED" 
+13-08-2018 13:37:13.29605 DBG 0  Component.cpp:249 stopInstances() 
+[LEAVE] m_componentName="iqrf::JsRenderDuktape" m_state="CLOSED" 
+13-08-2018 13:37:13.29617 DBG 0  Component.cpp:184 closeLibrary() 
+[ENTER] m_componentName="iqrf::JsRenderDuktape" m_state="CLOSED" 
+13-08-2018 13:37:13.29626 DBG 0  Component.cpp:199 closeLibrary() 
+[LEAVE] m_componentName="iqrf::JsRenderDuktape" m_state="CLOSED" 
+13-08-2018 13:37:13.29635 DBG 0  Component.cpp:235 stopInstances() 
+[ENTER] m_componentName="iqrf::JsCache" m_state="CLOSED" 
+13-08-2018 13:37:13.29643 DBG 0  Component.cpp:249 stopInstances() 
+[LEAVE] m_componentName="iqrf::JsCache" m_state="CLOSED" 
+13-08-2018 13:37:13.29652 DBG 0  Component.cpp:184 closeLibrary() 
+[ENTER] m_componentName="iqrf::JsCache" m_state="CLOSED" 
+13-08-2018 13:37:13.29661 DBG 0  Component.cpp:199 closeLibrary() 
+[LEAVE] m_componentName="iqrf::JsCache" m_state="CLOSED" 
+13-08-2018 13:37:13.29670 DBG 0  Component.cpp:235 stopInstances() 
+[ENTER] m_componentName="iqrf::JsonCfgApi" m_state="CLOSED" 
+13-08-2018 13:37:13.29679 DBG 0  Component.cpp:249 stopInstances() 
+[LEAVE] m_componentName="iqrf::JsonCfgApi" m_state="CLOSED" 
+13-08-2018 13:37:13.29695 DBG 0  Component.cpp:184 closeLibrary() 
+[ENTER] m_componentName="iqrf::JsonCfgApi" m_state="CLOSED" 
+13-08-2018 13:37:13.29703 DBG 0  Component.cpp:199 closeLibrary() 
+[LEAVE] m_componentName="iqrf::JsonCfgApi" m_state="CLOSED" 
+13-08-2018 13:37:13.29712 DBG 0  Component.cpp:235 stopInstances() 
+[ENTER] m_componentName="iqrf::JsonMngApi" m_state="CLOSED" 
+13-08-2018 13:37:13.29720 DBG 0  Component.cpp:249 stopInstances() 
+[LEAVE] m_componentName="iqrf::JsonMngApi" m_state="CLOSED" 
+13-08-2018 13:37:13.29728 DBG 0  Component.cpp:184 closeLibrary() 
+[ENTER] m_componentName="iqrf::JsonMngApi" m_state="CLOSED" 
+13-08-2018 13:37:13.29736 DBG 0  Component.cpp:199 closeLibrary() 
+[LEAVE] m_componentName="iqrf::JsonMngApi" m_state="CLOSED" 
+13-08-2018 13:37:13.29744 DBG 0  Component.cpp:235 stopInstances() 
+[ENTER] m_componentName="iqrf::JsonDpaApiRaw" m_state="CLOSED" 
+13-08-2018 13:37:13.29752 DBG 0  Component.cpp:249 stopInstances() 
+[LEAVE] m_componentName="iqrf::JsonDpaApiRaw" m_state="CLOSED" 
+13-08-2018 13:37:13.29761 DBG 0  Component.cpp:184 closeLibrary() 
+[ENTER] m_componentName="iqrf::JsonDpaApiRaw" m_state="CLOSED" 
+13-08-2018 13:37:13.29769 DBG 0  Component.cpp:199 closeLibrary() 
+[LEAVE] m_componentName="iqrf::JsonDpaApiRaw" m_state="CLOSED" 
+13-08-2018 13:37:13.29777 DBG 0  Component.cpp:235 stopInstances() 
+[ENTER] m_componentName="iqrf::JsonSplitter" m_state="CLOSED" 
+13-08-2018 13:37:13.29785 DBG 0  Component.cpp:249 stopInstances() 
+[LEAVE] m_componentName="iqrf::JsonSplitter" m_state="CLOSED" 
+13-08-2018 13:37:13.29793 DBG 0  Component.cpp:184 closeLibrary() 
+[ENTER] m_componentName="iqrf::JsonSplitter" m_state="CLOSED" 
+13-08-2018 13:37:13.29801 DBG 0  Component.cpp:199 closeLibrary() 
+[LEAVE] m_componentName="iqrf::JsonSplitter" m_state="CLOSED" 
+13-08-2018 13:37:13.29810 DBG 0  Component.cpp:235 stopInstances() 
+[ENTER] m_componentName="iqrf::Scheduler" m_state="CLOSED" 
+13-08-2018 13:37:13.29818 DBG 0  Component.cpp:249 stopInstances() 
+[LEAVE] m_componentName="iqrf::Scheduler" m_state="CLOSED" 
+13-08-2018 13:37:13.29826 DBG 0  Component.cpp:184 closeLibrary() 
+[ENTER] m_componentName="iqrf::Scheduler" m_state="CLOSED" 
+13-08-2018 13:37:13.29834 DBG 0  Component.cpp:199 closeLibrary() 
+[LEAVE] m_componentName="iqrf::Scheduler" m_state="CLOSED" 
+13-08-2018 13:37:13.29843 DBG 0  Component.cpp:235 stopInstances() 
+[ENTER] m_componentName="iqrf::IdeCounterpart" m_state="CLOSED" 
+13-08-2018 13:37:13.29851 DBG 0  Component.cpp:249 stopInstances() 
+[LEAVE] m_componentName="iqrf::IdeCounterpart" m_state="CLOSED" 
+13-08-2018 13:37:13.29859 DBG 0  Component.cpp:184 closeLibrary() 
+[ENTER] m_componentName="iqrf::IdeCounterpart" m_state="CLOSED" 
+13-08-2018 13:37:13.29867 DBG 0  Component.cpp:199 closeLibrary() 
+[LEAVE] m_componentName="iqrf::IdeCounterpart" m_state="CLOSED" 
+13-08-2018 13:37:13.29875 DBG 0  Component.cpp:235 stopInstances() 
+[ENTER] m_componentName="iqrf::LegacyApiSupport" m_state="CLOSED" 
+13-08-2018 13:37:13.29886 DBG 0  Component.cpp:249 stopInstances() 
+[LEAVE] m_componentName="iqrf::LegacyApiSupport" m_state="CLOSED" 
+13-08-2018 13:37:13.29895 DBG 0  Component.cpp:184 closeLibrary() 
+[ENTER] m_componentName="iqrf::LegacyApiSupport" m_state="CLOSED" 
+13-08-2018 13:37:13.29903 DBG 0  Component.cpp:199 closeLibrary() 
+[LEAVE] m_componentName="iqrf::LegacyApiSupport" m_state="CLOSED" 
+13-08-2018 13:37:13.29911 DBG 0  Component.cpp:235 stopInstances() 
+[ENTER] m_componentName="iqrf::IqrfDpa" m_state="CLOSED" 
+13-08-2018 13:37:13.29919 DBG 0  Component.cpp:249 stopInstances() 
+[LEAVE] m_componentName="iqrf::IqrfDpa" m_state="CLOSED" 
+13-08-2018 13:37:13.29928 DBG 0  Component.cpp:184 closeLibrary() 
+[ENTER] m_componentName="iqrf::IqrfDpa" m_state="CLOSED" 
+13-08-2018 13:37:13.29936 DBG 0  Component.cpp:199 closeLibrary() 
+[LEAVE] m_componentName="iqrf::IqrfDpa" m_state="CLOSED" 
+13-08-2018 13:37:13.29944 DBG 0  Component.cpp:235 stopInstances() 
+[ENTER] m_componentName="iqrf::IqrfSpi" m_state="CLOSED" 
+13-08-2018 13:37:13.29952 DBG 0  Component.cpp:249 stopInstances() 
+[LEAVE] m_componentName="iqrf::IqrfSpi" m_state="CLOSED" 
+13-08-2018 13:37:13.29961 DBG 0  Component.cpp:184 closeLibrary() 
+[ENTER] m_componentName="iqrf::IqrfSpi" m_state="CLOSED" 
+13-08-2018 13:37:13.29969 DBG 0  Component.cpp:199 closeLibrary() 
+[LEAVE] m_componentName="iqrf::IqrfSpi" m_state="CLOSED" 
+13-08-2018 13:37:13.29977 DBG 0  Component.cpp:235 stopInstances() 
+[ENTER] m_componentName="shape::WebsocketCppService" m_state="CLOSED" 
+13-08-2018 13:37:13.29985 DBG 0  Component.cpp:249 stopInstances() 
+[LEAVE] m_componentName="shape::WebsocketCppService" m_state="CLOSED" 
+13-08-2018 13:37:13.29994 DBG 0  Component.cpp:184 closeLibrary() 
+[ENTER] m_componentName="shape::WebsocketCppService" m_state="CLOSED" 
+13-08-2018 13:37:13.30002 DBG 0  Component.cpp:199 closeLibrary() 
+[LEAVE] m_componentName="shape::WebsocketCppService" m_state="CLOSED" 
+13-08-2018 13:37:13.30010 DBG 0  Component.cpp:235 stopInstances() 
+[ENTER] m_componentName="shape::CppRestService" m_state="STARTED" 
+13-08-2018 13:37:13.30019 INF 0  Component.cpp:114 setState() 
+m_componentName="shape::CppRestService" m_state="STOPPING" 
+13-08-2018 13:37:13.30027 DBG 0  Component.cpp:259 removeInstances() 
+[ENTER] m_componentName="shape::CppRestService" 
+13-08-2018 13:37:13.30036 DBG 0  ComponentInstance.cpp:162 ~ComponentInstance() 
+[ENTER] instanceName="CppRestService" 
+13-08-2018 13:37:13.30045 DBG 0  ComponentManager.cpp:327 removeProvidedInterface() 
+[ENTER] *providedInterface="ProvidedInterface="shape::IRestApiService" ProviderName="CppRestService" " 
+13-08-2018 13:37:13.30054 INF 0  ComponentManager.cpp:336 removeProvidedInterface() 
+Remove provided interface: shape::IRestApiService
+13-08-2018 13:37:13.30064 DBG 0  ComponentManager.cpp:364 removeProvidedInterface() 
+[LEAVE] 
+13-08-2018 13:37:13.30091 DBG 0  ComponentManager.cpp:180 exit() 
+[ENTER] 
+13-08-2018 13:37:13.30100 DBG 0  ComponentManager.cpp:187 exit() 
+[ENTER] 
+13-08-2018 13:37:13.30110 DBG 0  ComponentManager.cpp:198 exit() 
+[LEAVE] 
+13-08-2018 13:37:13.30118 DBG 0  ComponentManager.cpp:182 exit() 
+[LEAVE] 

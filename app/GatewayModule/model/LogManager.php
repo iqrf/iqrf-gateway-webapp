@@ -53,17 +53,27 @@ class LogManager {
 	}
 
 	/**
-	 * Load logs of IQRF Gateway Daemon
+	 * Get IQRF Gateway Daemon's log files
+	 * @return array IQRF Gateway Daemon's log files
+	 */
+	public function getLogFiles(): array {
+		$logFiles = [];
+		foreach (Finder::findFiles('*-iqrf-gateway-daemon.log')->from($this->logDir) as $file) {
+			$path = $file->getRealPath();
+			$fileName = Strings::replace($path, ['~^' . realpath($this->logDir) . '/~', '/-iqrf-gateway-daemon.log$/'], '');
+			$logFiles[$fileName] = $path;
+		}
+		krsort($logFiles);
+		return $logFiles;
+	}
+
+	/**
+	 * Load the latest log of IQRF Gateway Daemon
 	 * @return string IQRF Gateway Daemon's log
 	 */
 	public function load() {
-		$logFiles = [];
-		foreach (Finder::findFiles('*-iqrf-gateway-daemon.log')->from($this->logDir) as $file) {
-			$fileName = Strings::replace($file->getRealPath(), ['~^' . realpath($this->logDir) . '/~', '/-iqrf-gateway-daemon.log$/'], '');
-			$logFiles[$fileName] = FileSystem::read($file);
-		}
-		krsort($logFiles);
-		return reset($logFiles);
+		$logFiles = $this->getLogFiles();
+		return FileSystem::read(reset($logFiles));
 	}
 
 	/**
