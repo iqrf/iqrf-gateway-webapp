@@ -61,7 +61,7 @@ class SchedulerManager {
 	public function __construct(MainManager $mainManager, GenericManager $genericManager) {
 		$this->genericConfigManager = $genericManager;
 		$this->mainConfigManager = $mainManager;
-		$path = $this->mainConfigManager->load()['cacheDir'] . '/Scheduler';
+		$path = $this->mainConfigManager->load()['cacheDir'] . '/scheduler';
 		$this->fileManager = new JsonFileManager($path);
 	}
 

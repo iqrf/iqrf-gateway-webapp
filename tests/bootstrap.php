@@ -6,7 +6,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 Tester\Environment::setup();
 @mkdir(__DIR__ . '/configuration-test/');
-@mkdir(__DIR__ . '/configuration-test/Scheduler/');
+@mkdir(__DIR__ . '/configuration-test/scheduler/');
 date_default_timezone_set('Europe/Prague');
 
 $configurator = new Nette\Configurator;
