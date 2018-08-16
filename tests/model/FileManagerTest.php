@@ -1,8 +1,8 @@
 <?php
 
 /**
- * TEST: App\Model\JsonFileManager
- * @covers App\Model\JsonFileManager
+ * TEST: App\Model\FileManager
+ * @covers App\Model\FileManager
  * @phpVersion >= 7.0
  * @testCase
  */
@@ -10,19 +10,18 @@ declare(strict_types = 1);
 
 namespace Test\Model;
 
-use App\Model\JsonFileManager;
+use App\Model\FileManager;
 use Nette\DI\Container;
 use Nette\Utils\FileSystem;
-use Nette\Utils\Json;
 use Tester\Assert;
 use Tester\TestCase;
 
 $container = require __DIR__ . '/../bootstrap.php';
 
 /**
- * Tests for JSON file manager
+ * Tests for text file manager
  */
-class JsonFileManagerTest extends TestCase {
+class FileManagerTest extends TestCase {
 
 	/**
 	 * @var Container Nette Tester Container
@@ -30,17 +29,17 @@ class JsonFileManagerTest extends TestCase {
 	private $container;
 
 	/**
-	 * @var string File name
+	 * @var string FIle name
 	 */
-	private $fileName = 'config';
+	private $fileName = 'config.json';
 
 	/**
-	 * @var JsonFileManager JSON File manager
+	 * @var FileManager Text file manager
 	 */
 	private $manager;
 
 	/**
-	 * @var JsonFileManager JSON File manager
+	 * @var FileManager Text file manager
 	 */
 	private $managerTest;
 
@@ -66,8 +65,8 @@ class JsonFileManagerTest extends TestCase {
 	 * Set up test environment
 	 */
 	public function setUp() {
-		$this->manager = new JsonFileManager($this->path);
-		$this->managerTest = new JsonFileManager($this->pathTest);
+		$this->manager = new FileManager($this->path);
+		$this->managerTest = new FileManager($this->pathTest);
 	}
 
 	/**
@@ -81,7 +80,7 @@ class JsonFileManagerTest extends TestCase {
 	 * Test function to delete JSON file
 	 */
 	public function testDelete() {
-		$fileName = 'test-delete';
+		$fileName = 'test-delete.json';
 		$this->managerTest->write($fileName, $this->manager->read($this->fileName));
 		Assert::true($this->managerTest->exists($fileName));
 		$this->managerTest->delete($fileName);
@@ -100,8 +99,7 @@ class JsonFileManagerTest extends TestCase {
 	 * Test function to read JSON file
 	 */
 	public function testRead() {
-		$text = FileSystem::read($this->path . $this->fileName . '.json');
-		$expected = Json::decode($text, Json::FORCE_ARRAY);
+		$expected = FileSystem::read($this->path . $this->fileName);
 		Assert::equal($expected, $this->manager->read($this->fileName));
 	}
 
@@ -109,7 +107,7 @@ class JsonFileManagerTest extends TestCase {
 	 * Test function to write JSON file
 	 */
 	public function testWrite() {
-		$fileName = 'config-test';
+		$fileName = 'config-test.json';
 		$expected = $this->manager->read($this->fileName);
 		$this->managerTest->write($fileName, $expected);
 		Assert::equal($expected, $this->managerTest->read($fileName));
@@ -117,5 +115,5 @@ class JsonFileManagerTest extends TestCase {
 
 }
 
-$test = new JsonFileManagerTest($container);
+$test = new FileManagerTest($container);
 $test->run();
