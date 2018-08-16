@@ -34,6 +34,7 @@ class JsonSplitterPresenter extends ProtectedPresenter {
 	 * @inject
 	 */
 	public $formFactory;
+
 	/**
 	 * Create JSON Splitter settings form
 	 * @return Form JSON Splitter settings form

@@ -70,7 +70,7 @@ class LogManagerTest extends TestCase {
 		];
 		Assert::same($expected, $this->manager->getLogFiles());
 	}
-	
+
 	/**
 	 * Test function to load the latest IQRF Gateway Daemon's log
 	 */
@@ -79,7 +79,7 @@ class LogManagerTest extends TestCase {
 		$expected = $this->fileManager->read($fileName);
 		Assert::same($expected, $this->manager->load());
 	}
-	
+
 	/**
 	 * Test function to download a ZIP archive with IQRF Gateway Daemon's logs
 	 */
