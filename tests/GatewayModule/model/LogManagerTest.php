@@ -12,6 +12,7 @@ namespace Test\Model;
 
 use App\GatewayModule\Model\LogManager;
 use App\Model\FileManager;
+use App\Model\ZipArchiveManager;
 use Nette\Application\Responses\FileResponse;
 use Nette\DI\Container;
 use Tester\Assert;
@@ -84,11 +85,21 @@ class LogManagerTest extends TestCase {
 	 * Test function to download a ZIP archive with IQRF Gateway Daemon's logs
 	 */
 	public function testDownload() {
+		$actual = $this->manager->download();
 		$path = '/tmp/iqrf-daemon-gateway-logs.zip';
 		$fileName = 'iqrf-gateway-daemon-logs' . (new \DateTime())->format('c') . '.zip';
 		$contentType = 'application/zip';
 		$expected = new FileResponse($path, $fileName, $contentType, true);
-		Assert::equal($expected, $this->manager->download());
+		Assert::equal($expected, $actual);
+		$zipManager = new ZipArchiveManager($path, \ZipArchive::CREATE);
+		$logs = [
+			'2018-08-13-13-37-834-iqrf-gateway-daemon.log',
+			'2018-08-13-13-37-496-iqrf-gateway-daemon.log',
+		];
+		foreach ($logs as $log) {
+			$expectedLog = $this->fileManager->read($log);
+			Assert::same($expectedLog, $zipManager->openFile($log));
+		}
 	}
 
 }
