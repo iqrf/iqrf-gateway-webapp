@@ -11,6 +11,7 @@ declare(strict_types = 1);
 namespace Test\Router;
 
 use App\Router\RouterFactory;
+use Nette\Application\IRouter;
 use Nette\Application\Routers\Route;
 use Nette\Application\Routers\RouteList;
 use Nette\DI\Container;
@@ -30,6 +31,29 @@ class RouterFactoryTest extends TestCase {
 	private $container;
 
 	/**
+	 * @var array Routes
+	 */
+	private $expected = [
+		['Cloud:' => [
+				'[<lang [a-z]{2}>/]cloud/<presenter>/<action>[/<id>]',
+			],],
+		['Config:' => [
+				'[<lang [a-z]{2}>/]config/scheduler/add/<type>',
+				'[<lang [a-z]{2}>/]config/<presenter>/<action>[/<id>]',
+			],],
+		['Gateway:' => [
+				'[<lang [a-z]{2}>/]gateway/<presenter>/<action>',
+			],],
+		['IqrfApp:' => [
+				'[<lang [a-z]{2}>/]iqrfnet/<presenter>/<action>',
+			],],
+		['Service:' => [
+				'[<lang [a-z]{2}>/]service/<presenter>/<action>',
+			],],
+		'[<lang [a-z]{2}>/]<presenter>/<action>[/<id>]',
+	];
+
+	/**
 	 * Constructor
 	 * @param Container $container Nette Tester Container
 	 */
@@ -43,24 +67,16 @@ class RouterFactoryTest extends TestCase {
 	public function testCreateRouter() {
 		/** @var RouteList $routeList */
 		$routeList = RouterFactory::createRouter();
-		$expected = [
-			['Cloud:' => '[<lang [a-z]{2}>/]cloud/<presenter>/<action>[/<id>]'],
-			['Config:' => '[<lang [a-z]{2}>/]config/<presenter>/<action>[/<id>]'],
-			['Gateway:' => '[<lang [a-z]{2}>/]gateway/<presenter>/<action>'],
-			['IqrfApp:' => '[<lang [a-z]{2}>/]iqrfnet/<presenter>/<action>'],
-			['Service:' => '[<lang [a-z]{2}>/]service/<presenter>/<action>'],
-			'[<lang [a-z]{2}>/]<presenter>/<action>[/<id>]',
-		];
 		Assert::type(RouteList::class, $routeList);
 		Assert::same('', $routeList->getModule());
-		Assert::same($expected, array_map(function ($type) {
+		Assert::same($this->expected, array_map(function (IRouter $type) {
 					if ($type instanceof Route) {
 						return $type->getMask();
 					} elseif ($type instanceof RouteList) {
-						$routeMask = array_map(function ($route) {
+						$routeMask = array_map(function (Route $route) {
 							return $route->getMask();
 						}, (array) $type->getIterator());
-						return [$type->getModule() => reset($routeMask)];
+						return [$type->getModule() => $routeMask];
 					}
 				}, (array) $routeList->getIterator()));
 	}

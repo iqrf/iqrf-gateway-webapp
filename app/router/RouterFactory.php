@@ -41,6 +41,7 @@ class RouterFactory {
 		$cloud[] = new Route('[<lang [a-z]{2}>/]cloud/<presenter>/<action>[/<id>]', 'Homepage:default');
 		$router[] = $cloud;
 		$config = new RouteList('Config');
+		$config[] = new Route('[<lang [a-z]{2}>/]config/scheduler/add/<type>', 'Scheduler:add');
 		$config[] = new Route('[<lang [a-z]{2}>/]config/<presenter>/<action>[/<id>]', 'Homepage:default');
 		$router[] = $config;
 		$gateway = new RouteList('Gateway');
