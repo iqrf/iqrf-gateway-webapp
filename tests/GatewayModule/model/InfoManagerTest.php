@@ -17,6 +17,7 @@ use App\Model\CommandManager;
 use App\Model\FileManager;
 use App\Model\JsonFileManager;
 use App\Model\VersionManager;
+use Nette\Caching\Storages\DevNullStorage;
 use Nette\DI\Container;
 use Tester\Assert;
 use Tester\TestCase;
@@ -27,6 +28,11 @@ $container = require __DIR__ . '/../../bootstrap.php';
  * Tests for Gateway info manager
  */
 class InfoManagerTest extends TestCase {
+
+	/**
+	 * @var DevNullStorage Cache storage for testing
+	 */
+	private $cacheStorage;
 
 	/**
 	 * @var Container Nette Tester Container
@@ -77,7 +83,9 @@ class InfoManagerTest extends TestCase {
 	 */
 	public function setUp() {
 		$msgIdManager = new MessageIdManager();
-		$this->versionManager = new VersionManager(new CommandManager(false));
+		$this->cacheStorage = new DevNullStorage();
+		$commandManager = new CommandManager(false);
+		$this->versionManager = new VersionManager($commandManager, $this->cacheStorage);
 		$this->iqrfAppManager = new IqrfAppManager($this->wsServer, $msgIdManager);
 	}
 
@@ -184,14 +192,14 @@ class InfoManagerTest extends TestCase {
 		$version = 'v1.1.6';
 		$commandManager0 = \Mockery::mock(CommandManager::class);
 		$commandManager0->shouldReceive('commandExist')->with('git')->andReturn(false);
-		$versionManager0 = new VersionManager($commandManager0);
+		$versionManager0 = new VersionManager($commandManager0, $this->cacheStorage);
 		$gwInfoManager0 = new InfoManager($commandManager0, $this->iqrfAppManager, $versionManager0);
 		Assert::same($version, $gwInfoManager0->getWebAppVersion());
 		$gitBranches = '* master                 733d45340cbb2565fd068ca3257ad39a5e46f963 Add a notification to an update webapp to newer stable version';
 		$commandManager1 = \Mockery::mock(CommandManager::class);
 		$commandManager1->shouldReceive('commandExist')->with('git')->andReturn(true);
 		$commandManager1->shouldReceive('send')->with($this->commands['gitBranches'])->andReturn($gitBranches);
-		$versionManager1 = new VersionManager($commandManager1);
+		$versionManager1 = new VersionManager($commandManager1, $this->cacheStorage);
 		$gwInfoManager1 = new InfoManager($commandManager1, $this->iqrfAppManager, $versionManager1);
 		Assert::same($version . ' (master - 733d45340cbb2565fd068ca3257ad39a5e46f963)', $gwInfoManager1->getWebAppVersion());
 	}

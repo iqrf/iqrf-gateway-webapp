@@ -12,6 +12,7 @@ namespace Test\Model;
 
 use App\Model\CommandManager;
 use App\Model\VersionManager;
+use Nette\Caching\Storages\DevNullStorage;
 use Nette\DI\Container;
 use Tester\Assert;
 use Tester\TestCase;
@@ -22,6 +23,11 @@ $container = require __DIR__ . '/../bootstrap.php';
  * Tests for version manager
  */
 class VersionManagerTest extends TestCase {
+
+	/**
+	 * @var DevNullStorage Cache storage for testing
+	 */
+	private $cacheStorage;
 
 	/**
 	 * @var Container Nette Tester Container
@@ -56,7 +62,8 @@ class VersionManagerTest extends TestCase {
 	 */
 	public function setUp() {
 		$this->commandManager = new CommandManager(false);
-		$this->manager = new VersionManager($this->commandManager);
+		$this->cacheStorage = new DevNullStorage();
+		$this->manager = new VersionManager($this->commandManager, $this->cacheStorage);
 	}
 
 	/**
@@ -86,13 +93,13 @@ class VersionManagerTest extends TestCase {
 	public function testGetInstalledWebapp() {
 		$commandManager0 = \Mockery::mock(CommandManager::class);
 		$commandManager0->shouldReceive('commandExist')->with('git')->andReturn(false);
-		$versionManager0 = new VersionManager($commandManager0);
+		$versionManager0 = new VersionManager($commandManager0, $this->cacheStorage);
 		Assert::same('v' . $this->currentVersion, $versionManager0->getInstalledWebapp());
 		$gitBranches = '* master                 733d45340cbb2565fd068ca3257ad39a5e46f963 Add a notification to an update webapp to newer stable version';
 		$commandManager1 = \Mockery::mock(CommandManager::class);
 		$commandManager1->shouldReceive('commandExist')->with('git')->andReturn(true);
 		$commandManager1->shouldReceive('send')->with('git branch -v --no-abbrev')->andReturn($gitBranches);
-		$versionManager1 = new VersionManager($commandManager1);
+		$versionManager1 = new VersionManager($commandManager1, $this->cacheStorage);
 		Assert::same('v' . $this->currentVersion . ' (master - 733d45340cbb2565fd068ca3257ad39a5e46f963)', $versionManager1->getInstalledWebapp());
 	}
 

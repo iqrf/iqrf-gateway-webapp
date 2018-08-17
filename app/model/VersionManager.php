@@ -23,6 +23,8 @@ namespace App\Model;
 use App\Model\JsonFileManager;
 use GuzzleHttp\Client;
 use Nette;
+use Nette\Caching\Cache;
+use Nette\Caching\IStorage;
 use Nette\Utils\Json;
 
 /**
@@ -31,6 +33,11 @@ use Nette\Utils\Json;
 class VersionManager {
 
 	use Nette\SmartObject;
+
+	/**
+	 * @var Cache Cache
+	 */
+	private $cache;
 
 	/**
 	 * @var CommandManager Command manager
@@ -45,8 +52,10 @@ class VersionManager {
 	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
+	 * @param IStorage $storage Cache storage
 	 */
-	public function __construct(CommandManager $commandManager) {
+	public function __construct(CommandManager $commandManager, IStorage $storage) {
+		$this->cache = new Cache($storage, get_class($this));
 		$this->commandManager = $commandManager;
 		$this->jsonFileManager = new JsonFileManager(__DIR__ . '/../../');
 	}
@@ -64,10 +73,13 @@ class VersionManager {
 	 * @return string Current stable version of the webapp
 	 */
 	public function getCurrentWebapp() {
-		$client = new Client();
-		$composerUrl = 'https://raw.githubusercontent.com/iqrfsdk/iqrf-gateway-webapp/stable/composer.json';
-		$composerJson = $client->request('GET', $composerUrl)->getBody()->getContents();
-		return Json::decode($composerJson, Json::FORCE_ARRAY)['version'];
+		$json = $this->cache->load('current', function (&$dependencies) {
+			$dependencies = [Cache::EXPIRE => '1 hour'];
+			$client = new Client();
+			$url = 'https://raw.githubusercontent.com/iqrfsdk/iqrf-gateway-webapp/stable/composer.json';
+			return $client->request('GET', $url)->getBody()->getContents();
+		});
+		return Json::decode($json, Json::FORCE_ARRAY)['version'];
 	}
 
 	/**
