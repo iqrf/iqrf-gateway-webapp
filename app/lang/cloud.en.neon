@@ -2,6 +2,7 @@ title: Clouds
 description: Control cloud services.
 
 messages:
+	failureDownload: The webapp has not been able to download the root CA certificate. Probably the gateway has not been connected into the Internet.
 	success: The new connection to the cloud service has been created successfully.
 
 amazonAws:

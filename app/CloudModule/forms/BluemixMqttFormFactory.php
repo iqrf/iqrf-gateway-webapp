@@ -26,6 +26,7 @@ use App\Forms\FormFactory;
 use App\Model\NonExistingJsonSchemaException;
 use App\ServiceModule\Model\NotSupportedInitSystemException;
 use App\ServiceModule\Model\ServiceManager;
+use GuzzleHttp\Exception\TransferException;
 use Nette;
 use Nette\Forms\Form;
 use Nette\Forms\Controls\SubmitButton;
@@ -112,6 +113,10 @@ class BluemixMqttFormFactory {
 				$this->presenter->flashMessage('config.messages.nonExistingJsonSchema', 'danger');
 			} else if ($e instanceof IOException) {
 				$this->presenter->flashMessage('config.messages.writeFailure', 'danger');
+			} else if ($e instanceof TransferException) {
+				$this->presenter->flashMessage('cloud.messages.downloadFailure', 'danger');
+			} else {
+				throw $e;
 			}
 		}
 		if ($needRestart) {
