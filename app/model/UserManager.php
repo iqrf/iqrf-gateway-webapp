@@ -35,11 +35,6 @@ class UserManager {
 	use Nette\SmartObject;
 
 	/**
-	 * @var Context Database context
-	 */
-	private $database;
-
-	/**
 	 * @var Selection Database table selection
 	 */
 	private $table;
@@ -49,73 +44,72 @@ class UserManager {
 	 * @param Context $database Database contaxt
 	 */
 	public function __construct(Context $database) {
-		$this->database = $database;
-		$this->table = $this->database->table('users');
+		$this->table = $database->table('users');
 	}
 
 	/**
 	 * Change user's password
-	 * @param int $userId User ID
+	 * @param int $id User ID
 	 * @param string $oldPassword Old password
 	 * @param string $newPassword New password
 	 * @throws InvalidPasswordException
 	 */
-	public function changePassword(int $userId, string $oldPassword, string $newPassword) {
-		$row = $this->table->where('id', $userId)->fetch();
+	public function changePassword(int $id, string $oldPassword, string $newPassword) {
+		$row = $this->table->where('id', $id)->fetch();
 		if (!password_verify($oldPassword, $row['password'])) {
 			throw new InvalidPasswordException();
 		}
 		$data = ['password' => password_hash($newPassword, PASSWORD_DEFAULT)];
-		$this->table->where('id', $userId)->update($data);
+		$this->table->where('id', $id)->update($data);
 	}
 
 	/**
 	 * Delete User
-	 * @param int $userId User ID
+	 * @param int $id User ID
 	 */
-	public function delete(int $userId) {
-		$this->table->where('id', $userId)->delete();
+	public function delete(int $id) {
+		$this->table->where('id', $id)->delete();
 	}
 
 	/**
 	 * Edit user
-	 * @param int $userId User ID
+	 * @param int $id User ID
 	 * @param string $username New username
-	 * @param string $userType New user type
+	 * @param string $role New user role
 	 * @param string $language New user's language
 	 * @throws UsernameAlreadyExistsException
 	 */
-	public function edit(int $userId, string $username, string $userType, string $language) {
+	public function edit(int $id, string $username, string $role, string $language) {
 		$row = $this->table->where('username', $username)->fetch();
-		if ($row && $row['id'] !== $userId) {
+		if ($row && $row['id'] !== $id) {
 			throw new UsernameAlreadyExistsException();
 		}
 		$data = [
 			'username' => $username,
-			'user_type' => $userType,
+			'role' => $role,
 			'language' => $language,
 		];
-		$this->table->where('id', $userId)->update($data);
+		$this->table->where('id', $id)->update($data);
 	}
 
 	/**
 	 * Get infromation about user
-	 * @param int $userId User ID
+	 * @param int $id User ID
 	 * @return ActiveRow|false Information about user or false
 	 */
-	public function getInfo(int $userId) {
-		return $this->table->get($userId);
+	public function getInfo(int $id) {
+		return $this->table->get($id);
 	}
 
 	/**
 	 * Register new user
 	 * @param string $username Username
 	 * @param string $password Password
-	 * @param string $userType User type
+	 * @param string $role User's role
 	 * @param string $language User's language
 	 * @throws UsernameAlreadyExistsException
 	 */
-	public function register(string $username, string $password, string $userType, string $language) {
+	public function register(string $username, string $password, string $role, string $language) {
 		$row = $this->table->where('username', $username)->fetch();
 		if ($row) {
 			throw new UsernameAlreadyExistsException();
@@ -123,7 +117,7 @@ class UserManager {
 		$data = [
 			'username' => $username,
 			'password' => password_hash($password, PASSWORD_DEFAULT),
-			'user_type' => $userType,
+			'role' => $role,
 			'language' => $language,
 		];
 		$this->table->insert($data);

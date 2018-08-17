@@ -22,6 +22,7 @@ namespace App\Model;
 
 use Nette;
 use Nette\Database\Context;
+use Nette\Database\Table\Selection;
 use Nette\Security\AuthenticationException;
 use Nette\Security\IAuthenticator;
 use Nette\Security\Identity;
@@ -34,16 +35,16 @@ class AppAuthenticator implements IAuthenticator {
 	use Nette\SmartObject;
 
 	/**
-	 * @var Context Database context
+	 * @var Selection Database table selection
 	 */
-	private $database;
+	private $table;
 
 	/**
 	 * Constructor
 	 * @param Context $database Database contaxt
 	 */
 	public function __construct(Context $database) {
-		$this->database = $database;
+		$this->table = $database->table('users');
 	}
 
 	/**
@@ -54,7 +55,7 @@ class AppAuthenticator implements IAuthenticator {
 	 */
 	public function authenticate(array $credentials) {
 		list($username, $password) = $credentials;
-		$row = $this->database->table('users')->where('username', $username)->fetch();
+		$row = $this->table->where('username', $username)->fetch();
 		if (!$row) {
 			throw new AuthenticationException('User not found.');
 		}
@@ -62,7 +63,7 @@ class AppAuthenticator implements IAuthenticator {
 			throw new AuthenticationException('Invalid password.');
 		}
 		$data = ['username' => $row['username'], 'language' => $row['language']];
-		return new Identity($row['id'], $row['user_type'], $data);
+		return new Identity($row['id'], $row['role'], $data);
 	}
 
 }
