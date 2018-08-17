@@ -20,8 +20,6 @@ declare(strict_types = 1);
 
 namespace App\Presenters;
 
-use App\Model\VersionManager;
-use Kdyby\Translation\Phrase;
 use Kdyby\Translation\Translator;
 use Nette\Application\UI\ITemplate;
 use Nette\Application\UI\Presenter;
@@ -43,21 +41,10 @@ abstract class BasePresenter extends Presenter {
 	protected $translator;
 
 	/**
-	 * @var VersionManager Version manager
-	 * @inject
-	 */
-	public $versionManager;
-
-	/**
 	 * After template render
 	 */
 	public function afterRender() {
 		parent::afterRender();
-		if ($this->versionManager->availableWebappUpdate()) {
-			$version = ['version' => $this->versionManager->getCurrentWebapp()];
-			$phrase = new Phrase('core.update.available-webapp', null, $version);
-			$this->flashMessage($phrase, 'danger');
-		}
 		$this->template->iqrfGw = $this->context->parameters['iqrf-gw'];
 		$this->template->supervisord = $this->context->parameters['supervisord'];
 	}

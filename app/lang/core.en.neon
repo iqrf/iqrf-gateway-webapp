@@ -84,6 +84,7 @@ user:
 
 update:
 	available-webapp: 'There is an available update of the webapp to the version %version%.'
+	error: The webapp cannot check if there is available update because it cannot connect to the repository. Probably the gateway has not been connected into the Internet.
 
 errors:
 	form-timeout: 'Timeout expired, resubmit the form.'

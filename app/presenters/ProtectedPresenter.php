@@ -21,11 +21,36 @@ declare(strict_types = 1);
 namespace App\Presenters;
 
 use App\Presenters\BasePresenter;
+use App\Model\VersionManager;
+use Kdyby\Translation\Phrase;
+use GuzzleHttp\Exception\TransferException;
 
 /**
  * Protected presenter for protected application presenters
  */
 abstract class ProtectedPresenter extends BasePresenter {
+
+	/**
+	 * @var VersionManager Version manager
+	 * @inject
+	 */
+	public $versionManager;
+
+	/**
+	 * After template render
+	 */
+	public function afterRender() {
+		parent::afterRender();
+		try {
+			if ($this->versionManager->availableWebappUpdate()) {
+				$version = ['version' => $this->versionManager->getCurrentWebapp()];
+				$phrase = new Phrase('core.update.available-webapp', null, $version);
+				$this->flashMessage($phrase, 'danger');
+			}
+		} catch (TransferException $e) {
+			$this->flashMessage('core.update.error', 'warning');
+		}
+	}
 
 	/**
 	 * Start up an protected presenter
