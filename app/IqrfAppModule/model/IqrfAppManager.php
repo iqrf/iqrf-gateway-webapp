@@ -62,6 +62,30 @@ class IqrfAppManager {
 	];
 
 	/**
+	 * @var array DPA exceptions
+	 */
+	private $exceptions = [
+		-8 => ExclusiveAccessException::class,
+		-7 => BadResponseException::class,
+		-6 => BadRequestException::class,
+		-5 => BadRequestException::class,
+		-4 => InterfaceErrorException::class,
+		-3 => AbortedException::class,
+		-2 => InterfaceQueueFullException::class,
+		-1 => TimeoutException::class,
+		1 => GeneralFailureException::class,
+		2 => IncorrectPcmdException::class,
+		3 => IncorrectPnumException::class,
+		4 => IncorrectAddressException::class,
+		5 => IncorrectDataLengthException::class,
+		6 => IncorrectDataException::class,
+		7 => IncorrectHwpidUsedException::class,
+		8 => IncorrectNadrException::class,
+		9 => CustomHandlerConsumedInterfaceDataException::class,
+		10 => MissingCustomDpaHandlerException::class,
+	];
+
+	/**
 	 * Constructor
 	 * @param string $wsServer URL to IQRF Gateway Daemon's WebSocket server
 	 * @param MessageIdManager $msgIdManager Message ID manager
@@ -261,27 +285,13 @@ class IqrfAppManager {
 	 */
 	public function checkStatus(array $json) {
 		$status = Json::decode($json['response'], Json::FORCE_ARRAY)['data']['status'];
-		switch ($status) {
-			case -8: throw new ExclusiveAccessException();
-			case -7: throw new BadResponseException();
-			case -6: throw new BadRequestException();
-			case -5: throw new InterfaceBusyException();
-			case -4: throw new InterfaceErrorException();
-			case -3: throw new AbortedException();
-			case -2: throw new InterfaceQueueFullException();
-			case -1: throw new TimeoutException();
-			case 0: break;
-			case 1: throw new GeneralFailureException();
-			case 2: throw new IncorrectPcmdException();
-			case 3: throw new IncorrectPnumException();
-			case 4: throw new IncorrectAddressException();
-			case 5: throw new IncorrectDataLengthException();
-			case 6: throw new IncorrectDataException();
-			case 7: throw new IncorrectHwpidUsedException();
-			case 8: throw new IncorrectNadrException();
-			case 9: throw new CustomHandlerConsumedInterfaceDataException();
-			case 10: throw new MissingCustomDpaHandlerException();
-			default: throw new UserErrorException();
+		if ($status === 0) {
+			return;
+		}
+		if (array_key_exists($status, $this->exceptions)) {
+			throw new $this->exceptions[$status];
+		} else {
+			throw new UserErrorException();
 		}
 	}
 
