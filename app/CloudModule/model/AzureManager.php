@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\CloudModule\Model;
 
+use App\CloudModule\Exception\InvalidConnectionStringException;
 use App\ConfigModule\Model\GenericManager;
 use DateInterval;
 use DateTime;
@@ -90,14 +91,14 @@ class AzureManager {
 	/**
 	 * Validate MS Azure IoT Hub Connection String for devices
 	 * @param string $connectionString MS Azure IoT Hub Connection String
-	 * @throws InvalidConnectionString
+	 * @throws InvalidConnectionStringException
 	 */
 	public function checkConnectionString(string $connectionString) {
 		$data = $this->parseConnectionString($connectionString);
 		if (!isset($data['DeviceId']) ||
 				!isset($data['HostName']) ||
 				!isset($data['SharedAccessKey'])) {
-			throw new InvalidConnectionString();
+			throw new InvalidConnectionStringException();
 		}
 	}
 
@@ -109,7 +110,7 @@ class AzureManager {
 	 * @param int $expiresInMins Expiration in minutes
 	 * @return string MS Azure Shared access signature token
 	 */
-	public function generateSasToken(string $resourceUri, string $signingKey, string $policyName = null, int $expiresInMins = 525600) {
+	public function generateSasToken(string $resourceUri, string $signingKey, string $policyName = null, int $expiresInMins = 525600): string {
 		$now = new DateTime();
 		$expires = new DateInterval('PT' . $expiresInMins . 'M');
 		$ttl = intdiv($now->add($expires)->getTimestamp(), 60) * 60;
@@ -130,8 +131,9 @@ class AzureManager {
 	 * Parse Microsoft Azure IoT HUb connection string
 	 * @param string $connectionString MS Azure IoT Hub Connection string
 	 * @return array Values from the connection string
+	 * @throws InvalidConnectionStringException
 	 */
-	public function parseConnectionString(string $connectionString) {
+	public function parseConnectionString(string $connectionString): array {
 		$connection = trim($connectionString, " =\t\n\r\0\x0B");
 		$data = [];
 		foreach (explode(';', $connection) as $i) {
@@ -139,7 +141,7 @@ class AzureManager {
 			if (isset($j[0]) && isset($j[1])) {
 				$data[$j[0]] = $j[1];
 			} else {
-				throw new InvalidConnectionString();
+				throw new InvalidConnectionStringException();
 			}
 		}
 		return $data;

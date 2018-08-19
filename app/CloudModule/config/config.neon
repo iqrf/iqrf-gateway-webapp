@@ -7,4 +7,3 @@ services:
 	- App\CloudModule\Model\AzureManager
 	- App\CloudModule\Model\BluemixManager
 	- App\CloudModule\Model\InteliGlueManager
-	- App\CloudModule\Model\InvalidConnectionString

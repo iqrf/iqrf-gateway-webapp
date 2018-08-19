@@ -20,9 +20,9 @@ declare(strict_types = 1);
 
 namespace App\CloudModule\Forms;
 
+use App\CloudModule\Exception\InvalidConnectionStringException;
 use App\CloudModule\Model\AzureManager;
 use App\CloudModule\Presenters\AzurePresenter;
-use App\CloudModule\Model\InvalidConnectionString;
 use App\Forms\FormFactory;
 use App\Model\NonExistingJsonSchemaException;
 use App\ServiceModule\Model\NotSupportedInitSystemException;
@@ -105,7 +105,7 @@ class AzureMqttFormFactory {
 			$this->presenter->flashMessage('cloud.messages.success', 'success');
 			$this->presenter->redirect(':Config:Mqtt:default');
 		} catch (\Exception $e) {
-			if ($e instanceof InvalidConnectionString) {
+			if ($e instanceof InvalidConnectionStringException) {
 				$this->presenter->flashMessage('cloud.msAzure.messages.invalidConnectionString', 'danger');
 			} else if ($e instanceof NonExistingJsonSchemaException) {
 				$this->presenter->flashMessage('config.messages.nonExistingJsonSchema', 'danger');

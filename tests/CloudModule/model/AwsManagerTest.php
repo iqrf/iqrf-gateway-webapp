@@ -10,8 +10,8 @@ declare(strict_types = 1);
 
 namespace Test\ServiceModule\Model;
 
+use App\CloudModule\Exception\InvalidPrivateKeyForCertificateException;
 use App\CloudModule\Model\AwsManager;
-use App\CloudModule\Model\InvalidPrivateKeyForCertificate;
 use App\ConfigModule\Model\GenericManager;
 use App\Model\CertificateManager;
 use App\Model\JsonFileManager;
@@ -150,11 +150,10 @@ class AwsManagerTest extends TestCase {
 	}
 
 	/**
-	 * Test function to check a certificate and a private key
+	 * Test function to check a certificate and a private key (invalid private key)
 	 */
-	public function testCheckCertificate() {
+	public function testCheckCertificateInvalid() {
 		$array = $this->mockUploadedFiles(__DIR__ . '/../../model/certs/');
-		Assert::null($this->manager->checkCertificate($array));
 		Assert::exception(function () use ($array) {
 			$pKeyFile = __DIR__ . '/../../model/certs/pkey1.key';
 			$pKeyValue = [
@@ -166,7 +165,15 @@ class AwsManagerTest extends TestCase {
 			];
 			$array['key'] = new FileUpload($pKeyValue);
 			$this->manager->checkCertificate($array);
-		}, InvalidPrivateKeyForCertificate::class);
+		}, InvalidPrivateKeyForCertificateException::class);
+	}
+
+	/**
+	 * Test function to check a certificate and a private key (valid private key)
+	 */
+	public function testCheckCertificateValid() {
+		$array = $this->mockUploadedFiles(__DIR__ . '/../../model/certs/');
+		Assert::null($this->manager->checkCertificate($array));
 	}
 
 	/**

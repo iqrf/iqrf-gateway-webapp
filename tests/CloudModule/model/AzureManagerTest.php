@@ -10,8 +10,8 @@ declare(strict_types = 1);
 
 namespace Test\ServiceModule\Model;
 
+use App\CloudModule\Exception\InvalidConnectionStringException;
 use App\CloudModule\Model\AzureManager;
-use App\CloudModule\Model\InvalidConnectionString;
 use App\ConfigModule\Model\GenericManager;
 use App\Model\JsonFileManager;
 use App\Model\JsonSchemaManager;
@@ -114,14 +114,20 @@ class AzureManagerTest extends TestCase {
 	}
 
 	/**
-	 * Test function to check the connection string
+	 * Test function to check the connection string (invalid connection string)
 	 */
-	public function testCheckConnectionString() {
-		Assert::null($this->mockedManager->checkConnectionString($this->connectionString));
+	public function testCheckConnectionStringInvalid() {
 		$invalidString = 'HostName=iqrf.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=1234567890abcdefghijklmnopqrstuvwxyzABCDEFG=';
 		Assert::exception(function() use ($invalidString) {
 			$this->mockedManager->checkConnectionString($invalidString);
-		}, InvalidConnectionString::class);
+		}, InvalidConnectionStringException::class);
+	}
+
+	/**
+	 * Test function to check the connection string (valid connection string)
+	 */
+	public function testCheckConnectionStringValid() {
+		Assert::null($this->mockedManager->checkConnectionString($this->connectionString));
 	}
 
 	/**

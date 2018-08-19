@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\CloudModule\Model;
 
+use App\CloudModule\Exception\InvalidPrivateKeyForCertificateException;
 use App\ConfigModule\Model\GenericManager;
 use App\Model\CertificateManager;
 use GuzzleHttp\Client;
@@ -108,7 +109,7 @@ class AwsManager {
 		$cert = $values['cert']->getContents();
 		$pKey = $values['key']->getContents();
 		if (!$this->certManager->checkPrivateKey($cert, $pKey)) {
-			throw new InvalidPrivateKeyForCertificate();
+			throw new InvalidPrivateKeyForCertificateException();
 		}
 	}
 

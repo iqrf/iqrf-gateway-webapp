@@ -20,9 +20,9 @@ declare(strict_types = 1);
 
 namespace App\CloudModule\Forms;
 
+use App\CloudModule\Exception\InvalidPrivateKeyForCertificateException;
 use App\CloudModule\Model\AwsManager;
 use App\CloudModule\Presenters\AwsPresenter;
-use App\CloudModule\Model\InvalidPrivateKeyForCertificate;
 use App\Forms\FormFactory;
 use App\Model\NonExistingJsonSchemaException;
 use App\ServiceModule\Model\NotSupportedInitSystemException;
@@ -108,7 +108,7 @@ class AwsMqttFormFactory {
 			$this->presenter->flashMessage('cloud.messages.success', 'success');
 			$this->presenter->redirect(':Config:Mqtt:default');
 		} catch (\Exception $e) {
-			if ($e instanceof InvalidPrivateKeyForCertificate) {
+			if ($e instanceof InvalidPrivateKeyForCertificateException) {
 				$this->presenter->flashMessage('cloud.amazonAws.messages.mismatchedCrtAndKey', 'danger');
 			} else if ($e instanceof NonExistingJsonSchemaException) {
 				$this->presenter->flashMessage('config.messages.nonExistingJsonSchema', 'danger');
