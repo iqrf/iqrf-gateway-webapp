@@ -20,8 +20,8 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Forms;
 
-use App\ConfigModule\Model\IncompleteConfiguration;
-use App\ConfigModule\Model\InvalidConfigurationFormat;
+use App\ConfigModule\Exception\IncompleteConfigurationException;
+use App\ConfigModule\Exception\InvalidConfigurationFormatException;
 use App\ConfigModule\Model\MigrationManager;
 use App\ConfigModule\Presenters\MigrationPresenter;
 use App\Forms\FormFactory;
@@ -87,9 +87,9 @@ class MigrationFormFactory {
 			$this->manager->upload($form->getValues(true));
 			$this->presenter->flashMessage('config.migration.messages.importedConfig', 'success');
 		} catch (\Exception $e) {
-			if ($e instanceof IncompleteConfiguration) {
+			if ($e instanceof IncompleteConfigurationException) {
 				$this->presenter->flashMessage('config.migration.errors.invalidConfig', 'danger');
-			} else if ($e instanceof InvalidConfigurationFormat) {
+			} else if ($e instanceof InvalidConfigurationFormatException) {
 				$this->presenter->flashMessage('config.migration.errors.invalidFormat', 'danger');
 			} else if ($e instanceof NonExistingJsonSchemaException) {
 				$this->presenter->flashMessage('config.messages.nonExistingJsonSchema', 'danger');

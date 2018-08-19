@@ -18,18 +18,11 @@
  */
 declare(strict_types = 1);
 
-namespace App\ConfigModule\Model;
-
-/**
- * The exception that indicates an incomplete configuration
- */
-class IncompleteConfiguration extends \Exception {
-
-}
+namespace App\ConfigModule\Exception;
 
 /**
  * The exception that indicates an invalid format of configuration to import
  */
-class InvalidConfigurationFormat extends \Exception {
+class InvalidConfigurationFormatException extends \Exception {
 
 }

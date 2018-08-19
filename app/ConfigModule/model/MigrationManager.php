@@ -20,8 +20,8 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Model;
 
-use App\ConfigModule\Model\IncompleteConfiguration;
-use App\ConfigModule\Model\InvalidConfigurationFormat;
+use App\ConfigModule\Exception\IncompleteConfigurationException;
+use App\ConfigModule\Exception\InvalidConfigurationFormatException;
 use App\Model\CommandManager;
 use App\Model\InvalidJsonException;
 use App\Model\JsonSchemaManager;
@@ -101,14 +101,14 @@ class MigrationManager {
 		$zip = $formValues['configuration'];
 		if ($zip->isOk()) {
 			if ($zip->getContentType() !== 'application/zip') {
-				throw new InvalidConfigurationFormat();
+				throw new InvalidConfigurationFormatException();
 			}
 			$zip->move($this->path);
 			$zipManager = new ZipArchiveManager($this->path, \ZipArchive::CREATE);
 			if (!$this->validate($zipManager)) {
 				$zipManager->close();
 				FileSystem::delete($this->path);
-				throw new IncompleteConfiguration();
+				throw new IncompleteConfigurationException();
 			}
 			$this->commandManager->send('rm -rf ' . $this->configDirectory, true);
 			$this->commandManager->send('mkdir ' . $this->configDirectory, true);
