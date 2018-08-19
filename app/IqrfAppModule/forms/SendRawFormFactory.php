@@ -98,7 +98,7 @@ class SendRawFormFactory {
 		if ($this->manager->validatePacket($packet)) {
 			if ($values['overwriteAddress']) {
 				$nadr = $values['address'];
-				$packet = $this->manager->updateNadr($packet, $nadr);
+				$this->manager->updateNadr($packet, $nadr);
 			}
 			try {
 				$response = $this->manager->sendRaw($packet, $timeout);

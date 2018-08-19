@@ -68,7 +68,7 @@ class IqrfAppManager {
 		-8 => ExclusiveAccessException::class,
 		-7 => BadResponseException::class,
 		-6 => BadRequestException::class,
-		-5 => BadRequestException::class,
+		-5 => InterfaceBusyException::class,
 		-4 => InterfaceErrorException::class,
 		-3 => AbortedException::class,
 		-2 => InterfaceQueueFullException::class,
@@ -98,16 +98,17 @@ class IqrfAppManager {
 	/**
 	 * Send JSON request to IQRF Gateway Daemon via WebSocket
 	 * @param array $array JSON request in array
+	 * @param int $timeout Connection timeout in seconds
 	 * @return string JSON response
 	 */
-	public function sendCommand(array $array) {
+	public function sendToWebsocket(array $array, int $timeout = 15) {
 		$loop = EventLoop\Factory::create();
-		$reactConnector = new ReactSocket\Connector($loop, ['timeout' => 15]);
+		$reactConnector = new ReactSocket\Connector($loop, ['timeout' => $timeout]);
 		$connector = new WebSocketClient\Connector($loop, $reactConnector);
 		$connection = $connector($this->wsServer);
 		$wait = true;
 		$attempts = 2;
-		$loop->addTimer(25.0, function () use ($loop, &$wait) {
+		$loop->addTimer($timeout * 2, function () use ($loop, &$wait) {
 			$wait = false;
 			$loop->stop();
 		});
@@ -136,7 +137,11 @@ class IqrfAppManager {
 		while ($wait) {
 			$loop->run();
 		}
-		return strval($resolved);
+		$response = strval($resolved);
+		if (empty($response)) {
+			throw new EmptyResponseException();
+		}
+		return $response;
 	}
 
 	/**
@@ -161,13 +166,9 @@ class IqrfAppManager {
 		if (!isset($timeout)) {
 			unset($array['data']['timeout']);
 		}
-		$response = $this->sendCommand($array);
-		if (empty($response)) {
-			throw new EmptyResponseException();
-		}
 		$data = [
 			'request' => Json::encode($array, Json::PRETTY),
-			'response' => $response,
+			'response' => $this->sendToWebsocket($array),
 		];
 		Debugger::barDump($data, 'iqrfapp');
 		return $data;
@@ -194,7 +195,7 @@ class IqrfAppManager {
 			],
 			'returnVerbose' => true,
 		];
-		return $this->sendCommand($array);
+		return $this->sendToWebsocket($array);
 	}
 
 	/**
@@ -210,14 +211,13 @@ class IqrfAppManager {
 	/**
 	 * Update NADR in DPA packet
 	 * @param string $packet DPA packet to modify
-	 * @param string $nadr NADR
-	 * @return string Modified DPA packet
+	 * @param string $nadr New NADR
 	 */
-	public function updateNadr(string $packet, string $nadr): string {
+	public function updateNadr(string &$packet, string $nadr) {
 		$this->fixPacket($packet);
 		$data = explode('.', $packet);
 		$data[0] = Strings::padLeft($nadr, 2, '0');
-		return Strings::lower(implode('.', $data));
+		$packet = Strings::lower(implode('.', $data));
 	}
 
 	/**
