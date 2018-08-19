@@ -71,32 +71,27 @@ def install_debian(version, stability="stable", branch=None):
 	"""
 	send_command("apt-get update")
 	if version == "8" or version == "jessie" or version == "oldstable":
-		# Install support for HTTPS repositories
-		send_command("apt-get install apt-transport-https lsb-release ca-certificates")
-		# Download PGP key for PHP 7.0 repository
-		send_command("wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg")
-		# Add PHP 7.0 repository
-		send_command("sh -c 'echo \"deb https://packages.sury.org/php/ $(lsb_release -sc) main\" > /etc/apt/sources.list.d/php.list'")
-		send_command("apt-get update")
-		# Install sudo, nginx and php7.0
-		send_command("apt-get install -y sudo php7.0 php7.0-common php7.0-fpm php7.0-curl php7.0-json php7.0-sqlite3 php7.0-mbstring php7.0-zip nginx-full zip unzip")
+		add_php_repository_debian()
+		# Install sudo, nginx and php7.2
+		send_command("apt-get install -y sudo php7.2 php7.2-common php7.2-fpm php7.2-curl php7.2-json php7.2-sqlite3 php7.2-mbstring php7.2-zip nginx-full zip unzip")
 		# Install composer
 		send_command("bash ./install-composer.sh")
 		send_command("mv composer.phar /usr/bin/composer")
 		chmod_daemon_dir()
 		install_webapp(stability, branch)
-		fix_php_fpm_config("/etc/php/7.0/fpm/php.ini", "php7.0-fpm")
+		fix_php_fpm_config("/etc/php/7.0/fpm/php.ini", "php7.2-fpm")
 		disable_default_nginx_virtualhost()
-		create_nginx_virtualhost("iqrf-gateway-webapp_php7-0.localhost")
+		create_nginx_virtualhost("iqrf-gateway-webapp_php7-2.localhost")
 		enable_sudo()
 	elif version == "9" or version == "stretch" or version == "stable":
-		# Install sudo, nginx php7.0, composer and zip
-		send_command("apt-get install -y sudo php7.0 php7.0-common php7.0-fpm php7.0-curl php7.0-json php7.0-sqlite3 php7.0-mbstring php7.0-zip composer nginx-full zip unzip")
+		add_php_repository_debian()
+		# Install sudo, nginx php7.2, composer and zip
+		send_command("apt-get install -y sudo php7.2 php7.2-common php7.2-fpm php7.2-curl php7.2-json php7.2-sqlite3 php7.2-mbstring php7.2-zip composer nginx-full zip unzip")
 		chmod_daemon_dir()
 		install_webapp(stability, branch)
-		fix_php_fpm_config("/etc/php/7.0/fpm/php.ini", "php7.0-fpm")
+		fix_php_fpm_config("/etc/php/7.0/fpm/php.ini", "php7.2-fpm")
 		disable_default_nginx_virtualhost()
-		create_nginx_virtualhost("iqrf-gateway-webapp_php7-0.localhost")
+		create_nginx_virtualhost("iqrf-gateway-webapp_php7-2.localhost")
 		chown_dir(WEBAPP_DIRECTORY)
 		enable_sudo()
 	elif version == "10" or version == "buster" or version == "testing":
@@ -117,13 +112,16 @@ def install_ubuntu(version, stability="stable", branch=None):
 	"""
 	send_command("apt-get update")
 	if version == "16.04" or version == "xenial":
-		# Install sudo, nginx php7.0, composer and zip
-		send_command("apt-get install -y sudo php7.0 php7.0-common php7.0-fpm php7.0-curl php7.0-json php7.0-sqlite3 php7.0-mbstring php7.0-zip composer nginx-full zip unzip")
+		# Add PHP 7 repository
+		send_command("add-apt-repository ppa:ondrej/php")
+		send_command("apt-get update")
+		# Install sudo, nginx php7.2, composer and zip
+		send_command("apt-get install -y sudo php7.2 php7.2-common php7.2-fpm php7.2-curl php7.2-json php7.2-sqlite3 php7.2-mbstring php7.2-zip composer nginx-full zip unzip")
 		chmod_daemon_dir()
 		install_webapp(stability, branch)
-		fix_php_fpm_config("/etc/php/7.0/fpm/php.ini", "php7.0-fpm")
+		fix_php_fpm_config("/etc/php/7.0/fpm/php.ini", "php7.2-fpm")
 		disable_default_nginx_virtualhost()
-		create_nginx_virtualhost("iqrf-gateway-webapp_php7-0.localhost")
+		create_nginx_virtualhost("iqrf-gateway-webapp_php7-2.localhost")
 		chown_dir(WEBAPP_DIRECTORY)
 		enable_sudo()
 	elif version == "18.04" or version == "bionic":
@@ -178,6 +176,17 @@ def install_php_app(directory, use_git=True, branch=None):
 	send_command("chmod 777 log/")
 	send_command("chmod 777 temp/")
 
+def add_php_repository_debian():
+	"""
+	Add PHP debian repository
+	"""
+	# Install support for HTTPS repositories
+	send_command("apt-get install apt-transport-https lsb-release ca-certificates")
+	# Download PGP key for PHP 7 repository
+	send_command("wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg")
+	# Add PHP 7.0 repository
+	send_command("sh -c 'echo \"deb https://packages.sury.org/php/ $(lsb_release -sc) main\" > /etc/apt/sources.list.d/php.list'")
+	send_command("apt-get update")
 
 def chmod_daemon_dir():
 	"""
