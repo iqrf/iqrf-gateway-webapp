@@ -118,7 +118,8 @@ class IqrfAppManagerTest extends TestCase {
 	public function testFixPacket() {
 		$packet = '00.01.06.03.ff.ff';
 		$expected = '01.00.06.03.ff.ff';
-		Assert::same($expected, $this->iqrfAppManager->fixPacket($packet));
+		$this->iqrfAppManager->fixPacket($packet);
+		Assert::same($expected, $packet);
 	}
 
 	/**

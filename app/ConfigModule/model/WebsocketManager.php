@@ -126,7 +126,8 @@ class WebsocketManager {
 	 */
 	private function read(string $fileName): array {
 		$configuration = $this->fileManager->read($fileName);
-		return $this->genericManager->fixRequiredInterfaces($configuration);
+		$this->genericManager->fixRequiredInterfaces($configuration);
+		return $configuration;
 	}
 
 	/**

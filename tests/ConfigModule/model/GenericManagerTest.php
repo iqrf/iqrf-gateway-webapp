@@ -112,7 +112,8 @@ class GenericManagerTest extends TestCase {
 		$configuration = $expected;
 		$expected['RequiredInterfaces'][0]['target']['instance'] = 'WebsocketCppService';
 		unset($expected['RequiredInterfaces'][0]['target']['WebsocketPort']);
-		Assert::same($expected, $this->manager->fixRequiredInterfaces($configuration));
+		$this->manager->fixRequiredInterfaces($configuration);
+		Assert::same($expected, $configuration);
 	}
 
 	/**

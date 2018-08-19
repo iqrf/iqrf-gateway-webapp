@@ -78,7 +78,8 @@ class GenericManager {
 	 */
 	public function load(): array {
 		$configuration = $this->fileManager->read($this->fileName);
-		return $this->fixRequiredInterfaces($configuration);
+		$this->fixRequiredInterfaces($configuration);
+		return $configuration;
 	}
 
 	/**
@@ -201,11 +202,10 @@ class GenericManager {
 	/**
 	 * Fix a required interfaces in the configuration
 	 * @param array $configuration Configuration to fix
-	 * @return array Configuration with a fixed required interfaces
 	 */
-	public function fixRequiredInterfaces(array $configuration): array {
+	public function fixRequiredInterfaces(array &$configuration) {
 		if (!array_key_exists('RequiredInterfaces', $configuration)) {
-			return $configuration;
+			return;
 		}
 		$requiredInterfaces = $configuration['RequiredInterfaces'];
 		foreach ($requiredInterfaces as $id => $requiredInterface) {
@@ -218,7 +218,6 @@ class GenericManager {
 				$configuration['RequiredInterfaces'][$id]['target']['instance'] = $instanceName;
 			}
 		}
-		return $configuration;
 	}
 
 	/**

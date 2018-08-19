@@ -146,13 +146,14 @@ class IqrfAppManager {
 	 * @return array DPA request and response
 	 */
 	public function sendRaw(string $packet, int $timeout = null): array {
+		$this->fixPacket($packet);
 		$array = [
 			'mType' => 'iqrfRaw',
 			'data' => [
 				'msgId' => $this->msgIdManager->generate(),
 				'timeout' => (int) $timeout,
 				'req' => [
-					'rData' => $this->fixPacket($packet),
+					'rData' => $packet,
 				],
 			],
 			'returnVerbose' => true,
@@ -213,7 +214,8 @@ class IqrfAppManager {
 	 * @return string Modified DPA packet
 	 */
 	public function updateNadr(string $packet, string $nadr): string {
-		$data = explode('.', $this->fixPacket($packet));
+		$this->fixPacket($packet);
+		$data = explode('.', $packet);
 		$data[0] = Strings::padLeft($nadr, 2, '0');
 		return Strings::lower(implode('.', $data));
 	}
@@ -221,9 +223,8 @@ class IqrfAppManager {
 	/**
 	 * Fix DPA packet
 	 * @param string $packet DPA packet to fix
-	 * @return string Fixed DPA packet
 	 */
-	public function fixPacket(string $packet): string {
+	public function fixPacket(string &$packet) {
 		$data = explode('.', trim($packet, '.'));
 		$nadrLo = $data[0];
 		$nadrHi = $data[1];
@@ -231,7 +232,7 @@ class IqrfAppManager {
 			$data[1] = $nadrLo;
 			$data[0] = $nadrHi;
 		}
-		return Strings::lower(implode('.', $data));
+		$packet = Strings::lower(implode('.', $data));
 	}
 
 	/**
