@@ -1,4 +1,6 @@
-{**
+<?php
+
+/**
  * Copyright 2017 MICRORISC s.r.o.
  * Copyright 2017-2018 IQRF Tech s.r.o.
  *
@@ -13,12 +15,19 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*}
+ */
+declare(strict_types = 1);
 
-{block content}
-<h1 n:block=title>{_cloud.amazonAws.form.title}</h1>
-<div class='panel panel-default'>
-	<div class='panel-body'>
-		{control cloudAwsForm}
-	</div>
-</div>
+namespace App\CloudModule\Model;
+
+/**
+ * Interface for cloud service manager
+ */
+interface IManager {
+
+	/**
+	 * Create MQTT interface
+	 * @param array $values Form values
+	 */
+	public function createMqttInterface(array $values);
+}

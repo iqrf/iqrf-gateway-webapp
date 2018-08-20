@@ -30,7 +30,7 @@ use Nette\Utils\FileSystem;
 /**
  * Tool for managing Amazon AWS IoT
  */
-class AwsManager {
+class AwsManager implements IManager {
 
 	use Nette\SmartObject;
 

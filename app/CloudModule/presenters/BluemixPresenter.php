@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\CloudModule\Presenters;
 
-use App\CloudModule\Forms\BluemixMqttFormFactory;
+use App\CloudModule\Forms\BluemixFormFactory;
 use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
@@ -30,7 +30,7 @@ use Nette\Forms\Form;
 class BluemixPresenter extends ProtectedPresenter {
 
 	/**
-	 * @var BluemixMqttFormFactory IBM Bluemix form factory
+	 * @var BluemixFormFactory IBM Bluemix form factory
 	 * @inject
 	 */
 	public $formFactory;
@@ -39,7 +39,7 @@ class BluemixPresenter extends ProtectedPresenter {
 	 * Create MQTT interface form
 	 * @return Form MQTT interface form
 	 */
-	protected function createComponentCloudBluemixMqttForm(): Form {
+	protected function createComponentCloudBluemixForm(): Form {
 		return $this->formFactory->create($this);
 	}
 

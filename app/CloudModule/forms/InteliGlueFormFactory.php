@@ -23,52 +23,26 @@ namespace App\CloudModule\Forms;
 use App\CloudModule\Model\InteliGlueManager;
 use App\CloudModule\Presenters\InteliGluePresenter;
 use App\Forms\FormFactory;
-use App\Model\NonExistingJsonSchemaException;
-use App\ServiceModule\Model\NotSupportedInitSystemException;
 use App\ServiceModule\Model\ServiceManager;
-use GuzzleHttp\Exception\TransferException;
 use Nette;
 use Nette\Forms\Form;
 use Nette\Forms\Controls\SubmitButton;
-use Nette\IOException;
 
 /**
  * Form for creating MQTT connection into Inteliments InteliGlue
  */
-class InteliGlueMqttFormFactory {
+class InteliGlueFormFactory extends CloudFormFactory {
 
 	use Nette\SmartObject;
 
 	/**
-	 * @var InteliGlueManager Inteliments InteliGlue manager
-	 */
-	private $cloudManager;
-
-	/**
-	 * @var FormFactory Generic form factory
-	 */
-	private $factory;
-
-	/**
-	 * @var InteliGluePresenter Inteliments InteliGlue presenter
-	 */
-	private $presenter;
-
-	/**
-	 * @var ServiceManager Service manager
-	 */
-	private $serviceManager;
-
-	/**
 	 * Constructor
-	 * @param InteliGlueManager $inteliGlue Inteliments InteliGlue manager
+	 * @param InteliGlueManager $manager Inteliments InteliGlue manager
 	 * @param FormFactory $factory Generic form factory
 	 * @param ServiceManager $serviceManager Service manager
 	 */
-	public function __construct(InteliGlueManager $inteliGlue, FormFactory $factory, ServiceManager $serviceManager) {
-		$this->cloudManager = $inteliGlue;
-		$this->factory = $factory;
-		$this->serviceManager = $serviceManager;
+	public function __construct(InteliGlueManager $manager, FormFactory $factory, ServiceManager $serviceManager) {
+		parent::__construct($manager, $factory, $serviceManager);
 	}
 
 	/**
@@ -95,38 +69,6 @@ class InteliGlueMqttFormFactory {
 		};
 		$form->addProtection('core.errors.form-timeout');
 		return $form;
-	}
-
-	/**
-	 * Create the MQTT interface
-	 * @param SubmitButton $button Form's submit button
-	 * @param bool $needRestart Is restart needed?
-	 */
-	public function save(SubmitButton $button, bool $needRestart = false) {
-		$values = $button->getForm()->getValues(true);
-		try {
-			$this->cloudManager->createMqttInterface($values);
-			$this->presenter->flashMessage('cloud.messages.success', 'success');
-			$this->presenter->redirect(':Config:Mqtt:default');
-		} catch (\Exception $e) {
-			if ($e instanceof NonExistingJsonSchemaException) {
-				$this->presenter->flashMessage('config.messages.nonExistingJsonSchema', 'danger');
-			} else if ($e instanceof IOException) {
-				$this->presenter->flashMessage('config.messages.writeFailure', 'danger');
-			} else if ($e instanceof TransferException) {
-				$this->presenter->flashMessage('cloud.messages.downloadFailure', 'danger');
-			} else {
-				throw $e;
-			}
-		}
-		if ($needRestart) {
-			try {
-				$this->serviceManager->restart();
-				$this->presenter->flashMessage('service.actions.restart.message', 'info');
-			} catch (NotSupportedInitSystemException $e) {
-				$this->presenter->flashMessage('service.errors.unsupportedInit', 'danger');
-			}
-		}
 	}
 
 }

@@ -29,7 +29,7 @@ use Nette;
 /**
  * Tool for managing Azure IoT Hub
  */
-class AzureManager {
+class AzureManager implements IManager {
 
 	use Nette\SmartObject;
 
@@ -52,10 +52,11 @@ class AzureManager {
 	}
 
 	/**
-	 * Create MQTT interface from MS Azure IoT Hub Connection string
-	 * @param string $connectionString MS Azure IoT Hub Connection string
+	 * Create MQTT interface
+	 * @param array $values Values from form
 	 */
-	public function createMqttInterface(string $connectionString) {
+	public function createMqttInterface(array $values) {
+		$connectionString = $values['ConnectionString'];
 		$this->checkConnectionString($connectionString);
 		$data = $this->parseConnectionString($connectionString);
 		$endpoint = $data['HostName'] . '/devices/' . $data['DeviceId'];

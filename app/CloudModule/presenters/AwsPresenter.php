@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\CloudModule\Presenters;
 
-use App\CloudModule\Forms\AwsMqttFormFactory;
+use App\CloudModule\Forms\AwsFormFactory;
 use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
@@ -30,7 +30,7 @@ use Nette\Forms\Form;
 class AwsPresenter extends ProtectedPresenter {
 
 	/**
-	 * @var AwsMqttFormFactory Amazon AWS IoT form factory
+	 * @var AwsFormFactory Amazon AWS IoT form factory
 	 * @inject
 	 */
 	public $formFactory;
@@ -39,7 +39,7 @@ class AwsPresenter extends ProtectedPresenter {
 	 * Create MQTT interface form
 	 * @return Form MQTT interface form
 	 */
-	protected function createComponentCloudAwsMqttForm(): Form {
+	protected function createComponentCloudAwsForm(): Form {
 		return $this->formFactory->create($this);
 	}
 

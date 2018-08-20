@@ -28,7 +28,7 @@ use Nette\Utils\FileSystem;
 /**
  * Tool for managing Inteliments InteliGlue
  */
-class InteliGlueManager {
+class InteliGlueManager implements IManager {
 
 	use Nette\SmartObject;
 

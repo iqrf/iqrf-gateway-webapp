@@ -109,7 +109,8 @@ class AzureManagerTest extends TestCase {
 			'EnableServerCertAuth' => false,
 			'acceptAsyncMsg' => false,
 		];
-		$this->mockedManager->createMqttInterface($this->connectionString);
+		$array['ConnectionString'] = $this->connectionString;
+		$this->mockedManager->createMqttInterface($array);
 		Assert::same($mqtt, $this->fileManager->read('MqttMessagingAzure'));
 	}
 

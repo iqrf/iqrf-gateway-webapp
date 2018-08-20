@@ -28,7 +28,7 @@ use Nette\Utils\FileSystem;
 /**
  * Tool for managing IBM Bluemix
  */
-class BluemixManager {
+class BluemixManager implements IManager {
 
 	use Nette\SmartObject;
 
