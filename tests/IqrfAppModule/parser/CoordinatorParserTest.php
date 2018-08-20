@@ -64,21 +64,33 @@ class CoordinatorParserTest extends TestCase {
 	}
 
 	/**
-	 * Test function to parse DPA response
+	 * Test function to parse DPA response "Get bonded Nodes"
 	 */
-	public function testParse() {
+	public function testParseBonded() {
 		Assert::equal($this->expected['bonded'], $this->parser->parse($this->packet['bonded']));
+	}
+
+	/**
+	 * Test function to parse DPA response "Get discovered Node"
+	 */
+	public function testParseDiscovered() {
 		Assert::equal($this->expected['discovered'], $this->parser->parse($this->packet['discovered']));
 	}
 
 	/**
-	 * Test function to parse response to DPA Coordinator - "Get bonded nodes" and "Get discovered nodes" request
+	 * Test function to parse response to DPA Coordinator - "Get bonded nodes" request
 	 */
-	public function testParseGetNodes() {
-		$actualBonded = $this->parser->parseGetNodes($this->packet['bonded']);
-		Assert::equal($this->expected['bonded'], $actualBonded);
-		$actualDiscovered = $this->parser->parseGetNodes($this->packet['discovered']);
-		Assert::equal($this->expected['discovered'], $actualDiscovered);
+	public function testParseGetBondedNodes() {
+		$actual = $this->parser->parseGetNodes($this->packet['bonded']);
+		Assert::equal($this->expected['bonded'], $actual);
+	}
+
+	/**
+	 * Test function to parse response to DPA Coordinator - "Get discovered nodes" request
+	 */
+	public function testParseGetDiscoveredNodes() {
+		$actual = $this->parser->parseGetNodes($this->packet['discovered']);
+		Assert::equal($this->expected['discovered'], $actual);
 	}
 
 }

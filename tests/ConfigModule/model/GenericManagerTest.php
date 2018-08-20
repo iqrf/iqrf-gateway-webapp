@@ -42,7 +42,7 @@ class GenericManagerTest extends TestCase {
 	/**
 	 * @var JsonFileManager JSON file manager
 	 */
-	private $fileManagerTest;
+	private $fileManagerTemp;
 
 	/**
 	 * @var string File name (without .json)
@@ -57,22 +57,7 @@ class GenericManagerTest extends TestCase {
 	/**
 	 * @var GenericManager Generic configuration manager
 	 */
-	private $managerTest;
-
-	/**
-	 * @var string Directory with configuration files
-	 */
-	private $path = __DIR__ . '/../../data/configuration/';
-
-	/**
-	 * @var string Testing directory with configuration files
-	 */
-	private $pathTest = __DIR__ . '/../../temp/configuration/';
-
-	/**
-	 * @var string Directory with JSON schemas
-	 */
-	private $schemaPath = __DIR__ . '/../../data/cfgSchemas/';
+	private $managerTemp;
 
 	/**
 	 * Constructor
@@ -86,22 +71,25 @@ class GenericManagerTest extends TestCase {
 	 * Set up test environment
 	 */
 	public function setUp() {
-		$this->fileManager = new JsonFileManager($this->path);
-		$this->fileManagerTest = new JsonFileManager($this->pathTest);
-		$schemaManager = new JsonSchemaManager($this->schemaPath);
+		$configPath = __DIR__ . '/../../data/configuration/';
+		$configTempPath = __DIR__ . '/../../temp/configuration/';
+		$schemaPath = __DIR__ . '/../../data/cfgSchemas/';
+		$this->fileManager = new JsonFileManager($configPath);
+		$this->fileManagerTemp = new JsonFileManager($configTempPath);
+		$schemaManager = new JsonSchemaManager($schemaPath);
 		$this->manager = new GenericManager($this->fileManager, $schemaManager);
-		$this->managerTest = new GenericManager($this->fileManagerTest, $schemaManager);
+		$this->managerTemp = new GenericManager($this->fileManagerTemp, $schemaManager);
 	}
 
 	/**
 	 * Test function to delete the instance of component
 	 */
 	public function testDelete() {
-		$this->fileManagerTest->write($this->fileName, $this->fileManager->read($this->fileName));
-		Assert::true($this->fileManagerTest->exists($this->fileName));
-		$this->managerTest->setFileName($this->fileName);
-		$this->managerTest->delete();
-		Assert::false($this->fileManagerTest->exists($this->fileName));
+		$this->fileManagerTemp->write($this->fileName, $this->fileManager->read($this->fileName));
+		Assert::true($this->fileManagerTemp->exists($this->fileName));
+		$this->managerTemp->setFileName($this->fileName);
+		$this->managerTemp->delete();
+		Assert::false($this->fileManagerTemp->exists($this->fileName));
 	}
 
 	/**
@@ -172,7 +160,7 @@ class GenericManagerTest extends TestCase {
 	 * Test function to save main configuration of daemon
 	 */
 	public function testSave() {
-		$this->managerTest->setComponent($this->component);
+		$this->managerTemp->setComponent($this->component);
 		$array = [
 			'instance' => 'MqttMessaging',
 			'BrokerAddr' => 'tcp://127.0.0.1:1883',
@@ -197,10 +185,10 @@ class GenericManagerTest extends TestCase {
 			'acceptAsyncMsg' => true,
 		];
 		$expected = $this->fileManager->read($this->fileName);
-		$this->fileManagerTest->write($this->fileName, $expected);
+		$this->fileManagerTemp->write($this->fileName, $expected);
 		$expected['acceptAsyncMsg'] = true;
-		$this->managerTest->save($array);
-		Assert::equal($expected, $this->fileManagerTest->read($this->fileName));
+		$this->managerTemp->save($array);
+		Assert::equal($expected, $this->fileManagerTemp->read($this->fileName));
 	}
 
 }

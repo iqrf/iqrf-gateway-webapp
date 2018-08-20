@@ -65,8 +65,7 @@ class EnumerationParserTest extends TestCase {
 	 * Test function to parse DPA response
 	 */
 	public function testParse() {
-		$actual = $this->parser->parse($this->packet);
-		Assert::equal($this->expected, $actual);
+		Assert::equal($this->expected, $this->parser->parse($this->packet));
 	}
 
 	/**

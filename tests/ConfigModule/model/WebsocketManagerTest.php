@@ -38,7 +38,7 @@ class WebsocketManagerTest extends TestCase {
 	/**
 	 * @var JsonFileManager JSON file manager
 	 */
-	private $fileManagerTest;
+	private $fileManagerTemp;
 
 	/**
 	 * @var array Websocket messaging and service file names
@@ -64,22 +64,7 @@ class WebsocketManagerTest extends TestCase {
 	/**
 	 * @var WebsocketManager Websocket interface configuration manager
 	 */
-	private $managerTest;
-
-	/**
-	 * @var string Directory with configuration files
-	 */
-	private $path = __DIR__ . '/../../data/configuration/';
-
-	/**
-	 * @var string Testing directory with configuration files
-	 */
-	private $pathTest = __DIR__ . '/../../temp/configuration/';
-
-	/**
-	 * @var string Directory with JSON schemas
-	 */
-	private $schemaPath = __DIR__ . '/../../data/cfgSchemas/';
+	private $managerTemp;
 
 	/**
 	 * @var array Values from configuration form
@@ -101,13 +86,16 @@ class WebsocketManagerTest extends TestCase {
 	 * Set up test environment
 	 */
 	public function setUp() {
-		$this->fileManager = new JsonFileManager($this->path);
-		$this->fileManagerTest = new JsonFileManager($this->pathTest);
-		$schemaManager = new JsonSchemaManager($this->schemaPath);
+		$configPath = __DIR__ . '/../../data/configuration/';
+		$configTempPath = __DIR__ . '/../../temp/configuration/';
+		$schemaPath = __DIR__ . '/../../data/cfgSchemas/';
+		$this->fileManager = new JsonFileManager($configPath);
+		$this->fileManagerTemp = new JsonFileManager($configTempPath);
+		$schemaManager = new JsonSchemaManager($schemaPath);
 		$genericManager = new GenericManager($this->fileManager, $schemaManager);
-		$genericManagerTest = new GenericManager($this->fileManagerTest, $schemaManager);
+		$genericManagerTest = new GenericManager($this->fileManagerTemp, $schemaManager);
 		$this->manager = new WebsocketManager($genericManager, $this->fileManager, $schemaManager);
-		$this->managerTest = new WebsocketManager($genericManagerTest, $this->fileManagerTest, $schemaManager);
+		$this->managerTemp = new WebsocketManager($genericManagerTest, $this->fileManagerTemp, $schemaManager);
 	}
 
 	/**
@@ -116,7 +104,7 @@ class WebsocketManagerTest extends TestCase {
 	public function copyConfiguration() {
 		foreach ($this->fileNames as $fileName) {
 			$json = $this->fileManager->read($fileName);
-			$this->fileManagerTest->write($fileName, $json);
+			$this->fileManagerTemp->write($fileName, $json);
 		}
 	}
 
@@ -125,11 +113,11 @@ class WebsocketManagerTest extends TestCase {
 	 */
 	public function testDelete() {
 		$this->copyConfiguration();
-		Assert::true($this->fileManagerTest->exists($this->fileNames['messaging']));
-		Assert::true($this->fileManagerTest->exists($this->fileNames['service']));
-		$this->managerTest->delete(0);
-		Assert::false($this->fileManagerTest->exists($this->fileNames['messaging']));
-		Assert::false($this->fileManagerTest->exists($this->fileNames['service']));
+		Assert::true($this->fileManagerTemp->exists($this->fileNames['messaging']));
+		Assert::true($this->fileManagerTemp->exists($this->fileNames['service']));
+		$this->managerTemp->delete(0);
+		Assert::false($this->fileManagerTemp->exists($this->fileNames['messaging']));
+		Assert::false($this->fileManagerTemp->exists($this->fileNames['service']));
 	}
 
 	/**
@@ -150,13 +138,13 @@ class WebsocketManagerTest extends TestCase {
 	 */
 	public function testSave() {
 		$this->copyConfiguration();
-		$this->managerTest->load(0);
-		$this->managerTest->save($this->values);
+		$this->managerTemp->load(0);
+		$this->managerTemp->save($this->values);
 		$expectedMessaging = $this->fileManager->read($this->fileNames['messaging']);
 		$expectedMessaging['RequiredInterfaces'][0]['target']['instance'] = 'WebsocketCppService';
 		unset($expectedMessaging['RequiredInterfaces'][0]['target']['WebsocketPort']);
-		Assert::same($expectedMessaging, $this->fileManagerTest->read($this->fileNames['messaging']));
-		Assert::same($this->fileManager->read($this->fileNames['service']), $this->fileManagerTest->read($this->fileNames['service']));
+		Assert::same($expectedMessaging, $this->fileManagerTemp->read($this->fileNames['messaging']));
+		Assert::same($this->fileManager->read($this->fileNames['service']), $this->fileManagerTemp->read($this->fileNames['service']));
 	}
 
 	/**

@@ -64,10 +64,16 @@ class OsParserTest extends TestCase {
 	}
 
 	/**
-	 * Test function to parse DPA response
+	 * Test function to parse DPA response "OS Info"
 	 */
-	public function testParse() {
+	public function testParseInfo() {
 		Assert::equal($this->expected['osInfo'], $this->parser->parse($this->packet['osInfo']));
+	}
+
+	/**
+	 * Test function to parse DPA response "HWP configuration"
+	 */
+	public function testParseHwp() {
 		Assert::equal($this->expected['hwpConfiguration'], $this->parser->parse($this->packet['hwpConfiguration']));
 	}
 

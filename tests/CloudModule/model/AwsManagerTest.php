@@ -67,16 +67,6 @@ class AwsManagerTest extends TestCase {
 	];
 
 	/**
-	 * @var string Testing directory with configuration files
-	 */
-	private $pathTest = __DIR__ . '/../../temp/configuration/';
-
-	/**
-	 * @var string Directory with JSON schemas
-	 */
-	private $schemaPath = __DIR__ . '/../../data/cfgSchemas/';
-
-	/**
 	 * Constructor
 	 * @param Container $container Nette Tester Container
 	 */
@@ -88,9 +78,11 @@ class AwsManagerTest extends TestCase {
 	 * Set up test environment
 	 */
 	public function setUp() {
-		$this->fileManager = new JsonFileManager($this->pathTest);
+		$configPath = __DIR__ . '/../../temp/configuration/';
+		$schemaPath = __DIR__ . '/../../data/cfgSchemas/';
+		$this->fileManager = new JsonFileManager($configPath);
 		$certManager = new CertificateManager();
-		$schemaManager = new JsonSchemaManager($this->schemaPath);
+		$schemaManager = new JsonSchemaManager($schemaPath);
 		$configManager = new GenericManager($this->fileManager, $schemaManager);
 		$this->manager = new AwsManager($certManager, $configManager);
 		$this->mockedManager = \Mockery::mock(AwsManager::class, [$certManager, $configManager])->makePartial();
@@ -164,16 +156,16 @@ class AwsManagerTest extends TestCase {
 	 */
 	public function testCheckCertificateInvalid() {
 		$array = $this->mockUploadedFiles($this->certPath);
+		$pKeyFile = $this->certPath . 'pkey1.key';
+		$pKeyValue = [
+			'name' => 'pkey1.key',
+			'type' => 'text/plain',
+			'tmp_name' => $pKeyFile,
+			'error' => UPLOAD_ERR_OK,
+			'size' => filesize($pKeyFile),
+		];
+		$array['key'] = new FileUpload($pKeyValue);
 		Assert::exception(function () use ($array) {
-			$pKeyFile = $this->certPath . 'pkey1.key';
-			$pKeyValue = [
-				'name' => 'pkey1.key',
-				'type' => 'text/plain',
-				'tmp_name' => $pKeyFile,
-				'error' => UPLOAD_ERR_OK,
-				'size' => filesize($pKeyFile),
-			];
-			$array['key'] = new FileUpload($pKeyValue);
 			$this->manager->checkCertificate($array);
 		}, InvalidPrivateKeyForCertificateException::class);
 	}

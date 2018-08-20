@@ -39,7 +39,7 @@ class SchedulerManagerTest extends TestCase {
 	/**
 	 * @var JsonFileManager JSON file manager
 	 */
-	private $fileManagerTest;
+	private $fileManagerTemp;
 
 	/**
 	 * @var SchedulerManager Scheduler's task configuration manager
@@ -74,21 +74,6 @@ class SchedulerManagerTest extends TestCase {
 	private $fileName = 'Tasks';
 
 	/**
-	 * @var string Directory with configuration files
-	 */
-	private $path = __DIR__ . '/../../data/configuration/scheduler/';
-
-	/**
-	 * @var string Testing directory with configuration files
-	 */
-	private $pathTest = __DIR__ . '/../../temp/configuration/scheduler/';
-
-	/**
-	 * @var string Directory with JSON schemas
-	 */
-	private $schemaPath = __DIR__ . '/../../data/cfgSchemas/';
-
-	/**
 	 * Constructor
 	 * @param Container $container Nette Tester Container
 	 */
@@ -100,15 +85,18 @@ class SchedulerManagerTest extends TestCase {
 	 * Set up test environment
 	 */
 	public function setUp() {
-		$this->fileManager = new JsonFileManager($this->path);
-		$this->fileManagerTest = new JsonFileManager($this->pathTest);
-		$fileManager = new JsonFileManager(realpath($this->path . '/../'));
-		$schemaManager = new JsonSchemaManager($this->schemaPath);
+		$configPath = __DIR__ . '/../../data/configuration/';
+		$configTempPath = __DIR__ . '/../../temp/configuration/';
+		$schemaPath = __DIR__ . '/../../data/cfgSchemas/';
+		$this->fileManager = new JsonFileManager($configPath . 'scheduler/');
+		$this->fileManagerTemp = new JsonFileManager($configTempPath . 'scheduler/');
+		$fileManager = new JsonFileManager($configPath);
+		$schemaManager = new JsonSchemaManager($schemaPath);
 		$genericConfigManager = new GenericManager($fileManager, $schemaManager);
-		$configuration = ['cacheDir' => realpath($this->pathTest . '/../'),];
+		$configuration = ['cacheDir' => $configTempPath,];
 		$mainConfigManager = \Mockery::mock(MainManager::class);
 		$mainConfigManager->shouldReceive('load')->andReturn($configuration);
-		$this->fileManagerTest->write($this->fileName, $this->fileManager->read($this->fileName));
+		$this->fileManagerTemp->write($this->fileName, $this->fileManager->read($this->fileName));
 		$this->manager = new SchedulerManager($mainConfigManager, $genericConfigManager);
 	}
 
@@ -117,7 +105,7 @@ class SchedulerManagerTest extends TestCase {
 	 */
 	public function testAdd() {
 		$expected = $this->fileManager->read($this->fileName);
-		$this->fileManagerTest->write($this->fileName, $expected);
+		$this->fileManagerTemp->write($this->fileName, $expected);
 		$this->manager->add('raw');
 		$task = [
 			'time' => '',
@@ -138,7 +126,7 @@ class SchedulerManagerTest extends TestCase {
 				],],
 		];
 		array_push($expected['TasksJson'], $task);
-		Assert::equal($expected, $this->fileManagerTest->read($this->fileName));
+		Assert::equal($expected, $this->fileManagerTemp->read($this->fileName));
 	}
 
 	/**
@@ -146,10 +134,10 @@ class SchedulerManagerTest extends TestCase {
 	 */
 	public function testDelete() {
 		$expected = $this->fileManager->read($this->fileName);
-		$this->fileManagerTest->write($this->fileName, $expected);
+		$this->fileManagerTemp->write($this->fileName, $expected);
 		unset($expected['TasksJson'][5]);
 		$this->manager->delete(5);
-		Assert::equal($expected, $this->fileManagerTest->read($this->fileName));
+		Assert::equal($expected, $this->fileManagerTemp->read($this->fileName));
 	}
 
 	/**
@@ -230,10 +218,10 @@ class SchedulerManagerTest extends TestCase {
 		$array = $this->array;
 		$array['message']['nadr'] = '0';
 		$expected = $this->fileManager->read($this->fileName);
-		$this->fileManagerTest->write($this->fileName, $expected);
+		$this->fileManagerTemp->write($this->fileName, $expected);
 		$expected['TasksJson'][0]['message']['nadr'] = '0';
 		$this->manager->save($array, 0);
-		Assert::equal($expected, $this->fileManagerTest->read($this->fileName));
+		Assert::equal($expected, $this->fileManagerTemp->read($this->fileName));
 	}
 
 	/**

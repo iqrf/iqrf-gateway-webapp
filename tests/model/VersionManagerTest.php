@@ -88,19 +88,27 @@ class VersionManagerTest extends TestCase {
 	}
 
 	/**
-	 * Test function to get version of the webapp
+	 * Test function to get version of the webapp (with git)
 	 */
-	public function testGetInstalledWebapp() {
-		$commandManager0 = \Mockery::mock(CommandManager::class);
-		$commandManager0->shouldReceive('commandExist')->with('git')->andReturn(false);
-		$versionManager0 = new VersionManager($commandManager0, $this->cacheStorage);
-		Assert::same('v' . $this->currentVersion, $versionManager0->getInstalledWebapp());
+	public function testGetInstalledWebappWithGit() {
+		$expected = 'v' . $this->currentVersion . ' (master - 733d45340cbb2565fd068ca3257ad39a5e46f963)';
 		$gitBranches = '* master                 733d45340cbb2565fd068ca3257ad39a5e46f963 Add a notification to an update webapp to newer stable version';
-		$commandManager1 = \Mockery::mock(CommandManager::class);
-		$commandManager1->shouldReceive('commandExist')->with('git')->andReturn(true);
-		$commandManager1->shouldReceive('send')->with('git branch -v --no-abbrev')->andReturn($gitBranches);
-		$versionManager1 = new VersionManager($commandManager1, $this->cacheStorage);
-		Assert::same('v' . $this->currentVersion . ' (master - 733d45340cbb2565fd068ca3257ad39a5e46f963)', $versionManager1->getInstalledWebapp());
+		$commandManager = \Mockery::mock(CommandManager::class);
+		$commandManager->shouldReceive('commandExist')->with('git')->andReturn(true);
+		$commandManager->shouldReceive('send')->with('git branch -v --no-abbrev')->andReturn($gitBranches);
+		$manager = new VersionManager($commandManager, $this->cacheStorage);
+		Assert::same($expected, $manager->getInstalledWebapp());
+	}
+
+	/**
+	 * Test function to get version of the webapp (without git)
+	 */
+	public function testGetInstalledWebappWithoutGit() {
+		$expected = 'v' . $this->currentVersion;
+		$commandManager = \Mockery::mock(CommandManager::class);
+		$commandManager->shouldReceive('commandExist')->with('git')->andReturn(false);
+		$manager = new VersionManager($commandManager, $this->cacheStorage);
+		Assert::same($expected, $manager->getInstalledWebapp());
 	}
 
 }

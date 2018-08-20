@@ -52,16 +52,6 @@ class BluemixManagerTest extends TestCase {
 	];
 
 	/**
-	 * @var string Testing directory with configuration files
-	 */
-	private $pathTest = __DIR__ . '/../../temp/configuration/';
-
-	/**
-	 * @var string Directory with JSON schemas
-	 */
-	private $schemaPath = __DIR__ . '/../../data/cfgSchemas/';
-
-	/**
 	 * Constructor
 	 * @param Container $container Nette Tester Container
 	 */
@@ -73,8 +63,10 @@ class BluemixManagerTest extends TestCase {
 	 * Set up test environment
 	 */
 	public function setUp() {
-		$this->fileManager = new JsonFileManager($this->pathTest);
-		$schemaManager = new JsonSchemaManager($this->schemaPath);
+		$configPath = __DIR__ . '/../../temp/configuration/';
+		$schemaPath = __DIR__ . '/../../data/cfgSchemas/';
+		$this->fileManager = new JsonFileManager($configPath);
+		$schemaManager = new JsonSchemaManager($schemaPath);
 		$configManager = new GenericManager($this->fileManager, $schemaManager);
 		$this->manager = \Mockery::mock(BluemixManager::class, [$configManager])->makePartial();
 		$this->manager->shouldReceive('downloadCaCertificate')->andReturn(null);

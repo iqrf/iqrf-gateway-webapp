@@ -55,11 +55,17 @@ class CommandManagerTest extends TestCase {
 	}
 
 	/**
-	 * Test function to check the existence of a command
+	 * Test function to check the existence of a command (fail)
 	 */
-	public function testCommandExist() {
-		Assert::true($this->manager->commandExist('echo'));
+	public function testCommandExistFail() {
 		Assert::false($this->manager->commandExist('sndikasdhisdbajdbas'));
+	}
+
+	/**
+	 * Test function to check the existence of a command (success)
+	 */
+	public function testCommandExistSuccess() {
+		Assert::true($this->manager->commandExist('echo'));
 	}
 
 }

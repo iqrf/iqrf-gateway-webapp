@@ -36,7 +36,7 @@ class ComponentManagerTest extends TestCase {
 	/**
 	 * @var JsonFileManager JSON file manager
 	 */
-	private $fileManagerTest;
+	private $fileManagerTemp;
 
 	/**
 	 * @var string File name (without .json)
@@ -51,17 +51,7 @@ class ComponentManagerTest extends TestCase {
 	/**
 	 * @var ComponentManager Component configuration manager
 	 */
-	private $managerTest;
-
-	/**
-	 * @var string Directory with configuration files
-	 */
-	private $path = __DIR__ . '/../../data/configuration/';
-
-	/**
-	 * @var string Testing directory with configuration files
-	 */
-	private $pathTest = __DIR__ . '/../../temp/configuration/';
+	private $managerTemp;
 
 	/**
 	 * Constructor
@@ -75,10 +65,12 @@ class ComponentManagerTest extends TestCase {
 	 * Set up test environment
 	 */
 	public function setUp() {
-		$this->fileManager = new JsonFileManager($this->path);
-		$this->fileManagerTest = new JsonFileManager($this->pathTest);
+		$configPath = __DIR__ . '/../../data/configuration/';
+		$configTempPath = __DIR__ . '/../../temp/configuration/';
+		$this->fileManager = new JsonFileManager($configPath);
+		$this->fileManagerTemp = new JsonFileManager($configTempPath);
 		$this->manager = new ComponentManager($this->fileManager);
-		$this->managerTest = new ComponentManager($this->fileManagerTest);
+		$this->managerTemp = new ComponentManager($this->fileManagerTemp);
 	}
 
 	/**
@@ -86,7 +78,7 @@ class ComponentManagerTest extends TestCase {
 	 */
 	public function testAdd() {
 		$expected = $this->fileManager->read($this->fileName);
-		$this->fileManagerTest->write($this->fileName, $expected);
+		$this->fileManagerTemp->write($this->fileName, $expected);
 		$array = [
 			'name' => 'test::Test',
 			'libraryPath' => '',
@@ -95,8 +87,8 @@ class ComponentManagerTest extends TestCase {
 			'startlevel' => 100,
 		];
 		$expected['components'][] = $array;
-		$this->managerTest->add($array);
-		Assert::same($expected['components'], $this->managerTest->loadComponents());
+		$this->managerTemp->add($array);
+		Assert::same($expected['components'], $this->managerTemp->loadComponents());
 	}
 
 	/**
@@ -104,10 +96,10 @@ class ComponentManagerTest extends TestCase {
 	 */
 	public function testDelete() {
 		$expected = $this->fileManager->read($this->fileName);
-		$this->fileManagerTest->write($this->fileName, $expected);
+		$this->fileManagerTemp->write($this->fileName, $expected);
 		unset($expected['components'][30]);
-		$this->managerTest->delete(30);
-		Assert::same($expected['components'], $this->managerTest->loadComponents());
+		$this->managerTemp->delete(30);
+		Assert::same($expected['components'], $this->managerTemp->loadComponents());
 	}
 
 	/**
@@ -141,10 +133,10 @@ class ComponentManagerTest extends TestCase {
 			'startlevel' => 1,
 		];
 		$expected = $this->fileManager->read($this->fileName);
-		$this->fileManagerTest->write($this->fileName, $expected);
+		$this->fileManagerTemp->write($this->fileName, $expected);
 		$expected['components'][6]['enabled'] = false;
-		$this->managerTest->save($array, 6);
-		Assert::equal($expected, $this->fileManagerTest->read($this->fileName));
+		$this->managerTemp->save($array, 6);
+		Assert::equal($expected, $this->fileManagerTemp->read($this->fileName));
 	}
 
 }

@@ -77,7 +77,7 @@ class FileManagerTest extends TestCase {
 	}
 
 	/**
-	 * Test function to delete JSON file
+	 * Test function to delete file
 	 */
 	public function testDelete() {
 		$fileName = 'test-delete.json';
@@ -88,15 +88,21 @@ class FileManagerTest extends TestCase {
 	}
 
 	/**
-	 * Test function to check if JSON file exists
+	 * Test function to check if file exists (file is not exist)
 	 */
-	public function testExists() {
-		Assert::true($this->manager->exists($this->fileName));
+	public function testExistsFail() {
 		Assert::false($this->manager->exists('nonsense'));
 	}
 
 	/**
-	 * Test function to read JSON file
+	 * Test function to check if file exists (file is exist)
+	 */
+	public function testExistsSucecss() {
+		Assert::true($this->manager->exists($this->fileName));
+	}
+
+	/**
+	 * Test function to read text file
 	 */
 	public function testRead() {
 		$expected = FileSystem::read($this->path . $this->fileName);
@@ -104,7 +110,7 @@ class FileManagerTest extends TestCase {
 	}
 
 	/**
-	 * Test function to write JSON file
+	 * Test function to write text file
 	 */
 	public function testWrite() {
 		$fileName = 'config-test.json';

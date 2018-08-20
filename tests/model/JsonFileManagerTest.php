@@ -89,11 +89,17 @@ class JsonFileManagerTest extends TestCase {
 	}
 
 	/**
-	 * Test function to check if JSON file exists
+	 * Test function to check if JSON file exists (file is not exist)
 	 */
-	public function testExists() {
-		Assert::true($this->manager->exists($this->fileName));
+	public function testExistsFail() {
 		Assert::false($this->manager->exists('nonsense'));
+	}
+
+	/**
+	 * Test function to check if JSON file exists (file is exist)
+	 */
+	public function testExistsSucecss() {
+		Assert::true($this->manager->exists($this->fileName));
 	}
 
 	/**

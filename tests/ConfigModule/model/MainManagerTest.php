@@ -36,22 +36,12 @@ class MainManagerTest extends TestCase {
 	/**
 	 * @var JsonFileManager JSON file manager
 	 */
-	private $fileManagerTest;
+	private $fileManagerTemp;
 
 	/**
 	 * @var string File name (without .json)
 	 */
 	private $fileName = 'config';
-
-	/**
-	 * @var string Directory with configuration files
-	 */
-	private $path = __DIR__ . '/../../data/configuration/';
-
-	/**
-	 * @var string Testing directory with configuration files
-	 */
-	private $pathTest = __DIR__ . '/../../temp/configuration/';
 
 	/**
 	 * Constructor
@@ -65,8 +55,10 @@ class MainManagerTest extends TestCase {
 	 * Set up test environment
 	 */
 	public function setUp() {
-		$this->fileManager = new JsonFileManager($this->path);
-		$this->fileManagerTest = new JsonFileManager($this->pathTest);
+		$configPath = __DIR__ . '/../../data/configuration/';
+		$configTempPath = __DIR__ . '/../../temp/configuration/';
+		$this->fileManager = new JsonFileManager($configPath);
+		$this->fileManagerTemp = new JsonFileManager($configTempPath);
 	}
 
 	/**
@@ -82,7 +74,7 @@ class MainManagerTest extends TestCase {
 	 * Test function to save main configuration of daemon
 	 */
 	public function testSave() {
-		$manager = new MainManager($this->fileManagerTest);
+		$manager = new MainManager($this->fileManagerTemp);
 		$array = [
 			'applicationName' => 'IqrfGatewayDaemon',
 			'resourceDir' => '',
@@ -93,10 +85,10 @@ class MainManagerTest extends TestCase {
 			'deploymentDir' => '/usr/lib/iqrfgd2',
 		];
 		$expected = $this->fileManager->read($this->fileName);
-		$this->fileManagerTest->write($this->fileName, $expected);
+		$this->fileManagerTemp->write($this->fileName, $expected);
 		$expected['configurationDir'] = '/etc/iqrf-daemon';
 		$manager->save($array);
-		Assert::equal($expected, $this->fileManagerTest->read($this->fileName));
+		Assert::equal($expected, $this->fileManagerTemp->read($this->fileName));
 	}
 
 }
