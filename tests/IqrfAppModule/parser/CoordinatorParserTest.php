@@ -1,16 +1,16 @@
 <?php
 
 /**
- * TEST: App\IqrfAppModule\Model\CoordinatorParser
- * @covers App\IqrfAppModule\Model\CoordinatorParser
+ * TEST: App\IqrfAppModule\Parser\CoordinatorParser
+ * @covers App\IqrfAppModule\Parser\CoordinatorParser
  * @phpVersion >= 7.0
  * @testCase
  */
 declare(strict_types = 1);
 
-namespace Test\IqrfAppModule\Model;
+namespace Test\IqrfAppModule\Parser;
 
-use App\IqrfAppModule\Model\CoordinatorParser;
+use App\IqrfAppModule\Parser\CoordinatorParser;
 use App\Model\JsonFileManager;
 use Nette\DI\Container;
 use Tester\Assert;
@@ -56,7 +56,7 @@ class CoordinatorParserTest extends TestCase {
 	 */
 	public function setUp() {
 		$this->parser = new CoordinatorParser();
-		$jsonFileManager = new JsonFileManager(__DIR__ . '/data/');
+		$jsonFileManager = new JsonFileManager(__DIR__ . '/../data/');
 		$this->packet['bonded'] = $jsonFileManager->read('response-coordinator-bonded')['data']['rsp']['rData'];
 		$this->packet['discovered'] = $jsonFileManager->read('response-coordinator-discovered')['data']['rsp']['rData'];
 		$this->expected['bonded'] = $jsonFileManager->read('data-coordinator-bonded');

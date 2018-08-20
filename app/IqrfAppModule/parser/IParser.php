@@ -18,7 +18,7 @@
  */
 declare(strict_types = 1);
 
-namespace App\IqrfAppModule\Model;
+namespace App\IqrfAppModule\Parser;
 
 /**
  * Interface for DPA parsers

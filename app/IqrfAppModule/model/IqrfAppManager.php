@@ -20,12 +20,12 @@ declare(strict_types = 1);
 
 namespace App\IqrfAppModule\Model;
 
-use App\IqrfAppModule\Model\CoordinatorParser;
 use App\IqrfAppModule\Model\EmptyResponseException;
-use App\IqrfAppModule\Model\EnumerationParser;
 use App\IqrfAppModule\Model\InvalidOperationModeException;
 use App\IqrfAppModule\Model\MessageIdManager;
-use App\IqrfAppModule\Model\OsParser;
+use App\IqrfAppModule\Parser\CoordinatorParser;
+use App\IqrfAppModule\Parser\EnumerationParser;
+use App\IqrfAppModule\Parser\OsParser;
 use Nette;
 use Nette\Utils\Json;
 use Nette\Utils\Strings;

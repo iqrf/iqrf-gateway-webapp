@@ -63,7 +63,7 @@ class IqrfMacroManagerTest extends TestCase {
 	 * Test function to convert HEX to ASCII
 	 */
 	public function testHex2Ascii() {
-		$expected = FileSystem::read(__DIR__ . '/data/macros-ascii.expected');
+		$expected = FileSystem::read(__DIR__ . '/../data/macros-ascii.expected');
 		Assert::equal($expected, $this->manager->hex2ascii($this->hex));
 	}
 
@@ -71,7 +71,7 @@ class IqrfMacroManagerTest extends TestCase {
 	 * Test function to parse hex of macros
 	 */
 	public function testParseMacros() {
-		$expected = Json::decode(FileSystem::read(__DIR__ . '/data/iqrf-ide-macros.json'), Json::FORCE_ARRAY);
+		$expected = Json::decode(FileSystem::read(__DIR__ . '/../data/iqrf-ide-macros.json'), Json::FORCE_ARRAY);
 		Assert::equal($expected, $this->manager->parseMacros($this->hex));
 	}
 
@@ -79,7 +79,7 @@ class IqrfMacroManagerTest extends TestCase {
 	 * Test function to read IQRF IDE macros
 	 */
 	public function testRead() {
-		$expected = Json::decode(FileSystem::read(__DIR__ . '/data/iqrf-ide-macros.json'), Json::FORCE_ARRAY);
+		$expected = Json::decode(FileSystem::read(__DIR__ . '/../data/iqrf-ide-macros.json'), Json::FORCE_ARRAY);
 		Assert::equal($expected, $this->manager->read());
 	}
 

@@ -4,10 +4,10 @@ services:
 	- App\IqrfAppModule\Forms\DiscoveryFormFactory
 	- App\IqrfAppModule\Forms\RfFormFactory
 	- App\IqrfAppModule\Forms\SecurityFormFactory
-	- App\IqrfAppModule\Model\CoordinatorParser
-	- App\IqrfAppModule\Model\EnumerationParser
 	- App\IqrfAppModule\Model\IqrfAppManager(%daemon.wsServer%)
 	- App\IqrfAppModule\Model\IqrfMacroManager(%macroPath%)
 	- App\IqrfAppModule\Model\IqrfNetManager
 	- App\IqrfAppModule\Model\MessageIdManager
-	- App\IqrfAppModule\Model\OsParser
+	- App\IqrfAppModule\Parser\CoordinatorParser
+	- App\IqrfAppModule\Parser\EnumerationParser
+	- App\IqrfAppModule\Parser\OsParser

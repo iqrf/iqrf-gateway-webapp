@@ -1,8 +1,8 @@
 <?php
 
 /**
- * TEST: App\IqrfAppModule\Model\OsParser
- * @covers App\IqrfAppModule\Model\OsParser
+ * TEST: App\IqrfAppModule\Parser\OsParser
+ * @covers App\IqrfAppModule\Parser\OsParser
  * @phpVersion >= 7.0
  * @testCase
  */
@@ -10,7 +10,7 @@ declare(strict_types = 1);
 
 namespace Test\IqrfAppModule\Model;
 
-use App\IqrfAppModule\Model\OsParser;
+use App\IqrfAppModule\Parser\OsParser;
 use App\Model\JsonFileManager;
 use Nette\DI\Container;
 use Tester\Assert;
@@ -56,7 +56,7 @@ class OsParserTest extends TestCase {
 	 */
 	public function setUp() {
 		$this->parser = new OsParser();
-		$jsonFileManager = new JsonFileManager(__DIR__ . '/data/');
+		$jsonFileManager = new JsonFileManager(__DIR__ . '/../data/');
 		$this->packet['hwpConfiguration'] = $jsonFileManager->read('response-os-hwp-config')['data']['rsp']['rData'];
 		$this->packet['osInfo'] = $jsonFileManager->read('response-os-read')['data']['rsp']['rData'];
 		$this->expected['hwpConfiguration'] = $jsonFileManager->read('data-os-hwp-config');

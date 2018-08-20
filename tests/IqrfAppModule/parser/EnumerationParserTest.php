@@ -1,8 +1,8 @@
 <?php
 
 /**
- * TEST: App\IqrfAppModule\Model\EnumerationParser
- * @covers App\IqrfAppModule\Model\EnumerationParser
+ * TEST: App\IqrfAppModule\Parser\EnumerationParser
+ * @covers App\IqrfAppModule\Parser\EnumerationParser
  * @phpVersion >= 7.0
  * @testCase
  */
@@ -10,7 +10,7 @@ declare(strict_types = 1);
 
 namespace Test\IqrfAppModule\Model;
 
-use App\IqrfAppModule\Model\EnumerationParser;
+use App\IqrfAppModule\Parser\EnumerationParser;
 use App\Model\JsonFileManager;
 use Nette\DI\Container;
 use Tester\Assert;
@@ -56,7 +56,7 @@ class EnumerationParserTest extends TestCase {
 	 */
 	public function setUp() {
 		$this->parser = new EnumerationParser();
-		$jsonFileManager = new JsonFileManager(__DIR__ . '/data/');
+		$jsonFileManager = new JsonFileManager(__DIR__ . '/../data/');
 		$this->packet = $jsonFileManager->read('response-enumeration')['data']['rsp']['rData'];
 		$this->expected = $jsonFileManager->read('data-enumeration');
 	}

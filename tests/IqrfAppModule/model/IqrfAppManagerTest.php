@@ -114,8 +114,8 @@ class IqrfAppManagerTest extends TestCase {
 	 * Set up test environment
 	 */
 	public function setUp() {
-		$this->fileManager = new FileManager(__DIR__ . '/data/');
-		$this->jsonFileManager = new JsonFileManager(__DIR__ . '/data/');
+		$this->fileManager = new FileManager(__DIR__ . '/../data/');
+		$this->jsonFileManager = new JsonFileManager(__DIR__ . '/../data/');
 		$this->msgIdManager = \Mockery::mock(MessageIdManager::class);
 		$this->msgIdManager->shouldReceive('generate')->andReturn('1');
 		$this->manager = new IqrfAppManager($this->wsServer, $this->msgIdManager);
