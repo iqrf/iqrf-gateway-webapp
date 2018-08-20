@@ -10,29 +10,9 @@ declare(strict_types = 1);
 
 namespace Test\IqrfAppModule\Model;
 
-use App\IqrfAppModule\Model\AbortedException;
-use App\IqrfAppModule\Model\BadRequestException;
-use App\IqrfAppModule\Model\BadResponseException;
-use App\IqrfAppModule\Model\CustomHandlerConsumedInterfaceDataException;
-use App\IqrfAppModule\Model\EmptyResponseException;
-use App\IqrfAppModule\Model\ExclusiveAccessException;
-use App\IqrfAppModule\Model\GeneralFailureException;
-use App\IqrfAppModule\Model\IncorrectAddressException;
-use App\IqrfAppModule\Model\IncorrectDataException;
-use App\IqrfAppModule\Model\IncorrectDataLengthException;
-use App\IqrfAppModule\Model\IncorrectHwpidUsedException;
-use App\IqrfAppModule\Model\IncorrectNadrException;
-use App\IqrfAppModule\Model\IncorrectPcmdException;
-use App\IqrfAppModule\Model\IncorrectPnumException;
-use App\IqrfAppModule\Model\InterfaceBusyException;
-use App\IqrfAppModule\Model\InterfaceErrorException;
-use App\IqrfAppModule\Model\InterfaceQueueFullException;
-use App\IqrfAppModule\Model\InvalidOperationModeException;
+use App\IqrfAppModule\Exception as IqrfException;
 use App\IqrfAppModule\Model\IqrfAppManager;
 use App\IqrfAppModule\Model\MessageIdManager;
-use App\IqrfAppModule\Model\MissingCustomDpaHandlerException;
-use App\IqrfAppModule\Model\TimeoutException;
-use App\IqrfAppModule\Model\UserErrorException;
 use App\Model\FileManager;
 use App\Model\JsonFileManager;
 use Nette\DI\Container;
@@ -81,25 +61,25 @@ class IqrfAppManagerTest extends TestCase {
 	 * @var array DPA status exceptions
 	 */
 	private $statusExceptions = [
-		-8 => ExclusiveAccessException::class,
-		-7 => BadResponseException::class,
-		-6 => BadRequestException::class,
-		-5 => InterfaceBusyException::class,
-		-4 => InterfaceErrorException::class,
-		-3 => AbortedException::class,
-		-2 => InterfaceQueueFullException::class,
-		-1 => TimeoutException::class,
-		1 => GeneralFailureException::class,
-		2 => IncorrectPcmdException::class,
-		3 => IncorrectPnumException::class,
-		4 => IncorrectAddressException::class,
-		5 => IncorrectDataLengthException::class,
-		6 => IncorrectDataException::class,
-		7 => IncorrectHwpidUsedException::class,
-		8 => IncorrectNadrException::class,
-		9 => CustomHandlerConsumedInterfaceDataException::class,
-		10 => MissingCustomDpaHandlerException::class,
-		11 => UserErrorException::class,
+		-8 => IqrfException\ExclusiveAccessException::class,
+		-7 => IqrfException\BadResponseException::class,
+		-6 => IqrfException\BadRequestException::class,
+		-5 => IqrfException\InterfaceBusyException::class,
+		-4 => IqrfException\InterfaceErrorException::class,
+		-3 => IqrfException\AbortedException::class,
+		-2 => IqrfException\InterfaceQueueFullException::class,
+		-1 => IqrfException\TimeoutException::class,
+		1 => IqrfException\GeneralFailureException::class,
+		2 => IqrfException\IncorrectPcmdException::class,
+		3 => IqrfException\IncorrectPnumException::class,
+		4 => IqrfException\IncorrectAddressException::class,
+		5 => IqrfException\IncorrectDataLengthException::class,
+		6 => IqrfException\IncorrectDataException::class,
+		7 => IqrfException\IncorrectHwpidUsedException::class,
+		8 => IqrfException\IncorrectNadrException::class,
+		9 => IqrfException\CustomHandlerConsumedInterfaceDataException::class,
+		10 => IqrfException\MissingCustomDpaHandlerException::class,
+		11 => IqrfException\UserErrorException::class,
 	];
 
 	/**
@@ -154,7 +134,7 @@ class IqrfAppManagerTest extends TestCase {
 			$manager = new IqrfAppManager($wsServer, $this->msgIdManager);
 			$array = ['data' => ['msgId' => '1',],];
 			$manager->sendToWebsocket($array, 1);
-		}, EmptyResponseException::class);
+		}, IqrfException\EmptyResponseException::class);
 	}
 
 	/**
@@ -185,7 +165,7 @@ class IqrfAppManagerTest extends TestCase {
 	public function testChangeOperationModeInvalid() {
 		Assert::exception(function() {
 			$this->manager->changeOperationMode('invalid');
-		}, InvalidOperationModeException::class);
+		}, IqrfException\InvalidOperationModeException::class);
 	}
 
 	/**
@@ -258,7 +238,7 @@ class IqrfAppManagerTest extends TestCase {
 		Assert::exception(function () {
 			$array['response'] = $this->fileManager->read('response-error.json');
 			$this->manager->parseResponse($array);
-		}, TimeoutException::class);
+		}, IqrfException\TimeoutException::class);
 	}
 
 	/**

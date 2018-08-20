@@ -10,14 +10,9 @@ declare(strict_types = 1);
 
 namespace Test\IqrfAppModule\Model;
 
+use App\IqrfAppModule\Exception as IqrfException;
 use App\IqrfAppModule\Model\IqrfAppManager;
 use App\IqrfAppModule\Model\IqrfNetManager;
-use App\IqrfAppModule\Model\InvalidRfChannelTypeException;
-use App\IqrfAppModule\Model\InvalidRfLpTimeoutException;
-use App\IqrfAppModule\Model\InvalidRfOutputPowerException;
-use App\IqrfAppModule\Model\InvalidRfSignalFilterException;
-use App\IqrfAppModule\Model\UnsupportedInputFormatException;
-use App\IqrfAppModule\Model\UnsupportedSecurityTypeException;
 use Nette\DI\Container;
 use Tester\Assert;
 use Tester\TestCase;
@@ -131,13 +126,13 @@ class IqrfNetManagerTest extends TestCase {
 		}
 		Assert::exception(function() {
 			$this->iqrfNetManager->setSecurity('DEAD', 'DEAD');
-		}, UnsupportedInputFormatException::class);
+		}, IqrfException\UnsupportedInputFormatException::class);
 		Assert::exception(function() {
 			$this->iqrfNetManager->setSecurity('DEAD', 'DEAD', 'userKey');
-		}, UnsupportedInputFormatException::class);
+		}, IqrfException\UnsupportedInputFormatException::class);
 		Assert::exception(function() {
 			$this->iqrfNetManager->setSecurity('DEAD', 'ASCII', 'fooBar');
-		}, UnsupportedSecurityTypeException::class);
+		}, IqrfException\UnsupportedSecurityTypeException::class);
 	}
 
 	/**
@@ -177,7 +172,7 @@ class IqrfNetManagerTest extends TestCase {
 		Assert::same([3], $this->iqrfNetManager->setRfChannel(32, IqrfNetManager::ALTERNATIVE_RF_CHANNEL_B));
 		Assert::exception(function() {
 			$this->iqrfNetManager->setRfChannel(52, 'test');
-		}, InvalidRfChannelTypeException::class);
+		}, IqrfException\InvalidRfChannelTypeException::class);
 	}
 
 	/**
@@ -192,10 +187,10 @@ class IqrfNetManagerTest extends TestCase {
 		Assert::same([1], $this->iqrfNetManager->setRfLpTimeout(255));
 		Assert::exception(function() {
 			$this->iqrfNetManager->setRfLpTimeout(0);
-		}, InvalidRfLpTimeoutException::class);
+		}, IqrfException\InvalidRfLpTimeoutException::class);
 		Assert::exception(function() {
 			$this->iqrfNetManager->setRfLpTimeout(256);
-		}, InvalidRfLpTimeoutException::class);
+		}, IqrfException\InvalidRfLpTimeoutException::class);
 	}
 
 	/**
@@ -210,10 +205,10 @@ class IqrfNetManagerTest extends TestCase {
 		Assert::same([1], $this->iqrfNetManager->setRfOutputPower(7));
 		Assert::exception(function() {
 			$this->iqrfNetManager->setRfOutputPower(-1);
-		}, InvalidRfOutputPowerException::class);
+		}, IqrfException\InvalidRfOutputPowerException::class);
 		Assert::exception(function() {
 			$this->iqrfNetManager->setRfOutputPower(8);
-		}, InvalidRfOutputPowerException::class);
+		}, IqrfException\InvalidRfOutputPowerException::class);
 	}
 
 	/**
@@ -228,10 +223,10 @@ class IqrfNetManagerTest extends TestCase {
 		Assert::same([1], $this->iqrfNetManager->setRfSignalFilter(64));
 		Assert::exception(function() {
 			$this->iqrfNetManager->setRfSignalFilter(-1);
-		}, InvalidRfSignalFilterException::class);
+		}, IqrfException\InvalidRfSignalFilterException::class);
 		Assert::exception(function() {
 			$this->iqrfNetManager->setRfSignalFilter(65);
-		}, InvalidRfSignalFilterException::class);
+		}, IqrfException\InvalidRfSignalFilterException::class);
 	}
 
 }

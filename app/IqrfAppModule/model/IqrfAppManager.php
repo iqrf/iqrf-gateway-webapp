@@ -20,12 +20,10 @@ declare(strict_types = 1);
 
 namespace App\IqrfAppModule\Model;
 
-use App\IqrfAppModule\Model\EmptyResponseException;
+use App\IqrfAppModule\Exception as IqrfException;
 use App\IqrfAppModule\Model\InvalidOperationModeException;
 use App\IqrfAppModule\Model\MessageIdManager;
-use App\IqrfAppModule\Parser\CoordinatorParser;
-use App\IqrfAppModule\Parser\EnumerationParser;
-use App\IqrfAppModule\Parser\OsParser;
+use App\IqrfAppModule\Parser as IqrfParser;
 use Nette;
 use Nette\Utils\Json;
 use Nette\Utils\Strings;
@@ -56,33 +54,33 @@ class IqrfAppManager {
 	 * @var array DPA parsers
 	 */
 	private $parsers = [
-		CoordinatorParser::class,
-		EnumerationParser::class,
-		OsParser::class,
+		IqrfParser\CoordinatorParser::class,
+		IqrfParser\EnumerationParser::class,
+		IqrfParser\OsParser::class,
 	];
 
 	/**
 	 * @var array DPA exceptions
 	 */
 	private $exceptions = [
-		-8 => ExclusiveAccessException::class,
-		-7 => BadResponseException::class,
-		-6 => BadRequestException::class,
-		-5 => InterfaceBusyException::class,
-		-4 => InterfaceErrorException::class,
-		-3 => AbortedException::class,
-		-2 => InterfaceQueueFullException::class,
-		-1 => TimeoutException::class,
-		1 => GeneralFailureException::class,
-		2 => IncorrectPcmdException::class,
-		3 => IncorrectPnumException::class,
-		4 => IncorrectAddressException::class,
-		5 => IncorrectDataLengthException::class,
-		6 => IncorrectDataException::class,
-		7 => IncorrectHwpidUsedException::class,
-		8 => IncorrectNadrException::class,
-		9 => CustomHandlerConsumedInterfaceDataException::class,
-		10 => MissingCustomDpaHandlerException::class,
+		-8 => IqrfException\ExclusiveAccessException::class,
+		-7 => IqrfException\BadResponseException::class,
+		-6 => IqrfException\BadRequestException::class,
+		-5 => IqrfException\InterfaceBusyException::class,
+		-4 => IqrfException\InterfaceErrorException::class,
+		-3 => IqrfException\AbortedException::class,
+		-2 => IqrfException\InterfaceQueueFullException::class,
+		-1 => IqrfException\TimeoutException::class,
+		1 => IqrfException\GeneralFailureException::class,
+		2 => IqrfException\IncorrectPcmdException::class,
+		3 => IqrfException\IncorrectPnumException::class,
+		4 => IqrfException\IncorrectAddressException::class,
+		5 => IqrfException\IncorrectDataLengthException::class,
+		6 => IqrfException\IncorrectDataException::class,
+		7 => IqrfException\IncorrectHwpidUsedException::class,
+		8 => IqrfException\IncorrectNadrException::class,
+		9 => IqrfException\CustomHandlerConsumedInterfaceDataException::class,
+		10 => IqrfException\MissingCustomDpaHandlerException::class,
 	];
 
 	/**
@@ -139,7 +137,7 @@ class IqrfAppManager {
 		}
 		$response = strval($resolved);
 		if (empty($response)) {
-			throw new EmptyResponseException();
+			throw new IqrfException\EmptyResponseException();
 		}
 		return $response;
 	}
@@ -178,12 +176,12 @@ class IqrfAppManager {
 	 * Change iqrf-daemon operation mode
 	 * @param string $mode iqrf-daemon operation mode
 	 * @return string Response
-	 * @throws InvalidOperationModeException
+	 * @throws IqrfException\InvalidOperationModeException
 	 */
 	public function changeOperationMode(string $mode) {
 		$modes = ['forwarding', 'operational', 'service'];
 		if (!in_array($mode, $modes, true)) {
-			throw new InvalidOperationModeException();
+			throw new IqrfException\InvalidOperationModeException();
 		}
 		$array = [
 			'mType' => 'mngDaemon_Mode',
@@ -239,7 +237,7 @@ class IqrfAppManager {
 	 * Parse DPA response
 	 * @param array $json JSON DPA response
 	 * @return array|null Parsed response in array
-	 * @throws EmptyResponseException
+	 * @throws IqrfException\EmptyResponseException
 	 */
 	public function parseResponse(array $json) {
 		$this->checkStatus($json);
@@ -251,7 +249,7 @@ class IqrfAppManager {
 			}
 		}
 		if (empty($packet)) {
-			throw new EmptyResponseException();
+			throw new IqrfException\EmptyResponseException();
 		}
 		foreach ($this->parsers as $parser) {
 			$parsedData = (new $parser)->parse($packet);
@@ -264,25 +262,7 @@ class IqrfAppManager {
 	/**
 	 * Chack status from JSON DPA response
 	 * @param array $json JSON DPA request and response
-	 * @throws ExclusiveAccessException
-	 * @throws BadResponseException
-	 * @throws BadRequestException
-	 * @throws InterfaceBusyException
-	 * @throws InterfaceErrorException
-	 * @throws AbortedException
-	 * @throws InterfaceQueueFullException
-	 * @throws TimeoutException
-	 * @throws GeneralFailureException
-	 * @throws IncorrectPcmdException
-	 * @throws IncorrectPnumException
-	 * @throws IncorrectAddressException
-	 * @throws IncorrectDataLengthException
-	 * @throws IncorrectDataException
-	 * @throws IncorrectHwpidUsedException
-	 * @throws IncorrectNadrException
-	 * @throws CustomHandlerConsumedInterfaceDataException
-	 * @throws MissingCustomDpaHandlerException
-	 * @throws UserErrorException
+	 * @throws IqrfException\UserErrorException
 	 */
 	public function checkStatus(array $json) {
 		$status = Json::decode($json['response'], Json::FORCE_ARRAY)['data']['status'];
@@ -292,7 +272,7 @@ class IqrfAppManager {
 		if (array_key_exists($status, $this->exceptions)) {
 			throw new $this->exceptions[$status];
 		} else {
-			throw new UserErrorException();
+			throw new IqrfException\UserErrorException();
 		}
 	}
 

@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\IqrfAppModule\Model;
 
+use App\IqrfAppModule\Exception as IqrfException;
 use App\IqrfAppModule\Model\IqrfAppManager;
 use Nette;
 use Nette\Utils\Strings;
@@ -146,6 +147,8 @@ class IqrfNetManager {
 	 * @param string $inputFormat Determines in which format the password is entered
 	 * @param string $type Security type (access password or user key)
 	 * @return array DPA request and response
+	 * @throws IqrfException\UnsupportedSecurityTypeException
+	 * @throws IqrfException\UnsupportedInputFormatException
 	 */
 	public function setSecurity(string $password = '', string $inputFormat = self::DATA_FORMAT_ASCII, string $type = self::SECURITY_ACCESS_PASSOWRD) {
 		$packet = '00.00.02.06.ff.ff.';
@@ -154,14 +157,14 @@ class IqrfNetManager {
 		} else if ($type === self::SECURITY_USER_KEY) {
 			$packet .= '01.';
 		} else {
-			throw new UnsupportedSecurityTypeException();
+			throw new IqrfException\UnsupportedSecurityTypeException();
 		}
 		if ($inputFormat === self::DATA_FORMAT_ASCII) {
 			$data = implode(unpack('H*', $password));
 		} elseif ($inputFormat === self::DATA_FORMAT_HEX) {
 			$data = $password;
 		} else {
-			throw new UnsupportedInputFormatException();
+			throw new IqrfException\UnsupportedInputFormatException();
 		}
 		$dataToSend = $packet . Strings::lower(chunk_split(Strings::padLeft($data, 32, '0'), 2, '.'));
 		return $this->iqrfAppManager->sendRaw($dataToSend);
@@ -194,12 +197,12 @@ class IqrfNetManager {
 	 * @param int $channel RF channel ID
 	 * @param string $type RF channel type
 	 * @return array DPA request and response
-	 * @throws InvalidRfChannelTypeException
+	 * @throws IqrfException\InvalidRfChannelTypeException
 	 */
 	public function setRfChannel(int $channel, string $type): array {
 		$types = ['11', '12', '06', '07',];
 		if (!in_array($type, $types)) {
-			throw new InvalidRfChannelTypeException();
+			throw new IqrfException\InvalidRfChannelTypeException();
 		}
 		$rfChannel = Strings::padLeft(dechex($channel), 2, '0');
 		return $this->writeHwpConfigurationByte($type, $rfChannel);
@@ -209,11 +212,11 @@ class IqrfNetManager {
 	 * Set RF LP timeout
 	 * @param int $timeout RF LP timeout
 	 * @return array DPA request and response
-	 * @throws InvalidRfLpTimeoutException
+	 * @throws IqrfException\InvalidRfLpTimeoutException
 	 */
 	public function setRfLpTimeout(int $timeout) {
 		if ($timeout < 1 || $timeout > 255) {
-			throw new InvalidRfLpTimeoutException();
+			throw new IqrfException\InvalidRfLpTimeoutException();
 		}
 		$rfTimeout = Strings::padLeft(dechex($timeout), 2, '0');
 		return $this->writeHwpConfigurationByte('0a', $rfTimeout);
@@ -223,11 +226,11 @@ class IqrfNetManager {
 	 * Set RF output power
 	 * @param int $power RF output power
 	 * @return array DPA request and response
-	 * @throws InvalidRfOutputPowerException
+	 * @throws IqrfException\InvalidRfOutputPowerException
 	 */
 	public function setRfOutputPower(int $power): array {
 		if ($power < 0 || $power > 7) {
-			throw new InvalidRfOutputPowerException();
+			throw new IqrfException\InvalidRfOutputPowerException();
 		}
 		$rfPower = Strings::padLeft($power, 2, '0');
 		return $this->writeHwpConfigurationByte('08', $rfPower);
@@ -237,11 +240,11 @@ class IqrfNetManager {
 	 * Set RF signal filter
 	 * @param int $filter RF signal filter
 	 * @return array DPA request and response
-	 * @throws InvalidRfSignalFilterException
+	 * @throws IqrfException\InvalidRfSignalFilterException
 	 */
 	public function setRfSignalFilter(int $filter): array {
 		if ($filter < 0 || $filter > 64) {
-			throw new InvalidRfSignalFilterException();
+			throw new IqrfException\InvalidRfSignalFilterException();
 		}
 		$rfFilter = Strings::padLeft(dechex($filter), 2, '0');
 		return $this->writeHwpConfigurationByte('09', $rfFilter);

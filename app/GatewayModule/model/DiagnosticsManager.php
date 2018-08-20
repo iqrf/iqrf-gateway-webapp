@@ -20,8 +20,8 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Model;
 
-use App\IqrfAppModule\Model\DpaErrorException;
-use App\IqrfAppModule\Model\EmptyResponseException;
+use App\IqrfAppModule\Exception\DpaErrorException;
+use App\IqrfAppModule\Exception\EmptyResponseException;
 use App\IqrfAppModule\Model\IqrfAppManager;
 use App\GatewayModule\Model\InfoManager;
 use App\Model\CommandManager;
