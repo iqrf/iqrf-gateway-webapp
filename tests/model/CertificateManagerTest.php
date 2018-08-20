@@ -44,6 +44,11 @@ class CertificateManagerTest extends TestCase {
 	private $manager;
 
 	/**
+	 * @var string Path to a directory with certificates and private keys
+	 */
+	private $path = __DIR__ . '/../data/certificates/';
+
+	/**
 	 * Constructor
 	 * @param Container $container Nette Tester Container
 	 */
@@ -56,13 +61,13 @@ class CertificateManagerTest extends TestCase {
 	 */
 	public function setUp() {
 		$this->manager = new CertificateManager();
-		$this->certificates['ca0'] = FileSystem::read(__DIR__ . '/certs/ca0.pem');
-		$this->certificates['ca1'] = FileSystem::read(__DIR__ . '/certs/ca1.pem');
-		$this->certificates['intermediate0'] = FileSystem::read(__DIR__ . '/certs/intermediate0.pem');
-		$this->certificates['0'] = FileSystem::read(__DIR__ . '/certs/cert0.pem');
-		$this->certificates['1'] = FileSystem::read(__DIR__ . '/certs/cert1.pem');
-		$this->keys['0'] = FileSystem::read(__DIR__ . '/certs/pkey0.key');
-		$this->keys['1'] = FileSystem::read(__DIR__ . '/certs/pkey1.key');
+		$this->certificates['ca0'] = FileSystem::read($this->path . 'ca0.pem');
+		$this->certificates['ca1'] = FileSystem::read($this->path . 'ca1.pem');
+		$this->certificates['intermediate0'] = FileSystem::read($this->path . 'intermediate0.pem');
+		$this->certificates['0'] = FileSystem::read($this->path . 'cert0.pem');
+		$this->certificates['1'] = FileSystem::read($this->path . 'cert1.pem');
+		$this->keys['0'] = FileSystem::read($this->path . 'pkey0.key');
+		$this->keys['1'] = FileSystem::read($this->path . 'pkey1.key');
 	}
 
 	/**

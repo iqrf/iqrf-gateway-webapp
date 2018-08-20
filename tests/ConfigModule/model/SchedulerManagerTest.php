@@ -76,17 +76,17 @@ class SchedulerManagerTest extends TestCase {
 	/**
 	 * @var string Directory with configuration files
 	 */
-	private $path = __DIR__ . '/../../configuration/scheduler/';
+	private $path = __DIR__ . '/../../data/configuration/scheduler/';
 
 	/**
 	 * @var string Testing directory with configuration files
 	 */
-	private $pathTest = __DIR__ . '/../../configuration-test/scheduler/';
+	private $pathTest = __DIR__ . '/../../temp/configuration/scheduler/';
 
 	/**
 	 * @var string Directory with JSON schemas
 	 */
-	private $schemaPath = __DIR__ . '/../../jsonschema/';
+	private $schemaPath = __DIR__ . '/../../data/cfgSchemas/';
 
 	/**
 	 * Constructor

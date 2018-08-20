@@ -38,7 +38,7 @@ class LogManagerTest extends TestCase {
 	/**
 	 * @var string Directory with IQRF Gateway Daemon's logs
 	 */
-	private $logDir = __DIR__ . '/logs/';
+	private $logDir;
 
 	/**
 	 * @var LogManager IQRF Gateway Daemon's log manager
@@ -57,6 +57,7 @@ class LogManagerTest extends TestCase {
 	 * Set up test environment
 	 */
 	public function setUp() {
+		$this->logDir = realpath(__DIR__ . '/../../data/logs/');
 		$this->fileManager = new FileManager($this->logDir);
 		$this->manager = new LogManager($this->logDir);
 	}
@@ -66,8 +67,8 @@ class LogManagerTest extends TestCase {
 	 */
 	public function testGetLogFiles() {
 		$expected = [
-			'2018-08-13-13-37-834' => __DIR__ . '/logs/2018-08-13-13-37-834-iqrf-gateway-daemon.log',
-			'2018-08-13-13-37-496' => __DIR__ . '/logs/2018-08-13-13-37-496-iqrf-gateway-daemon.log',
+			'2018-08-13-13-37-834' => $this->logDir . '/2018-08-13-13-37-834-iqrf-gateway-daemon.log',
+			'2018-08-13-13-37-496' => $this->logDir . '/2018-08-13-13-37-496-iqrf-gateway-daemon.log',
 		];
 		Assert::same($expected, $this->manager->getLogFiles());
 	}

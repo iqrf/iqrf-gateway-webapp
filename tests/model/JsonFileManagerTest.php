@@ -47,12 +47,12 @@ class JsonFileManagerTest extends TestCase {
 	/**
 	 * @var string Directory with configuration files
 	 */
-	private $path = __DIR__ . '/../configuration/';
+	private $path = __DIR__ . '/../data/configuration/';
 
 	/**
 	 * @var string Directory with configuration files
 	 */
-	private $pathTest = __DIR__ . '/../configuration-test/';
+	private $pathTest = __DIR__ . '/../temp/configuration/';
 
 	/**
 	 * Constructor

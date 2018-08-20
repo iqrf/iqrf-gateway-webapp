@@ -38,7 +38,7 @@ class JsonSchemaManagerTest extends TestCase {
 	/**
 	 * @var string Directory with configuration files
 	 */
-	private $filePath = __DIR__ . '/../configuration/';
+	private $filePath = __DIR__ . '/../data/configuration/';
 
 	/**
 	 * @var JsonSchemaManager JSON schema manager
@@ -48,7 +48,7 @@ class JsonSchemaManagerTest extends TestCase {
 	/**
 	 * @var string Directory with JSON schemas
 	 */
-	private $schemaPath = __DIR__ . '/../jsonschema/';
+	private $schemaPath = __DIR__ . '/../data/cfgSchemas/';
 
 	/**
 	 * Constructor

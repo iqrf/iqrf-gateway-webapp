@@ -35,6 +35,16 @@ class AwsManagerTest extends TestCase {
 	private $container;
 
 	/**
+	 * @var string Path to a directory with certificates and private keys
+	 */
+	private $certPath = __DIR__ . '/../../data/certificates/';
+
+	/**
+	 * @var string Path to a temporary directory with certificates and private keys
+	 */
+	private $certPathTemp = __DIR__ . '/../../temp/certificates/';
+
+	/**
 	 * @var JsonFileManager JSON file manager
 	 */
 	private $fileManager;
@@ -59,12 +69,12 @@ class AwsManagerTest extends TestCase {
 	/**
 	 * @var string Testing directory with configuration files
 	 */
-	private $pathTest = __DIR__ . '/../../configuration-test/';
+	private $pathTest = __DIR__ . '/../../temp/configuration/';
 
 	/**
 	 * @var string Directory with JSON schemas
 	 */
-	private $schemaPath = __DIR__ . '/../../jsonschema/';
+	private $schemaPath = __DIR__ . '/../../data/cfgSchemas/';
 
 	/**
 	 * Constructor
@@ -153,9 +163,9 @@ class AwsManagerTest extends TestCase {
 	 * Test function to check a certificate and a private key (invalid private key)
 	 */
 	public function testCheckCertificateInvalid() {
-		$array = $this->mockUploadedFiles(__DIR__ . '/../../model/certs/');
+		$array = $this->mockUploadedFiles($this->certPath);
 		Assert::exception(function () use ($array) {
-			$pKeyFile = __DIR__ . '/../../model/certs/pkey1.key';
+			$pKeyFile = $this->certPath . 'pkey1.key';
 			$pKeyValue = [
 				'name' => 'pkey1.key',
 				'type' => 'text/plain',
@@ -172,7 +182,7 @@ class AwsManagerTest extends TestCase {
 	 * Test function to check a certificate and a private key (valid private key)
 	 */
 	public function testCheckCertificateValid() {
-		$array = $this->mockUploadedFiles(__DIR__ . '/../../model/certs/');
+		$array = $this->mockUploadedFiles($this->certPath);
 		Assert::null($this->manager->checkCertificate($array));
 	}
 
@@ -193,14 +203,14 @@ class AwsManagerTest extends TestCase {
 	 * Test function to upload root CA certificate, certificate and private key
 	 */
 	public function testUploadCertsAndKey() {
-		$certFile = __DIR__ . '/certs/cert0.pem';
-		$pKeyFile = __DIR__ . '/certs/pkey0.key';
-		FileSystem::copy(__DIR__ . '/../../model/certs/cert0.pem', $certFile);
-		FileSystem::copy(__DIR__ . '/../../model/certs/pkey0.key', $pKeyFile);
-		$array = $this->mockUploadedFiles(__DIR__ . '/certs/');
+		$certFile = $this->certPathTemp . 'cert0.pem';
+		$pKeyFile = $this->certPathTemp . 'pkey0.key';
+		FileSystem::copy($this->certPath . 'cert0.pem', $certFile);
+		FileSystem::copy($this->certPath . 'pkey0.key', $pKeyFile);
+		$array = $this->mockUploadedFiles($this->certPathTemp);
 		$paths = [
-			'cert' => __DIR__ . '/certs/cert.pem',
-			'key' => __DIR__ . '/certs/pKey.key',
+			'cert' => $this->certPathTemp . 'cert.pem',
+			'key' => $this->certPathTemp . 'pKey.key',
 		];
 		Assert::null($this->manager->uploadCertsAndKey($array, $paths));
 	}

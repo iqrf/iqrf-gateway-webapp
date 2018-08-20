@@ -5,8 +5,12 @@ declare(strict_types = 1);
 require __DIR__ . '/../vendor/autoload.php';
 
 Tester\Environment::setup();
-@mkdir(__DIR__ . '/configuration-test/');
-@mkdir(__DIR__ . '/configuration-test/scheduler/');
+if (basename(__DIR__) === 'tests') {
+	$tempDir = __DIR__ . '/temp/';
+	@mkdir($tempDir);
+	@mkdir($tempDir . 'configuration/');
+	@mkdir($tempDir . 'configuration/scheduler/');
+}
 date_default_timezone_set('Europe/Prague');
 
 $configurator = new Nette\Configurator;

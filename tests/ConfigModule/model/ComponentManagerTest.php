@@ -13,7 +13,6 @@ namespace Test\ConfigModule\Model;
 use App\ConfigModule\Model\ComponentManager;
 use App\Model\JsonFileManager;
 use Nette\DI\Container;
-use Nette\Utils\ArrayHash;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -57,12 +56,12 @@ class ComponentManagerTest extends TestCase {
 	/**
 	 * @var string Directory with configuration files
 	 */
-	private $path = __DIR__ . '/../../configuration/';
+	private $path = __DIR__ . '/../../data/configuration/';
 
 	/**
 	 * @var string Testing directory with configuration files
 	 */
-	private $pathTest = __DIR__ . '/../../configuration-test/';
+	private $pathTest = __DIR__ . '/../../temp/configuration/';
 
 	/**
 	 * Constructor

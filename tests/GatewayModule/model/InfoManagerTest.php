@@ -151,8 +151,9 @@ class InfoManagerTest extends TestCase {
 	 * Test function to get information about the Coordinator
 	 */
 	public function testGetCoordinatorInfo() {
-		$fileManager = new FileManager(__DIR__ . '/../../IqrfAppModule/data/');
-		$jsonFileManager = new JsonFileManager(__DIR__ . '/../../IqrfAppModule/data/');
+		$path = __DIR__ . '/../../data/iqrf/';
+		$fileManager = new FileManager($path);
+		$jsonFileManager = new JsonFileManager($path);
 		$parsedInfo = $jsonFileManager->read('data-os-read');
 		$output = [
 			'response' => $fileManager->read('response-os-read.json'),

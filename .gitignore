@@ -11,5 +11,5 @@ nbproject/
 tests/output/
 tests/*/output/
 tests/*/*/output/
-tests/configuration-test
-tests/CloudModule/model/certs
+tests/temp/
+coverage.xml

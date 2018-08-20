@@ -69,17 +69,17 @@ class WebsocketManagerTest extends TestCase {
 	/**
 	 * @var string Directory with configuration files
 	 */
-	private $path = __DIR__ . '/../../configuration/';
+	private $path = __DIR__ . '/../../data/configuration/';
 
 	/**
 	 * @var string Testing directory with configuration files
 	 */
-	private $pathTest = __DIR__ . '/../../configuration-test/';
+	private $pathTest = __DIR__ . '/../../temp/configuration/';
 
 	/**
 	 * @var string Directory with JSON schemas
 	 */
-	private $schemaPath = __DIR__ . '/../../jsonschema/';
+	private $schemaPath = __DIR__ . '/../../data/cfgSchemas/';
 
 	/**
 	 * @var array Values from configuration form

@@ -64,8 +64,8 @@
 	},
 	"scripts": {
 		"install-cs": "composer create-project nette/code-checker temp/code-checker --no-interaction",
-		"check-cs": "php temp/code-checker/code-checker -l --short-arrays -i \"tests/model/data/macros-ascii.expected\" -i \"docs/\" -i \"tests/configuration-test/\"",
-		"fix-cs": "php temp/code-checker/code-checker -f -l --short-arrays -i \"tests/model/data/macros-ascii.expected\" -i \"docs/\" -i \"tests/configuration-test/\"",
+		"check-cs": "php temp/code-checker/code-checker -l --short-arrays -i \"tests/data/macros/macros-ascii.expected\" -i \"docs/\" -i \"tests/temp/\"",
+		"fix-cs": "php temp/code-checker/code-checker -f -l --short-arrays -i \"tests/data/macros/macros-ascii.expected\" -i \"docs/\" -i \"tests/temp/\"",
 		"phpstan": "vendor/bin/phpstan analyse -c phpstan.neon -l 4 app tests"
 	},
 	"minimum-stability": "alpha"

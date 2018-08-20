@@ -53,12 +53,12 @@ class InteliGlueManagerTest extends TestCase {
 	/**
 	 * @var string Testing directory with configuration files
 	 */
-	private $pathTest = __DIR__ . '/../../configuration-test/';
+	private $pathTest = __DIR__ . '/../../temp/configuration/';
 
 	/**
 	 * @var string Directory with JSON schemas
 	 */
-	private $schemaPath = __DIR__ . '/../../jsonschema/';
+	private $schemaPath = __DIR__ . '/../../data/cfgSchemas/';
 
 	/**
 	 * Constructor
