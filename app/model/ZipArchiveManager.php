@@ -132,6 +132,7 @@ class ZipArchiveManager {
 				$files[] = Strings::trim($name, '/');
 			}
 		}
+		sort($files);
 		return $files;
 	}
 

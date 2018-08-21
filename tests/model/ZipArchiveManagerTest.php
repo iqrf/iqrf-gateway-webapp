@@ -92,9 +92,7 @@ class ZipArchiveManagerTest extends TestCase {
 		$fileName = 'config.json';
 		$path = $this->configDir . $fileName;
 		$this->managerNew->addFile($path, $fileName);
-		$actual = $this->managerNew->listFiles();
-		sort($actual);
-		Assert::same([$fileName], $actual);
+		Assert::same([$fileName], $this->managerNew->listFiles());
 	}
 
 	/**
@@ -104,9 +102,7 @@ class ZipArchiveManagerTest extends TestCase {
 		$fileName = 'test.json';
 		$text = 'Test';
 		$this->managerNew->addFileFromText($fileName, $text);
-		$actual = $this->managerNew->listFiles();
-		sort($actual);
-		Assert::same([$fileName], $actual);
+		Assert::same([$fileName], $this->managerNew->listFiles());
 	}
 
 	/**
@@ -115,9 +111,7 @@ class ZipArchiveManagerTest extends TestCase {
 	public function testAddFolder() {
 		$this->managerNew->addFolder($this->configDir, '');
 		$expected = $this->createList($this->configDir);
-		$actual = $this->managerNew->listFiles();
-		sort($actual);
-		Assert::same($expected, $actual);
+		Assert::same($expected, $this->managerNew->listFiles());
 	}
 
 	/**
@@ -129,9 +123,7 @@ class ZipArchiveManagerTest extends TestCase {
 		];
 		$fileName = 'test.json';
 		$this->managerNew->addJsonFromArray($fileName, $array);
-		$actual = $this->managerNew->listFiles();
-		sort($actual);
-		Assert::same([$fileName], $actual);
+		Assert::same([$fileName], $this->managerNew->listFiles());
 	}
 
 	/**
@@ -183,9 +175,7 @@ class ZipArchiveManagerTest extends TestCase {
 	 */
 	public function testListFiles() {
 		$expected = $this->createList($this->configDir);
-		$actual = $this->manager->listFiles();
-		sort($actual);
-		Assert::same($expected, $actual);
+		Assert::same($expected, $this->manager->listFiles());
 	}
 
 	/**
