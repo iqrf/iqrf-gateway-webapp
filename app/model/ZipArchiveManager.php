@@ -58,7 +58,7 @@ class ZipArchiveManager {
 	}
 
 	/**
-	 * Add a file to a ZIP archive using its contents
+	 * Add a file to the ZIP archive using its contents
 	 * @param string $filename File name
 	 * @param string $content The content of text file
 	 */
@@ -67,7 +67,7 @@ class ZipArchiveManager {
 	}
 
 	/**
-	 * Add a folder to a ZIP archive from the given path
+	 * Add a folder to the ZIP archive from the given path
 	 * @param string $path The path to the folder to add
 	 * @param string $folderName Folder name in the archive
 	 */
@@ -77,14 +77,14 @@ class ZipArchiveManager {
 		foreach ($files as $file => $fileObject) {
 			$this->addFile($file, $folderName . '/' . basename($file));
 		}
-		$folders = Finder::findDirectories('*')->in($path);
-		foreach ($folders as $folder => $folderObject) {
-			$this->addFolder($folder, $folderName . '/' . basename($folder));
+		$directories = Finder::findDirectories('*')->in($path);
+		foreach ($directories as $directory => $directoryObject) {
+			$this->addFolder($directory, $folderName . '/' . basename($directory));
 		}
 	}
 
 	/**
-	 * Add a JSON file to a ZIP archive using its contents
+	 * Add a JSON file to the ZIP archive using its contents
 	 * @param string $filename File name
 	 * @param array $jsonData JSON data in an array
 	 */
@@ -94,16 +94,16 @@ class ZipArchiveManager {
 	}
 
 	/**
-	 * Check if file or files exist in the archive
+	 * Check if the file or the files exist in the archive
 	 * @param string|array|ArrayHash $var File(s) to check
 	 * @return boolean Is file exist
 	 */
-	public function exist($var) {
+	public function exist($var): bool {
 		if (is_string($var)) {
-			return ($this->zip->locateName($var, \ZipArchive::FL_NOCASE | \ZipArchive::FL_NODIR)) !== false;
+			return ($this->zip->locateName('/' . $var, \ZipArchive::FL_NOCASE)) !== false;
 		} elseif (is_array($var) || (is_object($var) && $var instanceof ArrayHash)) {
 			foreach ($var as $file) {
-				$result = $this->zip->locateName($file, \ZipArchive::FL_NOCASE | \ZipArchive::FL_NODIR);
+				$result = $this->zip->locateName('/' . $file, \ZipArchive::FL_NOCASE);
 				if (!is_integer($result)) {
 					return false;
 				}
@@ -124,10 +124,13 @@ class ZipArchiveManager {
 	 * List files in the archive
 	 * @return array List of files in the archive
 	 */
-	public function listFiles() {
+	public function listFiles(): array {
 		$files = [];
 		for ($i = 0; $i < $this->zip->numFiles; $i++) {
-			$files[] = Strings::trim($this->zip->statIndex($i)['name'], '/');
+			$name = $this->zip->statIndex($i)['name'];
+			if (!Strings::endsWith($name, '/')) {
+				$files[] = Strings::trim($name, '/');
+			}
 		}
 		return $files;
 	}
