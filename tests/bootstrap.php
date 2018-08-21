@@ -10,6 +10,7 @@ if (basename(__DIR__) === 'tests') {
 	@mkdir($tempDir);
 	@mkdir($tempDir . 'configuration/');
 	@mkdir($tempDir . 'configuration/scheduler/');
+	@mkdir($tempDir . 'zip/');
 }
 date_default_timezone_set('Europe/Prague');
 
