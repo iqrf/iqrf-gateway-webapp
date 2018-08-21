@@ -64,7 +64,7 @@ class UserManager {
 	}
 
 	/**
-	 * Delete User
+	 * Delete the user
 	 * @param int $id User ID
 	 */
 	public function delete(int $id) {
@@ -72,7 +72,7 @@ class UserManager {
 	}
 
 	/**
-	 * Edit user
+	 * Edit the user
 	 * @param int $id User ID
 	 * @param string $username New username
 	 * @param string $role New user role
@@ -93,16 +93,20 @@ class UserManager {
 	}
 
 	/**
-	 * Get infromation about user
+	 * Get information about the user
 	 * @param int $id User ID
-	 * @return ActiveRow|false Information about user or false
+	 * @return array|null Information about the user or null
 	 */
 	public function getInfo(int $id) {
-		return $this->table->get($id);
+		$row = $this->table->get($id);
+		if ($row instanceof ActiveRow) {
+			return $row->toArray();
+		}
+		return null;
 	}
 
 	/**
-	 * Register new user
+	 * Register a new user
 	 * @param string $username Username
 	 * @param string $password Password
 	 * @param string $role User's role
