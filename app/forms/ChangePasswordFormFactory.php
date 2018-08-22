@@ -20,9 +20,9 @@ declare(strict_types = 1);
 
 namespace App\Forms;
 
+use App\Exception\InvalidPasswordException;
 use App\Forms\FormFactory;
 use App\Presenters\ProfilePresenter;
-use App\Model\InvalidPasswordException;
 use App\Model\UserManager;
 use Nette;
 use Nette\Forms\Form;

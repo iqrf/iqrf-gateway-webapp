@@ -20,8 +20,8 @@ declare(strict_types = 1);
 
 namespace App\Model;
 
-use App\Model\InvalidJsonException;
-use App\Model\NonExistingJsonSchemaException;
+use App\Exception\InvalidJsonException;
+use App\Exception\NonExistingJsonSchemaException;
 use JsonSchema\Validator;
 use Nette;
 use Nette\Utils\Strings;

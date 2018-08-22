@@ -21,7 +21,7 @@ declare(strict_types = 1);
 namespace App\ServiceModule\Presenters;
 
 use App\Presenters\ProtectedPresenter;
-use App\ServiceModule\Model\NotSupportedInitSystemException;
+use App\ServiceModule\Exception\NotSupportedInitSystemException;
 use App\ServiceModule\Model\ServiceManager;
 
 /**

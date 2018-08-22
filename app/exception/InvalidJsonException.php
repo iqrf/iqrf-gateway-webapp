@@ -18,32 +18,11 @@
  */
 declare(strict_types = 1);
 
-namespace App\Model;
+namespace App\Exception;
 
 /**
  * The exception that indicates an invalid JSON
  */
 class InvalidJsonException extends \InvalidArgumentException {
-
-}
-
-/**
- * The exception that indicates an invalid password
- */
-class InvalidPasswordException extends \InvalidArgumentException {
-
-}
-
-/**
- * The exception that indicates non-existing JSON schema
- */
-class NonExistingJsonSchemaException extends \InvalidArgumentException {
-
-}
-
-/**
- * The exception that indicates that the user with that username already exists.
- */
-class UsernameAlreadyExistsException extends \InvalidArgumentException {
 
 }

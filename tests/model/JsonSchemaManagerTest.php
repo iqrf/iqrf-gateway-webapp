@@ -10,10 +10,10 @@ declare(strict_types = 1);
 
 namespace Test\Model;
 
-use App\Model\InvalidJsonException;
+use App\Exception\InvalidJsonException;
+use App\Exception\NonExistingJsonSchemaException;
 use App\Model\JsonFileManager;
 use App\Model\JsonSchemaManager;
-use App\Model\NonExistingJsonSchemaException;
 use Nette\DI\Container;
 use Tester\Assert;
 use Tester\TestCase;

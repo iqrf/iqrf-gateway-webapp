@@ -18,7 +18,7 @@
  */
 declare(strict_types = 1);
 
-namespace App\ServiceModule\Model;
+namespace App\ServiceModule\Exception;
 
 /**
  * The exception that indicates not supported init system

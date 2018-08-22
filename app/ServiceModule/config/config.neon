@@ -1,3 +1,2 @@
 services:
-	- App\ServiceModule\Model\NotSupportedInitSystemException
 	- App\ServiceModule\Model\ServiceManager(%initDaemon%)

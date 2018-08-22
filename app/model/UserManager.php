@@ -20,8 +20,8 @@ declare(strict_types = 1);
 
 namespace App\Model;
 
-use App\Model\InvalidPasswordException;
-use App\Model\UsernameAlreadyExistsException;
+use App\Exception\InvalidPasswordException;
+use App\Exception\UsernameAlreadyExistsException;
 use Nette;
 use Nette\Database\Context;
 use Nette\Database\Table\Selection;

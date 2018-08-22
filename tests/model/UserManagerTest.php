@@ -10,9 +10,9 @@ declare(strict_types = 1);
 
 namespace Test\Model;
 
-use App\Model\InvalidPasswordException;
+use App\Exception\InvalidPasswordException;
+use App\Exception\UsernameAlreadyExistsException;
 use App\Model\UserManager;
-use App\Model\UsernameAlreadyExistsException;
 use Nette\Caching\Storages\MemoryStorage;
 use Nette\Database\Connection;
 use Nette\Database\Context;

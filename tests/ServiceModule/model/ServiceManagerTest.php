@@ -11,7 +11,7 @@ declare(strict_types = 1);
 namespace Test\ServiceModule\Model;
 
 use App\Model\CommandManager;
-use App\ServiceModule\Model\NotSupportedInitSystemException;
+use App\ServiceModule\Exception\NotSupportedInitSystemException;
 use App\ServiceModule\Model\ServiceManager;
 use Nette\DI\Container;
 use Tester\Assert;

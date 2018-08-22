@@ -22,10 +22,10 @@ namespace App\ConfigModule\Model;
 
 use App\ConfigModule\Exception\IncompleteConfigurationException;
 use App\ConfigModule\Exception\InvalidConfigurationFormatException;
+use App\Exception\InvalidJsonException;
+use App\Exception\NonExistingJsonSchemaException;
 use App\Model\CommandManager;
-use App\Model\InvalidJsonException;
 use App\Model\JsonSchemaManager;
-use App\Model\NonExistingJsonSchemaException;
 use App\Model\ZipArchiveManager;
 use Nette;
 use Nette\Application\Responses\FileResponse;

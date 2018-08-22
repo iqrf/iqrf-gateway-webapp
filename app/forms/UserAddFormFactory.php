@@ -20,10 +20,10 @@ declare(strict_types = 1);
 
 namespace App\Forms;
 
+use App\Exception\UsernameAlreadyExistsException;
 use App\Forms\FormFactory;
 use App\Presenters\UserPresenter;
 use App\Model\UserManager;
-use App\Model\UsernameAlreadyExistsException;
 use Nette;
 use Nette\Forms\Form;
 
