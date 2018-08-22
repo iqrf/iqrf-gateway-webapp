@@ -2,6 +2,8 @@ image: iqrfsdk/iqrf-gateway-webapp:tests
 
 stages:
     - test
+    - test-failure
+    - coverage
     - coding-style
 
 variables:
@@ -15,9 +17,7 @@ cache:
     stage: test
     before_script:
         - composer install --no-progress
-    tags:
-        - linux
-        - amd64
+    retry: 2
 
 test:php7.0:
     script:
@@ -47,6 +47,20 @@ test:php7.3:
     script:
         - vendor/bin/tester -p phpdbg7.3 -c ./tests/php.ini -s ./tests
     <<: *test_template
+
+test-failure:
+    stage: test-failure
+    script:
+        - 'for i in $(find ./tests -name \*.actual); do echo "--- $i"; cat $i; echo; echo; done'
+    when: on_failure
+
+coverage:
+    stage: coverage
+    before_script:
+        - update-alternatives --set php /usr/bin/php7.3
+        - composer install --no-progress
+    script:
+        - vendor/bin/tester -p phpdbg7.2 -c ./tests/php.ini -s --coverage ./coverage.xml --coverage-src ./app ./tests
 
 coding-style:
     stage: coding-style
