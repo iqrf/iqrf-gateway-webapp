@@ -49,7 +49,7 @@ class MigrationManagerTest extends TestCase {
 	/**
 	 * @var string Path to a temporary directory with IQRF Gateway Daemon's configuration
 	 */
-	private $configTempPath = __DIR__ . '/../../temp/migrated-configuration';
+	private $configTempPath = __DIR__ . '/../../temp/migrated-configuration/';
 
 	/**
 	 * @var FileManager Text file manager
@@ -98,6 +98,7 @@ class MigrationManagerTest extends TestCase {
 	 * Set up test environment
 	 */
 	protected function setUp() {
+		\Tester\Environment::lock('migration', __DIR__ . '/../../temp/');
 		$this->copyFiles();
 		$this->fileManager = new FileManager($this->configPath);
 		$schemaManager = new JsonSchemaManager($this->schemaPath);
@@ -193,6 +194,7 @@ class MigrationManagerTest extends TestCase {
 	public function testUploadSuccess() {
 		$this->manager->upload($this->mockUploadedArchive());
 		$expectedFiles = $this->createList($this->configPath);
+		sleep(2);
 		$actualFiles = $this->createList($this->configTempPath);
 		Assert::same($expectedFiles, $actualFiles);
 	}

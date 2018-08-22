@@ -2,7 +2,6 @@ image: iqrfsdk/iqrf-gateway-webapp:tests
 
 stages:
     - test
-    - test-failure
     - coverage
     - coding-style
 
@@ -22,6 +21,7 @@ cache:
 test:php7.0:
     script:
         - vendor/bin/tester -p phpdbg7.0 -c ./tests/php.ini -s ./tests
+        - 'for i in $(find ./tests -name \*.actual); do echo "--- $i"; cat $i; echo; echo; done'
     <<: *test_template
 
 test:php7.1:
@@ -30,6 +30,7 @@ test:php7.1:
         - composer install --no-progress
     script:
         - vendor/bin/tester -p phpdbg7.1 -c ./tests/php.ini -s ./tests
+        - 'for i in $(find ./tests -name \*.actual); do echo "--- $i"; cat $i; echo; echo; done'
     <<: *test_template
 
 test:php7.2:
@@ -38,6 +39,7 @@ test:php7.2:
         - composer install --no-progress
     script:
         - vendor/bin/tester -p phpdbg7.2 -c ./tests/php.ini -s ./tests
+        - 'for i in $(find ./tests -name \*.actual); do echo "--- $i"; cat $i; echo; echo; done'
     <<: *test_template
 
 test:php7.3:
@@ -46,13 +48,8 @@ test:php7.3:
         - composer install --no-progress
     script:
         - vendor/bin/tester -p phpdbg7.3 -c ./tests/php.ini -s ./tests
-    <<: *test_template
-
-test-failure:
-    stage: test-failure
-    script:
         - 'for i in $(find ./tests -name \*.actual); do echo "--- $i"; cat $i; echo; echo; done'
-    when: on_failure
+    <<: *test_template
 
 coverage:
     stage: coverage
