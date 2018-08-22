@@ -29,7 +29,6 @@ use App\Model\NonExistingJsonSchemaException;
 use App\Model\ZipArchiveManager;
 use Nette;
 use Nette\Application\Responses\FileResponse;
-use Nette\Utils\ArrayHash;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
 use Nette\Utils\Strings;
@@ -52,9 +51,14 @@ class MigrationManager {
 	private $schemaManager;
 
 	/**
-	 * @var ZipArchiveManager ZIP archive manager
+	 * @var ZipArchiveManager ZIP archive manager for a downloaded configuration
 	 */
-	private $zipManager;
+	private $zipManagerDownload;
+
+	/**
+	 * @var ZipArchiveManager ZIP archive manager for a uploaded configuration
+	 */
+	private $zipManagerUpload;
 
 	/**
 	 * @var string Path to a directory with a configuration of IQRF Gateway Daemon
@@ -74,7 +78,6 @@ class MigrationManager {
 	 */
 	public function __construct(string $configDirectory, CommandManager $commandManager, JsonSchemaManager $schemaManager) {
 		$this->configDirectory = $configDirectory;
-		$this->zipManager = new ZipArchiveManager($this->path);
 		$this->commandManager = $commandManager;
 		$this->schemaManager = $schemaManager;
 	}
@@ -84,11 +87,12 @@ class MigrationManager {
 	 * @return FileResponse HTTP response with a configuration
 	 */
 	public function download() {
+		$this->zipManagerDownload = new ZipArchiveManager($this->path);
 		$now = new \DateTime();
 		$fileName = 'iqrf-gateway-configuration_' . $now->format('c') . '.zip';
 		$contentType = 'application/zip';
-		$this->zipManager->addFolder($this->configDirectory, '');
-		$this->zipManager->close();
+		$this->zipManagerDownload->addFolder($this->configDirectory, '');
+		$this->zipManagerDownload->close();
 		$response = new FileResponse($this->path, $fileName, $contentType, true);
 		return $response;
 	}
@@ -98,23 +102,23 @@ class MigrationManager {
 	 * @param array $formValues Values from form
 	 */
 	public function upload(array $formValues) {
+		$this->zipManagerUpload = new ZipArchiveManager($this->path, \ZipArchive::CREATE);
 		$zip = $formValues['configuration'];
 		if ($zip->isOk()) {
 			if ($zip->getContentType() !== 'application/zip') {
 				throw new InvalidConfigurationFormatException();
 			}
 			$zip->move($this->path);
-			$zipManager = new ZipArchiveManager($this->path, \ZipArchive::CREATE);
-			if (!$this->validate($zipManager)) {
-				$zipManager->close();
+			if (!$this->validate($this->zipManagerUpload)) {
+				$this->zipManagerUpload->close();
 				FileSystem::delete($this->path);
 				throw new IncompleteConfigurationException();
 			}
 			$this->commandManager->send('rm -rf ' . $this->configDirectory, true);
 			$this->commandManager->send('mkdir ' . $this->configDirectory, true);
 			$this->changeOwner();
-			$zipManager->extract($this->configDirectory);
-			$zipManager->close();
+			$this->zipManagerUpload->extract($this->configDirectory);
+			$this->zipManagerUpload->close();
 			FileSystem::delete($this->path);
 		}
 	}
@@ -131,7 +135,7 @@ class MigrationManager {
 
 	/**
 	 * Validate JSON configuration files for IQRF Gateway Daemon
-	 * @param ZipArchiveManager $zipManager ZIP Archive manager
+	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 * @return bool Are JSON files valid?:
 	 */
 	public function validate(ZipArchiveManager $zipManager): bool {
@@ -139,7 +143,8 @@ class MigrationManager {
 			if (!Strings::match($file, '~^[a-zA-Z0-9]+\_\_[a-zA-Z0-9]+\.json$~')) {
 				continue;
 			}
-			$json = Json::decode($zipManager->openFile($file));
+			$jsonFile = $zipManager->openFile($file);
+			$json = Json::decode($jsonFile, Json::FORCE_ARRAY);
 			if (!array_key_exists('component', $json)) {
 				continue;
 			}
@@ -149,7 +154,7 @@ class MigrationManager {
 				continue;
 			}
 			try {
-				$this->schemaManager->validate(ArrayHash::from($json));
+				$this->schemaManager->validate(Json::decode($jsonFile));
 			} catch (InvalidJsonException $e) {
 				return false;
 			}
