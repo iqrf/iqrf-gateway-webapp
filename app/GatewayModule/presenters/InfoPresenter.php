@@ -24,7 +24,7 @@ use App\GatewayModule\Model\DiagnosticsManager;
 use App\GatewayModule\Model\InfoManager;
 use App\IqrfAppModule\Exception\EmptyResponseException;
 use App\IqrfAppModule\Exception\DpaErrorException;
-use App\Presenters\ProtectedPresenter;
+use App\CoreModule\Presenters\ProtectedPresenter;
 use Nette\Application\BadRequestException;
 use Tracy\Debugger;
 

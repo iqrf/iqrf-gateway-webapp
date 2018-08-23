@@ -54,21 +54,6 @@ session:
 	expiration: 14 days
 
 services:
-	- App\Forms\ChangePasswordFormFactory
-	- App\Forms\FormFactory
-	- App\Forms\SignInFormFactory
-	- App\Forms\UserAddFormFactory
-	- App\Forms\UserEditFormFactory
-	authenticator: App\Model\AppAuthenticator
-	- App\Model\CertificateManager
-	- App\Model\CommandManager(%sudo%)
-	- App\Model\FileManager(%daemon.configDir%)
-	- App\Model\JsonFileManager(%daemon.configDir%)
-	jsonSchemaManager:
-		factory: App\Model\JsonSchemaManager(%daemon.schemaDir%)
-		autowired: self
-	- App\Model\UserManager
-	- App\Model\VersionManager
 	router: App\Router\RouterFactory::createRouter
 	formFactory: Instante\Bootstrap3Renderer\BootstrapFormFactory
 
@@ -96,6 +81,7 @@ tracy:
 includes:
 	- ../CloudModule/config/config.neon
 	- ../ConfigModule/config/config.neon
+	- ../CoreModule/config/config.neon
 	- ../GatewayModule/config/config.neon
 	- ../IqrfAppModule/config/config.neon
 	- ../ServiceModule/config/config.neon

@@ -11,8 +11,8 @@ declare(strict_types = 1);
 namespace Test\ConfigModule\Model;
 
 use App\ConfigModule\Model\GenericManager;
-use App\Model\JsonFileManager;
-use App\Model\JsonSchemaManager;
+use App\CoreModule\Model\JsonFileManager;
+use App\CoreModule\Model\JsonSchemaManager;
 use Nette\DI\Container;
 use Tester\Assert;
 use Tester\TestCase;

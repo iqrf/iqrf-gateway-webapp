@@ -23,7 +23,7 @@ namespace App\ConfigModule\Presenters;
 use App\ConfigModule\Forms\IqrfSpiFormFactory;
 use App\ConfigModule\Model\GenericManager;
 use App\ConfigModule\Model\IqrfManager;
-use App\Model\JsonFileManager;
+use App\CoreModule\Model\JsonFileManager;
 use Nette\Forms\Form;
 
 /**

@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Model;
 
-use App\Model\JsonFileManager;
+use App\CoreModule\Model\JsonFileManager;
 use Nette;
 
 /**

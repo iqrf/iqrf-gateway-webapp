@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\IqrfAppModule\Presenters;
 
-use App\Presenters\ProtectedPresenter;
+use App\CoreModule\Presenters\ProtectedPresenter;
 
 /**
  * IQRF Network disambiguation presenter

@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\IqrfAppModule\Forms;
 
-use App\Forms\FormFactory;
+use App\CoreModule\Forms\FormFactory;
 use App\IqrfAppModule\Exception\EmptyResponseException;
 use App\IqrfAppModule\Exception\DpaErrorException;
 use App\IqrfAppModule\Model\IqrfNetManager;

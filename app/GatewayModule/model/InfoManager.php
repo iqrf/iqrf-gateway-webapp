@@ -21,9 +21,9 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Model;
 
 use App\IqrfAppModule\Model\IqrfAppManager;
-use App\Model\CommandManager;
-use App\Model\JsonFileManager;
-use App\Model\VersionManager;
+use App\CoreModule\Model\CommandManager;
+use App\CoreModule\Model\JsonFileManager;
+use App\CoreModule\Model\VersionManager;
 use Nette;
 
 /**

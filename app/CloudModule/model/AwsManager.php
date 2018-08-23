@@ -22,7 +22,7 @@ namespace App\CloudModule\Model;
 
 use App\CloudModule\Exception\InvalidPrivateKeyForCertificateException;
 use App\ConfigModule\Model\GenericManager;
-use App\Model\CertificateManager;
+use App\CoreModule\Model\CertificateManager;
 use GuzzleHttp\Client;
 use Nette;
 use Nette\Utils\FileSystem;

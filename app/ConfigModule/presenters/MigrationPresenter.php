@@ -22,7 +22,7 @@ namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\MigrationFormFactory;
 use App\ConfigModule\Model\MigrationManager;
-use App\Presenters\ProtectedPresenter;
+use App\CoreModule\Presenters\ProtectedPresenter;
 use Nette\Application\BadRequestException;
 use Nette\Forms\Form;
 use Tracy\Debugger;

@@ -21,7 +21,7 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Presenters;
 
 use App\GatewayModule\Model\LogManager;
-use App\Presenters\ProtectedPresenter;
+use App\CoreModule\Presenters\ProtectedPresenter;
 use Nette\Application\BadRequestException;
 use Nette\IOException;
 use Tracy\Debugger;

@@ -24,8 +24,8 @@ use App\IqrfAppModule\Exception\DpaErrorException;
 use App\IqrfAppModule\Exception\EmptyResponseException;
 use App\IqrfAppModule\Model\IqrfAppManager;
 use App\GatewayModule\Model\InfoManager;
-use App\Model\CommandManager;
-use App\Model\ZipArchiveManager;
+use App\CoreModule\Model\CommandManager;
+use App\CoreModule\Model\ZipArchiveManager;
 use Nette;
 use Nette\Application\Responses\FileResponse;
 

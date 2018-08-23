@@ -12,8 +12,8 @@ namespace Test\ServiceModule\Model;
 
 use App\CloudModule\Model\BluemixManager;
 use App\ConfigModule\Model\GenericManager;
-use App\Model\JsonFileManager;
-use App\Model\JsonSchemaManager;
+use App\CoreModule\Model\JsonFileManager;
+use App\CoreModule\Model\JsonSchemaManager;
 use Nette\DI\Container;
 use Tester\Assert;
 use Tester\TestCase;

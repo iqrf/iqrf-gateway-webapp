@@ -22,7 +22,7 @@ namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Model\SchedulerManager;
 use App\ConfigModule\Forms\SchedulerFormFactory;
-use App\Presenters\ProtectedPresenter;
+use App\CoreModule\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 use Nette\IOException;
 use Nette\Utils\JsonException;

@@ -11,8 +11,8 @@ declare(strict_types = 1);
 namespace Test\Model;
 
 use App\GatewayModule\Model\LogManager;
-use App\Model\FileManager;
-use App\Model\ZipArchiveManager;
+use App\CoreModule\Model\FileManager;
+use App\CoreModule\Model\ZipArchiveManager;
 use Nette\Application\Responses\FileResponse;
 use Nette\DI\Container;
 use Tester\Assert;

@@ -12,10 +12,10 @@ namespace Test\ConfigModule\Model;
 
 use App\ConfigModule\Exception\InvalidConfigurationFormatException;
 use App\ConfigModule\Model\MigrationManager;
-use App\Model\CommandManager;
-use App\Model\FileManager;
-use App\Model\JsonSchemaManager;
-use App\Model\ZipArchiveManager;
+use App\CoreModule\Model\CommandManager;
+use App\CoreModule\Model\FileManager;
+use App\CoreModule\Model\JsonSchemaManager;
+use App\CoreModule\Model\ZipArchiveManager;
 use Nette\Application\Responses\FileResponse;
 use Nette\DI\Container;
 use Nette\Http\FileUpload;

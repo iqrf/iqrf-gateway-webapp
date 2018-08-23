@@ -22,8 +22,8 @@ namespace App\ConfigModule\Forms;
 
 use App\ConfigModule\Model\MainManager;
 use App\ConfigModule\Presenters\MainPresenter;
-use App\Exception\NonExistingJsonSchemaException;
-use App\Forms\FormFactory;
+use App\CoreModule\Exception\NonExistingJsonSchemaException;
+use App\CoreModule\Forms\FormFactory;
 use Nette;
 use Nette\Forms\Form;
 use Nette\IOException;

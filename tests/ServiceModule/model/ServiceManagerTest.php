@@ -10,7 +10,7 @@ declare(strict_types = 1);
 
 namespace Test\ServiceModule\Model;
 
-use App\Model\CommandManager;
+use App\CoreModule\Model\CommandManager;
 use App\ServiceModule\Exception\NotSupportedInitSystemException;
 use App\ServiceModule\Model\ServiceManager;
 use Nette\DI\Container;

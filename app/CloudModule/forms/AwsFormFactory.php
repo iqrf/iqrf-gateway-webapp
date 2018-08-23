@@ -22,7 +22,7 @@ namespace App\CloudModule\Forms;
 
 use App\CloudModule\Model\AwsManager;
 use App\CloudModule\Presenters\AwsPresenter;
-use App\Forms\FormFactory;
+use App\CoreModule\Forms\FormFactory;
 use App\ServiceModule\Model\ServiceManager;
 use Nette;
 use Nette\Forms\Form;

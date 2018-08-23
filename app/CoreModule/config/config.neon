@@ -1,0 +1,16 @@
+services:
+	- App\CoreModule\Forms\ChangePasswordFormFactory
+	- App\CoreModule\Forms\FormFactory
+	- App\CoreModule\Forms\SignInFormFactory
+	- App\CoreModule\Forms\UserAddFormFactory
+	- App\CoreModule\Forms\UserEditFormFactory
+	authenticator: App\CoreModule\Model\AppAuthenticator
+	- App\CoreModule\Model\CertificateManager
+	- App\CoreModule\Model\CommandManager(%sudo%)
+	- App\CoreModule\Model\FileManager(%daemon.configDir%)
+	- App\CoreModule\Model\JsonFileManager(%daemon.configDir%)
+	jsonSchemaManager:
+		factory: App\CoreModule\Model\JsonSchemaManager(%daemon.schemaDir%)
+		autowired: self
+	- App\CoreModule\Model\UserManager
+	- App\CoreModule\Model\VersionManager

@@ -53,7 +53,9 @@ class RouterFactory {
 		$service = new RouteList('Service');
 		$service[] = new Route('[<lang [a-z]{2}>/]service/<presenter>/<action>', 'Control:default');
 		$router[] = $service;
-		$router[] = new Route('[<lang [a-z]{2}>/]<presenter>/<action>[/<id>]', 'Homepage:default');
+		$core = new RouteList('Core');
+		$core[] = new Route('[<lang [a-z]{2}>/]<presenter>/<action>[/<id>]', 'Homepage:default');
+		$router[] = $core;
 		return $router;
 	}
 

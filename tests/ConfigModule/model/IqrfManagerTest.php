@@ -10,7 +10,7 @@ declare(strict_types = 1);
 
 namespace Test\ConfigModule\Model;
 
-use App\Model\CommandManager;
+use App\CoreModule\Model\CommandManager;
 use App\ConfigModule\Model\IqrfManager;
 use Nette\DI\Container;
 use Tester\Assert;

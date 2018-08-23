@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Model;
 
-use App\Model\ZipArchiveManager;
+use App\CoreModule\Model\ZipArchiveManager;
 use Nette;
 use Nette\Application\Responses\FileResponse;
 use Nette\Utils\FileSystem;

@@ -21,7 +21,7 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Presenters;
 
 use App\IqrfAppModule\Model\IqrfAppManager;
-use App\Presenters\ProtectedPresenter;
+use App\CoreModule\Presenters\ProtectedPresenter;
 
 /**
  * Change operational mode presenter

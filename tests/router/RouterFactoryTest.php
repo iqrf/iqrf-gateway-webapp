@@ -50,7 +50,9 @@ class RouterFactoryTest extends TestCase {
 		['Service:' => [
 				'[<lang [a-z]{2}>/]service/<presenter>/<action>',
 			],],
-		'[<lang [a-z]{2}>/]<presenter>/<action>[/<id>]',
+		['Core:' =>
+			['[<lang [a-z]{2}>/]<presenter>/<action>[/<id>]']
+		],
 	];
 
 	/**

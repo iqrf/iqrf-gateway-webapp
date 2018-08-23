@@ -22,7 +22,7 @@ namespace App\ConfigModule\Model;
 
 use App\ConfigModule\Model\GenericManager;
 use App\ConfigModule\Model\MainManager;
-use App\Model\JsonFileManager;
+use App\CoreModule\Model\JsonFileManager;
 use Nette;
 use Nette\Utils\Strings;
 

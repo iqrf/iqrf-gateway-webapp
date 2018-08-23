@@ -11,7 +11,7 @@ declare(strict_types = 1);
 namespace Test\IqrfAppModule\Model;
 
 use App\IqrfAppModule\Parser\OsParser;
-use App\Model\JsonFileManager;
+use App\CoreModule\Model\JsonFileManager;
 use Nette\DI\Container;
 use Tester\Assert;
 use Tester\TestCase;

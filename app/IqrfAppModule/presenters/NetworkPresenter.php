@@ -24,7 +24,7 @@ use App\IqrfAppModule\Forms\BondingFormFactory;
 use App\IqrfAppModule\Forms\DiscoveryFormFactory;
 use App\IqrfAppModule\Forms\RfFormFactory;
 use App\IqrfAppModule\Forms\SecurityFormFactory;
-use App\Presenters\ProtectedPresenter;
+use App\CoreModule\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
 /**

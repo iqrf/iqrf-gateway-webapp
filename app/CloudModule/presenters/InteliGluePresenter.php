@@ -21,7 +21,7 @@ declare(strict_types = 1);
 namespace App\CloudModule\Presenters;
 
 use App\CloudModule\Forms\InteliGlueFormFactory;
-use App\Presenters\ProtectedPresenter;
+use App\CoreModule\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
 /**
