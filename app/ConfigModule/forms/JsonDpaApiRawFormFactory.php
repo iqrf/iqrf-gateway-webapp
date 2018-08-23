@@ -21,9 +21,7 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Forms;
 
 use App\ConfigModule\Forms\GenericConfigFormFactory;
-use App\ConfigModule\Model\GenericManager;
 use App\ConfigModule\Presenters\JsonRawApiPresenter;
-use App\Forms\FormFactory;
 use Nette;
 use Nette\Forms\Form;
 
@@ -35,21 +33,12 @@ class JsonDpaApiRawFormFactory extends GenericConfigFormFactory {
 	use Nette\SmartObject;
 
 	/**
-	 * Constructor
-	 * @param GenericManager $manager Generic configuration manager
-	 * @param FormFactory $factory Generic form factory
-	 */
-	public function __construct(GenericManager $manager, FormFactory $factory) {
-		parent::__construct($manager, $factory);
-		$this->manager->setComponent('iqrf::JsonDpaApiRaw');
-	}
-
-	/**
 	 * Create JSON Raw API configuration form
 	 * @param JsonRawApiPresenter $presenter JSON Raw API configuration presenter
 	 * @return Form JSON Raw API configuration form
 	 */
 	public function create(JsonRawApiPresenter $presenter): Form {
+		$this->manager->setComponent('iqrf::JsonDpaApiRaw');
 		$this->presenter = $presenter;
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('config.jsonRawApi.form'));

@@ -21,9 +21,7 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Forms;
 
 use App\ConfigModule\Forms\GenericConfigFormFactory;
-use App\ConfigModule\Model\GenericManager;
 use App\ConfigModule\Presenters\MqPresenter;
-use App\Forms\FormFactory;
 use Nette;
 use Nette\Forms\Form;
 
@@ -45,23 +43,14 @@ class MqFormFactory extends GenericConfigFormFactory {
 	private $instances;
 
 	/**
-	 * Constructor
-	 * @param GenericManager $manager Generic configuration manager
-	 * @param FormFactory $factory Generic form factory
-	 */
-	public function __construct(GenericManager $manager, FormFactory $factory) {
-		parent::__construct($manager, $factory);
-		$this->manager->setComponent('iqrf::MqMessaging');
-		$this->instances = $this->manager->getInstanceFiles();
-		$this->redirect = 'Mq:default';
-	}
-
-	/**
 	 * Create MQ interface configuration form
 	 * @param MqPresenter $presenter MQ interface presenter
 	 * @return Form MQ interface configuration form
 	 */
 	public function create(MqPresenter $presenter): Form {
+		$this->manager->setComponent('iqrf::MqMessaging');
+		$this->instances = $this->manager->getInstanceFiles();
+		$this->redirect = 'Mq:default';
 		$this->presenter = $presenter;
 		$this->id = intval($presenter->getParameter('id'));
 		$form = $this->factory->create();

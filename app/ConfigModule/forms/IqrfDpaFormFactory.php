@@ -21,9 +21,7 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Forms;
 
 use App\ConfigModule\Forms\GenericConfigFormFactory;
-use App\ConfigModule\Model\GenericManager;
 use App\ConfigModule\Presenters\IqrfDpaPresenter;
-use App\Forms\FormFactory;
 use Nette;
 use Nette\Forms\Form;
 
@@ -35,21 +33,12 @@ class IqrfDpaFormFactory extends GenericConfigFormFactory {
 	use Nette\SmartObject;
 
 	/**
-	 * Constructor
-	 * @param FormFactory $factory Generic form factory
-	 * @param GenericManager $manager Generic config manager
-	 */
-	public function __construct(FormFactory $factory, GenericManager $manager) {
-		parent::__construct($manager, $factory);
-		$this->manager->setComponent('iqrf::IqrfDpa');
-	}
-
-	/**
 	 * Create IQRF DPA configuration form
 	 * @param IqrfDpaPresenter $presenter IQRF DPA configuration presenter
 	 * @return Form IQRF DPA interface configuration form
 	 */
 	public function create(IqrfDpaPresenter $presenter): Form {
+		$this->manager->setComponent('iqrf::IqrfDpa');
 		$this->presenter = $presenter;
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('config.iqrfDpa.form'));

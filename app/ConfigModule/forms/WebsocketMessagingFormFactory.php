@@ -21,9 +21,7 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Forms;
 
 use App\ConfigModule\Forms\GenericConfigFormFactory;
-use App\ConfigModule\Model\GenericManager;
 use App\ConfigModule\Presenters\WebsocketPresenter;
-use App\Forms\FormFactory;
 use Nette;
 use Nette\Forms\Form;
 
@@ -45,23 +43,14 @@ class WebsocketMessagingFormFactory extends GenericConfigFormFactory {
 	private $id;
 
 	/**
-	 * Constructor
-	 * @param GenericManager $manager Generic configuration manager
-	 * @param FormFactory $factory Generic form factory
-	 */
-	public function __construct(GenericManager $manager, FormFactory $factory) {
-		parent::__construct($manager, $factory);
-		$this->manager->setComponent('iqrf::WebsocketMessaging');
-		$this->instances = $this->manager->getInstanceFiles();
-		$this->redirect = 'Websocket:default';
-	}
-
-	/**
 	 * Create websocket messaging configuration form
 	 * @param WebsocketPresenter $presenter Websocket interface presenter
 	 * @return Form Websocket messaging configuration form
 	 */
 	public function create(WebsocketPresenter $presenter): Form {
+		$this->manager->setComponent('iqrf::WebsocketMessaging');
+		$this->instances = $this->manager->getInstanceFiles();
+		$this->redirect = 'Websocket:default';
 		$this->presenter = $presenter;
 		$this->id = intval($presenter->getParameter('id'));
 		$form = $this->factory->create();

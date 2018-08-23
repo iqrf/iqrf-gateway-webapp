@@ -21,9 +21,7 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Forms;
 
 use App\ConfigModule\Forms\GenericConfigFormFactory;
-use App\ConfigModule\Model\GenericManager;
 use App\ConfigModule\Presenters\MqttPresenter;
-use App\Forms\FormFactory;
 use Nette;
 use Nette\Forms\Form;
 
@@ -45,23 +43,14 @@ class MqttFormFactory extends GenericConfigFormFactory {
 	private $instances;
 
 	/**
-	 * Constructor
-	 * @param GenericManager $manager Generic configuration manager
-	 * @param FormFactory $factory Generic form factory
-	 */
-	public function __construct(GenericManager $manager, FormFactory $factory) {
-		parent::__construct($manager, $factory);
-		$this->manager->setComponent('iqrf::MqttMessaging');
-		$this->instances = $this->manager->getInstanceFiles();
-		$this->redirect = 'Mqtt:default';
-	}
-
-	/**
 	 * Create MQTT interface configuration form
 	 * @param MqttPresenter $presenter MQTT interface presenter
 	 * @return Form MQTT interface configuration form
 	 */
 	public function create(MqttPresenter $presenter): Form {
+		$this->manager->setComponent('iqrf::MqttMessaging');
+		$this->instances = $this->manager->getInstanceFiles();
+		$this->redirect = 'Mqtt:default';
 		$this->presenter = $presenter;
 		$this->id = intval($presenter->getParameter('id'));
 		$qos = ['QoSes.QoS0', 'QoSes.QoS1', 'QoSes.QoS2'];

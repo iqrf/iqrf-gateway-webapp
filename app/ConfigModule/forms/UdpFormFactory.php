@@ -21,9 +21,7 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Forms;
 
 use App\ConfigModule\Forms\GenericConfigFormFactory;
-use App\ConfigModule\Model\GenericManager;
 use App\ConfigModule\Presenters\UdpPresenter;
-use App\Forms\FormFactory;
 use Nette;
 use Nette\Forms\Form;
 
@@ -45,23 +43,14 @@ class UdpFormFactory extends GenericConfigFormFactory {
 	private $id;
 
 	/**
-	 * Constructor
-	 * @param GenericManager $manager Generic configuration manager
-	 * @param FormFactory $factory Generic form factory
-	 */
-	public function __construct(GenericManager $manager, FormFactory $factory) {
-		parent::__construct($manager, $factory);
-		$this->manager->setComponent('iqrf::UdpMessaging');
-		$this->instances = $this->manager->getInstanceFiles();
-		$this->redirect = 'Udp:default';
-	}
-
-	/**
 	 * Create UDP interface configuration form
 	 * @param UdpPresenter $presenter UDP interface presenter
 	 * @return Form UDP interface configuration form
 	 */
 	public function create(UdpPresenter $presenter): Form {
+		$this->manager->setComponent('iqrf::UdpMessaging');
+		$this->instances = $this->manager->getInstanceFiles();
+		$this->redirect = 'Udp:default';
 		$this->presenter = $presenter;
 		$this->id = intval($presenter->getParameter('id'));
 		$form = $this->factory->create();

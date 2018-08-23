@@ -21,9 +21,7 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Forms;
 
 use App\ConfigModule\Forms\GenericConfigFormFactory;
-use App\ConfigModule\Model\GenericManager;
 use App\ConfigModule\Presenters\IqrfCdcPresenter;
-use App\Forms\FormFactory;
 use Nette;
 use Nette\Forms\Form;
 
@@ -35,21 +33,12 @@ class IqrfCdcFormFactory extends GenericConfigFormFactory {
 	use Nette\SmartObject;
 
 	/**
-	 * Constructor
-	 * @param FormFactory $factory Generic form factory
-	 * @param GenericManager $manager Generic config manager
-	 */
-	public function __construct(FormFactory $factory, GenericManager $manager) {
-		parent::__construct($manager, $factory);
-		$this->manager->setComponent('iqrf::IqrfCdc');
-	}
-
-	/**
 	 * Create IQRF CDC configuration form
 	 * @param IqrfCdcPresenter $presenter IQRF CDC configuration presenter
 	 * @return Form IQRF CDC interface configuration form
 	 */
 	public function create(IqrfCdcPresenter $presenter): Form {
+		$this->manager->setComponent('iqrf::IqrfCdc');
 		$this->presenter = $presenter;
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('config.iqrfCdc.form'));

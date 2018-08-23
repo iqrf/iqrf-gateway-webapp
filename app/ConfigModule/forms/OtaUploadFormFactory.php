@@ -21,9 +21,7 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Forms;
 
 use App\ConfigModule\Forms\GenericConfigFormFactory;
-use App\ConfigModule\Model\GenericManager;
 use App\ConfigModule\Presenters\IqmeshPresenter;
-use App\Forms\FormFactory;
 use Nette;
 use Nette\Forms\Form;
 
@@ -35,21 +33,12 @@ class OtaUploadFormFactory extends GenericConfigFormFactory {
 	use Nette\SmartObject;
 
 	/**
-	 * Constructor
-	 * @param GenericManager $manager Generic configuration manager
-	 * @param FormFactory $factory Generic form factory
-	 */
-	public function __construct(GenericManager $manager, FormFactory $factory) {
-		parent::__construct($manager, $factory);
-		$this->manager->setComponent('iqrf::OtaUploadService');
-	}
-
-	/**
 	 * Create OTA upload service configuration form
 	 * @param IqmeshPresenter $presenter IQMESH services configuration presenter
 	 * @return Form OTA upload configuration form
 	 */
 	public function create(IqmeshPresenter $presenter): Form {
+		$this->manager->setComponent('iqrf::OtaUploadService');
 		$this->presenter = $presenter;
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('config.iqmesh.otaUpload.form'));
