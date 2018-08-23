@@ -21,19 +21,28 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\IqrfDpaFormFactory;
-use App\Presenters\ProtectedPresenter;
+use App\ConfigModule\Model\GenericManager;
 use Nette\Forms\Form;
 
 /**
  * IQRF DPA interface configuration presenter
  */
-class IqrfDpaPresenter extends ProtectedPresenter {
+class IqrfDpaPresenter extends GenericPresenter {
 
 	/**
 	 * @var IqrfDpaFormFactory IQRF DPA interface configuration form factory
 	 * @inject
 	 */
 	public $dpaFormFactory;
+
+	/**
+	 * Constructor
+	 * @param GenericManager $genericManager Generic configuration manager
+	 */
+	public function __construct(GenericManager $genericManager) {
+		$components = ['iqrf::IqrfDpa'];
+		parent::__construct($components, $genericManager);
+	}
 
 	/**
 	 * Create IQRF DPA configuration interface form

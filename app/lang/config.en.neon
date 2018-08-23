@@ -6,9 +6,11 @@ actions:
 	Remove: Remove
 
 messages:
+	invalidJson: The configuration has not been loaded because the configuration file is corrupted.
 	multipleInstancesFailure: This component has to have one instance maximally.
 	nonExistingJsonSchema: The configuration has not been saved because the corresponding JSON schema not found.
 	success: The configuration has been saved successfully.
+	readFailure: The configuration has not been loaded because the webapp is unable to read the configuration file.
 	writeFailure: The configuration has not been saved because the webapp is unable to write the configuration file.
 
 components:

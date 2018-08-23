@@ -21,15 +21,15 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\IqrfSpiFormFactory;
+use App\ConfigModule\Model\GenericManager;
 use App\ConfigModule\Model\IqrfManager;
-use App\Presenters\ProtectedPresenter;
 use App\Model\JsonFileManager;
 use Nette\Forms\Form;
 
 /**
  * IQRF SPI interface configuration presenter
  */
-class IqrfSpiPresenter extends ProtectedPresenter {
+class IqrfSpiPresenter extends GenericPresenter {
 
 	/**
 	 * @var JsonFileManager JSON file manager
@@ -50,11 +50,13 @@ class IqrfSpiPresenter extends ProtectedPresenter {
 	/**
 	 * Constructor
 	 * @param IqrfManager $iqrfManager IQRF interface manager
+	 * @param GenericManager $genericManager Generic configuration manager
 	 */
-	public function __construct(IqrfManager $iqrfManager) {
+	public function __construct(IqrfManager $iqrfManager, GenericManager $genericManager) {
 		$this->iqrfManager = $iqrfManager;
 		$this->fileManager = new JsonFileManager(__DIR__ . '/../json/');
-		parent::__construct();
+		$components = ['iqrf::IqrfCdc'];
+		parent::__construct($components, $genericManager);
 	}
 
 	/**

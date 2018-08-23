@@ -20,35 +20,35 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Presenters;
 
-use App\ConfigModule\Forms\MainFormFactory;
-use App\ConfigModule\Model\MainManager;
+use App\ConfigModule\Model\GenericManager;
+use App\Exception\NonExistingJsonSchemaException;
 use App\Presenters\ProtectedPresenter;
-use Nette\Forms\Form;
 use Nette\IOException;
 use Nette\Utils\JsonException;
 
 /**
- * Main daemon configuration presenter
+ * Presenter for generic IQRF Gateway Daemon's configuration presenters
  */
-class MainPresenter extends ProtectedPresenter {
+abstract class GenericPresenter extends ProtectedPresenter {
 
 	/**
-	 * @var MainManager Main configuration manager
+	 * @var string[] IQRF Gateway Daemon's components
 	 */
-	private $configManager;
+	protected $components;
 
 	/**
-	 * @var MainFormFactory Main daemon's configuration form factory
-	 * @inject
+	 * @var GenericManager Generic configuration manager
 	 */
-	public $formFactory;
+	protected $configManager;
 
 	/**
 	 * Constructor
-	 * @param MainManager $configManager Main configuration manager
+	 * @param string[] $components IQRF Gateway Daemon's components
+	 * @param GenericManager $manager Generic configuration manager
 	 */
-	public function __construct(MainManager $configManager) {
-		$this->configManager = $configManager;
+	public function __construct(array $components, GenericManager $manager) {
+		$this->components = $components;
+		$this->configManager = $manager;
 		parent::__construct();
 	}
 
@@ -57,9 +57,12 @@ class MainPresenter extends ProtectedPresenter {
 	 */
 	public function actionDefault() {
 		try {
-			$this->configManager->load();
+			$this->checkInstanceFiles();
 		} catch (\Exception $e) {
-			if ($e instanceof IOException) {
+			if ($e instanceof NonExistingJsonSchemaException) {
+				$this->flashMessage('config.messages.nonExistingJsonSchema', 'danger');
+				$this->redirect('Homepage:default');
+			} else if ($e instanceof IOException) {
 				$this->flashMessage('config.messages.readFailure', 'danger');
 				$this->redirect('Homepage:default');
 			} else if ($e instanceof JsonException) {
@@ -72,11 +75,17 @@ class MainPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Create Main daemon's configuration form
-	 * @return Form Main daemon's configuration form
+	 * Check component's instance files
 	 */
-	protected function createComponentConfigMainForm(): Form {
-		return $this->formFactory->create($this);
+	private function checkInstanceFiles() {
+		foreach ($this->components as $component) {
+			$this->configManager->setComponent($component);
+			$files = $this->configManager->getInstanceFiles();
+			foreach ($files as $file) {
+				$this->configManager->setFileName($file);
+				$this->configManager->load();
+			}
+		}
 	}
 
 }

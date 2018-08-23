@@ -21,19 +21,28 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\IqrfRepositoryFormFactory;
-use App\Presenters\ProtectedPresenter;
+use App\ConfigModule\Model\GenericManager;
 use Nette\Forms\Form;
 
 /**
  * IQRF Repository configuration presenter
  */
-class IqrfRepositoryPresenter extends ProtectedPresenter {
+class IqrfRepositoryPresenter extends GenericPresenter {
 
 	/**
 	 * @var IqrfRepositoryFormFactory IQRF Repository configuration form factory
 	 * @inject
 	 */
 	public $formFactory;
+
+	/**
+	 * Constructor
+	 * @param GenericManager $genericManager Generic configuration manager
+	 */
+	public function __construct(GenericManager $genericManager) {
+		$components = ['iqrf::JsCache'];
+		parent::__construct($components, $genericManager);
+	}
 
 	/**
 	 * Create IQRF Repository configuration form

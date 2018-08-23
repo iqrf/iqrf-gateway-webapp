@@ -21,19 +21,28 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\OtaUploadFormFactory;
-use App\Presenters\ProtectedPresenter;
+use App\ConfigModule\Model\GenericManager;
 use Nette\Forms\Form;
 
 /**
  * IQMESH services configuration presenter
  */
-class IqmeshPresenter extends ProtectedPresenter {
+class IqmeshPresenter extends GenericPresenter {
 
 	/**
 	 * @var OtaUploadFormFactory IQRF OTA upload service configuration form factory
 	 * @inject
 	 */
 	public $otaFormFactory;
+
+	/**
+	 * Constructor
+	 * @param GenericManager $genericManager Generic configuration manager
+	 */
+	public function __construct(GenericManager $genericManager) {
+		$components = ['iqrf::OtaUploadService'];
+		parent::__construct($components, $genericManager);
+	}
 
 	/**
 	 * Create IQRF OTA upload service form

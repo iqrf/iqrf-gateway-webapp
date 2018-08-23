@@ -22,13 +22,12 @@ namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Model\GenericManager;
 use App\ConfigModule\Forms\MqttFormFactory;
-use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
 /**
  * MQTT interface configuration presenter
  */
-class MqttPresenter extends ProtectedPresenter {
+class MqttPresenter extends GenericPresenter {
 
 	/**
 	 * @var MqttFormFactory MQTT interface configuration form factory
@@ -37,18 +36,12 @@ class MqttPresenter extends ProtectedPresenter {
 	public $formFactory;
 
 	/**
-	 * @var GenericManager Generic manager
-	 */
-	private $configManager;
-
-	/**
 	 * Constructor
-	 * @param GenericManager $configManager Generic instance manager
+	 * @param GenericManager $genericManager Generic configuration manager
 	 */
-	public function __construct(GenericManager $configManager) {
-		$this->configManager = $configManager;
-		$this->configManager->setComponent('iqrf::MqttMessaging');
-		parent::__construct();
+	public function __construct(GenericManager $genericManager) {
+		$components = ['iqrf::MqttMessaging'];
+		parent::__construct($components, $genericManager);
 	}
 
 	/**

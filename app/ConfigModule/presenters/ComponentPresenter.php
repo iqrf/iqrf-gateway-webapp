@@ -24,6 +24,8 @@ use App\ConfigModule\Forms\ComponentsFormFactory;
 use App\ConfigModule\Model\ComponentManager;
 use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
+use Nette\IOException;
+use Nette\Utils\JsonException;
 
 /**
  * Component configuration presenter
@@ -48,6 +50,25 @@ class ComponentPresenter extends ProtectedPresenter {
 	public function __construct(ComponentManager $componentManager) {
 		$this->configManager = $componentManager;
 		parent::__construct();
+	}
+
+	/**
+	 * Catch exceptions
+	 */
+	public function actionDefault() {
+		try {
+			$this->configManager->loadComponents();
+		} catch (\Exception $e) {
+			if ($e instanceof IOException) {
+				$this->flashMessage('config.messages.readFailure', 'danger');
+				$this->redirect('Homepage:default');
+			} else if ($e instanceof JsonException) {
+				$this->flashMessage('config.messages.invalidJson', 'danger');
+				$this->redirect('Homepage:default');
+			} else {
+				throw $e;
+			}
+		}
 	}
 
 	/**

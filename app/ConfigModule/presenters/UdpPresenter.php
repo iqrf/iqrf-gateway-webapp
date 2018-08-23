@@ -22,13 +22,12 @@ namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\UdpFormFactory;
 use App\ConfigModule\Model\GenericManager;
-use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
 /**
  * UDP interface configuration presenter
  */
-class UdpPresenter extends ProtectedPresenter {
+class UdpPresenter extends GenericPresenter {
 
 	/**
 	 * @var UdpFormFactory UDP interface configuration form factory
@@ -37,18 +36,12 @@ class UdpPresenter extends ProtectedPresenter {
 	public $formFactory;
 
 	/**
-	 * @var GenericManager Generic manager
-	 */
-	private $configManager;
-
-	/**
 	 * Constructor
-	 * @param GenericManager $configManager Generic manager
+	 * @param GenericManager $genericManager Generic configuration manager
 	 */
-	public function __construct(GenericManager $configManager) {
-		$this->configManager = $configManager;
-		$this->configManager->setComponent('iqrf::UdpMessaging');
-		parent::__construct();
+	public function __construct(GenericManager $genericManager) {
+		$components = ['iqrf::UdpMessaging'];
+		parent::__construct($components, $genericManager);
 	}
 
 	/**

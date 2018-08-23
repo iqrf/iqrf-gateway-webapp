@@ -25,23 +25,17 @@ use App\ConfigModule\Forms\WebsocketMessagingFormFactory;
 use App\ConfigModule\Forms\WebsocketServiceFormFactory;
 use App\ConfigModule\Model\GenericManager;
 use App\ConfigModule\Model\WebsocketManager;
-use App\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 
 /**
  * Websocket interface configuration presenter
  */
-class WebsocketPresenter extends ProtectedPresenter {
-
-	/**
-	 * @var GenericManager Generic manager
-	 */
-	private $configManager;
+class WebsocketPresenter extends GenericPresenter {
 
 	/**
 	 * @var array Websocket components
 	 */
-	private $components = [
+	protected $components = [
 		'messaging' => 'iqrf::WebsocketMessaging',
 		'oldService' => 'shape::WebsocketService',
 		'service' => 'shape::WebsocketCppService',
@@ -72,13 +66,12 @@ class WebsocketPresenter extends ProtectedPresenter {
 
 	/**
 	 * Constructor
-	 * @param GenericManager $configManager Generic configuration manager
+	 * @param GenericManager $genericManager Generic configuration manager
 	 * @param WebsocketManager $websocketManager Websocket configuration manager
 	 */
-	public function __construct(GenericManager $configManager, WebsocketManager $websocketManager) {
-		$this->configManager = $configManager;
+	public function __construct(GenericManager $genericManager, WebsocketManager $websocketManager) {
 		$this->websocketManager = $websocketManager;
-		parent::__construct();
+		parent::__construct($this->components, $genericManager);
 	}
 
 	/**

@@ -21,19 +21,28 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\JsonDpaApiRawFormFactory;
-use App\Presenters\ProtectedPresenter;
+use App\ConfigModule\Model\GenericManager;
 use Nette\Forms\Form;
 
 /**
  * JSON Raw API configuration presenter
  */
-class JsonRawApiPresenter extends ProtectedPresenter {
+class JsonRawApiPresenter extends GenericPresenter {
 
 	/**
 	 * @var JsonDpaApiRawFormFactory JSON Raw API form factory
 	 * @inject
 	 */
 	public $formFactory;
+
+	/**
+	 * Constructor
+	 * @param GenericManager $genericManager Generic configuration manager
+	 */
+	public function __construct(GenericManager $genericManager) {
+		$components = ['iqrf::JsonDpaApiRaw'];
+		parent::__construct($components, $genericManager);
+	}
 
 	/**
 	 * Create JSON Raw API settings form

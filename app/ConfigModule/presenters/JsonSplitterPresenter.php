@@ -21,19 +21,28 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\JsonSplitterFormFactory;
-use App\Presenters\ProtectedPresenter;
+use App\ConfigModule\Model\GenericManager;
 use Nette\Forms\Form;
 
 /**
  * JSON Splitter configuration presenter
  */
-class JsonSplitterPresenter extends ProtectedPresenter {
+class JsonSplitterPresenter extends GenericPresenter {
 
 	/**
 	 * @var JsonSplitterFormFactory JSON Splitter form factory
 	 * @inject
 	 */
 	public $formFactory;
+
+	/**
+	 * Constructor
+	 * @param GenericManager $genericManager Generic configuration manager
+	 */
+	public function __construct(GenericManager $genericManager) {
+		$components = ['iqrf::JsonSplitter'];
+		parent::__construct($components, $genericManager);
+	}
 
 	/**
 	 * Create JSON Splitter settings form
