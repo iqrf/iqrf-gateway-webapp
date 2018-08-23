@@ -54,9 +54,9 @@ class LogManagerTest extends TestCase {
 	}
 
 	/**
-	 * Set up test environment
+	 * Set up the test environment
 	 */
-	public function setUp() {
+	protected function setUp() {
 		$this->logDir = realpath(__DIR__ . '/../../data/logs/');
 		$this->fileManager = new FileManager($this->logDir);
 		$this->manager = new LogManager($this->logDir);

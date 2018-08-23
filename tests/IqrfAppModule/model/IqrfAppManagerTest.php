@@ -91,9 +91,9 @@ class IqrfAppManagerTest extends TestCase {
 	}
 
 	/**
-	 * Set up test environment
+	 * Set up the test environment
 	 */
-	public function setUp() {
+	protected function setUp() {
 		$path = __DIR__ . '/../../data/iqrf/';
 		$this->fileManager = new FileManager($path);
 		$this->jsonFileManager = new JsonFileManager($path);
@@ -103,11 +103,18 @@ class IqrfAppManagerTest extends TestCase {
 	}
 
 	/**
+	 * Cleanup the test environment
+	 */
+	protected function tearDown() {
+		\Mockery::close();
+	}
+
+	/**
 	 * Change status in JSON DPA response
 	 * @param array $json JSON DPA request and response
 	 * @param int $status DPA status
 	 */
-	public function changeStatus(array &$json, int $status) {
+	private function changeStatus(array &$json, int $status) {
 		$data = Json::decode($json['response'], Json::FORCE_ARRAY);
 		$data['data']['status'] = $status;
 		$json['response'] = Json::encode($data);

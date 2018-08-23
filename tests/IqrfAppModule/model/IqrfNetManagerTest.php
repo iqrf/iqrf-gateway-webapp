@@ -48,11 +48,18 @@ class IqrfNetManagerTest extends TestCase {
 	}
 
 	/**
-	 * Set up test environment
+	 * Set up the test environment
 	 */
-	public function setUp() {
+	protected function setUp() {
 		$this->iqrfAppManager = \Mockery::mock(IqrfAppManager::class);
 		$this->iqrfNetManager = new IqrfNetManager($this->iqrfAppManager);
+	}
+
+	/**
+	 * Cleanup the test environment
+	 */
+	protected function tearDown() {
+		\Mockery::close();
 	}
 
 	/**

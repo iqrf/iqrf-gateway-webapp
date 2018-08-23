@@ -58,9 +58,9 @@ class IqrfMacroManagerTest extends TestCase {
 	}
 
 	/**
-	 * Set up test environment
+	 * Set up the test environment
 	 */
-	public function setUp() {
+	protected function setUp() {
 		$this->manager = new IqrfMacroManager($this->macroFileName);
 	}
 

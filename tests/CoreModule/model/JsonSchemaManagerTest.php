@@ -59,9 +59,9 @@ class JsonSchemaManagerTest extends TestCase {
 	}
 
 	/**
-	 * Set up test environment
+	 * Set up the test environment
 	 */
-	public function setUp() {
+	protected function setUp() {
 		$this->fileManager = new JsonFileManager($this->filePath);
 		$this->manager = new JsonSchemaManager($this->schemaPath);
 	}

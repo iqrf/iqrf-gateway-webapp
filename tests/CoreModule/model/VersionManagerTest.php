@@ -40,6 +40,11 @@ class VersionManagerTest extends TestCase {
 	private $commandManager;
 
 	/**
+	 * @var \Mockery\MockInterface Mocked command manager
+	 */
+	private $commandManagerMocked;
+
+	/**
 	 * @var string Current version of the webapp
 	 */
 	private $currentVersion = '1.1.6';
@@ -50,6 +55,11 @@ class VersionManagerTest extends TestCase {
 	private $manager;
 
 	/**
+	 * @var \Mockery\Mock Mocked version manager
+	 */
+	private $managerMocked;
+
+	/**
 	 * Constructor
 	 * @param Container $container Nette Tester Container
 	 */
@@ -58,26 +68,39 @@ class VersionManagerTest extends TestCase {
 	}
 
 	/**
-	 * Set up test environment
+	 * Set up the test environment
 	 */
-	public function setUp() {
+	protected function setUp() {
 		$this->commandManager = new CommandManager(false);
+		$this->commandManagerMocked = \Mockery::mock(CommandManager::class);
 		$this->cacheStorage = new DevNullStorage();
 		$this->manager = new VersionManager($this->commandManager, $this->cacheStorage);
+		$this->managerMocked = \Mockery::mock(VersionManager::class)->makePartial();
+	}
+
+	/**
+	 * Cleanup the test environment
+	 */
+	protected function tearDown() {
+		\Mockery::close();
 	}
 
 	/**
 	 * Test function to check if an update is available for the webapp
 	 */
-	public function testAvailableWebappUpdate() {
-		$manager0 = \Mockery::mock(VersionManager::class)->makePartial();
-		$manager0->shouldReceive('getInstalledWebapp')->with(false)->andReturn($this->currentVersion);
-		$manager0->shouldReceive('getCurrentWebapp')->with()->andReturn($this->currentVersion);
-		Assert::false($manager0->availableWebappUpdate());
-		$manager1 = \Mockery::mock(VersionManager::class)->makePartial();
-		$manager1->shouldReceive('getInstalledWebapp')->with(false)->andReturn('1.1.4');
-		$manager1->shouldReceive('getCurrentWebapp')->with()->andReturn($this->currentVersion);
-		Assert::true($manager1->availableWebappUpdate());
+	public function testAvailableWebappUpdateNo() {
+		$this->managerMocked->shouldReceive('getInstalledWebapp')->with(false)->andReturn($this->currentVersion);
+		$this->managerMocked->shouldReceive('getCurrentWebapp')->with()->andReturn($this->currentVersion);
+		Assert::false($this->managerMocked->availableWebappUpdate());
+	}
+
+	/**
+	 * Test function to check if an update is available for the webapp
+	 */
+	public function testAvailableWebappUpdateYes() {
+		$this->managerMocked->shouldReceive('getInstalledWebapp')->with(false)->andReturn('1.1.4');
+		$this->managerMocked->shouldReceive('getCurrentWebapp')->with()->andReturn($this->currentVersion);
+		Assert::true($this->managerMocked->availableWebappUpdate());
 	}
 
 	/**
@@ -93,10 +116,9 @@ class VersionManagerTest extends TestCase {
 	public function testGetInstalledWebappWithGit() {
 		$expected = 'v' . $this->currentVersion . ' (master - 733d45340cbb2565fd068ca3257ad39a5e46f963)';
 		$gitBranches = '* master                 733d45340cbb2565fd068ca3257ad39a5e46f963 Add a notification to an update webapp to newer stable version';
-		$commandManager = \Mockery::mock(CommandManager::class);
-		$commandManager->shouldReceive('commandExist')->with('git')->andReturn(true);
-		$commandManager->shouldReceive('send')->with('git branch -v --no-abbrev')->andReturn($gitBranches);
-		$manager = new VersionManager($commandManager, $this->cacheStorage);
+		$this->commandManagerMocked->shouldReceive('commandExist')->with('git')->andReturn(true);
+		$this->commandManagerMocked->shouldReceive('send')->with('git branch -v --no-abbrev')->andReturn($gitBranches);
+		$manager = new VersionManager($this->commandManagerMocked, $this->cacheStorage);
 		Assert::same($expected, $manager->getInstalledWebapp());
 	}
 
@@ -105,9 +127,8 @@ class VersionManagerTest extends TestCase {
 	 */
 	public function testGetInstalledWebappWithoutGit() {
 		$expected = 'v' . $this->currentVersion;
-		$commandManager = \Mockery::mock(CommandManager::class);
-		$commandManager->shouldReceive('commandExist')->with('git')->andReturn(false);
-		$manager = new VersionManager($commandManager, $this->cacheStorage);
+		$this->commandManagerMocked->shouldReceive('commandExist')->with('git')->andReturn(false);
+		$manager = new VersionManager($this->commandManagerMocked, $this->cacheStorage);
 		Assert::same($expected, $manager->getInstalledWebapp());
 	}
 

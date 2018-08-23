@@ -60,9 +60,9 @@ class BluemixManagerTest extends TestCase {
 	}
 
 	/**
-	 * Set up test environment
+	 * Set up the test environment
 	 */
-	public function setUp() {
+	protected function setUp() {
 		$configPath = __DIR__ . '/../../temp/configuration/';
 		$schemaPath = __DIR__ . '/../../data/cfgSchemas/';
 		$this->fileManager = new JsonFileManager($configPath);
@@ -70,6 +70,13 @@ class BluemixManagerTest extends TestCase {
 		$configManager = new GenericManager($this->fileManager, $schemaManager);
 		$this->manager = \Mockery::mock(BluemixManager::class, [$configManager])->makePartial();
 		$this->manager->shouldReceive('downloadCaCertificate')->andReturn(null);
+	}
+
+	/**
+	 * Cleanup the test environment
+	 */
+	protected function tearDown() {
+		\Mockery::close();
 	}
 
 	/**

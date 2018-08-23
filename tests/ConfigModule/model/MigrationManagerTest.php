@@ -95,7 +95,7 @@ class MigrationManagerTest extends TestCase {
 	}
 
 	/**
-	 * Set up test environment
+	 * Set up the test environment
 	 */
 	protected function setUp() {
 		\Tester\Environment::lock('migration', __DIR__ . '/../../temp/');
@@ -106,6 +106,13 @@ class MigrationManagerTest extends TestCase {
 		$this->commandManager = \Mockery::mock(CommandManager::class, [false])->makePartial();
 		$this->manager = new MigrationManager($this->configTempPath, $this->commandManager, $schemaManager);
 		$this->managerCorrupted = new MigrationManager($this->configTempPath, $this->commandManager, $schemaManagerCorrupted);
+	}
+
+	/**
+	 * Cleanup the test environment
+	 */
+	protected function tearDown() {
+		\Mockery::close();
 	}
 
 	/**

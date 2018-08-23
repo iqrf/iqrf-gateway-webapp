@@ -62,9 +62,9 @@ class UserManagerTest extends TestCase {
 	}
 
 	/**
-	 * Set up test environment
+	 * Set up the test environment
 	 */
-	public function setUp() {
+	protected function setUp() {
 		$connection = new Connection('sqlite::memory:');
 		$cacheStorage = new MemoryStorage();
 		$structure = new Structure($connection, $cacheStorage);

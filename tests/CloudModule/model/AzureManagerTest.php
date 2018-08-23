@@ -60,9 +60,9 @@ class AzureManagerTest extends TestCase {
 	}
 
 	/**
-	 * Set up test environment
+	 * Set up the test environment
 	 */
-	public function setUp() {
+	protected function setUp() {
 		$configPath = __DIR__ . '/../../temp/configuration/';
 		$schemaPath = __DIR__ . '/../../data/cfgSchemas/';
 		$this->fileManager = new JsonFileManager($configPath);
@@ -71,6 +71,13 @@ class AzureManagerTest extends TestCase {
 		$this->manager = new AzureManager($configManager);
 		$this->mockedManager = \Mockery::mock(AzureManager::class, [$configManager])->makePartial();
 		$this->mockedManager->shouldReceive('generateSasToken')->andReturn('generatedSasToken');
+	}
+
+	/**
+	 * Cleanup the test environment
+	 */
+	protected function tearDown() {
+		\Mockery::close();
 	}
 
 	/**

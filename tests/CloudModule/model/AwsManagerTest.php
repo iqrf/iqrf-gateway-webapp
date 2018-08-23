@@ -75,9 +75,9 @@ class AwsManagerTest extends TestCase {
 	}
 
 	/**
-	 * Set up test environment
+	 * Set up the test environment
 	 */
-	public function setUp() {
+	protected function setUp() {
 		$configPath = __DIR__ . '/../../temp/configuration/';
 		$schemaPath = __DIR__ . '/../../data/cfgSchemas/';
 		$this->fileManager = new JsonFileManager($configPath);
@@ -92,11 +92,18 @@ class AwsManagerTest extends TestCase {
 	}
 
 	/**
+	 * Cleanup the test environment
+	 */
+	protected function tearDown() {
+		\Mockery::close();
+	}
+
+	/**
 	 * Mock uploaded certificate and private key
 	 * @param string $path Path to certificate and private key
 	 * @return array Mocked uploaded certificate and private key
 	 */
-	public function mockUploadedFiles(string $path) {
+	private function mockUploadedFiles(string $path) {
 		$certFile = $path . '/cert0.pem';
 		$certValue = [
 			'name' => 'cert0.pem',

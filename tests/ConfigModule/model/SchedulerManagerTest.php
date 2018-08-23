@@ -82,9 +82,9 @@ class SchedulerManagerTest extends TestCase {
 	}
 
 	/**
-	 * Set up test environment
+	 * Set up the test environment
 	 */
-	public function setUp() {
+	protected function setUp() {
 		$configPath = __DIR__ . '/../../data/configuration/';
 		$configTempPath = __DIR__ . '/../../temp/configuration/';
 		$schemaPath = __DIR__ . '/../../data/cfgSchemas/';
@@ -98,6 +98,13 @@ class SchedulerManagerTest extends TestCase {
 		$mainConfigManager->shouldReceive('load')->andReturn($configuration);
 		$this->fileManagerTemp->write($this->fileName, $this->fileManager->read($this->fileName));
 		$this->manager = new SchedulerManager($mainConfigManager, $genericConfigManager);
+	}
+
+	/**
+	 * Cleanup the test environment
+	 */
+	protected function tearDown() {
+		\Mockery::close();
 	}
 
 	/**

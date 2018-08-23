@@ -53,9 +53,9 @@ class ZipArchiveManagerTest extends TestCase {
 	}
 
 	/**
-	 * Set up test environment
+	 * Set up the test environment
 	 */
-	public function setUp() {
+	protected function setUp() {
 		$path = __DIR__ . '/../../temp/archive.zip';
 		$pathExtract = __DIR__ . '/../../data/iqrf-gateway-configuration.zip';
 		$this->managerNew = new ZipArchiveManager($path);
@@ -63,9 +63,9 @@ class ZipArchiveManagerTest extends TestCase {
 	}
 
 	/**
-	 * This method is called after a test is executed
+	 * Cleanup the test environment
 	 */
-	public function tearDown() {
+	protected function tearDown() {
 		@$this->managerNew->close();
 		@$this->manager->close();
 	}
@@ -75,7 +75,7 @@ class ZipArchiveManagerTest extends TestCase {
 	 * @param string $path Path to the directory
 	 * @return array List of files in the directory
 	 */
-	public function createList(string $path): array {
+	private function createList(string $path): array {
 		$path = realpath($path) . '/';
 		$list = [];
 		foreach (Finder::findFiles('*.json')->from($path) as $file) {

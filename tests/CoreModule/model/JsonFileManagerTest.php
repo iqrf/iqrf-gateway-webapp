@@ -63,9 +63,9 @@ class JsonFileManagerTest extends TestCase {
 	}
 
 	/**
-	 * Set up test environment
+	 * Set up the test environment
 	 */
-	public function setUp() {
+	protected function setUp() {
 		$this->manager = new JsonFileManager($this->path);
 		$this->managerTest = new JsonFileManager($this->pathTest);
 	}

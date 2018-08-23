@@ -57,9 +57,9 @@ class CertificateManagerTest extends TestCase {
 	}
 
 	/**
-	 * Set up test environment
+	 * Set up the test environment
 	 */
-	public function setUp() {
+	protected function setUp() {
 		$this->manager = new CertificateManager();
 		$this->certificates['ca0'] = FileSystem::read($this->path . 'ca0.pem');
 		$this->certificates['ca1'] = FileSystem::read($this->path . 'ca1.pem');
