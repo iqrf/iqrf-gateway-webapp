@@ -99,7 +99,7 @@ class IqrfAppManager {
 	 * @param int $timeout Connection timeout in seconds
 	 * @return string JSON response
 	 */
-	public function sendToWebsocket(array $array, int $timeout = 15) {
+	public function sendToWebsocket(array $array, int $timeout = 15): string {
 		$loop = EventLoop\Factory::create();
 		$reactConnector = new ReactSocket\Connector($loop, ['timeout' => $timeout]);
 		$connector = new WebSocketClient\Connector($loop, $reactConnector);

@@ -70,7 +70,7 @@ class InfoManager {
 	 * Get board's vendor, name and version
 	 * @return string Board's vendor, name and version
 	 */
-	public function getBoard() {
+	public function getBoard(): string {
 		$deviceTree = $this->commandManager->send('cat /proc/device-tree/model', true);
 		if (!empty($deviceTree)) {
 			return $deviceTree;
@@ -88,7 +88,7 @@ class InfoManager {
 	 * Get IPv4 and IPv6 addresses of the gateway
 	 * @return array IPv4 and IPv6 addresses
 	 */
-	public function getIpAddresses() {
+	public function getIpAddresses(): array {
 		$addresses = [];
 		$lsInterfaces = $this->commandManager->send('ls /sys/class/net | awk \'{ print $0 }\'', true);
 		$interfaces = explode(PHP_EOL, $lsInterfaces);
@@ -109,7 +109,7 @@ class InfoManager {
 	 * Get MAC addresses of the gateway
 	 * @return array MAC addresses array
 	 */
-	public function getMacAddresses() {
+	public function getMacAddresses(): array {
 		$addresses = [];
 		$lsInterfaces = $this->commandManager->send('ls /sys/class/net | awk \'{ print $0 }\'', true);
 		$interfaces = explode(PHP_EOL, $lsInterfaces);
@@ -127,7 +127,7 @@ class InfoManager {
 	 * Get version of the daemon
 	 * @return string IQRF Daemon version
 	 */
-	public function getDaemonVersion() {
+	public function getDaemonVersion(): string {
 		$cmd = 'iqrfgd2 version';
 		$daemonExistence = $this->commandManager->commandExist('iqrfgd2');
 		if (!$daemonExistence) {
@@ -144,7 +144,7 @@ class InfoManager {
 	 * Get hostname of the gateway
 	 * @return string Hostname
 	 */
-	public function getHostname() {
+	public function getHostname(): string {
 		$cmd = 'hostname -f';
 		return $this->commandManager->send($cmd);
 	}
@@ -153,7 +153,7 @@ class InfoManager {
 	 * Get information about the Coordinator
 	 * @return array Information about the Coordinator
 	 */
-	public function getCoordinatorInfo() {
+	public function getCoordinatorInfo(): array {
 		$response = $this->iqrfAppManager->sendRaw('00.00.02.00.FF.FF');
 		return $this->iqrfAppManager->parseResponse($response);
 	}
@@ -162,7 +162,7 @@ class InfoManager {
 	 * Get current version of this wab application
 	 * @return string Version of this web application
 	 */
-	public function getWebAppVersion() {
+	public function getWebAppVersion(): string {
 		return $this->versionManager->getInstalledWebapp();
 	}
 

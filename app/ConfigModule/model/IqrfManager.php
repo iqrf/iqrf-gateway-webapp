@@ -47,7 +47,7 @@ class IqrfManager {
 	 * Create list of USB CDC interfaces available in the system
 	 * @return array USB CDC interfaces available in the system
 	 */
-	public function getCdcInterfaces() {
+	public function getCdcInterfaces(): array {
 		$cdc = [];
 		$ls = $this->commandManager->send("ls /dev/ttyACM* | awk '{ print $0 }'", true);
 		foreach (explode(PHP_EOL, $ls) as $path) {
@@ -55,16 +55,14 @@ class IqrfManager {
 				array_push($cdc, $path);
 			}
 		}
-		if (!empty($cdc)) {
-			return $cdc;
-		}
+		return $cdc;
 	}
 
 	/**
 	 * Create list of SPI interfaces available in the system
 	 * @return array SPI interfaces available in the system
 	 */
-	public function getSpiInterfaces() {
+	public function getSpiInterfaces(): array {
 		$spi = [];
 		$ls = $this->commandManager->send("ls /dev/spidev* | awk '{ print $0 }'", true);
 		foreach (explode(PHP_EOL, $ls) as $path) {
@@ -72,9 +70,7 @@ class IqrfManager {
 				array_push($spi, $path);
 			}
 		}
-		if (!empty($spi)) {
-			return $spi;
-		}
+		return $spi;
 	}
 
 }

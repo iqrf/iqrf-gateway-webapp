@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\Router;
 
 use Nette;
+use Nette\Application\IRouter;
 use Nette\Application\Routers\Route;
 use Nette\Application\Routers\RouteList;
 
@@ -33,9 +34,9 @@ class RouterFactory {
 
 	/**
 	 * Create router
-	 * @return Nette\Application\IRouter
+	 * @return IRouter Router interface
 	 */
-	public static function createRouter() {
+	public static function createRouter(): IRouter {
 		$router = new RouteList();
 		$cloud = new RouteList('Cloud');
 		$cloud[] = new Route('[<lang [a-z]{2}>/]cloud/<presenter>/<action>[/<id>]', 'Homepage:default');

@@ -175,7 +175,7 @@ class DiagnosticsManager {
 	 * Download a diagnostic data
 	 * @return FileResponse HTTP response with the diagnostic data
 	 */
-	public function download() {
+	public function download(): FileResponse {
 		$now = new \DateTime();
 		$fileName = 'iqrf-gateway-diagnostics_' . $now->format('c') . '.zip';
 		$contentType = 'application/zip';

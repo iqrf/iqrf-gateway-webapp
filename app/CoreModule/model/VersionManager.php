@@ -64,7 +64,7 @@ class VersionManager {
 	 * Check if an update is available for the webapp
 	 * @return bool Is available an update for the webapp?
 	 */
-	public function availableWebappUpdate() {
+	public function availableWebappUpdate(): bool {
 		return version_compare($this->getInstalledWebapp(false), $this->getCurrentWebapp(), '<');
 	}
 
@@ -72,7 +72,7 @@ class VersionManager {
 	 * Get the current stable version of the webapp
 	 * @return string Current stable version of the webapp
 	 */
-	public function getCurrentWebapp() {
+	public function getCurrentWebapp(): string {
 		$json = $this->cache->load('current', function (&$dependencies) {
 			$dependencies = [Cache::EXPIRE => '1 hour'];
 			$client = new Client();
@@ -87,7 +87,7 @@ class VersionManager {
 	 * @param bool $verbose Is verbose mode enabled?
 	 * @return string Installed version of the webapp
 	 */
-	public function getInstalledWebapp(bool $verbose = true) {
+	public function getInstalledWebapp(bool $verbose = true): string {
 		$composer = $this->jsonFileManager->read('composer')['version'];
 		if ($verbose) {
 			$composer = 'v' . $composer;

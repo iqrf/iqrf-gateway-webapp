@@ -150,7 +150,7 @@ class IqrfNetManager {
 	 * @throws IqrfException\UnsupportedSecurityTypeException
 	 * @throws IqrfException\UnsupportedInputFormatException
 	 */
-	public function setSecurity(string $password = '', string $inputFormat = self::DATA_FORMAT_ASCII, string $type = self::SECURITY_ACCESS_PASSOWRD) {
+	public function setSecurity(string $password = '', string $inputFormat = self::DATA_FORMAT_ASCII, string $type = self::SECURITY_ACCESS_PASSOWRD): array {
 		$packet = '00.00.02.06.ff.ff.';
 		if ($type === self::SECURITY_ACCESS_PASSOWRD) {
 			$packet .= '00.';
@@ -172,9 +172,9 @@ class IqrfNetManager {
 
 	/**
 	 * The command read HWP configuration
-	 * @return array|null DPA request and response
+	 * @return array DPA request and response
 	 */
-	public function readHwpConfiguration() {
+	public function readHwpConfiguration(): array {
 		$packet = '00.00.02.02.ff.ff.';
 		$response = $this->iqrfAppManager->sendRaw($packet);
 		return $this->iqrfAppManager->parseResponse($response);
@@ -214,7 +214,7 @@ class IqrfNetManager {
 	 * @return array DPA request and response
 	 * @throws IqrfException\InvalidRfLpTimeoutException
 	 */
-	public function setRfLpTimeout(int $timeout) {
+	public function setRfLpTimeout(int $timeout): array {
 		if ($timeout < 1 || $timeout > 255) {
 			throw new IqrfException\InvalidRfLpTimeoutException();
 		}

@@ -58,9 +58,10 @@ class ServiceManager {
 
 	/**
 	 * Start IQRF Gateway Daemon
+	 * @return string Output from init daemon
 	 * @throws NotSupportedInitSystemException
 	 */
-	public function start() {
+	public function start(): string {
 		switch ($this->initDaemon) {
 			case 'docker-supervisor':
 				$cmd = 'supervisorctl start ' . $this->serviceName;
@@ -76,9 +77,10 @@ class ServiceManager {
 
 	/**
 	 * Stop IQRF Gateway Daemon
+	 * @return string Output from init daemon
 	 * @throws NotSupportedInitSystemException
 	 */
-	public function stop() {
+	public function stop(): string {
 		switch ($this->initDaemon) {
 			case 'docker-supervisor':
 				$cmd = 'supervisorctl stop ' . $this->serviceName;
@@ -94,9 +96,10 @@ class ServiceManager {
 
 	/**
 	 * Retart IQRF Gateway Daemon
+	 * @return string Output from init daemon
 	 * @throws NotSupportedInitSystemException
 	 */
-	public function restart() {
+	public function restart(): string {
 		switch ($this->initDaemon) {
 			case 'docker-supervisor':
 				$cmd = 'supervisorctl restart ' . $this->serviceName;
@@ -112,9 +115,10 @@ class ServiceManager {
 
 	/**
 	 * Get status of IQRF Gateway Daemon
+	 * @return string Output from init daemon
 	 * @throws NotSupportedInitSystemException
 	 */
-	public function getStatus() {
+	public function getStatus(): string {
 		switch ($this->initDaemon) {
 			case 'docker-supervisor':
 				$cmd = 'supervisorctl status ' . $this->serviceName;

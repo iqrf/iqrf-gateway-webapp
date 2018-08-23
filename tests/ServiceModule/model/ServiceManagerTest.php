@@ -78,16 +78,18 @@ class ServiceManagerTest extends TestCase {
 	 * Test function to start IQRF Gateway Daemon's service via systemD
 	 */
 	public function testStartSystemD() {
-		$this->commandManager->shouldReceive('send')->with('systemctl start iqrfgd2.service', true)->andReturn(true);
-		Assert::true($this->managerSystemD->start());
+		$expected = 'start';
+		$this->commandManager->shouldReceive('send')->with('systemctl start iqrfgd2.service', true)->andReturn($expected);
+		Assert::same($expected, $this->managerSystemD->start());
 	}
 
 	/**
 	 * Test function to start IQRF Gateway Daemon's service via supervisord in Docker container
 	 */
 	public function testStartDockerSupervisorD() {
-		$this->commandManager->shouldReceive('send')->with('supervisorctl start iqrfgd2', true)->andReturn(true);
-		Assert::true($this->managerDocker->start());
+		$expected = 'start';
+		$this->commandManager->shouldReceive('send')->with('supervisorctl start iqrfgd2', true)->andReturn($expected);
+		Assert::same($expected, $this->managerDocker->start());
 	}
 
 	/**
@@ -101,16 +103,18 @@ class ServiceManagerTest extends TestCase {
 	 * Test function to stop IQRF Gateway Daemon's service via systemD
 	 */
 	public function testStopSystemD() {
-		$this->commandManager->shouldReceive('send')->with('systemctl stop iqrfgd2.service', true)->andReturn(true);
-		Assert::true($this->managerSystemD->stop());
+		$expected = 'stop';
+		$this->commandManager->shouldReceive('send')->with('systemctl stop iqrfgd2.service', true)->andReturn($expected);
+		Assert::same($expected, $this->managerSystemD->stop());
 	}
 
 	/**
 	 * Test function to stop IQRF Gateway Daemon's service via supervisord in Docker container
 	 */
 	public function testStopDockerSupervisorD() {
-		$this->commandManager->shouldReceive('send')->with('supervisorctl stop iqrfgd2', true)->andReturn(true);
-		Assert::true($this->managerDocker->stop());
+		$expected = 'stop';
+		$this->commandManager->shouldReceive('send')->with('supervisorctl stop iqrfgd2', true)->andReturn($expected);
+		Assert::same($expected, $this->managerDocker->stop());
 	}
 
 	/**
@@ -124,16 +128,18 @@ class ServiceManagerTest extends TestCase {
 	 * Test function to restart IQRF Gateway Daemon's service via systemD
 	 */
 	public function testRestartSystemD() {
-		$this->commandManager->shouldReceive('send')->with('systemctl restart iqrfgd2.service', true)->andReturn(true);
-		Assert::true($this->managerSystemD->restart());
+		$expected = 'restart';
+		$this->commandManager->shouldReceive('send')->with('systemctl restart iqrfgd2.service', true)->andReturn($expected);
+		Assert::same($expected, $this->managerSystemD->restart());
 	}
 
 	/**
 	 * Test function to restart IQRF Gateway Daemon's service via supervisord in Docker container
 	 */
 	public function testRestartDockerSupervisorD() {
-		$this->commandManager->shouldReceive('send')->with('supervisorctl restart iqrfgd2', true)->andReturn(true);
-		Assert::true($this->managerDocker->restart());
+		$expected = 'restart';
+		$this->commandManager->shouldReceive('send')->with('supervisorctl restart iqrfgd2', true)->andReturn($expected);
+		Assert::same($expected, $this->managerDocker->restart());
 	}
 
 	/**
@@ -147,16 +153,18 @@ class ServiceManagerTest extends TestCase {
 	 * Test function to get status of IQRF Gateway Daemon's service via systemD
 	 */
 	public function testGetStatusSystemD() {
-		$this->commandManager->shouldReceive('send')->with('systemctl status iqrfgd2.service', true)->andReturn(true);
-		Assert::true($this->managerSystemD->getStatus());
+		$expected = 'status';
+		$this->commandManager->shouldReceive('send')->with('systemctl status iqrfgd2.service', true)->andReturn($expected);
+		Assert::same($expected, $this->managerSystemD->getStatus());
 	}
 
 	/**
 	 * Test function to get status of IQRF Gateway Daemon's service via supervisord in Docker container
 	 */
 	public function testGetStatusDockerSupervisorD() {
-		$this->commandManager->shouldReceive('send')->with('supervisorctl status iqrfgd2', true)->andReturn(true);
-		Assert::true($this->managerDocker->getStatus());
+		$expected = 'status';
+		$this->commandManager->shouldReceive('send')->with('supervisorctl status iqrfgd2', true)->andReturn($expected);
+		Assert::same($expected, $this->managerDocker->getStatus());
 	}
 
 	/**

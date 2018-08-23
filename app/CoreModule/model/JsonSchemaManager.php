@@ -49,6 +49,7 @@ class JsonSchemaManager extends JsonFileManager {
 	/**
 	 * Set file name of JSON schema from component name
 	 * @param string $component Component name
+	 * @throws NonExistingJsonSchemaException
 	 */
 	public function setSchemaFromComponent(string $component) {
 		$schema = 'schema__' . Strings::replace($component, '~::~', '__');
@@ -63,8 +64,10 @@ class JsonSchemaManager extends JsonFileManager {
 	/**
 	 * Validate JSON
 	 * @param \stdClass $json JSON to validate
+	 * @return boolean Is the JSON valid?
+	 * @throws InvalidJsonException
 	 */
-	public function validate(\stdClass $json) {
+	public function validate(\stdClass $json): bool {
 		$schema = parent::read($this->schema);
 		$validator = new Validator();
 		$validator->validate($json, $schema);

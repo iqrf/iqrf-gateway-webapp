@@ -186,7 +186,7 @@ class GenericManager {
 	 * Get an instance file name with the property
 	 * @param string $type Property type
 	 * @param mixed $value Property value
-	 * @return string Instance file name
+	 * @return string|null Instance file name
 	 */
 	public function getInstanceByProperty(string $type, $value) {
 		$dir = $this->fileManager->getDirectory();

@@ -71,7 +71,7 @@ class LogManager {
 	 * Load the latest log of IQRF Gateway Daemon
 	 * @return string IQRF Gateway Daemon's log
 	 */
-	public function load() {
+	public function load(): string {
 		$logFiles = $this->getLogFiles();
 		return FileSystem::read(reset($logFiles));
 	}

@@ -25,6 +25,7 @@ use Nette\Database\Context;
 use Nette\Database\Table\Selection;
 use Nette\Security\AuthenticationException;
 use Nette\Security\IAuthenticator;
+use Nette\Security\IIdentity;
 use Nette\Security\Identity;
 
 /**
@@ -50,10 +51,10 @@ class AppAuthenticator implements IAuthenticator {
 	/**
 	 * Authenticate the user
 	 * @param array $credentials Authentication credentials
-	 * @return Identity Nette Identity
+	 * @return IIdentity Nette Identity
 	 * @throws AuthenticationException
 	 */
-	public function authenticate(array $credentials) {
+	public function authenticate(array $credentials): IIdentity {
 		list($username, $password) = $credentials;
 		$row = $this->table->where('username', $username)->fetch();
 		if (!$row) {
