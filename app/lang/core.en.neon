@@ -77,6 +77,8 @@ user:
 		add: Add
 		edit: Edit
 		messages:
+			username: Please enter the username.
+			password: Please enter the password.
 			successAdd: User %username% has been added successfully.
 			successDelete: User %username% has been deleted succesfully.
 			successEdit: Used %username% has been edited succesfully.

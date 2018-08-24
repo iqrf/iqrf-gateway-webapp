@@ -1,5 +1,6 @@
 # Local application configuration
 app/config/config.local.neon
+app/config/database.db
 # Composer
 vendor/
 composer.lock

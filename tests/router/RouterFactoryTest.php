@@ -44,6 +44,9 @@ class RouterFactoryTest extends TestCase {
 		['Gateway:' => [
 				'[<lang [a-z]{2}>/]gateway/<presenter>/<action>',
 			],],
+		['Install:' => [
+				'[<lang [a-z]{2}>/]install/<presenter>/<action>',
+			],],
 		['IqrfApp:' => [
 				'[<lang [a-z]{2}>/]iqrfnet/<presenter>/<action>',
 			],],

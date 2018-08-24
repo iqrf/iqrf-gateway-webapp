@@ -48,6 +48,9 @@ class RouterFactory {
 		$gateway = new RouteList('Gateway');
 		$gateway[] = new Route('[<lang [a-z]{2}>/]gateway/<presenter>/<action>', 'Homepage:default');
 		$router[] = $gateway;
+		$install = new RouteList('Install');
+		$install[] = new Route('[<lang [a-z]{2}>/]install/<presenter>/<action>', 'Homepage:default');
+		$router[] = $install;
 		$iqrfApp = new RouteList('IqrfApp');
 		$iqrfApp[] = new Route('[<lang [a-z]{2}>/]iqrfnet/<presenter>/<action>', 'Homepage:default');
 		$router[] = $iqrfApp;

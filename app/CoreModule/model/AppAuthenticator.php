@@ -45,7 +45,22 @@ class AppAuthenticator implements IAuthenticator {
 	 * @param Context $database Database contaxt
 	 */
 	public function __construct(Context $database) {
+		$this->createTable($database);
 		$this->table = $database->table('users');
+	}
+
+	/**
+	 * Create the database table
+	 * @param Context $database Database contaxt
+	 */
+	private function createTable(Context $database) {
+		$sql = 'CREATE TABLE IF NOT EXISTS `users` (';
+		$sql .= '`id`		INTEGER PRIMARY KEY AUTOINCREMENT,';
+		$sql .= '`username`	TEXT NOT NULL UNIQUE,';
+		$sql .= '`password`	TEXT NOT NULL,';
+		$sql .= '`role`		TEXT NOT NULL,';
+		$sql .= '`language`	TEXT DEFAULT \'en\');';
+		$database->query($sql);
 	}
 
 	/**

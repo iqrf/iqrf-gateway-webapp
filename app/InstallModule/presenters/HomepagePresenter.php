@@ -18,22 +18,23 @@
  */
 declare(strict_types = 1);
 
-namespace App\CoreModule\Presenters;
+namespace App\InstallModule\Presenters;
 
+use App\CoreModule\Forms\UserAddFormFactory;
+use App\CoreModule\Presenters\BasePresenter;
 use App\CoreModule\Model\UserManager;
-use App\CoreModule\Forms\SignInFormFactory;
 use Nette\Forms\Form;
 
 /**
- * Sign in/out presenter
+ * Installation presenter
  */
-class SignPresenter extends BasePresenter {
+class HomepagePresenter extends BasePresenter {
 
 	/**
-	 * @var SignInFormFactory Sign in form factory
+	 * @var UserAddFormFactory Add a new user form factory
 	 * @inject
 	 */
-	public $signInFactory;
+	public $userFormFactory;
 
 	/**
 	 * @var UserManager User manager
@@ -41,31 +42,11 @@ class SignPresenter extends BasePresenter {
 	private $userManager;
 
 	/**
-	 * User sign in
+	 * Create add a new user form
+	 * @return Form Add a new user form
 	 */
-	public function actionIn() {
-		if ($this->user->isLoggedIn()) {
-			$this->redirect('Homepage:');
-		}
-	}
-
-	/**
-	 * User sign out
-	 */
-	public function actionOut() {
-		if (!$this->user->isLoggedIn()) {
-			$this->redirect('Sign:in');
-		} else {
-			$this->getUser()->logout();
-		}
-	}
-
-	/**
-	 * Create sign in form
-	 * @return Form Sign in form
-	 */
-	protected function createComponentSignInForm() {
-		return $this->signInFactory->create($this);
+	protected function createComponentRegUserForm() {
+		return $this->userFormFactory->create($this);
 	}
 
 	/**
@@ -81,8 +62,8 @@ class SignPresenter extends BasePresenter {
 	 */
 	protected function startup() {
 		parent::startup();
-		if (empty($this->userManager->getUsers())) {
-			$this->redirect(':Install:Homepage:default');
+		if (!empty($this->userManager->getUsers())) {
+			$this->redirect(':Core:Sign:in');
 		}
 	}
 

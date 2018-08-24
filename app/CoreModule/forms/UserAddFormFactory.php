@@ -22,6 +22,7 @@ namespace App\CoreModule\Forms;
 
 use App\CoreModule\Exception\UsernameAlreadyExistsException;
 use App\CoreModule\Forms\FormFactory;
+use App\CoreModule\Presenters\BasePresenter;
 use App\CoreModule\Presenters\UserPresenter;
 use App\CoreModule\Model\UserManager;
 use Nette;
@@ -40,7 +41,7 @@ class UserAddFormFactory {
 	private $factory;
 
 	/**
-	 * @var UserPresenter User manager presenter
+	 * @var BasePresenter Base presenter
 	 */
 	private $presenter;
 
@@ -61,10 +62,10 @@ class UserAddFormFactory {
 
 	/**
 	 * Create register a new user form
-	 * @param UserPresenter $presenter User manager presenter
+	 * @param BasePresenter $presenter Base presenter
 	 * @return Form Register a new user form
 	 */
-	public function create(UserPresenter $presenter): Form {
+	public function create(BasePresenter $presenter): Form {
 		$this->presenter = $presenter;
 		$userTypes = [
 			'normal' => 'userTypes.normal',
@@ -94,7 +95,11 @@ class UserAddFormFactory {
 			$this->userManager->register($values['username'], $values['password'], $values['userType'], $values['language']);
 			$message = $form->getTranslator()->translate('messages.successAdd', ['username' => $values['username']]);
 			$this->presenter->flashMessage($message, 'success');
-			$this->presenter->redirect('User:default');
+			if ($this->presenter instanceof UserPresenter) {
+				$this->presenter->redirect('User:default');
+			} else {
+				$this->presenter->redirect(':Core:Sign:in');
+			}
 		} catch (UsernameAlreadyExistsException $e) {
 			$this->presenter->flashMessage('core.user.form.messages.usernameAlreadyExists', 'danger');
 		}

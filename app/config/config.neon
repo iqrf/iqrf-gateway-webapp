@@ -27,7 +27,7 @@ application:
 		*: App\*Module\Presenters\*Presenter
 
 database:
-	dsn: 'sqlite:%appDir%/db/database.db'
+	dsn: 'sqlite:%appDir%/config/database.db'
 
 extensions:
 	extendedFormMacros: Instante\ExtendedFormMacros\DI\ExtendedFormMacrosExtension
