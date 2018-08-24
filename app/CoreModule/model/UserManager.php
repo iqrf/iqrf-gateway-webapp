@@ -106,6 +106,18 @@ class UserManager {
 	}
 
 	/**
+	 * Get all registered users
+	 * @return array Registred userd
+	 */
+	public function getUsers(): array {
+		$users = [];
+		foreach ($this->table->fetchAll() as $user) {
+			$users[] = $user->toArray();
+		}
+		return $users;
+	}
+
+	/**
 	 * Register a new user
 	 * @param string $username Username
 	 * @param string $password Password

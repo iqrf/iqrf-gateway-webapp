@@ -173,6 +173,23 @@ class UserManagerTest extends TestCase {
 	}
 
 	/**
+	 * Test function to get all registered users (no registered user)
+	 */
+	public function testGetUsersNone() {
+		Assert::same([], $this->manager->getUsers());
+	}
+
+	/**
+	 * Test function to get all registered users (a registered user)
+	 */
+	public function testGetUsersOne() {
+		$this->createUser();
+		$expected = [['id' => 1]];
+		$expected[0] += $this->data;
+		Assert::same($expected, $this->manager->getUsers());
+	}
+
+	/**
 	 * Test function to register a new user (fail)
 	 */
 	public function testRegisterFail() {

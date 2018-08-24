@@ -24,8 +24,6 @@ use App\CoreModule\Forms\UserAddFormFactory;
 use App\CoreModule\Forms\UserEditFormFactory;
 use App\CoreModule\Model\UserManager;
 use Nette\Forms\Form;
-use Nette\Database\Context;
-use Nette\Database\Table\Selection;
 
 /**
  * User presenter
@@ -45,22 +43,15 @@ class UserPresenter extends ProtectedPresenter {
 	public $editFormFactory;
 
 	/**
-	 * @var Selection Database table selection
-	 */
-	private $table;
-
-	/**
 	 * @var UserManager User manager
 	 */
 	private $userManager;
 
 	/**
 	 * Constructor
-	 * @param Context $database Database contaxt
 	 * @param UserManager $userManager User manager
 	 */
-	public function __construct(Context $database, UserManager $userManager) {
-		$this->table = $database->table('users');
+	public function __construct(UserManager $userManager) {
 		$this->userManager = $userManager;
 		parent::__construct();
 	}
@@ -69,7 +60,7 @@ class UserPresenter extends ProtectedPresenter {
 	 * Render a list of users
 	 */
 	public function renderDefault() {
-		$this->template->users = $this->table;
+		$this->template->users = $this->userManager->getUsers();
 	}
 
 	/**
