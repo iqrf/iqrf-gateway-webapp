@@ -1,0 +1,17 @@
+iqrf-gateway-webapp (2.0.0-alpha~1.gbpc066ad) testing; urgency=medium
+
+  ** SNAPSHOT build @c066ada90e4e94bc4d0ea2906c5f124d783e5b0c **
+
+  [ Roman Ondráček ]
+  * Add configuration tools for IQRF Gateway Daemon v2
+  * Add PHPSTan - tool for static analysation
+  * Add JSON schema validation
+  * Add support for Debian testing and Ubuntu 18.04 in the installer
+  * Add an user manager
+  * Add the installation wizard
+  * Update dependencies
+  * Replace `iqrfapp` with a Websocket client
+  * Rename projet to `iqrf-gateway-webapp`
+  * Removed configuration tools for IQRF Gateway Daemon v1
+
+ -- Roman Ondráček <ondracek.roman@centrum.cz>  Mon, 27 Aug 2018 14:48:06 +0200

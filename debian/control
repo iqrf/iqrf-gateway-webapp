@@ -1,0 +1,17 @@
+Source: iqrf-gateway-webapp
+Section: php
+Priority: optional
+Maintainer: Roman Ondráček <roman.ondracek@iqrf.com>
+Build-Depends: debhelper (>= 10), pkg-php-tools (>= 1.35), composer, php-common,
+ php-cli, php-curl, php-fpm, php-json, php-mbstring, php-sqlite3, php-zip,
+Standards-Version: 4.1.5
+Homepage: https://github.com/iqrfsdk/iqrf-gateway-webapp
+Vcs-Git: https://github.com/iqrfsdk/iqrf-gateway-webapp.git
+Vcs-Browser: https://github.com/iqrfsdk/iqrf-gateway-webapp
+
+Package: iqrf-gateway-webapp
+Architecture: all
+Depends: ${misc:Depends}, composer, iqrf-gateway-daemon, php-common, php-cli,
+ php-curl, php-fpm, php-json, php-mbstring, php-sqlite3, php-zip, nginx-full
+Description: Web user interface for IQRF Gateway Daemon
+ IQRF Gateway webapp is an PHP web application for IQRF Gateway configuration.

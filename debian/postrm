@@ -1,0 +1,40 @@
+#!/bin/sh
+# postrm script for iqrf-gateway-webapp
+
+set -e
+
+nginx_remove() {
+	if [ -e /etc/nginx/sites-available/iqrf-daemon-webapp.localhost ] ; then
+		rm /etc/nginx/sites-available/iqrf-daemon-webapp.localhost
+	fi
+	if [ -e /etc/nginx/sites-enabled/iqrf-daemon-webapp.localhost ] ; then
+		rm /etc/nginx/sites-enabled/iqrf-daemon-webapp.localhost
+	fi
+	if [ -e /etc/nginx/sites-available/iqrf-gateway-webapp.localhost ] ; then
+		rm /etc/nginx/sites-available/iqrf-gateway-webapp.localhost
+	fi
+	if [ -e /etc/nginx/sites-enabled/iqrf-gateway-webapp.localhost ] ; then
+		rm /etc/nginx/sites-enabled/iqrf-gateway-webapp.localhost
+	fi
+	deb-systemd-invoke reload nginx
+}
+
+webapp_remove_config() {
+	if [ -d /etc/iqrf-gateway-webapp/ ] ; then
+		rm -rf /etc/iqrf-gateway-webapp/
+	fi
+}
+
+webapp_remove_data() {
+	if [ -d /usr/share/iqrf-gateway-webapp/ ] ; then
+		rm -rf /usr/share/iqrf-gateway-webapp/
+	fi
+}
+
+if [ "$1" = "remove" ] || [ "$1" = "purge" ]; then
+	nginx_remove
+	webapp_remove_data
+	if [ "$1" = "purge" ]; then
+		webapp_remove_config
+	fi
+fi

@@ -1,0 +1,10 @@
+#!/usr/bin/make -f
+
+%:
+	dh $@ --with phpcomposer
+
+#override_dh_auto_build:
+#	composer install
+
+#override_dh_auto_test:
+#	vendor/bin/tester -p phpdbg -c ./tests/php.ini -s ./tests

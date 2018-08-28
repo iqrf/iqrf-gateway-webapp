@@ -1,0 +1,63 @@
+#!/bin/sh
+# postinst script for iqrf-gateway-webapp
+
+set -e
+
+composer_init() {
+	if [ ! -d /usr/share/iqrf-gateway-webapp/vendor ] ; then
+		composer install -q -d /usr/share/iqrf-gateway-webapp
+	else
+		composer update -q -d /usr/share/iqrf-gateway-webapp
+	fi
+}
+
+nginx_virtualhost_install() {
+	nginx_virtualhost_old_remove
+	if [ -d /etc/php/7.2/fpm/ ] && [ ! -L /etc/nginx/sites-available/iqrf-gateway-webapp.localhost ] ; then
+		ln -s /etc/iqrf-gateway-webapp/nginx/iqrf-gateway-webapp_php7-2.localhost /etc/nginx/sites-available/iqrf-gateway-webapp.localhost
+	elif [ -d /etc/php/7.0/fpm/ ] && [ ! -L /etc/nginx/sites-available/iqrf-gateway-webapp.localhost ] ; then
+		ln -s /etc/iqrf-gateway-webapp/nginx/iqrf-gateway-webapp_php7-0.localhost /etc/nginx/sites-available/iqrf-gateway-webapp.localhost
+	fi
+	if [ ! -L /etc/nginx/sites-enabled/iqrf-gateway-webapp.localhost ] ; then
+		ln -s /etc/nginx/sites-available/iqrf-gateway-webapp.localhost /etc/nginx/sites-enabled/iqrf-gateway-webapp.localhost
+	fi
+	deb-systemd-invoke reload nginx
+}
+
+nginx_virtualhost_old_remove() {
+	if [ -e /etc/nginx/sites-enabled/default ] ; then
+		rm /etc/nginx/sites-enabled/default
+	fi
+	if [ -e /etc/nginx/sites-available/iqrf-daemon-webapp.localhost ] ; then
+		rm /etc/nginx/sites-available/iqrf-daemon-webapp.localhost
+	fi
+	if [ -e /etc/nginx/sites-enabled/iqrf-daemon-webapp.localhost ] ; then
+		rm /etc/nginx/sites-enabled/iqrf-daemon-webapp.localhost
+	fi
+	if [ -e /etc/nginx/sites-available/iqrf-gateway-webapp.localhost ] ; then
+		rm /etc/nginx/sites-available/iqrf-gateway-webapp.localhost
+	fi
+}
+
+webapp_chmod_dirs() {
+	chmod -R 666 /usr/share/iqrf-gateway-webapp/log/
+	chmod -R 666 /usr/share/iqrf-gateway-webapp/temp/
+	chmod 777 /usr/share/iqrf-gateway-webapp/log/
+	chmod 777 /usr/share/iqrf-gateway-webapp/temp/
+}
+
+webapp_remove_cache() {
+	if [ -d /usr/share/iqrf-gateway-webapp/temp/cache ] ; then
+		rm -rf /usr/share/iqrf-gateway-webapp/temp/cache
+	fi
+}
+
+if [ "$1" = "configure" ]; then
+	if [ ! -e /etc/nginx/sites-available/iqrf-gateway-webapp.localhost ] || [ ! -L /etc/nginx/sites-enabled/iqrf-gateway-webapp.localhost ] ; then
+		nginx_virtualhost_install
+	fi
+	chown -R www-data:www-data /usr/share/iqrf-gateway-webapp/
+	webapp_remove_cache
+	webapp_chmod_dirs
+	composer_init
+fi

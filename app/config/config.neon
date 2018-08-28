@@ -22,7 +22,7 @@ parameters:
 		dsn: 'https://da0cff92d85f4cd0aa5f0ea3b90ddffd:83a01f9c90014d9e8b186bd23a6a3d3f@sentry.iqrfsdk.org/2'
 
 application:
-	errorPresenter: Error
+	errorPresenter: Core:Error
 	mapping:
 		*: App\*Module\Presenters\*Presenter
 

@@ -3,6 +3,7 @@ image: iqrfsdk/iqrf-gateway-webapp:tests
 stages:
     - test
     - coding-style
+    - build-package
 
 variables:
        COMPOSER_CACHE_DIR: temp/composer/cache
@@ -13,11 +14,12 @@ cache:
 
 .test_template: &test_template
     stage: test
-    before_script:
-        - composer install --no-progress
     retry: 2
 
 test:php7.0:
+    before_script:
+        - update-alternatives --set php /usr/bin/php7.0
+        - composer install --no-progress
     script:
         - vendor/bin/tester -p phpdbg7.0 -c ./tests/php.ini -s ./tests
         - 'for i in $(find ./tests -name \*.actual); do echo "--- $i"; cat $i; echo; echo; done'
@@ -42,6 +44,7 @@ test:php7.2:
     <<: *test_template
 
 test:php7.3:
+    allow_failure: true
     before_script:
         - update-alternatives --set php /usr/bin/php7.3
         - composer install --no-progress
@@ -57,9 +60,6 @@ coding-style:
         - composer install-cs
     script:
         - composer check-cs
-    tags:
-        - linux
-        - amd64
 
 phpstan:
     stage: coding-style
@@ -68,6 +68,16 @@ phpstan:
         - composer install --no-progress
     script:
         - composer phpstan
-    tags:
-        - linux
-        - amd64
+
+build-package:
+    stage: build-package
+    before_script:
+        - update-alternatives --set php /usr/bin/php7.2
+        - git checkout -B "$CI_COMMIT_REF_NAME" "$CI_COMMIT_SHA"
+    script:
+        - gbp dch -a -S
+        - dpkg-buildpackage -b -rfakeroot -us -uc -tc
+    artifacts:
+        paths:
+            - '../iqrf-gateway-webapp_*all.deb'
+        expire_in: 2 weeks

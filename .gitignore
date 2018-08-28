@@ -4,6 +4,12 @@ app/config/database.db
 # Composer
 vendor/
 composer.lock
+# Debian package
+debian/.debhelper/
+debian/debhelper-build-stamp
+debian/files
+debian/iqrf-gateway-webapp/
+debian/iqrf-gateway-webapp.substvars
 # NetBeans IDE
 nbproject/
 # PhpStorm IDE

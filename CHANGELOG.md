@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 - Add JSON schema validation
 - Add support for Debian testing and Ubuntu 18.04 in the installer
 - Add an user manager
+- Add the installation wizard
 
 ### Changed:
 - Update dependencies
@@ -20,7 +21,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 - Removed configuration tools for IQRF Gateway Daemon v1
 
 ### Fixed:
--  Fix return type hints, class imports, call parent's constructor in constructors, etc.
+- Fix return type hints, class imports, call parent's constructor in constructors, etc.
+- Catch all exceptions and show error messages
+- Fix bugs in the ZIP archive manager
 
 ## [1.1.6] - 2018-07-10
 ### Added:
@@ -76,7 +79,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 ### Fixed:
 - Add an installation of ZIP extension for PHP in the webapp's installer
 - Complete a migration to a newer package for translations (fix #38)
-- Fix typo in a creation of a new MQTT interface into  IBM Bluemix
+- Fix typo in a creation of a new MQTT interface into IBM Bluemix
 
 ## [1.1.2] - 2018-05-10
 ### Added:
@@ -212,7 +215,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 - Catch exceptions when iqrf-daemon's log not found
 - Fix URLs in Inteliments InteliGlue manager
 - Attempt to fix bug in AWS IoT manager
-- Fix bad index for new Base services, MQ instances  and MQTT instances
+- Fix bad index for new Base services, MQ instances and MQTT instances
 - Fix bug in the installer - remove webapp's directory when it's upgraded from stable to development version
 - Fix redirect in 'CloudAzureMqttFormFactory' form
 - Fix path to templates for error pages
