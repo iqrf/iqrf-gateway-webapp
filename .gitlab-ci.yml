@@ -68,7 +68,8 @@ build-package:
     script:
         - gbp dch -a -S
         - dpkg-buildpackage -b -rfakeroot -us -uc -tc
+        - cp ../iqrf-gateway-webapp_*all.deb .
     artifacts:
         paths:
-            - '../iqrf-gateway-webapp_*all.deb'
+            - 'iqrf-gateway-webapp_*all.deb'
         expire_in: 2 weeks
