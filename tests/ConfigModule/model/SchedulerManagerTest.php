@@ -84,7 +84,7 @@ class SchedulerManagerTest extends TestCase {
 	/**
 	 * Set up the test environment
 	 */
-	protected function setUp() {
+	protected function setUp(): void {
 		$configPath = __DIR__ . '/../../data/configuration/';
 		$configTempPath = __DIR__ . '/../../temp/configuration/';
 		$schemaPath = __DIR__ . '/../../data/cfgSchemas/';
@@ -103,14 +103,14 @@ class SchedulerManagerTest extends TestCase {
 	/**
 	 * Cleanup the test environment
 	 */
-	protected function tearDown() {
+	protected function tearDown(): void {
 		\Mockery::close();
 	}
 
 	/**
 	 * Test function to add configuration of Scheduler
 	 */
-	public function testAdd() {
+	public function testAdd(): void {
 		$expected = $this->fileManager->read($this->fileName);
 		$this->fileManagerTemp->write($this->fileName, $expected);
 		$this->manager->add('raw');
@@ -139,7 +139,7 @@ class SchedulerManagerTest extends TestCase {
 	/**
 	 * Test function to delete configuration of Scheduler
 	 */
-	public function testDelete() {
+	public function testDelete(): void {
 		$expected = $this->fileManager->read($this->fileName);
 		$this->fileManagerTemp->write($this->fileName, $expected);
 		unset($expected['TasksJson'][5]);
@@ -150,14 +150,14 @@ class SchedulerManagerTest extends TestCase {
 	/**
 	 * Test function to fix HWPID format
 	 */
-	public function testFixHwpid() {
+	public function testFixHwpid(): void {
 		Assert::equal('01.00', $this->manager->fixHwpid('0001'));
 	}
 
 	/**
 	 * Test function to get last ID
 	 */
-	public function testGetLastId() {
+	public function testGetLastId(): void {
 		$expected = count($this->fileManager->read($this->fileName)['TasksJson']) - 1;
 		Assert::equal($expected, $this->manager->getLastId());
 	}
@@ -165,7 +165,7 @@ class SchedulerManagerTest extends TestCase {
 	/**
 	 * Test function to get avaiable messagings
 	 */
-	public function testGetMessagings() {
+	public function testGetMessagings(): void {
 		$expected = [
 			'config.mq.title' => ['MqMessaging',],
 			'config.mqtt.title' => ['MqttMessaging',],
@@ -181,7 +181,7 @@ class SchedulerManagerTest extends TestCase {
 	/**
 	 * Test function to get scheduler's services
 	 */
-	public function testGetServices() {
+	public function testGetServices(): void {
 		$expected = ['SchedulerMessaging'];
 		Assert::same($expected, $this->manager->getServices());
 	}
@@ -189,7 +189,7 @@ class SchedulerManagerTest extends TestCase {
 	/**
 	 * Test function to get tasks
 	 */
-	public function testGetTasks() {
+	public function testGetTasks(): void {
 		$expected = [
 			[
 				'time' => '*/5 * 1 * * * *',
@@ -213,7 +213,7 @@ class SchedulerManagerTest extends TestCase {
 	/**
 	 * Test function to load configuration of Scheduler
 	 */
-	public function testLoad() {
+	public function testLoad(): void {
 		Assert::equal($this->array, $this->manager->load(0));
 		Assert::equal([], $this->manager->load(10));
 	}
@@ -221,7 +221,7 @@ class SchedulerManagerTest extends TestCase {
 	/**
 	 * Test function to save configuration of Scheduler
 	 */
-	public function testSave() {
+	public function testSave(): void {
 		$array = $this->array;
 		$array['message']['nadr'] = '0';
 		$expected = $this->fileManager->read($this->fileName);
@@ -234,7 +234,7 @@ class SchedulerManagerTest extends TestCase {
 	/**
 	 * Test function to parse configuration of Scheduler
 	 */
-	public function testSaveJson() {
+	public function testSaveJson(): void {
 		$update = $this->array;
 		$update['task']['message']['msgid'] = '2';
 		$json = $this->fileManager->read($this->fileName);

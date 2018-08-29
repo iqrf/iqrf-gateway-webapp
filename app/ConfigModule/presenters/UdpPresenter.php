@@ -47,7 +47,7 @@ class UdpPresenter extends GenericPresenter {
 	/**
 	 * Render list of UDP interfaces
 	 */
-	public function renderDefault() {
+	public function renderDefault(): void {
 		$this->template->instances = $this->configManager->getInstances();
 	}
 
@@ -55,7 +55,7 @@ class UdpPresenter extends GenericPresenter {
 	 * Edit UDP interface
 	 * @param int $id ID of UDP interface
 	 */
-	public function renderEdit(int $id) {
+	public function renderEdit(int $id): void {
 		$this->template->id = $id;
 	}
 
@@ -63,7 +63,7 @@ class UdpPresenter extends GenericPresenter {
 	 * Delete UDP interface
 	 * @param int $id ID of UDP interface
 	 */
-	public function actionDelete(int $id) {
+	public function actionDelete(int $id): void {
 		$fileName = $this->configManager->getInstanceFiles()[$id];
 		$this->configManager->setFileName($fileName);
 		$this->configManager->delete();

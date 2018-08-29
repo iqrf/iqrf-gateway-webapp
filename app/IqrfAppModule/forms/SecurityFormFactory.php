@@ -93,7 +93,7 @@ class SecurityFormFactory {
 	 * Set IQMESH Access Password
 	 * @param SubmitButton $button Submit button for setting Access Password
 	 */
-	public function accessPasword(SubmitButton $button) {
+	public function accessPasword(SubmitButton $button): void {
 		$values = $button->getForm()->getValues();
 		try {
 			$this->manager->setSecurity($values['password'], $values['format'], IqrfNetManager::SECURITY_ACCESS_PASSOWRD);
@@ -113,7 +113,7 @@ class SecurityFormFactory {
 	 * Set IQMESH User Key
 	 * @param SubmitButton $button Submit button for setting User Key
 	 */
-	public function userKey(SubmitButton $button) {
+	public function userKey(SubmitButton $button): void {
 		$values = $button->getForm()->getValues();
 		try {
 			$this->manager->setSecurity($values['password'], $values['format'], IqrfNetManager::SECURITY_USER_KEY);

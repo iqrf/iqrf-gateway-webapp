@@ -64,7 +64,7 @@ class ComponentManagerTest extends TestCase {
 	/**
 	 * Set up the test environment
 	 */
-	protected function setUp() {
+	protected function setUp(): void {
 		$configPath = __DIR__ . '/../../data/configuration/';
 		$configTempPath = __DIR__ . '/../../temp/configuration/';
 		$this->fileManager = new JsonFileManager($configPath);
@@ -76,7 +76,7 @@ class ComponentManagerTest extends TestCase {
 	/**
 	 * The function to add a new component
 	 */
-	public function testAdd() {
+	public function testAdd(): void {
 		$expected = $this->fileManager->read($this->fileName);
 		$this->fileManagerTemp->write($this->fileName, $expected);
 		$array = [
@@ -94,7 +94,7 @@ class ComponentManagerTest extends TestCase {
 	/**
 	 * Test function to delete the component
 	 */
-	public function testDelete() {
+	public function testDelete(): void {
 		$expected = $this->fileManager->read($this->fileName);
 		$this->fileManagerTemp->write($this->fileName, $expected);
 		unset($expected['components'][30]);
@@ -105,7 +105,7 @@ class ComponentManagerTest extends TestCase {
 	/**
 	 * Test function to load configuration of components
 	 */
-	public function testLoadComponents() {
+	public function testLoadComponents(): void {
 		$json = $this->fileManager->read($this->fileName);
 		$expected = $json['components'];
 		Assert::equal($expected, $this->manager->loadComponents());
@@ -114,7 +114,7 @@ class ComponentManagerTest extends TestCase {
 	/**
 	 * Test function to load configuration of components
 	 */
-	public function testLoadComponent() {
+	public function testLoadComponent(): void {
 		$json = $this->fileManager->read($this->fileName);
 		$expected = $json['components'][0];
 		Assert::equal($expected, $this->manager->loadComponent(0));
@@ -124,7 +124,7 @@ class ComponentManagerTest extends TestCase {
 	/**
 	 * Test function to save configuration of components
 	 */
-	public function testSave() {
+	public function testSave(): void {
 		$array = [
 			'name' => 'iqrf::Scheduler',
 			'libraryPath' => '',

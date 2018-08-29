@@ -91,7 +91,7 @@ class WebsocketFormFactory {
 	 * Save websocket interface configuration
 	 * @param Form $form Websocket interface configuration form
 	 */
-	public function save(Form $form) {
+	public function save(Form $form): void {
 		try {
 			$this->manager->save($form->getValues(true));
 			$this->presenter->flashMessage('config.messages.success', 'success');

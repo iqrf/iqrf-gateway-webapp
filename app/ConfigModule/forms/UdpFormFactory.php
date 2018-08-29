@@ -80,7 +80,7 @@ class UdpFormFactory extends GenericConfigFormFactory {
 	 * Save UDP interface configuration
 	 * @param Form $form IDP interface configuration form
 	 */
-	public function save(Form $form) {
+	public function save(Form $form): void {
 		if (!$this->isExists() && count($this->instances) >= 1) {
 			$this->presenter->flashMessage('config.messages.multipleInstancesFailure', 'danger');
 			$this->presenter->redirect('Udp:default');

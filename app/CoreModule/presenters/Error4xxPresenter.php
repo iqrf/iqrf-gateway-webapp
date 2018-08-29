@@ -31,7 +31,7 @@ class Error4xxPresenter extends BasePresenter {
 	/**
 	 * Start up presenter
 	 */
-	public function startup() {
+	public function startup(): void {
 		parent::startup();
 		if (!$this->getRequest()->isMethod(Request::FORWARD)) {
 			$this->error();
@@ -42,7 +42,7 @@ class Error4xxPresenter extends BasePresenter {
 	 * Render 4xx error page
 	 * @param BadRequestException $exception
 	 */
-	public function renderDefault(BadRequestException $exception) {
+	public function renderDefault(BadRequestException $exception): void {
 		// load template 403.latte or 404.latte or ... 4xx.latte
 		$directory = __DIR__ . '/../templates/Error/';
 		$file = $directory . $exception->getCode() . '.latte';

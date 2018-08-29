@@ -87,7 +87,7 @@ class MainFormFactory {
 	 * Save main configuration
 	 * @param Form $form Main configuration form
 	 */
-	public function save(Form $form) {
+	public function save(Form $form): void {
 		try {
 			$this->manager->save($form->getValues(true));
 			$this->presenter->flashMessage('config.messages.success', 'success');

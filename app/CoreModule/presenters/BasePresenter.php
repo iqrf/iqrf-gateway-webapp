@@ -43,7 +43,7 @@ abstract class BasePresenter extends Presenter {
 	/**
 	 * After template render
 	 */
-	public function afterRender() {
+	public function afterRender(): void {
 		parent::afterRender();
 		$this->template->iqrfGw = $this->context->parameters['iqrf-gw'];
 		$this->template->supervisord = $this->context->parameters['supervisord'];
@@ -53,7 +53,7 @@ abstract class BasePresenter extends Presenter {
 	 * Inject translator service
 	 * @param Translator $translator Translator
 	 */
-	public function injectTranslator(Translator $translator) {
+	public function injectTranslator(Translator $translator): void {
 		$this->translator = $translator;
 	}
 
@@ -61,7 +61,7 @@ abstract class BasePresenter extends Presenter {
 	 * Create an template
 	 * @return ITemplate Template
 	 */
-	public function createTemplate() {
+	public function createTemplate(): ITemplate {
 		$template = parent::createTemplate();
 		$template->setTranslator($this->translator);
 		return $template;

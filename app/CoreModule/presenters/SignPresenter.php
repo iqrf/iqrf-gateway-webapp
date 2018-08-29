@@ -43,7 +43,7 @@ class SignPresenter extends BasePresenter {
 	/**
 	 * User sign in
 	 */
-	public function actionIn() {
+	public function actionIn(): void {
 		if ($this->user->isLoggedIn()) {
 			$this->redirect('Homepage:');
 		}
@@ -52,7 +52,7 @@ class SignPresenter extends BasePresenter {
 	/**
 	 * User sign out
 	 */
-	public function actionOut() {
+	public function actionOut(): void {
 		if (!$this->user->isLoggedIn()) {
 			$this->redirect('Sign:in');
 		} else {
@@ -64,7 +64,7 @@ class SignPresenter extends BasePresenter {
 	 * Create sign in form
 	 * @return Form Sign in form
 	 */
-	protected function createComponentSignInForm() {
+	protected function createComponentSignInForm(): Form {
 		return $this->signInFactory->create($this);
 	}
 
@@ -72,16 +72,16 @@ class SignPresenter extends BasePresenter {
 	 * Inject user manager
 	 * @param UserManager $userManager User manager
 	 */
-	public function injectUserManager(UserManager $userManager) {
+	public function injectUserManager(UserManager $userManager): void {
 		$this->userManager = $userManager;
 	}
 
 	/**
 	 * Start up an base presenter
 	 */
-	protected function startup() {
+	protected function startup(): void {
 		parent::startup();
-		if (empty($this->userManager->getUsers())) {
+		if ($this->userManager->getUsers() === []) {
 			$this->redirect(':Install:Homepage:default');
 		}
 	}

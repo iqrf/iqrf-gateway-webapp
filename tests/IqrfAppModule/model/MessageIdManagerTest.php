@@ -38,7 +38,7 @@ class MessageIdManagerTest extends TestCase {
 	/**
 	 * Test function to generate message ID
 	 */
-	public function testGenerate() {
+	public function testGenerate(): void {
 		$expected = strval((new \DateTime())->getTimestamp());
 		$manager = new MessageIdManager();
 		Assert::same($expected, $manager->generate());

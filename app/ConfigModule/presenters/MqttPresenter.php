@@ -47,7 +47,7 @@ class MqttPresenter extends GenericPresenter {
 	/**
 	 * Render list of MQTT interfaces
 	 */
-	public function renderDefault() {
+	public function renderDefault(): void {
 		$this->template->instances = $this->configManager->getInstances();
 	}
 
@@ -55,7 +55,7 @@ class MqttPresenter extends GenericPresenter {
 	 * Edit MQTT interface
 	 * @param int $id ID of MQTT interface
 	 */
-	public function renderEdit(int $id) {
+	public function renderEdit(int $id): void {
 		$this->template->id = $id;
 	}
 
@@ -63,7 +63,7 @@ class MqttPresenter extends GenericPresenter {
 	 * Delete MQTT interface
 	 * @param int $id ID of MQTT interface
 	 */
-	public function actionDelete(int $id) {
+	public function actionDelete(int $id): void {
 		$fileName = $this->configManager->getInstanceFiles()[$id];
 		$this->configManager->setFileName($fileName);
 		$this->configManager->delete();

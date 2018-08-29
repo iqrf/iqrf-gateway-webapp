@@ -55,7 +55,7 @@ class MainPresenter extends ProtectedPresenter {
 	/**
 	 * Catch exceptions
 	 */
-	public function actionDefault() {
+	public function actionDefault(): void {
 		try {
 			$this->configManager->load();
 		} catch (\Exception $e) {

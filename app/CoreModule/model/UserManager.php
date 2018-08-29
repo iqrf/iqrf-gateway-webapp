@@ -54,7 +54,7 @@ class UserManager {
 	 * @param string $newPassword New password
 	 * @throws InvalidPasswordException
 	 */
-	public function changePassword(int $id, string $oldPassword, string $newPassword) {
+	public function changePassword(int $id, string $oldPassword, string $newPassword): void {
 		$row = $this->table->where('id', $id)->fetch();
 		if (!password_verify($oldPassword, $row['password'])) {
 			throw new InvalidPasswordException();
@@ -67,7 +67,7 @@ class UserManager {
 	 * Delete the user
 	 * @param int $id User ID
 	 */
-	public function delete(int $id) {
+	public function delete(int $id): void {
 		$this->table->where('id', $id)->delete();
 	}
 
@@ -79,7 +79,7 @@ class UserManager {
 	 * @param string $language New user's language
 	 * @throws UsernameAlreadyExistsException
 	 */
-	public function edit(int $id, string $username, string $role, string $language) {
+	public function edit(int $id, string $username, string $role, string $language): void {
 		$row = $this->table->where('username', $username)->fetch();
 		if ($row && $row['id'] !== $id) {
 			throw new UsernameAlreadyExistsException();
@@ -97,7 +97,7 @@ class UserManager {
 	 * @param int $id User ID
 	 * @return array|null Information about the user or null
 	 */
-	public function getInfo(int $id) {
+	public function getInfo(int $id): ?array {
 		$row = $this->table->get($id);
 		if ($row instanceof ActiveRow) {
 			return $row->toArray();
@@ -125,7 +125,7 @@ class UserManager {
 	 * @param string $language User's language
 	 * @throws UsernameAlreadyExistsException
 	 */
-	public function register(string $username, string $password, string $role, string $language) {
+	public function register(string $username, string $password, string $role, string $language): void {
 		$row = $this->table->where('username', $username)->fetch();
 		if ($row) {
 			throw new UsernameAlreadyExistsException();

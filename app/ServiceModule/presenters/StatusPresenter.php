@@ -46,7 +46,7 @@ class StatusPresenter extends ProtectedPresenter {
 	/**
 	 * Render IQRF Gateway Daemon's service status
 	 */
-	public function renderDefault() {
+	public function renderDefault(): void {
 		try {
 			$status = $this->serviceManager->getStatus();
 			$this->template->status = $status;

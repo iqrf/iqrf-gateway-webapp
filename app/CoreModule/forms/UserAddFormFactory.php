@@ -89,7 +89,7 @@ class UserAddFormFactory {
 	 * Add a new user form
 	 * @param Form $form Register a new user form
 	 */
-	public function add(Form $form) {
+	public function add(Form $form): void {
 		$values = $form->getValues();
 		try {
 			$this->userManager->register($values['username'], $values['password'], $values['userType'], $values['language']);

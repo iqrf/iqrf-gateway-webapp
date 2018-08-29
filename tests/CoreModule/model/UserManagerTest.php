@@ -64,7 +64,7 @@ class UserManagerTest extends TestCase {
 	/**
 	 * Set up the test environment
 	 */
-	protected function setUp() {
+	protected function setUp(): void {
 		$connection = new Connection('sqlite::memory:');
 		$cacheStorage = new MemoryStorage();
 		$structure = new Structure($connection, $cacheStorage);
@@ -76,7 +76,7 @@ class UserManagerTest extends TestCase {
 	/**
 	 * Create database table
 	 */
-	private function createTable() {
+	private function createTable(): void {
 		$sql = 'CREATE TABLE `users` (
 	`id`		INTEGER PRIMARY KEY AUTOINCREMENT,
 	`username`	TEXT NOT NULL UNIQUE,
@@ -90,16 +90,16 @@ class UserManagerTest extends TestCase {
 	/**
 	 * Create a power user
 	 */
-	private function createUser() {
+	private function createUser(): void {
 		$this->context->table('users')->insert($this->data);
 	}
 
 	/**
 	 * Test function to change the password (incorrect old password)
 	 */
-	public function testChangePasswordFail() {
+	public function testChangePasswordFail(): void {
 		$this->createUser();
-		Assert::exception(function() {
+		Assert::exception(function(): void {
 			$this->manager->changePassword(1, 'admin', 'admin');
 		}, InvalidPasswordException::class);
 	}
@@ -107,7 +107,7 @@ class UserManagerTest extends TestCase {
 	/**
 	 * Test function to change the password (correct old password)
 	 */
-	public function testChangePasswordSuccess() {
+	public function testChangePasswordSuccess(): void {
 		$this->createUser();
 		$password = 'admin';
 		$this->manager->changePassword(1, 'iqrf', $password);
@@ -118,7 +118,7 @@ class UserManagerTest extends TestCase {
 	/**
 	 * Test function to delete the user
 	 */
-	public function testDelete() {
+	public function testDelete(): void {
 		$this->createUser();
 		Assert::same(1, $this->context->table('users')->count());
 		$this->manager->delete(1);
@@ -128,7 +128,7 @@ class UserManagerTest extends TestCase {
 	/**
 	 * Test function to edit the user (fail)
 	 */
-	public function testEditFail() {
+	public function testEditFail(): void {
 		$this->createUser();
 		$user = $this->data;
 		$user['username'] = 'user';
@@ -141,7 +141,7 @@ class UserManagerTest extends TestCase {
 	/**
 	 * Test function to edit the user (success)
 	 */
-	public function testEditSuccess() {
+	public function testEditSuccess(): void {
 		$this->createUser();
 		$this->manager->edit(1, 'admin', 'normal', 'cs');
 		$actual = $this->context->table('users')->fetch()->toArray();
@@ -158,14 +158,14 @@ class UserManagerTest extends TestCase {
 	/**
 	 * Test function to get information about the user (fail)
 	 */
-	public function testGetInfoFail() {
+	public function testGetInfoFail(): void {
 		Assert::null($this->manager->getInfo(1));
 	}
 
 	/**
 	 * Test function to get information about the user (success)
 	 */
-	public function testGetInfoSuccess() {
+	public function testGetInfoSuccess(): void {
 		$this->createUser();
 		$actual = $this->manager->getInfo(1);
 		unset($actual['id']);
@@ -175,14 +175,14 @@ class UserManagerTest extends TestCase {
 	/**
 	 * Test function to get all registered users (no registered user)
 	 */
-	public function testGetUsersNone() {
+	public function testGetUsersNone(): void {
 		Assert::same([], $this->manager->getUsers());
 	}
 
 	/**
 	 * Test function to get all registered users (a registered user)
 	 */
-	public function testGetUsersOne() {
+	public function testGetUsersOne(): void {
 		$this->createUser();
 		$expected = [['id' => 1]];
 		$expected[0] += $this->data;
@@ -192,7 +192,7 @@ class UserManagerTest extends TestCase {
 	/**
 	 * Test function to register a new user (fail)
 	 */
-	public function testRegisterFail() {
+	public function testRegisterFail(): void {
 		$this->createUser();
 		Assert::exception(function() {
 			$this->manager->register('admin', 'iqrf', 'power', 'en');
@@ -202,7 +202,7 @@ class UserManagerTest extends TestCase {
 	/**
 	 * Test function to register a new user (success)
 	 */
-	public function testRegisterSuccess() {
+	public function testRegisterSuccess(): void {
 		$this->manager->register('admin', 'iqrf', 'power', 'en');
 		$expected = $this->data;
 		$actual = $this->context->table('users')->fetch()->toArray();

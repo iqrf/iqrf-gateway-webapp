@@ -93,7 +93,7 @@ class IqrfAppManagerTest extends TestCase {
 	/**
 	 * Set up the test environment
 	 */
-	protected function setUp() {
+	protected function setUp(): void {
 		$path = __DIR__ . '/../../data/iqrf/';
 		$this->fileManager = new FileManager($path);
 		$this->jsonFileManager = new JsonFileManager($path);
@@ -105,7 +105,7 @@ class IqrfAppManagerTest extends TestCase {
 	/**
 	 * Cleanup the test environment
 	 */
-	protected function tearDown() {
+	protected function tearDown(): void {
 		\Mockery::close();
 	}
 
@@ -114,7 +114,7 @@ class IqrfAppManagerTest extends TestCase {
 	 * @param array $json JSON DPA request and response
 	 * @param int $status DPA status
 	 */
-	private function changeStatus(array &$json, int $status) {
+	private function changeStatus(array &$json, int $status): void {
 		$data = Json::decode($json['response'], Json::FORCE_ARRAY);
 		$data['data']['status'] = $status;
 		$json['response'] = Json::encode($data);
@@ -123,7 +123,7 @@ class IqrfAppManagerTest extends TestCase {
 	/**
 	 * Test function to send JSON DPA request via websocket (success)
 	 */
-	public function testSendToWebsocketSuccess() {
+	public function testSendToWebsocketSuccess(): void {
 		$array = [
 			'data' => [
 				'msgId' => '1',
@@ -136,8 +136,8 @@ class IqrfAppManagerTest extends TestCase {
 	/**
 	 * Test function to send JSON DPA request via websocket (timeout)
 	 */
-	public function testSendToWebsocketTimeout() {
-		Assert::exception(function() {
+	public function testSendToWebsocketTimeout(): void {
+		Assert::exception(function(): void {
 			$wsServer = 'ws://localhost:9000';
 			$manager = new IqrfAppManager($wsServer, $this->msgIdManager);
 			$array = ['data' => ['msgId' => '1',],];
@@ -148,7 +148,7 @@ class IqrfAppManagerTest extends TestCase {
 	/**
 	 * Test function to send RAW IQRF packet
 	 */
-	public function testSendRaw() {
+	public function testSendRaw(): void {
 		$packet = '01.00.06.03.ff.ff';
 		$array = [
 			'mType' => 'iqrfRaw',
@@ -170,7 +170,7 @@ class IqrfAppManagerTest extends TestCase {
 	/**
 	 * Test function to change IQRF Gateway Daemon's operation mode (invalid mode)
 	 */
-	public function testChangeOperationModeInvalid() {
+	public function testChangeOperationModeInvalid(): void {
 		Assert::exception(function() {
 			$this->manager->changeOperationMode('invalid');
 		}, IqrfException\InvalidOperationModeException::class);
@@ -179,7 +179,7 @@ class IqrfAppManagerTest extends TestCase {
 	/**
 	 * Test function to change IQRF Gateway Daemon's operation mode (valid mode)
 	 */
-	public function testChangeOperationModeValid() {
+	public function testChangeOperationModeValid(): void {
 		$modes = ['forwarding', 'operational', 'service'];
 		$format = '{"mType":"mngDaemon_Mode","data":{"msgId":"1","req":{"operMode":"%s"}},"returnVerbose":true}';
 		foreach ($modes as $mode) {
@@ -190,7 +190,7 @@ class IqrfAppManagerTest extends TestCase {
 	/**
 	 * Test function to validation of raw IQRF packet (invalid packet)
 	 */
-	public function testValidatePacketInvalid() {
+	public function testValidatePacketInvalid(): void {
 		$packets = [
 			'01 00 06 03 ff ff',
 			'01 00 06 03 ff ff.',
@@ -208,7 +208,7 @@ class IqrfAppManagerTest extends TestCase {
 	/**
 	 * Test function to validation of raw IQRF packet (valid packet)
 	 */
-	public function testValidatePacketValid() {
+	public function testValidatePacketValid(): void {
 		$packets = [
 			'01.00.06.03.ff.ff',
 			'01.00.06.03.ff.ff.',
@@ -221,7 +221,7 @@ class IqrfAppManagerTest extends TestCase {
 	/**
 	 * Test function to update NADR in raw DPA packet
 	 */
-	public function testUpdateNadr() {
+	public function testUpdateNadr(): void {
 		$packet = '01.00.06.03.ff.ff';
 		$nadr = 'F';
 		$expected = '0f.00.06.03.ff.ff';
@@ -232,7 +232,7 @@ class IqrfAppManagerTest extends TestCase {
 	/**
 	 * Test function to fix NADR in raw DPA packet
 	 */
-	public function testFixPacket() {
+	public function testFixPacket(): void {
 		$packet = '00.01.06.03.ff.ff';
 		$expected = '01.00.06.03.ff.ff';
 		$this->manager->fixPacket($packet);
@@ -242,9 +242,9 @@ class IqrfAppManagerTest extends TestCase {
 	/**
 	 * Test function to parse DPA response (DPA error)
 	 */
-	public function testParseResponseError() {
+	public function testParseResponseError(): void {
 		Assert::exception(function () {
-			$array['response'] = $this->fileManager->read('response-error.json');
+			$array = ['response' => $this->fileManager->read('response-error.json')];
 			$this->manager->parseResponse($array);
 		}, IqrfException\TimeoutException::class);
 	}
@@ -252,17 +252,19 @@ class IqrfAppManagerTest extends TestCase {
 	/**
 	 * Test function to parse DPA response (broadcast)
 	 */
-	public function testParseResponseBroadcast() {
-		$array['request'] = $this->fileManager->read('request-broadcast.json');
-		$array['response'] = $this->fileManager->read('response-broadcast.json');
+	public function testParseResponseBroadcast(): void {
+		$array = [
+			'request' => $this->fileManager->read('request-broadcast.json'),
+			'response' => $this->fileManager->read('response-broadcast.json'),
+		];
 		Assert::null($this->manager->parseResponse($array));
 	}
 
 	/**
 	 * Test function to parse DPA response (Coordinator parser)
 	 */
-	public function testParseResponseCoordinator() {
-		$array['response'] = $this->fileManager->read('response-coordinator-bonded.json');
+	public function testParseResponseCoordinator(): void {
+		$array = ['response' => $this->fileManager->read('response-coordinator-bonded.json')];
 		$expected = $this->jsonFileManager->read('data-coordinator-bonded');
 		Assert::equal($expected, $this->manager->parseResponse($array));
 	}
@@ -270,8 +272,8 @@ class IqrfAppManagerTest extends TestCase {
 	/**
 	 * Test function to parse DPA response (Enumeration parser)
 	 */
-	public function testParseResponseEnumerationParser() {
-		$array['response'] = $this->fileManager->read('response-enumeration.json');
+	public function testParseResponseEnumerationParser(): void {
+		$array = ['response' => $this->fileManager->read('response-enumeration.json')];
 		$expected = $this->jsonFileManager->read('data-enumeration');
 		Assert::equal($expected, $this->manager->parseResponse($array));
 	}
@@ -279,8 +281,8 @@ class IqrfAppManagerTest extends TestCase {
 	/**
 	 * Test function to parse DPA response (OS parser)
 	 */
-	public function testParseResponseOsParser() {
-		$array['response'] = $this->fileManager->read('response-os-read.json');
+	public function testParseResponseOsParser(): void {
+		$array = ['response' => $this->fileManager->read('response-os-read.json')];
 		$expected = $this->jsonFileManager->read('data-os-read');
 		Assert::equal($expected, $this->manager->parseResponse($array));
 	}
@@ -288,17 +290,17 @@ class IqrfAppManagerTest extends TestCase {
 	/**
 	 * Test function to parse DPA response (without parser)
 	 */
-	public function testParseResponseWithoutParser() {
-		$array['response'] = $this->fileManager->read('response-ledr-on.json');
+	public function testParseResponseWithoutParser(): void {
+		$array = ['response' => $this->fileManager->read('response-ledr-on.json')];
 		Assert::null($this->manager->parseResponse($array));
 	}
 
 	/**
 	 * Test function to check status from JSON response (status = OK)
 	 */
-	public function testCheckStatusOk() {
+	public function testCheckStatusOk(): void {
 		Assert::noError(function () {
-			$array['response'] = $this->fileManager->read('response-os-read.json');
+			$array = ['response' => $this->fileManager->read('response-os-read.json')];
 			$this->manager->checkStatus($array);
 		});
 	}
@@ -306,8 +308,8 @@ class IqrfAppManagerTest extends TestCase {
 	/**
 	 * Test function to check staus from JSON response (status = DPA error)
 	 */
-	public function testCheckStatusError() {
-		$array['response'] = $this->fileManager->read('response-error.json');
+	public function testCheckStatusError(): void {
+		$array = ['response' => $this->fileManager->read('response-error.json')];
 		foreach ($this->statusExceptions as $status => $exception) {
 			$this->changeStatus($array, $status);
 			Assert::exception(function() use ($array) {
@@ -319,18 +321,18 @@ class IqrfAppManagerTest extends TestCase {
 	/**
 	 * Test function to get a DPA packet from JSON DPA request
 	 */
-	public function testGetPacketRequest() {
+	public function testGetPacketRequest(): void {
 		$expected = '00.00.02.00.ff.ff';
-		$array['request'] = $this->fileManager->read('request-os-read.json');
+		$array = ['request' => $this->fileManager->read('request-os-read.json')];
 		Assert::same($expected, $this->manager->getPacket($array, 'request'));
 	}
 
 	/**
 	 * Test function to get a DPA packet from JSON DPA response
 	 */
-	public function testGetPacketResponse() {
+	public function testGetPacketResponse(): void {
 		$expected = '00.00.02.80.00.00.00.00.dc.3c.10.81.42.24.b8.08.00.28.00.31';
-		$array['response'] = $this->fileManager->read('response-os-read.json');
+		$array = ['response' => $this->fileManager->read('response-os-read.json')];
 		Assert::same($expected, $this->manager->getPacket($array, 'response'));
 	}
 

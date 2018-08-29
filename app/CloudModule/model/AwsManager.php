@@ -68,7 +68,7 @@ class AwsManager implements IManager {
 	 * Create MQTT interface
 	 * @param array $values Values from form
 	 */
-	public function createMqttInterface(array $values) {
+	public function createMqttInterface(array $values): void {
 		$paths = $this->createPaths();
 		$this->downloadCaCertificate();
 		$this->checkCertificate($values);
@@ -105,7 +105,7 @@ class AwsManager implements IManager {
 	 * Check a certificate and a private key
 	 * @param array $values Form values
 	 */
-	public function checkCertificate(array $values) {
+	public function checkCertificate(array $values): void {
 		$cert = $values['cert']->getContents();
 		$pKey = $values['key']->getContents();
 		if (!$this->certManager->checkPrivateKey($cert, $pKey)) {
@@ -117,7 +117,7 @@ class AwsManager implements IManager {
 	 * Create paths for root CA certificate, certificate and private key
 	 * @return array Paths for root CA certificate, certificate and private key
 	 */
-	public function createPaths() {
+	public function createPaths(): array {
 		$timestamp = (new \DateTime())->format(\DateTime::ISO8601);
 		$path = $this->path . $timestamp;
 		$paths = [];
@@ -131,7 +131,7 @@ class AwsManager implements IManager {
 	 * @param array $values Form values
 	 * @param array $paths Paths for root CA certificate, certificate and private key
 	 */
-	public function uploadCertsAndKey(array $values, array $paths) {
+	public function uploadCertsAndKey(array $values, array $paths): void {
 		$cert = $values['cert'];
 		$key = $values['key'];
 		if ($cert->isOk()) {
@@ -145,7 +145,7 @@ class AwsManager implements IManager {
 	/**
 	 * Download root CA certificate
 	 */
-	public function downloadCaCertificate() {
+	public function downloadCaCertificate(): void {
 		$client = new Client();
 		$caCertUrl = 'https://www.symantec.com/content/en/us/enterprise/verisign/roots/VeriSign-Class%203-Public-Primary-Certification-Authority-G5.pem';
 		$caCert = $client->request('GET', $caCertUrl)->getBody();

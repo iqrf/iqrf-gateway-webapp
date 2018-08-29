@@ -42,7 +42,7 @@ class JsonFileManager extends FileManager {
 	 * Delete a JSON file
 	 * @param string $fileName File name
 	 */
-	public function delete(string $fileName) {
+	public function delete(string $fileName): void {
 		parent::delete($fileName . '.json');
 	}
 
@@ -70,7 +70,7 @@ class JsonFileManager extends FileManager {
 	 * @param string $name File name (without .json)
 	 * @param array $array JSON data in array
 	 */
-	public function write(string $name, $array) {
+	public function write(string $name, $array): void {
 		$json = Json::encode($array, Json::PRETTY);
 		parent::write($name . '.json', $json);
 	}

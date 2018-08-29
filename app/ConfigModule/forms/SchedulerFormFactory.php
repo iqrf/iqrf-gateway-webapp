@@ -144,7 +144,7 @@ class SchedulerFormFactory {
 	 * Save scheduler's task configuration
 	 * @param Form $form Scheduler's task configuration fore
 	 */
-	public function save(Form $form) {
+	public function save(Form $form): void {
 		try {
 			$this->manager->save($form->getValues(true), $this->id);
 			$this->presenter->flashMessage('config.messages.success', 'success');

@@ -62,7 +62,7 @@ class BluemixManagerTest extends TestCase {
 	/**
 	 * Set up the test environment
 	 */
-	protected function setUp() {
+	protected function setUp(): void {
 		$configPath = __DIR__ . '/../../temp/configuration/';
 		$schemaPath = __DIR__ . '/../../data/cfgSchemas/';
 		$this->fileManager = new JsonFileManager($configPath);
@@ -75,14 +75,14 @@ class BluemixManagerTest extends TestCase {
 	/**
 	 * Cleanup the test environment
 	 */
-	protected function tearDown() {
+	protected function tearDown(): void {
 		\Mockery::close();
 	}
 
 	/**
 	 * Test function to create MQTT interface
 	 */
-	public function testCreateMqttInterface() {
+	public function testCreateMqttInterface(): void {
 		$mqtt = [
 			'component' => 'iqrf::MqttMessaging',
 			'instance' => 'MqttMessagingBluemix',

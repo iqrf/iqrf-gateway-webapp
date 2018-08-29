@@ -69,7 +69,7 @@ class RouterFactoryTest extends TestCase {
 	/**
 	 * Test function to create a router
 	 */
-	public function testCreateRouter() {
+	public function testCreateRouter(): void {
 		/** @var RouteList $routeList */
 		$routeList = RouterFactory::createRouter();
 		Assert::type(RouteList::class, $routeList);

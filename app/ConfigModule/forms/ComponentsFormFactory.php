@@ -91,7 +91,7 @@ class ComponentsFormFactory {
 	 * Save component configuration
 	 * @param Form $form Component configuration form
 	 */
-	public function save(Form $form) {
+	public function save(Form $form): void {
 		try {
 			$this->manager->save($form->getValues(true), $this->id);
 			$this->presenter->flashMessage('config.messages.success', 'success');

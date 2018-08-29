@@ -55,7 +55,7 @@ class ComponentPresenter extends ProtectedPresenter {
 	/**
 	 * Catch exceptions
 	 */
-	public function actionDefault() {
+	public function actionDefault(): void {
 		try {
 			$this->configManager->loadComponents();
 		} catch (\Exception $e) {
@@ -74,7 +74,7 @@ class ComponentPresenter extends ProtectedPresenter {
 	/**
 	 * Render list of components
 	 */
-	public function renderDefault() {
+	public function renderDefault(): void {
 		$this->template->components = $this->configManager->loadComponents();
 	}
 
@@ -82,7 +82,7 @@ class ComponentPresenter extends ProtectedPresenter {
 	 * Edit component
 	 * @param int $id Component ID
 	 */
-	public function renderEdit(int $id) {
+	public function renderEdit(int $id): void {
 		$this->template->id = $id;
 	}
 
@@ -90,7 +90,7 @@ class ComponentPresenter extends ProtectedPresenter {
 	 * Delete component
 	 * @param int $id Component ID
 	 */
-	public function actionDelete(int $id) {
+	public function actionDelete(int $id): void {
 		if ($this->user->isInRole('power')) {
 			$this->configManager->delete($id);
 		}

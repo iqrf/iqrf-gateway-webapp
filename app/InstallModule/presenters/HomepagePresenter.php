@@ -45,7 +45,7 @@ class HomepagePresenter extends BasePresenter {
 	 * Create add a new user form
 	 * @return Form Add a new user form
 	 */
-	protected function createComponentRegUserForm() {
+	protected function createComponentRegUserForm(): Form {
 		return $this->userFormFactory->create($this);
 	}
 
@@ -53,16 +53,16 @@ class HomepagePresenter extends BasePresenter {
 	 * Inject user manager
 	 * @param UserManager $userManager User manager
 	 */
-	public function injectUserManager(UserManager $userManager) {
+	public function injectUserManager(UserManager $userManager): void {
 		$this->userManager = $userManager;
 	}
 
 	/**
 	 * Start up an base presenter
 	 */
-	protected function startup() {
+	protected function startup(): void {
 		parent::startup();
-		if (!empty($this->userManager->getUsers())) {
+		if ($this->userManager->getUsers() !== []) {
 			$this->redirect(':Core:Sign:in');
 		}
 	}

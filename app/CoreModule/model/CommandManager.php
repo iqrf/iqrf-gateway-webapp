@@ -60,8 +60,8 @@ class CommandManager {
 	 * @return string Output
 	 */
 	public function send(string $cmd, bool $needSudo = false): string {
-		$command = $this->sudo && $needSudo ? 'sudo ' : '';
-		$command .= $cmd;
+		$command = ($this->sudo && $needSudo ? 'sudo ' : '') . $cmd;
+		$output = $pipes = [];
 		$output['command'] = $command;
 		$process = proc_open($command, $this->descriptorspec, $pipes);
 		if (is_resource($process)) {
@@ -84,7 +84,7 @@ class CommandManager {
 	 * @return bool
 	 */
 	public function commandExist(string $cmd): bool {
-		return !empty($this->send('which ' . $cmd));
+		return $this->send('which ' . $cmd) !== '';
 	}
 
 }

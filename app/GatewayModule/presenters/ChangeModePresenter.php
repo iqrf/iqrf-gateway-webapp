@@ -45,21 +45,21 @@ class ChangeModePresenter extends ProtectedPresenter {
 	/**
 	 * Change gateway mode to Forwarding mode
 	 */
-	public function actionForwarding() {
+	public function actionForwarding(): void {
 		$this->changeMode('forwarding');
 	}
 
 	/**
 	 * Change gateway mode to Operational mode
 	 */
-	public function actionOperational() {
+	public function actionOperational(): void {
 		$this->changeMode('operational');
 	}
 
 	/**
 	 * Change gateway mode to Service mode
 	 */
-	public function actionService() {
+	public function actionService(): void {
 		$this->changeMode('service');
 	}
 
@@ -67,7 +67,7 @@ class ChangeModePresenter extends ProtectedPresenter {
 	 * Change gateway mode
 	 * @param string $mode Gateway mode
 	 */
-	private function changeMode(string $mode) {
+	private function changeMode(string $mode): void {
 		$this->iqrfAppManager->changeOperationMode($mode);
 		$this->flashMessage('gateway.mode.modes.' . $mode . '.message', 'info');
 		$this->redirect('ChangeMode:default');

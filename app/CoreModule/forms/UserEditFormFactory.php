@@ -94,7 +94,7 @@ class UserEditFormFactory {
 	 * Save user info
 	 * @param Form $form Edit an existing user form
 	 */
-	public function save(Form $form) {
+	public function save(Form $form): void {
 		$values = $form->getValues();
 		try {
 			$this->userManager->edit($this->id, $values['username'], $values['user_type'], $values['language']);

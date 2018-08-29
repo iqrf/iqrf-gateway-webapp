@@ -77,7 +77,7 @@ class AwsManagerTest extends TestCase {
 	/**
 	 * Set up the test environment
 	 */
-	protected function setUp() {
+	protected function setUp(): void {
 		$configPath = __DIR__ . '/../../temp/configuration/';
 		$schemaPath = __DIR__ . '/../../data/cfgSchemas/';
 		$this->fileManager = new JsonFileManager($configPath);
@@ -94,7 +94,7 @@ class AwsManagerTest extends TestCase {
 	/**
 	 * Cleanup the test environment
 	 */
-	protected function tearDown() {
+	protected function tearDown(): void {
 		\Mockery::close();
 	}
 
@@ -120,15 +120,17 @@ class AwsManagerTest extends TestCase {
 			'error' => UPLOAD_ERR_OK,
 			'size' => filesize($pKeyFile),
 		];
-		$array['cert'] = new FileUpload($certValue);
-		$array['key'] = new FileUpload($pKeyValue);
+		$array = [
+			'cert' => new FileUpload($certValue),
+			'key' => new FileUpload($pKeyValue),
+		];
 		return $array;
 	}
 
 	/**
 	 * Test function to create MQTT interface
 	 */
-	public function testCreateMqttInterface() {
+	public function testCreateMqttInterface(): void {
 		$timestamp = (new \DateTime())->format(\DateTime::ISO8601);
 		$mqtt = [
 			'component' => 'iqrf::MqttMessaging',
@@ -161,7 +163,7 @@ class AwsManagerTest extends TestCase {
 	/**
 	 * Test function to check a certificate and a private key (invalid private key)
 	 */
-	public function testCheckCertificateInvalid() {
+	public function testCheckCertificateInvalid(): void {
 		$array = $this->mockUploadedFiles($this->certPath);
 		$pKeyFile = $this->certPath . 'pkey1.key';
 		$pKeyValue = [
@@ -180,15 +182,17 @@ class AwsManagerTest extends TestCase {
 	/**
 	 * Test function to check a certificate and a private key (valid private key)
 	 */
-	public function testCheckCertificateValid() {
+	public function testCheckCertificateValid(): void {
 		$array = $this->mockUploadedFiles($this->certPath);
-		Assert::null($this->manager->checkCertificate($array));
+		Assert::noError(function() use ($array) {
+			$this->manager->checkCertificate($array);
+		});
 	}
 
 	/**
 	 * Test function to create paths for certificates
 	 */
-	public function testCreatePaths() {
+	public function testCreatePaths(): void {
 		$timestamp = (new \DateTime())->format(\DateTime::ISO8601);
 		$actual = $this->mockedManager->createPaths();
 		$paths = [
@@ -201,7 +205,7 @@ class AwsManagerTest extends TestCase {
 	/**
 	 * Test function to upload root CA certificate, certificate and private key
 	 */
-	public function testUploadCertsAndKey() {
+	public function testUploadCertsAndKey(): void {
 		$certFile = $this->certPathTemp . 'cert0.pem';
 		$pKeyFile = $this->certPathTemp . 'pkey0.key';
 		FileSystem::copy($this->certPath . 'cert0.pem', $certFile);
@@ -211,7 +215,9 @@ class AwsManagerTest extends TestCase {
 			'cert' => $this->certPathTemp . 'cert.pem',
 			'key' => $this->certPathTemp . 'pKey.key',
 		];
-		Assert::null($this->manager->uploadCertsAndKey($array, $paths));
+		Assert::noError(function() use ($array, $paths) {
+			$this->manager->uploadCertsAndKey($array, $paths);
+		});
 	}
 
 }

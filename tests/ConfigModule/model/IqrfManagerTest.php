@@ -49,7 +49,7 @@ class IqrfManagerTest extends TestCase {
 	/**
 	 * Set up the test environment
 	 */
-	protected function setUp() {
+	protected function setUp(): void {
 		$this->commandManager = \Mockery::mock(CommandManager::class);
 		$this->manager = new IqrfManager($this->commandManager);
 	}
@@ -57,14 +57,14 @@ class IqrfManagerTest extends TestCase {
 	/**
 	 * Cleanup the test environment
 	 */
-	protected function tearDown() {
+	protected function tearDown(): void {
 		\Mockery::close();
 	}
 
 	/**
 	 * Test function to get list of SPI and USB CDC interfaces available in the system
 	 */
-	public function testGetCdcInterfaces() {
+	public function testGetCdcInterfaces(): void {
 		$output = '/dev/ttyACM0' . PHP_EOL . '/dev/ttyACM1';
 		$this->commandManager->shouldReceive('send')->with('ls /dev/ttyACM* | awk \'{ print $0 }\'', true)->andReturn($output);
 		$expected = ['/dev/ttyACM0', '/dev/ttyACM1'];
@@ -74,7 +74,7 @@ class IqrfManagerTest extends TestCase {
 	/**
 	 * Test function to get list of SPI and USB CDC interfaces available in the system
 	 */
-	public function testGetSpiInterfaces() {
+	public function testGetSpiInterfaces(): void {
 		$output = '/dev/spidev0.0' . PHP_EOL . '/dev/spidev0.1' . PHP_EOL . '/dev/spidev1.0' . PHP_EOL . '/dev/spidev1.1';
 		$this->commandManager->shouldReceive('send')->with('ls /dev/spidev* | awk \'{ print $0 }\'', true)->andReturn($output);
 		$expected = ['/dev/spidev0.0', '/dev/spidev0.1', '/dev/spidev1.0', '/dev/spidev1.1'];

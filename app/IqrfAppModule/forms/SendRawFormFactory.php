@@ -91,12 +91,12 @@ class SendRawFormFactory {
 	 * Send raw DPA packet
 	 * @param Form $form IQRF App send RAW packet form
 	 */
-	public function onSuccess(Form $form) {
+	public function onSuccess(Form $form): void {
 		$values = $form->getValues();
 		$packet = $values['packet'];
-		$timeout = $values['timeoutEnabled'] ? $values['timeout'] : null;
+		$timeout = $values['timeoutEnabled'] === true ? $values['timeout'] : null;
 		if ($this->manager->validatePacket($packet)) {
-			if ($values['overwriteAddress']) {
+			if ($values['overwriteAddress'] === true) {
 				$nadr = $values['address'];
 				$this->manager->updateNadr($packet, $nadr);
 			}

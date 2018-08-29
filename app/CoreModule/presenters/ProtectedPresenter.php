@@ -39,7 +39,7 @@ abstract class ProtectedPresenter extends BasePresenter {
 	/**
 	 * After template render
 	 */
-	public function afterRender() {
+	public function afterRender(): void {
 		parent::afterRender();
 		try {
 			if ($this->versionManager->availableWebappUpdate()) {
@@ -55,7 +55,7 @@ abstract class ProtectedPresenter extends BasePresenter {
 	/**
 	 * Start up an protected presenter
 	 */
-	protected function startup() {
+	protected function startup(): void {
 		parent::startup();
 		if (!$this->user->isLoggedIn()) {
 			$this->redirect(':Core:Sign:in');

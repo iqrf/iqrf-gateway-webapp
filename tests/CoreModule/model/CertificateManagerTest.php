@@ -59,7 +59,7 @@ class CertificateManagerTest extends TestCase {
 	/**
 	 * Set up the test environment
 	 */
-	protected function setUp() {
+	protected function setUp(): void {
 		$this->manager = new CertificateManager();
 		$this->certificates['ca0'] = FileSystem::read($this->path . 'ca0.pem');
 		$this->certificates['ca1'] = FileSystem::read($this->path . 'ca1.pem');
@@ -73,35 +73,35 @@ class CertificateManagerTest extends TestCase {
 	/**
 	 * Test function to check issuer of certificate (invalid issuer)
 	 */
-	public function testCheckIssuerInvalid() {
+	public function testCheckIssuerInvalid(): void {
 		Assert::false($this->manager->checkIssuer($this->certificates['ca1'], $this->certificates['intermediate0']));
 	}
 
 	/**
 	 * Test function to check issuer of certificate (self-signed certificate)
 	 */
-	public function testCheckIssuerSelfSigned() {
+	public function testCheckIssuerSelfSigned(): void {
 		Assert::true($this->manager->checkIssuer($this->certificates['0'], $this->certificates['0']));
 	}
 
 	/**
 	 * Test function to check issuer of certificate (CA signed certificate)
 	 */
-	public function testCheckIssuer() {
+	public function testCheckIssuer(): void {
 		Assert::true($this->manager->checkIssuer($this->certificates['ca0'], $this->certificates['intermediate0']));
 	}
 
 	/**
 	 * Test function to check private key of certificate (fail)
 	 */
-	public function testCheckPrivateKeyFail() {
+	public function testCheckPrivateKeyFail(): void {
 		Assert::false($this->manager->checkPrivateKey($this->certificates['1'], $this->keys['0']));
 	}
 
 	/**
 	 * Test function to check private key of certificate (success)
 	 */
-	public function testCheckPrivateKeySuccess() {
+	public function testCheckPrivateKeySuccess(): void {
 		Assert::true($this->manager->checkPrivateKey($this->certificates['0'], $this->keys['0']));
 	}
 

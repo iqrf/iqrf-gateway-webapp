@@ -70,7 +70,7 @@ class GenericManagerTest extends TestCase {
 	/**
 	 * Set up the test environment
 	 */
-	protected function setUp() {
+	protected function setUp(): void {
 		$configPath = __DIR__ . '/../../data/configuration/';
 		$configTempPath = __DIR__ . '/../../temp/configuration/';
 		$schemaPath = __DIR__ . '/../../data/cfgSchemas/';
@@ -84,7 +84,7 @@ class GenericManagerTest extends TestCase {
 	/**
 	 * Test function to delete the instance of component
 	 */
-	public function testDelete() {
+	public function testDelete(): void {
 		$this->fileManagerTemp->write($this->fileName, $this->fileManager->read($this->fileName));
 		Assert::true($this->fileManagerTemp->exists($this->fileName));
 		$this->managerTemp->setFileName($this->fileName);
@@ -95,7 +95,7 @@ class GenericManagerTest extends TestCase {
 	/**
 	 * Test function to fix a required instance in the configuration
 	 */
-	public function testFixRequiredInterfaces() {
+	public function testFixRequiredInterfaces(): void {
 		$expected = $this->fileManager->read('iqrf__WebsocketMessaging');
 		$configuration = $expected;
 		$expected['RequiredInterfaces'][0]['target']['instance'] = 'WebsocketCppService';
@@ -107,7 +107,7 @@ class GenericManagerTest extends TestCase {
 	/**
 	 * Test function to generate a file name
 	 */
-	public function testGenerateFileName() {
+	public function testGenerateFileName(): void {
 		$this->manager->setComponent($this->component);
 		$array = $this->fileManager->read($this->fileName);
 		$this->manager->generateFileName($array);
@@ -117,7 +117,7 @@ class GenericManagerTest extends TestCase {
 	/**
 	 * Test function to get instance by it's property
 	 */
-	public function testGetInstanceByProperty() {
+	public function testGetInstanceByProperty(): void {
 		Assert::same($this->fileName, $this->manager->getInstanceByProperty('instance', 'MqttMessaging'));
 		Assert::same($this->fileName, $this->manager->getInstanceByProperty('BrokerAddr', 'tcp://127.0.0.1:1883'));
 	}
@@ -125,7 +125,7 @@ class GenericManagerTest extends TestCase {
 	/**
 	 * Test function to get component's instances
 	 */
-	public function testGetInstances() {
+	public function testGetInstances(): void {
 		$this->manager->setComponent($this->component);
 		$expected = ['iqrf__MqttMessaging',];
 		Assert::equal($expected, $this->manager->getInstanceFiles());
@@ -134,7 +134,7 @@ class GenericManagerTest extends TestCase {
 	/**
 	 * Test function to get avaiable messagings
 	 */
-	public function testGetMessagings() {
+	public function testGetMessagings(): void {
 		$expected = [
 			'config.mq.title' => ['MqMessaging',],
 			'config.mqtt.title' => ['MqttMessaging',],
@@ -150,7 +150,7 @@ class GenericManagerTest extends TestCase {
 	/**
 	 * Test function to load main configuration of daemon
 	 */
-	public function testLoad() {
+	public function testLoad(): void {
 		$this->manager->setFileName($this->fileName);
 		$expected = $this->fileManager->read($this->fileName);
 		Assert::equal($expected, $this->manager->load());
@@ -159,7 +159,7 @@ class GenericManagerTest extends TestCase {
 	/**
 	 * Test function to save main configuration of daemon
 	 */
-	public function testSave() {
+	public function testSave(): void {
 		$this->managerTemp->setComponent($this->component);
 		$array = [
 			'instance' => 'MqttMessaging',

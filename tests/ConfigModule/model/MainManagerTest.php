@@ -54,7 +54,7 @@ class MainManagerTest extends TestCase {
 	/**
 	 * Set up the test environment
 	 */
-	protected function setUp() {
+	protected function setUp(): void {
 		$configPath = __DIR__ . '/../../data/configuration/';
 		$configTempPath = __DIR__ . '/../../temp/configuration/';
 		$this->fileManager = new JsonFileManager($configPath);
@@ -64,7 +64,7 @@ class MainManagerTest extends TestCase {
 	/**
 	 * Test function to load main configuration of daemon
 	 */
-	public function testLoad() {
+	public function testLoad(): void {
 		$manager = new MainManager($this->fileManager);
 		$expected = $this->fileManager->read($this->fileName);
 		Assert::equal($expected, $manager->load());
@@ -73,7 +73,7 @@ class MainManagerTest extends TestCase {
 	/**
 	 * Test function to save main configuration of daemon
 	 */
-	public function testSave() {
+	public function testSave(): void {
 		$manager = new MainManager($this->fileManagerTemp);
 		$array = [
 			'applicationName' => 'IqrfGatewayDaemon',

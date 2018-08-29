@@ -25,6 +25,7 @@ use Nette\Application\BadRequestException;
 use Nette\Application\Helpers;
 use Nette\Application\IPresenter;
 use Nette\Application\Request;
+use Nette\Application\IResponse;
 use Nette\Application\Responses\CallbackResponse;
 use Nette\Application\Responses\ForwardResponse;
 use Tracy\ILogger;
@@ -54,7 +55,7 @@ class ErrorPresenter implements IPresenter {
 	 * @param Request $request
 	 * @return ForwardResponse|CallbackResponse
 	 */
-	public function run(Request $request) {
+	public function run(Request $request): IResponse {
 		$exception = $request->getParameter('exception');
 		if ($exception instanceof BadRequestException) {
 			list($module,, $sep) = Helpers::splitName($request->getPresenterName());

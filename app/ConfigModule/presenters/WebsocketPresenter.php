@@ -77,7 +77,7 @@ class WebsocketPresenter extends GenericPresenter {
 	/**
 	 * Render list of Websocket interfaces
 	 */
-	public function renderDefault() {
+	public function renderDefault(): void {
 		$this->configManager->setComponent($this->components['messaging']);
 		$this->template->messagings = $this->configManager->getInstances();
 		$this->configManager->setComponent($this->components['service']);
@@ -89,7 +89,7 @@ class WebsocketPresenter extends GenericPresenter {
 	 * Edit Websocket interface
 	 * @param int $id ID of websocket interface
 	 */
-	public function renderEdit(int $id) {
+	public function renderEdit(int $id): void {
 		$this->template->id = $id;
 	}
 
@@ -97,7 +97,7 @@ class WebsocketPresenter extends GenericPresenter {
 	 * Edit Websocket messaging
 	 * @param int $id ID of websocket messaging
 	 */
-	public function renderEditMessaging(int $id) {
+	public function renderEditMessaging(int $id): void {
 		$this->configManager->setComponent($this->components['messaging']);
 		$this->template->id = $id;
 	}
@@ -106,7 +106,7 @@ class WebsocketPresenter extends GenericPresenter {
 	 * Edit Websocket service
 	 * @param int $id ID of websocket service
 	 */
-	public function renderEditService(int $id) {
+	public function renderEditService(int $id): void {
 		$this->configManager->setComponent($this->components['service']);
 		$this->template->id = $id;
 	}
@@ -115,7 +115,7 @@ class WebsocketPresenter extends GenericPresenter {
 	 * Delete Websocket interface
 	 * @param int $id ID of websocket interface
 	 */
-	public function actionDelete(int $id) {
+	public function actionDelete(int $id): void {
 		$this->websocketManager->delete($id);
 		$this->redirect('Websocket:default');
 		$this->setView('default');
@@ -125,7 +125,7 @@ class WebsocketPresenter extends GenericPresenter {
 	 * Delete Websocket messaging
 	 * @param int $id ID of websocket messaging
 	 */
-	public function actionDeleteMessaging(int $id) {
+	public function actionDeleteMessaging(int $id): void {
 		$this->configManager->setComponent($this->components['messaging']);
 		$fileName = $this->configManager->getInstanceFiles()[$id];
 		$this->configManager->setFileName($fileName);
@@ -138,7 +138,7 @@ class WebsocketPresenter extends GenericPresenter {
 	 * Delete Websocket service
 	 * @param int $id ID of websocket service
 	 */
-	public function actionDeleteService(int $id) {
+	public function actionDeleteService(int $id): void {
 		$this->configManager->setComponent($this->components['service']);
 		$fileName = $this->configManager->getInstanceFiles()[$id];
 		$this->configManager->setFileName($fileName);

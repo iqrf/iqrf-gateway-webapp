@@ -53,7 +53,7 @@ class ZipArchiveManager {
 	 * @param string $path The path to the file to add
 	 * @param string $filename File name in the archive
 	 */
-	public function addFile(string $path, string $filename) {
+	public function addFile(string $path, string $filename): void {
 		$this->zip->addFile($path, $filename);
 	}
 
@@ -62,7 +62,7 @@ class ZipArchiveManager {
 	 * @param string $filename File name
 	 * @param string $content The content of text file
 	 */
-	public function addFileFromText(string $filename, string $content) {
+	public function addFileFromText(string $filename, string $content): void {
 		$this->zip->addFromString($filename, $content);
 	}
 
@@ -71,7 +71,7 @@ class ZipArchiveManager {
 	 * @param string $path The path to the folder to add
 	 * @param string $folderName Folder name in the archive
 	 */
-	public function addFolder(string $path, string $folderName) {
+	public function addFolder(string $path, string $folderName): void {
 		$this->zip->addEmptyDir($folderName);
 		$files = Finder::findFiles('*')->in($path);
 		foreach ($files as $file => $fileObject) {
@@ -88,7 +88,7 @@ class ZipArchiveManager {
 	 * @param string $filename File name
 	 * @param array $jsonData JSON data in an array
 	 */
-	public function addJsonFromArray(string $filename, array $jsonData) {
+	public function addJsonFromArray(string $filename, array $jsonData): void {
 		$json = Json::encode($jsonData, Json::PRETTY);
 		$this->zip->addFromString($filename, $json);
 	}
@@ -110,13 +110,14 @@ class ZipArchiveManager {
 			}
 			return true;
 		}
+		return false;
 	}
 
 	/**
 	 * Extract the archive contents
 	 * @param string $destinationPath Path to location where to extract the files
 	 */
-	public function extract(string $destinationPath) {
+	public function extract(string $destinationPath): void {
 		$this->zip->extractTo($destinationPath);
 	}
 
@@ -139,16 +140,16 @@ class ZipArchiveManager {
 	/**
 	 * Open file in the archive
 	 * @param string $fileName File name
-	 * @return mixed Content of file
+	 * @return string Content of file
 	 */
-	public function openFile(string $fileName) {
+	public function openFile(string $fileName): string {
 		return $this->zip->getFromName('/' . $fileName);
 	}
 
 	/**
 	 * Close the active archive
 	 */
-	public function close() {
+	public function close(): void {
 		$this->zip->close();
 	}
 

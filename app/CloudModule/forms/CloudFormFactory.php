@@ -77,7 +77,7 @@ class CloudFormFactory {
 	 * @param SubmitButton $button Form's sumbit button
 	 * @param bool $needRestart Is restart needed?
 	 */
-	public function save(SubmitButton $button, bool $needRestart = false) {
+	public function save(SubmitButton $button, bool $needRestart = false): void {
 		$values = $button->getForm()->getValues(true);
 		try {
 			$this->manager->createMqttInterface($values);

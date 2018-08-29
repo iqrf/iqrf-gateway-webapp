@@ -72,13 +72,13 @@ class InfoManager {
 	 */
 	public function getBoard(): string {
 		$deviceTree = $this->commandManager->send('cat /proc/device-tree/model', true);
-		if (!empty($deviceTree)) {
+		if ($deviceTree !== '') {
 			return $deviceTree;
 		}
 		$dmiBoardVendor = $this->commandManager->send('cat /sys/class/dmi/id/board_vendor', true);
 		$dmiBoardName = $this->commandManager->send('cat /sys/class/dmi/id/board_name', true);
 		$dmiBoardVersion = $this->commandManager->send('cat /sys/class/dmi/id/board_version', true);
-		if (!empty($dmiBoardName) && !empty($dmiBoardVendor) && !empty($dmiBoardVersion)) {
+		if ($dmiBoardName !== '' && $dmiBoardVendor !== '' && $dmiBoardVersion !== '') {
 			return $dmiBoardVendor . ' ' . $dmiBoardName . ' (' . $dmiBoardVersion . ')';
 		}
 		return 'UNKNOWN';
@@ -98,7 +98,7 @@ class InfoManager {
 			}
 			$cmd = 'ip a s ' . $interface . ' | grep inet | grep global | grep -v temporary | awk \'{print $2}\'';
 			$output = $this->commandManager->send($cmd, true);
-			if (!empty($output)) {
+			if ($output !== '') {
 				$addresses[$interface] = explode(PHP_EOL, $output);
 			}
 		}
@@ -134,7 +134,7 @@ class InfoManager {
 			return 'none';
 		}
 		$result = $this->commandManager->send($cmd);
-		if (!empty($result)) {
+		if ($result !== '') {
 			return $result;
 		}
 		return 'unknown';

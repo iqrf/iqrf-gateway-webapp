@@ -48,7 +48,7 @@ class LogPresenter extends ProtectedPresenter {
 	/**
 	 * Render the latest IQRF Gateway Daemon's log
 	 */
-	public function renderDefault() {
+	public function renderDefault(): void {
 		try {
 			$this->template->log = $this->manager->load();
 		} catch (IOException $e) {
@@ -59,7 +59,7 @@ class LogPresenter extends ProtectedPresenter {
 	/**
 	 * Download an archive with IQRF Gateway Daemon's logs action
 	 */
-	public function actionDownload() {
+	public function actionDownload(): void {
 		try {
 			$this->sendResponse($this->manager->download());
 		} catch (BadRequestException $e) {

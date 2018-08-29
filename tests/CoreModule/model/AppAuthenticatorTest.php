@@ -65,7 +65,7 @@ class AppAuthenticatorTest extends TestCase {
 	/**
 	 * Set up the test environment
 	 */
-	protected function setUp() {
+	protected function setUp(): void {
 		$connection = new Connection('sqlite::memory:');
 		$cacheStorage = new MemoryStorage();
 		$structure = new Structure($connection, $cacheStorage);
@@ -77,7 +77,7 @@ class AppAuthenticatorTest extends TestCase {
 	/**
 	 * Create database table
 	 */
-	private function createTable() {
+	private function createTable(): void {
 		$sql = 'CREATE TABLE `users` (
 	`id`		INTEGER PRIMARY KEY AUTOINCREMENT,
 	`username`	TEXT NOT NULL UNIQUE,
@@ -92,7 +92,7 @@ class AppAuthenticatorTest extends TestCase {
 	/**
 	 * Test function to authenticate the user (incorrect username)
 	 */
-	public function testAuthenticateBadUsername() {
+	public function testAuthenticateBadUsername(): void {
 		Assert::exception(function() {
 			$credentials = ['iqrf', 'iqrf'];
 			$this->authenticator->authenticate($credentials);
@@ -102,7 +102,7 @@ class AppAuthenticatorTest extends TestCase {
 	/**
 	 * Test function to authenticate the user (incorrect password)
 	 */
-	public function testAuthenticateBadPassword() {
+	public function testAuthenticateBadPassword(): void {
 		Assert::exception(function() {
 			$credentials = ['admin', 'admin'];
 			$this->authenticator->authenticate($credentials);
@@ -112,7 +112,7 @@ class AppAuthenticatorTest extends TestCase {
 	/**
 	 * Test function to authenticate the user (correct username and password)
 	 */
-	public function testAuthenticateSuccess() {
+	public function testAuthenticateSuccess(): void {
 		$data = ['username' => 'admin', 'language' => 'en',];
 		$expected = new Identity(1, 'power', $data);
 		$credentials = ['admin', 'iqrf'];

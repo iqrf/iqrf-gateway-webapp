@@ -87,7 +87,7 @@ class DiscoveryFormFactory {
 	 * @param Form $form IQMESH discovery form
 	 * @param ArrayHash $values Values from IQMESH discovery form
 	 */
-	public function onSuccess(Form $form, ArrayHash $values) {
+	public function onSuccess(Form $form, ArrayHash $values): void {
 		try {
 			$this->manager->discovery($values['txPower'], dechex($values['maxNode']));
 		} catch (\Exception $e) {

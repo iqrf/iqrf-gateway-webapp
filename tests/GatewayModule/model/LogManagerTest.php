@@ -56,7 +56,7 @@ class LogManagerTest extends TestCase {
 	/**
 	 * Set up the test environment
 	 */
-	protected function setUp() {
+	protected function setUp(): void {
 		$this->logDir = realpath(__DIR__ . '/../../data/logs/');
 		$this->fileManager = new FileManager($this->logDir);
 		$this->manager = new LogManager($this->logDir);
@@ -65,7 +65,7 @@ class LogManagerTest extends TestCase {
 	/**
 	 * Test function to get IQRF Gateway Daemon's log files
 	 */
-	public function testGetLogFiles() {
+	public function testGetLogFiles(): void {
 		$expected = [
 			'2018-08-13-13-37-834' => $this->logDir . '/2018-08-13-13-37-834-iqrf-gateway-daemon.log',
 			'2018-08-13-13-37-496' => $this->logDir . '/2018-08-13-13-37-496-iqrf-gateway-daemon.log',
@@ -76,7 +76,7 @@ class LogManagerTest extends TestCase {
 	/**
 	 * Test function to load the latest IQRF Gateway Daemon's log
 	 */
-	public function testLoad() {
+	public function testLoad(): void {
 		$fileName = '2018-08-13-13-37-834-iqrf-gateway-daemon.log';
 		$expected = $this->fileManager->read($fileName);
 		Assert::same($expected, $this->manager->load());
@@ -85,7 +85,7 @@ class LogManagerTest extends TestCase {
 	/**
 	 * Test function to download a ZIP archive with IQRF Gateway Daemon's logs
 	 */
-	public function testDownload() {
+	public function testDownload(): void {
 		$actual = $this->manager->download();
 		$path = '/tmp/iqrf-daemon-gateway-logs.zip';
 		$fileName = 'iqrf-gateway-daemon-logs' . (new \DateTime())->format('c') . '.zip';

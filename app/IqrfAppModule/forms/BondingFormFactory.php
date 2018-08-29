@@ -87,9 +87,9 @@ class BondingFormFactory {
 	 * Bond new node
 	 * @param SubmitButton $button Submit button for bonding
 	 */
-	public function bondNode(SubmitButton $button) {
+	public function bondNode(SubmitButton $button): void {
 		$values = $button->getForm()->getValues();
-		$address = $values['autoAddress'] ? '00' : $values['address'];
+		$address = $values['autoAddress'] === true ? '00' : $values['address'];
 		try {
 			$this->manager->bondNode($address);
 		} catch (\Exception $e) {
@@ -108,7 +108,7 @@ class BondingFormFactory {
 	 * Clear all bonds
 	 * @param SubmitButton $button Submit button for cleaning all bonds
 	 */
-	public function clearAllBonds(SubmitButton $button) {
+	public function clearAllBonds(SubmitButton $button): void {
 		try {
 			$this->manager->clearAllBonds();
 		} catch (\Exception $e) {
@@ -127,7 +127,7 @@ class BondingFormFactory {
 	 * Rebond node
 	 * @param SubmitButton $button Submit button for rebonding
 	 */
-	public function rebondNode(SubmitButton $button) {
+	public function rebondNode(SubmitButton $button): void {
 		$values = $button->getForm()->getValues();
 		try {
 			$this->manager->rebondNode($values['address']);
@@ -147,7 +147,7 @@ class BondingFormFactory {
 	 * Remove node
 	 * @param SubmitButton $button Submit button for removing node
 	 */
-	public function removeNode(SubmitButton $button) {
+	public function removeNode(SubmitButton $button): void {
 		$values = $button->getForm()->getValues();
 		try {
 			$this->manager->removeNode($values['address']);

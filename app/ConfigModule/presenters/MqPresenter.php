@@ -47,7 +47,7 @@ class MqPresenter extends GenericPresenter {
 	/**
 	 * Render list of MQ interfaces
 	 */
-	public function renderDefault() {
+	public function renderDefault(): void {
 		$this->template->instances = $this->configManager->getInstances();
 	}
 
@@ -55,7 +55,7 @@ class MqPresenter extends GenericPresenter {
 	 * Edit MQ interface
 	 * @param int $id ID of MQ interface
 	 */
-	public function renderEdit(int $id) {
+	public function renderEdit(int $id): void {
 		$this->template->id = $id;
 	}
 
@@ -63,7 +63,7 @@ class MqPresenter extends GenericPresenter {
 	 * Delete MQ interface
 	 * @param int $id ID of MQ interface
 	 */
-	public function actionDelete(int $id) {
+	public function actionDelete(int $id): void {
 		$fileName = $this->configManager->getInstanceFiles()[$id];
 		$this->configManager->setFileName($fileName);
 		$this->configManager->delete();

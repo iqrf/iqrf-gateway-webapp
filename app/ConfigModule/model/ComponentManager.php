@@ -52,7 +52,7 @@ class ComponentManager {
 	 * Add new component
 	 * @param array $array Component's settings
 	 */
-	public function add(array $array) {
+	public function add(array $array): void {
 		$id = count($this->loadComponents());
 		$this->save($array, $id);
 	}
@@ -61,7 +61,7 @@ class ComponentManager {
 	 * Delete a component
 	 * @param int $id Component ID
 	 */
-	public function delete(int $id) {
+	public function delete(int $id): void {
 		$json = $this->fileManager->read($this->fileName);
 		unset($json['components'][$id]);
 		$json['components'] = array_values($json['components']);
@@ -95,7 +95,7 @@ class ComponentManager {
 	 * @param array $components Components settings
 	 * @param int $id Component ID
 	 */
-	public function save(array $components, int $id) {
+	public function save(array $components, int $id): void {
 		$json = $this->fileManager->read($this->fileName);
 		$json['components'][$id] = $components;
 		$this->fileManager->write($this->fileName, $json);

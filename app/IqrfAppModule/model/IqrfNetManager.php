@@ -201,7 +201,7 @@ class IqrfNetManager {
 	 */
 	public function setRfChannel(int $channel, string $type): array {
 		$types = ['11', '12', '06', '07',];
-		if (!in_array($type, $types)) {
+		if (!in_array($type, $types, true)) {
 			throw new IqrfException\InvalidRfChannelTypeException();
 		}
 		$rfChannel = Strings::padLeft(dechex($channel), 2, '0');

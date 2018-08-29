@@ -82,7 +82,7 @@ class MigrationFormFactory {
 	 * Import a configuration
 	 * @param Form $form Configuration migration form
 	 */
-	public function import(Form $form) {
+	public function import(Form $form): void {
 		try {
 			$this->manager->upload($form->getValues(true));
 			$this->presenter->flashMessage('config.migration.messages.importedConfig', 'success');

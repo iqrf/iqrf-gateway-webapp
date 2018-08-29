@@ -55,7 +55,7 @@ class MigrationPresenter extends ProtectedPresenter {
 	/**
 	 * Export a configuration action
 	 */
-	public function actionExport() {
+	public function actionExport(): void {
 		try {
 			$this->sendResponse($this->migrationManager->download());
 		} catch (BadRequestException $e) {

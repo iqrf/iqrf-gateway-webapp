@@ -91,7 +91,7 @@ class DiagnosticsManager {
 	/**
 	 * Add basic information about the gateway
 	 */
-	public function addInfo() {
+	public function addInfo(): void {
 		$array = [];
 		$array['board'] = $this->infoManager->getBoard();
 		$array['daemonVersion'] = $this->infoManager->getDaemonVersion();
@@ -112,21 +112,21 @@ class DiagnosticsManager {
 	/**
 	 * Add configuration of IQRF Gateway Daemon
 	 */
-	public function addConfiguration() {
+	public function addConfiguration(): void {
 		$this->zipManager->addFolder($this->confDir, 'configuration');
 	}
 
 	/**
 	 * Add log of IQRF Gateway daemon
 	 */
-	public function addDaemonLog() {
+	public function addDaemonLog(): void {
 		$this->zipManager->addFolder($this->logDir, 'logs/iqrf-gateway-daemon');
 	}
 
 	/**
 	 * Add information from dmesg commmand
 	 */
-	public function addDmesg() {
+	public function addDmesg(): void {
 		$output = $this->commandManager->send('dmesg', true);
 		$this->zipManager->addFileFromText('dmesg.log', $output);
 	}
@@ -134,7 +134,7 @@ class DiagnosticsManager {
 	/**
 	 * Add information about services
 	 */
-	public function addServices() {
+	public function addServices(): void {
 		if ($this->commandManager->commandExist('systemctl')) {
 			$output = $this->commandManager->send('systemctl list-units --type=service', true);
 			$this->zipManager->addFileFromText('services.log', $output);
@@ -144,9 +144,9 @@ class DiagnosticsManager {
 	/**
 	 * Add information about available SPI interfaces
 	 */
-	public function addSpi() {
+	public function addSpi(): void {
 		$output = $this->commandManager->send('ls /dev/spidev*', true);
-		if (!empty($output)) {
+		if ($output !== '') {
 			$this->zipManager->addFileFromText('spidev.log', $output);
 		}
 	}
@@ -154,10 +154,10 @@ class DiagnosticsManager {
 	/**
 	 * Add information from lsusb about USB gateways and programmers
 	 */
-	public function addUsb() {
+	public function addUsb(): void {
 		if ($this->commandManager->commandExist('lsusb')) {
 			$output = $this->commandManager->send('lsusb -v -d 1de6:', true);
-			if (!empty($output)) {
+			if ($output !== '') {
 				$this->zipManager->addFileFromText('lsusb.log', $output);
 			}
 		}
@@ -166,7 +166,7 @@ class DiagnosticsManager {
 	/**
 	 * Add log of IQRF Gateway daemon webapp
 	 */
-	public function addWebappLog() {
+	public function addWebappLog(): void {
 		$logDir = __DIR__ . '/../../../log/';
 		$this->zipManager->addFolder($logDir, 'logs/iqrf-gateway-webapp');
 	}

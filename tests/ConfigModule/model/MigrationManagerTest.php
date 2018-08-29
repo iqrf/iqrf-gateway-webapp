@@ -82,7 +82,7 @@ class MigrationManagerTest extends TestCase {
 	private $schemaCorruptedPath = __DIR__ . '/../../temp/cfgSchemas/';
 
 	/**
-	 * @1var string Path to a temporary ZIP archive with IQRF Gateway Daemon's configuration
+	 * @var string Path to a temporary ZIP archive with IQRF Gateway Daemon's configuration
 	 */
 	private $tempPath = __DIR__ . '/../../temp/iqrf-gateway-configuration.zip';
 
@@ -97,7 +97,7 @@ class MigrationManagerTest extends TestCase {
 	/**
 	 * Set up the test environment
 	 */
-	protected function setUp() {
+	protected function setUp(): void {
 		\Tester\Environment::lock('migration', __DIR__ . '/../../temp/');
 		$this->copyFiles();
 		$this->fileManager = new FileManager($this->configPath);
@@ -111,14 +111,14 @@ class MigrationManagerTest extends TestCase {
 	/**
 	 * Cleanup the test environment
 	 */
-	protected function tearDown() {
+	protected function tearDown(): void {
 		\Mockery::close();
 	}
 
 	/**
 	 * Copy files for testing
 	 */
-	private function copyFiles() {
+	private function copyFiles(): void {
 		FileSystem::copy($this->schemaPath, $this->schemaCorruptedPath);
 		FileSystem::copy($this->configPath, $this->configTempPath);
 		$zipSource = __DIR__ . '/../../data/iqrf-gateway-configuration.zip';
@@ -161,7 +161,7 @@ class MigrationManagerTest extends TestCase {
 	/**
 	 * Test function to download IQRF Gateway Daemon's configuration in a ZIP archive
 	 */
-	public function testDownload() {
+	public function testDownload(): void {
 		$timestamp = (new \DateTime())->format('c');
 		$actual = $this->manager->download();
 		$fileName = 'iqrf-gateway-configuration_' . $timestamp . '.zip';
@@ -180,7 +180,7 @@ class MigrationManagerTest extends TestCase {
 	/**
 	 * Test function to upload IQRF Gateway Daemon's configuration (incorrect MIME type)
 	 */
-	public function testUploadBadMime() {
+	public function testUploadBadMime(): void {
 		$filePath = $this->configTempPath . '/config.json';
 		$file = [
 			'name' => 'config.json',
@@ -189,7 +189,7 @@ class MigrationManagerTest extends TestCase {
 			'error' => UPLOAD_ERR_OK,
 			'size' => filesize($filePath),
 		];
-		$values['configuration'] = new FileUpload($file);
+		$values = ['configuration' => new FileUpload($file)];
 		Assert::exception(function () use ($values) {
 			$this->manager->upload($values);
 		}, InvalidConfigurationFormatException::class);
@@ -198,7 +198,7 @@ class MigrationManagerTest extends TestCase {
 	/**
 	 * Test function to upload IQRF Gateway Daemon's configuration (success)
 	 */
-	public function testUploadSuccess() {
+	public function testUploadSuccess(): void {
 		$this->manager->upload($this->mockUploadedArchive());
 		$expectedFiles = $this->createList($this->configPath);
 		sleep(2);
@@ -209,7 +209,7 @@ class MigrationManagerTest extends TestCase {
 	/**
 	 * Test function to validate IQRF Gateway Daemon's configuration (missing JSON schema)
 	 */
-	public function testValidateMissingJsonSchema() {
+	public function testValidateMissingJsonSchema(): void {
 		FileSystem::delete($this->schemaCorruptedPath . 'schema__iqrf__MqttMessaging.json');
 		$path = __DIR__ . '/../data/iqrf-gateway-configuration.zip';
 		$zipManager = new ZipArchiveManager($path, \ZipArchive::CREATE);
@@ -220,7 +220,7 @@ class MigrationManagerTest extends TestCase {
 	/**
 	 * Test function to validate IQRF Gateway Daemon's configuration (success)
 	 */
-	public function testValidateSuccess() {
+	public function testValidateSuccess(): void {
 		$path = __DIR__ . '/../data/iqrf-gateway-configuration.zip';
 		$zipManager = new ZipArchiveManager($path, \ZipArchive::CREATE);
 		Assert::true($this->manager->validate($zipManager));

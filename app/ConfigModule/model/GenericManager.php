@@ -68,7 +68,7 @@ class GenericManager {
 	/**
 	 * Delete a configuration
 	 */
-	public function delete() {
+	public function delete(): void {
 		$this->fileManager->delete($this->fileName);
 	}
 
@@ -86,7 +86,7 @@ class GenericManager {
 	 * Save configuration
 	 * @param array $array Settings
 	 */
-	public function save(array $array) {
+	public function save(array $array): void {
 		if (!isset($this->fileName)) {
 			$this->generateFileName($array);
 		}
@@ -100,7 +100,7 @@ class GenericManager {
 	 * Set component type
 	 * @param string $component Component name
 	 */
-	public function setComponent(string $component) {
+	public function setComponent(string $component): void {
 		$this->component = $component;
 		$this->schemaManager->setSchemaFromComponent($component);
 	}
@@ -117,7 +117,7 @@ class GenericManager {
 	 * Set file name
 	 * @param string $fileName File name (without .json)
 	 */
-	public function setFileName(string $fileName) {
+	public function setFileName(string $fileName): void {
 		$this->fileName = $fileName;
 	}
 
@@ -188,7 +188,7 @@ class GenericManager {
 	 * @param mixed $value Property value
 	 * @return string|null Instance file name
 	 */
-	public function getInstanceByProperty(string $type, $value) {
+	public function getInstanceByProperty(string $type, $value): ?string {
 		$dir = $this->fileManager->getDirectory();
 		foreach (Finder::findFiles('*.json')->exclude('config.json')->from($dir) as $file) {
 			$fileName = Strings::replace($file->getRealPath(), ['~^' . realpath($dir) . '/~', '/.json$/'], '');
@@ -203,7 +203,7 @@ class GenericManager {
 	 * Fix a required interfaces in the configuration
 	 * @param array $configuration Configuration to fix
 	 */
-	public function fixRequiredInterfaces(array &$configuration) {
+	public function fixRequiredInterfaces(array &$configuration): void {
 		if (!array_key_exists('RequiredInterfaces', $configuration)) {
 			return;
 		}
@@ -224,7 +224,7 @@ class GenericManager {
 	 * Generate a configuration file name
 	 * @param array $array Configuration from form
 	 */
-	public function generateFileName(array $array) {
+	public function generateFileName(array $array): void {
 		$prefix = explode('::', $this->component)[0];
 		$this->fileName = $prefix . '__' . $array['instance'];
 	}

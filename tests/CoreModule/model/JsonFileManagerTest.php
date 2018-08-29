@@ -65,7 +65,7 @@ class JsonFileManagerTest extends TestCase {
 	/**
 	 * Set up the test environment
 	 */
-	protected function setUp() {
+	protected function setUp(): void {
 		$this->manager = new JsonFileManager($this->path);
 		$this->managerTest = new JsonFileManager($this->pathTest);
 	}
@@ -73,14 +73,14 @@ class JsonFileManagerTest extends TestCase {
 	/**
 	 * Test function to get directory with files
 	 */
-	public function testGetDirectory() {
+	public function testGetDirectory(): void {
 		Assert::same($this->path, $this->manager->getDirectory());
 	}
 
 	/**
 	 * Test function to delete JSON file
 	 */
-	public function testDelete() {
+	public function testDelete(): void {
 		$fileName = 'test-delete';
 		$this->managerTest->write($fileName, $this->manager->read($this->fileName));
 		Assert::true($this->managerTest->exists($fileName));
@@ -91,21 +91,21 @@ class JsonFileManagerTest extends TestCase {
 	/**
 	 * Test function to check if JSON file exists (file is not exist)
 	 */
-	public function testExistsFail() {
+	public function testExistsFail(): void {
 		Assert::false($this->manager->exists('nonsense'));
 	}
 
 	/**
 	 * Test function to check if JSON file exists (file is exist)
 	 */
-	public function testExistsSucecss() {
+	public function testExistsSucecss(): void {
 		Assert::true($this->manager->exists($this->fileName));
 	}
 
 	/**
 	 * Test function to read JSON file
 	 */
-	public function testRead() {
+	public function testRead(): void {
 		$text = FileSystem::read($this->path . $this->fileName . '.json');
 		$expected = Json::decode($text, Json::FORCE_ARRAY);
 		Assert::equal($expected, $this->manager->read($this->fileName));
@@ -114,7 +114,7 @@ class JsonFileManagerTest extends TestCase {
 	/**
 	 * Test function to write JSON file
 	 */
-	public function testWrite() {
+	public function testWrite(): void {
 		$fileName = 'config-test';
 		$expected = $this->manager->read($this->fileName);
 		$this->managerTest->write($fileName, $expected);

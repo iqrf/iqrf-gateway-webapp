@@ -55,7 +55,7 @@ class AzureManager implements IManager {
 	 * Create MQTT interface
 	 * @param array $values Values from form
 	 */
-	public function createMqttInterface(array $values) {
+	public function createMqttInterface(array $values): void {
 		$connectionString = $values['ConnectionString'];
 		$this->checkConnectionString($connectionString);
 		$data = $this->parseConnectionString($connectionString);
@@ -94,7 +94,7 @@ class AzureManager implements IManager {
 	 * @param string $connectionString MS Azure IoT Hub Connection String
 	 * @throws InvalidConnectionStringException
 	 */
-	public function checkConnectionString(string $connectionString) {
+	public function checkConnectionString(string $connectionString): void {
 		$data = $this->parseConnectionString($connectionString);
 		if (!isset($data['DeviceId']) ||
 				!isset($data['HostName']) ||
@@ -122,7 +122,7 @@ class AzureManager implements IManager {
 		$signature = urlencode(base64_encode($hmac));
 		$token = 'SharedAccessSignature sr=' . $encodedResourceUri . '&sig='
 				. $signature . '&se=' . $ttl;
-		if (!empty($policyName)) {
+		if (!is_null($policyName)) {
 			$token .= '$skn=' . $policyName;
 		}
 		return $token;

@@ -55,7 +55,7 @@ class FileManager {
 	 * Delete a file
 	 * @param string $fileName File name
 	 */
-	public function delete(string $fileName) {
+	public function delete(string $fileName): void {
 		FileSystem::delete($this->directory . '/' . $fileName);
 	}
 
@@ -82,7 +82,7 @@ class FileManager {
 	 * @param string $fileName File name
 	 * @param string $content File content
 	 */
-	public function write(string $fileName, $content) {
+	public function write(string $fileName, $content): void {
 		$fileName = 'nette.safe://' . $this->directory . '/' . $fileName;
 		FileSystem::write($fileName, $content, null);
 	}

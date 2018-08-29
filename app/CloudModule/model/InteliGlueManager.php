@@ -59,7 +59,7 @@ class InteliGlueManager implements IManager {
 	 * Create MQTT interface
 	 * @param array $values Values from form
 	 */
-	public function createMqttInterface(array $values) {
+	public function createMqttInterface(array $values): void {
 		$this->downloadCaCertificate();
 		$this->configManager->setComponent('iqrf::MqttMessaging');
 		$this->configManager->setFileName($this->interfaceName);
@@ -92,7 +92,7 @@ class InteliGlueManager implements IManager {
 	/**
 	 * Download root CA certificate
 	 */
-	public function downloadCaCertificate() {
+	public function downloadCaCertificate(): void {
 		$client = new Client();
 		$caCertUrl = 'https://inteliments.com/static/docs/inteliglue/downloads/DST_Root_CA_X3.pem.txt';
 		$caCert = $client->request('GET', $caCertUrl)->getBody();

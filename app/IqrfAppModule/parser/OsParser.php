@@ -63,7 +63,7 @@ class OsParser implements IParser {
 		$data['OsVersion'] = (hexdec($packetArray[12]) >> 4) . '.0' . (hexdec($packetArray[12]) & 0x0f) . 'D';
 		$trType = hexdec($packetArray[13]) >> 4;
 		if (array_key_exists($trType, $trTypes)) {
-			$data['TrType'] = ((hexdec($packetArray[11]) & 0x80) ? 'DCTR-' : 'TR-') . $trTypes[$trType];
+			$data['TrType'] = ((hexdec($packetArray[11]) & 0x80) !== 0 ? 'DCTR-' : 'TR-') . $trTypes[$trType];
 		} else {
 			$data['TrType'] = 'UNKNOWN';
 		}

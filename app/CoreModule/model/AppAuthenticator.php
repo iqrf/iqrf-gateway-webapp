@@ -53,7 +53,7 @@ class AppAuthenticator implements IAuthenticator {
 	 * Create the database table
 	 * @param Context $database Database contaxt
 	 */
-	private function createTable(Context $database) {
+	private function createTable(Context $database): void {
 		$sql = 'CREATE TABLE IF NOT EXISTS `users` (';
 		$sql .= '`id`		INTEGER PRIMARY KEY AUTOINCREMENT,';
 		$sql .= '`username`	TEXT NOT NULL UNIQUE,';

@@ -57,7 +57,7 @@ class InfoPresenter extends ProtectedPresenter {
 	/**
 	 * Render default page
 	 */
-	public function renderDefault() {
+	public function renderDefault(): void {
 		$this->template->ipAddresses = $this->infoManager->getIpAddresses();
 		$this->template->macAddresses = $this->infoManager->getMacAddresses();
 		$this->template->board = $this->infoManager->getBoard();
@@ -78,7 +78,7 @@ class InfoPresenter extends ProtectedPresenter {
 	/**
 	 * Download action
 	 */
-	public function actionDownload() {
+	public function actionDownload(): void {
 		try {
 			$this->sendResponse($this->diagnosticsManager->download());
 		} catch (BadRequestException $e) {

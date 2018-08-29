@@ -55,7 +55,7 @@ class SchedulerPresenter extends ProtectedPresenter {
 	/**
 	 * Catch exceptions
 	 */
-	public function actionDefault() {
+	public function actionDefault(): void {
 		try {
 			$this->configManager->getTasks();
 		} catch (\Exception $e) {
@@ -74,7 +74,7 @@ class SchedulerPresenter extends ProtectedPresenter {
 	/**
 	 * Render list tasks in scheduler
 	 */
-	public function renderDefault() {
+	public function renderDefault(): void {
 		$this->template->tasks = $this->configManager->getTasks();
 	}
 
@@ -82,7 +82,7 @@ class SchedulerPresenter extends ProtectedPresenter {
 	 * Edit task in scheduler
 	 * @param int $id ID of task in Scheduler
 	 */
-	public function renderEdit(int $id) {
+	public function renderEdit(int $id): void {
 		$this->template->id = $id;
 	}
 
@@ -90,7 +90,7 @@ class SchedulerPresenter extends ProtectedPresenter {
 	 * Add new task to scheduler
 	 * @param string $type
 	 */
-	public function actionAdd(string $type) {
+	public function actionAdd(string $type): void {
 		$this->configManager->add($type);
 		$this->redirect('Scheduler:edit', ['id' => $this->configManager->getLastId()]);
 		$this->setView('default');
@@ -100,7 +100,7 @@ class SchedulerPresenter extends ProtectedPresenter {
 	 * Delete task in scheduler
 	 * @param int $id ID of task in Scheduler
 	 */
-	public function actionDelete(int $id) {
+	public function actionDelete(int $id): void {
 		$this->configManager->delete($id);
 		$this->redirect('Scheduler:default');
 		$this->setView('default');

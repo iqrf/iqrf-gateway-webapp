@@ -64,7 +64,7 @@ class FileManagerTest extends TestCase {
 	/**
 	 * Set up the test environment
 	 */
-	protected function setUp() {
+	protected function setUp(): void {
 		$this->manager = new FileManager($this->path);
 		$this->managerTest = new FileManager($this->pathTest);
 	}
@@ -72,14 +72,14 @@ class FileManagerTest extends TestCase {
 	/**
 	 * Test function to get directory with files
 	 */
-	public function testGetDirectory() {
+	public function testGetDirectory(): void {
 		Assert::same($this->path, $this->manager->getDirectory());
 	}
 
 	/**
 	 * Test function to delete file
 	 */
-	public function testDelete() {
+	public function testDelete(): void {
 		$fileName = 'test-delete.json';
 		$this->managerTest->write($fileName, $this->manager->read($this->fileName));
 		Assert::true($this->managerTest->exists($fileName));
@@ -90,21 +90,21 @@ class FileManagerTest extends TestCase {
 	/**
 	 * Test function to check if file exists (file is not exist)
 	 */
-	public function testExistsFail() {
+	public function testExistsFail(): void {
 		Assert::false($this->manager->exists('nonsense'));
 	}
 
 	/**
 	 * Test function to check if file exists (file is exist)
 	 */
-	public function testExistsSucecss() {
+	public function testExistsSucecss(): void {
 		Assert::true($this->manager->exists($this->fileName));
 	}
 
 	/**
 	 * Test function to read text file
 	 */
-	public function testRead() {
+	public function testRead(): void {
 		$expected = FileSystem::read($this->path . $this->fileName);
 		Assert::equal($expected, $this->manager->read($this->fileName));
 	}
@@ -112,7 +112,7 @@ class FileManagerTest extends TestCase {
 	/**
 	 * Test function to write text file
 	 */
-	public function testWrite() {
+	public function testWrite(): void {
 		$fileName = 'config-test.json';
 		$expected = $this->manager->read($this->fileName);
 		$this->managerTest->write($fileName, $expected);

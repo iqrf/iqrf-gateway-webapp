@@ -136,7 +136,7 @@ class IqrfAppManager {
 			$loop->run();
 		}
 		$response = strval($resolved);
-		if (empty($response)) {
+		if ($response === '') {
 			throw new IqrfException\EmptyResponseException();
 		}
 		return $response;
@@ -211,7 +211,7 @@ class IqrfAppManager {
 	 * @param string $packet DPA packet to modify
 	 * @param string $nadr New NADR
 	 */
-	public function updateNadr(string &$packet, string $nadr) {
+	public function updateNadr(string &$packet, string $nadr): void {
 		$this->fixPacket($packet);
 		$data = explode('.', $packet);
 		$data[0] = Strings::padLeft($nadr, 2, '0');
@@ -222,7 +222,7 @@ class IqrfAppManager {
 	 * Fix DPA packet
 	 * @param string $packet DPA packet to fix
 	 */
-	public function fixPacket(string &$packet) {
+	public function fixPacket(string &$packet): void {
 		$data = explode('.', trim($packet, '.'));
 		$nadrLo = $data[0];
 		$nadrHi = $data[1];
@@ -239,16 +239,16 @@ class IqrfAppManager {
 	 * @return array|null Parsed response in array
 	 * @throws IqrfException\EmptyResponseException
 	 */
-	public function parseResponse(array $json) {
+	public function parseResponse(array $json): ?array {
 		$this->checkStatus($json);
 		$packet = $this->getPacket($json, 'response');
 		if (array_key_exists('request', $json)) {
 			$nadr = explode('.', $this->getPacket($json, 'request'))[0];
-			if (empty($packet) && $nadr === 'ff') {
+			if ($packet !== '' && $nadr === 'ff') {
 				return null;
 			}
 		}
-		if (empty($packet)) {
+		if ($packet === '') {
 			throw new IqrfException\EmptyResponseException();
 		}
 		foreach ($this->parsers as $parser) {
@@ -257,6 +257,7 @@ class IqrfAppManager {
 				return $parsedData;
 			}
 		}
+		return null;
 	}
 
 	/**
@@ -264,7 +265,7 @@ class IqrfAppManager {
 	 * @param array $json JSON DPA request and response
 	 * @throws IqrfException\UserErrorException
 	 */
-	public function checkStatus(array $json) {
+	public function checkStatus(array $json): void {
 		$status = Json::decode($json['response'], Json::FORCE_ARRAY)['data']['status'];
 		if ($status === 0) {
 			return;

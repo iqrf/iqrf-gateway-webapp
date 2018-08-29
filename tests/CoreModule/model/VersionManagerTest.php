@@ -70,7 +70,7 @@ class VersionManagerTest extends TestCase {
 	/**
 	 * Set up the test environment
 	 */
-	protected function setUp() {
+	protected function setUp(): void {
 		$this->commandManager = new CommandManager(false);
 		$this->commandManagerMocked = \Mockery::mock(CommandManager::class);
 		$this->cacheStorage = new DevNullStorage();
@@ -81,14 +81,14 @@ class VersionManagerTest extends TestCase {
 	/**
 	 * Cleanup the test environment
 	 */
-	protected function tearDown() {
+	protected function tearDown(): void {
 		\Mockery::close();
 	}
 
 	/**
 	 * Test function to check if an update is available for the webapp
 	 */
-	public function testAvailableWebappUpdateNo() {
+	public function testAvailableWebappUpdateNo(): void {
 		$this->managerMocked->shouldReceive('getInstalledWebapp')->with(false)->andReturn($this->currentVersion);
 		$this->managerMocked->shouldReceive('getCurrentWebapp')->with()->andReturn($this->currentVersion);
 		Assert::false($this->managerMocked->availableWebappUpdate());
@@ -97,7 +97,7 @@ class VersionManagerTest extends TestCase {
 	/**
 	 * Test function to check if an update is available for the webapp
 	 */
-	public function testAvailableWebappUpdateYes() {
+	public function testAvailableWebappUpdateYes(): void {
 		$this->managerMocked->shouldReceive('getInstalledWebapp')->with(false)->andReturn('1.1.4');
 		$this->managerMocked->shouldReceive('getCurrentWebapp')->with()->andReturn($this->currentVersion);
 		Assert::true($this->managerMocked->availableWebappUpdate());
@@ -106,14 +106,14 @@ class VersionManagerTest extends TestCase {
 	/**
 	 * Test function to get the current stable version of the webapp
 	 */
-	public function testGetCurrentWebapp() {
+	public function testGetCurrentWebapp(): void {
 		Assert::same($this->currentVersion, $this->manager->getCurrentWebapp());
 	}
 
 	/**
 	 * Test function to get version of the webapp (with git)
 	 */
-	public function testGetInstalledWebappWithGit() {
+	public function testGetInstalledWebappWithGit(): void {
 		$expected = 'v' . $this->currentVersion . ' (master - 733d45340cbb2565fd068ca3257ad39a5e46f963)';
 		$gitBranches = '* master                 733d45340cbb2565fd068ca3257ad39a5e46f963 Add a notification to an update webapp to newer stable version';
 		$this->commandManagerMocked->shouldReceive('commandExist')->with('git')->andReturn(true);
@@ -125,7 +125,7 @@ class VersionManagerTest extends TestCase {
 	/**
 	 * Test function to get version of the webapp (without git)
 	 */
-	public function testGetInstalledWebappWithoutGit() {
+	public function testGetInstalledWebappWithoutGit(): void {
 		$expected = 'v' . $this->currentVersion;
 		$this->commandManagerMocked->shouldReceive('commandExist')->with('git')->andReturn(false);
 		$manager = new VersionManager($this->commandManagerMocked, $this->cacheStorage);

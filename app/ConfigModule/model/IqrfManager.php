@@ -51,7 +51,7 @@ class IqrfManager {
 		$cdc = [];
 		$ls = $this->commandManager->send("ls /dev/ttyACM* | awk '{ print $0 }'", true);
 		foreach (explode(PHP_EOL, $ls) as $path) {
-			if (!empty($path)) {
+			if ($path !== '') {
 				array_push($cdc, $path);
 			}
 		}
@@ -66,7 +66,7 @@ class IqrfManager {
 		$spi = [];
 		$ls = $this->commandManager->send("ls /dev/spidev* | awk '{ print $0 }'", true);
 		foreach (explode(PHP_EOL, $ls) as $path) {
-			if (!empty($path)) {
+			if ($path !== '') {
 				array_push($spi, $path);
 			}
 		}

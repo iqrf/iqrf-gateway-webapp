@@ -54,7 +54,7 @@ class CoordinatorParserTest extends TestCase {
 	/**
 	 * Set up test environment
 	 */
-	public function setUp() {
+	public function setUp(): void {
 		$this->parser = new CoordinatorParser();
 		$jsonFileManager = new JsonFileManager(__DIR__ . '/../../data/iqrf/');
 		$this->packet['bonded'] = $jsonFileManager->read('response-coordinator-bonded')['data']['rsp']['rData'];
@@ -66,21 +66,21 @@ class CoordinatorParserTest extends TestCase {
 	/**
 	 * Test function to parse DPA response "Get bonded Nodes"
 	 */
-	public function testParseBonded() {
+	public function testParseBonded(): void {
 		Assert::equal($this->expected['bonded'], $this->parser->parse($this->packet['bonded']));
 	}
 
 	/**
 	 * Test function to parse DPA response "Get discovered Node"
 	 */
-	public function testParseDiscovered() {
+	public function testParseDiscovered(): void {
 		Assert::equal($this->expected['discovered'], $this->parser->parse($this->packet['discovered']));
 	}
 
 	/**
 	 * Test function to parse response to DPA Coordinator - "Get bonded nodes" request
 	 */
-	public function testParseGetBondedNodes() {
+	public function testParseGetBondedNodes(): void {
 		$actual = $this->parser->parseGetNodes($this->packet['bonded']);
 		Assert::equal($this->expected['bonded'], $actual);
 	}
@@ -88,7 +88,7 @@ class CoordinatorParserTest extends TestCase {
 	/**
 	 * Test function to parse response to DPA Coordinator - "Get discovered nodes" request
 	 */
-	public function testParseGetDiscoveredNodes() {
+	public function testParseGetDiscoveredNodes(): void {
 		$actual = $this->parser->parseGetNodes($this->packet['discovered']);
 		Assert::equal($this->expected['discovered'], $actual);
 	}

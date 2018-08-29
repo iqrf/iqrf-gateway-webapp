@@ -69,7 +69,7 @@ class SchedulerManager {
 	 * Add task
 	 * @param string $type Task type
 	 */
-	public function add(string $type) {
+	public function add(string $type): void {
 		$json = $this->fileManager->read($this->fileName);
 		$taskManager = new JsonFileManager(__DIR__ . '/../json');
 		$tasks = $taskManager->read('Scheduler');
@@ -82,7 +82,7 @@ class SchedulerManager {
 	 * Delete task
 	 * @param int $id Task ID
 	 */
-	public function delete(int $id) {
+	public function delete(int $id): void {
 		$json = $this->fileManager->read($this->fileName);
 		unset($json['TasksJson'][$id]);
 		$json['TasksJson'] = array_values($json['TasksJson']);
@@ -115,17 +115,17 @@ class SchedulerManager {
 	 * @param array $data JSON
 	 * @return string DPA request
 	 */
-	public function getRequest(array $data) {
+	public function getRequest(array $data): string {
 		if ($data['type'] === 'raw') {
 			return $data['request'];
 		}
-		$nadr = (empty($data['nadr']) ? '00' : Strings::padLeft($data['nadr'], 2, '0')) . '.00.';
-		$hwpid = (!empty($data['hwpid']) ? $this->fixHwpid($data['hwpid']) : 'ff.ff');
+		$nadr = (!isset($data['nadr']) ? '00' : Strings::padLeft($data['nadr'], 2, '0')) . '.00.';
+		$hwpid = (isset($data['hwpid']) ? $this->fixHwpid($data['hwpid']) : 'ff.ff');
 		switch ($data['type']) {
 			case 'raw-hdp':
 				$pnum = Strings::padLeft($data['pnum'], 2, '0') . '.';
 				$pcmd = Strings::padLeft($data['pcmd'], 2, '0') . '.';
-				if (!empty($data['rdata'])) {
+				if (isset($data['rdata']) && $data['rdata'] !== '') {
 					$pdata = '.' . Strings::padLeft($data['rdata'], 2, '0');
 				} else {
 					$pdata = '';
@@ -163,13 +163,15 @@ class SchedulerManager {
 		$jsonTasks = $this->fileManager->read($this->fileName)['TasksJson'];
 		$tasks = [];
 		foreach ($jsonTasks as $json) {
-			$task['time'] = $json['time'];
-			$task['service'] = $json['service'];
-			$task['messaging'] = $json['task']['messaging'];
 			$message = $json['task']['message'];
-			$task['type'] = $message['ctype'] . ' | ' . $message['type'];
-			$task['request'] = $this->getRequest($message);
-			$task['id'] = array_keys($jsonTasks, $json, true)[0];
+			$task = [
+				'time' => $json['time'],
+				'service' => $json['service'],
+				'messaging' => $json['task']['messaging'],
+				'type' => $message['ctype'] . ' | ' . $message['type'],
+				'request' => $this->getRequest($message),
+				'id' => array_keys($jsonTasks, $json, true)[0],
+			];
 			array_push($tasks, $task);
 		}
 		return $tasks;
@@ -194,7 +196,7 @@ class SchedulerManager {
 	 * @param array $array Scheduler settings
 	 * @param int $id Task ID
 	 */
-	public function save(array $array, int $id = 0) {
+	public function save(array $array, int $id = 0): void {
 		$json = $this->saveJson($this->fileManager->read($this->fileName), $array, $id);
 		$this->fileManager->write($this->fileName, $json);
 	}

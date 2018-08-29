@@ -43,28 +43,28 @@ class CommandManagerTest extends TestCase {
 	/**
 	 * Set up the test environment
 	 */
-	protected function setUp() {
+	protected function setUp(): void {
 		$this->manager = new CommandManager(false);
 	}
 
 	/**
 	 * Test function to execute a shell command
 	 */
-	public function testSend() {
+	public function testSend(): void {
 		Assert::same('OK', $this->manager->send('echo "OK"'));
 	}
 
 	/**
 	 * Test function to check the existence of a command (fail)
 	 */
-	public function testCommandExistFail() {
+	public function testCommandExistFail(): void {
 		Assert::false($this->manager->commandExist('sndikasdhisdbajdbas'));
 	}
 
 	/**
 	 * Test function to check the existence of a command (success)
 	 */
-	public function testCommandExistSuccess() {
+	public function testCommandExistSuccess(): void {
 		Assert::true($this->manager->commandExist('echo'));
 	}
 

@@ -55,7 +55,7 @@ abstract class GenericPresenter extends ProtectedPresenter {
 	/**
 	 * Catch exceptions
 	 */
-	public function actionDefault() {
+	public function actionDefault(): void {
 		try {
 			$this->checkInstanceFiles();
 		} catch (\Exception $e) {
@@ -77,7 +77,7 @@ abstract class GenericPresenter extends ProtectedPresenter {
 	/**
 	 * Check component's instance files
 	 */
-	private function checkInstanceFiles() {
+	private function checkInstanceFiles(): void {
 		foreach ($this->components as $component) {
 			$this->configManager->setComponent($component);
 			$files = $this->configManager->getInstanceFiles();

@@ -85,7 +85,7 @@ class WebsocketManagerTest extends TestCase {
 	/**
 	 * Set up the test environment
 	 */
-	protected function setUp() {
+	protected function setUp(): void {
 		$configPath = __DIR__ . '/../../data/configuration/';
 		$configTempPath = __DIR__ . '/../../temp/configuration/';
 		$schemaPath = __DIR__ . '/../../data/cfgSchemas/';
@@ -101,7 +101,7 @@ class WebsocketManagerTest extends TestCase {
 	/**
 	 * Copy a configuration
 	 */
-	private function copyConfiguration() {
+	private function copyConfiguration(): void {
 		foreach ($this->fileNames as $fileName) {
 			$json = $this->fileManager->read($fileName);
 			$this->fileManagerTemp->write($fileName, $json);
@@ -111,7 +111,7 @@ class WebsocketManagerTest extends TestCase {
 	/**
 	 * Test function to delete a websocket interface configuration
 	 */
-	public function testDelete() {
+	public function testDelete(): void {
 		$this->copyConfiguration();
 		Assert::true($this->fileManagerTemp->exists($this->fileNames['messaging']));
 		Assert::true($this->fileManagerTemp->exists($this->fileNames['service']));
@@ -123,7 +123,7 @@ class WebsocketManagerTest extends TestCase {
 	/**
 	 * Test function to load a websocket interface configuration
 	 */
-	public function testLoad() {
+	public function testLoad(): void {
 		$expected = [
 			'messagingInstance' => $this->instances['messaging'],
 			'acceptAsyncMsg' => true,
@@ -136,7 +136,7 @@ class WebsocketManagerTest extends TestCase {
 	/**
 	 * Test function to save a websocket interface
 	 */
-	public function testSave() {
+	public function testSave(): void {
 		$this->copyConfiguration();
 		$this->managerTemp->load(0);
 		$this->managerTemp->save($this->values);
@@ -150,7 +150,7 @@ class WebsocketManagerTest extends TestCase {
 	/**
 	 * Test function to get a websocket interfaces
 	 */
-	public function testGetInstances() {
+	public function testGetInstances(): void {
 		$expected = [
 			[
 				'messagingInstance' => 'WebsocketMessaging',
@@ -175,7 +175,7 @@ class WebsocketManagerTest extends TestCase {
 	/**
 	 * Test function to create a websocket messaging
 	 */
-	public function testCreateMessaging() {
+	public function testCreateMessaging(): void {
 		$expected = [
 			'component' => 'iqrf::WebsocketMessaging',
 			'instance' => $this->instances['messaging'],
@@ -195,7 +195,7 @@ class WebsocketManagerTest extends TestCase {
 	/**
 	 * Test function to create a websocket service
 	 */
-	public function testCreateService() {
+	public function testCreateService(): void {
 		$expected = [
 			'component' => 'shape::WebsocketCppService',
 			'instance' => $this->instances['service'],
@@ -207,7 +207,7 @@ class WebsocketManagerTest extends TestCase {
 	/**
 	 * Test function to get websocket service file name by instance name
 	 */
-	public function testGetServiceFile() {
+	public function testGetServiceFile(): void {
 		Assert::same($this->fileNames['service'], $this->manager->getServiceFile($this->instances['service']));
 	}
 

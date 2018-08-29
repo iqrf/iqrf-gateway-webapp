@@ -117,7 +117,7 @@ class RfFormFactory {
 	 * Set RF channel
 	 * @param SubmitButton $button Submit button for setting RF channel
 	 */
-	public function setChannel(SubmitButton $button) {
+	public function setChannel(SubmitButton $button): void {
 		$form = $button->getForm();
 		$values = $form->getValues();
 		if ($this->rfBand === 'ERROR') {

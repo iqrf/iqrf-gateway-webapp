@@ -87,7 +87,7 @@ class ChangePasswordFormFactory {
 	 * Change user's password
 	 * @param Form $form Change password form
 	 */
-	public function change(Form $form) {
+	public function change(Form $form): void {
 		$values = $form->getValues();
 		try {
 			$userId = $this->user->getId();

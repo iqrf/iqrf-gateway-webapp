@@ -81,7 +81,7 @@ class SignInFormFactory {
 	 * Sign in user
 	 * @param Form $form Sign in form
 	 */
-	public function signIn(Form $form) {
+	public function signIn(Form $form): void {
 		$values = $form->getValues();
 		try {
 			$this->user->setExpiration($values->remember ? '14 days' : '20 minutes');

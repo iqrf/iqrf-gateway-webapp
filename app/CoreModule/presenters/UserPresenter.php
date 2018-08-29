@@ -59,7 +59,7 @@ class UserPresenter extends ProtectedPresenter {
 	/**
 	 * Render a list of users
 	 */
-	public function renderDefault() {
+	public function renderDefault(): void {
 		$this->template->users = $this->userManager->getUsers();
 	}
 
@@ -67,7 +67,7 @@ class UserPresenter extends ProtectedPresenter {
 	 * Render form for editing users
 	 * @param int $id User ID
 	 */
-	public function renderEdit(int $id) {
+	public function renderEdit(int $id): void {
 		$this->template->id = $id;
 	}
 
@@ -75,7 +75,7 @@ class UserPresenter extends ProtectedPresenter {
 	 * Delete an user
 	 * @param int $id User ID
 	 */
-	public function actionDelete(int $id) {
+	public function actionDelete(int $id): void {
 		$user = $this->userManager->getInfo($id);
 		$this->userManager->delete($id);
 		if ($this->user->id === $id) {
@@ -91,7 +91,7 @@ class UserPresenter extends ProtectedPresenter {
 	 * Create add a new user form
 	 * @return Form Add a new user form
 	 */
-	protected function createComponentUserAddForm() {
+	protected function createComponentUserAddForm(): Form {
 		return $this->addFormFactory->create($this);
 	}
 
@@ -99,7 +99,7 @@ class UserPresenter extends ProtectedPresenter {
 	 * Create edit and existing user form
 	 * @return Form Edit an existing user form
 	 */
-	protected function createComponentUserEditForm() {
+	protected function createComponentUserEditForm(): Form {
 		return $this->editFormFactory->create($this);
 	}
 

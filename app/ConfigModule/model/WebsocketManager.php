@@ -82,7 +82,7 @@ class WebsocketManager {
 	 * Delete a configuration
 	 * @param int $id Websocket interface ID
 	 */
-	public function delete(int $id) {
+	public function delete(int $id): void {
 		$this->genericManager->setComponent($this->components['messaging']);
 		$instances = $this->genericManager->getInstanceFiles();
 		$this->fileNames['messaging'] = Arrays::pick($instances, $id);
@@ -134,7 +134,7 @@ class WebsocketManager {
 	 * Save configuration
 	 * @param array $array Websocket settings
 	 */
-	public function save(array $array) {
+	public function save(array $array): void {
 		$timestamp = (new \DateTime())->getTimestamp();
 		$instances = [
 			'messaging' => $this->instances['messaging'] ?? 'WebsocketMessaging' . $timestamp,
@@ -209,7 +209,7 @@ class WebsocketManager {
 	 * @param string $instanceName Instance name
 	 * @return string|null Websocket service file name
 	 */
-	public function getServiceFile(string $instanceName) {
+	public function getServiceFile(string $instanceName): ?string {
 		$this->genericManager->setComponent($this->components['oldService']);
 		$oldServices = $this->genericManager->getInstanceFiles();
 		$this->genericManager->setComponent($this->components['service']);

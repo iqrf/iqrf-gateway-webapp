@@ -62,7 +62,7 @@ class AzureManagerTest extends TestCase {
 	/**
 	 * Set up the test environment
 	 */
-	protected function setUp() {
+	protected function setUp(): void {
 		$configPath = __DIR__ . '/../../temp/configuration/';
 		$schemaPath = __DIR__ . '/../../data/cfgSchemas/';
 		$this->fileManager = new JsonFileManager($configPath);
@@ -76,14 +76,14 @@ class AzureManagerTest extends TestCase {
 	/**
 	 * Cleanup the test environment
 	 */
-	protected function tearDown() {
+	protected function tearDown(): void {
 		\Mockery::close();
 	}
 
 	/**
 	 * Test function to create MQTT interface
 	 */
-	public function testCreateMqttInterface() {
+	public function testCreateMqttInterface(): void {
 		$mqtt = [
 			'component' => 'iqrf::MqttMessaging',
 			'instance' => 'MqttMessagingAzure',
@@ -108,7 +108,7 @@ class AzureManagerTest extends TestCase {
 			'EnableServerCertAuth' => false,
 			'acceptAsyncMsg' => false,
 		];
-		$array['ConnectionString'] = $this->connectionString;
+		$array = ['ConnectionString' => $this->connectionString];
 		$this->mockedManager->createMqttInterface($array);
 		Assert::same($mqtt, $this->fileManager->read('MqttMessagingAzure'));
 	}
@@ -116,7 +116,7 @@ class AzureManagerTest extends TestCase {
 	/**
 	 * Test function to check the connection string (invalid connection string)
 	 */
-	public function testCheckConnectionStringInvalid() {
+	public function testCheckConnectionStringInvalid(): void {
 		$invalidString = 'HostName=iqrf.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=1234567890abcdefghijklmnopqrstuvwxyzABCDEFG=';
 		Assert::exception(function() use ($invalidString) {
 			$this->mockedManager->checkConnectionString($invalidString);
@@ -126,14 +126,14 @@ class AzureManagerTest extends TestCase {
 	/**
 	 * Test function to check the connection string (valid connection string)
 	 */
-	public function testCheckConnectionStringValid() {
+	public function testCheckConnectionStringValid(): void {
 		Assert::null($this->mockedManager->checkConnectionString($this->connectionString));
 	}
 
 	/**
 	 * Test function to generate shared access signature token
 	 */
-	public function testGenerateSasToken() {
+	public function testGenerateSasToken(): void {
 		$resourceUri = 'iqrf.azure-devices.net/devices/iqrfGwTest';
 		$signingKey = '1234567890abcdefghijklmnopqrstuvwxyzABCDEFG';
 		$policyName = null;
@@ -147,7 +147,7 @@ class AzureManagerTest extends TestCase {
 	/**
 	 * Test function to parse the connection string
 	 */
-	public function testParseConnectionString() {
+	public function testParseConnectionString(): void {
 		$expected = [
 			'HostName' => 'iqrf.azure-devices.net',
 			'DeviceId' => 'IQRFGW',

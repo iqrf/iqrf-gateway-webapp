@@ -54,7 +54,7 @@ class EnumerationParserTest extends TestCase {
 	/**
 	 * Set up test environment
 	 */
-	public function setUp() {
+	public function setUp(): void {
 		$this->parser = new EnumerationParser();
 		$jsonFileManager = new JsonFileManager(__DIR__ . '/../../data/iqrf/');
 		$this->packet = $jsonFileManager->read('response-enumeration')['data']['rsp']['rData'];
@@ -64,14 +64,14 @@ class EnumerationParserTest extends TestCase {
 	/**
 	 * Test function to parse DPA response
 	 */
-	public function testParse() {
+	public function testParse(): void {
 		Assert::equal($this->expected, $this->parser->parse($this->packet));
 	}
 
 	/**
 	 * Test function to parse response to DPA Enumeration request
 	 */
-	public function testParsePeripheralEnumeration() {
+	public function testParsePeripheralEnumeration(): void {
 		$actual = $this->parser->parsePeripheralEnumeration($this->packet);
 		Assert::equal($this->expected, $actual);
 	}
@@ -79,7 +79,7 @@ class EnumerationParserTest extends TestCase {
 	/**
 	 * Test function to get embedded peripherals
 	 */
-	public function testGetEmbeddedPers() {
+	public function testGetEmbeddedPers(): void {
 		$actual = $this->parser->getEmbeddedPers($this->packet);
 		Assert::equal($this->expected['EmbeddedPers'], $actual);
 	}

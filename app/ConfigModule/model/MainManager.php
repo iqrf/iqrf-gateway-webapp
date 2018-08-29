@@ -61,7 +61,7 @@ class MainManager {
 	 * Save Main daemon configuration
 	 * @param array $array Main settings
 	 */
-	public function save(array $array) {
+	public function save(array $array): void {
 		$json = $this->fileManager->read($this->fileName);
 		$this->fileManager->write($this->fileName, array_merge($json, $array));
 	}

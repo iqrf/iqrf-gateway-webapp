@@ -62,7 +62,7 @@ class IqrfSpiPresenter extends GenericPresenter {
 	/**
 	 * Render IQRF SPI interface configurator
 	 */
-	public function renderDefault() {
+	public function renderDefault(): void {
 		$this->template->spiInterfaces = $this->iqrfManager->getSpiInterfaces();
 		$this->template->spiPins = $this->fileManager->read('SpiPins');
 	}

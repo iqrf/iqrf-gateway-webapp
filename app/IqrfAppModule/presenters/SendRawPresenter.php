@@ -61,7 +61,7 @@ class SendRawPresenter extends ProtectedPresenter {
 	/**
 	 * Render send raw DPA packet page
 	 */
-	public function renderDefault() {
+	public function renderDefault(): void {
 		$this->template->macros = $this->iqrfMacroManager->read();
 	}
 
@@ -69,7 +69,7 @@ class SendRawPresenter extends ProtectedPresenter {
 	 * AJAX handler for showing DPA request and response
 	 * @param array $data DPA request and response
 	 */
-	public function handleShowResponse(array $data) {
+	public function handleShowResponse(array $data): void {
 		$this->template->json = $data;
 		$this->template->parsedResponse = $this->iqrfAppManager->parseResponse($data);
 		$this->redrawControl('responseChange');

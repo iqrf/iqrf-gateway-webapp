@@ -38,7 +38,7 @@ class ProfilePresenter extends ProtectedPresenter {
 	 * Create change password form
 	 * @return Form Change password form
 	 */
-	protected function createComponentChangePasswordForm() {
+	protected function createComponentChangePasswordForm(): Form {
 		return $this->changePasswordFormFactory->create($this);
 	}
 

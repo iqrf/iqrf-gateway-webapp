@@ -59,7 +59,7 @@ class BluemixManager implements IManager {
 	 * Create MQTT interface
 	 * @param array $values Values from form
 	 */
-	public function createMqttInterface(array $values) {
+	public function createMqttInterface(array $values): void {
 		$this->downloadCaCertificate();
 		$this->configManager->setComponent('iqrf::MqttMessaging');
 		$this->configManager->setFileName($this->interfaceName);
@@ -92,7 +92,7 @@ class BluemixManager implements IManager {
 	/**
 	 * Download root CA certificate
 	 */
-	public function downloadCaCertificate() {
+	public function downloadCaCertificate(): void {
 		$client = new Client();
 		$caCertUrl = 'https://raw.githubusercontent.com/ibm-watson-iot/iot-python/master/src/ibmiotf/messaging.pem';
 		$caCert = $client->request('GET', $caCertUrl)->getBody();

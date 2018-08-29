@@ -69,7 +69,7 @@ class GenericConfigFormFactory {
 	 * Save generic configuration
 	 * @param Form $form Configuration form
 	 */
-	public function save(Form $form) {
+	public function save(Form $form): void {
 		try {
 			$this->manager->save($form->getValues(true));
 			$this->presenter->flashMessage('config.messages.success', 'success');

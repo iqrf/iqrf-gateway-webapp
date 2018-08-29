@@ -55,7 +55,7 @@ class IqrfCdcPresenter extends GenericPresenter {
 	/**
 	 * Render IQRF CDC interface configurator
 	 */
-	public function renderDefault() {
+	public function renderDefault(): void {
 		$this->template->cdcInterfaces = $this->iqrfManager->getCdcInterfaces();
 	}
 
@@ -63,7 +63,7 @@ class IqrfCdcPresenter extends GenericPresenter {
 	 * Create IQRF CDC interface configuration form
 	 * @return Form IQRF CDC interface configuration form
 	 */
-	protected function createComponentConfigIqrfCdcForm() {
+	protected function createComponentConfigIqrfCdcForm(): Form {
 		return $this->cdcFormFactory->create($this);
 	}
 

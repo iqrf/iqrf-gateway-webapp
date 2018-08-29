@@ -86,7 +86,7 @@ class MigrationManager {
 	 * Download a configuration
 	 * @return FileResponse HTTP response with a configuration
 	 */
-	public function download() {
+	public function download(): FileResponse {
 		$this->zipManagerDownload = new ZipArchiveManager($this->path);
 		$now = new \DateTime();
 		$fileName = 'iqrf-gateway-configuration_' . $now->format('c') . '.zip';
@@ -101,7 +101,7 @@ class MigrationManager {
 	 * Upload a configuration
 	 * @param array $formValues Values from form
 	 */
-	public function upload(array $formValues) {
+	public function upload(array $formValues): void {
 		$this->zipManagerUpload = new ZipArchiveManager($this->path, \ZipArchive::CREATE);
 		$zip = $formValues['configuration'];
 		if ($zip->isOk()) {
@@ -126,7 +126,7 @@ class MigrationManager {
 	/**
 	 * Change ownership of directory for JSON configuration files of IQRF Gateway Daemon
 	 */
-	private function changeOwner() {
+	private function changeOwner(): void {
 		$posixUser = posix_getpwuid(posix_geteuid());
 		$owner = $posixUser['name'] . ':' . posix_getgrgid($posixUser['gid'])['name'];
 		$this->commandManager->send('chown ' . $owner . ' ' . $this->configDirectory, true);
@@ -140,14 +140,12 @@ class MigrationManager {
 	 */
 	public function validate(ZipArchiveManager $zipManager): bool {
 		foreach ($zipManager->listFiles() as $file) {
-			if (!Strings::match($file, '~^[a-zA-Z0-9]+\_\_[a-zA-Z0-9]+\.json$~')) {
+			$matches = Strings::match($file, '~^[a-zA-Z0-9]+\_\_[a-zA-Z0-9]+\.json$~');
+			if (!is_array($matches)) {
 				continue;
 			}
 			$jsonFile = $zipManager->openFile($file);
 			$json = Json::decode($jsonFile, Json::FORCE_ARRAY);
-			if (!array_key_exists('component', $json)) {
-				continue;
-			}
 			try {
 				$this->schemaManager->setSchemaFromComponent($json['component']);
 			} catch (NonExistingJsonSchemaException $e) {
