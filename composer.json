@@ -44,9 +44,9 @@
 	"require-dev": {
 		"nette/tester": "^2.0",
 		"mockery/mockery": "^1.1",
-		"phpstan/phpstan": "^0.9 || ^0.10",
-		"phpstan/phpstan-nette": "^0.9 || ^0.10",
-		"phpstan/phpstan-strict-rules": "^0.9 || ^0.10"
+		"phpstan/phpstan": "^0.10",
+		"phpstan/phpstan-nette": "^0.10",
+		"phpstan/phpstan-strict-rules": "^0.10"
 	},
 	"autoload-dev": {
 		"classmap": ["app", "tests"]
