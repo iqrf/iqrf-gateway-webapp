@@ -16,15 +16,6 @@ cache:
     stage: test
     retry: 2
 
-test:php7.0:
-    before_script:
-        - update-alternatives --set php /usr/bin/php7.0
-        - composer install --no-progress
-    script:
-        - vendor/bin/tester -p phpdbg7.0 -c ./tests/php.ini -s ./tests
-        - 'for i in $(find ./tests -name \*.actual); do echo "--- $i"; cat $i; echo; echo; done'
-    <<: *test_template
-
 test:php7.1:
     before_script:
         - update-alternatives --set php /usr/bin/php7.1
