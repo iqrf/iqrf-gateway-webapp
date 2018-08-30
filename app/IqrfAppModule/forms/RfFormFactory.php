@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\IqrfAppModule\Forms;
 
@@ -89,13 +89,8 @@ class RfFormFactory {
 		];
 		try {
 			$this->rfBand = $this->manager->readHwpConfiguration()['rfBand'] ?? 'ERROR';
-		} catch (\Exception $e) {
-			if ($e instanceof EmptyResponseException ||
-					$e instanceof DpaErrorException) {
-				$this->rfBand = 'ERROR';
-			} else {
-				throw $e;
-			}
+		} catch (DpaErrorException | EmptyResponseException $e) {
+			$this->rfBand = 'ERROR';
 		}
 		$form->addSelect('rfBand', 'rfBand', $rfBands)->setDisabled()
 				->setDefaultValue($this->rfBand);
@@ -125,15 +120,10 @@ class RfFormFactory {
 		} else {
 			try {
 				$this->manager->setRfChannel($values['rfChannel'], strval($values['type']));
-			} catch (\Exception $e) {
-				if ($e instanceof EmptyResponseException ||
-						$e instanceof DpaErrorException) {
-					$message = 'No response from IQRF Gateway Daemon.';
-					$form->addError($message);
-					$this->presenter->flashMessage($message, 'danger');
-				} else {
-					throw $e;
-				}
+			} catch (EmptyResponseException | DpaErrorException $e) {
+				$message = 'No response from IQRF Gateway Daemon.';
+				$form->addError($message);
+				$this->presenter->flashMessage($message, 'danger');
 			}
 		}
 	}

@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\ConfigModule\Forms;
 
@@ -86,21 +86,17 @@ class MigrationFormFactory {
 		try {
 			$this->manager->upload($form->getValues(true));
 			$this->presenter->flashMessage('config.migration.messages.importedConfig', 'success');
-		} catch (\Exception $e) {
-			if ($e instanceof IncompleteConfigurationException) {
-				$this->presenter->flashMessage('config.migration.errors.invalidConfig', 'danger');
-			} else if ($e instanceof InvalidConfigurationFormatException) {
-				$this->presenter->flashMessage('config.migration.errors.invalidFormat', 'danger');
-			} else if ($e instanceof NonExistingJsonSchemaException) {
-				$this->presenter->flashMessage('config.messages.nonExistingJsonSchema', 'danger');
-			} else if ($e instanceof IOException) {
-				/**
-				 * @todo Custom error message.
-				 */
-				$$this->presenter->flashMessage('config.messages.writeFailure', 'danger');
-			} else {
-				throw $e;
-			}
+		} catch (IncompleteConfigurationException $e) {
+			$this->presenter->flashMessage('config.migration.errors.invalidConfig', 'danger');
+		} catch (InvalidConfigurationFormatException $e) {
+			$this->presenter->flashMessage('config.migration.errors.invalidFormat', 'danger');
+		} catch (NonExistingJsonSchemaException $e) {
+			$this->presenter->flashMessage('config.messages.nonExistingJsonSchema', 'danger');
+		} catch (IOException $e) {
+			/**
+			 * @todo Custom error message.
+			 */
+			$$this->presenter->flashMessage('config.messages.writeFailure', 'danger');
 		} finally {
 			$this->presenter->redirect('Homepage:default');
 		}

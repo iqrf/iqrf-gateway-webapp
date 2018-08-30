@@ -103,15 +103,10 @@ class SendRawFormFactory {
 			try {
 				$response = $this->manager->sendRaw($packet, $timeout);
 				$this->presenter->handleShowResponse($response);
-			} catch (\Exception $e) {
-				if ($e instanceof EmptyResponseException ||
-						$e instanceof DpaErrorException) {
-					$message = 'No response from IQRF Gateway Daemon.';
-					$form->addError($message);
-					$this->presenter->flashMessage($message, 'danger');
-				} else {
-					throw $e;
-				}
+			} catch (EmptyResponseException | DpaErrorException $e) {
+				$message = 'No response from IQRF Gateway Daemon.';
+				$form->addError($message);
+				$this->presenter->flashMessage($message, 'danger');
 			}
 		} else {
 			$message = 'Invalid DPA packet.';

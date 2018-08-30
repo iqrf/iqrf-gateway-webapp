@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\ConfigModule\Presenters;
 
@@ -58,19 +58,15 @@ abstract class GenericPresenter extends ProtectedPresenter {
 	public function actionDefault(): void {
 		try {
 			$this->checkInstanceFiles();
-		} catch (\Exception $e) {
-			if ($e instanceof NonExistingJsonSchemaException) {
-				$this->flashMessage('config.messages.nonExistingJsonSchema', 'danger');
-				$this->redirect('Homepage:default');
-			} else if ($e instanceof IOException) {
-				$this->flashMessage('config.messages.readFailure', 'danger');
-				$this->redirect('Homepage:default');
-			} else if ($e instanceof JsonException) {
-				$this->flashMessage('config.messages.invalidJson', 'danger');
-				$this->redirect('Homepage:default');
-			} else {
-				throw $e;
-			}
+		} catch (NonExistingJsonSchemaException $e) {
+			$this->flashMessage('config.messages.nonExistingJsonSchema', 'danger');
+			$this->redirect('Homepage:default');
+		} catch (IOException $e) {
+			$this->flashMessage('config.messages.readFailure', 'danger');
+			$this->redirect('Homepage:default');
+		} catch (JsonException $e) {
+			$this->flashMessage('config.messages.invalidJson', 'danger');
+			$this->redirect('Homepage:default');
 		}
 	}
 

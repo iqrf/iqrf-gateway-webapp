@@ -97,15 +97,10 @@ class SecurityFormFactory {
 		$values = $button->getForm()->getValues();
 		try {
 			$this->manager->setSecurity($values['password'], $values['format'], IqrfNetManager::SECURITY_ACCESS_PASSOWRD);
-		} catch (\Exception $e) {
-			if ($e instanceof EmptyResponseException ||
-					$e instanceof DpaErrorException) {
-				$message = 'No response from IQRF Gateway Daemon.';
-				$button->addError($message);
-				$this->presenter->flashMessage($message, 'danger');
-			} else {
-				throw $e;
-			}
+		} catch (EmptyResponseException | DpaErrorException $e) {
+			$message = 'No response from IQRF Gateway Daemon.';
+			$button->addError($message);
+			$this->presenter->flashMessage($message, 'danger');
 		}
 	}
 
@@ -117,15 +112,10 @@ class SecurityFormFactory {
 		$values = $button->getForm()->getValues();
 		try {
 			$this->manager->setSecurity($values['password'], $values['format'], IqrfNetManager::SECURITY_USER_KEY);
-		} catch (\Exception $e) {
-			if ($e instanceof EmptyResponseException ||
-					$e instanceof DpaErrorException) {
-				$message = 'No response from IQRF Gateway Daemon.';
-				$button->addError($message);
-				$this->presenter->flashMessage($message, 'danger');
-			} else {
-				throw $e;
-			}
+		} catch (EmptyResponseException | DpaErrorException $e) {
+			$message = 'No response from IQRF Gateway Daemon.';
+			$button->addError($message);
+			$this->presenter->flashMessage($message, 'danger');
 		}
 	}
 

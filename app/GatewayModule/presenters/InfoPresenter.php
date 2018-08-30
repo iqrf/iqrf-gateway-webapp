@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\GatewayModule\Presenters;
 
@@ -66,12 +66,8 @@ class InfoPresenter extends ProtectedPresenter {
 		$this->template->webAppVersion = $this->infoManager->getWebAppVersion();
 		try {
 			$this->template->module = $this->infoManager->getCoordinatorInfo();
-		} catch (\Exception $e) {
-			if ($e instanceof EmptyResponseException || $e instanceof DpaErrorException) {
-				$this->presenter->flashMessage('Cannot get information about the Coordinator.', 'danger');
-			} else {
-				throw $e;
-			}
+		} catch (DpaErrorException | EmptyResponseException $e) {
+			$this->presenter->flashMessage('Cannot get information about the Coordinator.', 'danger');
 		}
 	}
 

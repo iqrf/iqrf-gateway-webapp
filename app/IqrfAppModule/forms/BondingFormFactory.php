@@ -92,15 +92,10 @@ class BondingFormFactory {
 		$address = $values['autoAddress'] === true ? '00' : $values['address'];
 		try {
 			$this->manager->bondNode($address);
-		} catch (\Exception $e) {
-			if ($e instanceof EmptyResponseException ||
-					$e instanceof DpaErrorException) {
-				$message = 'No response from IQRF Gateway Daemon.';
-				$button->addError($message);
-				$this->presenter->flashMessage($message, 'danger');
-			} else {
-				throw $e;
-			}
+		} catch (EmptyResponseException | DpaErrorException $e) {
+			$message = 'No response from IQRF Gateway Daemon.';
+			$button->addError($message);
+			$this->presenter->flashMessage($message, 'danger');
 		}
 	}
 
@@ -111,15 +106,10 @@ class BondingFormFactory {
 	public function clearAllBonds(SubmitButton $button): void {
 		try {
 			$this->manager->clearAllBonds();
-		} catch (\Exception $e) {
-			if ($e instanceof EmptyResponseException ||
-					$e instanceof DpaErrorException) {
-				$message = 'No response from IQRF Gateway Daemon.';
-				$button->addError($message);
-				$this->presenter->flashMessage($message, 'danger');
-			} else {
-				throw $e;
-			}
+		} catch (EmptyResponseException | DpaErrorException $e) {
+			$message = 'No response from IQRF Gateway Daemon.';
+			$button->addError($message);
+			$this->presenter->flashMessage($message, 'danger');
 		}
 	}
 
@@ -131,15 +121,10 @@ class BondingFormFactory {
 		$values = $button->getForm()->getValues();
 		try {
 			$this->manager->rebondNode($values['address']);
-		} catch (\Exception $e) {
-			if ($e instanceof EmptyResponseException ||
-					$e instanceof DpaErrorException) {
-				$message = 'No response from IQRF Gateway Daemon.';
-				$button->addError($message);
-				$this->presenter->flashMessage($message, 'danger');
-			} else {
-				throw $e;
-			}
+		} catch (EmptyResponseException | DpaErrorException $e) {
+			$message = 'No response from IQRF Gateway Daemon.';
+			$button->addError($message);
+			$this->presenter->flashMessage($message, 'danger');
 		}
 	}
 
@@ -151,15 +136,10 @@ class BondingFormFactory {
 		$values = $button->getForm()->getValues();
 		try {
 			$this->manager->removeNode($values['address']);
-		} catch (\Exception $e) {
-			if ($e instanceof EmptyResponseException ||
-					$e instanceof DpaErrorException) {
-				$message = 'No response from IQRF Gateway Daemon.';
-				$button->addError($message);
-				$this->presenter->flashMessage($message, 'danger');
-			} else {
-				throw $e;
-			}
+		} catch (EmptyResponseException | DpaErrorException $e) {
+			$message = 'No response from IQRF Gateway Daemon.';
+			$button->addError($message);
+			$this->presenter->flashMessage($message, 'danger');
 		}
 	}
 

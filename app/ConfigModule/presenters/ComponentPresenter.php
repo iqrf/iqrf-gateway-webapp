@@ -58,16 +58,12 @@ class ComponentPresenter extends ProtectedPresenter {
 	public function actionDefault(): void {
 		try {
 			$this->configManager->loadComponents();
-		} catch (\Exception $e) {
-			if ($e instanceof IOException) {
-				$this->flashMessage('config.messages.readFailure', 'danger');
+		} catch (IOException $e) {
+			$this->flashMessage('config.messages.readFailure', 'danger');
 				$this->redirect('Homepage:default');
-			} else if ($e instanceof JsonException) {
-				$this->flashMessage('config.messages.invalidJson', 'danger');
-				$this->redirect('Homepage:default');
-			} else {
-				throw $e;
-			}
+		} catch (JsonException $e) {
+			$this->flashMessage('config.messages.invalidJson', 'danger');
+			$this->redirect('Homepage:default');
 		}
 	}
 

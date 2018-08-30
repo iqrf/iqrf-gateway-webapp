@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\GatewayModule\Model;
 
@@ -98,10 +98,8 @@ class DiagnosticsManager {
 		$array['webappVersion'] = $this->infoManager->getWebAppVersion();
 		try {
 			$array['coordinator'] = $this->infoManager->getCoordinatorInfo();
-		} catch (\Exception $e) {
-			if (!($e instanceof EmptyResponseException || $e instanceof DpaErrorException)) {
-				throw $e;
-			}
+		} catch (DpaErrorException | EmptyResponseException $e) {
+			$array['coordinator'] = 'ERROR';
 		}
 		$array['hostname'] = $this->infoManager->getHostname();
 		$array['uname'] = $this->commandManager->send('uname -a', true);

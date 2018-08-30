@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\CloudModule\Forms;
 
@@ -83,20 +83,16 @@ class CloudFormFactory {
 			$this->manager->createMqttInterface($values);
 			$this->presenter->flashMessage('cloud.messages.success', 'success');
 			$this->presenter->redirect(':Config:Mqtt:default');
-		} catch (\Exception $e) {
-			if ($e instanceof InvalidConnectionStringException) {
-				$this->presenter->flashMessage('cloud.msAzure.messages.invalidConnectionString', 'danger');
-			} else if ($e instanceof InvalidPrivateKeyForCertificateException) {
-				$this->presenter->flashMessage('cloud.amazonAws.messages.mismatchedCrtAndKey', 'danger');
-			} else if ($e instanceof NonExistingJsonSchemaException) {
-				$this->presenter->flashMessage('config.messages.nonExistingJsonSchema', 'danger');
-			} else if ($e instanceof IOException) {
-				$this->presenter->flashMessage('config.messages.writeFailure', 'danger');
-			} else if ($e instanceof TransferException) {
-				$this->presenter->flashMessage('cloud.messages.downloadFailure', 'danger');
-			} else {
-				throw $e;
-			}
+		} catch (InvalidConnectionStringException $e) {
+			$this->presenter->flashMessage('cloud.msAzure.messages.invalidConnectionString', 'danger');
+		} catch (InvalidPrivateKeyForCertificateException $e) {
+			$this->presenter->flashMessage('cloud.amazonAws.messages.mismatchedCrtAndKey', 'danger');
+		} catch (NonExistingJsonSchemaException $e) {
+			$this->presenter->flashMessage('config.messages.nonExistingJsonSchema', 'danger');
+		} catch (IOException $e) {
+			$this->presenter->flashMessage('config.messages.writeFailure', 'danger');
+		} catch (TransferException $e) {
+			$this->presenter->flashMessage('cloud.messages.downloadFailure', 'danger');
 		}
 		if ($needRestart) {
 			try {
