@@ -2,6 +2,7 @@ title: Configuration
 description: Edit configuration.
 
 actions:
+	Add: Add
 	Edit: Edit
 	Remove: Remove
 
@@ -22,7 +23,10 @@ components:
 		libraryPath: Library path
 		libraryName: Library name
 		enabled: Enabled
+		disabled: Disabled
 		startlevel: Start level
+		messages:
+			confirmDelete: Do you really want to delete component %s?
 		Save: Save
 
 iqmesh:

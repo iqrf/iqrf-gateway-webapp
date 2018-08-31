@@ -22,11 +22,12 @@ namespace App\ConfigModule\Model;
 
 use App\CoreModule\Model\JsonFileManager;
 use Nette;
+use Nette\Utils\Arrays;
 
 /**
  * Component configuration manager
  */
-class ComponentManager {
+class ComponentManager implements IConfigManager {
 
 	use Nette\SmartObject;
 
@@ -53,7 +54,7 @@ class ComponentManager {
 	 * @param array $array Component's settings
 	 */
 	public function add(array $array): void {
-		$id = count($this->loadComponents());
+		$id = count($this->list());
 		$this->save($array, $id);
 	}
 
@@ -73,8 +74,8 @@ class ComponentManager {
 	 * @param int $id Component ID
 	 * @return array Array for form
 	 */
-	public function loadComponent(int $id): array {
-		$json = $this->loadComponents();
+	public function load(int $id): array {
+		$json = $this->fileManager->read($this->fileName)['components'];
 		if (array_key_exists($id, $json)) {
 			return $json[$id];
 		}
@@ -85,9 +86,13 @@ class ComponentManager {
 	 * Load components from main configuration JSON
 	 * @return array Array for form
 	 */
-	public function loadComponents(): array {
-		$json = $this->fileManager->read($this->fileName);
-		return $json['components'];
+	public function list(): array {
+		$components = [];
+		$json = $this->fileManager->read($this->fileName)['components'];
+		foreach ($json as $id => $config) {
+			$components[$id] = Arrays::mergeTree(['id' => $id], $config);
+		}
+		return $components;
 	}
 
 	/**

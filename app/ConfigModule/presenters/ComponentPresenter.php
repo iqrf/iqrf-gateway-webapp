@@ -20,12 +20,14 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Presenters;
 
+use App\ConfigModule\Datagrids\ComponentsDataGridFactory;
 use App\ConfigModule\Forms\ComponentsFormFactory;
 use App\ConfigModule\Model\ComponentManager;
 use App\CoreModule\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 use Nette\IOException;
 use Nette\Utils\JsonException;
+use Ublaboo\DataGrid\DataGrid;
 
 /**
  * Component configuration presenter
@@ -38,10 +40,16 @@ class ComponentPresenter extends ProtectedPresenter {
 	private $configManager;
 
 	/**
+	 * @var ComponentsDataGridFactory Daemon's components datagrid
+	 * @inject
+	 */
+	public $datagridFactory;
+
+	/**
 	 * @var ComponentsFormFactory Daemon's components configuration form factory
 	 * @inject
 	 */
-	public $componentsFactory;
+	public $formFactory;
 
 	/**
 	 * Constructor
@@ -57,7 +65,7 @@ class ComponentPresenter extends ProtectedPresenter {
 	 */
 	public function actionDefault(): void {
 		try {
-			$this->configManager->loadComponents();
+			$this->configManager->list();
 		} catch (IOException $e) {
 			$this->flashMessage('config.messages.readFailure', 'danger');
 				$this->redirect('Homepage:default');
@@ -71,7 +79,7 @@ class ComponentPresenter extends ProtectedPresenter {
 	 * Render list of components
 	 */
 	public function renderDefault(): void {
-		$this->template->components = $this->configManager->loadComponents();
+		$this->template->components = $this->configManager->list();
 	}
 
 	/**
@@ -95,11 +103,20 @@ class ComponentPresenter extends ProtectedPresenter {
 	}
 
 	/**
+	 * Create components datagrid
+	 * @param string $name Datagrid's component name
+	 * @return DataGrid Components datagrid
+	 */
+	protected function createComponentConfigComponentsDataGrid(string $name): DataGrid {
+		return $this->datagridFactory->create($this, $name);
+	}
+
+	/**
 	 * Create components form
 	 * @return Form Components form
 	 */
 	protected function createComponentConfigComponentsForm(): Form {
-		return $this->componentsFactory->create($this);
+		return $this->formFactory->create($this);
 	}
 
 }

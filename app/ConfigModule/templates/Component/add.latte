@@ -16,5 +16,9 @@
 *}
 
 {block content}
-<h1 n:block=title>{_config.components.title}</h1>
-{control configComponentsDataGrid}
+<h1 n:block=title>{_config.components.form.title}</h1>
+<div class='panel panel-default'>
+	<div class='panel-body'>
+		{control configComponentsForm}
+	</div>
+</div>

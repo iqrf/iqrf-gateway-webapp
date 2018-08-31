@@ -13,6 +13,7 @@ namespace Test\ConfigModule\Model;
 use App\ConfigModule\Model\ComponentManager;
 use App\CoreModule\Model\JsonFileManager;
 use Nette\DI\Container;
+use Nette\Utils\Arrays;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -88,7 +89,8 @@ class ComponentManagerTest extends TestCase {
 		];
 		$expected['components'][] = $array;
 		$this->managerTemp->add($array);
-		Assert::same($expected['components'], $this->managerTemp->loadComponents());
+		$actual = $this->fileManagerTemp->read($this->fileName)['components'];
+		Assert::same($expected['components'], $actual);
 	}
 
 	/**
@@ -99,26 +101,30 @@ class ComponentManagerTest extends TestCase {
 		$this->fileManagerTemp->write($this->fileName, $expected);
 		unset($expected['components'][30]);
 		$this->managerTemp->delete(30);
-		Assert::same($expected['components'], $this->managerTemp->loadComponents());
+		$actual = $this->fileManagerTemp->read($this->fileName)['components'];
+		Assert::same($expected['components'], $actual);
 	}
 
 	/**
 	 * Test function to load configuration of components
 	 */
-	public function testLoadComponents(): void {
-		$json = $this->fileManager->read($this->fileName);
-		$expected = $json['components'];
-		Assert::equal($expected, $this->manager->loadComponents());
+	public function testList(): void {
+		$components = $this->fileManager->read($this->fileName)['components'];
+		$expected = [];
+		foreach ($components as $id => $config) {
+			$expected[$id] = Arrays::mergeTree(['id' => $id], $config);
+		}
+		Assert::equal($expected, $this->manager->list());
 	}
 
 	/**
 	 * Test function to load configuration of components
 	 */
-	public function testLoadComponent(): void {
+	public function testLoad(): void {
 		$json = $this->fileManager->read($this->fileName);
 		$expected = $json['components'][0];
-		Assert::equal($expected, $this->manager->loadComponent(0));
-		Assert::equal([], $this->manager->loadComponent(100));
+		Assert::equal($expected, $this->manager->load(0));
+		Assert::equal([], $this->manager->load(100));
 	}
 
 	/**

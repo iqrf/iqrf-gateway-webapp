@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\ConfigModule\Forms;
 
@@ -72,7 +72,6 @@ class ComponentsFormFactory {
 	 */
 	public function create(ComponentPresenter $presenter): Form {
 		$this->presenter = $presenter;
-		$this->id = intval($presenter->getParameter('id'));
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('config.components.form'));
 		$form->addText('name', 'name')->setRequired('messages.name');
@@ -81,7 +80,11 @@ class ComponentsFormFactory {
 		$form->addCheckbox('enabled', 'enabled');
 		$form->addInteger('startlevel', 'startlevel')->setRequired('messages.startLevel');
 		$form->addSubmit('save', 'Save');
-		$form->setDefaults($this->manager->loadComponent($this->id));
+		$id = $presenter->getParameter('id');
+		if (isset($id)) {
+			$this->id = intval($id);
+			$form->setDefaults($this->manager->load($this->id));
+		}
 		$form->addProtection('core.errors.form-timeout');
 		$form->onSuccess[] = [$this, 'save'];
 		return $form;
@@ -93,7 +96,12 @@ class ComponentsFormFactory {
 	 */
 	public function save(Form $form): void {
 		try {
-			$this->manager->save($form->getValues(true), $this->id);
+			$array = $form->getValues(true);
+			if (isset($this->id)) {
+				$this->manager->save($array, $this->id);
+			} else {
+				$this->manager->add($array);
+			}
 			$this->presenter->flashMessage('config.messages.success', 'success');
 		} catch (IOException $e) {
 			$this->presenter->flashMessage('config.messages.writeFailure', 'danger');

@@ -55,7 +55,7 @@ class UserDataGridFactory {
 	/**
 	 * Create user datagrid
 	 * @param UserPresenter $presenter User presenter
-	 * @param string Datagrid's component name
+	 * @param string $name Datagrid's component name
 	 * @return DataGrid User datagrid
 	 */
 	public function create(UserPresenter $presenter, string $name): DataGrid {

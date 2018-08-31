@@ -46,8 +46,10 @@ class DataGridFactory {
 	}
 
 	/**
-	 * Create a form and set the translator
-	 * @return Form Form
+	 * Create a datagrid and set the translator
+	 * @param BasePresenter $presenter Base presenter
+	 * @param string $name Datagrid's component name
+	 * @return DataGrid Datagrid
 	 */
 	public function create(BasePresenter $presenter, string $name): DataGrid {
 		DataGrid::$icon_prefix = 'glyphicon glyphicon-';
