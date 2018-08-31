@@ -26,6 +26,8 @@
 		<title>{ifset title}{include title|stripHtml|trim} | {/ifset}{_core.title}</title>
 		<link n:nonce rel='stylesheet' href='/css/bootstrap.min.css'>
 		<link n:nonce rel='stylesheet' href='/css/bootstrap-theme.min.css'>
+		<link n:nonce rel='stylesheet' href='/css/datagrid.min.css'>
+		<link n:nonce rel='stylesheet' href='/css/datagrid-spinners.min.css'>
 	</head>
 	<body n:nonce style='background-color: #ECF0F1;'>
 		<nav class='navbar navbar-default'>
@@ -143,7 +145,12 @@
 		<script n:nonce src='/js/jquery-3.3.1.min.js'></script>
 		<script n:nonce src='/js/bootstrap.min.js'></script>
 		<script n:nonce src='/js/netteForms.min.js'></script>
+		<script n:nonce src='/js/nette.ajax.min.js'></script>
+		<script n:nonce src='/js/datagrid.min.js'></script>
+		<script n:nonce src='/js/datagrid-instant-url-refresh.min.js'></script>
+		<script n:nonce src='/js/datagrid-spinners.min.js'></script>
 		<script n:nonce src='/js/iqrfApp.js'></script>
+		<script n:nonce>$.nette.init();</script>
 		{/block}
 	</body>
 </html>

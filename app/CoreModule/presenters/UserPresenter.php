@@ -20,10 +20,12 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Presenters;
 
+use App\CoreModule\Datagrids\UserDataGridFactory;
 use App\CoreModule\Forms\UserAddFormFactory;
 use App\CoreModule\Forms\UserEditFormFactory;
 use App\CoreModule\Model\UserManager;
 use Nette\Forms\Form;
+use Ublaboo\DataGrid\DataGrid;
 
 /**
  * User presenter
@@ -35,6 +37,12 @@ class UserPresenter extends ProtectedPresenter {
 	 * @inject
 	 */
 	public $addFormFactory;
+
+	/**
+	 * @var UserDataGridFactory User datagrid factory
+	 * @inject
+	 */
+	public $datagridFactory;
 
 	/**
 	 * @var UserEditFormFactory Edit an existing user form factory
@@ -54,13 +62,6 @@ class UserPresenter extends ProtectedPresenter {
 	public function __construct(UserManager $userManager) {
 		$this->userManager = $userManager;
 		parent::__construct();
-	}
-
-	/**
-	 * Render a list of users
-	 */
-	public function renderDefault(): void {
-		$this->template->users = $this->userManager->getUsers();
 	}
 
 	/**
@@ -93,6 +94,14 @@ class UserPresenter extends ProtectedPresenter {
 	 */
 	protected function createComponentUserAddForm(): Form {
 		return $this->addFormFactory->create($this);
+	}
+
+	/**
+	 * Create datagrid
+	 * @param string $name Component name
+	 */
+	protected function createComponentUserGrid(string $name): DataGrid {
+		return $this->datagridFactory->create($this, $name);
 	}
 
 	/**

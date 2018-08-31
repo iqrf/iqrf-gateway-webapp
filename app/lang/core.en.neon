@@ -77,6 +77,7 @@ user:
 		add: Add
 		edit: Edit
 		messages:
+			confirmDelete: Do you really want to delete user %s?
 			username: Please enter the username.
 			password: Please enter the password.
 			successAdd: User %username% has been added successfully.

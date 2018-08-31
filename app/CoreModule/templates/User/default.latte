@@ -17,38 +17,4 @@
 
 {block content}
 <h1 n:block=title>{_core.user.title}</h1>
-<div class='panel panel-default'>
-	<div class='panel-body'>
-		<table class='table table-striped'>
-			<thead>
-				<tr>
-					<th>{_core.user.form.id}</th>
-					<th>{_core.user.form.username}</th>
-					<th>{_core.user.form.userType}</th>
-					<th>{_core.user.form.language}</th>
-					<th>{_config.actions.Edit}</th>
-					<th>{_config.actions.Remove}</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr n:foreach="$users as $u">
-					<td>{$u['id']}</td>
-					<td>{$u['username']}</td>
-					<td>{_'core.user.form.userTypes.' . $u['role']}</td>
-					<td>{$u['language']}</td>
-					<td>
-						<a n:href="User:edit $u['id']">
-							<span class='glyphicon glyphicon-pencil' aria-hidden='true'></span>
-						</a>
-					</td>
-					<td>
-						<a n:href="User:delete $u['id']">
-							<span class='glyphicon glyphicon-remove' aria-hidden='true'></span>
-						</a>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-		<a class="btn btn-primary" n:href="User:add" role="button">Add</a>
-	</div>
-</div>
+{control userGrid}
