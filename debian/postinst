@@ -13,10 +13,8 @@ composer_init() {
 
 nginx_virtualhost_install() {
 	nginx_virtualhost_old_remove
-	if [ -d /etc/php/7.2/fpm/ ] && [ ! -L /etc/nginx/sites-available/iqrf-gateway-webapp.localhost ] ; then
+	if [ ! -L /etc/nginx/sites-available/iqrf-gateway-webapp.localhost ] ; then
 		ln -s /etc/iqrf-gateway-webapp/nginx/iqrf-gateway-webapp_php7-2.localhost /etc/nginx/sites-available/iqrf-gateway-webapp.localhost
-	elif [ -d /etc/php/7.0/fpm/ ] && [ ! -L /etc/nginx/sites-available/iqrf-gateway-webapp.localhost ] ; then
-		ln -s /etc/iqrf-gateway-webapp/nginx/iqrf-gateway-webapp_php7-0.localhost /etc/nginx/sites-available/iqrf-gateway-webapp.localhost
 	fi
 	if [ ! -L /etc/nginx/sites-enabled/iqrf-gateway-webapp.localhost ] ; then
 		ln -s /etc/nginx/sites-available/iqrf-gateway-webapp.localhost /etc/nginx/sites-enabled/iqrf-gateway-webapp.localhost
