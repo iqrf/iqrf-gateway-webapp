@@ -280,25 +280,32 @@ udp:
 websocket:
 	title: Websocket interface
 	description: IQRF Websocket interface settings.
+	form:
+		instance: Name of instance
+		acceptAsyncMsg: Accept Async messages
+		WebsocketPort: Websocket port
+		requiredInterface:
+			name: Required interface name
+			instance: Required websocket service
+		messages:
+			messagingInstance: Please enter name of websocket messaging.
+			serviceInstance: Please enter name of websocket service.
+			WebsocketPort: Please enter port of websocket service.
+		Save: Save
+	interface:
+		add: Add websocket interface
+		edit: Edit websocket interface
+		messages:
+			confirmDelete: Do you really want to delete websocket interface %s?
 	messaging:
 		title: Websocket messagings
-		form:
-			title: Edit websocket messaging
-			instance: Name of instance
-			acceptAsyncMsg: Accept Async messages
-			requiredInterface:
-				name: Required interface name
-				instance: Required websocket service
-			messages:
-				instance: Please enter name of websocket messaging.
-			Save: Save
+		add: Add websocket messaging
+		edit: Edit websocket messaging
+		messages:
+			confirmDelete: Do you really want to delete websocket messaging %s?
 	service:
 		title: Websocket services
-		form:
-			title: Edit websocket service
-			instance: Name of instance
-			WebsocketPort: Websocket port
-			messages:
-				instance: Please enter name of Websocket service.
-				WebsocketPort: Please enter port of websocket service.
-			Save: Save
+		add: Add websocket service
+		edit: Edit websocket service
+		messages:
+			confirmDelete: Do you really want to delete websocket service %s?

@@ -158,12 +158,12 @@ class WebsocketManager {
 	 * Get websocket instances
 	 * @return array Websocket instances
 	 */
-	public function getInstances(): array {
+	public function list(): array {
 		$this->genericManager->setComponent($this->components['messaging']);
 		$files = $this->genericManager->getInstanceFiles();
 		$instances = [];
 		foreach (array_keys($files) as $id) {
-			$instances[] = $this->load($id);
+			$instances[] = Arrays::mergeTree(['id' => $id], $this->load($id));
 		}
 		return $instances;
 	}

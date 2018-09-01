@@ -1,5 +1,6 @@
 services:
 	- App\ConfigModule\Datagrids\ComponentsDataGridFactory
+	- App\ConfigModule\Datagrids\WebsocketDataGridFactory
 	- App\ConfigModule\Forms\ComponentsFormFactory
 	- App\ConfigModule\Forms\IqrfCdcFormFactory
 	- App\ConfigModule\Forms\IqrfDpaFormFactory

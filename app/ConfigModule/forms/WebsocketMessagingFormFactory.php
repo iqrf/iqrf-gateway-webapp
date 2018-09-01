@@ -55,7 +55,7 @@ class WebsocketMessagingFormFactory extends GenericConfigFormFactory {
 		$this->id = intval($presenter->getParameter('id'));
 		$form = $this->factory->create();
 		$translator = $form->getTranslator();
-		$form->setTranslator($translator->domain('config.websocket.messaging.form'));
+		$form->setTranslator($translator->domain('config.websocket.form'));
 		if ($this->isExists()) {
 			$this->manager->setFileName($this->instances[$this->id]);
 			$defaults = $this->manager->load();
@@ -67,13 +67,13 @@ class WebsocketMessagingFormFactory extends GenericConfigFormFactory {
 		$requiredInterfaces = $form->addContainer('RequiredInterfaces');
 		foreach ($defaults['RequiredInterfaces'] as $id => $requiredInterface) {
 			$container = $requiredInterfaces->addContainer($id);
-			$container->addSelect('name', 'config.websocket.messaging.form.requiredInterface.name')
+			$container->addSelect('name', 'config.websocket.form.requiredInterface.name')
 					->setItems(['shape::IWebsocketService',], false)
 					->setTranslator($translator)
 					->setRequired('messages.requiredInterface.name');
 			$target = $container->addContainer('target');
-			$target->addSelect('instance', 'config.websocket.messaging.form.requiredInterface.instance')
-					->setItems($this->manager->getComponentInstances('shape::WebsocketService'), false)
+			$target->addSelect('instance', 'config.websocket.form.requiredInterface.instance')
+					->setItems($this->manager->getComponentInstances('shape::WebsocketCppService'), false)
 					->setTranslator($translator)
 					->setRequired('messages.requiredInterface.instance');
 		}

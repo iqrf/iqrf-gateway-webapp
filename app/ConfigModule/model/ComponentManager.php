@@ -54,8 +54,9 @@ class ComponentManager implements IConfigManager {
 	 * @param array $array Component's settings
 	 */
 	public function add(array $array): void {
-		$id = count($this->list());
-		$this->save($array, $id);
+		$json = $this->fileManager->read($this->fileName);
+		$json['components'][] = $array;
+		$this->fileManager->write($this->fileName, $json);
 	}
 
 	/**

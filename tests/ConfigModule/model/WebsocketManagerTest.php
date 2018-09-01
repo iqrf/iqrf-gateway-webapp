@@ -150,26 +150,29 @@ class WebsocketManagerTest extends TestCase {
 	/**
 	 * Test function to get a websocket interfaces
 	 */
-	public function testGetInstances(): void {
+	public function testList(): void {
 		$expected = [
 			[
+				'id' => 0,
 				'messagingInstance' => 'WebsocketMessaging',
 				'acceptAsyncMsg' => true,
 				'serviceInstance' => 'WebsocketCppService',
 				'port' => 1338,
 			], [
+				'id' => 1,
 				'messagingInstance' => 'WebsocketMessagingMobileApp',
 				'acceptAsyncMsg' => true,
 				'serviceInstance' => 'WebsocketCppServiceMobileApp',
 				'port' => 1339,
 			], [
+				'id' => 2,
 				'messagingInstance' => 'WebsocketMessagingWebApp',
 				'acceptAsyncMsg' => true,
 				'serviceInstance' => 'WebsocketCppServiceWebApp',
 				'port' => 1340,
 			],
 		];
-		Assert::same($expected, $this->manager->getInstances());
+		Assert::same($expected, $this->manager->list());
 	}
 
 	/**

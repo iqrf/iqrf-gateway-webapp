@@ -20,12 +20,14 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Presenters;
 
+use App\ConfigModule\Datagrids\WebsocketDataGridFactory;
 use App\ConfigModule\Forms\WebsocketFormFactory;
 use App\ConfigModule\Forms\WebsocketMessagingFormFactory;
 use App\ConfigModule\Forms\WebsocketServiceFormFactory;
 use App\ConfigModule\Model\GenericManager;
 use App\ConfigModule\Model\WebsocketManager;
 use Nette\Forms\Form;
+use Ublaboo\DataGrid\DataGrid;
 
 /**
  * Websocket interface configuration presenter
@@ -45,6 +47,12 @@ class WebsocketPresenter extends GenericPresenter {
 	 * @var WebsocketManager Websocket manager
 	 */
 	private $websocketManager;
+
+	/**
+	 * @var WebsocketDataGridFactory Websocket interface datagrid factory
+	 * @inject
+	 */
+	public $basicDataGridFactory;
 
 	/**
 	 * @var WebsocketFormFactory Websocket instance configuration form factory
@@ -82,7 +90,7 @@ class WebsocketPresenter extends GenericPresenter {
 		$this->template->messagings = $this->configManager->getInstances();
 		$this->configManager->setComponent($this->components['service']);
 		$this->template->services = $this->configManager->getInstances();
-		$this->template->interfaces = $this->websocketManager->getInstances();
+		$this->template->interfaces = $this->websocketManager->list();
 	}
 
 	/**
@@ -145,6 +153,15 @@ class WebsocketPresenter extends GenericPresenter {
 		$this->configManager->delete();
 		$this->redirect('Websocket:default');
 		$this->setView('default');
+	}
+
+	/**
+	 * Create websocket interfaces datagrid
+	 * @param string $name Datagrid's component name
+	 * @return DataGrid Websocket interfaces datagrid
+	 */
+	protected function createComponentConfigWebsocketDataGrid(string $name): DataGrid {
+		return $this->basicDataGridFactory->create($this, $name);
 	}
 
 	/**

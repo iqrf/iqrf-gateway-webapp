@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\ConfigModule\Forms;
 
@@ -46,11 +46,6 @@ class WebsocketFormFactory {
 	private $factory;
 
 	/**
-	 * @var int Websocket interface ID
-	 */
-	private $id;
-
-	/**
 	 * @var WebsocketPresenter Websocket interface presenter
 	 */
 	private $presenter;
@@ -72,16 +67,19 @@ class WebsocketFormFactory {
 	 */
 	public function create(WebsocketPresenter $presenter): Form {
 		$this->presenter = $presenter;
-		$this->id = intval($presenter->getParameter('id'));
 		$form = $this->factory->create();
 		$translator = $form->getTranslator();
 		$form->setTranslator($translator->domain('config.websocket.form'));
-		$form->addInteger('port', 'port')->setRequired('messages.port');
+		$form->addInteger('port', 'WebsocketPort')->setRequired('messages.WebsocketPort');
 		$form->addCheckbox('acceptAsyncMsg', 'acceptAsyncMsg');
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');
-		if (array_key_exists($this->id, $this->manager->getInstances())) {
-			$form->setDefaults($this->manager->load($this->id));
+		$parameter = $presenter->getParameter('id');
+		if (isset($parameter)) {
+			$id = intval($parameter);
+			if (array_key_exists($id, $this->manager->list())) {
+				$form->setDefaults($this->manager->load($id));
+			}
 		}
 		$form->onSuccess[] = [$this, 'save'];
 		return $form;
