@@ -19,7 +19,7 @@ nginx_virtualhost_install() {
 	if [ ! -L /etc/nginx/sites-enabled/iqrf-gateway-webapp.localhost ] ; then
 		ln -s /etc/nginx/sites-available/iqrf-gateway-webapp.localhost /etc/nginx/sites-enabled/iqrf-gateway-webapp.localhost
 	fi
-	deb-systemd-invoke reload nginx
+	deb-systemd-invoke reload nginx.service
 }
 
 nginx_virtualhost_old_remove() {
@@ -35,6 +35,13 @@ nginx_virtualhost_old_remove() {
 	if [ -e /etc/nginx/sites-available/iqrf-gateway-webapp.localhost ] ; then
 		rm /etc/nginx/sites-available/iqrf-gateway-webapp.localhost
 	fi
+}
+
+sudoers_rule_install() {
+	if [ ! -L /etc/sudoers.d/iqrf-gateway-webapp ] ; then
+		ln -s /etc/iqrf-gateway-webapp/sudoers/iqrf-gateway-webapp /etc/sudoers.d/iqrf-gateway-webapp
+	fi
+	deb-systemd-invoke restart sudo.service
 }
 
 webapp_chmod_dirs() {

@@ -16,7 +16,13 @@ nginx_remove() {
 	if [ -e /etc/nginx/sites-enabled/iqrf-gateway-webapp.localhost ] ; then
 		rm /etc/nginx/sites-enabled/iqrf-gateway-webapp.localhost
 	fi
-	deb-systemd-invoke reload nginx
+	deb-systemd-invoke reload nginx.service
+}
+sudoers_rule_remove() {
+	if [ -e /etc/sudoers.d/iqrf-gateway-webapp ] ; then
+		rm /etc/sudoers.d/iqrf-gateway-webapp
+	fi
+	deb-systemd-invoke restart sudo.service
 }
 
 webapp_remove_config() {
