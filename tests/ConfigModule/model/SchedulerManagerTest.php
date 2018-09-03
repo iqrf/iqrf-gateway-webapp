@@ -189,7 +189,7 @@ class SchedulerManagerTest extends TestCase {
 	/**
 	 * Test function to get tasks
 	 */
-	public function testGetTasks(): void {
+	public function testList(): void {
 		$expected = [
 			[
 				'time' => '*/5 * 1 * * * *',
@@ -207,7 +207,7 @@ class SchedulerManagerTest extends TestCase {
 				'id' => 1,
 			],
 		];
-		Assert::equal($expected, $this->manager->getTasks());
+		Assert::equal($expected, $this->manager->list());
 	}
 
 	/**
@@ -229,18 +229,6 @@ class SchedulerManagerTest extends TestCase {
 		$expected['TasksJson'][0]['message']['nadr'] = '0';
 		$this->manager->save($array, 0);
 		Assert::equal($expected, $this->fileManagerTemp->read($this->fileName));
-	}
-
-	/**
-	 * Test function to parse configuration of Scheduler
-	 */
-	public function testSaveJson(): void {
-		$update = $this->array;
-		$update['task']['message']['msgid'] = '2';
-		$json = $this->fileManager->read($this->fileName);
-		$expected = $json;
-		$expected['TasksJson'][0]['task']['message']['msgid'] = '2';
-		Assert::equal($expected, $this->manager->saveJson($json, $update, 0));
 	}
 
 }

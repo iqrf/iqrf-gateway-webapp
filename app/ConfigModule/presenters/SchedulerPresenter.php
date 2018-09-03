@@ -20,17 +20,25 @@ declare(strict_types=1);
 
 namespace App\ConfigModule\Presenters;
 
+use App\ConfigModule\Datagrids\SchedulerDataGridFactory;
 use App\ConfigModule\Model\SchedulerManager;
 use App\ConfigModule\Forms\SchedulerFormFactory;
 use App\CoreModule\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 use Nette\IOException;
 use Nette\Utils\JsonException;
+use Ublaboo\DataGrid\DataGrid;
 
 /**
  * Scheduler configuration presenter
  */
 class SchedulerPresenter extends ProtectedPresenter {
+
+	/**
+	 * @var SchedulerDataGridFactory Scheduler's tasks datagrid
+	 * @inject
+	 */
+	public $datagridFactory;
 
 	/**
 	 * @var SchedulerFormFactory Scheduler's task configuration form factory
@@ -57,7 +65,7 @@ class SchedulerPresenter extends ProtectedPresenter {
 	 */
 	public function actionDefault(): void {
 		try {
-			$this->configManager->getTasks();
+			$this->configManager->list();
 		} catch (IOException $e) {
 			$this->flashMessage('config.messages.readFailure', 'danger');
 			$this->redirect('Homepage:default');
@@ -71,7 +79,7 @@ class SchedulerPresenter extends ProtectedPresenter {
 	 * Render list tasks in scheduler
 	 */
 	public function renderDefault(): void {
-		$this->template->tasks = $this->configManager->getTasks();
+		$this->template->tasks = $this->configManager->list();
 	}
 
 	/**
@@ -100,6 +108,15 @@ class SchedulerPresenter extends ProtectedPresenter {
 		$this->configManager->delete($id);
 		$this->redirect('Scheduler:default');
 		$this->setView('default');
+	}
+
+	/**
+	 * Create scheduler's tasks datagrid
+	 * @param string $name Datagrid's component name
+	 * @return DataGrid Scheduler's tasks datagrid
+	 */
+	protected function createComponentConfigSchedulerDataGrid(string $name): DataGrid {
+		return $this->datagridFactory->create($this, $name);
 	}
 
 	/**

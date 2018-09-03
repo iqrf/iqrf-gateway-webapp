@@ -224,6 +224,7 @@ scheduler:
 	description: Scheduler settings.
 	form:
 		title: Edit task
+		id: ID
 		time: Time
 		service: Service
 		messaging: Messaging
@@ -251,6 +252,7 @@ scheduler:
 		rcode: Response code
 		dpaval: DPA value
 		messages:
+			confirmDelete: Do you really want to delete task with ID %s?
 			ctype: Please select category of message.
 			ctype-prompt: Select category of message
 			hwpid-rule: HWPID has to contain hexadecimal number of maximal length of 4 chars.

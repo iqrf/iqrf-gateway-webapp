@@ -119,7 +119,7 @@ class SchedulerManager {
 		if ($data['type'] === 'raw') {
 			return $data['request'];
 		}
-		$nadr = (!isset($data['nadr']) ? '00' : Strings::padLeft($data['nadr'], 2, '0')) . '.00.';
+		$nadr = (isset($data['nadr']) ? Strings::padLeft($data['nadr'], 2, '0') : '00') . '.00.';
 		$hwpid = (isset($data['hwpid']) ? $this->fixHwpid($data['hwpid']) : 'ff.ff');
 		switch ($data['type']) {
 			case 'raw-hdp':
@@ -159,7 +159,7 @@ class SchedulerManager {
 	 * Get tasks in Scheduler
 	 * @return array Tasks
 	 */
-	public function getTasks(): array {
+	public function list(): array {
 		$jsonTasks = $this->fileManager->read($this->fileName)['TasksJson'];
 		$tasks = [];
 		foreach ($jsonTasks as $json) {
@@ -182,7 +182,7 @@ class SchedulerManager {
 	 * @param int $id Task ID
 	 * @return array Array for form
 	 */
-	public function load(int $id = 0): array {
+	public function load(int $id): array {
 		$json = $this->fileManager->read($this->fileName);
 		$tasks = $json['TasksJson'];
 		if ($id > count($tasks)) {
@@ -196,21 +196,10 @@ class SchedulerManager {
 	 * @param array $array Scheduler settings
 	 * @param int $id Task ID
 	 */
-	public function save(array $array, int $id = 0): void {
-		$json = $this->saveJson($this->fileManager->read($this->fileName), $array, $id);
+	public function save(array $array, int $id): void {
+		$json = $this->fileManager->read($this->fileName);
+		$json['TasksJson'][$id] = $array;
 		$this->fileManager->write($this->fileName, $json);
-	}
-
-	/**
-	 * Convert Task configuration form array to JSON array
-	 * @param array $scheduler Original Task JSON array
-	 * @param array $update Changed settings
-	 * @param int $id Task ID
-	 * @return array JSON array
-	 */
-	public function saveJson(array $scheduler, array $update, int $id): array {
-		$scheduler['TasksJson'][$id] = $update;
-		return $scheduler;
 	}
 
 }
