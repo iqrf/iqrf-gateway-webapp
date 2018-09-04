@@ -71,8 +71,8 @@
 								<li><a n:href=':Config:Websocket:default'>{_config.websocket.title}</a></li>
 								<li><a n:href=':Config:Mq:default'>{_config.mq.title}</a></li>
 								<li><a n:href=':Config:Udp:default'>{_config.udp.title}</a></li>
-								<li><a n:href=':Config:JsonRawApi:default'>{_config.jsonRawApi.title}</a></li>
-								<li><a n:href=':Config:JsonSplitter:default'>{_config.jsonSplitter.title}</a></li>
+								<li><a n:if='$user->isInRole("power")' n:href=':Config:JsonRawApi:default'>{_config.jsonRawApi.title}</a></li>
+								<li><a n:if='$user->isInRole("power")' n:href=':Config:JsonSplitter:default'>{_config.jsonSplitter.title}</a></li>
 								<li><a n:href=':Config:Scheduler:default'>{_config.scheduler.title}</a></li>
 							</ul>
 						</li>

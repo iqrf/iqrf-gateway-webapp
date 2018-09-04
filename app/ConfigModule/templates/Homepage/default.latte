@@ -62,11 +62,11 @@
 		<header class='list-group-item-heading'>{_config.udp.title}</header>
 		<p class='list-group-item-text'>{_config.udp.description}</p>
 	</a>
-	<a n:href='JsonRawApi:default' class='list-group-item'>
+	<a n:if='$user->isInRole("power")' n:href='JsonRawApi:default' class='list-group-item'>
 		<header class='list-group-item-heading'>{_config.jsonRawApi.title}</header>
 		<p class='list-group-item-text'>{_config.jsonRawApi.description}</p>
 	</a>
-	<a n:href='JsonSplitter:default' class='list-group-item'>
+	<a n:if='$user->isInRole("power")' n:href='JsonSplitter:default' class='list-group-item'>
 		<header class='list-group-item-heading'>{_config.jsonSplitter.title}</header>
 		<p class='list-group-item-text'>{_config.jsonSplitter.description}</p>
 	</a>
