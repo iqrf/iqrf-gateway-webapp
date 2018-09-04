@@ -42,12 +42,11 @@ class JsonDpaApiRawFormFactory extends GenericConfigFormFactory {
 		$this->presenter = $presenter;
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('config.jsonRawApi.form'));
-		$this->manager->setFileName($this->manager->getInstanceFiles()[0]);
 		$form->addText('instance', 'instance')->setRequired('messages.instance');
 		$form->addCheckbox('asyncDpaMessage', 'asyncDpaMessage');
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');
-		$form->setDefaults($this->manager->load());
+		$form->setDefaults($this->manager->load(0));
 		$form->onSuccess[] = [$this, 'save'];
 		return $form;
 	}

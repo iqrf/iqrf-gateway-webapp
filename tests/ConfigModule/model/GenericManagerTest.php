@@ -13,6 +13,7 @@ namespace Test\ConfigModule\Model;
 use App\ConfigModule\Model\GenericManager;
 use App\CoreModule\Model\JsonFileManager;
 use App\CoreModule\Model\JsonSchemaManager;
+use Nette\Utils\Arrays;
 use Nette\DI\Container;
 use Tester\Assert;
 use Tester\TestCase;
@@ -85,10 +86,11 @@ class GenericManagerTest extends TestCase {
 	 * Test function to delete the instance of component
 	 */
 	public function testDelete(): void {
+		$this->managerTemp->setComponent($this->component);
 		$this->fileManagerTemp->write($this->fileName, $this->fileManager->read($this->fileName));
 		Assert::true($this->fileManagerTemp->exists($this->fileName));
-		$this->managerTemp->setFileName($this->fileName);
-		$this->managerTemp->delete();
+		$id = array_search($this->fileName, $this->managerTemp->getInstanceFiles(), true);
+		$this->managerTemp->delete($id);
 		Assert::false($this->fileManagerTemp->exists($this->fileName));
 	}
 
@@ -125,7 +127,7 @@ class GenericManagerTest extends TestCase {
 	/**
 	 * Test function to get component's instances
 	 */
-	public function testGetInstances(): void {
+	public function testGetInstanceFiles(): void {
 		$this->manager->setComponent($this->component);
 		$expected = ['iqrf__MqttMessaging',];
 		Assert::equal($expected, $this->manager->getInstanceFiles());
@@ -148,12 +150,22 @@ class GenericManagerTest extends TestCase {
 	}
 
 	/**
-	 * Test function to load main configuration of daemon
+	 * Test function to load configuration
 	 */
 	public function testLoad(): void {
-		$this->manager->setFileName($this->fileName);
+		$this->manager->setComponent($this->component);
 		$expected = $this->fileManager->read($this->fileName);
-		Assert::equal($expected, $this->manager->load());
+		Assert::equal($expected, $this->manager->load(0));
+	}
+
+	/**
+	 * Test function to list configurations
+	 */
+	public function testList(): void {
+		$this->manager->setComponent($this->component);
+		$file = $this->fileManager->read($this->fileName);
+		$expected = [Arrays::mergeTree(['id' => 0], $file)];
+		Assert::equal($expected, $this->manager->list());
 	}
 
 	/**

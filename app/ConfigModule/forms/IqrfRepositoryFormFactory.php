@@ -42,13 +42,12 @@ class IqrfRepositoryFormFactory extends GenericConfigFormFactory {
 		$this->presenter = $presenter;
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('config.iqrfRepository.form'));
-		$this->manager->setFileName($this->manager->getInstanceFiles()[0]);
 		$form->addText('instance', 'instance')->setRequired('messages.instance');
 		$form->addText('urlRepo', 'urlRepo')->setRequired('messages.urlRepo');
 		$form->addInteger('checkPeriodInMinutes', 'checkPeriodInMinutes');
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');
-		$form->setDefaults($this->manager->load());
+		$form->setDefaults($this->manager->load(0));
 		$form->onSuccess[] = [$this, 'save'];
 		return $form;
 	}

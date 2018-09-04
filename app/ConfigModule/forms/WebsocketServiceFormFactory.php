@@ -33,46 +33,26 @@ class WebsocketServiceFormFactory extends GenericConfigFormFactory {
 	use Nette\SmartObject;
 
 	/**
-	 * @var int Websocket service ID
-	 */
-	private $id;
-
-	/**
-	 * @var array Files with websocket service instances
-	 */
-	private $instances;
-
-	/**
 	 * Create websocket service configuration form
 	 * @param WebsocketPresenter $presenter Websocket interface presenter
 	 * @return Form Websocket service configuration form
 	 */
 	public function create(WebsocketPresenter $presenter): Form {
 		$this->manager->setComponent('shape::WebsocketCppService');
-		$this->instances = $this->manager->getInstanceFiles();
 		$this->redirect = 'Websocket:default';
 		$this->presenter = $presenter;
-		$this->id = intval($presenter->getParameter('id'));
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('config.websocket.form'));
 		$form->addText('instance', 'instance')->setRequired('messages.instance');
 		$form->addInteger('WebsocketPort', 'WebsocketPort')->setRequired('messages.WebsocketPort');
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');
-		if ($this->isExists()) {
-			$this->manager->setFileName($this->instances[$this->id]);
-			$form->setDefaults($this->manager->load());
+		$id = $presenter->getParameter('id');
+		if (isset($id)) {
+			$form->setDefaults($this->manager->load(intval($id)));
 		}
 		$form->onSuccess[] = [$this, 'save'];
 		return $form;
-	}
-
-	/**
-	 * Check if instance exists
-	 * @return bool Is instance exists?
-	 */
-	public function isExists(): bool {
-		return array_key_exists($this->id, $this->instances);
 	}
 
 }

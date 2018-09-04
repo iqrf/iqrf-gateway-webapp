@@ -67,19 +67,41 @@ class GenericManager {
 
 	/**
 	 * Delete a configuration
+	 * @param int $id Configuration ID
 	 */
-	public function delete(): void {
-		$this->fileManager->delete($this->fileName);
+	public function delete(int $id): void {
+		$instanceFiles = $this->getInstanceFiles();
+		if (isset($instanceFiles[$id])) {
+			$this->fileManager->delete($instanceFiles[$id]);
+		}
 	}
 
 	/**
 	 * Load a configuration
-	 * @return array Array for form
+	 * @param int $id Configuration ID
+	 * @return array Configuration in an array
 	 */
-	public function load(): array {
-		$configuration = $this->fileManager->read($this->fileName);
+	public function load(int $id): array {
+		$instanceFiles = $this->getInstanceFiles();
+		if (!isset($instanceFiles[$id])) {
+			return [];
+		}
+		$configuration = $this->fileManager->read($instanceFiles[$id]);
 		$this->fixRequiredInterfaces($configuration);
 		return $configuration;
+	}
+
+	/**
+	 * List configurations
+	 * @return array Configurations
+	 */
+	public function list(): array {
+		$files = array_keys($this->getInstanceFiles());
+		$instances = [];
+		foreach ($files as $id) {
+			$instances[] = Arrays::mergeTree(['id' => $id], $this->load($id));
+		}
+		return $instances;
 	}
 
 	/**
@@ -119,20 +141,6 @@ class GenericManager {
 	 */
 	public function setFileName(string $fileName): void {
 		$this->fileName = $fileName;
-	}
-
-	/**
-	 * Get component's instance
-	 * @return array Component's instances
-	 */
-	public function getInstances(): array {
-		$files = $this->getInstanceFiles();
-		$instances = [];
-		foreach ($files as $file) {
-			$this->fileName = $file;
-			$instances[] = $this->load();
-		}
-		return $instances;
 	}
 
 	/**
@@ -176,7 +184,9 @@ class GenericManager {
 	public function getComponentInstances(string $component): array {
 		$instances = [];
 		$this->setComponent($component);
-		foreach ($this->getInstances() as $instance) {
+		$files = array_keys($this->getInstanceFiles());
+		foreach ($files as $id) {
+			$instance = $this->load($id);
 			$instances[] = $instance['instance'];
 		}
 		return $instances;

@@ -42,12 +42,11 @@ class OtaUploadFormFactory extends GenericConfigFormFactory {
 		$this->presenter = $presenter;
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('config.iqmesh.otaUpload.form'));
-		$this->manager->setFileName($this->manager->getInstanceFiles()[0]);
 		$form->addText('instance', 'instance')->setRequired('messages.instance');
 		$form->addText('uploadPath', 'uploadPath')->setRequired('messages.uploadPath');
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');
-		$form->setDefaults($this->manager->load());
+		$form->setDefaults($this->manager->load(0));
 		$form->onSuccess[] = [$this, 'save'];
 		return $form;
 	}

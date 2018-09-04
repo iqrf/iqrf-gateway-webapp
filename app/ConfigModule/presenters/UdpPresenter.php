@@ -20,9 +20,11 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Presenters;
 
+use App\ConfigModule\Datagrids\UdpMessagingDataGridFactory;
 use App\ConfigModule\Forms\UdpFormFactory;
 use App\ConfigModule\Model\GenericManager;
 use Nette\Forms\Form;
+use Ublaboo\DataGrid\DataGrid;
 
 /**
  * UDP interface configuration presenter
@@ -36,19 +38,18 @@ class UdpPresenter extends GenericPresenter {
 	public $formFactory;
 
 	/**
+	 * @var UdpMessagingDataGridFactory UDP messaging configuration data grid factory
+	 * @inject
+	 */
+	public $dataGridFactory;
+
+	/**
 	 * Constructor
 	 * @param GenericManager $genericManager Generic configuration manager
 	 */
 	public function __construct(GenericManager $genericManager) {
 		$components = ['iqrf::UdpMessaging'];
 		parent::__construct($components, $genericManager);
-	}
-
-	/**
-	 * Render list of UDP interfaces
-	 */
-	public function renderDefault(): void {
-		$this->template->instances = $this->configManager->getInstances();
 	}
 
 	/**
@@ -64,11 +65,19 @@ class UdpPresenter extends GenericPresenter {
 	 * @param int $id ID of UDP interface
 	 */
 	public function actionDelete(int $id): void {
-		$fileName = $this->configManager->getInstanceFiles()[$id];
-		$this->configManager->setFileName($fileName);
-		$this->configManager->delete();
+		$this->configManager->setComponent('iqrf::UdpMessaging');
+		$this->configManager->delete($id);
 		$this->redirect('Udp:default');
 		$this->setView('default');
+	}
+
+	/**
+	 * Create UDP messaging datagrid
+	 * @param string $name Datagrid's component name
+	 * @return DataGrid UDP messaging datagrid
+	 */
+	protected function createComponentConfigUdpDataGrid(string $name): DataGrid {
+		return $this->dataGridFactory->create($this, $name);
 	}
 
 	/**

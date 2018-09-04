@@ -42,7 +42,6 @@ class IqrfSpiFormFactory extends GenericConfigFormFactory {
 		$this->presenter = $presenter;
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('config.iqrfSpi.form'));
-		$this->manager->setFileName($this->manager->getInstanceFiles()[0]);
 		$form->addText('instance', 'instance')->setRequired('messages.instance');
 		$form->addText('IqrfInterface', 'IqrfInterface')->setRequired('messages.IqrfInterface');
 		$form->addInteger('enableGpioPin', 'enableGpioPin');
@@ -52,7 +51,7 @@ class IqrfSpiFormFactory extends GenericConfigFormFactory {
 		$form->addInteger('spiClkGpioPin', 'spiClkGpioPin');
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');
-		$form->setDefaults($this->manager->load());
+		$form->setDefaults($this->manager->load(0));
 		$form->onSuccess[] = [$this, 'save'];
 		return $form;
 	}

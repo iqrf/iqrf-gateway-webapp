@@ -33,26 +33,14 @@ class UdpFormFactory extends GenericConfigFormFactory {
 	use Nette\SmartObject;
 
 	/**
-	 * @var array Files with UDP interface instances
-	 */
-	private $instances;
-
-	/**
-	 * @var int UDP interface ID
-	 */
-	private $id;
-
-	/**
 	 * Create UDP interface configuration form
 	 * @param UdpPresenter $presenter UDP interface presenter
 	 * @return Form UDP interface configuration form
 	 */
 	public function create(UdpPresenter $presenter): Form {
 		$this->manager->setComponent('iqrf::UdpMessaging');
-		$this->instances = $this->manager->getInstanceFiles();
 		$this->redirect = 'Udp:default';
 		$this->presenter = $presenter;
-		$this->id = intval($presenter->getParameter('id'));
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('config.udp.form'));
 		$form->addText('instance', 'instance')->setRequired('messages.instance');
@@ -60,20 +48,12 @@ class UdpFormFactory extends GenericConfigFormFactory {
 		$form->addInteger('LocalPort', 'LocalPort')->setRequired('messages.LocalPort');
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');
-		if ($this->isExists()) {
-			$this->manager->setFileName($this->instances[$this->id]);
-			$form->setDefaults($this->manager->load());
+		$id = $presenter->getParameter('id');
+		if (isset($id)) {
+			$form->setDefaults($this->manager->load(intval($id)));
 		}
 		$form->onSuccess[] = [$this, 'save'];
 		return $form;
-	}
-
-	/**
-	 * Check if instance exists
-	 * @return bool Is instance exists?
-	 */
-	public function isExists(): bool {
-		return array_key_exists($this->id, $this->instances);
 	}
 
 	/**
@@ -81,7 +61,9 @@ class UdpFormFactory extends GenericConfigFormFactory {
 	 * @param Form $form IDP interface configuration form
 	 */
 	public function save(Form $form): void {
-		if (!$this->isExists() && count($this->instances) >= 1) {
+		$instances = $this->manager->getInstanceFiles();
+		$id = intval($this->presenter->getParameter('id'));
+		if (array_key_exists($id, $instances) && count($instances) >= 1) {
 			$this->presenter->flashMessage('config.messages.multipleInstancesFailure', 'danger');
 			$this->presenter->redirect('Udp:default');
 		}

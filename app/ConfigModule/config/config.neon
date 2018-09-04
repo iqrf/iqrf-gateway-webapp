@@ -1,7 +1,12 @@
 services:
 	- App\ConfigModule\Datagrids\ComponentsDataGridFactory
+	- App\ConfigModule\Datagrids\MqMessagingDataGridFactory
+	- App\ConfigModule\Datagrids\MqttMessagingDataGridFactory
 	- App\ConfigModule\Datagrids\SchedulerDataGridFactory
+	- App\ConfigModule\Datagrids\UdpMessagingDataGridFactory
 	- App\ConfigModule\Datagrids\WebsocketDataGridFactory
+	- App\ConfigModule\Datagrids\WebsocketMessagingDataGridFactory
+	- App\ConfigModule\Datagrids\WebsocketServiceDataGridFactory
 	- App\ConfigModule\Forms\ComponentsFormFactory
 	- App\ConfigModule\Forms\IqrfCdcFormFactory
 	- App\ConfigModule\Forms\IqrfDpaFormFactory

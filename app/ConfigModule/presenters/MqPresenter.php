@@ -20,9 +20,11 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Presenters;
 
+use App\ConfigModule\Datagrids\MqMessagingDataGridFactory;
 use App\ConfigModule\Model\GenericManager;
 use App\ConfigModule\Forms\MqFormFactory;
 use Nette\Forms\Form;
+use Ublaboo\DataGrid\DataGrid;
 
 /**
  * MQ interface configuration presenter
@@ -36,19 +38,18 @@ class MqPresenter extends GenericPresenter {
 	public $formFactory;
 
 	/**
+	 * @var MqMessagingDataGridFactory MQ messaging configuration data grid factory
+	 * @inject
+	 */
+	public $dataGridFactory;
+
+	/**
 	 * Constructor
 	 * @param GenericManager $genericManager Generic configuration manager
 	 */
 	public function __construct(GenericManager $genericManager) {
 		$components = ['iqrf::MqMessaging'];
 		parent::__construct($components, $genericManager);
-	}
-
-	/**
-	 * Render list of MQ interfaces
-	 */
-	public function renderDefault(): void {
-		$this->template->instances = $this->configManager->getInstances();
 	}
 
 	/**
@@ -64,11 +65,19 @@ class MqPresenter extends GenericPresenter {
 	 * @param int $id ID of MQ interface
 	 */
 	public function actionDelete(int $id): void {
-		$fileName = $this->configManager->getInstanceFiles()[$id];
-		$this->configManager->setFileName($fileName);
-		$this->configManager->delete();
+		$this->configManager->setComponent('iqrf::MqMessaging');
+		$this->configManager->delete($id);
 		$this->redirect('Mq:default');
 		$this->setView('default');
+	}
+
+	/**
+	 * Create MQ messaging datagrid
+	 * @param string $name Datagrid's component name
+	 * @return DataGrid MQ messaging datagrid
+	 */
+	protected function createComponentConfigMqDataGrid(string $name): DataGrid {
+		return $this->dataGridFactory->create($this, $name);
 	}
 
 	/**

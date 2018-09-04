@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\ConfigModule\Presenters;
 
@@ -76,10 +76,9 @@ abstract class GenericPresenter extends ProtectedPresenter {
 	private function checkInstanceFiles(): void {
 		foreach ($this->components as $component) {
 			$this->configManager->setComponent($component);
-			$files = $this->configManager->getInstanceFiles();
-			foreach ($files as $file) {
-				$this->configManager->setFileName($file);
-				$this->configManager->load();
+			$files = array_keys($this->configManager->getInstanceFiles());
+			foreach ($files as $id) {
+				$this->configManager->load($id);
 			}
 		}
 	}

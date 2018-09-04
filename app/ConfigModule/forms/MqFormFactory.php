@@ -33,26 +33,14 @@ class MqFormFactory extends GenericConfigFormFactory {
 	use Nette\SmartObject;
 
 	/**
-	 * @var int MQ interface ID
-	 */
-	private $id;
-
-	/**
-	 * @var array Files with MQ interface instances
-	 */
-	private $instances;
-
-	/**
 	 * Create MQ interface configuration form
 	 * @param MqPresenter $presenter MQ interface presenter
 	 * @return Form MQ interface configuration form
 	 */
 	public function create(MqPresenter $presenter): Form {
 		$this->manager->setComponent('iqrf::MqMessaging');
-		$this->instances = $this->manager->getInstanceFiles();
 		$this->redirect = 'Mq:default';
 		$this->presenter = $presenter;
-		$this->id = intval($presenter->getParameter('id'));
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('config.mq.form'));
 		$form->addText('instance', 'instance')->setRequired('messages.instance');
@@ -61,20 +49,12 @@ class MqFormFactory extends GenericConfigFormFactory {
 		$form->addCheckbox('acceptAsyncMsg', 'acceptAsyncMsg');
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');
-		if ($this->isExists()) {
-			$this->manager->setFileName($this->instances[$this->id]);
-			$form->setDefaults($this->manager->load());
+		$id = $presenter->getParameter('id');
+		if (isset($id)) {
+			$form->setDefaults($this->manager->load(intval($id)));
 		}
 		$form->onSuccess[] = [$this, 'save'];
 		return $form;
-	}
-
-	/**
-	 * Check if instance exists
-	 * @return bool Is instance exists?
-	 */
-	public function isExists(): bool {
-		return array_key_exists($this->id, $this->instances);
 	}
 
 }

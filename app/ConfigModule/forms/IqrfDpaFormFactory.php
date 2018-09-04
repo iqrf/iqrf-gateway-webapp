@@ -42,26 +42,45 @@ class IqrfDpaFormFactory extends GenericConfigFormFactory {
 		$this->presenter = $presenter;
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('config.iqrfDpa.form'));
-		$communicationModes = ['STD' => 'CommunicationModes.STD', 'LP' => 'CommunicationModes.LP'];
+		$form->addText('instance', 'instance')->setRequired('messages.instance');
+		$form->addInteger('DpaHandlerTimeout', 'DpaHandlerTimeout')->setRequired('messages.DpaHandlerTimeout')
+				->addRule(Form::MIN, 'messages.DpaHandlerTimeout-rule', 0);
+		$form->addSelect('CommunicationMode', 'CommunicationMode', $this->getCommunicationModes());
+		$form->addInteger('BondedNodes', 'BondedNodes');
+		$form->addInteger('DiscoveredNodes', 'DiscoveredNodes');
+		$form->addSelect('ResponseTime', 'ResponseTime', $this->getResponseTimes());
+		$form->addSubmit('save', 'Save');
+		$form->setDefaults($this->manager->load(0));
+		$form->addProtection('core.errors.form-timeout');
+		$form->onSuccess[] = [$this, 'save'];
+		return $form;
+	}
+
+	/**
+	 * Get communication modes for the form
+	 * @return array Communication modes for the form
+	 */
+	public function getCommunicationModes(): array {
+		$modes = ['STD', 'LP'];
+		foreach ($modes as $index => $mode) {
+			unset($modes[$index]);
+			$modes[$mode] = 'CommunicationModes.' . $mode;
+		}
+		return $modes;
+	}
+
+	/**
+	 * Get response times for the form
+	 * @return array Response times for the form
+	 */
+	public function getResponseTimes(): array {
 		$responseTimes = ['k40Ms', 'k360Ms', 'k680Ms', 'k1320Ms', 'k2600Ms',
 			'k5160Ms', 'k10280Ms', 'k20620Ms',];
 		foreach ($responseTimes as $key => $time) {
 			unset($responseTimes[$key]);
 			$responseTimes[$time] = 'ResponseTimes.' . $time;
 		}
-		$this->manager->setFileName($this->manager->getInstanceFiles()[0]);
-		$form->addText('instance', 'instance')->setRequired('messages.instance');
-		$form->addInteger('DpaHandlerTimeout', 'DpaHandlerTimeout')->setRequired('messages.DpaHandlerTimeout')
-				->addRule(Form::MIN, 'messages.DpaHandlerTimeout-rule', 0);
-		$form->addSelect('CommunicationMode', 'CommunicationMode', $communicationModes);
-		$form->addInteger('BondedNodes', 'BondedNodes');
-		$form->addInteger('DiscoveredNodes', 'DiscoveredNodes');
-		$form->addSelect('ResponseTime', 'ResponseTime', $responseTimes);
-		$form->addSubmit('save', 'Save');
-		$form->setDefaults($this->manager->load());
-		$form->addProtection('core.errors.form-timeout');
-		$form->onSuccess[] = [$this, 'save'];
-		return $form;
+		return $responseTimes;
 	}
 
 }

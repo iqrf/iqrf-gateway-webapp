@@ -21,6 +21,8 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Datagrids\WebsocketDataGridFactory;
+use App\ConfigModule\Datagrids\WebsocketMessagingDataGridFactory;
+use App\ConfigModule\Datagrids\WebsocketServiceDataGridFactory;
 use App\ConfigModule\Forms\WebsocketFormFactory;
 use App\ConfigModule\Forms\WebsocketMessagingFormFactory;
 use App\ConfigModule\Forms\WebsocketServiceFormFactory;
@@ -61,10 +63,22 @@ class WebsocketPresenter extends GenericPresenter {
 	public $basicFormFactory;
 
 	/**
+	 * @var WebsocketMessagingDataGridFactory Websocket messaging configuration datagrid factory
+	 * @inject
+	 */
+	public $messagingDataGridFactory;
+
+	/**
 	 * @var WebsocketMessagingFormFactory Websocket messaging configuration form factory
 	 * @inject
 	 */
 	public $messagingFormFactory;
+
+	/**
+	 * @var WebsocketServiceDataGridFactory Websocket service configuration data grid
+	 * @inject
+	 */
+	public $serviceDataGridFactory;
 
 	/**
 	 * @var WebsocketServiceFormFactory Websocket service configuration form factory
@@ -80,17 +94,6 @@ class WebsocketPresenter extends GenericPresenter {
 	public function __construct(GenericManager $genericManager, WebsocketManager $websocketManager) {
 		$this->websocketManager = $websocketManager;
 		parent::__construct($this->components, $genericManager);
-	}
-
-	/**
-	 * Render list of Websocket interfaces
-	 */
-	public function renderDefault(): void {
-		$this->configManager->setComponent($this->components['messaging']);
-		$this->template->messagings = $this->configManager->getInstances();
-		$this->configManager->setComponent($this->components['service']);
-		$this->template->services = $this->configManager->getInstances();
-		$this->template->interfaces = $this->websocketManager->list();
 	}
 
 	/**
@@ -135,9 +138,7 @@ class WebsocketPresenter extends GenericPresenter {
 	 */
 	public function actionDeleteMessaging(int $id): void {
 		$this->configManager->setComponent($this->components['messaging']);
-		$fileName = $this->configManager->getInstanceFiles()[$id];
-		$this->configManager->setFileName($fileName);
-		$this->configManager->delete();
+		$this->configManager->delete($id);
 		$this->redirect('Websocket:default');
 		$this->setView('default');
 	}
@@ -148,9 +149,7 @@ class WebsocketPresenter extends GenericPresenter {
 	 */
 	public function actionDeleteService(int $id): void {
 		$this->configManager->setComponent($this->components['service']);
-		$fileName = $this->configManager->getInstanceFiles()[$id];
-		$this->configManager->setFileName($fileName);
-		$this->configManager->delete();
+		$this->configManager->delete($id);
 		$this->redirect('Websocket:default');
 		$this->setView('default');
 	}
@@ -173,11 +172,29 @@ class WebsocketPresenter extends GenericPresenter {
 	}
 
 	/**
+	 * Create websocket messaging datagrid
+	 * @param string $name Datagrid's component name
+	 * @return DataGrid Websocket messaging datagrid
+	 */
+	protected function createComponentConfigWebsocketMessagingDataGrid(string $name): DataGrid {
+		return $this->messagingDataGridFactory->create($this, $name);
+	}
+
+	/**
 	 * Create websocket messaging form
 	 * @return Form Websocket messaging form
 	 */
 	protected function createComponentConfigWebsocketMessagingForm(): Form {
 		return $this->messagingFormFactory->create($this);
+	}
+
+	/**
+	 * Create websocket service datagrid
+	 * @param string $name Datagrid's component name
+	 * @return DataGrid Websocket service datagrid
+	 */
+	protected function createComponentConfigWebsocketServiceDataGrid(string $name): DataGrid {
+		return $this->serviceDataGridFactory->create($this, $name);
 	}
 
 	/**

@@ -16,5 +16,9 @@
 *}
 
 {block content}
-<h1 n:block=title>{_config.udp.title}</h1>
-{control configUdpDataGrid}
+<h1 n:block=title>{_config.websocket.messaging.add}</h1>
+<div class='panel panel-default'>
+	<div class='panel-body'>
+		{control configWebsocketMessagingForm}
+	</div>
+</div>

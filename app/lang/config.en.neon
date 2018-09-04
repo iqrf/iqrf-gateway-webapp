@@ -169,13 +169,15 @@ migration:
 mq:
 	title: MQ interface
 	description: MQ interface settings.
+	add: Add MQ interface
+	edit: Edit MQ interface
 	form:
-		title: Edit MQ interface
 		instance: Name of instance
 		LocalMqName: Local MQ name
 		RemoteMqName: Remote MQ name
 		acceptAsyncMsg: Accept Async messages
 		messages:
+			confirmDelete: Do you really want to delete MQ messaging %s?
 			instance: Please enter name of MQ instance.
 			LocalMqName: Please enter local MQ name.
 			RemoteMqName: Please enter remote MQ name.
@@ -184,8 +186,9 @@ mq:
 mqtt:
 	title: MQTT interface
 	description: MQTT interface settings.
+	add: Add MQTT interface
+	edit: Edit MQTT interface
 	form:
-		title: Edit MQTT interface
 		instance: Name of instance
 		BrokerAddr: Broker address
 		ClientId: Client ID
@@ -212,6 +215,7 @@ mqtt:
 		EnableServerCertAuth: Enable server certificate authentication
 		acceptAsyncMsg: Accept Async messages
 		messages:
+			confirmDelete: Do you really want to delete MQTT messaging %s?
 			instance: Please enter name of MQTT instance.
 			BrokerAddr: Please enter address of MQTT broker.
 			ClientId: Please enter client ID.
@@ -268,12 +272,14 @@ scheduler:
 udp:
 	title: UDP interface
 	description: IQRF UDP interface settings.
+	add: Add UDP interface
+	edit: Edit UDP interface
 	form:
-		title: Edit UDP interface
 		instance: Name of instance
 		RemotePort: Remote port
 		LocalPort: Local port
 		messages:
+			confirmDelete: Do you really want to delete UDP messaging %s?
 			instance: Please enter name of UDP interface.
 			RemotePort: Please enter remote port.
 			LocalPort: Please enter local port.
