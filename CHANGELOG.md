@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
+
+## [2.0.0-beta] - 2018-09-05
 ### Added:
 - Add configuration tools for IQRF Gateway Daemon v2
 - Add PHPSTan - tool for static analysation
@@ -13,6 +15,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 - Add the installation wizard
 
 ### Changed:
+- Hide JSON Raw API and JSON Splitter configuration to a normal user
+- Move the link for the IQRF Gateway Daemon's configuration migration under the Gateway module
+- Drop PHP 7.0 support
+- Move core functionality into own module (CoreModule)
 - Update dependencies
 - Replace `iqrfapp` with a Websocket client
 - Rename projet to `iqrf-gateway-webapp`
@@ -294,7 +300,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 - Add a basic installation tool
 - Add IQRF IDE4 macros parser
 
-[Unreleased]: https://github.com/iqrfsdk/iqrf-gateway-webapp/compare/v1.1.6...HEAD
+[Unreleased]: https://github.com/iqrfsdk/iqrf-gateway-webapp/compare/v2.0.0-beta...HEAD
+[2.0.0-beta]: https://github.com/iqrfsdk/iqrf-gateway-webapp/compare/v1.1.6...v2.0.0-beta
 [1.1.6]: https://github.com/iqrfsdk/iqrf-gateway-webapp/compare/v1.1.5...v1.1.6
 [1.1.5]: https://github.com/iqrfsdk/iqrf-gateway-webapp/compare/v1.1.4...v1.1.5
 [1.1.4]: https://github.com/iqrfsdk/iqrf-gateway-webapp/compare/v1.1.3...v1.1.4

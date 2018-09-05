@@ -1,6 +1,4 @@
-iqrf-gateway-webapp (2.0.0-alpha~1.gbpc066ad) testing; urgency=medium
-
-  ** SNAPSHOT build @c066ada90e4e94bc4d0ea2906c5f124d783e5b0c **
+iqrf-gateway-webapp (2.0.0-beta) testing; urgency=medium
 
   [ Roman Ondráček ]
   * Add configuration tools for IQRF Gateway Daemon v2
@@ -9,9 +7,13 @@ iqrf-gateway-webapp (2.0.0-alpha~1.gbpc066ad) testing; urgency=medium
   * Add support for Debian testing and Ubuntu 18.04 in the installer
   * Add an user manager
   * Add the installation wizard
+  * Hide JSON Raw API and JSON Splitter configuration to a normal user
+  * Move the link for the IQRF Gateway Daemon's configuration migration under the Gateway module
+  * Drop PHP 7.0 support
+  * Move core functionality into own module (CoreModule)
   * Update dependencies
   * Replace `iqrfapp` with a Websocket client
   * Rename projet to `iqrf-gateway-webapp`
   * Removed configuration tools for IQRF Gateway Daemon v1
 
- -- Roman Ondráček <ondracek.roman@centrum.cz>  Mon, 27 Aug 2018 14:48:06 +0200
+ -- Roman Ondráček <roman.ondracek@iqrf.com>  Wed, 05 Sep 2018 13:50:10 +0200
