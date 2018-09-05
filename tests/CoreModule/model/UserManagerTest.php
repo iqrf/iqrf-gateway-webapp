@@ -65,6 +65,7 @@ class UserManagerTest extends TestCase {
 	 * Set up the test environment
 	 */
 	protected function setUp(): void {
+		\Tester\Environment::lock('user_db', __DIR__ . '/../../temp/');
 		$connection = new Connection('sqlite::memory:');
 		$cacheStorage = new MemoryStorage();
 		$structure = new Structure($connection, $cacheStorage);

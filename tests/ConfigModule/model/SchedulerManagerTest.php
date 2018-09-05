@@ -111,6 +111,7 @@ class SchedulerManagerTest extends TestCase {
 	 * Test function to add configuration of Scheduler
 	 */
 	public function testAdd(): void {
+		\Tester\Environment::lock('config_scheduler', __DIR__ . '/../../temp/');
 		$expected = $this->fileManager->read($this->fileName);
 		$this->fileManagerTemp->write($this->fileName, $expected);
 		$this->manager->add('raw');
@@ -222,6 +223,7 @@ class SchedulerManagerTest extends TestCase {
 	 * Test function to save configuration of Scheduler
 	 */
 	public function testSave(): void {
+		\Tester\Environment::lock('config_scheduler', __DIR__ . '/../../temp/');
 		$array = $this->array;
 		$array['message']['nadr'] = '0';
 		$expected = $this->fileManager->read($this->fileName);

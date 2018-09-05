@@ -74,6 +74,7 @@ class MainManagerTest extends TestCase {
 	 * Test function to save main configuration of daemon
 	 */
 	public function testSave(): void {
+		\Tester\Environment::lock('config_main', __DIR__ . '/../../temp/');
 		$manager = new MainManager($this->fileManagerTemp);
 		$array = [
 			'applicationName' => 'IqrfGatewayDaemon',

@@ -86,6 +86,7 @@ class GenericManagerTest extends TestCase {
 	 * Test function to delete the instance of component
 	 */
 	public function testDelete(): void {
+		\Tester\Environment::lock('config_mqtt', __DIR__ . '/../../temp/');
 		$this->managerTemp->setComponent($this->component);
 		$this->fileManagerTemp->write($this->fileName, $this->fileManager->read($this->fileName));
 		Assert::true($this->fileManagerTemp->exists($this->fileName));
@@ -172,6 +173,7 @@ class GenericManagerTest extends TestCase {
 	 * Test function to save main configuration of daemon
 	 */
 	public function testSave(): void {
+		\Tester\Environment::lock('config_mqtt', __DIR__ . '/../../temp/');
 		$this->managerTemp->setComponent($this->component);
 		$array = [
 			'instance' => 'MqttMessaging',

@@ -112,6 +112,7 @@ class WebsocketManagerTest extends TestCase {
 	 * Test function to delete a websocket interface configuration
 	 */
 	public function testDelete(): void {
+		\Tester\Environment::lock('config_websocket', __DIR__ . '/../../temp/');
 		$this->copyConfiguration();
 		Assert::true($this->fileManagerTemp->exists($this->fileNames['messaging']));
 		Assert::true($this->fileManagerTemp->exists($this->fileNames['service']));
@@ -137,6 +138,7 @@ class WebsocketManagerTest extends TestCase {
 	 * Test function to save a websocket interface
 	 */
 	public function testSave(): void {
+		\Tester\Environment::lock('config_websocket', __DIR__ . '/../../temp/');
 		$this->copyConfiguration();
 		$this->managerTemp->load(0);
 		$this->managerTemp->save($this->values);

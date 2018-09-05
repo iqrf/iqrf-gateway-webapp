@@ -146,13 +146,12 @@ class MigrationManagerTest extends TestCase {
 	 */
 	private function mockUploadedArchive(): array {
 		$values = [];
-		$filePath = __DIR__ . '/../../temp/iqrf-gateway-configuration.zip';
 		$file = [
 			'name' => 'iqrf-gateway-configuration.zip',
 			'type' => 'application/zip',
-			'tmp_name' => $filePath,
+			'tmp_name' => $this->tempPath,
 			'error' => UPLOAD_ERR_OK,
-			'size' => filesize($filePath),
+			'size' => filesize($this->tempPath),
 		];
 		$values['configuration'] = new FileUpload($file);
 		return $values;
@@ -201,7 +200,7 @@ class MigrationManagerTest extends TestCase {
 	public function testUploadSuccess(): void {
 		$this->manager->upload($this->mockUploadedArchive());
 		$expectedFiles = $this->createList($this->configPath);
-		sleep(2);
+		sleep(8);
 		$actualFiles = $this->createList($this->configTempPath);
 		Assert::same($expectedFiles, $actualFiles);
 	}
