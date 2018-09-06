@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\ConfigModule\Presenters;
 
@@ -61,11 +61,11 @@ class SchedulerPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Catch exceptions
+	 * Render list tasks in scheduler
 	 */
-	public function actionDefault(): void {
+	public function renderDefault(): void {
 		try {
-			$this->configManager->list();
+			$this->template->tasks = $this->configManager->list();
 		} catch (IOException $e) {
 			$this->flashMessage('config.messages.readFailure', 'danger');
 			$this->redirect('Homepage:default');
@@ -73,13 +73,6 @@ class SchedulerPresenter extends ProtectedPresenter {
 			$this->flashMessage('config.messages.invalidJson', 'danger');
 			$this->redirect('Homepage:default');
 		}
-	}
-
-	/**
-	 * Render list tasks in scheduler
-	 */
-	public function renderDefault(): void {
-		$this->template->tasks = $this->configManager->list();
 	}
 
 	/**
@@ -95,9 +88,17 @@ class SchedulerPresenter extends ProtectedPresenter {
 	 * @param string $type
 	 */
 	public function actionAdd(string $type): void {
-		$this->configManager->add($type);
-		$this->redirect('Scheduler:edit', ['id' => $this->configManager->getLastId()]);
-		$this->setView('default');
+		try {
+			$this->configManager->add($type);
+			$this->redirect('Scheduler:edit', ['id' => $this->configManager->getLastId()]);
+			$this->setView('default');
+		} catch (IOException $e) {
+			$this->flashMessage('config.messages.writeFailure', 'danger');
+			$this->redirect('Homepage:default');
+		} catch (JsonException $e) {
+			$this->flashMessage('config.messages.invalidJson', 'danger');
+			$this->redirect('Homepage:default');
+		}
 	}
 
 	/**
@@ -105,9 +106,17 @@ class SchedulerPresenter extends ProtectedPresenter {
 	 * @param int $id ID of task in Scheduler
 	 */
 	public function actionDelete(int $id): void {
-		$this->configManager->delete($id);
-		$this->redirect('Scheduler:default');
-		$this->setView('default');
+		try {
+			$this->configManager->delete($id);
+			$this->redirect('Scheduler:default');
+			$this->setView('default');
+		} catch (IOException $e) {
+			$this->flashMessage('config.messages.writeFailure', 'danger');
+			$this->redirect('Homepage:default');
+		} catch (JsonException $e) {
+			$this->flashMessage('config.messages.invalidJson', 'danger');
+			$this->redirect('Homepage:default');
+		}
 	}
 
 	/**

@@ -156,6 +156,13 @@ class SchedulerManagerTest extends TestCase {
 	}
 
 	/**
+	 * Test function to fix HWPID format (empty)
+	 */
+	public function testFixHwpidEmpty(): void {
+		Assert::equal('00.00', $this->manager->fixHwpid(''));
+	}
+
+	/**
 	 * Test function to get last ID
 	 */
 	public function testGetLastId(): void {

@@ -24,6 +24,8 @@ use App\ConfigModule\Model\GenericManager;
 use App\ConfigModule\Model\MainManager;
 use App\CoreModule\Model\JsonFileManager;
 use Nette;
+use Nette\IOException;
+use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
 
 /**
@@ -61,7 +63,11 @@ class SchedulerManager {
 	public function __construct(MainManager $mainManager, GenericManager $genericManager) {
 		$this->genericConfigManager = $genericManager;
 		$this->mainConfigManager = $mainManager;
-		$path = $this->mainConfigManager->load()['cacheDir'] . '/scheduler';
+		try {
+			$path = $this->mainConfigManager->load()['cacheDir'] . '/scheduler/';
+		} catch (IOException | JsonException $e) {
+			$path = '/var/cache/iqrfgd2/scheduler/';
+		}
 		$this->fileManager = new JsonFileManager($path);
 	}
 
@@ -95,7 +101,7 @@ class SchedulerManager {
 	 * @return string Fixed HWPID
 	 */
 	public function fixHwpid(string $hwpid): string {
-		$data = str_split($hwpid, 2);
+		$data = str_split(Strings::padLeft($hwpid, 4, '0'), 2);
 		return $data[1] . '.' . $data[0];
 	}
 
