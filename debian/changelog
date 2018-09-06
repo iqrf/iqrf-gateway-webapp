@@ -1,3 +1,13 @@
+iqrf-gateway-webapp (2.0.0-beta~1.gbp01ebe9) UNRELEASED; urgency=medium
+
+  ** SNAPSHOT build @01ebe9ff4e49a618e87f86e9a8e9b92d13622aa3 **
+
+  * Fix test for the version manager
+  * Add locks for tests which is manipulating with files
+  * Catch exceptions in the scheduler configuration manager
+
+ -- Roman Ondráček <roman.ondracek@iqrf.com>  Thu, 06 Sep 2018 11:24:59 +0200
+
 iqrf-gateway-webapp (2.0.0-beta) testing; urgency=medium
 
   [ Roman Ondráček ]
