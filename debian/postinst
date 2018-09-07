@@ -62,6 +62,7 @@ if [ "$1" = "configure" ]; then
 		nginx_virtualhost_install
 	fi
 	chown -R www-data:www-data /usr/share/iqrf-gateway-webapp/
+	sudoers_rule_install
 	webapp_remove_cache
 	webapp_chmod_dirs
 	composer_init
