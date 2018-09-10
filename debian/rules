@@ -3,6 +3,14 @@
 %:
 	dh $@ --with phpcomposer
 
+override_dh_fixperms:
+	dh_fixperms
+	chown -R www-data:www-data debian/iqrf-gateway-webapp/usr/share/iqrf-gateway-webapp/
+	chmod -R 644 debian/iqrf-gateway-webapp/usr/share/iqrf-gateway-webapp/log/
+	chmod -R 644 debian/iqrf-gateway-webapp/usr/share/iqrf-gateway-webapp/temp/
+	chmod 755 debian/iqrf-gateway-webapp/usr/share/iqrf-gateway-webapp/log/
+	chmod 755 debian/iqrf-gateway-webapp/usr/share/iqrf-gateway-webapp/temp/
+
 #override_dh_auto_build:
 #	composer install
 

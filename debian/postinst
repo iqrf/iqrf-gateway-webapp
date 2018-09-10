@@ -44,13 +44,6 @@ sudoers_rule_install() {
 	deb-systemd-invoke restart sudo.service
 }
 
-webapp_chmod_dirs() {
-	chmod -R 666 /usr/share/iqrf-gateway-webapp/log/
-	chmod -R 666 /usr/share/iqrf-gateway-webapp/temp/
-	chmod 777 /usr/share/iqrf-gateway-webapp/log/
-	chmod 777 /usr/share/iqrf-gateway-webapp/temp/
-}
-
 webapp_remove_cache() {
 	if [ -d /usr/share/iqrf-gateway-webapp/temp/cache ] ; then
 		rm -rf /usr/share/iqrf-gateway-webapp/temp/cache
@@ -61,9 +54,7 @@ if [ "$1" = "configure" ]; then
 	if [ ! -e /etc/nginx/sites-available/iqrf-gateway-webapp.localhost ] || [ ! -L /etc/nginx/sites-enabled/iqrf-gateway-webapp.localhost ] ; then
 		nginx_virtualhost_install
 	fi
-	chown -R www-data:www-data /usr/share/iqrf-gateway-webapp/
 	sudoers_rule_install
 	webapp_remove_cache
-	webapp_chmod_dirs
 	composer_init
 fi
