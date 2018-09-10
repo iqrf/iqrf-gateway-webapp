@@ -1,1 +1,4 @@
 action: Actions
+all: All
+no_item_found: No records have been found.
+reset_filter: Reset filter
