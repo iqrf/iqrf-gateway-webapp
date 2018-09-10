@@ -45,10 +45,8 @@ class IqrfSpiFormFactory extends GenericConfigFormFactory {
 		$form->addText('instance', 'instance')->setRequired('messages.instance');
 		$form->addText('IqrfInterface', 'IqrfInterface')->setRequired('messages.IqrfInterface');
 		$form->addInteger('enableGpioPin', 'enableGpioPin');
-		$form->addInteger('spiCe0GpioPin', 'spiCe0GpioPin');
-		$form->addInteger('spiMisoGpioPin', 'spiMisoGpioPin');
-		$form->addInteger('spiMosiGpioPin', 'spiMosiGpioPin');
-		$form->addInteger('spiClkGpioPin', 'spiClkGpioPin');
+		$form->addInteger('spiMasterEnGpioPin', 'spiMasterEnGpioPin');
+		$form->addInteger('pgmSwGpioPin', 'pgmSwGpioPin');
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');
 		$form->setDefaults($this->manager->load(0));

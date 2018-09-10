@@ -107,10 +107,8 @@ iqrfSpi:
 		instance: Name of instance
 		IqrfInterface: IQRF SPI interface
 		enableGpioPin: Enable GPIO pin
-		spiCe0GpioPin: SPI CE0 GPIO pin
-		spiMisoGpioPin: SPI MISO GPIO pin
-		spiMosiGpioPin: SPI MOSI GPIO pin
-		spiClkGpioPin: SPI CLK GPIO pin
+		spiMasterEnGpioPin: SPI Master enable GPIO pin
+		pgmSwGpioPin: Programming mode switch GPIO pin
 		messages:
 			instance: Please enter name of IQRF SPI instance.
 			IqrfInterface: Please enter IQRF SPI interface.

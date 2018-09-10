@@ -30,25 +30,15 @@
 			"description": "...",
 			"default": 23
 		},
-		"spiCe0GpioPin": {
+		"spiMasterEnGpioPin": {
 			"type": "integer",
 			"description": "...",
-			"default": 8
+			"default": 7
 		},
-		"spiMisoGpioPin": {
+		"pgmSwGpioPin": {
 			"type": "integer",
 			"description": "...",
-			"default": 9
-		},
-		"spiMosiGpioPin": {
-			"type": "integer",
-			"description": "...",
-			"default": 10
-		},
-		"spiClkGpioPin": {
-			"type": "integer",
-			"description": "...",
-			"default": 11
+			"default": 22
 		},
 		"RequiredInterfaces": {
 			"type": "array",
