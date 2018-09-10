@@ -20,3 +20,5 @@ tests/*/output/
 tests/*/*/output/
 tests/temp/
 coverage.xml
+# Sphinx
+docs/build/
