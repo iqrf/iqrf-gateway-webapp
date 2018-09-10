@@ -43,6 +43,15 @@ class IqmeshPresenter extends GenericPresenter {
 		$components = ['iqrf::OtaUploadService'];
 		parent::__construct($components, $genericManager);
 	}
+	
+	/**
+	 * Hide presenter
+	 * @throws Nette\Application\BadRequestException
+	 */
+	protected function startup(): void {
+		parent::startup();
+		throw new \Nette\Application\BadRequestException();
+	}
 
 	/**
 	 * Create IQRF OTA upload service form
