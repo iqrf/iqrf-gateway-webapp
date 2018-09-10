@@ -1,50 +1,22 @@
 {
 	"Raspberry Pi": {
-		"ledGpio": 22,
-		"pgmSwGpio": 7,
 		"enableGpio": 23,
-		"ce0Gpio": 8,
-		"misoGpio": 9,
-		"mosiGpio": 10,
-		"sclkGpio": 11,
-		"io1Gpio": 24,
-		"io2Gpio": 25,
-		"kernelModule": "spi_bcm2835"
+		"spiMasterEnGpioPin": 7,
+		"pgmSwGpioPin": 22
 	},
 	"Orange Pi": {
-		"ledGpio": 3,
-		"pgmSwGpio": 1,
 		"enableGpio": 19,
-		"ce0Gpio": 13,
-		"misoGpio": 16,
-		"mosiGpio": 15,
-		"sclkGpio": 14,
-		"io1Gpio": 18,
-		"io2Gpio": 2,
-		"kernelModule": ""
+		"spiMasterEnGpioPin": 10,
+		"pgmSwGpioPin": 3
 	},
 	"UP": {
-		"ledGpio": 22,
-		"pgmSwGpio": 7,
 		"enableGpio": 23,
-		"ce0Gpio": 8,
-		"misoGpio": 9,
-		"mosiGpio": 10,
-		"sclkGpio": 11,
-		"io1Gpio": 24,
-		"io2Gpio": 25,
-		"kernelModule": "spi_pxa2xx_platform"
+		"spiMasterEnGpioPin": 7,
+		"pgmSwGpioPin": 22
 	},
 	"UP Squared": {
-		"ledGpio": 22,
-		"pgmSwGpio": 7,
 		"enableGpio": 23,
-		"ce0Gpio": 8,
-		"misoGpio": 9,
-		"mosiGpio": 10,
-		"sclkGpio": 11,
-		"io1Gpio": 24,
-		"io2Gpio": 25,
-		"kernelModule": "spi_pxa2xx_platform"
+		"spiMasterEnGpioPin": 7,
+		"pgmSwGpioPin": 22
 	}
 }

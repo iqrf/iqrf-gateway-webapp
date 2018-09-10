@@ -103,10 +103,8 @@ $(".btn-spi-port").click(function () {
 // Select SPI pins from list of supported boards
 $(".btn-spiPin").click(function() {
 	$("#frm-configIqrfSpiForm-enableGpioPin").val($(this).data("enablegpio"));
-	$("#frm-configIqrfSpiForm-spiCe0GpioPin").val($(this).data("ce0gpio"));
-	$("#frm-configIqrfSpiForm-spiMisoGpioPin").val($(this).data("misogpio"));
-	$("#frm-configIqrfSpiForm-spiMosiGpioPin").val($(this).data("mosigpio"));
-	$("#frm-configIqrfSpiForm-spiClkGpioPin").val($(this).data("sclkgpio"));
+	$("#frm-configIqrfSpiForm-spiMasterEnGpioPin").val($(this).data("spimasterengpiopin"));
+	$("#frm-configIqrfSpiForm-pgmSwGpioPin").val($(this).data("pgmswgpiopin"));
 });
 
 // Select DPA packet form list of macros from IQRF IDE
