@@ -1,62 +1,47 @@
-# Installation
+# How to install IQRF Gateway Webapp
 
-## Installation with web server
+## Add PHP 7.2 repository
 
-### Nginx (automatic instalation)
+If you are using Debian 9, UbiLinux 4 or Ubuntu 16.04 you have had to add PHP 7.2 repository.
 
-If you use Debian 8 (jessie), Debian 9 (stretch) or Ubuntu 16.04 (xenial), you can use the installer which is located in install directory of this project:
-
-**Debian 8 (jessie)**
-```bash
-git clone https://github.com/iqrfsdk/iqrf-gateway-webapp.git
-cd iqrf-gateway-webapp/install/
-python3 install.py -d debian -v 8
+### For Debian
+```
+sudo apt-get -y install apt-transport-https lsb-release ca-certificates
+sudo wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
+sudo sh -c 'echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list'
+sudo apt-get update
 ```
 
-**Debian 9 (stretch)**
-```bash
-git clone https://github.com/iqrfsdk/iqrf-gateway-webapp.git
-cd iqrf-gateway-webapp/install/
-python3 install.py -d debian -v 9
+### For UbiLinux
+```
+sudo apt-get -y install apt-transport-https lsb-release ca-certificates
+sudo wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
+sudo sh -c 'echo "deb https://packages.sury.org/php/ stretch main" > /etc/apt/sources.list.d/php.list'
+sudo apt-get update
 ```
 
-**Ubuntu 16.04 (xenial)**
-```bash
-git clone https://github.com/iqrfsdk/iqrf-gateway-webapp.git
-cd iqrf-gateway-webapp/install/
-sudo python3 install.py -d ubuntu -v 16.04
+### For Ubuntu
+```
+sudo add-apt-repository ppa:ondrej/php
+sudo apt-get update
 ```
 
-Then visit `http://localhost` in your browser to see the welcome page.
+## Add IQRF Gateway repository
 
-### Development built-in PHP server
-
-The simplest way to get started is to start the built-in PHP server in the root directory of this project:
-
-```bash
-git clone https://github.com/iqrfsdk/iqrf-gateway-webapp.git
-cd iqrf-gateway-webapp/
-php -S localhost:8000 -t www/
+### For Debian and UbiLinux
+```
+sudo apt-get install dirmngr
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 9C076FCC7AB8F2E43C2AB0E73241B9B7B4BD8F8E
+echo "deb https://repos.iqrfsdk.org/testing/debian stretch testing" | sudo tee -a /etc/apt/sources.list
+sudo apt-get update
 ```
 
-Then visit `http://localhost:8000` in your browser to see the welcome page.
+### For Ubuntu
+Currently Ubuntu is not supported.
 
-## Instalation without web server
+## [Install IQRF Gateway Daemon](https://github.com/iqrfsdk/iqrf-gateway-daemon/blob/master/INSTALL.md)
 
-The best way to install this project is using Composer. If you don't have Composer yet, download it following [the instructions](https://doc.nette.org/composer). Then use command:
-
-### Development version
-
-```bash
-git clone https://github.com/iqrfsdk/iqrf-gateway-webapp.git
-cd iqrf-gateway-webapp/
-composer install
+## Install IQRF Gateway webapp
 ```
-
-Make directories `temp/` and `log/` writable.
-
-### Stable version
-
-```bash
-composer create-project iqrfsdk/iqrf-gateway-webapp
+sudo apt-get install iqrf-gateway-webapp
 ```
