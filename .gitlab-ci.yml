@@ -95,5 +95,5 @@ deploy-api-docs:
 deploy-user-docs:
     script:
         - cd docs/; make html
-        - rsync -hrvz --delete -e ssh docs/build/html/ www-deploy@iqrfsdk.org:/data/nginx/docs/iqrf-gateway-webapp/
+        - rsync -hrvz --delete -e ssh build/html/ www-deploy@iqrfsdk.org:/data/nginx/docs/iqrf-gateway-webapp/
     <<: *ssh_template
