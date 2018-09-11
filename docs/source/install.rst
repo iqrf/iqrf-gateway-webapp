@@ -5,7 +5,7 @@ How to install IQRF Gateway Webapp
 Add PHP 7.2 repository
 ######################
 
-If you are using Debian 9, UbiLinux 4 or Ubuntu 16.04 you have had to add PHP 7.2 repository.
+If you are using Debian 9, UbiLinux 4 or Ubuntu 16.04 you have to add PHP 7.2 repository.
 
 For Debian
 ----------
