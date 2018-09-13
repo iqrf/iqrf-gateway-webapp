@@ -44,6 +44,11 @@ class ComponentsDataGridFactory {
 	private $datagridFactory;
 
 	/**
+	 * @var ComponentPresenter Component's configuration presenter
+	 */
+	private $presenter;
+
+	/**
 	 * Constructor
 	 * @param DataGridFactory $datagridFactory Generic datagrid factory
 	 * @param ComponentManager $componentManager Component manager
@@ -60,8 +65,9 @@ class ComponentsDataGridFactory {
 	 * @return DataGrid Component datagrid
 	 */
 	public function create(ComponentPresenter $presenter, string $name): DataGrid {
+		$this->presenter = $presenter;
 		$grid = $this->datagridFactory->create($presenter, $name);
-		$grid->setDataSource($this->configManager->list());
+		$grid->setDataSource($this->load());
 		$grid->addColumnText('name', 'config.components.form.name');
 		$grid->addColumnText('libraryPath', 'config.components.form.libraryPath');
 		$grid->addColumnText('libraryName', 'config.components.form.libraryName');
@@ -74,12 +80,31 @@ class ComponentsDataGridFactory {
 		$grid->addAction('delete', 'config.actions.Remove')->setIcon('remove')
 				->setClass('btn btn-xs btn-danger ajax')
 				->setConfirm('config.components.form.messages.confirmDelete', 'name');
-		$grid->allowRowsAction('delete', function() use ($presenter) {
-			return $presenter->user->isInRole('power');
+		$grid->allowRowsAction('delete', function() {
+			return $this->presenter->user->isInRole('power');
 		});
 		$grid->addToolbarButton('add', 'config.actions.Add')
 				->setClass('btn btn-xs btn-success');
 		return $grid;
+	}
+
+	/**
+	 * Load data to the datagrid
+	 * @return array Data for the datagrid
+	 */
+	private function load(): array {
+		if ($this->presenter->user->isInRole('power')) {
+			return $this->configManager->list();
+		} else {
+			$visible = ['iqrf::IqrfCdc', 'iqrf::IqrfSpi', 'iqrf::IqrfUart', 'iqrf::Scheduler',];
+			$components = [];
+			foreach ($this->configManager->list() as $component) {
+				if (in_array($component['name'], $visible, true)) {
+					$components[] = $component;
+				}
+			}
+			return $components;
+		}
 	}
 
 }
