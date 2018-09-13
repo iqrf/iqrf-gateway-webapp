@@ -66,11 +66,13 @@ class MqttMessagingDataGridFactory {
 		$grid->addColumnText('instance', 'config.mqtt.form.instance');
 		$grid->addColumnText('BrokerAddr', 'config.mqtt.form.BrokerAddr');
 		$grid->addColumnText('ClientId', 'config.mqtt.form.ClientId');
+		$grid->addColumnText('TopicRequest', 'config.mqtt.form.TopicRequest');
+		$grid->addColumnText('TopicResponse', 'config.mqtt.form.TopicResponse');
 		$grid->addColumnStatus('EnabledSSL', 'config.mqtt.form.EnabledSSL')
 				->addOption(true, 'config.components.form.enabled')->setIcon('ok')->endOption()
 				->addOption(false, 'config.components.form.disabled')
 				->setIcon('remove')->setClass('btn btn-xs btn-danger')->endOption();
-		$grid->addColumnStatus('acceptAsyncMsg', 'config.mqtt.form.acceptAsyncMsg')
+		$grid->addColumnStatus('acceptAsyncMsg', 'config.mqtt.asyncMessages')
 				->addOption(true, 'config.components.form.enabled')->setIcon('ok')->endOption()
 				->addOption(false, 'config.components.form.disabled')
 				->setIcon('remove')->setClass('btn btn-xs btn-danger')->endOption();

@@ -169,6 +169,7 @@ mq:
 	description: MQ interface settings.
 	add: Add MQ interface
 	edit: Edit MQ interface
+	asyncMessages: Async messages
 	form:
 		instance: Name of instance
 		LocalMqName: Local MQ name
@@ -186,6 +187,7 @@ mqtt:
 	description: MQTT interface settings.
 	add: Add MQTT interface
 	edit: Edit MQTT interface
+	asyncMessages: Async messages
 	form:
 		instance: Name of instance
 		BrokerAddr: Broker address
