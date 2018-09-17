@@ -118,6 +118,22 @@ iqrfSpi:
 		boards: Boards
 		interfaces: Interfaces
 
+iqrfUart:
+	title: IQRF UART interface
+	description: IQRF UART interface settings.
+	form:
+		instance: Name of instance
+		IqrfInterface: IQRF UART interface
+		baudRate: UART baud rate
+		enableGpioPin: Enable GPIO pin
+		messages:
+			instance: Please enter name of IQRF UART instance.
+			IqrfInterface: Please enter IQRF UART interface.
+		Save: Save
+	mapping:
+		title: Available USB UART mappings
+		interfaces: Interfaces
+
 jsonRawApi:
 	title: JSON Raw API
 	description: JSON Raw API settings.

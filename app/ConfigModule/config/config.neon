@@ -12,6 +12,7 @@ services:
 	- App\ConfigModule\Forms\IqrfDpaFormFactory
 	- App\ConfigModule\Forms\IqrfRepositoryFormFactory
 	- App\ConfigModule\Forms\IqrfSpiFormFactory
+	- App\ConfigModule\Forms\IqrfUartFormFactory
 	- App\ConfigModule\Forms\JsonSplitterFormFactory
 	- App\ConfigModule\Forms\JsonDpaApiRawFormFactory
 	- App\ConfigModule\Forms\MainFormFactory
