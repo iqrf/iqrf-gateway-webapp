@@ -199,10 +199,9 @@ class MigrationManagerTest extends TestCase {
 	 */
 	public function testUploadSuccess(): void {
 		$this->manager->upload($this->mockUploadedArchive());
-		$expectedFiles = $this->createList($this->configPath);
-		sleep(8);
-		$actualFiles = $this->createList($this->configTempPath);
-		Assert::same($expectedFiles, $actualFiles);
+		$expected = $this->createList($this->configPath);
+		$actual = $this->createList($this->configTempPath);
+		Assert::same($expected, $actual);
 	}
 
 	/**

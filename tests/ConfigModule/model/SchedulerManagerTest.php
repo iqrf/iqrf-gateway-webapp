@@ -141,6 +141,7 @@ class SchedulerManagerTest extends TestCase {
 	 * Test function to delete configuration of Scheduler
 	 */
 	public function testDelete(): void {
+		\Tester\Environment::lock('config_scheduler', __DIR__ . '/../../temp/');
 		$expected = $this->fileManager->read($this->fileName);
 		$this->fileManagerTemp->write($this->fileName, $expected);
 		unset($expected['TasksJson'][5]);
