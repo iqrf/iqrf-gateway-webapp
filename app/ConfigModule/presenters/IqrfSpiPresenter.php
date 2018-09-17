@@ -40,7 +40,7 @@ class IqrfSpiPresenter extends GenericPresenter {
 	 * @var IqrfSpiFormFactory IQRF SPI interface configuration form factory
 	 * @inject
 	 */
-	public $spiFormFactory;
+	public $formFactory;
 
 	/**
 	 * @var IqrfManager IQRF interface manager
@@ -55,7 +55,7 @@ class IqrfSpiPresenter extends GenericPresenter {
 	public function __construct(IqrfManager $iqrfManager, GenericManager $genericManager) {
 		$this->iqrfManager = $iqrfManager;
 		$this->fileManager = new JsonFileManager(__DIR__ . '/../json/');
-		$components = ['iqrf::IqrfCdc'];
+		$components = ['iqrf::IqrfSpi'];
 		parent::__construct($components, $genericManager);
 	}
 
@@ -63,8 +63,8 @@ class IqrfSpiPresenter extends GenericPresenter {
 	 * Render IQRF SPI interface configurator
 	 */
 	public function renderDefault(): void {
-		$this->template->spiInterfaces = $this->iqrfManager->getSpiInterfaces();
-		$this->template->spiPins = $this->fileManager->read('SpiPins');
+		$this->template->interfaces = $this->iqrfManager->getSpiInterfaces();
+		$this->template->pins = $this->fileManager->read('SpiPins');
 	}
 
 	/**
@@ -72,7 +72,7 @@ class IqrfSpiPresenter extends GenericPresenter {
 	 * @return Form IQRF SPI interface configuration form
 	 */
 	protected function createComponentConfigIqrfSpiForm(): Form {
-		return $this->spiFormFactory->create($this);
+		return $this->formFactory->create($this);
 	}
 
 }
