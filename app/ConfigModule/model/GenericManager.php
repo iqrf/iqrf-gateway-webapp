@@ -157,6 +157,7 @@ class GenericManager {
 				$instances[] = $fileName;
 			}
 		}
+		sort($instances);
 		return $instances;
 	}
 
@@ -189,6 +190,7 @@ class GenericManager {
 			$instance = $this->load($id);
 			$instances[] = $instance['instance'];
 		}
+		sort($instances);
 		return $instances;
 	}
 
