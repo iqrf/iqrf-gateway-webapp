@@ -102,25 +102,26 @@ class MigrationManager {
 	 * @param array $formValues Values from form
 	 */
 	public function upload(array $formValues): void {
-		$this->zipManagerUpload = new ZipArchiveManager($this->path, \ZipArchive::CREATE);
 		$zip = $formValues['configuration'];
-		if ($zip->isOk()) {
-			if ($zip->getContentType() !== 'application/zip') {
-				throw new InvalidConfigurationFormatException();
-			}
-			$zip->move($this->path);
-			if (!$this->validate($this->zipManagerUpload)) {
-				$this->zipManagerUpload->close();
-				FileSystem::delete($this->path);
-				throw new IncompleteConfigurationException();
-			}
-			$this->commandManager->send('rm -rf ' . $this->configDirectory, true);
-			$this->commandManager->send('mkdir ' . $this->configDirectory, true);
-			$this->changeOwner();
-			$this->zipManagerUpload->extract($this->configDirectory);
+		if (!$zip->isOk()) {
+			throw new InvalidConfigurationFormatException();
+		}
+		if ($zip->getContentType() !== 'application/zip') {
+			throw new InvalidConfigurationFormatException();
+		}
+		$zip->move($this->path);
+		$this->zipManagerUpload = new ZipArchiveManager($this->path, \ZipArchive::CREATE);
+		if (!$this->validate($this->zipManagerUpload)) {
 			$this->zipManagerUpload->close();
 			FileSystem::delete($this->path);
+			throw new IncompleteConfigurationException();
 		}
+		$this->commandManager->send('rm -rf ' . $this->configDirectory, true);
+		$this->commandManager->send('mkdir ' . $this->configDirectory, true);
+		$this->changeOwner();
+		$this->zipManagerUpload->extract($this->configDirectory);
+		$this->zipManagerUpload->close();
+		FileSystem::delete($this->path);
 	}
 
 	/**
