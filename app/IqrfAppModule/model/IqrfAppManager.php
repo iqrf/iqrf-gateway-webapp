@@ -21,16 +21,11 @@ declare(strict_types = 1);
 namespace App\IqrfAppModule\Model;
 
 use App\IqrfAppModule\Exception as IqrfException;
-use App\IqrfAppModule\Model\InvalidOperationModeException;
 use App\IqrfAppModule\Model\MessageIdManager;
 use App\IqrfAppModule\Parser as IqrfParser;
 use Nette;
 use Nette\Utils\Json;
 use Nette\Utils\Strings;
-use Ratchet\Client as WebSocketClient;
-use Ratchet\RFC6455\Messaging as WebSocketMessaging;
-use React\EventLoop;
-use React\Socket as ReactSocket;
 use Tracy\Debugger;
 
 /**
@@ -44,6 +39,11 @@ class IqrfAppManager {
 	 * @var MessageIdManager Message ID manager
 	 */
 	private $msgIdManager;
+
+	/**
+	 * @var WebsocketClient Websocket client
+	 */
+	private $wsClient;
 
 	/**
 	 * @var string URL to IQRF Gateway Daemon's WebSocket server
@@ -90,56 +90,8 @@ class IqrfAppManager {
 	 */
 	public function __construct(string $wsServer, MessageIdManager $msgIdManager) {
 		$this->msgIdManager = $msgIdManager;
+		$this->wsClient = new WebsocketClient($wsServer, $msgIdManager);
 		$this->wsServer = $wsServer;
-	}
-
-	/**
-	 * Send JSON request to IQRF Gateway Daemon via WebSocket
-	 * @param array $array JSON request in array
-	 * @param int $timeout Connection timeout in seconds
-	 * @return string JSON response
-	 */
-	public function sendToWebsocket(array $array, int $timeout = 15): string {
-		$loop = EventLoop\Factory::create();
-		$reactConnector = new ReactSocket\Connector($loop, ['timeout' => $timeout]);
-		$connector = new WebSocketClient\Connector($loop, $reactConnector);
-		$connection = $connector($this->wsServer);
-		$wait = true;
-		$attempts = 2;
-		$loop->addTimer($timeout * 2, function () use ($loop, &$wait) {
-			$wait = false;
-			$loop->stop();
-		});
-		$resolved = null;
-		$connection->then(function (WebSocketClient\WebSocket $conn) use (&$resolved, &$wait, &$attempts, $loop, $array) {
-			$conn->send(Json::encode($array));
-			$conn->on('message', function (WebSocketMessaging\MessageInterface $msg) use (&$resolved, &$wait, &$attempts, $loop, $conn, $array) {
-				$json = Json::decode(strval($msg), Json::FORCE_ARRAY);
-				$correctMsgId = $array['data']['msgId'] === $json['data']['msgId'];
-				if ($correctMsgId) {
-					$resolved = $msg;
-					$wait = false;
-				} else if (!$correctMsgId && $attempts > 0) {
-					$attempts--;
-				} else {
-					$wait = false;
-				}
-				$conn->close();
-				$loop->stop();
-			});
-		}, function ($e) use (&$wait, $loop) {
-			Debugger::log($e->getMessage(), 'websocket');
-			$wait = false;
-			$loop->stop();
-		});
-		while ($wait) {
-			$loop->run();
-		}
-		$response = strval($resolved);
-		if ($response === '') {
-			throw new IqrfException\EmptyResponseException();
-		}
-		return $response;
 	}
 
 	/**
@@ -166,7 +118,7 @@ class IqrfAppManager {
 		}
 		$data = [
 			'request' => Json::encode($array, Json::PRETTY),
-			'response' => $this->sendToWebsocket($array),
+			'response' => Json::encode($this->wsClient->sendSync($array), Json::PRETTY),
 		];
 		Debugger::barDump($data, 'iqrfapp');
 		return $data;
@@ -193,7 +145,7 @@ class IqrfAppManager {
 			],
 			'returnVerbose' => true,
 		];
-		return $this->sendToWebsocket($array);
+		return Json::encode($this->wsClient->sendSync($array));
 	}
 
 	/**

@@ -121,31 +121,6 @@ class IqrfAppManagerTest extends TestCase {
 	}
 
 	/**
-	 * Test function to send JSON DPA request via websocket (success)
-	 */
-	public function testSendToWebsocketSuccess(): void {
-		$array = [
-			'data' => [
-				'msgId' => '1',
-			],
-		];
-		$expected = '{"data":{"msgId":"1"}}';
-		Assert::same($expected, $this->manager->sendToWebsocket($array));
-	}
-
-	/**
-	 * Test function to send JSON DPA request via websocket (timeout)
-	 */
-	public function testSendToWebsocketTimeout(): void {
-		Assert::exception(function(): void {
-			$wsServer = 'ws://localhost:9000';
-			$manager = new IqrfAppManager($wsServer, $this->msgIdManager);
-			$array = ['data' => ['msgId' => '1',],];
-			$manager->sendToWebsocket($array, 1);
-		}, IqrfException\EmptyResponseException::class);
-	}
-
-	/**
 	 * Test function to send RAW IQRF packet
 	 */
 	public function testSendRaw(): void {
@@ -162,7 +137,7 @@ class IqrfAppManagerTest extends TestCase {
 		];
 		$expected = [
 			'request' => Json::encode($array, Json::PRETTY),
-			'response' => Json::encode($array),
+			'response' => Json::encode($array, Json::PRETTY),
 		];
 		Assert::equal($expected, $this->manager->sendRaw($packet));
 	}
