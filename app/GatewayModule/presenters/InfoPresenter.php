@@ -67,7 +67,7 @@ class InfoPresenter extends ProtectedPresenter {
 		try {
 			$this->template->module = $this->infoManager->getCoordinatorInfo();
 		} catch (DpaErrorException | EmptyResponseException $e) {
-			$this->presenter->flashMessage('Cannot get information about the Coordinator.', 'danger');
+			$this->presenter->flashMessage('gateway.info.tr.error', 'danger');
 		}
 	}
 

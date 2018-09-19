@@ -13,7 +13,7 @@ info:
 		mac: MAC addresses
 	tr:
 		title: TR info
-		error: Cannot get information about the Coordinator
+		error: Cannot get information about the Coordinator.
 		moduleType: Module type
 		mcuType: MCU type
 		moduleId: MID
