@@ -66,6 +66,16 @@ class WebsocketClient {
 	}
 
 	/**
+	 * Add a message ID to the IQRF JSON DPA request
+	 * @param array $request IQRF JSON DPA request
+	 */
+	private function addMsgId(array &$request): void {
+		if (!array_key_exists('msgId', $request['data'])) {
+			$request['data']['msgId'] = $this->msgIdManager->generate();
+		}
+	}
+
+	/**
 	 * Send IQRF JSON DPA request
 	 * @param array $request IQRF JSON DPA request
 	 * @param int $timeout Websocket client timeout
@@ -79,6 +89,7 @@ class WebsocketClient {
 			$this->stopSync($wait);
 		});
 		$resolved = null;
+		$this->addMsgId($request);
 		$connection->then(function (WsClient $conn) use (&$resolved, &$wait, &$attempts, $request) {
 			$conn->send(Json::encode($request));
 			$conn->on('message', function (MessageInterface $msg) use (&$resolved, &$wait, &$attempts, $conn, $request) {
@@ -91,7 +102,7 @@ class WebsocketClient {
 		while ($wait) {
 			$this->loop->run();
 		}
-		return $this->parseResponse($resolved);
+		return $this->parseResponse($request, $resolved);
 	}
 
 	/**
@@ -117,17 +128,23 @@ class WebsocketClient {
 	}
 
 	/**
-	 * Parse JSON DPA response
+	 * Parse JSON DPA request and response
+	 * @param array $request JSON DPA request
 	 * @param MessageInterface $response JSON DPA response
 	 * @return array JSON DPA response in an array
 	 * @throws EmptyResponseException
 	 */
-	private function parseResponse(?MessageInterface $response): array {
+	private function parseResponse(array $request, ?MessageInterface $response): array {
 		$string = strval($response);
 		if ($string === '') {
 			throw new EmptyResponseException();
 		}
-		return Json::decode($string, Json::FORCE_ARRAY);
+		$data = [
+			'request' => $request,
+			'response' => Json::decode($string, Json::FORCE_ARRAY),
+		];
+		Debugger::barDump($data, 'iqrfapp');
+		return $data;
 	}
 
 	/**
@@ -152,14 +169,14 @@ class WebsocketClient {
 		$connection->close();
 		$this->loop->stop();
 	}
-	
+
 	/**
 	 * Stop event loop
 	 * @param bool $wait Wait to finish
 	 */
 	private function stopSync(bool &$wait): void {
-			$wait = false;
-			$this->loop->stop();
+		$wait = false;
+		$this->loop->stop();
 	}
 
 }

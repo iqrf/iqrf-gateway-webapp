@@ -13,6 +13,7 @@ namespace Test\IqrfAppModule\Model;
 use App\IqrfAppModule\Exception as IqrfException;
 use App\IqrfAppModule\Model\IqrfAppManager;
 use App\IqrfAppModule\Model\MessageIdManager;
+use App\IqrfAppModule\Model\WebsocketClient;
 use App\CoreModule\Model\FileManager;
 use App\CoreModule\Model\JsonFileManager;
 use Nette\DI\Container;
@@ -99,7 +100,8 @@ class IqrfAppManagerTest extends TestCase {
 		$this->jsonFileManager = new JsonFileManager($path);
 		$this->msgIdManager = \Mockery::mock(MessageIdManager::class);
 		$this->msgIdManager->shouldReceive('generate')->andReturn('1');
-		$this->manager = new IqrfAppManager($this->wsServer, $this->msgIdManager);
+		$wsClient = new WebsocketClient($this->wsServer, $this->msgIdManager);
+		$this->manager = new IqrfAppManager($wsClient);
 	}
 
 	/**
@@ -128,10 +130,10 @@ class IqrfAppManagerTest extends TestCase {
 		$array = [
 			'mType' => 'iqrfRaw',
 			'data' => [
-				'msgId' => '1',
 				'req' => [
 					'rData' => $packet,
 				],
+				'msgId' => '1',
 			],
 			'returnVerbose' => true,
 		];
@@ -156,7 +158,7 @@ class IqrfAppManagerTest extends TestCase {
 	 */
 	public function testChangeOperationModeValid(): void {
 		$modes = ['forwarding', 'operational', 'service'];
-		$format = '{"mType":"mngDaemon_Mode","data":{"msgId":"1","req":{"operMode":"%s"}},"returnVerbose":true}';
+		$format = '{"mType":"mngDaemon_Mode","data":{"req":{"operMode":"%s"},"msgId":"1"},"returnVerbose":true}';
 		foreach ($modes as $mode) {
 			Assert::same(sprintf($format, $mode), $this->manager->changeOperationMode($mode));
 		}

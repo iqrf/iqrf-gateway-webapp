@@ -72,12 +72,16 @@ class WebsocketClientTest extends TestCase {
 	 * Test function to send JSON DPA request via websocket (success)
 	 */
 	public function testSendSyncSuccess(): void {
-		$expected = [
+		$array = [
 			'data' => [
 				'msgId' => '1',
 			],
 		];
-		Assert::same($expected, $this->client->sendSync($expected));
+		$expected = [
+			'request' => $array,
+			'response' => $array,
+		];
+		Assert::same($expected, $this->client->sendSync($array));
 	}
 
 	/**

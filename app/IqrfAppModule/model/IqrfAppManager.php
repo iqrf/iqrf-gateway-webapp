@@ -21,12 +21,10 @@ declare(strict_types = 1);
 namespace App\IqrfAppModule\Model;
 
 use App\IqrfAppModule\Exception as IqrfException;
-use App\IqrfAppModule\Model\MessageIdManager;
 use App\IqrfAppModule\Parser as IqrfParser;
 use Nette;
 use Nette\Utils\Json;
 use Nette\Utils\Strings;
-use Tracy\Debugger;
 
 /**
  * Tool for controlling iqrfapp.
@@ -36,19 +34,9 @@ class IqrfAppManager {
 	use Nette\SmartObject;
 
 	/**
-	 * @var MessageIdManager Message ID manager
-	 */
-	private $msgIdManager;
-
-	/**
 	 * @var WebsocketClient Websocket client
 	 */
 	private $wsClient;
-
-	/**
-	 * @var string URL to IQRF Gateway Daemon's WebSocket server
-	 */
-	private $wsServer;
 
 	/**
 	 * @var array DPA parsers
@@ -85,13 +73,10 @@ class IqrfAppManager {
 
 	/**
 	 * Constructor
-	 * @param string $wsServer URL to IQRF Gateway Daemon's WebSocket server
-	 * @param MessageIdManager $msgIdManager Message ID manager
+	 * @param WebsocketClient $wsClient Websocket client
 	 */
-	public function __construct(string $wsServer, MessageIdManager $msgIdManager) {
-		$this->msgIdManager = $msgIdManager;
-		$this->wsClient = new WebsocketClient($wsServer, $msgIdManager);
-		$this->wsServer = $wsServer;
+	public function __construct(WebsocketClient $wsClient) {
+		$this->wsClient = $wsClient;
 	}
 
 	/**
@@ -105,7 +90,6 @@ class IqrfAppManager {
 		$array = [
 			'mType' => 'iqrfRaw',
 			'data' => [
-				'msgId' => $this->msgIdManager->generate(),
 				'timeout' => (int) $timeout,
 				'req' => [
 					'rData' => $packet,
@@ -116,11 +100,10 @@ class IqrfAppManager {
 		if (!isset($timeout)) {
 			unset($array['data']['timeout']);
 		}
-		$data = [
-			'request' => Json::encode($array, Json::PRETTY),
-			'response' => Json::encode($this->wsClient->sendSync($array), Json::PRETTY),
-		];
-		Debugger::barDump($data, 'iqrfapp');
+		$data = $this->wsClient->sendSync($array);
+		foreach ($data as &$json) {
+			$json = Json::encode($json, Json::PRETTY);
+		}
 		return $data;
 	}
 
@@ -138,14 +121,13 @@ class IqrfAppManager {
 		$array = [
 			'mType' => 'mngDaemon_Mode',
 			'data' => [
-				'msgId' => $this->msgIdManager->generate(),
 				'req' => [
 					'operMode' => $mode,
 				],
 			],
 			'returnVerbose' => true,
 		];
-		return Json::encode($this->wsClient->sendSync($array));
+		return Json::encode($this->wsClient->sendSync($array)['response']);
 	}
 
 	/**

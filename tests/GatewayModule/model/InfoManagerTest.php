@@ -13,6 +13,7 @@ namespace Test\Model;
 use App\GatewayModule\Model\InfoManager;
 use App\IqrfAppModule\Model\IqrfAppManager;
 use App\IqrfAppModule\Model\MessageIdManager;
+use App\IqrfAppModule\Model\WebsocketClient;
 use App\CoreModule\Model\CommandManager;
 use App\CoreModule\Model\VersionManager;
 use Nette\Caching\Storages\DevNullStorage;
@@ -95,7 +96,8 @@ class InfoManagerTest extends TestCase {
 		$this->commandManager = new CommandManager(false);
 		$this->commandManagerMocked = \Mockery::mock(CommandManager::class);
 		$this->versionManager = new VersionManager($this->commandManager, $cacheStorage);
-		$this->iqrfAppManager = new IqrfAppManager($this->wsServer, $msgIdManager);
+		$wsClient = new WebsocketClient($this->wsServer, $msgIdManager);
+		$this->iqrfAppManager = new IqrfAppManager($wsClient);
 		$this->managerMocked = new InfoManager($this->commandManagerMocked, $this->iqrfAppManager, $this->versionManager);
 	}
 
