@@ -1,7 +1,6 @@
 {
 	"name": "iqrfsdk/iqrf-gateway-webapp",
 	"description": "IQRF Gateway Daemon web application",
-	"version": "2.0.0-beta",
 	"type": "project",
 	"keywords": ["nette", "iqrf", "iqrf-daemon"],
 	"homepage": "https://github.com/iqrfsdk/iqrf-gateway-webapp",
@@ -40,7 +39,8 @@
 		"kdyby/translation": "^2.5",
 		"justinrainbow/json-schema": "^5.2",
 		"ratchet/pawl": "^0.3.2",
-		"ublaboo/datagrid": "^5.6"
+		"ublaboo/datagrid": "^5.6",
+		"contributte/guzzlette": "^2.0"
 	},
 	"require-dev": {
 		"nette/tester": "^2.0",

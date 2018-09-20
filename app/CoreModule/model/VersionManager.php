@@ -22,6 +22,7 @@ namespace App\CoreModule\Model;
 
 use App\CoreModule\Model\JsonFileManager;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\BadResponseException;
 use Nette;
 use Nette\Caching\Cache;
 use Nette\Caching\IStorage;
@@ -40,6 +41,11 @@ class VersionManager {
 	private $cache;
 
 	/**
+	 * @var Client HTTP(S) client
+	 */
+	private $client;
+
+	/**
 	 * @var CommandManager Command manager
 	 */
 	private $commandManager;
@@ -54,8 +60,9 @@ class VersionManager {
 	 * @param CommandManager $commandManager Command manager
 	 * @param IStorage $storage Cache storage
 	 */
-	public function __construct(CommandManager $commandManager, IStorage $storage) {
+	public function __construct(CommandManager $commandManager, IStorage $storage, Client $client) {
 		$this->cache = new Cache($storage, get_class($this));
+		$this->client = $client;
 		$this->commandManager = $commandManager;
 		$this->jsonFileManager = new JsonFileManager(__DIR__ . '/../../../');
 	}
@@ -75,11 +82,17 @@ class VersionManager {
 	public function getCurrentWebapp(): string {
 		$json = $this->cache->load('current', function (&$dependencies) {
 			$dependencies = [Cache::EXPIRE => '1 hour'];
-			$client = new Client();
-			$url = 'https://raw.githubusercontent.com/iqrfsdk/iqrf-gateway-webapp/stable/composer.json';
-			return $client->request('GET', $url)->getBody()->getContents();
+			$repoUrl = 'https://raw.githubusercontent.com/iqrfsdk/iqrf-gateway-webapp/';
+			try {
+				$url = $repoUrl . 'stable/version.json';
+				$file = $this->client->request('GET', $url)->getBody()->getContents();
+			} catch (BadResponseException $e) {
+				$url = $repoUrl . 'master/version.json';
+				$file = $this->client->request('GET', $url)->getBody()->getContents();
+			}
+			return $file;
 		});
-		return Json::decode($json, Json::FORCE_ARRAY)['version'];
+		return trim(Json::decode($json, Json::FORCE_ARRAY)['version'], 'v');
 	}
 
 	/**
@@ -88,17 +101,20 @@ class VersionManager {
 	 * @return string Installed version of the webapp
 	 */
 	public function getInstalledWebapp(bool $verbose = true): string {
-		$composer = $this->jsonFileManager->read('composer')['version'];
-		if ($verbose) {
-			$composer = 'v' . $composer;
+		$file = $this->jsonFileManager->read('version');
+		$version = $file['version'];
+		if (!$verbose) {
+			return trim($version, 'v');
 		}
-		if ($verbose && $this->commandManager->commandExist('git')) {
-			$branches = $this->commandManager->send('git branch -v --no-abbrev');
-			if (preg_match('{^\* (.+?)\s+([a-f0-9]{40})(?:\s|$)}m', $branches, $matches)) {
-				$composer .= ' (' . $matches[1] . ' - ' . $matches[2] . ')';
-			}
+		if (isset($file['commit']) && $file['commit'] !== '') {
+			return $version . ' (' . $file['commit'] . ')';
 		}
-		return $composer;
+		$isRepo = $this->commandManager->send('git rev-parse --is-inside-work-tree');
+		if ($isRepo === 'true') {
+			$commit = $this->commandManager->send('git rev-parse --verify HEAD');
+			return $version . ' (' . $commit . ')';
+		}
+		return $version;
 	}
 
 }

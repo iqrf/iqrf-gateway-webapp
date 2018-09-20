@@ -31,8 +31,12 @@ database:
 
 extensions:
 	extendedFormMacros: Instante\ExtendedFormMacros\DI\ExtendedFormMacrosExtension
+	guzzle: Contributte\Guzzlette\DI\GuzzleExtension
 	monolog: Kdyby\Monolog\DI\MonologExtension
 	translation: Kdyby\Translation\DI\TranslationExtension
+
+guzzle:
+	debug: true
 
 translation:
 	default: en
