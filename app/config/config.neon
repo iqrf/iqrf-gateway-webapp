@@ -10,11 +10,11 @@ parameters:
 	# Daemon configuration
 	daemon:
 		# Path to directory with IQRF Gateway Daemon's configuration files
-		configDir: '/etc/iqrfgd2/'
+		configDir: '/etc/iqrf-gateway-daemon/'
 		# Path to directory with IQRF Gateway Daemon's logs
-		logDir: '/var/log/iqrfgd2/'
+		logDir: '/var/log/iqrf-gateway-daemon/'
 		# Path to directory with IQRF Gateway Daemon's JSON schemas
-		schemaDir: '/etc/iqrfgd2/cfgSchemas/'
+		schemaDir: '/etc/iqrf-gateway-daemon/cfgSchemas/'
 		# URL to IQRF Gateway Daemon's WebSocket server
 		wsServer: 'ws://localhost:1338'
 	# Sentry configuration
