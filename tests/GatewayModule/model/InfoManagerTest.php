@@ -12,11 +12,8 @@ namespace Test\Model;
 
 use App\GatewayModule\Model\InfoManager;
 use App\IqrfAppModule\Model\IqrfAppManager;
-use App\IqrfAppModule\Model\MessageIdManager;
-use App\IqrfAppModule\Model\WebsocketClient;
 use App\CoreModule\Model\CommandManager;
 use App\CoreModule\Model\VersionManager;
-use Nette\Caching\Storages\DevNullStorage;
 use Nette\DI\Container;
 use Tester\Assert;
 use Tester\TestCase;
@@ -29,14 +26,9 @@ $container = require __DIR__ . '/../../bootstrap.php';
 class InfoManagerTest extends TestCase {
 
 	/**
-	 * @var CommandManager Command manager
-	 */
-	private $commandManager;
-
-	/**
 	 * @var \Mockery\MockInterface Mocked command manager
 	 */
-	private $commandManagerMocked;
+	private $commandManager;
 
 	/**
 	 * @var Container Nette Tester Container
@@ -44,24 +36,19 @@ class InfoManagerTest extends TestCase {
 	private $container;
 
 	/**
-	 * @var IqrfAppManager IQRF App manager
+	 * @var \Mockery\MockInterface Mocked IQRF App manager
 	 */
 	private $iqrfAppManager;
 
 	/**
 	 * @var InfoManager Gateway Info manager with mocked command manager
 	 */
-	private $managerMocked;
+	private $manager;
 
 	/**
-	 * @var VersionManager Version manager
+	 * @var \Mockery\MockInterface Mocked version manager
 	 */
 	private $versionManager;
-
-	/**
-	 * @var string URL to IQRF Gateway Daemon's WebSocket server
-	 */
-	private $wsServer = 'ws://echo.socketo.me:9000';
 
 	/**
 	 * @var array Mocked commands
@@ -91,14 +78,10 @@ class InfoManagerTest extends TestCase {
 	 * Set up the test environment
 	 */
 	protected function setUp(): void {
-		$msgIdManager = new MessageIdManager();
-		$cacheStorage = new DevNullStorage();
-		$this->commandManager = new CommandManager(false);
-		$this->commandManagerMocked = \Mockery::mock(CommandManager::class);
-		$this->versionManager = new VersionManager($this->commandManager, $cacheStorage);
-		$wsClient = new WebsocketClient($this->wsServer, $msgIdManager);
-		$this->iqrfAppManager = new IqrfAppManager($wsClient);
-		$this->managerMocked = new InfoManager($this->commandManagerMocked, $this->iqrfAppManager, $this->versionManager);
+		$this->commandManager = \Mockery::mock(CommandManager::class);
+		$this->versionManager = \Mockery::mock(VersionManager::class);
+		$this->iqrfAppManager = \Mockery::mock(IqrfAppManager::class);
+		$this->manager = new InfoManager($this->commandManager, $this->iqrfAppManager, $this->versionManager);
 	}
 
 	/**
@@ -113,51 +96,51 @@ class InfoManagerTest extends TestCase {
 	 */
 	public function testGetBoardDeviceTree(): void {
 		$expected = 'Raspberry Pi 2 Model B Rev 1.1';
-		$this->commandManagerMocked->shouldReceive('send')->with($this->commands['deviceTreeName'], true)->andReturn($expected);
-		Assert::same($expected, $this->managerMocked->getBoard());
+		$this->commandManager->shouldReceive('send')->with($this->commands['deviceTreeName'], true)->andReturn($expected);
+		Assert::same($expected, $this->manager->getBoard());
 	}
 
 	/**
 	 * Test function to get information about the board (via DMI)
 	 */
 	public function testGetBoardDmi(): void {
-		$this->commandManagerMocked->shouldReceive('send')->with($this->commands['deviceTreeName'], true);
-		$this->commandManagerMocked->shouldReceive('send')->with($this->commands['dmiBoardVendor'], true)->andReturn('AAEON');
-		$this->commandManagerMocked->shouldReceive('send')->with($this->commands['dmiBoardName'], true)->andReturn('UP-APL01');
-		$this->commandManagerMocked->shouldReceive('send')->with($this->commands['dmiBoardVersion'], true)->andReturn('V0.4');
-		Assert::same('AAEON UP-APL01 (V0.4)', $this->managerMocked->getBoard());
+		$this->commandManager->shouldReceive('send')->with($this->commands['deviceTreeName'], true);
+		$this->commandManager->shouldReceive('send')->with($this->commands['dmiBoardVendor'], true)->andReturn('AAEON');
+		$this->commandManager->shouldReceive('send')->with($this->commands['dmiBoardName'], true)->andReturn('UP-APL01');
+		$this->commandManager->shouldReceive('send')->with($this->commands['dmiBoardVersion'], true)->andReturn('V0.4');
+		Assert::same('AAEON UP-APL01 (V0.4)', $this->manager->getBoard());
 	}
 
 	/**
 	 * Test function to get information about the board (unknown method)
 	 */
 	public function testGetBoardUnknown(): void {
-		$this->commandManagerMocked->shouldReceive('send')->with($this->commands['deviceTreeName'], true);
-		$this->commandManagerMocked->shouldReceive('send')->with($this->commands['dmiBoardVendor'], true);
-		$this->commandManagerMocked->shouldReceive('send')->with($this->commands['dmiBoardName'], true);
-		$this->commandManagerMocked->shouldReceive('send')->with($this->commands['dmiBoardVersion'], true);
-		Assert::same('UNKNOWN', $this->managerMocked->getBoard());
+		$this->commandManager->shouldReceive('send')->with($this->commands['deviceTreeName'], true);
+		$this->commandManager->shouldReceive('send')->with($this->commands['dmiBoardVendor'], true);
+		$this->commandManager->shouldReceive('send')->with($this->commands['dmiBoardName'], true);
+		$this->commandManager->shouldReceive('send')->with($this->commands['dmiBoardVersion'], true);
+		Assert::same('UNKNOWN', $this->manager->getBoard());
 	}
 
 	/**
 	 * Test function to get IPv4 and IPv6 addresses of the gateway
 	 */
 	public function testGetIpAddresses(): void {
-		$this->commandManagerMocked->shouldReceive('send')->with($this->commands['networkAdapters'], true)->andReturn('eth0' . PHP_EOL . 'wlan0' . PHP_EOL . 'lo');
-		$this->commandManagerMocked->shouldReceive('send')->with($this->commands['ipAddressesEth0'], true)->andReturn('192.168.1.100' . PHP_EOL . 'fda9:d95:d5b1::64');
-		$this->commandManagerMocked->shouldReceive('send')->with($this->commands['ipAddressesWlan0'], true)->andReturn('');
+		$this->commandManager->shouldReceive('send')->with($this->commands['networkAdapters'], true)->andReturn('eth0' . PHP_EOL . 'wlan0' . PHP_EOL . 'lo');
+		$this->commandManager->shouldReceive('send')->with($this->commands['ipAddressesEth0'], true)->andReturn('192.168.1.100' . PHP_EOL . 'fda9:d95:d5b1::64');
+		$this->commandManager->shouldReceive('send')->with($this->commands['ipAddressesWlan0'], true)->andReturn('');
 		$expected = ['eth0' => ['192.168.1.100', 'fda9:d95:d5b1::64']];
-		Assert::same($expected, $this->managerMocked->getIpAddresses());
+		Assert::same($expected, $this->manager->getIpAddresses());
 	}
 
 	/**
 	 * Test function to get MAC addresses of the gateway
 	 */
 	public function testGetMacAddresses(): void {
-		$this->commandManagerMocked->shouldReceive('send')->with($this->commands['networkAdapters'], true)->andReturn('eth0' . PHP_EOL . 'lo');
-		$this->commandManagerMocked->shouldReceive('send')->with($this->commands['macAddresses'], true)->andReturn('01:02:03:04:05:06');
+		$this->commandManager->shouldReceive('send')->with($this->commands['networkAdapters'], true)->andReturn('eth0' . PHP_EOL . 'lo');
+		$this->commandManager->shouldReceive('send')->with($this->commands['macAddresses'], true)->andReturn('01:02:03:04:05:06');
 		$expected = ['eth0' => '01:02:03:04:05:06'];
-		Assert::same($expected, $this->managerMocked->getMacAddresses());
+		Assert::same($expected, $this->manager->getMacAddresses());
 	}
 
 	/**
@@ -165,8 +148,8 @@ class InfoManagerTest extends TestCase {
 	 */
 	public function testGetHostname(): void {
 		$expected = 'gateway';
-		$this->commandManagerMocked->shouldReceive('send')->with('hostname -f')->andReturn($expected);
-		Assert::same($expected, $this->managerMocked->getHostname());
+		$this->commandManager->shouldReceive('send')->with('hostname -f')->andReturn($expected);
+		Assert::same($expected, $this->manager->getHostname());
 	}
 
 	/**
@@ -175,11 +158,9 @@ class InfoManagerTest extends TestCase {
 	public function testGetCoordinatorInfo(): void {
 		$output = ['response'];
 		$expected = ['parsedResponse'];
-		$iqrfAppManager = \Mockery::mock(IqrfAppManager::class);
-		$iqrfAppManager->shouldReceive('sendRaw')->with('00.00.02.00.FF.FF')->andReturn($output);
-		$iqrfAppManager->shouldReceive('parseResponse')->with($output)->andReturn($expected);
-		$manager = new InfoManager($this->commandManager, $iqrfAppManager, $this->versionManager);
-		Assert::same($expected, $manager->getCoordinatorInfo());
+		$this->iqrfAppManager->shouldReceive('sendRaw')->with('00.00.02.00.FF.FF')->andReturn($output);
+		$this->iqrfAppManager->shouldReceive('parseResponse')->with($output)->andReturn($expected);
+		Assert::same($expected, $this->manager->getCoordinatorInfo());
 	}
 
 	/**
@@ -187,26 +168,26 @@ class InfoManagerTest extends TestCase {
 	 */
 	public function testGetDaemonVersion(): void {
 		$expected = 'v2.0.0dev 2018-07-04T10:30:51';
-		$this->commandManagerMocked->shouldReceive('commandExist')->with('iqrfgd2')->andReturn(true);
-		$this->commandManagerMocked->shouldReceive('send')->with($this->commands['daemonVersion'])->andReturn($expected);
-		Assert::same($expected, $this->managerMocked->getDaemonVersion());
+		$this->commandManager->shouldReceive('commandExist')->with('iqrfgd2')->andReturn(true);
+		$this->commandManager->shouldReceive('send')->with($this->commands['daemonVersion'])->andReturn($expected);
+		Assert::same($expected, $this->manager->getDaemonVersion());
 	}
 
 	/**
 	 * Test function to get IQRF Gateway Daemon's version (IQRF Gateway Daemon is not installed)
 	 */
 	public function testGetDaemonVersionNotInstalled(): void {
-		$this->commandManagerMocked->shouldReceive('commandExist')->with('iqrfgd2')->andReturn(false);
-		Assert::same('none', $this->managerMocked->getDaemonVersion());
+		$this->commandManager->shouldReceive('commandExist')->with('iqrfgd2')->andReturn(false);
+		Assert::same('none', $this->manager->getDaemonVersion());
 	}
 
 	/**
 	 * Test function to get IQRF Gateway Daemon's version (unknown version)
 	 */
 	public function testGetDaemonVersionUnknown(): void {
-		$this->commandManagerMocked->shouldReceive('commandExist')->with('iqrfgd2')->andReturn(true);
-		$this->commandManagerMocked->shouldReceive('send')->with($this->commands['daemonVersion']);
-		Assert::same('unknown', $this->managerMocked->getDaemonVersion());
+		$this->commandManager->shouldReceive('commandExist')->with('iqrfgd2')->andReturn(true);
+		$this->commandManager->shouldReceive('send')->with($this->commands['daemonVersion']);
+		Assert::same('unknown', $this->manager->getDaemonVersion());
 	}
 
 	/**
@@ -214,10 +195,8 @@ class InfoManagerTest extends TestCase {
 	 */
 	public function testGetWebAppVersion(): void {
 		$expected = 'v1.1.6';
-		$versionManager = \Mockery::mock(VersionManager::class);
-		$versionManager->shouldReceive('getInstalledWebapp')->andReturn($expected);
-		$manager = new InfoManager($this->commandManager, $this->iqrfAppManager, $versionManager);
-		Assert::same($expected, $manager->getWebAppVersion());
+		$this->versionManager->shouldReceive('getInstalledWebapp')->andReturn($expected);
+		Assert::same($expected, $this->manager->getWebAppVersion());
 	}
 
 }
