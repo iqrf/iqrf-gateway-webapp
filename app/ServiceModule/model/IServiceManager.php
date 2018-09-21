@@ -21,73 +21,39 @@ declare(strict_types = 1);
 namespace App\ServiceModule\Model;
 
 use App\CoreModule\Model\CommandManager;
-use App\ServiceModule\Exception\NotSupportedInitSystemException;
-use Nette;
 
 /**
- * Tool for managing services
+ * Interface for tools for managing IQRF Gateway Daemon's service
  */
-class ServiceManager {
-
-	use Nette\SmartObject;
-
-	/**
-	 * @var IServiceManager Init daemon service manager
-	 */
-	private $initDaemon;
+interface IServiceManager {
 
 	/**
 	 * Constructor
-	 * @param string $initDaemon Init daemon
 	 * @param CommandManager $commandManager Command manager
 	 */
-	public function __construct(string $initDaemon, CommandManager $commandManager) {
-		switch ($initDaemon) {
-			case 'docker-supervisor':
-				$this->initDaemon = new DockerSupervisorManager($commandManager);
-				break;
-			case 'systemd':
-				$this->initDaemon = new SystemDManager($commandManager);
-				break;
-			default:
-				$this->initDaemon = new UnknownManager($commandManager);
-		}
-	}
+	public function __construct(CommandManager $commandManager);
 
 	/**
 	 * Start IQRF Gateway Daemon's service
 	 * @return string Output from init daemon
-	 * @throws NotSupportedInitSystemException
 	 */
-	public function start(): string {
-		return $this->initDaemon->start();
-	}
+	public function start(): string;
 
 	/**
 	 * Stop IQRF Gateway Daemon's service
 	 * @return string Output from init daemon
-	 * @throws NotSupportedInitSystemException
 	 */
-	public function stop(): string {
-		return $this->initDaemon->stop();
-	}
+	public function stop(): string;
 
 	/**
 	 * Restart IQRF Gateway Daemon's service
 	 * @return string Output from init daemon
-	 * @throws NotSupportedInitSystemException
 	 */
-	public function restart(): string {
-		return $this->initDaemon->restart();
-	}
+	public function restart(): string;
 
 	/**
 	 * Get status of IQRF Gateway Daemon's service
 	 * @return string Output from init daemon
-	 * @throws NotSupportedInitSystemException
 	 */
-	public function getStatus(): string {
-		return $this->initDaemon->getStatus();
-	}
-
+	public function getStatus(): string;
 }

@@ -21,73 +21,67 @@ declare(strict_types = 1);
 namespace App\ServiceModule\Model;
 
 use App\CoreModule\Model\CommandManager;
-use App\ServiceModule\Exception\NotSupportedInitSystemException;
 use Nette;
 
 /**
- * Tool for managing services
+ * Tool for managing services (supervisord init daemon in a Docker container)
  */
-class ServiceManager {
+class DockerSupervisorManager implements IServiceManager {
 
 	use Nette\SmartObject;
 
 	/**
-	 * @var IServiceManager Init daemon service manager
+	 * @var CommandManager Command Manager
 	 */
-	private $initDaemon;
+	private $commandManager;
+
+	/**
+	 * @var string Name of service
+	 */
+	private $serviceName = 'iqrf-gateway-daemon';
 
 	/**
 	 * Constructor
-	 * @param string $initDaemon Init daemon
 	 * @param CommandManager $commandManager Command manager
 	 */
-	public function __construct(string $initDaemon, CommandManager $commandManager) {
-		switch ($initDaemon) {
-			case 'docker-supervisor':
-				$this->initDaemon = new DockerSupervisorManager($commandManager);
-				break;
-			case 'systemd':
-				$this->initDaemon = new SystemDManager($commandManager);
-				break;
-			default:
-				$this->initDaemon = new UnknownManager($commandManager);
-		}
+	public function __construct(CommandManager $commandManager) {
+		$this->commandManager = $commandManager;
 	}
 
 	/**
 	 * Start IQRF Gateway Daemon's service
 	 * @return string Output from init daemon
-	 * @throws NotSupportedInitSystemException
 	 */
 	public function start(): string {
-		return $this->initDaemon->start();
+		$cmd = 'supervisorctl start ' . $this->serviceName;
+		return $this->commandManager->send($cmd, true);
 	}
 
 	/**
 	 * Stop IQRF Gateway Daemon's service
 	 * @return string Output from init daemon
-	 * @throws NotSupportedInitSystemException
 	 */
 	public function stop(): string {
-		return $this->initDaemon->stop();
+		$cmd = 'supervisorctl stop ' . $this->serviceName;
+		return $this->commandManager->send($cmd, true);
 	}
 
 	/**
 	 * Restart IQRF Gateway Daemon's service
 	 * @return string Output from init daemon
-	 * @throws NotSupportedInitSystemException
 	 */
 	public function restart(): string {
-		return $this->initDaemon->restart();
+		$cmd = 'supervisorctl restart ' . $this->serviceName;
+		return $this->commandManager->send($cmd, true);
 	}
 
 	/**
 	 * Get status of IQRF Gateway Daemon's service
 	 * @return string Output from init daemon
-	 * @throws NotSupportedInitSystemException
 	 */
 	public function getStatus(): string {
-		return $this->initDaemon->getStatus();
+		$cmd = 'supervisorctl status ' . $this->serviceName;
+		return $this->commandManager->send($cmd, true);
 	}
 
 }
