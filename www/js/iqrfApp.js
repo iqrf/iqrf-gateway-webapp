@@ -100,11 +100,16 @@ $(".btn-spi-port").click(function () {
 	$("#frm-configIqrfSpiForm-IqrfInterface").val($(this).data("port"));
 });
 
+// Select IQRF UART interface port from list
+$(".btn-uart-port").click(function () {
+	$("#frm-configIqrfUartForm-IqrfInterface").val($(this).data("port"));
+});
+
 // Select SPI pins from list of supported boards
 $(".btn-spiPin").click(function() {
-	$("#frm-configIqrfSpiForm-enableGpioPin").val($(this).data("enablegpio"));
-	$("#frm-configIqrfSpiForm-spiMasterEnGpioPin").val($(this).data("spimasterengpiopin"));
-	$("#frm-configIqrfSpiForm-pgmSwGpioPin").val($(this).data("pgmswgpiopin"));
+	$("#frm-configIqrfSpiForm-powerEnableGpioPin").val($(this).data("powerenablegpiopin"));
+	$("#frm-configIqrfSpiForm-busEnableGpioPin").val($(this).data("busenablegpiopin"));
+	$("#frm-configIqrfSpiForm-pgmSwitchGpioPin").val($(this).data("pgmswitchgpiopin"));
 });
 
 // Select DPA packet form list of macros from IQRF IDE

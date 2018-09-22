@@ -28,7 +28,7 @@
 		<h3>{_config.iqrfUart.mapping.interfaces}</h3>
 		{if !empty($interfaces)}
 			{foreach $interfaces as $interface}
-				<a class="btn btn-default btn-cdc-port" role="button" data-port="{$interface}">{$interface}</a>
+				<a class="btn btn-default btn-uart-port" role="button" data-port="{$interface}">{$interface}</a>
 			{/foreach}
 		{/if}
 	</div>

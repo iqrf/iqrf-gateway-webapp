@@ -26,6 +26,10 @@ components:
 		disabled: Disabled
 		startlevel: Start level
 		messages:
+			name: Please enter name of component.
+			libraryPath: "Please enter path to component's library directory."
+			libraryName: "Please enter name of component's library file."
+			startLevel: "Please enter component's start level."
 			confirmDelete: Do you really want to delete component %s?
 		Save: Save
 
@@ -106,9 +110,9 @@ iqrfSpi:
 	form:
 		instance: Name of instance
 		IqrfInterface: IQRF SPI interface
-		enableGpioPin: Enable GPIO pin
-		spiMasterEnGpioPin: SPI Master enable GPIO pin
-		pgmSwGpioPin: Programming mode switch GPIO pin
+		powerEnableGpioPin: Power enable GPIO pin
+		busEnableGpioPin: SPI bus enable GPIO pin
+		pgmSwitchGpioPin: Programming mode switch GPIO pin
 		messages:
 			instance: Please enter name of IQRF SPI instance.
 			IqrfInterface: Please enter IQRF SPI interface.
@@ -125,7 +129,8 @@ iqrfUart:
 		instance: Name of instance
 		IqrfInterface: IQRF UART interface
 		baudRate: UART baud rate
-		enableGpioPin: Enable GPIO pin
+		powerEnableGpioPin: Power enable GPIO pin
+		busEnableGpioPin: UART bus enable GPIO pin
 		messages:
 			instance: Please enter name of IQRF UART instance.
 			IqrfInterface: Please enter IQRF UART interface.

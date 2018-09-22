@@ -1,22 +1,22 @@
 {
 	"Raspberry Pi": {
-		"enableGpio": 23,
-		"spiMasterEnGpioPin": 7,
-		"pgmSwGpioPin": 22
+		"powerEnableGpioPin": 23,
+		"busEnableGpioPin": 7,
+		"pgmSwitchGpioPin": 22
 	},
 	"Orange Pi": {
-		"enableGpio": 19,
-		"spiMasterEnGpioPin": 10,
-		"pgmSwGpioPin": 3
+		"powerEnableGpioPin": 19,
+		"busEnableGpioPin": 10,
+		"pgmSwitchGpioPin": 3
 	},
 	"UP": {
-		"enableGpio": 23,
-		"spiMasterEnGpioPin": 7,
-		"pgmSwGpioPin": 22
+		"powerEnableGpioPin": 23,
+		"busEnableGpioPin": 7,
+		"pgmSwitchGpioPin": 22
 	},
 	"UP Squared": {
-		"enableGpio": 23,
-		"spiMasterEnGpioPin": 7,
-		"pgmSwGpioPin": 22
+		"powerEnableGpioPin": 23,
+		"busEnableGpioPin": 7,
+		"pgmSwitchGpioPin": 22
 	}
 }
