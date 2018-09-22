@@ -136,14 +136,14 @@ class WebsocketClient {
 	 */
 	private function parseResponse(array $request, ?MessageInterface $response): array {
 		$string = strval($response);
+		$data = ['request' => $request];
 		if ($string === '') {
+			$data['status'] = 'Empty response.';
+			Debugger::barDump($data, 'Websocket client');
 			throw new EmptyResponseException();
 		}
-		$data = [
-			'request' => $request,
-			'response' => Json::decode($string, Json::FORCE_ARRAY),
-		];
-		Debugger::barDump($data, 'iqrfapp');
+		$data['response'] = Json::decode($string, Json::FORCE_ARRAY);
+		Debugger::barDump($data, 'Websocket client');
 		return $data;
 	}
 
