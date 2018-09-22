@@ -86,7 +86,8 @@ class GenericManager {
 		if (!isset($instanceFiles[$id])) {
 			return [];
 		}
-		$configuration = $this->fileManager->read($instanceFiles[$id]);
+		$this->fileName = $instanceFiles[$id];
+		$configuration = $this->fileManager->read($this->fileName);
 		$this->fixRequiredInterfaces($configuration);
 		return $configuration;
 	}
