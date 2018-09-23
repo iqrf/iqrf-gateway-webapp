@@ -33,9 +33,14 @@ class InteliGlueManager implements IManager {
 	use Nette\SmartObject;
 
 	/**
-	 * @var string Path to root CA certificate
+	 * @var string Path to the certificates
 	 */
-	private $caPath = '/etc/iqrf-daemon/certs/inteliments-ca.crt';
+	private $certPath;
+
+	/**
+	 * @var Client HTTP(S) client
+	 */
+	private $client;
 
 	/**
 	 * @var GenericManager Generic configuration manager
@@ -50,8 +55,11 @@ class InteliGlueManager implements IManager {
 	/**
 	 * Constructor
 	 * @param GenericManager $configManager Generic config manager
+	 * @param Client $client HTTP(S) client
 	 */
-	public function __construct(GenericManager $configManager) {
+	public function __construct(string $certPath, GenericManager $configManager, Client $client) {
+		$this->certPath = realpath($certPath);
+		$this->client = $client;
 		$this->configManager = $configManager;
 	}
 
@@ -62,7 +70,7 @@ class InteliGlueManager implements IManager {
 	public function createMqttInterface(array $values): void {
 		$this->downloadCaCertificate();
 		$this->configManager->setComponent('iqrf::MqttMessaging');
-		$this->configManager->setFileName($this->interfaceName);
+		$this->configManager->setFileName('iqrf__MqttMessaging_InteliGlue');
 		$interface = [
 			'instance' => $this->interfaceName,
 			'BrokerAddr' => 'ssl://mqtt.inteliglue.com:' . $values['assignedPort'],
@@ -78,7 +86,7 @@ class InteliGlueManager implements IManager {
 			'ConnectTimeout' => 5,
 			'MinReconnect' => 1,
 			'MaxReconnect' => 64,
-			'TrustStore' => $this->caPath,
+			'TrustStore' => $this->certPath . '/inteliments-ca.crt',
 			'KeyStore' => '',
 			'PrivateKey' => '',
 			'PrivateKeyPassword' => '',
@@ -93,10 +101,9 @@ class InteliGlueManager implements IManager {
 	 * Download root CA certificate
 	 */
 	public function downloadCaCertificate(): void {
-		$client = new Client();
 		$caCertUrl = 'https://inteliments.com/static/docs/inteliglue/downloads/DST_Root_CA_X3.pem.txt';
-		$caCert = $client->request('GET', $caCertUrl)->getBody();
-		FileSystem::write($this->caPath, $caCert);
+		$caCert = $this->client->request('GET', $caCertUrl)->getBody();
+		FileSystem::write($this->certPath . '/inteliments-ca.crt', $caCert);
 	}
 
 }

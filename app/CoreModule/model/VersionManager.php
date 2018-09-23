@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Model;
 
+use App\CoreModule\Model\CommandManager;
 use App\CoreModule\Model\JsonFileManager;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
@@ -59,6 +60,7 @@ class VersionManager {
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
 	 * @param IStorage $storage Cache storage
+	 * @param Client $client HTTP(S) client
 	 */
 	public function __construct(CommandManager $commandManager, IStorage $storage, Client $client) {
 		$this->cache = new Cache($storage, get_class($this));

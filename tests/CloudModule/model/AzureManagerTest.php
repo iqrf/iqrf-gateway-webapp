@@ -110,7 +110,7 @@ class AzureManagerTest extends TestCase {
 		];
 		$array = ['ConnectionString' => $this->connectionString];
 		$this->mockedManager->createMqttInterface($array);
-		Assert::same($mqtt, $this->fileManager->read('MqttMessagingAzure'));
+		Assert::same($mqtt, $this->fileManager->read('iqrf__MqttMessaging_Azure'));
 	}
 
 	/**

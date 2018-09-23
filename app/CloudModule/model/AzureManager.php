@@ -62,7 +62,7 @@ class AzureManager implements IManager {
 		$endpoint = $data['HostName'] . '/devices/' . $data['DeviceId'];
 		$token = $this->generateSasToken($endpoint, $data['SharedAccessKey']);
 		$this->configManager->setComponent('iqrf::MqttMessaging');
-		$this->configManager->setFileName($this->interfaceName);
+		$this->configManager->setFileName('iqrf__MqttMessaging_Azure');
 		$interface = [
 			'instance' => $this->interfaceName,
 			'BrokerAddr' => 'ssl://' . $data['HostName'] . ':8883',

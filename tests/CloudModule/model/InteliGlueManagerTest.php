@@ -14,6 +14,7 @@ use App\CloudModule\Model\InteliGlueManager;
 use App\ConfigModule\Model\GenericManager;
 use App\CoreModule\Model\JsonFileManager;
 use App\CoreModule\Model\JsonSchemaManager;
+use GuzzleHttp\Client;
 use Nette\DI\Container;
 use Tester\Assert;
 use Tester\TestCase;
@@ -29,6 +30,11 @@ class InteliGlueManagerTest extends TestCase {
 	 * @var Container Nette Tester Container
 	 */
 	private $container;
+
+	/**
+	 * @var string Path to a directory with certificates and private keys
+	 */
+	private $certPath;
 
 	/**
 	 * @var JsonFileManager JSON file manager
@@ -56,6 +62,7 @@ class InteliGlueManagerTest extends TestCase {
 	 */
 	public function __construct(Container $container) {
 		$this->container = $container;
+		$this->certPath = realpath(__DIR__ . '/../../data/certificates/') . '/';
 	}
 
 	/**
@@ -67,7 +74,8 @@ class InteliGlueManagerTest extends TestCase {
 		$this->fileManager = new JsonFileManager($configPath);
 		$schemaManager = new JsonSchemaManager($schemaPath);
 		$configManager = new GenericManager($this->fileManager, $schemaManager);
-		$this->manager = \Mockery::mock(InteliGlueManager::class, [$configManager])->makePartial();
+		$client = new Client();
+		$this->manager = \Mockery::mock(InteliGlueManager::class, [$this->certPath, $configManager, $client])->makePartial();
 		$this->manager->shouldReceive('downloadCaCertificate')->andReturn(null);
 	}
 
@@ -98,7 +106,7 @@ class InteliGlueManagerTest extends TestCase {
 			'ConnectTimeout' => 5,
 			'MinReconnect' => 1,
 			'MaxReconnect' => 64,
-			'TrustStore' => '/etc/iqrf-daemon/certs/inteliments-ca.crt',
+			'TrustStore' => $this->certPath . 'inteliments-ca.crt',
 			'KeyStore' => '',
 			'PrivateKey' => '',
 			'PrivateKeyPassword' => '',
@@ -107,7 +115,7 @@ class InteliGlueManagerTest extends TestCase {
 			'acceptAsyncMsg' => false,
 		];
 		$this->manager->createMqttInterface($this->formValues);
-		Assert::same($mqtt, $this->fileManager->read('MqttMessagingInteliGlue'));
+		Assert::same($mqtt, $this->fileManager->read('iqrf__MqttMessaging_InteliGlue'));
 	}
 
 }

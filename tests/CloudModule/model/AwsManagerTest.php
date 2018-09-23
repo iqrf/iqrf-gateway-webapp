@@ -16,6 +16,7 @@ use App\ConfigModule\Model\GenericManager;
 use App\CoreModule\Model\CertificateManager;
 use App\CoreModule\Model\JsonFileManager;
 use App\CoreModule\Model\JsonSchemaManager;
+use GuzzleHttp\Client;
 use Nette\DI\Container;
 use Nette\Http\FileUpload;
 use Nette\Utils\FileSystem;
@@ -37,12 +38,12 @@ class AwsManagerTest extends TestCase {
 	/**
 	 * @var string Path to a directory with certificates and private keys
 	 */
-	private $certPath = __DIR__ . '/../../data/certificates/';
+	private $certPath;
 
 	/**
 	 * @var string Path to a temporary directory with certificates and private keys
 	 */
-	private $certPathTemp = __DIR__ . '/../../temp/certificates/';
+	private $certPathTemp;
 
 	/**
 	 * @var JsonFileManager JSON file manager
@@ -72,6 +73,8 @@ class AwsManagerTest extends TestCase {
 	 */
 	public function __construct(Container $container) {
 		$this->container = $container;
+		$this->certPath = realpath(__DIR__ . '/../../data/certificates/') . '/';
+		$this->certPathTemp = realpath(__DIR__ . '/../../temp/certificates/') . '/';
 	}
 
 	/**
@@ -84,8 +87,9 @@ class AwsManagerTest extends TestCase {
 		$certManager = new CertificateManager();
 		$schemaManager = new JsonSchemaManager($schemaPath);
 		$configManager = new GenericManager($this->fileManager, $schemaManager);
-		$this->manager = new AwsManager($certManager, $configManager);
-		$this->mockedManager = \Mockery::mock(AwsManager::class, [$certManager, $configManager])->makePartial();
+		$client = new Client();
+		$this->manager = new AwsManager($this->certPathTemp, $certManager, $configManager, $client);
+		$this->mockedManager = \Mockery::mock(AwsManager::class, [$this->certPathTemp, $certManager, $configManager, $client])->makePartial();
 		$this->mockedManager->shouldReceive('downloadCaCertificate')->andReturn(null);
 		$this->mockedManager->shouldReceive('checkCertificate')->andReturn(null);
 		$this->mockedManager->shouldReceive('uploadCertsAndKey')->andReturn(null);
@@ -148,16 +152,16 @@ class AwsManagerTest extends TestCase {
 			'ConnectTimeout' => 5,
 			'MinReconnect' => 1,
 			'MaxReconnect' => 64,
-			'TrustStore' => '/etc/iqrf-daemon/certs/aws-ca.crt',
-			'KeyStore' => '/etc/iqrf-daemon/certs/' . $timestamp . '-aws.crt',
-			'PrivateKey' => '/etc/iqrf-daemon/certs/' . $timestamp . '-aws.key',
+			'TrustStore' => $this->certPathTemp . 'aws-ca.crt',
+			'KeyStore' => $this->certPathTemp . $timestamp . '-aws.crt',
+			'PrivateKey' => $this->certPathTemp . $timestamp . '-aws.key',
 			'PrivateKeyPassword' => '',
 			'EnabledCipherSuites' => '',
 			'EnableServerCertAuth' => false,
 			'acceptAsyncMsg' => false,
 		];
 		$this->mockedManager->createMqttInterface($this->formValues);
-		Assert::same($mqtt, $this->fileManager->read('MqttMessagingAws'));
+		Assert::same($mqtt, $this->fileManager->read('iqrf__MqttMessaging_Aws'));
 	}
 
 	/**
@@ -196,8 +200,8 @@ class AwsManagerTest extends TestCase {
 		$timestamp = (new \DateTime())->format(\DateTime::ISO8601);
 		$actual = $this->mockedManager->createPaths();
 		$paths = [
-			'cert' => '/etc/iqrf-daemon/certs/' . $timestamp . '-aws.crt',
-			'key' => '/etc/iqrf-daemon/certs/' . $timestamp . '-aws.key',
+			'cert' => $this->certPathTemp . $timestamp . '-aws.crt',
+			'key' => $this->certPathTemp . $timestamp . '-aws.key',
 		];
 		Assert::same($paths, $actual);
 	}

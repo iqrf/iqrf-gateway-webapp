@@ -14,6 +14,7 @@ use App\CloudModule\Model\BluemixManager;
 use App\ConfigModule\Model\GenericManager;
 use App\CoreModule\Model\JsonFileManager;
 use App\CoreModule\Model\JsonSchemaManager;
+use GuzzleHttp\Client;
 use Nette\DI\Container;
 use Tester\Assert;
 use Tester\TestCase;
@@ -29,6 +30,11 @@ class BluemixManagerTest extends TestCase {
 	 * @var Container Nette Tester Container
 	 */
 	private $container;
+
+	/**
+	 * @var string Path to a directory with certificates and private keys
+	 */
+	private $certPath;
 
 	/**
 	 * @var JsonFileManager JSON file manager
@@ -57,6 +63,7 @@ class BluemixManagerTest extends TestCase {
 	 */
 	public function __construct(Container $container) {
 		$this->container = $container;
+		$this->certPath = realpath(__DIR__ . '/../../data/certificates/') . '/';
 	}
 
 	/**
@@ -68,7 +75,8 @@ class BluemixManagerTest extends TestCase {
 		$this->fileManager = new JsonFileManager($configPath);
 		$schemaManager = new JsonSchemaManager($schemaPath);
 		$configManager = new GenericManager($this->fileManager, $schemaManager);
-		$this->manager = \Mockery::mock(BluemixManager::class, [$configManager])->makePartial();
+		$client = new Client();
+		$this->manager = \Mockery::mock(BluemixManager::class, [$this->certPath, $configManager, $client])->makePartial();
 		$this->manager->shouldReceive('downloadCaCertificate')->andReturn(null);
 	}
 
@@ -99,7 +107,7 @@ class BluemixManagerTest extends TestCase {
 			'ConnectTimeout' => 5,
 			'MinReconnect' => 1,
 			'MaxReconnect' => 64,
-			'TrustStore' => '/etc/iqrf-daemon/certs/bluemix-ca.crt',
+			'TrustStore' => $this->certPath . 'bluemix-ca.crt',
 			'KeyStore' => '',
 			'PrivateKey' => '',
 			'PrivateKeyPassword' => '',
@@ -108,7 +116,7 @@ class BluemixManagerTest extends TestCase {
 			'acceptAsyncMsg' => false,
 		];
 		$this->manager->createMqttInterface($this->formValues);
-		Assert::same($mqtt, $this->fileManager->read('MqttMessagingBluemix'));
+		Assert::same($mqtt, $this->fileManager->read('iqrf__MqttMessaging_Bluemix'));
 	}
 
 }

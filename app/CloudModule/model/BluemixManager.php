@@ -33,14 +33,19 @@ class BluemixManager implements IManager {
 	use Nette\SmartObject;
 
 	/**
-	 * @var string Path to root CA certificate
+	 * @var string Path to the certificates
 	 */
-	private $caPath = '/etc/iqrf-daemon/certs/bluemix-ca.crt';
+	private $certPath;
 
 	/**
 	 * @var GenericManager Generic configuration manager
 	 */
 	private $configManager;
+
+	/**
+	 * @var Client HTTP(S) client
+	 */
+	private $client;
 
 	/**
 	 * @var string MQTT interface name
@@ -50,8 +55,11 @@ class BluemixManager implements IManager {
 	/**
 	 * Constructor
 	 * @param GenericManager $configManager Generic config manager
+	 * @param Client $client HTTP(S) client
 	 */
-	public function __construct(GenericManager $configManager) {
+	public function __construct(string $certPath, GenericManager $configManager, Client $client) {
+		$this->certPath = realpath($certPath);
+		$this->client = $client;
 		$this->configManager = $configManager;
 	}
 
@@ -62,7 +70,7 @@ class BluemixManager implements IManager {
 	public function createMqttInterface(array $values): void {
 		$this->downloadCaCertificate();
 		$this->configManager->setComponent('iqrf::MqttMessaging');
-		$this->configManager->setFileName($this->interfaceName);
+		$this->configManager->setFileName('iqrf__MqttMessaging_Bluemix');
 		$interface = [
 			'instance' => $this->interfaceName,
 			'BrokerAddr' => 'ssl://' . $values['organizationId'] . '.messaging.internetofthings.ibmcloud.com:8883',
@@ -78,7 +86,7 @@ class BluemixManager implements IManager {
 			'ConnectTimeout' => 5,
 			'MinReconnect' => 1,
 			'MaxReconnect' => 64,
-			'TrustStore' => $this->caPath,
+			'TrustStore' => $this->certPath . '/bluemix-ca.crt',
 			'KeyStore' => '',
 			'PrivateKey' => '',
 			'PrivateKeyPassword' => '',
@@ -93,10 +101,9 @@ class BluemixManager implements IManager {
 	 * Download root CA certificate
 	 */
 	public function downloadCaCertificate(): void {
-		$client = new Client();
 		$caCertUrl = 'https://raw.githubusercontent.com/ibm-watson-iot/iot-python/master/src/ibmiotf/messaging.pem';
-		$caCert = $client->request('GET', $caCertUrl)->getBody();
-		FileSystem::write($this->caPath, $caCert);
+		$caCert = $this->client->request('GET', $caCertUrl)->getBody();
+		FileSystem::write($this->certPath . '/bluemix-ca.crt', $caCert);
 	}
 
 }

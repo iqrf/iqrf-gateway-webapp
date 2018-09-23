@@ -45,9 +45,14 @@ class AwsManager implements IManager {
 	private $certManager;
 
 	/**
-	 * @var string Path to certificates
+	 * @var string Path to the certificates
 	 */
-	private $path = '/etc/iqrf-daemon/certs/';
+	private $certPath;
+
+	/**
+	 * @var Client HTTP(S) client
+	 */
+	private $client;
 
 	/**
 	 * @var string MQTT interface name
@@ -58,9 +63,12 @@ class AwsManager implements IManager {
 	 * Constructor
 	 * @param CertificateManager $certManager Manager for certificates
 	 * @param GenericManager $configManager Generic config manager
+	 * @param Client $client HTTP(S) client
 	 */
-	public function __construct(CertificateManager $certManager, Genericmanager $configManager) {
+	public function __construct(string $certPath, CertificateManager $certManager, GenericManager $configManager, Client $client) {
+		$this->certPath = realpath($certPath) . '/';
 		$this->certManager = $certManager;
+		$this->client = $client;
 		$this->configManager = $configManager;
 	}
 
@@ -74,7 +82,7 @@ class AwsManager implements IManager {
 		$this->checkCertificate($values);
 		$this->uploadCertsAndKey($values, $paths);
 		$this->configManager->setComponent('iqrf::MqttMessaging');
-		$this->configManager->setFileName($this->interfaceName);
+		$this->configManager->setFileName('iqrf__MqttMessaging_Aws');
 		$interface = [
 			'instance' => $this->interfaceName,
 			'BrokerAddr' => 'ssl://' . $values['endpoint'] . ':8883',
@@ -90,7 +98,7 @@ class AwsManager implements IManager {
 			'ConnectTimeout' => 5,
 			'MinReconnect' => 1,
 			'MaxReconnect' => 64,
-			'TrustStore' => $this->path . 'aws-ca.crt',
+			'TrustStore' => $this->certPath . 'aws-ca.crt',
 			'KeyStore' => $paths['cert'],
 			'PrivateKey' => $paths['key'],
 			'PrivateKeyPassword' => '',
@@ -119,7 +127,7 @@ class AwsManager implements IManager {
 	 */
 	public function createPaths(): array {
 		$timestamp = (new \DateTime())->format(\DateTime::ISO8601);
-		$path = $this->path . $timestamp;
+		$path = $this->certPath . $timestamp;
 		$paths = [];
 		$paths['cert'] = $path . '-aws.crt';
 		$paths['key'] = $path . '-aws.key';
@@ -146,10 +154,9 @@ class AwsManager implements IManager {
 	 * Download root CA certificate
 	 */
 	public function downloadCaCertificate(): void {
-		$client = new Client();
 		$caCertUrl = 'https://www.symantec.com/content/en/us/enterprise/verisign/roots/VeriSign-Class%203-Public-Primary-Certification-Authority-G5.pem';
-		$caCert = $client->request('GET', $caCertUrl)->getBody();
-		FileSystem::write($this->path . 'aws-ca.crt', $caCert);
+		$caCert = $this->client->request('GET', $caCertUrl)->getBody();
+		FileSystem::write($this->certPath . 'aws-ca.crt', $caCert);
 	}
 
 }
