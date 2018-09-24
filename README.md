@@ -5,6 +5,7 @@
 [![Downloads this Month](https://img.shields.io/packagist/dm/iqrfsdk/iqrf-gateway-webapp.svg)](https://packagist.org/packages/iqrfsdk/iqrf-gateway-webapp)
 [![Apache License](https://img.shields.io/badge/license-APACHE2-blue.svg)](LICENSE)
 [![API documentation](https://img.shields.io/badge/docs-api-brightgreen.svg)](https://apidocs.iqrfsdk.org/iqrf-gateway-webapp/)
+[![User documentation](https://img.shields.io/badge/docs-user-blue.svg)](https://docs.iqrfsdk.org/iqrf-gateway-webapp/)
 
 This is web application for iqrf-daemon configuration.
 
@@ -24,7 +25,7 @@ It is *CRITICAL* that whole `app/`, `log/` and `temp/` directories are not acces
 
 ## License
 
-This library is licensed under Apache License 2.0:
+This project is licensed under Apache License 2.0:
 
  > Copyright 2017 MICRORISC s.r.o.
  > Copyright 2017-2018 IQRF Tech s.r.o.
