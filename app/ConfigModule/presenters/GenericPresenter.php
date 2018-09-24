@@ -59,13 +59,13 @@ abstract class GenericPresenter extends ProtectedPresenter {
 		try {
 			$this->checkInstanceFiles();
 		} catch (NonExistingJsonSchemaException $e) {
-			$this->flashMessage('config.messages.nonExistingJsonSchema', 'danger');
+			$this->flashMessage('config.messages.readFailures.nonExistingJsonSchema', 'danger');
 			$this->redirect('Homepage:default');
 		} catch (IOException $e) {
-			$this->flashMessage('config.messages.readFailure', 'danger');
+			$this->flashMessage('config.messages.readFailures.ioError', 'danger');
 			$this->redirect('Homepage:default');
 		} catch (JsonException $e) {
-			$this->flashMessage('config.messages.invalidJson', 'danger');
+			$this->flashMessage('config.messages.readFailures.invalidJson', 'danger');
 			$this->redirect('Homepage:default');
 		}
 	}

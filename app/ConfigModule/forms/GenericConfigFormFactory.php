@@ -74,9 +74,9 @@ class GenericConfigFormFactory {
 			$this->manager->save($form->getValues(true));
 			$this->presenter->flashMessage('config.messages.success', 'success');
 		} catch (NonExistingJsonSchemaException $e) {
-			$this->presenter->flashMessage('config.messages.nonExistingJsonSchema', 'danger');
+			$this->presenter->flashMessage('config.messages.writeFailures.nonExistingJsonSchema', 'danger');
 		} catch (IOException $e) {
-			$this->presenter->flashMessage('config.messages.writeFailure', 'danger');
+			$this->presenter->flashMessage('config.messages.writeFailures.ioError', 'danger');
 		} finally {
 			$this->presenter->redirect($this->redirect);
 		}

@@ -104,9 +104,9 @@ class ComponentsFormFactory {
 			}
 			$this->presenter->flashMessage('config.messages.success', 'success');
 		} catch (IOException $e) {
-			$this->presenter->flashMessage('config.messages.writeFailure', 'danger');
+			$this->presenter->flashMessage('config.messages.writeFailures.ioError', 'danger');
 		} catch (NonExistingJsonSchemaException $e) {
-			$this->presenter->flashMessage('config.messages.nonExistingJsonSchema', 'danger');
+			$this->presenter->flashMessage('config.messages.writeFailures.nonExistingJsonSchema', 'danger');
 		} finally {
 			$this->presenter->redirect('Component:default');
 		}

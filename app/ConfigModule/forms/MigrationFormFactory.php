@@ -91,12 +91,12 @@ class MigrationFormFactory {
 		} catch (InvalidConfigurationFormatException $e) {
 			$this->presenter->flashMessage('config.migration.errors.invalidFormat', 'danger');
 		} catch (NonExistingJsonSchemaException $e) {
-			$this->presenter->flashMessage('config.messages.nonExistingJsonSchema', 'danger');
+			$this->presenter->flashMessage('config.messages.writeFailures.nonExistingJsonSchema', 'danger');
 		} catch (IOException $e) {
 			/**
 			 * @todo Custom error message.
 			 */
-			$$this->presenter->flashMessage('config.messages.writeFailure', 'danger');
+			$$this->presenter->flashMessage('config.messages.writeFailures.ioError', 'danger');
 		} finally {
 			$this->presenter->redirect('Homepage:default');
 		}

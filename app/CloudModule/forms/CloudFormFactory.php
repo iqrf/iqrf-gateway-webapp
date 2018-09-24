@@ -88,9 +88,9 @@ class CloudFormFactory {
 		} catch (InvalidPrivateKeyForCertificateException $e) {
 			$this->presenter->flashMessage('cloud.amazonAws.messages.mismatchedCrtAndKey', 'danger');
 		} catch (NonExistingJsonSchemaException $e) {
-			$this->presenter->flashMessage('config.messages.nonExistingJsonSchema', 'danger');
+			$this->presenter->flashMessage('config.messages.writeFailures.nonExistingJsonSchema', 'danger');
 		} catch (IOException $e) {
-			$this->presenter->flashMessage('config.messages.writeFailure', 'danger');
+			$this->presenter->flashMessage('config.messages.writeFailures.ioError', 'danger');
 		} catch (TransferException $e) {
 			$this->presenter->flashMessage('cloud.messages.downloadFailure', 'danger');
 		}

@@ -67,10 +67,10 @@ class SchedulerPresenter extends ProtectedPresenter {
 		try {
 			$this->template->tasks = $this->configManager->list();
 		} catch (IOException $e) {
-			$this->flashMessage('config.messages.readFailure', 'danger');
+			$this->flashMessage('config.messages.readFailures.ioErrors', 'danger');
 			$this->redirect('Homepage:default');
 		} catch (JsonException $e) {
-			$this->flashMessage('config.messages.invalidJson', 'danger');
+			$this->flashMessage('config.messages.readFailures.invalidJson', 'danger');
 			$this->redirect('Homepage:default');
 		}
 	}
@@ -93,10 +93,10 @@ class SchedulerPresenter extends ProtectedPresenter {
 			$this->redirect('Scheduler:edit', ['id' => $this->configManager->getLastId()]);
 			$this->setView('default');
 		} catch (IOException $e) {
-			$this->flashMessage('config.messages.writeFailure', 'danger');
+			$this->flashMessage('config.messages.writeFailures.ioError', 'danger');
 			$this->redirect('Homepage:default');
 		} catch (JsonException $e) {
-			$this->flashMessage('config.messages.invalidJson', 'danger');
+			$this->flashMessage('config.messages.writeFailures.invalidJson', 'danger');
 			$this->redirect('Homepage:default');
 		}
 	}
@@ -111,10 +111,10 @@ class SchedulerPresenter extends ProtectedPresenter {
 			$this->redirect('Scheduler:default');
 			$this->setView('default');
 		} catch (IOException $e) {
-			$this->flashMessage('config.messages.writeFailure', 'danger');
+			$this->flashMessage('config.messages.writeFailures.ioError', 'danger');
 			$this->redirect('Homepage:default');
 		} catch (JsonException $e) {
-			$this->flashMessage('config.messages.invalidJson', 'danger');
+			$this->flashMessage('config.messages.writeFailures.invalidJson', 'danger');
 			$this->redirect('Homepage:default');
 		}
 	}
