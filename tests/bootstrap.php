@@ -8,6 +8,7 @@ Tester\Environment::setup();
 if (basename(__DIR__) === 'tests') {
 	$tempDir = __DIR__ . '/temp/';
 	@mkdir($tempDir);
+	@mkdir($tempDir . 'certificates/');
 	@mkdir($tempDir . 'configuration/');
 	@mkdir($tempDir . 'configuration/scheduler/');
 	@mkdir($tempDir . 'zip/');
