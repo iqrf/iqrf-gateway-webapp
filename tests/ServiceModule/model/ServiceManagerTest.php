@@ -84,7 +84,8 @@ class ServiceManagerTest extends TestCase {
 	 */
 	public function testStartSystemD(): void {
 		$expected = 'start';
-		$this->commandManager->shouldReceive('send')->with('systemctl start ' . $this->serviceName . '.service', true)->andReturn($expected);
+		$command = 'systemctl start ' . $this->serviceName . '.service';
+		$this->commandManager->shouldReceive('send')->with($command, true)->andReturn($expected);
 		Assert::same($expected, $this->managerSystemD->start());
 	}
 
@@ -93,7 +94,8 @@ class ServiceManagerTest extends TestCase {
 	 */
 	public function testStartDockerSupervisorD(): void {
 		$expected = 'start';
-		$this->commandManager->shouldReceive('send')->with('supervisorctl start ' . $this->serviceName, true)->andReturn($expected);
+		$command = 'supervisorctl start ' . $this->serviceName;
+		$this->commandManager->shouldReceive('send')->with($command, true)->andReturn($expected);
 		Assert::same($expected, $this->managerDocker->start());
 	}
 
@@ -109,7 +111,8 @@ class ServiceManagerTest extends TestCase {
 	 */
 	public function testStopSystemD(): void {
 		$expected = 'stop';
-		$this->commandManager->shouldReceive('send')->with('systemctl stop ' . $this->serviceName . '.service', true)->andReturn($expected);
+		$command = 'systemctl stop ' . $this->serviceName . '.service';
+		$this->commandManager->shouldReceive('send')->with($command, true)->andReturn($expected);
 		Assert::same($expected, $this->managerSystemD->stop());
 	}
 
@@ -118,7 +121,8 @@ class ServiceManagerTest extends TestCase {
 	 */
 	public function testStopDockerSupervisorD(): void {
 		$expected = 'stop';
-		$this->commandManager->shouldReceive('send')->with('supervisorctl stop ' . $this->serviceName, true)->andReturn($expected);
+		$command = 'supervisorctl stop ' . $this->serviceName;
+		$this->commandManager->shouldReceive('send')->with($command, true)->andReturn($expected);
 		Assert::same($expected, $this->managerDocker->stop());
 	}
 
@@ -134,7 +138,8 @@ class ServiceManagerTest extends TestCase {
 	 */
 	public function testRestartSystemD(): void {
 		$expected = 'restart';
-		$this->commandManager->shouldReceive('send')->with('systemctl restart ' . $this->serviceName . '.service', true)->andReturn($expected);
+		$command = 'systemctl restart ' . $this->serviceName . '.service';
+		$this->commandManager->shouldReceive('send')->with($command, true)->andReturn($expected);
 		Assert::same($expected, $this->managerSystemD->restart());
 	}
 
@@ -143,7 +148,8 @@ class ServiceManagerTest extends TestCase {
 	 */
 	public function testRestartDockerSupervisorD(): void {
 		$expected = 'restart';
-		$this->commandManager->shouldReceive('send')->with('supervisorctl restart ' . $this->serviceName, true)->andReturn($expected);
+		$command = 'supervisorctl restart ' . $this->serviceName;
+		$this->commandManager->shouldReceive('send')->with($command, true)->andReturn($expected);
 		Assert::same($expected, $this->managerDocker->restart());
 	}
 
@@ -159,7 +165,8 @@ class ServiceManagerTest extends TestCase {
 	 */
 	public function testGetStatusSystemD(): void {
 		$expected = 'status';
-		$this->commandManager->shouldReceive('send')->with('systemctl status ' . $this->serviceName . '.service', true)->andReturn($expected);
+		$command = 'systemctl status ' . $this->serviceName . '.service';
+		$this->commandManager->shouldReceive('send')->with($command, true)->andReturn($expected);
 		Assert::same($expected, $this->managerSystemD->getStatus());
 	}
 
@@ -168,7 +175,8 @@ class ServiceManagerTest extends TestCase {
 	 */
 	public function testGetStatusDockerSupervisorD(): void {
 		$expected = 'status';
-		$this->commandManager->shouldReceive('send')->with('supervisorctl status ' . $this->serviceName, true)->andReturn($expected);
+		$command = 'supervisorctl status ' . $this->serviceName;
+		$this->commandManager->shouldReceive('send')->with($command, true)->andReturn($expected);
 		Assert::same($expected, $this->managerDocker->getStatus());
 	}
 

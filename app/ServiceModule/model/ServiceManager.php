@@ -37,20 +37,23 @@ class ServiceManager {
 	private $initDaemon;
 
 	/**
+	 * @var array Init daemon service managers
+	 */
+	private $initDaemons = [
+		'docker-supervisor' => DockerSupervisorManager::class,
+		'systemd' => SystemDManager::class,
+	];
+
+	/**
 	 * Constructor
 	 * @param string $initDaemon Init daemon
 	 * @param CommandManager $commandManager Command manager
 	 */
 	public function __construct(string $initDaemon, CommandManager $commandManager) {
-		switch ($initDaemon) {
-			case 'docker-supervisor':
-				$this->initDaemon = new DockerSupervisorManager($commandManager);
-				break;
-			case 'systemd':
-				$this->initDaemon = new SystemDManager($commandManager);
-				break;
-			default:
-				$this->initDaemon = new UnknownManager($commandManager);
+		if (array_key_exists($initDaemon, $this->initDaemons)) {
+			$this->initDaemon = new $this->initDaemons[$initDaemon]($commandManager);
+		} else {
+			$this->initDaemon = new UnknownManager($commandManager);
 		}
 	}
 
