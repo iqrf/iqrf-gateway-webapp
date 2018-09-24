@@ -15,7 +15,11 @@ use App\ConfigModule\Model\GenericManager;
 use App\CoreModule\Model\JsonFileManager;
 use App\CoreModule\Model\JsonSchemaManager;
 use GuzzleHttp\Client;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Response;
 use Nette\DI\Container;
+use Nette\Utils\FileSystem;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -35,6 +39,11 @@ class InteliGlueManagerTest extends TestCase {
 	 * @var string Path to a directory with certificates and private keys
 	 */
 	private $certPath;
+
+	/**
+	 * @var GenericManager Generic configuration manager
+	 */
+	private $configManager;
 
 	/**
 	 * @var JsonFileManager JSON file manager
@@ -62,7 +71,7 @@ class InteliGlueManagerTest extends TestCase {
 	 */
 	public function __construct(Container $container) {
 		$this->container = $container;
-		$this->certPath = realpath(__DIR__ . '/../../data/certificates/') . '/';
+		$this->certPath = realpath(__DIR__ . '/../../temp/certificates/') . '/';
 	}
 
 	/**
@@ -73,9 +82,9 @@ class InteliGlueManagerTest extends TestCase {
 		$schemaPath = __DIR__ . '/../../data/cfgSchemas/';
 		$this->fileManager = new JsonFileManager($configPath);
 		$schemaManager = new JsonSchemaManager($schemaPath);
-		$configManager = new GenericManager($this->fileManager, $schemaManager);
+		$this->configManager = new GenericManager($this->fileManager, $schemaManager);
 		$client = new Client();
-		$this->manager = \Mockery::mock(InteliGlueManager::class, [$this->certPath, $configManager, $client])->makePartial();
+		$this->manager = \Mockery::mock(InteliGlueManager::class, [$this->certPath, $this->configManager, $client])->makePartial();
 		$this->manager->shouldReceive('downloadCaCertificate')->andReturn(null);
 	}
 
@@ -116,6 +125,21 @@ class InteliGlueManagerTest extends TestCase {
 		];
 		$this->manager->createMqttInterface($this->formValues);
 		Assert::same($mqtt, $this->fileManager->read('iqrf__MqttMessaging_InteliGlue'));
+	}
+
+	/**
+	 * Test function to download root CA certificate
+	 */
+	public function testDownloadCaCertificate(): void {
+		$expected = 'inteliments-ca.crt';
+		$responseMock = new MockHandler([
+			new Response(200, [], $expected),
+		]);
+		$handler = HandlerStack::create($responseMock);
+		$client = new Client(['handler' => $handler]);
+		$manager = new InteliGlueManager($this->certPath, $this->configManager, $client);
+		$manager->downloadCaCertificate();
+		Assert::same($expected, FileSystem::read($this->certPath . $expected));
 	}
 
 }

@@ -17,6 +17,9 @@ use App\CoreModule\Model\CertificateManager;
 use App\CoreModule\Model\JsonFileManager;
 use App\CoreModule\Model\JsonSchemaManager;
 use GuzzleHttp\Client;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Response;
 use Nette\DI\Container;
 use Nette\Http\FileUpload;
 use Nette\Utils\FileSystem;
@@ -36,6 +39,11 @@ class AwsManagerTest extends TestCase {
 	private $container;
 
 	/**
+	 * @var CertificateManager Certificate manager
+	 */
+	private $certManager;
+
+	/**
 	 * @var string Path to a directory with certificates and private keys
 	 */
 	private $certPath;
@@ -46,6 +54,11 @@ class AwsManagerTest extends TestCase {
 	private $certPathTemp;
 
 	/**
+	 * @var GenericManager Generic configuration manager
+	 */
+	private $configManager;
+
+	/**
 	 * @var JsonFileManager JSON file manager
 	 */
 	private $fileManager;
@@ -54,11 +67,6 @@ class AwsManagerTest extends TestCase {
 	 * @var AwsManager Amazon AWS IoT manager
 	 */
 	private $manager;
-
-	/**
-	 * @var \Mockery\Mock Mocked Amazon AWS IoT manager
-	 */
-	private $mockedManager;
 
 	/**
 	 * @var array Values from Amazon AWS IoT form
@@ -84,15 +92,11 @@ class AwsManagerTest extends TestCase {
 		$configPath = __DIR__ . '/../../temp/configuration/';
 		$schemaPath = __DIR__ . '/../../data/cfgSchemas/';
 		$this->fileManager = new JsonFileManager($configPath);
-		$certManager = new CertificateManager();
+		$this->certManager = new CertificateManager();
 		$schemaManager = new JsonSchemaManager($schemaPath);
-		$configManager = new GenericManager($this->fileManager, $schemaManager);
+		$this->configManager = new GenericManager($this->fileManager, $schemaManager);
 		$client = new Client();
-		$this->manager = new AwsManager($this->certPathTemp, $certManager, $configManager, $client);
-		$this->mockedManager = \Mockery::mock(AwsManager::class, [$this->certPathTemp, $certManager, $configManager, $client])->makePartial();
-		$this->mockedManager->shouldReceive('downloadCaCertificate')->andReturn(null);
-		$this->mockedManager->shouldReceive('checkCertificate')->andReturn(null);
-		$this->mockedManager->shouldReceive('uploadCertsAndKey')->andReturn(null);
+		$this->manager = new AwsManager($this->certPathTemp, $this->certManager, $this->configManager, $client);
 	}
 
 	/**
@@ -124,11 +128,10 @@ class AwsManagerTest extends TestCase {
 			'error' => UPLOAD_ERR_OK,
 			'size' => filesize($pKeyFile),
 		];
-		$array = [
+		return [
 			'cert' => new FileUpload($certValue),
 			'key' => new FileUpload($pKeyValue),
 		];
-		return $array;
 	}
 
 	/**
@@ -160,7 +163,12 @@ class AwsManagerTest extends TestCase {
 			'EnableServerCertAuth' => false,
 			'acceptAsyncMsg' => false,
 		];
-		$this->mockedManager->createMqttInterface($this->formValues);
+		$client = new Client();
+		$manager = \Mockery::mock(AwsManager::class, [$this->certPathTemp, $this->certManager, $this->configManager, $client])->makePartial();
+		$manager->shouldReceive('downloadCaCertificate')->andReturn(null);
+		$manager->shouldReceive('checkCertificate')->andReturn(null);
+		$manager->shouldReceive('uploadCertsAndKey')->andReturn(null);
+		$manager->createMqttInterface($this->formValues);
 		Assert::same($mqtt, $this->fileManager->read('iqrf__MqttMessaging_Aws'));
 	}
 
@@ -198,7 +206,7 @@ class AwsManagerTest extends TestCase {
 	 */
 	public function testCreatePaths(): void {
 		$timestamp = (new \DateTime())->format(\DateTime::ISO8601);
-		$actual = $this->mockedManager->createPaths();
+		$actual = $this->manager->createPaths();
 		$paths = [
 			'cert' => $this->certPathTemp . $timestamp . '-aws.crt',
 			'key' => $this->certPathTemp . $timestamp . '-aws.key',
@@ -222,6 +230,21 @@ class AwsManagerTest extends TestCase {
 		Assert::noError(function() use ($array, $paths) {
 			$this->manager->uploadCertsAndKey($array, $paths);
 		});
+	}
+
+	/**
+	 * Test function to download root CA certificate
+	 */
+	public function testDownloadCaCertificate(): void {
+		$expected = 'aws-ca.crt';
+		$responseMock = new MockHandler([
+			new Response(200, [], $expected),
+		]);
+		$handler = HandlerStack::create($responseMock);
+		$client = new Client(['handler' => $handler]);
+		$manager = new AwsManager($this->certPathTemp, $this->certManager, $this->configManager, $client);
+		$manager->downloadCaCertificate();
+		Assert::same($expected, FileSystem::read($this->certPathTemp . $expected));
 	}
 
 }
