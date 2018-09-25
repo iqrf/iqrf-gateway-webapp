@@ -10,7 +10,7 @@ parameters:
 	# Daemon configuration
 	daemon:
 		# Path to directory with certificates for IQRF Gateway Daemon
-		certDir: '/etc/iqrf-daemon/certs/'
+		certDir: '/etc/iqrf-gateway-daemon/certs/'
 		# Path to directory with IQRF Gateway Daemon's configuration files
 		configDir: '/etc/iqrf-gateway-daemon/'
 		# Path to directory with IQRF Gateway Daemon's logs
