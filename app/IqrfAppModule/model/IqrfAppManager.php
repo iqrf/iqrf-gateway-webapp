@@ -94,8 +94,8 @@ class IqrfAppManager {
 				'req' => [
 					'rData' => $packet,
 				],
+				'returnVerbose' => true,
 			],
-			'returnVerbose' => true,
 		];
 		if (!isset($timeout)) {
 			unset($array['data']['timeout']);
@@ -124,8 +124,8 @@ class IqrfAppManager {
 				'req' => [
 					'operMode' => $mode,
 				],
+				'returnVerbose' => true,
 			],
-			'returnVerbose' => true,
 		];
 		return Json::encode($this->wsClient->sendSync($array)['response']);
 	}
