@@ -62,13 +62,19 @@
 							</a>
 							<ul class="dropdown-menu">
 								<li><a n:href=':Config:Main:default'>{_config.main.title}</a></li>
-								<li><a n:href=':Config:Component:default'>{_config.components.title}</a></li>
+								<li><a n:href=':Config:Component:default'>
+										{if $user->isInRole('power')}
+											{_config.components.title}
+										{else}
+											{_config.selected-components.title}
+										{/if}
+									</a></li>
 								<li><a n:href=':Config:IqrfSpi:default'>{_config.iqrfSpi.title}</a></li>
 								<li><a n:href=':Config:IqrfCdc:default'>{_config.iqrfCdc.title}</a></li>
 								<li><a n:href=':Config:IqrfUart:default'>{_config.iqrfUart.title}</a></li>
 								<li><a n:href=':Config:IqrfDpa:default'>{_config.iqrfDpa.title}</a></li>
 								<li><a n:href=':Config:IqrfRepository:default'>{_config.iqrfRepository.title}</a></li>
-								{*<li><a n:href=':Config:Iqmesh:default'>{_config.iqmesh.title}</a></li>*}
+									{*<li><a n:href=':Config:Iqmesh:default'>{_config.iqmesh.title}</a></li>*}
 								<li><a n:href=':Config:Mqtt:default'>{_config.mqtt.title}</a></li>
 								<li><a n:href=':Config:Websocket:default'>{_config.websocket.title}</a></li>
 								<li><a n:href=':Config:Mq:default'>{_config.mq.title}</a></li>

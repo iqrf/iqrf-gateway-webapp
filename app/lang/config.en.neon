@@ -293,6 +293,11 @@ scheduler:
 			type-prompt: Select message type
 		Save: Save
 
+
+selected-components:
+	title: Selected components
+	description: Manage selected components.
+
 udp:
 	title: UDP interface
 	description: IQRF UDP interface settings.

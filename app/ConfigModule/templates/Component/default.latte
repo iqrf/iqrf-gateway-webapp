@@ -16,5 +16,11 @@
 *}
 
 {block content}
-<h1 n:block=title>{_config.components.title}</h1>
+<h1 n:block=title>
+	{if $user->isInRole('power')}
+		{_config.components.title}
+	{else}
+		{_config.selected-components.title}
+	{/if}
+</h1>
 {control configComponentsDataGrid}
