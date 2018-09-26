@@ -58,6 +58,7 @@ class InteliGlueManager implements IManager {
 	 * @param Client $client HTTP(S) client
 	 */
 	public function __construct(string $certPath, GenericManager $configManager, Client $client) {
+		FileSystem::createDir($certPath);
 		$this->certPath = realpath($certPath);
 		$this->client = $client;
 		$this->configManager = $configManager;

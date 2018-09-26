@@ -66,6 +66,7 @@ class AwsManager implements IManager {
 	 * @param Client $client HTTP(S) client
 	 */
 	public function __construct(string $certPath, CertificateManager $certManager, GenericManager $configManager, Client $client) {
+		FileSystem::createDir($certPath);
 		$this->certPath = realpath($certPath) . '/';
 		$this->certManager = $certManager;
 		$this->client = $client;
