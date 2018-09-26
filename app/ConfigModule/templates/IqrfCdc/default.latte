@@ -22,10 +22,10 @@
 		{control configIqrfCdcForm}
 	</div>
 </div>
-<h2>{_config.iqrfCdc.mapping.title}</h2>
+<h2>{_config.interfaceMapping.cdc}</h2>
 <div class='panel panel-default'>
 	<div class='panel-body'>
-		<h3>{_config.iqrfCdc.mapping.interfaces}</h3>
+		<h3>{_config.interfaceMapping.interfaces}</h3>
 		{if !empty($interfaces)}
 			{foreach $interfaces as $interface}
 				<a class="btn btn-default btn-cdc-port" role="button" data-port="{$interface}">{$interface}</a>

@@ -100,17 +100,26 @@ $(".btn-spi-port").click(function () {
 	$("#frm-configIqrfSpiForm-IqrfInterface").val($(this).data("port"));
 });
 
+// Select SPI port and pins from list of supported boards
+$(".btn-spi-pin").click(function() {
+	$("#frm-configIqrfSpiForm-IqrfInterface").val($(this).data("iqrfinterface"));
+	$("#frm-configIqrfSpiForm-powerEnableGpioPin").val($(this).data("powerenablegpiopin"));
+	$("#frm-configIqrfSpiForm-busEnableGpioPin").val($(this).data("busenablegpiopin"));
+	$("#frm-configIqrfSpiForm-pgmSwitchGpioPin").val($(this).data("pgmswitchgpiopin"));
+});
+
 // Select IQRF UART interface port from list
 $(".btn-uart-port").click(function () {
 	$("#frm-configIqrfUartForm-IqrfInterface").val($(this).data("port"));
 });
 
-// Select SPI port and pins from list of supported boards
-$(".btn-spiPin").click(function() {
-	$("#frm-configIqrfSpiForm-IqrfInterface").val($(this).data("iqrfinterface"));
-	$("#frm-configIqrfSpiForm-powerEnableGpioPin").val($(this).data("powerenablegpiopin"));
-	$("#frm-configIqrfSpiForm-busEnableGpioPin").val($(this).data("busenablegpiopin"));
-	$("#frm-configIqrfSpiForm-pgmSwitchGpioPin").val($(this).data("pgmswitchgpiopin"));
+// Select UART port and pins from list of supported boards
+$(".btn-uart-pin").click(function() {
+	$("#frm-configIqrfUartForm-IqrfInterface").val($(this).data("iqrfinterface"));
+	$("#frm-configIqrfUartForm-baudRate").val($(this).data("baudrate"));
+	$("#frm-configIqrfUartForm-powerEnableGpioPin").val($(this).data("powerenablegpiopin"));
+	$("#frm-configIqrfUartForm-busEnableGpioPin").val($(this).data("busenablegpiopin"));
+	$("#frm-configIqrfUartForm-pgmSwitchGpioPin").val($(this).data("pgmswitchgpiopin"));
 });
 
 // Select DPA packet form list of macros from IQRF IDE

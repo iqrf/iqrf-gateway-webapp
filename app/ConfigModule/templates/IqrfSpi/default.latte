@@ -22,18 +22,18 @@
 		{control configIqrfSpiForm}
 	</div>
 </div>
-<h2>{_config.iqrfSpi.mapping.title}</h2>
+<h2>{_config.interfaceMapping.spi}</h2>
 <div class='panel panel-default'>
 	<div class='panel-body'>
 		<div class='row'>
 			<div class='col-md-6'>
-				<h3>{_config.iqrfSpi.mapping.boards}</h3>
+				<h3>{_config.interfaceMapping.boards}</h3>
 				{foreach $pins as $board => $pin}
-					<a class="btn btn-default btn-spiPin" role="button" {foreach $pin as $pinName => $pinNumber} data-{$pinName}={$pinNumber}{/foreach}>{$board}</a>
+					<a class="btn btn-default btn-spi-pin" role="button" {foreach $pin as $pinName => $pinNumber} data-{$pinName}={$pinNumber}{/foreach}>{$board}</a>
 				{/foreach}
 			</div>
 			<div class='col-md-6'>
-				<h3>{_config.iqrfSpi.mapping.interfaces}</h3>
+				<h3>{_config.interfaceMapping.interfaces}</h3>
 				{if !empty($interfaces)}
 					{foreach $interfaces as $interface}
 						<a class="btn btn-default btn-spi-port" role="button" data-port="{$interface}">{$interface}</a>

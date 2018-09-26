@@ -36,6 +36,13 @@ components:
 			confirmDelete: Do you really want to delete component %s?
 		Save: Save
 
+interfaceMapping:
+	cdc: Available CDC mappings
+	spi: Available SPI mappings
+	uart: Available UART mappings
+	boards: Boards
+	interfaces: Interfaces
+
 iqmesh:
 	title: IQMESH services
 	description: Manage IQMESH services.
@@ -59,9 +66,6 @@ iqrfCdc:
 			instance: Please enter name of IQRF CDC instance.
 			IqrfInterface: Please enter IQRF CDC interface.
 		Save: Save
-	mapping:
-		title: Available USB CDC mappings
-		interfaces: Interfaces
 
 iqrfDpa:
 	title: IQRF DPA interface
@@ -120,10 +124,6 @@ iqrfSpi:
 			instance: Please enter name of IQRF SPI instance.
 			IqrfInterface: Please enter IQRF SPI interface.
 		Save: Save
-	mapping:
-		title: Available SPI mappings
-		boards: Boards
-		interfaces: Interfaces
 
 iqrfUart:
 	title: IQRF UART interface
@@ -138,9 +138,6 @@ iqrfUart:
 			instance: Please enter name of IQRF UART instance.
 			IqrfInterface: Please enter IQRF UART interface.
 		Save: Save
-	mapping:
-		title: Available USB UART mappings
-		interfaces: Interfaces
 
 jsonRawApi:
 	title: JSON Raw API
