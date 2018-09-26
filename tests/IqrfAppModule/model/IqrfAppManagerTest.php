@@ -133,9 +133,9 @@ class IqrfAppManagerTest extends TestCase {
 				'req' => [
 					'rData' => $packet,
 				],
+				'returnVerbose' => true,
 				'msgId' => '1',
 			],
-			'returnVerbose' => true,
 		];
 		$expected = [
 			'request' => Json::encode($array, Json::PRETTY),
@@ -158,7 +158,7 @@ class IqrfAppManagerTest extends TestCase {
 	 */
 	public function testChangeOperationModeValid(): void {
 		$modes = ['forwarding', 'operational', 'service'];
-		$format = '{"mType":"mngDaemon_Mode","data":{"req":{"operMode":"%s"},"msgId":"1"},"returnVerbose":true}';
+		$format = '{"mType":"mngDaemon_Mode","data":{"req":{"operMode":"%s"},"returnVerbose":true,"msgId":"1"}}';
 		foreach ($modes as $mode) {
 			Assert::same(sprintf($format, $mode), $this->manager->changeOperationMode($mode));
 		}
