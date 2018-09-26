@@ -1,20 +1,24 @@
 {
 	"Raspberry Pi": {
+		"IqrfInterface": "/dev/spidev0.0",
 		"powerEnableGpioPin": 23,
 		"busEnableGpioPin": 7,
 		"pgmSwitchGpioPin": 22
 	},
 	"Orange Pi": {
+		"IqrfInterface": "/dev/spidev1.0",
 		"powerEnableGpioPin": 19,
 		"busEnableGpioPin": 10,
 		"pgmSwitchGpioPin": 3
 	},
 	"UP": {
+		"IqrfInterface": "/dev/spidev2.0",
 		"powerEnableGpioPin": 23,
 		"busEnableGpioPin": 7,
 		"pgmSwitchGpioPin": 22
 	},
 	"UP Squared": {
+		"IqrfInterface": "/dev/spidev1.0",
 		"powerEnableGpioPin": 23,
 		"busEnableGpioPin": 7,
 		"pgmSwitchGpioPin": 22

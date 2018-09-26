@@ -105,8 +105,9 @@ $(".btn-uart-port").click(function () {
 	$("#frm-configIqrfUartForm-IqrfInterface").val($(this).data("port"));
 });
 
-// Select SPI pins from list of supported boards
+// Select SPI port and pins from list of supported boards
 $(".btn-spiPin").click(function() {
+	$("#frm-configIqrfSpiForm-IqrfInterface").val($(this).data("iqrfinterface"));
 	$("#frm-configIqrfSpiForm-powerEnableGpioPin").val($(this).data("powerenablegpiopin"));
 	$("#frm-configIqrfSpiForm-busEnableGpioPin").val($(this).data("busenablegpiopin"));
 	$("#frm-configIqrfSpiForm-pgmSwitchGpioPin").val($(this).data("pgmswitchgpiopin"));
