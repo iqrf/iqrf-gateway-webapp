@@ -22,7 +22,7 @@ For Raspbian
 .. code-block:: bash
 
 	sudo apt-get -y install apt-transport-https lsb-release ca-certificates dirmngr
-	sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 9C076FCC7AB8F2E43C2AB0E73241B9B7B4BD8F8E
+	sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys D93B0C12C8D04D7AAFBCFA27CCD91D6111A06851
 	sudo sh -c 'echo "deb https://repozytorium.mati75.eu/raspbian stretch-backports main contrib non-free" > /etc/apt/sources.list.d/php.list'
 	sudo apt-get update
 
