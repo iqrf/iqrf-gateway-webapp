@@ -41,7 +41,6 @@ class WebsocketPresenter extends GenericPresenter {
 	 */
 	protected $components = [
 		'messaging' => 'iqrf::WebsocketMessaging',
-		'oldService' => 'shape::WebsocketService',
 		'service' => 'shape::WebsocketCppService',
 	];
 

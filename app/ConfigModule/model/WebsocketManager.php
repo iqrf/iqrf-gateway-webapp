@@ -37,7 +37,6 @@ class WebsocketManager {
 	 */
 	private $components = [
 		'messaging' => 'iqrf::WebsocketMessaging',
-		'oldService' => 'shape::WebsocketService',
 		'service' => 'shape::WebsocketCppService',
 	];
 
@@ -87,8 +86,8 @@ class WebsocketManager {
 		$instances = $this->genericManager->getInstanceFiles();
 		$this->fileNames['messaging'] = Arrays::pick($instances, $id);
 		$messaging = $this->read($this->fileNames['messaging']);
-		$serviceInsatnce = $messaging['RequiredInterfaces'][0]['target']['instance'];
-		$this->fileNames['service'] = $this->getServiceFile($serviceInsatnce);
+		$serviceInstance = $messaging['RequiredInterfaces'][0]['target']['instance'];
+		$this->fileNames['service'] = $this->getServiceFile($serviceInstance);
 		$this->fileManager->delete($this->fileNames['messaging']);
 		$this->fileManager->delete($this->fileNames['service']);
 	}
@@ -146,7 +145,7 @@ class WebsocketManager {
 		];
 		foreach ($settings as $component => $config) {
 			$this->schemaManager->setSchemaFromComponent($this->components[$component]);
-			$this->schemaManager->validate((object) $config);
+			$this->schemaManager->validate((object)$config);
 		}
 		$messagingFileName = $this->fileNames['messaging'] ?? 'iqrf__' . $instances['messaging'];
 		$serviceFileName = $this->fileNames['service'] ?? 'shape__' . $instances['service'];
@@ -180,9 +179,9 @@ class WebsocketManager {
 			'instance' => $instances['messaging'],
 			'acceptAsyncMsg' => $values['acceptAsyncMsg'],
 			'RequiredInterfaces' => [
-				(object) [
+				(object)[
 					'name' => 'shape::IWebsocketService',
-					'target' => (object) [
+					'target' => (object)[
 						'instance' => $instances['service'],
 					],
 				],
@@ -210,11 +209,7 @@ class WebsocketManager {
 	 * @return string|null Websocket service file name
 	 */
 	public function getServiceFile(string $instanceName): ?string {
-		$this->genericManager->setComponent($this->components['oldService']);
-		$oldServices = $this->genericManager->getInstanceFiles();
-		$this->genericManager->setComponent($this->components['service']);
-		$newServices = $this->genericManager->getInstanceFiles();
-		$services = array_merge($oldServices, $newServices);
+		$services = $this->genericManager->getInstanceFiles();
 		foreach ($services as $service) {
 			$json = $this->read($service);
 			if (Arrays::pick($json, 'instance') === $instanceName) {
