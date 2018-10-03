@@ -3,13 +3,10 @@
 /**
  * Copyright 2017 MICRORISC s.r.o.
  * Copyright 2017-2018 IQRF Tech s.r.o.
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -79,10 +76,11 @@ class CloudFormFactory {
 	 */
 	public function save(SubmitButton $button, bool $needRestart = false): void {
 		$values = $button->getForm()->getValues(true);
+		$succes = false;
 		try {
 			$this->manager->createMqttInterface($values);
 			$this->presenter->flashMessage('cloud.messages.success', 'success');
-			$this->presenter->redirect(':Config:Mqtt:default');
+			$succes = true;
 		} catch (InvalidConnectionStringException $e) {
 			$this->presenter->flashMessage('cloud.msAzure.messages.invalidConnectionString', 'danger');
 		} catch (InvalidPrivateKeyForCertificateException $e) {
@@ -101,6 +99,9 @@ class CloudFormFactory {
 			} catch (NotSupportedInitSystemException $e) {
 				$this->presenter->flashMessage('service.errors.unsupportedInit', 'danger');
 			}
+		}
+		if ($succes) {
+			$this->presenter->redirect(':Config:Mqtt:default');
 		}
 	}
 
