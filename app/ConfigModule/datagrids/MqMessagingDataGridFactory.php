@@ -22,8 +22,10 @@ namespace App\ConfigModule\Datagrids;
 
 use App\ConfigModule\Presenters\MqPresenter;
 use App\ConfigModule\Model\GenericManager;
+use App\CoreModule\Exception\NonExistingJsonSchemaException;
 use App\CoreModule\Datagrids\DataGridFactory;
 use Nette;
+use Nette\IOException;
 use Ublaboo\DataGrid\DataGrid;
 
 /**
@@ -44,6 +46,11 @@ class MqMessagingDataGridFactory {
 	private $datagridFactory;
 
 	/**
+	 * @var MqPresenter MQ interface configuration presenter
+	 */
+	private $presenter;
+
+	/**
 	 * Constructor
 	 * @param DataGridFactory $datagridFactory Generic datagrid factory
 	 * @param GenericManager $configManager Generic configuration manager
@@ -55,11 +62,12 @@ class MqMessagingDataGridFactory {
 
 	/**
 	 * Create MQ messaging datagrid
-	 * @param MqPresenter $presenter MQ configuration presenter
+	 * @param MqPresenter $presenter MQ interface configuration presenter
 	 * @param string $name Datagrid's component name
 	 * @return DataGrid MQ messaging datagrid
 	 */
 	public function create(MqPresenter $presenter, string $name): DataGrid {
+		$this->presenter = $presenter;
 		$grid = $this->datagridFactory->create($presenter, $name);
 		$this->configManager->setComponent('iqrf::MqMessaging');
 		$grid->setDataSource($this->configManager->list());
@@ -67,17 +75,42 @@ class MqMessagingDataGridFactory {
 		$grid->addColumnText('LocalMqName', 'config.mq.form.LocalMqName');
 		$grid->addColumnText('RemoteMqName', 'config.mq.form.RemoteMqName');
 		$grid->addColumnStatus('acceptAsyncMsg', 'config.mq.form.acceptAsyncMsg')
-				->addOption(true, 'config.components.form.enabled')->setIcon('ok')->endOption()
-				->addOption(false, 'config.components.form.disabled')
-				->setIcon('remove')->setClass('btn btn-xs btn-danger')->endOption();
+			->addOption(true, 'config.components.form.enabled')->setIcon('ok')->endOption()
+			->addOption(false, 'config.components.form.disabled')
+			->setIcon('remove')->setClass('btn btn-xs btn-danger')->endOption()
+			->onChange[] = [$this, 'changeAsyncMsg'];
 		$grid->addAction('edit', 'config.actions.Edit')->setIcon('pencil')
-				->setClass('btn btn-xs btn-info');
+			->setClass('btn btn-xs btn-info');
 		$grid->addAction('delete', 'config.actions.Remove')->setIcon('remove')
-				->setClass('btn btn-xs btn-danger ajax')
-				->setConfirm('config.mq.form.messages.confirmDelete', 'instance');
+			->setClass('btn btn-xs btn-danger ajax')
+			->setConfirm('config.mq.form.messages.confirmDelete', 'instance');
 		$grid->addToolbarButton('add', 'config.actions.Add')
-				->setClass('btn btn-xs btn-success');
+			->setClass('btn btn-xs btn-success');
 		return $grid;
+	}
+
+	/**
+	 * Change status of the async messaging
+	 * @param int $id Component ID
+	 * @param bool $status New async messaging status
+	 */
+	public function changeAsyncMsg(int $id, bool $status): void {
+		$config = $this->configManager->load($id);
+		$config['acceptAsyncMsg'] = $status;
+		try {
+			$this->configManager->save($config);
+			$this->presenter->flashMessage('config.messages.success', 'success');
+		} catch (IOException $e) {
+			$this->presenter->flashMessage('config.messages.writeFailures.ioError', 'danger');
+		} catch (NonExistingJsonSchemaException $e) {
+			$this->presenter->flashMessage('config.messages.writeFailures.nonExistingJsonSchema', 'danger');
+		} finally {
+			if ($this->presenter->isAjax()) {
+				$this->presenter->redrawControl('flashes');
+				$this->presenter['configMqDataGrid']->setDataSource($this->configManager->list());
+				$this->presenter['configMqDataGrid']->redrawItem($id);
+			}
+		}
 	}
 
 }

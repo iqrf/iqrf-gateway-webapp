@@ -22,8 +22,10 @@ namespace App\ConfigModule\Datagrids;
 
 use App\ConfigModule\Presenters\WebsocketPresenter;
 use App\ConfigModule\Model\WebsocketManager;
+use App\CoreModule\Exception\NonExistingJsonSchemaException;
 use App\CoreModule\Datagrids\DataGridFactory;
 use Nette;
+use Nette\IOException;
 use Ublaboo\DataGrid\DataGrid;
 
 /**
@@ -44,6 +46,11 @@ class WebsocketDataGridFactory {
 	private $datagridFactory;
 
 	/**
+	 * @var WebsocketPresenter Websocket interface configuration presenter
+	 */
+	private $presenter;
+
+	/**
 	 * Constructor
 	 * @param DataGridFactory $datagridFactory Generic datagrid factory
 	 * @param WebsocketManager $configManager Websocket manager
@@ -60,22 +67,48 @@ class WebsocketDataGridFactory {
 	 * @return DataGrid Websocket datagrid
 	 */
 	public function create(WebsocketPresenter $presenter, string $name): DataGrid {
+		$this->presenter = $presenter;
 		$grid = $this->datagridFactory->create($presenter, $name);
 		$grid->setDataSource($this->configManager->list());
 		$grid->addColumnText('messagingInstance', 'config.websocket.form.instance');
 		$grid->addColumnNumber('port', 'config.websocket.form.WebsocketPort');
 		$grid->addColumnStatus('acceptAsyncMsg', 'config.websocket.form.acceptAsyncMsg')
-				->addOption(true, 'config.components.form.enabled')->setIcon('ok')->endOption()
-				->addOption(false, 'config.components.form.disabled')
-				->setIcon('remove')->setClass('btn btn-xs btn-danger')->endOption();
+			->addOption(true, 'config.components.form.enabled')->setIcon('ok')->endOption()
+			->addOption(false, 'config.components.form.disabled')
+			->setIcon('remove')->setClass('btn btn-xs btn-danger')->endOption()
+			->onChange[] = [$this, 'changeAsyncMsg'];
 		$grid->addAction('edit', 'config.actions.Edit')->setIcon('pencil')
-				->setClass('btn btn-xs btn-info');
+			->setClass('btn btn-xs btn-info');
 		$grid->addAction('delete', 'config.actions.Remove')->setIcon('remove')
-				->setClass('btn btn-xs btn-danger ajax')
-				->setConfirm('config.websocket.interface.messages.confirmDelete', 'messagingInstance');
+			->setClass('btn btn-xs btn-danger ajax')
+			->setConfirm('config.websocket.interface.messages.confirmDelete', 'messagingInstance');
 		$grid->addToolbarButton('add', 'config.actions.Add')
-				->setClass('btn btn-xs btn-success');
+			->setClass('btn btn-xs btn-success');
 		return $grid;
+	}
+
+	/**
+	 * Change status of the async messaging
+	 * @param int $id Component ID
+	 * @param bool $status New async messaging status
+	 */
+	public function changeAsyncMsg(int $id, bool $status): void {
+		$config = $this->configManager->load($id);
+		$config['acceptAsyncMsg'] = $status;
+		try {
+			$this->configManager->save($config);
+			$this->presenter->flashMessage('config.messages.success', 'success');
+		} catch (IOException $e) {
+			$this->presenter->flashMessage('config.messages.writeFailures.ioError', 'danger');
+		} catch (NonExistingJsonSchemaException $e) {
+			$this->presenter->flashMessage('config.messages.writeFailures.nonExistingJsonSchema', 'danger');
+		} finally {
+			if ($this->presenter->isAjax()) {
+				$this->presenter->redrawControl('flashes');
+				$this->presenter['configWebsocketDataGrid']->setDataSource($this->configManager->list());
+				$this->presenter['configWebsocketDataGrid']->redrawItem($id);
+			}
+		}
 	}
 
 }
