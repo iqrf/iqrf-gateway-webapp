@@ -76,6 +76,7 @@ class AwsManager implements IManager {
 	/**
 	 * Create MQTT interface
 	 * @param array $values Values from form
+	 * @throws InvalidPrivateKeyForCertificateException
 	 */
 	public function createMqttInterface(array $values): void {
 		$paths = $this->createPaths();
@@ -113,6 +114,7 @@ class AwsManager implements IManager {
 	/**
 	 * Check a certificate and a private key
 	 * @param array $values Form values
+	 * @throws InvalidPrivateKeyForCertificateException
 	 */
 	public function checkCertificate(array $values): void {
 		$cert = $values['cert']->getContents();
@@ -155,7 +157,7 @@ class AwsManager implements IManager {
 	 * Download root CA certificate
 	 */
 	public function downloadCaCertificate(): void {
-		$caCertUrl = 'https://www.symantec.com/content/en/us/enterprise/verisign/roots/VeriSign-Class%203-Public-Primary-Certification-Authority-G5.pem';
+		$caCertUrl = 'https://www.amazontrust.com/repository/AmazonRootCA2.pem';
 		$caCert = $this->client->request('GET', $caCertUrl)->getBody();
 		FileSystem::write($this->certPath . 'aws-ca.crt', $caCert);
 	}
