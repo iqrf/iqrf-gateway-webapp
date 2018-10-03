@@ -209,13 +209,16 @@ class WebsocketManager {
 	 * @return string|null Websocket service file name
 	 */
 	public function getServiceFile(string $instanceName): ?string {
+		$this->genericManager->setComponent($this->components['service']);
 		$services = $this->genericManager->getInstanceFiles();
+		var_dump($services);
 		foreach ($services as $service) {
 			$json = $this->read($service);
 			if (Arrays::pick($json, 'instance') === $instanceName) {
 				return $service;
 			}
 		}
+		return null;
 	}
 
 }
