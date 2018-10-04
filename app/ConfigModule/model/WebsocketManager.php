@@ -24,6 +24,7 @@ use App\CoreModule\Model\JsonFileManager;
 use App\CoreModule\Model\JsonSchemaManager;
 use Nette;
 use Nette\Utils\Arrays;
+use Nette\Utils\Json;
 
 /**
  * Websocket configuration manager
@@ -145,7 +146,8 @@ class WebsocketManager {
 		];
 		foreach ($settings as $component => $config) {
 			$this->schemaManager->setSchemaFromComponent($this->components[$component]);
-			$this->schemaManager->validate((object)$config);
+			$json = Json::encode($config);
+			$this->schemaManager->validate(Json::decode($json));
 		}
 		$messagingFileName = $this->fileNames['messaging'] ?? 'iqrf__' . $instances['messaging'];
 		$serviceFileName = $this->fileNames['service'] ?? 'shape__' . $instances['service'];

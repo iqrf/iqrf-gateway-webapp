@@ -26,6 +26,7 @@ use Nette;
 use Nette\Utils\Arrays;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Finder;
+use Nette\Utils\Json;
 use Nette\Utils\Strings;
 
 /**
@@ -115,7 +116,8 @@ class GenericManager {
 		}
 		$component = ['component' => $this->component];
 		$configuration = Arrays::mergeTree($component, $array);
-		$this->schemaManager->validate(ArrayHash::from($configuration));
+		$json = Json::encode($configuration);
+		$this->schemaManager->validate(Json::decode($json));
 		$this->fileManager->write($this->fileName, $configuration);
 	}
 
