@@ -22,12 +22,14 @@ namespace App\ConfigModule\Datagrids;
 
 use App\ConfigModule\Presenters\WebsocketPresenter;
 use App\ConfigModule\Model\GenericManager;
+use App\CoreModule\Exception\NonExistingJsonSchemaException;
 use App\CoreModule\Datagrids\DataGridFactory;
 use Nette;
+use Nette\IOException;
 use Ublaboo\DataGrid\DataGrid;
 
 /**
- * Render a websocket messaging datagrid
+ * Render a WebSocket messaging datagrid
  */
 class WebsocketMessagingDataGridFactory {
 
@@ -44,37 +46,44 @@ class WebsocketMessagingDataGridFactory {
 	private $datagridFactory;
 
 	/**
+	 * @var WebsocketPresenter WebSocket interface configuration presenter
+	 */
+	private $presenter;
+
+	/**
 	 * Constructor
-	 * @param DataGridFactory $datagridFactory Generic datagrid factory
+	 * @param DataGridFactory $dataGridFactory Generic data grid factory
 	 * @param GenericManager $configManager Generic configuration manager
 	 */
-	public function __construct(DataGridFactory $datagridFactory, GenericManager $configManager) {
-		$this->datagridFactory = $datagridFactory;
+	public function __construct(DataGridFactory $dataGridFactory, GenericManager $configManager) {
+		$this->datagridFactory = $dataGridFactory;
 		$this->configManager = $configManager;
 	}
 
 	/**
-	 * Create websocket messaging datagrid
-	 * @param WebsocketPresenter $presenter Websocket configuration presenter
-	 * @param string $name Datagrid's component name
-	 * @return DataGrid Websocket messaging datagrid
+	 * Create WebSocket messaging data grid
+	 * @param WebsocketPresenter $presenter WebSocket configuration presenter
+	 * @param string $name Data grid's component name
+	 * @return DataGrid WebSocket messaging data grid
 	 */
 	public function create(WebsocketPresenter $presenter, string $name): DataGrid {
+		$this->presenter = $presenter;
 		$grid = $this->datagridFactory->create($presenter, $name);
 		$grid->setDataSource($this->getData());
 		$grid->addColumnText('instance', 'config.websocket.form.instance');
 		$grid->addColumnStatus('acceptAsyncMsg', 'config.websocket.form.acceptAsyncMsg')
-				->addOption(true, 'config.components.form.enabled')->setIcon('ok')->endOption()
-				->addOption(false, 'config.components.form.disabled')
-				->setIcon('remove')->setClass('btn btn-xs btn-danger')->endOption();
+			->addOption(true, 'config.components.form.enabled')->setIcon('ok')->endOption()
+			->addOption(false, 'config.components.form.disabled')
+			->setIcon('remove')->setClass('btn btn-xs btn-danger')->endOption()
+			->onChange[] = [$this, 'changeAsyncMsg'];
 		$grid->addColumnText('requiredInterfaces', 'config.websocket.form.requiredInterface.instance');
 		$grid->addAction('edit-messaging', 'config.actions.Edit')->setIcon('pencil')
-				->setClass('btn btn-xs btn-info');
+			->setClass('btn btn-xs btn-info');
 		$grid->addAction('delete-messaging', 'config.actions.Remove')->setIcon('remove')
-				->setClass('btn btn-xs btn-danger ajax')
-				->setConfirm('config.websocket.messaging.messages.confirmDelete', 'instance');
+			->setClass('btn btn-xs btn-danger ajax')
+			->setConfirm('config.websocket.messaging.messages.confirmDelete', 'instance');
 		$grid->addToolbarButton('add-messaging', 'config.actions.Add')
-				->setClass('btn btn-xs btn-success');
+			->setClass('btn btn-xs btn-success');
 		return $grid;
 	}
 
@@ -93,6 +102,31 @@ class WebsocketMessagingDataGridFactory {
 			$configuration['requiredInterfaces'] = trim($requiredInterfaces, ', ');
 		}
 		return $configurations;
+	}
+
+	/**
+	 * Change status of the async messaging
+	 * @param int $id Component ID
+	 * @param bool $status New async messaging status
+	 */
+	public function changeAsyncMsg(int $id, bool $status): void {
+		$config = $this->configManager->load($id);
+		$config['acceptAsyncMsg'] = $status;
+		try {
+			$this->configManager->save($config);
+			$this->presenter->flashMessage('config.messages.success', 'success');
+		} catch (IOException $e) {
+			$this->presenter->flashMessage('config.messages.writeFailures.ioError', 'danger');
+		} catch (NonExistingJsonSchemaException $e) {
+			$this->presenter->flashMessage('config.messages.writeFailures.nonExistingJsonSchema', 'danger');
+		} finally {
+			if ($this->presenter->isAjax()) {
+				$this->presenter->redrawControl('flashes');
+				$dataGrid = $this->presenter['configWebsocketMessagingDataGrid'];
+				$dataGrid->setDataSource($this->getData());
+				$dataGrid->redrawItem($id);
+			}
+		}
 	}
 
 }
