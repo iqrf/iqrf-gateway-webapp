@@ -20,14 +20,14 @@ declare(strict_types = 1);
 
 namespace App\IqrfAppModule\Model;
 
-use Nette;
+use Nette\SmartObject;
 
 /**
  * Tool for parsing IQRF IDE macros.
  */
 class IqrfMacroManager {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * @var string Path to IQRF IDE Macro file
@@ -36,7 +36,7 @@ class IqrfMacroManager {
 
 	/**
 	 * Constructor
-	 * @param string $path Path to IQRF IDE MAcro file
+	 * @param string $path Path to IQRF IDE Macro file
 	 */
 	public function __construct(string $path) {
 		$this->path = $path;
@@ -65,19 +65,27 @@ class IqrfMacroManager {
 		$macros = [];
 		foreach ($array as $key => $value) {
 			$category = $key % 63;
-			$categoryId = floor($key / 63);
+			$categoryId = intval(floor($key / 63));
 			$macro = (($key - ($categoryId * 63)) - 2) % 5;
 			$macroId = floor(($key - 3 - ($categoryId * 63)) / 5);
 			if ($category === 0) {
 				$macros[$categoryId]['Name'] = $value;
-			} elseif ($category === 1) {
-				$macros[$categoryId]['Enabled'] = $value === 'True';
-			} elseif ($macro === 1) {
-				$macros[$categoryId]['Macros'][$macroId]['Name'] = $value;
-			} elseif ($macro === 2) {
-				$macros[$categoryId]['Macros'][$macroId]['Packet'] = trim($value, '.');
-			} elseif ($macro === 3) {
-				$macros[$categoryId]['Macros'][$macroId]['Enabled'] = $value === 'True';
+			} else {
+				if ($category === 1) {
+					$macros[$categoryId]['Enabled'] = $value === 'True';
+				} else {
+					if ($macro === 1) {
+						$macros[$categoryId]['Macros'][$macroId]['Name'] = $value;
+					} else {
+						if ($macro === 2) {
+							$macros[$categoryId]['Macros'][$macroId]['Packet'] = trim($value, '.');
+						} else {
+							if ($macro === 3) {
+								$macros[$categoryId]['Macros'][$macroId]['Enabled'] = $value === 'True';
+							}
+						}
+					}
+				}
 			}
 		}
 		return $macros;

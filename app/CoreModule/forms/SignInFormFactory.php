@@ -20,19 +20,18 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Forms;
 
-use App\CoreModule\Forms\FormFactory;
 use App\CoreModule\Presenters\SignPresenter;
-use Nette;
 use Nette\Forms\Form;
 use Nette\Security\AuthenticationException;
 use Nette\Security\User;
+use Nette\SmartObject;
 
 /**
  * Sign in form factory
  */
 class SignInFormFactory {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * @var FormFactory Generic form factory

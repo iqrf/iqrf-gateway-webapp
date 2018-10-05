@@ -20,22 +20,23 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Forms;
 
-use App\ConfigModule\Forms\GenericConfigFormFactory;
 use App\ConfigModule\Presenters\WebsocketPresenter;
-use Nette;
 use Nette\Forms\Form;
+use Nette\SmartObject;
+use Nette\Utils\JsonException;
 
 /**
- * Websocket service configuration service form factory
+ * WebSocket service configuration service form factory
  */
-class WebsocketServiceFormFactory extends GenericConfigFormFactory {
+class WebSocketServiceFormFactory extends GenericConfigFormFactory {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
-	 * Create websocket service configuration form
-	 * @param WebsocketPresenter $presenter Websocket interface presenter
-	 * @return Form Websocket service configuration form
+	 * Create WebSocket service configuration form
+	 * @param WebsocketPresenter $presenter WebSocket interface presenter
+	 * @return Form WebSocket service configuration form
+	 * @throws JsonException
 	 */
 	public function create(WebsocketPresenter $presenter): Form {
 		$this->manager->setComponent('shape::WebsocketCppService');

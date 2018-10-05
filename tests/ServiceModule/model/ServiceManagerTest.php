@@ -63,23 +63,6 @@ class ServiceManagerTest extends TestCase {
 	}
 
 	/**
-	 * Set up the test environment
-	 */
-	protected function setUp(): void {
-		$this->commandManager = \Mockery::mock(CommandManager::class);
-		$this->managerDocker = new ServiceManager('docker-supervisor', $this->commandManager);
-		$this->managerSystemD = new ServiceManager('systemd', $this->commandManager);
-		$this->managerUnknown = new ServiceManager('unknown', $this->commandManager);
-	}
-
-	/**
-	 * Cleanup the test environment
-	 */
-	protected function tearDown(): void {
-		\Mockery::close();
-	}
-
-	/**
 	 * Test function to start IQRF Gateway Daemon's service via systemD
 	 */
 	public function testStartSystemD(): void {
@@ -185,6 +168,23 @@ class ServiceManagerTest extends TestCase {
 	 */
 	public function testGetStatusUnknown(): void {
 		Assert::exception([$this->managerUnknown, 'getStatus'], NotSupportedInitSystemException::class);
+	}
+
+	/**
+	 * Set up the test environment
+	 */
+	protected function setUp(): void {
+		$this->commandManager = \Mockery::mock(CommandManager::class);
+		$this->managerDocker = new ServiceManager('docker-supervisor', $this->commandManager);
+		$this->managerSystemD = new ServiceManager('systemd', $this->commandManager);
+		$this->managerUnknown = new ServiceManager('unknown', $this->commandManager);
+	}
+
+	/**
+	 * Cleanup the test environment
+	 */
+	protected function tearDown(): void {
+		\Mockery::close();
 	}
 
 }

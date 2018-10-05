@@ -60,27 +60,6 @@ class AzureManagerTest extends TestCase {
 	}
 
 	/**
-	 * Set up the test environment
-	 */
-	protected function setUp(): void {
-		$configPath = __DIR__ . '/../../temp/configuration/';
-		$schemaPath = __DIR__ . '/../../data/cfgSchemas/';
-		$this->fileManager = new JsonFileManager($configPath);
-		$schemaManager = new JsonSchemaManager($schemaPath);
-		$configManager = new GenericManager($this->fileManager, $schemaManager);
-		$this->manager = new AzureManager($configManager);
-		$this->mockedManager = \Mockery::mock(AzureManager::class, [$configManager])->makePartial();
-		$this->mockedManager->shouldReceive('generateSasToken')->andReturn('generatedSasToken');
-	}
-
-	/**
-	 * Cleanup the test environment
-	 */
-	protected function tearDown(): void {
-		\Mockery::close();
-	}
-
-	/**
 	 * Test function to create MQTT interface
 	 */
 	public function testCreateMqttInterface(): void {
@@ -118,7 +97,7 @@ class AzureManagerTest extends TestCase {
 	 */
 	public function testCheckConnectionStringInvalid(): void {
 		$invalidString = 'HostName=iqrf.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=1234567890abcdefghijklmnopqrstuvwxyzABCDEFG=';
-		Assert::exception(function() use ($invalidString) {
+		Assert::exception(function () use ($invalidString) {
 			$this->mockedManager->checkConnectionString($invalidString);
 		}, InvalidConnectionStringException::class);
 	}
@@ -138,7 +117,7 @@ class AzureManagerTest extends TestCase {
 		$signingKey = '1234567890abcdefghijklmnopqrstuvwxyzABCDEFG';
 		$policyName = null;
 		$expiresInMins = intdiv((new \DateTime('2018-05-10T11:00:00'))->getTimestamp(), 60) -
-				intdiv((new \DateTime())->getTimestamp(), 60) + 5256000;
+			intdiv((new \DateTime())->getTimestamp(), 60) + 5256000;
 		$actual = $this->manager->generateSasToken($resourceUri, $signingKey, $policyName, $expiresInMins);
 		$expected = 'SharedAccessSignature sr=iqrf.azure-devices.net%2Fdevices%2FiqrfGwTest&sig=loSMVo4aSTBFh6psEwJcSInBGo%2BSD3noiFSHbgQuSMo%3D&se=1841302800';
 		Assert::same($expected, $actual);
@@ -154,6 +133,27 @@ class AzureManagerTest extends TestCase {
 			'SharedAccessKey' => '1234567890abcdefghijklmnopqrstuvwxyzABCDEFG',
 		];
 		Assert::same($expected, $this->mockedManager->parseConnectionString($this->connectionString));
+	}
+
+	/**
+	 * Set up the test environment
+	 */
+	protected function setUp(): void {
+		$configPath = __DIR__ . '/../../temp/configuration/';
+		$schemaPath = __DIR__ . '/../../data/cfgSchemas/';
+		$this->fileManager = new JsonFileManager($configPath);
+		$schemaManager = new JsonSchemaManager($schemaPath);
+		$configManager = new GenericManager($this->fileManager, $schemaManager);
+		$this->manager = new AzureManager($configManager);
+		$this->mockedManager = \Mockery::mock(AzureManager::class, [$configManager])->makePartial();
+		$this->mockedManager->shouldReceive('generateSasToken')->andReturn('generatedSasToken');
+	}
+
+	/**
+	 * Cleanup the test environment
+	 */
+	protected function tearDown(): void {
+		\Mockery::close();
 	}
 
 }

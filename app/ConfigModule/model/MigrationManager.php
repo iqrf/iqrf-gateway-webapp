@@ -27,18 +27,20 @@ use App\CoreModule\Exception\NonExistingJsonSchemaException;
 use App\CoreModule\Model\CommandManager;
 use App\CoreModule\Model\JsonSchemaManager;
 use App\CoreModule\Model\ZipArchiveManager;
-use Nette;
+use Nette\Application\BadRequestException;
 use Nette\Application\Responses\FileResponse;
+use Nette\SmartObject;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
+use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
 
 /**
- * Tool for migrationg configuration
+ * Tool for migrating configuration
  */
 class MigrationManager {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * @var CommandManager Command manager
@@ -85,6 +87,7 @@ class MigrationManager {
 	/**
 	 * Download a configuration
 	 * @return FileResponse HTTP response with a configuration
+	 * @throws BadRequestException
 	 */
 	public function download(): FileResponse {
 		$this->zipManagerDownload = new ZipArchiveManager($this->path);
@@ -100,6 +103,9 @@ class MigrationManager {
 	/**
 	 * Upload a configuration
 	 * @param array $formValues Values from form
+	 * @throws IncompleteConfigurationException
+	 * @throws InvalidConfigurationFormatException
+	 * @throws JsonException
 	 */
 	public function upload(array $formValues): void {
 		$zip = $formValues['configuration'];
@@ -125,19 +131,10 @@ class MigrationManager {
 	}
 
 	/**
-	 * Change ownership of directory for JSON configuration files of IQRF Gateway Daemon
-	 */
-	private function changeOwner(): void {
-		$posixUser = posix_getpwuid(posix_geteuid());
-		$owner = $posixUser['name'] . ':' . posix_getgrgid($posixUser['gid'])['name'];
-		$this->commandManager->send('chown ' . $owner . ' ' . $this->configDirectory, true);
-		$this->commandManager->send('chown -R ' . $owner . ' ' . $this->configDirectory, true);
-	}
-
-	/**
 	 * Validate JSON configuration files for IQRF Gateway Daemon
 	 * @param ZipArchiveManager $zipManager ZIP archive manager
-	 * @return bool Are JSON files valid?:
+	 * @return bool Are JSON files valid?
+	 * @throws JsonException
 	 */
 	public function validate(ZipArchiveManager $zipManager): bool {
 		foreach ($zipManager->listFiles() as $file) {
@@ -159,6 +156,16 @@ class MigrationManager {
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * Change ownership of directory for JSON configuration files of IQRF Gateway Daemon
+	 */
+	private function changeOwner(): void {
+		$posixUser = posix_getpwuid(posix_geteuid());
+		$owner = $posixUser['name'] . ':' . posix_getgrgid($posixUser['gid'])['name'];
+		$this->commandManager->send('chown ' . $owner . ' ' . $this->configDirectory, true);
+		$this->commandManager->send('chown -R ' . $owner . ' ' . $this->configDirectory, true);
 	}
 
 }

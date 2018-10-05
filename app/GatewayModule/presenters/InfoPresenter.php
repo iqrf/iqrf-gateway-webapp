@@ -16,16 +16,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\GatewayModule\Presenters;
 
+use App\CoreModule\Presenters\ProtectedPresenter;
 use App\GatewayModule\Model\DiagnosticsManager;
 use App\GatewayModule\Model\InfoManager;
-use App\IqrfAppModule\Exception\EmptyResponseException;
 use App\IqrfAppModule\Exception\DpaErrorException;
-use App\CoreModule\Presenters\ProtectedPresenter;
+use App\IqrfAppModule\Exception\EmptyResponseException;
 use Nette\Application\BadRequestException;
+use Nette\Utils\JsonException;
 use Tracy\Debugger;
 
 /**
@@ -56,6 +57,7 @@ class InfoPresenter extends ProtectedPresenter {
 
 	/**
 	 * Render default page
+	 * @throws JsonException
 	 */
 	public function renderDefault(): void {
 		$this->template->ipAddresses = $this->infoManager->getIpAddresses();
@@ -73,6 +75,7 @@ class InfoPresenter extends ProtectedPresenter {
 
 	/**
 	 * Download action
+	 * @throws JsonException
 	 */
 	public function actionDownload(): void {
 		try {

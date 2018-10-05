@@ -52,21 +52,6 @@ class DockerSupervisorManagerTest extends TestCase {
 	}
 
 	/**
-	 * Set up the test environment
-	 */
-	protected function setUp(): void {
-		$this->commandManager = \Mockery::mock(CommandManager::class);
-		$this->manager = new DockerSupervisorManager($this->commandManager);
-	}
-
-	/**
-	 * Cleanup the test environment
-	 */
-	protected function tearDown(): void {
-		\Mockery::close();
-	}
-
-	/**
 	 * Test function to start IQRF Gateway Daemon's service via supervisord in Docker container
 	 */
 	public function testStartDockerSupervisorD(): void {
@@ -104,6 +89,21 @@ class DockerSupervisorManagerTest extends TestCase {
 		$command = 'supervisorctl status ' . $this->serviceName;
 		$this->commandManager->shouldReceive('send')->with($command, true)->andReturn($expected);
 		Assert::same($expected, $this->manager->getStatus());
+	}
+
+	/**
+	 * Set up the test environment
+	 */
+	protected function setUp(): void {
+		$this->commandManager = \Mockery::mock(CommandManager::class);
+		$this->manager = new DockerSupervisorManager($this->commandManager);
+	}
+
+	/**
+	 * Cleanup the test environment
+	 */
+	protected function tearDown(): void {
+		\Mockery::close();
 	}
 
 }

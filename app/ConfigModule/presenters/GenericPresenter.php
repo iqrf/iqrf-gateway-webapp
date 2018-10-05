@@ -72,6 +72,7 @@ abstract class GenericPresenter extends ProtectedPresenter {
 
 	/**
 	 * Check component's instance files
+	 * @throws JsonException
 	 */
 	private function checkInstanceFiles(): void {
 		foreach ($this->components as $component) {

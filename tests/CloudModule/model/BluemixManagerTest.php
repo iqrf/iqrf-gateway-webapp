@@ -76,27 +76,6 @@ class BluemixManagerTest extends TestCase {
 	}
 
 	/**
-	 * Set up the test environment
-	 */
-	protected function setUp(): void {
-		$configPath = __DIR__ . '/../../temp/configuration/';
-		$schemaPath = __DIR__ . '/../../data/cfgSchemas/';
-		$this->fileManager = new JsonFileManager($configPath);
-		$schemaManager = new JsonSchemaManager($schemaPath);
-		$this->configManager = new GenericManager($this->fileManager, $schemaManager);
-		$client = new Client();
-		$this->manager = \Mockery::mock(BluemixManager::class, [$this->certPath, $this->configManager, $client])->makePartial();
-		$this->manager->shouldReceive('downloadCaCertificate')->andReturn(null);
-	}
-
-	/**
-	 * Cleanup the test environment
-	 */
-	protected function tearDown(): void {
-		\Mockery::close();
-	}
-
-	/**
 	 * Test function to create MQTT interface
 	 */
 	public function testCreateMqttInterface(): void {
@@ -141,6 +120,27 @@ class BluemixManagerTest extends TestCase {
 		$manager = new BluemixManager($this->certPath, $this->configManager, $client);
 		$manager->downloadCaCertificate();
 		Assert::same($expected, FileSystem::read($this->certPath . $expected));
+	}
+
+	/**
+	 * Set up the test environment
+	 */
+	protected function setUp(): void {
+		$configPath = __DIR__ . '/../../temp/configuration/';
+		$schemaPath = __DIR__ . '/../../data/cfgSchemas/';
+		$this->fileManager = new JsonFileManager($configPath);
+		$schemaManager = new JsonSchemaManager($schemaPath);
+		$this->configManager = new GenericManager($this->fileManager, $schemaManager);
+		$client = new Client();
+		$this->manager = \Mockery::mock(BluemixManager::class, [$this->certPath, $this->configManager, $client])->makePartial();
+		$this->manager->shouldReceive('downloadCaCertificate')->andReturn(null);
+	}
+
+	/**
+	 * Cleanup the test environment
+	 */
+	protected function tearDown(): void {
+		\Mockery::close();
 	}
 
 }

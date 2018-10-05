@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Model;
 
-use Nette;
+use Nette\SmartObject;
 use Nette\Utils\FileSystem;
 
 /**
@@ -28,7 +28,7 @@ use Nette\Utils\FileSystem;
  */
 class FileManager {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * @var string Directory with files
@@ -44,7 +44,7 @@ class FileManager {
 	}
 
 	/**
-	 * Return directory with files
+	 * Return the directory with files
 	 * @return string Directory with files
 	 */
 	public function getDirectory(): string {
@@ -52,7 +52,7 @@ class FileManager {
 	}
 
 	/**
-	 * Delete a file
+	 * Delete the file
 	 * @param string $fileName File name
 	 */
 	public function delete(string $fileName): void {
@@ -60,7 +60,7 @@ class FileManager {
 	}
 
 	/**
-	 * Check if file exists
+	 * Check if the file exists
 	 * @param string $fileName File name
 	 * @return bool Is file exists?
 	 */
@@ -69,7 +69,7 @@ class FileManager {
 	}
 
 	/**
-	 * Read file
+	 * Read the file
 	 * @param string $fileName File name
 	 * @return string File content
 	 */
@@ -78,7 +78,7 @@ class FileManager {
 	}
 
 	/**
-	 * Encode JSON from array and write JSON file
+	 * Write to the file
 	 * @param string $fileName File name
 	 * @param string $content File content
 	 */

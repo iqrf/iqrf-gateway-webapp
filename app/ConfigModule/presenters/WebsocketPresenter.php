@@ -20,92 +20,88 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Presenters;
 
-use App\ConfigModule\Datagrids\WebsocketDataGridFactory;
-use App\ConfigModule\Datagrids\WebsocketMessagingDataGridFactory;
-use App\ConfigModule\Datagrids\WebsocketServiceDataGridFactory;
-use App\ConfigModule\Forms\WebsocketFormFactory;
-use App\ConfigModule\Forms\WebsocketMessagingFormFactory;
-use App\ConfigModule\Forms\WebsocketServiceFormFactory;
+use App\ConfigModule\Datagrids\WebSocketDataGridFactory;
+use App\ConfigModule\Datagrids\WebSocketMessagingDataGridFactory;
+use App\ConfigModule\Datagrids\WebSocketServiceDataGridFactory;
+use App\ConfigModule\Forms\WebSocketFormFactory;
+use App\ConfigModule\Forms\WebSocketMessagingFormFactory;
+use App\ConfigModule\Forms\WebSocketServiceFormFactory;
 use App\ConfigModule\Model\GenericManager;
-use App\ConfigModule\Model\WebsocketManager;
+use App\ConfigModule\Model\WebSocketManager;
 use Nette\Forms\Form;
+use Nette\Utils\JsonException;
 use Ublaboo\DataGrid\DataGrid;
+use Ublaboo\DataGrid\Exception\DataGridColumnStatusException;
+use Ublaboo\DataGrid\Exception\DataGridException;
 
 /**
- * Websocket interface configuration presenter
+ * WebSocket interface configuration presenter
  */
 class WebsocketPresenter extends GenericPresenter {
 
 	/**
-	 * @var array Websocket components
+	 * @var WebSocketDataGridFactory WebSocket interface data grid factory
+	 * @inject
+	 */
+	public $basicDataGridFactory;
+	/**
+	 * @var WebSocketFormFactory WebSocket instance configuration form factory
+	 * @inject
+	 */
+	public $basicFormFactory;
+	/**
+	 * @var WebSocketMessagingDataGridFactory WebSocket messaging configuration data grid factory
+	 * @inject
+	 */
+	public $messagingDataGridFactory;
+	/**
+	 * @var WebSocketMessagingFormFactory WebSocket messaging configuration form factory
+	 * @inject
+	 */
+	public $messagingFormFactory;
+	/**
+	 * @var WebSocketServiceDataGridFactory WebSocket service configuration data grid
+	 * @inject
+	 */
+	public $serviceDataGridFactory;
+	/**
+	 * @var WebSocketServiceFormFactory WebSocket service configuration form factory
+	 * @inject
+	 */
+	public $serviceFormFactory;
+	/**
+	 * @var array WebSocket components
 	 */
 	protected $components = [
 		'messaging' => 'iqrf::WebsocketMessaging',
 		'service' => 'shape::WebsocketCppService',
 	];
-
 	/**
-	 * @var WebsocketManager Websocket manager
+	 * @var WebSocketManager WebSocket manager
 	 */
-	private $websocketManager;
-
-	/**
-	 * @var WebsocketDataGridFactory Websocket interface datagrid factory
-	 * @inject
-	 */
-	public $basicDataGridFactory;
-
-	/**
-	 * @var WebsocketFormFactory Websocket instance configuration form factory
-	 * @inject
-	 */
-	public $basicFormFactory;
-
-	/**
-	 * @var WebsocketMessagingDataGridFactory Websocket messaging configuration datagrid factory
-	 * @inject
-	 */
-	public $messagingDataGridFactory;
-
-	/**
-	 * @var WebsocketMessagingFormFactory Websocket messaging configuration form factory
-	 * @inject
-	 */
-	public $messagingFormFactory;
-
-	/**
-	 * @var WebsocketServiceDataGridFactory Websocket service configuration data grid
-	 * @inject
-	 */
-	public $serviceDataGridFactory;
-
-	/**
-	 * @var WebsocketServiceFormFactory Websocket service configuration form factory
-	 * @inject
-	 */
-	public $serviceFormFactory;
+	private $webSocketManager;
 
 	/**
 	 * Constructor
 	 * @param GenericManager $genericManager Generic configuration manager
-	 * @param WebsocketManager $websocketManager Websocket configuration manager
+	 * @param WebSocketManager $webSocketManager Websocket configuration manager
 	 */
-	public function __construct(GenericManager $genericManager, WebsocketManager $websocketManager) {
-		$this->websocketManager = $websocketManager;
+	public function __construct(GenericManager $genericManager, WebSocketManager $webSocketManager) {
+		$this->webSocketManager = $webSocketManager;
 		parent::__construct($this->components, $genericManager);
 	}
 
 	/**
-	 * Edit Websocket interface
-	 * @param int $id ID of websocket interface
+	 * Edit WebSocket interface
+	 * @param int $id ID of WebSocket interface
 	 */
 	public function renderEdit(int $id): void {
 		$this->template->id = $id;
 	}
 
 	/**
-	 * Edit Websocket messaging
-	 * @param int $id ID of websocket messaging
+	 * Edit WebSocket messaging
+	 * @param int $id ID of WebSocket messaging
 	 */
 	public function renderEditMessaging(int $id): void {
 		$this->configManager->setComponent($this->components['messaging']);
@@ -114,7 +110,7 @@ class WebsocketPresenter extends GenericPresenter {
 
 	/**
 	 * Edit Websocket service
-	 * @param int $id ID of websocket service
+	 * @param int $id ID of WebSocket service
 	 */
 	public function renderEditService(int $id): void {
 		$this->configManager->setComponent($this->components['service']);
@@ -122,18 +118,20 @@ class WebsocketPresenter extends GenericPresenter {
 	}
 
 	/**
-	 * Delete Websocket interface
-	 * @param int $id ID of websocket interface
+	 * Delete WebSocket interface
+	 * @param int $id ID of WebSocket interface
+	 * @throws JsonException
 	 */
 	public function actionDelete(int $id): void {
-		$this->websocketManager->delete($id);
+		$this->webSocketManager->delete($id);
 		$this->redirect('Websocket:default');
 		$this->setView('default');
 	}
 
 	/**
-	 * Delete Websocket messaging
-	 * @param int $id ID of websocket messaging
+	 * Delete WebSocket messaging
+	 * @param int $id ID of WebSocket messaging
+	 * @throws JsonException
 	 */
 	public function actionDeleteMessaging(int $id): void {
 		$this->configManager->setComponent($this->components['messaging']);
@@ -143,8 +141,9 @@ class WebsocketPresenter extends GenericPresenter {
 	}
 
 	/**
-	 * Delete Websocket service
-	 * @param int $id ID of websocket service
+	 * Delete WebSocket service
+	 * @param int $id ID of WebSocket service
+	 * @throws JsonException
 	 */
 	public function actionDeleteService(int $id): void {
 		$this->configManager->setComponent($this->components['service']);
@@ -154,53 +153,64 @@ class WebsocketPresenter extends GenericPresenter {
 	}
 
 	/**
-	 * Create websocket interfaces datagrid
-	 * @param string $name Datagrid's component name
-	 * @return DataGrid Websocket interfaces datagrid
+	 * Create WebSocket interfaces data grid
+	 * @param string $name Data grid's component name
+	 * @return DataGrid WebSocket interfaces data grid
+	 * @throws DataGridColumnStatusException
+	 * @throws DataGridException
+	 * @throws JsonException
 	 */
-	protected function createComponentConfigWebsocketDataGrid(string $name): DataGrid {
+	protected function createComponentConfigWebSocketDataGrid(string $name): DataGrid {
 		return $this->basicDataGridFactory->create($this, $name);
 	}
 
 	/**
-	 * Create websocket interface form
-	 * @return Form Websocket interface form
+	 * Create WebSocket interface form
+	 * @return Form WebSocket interface form
+	 * @throws JsonException
 	 */
-	protected function createComponentConfigWebsocketForm(): Form {
+	protected function createComponentConfigWebSocketForm(): Form {
 		return $this->basicFormFactory->create($this);
 	}
 
 	/**
-	 * Create websocket messaging datagrid
-	 * @param string $name Datagrid's component name
-	 * @return DataGrid Websocket messaging datagrid
+	 * Create WebSocket messaging data grid
+	 * @param string $name Data grid's component name
+	 * @return DataGrid WebSocket messaging data grid
+	 * @throws DataGridColumnStatusException
+	 * @throws DataGridException
+	 * @throws JsonException
 	 */
-	protected function createComponentConfigWebsocketMessagingDataGrid(string $name): DataGrid {
+	protected function createComponentConfigWebSocketMessagingDataGrid(string $name): DataGrid {
 		return $this->messagingDataGridFactory->create($this, $name);
 	}
 
 	/**
-	 * Create websocket messaging form
-	 * @return Form Websocket messaging form
+	 * Create WebSocket messaging form
+	 * @return Form WebSocket messaging form
+	 * @throws JsonException
 	 */
-	protected function createComponentConfigWebsocketMessagingForm(): Form {
+	protected function createComponentConfigWebSocketMessagingForm(): Form {
 		return $this->messagingFormFactory->create($this);
 	}
 
 	/**
-	 * Create websocket service datagrid
-	 * @param string $name Datagrid's component name
-	 * @return DataGrid Websocket service datagrid
+	 * Create WebSocket service data grid
+	 * @param string $name Data grid's component name
+	 * @return DataGrid WebSocket service data grid
+	 * @throws JsonException
+	 * @throws DataGridException
 	 */
-	protected function createComponentConfigWebsocketServiceDataGrid(string $name): DataGrid {
+	protected function createComponentConfigWebSocketServiceDataGrid(string $name): DataGrid {
 		return $this->serviceDataGridFactory->create($this, $name);
 	}
 
 	/**
-	 * Create websocket service form
-	 * @return Form Websocket service form
+	 * Create WebSocket service form
+	 * @return Form WebSocket service form
+	 * @throws JsonException
 	 */
-	protected function createComponentConfigWebsocketServiceForm(): Form {
+	protected function createComponentConfigWebSocketServiceForm(): Form {
 		return $this->serviceFormFactory->create($this);
 	}
 

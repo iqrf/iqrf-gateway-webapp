@@ -22,17 +22,17 @@ namespace App\CoreModule\Model;
 
 use App\CoreModule\Exception\InvalidPasswordException;
 use App\CoreModule\Exception\UsernameAlreadyExistsException;
-use Nette;
 use Nette\Database\Context;
-use Nette\Database\Table\Selection;
 use Nette\Database\Table\ActiveRow;
+use Nette\Database\Table\Selection;
+use Nette\SmartObject;
 
 /**
  * Tool for managing users
  */
 class UserManager {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * @var Selection Database table selection
@@ -41,7 +41,7 @@ class UserManager {
 
 	/**
 	 * Constructor
-	 * @param Context $database Database contaxt
+	 * @param Context $database Database context
 	 */
 	public function __construct(Context $database) {
 		$this->table = $database->table('users');
@@ -107,7 +107,7 @@ class UserManager {
 
 	/**
 	 * Get all registered users
-	 * @return array Registred userd
+	 * @return array Registered users
 	 */
 	public function getUsers(): array {
 		$users = [];

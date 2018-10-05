@@ -10,8 +10,8 @@ declare(strict_types = 1);
 
 namespace Test\ConfigModule\Model;
 
-use App\CoreModule\Model\CommandManager;
 use App\ConfigModule\Model\IqrfManager;
+use App\CoreModule\Model\CommandManager;
 use Nette\DI\Container;
 use Tester\Assert;
 use Tester\TestCase;
@@ -47,21 +47,6 @@ class IqrfManagerTest extends TestCase {
 	}
 
 	/**
-	 * Set up the test environment
-	 */
-	protected function setUp(): void {
-		$this->commandManager = \Mockery::mock(CommandManager::class);
-		$this->manager = new IqrfManager($this->commandManager);
-	}
-
-	/**
-	 * Cleanup the test environment
-	 */
-	protected function tearDown(): void {
-		\Mockery::close();
-	}
-
-	/**
 	 * Test function to get list of USB CDC interfaces available in the system
 	 */
 	public function testGetCdcInterfaces(): void {
@@ -89,6 +74,21 @@ class IqrfManagerTest extends TestCase {
 		$this->commandManager->shouldReceive('send')->with('ls /dev/ttyAMA* /dev/ttyS* | awk \'{ print $0 }\'', true)->andReturn($output);
 		$expected = ['/dev/ttyS0', '/dev/ttyS1', '/dev/ttyS2', '/dev/ttyS3'];
 		Assert::same($expected, $this->manager->getUartInterfaces());
+	}
+
+	/**
+	 * Set up the test environment
+	 */
+	protected function setUp(): void {
+		$this->commandManager = \Mockery::mock(CommandManager::class);
+		$this->manager = new IqrfManager($this->commandManager);
+	}
+
+	/**
+	 * Cleanup the test environment
+	 */
+	protected function tearDown(): void {
+		\Mockery::close();
 	}
 
 }

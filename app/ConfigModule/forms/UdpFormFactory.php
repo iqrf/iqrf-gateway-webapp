@@ -20,22 +20,23 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Forms;
 
-use App\ConfigModule\Forms\GenericConfigFormFactory;
 use App\ConfigModule\Presenters\UdpPresenter;
-use Nette;
 use Nette\Forms\Form;
+use Nette\SmartObject;
+use Nette\Utils\JsonException;
 
 /**
  * UDP interface configuration form factory
  */
 class UdpFormFactory extends GenericConfigFormFactory {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * Create UDP interface configuration form
 	 * @param UdpPresenter $presenter UDP interface presenter
 	 * @return Form UDP interface configuration form
+	 * @throws JsonException
 	 */
 	public function create(UdpPresenter $presenter): Form {
 		$this->manager->setComponent('iqrf::UdpMessaging');
@@ -59,6 +60,8 @@ class UdpFormFactory extends GenericConfigFormFactory {
 	/**
 	 * Save UDP interface configuration
 	 * @param Form $form IDP interface configuration form
+	 * @throws JsonException
+	 *
 	 */
 	public function save(Form $form): void {
 		$instances = $this->manager->getInstanceFiles();

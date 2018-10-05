@@ -10,6 +10,7 @@ parameters:
 		- '#Method Nette\\Forms\\Rules::elseCondition\(\) invoked with [0-9] parameters, 0 required.#'
 		- '#Call to an undefined method Mockery\\Mock::[a-zA-Z0-9_]+\(\).#'
 		- '#Call to an undefined method Mockery\\ExpectationInterface|Mockery\\HigherOrderMessage::with\(\).#'
+		- '#PHPDoc tag @throws with type (|[a-zA-Z0-9\\_]+\|)GuzzleHttp\\Exception\\GuzzleException(|\|[a-zA-Z0-9\\_]+) is not subtype of Throwable#'
 	fileExtensions:
 		- php
 		- phpt

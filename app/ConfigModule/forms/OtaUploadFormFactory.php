@@ -20,22 +20,23 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Forms;
 
-use App\ConfigModule\Forms\GenericConfigFormFactory;
 use App\ConfigModule\Presenters\IqmeshPresenter;
-use Nette;
 use Nette\Forms\Form;
+use Nette\SmartObject;
+use Nette\Utils\JsonException;
 
 /**
  * OTA upload configuration form factory
  */
 class OtaUploadFormFactory extends GenericConfigFormFactory {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * Create OTA upload service configuration form
 	 * @param IqmeshPresenter $presenter IQMESH services configuration presenter
 	 * @return Form OTA upload configuration form
+	 * @throws JsonException
 	 */
 	public function create(IqmeshPresenter $presenter): Form {
 		$this->manager->setComponent('iqrf::OtaUploadService');

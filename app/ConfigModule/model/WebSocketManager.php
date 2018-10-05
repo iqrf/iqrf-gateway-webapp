@@ -22,19 +22,20 @@ namespace App\ConfigModule\Model;
 
 use App\CoreModule\Model\JsonFileManager;
 use App\CoreModule\Model\JsonSchemaManager;
-use Nette;
+use Nette\SmartObject;
 use Nette\Utils\Arrays;
 use Nette\Utils\Json;
+use Nette\Utils\JsonException;
 
 /**
- * Websocket configuration manager
+ * WebSocket configuration manager
  */
-class WebsocketManager {
+class WebSocketManager {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
-	 * @var array Websocket components
+	 * @var array WebSocket components
 	 */
 	private $components = [
 		'messaging' => 'iqrf::WebsocketMessaging',
@@ -47,7 +48,7 @@ class WebsocketManager {
 	private $fileManager;
 
 	/**
-	 * @var array Websocket messaging and service file names
+	 * @var array WebSocket messaging and service file names
 	 */
 	private $fileNames;
 
@@ -57,7 +58,7 @@ class WebsocketManager {
 	private $genericManager;
 
 	/**
-	 * @var array Websocket instances
+	 * @var array WebSocket instances
 	 */
 	private $instances;
 
@@ -80,7 +81,8 @@ class WebsocketManager {
 
 	/**
 	 * Delete a configuration
-	 * @param int $id Websocket interface ID
+	 * @param int $id WebSocket interface ID
+	 * @throws JsonException
 	 */
 	public function delete(int $id): void {
 		$this->genericManager->setComponent($this->components['messaging']);
@@ -94,35 +96,10 @@ class WebsocketManager {
 	}
 
 	/**
-	 * Load a configuration
-	 * @param int $id Websocket interface ID
-	 * @return array Array for form
-	 */
-	public function load(int $id): array {
-		$this->genericManager->setComponent($this->components['messaging']);
-		$instances = $this->genericManager->getInstanceFiles();
-		$this->fileNames['messaging'] = Arrays::pick($instances, $id);
-		$messaging = $this->read($this->fileNames['messaging']);
-		$serviceInsatnce = $messaging['RequiredInterfaces'][0]['target']['instance'];
-		$this->fileNames['service'] = $this->getServiceFile($serviceInsatnce);
-		$service = $this->read($this->fileNames['service']);
-		$this->instances = [
-			'messaging' => $messaging['instance'],
-			'service' => $service['instance'],
-		];
-		$array = [
-			'messagingInstance' => $messaging['instance'],
-			'acceptAsyncMsg' => $messaging['acceptAsyncMsg'],
-			'serviceInstance' => $service['instance'],
-			'port' => $service['WebsocketPort'],
-		];
-		return $array;
-	}
-
-	/**
 	 * Read a configuration
 	 * @param string $fileName File name (without .json)
 	 * @return array Parsed configuration
+	 * @throws JsonException
 	 */
 	private function read(string $fileName): array {
 		$configuration = $this->fileManager->read($fileName);
@@ -131,8 +108,27 @@ class WebsocketManager {
 	}
 
 	/**
+	 * Get WebSocket service file name by instance name
+	 * @param string $instanceName Instance name
+	 * @return string|null WebSocket service file name
+	 * @throws JsonException
+	 */
+	public function getServiceFile(string $instanceName): ?string {
+		$this->genericManager->setComponent($this->components['service']);
+		$services = $this->genericManager->getInstanceFiles();
+		foreach ($services as $service) {
+			$json = $this->read($service);
+			if (Arrays::pick($json, 'instance') === $instanceName) {
+				return $service;
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * Save configuration
 	 * @param array $array Websocket settings
+	 * @throws JsonException
 	 */
 	public function save(array $array): void {
 		$timestamp = (new \DateTime())->getTimestamp();
@@ -153,20 +149,6 @@ class WebsocketManager {
 		$serviceFileName = $this->fileNames['service'] ?? 'shape__' . $instances['service'];
 		$this->fileManager->write($messagingFileName, $settings['messaging']);
 		$this->fileManager->write($serviceFileName, $settings['service']);
-	}
-
-	/**
-	 * Get websocket instances
-	 * @return array Websocket instances
-	 */
-	public function list(): array {
-		$this->genericManager->setComponent($this->components['messaging']);
-		$files = $this->genericManager->getInstanceFiles();
-		$instances = [];
-		foreach (array_keys($files) as $id) {
-			$instances[] = Arrays::mergeTree(['id' => $id], $this->load($id));
-		}
-		return $instances;
 	}
 
 	/**
@@ -206,20 +188,45 @@ class WebsocketManager {
 	}
 
 	/**
-	 * Get websocket service file name by instance name
-	 * @param string $instanceName Instance name
-	 * @return string|null Websocket service file name
+	 * Get WebSocket instances
+	 * @return array WebSocket instances
+	 * @throws JsonException
 	 */
-	public function getServiceFile(string $instanceName): ?string {
-		$this->genericManager->setComponent($this->components['service']);
-		$services = $this->genericManager->getInstanceFiles();
-		foreach ($services as $service) {
-			$json = $this->read($service);
-			if (Arrays::pick($json, 'instance') === $instanceName) {
-				return $service;
-			}
+	public function list(): array {
+		$this->genericManager->setComponent($this->components['messaging']);
+		$files = $this->genericManager->getInstanceFiles();
+		$instances = [];
+		foreach (array_keys($files) as $id) {
+			$instances[] = Arrays::mergeTree(['id' => $id], $this->load($id));
 		}
-		return null;
+		return $instances;
+	}
+
+	/**
+	 * Load a configuration
+	 * @param int $id WebSocket interface ID
+	 * @return array Array for form
+	 * @throws JsonException
+	 */
+	public function load(int $id): array {
+		$this->genericManager->setComponent($this->components['messaging']);
+		$instances = $this->genericManager->getInstanceFiles();
+		$this->fileNames['messaging'] = Arrays::pick($instances, $id);
+		$messaging = $this->read($this->fileNames['messaging']);
+		$serviceInstance = $messaging['RequiredInterfaces'][0]['target']['instance'];
+		$this->fileNames['service'] = $this->getServiceFile($serviceInstance);
+		$service = $this->read($this->fileNames['service']);
+		$this->instances = [
+			'messaging' => $messaging['instance'],
+			'service' => $service['instance'],
+		];
+		$array = [
+			'messagingInstance' => $messaging['instance'],
+			'acceptAsyncMsg' => $messaging['acceptAsyncMsg'],
+			'serviceInstance' => $service['instance'],
+			'port' => $service['WebsocketPort'],
+		];
+		return $array;
 	}
 
 }

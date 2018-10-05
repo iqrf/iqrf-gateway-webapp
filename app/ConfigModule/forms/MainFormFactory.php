@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\ConfigModule\Forms;
 
@@ -24,16 +24,17 @@ use App\ConfigModule\Model\MainManager;
 use App\ConfigModule\Presenters\MainPresenter;
 use App\CoreModule\Exception\NonExistingJsonSchemaException;
 use App\CoreModule\Forms\FormFactory;
-use Nette;
 use Nette\Forms\Form;
 use Nette\IOException;
+use Nette\SmartObject;
+use Nette\Utils\JsonException;
 
 /**
  * Main configuration form factory
  */
 class MainFormFactory {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * @var MainManager Main configuration manager
@@ -64,6 +65,7 @@ class MainFormFactory {
 	 * Create main configuration form
 	 * @param MainPresenter $presenter Main configuration presenter
 	 * @return Form Main configuration form
+	 * @throws JsonException
 	 */
 	public function create(MainPresenter $presenter): Form {
 		$this->presenter = $presenter;
@@ -86,6 +88,7 @@ class MainFormFactory {
 	/**
 	 * Save main configuration
 	 * @param Form $form Main configuration form
+	 * @throws JsonException
 	 */
 	public function save(Form $form): void {
 		try {

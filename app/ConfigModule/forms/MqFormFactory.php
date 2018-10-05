@@ -20,22 +20,23 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Forms;
 
-use App\ConfigModule\Forms\GenericConfigFormFactory;
 use App\ConfigModule\Presenters\MqPresenter;
-use Nette;
 use Nette\Forms\Form;
+use Nette\SmartObject;
+use Nette\Utils\JsonException;
 
 /**
  * MQ interface configuration form factory
  */
 class MqFormFactory extends GenericConfigFormFactory {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * Create MQ interface configuration form
 	 * @param MqPresenter $presenter MQ interface presenter
 	 * @return Form MQ interface configuration form
+	 * @throws JsonException
 	 */
 	public function create(MqPresenter $presenter): Form {
 		$this->manager->setComponent('iqrf::MqMessaging');

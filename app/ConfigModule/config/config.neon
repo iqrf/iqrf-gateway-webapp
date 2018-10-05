@@ -4,9 +4,9 @@ services:
 	- App\ConfigModule\Datagrids\MqttMessagingDataGridFactory
 	- App\ConfigModule\Datagrids\SchedulerDataGridFactory
 	- App\ConfigModule\Datagrids\UdpMessagingDataGridFactory
-	- App\ConfigModule\Datagrids\WebsocketDataGridFactory
-	- App\ConfigModule\Datagrids\WebsocketMessagingDataGridFactory
-	- App\ConfigModule\Datagrids\WebsocketServiceDataGridFactory
+	- App\ConfigModule\Datagrids\WebSocketDataGridFactory
+	- App\ConfigModule\Datagrids\WebSocketMessagingDataGridFactory
+	- App\ConfigModule\Datagrids\WebSocketServiceDataGridFactory
 	- App\ConfigModule\Forms\ComponentsFormFactory
 	- App\ConfigModule\Forms\IqrfCdcFormFactory
 	- App\ConfigModule\Forms\IqrfDpaFormFactory
@@ -22,9 +22,9 @@ services:
 	- App\ConfigModule\Forms\OtaUploadFormFactory
 	- App\ConfigModule\Forms\SchedulerFormFactory
 	- App\ConfigModule\Forms\UdpFormFactory
-	- App\ConfigModule\Forms\WebsocketFormFactory
-	- App\ConfigModule\Forms\WebsocketMessagingFormFactory
-	- App\ConfigModule\Forms\WebsocketServiceFormFactory
+	- App\ConfigModule\Forms\WebSocketFormFactory
+	- App\ConfigModule\Forms\WebSocketMessagingFormFactory
+	- App\ConfigModule\Forms\WebSocketServiceFormFactory
 	- App\ConfigModule\Forms\GenericConfigFormFactory
 	- App\ConfigModule\Model\ComponentManager
 	- App\ConfigModule\Model\GenericManager
@@ -32,4 +32,4 @@ services:
 	- App\ConfigModule\Model\MainManager
 	- App\ConfigModule\Model\MigrationManager(%daemon.configDir%)
 	- App\ConfigModule\Model\SchedulerManager
-	- App\ConfigModule\Model\WebsocketManager
+	- App\ConfigModule\Model\WebSocketManager

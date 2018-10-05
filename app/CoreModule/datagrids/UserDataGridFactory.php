@@ -20,22 +20,23 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Datagrids;
 
-use App\CoreModule\Presenters\UserPresenter;
 use App\CoreModule\Model\UserManager;
-use Nette;
+use App\CoreModule\Presenters\UserPresenter;
+use Nette\SmartObject;
 use Ublaboo\DataGrid\DataGrid;
+use Ublaboo\DataGrid\Exception\DataGridException;
 
 /**
- * Render an user datagrid
+ * Render an user data grid
  */
 class UserDataGridFactory {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * @var DataGridFactory Data grid factory
 	 */
-	private $datagridFactory;
+	private $dataGridFactory;
 
 	/**
 	 * @var UserManager User manager
@@ -44,34 +45,35 @@ class UserDataGridFactory {
 
 	/**
 	 * Constructor
-	 * @param DataGridFactory $datagridFactory Generic datagrid factory
+	 * @param DataGridFactory $dataGridFactory Generic data grid factory
 	 * @param UserManager $userManager User manager
 	 */
-	public function __construct(DataGridFactory $datagridFactory, UserManager $userManager) {
-		$this->datagridFactory = $datagridFactory;
+	public function __construct(DataGridFactory $dataGridFactory, UserManager $userManager) {
+		$this->dataGridFactory = $dataGridFactory;
 		$this->userManager = $userManager;
 	}
 
 	/**
-	 * Create user datagrid
+	 * Create user data grid
 	 * @param UserPresenter $presenter User presenter
-	 * @param string $name Datagrid's component name
-	 * @return DataGrid User datagrid
+	 * @param string $name Data grid's component name
+	 * @return DataGrid User data grid
+	 * @throws DataGridException
 	 */
 	public function create(UserPresenter $presenter, string $name): DataGrid {
-		$grid = $this->datagridFactory->create($presenter, $name);
+		$grid = $this->dataGridFactory->create($presenter, $name);
 		$grid->setDataSource($this->userManager->getUsers());
 		$grid->addColumnNumber('id', 'core.user.form.id')->setAlign('left');
 		$grid->addColumnText('username', 'core.user.form.username');
 		$grid->addColumnText('role', 'core.user.form.userType');
 		$grid->addColumnText('language', 'core.user.form.language');
 		$grid->addAction('edit', 'config.actions.Edit')->setIcon('pencil')
-				->setClass('btn btn-xs btn-info');
+			->setClass('btn btn-xs btn-info');
 		$grid->addAction('delete', 'config.actions.Remove')->setIcon('remove')
-				->setClass('btn btn-xs btn-danger ajax')
-				->setConfirm('core.user.form.messages.confirmDelete', 'username');
+			->setClass('btn btn-xs btn-danger ajax')
+			->setConfirm('core.user.form.messages.confirmDelete', 'username');
 		$grid->addToolbarButton('add', 'config.actions.Add')
-				->setClass('btn btn-xs btn-success');
+			->setClass('btn btn-xs btn-success');
 		return $grid;
 	}
 

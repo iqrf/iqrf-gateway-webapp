@@ -45,7 +45,7 @@ class ComponentManagerTest extends TestCase {
 	private $fileName = 'config';
 
 	/**
-	 * @var ComponentManager Componenct configuration manager
+	 * @var ComponentManager Component configuration manager
 	 */
 	private $manager;
 
@@ -60,18 +60,6 @@ class ComponentManagerTest extends TestCase {
 	 */
 	public function __construct(Container $container) {
 		$this->container = $container;
-	}
-
-	/**
-	 * Set up the test environment
-	 */
-	protected function setUp(): void {
-		$configPath = __DIR__ . '/../../data/configuration/';
-		$configTempPath = __DIR__ . '/../../temp/configuration/';
-		$this->fileManager = new JsonFileManager($configPath);
-		$this->fileManagerTemp = new JsonFileManager($configTempPath);
-		$this->manager = new ComponentManager($this->fileManager);
-		$this->managerTemp = new ComponentManager($this->fileManagerTemp);
 	}
 
 	/**
@@ -146,6 +134,18 @@ class ComponentManagerTest extends TestCase {
 		$expected['components'][6]['enabled'] = false;
 		$this->managerTemp->save($array, 6);
 		Assert::equal($expected, $this->fileManagerTemp->read($this->fileName));
+	}
+
+	/**
+	 * Set up the test environment
+	 */
+	protected function setUp(): void {
+		$configPath = __DIR__ . '/../../data/configuration/';
+		$configTempPath = __DIR__ . '/../../temp/configuration/';
+		$this->fileManager = new JsonFileManager($configPath);
+		$this->fileManagerTemp = new JsonFileManager($configTempPath);
+		$this->manager = new ComponentManager($this->fileManager);
+		$this->managerTemp = new ComponentManager($this->fileManagerTemp);
 	}
 
 }

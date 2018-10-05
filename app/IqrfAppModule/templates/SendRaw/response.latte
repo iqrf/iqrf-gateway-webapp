@@ -31,7 +31,8 @@
 							<tr n:foreach="$packet as $key => $value">
 								<th>{dechex($key)|upper}0</th>
 								<td n:foreach="$value as $status">
-									<span n:nonce class="glyphicon glyphicon-{$status ? 'ok' : 'remove'}" style="color: {$status ? 'green' : 'red'}" aria-hidden="true"></span>
+									<span n:nonce class="glyphicon glyphicon-{$status ? 'ok' : 'remove'}"
+									      style="color: {$status ? 'green' : 'red'}" aria-hidden="true"></span>
 								</td>
 
 							</tr>
@@ -41,8 +42,10 @@
 					{elseif $type === 'configuration'}
 						<p><strong>{_$type}:</strong> {foreach $packet as $cfg}{$cfg}{sep}.{/sep}{/foreach}</p>
 					{elseif $type === 'parsedConfiguration'}
-						<p><strong>{_$type}:</strong> <ul style="list-style-type:none">{foreach $packet as $name => $cfg}<li><strong>{_$name}:</strong> {$cfg}</li>{/foreach}</ul></p>
-							{else}
+						<p><strong>{_$type}:</strong>
+						<ul style="list-style-type:none">{foreach $packet as $name => $cfg}
+								<li><strong>{_$name}:</strong> {$cfg}</li>{/foreach}</ul>
+					{else}
 						<p><strong>{_$type}:</strong> {$packet}</p>
 					{/if}
 				{/foreach}

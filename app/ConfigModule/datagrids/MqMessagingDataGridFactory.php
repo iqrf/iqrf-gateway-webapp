@@ -20,20 +20,23 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Datagrids;
 
-use App\ConfigModule\Presenters\MqPresenter;
 use App\ConfigModule\Model\GenericManager;
-use App\CoreModule\Exception\NonExistingJsonSchemaException;
+use App\ConfigModule\Presenters\MqPresenter;
 use App\CoreModule\Datagrids\DataGridFactory;
-use Nette;
+use App\CoreModule\Exception\NonExistingJsonSchemaException;
 use Nette\IOException;
+use Nette\SmartObject;
+use Nette\Utils\JsonException;
 use Ublaboo\DataGrid\DataGrid;
+use Ublaboo\DataGrid\Exception\DataGridColumnStatusException;
+use Ublaboo\DataGrid\Exception\DataGridException;
 
 /**
- * Render a MQ messaging datagrid
+ * Render a MQ messaging data grid
  */
 class MqMessagingDataGridFactory {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * @var GenericManager Generic configuration manager
@@ -43,7 +46,7 @@ class MqMessagingDataGridFactory {
 	/**
 	 * @var DataGridFactory Data grid factory
 	 */
-	private $datagridFactory;
+	private $dataGridFactory;
 
 	/**
 	 * @var MqPresenter MQ interface configuration presenter
@@ -52,23 +55,26 @@ class MqMessagingDataGridFactory {
 
 	/**
 	 * Constructor
-	 * @param DataGridFactory $datagridFactory Generic datagrid factory
+	 * @param DataGridFactory $dataGridFactory Generic data grid factory
 	 * @param GenericManager $configManager Generic configuration manager
 	 */
-	public function __construct(DataGridFactory $datagridFactory, GenericManager $configManager) {
-		$this->datagridFactory = $datagridFactory;
+	public function __construct(DataGridFactory $dataGridFactory, GenericManager $configManager) {
+		$this->dataGridFactory = $dataGridFactory;
 		$this->configManager = $configManager;
 	}
 
 	/**
-	 * Create MQ messaging datagrid
+	 * Create MQ messaging data grid
 	 * @param MqPresenter $presenter MQ interface configuration presenter
-	 * @param string $name Datagrid's component name
-	 * @return DataGrid MQ messaging datagrid
+	 * @param string $name Data grid's component name
+	 * @return DataGrid MQ messaging data grid
+	 * @throws DataGridColumnStatusException
+	 * @throws DataGridException
+	 * @throws JsonException
 	 */
 	public function create(MqPresenter $presenter, string $name): DataGrid {
 		$this->presenter = $presenter;
-		$grid = $this->datagridFactory->create($presenter, $name);
+		$grid = $this->dataGridFactory->create($presenter, $name);
 		$this->configManager->setComponent('iqrf::MqMessaging');
 		$grid->setDataSource($this->configManager->list());
 		$grid->addColumnText('instance', 'config.mq.form.instance');
@@ -93,6 +99,7 @@ class MqMessagingDataGridFactory {
 	 * Change status of the async messaging
 	 * @param int $id Component ID
 	 * @param bool $status New async messaging status
+	 * @throws JsonException
 	 */
 	public function changeAsyncMsg(int $id, bool $status): void {
 		$config = $this->configManager->load($id);
@@ -107,8 +114,9 @@ class MqMessagingDataGridFactory {
 		} finally {
 			if ($this->presenter->isAjax()) {
 				$this->presenter->redrawControl('flashes');
-				$this->presenter['configMqDataGrid']->setDataSource($this->configManager->list());
-				$this->presenter['configMqDataGrid']->redrawItem($id);
+				$dataGrid = $this->presenter['configMqDataGrid'];
+				$dataGrid->setDataSource($this->configManager->list());
+				$dataGrid->redrawItem($id);
 			}
 		}
 	}

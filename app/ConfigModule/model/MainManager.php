@@ -21,14 +21,15 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Model;
 
 use App\CoreModule\Model\JsonFileManager;
-use Nette;
+use Nette\SmartObject;
+use Nette\Utils\JsonException;
 
 /**
  * Main configuration form factory
  */
 class MainManager {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * @var JsonFileManager JSON file manager
@@ -51,6 +52,7 @@ class MainManager {
 	/**
 	 * Convert Main configuration form array to JSON array
 	 * @return array Array for form
+	 * @throws JsonException
 	 */
 	public function load(): array {
 		$json = $this->fileManager->read($this->fileName);
@@ -60,6 +62,7 @@ class MainManager {
 	/**
 	 * Save Main daemon configuration
 	 * @param array $array Main settings
+	 * @throws JsonException
 	 */
 	public function save(array $array): void {
 		$json = $this->fileManager->read($this->fileName);

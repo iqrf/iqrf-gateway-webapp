@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\ConfigModule\Forms;
 
@@ -24,16 +24,17 @@ use App\ConfigModule\Model\GenericManager;
 use App\CoreModule\Exception\NonExistingJsonSchemaException;
 use App\CoreModule\Forms\FormFactory;
 use App\CoreModule\Presenters\ProtectedPresenter;
-use Nette;
 use Nette\Forms\Form;
 use Nette\IOException;
+use Nette\SmartObject;
+use Nette\Utils\JsonException;
 
 /**
  * Generic configuration form factory
  */
 class GenericConfigFormFactory {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * @var GenericManager Generic config manager
@@ -68,6 +69,7 @@ class GenericConfigFormFactory {
 	/**
 	 * Save generic configuration
 	 * @param Form $form Configuration form
+	 * @throws JsonException
 	 */
 	public function save(Form $form): void {
 		try {

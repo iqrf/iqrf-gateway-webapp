@@ -62,14 +62,6 @@ class FileManagerTest extends TestCase {
 	}
 
 	/**
-	 * Set up the test environment
-	 */
-	protected function setUp(): void {
-		$this->manager = new FileManager($this->path);
-		$this->managerTest = new FileManager($this->pathTest);
-	}
-
-	/**
 	 * Test function to get directory with files
 	 */
 	public function testGetDirectory(): void {
@@ -97,7 +89,7 @@ class FileManagerTest extends TestCase {
 	/**
 	 * Test function to check if file exists (file is exist)
 	 */
-	public function testExistsSucecss(): void {
+	public function testExistsSuccess(): void {
 		Assert::true($this->manager->exists($this->fileName));
 	}
 
@@ -117,6 +109,14 @@ class FileManagerTest extends TestCase {
 		$expected = $this->manager->read($this->fileName);
 		$this->managerTest->write($fileName, $expected);
 		Assert::equal($expected, $this->managerTest->read($fileName));
+	}
+
+	/**
+	 * Set up the test environment
+	 */
+	protected function setUp(): void {
+		$this->manager = new FileManager($this->path);
+		$this->managerTest = new FileManager($this->pathTest);
 	}
 
 }

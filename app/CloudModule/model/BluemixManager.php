@@ -22,15 +22,17 @@ namespace App\CloudModule\Model;
 
 use App\ConfigModule\Model\GenericManager;
 use GuzzleHttp\Client;
-use Nette;
+use GuzzleHttp\Exception\GuzzleException;
+use Nette\SmartObject;
 use Nette\Utils\FileSystem;
+use Nette\Utils\JsonException;
 
 /**
  * Tool for managing IBM Bluemix
  */
 class BluemixManager implements IManager {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * @var string Path to the certificates
@@ -54,6 +56,7 @@ class BluemixManager implements IManager {
 
 	/**
 	 * Constructor
+	 * @param string $certPath Path to the certificates
 	 * @param GenericManager $configManager Generic config manager
 	 * @param Client $client HTTP(S) client
 	 */
@@ -67,6 +70,8 @@ class BluemixManager implements IManager {
 	/**
 	 * Create MQTT interface
 	 * @param array $values Values from form
+	 * @throws GuzzleException
+	 * @throws JsonException
 	 */
 	public function createMqttInterface(array $values): void {
 		$this->downloadCaCertificate();
@@ -100,6 +105,7 @@ class BluemixManager implements IManager {
 
 	/**
 	 * Download root CA certificate
+	 * @throws GuzzleException
 	 */
 	public function downloadCaCertificate(): void {
 		$caCertUrl = 'https://raw.githubusercontent.com/ibm-watson-iot/iot-python/master/src/ibmiotf/messaging.pem';

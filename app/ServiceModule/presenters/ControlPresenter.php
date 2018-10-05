@@ -51,20 +51,6 @@ class ControlPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Stop IQRF Gateway Daemon's service
-	 */
-	public function actionStop(): void {
-		$this->action('stop');
-	}
-
-	/**
-	 * Restart IQRF Gateway Daemon's service
-	 */
-	public function actionRestart(): void {
-		$this->action('restart');
-	}
-
-	/**
 	 * Start, stop or restart IQRF Gateway Daemon's service
 	 * @param string $action Type of action (start/stop/restart)
 	 */
@@ -88,6 +74,20 @@ class ControlPresenter extends ProtectedPresenter {
 			$this->redirect('Control:default');
 			$this->setView('default');
 		}
+	}
+
+	/**
+	 * Stop IQRF Gateway Daemon's service
+	 */
+	public function actionStop(): void {
+		$this->action('stop');
+	}
+
+	/**
+	 * Restart IQRF Gateway Daemon's service
+	 */
+	public function actionRestart(): void {
+		$this->action('restart');
 	}
 
 }

@@ -20,21 +20,21 @@ declare(strict_types = 1);
 
 namespace App\IqrfAppModule\Parser;
 
-use Nette;
+use Nette\SmartObject;
 
 /**
  * Parser for DPA OS responses
  */
 class OsParser implements IParser {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * Parse DPA OS response
 	 * @param string $packet DPA packet
 	 * @return array|null Parsed data
 	 */
-	public function parse(string $packet) {
+	public function parse(string $packet): ?array {
 		$data = explode('.', $packet);
 		$pnum = $data[2];
 		if ($pnum !== '02') {
@@ -47,6 +47,7 @@ class OsParser implements IParser {
 			case '82':
 				return $this->parseHwpConfiguration($packet);
 		}
+		return null;
 	}
 
 	/**
@@ -78,14 +79,20 @@ class OsParser implements IParser {
 	}
 
 	/**
-	 * Get RF band from HWP configuration
-	 * @param string $byte Undocumented byte from HWP configuration
-	 * @return string RF band
+	 * Parse response to DPA OS - "Read HWP configuration" request
+	 * @param string $packet DPA packet response
+	 * @return array HWP configuration
 	 */
-	public function getRfBand(string $byte): string {
-		$bands = ['868 MHz', '916 MHz', '433 MHz'];
-		$bit = intval(base_convert($byte, 16, 2)) & 0x3;
-		return $bands[$bit];
+	public function parseHwpConfiguration(string $packet): array {
+		$data = [];
+		$packetArray = explode('.', $packet);
+		$data['checksum'] = $packetArray[8];
+		$config = array_slice($packetArray, 9, 31);
+		$data['configuration'] = $config;
+		$data['parsedConfiguration'] = $this->parseTrConfiguration($config);
+		$data['rfpgm'] = $packetArray[40];
+		$data['rfBand'] = $this->getRfBand($packetArray[41]);
+		return $data;
 	}
 
 	/**
@@ -113,20 +120,14 @@ class OsParser implements IParser {
 	}
 
 	/**
-	 * Parse response to DPA OS - "Read HWP configuration" request
-	 * @param string $packet DPA packet response
-	 * @return array HWP configuration
+	 * Get RF band from HWP configuration
+	 * @param string $byte Undocumented byte from HWP configuration
+	 * @return string RF band
 	 */
-	public function parseHwpConfiguration(string $packet): array {
-		$data = [];
-		$packetArray = explode('.', $packet);
-		$data['checksum'] = $packetArray[8];
-		$config = array_slice($packetArray, 9, 31);
-		$data['configuration'] = $config;
-		$data['parsedConfiguration'] = $this->parseTrConfiguration($config);
-		$data['rfpgm'] = $packetArray[40];
-		$data['rfBand'] = $this->getRfBand($packetArray[41]);
-		return $data;
+	public function getRfBand(string $byte): string {
+		$bands = ['868 MHz', '916 MHz', '433 MHz'];
+		$bit = intval(base_convert($byte, 16, 2)) & 0x3;
+		return $bands[$bit];
 	}
 
 }

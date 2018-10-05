@@ -8,7 +8,7 @@ services:
 	- App\IqrfAppModule\Model\IqrfMacroManager(%macroPath%)
 	- App\IqrfAppModule\Model\IqrfNetManager
 	- App\IqrfAppModule\Model\MessageIdManager
-	- App\IqrfAppModule\Model\WebsocketClient(%daemon.wsServer%)
+	- App\IqrfAppModule\Model\WebSocketClient(%daemon.wsServer%)
 	- App\IqrfAppModule\Parser\CoordinatorParser
 	- App\IqrfAppModule\Parser\EnumerationParser
 	- App\IqrfAppModule\Parser\OsParser

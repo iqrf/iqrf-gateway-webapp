@@ -20,18 +20,20 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Datagrids;
 
-use App\ConfigModule\Presenters\SchedulerPresenter;
 use App\ConfigModule\Model\SchedulerManager;
+use App\ConfigModule\Presenters\SchedulerPresenter;
 use App\CoreModule\Datagrids\DataGridFactory;
-use Nette;
+use Nette\SmartObject;
+use Nette\Utils\JsonException;
 use Ublaboo\DataGrid\DataGrid;
+use Ublaboo\DataGrid\Exception\DataGridException;
 
 /**
- * Render a components datagrid
+ * Render a components data grid
  */
 class SchedulerDataGridFactory {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * @var SchedulerManager Scheduler's tasks manager
@@ -41,26 +43,28 @@ class SchedulerDataGridFactory {
 	/**
 	 * @var DataGridFactory Data grid factory
 	 */
-	private $datagridFactory;
+	private $dataGridFactory;
 
 	/**
 	 * Constructor
-	 * @param DataGridFactory $datagridFactory Generic datagrid factory
+	 * @param DataGridFactory $dataGridFactory Generic data grid factory
 	 * @param SchedulerManager $configManager Scheduler's tasks manager
 	 */
-	public function __construct(DataGridFactory $datagridFactory, SchedulerManager $configManager) {
-		$this->datagridFactory = $datagridFactory;
+	public function __construct(DataGridFactory $dataGridFactory, SchedulerManager $configManager) {
+		$this->dataGridFactory = $dataGridFactory;
 		$this->configManager = $configManager;
 	}
 
 	/**
-	 * Create component datagrid
+	 * Create component data grid
 	 * @param SchedulerPresenter $presenter Scheduler's tasks configuration presenter
-	 * @param string $name Datagrid's component name
-	 * @return DataGrid Scheduler's tasks datagrid
+	 * @param string $name Data grid's component name
+	 * @return DataGrid Scheduler's tasks data grid
+	 * @throws DataGridException
+	 * @throws JsonException
 	 */
 	public function create(SchedulerPresenter $presenter, string $name): DataGrid {
-		$grid = $this->datagridFactory->create($presenter, $name);
+		$grid = $this->dataGridFactory->create($presenter, $name);
 		$grid->setDataSource($this->configManager->list());
 		$grid->addColumnNumber('id', 'config.scheduler.form.id');
 		$grid->addColumnText('time', 'config.scheduler.form.time');
@@ -68,10 +72,10 @@ class SchedulerDataGridFactory {
 		$grid->addColumnText('type', 'config.scheduler.form.type');
 		$grid->addColumnText('request', 'config.scheduler.form.request');
 		$grid->addAction('edit', 'config.actions.Edit')->setIcon('pencil')
-				->setClass('btn btn-xs btn-info');
+			->setClass('btn btn-xs btn-info');
 		$grid->addAction('delete', 'config.actions.Remove')->setIcon('remove')
-				->setClass('btn btn-xs btn-danger ajax')
-				->setConfirm('config.scheduler.form.messages.confirmDelete', 'id');
+			->setClass('btn btn-xs btn-danger ajax')
+			->setConfirm('config.scheduler.form.messages.confirmDelete', 'id');
 		return $grid;
 	}
 

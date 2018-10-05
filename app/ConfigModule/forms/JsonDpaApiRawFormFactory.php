@@ -20,22 +20,23 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Forms;
 
-use App\ConfigModule\Forms\GenericConfigFormFactory;
 use App\ConfigModule\Presenters\JsonRawApiPresenter;
-use Nette;
 use Nette\Forms\Form;
+use Nette\SmartObject;
+use Nette\Utils\JsonException;
 
 /**
  * JSON Raw API configuration form factory
  */
 class JsonDpaApiRawFormFactory extends GenericConfigFormFactory {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * Create JSON Raw API configuration form
 	 * @param JsonRawApiPresenter $presenter JSON Raw API configuration presenter
 	 * @return Form JSON Raw API configuration form
+	 * @throws JsonException
 	 */
 	public function create(JsonRawApiPresenter $presenter): Form {
 		$this->manager->setComponent('iqrf::JsonDpaApiRaw');

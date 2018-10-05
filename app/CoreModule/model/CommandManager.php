@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Model;
 
-use Nette;
+use Nette\SmartObject;
 use Nette\Utils\Strings;
 use Tracy\Debugger;
 
@@ -29,7 +29,7 @@ use Tracy\Debugger;
  */
 class CommandManager {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * @var bool Is sudo required?
@@ -54,9 +54,18 @@ class CommandManager {
 	}
 
 	/**
+	 * Check the existence of a command
+	 * @param string $cmd Command
+	 * @return bool Is the command exists?
+	 */
+	public function commandExist(string $cmd): bool {
+		return $this->send('which ' . $cmd) !== '';
+	}
+
+	/**
 	 * Execute shell command and return output
 	 * @param string $cmd Command to execute
-	 * @param bool $needSudo
+	 * @param bool $needSudo Is the command need sudo?
 	 * @return string Output
 	 */
 	public function send(string $cmd, bool $needSudo = false): string {
@@ -76,15 +85,6 @@ class CommandManager {
 		}
 		Debugger::barDump($output, 'Command manager');
 		return Strings::trim($output['stdout']);
-	}
-
-	/**
-	 * Check the existence of a command
-	 * @param string $cmd Command
-	 * @return bool
-	 */
-	public function commandExist(string $cmd): bool {
-		return $this->send('which ' . $cmd) !== '';
 	}
 
 }

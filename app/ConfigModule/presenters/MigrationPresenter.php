@@ -28,7 +28,7 @@ use Nette\Forms\Form;
 use Tracy\Debugger;
 
 /**
- * Confoguration migration presenter
+ * Configuration migration presenter
  */
 class MigrationPresenter extends ProtectedPresenter {
 

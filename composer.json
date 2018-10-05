@@ -2,7 +2,11 @@
 	"name": "iqrfsdk/iqrf-gateway-webapp",
 	"description": "IQRF Gateway Daemon web application",
 	"type": "project",
-	"keywords": ["nette", "iqrf", "iqrf-daemon"],
+	"keywords": [
+		"nette",
+		"iqrf",
+		"iqrf-daemon"
+	],
 	"homepage": "https://github.com/iqrfsdk/iqrf-gateway-webapp",
 	"license": "Apache-2.0",
 	"authors": [
@@ -15,6 +19,10 @@
 	],
 	"require": {
 		"php": ">=7.1.0",
+		"ext-json": "*",
+		"ext-openssl": "*",
+		"ext-posix": "*",
+		"ext-zip": "*",
 		"nette/application": "^2.4",
 		"nette/bootstrap": "^2.4",
 		"nette/caching": "^2.5",
@@ -50,7 +58,10 @@
 		"phpstan/phpstan-strict-rules": "^0.10"
 	},
 	"autoload-dev": {
-		"classmap": ["app", "tests"]
+		"classmap": [
+			"app",
+			"tests"
+		]
 	},
 	"support": {
 		"email": "roman.ondracek@iqrf.com",

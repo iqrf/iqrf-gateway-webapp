@@ -24,15 +24,17 @@ use App\CloudModule\Exception\InvalidPrivateKeyForCertificateException;
 use App\ConfigModule\Model\GenericManager;
 use App\CoreModule\Model\CertificateManager;
 use GuzzleHttp\Client;
-use Nette;
+use GuzzleHttp\Exception\GuzzleException;
+use Nette\SmartObject;
 use Nette\Utils\FileSystem;
+use Nette\Utils\JsonException;
 
 /**
  * Tool for managing Amazon AWS IoT
  */
 class AwsManager implements IManager {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * @var GenericManager Generic configuration manager
@@ -61,6 +63,7 @@ class AwsManager implements IManager {
 
 	/**
 	 * Constructor
+	 * @param string $certPath Path to the certificates
 	 * @param CertificateManager $certManager Manager for certificates
 	 * @param GenericManager $configManager Generic config manager
 	 * @param Client $client HTTP(S) client
@@ -76,7 +79,9 @@ class AwsManager implements IManager {
 	/**
 	 * Create MQTT interface
 	 * @param array $values Values from form
+	 * @throws GuzzleException
 	 * @throws InvalidPrivateKeyForCertificateException
+	 * @throws JsonException
 	 */
 	public function createMqttInterface(array $values): void {
 		$paths = $this->createPaths();
@@ -112,19 +117,6 @@ class AwsManager implements IManager {
 	}
 
 	/**
-	 * Check a certificate and a private key
-	 * @param array $values Form values
-	 * @throws InvalidPrivateKeyForCertificateException
-	 */
-	public function checkCertificate(array $values): void {
-		$cert = $values['cert']->getContents();
-		$pKey = $values['key']->getContents();
-		if (!$this->certManager->checkPrivateKey($cert, $pKey)) {
-			throw new InvalidPrivateKeyForCertificateException();
-		}
-	}
-
-	/**
 	 * Create paths for root CA certificate, certificate and private key
 	 * @return array Paths for root CA certificate, certificate and private key
 	 */
@@ -135,6 +127,29 @@ class AwsManager implements IManager {
 		$paths['cert'] = $path . '-aws.crt';
 		$paths['key'] = $path . '-aws.key';
 		return $paths;
+	}
+
+	/**
+	 * Download root CA certificate
+	 * @throws GuzzleException
+	 */
+	public function downloadCaCertificate(): void {
+		$caCertUrl = 'https://www.amazontrust.com/repository/AmazonRootCA2.pem';
+		$caCert = $this->client->request('GET', $caCertUrl)->getBody();
+		FileSystem::write($this->certPath . 'aws-ca.crt', $caCert);
+	}
+
+	/**
+	 * Check a certificate and a private key
+	 * @param array $values Form values
+	 * @throws InvalidPrivateKeyForCertificateException
+	 */
+	public function checkCertificate(array $values): void {
+		$cert = $values['cert']->getContents();
+		$pKey = $values['key']->getContents();
+		if (!$this->certManager->checkPrivateKey($cert, $pKey)) {
+			throw new InvalidPrivateKeyForCertificateException();
+		}
 	}
 
 	/**
@@ -151,15 +166,6 @@ class AwsManager implements IManager {
 		if ($key->isOk()) {
 			$key->move($paths['key']);
 		}
-	}
-
-	/**
-	 * Download root CA certificate
-	 */
-	public function downloadCaCertificate(): void {
-		$caCertUrl = 'https://www.amazontrust.com/repository/AmazonRootCA2.pem';
-		$caCert = $this->client->request('GET', $caCertUrl)->getBody();
-		FileSystem::write($this->certPath . 'aws-ca.crt', $caCert);
 	}
 
 }

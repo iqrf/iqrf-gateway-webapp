@@ -20,20 +20,23 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Datagrids;
 
-use App\ConfigModule\Presenters\WebsocketPresenter;
 use App\ConfigModule\Model\GenericManager;
-use App\CoreModule\Exception\NonExistingJsonSchemaException;
+use App\ConfigModule\Presenters\WebsocketPresenter;
 use App\CoreModule\Datagrids\DataGridFactory;
-use Nette;
+use App\CoreModule\Exception\NonExistingJsonSchemaException;
 use Nette\IOException;
+use Nette\SmartObject;
+use Nette\Utils\JsonException;
 use Ublaboo\DataGrid\DataGrid;
+use Ublaboo\DataGrid\Exception\DataGridColumnStatusException;
+use Ublaboo\DataGrid\Exception\DataGridException;
 
 /**
- * Render a WebSocket messaging datagrid
+ * Render a WebSocket messaging data grid
  */
-class WebsocketMessagingDataGridFactory {
+class WebSocketMessagingDataGridFactory {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * @var GenericManager Generic configuration manager
@@ -43,7 +46,7 @@ class WebsocketMessagingDataGridFactory {
 	/**
 	 * @var DataGridFactory Data grid factory
 	 */
-	private $datagridFactory;
+	private $dataGridFactory;
 
 	/**
 	 * @var WebsocketPresenter WebSocket interface configuration presenter
@@ -56,7 +59,7 @@ class WebsocketMessagingDataGridFactory {
 	 * @param GenericManager $configManager Generic configuration manager
 	 */
 	public function __construct(DataGridFactory $dataGridFactory, GenericManager $configManager) {
-		$this->datagridFactory = $dataGridFactory;
+		$this->dataGridFactory = $dataGridFactory;
 		$this->configManager = $configManager;
 	}
 
@@ -65,10 +68,13 @@ class WebsocketMessagingDataGridFactory {
 	 * @param WebsocketPresenter $presenter WebSocket configuration presenter
 	 * @param string $name Data grid's component name
 	 * @return DataGrid WebSocket messaging data grid
+	 * @throws DataGridColumnStatusException
+	 * @throws DataGridException
+	 * @throws JsonException
 	 */
 	public function create(WebsocketPresenter $presenter, string $name): DataGrid {
 		$this->presenter = $presenter;
-		$grid = $this->datagridFactory->create($presenter, $name);
+		$grid = $this->dataGridFactory->create($presenter, $name);
 		$grid->setDataSource($this->getData());
 		$grid->addColumnText('instance', 'config.websocket.form.instance');
 		$grid->addColumnStatus('acceptAsyncMsg', 'config.websocket.form.acceptAsyncMsg')
@@ -90,6 +96,7 @@ class WebsocketMessagingDataGridFactory {
 	/**
 	 * Parse data for data grid
 	 * @return array Data for data grid
+	 * @throws JsonException
 	 */
 	private function getData(): array {
 		$this->configManager->setComponent('iqrf::WebsocketMessaging');
@@ -108,6 +115,7 @@ class WebsocketMessagingDataGridFactory {
 	 * Change status of the async messaging
 	 * @param int $id Component ID
 	 * @param bool $status New async messaging status
+	 * @throws JsonException
 	 */
 	public function changeAsyncMsg(int $id, bool $status): void {
 		$config = $this->configManager->load($id);
@@ -122,7 +130,7 @@ class WebsocketMessagingDataGridFactory {
 		} finally {
 			if ($this->presenter->isAjax()) {
 				$this->presenter->redrawControl('flashes');
-				$dataGrid = $this->presenter['configWebsocketMessagingDataGrid'];
+				$dataGrid = $this->presenter['configWebSocketMessagingDataGrid'];
 				$dataGrid->setDataSource($this->getData());
 				$dataGrid->redrawItem($id);
 			}

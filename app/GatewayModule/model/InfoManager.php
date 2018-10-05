@@ -20,18 +20,22 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Model;
 
-use App\IqrfAppModule\Model\IqrfAppManager;
 use App\CoreModule\Model\CommandManager;
 use App\CoreModule\Model\JsonFileManager;
 use App\CoreModule\Model\VersionManager;
-use Nette;
+use App\IqrfAppModule\Exception\DpaErrorException;
+use App\IqrfAppModule\Exception\EmptyResponseException;
+use App\IqrfAppModule\Exception\UserErrorException;
+use App\IqrfAppModule\Model\IqrfAppManager;
+use Nette\SmartObject;
+use Nette\Utils\JsonException;
 
 /**
  * Tool for getting information about this gateway
  */
 class InfoManager {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * @var CommandManager Command manager
@@ -152,6 +156,10 @@ class InfoManager {
 	/**
 	 * Get information about the Coordinator
 	 * @return array Information about the Coordinator
+	 * @throws DpaErrorException
+	 * @throws EmptyResponseException
+	 * @throws JsonException
+	 * @throws UserErrorException
 	 */
 	public function getCoordinatorInfo(): array {
 		$response = $this->iqrfAppManager->sendRaw('00.00.02.00.FF.FF');
@@ -161,6 +169,7 @@ class InfoManager {
 	/**
 	 * Get current version of this wab application
 	 * @return string Version of this web application
+	 * @throws JsonException
 	 */
 	public function getWebAppVersion(): string {
 		return $this->versionManager->getInstalledWebapp();

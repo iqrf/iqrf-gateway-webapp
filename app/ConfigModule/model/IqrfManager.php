@@ -21,14 +21,14 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Model;
 
 use App\CoreModule\Model\CommandManager;
-use Nette;
+use Nette\SmartObject;
 
 /**
  * IQRF CDC/SPI/UART interface manager
  */
 class IqrfManager {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * @var CommandManager Command manager
@@ -53,6 +53,22 @@ class IqrfManager {
 	}
 
 	/**
+	 * Create list of interfaces available in the system
+	 * @param string $command Command to list interfaces
+	 * @return array List of interfaces available in the system
+	 */
+	private function getInterfaces(string $command): array {
+		$interfaces = [];
+		$ls = $this->commandManager->send($command, true);
+		foreach (explode(PHP_EOL, $ls) as $interface) {
+			if ($interface !== '') {
+				array_push($interfaces, $interface);
+			}
+		}
+		return $interfaces;
+	}
+
+	/**
 	 * Create list of SPI interfaces available in the system
 	 * @return array SPI interfaces available in the system
 	 */
@@ -68,22 +84,6 @@ class IqrfManager {
 	public function getUartInterfaces(): array {
 		$command = "ls /dev/ttyAMA* /dev/ttyS* | awk '{ print $0 }'";
 		return $this->getInterfaces($command);
-	}
-
-	/**
-	 * Create list of interfaces available in the system
-	 * @param string $command Command to list interfaces
-	 * @return array List of interfaces available in the system
-	 */
-	private function getInterfaces(string $command): array {
-		$interfaces = [];
-		$ls = $this->commandManager->send($command, true);
-		foreach (explode(PHP_EOL, $ls) as $interface) {
-			if ($interface !== '') {
-				array_push($interfaces, $interface);
-			}
-		}
-		return $interfaces;
 	}
 
 }

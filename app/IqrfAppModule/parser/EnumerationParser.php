@@ -20,21 +20,21 @@ declare(strict_types = 1);
 
 namespace App\IqrfAppModule\Parser;
 
-use Nette;
+use Nette\SmartObject;
 
 /**
  * Parser for DPA Enumeration responses.
  */
 class EnumerationParser implements IParser {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * Parse DPA Coordinator response
 	 * @param string $packet DPA packet
 	 * @return array|null Parsed data
 	 */
-	public function parse(string $packet) {
+	public function parse(string $packet): ?array {
 		$data = explode('.', $packet);
 		$pnum = $data[2];
 		if ($pnum !== 'ff') {
@@ -45,6 +45,7 @@ class EnumerationParser implements IParser {
 			case 'bf':
 				return $this->parsePeripheralEnumeration($packet);
 		}
+		return null;
 	}
 
 	/**

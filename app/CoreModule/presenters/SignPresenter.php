@@ -20,8 +20,8 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Presenters;
 
-use App\CoreModule\Model\UserManager;
 use App\CoreModule\Forms\SignInFormFactory;
+use App\CoreModule\Model\UserManager;
 use Nette\Forms\Form;
 
 /**
@@ -61,19 +61,19 @@ class SignPresenter extends BasePresenter {
 	}
 
 	/**
-	 * Create sign in form
-	 * @return Form Sign in form
-	 */
-	protected function createComponentSignInForm(): Form {
-		return $this->signInFactory->create($this);
-	}
-
-	/**
 	 * Inject user manager
 	 * @param UserManager $userManager User manager
 	 */
 	public function injectUserManager(UserManager $userManager): void {
 		$this->userManager = $userManager;
+	}
+
+	/**
+	 * Create sign in form
+	 * @return Form Sign in form
+	 */
+	protected function createComponentSignInForm(): Form {
+		return $this->signInFactory->create($this);
 	}
 
 	/**

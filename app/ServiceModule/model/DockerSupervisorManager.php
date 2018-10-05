@@ -21,14 +21,14 @@ declare(strict_types = 1);
 namespace App\ServiceModule\Model;
 
 use App\CoreModule\Model\CommandManager;
-use Nette;
+use Nette\SmartObject;
 
 /**
  * Tool for managing services (supervisord init daemon in a Docker container)
  */
 class DockerSupervisorManager implements IServiceManager {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * @var CommandManager Command Manager

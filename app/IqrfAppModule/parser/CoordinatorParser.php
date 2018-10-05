@@ -20,21 +20,21 @@ declare(strict_types = 1);
 
 namespace App\IqrfAppModule\Parser;
 
-use Nette;
+use Nette\SmartObject;
 
 /**
  * Parser for DPA Coordinator responses.
  */
 class CoordinatorParser implements IParser {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * Parse DPA Coordinator response
 	 * @param string $packet DPA packet
 	 * @return array|null Parsed data
 	 */
-	public function parse(string $packet) {
+	public function parse(string $packet): ?array {
 		$data = explode('.', $packet);
 		$pnum = $data[2];
 		if ($pnum !== '00') {
@@ -49,19 +49,7 @@ class CoordinatorParser implements IParser {
 			case '84':
 				return $this->parseBondNode($packet);
 		}
-	}
-
-	/**
-	 * Parse response to DPA Coordinator - "Bond node" request
-	 * @param string $packet DPA packet response
-	 * @return array Bonded node
-	 */
-	public function parseBondNode(string $packet): array {
-		$data = [];
-		$packetArray = explode('.', $packet);
-		$data['bondAddr'] = $packetArray[8];
-		$data['devNr'] = $packetArray[9];
-		return $data;
+		return null;
 	}
 
 	/**
@@ -76,12 +64,27 @@ class CoordinatorParser implements IParser {
 		$type = 'UnknownType';
 		if ($pcmd === '81') {
 			$type = 'DiscoveredNodes';
-		} elseif ($pcmd === '82') {
-			$type = 'BondedNodes';
+		} else {
+			if ($pcmd === '82') {
+				$type = 'BondedNodes';
+			}
 		}
 		for ($i = 0; $i < 30; $i += 2) {
 			$data[$type][$i / 2] = str_split(str_pad(strrev(base_convert($packetArray[9 + $i] . $packetArray[8 + $i], 16, 2)), 16, '0'));
 		}
+		return $data;
+	}
+
+	/**
+	 * Parse response to DPA Coordinator - "Bond node" request
+	 * @param string $packet DPA packet response
+	 * @return array Bonded node
+	 */
+	public function parseBondNode(string $packet): array {
+		$data = [];
+		$packetArray = explode('.', $packet);
+		$data['bondAddr'] = $packetArray[8];
+		$data['devNr'] = $packetArray[9];
 		return $data;
 	}
 

@@ -10,14 +10,15 @@ declare(strict_types = 1);
 
 namespace Test\IqrfAppModule\Model;
 
+use App\CoreModule\Model\FileManager;
+use App\CoreModule\Model\JsonFileManager;
 use App\IqrfAppModule\Exception as IqrfException;
 use App\IqrfAppModule\Model\IqrfAppManager;
 use App\IqrfAppModule\Model\MessageIdManager;
-use App\IqrfAppModule\Model\WebsocketClient;
-use App\CoreModule\Model\FileManager;
-use App\CoreModule\Model\JsonFileManager;
+use App\IqrfAppModule\Model\WebSocketClient;
 use Nette\DI\Container;
 use Nette\Utils\Json;
+use Nette\Utils\JsonException;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -92,37 +93,6 @@ class IqrfAppManagerTest extends TestCase {
 	}
 
 	/**
-	 * Set up the test environment
-	 */
-	protected function setUp(): void {
-		$path = __DIR__ . '/../../data/iqrf/';
-		$this->fileManager = new FileManager($path);
-		$this->jsonFileManager = new JsonFileManager($path);
-		$this->msgIdManager = \Mockery::mock(MessageIdManager::class);
-		$this->msgIdManager->shouldReceive('generate')->andReturn('1');
-		$wsClient = new WebsocketClient($this->wsServer, $this->msgIdManager);
-		$this->manager = new IqrfAppManager($wsClient);
-	}
-
-	/**
-	 * Cleanup the test environment
-	 */
-	protected function tearDown(): void {
-		\Mockery::close();
-	}
-
-	/**
-	 * Change status in JSON DPA response
-	 * @param array $json JSON DPA request and response
-	 * @param int $status DPA status
-	 */
-	private function changeStatus(array &$json, int $status): void {
-		$data = Json::decode($json['response'], Json::FORCE_ARRAY);
-		$data['data']['status'] = $status;
-		$json['response'] = Json::encode($data);
-	}
-
-	/**
 	 * Test function to send RAW IQRF packet
 	 */
 	public function testSendRaw(): void {
@@ -148,7 +118,7 @@ class IqrfAppManagerTest extends TestCase {
 	 * Test function to change IQRF Gateway Daemon's operation mode (invalid mode)
 	 */
 	public function testChangeOperationModeInvalid(): void {
-		Assert::exception(function() {
+		Assert::exception(function () {
 			$this->manager->changeOperationMode('invalid');
 		}, IqrfException\InvalidOperationModeException::class);
 	}
@@ -283,16 +253,28 @@ class IqrfAppManagerTest extends TestCase {
 	}
 
 	/**
-	 * Test function to check staus from JSON response (status = DPA error)
+	 * Test function to check status from JSON response (status = DPA error)
 	 */
 	public function testCheckStatusError(): void {
 		$array = ['response' => $this->fileManager->read('response-error.json')];
 		foreach ($this->statusExceptions as $status => $exception) {
 			$this->changeStatus($array, $status);
-			Assert::exception(function() use ($array) {
+			Assert::exception(function () use ($array) {
 				$this->manager->checkStatus($array);
 			}, $exception);
 		}
+	}
+
+	/**
+	 * Change status in JSON DPA response
+	 * @param array $json JSON DPA request and response
+	 * @param int $status DPA status
+	 * @throws JsonException
+	 */
+	private function changeStatus(array &$json, int $status): void {
+		$data = Json::decode($json['response'], Json::FORCE_ARRAY);
+		$data['data']['status'] = $status;
+		$json['response'] = Json::encode($data);
 	}
 
 	/**
@@ -311,6 +293,26 @@ class IqrfAppManagerTest extends TestCase {
 		$expected = '00.00.02.80.00.00.00.00.dc.3c.10.81.42.24.b8.08.00.28.00.31';
 		$array = ['response' => $this->fileManager->read('response-os-read.json')];
 		Assert::same($expected, $this->manager->getPacket($array, 'response'));
+	}
+
+	/**
+	 * Set up the test environment
+	 */
+	protected function setUp(): void {
+		$path = __DIR__ . '/../../data/iqrf/';
+		$this->fileManager = new FileManager($path);
+		$this->jsonFileManager = new JsonFileManager($path);
+		$this->msgIdManager = \Mockery::mock(MessageIdManager::class);
+		$this->msgIdManager->shouldReceive('generate')->andReturn('1');
+		$wsClient = new WebSocketClient($this->wsServer, $this->msgIdManager);
+		$this->manager = new IqrfAppManager($wsClient);
+	}
+
+	/**
+	 * Cleanup the test environment
+	 */
+	protected function tearDown(): void {
+		\Mockery::close();
 	}
 
 }

@@ -23,6 +23,7 @@ namespace App\ConfigModule\Presenters;
 use App\ConfigModule\Forms\JsonDpaApiRawFormFactory;
 use App\ConfigModule\Model\GenericManager;
 use Nette\Forms\Form;
+use Nette\Utils\JsonException;
 
 /**
  * JSON Raw API configuration presenter
@@ -47,6 +48,7 @@ class JsonRawApiPresenter extends GenericPresenter {
 	/**
 	 * Create JSON Raw API settings form
 	 * @return Form JSON Raw API settings form
+	 * @throws JsonException
 	 */
 	protected function createComponentConfigJsonDpaApiRawForm(): Form {
 		return $this->formFactory->create($this);

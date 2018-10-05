@@ -21,15 +21,16 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Model;
 
 use App\CoreModule\Model\JsonFileManager;
-use Nette;
+use Nette\SmartObject;
 use Nette\Utils\Arrays;
+use Nette\Utils\JsonException;
 
 /**
  * Component configuration manager
  */
 class ComponentManager implements IConfigManager {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * @var JsonFileManager JSON file manager
@@ -52,6 +53,7 @@ class ComponentManager implements IConfigManager {
 	/**
 	 * Add new component
 	 * @param array $array Component's settings
+	 * @throws JsonException
 	 */
 	public function add(array $array): void {
 		$json = $this->fileManager->read($this->fileName);
@@ -62,6 +64,7 @@ class ComponentManager implements IConfigManager {
 	/**
 	 * Delete a component
 	 * @param int $id Component ID
+	 * @throws JsonException
 	 */
 	public function delete(int $id): void {
 		$json = $this->fileManager->read($this->fileName);
@@ -74,6 +77,7 @@ class ComponentManager implements IConfigManager {
 	 * Load a component from main configuration JSON
 	 * @param int $id Component ID
 	 * @return array Array for form
+	 * @throws JsonException
 	 */
 	public function load(int $id): array {
 		$json = $this->fileManager->read($this->fileName)['components'];
@@ -86,6 +90,7 @@ class ComponentManager implements IConfigManager {
 	/**
 	 * Load components from main configuration JSON
 	 * @return array Array for form
+	 * @throws JsonException
 	 */
 	public function list(): array {
 		$components = [];
@@ -100,6 +105,7 @@ class ComponentManager implements IConfigManager {
 	 * Save components setting
 	 * @param array $components Components settings
 	 * @param int $id Component ID
+	 * @throws JsonException
 	 */
 	public function save(array $components, int $id): void {
 		$json = $this->fileManager->read($this->fileName);

@@ -10,9 +10,9 @@ declare(strict_types = 1);
 
 namespace Test\Model;
 
-use App\GatewayModule\Model\LogManager;
 use App\CoreModule\Model\FileManager;
 use App\CoreModule\Model\ZipArchiveManager;
+use App\GatewayModule\Model\LogManager;
 use Nette\Application\Responses\FileResponse;
 use Nette\DI\Container;
 use Tester\Assert;
@@ -54,15 +54,6 @@ class LogManagerTest extends TestCase {
 	}
 
 	/**
-	 * Set up the test environment
-	 */
-	protected function setUp(): void {
-		$this->logDir = realpath(__DIR__ . '/../../data/logs/');
-		$this->fileManager = new FileManager($this->logDir);
-		$this->manager = new LogManager($this->logDir);
-	}
-
-	/**
 	 * Test function to get IQRF Gateway Daemon's log files
 	 */
 	public function testGetLogFiles(): void {
@@ -101,6 +92,15 @@ class LogManagerTest extends TestCase {
 			$expectedLog = $this->fileManager->read($log);
 			Assert::same($expectedLog, $zipManager->openFile($log));
 		}
+	}
+
+	/**
+	 * Set up the test environment
+	 */
+	protected function setUp(): void {
+		$this->logDir = realpath(__DIR__ . '/../../data/logs/');
+		$this->fileManager = new FileManager($this->logDir);
+		$this->manager = new LogManager($this->logDir);
 	}
 
 }

@@ -62,30 +62,13 @@ class UserManagerTest extends TestCase {
 	}
 
 	/**
-	 * Set up the test environment
+	 * Test function to change the password (incorrect old password)
 	 */
-	protected function setUp(): void {
-		\Tester\Environment::lock('user_db', __DIR__ . '/../../temp/');
-		$connection = new Connection('sqlite::memory:');
-		$cacheStorage = new MemoryStorage();
-		$structure = new Structure($connection, $cacheStorage);
-		$this->context = new Context($connection, $structure);
-		$this->createTable();
-		$this->manager = new UserManager($this->context);
-	}
-
-	/**
-	 * Create database table
-	 */
-	private function createTable(): void {
-		$sql = 'CREATE TABLE `users` (
-	`id`		INTEGER PRIMARY KEY AUTOINCREMENT,
-	`username`	TEXT NOT NULL UNIQUE,
-	`password`	TEXT NOT NULL,
-	`role`		TEXT NOT NULL,
-	`language`	TEXT DEFAULT \'en\'
-);';
-		$this->context->query($sql);
+	public function testChangePasswordFail(): void {
+		$this->createUser();
+		Assert::exception(function (): void {
+			$this->manager->changePassword(1, 'admin', 'admin');
+		}, InvalidPasswordException::class);
 	}
 
 	/**
@@ -93,16 +76,6 @@ class UserManagerTest extends TestCase {
 	 */
 	private function createUser(): void {
 		$this->context->table('users')->insert($this->data);
-	}
-
-	/**
-	 * Test function to change the password (incorrect old password)
-	 */
-	public function testChangePasswordFail(): void {
-		$this->createUser();
-		Assert::exception(function(): void {
-			$this->manager->changePassword(1, 'admin', 'admin');
-		}, InvalidPasswordException::class);
 	}
 
 	/**
@@ -134,7 +107,7 @@ class UserManagerTest extends TestCase {
 		$user = $this->data;
 		$user['username'] = 'user';
 		$this->context->table('users')->insert($user);
-		Assert::exception(function() {
+		Assert::exception(function () {
 			$this->manager->edit(2, 'admin', 'normal', 'cs');
 		}, UsernameAlreadyExistsException::class);
 	}
@@ -195,7 +168,7 @@ class UserManagerTest extends TestCase {
 	 */
 	public function testRegisterFail(): void {
 		$this->createUser();
-		Assert::exception(function() {
+		Assert::exception(function () {
 			$this->manager->register('admin', 'iqrf', 'power', 'en');
 		}, UsernameAlreadyExistsException::class);
 	}
@@ -211,6 +184,33 @@ class UserManagerTest extends TestCase {
 		unset($actual['id'], $actual['password'], $expected['password']);
 		Assert::same($expected, $actual);
 		Assert::true(password_verify('iqrf', $hash));
+	}
+
+	/**
+	 * Set up the test environment
+	 */
+	protected function setUp(): void {
+		\Tester\Environment::lock('user_db', __DIR__ . '/../../temp/');
+		$connection = new Connection('sqlite::memory:');
+		$cacheStorage = new MemoryStorage();
+		$structure = new Structure($connection, $cacheStorage);
+		$this->context = new Context($connection, $structure);
+		$this->createTable();
+		$this->manager = new UserManager($this->context);
+	}
+
+	/**
+	 * Create database table
+	 */
+	private function createTable(): void {
+		$sql = 'CREATE TABLE `users` (
+	`id`		INTEGER PRIMARY KEY AUTOINCREMENT,
+	`username`	TEXT NOT NULL UNIQUE,
+	`password`	TEXT NOT NULL,
+	`role`		TEXT NOT NULL,
+	`language`	TEXT DEFAULT \'en\'
+);';
+		$this->context->query($sql);
 	}
 
 }

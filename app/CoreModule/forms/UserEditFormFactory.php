@@ -21,18 +21,17 @@ declare(strict_types = 1);
 namespace App\CoreModule\Forms;
 
 use App\CoreModule\Exception\UsernameAlreadyExistsException;
-use App\CoreModule\Forms\FormFactory;
-use App\CoreModule\Presenters\UserPresenter;
 use App\CoreModule\Model\UserManager;
-use Nette;
+use App\CoreModule\Presenters\UserPresenter;
 use Nette\Forms\Form;
+use Nette\SmartObject;
 
 /**
- * Edit an existring user form factory
+ * Edit an existing user form factory
  */
 class UserEditFormFactory {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * @var FormFactory Generic form factory
@@ -74,7 +73,7 @@ class UserEditFormFactory {
 		$this->id = intval($presenter->getParameter('id'));
 		$userTypes = [
 			'normal' => 'userTypes.normal',
-			'power' => 'userTypes.power'
+			'power' => 'userTypes.power',
 		];
 		$languages = [
 			'en' => 'languages.en',

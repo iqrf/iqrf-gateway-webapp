@@ -21,9 +21,9 @@ declare(strict_types = 1);
 namespace App\IqrfAppModule\Model;
 
 use App\IqrfAppModule\Exception\EmptyResponseException;
-use App\IqrfAppModule\Model\MessageIdManager;
-use Nette;
+use Nette\SmartObject;
 use Nette\Utils\Json;
+use Nette\Utils\JsonException;
 use Ratchet\Client;
 use Ratchet\Client\WebSocket as WsClient;
 use Ratchet\RFC6455\Messaging\MessageInterface;
@@ -33,11 +33,11 @@ use React\Socket as ReactSocket;
 use Tracy\Debugger;
 
 /**
- * Websocket client
+ * WebSocket client
  */
-class WebsocketClient {
+class WebSocketClient {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * @var MessageIdManager Message ID manager
@@ -50,13 +50,13 @@ class WebsocketClient {
 	private $loop;
 
 	/**
-	 * @var string URL to IQRF Gateway Daemon's Websocket server
+	 * @var string URL to IQRF Gateway Daemon's WebSocket server
 	 */
 	private $wsServer;
 
 	/**
 	 * Constructor
-	 * @param string $wsServer URL to IQRF Gateway Daemon's Websocket server
+	 * @param string $wsServer URL to IQRF Gateway Daemon's WebSocket server
 	 * @param MessageIdManager $msgIdManager Message ID manager
 	 */
 	public function __construct(string $wsServer, MessageIdManager $msgIdManager) {
@@ -66,20 +66,12 @@ class WebsocketClient {
 	}
 
 	/**
-	 * Add a message ID to the IQRF JSON DPA request
-	 * @param array $request IQRF JSON DPA request
-	 */
-	private function addMsgId(array &$request): void {
-		if (!array_key_exists('msgId', $request['data'])) {
-			$request['data']['msgId'] = $this->msgIdManager->generate();
-		}
-	}
-
-	/**
 	 * Send IQRF JSON DPA request
 	 * @param array $request IQRF JSON DPA request
-	 * @param int $timeout Websocket client timeout
+	 * @param int $timeout WebSocket client timeout
 	 * @return array IQRF JSON DPA response
+	 * @throws EmptyResponseException
+	 * @throws JsonException
 	 */
 	public function sendSync(array $request, int $timeout = 15): array {
 		$connection = $this->createConnection($timeout);
@@ -106,19 +98,8 @@ class WebsocketClient {
 	}
 
 	/**
-	 * Check if JSON DPA request and response have got the same message ID
-	 * @param array $request JSON DPA request
-	 * @param MessageInterface $response JSON DPA request
-	 * @return bool Have JSON DPA request and response got the same message ID
-	 */
-	private function checkMsgId(array $request, MessageInterface $response): bool {
-		$json = Json::decode(strval($response), Json::FORCE_ARRAY);
-		return $request['data']['msgId'] === $json['data']['msgId'];
-	}
-
-	/**
-	 * Create a connection to websocket server
-	 * @param int $timeout Websocket client timeout
+	 * Create a connection to WebSocket server
+	 * @param int $timeout WebSocket client timeout
 	 * @return PromiseInterface React promise
 	 */
 	private function createConnection(int $timeout): PromiseInterface {
@@ -128,33 +109,33 @@ class WebsocketClient {
 	}
 
 	/**
-	 * Parse JSON DPA request and response
-	 * @param array $request JSON DPA request
-	 * @param MessageInterface $response JSON DPA response
-	 * @return array JSON DPA response in an array
-	 * @throws EmptyResponseException
+	 * Stop event loop
+	 * @param bool $wait Wait to finish
 	 */
-	private function parseResponse(array $request, ?MessageInterface $response): array {
-		$string = strval($response);
-		$data = ['request' => $request];
-		if ($string === '') {
-			$data['status'] = 'Empty response.';
-			Debugger::barDump($data, 'Websocket client');
-			throw new EmptyResponseException();
-		}
-		$data['response'] = Json::decode($string, Json::FORCE_ARRAY);
-		Debugger::barDump($data, 'Websocket client');
-		return $data;
+	private function stopSync(bool &$wait): void {
+		$wait = false;
+		$this->loop->stop();
 	}
 
 	/**
-	 * Receive a message from websocket server
-	 * @param Client\WebSocket $connection Websocket client connection
+	 * Add a message ID to the IQRF JSON DPA request
+	 * @param array $request IQRF JSON DPA request
+	 */
+	private function addMsgId(array &$request): void {
+		if (!array_key_exists('msgId', $request['data'])) {
+			$request['data']['msgId'] = $this->msgIdManager->generate();
+		}
+	}
+
+	/**
+	 * Receive a message from WebSocket server
+	 * @param Client\WebSocket $connection WebSocket client connection
 	 * @param MessageInterface $message Received message
 	 * @param MessageInterface|null $resolved Stored receive message
 	 * @param bool $wait Wait to finish
 	 * @param int $attempts Attempts to receive
 	 * @param array $request IQRF JSON DPA request
+	 * @throws JsonException
 	 */
 	private function receiveSync(WsClient $connection, MessageInterface $message, ?MessageInterface &$resolved, bool &$wait, int &$attempts, array $request): void {
 		if ($attempts === 0) {
@@ -171,12 +152,36 @@ class WebsocketClient {
 	}
 
 	/**
-	 * Stop event loop
-	 * @param bool $wait Wait to finish
+	 * Check if JSON DPA request and response have got the same message ID
+	 * @param array $request JSON DPA request
+	 * @param MessageInterface $response JSON DPA request
+	 * @return bool Have JSON DPA request and response got the same message ID
+	 * @throws JsonException
 	 */
-	private function stopSync(bool &$wait): void {
-		$wait = false;
-		$this->loop->stop();
+	private function checkMsgId(array $request, MessageInterface $response): bool {
+		$json = Json::decode(strval($response), Json::FORCE_ARRAY);
+		return $request['data']['msgId'] === $json['data']['msgId'];
+	}
+
+	/**
+	 * Parse JSON DPA request and response
+	 * @param array $request JSON DPA request
+	 * @param null|MessageInterface $response JSON DPA response
+	 * @return array JSON DPA response in an array
+	 * @throws EmptyResponseException
+	 * @throws JsonException
+	 */
+	private function parseResponse(array $request, ?MessageInterface $response): array {
+		$string = strval($response);
+		$data = ['request' => $request];
+		if ($string === '') {
+			$data['status'] = 'Empty response.';
+			Debugger::barDump($data, 'Websocket client');
+			throw new EmptyResponseException();
+		}
+		$data['response'] = Json::decode($string, Json::FORCE_ARRAY);
+		Debugger::barDump($data, 'Websocket client');
+		return $data;
 	}
 
 }

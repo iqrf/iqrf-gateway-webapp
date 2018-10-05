@@ -23,6 +23,7 @@ namespace App\ConfigModule\Presenters;
 use App\ConfigModule\Forms\IqrfRepositoryFormFactory;
 use App\ConfigModule\Model\GenericManager;
 use Nette\Forms\Form;
+use Nette\Utils\JsonException;
 
 /**
  * IQRF Repository configuration presenter
@@ -47,6 +48,7 @@ class IqrfRepositoryPresenter extends GenericPresenter {
 	/**
 	 * Create IQRF Repository configuration form
 	 * @return Form IQRF Repository configuration form
+	 * @throws JsonException
 	 */
 	protected function createComponentConfigIqrfRepositoryForm(): Form {
 		return $this->formFactory->create($this);

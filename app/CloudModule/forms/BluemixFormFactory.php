@@ -24,16 +24,16 @@ use App\CloudModule\Model\BluemixManager;
 use App\CloudModule\Presenters\BluemixPresenter;
 use App\CoreModule\Forms\FormFactory;
 use App\ServiceModule\Model\ServiceManager;
-use Nette;
-use Nette\Forms\Form;
 use Nette\Forms\Controls\SubmitButton;
+use Nette\Forms\Form;
+use Nette\SmartObject;
 
 /**
  * Form for creating MQTT connection into IBM Bluemíx
  */
 class BluemixFormFactory extends CloudFormFactory {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * Constructor
@@ -60,11 +60,11 @@ class BluemixFormFactory extends CloudFormFactory {
 		$form->addText('token', 'token')->setRequired();
 		$form->addText('eventId', 'eventId')->setRequired()->setDefaultValue('iqrf');
 		$form->addSubmit('save', 'save')
-				->onClick[] = function (SubmitButton $button) {
+			->onClick[] = function (SubmitButton $button) {
 			$this->save($button);
 		};
 		$form->addSubmit('save_restart', 'save_restart')
-				->onClick[] = function (SubmitButton $button) {
+			->onClick[] = function (SubmitButton $button) {
 			$this->save($button, true);
 		};
 		$form->addProtection('core.errors.form-timeout');

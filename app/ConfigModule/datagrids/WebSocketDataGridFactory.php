@@ -20,55 +20,61 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Datagrids;
 
+use App\ConfigModule\Model\WebSocketManager;
 use App\ConfigModule\Presenters\WebsocketPresenter;
-use App\ConfigModule\Model\WebsocketManager;
-use App\CoreModule\Exception\NonExistingJsonSchemaException;
 use App\CoreModule\Datagrids\DataGridFactory;
-use Nette;
+use App\CoreModule\Exception\NonExistingJsonSchemaException;
 use Nette\IOException;
+use Nette\SmartObject;
+use Nette\Utils\JsonException;
 use Ublaboo\DataGrid\DataGrid;
+use Ublaboo\DataGrid\Exception\DataGridColumnStatusException;
+use Ublaboo\DataGrid\Exception\DataGridException;
 
 /**
- * Render a websocket interface datagrid
+ * Render a WebSocket interface data grid
  */
-class WebsocketDataGridFactory {
+class WebSocketDataGridFactory {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
-	 * @var WebsocketManager Websocket manager
+	 * @var WebSocketManager WebSocket manager
 	 */
 	private $configManager;
 
 	/**
 	 * @var DataGridFactory Data grid factory
 	 */
-	private $datagridFactory;
+	private $dataGridFactory;
 
 	/**
-	 * @var WebsocketPresenter Websocket interface configuration presenter
+	 * @var WebsocketPresenter WebSocket interface configuration presenter
 	 */
 	private $presenter;
 
 	/**
 	 * Constructor
-	 * @param DataGridFactory $datagridFactory Generic datagrid factory
-	 * @param WebsocketManager $configManager Websocket manager
+	 * @param DataGridFactory $dataGridFactory Generic data grid factory
+	 * @param WebSocketManager $configManager WebSocket interface manager
 	 */
-	public function __construct(DataGridFactory $datagridFactory, WebsocketManager $configManager) {
-		$this->datagridFactory = $datagridFactory;
+	public function __construct(DataGridFactory $dataGridFactory, WebSocketManager $configManager) {
+		$this->dataGridFactory = $dataGridFactory;
 		$this->configManager = $configManager;
 	}
 
 	/**
-	 * Create component datagrid
-	 * @param WebsocketPresenter $presenter Websocket configuration presenter
-	 * @param string $name Datagrid's component name
-	 * @return DataGrid Websocket datagrid
+	 * Create component data grid
+	 * @param WebsocketPresenter $presenter WebSocket interface configuration presenter
+	 * @param string $name Data grid's component name
+	 * @return DataGrid WebSocket data grid
+	 * @throws DataGridColumnStatusException
+	 * @throws DataGridException
+	 * @throws JsonException
 	 */
 	public function create(WebsocketPresenter $presenter, string $name): DataGrid {
 		$this->presenter = $presenter;
-		$grid = $this->datagridFactory->create($presenter, $name);
+		$grid = $this->dataGridFactory->create($presenter, $name);
 		$grid->setDataSource($this->configManager->list());
 		$grid->addColumnText('messagingInstance', 'config.websocket.form.instance');
 		$grid->addColumnNumber('port', 'config.websocket.form.WebsocketPort');
@@ -91,6 +97,7 @@ class WebsocketDataGridFactory {
 	 * Change status of the async messaging
 	 * @param int $id Component ID
 	 * @param bool $status New async messaging status
+	 * @throws JsonException
 	 */
 	public function changeAsyncMsg(int $id, bool $status): void {
 		$config = $this->configManager->load($id);
@@ -105,8 +112,9 @@ class WebsocketDataGridFactory {
 		} finally {
 			if ($this->presenter->isAjax()) {
 				$this->presenter->redrawControl('flashes');
-				$this->presenter['configWebsocketDataGrid']->setDataSource($this->configManager->list());
-				$this->presenter['configWebsocketDataGrid']->redrawItem($id);
+				$dataGrid = $this->presenter['configWebSocketDataGrid'];
+				$dataGrid->setDataSource($this->configManager->list());
+				$dataGrid->redrawItem($id);
 			}
 		}
 	}

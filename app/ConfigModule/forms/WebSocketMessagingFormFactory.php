@@ -20,18 +20,18 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Forms;
 
-use App\ConfigModule\Forms\GenericConfigFormFactory;
 use App\ConfigModule\Presenters\WebsocketPresenter;
-use Nette;
 use Nette\Forms\Form;
 use Nette\Localization\ITranslator;
+use Nette\SmartObject;
+use Nette\Utils\JsonException;
 
 /**
- * Websocket messaging configuration form factory
+ * WebSocket messaging configuration form factory
  */
-class WebsocketMessagingFormFactory extends GenericConfigFormFactory {
+class WebSocketMessagingFormFactory extends GenericConfigFormFactory {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * @var ITranslator Translator
@@ -39,9 +39,10 @@ class WebsocketMessagingFormFactory extends GenericConfigFormFactory {
 	private $translator;
 
 	/**
-	 * Create websocket messaging configuration form
-	 * @param WebsocketPresenter $presenter Websocket interface presenter
-	 * @return Form Websocket messaging configuration form
+	 * Create WebSocket messaging configuration form
+	 * @param WebsocketPresenter $presenter WebSocket interface presenter
+	 * @return Form WebSocket messaging configuration form
+	 * @throws JsonException
 	 */
 	public function create(WebsocketPresenter $presenter): Form {
 		$this->manager->setComponent('iqrf::WebsocketMessaging');
@@ -62,33 +63,10 @@ class WebsocketMessagingFormFactory extends GenericConfigFormFactory {
 	}
 
 	/**
-	 * Add the required interfaces into the form
-	 * @param Form $form Configuration form
-	 * @param array $data Configuration data
-	 */
-	private function addRequiredInterfaces(Form $form, array &$data): void {
-		$requiredInterfaces = $form->addContainer('RequiredInterfaces');
-		foreach ($data['RequiredInterfaces'] as $interfaceId => $requiredInterface) {
-			$container = $requiredInterfaces->addContainer($interfaceId);
-			$container->addSelect('name', 'config.websocket.form.requiredInterface.name')
-					->setItems(['shape::IWebsocketService',], false)
-					->setTranslator($this->translator)
-					->setRequired('messages.requiredInterface.name');
-			$target = $container->addContainer('target');
-			$target->addSelect('instance', 'config.websocket.form.requiredInterface.instance')
-					->setItems($this->manager->getComponentInstances('shape::WebsocketCppService'), false)
-					->setTranslator($this->translator)
-					->setRequired('messages.requiredInterface.instance');
-			if ($requiredInterface['target']['instance'] === '') {
-				unset($data['RequiredInterfaces'][$interfaceId]['target']['instance']);
-			}
-		}
-	}
-
-	/**
 	 * Load a configuration data for the form
-	 * @param WebsocketPresenter $presenter Websocket configuration presenter
+	 * @param WebsocketPresenter $presenter WebSocket configuration presenter
 	 * @return array Configuration in an array
+	 * @throws JsonException
 	 */
 	public function loadData(WebsocketPresenter $presenter): array {
 		$data = [];
@@ -100,6 +78,31 @@ class WebsocketMessagingFormFactory extends GenericConfigFormFactory {
 			$data = ['RequiredInterfaces' => [['name' => 'shape::IWebsocketService', 'target' => ['instance' => '']]]];
 		}
 		return $data;
+	}
+
+	/**
+	 * Add the required interfaces into the form
+	 * @param Form $form Configuration form
+	 * @param array $data Configuration data
+	 * @throws JsonException
+	 */
+	private function addRequiredInterfaces(Form $form, array &$data): void {
+		$requiredInterfaces = $form->addContainer('RequiredInterfaces');
+		foreach ($data['RequiredInterfaces'] as $interfaceId => $requiredInterface) {
+			$container = $requiredInterfaces->addContainer($interfaceId);
+			$container->addSelect('name', 'config.websocket.form.requiredInterface.name')
+				->setItems(['shape::IWebsocketService',], false)
+				->setTranslator($this->translator)
+				->setRequired('messages.requiredInterface.name');
+			$target = $container->addContainer('target');
+			$target->addSelect('instance', 'config.websocket.form.requiredInterface.instance')
+				->setItems($this->manager->getComponentInstances('shape::WebsocketCppService'), false)
+				->setTranslator($this->translator)
+				->setRequired('messages.requiredInterface.instance');
+			if ($requiredInterface['target']['instance'] === '') {
+				unset($data['RequiredInterfaces'][$interfaceId]['target']['instance']);
+			}
+		}
 	}
 
 }

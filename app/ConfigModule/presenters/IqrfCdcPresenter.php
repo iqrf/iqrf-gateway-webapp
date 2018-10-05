@@ -24,6 +24,7 @@ use App\ConfigModule\Forms\IqrfCdcFormFactory;
 use App\ConfigModule\Model\GenericManager;
 use App\ConfigModule\Model\IqrfManager;
 use Nette\Forms\Form;
+use Nette\Utils\JsonException;
 
 /**
  * IQRF CDC configuration presenter
@@ -62,6 +63,7 @@ class IqrfCdcPresenter extends GenericPresenter {
 	/**
 	 * Create IQRF CDC interface configuration form
 	 * @return Form IQRF CDC interface configuration form
+	 * @throws JsonException
 	 */
 	protected function createComponentConfigIqrfCdcForm(): Form {
 		return $this->formFactory->create($this);

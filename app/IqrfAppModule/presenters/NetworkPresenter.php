@@ -20,12 +20,13 @@ declare(strict_types = 1);
 
 namespace App\IqrfAppModule\Presenters;
 
+use App\CoreModule\Presenters\ProtectedPresenter;
 use App\IqrfAppModule\Forms\BondingFormFactory;
 use App\IqrfAppModule\Forms\DiscoveryFormFactory;
 use App\IqrfAppModule\Forms\RfFormFactory;
 use App\IqrfAppModule\Forms\SecurityFormFactory;
-use App\CoreModule\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
+use Nette\Utils\JsonException;
 
 /**
  * IQMESH Network Manager presenter
@@ -75,6 +76,7 @@ class NetworkPresenter extends ProtectedPresenter {
 	/**
 	 * Create IQMESH RF configuration form
 	 * @return Form IQMESH RF configuration form
+	 * @throws JsonException
 	 */
 	protected function createComponentIqrfNetRfForm(): Form {
 		return $this->rfForm->create($this);

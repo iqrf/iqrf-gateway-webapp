@@ -26,6 +26,7 @@ use App\CoreModule\Forms\UserEditFormFactory;
 use App\CoreModule\Model\UserManager;
 use Nette\Forms\Form;
 use Ublaboo\DataGrid\DataGrid;
+use Ublaboo\DataGrid\Exception\DataGridException;
 
 /**
  * User presenter
@@ -39,10 +40,10 @@ class UserPresenter extends ProtectedPresenter {
 	public $addFormFactory;
 
 	/**
-	 * @var UserDataGridFactory User datagrid factory
+	 * @var UserDataGridFactory User data grid factory
 	 * @inject
 	 */
-	public $datagridFactory;
+	public $dataGridFactory;
 
 	/**
 	 * @var UserEditFormFactory Edit an existing user form factory
@@ -97,11 +98,13 @@ class UserPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Create datagrid
+	 * Create data grid
 	 * @param string $name Component name
+	 * @return DataGrid
+	 * @throws DataGridException
 	 */
 	protected function createComponentUserGrid(string $name): DataGrid {
-		return $this->datagridFactory->create($this, $name);
+		return $this->dataGridFactory->create($this, $name);
 	}
 
 	/**

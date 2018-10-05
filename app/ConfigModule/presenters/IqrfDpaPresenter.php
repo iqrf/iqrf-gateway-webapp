@@ -23,6 +23,7 @@ namespace App\ConfigModule\Presenters;
 use App\ConfigModule\Forms\IqrfDpaFormFactory;
 use App\ConfigModule\Model\GenericManager;
 use Nette\Forms\Form;
+use Nette\Utils\JsonException;
 
 /**
  * IQRF DPA interface configuration presenter
@@ -47,6 +48,7 @@ class IqrfDpaPresenter extends GenericPresenter {
 	/**
 	 * Create IQRF DPA configuration interface form
 	 * @return Form IQRF DPA configuration interface form
+	 * @throws JsonException
 	 */
 	protected function createComponentConfigIqrfDpaForm(): Form {
 		return $this->dpaFormFactory->create($this);

@@ -30,6 +30,7 @@ class Error4xxPresenter extends BasePresenter {
 
 	/**
 	 * Start up presenter
+	 * @throws BadRequestException
 	 */
 	public function startup(): void {
 		parent::startup();

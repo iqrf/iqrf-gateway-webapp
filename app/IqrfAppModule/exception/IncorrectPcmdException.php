@@ -21,7 +21,7 @@ declare(strict_types = 1);
 namespace App\IqrfAppModule\Exception;
 
 /**
- * The exception that incicates an incorrect PCMD
+ * The exception that indicates an incorrect PCMD
  */
 class IncorrectPcmdException extends DpaErrorException {
 

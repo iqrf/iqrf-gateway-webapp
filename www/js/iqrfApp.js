@@ -18,11 +18,11 @@
 /**
  * Parse DPA packet
  * @param {string} packet DPA packet to parse
- * @returns {array} Parsed DPA packet
+ * @returns {{nadrLo: string, nadrHi: string, pnum: string, pcmd: string, hwpidLo: string, hwpidHi: string, pdata: string[]}} Parsed DPA packet
  */
 function parsePacket(packet) {
-	var arr = packet.split(".");
-	var parsed = {
+	let arr = packet.split(".");
+	return {
 		nadrLo: arr.shift(),
 		nadrHi: arr.shift(),
 		pnum: arr.shift(),
@@ -31,26 +31,25 @@ function parsePacket(packet) {
 		hwpidHi: arr.shift(),
 		pdata: (arr.join(".")).split(".")
 	};
-	return parsed;
 }
 
 /**
  * Validate DPA packet
  * @param {string} packet DPA packet to validate
- * @returns {Boolean} Is valid DPA packet?
+ * @returns {boolean} Is valid DPA packet?
  */
 function validatePacket(packet) {
-	var re = new RegExp("^([0-9a-fA-F]{1,2}\.){4,62}[0-9a-fA-F]{1,2}(\.|)$", "i");
+	let re = new RegExp("^([0-9a-fA-F]{1,2}\.){4,62}[0-9a-fA-F]{1,2}(\.|)$", "i");
 	return packet.match(re) !== null;
 }
 
 /**
  * Detect timeout from parsed DPA packet
- * @param {array} packet Parsed DPA packet
+ * @param {{nadrLo: string, nadrHi: string, pnum: string, pcmd: string, hwpidLo: string, hwpidHi: string, pdata: string[]}} packet Parsed DPA packet
  * @returns {Number}
  */
 function detectTimeout(packet) {
-	var timeout = null;
+	let timeout = null;
 	if (packet.pnum === "00" && packet.pcmd === "04") {
 		timeout = 12000;
 	} else if (packet.pnum === "00" && packet.pcmd === "07") {
@@ -63,17 +62,16 @@ function detectTimeout(packet) {
 
 /**
  * Set DPA timeout
- * @param {array} packet Parsed DPA packet
+ * @param {{nadrLo: string, nadrHi: string, pnum: string, pcmd: string, hwpidLo: string, hwpidHi: string, pdata: string[]}} packet Parsed DPA packet
  */
 function setTimeout(packet) {
-	var timeout = detectTimeout(packet);
+	let timeout = detectTimeout(packet);
 	if (timeout === null) {
 		$("#frm-iqrfAppSendRawForm-timeoutEnabled").prop("checked", false);
 		$("#frm-iqrfAppSendRawForm-timeout").prop("disabled", true);
 	} else {
 		$("#frm-iqrfAppSendRawForm-timeoutEnabled").prop("checked", true);
-		$("#frm-iqrfAppSendRawForm-timeout").prop("disabled", false);
-		$("#frm-iqrfAppSendRawForm-timeout").val(timeout);
+		$("#frm-iqrfAppSendRawForm-timeout").prop("disabled", false).val(timeout);
 	}
 }
 
@@ -101,7 +99,7 @@ $(".btn-spi-port").click(function () {
 });
 
 // Select SPI port and pins from list of supported boards
-$(".btn-spi-pin").click(function() {
+$(".btn-spi-pin").click(function () {
 	$("#frm-configIqrfSpiForm-IqrfInterface").val($(this).data("iqrfinterface"));
 	$("#frm-configIqrfSpiForm-powerEnableGpioPin").val($(this).data("powerenablegpiopin"));
 	$("#frm-configIqrfSpiForm-busEnableGpioPin").val($(this).data("busenablegpiopin"));
@@ -114,7 +112,7 @@ $(".btn-uart-port").click(function () {
 });
 
 // Select UART port and pins from list of supported boards
-$(".btn-uart-pin").click(function() {
+$(".btn-uart-pin").click(function () {
 	$("#frm-configIqrfUartForm-IqrfInterface").val($(this).data("iqrfinterface"));
 	$("#frm-configIqrfUartForm-baudRate").val($(this).data("baudrate"));
 	$("#frm-configIqrfUartForm-powerEnableGpioPin").val($(this).data("powerenablegpiopin"));
@@ -134,31 +132,20 @@ $("#frm-iqrfAppSendRawForm-packet").keypress(function () {
 
 // Enable or disable DPA timeout
 $("#frm-iqrfAppSendRawForm-timeoutEnabled").click(function () {
-	if ($(this).is(":checked")) {
-		$("#frm-iqrfAppSendRawForm-timeout").prop("disabled", false);
-	} else {
-		$("#frm-iqrfAppSendRawForm-timeout").prop("disabled", true);
-	}
+	let checked = $(this).is(":checked");
+	$("#frm-iqrfAppSendRawForm-timeout").prop("disabled", checked);
 });
 
 // Enable or disable overwrite NADR
 $("#frm-iqrfAppSendRawForm-overwriteAddress").click(function () {
-	if ($(this).is(":checked")) {
-		$("#frm-iqrfAppSendRawForm-address").prop("disabled", false);
-	} else {
-		$("#frm-iqrfAppSendRawForm-address").prop("disabled", true);
-	}
+	let checked = $(this).is(":checked");
+	$("#frm-iqrfAppSendRawForm-address").prop("disabled", checked);
 });
 
 // Enable or disable auto addressing in bonding new nodes
 $("#frm-iqrfNetBondingForm-autoAddress").click(function () {
-	if ($(this).is(":checked")) {
-		$("#frm-iqrfNetBondingForm-address").prop("disabled", true);
-		$("#frm-iqrfNetBondingForm-rebond").prop("disabled", true);
-		$("#frm-iqrfNetBondingForm-remove").prop("disabled", true);
-	} else {
-		$("#frm-iqrfNetBondingForm-address").prop("disabled", false);
-		$("#frm-iqrfNetBondingForm-rebond").prop("disabled", false);
-		$("#frm-iqrfNetBondingForm-remove").prop("disabled", false);
-	}
+	let checked = $(this).is(":checked");
+	$("#frm-iqrfNetBondingForm-address").prop("disabled", checked);
+	$("#frm-iqrfNetBondingForm-rebond").prop("disabled", checked);
+	$("#frm-iqrfNetBondingForm-remove").prop("disabled", checked);
 });

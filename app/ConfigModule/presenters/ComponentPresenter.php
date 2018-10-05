@@ -28,6 +28,8 @@ use Nette\Forms\Form;
 use Nette\IOException;
 use Nette\Utils\JsonException;
 use Ublaboo\DataGrid\DataGrid;
+use Ublaboo\DataGrid\Exception\DataGridColumnStatusException;
+use Ublaboo\DataGrid\Exception\DataGridException;
 
 /**
  * Component configuration presenter
@@ -35,21 +37,19 @@ use Ublaboo\DataGrid\DataGrid;
 class ComponentPresenter extends ProtectedPresenter {
 
 	/**
-	 * @var ComponentManager Component manager
-	 */
-	private $configManager;
-
-	/**
-	 * @var ComponentsDataGridFactory Daemon's components datagrid
+	 * @var ComponentsDataGridFactory Daemon's components data grid
 	 * @inject
 	 */
-	public $datagridFactory;
-
+	public $dataGridFactory;
 	/**
 	 * @var ComponentsFormFactory Daemon's components configuration form factory
 	 * @inject
 	 */
 	public $formFactory;
+	/**
+	 * @var ComponentManager Component manager
+	 */
+	private $configManager;
 
 	/**
 	 * Constructor
@@ -77,6 +77,7 @@ class ComponentPresenter extends ProtectedPresenter {
 
 	/**
 	 * Render list of components
+	 * @throws JsonException
 	 */
 	public function renderDefault(): void {
 		$this->template->components = $this->configManager->list();
@@ -93,6 +94,7 @@ class ComponentPresenter extends ProtectedPresenter {
 	/**
 	 * Delete component
 	 * @param int $id Component ID
+	 * @throws JsonException
 	 */
 	public function actionDelete(int $id): void {
 		if ($this->user->isInRole('power')) {
@@ -103,17 +105,21 @@ class ComponentPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Create components datagrid
-	 * @param string $name Datagrid's component name
-	 * @return DataGrid Components datagrid
+	 * Create components data grid
+	 * @param string $name Data grid's component name
+	 * @return DataGrid Components data grid
+	 * @throws DataGridColumnStatusException
+	 * @throws DataGridException
+	 * @throws JsonException
 	 */
 	protected function createComponentConfigComponentsDataGrid(string $name): DataGrid {
-		return $this->datagridFactory->create($this, $name);
+		return $this->dataGridFactory->create($this, $name);
 	}
 
 	/**
 	 * Create components form
 	 * @return Form Components form
+	 * @throws JsonException
 	 */
 	protected function createComponentConfigComponentsForm(): Form {
 		return $this->formFactory->create($this);

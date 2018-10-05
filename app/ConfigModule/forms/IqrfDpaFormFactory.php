@@ -20,22 +20,23 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Forms;
 
-use App\ConfigModule\Forms\GenericConfigFormFactory;
 use App\ConfigModule\Presenters\IqrfDpaPresenter;
-use Nette;
 use Nette\Forms\Form;
+use Nette\SmartObject;
+use Nette\Utils\JsonException;
 
 /**
  * IQRF DPA configuration form factory
  */
 class IqrfDpaFormFactory extends GenericConfigFormFactory {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * Create IQRF DPA configuration form
 	 * @param IqrfDpaPresenter $presenter IQRF DPA configuration presenter
 	 * @return Form IQRF DPA interface configuration form
+	 * @throws JsonException
 	 */
 	public function create(IqrfDpaPresenter $presenter): Form {
 		$this->manager->setComponent('iqrf::IqrfDpa');
@@ -43,8 +44,9 @@ class IqrfDpaFormFactory extends GenericConfigFormFactory {
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('config.iqrfDpa.form'));
 		$form->addText('instance', 'instance')->setRequired('messages.instance');
-		$form->addInteger('DpaHandlerTimeout', 'DpaHandlerTimeout')->setRequired('messages.DpaHandlerTimeout')
-				->addRule(Form::MIN, 'messages.DpaHandlerTimeout-rule', 0);
+		$form->addInteger('DpaHandlerTimeout', 'DpaHandlerTimeout')
+			->setRequired('messages.DpaHandlerTimeout')
+			->addRule(Form::MIN, 'messages.DpaHandlerTimeout-rule', 0);
 		$form->addSelect('CommunicationMode', 'CommunicationMode', $this->getCommunicationModes());
 		$form->addInteger('BondedNodes', 'BondedNodes');
 		$form->addInteger('DiscoveredNodes', 'DiscoveredNodes');

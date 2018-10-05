@@ -20,10 +20,10 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Presenters;
 
-use App\CoreModule\Presenters\BasePresenter;
 use App\CoreModule\Model\VersionManager;
-use Kdyby\Translation\Phrase;
 use GuzzleHttp\Exception\TransferException;
+use Kdyby\Translation\Phrase;
+use Nette\Utils\JsonException;
 
 /**
  * Protected presenter for protected application presenters
@@ -38,6 +38,7 @@ abstract class ProtectedPresenter extends BasePresenter {
 
 	/**
 	 * After template render
+	 * @throws JsonException
 	 */
 	public function afterRender(): void {
 		parent::afterRender();

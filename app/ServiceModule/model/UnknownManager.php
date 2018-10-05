@@ -22,14 +22,14 @@ namespace App\ServiceModule\Model;
 
 use App\CoreModule\Model\CommandManager;
 use App\ServiceModule\Exception\NotSupportedInitSystemException;
-use Nette;
+use Nette\SmartObject;
 
 /**
  * Tool for managing services (unknown init daemon)
  */
 class UnknownManager implements IServiceManager {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * @var CommandManager Command Manager

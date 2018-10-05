@@ -24,14 +24,15 @@ use App\CloudModule\Exception\InvalidConnectionStringException;
 use App\ConfigModule\Model\GenericManager;
 use DateInterval;
 use DateTime;
-use Nette;
+use Nette\SmartObject;
+use Nette\Utils\JsonException;
 
 /**
  * Tool for managing Azure IoT Hub
  */
 class AzureManager implements IManager {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * @var GenericManager Generic configuration manager
@@ -54,6 +55,8 @@ class AzureManager implements IManager {
 	/**
 	 * Create MQTT interface
 	 * @param array $values Values from form
+	 * @throws InvalidConnectionStringException
+	 * @throws JsonException
 	 */
 	public function createMqttInterface(array $values): void {
 		$connectionString = $values['ConnectionString'];
@@ -97,35 +100,10 @@ class AzureManager implements IManager {
 	public function checkConnectionString(string $connectionString): void {
 		$data = $this->parseConnectionString($connectionString);
 		if (!isset($data['DeviceId']) ||
-				!isset($data['HostName']) ||
-				!isset($data['SharedAccessKey'])) {
+			!isset($data['HostName']) ||
+			!isset($data['SharedAccessKey'])) {
 			throw new InvalidConnectionStringException();
 		}
-	}
-
-	/**
-	 * Generate shared access signature token
-	 * @param string $resourceUri URI prefix (by segment) of the endpoints that can be accessed with this token, starting with host name of the IoT hub (no protocol).
-	 * @param string $signingKey Signing key
-	 * @param string $policyName The name of the shared access policy to which this token refers. Absent if the token refers to device-registry credentials.
-	 * @param int $expiresInMins Expiration in minutes
-	 * @return string MS Azure Shared access signature token
-	 */
-	public function generateSasToken(string $resourceUri, string $signingKey, string $policyName = null, int $expiresInMins = 525600): string {
-		$now = new DateTime();
-		$expires = new DateInterval('PT' . $expiresInMins . 'M');
-		$ttl = intdiv($now->add($expires)->getTimestamp(), 60) * 60;
-		$encodedResourceUri = urlencode($resourceUri);
-		$toSign = $encodedResourceUri . "\n" . $ttl;
-		$key = strval(base64_decode($signingKey, true));
-		$hmac = hash_hmac('sha256', $toSign, $key, true);
-		$signature = urlencode(base64_encode($hmac));
-		$token = 'SharedAccessSignature sr=' . $encodedResourceUri . '&sig='
-				. $signature . '&se=' . $ttl;
-		if (!is_null($policyName)) {
-			$token .= '$skn=' . $policyName;
-		}
-		return $token;
 	}
 
 	/**
@@ -146,6 +124,31 @@ class AzureManager implements IManager {
 			}
 		}
 		return $data;
+	}
+
+	/**
+	 * Generate shared access signature token
+	 * @param string $resourceUri URI prefix (by segment) of the endpoints that can be accessed with this token, starting with host name of the IoT hub (no protocol).
+	 * @param string $signingKey Signing key
+	 * @param string $policyName The name of the shared access policy to which this token refers. Absent if the token refers to device-registry credentials.
+	 * @param int $expiresInMins Expiration in minutes
+	 * @return string MS Azure Shared access signature token
+	 */
+	public function generateSasToken(string $resourceUri, string $signingKey, string $policyName = null, int $expiresInMins = 525600): string {
+		$now = new DateTime();
+		$expires = new DateInterval('PT' . $expiresInMins . 'M');
+		$ttl = intdiv($now->add($expires)->getTimestamp(), 60) * 60;
+		$encodedResourceUri = urlencode($resourceUri);
+		$toSign = $encodedResourceUri . "\n" . $ttl;
+		$key = strval(base64_decode($signingKey, true));
+		$hmac = hash_hmac('sha256', $toSign, $key, true);
+		$signature = urlencode(base64_encode($hmac));
+		$token = 'SharedAccessSignature sr=' . $encodedResourceUri . '&sig='
+			. $signature . '&se=' . $ttl;
+		if (!is_null($policyName)) {
+			$token .= '$skn=' . $policyName;
+		}
+		return $token;
 	}
 
 }

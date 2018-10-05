@@ -13,8 +13,8 @@ namespace Test\ConfigModule\Model;
 use App\ConfigModule\Model\GenericManager;
 use App\CoreModule\Model\JsonFileManager;
 use App\CoreModule\Model\JsonSchemaManager;
-use Nette\Utils\Arrays;
 use Nette\DI\Container;
+use Nette\Utils\Arrays;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -31,7 +31,7 @@ class GenericManagerTest extends TestCase {
 	private $container;
 
 	/**
-	 * @var string COmponent name
+	 * @var string Component name
 	 */
 	private $component = 'iqrf::MqttMessaging';
 
@@ -66,20 +66,6 @@ class GenericManagerTest extends TestCase {
 	 */
 	public function __construct(Container $container) {
 		$this->container = $container;
-	}
-
-	/**
-	 * Set up the test environment
-	 */
-	protected function setUp(): void {
-		$configPath = __DIR__ . '/../../data/configuration/';
-		$configTempPath = __DIR__ . '/../../temp/configuration/';
-		$schemaPath = __DIR__ . '/../../data/cfgSchemas/';
-		$this->fileManager = new JsonFileManager($configPath);
-		$this->fileManagerTemp = new JsonFileManager($configTempPath);
-		$schemaManager = new JsonSchemaManager($schemaPath);
-		$this->manager = new GenericManager($this->fileManager, $schemaManager);
-		$this->managerTemp = new GenericManager($this->fileManagerTemp, $schemaManager);
 	}
 
 	/**
@@ -135,7 +121,7 @@ class GenericManagerTest extends TestCase {
 	}
 
 	/**
-	 * Test function to get avaiable messagings
+	 * Test function to get available messagings
 	 */
 	public function testGetMessagings(): void {
 		$expected = [
@@ -203,6 +189,20 @@ class GenericManagerTest extends TestCase {
 		$expected['acceptAsyncMsg'] = true;
 		$this->managerTemp->save($array);
 		Assert::equal($expected, $this->fileManagerTemp->read($this->fileName));
+	}
+
+	/**
+	 * Set up the test environment
+	 */
+	protected function setUp(): void {
+		$configPath = __DIR__ . '/../../data/configuration/';
+		$configTempPath = __DIR__ . '/../../temp/configuration/';
+		$schemaPath = __DIR__ . '/../../data/cfgSchemas/';
+		$this->fileManager = new JsonFileManager($configPath);
+		$this->fileManagerTemp = new JsonFileManager($configTempPath);
+		$schemaManager = new JsonSchemaManager($schemaPath);
+		$this->manager = new GenericManager($this->fileManager, $schemaManager);
+		$this->managerTemp = new GenericManager($this->fileManagerTemp, $schemaManager);
 	}
 
 }

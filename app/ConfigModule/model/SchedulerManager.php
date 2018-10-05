@@ -20,11 +20,9 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Model;
 
-use App\ConfigModule\Model\GenericManager;
-use App\ConfigModule\Model\MainManager;
 use App\CoreModule\Model\JsonFileManager;
-use Nette;
 use Nette\IOException;
+use Nette\SmartObject;
 use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
 
@@ -33,7 +31,7 @@ use Nette\Utils\Strings;
  */
 class SchedulerManager {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * @var GenericManager Generic config manager
@@ -74,6 +72,7 @@ class SchedulerManager {
 	/**
 	 * Add task
 	 * @param string $type Task type
+	 * @throws JsonException
 	 */
 	public function add(string $type): void {
 		$json = $this->fileManager->read($this->fileName);
@@ -87,6 +86,7 @@ class SchedulerManager {
 	/**
 	 * Delete task
 	 * @param int $id Task ID
+	 * @throws JsonException
 	 */
 	public function delete(int $id): void {
 		$json = $this->fileManager->read($this->fileName);
@@ -96,24 +96,61 @@ class SchedulerManager {
 	}
 
 	/**
-	 * Fix HWPID format
-	 * @param string $hwpid HWPID to fix
-	 * @return string Fixed HWPID
-	 */
-	public function fixHwpid(string $hwpid): string {
-		$data = str_split(Strings::padLeft($hwpid, 4, '0'), 2);
-		return $data[1] . '.' . $data[0];
-	}
-
-	/**
 	 * Get last ID
 	 * @return int Last ID in array
+	 * @throws JsonException
 	 */
 	public function getLastId(): int {
 		$json = $this->fileManager->read($this->fileName);
 		$tasks = $json['TasksJson'];
 		end($tasks);
 		return intval(key($tasks));
+	}
+
+	/**
+	 * Get available messagings
+	 * @return array Available messagings
+	 * @throws JsonException
+	 */
+	public function getMessagings(): array {
+		return $this->genericConfigManager->getMessagings();
+	}
+
+	/**
+	 * Get scheduler's services
+	 * @return array Scheduler's services
+	 * @throws JsonException
+	 */
+	public function getServices(): array {
+		$services = [];
+		$this->genericConfigManager->setComponent('iqrf::SchedulerMessaging');
+		foreach ($this->genericConfigManager->list() as $instance) {
+			$services[] = $instance['instance'];
+		}
+		return $services;
+	}
+
+	/**
+	 * Get tasks in Scheduler
+	 * @return array Tasks
+	 * @throws JsonException
+	 */
+	public function list(): array {
+		$jsonTasks = $this->fileManager->read($this->fileName)['TasksJson'];
+		$tasks = [];
+		foreach ($jsonTasks as $json) {
+			$message = $json['task']['message'];
+			$task = [
+				'time' => $json['time'],
+				'service' => $json['service'],
+				'messaging' => $json['task']['messaging'],
+				'type' => $message['ctype'] . ' | ' . $message['type'],
+				'request' => $this->getRequest($message),
+				'id' => array_keys($jsonTasks, $json, true)[0],
+			];
+			array_push($tasks, $task);
+		}
+		return $tasks;
 	}
 
 	/**
@@ -138,55 +175,24 @@ class SchedulerManager {
 				}
 				return $nadr . $pnum . $pcmd . $hwpid . $pdata;
 		}
+		return '';
 	}
 
 	/**
-	 * Get available messagings
-	 * @return array Available messagings
+	 * Fix HWPID format
+	 * @param string $hwpid HWPID to fix
+	 * @return string Fixed HWPID
 	 */
-	public function getMessagings(): array {
-		return $this->genericConfigManager->getMessagings();
-	}
-
-	/**
-	 * Get scheduler's services
-	 * @return array Scheduler's services
-	 */
-	public function getServices(): array {
-		$services = [];
-		$this->genericConfigManager->setComponent('iqrf::SchedulerMessaging');
-		foreach ($this->genericConfigManager->list() as $instance) {
-			$services[] = $instance['instance'];
-		}
-		return $services;
-	}
-
-	/**
-	 * Get tasks in Scheduler
-	 * @return array Tasks
-	 */
-	public function list(): array {
-		$jsonTasks = $this->fileManager->read($this->fileName)['TasksJson'];
-		$tasks = [];
-		foreach ($jsonTasks as $json) {
-			$message = $json['task']['message'];
-			$task = [
-				'time' => $json['time'],
-				'service' => $json['service'],
-				'messaging' => $json['task']['messaging'],
-				'type' => $message['ctype'] . ' | ' . $message['type'],
-				'request' => $this->getRequest($message),
-				'id' => array_keys($jsonTasks, $json, true)[0],
-			];
-			array_push($tasks, $task);
-		}
-		return $tasks;
+	public function fixHwpid(string $hwpid): string {
+		$data = str_split(Strings::padLeft($hwpid, 4, '0'), 2);
+		return $data[1] . '.' . $data[0];
 	}
 
 	/**
 	 * Convert Task JSON array to Task configuration form array
 	 * @param int $id Task ID
 	 * @return array Array for form
+	 * @throws JsonException
 	 */
 	public function load(int $id): array {
 		$json = $this->fileManager->read($this->fileName);
@@ -201,6 +207,7 @@ class SchedulerManager {
 	 * Save scheduler setting
 	 * @param array $array Scheduler settings
 	 * @param int $id Task ID
+	 * @throws JsonException
 	 */
 	public function save(array $array, int $id): void {
 		$json = $this->fileManager->read($this->fileName);

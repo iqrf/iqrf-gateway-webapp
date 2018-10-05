@@ -21,20 +21,21 @@ declare(strict_types = 1);
 namespace App\IqrfAppModule\Forms;
 
 use App\CoreModule\Forms\FormFactory;
-use App\IqrfAppModule\Exception\EmptyResponseException;
 use App\IqrfAppModule\Exception\DpaErrorException;
+use App\IqrfAppModule\Exception\EmptyResponseException;
 use App\IqrfAppModule\Model\IqrfNetManager;
 use App\IqrfAppModule\Presenters\NetworkPresenter;
-use Nette;
 use Nette\Forms\Form;
+use Nette\SmartObject;
 use Nette\Utils\ArrayHash;
+use Nette\Utils\JsonException;
 
 /**
- * IQMESH Discovery form factory.
+ * IQMESH Discovery form factory
  */
 class DiscoveryFormFactory {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * @var IqrfNetManager IQMESH Network manager
@@ -71,11 +72,11 @@ class DiscoveryFormFactory {
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('iqrfapp.network-manager.discovery'));
 		$form->addInteger('txPower', 'txPower')->setDefaultValue(6)
-				->addRule(Form::RANGE, 'messages.txPower', [0, 7])
-				->setRequired('messages.txPower');
+			->addRule(Form::RANGE, 'messages.txPower', [0, 7])
+			->setRequired('messages.txPower');
 		$form->addInteger('maxNode', 'maxNodeAddress')->setDefaultValue(239)
-				->addRule(Form::RANGE, 'messages.maxNodeAddress', [0, 239])
-				->setRequired('messages.maxNodeAddress');
+			->addRule(Form::RANGE, 'messages.maxNodeAddress', [0, 239])
+			->setRequired('messages.maxNodeAddress');
 		$form->addSubmit('send', 'send');
 		$form->addProtection('core.errors.form-timeout');
 		$form->onSuccess[] = [$this, 'onSuccess'];
@@ -86,6 +87,7 @@ class DiscoveryFormFactory {
 	 * Run Discovery
 	 * @param Form $form IQMESH discovery form
 	 * @param ArrayHash $values Values from IQMESH discovery form
+	 * @throws JsonException
 	 */
 	public function onSuccess(Form $form, ArrayHash $values): void {
 		try {

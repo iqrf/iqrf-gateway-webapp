@@ -21,20 +21,21 @@ declare(strict_types = 1);
 namespace App\IqrfAppModule\Forms;
 
 use App\CoreModule\Forms\FormFactory;
-use App\IqrfAppModule\Exception\EmptyResponseException;
 use App\IqrfAppModule\Exception\DpaErrorException;
+use App\IqrfAppModule\Exception\EmptyResponseException;
 use App\IqrfAppModule\Model\IqrfNetManager;
 use App\IqrfAppModule\Presenters\NetworkPresenter;
-use Nette;
-use Nette\Forms\Form;
 use Nette\Forms\Controls\SubmitButton;
+use Nette\Forms\Form;
+use Nette\SmartObject;
+use Nette\Utils\JsonException;
 
 /**
- * IQMESH Bonding form factory.
+ * IQMESH Bonding form factory
  */
 class BondingFormFactory {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * @var IqrfNetManager IQMESH Network manager
@@ -72,9 +73,9 @@ class BondingFormFactory {
 		$form->setTranslator($form->getTranslator()->domain('iqrfapp.network-manager.bonding'));
 		$form->addCheckbox('autoAddress', 'autoAddress');
 		$form->addText('address', 'address')->setDefaultValue('01')
-				->addConditionOn($form['autoAddress'], Form::EQUAL, false)
-				->addRule(Form::PATTERN, 'messages.address', '[0-9a-fA-F]{1,2}')
-				->setRequired('messages.address');
+			->addConditionOn($form['autoAddress'], Form::EQUAL, false)
+			->addRule(Form::PATTERN, 'messages.address', '[0-9a-fA-F]{1,2}')
+			->setRequired('messages.address');
 		$form->addSubmit('bond', 'bondNode')->onClick[] = [$this, 'bondNode'];
 		$form->addSubmit('rebond', 'rebondNode')->onClick[] = [$this, 'rebondNode'];
 		$form->addSubmit('remove', 'removeNode')->onClick[] = [$this, 'removeNode'];
@@ -86,6 +87,7 @@ class BondingFormFactory {
 	/**
 	 * Bond new node
 	 * @param SubmitButton $button Submit button for bonding
+	 * @throws JsonException
 	 */
 	public function bondNode(SubmitButton $button): void {
 		$values = $button->getForm()->getValues();
@@ -102,6 +104,7 @@ class BondingFormFactory {
 	/**
 	 * Clear all bonds
 	 * @param SubmitButton $button Submit button for cleaning all bonds
+	 * @throws JsonException
 	 */
 	public function clearAllBonds(SubmitButton $button): void {
 		try {
@@ -116,6 +119,7 @@ class BondingFormFactory {
 	/**
 	 * Rebond node
 	 * @param SubmitButton $button Submit button for rebonding
+	 * @throws JsonException
 	 */
 	public function rebondNode(SubmitButton $button): void {
 		$values = $button->getForm()->getValues();
@@ -131,6 +135,7 @@ class BondingFormFactory {
 	/**
 	 * Remove node
 	 * @param SubmitButton $button Submit button for removing node
+	 * @throws JsonException
 	 */
 	public function removeNode(SubmitButton $button): void {
 		$values = $button->getForm()->getValues();

@@ -16,8 +16,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
+
+use Nette\Application\Application;
 
 $container = require __DIR__ . '/../app/bootstrap.php';
 
-$container->getByType(Nette\Application\Application::class)->run();
+$container->getByType(Application::class)->run();

@@ -86,55 +86,6 @@ class AwsManagerTest extends TestCase {
 	}
 
 	/**
-	 * Set up the test environment
-	 */
-	protected function setUp(): void {
-		$configPath = __DIR__ . '/../../temp/configuration/';
-		$schemaPath = __DIR__ . '/../../data/cfgSchemas/';
-		$this->fileManager = new JsonFileManager($configPath);
-		$this->certManager = new CertificateManager();
-		$schemaManager = new JsonSchemaManager($schemaPath);
-		$this->configManager = new GenericManager($this->fileManager, $schemaManager);
-		$client = new Client();
-		$this->manager = new AwsManager($this->certPathTemp, $this->certManager, $this->configManager, $client);
-	}
-
-	/**
-	 * Cleanup the test environment
-	 */
-	protected function tearDown(): void {
-		\Mockery::close();
-	}
-
-	/**
-	 * Mock uploaded certificate and private key
-	 * @param string $path Path to certificate and private key
-	 * @return array Mocked uploaded certificate and private key
-	 */
-	private function mockUploadedFiles(string $path) {
-		$certFile = $path . '/cert0.pem';
-		$certValue = [
-			'name' => 'cert0.pem',
-			'type' => 'text/plain',
-			'tmp_name' => $certFile,
-			'error' => UPLOAD_ERR_OK,
-			'size' => filesize($certFile),
-		];
-		$pKeyFile = $path . '/pkey0.key';
-		$pKeyValue = [
-			'name' => 'pkey0.key',
-			'type' => 'text/plain',
-			'tmp_name' => $pKeyFile,
-			'error' => UPLOAD_ERR_OK,
-			'size' => filesize($pKeyFile),
-		];
-		return [
-			'cert' => new FileUpload($certValue),
-			'key' => new FileUpload($pKeyValue),
-		];
-	}
-
-	/**
 	 * Test function to create MQTT interface
 	 */
 	public function testCreateMqttInterface(): void {
@@ -192,11 +143,39 @@ class AwsManagerTest extends TestCase {
 	}
 
 	/**
+	 * Mock uploaded certificate and private key
+	 * @param string $path Path to certificate and private key
+	 * @return array Mocked uploaded certificate and private key
+	 */
+	private function mockUploadedFiles(string $path) {
+		$certFile = $path . '/cert0.pem';
+		$certValue = [
+			'name' => 'cert0.pem',
+			'type' => 'text/plain',
+			'tmp_name' => $certFile,
+			'error' => UPLOAD_ERR_OK,
+			'size' => filesize($certFile),
+		];
+		$pKeyFile = $path . '/pkey0.key';
+		$pKeyValue = [
+			'name' => 'pkey0.key',
+			'type' => 'text/plain',
+			'tmp_name' => $pKeyFile,
+			'error' => UPLOAD_ERR_OK,
+			'size' => filesize($pKeyFile),
+		];
+		return [
+			'cert' => new FileUpload($certValue),
+			'key' => new FileUpload($pKeyValue),
+		];
+	}
+
+	/**
 	 * Test function to check a certificate and a private key (valid private key)
 	 */
 	public function testCheckCertificateValid(): void {
 		$array = $this->mockUploadedFiles($this->certPath);
-		Assert::noError(function() use ($array) {
+		Assert::noError(function () use ($array) {
 			$this->manager->checkCertificate($array);
 		});
 	}
@@ -227,7 +206,7 @@ class AwsManagerTest extends TestCase {
 			'cert' => $this->certPathTemp . 'cert.pem',
 			'key' => $this->certPathTemp . 'pKey.key',
 		];
-		Assert::noError(function() use ($array, $paths) {
+		Assert::noError(function () use ($array, $paths) {
 			$this->manager->uploadCertsAndKey($array, $paths);
 		});
 	}
@@ -245,6 +224,27 @@ class AwsManagerTest extends TestCase {
 		$manager = new AwsManager($this->certPathTemp, $this->certManager, $this->configManager, $client);
 		$manager->downloadCaCertificate();
 		Assert::same($expected, FileSystem::read($this->certPathTemp . $expected));
+	}
+
+	/**
+	 * Set up the test environment
+	 */
+	protected function setUp(): void {
+		$configPath = __DIR__ . '/../../temp/configuration/';
+		$schemaPath = __DIR__ . '/../../data/cfgSchemas/';
+		$this->fileManager = new JsonFileManager($configPath);
+		$this->certManager = new CertificateManager();
+		$schemaManager = new JsonSchemaManager($schemaPath);
+		$this->configManager = new GenericManager($this->fileManager, $schemaManager);
+		$client = new Client();
+		$this->manager = new AwsManager($this->certPathTemp, $this->certManager, $this->configManager, $client);
+	}
+
+	/**
+	 * Cleanup the test environment
+	 */
+	protected function tearDown(): void {
+		\Mockery::close();
 	}
 
 }

@@ -20,21 +20,20 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Model;
 
-use App\CoreModule\Model\CommandManager;
-use App\CoreModule\Model\JsonFileManager;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
-use Nette;
 use Nette\Caching\Cache;
 use Nette\Caching\IStorage;
+use Nette\SmartObject;
 use Nette\Utils\Json;
+use Nette\Utils\JsonException;
 
 /**
  * Tool for getting versions of IQRF Gateway Daemon and IQRF Gateway Daemon webapp
  */
 class VersionManager {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * @var Cache Cache
@@ -72,35 +71,17 @@ class VersionManager {
 	/**
 	 * Check if an update is available for the webapp
 	 * @return bool Is available an update for the webapp?
+	 * @throws JsonException
 	 */
 	public function availableWebappUpdate(): bool {
 		return version_compare($this->getInstalledWebapp(false), $this->getCurrentWebapp(), '<');
 	}
 
 	/**
-	 * Get the current stable version of the webapp
-	 * @return string Current stable version of the webapp
-	 */
-	public function getCurrentWebapp(): string {
-		$json = $this->cache->load('current', function (&$dependencies) {
-			$dependencies = [Cache::EXPIRE => '1 hour'];
-			$repoUrl = 'https://raw.githubusercontent.com/iqrfsdk/iqrf-gateway-webapp/';
-			try {
-				$url = $repoUrl . 'stable/version.json';
-				$file = $this->client->request('GET', $url)->getBody()->getContents();
-			} catch (BadResponseException $e) {
-				$url = $repoUrl . 'master/version.json';
-				$file = $this->client->request('GET', $url)->getBody()->getContents();
-			}
-			return $file;
-		});
-		return trim(Json::decode($json, Json::FORCE_ARRAY)['version'], 'v');
-	}
-
-	/**
 	 * Get the installed version of the webapp
 	 * @param bool $verbose Is verbose mode enabled?
 	 * @return string Installed version of the webapp
+	 * @throws JsonException
 	 */
 	public function getInstalledWebapp(bool $verbose = true): string {
 		$file = $this->jsonFileManager->read('version');
@@ -117,6 +98,27 @@ class VersionManager {
 			return $version . ' (' . $commit . ')';
 		}
 		return $version;
+	}
+
+	/**
+	 * Get the current stable version of the webapp
+	 * @return string Current stable version of the webapp
+	 * @throws JsonException
+	 */
+	public function getCurrentWebapp(): string {
+		$json = $this->cache->load('current', function (&$dependencies) {
+			$dependencies = [Cache::EXPIRE => '1 hour'];
+			$repoUrl = 'https://raw.githubusercontent.com/iqrfsdk/iqrf-gateway-webapp/';
+			try {
+				$url = $repoUrl . 'stable/version.json';
+				$file = $this->client->request('GET', $url)->getBody()->getContents();
+			} catch (BadResponseException $e) {
+				$url = $repoUrl . 'master/version.json';
+				$file = $this->client->request('GET', $url)->getBody()->getContents();
+			}
+			return $file;
+		});
+		return trim(Json::decode($json, Json::FORCE_ARRAY)['version'], 'v');
 	}
 
 }

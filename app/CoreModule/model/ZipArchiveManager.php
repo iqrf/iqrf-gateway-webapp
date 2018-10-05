@@ -20,10 +20,11 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Model;
 
-use Nette;
+use Nette\SmartObject;
 use Nette\Utils\ArrayHash;
-use Nette\Utils\Json;
 use Nette\Utils\Finder;
+use Nette\Utils\Json;
+use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
 
 /**
@@ -31,7 +32,7 @@ use Nette\Utils\Strings;
  */
 class ZipArchiveManager {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * @var \ZipArchive ZIP archive
@@ -46,15 +47,6 @@ class ZipArchiveManager {
 	public function __construct(string $path, int $flags = \ZipArchive::CREATE | \ZipArchive::OVERWRITE) {
 		$this->zip = new \ZipArchive();
 		$this->zip->open($path, $flags);
-	}
-
-	/**
-	 * Add a file to a ZIP archive from the given path
-	 * @param string $path The path to the file to add
-	 * @param string $filename File name in the archive
-	 */
-	public function addFile(string $path, string $filename): void {
-		$this->zip->addFile($path, $filename);
 	}
 
 	/**
@@ -84,9 +76,19 @@ class ZipArchiveManager {
 	}
 
 	/**
+	 * Add a file to a ZIP archive from the given path
+	 * @param string $path The path to the file to add
+	 * @param string $filename File name in the archive
+	 */
+	public function addFile(string $path, string $filename): void {
+		$this->zip->addFile($path, $filename);
+	}
+
+	/**
 	 * Add a JSON file to the ZIP archive using its contents
 	 * @param string $filename File name
 	 * @param array $jsonData JSON data in an array
+	 * @throws JsonException
 	 */
 	public function addJsonFromArray(string $filename, array $jsonData): void {
 		$json = Json::encode($jsonData, Json::PRETTY);
@@ -101,14 +103,16 @@ class ZipArchiveManager {
 	public function exist($var): bool {
 		if (is_string($var)) {
 			return ($this->zip->locateName('/' . $var, \ZipArchive::FL_NOCASE)) !== false;
-		} elseif (is_array($var) || (is_object($var) && $var instanceof ArrayHash)) {
-			foreach ($var as $file) {
-				$result = $this->zip->locateName('/' . $file, \ZipArchive::FL_NOCASE);
-				if (!is_integer($result)) {
-					return false;
+		} else {
+			if (is_array($var) || (is_object($var) && $var instanceof ArrayHash)) {
+				foreach ($var as $file) {
+					$result = $this->zip->locateName('/' . $file, \ZipArchive::FL_NOCASE);
+					if (!is_integer($result)) {
+						return false;
+					}
 				}
+				return true;
 			}
-			return true;
 		}
 		return false;
 	}

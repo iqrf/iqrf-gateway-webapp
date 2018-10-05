@@ -23,6 +23,7 @@ namespace App\ConfigModule\Presenters;
 use App\ConfigModule\Forms\JsonSplitterFormFactory;
 use App\ConfigModule\Model\GenericManager;
 use Nette\Forms\Form;
+use Nette\Utils\JsonException;
 
 /**
  * JSON Splitter configuration presenter
@@ -47,6 +48,7 @@ class JsonSplitterPresenter extends GenericPresenter {
 	/**
 	 * Create JSON Splitter settings form
 	 * @return Form JSON Splitter settings form
+	 * @throws JsonException
 	 */
 	protected function createComponentConfigJsonSplitterForm(): Form {
 		return $this->formFactory->create($this);

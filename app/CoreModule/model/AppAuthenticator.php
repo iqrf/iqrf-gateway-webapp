@@ -20,20 +20,20 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Model;
 
-use Nette;
 use Nette\Database\Context;
 use Nette\Database\Table\Selection;
 use Nette\Security\AuthenticationException;
 use Nette\Security\IAuthenticator;
-use Nette\Security\IIdentity;
 use Nette\Security\Identity;
+use Nette\Security\IIdentity;
+use Nette\SmartObject;
 
 /**
  * Custom Authenticator
  */
 class AppAuthenticator implements IAuthenticator {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * @var Selection Database table selection
@@ -42,7 +42,7 @@ class AppAuthenticator implements IAuthenticator {
 
 	/**
 	 * Constructor
-	 * @param Context $database Database contaxt
+	 * @param Context $database Database context
 	 */
 	public function __construct(Context $database) {
 		$this->createTable($database);
@@ -51,7 +51,7 @@ class AppAuthenticator implements IAuthenticator {
 
 	/**
 	 * Create the database table
-	 * @param Context $database Database contaxt
+	 * @param Context $database Database context
 	 */
 	private function createTable(Context $database): void {
 		$sql = 'CREATE TABLE IF NOT EXISTS `users` (';

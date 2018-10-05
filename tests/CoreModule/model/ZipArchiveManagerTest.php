@@ -53,39 +53,6 @@ class ZipArchiveManagerTest extends TestCase {
 	}
 
 	/**
-	 * Set up the test environment
-	 */
-	protected function setUp(): void {
-		$path = __DIR__ . '/../../temp/archive.zip';
-		$pathExtract = __DIR__ . '/../../data/iqrf-gateway-configuration.zip';
-		$this->managerNew = new ZipArchiveManager($path);
-		$this->manager = new ZipArchiveManager($pathExtract, \ZipArchive::CREATE);
-	}
-
-	/**
-	 * Cleanup the test environment
-	 */
-	protected function tearDown(): void {
-		@$this->managerNew->close();
-		@$this->manager->close();
-	}
-
-	/**
-	 * Create list of files
-	 * @param string $path Path to the directory
-	 * @return array List of files in the directory
-	 */
-	private function createList(string $path): array {
-		$path = realpath($path) . '/';
-		$list = [];
-		foreach (Finder::findFiles('*.json')->from($path) as $file) {
-			$list[] = str_replace($path, '', $file->getRealPath());
-		}
-		sort($list);
-		return $list;
-	}
-
-	/**
 	 * Test function to add file to the ZIP archive
 	 */
 	public function testAddFile(): void {
@@ -115,6 +82,21 @@ class ZipArchiveManagerTest extends TestCase {
 	}
 
 	/**
+	 * Create list of files
+	 * @param string $path Path to the directory
+	 * @return array List of files in the directory
+	 */
+	private function createList(string $path): array {
+		$path = realpath($path) . '/';
+		$list = [];
+		foreach (Finder::findFiles('*.json')->from($path) as $file) {
+			$list[] = str_replace($path, '', $file->getRealPath());
+		}
+		sort($list);
+		return $list;
+	}
+
+	/**
 	 * Test function to add a JSON file to the ZIP archive
 	 */
 	public function testAddJsonFromArray(): void {
@@ -129,7 +111,7 @@ class ZipArchiveManagerTest extends TestCase {
 	/**
 	 * Test function to check if the file(s) exist(s) in the archive (a non-existing file)
 	 */
-	public function testExistNonexistingFile(): void {
+	public function testExistNonExistingFile(): void {
 		Assert::false($this->manager->exist('nonsense'));
 	}
 
@@ -143,7 +125,7 @@ class ZipArchiveManagerTest extends TestCase {
 	/**
 	 * Test function to check if the file(s) exist(s) in the archive (a single file in a subdirectory)
 	 */
-	public function testExistFileInSubdir(): void {
+	public function testExistFileInSubDir(): void {
 		Assert::true($this->manager->exist('scheduler/Tasks.json'));
 	}
 
@@ -185,6 +167,24 @@ class ZipArchiveManagerTest extends TestCase {
 		$fileName = 'config.json';
 		$expected = FileSystem::read($this->configDir . $fileName);
 		Assert::same($expected, $this->manager->openFile($fileName));
+	}
+
+	/**
+	 * Set up the test environment
+	 */
+	protected function setUp(): void {
+		$path = __DIR__ . '/../../temp/archive.zip';
+		$pathExtract = __DIR__ . '/../../data/iqrf-gateway-configuration.zip';
+		$this->managerNew = new ZipArchiveManager($path);
+		$this->manager = new ZipArchiveManager($pathExtract, \ZipArchive::CREATE);
+	}
+
+	/**
+	 * Cleanup the test environment
+	 */
+	protected function tearDown(): void {
+		@$this->managerNew->close();
+		@$this->manager->close();
 	}
 
 }

@@ -22,11 +22,11 @@ namespace App\ConfigModule\Model;
 
 use App\CoreModule\Model\JsonFileManager;
 use App\CoreModule\Model\JsonSchemaManager;
-use Nette;
+use Nette\SmartObject;
 use Nette\Utils\Arrays;
-use Nette\Utils\ArrayHash;
 use Nette\Utils\Finder;
 use Nette\Utils\Json;
+use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
 
 /**
@@ -34,7 +34,7 @@ use Nette\Utils\Strings;
  */
 class GenericManager {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * @var string Component type
@@ -69,6 +69,7 @@ class GenericManager {
 	/**
 	 * Delete a configuration
 	 * @param int $id Configuration ID
+	 * @throws JsonException
 	 */
 	public function delete(int $id): void {
 		$instanceFiles = $this->getInstanceFiles();
@@ -78,77 +79,9 @@ class GenericManager {
 	}
 
 	/**
-	 * Load a configuration
-	 * @param int $id Configuration ID
-	 * @return array Configuration in an array
-	 */
-	public function load(int $id): array {
-		$instanceFiles = $this->getInstanceFiles();
-		if (!isset($instanceFiles[$id])) {
-			return [];
-		}
-		$this->fileName = $instanceFiles[$id];
-		$configuration = $this->fileManager->read($this->fileName);
-		$this->fixRequiredInterfaces($configuration);
-		return $configuration;
-	}
-
-	/**
-	 * List configurations
-	 * @return array Configurations
-	 */
-	public function list(): array {
-		$files = array_keys($this->getInstanceFiles());
-		$instances = [];
-		foreach ($files as $id) {
-			$instances[] = Arrays::mergeTree(['id' => $id], $this->load($id));
-		}
-		return $instances;
-	}
-
-	/**
-	 * Save configuration
-	 * @param array $array Settings
-	 */
-	public function save(array $array): void {
-		if (!isset($this->fileName)) {
-			$this->generateFileName($array);
-		}
-		$component = ['component' => $this->component];
-		$configuration = Arrays::mergeTree($component, $array);
-		$json = Json::encode($configuration);
-		$this->schemaManager->validate(Json::decode($json));
-		$this->fileManager->write($this->fileName, $configuration);
-	}
-
-	/**
-	 * Set component type
-	 * @param string $component Component name
-	 */
-	public function setComponent(string $component): void {
-		$this->component = $component;
-		$this->schemaManager->setSchemaFromComponent($component);
-	}
-
-	/**
-	 * Get file name
-	 * @return string File name (without .json)
-	 */
-	public function getFileName(): string {
-		return $this->fileName;
-	}
-
-	/**
-	 * Set file name
-	 * @param string $fileName File name (without .json)
-	 */
-	public function setFileName(string $fileName): void {
-		$this->fileName = $fileName;
-	}
-
-	/**
 	 * Get component's instance files
 	 * @return array Files with component's instances
+	 * @throws JsonException
 	 */
 	public function getInstanceFiles(): array {
 		$dir = $this->fileManager->getDirectory();
@@ -165,58 +98,40 @@ class GenericManager {
 	}
 
 	/**
-	 * Get available messagings
-	 * @return array Available messagings
+	 * List configurations
+	 * @return array Configurations
+	 * @throws JsonException
 	 */
-	public function getMessagings(): array {
-		$components = [
-			'mq' => 'iqrf::MqMessaging', 'mqtt' => 'iqrf::MqttMessaging',
-			'udp' => 'iqrf::UdpMessaging', 'websocket' => 'iqrf::WebsocketMessaging'
-		];
-		$messagings = [];
-		foreach ($components as $name => $component) {
-			$messagings['config.' . $name . '.title'] = $this->getComponentInstances($component);
-		}
-		return $messagings;
-	}
-
-	/**
-	 * Get available instances of component
-	 * @param string $component Component
-	 * @return array Available instances of component
-	 */
-	public function getComponentInstances(string $component): array {
-		$instances = [];
-		$this->setComponent($component);
+	public function list(): array {
 		$files = array_keys($this->getInstanceFiles());
+		$instances = [];
 		foreach ($files as $id) {
-			$instance = $this->load($id);
-			$instances[] = $instance['instance'];
+			$instances[] = Arrays::mergeTree(['id' => $id], $this->load($id));
 		}
-		sort($instances);
 		return $instances;
 	}
 
 	/**
-	 * Get an instance file name with the property
-	 * @param string $type Property type
-	 * @param mixed $value Property value
-	 * @return string|null Instance file name
+	 * Load a configuration
+	 * @param int $id Configuration ID
+	 * @return array Configuration in an array
+	 * @throws JsonException
 	 */
-	public function getInstanceByProperty(string $type, $value): ?string {
-		$dir = $this->fileManager->getDirectory();
-		foreach (Finder::findFiles('*.json')->exclude('config.json')->from($dir) as $file) {
-			$fileName = Strings::replace($file->getRealPath(), ['~^' . realpath($dir) . '/~', '/.json$/'], '');
-			$json = $this->fileManager->read($fileName);
-			if (array_key_exists($type, $json) && $json[$type] === $value) {
-				return $fileName;
-			}
+	public function load(int $id): array {
+		$instanceFiles = $this->getInstanceFiles();
+		if (!isset($instanceFiles[$id])) {
+			return [];
 		}
+		$this->fileName = $instanceFiles[$id];
+		$configuration = $this->fileManager->read($this->fileName);
+		$this->fixRequiredInterfaces($configuration);
+		return $configuration;
 	}
 
 	/**
 	 * Fix a required interfaces in the configuration
 	 * @param array $configuration Configuration to fix
+	 * @throws JsonException
 	 */
 	public function fixRequiredInterfaces(array &$configuration): void {
 		if (!array_key_exists('RequiredInterfaces', $configuration)) {
@@ -236,12 +151,107 @@ class GenericManager {
 	}
 
 	/**
+	 * Get an instance file name with the property
+	 * @param string $type Property type
+	 * @param mixed $value Property value
+	 * @return string|null Instance file name
+	 * @throws JsonException
+	 */
+	public function getInstanceByProperty(string $type, $value): ?string {
+		$dir = $this->fileManager->getDirectory();
+		foreach (Finder::findFiles('*.json')->exclude('config.json')->from($dir) as $file) {
+			$fileName = Strings::replace($file->getRealPath(), ['~^' . realpath($dir) . '/~', '/.json$/'], '');
+			$json = $this->fileManager->read($fileName);
+			if (array_key_exists($type, $json) && $json[$type] === $value) {
+				return $fileName;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Save configuration
+	 * @param array $array Settings
+	 * @throws JsonException
+	 */
+	public function save(array $array): void {
+		if (!isset($this->fileName)) {
+			$this->generateFileName($array);
+		}
+		$component = ['component' => $this->component];
+		$configuration = Arrays::mergeTree($component, $array);
+		$json = Json::encode($configuration);
+		$this->schemaManager->validate(Json::decode($json));
+		$this->fileManager->write($this->fileName, $configuration);
+	}
+
+	/**
 	 * Generate a configuration file name
 	 * @param array $array Configuration from form
 	 */
 	public function generateFileName(array $array): void {
 		$prefix = explode('::', $this->component)[0];
 		$this->fileName = $prefix . '__' . $array['instance'];
+	}
+
+	/**
+	 * Get file name
+	 * @return string File name (without .json)
+	 */
+	public function getFileName(): string {
+		return $this->fileName;
+	}
+
+	/**
+	 * Set file name
+	 * @param string $fileName File name (without .json)
+	 */
+	public function setFileName(string $fileName): void {
+		$this->fileName = $fileName;
+	}
+
+	/**
+	 * Get available messagings
+	 * @return array Available messagings
+	 * @throws JsonException
+	 */
+	public function getMessagings(): array {
+		$components = [
+			'mq' => 'iqrf::MqMessaging', 'mqtt' => 'iqrf::MqttMessaging',
+			'udp' => 'iqrf::UdpMessaging', 'websocket' => 'iqrf::WebsocketMessaging',
+		];
+		$messagings = [];
+		foreach ($components as $name => $component) {
+			$messagings['config.' . $name . '.title'] = $this->getComponentInstances($component);
+		}
+		return $messagings;
+	}
+
+	/**
+	 * Get available instances of component
+	 * @param string $component Component
+	 * @return array Available instances of component
+	 * @throws JsonException
+	 */
+	public function getComponentInstances(string $component): array {
+		$instances = [];
+		$this->setComponent($component);
+		$files = array_keys($this->getInstanceFiles());
+		foreach ($files as $id) {
+			$instance = $this->load($id);
+			$instances[] = $instance['instance'];
+		}
+		sort($instances);
+		return $instances;
+	}
+
+	/**
+	 * Set component type
+	 * @param string $component Component name
+	 */
+	public function setComponent(string $component): void {
+		$this->component = $component;
+		$this->schemaManager->setSchemaFromComponent($component);
 	}
 
 }

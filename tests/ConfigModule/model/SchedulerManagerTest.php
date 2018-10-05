@@ -82,32 +82,6 @@ class SchedulerManagerTest extends TestCase {
 	}
 
 	/**
-	 * Set up the test environment
-	 */
-	protected function setUp(): void {
-		$configPath = __DIR__ . '/../../data/configuration/';
-		$configTempPath = __DIR__ . '/../../temp/configuration/';
-		$schemaPath = __DIR__ . '/../../data/cfgSchemas/';
-		$this->fileManager = new JsonFileManager($configPath . 'scheduler/');
-		$this->fileManagerTemp = new JsonFileManager($configTempPath . 'scheduler/');
-		$fileManager = new JsonFileManager($configPath);
-		$schemaManager = new JsonSchemaManager($schemaPath);
-		$genericConfigManager = new GenericManager($fileManager, $schemaManager);
-		$configuration = ['cacheDir' => $configTempPath,];
-		$mainConfigManager = \Mockery::mock(MainManager::class);
-		$mainConfigManager->shouldReceive('load')->andReturn($configuration);
-		$this->fileManagerTemp->write($this->fileName, $this->fileManager->read($this->fileName));
-		$this->manager = new SchedulerManager($mainConfigManager, $genericConfigManager);
-	}
-
-	/**
-	 * Cleanup the test environment
-	 */
-	protected function tearDown(): void {
-		\Mockery::close();
-	}
-
-	/**
 	 * Test function to add configuration of Scheduler
 	 */
 	public function testAdd(): void {
@@ -239,6 +213,32 @@ class SchedulerManagerTest extends TestCase {
 		$expected['TasksJson'][0]['message']['nadr'] = '0';
 		$this->manager->save($array, 0);
 		Assert::equal($expected, $this->fileManagerTemp->read($this->fileName));
+	}
+
+	/**
+	 * Set up the test environment
+	 */
+	protected function setUp(): void {
+		$configPath = __DIR__ . '/../../data/configuration/';
+		$configTempPath = __DIR__ . '/../../temp/configuration/';
+		$schemaPath = __DIR__ . '/../../data/cfgSchemas/';
+		$this->fileManager = new JsonFileManager($configPath . 'scheduler/');
+		$this->fileManagerTemp = new JsonFileManager($configTempPath . 'scheduler/');
+		$fileManager = new JsonFileManager($configPath);
+		$schemaManager = new JsonSchemaManager($schemaPath);
+		$genericConfigManager = new GenericManager($fileManager, $schemaManager);
+		$configuration = ['cacheDir' => $configTempPath,];
+		$mainConfigManager = \Mockery::mock(MainManager::class);
+		$mainConfigManager->shouldReceive('load')->andReturn($configuration);
+		$this->fileManagerTemp->write($this->fileName, $this->fileManager->read($this->fileName));
+		$this->manager = new SchedulerManager($mainConfigManager, $genericConfigManager);
+	}
+
+	/**
+	 * Cleanup the test environment
+	 */
+	protected function tearDown(): void {
+		\Mockery::close();
 	}
 
 }

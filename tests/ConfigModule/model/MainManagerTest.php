@@ -52,16 +52,6 @@ class MainManagerTest extends TestCase {
 	}
 
 	/**
-	 * Set up the test environment
-	 */
-	protected function setUp(): void {
-		$configPath = __DIR__ . '/../../data/configuration/';
-		$configTempPath = __DIR__ . '/../../temp/configuration/';
-		$this->fileManager = new JsonFileManager($configPath);
-		$this->fileManagerTemp = new JsonFileManager($configTempPath);
-	}
-
-	/**
 	 * Test function to load main configuration of daemon
 	 */
 	public function testLoad(): void {
@@ -90,6 +80,16 @@ class MainManagerTest extends TestCase {
 		$expected['configurationDir'] = '/etc/iqrf-daemon';
 		$manager->save($array);
 		Assert::equal($expected, $this->fileManagerTemp->read($this->fileName));
+	}
+
+	/**
+	 * Set up the test environment
+	 */
+	protected function setUp(): void {
+		$configPath = __DIR__ . '/../../data/configuration/';
+		$configTempPath = __DIR__ . '/../../temp/configuration/';
+		$this->fileManager = new JsonFileManager($configPath);
+		$this->fileManagerTemp = new JsonFileManager($configTempPath);
 	}
 
 }

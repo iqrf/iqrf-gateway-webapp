@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\ConfigModule\Forms;
 
@@ -26,16 +26,17 @@ use App\ConfigModule\Model\MigrationManager;
 use App\ConfigModule\Presenters\MigrationPresenter;
 use App\CoreModule\Exception\NonExistingJsonSchemaException;
 use App\CoreModule\Forms\FormFactory;
-use Nette;
 use Nette\Forms\Form;
 use Nette\IOException;
+use Nette\SmartObject;
+use Nette\Utils\JsonException;
 
 /**
  * Configuration migration form factory
  */
 class MigrationFormFactory {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * @var MigrationManager Configuration migration manager
@@ -81,6 +82,7 @@ class MigrationFormFactory {
 	/**
 	 * Import a configuration
 	 * @param Form $form Configuration migration form
+	 * @throws JsonException
 	 */
 	public function import(Form $form): void {
 		try {
@@ -93,9 +95,7 @@ class MigrationFormFactory {
 		} catch (NonExistingJsonSchemaException $e) {
 			$this->presenter->flashMessage('config.messages.writeFailures.nonExistingJsonSchema', 'danger');
 		} catch (IOException $e) {
-			/**
-			 * @todo Custom error message.
-			 */
+			/// TODO: Use custom error message.
 			$$this->presenter->flashMessage('config.messages.writeFailures.ioError', 'danger');
 		} finally {
 			$this->presenter->redirect('Homepage:default');

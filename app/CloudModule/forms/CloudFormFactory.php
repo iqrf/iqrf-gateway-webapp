@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\CloudModule\Forms;
 
@@ -28,32 +28,29 @@ use App\CoreModule\Presenters\ProtectedPresenter;
 use App\ServiceModule\Exception\NotSupportedInitSystemException;
 use App\ServiceModule\Model\ServiceManager;
 use GuzzleHttp\Exception\TransferException;
-use Nette;
 use Nette\Forms\Controls\SubmitButton;
 use Nette\IOException;
+use Nette\SmartObject;
 
 /**
  * Generic form factory for the cloud services
  */
-class CloudFormFactory {
+abstract class CloudFormFactory {
 
-	use Nette\SmartObject;
-
-	/**
-	 * @var IManager Cloud service manager
-	 */
-	private $manager;
+	use SmartObject;
 
 	/**
 	 * @var FormFactory Generic form factory
 	 */
 	protected $factory;
-
 	/**
 	 * @var ProtectedPresenter Protected presenter
 	 */
 	protected $presenter;
-
+	/**
+	 * @var IManager Cloud service manager
+	 */
+	private $manager;
 	/**
 	 * @var ServiceManager Service manager
 	 */
@@ -73,16 +70,16 @@ class CloudFormFactory {
 
 	/**
 	 * Create the MQTT interface
-	 * @param SubmitButton $button Form's sumbit button
+	 * @param SubmitButton $button Form's submit button
 	 * @param bool $needRestart Is restart needed?
 	 */
 	public function save(SubmitButton $button, bool $needRestart = false): void {
 		$values = $button->getForm()->getValues(true);
-		$succes = false;
+		$success = false;
 		try {
 			$this->manager->createMqttInterface($values);
 			$this->presenter->flashMessage('cloud.messages.success', 'success');
-			$succes = true;
+			$success = true;
 		} catch (InvalidConnectionStringException $e) {
 			$this->presenter->flashMessage('cloud.msAzure.messages.invalidConnectionString', 'danger');
 		} catch (InvalidPrivateKeyForCertificateException $e) {
@@ -102,7 +99,7 @@ class CloudFormFactory {
 				$this->presenter->flashMessage('service.errors.unsupportedInit', 'danger');
 			}
 		}
-		if ($succes) {
+		if ($success) {
 			$this->presenter->redirect(':Config:Mqtt:default');
 		}
 	}

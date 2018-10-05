@@ -24,16 +24,16 @@ use App\CloudModule\Model\AwsManager;
 use App\CloudModule\Presenters\AwsPresenter;
 use App\CoreModule\Forms\FormFactory;
 use App\ServiceModule\Model\ServiceManager;
-use Nette;
-use Nette\Forms\Form;
 use Nette\Forms\Controls\SubmitButton;
+use Nette\Forms\Form;
+use Nette\SmartObject;
 
 /**
  * Form for creating MQTT connection into Amazon AWS IoT
  */
 class AwsFormFactory extends CloudFormFactory {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * Constructor
@@ -58,11 +58,11 @@ class AwsFormFactory extends CloudFormFactory {
 		$form->addUpload('cert', 'certificate')->setRequired();
 		$form->addUpload('key', 'pkey')->setRequired();
 		$form->addSubmit('save', 'save')
-				->onClick[] = function (SubmitButton $button) {
+			->onClick[] = function (SubmitButton $button) {
 			$this->save($button);
 		};
 		$form->addSubmit('save_restart', 'save_restart')
-				->onClick[] = function (SubmitButton $button) {
+			->onClick[] = function (SubmitButton $button) {
 			$this->save($button, true);
 		};
 		$form->addProtection('core.errors.form-timeout');

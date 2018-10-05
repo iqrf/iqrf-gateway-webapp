@@ -24,16 +24,16 @@ use App\CloudModule\Model\InteliGlueManager;
 use App\CloudModule\Presenters\InteliGluePresenter;
 use App\CoreModule\Forms\FormFactory;
 use App\ServiceModule\Model\ServiceManager;
-use Nette;
-use Nette\Forms\Form;
 use Nette\Forms\Controls\SubmitButton;
+use Nette\Forms\Form;
+use Nette\SmartObject;
 
 /**
  * Form for creating MQTT connection into Inteliments InteliGlue
  */
 class InteliGlueFormFactory extends CloudFormFactory {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * Constructor
@@ -56,15 +56,15 @@ class InteliGlueFormFactory extends CloudFormFactory {
 		$form->setTranslator($form->getTranslator()->domain('cloud.intelimentsInteliGlue.form'));
 		$form->addText('rootTopic', 'rootTopic')->setRequired();
 		$form->addInteger('assignedPort', 'assignedPort')->setRequired()
-				->addRule(Form::RANGE, 'Port have to be in range from 0 to 65535', [0, 65535]);
+			->addRule(Form::RANGE, 'Port have to be in range from 0 to 65535', [0, 65535]);
 		$form->addText('clientId', 'clientId')->setRequired();
 		$form->addText('password', 'password')->setRequired();
 		$form->addSubmit('save', 'save')
-				->onClick[] = function (SubmitButton $button) {
+			->onClick[] = function (SubmitButton $button) {
 			$this->save($button);
 		};
 		$form->addSubmit('save_restart', 'save_restart')
-				->onClick[] = function (SubmitButton $button) {
+			->onClick[] = function (SubmitButton $button) {
 			$this->save($button, true);
 		};
 		$form->addProtection('core.errors.form-timeout');

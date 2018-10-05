@@ -20,11 +20,15 @@ declare(strict_types = 1);
 
 namespace App\IqrfAppModule\Presenters;
 
+use App\CoreModule\Presenters\ProtectedPresenter;
+use App\IqrfAppModule\Exception\DpaErrorException;
+use App\IqrfAppModule\Exception\EmptyResponseException;
+use App\IqrfAppModule\Exception\UserErrorException;
 use App\IqrfAppModule\Forms\SendRawFormFactory;
 use App\IqrfAppModule\Model\IqrfAppManager;
 use App\IqrfAppModule\Model\IqrfMacroManager;
-use App\CoreModule\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
+use Nette\Utils\JsonException;
 
 /**
  * Send raw DPA packet presenter
@@ -68,6 +72,10 @@ class SendRawPresenter extends ProtectedPresenter {
 	/**
 	 * AJAX handler for showing DPA request and response
 	 * @param array $data DPA request and response
+	 * @throws DpaErrorException
+	 * @throws EmptyResponseException
+	 * @throws JsonException
+	 * @throws UserErrorException
 	 */
 	public function handleShowResponse(array $data): void {
 		$this->template->json = $data;

@@ -20,22 +20,23 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Forms;
 
-use App\ConfigModule\Forms\GenericConfigFormFactory;
 use App\ConfigModule\Presenters\IqrfCdcPresenter;
-use Nette;
 use Nette\Forms\Form;
+use Nette\SmartObject;
+use Nette\Utils\JsonException;
 
 /**
  * IQRF CDC configuration form factory
  */
 class IqrfCdcFormFactory extends GenericConfigFormFactory {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * Create IQRF CDC configuration form
 	 * @param IqrfCdcPresenter $presenter IQRF CDC configuration presenter
 	 * @return Form IQRF CDC interface configuration form
+	 * @throws JsonException
 	 */
 	public function create(IqrfCdcPresenter $presenter): Form {
 		$this->manager->setComponent('iqrf::IqrfCdc');

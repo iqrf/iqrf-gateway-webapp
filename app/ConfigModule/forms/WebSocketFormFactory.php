@@ -20,23 +20,24 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Forms;
 
-use App\ConfigModule\Model\WebsocketManager;
+use App\ConfigModule\Model\WebSocketManager;
 use App\ConfigModule\Presenters\WebsocketPresenter;
 use App\CoreModule\Exception\NonExistingJsonSchemaException;
 use App\CoreModule\Forms\FormFactory;
-use Nette;
 use Nette\Forms\Form;
 use Nette\IOException;
+use Nette\SmartObject;
+use Nette\Utils\JsonException;
 
 /**
- * Websocket interface configuration form factory
+ * WebSocket interface configuration form factory
  */
-class WebsocketFormFactory {
+class WebSocketFormFactory {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
-	 * @var WebsocketManager Websocket configuration manager
+	 * @var WebSocketManager WebSocket configuration manager
 	 */
 	private $manager;
 
@@ -46,24 +47,25 @@ class WebsocketFormFactory {
 	private $factory;
 
 	/**
-	 * @var WebsocketPresenter Websocket interface presenter
+	 * @var WebsocketPresenter WebSocket interface presenter
 	 */
 	private $presenter;
 
 	/**
 	 * Constructor
-	 * @param WebsocketManager $manager Websocket configuration manager
+	 * @param WebSocketManager $manager WebSocket configuration manager
 	 * @param FormFactory $factory Generic form factory
 	 */
-	public function __construct(WebsocketManager $manager, FormFactory $factory) {
+	public function __construct(WebSocketManager $manager, FormFactory $factory) {
 		$this->manager = $manager;
 		$this->factory = $factory;
 	}
 
 	/**
-	 * Create websocket interface configuration form
-	 * @param WebsocketPresenter $presenter Websocket presenter
-	 * @return Form Websocket interface configuration form
+	 * Create WebSocket interface configuration form
+	 * @param WebsocketPresenter $presenter WebSocket presenter
+	 * @return Form WebSocket interface configuration form
+	 * @throws JsonException
 	 */
 	public function create(WebsocketPresenter $presenter): Form {
 		$this->presenter = $presenter;
@@ -86,8 +88,10 @@ class WebsocketFormFactory {
 	}
 
 	/**
-	 * Save websocket interface configuration
-	 * @param Form $form Websocket interface configuration form
+	 * Save WebSocket interface configuration
+	 * @param Form $form WebSocket interface configuration form
+	 * @throws JsonException
+	 *
 	 */
 	public function save(Form $form): void {
 		try {

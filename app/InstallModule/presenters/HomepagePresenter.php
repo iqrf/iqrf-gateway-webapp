@@ -21,8 +21,8 @@ declare(strict_types = 1);
 namespace App\InstallModule\Presenters;
 
 use App\CoreModule\Forms\UserAddFormFactory;
-use App\CoreModule\Presenters\BasePresenter;
 use App\CoreModule\Model\UserManager;
+use App\CoreModule\Presenters\BasePresenter;
 use Nette\Forms\Form;
 
 /**
@@ -42,19 +42,19 @@ class HomepagePresenter extends BasePresenter {
 	private $userManager;
 
 	/**
-	 * Create add a new user form
-	 * @return Form Add a new user form
-	 */
-	protected function createComponentRegUserForm(): Form {
-		return $this->userFormFactory->create($this);
-	}
-
-	/**
 	 * Inject user manager
 	 * @param UserManager $userManager User manager
 	 */
 	public function injectUserManager(UserManager $userManager): void {
 		$this->userManager = $userManager;
+	}
+
+	/**
+	 * Create add a new user form
+	 * @return Form Add a new user form
+	 */
+	protected function createComponentRegUserForm(): Form {
+		return $this->userFormFactory->create($this);
 	}
 
 	/**

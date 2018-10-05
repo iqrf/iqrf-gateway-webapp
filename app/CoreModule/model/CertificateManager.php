@@ -20,20 +20,20 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Model;
 
-use Nette;
+use Nette\SmartObject;
 
 /**
  * Tool for managing certificates
  */
 class CertificateManager {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
-	 * Checks if a certificate coresponds to a CA certificate
+	 * Checks if a certificate corresponds to a CA certificate
 	 * @param string $caCertificate CA certificate
 	 * @param string $certificate Certificate
-	 * @return bool Is a certificate coresponds to a CA certificate?
+	 * @return bool Is a certificate corresponds to a CA certificate?
 	 */
 	public function checkIssuer(string $caCertificate, string $certificate): bool {
 		$caCert = openssl_x509_parse($caCertificate);
@@ -45,22 +45,22 @@ class CertificateManager {
 	 * Check if a private key corresponds to a certificate
 	 * @param string $cert Certificate
 	 * @param string $pKey Private key
-	 * @param string $passphrase Passphrase for private key
+	 * @param string $password Password for private key
 	 * @return bool Is a private key corresponds to a certificate?
 	 */
-	public function checkPrivateKey(string $cert, string $pKey, string $passphrase = ''): bool {
-		$key = $this->getPrivateKey($pKey, $passphrase);
+	public function checkPrivateKey(string $cert, string $pKey, string $password = ''): bool {
+		$key = $this->getPrivateKey($pKey, $password);
 		return openssl_x509_check_private_key($cert, $key);
 	}
 
 	/**
 	 * Gets private key
 	 * @param string $key Private key
-	 * @param string $passphrase Passphrase for private key
+	 * @param string $password Password for private key
 	 * @return string|false Parsed private key or false
 	 */
-	public function getPrivateKey(string $key, string $passphrase = '') {
-		return openssl_pkey_get_private($key, $passphrase);
+	public function getPrivateKey(string $key, string $password = '') {
+		return openssl_pkey_get_private($key, $password);
 	}
 
 }

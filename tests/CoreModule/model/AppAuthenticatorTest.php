@@ -63,6 +63,36 @@ class AppAuthenticatorTest extends TestCase {
 	}
 
 	/**
+	 * Test function to authenticate the user (incorrect username)
+	 */
+	public function testAuthenticateBadUsername(): void {
+		Assert::exception(function () {
+			$credentials = ['iqrf', 'iqrf'];
+			$this->authenticator->authenticate($credentials);
+		}, AuthenticationException::class);
+	}
+
+	/**
+	 * Test function to authenticate the user (incorrect password)
+	 */
+	public function testAuthenticateBadPassword(): void {
+		Assert::exception(function () {
+			$credentials = ['admin', 'admin'];
+			$this->authenticator->authenticate($credentials);
+		}, AuthenticationException::class);
+	}
+
+	/**
+	 * Test function to authenticate the user (correct username and password)
+	 */
+	public function testAuthenticateSuccess(): void {
+		$data = ['username' => 'admin', 'language' => 'en',];
+		$expected = new Identity(1, 'power', $data);
+		$credentials = ['admin', 'iqrf'];
+		Assert::equal($expected, $this->authenticator->authenticate($credentials));
+	}
+
+	/**
 	 * Set up the test environment
 	 */
 	protected function setUp(): void {
@@ -88,36 +118,6 @@ class AppAuthenticatorTest extends TestCase {
 );';
 		$this->context->query($sql);
 		$this->context->table('users')->insert($this->data);
-	}
-
-	/**
-	 * Test function to authenticate the user (incorrect username)
-	 */
-	public function testAuthenticateBadUsername(): void {
-		Assert::exception(function() {
-			$credentials = ['iqrf', 'iqrf'];
-			$this->authenticator->authenticate($credentials);
-		}, AuthenticationException::class);
-	}
-
-	/**
-	 * Test function to authenticate the user (incorrect password)
-	 */
-	public function testAuthenticateBadPassword(): void {
-		Assert::exception(function() {
-			$credentials = ['admin', 'admin'];
-			$this->authenticator->authenticate($credentials);
-		}, AuthenticationException::class);
-	}
-
-	/**
-	 * Test function to authenticate the user (correct username and password)
-	 */
-	public function testAuthenticateSuccess(): void {
-		$data = ['username' => 'admin', 'language' => 'en',];
-		$expected = new Identity(1, 'power', $data);
-		$credentials = ['admin', 'iqrf'];
-		Assert::equal($expected, $this->authenticator->authenticate($credentials));
 	}
 
 }

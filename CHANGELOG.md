@@ -20,8 +20,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 - Drop PHP 7.0 support
 - Move core functionality into own module (CoreModule)
 - Update dependencies
-- Replace `iqrfapp` with a Websocket client
-- Rename projet to `iqrf-gateway-webapp`
+- Replace `iqrfapp` with a WebSocket client
+- Rename project to `iqrf-gateway-webapp`
 
 ### Removed:
 - Removed configuration tools for IQRF Gateway Daemon v1
@@ -65,7 +65,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ### Fixed:
 - Fix bug in the installer
-- Catch an exception when IQRF Gateway Daemon doesn't send response
+- Catch an exception when IQRF Gateway Daemon does not send response
 - Fix TR info on a page GW Info
 - Fix board name showing for boards with device tree support
 - Delete the configuration directory via a command in the configuration import method
@@ -110,7 +110,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 - Add a downloading of a basic diagnostic data
 
 ### Changed:
-- Optimalise parser for RF Band from HWP configuration
+- Optimise parser for RF Band from HWP configuration
 
 ### Removed:
 - Remove an extra page in the MQTT configuration tools for cloud services
@@ -125,7 +125,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 ### Added:
 - Add more (DC)TR types
 - Add unit for RSSI in DPA OS read response
-- Add select box for selecting Base service into configuratin tool of scheduler
+- Add select box for selecting Base service into configuration tool of scheduler
 - Add select box for selecting messaging into configuration tool of Base services
 - Add TLS connection for the MQTT connection into IBM Bluemix Cloud
 - Add option to overwrite NADR in Send raw DPA packet form (fix #10)
@@ -192,7 +192,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ### Changed:
 - Merge forms for IQMESH Network bonding into one
-- Change default TX Power for IQRFMESH Discovery to 6
+- Change default TX Power for IQMESH Discovery to 6
 - Update label for Azure IoT Connection String for Device, add PHPDocs in form
 - Update dependencies 'nette/php-generator' and 'mockery/mockery'
 - Redesign IQMESH Network Manager

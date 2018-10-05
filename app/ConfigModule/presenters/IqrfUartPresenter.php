@@ -25,6 +25,7 @@ use App\ConfigModule\Model\GenericManager;
 use App\ConfigModule\Model\IqrfManager;
 use App\CoreModule\Model\JsonFileManager;
 use Nette\Forms\Form;
+use Nette\Utils\JsonException;
 
 /**
  * IQRF UART configuration presenter
@@ -32,16 +33,14 @@ use Nette\Forms\Form;
 class IqrfUartPresenter extends GenericPresenter {
 
 	/**
-	 * @var JsonFileManager JSON file manager
-	 */
-	private $fileManager;
-
-	/**
 	 * @var IqrfUartFormFactory IQRF UART interface configuration form factory
 	 * @inject
 	 */
 	public $formFactory;
-
+	/**
+	 * @var JsonFileManager JSON file manager
+	 */
+	private $fileManager;
 	/**
 	 * @var IqrfManager IQRF interface manager
 	 */
@@ -61,6 +60,7 @@ class IqrfUartPresenter extends GenericPresenter {
 
 	/**
 	 * Render IQRF UART interface configurator
+	 * @throws JsonException
 	 */
 	public function renderDefault(): void {
 		$this->template->interfaces = $this->iqrfManager->getUartInterfaces();
@@ -70,6 +70,7 @@ class IqrfUartPresenter extends GenericPresenter {
 	/**
 	 * Create IQRF UART interface configuration form
 	 * @return Form IQRF UART interface configuration form
+	 * @throws JsonException
 	 */
 	protected function createComponentConfigIqrfUartForm(): Form {
 		return $this->formFactory->create($this);

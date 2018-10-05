@@ -20,22 +20,23 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Forms;
 
-use App\ConfigModule\Forms\GenericConfigFormFactory;
 use App\ConfigModule\Presenters\IqrfSpiPresenter;
-use Nette;
 use Nette\Forms\Form;
+use Nette\SmartObject;
+use Nette\Utils\JsonException;
 
 /**
  * IQRF SPI configuration form factory
  */
 class IqrfSpiFormFactory extends GenericConfigFormFactory {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * Create IQRF SPI configuration form
 	 * @param IqrfSpiPresenter $presenter IQRF SPI configuration presenter
 	 * @return Form IQRF SPI interface configuration form
+	 * @throws JsonException
 	 */
 	public function create(IqrfSpiPresenter $presenter): Form {
 		$this->manager->setComponent('iqrf::IqrfSpi');

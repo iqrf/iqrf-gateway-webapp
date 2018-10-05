@@ -16,25 +16,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\IqrfAppModule\Forms;
 
 use App\CoreModule\Forms\FormFactory;
-use App\IqrfAppModule\Exception\EmptyResponseException;
 use App\IqrfAppModule\Exception\DpaErrorException;
+use App\IqrfAppModule\Exception\EmptyResponseException;
+use App\IqrfAppModule\Exception\InvalidRfChannelTypeException;
 use App\IqrfAppModule\Model\IqrfNetManager;
 use App\IqrfAppModule\Presenters\NetworkPresenter;
-use Nette;
-use Nette\Forms\Form;
 use Nette\Forms\Controls\SubmitButton;
+use Nette\Forms\Form;
+use Nette\SmartObject;
+use Nette\Utils\JsonException;
 
 /**
- * IQMESH RF form factory.
+ * IQMESH RF form factory
  */
 class RfFormFactory {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * @var IqrfNetManager IQMESH Network manager
@@ -70,6 +72,7 @@ class RfFormFactory {
 	 * Create IQMESH Access password form
 	 * @param NetworkPresenter $presenter IQMESH Network presenter
 	 * @return Form IQMESH Access password form
+	 * @throws JsonException
 	 */
 	public function create(NetworkPresenter $presenter): Form {
 		$this->presenter = $presenter;
@@ -93,15 +96,15 @@ class RfFormFactory {
 			$this->rfBand = 'ERROR';
 		}
 		$form->addSelect('rfBand', 'rfBand', $rfBands)->setDisabled()
-				->setDefaultValue($this->rfBand);
+			->setDefaultValue($this->rfBand);
 		$form->addInteger('rfChannel', 'rfChannel')
-				->setRequired('messages.rfChannel')
-				->addConditionOn($form['rfBand'], Form::EQUAL, '443 MHz')
-				->addRule(Form::RANGE, 'messages.rfChannel443', [0, 16])
-				->elseCondition($form['rfBand'], Form::EQUAL, '868 MHz')
-				->addRule(Form::RANGE, 'messages.rfChannel868', [0, 67])
-				->elseCondition($form['rfBand'], Form::EQUAL, '916 MHz')
-				->addRule(Form::RANGE, 'messages.rfChannel916', [0, 255]);
+			->setRequired('messages.rfChannel')
+			->addConditionOn($form['rfBand'], Form::EQUAL, '443 MHz')
+			->addRule(Form::RANGE, 'messages.rfChannel443', [0, 16])
+			->elseCondition($form['rfBand'], Form::EQUAL, '868 MHz')
+			->addRule(Form::RANGE, 'messages.rfChannel868', [0, 67])
+			->elseCondition($form['rfBand'], Form::EQUAL, '916 MHz')
+			->addRule(Form::RANGE, 'messages.rfChannel916', [0, 255]);
 		$form->addSelect('type', 'rfChannelType', $types);
 		$form->addSubmit('set', 'set')->onClick[] = [$this, 'setChannel'];
 		$form->addProtection('core.errors.form-timeout');
@@ -111,6 +114,8 @@ class RfFormFactory {
 	/**
 	 * Set RF channel
 	 * @param SubmitButton $button Submit button for setting RF channel
+	 * @throws InvalidRfChannelTypeException
+	 * @throws JsonException
 	 */
 	public function setChannel(SubmitButton $button): void {
 		$form = $button->getForm();

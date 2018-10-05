@@ -21,7 +21,7 @@ declare(strict_types = 1);
 namespace App\IqrfAppModule\Exception;
 
 /**
- * The exception that indicates taht the interface queue is full
+ * The exception that indicates that the interface queue is full
  */
 class InterfaceQueueFullException extends DpaErrorException {
 

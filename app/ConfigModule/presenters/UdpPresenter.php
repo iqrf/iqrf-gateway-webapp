@@ -24,7 +24,9 @@ use App\ConfigModule\Datagrids\UdpMessagingDataGridFactory;
 use App\ConfigModule\Forms\UdpFormFactory;
 use App\ConfigModule\Model\GenericManager;
 use Nette\Forms\Form;
+use Nette\Utils\JsonException;
 use Ublaboo\DataGrid\DataGrid;
+use Ublaboo\DataGrid\Exception\DataGridException;
 
 /**
  * UDP interface configuration presenter
@@ -63,6 +65,7 @@ class UdpPresenter extends GenericPresenter {
 	/**
 	 * Delete UDP interface
 	 * @param int $id ID of UDP interface
+	 * @throws JsonException
 	 */
 	public function actionDelete(int $id): void {
 		$this->configManager->setComponent('iqrf::UdpMessaging');
@@ -72,9 +75,11 @@ class UdpPresenter extends GenericPresenter {
 	}
 
 	/**
-	 * Create UDP messaging datagrid
-	 * @param string $name Datagrid's component name
-	 * @return DataGrid UDP messaging datagrid
+	 * Create UDP messaging data grid
+	 * @param string $name Data grid's component name
+	 * @return DataGrid UDP messaging data grid
+	 * @throws DataGridException
+	 * @throws JsonException
 	 */
 	protected function createComponentConfigUdpDataGrid(string $name): DataGrid {
 		return $this->dataGridFactory->create($this, $name);
@@ -83,6 +88,7 @@ class UdpPresenter extends GenericPresenter {
 	/**
 	 * Create UDP interface configuration form
 	 * @return Form UDP interface configuration form
+	 * @throws JsonException
 	 */
 	protected function createComponentConfigUdpForm(): Form {
 		return $this->formFactory->create($this);

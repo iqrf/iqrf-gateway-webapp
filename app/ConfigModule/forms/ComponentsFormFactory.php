@@ -24,16 +24,17 @@ use App\ConfigModule\Model\ComponentManager;
 use App\ConfigModule\Presenters\ComponentPresenter;
 use App\CoreModule\Exception\NonExistingJsonSchemaException;
 use App\CoreModule\Forms\FormFactory;
-use Nette;
 use Nette\Forms\Form;
 use Nette\IOException;
+use Nette\SmartObject;
+use Nette\Utils\JsonException;
 
 /**
  * Component configuration form factory
  */
 class ComponentsFormFactory {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * @var ComponentManager Component configuration manager
@@ -69,6 +70,7 @@ class ComponentsFormFactory {
 	 * Create components configuration form
 	 * @param ComponentPresenter $presenter Component presenter
 	 * @return Form Components configuration form
+	 * @throws JsonException
 	 */
 	public function create(ComponentPresenter $presenter): Form {
 		$this->presenter = $presenter;
@@ -93,6 +95,7 @@ class ComponentsFormFactory {
 	/**
 	 * Save component configuration
 	 * @param Form $form Component configuration form
+	 * @throws JsonException
 	 */
 	public function save(Form $form): void {
 		try {

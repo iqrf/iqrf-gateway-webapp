@@ -21,13 +21,14 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Datagrids\SchedulerDataGridFactory;
-use App\ConfigModule\Model\SchedulerManager;
 use App\ConfigModule\Forms\SchedulerFormFactory;
+use App\ConfigModule\Model\SchedulerManager;
 use App\CoreModule\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 use Nette\IOException;
 use Nette\Utils\JsonException;
 use Ublaboo\DataGrid\DataGrid;
+use Ublaboo\DataGrid\Exception\DataGridException;
 
 /**
  * Scheduler configuration presenter
@@ -35,10 +36,10 @@ use Ublaboo\DataGrid\DataGrid;
 class SchedulerPresenter extends ProtectedPresenter {
 
 	/**
-	 * @var SchedulerDataGridFactory Scheduler's tasks datagrid
+	 * @var SchedulerDataGridFactory Scheduler's tasks data grid
 	 * @inject
 	 */
-	public $datagridFactory;
+	public $dataGridFactory;
 
 	/**
 	 * @var SchedulerFormFactory Scheduler's task configuration form factory
@@ -120,17 +121,20 @@ class SchedulerPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Create scheduler's tasks datagrid
-	 * @param string $name Datagrid's component name
-	 * @return DataGrid Scheduler's tasks datagrid
+	 * Create scheduler's tasks data grid
+	 * @param string $name Data grid's component name
+	 * @return DataGrid Scheduler's tasks data grid
+	 * @throws DataGridException
+	 * @throws JsonException
 	 */
 	protected function createComponentConfigSchedulerDataGrid(string $name): DataGrid {
-		return $this->datagridFactory->create($this, $name);
+		return $this->dataGridFactory->create($this, $name);
 	}
 
 	/**
 	 * Create Edit task form
 	 * @return Form Edit task form
+	 * @throws JsonException
 	 */
 	protected function createComponentConfigSchedulerForm(): Form {
 		return $this->formFactory->create($this);

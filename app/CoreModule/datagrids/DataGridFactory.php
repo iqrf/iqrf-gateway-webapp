@@ -22,15 +22,15 @@ namespace App\CoreModule\Datagrids;
 
 use App\CoreModule\Presenters\BasePresenter;
 use Kdyby\Translation\Translator;
-use Nette;
+use Nette\SmartObject;
 use Ublaboo\DataGrid\DataGrid;
 
 /**
- * Generic datagrid factory
+ * Generic data grid factory
  */
 class DataGridFactory {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * @var Translator Translator
@@ -46,10 +46,10 @@ class DataGridFactory {
 	}
 
 	/**
-	 * Create a datagrid and set the translator
+	 * Create a data grid and set the translator
 	 * @param BasePresenter $presenter Base presenter
-	 * @param string $name Datagrid's component name
-	 * @return DataGrid Datagrid
+	 * @param string $name Data grid's component name
+	 * @return DataGrid Data grid
 	 */
 	public function create(BasePresenter $presenter, string $name): DataGrid {
 		DataGrid::$icon_prefix = 'glyphicon glyphicon-';

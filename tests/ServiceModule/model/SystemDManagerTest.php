@@ -52,21 +52,6 @@ class SystemDManagerTest extends TestCase {
 	}
 
 	/**
-	 * Set up the test environment
-	 */
-	protected function setUp(): void {
-		$this->commandManager = \Mockery::mock(CommandManager::class);
-		$this->manager = new SystemDManager($this->commandManager);
-	}
-
-	/**
-	 * Cleanup the test environment
-	 */
-	protected function tearDown(): void {
-		\Mockery::close();
-	}
-
-	/**
 	 * Test function to start IQRF Gateway Daemon's service via systemD
 	 */
 	public function testStart(): void {
@@ -104,6 +89,21 @@ class SystemDManagerTest extends TestCase {
 		$command = 'systemctl status ' . $this->serviceName . '.service';
 		$this->commandManager->shouldReceive('send')->with($command, true)->andReturn($expected);
 		Assert::same($expected, $this->manager->getStatus());
+	}
+
+	/**
+	 * Set up the test environment
+	 */
+	protected function setUp(): void {
+		$this->commandManager = \Mockery::mock(CommandManager::class);
+		$this->manager = new SystemDManager($this->commandManager);
+	}
+
+	/**
+	 * Cleanup the test environment
+	 */
+	protected function tearDown(): void {
+		\Mockery::close();
 	}
 
 }

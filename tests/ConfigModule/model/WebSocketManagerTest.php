@@ -1,8 +1,8 @@
 <?php
 
 /**
- * TEST: App\ConfigModule\Model\WebsocketManager
- * @covers App\ConfigModule\Model\WebsocketManager
+ * TEST: App\ConfigModule\Model\WebSocketManager
+ * @covers App\ConfigModule\Model\WebSocketManager
  * @phpVersion >= 7.0
  * @testCase
  */
@@ -11,7 +11,7 @@ declare(strict_types = 1);
 namespace Test\ConfigModule\Model;
 
 use App\ConfigModule\Model\GenericManager;
-use App\ConfigModule\Model\WebsocketManager;
+use App\ConfigModule\Model\WebSocketManager;
 use App\CoreModule\Model\JsonFileManager;
 use App\CoreModule\Model\JsonSchemaManager;
 use Nette\DI\Container;
@@ -21,9 +21,9 @@ use Tester\TestCase;
 $container = require __DIR__ . '/../../bootstrap.php';
 
 /**
- * Tests for websocket interface configuration manager
+ * Tests for WebSocket interface configuration manager
  */
-class WebsocketManagerTest extends TestCase {
+class WebSocketManagerTest extends TestCase {
 
 	/**
 	 * @var Container Nette Tester Container
@@ -41,7 +41,7 @@ class WebsocketManagerTest extends TestCase {
 	private $fileManagerTemp;
 
 	/**
-	 * @var array Websocket messaging and service file names
+	 * @var array WebSocket messaging and service file names
 	 */
 	private $fileNames = [
 		'messaging' => 'iqrf__WebsocketMessaging',
@@ -49,7 +49,7 @@ class WebsocketManagerTest extends TestCase {
 	];
 
 	/**
-	 * @var array Websocket instances
+	 * @var array WebSocket instances
 	 */
 	private $instances = [
 		'messaging' => 'WebsocketMessaging',
@@ -57,12 +57,12 @@ class WebsocketManagerTest extends TestCase {
 	];
 
 	/**
-	 * @var WebsocketManager Websocket interface configuration manager
+	 * @var WebSocketManager WebSocket interface configuration manager
 	 */
 	private $manager;
 
 	/**
-	 * @var WebsocketManager Websocket interface configuration manager
+	 * @var WebSocketManager WebSocket interface configuration manager
 	 */
 	private $managerTemp;
 
@@ -83,19 +83,16 @@ class WebsocketManagerTest extends TestCase {
 	}
 
 	/**
-	 * Set up the test environment
+	 * Test function to delete a WebSocket interface configuration
 	 */
-	protected function setUp(): void {
-		$configPath = __DIR__ . '/../../data/configuration/';
-		$configTempPath = __DIR__ . '/../../temp/configuration/';
-		$schemaPath = __DIR__ . '/../../data/cfgSchemas/';
-		$this->fileManager = new JsonFileManager($configPath);
-		$this->fileManagerTemp = new JsonFileManager($configTempPath);
-		$schemaManager = new JsonSchemaManager($schemaPath);
-		$genericManager = new GenericManager($this->fileManager, $schemaManager);
-		$genericManagerTest = new GenericManager($this->fileManagerTemp, $schemaManager);
-		$this->manager = new WebsocketManager($genericManager, $this->fileManager, $schemaManager);
-		$this->managerTemp = new WebsocketManager($genericManagerTest, $this->fileManagerTemp, $schemaManager);
+	public function testDelete(): void {
+		\Tester\Environment::lock('config_websocket', __DIR__ . '/../../temp/');
+		$this->copyConfiguration();
+		Assert::true($this->fileManagerTemp->exists($this->fileNames['messaging']));
+		Assert::true($this->fileManagerTemp->exists($this->fileNames['service']));
+		$this->managerTemp->delete(0);
+		Assert::false($this->fileManagerTemp->exists($this->fileNames['messaging']));
+		Assert::false($this->fileManagerTemp->exists($this->fileNames['service']));
 	}
 
 	/**
@@ -109,20 +106,7 @@ class WebsocketManagerTest extends TestCase {
 	}
 
 	/**
-	 * Test function to delete a websocket interface configuration
-	 */
-	public function testDelete(): void {
-		\Tester\Environment::lock('config_websocket', __DIR__ . '/../../temp/');
-		$this->copyConfiguration();
-		Assert::true($this->fileManagerTemp->exists($this->fileNames['messaging']));
-		Assert::true($this->fileManagerTemp->exists($this->fileNames['service']));
-		$this->managerTemp->delete(0);
-		Assert::false($this->fileManagerTemp->exists($this->fileNames['messaging']));
-		Assert::false($this->fileManagerTemp->exists($this->fileNames['service']));
-	}
-
-	/**
-	 * Test function to load a websocket interface configuration
+	 * Test function to load a WebSocket interface configuration
 	 */
 	public function testLoad(): void {
 		$expected = [
@@ -135,7 +119,7 @@ class WebsocketManagerTest extends TestCase {
 	}
 
 	/**
-	 * Test function to save a websocket interface
+	 * Test function to save a WebSocket interface
 	 */
 	public function testSave(): void {
 		\Tester\Environment::lock('config_websocket', __DIR__ . '/../../temp/');
@@ -150,7 +134,7 @@ class WebsocketManagerTest extends TestCase {
 	}
 
 	/**
-	 * Test function to get a websocket interfaces
+	 * Test function to get a WebSocket interfaces
 	 */
 	public function testList(): void {
 		$expected = [
@@ -178,7 +162,7 @@ class WebsocketManagerTest extends TestCase {
 	}
 
 	/**
-	 * Test function to create a websocket messaging
+	 * Test function to create a WebSocket messaging
 	 */
 	public function testCreateMessaging(): void {
 		$expected = [
@@ -186,9 +170,9 @@ class WebsocketManagerTest extends TestCase {
 			'instance' => $this->instances['messaging'],
 			'acceptAsyncMsg' => $this->values['acceptAsyncMsg'],
 			'RequiredInterfaces' => [
-				(object) [
+				(object)[
 					'name' => 'shape::IWebsocketService',
-					'target' => (object) [
+					'target' => (object)[
 						'instance' => $this->instances['service'],
 					],
 				],
@@ -198,7 +182,7 @@ class WebsocketManagerTest extends TestCase {
 	}
 
 	/**
-	 * Test function to create a websocket service
+	 * Test function to create a WebSocket service
 	 */
 	public function testCreateService(): void {
 		$expected = [
@@ -210,13 +194,29 @@ class WebsocketManagerTest extends TestCase {
 	}
 
 	/**
-	 * Test function to get websocket service file name by instance name
+	 * Test function to get WebSocket service file name by instance name
 	 */
 	public function testGetServiceFile(): void {
 		Assert::same($this->fileNames['service'], $this->manager->getServiceFile($this->instances['service']));
 	}
 
+	/**
+	 * Set up the test environment
+	 */
+	protected function setUp(): void {
+		$configPath = __DIR__ . '/../../data/configuration/';
+		$configTempPath = __DIR__ . '/../../temp/configuration/';
+		$schemaPath = __DIR__ . '/../../data/cfgSchemas/';
+		$this->fileManager = new JsonFileManager($configPath);
+		$this->fileManagerTemp = new JsonFileManager($configTempPath);
+		$schemaManager = new JsonSchemaManager($schemaPath);
+		$genericManager = new GenericManager($this->fileManager, $schemaManager);
+		$genericManagerTest = new GenericManager($this->fileManagerTemp, $schemaManager);
+		$this->manager = new WebSocketManager($genericManager, $this->fileManager, $schemaManager);
+		$this->managerTemp = new WebSocketManager($genericManagerTest, $this->fileManagerTemp, $schemaManager);
+	}
+
 }
 
-$test = new WebsocketManagerTest($container);
+$test = new WebSocketManagerTest($container);
 $test->run();

@@ -25,6 +25,7 @@ use App\ConfigModule\Model\GenericManager;
 use App\ConfigModule\Model\IqrfManager;
 use App\CoreModule\Model\JsonFileManager;
 use Nette\Forms\Form;
+use Nette\Utils\JsonException;
 
 /**
  * IQRF SPI interface configuration presenter
@@ -32,16 +33,14 @@ use Nette\Forms\Form;
 class IqrfSpiPresenter extends GenericPresenter {
 
 	/**
-	 * @var JsonFileManager JSON file manager
-	 */
-	private $fileManager;
-
-	/**
 	 * @var IqrfSpiFormFactory IQRF SPI interface configuration form factory
 	 * @inject
 	 */
 	public $formFactory;
-
+	/**
+	 * @var JsonFileManager JSON file manager
+	 */
+	private $fileManager;
 	/**
 	 * @var IqrfManager IQRF interface manager
 	 */
@@ -61,6 +60,7 @@ class IqrfSpiPresenter extends GenericPresenter {
 
 	/**
 	 * Render IQRF SPI interface configurator
+	 * @throws JsonException
 	 */
 	public function renderDefault(): void {
 		$this->template->interfaces = $this->iqrfManager->getSpiInterfaces();
@@ -70,6 +70,7 @@ class IqrfSpiPresenter extends GenericPresenter {
 	/**
 	 * Create IQRF SPI interface configuration form
 	 * @return Form IQRF SPI interface configuration form
+	 * @throws JsonException
 	 */
 	protected function createComponentConfigIqrfSpiForm(): Form {
 		return $this->formFactory->create($this);

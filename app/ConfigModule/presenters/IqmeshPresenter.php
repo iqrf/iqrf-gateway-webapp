@@ -24,6 +24,7 @@ use App\ConfigModule\Forms\OtaUploadFormFactory;
 use App\ConfigModule\Model\GenericManager;
 use Nette\Application\BadRequestException;
 use Nette\Forms\Form;
+use Nette\Utils\JsonException;
 
 /**
  * IQMESH services configuration presenter
@@ -57,6 +58,7 @@ class IqmeshPresenter extends GenericPresenter {
 	/**
 	 * Create IQRF OTA upload service form
 	 * @return Form IQRF OTA upload service form
+	 * @throws JsonException
 	 */
 	protected function createComponentConfigOtaUploadForm(): Form {
 		return $this->otaFormFactory->create($this);

@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\ConfigModule\Forms;
 
@@ -24,16 +24,17 @@ use App\ConfigModule\Model\SchedulerManager;
 use App\ConfigModule\Presenters\SchedulerPresenter;
 use App\CoreModule\Exception\NonExistingJsonSchemaException;
 use App\CoreModule\Forms\FormFactory;
-use Nette;
 use Nette\Forms\Form;
 use Nette\IOException;
+use Nette\SmartObject;
+use Nette\Utils\JsonException;
 
 /**
  * Scheduler's task configuration form factory
  */
 class SchedulerFormFactory {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * @var SchedulerManager Scheduler manager
@@ -69,6 +70,7 @@ class SchedulerFormFactory {
 	 * Create Scheduler's task configuration form
 	 * @param SchedulerPresenter $presenter Scheduler presenter
 	 * @return Form Scheduler's task configuration form
+	 * @throws JsonException
 	 */
 	public function create(SchedulerPresenter $presenter): Form {
 		$this->presenter = $presenter;
@@ -89,37 +91,37 @@ class SchedulerFormFactory {
 		}
 		$form->addText('time', 'time');
 		$form->addSelect('service', 'config.scheduler.form.service')
-				->setItems($this->manager->getServices(), false)
-				->setTranslator($translator)
-				->setPrompt('config.scheduler.form.messages.service-prompt')
-				->setRequired('messages.service')->checkDefaultValue(false);
+			->setItems($this->manager->getServices(), false)
+			->setTranslator($translator)
+			->setPrompt('config.scheduler.form.messages.service-prompt')
+			->setRequired('messages.service')->checkDefaultValue(false);
 		$task = $form->addContainer('task');
 		$task->addSelect('messaging', 'config.scheduler.form.messaging')
-				->setItems($this->manager->getMessagings(), false)
-				->setTranslator($translator)
-				->setPrompt('config.scheduler.form.messages.messaging-prompt')
-				->setRequired('messages.messaging')->checkDefaultValue(false);
+			->setItems($this->manager->getMessagings(), false)
+			->setTranslator($translator)
+			->setPrompt('config.scheduler.form.messages.messaging-prompt')
+			->setRequired('messages.messaging')->checkDefaultValue(false);
 		$message = $task->addContainer('message');
 		$message->addSelect('ctype', 'ctype', $cTypes)
-				->setPrompt('messages.ctype-prompt')
-				->setRequired('messages.ctype')->checkDefaultValue(false);
+			->setPrompt('messages.ctype-prompt')
+			->setRequired('messages.ctype')->checkDefaultValue(false);
 		$message->addSelect('type', 'type', $types)
-				->setPrompt('messages.type-prompt')
-				->setRequired('messages.type')->checkDefaultValue(false);
+			->setPrompt('messages.type-prompt')
+			->setRequired('messages.type')->checkDefaultValue(false);
 		switch ($defaults['task']['message']['type']) {
 			case 'raw-hdp':
 				$message->addText('nadr', 'nadr')->setRequired('messages.nadr')
-						->addRule(Form::PATTERN, 'messages.nadr-rule', '[0-9A-Fa-f]{1,2}')
-						->addRule(Form::MAX_LENGTH, 'messages.nadr-rule', 2);
+					->addRule(Form::PATTERN, 'messages.nadr-rule', '[0-9A-Fa-f]{1,2}')
+					->addRule(Form::MAX_LENGTH, 'messages.nadr-rule', 2);
 				$message->addText('pnum', 'pnum')->setRequired('messages.pnum')
-						->addRule(Form::PATTERN, 'messages.pnum-rule', '[0-9A-Fa-f]{1,2}')
-						->addRule(Form::MAX_LENGTH, 'messages.pnum-rule', 2);
+					->addRule(Form::PATTERN, 'messages.pnum-rule', '[0-9A-Fa-f]{1,2}')
+					->addRule(Form::MAX_LENGTH, 'messages.pnum-rule', 2);
 				$message->addText('pcmd', 'pcmd')->setRequired('messages.pcmd')
-						->addRule(Form::PATTERN, 'messages.pcmd-rule', '[0-9A-Fa-f]{1,2}')
-						->addRule(Form::MAX_LENGTH, 'messages.pcmd-rule', 2);
+					->addRule(Form::PATTERN, 'messages.pcmd-rule', '[0-9A-Fa-f]{1,2}')
+					->addRule(Form::MAX_LENGTH, 'messages.pcmd-rule', 2);
 				$message->addText('hwpid', 'hwpid')->setRequired(false)
-						->addRule(Form::PATTERN, 'messages.hwpid-rule', '[0-9A-Fa-f]{4}')
-						->addRule(Form::MAX_LENGTH, 'messages.hwpid-rule', 4);
+					->addRule(Form::PATTERN, 'messages.hwpid-rule', '[0-9A-Fa-f]{4}')
+					->addRule(Form::MAX_LENGTH, 'messages.hwpid-rule', 4);
 				$message->addText('rcode', 'rcode');
 				$message->addText('rdata', 'rdata');
 				break;
@@ -142,7 +144,8 @@ class SchedulerFormFactory {
 
 	/**
 	 * Save scheduler's task configuration
-	 * @param Form $form Scheduler's task configuration fore
+	 * @param Form $form Scheduler's task configuration form
+	 * @throws JsonException
 	 */
 	public function save(Form $form): void {
 		try {

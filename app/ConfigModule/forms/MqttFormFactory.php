@@ -20,22 +20,23 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Forms;
 
-use App\ConfigModule\Forms\GenericConfigFormFactory;
 use App\ConfigModule\Presenters\MqttPresenter;
-use Nette;
 use Nette\Forms\Form;
+use Nette\SmartObject;
+use Nette\Utils\JsonException;
 
 /**
  * MQTT interface configuration form factory
  */
 class MqttFormFactory extends GenericConfigFormFactory {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * Create MQTT interface configuration form
 	 * @param MqttPresenter $presenter MQTT interface presenter
 	 * @return Form MQTT interface configuration form
+	 * @throws JsonException
 	 */
 	public function create(MqttPresenter $presenter): Form {
 		$this->manager->setComponent('iqrf::MqttMessaging');
@@ -46,15 +47,15 @@ class MqttFormFactory extends GenericConfigFormFactory {
 		$form->setTranslator($form->getTranslator()->domain('config.mqtt.form'));
 		$form->addText('instance', 'instance')->setRequired('messages.instance');
 		$form->addText('BrokerAddr', 'BrokerAddr')
-				->setRequired('messages.BrokerAddr');
+			->setRequired('messages.BrokerAddr');
 		$form->addText('ClientId', 'ClientId')
-				->setRequired('messages.ClientId');
+			->setRequired('messages.ClientId');
 		$form->addInteger('Persistence', 'Persistence');
 		$form->addSelect('Qos', 'QoS', $qos);
 		$form->addText('TopicRequest', 'TopicRequest')
-				->setRequired('messages.TopicRequest');
+			->setRequired('messages.TopicRequest');
 		$form->addText('TopicResponse', 'TopicResponse')
-				->setRequired('messages.TopicResponse');
+			->setRequired('messages.TopicResponse');
 		$form->addText('User', 'User');
 		$form->addText('Password', 'Password');
 		$form->addCheckbox('EnabledSSL', 'EnabledSSL');

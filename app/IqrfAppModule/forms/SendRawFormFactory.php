@@ -21,19 +21,20 @@ declare(strict_types = 1);
 namespace App\IqrfAppModule\Forms;
 
 use App\CoreModule\Forms\FormFactory;
-use App\IqrfAppModule\Exception\EmptyResponseException;
 use App\IqrfAppModule\Exception\DpaErrorException;
+use App\IqrfAppModule\Exception\EmptyResponseException;
 use App\IqrfAppModule\Model\IqrfAppManager;
 use App\IqrfAppModule\Presenters\SendRawPresenter;
-use Nette;
 use Nette\Forms\Form;
+use Nette\SmartObject;
+use Nette\Utils\JsonException;
 
 /**
- * Send raw DPA packet form factory.
+ * Send raw DPA packet form factory
  */
 class SendRawFormFactory {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * @var IqrfAppManager Manager for communicating with iqrfapp
@@ -71,16 +72,16 @@ class SendRawFormFactory {
 		$form->setTranslator($form->getTranslator()->domain('iqrfapp.send-packet'));
 		$form->addText('packet', 'packet')->setRequired('messages.packet');
 		$form->addCheckbox('overwriteAddress', 'overwriteAddress')
-				->setDefaultValue(false);
+			->setDefaultValue(false);
 		$form->addText('address', 'customAddress')->setDefaultValue('00')->setRequired(false)
-				->addRule(Form::PATTERN, 'messages.address-rule', '[0-9A-Fa-f]{1,2}')
-				->addRule(Form::MAX_LENGTH, 'messages.address-length', 2)
-				->addConditionOn($form['overwriteAddress'], Form::EQUAL, true);
+			->addRule(Form::PATTERN, 'messages.address-rule', '[0-9A-Fa-f]{1,2}')
+			->addRule(Form::MAX_LENGTH, 'messages.address-length', 2)
+			->addConditionOn($form['overwriteAddress'], Form::EQUAL, true);
 		$form->addCheckbox('timeoutEnabled', 'overwriteTimeout')
-				->setDefaultValue(true);
+			->setDefaultValue(true);
 		$form->addInteger('timeout', 'customTimeout')->setDefaultValue(1000)
-				->addConditionOn($form['timeoutEnabled'], Form::EQUAL, true)
-				->setRequired('customTimeout');
+			->addConditionOn($form['timeoutEnabled'], Form::EQUAL, true)
+			->setRequired('customTimeout');
 		$form->addSubmit('send', 'send');
 		$form->addProtection('core.errors.form-timeout');
 		$form->onSuccess[] = [$this, 'onSuccess'];
@@ -90,6 +91,7 @@ class SendRawFormFactory {
 	/**
 	 * Send raw DPA packet
 	 * @param Form $form IQRF App send RAW packet form
+	 * @throws JsonException
 	 */
 	public function onSuccess(Form $form): void {
 		$values = $form->getValues();

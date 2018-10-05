@@ -21,10 +21,13 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Datagrids\MqttMessagingDataGridFactory;
-use App\ConfigModule\Model\GenericManager;
 use App\ConfigModule\Forms\MqttFormFactory;
+use App\ConfigModule\Model\GenericManager;
 use Nette\Forms\Form;
+use Nette\Utils\JsonException;
 use Ublaboo\DataGrid\DataGrid;
+use Ublaboo\DataGrid\Exception\DataGridColumnStatusException;
+use Ublaboo\DataGrid\Exception\DataGridException;
 
 /**
  * MQTT interface configuration presenter
@@ -63,6 +66,7 @@ class MqttPresenter extends GenericPresenter {
 	/**
 	 * Delete MQTT interface
 	 * @param int $id ID of MQTT interface
+	 * @throws JsonException
 	 */
 	public function actionDelete(int $id): void {
 		$this->configManager->setComponent('iqrf::MqttMessaging');
@@ -72,9 +76,12 @@ class MqttPresenter extends GenericPresenter {
 	}
 
 	/**
-	 * Create MQTT messaging datagrid
-	 * @param string $name Datagrid's component name
-	 * @return DataGrid MQTT messaging datagrid
+	 * Create MQTT messaging data grid
+	 * @param string $name Data grid's component name
+	 * @return DataGrid MQTT messaging data grid
+	 * @throws DataGridColumnStatusException
+	 * @throws DataGridException
+	 * @throws JsonException
 	 */
 	protected function createComponentConfigMqttDataGrid(string $name): DataGrid {
 		return $this->dataGridFactory->create($this, $name);
@@ -83,6 +90,7 @@ class MqttPresenter extends GenericPresenter {
 	/**
 	 * Create MQTT interface configuration form
 	 * @return Form MQTT interface configuration form
+	 * @throws JsonException
 	 */
 	protected function createComponentConfigMqttForm(): Form {
 		return $this->formFactory->create($this);

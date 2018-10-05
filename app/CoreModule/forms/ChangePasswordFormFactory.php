@@ -21,19 +21,18 @@ declare(strict_types = 1);
 namespace App\CoreModule\Forms;
 
 use App\CoreModule\Exception\InvalidPasswordException;
-use App\CoreModule\Forms\FormFactory;
-use App\CoreModule\Presenters\ProfilePresenter;
 use App\CoreModule\Model\UserManager;
-use Nette;
+use App\CoreModule\Presenters\ProfilePresenter;
 use Nette\Forms\Form;
 use Nette\Security\User;
+use Nette\SmartObject;
 
 /**
  * Change password form factory
  */
 class ChangePasswordFormFactory {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * @var FormFactory Generic form factory

@@ -15,24 +15,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\ConfigModule\Datagrids;
 
-use App\ConfigModule\Presenters\ComponentPresenter;
 use App\ConfigModule\Model\ComponentManager;
+use App\ConfigModule\Presenters\ComponentPresenter;
 use App\CoreModule\Datagrids\DataGridFactory;
 use App\CoreModule\Exception\NonExistingJsonSchemaException;
-use Nette;
 use Nette\IOException;
+use Nette\SmartObject;
+use Nette\Utils\JsonException;
 use Ublaboo\DataGrid\DataGrid;
+use Ublaboo\DataGrid\Exception\DataGridColumnStatusException;
+use Ublaboo\DataGrid\Exception\DataGridException;
 
 /**
- * Render a components datagrid
+ * Render a components data grid
  */
 class ComponentsDataGridFactory {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * @var ComponentManager Component manager
@@ -42,7 +45,7 @@ class ComponentsDataGridFactory {
 	/**
 	 * @var DataGridFactory Data grid factory
 	 */
-	private $datagridFactory;
+	private $dataGridFactory;
 
 	/**
 	 * @var ComponentPresenter Component's configuration presenter
@@ -51,23 +54,26 @@ class ComponentsDataGridFactory {
 
 	/**
 	 * Constructor
-	 * @param DataGridFactory $datagridFactory Generic datagrid factory
+	 * @param DataGridFactory $dataGridFactory Generic data grid factory
 	 * @param ComponentManager $componentManager Component manager
 	 */
-	public function __construct(DataGridFactory $datagridFactory, ComponentManager $componentManager) {
-		$this->datagridFactory = $datagridFactory;
+	public function __construct(DataGridFactory $dataGridFactory, ComponentManager $componentManager) {
+		$this->dataGridFactory = $dataGridFactory;
 		$this->configManager = $componentManager;
 	}
 
 	/**
-	 * Create component datagrid
+	 * Create component data grid
 	 * @param ComponentPresenter $presenter Component configuration presenter
-	 * @param string $name Datagrid's component name
-	 * @return DataGrid Component datagrid
+	 * @param string $name Data grid's component name
+	 * @return DataGrid Component data grid
+	 * @throws DataGridColumnStatusException
+	 * @throws DataGridException
+	 * @throws JsonException
 	 */
 	public function create(ComponentPresenter $presenter, string $name): DataGrid {
 		$this->presenter = $presenter;
-		$grid = $this->datagridFactory->create($presenter, $name);
+		$grid = $this->dataGridFactory->create($presenter, $name);
 		$grid->setDataSource($this->load());
 		$grid->addColumnText('name', 'config.components.form.name');
 		$grid->addColumnText('libraryPath', 'config.components.form.libraryPath');
@@ -91,8 +97,9 @@ class ComponentsDataGridFactory {
 	}
 
 	/**
-	 * Load data to the datagrid
-	 * @return array Data for the datagrid
+	 * Load data to the data grid
+	 * @return array Data for the data grid
+	 * @throws JsonException
 	 */
 	private function load(): array {
 		if ($this->presenter->user->isInRole('power')) {
@@ -113,6 +120,7 @@ class ComponentsDataGridFactory {
 	 * Change status of the component
 	 * @param int $id Component ID
 	 * @param bool $status New component's status
+	 * @throws JsonException
 	 */
 	public function changeStatus(int $id, bool $status): void {
 		$config = $this->configManager->load($id);
@@ -127,8 +135,9 @@ class ComponentsDataGridFactory {
 		} finally {
 			if ($this->presenter->isAjax()) {
 				$this->presenter->redrawControl('flashes');
-				$this->presenter['configComponentsDataGrid']->setDataSource($this->load());
-				$this->presenter['configComponentsDataGrid']->redrawItem($id);
+				$dataGrid = $this->presenter['configComponentsDataGrid'];
+				$dataGrid->setDataSource($this->load());
+				$dataGrid->redrawItem($id);
 			}
 		}
 	}

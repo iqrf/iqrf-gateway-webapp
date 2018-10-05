@@ -48,21 +48,6 @@ class IqrfNetManagerTest extends TestCase {
 	}
 
 	/**
-	 * Set up the test environment
-	 */
-	protected function setUp(): void {
-		$this->iqrfAppManager = \Mockery::mock(IqrfAppManager::class);
-		$this->iqrfNetManager = new IqrfNetManager($this->iqrfAppManager);
-	}
-
-	/**
-	 * Cleanup the test environment
-	 */
-	protected function tearDown(): void {
-		\Mockery::close();
-	}
-
-	/**
 	 * Test function to clear all bonds
 	 */
 	public function testClearAllBonds(): void {
@@ -105,7 +90,7 @@ class IqrfNetManagerTest extends TestCase {
 	}
 
 	/**
-	 * Test function to removenode
+	 * Test function to remove the node
 	 */
 	public function testRemoveNode(): void {
 		$packet = '00.00.00.05.ff.ff.10';
@@ -128,16 +113,16 @@ class IqrfNetManagerTest extends TestCase {
 			$this->iqrfAppManager->shouldReceive('sendRaw')->with($packet)->andReturn([$id]);
 			$data = $id === 0 ? '' : 'DEAD';
 			$format = $id % 2 === 1 ? IqrfNetManager::DATA_FORMAT_HEX : IqrfNetManager::DATA_FORMAT_ASCII;
-			$type = $id > 2 ? IqrfNetManager::SECURITY_USER_KEY : IqrfNetManager::SECURITY_ACCESS_PASSOWRD;
+			$type = $id > 2 ? IqrfNetManager::SECURITY_USER_KEY : IqrfNetManager::SECURITY_ACCESS_PASSWORD;
 			Assert::same([$id], $this->iqrfNetManager->setSecurity($data, $format, $type));
 		}
-		Assert::exception(function(): void {
+		Assert::exception(function (): void {
 			$this->iqrfNetManager->setSecurity('DEAD', 'DEAD');
 		}, IqrfException\UnsupportedInputFormatException::class);
-		Assert::exception(function(): void {
+		Assert::exception(function (): void {
 			$this->iqrfNetManager->setSecurity('DEAD', 'DEAD', 'userKey');
 		}, IqrfException\UnsupportedInputFormatException::class);
-		Assert::exception(function(): void {
+		Assert::exception(function (): void {
 			$this->iqrfNetManager->setSecurity('DEAD', 'ASCII', 'fooBar');
 		}, IqrfException\UnsupportedSecurityTypeException::class);
 	}
@@ -177,7 +162,7 @@ class IqrfNetManagerTest extends TestCase {
 		Assert::same([1], $this->iqrfNetManager->setRfChannel(64, IqrfNetManager::MAIN_RF_CHANNEL_B));
 		Assert::same([2], $this->iqrfNetManager->setRfChannel(26, IqrfNetManager::ALTERNATIVE_RF_CHANNEL_A));
 		Assert::same([3], $this->iqrfNetManager->setRfChannel(32, IqrfNetManager::ALTERNATIVE_RF_CHANNEL_B));
-		Assert::exception(function(): void {
+		Assert::exception(function (): void {
 			$this->iqrfNetManager->setRfChannel(52, 'test');
 		}, IqrfException\InvalidRfChannelTypeException::class);
 	}
@@ -192,10 +177,10 @@ class IqrfNetManagerTest extends TestCase {
 		$this->iqrfAppManager->shouldReceive('sendRaw')->with($packet1)->andReturn([1]);
 		Assert::same([0], $this->iqrfNetManager->setRfLpTimeout(1));
 		Assert::same([1], $this->iqrfNetManager->setRfLpTimeout(255));
-		Assert::exception(function(): void {
+		Assert::exception(function (): void {
 			$this->iqrfNetManager->setRfLpTimeout(0);
 		}, IqrfException\InvalidRfLpTimeoutException::class);
-		Assert::exception(function(): void {
+		Assert::exception(function (): void {
 			$this->iqrfNetManager->setRfLpTimeout(256);
 		}, IqrfException\InvalidRfLpTimeoutException::class);
 	}
@@ -210,10 +195,10 @@ class IqrfNetManagerTest extends TestCase {
 		$this->iqrfAppManager->shouldReceive('sendRaw')->with($packet1)->andReturn([1]);
 		Assert::same([0], $this->iqrfNetManager->setRfOutputPower(0));
 		Assert::same([1], $this->iqrfNetManager->setRfOutputPower(7));
-		Assert::exception(function(): void {
+		Assert::exception(function (): void {
 			$this->iqrfNetManager->setRfOutputPower(-1);
 		}, IqrfException\InvalidRfOutputPowerException::class);
-		Assert::exception(function(): void {
+		Assert::exception(function (): void {
 			$this->iqrfNetManager->setRfOutputPower(8);
 		}, IqrfException\InvalidRfOutputPowerException::class);
 	}
@@ -228,12 +213,27 @@ class IqrfNetManagerTest extends TestCase {
 		$this->iqrfAppManager->shouldReceive('sendRaw')->with($packet1)->andReturn([1]);
 		Assert::same([0], $this->iqrfNetManager->setRfSignalFilter(0));
 		Assert::same([1], $this->iqrfNetManager->setRfSignalFilter(64));
-		Assert::exception(function(): void {
+		Assert::exception(function (): void {
 			$this->iqrfNetManager->setRfSignalFilter(-1);
 		}, IqrfException\InvalidRfSignalFilterException::class);
-		Assert::exception(function(): void {
+		Assert::exception(function (): void {
 			$this->iqrfNetManager->setRfSignalFilter(65);
 		}, IqrfException\InvalidRfSignalFilterException::class);
+	}
+
+	/**
+	 * Set up the test environment
+	 */
+	protected function setUp(): void {
+		$this->iqrfAppManager = \Mockery::mock(IqrfAppManager::class);
+		$this->iqrfNetManager = new IqrfNetManager($this->iqrfAppManager);
+	}
+
+	/**
+	 * Cleanup the test environment
+	 */
+	protected function tearDown(): void {
+		\Mockery::close();
 	}
 
 }

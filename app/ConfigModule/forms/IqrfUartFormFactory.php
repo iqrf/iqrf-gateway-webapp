@@ -20,29 +20,30 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Forms;
 
-use App\ConfigModule\Forms\GenericConfigFormFactory;
 use App\ConfigModule\Presenters\IqrfUartPresenter;
-use Nette;
 use Nette\Forms\Form;
+use Nette\SmartObject;
+use Nette\Utils\JsonException;
 
 /**
  * IQRF UART configuration form factory
  */
 class IqrfUartFormFactory extends GenericConfigFormFactory {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * @var array UART baud rates
 	 */
 	private $baudRates = [
-		1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400
+		1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400,
 	];
 
 	/**
 	 * Create IQRF UART configuration form
 	 * @param IqrfUartPresenter $presenter IQRF UART configuration presenter
 	 * @return Form IQRF UART interface configuration form
+	 * @throws JsonException
 	 */
 	public function create(IqrfUartPresenter $presenter): Form {
 		$this->manager->setComponent('iqrf::IqrfUart');
@@ -53,7 +54,7 @@ class IqrfUartFormFactory extends GenericConfigFormFactory {
 		$form->addText('instance', 'instance')->setRequired('messages.instance');
 		$form->addText('IqrfInterface', 'IqrfInterface')->setRequired('messages.IqrfInterface');
 		$form->addSelect('baudRate', 'config.iqrfUart.form.baudRate')
-				->setTranslator($translator)->setItems($this->baudRates, false);
+			->setTranslator($translator)->setItems($this->baudRates, false);
 		$form->addInteger('powerEnableGpioPin', 'powerEnableGpioPin');
 		$form->addInteger('busEnableGpioPin', 'busEnableGpioPin');
 		$form->addSubmit('save', 'Save');

@@ -20,17 +20,17 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Forms;
 
-use Kdyby\Translation\Translator;
 use Instante\ExtendedFormMacros\IFormFactory;
-use Nette;
+use Kdyby\Translation\Translator;
 use Nette\Forms\Form;
+use Nette\SmartObject;
 
 /**
  * Generic form factory
  */
 class FormFactory {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * @var IFormFactory Form factory interface

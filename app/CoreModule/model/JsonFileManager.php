@@ -20,15 +20,16 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Model;
 
-use Nette;
+use Nette\SmartObject;
 use Nette\Utils\Json;
+use Nette\Utils\JsonException;
 
 /**
  * Tool for reading and writing JSON files
  */
 class JsonFileManager extends FileManager {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * Constructor
@@ -59,6 +60,7 @@ class JsonFileManager extends FileManager {
 	 * Read JSON file and decode JSON to array
 	 * @param string $fileName File name (without .json)
 	 * @return array JSON data in array
+	 * @throws JsonException
 	 */
 	public function read(string $fileName): array {
 		$file = parent::read($fileName . '.json');
@@ -66,9 +68,10 @@ class JsonFileManager extends FileManager {
 	}
 
 	/**
-	 * Encode JSON from array and write JSON file
+	 * Encode JSON from array and write the JSON file
 	 * @param string $name File name (without .json)
 	 * @param array $array JSON data in array
+	 * @throws JsonException
 	 */
 	public function write(string $name, $array): void {
 		$json = Json::encode($array, Json::PRETTY);

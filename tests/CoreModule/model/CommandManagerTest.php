@@ -41,13 +41,6 @@ class CommandManagerTest extends TestCase {
 	}
 
 	/**
-	 * Set up the test environment
-	 */
-	protected function setUp(): void {
-		$this->manager = new CommandManager(false);
-	}
-
-	/**
 	 * Test function to execute a shell command
 	 */
 	public function testSend(): void {
@@ -66,6 +59,13 @@ class CommandManagerTest extends TestCase {
 	 */
 	public function testCommandExistSuccess(): void {
 		Assert::true($this->manager->commandExist('echo'));
+	}
+
+	/**
+	 * Set up the test environment
+	 */
+	protected function setUp(): void {
+		$this->manager = new CommandManager(false);
 	}
 
 }

@@ -20,8 +20,11 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Presenters;
 
-use App\IqrfAppModule\Model\IqrfAppManager;
 use App\CoreModule\Presenters\ProtectedPresenter;
+use App\IqrfAppModule\Exception\EmptyResponseException;
+use App\IqrfAppModule\Exception\InvalidOperationModeException;
+use App\IqrfAppModule\Model\IqrfAppManager;
+use Nette\Utils\JsonException;
 
 /**
  * Change operational mode presenter
@@ -43,14 +46,34 @@ class ChangeModePresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Change gateway mode to Forwarding mode
+	 * Change IQRF Gateway's mode to Forwarding mode
+	 * @throws EmptyResponseException
+	 * @throws InvalidOperationModeException
+	 * @throws JsonException
 	 */
 	public function actionForwarding(): void {
 		$this->changeMode('forwarding');
 	}
 
 	/**
-	 * Change gateway mode to Operational mode
+	 * Change IQRF Gateway Daemon's mode
+	 * @param string $mode New IQRF Gateway's mode mode
+	 * @throws EmptyResponseException
+	 * @throws InvalidOperationModeException
+	 * @throws JsonException
+	 */
+	private function changeMode(string $mode): void {
+		$this->iqrfAppManager->changeOperationMode($mode);
+		$this->flashMessage('gateway.mode.modes.' . $mode . '.message', 'info');
+		$this->redirect('ChangeMode:default');
+		$this->setView('default');
+	}
+
+	/**
+	 * Change IQRF Gateway's mode to Operational mode
+	 * @throws EmptyResponseException
+	 * @throws InvalidOperationModeException
+	 * @throws JsonException
 	 */
 	public function actionOperational(): void {
 		$this->changeMode('operational');
@@ -58,20 +81,12 @@ class ChangeModePresenter extends ProtectedPresenter {
 
 	/**
 	 * Change gateway mode to Service mode
+	 * @throws EmptyResponseException
+	 * @throws InvalidOperationModeException
+	 * @throws JsonException
 	 */
 	public function actionService(): void {
 		$this->changeMode('service');
-	}
-
-	/**
-	 * Change gateway mode
-	 * @param string $mode Gateway mode
-	 */
-	private function changeMode(string $mode): void {
-		$this->iqrfAppManager->changeOperationMode($mode);
-		$this->flashMessage('gateway.mode.modes.' . $mode . '.message', 'info');
-		$this->redirect('ChangeMode:default');
-		$this->setView('default');
 	}
 
 }

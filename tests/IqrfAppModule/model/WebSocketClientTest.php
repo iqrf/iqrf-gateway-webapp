@@ -1,8 +1,8 @@
 <?php
 
 /**
- * TEST: App\IqrfAppModule\Model\WebsocketClient
- * @covers App\IqrfAppModule\Model\WebsocketClient
+ * TEST: App\IqrfAppModule\Model\WebSocketClient
+ * @covers App\IqrfAppModule\Model\WebSocketClient
  * @phpVersion >= 7.0
  * @testCase
  */
@@ -12,7 +12,7 @@ namespace Test\IqrfAppModule\Model;
 
 use App\IqrfAppModule\Exception as IqrfException;
 use App\IqrfAppModule\Model\MessageIdManager;
-use App\IqrfAppModule\Model\WebsocketClient;
+use App\IqrfAppModule\Model\WebSocketClient;
 use Nette\DI\Container;
 use Tester\Assert;
 use Tester\TestCase;
@@ -20,9 +20,9 @@ use Tester\TestCase;
 $container = require __DIR__ . '/../../bootstrap.php';
 
 /**
- * Tests for websocket client
+ * Tests for WebSocket client
  */
-class WebsocketClientTest extends TestCase {
+class WebSocketClientTest extends TestCase {
 
 	/**
 	 * @var Container Nette Tester Container
@@ -30,7 +30,7 @@ class WebsocketClientTest extends TestCase {
 	private $container;
 
 	/**
-	 * @var WebsocketClient IQRF App manager
+	 * @var WebSocketClient IQRF App manager
 	 */
 	private $client;
 
@@ -53,23 +53,7 @@ class WebsocketClientTest extends TestCase {
 	}
 
 	/**
-	 * Set up the test environment
-	 */
-	protected function setUp(): void {
-		$this->msgIdManager = \Mockery::mock(MessageIdManager::class);
-		$this->msgIdManager->shouldReceive('generate')->andReturn('1');
-		$this->client = new WebsocketClient($this->wsServer, $this->msgIdManager);
-	}
-
-	/**
-	 * Cleanup the test environment
-	 */
-	protected function tearDown(): void {
-		\Mockery::close();
-	}
-
-	/**
-	 * Test function to send JSON DPA request via websocket (success)
+	 * Test function to send JSON DPA request via WebSocket (success)
 	 */
 	public function testSendSyncSuccess(): void {
 		$array = [
@@ -85,18 +69,34 @@ class WebsocketClientTest extends TestCase {
 	}
 
 	/**
-	 * Test function to send JSON DPA request via websocket (timeout)
+	 * Test function to send JSON DPA request via WebSocket (timeout)
 	 */
 	public function testSendSyncTimeout(): void {
-		Assert::exception(function(): void {
+		Assert::exception(function (): void {
 			$wsServer = 'ws://localhost:9000';
-			$manager = new WebsocketClient($wsServer, $this->msgIdManager);
+			$manager = new WebSocketClient($wsServer, $this->msgIdManager);
 			$array = ['data' => ['msgId' => '1',],];
 			$manager->sendSync($array, 1);
 		}, IqrfException\EmptyResponseException::class);
 	}
 
+	/**
+	 * Set up the test environment
+	 */
+	protected function setUp(): void {
+		$this->msgIdManager = \Mockery::mock(MessageIdManager::class);
+		$this->msgIdManager->shouldReceive('generate')->andReturn('1');
+		$this->client = new WebSocketClient($this->wsServer, $this->msgIdManager);
+	}
+
+	/**
+	 * Cleanup the test environment
+	 */
+	protected function tearDown(): void {
+		\Mockery::close();
+	}
+
 }
 
-$test = new WebsocketClientTest($container);
+$test = new WebSocketClientTest($container);
 $test->run();

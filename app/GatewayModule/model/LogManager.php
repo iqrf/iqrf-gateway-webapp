@@ -21,8 +21,9 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Model;
 
 use App\CoreModule\Model\ZipArchiveManager;
-use Nette;
+use Nette\Application\BadRequestException;
 use Nette\Application\Responses\FileResponse;
+use Nette\SmartObject;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
 use Nette\Utils\Strings;
@@ -32,7 +33,7 @@ use Nette\Utils\Strings;
  */
 class LogManager {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * @var string Path to a directory with log files of IQRF Gateway Daemon
@@ -53,6 +54,15 @@ class LogManager {
 	}
 
 	/**
+	 * Load the latest log of IQRF Gateway Daemon
+	 * @return string IQRF Gateway Daemon's log
+	 */
+	public function load(): string {
+		$logFiles = $this->getLogFiles();
+		return FileSystem::read(reset($logFiles));
+	}
+
+	/**
 	 * Get IQRF Gateway Daemon's log files
 	 * @return array IQRF Gateway Daemon's log files
 	 */
@@ -68,17 +78,9 @@ class LogManager {
 	}
 
 	/**
-	 * Load the latest log of IQRF Gateway Daemon
-	 * @return string IQRF Gateway Daemon's log
-	 */
-	public function load(): string {
-		$logFiles = $this->getLogFiles();
-		return FileSystem::read(reset($logFiles));
-	}
-
-	/**
 	 * Download logs of IQRF Gateway Daemon
 	 * @return FileResponse HTTP response with the logs
+	 * @throws BadRequestException
 	 */
 	public function download(): FileResponse {
 		$zipManager = new ZipArchiveManager($this->path);

@@ -21,14 +21,14 @@ declare(strict_types = 1);
 namespace App\ServiceModule\Model;
 
 use App\CoreModule\Model\CommandManager;
-use Nette;
+use Nette\SmartObject;
 
 /**
  * Tool for managing services (systemD init daemon)
  */
 class SystemDManager implements IServiceManager {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * @var CommandManager Command Manager

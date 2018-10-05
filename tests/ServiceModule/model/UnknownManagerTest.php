@@ -48,21 +48,6 @@ class UnknownManagerTest extends TestCase {
 	}
 
 	/**
-	 * Set up the test environment
-	 */
-	protected function setUp(): void {
-		$this->commandManager = \Mockery::mock(CommandManager::class);
-		$this->manager = new UnknownManager($this->commandManager);
-	}
-
-	/**
-	 * Cleanup the test environment
-	 */
-	protected function tearDown(): void {
-		\Mockery::close();
-	}
-
-	/**
 	 * Test function to start IQRF Gateway Daemon's service via unknown init daemon
 	 */
 	public function testStart(): void {
@@ -76,7 +61,6 @@ class UnknownManagerTest extends TestCase {
 		Assert::exception([$this->manager, 'stop'], NotSupportedInitSystemException::class);
 	}
 
-
 	/**
 	 * Test function to restart IQRF Gateway Daemon's service via unknown init daemon
 	 */
@@ -89,6 +73,21 @@ class UnknownManagerTest extends TestCase {
 	 */
 	public function testGetStatus(): void {
 		Assert::exception([$this->manager, 'getStatus'], NotSupportedInitSystemException::class);
+	}
+
+	/**
+	 * Set up the test environment
+	 */
+	protected function setUp(): void {
+		$this->commandManager = \Mockery::mock(CommandManager::class);
+		$this->manager = new UnknownManager($this->commandManager);
+	}
+
+	/**
+	 * Cleanup the test environment
+	 */
+	protected function tearDown(): void {
+		\Mockery::close();
 	}
 
 }

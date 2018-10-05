@@ -20,20 +20,23 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Datagrids;
 
-use App\ConfigModule\Presenters\MqttPresenter;
 use App\ConfigModule\Model\GenericManager;
-use App\CoreModule\Exception\NonExistingJsonSchemaException;
+use App\ConfigModule\Presenters\MqttPresenter;
 use App\CoreModule\Datagrids\DataGridFactory;
-use Nette;
+use App\CoreModule\Exception\NonExistingJsonSchemaException;
 use Nette\IOException;
+use Nette\SmartObject;
+use Nette\Utils\JsonException;
 use Ublaboo\DataGrid\DataGrid;
+use Ublaboo\DataGrid\Exception\DataGridColumnStatusException;
+use Ublaboo\DataGrid\Exception\DataGridException;
 
 /**
- * Render a MQTT messaging datagrid
+ * Render a MQTT messaging data grid
  */
 class MqttMessagingDataGridFactory {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * @var GenericManager Generic configuration manager
@@ -43,7 +46,7 @@ class MqttMessagingDataGridFactory {
 	/**
 	 * @var DataGridFactory Data grid factory
 	 */
-	private $datagridFactory;
+	private $dataGridFactory;
 
 	/**
 	 * @var MqttPresenter MQTT interface configuration presenter
@@ -52,23 +55,26 @@ class MqttMessagingDataGridFactory {
 
 	/**
 	 * Constructor
-	 * @param DataGridFactory $datagridFactory Generic datagrid factory
+	 * @param DataGridFactory $dataGridFactory Generic data grid factory
 	 * @param GenericManager $configManager Generic configuration manager
 	 */
-	public function __construct(DataGridFactory $datagridFactory, GenericManager $configManager) {
-		$this->datagridFactory = $datagridFactory;
+	public function __construct(DataGridFactory $dataGridFactory, GenericManager $configManager) {
+		$this->dataGridFactory = $dataGridFactory;
 		$this->configManager = $configManager;
 	}
 
 	/**
-	 * Create MQTT messaging datagrid
+	 * Create MQTT messaging data grid
 	 * @param MqttPresenter $presenter MQTT interface configuration presenter
-	 * @param string $name Datagrid's component name
-	 * @return DataGrid MQTT messaging datagrid
+	 * @param string $name Data grid's component name
+	 * @return DataGrid MQTT messaging data grid
+	 * @throws DataGridColumnStatusException
+	 * @throws DataGridException
+	 * @throws JsonException
 	 */
 	public function create(MqttPresenter $presenter, string $name): DataGrid {
 		$this->presenter = $presenter;
-		$grid = $this->datagridFactory->create($presenter, $name);
+		$grid = $this->dataGridFactory->create($presenter, $name);
 		$this->configManager->setComponent('iqrf::MqttMessaging');
 		$grid->setDataSource($this->configManager->list());
 		$grid->addColumnText('instance', 'config.mqtt.form.instance');
@@ -100,18 +106,10 @@ class MqttMessagingDataGridFactory {
 	 * Change status of the async messaging
 	 * @param int $id Component ID
 	 * @param bool $status New async messaging status
+	 * @throws JsonException
 	 */
 	public function changeAsyncMsg(int $id, bool $status): void {
 		$this->changeConfiguration($id, 'acceptAsyncMsg', $status);
-	}
-
-	/**
-	 * Change status of TLS support
-	 * @param int $id Component ID
-	 * @param bool $status New TLS support
-	 */
-	public function changeTls(int $id, bool $status): void {
-		$this->changeConfiguration($id, 'EnabledSSL', $status);
 	}
 
 	/**
@@ -119,6 +117,7 @@ class MqttMessagingDataGridFactory {
 	 * @param int $id ID
 	 * @param string $key Key to change
 	 * @param mixed $value New value
+	 * @throws JsonException
 	 */
 	private function changeConfiguration(int $id, string $key, $value): void {
 		$config = $this->configManager->load($id);
@@ -133,10 +132,21 @@ class MqttMessagingDataGridFactory {
 		} finally {
 			if ($this->presenter->isAjax()) {
 				$this->presenter->redrawControl('flashes');
-				$this->presenter['configMqttDataGrid']->setDataSource($this->configManager->list());
-				$this->presenter['configMqttDataGrid']->redrawItem($id);
+				$dataGrid = $this->presenter['configMqttDataGrid'];
+				$dataGrid->setDataSource($this->configManager->list());
+				$dataGrid->redrawItem($id);
 			}
 		}
+	}
+
+	/**
+	 * Change status of TLS support
+	 * @param int $id Component ID
+	 * @param bool $status New TLS support
+	 * @throws JsonException
+	 */
+	public function changeTls(int $id, bool $status): void {
+		$this->changeConfiguration($id, 'EnabledSSL', $status);
 	}
 
 }

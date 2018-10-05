@@ -16,25 +16,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\GatewayModule\Model;
 
+use App\CoreModule\Model\CommandManager;
+use App\CoreModule\Model\ZipArchiveManager;
 use App\IqrfAppModule\Exception\DpaErrorException;
 use App\IqrfAppModule\Exception\EmptyResponseException;
 use App\IqrfAppModule\Model\IqrfAppManager;
-use App\GatewayModule\Model\InfoManager;
-use App\CoreModule\Model\CommandManager;
-use App\CoreModule\Model\ZipArchiveManager;
-use Nette;
+use Nette\Application\BadRequestException;
 use Nette\Application\Responses\FileResponse;
+use Nette\SmartObject;
+use Nette\Utils\JsonException;
 
 /**
  * Gateway diagnostics tool
  */
 class DiagnosticsManager {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * @var CommandManager Command manager
@@ -89,22 +90,26 @@ class DiagnosticsManager {
 	}
 
 	/**
-	 * Add basic information about the gateway
+	 * Download a diagnostic data
+	 * @return FileResponse HTTP response with the diagnostic data
+	 * @throws BadRequestException
+	 * @throws JsonException
 	 */
-	public function addInfo(): void {
-		$array = [];
-		$array['board'] = $this->infoManager->getBoard();
-		$array['daemonVersion'] = $this->infoManager->getDaemonVersion();
-		$array['webappVersion'] = $this->infoManager->getWebAppVersion();
-		try {
-			$array['coordinator'] = $this->infoManager->getCoordinatorInfo();
-		} catch (DpaErrorException | EmptyResponseException $e) {
-			$array['coordinator'] = 'ERROR';
-		}
-		$array['hostname'] = $this->infoManager->getHostname();
-		$array['uname'] = $this->commandManager->send('uname -a', true);
-		$array['uptime'] = $this->commandManager->send('uptime -p', true);
-		$this->zipManager->addJsonFromArray('info.json', $array);
+	public function download(): FileResponse {
+		$now = new \DateTime();
+		$fileName = 'iqrf-gateway-diagnostics_' . $now->format('c') . '.zip';
+		$contentType = 'application/zip';
+		$this->addConfiguration();
+		$this->addDaemonLog();
+		$this->addDmesg();
+		$this->addInfo();
+		$this->addServices();
+		$this->addSpi();
+		$this->addUsb();
+		$this->addWebappLog();
+		$this->zipManager->close();
+		$response = new FileResponse($this->path, $fileName, $contentType, true);
+		return $response;
 	}
 
 	/**
@@ -122,11 +127,31 @@ class DiagnosticsManager {
 	}
 
 	/**
-	 * Add information from dmesg commmand
+	 * Add information from dmesg command
 	 */
 	public function addDmesg(): void {
 		$output = $this->commandManager->send('dmesg', true);
 		$this->zipManager->addFileFromText('dmesg.log', $output);
+	}
+
+	/**
+	 * Add basic information about the gateway
+	 * @throws JsonException
+	 */
+	public function addInfo(): void {
+		$array = [];
+		$array['board'] = $this->infoManager->getBoard();
+		$array['daemonVersion'] = $this->infoManager->getDaemonVersion();
+		$array['webappVersion'] = $this->infoManager->getWebAppVersion();
+		try {
+			$array['coordinator'] = $this->infoManager->getCoordinatorInfo();
+		} catch (DpaErrorException | EmptyResponseException $e) {
+			$array['coordinator'] = 'ERROR';
+		}
+		$array['hostname'] = $this->infoManager->getHostname();
+		$array['uname'] = $this->commandManager->send('uname -a', true);
+		$array['uptime'] = $this->commandManager->send('uptime -p', true);
+		$this->zipManager->addJsonFromArray('info.json', $array);
 	}
 
 	/**
@@ -167,27 +192,6 @@ class DiagnosticsManager {
 	public function addWebappLog(): void {
 		$logDir = __DIR__ . '/../../../log/';
 		$this->zipManager->addFolder($logDir, 'logs/iqrf-gateway-webapp');
-	}
-
-	/**
-	 * Download a diagnostic data
-	 * @return FileResponse HTTP response with the diagnostic data
-	 */
-	public function download(): FileResponse {
-		$now = new \DateTime();
-		$fileName = 'iqrf-gateway-diagnostics_' . $now->format('c') . '.zip';
-		$contentType = 'application/zip';
-		$this->addConfiguration();
-		$this->addDaemonLog();
-		$this->addDmesg();
-		$this->addInfo();
-		$this->addServices();
-		$this->addSpi();
-		$this->addUsb();
-		$this->addWebappLog();
-		$this->zipManager->close();
-		$response = new FileResponse($this->path, $fileName, $contentType, true);
-		return $response;
 	}
 
 }

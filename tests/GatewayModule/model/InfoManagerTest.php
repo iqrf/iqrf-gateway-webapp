@@ -10,10 +10,10 @@ declare(strict_types = 1);
 
 namespace Test\Model;
 
-use App\GatewayModule\Model\InfoManager;
-use App\IqrfAppModule\Model\IqrfAppManager;
 use App\CoreModule\Model\CommandManager;
 use App\CoreModule\Model\VersionManager;
+use App\GatewayModule\Model\InfoManager;
+use App\IqrfAppModule\Model\IqrfAppManager;
 use Nette\DI\Container;
 use Tester\Assert;
 use Tester\TestCase;
@@ -72,23 +72,6 @@ class InfoManagerTest extends TestCase {
 	 */
 	public function __construct(Container $container) {
 		$this->container = $container;
-	}
-
-	/**
-	 * Set up the test environment
-	 */
-	protected function setUp(): void {
-		$this->commandManager = \Mockery::mock(CommandManager::class);
-		$this->versionManager = \Mockery::mock(VersionManager::class);
-		$this->iqrfAppManager = \Mockery::mock(IqrfAppManager::class);
-		$this->manager = new InfoManager($this->commandManager, $this->iqrfAppManager, $this->versionManager);
-	}
-
-	/**
-	 * Cleanup the test environment
-	 */
-	protected function tearDown(): void {
-		\Mockery::close();
 	}
 
 	/**
@@ -197,6 +180,23 @@ class InfoManagerTest extends TestCase {
 		$expected = 'v1.1.6';
 		$this->versionManager->shouldReceive('getInstalledWebapp')->andReturn($expected);
 		Assert::same($expected, $this->manager->getWebAppVersion());
+	}
+
+	/**
+	 * Set up the test environment
+	 */
+	protected function setUp(): void {
+		$this->commandManager = \Mockery::mock(CommandManager::class);
+		$this->versionManager = \Mockery::mock(VersionManager::class);
+		$this->iqrfAppManager = \Mockery::mock(IqrfAppManager::class);
+		$this->manager = new InfoManager($this->commandManager, $this->iqrfAppManager, $this->versionManager);
+	}
+
+	/**
+	 * Cleanup the test environment
+	 */
+	protected function tearDown(): void {
+		\Mockery::close();
 	}
 
 }

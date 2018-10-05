@@ -22,8 +22,9 @@ namespace App\IqrfAppModule\Model;
 
 use App\IqrfAppModule\Exception as IqrfException;
 use App\IqrfAppModule\Parser as IqrfParser;
-use Nette;
+use Nette\SmartObject;
 use Nette\Utils\Json;
+use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
 
 /**
@@ -31,10 +32,10 @@ use Nette\Utils\Strings;
  */
 class IqrfAppManager {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
-	 * @var WebsocketClient Websocket client
+	 * @var WebSocketClient WebSocket client
 	 */
 	private $wsClient;
 
@@ -73,24 +74,26 @@ class IqrfAppManager {
 
 	/**
 	 * Constructor
-	 * @param WebsocketClient $wsClient Websocket client
+	 * @param WebSocketClient $wsClient WebSocket client
 	 */
-	public function __construct(WebsocketClient $wsClient) {
+	public function __construct(WebSocketClient $wsClient) {
 		$this->wsClient = $wsClient;
 	}
 
 	/**
 	 * Send RAW IQRF packet
 	 * @param string $packet RAW IQRF packet
-	 * @param int $timeout DPA timeout in milliseconds
+	 * @param int|null $timeout DPA timeout in milliseconds
 	 * @return array DPA request and response
+	 * @throws IqrfException\EmptyResponseException
+	 * @throws JsonException
 	 */
-	public function sendRaw(string $packet, int $timeout = null): array {
+	public function sendRaw(string $packet, ?int $timeout = null): array {
 		$this->fixPacket($packet);
 		$array = [
 			'mType' => 'iqrfRaw',
 			'data' => [
-				'timeout' => (int) $timeout,
+				'timeout' => (int)$timeout,
 				'req' => [
 					'rData' => $packet,
 				],
@@ -108,10 +111,27 @@ class IqrfAppManager {
 	}
 
 	/**
-	 * Change iqrf-daemon operation mode
-	 * @param string $mode iqrf-daemon operation mode
+	 * Fix DPA packet
+	 * @param string $packet DPA packet to fix
+	 */
+	public function fixPacket(string &$packet): void {
+		$data = explode('.', trim($packet, '.'));
+		$nadrLo = $data[0];
+		$nadrHi = $data[1];
+		if ($nadrHi !== '00' && $nadrLo === '00') {
+			$data[1] = $nadrLo;
+			$data[0] = $nadrHi;
+		}
+		$packet = Strings::lower(implode('.', $data));
+	}
+
+	/**
+	 * Change IQRF Gateway Daemon's operation mode
+	 * @param string $mode IQRF Gateway Daemon's operation mode
 	 * @return string Response
+	 * @throws IqrfException\EmptyResponseException
 	 * @throws IqrfException\InvalidOperationModeException
+	 * @throws JsonException
 	 */
 	public function changeOperationMode(string $mode) {
 		$modes = ['forwarding', 'operational', 'service'];
@@ -137,7 +157,7 @@ class IqrfAppManager {
 	 */
 	public function validatePacket(string $packet): bool {
 		$pattern = '/^([0-9a-fA-F]{1,2}\.){4,62}[0-9a-fA-F]{1,2}(\.|)$/';
-		return (bool) preg_match($pattern, $packet);
+		return (bool)preg_match($pattern, $packet);
 	}
 
 	/**
@@ -153,25 +173,13 @@ class IqrfAppManager {
 	}
 
 	/**
-	 * Fix DPA packet
-	 * @param string $packet DPA packet to fix
-	 */
-	public function fixPacket(string &$packet): void {
-		$data = explode('.', trim($packet, '.'));
-		$nadrLo = $data[0];
-		$nadrHi = $data[1];
-		if ($nadrHi !== '00' && $nadrLo === '00') {
-			$data[1] = $nadrLo;
-			$data[0] = $nadrHi;
-		}
-		$packet = Strings::lower(implode('.', $data));
-	}
-
-	/**
 	 * Parse DPA response
 	 * @param array $json JSON DPA response
 	 * @return array|null Parsed response in array
+	 * @throws IqrfException\DpaErrorException
 	 * @throws IqrfException\EmptyResponseException
+	 * @throws IqrfException\UserErrorException
+	 * @throws JsonException
 	 */
 	public function parseResponse(array $json): ?array {
 		$this->checkStatus($json);
@@ -195,9 +203,11 @@ class IqrfAppManager {
 	}
 
 	/**
-	 * Chack status from JSON DPA response
+	 * Check status from JSON DPA response
 	 * @param array $json JSON DPA request and response
+	 * @throws IqrfException\DpaErrorException
 	 * @throws IqrfException\UserErrorException
+	 * @throws JsonException
 	 */
 	public function checkStatus(array $json): void {
 		$status = Json::decode($json['response'], Json::FORCE_ARRAY)['data']['status'];
@@ -212,10 +222,11 @@ class IqrfAppManager {
 	}
 
 	/**
-	 * Get a DPA packet from JSON DPA request and reponse
+	 * Get a DPA packet from JSON DPA request and response
 	 * @param array $json JSON DPA request and response
 	 * @param string $type Data type (request|response)
 	 * @return string DPA packet
+	 * @throws JsonException
 	 */
 	public function getPacket(array $json, string $type): string {
 		$array = Json::decode($json[$type], Json::FORCE_ARRAY);

@@ -20,18 +20,20 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Datagrids;
 
-use App\ConfigModule\Presenters\WebsocketPresenter;
 use App\ConfigModule\Model\GenericManager;
+use App\ConfigModule\Presenters\WebsocketPresenter;
 use App\CoreModule\Datagrids\DataGridFactory;
-use Nette;
+use Nette\SmartObject;
+use Nette\Utils\JsonException;
 use Ublaboo\DataGrid\DataGrid;
+use Ublaboo\DataGrid\Exception\DataGridException;
 
 /**
- * Render a websocket service datagrid
+ * Render a WebSocket service data grid
  */
-class WebsocketServiceDataGridFactory {
+class WebSocketServiceDataGridFactory {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
 	 * @var GenericManager Generic configuration manager
@@ -41,37 +43,39 @@ class WebsocketServiceDataGridFactory {
 	/**
 	 * @var DataGridFactory Data grid factory
 	 */
-	private $datagridFactory;
+	private $dataGridFactory;
 
 	/**
 	 * Constructor
-	 * @param DataGridFactory $datagridFactory Generic datagrid factory
+	 * @param DataGridFactory $dataGridFactory Generic data grid factory
 	 * @param GenericManager $configManager Generic configuration manager
 	 */
-	public function __construct(DataGridFactory $datagridFactory, GenericManager $configManager) {
-		$this->datagridFactory = $datagridFactory;
+	public function __construct(DataGridFactory $dataGridFactory, GenericManager $configManager) {
+		$this->dataGridFactory = $dataGridFactory;
 		$this->configManager = $configManager;
 	}
 
 	/**
-	 * Create websocket service datagrid
-	 * @param WebsocketPresenter $presenter Websocket configuration presenter
-	 * @param string $name Datagrid's component name
-	 * @return DataGrid Websocket service datagrid
+	 * Create WebSocket service data grid
+	 * @param WebsocketPresenter $presenter WebSocket configuration presenter
+	 * @param string $name Data grid's component name
+	 * @return DataGrid WebSocket service data grid
+	 * @throws DataGridException
+	 * @throws JsonException
 	 */
 	public function create(WebsocketPresenter $presenter, string $name): DataGrid {
-		$grid = $this->datagridFactory->create($presenter, $name);
+		$grid = $this->dataGridFactory->create($presenter, $name);
 		$this->configManager->setComponent('shape::WebsocketCppService');
 		$grid->setDataSource($this->configManager->list());
 		$grid->addColumnText('instance', 'config.websocket.form.instance');
 		$grid->addColumnNumber('WebsocketPort', 'config.websocket.form.WebsocketPort');
 		$grid->addAction('edit-service', 'config.actions.Edit')->setIcon('pencil')
-				->setClass('btn btn-xs btn-info');
+			->setClass('btn btn-xs btn-info');
 		$grid->addAction('delete-service', 'config.actions.Remove')->setIcon('remove')
-				->setClass('btn btn-xs btn-danger ajax')
-				->setConfirm('config.websocket.service.messages.confirmDelete', 'instance');
+			->setClass('btn btn-xs btn-danger ajax')
+			->setConfirm('config.websocket.service.messages.confirmDelete', 'instance');
 		$grid->addToolbarButton('add-service', 'config.actions.Add')
-				->setClass('btn btn-xs btn-success');
+			->setClass('btn btn-xs btn-success');
 		return $grid;
 	}
 

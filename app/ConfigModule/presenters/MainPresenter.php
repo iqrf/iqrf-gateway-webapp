@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\ConfigModule\Presenters;
 
@@ -33,15 +33,14 @@ use Nette\Utils\JsonException;
 class MainPresenter extends ProtectedPresenter {
 
 	/**
-	 * @var MainManager Main configuration manager
-	 */
-	private $configManager;
-
-	/**
 	 * @var MainFormFactory Main daemon's configuration form factory
 	 * @inject
 	 */
 	public $formFactory;
+	/**
+	 * @var MainManager Main configuration manager
+	 */
+	private $configManager;
 
 	/**
 	 * Constructor
@@ -70,6 +69,7 @@ class MainPresenter extends ProtectedPresenter {
 	/**
 	 * Create Main daemon's configuration form
 	 * @return Form Main daemon's configuration form
+	 * @throws JsonException
 	 */
 	protected function createComponentConfigMainForm(): Form {
 		return $this->formFactory->create($this);

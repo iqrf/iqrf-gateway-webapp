@@ -21,10 +21,13 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Datagrids\MqMessagingDataGridFactory;
-use App\ConfigModule\Model\GenericManager;
 use App\ConfigModule\Forms\MqFormFactory;
+use App\ConfigModule\Model\GenericManager;
 use Nette\Forms\Form;
+use Nette\Utils\JsonException;
 use Ublaboo\DataGrid\DataGrid;
+use Ublaboo\DataGrid\Exception\DataGridColumnStatusException;
+use Ublaboo\DataGrid\Exception\DataGridException;
 
 /**
  * MQ interface configuration presenter
@@ -32,7 +35,7 @@ use Ublaboo\DataGrid\DataGrid;
 class MqPresenter extends GenericPresenter {
 
 	/**
-	 * @var MqFormFactory MQ inteface configuration form factory
+	 * @var MqFormFactory MQ interface configuration form factory
 	 * @inject
 	 */
 	public $formFactory;
@@ -63,6 +66,7 @@ class MqPresenter extends GenericPresenter {
 	/**
 	 * Delete MQ interface
 	 * @param int $id ID of MQ interface
+	 * @throws JsonException
 	 */
 	public function actionDelete(int $id): void {
 		$this->configManager->setComponent('iqrf::MqMessaging');
@@ -72,9 +76,12 @@ class MqPresenter extends GenericPresenter {
 	}
 
 	/**
-	 * Create MQ messaging datagrid
-	 * @param string $name Datagrid's component name
-	 * @return DataGrid MQ messaging datagrid
+	 * Create MQ messaging data grid
+	 * @param string $name Data grid's component name
+	 * @return DataGrid MQ messaging data grid
+	 * @throws DataGridColumnStatusException
+	 * @throws DataGridException
+	 * @throws JsonException
 	 */
 	protected function createComponentConfigMqDataGrid(string $name): DataGrid {
 		return $this->dataGridFactory->create($this, $name);
@@ -83,6 +90,7 @@ class MqPresenter extends GenericPresenter {
 	/**
 	 * Create MQ interface configuration form
 	 * @return Form MQ interface configuration form
+	 * @throws JsonException
 	 */
 	protected function createComponentConfigMqForm(): Form {
 		return $this->formFactory->create($this);

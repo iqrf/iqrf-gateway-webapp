@@ -23,18 +23,19 @@ namespace App\CoreModule\Model;
 use App\CoreModule\Exception\InvalidJsonException;
 use App\CoreModule\Exception\NonExistingJsonSchemaException;
 use JsonSchema\Validator;
-use Nette;
+use Nette\SmartObject;
+use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
 
 /**
- * Tool for reading and validationg JSON schemas.
+ * Tool for reading and validating JSON schemas
  */
 class JsonSchemaManager extends JsonFileManager {
 
-	use Nette\SmartObject;
+	use SmartObject;
 
 	/**
-	 * @var string JSON Schema file name
+	 * @var string JSON schema file name
 	 */
 	private $schema;
 
@@ -47,7 +48,7 @@ class JsonSchemaManager extends JsonFileManager {
 	}
 
 	/**
-	 * Set file name of JSON schema from component name
+	 * Set file name of JSON schema from the component name
 	 * @param string $component Component name
 	 * @throws NonExistingJsonSchemaException
 	 */
@@ -66,6 +67,7 @@ class JsonSchemaManager extends JsonFileManager {
 	 * @param \stdClass $json JSON to validate
 	 * @return boolean Is the JSON valid?
 	 * @throws InvalidJsonException
+	 * @throws JsonException
 	 */
 	public function validate(\stdClass $json): bool {
 		$schema = parent::read($this->schema);
