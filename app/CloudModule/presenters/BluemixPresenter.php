@@ -21,8 +21,10 @@ declare(strict_types = 1);
 namespace App\CloudModule\Presenters;
 
 use App\CloudModule\Forms\BluemixFormFactory;
+use App\CoreModule\Model\JsonFileManager;
 use App\CoreModule\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
+use Nette\Utils\JsonException;
 
 /**
  * IBM Bluemix presenter
@@ -34,6 +36,18 @@ class BluemixPresenter extends ProtectedPresenter {
 	 * @inject
 	 */
 	public $formFactory;
+	/**
+	 * @var JsonFileManager JSON file manager
+	 */
+	private $fileManager;
+
+	/**
+	 * Constructor
+	 */
+	public function __construct() {
+		$this->fileManager = new JsonFileManager(__DIR__ . '/../json/');
+		parent::__construct();
+	}
 
 	/**
 	 * Create MQTT interface form
@@ -41,6 +55,14 @@ class BluemixPresenter extends ProtectedPresenter {
 	 */
 	protected function createComponentCloudBluemixForm(): Form {
 		return $this->formFactory->create($this);
+	}
+
+	/**
+	 * Render MQTT interface creation form
+	 * @throws JsonException
+	 */
+	public function renderDefault(): void {
+		$this->template->guides = $this->fileManager->read('guides')['bluemix'];
 	}
 
 }

@@ -1,0 +1,14 @@
+{
+	"aws": {
+		"pdf": "https://github.com/iqrfsdk/iot-starter-kit/blob/master/install/pdf/iqrf-part3a.pdf",
+		"video": "https://youtu.be/Z9R2vdaw3KA"
+	},
+	"azure": {
+		"pdf": "https://github.com/iqrfsdk/iot-starter-kit/blob/master/install/pdf/iqrf-part3b.pdf",
+		"video": "https://youtu.be/SIBoTrYwR2g"
+	},
+	"bluemix": {
+		"pdf": "https://github.com/iqrfsdk/iot-starter-kit/blob/master/install/pdf/iqrf-part3c.pdf",
+		"video": "https://youtu.be/xoAReOyrkZ4"
+	}
+}

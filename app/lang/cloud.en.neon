@@ -53,3 +53,7 @@ msAzure:
 		save_restart: Save and restart
 	messages:
 		invalidConnectionString: Invalid MS Azure IoT Hub connection string for device.
+
+guides:
+	pdf: PDF guide
+	video: Video guide
