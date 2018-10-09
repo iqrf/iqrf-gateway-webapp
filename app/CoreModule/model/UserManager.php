@@ -59,8 +59,7 @@ class UserManager {
 		if (!password_verify($oldPassword, $row['password'])) {
 			throw new InvalidPasswordException();
 		}
-		$data = ['password' => password_hash($newPassword, PASSWORD_DEFAULT)];
-		$this->table->where('id', $id)->update($data);
+		$this->editPassword($id, $newPassword);
 	}
 
 	/**
@@ -89,6 +88,16 @@ class UserManager {
 			'role' => $role,
 			'language' => $language,
 		];
+		$this->table->where('id', $id)->update($data);
+	}
+
+	/**
+	 * Edit rhe user's password
+	 * @param int $id User ID
+	 * @param string $password New User's password
+	 */
+	public function editPassword(int $id, string $password): void {
+		$data = ['password' => password_hash($password, PASSWORD_DEFAULT)];
 		$this->table->where('id', $id)->update($data);
 	}
 

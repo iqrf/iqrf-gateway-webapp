@@ -32,10 +32,20 @@ database:
 	dsn: 'sqlite:%appDir%/config/database.db'
 
 extensions:
+	console: Contributte\Console\DI\ConsoleExtension(%consoleMode%)
 	extendedFormMacros: Instante\ExtendedFormMacros\DI\ExtendedFormMacrosExtension
 	guzzle: Contributte\Guzzlette\DI\GuzzleExtension
 	monolog: Kdyby\Monolog\DI\MonologExtension
 	translation: Kdyby\Translation\DI\TranslationExtension
+
+console:
+	name: IQRF Gateway Webapp manager
+	version: 2.0-beta
+	catchExceptions: true
+	autoExit: true
+	#url: https://contributte.com
+	lazy: true
+	#helperSet: @customHelperSet
 
 guzzle:
 	debug: true
@@ -87,6 +97,7 @@ tracy:
 includes:
 	- ../CloudModule/config/config.neon
 	- ../ConfigModule/config/config.neon
+	- ../ConsoleModule/config/config.neon
 	- ../CoreModule/config/config.neon
 	- ../GatewayModule/config/config.neon
 	- ../IqrfAppModule/config/config.neon
