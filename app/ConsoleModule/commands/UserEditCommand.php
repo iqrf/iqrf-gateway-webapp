@@ -20,14 +20,14 @@ declare(strict_types = 1);
 
 namespace App\ConsoleModule\Commands;
 
-use App\CoreModule\Model\UserManager;
+use App\ConsoleModule\Model\ConsoleUserManager;
 use Nette\SmartObject;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\Question;
+use Symfony\Component\Console\Question\ChoiceQuestion;
 
 /**
  * CLI command for user management
@@ -42,15 +42,15 @@ class UserEditCommand extends Command {
 	protected static $defaultName = 'user:edit';
 
 	/**
-	 * @var UserManager User manager
+	 * @var ConsoleUserManager User manager
 	 */
 	protected $userManager;
 
 	/**
 	 * Constructor
-	 * @param UserManager $userManager User manager
+	 * @param ConsoleUserManager $userManager User manager
 	 */
-	public function __construct(UserManager $userManager) {
+	public function __construct(ConsoleUserManager $userManager) {
 		parent::__construct();
 		$this->userManager = $userManager;
 	}
@@ -89,28 +89,15 @@ class UserEditCommand extends Command {
 	 */
 	private function askUserName(InputInterface $input, OutputInterface $output): array {
 		$username = $input->getOption('username');
-		$user = $this->getUser($username);
+		$user = $this->userManager->getUser($username);
 		while (is_null($user)) {
 			$helper = $this->getHelper('question');
-			$question = new Question('Please enter the username: ');
+			$userNames = $this->userManager->listUserNames();
+			$question = new ChoiceQuestion('Please enter the username: ', $userNames);
 			$username = $helper->ask($input, $output, $question);
-			$user = $this->getUser($username);
+			$user = $this->userManager->getUser($username);
 		}
 		return $user;
-	}
-
-	/**
-	 * Get information about the user from username
-	 * @param null|string $username Username
-	 * @return array|null Information about the user
-	 */
-	private function getUser(?string $username): ?array {
-		foreach ($this->userManager->getUsers() as $user) {
-			if ($user['username'] === $username) {
-				return $user;
-			}
-		}
-		return null;
 	}
 
 	/**
@@ -125,7 +112,7 @@ class UserEditCommand extends Command {
 		$roles = ['power', 'normal'];
 		while (is_null($role) || !in_array($role, $roles, true)) {
 			$helper = $this->getHelper('question');
-			$question = new Question('Please enter the user\'s role: [' . $user['role'] . '] ', $user['role']);
+			$question = new ChoiceQuestion('Please enter the user\'s role: ', $roles, $user['role']);
 			$role = $helper->ask($input, $output, $question);
 		}
 		return $role;
@@ -143,7 +130,7 @@ class UserEditCommand extends Command {
 		$languages = ['en'];
 		while (is_null($language) || !in_array($language, $languages, true)) {
 			$helper = $this->getHelper('question');
-			$question = new Question('Please enter the user\'s language: [' . $user['language'] . '] ', $user['language']);
+			$question = new ChoiceQuestion('Please enter the user\'s language: ', $languages, $user['language']);
 			$language = $helper->ask($input, $output, $question);
 		}
 		return $language;

@@ -20,13 +20,14 @@ declare(strict_types = 1);
 
 namespace App\ConsoleModule\Commands;
 
-use App\CoreModule\Model\UserManager;
+use App\ConsoleModule\Model\ConsoleUserManager;
 use Nette\SmartObject;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
 
 /**
@@ -42,15 +43,15 @@ class UserAddCommand extends Command {
 	protected static $defaultName = 'user:add';
 
 	/**
-	 * @var UserManager User manager
+	 * @var ConsoleUserManager User manager
 	 */
 	protected $userManager;
 
 	/**
 	 * Constructor
-	 * @param UserManager $userManager User manager
+	 * @param ConsoleUserManager $userManager User manager
 	 */
-	public function __construct(UserManager $userManager) {
+	public function __construct(ConsoleUserManager $userManager) {
 		parent::__construct();
 		$this->userManager = $userManager;
 	}
@@ -95,28 +96,11 @@ class UserAddCommand extends Command {
 			$helper = $this->getHelper('question');
 			$question = new Question('Please enter the username: ');
 			$name = $helper->ask($input, $output, $question);
-			if ($this->uniqueUserName($name)) {
+			if ($this->userManager->uniqueUserName($name)) {
 				$username = $name;
 			}
 		}
 		return $username;
-	}
-
-	/**
-	 * Check if the username is unique
-	 * @param null|string $username Username to check
-	 * @return bool Is username unique?
-	 */
-	private function uniqueUserName(?string $username): bool {
-		if (is_null($username)) {
-			return false;
-		}
-		foreach ($this->userManager->getUsers() as $user) {
-			if ($user['username'] === $username) {
-				return false;
-			}
-		}
-		return true;
 	}
 
 	/**
@@ -146,7 +130,7 @@ class UserAddCommand extends Command {
 		$roles = ['power', 'normal'];
 		while (is_null($role) || !in_array($role, $roles, true)) {
 			$helper = $this->getHelper('question');
-			$question = new Question('Please enter the user\'s role: [normal] ', 'normal');
+			$question = new ChoiceQuestion('Please enter the user\'s role: ', $roles, 'normal');
 			$role = $helper->ask($input, $output, $question);
 		}
 		return $role;
@@ -163,7 +147,7 @@ class UserAddCommand extends Command {
 		$languages = ['en'];
 		while (is_null($language) || !in_array($language, $languages, true)) {
 			$helper = $this->getHelper('question');
-			$question = new Question('Please enter the user\'s language: [en] ', 'en');
+			$question = new ChoiceQuestion('Please enter the user\'s language: ', $languages, 'en');
 			$language = $helper->ask($input, $output, $question);
 		}
 		return $language;

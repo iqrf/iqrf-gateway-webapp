@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ConsoleModule\Commands;
 
-use App\CoreModule\Model\UserManager;
+use App\ConsoleModule\Model\ConsoleUserManager;
 use Nette\SmartObject;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
@@ -40,15 +40,15 @@ class UserListCommand extends Command {
 	protected static $defaultName = 'user:list';
 
 	/**
-	 * @var UserManager User manager
+	 * @var ConsoleUserManager User manager
 	 */
 	protected $userManager;
 
 	/**
 	 * Constructor
-	 * @param UserManager $userManager User manager
+	 * @param ConsoleUserManager $userManager User manager
 	 */
-	public function __construct(UserManager $userManager) {
+	public function __construct(ConsoleUserManager $userManager) {
 		parent::__construct();
 		$this->userManager = $userManager;
 	}
@@ -68,22 +68,10 @@ class UserListCommand extends Command {
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): void {
 		$header = ['ID', 'Username', 'Role', 'Language'];
-		$users = $this->userManager->getUsers();
-		$this->removeHashes($users);
 		$table = new Table($output);
 		$table->setHeaders($header);
-		$table->setRows($users);
+		$table->setRows($this->userManager->listUsers());
 		$table->render();
-	}
-
-	/**
-	 * Remove hashes from the information about the users
-	 * @param array $users Information about the users
-	 */
-	private function removeHashes(array &$users): void {
-		foreach ($users as &$user) {
-			unset($user['password']);
-		}
 	}
 
 }
