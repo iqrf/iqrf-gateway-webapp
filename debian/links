@@ -1,3 +1,4 @@
+usr/share/iqrf-gateway-webapp/bin/manager                               usr/bin/iqrf-gateway-webapp-manager
 usr/share/javascript/bootstrap/css/bootstrap-theme.min.css				usr/share/iqrf-gateway-webapp/www/css/bootstrap-theme.min.css
 usr/share/javascript/bootstrap/css/bootstrap-theme.min.css.map			usr/share/iqrf-gateway-webapp/www/css/bootstrap-theme.min.css.map
 usr/share/javascript/bootstrap/css/bootstrap.min.css					usr/share/iqrf-gateway-webapp/www/css/bootstrap.min.css

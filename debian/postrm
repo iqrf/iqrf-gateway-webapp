@@ -22,7 +22,6 @@ sudoers_rule_remove() {
 	if [ -e /etc/sudoers.d/iqrf-gateway-webapp ] ; then
 		rm /etc/sudoers.d/iqrf-gateway-webapp
 	fi
-	deb-systemd-invoke restart sudo.service
 }
 
 webapp_remove_config() {
@@ -37,9 +36,16 @@ webapp_remove_data() {
 	fi
 }
 
+webapp_remove_manager() {
+	if [ -e /usr/bin/iqrf-gateway-webapp-manager ] ; then
+		rm /usr/bin/iqrf-gateway-webapp-manager
+	fi
+}
+
 if [ "$1" = "remove" ] || [ "$1" = "purge" ]; then
 	nginx_remove
 	webapp_remove_data
+	webapp_remove_manager
 	if [ "$1" = "purge" ]; then
 		webapp_remove_config
 	fi

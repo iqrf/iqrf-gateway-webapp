@@ -5,9 +5,9 @@ set -e
 
 composer_init() {
 	if [ ! -d /usr/share/iqrf-gateway-webapp/vendor ] ; then
-		composer install -q -d /usr/share/iqrf-gateway-webapp
+		composer install -d /usr/share/iqrf-gateway-webapp
 	else
-		composer update -q -d /usr/share/iqrf-gateway-webapp
+		composer update -d /usr/share/iqrf-gateway-webapp
 	fi
 }
 
@@ -41,7 +41,6 @@ sudoers_rule_install() {
 	if [ ! -L /etc/sudoers.d/iqrf-gateway-webapp ] ; then
 		ln -s /etc/iqrf-gateway-webapp/sudoers/iqrf-gateway-webapp /etc/sudoers.d/iqrf-gateway-webapp
 	fi
-	deb-systemd-invoke restart sudo.service
 }
 
 webapp_remove_cache() {

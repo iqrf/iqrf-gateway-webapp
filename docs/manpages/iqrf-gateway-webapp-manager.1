@@ -9,19 +9,39 @@ command manages IQRF Gateway Webapp from command line.
 iqrf-gateway-webapp-manager [command] [options]
 .SH COMMANDS
 .nf
-.BR iqrf-gateway-webapp-manager " \fIlist\fP \- Lists all available commands"
-.BR iqrf-gateway-webapp-manager " \fIuser:add\fP [\-u USERNAME] [\-p PASSWORD] [\-r ROLE] [\-l LANGUAGE] \- Adds a new user"
-.BR iqrf-gateway-webapp-manager " \fIuser:edit\fP [\-u USERNAME] [\-r ROLE] [\-l LANGUAGE] \- Edits an existing user"
-.BR iqrf-gateway-webapp-manager " \fIuser:list\fP \- Lists all users"
-.BR iqrf-gateway-webapp-manager " \fIuser:password\fP [\-u USERNAME] [\-p PASSWORD] \- Changes a user's password"
-.BR iqrf-gateway-webapp-manager " \fIuser:remove\fP [\-u USERNAME] \- Removes an existing user"
+.TP
+.BR iqrf-gateway-webapp-manager " \fIlist\fP"
+Lists all available commands
+.TP
+.BR iqrf-gateway-webapp-manager " \fIuser:add\fP [\-u USERNAME] [\-p PASSWORD] [\-r ROLE] [\-l LANGUAGE]"
+Adds a new user
+.TP
+.BR iqrf-gateway-webapp-manager " \fIuser:edit\fP [\-u USERNAME] [\-r ROLE] [\-l LANGUAGE]"
+Edits an existing user
+.TP
+.BR iqrf-gateway-webapp-manager " \fIuser:list\fP"
+Lists all users
+.TP
+.BR iqrf-gateway-webapp-manager " \fIuser:password\fP [\-u USERNAME] [\-p PASSWORD]"
+Changes a user's password
+.TP
+.BR iqrf-gateway-webapp-manager " \fIuser:remove\fP [\-u USERNAME]"
+Removes an existing user
 .fi
 .SH OPTIONS
 .nf
-.BR \-u,\ \-user,\ \-\-username " \fIUSERNAME\fP \- User's username"
-.BR \-p,\ \-pass,\ \-\-password " \fIPASSWORD\fP \- User's password"
-.BR \-r,\ \-role,\ \-\-role " \fIROLE\fP \- User's role"
-.BR \-l,\ \-lang,\ \-\-language " \fILANGUAGE\fP \- User's language"
+.TP
+.BR \-u ", " \-user ", " \-\-username " \fIUSERNAME\fP"
+User's username
+.TP
+.BR \-p ", " \-pass ", " \-\-password " \fIPASSWORD\fP"
+User's password
+.TP
+.BR \-r ", " \-role ", " \-\-role " \fIROLE\fP"
+User's role
+.TP
+.BR \-l ", " \-lang ", " \-\-language " \fILANGUAGE\fP"
+User's language
 .fi
 .SH LICENCE
 This program is licensed under Apache License version 2.0.
