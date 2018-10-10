@@ -1,0 +1,34 @@
+.TH IQRF-GATEWAY-WEBAPP-MANAGER 1 2018-10-10 "IQRF Gateway Webapp v2.0.0" "IQRF GW Manual"
+.SH NAME
+iqrf-gateway-webapp-manager \- manage IQRF Gateway Webapp from CLI
+.SH DESCRIPTION
+The
+.B iqrf-gateway-webapp-manager
+command manages IQRF Gateway Webapp from command line.
+.SH SYNOPSIS
+iqrf-gateway-webapp-manager [command] [options]
+.SH COMMANDS
+.nf
+.BR iqrf-gateway-webapp-manager " \fIlist\fP \- Lists all available commands"
+.BR iqrf-gateway-webapp-manager " \fIuser:add\fP [\-u USERNAME] [\-p PASSWORD] [\-r ROLE] [\-l LANGUAGE] \- Adds a new user"
+.BR iqrf-gateway-webapp-manager " \fIuser:edit\fP [\-u USERNAME] [\-r ROLE] [\-l LANGUAGE] \- Edits an existing user"
+.BR iqrf-gateway-webapp-manager " \fIuser:list\fP \- Lists all users"
+.BR iqrf-gateway-webapp-manager " \fIuser:password\fP [\-u USERNAME] [\-p PASSWORD] \- Changes a user's password"
+.BR iqrf-gateway-webapp-manager " \fIuser:remove\fP [\-u USERNAME] \- Removes an existing user"
+.fi
+.SH OPTIONS
+.nf
+.BR \-u,\ \-user,\ \-\-username " \fIUSERNAME\fP \- User's username"
+.BR \-p,\ \-pass,\ \-\-password " \fIPASSWORD\fP \- User's password"
+.BR \-r,\ \-role,\ \-\-role " \fIROLE\fP \- User's role"
+.BR \-l,\ \-lang,\ \-\-language " \fILANGUAGE\fP \- User's language"
+.fi
+.SH LICENCE
+This program is licensed under Apache License version 2.0.
+.SH AUTHOR
+Roman Ondráček <\fIroman.ondracek@iqrf.com\fP>
+.SH COPYRIGHT
+.nf
+Copyright 2017 MICRORISC s.r.o.
+Copyright 2017\-2018 IQRF Tech s.r.o.
+.fi
