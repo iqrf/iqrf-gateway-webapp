@@ -1,4 +1,4 @@
-image: iqrfsdk/iqrf-gateway-webapp:tests
+image: iqrfsdk/iqrf-gateway-webapp:tests-buster
 
 stages:
     - test
@@ -28,6 +28,7 @@ cache:
         - chmod 644 ~/.ssh/known_hosts
 
 test:php7.1:
+    image: iqrfsdk/iqrf-gateway-webapp:tests-stretch
     before_script:
         - update-alternatives --set php /usr/bin/php7.1
         - composer install --no-progress
