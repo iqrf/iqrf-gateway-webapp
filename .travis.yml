@@ -2,6 +2,7 @@ language: php
 php:
   - 7.1
   - 7.2
+  - 7.3
 env:
   - PHP_BIN=php
 install:
@@ -19,20 +20,20 @@ after_failure:
 jobs:
   include:
     - stage: Code Coverage
-      php: 7.1
+      php: 7.2
       script:
         - travis_retry vendor/bin/tester -p phpdbg -c ./tests/php.ini -s --coverage ./coverage.xml --coverage-src ./app ./tests
       after_script:
         - bash <(curl -s https://codecov.io/bash)
     - stage: Code Standard Checker
-      php: 7.1
+      php: 7.2
       install:
         # Install Nette Code Checker
         - travis_retry composer install-cs
       script:
         - composer check-cs
     - stage: Static Analysis
-      php: 7.1
+      php: 7.2
       script:
         - composer phpstan
   allow_failures:
@@ -43,7 +44,6 @@ cache:
     - "$HOME/.composer/cache"
 notifications:
   slack:
-    slack:
     rooms:
       - secure: niQehmmb7BgLPQ9J6kpXg+WRGreh9E9zeunrG8dL2Ko2UWNe4jX+H0HDIxV/GIi8SEEeFPJBZM9zFP/49UG+m0b23lhxPj5T8Jcqov0PzPEqN9JRR2aNF1NMCJB/EP/6vh4onAOaiuCj6offmqaeSdHwZuKhJew3ZnHN9HeoVj4SUCS2e46T5GV1YuIF25Bzf3fbR6XJphEQUlOeoETsT2bOyNHRTHcxjjDZPkHCNurNQ1bkJXNP0ntMGF2vKFsvJ4HedeK3y3X4T9Y6amwf5FRXJ/avX5IbXsQtfy96FymvO+YKIio2k9oInBED3wBPcZobjF5GGw7Nqz5q4tTK2K0hHETHDFlftAyG8q0GCT/XoFV9o+QBPIV+24fa6f3qC7vJbAT2B3HYJoxAUQB1vH0C+Rip31jRvadOxnSKLtDirwKFQc1Jm8BHZWdqXOQa9+KLq6ADTH4RV0kAgTnqemzmADfOSGD0PV5XiePL7r2EWyx9MNeenLS0POsZUWLGEeuj/Q5pINN6iCxIfeTfDouu9nVTFSW+aAAAUWA2PMGn6rWEcORYt0GdNwWxTsoP8/I50jXxqKs2MMOaApoND4KbFR5qj1NNhy4ClfNMgRMa5rPAov1oe1Zgn00wSz2AAVGiR5T2i9S62qB20ih1NvxsD1/8aHYwr6cFv/fDJuQ=
     on_success: never
