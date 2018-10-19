@@ -70,7 +70,7 @@ class DiscoveryFormFactory {
 	public function create(NetworkPresenter $presenter): Form {
 		$this->presenter = $presenter;
 		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('iqrfapp.network-manager.discovery'));
+		$form->setTranslator($form->getTranslator()->domain('iqrfnet.network-manager.discovery'));
 		$form->addInteger('txPower', 'txPower')->setDefaultValue(6)
 			->addRule(Form::RANGE, 'messages.txPower', [0, 7])
 			->setRequired('messages.txPower');

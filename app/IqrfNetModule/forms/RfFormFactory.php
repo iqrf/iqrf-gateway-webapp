@@ -77,7 +77,7 @@ class RfFormFactory {
 	public function create(NetworkPresenter $presenter): Form {
 		$this->presenter = $presenter;
 		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('iqrfapp.network-manager.rf-settings'));
+		$form->setTranslator($form->getTranslator()->domain('iqrfnet.network-manager.rf-settings'));
 		$rfBands = [
 			'443 MHz' => 'rfBands.443',
 			'868 MHz' => 'rfBands.868',

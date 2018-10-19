@@ -70,7 +70,7 @@ class BondingFormFactory {
 	public function create(NetworkPresenter $presenter): Form {
 		$this->presenter = $presenter;
 		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('iqrfapp.network-manager.bonding'));
+		$form->setTranslator($form->getTranslator()->domain('iqrfnet.network-manager.bonding'));
 		$form->addCheckbox('autoAddress', 'autoAddress');
 		$form->addText('address', 'address')->setDefaultValue('01')
 			->addConditionOn($form['autoAddress'], Form::EQUAL, false)

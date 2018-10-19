@@ -16,23 +16,23 @@
 *}
 
 {block content}
-<h1 n:block=title>{_iqrfapp.send-packet.title}</h1>
+<h1 n:block=title>{_iqrfnet.send-packet.title}</h1>
 <div class='panel panel-default'>
 	<div class='panel-body'>
 		<form n:name=iqrfAppSendRawForm class=form>
-			<label n:name=packet for='packet'>{_iqrfapp.send-packet.packet}</label>
+			<label n:name=packet for='packet'>{_iqrfnet.send-packet.packet}</label>
 			<input n:name=packet class='form-control'>
 			<div class='row'>
 				<div class='col-md-6'>
 					<div class="form-group">
 						<div class="checkbox">
 							<label n:name=overwriteAddress for='overwriteAddress'>
-								<input n:name=overwriteAddress type="checkbox">{_iqrfapp.send-packet.overwriteAddress}
+								<input n:name=overwriteAddress type="checkbox">{_iqrfnet.send-packet.overwriteAddress}
 							</label>
 						</div>
 					</div>
 					<div class="form-group">
-						<label n:name=address for="address">{_iqrfapp.send-packet.customAddress}</label>
+						<label n:name=address for="address">{_iqrfnet.send-packet.customAddress}</label>
 						<input n:name=address type="text" class="form-control">
 					</div>
 				</div>
@@ -40,12 +40,12 @@
 					<div class="form-group">
 						<div class="checkbox">
 							<label n:name=timeoutEnabled for='timeoutEnabled'>
-								<input n:name=timeoutEnabled type="checkbox">{_iqrfapp.send-packet.overwriteTimeout}
+								<input n:name=timeoutEnabled type="checkbox">{_iqrfnet.send-packet.overwriteTimeout}
 							</label>
 						</div>
 					</div>
 					<div class="form-group">
-						<label n:name=timeout for="timeout">{_iqrfapp.send-packet.customTimeout}</label>
+						<label n:name=timeout for="timeout">{_iqrfnet.send-packet.customTimeout}</label>
 						<input n:name=timeout type="text" class="form-control">
 					</div>
 				</div>
@@ -54,7 +54,7 @@
 		</form>
 	</div>
 </div>
-<h2>{_iqrfapp.macros.title}</h2>
+<h2>{_iqrfnet.macros.title}</h2>
 <div class='panel panel-default'>
 	<div class='panel-body'>
 		<div class="btn-toolbar" role="toolbar">

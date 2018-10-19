@@ -16,17 +16,17 @@
 *}
 
 {block content}
-<h1 n:block=title>{_iqrfapp.network-manager.title}</h1>
+<h1 n:block=title>{_iqrfnet.network-manager.title}</h1>
 <div class="col-sm-6">
-	<h2>{_iqrfapp.network-manager.bonding.title}</h2>
+	<h2>{_iqrfnet.network-manager.bonding.title}</h2>
 	<div class='panel panel-default'>
 		<div class='panel-body'>
 			<form n:name=iqrfNetBondingForm class=form>
-				<label n:name=address for='address'>{_iqrfapp.network-manager.bonding.address}</label>
+				<label n:name=address for='address'>{_iqrfnet.network-manager.bonding.address}</label>
 				<input n:name=address class='form-control'>
 				<div class='checkbox'>
 					<label n:name=autoAddress for='autoAddress'>
-						<input n:name=autoAddress type='checkbox'> {_iqrfapp.network-manager.bonding.autoAddress}
+						<input n:name=autoAddress type='checkbox'> {_iqrfnet.network-manager.bonding.autoAddress}
 					</label>
 				</div>
 				<input n:name=bond id='frm-iqrfNetBondingForm-bond' class='btn btn-primary'>
@@ -38,7 +38,7 @@
 	</div>
 </div>
 <div class="col-sm-6">
-	<h2>{_iqrfapp.network-manager.discovery.title}</h2>
+	<h2>{_iqrfnet.network-manager.discovery.title}</h2>
 	<div class='panel panel-default'>
 		<div class='panel-body'>
 			{control iqrfNetDiscoveryForm}
@@ -46,7 +46,7 @@
 	</div>
 </div>
 <div class="col-sm-6">
-	<h2>{_iqrfapp.network-manager.security.title}</h2>
+	<h2>{_iqrfnet.network-manager.security.title}</h2>
 	<div class='panel panel-default'>
 		<div class='panel-body'>
 			{control iqrfNetSecurityForm}
@@ -54,7 +54,7 @@
 	</div>
 </div>
 <div class="col-sm-6">
-	<h2>{_iqrfapp.network-manager.rf-settings.title}</h2>
+	<h2>{_iqrfnet.network-manager.rf-settings.title}</h2>
 	<div class='panel panel-default'>
 		<div class='panel-body'>
 			{control iqrfNetRfForm}

@@ -69,7 +69,7 @@ class SendRawFormFactory {
 	public function create(SendRawPresenter $presenter): Form {
 		$this->presenter = $presenter;
 		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('iqrfapp.send-packet'));
+		$form->setTranslator($form->getTranslator()->domain('iqrfnet.send-packet'));
 		$form->addText('packet', 'packet')->setRequired('messages.packet');
 		$form->addCheckbox('overwriteAddress', 'overwriteAddress')
 			->setDefaultValue(false);

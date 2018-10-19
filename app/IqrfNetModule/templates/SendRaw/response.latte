@@ -17,7 +17,7 @@
 
 {snippet responseChange}
 	{ifset $parsedResponse}
-		<h2>{_iqrfapp.send-packet.parsed-response}</h2>
+		<h2>{_iqrfnet.send-packet.parsed-response}</h2>
 		<div class='panel panel-default'>
 			<div class='panel-body'>
 				{foreach $parsedResponse as $type => $packet}
@@ -54,7 +54,7 @@
 	{/ifset}
 	<div class="row">
 		<div class="col-xs-6">
-			<h2>{_iqrfapp.send-packet.request}</h2>
+			<h2>{_iqrfnet.send-packet.request}</h2>
 			<div class='panel panel-default'>
 				<div class='panel-body'>
 					<pre><code class='json'>{$json['request']}</code></pre>
@@ -62,7 +62,7 @@
 			</div>
 		</div>
 		<div class="col-xs-6">
-			<h2>{_iqrfapp.send-packet.response}</h2>
+			<h2>{_iqrfnet.send-packet.response}</h2>
 			<div class='panel panel-default'>
 				<div class='panel-body'>
 					<pre><code class='json'>{$json['response']}</code></pre>

@@ -72,7 +72,7 @@ class SecurityFormFactory {
 	public function create(NetworkPresenter $presenter): Form {
 		$this->presenter = $presenter;
 		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('iqrfapp.network-manager.security'));
+		$form->setTranslator($form->getTranslator()->domain('iqrfnet.network-manager.security'));
 		$inputFormats = [
 			'ASCII' => 'input-formats.ascii',
 			'HEX' => 'input-formats.hex',
