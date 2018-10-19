@@ -67,11 +67,11 @@ function detectTimeout(packet) {
 function setTimeout(packet) {
 	let timeout = detectTimeout(packet);
 	if (timeout === null) {
-		$("#frm-iqrfAppSendRawForm-timeoutEnabled").prop("checked", false);
-		$("#frm-iqrfAppSendRawForm-timeout").prop("disabled", true);
+		$("#frm-sendRawForm-timeoutEnabled").prop("checked", false);
+		$("#frm-sendRawForm-timeout").prop("disabled", true);
 	} else {
-		$("#frm-iqrfAppSendRawForm-timeoutEnabled").prop("checked", true);
-		$("#frm-iqrfAppSendRawForm-timeout").prop("disabled", false).val(timeout);
+		$("#frm-sendRawForm-timeoutEnabled").prop("checked", true);
+		$("#frm-sendRawForm-timeout").prop("disabled", false).val(timeout);
 	}
 }
 
@@ -82,9 +82,9 @@ function setTimeout(packet) {
 function setPacket(packet) {
 	if (validatePacket(packet)) {
 		setTimeout(parsePacket(packet));
-		$("#frm-iqrfAppSendRawForm-packet").val(packet);
+		$("#frm-sendRawForm-packet").val(packet);
 	} else {
-		$("#frm-iqrfAppSendRawForm-timeout").prop("disabled", true);
+		$("#frm-sendRawForm-timeout").prop("disabled", true);
 	}
 }
 
@@ -125,21 +125,24 @@ $(".btn-packet").click(function () {
 	setPacket($(this).data("packet"));
 });
 
+// Disable custom NADR input
+$("#frm-sendRawForm-address").prop("disabled", true);
+
 // Validate and fix DPA packet and set DPA timeout
-$("#frm-iqrfAppSendRawForm-packet").keypress(function () {
+$("#frm-sendRawForm-packet").keypress(function () {
 	setPacket($(this).val());
 });
 
 // Enable or disable DPA timeout
-$("#frm-iqrfAppSendRawForm-timeoutEnabled").click(function () {
-	let checked = $(this).is(":checked");
-	$("#frm-iqrfAppSendRawForm-timeout").prop("disabled", checked);
+$("#frm-sendRawForm-timeoutEnabled").click(function () {
+	let enabled = $(this).is(":checked");
+	$("#frm-sendRawForm-timeout").prop("disabled", !enabled);
 });
 
 // Enable or disable overwrite NADR
-$("#frm-iqrfAppSendRawForm-overwriteAddress").click(function () {
-	let checked = $(this).is(":checked");
-	$("#frm-iqrfAppSendRawForm-address").prop("disabled", checked);
+$("#frm-sendRawForm-overwriteAddress").click(function () {
+	let enabled = !$(this).is(":checked");
+	$("#frm-sendRawForm-address").prop("disabled", enabled);
 });
 
 // Enable or disable auto addressing in bonding new nodes

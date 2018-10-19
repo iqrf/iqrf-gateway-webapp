@@ -87,7 +87,7 @@ class SendRawPresenter extends ProtectedPresenter {
 	 * Create send raw DPA packet form
 	 * @return Form Send raw DPA packet form
 	 */
-	protected function createComponentIqrfAppSendRawForm(): Form {
+	protected function createComponentSendRawForm(): Form {
 		return $this->sendRawFactory->create($this);
 	}
 
