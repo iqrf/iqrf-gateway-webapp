@@ -13,6 +13,7 @@ namespace Test\Model;
 use App\CoreModule\Model\CommandManager;
 use App\CoreModule\Model\VersionManager;
 use App\GatewayModule\Model\InfoManager;
+use App\IqrfAppModule\Model\DpaRawManager;
 use App\IqrfAppModule\Model\IqrfAppManager;
 use Nette\DI\Container;
 use Tester\Assert;
@@ -38,7 +39,7 @@ class InfoManagerTest extends TestCase {
 	/**
 	 * @var \Mockery\MockInterface Mocked IQRF App manager
 	 */
-	private $iqrfAppManager;
+	private $dpaManager;
 
 	/**
 	 * @var InfoManager Gateway Info manager with mocked command manager
@@ -141,8 +142,8 @@ class InfoManagerTest extends TestCase {
 	public function testGetCoordinatorInfo(): void {
 		$output = ['response'];
 		$expected = ['parsedResponse'];
-		$this->iqrfAppManager->shouldReceive('sendRaw')->with('00.00.02.00.FF.FF')->andReturn($output);
-		$this->iqrfAppManager->shouldReceive('parseResponse')->with($output)->andReturn($expected);
+		$this->dpaManager->shouldReceive('send')->with('00.00.02.00.FF.FF')->andReturn($output);
+		$this->dpaManager->shouldReceive('parseResponse')->with($output)->andReturn($expected);
 		Assert::same($expected, $this->manager->getCoordinatorInfo());
 	}
 
@@ -188,8 +189,8 @@ class InfoManagerTest extends TestCase {
 	protected function setUp(): void {
 		$this->commandManager = \Mockery::mock(CommandManager::class);
 		$this->versionManager = \Mockery::mock(VersionManager::class);
-		$this->iqrfAppManager = \Mockery::mock(IqrfAppManager::class);
-		$this->manager = new InfoManager($this->commandManager, $this->iqrfAppManager, $this->versionManager);
+		$this->dpaManager = \Mockery::mock(DpaRawManager::class);
+		$this->manager = new InfoManager($this->commandManager, $this->dpaManager, $this->versionManager);
 	}
 
 	/**

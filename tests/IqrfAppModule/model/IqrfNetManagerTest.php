@@ -11,6 +11,7 @@ declare(strict_types = 1);
 namespace Test\IqrfAppModule\Model;
 
 use App\IqrfAppModule\Exception as IqrfException;
+use App\IqrfAppModule\Model\DpaRawManager;
 use App\IqrfAppModule\Model\IqrfAppManager;
 use App\IqrfAppModule\Model\IqrfNetManager;
 use Nette\DI\Container;
@@ -32,12 +33,12 @@ class IqrfNetManagerTest extends TestCase {
 	/**
 	 * @var \Mockery\MockInterface Mocked IQRF App manager
 	 */
-	private $iqrfAppManager;
+	private $dpaManageer;
 
 	/**
 	 * @var IqrfNetManager IQMESH Network manager
 	 */
-	private $iqrfNetManager;
+	private $manager;
 
 	/**
 	 * Constructor
@@ -52,8 +53,8 @@ class IqrfNetManagerTest extends TestCase {
 	 */
 	public function testClearAllBonds(): void {
 		$packet = '00.00.00.03.ff.ff';
-		$this->iqrfAppManager->shouldReceive('sendRaw')->with($packet)->andReturn([true]);
-		Assert::same([true], $this->iqrfNetManager->clearAllBonds());
+		$this->dpaManageer->shouldReceive('send')->with($packet)->andReturn([true]);
+		Assert::same([true], $this->manager->clearAllBonds());
 	}
 
 	/**
@@ -61,11 +62,11 @@ class IqrfNetManagerTest extends TestCase {
 	 */
 	public function testBondNode(): void {
 		$packet0 = '00.00.00.04.ff.ff.00.00';
-		$this->iqrfAppManager->shouldReceive('sendRaw')->with($packet0, 12000)->andReturn([true]);
-		Assert::same([true], $this->iqrfNetManager->bondNode());
+		$this->dpaManageer->shouldReceive('send')->with($packet0, 12000)->andReturn([true]);
+		Assert::same([true], $this->manager->bondNode());
 		$packet1 = '00.00.00.04.ff.ff.0f.00';
-		$this->iqrfAppManager->shouldReceive('sendRaw')->with($packet1, 12000)->andReturn([true]);
-		Assert::same([true], $this->iqrfNetManager->bondNode('f'));
+		$this->dpaManageer->shouldReceive('send')->with($packet1, 12000)->andReturn([true]);
+		Assert::same([true], $this->manager->bondNode('f'));
 	}
 
 	/**
@@ -73,11 +74,11 @@ class IqrfNetManagerTest extends TestCase {
 	 */
 	public function testDiscovery(): void {
 		$packet0 = '00.00.00.07.ff.ff.00.00';
-		$this->iqrfAppManager->shouldReceive('sendRaw')->with($packet0, 0)->andReturn([true]);
-		Assert::same([true], $this->iqrfNetManager->discovery());
+		$this->dpaManageer->shouldReceive('send')->with($packet0, 0)->andReturn([true]);
+		Assert::same([true], $this->manager->discovery());
 		$packet1 = '00.00.00.07.ff.ff.06.ef';
-		$this->iqrfAppManager->shouldReceive('sendRaw')->with($packet1, 0)->andReturn([true]);
-		Assert::same([true], $this->iqrfNetManager->discovery(6, 'ef'));
+		$this->dpaManageer->shouldReceive('send')->with($packet1, 0)->andReturn([true]);
+		Assert::same([true], $this->manager->discovery(6, 'ef'));
 	}
 
 	/**
@@ -85,8 +86,8 @@ class IqrfNetManagerTest extends TestCase {
 	 */
 	public function testRebondNode(): void {
 		$packet = '00.00.00.06.ff.ff.10';
-		$this->iqrfAppManager->shouldReceive('sendRaw')->with($packet)->andReturn([true]);
-		Assert::same([true], $this->iqrfNetManager->rebondNode('10'));
+		$this->dpaManageer->shouldReceive('send')->with($packet)->andReturn([true]);
+		Assert::same([true], $this->manager->rebondNode('10'));
 	}
 
 	/**
@@ -94,8 +95,8 @@ class IqrfNetManagerTest extends TestCase {
 	 */
 	public function testRemoveNode(): void {
 		$packet = '00.00.00.05.ff.ff.10';
-		$this->iqrfAppManager->shouldReceive('sendRaw')->with($packet)->andReturn([true]);
-		Assert::same([true], $this->iqrfNetManager->removeNode('10'));
+		$this->dpaManageer->shouldReceive('send')->with($packet)->andReturn([true]);
+		Assert::same([true], $this->manager->removeNode('10'));
 	}
 
 	/**
@@ -110,20 +111,20 @@ class IqrfNetManagerTest extends TestCase {
 			'00.00.02.06.ff.ff.01.00.00.00.00.00.00.00.00.00.00.00.00.44.45.41.44.',
 		];
 		foreach ($packets as $id => $packet) {
-			$this->iqrfAppManager->shouldReceive('sendRaw')->with($packet)->andReturn([$id]);
+			$this->dpaManageer->shouldReceive('send')->with($packet)->andReturn([$id]);
 			$data = $id === 0 ? '' : 'DEAD';
 			$format = $id % 2 === 1 ? IqrfNetManager::DATA_FORMAT_HEX : IqrfNetManager::DATA_FORMAT_ASCII;
 			$type = $id > 2 ? IqrfNetManager::SECURITY_USER_KEY : IqrfNetManager::SECURITY_ACCESS_PASSWORD;
-			Assert::same([$id], $this->iqrfNetManager->setSecurity($data, $format, $type));
+			Assert::same([$id], $this->manager->setSecurity($data, $format, $type));
 		}
 		Assert::exception(function (): void {
-			$this->iqrfNetManager->setSecurity('DEAD', 'DEAD');
+			$this->manager->setSecurity('DEAD', 'DEAD');
 		}, IqrfException\UnsupportedInputFormatException::class);
 		Assert::exception(function (): void {
-			$this->iqrfNetManager->setSecurity('DEAD', 'DEAD', 'userKey');
+			$this->manager->setSecurity('DEAD', 'DEAD', 'userKey');
 		}, IqrfException\UnsupportedInputFormatException::class);
 		Assert::exception(function (): void {
-			$this->iqrfNetManager->setSecurity('DEAD', 'ASCII', 'fooBar');
+			$this->manager->setSecurity('DEAD', 'ASCII', 'fooBar');
 		}, IqrfException\UnsupportedSecurityTypeException::class);
 	}
 
@@ -132,9 +133,9 @@ class IqrfNetManagerTest extends TestCase {
 	 */
 	public function testReadHwpConfiguration(): void {
 		$packet = '00.00.02.02.ff.ff.';
-		$this->iqrfAppManager->shouldReceive('sendRaw')->with($packet)->andReturn(['response']);
-		$this->iqrfAppManager->shouldReceive('parseResponse')->with(['response'])->andReturn([true]);
-		Assert::same([true], $this->iqrfNetManager->readHwpConfiguration());
+		$this->dpaManageer->shouldReceive('send')->with($packet)->andReturn(['response']);
+		$this->dpaManageer->shouldReceive('parseResponse')->with(['response'])->andReturn([true]);
+		Assert::same([true], $this->manager->readHwpConfiguration());
 	}
 
 	/**
@@ -142,8 +143,8 @@ class IqrfNetManagerTest extends TestCase {
 	 */
 	public function testWriteHwpConfigurationByte(): void {
 		$packet = '00.00.02.09.ff.ff.06.34.ff';
-		$this->iqrfAppManager->shouldReceive('sendRaw')->with($packet)->andReturn([true]);
-		Assert::same([true], $this->iqrfNetManager->writeHwpConfigurationByte('06', '34'));
+		$this->dpaManageer->shouldReceive('send')->with($packet)->andReturn([true]);
+		Assert::same([true], $this->manager->writeHwpConfigurationByte('06', '34'));
 	}
 
 	/**
@@ -154,16 +155,16 @@ class IqrfNetManagerTest extends TestCase {
 		$packet1 = '00.00.02.09.ff.ff.12.40.ff';
 		$packet2 = '00.00.02.09.ff.ff.06.1a.ff';
 		$packet3 = '00.00.02.09.ff.ff.07.20.ff';
-		$this->iqrfAppManager->shouldReceive('sendRaw')->with($packet0)->andReturn([0]);
-		$this->iqrfAppManager->shouldReceive('sendRaw')->with($packet1)->andReturn([1]);
-		$this->iqrfAppManager->shouldReceive('sendRaw')->with($packet2)->andReturn([2]);
-		$this->iqrfAppManager->shouldReceive('sendRaw')->with($packet3)->andReturn([3]);
-		Assert::same([0], $this->iqrfNetManager->setRfChannel(52, IqrfNetManager::MAIN_RF_CHANNEL_A));
-		Assert::same([1], $this->iqrfNetManager->setRfChannel(64, IqrfNetManager::MAIN_RF_CHANNEL_B));
-		Assert::same([2], $this->iqrfNetManager->setRfChannel(26, IqrfNetManager::ALTERNATIVE_RF_CHANNEL_A));
-		Assert::same([3], $this->iqrfNetManager->setRfChannel(32, IqrfNetManager::ALTERNATIVE_RF_CHANNEL_B));
+		$this->dpaManageer->shouldReceive('send')->with($packet0)->andReturn([0]);
+		$this->dpaManageer->shouldReceive('send')->with($packet1)->andReturn([1]);
+		$this->dpaManageer->shouldReceive('send')->with($packet2)->andReturn([2]);
+		$this->dpaManageer->shouldReceive('send')->with($packet3)->andReturn([3]);
+		Assert::same([0], $this->manager->setRfChannel(52, IqrfNetManager::MAIN_RF_CHANNEL_A));
+		Assert::same([1], $this->manager->setRfChannel(64, IqrfNetManager::MAIN_RF_CHANNEL_B));
+		Assert::same([2], $this->manager->setRfChannel(26, IqrfNetManager::ALTERNATIVE_RF_CHANNEL_A));
+		Assert::same([3], $this->manager->setRfChannel(32, IqrfNetManager::ALTERNATIVE_RF_CHANNEL_B));
 		Assert::exception(function (): void {
-			$this->iqrfNetManager->setRfChannel(52, 'test');
+			$this->manager->setRfChannel(52, 'test');
 		}, IqrfException\InvalidRfChannelTypeException::class);
 	}
 
@@ -173,15 +174,15 @@ class IqrfNetManagerTest extends TestCase {
 	public function testSetRfLpTimeout(): void {
 		$packet0 = '00.00.02.09.ff.ff.0a.01.ff';
 		$packet1 = '00.00.02.09.ff.ff.0a.ff.ff';
-		$this->iqrfAppManager->shouldReceive('sendRaw')->with($packet0)->andReturn([0]);
-		$this->iqrfAppManager->shouldReceive('sendRaw')->with($packet1)->andReturn([1]);
-		Assert::same([0], $this->iqrfNetManager->setRfLpTimeout(1));
-		Assert::same([1], $this->iqrfNetManager->setRfLpTimeout(255));
+		$this->dpaManageer->shouldReceive('send')->with($packet0)->andReturn([0]);
+		$this->dpaManageer->shouldReceive('send')->with($packet1)->andReturn([1]);
+		Assert::same([0], $this->manager->setRfLpTimeout(1));
+		Assert::same([1], $this->manager->setRfLpTimeout(255));
 		Assert::exception(function (): void {
-			$this->iqrfNetManager->setRfLpTimeout(0);
+			$this->manager->setRfLpTimeout(0);
 		}, IqrfException\InvalidRfLpTimeoutException::class);
 		Assert::exception(function (): void {
-			$this->iqrfNetManager->setRfLpTimeout(256);
+			$this->manager->setRfLpTimeout(256);
 		}, IqrfException\InvalidRfLpTimeoutException::class);
 	}
 
@@ -191,15 +192,15 @@ class IqrfNetManagerTest extends TestCase {
 	public function testSetRfOutputPower(): void {
 		$packet0 = '00.00.02.09.ff.ff.08.00.ff';
 		$packet1 = '00.00.02.09.ff.ff.08.07.ff';
-		$this->iqrfAppManager->shouldReceive('sendRaw')->with($packet0)->andReturn([0]);
-		$this->iqrfAppManager->shouldReceive('sendRaw')->with($packet1)->andReturn([1]);
-		Assert::same([0], $this->iqrfNetManager->setRfOutputPower(0));
-		Assert::same([1], $this->iqrfNetManager->setRfOutputPower(7));
+		$this->dpaManageer->shouldReceive('send')->with($packet0)->andReturn([0]);
+		$this->dpaManageer->shouldReceive('send')->with($packet1)->andReturn([1]);
+		Assert::same([0], $this->manager->setRfOutputPower(0));
+		Assert::same([1], $this->manager->setRfOutputPower(7));
 		Assert::exception(function (): void {
-			$this->iqrfNetManager->setRfOutputPower(-1);
+			$this->manager->setRfOutputPower(-1);
 		}, IqrfException\InvalidRfOutputPowerException::class);
 		Assert::exception(function (): void {
-			$this->iqrfNetManager->setRfOutputPower(8);
+			$this->manager->setRfOutputPower(8);
 		}, IqrfException\InvalidRfOutputPowerException::class);
 	}
 
@@ -209,15 +210,15 @@ class IqrfNetManagerTest extends TestCase {
 	public function testSetRfSignalFilter(): void {
 		$packet0 = '00.00.02.09.ff.ff.09.00.ff';
 		$packet1 = '00.00.02.09.ff.ff.09.40.ff';
-		$this->iqrfAppManager->shouldReceive('sendRaw')->with($packet0)->andReturn([0]);
-		$this->iqrfAppManager->shouldReceive('sendRaw')->with($packet1)->andReturn([1]);
-		Assert::same([0], $this->iqrfNetManager->setRfSignalFilter(0));
-		Assert::same([1], $this->iqrfNetManager->setRfSignalFilter(64));
+		$this->dpaManageer->shouldReceive('send')->with($packet0)->andReturn([0]);
+		$this->dpaManageer->shouldReceive('send')->with($packet1)->andReturn([1]);
+		Assert::same([0], $this->manager->setRfSignalFilter(0));
+		Assert::same([1], $this->manager->setRfSignalFilter(64));
 		Assert::exception(function (): void {
-			$this->iqrfNetManager->setRfSignalFilter(-1);
+			$this->manager->setRfSignalFilter(-1);
 		}, IqrfException\InvalidRfSignalFilterException::class);
 		Assert::exception(function (): void {
-			$this->iqrfNetManager->setRfSignalFilter(65);
+			$this->manager->setRfSignalFilter(65);
 		}, IqrfException\InvalidRfSignalFilterException::class);
 	}
 
@@ -225,8 +226,8 @@ class IqrfNetManagerTest extends TestCase {
 	 * Set up the test environment
 	 */
 	protected function setUp(): void {
-		$this->iqrfAppManager = \Mockery::mock(IqrfAppManager::class);
-		$this->iqrfNetManager = new IqrfNetManager($this->iqrfAppManager);
+		$this->dpaManageer = \Mockery::mock(DpaRawManager::class);
+		$this->manager = new IqrfNetManager($this->dpaManageer);
 	}
 
 	/**

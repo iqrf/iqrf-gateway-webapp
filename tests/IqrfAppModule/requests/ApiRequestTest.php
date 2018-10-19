@@ -1,0 +1,99 @@
+<?php
+
+/**
+ * TEST: App\IqrfAppModule\Requests\ApiRequest
+ * @covers App\IqrfAppModule\Requests\ApiRequest
+ * @phpVersion >= 7.0
+ * @testCase
+ */
+declare(strict_types = 1);
+
+namespace Test\IqrfAppModule\Requests;
+
+use App\IqrfAppModule\Model\MessageIdManager;
+use App\IqrfAppModule\Requests\ApiRequest;
+use Nette\DI\Container;
+use Nette\Utils\Json;
+use Tester\Assert;
+use Tester\TestCase;
+
+$container = require __DIR__ . '/../../bootstrap.php';
+
+/**
+ * Tests for JSON API request manager
+ */
+class ApiRequestTest extends TestCase {
+
+	/**
+	 * @var array JSON API request in an array
+	 */
+	private $array = [
+		'mType' => 'mngDaemon_Mode',
+		'data' => [
+			'req' => ['operMode' => 'service'],
+			'returnVerbose' => true,
+		],
+	];
+
+	/**
+	 * @var Container Nette Tester Container
+	 */
+	private $container;
+
+	/**
+	 * @var ApiRequest JSON API Request
+	 */
+	private $request;
+
+	/**
+	 * Constructor
+	 * @param Container $container Nette Tester Container
+	 */
+	public function __construct(Container $container) {
+		$this->container = $container;
+	}
+
+	/**
+	 * Start up test environment
+	 */
+	protected function setUp(): void {
+		$msgIdManager = \Mockery::mock(MessageIdManager::class);
+		$msgIdManager->shouldReceive('generate')->andReturn('1');
+		$this->request = new ApiRequest($msgIdManager);
+	}
+
+	/**
+	 * Test function to set the request
+	 */
+	public function testSetRequest(): void {
+		Assert::noError(function () {
+			$this->request->setRequest($this->array);
+		});
+	}
+
+	/**
+	 * Test function to get the request as array
+	 */
+	public function testToArray(): void {
+		$this->request->setRequest($this->array);
+		$expected = $this->array;
+		$expected['data']['msgId'] = '1';
+		Assert::equal($expected, $this->request->toArray());
+	}
+
+	/**
+	 * Test function to get the request as JSON string
+	 */
+	public function testToJson(): void {
+		$this->request->setRequest($this->array);
+		$array = $this->array;
+		$array['data']['msgId'] = '1';
+		$expected = Json::encode($array, Json::PRETTY);
+		Assert::equal($expected, $this->request->toJson(true));
+	}
+
+}
+
+
+$test = new ApiRequestTest($container);
+$test->run();

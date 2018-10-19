@@ -21,6 +21,8 @@ declare(strict_types = 1);
 namespace App\IqrfAppModule\Model;
 
 use App\IqrfAppModule\Exception\EmptyResponseException;
+use App\IqrfAppModule\Requests\ApiRequest;
+use App\IqrfAppModule\Responses\ApiResponse;
 use Nette\SmartObject;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
@@ -40,11 +42,6 @@ class WebSocketClient {
 	use SmartObject;
 
 	/**
-	 * @var MessageIdManager Message ID manager
-	 */
-	private $msgIdManager;
-
-	/**
 	 * @var EventLoop\LoopInterface Event loop
 	 */
 	private $loop;
@@ -57,23 +54,21 @@ class WebSocketClient {
 	/**
 	 * Constructor
 	 * @param string $wsServer URL to IQRF Gateway Daemon's WebSocket server
-	 * @param MessageIdManager $msgIdManager Message ID manager
 	 */
-	public function __construct(string $wsServer, MessageIdManager $msgIdManager) {
+	public function __construct(string $wsServer) {
 		$this->loop = EventLoop\Factory::create();
-		$this->msgIdManager = $msgIdManager;
 		$this->wsServer = $wsServer;
 	}
 
 	/**
 	 * Send IQRF JSON DPA request
-	 * @param array $request IQRF JSON DPA request
+	 * @param ApiRequest $request IQRF JSON DPA request
 	 * @param int $timeout WebSocket client timeout
 	 * @return array IQRF JSON DPA response
 	 * @throws EmptyResponseException
 	 * @throws JsonException
 	 */
-	public function sendSync(array $request, int $timeout = 15): array {
+	public function sendSync(ApiRequest $request, int $timeout = 15): array {
 		$connection = $this->createConnection($timeout);
 		$wait = true;
 		$attempts = 2;
@@ -81,9 +76,8 @@ class WebSocketClient {
 			$this->stopSync($wait);
 		});
 		$resolved = null;
-		$this->addMsgId($request);
 		$connection->then(function (WsClient $conn) use (&$resolved, &$wait, &$attempts, $request) {
-			$conn->send(Json::encode($request));
+			$conn->send($request->toJson());
 			$conn->on('message', function (MessageInterface $msg) use (&$resolved, &$wait, &$attempts, $conn, $request) {
 				$this->receiveSync($conn, $msg, $resolved, $wait, $attempts, $request);
 			});
@@ -118,26 +112,16 @@ class WebSocketClient {
 	}
 
 	/**
-	 * Add a message ID to the IQRF JSON DPA request
-	 * @param array $request IQRF JSON DPA request
-	 */
-	private function addMsgId(array &$request): void {
-		if (!array_key_exists('msgId', $request['data'])) {
-			$request['data']['msgId'] = $this->msgIdManager->generate();
-		}
-	}
-
-	/**
 	 * Receive a message from WebSocket server
 	 * @param Client\WebSocket $connection WebSocket client connection
 	 * @param MessageInterface $message Received message
 	 * @param MessageInterface|null $resolved Stored receive message
 	 * @param bool $wait Wait to finish
 	 * @param int $attempts Attempts to receive
-	 * @param array $request IQRF JSON DPA request
+	 * @param ApiRequest $request IQRF JSON DPA request
 	 * @throws JsonException
 	 */
-	private function receiveSync(WsClient $connection, MessageInterface $message, ?MessageInterface &$resolved, bool &$wait, int &$attempts, array $request): void {
+	private function receiveSync(WsClient $connection, MessageInterface $message, ?MessageInterface &$resolved, bool &$wait, int &$attempts, ApiRequest $request): void {
 		if ($attempts === 0) {
 			$wait = false;
 		}
@@ -153,34 +137,36 @@ class WebSocketClient {
 
 	/**
 	 * Check if JSON DPA request and response have got the same message ID
-	 * @param array $request JSON DPA request
+	 * @param ApiRequest $request JSON DPA request
 	 * @param MessageInterface $response JSON DPA request
 	 * @return bool Have JSON DPA request and response got the same message ID
 	 * @throws JsonException
 	 */
-	private function checkMsgId(array $request, MessageInterface $response): bool {
+	private function checkMsgId(ApiRequest $request, MessageInterface $response): bool {
 		$json = Json::decode(strval($response), Json::FORCE_ARRAY);
-		return $request['data']['msgId'] === $json['data']['msgId'];
+		return $request->toArray()['data']['msgId'] === $json['data']['msgId'];
 	}
 
 	/**
 	 * Parse JSON DPA request and response
-	 * @param array $request JSON DPA request
+	 * @param ApiRequest $request JSON DPA request
 	 * @param null|MessageInterface $response JSON DPA response
 	 * @return array JSON DPA response in an array
 	 * @throws EmptyResponseException
 	 * @throws JsonException
 	 */
-	private function parseResponse(array $request, ?MessageInterface $response): array {
+	private function parseResponse(ApiRequest $request, ?MessageInterface $response): array {
 		$string = strval($response);
-		$data = ['request' => $request];
+		$data = ['request' => $request->toArray()];
 		if ($string === '') {
 			$data['status'] = 'Empty response.';
-			Debugger::barDump($data, 'Websocket client');
+			Debugger::barDump($data, 'WebSocket client');
 			throw new EmptyResponseException();
 		}
-		$data['response'] = Json::decode($string, Json::FORCE_ARRAY);
-		Debugger::barDump($data, 'Websocket client');
+		$apiResponse = new ApiResponse();
+		$apiResponse->setResponse($string);
+		$data['response'] = $apiResponse->toArray();
+		Debugger::barDump($data, 'WebSocket client');
 		return $data;
 	}
 

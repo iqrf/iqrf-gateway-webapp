@@ -23,7 +23,7 @@ namespace App\GatewayModule\Presenters;
 use App\CoreModule\Presenters\ProtectedPresenter;
 use App\IqrfAppModule\Exception\EmptyResponseException;
 use App\IqrfAppModule\Exception\InvalidOperationModeException;
-use App\IqrfAppModule\Model\IqrfAppManager;
+use App\IqrfAppModule\Model\GwModeManager;
 use Nette\Utils\JsonException;
 
 /**
@@ -32,16 +32,16 @@ use Nette\Utils\JsonException;
 class ChangeModePresenter extends ProtectedPresenter {
 
 	/**
-	 * @var IqrfAppManager IQRF App manager
+	 * @var GwModeManager IQRF Gateway Daemon's mode manager
 	 */
-	private $iqrfAppManager;
+	private $manager;
 
 	/**
 	 * Constructor
-	 * @param IqrfAppManager $iqrfAppManager IQRF App manager
+	 * @param GwModeManager $manager IQRF Gateway Daemon's mode manager
 	 */
-	public function __construct(IqrfAppManager $iqrfAppManager) {
-		$this->iqrfAppManager = $iqrfAppManager;
+	public function __construct(GwModeManager $manager) {
+		$this->manager = $manager;
 		parent::__construct();
 	}
 
@@ -63,7 +63,7 @@ class ChangeModePresenter extends ProtectedPresenter {
 	 * @throws JsonException
 	 */
 	private function changeMode(string $mode): void {
-		$this->iqrfAppManager->changeOperationMode($mode);
+		$this->manager->changeMode($mode);
 		$this->flashMessage('gateway.mode.modes.' . $mode . '.message', 'info');
 		$this->redirect('ChangeMode:default');
 		$this->setView('default');

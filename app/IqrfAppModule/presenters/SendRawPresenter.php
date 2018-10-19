@@ -25,7 +25,7 @@ use App\IqrfAppModule\Exception\DpaErrorException;
 use App\IqrfAppModule\Exception\EmptyResponseException;
 use App\IqrfAppModule\Exception\UserErrorException;
 use App\IqrfAppModule\Forms\SendRawFormFactory;
-use App\IqrfAppModule\Model\IqrfAppManager;
+use App\IqrfAppModule\Model\DpaRawManager;
 use App\IqrfAppModule\Model\IqrfMacroManager;
 use Nette\Forms\Form;
 use Nette\Utils\JsonException;
@@ -42,23 +42,23 @@ class SendRawPresenter extends ProtectedPresenter {
 	public $sendRawFactory;
 
 	/**
-	 * @var IqrfAppManager iqrfapp Manager
+	 * @var DpaRawManager DPA raw request and response manager
 	 */
-	private $iqrfAppManager;
+	private $dpaManager;
 
 	/**
 	 * @var IqrfMacroManager IQRF IDE Macros manager
 	 */
-	private $iqrfMacroManager;
+	private $macroManager;
 
 	/**
 	 * Constructor
-	 * @param IqrfAppManager $manager iqrfapp Manager
+	 * @param DpaRawManager $manager DPA Raw request and response manager
 	 * @param IqrfMacroManager $macroManager IQRF IDE Macros manager
 	 */
-	public function __construct(IqrfAppManager $manager, IqrfMacroManager $macroManager) {
-		$this->iqrfAppManager = $manager;
-		$this->iqrfMacroManager = $macroManager;
+	public function __construct(DpaRawManager $manager, IqrfMacroManager $macroManager) {
+		$this->dpaManager = $manager;
+		$this->macroManager = $macroManager;
 		parent::__construct();
 	}
 
@@ -66,7 +66,7 @@ class SendRawPresenter extends ProtectedPresenter {
 	 * Render send raw DPA packet page
 	 */
 	public function renderDefault(): void {
-		$this->template->macros = $this->iqrfMacroManager->read();
+		$this->template->macros = $this->macroManager->read();
 	}
 
 	/**
@@ -79,7 +79,7 @@ class SendRawPresenter extends ProtectedPresenter {
 	 */
 	public function handleShowResponse(array $data): void {
 		$this->template->json = $data;
-		$this->template->parsedResponse = $this->iqrfAppManager->parseResponse($data);
+		$this->template->parsedResponse = $this->dpaManager->parseResponse($data);
 		$this->redrawControl('responseChange');
 	}
 

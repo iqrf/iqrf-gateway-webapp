@@ -13,6 +13,7 @@ namespace Test\IqrfAppModule\Model;
 use App\IqrfAppModule\Exception as IqrfException;
 use App\IqrfAppModule\Model\MessageIdManager;
 use App\IqrfAppModule\Model\WebSocketClient;
+use App\IqrfAppModule\Requests\ApiRequest;
 use Nette\DI\Container;
 use Tester\Assert;
 use Tester\TestCase;
@@ -40,6 +41,11 @@ class WebSocketClientTest extends TestCase {
 	private $msgIdManager;
 
 	/**
+	 * @var ApiRequest JSON API request
+	 */
+	private $request;
+
+	/**
 	 * @var string URL to IQRF Gateway Daemon's WebSocket server
 	 */
 	private $wsServer = 'ws://echo.socketo.me:9000';
@@ -59,13 +65,15 @@ class WebSocketClientTest extends TestCase {
 		$array = [
 			'data' => [
 				'msgId' => '1',
+				'status' => 0,
 			],
 		];
 		$expected = [
 			'request' => $array,
 			'response' => $array,
 		];
-		Assert::same($expected, $this->client->sendSync($array));
+		$this->request->setRequest($array);
+		Assert::same($expected, $this->client->sendSync($this->request));
 	}
 
 	/**
@@ -74,9 +82,10 @@ class WebSocketClientTest extends TestCase {
 	public function testSendSyncTimeout(): void {
 		Assert::exception(function (): void {
 			$wsServer = 'ws://localhost:9000';
-			$manager = new WebSocketClient($wsServer, $this->msgIdManager);
+			$manager = new WebSocketClient($wsServer);
 			$array = ['data' => ['msgId' => '1',],];
-			$manager->sendSync($array, 1);
+			$this->request->setRequest($array);
+			$manager->sendSync($this->request, 1);
 		}, IqrfException\EmptyResponseException::class);
 	}
 
@@ -84,9 +93,10 @@ class WebSocketClientTest extends TestCase {
 	 * Set up the test environment
 	 */
 	protected function setUp(): void {
-		$this->msgIdManager = \Mockery::mock(MessageIdManager::class);
-		$this->msgIdManager->shouldReceive('generate')->andReturn('1');
-		$this->client = new WebSocketClient($this->wsServer, $this->msgIdManager);
+		$msgIdManager = \Mockery::mock(MessageIdManager::class);
+		$msgIdManager->shouldReceive('generate')->andReturn('1');
+		$this->request = new ApiRequest($msgIdManager);
+		$this->client = new WebSocketClient($this->wsServer);
 	}
 
 	/**

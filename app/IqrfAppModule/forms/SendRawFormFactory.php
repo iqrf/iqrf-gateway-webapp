@@ -23,7 +23,7 @@ namespace App\IqrfAppModule\Forms;
 use App\CoreModule\Forms\FormFactory;
 use App\IqrfAppModule\Exception\DpaErrorException;
 use App\IqrfAppModule\Exception\EmptyResponseException;
-use App\IqrfAppModule\Model\IqrfAppManager;
+use App\IqrfAppModule\Model\DpaRawManager;
 use App\IqrfAppModule\Presenters\SendRawPresenter;
 use Nette\Forms\Form;
 use Nette\SmartObject;
@@ -37,7 +37,7 @@ class SendRawFormFactory {
 	use SmartObject;
 
 	/**
-	 * @var IqrfAppManager Manager for communicating with iqrfapp
+	 * @var DpaRawManager DPA Raw request and response manager
 	 */
 	private $manager;
 
@@ -54,9 +54,9 @@ class SendRawFormFactory {
 	/**
 	 * Constructor
 	 * @param FormFactory $factory Generic form factory
-	 * @param IqrfAppManager $manager Manager for communicating with iqrfapp
+	 * @param DpaRawManager $manager DPA raw request and response manager
 	 */
-	public function __construct(FormFactory $factory, IqrfAppManager $manager) {
+	public function __construct(FormFactory $factory, DpaRawManager $manager) {
 		$this->factory = $factory;
 		$this->manager = $manager;
 	}
@@ -103,7 +103,7 @@ class SendRawFormFactory {
 				$this->manager->updateNadr($packet, $nadr);
 			}
 			try {
-				$response = $this->manager->sendRaw($packet, $timeout);
+				$response = $this->manager->send($packet, $timeout);
 				$this->presenter->handleShowResponse($response);
 			} catch (EmptyResponseException | DpaErrorException $e) {
 				$message = 'No response from IQRF Gateway Daemon.';

@@ -26,7 +26,7 @@ use App\CoreModule\Model\VersionManager;
 use App\IqrfAppModule\Exception\DpaErrorException;
 use App\IqrfAppModule\Exception\EmptyResponseException;
 use App\IqrfAppModule\Exception\UserErrorException;
-use App\IqrfAppModule\Model\IqrfAppManager;
+use App\IqrfAppModule\Model\DpaRawManager;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;
 
@@ -43,9 +43,9 @@ class InfoManager {
 	private $commandManager;
 
 	/**
-	 * @var IqrfAppManager IqrfApp manager
+	 * @var DpaRawManager DPA Raw request and response manager
 	 */
-	private $iqrfAppManager;
+	private $dpaManager;
 
 	/**
 	 * @var JsonFileManager JSON file manager
@@ -60,12 +60,12 @@ class InfoManager {
 	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
-	 * @param IqrfAppManager $iqrfAppManager IqrfApp manager
+	 * @param DpaRawManager $dpaManager DPA Raw request and response manager
 	 * @param VersionManager $versionManager Version manager
 	 */
-	public function __construct(CommandManager $commandManager, IqrfAppManager $iqrfAppManager, VersionManager $versionManager) {
+	public function __construct(CommandManager $commandManager, DpaRawManager $dpaManager, VersionManager $versionManager) {
 		$this->commandManager = $commandManager;
-		$this->iqrfAppManager = $iqrfAppManager;
+		$this->dpaManager = $dpaManager;
 		$this->jsonFileManager = new JsonFileManager(__DIR__ . '/../../../');
 		$this->versionManager = $versionManager;
 	}
@@ -162,8 +162,8 @@ class InfoManager {
 	 * @throws UserErrorException
 	 */
 	public function getCoordinatorInfo(): array {
-		$response = $this->iqrfAppManager->sendRaw('00.00.02.00.FF.FF');
-		return $this->iqrfAppManager->parseResponse($response);
+		$response = $this->dpaManager->send('00.00.02.00.FF.FF');
+		return $this->dpaManager->parseResponse($response);
 	}
 
 	/**

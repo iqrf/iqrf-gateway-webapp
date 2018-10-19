@@ -22,17 +22,23 @@ namespace App\IqrfAppModule\Model;
 
 use App\IqrfAppModule\Exception as IqrfException;
 use App\IqrfAppModule\Parser as IqrfParser;
+use App\IqrfAppModule\Requests\DpaRequest;
 use Nette\SmartObject;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
 
 /**
- * Tool for controlling iqrfapp.
+ * Tool for sending and parsing JSON DPA Raw requests and responses
  */
-class IqrfAppManager {
+class DpaRawManager {
 
 	use SmartObject;
+
+	/**
+	 * @var DpaRequest JSON DPA request
+	 */
+	private $request;
 
 	/**
 	 * @var WebSocketClient WebSocket client
@@ -49,34 +55,12 @@ class IqrfAppManager {
 	];
 
 	/**
-	 * @var array DPA exceptions
-	 */
-	private $exceptions = [
-		-8 => IqrfException\ExclusiveAccessException::class,
-		-7 => IqrfException\BadResponseException::class,
-		-6 => IqrfException\BadRequestException::class,
-		-5 => IqrfException\InterfaceBusyException::class,
-		-4 => IqrfException\InterfaceErrorException::class,
-		-3 => IqrfException\AbortedException::class,
-		-2 => IqrfException\InterfaceQueueFullException::class,
-		-1 => IqrfException\TimeoutException::class,
-		1 => IqrfException\GeneralFailureException::class,
-		2 => IqrfException\IncorrectPcmdException::class,
-		3 => IqrfException\IncorrectPnumException::class,
-		4 => IqrfException\IncorrectAddressException::class,
-		5 => IqrfException\IncorrectDataLengthException::class,
-		6 => IqrfException\IncorrectDataException::class,
-		7 => IqrfException\IncorrectHwpidUsedException::class,
-		8 => IqrfException\IncorrectNadrException::class,
-		9 => IqrfException\CustomHandlerConsumedInterfaceDataException::class,
-		10 => IqrfException\MissingCustomDpaHandlerException::class,
-	];
-
-	/**
 	 * Constructor
+	 * @param DpaRequest $request JSON DPA request
 	 * @param WebSocketClient $wsClient WebSocket client
 	 */
-	public function __construct(WebSocketClient $wsClient) {
+	public function __construct(DpaRequest $request, WebSocketClient $wsClient) {
+		$this->request = $request;
 		$this->wsClient = $wsClient;
 	}
 
@@ -88,8 +72,7 @@ class IqrfAppManager {
 	 * @throws IqrfException\EmptyResponseException
 	 * @throws JsonException
 	 */
-	public function sendRaw(string $packet, ?int $timeout = null): array {
-		$this->fixPacket($packet);
+	public function send(string $packet, ?int $timeout = null): array {
 		$array = [
 			'mType' => 'iqrfRaw',
 			'data' => [
@@ -103,51 +86,12 @@ class IqrfAppManager {
 		if (!isset($timeout)) {
 			unset($array['data']['timeout']);
 		}
-		$data = $this->wsClient->sendSync($array);
+		$this->request->setRequest($array);
+		$data = $this->wsClient->sendSync($this->request);
 		foreach ($data as &$json) {
 			$json = Json::encode($json, Json::PRETTY);
 		}
 		return $data;
-	}
-
-	/**
-	 * Fix DPA packet
-	 * @param string $packet DPA packet to fix
-	 */
-	public function fixPacket(string &$packet): void {
-		$data = explode('.', trim($packet, '.'));
-		$nadrLo = $data[0];
-		$nadrHi = $data[1];
-		if ($nadrHi !== '00' && $nadrLo === '00') {
-			$data[1] = $nadrLo;
-			$data[0] = $nadrHi;
-		}
-		$packet = Strings::lower(implode('.', $data));
-	}
-
-	/**
-	 * Change IQRF Gateway Daemon's operation mode
-	 * @param string $mode IQRF Gateway Daemon's operation mode
-	 * @return string Response
-	 * @throws IqrfException\EmptyResponseException
-	 * @throws IqrfException\InvalidOperationModeException
-	 * @throws JsonException
-	 */
-	public function changeOperationMode(string $mode) {
-		$modes = ['forwarding', 'operational', 'service'];
-		if (!in_array($mode, $modes, true)) {
-			throw new IqrfException\InvalidOperationModeException();
-		}
-		$array = [
-			'mType' => 'mngDaemon_Mode',
-			'data' => [
-				'req' => [
-					'operMode' => $mode,
-				],
-				'returnVerbose' => true,
-			],
-		];
-		return Json::encode($this->wsClient->sendSync($array)['response']);
 	}
 
 	/**
@@ -166,9 +110,9 @@ class IqrfAppManager {
 	 * @param string $nadr New NADR
 	 */
 	public function updateNadr(string &$packet, string $nadr): void {
-		$this->fixPacket($packet);
 		$data = explode('.', $packet);
 		$data[0] = Strings::padLeft($nadr, 2, '0');
+		$data[1] = '00';
 		$packet = Strings::lower(implode('.', $data));
 	}
 
@@ -176,13 +120,10 @@ class IqrfAppManager {
 	 * Parse DPA response
 	 * @param array $json JSON DPA response
 	 * @return array|null Parsed response in array
-	 * @throws IqrfException\DpaErrorException
 	 * @throws IqrfException\EmptyResponseException
-	 * @throws IqrfException\UserErrorException
 	 * @throws JsonException
 	 */
 	public function parseResponse(array $json): ?array {
-		$this->checkStatus($json);
 		$packet = $this->getPacket($json, 'response');
 		if (array_key_exists('request', $json)) {
 			$nadr = explode('.', $this->getPacket($json, 'request'))[0];
@@ -200,25 +141,6 @@ class IqrfAppManager {
 			}
 		}
 		return null;
-	}
-
-	/**
-	 * Check status from JSON DPA response
-	 * @param array $json JSON DPA request and response
-	 * @throws IqrfException\DpaErrorException
-	 * @throws IqrfException\UserErrorException
-	 * @throws JsonException
-	 */
-	public function checkStatus(array $json): void {
-		$status = Json::decode($json['response'], Json::FORCE_ARRAY)['data']['status'];
-		if ($status === 0) {
-			return;
-		}
-		if (array_key_exists($status, $this->exceptions)) {
-			throw new $this->exceptions[$status];
-		} else {
-			throw new IqrfException\UserErrorException();
-		}
 	}
 
 	/**

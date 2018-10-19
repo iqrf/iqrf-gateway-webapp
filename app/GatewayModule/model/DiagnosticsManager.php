@@ -24,7 +24,6 @@ use App\CoreModule\Model\CommandManager;
 use App\CoreModule\Model\ZipArchiveManager;
 use App\IqrfAppModule\Exception\DpaErrorException;
 use App\IqrfAppModule\Exception\EmptyResponseException;
-use App\IqrfAppModule\Model\IqrfAppManager;
 use Nette\Application\BadRequestException;
 use Nette\Application\Responses\FileResponse;
 use Nette\SmartObject;
@@ -41,11 +40,6 @@ class DiagnosticsManager {
 	 * @var CommandManager Command manager
 	 */
 	private $commandManager;
-
-	/**
-	 * @var IqrfAppManager IqrfApp manager
-	 */
-	private $iqrfAppManager;
 
 	/**
 	 * @var InfoManager Gateway info manager
@@ -77,12 +71,10 @@ class DiagnosticsManager {
 	 * @param string $confDir Path to a directory with IQRF Gateway Daemon's configuration
 	 * @param string $logDir Path to a directory with log files of IQRF Gateway Daemon
 	 * @param CommandManager $commandManager Command manager
-	 * @param IqrfAppManager $iqrfAppManager IqrfApp manager
 	 * @param InfoManager $infoManager Gateway Info manager
 	 */
-	public function __construct(string $confDir, string $logDir, CommandManager $commandManager, IqrfAppManager $iqrfAppManager, InfoManager $infoManager) {
+	public function __construct(string $confDir, string $logDir, CommandManager $commandManager, InfoManager $infoManager) {
 		$this->commandManager = $commandManager;
-		$this->iqrfAppManager = $iqrfAppManager;
 		$this->infoManager = $infoManager;
 		$this->confDir = $confDir;
 		$this->logDir = $logDir;

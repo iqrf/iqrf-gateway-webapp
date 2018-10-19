@@ -73,16 +73,16 @@ class IqrfNetManager {
 	const SECURITY_USER_KEY = 'userKey';
 
 	/**
-	 * @var IqrfAppManager iqrfapp manager
+	 * @var DpaRawManager DPA Raw request and response manager
 	 */
-	private $iqrfAppManager;
+	private $manager;
 
 	/**
 	 * Constructor
-	 * @param IqrfAppManager $iqrfAppManager iqrfapp manager
+	 * @param DpaRawManager $manager DPA raw request and response manager
 	 */
-	public function __construct(IqrfAppManager $iqrfAppManager) {
-		$this->iqrfAppManager = $iqrfAppManager;
+	public function __construct(DpaRawManager $manager) {
+		$this->manager = $manager;
 	}
 
 	/**
@@ -94,7 +94,7 @@ class IqrfNetManager {
 	 */
 	public function clearAllBonds(): array {
 		$packet = '00.00.00.03.ff.ff';
-		return $this->iqrfAppManager->sendRaw($packet);
+		return $this->manager->send($packet);
 	}
 
 	/**
@@ -108,7 +108,7 @@ class IqrfNetManager {
 	public function bondNode(string $address = '00'): array {
 		$packet = '00.00.00.04.ff.ff.' . Strings::padLeft($address, 2, '0') . '.00';
 		$timeout = 12000;
-		return $this->iqrfAppManager->sendRaw($packet, $timeout);
+		return $this->manager->send($packet, $timeout);
 	}
 
 	/**
@@ -124,7 +124,7 @@ class IqrfNetManager {
 		$power = Strings::padLeft($txPower, 2, '0');
 		$packet = '00.00.00.07.ff.ff.' . $power . '.' . $maxAddress;
 		$timeout = 0;
-		return $this->iqrfAppManager->sendRaw($packet, $timeout);
+		return $this->manager->send($packet, $timeout);
 	}
 
 	/**
@@ -136,7 +136,7 @@ class IqrfNetManager {
 	 */
 	public function removeNode(string $address): array {
 		$packet = '00.00.00.05.ff.ff.' . Strings::padLeft($address, 2, '0');
-		return $this->iqrfAppManager->sendRaw($packet);
+		return $this->manager->send($packet);
 	}
 
 	/**
@@ -148,7 +148,7 @@ class IqrfNetManager {
 	 */
 	public function rebondNode(string $address): array {
 		$packet = '00.00.00.06.ff.ff.' . Strings::padLeft($address, 2, '0');
-		return $this->iqrfAppManager->sendRaw($packet);
+		return $this->manager->send($packet);
 	}
 
 	/**
@@ -183,7 +183,7 @@ class IqrfNetManager {
 			}
 		}
 		$dataToSend = $packet . Strings::lower(chunk_split(Strings::padLeft($data, 32, '0'), 2, '.'));
-		return $this->iqrfAppManager->sendRaw($dataToSend);
+		return $this->manager->send($dataToSend);
 	}
 
 	/**
@@ -196,8 +196,8 @@ class IqrfNetManager {
 	 */
 	public function readHwpConfiguration(): array {
 		$packet = '00.00.02.02.ff.ff.';
-		$response = $this->iqrfAppManager->sendRaw($packet);
-		return $this->iqrfAppManager->parseResponse($response);
+		$response = $this->manager->send($packet);
+		return $this->manager->parseResponse($response);
 	}
 
 	/**
@@ -229,7 +229,7 @@ class IqrfNetManager {
 	 */
 	public function writeHwpConfigurationByte(string $address, string $value, string $mask = 'ff'): array {
 		$packet = '00.00.02.09.ff.ff.' . $address . '.' . $value . '.' . $mask;
-		return $this->iqrfAppManager->sendRaw($packet);
+		return $this->manager->send($packet);
 	}
 
 	/**
