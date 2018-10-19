@@ -1,0 +1,19 @@
+services:
+	- App\IqrfNetModule\Forms\SendRawFormFactory
+	- App\IqrfNetModule\Forms\BondingFormFactory
+	- App\IqrfNetModule\Forms\DiscoveryFormFactory
+	- App\IqrfNetModule\Forms\RfFormFactory
+	- App\IqrfNetModule\Forms\SecurityFormFactory
+	- App\IqrfNetModule\Model\DpaRawManager
+	- App\IqrfNetModule\Model\GwModeManager
+	- App\IqrfNetModule\Model\IqrfMacroManager(%macroPath%)
+	- App\IqrfNetModule\Model\IqrfNetManager
+	- App\IqrfNetModule\Model\MessageIdManager
+	- App\IqrfNetModule\Model\WebSocketClient(%daemon.wsServer%)
+	- App\IqrfNetModule\Parser\CoordinatorParser
+	- App\IqrfNetModule\Parser\EnumerationParser
+	- App\IqrfNetModule\Parser\OsParser
+	- App\IqrfNetModule\Requests\ApiRequest
+	dpaRequest:
+		factory: App\IqrfNetModule\Requests\DpaRequest
+		autowired: self

@@ -22,8 +22,8 @@ namespace App\GatewayModule\Model;
 
 use App\CoreModule\Model\CommandManager;
 use App\CoreModule\Model\ZipArchiveManager;
-use App\IqrfAppModule\Exception\DpaErrorException;
-use App\IqrfAppModule\Exception\EmptyResponseException;
+use App\IqrfNetModule\Exceptions\DpaErrorException;
+use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use Nette\Application\BadRequestException;
 use Nette\Application\Responses\FileResponse;
 use Nette\SmartObject;

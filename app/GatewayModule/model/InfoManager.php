@@ -23,10 +23,10 @@ namespace App\GatewayModule\Model;
 use App\CoreModule\Model\CommandManager;
 use App\CoreModule\Model\JsonFileManager;
 use App\CoreModule\Model\VersionManager;
-use App\IqrfAppModule\Exception\DpaErrorException;
-use App\IqrfAppModule\Exception\EmptyResponseException;
-use App\IqrfAppModule\Exception\UserErrorException;
-use App\IqrfAppModule\Model\DpaRawManager;
+use App\IqrfNetModule\Exceptions\DpaErrorException;
+use App\IqrfNetModule\Exceptions\EmptyResponseException;
+use App\IqrfNetModule\Exceptions\UserErrorException;
+use App\IqrfNetModule\Model\DpaRawManager;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;
 

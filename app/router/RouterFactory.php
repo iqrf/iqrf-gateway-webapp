@@ -51,9 +51,9 @@ class RouterFactory {
 		$install = new RouteList('Install');
 		$install[] = new Route('[<lang [a-z]{2}>/]install/<presenter>/<action>', 'Homepage:default');
 		$router[] = $install;
-		$iqrfApp = new RouteList('IqrfApp');
-		$iqrfApp[] = new Route('[<lang [a-z]{2}>/]iqrfnet/<presenter>/<action>', 'Homepage:default');
-		$router[] = $iqrfApp;
+		$iqrfNet = new RouteList('IqrfNet');
+		$iqrfNet[] = new Route('[<lang [a-z]{2}>/]iqrfnet/<presenter>/<action>', 'Homepage:default');
+		$router[] = $iqrfNet;
 		$service = new RouteList('Service');
 		$service[] = new Route('[<lang [a-z]{2}>/]service/<presenter>/<action>', 'Control:default');
 		$router[] = $service;

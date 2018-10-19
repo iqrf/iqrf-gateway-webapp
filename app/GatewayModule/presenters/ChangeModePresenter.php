@@ -21,9 +21,9 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Presenters;
 
 use App\CoreModule\Presenters\ProtectedPresenter;
-use App\IqrfAppModule\Exception\EmptyResponseException;
-use App\IqrfAppModule\Exception\InvalidOperationModeException;
-use App\IqrfAppModule\Model\GwModeManager;
+use App\IqrfNetModule\Exceptions\EmptyResponseException;
+use App\IqrfNetModule\Exceptions\InvalidOperationModeException;
+use App\IqrfNetModule\Model\GwModeManager;
 use Nette\Utils\JsonException;
 
 /**

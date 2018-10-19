@@ -100,5 +100,5 @@ includes:
 	- ../ConsoleModule/config/config.neon
 	- ../CoreModule/config/config.neon
 	- ../GatewayModule/config/config.neon
-	- ../IqrfAppModule/config/config.neon
+	- ../IqrfNetModule/config/config.neon
 	- ../ServiceModule/config/config.neon
