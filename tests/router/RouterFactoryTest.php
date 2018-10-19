@@ -47,7 +47,7 @@ class RouterFactoryTest extends TestCase {
 		['Install:' => [
 			'[<lang [a-z]{2}>/]install/<presenter>/<action>',
 		],],
-		['IqrfApp:' => [
+		['IqrfNet:' => [
 			'[<lang [a-z]{2}>/]iqrfnet/<presenter>/<action>',
 		],],
 		['Service:' => [
