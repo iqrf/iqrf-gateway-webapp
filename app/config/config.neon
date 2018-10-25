@@ -93,6 +93,8 @@ http:
 tracy:
 	email: 'roman.ondracek@iqrf.com'
 	strictMode: true
+	maxDepth: 10
+	maxLen: 100
 
 includes:
 	- ../CloudModule/config/config.neon

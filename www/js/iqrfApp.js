@@ -152,3 +152,61 @@ $("#frm-iqrfNetBondingForm-autoAddress").click(function () {
 	$("#frm-iqrfNetBondingForm-rebond").prop("disabled", checked);
 	$("#frm-iqrfNetBondingForm-remove").prop("disabled", checked);
 });
+
+let schedulerTime = $('#frm-configSchedulerForm-time');
+let schedulerCron = $('#frm-configSchedulerForm-cron');
+
+function parseCron() {
+	let cronstrue = window.cronstrue;
+	let text = '';
+	let value = $('#frm-configSchedulerForm-time').val();
+	let len = value.split(' ').length;
+	let aliases = new Map();
+	aliases.set("@reboot", "");
+	aliases.set("@yearly", "0 0 0 0 1 1 *");
+	aliases.set("@annually", "0 0 0 0 1 1 *");
+	aliases.set("@monthly", "0 0 0 0 1 * *");
+	aliases.set("@weekly", "0 0 0 * * * 0");
+	aliases.set("@daily", "0 0 0 * * * *");
+	aliases.set("@hourly", "0 0 * * * * *");
+	aliases.set("@minutely", "0 * * * * * *");
+	if (len == 1) {
+		value = aliases.get(value);
+		if (value === undefined) {
+			return text;
+		}
+		len = value.split(' ').length;
+	}
+	if (len > 5 && len < 8) {
+		try {
+			text = cronstrue.toString(value);
+			if (!$('#frm-configSchedulerForm-cron').length) {
+				text = '<span id="frm-configSchedulerForm-cron" class="label label-info">' + text + '</span>';
+			}
+
+		} catch (e) {
+			console.error(e);
+		}
+	}
+	return text;
+}
+
+schedulerTime.before(function () {
+	return parseCron();
+});
+
+schedulerTime.keyup(function () {
+		console.warn(schedulerCron.length);
+		schedulerCron = $('#frm-configSchedulerForm-cron');
+		if (schedulerCron.length) {
+			schedulerCron.text(function () {
+				return parseCron();
+			});
+		} else {
+			;
+			$(this).before(function () {
+				return parseCron();
+			});
+		}
+	}
+);

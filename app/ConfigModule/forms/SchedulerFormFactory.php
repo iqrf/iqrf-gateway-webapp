@@ -24,6 +24,7 @@ use App\ConfigModule\Model\SchedulerManager;
 use App\ConfigModule\Presenters\SchedulerPresenter;
 use App\CoreModule\Exception\NonExistingJsonSchemaException;
 use App\CoreModule\Forms\FormFactory;
+use Nette\Forms\Container;
 use Nette\Forms\Form;
 use Nette\IOException;
 use Nette\SmartObject;
@@ -57,6 +58,14 @@ class SchedulerFormFactory {
 	private $presenter;
 
 	/**
+	 * @var array Message types
+	 */
+	private $mTypes = [
+		'iqrfRaw'=> 'mTypes.iqrfRaw',
+		'iqrfRawHdp'=> 'mTypes.iqrfRawHdp',
+	];
+
+	/**
 	 * Constructor
 	 * @param FormFactory $factory Generic form factory
 	 * @param SchedulerManager $manager Scheduler manager
@@ -79,16 +88,6 @@ class SchedulerFormFactory {
 		$translator = $form->getTranslator();
 		$form->setTranslator($translator->domain('config.scheduler.form'));
 		$defaults = $this->manager->load($this->id);
-		$cTypes = [
-			'dpa' => 'cTypes.dpa',
-		];
-		$types = [
-			'raw', 'raw-hdp',
-		];
-		foreach ($types as $key => $type) {
-			unset($types[$key]);
-			$types[$type] = 'types.' . $type;
-		}
 		$form->addText('time', 'time');
 		$form->addSelect('service', 'config.scheduler.form.service')
 			->setItems($this->manager->getServices(), false)
@@ -102,44 +101,49 @@ class SchedulerFormFactory {
 			->setPrompt('config.scheduler.form.messages.messaging-prompt')
 			->setRequired('messages.messaging')->checkDefaultValue(false);
 		$message = $task->addContainer('message');
-		$message->addSelect('ctype', 'ctype', $cTypes)
-			->setPrompt('messages.ctype-prompt')
-			->setRequired('messages.ctype')->checkDefaultValue(false);
-		$message->addSelect('type', 'type', $types)
-			->setPrompt('messages.type-prompt')
-			->setRequired('messages.type')->checkDefaultValue(false);
-		switch ($defaults['task']['message']['type']) {
-			case 'raw-hdp':
-				$message->addText('nadr', 'nadr')->setRequired('messages.nadr')
-					->addRule(Form::PATTERN, 'messages.nadr-rule', '[0-9A-Fa-f]{1,2}')
-					->addRule(Form::MAX_LENGTH, 'messages.nadr-rule', 2);
-				$message->addText('pnum', 'pnum')->setRequired('messages.pnum')
-					->addRule(Form::PATTERN, 'messages.pnum-rule', '[0-9A-Fa-f]{1,2}')
-					->addRule(Form::MAX_LENGTH, 'messages.pnum-rule', 2);
-				$message->addText('pcmd', 'pcmd')->setRequired('messages.pcmd')
-					->addRule(Form::PATTERN, 'messages.pcmd-rule', '[0-9A-Fa-f]{1,2}')
-					->addRule(Form::MAX_LENGTH, 'messages.pcmd-rule', 2);
-				$message->addText('hwpid', 'hwpid')->setRequired(false)
-					->addRule(Form::PATTERN, 'messages.hwpid-rule', '[0-9A-Fa-f]{4}')
-					->addRule(Form::MAX_LENGTH, 'messages.hwpid-rule', 4);
-				$message->addText('rcode', 'rcode');
-				$message->addText('rdata', 'rdata');
+		$message->addSelect('mType', 'mType', $this->mTypes)
+			->setPrompt('messages.mType-prompt')
+			->setRequired('messages.mType')->checkDefaultValue(false);
+		$data = $message->addContainer('data');
+		$data->addText('msgId', 'msgId');
+		$data->addInteger('timeout', 'timeout');
+		$req = $data->addContainer('req');
+		switch ($defaults['task']['message']['mType']) {
+			case 'iqrfRaw':
+				$this->addRaw($req);
 				break;
-			default:
+			case 'iqrfRawHdp':
+				$pData = &$defaults['task']['message']['data']['req']['pData'];
+				$pData = implode('.', $pData);
+				$this->addRawHdp($req);
 				break;
 		}
-		$message->addInteger('timeout', 'timeout');
-		$message->addText('request', 'request');
-		$message->addText('request_ts', 'request_ts');
-		$message->addText('confirmation', 'confirmation');
-		$message->addText('confirmation_ts', 'confirmation_ts');
-		$message->addText('response', 'response');
-		$message->addText('response_ts', 'response_ts');
+		$data->addCheckbox('returnVerbose', 'returnVerbose');
 		$form->addSubmit('save', 'Save');
 		$form->setDefaults($defaults);
 		$form->addProtection('core.errors.form-timeout');
 		$form->onSuccess[] = [$this, 'save'];
 		return $form;
+	}
+
+	/**
+	 * Add inputs for DPA raw request
+	 * @param Container $req Form request container
+	 */
+	private function addRaw(Container $req):void {
+		$req->addText('rData', 'request');
+	}
+
+	/**
+	 * Add inputs for DPA raw HDP request
+	 * @param Container $req Form request container
+	 */
+	private function addRawHdp(Container $req):void {
+		$req->addInteger('nAdr', 'nAdr');
+		$req->addInteger('pNum', 'pNum');
+		$req->addInteger('pCmd', 'pCmd');
+		$req->addInteger('hwpId', 'hwpId');
+		$req->addText('pData', 'pData');
 	}
 
 	/**
@@ -149,7 +153,10 @@ class SchedulerFormFactory {
 	 */
 	public function save(Form $form): void {
 		try {
-			$this->manager->save($form->getValues(true), $this->id);
+			$values = $form->getValues(true);
+			$pData = &$values['task']['message']['data']['req']['pData'];
+			$pData = explode('.', $pData);
+			$this->manager->save($values, $this->id);
 			$this->presenter->flashMessage('config.messages.success', 'success');
 		} catch (NonExistingJsonSchemaException $e) {
 			$this->presenter->flashMessage('config.messages.writeFailures.nonExistingJsonSchema', 'danger');

@@ -55,16 +55,13 @@ class SchedulerManagerTest extends TestCase {
 		'task' => [
 			'messaging' => 'WebsocketMessaging',
 			'message' => [
-				'ctype' => 'dpa',
-				'type' => 'raw',
-				'msgid' => '1',
-				'timeout' => 1000,
-				'request' => '00.00.06.03.ff.ff',
-				'request_ts' => '',
-				'confirmation' => '',
-				'confirmation_ts' => '',
-				'response' => '',
-				'response_ts' => '',
+				'mType' => 'iqrfRaw',
+				'data' => [
+					'msgId' => '1',
+					'timeout' => 1000,
+					'req' => ['rData' => '00.00.06.03.ff.ff'],
+				],
+				'returnVerbose' => true,
 			],],
 	];
 
@@ -95,16 +92,13 @@ class SchedulerManagerTest extends TestCase {
 			'task' => [
 				'messaging' => '',
 				'message' => [
-					'ctype' => 'dpa',
-					'type' => 'raw',
-					'msgid' => '',
-					'timeout' => 0,
-					'request' => '',
-					'request_ts' => '',
-					'confirmation' => '',
-					'confirmation_ts' => '',
-					'response' => '',
-					'response_ts' => '',
+					'mType' => 'iqrfRaw',
+					'data' => [
+						'msgId' => '',
+						'timeout' => 0,
+						'req' => ['rData' => ''],
+					],
+					'returnVerbose' => true,
 				],],
 		];
 		array_push($expected['TasksJson'], $task);
@@ -127,14 +121,14 @@ class SchedulerManagerTest extends TestCase {
 	 * Test function to fix HWPID format
 	 */
 	public function testFixHwpid(): void {
-		Assert::equal('01.00', $this->manager->fixHwpid('0001'));
+		Assert::equal('01.00', $this->manager->fixHwpid(1));
 	}
 
 	/**
 	 * Test function to fix HWPID format (empty)
 	 */
 	public function testFixHwpidEmpty(): void {
-		Assert::equal('00.00', $this->manager->fixHwpid(''));
+		Assert::equal('00.00', $this->manager->fixHwpid());
 	}
 
 	/**
@@ -178,14 +172,14 @@ class SchedulerManagerTest extends TestCase {
 				'time' => '*/5 * 1 * * * *',
 				'service' => 'SchedulerMessaging',
 				'messaging' => 'WebsocketMessaging',
-				'type' => 'dpa | raw',
+				'mType' => 'iqrfRaw',
 				'request' => '00.00.06.03.ff.ff',
 				'id' => 0,
 			], [
 				'time' => '*/5 * 1 * * * *',
 				'service' => 'SchedulerMessaging',
 				'messaging' => 'WebsocketMessaging',
-				'type' => 'dpa | raw-hdp',
+				'mType' => 'iqrfRawHdp',
 				'request' => '00.00.06.03.ff.ff',
 				'id' => 1,
 			],

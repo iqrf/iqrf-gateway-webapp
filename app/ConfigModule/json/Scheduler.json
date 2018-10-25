@@ -5,16 +5,15 @@
 		"task": {
 			"messaging": "",
 			"message": {
-				"ctype": "dpa",
-				"type": "raw",
-				"msgid": "",
-				"timeout": 0,
-				"request": "",
-				"request_ts": "",
-				"confirmation": "",
-				"confirmation_ts": "",
-				"response": "",
-				"response_ts": ""
+				"mType": "iqrfRaw",
+				"data": {
+					"msgId": "",
+					"timeout": 0,
+					"req": {
+						"rData": ""
+					}
+				},
+				"returnVerbose": true
 			}
 		}
 	},
@@ -24,22 +23,18 @@
 		"task": {
 			"messaging": "",
 			"message": {
-				"ctype": "dpa",
-				"type": "raw-hdp",
-				"msgid": "",
-				"timeout": 0,
-				"nadr": "",
-				"pnum": "",
-				"pcmd": "",
-				"hwpid": "",
-				"rcode": "",
-				"rdata": "",
-				"request": "",
-				"request_ts": "",
-				"confirmation": "",
-				"confirmation_ts": "",
-				"response": "",
-				"response_ts": ""
+				"mType": "iqrfRawHdp",
+				"data": {
+					"msgId": "",
+					"req": {
+						"nAdr": 0,
+						"pNum": 0,
+						"pCmd": 0,
+						"hwpId": 65535,
+						"pData": []
+					}
+				},
+				"returnVerbose": true
 			}
 		}
 	}

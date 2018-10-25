@@ -6,16 +6,15 @@
 			"task": {
 				"messaging": "WebsocketMessaging",
 				"message": {
-					"ctype": "dpa",
-					"type": "raw",
-					"msgid": "1",
-					"timeout": 1000,
-					"request": "00.00.06.03.ff.ff",
-					"request_ts": "",
-					"confirmation": "",
-					"confirmation_ts": "",
-					"response": "",
-					"response_ts": ""
+					"mType": "iqrfRaw",
+					"data": {
+						"msgId": "1",
+						"timeout": 1000,
+						"req": {
+							"rData": "00.00.06.03.ff.ff"
+						}
+					},
+					"returnVerbose": true
 				}
 			}
 		},
@@ -25,22 +24,19 @@
 			"task": {
 				"messaging": "WebsocketMessaging",
 				"message": {
-					"ctype": "dpa",
-					"type": "raw-hdp",
-					"msgid": "123",
+					"mType": "iqrfRawHdp",
 					"timeout": 1000,
-					"nadr": "00",
-					"pnum": "06",
-					"pcmd": "03",
-					"hwpid": "ffff",
-					"rcode": "",
-					"rdata": "",
-					"request": "",
-					"request_ts": "",
-					"confirmation": "",
-					"confirmation_ts": "",
-					"response": "",
-					"response_ts": ""
+					"data": {
+						"msgId": "123",
+						"req": {
+							"nAdr": 0,
+							"pNum": 6,
+							"pCmd": 3,
+							"hwpId": 65535,
+							"pData": []
+						},
+						"returnVerbose": true
+					}
 				}
 			}
 		}

@@ -69,7 +69,7 @@ class SchedulerDataGridFactory {
 		$grid->addColumnNumber('id', 'config.scheduler.form.id');
 		$grid->addColumnText('time', 'config.scheduler.form.time');
 		$grid->addColumnText('service', 'config.scheduler.form.service');
-		$grid->addColumnText('type', 'config.scheduler.form.type');
+		$grid->addColumnText('mType', 'config.scheduler.form.mType');
 		$grid->addColumnText('request', 'config.scheduler.form.request');
 		$grid->addAction('edit', 'config.actions.Edit')->setIcon('pencil')
 			->setClass('btn btn-xs btn-info');

@@ -138,15 +138,15 @@ class SchedulerManager {
 	public function list(): array {
 		$jsonTasks = $this->fileManager->read($this->fileName)['TasksJson'];
 		$tasks = [];
-		foreach ($jsonTasks as $json) {
-			$message = $json['task']['message'];
+		foreach ($jsonTasks as $id => $jsonTask) {
+			$message = $jsonTask['task']['message'];
 			$task = [
-				'time' => $json['time'],
-				'service' => $json['service'],
-				'messaging' => $json['task']['messaging'],
-				'type' => $message['ctype'] . ' | ' . $message['type'],
+				'time' => $jsonTask['time'],
+				'service' => $jsonTask['service'],
+				'messaging' => $jsonTask['task']['messaging'],
+				'mType' => $message['mType'] ?? '',
 				'request' => $this->getRequest($message),
-				'id' => array_keys($jsonTasks, $json, true)[0],
+				'id' => $id,
 			];
 			array_push($tasks, $task);
 		}
@@ -159,33 +159,39 @@ class SchedulerManager {
 	 * @return string DPA request
 	 */
 	public function getRequest(array $data): string {
-		if ($data['type'] === 'raw') {
-			return $data['request'];
+		if ((!isset($data['mType'])) || (!isset($data['data']['req']))) {
+			return '';
 		}
-		$nadr = (isset($data['nadr']) ? Strings::padLeft($data['nadr'], 2, '0') : '00') . '.00.';
-		$hwpid = (isset($data['hwpid']) ? $this->fixHwpid($data['hwpid']) : 'ff.ff');
-		switch ($data['type']) {
-			case 'raw-hdp':
-				$pnum = Strings::padLeft($data['pnum'], 2, '0') . '.';
-				$pcmd = Strings::padLeft($data['pcmd'], 2, '0') . '.';
-				if (isset($data['rdata']) && $data['rdata'] !== '') {
-					$pdata = '.' . Strings::padLeft($data['rdata'], 2, '0');
-				} else {
-					$pdata = '';
+		$request = $data['data']['req'];
+		switch ($data['mType']) {
+			case 'iqrfRaw':
+				return $request['rData'];
+			case 'iqrfRawHdp':
+				$packet = Strings::padLeft(dechex($request['nAdr']), 2, '0') . '.00.';
+				$packet .= Strings::padLeft(dechex($request['pNum']), 2, '0') . '.';
+				$packet .= Strings::padLeft(dechex($request['pCmd']), 2, '0') . '.';
+				$packet .= $this->fixHwpid($request['hwpId'] ?? 65535);
+				if (isset($request['pData']) && $request['pData'] !== []) {
+					foreach ($request['pData'] as &$byte) {
+						$byte = Strings::padLeft(dechex($byte), 2, '0');
+					}
+					$packet .= '.' . implode('.',$request['pData']);
 				}
-				return $nadr . $pnum . $pcmd . $hwpid . $pdata;
+				return $packet;
+			default:
+				return '';
 		}
-		return '';
 	}
 
 	/**
 	 * Fix HWPID format
-	 * @param string $hwpid HWPID to fix
+	 * @param int|null $hwpId HWPID to fix
 	 * @return string Fixed HWPID
 	 */
-	public function fixHwpid(string $hwpid): string {
-		$data = str_split(Strings::padLeft($hwpid, 4, '0'), 2);
-		return $data[1] . '.' . $data[0];
+	public function fixHwpid(?int $hwpId = null): string {
+		$data = Strings::padLeft(dechex($hwpId & 255), 2, '0') . '.';
+		$data .= Strings::padLeft(dechex($hwpId >> 8), 2, '0');
+		return $data;
 	}
 
 	/**

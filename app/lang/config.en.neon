@@ -233,37 +233,27 @@ scheduler:
 		time: Time
 		service: Service
 		messaging: Messaging
-		ctype: Category
-		cTypes:
-			dpa: DPA
-		type: Type of the DPA message
-		types:
-			raw: Raw
-			raw-hdp: Raw HDP
+		mType: Message type
+		mTypes:
+			iqrfRaw: DPA Raw
 		request: DPA request
-		request_ts: DPA request timestamp
-		response: DPA response
-		response_ts: DPA response timestamp
-		confirmation: DPA confirmation
-		confirmation_ts: DPA confirmation timestamp
-		nadr: NADR
+		nAdr: NADR
 		cmd: Command
-		pnum: PNUM
-		pcmd: PCMD
-		hwpid: HWPID
+		pNum: PNUM
+		pCmd: PCMD
+		hwpId: HWPID
+		pData: Data
 		timeout: Timeout
-		msgid: Message ID
-		sensors: Sensors
-		rcode: Response code
-		dpaval: DPA value
+		msgId: Message ID
+		returnVerbose: Enable verbose response
 		messages:
 			confirmDelete: Do you really want to delete task with ID %s?
-			ctype: Please select category of message.
-			ctype-prompt: Select category of message
 			hwpid-rule: HWPID has to contain hexadecimal number of maximal length of 4 chars.
 			nadr-rule: NADR has to contain hexadecimal number of maximal length of 2 chars.
 			messaging: Please select messaging.
 			messaging-prompt: Select messaging
+			mType: Please select message type.
+			mType-prompt: Select message type
 			service: Please select service.
 			service-prompt: Select service
 			type: Please select type of the DPA message.
