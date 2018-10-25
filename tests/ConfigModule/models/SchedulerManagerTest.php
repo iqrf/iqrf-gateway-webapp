@@ -146,7 +146,6 @@ class SchedulerManagerTest extends TestCase {
 		$expected = [
 			'config.mq.title' => ['MqMessaging',],
 			'config.mqtt.title' => ['MqttMessaging',],
-			'config.udp.title' => ['UdpMessaging',],
 			'config.websocket.title' => [
 				'WebsocketMessaging', 'WebsocketMessagingMobileApp',
 				'WebsocketMessagingWebApp',

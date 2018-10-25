@@ -236,6 +236,7 @@ scheduler:
 		mType: Message type
 		mTypes:
 			iqrfRaw: DPA Raw
+			iqrfRawHdp: DPA Raw HDP
 		request: DPA request
 		nAdr: NADR
 		cmd: Command

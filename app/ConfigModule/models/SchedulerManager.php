@@ -113,7 +113,9 @@ class SchedulerManager {
 	 * @throws JsonException
 	 */
 	public function getMessagings(): array {
-		return $this->genericConfigManager->getMessagings();
+		$messagings = $this->genericConfigManager->getMessagings();
+		unset($messagings['config.udp.title']);
+		return $messagings;
 	}
 
 	/**
