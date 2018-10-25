@@ -20,10 +20,13 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Datagrids;
 
+use App\CoreModule\Exceptions\UsernameAlreadyExistsException;
 use App\CoreModule\Models\UserManager;
 use App\CoreModule\Presenters\UserPresenter;
+use Kdyby\Translation\Phrase;
 use Nette\SmartObject;
 use Ublaboo\DataGrid\DataGrid;
+use Ublaboo\DataGrid\Exception\DataGridColumnStatusException;
 use Ublaboo\DataGrid\Exception\DataGridException;
 
 /**
@@ -41,16 +44,21 @@ class UserDataGridFactory {
 	/**
 	 * @var UserManager User manager
 	 */
-	private $userManager;
+	private $manager;
+
+	/**
+	 * @var UserPresenter User manager presenter
+	 */
+	private $presenter;
 
 	/**
 	 * Constructor
 	 * @param DataGridFactory $dataGridFactory Generic data grid factory
-	 * @param UserManager $userManager User manager
+	 * @param UserManager $manager User manager
 	 */
-	public function __construct(DataGridFactory $dataGridFactory, UserManager $userManager) {
+	public function __construct(DataGridFactory $dataGridFactory, UserManager $manager) {
 		$this->dataGridFactory = $dataGridFactory;
-		$this->userManager = $userManager;
+		$this->manager = $manager;
 	}
 
 	/**
@@ -58,15 +66,22 @@ class UserDataGridFactory {
 	 * @param UserPresenter $presenter User presenter
 	 * @param string $name Data grid's component name
 	 * @return DataGrid User data grid
+	 * @throws DataGridColumnStatusException
 	 * @throws DataGridException
 	 */
 	public function create(UserPresenter $presenter, string $name): DataGrid {
+		$this->presenter = $presenter;
 		$grid = $this->dataGridFactory->create($presenter, $name);
-		$grid->setDataSource($this->userManager->getUsers());
+		$grid->setDataSource($this->manager->getUsers());
 		$grid->addColumnNumber('id', 'core.user.form.id')->setAlign('left');
 		$grid->addColumnText('username', 'core.user.form.username');
-		$grid->addColumnText('role', 'core.user.form.userType');
-		$grid->addColumnText('language', 'core.user.form.language');
+		$grid->addColumnStatus('role', 'core.user.form.userType')
+			->addOption('normal', 'core.user.form.userTypes.normal')->endOption()
+			->addOption('power', 'core.user.form.userTypes.power')->endOption()
+			->onChange[] = [$this, 'changeRole'];
+		$grid->addColumnStatus('language', 'core.user.form.language')
+			->addOption('en', 'core.user.form.languages.en')->endOption()
+			->onChange[] = [$this, 'changeLanguage'];
 		$grid->addAction('edit', 'config.actions.Edit')->setIcon('pencil')
 			->setClass('btn btn-xs btn-info');
 		$grid->addAction('delete', 'config.actions.Remove')->setIcon('remove')
@@ -75,6 +90,60 @@ class UserDataGridFactory {
 		$grid->addToolbarButton('add', 'config.actions.Add')
 			->setClass('btn btn-xs btn-success');
 		return $grid;
+	}
+
+	/**
+	 * Change user's role
+	 * @param int $id User ID
+	 * @param string $role User's role
+	 */
+	public function changeRole(int $id, string $role): void {
+		$user = $this->manager->getInfo($id);
+		try {
+			$this->manager->edit($id, $user['username'], $role, $user['language']);
+			if ($this->presenter->user->id === $id) {
+				$this->presenter->user->logout();
+			}
+			$message = new Phrase('core.user.form.messages.successEdit', null,['username' => $user['username']]);
+			$this->presenter->flashMessage($message, 'success');
+			$this->presenter->redirect('User:default');
+		} catch (UsernameAlreadyExistsException $e) {
+			$this->presenter->flashMessage('core.user.form.messages.usernameAlreadyExists', 'danger');
+		} finally {
+			if ($this->presenter->isAjax()) {
+				$this->presenter->redrawControl('flashes');
+				$dataGrid = $this->presenter['userGrid'];
+				$dataGrid->setDataSource($this->manager->getUsers());
+				$dataGrid->redrawItem($id);
+			}
+		}
+	}
+
+	/**
+	 * Change user's language
+	 * @param int $id User ID
+	 * @param string $language User's language
+	 */
+	public function changeLanguage(int $id, string $language): void {
+		$user = $this->manager->getInfo($id);
+		try {
+			$this->manager->edit($id, $user['username'], $user['role'], $language);
+			if ($this->presenter->user->id === $id) {
+				$this->presenter->user->logout();
+			}
+			$message = new Phrase('core.user.form.messages.successEdit', null,['username' => $user['username']]);
+			$this->presenter->flashMessage($message, 'success');
+			$this->presenter->redirect('User:default');
+		} catch (UsernameAlreadyExistsException $e) {
+			$this->presenter->flashMessage('core.user.form.messages.usernameAlreadyExists', 'danger');
+		} finally {
+			if ($this->presenter->isAjax()) {
+				$this->presenter->redrawControl('flashes');
+				$dataGrid = $this->presenter['userGrid'];
+				$dataGrid->setDataSource($this->manager->getUsers());
+				$dataGrid->redrawItem($id);
+			}
+		}
 	}
 
 }
