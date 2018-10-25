@@ -10,7 +10,7 @@ declare(strict_types = 1);
 
 namespace Test\IqrfNetModule\Requests;
 
-use App\IqrfNetModule\Model\MessageIdManager;
+use App\IqrfNetModule\Models\MessageIdManager;
 use App\IqrfNetModule\Requests\ApiRequest;
 use Nette\DI\Container;
 use Nette\Utils\Json;

@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Datagrids;
 
-use App\ConfigModule\Model\SchedulerManager;
+use App\ConfigModule\Models\SchedulerManager;
 use App\ConfigModule\Presenters\SchedulerPresenter;
 use App\CoreModule\Datagrids\DataGridFactory;
 use Nette\SmartObject;

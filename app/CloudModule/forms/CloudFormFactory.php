@@ -19,14 +19,14 @@ declare(strict_types = 1);
 
 namespace App\CloudModule\Forms;
 
-use App\CloudModule\Exception\InvalidConnectionStringException;
-use App\CloudModule\Exception\InvalidPrivateKeyForCertificateException;
-use App\CloudModule\Model\IManager;
-use App\CoreModule\Exception\NonExistingJsonSchemaException;
+use App\CloudModule\Exceptions\InvalidConnectionStringException;
+use App\CloudModule\Exceptions\InvalidPrivateKeyForCertificateException;
+use App\CloudModule\Models\IManager;
+use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
 use App\CoreModule\Forms\FormFactory;
 use App\CoreModule\Presenters\ProtectedPresenter;
-use App\ServiceModule\Exception\NotSupportedInitSystemException;
-use App\ServiceModule\Model\ServiceManager;
+use App\ServiceModule\Exceptions\NotSupportedInitSystemException;
+use App\ServiceModule\Models\ServiceManager;
 use GuzzleHttp\Exception\TransferException;
 use Nette\Forms\Controls\SubmitButton;
 use Nette\IOException;

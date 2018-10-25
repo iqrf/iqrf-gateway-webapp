@@ -21,7 +21,7 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\MainFormFactory;
-use App\ConfigModule\Model\MainManager;
+use App\ConfigModule\Models\MainManager;
 use App\CoreModule\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 use Nette\IOException;

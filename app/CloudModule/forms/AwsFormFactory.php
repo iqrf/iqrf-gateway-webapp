@@ -20,10 +20,10 @@ declare(strict_types = 1);
 
 namespace App\CloudModule\Forms;
 
-use App\CloudModule\Model\AwsManager;
+use App\CloudModule\Models\AwsManager;
 use App\CloudModule\Presenters\AwsPresenter;
 use App\CoreModule\Forms\FormFactory;
-use App\ServiceModule\Model\ServiceManager;
+use App\ServiceModule\Models\ServiceManager;
 use Nette\Forms\Controls\SubmitButton;
 use Nette\Forms\Form;
 use Nette\SmartObject;

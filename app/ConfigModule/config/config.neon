@@ -26,10 +26,10 @@ services:
 	- App\ConfigModule\Forms\WebSocketMessagingFormFactory
 	- App\ConfigModule\Forms\WebSocketServiceFormFactory
 	- App\ConfigModule\Forms\GenericConfigFormFactory
-	- App\ConfigModule\Model\ComponentManager
-	- App\ConfigModule\Model\GenericManager
-	- App\ConfigModule\Model\IqrfManager
-	- App\ConfigModule\Model\MainManager
-	- App\ConfigModule\Model\MigrationManager(%daemon.configDir%)
-	- App\ConfigModule\Model\SchedulerManager
-	- App\ConfigModule\Model\WebSocketManager
+	- App\ConfigModule\Models\ComponentManager
+	- App\ConfigModule\Models\GenericManager
+	- App\ConfigModule\Models\IqrfManager
+	- App\ConfigModule\Models\MainManager
+	- App\ConfigModule\Models\MigrationManager(%daemon.configDir%)
+	- App\ConfigModule\Models\SchedulerManager
+	- App\ConfigModule\Models\WebSocketManager

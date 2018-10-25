@@ -20,11 +20,11 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Forms;
 
-use App\ConfigModule\Exception\IncompleteConfigurationException;
-use App\ConfigModule\Exception\InvalidConfigurationFormatException;
-use App\ConfigModule\Model\MigrationManager;
+use App\ConfigModule\Exceptions\IncompleteConfigurationException;
+use App\ConfigModule\Exceptions\InvalidConfigurationFormatException;
+use App\ConfigModule\Models\MigrationManager;
 use App\ConfigModule\Presenters\MigrationPresenter;
-use App\CoreModule\Exception\NonExistingJsonSchemaException;
+use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
 use App\CoreModule\Forms\FormFactory;
 use Nette\Forms\Form;
 use Nette\IOException;

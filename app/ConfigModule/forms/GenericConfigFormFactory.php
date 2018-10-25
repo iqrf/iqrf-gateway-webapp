@@ -20,8 +20,8 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Forms;
 
-use App\ConfigModule\Model\GenericManager;
-use App\CoreModule\Exception\NonExistingJsonSchemaException;
+use App\ConfigModule\Models\GenericManager;
+use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
 use App\CoreModule\Forms\FormFactory;
 use App\CoreModule\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;

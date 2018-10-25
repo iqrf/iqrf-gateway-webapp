@@ -20,8 +20,8 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Forms;
 
-use App\CoreModule\Exception\UsernameAlreadyExistsException;
-use App\CoreModule\Model\UserManager;
+use App\CoreModule\Exceptions\UsernameAlreadyExistsException;
+use App\CoreModule\Models\UserManager;
 use App\CoreModule\Presenters\UserPresenter;
 use Nette\Forms\Form;
 use Nette\SmartObject;

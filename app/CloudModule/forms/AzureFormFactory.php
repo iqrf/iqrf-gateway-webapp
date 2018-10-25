@@ -20,10 +20,10 @@ declare(strict_types = 1);
 
 namespace App\CloudModule\Forms;
 
-use App\CloudModule\Model\AzureManager;
+use App\CloudModule\Models\AzureManager;
 use App\CloudModule\Presenters\AzurePresenter;
 use App\CoreModule\Forms\FormFactory;
-use App\ServiceModule\Model\ServiceManager;
+use App\ServiceModule\Models\ServiceManager;
 use Nette\Forms\Controls\SubmitButton;
 use Nette\Forms\Form;
 use Nette\SmartObject;

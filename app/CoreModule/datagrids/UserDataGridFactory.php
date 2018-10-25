@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Datagrids;
 
-use App\CoreModule\Model\UserManager;
+use App\CoreModule\Models\UserManager;
 use App\CoreModule\Presenters\UserPresenter;
 use Nette\SmartObject;
 use Ublaboo\DataGrid\DataGrid;

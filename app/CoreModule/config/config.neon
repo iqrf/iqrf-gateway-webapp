@@ -6,13 +6,13 @@ services:
 	- App\CoreModule\Forms\SignInFormFactory
 	- App\CoreModule\Forms\UserAddFormFactory
 	- App\CoreModule\Forms\UserEditFormFactory
-	authenticator: App\CoreModule\Model\AppAuthenticator
-	- App\CoreModule\Model\CertificateManager
-	- App\CoreModule\Model\CommandManager(%sudo%)
-	- App\CoreModule\Model\FileManager(%daemon.configDir%)
-	- App\CoreModule\Model\JsonFileManager(%daemon.configDir%)
+	authenticator: App\CoreModule\Models\AppAuthenticator
+	- App\CoreModule\Models\CertificateManager
+	- App\CoreModule\Models\CommandManager(%sudo%)
+	- App\CoreModule\Models\FileManager(%daemon.configDir%)
+	- App\CoreModule\Models\JsonFileManager(%daemon.configDir%)
 	jsonSchemaManager:
-		factory: App\CoreModule\Model\JsonSchemaManager(%daemon.schemaDir%)
+		factory: App\CoreModule\Models\JsonSchemaManager(%daemon.schemaDir%)
 		autowired: self
-	- App\CoreModule\Model\UserManager
-	- App\CoreModule\Model\VersionManager
+	- App\CoreModule\Models\UserManager
+	- App\CoreModule\Models\VersionManager

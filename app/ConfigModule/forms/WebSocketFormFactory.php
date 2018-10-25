@@ -20,9 +20,9 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Forms;
 
-use App\ConfigModule\Model\WebSocketManager;
+use App\ConfigModule\Models\WebSocketManager;
 use App\ConfigModule\Presenters\WebsocketPresenter;
-use App\CoreModule\Exception\NonExistingJsonSchemaException;
+use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
 use App\CoreModule\Forms\FormFactory;
 use Nette\Forms\Form;
 use Nette\IOException;

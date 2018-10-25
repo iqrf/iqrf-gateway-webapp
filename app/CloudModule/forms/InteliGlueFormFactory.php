@@ -20,10 +20,10 @@ declare(strict_types = 1);
 
 namespace App\CloudModule\Forms;
 
-use App\CloudModule\Model\InteliGlueManager;
+use App\CloudModule\Models\InteliGlueManager;
 use App\CloudModule\Presenters\InteliGluePresenter;
 use App\CoreModule\Forms\FormFactory;
-use App\ServiceModule\Model\ServiceManager;
+use App\ServiceModule\Models\ServiceManager;
 use Nette\Forms\Controls\SubmitButton;
 use Nette\Forms\Form;
 use Nette\SmartObject;

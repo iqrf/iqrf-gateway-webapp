@@ -20,10 +20,10 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Datagrids;
 
-use App\ConfigModule\Model\GenericManager;
+use App\ConfigModule\Models\GenericManager;
 use App\ConfigModule\Presenters\WebsocketPresenter;
 use App\CoreModule\Datagrids\DataGridFactory;
-use App\CoreModule\Exception\NonExistingJsonSchemaException;
+use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
 use Nette\IOException;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;

@@ -21,7 +21,7 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\IqrfDpaFormFactory;
-use App\ConfigModule\Model\GenericManager;
+use App\ConfigModule\Models\GenericManager;
 use Nette\Forms\Form;
 use Nette\Utils\JsonException;
 

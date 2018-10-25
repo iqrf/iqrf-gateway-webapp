@@ -4,15 +4,15 @@ services:
 	- App\IqrfNetModule\Forms\DiscoveryFormFactory
 	- App\IqrfNetModule\Forms\RfFormFactory
 	- App\IqrfNetModule\Forms\SecurityFormFactory
-	- App\IqrfNetModule\Model\DpaRawManager
-	- App\IqrfNetModule\Model\GwModeManager
-	- App\IqrfNetModule\Model\IqrfMacroManager(%macroPath%)
-	- App\IqrfNetModule\Model\IqrfNetManager
-	- App\IqrfNetModule\Model\MessageIdManager
-	- App\IqrfNetModule\Model\WebSocketClient(%daemon.wsServer%)
-	- App\IqrfNetModule\Parser\CoordinatorParser
-	- App\IqrfNetModule\Parser\EnumerationParser
-	- App\IqrfNetModule\Parser\OsParser
+	- App\IqrfNetModule\Models\DpaRawManager
+	- App\IqrfNetModule\Models\GwModeManager
+	- App\IqrfNetModule\Models\IqrfMacroManager(%macroPath%)
+	- App\IqrfNetModule\Models\IqrfNetManager
+	- App\IqrfNetModule\Models\MessageIdManager
+	- App\IqrfNetModule\Models\WebSocketClient(%daemon.wsServer%)
+	- App\IqrfNetModule\Parsers\CoordinatorParser
+	- App\IqrfNetModule\Parsers\EnumerationParser
+	- App\IqrfNetModule\Parsers\OsParser
 	- App\IqrfNetModule\Requests\ApiRequest
 	dpaRequest:
 		factory: App\IqrfNetModule\Requests\DpaRequest

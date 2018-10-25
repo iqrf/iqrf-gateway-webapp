@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\IqrfNetModule\Requests;
 
-use App\IqrfNetModule\Model\MessageIdManager;
+use App\IqrfNetModule\Models\MessageIdManager;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 

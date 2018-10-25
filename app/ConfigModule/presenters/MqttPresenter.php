@@ -22,7 +22,7 @@ namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Datagrids\MqttMessagingDataGridFactory;
 use App\ConfigModule\Forms\MqttFormFactory;
-use App\ConfigModule\Model\GenericManager;
+use App\ConfigModule\Models\GenericManager;
 use Nette\Forms\Form;
 use Nette\Utils\JsonException;
 use Ublaboo\DataGrid\DataGrid;

@@ -20,8 +20,8 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Forms;
 
-use App\CoreModule\Exception\InvalidPasswordException;
-use App\CoreModule\Model\UserManager;
+use App\CoreModule\Exceptions\InvalidPasswordException;
+use App\CoreModule\Models\UserManager;
 use App\CoreModule\Presenters\ProfilePresenter;
 use Nette\Forms\Form;
 use Nette\Security\User;

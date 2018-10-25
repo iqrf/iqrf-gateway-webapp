@@ -21,8 +21,8 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Presenters;
 
 use App\CoreModule\Presenters\ProtectedPresenter;
-use App\GatewayModule\Model\DiagnosticsManager;
-use App\GatewayModule\Model\InfoManager;
+use App\GatewayModule\Models\DiagnosticsManager;
+use App\GatewayModule\Models\InfoManager;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use Nette\Application\BadRequestException;

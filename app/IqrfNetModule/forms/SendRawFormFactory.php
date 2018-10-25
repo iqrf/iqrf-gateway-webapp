@@ -23,7 +23,7 @@ namespace App\IqrfNetModule\Forms;
 use App\CoreModule\Forms\FormFactory;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
-use App\IqrfNetModule\Model\DpaRawManager;
+use App\IqrfNetModule\Models\DpaRawManager;
 use App\IqrfNetModule\Presenters\SendRawPresenter;
 use Nette\Forms\Form;
 use Nette\SmartObject;

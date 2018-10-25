@@ -21,7 +21,7 @@ declare(strict_types = 1);
 namespace App\CoreModule\Presenters;
 
 use App\CoreModule\Forms\SignInFormFactory;
-use App\CoreModule\Model\UserManager;
+use App\CoreModule\Models\UserManager;
 use Nette\Forms\Form;
 
 /**

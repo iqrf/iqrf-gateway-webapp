@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Presenters;
 
-use App\CoreModule\Model\VersionManager;
+use App\CoreModule\Models\VersionManager;
 use GuzzleHttp\Exception\TransferException;
 use Kdyby\Translation\Phrase;
 use Nette\Utils\JsonException;

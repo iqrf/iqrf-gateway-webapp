@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ConsoleModule\Commands;
 
-use App\ConsoleModule\Model\ConsoleUserManager;
+use App\ConsoleModule\Models\ConsoleUserManager;
 use Nette\SmartObject;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputDefinition;

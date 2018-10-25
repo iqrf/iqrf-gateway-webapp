@@ -25,8 +25,8 @@ use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\IqrfNetModule\Forms\SendRawFormFactory;
-use App\IqrfNetModule\Model\DpaRawManager;
-use App\IqrfNetModule\Model\IqrfMacroManager;
+use App\IqrfNetModule\Models\DpaRawManager;
+use App\IqrfNetModule\Models\IqrfMacroManager;
 use Nette\Forms\Form;
 use Nette\Utils\JsonException;
 

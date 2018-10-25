@@ -21,8 +21,8 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\IqrfCdcFormFactory;
-use App\ConfigModule\Model\GenericManager;
-use App\ConfigModule\Model\IqrfManager;
+use App\ConfigModule\Models\GenericManager;
+use App\ConfigModule\Models\IqrfManager;
 use Nette\Forms\Form;
 use Nette\Utils\JsonException;
 

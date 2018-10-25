@@ -23,7 +23,7 @@ namespace App\GatewayModule\Presenters;
 use App\CoreModule\Presenters\ProtectedPresenter;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Exceptions\InvalidOperationModeException;
-use App\IqrfNetModule\Model\GwModeManager;
+use App\IqrfNetModule\Models\GwModeManager;
 use Nette\Utils\JsonException;
 
 /**

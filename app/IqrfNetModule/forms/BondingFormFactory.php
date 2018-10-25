@@ -23,7 +23,7 @@ namespace App\IqrfNetModule\Forms;
 use App\CoreModule\Forms\FormFactory;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
-use App\IqrfNetModule\Model\IqrfNetManager;
+use App\IqrfNetModule\Models\IqrfNetManager;
 use App\IqrfNetModule\Presenters\NetworkPresenter;
 use Nette\Forms\Controls\SubmitButton;
 use Nette\Forms\Form;

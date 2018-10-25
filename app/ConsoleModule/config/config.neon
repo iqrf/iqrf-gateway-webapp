@@ -5,5 +5,5 @@ services:
 	- App\ConsoleModule\Commands\UserPasswordCommand
 	- App\ConsoleModule\Commands\UserRemoveCommand
 	consoleUserManager:
-		factory: App\ConsoleModule\Model\ConsoleUserManager
+		factory: App\ConsoleModule\Models\ConsoleUserManager
 		autowired: self

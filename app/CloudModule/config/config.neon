@@ -3,7 +3,7 @@ services:
 	- App\CloudModule\Forms\AzureFormFactory
 	- App\CloudModule\Forms\BluemixFormFactory
 	- App\CloudModule\Forms\InteliGlueFormFactory
-	- App\CloudModule\Model\AwsManager(%daemon.certDir%)
-	- App\CloudModule\Model\AzureManager
-	- App\CloudModule\Model\BluemixManager(%daemon.certDir%)
-	- App\CloudModule\Model\InteliGlueManager(%daemon.certDir%)
+	- App\CloudModule\Models\AwsManager(%daemon.certDir%)
+	- App\CloudModule\Models\AzureManager
+	- App\CloudModule\Models\BluemixManager(%daemon.certDir%)
+	- App\CloudModule\Models\InteliGlueManager(%daemon.certDir%)

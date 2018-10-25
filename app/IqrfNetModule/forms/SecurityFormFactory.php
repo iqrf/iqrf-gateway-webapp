@@ -25,7 +25,7 @@ use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Exceptions\UnsupportedInputFormatException;
 use App\IqrfNetModule\Exceptions\UnsupportedSecurityTypeException;
-use App\IqrfNetModule\Model\IqrfNetManager;
+use App\IqrfNetModule\Models\IqrfNetManager;
 use App\IqrfNetModule\Presenters\NetworkPresenter;
 use Nette\Forms\Controls\SubmitButton;
 use Nette\Forms\Form;

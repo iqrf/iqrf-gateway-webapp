@@ -20,9 +20,9 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Forms;
 
-use App\ConfigModule\Model\SchedulerManager;
+use App\ConfigModule\Models\SchedulerManager;
 use App\ConfigModule\Presenters\SchedulerPresenter;
-use App\CoreModule\Exception\NonExistingJsonSchemaException;
+use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
 use App\CoreModule\Forms\FormFactory;
 use Nette\Forms\Container;
 use Nette\Forms\Form;

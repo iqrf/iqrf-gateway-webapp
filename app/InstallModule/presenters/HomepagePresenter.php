@@ -21,7 +21,7 @@ declare(strict_types = 1);
 namespace App\InstallModule\Presenters;
 
 use App\CoreModule\Forms\UserAddFormFactory;
-use App\CoreModule\Model\UserManager;
+use App\CoreModule\Models\UserManager;
 use App\CoreModule\Presenters\BasePresenter;
 use Nette\Forms\Form;
 

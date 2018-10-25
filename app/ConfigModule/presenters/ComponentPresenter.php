@@ -22,7 +22,7 @@ namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Datagrids\ComponentsDataGridFactory;
 use App\ConfigModule\Forms\ComponentsFormFactory;
-use App\ConfigModule\Model\ComponentManager;
+use App\ConfigModule\Models\ComponentManager;
 use App\CoreModule\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 use Nette\IOException;

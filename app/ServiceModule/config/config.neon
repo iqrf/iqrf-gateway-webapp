@@ -1,5 +1,5 @@
 services:
-	- App\ServiceModule\Model\DockerSupervisorManager
-	- App\ServiceModule\Model\ServiceManager(%initDaemon%)
-	- App\ServiceModule\Model\SystemDManager
-	- App\ServiceModule\Model\UnknownManager
+	- App\ServiceModule\Models\DockerSupervisorManager
+	- App\ServiceModule\Models\ServiceManager(%initDaemon%)
+	- App\ServiceModule\Models\SystemDManager
+	- App\ServiceModule\Models\UnknownManager

@@ -1,4 +1,4 @@
 services:
-	- App\GatewayModule\Model\DiagnosticsManager(%daemon.configDir%, %daemon.logDir%)
-	- App\GatewayModule\Model\InfoManager
-	- App\GatewayModule\Model\LogManager(%daemon.logDir%)
+	- App\GatewayModule\Models\DiagnosticsManager(%daemon.configDir%, %daemon.logDir%)
+	- App\GatewayModule\Models\InfoManager
+	- App\GatewayModule\Models\LogManager(%daemon.logDir%)

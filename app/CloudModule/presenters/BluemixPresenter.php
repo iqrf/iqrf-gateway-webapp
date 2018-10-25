@@ -21,7 +21,7 @@ declare(strict_types = 1);
 namespace App\CloudModule\Presenters;
 
 use App\CloudModule\Forms\BluemixFormFactory;
-use App\CoreModule\Model\JsonFileManager;
+use App\CoreModule\Models\JsonFileManager;
 use App\CoreModule\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 use Nette\Utils\JsonException;

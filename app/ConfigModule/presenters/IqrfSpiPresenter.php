@@ -21,9 +21,9 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\IqrfSpiFormFactory;
-use App\ConfigModule\Model\GenericManager;
-use App\ConfigModule\Model\IqrfManager;
-use App\CoreModule\Model\JsonFileManager;
+use App\ConfigModule\Models\GenericManager;
+use App\ConfigModule\Models\IqrfManager;
+use App\CoreModule\Models\JsonFileManager;
 use Nette\Forms\Form;
 use Nette\Utils\JsonException;
 

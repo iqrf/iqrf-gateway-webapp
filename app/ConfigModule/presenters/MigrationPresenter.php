@@ -21,7 +21,7 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\MigrationFormFactory;
-use App\ConfigModule\Model\MigrationManager;
+use App\ConfigModule\Models\MigrationManager;
 use App\CoreModule\Presenters\ProtectedPresenter;
 use Nette\Application\BadRequestException;
 use Nette\Forms\Form;

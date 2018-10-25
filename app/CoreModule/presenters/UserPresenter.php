@@ -23,7 +23,7 @@ namespace App\CoreModule\Presenters;
 use App\CoreModule\Datagrids\UserDataGridFactory;
 use App\CoreModule\Forms\UserAddFormFactory;
 use App\CoreModule\Forms\UserEditFormFactory;
-use App\CoreModule\Model\UserManager;
+use App\CoreModule\Models\UserManager;
 use Nette\Forms\Form;
 use Ublaboo\DataGrid\DataGrid;
 use Ublaboo\DataGrid\Exception\DataGridException;

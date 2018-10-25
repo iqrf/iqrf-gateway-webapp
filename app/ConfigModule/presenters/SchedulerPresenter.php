@@ -22,7 +22,7 @@ namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Datagrids\SchedulerDataGridFactory;
 use App\ConfigModule\Forms\SchedulerFormFactory;
-use App\ConfigModule\Model\SchedulerManager;
+use App\ConfigModule\Models\SchedulerManager;
 use App\CoreModule\Presenters\ProtectedPresenter;
 use Nette\Forms\Form;
 use Nette\IOException;

@@ -19,10 +19,10 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Datagrids;
 
-use App\ConfigModule\Model\ComponentManager;
+use App\ConfigModule\Models\ComponentManager;
 use App\ConfigModule\Presenters\ComponentPresenter;
 use App\CoreModule\Datagrids\DataGridFactory;
-use App\CoreModule\Exception\NonExistingJsonSchemaException;
+use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
 use Nette\IOException;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;
