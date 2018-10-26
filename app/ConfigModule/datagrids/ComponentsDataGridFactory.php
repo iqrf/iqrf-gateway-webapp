@@ -105,7 +105,7 @@ class ComponentsDataGridFactory {
 		if ($this->presenter->user->isInRole('power')) {
 			return $this->configManager->list();
 		} else {
-			$visible = ['iqrf::IqrfCdc', 'iqrf::IqrfSpi', 'iqrf::IqrfUart', 'iqrf::Scheduler',];
+			$visible = ['iqrf::IqrfCdc', 'iqrf::IqrfSpi', 'iqrf::IqrfUart',];
 			$components = [];
 			foreach ($this->configManager->list() as $component) {
 				if (in_array($component['name'], $visible, true)) {
