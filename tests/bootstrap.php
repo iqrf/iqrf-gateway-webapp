@@ -13,7 +13,7 @@ if (basename(__DIR__) === 'tests') {
 	@mkdir($tempDir . 'configuration/scheduler/');
 	@mkdir($tempDir . 'zip/');
 }
-date_default_timezone_set('Europe/Prague');
+date_default_timezone_set('Etc/GMT-2');
 
 $configurator = new Nette\Configurator;
 $configurator->setDebugMode(false);
