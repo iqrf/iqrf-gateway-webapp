@@ -52,9 +52,9 @@ For Debian and UbiLinux
 .. code-block:: bash
 
 
-	sudo apt-get install dirmngr
+	sudo apt-get install dirmngr apt-transport-https
 	sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 9C076FCC7AB8F2E43C2AB0E73241B9B7B4BD8F8E
-	echo "deb https://repos.iqrfsdk.org/testing/debian stretch testing" | sudo tee -a /etc/apt/sources.list
+	echo "deb https://repos.iqrf.org/testing/debian stretch testing" | sudo tee -a /etc/apt/sources.list
 	sudo apt-get update
 
 
@@ -64,7 +64,7 @@ Currently Ubuntu is not supported.
 
 Install IQRF Gateway Daemon
 ###########################
-Follow the `IQRF Gateway Daemon's installation guide <https://github.com/iqrfsdk/iqrf-gateway-daemon/blob/master/INSTALL.md>`_.
+Follow the `IQRF Gateway Daemon's installation guide <https://docs.iqrf.org/iqrf-gateway-daemon/install.html>`_.
 
 Install IQRF Gateway webapp
 ###########################
