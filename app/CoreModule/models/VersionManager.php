@@ -108,7 +108,7 @@ class VersionManager {
 	public function getCurrentWebapp(): string {
 		$json = $this->cache->load('current', function (&$dependencies) {
 			$dependencies = [Cache::EXPIRE => '1 hour'];
-			$repoUrl = 'https://raw.githubusercontent.com/iqrfsdk/iqrf-gateway-webapp/';
+			$repoUrl = 'https://gitlab.iqrfsdk.org/open-source/iqrf-gateway-webapp/raw/';
 			try {
 				$url = $repoUrl . 'stable/version.json';
 				$file = $this->client->request('GET', $url)->getBody()->getContents();
