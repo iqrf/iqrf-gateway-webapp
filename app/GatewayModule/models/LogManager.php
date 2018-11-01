@@ -68,9 +68,10 @@ class LogManager {
 	 */
 	public function getLogFiles(): array {
 		$logFiles = [];
-		foreach (Finder::findFiles('*-iqrf-gateway-daemon.log')->from($this->logDir) as $file) {
+		foreach (Finder::findFiles('*iqrf-gateway-daemon.log')->from($this->logDir) as $file) {
 			$path = $file->getRealPath();
-			$fileName = Strings::replace($path, ['~^' . realpath($this->logDir) . '/~', '/-iqrf-gateway-daemon.log$/'], '');
+			$pattern = ['~^' . realpath($this->logDir) . '/~', '/(-iqrf-gateway-daemon|)\.log$/'];
+			$fileName = Strings::trim(Strings::replace($path, $pattern, ''), '-');
 			$logFiles[$fileName] = $path;
 		}
 		krsort($logFiles);
