@@ -68,7 +68,7 @@ class WebSocketClient {
 	 * @throws EmptyResponseException
 	 * @throws JsonException
 	 */
-	public function sendSync(ApiRequest $request, int $timeout = 15): array {
+	public function sendSync(ApiRequest $request, int $timeout = 13): array {
 		$connection = $this->createConnection($timeout);
 		$wait = true;
 		$attempts = 2;
