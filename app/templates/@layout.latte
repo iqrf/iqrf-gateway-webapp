@@ -20,32 +20,81 @@
 <head>
 	<meta charset='utf-8'>
 	<meta http-equiv='X-UA-Compatible' content='IE=edge'>
-	<meta name='viewport' content='width=device-width, initial-scale=1'>
+	<meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no'>
 	<meta name='description' content='Web configurator for iqrf-daemon'>
 	<meta name='author' content='IQRF Tech.r.o.'>
 	<title>{ifset title}{include title|stripHtml|trim} | {/ifset}{_core.title}</title>
 	<link n:nonce rel='stylesheet' href='/css/bootstrap.min.css'>
-	<link n:nonce rel='stylesheet' href='/css/bootstrap-theme.min.css'>
+	{*<link n:nonce rel='stylesheet' href='/css/bootstrap-theme.min.css'>*}
+	<link n:nonce rel='stylesheet' href='/css/adminlte.min.css'>
+	<link n:nonce rel='stylesheet' href='/css/skin-blue.min.css'>
 	<link n:nonce rel='stylesheet' href='/css/datagrid.min.css'>
 	<link n:nonce rel='stylesheet' href='/css/datagrid-spinners.min.css'>
 	<link n:nonce rel='stylesheet' href='/css/highlight.github.min.css'>
 </head>
-<body n:nonce style='background-color: #ECF0F1;'>
-{include 'menu.latte'}
-<div class='container theme-showcase' role='main'>
-	{snippet flashes}
-		<div n:foreach='$flashes as $flash' class='alert alert-{$flash->type} alert-dismissible' role='alert'>
-			<button type='button' class='close' data-dismiss='alert' aria-label='Close'>
-				<span aria-hidden='true'>&times;</span>
-			</button>
-			{_$flash->message}
-		</div>
-	{/snippet}
-	{include content}
+<body class='hold-transition skin-blue sidebar-mini'>
+<div class='wrapper'>
+	{*	{include 'menu.latte'}
+		<div class='container theme-showcase' role='main'>
+			{snippet flashes}
+				<div n:foreach='$flashes as $flash' class='alert alert-{$flash->type} alert-dismissible' role='alert'>
+					<button type='button' class='close' data-dismiss='alert' aria-label='Close'>
+						<span aria-hidden='true'>&times;</span>
+					</button>
+					{_$flash->message}
+				</div>
+			{/snippet}
+			{include content}
+		</div>*}
+	<!-- Main Header -->
+	<header class='main-header'>
+		<a n:href=':Core:Homepage:default' class='logo'>
+			<span class='logo-mini'><img src='/img/logo-small.svg'></span>
+			<span class='logo-lg'><img src='/img/logo-big.svg'></span>
+		</a>
+		<nav class='navbar navbar-static-top' role='navigation'>
+			<a href='#' class='sidebar-toggle' data-toggle='push-menu' role='button'>
+				<span class='sr-only'>Toggle navigation</span>
+			</a>
+			<div class='navbar-custom-menu'>
+				<ul class='nav navbar-nav'>
+					<li class="dropdown user user-menu">
+					<li n:if='!$user->loggedIn'><a n:href=':Core:Sign:in'>{_core.sign.in}</a></li>
+					<li n:if='$user->loggedIn' class='dropdown'>
+						<a n:href=':Core:Profile:default' class="dropdown-toggle" data-toggle="dropdown" role="button">
+							{$user->getIdentity()->getData()['username']} <span class="caret"></span>
+						</a>
+						<ul class="dropdown-menu">
+							<li><a n:href=':Core:Profile:default'>{_core.profile.title}</a></li>
+							<li><a n:href=':Core:Sign:out'>{_core.sign.out}</a></li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</nav>
+	</header>
+	{include 'sidebar.latte'}
+	<div class='content-wrapper'>
+		<section class='content-header'>
+			<h1>{include title}</h1>
+		</section>
+		<section class='content container-fluid'>
+			{snippet flashes}
+				<div n:foreach='$flashes as $flash' class='alert alert-{$flash->type} alert-dismissible' role='alert'>
+					<button type='button' class='close' data-dismiss='alert' aria-label='Close'>
+						<span aria-hidden='true'>&times;</span>
+					</button>
+					{_$flash->message}
+				</div>
+			{/snippet}
+			{include content}
+		</section>
+	</div>
 </div>
 {block scripts}
 	<script n:nonce src='/js/jquery-3.3.1.min.js'></script>
 	<script n:nonce src='/js/bootstrap.min.js'></script>
+	<script n:nonce src='/js/adminlte.min.js'></script>
 	<script n:nonce src='/js/netteForms.min.js'></script>
 	<script n:nonce src='/js/nette.ajax.min.js'></script>
 	<script n:nonce src='/js/datagrid.min.js'></script>

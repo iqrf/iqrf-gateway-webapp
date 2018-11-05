@@ -15,12 +15,12 @@
  * limitations under the License.
 *}
 
-{block content}
-<h1 n:block=title>
+{block title}
 	{if $user->isInRole('power')}
 		{_config.components.title}
 	{else}
 		{_config.selected-components.title}
 	{/if}
-</h1>
+{/block}
+{block content}
 {control configComponentsDataGrid}
