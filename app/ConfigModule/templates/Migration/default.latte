@@ -27,3 +27,14 @@
 		</form>
 	</div>
 </div>
+<h2>{_config.schedulerMigration.title}</h2>
+<div class='panel panel-default'>
+	<div class='panel-body'>
+		<form n:name=configSchedulerImportForm class=form>
+			<label n:name=configuration for='configuration'>{_config.schedulerMigration.configuration}</label>
+			<input n:name=configuration>
+			<input n:name=import class='btn btn-primary navbar-btn'>
+			<a class="btn btn-primary" n:href="Migration:schedulerExport" role="button">{_config.schedulerMigration.export}</a>
+		</form>
+	</div>
+</div>

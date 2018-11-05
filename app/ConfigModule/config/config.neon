@@ -21,6 +21,7 @@ services:
 	- App\ConfigModule\Forms\MqttFormFactory
 	- App\ConfigModule\Forms\OtaUploadFormFactory
 	- App\ConfigModule\Forms\SchedulerFormFactory
+	- App\ConfigModule\Forms\SchedulerMigrationFormFactory
 	- App\ConfigModule\Forms\UdpFormFactory
 	- App\ConfigModule\Forms\WebSocketFormFactory
 	- App\ConfigModule\Forms\WebSocketMessagingFormFactory
@@ -32,4 +33,5 @@ services:
 	- App\ConfigModule\Models\MainManager
 	- App\ConfigModule\Models\MigrationManager(%daemon.configDir%)
 	- App\ConfigModule\Models\SchedulerManager
+	- App\ConfigModule\Models\SchedulerMigrationManager
 	- App\ConfigModule\Models\WebSocketManager

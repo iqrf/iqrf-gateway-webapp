@@ -261,6 +261,18 @@ scheduler:
 			type-prompt: Select message type
 		Save: Save
 
+schedulerMigration:
+	title: Scheduler's configuration migration
+	export: Export scheduler's configuration
+	import: Import scheduler's configuration
+	configuration: "IQRF Gateway Daemon's scheduler's configuration to import"
+	messages:
+		configuration: "Please select a JSON file with IQRF Gateway Daemon's scheduler's configuration to import."
+		importedConfig: "IQRF Gateway Daemon's scheduler's configuration has been imported."
+	errors:
+		invalidConfig: The JSON file contains invalid configuration.
+		invalidFormat: Uploaded invalid file format.
+		readConfig: Cannot read JSON with a scheduler's configuration.
 
 selected-components:
 	title: Selected components

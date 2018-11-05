@@ -21,7 +21,9 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\MigrationFormFactory;
+use App\ConfigModule\Forms\SchedulerMigrationFormFactory;
 use App\ConfigModule\Models\MigrationManager;
+use App\ConfigModule\Models\SchedulerMigrationManager;
 use App\CoreModule\Presenters\ProtectedPresenter;
 use Nette\Application\BadRequestException;
 use Nette\Forms\Form;
@@ -39,16 +41,28 @@ class MigrationPresenter extends ProtectedPresenter {
 	public $formFactory;
 
 	/**
+	 * @var SchedulerMigrationFormFactory Scheduler's configuration import form factory
+	 * @inject
+	 */
+	public $schedulerFormFactory;
+
+	/**
 	 * @var MigrationManager Configuration migration manager
 	 */
-	private $migrationManager;
+	private $manager;
+
+	/**
+	 * @var SchedulerMigrationManager Scheduler's configuration migration manager
+	 */
+	private $schedulerManager;
 
 	/**
 	 * Constructor
-	 * @param MigrationManager $migrationManager Configuration migration manager
+	 * @param MigrationManager $manager Configuration migration manager
 	 */
-	public function __construct(MigrationManager $migrationManager) {
-		$this->migrationManager = $migrationManager;
+	public function __construct(MigrationManager $manager, SchedulerMigrationManager $schedulerManager) {
+		$this->manager = $manager;
+		$this->schedulerManager = $schedulerManager;
 		parent::__construct();
 	}
 
@@ -57,10 +71,24 @@ class MigrationPresenter extends ProtectedPresenter {
 	 */
 	public function actionExport(): void {
 		try {
-			$this->sendResponse($this->migrationManager->download());
+			$this->sendResponse($this->manager->download());
 		} catch (BadRequestException $e) {
 			Debugger::log('Cannot read zip archive with a configuration.');
 			$this->flashMessage('config.migration.errors.readConfig', 'danger');
+			$this->redirect('Migration:default');
+			$this->setView('default');
+		}
+	}
+
+	/**
+	 * Export a scheduler's configuration action
+	 */
+	public function actionSchedulerExport(): void {
+		try {
+			$this->sendResponse($this->schedulerManager->download());
+		} catch (BadRequestException $e) {
+			Debugger::log('Cannot read JSON file with a scheduler\'s configuration.');
+			$this->flashMessage('config.schedulerMigration.errors.readConfig', 'danger');
 			$this->redirect('Migration:default');
 			$this->setView('default');
 		}
@@ -72,6 +100,14 @@ class MigrationPresenter extends ProtectedPresenter {
 	 */
 	protected function createComponentConfigImportForm(): Form {
 		return $this->formFactory->create($this);
+	}
+
+	/**
+	 * Create scheduler's configuration import form
+	 * @return Form Scheduler's configuration import form
+	 */
+	protected function createComponentConfigSchedulerImportForm(): Form {
+		return $this->schedulerFormFactory->create($this);
 	}
 
 }
