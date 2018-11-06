@@ -78,7 +78,6 @@ class DiagnosticsManager {
 		$this->infoManager = $infoManager;
 		$this->confDir = $confDir;
 		$this->logDir = $logDir;
-		$this->zipManager = new ZipArchiveManager($this->path);
 	}
 
 	/**
@@ -88,6 +87,7 @@ class DiagnosticsManager {
 	 * @throws JsonException
 	 */
 	public function download(): FileResponse {
+		$this->zipManager = new ZipArchiveManager($this->path);
 		$now = new \DateTime();
 		$fileName = 'iqrf-gateway-diagnostics_' . $now->format('c') . '.zip';
 		$contentType = 'application/zip';
