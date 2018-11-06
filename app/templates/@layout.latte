@@ -25,28 +25,25 @@
 	<meta name='author' content='IQRF Tech.r.o.'>
 	<title>{ifset title}{include title|stripHtml|trim} | {/ifset}{_core.title}</title>
 	<link n:nonce rel='stylesheet' href='/css/bootstrap.min.css'>
-	{*<link n:nonce rel='stylesheet' href='/css/bootstrap-theme.min.css'>*}
 	<link n:nonce rel='stylesheet' href='/css/adminlte.min.css'>
 	<link n:nonce rel='stylesheet' href='/css/skin-blue.min.css'>
 	<link n:nonce rel='stylesheet' href='/css/datagrid.min.css'>
 	<link n:nonce rel='stylesheet' href='/css/datagrid-spinners.min.css'>
 	<link n:nonce rel='stylesheet' href='/css/highlight.github.min.css'>
+	<link rel='apple-touch-icon' sizes='180x180' href='/img/favicon/apple-touch-icon.png'>
+	<link rel='icon' type='image/png' sizes='32x32' href='/img/favicon/favicon-32x32.png'>
+	<link rel='icon' type='image/png' sizes='16x16' href='/img/favicon/favicon-16x16.png'>
+	<link rel='manifest' href='/img/favicon/site.webmanifest'>
+	<link rel='mask-icon' href='/img/favicon/safari-pinned-tab.svg' color='#367fa9'>
+	<link rel='shortcut icon' href='/img/favicon/favicon.ico'>
+	<meta name='msapplication-TileColor' content='#367fa9'>
+	<meta name='msapplication-config' content='/img/favicon/browserconfig.xml'>
+	<meta name='theme-color' content='#ffffff'>
+
+
 </head>
 <body class='hold-transition skin-blue sidebar-mini'>
 <div class='wrapper'>
-	{*	{include 'menu.latte'}
-		<div class='container theme-showcase' role='main'>
-			{snippet flashes}
-				<div n:foreach='$flashes as $flash' class='alert alert-{$flash->type} alert-dismissible' role='alert'>
-					<button type='button' class='close' data-dismiss='alert' aria-label='Close'>
-						<span aria-hidden='true'>&times;</span>
-					</button>
-					{_$flash->message}
-				</div>
-			{/snippet}
-			{include content}
-		</div>*}
-	<!-- Main Header -->
 	<header class='main-header'>
 		<a n:href=':Core:Homepage:default' class='logo'>
 			<span class='logo-mini'><img src='/img/logo-small.svg'></span>
@@ -58,13 +55,13 @@
 			</a>
 			<div class='navbar-custom-menu'>
 				<ul class='nav navbar-nav'>
-					<li class="dropdown user user-menu">
+					<li class='dropdown user user-menu'>
 					<li n:if='!$user->loggedIn'><a n:href=':Core:Sign:in'>{_core.sign.in}</a></li>
 					<li n:if='$user->loggedIn' class='dropdown'>
-						<a n:href=':Core:Profile:default' class="dropdown-toggle" data-toggle="dropdown" role="button">
-							{$user->getIdentity()->getData()['username']} <span class="caret"></span>
+						<a n:href=':Core:Profile:default' class='dropdown-toggle' data-toggle='dropdown' role='button'>
+							{$user->getIdentity()->getData()['username']} <span class='caret'></span>
 						</a>
-						<ul class="dropdown-menu">
+						<ul class='dropdown-menu'>
 							<li><a n:href=':Core:Profile:default'>{_core.profile.title}</a></li>
 							<li><a n:href=':Core:Sign:out'>{_core.sign.out}</a></li>
 						</ul>
