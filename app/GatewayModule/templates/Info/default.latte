@@ -57,6 +57,45 @@
 				</td>
 			</tr>
 			<tr>
+				<th>{_gateway.info.usages.disks}</th>
+				<td>
+					{foreach $diskUsages as $usage}
+						<strong>{$usage['fsName']} ({$usage['fsType']}):</strong>
+						<span>{_gateway.info.usages.used} {$usage['used']} / {$usage['size']}</span>
+						<div class="progress">
+						<div n:nonce class="progress-bar usage-progress-bar" role="progressbar"
+						     style="width: {$usage['usage']|noescape};">
+							{$usage['used']} ({$usage['usage']})
+						</div>
+						</div>{sep}<br>{/sep}
+					{/foreach}
+				</td>
+			</tr>
+			<tr>
+				<th>{_gateway.info.usages.memory}</th>
+				<td>
+					<span>{_gateway.info.usages.used} {$memoryUsage['used']} / {$memoryUsage['size']}</span>
+					<div class="progress">
+						<div n:nonce class="progress-bar usage-progress-bar" role="progressbar"
+						     style="width: {$memoryUsage['usage']|noescape};">
+							{$memoryUsage['used']} ({$memoryUsage['usage']})
+						</div>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<th>{_gateway.info.usages.swap}</th>
+				<td>
+					<span>{_gateway.info.usages.used} {$swapUsage['used']} / {$swapUsage['size']}</span>
+					<div class="progress">
+						<div n:nonce class="progress-bar usage-progress-bar" role="progressbar"
+						     style="width: {$swapUsage['usage']|noescape};">
+							{$swapUsage['used']} ({$swapUsage['usage']})
+						</div>
+					</div>
+				</td>
+			</tr>
+			<tr>
 				<th>{_gateway.info.tr.title}</th>
 				<td>
 					{ifset $module}

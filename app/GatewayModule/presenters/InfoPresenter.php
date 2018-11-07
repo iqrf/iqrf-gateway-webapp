@@ -66,6 +66,9 @@ class InfoPresenter extends ProtectedPresenter {
 		$this->template->hostname = $this->infoManager->getHostname();
 		$this->template->daemonVersion = $this->infoManager->getDaemonVersion();
 		$this->template->webAppVersion = $this->infoManager->getWebAppVersion();
+		$this->template->diskUsages = $this->infoManager->getDiskUsages();
+		$this->template->memoryUsage = $this->infoManager->getMemoryUsage();
+		$this->template->swapUsage = $this->infoManager->getSwapUsage();
 		try {
 			$this->template->module = $this->infoManager->getCoordinatorInfo();
 		} catch (DpaErrorException | EmptyResponseException $e) {

@@ -175,4 +175,82 @@ class InfoManager {
 		return $this->versionManager->getInstalledWebapp();
 	}
 
+	/**
+	 * Get disk usages
+	 * @return array Disk usages
+	 */
+	public function getDiskUsages(): array {
+		$output = $this->commandManager->send('df -x tmpfs -x devtmpfs -T -P | awk \'{if (NR!=1) {$6="";print}}\'');
+		$usages = [];
+		foreach (explode(PHP_EOL, $output) as $id => $disk) {
+			$segments = explode(' ', $disk);
+			$usages[$id] = [
+				'fsName' => $segments[0],
+				'fsType' => $segments[1],
+				'size' => $this->convertSizes(intval($segments[2]) << 10),
+				'used' => $this->convertSizes(intval($segments[3]) << 10),
+				'available' => $this->convertSizes(intval($segments[4]) << 10),
+				'usage' => round($segments[3] / $segments[2] * 100, 2) . '%',
+				'mount' => $segments[6],
+			];
+		}
+		return $usages;
+	}
+
+	/**
+	 * Get memory usage
+	 * @return array Memory usage
+	 */
+	public function getMemoryUsage(): array {
+		$output = $this->commandManager->send('free -bw | awk \'{{if (NR==2) print $2,$3,$4,$5,$6,$7,$8}}\'');
+		$segments = explode(' ', $output);
+		$usages = [
+			'size' => $this->convertSizes($segments[0]),
+			'used' => $this->convertSizes($segments[1]),
+			'free' => $this->convertSizes($segments[2]),
+			'shared' => $this->convertSizes($segments[3]),
+			'buffers' => $this->convertSizes($segments[4]),
+			'cache' => $this->convertSizes($segments[5]),
+			'available' => $this->convertSizes($segments[6]),
+			'usage' => round($segments[1] / $segments[0] * 100, 2) . '%',
+		];
+		return $usages;
+	}
+
+	/**
+	 * Get swap usage
+	 * @return array Swap usage
+	 */
+	public function getSwapUsage(): array {
+		$output = $this->commandManager->send('free -b | awk \'{{if (NR==3) print $2,$3,$4}}\'');
+		$segments = explode(' ', $output);
+		$usages = [
+			'size' => $this->convertSizes($segments[0]),
+			'used' => $this->convertSizes($segments[1]),
+			'free' => $this->convertSizes($segments[2]),
+			'usage' => round($segments[1] / $segments[0] * 100, 2) . '%',
+		];
+		return $usages;
+	}
+
+	/**
+	 * Converts bytes to human readable sizes
+	 * @param mixed $bytes Bytes to convert
+	 * @param int $precision Conversion precision
+	 * @return string Human readable size
+	 */
+	public function convertSizes($bytes, int $precision = 2): string {
+		$bytes = round(intval($bytes));
+		$units = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB'];
+		$unit = 'B';
+		foreach ($units as $unit) {
+			if (abs($bytes) < 1024 || $unit === end($units)) {
+				break;
+			}
+			$bytes /= 1024;
+		}
+		return round($bytes, $precision) . ' ' . $unit;
+	}
+
+
 }

@@ -143,6 +143,9 @@ class DiagnosticsManager {
 		$array['hostname'] = $this->infoManager->getHostname();
 		$array['uname'] = $this->commandManager->send('uname -a', true);
 		$array['uptime'] = $this->commandManager->send('uptime -p', true);
+		$array['diskUsages'] = $this->infoManager->getDiskUsages();
+		$array['memoryUsage'] = $this->infoManager->getMemoryUsage();
+		$array['swapUsage'] = $this->infoManager->getSwapUsage();
 		$this->zipManager->addJsonFromArray('info.json', $array);
 	}
 
