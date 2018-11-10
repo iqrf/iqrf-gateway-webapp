@@ -100,35 +100,6 @@ class IqrfNetManagerTest extends TestCase {
 	}
 
 	/**
-	 * Test function to set IQMESH Security (Access Password and User Key)
-	 */
-	public function testSetSecurity(): void {
-		$packets = [
-			'00.00.02.06.ff.ff.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.',
-			'00.00.02.06.ff.ff.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.de.ad.',
-			'00.00.02.06.ff.ff.00.00.00.00.00.00.00.00.00.00.00.00.00.44.45.41.44.',
-			'00.00.02.06.ff.ff.01.00.00.00.00.00.00.00.00.00.00.00.00.00.00.de.ad.',
-			'00.00.02.06.ff.ff.01.00.00.00.00.00.00.00.00.00.00.00.00.44.45.41.44.',
-		];
-		foreach ($packets as $id => $packet) {
-			$this->dpaManageer->shouldReceive('send')->with($packet)->andReturn([$id]);
-			$data = $id === 0 ? '' : 'DEAD';
-			$format = $id % 2 === 1 ? IqrfNetManager::DATA_FORMAT_HEX : IqrfNetManager::DATA_FORMAT_ASCII;
-			$type = $id > 2 ? IqrfNetManager::SECURITY_USER_KEY : IqrfNetManager::SECURITY_ACCESS_PASSWORD;
-			Assert::same([$id], $this->manager->setSecurity($data, $format, $type));
-		}
-		Assert::exception(function (): void {
-			$this->manager->setSecurity('DEAD', 'DEAD');
-		}, IqrfException\UnsupportedInputFormatException::class);
-		Assert::exception(function (): void {
-			$this->manager->setSecurity('DEAD', 'DEAD', 'userKey');
-		}, IqrfException\UnsupportedInputFormatException::class);
-		Assert::exception(function (): void {
-			$this->manager->setSecurity('DEAD', 'ASCII', 'fooBar');
-		}, IqrfException\UnsupportedSecurityTypeException::class);
-	}
-
-	/**
 	 * Test function to read HWP configuration
 	 */
 	public function testReadHwpConfiguration(): void {

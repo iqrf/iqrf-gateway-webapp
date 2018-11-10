@@ -10,6 +10,7 @@ services:
 	- App\IqrfNetModule\Models\IqrfMacroManager(%macroPath%)
 	- App\IqrfNetModule\Models\IqrfNetManager
 	- App\IqrfNetModule\Models\MessageIdManager
+	- App\IqrfNetModule\Models\SecurityManager
 	- App\IqrfNetModule\Models\WebSocketClient(%daemon.wsServer%)
 	- App\IqrfNetModule\Parsers\CoordinatorParser
 	- App\IqrfNetModule\Parsers\EnumerationParser

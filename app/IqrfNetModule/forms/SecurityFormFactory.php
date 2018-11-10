@@ -21,11 +21,12 @@ declare(strict_types = 1);
 namespace App\IqrfNetModule\Forms;
 
 use App\CoreModule\Forms\FormFactory;
+use App\IqrfNetModule\Enums\DataFormat;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Exceptions\UnsupportedInputFormatException;
 use App\IqrfNetModule\Exceptions\UnsupportedSecurityTypeException;
-use App\IqrfNetModule\Models\IqrfNetManager;
+use App\IqrfNetModule\Models\SecurityManager;
 use App\IqrfNetModule\Presenters\NetworkPresenter;
 use Nette\Forms\Controls\SubmitButton;
 use Nette\Forms\Form;
@@ -40,7 +41,7 @@ class SecurityFormFactory {
 	use SmartObject;
 
 	/**
-	 * @var IqrfNetManager IQMESH Network manager
+	 * @var SecurityManager IQMESH Network security manager
 	 */
 	private $manager;
 
@@ -57,9 +58,9 @@ class SecurityFormFactory {
 	/**
 	 * Constructor
 	 * @param FormFactory $factory Generic form factory
-	 * @param IqrfNetManager $manager IQMESH Network manager
+	 * @param SecurityManager $manager IQMESH Network security manager
 	 */
-	public function __construct(FormFactory $factory, IqrfNetManager $manager) {
+	public function __construct(FormFactory $factory, SecurityManager $manager) {
 		$this->factory = $factory;
 		$this->manager = $manager;
 	}
@@ -74,16 +75,14 @@ class SecurityFormFactory {
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('iqrfnet.network-manager.security'));
 		$inputFormats = [
-			'ASCII' => 'input-formats.ascii',
-			'HEX' => 'input-formats.hex',
+			DataFormat::ASCII => 'input-formats.ascii',
+			DataFormat::HEX => 'input-formats.hex',
 		];
-		$form->addSelect('format', 'input-format', $inputFormats)
-			->setDefaultValue('ASCII');
-		$form->addText('password', 'password')
-			->setRequired(false)
-			->addConditionOn($form['format'], Form::EQUAL, 'ASCII')
+		$form->addSelect('format', 'input-format', $inputFormats)->setDefaultValue(DataFormat::ASCII);
+		$form->addText('password', 'password')->setRequired(false)
+			->addConditionOn($form['format'], Form::EQUAL, DataFormat::ASCII)
 			->addRule(Form::MAX_LENGTH, 'messages.ascii-password-length', 16)
-			->elseCondition($form['format'], Form::EQUAL, 'HEX')
+			->elseCondition($form['format'], Form::EQUAL, DataFormat::HEX)
 			->addRule(Form::PATTERN, 'messages.hex-password-format', '[0-9A-Fa-f]{0,32}')
 			->addRule(Form::MAX_LENGTH, 'messages.hex-password-length', 32);
 		$form->addSubmit('setAccessPassword', 'setAccessPassword')->onClick[] = [$this, 'accessPassword'];
@@ -102,7 +101,7 @@ class SecurityFormFactory {
 	public function accessPassword(SubmitButton $button): void {
 		$values = $button->getForm()->getValues();
 		try {
-			$this->manager->setSecurity($values['password'], $values['format'], IqrfNetManager::SECURITY_ACCESS_PASSWORD);
+			$this->manager->setAccessPassword($values['password'], $values['format']);
 		} catch (EmptyResponseException | DpaErrorException $e) {
 			$message = 'No response from IQRF Gateway Daemon.';
 			$button->addError($message);
@@ -120,7 +119,7 @@ class SecurityFormFactory {
 	public function userKey(SubmitButton $button): void {
 		$values = $button->getForm()->getValues();
 		try {
-			$this->manager->setSecurity($values['password'], $values['format'], IqrfNetManager::SECURITY_USER_KEY);
+			$this->manager->setUserKey($values['password'], $values['format']);
 		} catch (EmptyResponseException | DpaErrorException $e) {
 			$message = 'No response from IQRF Gateway Daemon.';
 			$button->addError($message);

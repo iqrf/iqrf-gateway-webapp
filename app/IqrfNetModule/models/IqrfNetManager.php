@@ -152,41 +152,6 @@ class IqrfNetManager {
 	}
 
 	/**
-	 * Set Access password for applications using network communication.
-	 * @param string $password New access password (can be ASCII or HEX format)
-	 * @param string $inputFormat Determines in which format the password is entered
-	 * @param string $type Security type (access password or user key)
-	 * @return array DPA request and response
-	 * @throws IqrfException\EmptyResponseException
-	 * @throws IqrfException\UnsupportedInputFormatException
-	 * @throws IqrfException\UnsupportedSecurityTypeException
-	 * @throws JsonException
-	 */
-	public function setSecurity(string $password = '', string $inputFormat = self::DATA_FORMAT_ASCII, string $type = self::SECURITY_ACCESS_PASSWORD): array {
-		$packet = '00.00.02.06.ff.ff.';
-		if ($type === self::SECURITY_ACCESS_PASSWORD) {
-			$packet .= '00.';
-		} else {
-			if ($type === self::SECURITY_USER_KEY) {
-				$packet .= '01.';
-			} else {
-				throw new IqrfException\UnsupportedSecurityTypeException();
-			}
-		}
-		if ($inputFormat === self::DATA_FORMAT_ASCII) {
-			$data = implode(unpack('H*', $password));
-		} else {
-			if ($inputFormat === self::DATA_FORMAT_HEX) {
-				$data = $password;
-			} else {
-				throw new IqrfException\UnsupportedInputFormatException();
-			}
-		}
-		$dataToSend = $packet . Strings::lower(chunk_split(Strings::padLeft($data, 32, '0'), 2, '.'));
-		return $this->manager->send($dataToSend);
-	}
-
-	/**
 	 * The command read HWP configuration
 	 * @return array DPA request and response
 	 * @throws IqrfException\DpaErrorException
