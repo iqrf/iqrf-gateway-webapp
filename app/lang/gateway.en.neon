@@ -18,7 +18,9 @@ info:
 		mcuType: MCU type
 		moduleId: MID
 		os: OS
-		voltage: Supply Voltage
+		dpa: DPA
+		rfMode: RF mode
+		voltage: Supply voltage
 	usages:
 		memory: Memory usage
 		disks: Disk usages

@@ -6,6 +6,7 @@ services:
 	- App\IqrfNetModule\Forms\SecurityFormFactory
 	- App\IqrfNetModule\Models\BondingManager
 	- App\IqrfNetModule\Models\DpaRawManager
+	- App\IqrfNetModule\Models\EnumerationManager
 	- App\IqrfNetModule\Models\GwModeManager
 	- App\IqrfNetModule\Models\IqrfMacroManager(%macroPath%)
 	- App\IqrfNetModule\Models\IqrfNetManager

@@ -26,7 +26,7 @@ use App\CoreModule\Models\VersionManager;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Exceptions\UserErrorException;
-use App\IqrfNetModule\Models\DpaRawManager;
+use App\IqrfNetModule\Models\EnumerationManager;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;
 
@@ -43,31 +43,31 @@ class InfoManager {
 	private $commandManager;
 
 	/**
-	 * @var DpaRawManager DPA Raw request and response manager
-	 */
-	private $dpaManager;
-
-	/**
 	 * @var JsonFileManager JSON file manager
 	 */
 	private $jsonFileManager;
 
 	/**
-	 * @var VersionManager version manager
+	 * @var EnumerationManager IQMESH Enumeration manager
+	 */
+	private $enumerationManager;
+
+	/**
+	 * @var VersionManager Version manager
 	 */
 	private $versionManager;
 
 	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
-	 * @param DpaRawManager $dpaManager DPA Raw request and response manager
+	 * @param EnumerationManager $enumerationManager IQMESH Enumeration manager
 	 * @param VersionManager $versionManager Version manager
 	 */
-	public function __construct(CommandManager $commandManager, DpaRawManager $dpaManager, VersionManager $versionManager) {
+	public function __construct(CommandManager $commandManager, EnumerationManager $enumerationManager, VersionManager $versionManager) {
 		$this->commandManager = $commandManager;
-		$this->dpaManager = $dpaManager;
 		$this->jsonFileManager = new JsonFileManager(__DIR__ . '/../../../');
 		$this->versionManager = $versionManager;
+		$this->enumerationManager = $enumerationManager;
 	}
 
 	/**
@@ -162,8 +162,7 @@ class InfoManager {
 	 * @throws UserErrorException
 	 */
 	public function getCoordinatorInfo(): array {
-		$response = $this->dpaManager->send('00.00.02.00.FF.FF');
-		return $this->dpaManager->parseResponse($response);
+		return $this->enumerationManager->device(0);
 	}
 
 	/**

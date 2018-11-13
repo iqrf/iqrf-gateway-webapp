@@ -70,7 +70,7 @@ class InfoPresenter extends ProtectedPresenter {
 		$this->template->memoryUsage = $this->infoManager->getMemoryUsage();
 		$this->template->swapUsage = $this->infoManager->getSwapUsage();
 		try {
-			$this->template->module = $this->infoManager->getCoordinatorInfo();
+			$this->template->module = $this->infoManager->getCoordinatorInfo()['response']['data']['rsp'];
 		} catch (DpaErrorException | EmptyResponseException $e) {
 			$this->presenter->flashMessage('gateway.info.tr.error', 'danger');
 		}

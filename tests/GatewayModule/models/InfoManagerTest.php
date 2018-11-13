@@ -13,7 +13,7 @@ namespace Test\GatewayModule\Models;
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\VersionManager;
 use App\GatewayModule\Models\InfoManager;
-use App\IqrfNetModule\Models\DpaRawManager;
+use App\IqrfNetModule\Models\EnumerationManager;
 use App\IqrfNetModule\Models\IqrfAppManager;
 use Nette\DI\Container;
 use Tester\Assert;
@@ -37,9 +37,9 @@ class InfoManagerTest extends TestCase {
 	private $container;
 
 	/**
-	 * @var \Mockery\MockInterface Mocked IQRF App manager
+	 * @var \Mockery\MockInterface Mocked IQMESH enumeration manager
 	 */
-	private $dpaManager;
+	private $enumerationManager;
 
 	/**
 	 * @var InfoManager Gateway Info manager with mocked command manager
@@ -140,10 +140,8 @@ class InfoManagerTest extends TestCase {
 	 * Test function to get information about the Coordinator
 	 */
 	public function testGetCoordinatorInfo(): void {
-		$output = ['response'];
-		$expected = ['parsedResponse'];
-		$this->dpaManager->shouldReceive('send')->with('00.00.02.00.FF.FF')->andReturn($output);
-		$this->dpaManager->shouldReceive('parseResponse')->with($output)->andReturn($expected);
+		$expected = ['request' => [], 'response' => []];
+		$this->enumerationManager->shouldReceive('device')->with(0)->andReturn($expected);
 		Assert::same($expected, $this->manager->getCoordinatorInfo());
 	}
 
@@ -256,8 +254,8 @@ class InfoManagerTest extends TestCase {
 	protected function setUp(): void {
 		$this->commandManager = \Mockery::mock(CommandManager::class);
 		$this->versionManager = \Mockery::mock(VersionManager::class);
-		$this->dpaManager = \Mockery::mock(DpaRawManager::class);
-		$this->manager = new InfoManager($this->commandManager, $this->dpaManager, $this->versionManager);
+		$this->enumerationManager = \Mockery::mock(EnumerationManager::class);
+		$this->manager = new InfoManager($this->commandManager, $this->enumerationManager, $this->versionManager);
 	}
 
 	/**

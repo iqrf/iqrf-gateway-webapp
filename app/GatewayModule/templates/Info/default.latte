@@ -99,11 +99,15 @@
 				<th>{_gateway.info.tr.title}</th>
 				<td>
 					{ifset $module}
-						<strong>{_gateway.info.tr.moduleType}:</strong> {$module['TrType']}<br>
-						<strong>{_gateway.info.tr.mcuType}:</strong> {$module['McuType']}<br>
-						<strong>{_gateway.info.tr.moduleId}:</strong> {$module['ModuleId']}<br>
-						<strong>{_gateway.info.tr.os}:</strong> {$module['OsVersion']} ({$module['OsBuild']})<br>
-						<strong>{_gateway.info.tr.voltage}:</strong> {$module['SupplyVoltage']}
+						{var $osInfo = $module['osRead']}
+						{var $enumeration = $module['peripheralEnumeration']}
+						<strong>{_gateway.info.tr.moduleType}:</strong> {$osInfo['trMcuType']['trType']}<br>
+						<strong>{_gateway.info.tr.mcuType}:</strong> {$osInfo['trMcuType']['mcuType']}<br>
+						<strong>{_gateway.info.tr.moduleId}:</strong> {$osInfo['mid']}<br>
+						<strong>{_gateway.info.tr.os}:</strong> {$osInfo['osVersion']} ({$osInfo['osBuild']})<br>
+						<strong>{_gateway.info.tr.dpa}:</strong> {$enumeration['dpaVer']}<br>
+						<strong>{_gateway.info.tr.rfMode}:</strong> {$enumeration['flags']['rfMode']}<br>
+						<strong>{_gateway.info.tr.voltage}:</strong> {$osInfo['supplyVoltage']}
 					{else}
 						{_gateway.info.tr.error}
 					{/ifset}
