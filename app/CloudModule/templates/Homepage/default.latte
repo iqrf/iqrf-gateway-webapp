@@ -18,6 +18,10 @@
 {block title}{_cloud.title}{/block}
 {block content}
 <div class='list-group'>
+	<a n:href='IbmCloud:default' class='list-group-item'>
+		<header class='list-group-item-heading'>{_cloud.ibmCloud.title}</header>
+		<p class='list-group-item-text'>{_cloud.ibmCloud.description}</p>
+	</a>
 	<a n:href='Aws:default' class='list-group-item'>
 		<header class='list-group-item-heading'>{_cloud.amazonAws.title}</header>
 		<p class='list-group-item-text'>{_cloud.amazonAws.description}</p>
@@ -25,10 +29,6 @@
 	<a n:href='Azure:default' class='list-group-item'>
 		<header class='list-group-item-heading'>{_cloud.msAzure.title}</header>
 		<p class='list-group-item-text'>{_cloud.msAzure.description}</p>
-	</a>
-	<a n:href='Bluemix:default' class='list-group-item'>
-		<header class='list-group-item-heading'>{_cloud.ibmBluemix.title}</header>
-		<p class='list-group-item-text'>{_cloud.ibmBluemix.description}</p>
 	</a>
 	<a n:href='InteliGlue:default' class='list-group-item'>
 		<header class='list-group-item-heading'>{_cloud.intelimentsInteliGlue.title}</header>

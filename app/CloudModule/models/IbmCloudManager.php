@@ -28,9 +28,9 @@ use Nette\Utils\FileSystem;
 use Nette\Utils\JsonException;
 
 /**
- * Tool for managing IBM Bluemix
+ * Tool for managing MQTT connection into IBM Cloud
  */
-class BluemixManager implements IManager {
+class IbmCloudManager implements IManager {
 
 	use SmartObject;
 
@@ -52,7 +52,7 @@ class BluemixManager implements IManager {
 	/**
 	 * @var string MQTT interface name
 	 */
-	private $interfaceName = 'MqttMessagingBluemix';
+	private $interfaceName = 'MqttMessagingIbmCloud';
 
 	/**
 	 * Constructor
@@ -76,7 +76,7 @@ class BluemixManager implements IManager {
 	public function createMqttInterface(array $values): void {
 		$this->downloadCaCertificate();
 		$this->configManager->setComponent('iqrf::MqttMessaging');
-		$this->configManager->setFileName('iqrf__MqttMessaging_Bluemix');
+		$this->configManager->setFileName('iqrf__MqttMessaging_IbmCloud');
 		$interface = [
 			'instance' => $this->interfaceName,
 			'BrokerAddr' => 'ssl://' . $values['organizationId'] . '.messaging.internetofthings.ibmcloud.com:8883',
@@ -92,7 +92,7 @@ class BluemixManager implements IManager {
 			'ConnectTimeout' => 5,
 			'MinReconnect' => 1,
 			'MaxReconnect' => 64,
-			'TrustStore' => $this->certPath . '/bluemix-ca.crt',
+			'TrustStore' => $this->certPath . '/ibm-cloud-ca.crt',
 			'KeyStore' => '',
 			'PrivateKey' => '',
 			'PrivateKeyPassword' => '',
@@ -110,7 +110,7 @@ class BluemixManager implements IManager {
 	public function downloadCaCertificate(): void {
 		$caCertUrl = 'https://raw.githubusercontent.com/ibm-watson-iot/iot-python/master/src/ibmiotf/messaging.pem';
 		$caCert = $this->client->request('GET', $caCertUrl)->getBody();
-		FileSystem::write($this->certPath . '/bluemix-ca.crt', $caCert);
+		FileSystem::write($this->certPath . '/ibm-cloud-ca.crt', $caCert);
 	}
 
 }

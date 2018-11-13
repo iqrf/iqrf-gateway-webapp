@@ -18,11 +18,11 @@ amazonAws:
 	messages:
 		mismatchedCrtAndKey: The private key does not corespond to the certificate.
 
-ibmBluemix:
-	title: IBM Bluemix
-	description: Add a new MQTT connection into IBM Bluemix.
+ibmCloud:
+	title: IBM Cloud
+	description: Add a new MQTT connection into IBM Cloud.
 	form:
-		title: Add a new MQTT connection into IBM Bluemix
+		title: Add a new MQTT connection into IBM Cloud
 		organizationId: Organization ID
 		deviceType: Device Type
 		deviceId: Device ID

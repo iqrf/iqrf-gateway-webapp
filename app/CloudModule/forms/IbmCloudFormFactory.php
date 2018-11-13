@@ -20,8 +20,8 @@ declare(strict_types = 1);
 
 namespace App\CloudModule\Forms;
 
-use App\CloudModule\Models\BluemixManager;
-use App\CloudModule\Presenters\BluemixPresenter;
+use App\CloudModule\Models\IbmCloudManager;
+use App\CloudModule\Presenters\IbmCloudPresenter;
 use App\CoreModule\Forms\FormFactory;
 use App\ServiceModule\Models\ServiceManager;
 use Nette\Forms\Controls\SubmitButton;
@@ -29,31 +29,31 @@ use Nette\Forms\Form;
 use Nette\SmartObject;
 
 /**
- * Form for creating MQTT connection into IBM Bluemíx
+ * Form for creating MQTT connection into IBM Cloud
  */
-class BluemixFormFactory extends CloudFormFactory {
+class IbmCloudFormFactory extends CloudFormFactory {
 
 	use SmartObject;
 
 	/**
 	 * Constructor
-	 * @param BluemixManager $manager IBM Bluemix manager
+	 * @param IbmCloudManager $manager IBM Cloud manager
 	 * @param FormFactory $factory Generic form factory
 	 * @param ServiceManager $serviceManager Service manager
 	 */
-	public function __construct(BluemixManager $manager, FormFactory $factory, ServiceManager $serviceManager) {
+	public function __construct(IbmCloudManager $manager, FormFactory $factory, ServiceManager $serviceManager) {
 		parent::__construct($manager, $factory, $serviceManager);
 	}
 
 	/**
 	 * Create MQTT configuration form
-	 * @param BluemixPresenter $presenter IBM Bluemix presenter
+	 * @param IbmCloudPresenter $presenter IBM Cloud presenter
 	 * @return Form MQTT configuration form
 	 */
-	public function create(BluemixPresenter $presenter): Form {
+	public function create(IbmCloudPresenter $presenter): Form {
 		$this->presenter = $presenter;
 		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('cloud.ibmBluemix.form'));
+		$form->setTranslator($form->getTranslator()->domain('cloud.ibmCloud.form'));
 		$form->addText('organizationId', 'organizationId')->setRequired();
 		$form->addText('deviceType', 'deviceType')->setRequired();
 		$form->addText('deviceId', 'deviceId')->setRequired();
