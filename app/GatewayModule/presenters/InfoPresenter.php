@@ -69,6 +69,7 @@ class InfoPresenter extends ProtectedPresenter {
 		$this->template->diskUsages = $this->infoManager->getDiskUsages();
 		$this->template->memoryUsage = $this->infoManager->getMemoryUsage();
 		$this->template->swapUsage = $this->infoManager->getSwapUsage();
+		$this->template->gwId = $this->infoManager->getId();
 		try {
 			$this->template->module = $this->infoManager->getCoordinatorInfo()['response']['data']['rsp'];
 		} catch (DpaErrorException | EmptyResponseException $e) {

@@ -28,6 +28,7 @@ use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\IqrfNetModule\Models\EnumerationManager;
 use Nette\SmartObject;
+use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 
 /**
@@ -75,6 +76,13 @@ class InfoManager {
 	 * @return string Board's vendor, name and version
 	 */
 	public function getBoard(): string {
+		$gwJson = $this->commandManager->send('cat /etc/iqrf-gateway.json', true);
+		if ($gwJson !== '') {
+			try {
+				$gw = Json::decode($gwJson, Json::FORCE_ARRAY);
+				return $gw['gwManufacturer'] . ' ' . $gw['gwProduct'];
+			} catch (JsonException $e) {}
+		}
 		$deviceTree = $this->commandManager->send('cat /proc/device-tree/model', true);
 		if ($deviceTree !== '') {
 			return $deviceTree;
@@ -86,6 +94,21 @@ class InfoManager {
 			return $dmiBoardVendor . ' ' . $dmiBoardName . ' (' . $dmiBoardVersion . ')';
 		}
 		return 'UNKNOWN';
+	}
+
+	/**
+	 * Get gateway ID
+	 * @return null|string Gateway ID
+	 */
+	public function getId(): ?string {
+		$gwJson = $this->commandManager->send('cat /etc/iqrf-gateway.json', true);
+		if ($gwJson !== '') {
+			try {
+				$gw = Json::decode($gwJson, Json::FORCE_ARRAY);
+				return $gw['gwId'];
+			} catch (JsonException $e) {}
+		}
+		return null;
 	}
 
 	/**

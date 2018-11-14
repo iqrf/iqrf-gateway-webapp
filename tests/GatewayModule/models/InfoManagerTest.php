@@ -60,6 +60,7 @@ class InfoManagerTest extends TestCase {
 		'dmiBoardName' => 'cat /sys/class/dmi/id/board_name',
 		'dmiBoardVendor' => 'cat /sys/class/dmi/id/board_vendor',
 		'dmiBoardVersion' => 'cat /sys/class/dmi/id/board_version',
+		'gw' => 'cat /etc/iqrf-gateway.json',
 		'ipAddressesEth0' => 'ip a s eth0 | grep inet | grep global | grep -v temporary | awk \'{print $2}\'',
 		'ipAddressesWlan0' => 'ip a s wlan0 | grep inet | grep global | grep -v temporary | awk \'{print $2}\'',
 		'macAddresses' => 'cat /sys/class/net/eth0/address',
@@ -76,10 +77,20 @@ class InfoManagerTest extends TestCase {
 	}
 
 	/**
+	 * Test function to get information about the board (via IQRF GW json)
+	 */
+	public function testGetBoardGw(): void {
+		$output = '{"gwProduct":"IQD-GW-01","gwManufacturer":"MICRORISC s.r.o."}';
+		$this->commandManager->shouldReceive('send')->with($this->commands['gw'], true)->andReturn($output);
+		Assert::same('MICRORISC s.r.o. IQD-GW-01', $this->manager->getBoard());
+	}
+
+	/**
 	 * Test function to get information about the board (via device tree)
 	 */
 	public function testGetBoardDeviceTree(): void {
 		$expected = 'Raspberry Pi 2 Models B Rev 1.1';
+		$this->commandManager->shouldReceive('send')->with($this->commands['gw'], true);
 		$this->commandManager->shouldReceive('send')->with($this->commands['deviceTreeName'], true)->andReturn($expected);
 		Assert::same($expected, $this->manager->getBoard());
 	}
@@ -88,6 +99,7 @@ class InfoManagerTest extends TestCase {
 	 * Test function to get information about the board (via DMI)
 	 */
 	public function testGetBoardDmi(): void {
+		$this->commandManager->shouldReceive('send')->with($this->commands['gw'], true);
 		$this->commandManager->shouldReceive('send')->with($this->commands['deviceTreeName'], true);
 		$this->commandManager->shouldReceive('send')->with($this->commands['dmiBoardVendor'], true)->andReturn('AAEON');
 		$this->commandManager->shouldReceive('send')->with($this->commands['dmiBoardName'], true)->andReturn('UP-APL01');
@@ -99,11 +111,21 @@ class InfoManagerTest extends TestCase {
 	 * Test function to get information about the board (unknown method)
 	 */
 	public function testGetBoardUnknown(): void {
+		$this->commandManager->shouldReceive('send')->with($this->commands['gw'], true);
 		$this->commandManager->shouldReceive('send')->with($this->commands['deviceTreeName'], true);
 		$this->commandManager->shouldReceive('send')->with($this->commands['dmiBoardVendor'], true);
 		$this->commandManager->shouldReceive('send')->with($this->commands['dmiBoardName'], true);
 		$this->commandManager->shouldReceive('send')->with($this->commands['dmiBoardVersion'], true);
 		Assert::same('UNKNOWN', $this->manager->getBoard());
+	}
+
+	/**
+	 * Test function to get the gateway ID
+	 */
+	public function testGetId(): void {
+		$output = '{"gwId":"0242fc1e6f85b296"}';
+		$this->commandManager->shouldReceive('send')->with($this->commands['gw'], true)->andReturn($output);
+		Assert::same('0242fc1e6f85b296', $this->manager->getId());
 	}
 
 	/**

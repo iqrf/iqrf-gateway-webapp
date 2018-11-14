@@ -4,6 +4,7 @@ info:
 	title: Gateway Info
 	description: Show infromation about this gateway.
 	board: Board
+	gwId: IQRF Gateway ID
 	version:
 		iqrf-gw-daemon: IQRF Gateway Daemon
 		iqrf-gw-webapp: IQRF Gateway Daemon webapp

@@ -24,6 +24,12 @@
 				<th>{_gateway.info.board}</th>
 				<td>{$board}</td>
 			</tr>
+			{ifset $gwId}
+				<tr>
+					<th>{_gateway.info.gwId}</th>
+					<td>{$gwId}</td>
+				</tr>
+			{/ifset}
 			<tr>
 				<th>{_gateway.info.version.iqrf-gw-daemon}</th>
 				<td>{$daemonVersion}</td>
