@@ -179,16 +179,16 @@ class InfoManager {
 	 * @return array Disk usages
 	 */
 	public function getDiskUsages(): array {
-		$output = $this->commandManager->send('df -x tmpfs -x devtmpfs -T -P | awk \'{if (NR!=1) {$6="";print}}\'');
+		$output = $this->commandManager->send('df -B1 -x tmpfs -x devtmpfs -T -P | awk \'{if (NR!=1) {$6="";print}}\'');
 		$usages = [];
 		foreach (explode(PHP_EOL, $output) as $id => $disk) {
 			$segments = explode(' ', $disk);
 			$usages[$id] = [
 				'fsName' => $segments[0],
 				'fsType' => $segments[1],
-				'size' => $this->convertSizes(intval($segments[2]) << 10),
-				'used' => $this->convertSizes(intval($segments[3]) << 10),
-				'available' => $this->convertSizes(intval($segments[4]) << 10),
+				'size' => $this->convertSizes($segments[2]),
+				'used' => $this->convertSizes($segments[3]),
+				'available' => $this->convertSizes($segments[4]),
 				'usage' => round($segments[3] / $segments[2] * 100, 2) . '%',
 				'mount' => $segments[6],
 			];
@@ -239,7 +239,7 @@ class InfoManager {
 	 * @return string Human readable size
 	 */
 	public function convertSizes($bytes, int $precision = 2): string {
-		$bytes = round(intval($bytes));
+		$bytes = round(floatval($bytes));
 		$units = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB'];
 		$unit = 'B';
 		foreach ($units as $unit) {

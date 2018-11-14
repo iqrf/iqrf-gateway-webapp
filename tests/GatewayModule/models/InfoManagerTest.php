@@ -185,17 +185,17 @@ class InfoManagerTest extends TestCase {
 	 * Test function to get disk usages
 	 */
 	public function testGetDiskUsages(): void {
-		$command = 'df -x tmpfs -x devtmpfs -T -P | awk \'{if (NR!=1) {$6="";print}}\'';
-		$output = '/dev/sda1 ext4 238023280 194816316 31092636  /';
+		$command = 'df -B1 -x tmpfs -x devtmpfs -T -P | awk \'{if (NR!=1) {$6="";print}}\'';
+		$output = '/dev/sda1 ext4 243735838720 205705183232 25625583616  /';
 		$this->commandManager->shouldReceive('send')->with($command)->andReturn($output);
 		$expected = [
 			[
 				'fsName' => '/dev/sda1',
 				'fsType' => 'ext4',
 				'size' => '227 GB',
-				'used' => '185.79 GB',
-				'available' => '29.65 GB',
-				'usage' => '81.85%',
+				'used' => '191.58 GB',
+				'available' => '23.87 GB',
+				'usage' => '84.4%',
 				'mount' => '/',
 			],
 		];
