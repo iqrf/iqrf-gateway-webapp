@@ -88,7 +88,8 @@ build-package:
 
 deploy-api-docs:
     script:
-        - curl https://phpdoc.org/phpDocumentor.phar -o phpDocumentor.phar
+        - curl https://github.com/phpDocumentor/phpDocumentor2/releases/download/v3.0.0-alpha.3/phpDocumentor.phar -o phpDocumentor.phar
+        - curl https://github.com/phpDocumentor/phpDocumentor2/releases/download/v3.0.0-alpha.3/phpDocumentor.phar.pubkey -o phpDocumentor.phar.pubkey
         - php phpDocumentor.phar
         - rsync -hrvz --delete -e ssh docs/api/ www-deploy@iqrfsdk.org:/data/nginx/apidocs/iqrf-gateway-webapp/
     <<: *ssh_template

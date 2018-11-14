@@ -1,26 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<phpdoc>
-	<title>IQRF Gateway Webapp</title>
-	<parser>
-		<target>docs/api/</target>
-		<encoding>utf8</encoding>
-		<markers>
-			<item>TODO</item>
-			<item>FIXME</item>
-		</markers>
-		<extensions>
-			<extension>php</extension>
-		</extensions>
-		<visibility></visibility>
-	</parser>
-	<transformer>
-		<target>docs/api/</target>
-	</transformer>
-	<transformations>
-		<template name="clean" />
-	</transformations>
-	<files>
-		<directory>app/</directory>
-                <directory>tests/</directory>
-	</files>
-</phpdoc>
+<phpdocumentor>
+    <title>IQRF Gateway Webapp</title>
+    <parser>
+        <target>temp/api-cache/</target>
+    </parser>
+    <transformer>
+        <target>docs/api/</target>
+    </transformer>
+    <files>
+        <directory>app/</directory>
+        <directory>tests/</directory>
+    </files>
+    <plugins>
+        <plugin path="Core"/>
+    </plugins>
+    <transformations>
+        <template name="clean"/>
+    </transformations>
+</phpdocumentor>
