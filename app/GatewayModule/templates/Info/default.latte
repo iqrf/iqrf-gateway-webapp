@@ -89,18 +89,20 @@
 					</div>
 				</td>
 			</tr>
-			<tr>
-				<th>{_gateway.info.usages.swap}</th>
-				<td>
-					<span>{_gateway.info.usages.used} {$swapUsage['used']} / {$swapUsage['size']}</span>
-					<div class="progress">
-						<div n:nonce class="progress-bar usage-progress-bar" role="progressbar"
-						     style="width: {$swapUsage['usage']|noescape};">
-							{$swapUsage['used']} ({$swapUsage['usage']})
+			{ifset $swapUsage}
+				<tr>
+					<th>{_gateway.info.usages.swap}</th>
+					<td>
+						<span>{_gateway.info.usages.used} {$swapUsage['used']} / {$swapUsage['size']}</span>
+						<div class="progress">
+							<div n:nonce class="progress-bar usage-progress-bar" role="progressbar"
+							     style="width: {$swapUsage['usage']|noescape};">
+								{$swapUsage['used']} ({$swapUsage['usage']})
+							</div>
 						</div>
-					</div>
-				</td>
-			</tr>
+					</td>
+				</tr>
+			{/ifset}
 			<tr>
 				<th>{_gateway.info.tr.title}</th>
 				<td>

@@ -241,11 +241,14 @@ class InfoManager {
 
 	/**
 	 * Get swap usage
-	 * @return array Swap usage
+	 * @return array|null Swap usage
 	 */
-	public function getSwapUsage(): array {
+	public function getSwapUsage(): ?array {
 		$output = $this->commandManager->send('free -b | awk \'{{if (NR==3) print $2,$3,$4}}\'');
 		$segments = explode(' ', $output);
+		if ($segments[0] === '0') {
+			return null;
+		}
 		$usages = [
 			'size' => $this->convertSizes($segments[0]),
 			'used' => $this->convertSizes($segments[1]),

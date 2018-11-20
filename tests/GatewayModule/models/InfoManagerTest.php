@@ -261,6 +261,17 @@ class InfoManagerTest extends TestCase {
 		Assert::same($expected, $this->manager->getSwapUsage());
 	}
 
+
+	/**
+	 * Test function to get swap usage (computer hasn't got swap)
+	 */
+	public function testGetSwapUsageWithoutSwap(): void {
+		$command = 'free -b | awk \'{{if (NR==3) print $2,$3,$4}}\'';
+		$output = '0 0 0 ';
+		$this->commandManager->shouldReceive('send')->with($command)->andReturn($output);
+		Assert::null($this->manager->getSwapUsage());
+	}
+
 	/**
 	 * Test function to convert size in bytes to human readable format
 	 */
