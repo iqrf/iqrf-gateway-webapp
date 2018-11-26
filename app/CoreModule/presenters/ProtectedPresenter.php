@@ -45,11 +45,11 @@ abstract class ProtectedPresenter extends BasePresenter {
 		try {
 			if ($this->versionManager->availableWebappUpdate()) {
 				$version = ['version' => $this->versionManager->getCurrentWebapp()];
-				$phrase = new Phrase('core.update.available-webapp', null, $version);
-				$this->flashMessage($phrase, 'danger');
+				$phrase = new Phrase('core.update.new-version-tag', null, $version);
+				$this->template->newVersion = $phrase;
 			}
 		} catch (TransferException $e) {
-			$this->flashMessage('core.update.error', 'warning');
+			$this->template->offlineMode = true;
 		}
 	}
 
