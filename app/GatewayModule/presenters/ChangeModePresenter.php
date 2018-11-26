@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Presenters;
 
 use App\CoreModule\Presenters\ProtectedPresenter;
+use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Exceptions\InvalidOperationModeException;
 use App\IqrfNetModule\Models\GwModeManager;
@@ -63,10 +64,15 @@ class ChangeModePresenter extends ProtectedPresenter {
 	 * @throws JsonException
 	 */
 	private function changeMode(string $mode): void {
-		$this->manager->changeMode($mode);
-		$this->flashMessage('gateway.mode.modes.' . $mode . '.message', 'info');
-		$this->redirect('ChangeMode:default');
 		$this->setView('default');
+		try {
+			$this->manager->changeMode($mode);
+			$this->flashMessage('gateway.mode.modes.' . $mode . '.message', 'info');
+			$this->redirect('ChangeMode:default');
+		} catch (EmptyResponseException | DpaErrorException $e) {
+			$message = 'No response from IQRF Gateway Daemon.';
+			$this->flashMessage($message, 'danger');
+		}
 	}
 
 	/**
