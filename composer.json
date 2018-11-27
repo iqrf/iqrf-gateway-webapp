@@ -1,13 +1,15 @@
 {
-	"name": "iqrfsdk/iqrf-gateway-webapp",
+	"name": "iqrf/iqrf-gateway-webapp",
 	"description": "IQRF Gateway Daemon web application",
 	"type": "project",
 	"keywords": [
 		"nette",
 		"iqrf",
-		"iqrf-daemon"
+		"iqrf-daemon",
+		"iqrf-gateway",
+		"iqrf-gateway-daemon"
 	],
-	"homepage": "https://github.com/iqrfsdk/iqrf-gateway-webapp",
+	"homepage": "https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp",
 	"license": "Apache-2.0",
 	"authors": [
 		{
@@ -56,7 +58,8 @@
 		"mockery/mockery": "^1.1",
 		"phpstan/phpstan": "^0.10",
 		"phpstan/phpstan-nette": "^0.10",
-		"phpstan/phpstan-strict-rules": "^0.10"
+		"phpstan/phpstan-strict-rules": "^0.10",
+		"phpstan/phpstan-mockery": "^0.10.2"
 	},
 	"autoload-dev": {
 		"classmap": [
@@ -66,12 +69,14 @@
 	},
 	"support": {
 		"email": "roman.ondracek@iqrf.com",
-		"issues": "https://github.com/iqrfsdk/iqrf-gateway-webapp/issues",
-		"source": "https://github.com/iqrfsdk/iqrf-gateway-webapp"
+		"issues": "https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp/issues",
+		"source": "https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp"
 	},
 	"archive": {
 		"exclude": [
 			"/docker/",
+			"/docs/",
+			"/debian/",
 			"/install/"
 		]
 	},
