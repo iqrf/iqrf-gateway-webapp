@@ -1,6 +1,6 @@
 # IQRF Gateway Webapp
 
-[![Build Status](https://gitlab.iqrf.org/gateway/iqrf-daemon/badges/master/build.svg)](https://gitlab.iqrf.org/gateway/iqrf-daemon/pipelines)
+[![Build Status](https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp/badges/master/build.svg)](https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp/pipelines)
 [![Apache License](https://img.shields.io/badge/license-APACHE2-blue.svg)](LICENSE)
 [![API documentation](https://img.shields.io/badge/docs-api-brightgreen.svg)](https://apidocs.iqrf.org/iqrf-gateway-webapp/)
 [![User documentation](https://img.shields.io/badge/docs-user-blue.svg)](https://docs.iqrf.org/iqrf-gateway-webapp/)
