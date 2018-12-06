@@ -26,7 +26,7 @@ use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\IqrfNetModule\Forms\SendRawFormFactory;
 use App\IqrfNetModule\Models\DpaRawManager;
-use App\IqrfNetModule\Models\IqrfMacroManager;
+use Iqrf\IdeMacros\MacroFileParser;
 use Nette\Forms\Form;
 use Nette\Utils\JsonException;
 
@@ -45,20 +45,18 @@ class SendRawPresenter extends ProtectedPresenter {
 	 * @var DpaRawManager DPA raw request and response manager
 	 */
 	private $dpaManager;
-
 	/**
-	 * @var IqrfMacroManager IQRF IDE Macros manager
+	 * @var MacroFileParser IQRF IDE Macros parser
 	 */
-	private $macroManager;
+	private $macroParser;
 
 	/**
 	 * Constructor
 	 * @param DpaRawManager $manager DPA Raw request and response manager
-	 * @param IqrfMacroManager $macroManager IQRF IDE Macros manager
 	 */
-	public function __construct(DpaRawManager $manager, IqrfMacroManager $macroManager) {
+	public function __construct(string $fileName, DpaRawManager $manager) {
 		$this->dpaManager = $manager;
-		$this->macroManager = $macroManager;
+		$this->macroParser = new MacroFileParser($fileName);
 		parent::__construct();
 	}
 
@@ -66,7 +64,8 @@ class SendRawPresenter extends ProtectedPresenter {
 	 * Render send raw DPA packet page
 	 */
 	public function renderDefault(): void {
-		$this->template->macros = $this->macroManager->read();
+		$macros = $this->macroParser->read();
+		$this->template->macros = $this->macroParser->toArray($macros);
 	}
 
 	/**

@@ -61,11 +61,11 @@
 			<div n:foreach="$macros as $macro" class="btn-group">
 				<button type="button" class="btn btn-primary btn-block dropdown-toggle" data-toggle="dropdown"
 				        aria-haspopup="true" aria-expanded="false">
-					{$macro['Name']} <span class="caret"></span>
+					{$macro['name']} <span class="caret"></span>
 				</button>
 				<ul class="dropdown-menu">
-					<li n:foreach="$macro['Macros'] as $item"><a n:if="$item['Enabled']" class='btn-packet'
-					                                                                     data-packet='{$item['Packet']}'>{$item['Name']}</a>
+					<li n:foreach="$macro['macros'] as $item"><a n:if="$item['enabled']" class='btn-packet'
+					                                                                     data-packet='{$item['request']}'>{$item['name']}</a>
 					</li>
 				</ul>
 			</div>

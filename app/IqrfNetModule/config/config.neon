@@ -8,7 +8,6 @@ services:
 	- App\IqrfNetModule\Models\DpaRawManager
 	- App\IqrfNetModule\Models\EnumerationManager
 	- App\IqrfNetModule\Models\GwModeManager
-	- App\IqrfNetModule\Models\IqrfMacroManager(%macroPath%)
 	- App\IqrfNetModule\Models\IqrfNetManager
 	- App\IqrfNetModule\Models\MessageIdManager
 	- App\IqrfNetModule\Models\SecurityManager
@@ -16,6 +15,7 @@ services:
 	- App\IqrfNetModule\Parsers\CoordinatorParser
 	- App\IqrfNetModule\Parsers\EnumerationParser
 	- App\IqrfNetModule\Parsers\OsParser
+	- App\IqrfNetModule\Presenters\SendRawPresenter(%macroPath%)
 	- App\IqrfNetModule\Requests\ApiRequest
 	dpaRequest:
 		factory: App\IqrfNetModule\Requests\DpaRequest
