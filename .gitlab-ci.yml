@@ -1,101 +1,113 @@
 image: iqrfsdk/iqrf-gateway-webapp:tests-buster
 
 stages:
-    - test
-    - coding-style
-    - build-package
-    - deploy-docs
+  - test
+  - coding-style
+  - build-package
+  - deploy-docs
 
 variables:
-       COMPOSER_CACHE_DIR: temp/composer/cache
+  COMPOSER_CACHE_DIR: temp/composer/cache
 
 cache:
-    paths:
-        - temp/composer/cache
+  paths:
+    - temp/composer/cache
 
 .test_template: &test_template
-    stage: test
-    retry: 2
+  stage: test
+  retry: 2
 
 .ssh_template: &ssh_template
-    stage: deploy-docs
-    before_script:
-        - eval $(ssh-agent -s)
-        - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
-        - mkdir -p ~/.ssh
-        - chmod 700 ~/.ssh
-        - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
-        - chmod 644 ~/.ssh/known_hosts
+  stage: deploy-docs
+  before_script:
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
 
 test:php7.1:
-    image: iqrfsdk/iqrf-gateway-webapp:tests-stretch
-    before_script:
-        - update-alternatives --set php /usr/bin/php7.1
-        - composer install --no-progress
-    script:
-        - vendor/bin/tester -p phpdbg7.1 -c ./tests/php.ini -s ./tests
-        - 'for i in $(find ./tests -name \*.actual); do echo "--- $i"; cat $i; echo; echo; done'
-    <<: *test_template
+  image: iqrfsdk/iqrf-gateway-webapp:tests-stretch
+  before_script:
+    - update-alternatives --set php /usr/bin/php7.1
+    - composer install --no-progress
+  script:
+    - vendor/bin/tester -p phpdbg7.1 -c ./tests/php.ini -s ./tests
+    - 'for i in $(find ./tests -name \*.actual); do echo "--- $i"; cat $i; echo; echo; done'
+  <<: *test_template
 
 test:php7.2:
-    before_script:
-        - update-alternatives --set php /usr/bin/php7.2
-        - composer install --no-progress
-    script:
-        - vendor/bin/tester -p phpdbg7.2 -c ./tests/php.ini -s ./tests
-        - 'for i in $(find ./tests -name \*.actual); do echo "--- $i"; cat $i; echo; echo; done'
-    <<: *test_template
+  before_script:
+    - update-alternatives --set php /usr/bin/php7.2
+    - composer install --no-progress
+  script:
+    - vendor/bin/tester -p phpdbg7.2 -c ./tests/php.ini -s ./tests
+    - 'for i in $(find ./tests -name \*.actual); do echo "--- $i"; cat $i; echo; echo; done'
+  <<: *test_template
 
 test:php7.3:
-    allow_failure: true
-    before_script:
-        - update-alternatives --set php /usr/bin/php7.3
-        - composer install --no-progress
-    script:
-        - vendor/bin/tester -p phpdbg7.3 -c ./tests/php.ini -s ./tests
-        - 'for i in $(find ./tests -name \*.actual); do echo "--- $i"; cat $i; echo; echo; done'
-    <<: *test_template
+  allow_failure: true
+  before_script:
+    - update-alternatives --set php /usr/bin/php7.3
+    - composer install --no-progress
+  script:
+    - vendor/bin/tester -p phpdbg7.3 -c ./tests/php.ini -s ./tests
+    - 'for i in $(find ./tests -name \*.actual); do echo "--- $i"; cat $i; echo; echo; done'
+  <<: *test_template
+
+coverage:
+  before_script:
+    - update-alternatives --set php /usr/bin/php7.3
+    - composer install --no-progress
+  script:
+    - vendor/bin/tester -p phpdbg -c ./tests/php.ini -o none --coverage ./coverage.html --coverage-src ./app ./tests
+  artifacts:
+    paths:
+      - 'coverage.html'
+    expire_in: 2 weeks
+  <<: *test_template
 
 coding-style:
-    stage: coding-style
-    before_script:
-        - update-alternatives --set php /usr/bin/php7.2
-        - composer install-cs
-    script:
-        - composer check-cs
+  stage: coding-style
+  before_script:
+    - update-alternatives --set php /usr/bin/php7.2
+    - composer install-cs
+  script:
+    - composer check-cs
 
 phpstan:
-    stage: coding-style
-    before_script:
-        - update-alternatives --set php /usr/bin/php7.2
-        - composer install --no-progress
-    script:
-        - composer phpstan
+  stage: coding-style
+  before_script:
+    - update-alternatives --set php /usr/bin/php7.2
+    - composer install --no-progress
+  script:
+    - composer phpstan
 
 build-package:
-    stage: build-package
-    before_script:
-        - update-alternatives --set php /usr/bin/php7.2
-        - git checkout -B "$CI_COMMIT_REF_NAME" "$CI_COMMIT_SHA"
-    script:
-        - gbp dch -a -S --snapshot-number="$CI_PIPELINE_ID"
-        - dpkg-buildpackage -b -rfakeroot -us -uc -tc
-        - cp ../iqrf-gateway-webapp_*all.deb .
-    artifacts:
-        paths:
-            - 'iqrf-gateway-webapp_*all.deb'
-        expire_in: 2 weeks
+  stage: build-package
+  before_script:
+    - update-alternatives --set php /usr/bin/php7.2
+    - git checkout -B "$CI_COMMIT_REF_NAME" "$CI_COMMIT_SHA"
+  script:
+    - gbp dch -a -S --snapshot-number="$CI_PIPELINE_ID"
+    - dpkg-buildpackage -b -rfakeroot -us -uc -tc
+    - cp ../iqrf-gateway-webapp_*all.deb .
+  artifacts:
+    paths:
+      - 'iqrf-gateway-webapp_*all.deb'
+    expire_in: 2 weeks
 
 deploy-api-docs:
-    script:
-        - curl -L https://github.com/phpDocumentor/phpDocumentor2/releases/download/v3.0.0-alpha.3/phpDocumentor.phar -o phpDocumentor.phar
-        - curl -L https://github.com/phpDocumentor/phpDocumentor2/releases/download/v3.0.0-alpha.3/phpDocumentor.phar.pubkey -o phpDocumentor.phar.pubkey
-        - php phpDocumentor.phar
-        - rsync -hrvz --delete -e ssh docs/api/ www-deploy@iqrfsdk.org:/data/nginx/apidocs/iqrf-gateway-webapp/
-    <<: *ssh_template
+  script:
+    - curl -L https://github.com/phpDocumentor/phpDocumentor2/releases/download/v3.0.0-alpha.3/phpDocumentor.phar -o phpDocumentor.phar
+    - curl -L https://github.com/phpDocumentor/phpDocumentor2/releases/download/v3.0.0-alpha.3/phpDocumentor.phar.pubkey -o phpDocumentor.phar.pubkey
+    - php phpDocumentor.phar
+    - rsync -hrvz --delete -e ssh docs/api/ www-deploy@iqrfsdk.org:/data/nginx/apidocs/iqrf-gateway-webapp/
+  <<: *ssh_template
 
 deploy-user-docs:
-    script:
-        - cd docs/; make html
-        - rsync -hrvz --delete -e ssh build/html/ www-deploy@iqrfsdk.org:/data/nginx/docs/iqrf-gateway-webapp/
-    <<: *ssh_template
+  script:
+    - cd docs/; make html
+    - rsync -hrvz --delete -e ssh build/html/ www-deploy@iqrfsdk.org:/data/nginx/docs/iqrf-gateway-webapp/
+  <<: *ssh_template
