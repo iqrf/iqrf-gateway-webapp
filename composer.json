@@ -83,8 +83,8 @@
 	},
 	"scripts": {
 		"install-cs": "composer create-project nette/code-checker temp/code-checker --no-interaction",
-		"check-cs": "php temp/code-checker/code-checker -l --no-progress --strict-types -i \"tests/data/macros/macros-ascii.expected\" -i \"docs/\" -i \"tests/temp/\"",
-		"fix-cs": "php temp/code-checker/code-checker -f -l --no-progress --strict-types -i \"tests/data/macros/macros-ascii.expected\" -i \"docs/\" -i \"tests/temp/\"",
+		"check-cs": "php temp/code-checker/code-checker -l --no-progress --strict-types -i \"coverage.*\" -i \"docs/\" -i \"tests/temp/\"",
+		"fix-cs": "php temp/code-checker/code-checker -f -l --no-progress --strict-types -i \"coverage.*\" -i \"docs/\" -i \"tests/temp/\"",
 		"phpstan": "vendor/bin/phpstan analyse -c phpstan.neon -l 4 app tests"
 	}
 }
