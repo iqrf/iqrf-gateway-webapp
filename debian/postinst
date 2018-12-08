@@ -19,7 +19,9 @@ nginx_virtualhost_install() {
 	if [ ! -L /etc/nginx/sites-enabled/iqrf-gateway-webapp.localhost ] ; then
 		ln -s /etc/nginx/sites-available/iqrf-gateway-webapp.localhost /etc/nginx/sites-enabled/iqrf-gateway-webapp.localhost
 	fi
-	deb-systemd-invoke reload nginx.service
+	if deb-systemd-invoke is-enabled nginx.service ; then
+		deb-systemd-invoke reload nginx.service
+	fi
 }
 
 nginx_virtualhost_old_remove() {
