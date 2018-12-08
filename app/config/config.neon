@@ -21,7 +21,7 @@ parameters:
 		wsServer: 'ws://localhost:1338'
 	# Sentry configuration
 	sentry:
-		dsn: 'https://da0cff92d85f4cd0aa5f0ea3b90ddffd:83a01f9c90014d9e8b186bd23a6a3d3f@sentry.iqrfsdk.org/2'
+		dsn: 'https://31687391bccd475da4e2082861076d65:5f28e74fa9e34754ab1c7226c3a342ca@sentry.iqrf.org/2'
 
 application:
 	errorPresenter: Core:Error
