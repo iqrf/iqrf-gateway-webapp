@@ -42,16 +42,22 @@ cache:
 build-docker:tests-buster:
   only:
     changes:
+      - .gitlab-ci.yml
       - docker/tests/buster.Dockerfile
   variables:
+    DOCKER_FILE: docker/tests/buster.Dockerfile
+    DOCKER_IMAGE: iqrfsdk/iqrf-gateway-webapp
     DOCKER_TAG: tests-buster
   <<: *docker_template
 
 build-docker:tests-stretch:
   only:
     changes:
+      - .gitlab-ci.yml
       - docker/tests/stretch.Dockerfile
   variables:
+    DOCKER_FILE: docker/tests/stretch.Dockerfile
+    DOCKER_IMAGE: iqrfsdk/iqrf-gateway-webapp
     DOCKER_TAG: tests-stretch
   <<: *docker_template
 
