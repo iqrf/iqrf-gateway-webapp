@@ -22,6 +22,7 @@ services:
 	- App\ConfigModule\Forms\OtaUploadFormFactory
 	- App\ConfigModule\Forms\SchedulerFormFactory
 	- App\ConfigModule\Forms\SchedulerMigrationFormFactory
+	- App\ConfigModule\Forms\TraceFileFormFactory
 	- App\ConfigModule\Forms\UdpFormFactory
 	- App\ConfigModule\Forms\WebSocketFormFactory
 	- App\ConfigModule\Forms\WebSocketMessagingFormFactory

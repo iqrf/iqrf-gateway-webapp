@@ -69,6 +69,7 @@
 						<a n:if='$user->isInRole("power")' n:href=':Config:JsonSplitter:default'>{_config.jsonSplitter.title}</a>
 					</li>
 					<li><a n:href=':Config:Scheduler:default'>{_config.scheduler.title}</a></li>
+					<li><a n:href=':Config:Tracer:default'>{_config.tracer.title}</a></li>
 				</ul>
 			</li>
 			<li n:if='$user->loggedIn'>

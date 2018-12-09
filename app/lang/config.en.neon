@@ -278,6 +278,24 @@ selected-components:
 	title: Selected components
 	description: Manage selected components.
 
+tracer:
+	title: Tracer file
+	description: Tracer file settings.
+	form:
+		instance: Instance name
+		path: Path to directory with logs
+		filename: File name
+		maxSizeMB: Maximal size in MB
+		timestampFiles: Enable timestamp files
+		channel: Verbosity channel
+		level: Verbosity level
+		VerbosityLevels:
+			Error: Error
+			Warning: Warning
+			Info: Info
+			Debug: Debug
+		Save: Save
+
 udp:
 	title: UDP interface
 	description: IQRF UDP interface settings.
