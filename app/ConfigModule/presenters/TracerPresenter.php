@@ -20,10 +20,13 @@ declare(strict_types=1);
 
 namespace App\ConfigModule\Presenters;
 
+use App\ConfigModule\Datagrids\TraceFileDataGridFactory;
 use App\ConfigModule\Forms\TraceFileFormFactory;
 use App\ConfigModule\Models\GenericManager;
 use Nette\Forms\Form;
 use Nette\Utils\JsonException;
+use Ublaboo\DataGrid\DataGrid;
+use Ublaboo\DataGrid\Exception\DataGridException;
 
 class TracerPresenter extends GenericPresenter {
 
@@ -32,6 +35,12 @@ class TracerPresenter extends GenericPresenter {
 	 * @inject
 	 */
 	public $formFactory;
+
+	/**
+	 * @var TraceFileDataGridFactory Trace files configuration data grid factory
+	 * @inject
+	 */
+	public $dataGridFactory;
 
 	/**
 	 * Constructor
@@ -68,6 +77,17 @@ class TracerPresenter extends GenericPresenter {
 	 */
 	protected function createComponentConfigTracerForm(): Form {
 		return $this->formFactory->create($this);
+	}
+
+	/**
+	 * Create Trace file data grid
+	 * @param string $name Data grid's component name
+	 * @return DataGrid Trace file data grid
+	 * @throws DataGridException
+	 * @throws JsonException
+	 */
+	protected function createComponentConfigTracerDataGrid(string $name): DataGrid {
+		return $this->dataGridFactory->create($this, $name);
 	}
 
 }
