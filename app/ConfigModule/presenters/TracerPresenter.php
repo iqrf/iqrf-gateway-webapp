@@ -22,6 +22,8 @@ namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\TraceFileFormFactory;
 use App\ConfigModule\Models\GenericManager;
+use Nette\Forms\Form;
+use Nette\Utils\JsonException;
 
 class TracerPresenter extends GenericPresenter {
 
@@ -64,8 +66,7 @@ class TracerPresenter extends GenericPresenter {
 	 * Create Tracer form
 	 * @return Form Tracer form
 	 */
-	protected function createComponentConfigTracerForm() {
-		$this->onlyForAdmins();
+	protected function createComponentConfigTracerForm(): Form {
 		return $this->formFactory->create($this);
 	}
 

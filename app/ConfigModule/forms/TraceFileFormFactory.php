@@ -21,8 +21,9 @@ declare(strict_types=1);
 namespace App\ConfigModule\Forms;
 
 use App\ConfigModule\Presenters\TracerPresenter;
-use Nette\Application\UI\Form;
+use Nette\Forms\Form;
 use Nette\SmartObject;
+use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
 
 class TraceFileFormFactory extends GenericConfigFormFactory {
@@ -35,11 +36,17 @@ class TraceFileFormFactory extends GenericConfigFormFactory {
 	 * @return Form Tracer configuration form
 	 */
 	public function create(TracerPresenter $presenter): Form {
+		$this->manager->setComponent('shape::TraceFileService');
+		$this->redirect = 'Tracer:default';
+		$this->presenter = $presenter;
+		$id = intval($presenter->getParameter('id'));
+		try {
+			$defaults = $this->manager->load($id);
+		} catch (JsonException $e) {
+			$defaults = [];
+		}
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('config.tracer.form'));
-		$this->manager->setComponent('shape::TraceFileService');
-		$this->manager->setFileName($this->manager->getInstanceFiles()[0]);
-		$defaults = $this->manager->load();
 		$items = ['err' => 'VerbosityLevels.Error', 'war' => 'VerbosityLevels.Warning',
 			'inf' => 'VerbosityLevels.Info', 'dbg' => 'VerbosityLevels.Debug'];
 		$form->addText('instance', 'instance');
