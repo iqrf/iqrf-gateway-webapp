@@ -17,7 +17,7 @@ RUN apt-get update \
 
 WORKDIR /var/www/iqrf-gateway-webapp
 
-RUN git clone https://github.com/iqrfsdk/iqrf-gateway-webapp .
+RUN git clone https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp .
 RUN composer install
 RUN sed -i 's/sudo\:\ true/sudo\:\ false/g' app/config/config.neon
 RUN sed -i "s/initDaemon: 'systemd'/initDaemon: 'docker'/g" app/config/config.neon

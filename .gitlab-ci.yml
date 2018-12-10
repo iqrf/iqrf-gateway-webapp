@@ -39,6 +39,50 @@ cache:
     - docker build -f $DOCKER_FILE -t $DOCKER_IMAGE:$DOCKER_TAG .
     - docker push $DOCKER_IMAGE:$DOCKER_TAG
 
+build-docker:latest-amd64:
+  only:
+    changes:
+      - .gitlab-ci.yml
+      - docker/latest/amd64.Dockerfile
+  variables:
+    DOCKER_FILE: docker/latest/amd64.Dockerfile
+    DOCKER_IMAGE: iqrf/iqrf-gateway-webapp
+    DOCKER_TAG: latest-amd64
+  <<: *docker_template
+
+build-docker:latest-rpi:
+  only:
+    changes:
+      - .gitlab-ci.yml
+      - docker/latest/rpi.Dockerfile
+  variables:
+    DOCKER_FILE: docker/latest/rpi.Dockerfile
+    DOCKER_IMAGE: iqrf/iqrf-gateway-webapp
+    DOCKER_TAG: latest-rpi
+  <<: *docker_template
+
+build-docker:stable-amd64:
+  only:
+    changes:
+      - .gitlab-ci.yml
+      - docker/stable/amd64.Dockerfile
+  variables:
+    DOCKER_FILE: docker/stable/amd64.Dockerfile
+    DOCKER_IMAGE: iqrf/iqrf-gateway-webapp
+    DOCKER_TAG: stable-amd64
+  <<: *docker_template
+
+build-docker:stable-rpi:
+  only:
+    changes:
+      - .gitlab-ci.yml
+      - docker/stable/rpi.Dockerfile
+  variables:
+    DOCKER_FILE: docker/stable/rpi.Dockerfile
+    DOCKER_IMAGE: iqrf/iqrf-gateway-webapp
+    DOCKER_TAG: stable-rpi
+  <<: *docker_template
+
 build-docker:tests-buster:
   only:
     changes:

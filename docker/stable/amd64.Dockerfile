@@ -15,7 +15,7 @@ RUN apt-get update \
 
 WORKDIR /var/www/iqrf-gateway-webapp
 
-RUN composer create-project iqrfsdk/iqrf-gateway-webapp .
+RUN composer create-project iqrf/iqrf-gateway-webapp .
 RUN sed -i 's/sudo\:\ true/sudo\:\ false/g' app/config/config.neon
 RUN sed -i "s/initDaemon: 'systemd'/initDaemon: 'docker'/g" app/config/config.neon
 RUN chmod 777 log/ \
