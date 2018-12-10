@@ -17,6 +17,8 @@ cache:
 .test_template: &test_template
   stage: test
   retry: 2
+  tags:
+    - linux, amd64
 
 .ssh_template: &ssh_template
   stage: deploy-docs
@@ -28,82 +30,91 @@ cache:
     - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
 
-.docker_template: &docker_template
+.docker_template:
   image: docker:stable
   services:
     - docker:dind
   stage: build-docker
+  only:
+    changes:
+      - .gitlab-ci.yml
   before_script:
     - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
   script:
     - docker build -f $DOCKER_FILE -t $DOCKER_IMAGE:$DOCKER_TAG .
     - docker push $DOCKER_IMAGE:$DOCKER_TAG
+  tags:
+    - linux, docker
+  variables:
+    DOCKER_IMAGE: iqrftech/iqrf-gateway-webapp
 
 build-docker:latest-amd64:
+  extends: .docker_template
   only:
     changes:
-      - .gitlab-ci.yml
       - docker/latest/amd64.Dockerfile
+  tags:
+    - linux, docker, amd64
   variables:
     DOCKER_FILE: docker/latest/amd64.Dockerfile
-    DOCKER_IMAGE: iqrf/iqrf-gateway-webapp
     DOCKER_TAG: latest-amd64
-  <<: *docker_template
 
 build-docker:latest-rpi:
+  extends: .docker_template
   only:
     changes:
-      - .gitlab-ci.yml
       - docker/latest/rpi.Dockerfile
+  tags:
+    - linux, docker, armhf
   variables:
     DOCKER_FILE: docker/latest/rpi.Dockerfile
-    DOCKER_IMAGE: iqrf/iqrf-gateway-webapp
     DOCKER_TAG: latest-rpi
-  <<: *docker_template
 
 build-docker:stable-amd64:
+  extends: .docker_template
   only:
     changes:
-      - .gitlab-ci.yml
       - docker/stable/amd64.Dockerfile
+  tags:
+    - linux, docker, amd64
   variables:
     DOCKER_FILE: docker/stable/amd64.Dockerfile
-    DOCKER_IMAGE: iqrf/iqrf-gateway-webapp
     DOCKER_TAG: stable-amd64
-  <<: *docker_template
 
 build-docker:stable-rpi:
+  extends: .docker_template
   only:
     changes:
-      - .gitlab-ci.yml
       - docker/stable/rpi.Dockerfile
+  tags:
+    - linux, docker, armhf
   variables:
     DOCKER_FILE: docker/stable/rpi.Dockerfile
-    DOCKER_IMAGE: iqrf/iqrf-gateway-webapp
     DOCKER_TAG: stable-rpi
-  <<: *docker_template
 
 build-docker:tests-buster:
+  extends: .docker_template
   only:
     changes:
-      - .gitlab-ci.yml
       - docker/tests/buster.Dockerfile
+  tags:
+    - linux, docker, amd64
   variables:
     DOCKER_FILE: docker/tests/buster.Dockerfile
     DOCKER_IMAGE: iqrfsdk/iqrf-gateway-webapp
     DOCKER_TAG: tests-buster
-  <<: *docker_template
 
 build-docker:tests-stretch:
+  extends: .docker_template
   only:
     changes:
-      - .gitlab-ci.yml
       - docker/tests/stretch.Dockerfile
+  tags:
+    - linux, docker, amd64
   variables:
     DOCKER_FILE: docker/tests/stretch.Dockerfile
     DOCKER_IMAGE: iqrfsdk/iqrf-gateway-webapp
     DOCKER_TAG: tests-stretch
-  <<: *docker_template
 
 test:php7.1:
   image: iqrfsdk/iqrf-gateway-webapp:tests-stretch
