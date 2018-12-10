@@ -60,6 +60,7 @@ build-docker:latest-amd64:
     DOCKER_TAG: latest-amd64
 
 build-docker:latest-rpi:
+  allow_failure: true
   extends: .docker_template
   tags:
     - linux, docker, armhf
@@ -76,6 +77,7 @@ build-docker:stable-amd64:
     DOCKER_TAG: stable-amd64
 
 build-docker:stable-rpi:
+  allow_failure: true
   extends: .docker_template
   tags:
     - linux, docker, armhf
