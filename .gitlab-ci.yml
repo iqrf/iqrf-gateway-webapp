@@ -69,9 +69,6 @@ build-docker:latest-rpi:
 
 build-docker:stable-amd64:
   extends: .docker_template
-  only:
-    changes:
-      - docker/stable/amd64.Dockerfile
   tags:
     - linux, docker, amd64
   variables:
@@ -80,9 +77,6 @@ build-docker:stable-amd64:
 
 build-docker:stable-rpi:
   extends: .docker_template
-  only:
-    changes:
-      - docker/stable/rpi.Dockerfile
   tags:
     - linux, docker, armhf
   variables:
@@ -91,9 +85,6 @@ build-docker:stable-rpi:
 
 build-docker:tests-buster:
   extends: .docker_template
-  only:
-    changes:
-      - docker/tests/buster.Dockerfile
   tags:
     - linux, docker, amd64
   variables:
@@ -103,9 +94,6 @@ build-docker:tests-buster:
 
 build-docker:tests-stretch:
   extends: .docker_template
-  only:
-    changes:
-      - docker/tests/stretch.Dockerfile
   tags:
     - linux, docker, amd64
   variables:
