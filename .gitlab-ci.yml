@@ -29,6 +29,8 @@ cache:
     - chmod 700 ~/.ssh
     - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
+  tags:
+    - linux
 
 .docker_template:
   image: docker:stable
@@ -38,6 +40,7 @@ cache:
   only:
     changes:
       - .gitlab-ci.yml
+      - docker/*/*.Dockerfile
   before_script:
     - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
   script:
@@ -50,9 +53,6 @@ cache:
 
 build-docker:latest-amd64:
   extends: .docker_template
-  only:
-    changes:
-      - docker/latest/amd64.Dockerfile
   tags:
     - linux, docker, amd64
   variables:
@@ -61,9 +61,6 @@ build-docker:latest-amd64:
 
 build-docker:latest-rpi:
   extends: .docker_template
-  only:
-    changes:
-      - docker/latest/rpi.Dockerfile
   tags:
     - linux, docker, armhf
   variables:
