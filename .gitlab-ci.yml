@@ -37,10 +37,6 @@ cache:
   services:
     - docker:dind
   stage: build-docker
-  only:
-    changes:
-      - .gitlab-ci.yml
-      - docker/*/*.Dockerfile
   before_script:
     - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
   script:
