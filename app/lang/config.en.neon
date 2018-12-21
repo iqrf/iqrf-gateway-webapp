@@ -100,6 +100,7 @@ iqrfSpi:
 		powerEnableGpioPin: Power enable GPIO pin
 		busEnableGpioPin: SPI bus enable GPIO pin
 		pgmSwitchGpioPin: Programming mode switch GPIO pin
+		spiReset: Enable SPI reset
 		messages:
 			instance: Please enter name of IQRF SPI instance.
 			IqrfInterface: Please enter IQRF SPI interface.
