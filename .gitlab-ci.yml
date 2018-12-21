@@ -1,4 +1,4 @@
-image: iqrfsdk/iqrf-gateway-webapp:tests-buster
+image: iqrfsdk/iqrf-gateway-webapp:tests-stretch
 
 stages:
   - build-docker
@@ -55,15 +55,6 @@ build-docker:latest-amd64:
     DOCKER_FILE: docker/latest/amd64.Dockerfile
     DOCKER_TAG: latest-amd64
 
-build-docker:latest-rpi:
-  allow_failure: true
-  extends: .docker_template
-  tags:
-    - linux, docker, armhf
-  variables:
-    DOCKER_FILE: docker/latest/rpi.Dockerfile
-    DOCKER_TAG: latest-rpi
-
 build-docker:stable-amd64:
   extends: .docker_template
   tags:
@@ -71,15 +62,6 @@ build-docker:stable-amd64:
   variables:
     DOCKER_FILE: docker/stable/amd64.Dockerfile
     DOCKER_TAG: stable-amd64
-
-build-docker:stable-rpi:
-  allow_failure: true
-  extends: .docker_template
-  tags:
-    - linux, docker, armhf
-  variables:
-    DOCKER_FILE: docker/stable/rpi.Dockerfile
-    DOCKER_TAG: stable-rpi
 
 build-docker:tests-buster:
   extends: .docker_template
@@ -100,7 +82,6 @@ build-docker:tests-stretch:
     DOCKER_TAG: tests-stretch
 
 test:php7.1:
-  image: iqrfsdk/iqrf-gateway-webapp:tests-stretch
   before_script:
     - update-alternatives --set php /usr/bin/php7.1
     - composer install --no-progress
@@ -119,7 +100,7 @@ test:php7.2:
   <<: *test_template
 
 test:php7.3:
-  allow_failure: true
+  image: iqrfsdk/iqrf-gateway-webapp:tests-buster
   before_script:
     - update-alternatives --set php /usr/bin/php7.3
     - composer install --no-progress
@@ -129,6 +110,7 @@ test:php7.3:
   <<: *test_template
 
 coverage:
+  image: iqrfsdk/iqrf-gateway-webapp:tests-buster
   before_script:
     - update-alternatives --set php /usr/bin/php7.3
     - composer install --no-progress
@@ -171,6 +153,7 @@ build-package:
     expire_in: 2 weeks
 
 deploy-api-docs:
+  image: iqrfsdk/iqrf-gateway-webapp:tests-buster
   script:
     - curl -L https://github.com/phpDocumentor/phpDocumentor2/releases/download/v3.0.0-alpha.3/phpDocumentor.phar -o phpDocumentor.phar
     - curl -L https://github.com/phpDocumentor/phpDocumentor2/releases/download/v3.0.0-alpha.3/phpDocumentor.phar.pubkey -o phpDocumentor.phar.pubkey
@@ -179,6 +162,7 @@ deploy-api-docs:
   <<: *ssh_template
 
 deploy-user-docs:
+  image: iqrfsdk/iqrf-gateway-webapp:tests-buster
   script:
     - cd docs/; make html
     - rsync -hrvz --delete -e ssh build/html/ www-deploy@iqrfsdk.org:/data/nginx/docs/iqrf-gateway-webapp/
