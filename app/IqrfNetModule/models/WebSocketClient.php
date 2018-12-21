@@ -57,7 +57,12 @@ class WebSocketClient {
 	 */
 	public function __construct(string $wsServer) {
 		$this->loop = EventLoop\Factory::create();
-		$this->wsServer = $wsServer;
+		$wsServerEnv = getenv('IQRFGD_WS_SERVER');
+		if($wsServerEnv !== false) {
+			$this->wsServer = $wsServerEnv;
+		} else {
+			$this->wsServer = $wsServer;
+		}
 	}
 
 	/**
