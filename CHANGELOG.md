@@ -4,6 +4,92 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
+### Added:
+- Add a skeleton of user documentation
+- Add the API documentation and User documentation deployment to GitLab CI
+- Add MQTT topics to the MQTT datagrid
+- Add a method to get UART interfaces available in the system
+- Add the IQRF UART interface configutation tool
+- Add JSON highlighter
+- Add debug information into WebSocket client
+- Add a guide how to install PHP 7.2 on Raspbian 9
+- Create the directory for certificates for MQTT connections
+- Add a SPI port mapping
+- Add a port and pins mapping for UART interface
+- Allow status changes from the datagrid for MQ, MQTT and WebSocket interface
+- Allow status changes from the datagrid for WebSocket messagings
+- Add links to PDF and video guides for cloud services
+- Add the CLI tool for managing webapp
+- Add man page
+- Add scheduler's configuration migration
+- Add disk, memory and swap usages
+- Add IQMESH Network bonding manager
+- Add IQMESH enumeration manager, add DPA version and RF mode to GW info
+- Add information about IQRF Gateway to GW info
+- Add Docker testing images building and deploying into GitLab CI
+- Add a trace file configuration tool
+- Add SPI restart option into IQRF SPI configuration tool
+- Set IQRF Gateway Daemon's WS server URL via ENV variable
+
+### Changed:
+- Update IQRF Gateway Daemon's SPI configuration tool
+- Update the installation guide
+- Hide OTA upload configuration tool
+- Show only necessary components for a normal user
+- Update names of IQRF Gateway Daemon's directories
+- Update SPI and UART GPIO pins names
+- Rename the configuration tool for components for normal users
+- Move the navigation to own template
+- Update the PGP key of PHP repository for Raspbian
+- Update the root CA certificate for Amazon AWS IoT
+- Cleanup IQRF DPA configuration tool
+- Change namespace for IQRF Network module
+- Scheduler uses APIv2 and displays the task time in human readable format
+- Improve user's data grid
+- Remove scheduler from manageable components by normal user
+- Update the installation guide
+- Decrease default WS client timeout to 26 seconds
+- Use new API for setting an access password and an user key
+- Change the order of cloud services
+- Update notification about a new version and about an offline mode
+- Update IQRF IDE Macros
+- Update Sentry's DSN
+- Build new Docker images for each commit
+
+### Removed:
+- Remove support of the old websocket service - shape::WebsocketService
+
+### Fixed:
+- Catch exceptions in the scheduler configuration manager
+- Fix SPI pins mapping tool for SBCs
+- Fix permissions in the Debian package
+- Fix typo in IQMESH configuration tool's presenter
+- Fix lintian tag `embedded-javascript-library`
+- Fix a grammatical mistake in the user documentation
+- Fix components order in the generic configuration manager
+- Fix a bug in the IQRF Gateway Daemon's configuration import
+- Fix a translation in GW info
+- Fix bug in a saving of IQRF Gateway Daemon's configuration file
+- Fix configuration error messages
+- Fix the path for certificates for MQTT connections
+- Fix bug in the generic cloud service manager
+- Fix component's status changing from datagrid
+- Fix redrawing of the component's datagrid
+- Fix websocket interface manager
+- Fix bugs in JSON validation against the JSON schema
+- Fix typos, update PHPDocs, sort imports and format source code
+- Fix send DPA raw form
+- Fix bugs in the scheduler's configuration tool
+- Fix IQRF Gateway Daemon's log viewer
+- Fix timezone in tests
+- Fix URL for checking updates
+- Fix bug in GW diagnostics
+- Fix name of IBM Cloud
+- Fix disk usage unit conversion
+- Fix bug in a swap usage
+- Fix changing of the IQRF Gateway Daemon mode
+- Reload nginx service only if nginx service is started in Debian package installation and uninstallation
+- Fix Docker testing images building and deploying in GitLab CI
 
 ## [2.0.0-beta] - 2018-09-05
 ### Added:
@@ -291,7 +377,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 - Fix bug in installer (updating dependencies)
 
 
-## 0.5.0 - 2017-07-12
+## [0.5.0] - 2017-07-12
 ### Added
 - Add configuration tools for IQRF Gateway Daemon
 - Add IQRF Gateway daemon's service manager
@@ -300,15 +386,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 - Add a basic installation tool
 - Add IQRF IDE4 macros parser
 
-[Unreleased]: https://github.com/iqrfsdk/iqrf-gateway-webapp/compare/v2.0.0-beta...HEAD
-[2.0.0-beta]: https://github.com/iqrfsdk/iqrf-gateway-webapp/compare/v1.1.6...v2.0.0-beta
-[1.1.6]: https://github.com/iqrfsdk/iqrf-gateway-webapp/compare/v1.1.5...v1.1.6
-[1.1.5]: https://github.com/iqrfsdk/iqrf-gateway-webapp/compare/v1.1.4...v1.1.5
-[1.1.4]: https://github.com/iqrfsdk/iqrf-gateway-webapp/compare/v1.1.3...v1.1.4
-[1.1.3]: https://github.com/iqrfsdk/iqrf-gateway-webapp/compare/v1.1.2...v1.1.3
-[1.1.2]: https://github.com/iqrfsdk/iqrf-gateway-webapp/compare/v1.1.1...v1.1.2
-[1.1.1]: https://github.com/iqrfsdk/iqrf-gateway-webapp/compare/v1.1.0...v1.1.1
-[1.1.0]: https://github.com/iqrfsdk/iqrf-gateway-webapp/compare/v1.0.0...v1.1.0
-[1.0.0]: https://github.com/iqrfsdk/iqrf-gateway-webapp/compare/v0.8.1...v1.0.0
-[0.8.1]: https://github.com/iqrfsdk/iqrf-gateway-webapp/compare/v0.8.0...v0.8.1
-[0.8.0]: https://github.com/iqrfsdk/iqrf-gateway-webapp/compare/v0.5.0...v0.8.0
+[Unreleased]: https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp/compare/v2.0.0-beta...master
+[2.0.0-beta]: https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp/compare/v1.1.6...v2.0.0-beta
+[1.1.6]: https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp/compare/v1.1.5...v1.1.6
+[1.1.5]: https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp/compare/v1.1.4...v1.1.5
+[1.1.4]: https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp/compare/v1.1.3...v1.1.4
+[1.1.3]: https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp/compare/v1.1.2...v1.1.3
+[1.1.2]: https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp/compare/v1.1.1...v1.1.2
+[1.1.1]: https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp/compare/v1.1.0...v1.1.1
+[1.1.0]: https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp/compare/v1.0.0...v1.1.0
+[1.0.0]: https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp/compare/v0.8.1...v1.0.0
+[0.8.1]: https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp/compare/v0.8.0...v0.8.1
+[0.8.0]: https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp/compare/v0.5.0...v0.8.0
+[0.5.0]: https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp/compare/35daaafb...v0.5.0
