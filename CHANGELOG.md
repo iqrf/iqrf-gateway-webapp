@@ -9,7 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 - Add the API documentation and User documentation deployment to GitLab CI
 - Add MQTT topics to the MQTT datagrid
 - Add a method to get UART interfaces available in the system
-- Add the IQRF UART interface configutation tool
+- Add the IQRF UART interface configuration tool
 - Add JSON highlighter
 - Add debug information into WebSocket client
 - Add a guide how to install PHP 7.2 on Raspbian 9
@@ -17,7 +17,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 - Add a SPI port mapping
 - Add a port and pins mapping for UART interface
 - Allow status changes from the datagrid for MQ, MQTT and WebSocket interface
-- Allow status changes from the datagrid for WebSocket messagings
+- Allow status changes from the datagrid for WebSocket messaging
 - Add links to PDF and video guides for cloud services
 - Add the CLI tool for managing webapp
 - Add man page
@@ -57,7 +57,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 - Build new Docker images for each commit
 
 ### Removed:
-- Remove support of the old websocket service - shape::WebsocketService
+- Remove support of the old WebSocket service - shape::WebsocketService
 
 ### Fixed:
 - Catch exceptions in the scheduler configuration manager
@@ -94,7 +94,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 ## [2.0.0-beta] - 2018-09-05
 ### Added:
 - Add configuration tools for IQRF Gateway Daemon v2
-- Add PHPSTan - tool for static analysation
+- Add PHPSTan - tool for static analysis
 - Add JSON schema validation
 - Add support for Debian testing and Ubuntu 18.04 in the installer
 - Add an user manager

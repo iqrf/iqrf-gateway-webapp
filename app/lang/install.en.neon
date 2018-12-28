@@ -9,5 +9,5 @@ createUser:
 	button: Add a new user
 
 gwInfo:
-    title: Some information about this gateway
-    button: Show GW info
+	title: Some information about this gateway
+	button: Show GW info
