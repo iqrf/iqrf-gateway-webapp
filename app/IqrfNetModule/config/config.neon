@@ -1,9 +1,10 @@
 services:
-	- App\IqrfNetModule\Forms\SendRawFormFactory
 	- App\IqrfNetModule\Forms\BondingFormFactory
 	- App\IqrfNetModule\Forms\DiscoveryFormFactory
 	- App\IqrfNetModule\Forms\RfFormFactory
 	- App\IqrfNetModule\Forms\SecurityFormFactory
+	- App\IqrfNetModule\Forms\SendJsonFormFactory
+	- App\IqrfNetModule\Forms\SendRawFormFactory
 	- App\IqrfNetModule\Models\BondingManager
 	- App\IqrfNetModule\Models\DpaRawManager
 	- App\IqrfNetModule\Models\EnumerationManager
