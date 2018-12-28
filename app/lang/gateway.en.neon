@@ -7,7 +7,7 @@ info:
 	gwId: IQRF Gateway ID
 	version:
 		iqrf-gw-daemon: IQRF Gateway Daemon
-		iqrf-gw-webapp: IQRF Gateway Daemon webapp
+		iqrf-gw-webapp: IQRF Gateway Webapp
 	hostname: Hostname
 	addresses:
 		ip: IP addresses

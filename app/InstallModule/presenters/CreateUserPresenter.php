@@ -20,9 +20,26 @@ declare(strict_types = 1);
 
 namespace App\InstallModule\Presenters;
 
+use App\CoreModule\Forms\UserAddFormFactory;
+use Nette\Forms\Form;
+
 /**
- * Installation wizard presenter
+ * Create the first webapp's user presenter
  */
-class HomepagePresenter extends InstallationPresenter {
+class CreateUserPresenter extends InstallationPresenter {
+
+	/**
+	 * @var UserAddFormFactory Create the first webapp's user form
+	 * @inject
+	 */
+	public $userFormFactory;
+
+	/**
+	 * Create create the first webapp's user form
+	 * @return Form Create the first webapp's user form
+	 */
+	protected function createComponentCreateUserForm(): Form {
+		return $this->userFormFactory->create($this);
+	}
 
 }

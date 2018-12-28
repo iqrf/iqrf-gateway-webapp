@@ -1,4 +1,13 @@
 title: Installation wizard
 
+invitation: """
+Welcome to IQRF Gateway Webapp. Before getting started, you have to create the first webapp's user.
+"""
+
 createUser:
 	title: Add a new user
+	button: Add a new user
+
+gwInfo:
+    title: Some information about this gateway
+    button: Show GW info

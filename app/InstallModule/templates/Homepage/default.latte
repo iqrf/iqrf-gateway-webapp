@@ -17,9 +17,12 @@
 
 {block title}{_install.title}{/block}
 {block content}
-<h2>{_install.createUser.title}</h2>
 <div class='panel panel-default'>
 	<div class='panel-body'>
-		{control regUserForm}
+		{_install.invitation}
+	</div>
+	<div class='panel-footer'>
+		<a n:href='CreateUser:default' class='btn btn-primary'>{_install.createUser.button}</a>
+		<a n:href='GatewayInfo:default' class='btn btn-primary'>{_install.gwInfo.button}</a>
 	</div>
 </div>

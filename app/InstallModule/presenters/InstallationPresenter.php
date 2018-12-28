@@ -20,9 +20,35 @@ declare(strict_types = 1);
 
 namespace App\InstallModule\Presenters;
 
+use App\CoreModule\Models\UserManager;
+use App\CoreModule\Presenters\BasePresenter;
+
 /**
- * Installation wizard presenter
+ * Installation presenter
  */
-class HomepagePresenter extends InstallationPresenter {
+abstract class InstallationPresenter extends BasePresenter {
+
+	/**
+	 * @var UserManager User manager
+	 */
+	protected $userManager;
+
+	/**
+	 * Inject user manager
+	 * @param UserManager $userManager User manager
+	 */
+	public function injectUserManager(UserManager $userManager): void {
+		$this->userManager = $userManager;
+	}
+
+	/**
+	 * Start up an base presenter
+	 */
+	protected function startup(): void {
+		parent::startup();
+		if ($this->userManager->getUsers() !== []) {
+			$this->redirect(':Core:Sign:in');
+		}
+	}
 
 }
