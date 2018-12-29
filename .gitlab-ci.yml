@@ -46,7 +46,7 @@ cache:
   tags:
     - linux, docker
   variables:
-    DOCKER_IMAGE: iqrftech/iqr f-gateway-webapp
+    DOCKER_IMAGE: iqrftech/iqrf-gateway-webapp
 
 .docker_template_testing:
   extends: .docker_template
@@ -84,14 +84,12 @@ build-docker:tests-buster:
   extends: .docker_template_testing
   variables:
     DOCKER_FILE: docker/tests/buster.Dockerfile
-    DOCKER_IMAGE: iqrfsdk/iqrf-gateway-webapp
     DOCKER_TAG: tests-buster
 
 build-docker:tests-stretch:
   extends: .docker_template_testing
   variables:
     DOCKER_FILE: docker/tests/stretch.Dockerfile
-    DOCKER_IMAGE: iqrfsdk/iqrf-gateway-webapp
     DOCKER_TAG: tests-stretch
 
 test:php7.1:
