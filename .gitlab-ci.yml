@@ -1,10 +1,11 @@
 image: iqrfsdk/iqrf-gateway-webapp:tests-stretch
 
 stages:
-  - build-docker
+  - build-docker-testing
   - test
   - coding-style
   - build-package
+  - build-docker
   - deploy-docs
 
 variables:
@@ -45,10 +46,23 @@ cache:
   tags:
     - linux, docker
   variables:
-    DOCKER_IMAGE: iqrftech/iqrf-gateway-webapp
+    DOCKER_IMAGE: iqrftech/iqr f-gateway-webapp
+
+.docker_template_testing:
+  extends: .docker_template
+  stage: build-docker-testing
+  only:
+      refs:
+        - master
+        - schedules
+  tags:
+    - linux, docker, amd64
 
 build-docker:latest-amd64:
   extends: .docker_template
+  only:
+      refs:
+        - master
   tags:
     - linux, docker, amd64
   variables:
@@ -57,6 +71,9 @@ build-docker:latest-amd64:
 
 build-docker:stable-amd64:
   extends: .docker_template
+  only:
+      refs:
+        - stable
   tags:
     - linux, docker, amd64
   variables:
@@ -64,18 +81,14 @@ build-docker:stable-amd64:
     DOCKER_TAG: stable-amd64
 
 build-docker:tests-buster:
-  extends: .docker_template
-  tags:
-    - linux, docker, amd64
+  extends: .docker_template_testing
   variables:
     DOCKER_FILE: docker/tests/buster.Dockerfile
     DOCKER_IMAGE: iqrfsdk/iqrf-gateway-webapp
     DOCKER_TAG: tests-buster
 
 build-docker:tests-stretch:
-  extends: .docker_template
-  tags:
-    - linux, docker, amd64
+  extends: .docker_template_testing
   variables:
     DOCKER_FILE: docker/tests/stretch.Dockerfile
     DOCKER_IMAGE: iqrfsdk/iqrf-gateway-webapp
