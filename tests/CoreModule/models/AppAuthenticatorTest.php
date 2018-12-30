@@ -15,13 +15,13 @@ use Nette\Caching\Storages\MemoryStorage;
 use Nette\Database\Connection;
 use Nette\Database\Context;
 use Nette\Database\Structure;
-use Nette\DI\Container;
 use Nette\Security\AuthenticationException;
 use Nette\Security\Identity;
 use Tester\Assert;
+use Tester\Environment;
 use Tester\TestCase;
 
-$container = require __DIR__ . '/../../bootstrap.php';
+require __DIR__ . '/../../bootstrap.php';
 
 /**
  * Tests for certificate manager
@@ -34,17 +34,12 @@ class AppAuthenticatorTest extends TestCase {
 	private $authenticator;
 
 	/**
-	 * @var Container Nette Tester Container
-	 */
-	private $container;
-
-	/**
 	 * @var Context Nette Database context
 	 */
 	private $context;
 
 	/**
-	 * @var array Information about admin user
+	 * @var mixed[string] Information about admin user
 	 */
 	private $data = [
 		'id' => 1,
@@ -55,18 +50,10 @@ class AppAuthenticatorTest extends TestCase {
 	];
 
 	/**
-	 * Constructor
-	 * @param Container $container Nette Tester Container
-	 */
-	public function __construct(Container $container) {
-		$this->container = $container;
-	}
-
-	/**
 	 * Test function to authenticate the user (incorrect username)
 	 */
 	public function testAuthenticateBadUsername(): void {
-		Assert::exception(function () {
+		Assert::exception(function (): void {
 			$credentials = ['iqrf', 'iqrf'];
 			$this->authenticator->authenticate($credentials);
 		}, AuthenticationException::class);
@@ -76,7 +63,7 @@ class AppAuthenticatorTest extends TestCase {
 	 * Test function to authenticate the user (incorrect password)
 	 */
 	public function testAuthenticateBadPassword(): void {
-		Assert::exception(function () {
+		Assert::exception(function (): void {
 			$credentials = ['admin', 'admin'];
 			$this->authenticator->authenticate($credentials);
 		}, AuthenticationException::class);
@@ -86,7 +73,7 @@ class AppAuthenticatorTest extends TestCase {
 	 * Test function to authenticate the user (correct username and password)
 	 */
 	public function testAuthenticateSuccess(): void {
-		$data = ['username' => 'admin', 'language' => 'en',];
+		$data = ['username' => 'admin', 'language' => 'en'];
 		$expected = new Identity(1, 'power', $data);
 		$credentials = ['admin', 'iqrf'];
 		Assert::equal($expected, $this->authenticator->authenticate($credentials));
@@ -96,7 +83,7 @@ class AppAuthenticatorTest extends TestCase {
 	 * Set up the test environment
 	 */
 	protected function setUp(): void {
-		\Tester\Environment::lock('user_db', __DIR__ . '/../../temp/');
+		Environment::lock('user_db', __DIR__ . '/../../temp/');
 		$connection = new Connection('sqlite::memory:');
 		$cacheStorage = new MemoryStorage();
 		$structure = new Structure($connection, $cacheStorage);
@@ -122,5 +109,5 @@ class AppAuthenticatorTest extends TestCase {
 
 }
 
-$test = new AppAuthenticatorTest($container);
+$test = new AppAuthenticatorTest();
 $test->run();

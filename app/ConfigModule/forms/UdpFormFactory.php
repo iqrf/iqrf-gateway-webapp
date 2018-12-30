@@ -61,7 +61,6 @@ class UdpFormFactory extends GenericConfigFormFactory {
 	 * Save UDP interface configuration
 	 * @param Form $form IDP interface configuration form
 	 * @throws JsonException
-	 *
 	 */
 	public function save(Form $form): void {
 		$instances = $this->manager->getInstanceFiles();

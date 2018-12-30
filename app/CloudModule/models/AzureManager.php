@@ -54,7 +54,7 @@ class AzureManager implements IManager {
 
 	/**
 	 * Create MQTT interface
-	 * @param array $values Values from form
+	 * @param mixed[] $values Values from form
 	 * @throws InvalidConnectionStringException
 	 * @throws JsonException
 	 */
@@ -109,7 +109,7 @@ class AzureManager implements IManager {
 	/**
 	 * Parse Microsoft Azure IoT HUb connection string
 	 * @param string $connectionString MS Azure IoT Hub Connection string
-	 * @return array Values from the connection string
+	 * @return string[] Values from the connection string
 	 * @throws InvalidConnectionStringException
 	 */
 	public function parseConnectionString(string $connectionString): array {
@@ -130,11 +130,11 @@ class AzureManager implements IManager {
 	 * Generate shared access signature token
 	 * @param string $resourceUri URI prefix (by segment) of the endpoints that can be accessed with this token, starting with host name of the IoT hub (no protocol).
 	 * @param string $signingKey Signing key
-	 * @param string $policyName The name of the shared access policy to which this token refers. Absent if the token refers to device-registry credentials.
+	 * @param string|null $policyName The name of the shared access policy to which this token refers. Absent if the token refers to device-registry credentials.
 	 * @param int $expiresInMins Expiration in minutes
 	 * @return string MS Azure Shared access signature token
 	 */
-	public function generateSasToken(string $resourceUri, string $signingKey, string $policyName = null, int $expiresInMins = 525600): string {
+	public function generateSasToken(string $resourceUri, string $signingKey, ?string $policyName = null, int $expiresInMins = 525600): string {
 		$now = new DateTime();
 		$expires = new DateInterval('PT' . $expiresInMins . 'M');
 		$ttl = intdiv($now->add($expires)->getTimestamp(), 60) * 60;
@@ -145,7 +145,7 @@ class AzureManager implements IManager {
 		$signature = urlencode(base64_encode($hmac));
 		$token = 'SharedAccessSignature sr=' . $encodedResourceUri . '&sig='
 			. $signature . '&se=' . $ttl;
-		if (!is_null($policyName)) {
+		if ($policyName !== null) {
 			$token .= '$skn=' . $policyName;
 		}
 		return $token;

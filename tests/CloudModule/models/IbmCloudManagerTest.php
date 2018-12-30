@@ -18,22 +18,18 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
-use Nette\DI\Container;
+use Mockery;
+use Mockery\Mock;
 use Nette\Utils\FileSystem;
 use Tester\Assert;
 use Tester\TestCase;
 
-$container = require __DIR__ . '/../../bootstrap.php';
+require __DIR__ . '/../../bootstrap.php';
 
 /**
  * Tests for IBM Cloud manager
  */
 class IbmCloudManagerTest extends TestCase {
-
-	/**
-	 * @var Container Nette Tester Container
-	 */
-	private $container;
 
 	/**
 	 * @var string Path to a directory with certificates and private keys
@@ -51,12 +47,12 @@ class IbmCloudManagerTest extends TestCase {
 	private $fileManager;
 
 	/**
-	 * @var \Mockery\Mock Mocked IBM Bluemix manager
+	 * @var Mock|IbmCloudManager Mocked IBM Bluemix manager
 	 */
 	private $manager;
 
 	/**
-	 * @var array Values from IBM Cloud form
+	 * @var string[] Values from IBM Cloud form
 	 */
 	private $formValues = [
 		'deviceId' => 'gw00',
@@ -68,10 +64,8 @@ class IbmCloudManagerTest extends TestCase {
 
 	/**
 	 * Constructor
-	 * @param Container $container Nette Tester Container
 	 */
-	public function __construct(Container $container) {
-		$this->container = $container;
+	public function __construct() {
 		$this->certPath = realpath(__DIR__ . '/../../temp/certificates/') . '/';
 	}
 
@@ -132,7 +126,7 @@ class IbmCloudManagerTest extends TestCase {
 		$schemaManager = new JsonSchemaManager($schemaPath);
 		$this->configManager = new GenericManager($this->fileManager, $schemaManager);
 		$client = new Client();
-		$this->manager = \Mockery::mock(IbmCloudManager::class, [$this->certPath, $this->configManager, $client])->makePartial();
+		$this->manager = Mockery::mock(IbmCloudManager::class, [$this->certPath, $this->configManager, $client])->makePartial();
 		$this->manager->shouldReceive('downloadCaCertificate')->andReturn(null);
 	}
 
@@ -140,10 +134,10 @@ class IbmCloudManagerTest extends TestCase {
 	 * Cleanup the test environment
 	 */
 	protected function tearDown(): void {
-		\Mockery::close();
+		Mockery::close();
 	}
 
 }
 
-$test = new IbmCloudManagerTest($container);
+$test = new IbmCloudManagerTest();
 $test->run();

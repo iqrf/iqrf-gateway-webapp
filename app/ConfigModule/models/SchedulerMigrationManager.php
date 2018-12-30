@@ -21,7 +21,6 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Models;
 
 use App\ConfigModule\Exceptions\InvalidConfigurationFormatException;
-use App\CoreModule\Models\JsonFileManager;
 use DateTime;
 use Nette\Application\BadRequestException;
 use Nette\Application\Responses\FileResponse;
@@ -40,11 +39,6 @@ class SchedulerMigrationManager {
 	 * @var MainManager Main configuration manager
 	 */
 	private $mainConfigManager;
-
-	/**
-	 * @var JsonFileManager JSON file manager
-	 */
-	private $fileManager;
 
 	/**
 	 * @var string File name (without .json)
@@ -67,7 +61,6 @@ class SchedulerMigrationManager {
 		} catch (IOException | JsonException $e) {
 			$this->path = '/var/cache/iqrfgd2/scheduler/';
 		}
-		$this->fileManager = new JsonFileManager($this->path);
 	}
 
 	/**
@@ -86,7 +79,7 @@ class SchedulerMigrationManager {
 
 	/**
 	 * Upload a scheduler's configuration
-	 * @param array $formValues Values from form
+	 * @param mixed[] $formValues Values from form
 	 * @throws InvalidConfigurationFormatException
 	 */
 	public function upload(array $formValues): void {

@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Models;
 
 use App\CoreModule\Models\ZipArchiveManager;
+use DateTime;
 use Nette\Application\BadRequestException;
 use Nette\Application\Responses\FileResponse;
 use Nette\SmartObject;
@@ -64,7 +65,7 @@ class LogManager {
 
 	/**
 	 * Get IQRF Gateway Daemon's log files
-	 * @return array IQRF Gateway Daemon's log files
+	 * @return string[] IQRF Gateway Daemon's log files
 	 */
 	public function getLogFiles(): array {
 		$logFiles = [];
@@ -86,7 +87,7 @@ class LogManager {
 	public function download(): FileResponse {
 		$zipManager = new ZipArchiveManager($this->path);
 		$zipManager->addFolder($this->logDir, '');
-		$now = new \DateTime();
+		$now = new DateTime();
 		$fileName = 'iqrf-gateway-daemon-logs' . $now->format('c') . '.zip';
 		$contentType = 'application/zip';
 		$zipManager->close();

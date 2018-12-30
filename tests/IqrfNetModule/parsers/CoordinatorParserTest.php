@@ -12,21 +12,15 @@ namespace Test\IqrfNetModule\Parsers;
 
 use App\CoreModule\Models\JsonFileManager;
 use App\IqrfNetModule\Parsers\CoordinatorParser;
-use Nette\DI\Container;
 use Tester\Assert;
 use Tester\TestCase;
 
-$container = require __DIR__ . '/../../bootstrap.php';
+require __DIR__ . '/../../bootstrap.php';
 
 /**
  * Tests for parser for of Coordinator responses
  */
 class CoordinatorParserTest extends TestCase {
-
-	/**
-	 * @var Container Nette Tester Container
-	 */
-	private $container;
 
 	/**
 	 * @var CoordinatorParser DPA Coordinator response parser
@@ -39,22 +33,14 @@ class CoordinatorParserTest extends TestCase {
 	private $packet = [];
 
 	/**
-	 * @var array Expected parsed information
+	 * @var mixed[] Expected parsed information
 	 */
 	private $expected;
 
 	/**
-	 * Constructor
-	 * @param Container $container Nette Tester Container
-	 */
-	public function __construct(Container $container) {
-		$this->container = $container;
-	}
-
-	/**
 	 * Set up test environment
 	 */
-	public function setUp(): void {
+	protected function setUp(): void {
 		$this->parser = new CoordinatorParser();
 		$jsonFileManager = new JsonFileManager(__DIR__ . '/../../data/iqrf/');
 		$this->packet['bonded'] = $jsonFileManager->read('response-coordinator-bonded')['data']['rsp']['rData'];
@@ -95,5 +81,5 @@ class CoordinatorParserTest extends TestCase {
 
 }
 
-$test = new CoordinatorParserTest($container);
+$test = new CoordinatorParserTest();
 $test->run();

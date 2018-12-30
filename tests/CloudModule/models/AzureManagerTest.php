@@ -15,21 +15,18 @@ use App\CloudModule\Models\AzureManager;
 use App\ConfigModule\Models\GenericManager;
 use App\CoreModule\Models\JsonFileManager;
 use App\CoreModule\Models\JsonSchemaManager;
-use Nette\DI\Container;
+use DateTime;
+use Mockery;
+use Mockery\Mock;
 use Tester\Assert;
 use Tester\TestCase;
 
-$container = require __DIR__ . '/../../bootstrap.php';
+require __DIR__ . '/../../bootstrap.php';
 
 /**
  * Test for MS Azure IoT Hub manager
  */
 class AzureManagerTest extends TestCase {
-
-	/**
-	 * @var Container Nette Tester Container
-	 */
-	private $container;
 
 	/**
 	 * @var JsonFileManager JSON file manager
@@ -42,7 +39,7 @@ class AzureManagerTest extends TestCase {
 	private $manager;
 
 	/**
-	 * @var \Mockery\Mock Mocked MS Azure IoT hub manager
+	 * @var Mock|AzureManager Mocked MS Azure IoT hub manager
 	 */
 	private $mockedManager;
 
@@ -50,14 +47,6 @@ class AzureManagerTest extends TestCase {
 	 * @var string MS Azure IoT Hub connection string for the device
 	 */
 	private $connectionString = 'HostName=iqrf.azure-devices.net;DeviceId=IQRFGW;SharedAccessKey=1234567890abcdefghijklmnopqrstuvwxyzABCDEFG=';
-
-	/**
-	 * Constructor
-	 * @param Container $container Nette Tester Container
-	 */
-	public function __construct(Container $container) {
-		$this->container = $container;
-	}
 
 	/**
 	 * Test function to create MQTT interface
@@ -97,7 +86,7 @@ class AzureManagerTest extends TestCase {
 	 */
 	public function testCheckConnectionStringInvalid(): void {
 		$invalidString = 'HostName=iqrf.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=1234567890abcdefghijklmnopqrstuvwxyzABCDEFG=';
-		Assert::exception(function () use ($invalidString) {
+		Assert::exception(function () use ($invalidString): void {
 			$this->mockedManager->checkConnectionString($invalidString);
 		}, InvalidConnectionStringException::class);
 	}
@@ -116,8 +105,8 @@ class AzureManagerTest extends TestCase {
 		$resourceUri = 'iqrf.azure-devices.net/devices/iqrfGwTest';
 		$signingKey = '1234567890abcdefghijklmnopqrstuvwxyzABCDEFG';
 		$policyName = null;
-		$expiresInMins = intdiv((new \DateTime('2018-05-10T11:00:00'))->getTimestamp(), 60) -
-			intdiv((new \DateTime())->getTimestamp(), 60) + 5256000;
+		$expiresInMins = intdiv((new DateTime('2018-05-10T11:00:00'))->getTimestamp(), 60) -
+			intdiv((new DateTime())->getTimestamp(), 60) + 5256000;
 		$actual = $this->manager->generateSasToken($resourceUri, $signingKey, $policyName, $expiresInMins);
 		$expected = 'SharedAccessSignature sr=iqrf.azure-devices.net%2Fdevices%2FiqrfGwTest&sig=loSMVo4aSTBFh6psEwJcSInBGo%2BSD3noiFSHbgQuSMo%3D&se=1841302800';
 		Assert::same($expected, $actual);
@@ -145,7 +134,7 @@ class AzureManagerTest extends TestCase {
 		$schemaManager = new JsonSchemaManager($schemaPath);
 		$configManager = new GenericManager($this->fileManager, $schemaManager);
 		$this->manager = new AzureManager($configManager);
-		$this->mockedManager = \Mockery::mock(AzureManager::class, [$configManager])->makePartial();
+		$this->mockedManager = Mockery::mock(AzureManager::class, [$configManager])->makePartial();
 		$this->mockedManager->shouldReceive('generateSasToken')->andReturn('generatedSasToken');
 	}
 
@@ -153,10 +142,10 @@ class AzureManagerTest extends TestCase {
 	 * Cleanup the test environment
 	 */
 	protected function tearDown(): void {
-		\Mockery::close();
+		Mockery::close();
 	}
 
 }
 
-$test = new AzureManagerTest($container);
+$test = new AzureManagerTest();
 $test->run();

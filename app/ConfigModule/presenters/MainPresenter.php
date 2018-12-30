@@ -37,6 +37,7 @@ class MainPresenter extends ProtectedPresenter {
 	 * @inject
 	 */
 	public $formFactory;
+
 	/**
 	 * @var MainManager Main configuration manager
 	 */

@@ -12,12 +12,11 @@ namespace Test\IqrfNetModule\Responses;
 
 use App\IqrfNetModule\Exceptions as IqrfException;
 use App\IqrfNetModule\Responses\ApiResponse;
-use Nette\DI\Container;
 use Nette\Utils\Json;
 use Tester\Assert;
 use Tester\TestCase;
 
-$container = require __DIR__ . '/../../bootstrap.php';
+require __DIR__ . '/../../bootstrap.php';
 
 /**
  * Tests for JSON API response manager
@@ -25,7 +24,7 @@ $container = require __DIR__ . '/../../bootstrap.php';
 class ApiResponseTest extends TestCase {
 
 	/**
-	 * @var array JSON API response in an array
+	 * @var mixed{} JSON API response in an array
 	 */
 	private $array = [
 		'mType' => 'mngDaemon_Mode',
@@ -35,11 +34,6 @@ class ApiResponseTest extends TestCase {
 			'status' => 0,
 		],
 	];
-
-	/**
-	 * @var Container Nette Tester Container
-	 */
-	private $container;
 
 	/**
 	 * @var string JSON API response in a string
@@ -53,10 +47,8 @@ class ApiResponseTest extends TestCase {
 
 	/**
 	 * Constructor
-	 * @param Container $container Nette Tester Container
 	 */
-	public function __construct(Container $container) {
-		$this->container = $container;
+	public function __construct() {
 		$this->json = Json::encode($this->array);
 	}
 
@@ -71,7 +63,7 @@ class ApiResponseTest extends TestCase {
 	 * Test function to set the request (success)
 	 */
 	public function testSetRequestOk(): void {
-		Assert::noError(function () {
+		Assert::noError(function (): void {
 			$this->response->setResponse($this->json);
 		});
 	}
@@ -80,7 +72,7 @@ class ApiResponseTest extends TestCase {
 	 * Test function to set the request (user error)
 	 */
 	public function testSetRequestUserError(): void {
-		Assert::exception(function () {
+		Assert::exception(function (): void {
 			$array = $this->array;
 			$array['data']['status'] = 20;
 			$json = Json::encode($array);
@@ -92,7 +84,7 @@ class ApiResponseTest extends TestCase {
 	 * Test function to set the request (timeout)
 	 */
 	public function testSetRequestTimeout(): void {
-		Assert::exception(function () {
+		Assert::exception(function (): void {
 			$array = $this->array;
 			$array['data']['status'] = -1;
 			$json = Json::encode($array);
@@ -123,6 +115,5 @@ class ApiResponseTest extends TestCase {
 
 }
 
-
-$test = new ApiResponseTest($container);
+$test = new ApiResponseTest();
 $test->run();

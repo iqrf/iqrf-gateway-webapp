@@ -27,7 +27,7 @@ interface IConfigManager {
 
 	/**
 	 * Add a new configuration
-	 * @param array $config Configuration to add
+	 * @param mixed[] $config Configuration to add
 	 */
 	public function add(array $config): void;
 
@@ -39,21 +39,22 @@ interface IConfigManager {
 
 	/**
 	 * List component's configuration
-	 * @return array Component's configuration
+	 * @return mixed[] Component's configuration
 	 */
 	public function list(): array;
 
 	/**
 	 * Load component's configuration
 	 * @param int $id Configuration ID
-	 * @return array Configuration
+	 * @return mixed[] Configuration
 	 */
 	public function load(int $id): array;
 
 	/**
 	 * Save the configuration
-	 * @param array $config Configuration to save
+	 * @param mixed[] $config Configuration to save
 	 * @param int $id Configuration ID
 	 */
 	public function save(array $config, int $id): void;
+
 }

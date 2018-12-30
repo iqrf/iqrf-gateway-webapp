@@ -71,7 +71,7 @@ class FileManager {
 	/**
 	 * Read the file
 	 * @param string $fileName File name
-	 * @return string File content
+	 * @return mixed File content
 	 */
 	public function read(string $fileName) {
 		return FileSystem::read($this->directory . '/' . $fileName);
@@ -80,7 +80,7 @@ class FileManager {
 	/**
 	 * Write to the file
 	 * @param string $fileName File name
-	 * @param string $content File content
+	 * @param mixed $content File content
 	 */
 	public function write(string $fileName, $content): void {
 		$fileName = 'nette.safe://' . $this->directory . '/' . $fileName;

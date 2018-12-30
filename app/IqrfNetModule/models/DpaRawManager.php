@@ -46,7 +46,7 @@ class DpaRawManager {
 	private $wsClient;
 
 	/**
-	 * @var array DPA parsers
+	 * @var string[] DPA parsers
 	 */
 	private $parsers = [
 		IqrfParser\CoordinatorParser::class,
@@ -68,7 +68,7 @@ class DpaRawManager {
 	 * Send RAW IQRF packet
 	 * @param string $packet RAW IQRF packet
 	 * @param int|null $timeout DPA timeout in milliseconds
-	 * @return array DPA request and response
+	 * @return mixed[] DPA request and response
 	 * @throws IqrfException\EmptyResponseException
 	 * @throws JsonException
 	 */
@@ -76,7 +76,7 @@ class DpaRawManager {
 		$array = [
 			'mType' => 'iqrfRaw',
 			'data' => [
-				'timeout' => (int)$timeout,
+				'timeout' => (int) $timeout,
 				'req' => [
 					'rData' => $packet,
 				],
@@ -101,7 +101,7 @@ class DpaRawManager {
 	 */
 	public function validatePacket(string $packet): bool {
 		$pattern = '/^([0-9a-fA-F]{1,2}\.){4,62}[0-9a-fA-F]{1,2}(\.|)$/';
-		return (bool)preg_match($pattern, $packet);
+		return (bool) preg_match($pattern, $packet);
 	}
 
 	/**
@@ -118,8 +118,8 @@ class DpaRawManager {
 
 	/**
 	 * Parse DPA response
-	 * @param array $json JSON DPA response
-	 * @return array|null Parsed response in array
+	 * @param mixed[] $json JSON DPA response
+	 * @return mixed[]|null Parsed response in array
 	 * @throws IqrfException\EmptyResponseException
 	 * @throws JsonException
 	 */
@@ -135,7 +135,7 @@ class DpaRawManager {
 			throw new IqrfException\EmptyResponseException();
 		}
 		foreach ($this->parsers as $parser) {
-			$parsedData = (new $parser)->parse($packet);
+			$parsedData = (new $parser())->parse($packet);
 			if (isset($parsedData)) {
 				return $parsedData;
 			}
@@ -145,7 +145,7 @@ class DpaRawManager {
 
 	/**
 	 * Get a DPA packet from JSON DPA request and response
-	 * @param array $json JSON DPA request and response
+	 * @param mixed[] $json JSON DPA request and response
 	 * @param string $type Data type (request|response)
 	 * @return string DPA packet
 	 * @throws JsonException

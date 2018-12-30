@@ -12,11 +12,12 @@ namespace Test\ServiceModule\Models;
 
 use App\CoreModule\Models\CommandManager;
 use App\ServiceModule\Models\DockerSupervisorManager;
-use Nette\DI\Container;
+use Mockery;
+use Mockery\MockInterface;
 use Tester\Assert;
 use Tester\TestCase;
 
-$container = require __DIR__ . '/../../bootstrap.php';
+require __DIR__ . '/../../bootstrap.php';
 
 /**
  * Tests for supervisord service manager in a Docker container
@@ -24,12 +25,7 @@ $container = require __DIR__ . '/../../bootstrap.php';
 class DockerSupervisorManagerTest extends TestCase {
 
 	/**
-	 * @var Container Nette Tester Container
-	 */
-	private $container;
-
-	/**
-	 * @var \Mockery\MockInterface Mocked command manager
+	 * @var MockInterface Mocked command manager
 	 */
 	private $commandManager;
 
@@ -42,14 +38,6 @@ class DockerSupervisorManagerTest extends TestCase {
 	 * @var string Name of service
 	 */
 	private $serviceName = 'iqrf-gateway-daemon';
-
-	/**
-	 * Constructor
-	 * @param Container $container Nette Tester Container
-	 */
-	public function __construct(Container $container) {
-		$this->container = $container;
-	}
 
 	/**
 	 * Test function to start IQRF Gateway Daemon's service via supervisord in Docker container
@@ -95,7 +83,7 @@ class DockerSupervisorManagerTest extends TestCase {
 	 * Set up the test environment
 	 */
 	protected function setUp(): void {
-		$this->commandManager = \Mockery::mock(CommandManager::class);
+		$this->commandManager = Mockery::mock(CommandManager::class);
 		$this->manager = new DockerSupervisorManager($this->commandManager);
 	}
 
@@ -103,10 +91,10 @@ class DockerSupervisorManagerTest extends TestCase {
 	 * Cleanup the test environment
 	 */
 	protected function tearDown(): void {
-		\Mockery::close();
+		Mockery::close();
 	}
 
 }
 
-$test = new DockerSupervisorManagerTest($container);
+$test = new DockerSupervisorManagerTest();
 $test->run();

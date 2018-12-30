@@ -36,6 +36,7 @@ class AzurePresenter extends ProtectedPresenter {
 	 * @inject
 	 */
 	public $formFactory;
+
 	/**
 	 * @var JsonFileManager JSON file manager
 	 */

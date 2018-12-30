@@ -12,12 +12,12 @@ namespace Test\IqrfNetModule\Requests;
 
 use App\IqrfNetModule\Models\MessageIdManager;
 use App\IqrfNetModule\Requests\DpaRequest;
-use Nette\DI\Container;
+use Mockery;
 use Nette\Utils\Json;
 use Tester\Assert;
 use Tester\TestCase;
 
-$container = require __DIR__ . '/../../bootstrap.php';
+require __DIR__ . '/../../bootstrap.php';
 
 /**
  * Tests for JSON DPA request manager
@@ -25,7 +25,7 @@ $container = require __DIR__ . '/../../bootstrap.php';
 class DpaRequestTest extends TestCase {
 
 	/**
-	 * @var array JSON DPA request in an array
+	 * @var mixed[] JSON DPA request in an array
 	 */
 	private $array = [
 		'mType' => 'iqrfRaw',
@@ -39,28 +39,15 @@ class DpaRequestTest extends TestCase {
 	];
 
 	/**
-	 * @var Container Nette Tester Container
-	 */
-	private $container;
-
-	/**
 	 * @var DpaRequest JSON DPA Request
 	 */
 	private $request;
 
 	/**
-	 * Constructor
-	 * @param Container $container Nette Tester Container
-	 */
-	public function __construct(Container $container) {
-		$this->container = $container;
-	}
-
-	/**
 	 * Start up test environment
 	 */
 	protected function setUp(): void {
-		$msgIdManager = \Mockery::mock(MessageIdManager::class);
+		$msgIdManager = Mockery::mock(MessageIdManager::class);
 		$msgIdManager->shouldReceive('generate')->andReturn('1');
 		$this->request = new DpaRequest($msgIdManager);
 	}
@@ -111,6 +98,5 @@ class DpaRequestTest extends TestCase {
 
 }
 
-
-$test = new DpaRequestTest($container);
+$test = new DpaRequestTest();
 $test->run();

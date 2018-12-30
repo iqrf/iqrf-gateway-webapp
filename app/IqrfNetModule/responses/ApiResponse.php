@@ -30,7 +30,7 @@ use Nette\Utils\JsonException;
 class ApiResponse {
 
 	/**
-	 * @var array DPA exceptions
+	 * @var string[] DPA exceptions
 	 */
 	private $exceptions = [
 		-8 => IqrfException\ExclusiveAccessException::class,
@@ -54,7 +54,7 @@ class ApiResponse {
 	];
 
 	/**
-	 * @var array JSON API response
+	 * @var mixed[] JSON API response
 	 */
 	protected $response;
 
@@ -69,7 +69,7 @@ class ApiResponse {
 			return;
 		}
 		if (array_key_exists($status, $this->exceptions)) {
-			throw new $this->exceptions[$status];
+			throw new $this->exceptions[$status]();
 		} else {
 			throw new IqrfException\UserErrorException();
 		}
@@ -89,7 +89,7 @@ class ApiResponse {
 
 	/**
 	 * Convert JSON API request to a array
-	 * @return array JSON API request
+	 * @return mixed[] JSON API request
 	 */
 	public function toArray(): array {
 		return $this->response;

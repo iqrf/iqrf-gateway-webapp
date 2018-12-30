@@ -27,7 +27,8 @@ interface IManager {
 
 	/**
 	 * Create MQTT interface
-	 * @param array $values Form values
+	 * @param mixed[] $values Form values
 	 */
 	public function createMqttInterface(array $values): void;
+
 }

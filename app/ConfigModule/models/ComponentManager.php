@@ -52,7 +52,7 @@ class ComponentManager implements IConfigManager {
 
 	/**
 	 * Add new component
-	 * @param array $array Component's settings
+	 * @param mixed[] $array Component's settings
 	 * @throws JsonException
 	 */
 	public function add(array $array): void {
@@ -76,7 +76,7 @@ class ComponentManager implements IConfigManager {
 	/**
 	 * Load a component from main configuration JSON
 	 * @param int $id Component ID
-	 * @return array Array for form
+	 * @return mixed[] Array for form
 	 * @throws JsonException
 	 */
 	public function load(int $id): array {
@@ -89,7 +89,7 @@ class ComponentManager implements IConfigManager {
 
 	/**
 	 * Load components from main configuration JSON
-	 * @return array Array for form
+	 * @return mixed[] Array for form
 	 * @throws JsonException
 	 */
 	public function list(): array {
@@ -103,7 +103,7 @@ class ComponentManager implements IConfigManager {
 
 	/**
 	 * Save components setting
-	 * @param array $components Components settings
+	 * @param mixed[] $components Components settings
 	 * @param int $id Component ID
 	 * @throws JsonException
 	 */

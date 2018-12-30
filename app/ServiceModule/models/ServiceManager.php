@@ -37,7 +37,7 @@ class ServiceManager {
 	private $initDaemon;
 
 	/**
-	 * @var array Init daemon service managers
+	 * @var string[] Init daemon service managers
 	 */
 	private $initDaemons = [
 		'docker-supervisor' => DockerSupervisorManager::class,

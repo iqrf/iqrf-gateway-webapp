@@ -91,7 +91,6 @@ class WebSocketFormFactory {
 	 * Save WebSocket interface configuration
 	 * @param Form $form WebSocket interface configuration form
 	 * @throws JsonException
-	 *
 	 */
 	public function save(Form $form): void {
 		try {

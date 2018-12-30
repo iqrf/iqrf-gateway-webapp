@@ -11,12 +11,11 @@ declare(strict_types = 1);
 namespace Test\CoreModule\Model;
 
 use App\CoreModule\Models\CertificateManager;
-use Nette\DI\Container;
 use Nette\Utils\FileSystem;
 use Tester\Assert;
 use Tester\TestCase;
 
-$container = require __DIR__ . '/../../bootstrap.php';
+require __DIR__ . '/../../bootstrap.php';
 
 /**
  * Tests for certificate manager
@@ -24,17 +23,12 @@ $container = require __DIR__ . '/../../bootstrap.php';
 class CertificateManagerTest extends TestCase {
 
 	/**
-	 * @var Container Nette Tester Container
-	 */
-	private $container;
-
-	/**
-	 * @var array Certificates
+	 * @var string[] Certificates
 	 */
 	private $certificates = [];
 
 	/**
-	 * @var array Private keys
+	 * @var string[] Private keys
 	 */
 	private $keys = [];
 
@@ -50,10 +44,15 @@ class CertificateManagerTest extends TestCase {
 
 	/**
 	 * Constructor
-	 * @param Container $container Nette Tester Container
 	 */
-	public function __construct(Container $container) {
-		$this->container = $container;
+	public function __construct() {
+		$this->certificates['ca0'] = FileSystem::read($this->path . 'ca0.pem');
+		$this->certificates['ca1'] = FileSystem::read($this->path . 'ca1.pem');
+		$this->certificates['intermediate0'] = FileSystem::read($this->path . 'intermediate0.pem');
+		$this->certificates['0'] = FileSystem::read($this->path . 'cert0.pem');
+		$this->certificates['1'] = FileSystem::read($this->path . 'cert1.pem');
+		$this->keys['0'] = FileSystem::read($this->path . 'pkey0.key');
+		$this->keys['1'] = FileSystem::read($this->path . 'pkey1.key');
 	}
 
 	/**
@@ -96,16 +95,9 @@ class CertificateManagerTest extends TestCase {
 	 */
 	protected function setUp(): void {
 		$this->manager = new CertificateManager();
-		$this->certificates['ca0'] = FileSystem::read($this->path . 'ca0.pem');
-		$this->certificates['ca1'] = FileSystem::read($this->path . 'ca1.pem');
-		$this->certificates['intermediate0'] = FileSystem::read($this->path . 'intermediate0.pem');
-		$this->certificates['0'] = FileSystem::read($this->path . 'cert0.pem');
-		$this->certificates['1'] = FileSystem::read($this->path . 'cert1.pem');
-		$this->keys['0'] = FileSystem::read($this->path . 'pkey0.key');
-		$this->keys['1'] = FileSystem::read($this->path . 'pkey1.key');
 	}
 
 }
 
-$test = new CertificateManagerTest($container);
+$test = new CertificateManagerTest();
 $test->run();

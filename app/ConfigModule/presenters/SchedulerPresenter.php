@@ -86,7 +86,7 @@ class SchedulerPresenter extends ProtectedPresenter {
 
 	/**
 	 * Add new task to scheduler
-	 * @param string $type
+	 * @param string $type Task type
 	 */
 	public function actionAdd(string $type): void {
 		try {

@@ -14,21 +14,16 @@ use App\ConfigModule\Models\GenericManager;
 use App\ConfigModule\Models\WebSocketManager;
 use App\CoreModule\Models\JsonFileManager;
 use App\CoreModule\Models\JsonSchemaManager;
-use Nette\DI\Container;
 use Tester\Assert;
+use Tester\Environment;
 use Tester\TestCase;
 
-$container = require __DIR__ . '/../../bootstrap.php';
+require __DIR__ . '/../../bootstrap.php';
 
 /**
  * Tests for WebSocket interface configuration manager
  */
 class WebSocketManagerTest extends TestCase {
-
-	/**
-	 * @var Container Nette Tester Container
-	 */
-	private $container;
 
 	/**
 	 * @var JsonFileManager JSON file manager
@@ -41,7 +36,7 @@ class WebSocketManagerTest extends TestCase {
 	private $fileManagerTemp;
 
 	/**
-	 * @var array WebSocket messaging and service file names
+	 * @var string[] WebSocket messaging and service file names
 	 */
 	private $fileNames = [
 		'messaging' => 'iqrf__WebsocketMessaging',
@@ -49,7 +44,7 @@ class WebSocketManagerTest extends TestCase {
 	];
 
 	/**
-	 * @var array WebSocket instances
+	 * @var string[] WebSocket instances
 	 */
 	private $instances = [
 		'messaging' => 'WebsocketMessaging',
@@ -67,7 +62,7 @@ class WebSocketManagerTest extends TestCase {
 	private $managerTemp;
 
 	/**
-	 * @var array Values from configuration form
+	 * @var mixed[] Values from configuration form
 	 */
 	private $values = [
 		'acceptAsyncMsg' => true,
@@ -75,18 +70,10 @@ class WebSocketManagerTest extends TestCase {
 	];
 
 	/**
-	 * Constructor
-	 * @param Container $container Nette Tester Container
-	 */
-	public function __construct(Container $container) {
-		$this->container = $container;
-	}
-
-	/**
 	 * Test function to delete a WebSocket interface configuration
 	 */
 	public function testDelete(): void {
-		\Tester\Environment::lock('config_websocket', __DIR__ . '/../../temp/');
+		Environment::lock('config_websocket', __DIR__ . '/../../temp/');
 		$this->copyConfiguration();
 		Assert::true($this->fileManagerTemp->exists($this->fileNames['messaging']));
 		Assert::true($this->fileManagerTemp->exists($this->fileNames['service']));
@@ -122,7 +109,7 @@ class WebSocketManagerTest extends TestCase {
 	 * Test function to save a WebSocket interface
 	 */
 	public function testSave(): void {
-		\Tester\Environment::lock('config_websocket', __DIR__ . '/../../temp/');
+		Environment::lock('config_websocket', __DIR__ . '/../../temp/');
 		$this->copyConfiguration();
 		$this->managerTemp->load(0);
 		$this->managerTemp->save($this->values);
@@ -170,9 +157,9 @@ class WebSocketManagerTest extends TestCase {
 			'instance' => $this->instances['messaging'],
 			'acceptAsyncMsg' => $this->values['acceptAsyncMsg'],
 			'RequiredInterfaces' => [
-				(object)[
+				(object) [
 					'name' => 'shape::IWebsocketService',
-					'target' => (object)[
+					'target' => (object) [
 						'instance' => $this->instances['service'],
 					],
 				],
@@ -218,5 +205,5 @@ class WebSocketManagerTest extends TestCase {
 
 }
 
-$test = new WebSocketManagerTest($container);
+$test = new WebSocketManagerTest();
 $test->run();

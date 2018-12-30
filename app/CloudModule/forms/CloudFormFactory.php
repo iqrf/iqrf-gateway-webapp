@@ -43,14 +43,17 @@ abstract class CloudFormFactory {
 	 * @var FormFactory Generic form factory
 	 */
 	protected $factory;
+
 	/**
 	 * @var ProtectedPresenter Protected presenter
 	 */
 	protected $presenter;
+
 	/**
 	 * @var IManager Cloud service manager
 	 */
 	private $manager;
+
 	/**
 	 * @var ServiceManager Service manager
 	 */

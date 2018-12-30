@@ -12,12 +12,12 @@ namespace Test\IqrfNetModule\Requests;
 
 use App\IqrfNetModule\Models\MessageIdManager;
 use App\IqrfNetModule\Requests\ApiRequest;
-use Nette\DI\Container;
+use Mockery;
 use Nette\Utils\Json;
 use Tester\Assert;
 use Tester\TestCase;
 
-$container = require __DIR__ . '/../../bootstrap.php';
+require __DIR__ . '/../../bootstrap.php';
 
 /**
  * Tests for JSON API request manager
@@ -25,7 +25,7 @@ $container = require __DIR__ . '/../../bootstrap.php';
 class ApiRequestTest extends TestCase {
 
 	/**
-	 * @var array JSON API request in an array
+	 * @var mixed[] JSON API request in an array
 	 */
 	private $array = [
 		'mType' => 'mngDaemon_Mode',
@@ -36,28 +36,15 @@ class ApiRequestTest extends TestCase {
 	];
 
 	/**
-	 * @var Container Nette Tester Container
-	 */
-	private $container;
-
-	/**
 	 * @var ApiRequest JSON API Request
 	 */
 	private $request;
 
 	/**
-	 * Constructor
-	 * @param Container $container Nette Tester Container
-	 */
-	public function __construct(Container $container) {
-		$this->container = $container;
-	}
-
-	/**
 	 * Start up test environment
 	 */
 	protected function setUp(): void {
-		$msgIdManager = \Mockery::mock(MessageIdManager::class);
+		$msgIdManager = Mockery::mock(MessageIdManager::class);
 		$msgIdManager->shouldReceive('generate')->andReturn('1');
 		$this->request = new ApiRequest($msgIdManager);
 	}
@@ -66,7 +53,7 @@ class ApiRequestTest extends TestCase {
 	 * Test function to set the request
 	 */
 	public function testSetRequest(): void {
-		Assert::noError(function () {
+		Assert::noError(function (): void {
 			$this->request->setRequest($this->array);
 		});
 	}
@@ -94,6 +81,5 @@ class ApiRequestTest extends TestCase {
 
 }
 
-
-$test = new ApiRequestTest($container);
+$test = new ApiRequestTest();
 $test->run();

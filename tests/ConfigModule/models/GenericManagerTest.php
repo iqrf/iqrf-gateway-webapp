@@ -13,22 +13,17 @@ namespace Test\ConfigModule\Models;
 use App\ConfigModule\Models\GenericManager;
 use App\CoreModule\Models\JsonFileManager;
 use App\CoreModule\Models\JsonSchemaManager;
-use Nette\DI\Container;
 use Nette\Utils\Arrays;
 use Tester\Assert;
+use Tester\Environment;
 use Tester\TestCase;
 
-$container = require __DIR__ . '/../../bootstrap.php';
+require __DIR__ . '/../../bootstrap.php';
 
 /**
  * Tests for generic configuration manager
  */
 class GenericManagerTest extends TestCase {
-
-	/**
-	 * @var Container Nette Tester Container
-	 */
-	private $container;
 
 	/**
 	 * @var string Component name
@@ -61,18 +56,10 @@ class GenericManagerTest extends TestCase {
 	private $managerTemp;
 
 	/**
-	 * Constructor
-	 * @param Container $container Nette Tester Container
-	 */
-	public function __construct(Container $container) {
-		$this->container = $container;
-	}
-
-	/**
 	 * Test function to delete the instance of component
 	 */
 	public function testDelete(): void {
-		\Tester\Environment::lock('config_mqtt', __DIR__ . '/../../temp/');
+		Environment::lock('config_mqtt', __DIR__ . '/../../temp/');
 		$this->managerTemp->setComponent($this->component);
 		$this->fileManagerTemp->write($this->fileName, $this->fileManager->read($this->fileName));
 		Assert::true($this->fileManagerTemp->exists($this->fileName));
@@ -116,7 +103,7 @@ class GenericManagerTest extends TestCase {
 	 */
 	public function testGetInstanceFiles(): void {
 		$this->manager->setComponent($this->component);
-		$expected = ['iqrf__MqttMessaging',];
+		$expected = ['iqrf__MqttMessaging'];
 		Assert::equal($expected, $this->manager->getInstanceFiles());
 	}
 
@@ -125,11 +112,12 @@ class GenericManagerTest extends TestCase {
 	 */
 	public function testGetMessagings(): void {
 		$expected = [
-			'config.mq.title' => ['MqMessaging',],
-			'config.mqtt.title' => ['MqttMessaging',],
-			'config.udp.title' => ['UdpMessaging',],
+			'config.mq.title' => ['MqMessaging'],
+			'config.mqtt.title' => ['MqttMessaging'],
+			'config.udp.title' => ['UdpMessaging'],
 			'config.websocket.title' => [
-				'WebsocketMessaging', 'WebsocketMessagingMobileApp',
+				'WebsocketMessaging',
+				'WebsocketMessagingMobileApp',
 				'WebsocketMessagingWebApp',
 			],
 		];
@@ -159,7 +147,7 @@ class GenericManagerTest extends TestCase {
 	 * Test function to save main configuration of daemon
 	 */
 	public function testSave(): void {
-		\Tester\Environment::lock('config_mqtt', __DIR__ . '/../../temp/');
+		Environment::lock('config_mqtt', __DIR__ . '/../../temp/');
 		$this->managerTemp->setComponent($this->component);
 		$array = [
 			'instance' => 'MqttMessaging',
@@ -207,5 +195,5 @@ class GenericManagerTest extends TestCase {
 
 }
 
-$test = new GenericManagerTest($container);
+$test = new GenericManagerTest();
 $test->run();

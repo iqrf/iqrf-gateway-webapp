@@ -11,23 +11,17 @@ declare(strict_types = 1);
 namespace Test\CoreModule\Model;
 
 use App\CoreModule\Models\JsonFileManager;
-use Nette\DI\Container;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
 use Tester\Assert;
 use Tester\TestCase;
 
-$container = require __DIR__ . '/../../bootstrap.php';
+require __DIR__ . '/../../bootstrap.php';
 
 /**
  * Tests for JSON file manager
  */
 class JsonFileManagerTest extends TestCase {
-
-	/**
-	 * @var Container Nette Tester Container
-	 */
-	private $container;
 
 	/**
 	 * @var string File name
@@ -53,14 +47,6 @@ class JsonFileManagerTest extends TestCase {
 	 * @var string Directory with configuration files
 	 */
 	private $pathTest = __DIR__ . '/../../temp/configuration/';
-
-	/**
-	 * Constructor
-	 * @param Container $container Nette Tester Container
-	 */
-	public function __construct(Container $container) {
-		$this->container = $container;
-	}
 
 	/**
 	 * Test function to get directory with files
@@ -123,5 +109,5 @@ class JsonFileManagerTest extends TestCase {
 
 }
 
-$test = new JsonFileManagerTest($container);
+$test = new JsonFileManagerTest();
 $test->run();

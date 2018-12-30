@@ -24,6 +24,7 @@ use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
+use DateTime;
 use Nette\Application\BadRequestException;
 use Nette\Application\Responses\FileResponse;
 use Nette\SmartObject;
@@ -88,7 +89,7 @@ class DiagnosticsManager {
 	 */
 	public function download(): FileResponse {
 		$this->zipManager = new ZipArchiveManager($this->path);
-		$now = new \DateTime();
+		$now = new DateTime();
 		$fileName = 'iqrf-gateway-diagnostics_' . $now->format('c') . '.zip';
 		$contentType = 'application/zip';
 		$this->addConfiguration();

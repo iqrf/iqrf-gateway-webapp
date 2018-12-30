@@ -36,6 +36,7 @@ class IbmCloudPresenter extends ProtectedPresenter {
 	 * @inject
 	 */
 	public $formFactory;
+
 	/**
 	 * @var JsonFileManager JSON file manager
 	 */

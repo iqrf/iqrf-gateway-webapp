@@ -12,21 +12,15 @@ namespace Test\IqrfNetModule\Models;
 
 use App\CoreModule\Models\JsonFileManager;
 use App\IqrfNetModule\Parsers\EnumerationParser;
-use Nette\DI\Container;
 use Tester\Assert;
 use Tester\TestCase;
 
-$container = require __DIR__ . '/../../bootstrap.php';
+require __DIR__ . '/../../bootstrap.php';
 
 /**
  * Tests for parser of DPA Enumeration responses
  */
 class EnumerationParserTest extends TestCase {
-
-	/**
-	 * @var Container Nette Tester Container
-	 */
-	private $container;
 
 	/**
 	 * @var EnumerationParser DPA Enumeration response parser
@@ -39,22 +33,14 @@ class EnumerationParserTest extends TestCase {
 	private $packet;
 
 	/**
-	 * @var array Expected Enumeration parsed response
+	 * @var mixed[] Expected Enumeration parsed response
 	 */
 	private $expected;
 
 	/**
-	 * Constructor
-	 * @param Container $container Nette Tester Container
-	 */
-	public function __construct(Container $container) {
-		$this->container = $container;
-	}
-
-	/**
 	 * Set up test environment
 	 */
-	public function setUp(): void {
+	protected function setUp(): void {
 		$this->parser = new EnumerationParser();
 		$jsonFileManager = new JsonFileManager(__DIR__ . '/../../data/iqrf/');
 		$this->packet = $jsonFileManager->read('response-enumeration')['data']['rsp']['rData'];
@@ -86,5 +72,5 @@ class EnumerationParserTest extends TestCase {
 
 }
 
-$test = new EnumerationParserTest($container);
+$test = new EnumerationParserTest();
 $test->run();

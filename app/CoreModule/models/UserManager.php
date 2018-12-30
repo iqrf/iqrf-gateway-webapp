@@ -104,7 +104,7 @@ class UserManager {
 	/**
 	 * Get information about the user
 	 * @param int $id User ID
-	 * @return array|null Information about the user or null
+	 * @return mixed[]|null Information about the user or null
 	 */
 	public function getInfo(int $id): ?array {
 		$row = $this->table->get($id);
@@ -116,7 +116,7 @@ class UserManager {
 
 	/**
 	 * Get all registered users
-	 * @return array Registered users
+	 * @return mixed[] Registered users
 	 */
 	public function getUsers(): array {
 		$users = [];

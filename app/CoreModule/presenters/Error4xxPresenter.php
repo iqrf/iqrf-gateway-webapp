@@ -41,7 +41,7 @@ class Error4xxPresenter extends BasePresenter {
 
 	/**
 	 * Render 4xx error page
-	 * @param BadRequestException $exception
+	 * @param BadRequestException $exception Bad HTTP(S) request exception
 	 */
 	public function renderDefault(BadRequestException $exception): void {
 		// load template 403.latte or 404.latte or ... 4xx.latte

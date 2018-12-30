@@ -89,16 +89,22 @@ class SendJsonFormFactory {
 	/**
 	 * Send raw DPA packet
 	 * @param Form $form IQRF App send RAW packet form
-	 * @throws JsonException
 	 */
 	public function onSuccess(Form $form): void {
 		$values = $form->getValues();
-		$array = Json::decode($values['json'], Json::FORCE_ARRAY);
+		$array = [];
+		try {
+			$array = get_object_vars(Json::decode($values['json']));
+		} catch (JsonException $e) {
+			$message = 'Invalid JSON request.';
+			$form->addError($message);
+			$this->presenter->flashMessage($message, 'danger');
+		}
 		try {
 			$this->request->setRequest($array);
 			$response = $this->wsClient->sendSync($this->request);
 			$this->presenter->handleShowResponse($response);
-		} catch (EmptyResponseException | DpaErrorException $e) {
+		} catch (EmptyResponseException | DpaErrorException | JsonException $e) {
 			$message = 'No response from IQRF Gateway Daemon.';
 			$form->addError($message);
 			$this->presenter->flashMessage($message, 'danger');

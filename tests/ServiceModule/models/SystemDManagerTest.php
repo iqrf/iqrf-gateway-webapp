@@ -12,11 +12,12 @@ namespace Test\ServiceModule\Models;
 
 use App\CoreModule\Models\CommandManager;
 use App\ServiceModule\Models\SystemDManager;
-use Nette\DI\Container;
+use Mockery;
+use Mockery\MockInterface;
 use Tester\Assert;
 use Tester\TestCase;
 
-$container = require __DIR__ . '/../../bootstrap.php';
+require __DIR__ . '/../../bootstrap.php';
 
 /**
  * Tests for systemD service manager
@@ -24,12 +25,7 @@ $container = require __DIR__ . '/../../bootstrap.php';
 class SystemDManagerTest extends TestCase {
 
 	/**
-	 * @var Container Nette Tester Container
-	 */
-	private $container;
-
-	/**
-	 * @var \Mockery\MockInterface Mocked command manager
+	 * @var MockInterface Mocked command manager
 	 */
 	private $commandManager;
 
@@ -42,14 +38,6 @@ class SystemDManagerTest extends TestCase {
 	 * @var string Name of service
 	 */
 	private $serviceName = 'iqrf-gateway-daemon';
-
-	/**
-	 * Constructor
-	 * @param Container $container Nette Tester Container
-	 */
-	public function __construct(Container $container) {
-		$this->container = $container;
-	}
 
 	/**
 	 * Test function to start IQRF Gateway Daemon's service via systemD
@@ -95,7 +83,7 @@ class SystemDManagerTest extends TestCase {
 	 * Set up the test environment
 	 */
 	protected function setUp(): void {
-		$this->commandManager = \Mockery::mock(CommandManager::class);
+		$this->commandManager = Mockery::mock(CommandManager::class);
 		$this->manager = new SystemDManager($this->commandManager);
 	}
 
@@ -103,10 +91,10 @@ class SystemDManagerTest extends TestCase {
 	 * Cleanup the test environment
 	 */
 	protected function tearDown(): void {
-		\Mockery::close();
+		Mockery::close();
 	}
 
 }
 
-$test = new SystemDManagerTest($container);
+$test = new SystemDManagerTest();
 $test->run();

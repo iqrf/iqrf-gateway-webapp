@@ -52,18 +52,17 @@ class ErrorPresenter implements IPresenter {
 
 	/**
 	 * Run Error presenter
-	 * @param Request $request
+	 * @param Request $request HTTP(S) request
 	 * @return ForwardResponse|CallbackResponse
 	 */
 	public function run(Request $request): IResponse {
 		$exception = $request->getParameter('exception');
 		if ($exception instanceof BadRequestException) {
-			list($module, , $sep) = Helpers::splitName($request->getPresenterName());
+			[$module, , $sep] = Helpers::splitName($request->getPresenterName());
 			return new ForwardResponse($request->setPresenterName($module . $sep . 'Error4xx'));
 		}
-
 		$this->logger->log($exception, ILogger::EXCEPTION);
-		return new CallbackResponse(function () {
+		return new CallbackResponse(function (): void {
 			require __DIR__ . '/../templates/Error/500.phtml';
 		});
 	}

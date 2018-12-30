@@ -80,7 +80,7 @@ class GenericManager {
 
 	/**
 	 * Get component's instance files
-	 * @return array Files with component's instances
+	 * @return string[] Files with component's instances
 	 * @throws JsonException
 	 */
 	public function getInstanceFiles(): array {
@@ -99,7 +99,7 @@ class GenericManager {
 
 	/**
 	 * List configurations
-	 * @return array Configurations
+	 * @return mixed[] Configurations
 	 * @throws JsonException
 	 */
 	public function list(): array {
@@ -114,7 +114,7 @@ class GenericManager {
 	/**
 	 * Load a configuration
 	 * @param int $id Configuration ID
-	 * @return array Configuration in an array
+	 * @return mixed[] Configuration in an array
 	 * @throws JsonException
 	 */
 	public function load(int $id): array {
@@ -130,7 +130,7 @@ class GenericManager {
 
 	/**
 	 * Fix a required interfaces in the configuration
-	 * @param array $configuration Configuration to fix
+	 * @param mixed[] $configuration Configuration to fix
 	 * @throws JsonException
 	 */
 	public function fixRequiredInterfaces(array &$configuration): void {
@@ -171,7 +171,7 @@ class GenericManager {
 
 	/**
 	 * Save configuration
-	 * @param array $array Settings
+	 * @param mixed[] $array Settings
 	 * @throws JsonException
 	 */
 	public function save(array $array): void {
@@ -187,7 +187,7 @@ class GenericManager {
 
 	/**
 	 * Generate a configuration file name
-	 * @param array $array Configuration from form
+	 * @param mixed[] $array Configuration from form
 	 */
 	public function generateFileName(array $array): void {
 		$prefix = explode('::', $this->component)[0];
@@ -212,13 +212,15 @@ class GenericManager {
 
 	/**
 	 * Get available messagings
-	 * @return array Available messagings
+	 * @return string[] Available messagings
 	 * @throws JsonException
 	 */
 	public function getMessagings(): array {
 		$components = [
-			'mq' => 'iqrf::MqMessaging', 'mqtt' => 'iqrf::MqttMessaging',
-			'udp' => 'iqrf::UdpMessaging', 'websocket' => 'iqrf::WebsocketMessaging',
+			'mq' => 'iqrf::MqMessaging',
+			'mqtt' => 'iqrf::MqttMessaging',
+			'udp' => 'iqrf::UdpMessaging',
+			'websocket' => 'iqrf::WebsocketMessaging',
 		];
 		$messagings = [];
 		foreach ($components as $name => $component) {
@@ -230,7 +232,7 @@ class GenericManager {
 	/**
 	 * Get available instances of component
 	 * @param string $component Component
-	 * @return array Available instances of component
+	 * @return string[] Available instances of component
 	 * @throws JsonException
 	 */
 	public function getComponentInstances(string $component): array {

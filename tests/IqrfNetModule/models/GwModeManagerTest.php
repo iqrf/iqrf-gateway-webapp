@@ -15,21 +15,16 @@ use App\IqrfNetModule\Models\GwModeManager;
 use App\IqrfNetModule\Models\MessageIdManager;
 use App\IqrfNetModule\Models\WebSocketClient;
 use App\IqrfNetModule\Requests\ApiRequest;
-use Nette\DI\Container;
+use Mockery;
 use Tester\Assert;
 use Tester\TestCase;
 
-$container = require __DIR__ . '/../../bootstrap.php';
+require __DIR__ . '/../../bootstrap.php';
 
 /**
  * Tests for IQRF App manager
  */
 class GwModeManagerTest extends TestCase {
-
-	/**
-	 * @var Container Nette Tester Container
-	 */
-	private $container;
 
 	/**
 	 * @var GwModeManager IQRF Gateway Daemon's mode manager
@@ -42,18 +37,10 @@ class GwModeManagerTest extends TestCase {
 	private $wsServer = 'ws://echo.socketo.me:9000';
 
 	/**
-	 * Constructor
-	 * @param Container $container Nette Tester Container
-	 */
-	public function __construct(Container $container) {
-		$this->container = $container;
-	}
-
-	/**
 	 * Test function to change IQRF Gateway Daemon's operation mode (invalid mode)
 	 */
 	public function testChangeOperationModeInvalid(): void {
-		Assert::exception(function () {
+		Assert::exception(function (): void {
 			$this->manager->changeMode('invalid');
 		}, IqrfException\InvalidOperationModeException::class);
 	}
@@ -82,7 +69,7 @@ class GwModeManagerTest extends TestCase {
 	 * Set up the test environment
 	 */
 	protected function setUp(): void {
-		$msgIdManager = \Mockery::mock(MessageIdManager::class);
+		$msgIdManager = Mockery::mock(MessageIdManager::class);
 		$msgIdManager->shouldReceive('generate')->andReturn('1');
 		$wsClient = new WebSocketClient($this->wsServer);
 		$request = new ApiRequest($msgIdManager);
@@ -93,10 +80,10 @@ class GwModeManagerTest extends TestCase {
 	 * Cleanup the test environment
 	 */
 	protected function tearDown(): void {
-		\Mockery::close();
+		Mockery::close();
 	}
 
 }
 
-$test = new GwModeManagerTest($container);
+$test = new GwModeManagerTest();
 $test->run();

@@ -12,21 +12,16 @@ namespace Test\ConfigModule\Models;
 
 use App\ConfigModule\Models\MainManager;
 use App\CoreModule\Models\JsonFileManager;
-use Nette\DI\Container;
 use Tester\Assert;
+use Tester\Environment;
 use Tester\TestCase;
 
-$container = require __DIR__ . '/../../bootstrap.php';
+require __DIR__ . '/../../bootstrap.php';
 
 /**
  * Tests for main configuration manager
  */
 class MainManagerTest extends TestCase {
-
-	/**
-	 * @var Container Nette Tester Container
-	 */
-	private $container;
 
 	/**
 	 * @var JsonFileManager JSON file manager
@@ -44,14 +39,6 @@ class MainManagerTest extends TestCase {
 	private $fileName = 'config';
 
 	/**
-	 * Constructor
-	 * @param Container $container Nette Tester Container
-	 */
-	public function __construct(Container $container) {
-		$this->container = $container;
-	}
-
-	/**
 	 * Test function to load main configuration of daemon
 	 */
 	public function testLoad(): void {
@@ -64,7 +51,7 @@ class MainManagerTest extends TestCase {
 	 * Test function to save main configuration of daemon
 	 */
 	public function testSave(): void {
-		\Tester\Environment::lock('config_main', __DIR__ . '/../../temp/');
+		Environment::lock('config_main', __DIR__ . '/../../temp/');
 		$manager = new MainManager($this->fileManagerTemp);
 		$array = [
 			'applicationName' => 'IqrfGatewayDaemon',
@@ -94,5 +81,5 @@ class MainManagerTest extends TestCase {
 
 }
 
-$test = new MainManagerTest($container);
+$test = new MainManagerTest();
 $test->run();

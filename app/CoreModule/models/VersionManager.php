@@ -62,7 +62,7 @@ class VersionManager {
 	 * @param Client $client HTTP(S) client
 	 */
 	public function __construct(CommandManager $commandManager, IStorage $storage, Client $client) {
-		$this->cache = new Cache($storage, get_class($this));
+		$this->cache = new Cache($storage, 'version_manager');
 		$this->client = $client;
 		$this->commandManager = $commandManager;
 		$this->jsonFileManager = new JsonFileManager(__DIR__ . '/../../../');

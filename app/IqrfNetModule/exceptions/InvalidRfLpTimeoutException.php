@@ -20,9 +20,11 @@ declare(strict_types = 1);
 
 namespace App\IqrfNetModule\Exceptions;
 
+use Exception;
+
 /**
  * The exception that indicates invalid RF LP timeout
  */
-class InvalidRfLpTimeoutException extends \Exception {
+class InvalidRfLpTimeoutException extends Exception {
 
 }

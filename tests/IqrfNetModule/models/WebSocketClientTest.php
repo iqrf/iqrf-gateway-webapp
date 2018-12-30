@@ -14,21 +14,16 @@ use App\IqrfNetModule\Exceptions as IqrfException;
 use App\IqrfNetModule\Models\MessageIdManager;
 use App\IqrfNetModule\Models\WebSocketClient;
 use App\IqrfNetModule\Requests\ApiRequest;
-use Nette\DI\Container;
+use Mockery;
 use Tester\Assert;
 use Tester\TestCase;
 
-$container = require __DIR__ . '/../../bootstrap.php';
+require __DIR__ . '/../../bootstrap.php';
 
 /**
  * Tests for WebSocket client
  */
 class WebSocketClientTest extends TestCase {
-
-	/**
-	 * @var Container Nette Tester Container
-	 */
-	private $container;
 
 	/**
 	 * @var WebSocketClient IQRF App manager
@@ -44,14 +39,6 @@ class WebSocketClientTest extends TestCase {
 	 * @var string URL to IQRF Gateway Daemon's WebSocket server
 	 */
 	private $wsServer = 'ws://echo.socketo.me:9000';
-
-	/**
-	 * Constructor
-	 * @param Container $container Nette Tester Container
-	 */
-	public function __construct(Container $container) {
-		$this->container = $container;
-	}
 
 	/**
 	 * Test function to send JSON DPA request via WebSocket (success)
@@ -78,7 +65,7 @@ class WebSocketClientTest extends TestCase {
 		Assert::exception(function (): void {
 			$wsServer = 'ws://localhost:9000';
 			$manager = new WebSocketClient($wsServer);
-			$array = ['data' => ['msgId' => '1',],];
+			$array = ['data' => ['msgId' => '1']];
 			$this->request->setRequest($array);
 			$manager->sendSync($this->request, 1);
 		}, IqrfException\EmptyResponseException::class);
@@ -88,7 +75,7 @@ class WebSocketClientTest extends TestCase {
 	 * Set up the test environment
 	 */
 	protected function setUp(): void {
-		$msgIdManager = \Mockery::mock(MessageIdManager::class);
+		$msgIdManager = Mockery::mock(MessageIdManager::class);
 		$msgIdManager->shouldReceive('generate')->andReturn('1');
 		$this->request = new ApiRequest($msgIdManager);
 		$this->client = new WebSocketClient($this->wsServer);
@@ -98,10 +85,10 @@ class WebSocketClientTest extends TestCase {
 	 * Cleanup the test environment
 	 */
 	protected function tearDown(): void {
-		\Mockery::close();
+		Mockery::close();
 	}
 
 }
 
-$test = new WebSocketClientTest($container);
+$test = new WebSocketClientTest();
 $test->run();

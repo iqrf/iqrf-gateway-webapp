@@ -16,12 +16,14 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
+use Mockery;
+use Mockery\Mock;
+use Mockery\MockInterface;
 use Nette\Caching\Storages\DevNullStorage;
-use Nette\DI\Container;
 use Tester\Assert;
 use Tester\TestCase;
 
-$container = require __DIR__ . '/../../bootstrap.php';
+require __DIR__ . '/../../bootstrap.php';
 
 /**
  * Tests for version manager
@@ -34,12 +36,7 @@ class VersionManagerTest extends TestCase {
 	private $cacheStorage;
 
 	/**
-	 * @var Container Nette Tester Container
-	 */
-	private $container;
-
-	/**
-	 * @var \Mockery\MockInterface Mocked command manager
+	 * @var MockInterface Mocked command manager
 	 */
 	private $commandManager;
 
@@ -59,17 +56,9 @@ class VersionManagerTest extends TestCase {
 	private $manager;
 
 	/**
-	 * @var \Mockery\Mock Mocked version manager
+	 * @var Mock Mocked version manager
 	 */
 	private $managerMocked;
-
-	/**
-	 * Constructor
-	 * @param Container $container Nette Tester Container
-	 */
-	public function __construct(Container $container) {
-		$this->container = $container;
-	}
 
 	/**
 	 * Test function to check if an update is available for the webapp
@@ -153,21 +142,21 @@ class VersionManagerTest extends TestCase {
 	 * Set up the test environment
 	 */
 	protected function setUp(): void {
-		$this->commandManager = \Mockery::mock(CommandManager::class);
+		$this->commandManager = Mockery::mock(CommandManager::class);
 		$this->cacheStorage = new DevNullStorage();
 		$client = new Client();
 		$this->manager = new VersionManager($this->commandManager, $this->cacheStorage, $client);
-		$this->managerMocked = \Mockery::mock(VersionManager::class)->makePartial();
+		$this->managerMocked = Mockery::mock(VersionManager::class)->makePartial();
 	}
 
 	/**
 	 * Cleanup the test environment
 	 */
 	protected function tearDown(): void {
-		\Mockery::close();
+		Mockery::close();
 	}
 
 }
 
-$test = new VersionManagerTest($container);
+$test = new VersionManagerTest();
 $test->run();

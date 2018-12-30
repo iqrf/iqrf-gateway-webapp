@@ -65,7 +65,7 @@ class WebSocketMessagingFormFactory extends GenericConfigFormFactory {
 	/**
 	 * Load a configuration data for the form
 	 * @param WebsocketPresenter $presenter WebSocket configuration presenter
-	 * @return array Configuration in an array
+	 * @return mixed[] Configuration in an array
 	 * @throws JsonException
 	 */
 	public function loadData(WebsocketPresenter $presenter): array {
@@ -83,7 +83,7 @@ class WebSocketMessagingFormFactory extends GenericConfigFormFactory {
 	/**
 	 * Add the required interfaces into the form
 	 * @param Form $form Configuration form
-	 * @param array $data Configuration data
+	 * @param mixed[] $data Configuration data
 	 * @throws JsonException
 	 */
 	private function addRequiredInterfaces(Form $form, array &$data): void {
@@ -91,7 +91,7 @@ class WebSocketMessagingFormFactory extends GenericConfigFormFactory {
 		foreach ($data['RequiredInterfaces'] as $interfaceId => $requiredInterface) {
 			$container = $requiredInterfaces->addContainer($interfaceId);
 			$container->addSelect('name', 'config.websocket.form.requiredInterface.name')
-				->setItems(['shape::IWebsocketService',], false)
+				->setItems(['shape::IWebsocketService'], false)
 				->setTranslator($this->translator)
 				->setRequired('messages.requiredInterface.name');
 			$target = $container->addContainer('target');

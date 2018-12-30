@@ -16,27 +16,23 @@ use App\ConfigModule\Models\GenericManager;
 use App\CoreModule\Models\CertificateManager;
 use App\CoreModule\Models\JsonFileManager;
 use App\CoreModule\Models\JsonSchemaManager;
+use DateTime;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
-use Nette\DI\Container;
+use Mockery;
 use Nette\Http\FileUpload;
 use Nette\Utils\FileSystem;
 use Tester\Assert;
 use Tester\TestCase;
 
-$container = require __DIR__ . '/../../bootstrap.php';
+require __DIR__ . '/../../bootstrap.php';
 
 /**
  * Tests for Amazon AWS IoT
  */
 class AwsManagerTest extends TestCase {
-
-	/**
-	 * @var Container Nette Tester Container
-	 */
-	private $container;
 
 	/**
 	 * @var CertificateManager Certificate manager
@@ -69,7 +65,7 @@ class AwsManagerTest extends TestCase {
 	private $manager;
 
 	/**
-	 * @var array Values from Amazon AWS IoT form
+	 * @var string[] Values from Amazon AWS IoT form
 	 */
 	private $formValues = [
 		'endpoint' => 'localhost',
@@ -77,10 +73,8 @@ class AwsManagerTest extends TestCase {
 
 	/**
 	 * Constructor
-	 * @param Container $container Nette Tester Container
 	 */
-	public function __construct(Container $container) {
-		$this->container = $container;
+	public function __construct() {
 		$this->certPath = realpath(__DIR__ . '/../../data/certificates/') . '/';
 		$this->certPathTemp = realpath(__DIR__ . '/../../temp/certificates/') . '/';
 	}
@@ -89,7 +83,7 @@ class AwsManagerTest extends TestCase {
 	 * Test function to create MQTT interface
 	 */
 	public function testCreateMqttInterface(): void {
-		$timestamp = (new \DateTime())->format(\DateTime::ISO8601);
+		$timestamp = (new DateTime())->format(DateTime::ISO8601);
 		$mqtt = [
 			'component' => 'iqrf::MqttMessaging',
 			'instance' => 'MqttMessagingAws',
@@ -115,7 +109,7 @@ class AwsManagerTest extends TestCase {
 			'acceptAsyncMsg' => false,
 		];
 		$client = new Client();
-		$manager = \Mockery::mock(AwsManager::class, [$this->certPathTemp, $this->certManager, $this->configManager, $client])->makePartial();
+		$manager = Mockery::mock(AwsManager::class, [$this->certPathTemp, $this->certManager, $this->configManager, $client])->makePartial();
 		$manager->shouldReceive('downloadCaCertificate')->andReturn(null);
 		$manager->shouldReceive('checkCertificate')->andReturn(null);
 		$manager->shouldReceive('uploadCertsAndKey')->andReturn(null);
@@ -137,7 +131,7 @@ class AwsManagerTest extends TestCase {
 			'size' => filesize($pKeyFile),
 		];
 		$array['key'] = new FileUpload($pKeyValue);
-		Assert::exception(function () use ($array) {
+		Assert::exception(function () use ($array): void {
 			$this->manager->checkCertificate($array);
 		}, InvalidPrivateKeyForCertificateException::class);
 	}
@@ -145,9 +139,9 @@ class AwsManagerTest extends TestCase {
 	/**
 	 * Mock uploaded certificate and private key
 	 * @param string $path Path to certificate and private key
-	 * @return array Mocked uploaded certificate and private key
+	 * @return FileUpload[] Mocked uploaded certificate and private key
 	 */
-	private function mockUploadedFiles(string $path) {
+	private function mockUploadedFiles(string $path): array {
 		$certFile = $path . '/cert0.pem';
 		$certValue = [
 			'name' => 'cert0.pem',
@@ -175,7 +169,7 @@ class AwsManagerTest extends TestCase {
 	 */
 	public function testCheckCertificateValid(): void {
 		$array = $this->mockUploadedFiles($this->certPath);
-		Assert::noError(function () use ($array) {
+		Assert::noError(function () use ($array): void {
 			$this->manager->checkCertificate($array);
 		});
 	}
@@ -184,7 +178,7 @@ class AwsManagerTest extends TestCase {
 	 * Test function to create paths for certificates
 	 */
 	public function testCreatePaths(): void {
-		$timestamp = (new \DateTime())->format(\DateTime::ISO8601);
+		$timestamp = (new DateTime())->format(DateTime::ISO8601);
 		$actual = $this->manager->createPaths();
 		$paths = [
 			'cert' => $this->certPathTemp . $timestamp . '-aws.crt',
@@ -206,7 +200,7 @@ class AwsManagerTest extends TestCase {
 			'cert' => $this->certPathTemp . 'cert.pem',
 			'key' => $this->certPathTemp . 'pKey.key',
 		];
-		Assert::noError(function () use ($array, $paths) {
+		Assert::noError(function () use ($array, $paths): void {
 			$this->manager->uploadCertsAndKey($array, $paths);
 		});
 	}
@@ -244,10 +238,10 @@ class AwsManagerTest extends TestCase {
 	 * Cleanup the test environment
 	 */
 	protected function tearDown(): void {
-		\Mockery::close();
+		Mockery::close();
 	}
 
 }
 
-$test = new AwsManagerTest($container);
+$test = new AwsManagerTest();
 $test->run();

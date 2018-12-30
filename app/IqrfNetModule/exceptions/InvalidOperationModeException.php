@@ -20,9 +20,11 @@ declare(strict_types = 1);
 
 namespace App\IqrfNetModule\Exceptions;
 
+use Exception;
+
 /**
  * The exception that indicates invalid gateway operational mode
  */
-class InvalidOperationModeException extends \Exception {
+class InvalidOperationModeException extends Exception {
 
 }

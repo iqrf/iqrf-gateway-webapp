@@ -56,13 +56,13 @@ class AzureFormFactory extends CloudFormFactory {
 		$form->setTranslator($form->getTranslator()->domain('cloud.msAzure.form'));
 		$form->addText('ConnectionString', 'connectionString')->setRequired();
 		$form->addSubmit('save', 'save')
-			->onClick[] = function (SubmitButton $button) {
-			$this->save($button);
-		};
+			->onClick[] = function (SubmitButton $button): void {
+				$this->save($button);
+			};
 		$form->addSubmit('save_restart', 'save_restart')
-			->onClick[] = function (SubmitButton $button) {
-			$this->save($button, true);
-		};
+			->onClick[] = function (SubmitButton $button): void {
+				$this->save($button, true);
+			};
 		$form->addProtection('core.errors.form-timeout');
 		return $form;
 	}

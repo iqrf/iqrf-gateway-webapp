@@ -21,7 +21,6 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Models;
 
 use App\CoreModule\Models\CommandManager;
-use App\CoreModule\Models\JsonFileManager;
 use App\CoreModule\Models\VersionManager;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
@@ -44,11 +43,6 @@ class InfoManager {
 	private $commandManager;
 
 	/**
-	 * @var JsonFileManager JSON file manager
-	 */
-	private $jsonFileManager;
-
-	/**
 	 * @var EnumerationManager IQMESH Enumeration manager
 	 */
 	private $enumerationManager;
@@ -66,7 +60,6 @@ class InfoManager {
 	 */
 	public function __construct(CommandManager $commandManager, EnumerationManager $enumerationManager, VersionManager $versionManager) {
 		$this->commandManager = $commandManager;
-		$this->jsonFileManager = new JsonFileManager(__DIR__ . '/../../../');
 		$this->versionManager = $versionManager;
 		$this->enumerationManager = $enumerationManager;
 	}
@@ -81,7 +74,9 @@ class InfoManager {
 			try {
 				$gw = Json::decode($gwJson, Json::FORCE_ARRAY);
 				return $gw['gwManufacturer'] . ' ' . $gw['gwProduct'];
-			} catch (JsonException $e) {}
+			} catch (JsonException $e) {
+				// Skip IQRF GW info file parsing
+			}
 		}
 		$deviceTree = $this->commandManager->send('cat /proc/device-tree/model', true);
 		if ($deviceTree !== '') {
@@ -98,7 +93,7 @@ class InfoManager {
 
 	/**
 	 * Get gateway ID
-	 * @return null|string Gateway ID
+	 * @return string|null Gateway ID
 	 */
 	public function getId(): ?string {
 		$gwJson = $this->commandManager->send('cat /etc/iqrf-gateway.json', true);
@@ -106,14 +101,16 @@ class InfoManager {
 			try {
 				$gw = Json::decode($gwJson, Json::FORCE_ARRAY);
 				return $gw['gwId'];
-			} catch (JsonException $e) {}
+			} catch (JsonException $e) {
+				// Skip IQRF GW info file parsing
+			}
 		}
 		return null;
 	}
 
 	/**
 	 * Get IPv4 and IPv6 addresses of the gateway
-	 * @return array IPv4 and IPv6 addresses
+	 * @return string[] IPv4 and IPv6 addresses
 	 */
 	public function getIpAddresses(): array {
 		$addresses = [];
@@ -134,7 +131,7 @@ class InfoManager {
 
 	/**
 	 * Get MAC addresses of the gateway
-	 * @return array MAC addresses array
+	 * @return string[] MAC addresses array
 	 */
 	public function getMacAddresses(): array {
 		$addresses = [];
@@ -178,7 +175,7 @@ class InfoManager {
 
 	/**
 	 * Get information about the Coordinator
-	 * @return array Information about the Coordinator
+	 * @return string[] Information about the Coordinator
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws JsonException
@@ -199,7 +196,7 @@ class InfoManager {
 
 	/**
 	 * Get disk usages
-	 * @return array Disk usages
+	 * @return string[] Disk usages
 	 */
 	public function getDiskUsages(): array {
 		$output = $this->commandManager->send('df -B1 -x tmpfs -x devtmpfs -T -P | awk \'{if (NR!=1) {$6="";print}}\'');
@@ -221,7 +218,7 @@ class InfoManager {
 
 	/**
 	 * Get memory usage
-	 * @return array Memory usage
+	 * @return string[] Memory usage
 	 */
 	public function getMemoryUsage(): array {
 		$output = $this->commandManager->send('free -bw | awk \'{{if (NR==2) print $2,$3,$4,$5,$6,$7,$8}}\'');
@@ -241,7 +238,7 @@ class InfoManager {
 
 	/**
 	 * Get swap usage
-	 * @return array|null Swap usage
+	 * @return string[]|null Swap usage
 	 */
 	public function getSwapUsage(): ?array {
 		$output = $this->commandManager->send('free -b | awk \'{{if (NR==3) print $2,$3,$4}}\'');
@@ -276,6 +273,5 @@ class InfoManager {
 		}
 		return round($bytes, $precision) . ' ' . $unit;
 	}
-
 
 }

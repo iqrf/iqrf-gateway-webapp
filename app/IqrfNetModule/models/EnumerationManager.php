@@ -55,7 +55,7 @@ class EnumerationManager {
 	/**
 	 * Enumerate a device
 	 * @param int $address Device address to enumerate
-	 * @return array DPA request and response
+	 * @return mixed[] DPA request and response
 	 * @throws IqrfException\EmptyResponseException
 	 * @throws JsonException
 	 */

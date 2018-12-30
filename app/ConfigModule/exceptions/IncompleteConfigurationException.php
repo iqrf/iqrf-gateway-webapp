@@ -20,9 +20,11 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Exceptions;
 
+use Exception;
+
 /**
  * The exception that indicates an incomplete configuration
  */
-class IncompleteConfigurationException extends \Exception {
+class IncompleteConfigurationException extends Exception {
 
 }

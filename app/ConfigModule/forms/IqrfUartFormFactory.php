@@ -33,11 +33,9 @@ class IqrfUartFormFactory extends GenericConfigFormFactory {
 	use SmartObject;
 
 	/**
-	 * @var array UART baud rates
+	 * @var int[] UART baud rates
 	 */
-	private $baudRates = [
-		1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400,
-	];
+	private $baudRates = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400];
 
 	/**
 	 * Create IQRF UART configuration form

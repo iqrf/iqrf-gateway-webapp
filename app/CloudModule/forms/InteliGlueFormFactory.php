@@ -60,13 +60,13 @@ class InteliGlueFormFactory extends CloudFormFactory {
 		$form->addText('clientId', 'clientId')->setRequired();
 		$form->addText('password', 'password')->setRequired();
 		$form->addSubmit('save', 'save')
-			->onClick[] = function (SubmitButton $button) {
-			$this->save($button);
-		};
+			->onClick[] = function (SubmitButton $button): void {
+				$this->save($button);
+			};
 		$form->addSubmit('save_restart', 'save_restart')
-			->onClick[] = function (SubmitButton $button) {
-			$this->save($button, true);
-		};
+			->onClick[] = function (SubmitButton $button): void {
+				$this->save($button, true);
+			};
 		$form->addProtection('core.errors.form-timeout');
 		return $form;
 	}

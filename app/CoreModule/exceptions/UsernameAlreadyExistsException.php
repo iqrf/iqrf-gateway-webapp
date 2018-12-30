@@ -20,9 +20,11 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Exceptions;
 
+use InvalidArgumentException;
+
 /**
  * The exception that indicates that the user with that username already exists.
  */
-class UsernameAlreadyExistsException extends \InvalidArgumentException {
+class UsernameAlreadyExistsException extends InvalidArgumentException {
 
 }

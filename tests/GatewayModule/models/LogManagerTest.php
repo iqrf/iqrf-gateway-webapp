@@ -13,22 +13,18 @@ namespace Test\GatewayModule\Models;
 use App\CoreModule\Models\FileManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use App\GatewayModule\Models\LogManager;
+use DateTime;
 use Nette\Application\Responses\FileResponse;
-use Nette\DI\Container;
 use Tester\Assert;
 use Tester\TestCase;
+use ZipArchive;
 
-$container = require __DIR__ . '/../../bootstrap.php';
+require __DIR__ . '/../../bootstrap.php';
 
 /**
  * Tests for Gateway info manager
  */
 class LogManagerTest extends TestCase {
-
-	/**
-	 * @var Container Nette Tester Container
-	 */
-	private $container;
 
 	/**
 	 * @var FileManager Text file manager
@@ -44,14 +40,6 @@ class LogManagerTest extends TestCase {
 	 * @var LogManager IQRF Gateway Daemon's log manager
 	 */
 	private $manager;
-
-	/**
-	 * Constructor
-	 * @param Container $container Nette Tester Container
-	 */
-	public function __construct(Container $container) {
-		$this->container = $container;
-	}
 
 	/**
 	 * Test function to get IQRF Gateway Daemon's log files
@@ -79,11 +67,11 @@ class LogManagerTest extends TestCase {
 	public function testDownload(): void {
 		$actual = $this->manager->download();
 		$path = '/tmp/iqrf-daemon-gateway-logs.zip';
-		$fileName = 'iqrf-gateway-daemon-logs' . (new \DateTime())->format('c') . '.zip';
+		$fileName = 'iqrf-gateway-daemon-logs' . (new DateTime())->format('c') . '.zip';
 		$contentType = 'application/zip';
 		$expected = new FileResponse($path, $fileName, $contentType, true);
 		Assert::equal($expected, $actual);
-		$zipManager = new ZipArchiveManager($path, \ZipArchive::CREATE);
+		$zipManager = new ZipArchiveManager($path, ZipArchive::CREATE);
 		$logs = [
 			'2018-08-13-13-37-834-iqrf-gateway-daemon.log',
 			'2018-08-13-13-37-496-iqrf-gateway-daemon.log',
@@ -105,5 +93,5 @@ class LogManagerTest extends TestCase {
 
 }
 
-$test = new LogManagerTest($container);
+$test = new LogManagerTest();
 $test->run();

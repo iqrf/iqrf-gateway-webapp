@@ -35,7 +35,7 @@ class ApiRequest {
 	protected $msgIdManager;
 
 	/**
-	 * @var array JSON API request
+	 * @var mixed[] JSON API request
 	 */
 	protected $request;
 
@@ -58,7 +58,7 @@ class ApiRequest {
 
 	/**
 	 * Set JSON API request
-	 * @param array $request JSON API request
+	 * @param mixed[] $request JSON API request
 	 */
 	public function setRequest(array $request): void {
 		$this->request = $request;
@@ -67,7 +67,7 @@ class ApiRequest {
 
 	/**
 	 * Convert JSON API request to a array
-	 * @return array JSON API request
+	 * @return mixed[] JSON API request
 	 */
 	public function toArray(): array {
 		return $this->request;

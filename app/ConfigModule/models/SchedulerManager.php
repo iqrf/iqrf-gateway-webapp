@@ -109,7 +109,7 @@ class SchedulerManager {
 
 	/**
 	 * Get available messagings
-	 * @return array Available messagings
+	 * @return string[] Available messagings
 	 * @throws JsonException
 	 */
 	public function getMessagings(): array {
@@ -120,7 +120,7 @@ class SchedulerManager {
 
 	/**
 	 * Get scheduler's services
-	 * @return array Scheduler's services
+	 * @return mixed[] Scheduler's services
 	 * @throws JsonException
 	 */
 	public function getServices(): array {
@@ -134,7 +134,7 @@ class SchedulerManager {
 
 	/**
 	 * Get tasks in Scheduler
-	 * @return array Tasks
+	 * @return mixed[] Tasks
 	 * @throws JsonException
 	 */
 	public function list(): array {
@@ -157,7 +157,7 @@ class SchedulerManager {
 
 	/**
 	 * Get DPA request from JSON
-	 * @param array $data JSON
+	 * @param mixed[] $data JSON
 	 * @return string DPA request
 	 */
 	public function getRequest(array $data): string {
@@ -177,7 +177,7 @@ class SchedulerManager {
 					foreach ($request['pData'] as &$byte) {
 						$byte = Strings::padLeft(dechex($byte), 2, '0');
 					}
-					$packet .= '.' . implode('.',$request['pData']);
+					$packet .= '.' . implode('.', $request['pData']);
 				}
 				return $packet;
 			default:
@@ -199,7 +199,7 @@ class SchedulerManager {
 	/**
 	 * Convert Task JSON array to Task configuration form array
 	 * @param int $id Task ID
-	 * @return array Array for form
+	 * @return mixed[] Array for form
 	 * @throws JsonException
 	 */
 	public function load(int $id): array {
@@ -213,7 +213,7 @@ class SchedulerManager {
 
 	/**
 	 * Save scheduler setting
-	 * @param array $array Scheduler settings
+	 * @param mixed[] $array Scheduler settings
 	 * @param int $id Task ID
 	 * @throws JsonException
 	 */

@@ -60,13 +60,13 @@ class IbmCloudFormFactory extends CloudFormFactory {
 		$form->addText('token', 'token')->setRequired();
 		$form->addText('eventId', 'eventId')->setRequired()->setDefaultValue('iqrf');
 		$form->addSubmit('save', 'save')
-			->onClick[] = function (SubmitButton $button) {
-			$this->save($button);
-		};
+			->onClick[] = function (SubmitButton $button): void {
+				$this->save($button);
+			};
 		$form->addSubmit('save_restart', 'save_restart')
-			->onClick[] = function (SubmitButton $button) {
-			$this->save($button, true);
-		};
+			->onClick[] = function (SubmitButton $button): void {
+				$this->save($button, true);
+			};
 		$form->addProtection('core.errors.form-timeout');
 		return $form;
 	}

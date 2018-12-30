@@ -18,22 +18,18 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
-use Nette\DI\Container;
+use Mockery;
+use Mockery\Mock;
 use Nette\Utils\FileSystem;
 use Tester\Assert;
 use Tester\TestCase;
 
-$container = require __DIR__ . '/../../bootstrap.php';
+require __DIR__ . '/../../bootstrap.php';
 
 /**
  * Tests for Inteliment InteliGlue manager
  */
 class InteliGlueManagerTest extends TestCase {
-
-	/**
-	 * @var Container Nette Tester Container
-	 */
-	private $container;
 
 	/**
 	 * @var string Path to a directory with certificates and private keys
@@ -51,12 +47,12 @@ class InteliGlueManagerTest extends TestCase {
 	private $fileManager;
 
 	/**
-	 * @var \Mockery\Mock Mocked Inteliments InteliGlue manager
+	 * @var Mock|InteliGlueManager Mocked Inteliments InteliGlue manager
 	 */
 	private $manager;
 
 	/**
-	 * @var array Values from Inteliments InteliGlue form
+	 * @var mixed[] Values from Inteliments InteliGlue form
 	 */
 	private $formValues = [
 		'assignedPort' => 1234,
@@ -67,10 +63,8 @@ class InteliGlueManagerTest extends TestCase {
 
 	/**
 	 * Constructor
-	 * @param Container $container Nette Tester Container
 	 */
-	public function __construct(Container $container) {
-		$this->container = $container;
+	public function __construct() {
 		$this->certPath = realpath(__DIR__ . '/../../temp/certificates/') . '/';
 	}
 
@@ -131,7 +125,7 @@ class InteliGlueManagerTest extends TestCase {
 		$schemaManager = new JsonSchemaManager($schemaPath);
 		$this->configManager = new GenericManager($this->fileManager, $schemaManager);
 		$client = new Client();
-		$this->manager = \Mockery::mock(InteliGlueManager::class, [$this->certPath, $this->configManager, $client])->makePartial();
+		$this->manager = Mockery::mock(InteliGlueManager::class, [$this->certPath, $this->configManager, $client])->makePartial();
 		$this->manager->shouldReceive('downloadCaCertificate')->andReturn(null);
 	}
 
@@ -139,10 +133,10 @@ class InteliGlueManagerTest extends TestCase {
 	 * Cleanup the test environment
 	 */
 	protected function tearDown(): void {
-		\Mockery::close();
+		Mockery::close();
 	}
 
 }
 
-$test = new InteliGlueManagerTest($container);
+$test = new InteliGlueManagerTest();
 $test->run();

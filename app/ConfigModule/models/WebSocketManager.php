@@ -22,6 +22,7 @@ namespace App\ConfigModule\Models;
 
 use App\CoreModule\Models\JsonFileManager;
 use App\CoreModule\Models\JsonSchemaManager;
+use DateTime;
 use Nette\SmartObject;
 use Nette\Utils\Arrays;
 use Nette\Utils\Json;
@@ -35,7 +36,7 @@ class WebSocketManager {
 	use SmartObject;
 
 	/**
-	 * @var array WebSocket components
+	 * @var string[] WebSocket components
 	 */
 	private $components = [
 		'messaging' => 'iqrf::WebsocketMessaging',
@@ -48,7 +49,7 @@ class WebSocketManager {
 	private $fileManager;
 
 	/**
-	 * @var array WebSocket messaging and service file names
+	 * @var string[] WebSocket messaging and service file names
 	 */
 	private $fileNames;
 
@@ -58,7 +59,7 @@ class WebSocketManager {
 	private $genericManager;
 
 	/**
-	 * @var array WebSocket instances
+	 * @var string[] WebSocket instances
 	 */
 	private $instances;
 
@@ -98,7 +99,7 @@ class WebSocketManager {
 	/**
 	 * Read a configuration
 	 * @param string $fileName File name (without .json)
-	 * @return array Parsed configuration
+	 * @return mixed[] Parsed configuration
 	 * @throws JsonException
 	 */
 	private function read(string $fileName): array {
@@ -127,11 +128,11 @@ class WebSocketManager {
 
 	/**
 	 * Save configuration
-	 * @param array $array Websocket settings
+	 * @param mixed[] $array Websocket settings
 	 * @throws JsonException
 	 */
 	public function save(array $array): void {
-		$timestamp = (new \DateTime())->getTimestamp();
+		$timestamp = (new DateTime())->getTimestamp();
 		$instances = [
 			'messaging' => $this->instances['messaging'] ?? 'WebsocketMessaging' . $timestamp,
 			'service' => $this->instances['service'] ?? 'WebsocketCppService' . $timestamp,
@@ -153,9 +154,9 @@ class WebSocketManager {
 
 	/**
 	 * Create a messaging configuration
-	 * @param array $values Values from form
-	 * @param array $instances Names of messaging and service instances
-	 * @return array Messaging configuration
+	 * @param mixed[] $values Values from form
+	 * @param string[] $instances Names of messaging and service instances
+	 * @return mixed[] Messaging configuration
 	 */
 	public function createMessaging(array $values, array $instances): array {
 		return [
@@ -163,9 +164,9 @@ class WebSocketManager {
 			'instance' => $instances['messaging'],
 			'acceptAsyncMsg' => $values['acceptAsyncMsg'],
 			'RequiredInterfaces' => [
-				(object)[
+				(object) [
 					'name' => 'shape::IWebsocketService',
-					'target' => (object)[
+					'target' => (object) [
 						'instance' => $instances['service'],
 					],
 				],
@@ -175,9 +176,9 @@ class WebSocketManager {
 
 	/**
 	 * Create a service configuration
-	 * @param array $values Values from form
-	 * @param array $instances Names of messaging and service instances
-	 * @return array Service configuration
+	 * @param mixed[] $values Values from form
+	 * @param string[] $instances Names of messaging and service instances
+	 * @return mixed[] Service configuration
 	 */
 	public function createService(array $values, array $instances): array {
 		return [
@@ -189,7 +190,7 @@ class WebSocketManager {
 
 	/**
 	 * Get WebSocket instances
-	 * @return array WebSocket instances
+	 * @return mixed[] WebSocket instances
 	 * @throws JsonException
 	 */
 	public function list(): array {
@@ -205,7 +206,7 @@ class WebSocketManager {
 	/**
 	 * Load a configuration
 	 * @param int $id WebSocket interface ID
-	 * @return array Array for form
+	 * @return mixed[] Array for form
 	 * @throws JsonException
 	 */
 	public function load(int $id): array {

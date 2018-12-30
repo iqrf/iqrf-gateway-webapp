@@ -20,7 +20,6 @@ declare(strict_types = 1);
 
 namespace App\ServiceModule\Models;
 
-use App\CoreModule\Models\CommandManager;
 use App\ServiceModule\Exceptions\NotSupportedInitSystemException;
 use Nette\SmartObject;
 
@@ -32,21 +31,7 @@ class UnknownManager implements IServiceManager {
 	use SmartObject;
 
 	/**
-	 * @var CommandManager Command Manager
-	 */
-	private $commandManager;
-
-	/**
-	 * Constructor
-	 * @param CommandManager $commandManager Command manager
-	 */
-	public function __construct(CommandManager $commandManager) {
-		$this->commandManager = $commandManager;
-	}
-
-	/**
 	 * Start IQRF Gateway Daemon
-	 * @return string Output from init daemon
 	 * @throws NotSupportedInitSystemException
 	 */
 	public function start(): string {
@@ -55,7 +40,6 @@ class UnknownManager implements IServiceManager {
 
 	/**
 	 * Stop IQRF Gateway Daemon's service
-	 * @return string Output from init daemon
 	 * @throws NotSupportedInitSystemException
 	 */
 	public function stop(): string {
@@ -64,7 +48,6 @@ class UnknownManager implements IServiceManager {
 
 	/**
 	 * Restart IQRF Gateway Daemon's service
-	 * @return string Output from init daemon
 	 * @throws NotSupportedInitSystemException
 	 */
 	public function restart(): string {
@@ -73,7 +56,6 @@ class UnknownManager implements IServiceManager {
 
 	/**
 	 * Get status of IQRF Gateway Daemon's service
-	 * @return string Output from init daemon
 	 * @throws NotSupportedInitSystemException
 	 */
 	public function getStatus(): string {

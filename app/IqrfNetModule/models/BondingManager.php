@@ -55,7 +55,7 @@ class BondingManager {
 	/**
 	 * Local bond a node
 	 * @param int $address A requested address for the bonded node. If this parameter equals to 0, then the first free address is assigned to the node.
-	 * @return array DPA request and response
+	 * @return mixed[] DPA request and response
 	 * @throws IqrfException\EmptyResponseException
 	 * @throws JsonException
 	 */
@@ -78,7 +78,7 @@ class BondingManager {
 	 * Bond a node via IQRF Smart Connect
 	 * @param int $address Address to bond the device to.
 	 * @param string $code Smart connect code of the device.
-	 * @return array DPA request and response
+	 * @return mixed[] DPA request and response
 	 * @throws IqrfException\EmptyResponseException
 	 * @throws JsonException
 	 */
@@ -100,7 +100,7 @@ class BondingManager {
 
 	/**
 	 * Clear all bonds
-	 * @return array DPA request and response
+	 * @return mixed[] DPA request and response
 	 * @throws IqrfException\EmptyResponseException
 	 * @throws JsonException
 	 */
@@ -121,7 +121,7 @@ class BondingManager {
 	/**
 	 * Re-bond a node
 	 * @param int $address Address of the node to be re-bonded.
-	 * @return array DPA request and response
+	 * @return mixed[] DPA request and response
 	 * @throws IqrfException\EmptyResponseException
 	 * @throws JsonException
 	 */
@@ -144,7 +144,7 @@ class BondingManager {
 	/**
 	 * Remove a bond
 	 * @param int $address Address of the node to be removed.
-	 * @return array DPA request and response
+	 * @return mixed[] DPA request and response
 	 * @throws IqrfException\EmptyResponseException
 	 * @throws JsonException
 	 */

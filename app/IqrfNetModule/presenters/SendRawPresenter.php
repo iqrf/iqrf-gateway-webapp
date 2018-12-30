@@ -45,6 +45,7 @@ class SendRawPresenter extends ProtectedPresenter {
 	 * @var DpaRawManager DPA raw request and response manager
 	 */
 	private $dpaManager;
+
 	/**
 	 * @var MacroFileParser IQRF IDE Macros parser
 	 */
@@ -70,7 +71,7 @@ class SendRawPresenter extends ProtectedPresenter {
 
 	/**
 	 * AJAX handler for showing DPA request and response
-	 * @param array $data DPA request and response
+	 * @param mixed[] $data DPA request and response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws JsonException

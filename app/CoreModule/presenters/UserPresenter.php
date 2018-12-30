@@ -100,7 +100,7 @@ class UserPresenter extends ProtectedPresenter {
 	/**
 	 * Create data grid
 	 * @param string $name Component name
-	 * @return DataGrid
+	 * @return DataGrid Datagrid wirh users
 	 * @throws DataGridException
 	 */
 	protected function createComponentUserGrid(string $name): DataGrid {

@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\IqrfNetModule\Enums;
 
@@ -28,11 +28,11 @@ class DataFormat {
 	/**
 	 * ASCII data format
 	 */
-	const ASCII = 'ASCII';
+	public const ASCII = 'ASCII';
 
 	/**
 	 * HEX data format
 	 */
-	const HEX = 'HEX';
+	public const HEX = 'HEX';
 
 }

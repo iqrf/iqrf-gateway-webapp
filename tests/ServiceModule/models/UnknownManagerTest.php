@@ -13,11 +13,12 @@ namespace Test\ServiceModule\Models;
 use App\CoreModule\Models\CommandManager;
 use App\ServiceModule\Exceptions\NotSupportedInitSystemException;
 use App\ServiceModule\Models\UnknownManager;
-use Nette\DI\Container;
+use Mockery;
+use Mockery\MockInterface;
 use Tester\Assert;
 use Tester\TestCase;
 
-$container = require __DIR__ . '/../../bootstrap.php';
+require __DIR__ . '/../../bootstrap.php';
 
 /**
  * Tests for service manager
@@ -25,12 +26,7 @@ $container = require __DIR__ . '/../../bootstrap.php';
 class UnknownManagerTest extends TestCase {
 
 	/**
-	 * @var Container Nette Tester Container
-	 */
-	private $container;
-
-	/**
-	 * @var \Mockery\MockInterface Mocked command manager
+	 * @var MockInterface Mocked command manager
 	 */
 	private $commandManager;
 
@@ -38,14 +34,6 @@ class UnknownManagerTest extends TestCase {
 	 * @var UnknownManager Service manager for unknown init daemon
 	 */
 	private $manager;
-
-	/**
-	 * Constructor
-	 * @param Container $container Nette Tester Container
-	 */
-	public function __construct(Container $container) {
-		$this->container = $container;
-	}
 
 	/**
 	 * Test function to start IQRF Gateway Daemon's service via unknown init daemon
@@ -79,7 +67,7 @@ class UnknownManagerTest extends TestCase {
 	 * Set up the test environment
 	 */
 	protected function setUp(): void {
-		$this->commandManager = \Mockery::mock(CommandManager::class);
+		$this->commandManager = Mockery::mock(CommandManager::class);
 		$this->manager = new UnknownManager($this->commandManager);
 	}
 
@@ -87,10 +75,10 @@ class UnknownManagerTest extends TestCase {
 	 * Cleanup the test environment
 	 */
 	protected function tearDown(): void {
-		\Mockery::close();
+		Mockery::close();
 	}
 
 }
 
-$test = new UnknownManagerTest($container);
+$test = new UnknownManagerTest();
 $test->run();

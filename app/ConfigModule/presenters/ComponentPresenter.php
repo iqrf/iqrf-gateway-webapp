@@ -41,11 +41,13 @@ class ComponentPresenter extends ProtectedPresenter {
 	 * @inject
 	 */
 	public $dataGridFactory;
+
 	/**
 	 * @var ComponentsFormFactory Daemon's components configuration form factory
 	 * @inject
 	 */
 	public $formFactory;
+
 	/**
 	 * @var ComponentManager Component manager
 	 */

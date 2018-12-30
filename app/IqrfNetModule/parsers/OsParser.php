@@ -32,7 +32,7 @@ class OsParser implements IParser {
 	/**
 	 * Parse DPA OS response
 	 * @param string $packet DPA packet
-	 * @return array|null Parsed data
+	 * @return mixed[]|null Parsed data
 	 */
 	public function parse(string $packet): ?array {
 		$data = explode('.', $packet);
@@ -53,7 +53,7 @@ class OsParser implements IParser {
 	/**
 	 * Parse response to DPA OS - "Read info" request
 	 * @param string $packet DPA packet response
-	 * @return array Information about DCTR module
+	 * @return mixed[] Information about DCTR module
 	 */
 	public function parseReadInfo(string $packet): array {
 		$data = [];
@@ -81,7 +81,7 @@ class OsParser implements IParser {
 	/**
 	 * Parse response to DPA OS - "Read HWP configuration" request
 	 * @param string $packet DPA packet response
-	 * @return array HWP configuration
+	 * @return mixed[] HWP configuration
 	 */
 	public function parseHwpConfiguration(string $packet): array {
 		$data = [];
@@ -97,8 +97,8 @@ class OsParser implements IParser {
 
 	/**
 	 * Parse TR configuration
-	 * @param array $config HWP configuration
-	 * @return array TR configuration
+	 * @param mixed[] $config HWP configuration
+	 * @return mixed[] TR configuration
 	 */
 	public function parseTrConfiguration(array $config): array {
 		$data = [];

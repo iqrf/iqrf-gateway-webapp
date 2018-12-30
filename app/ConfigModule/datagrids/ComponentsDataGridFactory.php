@@ -98,14 +98,14 @@ class ComponentsDataGridFactory {
 
 	/**
 	 * Load data to the data grid
-	 * @return array Data for the data grid
+	 * @return mixed[] Data for the data grid
 	 * @throws JsonException
 	 */
 	private function load(): array {
 		if ($this->presenter->user->isInRole('power')) {
 			return $this->configManager->list();
 		} else {
-			$visible = ['iqrf::IqrfCdc', 'iqrf::IqrfSpi', 'iqrf::IqrfUart',];
+			$visible = ['iqrf::IqrfCdc', 'iqrf::IqrfSpi', 'iqrf::IqrfUart'];
 			$components = [];
 			foreach ($this->configManager->list() as $component) {
 				if (in_array($component['name'], $visible, true)) {

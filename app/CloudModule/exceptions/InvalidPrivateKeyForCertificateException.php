@@ -20,9 +20,11 @@ declare(strict_types = 1);
 
 namespace App\CloudModule\Exceptions;
 
+use Exception;
+
 /**
  * The exception that indicates an invalid private key for a certificate
  */
-class InvalidPrivateKeyForCertificateException extends \Exception {
+class InvalidPrivateKeyForCertificateException extends Exception {
 
 }

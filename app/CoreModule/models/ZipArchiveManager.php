@@ -26,6 +26,7 @@ use Nette\Utils\Finder;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
+use ZipArchive;
 
 /**
  * Tool for creating a new zip archive
@@ -35,7 +36,7 @@ class ZipArchiveManager {
 	use SmartObject;
 
 	/**
-	 * @var \ZipArchive ZIP archive
+	 * @var ZipArchive ZIP archive
 	 */
 	private $zip;
 
@@ -44,8 +45,8 @@ class ZipArchiveManager {
 	 * @param string $path Path of a new zip archive
 	 * @param int $flags The mode to use to open the archive
 	 */
-	public function __construct(string $path, int $flags = \ZipArchive::CREATE | \ZipArchive::OVERWRITE) {
-		$this->zip = new \ZipArchive();
+	public function __construct(string $path, int $flags = ZipArchive::CREATE | ZipArchive::OVERWRITE) {
+		$this->zip = new ZipArchive();
 		$this->zip->open($path, $flags);
 	}
 
@@ -87,7 +88,7 @@ class ZipArchiveManager {
 	/**
 	 * Add a JSON file to the ZIP archive using its contents
 	 * @param string $filename File name
-	 * @param array $jsonData JSON data in an array
+	 * @param mixed[] $jsonData JSON data in an array
 	 * @throws JsonException
 	 */
 	public function addJsonFromArray(string $filename, array $jsonData): void {
@@ -97,17 +98,17 @@ class ZipArchiveManager {
 
 	/**
 	 * Check if the file or the files exist in the archive
-	 * @param string|array|ArrayHash $var File(s) to check
-	 * @return boolean Is file exist
+	 * @param string|mixed[]|ArrayHash $var File(s) to check
+	 * @return bool Is file exist
 	 */
 	public function exist($var): bool {
 		if (is_string($var)) {
-			return ($this->zip->locateName('/' . $var, \ZipArchive::FL_NOCASE)) !== false;
+			return ($this->zip->locateName('/' . $var, ZipArchive::FL_NOCASE)) !== false;
 		} else {
 			if (is_array($var) || (is_object($var) && $var instanceof ArrayHash)) {
 				foreach ($var as $file) {
-					$result = $this->zip->locateName('/' . $file, \ZipArchive::FL_NOCASE);
-					if (!is_integer($result)) {
+					$result = $this->zip->locateName('/' . $file, ZipArchive::FL_NOCASE);
+					if (!is_int($result)) {
 						return false;
 					}
 				}
@@ -127,7 +128,7 @@ class ZipArchiveManager {
 
 	/**
 	 * List files in the archive
-	 * @return array List of files in the archive
+	 * @return string[] List of files in the archive
 	 */
 	public function listFiles(): array {
 		$files = [];

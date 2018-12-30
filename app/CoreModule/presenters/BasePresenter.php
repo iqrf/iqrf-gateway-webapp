@@ -30,8 +30,8 @@ use Nette\Application\UI\Presenter;
 abstract class BasePresenter extends Presenter {
 
 	/**
-	 * @persistent
 	 * @var string Language
+	 * @persistent
 	 */
 	public $lang;
 

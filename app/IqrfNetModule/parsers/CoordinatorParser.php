@@ -32,7 +32,7 @@ class CoordinatorParser implements IParser {
 	/**
 	 * Parse DPA Coordinator response
 	 * @param string $packet DPA packet
-	 * @return array|null Parsed data
+	 * @return mixed[]|null Parsed data
 	 */
 	public function parse(string $packet): ?array {
 		$data = explode('.', $packet);
@@ -55,7 +55,7 @@ class CoordinatorParser implements IParser {
 	/**
 	 * Parse response to DPA Coordinator - "Get bonded nodes" and "Get discovered nodes" request
 	 * @param string $packet DPA packet response
-	 * @return array Bonded XOR discovered nodes
+	 * @return mixed[] Bonded XOR discovered nodes
 	 */
 	public function parseGetNodes(string $packet): array {
 		$data = [];
@@ -78,7 +78,7 @@ class CoordinatorParser implements IParser {
 	/**
 	 * Parse response to DPA Coordinator - "Bond node" request
 	 * @param string $packet DPA packet response
-	 * @return array Bonded node
+	 * @return mixed[] Bonded node
 	 */
 	public function parseBondNode(string $packet): array {
 		$data = [];

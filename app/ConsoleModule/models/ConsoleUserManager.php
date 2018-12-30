@@ -32,8 +32,8 @@ class ConsoleUserManager extends UserManager {
 
 	/**
 	 * Get information about the user from username
-	 * @param null|string $username Username
-	 * @return array|null Information about the user
+	 * @param string|null $username Username
+	 * @return mixed[]|null Information about the user
 	 */
 	public function getUser(?string $username): ?array {
 		foreach ($this->getUsers() as $user) {
@@ -46,11 +46,11 @@ class ConsoleUserManager extends UserManager {
 
 	/**
 	 * Check if the username is unique
-	 * @param null|string $username Username to check
+	 * @param string|null $username Username to check
 	 * @return bool Is username unique?
 	 */
 	public function uniqueUserName(?string $username): bool {
-		if (is_null($username)) {
+		if ($username === null) {
 			return false;
 		}
 		foreach ($this->getUsers() as $user) {
@@ -63,7 +63,7 @@ class ConsoleUserManager extends UserManager {
 
 	/**
 	 * List all registered users
-	 * @return array Registered users
+	 * @return mixed[] Registered users
 	 */
 	public function listUsers(): array {
 		$users = $this->getUsers();
@@ -73,7 +73,7 @@ class ConsoleUserManager extends UserManager {
 
 	/**
 	 * List user names of all webapp's users
-	 * @return array User names of all webapp's users
+	 * @return mixed[] User names of all webapp's users
 	 */
 	public function listUserNames(): array {
 		$users = [];
@@ -85,7 +85,7 @@ class ConsoleUserManager extends UserManager {
 
 	/**
 	 * Remove hashes from the information about the users
-	 * @param array $users Information about the users
+	 * @param mixed[] $users Information about the users
 	 */
 	private function removeHashes(array &$users): void {
 		foreach ($users as &$user) {

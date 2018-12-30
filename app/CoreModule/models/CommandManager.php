@@ -37,12 +37,12 @@ class CommandManager {
 	private $sudo;
 
 	/**
-	 * @var array An indexed array where the key represents the descriptor number and the value represents how PHP will pass that descriptor to the child process. 0 is stdin, 1 is stdout, while 2 is stderr.
+	 * @var mixed[] An indexed array where the key represents the descriptor number and the value represents how PHP will pass that descriptor to the child process. 0 is stdin, 1 is stdout, while 2 is stderr.
 	 */
 	private $descriptorspec = [
 		0 => ['pipe', 'r'], // stdin is a pipe that the child will read from
 		1 => ['pipe', 'w'], // stdout is a pipe that the child will write to
-		2 => ['pipe', 'w'] // stderr is a pipe that the child will write to
+		2 => ['pipe', 'w'], // stderr is a pipe that the child will write to
 	];
 
 	/**

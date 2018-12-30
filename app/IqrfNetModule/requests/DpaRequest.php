@@ -45,7 +45,7 @@ class DpaRequest extends ApiRequest {
 	/**
 	 * Fix DPA requests
 	 */
-	private function fixRequest() {
+	private function fixRequest(): void {
 		$mType = $this->request['mType'] ?? 'unknown';
 		switch ($mType) {
 			case 'iqrfRaw':
@@ -56,7 +56,7 @@ class DpaRequest extends ApiRequest {
 
 	/**
 	 * Set JSON DPA request
-	 * @param array $request JSON DPA request
+	 * @param mixed[] $request JSON DPA request
 	 */
 	public function setRequest(array $request): void {
 		parent::setRequest($request);

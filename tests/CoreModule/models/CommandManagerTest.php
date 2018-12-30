@@ -11,11 +11,10 @@ declare(strict_types = 1);
 namespace Test\CoreModule\Model;
 
 use App\CoreModule\Models\CommandManager;
-use Nette\DI\Container;
 use Tester\Assert;
 use Tester\TestCase;
 
-$container = require __DIR__ . '/../../bootstrap.php';
+require __DIR__ . '/../../bootstrap.php';
 
 /**
  * Tests for command manager
@@ -23,22 +22,9 @@ $container = require __DIR__ . '/../../bootstrap.php';
 class CommandManagerTest extends TestCase {
 
 	/**
-	 * @var Container Nette Tester Container
-	 */
-	private $container;
-
-	/**
 	 * @var CommandManager Command manager
 	 */
 	private $manager;
-
-	/**
-	 * Constructor
-	 * @param Container $container Nette Tester Container
-	 */
-	public function __construct(Container $container) {
-		$this->container = $container;
-	}
 
 	/**
 	 * Test function to execute a shell command
@@ -70,5 +56,5 @@ class CommandManagerTest extends TestCase {
 
 }
 
-$test = new CommandManagerTest($container);
+$test = new CommandManagerTest();
 $test->run();

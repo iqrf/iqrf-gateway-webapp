@@ -20,9 +20,11 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Exceptions;
 
+use InvalidArgumentException;
+
 /**
  * The exception that indicates an invalid JSON
  */
-class InvalidJsonException extends \InvalidArgumentException {
+class InvalidJsonException extends InvalidArgumentException {
 
 }

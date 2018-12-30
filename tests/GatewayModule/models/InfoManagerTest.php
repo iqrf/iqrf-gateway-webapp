@@ -14,12 +14,12 @@ use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\VersionManager;
 use App\GatewayModule\Models\InfoManager;
 use App\IqrfNetModule\Models\EnumerationManager;
-use App\IqrfNetModule\Models\IqrfAppManager;
-use Nette\DI\Container;
+use Mockery;
+use Mockery\MockInterface;
 use Tester\Assert;
 use Tester\TestCase;
 
-$container = require __DIR__ . '/../../bootstrap.php';
+require __DIR__ . '/../../bootstrap.php';
 
 /**
  * Tests for Gateway info manager
@@ -27,17 +27,12 @@ $container = require __DIR__ . '/../../bootstrap.php';
 class InfoManagerTest extends TestCase {
 
 	/**
-	 * @var \Mockery\MockInterface Mocked command manager
+	 * @var MockInterface Mocked command manager
 	 */
 	private $commandManager;
 
 	/**
-	 * @var Container Nette Tester Container
-	 */
-	private $container;
-
-	/**
-	 * @var \Mockery\MockInterface Mocked IQMESH enumeration manager
+	 * @var MockInterface Mocked IQMESH enumeration manager
 	 */
 	private $enumerationManager;
 
@@ -47,12 +42,12 @@ class InfoManagerTest extends TestCase {
 	private $manager;
 
 	/**
-	 * @var \Mockery\MockInterface Mocked version manager
+	 * @var MockInterface Mocked version manager
 	 */
 	private $versionManager;
 
 	/**
-	 * @var array Mocked commands
+	 * @var string[] Mocked commands
 	 */
 	private $commands = [
 		'daemonVersion' => 'iqrfgd2 version',
@@ -67,14 +62,6 @@ class InfoManagerTest extends TestCase {
 		'networkAdapters' => 'ls /sys/class/net | awk \'{ print $0 }\'',
 		'gitBranches' => 'git branch -v --no-abbrev',
 	];
-
-	/**
-	 * Constructor
-	 * @param Container $container Nette Tester Container
-	 */
-	public function __construct(Container $container) {
-		$this->container = $container;
-	}
 
 	/**
 	 * Test function to get information about the board (via IQRF GW json)
@@ -285,9 +272,9 @@ class InfoManagerTest extends TestCase {
 	 * Set up the test environment
 	 */
 	protected function setUp(): void {
-		$this->commandManager = \Mockery::mock(CommandManager::class);
-		$this->versionManager = \Mockery::mock(VersionManager::class);
-		$this->enumerationManager = \Mockery::mock(EnumerationManager::class);
+		$this->commandManager = Mockery::mock(CommandManager::class);
+		$this->versionManager = Mockery::mock(VersionManager::class);
+		$this->enumerationManager = Mockery::mock(EnumerationManager::class);
 		$this->manager = new InfoManager($this->commandManager, $this->enumerationManager, $this->versionManager);
 	}
 
@@ -295,10 +282,10 @@ class InfoManagerTest extends TestCase {
 	 * Cleanup the test environment
 	 */
 	protected function tearDown(): void {
-		\Mockery::close();
+		Mockery::close();
 	}
 
 }
 
-$test = new InfoManagerTest($container);
+$test = new InfoManagerTest();
 $test->run();

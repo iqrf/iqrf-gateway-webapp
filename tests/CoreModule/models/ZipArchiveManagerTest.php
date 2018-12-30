@@ -11,13 +11,13 @@ declare(strict_types = 1);
 namespace Test\CoreModule\Model;
 
 use App\CoreModule\Models\ZipArchiveManager;
-use Nette\DI\Container;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
 use Tester\Assert;
 use Tester\TestCase;
+use ZipArchive;
 
-$container = require __DIR__ . '/../../bootstrap.php';
+require __DIR__ . '/../../bootstrap.php';
 
 /**
  * Tests for ZIP archive manager manager
@@ -30,11 +30,6 @@ class ZipArchiveManagerTest extends TestCase {
 	private $configDir = __DIR__ . '/../../data/configuration/';
 
 	/**
-	 * @var Container Nette Tester Container
-	 */
-	private $container;
-
-	/**
 	 * @var ZipArchiveManager ZIP archive manager for new archive creation
 	 */
 	private $managerNew;
@@ -43,14 +38,6 @@ class ZipArchiveManagerTest extends TestCase {
 	 * @var ZipArchiveManager ZIP archive manager for extraction
 	 */
 	private $manager;
-
-	/**
-	 * Constructor
-	 * @param Container $container Nette Tester Container
-	 */
-	public function __construct(Container $container) {
-		$this->container = $container;
-	}
 
 	/**
 	 * Test function to add file to the ZIP archive
@@ -84,7 +71,7 @@ class ZipArchiveManagerTest extends TestCase {
 	/**
 	 * Create list of files
 	 * @param string $path Path to the directory
-	 * @return array List of files in the directory
+	 * @return string[]|array List of files in the directory
 	 */
 	private function createList(string $path): array {
 		$path = realpath($path) . '/';
@@ -176,7 +163,7 @@ class ZipArchiveManagerTest extends TestCase {
 		$path = __DIR__ . '/../../temp/archive.zip';
 		$pathExtract = __DIR__ . '/../../data/iqrf-gateway-configuration.zip';
 		$this->managerNew = new ZipArchiveManager($path);
-		$this->manager = new ZipArchiveManager($pathExtract, \ZipArchive::CREATE);
+		$this->manager = new ZipArchiveManager($pathExtract, ZipArchive::CREATE);
 	}
 
 	/**
@@ -189,5 +176,5 @@ class ZipArchiveManagerTest extends TestCase {
 
 }
 
-$test = new ZipArchiveManagerTest($container);
+$test = new ZipArchiveManagerTest();
 $test->run();

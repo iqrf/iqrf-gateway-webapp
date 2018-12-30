@@ -92,7 +92,7 @@ class UserAddCommand extends Command {
 	 */
 	private function askUserName(InputInterface $input, OutputInterface $output): string {
 		$username = $input->getOption('username');
-		while (is_null($username)) {
+		while ($username === null) {
 			$helper = $this->getHelper('question');
 			$question = new Question('Please enter the username: ');
 			$name = $helper->ask($input, $output, $question);
@@ -111,7 +111,7 @@ class UserAddCommand extends Command {
 	 */
 	private function askPassword(InputInterface $input, OutputInterface $output): string {
 		$password = $input->getOption('password');
-		while (is_null($password)) {
+		while ($password === null) {
 			$helper = $this->getHelper('question');
 			$question = new Question('Please enter the new user\'s password: ');
 			$password = $helper->ask($input, $output, $question);
@@ -128,7 +128,7 @@ class UserAddCommand extends Command {
 	private function askRole(InputInterface $input, OutputInterface $output): string {
 		$role = $input->getOption('role');
 		$roles = ['power', 'normal'];
-		while (is_null($role) || !in_array($role, $roles, true)) {
+		while ($role === null || !in_array($role, $roles, true)) {
 			$helper = $this->getHelper('question');
 			$question = new ChoiceQuestion('Please enter the user\'s role: ', $roles, 'normal');
 			$role = $helper->ask($input, $output, $question);
@@ -145,13 +145,12 @@ class UserAddCommand extends Command {
 	private function askLanguage(InputInterface $input, OutputInterface $output): string {
 		$language = $input->getOption('language');
 		$languages = ['en'];
-		while (is_null($language) || !in_array($language, $languages, true)) {
+		while ($language === null || !in_array($language, $languages, true)) {
 			$helper = $this->getHelper('question');
 			$question = new ChoiceQuestion('Please enter the user\'s language: ', $languages, 'en');
 			$language = $helper->ask($input, $output, $question);
 		}
 		return $language;
 	}
-
 
 }

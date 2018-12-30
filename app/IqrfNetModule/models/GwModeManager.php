@@ -42,7 +42,6 @@ class GwModeManager {
 	 */
 	private $wsClient;
 
-
 	/**
 	 * Constructor
 	 * @param ApiRequest $request JSON API request
@@ -56,7 +55,7 @@ class GwModeManager {
 	/**
 	 * Change IQRF Gateway Daemon's operation mode
 	 * @param string $mode IQRF Gateway Daemon's operation mode
-	 * @return array JSON API request and response
+	 * @return mixed[] JSON API request and response
 	 * @throws IqrfException\EmptyResponseException
 	 * @throws IqrfException\InvalidOperationModeException
 	 * @throws JsonException

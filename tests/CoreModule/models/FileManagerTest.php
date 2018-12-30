@@ -11,22 +11,16 @@ declare(strict_types = 1);
 namespace Test\CoreModule\Model;
 
 use App\CoreModule\Models\FileManager;
-use Nette\DI\Container;
 use Nette\Utils\FileSystem;
 use Tester\Assert;
 use Tester\TestCase;
 
-$container = require __DIR__ . '/../../bootstrap.php';
+require __DIR__ . '/../../bootstrap.php';
 
 /**
  * Tests for text file manager
  */
 class FileManagerTest extends TestCase {
-
-	/**
-	 * @var Container Nette Tester Container
-	 */
-	private $container;
 
 	/**
 	 * @var string FIle name
@@ -52,14 +46,6 @@ class FileManagerTest extends TestCase {
 	 * @var string Directory with configuration files
 	 */
 	private $pathTest = __DIR__ . '/../../temp/configuration/';
-
-	/**
-	 * Constructor
-	 * @param Container $container Nette Tester Container
-	 */
-	public function __construct(Container $container) {
-		$this->container = $container;
-	}
 
 	/**
 	 * Test function to get directory with files
@@ -121,5 +107,5 @@ class FileManagerTest extends TestCase {
 
 }
 
-$test = new FileManagerTest($container);
+$test = new FileManagerTest();
 $test->run();

@@ -11,11 +11,11 @@ declare(strict_types = 1);
 namespace Test\IqrfNetModule\Models;
 
 use App\IqrfNetModule\Models\MessageIdManager;
-use Nette\DI\Container;
+use DateTime;
 use Tester\Assert;
 use Tester\TestCase;
 
-$container = require __DIR__ . '/../../bootstrap.php';
+require __DIR__ . '/../../bootstrap.php';
 
 /**
  * Tests for message ID generator
@@ -23,23 +23,10 @@ $container = require __DIR__ . '/../../bootstrap.php';
 class MessageIdManagerTest extends TestCase {
 
 	/**
-	 * @var Container Nette Tester Container
-	 */
-	private $container;
-
-	/**
-	 * Constructor
-	 * @param Container $container Nette Tester Container
-	 */
-	public function __construct(Container $container) {
-		$this->container = $container;
-	}
-
-	/**
 	 * Test function to generate message ID
 	 */
 	public function testGenerate(): void {
-		$expected = strval((new \DateTime())->getTimestamp());
+		$expected = strval((new DateTime())->getTimestamp());
 		$manager = new MessageIdManager();
 		Assert::same($expected, $manager->generate());
 	}
@@ -47,5 +34,5 @@ class MessageIdManagerTest extends TestCase {
 }
 
 
-$test = new MessageIdManagerTest($container);
+$test = new MessageIdManagerTest();
 $test->run();

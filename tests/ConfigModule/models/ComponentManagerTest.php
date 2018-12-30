@@ -12,22 +12,17 @@ namespace Test\ConfigModule\Models;
 
 use App\ConfigModule\Models\ComponentManager;
 use App\CoreModule\Models\JsonFileManager;
-use Nette\DI\Container;
 use Nette\Utils\Arrays;
 use Tester\Assert;
+use Tester\Environment;
 use Tester\TestCase;
 
-$container = require __DIR__ . '/../../bootstrap.php';
+require __DIR__ . '/../../bootstrap.php';
 
 /**
  * Tests for component configuration manager
  */
 class ComponentManagerTest extends TestCase {
-
-	/**
-	 * @var Container Nette Tester Container
-	 */
-	private $container;
 
 	/**
 	 * @var JsonFileManager JSON file manager
@@ -55,18 +50,10 @@ class ComponentManagerTest extends TestCase {
 	private $managerTemp;
 
 	/**
-	 * Constructor
-	 * @param Container $container Nette Tester Container
-	 */
-	public function __construct(Container $container) {
-		$this->container = $container;
-	}
-
-	/**
 	 * The function to add a new component
 	 */
 	public function testAdd(): void {
-		\Tester\Environment::lock('config_main', __DIR__ . '/../../temp/');
+		Environment::lock('config_main', __DIR__ . '/../../temp/');
 		$expected = $this->fileManager->read($this->fileName);
 		$this->fileManagerTemp->write($this->fileName, $expected);
 		$array = [
@@ -86,7 +73,7 @@ class ComponentManagerTest extends TestCase {
 	 * Test function to delete the component
 	 */
 	public function testDelete(): void {
-		\Tester\Environment::lock('config_main', __DIR__ . '/../../temp/');
+		Environment::lock('config_main', __DIR__ . '/../../temp/');
 		$expected = $this->fileManager->read($this->fileName);
 		$this->fileManagerTemp->write($this->fileName, $expected);
 		unset($expected['components'][30]);
@@ -121,7 +108,7 @@ class ComponentManagerTest extends TestCase {
 	 * Test function to save configuration of components
 	 */
 	public function testSave(): void {
-		\Tester\Environment::lock('config_main', __DIR__ . '/../../temp/');
+		Environment::lock('config_main', __DIR__ . '/../../temp/');
 		$array = [
 			'name' => 'iqrf::Scheduler',
 			'libraryPath' => '',
@@ -150,5 +137,5 @@ class ComponentManagerTest extends TestCase {
 
 }
 
-$test = new ComponentManagerTest($container);
+$test = new ComponentManagerTest();
 $test->run();

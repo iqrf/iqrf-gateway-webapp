@@ -32,7 +32,7 @@ class EnumerationParser implements IParser {
 	/**
 	 * Parse DPA Coordinator response
 	 * @param string $packet DPA packet
-	 * @return array|null Parsed data
+	 * @return mixed[]|null Parsed data
 	 */
 	public function parse(string $packet): ?array {
 		$data = explode('.', $packet);
@@ -51,7 +51,7 @@ class EnumerationParser implements IParser {
 	/**
 	 * Parse response to DPA Peripheral enumeration request
 	 * @param string $packet DPA packet response
-	 * @return array Parsed peripheral enumeration
+	 * @return mixed[] Parsed peripheral enumeration
 	 * @todo Add parser for User's peripherals
 	 */
 	public function parsePeripheralEnumeration(string $packet): array {
@@ -71,14 +71,11 @@ class EnumerationParser implements IParser {
 	/**
 	 * Get Embedded peripherals from DPA response
 	 * @param string $packet DPA packet response
-	 * @return array Embedded Peripherals
+	 * @return mixed[] Embedded Peripherals
 	 */
 	public function getEmbeddedPers(string $packet): array {
 		$data = [];
-		$peripherals = [
-			1 => 'NODE', 2 => 'OS', 3 => 'EEPROM', 4 => 'EEEPROM', 5 => 'RAM',
-			6 => 'LEDR', 7 => 'LEDG', 9 => 'IO', 10 => 'Thermometer',
-		];
+		$peripherals = [1 => 'NODE', 2 => 'OS', 3 => 'EEPROM', 4 => 'EEEPROM', 5 => 'RAM', 6 => 'LEDR', 7 => 'LEDG', 9 => 'IO', 10 => 'Thermometer'];
 		$array = explode('.', $packet);
 		$part = $array[11] . $array[12] . $array[13] . $array[14] . $array[15];
 		$bits = array_keys(str_split(str_pad(strrev(base_convert($part, 16, 2)), 16, '0')));

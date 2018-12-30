@@ -28,8 +28,8 @@ interface IParser {
 	/**
 	 * Parse DPA response
 	 * @param string $packet DPA packet
-	 * @return array|null Parsed data os null
+	 * @return mixed[]|null Parsed data os null
 	 */
-	public function parse(string $packet);
+	public function parse(string $packet): ?array;
 
 }

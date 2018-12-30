@@ -58,11 +58,11 @@ class SchedulerFormFactory {
 	private $presenter;
 
 	/**
-	 * @var array Message types
+	 * @var string[] Message types
 	 */
 	private $mTypes = [
-		'iqrfRaw'=> 'mTypes.iqrfRaw',
-		'iqrfRawHdp'=> 'mTypes.iqrfRawHdp',
+		'iqrfRaw' => 'mTypes.iqrfRaw',
+		'iqrfRawHdp' => 'mTypes.iqrfRawHdp',
 	];
 
 	/**
@@ -130,7 +130,7 @@ class SchedulerFormFactory {
 	 * Add inputs for DPA raw request
 	 * @param Container $req Form request container
 	 */
-	private function addRaw(Container $req):void {
+	private function addRaw(Container $req): void {
 		$req->addText('rData', 'request');
 	}
 
@@ -138,7 +138,7 @@ class SchedulerFormFactory {
 	 * Add inputs for DPA raw HDP request
 	 * @param Container $req Form request container
 	 */
-	private function addRawHdp(Container $req):void {
+	private function addRawHdp(Container $req): void {
 		$req->addInteger('nAdr', 'nAdr');
 		$req->addInteger('pNum', 'pNum');
 		$req->addInteger('pCmd', 'pCmd');

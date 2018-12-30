@@ -15,21 +15,17 @@ use App\ConfigModule\Models\MainManager;
 use App\ConfigModule\Models\SchedulerManager;
 use App\CoreModule\Models\JsonFileManager;
 use App\CoreModule\Models\JsonSchemaManager;
-use Nette\DI\Container;
+use Mockery;
 use Tester\Assert;
+use Tester\Environment;
 use Tester\TestCase;
 
-$container = require __DIR__ . '/../../bootstrap.php';
+require __DIR__ . '/../../bootstrap.php';
 
 /**
  * Tests for scheduler's task configuration manager
  */
 class SchedulerManagerTest extends TestCase {
-
-	/**
-	 * @var Container Nette Tester Container
-	 */
-	private $container;
 
 	/**
 	 * @var JsonFileManager JSON file manager
@@ -47,7 +43,7 @@ class SchedulerManagerTest extends TestCase {
 	private $manager;
 
 	/**
-	 * @var array Scheduler's task settings
+	 * @var mixed[string] Scheduler's task settings
 	 */
 	private $array = [
 		'time' => '*/5 * 1 * * * *',
@@ -71,18 +67,10 @@ class SchedulerManagerTest extends TestCase {
 	private $fileName = 'Tasks';
 
 	/**
-	 * Constructor
-	 * @param Container $container Nette Tester Container
-	 */
-	public function __construct(Container $container) {
-		$this->container = $container;
-	}
-
-	/**
 	 * Test function to add configuration of Scheduler
 	 */
 	public function testAdd(): void {
-		\Tester\Environment::lock('config_scheduler', __DIR__ . '/../../temp/');
+		Environment::lock('config_scheduler', __DIR__ . '/../../temp/');
 		$expected = $this->fileManager->read($this->fileName);
 		$this->fileManagerTemp->write($this->fileName, $expected);
 		$this->manager->add('raw');
@@ -109,7 +97,7 @@ class SchedulerManagerTest extends TestCase {
 	 * Test function to delete configuration of Scheduler
 	 */
 	public function testDelete(): void {
-		\Tester\Environment::lock('config_scheduler', __DIR__ . '/../../temp/');
+		Environment::lock('config_scheduler', __DIR__ . '/../../temp/');
 		$expected = $this->fileManager->read($this->fileName);
 		$this->fileManagerTemp->write($this->fileName, $expected);
 		unset($expected['TasksJson'][5]);
@@ -144,10 +132,11 @@ class SchedulerManagerTest extends TestCase {
 	 */
 	public function testGetMessagings(): void {
 		$expected = [
-			'config.mq.title' => ['MqMessaging',],
-			'config.mqtt.title' => ['MqttMessaging',],
+			'config.mq.title' => ['MqMessaging'],
+			'config.mqtt.title' => ['MqttMessaging'],
 			'config.websocket.title' => [
-				'WebsocketMessaging', 'WebsocketMessagingMobileApp',
+				'WebsocketMessaging',
+				'WebsocketMessagingMobileApp',
 				'WebsocketMessagingWebApp',
 			],
 		];
@@ -198,7 +187,7 @@ class SchedulerManagerTest extends TestCase {
 	 * Test function to save configuration of Scheduler
 	 */
 	public function testSave(): void {
-		\Tester\Environment::lock('config_scheduler', __DIR__ . '/../../temp/');
+		Environment::lock('config_scheduler', __DIR__ . '/../../temp/');
 		$array = $this->array;
 		$array['message']['nadr'] = '0';
 		$expected = $this->fileManager->read($this->fileName);
@@ -220,8 +209,8 @@ class SchedulerManagerTest extends TestCase {
 		$fileManager = new JsonFileManager($configPath);
 		$schemaManager = new JsonSchemaManager($schemaPath);
 		$genericConfigManager = new GenericManager($fileManager, $schemaManager);
-		$configuration = ['cacheDir' => $configTempPath,];
-		$mainConfigManager = \Mockery::mock(MainManager::class);
+		$configuration = ['cacheDir' => $configTempPath];
+		$mainConfigManager = Mockery::mock(MainManager::class);
 		$mainConfigManager->shouldReceive('load')->andReturn($configuration);
 		$this->fileManagerTemp->write($this->fileName, $this->fileManager->read($this->fileName));
 		$this->manager = new SchedulerManager($mainConfigManager, $genericConfigManager);
@@ -231,10 +220,10 @@ class SchedulerManagerTest extends TestCase {
 	 * Cleanup the test environment
 	 */
 	protected function tearDown(): void {
-		\Mockery::close();
+		Mockery::close();
 	}
 
 }
 
-$test = new SchedulerManagerTest($container);
+$test = new SchedulerManagerTest();
 $test->run();

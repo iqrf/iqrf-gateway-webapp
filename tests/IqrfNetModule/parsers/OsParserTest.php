@@ -12,21 +12,15 @@ namespace Test\IqrfNetModule\Models;
 
 use App\CoreModule\Models\JsonFileManager;
 use App\IqrfNetModule\Parsers\OsParser;
-use Nette\DI\Container;
 use Tester\Assert;
 use Tester\TestCase;
 
-$container = require __DIR__ . '/../../bootstrap.php';
+require __DIR__ . '/../../bootstrap.php';
 
 /**
  * Tests for parser of DPA OS responses
  */
 class OsParserTest extends TestCase {
-
-	/**
-	 * @var Container Nette Tester Container
-	 */
-	private $container;
 
 	/**
 	 * @var OsParser DPA OS response parser
@@ -39,17 +33,9 @@ class OsParserTest extends TestCase {
 	private $packet;
 
 	/**
-	 * @var array Expected parsed responses
+	 * @var mixed[] Expected parsed responses
 	 */
 	private $expected;
-
-	/**
-	 * Constructor
-	 * @param Container $container Nette Tester Container
-	 */
-	public function __construct(Container $container) {
-		$this->container = $container;
-	}
 
 	/**
 	 * Set up test environment
@@ -107,5 +93,5 @@ class OsParserTest extends TestCase {
 
 }
 
-$test = new OsParserTest($container);
+$test = new OsParserTest();
 $test->run();

@@ -44,38 +44,45 @@ class WebsocketPresenter extends GenericPresenter {
 	 * @inject
 	 */
 	public $basicDataGridFactory;
+
 	/**
 	 * @var WebSocketFormFactory WebSocket instance configuration form factory
 	 * @inject
 	 */
 	public $basicFormFactory;
+
 	/**
 	 * @var WebSocketMessagingDataGridFactory WebSocket messaging configuration data grid factory
 	 * @inject
 	 */
 	public $messagingDataGridFactory;
+
 	/**
 	 * @var WebSocketMessagingFormFactory WebSocket messaging configuration form factory
 	 * @inject
 	 */
 	public $messagingFormFactory;
+
 	/**
 	 * @var WebSocketServiceDataGridFactory WebSocket service configuration data grid
 	 * @inject
 	 */
 	public $serviceDataGridFactory;
+
 	/**
 	 * @var WebSocketServiceFormFactory WebSocket service configuration form factory
 	 * @inject
 	 */
 	public $serviceFormFactory;
+
 	/**
-	 * @var array WebSocket components
+	 * @var string[] WebSocket components
 	 */
 	protected $components = [
 		'messaging' => 'iqrf::WebsocketMessaging',
 		'service' => 'shape::WebsocketCppService',
 	];
+
 	/**
 	 * @var WebSocketManager WebSocket manager
 	 */

@@ -52,4 +52,5 @@ class HomepagePresenter extends ProtectedPresenter {
 			$this->flashMessage('core.update.error', 'warning');
 		}
 	}
+
 }

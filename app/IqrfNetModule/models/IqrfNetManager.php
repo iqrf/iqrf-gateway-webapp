@@ -35,42 +35,42 @@ class IqrfNetManager {
 	/**
 	 * Alternative RF channel A
 	 */
-	const ALTERNATIVE_RF_CHANNEL_A = '06';
+	public const ALTERNATIVE_RF_CHANNEL_A = '06';
 
 	/**
 	 * Alternative RF channel B
 	 */
-	const ALTERNATIVE_RF_CHANNEL_B = '07';
+	public const ALTERNATIVE_RF_CHANNEL_B = '07';
 
 	/**
 	 * Main RF channel A
 	 */
-	const MAIN_RF_CHANNEL_A = '11';
+	public const MAIN_RF_CHANNEL_A = '11';
 
 	/**
 	 * Main RF channel B
 	 */
-	const MAIN_RF_CHANNEL_B = '12';
+	public const MAIN_RF_CHANNEL_B = '12';
 
 	/**
 	 * ASCII data format
 	 */
-	const DATA_FORMAT_ASCII = 'ASCII';
+	public const DATA_FORMAT_ASCII = 'ASCII';
 
 	/**
 	 * HEX data format
 	 */
-	const DATA_FORMAT_HEX = 'HEX';
+	public const DATA_FORMAT_HEX = 'HEX';
 
 	/**
 	 * IQMESH Security Access password
 	 */
-	const SECURITY_ACCESS_PASSWORD = 'accessPassword';
+	public const SECURITY_ACCESS_PASSWORD = 'accessPassword';
 
 	/**
 	 * IQMESH Security User key
 	 */
-	const SECURITY_USER_KEY = 'userKey';
+	public const SECURITY_USER_KEY = 'userKey';
 
 	/**
 	 * @var DpaRawManager DPA Raw request and response manager
@@ -88,7 +88,7 @@ class IqrfNetManager {
 	/**
 	 * The command removes all nodes from the list of bonded nodes at coordinator memory.
 	 * It actually destroys the network from the coordinator point of view.
-	 * @return array DPA request and response
+	 * @return mixed[] DPA request and response
 	 * @throws IqrfException\EmptyResponseException
 	 * @throws JsonException
 	 */
@@ -101,7 +101,7 @@ class IqrfNetManager {
 	 * This command bonds a new node by the coordinator.
 	 * There is a maximum approx. 12 s blocking delay when this function is called.
 	 * @param string $address A requested address for the bonded node. The address must not be used (bonded) yet. If this parameter equals to 0, then the 1 free address is assigned to the node.
-	 * @return array DPA request and response
+	 * @return mixed[] DPA request and response
 	 * @throws IqrfException\EmptyResponseException
 	 * @throws JsonException
 	 */
@@ -116,7 +116,7 @@ class IqrfNetManager {
 	 * The time when the response is delivered depends highly on the number of network devices, the network topology, and RF mode, thus, it is not predictable. It can take from a few seconds to many minutes.
 	 * @param int $txPower TX Power used for discovery.
 	 * @param string $maxAddress Nonzero value specifies maximum node address to be part of the discovery process. This feature allows splitting all node devices into two parts: [1] devices having an address from 1 to MaxAddr will be part of the discovery process thus they become routers, [2] devices having an address from MaxAddr+1 to 239 will not be routers. See IQRF OS documentation for more information. The value of this parameter is ignored at demo version. A value 5 is always used instead.
-	 * @return array DPA request and response
+	 * @return mixed[] DPA request and response
 	 * @throws IqrfException\EmptyResponseException
 	 * @throws JsonException
 	 */
@@ -130,7 +130,7 @@ class IqrfNetManager {
 	/**
 	 * Removes already bonded node from the list of bonded nodes at coordinator memory.
 	 * @param string $address Address of the node to remove the bond to
-	 * @return array DPA request and response
+	 * @return mixed[] DPA request and response
 	 * @throws IqrfException\EmptyResponseException
 	 * @throws JsonException
 	 */
@@ -142,7 +142,7 @@ class IqrfNetManager {
 	/**
 	 * Puts specified node back to the list of bonded nodes in the coordinator memory.
 	 * @param string $address Number of bonded network nodes
-	 * @return array DPA request and response
+	 * @return mixed[] DPA request and response
 	 * @throws IqrfException\EmptyResponseException
 	 * @throws JsonException
 	 */
@@ -153,7 +153,7 @@ class IqrfNetManager {
 
 	/**
 	 * The command read HWP configuration
-	 * @return array DPA request and response
+	 * @return mixed[] DPA request and response
 	 * @throws IqrfException\DpaErrorException
 	 * @throws IqrfException\EmptyResponseException
 	 * @throws IqrfException\UserErrorException
@@ -169,13 +169,13 @@ class IqrfNetManager {
 	 * Set RF channel
 	 * @param int $channel RF channel ID
 	 * @param string $type RF channel type
-	 * @return array DPA request and response
+	 * @return mixed[] DPA request and response
 	 * @throws IqrfException\EmptyResponseException
 	 * @throws IqrfException\InvalidRfChannelTypeException
 	 * @throws JsonException
 	 */
 	public function setRfChannel(int $channel, string $type): array {
-		$types = ['11', '12', '06', '07',];
+		$types = ['11', '12', '06', '07'];
 		if (!in_array($type, $types, true)) {
 			throw new IqrfException\InvalidRfChannelTypeException();
 		}
@@ -188,7 +188,7 @@ class IqrfNetManager {
 	 * @param string $address Address of the item at configuration memory block.
 	 * @param string $value Value of the configuration item to write.
 	 * @param string $mask Specifies bits of the configuration byte to be modified by the corresponding bits of the Value parameter. Only bits that are set at the Mask will be written to the configuration byte i.e. when Mask equals to 0xFF then the whole Value will be written to the configuration byte. For example, when Mask equals to 0x12 then only bit.1 and bit.4 from Value will be written to the configuration byte.
-	 * @return array DPA request and response
+	 * @return mixed[] DPA request and response
 	 * @throws IqrfException\EmptyResponseException
 	 * @throws JsonException
 	 */
@@ -200,7 +200,7 @@ class IqrfNetManager {
 	/**
 	 * Set RF LP timeout
 	 * @param int $timeout RF LP timeout
-	 * @return array DPA request and response
+	 * @return mixed[] DPA request and response
 	 * @throws IqrfException\EmptyResponseException
 	 * @throws IqrfException\InvalidRfLpTimeoutException
 	 * @throws JsonException
@@ -216,7 +216,7 @@ class IqrfNetManager {
 	/**
 	 * Set RF output power
 	 * @param int $power RF output power
-	 * @return array DPA request and response
+	 * @return mixed[] DPA request and response
 	 * @throws IqrfException\EmptyResponseException
 	 * @throws IqrfException\InvalidRfOutputPowerException
 	 * @throws JsonException
@@ -232,7 +232,7 @@ class IqrfNetManager {
 	/**
 	 * Set RF signal filter
 	 * @param int $filter RF signal filter
-	 * @return array DPA request and response
+	 * @return mixed[] DPA request and response
 	 * @throws IqrfException\EmptyResponseException
 	 * @throws IqrfException\InvalidRfSignalFilterException
 	 * @throws JsonException

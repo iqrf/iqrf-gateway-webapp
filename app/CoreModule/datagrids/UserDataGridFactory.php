@@ -104,7 +104,7 @@ class UserDataGridFactory {
 			if ($this->presenter->user->id === $id) {
 				$this->presenter->user->logout();
 			}
-			$message = new Phrase('core.user.form.messages.successEdit', null,['username' => $user['username']]);
+			$message = new Phrase('core.user.form.messages.successEdit', null, ['username' => $user['username']]);
 			$this->presenter->flashMessage($message, 'success');
 			$this->presenter->redirect('User:default');
 		} catch (UsernameAlreadyExistsException $e) {
@@ -131,7 +131,7 @@ class UserDataGridFactory {
 			if ($this->presenter->user->id === $id) {
 				$this->presenter->user->logout();
 			}
-			$message = new Phrase('core.user.form.messages.successEdit', null,['username' => $user['username']]);
+			$message = new Phrase('core.user.form.messages.successEdit', null, ['username' => $user['username']]);
 			$this->presenter->flashMessage($message, 'success');
 			$this->presenter->redirect('User:default');
 		} catch (UsernameAlreadyExistsException $e) {

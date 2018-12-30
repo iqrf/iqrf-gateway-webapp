@@ -17,11 +17,11 @@ use Nette\Caching\Storages\MemoryStorage;
 use Nette\Database\Connection;
 use Nette\Database\Context;
 use Nette\Database\Structure;
-use Nette\DI\Container;
 use Tester\Assert;
+use Tester\Environment;
 use Tester\TestCase;
 
-$container = require __DIR__ . '/../../bootstrap.php';
+require __DIR__ . '/../../bootstrap.php';
 
 /**
  * Tests for certificate manager
@@ -29,17 +29,12 @@ $container = require __DIR__ . '/../../bootstrap.php';
 class UserManagerTest extends TestCase {
 
 	/**
-	 * @var Container Nette Tester Container
-	 */
-	private $container;
-
-	/**
 	 * @var Context Nette Database context
 	 */
 	private $context;
 
 	/**
-	 * @var array Information about the user admin
+	 * @var string[] Information about the user admin
 	 */
 	private $data = [
 		'username' => 'admin',
@@ -52,14 +47,6 @@ class UserManagerTest extends TestCase {
 	 * @var UserManager User manager
 	 */
 	private $manager;
-
-	/**
-	 * Constructor
-	 * @param Container $container Nette Tester Container
-	 */
-	public function __construct(Container $container) {
-		$this->container = $container;
-	}
 
 	/**
 	 * Test function to change the password (incorrect old password)
@@ -107,7 +94,7 @@ class UserManagerTest extends TestCase {
 		$user = $this->data;
 		$user['username'] = 'user';
 		$this->context->table('users')->insert($user);
-		Assert::exception(function () {
+		Assert::exception(function (): void {
 			$this->manager->edit(2, 'admin', 'normal', 'cs');
 		}, UsernameAlreadyExistsException::class);
 	}
@@ -168,7 +155,7 @@ class UserManagerTest extends TestCase {
 	 */
 	public function testRegisterFail(): void {
 		$this->createUser();
-		Assert::exception(function () {
+		Assert::exception(function (): void {
 			$this->manager->register('admin', 'iqrf', 'power', 'en');
 		}, UsernameAlreadyExistsException::class);
 	}
@@ -190,7 +177,7 @@ class UserManagerTest extends TestCase {
 	 * Set up the test environment
 	 */
 	protected function setUp(): void {
-		\Tester\Environment::lock('user_db', __DIR__ . '/../../temp/');
+		Environment::lock('user_db', __DIR__ . '/../../temp/');
 		$connection = new Connection('sqlite::memory:');
 		$cacheStorage = new MemoryStorage();
 		$structure = new Structure($connection, $cacheStorage);
@@ -215,5 +202,5 @@ class UserManagerTest extends TestCase {
 
 }
 
-$test = new UserManagerTest($container);
+$test = new UserManagerTest();
 $test->run();

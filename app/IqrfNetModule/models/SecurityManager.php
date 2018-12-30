@@ -58,7 +58,7 @@ class SecurityManager {
 	 * Set an access password
 	 * @param string $password An access password
 	 * @param string $inputFormat Input data format (ASCII or HEX)
-	 * @return array DPA request and response
+	 * @return mixed[] DPA request and response
 	 * @throws IqrfException\EmptyResponseException
 	 * @throws IqrfException\UnsupportedInputFormatException
 	 * @throws JsonException
@@ -71,7 +71,7 @@ class SecurityManager {
 	 * Set an user key
 	 * @param string $password An user key
 	 * @param string $inputFormat Input data format (ASCII or HEX)
-	 * @return array DPA request and response
+	 * @return mixed[] DPA request and response
 	 * @throws IqrfException\EmptyResponseException
 	 * @throws IqrfException\UnsupportedInputFormatException
 	 * @throws JsonException
@@ -85,7 +85,7 @@ class SecurityManager {
 	 * @param string $password An access password or an user key
 	 * @param string $inputFormat Input data format (ASCII or HEX)
 	 * @param int $type Security type (access password, user key)
-	 * @return array DPA request and response
+	 * @return mixed[] DPA request and response
 	 * @throws IqrfException\EmptyResponseException
 	 * @throws IqrfException\UnsupportedInputFormatException
 	 * @throws JsonException
@@ -112,13 +112,13 @@ class SecurityManager {
 	 * Convert an access password or an user key to HEX format
 	 * @param string $password Access password or user key
 	 * @param string $inputFormat Input data format (ASCII or HEX)
-	 * @return array Converted an access password or an user key
+	 * @return mixed[] Converted an access password or an user key
 	 * @throws IqrfException\UnsupportedInputFormatException
 	 */
 	private function convertToHex(string $password, string $inputFormat): array {
 		if ($inputFormat === DataFormat::ASCII) {
 			$data = implode(unpack('H*', $password));
-		} else if ($inputFormat === DataFormat::HEX) {
+		} elseif ($inputFormat === DataFormat::HEX) {
 			$data = $password;
 		} else {
 			throw new IqrfException\UnsupportedInputFormatException();

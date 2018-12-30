@@ -14,11 +14,10 @@ use App\Router\RouterFactory;
 use Nette\Application\IRouter;
 use Nette\Application\Routers\Route;
 use Nette\Application\Routers\RouteList;
-use Nette\DI\Container;
 use Tester\Assert;
 use Tester\TestCase;
 
-$container = require __DIR__ . '/../bootstrap.php';
+require __DIR__ . '/../bootstrap.php';
 
 /**
  * Tests for router factory
@@ -26,12 +25,7 @@ $container = require __DIR__ . '/../bootstrap.php';
 class RouterFactoryTest extends TestCase {
 
 	/**
-	 * @var Container Nette Tester Container
-	 */
-	private $container;
-
-	/**
-	 * @var array Routes
+	 * @var array[string[]] Routes
 	 */
 	private $expected = [
 		['Cloud:' => [
@@ -59,14 +53,6 @@ class RouterFactoryTest extends TestCase {
 	];
 
 	/**
-	 * Constructor
-	 * @param Container $container Nette Tester Container
-	 */
-	public function __construct(Container $container) {
-		$this->container = $container;
-	}
-
-	/**
 	 * Test function to create a router
 	 */
 	public function testCreateRouter(): void {
@@ -81,15 +67,15 @@ class RouterFactoryTest extends TestCase {
 				if ($type instanceof RouteList) {
 					$routeMask = array_map(function (Route $route) {
 						return $route->getMask();
-					}, (array)$type->getIterator());
+					}, (array) $type->getIterator());
 					return [$type->getModule() => $routeMask];
 				}
 			}
 			return;
-		}, (array)$routeList->getIterator()));
+		}, (array) $routeList->getIterator()));
 	}
 
 }
 
-$test = new RouterFactoryTest($container);
+$test = new RouterFactoryTest();
 $test->run();

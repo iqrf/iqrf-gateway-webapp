@@ -23,6 +23,7 @@ namespace App\CloudModule\Models;
 use App\CloudModule\Exceptions\InvalidPrivateKeyForCertificateException;
 use App\ConfigModule\Models\GenericManager;
 use App\CoreModule\Models\CertificateManager;
+use DateTime;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Nette\SmartObject;
@@ -78,7 +79,7 @@ class AwsManager implements IManager {
 
 	/**
 	 * Create MQTT interface
-	 * @param array $values Values from form
+	 * @param mixed[] $values Values from form
 	 * @throws GuzzleException
 	 * @throws InvalidPrivateKeyForCertificateException
 	 * @throws JsonException
@@ -118,10 +119,10 @@ class AwsManager implements IManager {
 
 	/**
 	 * Create paths for root CA certificate, certificate and private key
-	 * @return array Paths for root CA certificate, certificate and private key
+	 * @return string[] Paths for root CA certificate, certificate and private key
 	 */
 	public function createPaths(): array {
-		$timestamp = (new \DateTime())->format(\DateTime::ISO8601);
+		$timestamp = (new DateTime())->format(DateTime::ISO8601);
 		$path = $this->certPath . $timestamp;
 		$paths = [];
 		$paths['cert'] = $path . '-aws.crt';
@@ -141,7 +142,7 @@ class AwsManager implements IManager {
 
 	/**
 	 * Check a certificate and a private key
-	 * @param array $values Form values
+	 * @param mixed[] $values Form values
 	 * @throws InvalidPrivateKeyForCertificateException
 	 */
 	public function checkCertificate(array $values): void {
@@ -154,8 +155,8 @@ class AwsManager implements IManager {
 
 	/**
 	 * Upload root CA certificate, certificate and private key
-	 * @param array $values Form values
-	 * @param array $paths Paths for root CA certificate, certificate and private key
+	 * @param mixed[] $values Form values
+	 * @param string[] $paths Paths for root CA certificate, certificate and private key
 	 */
 	public function uploadCertsAndKey(array $values, array $paths): void {
 		$cert = $values['cert'];

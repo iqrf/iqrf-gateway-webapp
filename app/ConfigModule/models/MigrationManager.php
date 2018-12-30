@@ -27,6 +27,7 @@ use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\JsonSchemaManager;
 use App\CoreModule\Models\ZipArchiveManager;
+use DateTime;
 use Nette\Application\BadRequestException;
 use Nette\Application\Responses\FileResponse;
 use Nette\SmartObject;
@@ -34,6 +35,7 @@ use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
+use ZipArchive;
 
 /**
  * Tool for migrating configuration
@@ -91,7 +93,7 @@ class MigrationManager {
 	 */
 	public function download(): FileResponse {
 		$this->zipManagerDownload = new ZipArchiveManager($this->path);
-		$now = new \DateTime();
+		$now = new DateTime();
 		$fileName = 'iqrf-gateway-configuration_' . $now->format('c') . '.zip';
 		$contentType = 'application/zip';
 		$this->zipManagerDownload->addFolder($this->configDirectory, '');
@@ -102,7 +104,7 @@ class MigrationManager {
 
 	/**
 	 * Upload a configuration
-	 * @param array $formValues Values from form
+	 * @param mixed[] $formValues Values from form
 	 * @throws IncompleteConfigurationException
 	 * @throws InvalidConfigurationFormatException
 	 * @throws JsonException
@@ -116,7 +118,7 @@ class MigrationManager {
 			throw new InvalidConfigurationFormatException();
 		}
 		$zip->move($this->path);
-		$this->zipManagerUpload = new ZipArchiveManager($this->path, \ZipArchive::CREATE);
+		$this->zipManagerUpload = new ZipArchiveManager($this->path, ZipArchive::CREATE);
 		if (!$this->validate($this->zipManagerUpload)) {
 			$this->zipManagerUpload->close();
 			FileSystem::delete($this->path);

@@ -83,12 +83,12 @@ class UserRemoveCommand extends Command {
 	 * Ask for the username
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
-	 * @return array Information about the user
+	 * @return mixed[] Information about the user
 	 */
 	private function askUserName(InputInterface $input, OutputInterface $output): array {
 		$username = $input->getOption('username');
 		$user = $this->userManager->getUser($username);
-		while (is_null($user)) {
+		while ($user === null) {
 			$helper = $this->getHelper('question');
 			$userNames = $this->userManager->listUserNames();
 			$question = new ChoiceQuestion('Please enter the username: ', $userNames);
@@ -110,6 +110,5 @@ class UserRemoveCommand extends Command {
 			return;
 		}
 	}
-
 
 }

@@ -20,9 +20,11 @@ declare(strict_types = 1);
 
 namespace App\IqrfNetModule\Exceptions;
 
+use Exception;
+
 /**
  * The exception that indicates empty JSON DPA or DPA response
  */
-class EmptyResponseException extends \Exception {
+class EmptyResponseException extends Exception {
 
 }

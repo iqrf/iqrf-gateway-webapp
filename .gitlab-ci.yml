@@ -149,6 +149,14 @@ phpstan:
   script:
     - composer phpstan
 
+qa:
+  stage: coding-style
+  before_script:
+    - update-alternatives --set php /usr/bin/php7.2
+    - composer install --no-progress
+  script:
+    - composer qa
+
 build-package:
   stage: build-package
   before_script:

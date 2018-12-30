@@ -20,9 +20,11 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Exceptions;
 
+use Exception;
+
 /**
  * The exception that indicates an invalid format of configuration to import
  */
-class InvalidConfigurationFormatException extends \Exception {
+class InvalidConfigurationFormatException extends Exception {
 
 }

@@ -16,15 +16,19 @@ use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FileManager;
 use App\CoreModule\Models\JsonSchemaManager;
 use App\CoreModule\Models\ZipArchiveManager;
+use DateTime;
+use Mockery;
+use Mockery\Mock;
 use Nette\Application\Responses\FileResponse;
-use Nette\DI\Container;
 use Nette\Http\FileUpload;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
 use Tester\Assert;
+use Tester\Environment;
 use Tester\TestCase;
+use ZipArchive;
 
-$container = require __DIR__ . '/../../bootstrap.php';
+require __DIR__ . '/../../bootstrap.php';
 
 /**
  * Tests for IQRF interface manager
@@ -32,14 +36,9 @@ $container = require __DIR__ . '/../../bootstrap.php';
 class MigrationManagerTest extends TestCase {
 
 	/**
-	 * @var \Mockery\Mock Mocker command manager
+	 * @var Mock Mocker command manager
 	 */
 	private $commandManager;
-
-	/**
-	 * @var Container Nette Tester Container
-	 */
-	private $container;
 
 	/**
 	 * @var string Path to a directory with IQRF Gateway Daemon's configuration
@@ -87,25 +86,17 @@ class MigrationManagerTest extends TestCase {
 	private $tempPath = __DIR__ . '/../../temp/iqrf-gateway-configuration.zip';
 
 	/**
-	 * Constructor
-	 * @param Container $container Nette Tester Container
-	 */
-	public function __construct(Container $container) {
-		$this->container = $container;
-	}
-
-	/**
 	 * Test function to download IQRF Gateway Daemon's configuration in a ZIP archive
 	 */
 	public function testDownload(): void {
-		$timestamp = (new \DateTime())->format('c');
+		$timestamp = (new DateTime())->format('c');
 		$actual = $this->manager->download();
 		$fileName = 'iqrf-gateway-configuration_' . $timestamp . '.zip';
 		$contentType = 'application/zip';
 		$expected = new FileResponse($this->path, $fileName, $contentType, true);
 		Assert::equal($expected, $actual);
 		$files = $this->createList($this->configPath);
-		$zipManager = new ZipArchiveManager($this->path, \ZipArchive::CREATE);
+		$zipManager = new ZipArchiveManager($this->path, ZipArchive::CREATE);
 		foreach ($files as $file) {
 			$expected = $this->fileManager->read($file);
 			Assert::same($expected, $zipManager->openFile($file));
@@ -116,7 +107,7 @@ class MigrationManagerTest extends TestCase {
 	/**
 	 * Create list of files
 	 * @param string $path Path to the directory
-	 * @return array List of files in the directory
+	 * @return string[] List of files in the directory
 	 */
 	private function createList(string $path): array {
 		$path = realpath($path) . '/';
@@ -141,7 +132,7 @@ class MigrationManagerTest extends TestCase {
 			'size' => filesize($filePath),
 		];
 		$values = ['configuration' => new FileUpload($file)];
-		Assert::exception(function () use ($values) {
+		Assert::exception(function () use ($values): void {
 			$this->manager->upload($values);
 		}, InvalidConfigurationFormatException::class);
 	}
@@ -158,7 +149,7 @@ class MigrationManagerTest extends TestCase {
 
 	/**
 	 * Mock an uploaded configuration
-	 * @return array Mocked form values
+	 * @return FileUpload[] Mocked form values
 	 */
 	private function mockUploadedArchive(): array {
 		$values = [];
@@ -179,7 +170,7 @@ class MigrationManagerTest extends TestCase {
 	public function testValidateMissingJsonSchema(): void {
 		FileSystem::delete($this->schemaCorruptedPath . 'schema__iqrf__MqttMessaging.json');
 		$path = __DIR__ . '/../data/iqrf-gateway-configuration.zip';
-		$zipManager = new ZipArchiveManager($path, \ZipArchive::CREATE);
+		$zipManager = new ZipArchiveManager($path, ZipArchive::CREATE);
 		Assert::true($this->managerCorrupted->validate($zipManager));
 		$zipManager->close();
 	}
@@ -189,7 +180,7 @@ class MigrationManagerTest extends TestCase {
 	 */
 	public function testValidateSuccess(): void {
 		$path = __DIR__ . '/../data/iqrf-gateway-configuration.zip';
-		$zipManager = new ZipArchiveManager($path, \ZipArchive::CREATE);
+		$zipManager = new ZipArchiveManager($path, ZipArchive::CREATE);
 		Assert::true($this->manager->validate($zipManager));
 		$zipManager->close();
 	}
@@ -198,12 +189,12 @@ class MigrationManagerTest extends TestCase {
 	 * Set up the test environment
 	 */
 	protected function setUp(): void {
-		\Tester\Environment::lock('migration', __DIR__ . '/../../temp/');
+		Environment::lock('migration', __DIR__ . '/../../temp/');
 		$this->copyFiles();
 		$this->fileManager = new FileManager($this->configPath);
 		$schemaManager = new JsonSchemaManager($this->schemaPath);
 		$schemaManagerCorrupted = new JsonSchemaManager($this->schemaCorruptedPath);
-		$this->commandManager = \Mockery::mock(CommandManager::class, [false])->makePartial();
+		$this->commandManager = Mockery::mock(CommandManager::class, [false])->makePartial();
 		$this->manager = new MigrationManager($this->configTempPath, $this->commandManager, $schemaManager);
 		$this->managerCorrupted = new MigrationManager($this->configTempPath, $this->commandManager, $schemaManagerCorrupted);
 	}
@@ -222,10 +213,10 @@ class MigrationManagerTest extends TestCase {
 	 * Cleanup the test environment
 	 */
 	protected function tearDown(): void {
-		\Mockery::close();
+		Mockery::close();
 	}
 
 }
 
-$test = new MigrationManagerTest($container);
+$test = new MigrationManagerTest();
 $test->run();

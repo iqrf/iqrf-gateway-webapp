@@ -59,7 +59,7 @@ class JsonFileManager extends FileManager {
 	/**
 	 * Read JSON file and decode JSON to array
 	 * @param string $fileName File name (without .json)
-	 * @return array JSON data in array
+	 * @return mixed[] JSON data in array
 	 * @throws JsonException
 	 */
 	public function read(string $fileName): array {
@@ -70,7 +70,7 @@ class JsonFileManager extends FileManager {
 	/**
 	 * Encode JSON from array and write the JSON file
 	 * @param string $name File name (without .json)
-	 * @param array $array JSON data in array
+	 * @param mixed $array JSON data in array
 	 * @throws JsonException
 	 */
 	public function write(string $name, $array): void {

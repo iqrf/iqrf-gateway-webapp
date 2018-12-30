@@ -20,9 +20,11 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Exceptions;
 
+use InvalidArgumentException;
+
 /**
  * The exception that indicates non-existing JSON schema
  */
-class NonExistingJsonSchemaException extends \InvalidArgumentException {
+class NonExistingJsonSchemaException extends InvalidArgumentException {
 
 }

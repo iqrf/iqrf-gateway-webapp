@@ -35,7 +35,7 @@ class StatusPresenter extends ProtectedPresenter {
 	private $serviceManager;
 
 	/**
-	 * Constructor.
+	 * Constructor
 	 * @param ServiceManager $serviceManager Service manager
 	 */
 	public function __construct(ServiceManager $serviceManager) {

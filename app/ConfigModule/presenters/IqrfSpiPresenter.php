@@ -37,10 +37,12 @@ class IqrfSpiPresenter extends GenericPresenter {
 	 * @inject
 	 */
 	public $formFactory;
+
 	/**
 	 * @var JsonFileManager JSON file manager
 	 */
 	private $fileManager;
+
 	/**
 	 * @var IqrfManager IQRF interface manager
 	 */

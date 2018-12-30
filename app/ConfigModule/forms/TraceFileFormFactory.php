@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\ConfigModule\Forms;
 
@@ -31,24 +31,27 @@ class TraceFileFormFactory extends GenericConfigFormFactory {
 	use SmartObject;
 
 	/**
+	 * @var string[] Verbosity levels
+	 */
+	private $verbosityLevels = [
+		'err' => 'VerbosityLevels.Error',
+		'war' => 'VerbosityLevels.Warning',
+		'inf' => 'VerbosityLevels.Info',
+		'dbg' => 'VerbosityLevels.Debug',
+	];
+
+	/**
 	 * Create Tracer configuration form
-	 * @param TracerPresenter $presenter
+	 * @param TracerPresenter $presenter Tracer configuration presenter
 	 * @return Form Tracer configuration form
 	 */
 	public function create(TracerPresenter $presenter): Form {
 		$this->manager->setComponent('shape::TraceFileService');
 		$this->redirect = 'Tracer:default';
 		$this->presenter = $presenter;
-		$id = intval($presenter->getParameter('id'));
-		try {
-			$defaults = $this->manager->load($id);
-		} catch (JsonException $e) {
-			$defaults = [];
-		}
+		$defaults = $this->load();
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('config.tracer.form'));
-		$items = ['err' => 'VerbosityLevels.Error', 'war' => 'VerbosityLevels.Warning',
-			'inf' => 'VerbosityLevels.Info', 'dbg' => 'VerbosityLevels.Debug'];
 		$form->addText('instance', 'instance');
 		$form->addText('path', 'path');
 		$form->addText('filename', 'filename');
@@ -58,18 +61,40 @@ class TraceFileFormFactory extends GenericConfigFormFactory {
 		foreach ($defaults['VerbosityLevels'] as $id => $verbosityLevel) {
 			$container = $verbosityLevels->addContainer($id);
 			$container->addInteger('channel', 'channel');
-			$container->addSelect('level', 'level', $items)
-					->setDefaultValue(Strings::lower($verbosityLevel['level']));
+			$container->addSelect('level', 'level', $this->verbosityLevels)
+				->setDefaultValue(Strings::lower($verbosityLevel['level']));
 			unset($defaults['VerbosityLevels'][$id]['level']);
 		}
 		$form->addSubmit('save', 'Save');
 		$form->setDefaults($defaults);
 		$form->addProtection('core.errors.form-timeout');
-		$form->onSuccess[] = function (Form $form, $values) use ($presenter) {
-			$this->manager->save($values);
-			$presenter->redirect('Homepage:default');
-		};
+		$form->onSuccess[] = [$this, 'save'];
 		return $form;
+	}
+
+	/**
+	 * Load tracer configuration
+	 * @return mixed[] Tracer configuration
+	 */
+	private function load(): array {
+		$id = intval($this->presenter->getParameter('id'));
+		try {
+			$defaults = $this->manager->load($id);
+		} catch (JsonException $e) {
+			$defaults = [];
+		}
+		return $defaults;
+	}
+
+	/**
+	 * Save tracer configuration
+	 * @param Form $form Tracer configuration form
+	 * @throws JsonException
+	 */
+	private function save(Form $form): void {
+		$values = $form->getValues(true);
+		$this->manager->save($values);
+		$this->presenter->redirect('Homepage:default');
 	}
 
 }

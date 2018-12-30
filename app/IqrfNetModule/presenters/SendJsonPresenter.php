@@ -38,7 +38,7 @@ class SendJsonPresenter extends ProtectedPresenter {
 
 	/**
 	 * AJAX handler for showing DPA request and response
-	 * @param array $data DPA request and response
+	 * @param mixed[] $data DPA request and response
 	 */
 	public function handleShowResponse(array $data): void {
 		foreach ($data as &$json) {

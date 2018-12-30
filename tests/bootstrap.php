@@ -15,7 +15,7 @@ if (basename(__DIR__) === 'tests') {
 }
 date_default_timezone_set('Etc/GMT-2');
 
-$configurator = new Nette\Configurator;
+$configurator = new Nette\Configurator();
 $configurator->setDebugMode(false);
 $configurator->setTempDirectory(__DIR__ . '/../temp');
 $configurator->createRobotLoader()->addDirectory(__DIR__ . '/../app')->register();

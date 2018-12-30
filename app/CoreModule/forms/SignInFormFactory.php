@@ -39,7 +39,6 @@ class SignInFormFactory {
 	private $factory;
 
 	/**
-	 *
 	 * @var SignPresenter Sign (in|out) presenter
 	 */
 	private $presenter;

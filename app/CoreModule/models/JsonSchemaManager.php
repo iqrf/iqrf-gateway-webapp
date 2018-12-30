@@ -26,6 +26,7 @@ use JsonSchema\Validator;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
+use stdClass;
 
 /**
  * Tool for reading and validating JSON schemas
@@ -64,12 +65,12 @@ class JsonSchemaManager extends JsonFileManager {
 
 	/**
 	 * Validate JSON
-	 * @param \stdClass $json JSON to validate
-	 * @return boolean Is the JSON valid?
+	 * @param stdClass $json JSON to validate
+	 * @return bool Is the JSON valid?
 	 * @throws InvalidJsonException
 	 * @throws JsonException
 	 */
-	public function validate(\stdClass $json): bool {
+	public function validate(stdClass $json): bool {
 		$schema = parent::read($this->schema);
 		$validator = new Validator();
 		$validator->validate($json, $schema);

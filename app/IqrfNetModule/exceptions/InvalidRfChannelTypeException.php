@@ -20,9 +20,11 @@ declare(strict_types = 1);
 
 namespace App\IqrfNetModule\Exceptions;
 
+use Exception;
+
 /**
  * The exception that indicates invalid RF channel type
  */
-class InvalidRfChannelTypeException extends \Exception {
+class InvalidRfChannelTypeException extends Exception {
 
 }

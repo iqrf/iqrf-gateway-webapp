@@ -12,13 +12,13 @@ namespace Test\IqrfNetModule\Models;
 
 use App\IqrfNetModule\Exceptions as IqrfException;
 use App\IqrfNetModule\Models\DpaRawManager;
-use App\IqrfNetModule\Models\IqrfAppManager;
 use App\IqrfNetModule\Models\IqrfNetManager;
-use Nette\DI\Container;
+use Mockery;
+use Mockery\MockInterface;
 use Tester\Assert;
 use Tester\TestCase;
 
-$container = require __DIR__ . '/../../bootstrap.php';
+require __DIR__ . '/../../bootstrap.php';
 
 /**
  * Tests for IQMESH Network manager
@@ -26,12 +26,7 @@ $container = require __DIR__ . '/../../bootstrap.php';
 class IqrfNetManagerTest extends TestCase {
 
 	/**
-	 * @var Container Nette Tester Container
-	 */
-	private $container;
-
-	/**
-	 * @var \Mockery\MockInterface Mocked IQRF App manager
+	 * @var MockInterface Mocked IQRF App manager
 	 */
 	private $dpaManageer;
 
@@ -39,14 +34,6 @@ class IqrfNetManagerTest extends TestCase {
 	 * @var IqrfNetManager IQMESH Network manager
 	 */
 	private $manager;
-
-	/**
-	 * Constructor
-	 * @param Container $container Nette Tester Container
-	 */
-	public function __construct(Container $container) {
-		$this->container = $container;
-	}
 
 	/**
 	 * Test function to clear all bonds
@@ -197,7 +184,7 @@ class IqrfNetManagerTest extends TestCase {
 	 * Set up the test environment
 	 */
 	protected function setUp(): void {
-		$this->dpaManageer = \Mockery::mock(DpaRawManager::class);
+		$this->dpaManageer = Mockery::mock(DpaRawManager::class);
 		$this->manager = new IqrfNetManager($this->dpaManageer);
 	}
 
@@ -205,10 +192,10 @@ class IqrfNetManagerTest extends TestCase {
 	 * Cleanup the test environment
 	 */
 	protected function tearDown(): void {
-		\Mockery::close();
+		Mockery::close();
 	}
 
 }
 
-$test = new IqrfNetManagerTest($container);
+$test = new IqrfNetManagerTest();
 $test->run();

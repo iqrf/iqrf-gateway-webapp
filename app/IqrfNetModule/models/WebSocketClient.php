@@ -58,7 +58,7 @@ class WebSocketClient {
 	public function __construct(string $wsServer) {
 		$this->loop = EventLoop\Factory::create();
 		$wsServerEnv = getenv('IQRFGD_WS_SERVER');
-		if($wsServerEnv !== false) {
+		if ($wsServerEnv !== false) {
 			$this->wsServer = $wsServerEnv;
 		} else {
 			$this->wsServer = $wsServer;
@@ -69,7 +69,7 @@ class WebSocketClient {
 	 * Send IQRF JSON DPA request
 	 * @param ApiRequest $request IQRF JSON DPA request
 	 * @param int $timeout WebSocket client timeout
-	 * @return array IQRF JSON DPA response
+	 * @return mixed[] IQRF JSON DPA response
 	 * @throws EmptyResponseException
 	 * @throws JsonException
 	 */
@@ -77,16 +77,16 @@ class WebSocketClient {
 		$connection = $this->createConnection($timeout);
 		$wait = true;
 		$attempts = 2;
-		$this->loop->addTimer($timeout * 2, function () use (&$wait) {
+		$this->loop->addTimer($timeout * 2, function () use (&$wait): void {
 			$this->stopSync($wait);
 		});
 		$resolved = null;
-		$connection->then(function (WsClient $conn) use (&$resolved, &$wait, &$attempts, $request) {
+		$connection->then(function (WsClient $conn) use (&$resolved, &$wait, &$attempts, $request): void {
 			$conn->send($request->toJson());
-			$conn->on('message', function (MessageInterface $msg) use (&$resolved, &$wait, &$attempts, $conn, $request) {
+			$conn->on('message', function (MessageInterface $msg) use (&$resolved, &$wait, &$attempts, $conn, $request): void {
 				$this->receiveSync($conn, $msg, $resolved, $wait, $attempts, $request);
 			});
-		}, function ($e) use (&$wait) {
+		}, function ($e) use (&$wait): void {
 			Debugger::log($e->getMessage(), 'websocket');
 			$this->stopSync($wait);
 		});
@@ -155,8 +155,8 @@ class WebSocketClient {
 	/**
 	 * Parse JSON DPA request and response
 	 * @param ApiRequest $request JSON DPA request
-	 * @param null|MessageInterface $response JSON DPA response
-	 * @return array JSON DPA response in an array
+	 * @param MessageInterface|null $response JSON DPA response
+	 * @return mixed[] JSON DPA response in an array
 	 * @throws EmptyResponseException
 	 * @throws JsonException
 	 */

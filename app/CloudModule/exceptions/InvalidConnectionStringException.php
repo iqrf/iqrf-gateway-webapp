@@ -20,9 +20,11 @@ declare(strict_types = 1);
 
 namespace App\CloudModule\Exceptions;
 
+use Exception;
+
 /**
  * The exception that indicates an invalid MS Azure IoT Hub connection string
  */
-class InvalidConnectionStringException extends \Exception {
+class InvalidConnectionStringException extends Exception {
 
 }

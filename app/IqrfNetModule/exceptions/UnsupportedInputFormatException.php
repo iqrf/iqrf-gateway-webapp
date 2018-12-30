@@ -20,9 +20,11 @@ declare(strict_types = 1);
 
 namespace App\IqrfNetModule\Exceptions;
 
+use Exception;
+
 /**
  * The exception that indicates unsupported input format
  */
-class UnsupportedInputFormatException extends \Exception {
+class UnsupportedInputFormatException extends Exception {
 
 }

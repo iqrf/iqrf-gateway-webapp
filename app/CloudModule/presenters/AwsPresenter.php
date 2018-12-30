@@ -36,6 +36,7 @@ class AwsPresenter extends ProtectedPresenter {
 	 * @inject
 	 */
 	public $formFactory;
+
 	/**
 	 * @var JsonFileManager JSON file manager
 	 */

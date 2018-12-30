@@ -59,6 +59,7 @@ class GatewayInfoPresenter extends InstallationPresenter {
 		try {
 			$this->template->module = $this->infoManager->getCoordinatorInfo()['response']['data']['rsp'];
 		} catch (DpaErrorException | EmptyResponseException $e) {
+			return;
 		}
 	}
 

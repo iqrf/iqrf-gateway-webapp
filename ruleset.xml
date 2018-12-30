@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<ruleset name="IQRF">
+	<!-- Ninjify Coding Standard -->
+	<rule ref="./vendor/ninjify/coding-standard/ruleset.xml"/>
+
+	<rule ref="Generic.Functions.OpeningFunctionBraceBsdAllman">
+		<exclude name="Generic.Functions.OpeningFunctionBraceBsdAllman.BraceOnSameLine"/>
+	</rule>
+	<rule ref="Generic.WhiteSpace.ScopeIndent">
+		<properties>
+			<property name="indent" value="4"/>
+			<property name="tabIndent" value="true"/>
+		</properties>
+	</rule>
+	<rule ref="Generic.WhiteSpace.DisallowSpaceIndent"/>
+
+	<rule ref="PEAR.Classes.ClassDeclaration">
+		<exclude name="PEAR.Classes.ClassDeclaration.OpenBraceNewLine"/>
+	</rule>
+
+	<rule ref="SlevomatCodingStandard.Commenting">
+		<exclude name="SlevomatCodingStandard.Commenting.DocCommentSpacing.IncorrectLinesCountBetweenDescriptionAndAnnotations"/>
+		<exclude name="SlevomatCodingStandard.Commenting.RequireOneLinePropertyDocComment.MultiLinePropertyComment"/>
+	</rule>
+	<rule ref="SlevomatCodingStandard.Operators.DisallowIncrementAndDecrementOperators">
+		<exclude name="SlevomatCodingStandard.Operators.DisallowIncrementAndDecrementOperators.DisallowedPostDecrementOperator"/>
+	</rule>
+	<rule ref="SlevomatCodingStandard.TypeHints">
+		<exclude name="SlevomatCodingStandard.TypeHints.DeclareStrictTypes.IncorrectWhitespaceBetweenOpenTagAndDeclare"/>
+	</rule>
+
+	<rule ref="Squiz.Functions.MultiLineFunctionDeclaration">
+		<exclude name="Squiz.Functions.MultiLineFunctionDeclaration.BraceOnSameLine"/>
+	</rule>
+
+	<!--Exclude folders -->
+	<exclude-pattern>./tests/temp</exclude-pattern>
+</ruleset>
