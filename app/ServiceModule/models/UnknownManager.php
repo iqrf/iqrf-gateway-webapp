@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ServiceModule\Models;
 
+use App\CoreModule\Models\CommandManager;
 use App\ServiceModule\Exceptions\NotSupportedInitSystemException;
 use Nette\SmartObject;
 
@@ -29,6 +30,14 @@ use Nette\SmartObject;
 class UnknownManager implements IServiceManager {
 
 	use SmartObject;
+
+	/**
+	 * Constructor
+	 * @param CommandManager $commandManager Command manager
+	 */
+	public function __construct(CommandManager $commandManager) {
+		$commandManager;
+	}
 
 	/**
 	 * Start IQRF Gateway Daemon

@@ -212,7 +212,7 @@ class GenericManager {
 
 	/**
 	 * Get available messagings
-	 * @return string[] Available messagings
+	 * @return string[][] Available messagings
 	 * @throws JsonException
 	 */
 	public function getMessagings(): array {

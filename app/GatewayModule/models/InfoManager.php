@@ -110,7 +110,7 @@ class InfoManager {
 
 	/**
 	 * Get IPv4 and IPv6 addresses of the gateway
-	 * @return string[] IPv4 and IPv6 addresses
+	 * @return string[][] IPv4 and IPv6 addresses
 	 */
 	public function getIpAddresses(): array {
 		$addresses = [];
@@ -175,7 +175,7 @@ class InfoManager {
 
 	/**
 	 * Get information about the Coordinator
-	 * @return string[] Information about the Coordinator
+	 * @return mixed[] Information about the Coordinator
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws JsonException
@@ -196,14 +196,14 @@ class InfoManager {
 
 	/**
 	 * Get disk usages
-	 * @return string[] Disk usages
+	 * @return string[][] Disk usages
 	 */
 	public function getDiskUsages(): array {
 		$output = $this->commandManager->send('df -B1 -x tmpfs -x devtmpfs -T -P | awk \'{if (NR!=1) {$6="";print}}\'');
 		$usages = [];
-		foreach (explode(PHP_EOL, $output) as $id => $disk) {
+		foreach (explode(PHP_EOL, $output) as $disk) {
 			$segments = explode(' ', $disk);
-			$usages[$id] = [
+			$usages[] = [
 				'fsName' => $segments[0],
 				'fsType' => $segments[1],
 				'size' => $this->convertSizes($segments[2]),

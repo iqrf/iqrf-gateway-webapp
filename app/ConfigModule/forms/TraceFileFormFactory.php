@@ -86,15 +86,4 @@ class TraceFileFormFactory extends GenericConfigFormFactory {
 		return $defaults;
 	}
 
-	/**
-	 * Save tracer configuration
-	 * @param Form $form Tracer configuration form
-	 * @throws JsonException
-	 */
-	private function save(Form $form): void {
-		$values = $form->getValues(true);
-		$this->manager->save($values);
-		$this->presenter->redirect('Homepage:default');
-	}
-
 }

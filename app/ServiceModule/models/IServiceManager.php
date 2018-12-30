@@ -20,10 +20,18 @@ declare(strict_types = 1);
 
 namespace App\ServiceModule\Models;
 
+use App\CoreModule\Models\CommandManager;
+
 /**
  * Interface for tools for managing IQRF Gateway Daemon's service
  */
 interface IServiceManager {
+
+	/**
+	 * Constructor
+	 * @param CommandManager $commandManager Command manager
+	 */
+	public function __construct(CommandManager $commandManager);
 
 	/**
 	 * Start IQRF Gateway Daemon's service
