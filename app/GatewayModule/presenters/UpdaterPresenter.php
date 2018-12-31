@@ -59,7 +59,7 @@ class UpdaterPresenter extends ProtectedPresenter {
 	/**
 	 * Shows shell command output
 	 * @param string $type Output type
-	 * @param null|string $buffer Output buffer
+	 * @param string|null $buffer Output buffer
 	 */
 	public function showCommandOutput(string $type, ?string $buffer): void {
 		if (isset($this->template->outputBuffer)) {
@@ -69,4 +69,5 @@ class UpdaterPresenter extends ProtectedPresenter {
 		}
 		$this->redrawControl('outputChange');
 	}
+
 }
