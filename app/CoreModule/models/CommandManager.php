@@ -22,6 +22,7 @@ namespace App\CoreModule\Models;
 
 use Nette\SmartObject;
 use Nette\Utils\Strings;
+use Symfony\Component\Process\Process;
 use Tracy\Debugger;
 
 /**
@@ -35,15 +36,6 @@ class CommandManager {
 	 * @var bool Is sudo required?
 	 */
 	private $sudo;
-
-	/**
-	 * @var mixed[] An indexed array where the key represents the descriptor number and the value represents how PHP will pass that descriptor to the child process. 0 is stdin, 1 is stdout, while 2 is stderr.
-	 */
-	private $descriptorspec = [
-		0 => ['pipe', 'r'], // stdin is a pipe that the child will read from
-		1 => ['pipe', 'w'], // stdout is a pipe that the child will write to
-		2 => ['pipe', 'w'], // stderr is a pipe that the child will write to
-	];
 
 	/**
 	 * Constructor
@@ -70,19 +62,14 @@ class CommandManager {
 	 */
 	public function send(string $cmd, bool $needSudo = false): string {
 		$command = ($this->sudo && $needSudo ? 'sudo ' : '') . $cmd;
-		$output = $pipes = [];
-		$output['command'] = $command;
-		$process = proc_open($command, $this->descriptorspec, $pipes);
-		if (is_resource($process)) {
-			fclose($pipes[0]);
-			$output['stdout'] = stream_get_contents($pipes[1]);
-			fclose($pipes[1]);
-			$output['stderr'] = stream_get_contents($pipes[2]);
-			fclose($pipes[2]);
-			// It is important that you close any pipes before calling
-			// proc_close in order to avoid a deadlock
-			$output['returnValue'] = proc_close($process);
-		}
+		$process = Process::fromShellCommandline($command);
+		$process->run();
+		$output = [
+			'command' => $command,
+			'stdout' => $process->getOutput(),
+			'stderr' => $process->getErrorOutput(),
+			'returnValue' => $process->getExitCode(),
+		];
 		Debugger::barDump($output, 'Command manager');
 		return Strings::trim($output['stdout']);
 	}
