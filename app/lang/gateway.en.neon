@@ -53,5 +53,11 @@ mode:
 			description: Change IQRF Daemon mode to forwarding mode.
 			message: Gateway mode has been changed to forwarding mode.
 
+updater:
+    title: IQRF Gateway updater
+    update: Update packages list
+    upgrade: Upgrade packages
+    output: Command output
+
 errors:
 	log-read: Cannot read log file.
