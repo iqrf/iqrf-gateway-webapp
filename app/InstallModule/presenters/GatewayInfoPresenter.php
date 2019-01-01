@@ -56,11 +56,7 @@ class GatewayInfoPresenter extends InstallationPresenter {
 		$this->template->daemonVersion = $this->infoManager->getDaemonVersion();
 		$this->template->webAppVersion = $this->infoManager->getWebAppVersion();
 		$this->template->gwId = $this->infoManager->getId();
-		try {
-			$this->template->module = $this->infoManager->getCoordinatorInfo()['response']['data']['rsp'];
-		} catch (DpaErrorException | EmptyResponseException $e) {
-			return;
-		}
+		$this->template->gwmonId = $this->infoManager->getGwmonId();
 	}
 
 }

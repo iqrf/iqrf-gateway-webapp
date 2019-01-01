@@ -274,4 +274,16 @@ class InfoManager {
 		return round($bytes, $precision) . ' ' . $unit;
 	}
 
+	/**
+	 * Get gwmon ID
+	 * @return string|null Gwmon ID
+	 */
+	public function getGwmonId(): ?string {
+		$gwmonId = $this->commandManager->send('cat /etc/iqrf-gateway.json', true);
+		if ($gwmonId !== '') {
+			return $gwmonId;
+		}
+		return null;
+	}
+
 }

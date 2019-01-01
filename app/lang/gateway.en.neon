@@ -5,6 +5,7 @@ info:
 	description: Show infromation about this gateway.
 	board: Board
 	gwId: IQRF Gateway ID
+	gwmonId: PIXLA customer ID
 	version:
 		iqrf-gw-daemon: IQRF Gateway Daemon
 		iqrf-gw-webapp: IQRF Gateway Webapp

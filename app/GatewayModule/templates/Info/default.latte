@@ -30,6 +30,12 @@
 					<td>{$gwId}</td>
 				</tr>
 			{/ifset}
+			{ifset $gwmonId}
+				<tr>
+					<th>{_gateway.info.gwmonId}</th>
+					<td>{$gwmonId}</td>
+				</tr>
+			{/ifset}
 			<tr>
 				<th>{_gateway.info.version.iqrf-gw-daemon}</th>
 				<td>{$daemonVersion}</td>

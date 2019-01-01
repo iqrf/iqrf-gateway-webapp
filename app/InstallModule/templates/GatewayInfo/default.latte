@@ -31,6 +31,12 @@
 					<td>{$gwId}</td>
 				</tr>
 			{/ifset}
+			{ifset $gwmonId}
+				<tr>
+					<th>{_gateway.info.gwmonId}</th>
+					<td>{$gwmonId}</td>
+				</tr>
+			{/ifset}
 			<tr>
 				<th>{_gateway.info.hostname}</th>
 				<td>{$hostname}</td>
@@ -62,24 +68,6 @@
 			<tr>
 				<th>{_gateway.info.version.iqrf-gw-webapp}</th>
 				<td>{$webAppVersion}</td>
-			</tr>
-			<tr>
-				<th>{_gateway.info.tr.title}</th>
-				<td>
-					{ifset $module}
-						{var $osInfo = $module['osRead']}
-						{var $enumeration = $module['peripheralEnumeration']}
-						<strong>{_gateway.info.tr.moduleType}:</strong> {$osInfo['trMcuType']['trType']}<br>
-						<strong>{_gateway.info.tr.mcuType}:</strong> {$osInfo['trMcuType']['mcuType']}<br>
-						<strong>{_gateway.info.tr.moduleId}:</strong> {$osInfo['mid']}<br>
-						<strong>{_gateway.info.tr.os}:</strong> {$osInfo['osVersion']} ({$osInfo['osBuild']})<br>
-						<strong>{_gateway.info.tr.dpa}:</strong> {$enumeration['dpaVer']}<br>
-						<strong>{_gateway.info.tr.rfMode}:</strong> {$enumeration['flags']['rfMode']}<br>
-						<strong>{_gateway.info.tr.voltage}:</strong> {$osInfo['supplyVoltage']}
-					{else}
-						{_gateway.info.tr.error}
-					{/ifset}
-				</td>
 			</tr>
 		</table>
 	</div>
