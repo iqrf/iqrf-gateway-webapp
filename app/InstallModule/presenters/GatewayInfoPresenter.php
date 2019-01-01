@@ -21,8 +21,6 @@ declare(strict_types = 1);
 namespace App\InstallModule\Presenters;
 
 use App\GatewayModule\Models\InfoManager;
-use App\IqrfNetModule\Exceptions\DpaErrorException;
-use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use Nette\Utils\JsonException;
 
 /**
