@@ -56,6 +56,8 @@ mode:
 
 updater:
 	title: IQRF Gateway updater
+	description: IQRF Gateway updater.
+	warning: IQRF Gateway updater is an experimental feature and could change at any time. Please wait until the process displays its output.
 	update: Update packages list
 	upgrade: Upgrade packages
 	output: Command output

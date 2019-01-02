@@ -19,8 +19,9 @@
 {block content}
 <div class='panel panel-default'>
 	<div class='panel-body'>
-		<a class="ajax btn btn-primary" n:href="update!" role="button">{_gateway.updater.update}</a>
-		<a class="ajax btn btn-primary" n:href="upgrade!" role="button">{_gateway.updater.upgrade}</a>
+		<div class='alert alert-warning' role='alert'>{_gateway.updater.warning}</div>
+		<a class='ajax btn btn-primary' n:href='update!' role='button'>{_gateway.updater.update}</a>
+		<a class='ajax btn btn-primary' n:href='upgrade!' role='button'>{_gateway.updater.upgrade}</a>
 	</div>
 </div>
 
