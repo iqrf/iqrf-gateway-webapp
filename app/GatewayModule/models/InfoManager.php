@@ -275,11 +275,11 @@ class InfoManager {
 	}
 
 	/**
-	 * Get gwmon ID
-	 * @return string|null Gwmon ID
+	 * Get gwmon customer ID
+	 * @return string|null Gwmon customer ID
 	 */
 	public function getGwmonId(): ?string {
-		$gwmonId = $this->commandManager->send('cat /etc/iqrf-gateway.json', true);
+		$gwmonId = $this->commandManager->send('cat /etc/gwman/customer_id', true);
 		if ($gwmonId !== '') {
 			return $gwmonId;
 		}
