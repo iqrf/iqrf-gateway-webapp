@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\IqrfNetModule\Requests;
 
 use Nette\Utils\Strings;
+use stdClass;
 
 /**
  * JSON DPA request
@@ -31,7 +32,11 @@ class DpaRequest extends ApiRequest {
 	 * Fix raw DPA packet
 	 */
 	private function fixRawPacket(): void {
-		$packet = &$this->request['data']['req']['rData'];
+		if (is_array($this->request)) {
+			$packet = &$this->request['data']['req']['rData'];
+		} else {
+			$packet = &$this->request->data->req->rData;
+		}
 		$data = explode('.', trim($packet, '.'));
 		$nadrLo = $data[0];
 		$nadrHi = $data[1];
@@ -46,7 +51,13 @@ class DpaRequest extends ApiRequest {
 	 * Fix DPA requests
 	 */
 	private function fixRequest(): void {
-		$mType = $this->request['mType'] ?? 'unknown';
+		if (is_array($this->request)) {
+			$mType = $this->request['mType'];
+		} elseif ($this->request instanceof stdClass) {
+			$mType = $this->request->mType;
+		} else {
+			$mType = 'unknown';
+		}
 		switch ($mType) {
 			case 'iqrfRaw':
 				$this->fixRawPacket();
@@ -56,9 +67,9 @@ class DpaRequest extends ApiRequest {
 
 	/**
 	 * Set JSON DPA request
-	 * @param mixed[] $request JSON DPA request
+	 * @param mixed $request JSON DPA request
 	 */
-	public function setRequest(array $request): void {
+	public function setRequest($request): void {
 		parent::setRequest($request);
 		$this->fixRequest();
 	}

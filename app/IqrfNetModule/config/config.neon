@@ -3,7 +3,9 @@ services:
 	- App\IqrfNetModule\Forms\DiscoveryFormFactory
 	- App\IqrfNetModule\Forms\RfFormFactory
 	- App\IqrfNetModule\Forms\SecurityFormFactory
-	- App\IqrfNetModule\Forms\SendJsonFormFactory
+	sendJsonFormFactory:
+	     factory: App\IqrfNetModule\Forms\SendJsonFormFactory
+	     arguments: [@jsonSchemaManagerApi]
 	- App\IqrfNetModule\Forms\SendRawFormFactory
 	- App\IqrfNetModule\Models\BondingManager
 	- App\IqrfNetModule\Models\DpaRawManager

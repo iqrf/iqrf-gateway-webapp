@@ -148,8 +148,9 @@ class WebSocketClient {
 	 * @throws JsonException
 	 */
 	private function checkMsgId(ApiRequest $request, MessageInterface $response): bool {
-		$json = Json::decode(strval($response), Json::FORCE_ARRAY);
-		return $request->toArray()['data']['msgId'] === $json['data']['msgId'];
+		$requestJson = Json::decode($request->toJson(), Json::FORCE_ARRAY);
+		$responseJson = Json::decode(strval($response), Json::FORCE_ARRAY);
+		return $requestJson['data']['msgId'] === $responseJson['data']['msgId'];
 	}
 
 	/**

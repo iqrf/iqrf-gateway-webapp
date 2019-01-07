@@ -23,6 +23,7 @@ namespace App\IqrfNetModule\Requests;
 use App\IqrfNetModule\Models\MessageIdManager;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
+use stdClass;
 
 /**
  * JSON API request
@@ -51,26 +52,31 @@ class ApiRequest {
 	 * Add a message ID to the JSON API request
 	 */
 	protected function addMsgId(): void {
-		if (!array_key_exists('msgId', $this->request['data'])) {
+		if (is_array($this->request) && !array_key_exists('msgId', $this->request['data'])) {
 			$this->request['data']['msgId'] = $this->msgIdManager->generate();
+		} elseif ($this->request instanceof stdClass && !isset($this->request->data->msgId)) {
+			$this->request->data->msgId = $this->msgIdManager->generate();
 		}
 	}
 
 	/**
 	 * Set JSON API request
-	 * @param mixed[] $request JSON API request
+	 * @param mixed[]|stdClass $request JSON API request
 	 */
-	public function setRequest(array $request): void {
-		$this->request = $request;
-		$this->addMsgId();
+	public function setRequest($request): void {
+		if (is_array($request) || $this->request instanceof stdClass) {
+			$this->request = $request;
+			$this->addMsgId();
+		}
 	}
 
 	/**
 	 * Convert JSON API request to a array
 	 * @return mixed[] JSON API request
+	 * @throws JsonException
 	 */
 	public function toArray(): array {
-		return $this->request;
+		return Json::decode($this->toJson(), Json::FORCE_ARRAY);
 	}
 
 	/**

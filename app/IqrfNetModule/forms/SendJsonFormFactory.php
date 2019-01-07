@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\IqrfNetModule\Forms;
 
 use App\CoreModule\Forms\FormFactory;
+use App\CoreModule\Models\JsonSchemaManager;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Models\WebSocketClient;
@@ -44,6 +45,11 @@ class SendJsonFormFactory {
 	private $factory;
 
 	/**
+	 * @var JsonSchemaManager API JSON schema manager
+	 */
+	private $jsonSchemaManager;
+
+	/**
 	 * @var SendJsonPresenter IQRF Send raw JSON DPA request presenter
 	 */
 	private $presenter;
@@ -60,12 +66,14 @@ class SendJsonFormFactory {
 
 	/**
 	 * Constructor
+	 * @param JsonSchemaManager $jsonSchemaManager API JSON schema manager
 	 * @param FormFactory $factory Generic form factory
 	 * @param DpaRequest $request JSON DPA request
 	 * @param WebSocketClient $wsClient WebSocket client
 	 */
-	public function __construct(FormFactory $factory, DpaRequest $request, WebSocketClient $wsClient) {
+	public function __construct(JsonSchemaManager $jsonSchemaManager, FormFactory $factory, DpaRequest $request, WebSocketClient $wsClient) {
 		$this->factory = $factory;
+		$this->jsonSchemaManager = $jsonSchemaManager;
 		$this->request = $request;
 		$this->wsClient = $wsClient;
 	}
@@ -92,21 +100,24 @@ class SendJsonFormFactory {
 	 */
 	public function onSuccess(Form $form): void {
 		$values = $form->getValues();
-		$array = [];
+		$json = [];
 		try {
-			$array = get_object_vars(Json::decode($values['json']));
+			$json = Json::decode($values['json']);
+			if (isset($json->mType)) {
+				$this->jsonSchemaManager->setSchemaFromMessageType($json->mType);
+				$this->jsonSchemaManager->validate($json, true);
+			}
 		} catch (JsonException $e) {
 			$message = 'Invalid JSON request.';
 			$form->addError($message);
 			$this->presenter->flashMessage($message, 'danger');
 		}
 		try {
-			$this->request->setRequest($array);
+			$this->request->setRequest($json);
 			$response = $this->wsClient->sendSync($this->request);
 			$this->presenter->handleShowResponse($response);
 		} catch (EmptyResponseException | DpaErrorException | JsonException $e) {
 			$message = 'No response from IQRF Gateway Daemon.';
-			$form->addError($message);
 			$this->presenter->flashMessage($message, 'danger');
 		}
 	}
