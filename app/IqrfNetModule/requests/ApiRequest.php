@@ -36,7 +36,7 @@ class ApiRequest {
 	protected $msgIdManager;
 
 	/**
-	 * @var mixed[] JSON API request
+	 * @var mixed[]|stdClass JSON API request
 	 */
 	protected $request;
 
