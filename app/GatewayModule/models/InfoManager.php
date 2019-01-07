@@ -182,7 +182,21 @@ class InfoManager {
 	 * @throws UserErrorException
 	 */
 	public function getCoordinatorInfo(): array {
-		return $this->enumerationManager->device(0);
+		$dpa = $this->enumerationManager->device(0);
+		if (!isset($dpa['response']) || $dpa['response'] === []) {
+			return $dpa;
+		}
+		$flags = &$dpa['response']['data']['rsp']['flags'];
+		if (array_key_exists('rfMode', $flags)) {
+			return $dpa;
+		} elseif (array_key_exists('stdAndLpNetwork', $flags) && $flags['stdAndLpNetwork']) {
+			$flags['rfMode'] = 'STD+LP';
+		} elseif (array_key_exists('rfModeStd', $flags) && $flags['rfModeStd']) {
+			$flags['rfMode'] = 'STD';
+		} elseif (array_key_exists('rfModeLp', $flags) && $flags['rfModeLp']) {
+			$flags['rfMode'] = 'LP';
+		}
+		return $dpa;
 	}
 
 	/**
