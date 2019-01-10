@@ -64,7 +64,7 @@ class ApiRequest {
 	 * @param mixed[]|stdClass $request JSON API request
 	 */
 	public function setRequest($request): void {
-		if (is_array($request) || $this->request instanceof stdClass) {
+		if (is_array($request) || ($request instanceof stdClass)) {
 			$this->request = $request;
 			$this->addMsgId();
 		}
