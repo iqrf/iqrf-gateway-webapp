@@ -183,20 +183,29 @@ class InfoManager {
 	 */
 	public function getCoordinatorInfo(): array {
 		$dpa = $this->enumerationManager->device(0);
-		if (!isset($dpa['response']) || $dpa['response'] === []) {
-			return $dpa;
+		$this->parseRfMode($dpa);
+		return $dpa;
+	}
+
+	/**
+	 * Parse RF mode from information about the Coordinator
+	 * @param mixed[] $dpa Information about the Coordinator
+	 */
+	private function parseRfMode(array &$dpa): void {
+		if (!isset($dpa['response']['data']['rsp']['flags'])) {
+			return;
 		}
 		$flags = &$dpa['response']['data']['rsp']['flags'];
-		if (array_key_exists('rfMode', $flags)) {
-			return $dpa;
-		} elseif (array_key_exists('stdAndLpNetwork', $flags) && $flags['stdAndLpNetwork']) {
+		if (!is_array($flags) || array_key_exists('rfMode', $flags)) {
+			return;
+		}
+		if (array_key_exists('stdAndLpNetwork', $flags) && $flags['stdAndLpNetwork']) {
 			$flags['rfMode'] = 'STD+LP';
 		} elseif (array_key_exists('rfModeStd', $flags) && $flags['rfModeStd']) {
 			$flags['rfMode'] = 'STD';
 		} elseif (array_key_exists('rfModeLp', $flags) && $flags['rfModeLp']) {
 			$flags['rfMode'] = 'LP';
 		}
-		return $dpa;
 	}
 
 	/**
