@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\IqrfNetModule\Requests;
 
+use App\CoreModule\Exceptions\InvalidJsonException;
 use App\IqrfNetModule\Models\MessageIdManager;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
@@ -61,13 +62,14 @@ class ApiRequest {
 
 	/**
 	 * Set JSON API request
-	 * @param mixed[]|stdClass $request JSON API request
+	 * @param mixed $request JSON API request
 	 */
 	public function setRequest($request): void {
-		if (is_array($request) || ($request instanceof stdClass)) {
-			$this->request = $request;
-			$this->addMsgId();
+		if (!is_array($request) && !($request instanceof stdClass)) {
+			throw new InvalidJsonException();
 		}
+		$this->request = $request;
+		$this->addMsgId();
 	}
 
 	/**
