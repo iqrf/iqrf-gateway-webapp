@@ -192,10 +192,10 @@ class InfoManager {
 	 * @param mixed[] $dpa Information about the Coordinator
 	 */
 	private function parseRfMode(array &$dpa): void {
-		if (!isset($dpa['response']['data']['rsp']['flags'])) {
+		if (!isset($dpa['response']['data']['rsp']['peripheralEnumeration']['flags'])) {
 			return;
 		}
-		$flags = &$dpa['response']['data']['rsp']['flags'];
+		$flags = &$dpa['response']['data']['rsp']['peripheralEnumeration']['flags'];
 		if (!is_array($flags) || array_key_exists('rfMode', $flags)) {
 			return;
 		}
