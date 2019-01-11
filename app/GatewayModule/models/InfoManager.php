@@ -38,6 +38,15 @@ class InfoManager {
 	use SmartObject;
 
 	/**
+	 * @var string[] Board managers
+	 */
+	private $boardManagers = [
+		IqrfBoardInfoManager::class,
+		DeviceTreeBoardInfoManager::class,
+		DmiBoardInfoManager::class,
+	];
+
+	/**
 	 * @var CommandManager Command manager
 	 */
 	private $commandManager;
@@ -69,24 +78,11 @@ class InfoManager {
 	 * @return string Board's vendor, name and version
 	 */
 	public function getBoard(): string {
-		$gwJson = $this->commandManager->send('cat /etc/iqrf-gateway.json', true);
-		if ($gwJson !== '') {
-			try {
-				$gw = Json::decode($gwJson, Json::FORCE_ARRAY);
-				return $gw['gwManufacturer'] . ' ' . $gw['gwProduct'];
-			} catch (JsonException $e) {
-				// Skip IQRF GW info file parsing
+		foreach ($this->boardManagers as $boardManager) {
+			$boardName = (new $boardManager($this->commandManager))->getName();
+			if (isset($boardName)) {
+				return $boardName;
 			}
-		}
-		$deviceTree = $this->commandManager->send('cat /proc/device-tree/model', true);
-		if ($deviceTree !== '') {
-			return $deviceTree;
-		}
-		$dmiBoardVendor = $this->commandManager->send('cat /sys/class/dmi/id/board_vendor', true);
-		$dmiBoardName = $this->commandManager->send('cat /sys/class/dmi/id/board_name', true);
-		$dmiBoardVersion = $this->commandManager->send('cat /sys/class/dmi/id/board_version', true);
-		if ($dmiBoardName !== '' && $dmiBoardVendor !== '' && $dmiBoardVersion !== '') {
-			return $dmiBoardVendor . ' ' . $dmiBoardName . ' (' . $dmiBoardVersion . ')';
 		}
 		return 'UNKNOWN';
 	}
