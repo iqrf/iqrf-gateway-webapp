@@ -1,12 +1,1 @@
 usr/share/iqrf-gateway-webapp/bin/manager                               usr/bin/iqrf-gateway-webapp-manager
-usr/share/javascript/bootstrap/css/bootstrap-theme.min.css				usr/share/iqrf-gateway-webapp/www/css/bootstrap-theme.min.css
-usr/share/javascript/bootstrap/css/bootstrap-theme.min.css.map			usr/share/iqrf-gateway-webapp/www/css/bootstrap-theme.min.css.map
-usr/share/javascript/bootstrap/css/bootstrap.min.css					usr/share/iqrf-gateway-webapp/www/css/bootstrap.min.css
-usr/share/javascript/bootstrap/css/bootstrap.min.css.map				usr/share/iqrf-gateway-webapp/www/css/bootstrap.min.css.map
-usr/share/javascript/bootstrap/fonts/glyphicons-halflings-regular.eot	usr/share/iqrf-gateway-webapp/www/fonts/glyphicons-halflings-regular.eot
-usr/share/javascript/bootstrap/fonts/glyphicons-halflings-regular.svg	usr/share/iqrf-gateway-webapp/www/fonts/glyphicons-halflings-regular.svg
-usr/share/javascript/bootstrap/fonts/glyphicons-halflings-regular.ttf	usr/share/iqrf-gateway-webapp/www/fonts/glyphicons-halflings-regular.ttf
-usr/share/javascript/bootstrap/fonts/glyphicons-halflings-regular.woff	usr/share/iqrf-gateway-webapp/www/fonts/glyphicons-halflings-regular.woff
-usr/share/javascript/bootstrap/fonts/glyphicons-halflings-regular.woff2	usr/share/iqrf-gateway-webapp/www/fonts/glyphicons-halflings-regular.woff2
-usr/share/javascript/bootstrap/js/bootstrap.min.js						usr/share/iqrf-gateway-webapp/www/js/bootstrap.min.js
-usr/share/javascript/jquery/jquery.min.js								usr/share/iqrf-gateway-webapp/www/js/jquery-3.3.1.min.js

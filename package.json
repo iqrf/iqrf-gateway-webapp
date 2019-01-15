@@ -1,0 +1,45 @@
+{
+	"name": "iqrf-gateway-webapp",
+	"version": "2.0.0-beta",
+	"repository": {
+		"type": "git",
+		"url": "https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp.git"
+	},
+	"description": "IQRF Gateway Daemon web application",
+	"keywords": [
+		"iqrf",
+		"iqrf-gateway",
+		"iqrf-gateway-webapp"
+	],
+	"author": "Roman Ondráček <roman.ondracek@iqrf.com>",
+	"license": "Apache-2.0",
+	"bugs": {
+		"url": "https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp/issues"
+	},
+	"homepage": "https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp",
+	"dependencies": {
+		"@sentry/browser": "^4.5",
+		"admin-lte": "^2.4",
+		"autosize": "^4.0.2",
+		"cronstrue": "^1.60",
+		"highlight.js": "^9.13",
+		"jquery": "^3.3",
+		"morris.js": "github:morrisjs/morris.js",
+		"nette-forms": "^2.4",
+		"nette.ajax.js": "^2.3",
+		"ublaboo-datagrid": "^5.7"
+	},
+	"devDependencies": {
+		"@babel/core": "^7.2",
+		"@babel/preset-env": "^7.2",
+		"babel-loader": "^8.0",
+		"css-loader": "^2.1",
+		"file-loader": "^3.0",
+		"mini-css-extract-plugin": "^0.5.0",
+		"style-loader": "^0.23",
+		"uglifyjs-webpack-plugin": "^2.1",
+		"url-loader": "^1.1.2",
+		"webpack": "^4.28",
+		"webpack-cli": "^3.2"
+	}
+}

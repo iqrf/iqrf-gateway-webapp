@@ -83,7 +83,7 @@ http:
 			# for browsers that support CSP3
 			nonce
 			# for browsers that support CSP2
-			self
+			self, unsafe-eval
 		]
 		style-src: [
 			# for browsers that support CSP3

@@ -4,6 +4,9 @@ app/config/database.db
 # Composer
 vendor/
 composer.lock
+# NPM
+node_modules/
+package-lock.json
 # Debian package
 debian/.debhelper/
 debian/debhelper-build-stamp
@@ -19,6 +22,7 @@ tests/output/
 tests/*/output/
 tests/*/*/output/
 tests/temp/
+coverage.html
 coverage.xml
 # Sphinx
 docs/build/

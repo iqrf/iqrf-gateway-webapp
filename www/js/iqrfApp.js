@@ -21,15 +21,15 @@
  * @returns {{nadrLo: string, nadrHi: string, pnum: string, pcmd: string, hwpidLo: string, hwpidHi: string, pdata: string[]}} Parsed DPA packet
  */
 function parsePacket(packet) {
-	let arr = packet.split(".");
+	let packetArray = packet.split(".");
 	return {
-		nadrLo: arr.shift(),
-		nadrHi: arr.shift(),
-		pnum: arr.shift(),
-		pcmd: arr.shift(),
-		hwpidLo: arr.shift(),
-		hwpidHi: arr.shift(),
-		pdata: (arr.join(".")).split(".")
+		nadrLo: packetArray.shift(),
+		nadrHi: packetArray.shift(),
+		pnum: packetArray.shift(),
+		pcmd: packetArray.shift(),
+		hwpidLo: packetArray.shift(),
+		hwpidHi: packetArray.shift(),
+		pdata: (packetArray.join(".")).split(".")
 	};
 }
 

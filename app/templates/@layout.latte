@@ -24,12 +24,8 @@
 	<meta name='description' content='Web configurator for iqrf-daemon'>
 	<meta name='author' content='IQRF Tech.r.o.'>
 	<title>{ifset title}{include title|stripHtml|trim} | {/ifset}{_core.title}</title>
-	<link n:nonce rel='stylesheet' href='/css/bootstrap.min.css'>
-	<link n:nonce rel='stylesheet' href='/css/adminlte.min.css'>
-	<link n:nonce rel='stylesheet' href='/css/skin-blue.min.css'>
-	<link n:nonce rel='stylesheet' href='/css/datagrid.min.css'>
-	<link n:nonce rel='stylesheet' href='/css/datagrid-spinners.min.css'>
-	<link n:nonce rel='stylesheet' href='/css/highlight.github.min.css'>
+	<link n:nonce rel='stylesheet' href='/dist/app.bundle.css'>
+	<link n:nonce rel='stylesheet' href='/dist/highlight.bundle.css'>
 	<link rel='apple-touch-icon' sizes='180x180' href='/img/favicon/apple-touch-icon.png'>
 	<link rel='icon' type='image/png' sizes='32x32' href='/img/favicon/favicon-32x32.png'>
 	<link rel='icon' type='image/png' sizes='16x16' href='/img/favicon/favicon-16x16.png'>
@@ -95,19 +91,8 @@
 	</div>
 </div>
 {block scripts}
-	<script n:nonce src='/js/jquery-3.3.1.min.js'></script>
-	<script n:nonce src='/js/bootstrap.min.js'></script>
-	<script n:nonce src='/js/adminlte.min.js'></script>
-	<script n:nonce src='/js/netteForms.min.js'></script>
-	<script n:nonce src='/js/nette.ajax.min.js'></script>
-	<script n:nonce src='/js/datagrid.min.js'></script>
-	<script n:nonce src='/js/datagrid-instant-url-refresh.min.js'></script>
-	<script n:nonce src='/js/datagrid-spinners.min.js'></script>
-	<script n:nonce src='/js/cronstrue-i18n.min.js'></script>
-	<script n:nonce src='/js/iqrfApp.js'></script>
-	<script n:nonce src='/js/highlight.pack.js'></script>
-	<script n:nonce>$.nette.init();</script>
-	<script n:nonce>hljs.initHighlightingOnLoad();</script>
+	<script n:nonce src='/dist/app.bundle.js'></script>
+	<script n:nonce src='/dist/highlight.bundle.js'></script>
 {/block}
 </body>
 </html>
