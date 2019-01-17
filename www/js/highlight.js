@@ -17,8 +17,10 @@
 
 'use strict';
 
-import hljs from 'highlight.js';
+import hljs from 'highlight.js/lib/highlight';
+import json from 'highlight.js/lib/languages/json';
 
-import '../css/highlight.css';
+import 'highlight.js/styles/github.css';
 
 hljs.initHighlightingOnLoad();
+hljs.registerLanguage('json', json);
