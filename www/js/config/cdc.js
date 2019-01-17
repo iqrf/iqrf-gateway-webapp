@@ -17,8 +17,10 @@
 
 'use strict';
 
-import hljs from 'highlight.js';
-
-import '../css/highlight.css';
-
-hljs.initHighlightingOnLoad();
+// Select IQRF CDC interface port from list
+let cdcPorts = document.getElementsByClassName('btn-cdc-port');
+for (let i = 0; i < cdcPorts.length; i++) {
+	cdcPorts[i].addEventListener('click', function (event) {
+		document.getElementById('frm-configIqrfCdcForm-IqrfInterface').value = event.currentTarget.dataset.port;
+	});
+}

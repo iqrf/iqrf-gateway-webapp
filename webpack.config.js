@@ -10,11 +10,16 @@ module.exports = {
 	},
 	output: {
 		filename: '[name].bundle.js',
-		chunkFilename: '[name].bundle.js',
 		path: path.resolve(__dirname, 'www/dist')
 	},
 	module: {
 		rules: [
+			{
+				enforce: "pre",
+				test: /\.js$/,
+				exclude: /node_modules/,
+				loader: "eslint-loader",
+			},
 			{
 				test: /\.js$/,
 				exclude: /node_modules/,
@@ -61,6 +66,9 @@ module.exports = {
 		}),
 	],
 	optimization: {
-		minimizer: [new UglifyJsPlugin()],
+		minimize: true,
+		minimizer: [
+			new UglifyJsPlugin()
+		],
 	},
 };

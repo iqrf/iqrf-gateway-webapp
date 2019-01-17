@@ -17,8 +17,13 @@
 
 'use strict';
 
-import hljs from 'highlight.js';
-
-import '../css/highlight.css';
-
-hljs.initHighlightingOnLoad();
+// Enable or disable auto addressing in bonding new nodes
+let autoAddress = document.getElementById('frm-iqrfNetBondingForm-autoAddress');
+if (autoAddress !== null) {
+	autoAddress.addEventListener('click', function (event) {
+		let checked = event.currentTarget.checked;
+		document.getElementById('frm-iqrfNetBondingForm-address').disabled = checked;
+		document.getElementById('frm-iqrfNetBondingForm-rebond').disabled = checked;
+		document.getElementById('frm-iqrfNetBondingForm-remove').disabled = checked;
+	});
+}
