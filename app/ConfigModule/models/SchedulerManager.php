@@ -64,7 +64,7 @@ class SchedulerManager {
 		try {
 			$path = $this->mainConfigManager->load()['cacheDir'] . '/scheduler/';
 		} catch (IOException | JsonException $e) {
-			$path = '/var/cache/iqrfgd2/scheduler/';
+			$path = '/var/cache/iqrf-gateway-daemon/scheduler/';
 		}
 		$this->fileManager = new JsonFileManager($path);
 	}
