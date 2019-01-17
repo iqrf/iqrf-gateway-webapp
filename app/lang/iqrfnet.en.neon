@@ -2,11 +2,11 @@ title: IQRF Net
 description: Control IQRF network.
 
 send-json:
-	title: Send JSON DPA request
-	description: Send raw JSON DPA request.
-	json: JSON DPA request
+	title: Send IQRF JSON request
+	description: Send IQRF JSON request.
+	json: IQRF JSON request
 	messages:
-		packet: Please enter JSON DPA request.
+		packet: Please enter IQRF JSON request.
 	send: Send
 	response: Response
 	request: Request
