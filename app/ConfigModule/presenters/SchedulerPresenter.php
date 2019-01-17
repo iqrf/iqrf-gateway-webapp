@@ -68,7 +68,7 @@ class SchedulerPresenter extends ProtectedPresenter {
 		try {
 			$this->template->tasks = $this->configManager->list();
 		} catch (IOException $e) {
-			$this->flashMessage('config.messages.readFailures.ioErrors', 'danger');
+			$this->flashMessage('config.messages.readFailures.ioError', 'danger');
 			$this->redirect('Homepage:default');
 		} catch (JsonException $e) {
 			$this->flashMessage('config.messages.readFailures.invalidJson', 'danger');
