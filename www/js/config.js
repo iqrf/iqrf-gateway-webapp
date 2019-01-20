@@ -17,27 +17,8 @@
 
 'use strict';
 
-import 'admin-lte';
-import 'autosize';
-import 'bootstrap';
-import 'jquery';
-import 'nette-forms';
-import 'nette.ajax.js';
-import 'ublaboo-datagrid';
-import autosize from 'autosize';
-import Nette from 'nette-forms';
-import * as Sentry from '@sentry/browser';
-
-import '../css/app.css';
-
-Sentry.init({
-	dsn: 'https://31687391bccd475da4e2082861076d65@sentry.iqrf.org/2'
-});
-
-Nette.initOnLoad();
-
-$(function () {
-	$.nette.init();
-});
-
-autosize(document.querySelectorAll('textarea'));
+import './config/cdc';
+import './config/spi';
+import './config/uart';
+import './config/scheduler';
+import 'cronstrue';

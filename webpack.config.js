@@ -1,11 +1,14 @@
 const webpack = require('webpack');
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
 	entry: {
 		app: './www/js/app.js',
+		config: './www/js/config.js',
+		iqrfNet: './www/js/iqrfNet.js',
 		highlight:'./www/js/highlight.js',
 	},
 	output: {
@@ -68,7 +71,12 @@ module.exports = {
 	optimization: {
 		minimize: true,
 		minimizer: [
-			new UglifyJsPlugin()
+			new UglifyJsPlugin({
+				cache: true,
+				parallel: true,
+				sourceMap: true
+			}),
+			new OptimizeCSSAssetsPlugin({})
 		],
 	},
 };

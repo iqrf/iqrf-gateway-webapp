@@ -18,7 +18,7 @@
 'use strict';
 
 // Select IQRF UART interface port from list
-let uartPorts = document.getElementsByClassName('btn-uart-pin');
+let uartPorts = document.getElementsByClassName('btn-uart-port');
 for (let i = 0; i < uartPorts.length; i++) {
 	uartPorts[i].addEventListener('click', function (event) {
 		document.getElementById('frm-configIqrfUartForm-IqrfInterface').value = event.currentTarget.dataset.port;
@@ -34,6 +34,5 @@ for (let i = 0; i < uartPins.length; i++) {
 		document.getElementById('frm-configIqrfUartForm-baudRate').value = data.baudrate;
 		document.getElementById('frm-configIqrfUartForm-powerEnableGpioPin').value = data.powerenablegpiopin;
 		document.getElementById('frm-configIqrfUartForm-busEnableGpioPin').value = data.busenablegpiopin;
-		document.getElementById('frm-configIqrfUartForm-pgmSwitchGpioPin').value = data.pgmswitchgpiopin;
 	});
 }
