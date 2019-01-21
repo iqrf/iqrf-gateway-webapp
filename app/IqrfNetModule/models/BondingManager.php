@@ -56,7 +56,9 @@ class BondingManager {
 	 * Local bond a node
 	 * @param int $address A requested address for the bonded node. If this parameter equals to 0, then the first free address is assigned to the node.
 	 * @return mixed[] DPA request and response
+	 * @throws IqrfException\DpaErrorException
 	 * @throws IqrfException\EmptyResponseException
+	 * @throws IqrfException\UserErrorException
 	 * @throws JsonException
 	 */
 	public function bondLocal(int $address = 0): array {
@@ -79,7 +81,9 @@ class BondingManager {
 	 * @param int $address Address to bond the device to.
 	 * @param string $code Smart connect code of the device.
 	 * @return mixed[] DPA request and response
+	 * @throws IqrfException\DpaErrorException
 	 * @throws IqrfException\EmptyResponseException
+	 * @throws IqrfException\UserErrorException
 	 * @throws JsonException
 	 */
 	public function bondSmartConnect(int $address, string $code): array {
@@ -101,7 +105,9 @@ class BondingManager {
 	/**
 	 * Clear all bonds
 	 * @return mixed[] DPA request and response
+	 * @throws IqrfException\DpaErrorException
 	 * @throws IqrfException\EmptyResponseException
+	 * @throws IqrfException\UserErrorException
 	 * @throws JsonException
 	 */
 	public function clearAll(): array {
@@ -122,7 +128,9 @@ class BondingManager {
 	 * Re-bond a node
 	 * @param int $address Address of the node to be re-bonded.
 	 * @return mixed[] DPA request and response
+	 * @throws IqrfException\DpaErrorException
 	 * @throws IqrfException\EmptyResponseException
+	 * @throws IqrfException\UserErrorException
 	 * @throws JsonException
 	 */
 	public function rebond(int $address): array {
@@ -145,7 +153,9 @@ class BondingManager {
 	 * Remove a bond
 	 * @param int $address Address of the node to be removed.
 	 * @return mixed[] DPA request and response
+	 * @throws IqrfException\DpaErrorException
 	 * @throws IqrfException\EmptyResponseException
+	 * @throws IqrfException\UserErrorException
 	 * @throws JsonException
 	 */
 	public function remove(int $address): array {

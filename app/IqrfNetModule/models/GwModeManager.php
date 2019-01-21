@@ -56,8 +56,10 @@ class GwModeManager {
 	 * Change IQRF Gateway Daemon's operation mode
 	 * @param string $mode IQRF Gateway Daemon's operation mode
 	 * @return mixed[] JSON API request and response
+	 * @throws IqrfException\DpaErrorException
 	 * @throws IqrfException\EmptyResponseException
 	 * @throws IqrfException\InvalidOperationModeException
+	 * @throws IqrfException\UserErrorException
 	 * @throws JsonException
 	 */
 	public function changeMode(string $mode): array {

@@ -86,8 +86,10 @@ class SecurityManager {
 	 * @param string $inputFormat Input data format (ASCII or HEX)
 	 * @param int $type Security type (access password, user key)
 	 * @return mixed[] DPA request and response
+	 * @throws IqrfException\DpaErrorException
 	 * @throws IqrfException\EmptyResponseException
 	 * @throws IqrfException\UnsupportedInputFormatException
+	 * @throws IqrfException\UserErrorException
 	 * @throws JsonException
 	 */
 	private function setSecurity(string $password, string $inputFormat, int $type): array {

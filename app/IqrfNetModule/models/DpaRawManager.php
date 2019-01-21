@@ -69,7 +69,9 @@ class DpaRawManager {
 	 * @param string $packet RAW IQRF packet
 	 * @param int|null $timeout DPA timeout in milliseconds
 	 * @return mixed[] DPA request and response
+	 * @throws IqrfException\DpaErrorException
 	 * @throws IqrfException\EmptyResponseException
+	 * @throws IqrfException\UserErrorException
 	 * @throws JsonException
 	 */
 	public function send(string $packet, ?int $timeout = null): array {

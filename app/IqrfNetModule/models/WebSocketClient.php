@@ -20,7 +20,9 @@ declare(strict_types = 1);
 
 namespace App\IqrfNetModule\Models;
 
+use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
+use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\IqrfNetModule\Requests\ApiRequest;
 use App\IqrfNetModule\Responses\ApiResponse;
 use Nette\SmartObject;
@@ -70,8 +72,10 @@ class WebSocketClient {
 	 * @param ApiRequest $request IQRF JSON DPA request
 	 * @param int $timeout WebSocket client timeout
 	 * @return mixed[] IQRF JSON DPA response
+	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws JsonException
+	 * @throws UserErrorException
 	 */
 	public function sendSync(ApiRequest $request, int $timeout = 13): array {
 		$connection = $this->createConnection($timeout);
@@ -87,7 +91,7 @@ class WebSocketClient {
 				$this->receiveSync($conn, $msg, $resolved, $wait, $attempts, $request);
 			});
 		}, function ($e) use (&$wait): void {
-			Debugger::log($e->getMessage(), 'websocket');
+			Debugger::log($e->getMessage(), 'WebSocket Client');
 			$this->stopSync($wait);
 		});
 		while ($wait) {
@@ -160,6 +164,8 @@ class WebSocketClient {
 	 * @return mixed[] JSON DPA response in an array
 	 * @throws EmptyResponseException
 	 * @throws JsonException
+	 * @throws DpaErrorException
+	 * @throws UserErrorException
 	 */
 	private function parseResponse(ApiRequest $request, ?MessageInterface $response): array {
 		$string = strval($response);

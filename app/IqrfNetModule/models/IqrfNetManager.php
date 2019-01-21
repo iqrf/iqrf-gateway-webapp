@@ -89,7 +89,9 @@ class IqrfNetManager {
 	 * The command removes all nodes from the list of bonded nodes at coordinator memory.
 	 * It actually destroys the network from the coordinator point of view.
 	 * @return mixed[] DPA request and response
+	 * @throws IqrfException\DpaErrorException
 	 * @throws IqrfException\EmptyResponseException
+	 * @throws IqrfException\UserErrorException
 	 * @throws JsonException
 	 */
 	public function clearAllBonds(): array {
@@ -102,7 +104,9 @@ class IqrfNetManager {
 	 * There is a maximum approx. 12 s blocking delay when this function is called.
 	 * @param string $address A requested address for the bonded node. The address must not be used (bonded) yet. If this parameter equals to 0, then the 1 free address is assigned to the node.
 	 * @return mixed[] DPA request and response
+	 * @throws IqrfException\DpaErrorException
 	 * @throws IqrfException\EmptyResponseException
+	 * @throws IqrfException\UserErrorException
 	 * @throws JsonException
 	 */
 	public function bondNode(string $address = '00'): array {
@@ -117,7 +121,9 @@ class IqrfNetManager {
 	 * @param int $txPower TX Power used for discovery.
 	 * @param string $maxAddress Nonzero value specifies maximum node address to be part of the discovery process. This feature allows splitting all node devices into two parts: [1] devices having an address from 1 to MaxAddr will be part of the discovery process thus they become routers, [2] devices having an address from MaxAddr+1 to 239 will not be routers. See IQRF OS documentation for more information. The value of this parameter is ignored at demo version. A value 5 is always used instead.
 	 * @return mixed[] DPA request and response
+	 * @throws IqrfException\DpaErrorException
 	 * @throws IqrfException\EmptyResponseException
+	 * @throws IqrfException\UserErrorException
 	 * @throws JsonException
 	 */
 	public function discovery(int $txPower = 0, string $maxAddress = '00'): array {
@@ -131,7 +137,9 @@ class IqrfNetManager {
 	 * Removes already bonded node from the list of bonded nodes at coordinator memory.
 	 * @param string $address Address of the node to remove the bond to
 	 * @return mixed[] DPA request and response
+	 * @throws IqrfException\DpaErrorException
 	 * @throws IqrfException\EmptyResponseException
+	 * @throws IqrfException\UserErrorException
 	 * @throws JsonException
 	 */
 	public function removeNode(string $address): array {
@@ -143,7 +151,9 @@ class IqrfNetManager {
 	 * Puts specified node back to the list of bonded nodes in the coordinator memory.
 	 * @param string $address Number of bonded network nodes
 	 * @return mixed[] DPA request and response
+	 * @throws IqrfException\DpaErrorException
 	 * @throws IqrfException\EmptyResponseException
+	 * @throws IqrfException\UserErrorException
 	 * @throws JsonException
 	 */
 	public function rebondNode(string $address): array {
@@ -170,8 +180,10 @@ class IqrfNetManager {
 	 * @param int $channel RF channel ID
 	 * @param string $type RF channel type
 	 * @return mixed[] DPA request and response
+	 * @throws IqrfException\DpaErrorException
 	 * @throws IqrfException\EmptyResponseException
 	 * @throws IqrfException\InvalidRfChannelTypeException
+	 * @throws IqrfException\UserErrorException
 	 * @throws JsonException
 	 */
 	public function setRfChannel(int $channel, string $type): array {
@@ -189,7 +201,9 @@ class IqrfNetManager {
 	 * @param string $value Value of the configuration item to write.
 	 * @param string $mask Specifies bits of the configuration byte to be modified by the corresponding bits of the Value parameter. Only bits that are set at the Mask will be written to the configuration byte i.e. when Mask equals to 0xFF then the whole Value will be written to the configuration byte. For example, when Mask equals to 0x12 then only bit.1 and bit.4 from Value will be written to the configuration byte.
 	 * @return mixed[] DPA request and response
+	 * @throws IqrfException\DpaErrorException
 	 * @throws IqrfException\EmptyResponseException
+	 * @throws IqrfException\UserErrorException
 	 * @throws JsonException
 	 */
 	public function writeHwpConfigurationByte(string $address, string $value, string $mask = 'ff'): array {
@@ -201,8 +215,10 @@ class IqrfNetManager {
 	 * Set RF LP timeout
 	 * @param int $timeout RF LP timeout
 	 * @return mixed[] DPA request and response
+	 * @throws IqrfException\DpaErrorException
 	 * @throws IqrfException\EmptyResponseException
 	 * @throws IqrfException\InvalidRfLpTimeoutException
+	 * @throws IqrfException\UserErrorException
 	 * @throws JsonException
 	 */
 	public function setRfLpTimeout(int $timeout): array {
@@ -217,8 +233,10 @@ class IqrfNetManager {
 	 * Set RF output power
 	 * @param int $power RF output power
 	 * @return mixed[] DPA request and response
+	 * @throws IqrfException\DpaErrorException
 	 * @throws IqrfException\EmptyResponseException
 	 * @throws IqrfException\InvalidRfOutputPowerException
+	 * @throws IqrfException\UserErrorException
 	 * @throws JsonException
 	 */
 	public function setRfOutputPower(int $power): array {
@@ -233,8 +251,10 @@ class IqrfNetManager {
 	 * Set RF signal filter
 	 * @param int $filter RF signal filter
 	 * @return mixed[] DPA request and response
+	 * @throws IqrfException\DpaErrorException
 	 * @throws IqrfException\EmptyResponseException
 	 * @throws IqrfException\InvalidRfSignalFilterException
+	 * @throws IqrfException\UserErrorException
 	 * @throws JsonException
 	 */
 	public function setRfSignalFilter(int $filter): array {
