@@ -1,7 +1,8 @@
 services:
 	- App\IqrfNetModule\Forms\BondingFormFactory
 	- App\IqrfNetModule\Forms\DiscoveryFormFactory
-	- App\IqrfNetModule\Forms\RfFormFactory
+	- App\IqrfNetModule\Forms\DpaConfigFormFactory
+	- App\IqrfNetModule\Forms\OsConfigFormFactory
 	- App\IqrfNetModule\Forms\SecurityFormFactory
 	sendJsonFormFactory:
 		factory: App\IqrfNetModule\Forms\SendJsonFormFactory
@@ -14,6 +15,7 @@ services:
 	- App\IqrfNetModule\Models\IqrfNetManager
 	- App\IqrfNetModule\Models\MessageIdManager
 	- App\IqrfNetModule\Models\SecurityManager
+	- App\IqrfNetModule\Models\TrConfigManager
 	- App\IqrfNetModule\Models\WebSocketClient(%daemon.wsServer%)
 	- App\IqrfNetModule\Parsers\CoordinatorParser
 	- App\IqrfNetModule\Parsers\EnumerationParser

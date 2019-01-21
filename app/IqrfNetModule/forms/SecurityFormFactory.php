@@ -27,14 +27,14 @@ use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Exceptions\UnsupportedInputFormatException;
 use App\IqrfNetModule\Exceptions\UnsupportedSecurityTypeException;
 use App\IqrfNetModule\Models\SecurityManager;
-use App\IqrfNetModule\Presenters\NetworkPresenter;
+use App\IqrfNetModule\Presenters\TrSecurityPresenter;
 use Nette\Forms\Controls\SubmitButton;
 use Nette\Forms\Form;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;
 
 /**
- * IQMESH Security form factory
+ * IQMESH Network security form factory
  */
 class SecurityFormFactory {
 
@@ -51,7 +51,7 @@ class SecurityFormFactory {
 	private $factory;
 
 	/**
-	 * @var NetworkPresenter IQMESH Network presenter
+	 * @var TrSecurityPresenter IQMESH Network security presenter
 	 */
 	private $presenter;
 
@@ -67,13 +67,13 @@ class SecurityFormFactory {
 
 	/**
 	 * Create IQMESH Access password form
-	 * @param NetworkPresenter $presenter IQMESH Network presenter
-	 * @return Form IQMESH Access password form
+	 * @param TrSecurityPresenter $presenter IQMESH Network security presenter
+	 * @return Form Get IQMESH Access password/User key form
 	 */
-	public function create(NetworkPresenter $presenter): Form {
+	public function create(TrSecurityPresenter $presenter): Form {
 		$this->presenter = $presenter;
 		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('iqrfnet.network-manager.security'));
+		$form->setTranslator($form->getTranslator()->domain('iqrfnet.security'));
 		$inputFormats = [
 			DataFormat::ASCII => 'input-formats.ascii',
 			DataFormat::HEX => 'input-formats.hex',

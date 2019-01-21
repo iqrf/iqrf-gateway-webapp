@@ -21,41 +21,26 @@ declare(strict_types = 1);
 namespace App\IqrfNetModule\Presenters;
 
 use App\CoreModule\Presenters\ProtectedPresenter;
-use App\IqrfNetModule\Forms\BondingFormFactory;
-use App\IqrfNetModule\Forms\DiscoveryFormFactory;
+use App\IqrfNetModule\Forms\SecurityFormFactory;
 use Nette\Forms\Form;
 
 /**
- * IQMESH Network Manager presenter
+ * IQMESH Network Manager - TR security presenter
  */
-class NetworkPresenter extends ProtectedPresenter {
+class TrSecurityPresenter extends ProtectedPresenter {
 
 	/**
-	 * @var BondingFormFactory IQMESH Bonding form
+	 * @var SecurityFormFactory IQMESH Security configuration form
 	 * @inject
 	 */
-	public $bondingForm;
+	public $form;
 
 	/**
-	 * @var DiscoveryFormFactory IQMESH Discovery form
-	 * @inject
+	 * Create IQMESH Security configuration form
+	 * @return Form IQMESH Security configuration form
 	 */
-	public $discoveryForm;
-
-	/**
-	 * Create IQMESH Bonding form
-	 * @return Form IQMESH Bonding form
-	 */
-	protected function createComponentIqrfNetBondingForm(): Form {
-		return $this->bondingForm->create($this);
-	}
-
-	/**
-	 * Create IQMESH Discovery form
-	 * @return Form IQMESH Discovery form
-	 */
-	protected function createComponentIqrfNetDiscoveryForm(): Form {
-		return $this->discoveryForm->create($this);
+	protected function createComponentIqrfNetSecurityForm(): Form {
+		return $this->form->create($this);
 	}
 
 }

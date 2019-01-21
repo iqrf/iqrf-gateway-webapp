@@ -17,6 +17,12 @@
 
 {block title}{_iqrfnet.network-manager.title}{/block}
 {block content}
+<ul class='nav nav-tabs'>
+	<li role='presentation' class='active'><a n:href='Network:default'>{_iqrfnet.network.title}</a></li>
+	<li role='presentation'><a n:href='OsConfig:default'>{_iqrfnet.osConfig.title}</a></li>
+	<li role='presentation'><a n:href='DpaConfig:default'>{_iqrfnet.dpaConfig.title}</a></li>
+	<li role='presentation'><a n:href='TrSecurity:default'>{_iqrfnet.security.title}</a></li>
+</ul>
 <div class="col-sm-6">
 	<h2>{_iqrfnet.network-manager.bonding.title}</h2>
 	<div class='panel panel-default'>
@@ -42,22 +48,6 @@
 	<div class='panel panel-default'>
 		<div class='panel-body'>
 			{control iqrfNetDiscoveryForm}
-		</div>
-	</div>
-</div>
-<div class="col-sm-6">
-	<h2>{_iqrfnet.network-manager.security.title}</h2>
-	<div class='panel panel-default'>
-		<div class='panel-body'>
-			{control iqrfNetSecurityForm}
-		</div>
-	</div>
-</div>
-<div class="col-sm-6">
-	<h2>{_iqrfnet.network-manager.rf-settings.title}</h2>
-	<div class='panel panel-default'>
-		<div class='panel-body'>
-			{control iqrfNetRfForm}
 		</div>
 	</div>
 </div>
