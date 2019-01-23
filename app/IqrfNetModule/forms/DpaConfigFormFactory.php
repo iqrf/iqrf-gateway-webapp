@@ -64,6 +64,7 @@ class DpaConfigFormFactory extends TrConfigFormFactory {
 	 * @param Form $form DPA configuration form
 	 */
 	private function addEmbeddedPeripherals(Form &$form): void {
+		$form->addGroup($form->getTranslator()->translate('embeddedPeripherals'));
 		$peripherals = ['coordinator', 'node', 'os', 'eeprom', 'eeeprom', 'ram','ledr',	'ledg', 'spi', 'io', 'thermometer', 'pwm', 'uart', 'frc'];
 		$embPers = $form->addContainer('embPers');
 		foreach ($peripherals as $peripheral) {
@@ -76,6 +77,7 @@ class DpaConfigFormFactory extends TrConfigFormFactory {
 	 * @param Form $form DPA configuration form
 	 */
 	private function addRfConfiguration(Form &$form): void {
+		$form->addGroup($form->getTranslator()->translate('rf'));
 		if (array_key_exists('stdAndLpNetwork', $this->configuration)) {
 			$networkTypes = [false => 'networkTypes.std', true => 'networkTypes.stdLp'];
 			$form->addSelect('networkType', 'networkType', $networkTypes);
@@ -100,6 +102,7 @@ class DpaConfigFormFactory extends TrConfigFormFactory {
 	 * @param Form $form DPA configuration form
 	 */
 	private function addOtherConfiguration(Form &$form): void {
+		$form->addGroup($form->getTranslator()->translate('other'));
 		$form->addCheckbox('customDpaHandler', 'customDpaHandler');
 		$form->addCheckbox('ioSetup', 'ioSetup');
 		$form->addCheckbox('dpaAutoexec', 'dpaAutoexec');
@@ -114,6 +117,9 @@ class DpaConfigFormFactory extends TrConfigFormFactory {
 			unset($uartBaudrates[$key]);
 		}
 		$form->addSelect('uartBaudrate', 'uartBaudrate', $uartBaudrates);
+		if (array_key_exists('nodeDpaInterface', $this->configuration)) {
+			$form->addCheckbox('nodeDpaInterface', 'nodeDpaInterface');
+		}
 	}
 
 }

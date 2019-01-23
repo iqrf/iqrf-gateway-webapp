@@ -107,7 +107,8 @@ abstract class TrConfigFormFactory {
 	 * @param TextInput $input RF channel input
 	 */
 	protected function setRfChannelRule(TextInput $input): void {
-		switch ($this->configuration['rfBand']) {
+		$rfBand = $this->configuration['rfBand'] ?? null;
+		switch ($rfBand) {
 			case '443':
 				$input->addRule(Form::RANGE, 'messages.rfChannel443', [0, 16]);
 				break;
@@ -116,6 +117,9 @@ abstract class TrConfigFormFactory {
 				break;
 			case '916':
 				$input->addRule(Form::RANGE, 'messages.rfChannel916', [0, 255]);
+				break;
+			default:
+				$input->setDisabled();
 				break;
 		}
 	}

@@ -9,10 +9,10 @@ services:
 		arguments: [@jsonSchemaManagerApi]
 	- App\IqrfNetModule\Forms\SendRawFormFactory
 	- App\IqrfNetModule\Models\BondingManager
+	- App\IqrfNetModule\Models\DiscoveryManager
 	- App\IqrfNetModule\Models\DpaRawManager
 	- App\IqrfNetModule\Models\EnumerationManager
 	- App\IqrfNetModule\Models\GwModeManager
-	- App\IqrfNetModule\Models\IqrfNetManager
 	- App\IqrfNetModule\Models\MessageIdManager
 	- App\IqrfNetModule\Models\SecurityManager
 	- App\IqrfNetModule\Models\TrConfigManager

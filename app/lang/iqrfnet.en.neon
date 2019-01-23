@@ -1,8 +1,35 @@
 title: IQRF Net
 description: Control IQRF network.
 
+bonding:
+	title: Bonding
+	method: Bonding method
+	methods:
+		local: Local bonding
+		smartConnect: Smart Connect
+	address: 'Address (HEX)'
+	autoAddress: Auto address
+	smartConnectCode: IQRF Smart Connect Code
+	messages:
+		address: Enter valid address.
+		smartConnectCode: Please enter IQRF Smart Connect Code.
+	bondNode: Bond Node
+	rebondNode: Rebond Node
+	removeNode: Remove Node
+	clearAllBonds: Clear All Bonds
+
+discovery:
+	title: Discovery
+	txPower: TX Power
+	maxNodeAddress: Max. Node Address
+	messages:
+		txPower: TX Power have to be integer from 0 to 7.
+		maxNodeAddress: Max. Node Address have to be integer form 0 to 239.
+	send: Discovery
+
 dpaConfig:
 	title: DPA configuration
+	embeddedPeripherals: Embedded peripherals
 	embPers:
 		coordinator: Coordinator
 		node: Node
@@ -18,6 +45,7 @@ dpaConfig:
 		pwm: PWM
 		uart: UART
 		frc: FRC
+	rf: RF
 	networkType: Network Type
 	networkTypes:
 		std: STD
@@ -28,6 +56,7 @@ dpaConfig:
 	lpRxTimeout: LP RX timeout
 	rfSubChannelA: RF channeů 2nd network
 	rfSubChannelB: Alternative DSM channel
+	other: Other
 	customDpaHandler: Custom DPA Handler
 	ioSetup: IO Setup
 	dpaAutoexec: Autoexec
@@ -45,6 +74,7 @@ dpaConfig:
 		57600: 57600 Bd
 		115200: 115200 Bd
 		230400: 230400 Bd
+	nodeDpaInterface: Node DPA interface
 	messages:
 			lpRxTimeout: LP RX timeout has to be in range from 1 to 255.
 			rfChannel443: RF Channel has to be in range from 0 to 16.
@@ -54,14 +84,17 @@ dpaConfig:
 			txPower: TX Power have to be integer from 0 to 7.
 	save: Save
 
-network:
-	title: IQMESH network manager
+
+
+network-manager:
+	title: IQMESH Network Manager
+	description: IQMESH Network Manager.
 
 osConfig:
 	title: IQRF OS configuration
 	rfBand: RF Band
 	rfBands:
-		443: 443 MHz
+		433: 433 MHz
 		868: 868 MHz
 		916: 916 MHz
 	rfChannelA: RF channel A
@@ -118,61 +151,3 @@ send-packet:
 	parsed-response: Parsed response
 	response: Response
 	request: Request
-
-network-manager:
-	title: IQMESH Network Manager
-	description: IQMESH Network Manager.
-	dpa:
-		title: DPA configuration
-	bonding:
-		title: Bonding
-		address: 'Address (HEX)'
-		autoAddress: Auto address
-		messages:
-			address: Enter valid address.
-		bondNode: Bond Node
-		rebondNode: Rebond Node
-		removeNode: Remove Node
-		clearAllBonds: Clear All Bonds
-	discovery:
-		title: Discovery
-		txPower: TX Power
-		maxNodeAddress: Max. Node Address
-		messages:
-			txPower: TX Power have to be integer from 0 to 7.
-			maxNodeAddress: Max. Node Address have to be integer form 0 to 239.
-		send: Discovery
-	rf-settings:
-		title: RF settings
-		rfBand: RF Band
-		rfBands:
-			'443': 443 MHz
-			'868': 868 MHz
-			'916': 916 MHz
-			error: ERROR
-		rfChannel: RF Channel
-		rfChannelType: RF Channel Type
-		rfChannelTypes:
-			main-a: Main Channel A
-			main-b: Main Channel B
-			alternative-a: Alternative Channel A
-			alternative-b: Alternative Channel B
-		messages:
-			rfChannel: Please enter RF channel.
-			rfChannel443: RF Channel has to be in range from 0 to 16.
-			rfChannel868: RF Channel has to be in range from 0 to 67.
-			rfChannel916: RF Channel has to be in range from 0 to 255.
-		set: Set
-	security:
-		title: Security
-		input-format: Input format
-		input-formats:
-			ascii: ASCII
-			hex: HEX
-		password: Password
-		setAccessPassword: Set Access Password
-		setUserKey: Set User Key
-		messages:
-			ascii-password-length: It has to have maximal length of 16 chars.
-			hex-password-format: It has to contain hexadecimal number.
-			hex-password-length: It has to have maximal length of 32 chars.

@@ -23,7 +23,7 @@ namespace App\IqrfNetModule\Forms;
 use App\CoreModule\Forms\FormFactory;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
-use App\IqrfNetModule\Models\IqrfNetManager;
+use App\IqrfNetModule\Models\DiscoveryManager;
 use App\IqrfNetModule\Presenters\NetworkPresenter;
 use Nette\Forms\Form;
 use Nette\SmartObject;
@@ -38,7 +38,7 @@ class DiscoveryFormFactory {
 	use SmartObject;
 
 	/**
-	 * @var IqrfNetManager IQMESH Network manager
+	 * @var DiscoveryManager IQMESH Discovery manager
 	 */
 	private $manager;
 
@@ -55,9 +55,9 @@ class DiscoveryFormFactory {
 	/**
 	 * Constructor
 	 * @param FormFactory $factory Generic form factory
-	 * @param IqrfNetManager $manager IQMESH Network manager
+	 * @param DiscoveryManager $manager IQMESH Discovery manager
 	 */
-	public function __construct(FormFactory $factory, IqrfNetManager $manager) {
+	public function __construct(FormFactory $factory, DiscoveryManager $manager) {
 		$this->factory = $factory;
 		$this->manager = $manager;
 	}
@@ -70,7 +70,7 @@ class DiscoveryFormFactory {
 	public function create(NetworkPresenter $presenter): Form {
 		$this->presenter = $presenter;
 		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('iqrfnet.network-manager.discovery'));
+		$form->setTranslator($form->getTranslator()->domain('iqrfnet.discovery'));
 		$form->addInteger('txPower', 'txPower')->setDefaultValue(6)
 			->addRule(Form::RANGE, 'messages.txPower', [0, 7])
 			->setRequired('messages.txPower');
@@ -91,7 +91,7 @@ class DiscoveryFormFactory {
 	 */
 	public function onSuccess(Form $form, ArrayHash $values): void {
 		try {
-			$this->manager->discovery($values['txPower'], dechex($values['maxNode']));
+			$this->manager->run($values['txPower'], $values['maxNode']);
 		} catch (EmptyResponseException | DpaErrorException $e) {
 			$message = 'No response from IQRF Gateway Daemon.';
 			$form->addError($message);

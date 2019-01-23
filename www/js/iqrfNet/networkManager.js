@@ -27,3 +27,17 @@ if (autoAddress !== null) {
 		document.getElementById('frm-iqrfNetBondingForm-remove').disabled = checked;
 	});
 }
+
+// Enable or disable IQRF Smart Connect Code input
+let bondingMethod = document.getElementById('frm-iqrfNetBondingForm-method');
+if (bondingMethod !== null) {
+	bondingMethod.addEventListener('change', function (event) {
+		let disabled = event.currentTarget.value !== 'smartConnect';
+		document.getElementById('frm-iqrfNetBondingForm-smartConnectCode').disabled = disabled;
+	});
+}
+
+let smartConnectCode = document.getElementById('frm-iqrfNetBondingForm-smartConnectCode');
+if (smartConnectCode !== null) {
+	smartConnectCode.disabled = true;
+}

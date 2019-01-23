@@ -68,8 +68,10 @@ class OsConfigFormFactory extends TrConfigFormFactory {
 			$rfBands[$rfBand] = 'rfBands.' . $rfBand;
 			unset($rfBands[$key]);
 		}
-		$form->addSelect('rfBand', 'rfBand', $rfBands)->setDisabled()
-			->setDefaultValue($this->configuration['rfBand']);
+		$form->addSelect('rfBand', 'rfBand', $rfBands)->setDisabled();
+		if (array_key_exists('rfBand', $this->configuration)) {
+			$form['rfBand']->setDefaultValue($this->configuration['rfBand']);
+		}
 		$rfChannels = ['rfChannelA', 'rfChannelB'];
 		foreach ($rfChannels as $rfChannel) {
 			$form->addInteger($rfChannel, $rfChannel);
@@ -87,8 +89,10 @@ class OsConfigFormFactory extends TrConfigFormFactory {
 		$form->addCheckbox('rfPgmTerminateMcuPin', 'rfPgmTerminateMcuPin');
 		$form->addCheckbox('rfPgmDualChannel', 'rfPgmDualChannel');
 		$form->addCheckbox('rfPgmLpMode', 'rfPgmLpMode');
-		$form->addCheckbox('rfPgmIncorrectUpload', 'rfPgmIncorrectUpload')->setDisabled()
-			->setDefaultValue($this->configuration['rfPgmIncorrectUpload']);
+		$form->addCheckbox('rfPgmIncorrectUpload', 'rfPgmIncorrectUpload')->setDisabled();
+		if (array_key_exists('rfPgmIncorrectUpload', $this->configuration)) {
+			$form['rfPgmIncorrectUpload']->setDefaultValue($this->configuration['rfPgmIncorrectUpload']);
+		}
 	}
 
 }

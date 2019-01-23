@@ -23,7 +23,7 @@ namespace App\IqrfNetModule\Forms;
 use App\CoreModule\Forms\FormFactory;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
-use App\IqrfNetModule\Models\IqrfNetManager;
+use App\IqrfNetModule\Models\BondingManager;
 use App\IqrfNetModule\Presenters\NetworkPresenter;
 use Nette\Forms\Controls\SubmitButton;
 use Nette\Forms\Form;
@@ -38,7 +38,7 @@ class BondingFormFactory {
 	use SmartObject;
 
 	/**
-	 * @var IqrfNetManager IQMESH Network manager
+	 * @var BondingManager IQMESH Bonding manager
 	 */
 	private $manager;
 
@@ -55,9 +55,9 @@ class BondingFormFactory {
 	/**
 	 * Constructor
 	 * @param FormFactory $factory Generic form factory
-	 * @param IqrfNetManager $manager IQMESH Network manager
+	 * @param BondingManager $manager IQMESH Bonding manager
 	 */
-	public function __construct(FormFactory $factory, IqrfNetManager $manager) {
+	public function __construct(FormFactory $factory, BondingManager $manager) {
 		$this->factory = $factory;
 		$this->manager = $manager;
 	}
@@ -70,16 +70,36 @@ class BondingFormFactory {
 	public function create(NetworkPresenter $presenter): Form {
 		$this->presenter = $presenter;
 		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('iqrfnet.network-manager.bonding'));
-		$form->addCheckbox('autoAddress', 'autoAddress');
-		$form->addText('address', 'address')->setDefaultValue('01')
-			->addConditionOn($form['autoAddress'], Form::EQUAL, false)
+		$methods = ['local', 'smartConnect'];
+		foreach ($methods as $id => $method) {
+			$methods[$method] = 'methods.' . $method;
+			unset($methods[$id]);
+		}
+		$form->setTranslator($form->getTranslator()->domain('iqrfnet.bonding'));
+		$form->addSelect('method', 'method', $methods);
+		$form->addText('address', 'address')->setDefaultValue('01');
+		$form->addCheckbox('autoAddress', 'autoAddress')
+			->addCondition(Form::EQUAL, false)
+			->toggle('frm-iqrfNetBondingForm-rebond')
+			->toggle('frm-iqrfNetBondingForm-remove');
+		$form['address']->addConditionOn($form['autoAddress'], Form::EQUAL, false)
 			->addRule(Form::PATTERN, 'messages.address', '[0-9a-fA-F]{1,2}')
 			->setRequired('messages.address');
-		$form->addSubmit('bond', 'bondNode')->onClick[] = [$this, 'bondNode'];
-		$form->addSubmit('rebond', 'rebondNode')->onClick[] = [$this, 'rebondNode'];
-		$form->addSubmit('remove', 'removeNode')->onClick[] = [$this, 'removeNode'];
-		$form->addSubmit('clear', 'clearAllBonds')->onClick[] = [$this, 'clearAllBonds'];
+		$form->addText('smartConnectCode', 'smartConnectCode')
+			->addConditionOn($form['method'], Form::EQUAL, 'smartConnect')
+			->setRequired('message.smartConnectCode');
+		$form->addSubmit('bond', 'bondNode')
+			->setHtmlAttribute('id', 'frm-iqrfNetBondingForm-bondNode')
+			->onClick[] = [$this, 'bondNode'];
+		$form->addSubmit('rebond', 'rebondNode')
+			->setHtmlAttribute('id', 'frm-iqrfNetBondingForm-rebond')
+			->onClick[] = [$this, 'rebondNode'];
+		$form->addSubmit('remove', 'removeNode')
+			->setHtmlAttribute('id', 'frm-iqrfNetBondingForm-remove')
+			->onClick[] = [$this, 'removeNode'];
+		$form->addSubmit('clear', 'clearAllBonds')
+			->setHtmlAttribute('id', 'frm-iqrfNetBondingForm-clear')
+			->onClick[] = [$this, 'clearAllBonds'];
 		$form->addProtection('core.errors.form-timeout');
 		return $form;
 	}
@@ -91,9 +111,16 @@ class BondingFormFactory {
 	 */
 	public function bondNode(SubmitButton $button): void {
 		$values = $button->getForm()->getValues();
-		$address = $values['autoAddress'] === true ? '00' : $values['address'];
+		$address = $values['autoAddress'] === true ? 0 : intval($values['address']);
 		try {
-			$this->manager->bondNode($address);
+			switch ($values['method']) {
+				case 'local':
+					$this->manager->bondLocal($address);
+					break;
+				case 'smartConnect':
+					$this->manager->bondSmartConnect($address, $values['smartConnectCode']);
+					break;
+			}
 		} catch (EmptyResponseException | DpaErrorException $e) {
 			$message = 'No response from IQRF Gateway Daemon.';
 			$button->addError($message);
@@ -108,7 +135,7 @@ class BondingFormFactory {
 	 */
 	public function clearAllBonds(SubmitButton $button): void {
 		try {
-			$this->manager->clearAllBonds();
+			$this->manager->clearAll();
 		} catch (EmptyResponseException | DpaErrorException $e) {
 			$message = 'No response from IQRF Gateway Daemon.';
 			$button->addError($message);
@@ -124,7 +151,7 @@ class BondingFormFactory {
 	public function rebondNode(SubmitButton $button): void {
 		$values = $button->getForm()->getValues();
 		try {
-			$this->manager->rebondNode($values['address']);
+			$this->manager->rebond($values['address']);
 		} catch (EmptyResponseException | DpaErrorException $e) {
 			$message = 'No response from IQRF Gateway Daemon.';
 			$button->addError($message);
@@ -140,7 +167,7 @@ class BondingFormFactory {
 	public function removeNode(SubmitButton $button): void {
 		$values = $button->getForm()->getValues();
 		try {
-			$this->manager->removeNode($values['address']);
+			$this->manager->remove($values['address']);
 		} catch (EmptyResponseException | DpaErrorException $e) {
 			$message = 'No response from IQRF Gateway Daemon.';
 			$button->addError($message);

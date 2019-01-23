@@ -15,36 +15,24 @@
  * limitations under the License.
 *}
 
-{block title}{_iqrfnet.network-manager.title}{/block}
+{block title}{_iqrfnet.title}{/block}
 {block content}
 <ul class='nav nav-tabs'>
-	<li role='presentation' class='active'><a n:href='Network:default'>{_iqrfnet.network.title}</a></li>
+	<li role='presentation' class='active'><a n:href='Network:default'>{_iqrfnet.network-manager.title}</a></li>
 	<li role='presentation'><a n:href='OsConfig:default'>{_iqrfnet.osConfig.title}</a></li>
 	<li role='presentation'><a n:href='DpaConfig:default'>{_iqrfnet.dpaConfig.title}</a></li>
 	<li role='presentation'><a n:href='TrSecurity:default'>{_iqrfnet.security.title}</a></li>
 </ul>
 <div class="col-sm-6">
-	<h2>{_iqrfnet.network-manager.bonding.title}</h2>
+	<h2>{_iqrfnet.bonding.title}</h2>
 	<div class='panel panel-default'>
 		<div class='panel-body'>
-			<form n:name=iqrfNetBondingForm class=form>
-				<label n:name=address for='address'>{_iqrfnet.network-manager.bonding.address}</label>
-				<input n:name=address class='form-control'>
-				<div class='checkbox'>
-					<label n:name=autoAddress for='autoAddress'>
-						<input n:name=autoAddress type='checkbox'> {_iqrfnet.network-manager.bonding.autoAddress}
-					</label>
-				</div>
-				<input n:name=bond id='frm-iqrfNetBondingForm-bond' class='btn btn-primary'>
-				<input n:name=rebond id='frm-iqrfNetBondingForm-rebond' class='btn btn-primary'>
-				<input n:name=remove id='frm-iqrfNetBondingForm-remove' class='btn btn-primary'>
-				<input n:name=clear id='frm-iqrfNetBondingForm-clear' class='btn btn-primary'>
-			</form>
+			{control iqrfNetBondingForm}
 		</div>
 	</div>
 </div>
 <div class="col-sm-6">
-	<h2>{_iqrfnet.network-manager.discovery.title}</h2>
+	<h2>{_iqrfnet.discovery.title}</h2>
 	<div class='panel panel-default'>
 		<div class='panel-body'>
 			{control iqrfNetDiscoveryForm}
