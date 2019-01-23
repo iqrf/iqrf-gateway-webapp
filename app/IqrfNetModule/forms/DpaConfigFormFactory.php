@@ -65,7 +65,7 @@ class DpaConfigFormFactory extends TrConfigFormFactory {
 	 */
 	private function addEmbeddedPeripherals(Form &$form): void {
 		$form->addGroup($form->getTranslator()->translate('embeddedPeripherals'));
-		$peripherals = ['coordinator', 'node', 'os', 'eeprom', 'eeeprom', 'ram','ledr',	'ledg', 'spi', 'io', 'thermometer', 'pwm', 'uart', 'frc'];
+		$peripherals = ['coordinator', 'node', 'os', 'eeprom', 'eeeprom', 'ram','ledr', 'ledg', 'spi', 'io', 'thermometer', 'pwm', 'uart', 'frc'];
 		$embPers = $form->addContainer('embPers');
 		foreach ($peripherals as $peripheral) {
 			$embPers->addCheckbox($peripheral, 'embPers.' . $peripheral);

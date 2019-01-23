@@ -98,7 +98,7 @@ class TrConfigManager {
 				'returnVerbose' => true,
 			],
 		];
-		$array['data']['req'] =	Arrays::mergeTree($array['data']['req'], $config);
+		$array['data']['req'] = Arrays::mergeTree($array['data']['req'], $config);
 		$this->request->setRequest($array);
 		return $this->wsClient->sendSync($this->request);
 	}
