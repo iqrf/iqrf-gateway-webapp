@@ -188,19 +188,25 @@ class InfoManager {
 	 * @param mixed[] $dpa Information about the Coordinator
 	 */
 	private function parseRfMode(array &$dpa): void {
-		if (!isset($dpa['response']['data']['rsp']['peripheralEnumeration']['flags'])) {
+		if (!isset($dpa['response']['data']['rsp']['peripheralEnumeration'])) {
 			return;
 		}
-		$flags = &$dpa['response']['data']['rsp']['peripheralEnumeration']['flags'];
+		$enumeration = &$dpa['response']['data']['rsp']['peripheralEnumeration'];
+		$flags = &$enumeration['flags'];
 		if (!is_array($flags) || array_key_exists('rfMode', $flags)) {
 			return;
 		}
+		if(version_compare($enumeration['dpaVer'], '4.00', '<')) {
+			$array = &$flags['rfMode'];
+		} else {
+			$array = &$flags['networkType'];
+		}
 		if (array_key_exists('stdAndLpNetwork', $flags) && $flags['stdAndLpNetwork']) {
-			$flags['rfMode'] = 'STD+LP';
+			$array = 'STD+LP';
 		} elseif (array_key_exists('rfModeStd', $flags) && $flags['rfModeStd']) {
-			$flags['rfMode'] = 'STD';
+			$array = 'STD';
 		} elseif (array_key_exists('rfModeLp', $flags) && $flags['rfModeLp']) {
-			$flags['rfMode'] = 'LP';
+			$array = 'LP';
 		}
 	}
 

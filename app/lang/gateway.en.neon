@@ -5,7 +5,7 @@ info:
 	description: Show infromation about this gateway.
 	board: Board
 	gwId: IQRF Gateway ID
-	gwmonId: PIXLA customer ID
+	gwmonId: PIXLA token
 	version:
 		iqrf-gw-daemon: IQRF Gateway Daemon
 		iqrf-gw-webapp: IQRF Gateway Webapp
@@ -22,6 +22,7 @@ info:
 		os: OS
 		dpa: DPA
 		rfMode: RF mode
+		networkType: Network type
 		voltage: Supply voltage
 	usages:
 		memory: Memory usage
