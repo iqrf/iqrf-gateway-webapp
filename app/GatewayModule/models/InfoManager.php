@@ -196,7 +196,7 @@ class InfoManager {
 		if (!is_array($flags) || array_key_exists('rfMode', $flags)) {
 			return;
 		}
-		if(version_compare($enumeration['dpaVer'], '4.00', '<')) {
+		if (version_compare($enumeration['dpaVer'], '4.00', '<')) {
 			$array = &$flags['rfMode'];
 		} else {
 			$array = &$flags['networkType'];
