@@ -196,6 +196,7 @@ deploy-package-devel:
   script:
     - ssh www-deploy@iqrfsdk.org "rm -f /data/nginx/dl/iqrf-gateway-webapp/stretch/all/devel/*"
     - rsync -hrvz --delete -e ssh iqrf-gateway-webapp_*all.deb www-deploy@iqrfsdk.org:/data/nginx/dl/iqrf-gateway-webapp/stretch/all/devel
+  <<: *ssh_template
 
 deploy-package-stable:
   stage: deploy-package
@@ -209,6 +210,7 @@ deploy-package-stable:
   script:
     - ssh www-deploy@iqrfsdk.org "rm -f /data/nginx/dl/iqrf-gateway-webapp/stretch/all/stable/*"
     - rsync -hrvz --delete -e ssh iqrf-gateway-webapp_*all.deb www-deploy@iqrfsdk.org:/data/nginx/dl/iqrf-gateway-webapp/stretch/all/stable
+  <<: *ssh_template
 
 deploy-user-docs:
   image: iqrfsdk/iqrf-gateway-webapp:tests-buster
