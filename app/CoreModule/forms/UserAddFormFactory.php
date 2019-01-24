@@ -24,6 +24,7 @@ use App\CoreModule\Exceptions\UsernameAlreadyExistsException;
 use App\CoreModule\Models\UserManager;
 use App\CoreModule\Presenters\BasePresenter;
 use App\CoreModule\Presenters\UserPresenter;
+use App\InstallModule\Presenters\CreateUserPresenter;
 use Nette\Forms\Form;
 use Nette\SmartObject;
 
@@ -61,24 +62,17 @@ class UserAddFormFactory {
 
 	/**
 	 * Create register a new user form
-	 * @param BasePresenter $presenter Base presenter
+	 * @param BasePresenter|CreateUserPresenter|UserPresenter $presenter Base presenter
 	 * @return Form Register a new user form
 	 */
 	public function create(BasePresenter $presenter): Form {
 		$this->presenter = $presenter;
-		$userTypes = [
-			'normal' => 'userTypes.normal',
-			'power' => 'userTypes.power',
-		];
-		$languages = [
-			'en' => 'languages.en',
-		];
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('core.user.form'));
 		$form->addText('username', 'username')->setRequired('messages.username');
 		$form->addPassword('password', 'password')->setRequired('messages.password');
-		$form->addSelect('userType', 'userType', $userTypes);
-		$form->addSelect('language', 'language', $languages);
+		$form->addSelect('userType', 'userType', $this->getUserTypes());
+		$form->addSelect('language', 'language', $this->getLanguages());
 		$form->addSubmit('add', 'add');
 		$form->onSuccess[] = [$this, 'add'];
 		return $form;
@@ -102,6 +96,35 @@ class UserAddFormFactory {
 		} catch (UsernameAlreadyExistsException $e) {
 			$this->presenter->flashMessage('core.user.form.messages.usernameAlreadyExists', 'danger');
 		}
+	}
+
+	/**
+	 * Get languages
+	 * @return string[] Available languages
+	 */
+	private function getLanguages(): array {
+		$languages = ['en'];
+		foreach ($languages as $key => $language) {
+			$languages[$language] = 'languages.' . $language;
+			unset($languages[$key]);
+		}
+		return $languages;
+	}
+
+	/**
+	 * Get user types
+	 * @return string[] User types
+	 */
+	private function getUserTypes(): array {
+		$userTypes = ['normal', 'power'];
+		foreach ($userTypes as $key => $type) {
+			$userTypes[$type] = 'userTypes.' . $type;
+			unset($userTypes[$key]);
+		}
+		if ($this->presenter instanceof CreateUserPresenter) {
+			unset($userTypes['power']);
+		}
+		return $userTypes;
 	}
 
 }
