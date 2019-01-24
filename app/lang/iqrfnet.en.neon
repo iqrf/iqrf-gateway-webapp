@@ -90,6 +90,7 @@ macros:
 network-manager:
 	title: IQMESH Network Manager
 	description: IQMESH Network Manager.
+	control: Control
 
 osConfig:
 	title: IQRF OS configuration
@@ -152,3 +153,7 @@ send-packet:
 	parsed-response: Parsed response
 	response: Response
 	request: Request
+
+trConfiguration:
+	title: TR configuration
+	description: Edit TR configuration.
