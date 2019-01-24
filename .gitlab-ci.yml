@@ -189,7 +189,7 @@ deploy-package-devel:
   dependencies:
     - build-package
   environment:
-    name: user-docs
+    name: package-devel
     url: https://dl.iqrfsdk.org/iqrf-gateway-webapp/stretch/all/devel
   only:
     - master
