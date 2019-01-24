@@ -28,7 +28,7 @@ discovery:
 	send: Discovery
 
 dpaConfig:
-	title: DPA configuration
+	title: DPA
 	embeddedPeripherals: Embedded peripherals
 	embPers:
 		coordinator: Coordinator
@@ -93,7 +93,7 @@ network-manager:
 	control: Control
 
 osConfig:
-	title: IQRF OS configuration
+	title: OS
 	rfBand: RF Band
 	rfBands:
 		433: 433 MHz
@@ -114,7 +114,7 @@ osConfig:
 	save: Save
 
 security:
-	title: IQMESH security configuration
+	title: Security
 	input-format: Input format
 	input-formats:
 		ascii: ASCII
