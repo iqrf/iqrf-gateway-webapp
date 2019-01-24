@@ -5,6 +5,7 @@ stages:
   - test
   - coding-style
   - build-package
+  - deploy-package
   - build-docker
   - deploy-docs
 
@@ -22,7 +23,6 @@ cache:
     - linux, amd64
 
 .ssh_template: &ssh_template
-  stage: deploy-docs
   before_script:
     - eval $(ssh-agent -s)
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
@@ -52,17 +52,17 @@ cache:
   extends: .docker_template
   stage: build-docker-testing
   only:
-      refs:
-        - master
-        - schedules
+    refs:
+      - master
+      - schedules
   tags:
     - linux, docker, amd64
 
 build-docker:latest-amd64:
   extends: .docker_template
   only:
-      refs:
-        - master
+    refs:
+      - master
   tags:
     - linux, docker, amd64
   variables:
@@ -72,8 +72,8 @@ build-docker:latest-amd64:
 build-docker:stable-amd64:
   extends: .docker_template
   only:
-      refs:
-        - stable
+    refs:
+      - stable
   tags:
     - linux, docker, amd64
   variables:
@@ -173,6 +173,10 @@ build-package:
 
 deploy-api-docs:
   image: iqrfsdk/iqrf-gateway-webapp:tests-buster
+  stage: deploy-docs
+  environment:
+    name: api-docs
+    url: https://apidocs.iqrfsdk.org/iqrf-gateway-webapp/
   script:
     - curl -L https://github.com/phpDocumentor/phpDocumentor2/releases/download/v3.0.0-alpha.3/phpDocumentor.phar -o phpDocumentor.phar
     - curl -L https://github.com/phpDocumentor/phpDocumentor2/releases/download/v3.0.0-alpha.3/phpDocumentor.phar.pubkey -o phpDocumentor.phar.pubkey
@@ -180,8 +184,38 @@ deploy-api-docs:
     - rsync -hrvz --delete -e ssh docs/api/ www-deploy@iqrfsdk.org:/data/nginx/apidocs/iqrf-gateway-webapp/
   <<: *ssh_template
 
+deploy-package-devel:
+  stage: deploy-package
+  dependencies:
+    - build-package
+  environment:
+    name: user-docs
+    url: https://dl.iqrfsdk.org/iqrf-gateway-webapp/stretch/all/devel
+  only:
+    - master
+  script:
+    - ssh www-deploy@iqrfsdk.org "rm -f /data/nginx/dl/iqrf-gateway-webapp/stretch/all/devel/*"
+    - rsync -hrvz --delete -e ssh iqrf-gateway-webapp_*all.deb www-deploy@iqrfsdk.org:/data/nginx/dl/iqrf-gateway-webapp/stretch/all/devel
+
+deploy-package-stable:
+  stage: deploy-package
+  dependencies:
+    - build-package
+  environment:
+    name: package-stable
+    url: https://dl.iqrfsdk.org/iqrf-gateway-webapp/stretch/all/stable
+  only:
+    - stable
+  script:
+    - ssh www-deploy@iqrfsdk.org "rm -f /data/nginx/dl/iqrf-gateway-webapp/stretch/all/stable/*"
+    - rsync -hrvz --delete -e ssh iqrf-gateway-webapp_*all.deb www-deploy@iqrfsdk.org:/data/nginx/dl/iqrf-gateway-webapp/stretch/all/stable
+
 deploy-user-docs:
   image: iqrfsdk/iqrf-gateway-webapp:tests-buster
+  stage: deploy-docs
+  environment:
+    name: user-docs
+    url: https://docs.iqrfsdk.org/iqrf-gateway-webapp/
   script:
     - cd docs/; make html
     - rsync -hrvz --delete -e ssh build/html/ www-deploy@iqrfsdk.org:/data/nginx/docs/iqrf-gateway-webapp/
