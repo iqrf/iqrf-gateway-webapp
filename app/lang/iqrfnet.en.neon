@@ -84,7 +84,8 @@ dpaConfig:
 			txPower: TX Power have to be integer from 0 to 7.
 	save: Save
 
-
+macros:
+	title: Macros
 
 network-manager:
 	title: IQMESH Network Manager
