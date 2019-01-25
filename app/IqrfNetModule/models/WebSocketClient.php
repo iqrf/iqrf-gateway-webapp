@@ -26,7 +26,6 @@ use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\IqrfNetModule\Requests\ApiRequest;
 use App\IqrfNetModule\Responses\ApiResponse;
 use Nette\SmartObject;
-use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 use Ratchet\Client;
 use Ratchet\Client\WebSocket as WsClient;
@@ -80,15 +79,14 @@ class WebSocketClient {
 	public function sendSync(ApiRequest $request, int $timeout = 13): array {
 		$connection = $this->createConnection($timeout);
 		$wait = true;
-		$attempts = 2;
 		$this->loop->addTimer($timeout * 2, function () use (&$wait): void {
 			$this->stopSync($wait);
 		});
 		$resolved = null;
-		$connection->then(function (WsClient $conn) use (&$resolved, &$wait, &$attempts, $request): void {
+		$connection->then(function (WsClient $conn) use (&$resolved, &$wait, $request): void {
 			$conn->send($request->toJson());
-			$conn->on('message', function (MessageInterface $msg) use (&$resolved, &$wait, &$attempts, $conn, $request): void {
-				$this->receiveSync($conn, $msg, $resolved, $wait, $attempts, $request);
+			$conn->on('message', function (MessageInterface $msg) use (&$resolved, &$wait, $conn): void {
+				$this->receiveSync($conn, $msg, $resolved, $wait);
 			});
 		}, function ($e) use (&$wait): void {
 			Debugger::log($e->getMessage(), 'WebSocket Client');
@@ -126,35 +124,12 @@ class WebSocketClient {
 	 * @param MessageInterface $message Received message
 	 * @param MessageInterface|null $resolved Stored receive message
 	 * @param bool $wait Wait to finish
-	 * @param int $attempts Attempts to receive
-	 * @param ApiRequest $request IQRF JSON DPA request
-	 * @throws JsonException
 	 */
-	private function receiveSync(WsClient $connection, MessageInterface $message, ?MessageInterface &$resolved, bool &$wait, int &$attempts, ApiRequest $request): void {
-		if ($attempts === 0) {
-			$wait = false;
-		}
-		if ($this->checkMsgId($request, $message)) {
-			$resolved = $message;
-			$wait = false;
-		} else {
-			$attempts--;
-		}
+	private function receiveSync(WsClient $connection, MessageInterface $message, ?MessageInterface &$resolved, bool &$wait): void {
+		$resolved = $message;
+		$wait = false;
 		$connection->close();
 		$this->loop->stop();
-	}
-
-	/**
-	 * Check if JSON DPA request and response have got the same message ID
-	 * @param ApiRequest $request JSON DPA request
-	 * @param MessageInterface $response JSON DPA request
-	 * @return bool Have JSON DPA request and response got the same message ID
-	 * @throws JsonException
-	 */
-	private function checkMsgId(ApiRequest $request, MessageInterface $response): bool {
-		$requestJson = Json::decode($request->toJson(), Json::FORCE_ARRAY);
-		$responseJson = Json::decode(strval($response), Json::FORCE_ARRAY);
-		return $requestJson['data']['msgId'] === $responseJson['data']['msgId'];
 	}
 
 	/**
