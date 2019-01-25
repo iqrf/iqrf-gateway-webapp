@@ -128,7 +128,7 @@ class WebSocketClient {
 	/**
 	 * Stop event loop
 	 */
-	private function stopSync(): void {
+	public function stopSync(): void {
 		$this->wait = false;
 		$this->loop->stop();
 	}
