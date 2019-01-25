@@ -116,6 +116,7 @@ class BondingManager {
 			'data' => [
 				'req' => [
 					'nAdr' => 0,
+					'param' => (object) [],
 				],
 				'returnVerbose' => true,
 			],
