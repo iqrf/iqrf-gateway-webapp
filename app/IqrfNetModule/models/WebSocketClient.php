@@ -43,26 +43,46 @@ class WebSocketClient {
 	use SmartObject;
 
 	/**
+	 * @var WsClient WebSocket client
+	 */
+	private $client;
+
+	/**
 	 * @var EventLoop\LoopInterface Event loop
 	 */
 	private $loop;
 
 	/**
+	 * @var ApiRequest IQRF JSON DPA request
+	 */
+	private $request;
+
+	/**
+	 * @var MessageInterface|null Response from WebSocket server
+	 */
+	private $response;
+
+	/**
 	 * @var string URL to IQRF Gateway Daemon's WebSocket server
 	 */
-	private $wsServer;
+	private $serverUrl;
+
+	/**
+	 * @var bool Wait to finish
+	 */
+	private $wait = true;
 
 	/**
 	 * Constructor
-	 * @param string $wsServer URL to IQRF Gateway Daemon's WebSocket server
+	 * @param string $serverUrl URL to IQRF Gateway Daemon's WebSocket server
 	 */
-	public function __construct(string $wsServer) {
+	public function __construct(string $serverUrl) {
 		$this->loop = EventLoop\Factory::create();
-		$wsServerEnv = getenv('IQRFGD_WS_SERVER');
-		if ($wsServerEnv !== false) {
-			$this->wsServer = $wsServerEnv;
+		$serverUrlEnv = getenv('IQRFGD_WS_SERVER');
+		if ($serverUrlEnv !== false) {
+			$this->serverUrl = $serverUrlEnv;
 		} else {
-			$this->wsServer = $wsServer;
+			$this->serverUrl = $serverUrl;
 		}
 	}
 
@@ -78,24 +98,20 @@ class WebSocketClient {
 	 */
 	public function sendSync(ApiRequest $request, int $timeout = 13): array {
 		$connection = $this->createConnection($timeout);
-		$wait = true;
-		$this->loop->addTimer($timeout * 2, function () use (&$wait): void {
-			$this->stopSync($wait);
-		});
-		$resolved = null;
-		$connection->then(function (WsClient $conn) use (&$resolved, &$wait, $request): void {
-			$conn->send($request->toJson());
-			$conn->on('message', function (MessageInterface $msg) use (&$resolved, &$wait, $conn): void {
-				$this->receiveSync($conn, $msg, $resolved, $wait);
-			});
-		}, function ($e) use (&$wait): void {
+		$this->request = $request;
+		$this->loop->addTimer($timeout * 2, [$this, 'stopSync']);
+		$connection->then(function (WsClient $conn): void {
+			$this->client = $conn;
+			$this->client->send($this->request->toJson());
+			$this->client->on('message', [$this, 'receiveSync']);
+		}, function ($e): void {
 			Debugger::log($e->getMessage(), 'WebSocket Client');
-			$this->stopSync($wait);
+			$this->stopSync();
 		});
-		while ($wait) {
+		while ($this->wait) {
 			$this->loop->run();
 		}
-		return $this->parseResponse($request, $resolved);
+		return $this->parseResponse();
 	}
 
 	/**
@@ -106,50 +122,43 @@ class WebSocketClient {
 	private function createConnection(int $timeout): PromiseInterface {
 		$reactConnector = new ReactSocket\Connector($this->loop, ['timeout' => $timeout]);
 		$connector = new Client\Connector($this->loop, $reactConnector);
-		return $connector($this->wsServer);
+		return $connector($this->serverUrl);
 	}
 
 	/**
 	 * Stop event loop
-	 * @param bool $wait Wait to finish
 	 */
-	private function stopSync(bool &$wait): void {
-		$wait = false;
+	private function stopSync(): void {
+		$this->wait = false;
 		$this->loop->stop();
 	}
 
 	/**
 	 * Receive a message from WebSocket server
-	 * @param Client\WebSocket $connection WebSocket client connection
 	 * @param MessageInterface $message Received message
-	 * @param MessageInterface|null $resolved Stored receive message
-	 * @param bool $wait Wait to finish
 	 */
-	private function receiveSync(WsClient $connection, MessageInterface $message, ?MessageInterface &$resolved, bool &$wait): void {
-		$resolved = $message;
-		$wait = false;
-		$connection->close();
-		$this->loop->stop();
+	public function receiveSync(MessageInterface $message): void {
+		$this->response = $message;
+		$this->client->close();
+		$this->stopSync();
 	}
 
 	/**
 	 * Parse JSON DPA request and response
-	 * @param ApiRequest $request JSON DPA request
-	 * @param MessageInterface|null $response JSON DPA response
 	 * @return mixed[] JSON DPA response in an array
 	 * @throws EmptyResponseException
 	 * @throws JsonException
 	 * @throws DpaErrorException
 	 * @throws UserErrorException
 	 */
-	private function parseResponse(ApiRequest $request, ?MessageInterface $response): array {
-		$string = strval($response);
-		$data = ['request' => $request->toArray()];
-		if ($string === '') {
+	private function parseResponse(): array {
+		$data = ['request' => $this->request->toArray()];
+		if ($this->response === null) {
 			$data['status'] = 'Empty response.';
 			Debugger::barDump($data, 'WebSocket client');
 			throw new EmptyResponseException();
 		}
+		$string = $this->response->getPayload();
 		$apiResponse = new ApiResponse();
 		$apiResponse->setResponse($string);
 		$data['response'] = $apiResponse->toArray();
