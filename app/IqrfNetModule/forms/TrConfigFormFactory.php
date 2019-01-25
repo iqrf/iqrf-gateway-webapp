@@ -42,7 +42,7 @@ abstract class TrConfigFormFactory {
 	/**
 	 * @var mixed[] TR configuration
 	 */
-	protected $configuration;
+	protected $configuration = [];
 
 	/**
 	 * @var TrConfigManager IQRF TR configuration manager
@@ -71,19 +71,21 @@ abstract class TrConfigFormFactory {
 
 	/**
 	 * Load IQRF TR configuration into the form
-	 * @return mixed[] Form values
-	 * @throws DpaErrorException
-	 * @throws EmptyResponseException
-	 * @throws JsonException
-	 * @throws UserErrorException
 	 */
-	protected function load(): array {
+	protected function load(): void {
 		$address = $this->presenter->getParameter('id', 0);
-		$dpa = $this->manager->read($address);
-		if (array_key_exists('response', $dpa)) {
-			return $dpa['response']['data']['rsp'];
+		try {
+			$dpa = $this->manager->read($address);
+		} catch (UserErrorException | DpaErrorException | EmptyResponseException | JsonException $e) {
+			return;
 		}
-		return [];
+		if (!array_key_exists('response', $dpa)) {
+			return;
+		}
+		$this->configuration = $dpa['response']['data']['rsp'];
+		if (array_key_exists('stdAndLpNetwork', $this->configuration)) {
+			$this->configuration['stdAndLpNetwork'] = intval($this->configuration['stdAndLpNetwork']);
+		}
 	}
 
 	/**
@@ -97,6 +99,9 @@ abstract class TrConfigFormFactory {
 	public function save(Form $form): void {
 		$address = $this->presenter->getParameter('id', 0);
 		$config = $form->getValues(true);
+		if (array_key_exists('stdAndLpNetwork', $config)) {
+			$config['stdAndLpNetwork'] = boolval($config['stdAndLpNetwork']);
+		}
 		// Workaround for a bug in IQRF Gateway Daemon
 		$config['rfBand'] = $this->configuration['rfBand'];
 		$this->manager->write($address, $config);

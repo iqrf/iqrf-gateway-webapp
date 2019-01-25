@@ -42,7 +42,6 @@ dpaConfig:
 		spi: SPI
 		io: IO
 		thermometer: Thermometer
-		pwm: PWM
 		uart: UART
 		frc: FRC
 	rf: RF
@@ -76,12 +75,12 @@ dpaConfig:
 		230400: 230400 Bd
 	nodeDpaInterface: Node DPA interface
 	messages:
-			lpRxTimeout: LP RX timeout has to be in range from 1 to 255.
-			rfChannel443: RF Channel has to be in range from 0 to 16.
-			rfChannel868: RF Channel has to be in range from 0 to 67.
-			rfChannel916: RF Channel has to be in range from 0 to 255.
-			rxFilter: RX filter have to be integer from 0 to 63.
-			txPower: TX Power have to be integer from 0 to 7.
+		lpRxTimeout: LP RX timeout has to be in range from 1 to 255.
+		rfChannel443: RF Channel has to be in range from 0 to 16.
+		rfChannel868: RF Channel has to be in range from 0 to 67.
+		rfChannel916: RF Channel has to be in range from 0 to 255.
+		rxFilter: RX filter have to be integer from 0 to 63.
+		txPower: TX Power have to be integer from 0 to 7.
 	save: Save
 
 macros:
@@ -108,9 +107,9 @@ osConfig:
 	rfPgmLpMode: LP mode
 	rfPgmIncorrectUpload: Incorrect upload
 	messages:
-			rfChannel443: RF Channel has to be in range from 0 to 16.
-			rfChannel868: RF Channel has to be in range from 0 to 67.
-			rfChannel916: RF Channel has to be in range from 0 to 255.
+		rfChannel443: RF Channel has to be in range from 0 to 16.
+		rfChannel868: RF Channel has to be in range from 0 to 67.
+		rfChannel916: RF Channel has to be in range from 0 to 255.
 	save: Save
 
 security:

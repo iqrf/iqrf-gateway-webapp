@@ -20,13 +20,9 @@ declare(strict_types = 1);
 
 namespace App\IqrfNetModule\Forms;
 
-use App\IqrfNetModule\Exceptions\DpaErrorException;
-use App\IqrfNetModule\Exceptions\EmptyResponseException;
-use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\IqrfNetModule\Presenters\OsConfigPresenter;
 use Nette\Application\UI\Form;
 use Nette\SmartObject;
-use Nette\Utils\JsonException;
 
 /**
  * IQRF TR - IQRF OS configuration form factory
@@ -42,11 +38,7 @@ class OsConfigFormFactory extends TrConfigFormFactory {
 	 */
 	public function create(OsConfigPresenter $presenter): Form {
 		$this->presenter = $presenter;
-		try {
-			$this->configuration = $this->load();
-		} catch (UserErrorException | DpaErrorException | EmptyResponseException | JsonException $e) {
-			$this->configuration = [];
-		}
+		$this->load();
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('iqrfnet.osConfig'));
 		$this->addRfConfiguration($form);

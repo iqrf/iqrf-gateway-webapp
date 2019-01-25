@@ -20,13 +20,9 @@ declare(strict_types = 1);
 
 namespace App\IqrfNetModule\Forms;
 
-use App\IqrfNetModule\Exceptions\DpaErrorException;
-use App\IqrfNetModule\Exceptions\EmptyResponseException;
-use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\IqrfNetModule\Presenters\DpaConfigPresenter;
 use Nette\Application\UI\Form;
 use Nette\SmartObject;
-use Nette\Utils\JsonException;
 
 /**
  * IQRF TR - DPA configuration form factory
@@ -42,11 +38,7 @@ class DpaConfigFormFactory extends TrConfigFormFactory {
 	 */
 	public function create(DpaConfigPresenter $presenter): Form {
 		$this->presenter = $presenter;
-		try {
-			$this->configuration = $this->load();
-		} catch (UserErrorException | DpaErrorException | EmptyResponseException | JsonException $e) {
-			$this->configuration = [];
-		}
+		$this->load();
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('iqrfnet.dpaConfig'));
 		$this->addEmbeddedPeripherals($form);
@@ -65,8 +57,13 @@ class DpaConfigFormFactory extends TrConfigFormFactory {
 	 */
 	private function addEmbeddedPeripherals(Form &$form): void {
 		$form->addGroup($form->getTranslator()->translate('embeddedPeripherals'));
-		$peripherals = ['coordinator', 'node', 'os', 'eeprom', 'eeeprom', 'ram','ledr', 'ledg', 'spi', 'io', 'thermometer', 'pwm', 'uart', 'frc'];
 		$embPers = $form->addContainer('embPers');
+		$unchangablePeripherals = ['coordinator', 'node', 'os'];
+		foreach ($unchangablePeripherals as $peripheral) {
+			$embPers->addCheckbox($peripheral, 'embPers.' . $peripheral)
+				->setDisabled()->setValue($this->configuration['embPers'][$peripheral]);
+		}
+		$peripherals = ['eeprom', 'eeeprom', 'ram','ledr', 'ledg', 'spi', 'io', 'thermometer', 'uart', 'frc'];
 		foreach ($peripherals as $peripheral) {
 			$embPers->addCheckbox($peripheral, 'embPers.' . $peripheral);
 		}
@@ -80,7 +77,7 @@ class DpaConfigFormFactory extends TrConfigFormFactory {
 		$form->addGroup($form->getTranslator()->translate('rf'));
 		if (array_key_exists('stdAndLpNetwork', $this->configuration)) {
 			$networkTypes = [false => 'networkTypes.std', true => 'networkTypes.stdLp'];
-			$form->addSelect('networkType', 'networkType', $networkTypes);
+			$form->addSelect('stdAndLpNetwork', 'networkType', $networkTypes);
 		}
 		$form->addInteger('txPower', 'txPower')->addRule(Form::RANGE, 'messages.txPower', [0, 7])
 			->setRequired('messages.txPower');
