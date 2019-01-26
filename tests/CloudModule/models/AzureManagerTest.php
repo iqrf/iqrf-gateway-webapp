@@ -95,7 +95,9 @@ class AzureManagerTest extends TestCase {
 	 * Test function to check the connection string (valid connection string)
 	 */
 	public function testCheckConnectionStringValid(): void {
-		Assert::null($this->mockedManager->checkConnectionString($this->connectionString));
+		Assert::noError(function (): void {
+			$this->mockedManager->checkConnectionString($this->connectionString);
+		});
 	}
 
 	/**
