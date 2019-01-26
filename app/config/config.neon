@@ -37,7 +37,7 @@ extensions:
 	console: Contributte\Console\DI\ConsoleExtension(%consoleMode%)
 	extendedFormMacros: Instante\ExtendedFormMacros\DI\ExtendedFormMacrosExtension
 	guzzle: Contributte\Guzzlette\DI\GuzzleExtension
-	monolog: Kdyby\Monolog\DI\MonologExtension
+	monolog: Contributte\Monolog\DI\MonologExtension
 	translation: Kdyby\Translation\DI\TranslationExtension
 
 console:
@@ -57,16 +57,16 @@ translation:
 	fallback: [en]
 
 monolog:
-	name: iqrf-gateway-webapp
-	hookToTracy: true
-	registerFallback: true
-	usePriorityProcessor: true
-	handlers:
-		raven: Monolog\Handler\RavenHandler(Raven_Client(%sentry.dsn%))
-	processors:
-		- Monolog\Processor\GitProcessor
-		- Monolog\Processor\WebProcessor
-		- Kdyby\Monolog\Processor\PriorityProcessor
+	tracy:
+		hook: true
+	channel:
+		default:
+			handlers:
+				- Monolog\Handler\RavenHandler(Raven_Client(%sentry.dsn%))
+			processors:
+				- Monolog\Processor\GitProcessor()
+				- Monolog\Processor\MemoryPeakUsageProcessor()
+				- Monolog\Processor\WebProcessor()
 
 session:
 	expiration: 14 days
