@@ -18,6 +18,12 @@ bonding:
 	removeNode: Remove Node
 	clearAllBonds: Clear All Bonds
 
+devices:
+	title: Devices Info
+	bonded: Bonded device
+	discovered: Discovered device
+	unbonded: Unbonded device
+
 discovery:
 	title: Discovery
 	txPower: TX Power
