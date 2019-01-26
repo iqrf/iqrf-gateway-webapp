@@ -45,6 +45,7 @@ class WebSocketClientTest extends TestCase {
 	 */
 	public function testSendSyncSuccess(): void {
 		$array = [
+			'mType' => 'test',
 			'data' => [
 				'msgId' => '1',
 				'status' => 0,
