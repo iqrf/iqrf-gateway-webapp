@@ -35,6 +35,7 @@ database:
 
 extensions:
 	console: Contributte\Console\DI\ConsoleExtension(%consoleMode%)
+	console.extra: Contributte\Console\Extra\DI\ConsoleBridgesExtension
 	extendedFormMacros: Instante\ExtendedFormMacros\DI\ExtendedFormMacrosExtension
 	guzzle: Contributte\Guzzlette\DI\GuzzleExtension
 	monolog: Contributte\Monolog\DI\MonologExtension
@@ -42,12 +43,16 @@ extensions:
 
 console:
 	name: IQRF Gateway Webapp manager
-	version: 2.0-beta
+	version: 2.0.0-beta
 	catchExceptions: true
 	autoExit: true
-	#url: https://contributte.com
+	url: http://localhost/
 	lazy: true
 	#helperSet: @customHelperSet
+
+console.extra:
+	security: false
+	utils: false
 
 guzzle:
 	debug: true
