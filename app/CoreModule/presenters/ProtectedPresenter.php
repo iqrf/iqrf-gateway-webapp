@@ -23,6 +23,9 @@ namespace App\CoreModule\Presenters;
 use App\CoreModule\Models\VersionManager;
 use GuzzleHttp\Exception\TransferException;
 use Kdyby\Translation\Phrase;
+use Nette\Reflection\ClassType;
+use Nette\Reflection\Method;
+use Nette\Security\IUserStorage;
 use Nette\Utils\JsonException;
 
 /**
@@ -54,13 +57,17 @@ abstract class ProtectedPresenter extends BasePresenter {
 	}
 
 	/**
-	 * Start up an protected presenter
+	 * Check requirements
+	 * @param ClassType|Method $element Element
 	 */
-	protected function startup(): void {
-		parent::startup();
+	public function checkRequirements($element): void {
 		if (!$this->user->isLoggedIn()) {
-			$this->redirect(':Core:Sign:in');
+			if ($this->user->getLogoutReason() === IUserStorage::INACTIVITY) {
+				$this->flashMessage('core.signOut.inactivity', 'info');
+			}
+			$this->redirect(':Core:Sign:In', ['backlink' => $this->storeRequest()]);
 		}
+		parent::checkRequirements($element);
 	}
 
 }

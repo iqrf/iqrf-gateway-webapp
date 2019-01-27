@@ -30,6 +30,12 @@ use Nette\Forms\Form;
 class SignPresenter extends BasePresenter {
 
 	/**
+	 * @var string Back link
+	 * @persistent
+	 */
+	public $backlink;
+
+	/**
 	 * @var SignInFormFactory Sign in form factory
 	 * @inject
 	 */

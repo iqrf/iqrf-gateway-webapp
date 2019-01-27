@@ -85,6 +85,7 @@ class SignInFormFactory {
 			$this->user->setExpiration($values->remember ? '14 days' : '20 minutes');
 			$this->user->login($values->username, $values->password);
 			$this->presenter->flashMessage('core.sign.inForm.messages.success', 'success');
+			$this->presenter->restoreRequest($this->presenter->backlink);
 			$this->presenter->redirect('Homepage:default');
 		} catch (AuthenticationException $e) {
 			$this->presenter->flashMessage('core.sign.inForm.messages.incorrectUsernameOrPassword', 'danger');
