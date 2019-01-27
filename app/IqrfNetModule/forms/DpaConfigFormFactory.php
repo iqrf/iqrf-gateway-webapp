@@ -61,7 +61,10 @@ class DpaConfigFormFactory extends TrConfigFormFactory {
 		$unchangablePeripherals = ['coordinator', 'node', 'os'];
 		foreach ($unchangablePeripherals as $peripheral) {
 			$embPers->addCheckbox($peripheral, 'embPers.' . $peripheral)
-				->setDisabled()->setValue($this->configuration['embPers'][$peripheral]);
+				->setDisabled();
+			if (array_key_exists('embPers', $this->configuration)) {
+				$embPers[$peripheral]->setValue($this->configuration['embPers'][$peripheral]);
+			}
 		}
 		$peripherals = ['eeprom', 'eeeprom', 'ram','ledr', 'ledg', 'spi', 'io', 'thermometer', 'uart', 'frc'];
 		foreach ($peripherals as $peripheral) {
