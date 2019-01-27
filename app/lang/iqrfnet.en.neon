@@ -7,11 +7,11 @@ bonding:
 	methods:
 		local: Local bonding
 		smartConnect: Smart Connect
-	address: 'Address (HEX)'
+	address: 'Address'
 	autoAddress: Auto address
 	smartConnectCode: IQRF Smart Connect Code
 	messages:
-		address: Enter valid address.
+		address: Please enter a valid address. Its has to be a decadic number from 1 to 239.
 		smartConnectCode: Please enter IQRF Smart Connect Code.
 	bondNode: Bond Node
 	rebondNode: Rebond Node
@@ -30,7 +30,7 @@ discovery:
 	maxNodeAddress: Max. Node Address
 	messages:
 		txPower: TX Power have to be integer from 0 to 7.
-		maxNodeAddress: Max. Node Address have to be integer form 0 to 239.
+		maxNodeAddress: Max. Node Address has to be integer form 0 to 239.
 	send: Discovery
 
 dpaConfig:

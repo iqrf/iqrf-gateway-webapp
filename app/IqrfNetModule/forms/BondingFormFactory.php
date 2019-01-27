@@ -77,7 +77,8 @@ class BondingFormFactory {
 		}
 		$form->setTranslator($form->getTranslator()->domain('iqrfnet.bonding'));
 		$form->addSelect('method', 'method', $methods);
-		$form->addText('address', 'address')->setDefaultValue('01');
+		$form->addInteger('address', 'address')->setDefaultValue(1)
+			->addRule(Form::RANGE, 'messages.address', [1, 239]);
 		$form->addCheckbox('autoAddress', 'autoAddress')
 			->addCondition(Form::EQUAL, false)
 			->toggle('frm-iqrfNetBondingForm-rebond')
@@ -111,7 +112,7 @@ class BondingFormFactory {
 	 */
 	public function bondNode(SubmitButton $button): void {
 		$values = $button->getForm()->getValues();
-		$address = $values['autoAddress'] === true ? 0 : intval($values['address']);
+		$address = $values['autoAddress'] === true ? 0 : $values['address'];
 		try {
 			switch ($values['method']) {
 				case 'local':
