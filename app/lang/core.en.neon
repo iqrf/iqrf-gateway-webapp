@@ -27,6 +27,7 @@ sign:
 
 signOut:
 	title: You have been signed out
+	inactivity: You have been logged out for inactivity
 	message: Sign in to another account
 
 node-red:
