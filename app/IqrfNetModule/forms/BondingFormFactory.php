@@ -108,11 +108,10 @@ class BondingFormFactory {
 	/**
 	 * Bond new node
 	 * @param SubmitButton $button Submit button for bonding
-	 * @throws JsonException
 	 */
 	public function bondNode(SubmitButton $button): void {
 		$values = $button->getForm()->getValues();
-		$address = $values['autoAddress'] === true ? 0 : $values['address'];
+		$address = $values['autoAddress'] ? 0 : $values['address'];
 		try {
 			switch ($values['method']) {
 				case 'local':
@@ -122,57 +121,50 @@ class BondingFormFactory {
 					$this->manager->bondSmartConnect($address, $values['smartConnectCode']);
 					break;
 			}
-		} catch (EmptyResponseException | DpaErrorException $e) {
-			$message = 'No response from IQRF Gateway Daemon.';
-			$button->addError($message);
-			$this->presenter->flashMessage($message, 'danger');
+			$this->presenter->flashMessage('iqrfnet.bonding.messages.bond.success', 'success');
+		} catch (EmptyResponseException | DpaErrorException | JsonException $e) {
+			$this->presenter->flashMessage('iqrfnet.bonding.messages.bond.failure', 'danger');
 		}
 	}
 
 	/**
 	 * Clear all bonds
 	 * @param SubmitButton $button Submit button for cleaning all bonds
-	 * @throws JsonException
 	 */
 	public function clearAllBonds(SubmitButton $button): void {
 		try {
 			$this->manager->clearAll();
-		} catch (EmptyResponseException | DpaErrorException $e) {
-			$message = 'No response from IQRF Gateway Daemon.';
-			$button->addError($message);
-			$this->presenter->flashMessage($message, 'danger');
+			$this->presenter->flashMessage('iqrfnet.bonding.messages.clearAll.success', 'success');
+		} catch (EmptyResponseException | DpaErrorException | JsonException $e) {
+			$this->presenter->flashMessage('iqrfnet.bonding.messages.clearAll.failure', 'danger');
 		}
 	}
 
 	/**
 	 * Rebond node
 	 * @param SubmitButton $button Submit button for rebonding
-	 * @throws JsonException
 	 */
 	public function rebondNode(SubmitButton $button): void {
 		$values = $button->getForm()->getValues();
 		try {
 			$this->manager->rebond($values['address']);
-		} catch (EmptyResponseException | DpaErrorException $e) {
-			$message = 'No response from IQRF Gateway Daemon.';
-			$button->addError($message);
-			$this->presenter->flashMessage($message, 'danger');
+			$this->presenter->flashMessage('iqrfnet.bonding.messages.rebond.success', 'success');
+		} catch (EmptyResponseException | DpaErrorException | JsonException $e) {
+			$this->presenter->flashMessage('iqrfnet.bonding.messages.rebond.failure', 'danger');
 		}
 	}
 
 	/**
 	 * Remove node
 	 * @param SubmitButton $button Submit button for removing node
-	 * @throws JsonException
 	 */
 	public function removeNode(SubmitButton $button): void {
 		$values = $button->getForm()->getValues();
 		try {
 			$this->manager->remove($values['address']);
-		} catch (EmptyResponseException | DpaErrorException $e) {
-			$message = 'No response from IQRF Gateway Daemon.';
-			$button->addError($message);
-			$this->presenter->flashMessage($message, 'danger');
+			$this->presenter->flashMessage('iqrfnet.bonding.messages.remove.success', 'success');
+		} catch (EmptyResponseException | DpaErrorException | JsonException $e) {
+			$this->presenter->flashMessage('iqrfnet.bonding.messages.remove.failure', 'danger');
 		}
 	}
 

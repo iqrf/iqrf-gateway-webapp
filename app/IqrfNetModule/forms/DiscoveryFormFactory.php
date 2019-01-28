@@ -87,15 +87,13 @@ class DiscoveryFormFactory {
 	 * Run Discovery
 	 * @param Form $form IQMESH discovery form
 	 * @param ArrayHash $values Values from IQMESH discovery form
-	 * @throws JsonException
 	 */
 	public function onSuccess(Form $form, ArrayHash $values): void {
 		try {
 			$this->manager->run($values['txPower'], $values['maxNode']);
-		} catch (EmptyResponseException | DpaErrorException $e) {
-			$message = 'No response from IQRF Gateway Daemon.';
-			$form->addError($message);
-			$this->presenter->flashMessage($message, 'danger');
+			$this->presenter->flashMessage('iqrfnet.discovery.messages.success', 'success');
+		} catch (EmptyResponseException | DpaErrorException | JsonException $e) {
+			$this->presenter->flashMessage('iqrfnet.discovery.messages.failure', 'danger');
 		}
 	}
 
