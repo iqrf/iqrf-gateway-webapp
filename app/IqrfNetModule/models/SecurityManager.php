@@ -59,8 +59,10 @@ class SecurityManager {
 	 * @param string $password An access password
 	 * @param string $inputFormat Input data format (ASCII or HEX)
 	 * @return mixed[] DPA request and response
+	 * @throws IqrfException\DpaErrorException
 	 * @throws IqrfException\EmptyResponseException
 	 * @throws IqrfException\UnsupportedInputFormatException
+	 * @throws IqrfException\UserErrorException
 	 * @throws JsonException
 	 */
 	public function setAccessPassword(string $password = '', string $inputFormat = DataFormat::ASCII): array {
@@ -72,8 +74,10 @@ class SecurityManager {
 	 * @param string $password An user key
 	 * @param string $inputFormat Input data format (ASCII or HEX)
 	 * @return mixed[] DPA request and response
+	 * @throws IqrfException\DpaErrorException
 	 * @throws IqrfException\EmptyResponseException
 	 * @throws IqrfException\UnsupportedInputFormatException
+	 * @throws IqrfException\UserErrorException
 	 * @throws JsonException
 	 */
 	public function setUserKey(string $password = '', string $inputFormat = DataFormat::ASCII): array {

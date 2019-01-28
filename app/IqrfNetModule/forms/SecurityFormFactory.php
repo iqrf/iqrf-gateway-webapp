@@ -25,7 +25,6 @@ use App\IqrfNetModule\Enums\DataFormat;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Exceptions\UnsupportedInputFormatException;
-use App\IqrfNetModule\Exceptions\UnsupportedSecurityTypeException;
 use App\IqrfNetModule\Models\SecurityManager;
 use App\IqrfNetModule\Presenters\TrSecurityPresenter;
 use Nette\Forms\Controls\SubmitButton;
@@ -94,36 +93,28 @@ class SecurityFormFactory {
 	/**
 	 * Set IQMESH Access Password
 	 * @param SubmitButton $button Submit button for setting Access Password
-	 * @throws JsonException
-	 * @throws UnsupportedInputFormatException
-	 * @throws UnsupportedSecurityTypeException
 	 */
 	public function accessPassword(SubmitButton $button): void {
 		$values = $button->getForm()->getValues();
 		try {
 			$this->manager->setAccessPassword($values['password'], $values['format']);
-		} catch (EmptyResponseException | DpaErrorException $e) {
-			$message = 'No response from IQRF Gateway Daemon.';
-			$button->addError($message);
-			$this->presenter->flashMessage($message, 'danger');
+			$this->presenter->flashMessage('iqrfnet.security.accessPassword.success', 'success');
+		} catch (DpaErrorException | EmptyResponseException | JsonException | UnsupportedInputFormatException $e) {
+			$this->presenter->flashMessage('iqrfnet.security.accessPassword.failure', 'danger');
 		}
 	}
 
 	/**
 	 * Set IQMESH User Key
 	 * @param SubmitButton $button Submit button for setting User Key
-	 * @throws JsonException
-	 * @throws UnsupportedInputFormatException
-	 * @throws UnsupportedSecurityTypeException
 	 */
 	public function userKey(SubmitButton $button): void {
 		$values = $button->getForm()->getValues();
 		try {
 			$this->manager->setUserKey($values['password'], $values['format']);
-		} catch (EmptyResponseException | DpaErrorException $e) {
-			$message = 'No response from IQRF Gateway Daemon.';
-			$button->addError($message);
-			$this->presenter->flashMessage($message, 'danger');
+			$this->presenter->flashMessage('iqrfnet.security.userKey.success', 'success');
+		} catch (DpaErrorException | EmptyResponseException | JsonException | UnsupportedInputFormatException $e) {
+			$this->presenter->flashMessage('iqrfnet.security.userKey.failure', 'danger');
 		}
 	}
 

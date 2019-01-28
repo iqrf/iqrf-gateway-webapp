@@ -69,13 +69,6 @@ dpaConfig:
 		115200: 115200 Bd
 		230400: 230400 Bd
 	nodeDpaInterface: Node DPA interface
-	messages:
-		lpRxTimeout: LP RX timeout has to be in range from 1 to 255.
-		rfChannel443: RF Channel has to be in range from 0 to 16.
-		rfChannel868: RF Channel has to be in range from 0 to 67.
-		rfChannel916: RF Channel has to be in range from 0 to 255.
-		rxFilter: RX filter have to be integer from 0 to 63.
-		txPower: TX Power have to be integer from 0 to 7.
 	save: Save
 
 macros:
@@ -112,9 +105,12 @@ osConfig:
 	rfPgmLpMode: LP mode
 	rfPgmIncorrectUpload: Incorrect upload
 	messages:
+		lpRxTimeout: LP RX timeout has to be in range from 1 to 255.
 		rfChannel443: RF Channel has to be in range from 0 to 16.
 		rfChannel868: RF Channel has to be in range from 0 to 67.
 		rfChannel916: RF Channel has to be in range from 0 to 255.
+		rxFilter: RX filter have to be integer from 0 to 63.
+		txPower: TX Power have to be integer from 0 to 7.
 	save: Save
 
 security:
@@ -130,6 +126,12 @@ security:
 		ascii-password-length: It has to have maximal length of 16 chars.
 		hex-password-format: It has to contain hexadecimal number.
 		hex-password-length: It has to have maximal length of 32 chars.
+	accessPassword:
+		failure: An error occurred while the access password setting.
+		success: The access password has been set successfully.
+	userKey:
+		failure: An error occurred while the user key setting.
+		success: The user key has been set successfully.
 
 send-json:
 	title: Send IQRF JSON request
