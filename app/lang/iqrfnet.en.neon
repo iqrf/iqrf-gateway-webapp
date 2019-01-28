@@ -161,3 +161,8 @@ send-packet:
 trConfiguration:
 	title: TR configuration
 	description: Edit TR configuration.
+	read:
+		failure: An error occured while TR configuration reading.
+	write:
+		failure: An error occured while TR configuration saving.
+		success: The TR configuration has been saved successfully.

@@ -75,7 +75,7 @@ abstract class TrConfigFormFactory {
 		$address = $this->presenter->getParameter('id', 0);
 		try {
 			$dpa = $this->manager->read($address);
-		} catch (UserErrorException | DpaErrorException | EmptyResponseException | JsonException $e) {
+		} catch (DpaErrorException | EmptyResponseException | JsonException | UserErrorException $e) {
 			return;
 		}
 		if (!array_key_exists('response', $dpa)) {
@@ -90,10 +90,6 @@ abstract class TrConfigFormFactory {
 	/**
 	 * Write IQRF TR configuration from the form
 	 * @param Form $form Set TR configuration form
-	 * @throws DpaErrorException
-	 * @throws EmptyResponseException
-	 * @throws JsonException
-	 * @throws UserErrorException
 	 */
 	public function save(Form $form): void {
 		$address = $this->presenter->getParameter('id', 0);
@@ -101,9 +97,12 @@ abstract class TrConfigFormFactory {
 		if (array_key_exists('stdAndLpNetwork', $config)) {
 			$config['stdAndLpNetwork'] = boolval($config['stdAndLpNetwork']);
 		}
-		// Workaround for a bug in IQRF Gateway Daemon
-		$config['rfBand'] = $this->configuration['rfBand'];
-		$this->manager->write($address, $config);
+		try {
+			$this->manager->write($address, $config);
+			$this->presenter->flashMessage('iqrfnet.trConfiguration.write.success', 'success');
+		} catch (DpaErrorException | EmptyResponseException | JsonException | UserErrorException $e) {
+			$this->presenter->flashMessage('iqrfnet.trConfiguration.write.failure', 'danger');
+		}
 	}
 
 }
