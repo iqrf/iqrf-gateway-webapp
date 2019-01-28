@@ -85,6 +85,22 @@ dpaConfig:
 	nodeDpaInterface: Node DPA interface
 	save: Save
 
+enumeration:
+	title: IQMESH Device enumeration
+	deviceInfo: Device info
+	deviceAddr: Device address
+	manufacturer: Manufacturer
+	product: Product name
+	trInfo: TR info
+	trType: TR type
+	mid: Module ID
+	osVersion: IQRF OS version
+	dpaVersion: DPA version
+	rssi: RSSI
+	supplyVoltage: Supply voltage
+	messages:
+		failure: An error occurred while the device enumeration.
+
 macros:
 	title: Macros
 
