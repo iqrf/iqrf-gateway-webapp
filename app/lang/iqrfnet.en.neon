@@ -50,17 +50,6 @@ dpaConfig:
 		thermometer: Thermometer
 		uart: UART
 		frc: FRC
-	rf: RF
-	networkType: Network Type
-	networkTypes:
-		std: STD
-		stdLp: STD+LP
-		lp: LP
-	txPower: TX power
-	rxFilter: RX filter
-	lpRxTimeout: LP RX timeout
-	rfSubChannelA: RF channeů 2nd network
-	rfSubChannelB: Alternative DSM channel
 	other: Other
 	customDpaHandler: Custom DPA Handler
 	ioSetup: IO Setup
@@ -99,6 +88,11 @@ network-manager:
 
 osConfig:
 	title: OS
+	networkType: Network Type
+	networkTypes:
+		std: STD
+		stdLp: STD+LP
+		lp: LP
 	rfBand: RF Band
 	rfBands:
 		433: 433 MHz
@@ -106,6 +100,11 @@ osConfig:
 		916: 916 MHz
 	rfChannelA: RF channel A
 	rfChannelB: RF channel B
+	rfSubChannelA: RF channeů 2nd network
+	rfSubChannelB: Alternative DSM channel
+	txPower: TX power
+	rxFilter: RX filter
+	lpRxTimeout: LP RX timeout
 	rfPgmEnableAfterReset: Enable after reset
 	rfPgmTerminateAfter1Min: Termination after ~1 minute
 	rfPgmTerminateMcuPin: Termination by MCU pin

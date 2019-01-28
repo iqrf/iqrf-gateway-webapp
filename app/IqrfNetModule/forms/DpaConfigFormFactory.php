@@ -21,7 +21,7 @@ declare(strict_types = 1);
 namespace App\IqrfNetModule\Forms;
 
 use App\IqrfNetModule\Presenters\DpaConfigPresenter;
-use Nette\Application\UI\Form;
+use Nette\Forms\Form;
 use Nette\SmartObject;
 
 /**
@@ -42,7 +42,6 @@ class DpaConfigFormFactory extends TrConfigFormFactory {
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('iqrfnet.dpaConfig'));
 		$this->addEmbeddedPeripherals($form);
-		$this->addRfConfiguration($form);
 		$this->addOtherConfiguration($form);
 		$form->addSubmit('save', 'save');
 		$form->addProtection('core.errors.form-timeout');
@@ -69,31 +68,6 @@ class DpaConfigFormFactory extends TrConfigFormFactory {
 		$peripherals = ['eeprom', 'eeeprom', 'ram','ledr', 'ledg', 'spi', 'io', 'thermometer', 'uart', 'frc'];
 		foreach ($peripherals as $peripheral) {
 			$embPers->addCheckbox($peripheral, 'embPers.' . $peripheral);
-		}
-	}
-
-	/**
-	 * Add RF configuration to the form
-	 * @param Form $form DPA configuration form
-	 */
-	private function addRfConfiguration(Form &$form): void {
-		$form->addGroup($form->getTranslator()->translate('rf'));
-		if (array_key_exists('stdAndLpNetwork', $this->configuration)) {
-			$networkTypes = [false => 'networkTypes.std', true => 'networkTypes.stdLp'];
-			$form->addSelect('stdAndLpNetwork', 'networkType', $networkTypes);
-		}
-		$form->addInteger('txPower', 'txPower')->addRule(Form::RANGE, 'messages.txPower', [0, 7])
-			->setRequired('messages.txPower');
-		$form->addInteger('rxFilter', 'rxFilter')->addRule(Form::RANGE, 'messages.rxFilter', [0, 64])
-			->setRequired('messages.rxFilter');
-		$form->addInteger('lpRxTimeout', 'lpRxTimeout')->addRule(Form::RANGE, 'messages.lpRxTimeout', [1, 255])
-			->setRequired('messages.lpRxTimeout');
-		$subChannels = ['rfSubChannelA', 'rfSubChannelB'];
-		foreach ($subChannels as $subChannel) {
-			if (array_key_exists($subChannel, $this->configuration)) {
-				$form->addInteger($subChannel, $subChannel);
-				$this->setRfChannelRule($form[$subChannel]);
-			}
 		}
 	}
 

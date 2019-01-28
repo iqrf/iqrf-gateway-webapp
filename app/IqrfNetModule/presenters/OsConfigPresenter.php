@@ -22,7 +22,7 @@ namespace App\IqrfNetModule\Presenters;
 
 use App\CoreModule\Presenters\ProtectedPresenter;
 use App\IqrfNetModule\Forms\OsConfigFormFactory;
-use Nette\Application\UI\Form;
+use Nette\Forms\Form;
 
 /**
  * IQMESH Network Manager - IQRF OS configuration presenter

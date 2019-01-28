@@ -27,8 +27,7 @@ use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\IqrfNetModule\Models\TrConfigManager;
 use App\IqrfNetModule\Presenters\DpaConfigPresenter;
 use App\IqrfNetModule\Presenters\OsConfigPresenter;
-use Nette\Application\UI\Form;
-use Nette\Forms\Controls\TextInput;
+use Nette\Forms\Form;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;
 
@@ -105,28 +104,6 @@ abstract class TrConfigFormFactory {
 		// Workaround for a bug in IQRF Gateway Daemon
 		$config['rfBand'] = $this->configuration['rfBand'];
 		$this->manager->write($address, $config);
-	}
-
-	/**
-	 * Set rules for RF channel input
-	 * @param TextInput $input RF channel input
-	 */
-	protected function setRfChannelRule(TextInput $input): void {
-		$rfBand = $this->configuration['rfBand'] ?? null;
-		switch ($rfBand) {
-			case '443':
-				$input->addRule(Form::RANGE, 'messages.rfChannel443', [0, 16]);
-				break;
-			case '868':
-				$input->addRule(Form::RANGE, 'messages.rfChannel868', [0, 67]);
-				break;
-			case '916':
-				$input->addRule(Form::RANGE, 'messages.rfChannel916', [0, 255]);
-				break;
-			default:
-				$input->setDisabled();
-				break;
-		}
 	}
 
 }

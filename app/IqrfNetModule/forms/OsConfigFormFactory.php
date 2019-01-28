@@ -21,7 +21,8 @@ declare(strict_types = 1);
 namespace App\IqrfNetModule\Forms;
 
 use App\IqrfNetModule\Presenters\OsConfigPresenter;
-use Nette\Application\UI\Form;
+use Nette\Forms\Controls\TextInput;
+use Nette\Forms\Form;
 use Nette\SmartObject;
 
 /**
@@ -69,6 +70,23 @@ class OsConfigFormFactory extends TrConfigFormFactory {
 			$form->addInteger($rfChannel, $rfChannel);
 			$this->setRfChannelRule($form[$rfChannel]);
 		}
+		$subChannels = ['rfSubChannelA', 'rfSubChannelB'];
+		foreach ($subChannels as $subChannel) {
+			if (array_key_exists($subChannel, $this->configuration)) {
+				$form->addInteger($subChannel, $subChannel);
+				$this->setRfChannelRule($form[$subChannel]);
+			}
+		}
+		if (array_key_exists('stdAndLpNetwork', $this->configuration)) {
+			$networkTypes = [false => 'networkTypes.std', true => 'networkTypes.stdLp'];
+			$form->addSelect('stdAndLpNetwork', 'networkType', $networkTypes);
+		}
+		$form->addInteger('txPower', 'txPower')->addRule(Form::RANGE, 'messages.txPower', [0, 7])
+			->setRequired('messages.txPower');
+		$form->addInteger('rxFilter', 'rxFilter')->addRule(Form::RANGE, 'messages.rxFilter', [0, 64])
+			->setRequired('messages.rxFilter');
+		$form->addInteger('lpRxTimeout', 'lpRxTimeout')->addRule(Form::RANGE, 'messages.lpRxTimeout', [1, 255])
+			->setRequired('messages.lpRxTimeout');
 	}
 
 	/**
@@ -84,6 +102,28 @@ class OsConfigFormFactory extends TrConfigFormFactory {
 		$form->addCheckbox('rfPgmIncorrectUpload', 'rfPgmIncorrectUpload')->setDisabled();
 		if (array_key_exists('rfPgmIncorrectUpload', $this->configuration)) {
 			$form['rfPgmIncorrectUpload']->setDefaultValue($this->configuration['rfPgmIncorrectUpload']);
+		}
+	}
+
+	/**
+	 * Set rules for RF channel input
+	 * @param TextInput $input RF channel input
+	 */
+	private function setRfChannelRule(TextInput $input): void {
+		$rfBand = $this->configuration['rfBand'] ?? null;
+		switch ($rfBand) {
+			case '443':
+				$input->addRule(Form::RANGE, 'messages.rfChannel443', [0, 16]);
+				break;
+			case '868':
+				$input->addRule(Form::RANGE, 'messages.rfChannel868', [0, 67]);
+				break;
+			case '916':
+				$input->addRule(Form::RANGE, 'messages.rfChannel916', [0, 255]);
+				break;
+			default:
+				$input->setDisabled();
+				break;
 		}
 	}
 
