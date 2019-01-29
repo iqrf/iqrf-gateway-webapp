@@ -96,24 +96,20 @@ class SendRawFormFactory {
 	public function onSuccess(Form $form): void {
 		$values = $form->getValues();
 		$packet = $values['packet'];
-		$timeout = $values['timeoutEnabled'] === true ? $values['timeout'] : null;
-		if ($this->manager->validatePacket($packet)) {
-			if ($values['overwriteAddress'] === true) {
-				$nadr = $values['address'];
-				$this->manager->updateNadr($packet, $nadr);
-			}
-			try {
-				$response = $this->manager->send($packet, $timeout);
-				$this->presenter->handleShowResponse($response);
-			} catch (EmptyResponseException | DpaErrorException $e) {
-				$message = 'No response from IQRF Gateway Daemon.';
-				$form->addError($message);
-				$this->presenter->flashMessage($message, 'danger');
-			}
-		} else {
-			$message = 'Invalid DPA packet.';
-			$form->addError($message);
-			$this->presenter->flashMessage($message, 'danger');
+		$timeout = $values['timeoutEnabled'] ? $values['timeout'] : null;
+		if (!$this->manager->validatePacket($packet)) {
+			$this->presenter->flashMessage('iqrfnet.send-packet.messages.invalidPacket', 'danger');
+			return;
+		}
+		if ($values['overwriteAddress']) {
+			$nadr = $values['address'];
+			$this->manager->updateNadr($packet, $nadr);
+		}
+		try {
+			$response = $this->manager->send($packet, $timeout);
+			$this->presenter->handleShowResponse($response);
+		} catch (EmptyResponseException | DpaErrorException $e) {
+			$this->presenter->flashMessage('iqrfnet.webSocketClient.messages.emptyResponse', 'danger');
 		}
 	}
 

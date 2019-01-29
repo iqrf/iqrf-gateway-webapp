@@ -108,16 +108,14 @@ class SendJsonFormFactory {
 				$this->jsonSchemaManager->validate($json, true);
 			}
 		} catch (JsonException $e) {
-			$message = 'Invalid JSON request.';
-			$this->presenter->flashMessage($message, 'danger');
+			$this->presenter->flashMessage('iqrfnet.send-json.messages.invalidJson', 'danger');
 		}
 		try {
 			$this->request->setRequest($json);
 			$response = $this->wsClient->sendSync($this->request, false);
 			$this->presenter->handleShowResponse($response);
 		} catch (EmptyResponseException | DpaErrorException | JsonException $e) {
-			$message = 'No response from IQRF Gateway Daemon.';
-			$this->presenter->flashMessage($message, 'danger');
+			$this->presenter->flashMessage('iqrfnet.webSocketClient.messages.emptyResponse', 'danger');
 		}
 	}
 

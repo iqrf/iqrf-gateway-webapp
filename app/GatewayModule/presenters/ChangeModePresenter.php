@@ -70,8 +70,7 @@ class ChangeModePresenter extends ProtectedPresenter {
 			$this->flashMessage('gateway.mode.modes.' . $mode . '.message', 'info');
 			$this->redirect('ChangeMode:default');
 		} catch (EmptyResponseException | DpaErrorException $e) {
-			$message = 'No response from IQRF Gateway Daemon.';
-			$this->flashMessage($message, 'danger');
+			$this->flashMessage('iqrfnet.webSocketClient.messages.emptyResponse', 'danger');
 		}
 	}
 

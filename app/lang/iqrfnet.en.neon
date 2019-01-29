@@ -168,7 +168,8 @@ send-json:
 	description: Send IQRF JSON request.
 	json: IQRF JSON request
 	messages:
-		packet: Please enter IQRF JSON request.
+		invalidJson: Invalid JSON request.
+		json: Please enter IQRF JSON request.
 	send: Send
 	response: Response
 	request: Request
@@ -184,6 +185,7 @@ send-packet:
 	messages:
 		address-length: It has to have maximal length of 2 chars.
 		address-rule: It has to contain hexadecimal number - NADR.
+		invalidPacket: Invalid DPA packet.
 		packet: Please enter DPA packet.
 	send: Send
 	parsed-response: Parsed response
@@ -198,3 +200,7 @@ trConfiguration:
 	write:
 		failure: An error occured while TR configuration saving.
 		success: The TR configuration has been saved successfully.
+
+webSocketClient:
+	messages:
+		emptyResponse: No response from IQRF Gateway Daemon.
