@@ -71,24 +71,26 @@ class ApiResponseTest extends TestCase {
 	/**
 	 * Test function to set the request (user error)
 	 */
-	public function testSetRequestUserError(): void {
+	public function testCheckStatusUserError(): void {
 		Assert::exception(function (): void {
 			$array = $this->array;
 			$array['data']['status'] = 20;
 			$json = Json::encode($array);
 			$this->response->setResponse($json);
+			$this->response->checkStatus();
 		}, IqrfException\UserErrorException::class);
 	}
 
 	/**
 	 * Test function to set the request (timeout)
 	 */
-	public function testSetRequestTimeout(): void {
+	public function testCheckStatusTimeout(): void {
 		Assert::exception(function (): void {
 			$array = $this->array;
 			$array['data']['status'] = -1;
 			$json = Json::encode($array);
 			$this->response->setResponse($json);
+			$this->response->checkStatus();
 		}, IqrfException\TimeoutException::class);
 	}
 

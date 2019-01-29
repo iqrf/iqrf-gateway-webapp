@@ -70,6 +70,7 @@ class WebSocketClient {
 	/**
 	 * Send IQRF JSON DPA request
 	 * @param ApiRequest $request IQRF JSON DPA request
+	 * @param bool $checkStatus Check response status
 	 * @param int $timeout WebSocket client timeout
 	 * @return mixed[] IQRF JSON DPA response
 	 * @throws DpaErrorException
@@ -77,7 +78,7 @@ class WebSocketClient {
 	 * @throws JsonException
 	 * @throws UserErrorException
 	 */
-	public function sendSync(ApiRequest $request, int $timeout = 13): array {
+	public function sendSync(ApiRequest $request, bool $checkStatus = true, int $timeout = 13): array {
 		$connection = $this->createConnection($timeout);
 		$wait = true;
 		$attempts = 2;
@@ -97,7 +98,7 @@ class WebSocketClient {
 		while ($wait) {
 			$this->loop->run();
 		}
-		return $this->parseResponse($request, $resolved);
+		return $this->parseResponse($request, $resolved, $checkStatus);
 	}
 
 	/**
@@ -163,22 +164,25 @@ class WebSocketClient {
 	 * Parse JSON DPA request and response
 	 * @param ApiRequest $request JSON DPA request
 	 * @param MessageInterface|null $response JSON DPA response
+	 * @param bool $checkStatus Check response status
 	 * @return mixed[] JSON DPA response in an array
 	 * @throws EmptyResponseException
 	 * @throws JsonException
 	 * @throws DpaErrorException
 	 * @throws UserErrorException
 	 */
-	private function parseResponse(ApiRequest $request, ?MessageInterface $response): array {
-		$string = strval($response);
+	private function parseResponse(ApiRequest $request, ?MessageInterface $response, bool $checkStatus): array {
 		$data = ['request' => $request->toArray()];
-		if ($string === '') {
+		if ($response === null) {
 			$data['status'] = 'Empty response.';
 			Debugger::barDump($data, 'WebSocket client');
 			throw new EmptyResponseException();
 		}
 		$apiResponse = new ApiResponse();
-		$apiResponse->setResponse($string);
+		$apiResponse->setResponse($response->getPayload());
+		if ($checkStatus) {
+			$apiResponse->checkStatus();
+		}
 		$data['response'] = $apiResponse->toArray();
 		Debugger::barDump($data, 'WebSocket client');
 		return $data;

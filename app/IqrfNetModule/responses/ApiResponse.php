@@ -78,13 +78,13 @@ class ApiResponse {
 	/**
 	 * Set JSON API response
 	 * @param string $response JSON API response
-	 * @throws IqrfException\DpaErrorException
-	 * @throws IqrfException\UserErrorException
-	 * @throws JsonException
 	 */
 	public function setResponse(string $response): void {
-		$this->response = Json::decode($response, Json::FORCE_ARRAY);
-		$this->checkStatus();
+		try {
+			$this->response = Json::decode($response, Json::FORCE_ARRAY);
+		} catch (JsonException $e) {
+			$this->response = [];
+		}
 	}
 
 	/**

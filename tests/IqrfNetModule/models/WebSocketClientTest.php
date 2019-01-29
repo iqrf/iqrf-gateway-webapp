@@ -68,7 +68,7 @@ class WebSocketClientTest extends TestCase {
 			$manager = new WebSocketClient($wsServer);
 			$array = ['data' => ['msgId' => '1']];
 			$this->request->setRequest($array);
-			$manager->sendSync($this->request, 1);
+			$manager->sendSync($this->request, true, 1);
 		}, IqrfException\EmptyResponseException::class);
 	}
 
