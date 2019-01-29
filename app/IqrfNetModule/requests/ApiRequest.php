@@ -53,7 +53,7 @@ class ApiRequest {
 	 * Add a message ID to the JSON API request
 	 */
 	protected function addMsgId(): void {
-		if (is_array($this->request) && !array_key_exists('msgId', $this->request['data'])) {
+		if (is_array($this->request) && !isset($this->request['data']['msgId'])) {
 			$this->request['data']['msgId'] = $this->msgIdManager->generate();
 		} elseif ($this->request instanceof stdClass && !isset($this->request->data->msgId)) {
 			$this->request->data->msgId = $this->msgIdManager->generate();
