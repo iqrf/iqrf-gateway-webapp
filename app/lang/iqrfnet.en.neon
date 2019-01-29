@@ -166,6 +166,7 @@ security:
 send-json:
 	title: Send IQRF JSON request
 	description: Send IQRF JSON request.
+	documentation: Show API documentation.
 	json: IQRF JSON request
 	messages:
 		invalidJson: Invalid JSON request.
