@@ -210,7 +210,6 @@ class SchedulerManagerTest extends TestCase {
 		$configPath = __DIR__ . '/../../data/';
 		$configTempPath = __DIR__ . '/../../temp/configuration/';
 		$schemaPath = __DIR__ . '/../../data/cfgSchemas/';
-		$this->fileManager = new JsonFileManager($configPath . 'scheduler/');
 		$this->fileManagerTemp = new JsonFileManager($configTempPath . 'scheduler/');
 		$fileManager = new JsonFileManager($configPath);
 		$schemaManager = new JsonSchemaManager($schemaPath);

@@ -21,12 +21,17 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Models;
 
 use App\ConfigModule\Exceptions\InvalidConfigurationFormatException;
+use App\CoreModule\Models\ZipArchiveManager;
 use DateTime;
 use Nette\Application\BadRequestException;
 use Nette\Application\Responses\FileResponse;
 use Nette\IOException;
 use Nette\SmartObject;
+use Nette\Utils\FileSystem;
+use Nette\Utils\Finder;
 use Nette\Utils\JsonException;
+use SplFileInfo;
+use ZipArchive;
 
 /**
  * Scheduler configuration migration manager
@@ -36,19 +41,19 @@ class SchedulerMigrationManager {
 	use SmartObject;
 
 	/**
+	 * @var string Path to a directory with scheduler's configuration
+	 */
+	private $configDirectory;
+
+	/**
 	 * @var MainManager Main configuration manager
 	 */
 	private $mainConfigManager;
 
 	/**
-	 * @var string File name (without .json)
+	 * @var string Path to ZIP archive
 	 */
-	private $fileName = 'Tasks';
-
-	/**
-	 * @var string Path to a directory with scheduler's configuration
-	 */
-	private $path;
+	private $path = '/tmp/iqrf-daemon-scheduler.zip';
 
 	/**
 	 * Constructor
@@ -57,9 +62,9 @@ class SchedulerMigrationManager {
 	public function __construct(MainManager $mainManager) {
 		$this->mainConfigManager = $mainManager;
 		try {
-			$this->path = $this->mainConfigManager->load()['cacheDir'] . '/scheduler/';
+			$this->configDirectory = $this->mainConfigManager->load()['cacheDir'] . '/scheduler/';
 		} catch (IOException | JsonException $e) {
-			$this->path = '/var/cache/iqrfgd2/scheduler/';
+			$this->configDirectory = '/var/cache/iqrfgd2/scheduler/';
 		}
 	}
 
@@ -69,30 +74,47 @@ class SchedulerMigrationManager {
 	 * @throws BadRequestException
 	 */
 	public function download(): FileResponse {
+		$zipManager = new ZipArchiveManager($this->path);
 		$now = new DateTime();
-		$fileName = 'iqrf-gateway-scheduler' . $now->format('c') . '.json';
-		$path = $this->path . '/' . $this->fileName . '.json';
-		$contentType = 'application/json';
-		$response = new FileResponse($path, $fileName, $contentType, true);
+		$fileName = 'iqrf-gateway-scheduler_' . $now->format('c') . '.zip';
+		$contentType = 'application/zip';
+		$zipManager->addFolder($this->configDirectory, '');
+		$zipManager->close();
+		$response = new FileResponse($this->path, $fileName, $contentType, true);
 		return $response;
 	}
 
 	/**
-	 * Upload a scheduler's configuration
+	 * Upload a configuration
 	 * @param mixed[] $formValues Values from form
 	 * @throws InvalidConfigurationFormatException
 	 */
 	public function upload(array $formValues): void {
-		$json = $formValues['configuration'];
-		if (!$json->isOk()) {
+		$zip = $formValues['configuration'];
+		if (!$zip->isOk()) {
 			throw new InvalidConfigurationFormatException();
 		}
-		$type = $json->getContentType();
-		if ($type !== 'application/json' && $type !== 'text/plain') {
+		if ($zip->getContentType() !== 'application/zip') {
 			throw new InvalidConfigurationFormatException();
 		}
-		$path = $this->path . '/' . $this->fileName . '.json';
-		$json->move($path);
+		$zip->move($this->path);
+		$zipManagerUpload = new ZipArchiveManager($this->path, ZipArchive::CREATE);
+		$this->removeOldConfiguration();
+		$zipManagerUpload->extract($this->configDirectory);
+		$zipManagerUpload->close();
+		FileSystem::delete($this->path);
+	}
+
+	/**
+	 * Remove an old scheduler's configuration
+	 */
+	private function removeOldConfiguration(): void {
+		/**
+		 * @var SplFileInfo $file File info
+		 */
+		foreach (Finder::findFiles('*.json')->in($this->configDirectory) as $file) {
+			FileSystem::delete($file->getPath());
+		}
 	}
 
 }
