@@ -1,7 +1,14 @@
 {
 	"raw": {
-		"time": "",
-		"service": "",
+		"taskId": 0,
+		"clientId": "",
+		"timeSpec": {
+			"cronTime": "",
+			"exactTime": false,
+			"periodic": false,
+			"period": 0,
+			"startTime": ""
+		},
 		"task": {
 			"messaging": "",
 			"message": {
@@ -18,8 +25,16 @@
 		}
 	},
 	"raw-hdp": {
-		"time": "",
-		"service": "",
+		"taskId": 0,
+		"clientId": "",
+		"timeSpec": {
+			"cronTime": "",
+			"exactTime": false,
+			"periodic": false,
+			"period": 0,
+			"startTime": ""
+		},
+
 		"task": {
 			"messaging": "",
 			"message": {

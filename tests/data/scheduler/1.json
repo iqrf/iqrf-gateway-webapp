@@ -1,0 +1,25 @@
+{
+	"taskId": 1,
+	"clientId": "SchedulerMessaging",
+	"timeSpec": {
+		"cronTime": "*/5 * 1 * * * *",
+		"exactTime": false,
+		"periodic": false,
+		"period": 0,
+		"startTime": ""
+	},
+	"task": {
+		"messaging": "WebsocketMessaging",
+		"message": {
+			"mType": "iqrfRaw",
+			"data": {
+				"msgId": "1",
+				"timeout": 1000,
+				"req": {
+					"rData": "00.00.06.03.ff.ff"
+				}
+			},
+			"returnVerbose": true
+		}
+	}
+}

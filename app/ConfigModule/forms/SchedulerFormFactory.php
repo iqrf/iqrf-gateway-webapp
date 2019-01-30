@@ -66,6 +66,11 @@ class SchedulerFormFactory {
 	];
 
 	/**
+	 * @var mixed[] Task's settings
+	 */
+	private $task;
+
+	/**
 	 * Constructor
 	 * @param FormFactory $factory Generic form factory
 	 * @param SchedulerManager $manager Scheduler manager
@@ -87,19 +92,33 @@ class SchedulerFormFactory {
 		$form = $this->factory->create();
 		$translator = $form->getTranslator();
 		$form->setTranslator($translator->domain('config.scheduler.form'));
-		$defaults = $this->manager->load($this->id);
-		$form->addText('time', 'time');
-		$form->addSelect('service', 'config.scheduler.form.service')
+		$this->task = $this->manager->load($this->id);
+		$form->addInteger('taskId', 'taskId');
+		$form->addSelect('clientId', 'config.scheduler.form.clientId')
 			->setItems($this->manager->getServices(), false)
 			->setTranslator($translator)
-			->setPrompt('config.scheduler.form.messages.service-prompt')
-			->setRequired('messages.service')->checkDefaultValue(false);
+			->setPrompt('config.scheduler.form.messages.clientId-prompt')
+			->setRequired('messages.clientId')->checkDefaultValue(false);
+		$this->addTimeSpec($form);
 		$task = $form->addContainer('task');
 		$task->addSelect('messaging', 'config.scheduler.form.messaging')
 			->setItems($this->manager->getMessagings(), false)
 			->setTranslator($translator)
 			->setPrompt('config.scheduler.form.messages.messaging-prompt')
 			->setRequired('messages.messaging')->checkDefaultValue(false);
+		$this->addMessage($task);
+		$form->addSubmit('save', 'Save');
+		$form->setDefaults($this->task);
+		$form->addProtection('core.errors.form-timeout');
+		$form->onSuccess[] = [$this, 'save'];
+		return $form;
+	}
+
+	/**
+	 * Add message
+	 * @param Container $task Task container
+	 */
+	private function addMessage(Container $task): void {
 		$message = $task->addContainer('message');
 		$message->addSelect('mType', 'mType', $this->mTypes)
 			->setPrompt('messages.mType-prompt')
@@ -108,22 +127,36 @@ class SchedulerFormFactory {
 		$data->addText('msgId', 'msgId');
 		$data->addInteger('timeout', 'timeout');
 		$req = $data->addContainer('req');
-		switch ($defaults['task']['message']['mType']) {
+		switch ($this->task['task']['message']['mType']) {
 			case 'iqrfRaw':
 				$this->addRaw($req);
 				break;
 			case 'iqrfRawHdp':
-				$pData = &$defaults['task']['message']['data']['req']['pData'];
+				$pData = &$this->task['task']['message']['data']['req']['pData'];
 				$pData = implode('.', $pData);
 				$this->addRawHdp($req);
 				break;
 		}
 		$data->addCheckbox('returnVerbose', 'returnVerbose');
-		$form->addSubmit('save', 'Save');
-		$form->setDefaults($defaults);
-		$form->addProtection('core.errors.form-timeout');
-		$form->onSuccess[] = [$this, 'save'];
-		return $form;
+	}
+
+	/**
+	 * Add time specification
+	 * @param Form $form Task's configuration form
+	 */
+	private function addTimeSpec(Form $form): void {
+		$timeSpec = $form->addContainer('timeSpec');
+		$timeSpec->addText('cronTime', 'timeSpec.cronTime');
+		$timeSpec->addCheckbox('exactTime', 'timeSpec.exactTime');
+		$timeSpec->addCheckbox('periodic', 'timeSpec.periodic');
+		$timeSpec->addInteger('period', 'timeSpec.period');
+		$timeSpec->addText('startTime', 'timeSpec.startTime');
+		$timeSpec['period']
+			->addConditionOn($timeSpec['periodic'], Form::EQUAL, true)
+			->setRequired('messages.timeSpec.period');
+		$timeSpec['startTime']
+			->addConditionOn($timeSpec['periodic'], Form::EQUAL, true)
+			->setRequired('messages.timeSpec.startTime');
 	}
 
 	/**
@@ -154,9 +187,7 @@ class SchedulerFormFactory {
 	public function save(Form $form): void {
 		try {
 			$values = $form->getValues(true);
-			$pData = &$values['task']['message']['data']['req']['pData'];
-			$pData = explode('.', $pData);
-			$this->manager->save($values, $this->id);
+			$this->manager->save($values);
 			$this->presenter->flashMessage('config.messages.success', 'success');
 		} catch (NonExistingJsonSchemaException $e) {
 			$this->presenter->flashMessage('config.messages.writeFailures.nonExistingJsonSchema', 'danger');

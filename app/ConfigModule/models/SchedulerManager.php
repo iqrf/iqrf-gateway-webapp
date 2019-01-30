@@ -21,8 +21,10 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Models;
 
 use App\CoreModule\Models\JsonFileManager;
+use DateTime;
 use Nette\IOException;
 use Nette\SmartObject;
+use Nette\Utils\Finder;
 use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
 
@@ -51,7 +53,7 @@ class SchedulerManager {
 	/**
 	 * @var string File name (without .json)
 	 */
-	private $fileName = 'Tasks';
+	private $fileName;
 
 	/**
 	 * Constructor
@@ -75,12 +77,13 @@ class SchedulerManager {
 	 * @throws JsonException
 	 */
 	public function add(string $type): void {
-		$json = $this->fileManager->read($this->fileName);
 		$taskManager = new JsonFileManager(__DIR__ . '/../json');
 		$tasks = $taskManager->read('Scheduler');
-		$task = array_key_exists($type, $tasks) ? $tasks[$type] : null;
-		array_push($json['TasksJson'], $task);
-		$this->fileManager->write($this->fileName, $json);
+		if (array_key_exists($type, $tasks)) {
+			$task = $tasks[$type];
+			$task['taskId'] = (new DateTime())->getTimestamp();
+			$this->save($task);
+		}
 	}
 
 	/**
@@ -89,10 +92,10 @@ class SchedulerManager {
 	 * @throws JsonException
 	 */
 	public function delete(int $id): void {
-		$json = $this->fileManager->read($this->fileName);
-		unset($json['TasksJson'][$id]);
-		$json['TasksJson'] = array_values($json['TasksJson']);
-		$this->fileManager->write($this->fileName, $json);
+		$files = $this->getTaskFiles();
+		if (isset($files[$id])) {
+			$this->fileManager->delete($files[$id]);
+		}
 	}
 
 	/**
@@ -101,10 +104,54 @@ class SchedulerManager {
 	 * @throws JsonException
 	 */
 	public function getLastId(): int {
-		$json = $this->fileManager->read($this->fileName);
-		$tasks = $json['TasksJson'];
+		$tasks = $this->getTaskFiles();
 		end($tasks);
 		return intval(key($tasks));
+	}
+
+	/**
+	 * Get task's files
+	 * @return string[] Files with tasks
+	 * @throws JsonException
+	 */
+	public function getTaskFiles(): array {
+		$dir = $this->fileManager->getDirectory();
+		$files = [];
+		foreach (Finder::findFiles('*.json')->from($dir) as $file) {
+			$fileName = Strings::replace($file->getRealPath(), ['~^' . realpath($dir) . '/~', '/.json$/'], '');
+			$json = $this->fileManager->read($fileName);
+			if (array_key_exists('taskId', $json)) {
+				$files[$json['taskId']] = $fileName;
+			}
+		}
+		asort($files);
+		return $files;
+	}
+
+	/**
+	 * Get task's time
+	 * @param mixed[] $task Task
+	 * @return string Task's time
+	 */
+	private function getTime(array $task): string {
+		$timeSpec = $task['timeSpec'];
+		if ($timeSpec['cronTime'] !== '') {
+			return $timeSpec['cronTime'];
+		}
+		if ($timeSpec['exactTime']) {
+			return $timeSpec['startTime'];
+		}
+		if ($timeSpec['periodic']) {
+			$period = $timeSpec['period'];
+			if ($period < 60) {
+				return 'every ' . $period . ' seconds';
+			} elseif ($period < 3600) {
+				return 'every ' . gmdate('m:s', $period) . ' minutes';
+			} else {
+				return 'every ' . gmdate('H:m:s', $period) . ' hours';
+			}
+		}
+		return '';
 	}
 
 	/**
@@ -120,7 +167,7 @@ class SchedulerManager {
 
 	/**
 	 * Get scheduler's services
-	 * @return mixed[] Scheduler's services
+	 * @return string[] Scheduler's services
 	 * @throws JsonException
 	 */
 	public function getServices(): array {
@@ -138,17 +185,17 @@ class SchedulerManager {
 	 * @throws JsonException
 	 */
 	public function list(): array {
-		$jsonTasks = $this->fileManager->read($this->fileName)['TasksJson'];
 		$tasks = [];
-		foreach ($jsonTasks as $id => $jsonTask) {
-			$message = $jsonTask['task']['message'];
+		foreach ($this->getTaskFiles() as $id => $fileName) {
+			$data = $this->load($id);
+			$message = $data['task']['message'];
 			$task = [
-				'time' => $jsonTask['time'],
-				'service' => $jsonTask['service'],
-				'messaging' => $jsonTask['task']['messaging'],
+				'id' => $data['taskId'],
+				'time' => $this->getTime($data),
+				'service' => $data['clientId'],
+				'messaging' => $data['task']['messaging'],
 				'mType' => $message['mType'] ?? '',
 				'request' => $this->getRequest($message),
-				'id' => $id,
 			];
 			array_push($tasks, $task);
 		}
@@ -203,24 +250,24 @@ class SchedulerManager {
 	 * @throws JsonException
 	 */
 	public function load(int $id): array {
-		$json = $this->fileManager->read($this->fileName);
-		$tasks = $json['TasksJson'];
-		if ($id > count($tasks)) {
+		$files = $this->getTaskFiles();
+		if (!isset($files[$id])) {
 			return [];
 		}
-		return $tasks[$id];
+		$this->fileName = strval($files[$id]);
+		return $this->fileManager->read($this->fileName);
 	}
 
 	/**
-	 * Save scheduler setting
-	 * @param mixed[] $array Scheduler settings
-	 * @param int $id Task ID
+	 * Save task's setting
+	 * @param mixed[] $array Task's settings
 	 * @throws JsonException
 	 */
-	public function save(array $array, int $id): void {
-		$json = $this->fileManager->read($this->fileName);
-		$json['TasksJson'][$id] = $array;
-		$this->fileManager->write($this->fileName, $json);
+	public function save(array $array): void {
+		if (!isset($this->fileName)) {
+			$this->fileName = strval($array['taskId']);
+		}
+		$this->fileManager->write($this->fileName, $array);
 	}
 
 }

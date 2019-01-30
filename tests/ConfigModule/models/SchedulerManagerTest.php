@@ -15,6 +15,7 @@ use App\ConfigModule\Models\MainManager;
 use App\ConfigModule\Models\SchedulerManager;
 use App\CoreModule\Models\JsonFileManager;
 use App\CoreModule\Models\JsonSchemaManager;
+use DateTime;
 use Mockery;
 use Tester\Assert;
 use Tester\Environment;
@@ -30,11 +31,6 @@ class SchedulerManagerTest extends TestCase {
 	/**
 	 * @var JsonFileManager JSON file manager
 	 */
-	private $fileManager;
-
-	/**
-	 * @var JsonFileManager JSON file manager
-	 */
 	private $fileManagerTemp;
 
 	/**
@@ -43,11 +39,23 @@ class SchedulerManagerTest extends TestCase {
 	private $manager;
 
 	/**
+	 * @var SchedulerManager Scheduler's task configuration manager (with temporary files)
+	 */
+	private $managerTemp;
+
+	/**
 	 * @var mixed[string] Scheduler's task settings
 	 */
 	private $array = [
-		'time' => '*/5 * 1 * * * *',
-		'service' => 'SchedulerMessaging',
+		'taskId' => 1,
+		'clientId' => 'SchedulerMessaging',
+		'timeSpec' => [
+			'cronTime' => '*/5 * 1 * * * *',
+			'exactTime' => false,
+			'periodic' => false,
+			'period' => 0,
+			'startTime' => '',
+		],
 		'task' => [
 			'messaging' => 'WebsocketMessaging',
 			'message' => [
@@ -62,21 +70,22 @@ class SchedulerManagerTest extends TestCase {
 	];
 
 	/**
-	 * @var string File name (without .json)
-	 */
-	private $fileName = 'Tasks';
-
-	/**
 	 * Test function to add configuration of Scheduler
 	 */
 	public function testAdd(): void {
 		Environment::lock('config_scheduler', __DIR__ . '/../../temp/');
-		$expected = $this->fileManager->read($this->fileName);
-		$this->fileManagerTemp->write($this->fileName, $expected);
-		$this->manager->add('raw');
-		$task = [
-			'time' => '',
-			'service' => '',
+		$this->managerTemp->add('raw');
+		$timestamp = (new DateTime())->getTimestamp();
+		$expected = [
+			'taskId' => $timestamp,
+			'clientId' => '',
+			'timeSpec' => [
+				'cronTime' => '',
+				'exactTime' => false,
+				'periodic' => false,
+				'period' => 0,
+				'startTime' => '',
+			],
 			'task' => [
 				'messaging' => '',
 				'message' => [
@@ -87,10 +96,10 @@ class SchedulerManagerTest extends TestCase {
 						'req' => ['rData' => ''],
 					],
 					'returnVerbose' => true,
-				],],
+				],
+			],
 		];
-		array_push($expected['TasksJson'], $task);
-		Assert::equal($expected, $this->fileManagerTemp->read($this->fileName));
+		Assert::equal($expected, $this->fileManagerTemp->read(strval($timestamp)));
 	}
 
 	/**
@@ -98,11 +107,11 @@ class SchedulerManagerTest extends TestCase {
 	 */
 	public function testDelete(): void {
 		Environment::lock('config_scheduler', __DIR__ . '/../../temp/');
-		$expected = $this->fileManager->read($this->fileName);
-		$this->fileManagerTemp->write($this->fileName, $expected);
-		unset($expected['TasksJson'][5]);
-		$this->manager->delete(5);
-		Assert::equal($expected, $this->fileManagerTemp->read($this->fileName));
+		$fileName = '1';
+		$this->fileManagerTemp->write($fileName, $this->array);
+		Assert::true($this->fileManagerTemp->exists($fileName));
+		$this->managerTemp->delete(1);
+		Assert::false($this->fileManagerTemp->exists($fileName));
 	}
 
 	/**
@@ -123,7 +132,7 @@ class SchedulerManagerTest extends TestCase {
 	 * Test function to get last ID
 	 */
 	public function testGetLastId(): void {
-		$expected = count($this->fileManager->read($this->fileName)['TasksJson']) - 1;
+		$expected = 2;
 		Assert::equal($expected, $this->manager->getLastId());
 	}
 
@@ -162,14 +171,14 @@ class SchedulerManagerTest extends TestCase {
 				'messaging' => 'WebsocketMessaging',
 				'mType' => 'iqrfRaw',
 				'request' => '00.00.06.03.ff.ff',
-				'id' => 0,
+				'id' => 1,
 			], [
 				'time' => '*/5 * 1 * * * *',
 				'service' => 'SchedulerMessaging',
 				'messaging' => 'WebsocketMessaging',
 				'mType' => 'iqrfRawHdp',
 				'request' => '00.00.06.03.ff.ff',
-				'id' => 1,
+				'id' => 2,
 			],
 		];
 		Assert::equal($expected, $this->manager->list());
@@ -179,7 +188,7 @@ class SchedulerManagerTest extends TestCase {
 	 * Test function to load configuration of Scheduler
 	 */
 	public function testLoad(): void {
-		Assert::equal($this->array, $this->manager->load(0));
+		Assert::equal($this->array, $this->manager->load(1));
 		Assert::equal([], $this->manager->load(10));
 	}
 
@@ -188,20 +197,17 @@ class SchedulerManagerTest extends TestCase {
 	 */
 	public function testSave(): void {
 		Environment::lock('config_scheduler', __DIR__ . '/../../temp/');
-		$array = $this->array;
-		$array['message']['nadr'] = '0';
-		$expected = $this->fileManager->read($this->fileName);
-		$this->fileManagerTemp->write($this->fileName, $expected);
-		$expected['TasksJson'][0]['message']['nadr'] = '0';
-		$this->manager->save($array, 0);
-		Assert::equal($expected, $this->fileManagerTemp->read($this->fileName));
+		$expected = $this->array;
+		$expected['message']['nadr'] = '0';
+		$this->managerTemp->save($expected);
+		Assert::equal($expected, $this->fileManagerTemp->read('1'));
 	}
 
 	/**
 	 * Set up the test environment
 	 */
 	protected function setUp(): void {
-		$configPath = __DIR__ . '/../../data/configuration/';
+		$configPath = __DIR__ . '/../../data/';
 		$configTempPath = __DIR__ . '/../../temp/configuration/';
 		$schemaPath = __DIR__ . '/../../data/cfgSchemas/';
 		$this->fileManager = new JsonFileManager($configPath . 'scheduler/');
@@ -209,11 +215,12 @@ class SchedulerManagerTest extends TestCase {
 		$fileManager = new JsonFileManager($configPath);
 		$schemaManager = new JsonSchemaManager($schemaPath);
 		$genericConfigManager = new GenericManager($fileManager, $schemaManager);
-		$configuration = ['cacheDir' => $configTempPath];
 		$mainConfigManager = Mockery::mock(MainManager::class);
-		$mainConfigManager->shouldReceive('load')->andReturn($configuration);
-		$this->fileManagerTemp->write($this->fileName, $this->fileManager->read($this->fileName));
+		$mainConfigManager->shouldReceive('load')->andReturn(['cacheDir' => $configPath]);
+		$mainConfigManagerTemp = Mockery::mock(MainManager::class);
+		$mainConfigManagerTemp->shouldReceive('load')->andReturn(['cacheDir' => $configTempPath]);
 		$this->manager = new SchedulerManager($mainConfigManager, $genericConfigManager);
+		$this->managerTemp = new SchedulerManager($mainConfigManagerTemp, $genericConfigManager);
 	}
 
 	/**
