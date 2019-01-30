@@ -111,18 +111,7 @@ class BondingManager {
 	 * @throws JsonException
 	 */
 	public function clearAll(): array {
-		$array = [
-			'mType' => 'iqrfEmbedCoordinator_ClearAllBonds',
-			'data' => [
-				'req' => [
-					'nAdr' => 0,
-					'param' => (object) [],
-				],
-				'returnVerbose' => true,
-			],
-		];
-		$this->request->setRequest($array);
-		return $this->wsClient->sendSync($this->request);
+		return $this->remove(255);
 	}
 
 	/**
@@ -161,11 +150,11 @@ class BondingManager {
 	 */
 	public function remove(int $address): array {
 		$array = [
-			'mType' => 'iqrfEmbedCoordinator_RemoveBond',
+			'mType' => 'iqmeshNetwork_RemoveBond',
 			'data' => [
+				'repeat' => 2,
 				'req' => [
-					'nAdr' => 0,
-					'bondAddr' => $address,
+					'deviceAddr' => $address,
 				],
 				'returnVerbose' => true,
 			],
