@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models;
 
+use App\ConfigModule\Models\MainManager;
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
@@ -53,6 +54,11 @@ class DiagnosticsManager {
 	private $zipManager;
 
 	/**
+	 * @var string Path to a directory with IQRF Gateway Daemon's cache
+	 */
+	private $cacheDir;
+
+	/**
 	 * @var string Path to a directory with IQRF Gateway Daemon's configuration
 	 */
 	private $confDir;
@@ -73,10 +79,16 @@ class DiagnosticsManager {
 	 * @param string $logDir Path to a directory with log files of IQRF Gateway Daemon
 	 * @param CommandManager $commandManager Command manager
 	 * @param InfoManager $infoManager Gateway Info manager
+	 * @param MainManager $mainManager Main configuration manager
 	 */
-	public function __construct(string $confDir, string $logDir, CommandManager $commandManager, InfoManager $infoManager) {
+	public function __construct(string $confDir, string $logDir, CommandManager $commandManager, InfoManager $infoManager, MainManager $mainManager) {
 		$this->commandManager = $commandManager;
 		$this->infoManager = $infoManager;
+		try {
+			$this->cacheDir = $mainManager->load()['cacheDir'];
+		} catch (JsonException $e) {
+			$this->cacheDir = '/var/cache/iqrf-gateway-daemon/';
+		}
 		$this->confDir = $confDir;
 		$this->logDir = $logDir;
 	}
@@ -93,6 +105,8 @@ class DiagnosticsManager {
 		$fileName = 'iqrf-gateway-diagnostics_' . $now->format('c') . '.zip';
 		$contentType = 'application/zip';
 		$this->addConfiguration();
+		$this->addMetadata();
+		$this->addScheduler();
 		$this->addDaemonLog();
 		$this->addDmesg();
 		$this->addInfo();
@@ -110,6 +124,20 @@ class DiagnosticsManager {
 	 */
 	public function addConfiguration(): void {
 		$this->zipManager->addFolder($this->confDir, 'configuration');
+	}
+
+	/**
+	 * Add IQRF Gateway Daemon's metadata
+	 */
+	public function addMetadata(): void {
+		$this->zipManager->addFolder($this->cacheDir . '/metaData', 'metaData');
+	}
+
+	/**
+	 * Add scheduler's configuration
+	 */
+	public function addScheduler(): void {
+		$this->zipManager->addFolder($this->cacheDir . '/scheduler', 'scheduler');
 	}
 
 	/**
