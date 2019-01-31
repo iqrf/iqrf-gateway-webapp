@@ -4,17 +4,17 @@
 set -e
 
 nginx_remove() {
-	if [ -e /etc/nginx/sites-available/iqrf-daemon-webapp.localhost ] ; then
-		rm /etc/nginx/sites-available/iqrf-daemon-webapp.localhost
-	fi
 	if [ -e /etc/nginx/sites-enabled/iqrf-daemon-webapp.localhost ] ; then
 		rm /etc/nginx/sites-enabled/iqrf-daemon-webapp.localhost
 	fi
-	if [ -e /etc/nginx/sites-available/iqrf-gateway-webapp.localhost ] ; then
-		rm /etc/nginx/sites-available/iqrf-gateway-webapp.localhost
-	fi
 	if [ -e /etc/nginx/sites-enabled/iqrf-gateway-webapp.localhost ] ; then
 		rm /etc/nginx/sites-enabled/iqrf-gateway-webapp.localhost
+	fi
+	if [ -e /etc/nginx/sites-available/iqrf-daemon-webapp.localhost ] ; then
+		rm /etc/nginx/sites-available/iqrf-daemon-webapp.localhost
+	fi
+	if [ -e /etc/nginx/sites-available/iqrf-gateway-webapp.localhost ] ; then
+		rm /etc/nginx/sites-available/iqrf-gateway-webapp.localhost
 	fi
 	if deb-systemd-invoke is-enabled nginx.service ; then
     	deb-systemd-invoke reload nginx.service
