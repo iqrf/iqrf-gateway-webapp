@@ -142,7 +142,7 @@ class SchedulerManager {
 			return $timeSpec['startTime'];
 		}
 		if ($timeSpec['periodic']) {
-			$period = $timeSpec['period'];
+			$period = $timeSpec['period'] / 1e3;
 			if ($period < 60) {
 				return 'every ' . $period . ' seconds';
 			} elseif ($period < 3600) {

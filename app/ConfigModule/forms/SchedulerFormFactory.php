@@ -155,7 +155,7 @@ class SchedulerFormFactory {
 			->addConditionOn($timeSpec['periodic'], Form::EQUAL, true)
 			->setRequired('messages.timeSpec.period');
 		$timeSpec['startTime']
-			->addConditionOn($timeSpec['periodic'], Form::EQUAL, true)
+			->addConditionOn($timeSpec['exactTime'], Form::EQUAL, true)
 			->setRequired('messages.timeSpec.startTime');
 	}
 
