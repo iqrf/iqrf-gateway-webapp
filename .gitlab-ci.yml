@@ -177,6 +177,8 @@ deploy-api-docs:
   environment:
     name: api-docs
     url: https://apidocs.iqrfsdk.org/iqrf-gateway-webapp/
+  only:
+    - master
   script:
     - curl -L https://github.com/phpDocumentor/phpDocumentor2/releases/download/v3.0.0-alpha.3/phpDocumentor.phar -o phpDocumentor.phar
     - curl -L https://github.com/phpDocumentor/phpDocumentor2/releases/download/v3.0.0-alpha.3/phpDocumentor.phar.pubkey -o phpDocumentor.phar.pubkey
@@ -218,6 +220,8 @@ deploy-user-docs:
   environment:
     name: user-docs
     url: https://docs.iqrfsdk.org/iqrf-gateway-webapp/
+  only:
+    - master
   script:
     - cd docs/; make html
     - rsync -hrvz --delete -e ssh build/html/ www-deploy@iqrfsdk.org:/data/nginx/docs/iqrf-gateway-webapp/
