@@ -270,6 +270,9 @@ class SchedulerManager {
 		if (!isset($this->fileName)) {
 			$this->fileName = strval($array['taskId']);
 		}
+		if (!isset($array['task']['message']['data']['timeout'])) {
+			unset($array['task']['message']['data']['timeout']);
+		}
 		$this->fileManager->write($this->fileName, $array);
 	}
 
