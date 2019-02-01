@@ -27,7 +27,7 @@ This project is licensed under Apache License 2.0:
 
  > Copyright 2017 MICRORISC s.r.o.
  >
- > Copyright 2017-2018 IQRF Tech s.r.o.
+ > Copyright 2017-2019 IQRF Tech s.r.o.
  >
  > Licensed under the Apache License, Version 2.0 (the "License");
  >
