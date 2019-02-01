@@ -79,7 +79,7 @@ class LightManager {
 	}
 
 	/**
-	 * Set a power of the light
+	 * Set a power of the lights
 	 * @param int $address Network device address
 	 * @param int[] $lights Light's power
 	 * @return mixed[] DPA request and response
@@ -97,13 +97,102 @@ class LightManager {
 					'param' => [
 						'lights' => [],
 					],
+					'returnVerbose' => true,
+				],
+			],
+		];
+		/**
+		 * @var int $index Light's index
+		 * @var int $power Light's power <0;100>
+		 */
+		foreach ($lights as $index => $power) {
+			$array['data']['req']['param']['lights'][] = ['index' => $index, 'power' => $power];
+		}
+		$this->request->setRequest($array);
+		return $this->wsClient->sendSync($this->request);
+	}
+
+	/**
+	 * Get power of the lights
+	 * @param int $address Network device address
+	 * @param int[] $lights Indexes of lights
+	 * @return mixed[] DPA request and response
+	 * @throws DpaErrorException
+	 * @throws EmptyResponseException
+	 * @throws JsonException
+	 * @throws UserErrorException
+	 */
+	public function getPower(int $address, array $lights): array {
+		$array = [];
+		/**
+		 * @var int $light Light'$ index
+		 */
+		foreach ($lights as $light) {
+			$array[$light] = 127;
+		}
+		return $this->setPower($address, $array);
+	}
+
+	/**
+	 * Increment power of the lights
+	 * @param int $address Network device address
+	 * @param int[] $lights Incremented power of lights
+	 * @return mixed[] DPA request and response
+	 * @throws DpaErrorException
+	 * @throws EmptyResponseException
+	 * @throws JsonException
+	 * @throws UserErrorException
+	 */
+	public function incrementPower(int $address, array $lights): array {
+		$array = [
+			'mType' => 'iqrfLight_IncrementPower',
+			'data' => [
+				'req' => [
+					'nAdr' => $address,
+					'param' => [
+						'lights' => [],
+					],
 				],
 				'returnVerbose' => true,
 			],
 		];
 		/**
 		 * @var int $index Light's index
-		 * @var int $power Light's power <0;100>
+		 * @var int $power Light's incremented power <0;100>
+		 */
+		foreach ($lights as $index => $power) {
+			$array['data']['req']['param']['lights'][] = ['index' => $index, 'power' => $power];
+		}
+		$this->request->setRequest($array);
+		return $this->wsClient->sendSync($this->request);
+	}
+
+	/**
+	 * Decrement power of the lights
+	 * @param int $address Network device address
+	 * @param int[] $lights Decremented power of lights
+	 * @return mixed[] DPA request and response
+	 * @throws DpaErrorException
+	 * @throws EmptyResponseException
+	 * @throws JsonException
+	 * @throws UserErrorException
+	 */
+	public function decrementPower(int $address, array $lights): array {
+		$array = [
+			'mType' => 'iqrfLight_DecrementPower',
+			'data' => [
+				'req' => [
+					'nAdr' => $address,
+					'param' => [
+						'lights' => [],
+					],
+				],
+				'returnVerbose' => true,
+			],
+		];
+		/**
+		 * @var int $index Light's index
+		 * @var int $power Light's decremented power <0;100>
 		 */
 		foreach ($lights as $index => $power) {
 			$array['data']['req']['param']['lights'][] = ['index' => $index, 'power' => $power];
