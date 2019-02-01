@@ -55,6 +55,20 @@ mode:
 			description: Change IQRF Daemon mode to forwarding mode.
 			message: Gateway mode has been changed to forwarding mode.
 
+power:
+	title: Power
+	description: Power off or reboot this IQRF Gateway.
+	powerOff:
+		title: Power off
+		description: Power off the operationg system of your device.
+		button: Perform power off
+		success: Your device has been powered off successfully.
+	reboot:
+		title: Reboot
+		description: Reboots the operating system of your device.
+		button: Perform reboot
+		success: Your device has been restarted successfully.
+
 updater:
 	title: IQRF Gateway updater
 	description: IQRF Gateway updater.
