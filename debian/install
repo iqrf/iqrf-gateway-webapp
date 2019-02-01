@@ -1,8 +1,8 @@
-app						usr/share/iqrf-gateway-webapp
-bin						usr/share/iqrf-gateway-webapp
-composer.json			usr/share/iqrf-gateway-webapp
-debian/config/nginx		etc/iqrf-gateway-webapp
-debian/config/sudoers	etc/sudoers.d/iqrf-gateway-webapp
-iqrf					usr/share/iqrf-gateway-webapp
-version.json			usr/share/iqrf-gateway-webapp
-www						usr/share/iqrf-gateway-webapp
+app						                    usr/share/iqrf-gateway-webapp
+bin						                    usr/share/iqrf-gateway-webapp
+composer.json			                    usr/share/iqrf-gateway-webapp
+debian/config/nginx		                    etc/iqrf-gateway-webapp
+debian/config/sudoers/iqrf-gateway-webapp	etc/sudoers.d
+iqrf					                    usr/share/iqrf-gateway-webapp
+version.json			                    usr/share/iqrf-gateway-webapp
+www						                    usr/share/iqrf-gateway-webapp
