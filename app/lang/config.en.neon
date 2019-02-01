@@ -171,7 +171,7 @@ mq:
 	description: MQ interface settings.
 	add: Add MQ interface
 	edit: Edit MQ interface
-	asyncMessages: Async messages
+	asyncMessages: Asynchronous messages
 	form:
 		instance: Name of instance
 		LocalMqName: Local MQ name
@@ -189,7 +189,7 @@ mqtt:
 	description: MQTT interface settings.
 	add: Add MQTT interface
 	edit: Edit MQTT interface
-	asyncMessages: Async messages
+	asyncMessages: Asynchronous messages
 	form:
 		instance: Name of instance
 		BrokerAddr: Broker address
@@ -215,7 +215,7 @@ mqtt:
 		PrivateKeyPassword: Private key password
 		EnabledCipherSuites: Enabled cipher suites
 		EnableServerCertAuth: Enable server certificate authentication
-		acceptAsyncMsg: Accept Async messages
+		acceptAsyncMsg: Accept asynchronous messages
 		messages:
 			confirmDelete: Do you really want to delete MQTT messaging %s?
 			instance: Please enter name of MQTT instance.
@@ -325,34 +325,34 @@ udp:
 		Save: Save
 
 websocket:
-	title: Websocket interface
-	description: IQRF Websocket interface settings.
+	title: WebSocket interface
+	description: IQRF WebSocket interface settings.
 	form:
 		instance: Name of instance
-		acceptAsyncMsg: Accept Async messages
-		WebsocketPort: Websocket port
+		acceptAsyncMsg: Accept asynchronous messages
+		WebsocketPort: WebSocket port
 		requiredInterface:
 			name: Required interface name
-			instance: Required websocket service
+			instance: Required WebSocket service
 		messages:
-			messagingInstance: Please enter name of websocket messaging.
-			serviceInstance: Please enter name of websocket service.
-			WebsocketPort: Please enter port of websocket service.
+			messagingInstance: Please enter name of WebSocket messaging.
+			serviceInstance: Please enter name of WebSocket service.
+			WebsocketPort: Please enter port of WebSocket service.
 		Save: Save
 	interface:
-		add: Add websocket interface
-		edit: Edit websocket interface
+		add: Add WebSocket interface
+		edit: Edit WebSocket interface
 		messages:
-			confirmDelete: Do you really want to delete websocket interface %s?
+			confirmDelete: Do you really want to delete WebSocket interface %s?
 	messaging:
-		title: Websocket messagings
-		add: Add websocket messaging
-		edit: Edit websocket messaging
+		title: WebSocket messagings
+		add: Add WebSocket messaging
+		edit: Edit WebSocket messaging
 		messages:
-			confirmDelete: Do you really want to delete websocket messaging %s?
+			confirmDelete: Do you really want to delete WebSocket messaging %s?
 	service:
-		title: Websocket services
-		add: Add websocket service
-		edit: Edit websocket service
+		title: WebSocket services
+		add: Add WebSocket service
+		edit: Edit WebSocket service
 		messages:
-			confirmDelete: Do you really want to delete websocket service %s?
+			confirmDelete: Do you really want to delete WebSocket service %s?

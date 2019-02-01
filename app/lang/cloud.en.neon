@@ -16,7 +16,7 @@ amazonAws:
 		save: Save
 		save_restart: Save and restart
 	messages:
-		mismatchedCrtAndKey: The private key does not corespond to the certificate.
+		mismatchedCrtAndKey: The private key does not correspond to the certificate.
 
 ibmCloud:
 	title: IBM Cloud
