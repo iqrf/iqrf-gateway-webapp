@@ -95,9 +95,10 @@ class BinaryOutputManager {
 				'req' => [
 					'nAdr' => $address,
 					'param' => [
-						'binouts' => (object) [],
+						'binouts' => [],
 					],
 				],
+				'returnVerbose' => true,
 			],
 		];
 		foreach ($outputs as $index => $state) {
