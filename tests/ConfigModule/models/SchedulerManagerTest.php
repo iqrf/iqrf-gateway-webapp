@@ -66,7 +66,8 @@ class SchedulerManagerTest extends TestCase {
 					'req' => ['rData' => '00.00.06.03.ff.ff'],
 				],
 				'returnVerbose' => true,
-			],],
+			],
+		],
 	];
 
 	/**
@@ -92,7 +93,6 @@ class SchedulerManagerTest extends TestCase {
 					'mType' => 'iqrfRaw',
 					'data' => [
 						'msgId' => '',
-						'timeout' => 0,
 						'req' => ['rData' => ''],
 					],
 					'returnVerbose' => true,
