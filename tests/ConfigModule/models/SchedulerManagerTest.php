@@ -129,14 +129,6 @@ class SchedulerManagerTest extends TestCase {
 	}
 
 	/**
-	 * Test function to get last ID
-	 */
-	public function testGetLastId(): void {
-		$expected = 2;
-		Assert::equal($expected, $this->manager->getLastId());
-	}
-
-	/**
 	 * Test function to get avaiable messagings
 	 */
 	public function testGetMessagings(): void {

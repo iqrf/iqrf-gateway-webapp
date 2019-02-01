@@ -48,11 +48,6 @@ class SchedulerFormFactory {
 	private $factory;
 
 	/**
-	 * @var int Scheduler's task ID
-	 */
-	private $id;
-
-	/**
 	 * @var SchedulerPresenter Scheduler presenter
 	 */
 	private $presenter;
@@ -88,11 +83,10 @@ class SchedulerFormFactory {
 	 */
 	public function create(SchedulerPresenter $presenter): Form {
 		$this->presenter = $presenter;
-		$this->id = intval($presenter->getParameter('id'));
 		$form = $this->factory->create();
 		$translator = $form->getTranslator();
 		$form->setTranslator($translator->domain('config.scheduler.form'));
-		$this->task = $this->manager->load($this->id);
+		$this->load($presenter->getParameters());
 		$form->addInteger('taskId', 'taskId');
 		$form->addSelect('clientId', 'config.scheduler.form.clientId')
 			->setItems($this->manager->getServices(), false)
@@ -180,8 +174,21 @@ class SchedulerFormFactory {
 	}
 
 	/**
-	 * Save scheduler's task configuration
-	 * @param Form $form Scheduler's task configuration form
+	 * Load task's settings
+	 * @param mixed[] $parameters Presenter's parameters
+	 * @throws JsonException
+	 */
+	private function load(array $parameters): void {
+		if (array_key_exists('id', $parameters)) {
+			$this->task = $this->manager->load(intval($parameters['id']));
+		} elseif (array_key_exists('type', $parameters)) {
+			$this->task = $this->manager->loadType($parameters['type']);
+		}
+	}
+
+	/**
+	 * Save task's configuration
+	 * @param Form $form Task's configuration form
 	 * @throws JsonException
 	 */
 	public function save(Form $form): void {

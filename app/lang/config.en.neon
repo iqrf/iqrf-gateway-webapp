@@ -228,8 +228,9 @@ mqtt:
 scheduler:
 	title: Scheduler
 	description: Scheduler settings.
+	add: Add task
+	edit: Edit task
 	form:
-		title: Edit task
 		id: ID
 		taskId: Task ID
 		time: Time
