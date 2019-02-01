@@ -42,7 +42,7 @@ nginx_virtualhost_old_remove() {
 openssl_create_ca() {
 	if [ ! -f /etc/iqrf-gateway-webapp/certs/cert.pem ] || [ ! -f /etc/iqrf-gateway-webapp/certs/privkey.pem ] ; then
 		openssl req -new -x509 -days 3650 \
-			-subj "/C=CZ/ST=Hradec Králové Region/L=Jičín/O=IQRF Tech s.r.o." \
+			-subj "/C=CZ/ST=Hradec Kralove Region/L=Jicin/O=IQRF Tech s.r.o." \
 			-newkey rsa:4096 -nodes -keyout /etc/iqrf-gateway-webapp/certs/privkey.pem \
 			-out /etc/iqrf-gateway-webapp/certs/cert.pem
 		chmod 600 /etc/iqrf-gateway-webapp/certs/*.pem
@@ -57,9 +57,7 @@ webapp_remove_cache() {
 
 if [ "$1" = "configure" ]; then
 	openssl_create_ca
-	if [ ! -e /etc/nginx/sites-available/iqrf-gateway-webapp.localhost ] || [ ! -L /etc/nginx/sites-enabled/iqrf-gateway-webapp.localhost ] ; then
-		nginx_virtualhost_install
-	fi
+	nginx_virtualhost_install
 	webapp_remove_cache
 	composer_init
 fi
