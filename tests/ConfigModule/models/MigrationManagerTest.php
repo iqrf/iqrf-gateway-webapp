@@ -16,6 +16,7 @@ use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FileManager;
 use App\CoreModule\Models\JsonSchemaManager;
 use App\CoreModule\Models\ZipArchiveManager;
+use App\ServiceModule\Models\ServiceManager;
 use DateTime;
 use Mockery;
 use Mockery\Mock;
@@ -195,8 +196,10 @@ class MigrationManagerTest extends TestCase {
 		$schemaManager = new JsonSchemaManager($this->schemaPath);
 		$schemaManagerCorrupted = new JsonSchemaManager($this->schemaCorruptedPath);
 		$this->commandManager = Mockery::mock(CommandManager::class, [false])->makePartial();
-		$this->manager = new MigrationManager($this->configTempPath, $this->commandManager, $schemaManager);
-		$this->managerCorrupted = new MigrationManager($this->configTempPath, $this->commandManager, $schemaManagerCorrupted);
+		$serviceManager = Mockery::mock(ServiceManager::class);
+		$serviceManager->shouldReceive('restart');
+		$this->manager = new MigrationManager($this->configTempPath, $this->commandManager, $schemaManager, $serviceManager);
+		$this->managerCorrupted = new MigrationManager($this->configTempPath, $this->commandManager, $schemaManagerCorrupted, $serviceManager);
 	}
 
 	/**
