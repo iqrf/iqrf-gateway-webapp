@@ -72,7 +72,7 @@ abstract class TrConfigFormFactory {
 	 * Load IQRF TR configuration into the form
 	 */
 	protected function load(): void {
-		$address = $this->presenter->getParameter('id', 0);
+		$address = intval($this->presenter->getParameter('address', 0));
 		try {
 			$dpa = $this->manager->read($address);
 		} catch (DpaErrorException | EmptyResponseException | JsonException | UserErrorException $e) {

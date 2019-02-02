@@ -18,9 +18,10 @@
 {block title}{_iqrfnet.trConfiguration.title}{/block}
 {block content}
 <ul class='nav nav-tabs'>
-	<li role='presentation'><a n:href='OsConfig:default'>{_iqrfnet.osConfig.title}</a></li>
-	<li role='presentation'><a n:href='DpaConfig:default'>{_iqrfnet.dpaConfig.title}</a></li>
-	<li role='presentation' class='active'><a n:href='TrSecurity:default'>{_iqrfnet.security.title}</a></li>
+	{var $address = $presenter->getParameter('address')}
+	<li role='presentation'><a n:href='OsConfig:default, address => $address'>{_iqrfnet.osConfig.title}</a></li>
+	<li role='presentation'><a n:href='DpaConfig:default, address => $address'>{_iqrfnet.dpaConfig.title}</a></li>
+	<li role='presentation' class='active'><a n:href='TrSecurity:default, address => $address'>{_iqrfnet.security.title}</a></li>
 </ul>
 <h2>{_iqrfnet.security.title}</h2>
 <div class='panel panel-default'>

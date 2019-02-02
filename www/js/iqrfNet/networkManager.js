@@ -32,12 +32,30 @@ if (autoAddress !== null) {
 let bondingMethod = document.getElementById('frm-iqrfNetBondingForm-method');
 if (bondingMethod !== null) {
 	bondingMethod.addEventListener('change', function (event) {
-		let disabled = event.currentTarget.value !== 'smartConnect';
-		document.getElementById('frm-iqrfNetBondingForm-smartConnectCode').disabled = disabled;
+		document.getElementById('frm-iqrfNetBondingForm-smartConnectCode').disabled = event.currentTarget.value !== 'smartConnect';
 	});
 }
 
 let smartConnectCode = document.getElementById('frm-iqrfNetBondingForm-smartConnectCode');
 if (smartConnectCode !== null) {
 	smartConnectCode.disabled = true;
+}
+
+// Add warning if the interoperability will be violated
+let stdAndLpNetwork = document.getElementById('frm-iqrfNetOsForm-stdAndLpNetwork');
+if (stdAndLpNetwork !== null) {
+	stdAndLpNetwork.addEventListener('change', function (event) {
+		let message = document.createElement('span');
+		message.id = 'frm-iqrfNetOsForm-stdAndLpNetwork-warning';
+		message.className = 'label label-warning';
+		message.innerText = stdAndLpNetwork.dataset.warning;
+		if (event.currentTarget.checked) {
+			let warning = document.getElementById('frm-iqrfNetOsForm-stdAndLpNetwork-warning');
+			if (warning !== null) {
+				warning.parentNode.removeChild(warning);
+			}
+		} else {
+			stdAndLpNetwork.parentElement.insertAdjacentHTML('afterend', message.outerHTML);
+		}
+	});
 }

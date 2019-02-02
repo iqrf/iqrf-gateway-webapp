@@ -111,6 +111,7 @@ network-manager:
 
 osConfig:
 	title: OS
+	rf: RF
 	networkType: Network Type
 	networkTypes:
 		std: STD
@@ -125,9 +126,11 @@ osConfig:
 	rfChannelB: RF channel B
 	rfSubChannelA: RF channel 2nd network
 	rfSubChannelB: Alternative DSM channel
+	stdAndLpNetwork: STD and LP network
 	txPower: TX power
 	rxFilter: RX filter
 	lpRxTimeout: LP RX timeout
+	rfPgm: RFPGM
 	rfPgmEnableAfterReset: Enable after reset
 	rfPgmTerminateAfter1Min: Termination after ~1 minute
 	rfPgmTerminateMcuPin: Termination by MCU pin
@@ -135,6 +138,7 @@ osConfig:
 	rfPgmLpMode: LP mode
 	rfPgmIncorrectUpload: Incorrect upload
 	messages:
+		breakInteroperability: You will break interoperability if you disable STD and LP network.
 		lpRxTimeout: LP RX timeout has to be in range from 1 to 255.
 		rfChannel443: RF Channel has to be in range from 0 to 16.
 		rfChannel868: RF Channel has to be in range from 0 to 67.
