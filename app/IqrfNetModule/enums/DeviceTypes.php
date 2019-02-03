@@ -44,4 +44,5 @@ class DeviceTypes {
 	 * Coordinator
 	 */
 	public const COORDINATOR = 3;
+
 }

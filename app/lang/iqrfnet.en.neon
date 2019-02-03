@@ -33,6 +33,7 @@ bonding:
 devices:
 	title: Devices Info
 	bonded: Bonded device
+	coordinator: Coordinator
 	discovered: Discovered device
 	unbonded: Unbonded device
 
