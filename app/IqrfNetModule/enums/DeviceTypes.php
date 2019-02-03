@@ -40,4 +40,8 @@ class DeviceTypes {
 	 */
 	public const DISCOVERED = 2;
 
+	/**
+	 * Coordinator
+	 */
+	public const COORDINATOR = 3;
 }
