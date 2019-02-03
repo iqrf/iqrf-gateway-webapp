@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\IqrfNetModule\Parsers;
 
 use Nette\SmartObject;
+use Nette\Utils\Strings;
 
 /**
  * Parsers for DPA Coordinator responses.
@@ -58,21 +59,39 @@ class CoordinatorParser implements IParser {
 	 * @return mixed[] Bonded XOR discovered nodes
 	 */
 	public function parseGetNodes(string $packet): array {
-		$data = [];
 		$packetArray = explode('.', $packet);
 		$pcmd = $packetArray[3];
-		$type = 'UnknownType';
-		if ($pcmd === '81') {
-			$type = 'DiscoveredNodes';
-		} else {
-			if ($pcmd === '82') {
+		switch ($pcmd) {
+			case '81':
+				$type = 'DiscoveredNodes';
+				break;
+			case '82':
 				$type = 'BondedNodes';
-			}
+				break;
+			default:
+				$type = 'UnknownType';
 		}
-		for ($i = 0; $i < 30; $i += 2) {
-			$data[$type][$i / 2] = str_split(str_pad(strrev(base_convert($packetArray[9 + $i] . $packetArray[8 + $i], 16, 2)), 16, '0'));
+		return [$type => $this->bitmapToStatuses($packetArray)];
+	}
+
+	/**
+	 * Convert bitmap to statuses
+	 * @param mixed[] $packet DPA response
+	 * @return mixed[][] Nodes
+	 */
+	private function bitmapToStatuses(array $packet): array {
+		$bitMap = array_slice($packet, 8);
+		$result = [];
+		$tempArray = [];
+		for ($i = 0; $i < 30; $i++) {
+			$tempArray[] = Strings::reverse(Strings::padLeft(base_convert($bitMap[$i], 16, 2), 8, '0'));
 		}
-		return $data;
+		$temp = str_split(implode('', $tempArray));
+		foreach ($temp as $key => $char) {
+			$result[intdiv($key, 10)][$key % 10] = boolval($char);
+		}
+		$result[0][0] = null;
+		return $result;
 	}
 
 	/**
