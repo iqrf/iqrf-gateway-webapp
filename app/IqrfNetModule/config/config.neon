@@ -1,5 +1,6 @@
 services:
 	- App\IqrfNetModule\Forms\BondingFormFactory
+	- App\IqrfNetModule\Forms\ChangeAddressFormFactory
 	- App\IqrfNetModule\Forms\DiscoveryFormFactory
 	- App\IqrfNetModule\Forms\DpaConfigFormFactory
 	- App\IqrfNetModule\Forms\OsConfigFormFactory
@@ -8,8 +9,8 @@ services:
 		factory: App\IqrfNetModule\Forms\SendJsonFormFactory
 		arguments: [@jsonSchemaManagerApi]
 	- App\IqrfNetModule\Forms\SendRawFormFactory
+	- App\IqrfNetModule\Forms\StandardSensorFormFactory
 	- App\IqrfNetModule\Models\BondingManager
-	- App\IqrfNetModule\Forms\ChangeAddressFormFactory
 	- App\IqrfNetModule\Models\DevicesManager
 	- App\IqrfNetModule\Models\DiscoveryManager
 	- App\IqrfNetModule\Models\DpaRawManager
@@ -17,6 +18,7 @@ services:
 	- App\IqrfNetModule\Models\GwModeManager
 	- App\IqrfNetModule\Models\MessageIdManager
 	- App\IqrfNetModule\Models\SecurityManager
+	- App\IqrfNetModule\Models\StandardSensorManager
 	- App\IqrfNetModule\Models\TrConfigManager
 	- App\IqrfNetModule\Models\WebSocketClient(%daemon.wsServer%)
 	- App\IqrfNetModule\Parsers\CoordinatorParser

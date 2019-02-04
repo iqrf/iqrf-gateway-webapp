@@ -205,6 +205,22 @@ send-packet:
 	response: Response
 	request: Request
 
+standard:
+	title: IQRF Standard manager
+	description: IQRF Standard manager.
+	sensor:
+		title: IQRF Standard sensor
+		address: Address
+		messages:
+			address: Address has to be integer form 0 to 239.
+			enumerateError: An error occurred while IQRF Standared sensor enumeration.
+			readError: An error occurred while IQRF Standared sensor reading values.
+		enumerate: Enumerate
+		readAll: Read all
+		type: Type
+		unit: Unit
+		value: Value
+
 trConfiguration:
 	title: TR configuration
 	description: Edit TR configuration.
