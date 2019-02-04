@@ -30,6 +30,13 @@ bonding:
 	removeNode: Remove Node
 	clearAllBonds: Clear All Bonds
 
+changeAddress:
+	title: Change network address
+	address: New address
+	messages:
+		address: Address has to be integer form 0 to 239.
+	set: Set
+
 devices:
 	title: Devices Info
 	bonded: Bonded device
