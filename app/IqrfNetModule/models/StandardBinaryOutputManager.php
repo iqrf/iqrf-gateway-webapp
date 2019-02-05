@@ -81,7 +81,7 @@ class StandardBinaryOutputManager {
 	/**
 	 * Set binary outputs state
 	 * @param int $address Network device address
-	 * @param bool[] $outputs Status fo binary outputs
+	 * @param StandardBinaryOutput[] $outputs Standard binary output
 	 * @return mixed[] DPA request and response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
@@ -101,11 +101,11 @@ class StandardBinaryOutputManager {
 				'returnVerbose' => true,
 			],
 		];
-		foreach ($outputs as $index => $state) {
-			if (!is_bool($state)) {
-				continue;
-			}
-			$array['data']['req']['param']['binouts'][] = ['index' => $index, 'state' => $state];
+		/**
+		 * @var StandardBinaryOutput $output Standard binary output
+		 */
+		foreach ($outputs as $output) {
+			$array['data']['req']['param']['binouts'][] = $output->toArray();
 		}
 		$this->request->setRequest($array);
 		return $this->wsClient->sendSync($this->request);

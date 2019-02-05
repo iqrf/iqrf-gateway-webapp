@@ -24,6 +24,7 @@ use App\CoreModule\Forms\FormFactory;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Exceptions\UserErrorException;
+use App\IqrfNetModule\Models\StandardBinaryOutput;
 use App\IqrfNetModule\Models\StandardBinaryOutputManager;
 use App\IqrfNetModule\Presenters\StandardPresenter;
 use Nette\Forms\Controls\SubmitButton;
@@ -32,7 +33,7 @@ use Nette\SmartObject;
 use Nette\Utils\JsonException;
 
 /**
- * IQRF Standard light form factory
+ * IQRF Standard binary output form factory
  */
 class StandardBinaryOutputFormFactory {
 
@@ -64,22 +65,26 @@ class StandardBinaryOutputFormFactory {
 	}
 
 	/**
-	 * Create IQRF App send JSON request form
+	 * Create IQRF Standard Binary output form
 	 * @param StandardPresenter $presenter IQRF Standard presenter
-	 * @return Form IQRF App send RAW packet form
+	 * @return Form IQRF Standard Binary output form
 	 */
 	public function create(StandardPresenter $presenter): Form {
 		$this->presenter = $presenter;
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('iqrfnet.standard.binaryOutput'));
 		$form->addInteger('address', 'address')->setRequired('messages.address');
+		$form->addInteger('index', 'index')->setDefaultValue(0)
+			->addRule(Form::RANGE, 'messages.index', [0, 31]);
+		$form->addCheckbox('state', 'state');
 		$form->addSubmit('enumerate', 'enumerate')->onClick[] = [$this, 'enumerate'];
+		$form->addSubmit('set', 'set')->onClick[] = [$this, 'set'];
 		$form->addProtection('core.errors.form-timeout');
 		return $form;
 	}
 
 	/**
-	 * Enumerate a standard sensor
+	 * Enumerate a standard binary output
 	 * @param SubmitButton $button Submit button
 	 */
 	public function enumerate(SubmitButton $button): void {
@@ -89,6 +94,21 @@ class StandardBinaryOutputFormFactory {
 			$this->presenter->handleBinaryOutputResponse($data);
 		} catch (UserErrorException | DpaErrorException | EmptyResponseException | JsonException $e) {
 			$this->presenter->flashMessage('iqrfnet.standard.binaryOutput.messages.enumerateError', 'danger');
+		}
+	}
+
+	/**
+	 * Set output's state of a standard binary output
+	 * @param SubmitButton $button Submit button
+	 */
+	public function set(SubmitButton $button): void {
+		$values = $button->getForm()->getValues(true);
+		try {
+			$output = new StandardBinaryOutput($values['index'], $values['state']);
+			$data = $this->manager->setOutput($values['address'], [$output]);
+			$this->presenter->handleBinaryOutputResponse($data);
+		} catch (UserErrorException | DpaErrorException | EmptyResponseException | JsonException $e) {
+			$this->presenter->flashMessage('iqrfnet.standard.binaryOutput.messages.setError', 'danger');
 		}
 	}
 

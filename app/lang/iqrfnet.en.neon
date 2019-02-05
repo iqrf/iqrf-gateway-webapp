@@ -34,7 +34,7 @@ changeAddress:
 	title: Change network address
 	address: New address
 	messages:
-		address: Address has to be integer form 0 to 239.
+		address: Address has to be an integer from 0 to 239.
 	set: Set
 
 devices:
@@ -50,7 +50,7 @@ discovery:
 	maxNodeAddress: Max. Node Address
 	messages:
 		txPower: TX Power have to be integer from 0 to 7.
-		maxNodeAddress: Max. Node Address has to be integer form 0 to 239.
+		maxNodeAddress: Max. Node Address has to be an integer from 0 to 239.
 		failure: An error occurred while running discovery.
 		success: The discovery has been finished successfully.
 	send: Discovery
@@ -211,16 +211,20 @@ standard:
 	binaryOutput:
 		title: IQRF Standard binary output
 		address: Address
+		index: Index of the binary output
+		state: State of the binary output
 		messages:
-			address: Address has to be integer form 0 to 239.
+			address: Address has to be an integer from 0 to 239.
 			enumerateError: An error occurred while IQRF Standared binary output enumeration.
+			setError: An error occurred while IQRF Standard binary output's state setting.
 		enumerate: Enumerate
+		set: Set
 		outputs: Outputs
 	light:
 		title: IQRF Standard light
 		address: Address
 		messages:
-			address: Address has to be integer form 0 to 239.
+			address: Address has to be an integer from 0 to 239.
 			enumerateError: An error occurred while IQRF Standared light enumeration.
 		enumerate: Enumerate
 		lights: Lights
@@ -228,7 +232,8 @@ standard:
 		title: IQRF Standard sensor
 		address: Address
 		messages:
-			address: Address has to be integer form 0 to 239.
+			address: Address has to be an integer from 0 to 239.
+			index: Index of the binary output gas to be an integer from 0 to 31.
 			enumerateError: An error occurred while IQRF Standared sensor enumeration.
 			readError: An error occurred while IQRF Standared sensor reading values.
 		enumerate: Enumerate
