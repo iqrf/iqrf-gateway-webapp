@@ -208,6 +208,22 @@ send-packet:
 standard:
 	title: IQRF Standard manager
 	description: IQRF Standard manager.
+	binaryOutput:
+		title: IQRF Standard binary output
+		address: Address
+		messages:
+			address: Address has to be integer form 0 to 239.
+			enumerateError: An error occurred while IQRF Standared binary output enumeration.
+		enumerate: Enumerate
+		outputs: Outputs
+	light:
+		title: IQRF Standard light
+		address: Address
+		messages:
+			address: Address has to be integer form 0 to 239.
+			enumerateError: An error occurred while IQRF Standared light enumeration.
+		enumerate: Enumerate
+		lights: Lights
 	sensor:
 		title: IQRF Standard sensor
 		address: Address

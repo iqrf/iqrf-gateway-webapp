@@ -9,6 +9,8 @@ services:
 		factory: App\IqrfNetModule\Forms\SendJsonFormFactory
 		arguments: [@jsonSchemaManagerApi]
 	- App\IqrfNetModule\Forms\SendRawFormFactory
+	- App\IqrfNetModule\Forms\StandardBinaryOutputFormFactory
+	- App\IqrfNetModule\Forms\StandardLightFormFactory
 	- App\IqrfNetModule\Forms\StandardSensorFormFactory
 	- App\IqrfNetModule\Models\BondingManager
 	- App\IqrfNetModule\Models\DevicesManager
@@ -18,6 +20,8 @@ services:
 	- App\IqrfNetModule\Models\GwModeManager
 	- App\IqrfNetModule\Models\MessageIdManager
 	- App\IqrfNetModule\Models\SecurityManager
+	- App\IqrfNetModule\Models\StandardBinaryOutputManager
+	- App\IqrfNetModule\Models\StandardLightManager
 	- App\IqrfNetModule\Models\StandardSensorManager
 	- App\IqrfNetModule\Models\TrConfigManager
 	- App\IqrfNetModule\Models\WebSocketClient(%daemon.wsServer%)
