@@ -97,7 +97,8 @@ class SecurityFormFactory {
 	public function accessPassword(SubmitButton $button): void {
 		$values = $button->getForm()->getValues();
 		try {
-			$this->manager->setAccessPassword($values['password'], $values['format']);
+			$address = $this->presenter->getParameter('address', 0);
+			$this->manager->setAccessPassword($address, $values['password'], $values['format']);
 			$this->presenter->flashMessage('iqrfnet.security.accessPassword.success', 'success');
 		} catch (DpaErrorException | EmptyResponseException | JsonException | UnsupportedInputFormatException $e) {
 			$this->presenter->flashMessage('iqrfnet.security.accessPassword.failure', 'danger');
@@ -111,7 +112,8 @@ class SecurityFormFactory {
 	public function userKey(SubmitButton $button): void {
 		$values = $button->getForm()->getValues();
 		try {
-			$this->manager->setUserKey($values['password'], $values['format']);
+			$address = $this->presenter->getParameter('address', 0);
+			$this->manager->setUserKey($address, $values['password'], $values['format']);
 			$this->presenter->flashMessage('iqrfnet.security.userKey.success', 'success');
 		} catch (DpaErrorException | EmptyResponseException | JsonException | UnsupportedInputFormatException $e) {
 			$this->presenter->flashMessage('iqrfnet.security.userKey.failure', 'danger');

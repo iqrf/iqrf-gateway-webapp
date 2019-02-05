@@ -77,29 +77,19 @@ class SchedulerPresenter extends ProtectedPresenter {
 	}
 
 	/**
+	 * Add task in scheduler
+	 * @param string $type Task's message type
+	 */
+	public function renderAdd(string $type): void {
+		$this->template->type = $type;
+	}
+
+	/**
 	 * Edit task in scheduler
 	 * @param int $id ID of task in Scheduler
 	 */
 	public function renderEdit(int $id): void {
 		$this->template->id = $id;
-	}
-
-	/**
-	 * Add new task to scheduler
-	 * @param string $type Task type
-	 */
-	public function actionAdd(string $type): void {
-		try {
-			$this->configManager->add($type);
-			$this->redirect('Scheduler:edit', ['id' => $this->configManager->getLastId()]);
-			$this->setView('default');
-		} catch (IOException $e) {
-			$this->flashMessage('config.messages.writeFailures.ioError', 'danger');
-			$this->redirect('Homepage:default');
-		} catch (JsonException $e) {
-			$this->flashMessage('config.messages.writeFailures.invalidJson', 'danger');
-			$this->redirect('Homepage:default');
-		}
 	}
 
 	/**

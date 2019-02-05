@@ -25,7 +25,7 @@ import cronstrue from 'cronstrue';
 function parseCron() {
 	let text = '';
 	let cron = document.getElementById('frm-configSchedulerForm-cron');
-	let time = document.getElementById('frm-configSchedulerForm-time');
+	let time = document.getElementById('frm-configSchedulerForm-timeSpec-cronTime');
 	let value = time.value;
 	let len = value.split(' ').length;
 	let aliases = new Map();
@@ -62,7 +62,7 @@ function parseCron() {
 	}
 }
 
-let time = document.getElementById('frm-configSchedulerForm-time');
+let time = document.getElementById('frm-configSchedulerForm-timeSpec-cronTime');
 if (time !== null) {
 	parseCron();
 	time.addEventListener('keyup', function () {

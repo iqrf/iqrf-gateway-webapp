@@ -2,7 +2,7 @@ title: Gateway
 
 info:
 	title: Gateway Info
-	description: Show infromation about this gateway.
+	description: Show information about this gateway.
 	board: Board
 	gwId: IQRF Gateway ID
 	gwmonId: PIXLA token
@@ -35,7 +35,7 @@ diagnostics:
 
 log:
 	title: IQRF Daemon log
-	description: Show log of the iqrf-daemon.
+	description: Show log of IQRF Gateway Daemon.
 	download: Download
 
 mode:
@@ -56,11 +56,11 @@ mode:
 			message: Gateway mode has been changed to forwarding mode.
 
 power:
-	title: Power
-	description: Power off or reboot this IQRF Gateway.
+	title: Power control
+	description: Powers off or reboots this IQRF Gateway.
 	powerOff:
 		title: Power off
-		description: Power off the operationg system of your device.
+		description: Powers off the operating system of your device.
 		button: Perform power off
 		success: Your device has been powered off successfully.
 	reboot:

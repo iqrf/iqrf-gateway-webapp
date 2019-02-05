@@ -20,26 +20,36 @@ declare(strict_types = 1);
 
 namespace App\IqrfNetModule\Presenters;
 
-use App\IqrfNetModule\Forms\OsConfigFormFactory;
+use App\CoreModule\Presenters\ProtectedPresenter;
+use App\IqrfNetModule\Forms\StandardSensorFormFactory;
 use Nette\Forms\Form;
 
 /**
- * IQMESH Network Manager - IQRF OS configuration presenter
+ * IQRF Standard manager presenter
  */
-class OsConfigPresenter extends TrConfigPresenter {
+class StandardPresenter extends ProtectedPresenter {
 
 	/**
-	 * @var OsConfigFormFactory IQRF OS configuration form
+	 * @var StandardSensorFormFactory IQRF Standard sensor form factory
 	 * @inject
 	 */
-	public $form;
+	public $sensorForm;
 
 	/**
-	 * Create IQRF OS configuration form
-	 * @return Form IQRF OS configuration form
+	 * AJAX handler for showing IQRF Standard sensor info
+	 * @param mixed[] $data DPA request and response
 	 */
-	protected function createComponentIqrfNetOsForm(): Form {
-		return $this->form->create($this);
+	public function handleSensorResponse(array $data): void {
+		$this->template->sensorData = $data;
+		$this->redrawControl('sensors');
+	}
+
+	/**
+	 * Create IQRF Standard sensor form
+	 * @return Form IQRF Standard sensor form
+	 */
+	protected function createComponentSensorForm(): Form {
+		return $this->sensorForm->create($this);
 	}
 
 }

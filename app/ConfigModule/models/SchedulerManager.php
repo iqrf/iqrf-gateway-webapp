@@ -72,22 +72,19 @@ class SchedulerManager {
 	}
 
 	/**
-	 * Add task
+	 * Add a new task
 	 * @param string $type Task type
 	 * @throws JsonException
 	 */
 	public function add(string $type): void {
-		$taskManager = new JsonFileManager(__DIR__ . '/../json');
-		$tasks = $taskManager->read('Scheduler');
-		if (array_key_exists($type, $tasks)) {
-			$task = $tasks[$type];
-			$task['taskId'] = (new DateTime())->getTimestamp();
+		$task = $this->loadType($type);
+		if ($task !== null) {
 			$this->save($task);
 		}
 	}
 
 	/**
-	 * Delete task
+	 * Delete a task
 	 * @param int $id Task ID
 	 * @throws JsonException
 	 */
@@ -96,17 +93,6 @@ class SchedulerManager {
 		if (isset($files[$id])) {
 			$this->fileManager->delete($files[$id]);
 		}
-	}
-
-	/**
-	 * Get last ID
-	 * @return int Last ID in array
-	 * @throws JsonException
-	 */
-	public function getLastId(): int {
-		$tasks = $this->getTaskFiles();
-		end($tasks);
-		return intval(key($tasks));
 	}
 
 	/**
@@ -244,9 +230,9 @@ class SchedulerManager {
 	}
 
 	/**
-	 * Convert Task JSON array to Task configuration form array
+	 * Load task's settings
 	 * @param int $id Task ID
-	 * @return mixed[] Array for form
+	 * @return mixed[] Array for the form
 	 * @throws JsonException
 	 */
 	public function load(int $id): array {
@@ -259,6 +245,23 @@ class SchedulerManager {
 	}
 
 	/**
+	 * Load task's settings from the task's message type
+	 * @param string $type Task's message type
+	 * @return mixed[]|null Array for the form
+	 * @throws JsonException
+	 */
+	public function loadType(string $type): ?array {
+		$taskManager = new JsonFileManager(__DIR__ . '/../json');
+		$tasks = $taskManager->read('Scheduler');
+		if (array_key_exists($type, $tasks)) {
+			$task = $tasks[$type];
+			$task['taskId'] = (new DateTime())->getTimestamp();
+			return $task;
+		}
+		return null;
+	}
+
+	/**
 	 * Save task's setting
 	 * @param mixed[] $array Task's settings
 	 * @throws JsonException
@@ -266,6 +269,9 @@ class SchedulerManager {
 	public function save(array $array): void {
 		if (!isset($this->fileName)) {
 			$this->fileName = strval($array['taskId']);
+		}
+		if (!isset($array['task']['message']['data']['timeout'])) {
+			unset($array['task']['message']['data']['timeout']);
 		}
 		$this->fileManager->write($this->fileName, $array);
 	}

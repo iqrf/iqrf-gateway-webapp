@@ -15,25 +15,16 @@
  * limitations under the License.
 *}
 
-{block title}{_iqrfnet.trConfiguration.title}{/block}
+{block title}{_iqrfnet.standard.title}{/block}
 {block content}
-<ul class='nav nav-tabs'>
-	{var $address = $presenter->getParameter('address')}
-	<li role='presentation'><a n:href='OsConfig:default, address => $address'>{_iqrfnet.osConfig.title}</a></li>
-	<li role='presentation'><a n:href='DpaConfig:default, address => $address'>{_iqrfnet.dpaConfig.title}</a></li>
-	<li role='presentation' class='active'><a n:href='TrSecurity:default, address => $address'>{_iqrfnet.security.title}</a></li>
-</ul>
 <div class='panel panel-default'>
 	<div class='panel-heading'>
-		{_iqrfnet.changeAddress.title}
+		<h3 class='panel-title'>{_iqrfnet.standard.sensor.title}</h3>
 	</div>
 	<div class='panel-body'>
-		{control iqrfNetAddressForm}
+		{control sensorForm}
 	</div>
-</div>
-<h2>{_iqrfnet.security.title}</h2>
-<div class='panel panel-default'>
-	<div class='panel-body'>
-		{control iqrfNetSecurityForm}
+	<div n:ifset='$sensorData' class='panel-footer'>
+		{include 'sensor.latte', data => $sensorData}
 	</div>
 </div>

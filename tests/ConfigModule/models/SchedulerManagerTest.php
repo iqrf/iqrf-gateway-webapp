@@ -66,7 +66,8 @@ class SchedulerManagerTest extends TestCase {
 					'req' => ['rData' => '00.00.06.03.ff.ff'],
 				],
 				'returnVerbose' => true,
-			],],
+			],
+		],
 	];
 
 	/**
@@ -92,7 +93,6 @@ class SchedulerManagerTest extends TestCase {
 					'mType' => 'iqrfRaw',
 					'data' => [
 						'msgId' => '',
-						'timeout' => 0,
 						'req' => ['rData' => ''],
 					],
 					'returnVerbose' => true,
@@ -126,14 +126,6 @@ class SchedulerManagerTest extends TestCase {
 	 */
 	public function testFixHwpidEmpty(): void {
 		Assert::equal('00.00', $this->manager->fixHwpid());
-	}
-
-	/**
-	 * Test function to get last ID
-	 */
-	public function testGetLastId(): void {
-		$expected = 2;
-		Assert::equal($expected, $this->manager->getLastId());
 	}
 
 	/**

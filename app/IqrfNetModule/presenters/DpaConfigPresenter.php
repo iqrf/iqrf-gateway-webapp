@@ -20,14 +20,13 @@ declare(strict_types = 1);
 
 namespace App\IqrfNetModule\Presenters;
 
-use App\CoreModule\Presenters\ProtectedPresenter;
 use App\IqrfNetModule\Forms\DpaConfigFormFactory;
 use Nette\Forms\Form;
 
 /**
  * IQMESH Network Manager - DPA configuration presenter
  */
-class DpaConfigPresenter extends ProtectedPresenter {
+class DpaConfigPresenter extends TrConfigPresenter {
 
 	/**
 	 * @var DpaConfigFormFactory DPA configuration form

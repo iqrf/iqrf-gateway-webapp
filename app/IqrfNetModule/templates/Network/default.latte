@@ -20,15 +20,13 @@
 <ul class='nav nav-tabs'>
 	<li role='presentation' class='active'><a n:href='Network:default'>{_iqrfnet.network-manager.control}</a></li>
 </ul>
-<div class="col-sm-6">
+<div class='col-sm-6'>
 	<h2>{_iqrfnet.bonding.title}</h2>
 	<div class='panel panel-default'>
 		<div class='panel-body'>
 			{control iqrfNetBondingForm}
 		</div>
 	</div>
-</div>
-<div class="col-sm-6">
 	<h2>{_iqrfnet.discovery.title}</h2>
 	<div class='panel panel-default'>
 		<div class='panel-body'>
@@ -38,5 +36,5 @@
 </div>
 
 {ifset $devices}
-	{include 'devices.latte', base=> $base, devices => $devices}
+	{include 'devices.latte', base => $base, devices => $devices}
 {/ifset}

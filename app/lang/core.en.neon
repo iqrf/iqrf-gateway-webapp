@@ -32,11 +32,11 @@ signOut:
 
 node-red:
 	title: Node RED
-	description: Open Nede RED workflow.
+	description: Open Node RED workflow.
 
 node-red-dashboard:
 	title: Node RED Dashboard
-	description: Open Nede RED Dashboard.
+	description: Open Node RED Dashboard.
 
 supervisor:
 	title: Supervisor
@@ -82,8 +82,8 @@ user:
 			username: Please enter the username.
 			password: Please enter the password.
 			successAdd: User %username% has been added successfully.
-			successDelete: User %username% has been deleted succesfully.
-			successEdit: Used %username% has been edited succesfully.
+			successDelete: User %username% has been deleted successfully.
+			successEdit: Used %username% has been edited successfully.
 			usernameAlreadyExists: Username is already used.
 
 update:

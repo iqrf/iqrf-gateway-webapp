@@ -20,26 +20,27 @@ declare(strict_types = 1);
 
 namespace App\IqrfNetModule\Presenters;
 
-use App\IqrfNetModule\Forms\OsConfigFormFactory;
+use App\CoreModule\Presenters\ProtectedPresenter;
+use App\IqrfNetModule\Forms\ChangeAddressFormFactory;
 use Nette\Forms\Form;
 
 /**
- * IQMESH Network Manager - IQRF OS configuration presenter
+ * IQMESH Network Manager - TR security presenter
  */
-class OsConfigPresenter extends TrConfigPresenter {
+class TrConfigPresenter extends ProtectedPresenter {
 
 	/**
-	 * @var OsConfigFormFactory IQRF OS configuration form
+	 * @var ChangeAddressFormFactory Change device address form
 	 * @inject
 	 */
-	public $form;
+	public $changeAddressForm;
 
 	/**
-	 * Create IQRF OS configuration form
-	 * @return Form IQRF OS configuration form
+	 * Create change device address form
+	 * @return Form Change device address form
 	 */
-	protected function createComponentIqrfNetOsForm(): Form {
-		return $this->form->create($this);
+	protected function createComponentIqrfNetAddressForm(): Form {
+		return $this->changeAddressForm->create($this);
 	}
 
 }

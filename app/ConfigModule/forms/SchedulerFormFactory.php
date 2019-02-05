@@ -24,7 +24,10 @@ use App\ConfigModule\Models\SchedulerManager;
 use App\ConfigModule\Presenters\SchedulerPresenter;
 use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
 use App\CoreModule\Forms\FormFactory;
+use App\ServiceModule\Exceptions\NotSupportedInitSystemException;
+use App\ServiceModule\Models\ServiceManager;
 use Nette\Forms\Container;
+use Nette\Forms\Controls\SubmitButton;
 use Nette\Forms\Form;
 use Nette\IOException;
 use Nette\SmartObject;
@@ -48,11 +51,6 @@ class SchedulerFormFactory {
 	private $factory;
 
 	/**
-	 * @var int Scheduler's task ID
-	 */
-	private $id;
-
-	/**
 	 * @var SchedulerPresenter Scheduler presenter
 	 */
 	private $presenter;
@@ -66,6 +64,11 @@ class SchedulerFormFactory {
 	];
 
 	/**
+	 * @var ServiceManager Service manager
+	 */
+	private $serviceManager;
+
+	/**
 	 * @var mixed[] Task's settings
 	 */
 	private $task;
@@ -74,43 +77,50 @@ class SchedulerFormFactory {
 	 * Constructor
 	 * @param FormFactory $factory Generic form factory
 	 * @param SchedulerManager $manager Scheduler manager
+	 * @param ServiceManager $serviceManager Service manager
 	 */
-	public function __construct(FormFactory $factory, SchedulerManager $manager) {
+	public function __construct(FormFactory $factory, SchedulerManager $manager, ServiceManager $serviceManager) {
 		$this->manager = $manager;
 		$this->factory = $factory;
+		$this->serviceManager = $serviceManager;
 	}
 
 	/**
 	 * Create Scheduler's task configuration form
 	 * @param SchedulerPresenter $presenter Scheduler presenter
 	 * @return Form Scheduler's task configuration form
-	 * @throws JsonException
 	 */
 	public function create(SchedulerPresenter $presenter): Form {
 		$this->presenter = $presenter;
-		$this->id = intval($presenter->getParameter('id'));
 		$form = $this->factory->create();
 		$translator = $form->getTranslator();
 		$form->setTranslator($translator->domain('config.scheduler.form'));
-		$this->task = $this->manager->load($this->id);
+		try {
+			$this->load($presenter->getParameters());
+			$messagings = $this->manager->getMessagings();
+			$services = $this->manager->getServices();
+		} catch (JsonException $e) {
+			$messagings = [];
+			$services = [];
+		}
 		$form->addInteger('taskId', 'taskId');
 		$form->addSelect('clientId', 'config.scheduler.form.clientId')
-			->setItems($this->manager->getServices(), false)
+			->setItems($services, false)
 			->setTranslator($translator)
 			->setPrompt('config.scheduler.form.messages.clientId-prompt')
 			->setRequired('messages.clientId')->checkDefaultValue(false);
 		$this->addTimeSpec($form);
 		$task = $form->addContainer('task');
 		$task->addSelect('messaging', 'config.scheduler.form.messaging')
-			->setItems($this->manager->getMessagings(), false)
+			->setItems($messagings, false)
 			->setTranslator($translator)
 			->setPrompt('config.scheduler.form.messages.messaging-prompt')
 			->setRequired('messages.messaging')->checkDefaultValue(false);
 		$this->addMessage($task);
-		$form->addSubmit('save', 'Save');
+		$form->addSubmit('save', 'save')->onClick[] = [$this, 'save'];
+		$form->addSubmit('saveAndRestart', 'saveAndRestart')->onClick[] = [$this, 'saveAndRestart'];
 		$form->setDefaults($this->task);
 		$form->addProtection('core.errors.form-timeout');
-		$form->onSuccess[] = [$this, 'save'];
 		return $form;
 	}
 
@@ -180,21 +190,50 @@ class SchedulerFormFactory {
 	}
 
 	/**
-	 * Save scheduler's task configuration
-	 * @param Form $form Scheduler's task configuration form
+	 * Load task's settings
+	 * @param mixed[] $parameters Presenter's parameters
 	 * @throws JsonException
 	 */
-	public function save(Form $form): void {
+	private function load(array $parameters): void {
+		if (array_key_exists('id', $parameters)) {
+			$this->task = $this->manager->load(intval($parameters['id']));
+		} elseif (array_key_exists('type', $parameters)) {
+			$this->task = $this->manager->loadType($parameters['type']);
+		}
+	}
+
+	/**
+	 * Save task's configuration
+	 * @param SubmitButton $button Submit button
+	 */
+	public function save(SubmitButton $button): void {
 		try {
-			$values = $form->getValues(true);
+			$values = $button->getForm()->getValues(true);
 			$this->manager->save($values);
 			$this->presenter->flashMessage('config.messages.success', 'success');
 		} catch (NonExistingJsonSchemaException $e) {
 			$this->presenter->flashMessage('config.messages.writeFailures.nonExistingJsonSchema', 'danger');
 		} catch (IOException $e) {
 			$this->presenter->flashMessage('config.messages.writeFailures.ioError', 'danger');
+		} catch (JsonException $e) {
+			$this->presenter->flashMessage('config.messages.writeFailures.invalidJson', 'danger');
 		} finally {
 			$this->presenter->redirect('Scheduler:default');
+		}
+	}
+
+	/**
+	 * Save task's configuration and restart IQRF Gateway Daemon
+	 * @param SubmitButton $button Submit button
+	 */
+	public function saveAndRestart(SubmitButton $button): void {
+		try {
+			$this->serviceManager->restart();
+			$this->presenter->flashMessage('service.actions.restart.message', 'info');
+		} catch (NotSupportedInitSystemException $e) {
+			$this->presenter->flashMessage('service.errors.unsupportedInit', 'danger');
+		} finally {
+			$this->save($button);
 		}
 	}
 

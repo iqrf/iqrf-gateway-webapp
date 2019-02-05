@@ -56,6 +56,7 @@ class SecurityManager {
 
 	/**
 	 * Set an access password
+	 * @param int $address Network device address
 	 * @param string $password An access password
 	 * @param string $inputFormat Input data format (ASCII or HEX)
 	 * @return mixed[] DPA request and response
@@ -65,12 +66,13 @@ class SecurityManager {
 	 * @throws IqrfException\UserErrorException
 	 * @throws JsonException
 	 */
-	public function setAccessPassword(string $password = '', string $inputFormat = DataFormat::ASCII): array {
-		return $this->setSecurity($password, $inputFormat, 0);
+	public function setAccessPassword(int $address, string $password = '', string $inputFormat = DataFormat::ASCII): array {
+		return $this->setSecurity($address, $password, $inputFormat, 0);
 	}
 
 	/**
 	 * Set an user key
+	 * @param int $address Network device address
 	 * @param string $password An user key
 	 * @param string $inputFormat Input data format (ASCII or HEX)
 	 * @return mixed[] DPA request and response
@@ -80,12 +82,13 @@ class SecurityManager {
 	 * @throws IqrfException\UserErrorException
 	 * @throws JsonException
 	 */
-	public function setUserKey(string $password = '', string $inputFormat = DataFormat::ASCII): array {
-		return $this->setSecurity($password, $inputFormat, 1);
+	public function setUserKey(int $address, string $password = '', string $inputFormat = DataFormat::ASCII): array {
+		return $this->setSecurity($address, $password, $inputFormat, 1);
 	}
 
 	/**
 	 * Set IQMESH security
+	 * @param int $address Network device address
 	 * @param string $password An access password or an user key
 	 * @param string $inputFormat Input data format (ASCII or HEX)
 	 * @param int $type Security type (access password, user key)
@@ -96,12 +99,12 @@ class SecurityManager {
 	 * @throws IqrfException\UserErrorException
 	 * @throws JsonException
 	 */
-	private function setSecurity(string $password, string $inputFormat, int $type): array {
+	private function setSecurity(int $address, string $password, string $inputFormat, int $type): array {
 		$array = [
 			'mType' => 'iqrfEmbedOs_SetSecurity',
 			'data' => [
 				'req' => [
-					'nAdr' => 0,
+					'nAdr' => $address,
 					'param' => [
 						'type' => $type,
 						'data' => $this->convertToHex($password, $inputFormat),

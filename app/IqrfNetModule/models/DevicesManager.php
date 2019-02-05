@@ -155,6 +155,7 @@ class DevicesManager {
 			$base = 10;
 		}
 		$this->createEmptyTable($base);
+		$this->table[0][0] = DeviceTypes::COORDINATOR;
 		$this->fillTable(DeviceTypes::BONDED, $base);
 		$this->fillTable(DeviceTypes::DISCOVERED, $base);
 		return $this->table;

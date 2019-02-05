@@ -11,28 +11,36 @@ bonding:
 	autoAddress: Auto address
 	smartConnectCode: IQRF Smart Connect Code
 	messages:
-		address: Please enter a valid address. Its has to be a decadic number from 1 to 239.
+		address: Please enter a valid address. Its has to be a decimal number from 1 to 239.
 		smartConnectCode: Please enter IQRF Smart Connect Code.
 		bond:
-			failure: An error occured while bonding a new device.
+			failure: An error occurred while bonding a new device.
 			success: A new device has been bonded successfully.
 		clearAll:
 			failure: An error occurred while clearing all bonds.
 			success: All bonds have been cleared successfully.
 		rebond:
-			failure: An error occured while rebonding a device.
+			failure: An error occurred while rebonding a device.
 			success: A device has been rebonded successfully.
 		remove:
-			failure: An error occured while removing a device from the network.
+			failure: An error occurred while removing a device from the network.
 			success: A device has been removed successfully from the network.
 	bondNode: Bond Node
 	rebondNode: Rebond Node
 	removeNode: Remove Node
 	clearAllBonds: Clear All Bonds
 
+changeAddress:
+	title: Change network address
+	address: New address
+	messages:
+		address: Address has to be integer form 0 to 239.
+	set: Set
+
 devices:
 	title: Devices Info
 	bonded: Bonded device
+	coordinator: Coordinator
 	discovered: Discovered device
 	unbonded: Unbonded device
 
@@ -105,12 +113,13 @@ macros:
 	title: Macros
 
 network-manager:
-	title: IQMESH Network Manager
-	description: IQMESH Network Manager.
+	title: IQMESH Network manager
+	description: IQMESH Network manager.
 	control: Control
 
 osConfig:
 	title: OS
+	rf: RF
 	networkType: Network Type
 	networkTypes:
 		std: STD
@@ -123,11 +132,13 @@ osConfig:
 		916: 916 MHz
 	rfChannelA: RF channel A
 	rfChannelB: RF channel B
-	rfSubChannelA: RF channeů 2nd network
+	rfSubChannelA: RF channel 2nd network
 	rfSubChannelB: Alternative DSM channel
+	stdAndLpNetwork: STD and LP network
 	txPower: TX power
 	rxFilter: RX filter
 	lpRxTimeout: LP RX timeout
+	rfPgm: RFPGM
 	rfPgmEnableAfterReset: Enable after reset
 	rfPgmTerminateAfter1Min: Termination after ~1 minute
 	rfPgmTerminateMcuPin: Termination by MCU pin
@@ -135,6 +146,7 @@ osConfig:
 	rfPgmLpMode: LP mode
 	rfPgmIncorrectUpload: Incorrect upload
 	messages:
+		breakInteroperability: You will break interoperability if you disable STD and LP network.
 		lpRxTimeout: LP RX timeout has to be in range from 1 to 255.
 		rfChannel443: RF Channel has to be in range from 0 to 16.
 		rfChannel868: RF Channel has to be in range from 0 to 67.
@@ -193,13 +205,29 @@ send-packet:
 	response: Response
 	request: Request
 
+standard:
+	title: IQRF Standard manager
+	description: IQRF Standard manager.
+	sensor:
+		title: IQRF Standard sensor
+		address: Address
+		messages:
+			address: Address has to be integer form 0 to 239.
+			enumerateError: An error occurred while IQRF Standared sensor enumeration.
+			readError: An error occurred while IQRF Standared sensor reading values.
+		enumerate: Enumerate
+		readAll: Read all
+		type: Type
+		unit: Unit
+		value: Value
+
 trConfiguration:
 	title: TR configuration
 	description: Edit TR configuration.
 	read:
-		failure: An error occured while TR configuration reading.
+		failure: An error occurred while TR configuration reading.
 	write:
-		failure: An error occured while TR configuration saving.
+		failure: An error occurred while TR configuration saving.
 		success: The TR configuration has been saved successfully.
 
 webSocketClient:

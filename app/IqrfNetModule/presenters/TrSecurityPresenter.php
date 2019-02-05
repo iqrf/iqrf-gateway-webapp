@@ -20,14 +20,13 @@ declare(strict_types = 1);
 
 namespace App\IqrfNetModule\Presenters;
 
-use App\CoreModule\Presenters\ProtectedPresenter;
 use App\IqrfNetModule\Forms\SecurityFormFactory;
 use Nette\Forms\Form;
 
 /**
  * IQMESH Network Manager - TR security presenter
  */
-class TrSecurityPresenter extends ProtectedPresenter {
+class TrSecurityPresenter extends TrConfigPresenter {
 
 	/**
 	 * @var SecurityFormFactory IQMESH Security configuration form

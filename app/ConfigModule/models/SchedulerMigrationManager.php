@@ -22,6 +22,8 @@ namespace App\ConfigModule\Models;
 
 use App\ConfigModule\Exceptions\InvalidConfigurationFormatException;
 use App\CoreModule\Models\ZipArchiveManager;
+use App\ServiceModule\Exceptions\NotSupportedInitSystemException;
+use App\ServiceModule\Models\ServiceManager;
 use DateTime;
 use Nette\Application\BadRequestException;
 use Nette\Application\Responses\FileResponse;
@@ -56,16 +58,23 @@ class SchedulerMigrationManager {
 	private $path = '/tmp/iqrf-daemon-scheduler.zip';
 
 	/**
+	 * @var ServiceManager Service manager
+	 */
+	private $serviceManager;
+
+	/**
 	 * Constructor
 	 * @param MainManager $mainManager Main configuration manager
+	 * @param ServiceManager $serviceManager Service manager
 	 */
-	public function __construct(MainManager $mainManager) {
+	public function __construct(MainManager $mainManager, ServiceManager $serviceManager) {
 		$this->mainConfigManager = $mainManager;
 		try {
 			$this->configDirectory = $this->mainConfigManager->load()['cacheDir'] . '/scheduler/';
 		} catch (IOException | JsonException $e) {
 			$this->configDirectory = '/var/cache/iqrfgd2/scheduler/';
 		}
+		$this->serviceManager = $serviceManager;
 	}
 
 	/**
@@ -88,6 +97,7 @@ class SchedulerMigrationManager {
 	 * Upload a configuration
 	 * @param mixed[] $formValues Values from form
 	 * @throws InvalidConfigurationFormatException
+	 * @throws NotSupportedInitSystemException
 	 */
 	public function upload(array $formValues): void {
 		$zip = $formValues['configuration'];
@@ -103,6 +113,7 @@ class SchedulerMigrationManager {
 		$zipManagerUpload->extract($this->configDirectory);
 		$zipManagerUpload->close();
 		FileSystem::delete($this->path);
+		$this->serviceManager->restart();
 	}
 
 	/**

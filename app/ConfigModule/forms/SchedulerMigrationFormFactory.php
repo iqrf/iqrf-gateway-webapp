@@ -25,6 +25,7 @@ use App\ConfigModule\Models\SchedulerMigrationManager;
 use App\ConfigModule\Presenters\MigrationPresenter;
 use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
 use App\CoreModule\Forms\FormFactory;
+use App\ServiceModule\Exceptions\NotSupportedInitSystemException;
 use Nette\Forms\Form;
 use Nette\IOException;
 use Nette\SmartObject;
@@ -89,6 +90,8 @@ class SchedulerMigrationFormFactory {
 			$this->presenter->flashMessage('config.migration.errors.invalidFormat', 'danger');
 		} catch (NonExistingJsonSchemaException $e) {
 			$this->presenter->flashMessage('config.messages.writeFailures.nonExistingJsonSchema', 'danger');
+		} catch (NotSupportedInitSystemException $e) {
+			$this->presenter->flashMessage('service.errors.unsupportedInit', 'danger');
 		} catch (IOException $e) {
 			/// TODO: Use custom error message.
 			$$this->presenter->flashMessage('config.messages.writeFailures.ioError', 'danger');

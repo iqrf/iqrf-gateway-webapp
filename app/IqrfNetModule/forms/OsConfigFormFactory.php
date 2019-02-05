@@ -56,6 +56,7 @@ class OsConfigFormFactory extends TrConfigFormFactory {
 	 * @param Form $form IQRF OS configuration form
 	 */
 	private function addRfConfiguration(Form &$form): void {
+		$form->addGroup($form->getTranslator()->translate('rf'));
 		$rfBands = ['433', '868', '916'];
 		foreach ($rfBands as $key => $rfBand) {
 			$rfBands[$rfBand] = 'rfBands.' . $rfBand;
@@ -78,8 +79,8 @@ class OsConfigFormFactory extends TrConfigFormFactory {
 			}
 		}
 		if (array_key_exists('stdAndLpNetwork', $this->configuration)) {
-			$networkTypes = [false => 'networkTypes.std', true => 'networkTypes.stdLp'];
-			$form->addSelect('stdAndLpNetwork', 'networkType', $networkTypes);
+			$form->addCheckbox('stdAndLpNetwork', 'stdAndLpNetwork')
+				->setHtmlAttribute('data-warning', $form->getTranslator()->translate('messages.breakInteroperability'));
 		}
 		$form->addInteger('txPower', 'txPower')->addRule(Form::RANGE, 'messages.txPower', [0, 7])
 			->setRequired('messages.txPower');
@@ -94,6 +95,7 @@ class OsConfigFormFactory extends TrConfigFormFactory {
 	 * @param Form $form IQRF OS configuration form
 	 */
 	private function addRfpgwConfiguration(Form &$form): void {
+		$form->addGroup($form->getTranslator()->translate('rfPgm'));
 		$form->addCheckbox('rfPgmEnableAfterReset', 'rfPgmEnableAfterReset');
 		$form->addCheckbox('rfPgmTerminateAfter1Min', 'rfPgmTerminateAfter1Min');
 		$form->addCheckbox('rfPgmTerminateMcuPin', 'rfPgmTerminateMcuPin');

@@ -27,6 +27,8 @@ use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\JsonSchemaManager;
 use App\CoreModule\Models\ZipArchiveManager;
+use App\ServiceModule\Exceptions\NotSupportedInitSystemException;
+use App\ServiceModule\Models\ServiceManager;
 use DateTime;
 use Nette\Application\BadRequestException;
 use Nette\Application\Responses\FileResponse;
@@ -75,15 +77,22 @@ class MigrationManager {
 	private $path = '/tmp/iqrf-daemon-configuration.zip';
 
 	/**
+	 * @var ServiceManager Service manager
+	 */
+	private $serviceManager;
+
+	/**
 	 * Constructor
 	 * @param string $configDirectory Path to a directory with a configuration of IQRF Gateway Daemon
 	 * @param CommandManager $commandManager Command manager
 	 * @param JsonSchemaManager $schemaManager JSON schema manager
+	 * @param ServiceManager $serviceManager Service manager
 	 */
-	public function __construct(string $configDirectory, CommandManager $commandManager, JsonSchemaManager $schemaManager) {
+	public function __construct(string $configDirectory, CommandManager $commandManager, JsonSchemaManager $schemaManager, ServiceManager $serviceManager) {
 		$this->configDirectory = $configDirectory;
 		$this->commandManager = $commandManager;
 		$this->schemaManager = $schemaManager;
+		$this->serviceManager = $serviceManager;
 	}
 
 	/**
@@ -108,6 +117,7 @@ class MigrationManager {
 	 * @throws IncompleteConfigurationException
 	 * @throws InvalidConfigurationFormatException
 	 * @throws JsonException
+	 * @throws NotSupportedInitSystemException
 	 */
 	public function upload(array $formValues): void {
 		$zip = $formValues['configuration'];
@@ -130,6 +140,7 @@ class MigrationManager {
 		$this->zipManagerUpload->extract($this->configDirectory);
 		$this->zipManagerUpload->close();
 		FileSystem::delete($this->path);
+		$this->serviceManager->restart();
 	}
 
 	/**
