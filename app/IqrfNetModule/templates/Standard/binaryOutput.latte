@@ -20,11 +20,36 @@
 	{var $response = $data['response']}
 	{switch $response['mType']}
 		{case 'iqrfBinaryoutput_Enumerate'}
-		<table class='table table-striped'>
-			<tr>
-				<th>{_iqrfnet.standard.binaryOutput.outputs}</th>
-				<td>{$response["data"]["rsp"]["result"]["binouts"]}</td>
-			</tr>
-		</table>
+		<div class='table-responsive'>
+			<table class='table table-striped'>
+				<tr>
+					<th>{_iqrfnet.standard.binaryOutput.table.outputs}</th>
+					<td>{$response["data"]["rsp"]["result"]["binouts"]}</td>
+				</tr>
+			</table>
+		</div>
+		{case 'iqrfBinaryoutput_SetOutput'}
+		<div class='table-responsive'>
+			<table class='table table-striped'>
+				<tr>
+					<th>{_iqrfnet.standard.binaryOutput.table.index}</th>
+					<td n:foreach='$response["data"]["rsp"]["result"]["prevVals"] as $index => $state'>
+						{$index}
+					</td>
+				</tr>
+				<tr>
+					<th>{_iqrfnet.standard.binaryOutput.table.state}</th>
+					<td n:foreach='$response["data"]["rsp"]["result"]["prevVals"] as $index => $state'>
+						{switch $state}
+							{case true}
+							{var $icon = 'ok', $color = 'text-success'}
+							{case false}
+							{var $icon = 'remove', $color = 'text-danger'}
+						{/switch}
+						<span class='glyphicon glyphicon-{$icon} {$color}' aria-hidden='true'></span>
+					</td>
+				</tr>
+			</table>
+		</div>
 	{/switch}
 {/snippet}

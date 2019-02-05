@@ -78,6 +78,7 @@ class StandardBinaryOutputFormFactory {
 			->addRule(Form::RANGE, 'messages.index', [0, 31]);
 		$form->addCheckbox('state', 'state');
 		$form->addSubmit('enumerate', 'enumerate')->onClick[] = [$this, 'enumerate'];
+		$form->addSubmit('get', 'get')->onClick[] = [$this, 'get'];
 		$form->addSubmit('set', 'set')->onClick[] = [$this, 'set'];
 		$form->addProtection('core.errors.form-timeout');
 		return $form;
@@ -98,6 +99,20 @@ class StandardBinaryOutputFormFactory {
 	}
 
 	/**
+	 * Get output's state of a standard binary output
+	 * @param SubmitButton $button Submit button
+	 */
+	public function get(SubmitButton $button): void {
+		$values = $button->getForm()->getValues(true);
+		try {
+			$data = $this->manager->getOutputs($values['address']);
+			$this->presenter->handleBinaryOutputResponse($data);
+		} catch (UserErrorException | DpaErrorException | EmptyResponseException | JsonException $e) {
+			$this->presenter->flashMessage('iqrfnet.standard.binaryOutput.messages.getError', 'danger');
+		}
+	}
+
+	/**
 	 * Set output's state of a standard binary output
 	 * @param SubmitButton $button Submit button
 	 */
@@ -105,7 +120,7 @@ class StandardBinaryOutputFormFactory {
 		$values = $button->getForm()->getValues(true);
 		try {
 			$output = new StandardBinaryOutput($values['index'], $values['state']);
-			$data = $this->manager->setOutput($values['address'], [$output]);
+			$data = $this->manager->setOutputs($values['address'], [$output]);
 			$this->presenter->handleBinaryOutputResponse($data);
 		} catch (UserErrorException | DpaErrorException | EmptyResponseException | JsonException $e) {
 			$this->presenter->flashMessage('iqrfnet.standard.binaryOutput.messages.setError', 'danger');

@@ -79,7 +79,20 @@ class StandardBinaryOutputManager {
 	}
 
 	/**
-	 * Set binary outputs state
+	 * Get states of IQRF Standard binary outputs
+	 * @param int $address Network device address
+	 * @return mixed[] API request and response
+	 * @throws DpaErrorException
+	 * @throws EmptyResponseException
+	 * @throws JsonException
+	 * @throws UserErrorException
+	 */
+	public function getOutputs(int $address): array {
+		return $this->setOutputs($address, []);
+	}
+
+	/**
+	 * Set states of IQRF Standard binary outputs
 	 * @param int $address Network device address
 	 * @param StandardBinaryOutput[] $outputs Standard binary output
 	 * @return mixed[] DPA request and response
@@ -88,7 +101,7 @@ class StandardBinaryOutputManager {
 	 * @throws JsonException
 	 * @throws UserErrorException
 	 */
-	public function setOutput(int $address, array $outputs): array {
+	public function setOutputs(int $address, array $outputs): array {
 		$array = [
 			'mType' => 'iqrfBinaryoutput_SetOutput',
 			'data' => [

@@ -219,8 +219,12 @@ standard:
 			enumerateError: An error occurred while IQRF Standared binary output enumeration.
 			setError: An error occurred while IQRF Standard binary output's state setting.
 		enumerate: Enumerate
-		set: Set
-		outputs: Outputs
+		get: Get states
+		set: Set state
+		table:
+			outputs: Outputs
+			index: Index
+			state: State
 	light:
 		title: IQRF Standard light
 		address: Address
