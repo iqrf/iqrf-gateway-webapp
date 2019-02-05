@@ -113,8 +113,8 @@ macros:
 	title: Macros
 
 network-manager:
-	title: IQMESH Network Manager
-	description: IQMESH Network Manager.
+	title: IQMESH Network manager
+	description: IQMESH Network manager.
 	control: Control
 
 osConfig:
