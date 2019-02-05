@@ -106,6 +106,7 @@ enumeration:
 	dpaVersion: DPA version
 	rssi: RSSI
 	supplyVoltage: Supply voltage
+	back: Back to IQMESH Network manager
 	messages:
 		failure: An error occurred while the device enumeration.
 
