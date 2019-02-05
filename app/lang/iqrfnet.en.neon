@@ -216,7 +216,9 @@ standard:
 		state: State of the binary output
 		messages:
 			address: Address has to be an integer from 0 to 239.
+			index: Index has to be an integer from 0 to 31.
 			enumerateError: An error occurred while IQRF Standared binary output enumeration.
+			getError: An error occurred while IQRF Standard binary output's state getting.
 			setError: An error occurred while IQRF Standard binary output's state setting.
 		enumerate: Enumerate
 		get: Get states
@@ -228,11 +230,24 @@ standard:
 	light:
 		title: IQRF Standard light
 		address: Address
+		index: Index of the light
+		power: Power of the light
 		messages:
 			address: Address has to be an integer from 0 to 239.
+			index: Index has to be an integer from 0 to 31.
+			power: Power has to be an integer from 0 to 100.
 			enumerateError: An error occurred while IQRF Standared light enumeration.
+			getError: An error occurred while IQRF Standard light's power getting.
+			setError: An error occurred while IQRF Standard light's power setting.
+			incrementError: An error occurred while IQRF Standard light's power incrementing.
+			decrementError: An error occurred while IQRF Standard light's power decrementing.
 		enumerate: Enumerate
-		lights: Lights
+		get: Get power
+		set: Set power
+		increment: Increment power
+		decrement: Decrement power
+		table:
+			lights: Lights
 	sensor:
 		title: IQRF Standard sensor
 		address: Address

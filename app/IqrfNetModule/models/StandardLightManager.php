@@ -97,8 +97,8 @@ class StandardLightManager {
 					'param' => [
 						'lights' => [],
 					],
-					'returnVerbose' => true,
 				],
+				'returnVerbose' => true,
 			],
 		];
 		/**

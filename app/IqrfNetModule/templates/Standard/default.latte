@@ -17,36 +17,40 @@
 
 {block title}{_iqrfnet.standard.title}{/block}
 {block content}
-<div class='panel panel-default'>
-	<div class='panel-heading'>
-		<h3 class='panel-title'>{_iqrfnet.standard.binaryOutput.title}</h3>
+<div class='col-sm-6'>
+	<div class='panel panel-default'>
+		<div class='panel-heading'>
+			<h3 class='panel-title'>{_iqrfnet.standard.binaryOutput.title}</h3>
+		</div>
+		<div class='panel-body'>
+			{control binaryOutputForm}
+		</div>
+		<div n:ifset='$binaryOutputData' class='panel-footer'>
+			{include 'binaryOutput.latte', data => $binaryOutputData}
+		</div>
 	</div>
-	<div class='panel-body'>
-		{control binaryOutputForm}
-	</div>
-	<div n:ifset='$binaryOutputData' class='panel-footer'>
-		{include 'binaryOutput.latte', data => $binaryOutputData}
+	<div class='panel panel-default'>
+		<div class='panel-heading'>
+			<h3 class='panel-title'>{_iqrfnet.standard.sensor.title}</h3>
+		</div>
+		<div class='panel-body'>
+			{control sensorForm}
+		</div>
+		<div n:ifset='$sensorData' class='panel-footer'>
+			{include 'sensor.latte', data => $sensorData}
+		</div>
 	</div>
 </div>
-<div class='panel panel-default'>
-	<div class='panel-heading'>
-		<h3 class='panel-title'>{_iqrfnet.standard.light.title}</h3>
-	</div>
-	<div class='panel-body'>
-		{control lightForm}
-	</div>
-	<div n:ifset='$lightData' class='panel-footer'>
-		{include 'light.latte', data => $lightData}
-	</div>
-</div>
-<div class='panel panel-default'>
-	<div class='panel-heading'>
-		<h3 class='panel-title'>{_iqrfnet.standard.sensor.title}</h3>
-	</div>
-	<div class='panel-body'>
-		{control sensorForm}
-	</div>
-	<div n:ifset='$sensorData' class='panel-footer'>
-		{include 'sensor.latte', data => $sensorData}
+<div class='col-sm-6'>
+	<div class='panel panel-default'>
+		<div class='panel-heading'>
+			<h3 class='panel-title'>{_iqrfnet.standard.light.title}</h3>
+		</div>
+		<div class='panel-body'>
+			{control lightForm}
+		</div>
+		<div n:ifset='$lightData' class='panel-footer'>
+			{include 'light.latte', data => $lightData}
+		</div>
 	</div>
 </div>

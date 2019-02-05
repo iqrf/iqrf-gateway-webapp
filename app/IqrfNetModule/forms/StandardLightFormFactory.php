@@ -24,6 +24,7 @@ use App\CoreModule\Forms\FormFactory;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Exceptions\UserErrorException;
+use App\IqrfNetModule\Models\StandardLight;
 use App\IqrfNetModule\Models\StandardLightManager;
 use App\IqrfNetModule\Presenters\StandardPresenter;
 use Nette\Forms\Controls\SubmitButton;
@@ -64,22 +65,30 @@ class StandardLightFormFactory {
 	}
 
 	/**
-	 * Create IQRF App send JSON request form
+	 * Create IQRF Standard light form
 	 * @param StandardPresenter $presenter IQRF Standard presenter
-	 * @return Form IQRF App send RAW packet form
+	 * @return Form IQRF Standard light form
 	 */
 	public function create(StandardPresenter $presenter): Form {
 		$this->presenter = $presenter;
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('iqrfnet.standard.light'));
 		$form->addInteger('address', 'address')->setRequired('messages.address');
+		$form->addInteger('index', 'index')->setDefaultValue(0)
+			->addRule(Form::RANGE, 'messages.index', [0, 31]);
+		$form->addInteger('power', 'power')->setDefaultValue(50)
+			->addRule(Form::RANGE, 'messages.power', [0, 100]);
 		$form->addSubmit('enumerate', 'enumerate')->onClick[] = [$this, 'enumerate'];
+		$form->addSubmit('get', 'get')->onClick[] = [$this, 'getPower'];
+		$form->addSubmit('set', 'set')->onClick[] = [$this, 'setPower'];
+		$form->addSubmit('increment', 'increment')->onClick[] = [$this, 'incrementPower'];
+		$form->addSubmit('decrement', 'decrement')->onClick[] = [$this, 'decrementPower'];
 		$form->addProtection('core.errors.form-timeout');
 		return $form;
 	}
 
 	/**
-	 * Enumerate a standard sensor
+	 * Enumerate a standard light
 	 * @param SubmitButton $button Submit button
 	 */
 	public function enumerate(SubmitButton $button): void {
@@ -89,6 +98,66 @@ class StandardLightFormFactory {
 			$this->presenter->handleLightResponse($data);
 		} catch (UserErrorException | DpaErrorException | EmptyResponseException | JsonException $e) {
 			$this->presenter->flashMessage('iqrfnet.standard.light.messages.enumerateError', 'danger');
+		}
+	}
+
+	/**
+	 * Get a power of IQRF Standard light
+	 * @param SubmitButton $button Submit button
+	 */
+	public function getPower(SubmitButton $button): void {
+		$values = $button->getForm()->getValues(true);
+		try {
+			$light = new StandardLight($values['index'], $values['power']);
+			$data = $this->manager->getPower($values['address'], [$light]);
+			$this->presenter->handleLightResponse($data);
+		} catch (UserErrorException | DpaErrorException | EmptyResponseException | JsonException $e) {
+			$this->presenter->flashMessage('iqrfnet.standard.light.messages.getError', 'danger');
+		}
+	}
+
+	/**
+	 * Set a power of IQRF Standard light
+	 * @param SubmitButton $button Submit button
+	 */
+	public function setPower(SubmitButton $button): void {
+		$values = $button->getForm()->getValues(true);
+		try {
+			$light = new StandardLight($values['index'], $values['power']);
+			$data = $this->manager->setPower($values['address'], [$light]);
+			$this->presenter->handleLightResponse($data);
+		} catch (UserErrorException | DpaErrorException | EmptyResponseException | JsonException $e) {
+			$this->presenter->flashMessage('iqrfnet.standard.light.messages.setError', 'danger');
+		}
+	}
+
+	/**
+	 * Increment a power of IQRF Standard light
+	 * @param SubmitButton $button Submit button
+	 */
+	public function incrementPower(SubmitButton $button): void {
+		$values = $button->getForm()->getValues(true);
+		try {
+			$light = new StandardLight($values['index'], $values['power']);
+			$data = $this->manager->incrementPower($values['address'], [$light]);
+			$this->presenter->handleLightResponse($data);
+		} catch (UserErrorException | DpaErrorException | EmptyResponseException | JsonException $e) {
+			$this->presenter->flashMessage('iqrfnet.standard.light.messages.incrementError', 'danger');
+		}
+	}
+
+	/**
+	 * Decrement a power of IQRF Standard light
+	 * @param SubmitButton $button Submit button
+	 */
+	public function decrementPower(SubmitButton $button): void {
+		$values = $button->getForm()->getValues(true);
+		try {
+			$light = new StandardLight($values['index'], $values['power']);
+			$data = $this->manager->decrementPower($values['address'], [$light]);
+			$this->presenter->handleLightResponse($data);
+		} catch (UserErrorException | DpaErrorException | EmptyResponseException | JsonException $e) {
+			$this->presenter->flashMessage('iqrfnet.standard.light.messages.decrementError', 'danger');
 		}
 	}
 
