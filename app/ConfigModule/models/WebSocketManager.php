@@ -81,7 +81,7 @@ class WebSocketManager {
 	}
 
 	/**
-	 * Delete a configuration
+	 * Deletes a configuration
 	 * @param int $id WebSocket interface ID
 	 * @throws JsonException
 	 */
@@ -97,7 +97,7 @@ class WebSocketManager {
 	}
 
 	/**
-	 * Read a configuration
+	 * Reads a configuration
 	 * @param string $fileName File name (without .json)
 	 * @return mixed[] Parsed configuration
 	 * @throws JsonException
@@ -109,7 +109,7 @@ class WebSocketManager {
 	}
 
 	/**
-	 * Get WebSocket service file name by instance name
+	 * Gets WebSocket service file name by instance name
 	 * @param string $instanceName Instance name
 	 * @return string|null WebSocket service file name
 	 * @throws JsonException
@@ -127,7 +127,7 @@ class WebSocketManager {
 	}
 
 	/**
-	 * Save configuration
+	 * Saves the configuration
 	 * @param mixed[] $array Websocket settings
 	 * @throws JsonException
 	 */
@@ -153,7 +153,7 @@ class WebSocketManager {
 	}
 
 	/**
-	 * Create a messaging configuration
+	 * Creates a messaging configuration
 	 * @param mixed[] $values Values from form
 	 * @param string[] $instances Names of messaging and service instances
 	 * @return mixed[] Messaging configuration
@@ -175,7 +175,7 @@ class WebSocketManager {
 	}
 
 	/**
-	 * Create a service configuration
+	 * Creates a service configuration
 	 * @param mixed[] $values Values from form
 	 * @param string[] $instances Names of messaging and service instances
 	 * @return mixed[] Service configuration
@@ -189,7 +189,7 @@ class WebSocketManager {
 	}
 
 	/**
-	 * Get WebSocket instances
+	 * Gets WebSocket instances
 	 * @return mixed[] WebSocket instances
 	 * @throws JsonException
 	 */
@@ -204,7 +204,7 @@ class WebSocketManager {
 	}
 
 	/**
-	 * Load a configuration
+	 * Loads a configuration
 	 * @param int $id WebSocket interface ID
 	 * @return mixed[] Array for form
 	 * @throws JsonException

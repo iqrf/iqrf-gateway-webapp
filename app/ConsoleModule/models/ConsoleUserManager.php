@@ -31,7 +31,7 @@ class ConsoleUserManager extends UserManager {
 	use SmartObject;
 
 	/**
-	 * Get information about the user from username
+	 * Gets information about the user from the username
 	 * @param string|null $username Username
 	 * @return mixed[]|null Information about the user
 	 */
@@ -45,7 +45,7 @@ class ConsoleUserManager extends UserManager {
 	}
 
 	/**
-	 * Check if the username is unique
+	 * Checks if the username is unique
 	 * @param string|null $username Username to check
 	 * @return bool Is username unique?
 	 */
@@ -62,7 +62,7 @@ class ConsoleUserManager extends UserManager {
 	}
 
 	/**
-	 * List all registered users
+	 * Lists all registered users
 	 * @return mixed[] Registered users
 	 */
 	public function listUsers(): array {
@@ -72,7 +72,7 @@ class ConsoleUserManager extends UserManager {
 	}
 
 	/**
-	 * List user names of all webapp's users
+	 * Lists user names of all webapp's users
 	 * @return mixed[] User names of all webapp's users
 	 */
 	public function listUserNames(): array {
@@ -84,7 +84,7 @@ class ConsoleUserManager extends UserManager {
 	}
 
 	/**
-	 * Remove hashes from the information about the users
+	 * Removes hashes from the information about the users
 	 * @param mixed[] $users Information about the users
 	 */
 	private function removeHashes(array &$users): void {

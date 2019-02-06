@@ -54,7 +54,7 @@ class UserListCommand extends Command {
 	}
 
 	/**
-	 * Configure the command
+	 * Configures the user list command
 	 */
 	protected function configure(): void {
 		$this->setName('user:list');
@@ -62,7 +62,7 @@ class UserListCommand extends Command {
 	}
 
 	/**
-	 * Execute the command
+	 * Executes the user list command
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
 	 */

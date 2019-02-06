@@ -43,7 +43,7 @@ class PowerPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Power off IQRF Gateway
+	 * Powers off IQRF Gateway
 	 */
 	public function handleOff(): void {
 		if ($this->isAjax()) {
@@ -54,7 +54,7 @@ class PowerPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Reboot IQRF Gateway
+	 * Reboots IQRF Gateway
 	 */
 	public function handleReboot(): void {
 		if ($this->isAjax()) {

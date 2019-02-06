@@ -72,7 +72,7 @@ class SchedulerManager {
 	}
 
 	/**
-	 * Add a new task
+	 * Adds a new task
 	 * @param string $type Task type
 	 * @throws JsonException
 	 */
@@ -84,7 +84,7 @@ class SchedulerManager {
 	}
 
 	/**
-	 * Delete a task
+	 * Deletes a task
 	 * @param int $id Task ID
 	 * @throws JsonException
 	 */
@@ -96,7 +96,7 @@ class SchedulerManager {
 	}
 
 	/**
-	 * Get task's files
+	 * Gets task's files
 	 * @return string[] Files with tasks
 	 * @throws JsonException
 	 */
@@ -115,7 +115,7 @@ class SchedulerManager {
 	}
 
 	/**
-	 * Get task's time
+	 * Gets task's time
 	 * @param mixed[] $task Task
 	 * @return string Task's time
 	 */
@@ -141,7 +141,7 @@ class SchedulerManager {
 	}
 
 	/**
-	 * Get available messagings
+	 * Gets available messagings
 	 * @return string[][] Available messagings
 	 * @throws JsonException
 	 */
@@ -152,7 +152,7 @@ class SchedulerManager {
 	}
 
 	/**
-	 * Get scheduler's services
+	 * Gets scheduler's services
 	 * @return string[] Scheduler's services
 	 * @throws JsonException
 	 */
@@ -166,7 +166,7 @@ class SchedulerManager {
 	}
 
 	/**
-	 * Get tasks in Scheduler
+	 * Gets tasks
 	 * @return mixed[] Tasks
 	 * @throws JsonException
 	 */
@@ -189,7 +189,7 @@ class SchedulerManager {
 	}
 
 	/**
-	 * Get DPA request from JSON
+	 * Gets DPA request from JSON
 	 * @param mixed[] $data JSON
 	 * @return string DPA request
 	 */
@@ -219,7 +219,7 @@ class SchedulerManager {
 	}
 
 	/**
-	 * Fix HWPID format
+	 * Fixes the HWPID format
 	 * @param int|null $hwpId HWPID to fix
 	 * @return string Fixed HWPID
 	 */
@@ -230,7 +230,7 @@ class SchedulerManager {
 	}
 
 	/**
-	 * Load task's settings
+	 * Loads the task's configuration
 	 * @param int $id Task ID
 	 * @return mixed[] Array for the form
 	 * @throws JsonException
@@ -245,7 +245,7 @@ class SchedulerManager {
 	}
 
 	/**
-	 * Load task's settings from the task's message type
+	 * Loads the task's configuration from the task's message type
 	 * @param string $type Task's message type
 	 * @return mixed[]|null Array for the form
 	 * @throws JsonException
@@ -262,8 +262,8 @@ class SchedulerManager {
 	}
 
 	/**
-	 * Save task's setting
-	 * @param mixed[] $array Task's settings
+	 * Saves the task's configuration
+	 * @param mixed[] $array Task's configuration
 	 * @throws JsonException
 	 */
 	public function save(array $array): void {

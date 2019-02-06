@@ -33,8 +33,8 @@ class MqttFormFactory extends GenericConfigFormFactory {
 	use SmartObject;
 
 	/**
-	 * Create MQTT interface configuration form
-	 * @param MqttPresenter $presenter MQTT interface presenter
+	 * Creates the MQTT interface configuration form
+	 * @param MqttPresenter $presenter MQTT interface configuration presenter
 	 * @return Form MQTT interface configuration form
 	 * @throws JsonException
 	 */

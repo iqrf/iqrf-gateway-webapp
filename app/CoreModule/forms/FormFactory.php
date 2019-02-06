@@ -53,7 +53,7 @@ class FormFactory {
 	}
 
 	/**
-	 * Create a form and set the translator
+	 * Creates a form and set the translator
 	 * @return Form Form
 	 */
 	public function create(): Form {

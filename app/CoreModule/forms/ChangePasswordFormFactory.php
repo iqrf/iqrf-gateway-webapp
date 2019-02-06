@@ -67,7 +67,7 @@ class ChangePasswordFormFactory {
 	}
 
 	/**
-	 * Create change password form
+	 * Creates the change password form
 	 * @param ProfilePresenter $presenter User profile presenter
 	 * @return Form Change password form
 	 */
@@ -83,7 +83,7 @@ class ChangePasswordFormFactory {
 	}
 
 	/**
-	 * Change user's password
+	 * Changes the user's password
 	 * @param Form $form Change password form
 	 */
 	public function change(Form $form): void {

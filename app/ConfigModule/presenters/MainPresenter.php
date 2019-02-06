@@ -53,7 +53,7 @@ class MainPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Catch exceptions
+	 * Catches exceptions
 	 */
 	public function actionDefault(): void {
 		try {
@@ -68,7 +68,7 @@ class MainPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Create Main daemon's configuration form
+	 * Creates the Main daemon's configuration form
 	 * @return Form Main daemon's configuration form
 	 * @throws JsonException
 	 */

@@ -29,7 +29,7 @@ use stdClass;
 class DpaRequest extends ApiRequest {
 
 	/**
-	 * Fix raw DPA packet
+	 * Fixes a DPA packet
 	 */
 	private function fixRawPacket(): void {
 		if (is_array($this->request)) {
@@ -48,7 +48,7 @@ class DpaRequest extends ApiRequest {
 	}
 
 	/**
-	 * Fix DPA requests
+	 * Fixes DPA requests
 	 */
 	private function fixRequest(): void {
 		if (is_array($this->request)) {
@@ -66,7 +66,7 @@ class DpaRequest extends ApiRequest {
 	}
 
 	/**
-	 * Set JSON DPA request
+	 * Sets the JSON DPA request
 	 * @param mixed $request JSON DPA request
 	 */
 	public function setRequest($request): void {

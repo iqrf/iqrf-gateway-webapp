@@ -46,7 +46,7 @@ class IqrfRepositoryPresenter extends GenericPresenter {
 	}
 
 	/**
-	 * Create IQRF Repository configuration form
+	 * Creates the IQRF Repository configuration form
 	 * @return Form IQRF Repository configuration form
 	 * @throws JsonException
 	 */

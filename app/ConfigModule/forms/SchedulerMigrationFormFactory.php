@@ -63,7 +63,7 @@ class SchedulerMigrationFormFactory {
 	}
 
 	/**
-	 * Create configuration migration form
+	 * Creates the configuration migration form
 	 * @param MigrationPresenter $presenter Configuration migration presenter
 	 * @return Form Configuration migration form
 	 */
@@ -79,8 +79,8 @@ class SchedulerMigrationFormFactory {
 	}
 
 	/**
-	 * Import a configuration
-	 * @param Form $form Configuration migration form
+	 * Imports the scheduler's configuration
+	 * @param Form $form Scheduler's configuration migration form
 	 */
 	public function import(Form $form): void {
 		try {

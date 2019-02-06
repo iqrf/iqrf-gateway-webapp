@@ -21,10 +21,10 @@ declare(strict_types = 1);
 namespace App\IqrfNetModule\Forms;
 
 use App\CoreModule\Forms\FormFactory;
+use App\IqrfNetModule\Entities\StandardBinaryOutput;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Exceptions\UserErrorException;
-use App\IqrfNetModule\Models\StandardBinaryOutput;
 use App\IqrfNetModule\Models\StandardBinaryOutputManager;
 use App\IqrfNetModule\Presenters\StandardPresenter;
 use Nette\Forms\Controls\SubmitButton;
@@ -65,7 +65,7 @@ class StandardBinaryOutputFormFactory {
 	}
 
 	/**
-	 * Create IQRF Standard Binary output form
+	 * Creates IQRF Standard Binary output form
 	 * @param StandardPresenter $presenter IQRF Standard presenter
 	 * @return Form IQRF Standard Binary output form
 	 */
@@ -85,7 +85,7 @@ class StandardBinaryOutputFormFactory {
 	}
 
 	/**
-	 * Enumerate a standard binary output
+	 * Enumerates a standard binary output
 	 * @param SubmitButton $button Submit button
 	 */
 	public function enumerate(SubmitButton $button): void {
@@ -99,7 +99,7 @@ class StandardBinaryOutputFormFactory {
 	}
 
 	/**
-	 * Get output's state of a standard binary output
+	 * Gets output's state of a standard binary output
 	 * @param SubmitButton $button Submit button
 	 */
 	public function get(SubmitButton $button): void {
@@ -113,7 +113,7 @@ class StandardBinaryOutputFormFactory {
 	}
 
 	/**
-	 * Set output's state of a standard binary output
+	 * Sets output's state of a standard binary output
 	 * @param SubmitButton $button Submit button
 	 */
 	public function set(SubmitButton $button): void {

@@ -30,7 +30,7 @@ use Ublaboo\DataGrid\Exception\DataGridColumnStatusException;
 use Ublaboo\DataGrid\Exception\DataGridException;
 
 /**
- * Render an user data grid
+ * User data grid
  */
 class UserDataGridFactory {
 
@@ -62,7 +62,7 @@ class UserDataGridFactory {
 	}
 
 	/**
-	 * Create user data grid
+	 * Creates the user data grid
 	 * @param UserPresenter $presenter User presenter
 	 * @param string $name Data grid's component name
 	 * @return DataGrid User data grid
@@ -93,7 +93,7 @@ class UserDataGridFactory {
 	}
 
 	/**
-	 * Change user's role
+	 * Changes user's role
 	 * @param int $id User ID
 	 * @param string $role User's role
 	 */
@@ -120,7 +120,7 @@ class UserDataGridFactory {
 	}
 
 	/**
-	 * Change user's language
+	 * Changes user's language
 	 * @param int $id User ID
 	 * @param string $language User's language
 	 */

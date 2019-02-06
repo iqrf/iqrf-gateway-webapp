@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\IqrfNetModule\Models;
 
+use App\IqrfNetModule\Entities\StandardLight;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Exceptions\UserErrorException;
@@ -55,9 +56,9 @@ class StandardLightManager {
 	}
 
 	/**
-	 * Enumerate device
+	 * Enumerates a IQRF Standard light device
 	 * @param int $address Network device address
-	 * @return mixed[] DPA request and response
+	 * @return mixed[] API request and response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws UserErrorException
@@ -79,10 +80,10 @@ class StandardLightManager {
 	}
 
 	/**
-	 * Set a power of the lights
+	 * Sets a power of the lights
 	 * @param int $address Network device address
-	 * @param StandardLight[] $lights Lights
-	 * @return mixed[] DPA request and response
+	 * @param StandardLight[] $lights Array of IQRF Standard light entities
+	 * @return mixed[] API request and response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws JsonException
@@ -101,21 +102,16 @@ class StandardLightManager {
 				'returnVerbose' => true,
 			],
 		];
-		/**
-		 * @var StandardLight $light Standard light
-		 */
-		foreach ($lights as $light) {
-			$array['data']['req']['param']['lights'][] = $light->toArray();
-		}
+		$this->convertEntityToArray($array, $lights);
 		$this->request->setRequest($array);
 		return $this->wsClient->sendSync($this->request);
 	}
 
 	/**
-	 * Get power of the lights
+	 * Gets power of the lights
 	 * @param int $address Network device address
-	 * @param StandardLight[] $lights Indexes of lights
-	 * @return mixed[] DPA request and response
+	 * @param StandardLight[] $lights Array of IQRF Standard light entities
+	 * @return mixed[] API request and response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws JsonException
@@ -132,10 +128,10 @@ class StandardLightManager {
 	}
 
 	/**
-	 * Increment power of the lights
+	 * Increments power of the lights
 	 * @param int $address Network device address
-	 * @param StandardLight[] $lights Incremented power of lights
-	 * @return mixed[] DPA request and response
+	 * @param StandardLight[] $lights Array of IQRF Standard light entities
+	 * @return mixed[] API request and response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws JsonException
@@ -154,21 +150,16 @@ class StandardLightManager {
 				'returnVerbose' => true,
 			],
 		];
-		/**
-		 * @var StandardLight $light Standard light
-		 */
-		foreach ($lights as $light) {
-			$array['data']['req']['param']['lights'][] = $light->toArray();
-		}
+		$this->convertEntityToArray($array, $lights);
 		$this->request->setRequest($array);
 		return $this->wsClient->sendSync($this->request);
 	}
 
 	/**
-	 * Decrement power of the lights
+	 * Decrements power of the lights
 	 * @param int $address Network device address
-	 * @param StandardLight[] $lights Decremented power of lights
-	 * @return mixed[] DPA request and response
+	 * @param StandardLight[] $lights Array of IQRF Standard light entities
+	 * @return mixed[] API request and response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws JsonException
@@ -187,14 +178,23 @@ class StandardLightManager {
 				'returnVerbose' => true,
 			],
 		];
+		$this->convertEntityToArray($array, $lights);
+		$this->request->setRequest($array);
+		return $this->wsClient->sendSync($this->request);
+	}
+
+	/**
+	 * Converts IQRF Standard light entities to arrays
+	 * @param mixed[] $request API request
+	 * @param StandardLight[] $lights Array of IQRF Standard light entities
+	 */
+	private function convertEntityToArray(array &$request, array $lights): void {
 		/**
 		 * @var StandardLight $light Standard light
 		 */
 		foreach ($lights as $light) {
-			$array['data']['req']['param']['lights'][] = $light->toArray();
+			$request['data']['req']['param']['lights'][] = $light->toArray();
 		}
-		$this->request->setRequest($array);
-		return $this->wsClient->sendSync($this->request);
 	}
 
 }

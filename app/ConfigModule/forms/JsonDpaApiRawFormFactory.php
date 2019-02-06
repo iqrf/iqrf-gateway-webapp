@@ -33,7 +33,7 @@ class JsonDpaApiRawFormFactory extends GenericConfigFormFactory {
 	use SmartObject;
 
 	/**
-	 * Create JSON Raw API configuration form
+	 * Creates the JSON Raw API configuration form
 	 * @param JsonRawApiPresenter $presenter JSON Raw API configuration presenter
 	 * @return Form JSON Raw API configuration form
 	 * @throws JsonException

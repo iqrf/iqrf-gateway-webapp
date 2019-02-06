@@ -29,7 +29,7 @@ use Ublaboo\DataGrid\DataGrid;
 use Ublaboo\DataGrid\Exception\DataGridException;
 
 /**
- * Render a components data grid
+ * Scheduler's tasks data grid
  */
 class SchedulerDataGridFactory {
 
@@ -56,7 +56,7 @@ class SchedulerDataGridFactory {
 	}
 
 	/**
-	 * Create component data grid
+	 * Create scheduler's tasks data grid
 	 * @param SchedulerPresenter $presenter Scheduler's tasks configuration presenter
 	 * @param string $name Data grid's component name
 	 * @return DataGrid Scheduler's tasks data grid

@@ -44,7 +44,7 @@ class UpdaterManager {
 	}
 
 	/**
-	 * Update list of packages
+	 * Updates a list of packages
 	 * @param callable $callback Callback
 	 */
 	public function update(callable $callback): void {
@@ -52,7 +52,7 @@ class UpdaterManager {
 	}
 
 	/**
-	 * Upgrade packages
+	 * Upgrades packages
 	 * @param callable $callback Callback
 	 */
 	public function upgrade(callable $callback): void {
@@ -60,7 +60,7 @@ class UpdaterManager {
 	}
 
 	/**
-	 * Run command in shell
+	 * Runs command in shell
 	 * @param string $cmd Shell command
 	 * @param callable $callback Callback
 	 */

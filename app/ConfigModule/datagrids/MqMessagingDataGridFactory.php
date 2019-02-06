@@ -32,7 +32,7 @@ use Ublaboo\DataGrid\Exception\DataGridColumnStatusException;
 use Ublaboo\DataGrid\Exception\DataGridException;
 
 /**
- * Render a MQ messaging data grid
+ * MQ messaging data grid
  */
 class MqMessagingDataGridFactory {
 
@@ -64,7 +64,7 @@ class MqMessagingDataGridFactory {
 	}
 
 	/**
-	 * Create MQ messaging data grid
+	 * Creates the MQ messaging data grid
 	 * @param MqPresenter $presenter MQ interface configuration presenter
 	 * @param string $name Data grid's component name
 	 * @return DataGrid MQ messaging data grid
@@ -96,9 +96,9 @@ class MqMessagingDataGridFactory {
 	}
 
 	/**
-	 * Change status of the async messaging
+	 * Changes status of the asynchronous messaging
 	 * @param int $id Component ID
-	 * @param bool $status New async messaging status
+	 * @param bool $status New asynchronous messaging status
 	 * @throws JsonException
 	 */
 	public function changeAsyncMsg(int $id, bool $status): void {

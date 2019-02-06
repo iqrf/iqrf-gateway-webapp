@@ -47,7 +47,7 @@ class IqmeshPresenter extends GenericPresenter {
 	}
 
 	/**
-	 * Hide presenter
+	 * Temporary hides the presenter
 	 * @throws BadRequestException
 	 */
 	protected function startup(): void {
@@ -56,7 +56,7 @@ class IqmeshPresenter extends GenericPresenter {
 	}
 
 	/**
-	 * Create IQRF OTA upload service form
+	 * Creates the IQRF OTA upload service form
 	 * @return Form IQRF OTA upload service form
 	 * @throws JsonException
 	 */

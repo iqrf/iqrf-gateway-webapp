@@ -32,7 +32,7 @@ use Ublaboo\DataGrid\Exception\DataGridColumnStatusException;
 use Ublaboo\DataGrid\Exception\DataGridException;
 
 /**
- * Render a MQTT messaging data grid
+ * MQTT messaging data grid
  */
 class MqttMessagingDataGridFactory {
 
@@ -64,7 +64,7 @@ class MqttMessagingDataGridFactory {
 	}
 
 	/**
-	 * Create MQTT messaging data grid
+	 * Creates the MQTT messaging data grid
 	 * @param MqttPresenter $presenter MQTT interface configuration presenter
 	 * @param string $name Data grid's component name
 	 * @return DataGrid MQTT messaging data grid
@@ -103,9 +103,9 @@ class MqttMessagingDataGridFactory {
 	}
 
 	/**
-	 * Change status of the async messaging
+	 * Changes the status of the asynchronous messaging
 	 * @param int $id Component ID
-	 * @param bool $status New async messaging status
+	 * @param bool $status New asynchronous messaging status
 	 * @throws JsonException
 	 */
 	public function changeAsyncMsg(int $id, bool $status): void {
@@ -113,8 +113,8 @@ class MqttMessagingDataGridFactory {
 	}
 
 	/**
-	 * Change configuration
-	 * @param int $id ID
+	 * Changes the MQTT messaging configuration
+	 * @param int $id MQTT messaging configuration ID
 	 * @param string $key Key to change
 	 * @param mixed $value New value
 	 * @throws JsonException
@@ -140,7 +140,7 @@ class MqttMessagingDataGridFactory {
 	}
 
 	/**
-	 * Change status of TLS support
+	 * Changes the status of TLS support
 	 * @param int $id Component ID
 	 * @param bool $status New TLS support
 	 * @throws JsonException

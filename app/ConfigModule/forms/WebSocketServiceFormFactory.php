@@ -33,8 +33,8 @@ class WebSocketServiceFormFactory extends GenericConfigFormFactory {
 	use SmartObject;
 
 	/**
-	 * Create WebSocket service configuration form
-	 * @param WebsocketPresenter $presenter WebSocket interface presenter
+	 * Creates the WebSocket service configuration form
+	 * @param WebsocketPresenter $presenter WebSocket interface configuration presenter
 	 * @return Form WebSocket service configuration form
 	 * @throws JsonException
 	 */

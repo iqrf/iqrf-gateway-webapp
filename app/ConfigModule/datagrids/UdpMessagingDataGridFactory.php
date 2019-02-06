@@ -29,7 +29,7 @@ use Ublaboo\DataGrid\DataGrid;
 use Ublaboo\DataGrid\Exception\DataGridException;
 
 /**
- * Render a UDP messaging data grid
+ * IQRF UDP interface data grid
  */
 class UdpMessagingDataGridFactory {
 
@@ -56,8 +56,8 @@ class UdpMessagingDataGridFactory {
 	}
 
 	/**
-	 * Create UDP messaging data grid
-	 * @param UdpPresenter $presenter UDP configuration presenter
+	 * Create the IQRF UDP messaging data grid
+	 * @param UdpPresenter $presenter IQRF UDP messaging configuration presenter
 	 * @param string $name Data grid's component name
 	 * @return DataGrid UDP messaging data grid
 	 * @throws DataGridException

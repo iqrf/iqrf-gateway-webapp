@@ -33,8 +33,8 @@ class IqrfCdcFormFactory extends GenericConfigFormFactory {
 	use SmartObject;
 
 	/**
-	 * Create IQRF CDC configuration form
-	 * @param IqrfCdcPresenter $presenter IQRF CDC configuration presenter
+	 * Creates the IQRF CDC interface configuration form
+	 * @param IqrfCdcPresenter $presenter IQRF CDC interface configuration presenter
 	 * @return Form IQRF CDC interface configuration form
 	 * @throws JsonException
 	 */

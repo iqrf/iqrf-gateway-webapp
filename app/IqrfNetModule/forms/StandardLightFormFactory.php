@@ -21,10 +21,10 @@ declare(strict_types = 1);
 namespace App\IqrfNetModule\Forms;
 
 use App\CoreModule\Forms\FormFactory;
+use App\IqrfNetModule\Entities\StandardLight;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Exceptions\UserErrorException;
-use App\IqrfNetModule\Models\StandardLight;
 use App\IqrfNetModule\Models\StandardLightManager;
 use App\IqrfNetModule\Presenters\StandardPresenter;
 use Nette\Forms\Controls\SubmitButton;
@@ -65,7 +65,7 @@ class StandardLightFormFactory {
 	}
 
 	/**
-	 * Create IQRF Standard light form
+	 * Creates IQRF Standard light form
 	 * @param StandardPresenter $presenter IQRF Standard presenter
 	 * @return Form IQRF Standard light form
 	 */
@@ -88,7 +88,7 @@ class StandardLightFormFactory {
 	}
 
 	/**
-	 * Enumerate a standard light
+	 * Enumerates a IQRF STandard light device
 	 * @param SubmitButton $button Submit button
 	 */
 	public function enumerate(SubmitButton $button): void {
@@ -102,7 +102,7 @@ class StandardLightFormFactory {
 	}
 
 	/**
-	 * Get a power of IQRF Standard light
+	 * Gets a power of IQRF Standard light
 	 * @param SubmitButton $button Submit button
 	 */
 	public function getPower(SubmitButton $button): void {
@@ -117,7 +117,7 @@ class StandardLightFormFactory {
 	}
 
 	/**
-	 * Set a power of IQRF Standard light
+	 * Sets a power of IQRF Standard light
 	 * @param SubmitButton $button Submit button
 	 */
 	public function setPower(SubmitButton $button): void {
@@ -132,7 +132,7 @@ class StandardLightFormFactory {
 	}
 
 	/**
-	 * Increment a power of IQRF Standard light
+	 * Increments a power of IQRF Standard light
 	 * @param SubmitButton $button Submit button
 	 */
 	public function incrementPower(SubmitButton $button): void {
@@ -147,7 +147,7 @@ class StandardLightFormFactory {
 	}
 
 	/**
-	 * Decrement a power of IQRF Standard light
+	 * Decrements a power of IQRF Standard light
 	 * @param SubmitButton $button Submit button
 	 */
 	public function decrementPower(SubmitButton $button): void {

@@ -44,7 +44,7 @@ class IqrfManager {
 	}
 
 	/**
-	 * Create list of USB CDC interfaces available in the system
+	 * Creates a list of USB CDC interfaces available in the system
 	 * @return string[] USB CDC interfaces available in the system
 	 */
 	public function getCdcInterfaces(): array {
@@ -53,7 +53,7 @@ class IqrfManager {
 	}
 
 	/**
-	 * Create list of interfaces available in the system
+	 * Creates a list of interfaces available in the system
 	 * @param string $command Command to list interfaces
 	 * @return string[] List of interfaces available in the system
 	 */
@@ -69,7 +69,7 @@ class IqrfManager {
 	}
 
 	/**
-	 * Create list of SPI interfaces available in the system
+	 * Creates a list of SPI interfaces available in the system
 	 * @return string[] SPI interfaces available in the system
 	 */
 	public function getSpiInterfaces(): array {
@@ -78,7 +78,7 @@ class IqrfManager {
 	}
 
 	/**
-	 * Create list of UART interfaces available in the system
+	 * Creates a list of UART interfaces available in the system
 	 * @return string[] UART interfaces available in the system
 	 */
 	public function getUartInterfaces(): array {

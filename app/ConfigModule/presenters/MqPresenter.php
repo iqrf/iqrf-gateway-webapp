@@ -41,7 +41,7 @@ class MqPresenter extends GenericPresenter {
 	public $formFactory;
 
 	/**
-	 * @var MqMessagingDataGridFactory MQ messaging configuration data grid factory
+	 * @var MqMessagingDataGridFactory MQ interface data grid factory
 	 * @inject
 	 */
 	public $dataGridFactory;
@@ -56,7 +56,7 @@ class MqPresenter extends GenericPresenter {
 	}
 
 	/**
-	 * Edit MQ interface
+	 * Edits the MQ interface
 	 * @param int $id ID of MQ interface
 	 */
 	public function renderEdit(int $id): void {
@@ -64,7 +64,7 @@ class MqPresenter extends GenericPresenter {
 	}
 
 	/**
-	 * Delete MQ interface
+	 * Deletes the MQ interface
 	 * @param int $id ID of MQ interface
 	 * @throws JsonException
 	 */
@@ -76,9 +76,9 @@ class MqPresenter extends GenericPresenter {
 	}
 
 	/**
-	 * Create MQ messaging data grid
+	 * Creates the MQ interface data grid
 	 * @param string $name Data grid's component name
-	 * @return DataGrid MQ messaging data grid
+	 * @return DataGrid MQ interface data grid
 	 * @throws DataGridColumnStatusException
 	 * @throws DataGridException
 	 * @throws JsonException

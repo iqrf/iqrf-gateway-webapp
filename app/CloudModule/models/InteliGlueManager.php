@@ -68,7 +68,7 @@ class InteliGlueManager implements IManager {
 	}
 
 	/**
-	 * Create MQTT interface
+	 * Creates a new MQTT interface
 	 * @param mixed[] $values Values from form
 	 * @throws GuzzleException
 	 * @throws JsonException
@@ -104,7 +104,7 @@ class InteliGlueManager implements IManager {
 	}
 
 	/**
-	 * Download root CA certificate
+	 * Downloads the root CA certificate
 	 * @throws GuzzleException
 	 */
 	public function downloadCaCertificate(): void {

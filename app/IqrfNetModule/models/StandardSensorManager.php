@@ -20,7 +20,9 @@ declare(strict_types = 1);
 
 namespace App\IqrfNetModule\Models;
 
-use App\IqrfNetModule\Exceptions as IqrfException;
+use App\IqrfNetModule\Exceptions\DpaErrorException;
+use App\IqrfNetModule\Exceptions\EmptyResponseException;
+use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\IqrfNetModule\Requests\ApiRequest;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;
@@ -53,12 +55,12 @@ class StandardSensorManager {
 	}
 
 	/**
-	 * Enumerate a standard sensor
+	 * Enumerates a standard sensor
 	 * @param int $address Network device address
 	 * @return mixed[] API request and response
-	 * @throws IqrfException\DpaErrorException
-	 * @throws IqrfException\EmptyResponseException
-	 * @throws IqrfException\UserErrorException
+	 * @throws DpaErrorException
+	 * @throws EmptyResponseException
+	 * @throws UserErrorException
 	 * @throws JsonException
 	 */
 	public function enumerate(int $address): array {
@@ -77,12 +79,12 @@ class StandardSensorManager {
 	}
 
 	/**
-	 * Read all sensors with types
+	 * Reads all sensors with types
 	 * @param int $address Network device address
 	 * @return mixed[] API request and response
-	 * @throws IqrfException\DpaErrorException
-	 * @throws IqrfException\EmptyResponseException
-	 * @throws IqrfException\UserErrorException
+	 * @throws DpaErrorException
+	 * @throws EmptyResponseException
+	 * @throws UserErrorException
 	 * @throws JsonException
 	 */
 	public function readAll(int $address): array {

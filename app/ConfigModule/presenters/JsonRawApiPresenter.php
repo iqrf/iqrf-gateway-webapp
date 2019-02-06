@@ -46,8 +46,8 @@ class JsonRawApiPresenter extends GenericPresenter {
 	}
 
 	/**
-	 * Create JSON Raw API settings form
-	 * @return Form JSON Raw API settings form
+	 * Creates the JSON Raw API configuration form
+	 * @return Form JSON Raw API configuration form
 	 * @throws JsonException
 	 */
 	protected function createComponentConfigJsonDpaApiRawForm(): Form {

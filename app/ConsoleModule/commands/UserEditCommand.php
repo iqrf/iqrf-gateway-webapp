@@ -56,7 +56,7 @@ class UserEditCommand extends Command {
 	}
 
 	/**
-	 * Configure the command
+	 * Configures the user edit command
 	 */
 	protected function configure(): void {
 		$this->setName('user:edit');
@@ -70,7 +70,7 @@ class UserEditCommand extends Command {
 	}
 
 	/**
-	 * Execute the command
+	 * Executes the user edit command
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
 	 */
@@ -82,7 +82,7 @@ class UserEditCommand extends Command {
 	}
 
 	/**
-	 * Ask for the username
+	 * Asks for the username
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
 	 * @return mixed[] Information about the user
@@ -101,7 +101,7 @@ class UserEditCommand extends Command {
 	}
 
 	/**
-	 * Ask for the user's role
+	 * Asks for the user's role
 	 * @param mixed[] $user Information about the user
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
@@ -119,7 +119,7 @@ class UserEditCommand extends Command {
 	}
 
 	/**
-	 * Ask for the user's language
+	 * Asks for the user's language
 	 * @param mixed[] $user Information about the user
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output

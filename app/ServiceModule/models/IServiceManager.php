@@ -34,25 +34,25 @@ interface IServiceManager {
 	public function __construct(CommandManager $commandManager);
 
 	/**
-	 * Start IQRF Gateway Daemon's service
+	 * Starts IQRF Gateway Daemon's service
 	 * @return string Output from init daemon
 	 */
 	public function start(): string;
 
 	/**
-	 * Stop IQRF Gateway Daemon's service
+	 * Stops IQRF Gateway Daemon's service
 	 * @return string Output from init daemon
 	 */
 	public function stop(): string;
 
 	/**
-	 * Restart IQRF Gateway Daemon's service
+	 * Restarts IQRF Gateway Daemon's service
 	 * @return string Output from init daemon
 	 */
 	public function restart(): string;
 
 	/**
-	 * Get status of IQRF Gateway Daemon's service
+	 * Gets status of IQRF Gateway Daemon's service
 	 * @return string Output from init daemon
 	 */
 	public function getStatus(): string;

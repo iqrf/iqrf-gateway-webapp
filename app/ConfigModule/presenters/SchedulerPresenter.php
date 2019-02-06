@@ -62,7 +62,7 @@ class SchedulerPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Render list tasks in scheduler
+	 * Renders a list of tasks in scheduler
 	 */
 	public function renderDefault(): void {
 		try {
@@ -77,7 +77,7 @@ class SchedulerPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Add task in scheduler
+	 * Adds the task into scheduler
 	 * @param string $type Task's message type
 	 */
 	public function renderAdd(string $type): void {
@@ -85,7 +85,7 @@ class SchedulerPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Edit task in scheduler
+	 * Edits the task in scheduler
 	 * @param int $id ID of task in Scheduler
 	 */
 	public function renderEdit(int $id): void {
@@ -93,7 +93,7 @@ class SchedulerPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Delete task in scheduler
+	 * Deletes the task in scheduler
 	 * @param int $id ID of task in Scheduler
 	 */
 	public function actionDelete(int $id): void {
@@ -111,7 +111,7 @@ class SchedulerPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Create scheduler's tasks data grid
+	 * Creates the scheduler's tasks data grid
 	 * @param string $name Data grid's component name
 	 * @return DataGrid Scheduler's tasks data grid
 	 * @throws DataGridException
@@ -122,7 +122,7 @@ class SchedulerPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Create Edit task form
+	 * Creates the Edit task form
 	 * @return Form Edit task form
 	 * @throws JsonException
 	 */

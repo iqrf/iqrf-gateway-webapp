@@ -99,7 +99,7 @@ class WebsocketPresenter extends GenericPresenter {
 	}
 
 	/**
-	 * Edit WebSocket interface
+	 * Edits the WebSocket interface
 	 * @param int $id ID of WebSocket interface
 	 */
 	public function renderEdit(int $id): void {
@@ -107,7 +107,7 @@ class WebsocketPresenter extends GenericPresenter {
 	}
 
 	/**
-	 * Edit WebSocket messaging
+	 * Edits the WebSocket messaging
 	 * @param int $id ID of WebSocket messaging
 	 */
 	public function renderEditMessaging(int $id): void {
@@ -116,7 +116,7 @@ class WebsocketPresenter extends GenericPresenter {
 	}
 
 	/**
-	 * Edit Websocket service
+	 * Edits the Websocket service
 	 * @param int $id ID of WebSocket service
 	 */
 	public function renderEditService(int $id): void {
@@ -125,7 +125,7 @@ class WebsocketPresenter extends GenericPresenter {
 	}
 
 	/**
-	 * Delete WebSocket interface
+	 * Deletes the WebSocket interface
 	 * @param int $id ID of WebSocket interface
 	 * @throws JsonException
 	 */
@@ -136,7 +136,7 @@ class WebsocketPresenter extends GenericPresenter {
 	}
 
 	/**
-	 * Delete WebSocket messaging
+	 * Deletes the WebSocket messaging
 	 * @param int $id ID of WebSocket messaging
 	 * @throws JsonException
 	 */
@@ -148,7 +148,7 @@ class WebsocketPresenter extends GenericPresenter {
 	}
 
 	/**
-	 * Delete WebSocket service
+	 * Deletes the WebSocket service
 	 * @param int $id ID of WebSocket service
 	 * @throws JsonException
 	 */
@@ -160,7 +160,7 @@ class WebsocketPresenter extends GenericPresenter {
 	}
 
 	/**
-	 * Create WebSocket interfaces data grid
+	 * Creates the WebSocket interfaces data grid
 	 * @param string $name Data grid's component name
 	 * @return DataGrid WebSocket interfaces data grid
 	 * @throws DataGridColumnStatusException
@@ -172,8 +172,8 @@ class WebsocketPresenter extends GenericPresenter {
 	}
 
 	/**
-	 * Create WebSocket interface form
-	 * @return Form WebSocket interface form
+	 * Creates the WebSocket interface configuration form
+	 * @return Form WebSocket interface configuration form
 	 * @throws JsonException
 	 */
 	protected function createComponentConfigWebSocketForm(): Form {
@@ -181,7 +181,7 @@ class WebsocketPresenter extends GenericPresenter {
 	}
 
 	/**
-	 * Create WebSocket messaging data grid
+	 * Creates the WebSocket messaging data grid
 	 * @param string $name Data grid's component name
 	 * @return DataGrid WebSocket messaging data grid
 	 * @throws DataGridColumnStatusException
@@ -193,8 +193,8 @@ class WebsocketPresenter extends GenericPresenter {
 	}
 
 	/**
-	 * Create WebSocket messaging form
-	 * @return Form WebSocket messaging form
+	 * Creates the WebSocket messaging configuration form
+	 * @return Form WebSocket messaging configuration form
 	 * @throws JsonException
 	 */
 	protected function createComponentConfigWebSocketMessagingForm(): Form {
@@ -202,7 +202,7 @@ class WebsocketPresenter extends GenericPresenter {
 	}
 
 	/**
-	 * Create WebSocket service data grid
+	 * Creates the WebSocket service data grid
 	 * @param string $name Data grid's component name
 	 * @return DataGrid WebSocket service data grid
 	 * @throws JsonException
@@ -213,8 +213,8 @@ class WebsocketPresenter extends GenericPresenter {
 	}
 
 	/**
-	 * Create WebSocket service form
-	 * @return Form WebSocket service form
+	 * Creates WebSocket service configuration form
+	 * @return Form WebSocket service configuration form
 	 * @throws JsonException
 	 */
 	protected function createComponentConfigWebSocketServiceForm(): Form {

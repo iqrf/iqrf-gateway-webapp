@@ -20,7 +20,9 @@ declare(strict_types = 1);
 
 namespace App\IqrfNetModule\Models;
 
-use App\IqrfNetModule\Exceptions as IqrfException;
+use App\IqrfNetModule\Exceptions\DpaErrorException;
+use App\IqrfNetModule\Exceptions\EmptyResponseException;
+use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\IqrfNetModule\Requests\ApiRequest;
 use Nette\SmartObject;
 use Nette\Utils\Arrays;
@@ -54,12 +56,12 @@ class TrConfigManager {
 	}
 
 	/**
-	 * Read TR's configuration
+	 * Reads TR's configuration
 	 * @param int $address Device address to read the configuration from
-	 * @return mixed[] DPA request and response
-	 * @throws IqrfException\DpaErrorException
-	 * @throws IqrfException\EmptyResponseException
-	 * @throws IqrfException\UserErrorException
+	 * @return mixed[] API request and response
+	 * @throws DpaErrorException
+	 * @throws EmptyResponseException
+	 * @throws UserErrorException
 	 * @throws JsonException
 	 */
 	public function read(int $address = 0): array {
@@ -78,13 +80,13 @@ class TrConfigManager {
 	}
 
 	/**
-	 * Write TR's configuration
+	 * Writes TR's configuration
 	 * @param int $address Device address to write the configuration to
 	 * @param mixed[] $config New TR configuration
 	 * @return mixed[] DPA request and response
-	 * @throws IqrfException\DpaErrorException
-	 * @throws IqrfException\EmptyResponseException
-	 * @throws IqrfException\UserErrorException
+	 * @throws DpaErrorException
+	 * @throws EmptyResponseException
+	 * @throws UserErrorException
 	 * @throws JsonException
 	 */
 	public function write(int $address = 0, array $config = []): array {

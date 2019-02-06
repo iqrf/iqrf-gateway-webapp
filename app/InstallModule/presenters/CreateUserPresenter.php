@@ -32,14 +32,14 @@ class CreateUserPresenter extends InstallationPresenter {
 	 * @var UserAddFormFactory Create the first webapp's user form
 	 * @inject
 	 */
-	public $userFormFactory;
+	public $form;
 
 	/**
-	 * Create create the first webapp's user form
+	 * Creates the create the first webapp's user form
 	 * @return Form Create the first webapp's user form
 	 */
 	protected function createComponentCreateUserForm(): Form {
-		return $this->userFormFactory->create($this);
+		return $this->form->create($this);
 	}
 
 }

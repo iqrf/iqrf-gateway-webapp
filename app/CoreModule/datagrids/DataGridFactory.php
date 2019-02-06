@@ -46,7 +46,7 @@ class DataGridFactory {
 	}
 
 	/**
-	 * Create a data grid and set the translator
+	 * Creates a data grid and set the translator
 	 * @param BasePresenter $presenter Base presenter
 	 * @param string $name Data grid's component name
 	 * @return DataGrid Data grid

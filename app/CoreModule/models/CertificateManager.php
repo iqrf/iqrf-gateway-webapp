@@ -42,7 +42,7 @@ class CertificateManager {
 	}
 
 	/**
-	 * Check if a private key corresponds to a certificate
+	 * Checks if a private key corresponds to a certificate
 	 * @param string $cert Certificate
 	 * @param string $pKey Private key
 	 * @param string $password Password for private key

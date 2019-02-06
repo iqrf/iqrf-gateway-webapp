@@ -46,9 +46,9 @@ class AzureFormFactory extends CloudFormFactory {
 	}
 
 	/**
-	 * Create MQTT configuration form
-	 * @param AzurePresenter $presenter MS Azure presenter
-	 * @return Form MQTT configuration form
+	 * Creates the Microsoft Azure IoT Hub form
+	 * @param AzurePresenter $presenter Microsoft Azure IoT Hub presenter
+	 * @return Form Microsoft Azure IoT Hub form
 	 */
 	public function create(AzurePresenter $presenter): Form {
 		$this->presenter = $presenter;

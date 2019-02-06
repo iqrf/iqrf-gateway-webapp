@@ -46,9 +46,9 @@ class IbmCloudFormFactory extends CloudFormFactory {
 	}
 
 	/**
-	 * Create MQTT configuration form
+	 * Creates the IBM Cloud form
 	 * @param IbmCloudPresenter $presenter IBM Cloud presenter
-	 * @return Form MQTT configuration form
+	 * @return Form IBM Cloud form
 	 */
 	public function create(IbmCloudPresenter $presenter): Form {
 		$this->presenter = $presenter;

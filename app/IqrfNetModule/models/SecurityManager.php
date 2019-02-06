@@ -21,7 +21,10 @@ declare(strict_types = 1);
 namespace App\IqrfNetModule\Models;
 
 use App\IqrfNetModule\Enums\DataFormat;
-use App\IqrfNetModule\Exceptions as IqrfException;
+use App\IqrfNetModule\Exceptions\DpaErrorException;
+use App\IqrfNetModule\Exceptions\EmptyResponseException;
+use App\IqrfNetModule\Exceptions\UnsupportedInputFormatException;
+use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\IqrfNetModule\Requests\ApiRequest;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;
@@ -55,15 +58,15 @@ class SecurityManager {
 	}
 
 	/**
-	 * Set an access password
+	 * Sets an access password
 	 * @param int $address Network device address
 	 * @param string $password An access password
 	 * @param string $inputFormat Input data format (ASCII or HEX)
-	 * @return mixed[] DPA request and response
-	 * @throws IqrfException\DpaErrorException
-	 * @throws IqrfException\EmptyResponseException
-	 * @throws IqrfException\UnsupportedInputFormatException
-	 * @throws IqrfException\UserErrorException
+	 * @return mixed[] API request and response
+	 * @throws DpaErrorException
+	 * @throws EmptyResponseException
+	 * @throws UnsupportedInputFormatException
+	 * @throws UserErrorException
 	 * @throws JsonException
 	 */
 	public function setAccessPassword(int $address, string $password = '', string $inputFormat = DataFormat::ASCII): array {
@@ -71,15 +74,15 @@ class SecurityManager {
 	}
 
 	/**
-	 * Set an user key
+	 * Sets an user key
 	 * @param int $address Network device address
 	 * @param string $password An user key
 	 * @param string $inputFormat Input data format (ASCII or HEX)
-	 * @return mixed[] DPA request and response
-	 * @throws IqrfException\DpaErrorException
-	 * @throws IqrfException\EmptyResponseException
-	 * @throws IqrfException\UnsupportedInputFormatException
-	 * @throws IqrfException\UserErrorException
+	 * @return mixed[] API request and response
+	 * @throws DpaErrorException
+	 * @throws EmptyResponseException
+	 * @throws UnsupportedInputFormatException
+	 * @throws UserErrorException
 	 * @throws JsonException
 	 */
 	public function setUserKey(int $address, string $password = '', string $inputFormat = DataFormat::ASCII): array {
@@ -87,16 +90,16 @@ class SecurityManager {
 	}
 
 	/**
-	 * Set IQMESH security
+	 * Sets IQMESH security
 	 * @param int $address Network device address
 	 * @param string $password An access password or an user key
 	 * @param string $inputFormat Input data format (ASCII or HEX)
 	 * @param int $type Security type (access password, user key)
-	 * @return mixed[] DPA request and response
-	 * @throws IqrfException\DpaErrorException
-	 * @throws IqrfException\EmptyResponseException
-	 * @throws IqrfException\UnsupportedInputFormatException
-	 * @throws IqrfException\UserErrorException
+	 * @return mixed[] API request and response
+	 * @throws DpaErrorException
+	 * @throws EmptyResponseException
+	 * @throws UnsupportedInputFormatException
+	 * @throws UserErrorException
 	 * @throws JsonException
 	 */
 	private function setSecurity(int $address, string $password, string $inputFormat, int $type): array {
@@ -118,11 +121,11 @@ class SecurityManager {
 	}
 
 	/**
-	 * Convert an access password or an user key to HEX format
+	 * Converts an access password or an user key to HEX format
 	 * @param string $password Access password or user key
 	 * @param string $inputFormat Input data format (ASCII or HEX)
 	 * @return mixed[] Converted an access password or an user key
-	 * @throws IqrfException\UnsupportedInputFormatException
+	 * @throws UnsupportedInputFormatException
 	 */
 	private function convertToHex(string $password, string $inputFormat): array {
 		if ($inputFormat === DataFormat::ASCII) {
@@ -130,7 +133,7 @@ class SecurityManager {
 		} elseif ($inputFormat === DataFormat::HEX) {
 			$data = $password;
 		} else {
-			throw new IqrfException\UnsupportedInputFormatException();
+			throw new UnsupportedInputFormatException();
 		}
 		$array = explode('.', Strings::trim(Strings::lower(chunk_split(Strings::padLeft($data, 32, '0'), 2, '.')), '.'));
 		foreach ($array as &$chunk) {

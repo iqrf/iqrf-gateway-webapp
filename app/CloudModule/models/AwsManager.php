@@ -78,7 +78,7 @@ class AwsManager implements IManager {
 	}
 
 	/**
-	 * Create MQTT interface
+	 * Creates a new MQTT interface
 	 * @param mixed[] $values Values from form
 	 * @throws GuzzleException
 	 * @throws InvalidPrivateKeyForCertificateException
@@ -118,7 +118,7 @@ class AwsManager implements IManager {
 	}
 
 	/**
-	 * Create paths for root CA certificate, certificate and private key
+	 * Creates paths for root CA certificate, certificate and private key
 	 * @return string[] Paths for root CA certificate, certificate and private key
 	 */
 	public function createPaths(): array {
@@ -131,7 +131,7 @@ class AwsManager implements IManager {
 	}
 
 	/**
-	 * Download root CA certificate
+	 * Downloads the root CA certificate
 	 * @throws GuzzleException
 	 */
 	public function downloadCaCertificate(): void {
@@ -141,7 +141,7 @@ class AwsManager implements IManager {
 	}
 
 	/**
-	 * Check a certificate and a private key
+	 * Checks a certificate and a private key
 	 * @param mixed[] $values Form values
 	 * @throws InvalidPrivateKeyForCertificateException
 	 */
@@ -154,7 +154,7 @@ class AwsManager implements IManager {
 	}
 
 	/**
-	 * Upload root CA certificate, certificate and private key
+	 * Uploads root CA certificate, certificate and private key
 	 * @param mixed[] $values Form values
 	 * @param string[] $paths Paths for root CA certificate, certificate and private key
 	 */

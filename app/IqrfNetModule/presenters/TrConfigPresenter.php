@@ -25,7 +25,7 @@ use App\IqrfNetModule\Forms\ChangeAddressFormFactory;
 use Nette\Forms\Form;
 
 /**
- * IQMESH Network Manager - TR security presenter
+ * TR configuration presenter
  */
 class TrConfigPresenter extends ProtectedPresenter {
 
@@ -36,8 +36,8 @@ class TrConfigPresenter extends ProtectedPresenter {
 	public $changeAddressForm;
 
 	/**
-	 * Create change device address form
-	 * @return Form Change device address form
+	 * Create the change a network device address form
+	 * @return Form Change a network device address form
 	 */
 	protected function createComponentIqrfNetAddressForm(): Form {
 		return $this->changeAddressForm->create($this);

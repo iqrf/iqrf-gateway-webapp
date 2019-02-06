@@ -50,7 +50,7 @@ class JsonSchemaManager extends JsonFileManager {
 	}
 
 	/**
-	 * Set file name of JSON schema from the component name
+	 * Sets the file name of JSON schema from the component name
 	 * @param string $component Component name
 	 * @throws NonExistingJsonSchemaException
 	 */
@@ -65,7 +65,7 @@ class JsonSchemaManager extends JsonFileManager {
 	}
 
 	/**
-	 * Set file name of JSON schema from the API message type
+	 * Sets the file name of JSON schema from the API message type
 	 * @param string $mType Message type
 	 * @throws NonExistingJsonSchemaException
 	 */
@@ -80,7 +80,7 @@ class JsonSchemaManager extends JsonFileManager {
 	}
 
 	/**
-	 * Validate JSON
+	 * Validates JSON
 	 * @param mixed $json JSON to validate
 	 * @param bool $tryFix Try fix JSON?
 	 * @return bool Is the JSON valid?

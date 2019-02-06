@@ -67,7 +67,7 @@ class ComponentsFormFactory {
 	}
 
 	/**
-	 * Create components configuration form
+	 * Creates the components configuration form
 	 * @param ComponentPresenter $presenter Component presenter
 	 * @return Form Components configuration form
 	 * @throws JsonException
@@ -93,7 +93,7 @@ class ComponentsFormFactory {
 	}
 
 	/**
-	 * Save component configuration
+	 * Saves the component configuration
 	 * @param Form $form Component configuration form
 	 * @throws JsonException
 	 */

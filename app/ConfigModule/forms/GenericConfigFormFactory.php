@@ -67,7 +67,7 @@ class GenericConfigFormFactory {
 	}
 
 	/**
-	 * Save generic configuration
+	 * Saves the generic configuration
 	 * @param Form $form Configuration form
 	 * @throws JsonException
 	 */

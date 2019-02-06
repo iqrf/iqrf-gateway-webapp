@@ -33,7 +33,7 @@ class IqrfRepositoryFormFactory extends GenericConfigFormFactory {
 	use SmartObject;
 
 	/**
-	 * Create IQRF Repository configuration form
+	 * Creates the IQRF Repository configuration form
 	 * @param IqrfRepositoryPresenter $presenter IQRF Repository configuration presenter
 	 * @return Form IQRF Repository configuration form
 	 * @throws JsonException

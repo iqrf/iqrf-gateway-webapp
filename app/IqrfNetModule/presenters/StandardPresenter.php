@@ -77,7 +77,7 @@ class StandardPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Create IQRF Standard binary output form
+	 * Creates the IQRF Standard binary output form
 	 * @return Form IQRF Standard binary output form
 	 */
 	protected function createComponentBinaryOutputForm(): Form {
@@ -85,7 +85,7 @@ class StandardPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Create IQRF Standard light form
+	 * Creates the IQRF Standard light form
 	 * @return Form IQRF Standard light form
 	 */
 	protected function createComponentLightForm(): Form {
@@ -93,7 +93,7 @@ class StandardPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Create IQRF Standard sensor form
+	 * Creates the IQRF Standard sensor form
 	 * @return Form IQRF Standard sensor form
 	 */
 	protected function createComponentSensorForm(): Form {

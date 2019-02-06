@@ -36,8 +36,8 @@ class InteliGluePresenter extends ProtectedPresenter {
 	public $formFactory;
 
 	/**
-	 * Create MQTT interface form
-	 * @return Form MQTT interface form
+	 * Creates the Inteliments InteliGlue form
+	 * @return Form Inteliments InteliGlue form
 	 */
 	protected function createComponentCloudInteliGlueForm(): Form {
 		return $this->formFactory->create($this);

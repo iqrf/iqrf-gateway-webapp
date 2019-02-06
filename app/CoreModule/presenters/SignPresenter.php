@@ -47,7 +47,7 @@ class SignPresenter extends BasePresenter {
 	private $userManager;
 
 	/**
-	 * User sign in
+	 * Signs user in
 	 */
 	public function actionIn(): void {
 		if ($this->user->isLoggedIn()) {
@@ -56,7 +56,7 @@ class SignPresenter extends BasePresenter {
 	}
 
 	/**
-	 * User sign out
+	 * Signs user out
 	 */
 	public function actionOut(): void {
 		if (!$this->user->isLoggedIn()) {
@@ -67,7 +67,7 @@ class SignPresenter extends BasePresenter {
 	}
 
 	/**
-	 * Inject user manager
+	 * Injects the user manager
 	 * @param UserManager $userManager User manager
 	 */
 	public function injectUserManager(UserManager $userManager): void {
@@ -75,7 +75,7 @@ class SignPresenter extends BasePresenter {
 	}
 
 	/**
-	 * Create sign in form
+	 * Creates the sign in form
 	 * @return Form Sign in form
 	 */
 	protected function createComponentSignInForm(): Form {
@@ -83,7 +83,7 @@ class SignPresenter extends BasePresenter {
 	}
 
 	/**
-	 * Start up an base presenter
+	 * Starts up an base presenter
 	 */
 	protected function startup(): void {
 		parent::startup();

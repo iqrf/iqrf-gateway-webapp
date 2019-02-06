@@ -41,7 +41,7 @@ class DmiBoardInfoManager implements IBoardInfoManager {
 	}
 
 	/**
-	 * Gewt board's name from DMI
+	 * Get the board's name from DMI
 	 * @return string|null Board's name
 	 */
 	public function getName(): ?string {

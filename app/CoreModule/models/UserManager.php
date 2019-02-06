@@ -48,7 +48,7 @@ class UserManager {
 	}
 
 	/**
-	 * Change user's password
+	 * Changes the user's password
 	 * @param int $id User ID
 	 * @param string $oldPassword Old password
 	 * @param string $newPassword New password
@@ -63,7 +63,7 @@ class UserManager {
 	}
 
 	/**
-	 * Delete the user
+	 * Deletes the user
 	 * @param int $id User ID
 	 */
 	public function delete(int $id): void {
@@ -71,7 +71,7 @@ class UserManager {
 	}
 
 	/**
-	 * Edit the user
+	 * Edits the user
 	 * @param int $id User ID
 	 * @param string $username New username
 	 * @param string $role New user role
@@ -92,7 +92,7 @@ class UserManager {
 	}
 
 	/**
-	 * Edit rhe user's password
+	 * Edits rhe user's password
 	 * @param int $id User ID
 	 * @param string $password New User's password
 	 */
@@ -102,7 +102,7 @@ class UserManager {
 	}
 
 	/**
-	 * Get information about the user
+	 * Gets information about the user
 	 * @param int $id User ID
 	 * @return mixed[]|null Information about the user or null
 	 */
@@ -115,7 +115,7 @@ class UserManager {
 	}
 
 	/**
-	 * Get all registered users
+	 * Gets all registered users
 	 * @return mixed[] Registered users
 	 */
 	public function getUsers(): array {
@@ -127,7 +127,7 @@ class UserManager {
 	}
 
 	/**
-	 * Register a new user
+	 * Registers a new user
 	 * @param string $username Username
 	 * @param string $password Password
 	 * @param string $role User's role

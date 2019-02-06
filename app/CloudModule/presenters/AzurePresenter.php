@@ -51,15 +51,15 @@ class AzurePresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Create MQTT interface form
-	 * @return Form MQTT interface form
+	 * Creates Microsoft Azure IoT Hub form
+	 * @return Form Microsoft Azure IoT Hub form
 	 */
 	protected function createComponentCloudAzureForm(): Form {
 		return $this->formFactory->create($this);
 	}
 
 	/**
-	 * Render MQTT interface creation form
+	 * Renders guides for Microsoft Azure IoT Hub form
 	 * @throws JsonException
 	 */
 	public function renderDefault(): void {

@@ -27,7 +27,7 @@ use App\IqrfNetModule\Models\DevicesManager;
 use Nette\Forms\Form;
 
 /**
- * IQMESH Network Manager presenter
+ * IQMESH Network manager presenter
  */
 class NetworkPresenter extends ProtectedPresenter {
 
@@ -58,7 +58,7 @@ class NetworkPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Create IQMESH Bonding form
+	 * Creates the IQMESH Bonding form
 	 * @return Form IQMESH Bonding form
 	 */
 	protected function createComponentIqrfNetBondingForm(): Form {
@@ -66,7 +66,7 @@ class NetworkPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Create IQMESH Discovery form
+	 * Creates the IQMESH Discovery form
 	 * @return Form IQMESH Discovery form
 	 */
 	protected function createComponentIqrfNetDiscoveryForm(): Form {
@@ -74,7 +74,7 @@ class NetworkPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Show bonded and discovered devices
+	 * Shows bonded and discovered devices
 	 */
 	public function handleShowNodes(): void {
 		$base = 10;
@@ -84,7 +84,7 @@ class NetworkPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Render default page
+	 * Renders a default page
 	 */
 	public function renderDefault(): void {
 		$base = 10;

@@ -25,14 +25,14 @@ use Nette\Forms\Form;
 use Nette\SmartObject;
 
 /**
- * IQRF TR - DPA configuration form factory
+ * DPA configuration form factory
  */
 class DpaConfigFormFactory extends TrConfigFormFactory {
 
 	use SmartObject;
 
 	/**
-	 * Create DPA configuration form
+	 * Creates DPA configuration form
 	 * @param DpaConfigPresenter $presenter DPA configuration presenter
 	 * @return Form DPA configuration form
 	 */
@@ -51,7 +51,7 @@ class DpaConfigFormFactory extends TrConfigFormFactory {
 	}
 
 	/**
-	 * Add embedded peripherals to the form
+	 * Adds embedded peripherals to the form
 	 * @param Form $form DPA configuration form
 	 */
 	private function addEmbeddedPeripherals(Form &$form): void {

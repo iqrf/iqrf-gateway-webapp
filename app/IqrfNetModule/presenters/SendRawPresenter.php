@@ -31,18 +31,18 @@ use Nette\Forms\Form;
 use Nette\Utils\JsonException;
 
 /**
- * Send raw DPA packet presenter
+ * Send DPA packet presenter
  */
 class SendRawPresenter extends ProtectedPresenter {
 
 	/**
-	 * @var SendRawFormFactory Send raw DPA packet form
+	 * @var SendRawFormFactory Send DPA packet form
 	 * @inject
 	 */
 	public $sendRawFactory;
 
 	/**
-	 * @var DpaRawManager DPA raw request and response manager
+	 * @var DpaRawManager DPA request and response manager
 	 */
 	private $dpaManager;
 
@@ -53,7 +53,7 @@ class SendRawPresenter extends ProtectedPresenter {
 
 	/**
 	 * Constructor
-	 * @param DpaRawManager $manager DPA Raw request and response manager
+	 * @param DpaRawManager $manager DPA request and response manager
 	 */
 	public function __construct(string $fileName, DpaRawManager $manager) {
 		$this->dpaManager = $manager;
@@ -62,7 +62,7 @@ class SendRawPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Render send raw DPA packet page
+	 * Renders a send DPA packet page
 	 */
 	public function renderDefault(): void {
 		$macros = $this->macroParser->read();
@@ -84,8 +84,8 @@ class SendRawPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Create send raw DPA packet form
-	 * @return Form Send raw DPA packet form
+	 * Creates the send DPA packet form
+	 * @return Form Send DPA packet form
 	 */
 	protected function createComponentSendRawForm(): Form {
 		return $this->sendRawFactory->create($this);

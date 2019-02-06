@@ -61,7 +61,7 @@ class IqrfSpiPresenter extends GenericPresenter {
 	}
 
 	/**
-	 * Render IQRF SPI interface configurator
+	 * Renders the IQRF SPI interface configurator
 	 * @throws JsonException
 	 */
 	public function renderDefault(): void {
@@ -70,7 +70,7 @@ class IqrfSpiPresenter extends GenericPresenter {
 	}
 
 	/**
-	 * Create IQRF SPI interface configuration form
+	 * Creates the IQRF SPI interface configuration form
 	 * @return Form IQRF SPI interface configuration form
 	 * @throws JsonException
 	 */

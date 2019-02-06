@@ -51,15 +51,15 @@ class AwsPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Create MQTT interface form
-	 * @return Form MQTT interface form
+	 * Creates MQTT connection into Amazon AWS IoT form
+	 * @return Form MQTT connection into Amazon AWS IoT form
 	 */
 	protected function createComponentCloudAwsForm(): Form {
 		return $this->formFactory->create($this);
 	}
 
 	/**
-	 * Render MQTT interface creation form
+	 * Renders guides for Amazon AWS IoT form
 	 * @throws JsonException
 	 */
 	public function renderDefault(): void {

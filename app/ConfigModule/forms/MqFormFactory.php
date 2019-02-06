@@ -33,8 +33,8 @@ class MqFormFactory extends GenericConfigFormFactory {
 	use SmartObject;
 
 	/**
-	 * Create MQ interface configuration form
-	 * @param MqPresenter $presenter MQ interface presenter
+	 * Creates the MQ interface configuration form
+	 * @param MqPresenter $presenter MQ interface configuration presenter
 	 * @return Form MQ interface configuration form
 	 * @throws JsonException
 	 */

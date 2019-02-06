@@ -64,9 +64,9 @@ class StandardSensorFormFactory {
 	}
 
 	/**
-	 * Create IQRF App send JSON request form
+	 * Creates IQRF Standard sensor form
 	 * @param StandardPresenter $presenter IQRF Standard presenter
-	 * @return Form IQRF App send RAW packet form
+	 * @return Form IQRF Standard sensor form
 	 */
 	public function create(StandardPresenter $presenter): Form {
 		$this->presenter = $presenter;
@@ -80,7 +80,7 @@ class StandardSensorFormFactory {
 	}
 
 	/**
-	 * Enumerate a standard sensor
+	 * Enumerates a IQRF Standard sensor device
 	 * @param SubmitButton $button Submit button
 	 */
 	public function enumerate(SubmitButton $button): void {
@@ -94,7 +94,7 @@ class StandardSensorFormFactory {
 	}
 
 	/**
-	 * Read all sensors with types
+	 * Reads all sensors with types
 	 * @param SubmitButton $button Submit button
 	 */
 	public function readAll(SubmitButton $button): void {

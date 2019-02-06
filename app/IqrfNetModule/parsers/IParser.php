@@ -26,7 +26,7 @@ namespace App\IqrfNetModule\Parsers;
 interface IParser {
 
 	/**
-	 * Parse DPA response
+	 * Parses a DPA response
 	 * @param string $packet DPA packet
 	 * @return mixed[]|null Parsed data os null
 	 */

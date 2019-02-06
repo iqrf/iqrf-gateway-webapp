@@ -46,7 +46,7 @@ class LogPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Render the latest IQRF Gateway Daemon's log
+	 * Renders the latest IQRF Gateway Daemon's log
 	 */
 	public function renderDefault(): void {
 		try {
@@ -57,7 +57,7 @@ class LogPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Download an archive with IQRF Gateway Daemon's logs action
+	 * Downloads an archive with IQRF Gateway Daemon's logs action
 	 */
 	public function actionDownload(): void {
 		try {

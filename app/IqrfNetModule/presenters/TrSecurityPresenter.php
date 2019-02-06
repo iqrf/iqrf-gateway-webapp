@@ -24,7 +24,7 @@ use App\IqrfNetModule\Forms\SecurityFormFactory;
 use Nette\Forms\Form;
 
 /**
- * IQMESH Network Manager - TR security presenter
+ * IQMESH security presenter
  */
 class TrSecurityPresenter extends TrConfigPresenter {
 
@@ -35,7 +35,7 @@ class TrSecurityPresenter extends TrConfigPresenter {
 	public $form;
 
 	/**
-	 * Create IQMESH Security configuration form
+	 * Creates the IQMESH Security configuration form
 	 * @return Form IQMESH Security configuration form
 	 */
 	protected function createComponentIqrfNetSecurityForm(): Form {

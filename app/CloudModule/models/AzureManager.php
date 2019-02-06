@@ -53,7 +53,7 @@ class AzureManager implements IManager {
 	}
 
 	/**
-	 * Create MQTT interface
+	 * Creates a new MQTT interface
 	 * @param mixed[] $values Values from form
 	 * @throws InvalidConnectionStringException
 	 * @throws JsonException
@@ -93,7 +93,7 @@ class AzureManager implements IManager {
 	}
 
 	/**
-	 * Validate MS Azure IoT Hub Connection String for devices
+	 * Validates MS Azure IoT Hub Connection String for devices
 	 * @param string $connectionString MS Azure IoT Hub Connection String
 	 * @throws InvalidConnectionStringException
 	 */
@@ -107,7 +107,7 @@ class AzureManager implements IManager {
 	}
 
 	/**
-	 * Parse Microsoft Azure IoT HUb connection string
+	 * Parses Microsoft Azure IoT Hub connection string
 	 * @param string $connectionString MS Azure IoT Hub Connection string
 	 * @return string[] Values from the connection string
 	 * @throws InvalidConnectionStringException
@@ -127,7 +127,7 @@ class AzureManager implements IManager {
 	}
 
 	/**
-	 * Generate shared access signature token
+	 * Generates the shared access signature token
 	 * @param string $resourceUri URI prefix (by segment) of the endpoints that can be accessed with this token, starting with host name of the IoT hub (no protocol).
 	 * @param string $signingKey Signing key
 	 * @param string|null $policyName The name of the shared access policy to which this token refers. Absent if the token refers to device-registry credentials.

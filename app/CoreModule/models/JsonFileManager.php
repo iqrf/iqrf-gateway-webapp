@@ -40,7 +40,7 @@ class JsonFileManager extends FileManager {
 	}
 
 	/**
-	 * Delete a JSON file
+	 * Deletes the JSON file
 	 * @param string $fileName File name
 	 */
 	public function delete(string $fileName): void {
@@ -48,7 +48,7 @@ class JsonFileManager extends FileManager {
 	}
 
 	/**
-	 * Check if file exists
+	 * Checks if the JSON file exists
 	 * @param string $fileName File name
 	 * @return bool Is file exists?
 	 */
@@ -57,7 +57,7 @@ class JsonFileManager extends FileManager {
 	}
 
 	/**
-	 * Read JSON file and decode JSON to array
+	 * Reads the JSON file and decode it to array
 	 * @param string $fileName File name (without .json)
 	 * @return mixed[] JSON data in array
 	 * @throws JsonException
@@ -68,7 +68,7 @@ class JsonFileManager extends FileManager {
 	}
 
 	/**
-	 * Encode JSON from array and write the JSON file
+	 * Encodes the JSON from array and write into the JSON file
 	 * @param string $name File name (without .json)
 	 * @param mixed $array JSON data in array
 	 * @throws JsonException

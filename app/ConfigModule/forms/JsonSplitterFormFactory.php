@@ -33,8 +33,8 @@ class JsonSplitterFormFactory extends GenericConfigFormFactory {
 	use SmartObject;
 
 	/**
-	 * Create JSON splitter service configuration form
-	 * @param JsonSplitterPresenter $presenter JSON Splitter settings presenter
+	 * Creates the JSON splitter service configuration form
+	 * @param JsonSplitterPresenter $presenter JSON Splitter configuration presenter
 	 * @return Form JSON splitter configuration form
 	 * @throws JsonException
 	 */

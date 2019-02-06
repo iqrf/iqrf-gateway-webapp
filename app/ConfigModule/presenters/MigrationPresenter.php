@@ -67,7 +67,7 @@ class MigrationPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Export a configuration action
+	 * Exports a configuration action
 	 */
 	public function actionExport(): void {
 		try {
@@ -81,7 +81,7 @@ class MigrationPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Export a scheduler's configuration action
+	 * Exports a scheduler's configuration action
 	 */
 	public function actionSchedulerExport(): void {
 		try {
@@ -95,7 +95,7 @@ class MigrationPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Create configuration import form
+	 * Creates the configuration import form
 	 * @return Form Configuration import form
 	 */
 	protected function createComponentConfigImportForm(): Form {
@@ -103,7 +103,7 @@ class MigrationPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Create scheduler's configuration import form
+	 * Creates the scheduler's configuration import form
 	 * @return Form Scheduler's configuration import form
 	 */
 	protected function createComponentConfigSchedulerImportForm(): Form {

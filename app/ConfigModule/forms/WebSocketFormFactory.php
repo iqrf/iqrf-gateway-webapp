@@ -62,8 +62,8 @@ class WebSocketFormFactory {
 	}
 
 	/**
-	 * Create WebSocket interface configuration form
-	 * @param WebsocketPresenter $presenter WebSocket presenter
+	 * Creates the WebSocket interface configuration form
+	 * @param WebsocketPresenter $presenter WebSocket interface configuration presenter
 	 * @return Form WebSocket interface configuration form
 	 * @throws JsonException
 	 */
@@ -88,7 +88,7 @@ class WebSocketFormFactory {
 	}
 
 	/**
-	 * Save WebSocket interface configuration
+	 * Saves the WebSocket interface configuration
 	 * @param Form $form WebSocket interface configuration form
 	 * @throws JsonException
 	 */

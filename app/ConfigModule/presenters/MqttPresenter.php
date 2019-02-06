@@ -41,7 +41,7 @@ class MqttPresenter extends GenericPresenter {
 	public $formFactory;
 
 	/**
-	 * @var MqttMessagingDataGridFactory MQTT messaging configuration data grid factory
+	 * @var MqttMessagingDataGridFactory MQTT interface data grid factory
 	 * @inject
 	 */
 	public $dataGridFactory;
@@ -56,7 +56,7 @@ class MqttPresenter extends GenericPresenter {
 	}
 
 	/**
-	 * Edit MQTT interface
+	 * Edits the MQTT interface
 	 * @param int $id ID of MQTT interface
 	 */
 	public function renderEdit(int $id): void {
@@ -64,7 +64,7 @@ class MqttPresenter extends GenericPresenter {
 	}
 
 	/**
-	 * Delete MQTT interface
+	 * Deletes the MQTT interface
 	 * @param int $id ID of MQTT interface
 	 * @throws JsonException
 	 */
@@ -76,9 +76,9 @@ class MqttPresenter extends GenericPresenter {
 	}
 
 	/**
-	 * Create MQTT messaging data grid
+	 * Creates the MQTT interface data grid
 	 * @param string $name Data grid's component name
-	 * @return DataGrid MQTT messaging data grid
+	 * @return DataGrid MQTT interface data grid
 	 * @throws DataGridColumnStatusException
 	 * @throws DataGridException
 	 * @throws JsonException
@@ -88,7 +88,7 @@ class MqttPresenter extends GenericPresenter {
 	}
 
 	/**
-	 * Create MQTT interface configuration form
+	 * Creates the MQTT interface configuration form
 	 * @return Form MQTT interface configuration form
 	 * @throws JsonException
 	 */

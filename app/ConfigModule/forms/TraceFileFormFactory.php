@@ -26,6 +26,9 @@ use Nette\SmartObject;
 use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
 
+/**
+ * Tracer configuration form factory
+ */
 class TraceFileFormFactory extends GenericConfigFormFactory {
 
 	use SmartObject;
@@ -41,7 +44,7 @@ class TraceFileFormFactory extends GenericConfigFormFactory {
 	];
 
 	/**
-	 * Create Tracer configuration form
+	 * Creates the Tracer configuration form
 	 * @param TracerPresenter $presenter Tracer configuration presenter
 	 * @return Form Tracer configuration form
 	 */
@@ -73,7 +76,7 @@ class TraceFileFormFactory extends GenericConfigFormFactory {
 	}
 
 	/**
-	 * Load tracer configuration
+	 * Loads the tracer configuration
 	 * @return mixed[] Tracer configuration
 	 */
 	private function load(): array {

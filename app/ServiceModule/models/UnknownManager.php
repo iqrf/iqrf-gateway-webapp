@@ -40,7 +40,7 @@ class UnknownManager implements IServiceManager {
 	}
 
 	/**
-	 * Start IQRF Gateway Daemon
+	 * Starts IQRF Gateway Daemon
 	 * @throws NotSupportedInitSystemException
 	 */
 	public function start(): string {
@@ -48,7 +48,7 @@ class UnknownManager implements IServiceManager {
 	}
 
 	/**
-	 * Stop IQRF Gateway Daemon's service
+	 * Stops IQRF Gateway Daemon's service
 	 * @throws NotSupportedInitSystemException
 	 */
 	public function stop(): string {
@@ -56,7 +56,7 @@ class UnknownManager implements IServiceManager {
 	}
 
 	/**
-	 * Restart IQRF Gateway Daemon's service
+	 * Restarts IQRF Gateway Daemon's service
 	 * @throws NotSupportedInitSystemException
 	 */
 	public function restart(): string {
@@ -64,7 +64,7 @@ class UnknownManager implements IServiceManager {
 	}
 
 	/**
-	 * Get status of IQRF Gateway Daemon's service
+	 * Gets status of IQRF Gateway Daemon's service
 	 * @throws NotSupportedInitSystemException
 	 */
 	public function getStatus(): string {

@@ -31,7 +31,7 @@ class CoordinatorParser implements IParser {
 	use SmartObject;
 
 	/**
-	 * Parse DPA Coordinator response
+	 * Parses a DPA Coordinator response
 	 * @param string $packet DPA packet
 	 * @return mixed[]|null Parsed data
 	 */
@@ -54,7 +54,7 @@ class CoordinatorParser implements IParser {
 	}
 
 	/**
-	 * Parse response to DPA Coordinator - "Get bonded nodes" and "Get discovered nodes" request
+	 * Parses a response to DPA Coordinator - "Get bonded nodes" and "Get discovered nodes" request
 	 * @param string $packet DPA packet response
 	 * @return mixed[] Bonded XOR discovered nodes
 	 */
@@ -75,7 +75,7 @@ class CoordinatorParser implements IParser {
 	}
 
 	/**
-	 * Convert bitmap to statuses
+	 * Converts a bitmap to statuses
 	 * @param mixed[] $packet DPA response
 	 * @return mixed[][] Nodes
 	 */
@@ -95,7 +95,7 @@ class CoordinatorParser implements IParser {
 	}
 
 	/**
-	 * Parse response to DPA Coordinator - "Bond node" request
+	 * Parses a response to DPA Coordinator - "Bond node" request
 	 * @param string $packet DPA packet response
 	 * @return mixed[] Bonded node
 	 */

@@ -27,7 +27,7 @@ use App\IqrfNetModule\Models\EnumerationManager;
 use Nette\Utils\JsonException;
 
 /**
- * IQMESH Network manager - device enumeration
+ * IQMESH device enumeration presenter
  */
 class EnumerationPresenter extends ProfilePresenter {
 
@@ -46,7 +46,7 @@ class EnumerationPresenter extends ProfilePresenter {
 	}
 
 	/**
-	 * Enumerate device
+	 * Enumerates a device
 	 * @param int $address Device address
 	 */
 	public function renderDefault(int $address = 0): void {

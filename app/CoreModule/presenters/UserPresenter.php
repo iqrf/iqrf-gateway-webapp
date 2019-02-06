@@ -66,7 +66,7 @@ class UserPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Render form for editing users
+	 * Renders the form for editing users
 	 * @param int $id User ID
 	 */
 	public function renderEdit(int $id): void {
@@ -74,7 +74,7 @@ class UserPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Delete an user
+	 * Deletes an user
 	 * @param int $id User ID
 	 */
 	public function actionDelete(int $id): void {
@@ -90,7 +90,7 @@ class UserPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Create add a new user form
+	 * Creates the add a new user form
 	 * @return Form Add a new user form
 	 */
 	protected function createComponentUserAddForm(): Form {
@@ -98,7 +98,7 @@ class UserPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Create data grid
+	 * Creates the data grid
 	 * @param string $name Component name
 	 * @return DataGrid Datagrid wirh users
 	 * @throws DataGridException
@@ -108,7 +108,7 @@ class UserPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Create edit and existing user form
+	 * Creates the edit an existing user form
 	 * @return Form Edit an existing user form
 	 */
 	protected function createComponentUserEditForm(): Form {

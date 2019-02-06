@@ -64,7 +64,7 @@ class UserEditFormFactory {
 	}
 
 	/**
-	 * Create edit and existing user form
+	 * Creates edit an existing user form
 	 * @param UserPresenter $presenter User manager presenter
 	 * @return Form Edit an existing user form
 	 */
@@ -90,7 +90,7 @@ class UserEditFormFactory {
 	}
 
 	/**
-	 * Save user info
+	 * Saves the user info
 	 * @param Form $form Edit an existing user form
 	 */
 	public function save(Form $form): void {

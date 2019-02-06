@@ -57,7 +57,7 @@ abstract class ProtectedPresenter extends BasePresenter {
 	}
 
 	/**
-	 * Check requirements
+	 * Checks requirements
 	 * @param ClassType|Method $element Element
 	 */
 	public function checkRequirements($element): void {

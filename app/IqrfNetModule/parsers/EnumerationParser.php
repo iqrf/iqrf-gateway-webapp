@@ -30,7 +30,7 @@ class EnumerationParser implements IParser {
 	use SmartObject;
 
 	/**
-	 * Parse DPA Coordinator response
+	 * Parses a DPA Enumeration response
 	 * @param string $packet DPA packet
 	 * @return mixed[]|null Parsed data
 	 */
@@ -49,7 +49,7 @@ class EnumerationParser implements IParser {
 	}
 
 	/**
-	 * Parse response to DPA Peripheral enumeration request
+	 * Parses a response to DPA Peripheral enumeration request
 	 * @param string $packet DPA packet response
 	 * @return mixed[] Parsed peripheral enumeration
 	 * @todo Add parser for User's peripherals
@@ -69,7 +69,7 @@ class EnumerationParser implements IParser {
 	}
 
 	/**
-	 * Get Embedded peripherals from DPA response
+	 * Gets Embedded peripherals from DPA response
 	 * @param string $packet DPA packet response
 	 * @return mixed[] Embedded Peripherals
 	 */

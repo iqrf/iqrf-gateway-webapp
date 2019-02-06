@@ -33,14 +33,14 @@ use Nette\SmartObject;
 use Nette\Utils\JsonException;
 
 /**
- * IQMESH Network security form factory
+ * IQMESH security form factory
  */
 class SecurityFormFactory {
 
 	use SmartObject;
 
 	/**
-	 * @var SecurityManager IQMESH Network security manager
+	 * @var SecurityManager IQMESH security manager
 	 */
 	private $manager;
 
@@ -50,14 +50,14 @@ class SecurityFormFactory {
 	private $factory;
 
 	/**
-	 * @var TrSecurityPresenter IQMESH Network security presenter
+	 * @var TrSecurityPresenter IQMESH security presenter
 	 */
 	private $presenter;
 
 	/**
 	 * Constructor
 	 * @param FormFactory $factory Generic form factory
-	 * @param SecurityManager $manager IQMESH Network security manager
+	 * @param SecurityManager $manager IQMESH security manager
 	 */
 	public function __construct(FormFactory $factory, SecurityManager $manager) {
 		$this->factory = $factory;
@@ -65,9 +65,9 @@ class SecurityFormFactory {
 	}
 
 	/**
-	 * Create IQMESH Access password form
-	 * @param TrSecurityPresenter $presenter IQMESH Network security presenter
-	 * @return Form Get IQMESH Access password/User key form
+	 * Creates IQMESH security form
+	 * @param TrSecurityPresenter $presenter IQMESH security presenter
+	 * @return Form IQMESH security form
 	 */
 	public function create(TrSecurityPresenter $presenter): Form {
 		$this->presenter = $presenter;
@@ -91,7 +91,7 @@ class SecurityFormFactory {
 	}
 
 	/**
-	 * Set IQMESH Access Password
+	 * Sets IQMESH Access Password
 	 * @param SubmitButton $button Submit button for setting Access Password
 	 */
 	public function accessPassword(SubmitButton $button): void {
@@ -106,7 +106,7 @@ class SecurityFormFactory {
 	}
 
 	/**
-	 * Set IQMESH User Key
+	 * Sets IQMESH User Key
 	 * @param SubmitButton $button Submit button for setting User Key
 	 */
 	public function userKey(SubmitButton $button): void {

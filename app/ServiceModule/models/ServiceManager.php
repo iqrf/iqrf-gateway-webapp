@@ -58,7 +58,7 @@ class ServiceManager {
 	}
 
 	/**
-	 * Start IQRF Gateway Daemon's service
+	 * Starts IQRF Gateway Daemon's service
 	 * @return string Output from init daemon
 	 * @throws NotSupportedInitSystemException
 	 */
@@ -67,7 +67,7 @@ class ServiceManager {
 	}
 
 	/**
-	 * Stop IQRF Gateway Daemon's service
+	 * Stops IQRF Gateway Daemon's service
 	 * @return string Output from init daemon
 	 * @throws NotSupportedInitSystemException
 	 */
@@ -76,7 +76,7 @@ class ServiceManager {
 	}
 
 	/**
-	 * Restart IQRF Gateway Daemon's service
+	 * Restarts IQRF Gateway Daemon's service
 	 * @return string Output from init daemon
 	 * @throws NotSupportedInitSystemException
 	 */
@@ -85,7 +85,7 @@ class ServiceManager {
 	}
 
 	/**
-	 * Get status of IQRF Gateway Daemon's service
+	 * Gets status of IQRF Gateway Daemon's service
 	 * @return string Output from init daemon
 	 * @throws NotSupportedInitSystemException
 	 */

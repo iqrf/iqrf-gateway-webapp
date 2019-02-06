@@ -94,7 +94,7 @@ class DiagnosticsManager {
 	}
 
 	/**
-	 * Download a diagnostic data
+	 * Downloads a diagnostic data
 	 * @return FileResponse HTTP response with the diagnostic data
 	 * @throws BadRequestException
 	 * @throws JsonException
@@ -120,35 +120,35 @@ class DiagnosticsManager {
 	}
 
 	/**
-	 * Add configuration of IQRF Gateway Daemon
+	 * Adds a configuration of IQRF Gateway Daemon
 	 */
 	public function addConfiguration(): void {
 		$this->zipManager->addFolder($this->confDir, 'configuration');
 	}
 
 	/**
-	 * Add IQRF Gateway Daemon's metadata
+	 * Adds IQRF Gateway Daemon's metadata
 	 */
 	public function addMetadata(): void {
 		$this->zipManager->addFolder($this->cacheDir . '/metaData', 'metaData');
 	}
 
 	/**
-	 * Add scheduler's configuration
+	 * Adds a configuration of IQRF Gateway Daemon's scheduler
 	 */
 	public function addScheduler(): void {
 		$this->zipManager->addFolder($this->cacheDir . '/scheduler', 'scheduler');
 	}
 
 	/**
-	 * Add log of IQRF Gateway daemon
+	 * Adds logs of IQRF Gateway Daemon
 	 */
 	public function addDaemonLog(): void {
 		$this->zipManager->addFolder($this->logDir, 'logs/iqrf-gateway-daemon');
 	}
 
 	/**
-	 * Add information from dmesg command
+	 * Adds information from dmesg command
 	 */
 	public function addDmesg(): void {
 		$output = $this->commandManager->send('dmesg', true);
@@ -156,7 +156,7 @@ class DiagnosticsManager {
 	}
 
 	/**
-	 * Add basic information about the gateway
+	 * Adds basic information about the gateway
 	 * @throws JsonException
 	 */
 	public function addInfo(): void {
@@ -179,7 +179,7 @@ class DiagnosticsManager {
 	}
 
 	/**
-	 * Add information about services
+	 * Adds information about services
 	 */
 	public function addServices(): void {
 		if ($this->commandManager->commandExist('systemctl')) {
@@ -189,7 +189,7 @@ class DiagnosticsManager {
 	}
 
 	/**
-	 * Add information about available SPI interfaces
+	 * Adds information about available SPI interfaces
 	 */
 	public function addSpi(): void {
 		$output = $this->commandManager->send('ls /dev/spidev*', true);
@@ -199,7 +199,7 @@ class DiagnosticsManager {
 	}
 
 	/**
-	 * Add information from lsusb about USB gateways and programmers
+	 * Adds information from lsusb about USB gateways and programmers
 	 */
 	public function addUsb(): void {
 		if ($this->commandManager->commandExist('lsusb')) {
@@ -211,7 +211,7 @@ class DiagnosticsManager {
 	}
 
 	/**
-	 * Add log of IQRF Gateway daemon webapp
+	 * Adds logs of IQRF Gateway Webapp
 	 */
 	public function addWebappLog(): void {
 		$logDir = __DIR__ . '/../../../log/';

@@ -20,7 +20,10 @@ declare(strict_types = 1);
 
 namespace App\IqrfNetModule\Models;
 
-use App\IqrfNetModule\Exceptions as IqrfException;
+use App\IqrfNetModule\Exceptions\DpaErrorException;
+use App\IqrfNetModule\Exceptions\EmptyResponseException;
+use App\IqrfNetModule\Exceptions\InvalidOperationModeException;
+use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\IqrfNetModule\Requests\ApiRequest;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;
@@ -53,19 +56,19 @@ class GwModeManager {
 	}
 
 	/**
-	 * Change IQRF Gateway Daemon's operation mode
+	 * Changes IQRF Gateway Daemon's operation mode
 	 * @param string $mode IQRF Gateway Daemon's operation mode
 	 * @return mixed[] JSON API request and response
-	 * @throws IqrfException\DpaErrorException
-	 * @throws IqrfException\EmptyResponseException
-	 * @throws IqrfException\InvalidOperationModeException
-	 * @throws IqrfException\UserErrorException
+	 * @throws DpaErrorException
+	 * @throws EmptyResponseException
+	 * @throws InvalidOperationModeException
+	 * @throws UserErrorException
 	 * @throws JsonException
 	 */
 	public function changeMode(string $mode): array {
 		$modes = ['forwarding', 'operational', 'service'];
 		if (!in_array($mode, $modes, true)) {
-			throw new IqrfException\InvalidOperationModeException();
+			throw new InvalidOperationModeException();
 		}
 		$array = [
 			'mType' => 'mngDaemon_Mode',

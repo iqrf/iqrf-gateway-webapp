@@ -26,7 +26,7 @@ namespace App\CloudModule\Models;
 interface IManager {
 
 	/**
-	 * Create MQTT interface
+	 * Creates a new MQTT interface
 	 * @param mixed[] $values Form values
 	 */
 	public function createMqttInterface(array $values): void;

@@ -46,7 +46,7 @@ class CommandManager {
 	}
 
 	/**
-	 * Check the existence of a command
+	 * Checks the existence of a command
 	 * @param string $cmd Command
 	 * @return bool Is the command exists?
 	 */
@@ -55,7 +55,7 @@ class CommandManager {
 	}
 
 	/**
-	 * Execute shell command and return output
+	 * Executes shell command and returns output
 	 * @param string $cmd Command to execute
 	 * @param bool $needSudo Is the command need sudo?
 	 * @return string Output

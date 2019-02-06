@@ -39,8 +39,8 @@ class WebSocketMessagingFormFactory extends GenericConfigFormFactory {
 	private $translator;
 
 	/**
-	 * Create WebSocket messaging configuration form
-	 * @param WebsocketPresenter $presenter WebSocket interface presenter
+	 * Creates the WebSocket messaging configuration form
+	 * @param WebsocketPresenter $presenter WebSocket interface configuration presenter
 	 * @return Form WebSocket messaging configuration form
 	 * @throws JsonException
 	 */
@@ -63,7 +63,7 @@ class WebSocketMessagingFormFactory extends GenericConfigFormFactory {
 	}
 
 	/**
-	 * Load a configuration data for the form
+	 * Loads the configuration data for the form
 	 * @param WebsocketPresenter $presenter WebSocket configuration presenter
 	 * @return mixed[] Configuration in an array
 	 * @throws JsonException
@@ -81,7 +81,7 @@ class WebSocketMessagingFormFactory extends GenericConfigFormFactory {
 	}
 
 	/**
-	 * Add the required interfaces into the form
+	 * Adds the required interfaces into the form
 	 * @param Form $form Configuration form
 	 * @param mixed[] $data Configuration data
 	 * @throws JsonException

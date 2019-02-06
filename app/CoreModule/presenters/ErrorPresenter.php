@@ -51,7 +51,7 @@ class ErrorPresenter implements IPresenter {
 	}
 
 	/**
-	 * Run Error presenter
+	 * Runs Error presenter
 	 * @param Request $request HTTP(S) request
 	 * @return ForwardResponse|CallbackResponse
 	 */

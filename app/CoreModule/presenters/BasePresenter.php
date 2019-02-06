@@ -52,7 +52,7 @@ abstract class BasePresenter extends Presenter {
 	}
 
 	/**
-	 * Inject translator service
+	 * Injects the translator service
 	 * @param Translator $translator Translator
 	 */
 	public function injectTranslator(Translator $translator): void {
@@ -60,7 +60,7 @@ abstract class BasePresenter extends Presenter {
 	}
 
 	/**
-	 * Create an template
+	 * Creates an template
 	 * @return ITemplate Template
 	 */
 	public function createTemplate(): ITemplate {

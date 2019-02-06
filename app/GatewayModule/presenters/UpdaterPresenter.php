@@ -43,14 +43,14 @@ class UpdaterPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Handle updating package's cache
+	 * Handles updating package's cache
 	 */
 	public function handleUpdate(): void {
 		$this->manager->update([$this, 'showCommandOutput']);
 	}
 
 	/**
-	 * Handle updating packages
+	 * Handles updating packages
 	 */
 	public function handleUpgrade(): void {
 		$this->manager->upgrade([$this, 'showCommandOutput']);

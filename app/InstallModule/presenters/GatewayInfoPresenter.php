@@ -24,18 +24,18 @@ use App\GatewayModule\Models\InfoManager;
 use Nette\Utils\JsonException;
 
 /**
- * Gateway info presenter
+ * IQRF Gateway info presenter
  */
 class GatewayInfoPresenter extends InstallationPresenter {
 
 	/**
-	 * @var InfoManager GW Info manager
+	 * @var InfoManager IQRF GW Info manager
 	 */
 	private $infoManager;
 
 	/**
 	 * Constructor
-	 * @param InfoManager $infoManager GW Info manager
+	 * @param InfoManager $infoManager IQRF GW Info manager
 	 */
 	public function __construct(InfoManager $infoManager) {
 		$this->infoManager = $infoManager;
@@ -43,7 +43,7 @@ class GatewayInfoPresenter extends InstallationPresenter {
 	}
 
 	/**
-	 * Render default page
+	 * Renders a default page
 	 * @throws JsonException
 	 */
 	public function renderDefault(): void {
@@ -54,7 +54,7 @@ class GatewayInfoPresenter extends InstallationPresenter {
 		$this->template->daemonVersion = $this->infoManager->getDaemonVersion();
 		$this->template->webAppVersion = $this->infoManager->getWebAppVersion();
 		$this->template->gwId = $this->infoManager->getId();
-		$this->template->gwmonId = $this->infoManager->getGwmonId();
+		$this->template->gwmonId = $this->infoManager->getPixlaToken();
 	}
 
 }

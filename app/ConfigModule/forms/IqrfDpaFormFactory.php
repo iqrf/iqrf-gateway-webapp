@@ -33,9 +33,9 @@ class IqrfDpaFormFactory extends GenericConfigFormFactory {
 	use SmartObject;
 
 	/**
-	 * Create IQRF DPA configuration form
+	 * Creates the IQRF DPA configuration form
 	 * @param IqrfDpaPresenter $presenter IQRF DPA configuration presenter
-	 * @return Form IQRF DPA interface configuration form
+	 * @return Form IQRF DPA configuration form
 	 * @throws JsonException
 	 */
 	public function create(IqrfDpaPresenter $presenter): Form {

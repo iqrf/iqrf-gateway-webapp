@@ -78,7 +78,7 @@ class SchedulerMigrationManager {
 	}
 
 	/**
-	 * Download a scheduler's configuration
+	 * Downloads a scheduler's configuration
 	 * @return FileResponse HTTP response with a scheduler's configuration
 	 * @throws BadRequestException
 	 */
@@ -94,7 +94,7 @@ class SchedulerMigrationManager {
 	}
 
 	/**
-	 * Upload a configuration
+	 * Uploads a configuration
 	 * @param mixed[] $formValues Values from form
 	 * @throws InvalidConfigurationFormatException
 	 * @throws NotSupportedInitSystemException
@@ -117,7 +117,7 @@ class SchedulerMigrationManager {
 	}
 
 	/**
-	 * Remove an old scheduler's configuration
+	 * Removes an old scheduler's configuration
 	 */
 	private function removeOldConfiguration(): void {
 		/**

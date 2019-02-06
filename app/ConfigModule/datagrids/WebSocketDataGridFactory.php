@@ -32,7 +32,7 @@ use Ublaboo\DataGrid\Exception\DataGridColumnStatusException;
 use Ublaboo\DataGrid\Exception\DataGridException;
 
 /**
- * Render a WebSocket interface data grid
+ * WebSocket interface data grid
  */
 class WebSocketDataGridFactory {
 
@@ -64,7 +64,7 @@ class WebSocketDataGridFactory {
 	}
 
 	/**
-	 * Create component data grid
+	 * Creates the WebSocket interface data grid
 	 * @param WebsocketPresenter $presenter WebSocket interface configuration presenter
 	 * @param string $name Data grid's component name
 	 * @return DataGrid WebSocket data grid
@@ -94,9 +94,9 @@ class WebSocketDataGridFactory {
 	}
 
 	/**
-	 * Change status of the async messaging
+	 * Changes the status of the asynchronous messaging
 	 * @param int $id Component ID
-	 * @param bool $status New async messaging status
+	 * @param bool $status New asynchronous messaging status
 	 * @throws JsonException
 	 */
 	public function changeAsyncMsg(int $id, bool $status): void {

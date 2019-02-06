@@ -69,7 +69,7 @@ abstract class TrConfigFormFactory {
 	}
 
 	/**
-	 * Load IQRF TR configuration into the form
+	 * Loads IQRF TR configuration into the form
 	 */
 	protected function load(): void {
 		$address = intval($this->presenter->getParameter('address', 0));
@@ -88,7 +88,7 @@ abstract class TrConfigFormFactory {
 	}
 
 	/**
-	 * Write IQRF TR configuration from the form
+	 * Writes IQRF TR configuration from the form
 	 * @param Form $form Set TR configuration form
 	 */
 	public function save(Form $form): void {

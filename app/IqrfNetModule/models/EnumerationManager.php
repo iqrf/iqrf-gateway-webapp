@@ -20,7 +20,9 @@ declare(strict_types = 1);
 
 namespace App\IqrfNetModule\Models;
 
-use App\IqrfNetModule\Exceptions as IqrfException;
+use App\IqrfNetModule\Exceptions\DpaErrorException;
+use App\IqrfNetModule\Exceptions\EmptyResponseException;
+use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\IqrfNetModule\Requests\ApiRequest;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;
@@ -53,12 +55,12 @@ class EnumerationManager {
 	}
 
 	/**
-	 * Enumerate a device
+	 * Enumerates a device
 	 * @param int $address Device address to enumerate
-	 * @return mixed[] DPA request and response
-	 * @throws IqrfException\DpaErrorException
-	 * @throws IqrfException\EmptyResponseException
-	 * @throws IqrfException\UserErrorException
+	 * @return mixed[] API request and response
+	 * @throws DpaErrorException
+	 * @throws EmptyResponseException
+	 * @throws UserErrorException
 	 * @throws JsonException
 	 */
 	public function device(int $address): array {

@@ -68,11 +68,11 @@ class WebSocketClient {
 	}
 
 	/**
-	 * Send IQRF JSON DPA request
-	 * @param ApiRequest $request IQRF JSON DPA request
+	 * Sends IQRF JSON API request
+	 * @param ApiRequest $request IQRF JSON API request
 	 * @param bool $checkStatus Check response status
 	 * @param int $timeout WebSocket client timeout
-	 * @return mixed[] IQRF JSON DPA response
+	 * @return mixed[] IQRF JSON API response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws JsonException
@@ -102,7 +102,7 @@ class WebSocketClient {
 	}
 
 	/**
-	 * Create a connection to WebSocket server
+	 * Creates a connection to WebSocket server
 	 * @param int $timeout WebSocket client timeout
 	 * @return PromiseInterface React promise
 	 */
@@ -113,7 +113,7 @@ class WebSocketClient {
 	}
 
 	/**
-	 * Stop event loop
+	 * Stops event loop
 	 * @param bool $wait Wait to finish
 	 */
 	private function stopSync(bool &$wait): void {
@@ -122,13 +122,13 @@ class WebSocketClient {
 	}
 
 	/**
-	 * Receive a message from WebSocket server
+	 * Receives a message from WebSocket server
 	 * @param Client\WebSocket $connection WebSocket client connection
 	 * @param MessageInterface $message Received message
 	 * @param MessageInterface|null $resolved Stored receive message
 	 * @param bool $wait Wait to finish
 	 * @param int $attempts Attempts to receive
-	 * @param ApiRequest $request IQRF JSON DPA request
+	 * @param ApiRequest $request IQRF JSON API request
 	 * @throws JsonException
 	 */
 	private function receiveSync(WsClient $connection, MessageInterface $message, ?MessageInterface &$resolved, bool &$wait, int &$attempts, ApiRequest $request): void {
@@ -146,7 +146,7 @@ class WebSocketClient {
 	}
 
 	/**
-	 * Check if JSON DPA request and response have got the same message ID
+	 * Checks if JSON DPA request and response have got the same message ID
 	 * @param ApiRequest $request JSON DPA request
 	 * @param MessageInterface $response JSON DPA request
 	 * @return bool Have JSON DPA request and response got the same message ID
@@ -161,11 +161,11 @@ class WebSocketClient {
 	}
 
 	/**
-	 * Parse JSON DPA request and response
+	 * Parses IQRF JSON API request and response
 	 * @param ApiRequest $request JSON DPA request
-	 * @param MessageInterface|null $response JSON DPA response
+	 * @param MessageInterface|null $response IQRF JSON API response
 	 * @param bool $checkStatus Check response status
-	 * @return mixed[] JSON DPA response in an array
+	 * @return mixed[] IQRF JSON API response in an array
 	 * @throws EmptyResponseException
 	 * @throws JsonException
 	 * @throws DpaErrorException

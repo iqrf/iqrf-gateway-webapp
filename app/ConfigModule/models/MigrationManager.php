@@ -96,7 +96,7 @@ class MigrationManager {
 	}
 
 	/**
-	 * Download a configuration
+	 * Downloads a configuration
 	 * @return FileResponse HTTP response with a configuration
 	 * @throws BadRequestException
 	 */
@@ -112,7 +112,7 @@ class MigrationManager {
 	}
 
 	/**
-	 * Upload a configuration
+	 * Uploads a configuration
 	 * @param mixed[] $formValues Values from form
 	 * @throws IncompleteConfigurationException
 	 * @throws InvalidConfigurationFormatException
@@ -144,7 +144,7 @@ class MigrationManager {
 	}
 
 	/**
-	 * Validate JSON configuration files for IQRF Gateway Daemon
+	 * Validates JSON configuration files for IQRF Gateway Daemon
 	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 * @return bool Are JSON files valid?
 	 * @throws JsonException
@@ -172,7 +172,7 @@ class MigrationManager {
 	}
 
 	/**
-	 * Change ownership of directory for JSON configuration files of IQRF Gateway Daemon
+	 * Changes ownership of directory for JSON configuration files of IQRF Gateway Daemon
 	 */
 	private function changeOwner(): void {
 		$posixUser = posix_getpwuid(posix_geteuid());

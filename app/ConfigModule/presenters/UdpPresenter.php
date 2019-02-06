@@ -55,7 +55,7 @@ class UdpPresenter extends GenericPresenter {
 	}
 
 	/**
-	 * Edit UDP interface
+	 * Edits the UDP interface
 	 * @param int $id ID of UDP interface
 	 */
 	public function renderEdit(int $id): void {
@@ -63,7 +63,7 @@ class UdpPresenter extends GenericPresenter {
 	}
 
 	/**
-	 * Delete UDP interface
+	 * Deletes the UDP interface
 	 * @param int $id ID of UDP interface
 	 * @throws JsonException
 	 */
@@ -75,7 +75,7 @@ class UdpPresenter extends GenericPresenter {
 	}
 
 	/**
-	 * Create UDP messaging data grid
+	 * Creates the UDP messaging data grid
 	 * @param string $name Data grid's component name
 	 * @return DataGrid UDP messaging data grid
 	 * @throws DataGridException
@@ -86,7 +86,7 @@ class UdpPresenter extends GenericPresenter {
 	}
 
 	/**
-	 * Create UDP interface configuration form
+	 * Creates the UDP interface configuration form
 	 * @return Form UDP interface configuration form
 	 * @throws JsonException
 	 */

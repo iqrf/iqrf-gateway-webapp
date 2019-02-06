@@ -51,7 +51,7 @@ class ComponentManager implements IConfigManager {
 	}
 
 	/**
-	 * Add new component
+	 * Adds a new component
 	 * @param mixed[] $array Component's settings
 	 * @throws JsonException
 	 */
@@ -62,7 +62,7 @@ class ComponentManager implements IConfigManager {
 	}
 
 	/**
-	 * Delete a component
+	 * Deletes the component
 	 * @param int $id Component ID
 	 * @throws JsonException
 	 */
@@ -74,7 +74,7 @@ class ComponentManager implements IConfigManager {
 	}
 
 	/**
-	 * Load a component from main configuration JSON
+	 * Loads the component from main configuration JSON
 	 * @param int $id Component ID
 	 * @return mixed[] Array for form
 	 * @throws JsonException
@@ -88,7 +88,7 @@ class ComponentManager implements IConfigManager {
 	}
 
 	/**
-	 * Load components from main configuration JSON
+	 * Loads components from main configuration JSON
 	 * @return mixed[] Array for form
 	 * @throws JsonException
 	 */
@@ -102,8 +102,8 @@ class ComponentManager implements IConfigManager {
 	}
 
 	/**
-	 * Save components setting
-	 * @param mixed[] $components Components settings
+	 * Saves the component's configuration
+	 * @param mixed[] $components Component's configuration
 	 * @param int $id Component ID
 	 * @throws JsonException
 	 */

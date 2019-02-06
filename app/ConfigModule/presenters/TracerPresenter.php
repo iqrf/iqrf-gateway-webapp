@@ -28,6 +28,9 @@ use Nette\Utils\JsonException;
 use Ublaboo\DataGrid\DataGrid;
 use Ublaboo\DataGrid\Exception\DataGridException;
 
+/**
+ * Tracer configuration presenter
+ */
 class TracerPresenter extends GenericPresenter {
 
 	/**
@@ -37,7 +40,7 @@ class TracerPresenter extends GenericPresenter {
 	public $formFactory;
 
 	/**
-	 * @var TraceFileDataGridFactory Trace files configuration data grid factory
+	 * @var TraceFileDataGridFactory Tracer configuration data grid factory
 	 * @inject
 	 */
 	public $dataGridFactory;
@@ -52,7 +55,7 @@ class TracerPresenter extends GenericPresenter {
 	}
 
 	/**
-	 * Edit UDP interface
+	 * Edits the tracer configuration
 	 * @param int $id ID of UDP interface
 	 */
 	public function renderEdit(int $id): void {
@@ -60,8 +63,8 @@ class TracerPresenter extends GenericPresenter {
 	}
 
 	/**
-	 * Delete trace file service
-	 * @param int $id ID of trace file service
+	 * Deletes the tracer service
+	 * @param int $id ID of tracer service
 	 * @throws JsonException
 	 */
 	public function actionDelete(int $id): void {
@@ -72,7 +75,7 @@ class TracerPresenter extends GenericPresenter {
 	}
 
 	/**
-	 * Create Tracer form
+	 * Creates the Tracer form
 	 * @return Form Tracer form
 	 */
 	protected function createComponentConfigTracerForm(): Form {
@@ -80,9 +83,9 @@ class TracerPresenter extends GenericPresenter {
 	}
 
 	/**
-	 * Create Trace file data grid
+	 * Creates tracer data grid
 	 * @param string $name Data grid's component name
-	 * @return DataGrid Trace file data grid
+	 * @return DataGrid Tracer data grid
 	 * @throws DataGridException
 	 * @throws JsonException
 	 */

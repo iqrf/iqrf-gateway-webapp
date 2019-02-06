@@ -21,7 +21,9 @@ declare(strict_types = 1);
 namespace App\IqrfNetModule\Models;
 
 use App\IqrfNetModule\Enums\DeviceTypes;
-use App\IqrfNetModule\Exceptions as IqrfException;
+use App\IqrfNetModule\Exceptions\DpaErrorException;
+use App\IqrfNetModule\Exceptions\EmptyResponseException;
+use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\IqrfNetModule\Requests\ApiRequest;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;
@@ -59,11 +61,11 @@ class DevicesManager {
 	}
 
 	/**
-	 * Get bonded devices
-	 * @return mixed[] DPA request and response
-	 * @throws IqrfException\DpaErrorException
-	 * @throws IqrfException\EmptyResponseException
-	 * @throws IqrfException\UserErrorException
+	 * Gets bonded devices
+	 * @return mixed[] API request and response
+	 * @throws DpaErrorException
+	 * @throws EmptyResponseException
+	 * @throws UserErrorException
 	 * @throws JsonException
 	 */
 	public function getBonded(): array {
@@ -82,11 +84,11 @@ class DevicesManager {
 	}
 
 	/**
-	 * Get discovered devices
-	 * @return mixed[] DPA request and response
-	 * @throws IqrfException\DpaErrorException
-	 * @throws IqrfException\EmptyResponseException
-	 * @throws IqrfException\UserErrorException
+	 * Gets discovered devices
+	 * @return mixed[] API request and response
+	 * @throws DpaErrorException
+	 * @throws EmptyResponseException
+	 * @throws UserErrorException
 	 * @throws JsonException
 	 */
 	public function getDiscovered(): array {
@@ -105,7 +107,7 @@ class DevicesManager {
 	}
 
 	/**
-	 * Create an empty table for bonded and discovered devices
+	 * Creates an empty table for bonded and discovered devices
 	 * @param int $base Base
 	 */
 	private function createEmptyTable(int $base): void {
@@ -117,7 +119,7 @@ class DevicesManager {
 	}
 
 	/**
-	 * Fill table with bonded or discovered devices
+	 * Fills table with bonded or discovered devices
 	 * @param int $deviceType Bonded or discovered devices
 	 * @param int $base Base
 	 */
@@ -126,14 +128,14 @@ class DevicesManager {
 			case DeviceTypes::BONDED:
 				try {
 					$devices = $this->getBonded()['response']['data']['rsp']['result']['bondedDevices'] ?? [];
-				} catch (IqrfException\UserErrorException | IqrfException\DpaErrorException | IqrfException\EmptyResponseException | JsonException $e) {
+				} catch (UserErrorException | DpaErrorException | EmptyResponseException | JsonException $e) {
 					$devices = [];
 				}
 				break;
 			case DeviceTypes::DISCOVERED:
 				try {
 					$devices = $this->getDiscovered()['response']['data']['rsp']['result']['discoveredDevices'] ?? [];
-				} catch (IqrfException\UserErrorException | IqrfException\DpaErrorException | IqrfException\EmptyResponseException | JsonException $e) {
+				} catch (UserErrorException | DpaErrorException | EmptyResponseException | JsonException $e) {
 					$devices = [];
 				}
 				break;
@@ -146,7 +148,7 @@ class DevicesManager {
 	}
 
 	/**
-	 * Get table of bonded and discovered devices
+	 * Gets table of bonded and discovered devices
 	 * @param int $base Base
 	 * @return mixed[]|null Table of bonded and discovered devices
 	 */

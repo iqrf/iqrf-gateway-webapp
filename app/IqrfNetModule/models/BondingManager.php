@@ -20,7 +20,9 @@ declare(strict_types = 1);
 
 namespace App\IqrfNetModule\Models;
 
-use App\IqrfNetModule\Exceptions as IqrfException;
+use App\IqrfNetModule\Exceptions\DpaErrorException;
+use App\IqrfNetModule\Exceptions\EmptyResponseException;
+use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\IqrfNetModule\Requests\ApiRequest;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;
@@ -53,12 +55,12 @@ class BondingManager {
 	}
 
 	/**
-	 * Local bond a node
+	 * Bonds a node locally
 	 * @param int $address A requested address for the bonded node. If this parameter equals to 0, then the first free address is assigned to the node.
-	 * @return mixed[] DPA request and response
-	 * @throws IqrfException\DpaErrorException
-	 * @throws IqrfException\EmptyResponseException
-	 * @throws IqrfException\UserErrorException
+	 * @return mixed[] API request and response
+	 * @throws DpaErrorException
+	 * @throws EmptyResponseException
+	 * @throws UserErrorException
 	 * @throws JsonException
 	 */
 	public function bondLocal(int $address = 0): array {
@@ -77,13 +79,13 @@ class BondingManager {
 	}
 
 	/**
-	 * Bond a node via IQRF Smart Connect
-	 * @param int $address Address to bond the device to.
-	 * @param string $code Smart connect code of the device.
-	 * @return mixed[] DPA request and response
-	 * @throws IqrfException\DpaErrorException
-	 * @throws IqrfException\EmptyResponseException
-	 * @throws IqrfException\UserErrorException
+	 * Bonds a node via IQRF Smart Connect
+	 * @param int $address Address to bond the device to
+	 * @param string $code Smart connect code of the device
+	 * @return mixed[] API request and response
+	 * @throws DpaErrorException
+	 * @throws EmptyResponseException
+	 * @throws UserErrorException
 	 * @throws JsonException
 	 */
 	public function bondSmartConnect(int $address, string $code): array {
@@ -103,11 +105,11 @@ class BondingManager {
 	}
 
 	/**
-	 * Clear all bonds
-	 * @return mixed[] DPA request and response
-	 * @throws IqrfException\DpaErrorException
-	 * @throws IqrfException\EmptyResponseException
-	 * @throws IqrfException\UserErrorException
+	 * Clears all bonds
+	 * @return mixed[] API request and response
+	 * @throws DpaErrorException
+	 * @throws EmptyResponseException
+	 * @throws UserErrorException
 	 * @throws JsonException
 	 */
 	public function clearAll(): array {
@@ -115,12 +117,12 @@ class BondingManager {
 	}
 
 	/**
-	 * Re-bond a node
-	 * @param int $address Address of the node to be re-bonded.
-	 * @return mixed[] DPA request and response
-	 * @throws IqrfException\DpaErrorException
-	 * @throws IqrfException\EmptyResponseException
-	 * @throws IqrfException\UserErrorException
+	 * Re-bonds a node
+	 * @param int $address Address of the node to be re-bonded
+	 * @return mixed[] API request and response
+	 * @throws DpaErrorException
+	 * @throws EmptyResponseException
+	 * @throws UserErrorException
 	 * @throws JsonException
 	 */
 	public function rebond(int $address): array {
@@ -140,12 +142,12 @@ class BondingManager {
 	}
 
 	/**
-	 * Remove a bond
-	 * @param int $address Address of the node to be removed.
-	 * @return mixed[] DPA request and response
-	 * @throws IqrfException\DpaErrorException
-	 * @throws IqrfException\EmptyResponseException
-	 * @throws IqrfException\UserErrorException
+	 * Removes a bond
+	 * @param int $address Address of the node to be removed
+	 * @return mixed[] API request and response
+	 * @throws DpaErrorException
+	 * @throws EmptyResponseException
+	 * @throws UserErrorException
 	 * @throws JsonException
 	 */
 	public function remove(int $address): array {

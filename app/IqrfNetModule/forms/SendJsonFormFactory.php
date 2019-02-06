@@ -33,7 +33,7 @@ use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 
 /**
- * Send raw JSON request form factory
+ * Send IQRF JSON request form factory
  */
 class SendJsonFormFactory {
 
@@ -50,12 +50,12 @@ class SendJsonFormFactory {
 	private $jsonSchemaManager;
 
 	/**
-	 * @var SendJsonPresenter IQRF Send raw JSON DPA request presenter
+	 * @var SendJsonPresenter Send IQRF JSON request presenter
 	 */
 	private $presenter;
 
 	/**
-	 * @var DpaRequest JSON DPA request
+	 * @var DpaRequest IQRF JSON API request
 	 */
 	private $request;
 
@@ -68,7 +68,7 @@ class SendJsonFormFactory {
 	 * Constructor
 	 * @param JsonSchemaManager $jsonSchemaManager API JSON schema manager
 	 * @param FormFactory $factory Generic form factory
-	 * @param DpaRequest $request JSON DPA request
+	 * @param DpaRequest $request IQRF JSON API request
 	 * @param WebSocketClient $wsClient WebSocket client
 	 */
 	public function __construct(JsonSchemaManager $jsonSchemaManager, FormFactory $factory, DpaRequest $request, WebSocketClient $wsClient) {
@@ -79,9 +79,9 @@ class SendJsonFormFactory {
 	}
 
 	/**
-	 * Create IQRF App send JSON request form
-	 * @param SendJsonPresenter $presenter IQRF Send JSON request presenter
-	 * @return Form IQRF App send RAW packet form
+	 * Creates Send IQRF JSON request form
+	 * @param SendJsonPresenter $presenter Send IQRF JSON request presenter
+	 * @return Form Send IQRF JSON request form
 	 */
 	public function create(SendJsonPresenter $presenter): Form {
 		$this->presenter = $presenter;
@@ -95,8 +95,8 @@ class SendJsonFormFactory {
 	}
 
 	/**
-	 * Send raw DPA packet
-	 * @param Form $form IQRF App send RAW packet form
+	 * Sends IQRF JSON API request
+	 * @param Form $form Send IQRF JSON request form
 	 */
 	public function onSuccess(Form $form): void {
 		$values = $form->getValues();

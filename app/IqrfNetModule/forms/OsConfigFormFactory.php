@@ -26,16 +26,16 @@ use Nette\Forms\Form;
 use Nette\SmartObject;
 
 /**
- * IQRF TR - IQRF OS configuration form factory
+ * IQRF OS configuration form factory
  */
 class OsConfigFormFactory extends TrConfigFormFactory {
 
 	use SmartObject;
 
 	/**
-	 * Create IQRF OS configuration tool form
+	 * Creates IQRF OS configuration form
 	 * @param OsConfigPresenter $presenter IQRF OS configuration presenter
-	 * @return Form IQRF OS configuration tool form
+	 * @return Form IQRF OS configuration form
 	 */
 	public function create(OsConfigPresenter $presenter): Form {
 		$this->presenter = $presenter;
@@ -52,7 +52,7 @@ class OsConfigFormFactory extends TrConfigFormFactory {
 	}
 
 	/**
-	 * Add RF configuration to the form
+	 * Adds RF configuration to the form
 	 * @param Form $form IQRF OS configuration form
 	 */
 	private function addRfConfiguration(Form &$form): void {
@@ -91,7 +91,7 @@ class OsConfigFormFactory extends TrConfigFormFactory {
 	}
 
 	/**
-	 * Add RFPGM configuration to the form
+	 * Adds RFPGM configuration to the form
 	 * @param Form $form IQRF OS configuration form
 	 */
 	private function addRfpgwConfiguration(Form &$form): void {
@@ -108,7 +108,7 @@ class OsConfigFormFactory extends TrConfigFormFactory {
 	}
 
 	/**
-	 * Set rules for RF channel input
+	 * Sets rules for RF channel input
 	 * @param TextInput $input RF channel input
 	 */
 	private function setRfChannelRule(TextInput $input): void {

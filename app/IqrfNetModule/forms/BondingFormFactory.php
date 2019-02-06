@@ -48,7 +48,7 @@ class BondingFormFactory {
 	private $factory;
 
 	/**
-	 * @var NetworkPresenter IQMESH Network presenter
+	 * @var NetworkPresenter IQMESH Network manager presenter
 	 */
 	private $presenter;
 
@@ -63,8 +63,8 @@ class BondingFormFactory {
 	}
 
 	/**
-	 * Create IQMESH bonding form
-	 * @param NetworkPresenter $presenter IQMESH Network presenter
+	 * Creates IQMESH bonding form
+	 * @param NetworkPresenter $presenter IQMESH Network manager presenter
 	 * @return Form IQMESH bonding form
 	 */
 	public function create(NetworkPresenter $presenter): Form {
@@ -106,8 +106,8 @@ class BondingFormFactory {
 	}
 
 	/**
-	 * Bond new node
-	 * @param SubmitButton $button Submit button for bonding
+	 * Bonds a new node
+	 * @param SubmitButton $button Submit button for bonding a new node
 	 */
 	public function bondNode(SubmitButton $button): void {
 		$values = $button->getForm()->getValues();
@@ -128,7 +128,7 @@ class BondingFormFactory {
 	}
 
 	/**
-	 * Clear all bonds
+	 * Clears all bonds
 	 * @param SubmitButton $button Submit button for cleaning all bonds
 	 */
 	public function clearAllBonds(SubmitButton $button): void {
@@ -141,8 +141,8 @@ class BondingFormFactory {
 	}
 
 	/**
-	 * Rebond node
-	 * @param SubmitButton $button Submit button for rebonding
+	 * Rebonds a node
+	 * @param SubmitButton $button Submit button for rebonding a node
 	 */
 	public function rebondNode(SubmitButton $button): void {
 		$values = $button->getForm()->getValues();
@@ -155,8 +155,8 @@ class BondingFormFactory {
 	}
 
 	/**
-	 * Remove node
-	 * @param SubmitButton $button Submit button for removing node
+	 * Removes a node
+	 * @param SubmitButton $button Submit button for removing a node
 	 */
 	public function removeNode(SubmitButton $button): void {
 		$values = $button->getForm()->getValues();

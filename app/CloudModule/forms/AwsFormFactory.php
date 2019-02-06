@@ -46,9 +46,9 @@ class AwsFormFactory extends CloudFormFactory {
 	}
 
 	/**
-	 * Create MQTT configuration form
+	 * Creates the Amazon AWS IoT form
 	 * @param AwsPresenter $presenter Amazon AWS IoT presenter
-	 * @return Form MQTT configuration form
+	 * @return Form Amazon AWS IoT form
 	 */
 	public function create(AwsPresenter $presenter): Form {
 		$this->presenter = $presenter;

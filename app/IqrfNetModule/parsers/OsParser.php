@@ -30,7 +30,7 @@ class OsParser implements IParser {
 	use SmartObject;
 
 	/**
-	 * Parse DPA OS response
+	 * Parses a DPA OS response
 	 * @param string $packet DPA packet
 	 * @return mixed[]|null Parsed data
 	 */
@@ -51,7 +51,7 @@ class OsParser implements IParser {
 	}
 
 	/**
-	 * Parse response to DPA OS - "Read info" request
+	 * Parses a response to DPA OS - "Read info" request
 	 * @param string $packet DPA packet response
 	 * @return mixed[] Information about DCTR module
 	 */
@@ -79,7 +79,7 @@ class OsParser implements IParser {
 	}
 
 	/**
-	 * Parse response to DPA OS - "Read HWP configuration" request
+	 * Parses a response to DPA OS - "Read HWP configuration" request
 	 * @param string $packet DPA packet response
 	 * @return mixed[] HWP configuration
 	 */
@@ -96,7 +96,7 @@ class OsParser implements IParser {
 	}
 
 	/**
-	 * Parse TR configuration
+	 * Parses a TR configuration
 	 * @param mixed[] $config HWP configuration
 	 * @return mixed[] TR configuration
 	 */
@@ -120,7 +120,7 @@ class OsParser implements IParser {
 	}
 
 	/**
-	 * Get RF band from HWP configuration
+	 * Gets a RF band from HWP configuration
 	 * @param string $byte Undocumented byte from HWP configuration
 	 * @return string RF band
 	 */

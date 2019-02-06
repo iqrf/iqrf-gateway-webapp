@@ -33,8 +33,8 @@ class IqrfSpiFormFactory extends GenericConfigFormFactory {
 	use SmartObject;
 
 	/**
-	 * Create IQRF SPI configuration form
-	 * @param IqrfSpiPresenter $presenter IQRF SPI configuration presenter
+	 * Creates the IQRF SPI interface configuration form
+	 * @param IqrfSpiPresenter $presenter IQRF SPI interface configuration presenter
 	 * @return Form IQRF SPI interface configuration form
 	 * @throws JsonException
 	 */

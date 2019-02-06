@@ -86,8 +86,8 @@ class SchedulerFormFactory {
 	}
 
 	/**
-	 * Create Scheduler's task configuration form
-	 * @param SchedulerPresenter $presenter Scheduler presenter
+	 * Creates the Scheduler's task configuration form
+	 * @param SchedulerPresenter $presenter Scheduler configuration presenter
 	 * @return Form Scheduler's task configuration form
 	 */
 	public function create(SchedulerPresenter $presenter): Form {
@@ -125,7 +125,7 @@ class SchedulerFormFactory {
 	}
 
 	/**
-	 * Add message
+	 * Adds the message
 	 * @param Container $task Task container
 	 */
 	private function addMessage(Container $task): void {
@@ -151,7 +151,7 @@ class SchedulerFormFactory {
 	}
 
 	/**
-	 * Add time specification
+	 * Adds the time specification
 	 * @param Form $form Task's configuration form
 	 */
 	private function addTimeSpec(Form $form): void {
@@ -170,7 +170,7 @@ class SchedulerFormFactory {
 	}
 
 	/**
-	 * Add inputs for DPA raw request
+	 * Adds the inputs for DPA raw request
 	 * @param Container $req Form request container
 	 */
 	private function addRaw(Container $req): void {
@@ -178,7 +178,7 @@ class SchedulerFormFactory {
 	}
 
 	/**
-	 * Add inputs for DPA raw HDP request
+	 * Adds the inputs for DPA raw HDP request
 	 * @param Container $req Form request container
 	 */
 	private function addRawHdp(Container $req): void {
@@ -190,7 +190,7 @@ class SchedulerFormFactory {
 	}
 
 	/**
-	 * Load task's settings
+	 * Loads the task's configuration
 	 * @param mixed[] $parameters Presenter's parameters
 	 * @throws JsonException
 	 */
@@ -203,7 +203,7 @@ class SchedulerFormFactory {
 	}
 
 	/**
-	 * Save task's configuration
+	 * Saves the task's configuration
 	 * @param SubmitButton $button Submit button
 	 */
 	public function save(SubmitButton $button): void {
@@ -223,7 +223,7 @@ class SchedulerFormFactory {
 	}
 
 	/**
-	 * Save task's configuration and restart IQRF Gateway Daemon
+	 * Saves the task's configuration and restart IQRF Gateway Daemon
 	 * @param SubmitButton $button Submit button
 	 */
 	public function saveAndRestart(SubmitButton $button): void {

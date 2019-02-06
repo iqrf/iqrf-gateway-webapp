@@ -61,7 +61,7 @@ class UserAddFormFactory {
 	}
 
 	/**
-	 * Create register a new user form
+	 * Creates register a new user form
 	 * @param BasePresenter|CreateUserPresenter|UserPresenter $presenter Base presenter
 	 * @return Form Register a new user form
 	 */
@@ -79,7 +79,7 @@ class UserAddFormFactory {
 	}
 
 	/**
-	 * Add a new user form
+	 * Adds a new user
 	 * @param Form $form Register a new user form
 	 */
 	public function add(Form $form): void {
@@ -99,7 +99,7 @@ class UserAddFormFactory {
 	}
 
 	/**
-	 * Get languages
+	 * Gets languages
 	 * @return string[] Available languages
 	 */
 	private function getLanguages(): array {
@@ -112,7 +112,7 @@ class UserAddFormFactory {
 	}
 
 	/**
-	 * Get user types
+	 * Gets user types
 	 * @return string[] User types
 	 */
 	private function getUserTypes(): array {

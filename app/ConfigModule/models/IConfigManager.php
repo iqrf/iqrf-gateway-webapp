@@ -26,32 +26,32 @@ namespace App\ConfigModule\Models;
 interface IConfigManager {
 
 	/**
-	 * Add a new configuration
+	 * Adds a new configuration
 	 * @param mixed[] $config Configuration to add
 	 */
 	public function add(array $config): void;
 
 	/**
-	 * Delete a configuration
+	 * Deletes a configuration
 	 * @param int $id Configuration ID
 	 */
 	public function delete(int $id): void;
 
 	/**
-	 * List component's configuration
+	 * Lists component's configuration
 	 * @return mixed[] Component's configuration
 	 */
 	public function list(): array;
 
 	/**
-	 * Load component's configuration
+	 * Loads the component's configuration
 	 * @param int $id Configuration ID
 	 * @return mixed[] Configuration
 	 */
 	public function load(int $id): array;
 
 	/**
-	 * Save the configuration
+	 * Saves the configuration
 	 * @param mixed[] $config Configuration to save
 	 * @param int $id Configuration ID
 	 */

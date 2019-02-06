@@ -38,8 +38,8 @@ class IqrfUartFormFactory extends GenericConfigFormFactory {
 	private $baudRates = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400];
 
 	/**
-	 * Create IQRF UART configuration form
-	 * @param IqrfUartPresenter $presenter IQRF UART configuration presenter
+	 * Creates the IQRF UART interface configuration form
+	 * @param IqrfUartPresenter $presenter IQRF UART interfaceconfiguration presenter
 	 * @return Form IQRF UART interface configuration form
 	 * @throws JsonException
 	 */

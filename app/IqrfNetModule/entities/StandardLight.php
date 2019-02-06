@@ -18,57 +18,57 @@
  */
 declare(strict_types = 1);
 
-namespace App\IqrfNetModule\Models;
+namespace App\IqrfNetModule\Entities;
 
 /**
- * IQRF Standard binary output
+ * IQRF Standard light
  */
-class StandardBinaryOutput {
+class StandardLight {
 
 	/**
-	 * @var int Index of the binary output
+	 * @var int Index of the light
 	 */
 	private $index;
 
 	/**
-	 * @var bool State of the binary output
+	 * @var int Power level of the light from range <0;100>
 	 */
-	private $state;
+	private $power;
 
 	/**
 	 * Constructor
-	 * @param int $index Index of the binary output
-	 * @param bool $state State of the binary output
+	 * @param int $index Index of the light
+	 * @param int $power Power level of the light from range <0;100>
 	 */
-	public function __construct(int $index, bool $state) {
+	public function __construct(int $index, int $power) {
 		$this->index = $index;
-		$this->state = $state;
+		$this->power = $power;
 	}
 
 	/**
-	 * Get the binary output's state
-	 * @return bool Binary output's state
+	 * Get a power level of the light
+	 * @return int Power level of the light from range <0;100>
 	 */
-	public function getState(): bool {
-		return $this->state;
+	public function getPower(): int {
+		return $this->power;
 	}
 
 	/**
-	 * Set the binary output's state
-	 * @param bool $state Binary output's state
+	 * Set a power level of the light
+	 * @param int $power Power level of the light from range <0;100>
 	 */
-	public function setState(bool $state): void {
-		$this->state = $state;
+	public function setPower(int $power): void {
+		$this->power = $power;
 	}
 
 	/**
 	 * Convert an object to an array
-	 * @return mixed[] Properties in array
+	 * @return int[] Properties in array
 	 */
 	public function toArray(): array {
 		return [
 			'index' => $this->index,
-			'state' => $this->state,
+			'power' => $this->power,
 		];
 	}
 

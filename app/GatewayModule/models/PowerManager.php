@@ -44,14 +44,14 @@ class PowerManager {
 	}
 
 	/**
-	 * Power off IQRF Gateway
+	 * Powers off IQRF Gateway
 	 */
 	public function powerOff(): void {
 		$this->commandManager->send('poweroff', true);
 	}
 
 	/**
-	 * Reboot IQRF Gateway
+	 * Reboots IQRF Gateway
 	 */
 	public function reboot(): void {
 		$this->commandManager->send('reboot', true);

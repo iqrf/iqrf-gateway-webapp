@@ -20,8 +20,12 @@ declare(strict_types = 1);
 
 namespace App\IqrfNetModule\Models;
 
-use App\IqrfNetModule\Exceptions as IqrfException;
-use App\IqrfNetModule\Parsers as IqrfParser;
+use App\IqrfNetModule\Exceptions\DpaErrorException;
+use App\IqrfNetModule\Exceptions\EmptyResponseException;
+use App\IqrfNetModule\Exceptions\UserErrorException;
+use App\IqrfNetModule\Parsers\CoordinatorParser;
+use App\IqrfNetModule\Parsers\EnumerationParser;
+use App\IqrfNetModule\Parsers\OsParser;
 use App\IqrfNetModule\Requests\DpaRequest;
 use Nette\SmartObject;
 use Nette\Utils\Json;
@@ -49,9 +53,9 @@ class DpaRawManager {
 	 * @var string[] DPA parsers
 	 */
 	private $parsers = [
-		IqrfParser\CoordinatorParser::class,
-		IqrfParser\EnumerationParser::class,
-		IqrfParser\OsParser::class,
+		CoordinatorParser::class,
+		EnumerationParser::class,
+		OsParser::class,
 	];
 
 	/**
@@ -65,13 +69,13 @@ class DpaRawManager {
 	}
 
 	/**
-	 * Send RAW IQRF packet
+	 * Sends RAW IQRF packet
 	 * @param string $packet RAW IQRF packet
 	 * @param int|null $timeout DPA timeout in milliseconds
 	 * @return mixed[] DPA request and response
-	 * @throws IqrfException\DpaErrorException
-	 * @throws IqrfException\EmptyResponseException
-	 * @throws IqrfException\UserErrorException
+	 * @throws DpaErrorException
+	 * @throws EmptyResponseException
+	 * @throws UserErrorException
 	 * @throws JsonException
 	 */
 	public function send(string $packet, ?int $timeout = null): array {
@@ -97,7 +101,7 @@ class DpaRawManager {
 	}
 
 	/**
-	 * Validate DPA packet
+	 * Validates DPA packet
 	 * @param string $packet DPA packet to validate
 	 * @return bool Status
 	 */
@@ -107,7 +111,7 @@ class DpaRawManager {
 	}
 
 	/**
-	 * Update NADR in DPA packet
+	 * Updates NADR in DPA packet
 	 * @param string $packet DPA packet to modify
 	 * @param string $nadr New NADR
 	 */
@@ -119,10 +123,10 @@ class DpaRawManager {
 	}
 
 	/**
-	 * Parse DPA response
+	 * Parses DPA response
 	 * @param mixed[] $json JSON DPA response
 	 * @return mixed[]|null Parsed response in array
-	 * @throws IqrfException\EmptyResponseException
+	 * @throws EmptyResponseException
 	 * @throws JsonException
 	 */
 	public function parseResponse(array $json): ?array {
@@ -134,7 +138,7 @@ class DpaRawManager {
 			}
 		}
 		if ($packet === '') {
-			throw new IqrfException\EmptyResponseException();
+			throw new EmptyResponseException();
 		}
 		foreach ($this->parsers as $parser) {
 			$parsedData = (new $parser())->parse($packet);
@@ -146,7 +150,7 @@ class DpaRawManager {
 	}
 
 	/**
-	 * Get a DPA packet from JSON DPA request and response
+	 * Gets a DPA packet from JSON DPA request and response
 	 * @param mixed[] $json JSON DPA request and response
 	 * @param string $type Data type (request|response)
 	 * @return string DPA packet

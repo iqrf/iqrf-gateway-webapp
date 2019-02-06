@@ -44,7 +44,7 @@ class FileManager {
 	}
 
 	/**
-	 * Return the directory with files
+	 * Returns the directory with files
 	 * @return string Directory with files
 	 */
 	public function getDirectory(): string {
@@ -52,7 +52,7 @@ class FileManager {
 	}
 
 	/**
-	 * Delete the file
+	 * Deletes the file
 	 * @param string $fileName File name
 	 */
 	public function delete(string $fileName): void {
@@ -60,7 +60,7 @@ class FileManager {
 	}
 
 	/**
-	 * Check if the file exists
+	 * Checks if the file exists
 	 * @param string $fileName File name
 	 * @return bool Is file exists?
 	 */
@@ -69,7 +69,7 @@ class FileManager {
 	}
 
 	/**
-	 * Read the file
+	 * Reads the file
 	 * @param string $fileName File name
 	 * @return mixed File content
 	 */
@@ -78,7 +78,7 @@ class FileManager {
 	}
 
 	/**
-	 * Write to the file
+	 * Writes into the file
 	 * @param string $fileName File name
 	 * @param mixed $content File content
 	 */

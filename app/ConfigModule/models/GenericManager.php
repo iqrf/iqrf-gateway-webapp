@@ -67,7 +67,7 @@ class GenericManager {
 	}
 
 	/**
-	 * Delete a configuration
+	 * Deletes a configuration
 	 * @param int $id Configuration ID
 	 * @throws JsonException
 	 */
@@ -79,7 +79,7 @@ class GenericManager {
 	}
 
 	/**
-	 * Get component's instance files
+	 * Gets component's instance files
 	 * @return string[] Files with component's instances
 	 * @throws JsonException
 	 */
@@ -98,7 +98,7 @@ class GenericManager {
 	}
 
 	/**
-	 * List configurations
+	 * Get a list of  configurations
 	 * @return mixed[] Configurations
 	 * @throws JsonException
 	 */
@@ -112,7 +112,7 @@ class GenericManager {
 	}
 
 	/**
-	 * Load a configuration
+	 * Loads the configuration
 	 * @param int $id Configuration ID
 	 * @return mixed[] Configuration in an array
 	 * @throws JsonException
@@ -129,7 +129,7 @@ class GenericManager {
 	}
 
 	/**
-	 * Fix a required interfaces in the configuration
+	 * Fixes the required interfaces in the configuration
 	 * @param mixed[] $configuration Configuration to fix
 	 * @throws JsonException
 	 */
@@ -151,7 +151,7 @@ class GenericManager {
 	}
 
 	/**
-	 * Get an instance file name with the property
+	 * Gets an instance file name with the property
 	 * @param string $type Property type
 	 * @param mixed $value Property value
 	 * @return string|null Instance file name
@@ -170,8 +170,8 @@ class GenericManager {
 	}
 
 	/**
-	 * Save configuration
-	 * @param mixed[] $array Settings
+	 * Saves the configuration
+	 * @param mixed[] $array Configuration in an array
 	 * @throws JsonException
 	 */
 	public function save(array $array): void {
@@ -186,7 +186,7 @@ class GenericManager {
 	}
 
 	/**
-	 * Generate a configuration file name
+	 * Generates a configuration file name
 	 * @param mixed[] $array Configuration from form
 	 */
 	public function generateFileName(array $array): void {
@@ -195,7 +195,7 @@ class GenericManager {
 	}
 
 	/**
-	 * Get file name
+	 * Gets the file name
 	 * @return string File name (without .json)
 	 */
 	public function getFileName(): string {
@@ -203,7 +203,7 @@ class GenericManager {
 	}
 
 	/**
-	 * Set file name
+	 * Sets the file name
 	 * @param string $fileName File name (without .json)
 	 */
 	public function setFileName(string $fileName): void {
@@ -211,7 +211,7 @@ class GenericManager {
 	}
 
 	/**
-	 * Get available messagings
+	 * Gets available messagings
 	 * @return string[][] Available messagings
 	 * @throws JsonException
 	 */
@@ -230,7 +230,7 @@ class GenericManager {
 	}
 
 	/**
-	 * Get available instances of component
+	 * Gets available instances of component
 	 * @param string $component Component
 	 * @return string[] Available instances of component
 	 * @throws JsonException
@@ -248,7 +248,7 @@ class GenericManager {
 	}
 
 	/**
-	 * Set component type
+	 * Sets the component type
 	 * @param string $component Component name
 	 */
 	public function setComponent(string $component): void {

@@ -48,7 +48,7 @@ class DiscoveryFormFactory {
 	private $factory;
 
 	/**
-	 * @var NetworkPresenter IQMESH Network presenter
+	 * @var NetworkPresenter IQMESH Network manager presenter
 	 */
 	private $presenter;
 
@@ -63,8 +63,8 @@ class DiscoveryFormFactory {
 	}
 
 	/**
-	 * Create Discovery form
-	 * @param NetworkPresenter $presenter IQMESH Network presenter
+	 * Creates IQMESH discovery form
+	 * @param NetworkPresenter $presenter IQMESH Network manager presenter
 	 * @return Form IQMESH discovery form
 	 */
 	public function create(NetworkPresenter $presenter): Form {
@@ -84,7 +84,7 @@ class DiscoveryFormFactory {
 	}
 
 	/**
-	 * Run Discovery
+	 * Runs IQMESH discovery
 	 * @param Form $form IQMESH discovery form
 	 * @param ArrayHash $values Values from IQMESH discovery form
 	 */

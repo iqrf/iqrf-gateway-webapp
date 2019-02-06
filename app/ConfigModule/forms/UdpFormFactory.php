@@ -33,8 +33,8 @@ class UdpFormFactory extends GenericConfigFormFactory {
 	use SmartObject;
 
 	/**
-	 * Create UDP interface configuration form
-	 * @param UdpPresenter $presenter UDP interface presenter
+	 * Creates the UDP interface configuration form
+	 * @param UdpPresenter $presenter UDP interface configuration presenter
 	 * @return Form UDP interface configuration form
 	 * @throws JsonException
 	 */
@@ -58,8 +58,8 @@ class UdpFormFactory extends GenericConfigFormFactory {
 	}
 
 	/**
-	 * Save UDP interface configuration
-	 * @param Form $form IDP interface configuration form
+	 * Saves the UDP interface configuration
+	 * @param Form $form UDP interface configuration form
 	 * @throws JsonException
 	 */
 	public function save(Form $form): void {

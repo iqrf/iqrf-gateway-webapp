@@ -74,7 +74,7 @@ class InfoManager {
 	}
 
 	/**
-	 * Get board's vendor, name and version
+	 * Gets board's vendor, name and version
 	 * @return string Board's vendor, name and version
 	 */
 	public function getBoard(): string {
@@ -88,7 +88,7 @@ class InfoManager {
 	}
 
 	/**
-	 * Get gateway ID
+	 * Gets gateway ID
 	 * @return string|null Gateway ID
 	 */
 	public function getId(): ?string {
@@ -105,7 +105,7 @@ class InfoManager {
 	}
 
 	/**
-	 * Get IPv4 and IPv6 addresses of the gateway
+	 * Gets IPv4 and IPv6 addresses of the gateway
 	 * @return string[][] IPv4 and IPv6 addresses
 	 */
 	public function getIpAddresses(): array {
@@ -126,7 +126,7 @@ class InfoManager {
 	}
 
 	/**
-	 * Get MAC addresses of the gateway
+	 * Gets MAC addresses of the gateway
 	 * @return string[] MAC addresses array
 	 */
 	public function getMacAddresses(): array {
@@ -144,8 +144,8 @@ class InfoManager {
 	}
 
 	/**
-	 * Get version of the daemon
-	 * @return string IQRF Daemon version
+	 * Gets version of IQRF Gateway Daemon
+	 * @return string IQRF Gateway Daemon version
 	 */
 	public function getDaemonVersion(): string {
 		$cmd = 'iqrfgd2 version';
@@ -161,7 +161,7 @@ class InfoManager {
 	}
 
 	/**
-	 * Get hostname of the gateway
+	 * Gets a hostname of the gateway
 	 * @return string Hostname
 	 */
 	public function getHostname(): string {
@@ -170,7 +170,7 @@ class InfoManager {
 	}
 
 	/**
-	 * Get information about the Coordinator
+	 * Gets information about the Coordinator
 	 * @return mixed[] Information about the Coordinator
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
@@ -184,7 +184,7 @@ class InfoManager {
 	}
 
 	/**
-	 * Parse RF mode from information about the Coordinator
+	 * Parses RF mode from information about the Coordinator
 	 * @param mixed[] $dpa Information about the Coordinator
 	 */
 	private function parseRfMode(array &$dpa): void {
@@ -211,7 +211,7 @@ class InfoManager {
 	}
 
 	/**
-	 * Get current version of this wab application
+	 * Gets a current version of this wab application
 	 * @return string Version of this web application
 	 * @throws JsonException
 	 */
@@ -220,7 +220,7 @@ class InfoManager {
 	}
 
 	/**
-	 * Get disk usages
+	 * Gets disk usages
 	 * @return string[][] Disk usages
 	 */
 	public function getDiskUsages(): array {
@@ -242,7 +242,7 @@ class InfoManager {
 	}
 
 	/**
-	 * Get memory usage
+	 * Gets a memory usage
 	 * @return string[] Memory usage
 	 */
 	public function getMemoryUsage(): array {
@@ -262,7 +262,7 @@ class InfoManager {
 	}
 
 	/**
-	 * Get swap usage
+	 * Gets a swap usage
 	 * @return string[]|null Swap usage
 	 */
 	public function getSwapUsage(): ?array {
@@ -300,10 +300,10 @@ class InfoManager {
 	}
 
 	/**
-	 * Get gwmon customer ID
-	 * @return string|null Gwmon customer ID
+	 * Gets PIXLA token
+	 * @return string|null PIXLA token
 	 */
-	public function getGwmonId(): ?string {
+	public function getPixlaToken(): ?string {
 		$gwmonId = $this->commandManager->send('cat /etc/gwman/customer_id', true);
 		if ($gwmonId !== '') {
 			return $gwmonId;

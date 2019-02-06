@@ -69,16 +69,18 @@ class VersionManager {
 	}
 
 	/**
-	 * Check if an update is available for the webapp
+	 * Checks if an update is available for the webapp
 	 * @return bool Is available an update for the webapp?
 	 * @throws JsonException
 	 */
 	public function availableWebappUpdate(): bool {
-		return version_compare($this->getInstalledWebapp(false), $this->getCurrentWebapp(), '<');
+		$installedVersion = $this->getInstalledWebapp(false);
+		$currentVersion = $this->getCurrentWebapp();
+		return version_compare($installedVersion, $currentVersion, '<');
 	}
 
 	/**
-	 * Get the installed version of the webapp
+	 * Gets the installed version of the webapp
 	 * @param bool $verbose Is verbose mode enabled?
 	 * @return string Installed version of the webapp
 	 * @throws JsonException
@@ -101,7 +103,7 @@ class VersionManager {
 	}
 
 	/**
-	 * Get the current stable version of the webapp
+	 * Gets the current stable version of the webapp
 	 * @return string Current stable version of the webapp
 	 * @throws JsonException
 	 */

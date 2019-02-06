@@ -51,15 +51,15 @@ class IbmCloudPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Create MQTT interface form
-	 * @return Form MQTT interface form
+	 * Creates the IBM Cloud form
+	 * @return Form IBM Cloud form
 	 */
 	protected function createComponentCloudIbmForm(): Form {
 		return $this->formFactory->create($this);
 	}
 
 	/**
-	 * Render MQTT interface creation form
+	 * Renders guides for IBM Cloud form
 	 * @throws JsonException
 	 */
 	public function renderDefault(): void {

@@ -30,24 +30,24 @@ use Nette\Utils\JsonException;
 use Tracy\Debugger;
 
 /**
- * Gateway Info presenter
+ * IQRF Gateway Info presenter
  */
 class InfoPresenter extends ProtectedPresenter {
 
 	/**
-	 * @var DiagnosticsManager GW Diagnostic manager
+	 * @var DiagnosticsManager IQRF Gateway Diagnostic manager
 	 */
 	private $diagnosticsManager;
 
 	/**
-	 * @var InfoManager GW Info manager
+	 * @var InfoManager IQRF Gateway Info manager
 	 */
 	private $infoManager;
 
 	/**
 	 * Constructor
-	 * @param InfoManager $infoManager GW Info manager
-	 * @param DiagnosticsManager $diagnosticsManager GW Diagnostic manager
+	 * @param InfoManager $infoManager IQRF Gateway Info manager
+	 * @param DiagnosticsManager $diagnosticsManager IQRF Gateway Diagnostic manager
 	 */
 	public function __construct(InfoManager $infoManager, DiagnosticsManager $diagnosticsManager) {
 		$this->diagnosticsManager = $diagnosticsManager;
@@ -56,7 +56,7 @@ class InfoPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Render default page
+	 * Renders IQRF Gateway Info page
 	 * @throws JsonException
 	 */
 	public function renderDefault(): void {
@@ -70,7 +70,7 @@ class InfoPresenter extends ProtectedPresenter {
 		$this->template->memoryUsage = $this->infoManager->getMemoryUsage();
 		$this->template->swapUsage = $this->infoManager->getSwapUsage();
 		$this->template->gwId = $this->infoManager->getId();
-		$this->template->gwmodId = $this->infoManager->getGwmonId();
+		$this->template->gwmodId = $this->infoManager->getPixlaToken();
 		try {
 			$this->template->module = $this->infoManager->getCoordinatorInfo()['response']['data']['rsp'];
 		} catch (DpaErrorException | EmptyResponseException $e) {
@@ -79,7 +79,7 @@ class InfoPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Download action
+	 * Handles download IQRF Gateway Daemon's log action
 	 * @throws JsonException
 	 */
 	public function actionDownload(): void {

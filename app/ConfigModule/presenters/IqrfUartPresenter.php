@@ -61,7 +61,7 @@ class IqrfUartPresenter extends GenericPresenter {
 	}
 
 	/**
-	 * Render IQRF UART interface configurator
+	 * Renders the IQRF UART interface configurator
 	 * @throws JsonException
 	 */
 	public function renderDefault(): void {
@@ -70,7 +70,7 @@ class IqrfUartPresenter extends GenericPresenter {
 	}
 
 	/**
-	 * Create IQRF UART interface configuration form
+	 * Creates the IQRF UART interface configuration form
 	 * @return Form IQRF UART interface configuration form
 	 * @throws JsonException
 	 */

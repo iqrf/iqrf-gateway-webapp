@@ -37,7 +37,7 @@ class ApiRequest {
 	protected $msgIdManager;
 
 	/**
-	 * @var mixed[]|stdClass JSON API request
+	 * @var mixed[]|stdClass IQRF JSON API request
 	 */
 	protected $request;
 
@@ -50,7 +50,7 @@ class ApiRequest {
 	}
 
 	/**
-	 * Add a message ID to the JSON API request
+	 * Adds a message ID to the IQRF JSON API request
 	 */
 	protected function addMsgId(): void {
 		if (is_array($this->request) && !isset($this->request['data']['msgId'])) {
@@ -61,8 +61,8 @@ class ApiRequest {
 	}
 
 	/**
-	 * Set JSON API request
-	 * @param mixed $request JSON API request
+	 * Sets the IQRF JSON API request
+	 * @param mixed $request IQRF JSON API request
 	 */
 	public function setRequest($request): void {
 		if (!is_array($request) && !($request instanceof stdClass)) {
@@ -73,8 +73,8 @@ class ApiRequest {
 	}
 
 	/**
-	 * Convert JSON API request to a array
-	 * @return mixed[] JSON API request
+	 * Converts the IQRF JSON API request to a array
+	 * @return mixed[] IQRF JSON API request
 	 * @throws JsonException
 	 */
 	public function toArray(): array {
@@ -82,7 +82,7 @@ class ApiRequest {
 	}
 
 	/**
-	 * Convert JSON DPA request to JSON string
+	 * Converts the IQRF JSON DPA request to JSON string
 	 * @param bool $pretty Pretty formatted JSON
 	 * @return string JSON string
 	 * @throws JsonException

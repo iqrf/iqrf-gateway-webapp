@@ -24,7 +24,7 @@ use App\IqrfNetModule\Forms\OsConfigFormFactory;
 use Nette\Forms\Form;
 
 /**
- * IQMESH Network Manager - IQRF OS configuration presenter
+ * IQRF OS configuration presenter
  */
 class OsConfigPresenter extends TrConfigPresenter {
 
@@ -35,7 +35,7 @@ class OsConfigPresenter extends TrConfigPresenter {
 	public $form;
 
 	/**
-	 * Create IQRF OS configuration form
+	 * Createa the IQRF OS configuration form
 	 * @return Form IQRF OS configuration form
 	 */
 	protected function createComponentIqrfNetOsForm(): Form {

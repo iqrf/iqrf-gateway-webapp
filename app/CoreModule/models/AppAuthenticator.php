@@ -50,7 +50,7 @@ class AppAuthenticator implements IAuthenticator {
 	}
 
 	/**
-	 * Create the database table
+	 * Creates the database table
 	 * @param Context $database Database context
 	 */
 	private function createTable(Context $database): void {
@@ -64,7 +64,7 @@ class AppAuthenticator implements IAuthenticator {
 	}
 
 	/**
-	 * Authenticate the user
+	 * Authenticates the user
 	 * @param string[] $credentials Authentication credentials
 	 * @return IIdentity Nette Identity
 	 * @throws AuthenticationException

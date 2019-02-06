@@ -42,7 +42,7 @@ abstract class InstallationPresenter extends BasePresenter {
 	}
 
 	/**
-	 * Start up an base presenter
+	 * Starts up an base presenter
 	 */
 	protected function startup(): void {
 		parent::startup();

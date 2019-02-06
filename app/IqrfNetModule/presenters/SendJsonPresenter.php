@@ -26,19 +26,19 @@ use Nette\Forms\Form;
 use Nette\Utils\Json;
 
 /**
- * Send raw JSON DPA request presenter
+ * Send IQRF JSON request presenter
  */
 class SendJsonPresenter extends ProtectedPresenter {
 
 	/**
-	 * @var SendJsonFormFactory Send raw JSON DPA request form
+	 * @var SendJsonFormFactory Send IQRF JSON request form
 	 * @inject
 	 */
 	public $sendJsonFactory;
 
 	/**
-	 * AJAX handler for showing DPA request and response
-	 * @param mixed[] $data DPA request and response
+	 * AJAX handler for showing IQRF JSON API request and response
+	 * @param mixed[] $data IQRF JSON API request and response
 	 */
 	public function handleShowResponse(array $data): void {
 		foreach ($data as &$json) {
@@ -49,8 +49,8 @@ class SendJsonPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Create send raw JSON DPA request form
-	 * @return Form Send raw JSON DPA request form
+	 * Creates the send IQRF JSON API request form
+	 * @return Form Send IQRF JSON API request form
 	 */
 	protected function createComponentSendJsonForm(): Form {
 		return $this->sendJsonFactory->create($this);

@@ -28,7 +28,7 @@ use App\IqrfNetModule\Models\GwModeManager;
 use Nette\Utils\JsonException;
 
 /**
- * Change operational mode presenter
+ * Change IQRF Gateway Daemon's operational mode presenter
  */
 class ChangeModePresenter extends ProtectedPresenter {
 
@@ -47,7 +47,7 @@ class ChangeModePresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Change IQRF Gateway's mode to Forwarding mode
+	 * Changes IQRF Gateway's mode to Forwarding mode
 	 * @throws EmptyResponseException
 	 * @throws InvalidOperationModeException
 	 * @throws JsonException
@@ -57,8 +57,8 @@ class ChangeModePresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Change IQRF Gateway Daemon's mode
-	 * @param string $mode New IQRF Gateway's mode mode
+	 * Changes IQRF Gateway Daemon's mode
+	 * @param string $mode New IQRF Gateway's mode
 	 * @throws EmptyResponseException
 	 * @throws InvalidOperationModeException
 	 * @throws JsonException
@@ -75,7 +75,7 @@ class ChangeModePresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Change IQRF Gateway's mode to Operational mode
+	 * Changes IQRF Gateway's mode to Operational mode
 	 * @throws EmptyResponseException
 	 * @throws InvalidOperationModeException
 	 * @throws JsonException
@@ -85,7 +85,7 @@ class ChangeModePresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Change gateway mode to Service mode
+	 * Changes gateway mode to Service mode
 	 * @throws EmptyResponseException
 	 * @throws InvalidOperationModeException
 	 * @throws JsonException

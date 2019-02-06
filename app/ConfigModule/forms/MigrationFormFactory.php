@@ -65,7 +65,7 @@ class MigrationFormFactory {
 	}
 
 	/**
-	 * Create configuration migration form
+	 * Creates the configuration migration form
 	 * @param MigrationPresenter $presenter Configuration migration presenter
 	 * @return Form Configuration migration form
 	 */
@@ -81,7 +81,7 @@ class MigrationFormFactory {
 	}
 
 	/**
-	 * Import a configuration
+	 * Imports the configuration
 	 * @param Form $form Configuration migration form
 	 * @throws JsonException
 	 */

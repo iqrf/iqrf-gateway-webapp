@@ -51,7 +51,7 @@ class ZipArchiveManager {
 	}
 
 	/**
-	 * Add a file to the ZIP archive using its contents
+	 * Adds a file to the ZIP archive using its contents
 	 * @param string $filename File name
 	 * @param string $content The content of text file
 	 */
@@ -60,7 +60,7 @@ class ZipArchiveManager {
 	}
 
 	/**
-	 * Add a folder to the ZIP archive from the given path
+	 * Adds a folder to the ZIP archive from the given path
 	 * @param string $path The path to the folder to add
 	 * @param string $folderName Folder name in the archive
 	 */
@@ -77,7 +77,7 @@ class ZipArchiveManager {
 	}
 
 	/**
-	 * Add a file to a ZIP archive from the given path
+	 * Adds a file to a ZIP archive from the given path
 	 * @param string $path The path to the file to add
 	 * @param string $filename File name in the archive
 	 */
@@ -86,7 +86,7 @@ class ZipArchiveManager {
 	}
 
 	/**
-	 * Add a JSON file to the ZIP archive using its contents
+	 * Adds a JSON file to the ZIP archive using its contents
 	 * @param string $filename File name
 	 * @param mixed[] $jsonData JSON data in an array
 	 * @throws JsonException
@@ -97,7 +97,7 @@ class ZipArchiveManager {
 	}
 
 	/**
-	 * Check if the file or the files exist in the archive
+	 * Checks if the file or the files exist in the archive
 	 * @param string|mixed[]|ArrayHash $var File(s) to check
 	 * @return bool Is file exist
 	 */
@@ -119,7 +119,7 @@ class ZipArchiveManager {
 	}
 
 	/**
-	 * Extract the archive contents
+	 * Extracts the archive contents
 	 * @param string $destinationPath Path to location where to extract the files
 	 */
 	public function extract(string $destinationPath): void {
@@ -127,7 +127,7 @@ class ZipArchiveManager {
 	}
 
 	/**
-	 * List files in the archive
+	 * Lists files in the archive
 	 * @return string[] List of files in the archive
 	 */
 	public function listFiles(): array {
@@ -143,7 +143,7 @@ class ZipArchiveManager {
 	}
 
 	/**
-	 * Open file in the archive
+	 * Opens file in the archive
 	 * @param string $fileName File name
 	 * @return string Content of file
 	 */
@@ -152,7 +152,7 @@ class ZipArchiveManager {
 	}
 
 	/**
-	 * Close the active archive
+	 * Closes the active archive
 	 */
 	public function close(): void {
 		$this->zip->close();

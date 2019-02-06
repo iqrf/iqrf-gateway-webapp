@@ -43,7 +43,7 @@ class IqrfBoardInfoManager implements IBoardInfoManager {
 	}
 
 	/**
-	 * Get IQRF Gateway's board's name
+	 * Gets IQRF Gateway's board's name
 	 * @return string|null IQRF Gateway's board's name
 	 */
 	public function getName(): ?string {

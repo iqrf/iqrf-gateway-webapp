@@ -57,7 +57,7 @@ class UserAddCommand extends Command {
 	}
 
 	/**
-	 * Configure the command
+	 * Configures the user add command
 	 */
 	protected function configure(): void {
 		$this->setName('user:add');
@@ -72,7 +72,7 @@ class UserAddCommand extends Command {
 	}
 
 	/**
-	 * Execute the command
+	 * Executes the user add command
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
 	 */
@@ -85,7 +85,7 @@ class UserAddCommand extends Command {
 	}
 
 	/**
-	 * Ask for the username
+	 * Asks for the username
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
 	 * @return string Username
@@ -104,7 +104,7 @@ class UserAddCommand extends Command {
 	}
 
 	/**
-	 * Ask for the user's password
+	 * Asks for the user's password
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
 	 * @return string User's password
@@ -120,7 +120,7 @@ class UserAddCommand extends Command {
 	}
 
 	/**
-	 * Ask for the user's role
+	 * Asks for the user's role
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
 	 * @return string User's role
@@ -137,7 +137,7 @@ class UserAddCommand extends Command {
 	}
 
 	/**
-	 * Ask for the user's language
+	 * Asks for the user's language
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
 	 * @return string User's language

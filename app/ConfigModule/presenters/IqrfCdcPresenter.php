@@ -54,14 +54,14 @@ class IqrfCdcPresenter extends GenericPresenter {
 	}
 
 	/**
-	 * Render IQRF CDC interface configurator
+	 * Renders the IQRF CDC interface configurator
 	 */
 	public function renderDefault(): void {
 		$this->template->interfaces = $this->iqrfManager->getCdcInterfaces();
 	}
 
 	/**
-	 * Create IQRF CDC interface configuration form
+	 * Creates the IQRF CDC interface configuration form
 	 * @return Form IQRF CDC interface configuration form
 	 * @throws JsonException
 	 */

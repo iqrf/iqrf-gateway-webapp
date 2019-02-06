@@ -44,7 +44,7 @@ class StatusPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Render IQRF Gateway Daemon's service status
+	 * Renders IQRF Gateway Daemon's service status
 	 */
 	public function renderDefault(): void {
 		try {

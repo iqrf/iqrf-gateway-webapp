@@ -24,7 +24,7 @@ use App\IqrfNetModule\Forms\DpaConfigFormFactory;
 use Nette\Forms\Form;
 
 /**
- * IQMESH Network Manager - DPA configuration presenter
+ * DPA configuration presenter
  */
 class DpaConfigPresenter extends TrConfigPresenter {
 
@@ -35,7 +35,7 @@ class DpaConfigPresenter extends TrConfigPresenter {
 	public $form;
 
 	/**
-	 * Create DPA configuration form
+	 * Creates the DPA configuration form
 	 * @return Form DPA configuration form
 	 */
 	protected function createComponentIqrfNetDpaForm(): Form {

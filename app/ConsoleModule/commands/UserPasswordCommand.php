@@ -57,7 +57,7 @@ class UserPasswordCommand extends Command {
 	}
 
 	/**
-	 * Configure the command
+	 * Configures the change user's password command
 	 */
 	protected function configure(): void {
 		$this->setName('user:password');
@@ -70,7 +70,7 @@ class UserPasswordCommand extends Command {
 	}
 
 	/**
-	 * Execute the command
+	 * Executes the change user's password command
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
 	 */
@@ -81,7 +81,7 @@ class UserPasswordCommand extends Command {
 	}
 
 	/**
-	 * Ask for the username
+	 * Asks for the username
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
 	 * @return mixed[] Information about the user
@@ -100,7 +100,7 @@ class UserPasswordCommand extends Command {
 	}
 
 	/**
-	 * Ask for the user's password
+	 * Asks for the user's password
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
 	 * @return string New user's password

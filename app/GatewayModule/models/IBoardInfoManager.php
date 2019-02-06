@@ -26,7 +26,7 @@ namespace App\GatewayModule\Models;
 interface IBoardInfoManager {
 
 	/**
-	 * Get board's name
+	 * Gets the board's name
 	 * @return string|null Board's name
 	 */
 	public function getName(): ?string;

@@ -29,7 +29,7 @@ use Ublaboo\DataGrid\DataGrid;
 use Ublaboo\DataGrid\Exception\DataGridException;
 
 /**
- * Render a WebSocket service data grid
+ * WebSocket service data grid
  */
 class WebSocketServiceDataGridFactory {
 
@@ -56,8 +56,8 @@ class WebSocketServiceDataGridFactory {
 	}
 
 	/**
-	 * Create WebSocket service data grid
-	 * @param WebsocketPresenter $presenter WebSocket configuration presenter
+	 * Creates the WebSocket service data grid
+	 * @param WebsocketPresenter $presenter WebSocket interface configuration presenter
 	 * @param string $name Data grid's component name
 	 * @return DataGrid WebSocket service data grid
 	 * @throws DataGridException

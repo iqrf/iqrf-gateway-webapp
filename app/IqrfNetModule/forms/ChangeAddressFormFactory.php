@@ -48,9 +48,9 @@ class ChangeAddressFormFactory {
 	}
 
 	/**
-	 * Create change network device address form
+	 * Creates change a network device address form
 	 * @param ProtectedPresenter $presenter Protected presenter
-	 * @return Form Change network device address
+	 * @return Form Change a network device address
 	 */
 	public function create(ProtectedPresenter $presenter): Form {
 		$this->presenter = $presenter;
@@ -66,8 +66,8 @@ class ChangeAddressFormFactory {
 	}
 
 	/**
-	 * Redirect on success
-	 * @param Form $form Change device address form
+	 * Redirects on success
+	 * @param Form $form Change a netwotk device address form
 	 */
 	public function onSuccess(Form $form): void {
 		$this->presenter->redirect('this', ['address' => $form->getValues()->address]);

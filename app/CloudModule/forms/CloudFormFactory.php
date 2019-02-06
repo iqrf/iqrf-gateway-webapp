@@ -72,7 +72,7 @@ abstract class CloudFormFactory {
 	}
 
 	/**
-	 * Create the MQTT interface
+	 * Saves the MQTT interface
 	 * @param SubmitButton $button Form's submit button
 	 * @param bool $needRestart Is restart needed?
 	 */

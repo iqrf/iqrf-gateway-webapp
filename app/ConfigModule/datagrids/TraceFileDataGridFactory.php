@@ -29,7 +29,7 @@ use Ublaboo\DataGrid\DataGrid;
 use Ublaboo\DataGrid\Exception\DataGridException;
 
 /**
- * Render a tracer files data grid
+ * Tracer files data grid
  */
 class TraceFileDataGridFactory {
 
@@ -56,10 +56,10 @@ class TraceFileDataGridFactory {
 	}
 
 	/**
-	 * Create UDP messaging data grid
-	 * @param TracerPresenter $presenter UDP configuration presenter
+	 * Creates the tracer data grid
+	 * @param TracerPresenter $presenter Tracer configuration presenter
 	 * @param string $name Data grid's component name
-	 * @return DataGrid UDP messaging data grid
+	 * @return DataGrid Tracer data grid
 	 * @throws DataGridException
 	 * @throws JsonException
 	 */

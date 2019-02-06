@@ -30,7 +30,7 @@ use Nette\Utils\Finder;
 use Nette\Utils\Strings;
 
 /**
- * Tool for downloading and reading IQRF Daemon's log files
+ * Tool for downloading and reading IQRF Gateway Daemon's log files
  */
 class LogManager {
 
@@ -55,7 +55,7 @@ class LogManager {
 	}
 
 	/**
-	 * Load the latest log of IQRF Gateway Daemon
+	 * Loads the latest log of IQRF Gateway Daemon
 	 * @return string IQRF Gateway Daemon's log
 	 */
 	public function load(): string {
@@ -64,7 +64,7 @@ class LogManager {
 	}
 
 	/**
-	 * Get IQRF Gateway Daemon's log files
+	 * Gets IQRF Gateway Daemon's log files
 	 * @return string[] IQRF Gateway Daemon's log files
 	 */
 	public function getLogFiles(): array {
@@ -80,7 +80,7 @@ class LogManager {
 	}
 
 	/**
-	 * Download logs of IQRF Gateway Daemon
+	 * Downloads logs of IQRF Gateway Daemon
 	 * @return FileResponse HTTP response with the logs
 	 * @throws BadRequestException
 	 */

@@ -62,7 +62,7 @@ class MainFormFactory {
 	}
 
 	/**
-	 * Create main configuration form
+	 * Creates the main configuration form
 	 * @param MainPresenter $presenter Main configuration presenter
 	 * @return Form Main configuration form
 	 * @throws JsonException
@@ -86,7 +86,7 @@ class MainFormFactory {
 	}
 
 	/**
-	 * Save main configuration
+	 * Saves the main configuration
 	 * @param Form $form Main configuration form
 	 * @throws JsonException
 	 */

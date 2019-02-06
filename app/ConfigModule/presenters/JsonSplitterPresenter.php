@@ -46,8 +46,8 @@ class JsonSplitterPresenter extends GenericPresenter {
 	}
 
 	/**
-	 * Create JSON Splitter settings form
-	 * @return Form JSON Splitter settings form
+	 * Creates the JSON Splitter configuration form
+	 * @return Form JSON Splitter configuration form
 	 * @throws JsonException
 	 */
 	protected function createComponentConfigJsonSplitterForm(): Form {

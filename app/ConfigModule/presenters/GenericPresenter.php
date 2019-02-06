@@ -27,7 +27,7 @@ use Nette\IOException;
 use Nette\Utils\JsonException;
 
 /**
- * Presenter for generic IQRF Gateway Daemon's configuration presenters
+ * Presenter for generic IQRF Gateway Daemon's configuration
  */
 abstract class GenericPresenter extends ProtectedPresenter {
 
@@ -53,7 +53,7 @@ abstract class GenericPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Catch exceptions
+	 * Catches exceptions
 	 */
 	public function actionDefault(): void {
 		try {
@@ -71,7 +71,7 @@ abstract class GenericPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Check component's instance files
+	 * Checkes the component's instance files
 	 * @throws JsonException
 	 */
 	private function checkInstanceFiles(): void {

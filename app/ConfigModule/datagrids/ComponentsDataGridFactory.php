@@ -31,7 +31,7 @@ use Ublaboo\DataGrid\Exception\DataGridColumnStatusException;
 use Ublaboo\DataGrid\Exception\DataGridException;
 
 /**
- * Render a components data grid
+ * Daemon's components data grid
  */
 class ComponentsDataGridFactory {
 
@@ -63,7 +63,7 @@ class ComponentsDataGridFactory {
 	}
 
 	/**
-	 * Create component data grid
+	 * Creates the component data grid
 	 * @param ComponentPresenter $presenter Component configuration presenter
 	 * @param string $name Data grid's component name
 	 * @return DataGrid Component data grid
@@ -97,7 +97,7 @@ class ComponentsDataGridFactory {
 	}
 
 	/**
-	 * Load data to the data grid
+	 * Loads the data to the data grid
 	 * @return mixed[] Data for the data grid
 	 * @throws JsonException
 	 */
@@ -117,7 +117,7 @@ class ComponentsDataGridFactory {
 	}
 
 	/**
-	 * Change status of the component
+	 * Changes the status of the component
 	 * @param int $id Component ID
 	 * @param bool $status New component's status
 	 * @throws JsonException

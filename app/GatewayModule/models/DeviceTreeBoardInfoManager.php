@@ -41,7 +41,7 @@ class DeviceTreeBoardInfoManager implements IBoardInfoManager {
 	}
 
 	/**
-	 * Get board's name from device tree
+	 * Gets the board's name from device tree
 	 * @return string|null Board's name
 	 */
 	public function getName(): ?string {

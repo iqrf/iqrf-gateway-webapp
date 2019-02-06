@@ -29,7 +29,7 @@ use Nette\Application\Request;
 class Error4xxPresenter extends BasePresenter {
 
 	/**
-	 * Start up presenter
+	 * Starts up presenter
 	 * @throws BadRequestException
 	 */
 	public function startup(): void {
@@ -40,7 +40,7 @@ class Error4xxPresenter extends BasePresenter {
 	}
 
 	/**
-	 * Render 4xx error page
+	 * Renders 4xx error page
 	 * @param BadRequestException $exception Bad HTTP(S) request exception
 	 */
 	public function renderDefault(BadRequestException $exception): void {

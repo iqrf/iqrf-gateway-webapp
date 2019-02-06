@@ -57,7 +57,7 @@ class UserRemoveCommand extends Command {
 	}
 
 	/**
-	 * Configure the command
+	 * Configures the user remove command
 	 */
 	protected function configure(): void {
 		$this->setName('user:remove');
@@ -69,7 +69,7 @@ class UserRemoveCommand extends Command {
 	}
 
 	/**
-	 * Execute the command
+	 * Executes the user remove command
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
 	 */
@@ -80,7 +80,7 @@ class UserRemoveCommand extends Command {
 	}
 
 	/**
-	 * Ask for the username
+	 * Asks for the username
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
 	 * @return mixed[] Information about the user
@@ -99,7 +99,7 @@ class UserRemoveCommand extends Command {
 	}
 
 	/**
-	 * Confirm the action
+	 * Confirms the action
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
 	 */

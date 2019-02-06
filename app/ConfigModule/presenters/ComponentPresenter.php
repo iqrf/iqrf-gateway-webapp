@@ -63,7 +63,7 @@ class ComponentPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Catch exceptions
+	 * Catches exceptions
 	 */
 	public function actionDefault(): void {
 		try {
@@ -78,7 +78,7 @@ class ComponentPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Render list of components
+	 * Renders a list of components
 	 * @throws JsonException
 	 */
 	public function renderDefault(): void {
@@ -86,7 +86,7 @@ class ComponentPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Edit component
+	 * Edits the component
 	 * @param int $id Component ID
 	 */
 	public function renderEdit(int $id): void {
@@ -94,7 +94,7 @@ class ComponentPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Delete component
+	 * Deletes the component
 	 * @param int $id Component ID
 	 * @throws JsonException
 	 */
@@ -107,7 +107,7 @@ class ComponentPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Create components data grid
+	 * Creates the components data grid
 	 * @param string $name Data grid's component name
 	 * @return DataGrid Components data grid
 	 * @throws DataGridColumnStatusException
@@ -119,8 +119,8 @@ class ComponentPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Create components form
-	 * @return Form Components form
+	 * Creates the components configuration form
+	 * @return Form Components configuration form
 	 * @throws JsonException
 	 */
 	protected function createComponentConfigComponentsForm(): Form {

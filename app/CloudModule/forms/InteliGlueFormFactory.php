@@ -46,9 +46,9 @@ class InteliGlueFormFactory extends CloudFormFactory {
 	}
 
 	/**
-	 * Create MQTT configuration form
+	 * Creates the Inteliments InteliGlue form
 	 * @param InteliGluePresenter $presenter Inteliments InteliGlue presenter
-	 * @return Form MQTT configuration form
+	 * @return Form Inteliments InteliGlue form
 	 */
 	public function create(InteliGluePresenter $presenter): Form {
 		$this->presenter = $presenter;

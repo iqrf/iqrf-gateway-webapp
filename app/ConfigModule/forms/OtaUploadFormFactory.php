@@ -33,7 +33,7 @@ class OtaUploadFormFactory extends GenericConfigFormFactory {
 	use SmartObject;
 
 	/**
-	 * Create OTA upload service configuration form
+	 * Creates the OTA upload service configuration form
 	 * @param IqmeshPresenter $presenter IQMESH services configuration presenter
 	 * @return Form OTA upload configuration form
 	 * @throws JsonException

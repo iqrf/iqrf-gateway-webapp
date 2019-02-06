@@ -46,7 +46,7 @@ class IqrfDpaPresenter extends GenericPresenter {
 	}
 
 	/**
-	 * Create IQRF DPA configuration interface form
+	 * Creates the IQRF DPA configuration interface form
 	 * @return Form IQRF DPA configuration interface form
 	 * @throws JsonException
 	 */

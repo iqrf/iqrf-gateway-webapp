@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\IqrfNetModule\Models;
 
+use App\IqrfNetModule\Entities\StandardBinaryOutput;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Exceptions\UserErrorException;
@@ -55,9 +56,9 @@ class StandardBinaryOutputManager {
 	}
 
 	/**
-	 * Enumerate device
+	 * Enumerates a IQRF Standard binary output device
 	 * @param int $address Network device address
-	 * @return mixed[] DPA request and response
+	 * @return mixed[] API request and response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws UserErrorException
@@ -79,7 +80,7 @@ class StandardBinaryOutputManager {
 	}
 
 	/**
-	 * Get states of IQRF Standard binary outputs
+	 * Gets states of IQRF Standard binary outputs
 	 * @param int $address Network device address
 	 * @return mixed[] API request and response
 	 * @throws DpaErrorException
@@ -92,10 +93,10 @@ class StandardBinaryOutputManager {
 	}
 
 	/**
-	 * Set states of IQRF Standard binary outputs
+	 * Sets states of IQRF Standard binary outputs
 	 * @param int $address Network device address
 	 * @param StandardBinaryOutput[] $outputs Standard binary output
-	 * @return mixed[] DPA request and response
+	 * @return mixed[] API request and response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws JsonException

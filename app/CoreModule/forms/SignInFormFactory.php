@@ -59,7 +59,7 @@ class SignInFormFactory {
 	}
 
 	/**
-	 * Create sign in form
+	 * Creates sign in form
 	 * @param SignPresenter $presenter Sign (in|out) presenter
 	 * @return Form Sign in form
 	 */
@@ -76,7 +76,7 @@ class SignInFormFactory {
 	}
 
 	/**
-	 * Sign in user
+	 * Signs user in
 	 * @param Form $form Sign in form
 	 */
 	public function signIn(Form $form): void {
