@@ -3,32 +3,24 @@
 /**
  * TEST: App\ServiceModule\Models\UnknownManager
  * @covers App\ServiceModule\Models\UnknownManager
- * @phpVersion >= 7.0
+ * @phpVersion >= 7.1
  * @testCase
  */
 declare(strict_types = 1);
 
 namespace Test\ServiceModule\Models;
 
-use App\CoreModule\Models\CommandManager;
 use App\ServiceModule\Exceptions\NotSupportedInitSystemException;
 use App\ServiceModule\Models\UnknownManager;
-use Mockery;
-use Mockery\MockInterface;
 use Tester\Assert;
-use Tester\TestCase;
+use Tests\Toolkit\TestCases\CommandTestCase;
 
-require __DIR__ . '/../../bootstrap.php';
+require __DIR__ . '/../../../bootstrap.php';
 
 /**
  * Tests for service manager
  */
-class UnknownManagerTest extends TestCase {
-
-	/**
-	 * @var MockInterface Mocked command manager
-	 */
-	private $commandManager;
+class UnknownManagerTest extends CommandTestCase {
 
 	/**
 	 * @var UnknownManager Service manager for unknown init daemon
@@ -36,46 +28,39 @@ class UnknownManagerTest extends TestCase {
 	private $manager;
 
 	/**
-	 * Test function to start IQRF Gateway Daemon's service via unknown init daemon
+	 * Tests the function to start IQRF Gateway Daemon's service via unknown init daemon
 	 */
 	public function testStart(): void {
 		Assert::exception([$this->manager, 'start'], NotSupportedInitSystemException::class);
 	}
 
 	/**
-	 * Test function to stop IQRF Gateway Daemon's service via unknown init daemon
+	 * Tests the function to stop IQRF Gateway Daemon's service via unknown init daemon
 	 */
 	public function testStop(): void {
 		Assert::exception([$this->manager, 'stop'], NotSupportedInitSystemException::class);
 	}
 
 	/**
-	 * Test function to restart IQRF Gateway Daemon's service via unknown init daemon
+	 * Tests the function to restart IQRF Gateway Daemon's service via unknown init daemon
 	 */
 	public function testRestart(): void {
 		Assert::exception([$this->manager, 'restart'], NotSupportedInitSystemException::class);
 	}
 
 	/**
-	 * Test function to get status of IQRF Gateway Daemon's service via unknown init daemon
+	 * Tests the function to get status of IQRF Gateway Daemon's service via unknown init daemon
 	 */
 	public function testGetStatus(): void {
 		Assert::exception([$this->manager, 'getStatus'], NotSupportedInitSystemException::class);
 	}
 
 	/**
-	 * Set up the test environment
+	 * Sets up the test environment
 	 */
 	protected function setUp(): void {
-		$this->commandManager = Mockery::mock(CommandManager::class);
+		parent::setUp();
 		$this->manager = new UnknownManager($this->commandManager);
-	}
-
-	/**
-	 * Cleanup the test environment
-	 */
-	protected function tearDown(): void {
-		Mockery::close();
 	}
 
 }

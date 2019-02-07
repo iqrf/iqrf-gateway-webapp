@@ -3,31 +3,23 @@
 /**
  * TEST: App\ServiceModule\Models\SystemDManager
  * @covers App\ServiceModule\Models\SystemDManager
- * @phpVersion >= 7.0
+ * @phpVersion >= 7.1
  * @testCase
  */
 declare(strict_types = 1);
 
-namespace Test\ServiceModule\Models;
+namespace Test\Unit\ServiceModule\Models;
 
-use App\CoreModule\Models\CommandManager;
 use App\ServiceModule\Models\SystemDManager;
-use Mockery;
-use Mockery\MockInterface;
 use Tester\Assert;
-use Tester\TestCase;
+use Tests\Toolkit\TestCases\CommandTestCase;
 
-require __DIR__ . '/../../bootstrap.php';
+require __DIR__ . '/../../../bootstrap.php';
 
 /**
  * Tests for systemD service manager
  */
-class SystemDManagerTest extends TestCase {
-
-	/**
-	 * @var MockInterface Mocked command manager
-	 */
-	private $commandManager;
+class SystemDManagerTest extends CommandTestCase {
 
 	/**
 	 * @var SystemDManager Service manager for systemD init daemon
@@ -40,42 +32,42 @@ class SystemDManagerTest extends TestCase {
 	private $serviceName = 'iqrf-gateway-daemon';
 
 	/**
-	 * Test function to start IQRF Gateway Daemon's service via systemD
+	 * Tests the function to start IQRF Gateway Daemon's service via systemD
 	 */
 	public function testStart(): void {
 		$expected = 'start';
 		$command = 'systemctl start ' . $this->serviceName . '.service';
-		$this->commandManager->shouldReceive('send')->with($command, true)->andReturn($expected);
+		$this->receiveCommand($command, true, $expected);
 		Assert::same($expected, $this->manager->start());
 	}
 
 	/**
-	 * Test function to stop IQRF Gateway Daemon's service via systemD
+	 * Tests the function to stop IQRF Gateway Daemon's service via systemD
 	 */
 	public function testStop(): void {
 		$expected = 'stop';
 		$command = 'systemctl stop ' . $this->serviceName . '.service';
-		$this->commandManager->shouldReceive('send')->with($command, true)->andReturn($expected);
+		$this->receiveCommand($command, true, $expected);
 		Assert::same($expected, $this->manager->stop());
 	}
 
 	/**
-	 * Test function to restart IQRF Gateway Daemon's service via systemD
+	 * Tests the function to restart IQRF Gateway Daemon's service via systemD
 	 */
 	public function testRestart(): void {
 		$expected = 'restart';
 		$command = 'systemctl restart ' . $this->serviceName . '.service';
-		$this->commandManager->shouldReceive('send')->with($command, true)->andReturn($expected);
+		$this->receiveCommand($command, true, $expected);
 		Assert::same($expected, $this->manager->restart());
 	}
 
 	/**
-	 * Test function to get status of IQRF Gateway Daemon's service via systemD
+	 * Tests the function to get status of IQRF Gateway Daemon's service via systemD
 	 */
 	public function testGetStatus(): void {
 		$expected = 'status';
 		$command = 'systemctl status ' . $this->serviceName . '.service';
-		$this->commandManager->shouldReceive('send')->with($command, true)->andReturn($expected);
+		$this->receiveCommand($command, true, $expected);
 		Assert::same($expected, $this->manager->getStatus());
 	}
 
@@ -83,15 +75,8 @@ class SystemDManagerTest extends TestCase {
 	 * Set up the test environment
 	 */
 	protected function setUp(): void {
-		$this->commandManager = Mockery::mock(CommandManager::class);
+		parent::setUp();
 		$this->manager = new SystemDManager($this->commandManager);
-	}
-
-	/**
-	 * Cleanup the test environment
-	 */
-	protected function tearDown(): void {
-		Mockery::close();
 	}
 
 }
