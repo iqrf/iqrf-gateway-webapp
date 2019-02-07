@@ -3,7 +3,7 @@
 /**
  * TEST: App\CoreModule\Models\AppAuthenticator
  * @covers App\CoreModule\Models\AppAuthenticator
- * @phpVersion >= 7.0
+ * @phpVersion >= 7.1
  * @testCase
  */
 declare(strict_types = 1);
@@ -11,32 +11,23 @@ declare(strict_types = 1);
 namespace Test\CoreModule\Model;
 
 use App\CoreModule\Models\AppAuthenticator;
-use Nette\Caching\Storages\MemoryStorage;
-use Nette\Database\Connection;
-use Nette\Database\Context;
-use Nette\Database\Structure;
 use Nette\Security\AuthenticationException;
 use Nette\Security\Identity;
 use Tester\Assert;
 use Tester\Environment;
-use Tester\TestCase;
+use Tests\Toolkit\TestCases\DatabaseTestCase;
 
 require __DIR__ . '/../../bootstrap.php';
 
 /**
- * Tests for certificate manager
+ * Tests for application authenticator manager
  */
-class AppAuthenticatorTest extends TestCase {
+class AppAuthenticatorTest extends DatabaseTestCase {
 
 	/**
 	 * @var AppAuthenticator User manager
 	 */
 	private $authenticator;
-
-	/**
-	 * @var Context Nette Database context
-	 */
-	private $context;
 
 	/**
 	 * @var mixed[string] Information about admin user
@@ -50,7 +41,7 @@ class AppAuthenticatorTest extends TestCase {
 	];
 
 	/**
-	 * Test function to authenticate the user (incorrect username)
+	 * Tests the function to authenticate the user (incorrect username)
 	 */
 	public function testAuthenticateBadUsername(): void {
 		Assert::exception(function (): void {
@@ -60,7 +51,7 @@ class AppAuthenticatorTest extends TestCase {
 	}
 
 	/**
-	 * Test function to authenticate the user (incorrect password)
+	 * Tests the function to authenticate the user (incorrect password)
 	 */
 	public function testAuthenticateBadPassword(): void {
 		Assert::exception(function (): void {
@@ -70,7 +61,7 @@ class AppAuthenticatorTest extends TestCase {
 	}
 
 	/**
-	 * Test function to authenticate the user (correct username and password)
+	 * Tests the function to authenticate the user (correct username and password)
 	 */
 	public function testAuthenticateSuccess(): void {
 		$data = ['username' => 'admin', 'language' => 'en'];
@@ -80,20 +71,17 @@ class AppAuthenticatorTest extends TestCase {
 	}
 
 	/**
-	 * Set up the test environment
+	 * Sets up the test environment
 	 */
 	protected function setUp(): void {
 		Environment::lock('user_db', __DIR__ . '/../../temp/');
-		$connection = new Connection('sqlite::memory:');
-		$cacheStorage = new MemoryStorage();
-		$structure = new Structure($connection, $cacheStorage);
-		$this->context = new Context($connection, $structure);
+		parent::setUp();
 		$this->createTable();
 		$this->authenticator = new AppAuthenticator($this->context);
 	}
 
 	/**
-	 * Create database table
+	 * Creates the database table
 	 */
 	private function createTable(): void {
 		$sql = 'CREATE TABLE `users` (

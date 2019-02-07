@@ -20,44 +20,30 @@ declare(strict_types = 1);
 
 namespace Tests\Toolkit\TestCases;
 
-use App\CoreModule\Models\CommandManager;
-use Mockery;
-use Mockery\MockInterface;
+use Nette\Caching\Storages\MemoryStorage;
+use Nette\Database\Connection;
+use Nette\Database\Context;
+use Nette\Database\Structure;
 use Tester\TestCase;
 
 /**
- * Shell command test case
+ * Database test case
  */
-abstract class CommandTestCase extends TestCase {
+abstract class DatabaseTestCase extends TestCase {
 
 	/**
-	 * @var CommandManager|MockInterface Mocked command manager
+	 * @var Context Nette Database context
 	 */
-	protected $commandManager;
+	protected $context;
 
 	/**
 	 * Sets up the test environment
 	 */
 	protected function setUp(): void {
-		$this->commandManager = Mockery::mock(CommandManager::class);
-	}
-
-	/**
-	 * Cleanups the test environment
-	 */
-	protected function tearDown(): void {
-		Mockery::close();
-	}
-
-	/**
-	 * Receives the command
-	 * @param string $command Command
-	 * @param bool $needSudo Is sudo needed?
-	 * @param string $output Command's output
-	 */
-	protected function receiveCommand(string $command, bool $needSudo, string $output): void {
-		$this->commandManager->shouldReceive('send')
-			->with($command, $needSudo)->andReturn($output);
+		$connection = new Connection('sqlite::memory:');
+		$cacheStorage = new MemoryStorage();
+		$structure = new Structure($connection, $cacheStorage);
+		$this->context = new Context($connection, $structure);
 	}
 
 }
