@@ -3,13 +3,14 @@
 /**
  * TEST: App\IqrfNetModule\Requests\ApiRequest
  * @covers App\IqrfNetModule\Requests\ApiRequest
- * @phpVersion >= 7.0
+ * @phpVersion >= 7.1
  * @testCase
  */
 declare(strict_types = 1);
 
-namespace Test\IqrfNetModule\Requests;
+namespace Test\Unit\IqrfNetModule\Requests;
 
+use App\CoreModule\Exceptions\InvalidJsonException;
 use App\IqrfNetModule\Models\MessageIdManager;
 use App\IqrfNetModule\Requests\ApiRequest;
 use Mockery;
@@ -17,7 +18,7 @@ use Nette\Utils\Json;
 use Tester\Assert;
 use Tester\TestCase;
 
-require __DIR__ . '/../../bootstrap.php';
+require __DIR__ . '/../../../bootstrap.php';
 
 /**
  * Tests for JSON API request manager
@@ -25,7 +26,7 @@ require __DIR__ . '/../../bootstrap.php';
 class ApiRequestTest extends TestCase {
 
 	/**
-	 * @var mixed[] JSON API request in an array
+	 * @var mixed[] IQRF JSON API request in an array
 	 */
 	private $array = [
 		'mType' => 'mngDaemon_Mode',
@@ -41,7 +42,7 @@ class ApiRequestTest extends TestCase {
 	private $request;
 
 	/**
-	 * Start up test environment
+	 * Starts up test environment
 	 */
 	protected function setUp(): void {
 		$msgIdManager = Mockery::mock(MessageIdManager::class);
@@ -50,16 +51,25 @@ class ApiRequestTest extends TestCase {
 	}
 
 	/**
-	 * Test function to set the request
+	 * Tests the function to set the request (valid request)
 	 */
-	public function testSetRequest(): void {
+	public function testSetRequestValid(): void {
 		Assert::noError(function (): void {
 			$this->request->setRequest($this->array);
 		});
 	}
 
 	/**
-	 * Test function to get the request as array
+	 * Tests the function to set the request (invalid request)
+	 */
+	public function testSetRequestInvalid(): void {
+		Assert::exception(function (): void {
+			$this->request->setRequest(null);
+		}, InvalidJsonException::class);
+	}
+
+	/**
+	 * Tests the function to get the request as array
 	 */
 	public function testToArray(): void {
 		$this->request->setRequest($this->array);
@@ -69,7 +79,7 @@ class ApiRequestTest extends TestCase {
 	}
 
 	/**
-	 * Test function to get the request as JSON string
+	 * Tests the function to get the request as JSON string
 	 */
 	public function testToJson(): void {
 		$this->request->setRequest($this->array);

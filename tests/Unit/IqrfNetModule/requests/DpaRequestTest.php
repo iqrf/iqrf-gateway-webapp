@@ -3,12 +3,12 @@
 /**
  * TEST: App\IqrfNetModule\Requests\DpaRequest
  * @covers App\IqrfNetModule\Requests\DpaRequest
- * @phpVersion >= 7.0
+ * @phpVersion >= 7.1
  * @testCase
  */
 declare(strict_types = 1);
 
-namespace Test\IqrfNetModule\Requests;
+namespace Test\Unit\IqrfNetModule\Requests;
 
 use App\IqrfNetModule\Models\MessageIdManager;
 use App\IqrfNetModule\Requests\DpaRequest;
@@ -17,7 +17,7 @@ use Nette\Utils\Json;
 use Tester\Assert;
 use Tester\TestCase;
 
-require __DIR__ . '/../../bootstrap.php';
+require __DIR__ . '/../../../bootstrap.php';
 
 /**
  * Tests for JSON DPA request manager
@@ -44,7 +44,7 @@ class DpaRequestTest extends TestCase {
 	private $request;
 
 	/**
-	 * Start up test environment
+	 * Starts up test environment
 	 */
 	protected function setUp(): void {
 		$msgIdManager = Mockery::mock(MessageIdManager::class);
@@ -53,7 +53,7 @@ class DpaRequestTest extends TestCase {
 	}
 
 	/**
-	 * Test function to set the request (without DPA request fixing)
+	 * Tests the function to set the request (without DPA request fixing)
 	 */
 	public function testSetRequest(): void {
 		$this->request->setRequest($this->array);
@@ -63,7 +63,7 @@ class DpaRequestTest extends TestCase {
 	}
 
 	/**
-	 * Test function to set the request (with DPA Raw packet fixing)
+	 * Tests the function to set the request (with DPA Raw packet fixing)
 	 */
 	public function testSetRequestRawFix(): void {
 		$array = $this->array;
@@ -76,7 +76,7 @@ class DpaRequestTest extends TestCase {
 	}
 
 	/**
-	 * Test function to get the request as array
+	 * Tests the function to get the request as array
 	 */
 	public function testToArray(): void {
 		$this->request->setRequest($this->array);
@@ -86,7 +86,7 @@ class DpaRequestTest extends TestCase {
 	}
 
 	/**
-	 * Test function to get the request as JSON string
+	 * Tests the function to get the request as JSON string
 	 */
 	public function testToJson(): void {
 		$this->request->setRequest($this->array);

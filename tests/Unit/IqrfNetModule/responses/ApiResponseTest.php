@@ -3,7 +3,7 @@
 /**
  * TEST: App\IqrfNetModule\Responses\ApiResponse
  * @covers App\IqrfNetModule\Requests\ApiResponse
- * @phpVersion >= 7.0
+ * @phpVersion >= 7.1
  * @testCase
  */
 declare(strict_types = 1);
@@ -16,7 +16,7 @@ use Nette\Utils\Json;
 use Tester\Assert;
 use Tester\TestCase;
 
-require __DIR__ . '/../../bootstrap.php';
+require __DIR__ . '/../../../bootstrap.php';
 
 /**
  * Tests for JSON API response manager
@@ -24,7 +24,7 @@ require __DIR__ . '/../../bootstrap.php';
 class ApiResponseTest extends TestCase {
 
 	/**
-	 * @var mixed{} JSON API response in an array
+	 * @var mixed[] JSON API response in an array
 	 */
 	private $array = [
 		'mType' => 'mngDaemon_Mode',
@@ -53,14 +53,14 @@ class ApiResponseTest extends TestCase {
 	}
 
 	/**
-	 * Start up test environment
+	 * Starts up test environment
 	 */
 	protected function setUp(): void {
 		$this->response = new ApiResponse();
 	}
 
 	/**
-	 * Test function to set the request (success)
+	 * Tests the function to set the request (success)
 	 */
 	public function testSetRequestOk(): void {
 		Assert::noError(function (): void {
@@ -69,7 +69,7 @@ class ApiResponseTest extends TestCase {
 	}
 
 	/**
-	 * Test function to set the request (user error)
+	 * Tests the function to set the request (user error)
 	 */
 	public function testCheckStatusUserError(): void {
 		Assert::exception(function (): void {
@@ -82,7 +82,7 @@ class ApiResponseTest extends TestCase {
 	}
 
 	/**
-	 * Test function to set the request (timeout)
+	 * Tests the function to set the request (timeout)
 	 */
 	public function testCheckStatusTimeout(): void {
 		Assert::exception(function (): void {
@@ -95,7 +95,7 @@ class ApiResponseTest extends TestCase {
 	}
 
 	/**
-	 * Test function to get the request as array
+	 * Tests the function to get the request as array
 	 */
 	public function testToArray(): void {
 		$this->response->setResponse($this->json);
@@ -105,7 +105,7 @@ class ApiResponseTest extends TestCase {
 	}
 
 	/**
-	 * Test function to get the request as JSON string
+	 * Tests the function to get the request as JSON string
 	 */
 	public function testToJson(): void {
 		$this->response->setResponse($this->json);

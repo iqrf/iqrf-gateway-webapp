@@ -24,6 +24,8 @@ use App\IqrfNetModule\Models\WebSocketClient;
 use App\IqrfNetModule\Requests\ApiRequest;
 use Mockery;
 use Mockery\MockInterface;
+use Nette\Utils\FileSystem;
+use Nette\Utils\Json;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -66,6 +68,18 @@ abstract class WebSocketTestCase extends TestCase {
 	 */
 	protected function tearDown(): void {
 		Mockery::close();
+	}
+
+	/**
+	 * Reads the IQRF JSON API response
+	 * @param string $mType Message type
+	 * @return mixed[] IQRF JSON API response
+	 */
+	public function readJsonResponse(string $mType): array {
+		$path = __DIR__ . '/../../data/apiResponses/';
+		$file = FileSystem::read($path . $mType . '.json');
+		$response['response'] = Json::decode($file, Json::FORCE_ARRAY);
+		return $response;
 	}
 
 }

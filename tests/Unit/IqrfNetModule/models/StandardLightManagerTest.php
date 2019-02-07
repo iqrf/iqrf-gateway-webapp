@@ -8,7 +8,7 @@
 
 declare(strict_types = 1);
 
-namespace Tests\Unit\GatewayModule\Models;
+namespace Tests\Unit\IqrfNetModule\Models;
 
 use App\IqrfNetModule\Entities\StandardLight;
 use App\IqrfNetModule\Models\StandardLightManager;
