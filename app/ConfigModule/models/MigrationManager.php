@@ -134,8 +134,8 @@ class MigrationManager {
 			FileSystem::delete($this->path);
 			throw new IncompleteConfigurationException();
 		}
-		$this->commandManager->send('rm -rf ' . $this->configDirectory, true);
-		$this->commandManager->send('mkdir ' . $this->configDirectory, true);
+		$this->commandManager->run('rm -rf ' . $this->configDirectory, true);
+		$this->commandManager->run('mkdir ' . $this->configDirectory, true);
 		$this->changeOwner();
 		$this->zipManagerUpload->extract($this->configDirectory);
 		$this->zipManagerUpload->close();
@@ -177,8 +177,8 @@ class MigrationManager {
 	private function changeOwner(): void {
 		$posixUser = posix_getpwuid(posix_geteuid());
 		$owner = $posixUser['name'] . ':' . posix_getgrgid($posixUser['gid'])['name'];
-		$this->commandManager->send('chown ' . $owner . ' ' . $this->configDirectory, true);
-		$this->commandManager->send('chown -R ' . $owner . ' ' . $this->configDirectory, true);
+		$this->commandManager->run('chown ' . $owner . ' ' . $this->configDirectory, true);
+		$this->commandManager->run('chown -R ' . $owner . ' ' . $this->configDirectory, true);
 	}
 
 }

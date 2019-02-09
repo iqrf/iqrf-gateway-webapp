@@ -54,7 +54,7 @@ class DockerSupervisorManager implements IServiceManager {
 	 */
 	public function start(): string {
 		$cmd = 'supervisorctl start ' . $this->serviceName;
-		return $this->commandManager->send($cmd, true);
+		return $this->commandManager->run($cmd, true);
 	}
 
 	/**
@@ -63,7 +63,7 @@ class DockerSupervisorManager implements IServiceManager {
 	 */
 	public function stop(): string {
 		$cmd = 'supervisorctl stop ' . $this->serviceName;
-		return $this->commandManager->send($cmd, true);
+		return $this->commandManager->run($cmd, true);
 	}
 
 	/**
@@ -72,7 +72,7 @@ class DockerSupervisorManager implements IServiceManager {
 	 */
 	public function restart(): string {
 		$cmd = 'supervisorctl restart ' . $this->serviceName;
-		return $this->commandManager->send($cmd, true);
+		return $this->commandManager->run($cmd, true);
 	}
 
 	/**
@@ -81,7 +81,7 @@ class DockerSupervisorManager implements IServiceManager {
 	 */
 	public function getStatus(): string {
 		$cmd = 'supervisorctl status ' . $this->serviceName;
-		return $this->commandManager->send($cmd, true);
+		return $this->commandManager->run($cmd, true);
 	}
 
 }

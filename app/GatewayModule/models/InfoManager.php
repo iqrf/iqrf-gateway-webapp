@@ -92,7 +92,7 @@ class InfoManager {
 	 * @return string|null Gateway ID
 	 */
 	public function getId(): ?string {
-		$gwJson = $this->commandManager->send('cat /etc/iqrf-gateway.json', true);
+		$gwJson = $this->commandManager->run('cat /etc/iqrf-gateway.json', true);
 		if ($gwJson !== '') {
 			try {
 				$gw = Json::decode($gwJson, Json::FORCE_ARRAY);
@@ -110,14 +110,14 @@ class InfoManager {
 	 */
 	public function getIpAddresses(): array {
 		$addresses = [];
-		$lsInterfaces = $this->commandManager->send('ls /sys/class/net | awk \'{ print $0 }\'', true);
+		$lsInterfaces = $this->commandManager->run('ls /sys/class/net | awk \'{ print $0 }\'', true);
 		$interfaces = explode(PHP_EOL, $lsInterfaces);
 		foreach ($interfaces as $interface) {
 			if ($interface === 'lo') {
 				continue;
 			}
 			$cmd = 'ip a s ' . $interface . ' | grep inet | grep global | grep -v temporary | awk \'{print $2}\'';
-			$output = $this->commandManager->send($cmd, true);
+			$output = $this->commandManager->run($cmd, true);
 			if ($output !== '') {
 				$addresses[$interface] = explode(PHP_EOL, $output);
 			}
@@ -131,14 +131,14 @@ class InfoManager {
 	 */
 	public function getMacAddresses(): array {
 		$addresses = [];
-		$lsInterfaces = $this->commandManager->send('ls /sys/class/net | awk \'{ print $0 }\'', true);
+		$lsInterfaces = $this->commandManager->run('ls /sys/class/net | awk \'{ print $0 }\'', true);
 		$interfaces = explode(PHP_EOL, $lsInterfaces);
 		foreach ($interfaces as $interface) {
 			if ($interface === 'lo') {
 				continue;
 			}
 			$cmd = 'cat /sys/class/net/' . $interface . '/address';
-			$addresses[$interface] = $this->commandManager->send($cmd, true);
+			$addresses[$interface] = $this->commandManager->run($cmd, true);
 		}
 		return $addresses;
 	}
@@ -153,7 +153,7 @@ class InfoManager {
 		if (!$daemonExistence) {
 			return 'none';
 		}
-		$result = $this->commandManager->send($cmd);
+		$result = $this->commandManager->run($cmd);
 		if ($result !== '') {
 			return $result;
 		}
@@ -166,7 +166,7 @@ class InfoManager {
 	 */
 	public function getHostname(): string {
 		$cmd = 'hostname -f';
-		return $this->commandManager->send($cmd);
+		return $this->commandManager->run($cmd);
 	}
 
 	/**
@@ -224,7 +224,7 @@ class InfoManager {
 	 * @return string[][] Disk usages
 	 */
 	public function getDiskUsages(): array {
-		$output = $this->commandManager->send('df -B1 -x tmpfs -x devtmpfs -T -P | awk \'{if (NR!=1) {$6="";print}}\'');
+		$output = $this->commandManager->run('df -B1 -x tmpfs -x devtmpfs -T -P | awk \'{if (NR!=1) {$6="";print}}\'');
 		$usages = [];
 		foreach (explode(PHP_EOL, $output) as $disk) {
 			$segments = explode(' ', $disk);
@@ -246,7 +246,7 @@ class InfoManager {
 	 * @return string[] Memory usage
 	 */
 	public function getMemoryUsage(): array {
-		$output = $this->commandManager->send('free -bw | awk \'{{if (NR==2) print $2,$3,$4,$5,$6,$7,$8}}\'');
+		$output = $this->commandManager->run('free -bw | awk \'{{if (NR==2) print $2,$3,$4,$5,$6,$7,$8}}\'');
 		$segments = explode(' ', $output);
 		$usages = [
 			'size' => $this->convertSizes($segments[0]),
@@ -266,7 +266,7 @@ class InfoManager {
 	 * @return string[]|null Swap usage
 	 */
 	public function getSwapUsage(): ?array {
-		$output = $this->commandManager->send('free -b | awk \'{{if (NR==3) print $2,$3,$4}}\'');
+		$output = $this->commandManager->run('free -b | awk \'{{if (NR==3) print $2,$3,$4}}\'');
 		$segments = explode(' ', $output);
 		if ($segments[0] === '0') {
 			return null;
@@ -304,7 +304,7 @@ class InfoManager {
 	 * @return string|null PIXLA token
 	 */
 	public function getPixlaToken(): ?string {
-		$gwmonId = $this->commandManager->send('cat /etc/gwman/customer_id', true);
+		$gwmonId = $this->commandManager->run('cat /etc/gwman/customer_id', true);
 		if ($gwmonId !== '') {
 			return $gwmonId;
 		}

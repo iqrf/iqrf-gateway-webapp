@@ -3,14 +3,13 @@
 /**
  * TEST: App\CoreModule\Models\VersionManager
  * @covers App\CoreModule\Models\VersionManager
- * @phpVersion >= 7.0
+ * @phpVersion >= 7.1
  * @testCase
  */
 declare(strict_types = 1);
 
 namespace Test\CoreModule\Model;
 
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\VersionManager;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
@@ -18,27 +17,21 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use Mockery;
 use Mockery\Mock;
-use Mockery\MockInterface;
 use Nette\Caching\Storages\DevNullStorage;
 use Tester\Assert;
-use Tester\TestCase;
+use Tests\Toolkit\TestCases\CommandTestCase;
 
 require __DIR__ . '/../../bootstrap.php';
 
 /**
  * Tests for version manager
  */
-class VersionManagerTest extends TestCase {
+class VersionManagerTest extends CommandTestCase {
 
 	/**
 	 * @var DevNullStorage Cache storage for testing
 	 */
 	private $cacheStorage;
-
-	/**
-	 * @var MockInterface Mocked command manager
-	 */
-	private $commandManager;
 
 	/**
 	 * @var string Current version of the webapp
@@ -56,12 +49,12 @@ class VersionManagerTest extends TestCase {
 	private $manager;
 
 	/**
-	 * @var Mock Mocked version manager
+	 * @var Mock|VersionManager Mocked version manager
 	 */
 	private $managerMocked;
 
 	/**
-	 * Test function to check if an update is available for the webapp
+	 * Tests the function to check if an update is available for the webapp
 	 */
 	public function testAvailableWebappUpdateNo(): void {
 		$this->managerMocked->shouldReceive('getInstalledWebapp')
@@ -72,7 +65,7 @@ class VersionManagerTest extends TestCase {
 	}
 
 	/**
-	 * Test function to check if an update is available for the webapp
+	 * Tests the function to check if an update is available for the webapp
 	 */
 	public function testAvailableWebappUpdateYes(): void {
 		$this->managerMocked->shouldReceive('getInstalledWebapp')
@@ -83,7 +76,7 @@ class VersionManagerTest extends TestCase {
 	}
 
 	/**
-	 * Test function to get the current webapp version (stable - success)
+	 * Tests the function to get the current webapp version (stable - success)
 	 */
 	public function testGetCurrentWebappStable(): void {
 		$responseMock = new MockHandler([
@@ -96,7 +89,7 @@ class VersionManagerTest extends TestCase {
 	}
 
 	/**
-	 * Test function to get the current webapp version (stable - failure, master - success)
+	 * Tests the function to get the current webapp version (stable - failure, master - success)
 	 */
 	public function testGetCurrentWebappMaster(): void {
 		$responseMock = new MockHandler([
@@ -110,50 +103,40 @@ class VersionManagerTest extends TestCase {
 	}
 
 	/**
-	 * Test function to get the installed webapp version
+	 * Tests the function to get the installed webapp version
 	 */
 	public function testGetInstalledWebapp(): void {
 		Assert::same($this->currentVersion, $this->manager->getInstalledWebapp(false));
 	}
 
 	/**
-	 * Test function to get the installed webapp version with git
+	 * Tests the function to get the installed webapp version with git
 	 */
 	public function testGetInstalledWebappGit(): void {
-		$this->commandManager->shouldReceive('send')
-			->with('git rev-parse --is-inside-work-tree')->andReturn('true');
-		$this->commandManager->shouldReceive('send')
-			->with('git rev-parse --verify HEAD')->andReturn('commit');
+		$this->receiveCommand('git rev-parse --is-inside-work-tree', null, 'true');
+		$this->receiveCommand('git rev-parse --verify HEAD', null, 'commit');
 		$expected = 'v' . $this->currentVersion . ' (commit)';
 		Assert::same($expected, $this->manager->getInstalledWebapp());
 	}
 
 	/**
-	 * Test function to get the installed webapp version
+	 * Tests the function to get the installed webapp version
 	 */
 	public function testGetInstalledWebappFallback(): void {
-		$this->commandManager->shouldReceive('send')
-			->with('git rev-parse --is-inside-work-tree')->andReturn('false');
+		$this->receiveCommand('git rev-parse --is-inside-work-tree', null, 'false');
 		$expected = 'v' . $this->currentVersion;
 		Assert::same($expected, $this->manager->getInstalledWebapp());
 	}
 
 	/**
-	 * Set up the test environment
+	 * Sets up the test environment
 	 */
 	protected function setUp(): void {
-		$this->commandManager = Mockery::mock(CommandManager::class);
+		parent::setUp();
 		$this->cacheStorage = new DevNullStorage();
 		$client = new Client();
 		$this->manager = new VersionManager($this->commandManager, $this->cacheStorage, $client);
 		$this->managerMocked = Mockery::mock(VersionManager::class)->makePartial();
-	}
-
-	/**
-	 * Cleanup the test environment
-	 */
-	protected function tearDown(): void {
-		Mockery::close();
 	}
 
 }

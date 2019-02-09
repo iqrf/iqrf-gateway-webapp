@@ -3,32 +3,24 @@
 /**
  * TEST: App\ServiceModule\Models\ServiceManager
  * @covers App\ServiceModule\Models\ServiceManager
- * @phpVersion >= 7.0
+ * @phpVersion >= 7.1
  * @testCase
  */
 declare(strict_types = 1);
 
 namespace Test\ServiceModule\Models;
 
-use App\CoreModule\Models\CommandManager;
 use App\ServiceModule\Exceptions\NotSupportedInitSystemException;
 use App\ServiceModule\Models\ServiceManager;
-use Mockery;
-use Mockery\MockInterface;
 use Tester\Assert;
-use Tester\TestCase;
+use Tests\Toolkit\TestCases\CommandTestCase;
 
 require __DIR__ . '/../../bootstrap.php';
 
 /**
  * Tests for service manager
  */
-class ServiceManagerTest extends TestCase {
-
-	/**
-	 * @var MockInterface Mocked command manager
-	 */
-	private $commandManager;
+class ServiceManagerTest extends CommandTestCase {
 
 	/**
 	 * @var ServiceManager Service manager for supervisord init daemon in a Docker container
@@ -51,128 +43,121 @@ class ServiceManagerTest extends TestCase {
 	private $serviceName = 'iqrf-gateway-daemon';
 
 	/**
-	 * Test function to start IQRF Gateway Daemon's service via systemD
+	 * Tests the function to start IQRF Gateway Daemon's service via systemD
 	 */
 	public function testStartSystemD(): void {
 		$expected = 'start';
 		$command = 'systemctl start ' . $this->serviceName . '.service';
-		$this->commandManager->shouldReceive('send')->with($command, true)->andReturn($expected);
+		$this->receiveCommand($command, true, $expected);
 		Assert::same($expected, $this->managerSystemD->start());
 	}
 
 	/**
-	 * Test function to start IQRF Gateway Daemon's service via supervisord in Docker container
+	 * Tests the function to start IQRF Gateway Daemon's service via supervisord in Docker container
 	 */
 	public function testStartDockerSupervisorD(): void {
 		$expected = 'start';
 		$command = 'supervisorctl start ' . $this->serviceName;
-		$this->commandManager->shouldReceive('send')->with($command, true)->andReturn($expected);
+		$this->receiveCommand($command, true, $expected);
 		Assert::same($expected, $this->managerDocker->start());
 	}
 
 	/**
-	 * Test function to start IQRF Gateway Daemon's service via unknown init daemon
+	 * Tests the function to start IQRF Gateway Daemon's service via unknown init daemon
 	 */
 	public function testStartUnknown(): void {
 		Assert::exception([$this->managerUnknown, 'start'], NotSupportedInitSystemException::class);
 	}
 
 	/**
-	 * Test function to stop IQRF Gateway Daemon's service via systemD
+	 * Tests the function to stop IQRF Gateway Daemon's service via systemD
 	 */
 	public function testStopSystemD(): void {
 		$expected = 'stop';
 		$command = 'systemctl stop ' . $this->serviceName . '.service';
-		$this->commandManager->shouldReceive('send')->with($command, true)->andReturn($expected);
+		$this->receiveCommand($command, true, $expected);
 		Assert::same($expected, $this->managerSystemD->stop());
 	}
 
 	/**
-	 * Test function to stop IQRF Gateway Daemon's service via supervisord in Docker container
+	 * Tests the function to stop IQRF Gateway Daemon's service via supervisord in Docker container
 	 */
 	public function testStopDockerSupervisorD(): void {
 		$expected = 'stop';
 		$command = 'supervisorctl stop ' . $this->serviceName;
-		$this->commandManager->shouldReceive('send')->with($command, true)->andReturn($expected);
+		$this->receiveCommand($command, true, $expected);
 		Assert::same($expected, $this->managerDocker->stop());
 	}
 
 	/**
-	 * Test function to stop IQRF Gateway Daemon's service via unknown init daemon
+	 * Tests the function to stop IQRF Gateway Daemon's service via unknown init daemon
 	 */
 	public function testStopUnknown(): void {
 		Assert::exception([$this->managerUnknown, 'stop'], NotSupportedInitSystemException::class);
 	}
 
 	/**
-	 * Test function to restart IQRF Gateway Daemon's service via systemD
+	 * Tests the function to restart IQRF Gateway Daemon's service via systemD
 	 */
 	public function testRestartSystemD(): void {
 		$expected = 'restart';
 		$command = 'systemctl restart ' . $this->serviceName . '.service';
-		$this->commandManager->shouldReceive('send')->with($command, true)->andReturn($expected);
+		$this->receiveCommand($command, true, $expected);
 		Assert::same($expected, $this->managerSystemD->restart());
 	}
 
 	/**
-	 * Test function to restart IQRF Gateway Daemon's service via supervisord in Docker container
+	 * Tests the function to restart IQRF Gateway Daemon's service via supervisord in Docker container
 	 */
 	public function testRestartDockerSupervisorD(): void {
 		$expected = 'restart';
 		$command = 'supervisorctl restart ' . $this->serviceName;
-		$this->commandManager->shouldReceive('send')->with($command, true)->andReturn($expected);
+		$this->receiveCommand($command, true, $expected);
 		Assert::same($expected, $this->managerDocker->restart());
 	}
 
 	/**
-	 * Test function to restart IQRF Gateway Daemon's service via unknown init daemon
+	 * Tests the function to restart IQRF Gateway Daemon's service via unknown init daemon
 	 */
 	public function testRestartUnknown(): void {
 		Assert::exception([$this->managerUnknown, 'restart'], NotSupportedInitSystemException::class);
 	}
 
 	/**
-	 * Test function to get status of IQRF Gateway Daemon's service via systemD
+	 * Tests the function to get status of IQRF Gateway Daemon's service via systemD
 	 */
 	public function testGetStatusSystemD(): void {
 		$expected = 'status';
 		$command = 'systemctl status ' . $this->serviceName . '.service';
-		$this->commandManager->shouldReceive('send')->with($command, true)->andReturn($expected);
+		$this->receiveCommand($command, true, $expected);
 		Assert::same($expected, $this->managerSystemD->getStatus());
 	}
 
 	/**
-	 * Test function to get status of IQRF Gateway Daemon's service via supervisord in Docker container
+	 * Tests the function to get status of IQRF Gateway Daemon's service via supervisord in Docker container
 	 */
 	public function testGetStatusDockerSupervisorD(): void {
 		$expected = 'status';
 		$command = 'supervisorctl status ' . $this->serviceName;
-		$this->commandManager->shouldReceive('send')->with($command, true)->andReturn($expected);
+		$this->receiveCommand($command, true, $expected);
 		Assert::same($expected, $this->managerDocker->getStatus());
 	}
 
 	/**
-	 * Test function to get status of IQRF Gateway Daemon's service via unknown init daemon
+	 * Tests the function to get status of IQRF Gateway Daemon's service via unknown init daemon
 	 */
 	public function testGetStatusUnknown(): void {
 		Assert::exception([$this->managerUnknown, 'getStatus'], NotSupportedInitSystemException::class);
 	}
 
 	/**
-	 * Set up the test environment
+	 * Sets up the test environment
 	 */
 	protected function setUp(): void {
-		$this->commandManager = Mockery::mock(CommandManager::class);
+		parent::setUp();
 		$this->managerDocker = new ServiceManager('docker-supervisor', $this->commandManager);
 		$this->managerSystemD = new ServiceManager('systemd', $this->commandManager);
 		$this->managerUnknown = new ServiceManager('unknown', $this->commandManager);
-	}
-
-	/**
-	 * Cleanup the test environment
-	 */
-	protected function tearDown(): void {
-		Mockery::close();
 	}
 
 }

@@ -47,7 +47,7 @@ class IqrfBoardInfoManager implements IBoardInfoManager {
 	 * @return string|null IQRF Gateway's board's name
 	 */
 	public function getName(): ?string {
-		$gwJson = $this->commandManager->send('cat /etc/iqrf-gateway.json', true);
+		$gwJson = $this->commandManager->run('cat /etc/iqrf-gateway.json', true);
 		if ($gwJson === '') {
 			return null;
 		}

@@ -59,7 +59,7 @@ class IqrfManager {
 	 */
 	private function getInterfaces(string $command): array {
 		$interfaces = [];
-		$ls = $this->commandManager->send($command, true);
+		$ls = $this->commandManager->run($command, true);
 		foreach (explode(PHP_EOL, $ls) as $interface) {
 			if ($interface !== '') {
 				array_push($interfaces, $interface);

@@ -55,9 +55,16 @@ abstract class CommandTestCase extends TestCase {
 	 * @param bool $needSudo Is sudo needed?
 	 * @param string $output Command's output
 	 */
-	protected function receiveCommand(string $command, bool $needSudo, string $output): void {
-		$this->commandManager->shouldReceive('send')
-			->with($command, $needSudo)->andReturn($output);
+	protected function receiveCommand(string $command, ?bool $needSudo = null, ?string $output = null): void {
+		$process = $this->commandManager->shouldReceive('run');
+		if ($needSudo === null) {
+			$process->with($command);
+		} else {
+			$process->with($command, $needSudo);
+		}
+		if ($output !== null) {
+			$process->andReturn($output);
+		}
 	}
 
 }

@@ -10,24 +10,16 @@ declare(strict_types = 1);
 
 namespace Tests\Unit\GatewayModule\Models;
 
-use App\CoreModule\Models\CommandManager;
 use App\GatewayModule\Models\PowerManager;
-use Mockery;
-use Mockery\MockInterface;
 use Tester\Assert;
-use Tester\TestCase;
+use Tests\Toolkit\TestCases\CommandTestCase;
 
 require __DIR__ . '/../../../bootstrap.php';
 
 /**
  * Tests for tool for powering off and rebooting IQRF Gateway
  */
-class PowerManagerTest extends TestCase {
-
-	/**
-	 * @var MockInterface Mocked command manager
-	 */
-	private $commandManager;
+class PowerManagerTest extends CommandTestCase {
 
 	/**
 	 * @var PowerManager Tool for powering off and rebooting IQRF Gateway
@@ -38,23 +30,15 @@ class PowerManagerTest extends TestCase {
 	 * Sets up the test environment
 	 */
 	protected function setUp(): void {
-		$this->commandManager = Mockery::mock(CommandManager::class);
+		parent::setUp();
 		$this->manager = new PowerManager($this->commandManager);
-	}
-
-	/**
-	 * Cleanups the test environment
-	 */
-	protected function tearDown(): void {
-		Mockery::close();
 	}
 
 	/**
 	 * Tests the function to power off iQRF Gateway
 	 */
 	public function testPowerOff(): void {
-		$this->commandManager->shouldReceive('send')
-			->with('poweroff', true);
+		$this->receiveCommand('poweroff', true, '');
 		Assert::noError([$this->manager, 'powerOff']);
 	}
 
@@ -62,8 +46,7 @@ class PowerManagerTest extends TestCase {
 	 * Tests the function to reboot iQRF Gateway
 	 */
 	public function testReboot(): void {
-		$this->commandManager->shouldReceive('send')
-			->with('reboot', true);
+		$this->receiveCommand('reboot', true, '');
 		Assert::noError([$this->manager, 'reboot']);
 	}
 

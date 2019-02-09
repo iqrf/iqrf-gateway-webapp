@@ -20,8 +20,8 @@ declare(strict_types = 1);
 
 namespace App\GatewayModule\Models;
 
+use App\CoreModule\Models\CommandManager;
 use Nette\SmartObject;
-use Symfony\Component\Process\Process;
 
 /**
  * Tool for updating packages of IQRF Gateways
@@ -31,16 +31,16 @@ class UpdaterManager {
 	use SmartObject;
 
 	/**
-	 * @var bool Is sudo required?
+	 * @var CommandManager Command manager
 	 */
-	private $sudo;
+	private $commandManager;
 
 	/**
 	 * Constructor
-	 * @param bool $sudo Is sudo required?
+	 * @param CommandManager $commandManager Command manager
 	 */
-	public function __construct(bool $sudo) {
-		$this->sudo = $sudo;
+	public function __construct(CommandManager $commandManager) {
+		$this->commandManager = $commandManager;
 	}
 
 	/**
@@ -48,7 +48,7 @@ class UpdaterManager {
 	 * @param callable $callback Callback
 	 */
 	public function update(callable $callback): void {
-		$this->runCommand('apt-get update', $callback);
+		$this->commandManager->runAsync($callback, 'apt-get update', true);
 	}
 
 	/**
@@ -56,20 +56,7 @@ class UpdaterManager {
 	 * @param callable $callback Callback
 	 */
 	public function upgrade(callable $callback): void {
-		$this->runCommand('apt-get upgrade -y', $callback);
-	}
-
-	/**
-	 * Runs command in shell
-	 * @param string $cmd Shell command
-	 * @param callable $callback Callback
-	 */
-	private function runCommand(string $cmd, callable $callback): void {
-		$command = ($this->sudo ? 'sudo ' : '') . $cmd;
-		$process = Process::fromShellCommandline($command);
-		$process->setTimeout(36000);
-		$process->start($callback);
-		$process->wait();
+		$this->commandManager->runAsync($callback, 'apt-get upgrade -y', true);
 	}
 
 }

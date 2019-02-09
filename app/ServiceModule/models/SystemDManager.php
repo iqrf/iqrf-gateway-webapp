@@ -54,7 +54,7 @@ class SystemDManager implements IServiceManager {
 	 */
 	public function start(): string {
 		$cmd = 'systemctl start ' . $this->serviceName . '.service';
-		return $this->commandManager->send($cmd, true);
+		return $this->commandManager->run($cmd, true);
 	}
 
 	/**
@@ -63,7 +63,7 @@ class SystemDManager implements IServiceManager {
 	 */
 	public function stop(): string {
 		$cmd = 'systemctl stop ' . $this->serviceName . '.service';
-		return $this->commandManager->send($cmd, true);
+		return $this->commandManager->run($cmd, true);
 	}
 
 	/**
@@ -72,7 +72,7 @@ class SystemDManager implements IServiceManager {
 	 */
 	public function restart(): string {
 		$cmd = 'systemctl restart ' . $this->serviceName . '.service';
-		return $this->commandManager->send($cmd, true);
+		return $this->commandManager->run($cmd, true);
 	}
 
 	/**
@@ -81,7 +81,7 @@ class SystemDManager implements IServiceManager {
 	 */
 	public function getStatus(): string {
 		$cmd = 'systemctl status ' . $this->serviceName . '.service';
-		return $this->commandManager->send($cmd, true);
+		return $this->commandManager->run($cmd, true);
 	}
 
 }

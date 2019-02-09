@@ -51,16 +51,16 @@ class CommandManager {
 	 * @return bool Is the command exists?
 	 */
 	public function commandExist(string $cmd): bool {
-		return $this->send('which ' . $cmd) !== '';
+		return $this->run('which ' . $cmd) !== '';
 	}
 
 	/**
 	 * Executes shell command and returns output
 	 * @param string $cmd Command to execute
-	 * @param bool $needSudo Is the command need sudo?
+	 * @param bool $needSudo Is the command needs sudo?
 	 * @return string Output
 	 */
-	public function send(string $cmd, bool $needSudo = false): string {
+	public function run(string $cmd, bool $needSudo = false): string {
 		$command = ($this->sudo && $needSudo ? 'sudo ' : '') . $cmd;
 		$process = Process::fromShellCommandline($command);
 		$process->run();
@@ -72,6 +72,21 @@ class CommandManager {
 		];
 		Debugger::barDump($output, 'Command manager');
 		return Strings::trim($output['stdout']);
+	}
+
+	/**
+	 * Executes the command asynchronously
+	 * @param callable $callback Callback to run whenever there is some output available on STDOUT or STDERR
+	 * @param string $cmd Command to execute
+	 * @param bool $needSudo Is the command needs sudo?
+	 * @param int $timeout Command's timeout
+	 */
+	public function runAsync(callable $callback, string $cmd, bool $needSudo = false, int $timeout = 36000): void {
+		$command = ($this->sudo && $needSudo ? 'sudo ' : '') . $cmd;
+		$process = Process::fromShellCommandline($command);
+		$process->setTimeout($timeout);
+		$process->start($callback);
+		$process->wait();
 	}
 
 }
