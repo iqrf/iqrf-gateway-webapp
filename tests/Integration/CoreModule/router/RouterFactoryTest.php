@@ -1,26 +1,26 @@
 <?php
 
 /**
- * TEST: App\Router\RouterFactory
- * @covers App\Router\RouterFactory
- * @phpVersion >= 7.0
+ * TEST: App\CoreModule\Router\RouterFactory
+ * @covers App\CoreModule\Router\RouterFactory
+ * @phpVersion >= 7.1
  * @testCase
  */
 declare(strict_types = 1);
 
 namespace Test\Router;
 
-use App\Router\RouterFactory;
+use App\CoreModule\Router\RouterFactory;
 use Nette\Application\IRouter;
 use Nette\Application\Routers\Route;
 use Nette\Application\Routers\RouteList;
 use Tester\Assert;
 use Tester\TestCase;
 
-require __DIR__ . '/../bootstrap.php';
+require __DIR__ . '/../../../bootstrap.php';
 
 /**
- * Tests for router factory
+ * Tests for the router factory
  */
 class RouterFactoryTest extends TestCase {
 
@@ -57,7 +57,7 @@ class RouterFactoryTest extends TestCase {
 	];
 
 	/**
-	 * Test function to create a router
+	 * Tests the function to create a router
 	 */
 	public function testCreateRouter(): void {
 		/** @var RouteList $routeList */
@@ -71,12 +71,12 @@ class RouterFactoryTest extends TestCase {
 				if ($type instanceof RouteList) {
 					$routeMask = array_map(function (Route $route) {
 						return $route->getMask();
-					}, (array) $type->getIterator());
+					}, $type->getIterator()->getArrayCopy());
 					return [$type->getModule() => $routeMask];
 				}
 			}
 			return;
-		}, (array) $routeList->getIterator()));
+		}, $routeList->getIterator()->getArrayCopy()));
 	}
 
 }

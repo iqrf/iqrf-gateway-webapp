@@ -77,7 +77,7 @@ session:
 	expiration: 14 days
 
 services:
-	router: App\Router\RouterFactory::createRouter
+	router: App\CoreModule\Router\RouterFactory::createRouter
 	formFactory: Instante\Bootstrap3Renderer\BootstrapFormFactory
 
 http:

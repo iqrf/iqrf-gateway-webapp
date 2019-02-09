@@ -18,7 +18,7 @@
  */
 declare(strict_types = 1);
 
-namespace App\Router;
+namespace App\CoreModule\Router;
 
 use Nette;
 use Nette\Application\IRouter;
