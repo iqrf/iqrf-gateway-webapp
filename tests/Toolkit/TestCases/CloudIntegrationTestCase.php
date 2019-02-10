@@ -20,7 +20,6 @@ declare(strict_types = 1);
 
 namespace Tests\Toolkit\TestCases;
 
-use App\CloudModule\Models\IManager;
 use App\ConfigModule\Models\GenericManager;
 use App\CoreModule\Models\JsonFileManager;
 use App\CoreModule\Models\JsonSchemaManager;
@@ -29,7 +28,6 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use Mockery;
-use Mockery\Mock;
 use Tester\TestCase;
 
 /**
@@ -51,11 +49,6 @@ abstract class CloudIntegrationTestCase extends TestCase {
 	 * @var JsonFileManager JSON file manager
 	 */
 	protected $fileManager;
-
-	/**
-	 * @var Mock|IManager Cloud manager
-	 */
-	protected $manager;
 
 	/**
 	 * Mocks the HTTP(S) client

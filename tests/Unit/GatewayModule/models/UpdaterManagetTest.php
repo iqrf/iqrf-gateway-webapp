@@ -38,7 +38,7 @@ class UpdaterManagetTest extends CommandTestCase {
 	 * Tests the function to list upgradable packages
 	 */
 	public function testListUpgradable(): void {
-		$this->receiveAsyncCommand([$this, 'callback'],'apt-get --just-print upgrade', true);
+		$this->receiveAsyncCommand([$this, 'callback'], 'apt-get --just-print upgrade', true);
 		Assert::noError(function (): void {
 			$this->manager->listUpgradable([$this, 'callback']);
 		});
@@ -48,7 +48,7 @@ class UpdaterManagetTest extends CommandTestCase {
 	 * Tests the function to update list of packages
 	 */
 	public function testUpdate(): void {
-		$this->receiveAsyncCommand([$this, 'callback'],'apt-get update', true);
+		$this->receiveAsyncCommand([$this, 'callback'], 'apt-get update', true);
 		Assert::noError(function (): void {
 			$this->manager->update([$this, 'callback']);
 		});
@@ -58,7 +58,7 @@ class UpdaterManagetTest extends CommandTestCase {
 	 * Tests the function to upgrade packages
 	 */
 	public function testUpgrade(): void {
-		$this->receiveAsyncCommand([$this, 'callback'],'apt-get upgrade -y', true);
+		$this->receiveAsyncCommand([$this, 'callback'], 'apt-get upgrade -y', true);
 		Assert::noError(function (): void {
 			$this->manager->upgrade([$this, 'callback']);
 		});

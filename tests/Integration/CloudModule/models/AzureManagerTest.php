@@ -14,6 +14,7 @@ use App\CloudModule\Exceptions\InvalidConnectionStringException;
 use App\CloudModule\Models\AzureManager;
 use DateTime;
 use Mockery;
+use Mockery\Mock;
 use Tester\Assert;
 use Tests\Toolkit\TestCases\CloudIntegrationTestCase;
 
@@ -28,6 +29,11 @@ class AzureManagerTest extends CloudIntegrationTestCase {
 	 * @var string MS Azure IoT Hub connection string for the device
 	 */
 	private $connectionString = 'HostName=iqrf.azure-devices.net;DeviceId=IQRFGW;SharedAccessKey=1234567890abcdefghijklmnopqrstuvwxyzABCDEFG=';
+
+	/**
+	 * @var Mock|AzureManager Microsoft Azure IoT Hub manager
+	 */
+	private $manager;
 
 	/**
 	 * Tests the function to create MQTT interface

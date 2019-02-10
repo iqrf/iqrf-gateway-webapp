@@ -13,6 +13,7 @@ namespace Test\ServiceModule\Models;
 use App\CloudModule\Models\IbmCloudManager;
 use GuzzleHttp\Client;
 use Mockery;
+use Mockery\Mock;
 use Nette\Utils\FileSystem;
 use Tester\Assert;
 use Tests\Toolkit\TestCases\CloudIntegrationTestCase;
@@ -34,6 +35,11 @@ class IbmCloudManagerTest extends CloudIntegrationTestCase {
 		'organizationId' => 'org1234',
 		'token' => 'token1234',
 	];
+
+	/**
+	 * @var Mock|IbmCloudManager IBM Cloud manager
+	 */
+	private $manager;
 
 	/**
 	 * Tests the function to create a new MQTT interface

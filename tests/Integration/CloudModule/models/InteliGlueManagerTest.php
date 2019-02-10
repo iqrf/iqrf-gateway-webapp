@@ -13,6 +13,7 @@ namespace Test\ServiceModule\Models;
 use App\CloudModule\Models\InteliGlueManager;
 use GuzzleHttp\Client;
 use Mockery;
+use Mockery\Mock;
 use Nette\Utils\FileSystem;
 use Tester\Assert;
 use Tests\Toolkit\TestCases\CloudIntegrationTestCase;
@@ -33,6 +34,11 @@ class InteliGlueManagerTest extends CloudIntegrationTestCase {
 		'password' => 'pass1234',
 		'rootTopic' => 'root',
 	];
+
+	/**
+	 * @var Mock|InteliGlueManager Inteliments InteliGlue manager
+	 */
+	private $manager;
 
 	/**
 	 * Tests the function to create a new MQTT interface

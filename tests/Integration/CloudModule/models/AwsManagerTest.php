@@ -16,6 +16,7 @@ use App\CoreModule\Models\CertificateManager;
 use DateTime;
 use GuzzleHttp\Client;
 use Mockery;
+use Mockery\Mock;
 use Nette\Http\FileUpload;
 use Nette\Utils\FileSystem;
 use Tester\Assert;
@@ -44,6 +45,11 @@ class AwsManagerTest extends CloudIntegrationTestCase {
 	private $formValues = [
 		'endpoint' => 'localhost',
 	];
+
+	/**
+	 * @var Mock|AwsManager Amazon AWS IoT manager
+	 */
+	private $manager;
 
 	/**
 	 * Tests the function to create a new MQTT interface
