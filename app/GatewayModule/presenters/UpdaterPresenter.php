@@ -43,6 +43,13 @@ class UpdaterPresenter extends ProtectedPresenter {
 	}
 
 	/**
+	 * Handles listing of upgradable packages
+	 */
+	public function handleList(): void {
+		$this->manager->listUpgradable([$this, 'showCommandOutput']);
+	}
+
+	/**
 	 * Handles updating package's cache
 	 */
 	public function handleUpdate(): void {
