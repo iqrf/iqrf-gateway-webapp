@@ -50,7 +50,7 @@ abstract class CommandTestCase extends TestCase {
 	}
 
 	/**
-	 * Receives the command
+	 * Receives a command
 	 * @param string $command Command
 	 * @param bool $needSudo Is sudo needed?
 	 * @param string $output Command's output
@@ -64,6 +64,21 @@ abstract class CommandTestCase extends TestCase {
 		}
 		if ($output !== null) {
 			$process->andReturn($output);
+		}
+	}
+
+	/**
+	 * Receives an async command
+	 * @param callable $callback Command's callback
+	 * @param string $command Command
+	 * @param bool|null $needSudo Is sudo needed?
+	 */
+	protected function receiveAsyncCommand(callable $callback, string $command, ?bool $needSudo = null): void {
+		$process = $this->commandManager->shouldReceive('runAsync');
+		if ($needSudo === null) {
+			$process->with($callback, $command);
+		} else {
+			$process->with($callback, $command, $needSudo);
 		}
 	}
 

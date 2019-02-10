@@ -8,7 +8,7 @@
  */
 declare(strict_types = 1);
 
-namespace Test\Router;
+namespace Test\Integration\CoreModule\Router;
 
 use App\CoreModule\Router\RouterFactory;
 use Nette\Application\IRouter;

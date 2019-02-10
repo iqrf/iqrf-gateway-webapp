@@ -44,6 +44,14 @@ class UpdaterManager {
 	}
 
 	/**
+	 * Lists upgradable packages
+	 * @param callable $callback Callback
+	 */
+	public function listUpgradable(callable $callback): void {
+		$this->commandManager->runAsync($callback, 'apt-get --just-print upgrade', true);
+	}
+
+	/**
 	 * Updates a list of packages
 	 * @param callable $callback Callback
 	 */

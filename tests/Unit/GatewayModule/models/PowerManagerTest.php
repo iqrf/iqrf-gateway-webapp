@@ -35,7 +35,7 @@ class PowerManagerTest extends CommandTestCase {
 	}
 
 	/**
-	 * Tests the function to power off iQRF Gateway
+	 * Tests the function to power off IQRF Gateway
 	 */
 	public function testPowerOff(): void {
 		$this->receiveCommand('poweroff', true, '');
@@ -43,7 +43,7 @@ class PowerManagerTest extends CommandTestCase {
 	}
 
 	/**
-	 * Tests the function to reboot iQRF Gateway
+	 * Tests the function to reboot IQRF Gateway
 	 */
 	public function testReboot(): void {
 		$this->receiveCommand('reboot', true, '');
