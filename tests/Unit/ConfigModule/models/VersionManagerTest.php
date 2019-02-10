@@ -8,7 +8,7 @@
  */
 declare(strict_types = 1);
 
-namespace Test\Unit\CoreModule\Model;
+namespace Tests\Unit\CoreModule\Model;
 
 use App\CoreModule\Models\VersionManager;
 use GuzzleHttp\Client;

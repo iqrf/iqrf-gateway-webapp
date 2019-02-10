@@ -8,7 +8,7 @@
  */
 declare(strict_types = 1);
 
-namespace Test\Unit\IqrfNetModule\Models;
+namespace Tests\Unit\IqrfNetModule\Models;
 
 use App\CoreModule\Models\FileManager;
 use App\CoreModule\Models\JsonFileManager;

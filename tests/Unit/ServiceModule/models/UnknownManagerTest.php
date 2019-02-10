@@ -8,7 +8,7 @@
  */
 declare(strict_types = 1);
 
-namespace Test\ServiceModule\Models;
+namespace Tests\Unit\ServiceModule\Models;
 
 use App\ServiceModule\Exceptions\NotSupportedInitSystemException;
 use App\ServiceModule\Models\UnknownManager;

@@ -8,7 +8,7 @@
  */
 declare(strict_types = 1);
 
-namespace Test\Unit\IqrfNetModule\Requests;
+namespace Tests\Unit\IqrfNetModule\Requests;
 
 use App\CoreModule\Exceptions\InvalidJsonException;
 use App\IqrfNetModule\Models\MessageIdManager;

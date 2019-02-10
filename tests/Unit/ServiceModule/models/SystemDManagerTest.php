@@ -8,7 +8,7 @@
  */
 declare(strict_types = 1);
 
-namespace Test\Unit\ServiceModule\Models;
+namespace Tests\Unit\ServiceModule\Models;
 
 use App\ServiceModule\Models\SystemDManager;
 use Tester\Assert;

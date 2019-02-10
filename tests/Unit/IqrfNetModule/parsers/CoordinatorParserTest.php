@@ -8,7 +8,7 @@
  */
 declare(strict_types = 1);
 
-namespace Test\Unit\IqrfNetModule\Parsers;
+namespace Tests\Unit\IqrfNetModule\Parsers;
 
 use App\IqrfNetModule\Parsers\CoordinatorParser;
 use Tester\Assert;

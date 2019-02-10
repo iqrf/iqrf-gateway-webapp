@@ -8,7 +8,7 @@
  */
 declare(strict_types = 1);
 
-namespace Test\Integration\ConfigModule\Models;
+namespace Tests\Integration\ConfigModule\Models;
 
 use App\ConfigModule\Models\ComponentManager;
 use Nette\Utils\Arrays;

@@ -8,7 +8,7 @@
  */
 declare(strict_types = 1);
 
-namespace Test\Unit\GatewayModule\Models;
+namespace Tests\Unit\GatewayModule\Models;
 
 use App\GatewayModule\Models\DeviceTreeBoardInfoManager;
 use Tester\Assert;

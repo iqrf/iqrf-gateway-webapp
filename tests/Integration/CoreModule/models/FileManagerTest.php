@@ -8,7 +8,7 @@
  */
 declare(strict_types = 1);
 
-namespace Test\Integration\CoreModule\Model;
+namespace Tests\Integration\CoreModule\Model;
 
 use App\CoreModule\Models\FileManager;
 use Nette\Utils\FileSystem;

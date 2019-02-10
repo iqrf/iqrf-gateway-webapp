@@ -8,7 +8,7 @@
  */
 declare(strict_types = 1);
 
-namespace Test\IqrfNetModule\Models;
+namespace Tests\Unit\IqrfNetModule\Models;
 
 use App\IqrfNetModule\Exceptions as IqrfException;
 use App\IqrfNetModule\Models\GwModeManager;

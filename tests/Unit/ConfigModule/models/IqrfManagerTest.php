@@ -8,7 +8,7 @@
  */
 declare(strict_types = 1);
 
-namespace Test\Unit\ConfigModule\Models;
+namespace Tests\Unit\ConfigModule\Models;
 
 use App\ConfigModule\Models\IqrfManager;
 use Tester\Assert;

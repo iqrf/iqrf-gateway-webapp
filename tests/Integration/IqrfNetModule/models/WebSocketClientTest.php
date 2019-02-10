@@ -8,7 +8,7 @@
  */
 declare(strict_types = 1);
 
-namespace Test\Integration\IqrfNetModule\Models;
+namespace Tests\Integration\IqrfNetModule\Models;
 
 use App\IqrfNetModule\Exceptions as IqrfException;
 use App\IqrfNetModule\Models\MessageIdManager;

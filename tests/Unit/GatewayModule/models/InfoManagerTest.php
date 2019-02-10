@@ -8,7 +8,7 @@
  */
 declare(strict_types = 1);
 
-namespace Test\Unit\GatewayModule\Models;
+namespace Tests\Unit\GatewayModule\Models;
 
 use App\CoreModule\Models\VersionManager;
 use App\GatewayModule\Models\InfoManager;

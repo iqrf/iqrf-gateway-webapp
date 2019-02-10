@@ -8,7 +8,7 @@
  */
 declare(strict_types = 1);
 
-namespace Test\IqrfNetModule\Responses;
+namespace Tests\Unit\IqrfNetModule\Responses;
 
 use App\IqrfNetModule\Exceptions as IqrfException;
 use App\IqrfNetModule\Responses\ApiResponse;

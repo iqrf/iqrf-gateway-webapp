@@ -8,7 +8,7 @@
  */
 declare(strict_types = 1);
 
-namespace Test\Integration\GatewayModule\Models;
+namespace Tests\Integration\GatewayModule\Models;
 
 use App\CoreModule\Models\FileManager;
 use App\CoreModule\Models\ZipArchiveManager;

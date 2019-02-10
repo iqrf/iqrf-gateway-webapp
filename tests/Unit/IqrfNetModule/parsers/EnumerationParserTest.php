@@ -8,7 +8,7 @@
  */
 declare(strict_types = 1);
 
-namespace Test\Unit\IqrfNetModule\Models;
+namespace Tests\Unit\IqrfNetModule\Parsers;
 
 use App\IqrfNetModule\Parsers\EnumerationParser;
 use Tester\Assert;
