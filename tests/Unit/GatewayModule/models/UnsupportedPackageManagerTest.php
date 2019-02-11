@@ -37,7 +37,7 @@ class UnsupportedPackageManagerTest extends CommandTestCase {
 	 */
 	protected function setUp(): void {
 		parent::setUp();
-		$this->manager = new UnsupportedPackageManager($this->commandManager);
+		$this->manager = new UnsupportedPackageManager();
 	}
 
 	/**

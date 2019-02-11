@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Datagrids;
 
 use App\CoreModule\Datagrids\DataGridFactory;
+use App\GatewayModule\Exceptions\UnsupportedPackageManagerException;
 use App\GatewayModule\Models\UpdaterManager;
 use App\GatewayModule\Presenters\UpdaterPresenter;
 use Nette\SmartObject;
@@ -65,7 +66,11 @@ class UpgradablePackagesDataGridFactory {
 	 */
 	public function create(UpdaterPresenter $presenter, string $name): DataGrid {
 		$grid = $this->dataGridFactory->create($presenter, $name);
-		$grid->setDataSource($this->manager->getUpgradable());
+		try {
+			$grid->setDataSource($this->manager->getUpgradable());
+		} catch (UnsupportedPackageManagerException $e) {
+			$presenter->redirect('Updater:default');
+		}
 		$grid->addColumnText('name', 'gateway.updater.upgradablePackages.packageName');
 		$grid->addColumnText('oldVersion', 'gateway.updater.upgradablePackages.oldVersion');
 		$grid->addColumnText('newVersion', 'gateway.updater.upgradablePackages.newVersion');

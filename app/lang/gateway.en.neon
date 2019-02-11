@@ -82,6 +82,8 @@ updater:
 		oldVersion: Old version
 		newVersion: New version
 	output: Command output
+	messages:
+		unsupportedManager: This device is using an unsupported package manager.
 
 errors:
 	log-read: Cannot read log file.

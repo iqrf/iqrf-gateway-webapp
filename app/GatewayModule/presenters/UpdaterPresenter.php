@@ -22,6 +22,7 @@ namespace App\GatewayModule\Presenters;
 
 use App\CoreModule\Presenters\ProtectedPresenter;
 use App\GatewayModule\Datagrids\UpgradablePackagesDataGridFactory;
+use App\GatewayModule\Exceptions\UnsupportedPackageManagerException;
 use App\GatewayModule\Models\UpdaterManager;
 use Ublaboo\DataGrid\DataGrid;
 use Ublaboo\DataGrid\Exception\DataGridColumnStatusException;
@@ -67,23 +68,38 @@ class UpdaterPresenter extends ProtectedPresenter {
 	 * Handles listing of upgradable packages
 	 */
 	public function handleList(): void {
-		$this->manager->listUpgradable([$this, 'showCommandOutput']);
-		$this->template->upgradablePackages = true;
-		$this->redrawControl('upgradablePackages');
+		try {
+			$this->manager->listUpgradable([$this, 'showCommandOutput']);
+			$this->template->upgradablePackages = true;
+			$this->redrawControl('upgradablePackages');
+		} catch (UnsupportedPackageManagerException $e) {
+			$this->flashMessage('gateway.updater.messages.unsupportedManager', 'danger');
+			$this->redrawControl('flashes');
+		}
 	}
 
 	/**
 	 * Handles updating package's cache
 	 */
 	public function handleUpdate(): void {
-		$this->manager->update([$this, 'showCommandOutput']);
+		try {
+			$this->manager->update([$this, 'showCommandOutput']);
+		} catch (UnsupportedPackageManagerException $e) {
+			$this->flashMessage('gateway.updater.messages.unsupportedManager', 'danger');
+			$this->redrawControl('flashes');
+		}
 	}
 
 	/**
 	 * Handles updating packages
 	 */
 	public function handleUpgrade(): void {
-		$this->manager->upgrade([$this, 'showCommandOutput']);
+		try {
+			$this->manager->upgrade([$this, 'showCommandOutput']);
+		} catch (UnsupportedPackageManagerException $e) {
+			$this->flashMessage('gateway.updater.messages.unsupportedManager', 'danger');
+			$this->redrawControl('flashes');
+		}
 	}
 
 	/**
