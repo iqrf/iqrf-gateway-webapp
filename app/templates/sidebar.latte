@@ -68,6 +68,9 @@
 						<a n:href=':Config:JsonRawApi:default'>{_config.jsonRawApi.title}</a>
 					</li>
 					<li n:if='$user->isInRole("power")'>
+						<a n:href=':Config:JsonMngMetaDataApi:default'>{_config.jsonMngMetaDataApi.title}</a>
+					</li>
+					<li n:if='$user->isInRole("power")'>
 						<a n:href=':Config:JsonSplitter:default'>{_config.jsonSplitter.title}</a>
 					</li>
 					<li><a n:href=':Config:Scheduler:default'>{_config.scheduler.title}</a></li>
