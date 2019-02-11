@@ -20,7 +20,6 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Presenters;
 
-use App\ConfigModule\Forms\JsonDpaApiRawFormFactory;
 use App\ConfigModule\Forms\JsonMngMetaDataApiFormFactory;
 use App\ConfigModule\Models\GenericManager;
 use Nette\Forms\Form;

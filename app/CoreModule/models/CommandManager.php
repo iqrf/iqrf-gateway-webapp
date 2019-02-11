@@ -87,6 +87,13 @@ class CommandManager {
 		$process->setTimeout($timeout);
 		$process->start($callback);
 		$process->wait();
+		$output = [
+			'command' => $command,
+			'stdout' => $process->getOutput(),
+			'stderr' => $process->getErrorOutput(),
+			'returnValue' => $process->getExitCode(),
+		];
+		Debugger::barDump($output, 'Command manager');
 	}
 
 }

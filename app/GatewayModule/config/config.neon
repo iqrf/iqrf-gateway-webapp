@@ -1,4 +1,5 @@
 services:
+	- App\GatewayModule\Datagrids\UpgradablePackagesDataGridFactory
 	- App\GatewayModule\Models\DiagnosticsManager(%daemon.configDir%, %daemon.logDir%)
 	- App\GatewayModule\Models\InfoManager
 	- App\GatewayModule\Models\LogManager(%daemon.logDir%)

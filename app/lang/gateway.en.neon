@@ -76,6 +76,11 @@ updater:
 	update: Update packages list
 	listUpgradable: List upgradable packages
 	upgrade: Upgrade packages
+	upgradablePackages:
+		title: List of upgradable packages
+		packageName: Name
+		oldVersion: Old version
+		newVersion: New version
 	output: Command output
 
 errors:

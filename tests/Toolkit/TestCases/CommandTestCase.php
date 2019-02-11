@@ -68,6 +68,16 @@ abstract class CommandTestCase extends TestCase {
 	}
 
 	/**
+	 * Receives a command existence check
+	 * @param string $command Command
+	 * @param bool $output Is the command exist?
+	 */
+	protected function receiveCommandExist(string $command, bool $output): void {
+		$this->commandManager->shouldReceive('commandExist')
+			->with($command)->andReturn($output);
+	}
+
+	/**
 	 * Receives an async command
 	 * @param callable $callback Command's callback
 	 * @param string $command Command

@@ -26,13 +26,24 @@
 	</div>
 </div>
 
+{snippet upgradablePackages}
+	{ifset $upgradablePackages}
+		<h2>{_gateway.updater.upgradablePackages.title}</h2>
+		<div class='panel panel-default'>
+			<div class='panel-body'>
+				{control upgradablePackagesGrid}
+			</div>
+		</div>
+	{/ifset}
+{/snippet}
+
 {snippet outputChange}
 	{ifset $outputBuffer}
-	<h2>{_gateway.updater.output}</h2>
-	<div class='panel panel-default'>
-		<div class='panel-body'>
-			<pre>{$outputBuffer}</pre>
+		<h2>{_gateway.updater.output}</h2>
+		<div class='panel panel-default'>
+			<div class='panel-body'>
+				<pre>{$outputBuffer}</pre>
+			</div>
 		</div>
-	</div>
 	{/ifset}
 {/snippet}

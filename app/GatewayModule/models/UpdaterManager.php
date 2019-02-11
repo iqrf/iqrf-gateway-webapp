@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Models;
 
 use App\CoreModule\Models\CommandManager;
+use App\GatewayModule\Exceptions\UnsupportedPackageManagerException;
 use Nette\SmartObject;
 
 /**
@@ -31,16 +32,30 @@ class UpdaterManager {
 	use SmartObject;
 
 	/**
-	 * @var CommandManager Command manager
+	 * @var IPackageManager Adapter for package manager
 	 */
-	private $commandManager;
+	private $packageManager;
+
+	/**
+	 * @var string[] Adapters for package managers
+	 */
+	private $packageManagers = [
+		AptGetPackageManager::class,
+	];
 
 	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
 	 */
 	public function __construct(CommandManager $commandManager) {
-		$this->commandManager = $commandManager;
+		foreach ($this->packageManagers as $packageManager) {
+			try {
+				$this->packageManager = new $packageManager($commandManager);
+				break;
+			} catch (UnsupportedPackageManagerException $e) {
+				$this->packageManager = new UnsupportedPackageManager();
+			}
+		}
 	}
 
 	/**
@@ -48,7 +63,15 @@ class UpdaterManager {
 	 * @param callable $callback Callback
 	 */
 	public function listUpgradable(callable $callback): void {
-		$this->commandManager->runAsync($callback, 'apt-get --just-print upgrade', true);
+		$this->packageManager->listUpgradable($callback);
+	}
+
+	/**
+	 * Returns list of upgradable packages
+	 * @return mixed[] Upgradable packages
+	 */
+	public function getUpgradable(): ?array {
+		return $this->packageManager->getUpgradable();
 	}
 
 	/**
@@ -56,7 +79,7 @@ class UpdaterManager {
 	 * @param callable $callback Callback
 	 */
 	public function update(callable $callback): void {
-		$this->commandManager->runAsync($callback, 'apt-get update', true);
+		$this->packageManager->update($callback);
 	}
 
 	/**
@@ -64,7 +87,7 @@ class UpdaterManager {
 	 * @param callable $callback Callback
 	 */
 	public function upgrade(callable $callback): void {
-		$this->commandManager->runAsync($callback, 'apt-get upgrade -y', true);
+		$this->packageManager->upgrade($callback);
 	}
 
 }

@@ -21,12 +21,22 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Presenters;
 
 use App\CoreModule\Presenters\ProtectedPresenter;
+use App\GatewayModule\Datagrids\UpgradablePackagesDataGridFactory;
 use App\GatewayModule\Models\UpdaterManager;
+use Ublaboo\DataGrid\DataGrid;
+use Ublaboo\DataGrid\Exception\DataGridColumnStatusException;
+use Ublaboo\DataGrid\Exception\DataGridException;
 
 /**
  * IQRF Gateway updater presenter
  */
 class UpdaterPresenter extends ProtectedPresenter {
+
+	/**
+	 * @var UpgradablePackagesDataGridFactory Upgradable packages data grid factory
+	 * @inject
+	 */
+	public $dataGridFactory;
 
 	/**
 	 * @var UpdaterManager Updater manager
@@ -43,10 +53,23 @@ class UpdaterPresenter extends ProtectedPresenter {
 	}
 
 	/**
+	 * Creates the data grid with upgradable packages
+	 * @param string $name Component name
+	 * @return DataGrid Datagrid with upgradable packages
+	 * @throws DataGridColumnStatusException
+	 * @throws DataGridException
+	 */
+	protected function createComponentUpgradablePackagesGrid(string $name): DataGrid {
+		return $this->dataGridFactory->create($this, $name);
+	}
+
+	/**
 	 * Handles listing of upgradable packages
 	 */
 	public function handleList(): void {
 		$this->manager->listUpgradable([$this, 'showCommandOutput']);
+		$this->template->upgradablePackages = true;
+		$this->redrawControl('upgradablePackages');
 	}
 
 	/**
