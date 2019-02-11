@@ -192,12 +192,12 @@ deploy-package-devel:
     - build-package
   environment:
     name: package-devel
-    url: https://dl.iqrfsdk.org/iqrf-gateway-webapp/stretch/all/devel
+    url: https://dl.iqrfsdk.org/iqrf-gateway-webapp/all/devel
   only:
     - master
   script:
-    - ssh www-deploy@iqrfsdk.org "rm -f /data/nginx/dl/iqrf-gateway-webapp/stretch/all/devel/*"
-    - rsync -hrvz --delete -e ssh iqrf-gateway-webapp_*all.deb www-deploy@iqrfsdk.org:/data/nginx/dl/iqrf-gateway-webapp/stretch/all/devel
+    - ssh www-deploy@iqrfsdk.org "rm -f /data/nginx/dl/iqrf-gateway-webapp/all/devel/*"
+    - rsync -hrvz --delete -e ssh iqrf-gateway-webapp_*all.deb www-deploy@iqrfsdk.org:/data/nginx/dl/iqrf-gateway-webapp/all/devel
   <<: *ssh_template
 
 deploy-package-stable:
@@ -206,12 +206,12 @@ deploy-package-stable:
     - build-package
   environment:
     name: package-stable
-    url: https://dl.iqrfsdk.org/iqrf-gateway-webapp/stretch/all/stable
+    url: https://dl.iqrfsdk.org/iqrf-gateway-webapp/all/stable
   only:
     - stable
   script:
-    - ssh www-deploy@iqrfsdk.org "rm -f /data/nginx/dl/iqrf-gateway-webapp/stretch/all/stable/*"
-    - rsync -hrvz --delete -e ssh iqrf-gateway-webapp_*all.deb www-deploy@iqrfsdk.org:/data/nginx/dl/iqrf-gateway-webapp/stretch/all/stable
+    - ssh www-deploy@iqrfsdk.org "rm -f /data/nginx/dl/iqrf-gateway-webapp/all/stable/*"
+    - rsync -hrvz --delete -e ssh iqrf-gateway-webapp_*all.deb www-deploy@iqrfsdk.org:/data/nginx/dl/iqrf-gateway-webapp/all/stable
   <<: *ssh_template
 
 deploy-user-docs:
