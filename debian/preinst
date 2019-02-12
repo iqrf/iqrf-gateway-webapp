@@ -6,3 +6,7 @@ set -e
 if [ -e /etc/iqrf-gateway-webapp/sudoers ] ; then
 	rm -rf /etc/iqrf-gateway-webapp/sudoers
 fi
+
+if [ -d /etc/sudoers.d/iqrf-gateway-webapp ] ; then
+	rm -rf /etc/sudoers.d/iqrf-gateway-webapp
+fi
