@@ -51,7 +51,7 @@ if [ "$1" = "remove" ] || [ "$1" = "purge" ]; then
 	if [ "$1" = "purge" ]; then
 		webapp_remove_config
 	fi
-	if [ -d /etc/sudoers.d/iqrf-gateway-webapp ] ; then
+	if [ ! -f /etc/sudoers.d/iqrf-gateway-webapp ] ; then
 		rm -rf /etc/sudoers.d/iqrf-gateway-webapp
 	fi
 fi
