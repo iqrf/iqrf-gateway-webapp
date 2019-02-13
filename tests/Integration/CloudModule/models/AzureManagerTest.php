@@ -118,7 +118,6 @@ class AzureManagerTest extends CloudIntegrationTestCase {
 	 * Sets up the test environment
 	 */
 	protected function setUp(): void {
-		parent::setUp();
 		$this->manager = Mockery::mock(AzureManager::class, [$this->configManager])->makePartial();
 	}
 

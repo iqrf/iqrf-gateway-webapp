@@ -51,6 +51,18 @@ abstract class CloudIntegrationTestCase extends TestCase {
 	protected $fileManager;
 
 	/**
+	 * Sets up the test environment
+	 */
+	public function __construct() {
+		$this->certPath = realpath(__DIR__ . '/../../temp/certificates/') . '/';
+		$configPath = __DIR__ . '/../../temp/configuration/';
+		$schemaPath = __DIR__ . '/../../data/cfgSchemas/';
+		$this->fileManager = new JsonFileManager($configPath);
+		$schemaManager = new JsonSchemaManager($schemaPath);
+		$this->configManager = new GenericManager($this->fileManager, $schemaManager);
+	}
+
+	/**
 	 * Mocks the HTTP(S) client
 	 * @param string $content File's content
 	 * @return Client HTTP(S) client
@@ -61,18 +73,6 @@ abstract class CloudIntegrationTestCase extends TestCase {
 		]);
 		$handler = HandlerStack::create($response);
 		return new Client(['handler' => $handler]);
-	}
-
-	/**
-	 * Sets up the test environment
-	 */
-	protected function setUp(): void {
-		$this->certPath = realpath(__DIR__ . '/../../temp/certificates/') . '/';
-		$configPath = __DIR__ . '/../../temp/configuration/';
-		$schemaPath = __DIR__ . '/../../temp/cfgSchemas/';
-		$this->fileManager = new JsonFileManager($configPath);
-		$schemaManager = new JsonSchemaManager($schemaPath);
-		$this->configManager = new GenericManager($this->fileManager, $schemaManager);
 	}
 
 	/**

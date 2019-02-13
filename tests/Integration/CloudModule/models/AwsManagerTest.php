@@ -163,7 +163,6 @@ class AwsManagerTest extends CloudIntegrationTestCase {
 	 * Sets up the test environment
 	 */
 	protected function setUp(): void {
-		parent::setUp();
 		$this->certPathReal = realpath(__DIR__ . '/../../../data/certificates/') . '/';
 		$this->certManager = new CertificateManager();
 		$client = new Client();

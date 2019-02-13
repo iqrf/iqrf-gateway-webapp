@@ -87,7 +87,6 @@ class IbmCloudManagerTest extends CloudIntegrationTestCase {
 	 * Sets up the test environment
 	 */
 	protected function setUp(): void {
-		parent::setUp();
 		$client = new Client();
 		$this->manager = Mockery::mock(IbmCloudManager::class, [$this->certPath, $this->configManager, $client])->makePartial();
 		$this->manager->shouldReceive('downloadCaCertificate')->andReturn(null);
