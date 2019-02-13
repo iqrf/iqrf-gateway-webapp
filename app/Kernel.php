@@ -18,16 +18,27 @@
  */
 declare(strict_types = 1);
 
-require __DIR__ . '/../vendor/autoload.php';
+namespace App;
 
-$configurator = new Nette\Configurator();
+use Nette\Configurator;
 
-//$configurator->setDebugMode('23.75.345.200'); // enable for your remote IP
-$configurator->enableTracy(__DIR__ . '/../log');
-$configurator->setTimeZone('Europe/Prague');
-$configurator->setTempDirectory(__DIR__ . '/../temp');
-$configurator->createRobotLoader()->addDirectory(__DIR__)->register();
-$configurator->addConfig(__DIR__ . '/config/config.neon');
+/**
+ * Application's kernel
+ */
+class Kernel {
 
-$container = $configurator->createContainer();
-return $container;
+	/**
+	 * Boots the application's kernel
+	 * @return Configurator Configurator
+	 */
+	public static function boot(): Configurator {
+		$configurator = new Configurator();
+		$configurator->enableTracy(__DIR__ . '/../log');
+		$configurator->setTimeZone('Europe/Prague');
+		$configurator->setTempDirectory(__DIR__ . '/../temp');
+		$configurator->createRobotLoader()->addDirectory(__DIR__)->register();
+		$configurator->addConfig(__DIR__ . '/config/config.neon');
+		return $configurator;
+	}
+
+}

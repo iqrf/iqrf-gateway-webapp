@@ -19,7 +19,13 @@
 
 declare(strict_types = 1);
 
+use App\Kernel;
+
 require __DIR__ . '/../vendor/autoload.php';
+
+$configurator = Kernel::boot();
+$configurator->setDebugMode(false);
+$configurator->setTempDirectory(__DIR__ . '/../temp/tests');
 
 Tester\Environment::setup();
 if (basename(__DIR__) === 'tests') {
@@ -31,12 +37,6 @@ if (basename(__DIR__) === 'tests') {
 	@mkdir($tempDir . 'zip/');
 }
 date_default_timezone_set('Etc/GMT-2');
-
-$configurator = new Nette\Configurator();
-$configurator->setDebugMode(false);
-$configurator->setTempDirectory(__DIR__ . '/../temp');
-$configurator->createRobotLoader()->addDirectory(__DIR__ . '/../app')->register();
-$configurator->addConfig(__DIR__ . '/../app/config/config.neon');
 
 $container = $configurator->createContainer();
 return $container;

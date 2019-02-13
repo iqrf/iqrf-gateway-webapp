@@ -18,8 +18,14 @@
  */
 declare(strict_types = 1);
 
+use App\Kernel;
 use Nette\Application\Application;
 
-$container = require __DIR__ . '/../app/bootstrap.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
-$container->getByType(Application::class)->run();
+// Creates DI container
+$container = Kernel::boot()->createContainer();
+// Gets application from DI container
+$application = $container->getByType(Application::class);
+// Runs application
+$application->run();
