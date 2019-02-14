@@ -81,7 +81,7 @@ class SchedulerManagerTest extends TestCase {
 			'taskId' => $timestamp,
 			'clientId' => '',
 			'timeSpec' => [
-				'cronTime' => '',
+				'cronTime' => [''],
 				'exactTime' => false,
 				'periodic' => false,
 				'period' => 0,
@@ -192,6 +192,7 @@ class SchedulerManagerTest extends TestCase {
 		$expected = $this->array;
 		$expected['message']['nadr'] = '0';
 		$this->managerTemp->save($expected);
+		$expected['timeSpec']['cronTime'] = ['*/5', '*', '1', '*', '*', '*', '*'];
 		Assert::equal($expected, $this->fileManagerTemp->read('1'));
 	}
 

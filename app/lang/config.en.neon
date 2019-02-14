@@ -251,7 +251,7 @@ scheduler:
 			cronTime: Time in cron format
 			exactTime: Exact time
 			periodic: Periodic
-			period: Period in milliseconds
+			period: Period in seconds
 			startTime: Start time
 		messaging: Messaging
 		mType: Message type

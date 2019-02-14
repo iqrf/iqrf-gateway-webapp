@@ -2,7 +2,7 @@
 	"taskId": 2,
 	"clientId": "SchedulerMessaging",
 	"timeSpec": {
-		"cronTime": "*/5 * 1 * * * *",
+		"cronTime": ["*/5", "*", "1", "*", "*", "*", "*"],
 		"exactTime": false,
 		"periodic": false,
 		"period": 0,

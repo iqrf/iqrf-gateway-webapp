@@ -27,6 +27,8 @@ use Nette\SmartObject;
 use Nette\Utils\Finder;
 use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
+use SplFileInfo;
+use Throwable;
 
 /**
  * Scheduler configuration manager
@@ -84,6 +86,25 @@ class SchedulerManager {
 	}
 
 	/**
+	 * Converts a cron time from a string to an array
+	 * @param mixed[] $config Tasks's configuration
+	 */
+	private function cronToArray(array &$config): void {
+		$cron = &$config['timeSpec']['cronTime'];
+		$cron = explode(' ', $cron);
+		$cron = array_slice($cron, 0, 7);
+	}
+
+	/**
+	 * Converts a cron time from an array to a string
+	 * @param mixed[] $config Task's configuration
+	 */
+	private function cronToString(array &$config): void {
+		$cron = &$config['timeSpec']['cronTime'];
+		$cron = implode(' ', $cron);
+	}
+
+	/**
 	 * Deletes a task
 	 * @param int $id Task ID
 	 * @throws JsonException
@@ -103,8 +124,12 @@ class SchedulerManager {
 	public function getTaskFiles(): array {
 		$dir = $this->fileManager->getDirectory();
 		$files = [];
+		/**
+		 * @var SplFileInfo $file File info
+		 */
 		foreach (Finder::findFiles('*.json')->from($dir) as $file) {
-			$fileName = Strings::replace($file->getRealPath(), ['~^' . realpath($dir) . '/~', '/.json$/'], '');
+			$dirPathPattern = ['~^' . realpath($dir) . '/~', '/.json$/'];
+			$fileName = Strings::replace($file->getRealPath(), $dirPathPattern, '');
 			$json = $this->fileManager->read($fileName);
 			if (array_key_exists('taskId', $json)) {
 				$files[$json['taskId']] = $fileName;
@@ -125,19 +150,36 @@ class SchedulerManager {
 			return $timeSpec['cronTime'];
 		}
 		if ($timeSpec['exactTime']) {
-			return $timeSpec['startTime'];
+			return 'one shot (' . $timeSpec['startTime'] . ')';
 		}
 		if ($timeSpec['periodic']) {
-			$period = $timeSpec['period'] / 1e3;
+			$period = $timeSpec['period'];
 			if ($period < 60) {
-				return 'every ' . $period . ' seconds';
+				$format = 'every %s seconds';
 			} elseif ($period < 3600) {
-				return 'every ' . gmdate('m:s', $period) . ' minutes';
+				$format = 'every %i:%S minutes';
 			} else {
-				return 'every ' . gmdate('H:m:s', $period) . ' hours';
+				$format = 'every %h:%I:%S hours';
 			}
+			return $this->formatPeriod($period, $format) ?? '';
 		}
 		return '';
+	}
+
+	/**
+	 * Formats a period in seconds
+	 * @param int $seconds Perion in seconds
+	 * @param string $format Period's format
+	 * @return string|null Formatted period
+	 */
+	private function formatPeriod(int $seconds, string $format): ?string {
+		try {
+			$date0 = new DateTime('@0');
+			$date1 = new DateTime('@0' . $seconds);
+			return $date1->diff($date0)->format($format);
+		} catch (Throwable $e) {
+			return null;
+		}
 	}
 
 	/**
@@ -241,7 +283,9 @@ class SchedulerManager {
 			return [];
 		}
 		$this->fileName = strval($files[$id]);
-		return $this->fileManager->read($this->fileName);
+		$config = $this->fileManager->read($this->fileName);
+		$this->cronToString($config);
+		return $config;
 	}
 
 	/**
@@ -255,7 +299,11 @@ class SchedulerManager {
 		$tasks = $taskManager->read('Scheduler');
 		if (array_key_exists($type, $tasks)) {
 			$task = $tasks[$type];
-			$task['taskId'] = (new DateTime())->getTimestamp();
+			try {
+				$task['taskId'] = (new DateTime())->getTimestamp();
+			} catch (Throwable $e) {
+				$task['taskId'] = null;
+			}
 			return $task;
 		}
 		return null;
@@ -263,17 +311,18 @@ class SchedulerManager {
 
 	/**
 	 * Saves the task's configuration
-	 * @param mixed[] $array Task's configuration
+	 * @param mixed[] $config Task's configuration
 	 * @throws JsonException
 	 */
-	public function save(array $array): void {
+	public function save(array $config): void {
 		if (!isset($this->fileName)) {
-			$this->fileName = strval($array['taskId']);
+			$this->fileName = strval($config['taskId']);
 		}
-		if (!isset($array['task']['message']['data']['timeout'])) {
-			unset($array['task']['message']['data']['timeout']);
+		if (!isset($config['task']['message']['data']['timeout'])) {
+			unset($config['task']['message']['data']['timeout']);
 		}
-		$this->fileManager->write($this->fileName, $array);
+		$this->cronToArray($config);
+		$this->fileManager->write($this->fileName, $config);
 	}
 
 }
