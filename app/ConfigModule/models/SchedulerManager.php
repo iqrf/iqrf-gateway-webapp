@@ -91,8 +91,10 @@ class SchedulerManager {
 	 */
 	private function cronToArray(array &$config): void {
 		$cron = &$config['timeSpec']['cronTime'];
+		$length = 7;
 		$cron = explode(' ', $cron);
-		$cron = array_slice($cron, 0, 7);
+		$cron = array_slice($cron, 0, $length);
+		$cron = array_pad($cron, $length, '');
 	}
 
 	/**
@@ -101,7 +103,7 @@ class SchedulerManager {
 	 */
 	private function cronToString(array &$config): void {
 		$cron = &$config['timeSpec']['cronTime'];
-		$cron = implode(' ', $cron);
+		$cron = Strings::trim(implode(' ', $cron));
 	}
 
 	/**

@@ -81,7 +81,7 @@ class SchedulerManagerTest extends TestCase {
 			'taskId' => $timestamp,
 			'clientId' => '',
 			'timeSpec' => [
-				'cronTime' => [''],
+				'cronTime' => ['', '', '', '', '', '', ''],
 				'exactTime' => false,
 				'periodic' => false,
 				'period' => 0,
