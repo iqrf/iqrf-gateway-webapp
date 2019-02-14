@@ -46,13 +46,14 @@ class IqrfUartFormFactory extends GenericConfigFormFactory {
 	public function create(IqrfUartPresenter $presenter): Form {
 		$this->manager->setComponent('iqrf::IqrfUart');
 		$this->presenter = $presenter;
-		$form = $this->factory->create();
-		$translator = $form->getTranslator();
-		$form->setTranslator($translator->domain('config.iqrfUart.form'));
-		$form->addText('instance', 'instance')->setRequired('messages.instance');
-		$form->addText('IqrfInterface', 'IqrfInterface')->setRequired('messages.IqrfInterface');
+		$form = $this->factory->create('config.iqrfUart.form');
+		$form->addText('instance', 'instance')
+			->setRequired('messages.instance');
+		$form->addText('IqrfInterface', 'IqrfInterface')
+			->setRequired('messages.IqrfInterface');
 		$form->addSelect('baudRate', 'config.iqrfUart.form.baudRate')
-			->setTranslator($translator)->setItems($this->baudRates, false);
+			->setTranslator($this->factory->getTranslator())
+			->setItems($this->baudRates, false);
 		$form->addInteger('powerEnableGpioPin', 'powerEnableGpioPin');
 		$form->addInteger('busEnableGpioPin', 'busEnableGpioPin');
 		$form->addSubmit('save', 'Save');

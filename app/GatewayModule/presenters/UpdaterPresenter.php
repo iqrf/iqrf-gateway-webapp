@@ -83,7 +83,10 @@ class UpdaterPresenter extends ProtectedPresenter {
 	 */
 	public function handleUpdate(): void {
 		try {
-			$this->manager->update([$this, 'showCommandOutput']);
+			$this->manager->update(function (string $type, ?string $buffer): void {
+				$this->showCommandOutput($type, $buffer);
+				$this->redrawControl('outputChange');
+			});
 		} catch (UnsupportedPackageManagerException $e) {
 			$this->flashMessage('gateway.updater.messages.unsupportedManager', 'danger');
 			$this->redrawControl('flashes');

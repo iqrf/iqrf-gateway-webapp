@@ -78,9 +78,9 @@ class UserEditFormFactory {
 		$languages = [
 			'en' => 'languages.en',
 		];
-		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('core.user.form'));
-		$form->addText('username', 'username')->setRequired('messages.username');
+		$form = $this->factory->create('core.user.form');
+		$form->addText('username', 'username')
+			->setRequired('messages.username');
 		$form->addSelect('user_type', 'userType', $userTypes);
 		$form->addSelect('language', 'language', $languages);
 		$form->setDefaults($this->userManager->getInfo($this->id));

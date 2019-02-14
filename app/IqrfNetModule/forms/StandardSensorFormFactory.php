@@ -70,9 +70,9 @@ class StandardSensorFormFactory {
 	 */
 	public function create(StandardPresenter $presenter): Form {
 		$this->presenter = $presenter;
-		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('iqrfnet.standard.sensor'));
-		$form->addInteger('address', 'address')->setRequired('messages.address');
+		$form = $this->factory->create('iqrfnet.standard.sensor');
+		$form->addInteger('address', 'address')
+			->setRequired('messages.address');
 		$form->addSubmit('enumerate', 'enumerate')->onClick[] = [$this, 'enumerate'];
 		$form->addSubmit('readAll', 'readAll')->onClick[] = [$this, 'readAll'];
 		$form->addProtection('core.errors.form-timeout');

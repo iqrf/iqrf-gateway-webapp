@@ -52,13 +52,16 @@ class InteliGlueFormFactory extends CloudFormFactory {
 	 */
 	public function create(InteliGluePresenter $presenter): Form {
 		$this->presenter = $presenter;
-		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('cloud.intelimentsInteliGlue.form'));
-		$form->addText('rootTopic', 'rootTopic')->setRequired();
-		$form->addInteger('assignedPort', 'assignedPort')->setRequired()
-			->addRule(Form::RANGE, 'Port have to be in range from 0 to 65535', [0, 65535]);
-		$form->addText('clientId', 'clientId')->setRequired();
-		$form->addText('password', 'password')->setRequired();
+		$form = $this->factory->create('cloud.intelimentsInteliGlue.form');
+		$form->addText('rootTopic', 'rootTopic')
+			->setRequired('messages.rootTopic');
+		$form->addInteger('assignedPort', 'assignedPort')
+			->setRequired('messages.assignedPort')
+			->addRule(Form::RANGE, 'messages.assignedPortRange', [0, 65535]);
+		$form->addText('clientId', 'clientId')
+			->setRequired('messages.clientId');
+		$form->addText('password', 'password')
+			->setRequired('messages.password');
 		$form->addSubmit('save', 'save')
 			->onClick[] = function (SubmitButton $button): void {
 				$this->save($button);

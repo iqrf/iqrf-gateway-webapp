@@ -85,9 +85,9 @@ class SendJsonFormFactory {
 	 */
 	public function create(SendJsonPresenter $presenter): Form {
 		$this->presenter = $presenter;
-		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('iqrfnet.send-json'));
-		$form->addTextArea('json', 'json')->setRequired('messages.json');
+		$form = $this->factory->create('iqrfnet.send-json');
+		$form->addTextArea('json', 'json')
+			->setRequired('messages.json');
 		$form->addSubmit('send', 'send');
 		$form->addProtection('core.errors.form-timeout');
 		$form->onSuccess[] = [$this, 'onSuccess'];

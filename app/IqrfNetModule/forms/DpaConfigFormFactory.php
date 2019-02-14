@@ -39,8 +39,7 @@ class DpaConfigFormFactory extends TrConfigFormFactory {
 	public function create(DpaConfigPresenter $presenter): Form {
 		$this->presenter = $presenter;
 		$this->load();
-		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('iqrfnet.dpaConfig'));
+		$form = $this->factory->create('iqrfnet.dpaConfig');
 		$this->addEmbeddedPeripherals($form);
 		$this->addOtherConfiguration($form);
 		$form->addSubmit('save', 'save');

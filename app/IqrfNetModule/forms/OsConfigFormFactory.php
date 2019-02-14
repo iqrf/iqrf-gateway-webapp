@@ -40,8 +40,7 @@ class OsConfigFormFactory extends TrConfigFormFactory {
 	public function create(OsConfigPresenter $presenter): Form {
 		$this->presenter = $presenter;
 		$this->load();
-		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('iqrfnet.osConfig'));
+		$form = $this->factory->create('iqrfnet.osConfig');
 		$this->addRfConfiguration($form);
 		$this->addRfpgwConfiguration($form);
 		$form->addSubmit('save', 'save');
@@ -79,14 +78,18 @@ class OsConfigFormFactory extends TrConfigFormFactory {
 			}
 		}
 		if (array_key_exists('stdAndLpNetwork', $this->configuration)) {
+			$warning = $form->getTranslator()->translate('messages.breakInteroperability');
 			$form->addCheckbox('stdAndLpNetwork', 'stdAndLpNetwork')
-				->setHtmlAttribute('data-warning', $form->getTranslator()->translate('messages.breakInteroperability'));
+				->setHtmlAttribute('data-warning', $warning);
 		}
-		$form->addInteger('txPower', 'txPower')->addRule(Form::RANGE, 'messages.txPower', [0, 7])
+		$form->addInteger('txPower', 'txPower')
+			->addRule(Form::RANGE, 'messages.txPower', [0, 7])
 			->setRequired('messages.txPower');
-		$form->addInteger('rxFilter', 'rxFilter')->addRule(Form::RANGE, 'messages.rxFilter', [0, 64])
+		$form->addInteger('rxFilter', 'rxFilter')
+			->addRule(Form::RANGE, 'messages.rxFilter', [0, 64])
 			->setRequired('messages.rxFilter');
-		$form->addInteger('lpRxTimeout', 'lpRxTimeout')->addRule(Form::RANGE, 'messages.lpRxTimeout', [1, 255])
+		$form->addInteger('lpRxTimeout', 'lpRxTimeout')
+			->addRule(Form::RANGE, 'messages.lpRxTimeout', [1, 255])
 			->setRequired('messages.lpRxTimeout');
 	}
 

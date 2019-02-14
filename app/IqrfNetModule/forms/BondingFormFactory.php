@@ -69,15 +69,10 @@ class BondingFormFactory {
 	 */
 	public function create(NetworkPresenter $presenter): Form {
 		$this->presenter = $presenter;
-		$form = $this->factory->create();
-		$methods = ['local', 'smartConnect'];
-		foreach ($methods as $id => $method) {
-			$methods[$method] = 'methods.' . $method;
-			unset($methods[$id]);
-		}
-		$form->setTranslator($form->getTranslator()->domain('iqrfnet.bonding'));
-		$form->addSelect('method', 'method', $methods);
-		$form->addInteger('address', 'address')->setDefaultValue(1)
+		$form = $this->factory->create('iqrfnet.bonding');
+		$form->addSelect('method', 'method', $this->getBondingMethods());
+		$form->addInteger('address', 'address')
+			->setDefaultValue(1)
 			->addRule(Form::RANGE, 'messages.address', [1, 239]);
 		$form->addCheckbox('autoAddress', 'autoAddress')
 			->addCondition(Form::EQUAL, false)
@@ -88,21 +83,34 @@ class BondingFormFactory {
 			->setRequired('messages.address');
 		$form->addText('smartConnectCode', 'smartConnectCode')
 			->addConditionOn($form['method'], Form::EQUAL, 'smartConnect')
-			->setRequired('message.smartConnectCode');
+			->setRequired('messages.smartConnectCode');
 		$form->addSubmit('bond', 'bondNode')
-			->setHtmlAttribute('id', 'frm-iqrfNetBondingForm-bondNode')
+			->setHtmlId('frm-iqrfNetBondingForm-bondNode')
 			->onClick[] = [$this, 'bondNode'];
 		$form->addSubmit('rebond', 'rebondNode')
-			->setHtmlAttribute('id', 'frm-iqrfNetBondingForm-rebond')
+			->setHtmlId('frm-iqrfNetBondingForm-rebond')
 			->onClick[] = [$this, 'rebondNode'];
 		$form->addSubmit('remove', 'removeNode')
-			->setHtmlAttribute('id', 'frm-iqrfNetBondingForm-remove')
+			->setHtmlId('frm-iqrfNetBondingForm-remove')
 			->onClick[] = [$this, 'removeNode'];
 		$form->addSubmit('clear', 'clearAllBonds')
-			->setHtmlAttribute('id', 'frm-iqrfNetBondingForm-clear')
+			->setHtmlId('frm-iqrfNetBondingForm-clear')
 			->onClick[] = [$this, 'clearAllBonds'];
 		$form->addProtection('core.errors.form-timeout');
 		return $form;
+	}
+
+	/**
+	 * Returns bonding methods
+	 * @return mixed[] Bonding methods
+	 */
+	private function getBondingMethods(): array {
+		$methods = ['local', 'smartConnect'];
+		foreach ($methods as $id => $method) {
+			$methods[$method] = 'methods.' . $method;
+			unset($methods[$id]);
+		}
+		return $methods;
 	}
 
 	/**

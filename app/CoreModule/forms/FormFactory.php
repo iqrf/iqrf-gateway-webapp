@@ -44,7 +44,7 @@ class FormFactory {
 
 	/**
 	 * Constructor
-	 * @param Translator $translator Translator
+	 * @param Translator $translator Translator service
 	 * @param IFormFactory $iFormFactory Form factory interface
 	 */
 	public function __construct(Translator $translator, IFormFactory $iFormFactory) {
@@ -54,12 +54,26 @@ class FormFactory {
 
 	/**
 	 * Creates a form and set the translator
+	 * @param string|null $translationPrefix Translated message prefix
 	 * @return Form Form
 	 */
-	public function create(): Form {
+	public function create(?string $translationPrefix = null): Form {
 		$form = $this->iFormFactory->create();
-		$form->setTranslator($this->translator);
+		if ($translationPrefix === null) {
+			$form->setTranslator($this->translator);
+		} else {
+			$translator = $this->translator->domain($translationPrefix);
+			$form->setTranslator($translator);
+		}
 		return $form;
+	}
+
+	/**
+	 * Returns the translator service
+	 * @return Translator Translator service
+	 */
+	public function getTranslator(): Translator {
+		return $this->translator;
 	}
 
 }

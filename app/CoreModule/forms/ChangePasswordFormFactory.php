@@ -73,10 +73,11 @@ class ChangePasswordFormFactory {
 	 */
 	public function create(ProfilePresenter $presenter): Form {
 		$this->presenter = $presenter;
-		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('core.changePassword.form'));
-		$form->addPassword('oldPassword', 'oldPassword')->setRequired('messages.oldPassword');
-		$form->addPassword('newPassword', 'newPassword')->setRequired('messages.newPassword');
+		$form = $this->factory->create('core.changePassword.form');
+		$form->addPassword('oldPassword', 'oldPassword')
+			->setRequired('messages.oldPassword');
+		$form->addPassword('newPassword', 'newPassword')
+			->setRequired('messages.newPassword');
 		$form->addSubmit('change', 'change');
 		$form->onSuccess[] = [$this, 'change'];
 		return $form;

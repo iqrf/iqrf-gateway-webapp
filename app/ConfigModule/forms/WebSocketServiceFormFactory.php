@@ -42,10 +42,11 @@ class WebSocketServiceFormFactory extends GenericConfigFormFactory {
 		$this->manager->setComponent('shape::WebsocketCppService');
 		$this->redirect = 'Websocket:default';
 		$this->presenter = $presenter;
-		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('config.websocket.form'));
-		$form->addText('instance', 'instance')->setRequired('messages.instance');
-		$form->addInteger('WebsocketPort', 'WebsocketPort')->setRequired('messages.WebsocketPort');
+		$form = $this->factory->create('config.websocket.form');
+		$form->addText('instance', 'instance')
+			->setRequired('messages.serviceInstance');
+		$form->addInteger('WebsocketPort', 'WebsocketPort')
+			->setRequired('messages.WebsocketPort');
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');
 		$id = $presenter->getParameter('id');

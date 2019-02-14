@@ -53,8 +53,7 @@ class TraceFileFormFactory extends GenericConfigFormFactory {
 		$this->redirect = 'Tracer:default';
 		$this->presenter = $presenter;
 		$defaults = $this->load();
-		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('config.tracer.form'));
+		$form = $this->factory->create('config.tracer.form');
 		$form->addText('instance', 'instance');
 		$form->addText('path', 'path');
 		$form->addText('filename', 'filename');

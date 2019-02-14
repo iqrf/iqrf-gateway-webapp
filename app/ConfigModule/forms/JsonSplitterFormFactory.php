@@ -41,9 +41,9 @@ class JsonSplitterFormFactory extends GenericConfigFormFactory {
 	public function create(JsonSplitterPresenter $presenter): Form {
 		$this->manager->setComponent('iqrf::JsonSplitter');
 		$this->presenter = $presenter;
-		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('config.jsonSplitter.form'));
-		$form->addText('instance', 'instance')->setRequired('messages.instance');
+		$form = $this->factory->create('config.jsonSplitter.form');
+		$form->addText('instance', 'instance')
+			->setRequired('messages.instance');
 		$form->addCheckbox('validateJsonResponse', 'validateJsonResponse');
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');

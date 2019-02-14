@@ -92,9 +92,8 @@ class SchedulerFormFactory {
 	 */
 	public function create(SchedulerPresenter $presenter): Form {
 		$this->presenter = $presenter;
-		$form = $this->factory->create();
-		$translator = $form->getTranslator();
-		$form->setTranslator($translator->domain('config.scheduler.form'));
+		$form = $this->factory->create('config.scheduler.form');
+		$translator = $this->factory->getTranslator();
 		try {
 			$this->load($presenter->getParameters());
 			$messagings = $this->manager->getMessagings();
@@ -108,14 +107,16 @@ class SchedulerFormFactory {
 			->setItems($services, false)
 			->setTranslator($translator)
 			->setPrompt('config.scheduler.form.messages.clientId-prompt')
-			->setRequired('messages.clientId')->checkDefaultValue(false);
+			->setRequired('messages.clientId')
+			->checkDefaultValue(false);
 		$this->addTimeSpec($form);
 		$task = $form->addContainer('task');
 		$task->addSelect('messaging', 'config.scheduler.form.messaging')
 			->setItems($messagings, false)
 			->setTranslator($translator)
 			->setPrompt('config.scheduler.form.messages.messaging-prompt')
-			->setRequired('messages.messaging')->checkDefaultValue(false);
+			->setRequired('messages.messaging')
+			->checkDefaultValue(false);
 		$this->addMessage($task);
 		$form->addSubmit('save', 'save')->onClick[] = [$this, 'save'];
 		$form->addSubmit('saveAndRestart', 'saveAndRestart')->onClick[] = [$this, 'saveAndRestart'];
@@ -132,7 +133,8 @@ class SchedulerFormFactory {
 		$message = $task->addContainer('message');
 		$message->addSelect('mType', 'mType', $this->mTypes)
 			->setPrompt('messages.mType-prompt')
-			->setRequired('messages.mType')->checkDefaultValue(false);
+			->setRequired('messages.mType')
+			->checkDefaultValue(false);
 		$data = $message->addContainer('data');
 		$data->addText('msgId', 'msgId');
 		$data->addInteger('timeout', 'timeout');

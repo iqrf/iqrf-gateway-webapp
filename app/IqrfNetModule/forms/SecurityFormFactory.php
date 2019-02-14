@@ -71,17 +71,19 @@ class SecurityFormFactory {
 	 */
 	public function create(TrSecurityPresenter $presenter): Form {
 		$this->presenter = $presenter;
-		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('iqrfnet.security'));
+		$form = $this->factory->create('iqrfnet.security');
 		$inputFormats = [
 			DataFormat::ASCII => 'input-formats.ascii',
 			DataFormat::HEX => 'input-formats.hex',
 		];
-		$form->addSelect('format', 'input-format', $inputFormats)->setDefaultValue(DataFormat::ASCII);
-		$form->addText('password', 'password')->setRequired(false)
+		$form->addSelect('format', 'input-format', $inputFormats)
+			->setDefaultValue(DataFormat::ASCII);
+		$form->addText('password', 'password')
+			->setRequired(false)
 			->addConditionOn($form['format'], Form::EQUAL, DataFormat::ASCII)
 			->addRule(Form::MAX_LENGTH, 'messages.ascii-password-length', 16)
-			->elseCondition($form['format'], Form::EQUAL, DataFormat::HEX)
+			->endCondition()
+			->addConditionOn($form['format'], Form::EQUAL, DataFormat::HEX)
 			->addRule(Form::PATTERN, 'messages.hex-password-format', '[0-9A-Fa-f]{0,32}')
 			->addRule(Form::MAX_LENGTH, 'messages.hex-password-length', 32);
 		$form->addSubmit('setAccessPassword', 'setAccessPassword')->onClick[] = [$this, 'accessPassword'];

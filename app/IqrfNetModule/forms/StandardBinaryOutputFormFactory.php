@@ -71,10 +71,11 @@ class StandardBinaryOutputFormFactory {
 	 */
 	public function create(StandardPresenter $presenter): Form {
 		$this->presenter = $presenter;
-		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('iqrfnet.standard.binaryOutput'));
-		$form->addInteger('address', 'address')->setRequired('messages.address');
-		$form->addInteger('index', 'index')->setDefaultValue(0)
+		$form = $this->factory->create('iqrfnet.standard.binaryOutput');
+		$form->addInteger('address', 'address')
+			->setRequired('messages.address');
+		$form->addInteger('index', 'index')
+			->setDefaultValue(0)
 			->addRule(Form::RANGE, 'messages.index', [0, 31]);
 		$form->addCheckbox('state', 'state');
 		$form->addSubmit('enumerate', 'enumerate')->onClick[] = [$this, 'enumerate'];

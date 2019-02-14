@@ -74,13 +74,15 @@ class ComponentsFormFactory {
 	 */
 	public function create(ComponentPresenter $presenter): Form {
 		$this->presenter = $presenter;
-		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('config.components.form'));
-		$form->addText('name', 'name')->setRequired('messages.name');
+		$form = $this->factory->create('config.components.form');
+		$form->addText('name', 'name')
+			->setRequired('messages.name');
 		$form->addText('libraryPath', 'libraryPath');
-		$form->addText('libraryName', 'libraryName')->setRequired('messages.libraryName');
+		$form->addText('libraryName', 'libraryName')
+			->setRequired('messages.libraryName');
 		$form->addCheckbox('enabled', 'enabled');
-		$form->addInteger('startlevel', 'startlevel')->setRequired('messages.startLevel');
+		$form->addInteger('startlevel', 'startlevel')
+			->setRequired('messages.startLevel');
 		$form->addSubmit('save', 'Save');
 		$id = $presenter->getParameter('id');
 		if (isset($id)) {

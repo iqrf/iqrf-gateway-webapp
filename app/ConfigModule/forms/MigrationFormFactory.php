@@ -71,8 +71,7 @@ class MigrationFormFactory {
 	 */
 	public function create(MigrationPresenter $presenter): Form {
 		$this->presenter = $presenter;
-		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('config.migration'));
+		$form = $this->factory->create('config.migration');
 		$form->addUpload('configuration', 'configuration')
 			->setRequired('messages.configuration')
 			->setHtmlAttribute('accept', '.zip');
@@ -101,7 +100,7 @@ class MigrationFormFactory {
 			$this->presenter->flashMessage('service.errors.unsupportedInit', 'danger');
 		} catch (IOException $e) {
 			/// TODO: Use custom error message.
-			$$this->presenter->flashMessage('config.messages.writeFailures.ioError', 'danger');
+			$this->presenter->flashMessage('config.messages.writeFailures.ioError', 'danger');
 		} finally {
 			$this->presenter->redirect('Homepage:default');
 		}

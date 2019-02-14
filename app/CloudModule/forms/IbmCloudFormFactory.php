@@ -52,13 +52,18 @@ class IbmCloudFormFactory extends CloudFormFactory {
 	 */
 	public function create(IbmCloudPresenter $presenter): Form {
 		$this->presenter = $presenter;
-		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('cloud.ibmCloud.form'));
-		$form->addText('organizationId', 'organizationId')->setRequired();
-		$form->addText('deviceType', 'deviceType')->setRequired();
-		$form->addText('deviceId', 'deviceId')->setRequired();
-		$form->addText('token', 'token')->setRequired();
-		$form->addText('eventId', 'eventId')->setRequired()->setDefaultValue('iqrf');
+		$form = $this->factory->create('cloud.ibmCloud.form');
+		$form->addText('organizationId', 'organizationId')
+			->setRequired('messages.organizationId');
+		$form->addText('deviceType', 'deviceType')
+			->setRequired('messages.deviceType');
+		$form->addText('deviceId', 'deviceId')
+			->setRequired('messages.deviceId');
+		$form->addText('token', 'token')
+			->setRequired('messages.token');
+		$form->addText('eventId', 'eventId')
+			->setRequired('messages.eventId')
+			->setDefaultValue('iqrf');
 		$form->addSubmit('save', 'save')
 			->onClick[] = function (SubmitButton $button): void {
 				$this->save($button);

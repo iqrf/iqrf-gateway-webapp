@@ -41,9 +41,9 @@ class JsonMngMetaDataApiFormFactory extends GenericConfigFormFactory {
 	public function create(JsonMngMetaDataApiPresenter $presenter): Form {
 		$this->manager->setComponent('iqrf::JsonMngMetaDataApi');
 		$this->presenter = $presenter;
-		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('config.jsonMngMetaDataApi.form'));
-		$form->addText('instance', 'instance')->setRequired('messages.instance');
+		$form = $this->factory->create('config.jsonMngMetaDataApi.form');
+		$form->addText('instance', 'instance')
+			->setRequired('messages.instance');
 		$form->addCheckbox('metaDataToMessages', 'metaDataToMessages');
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');

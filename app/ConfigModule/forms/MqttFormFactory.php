@@ -43,22 +43,32 @@ class MqttFormFactory extends GenericConfigFormFactory {
 		$this->redirect = 'Mqtt:default';
 		$this->presenter = $presenter;
 		$qos = ['QoSes.QoS0', 'QoSes.QoS1', 'QoSes.QoS2'];
-		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('config.mqtt.form'));
-		$form->addText('instance', 'instance')->setRequired('messages.instance');
-		$form->addText('BrokerAddr', 'BrokerAddr')->setRequired('messages.BrokerAddr');
-		$form->addText('ClientId', 'ClientId')->setRequired('messages.ClientId');
-		$form->addInteger('Persistence', 'Persistence')->setDefaultValue(1);
-		$form->addSelect('Qos', 'QoS', $qos)->setDefaultValue(1);
-		$form->addText('TopicRequest', 'TopicRequest')->setRequired('messages.TopicRequest');
-		$form->addText('TopicResponse', 'TopicResponse')->setRequired('messages.TopicResponse');
+		$form = $this->factory->create('config.mqtt.form');
+		$form->addText('instance', 'instance')
+			->setRequired('messages.instance');
+		$form->addText('BrokerAddr', 'BrokerAddr')
+			->setRequired('messages.BrokerAddr');
+		$form->addText('ClientId', 'ClientId')
+			->setRequired('messages.ClientId');
+		$form->addInteger('Persistence', 'Persistence')
+			->setDefaultValue(1);
+		$form->addSelect('Qos', 'QoS', $qos)
+			->setDefaultValue(1);
+		$form->addText('TopicRequest', 'TopicRequest')
+			->setRequired('messages.TopicRequest');
+		$form->addText('TopicResponse', 'TopicResponse')
+			->setRequired('messages.TopicResponse');
 		$form->addText('User', 'User');
 		$form->addText('Password', 'Password');
 		$form->addCheckbox('EnabledSSL', 'EnabledSSL');
-		$form->addInteger('KeepAliveInterval', 'KeepAliveInterval')->setDefaultValue(20);
-		$form->addInteger('ConnectTimeout', 'ConnectTimeout')->setDefaultValue(5);
-		$form->addInteger('MinReconnect', 'MinReconnect')->setDefaultValue(1);
-		$form->addInteger('MaxReconnect', 'MaxReconnect')->setDefaultValue(64);
+		$form->addInteger('KeepAliveInterval', 'KeepAliveInterval')
+			->setDefaultValue(20);
+		$form->addInteger('ConnectTimeout', 'ConnectTimeout')
+			->setDefaultValue(5);
+		$form->addInteger('MinReconnect', 'MinReconnect')
+			->setDefaultValue(1);
+		$form->addInteger('MaxReconnect', 'MaxReconnect')
+			->setDefaultValue(64);
 		$form->addText('TrustStore', 'TrustStore');
 		$form->addText('KeyStore', 'KeyStore');
 		$form->addText('PrivateKey', 'PrivateKey');

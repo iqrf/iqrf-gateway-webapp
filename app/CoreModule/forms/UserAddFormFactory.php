@@ -67,10 +67,11 @@ class UserAddFormFactory {
 	 */
 	public function create(BasePresenter $presenter): Form {
 		$this->presenter = $presenter;
-		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('core.user.form'));
-		$form->addText('username', 'username')->setRequired('messages.username');
-		$form->addPassword('password', 'password')->setRequired('messages.password');
+		$form = $this->factory->create('core.user.form');
+		$form->addText('username', 'username')
+			->setRequired('messages.username');
+		$form->addPassword('password', 'password')
+			->setRequired('messages.password');
 		$form->addSelect('userType', 'userType', $this->getUserTypes());
 		$form->addSelect('language', 'language', $this->getLanguages());
 		$form->addSubmit('add', 'add');

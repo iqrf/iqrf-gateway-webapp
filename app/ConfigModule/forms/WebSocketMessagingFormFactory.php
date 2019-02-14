@@ -22,7 +22,6 @@ namespace App\ConfigModule\Forms;
 
 use App\ConfigModule\Presenters\WebsocketPresenter;
 use Nette\Forms\Form;
-use Nette\Localization\ITranslator;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;
 
@@ -34,11 +33,6 @@ class WebSocketMessagingFormFactory extends GenericConfigFormFactory {
 	use SmartObject;
 
 	/**
-	 * @var ITranslator Translator
-	 */
-	private $translator;
-
-	/**
 	 * Creates the WebSocket messaging configuration form
 	 * @param WebsocketPresenter $presenter WebSocket interface configuration presenter
 	 * @return Form WebSocket messaging configuration form
@@ -48,11 +42,10 @@ class WebSocketMessagingFormFactory extends GenericConfigFormFactory {
 		$this->manager->setComponent('iqrf::WebsocketMessaging');
 		$this->redirect = 'Websocket:default';
 		$this->presenter = $presenter;
-		$form = $this->factory->create();
-		$this->translator = $form->getTranslator();
-		$form->setTranslator($this->translator->domain('config.websocket.form'));
+		$form = $this->factory->create('config.websocket.form');
 		$defaults = $this->loadData($presenter);
-		$form->addText('instance', 'instance')->setRequired('messages.instance');
+		$form->addText('instance', 'instance')
+			->setRequired('messages.messagingInstance');
 		$form->addCheckbox('acceptAsyncMsg', 'acceptAsyncMsg');
 		$this->addRequiredInterfaces($form, $defaults);
 		$form->addSubmit('save', 'Save');
@@ -87,17 +80,18 @@ class WebSocketMessagingFormFactory extends GenericConfigFormFactory {
 	 * @throws JsonException
 	 */
 	private function addRequiredInterfaces(Form $form, array &$data): void {
+		$translator = $this->factory->getTranslator();
 		$requiredInterfaces = $form->addContainer('RequiredInterfaces');
 		foreach ($data['RequiredInterfaces'] as $interfaceId => $requiredInterface) {
 			$container = $requiredInterfaces->addContainer($interfaceId);
 			$container->addSelect('name', 'config.websocket.form.requiredInterface.name')
 				->setItems(['shape::IWebsocketService'], false)
-				->setTranslator($this->translator)
+				->setTranslator($translator)
 				->setRequired('messages.requiredInterface.name');
 			$target = $container->addContainer('target');
 			$target->addSelect('instance', 'config.websocket.form.requiredInterface.instance')
 				->setItems($this->manager->getComponentInstances('shape::WebsocketCppService'), false)
-				->setTranslator($this->translator)
+				->setTranslator($translator)
 				->setRequired('messages.requiredInterface.instance');
 			if ($requiredInterface['target']['instance'] === '') {
 				unset($data['RequiredInterfaces'][$interfaceId]['target']['instance']);

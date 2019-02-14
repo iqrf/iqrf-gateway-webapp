@@ -69,8 +69,7 @@ class MainFormFactory {
 	 */
 	public function create(MainPresenter $presenter): Form {
 		$this->presenter = $presenter;
-		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('config.main.form'));
+		$form = $this->factory->create('config.main.form');
 		$form->addText('applicationName', 'applicationName');
 		$form->addText('resourceDir', 'resourceDir');
 		$form->addText('dataDir', 'dataDir');

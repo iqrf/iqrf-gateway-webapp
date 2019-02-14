@@ -41,9 +41,9 @@ class JsonDpaApiRawFormFactory extends GenericConfigFormFactory {
 	public function create(JsonRawApiPresenter $presenter): Form {
 		$this->manager->setComponent('iqrf::JsonDpaApiRaw');
 		$this->presenter = $presenter;
-		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('config.jsonRawApi.form'));
-		$form->addText('instance', 'instance')->setRequired('messages.instance');
+		$form = $this->factory->create('config.jsonRawApi.form');
+		$form->addText('instance', 'instance')
+			->setRequired('messages.instance');
 		$form->addCheckbox('asyncDpaMessage', 'asyncDpaMessage');
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');

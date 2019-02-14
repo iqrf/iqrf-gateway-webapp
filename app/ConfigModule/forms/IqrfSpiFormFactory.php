@@ -41,10 +41,11 @@ class IqrfSpiFormFactory extends GenericConfigFormFactory {
 	public function create(IqrfSpiPresenter $presenter): Form {
 		$this->manager->setComponent('iqrf::IqrfSpi');
 		$this->presenter = $presenter;
-		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('config.iqrfSpi.form'));
-		$form->addText('instance', 'instance')->setRequired('messages.instance');
-		$form->addText('IqrfInterface', 'IqrfInterface')->setRequired('messages.IqrfInterface');
+		$form = $this->factory->create('config.iqrfSpi.form');
+		$form->addText('instance', 'instance')
+			->setRequired('messages.instance');
+		$form->addText('IqrfInterface', 'IqrfInterface')
+			->setRequired('messages.IqrfInterface');
 		$form->addInteger('powerEnableGpioPin', 'powerEnableGpioPin');
 		$form->addInteger('busEnableGpioPin', 'busEnableGpioPin');
 		$form->addInteger('pgmSwitchGpioPin', 'pgmSwitchGpioPin');

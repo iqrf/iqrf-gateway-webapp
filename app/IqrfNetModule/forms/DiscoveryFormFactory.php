@@ -69,12 +69,13 @@ class DiscoveryFormFactory {
 	 */
 	public function create(NetworkPresenter $presenter): Form {
 		$this->presenter = $presenter;
-		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('iqrfnet.discovery'));
-		$form->addInteger('txPower', 'txPower')->setDefaultValue(6)
+		$form = $this->factory->create('iqrfnet.discovery');
+		$form->addInteger('txPower', 'txPower')
+			->setDefaultValue(6)
 			->addRule(Form::RANGE, 'messages.txPower', [0, 7])
 			->setRequired('messages.txPower');
-		$form->addInteger('maxNode', 'maxNodeAddress')->setDefaultValue(239)
+		$form->addInteger('maxNode', 'maxNodeAddress')
+			->setDefaultValue(239)
 			->addRule(Form::RANGE, 'messages.maxNodeAddress', [0, 239])
 			->setRequired('messages.maxNodeAddress');
 		$form->addSubmit('send', 'send');

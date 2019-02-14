@@ -41,9 +41,9 @@ class IqrfDpaFormFactory extends GenericConfigFormFactory {
 	public function create(IqrfDpaPresenter $presenter): Form {
 		$this->manager->setComponent('iqrf::IqrfDpa');
 		$this->presenter = $presenter;
-		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('config.iqrfDpa.form'));
-		$form->addText('instance', 'instance')->setRequired('messages.instance');
+		$form = $this->factory->create('config.iqrfDpa.form');
+		$form->addText('instance', 'instance')
+			->setRequired('messages.instance');
 		$form->addInteger('DpaHandlerTimeout', 'DpaHandlerTimeout')
 			->setRequired('messages.DpaHandlerTimeout')
 			->addRule(Form::MIN, 'messages.DpaHandlerTimeout-rule', 0);

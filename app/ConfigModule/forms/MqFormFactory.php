@@ -42,11 +42,13 @@ class MqFormFactory extends GenericConfigFormFactory {
 		$this->manager->setComponent('iqrf::MqMessaging');
 		$this->redirect = 'Mq:default';
 		$this->presenter = $presenter;
-		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('config.mq.form'));
-		$form->addText('instance', 'instance')->setRequired('messages.instance');
-		$form->addText('LocalMqName', 'LocalMqName')->setRequired('messages.LocalMqName');
-		$form->addText('RemoteMqName', 'RemoteMqName')->setRequired('messages.RemoteMqName');
+		$form = $this->factory->create('config.mq.form');
+		$form->addText('instance', 'instance')
+			->setRequired('messages.instance');
+		$form->addText('LocalMqName', 'LocalMqName')
+			->setRequired('messages.LocalMqName');
+		$form->addText('RemoteMqName', 'RemoteMqName')
+			->setRequired('messages.RemoteMqName');
 		$form->addCheckbox('acceptAsyncMsg', 'acceptAsyncMsg');
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');

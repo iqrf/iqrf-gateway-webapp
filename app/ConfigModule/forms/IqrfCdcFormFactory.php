@@ -41,10 +41,11 @@ class IqrfCdcFormFactory extends GenericConfigFormFactory {
 	public function create(IqrfCdcPresenter $presenter): Form {
 		$this->manager->setComponent('iqrf::IqrfCdc');
 		$this->presenter = $presenter;
-		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('config.iqrfCdc.form'));
-		$form->addText('instance', 'instance')->setRequired('messages.instance');
-		$form->addText('IqrfInterface', 'IqrfInterface')->setRequired('messages.IqrfInterface');
+		$form = $this->factory->create('config.iqrfCdc.form');
+		$form->addText('instance', 'instance')
+			->setRequired('messages.instance');
+		$form->addText('IqrfInterface', 'IqrfInterface')
+			->setRequired('messages.IqrfInterface');
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');
 		$form->setDefaults($this->manager->load(0));

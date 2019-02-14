@@ -68,18 +68,21 @@ class SendRawFormFactory {
 	 */
 	public function create(SendRawPresenter $presenter): Form {
 		$this->presenter = $presenter;
-		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('iqrfnet.send-packet'));
-		$form->addText('packet', 'packet')->setRequired('messages.packet');
+		$form = $this->factory->create('iqrfnet.send-packet');
+		$form->addText('packet', 'packet')
+			->setRequired('messages.packet');
 		$form->addCheckbox('overwriteAddress', 'overwriteAddress')
 			->setDefaultValue(false);
-		$form->addText('address', 'customAddress')->setDefaultValue('00')->setRequired(false)
+		$form->addText('address', 'customAddress')
+			->setDefaultValue('00')
+			->setRequired(false)
 			->addRule(Form::PATTERN, 'messages.address-rule', '[0-9A-Fa-f]{1,2}')
 			->addRule(Form::MAX_LENGTH, 'messages.address-length', 2)
 			->addConditionOn($form['overwriteAddress'], Form::EQUAL, true);
 		$form->addCheckbox('timeoutEnabled', 'overwriteTimeout')
 			->setDefaultValue(true);
-		$form->addInteger('timeout', 'customTimeout')->setDefaultValue(1000)
+		$form->addInteger('timeout', 'customTimeout')
+			->setDefaultValue(1000)
 			->addConditionOn($form['timeoutEnabled'], Form::EQUAL, true)
 			->setRequired('customTimeout');
 		$form->addSubmit('send', 'send');

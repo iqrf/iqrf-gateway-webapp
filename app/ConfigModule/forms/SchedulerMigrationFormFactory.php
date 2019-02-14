@@ -69,8 +69,7 @@ class SchedulerMigrationFormFactory {
 	 */
 	public function create(MigrationPresenter $presenter): Form {
 		$this->presenter = $presenter;
-		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('config.schedulerMigration'));
+		$form = $this->factory->create('config.schedulerMigration');
 		$form->addUpload('configuration', 'configuration')
 			->setRequired('messages.configuration')
 			->setHtmlAttribute('accept', '.zip');

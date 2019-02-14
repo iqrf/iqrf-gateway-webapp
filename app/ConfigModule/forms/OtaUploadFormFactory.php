@@ -41,10 +41,11 @@ class OtaUploadFormFactory extends GenericConfigFormFactory {
 	public function create(IqmeshPresenter $presenter): Form {
 		$this->manager->setComponent('iqrf::OtaUploadService');
 		$this->presenter = $presenter;
-		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('config.iqmesh.otaUpload.form'));
-		$form->addText('instance', 'instance')->setRequired('messages.instance');
-		$form->addText('uploadPath', 'uploadPath')->setRequired('messages.uploadPath');
+		$form = $this->factory->create('config.iqmesh.otaUpload.form');
+		$form->addText('instance', 'instance')
+			->setRequired('messages.instance');
+		$form->addText('uploadPath', 'uploadPath')
+			->setRequired('messages.uploadPath');
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');
 		$form->setDefaults($this->manager->load(0));

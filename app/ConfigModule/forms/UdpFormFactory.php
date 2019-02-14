@@ -42,11 +42,13 @@ class UdpFormFactory extends GenericConfigFormFactory {
 		$this->manager->setComponent('iqrf::UdpMessaging');
 		$this->redirect = 'Udp:default';
 		$this->presenter = $presenter;
-		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('config.udp.form'));
-		$form->addText('instance', 'instance')->setRequired('messages.instance');
-		$form->addInteger('RemotePort', 'RemotePort')->setRequired('messages.RemotePort');
-		$form->addInteger('LocalPort', 'LocalPort')->setRequired('messages.LocalPort');
+		$form = $this->factory->create('config.udp.form');
+		$form->addText('instance', 'instance')
+			->setRequired('messages.instance');
+		$form->addInteger('RemotePort', 'RemotePort')
+			->setRequired('messages.RemotePort');
+		$form->addInteger('LocalPort', 'LocalPort')
+			->setRequired('messages.LocalPort');
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');
 		$id = $presenter->getParameter('id');

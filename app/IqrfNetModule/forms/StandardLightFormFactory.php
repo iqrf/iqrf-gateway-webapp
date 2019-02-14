@@ -71,12 +71,14 @@ class StandardLightFormFactory {
 	 */
 	public function create(StandardPresenter $presenter): Form {
 		$this->presenter = $presenter;
-		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('iqrfnet.standard.light'));
-		$form->addInteger('address', 'address')->setRequired('messages.address');
-		$form->addInteger('index', 'index')->setDefaultValue(0)
+		$form = $this->factory->create('iqrfnet.standard.light');
+		$form->addInteger('address', 'address')
+			->setRequired('messages.address');
+		$form->addInteger('index', 'index')
+			->setDefaultValue(0)
 			->addRule(Form::RANGE, 'messages.index', [0, 31]);
-		$form->addInteger('power', 'power')->setDefaultValue(50)
+		$form->addInteger('power', 'power')
+			->setDefaultValue(50)
 			->addRule(Form::RANGE, 'messages.power', [0, 100]);
 		$form->addSubmit('enumerate', 'enumerate')->onClick[] = [$this, 'enumerate'];
 		$form->addSubmit('get', 'get')->onClick[] = [$this, 'getPower'];

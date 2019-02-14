@@ -351,6 +351,9 @@ websocket:
 			messagingInstance: Please enter name of WebSocket messaging.
 			serviceInstance: Please enter name of WebSocket service.
 			WebsocketPort: Please enter port of WebSocket service.
+			requiredInterface:
+				name: Please enter the name of required interface.
+				instance: Please enter the required WebSocket service instance.
 		Save: Save
 	interface:
 		add: Add WebSocket interface

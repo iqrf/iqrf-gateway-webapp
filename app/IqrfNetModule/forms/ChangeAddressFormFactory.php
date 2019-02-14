@@ -54,8 +54,7 @@ class ChangeAddressFormFactory {
 	 */
 	public function create(ProtectedPresenter $presenter): Form {
 		$this->presenter = $presenter;
-		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('iqrfnet.changeAddress'));
+		$form = $this->factory->create('iqrfnet.changeAddress');
 		$form->addInteger('address', 'address')
 			->addRule(Form::RANGE, 'messages.address', [0, 239])
 			->setRequired('messages.address');

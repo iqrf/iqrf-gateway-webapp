@@ -69,10 +69,9 @@ class WebSocketFormFactory {
 	 */
 	public function create(WebsocketPresenter $presenter): Form {
 		$this->presenter = $presenter;
-		$form = $this->factory->create();
-		$translator = $form->getTranslator();
-		$form->setTranslator($translator->domain('config.websocket.form'));
-		$form->addInteger('port', 'WebsocketPort')->setRequired('messages.WebsocketPort');
+		$form = $this->factory->create('config.websocket.form');
+		$form->addInteger('port', 'WebsocketPort')
+			->setRequired('messages.WebsocketPort');
 		$form->addCheckbox('acceptAsyncMsg', 'acceptAsyncMsg');
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');

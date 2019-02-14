@@ -12,7 +12,11 @@ amazonAws:
 		title: Add a new MQTT connection into Amazon AWS IoT
 		endpoint: Endpoint
 		certificate: Certificate
-		pkey: Private key
+		key: Private key
+		messages:
+			endpoint: Please enter the endpoint.
+			certificate: Please enter the certificate.
+			key: Please enter the private key.
 		save: Save
 		save_restart: Save and restart
 	messages:
@@ -24,10 +28,16 @@ ibmCloud:
 	form:
 		title: Add a new MQTT connection into IBM Cloud
 		organizationId: Organization ID
-		deviceType: Device Type
+		deviceType: Device type
 		deviceId: Device ID
-		token: Authentication Token
+		token: Authentication token
 		eventId: Command and event ID
+		messages:
+			organizationId: Please enter the organization ID.
+			deviceType: Please enter the device type.
+			deviceId: Please enter the device ID.
+			token: Please enter the authentication token.
+			eventId: Please enter command and event ID.
 		save: Save
 		save_restart: Save and restart
 
@@ -40,6 +50,12 @@ intelimentsInteliGlue:
 		assignedPort: Assigned Port
 		clientId: Client ID
 		password: Password
+		messages:
+			rootTopic: Please enter the root topic.
+			assignedPort: Please enter the assigned port.
+			assignedPortRange: Port has to be an integer in range from 0 to 65535.
+			clientId: Please enter the client ID.
+			password: Please enter the password.
 		save: Save
 		save_restart: Save and restart
 
@@ -49,6 +65,8 @@ msAzure:
 	form:
 		title: Add a new MQTT connection into Azure IoT hub
 		connectionString: IoT Hub Connection String for Device
+		messages:
+			connectionString: Please enter IoT Hub Connection String for Device.
 		save: Save
 		save_restart: Save and restart
 	messages:

@@ -52,11 +52,13 @@ class AwsFormFactory extends CloudFormFactory {
 	 */
 	public function create(AwsPresenter $presenter): Form {
 		$this->presenter = $presenter;
-		$form = $this->factory->create();
-		$form->setTranslator($form->getTranslator()->domain('cloud.amazonAws.form'));
-		$form->addText('endpoint', 'endpoint')->setRequired();
-		$form->addUpload('cert', 'certificate')->setRequired();
-		$form->addUpload('key', 'pkey')->setRequired();
+		$form = $this->factory->create('cloud.amazonAws.form');
+		$form->addText('endpoint', 'endpoint')
+			->setRequired('messages.endpoint');
+		$form->addUpload('cert', 'certificate')
+			->setRequired('messages.certificate');
+		$form->addUpload('key', 'key')
+			->setRequired('messages.key');
 		$form->addSubmit('save', 'save')
 			->onClick[] = function (SubmitButton $button): void {
 				$this->save($button);
