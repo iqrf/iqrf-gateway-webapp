@@ -73,7 +73,9 @@ class MigrationFormFactory {
 		$this->presenter = $presenter;
 		$form = $this->factory->create();
 		$form->setTranslator($form->getTranslator()->domain('config.migration'));
-		$form->addUpload('configuration', 'configuration')->setRequired('messages.configuration');
+		$form->addUpload('configuration', 'configuration')
+			->setRequired('messages.configuration')
+			->setHtmlAttribute('accept', '.zip');
 		$form->addSubmit('import', 'import');
 		$form->addProtection('core.errors.form-timeout');
 		$form->onSuccess[] = [$this, 'import'];
