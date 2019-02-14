@@ -18,7 +18,7 @@
  */
 declare(strict_types = 1);
 
-namespace App\GatewayModule\Models;
+namespace App\GatewayModule\Models\PackageManagers;
 
 use App\CoreModule\Models\CommandManager;
 use App\GatewayModule\Exceptions\UnsupportedPackageManagerException;

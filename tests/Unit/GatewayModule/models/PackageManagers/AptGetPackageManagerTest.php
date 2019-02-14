@@ -1,20 +1,20 @@
 <?php
 /**
- * TEST: App\GatewayModule\Models\AptGetPackageManager
- * @covers App\GatewayModule\Models\AptGetPackageManager
+ * TEST: App\GatewayModule\Models\PackageManagers\AptGetPackageManager
+ * @covers App\GatewayModule\Models\PackageManagers\AptGetPackageManager
  * @phpVersion >= 7.1
  * @testCase
  */
 
 declare(strict_types = 1);
 
-namespace Tests\Unit\GatewayModule\Models;
+namespace Tests\Unit\GatewayModule\Models\PackageManagers;
 
-use App\GatewayModule\Models\AptGetPackageManager;
+use App\GatewayModule\Models\PackageManagers\AptGetPackageManager;
 use Tester\Assert;
 use Tests\Toolkit\TestCases\CommandTestCase;
 
-require __DIR__ . '/../../../bootstrap.php';
+require __DIR__ . '/../../../../bootstrap.php';
 
 /**
  * Tests for tool for apt-get package manager

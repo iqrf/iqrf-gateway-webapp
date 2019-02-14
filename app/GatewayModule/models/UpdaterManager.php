@@ -22,6 +22,9 @@ namespace App\GatewayModule\Models;
 
 use App\CoreModule\Models\CommandManager;
 use App\GatewayModule\Exceptions\UnsupportedPackageManagerException;
+use App\GatewayModule\Models\PackageManagers\AptGetPackageManager;
+use App\GatewayModule\Models\PackageManagers\IPackageManager;
+use App\GatewayModule\Models\PackageManagers\UnsupportedPackageManager;
 use Nette\SmartObject;
 
 /**

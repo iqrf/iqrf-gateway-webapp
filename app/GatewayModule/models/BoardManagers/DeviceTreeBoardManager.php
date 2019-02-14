@@ -18,16 +18,14 @@
  */
 declare(strict_types = 1);
 
-namespace App\GatewayModule\Models;
+namespace App\GatewayModule\Models\BoardManagers;
 
 use App\CoreModule\Models\CommandManager;
-use Nette\Utils\Json;
-use Nette\Utils\JsonException;
 
 /**
- * IQRF Gateway's board manager
+ * Device tree board manager
  */
-class IqrfBoardInfoManager implements IBoardInfoManager {
+class DeviceTreeBoardManager implements IBoardManager {
 
 	/**
 	 * @var CommandManager Command manager
@@ -43,20 +41,15 @@ class IqrfBoardInfoManager implements IBoardInfoManager {
 	}
 
 	/**
-	 * Gets IQRF Gateway's board's name
-	 * @return string|null IQRF Gateway's board's name
+	 * Gets the board's name from device tree
+	 * @return string|null Board's name
 	 */
 	public function getName(): ?string {
-		$gwJson = $this->commandManager->run('cat /etc/iqrf-gateway.json', true);
-		if ($gwJson === '') {
-			return null;
+		$deviceTree = $this->commandManager->run('cat /proc/device-tree/model', true);
+		if ($deviceTree !== '') {
+			return $deviceTree;
 		}
-		try {
-			$gw = Json::decode($gwJson, Json::FORCE_ARRAY);
-			return $gw['gwManufacturer'] . ' ' . $gw['gwProduct'];
-		} catch (JsonException $e) {
-			return null;
-		}
+		return null;
 	}
 
 }

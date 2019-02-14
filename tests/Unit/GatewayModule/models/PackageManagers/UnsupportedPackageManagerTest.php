@@ -1,21 +1,21 @@
 <?php
 /**
- * TEST: App\GatewayModule\Models\UnsupportedPackageManager
- * @covers App\GatewayModule\Models\UnsupportedPackageManager
+ * TEST: App\GatewayModule\Models\PackageManagers\UnsupportedPackageManager
+ * @covers App\GatewayModule\Models\PackageManagers\UnsupportedPackageManager
  * @phpVersion >= 7.1
  * @testCase
  */
 
 declare(strict_types = 1);
 
-namespace Tests\Unit\GatewayModule\Models;
+namespace Tests\Unit\GatewayModule\Models\PackageManagers;
 
 use App\GatewayModule\Exceptions\UnsupportedPackageManagerException;
-use App\GatewayModule\Models\UnsupportedPackageManager;
+use App\GatewayModule\Models\PackageManagers\UnsupportedPackageManager;
 use Tester\Assert;
 use Tests\Toolkit\TestCases\CommandTestCase;
 
-require __DIR__ . '/../../../bootstrap.php';
+require __DIR__ . '/../../../../bootstrap.php';
 
 /**
  * Tests for tool for unsupported package manager

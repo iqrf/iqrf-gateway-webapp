@@ -1,20 +1,20 @@
 <?php
 
 /**
- * TEST: App\GatewayModule\Models\DmiBoardInfoManager
- * @covers App\GatewayModule\Models\DmiBoardInfoManager
+ * TEST: App\GatewayModule\Models\DmiBoardManager
+ * @covers App\GatewayModule\Models\DmiBoardManager
  * @phpVersion >= 7.1
  * @testCase
  */
 declare(strict_types = 1);
 
-namespace Tests\Unit\GatewayModule\Models;
+namespace Tests\Unit\GatewayModule\Models\BoardManagers;
 
-use App\GatewayModule\Models\DmiBoardInfoManager;
+use App\GatewayModule\Models\BoardManagers\DmiBoardManager;
 use Tester\Assert;
 use Tests\Toolkit\TestCases\CommandTestCase;
 
-require __DIR__ . '/../../../bootstrap.php';
+require __DIR__ . '/../../../../bootstrap.php';
 
 /**
  * Tests for DMI board manager
@@ -22,7 +22,7 @@ require __DIR__ . '/../../../bootstrap.php';
 class DmiBoardInfoManagerTest extends CommandTestCase {
 
 	/**
-	 * @var DmiBoardInfoManager DMI board manager
+	 * @var DmiBoardManager DMI board manager
 	 */
 	private $manager;
 
@@ -60,7 +60,7 @@ class DmiBoardInfoManagerTest extends CommandTestCase {
 	 */
 	protected function setUp(): void {
 		parent::setUp();
-		$this->manager = new DmiBoardInfoManager($this->commandManager);
+		$this->manager = new DmiBoardManager($this->commandManager);
 	}
 
 }

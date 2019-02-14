@@ -1,28 +1,28 @@
 <?php
 
 /**
- * TEST: App\GatewayModule\Models\DeviceTreeBoardInfoManager
- * @covers App\GatewayModule\Models\DeviceTreeBoardInfoManager
+ * TEST: App\GatewayModule\Models\DeviceTreeBoardManager
+ * @covers App\GatewayModule\Models\DeviceTreeBoardManager
  * @phpVersion >= 7.1
  * @testCase
  */
 declare(strict_types = 1);
 
-namespace Tests\Unit\GatewayModule\Models;
+namespace Tests\Unit\GatewayModule\Models\BoardManagers;
 
-use App\GatewayModule\Models\DeviceTreeBoardInfoManager;
+use App\GatewayModule\Models\BoardManagers\DeviceTreeBoardManager;
 use Tester\Assert;
 use Tests\Toolkit\TestCases\CommandTestCase;
 
-require __DIR__ . '/../../../bootstrap.php';
+require __DIR__ . '/../../../../bootstrap.php';
 
 /**
  * Tests for Device tree board manager
  */
-class DeviceTreeBoardInfoManagerTest extends CommandTestCase {
+class DeviceTreeBoardManagerTest extends CommandTestCase {
 
 	/**
-	 * @var DeviceTreeBoardInfoManager Device tree board manager
+	 * @var DeviceTreeBoardManager Device tree board manager
 	 */
 	private $manager;
 
@@ -53,10 +53,10 @@ class DeviceTreeBoardInfoManagerTest extends CommandTestCase {
 	 */
 	protected function setUp(): void {
 		parent::setUp();
-		$this->manager = new DeviceTreeBoardInfoManager($this->commandManager);
+		$this->manager = new DeviceTreeBoardManager($this->commandManager);
 	}
 
 }
 
-$test = new DeviceTreeBoardInfoManagerTest();
+$test = new DeviceTreeBoardManagerTest();
 $test->run();

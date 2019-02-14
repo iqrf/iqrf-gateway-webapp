@@ -22,6 +22,9 @@ namespace App\GatewayModule\Models;
 
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\VersionManager;
+use App\GatewayModule\Models\BoardManagers\DeviceTreeBoardManager;
+use App\GatewayModule\Models\BoardManagers\DmiBoardManager;
+use App\GatewayModule\Models\BoardManagers\IqrfBoardManager;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Exceptions\UserErrorException;
@@ -41,9 +44,9 @@ class InfoManager {
 	 * @var string[] Board managers
 	 */
 	private $boardManagers = [
-		IqrfBoardInfoManager::class,
-		DeviceTreeBoardInfoManager::class,
-		DmiBoardInfoManager::class,
+		IqrfBoardManager::class,
+		DeviceTreeBoardManager::class,
+		DmiBoardManager::class,
 	];
 
 	/**

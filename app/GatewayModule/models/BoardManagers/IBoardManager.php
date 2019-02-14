@@ -18,38 +18,17 @@
  */
 declare(strict_types = 1);
 
-namespace App\GatewayModule\Models;
-
-use App\CoreModule\Models\CommandManager;
+namespace App\GatewayModule\Models\BoardManagers;
 
 /**
- * Device tree board manager
+ * Interface for board info managers
  */
-class DeviceTreeBoardInfoManager implements IBoardInfoManager {
+interface IBoardManager {
 
 	/**
-	 * @var CommandManager Command manager
-	 */
-	private $commandManager;
-
-	/**
-	 * Constructor
-	 * @param CommandManager $commandManager Command manager
-	 */
-	public function __construct(CommandManager $commandManager) {
-		$this->commandManager = $commandManager;
-	}
-
-	/**
-	 * Gets the board's name from device tree
+	 * Gets the board's name
 	 * @return string|null Board's name
 	 */
-	public function getName(): ?string {
-		$deviceTree = $this->commandManager->run('cat /proc/device-tree/model', true);
-		if ($deviceTree !== '') {
-			return $deviceTree;
-		}
-		return null;
-	}
+	public function getName(): ?string;
 
 }

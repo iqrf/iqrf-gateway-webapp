@@ -18,14 +18,16 @@
  */
 declare(strict_types = 1);
 
-namespace App\GatewayModule\Models;
+namespace App\GatewayModule\Models\BoardManagers;
 
 use App\CoreModule\Models\CommandManager;
+use Nette\Utils\Json;
+use Nette\Utils\JsonException;
 
 /**
- * DMI board manager
+ * IQRF Gateway's board manager
  */
-class DmiBoardInfoManager implements IBoardInfoManager {
+class IqrfBoardManager implements IBoardManager {
 
 	/**
 	 * @var CommandManager Command manager
@@ -41,17 +43,20 @@ class DmiBoardInfoManager implements IBoardInfoManager {
 	}
 
 	/**
-	 * Get the board's name from DMI
-	 * @return string|null Board's name
+	 * Gets IQRF Gateway's board's name
+	 * @return string|null IQRF Gateway's board's name
 	 */
 	public function getName(): ?string {
-		$vendor = $this->commandManager->run('cat /sys/class/dmi/id/board_vendor', true);
-		$name = $this->commandManager->run('cat /sys/class/dmi/id/board_name', true);
-		$version = $this->commandManager->run('cat /sys/class/dmi/id/board_version', true);
-		if ($name !== '' && $vendor !== '' && $version !== '') {
-			return $vendor . ' ' . $name . ' (' . $version . ')';
+		$gwJson = $this->commandManager->run('cat /etc/iqrf-gateway.json', true);
+		if ($gwJson === '') {
+			return null;
 		}
-		return null;
+		try {
+			$gw = Json::decode($gwJson, Json::FORCE_ARRAY);
+			return $gw['gwManufacturer'] . ' ' . $gw['gwProduct'];
+		} catch (JsonException $e) {
+			return null;
+		}
 	}
 
 }
