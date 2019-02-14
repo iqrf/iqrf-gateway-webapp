@@ -95,7 +95,7 @@ class SchedulerMigrationFormFactory {
 			$this->presenter->flashMessage('service.errors.unsupportedInit', 'danger');
 		} catch (IOException $e) {
 			/// TODO: Use custom error message.
-			$$this->presenter->flashMessage('config.messages.writeFailures.ioError', 'danger');
+			$this->presenter->flashMessage('config.messages.writeFailures.ioError', 'danger');
 		} finally {
 			$this->presenter->redirect('Homepage:default');
 		}
