@@ -73,10 +73,10 @@ iqrfDpa:
 	description: IQRF DPA interface settings.
 	form:
 		instance: Name of instance
-		DpaHandlerTimeout: DPA Handler timeout
+		DpaHandlerTimeout: DPA Confirmation/Response timeout in milliseconds
 		messages:
 			instance: Please enter name of IQRF DPA instance.
-			DpaHandlerTimeout: Please enter default DPA Handler timeout.
+			DpaHandlerTimeout: Please enter default DPA Confirmation/Response timeout.
 			DpaHandlerTimeout-rule: DPA Handler timeout must be bigger than 0.
 		Save: Save
 
