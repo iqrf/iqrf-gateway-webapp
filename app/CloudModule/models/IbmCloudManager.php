@@ -108,7 +108,7 @@ class IbmCloudManager implements IManager {
 	 * @throws GuzzleException
 	 */
 	public function downloadCaCertificate(): void {
-		$caCertUrl = 'https://raw.githubusercontent.com/ibm-watson-iot/iot-python/master/src/ibmiotf/messaging.pem';
+		$caCertUrl = 'https://raw.githubusercontent.com/ibm-watson-iot/iot-python/master/src/wiotp/sdk/messaging.pem';
 		$caCert = $this->client->request('GET', $caCertUrl)->getBody();
 		FileSystem::write($this->certPath . '/ibm-cloud-ca.crt', $caCert);
 	}
