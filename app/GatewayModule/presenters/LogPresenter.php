@@ -24,7 +24,7 @@ use App\CoreModule\Presenters\ProtectedPresenter;
 use App\GatewayModule\Models\LogManager;
 use Nette\Application\BadRequestException;
 use Nette\IOException;
-use Tracy\Debugger;
+use UnexpectedValueException;
 
 /**
  * IQRF Gateway Daemon's log presenter
@@ -51,7 +51,7 @@ class LogPresenter extends ProtectedPresenter {
 	public function renderDefault(): void {
 		try {
 			$this->template->log = $this->manager->load();
-		} catch (\UnexpectedValueException $e) {
+		} catch (UnexpectedValueException $e) {
 			$this->flashMessage('gateway.log.messages.nonExistingDir', 'danger');
 		} catch (IOException $e) {
 			$this->flashMessage('gateway.log.messages.readError', 'danger');
@@ -64,7 +64,7 @@ class LogPresenter extends ProtectedPresenter {
 	public function actionDownload(): void {
 		try {
 			$this->sendResponse($this->manager->download());
-		} catch (\UnexpectedValueException $e) {
+		} catch (UnexpectedValueException $e) {
 			$this->flashMessage('gateway.log.messages.nonExistingDir', 'danger');
 			$this->redirect('Log:default');
 			$this->setView('default');
