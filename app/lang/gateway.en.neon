@@ -34,9 +34,12 @@ diagnostics:
 	download: Download diagnostics
 
 log:
-	title: IQRF Daemon log
-	description: Show log of IQRF Gateway Daemon.
+	title: IQRF Gateway Daemon log
+	description: Shows log of IQRF Gateway Daemon.
 	download: Download
+	messages:
+		nonExistingDir: IQRF Gateway Daemon's log directory does not exist.
+		readError: Cannot read IQRF Gateway Daemon's log file.
 
 mode:
 	title: Change gateway mode
