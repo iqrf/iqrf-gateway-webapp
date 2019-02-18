@@ -25,7 +25,7 @@
 		<div class='panel-body'>
 			{control binaryOutputForm}
 		</div>
-		<div n:ifset='$binaryOutputData' class='panel-footer'>
+		<div n:ifset='$binaryOutputData' class='panel-footer table-responsive'>
 			{include 'binaryOutput.latte', data => $binaryOutputData}
 		</div>
 	</div>
@@ -36,7 +36,7 @@
 		<div class='panel-body'>
 			{control sensorForm}
 		</div>
-		<div n:ifset='$sensorData' class='panel-footer'>
+		<div n:ifset='$sensorData' class='panel-footer table-responsive'>
 			{include 'sensor.latte', data => $sensorData}
 		</div>
 	</div>
@@ -49,7 +49,7 @@
 		<div class='panel-body'>
 			{control lightForm}
 		</div>
-		<div n:ifset='$lightData' class='panel-footer'>
+		<div n:ifset='$lightData' class='panel-footer table-responsive'>
 			{include 'light.latte', data => $lightData}
 		</div>
 	</div>

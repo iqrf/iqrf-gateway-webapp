@@ -16,40 +16,36 @@
 *}
 
 {snippet binaryOutputs}
-	{dump $data}
 	{var $response = $data['response']}
 	{switch $response['mType']}
 		{case 'iqrfBinaryoutput_Enumerate'}
-		<div class='table-responsive'>
-			<table class='table table-striped'>
-				<tr>
-					<th>{_iqrfnet.standard.binaryOutput.table.outputs}</th>
-					<td>{$response["data"]["rsp"]["result"]["binouts"]}</td>
-				</tr>
-			</table>
-		</div>
+		<table class='table table-striped'>
+			<tr>
+				<th>{_iqrfnet.standard.binaryOutput.table.outputs}</th>
+				<td>{$response["data"]["rsp"]["result"]["binouts"]}</td>
+			</tr>
+		</table>
 		{case 'iqrfBinaryoutput_SetOutput'}
-		<div class='table-responsive'>
-			<table class='table table-striped'>
-				<tr>
-					<th>{_iqrfnet.standard.binaryOutput.table.index}</th>
-					<td n:foreach='$response["data"]["rsp"]["result"]["prevVals"] as $index => $state'>
-						{$index}
-					</td>
-				</tr>
-				<tr>
-					<th>{_iqrfnet.standard.binaryOutput.table.state}</th>
-					<td n:foreach='$response["data"]["rsp"]["result"]["prevVals"] as $index => $state'>
-						{switch $state}
-							{case true}
-							{var $icon = 'ok', $color = 'text-success'}
-							{case false}
-							{var $icon = 'remove', $color = 'text-danger'}
-						{/switch}
-						<span class='glyphicon glyphicon-{$icon} {$color}' aria-hidden='true'></span>
-					</td>
-				</tr>
-			</table>
-		</div>
+		{var $outputs = $response["data"]["rsp"]["result"]["prevVals"]}
+		<table class='table table-striped'>
+			<tr>
+				<th>{_iqrfnet.standard.binaryOutput.table.index}</th>
+				<td n:foreach='$outputs as $index => $state'>
+					{$index}
+				</td>
+			</tr>
+			<tr>
+				<th>{_iqrfnet.standard.binaryOutput.table.state}</th>
+				<td n:foreach='$outputs as $index => $state'>
+					{switch $state}
+						{case true}
+						{var $icon = 'ok', $color = 'text-success'}
+						{case false}
+						{var $icon = 'remove', $color = 'text-danger'}
+					{/switch}
+					<span class='glyphicon glyphicon-{$icon} {$color}' aria-hidden='true'></span>
+				</td>
+			</tr>
+		</table>
 	{/switch}
 {/snippet}
