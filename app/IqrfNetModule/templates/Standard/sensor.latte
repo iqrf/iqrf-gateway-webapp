@@ -20,26 +20,33 @@
 	{switch $response['mType']}
 		{case 'iqrfSensor_Enumerate'}
 		{var $sensors = $response["data"]["rsp"]["result"]["sensors"]}
-		<table class='table table-striped'>
+		<table class='table table-striped text-center'>
 			<tr>
 				<th>{_iqrfnet.standard.sensor.type}</th>
 				<td n:foreach='$sensors as $sensor'>{$sensor['name']}</td>
 			</tr>
 			<tr>
 				<th>{_iqrfnet.standard.sensor.unit}</th>
-				<td n:foreach='$sensors as $sensor'>{$sensor['unit']}</td>
+				<td n:foreach='$sensors as $sensor'>
+					{var $unit = $sensor['unit'] !== '?' ? ' ' . $sensor['unit']}
+					{$unit}
+				</td>
 			</tr>
 		</table>
 		{case 'iqrfSensor_ReadSensorsWithTypes'}
 		{var $sensors = $response["data"]["rsp"]["result"]["sensors"]}
-		<table class='table table-striped'>
+		<table class='table table-striped text-center'>
 			<tr>
 				<th>{_iqrfnet.standard.sensor.type}</th>
 				<td n:foreach='$sensors as $sensor'>{$sensor['name']}</td>
 			</tr>
 			<tr>
 				<th>{_iqrfnet.standard.sensor.value}</th>
-				<td n:foreach='$sensors as $sensor'>{$sensor['value']|number:2}&nbsp;{$sensor['unit']}</td>
+				<td n:foreach='$sensors as $sensor'>
+					{var $value = round($sensor['value'], 2)}
+					{var $unit = $sensor['unit'] !== '?' ? ' ' . $sensor['unit']}
+					{$value}{$unit}
+				</td>
 			</tr>
 		</table>
 	{/switch}
