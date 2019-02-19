@@ -26,6 +26,7 @@ use Nette\Utils\Finder;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
+use UnexpectedValueException;
 use ZipArchive;
 
 /**
@@ -62,17 +63,27 @@ class ZipArchiveManager {
 	/**
 	 * Adds a folder to the ZIP archive from the given path
 	 * @param string $path The path to the folder to add
-	 * @param string $folderName Folder name in the archive
+	 * @param string $name Directory name in the archive
 	 */
-	public function addFolder(string $path, string $folderName): void {
-		$this->zip->addEmptyDir($folderName);
-		$files = Finder::findFiles('*')->in($path);
-		foreach ($files as $file => $fileObject) {
-			$this->addFile($file, $folderName . '/' . basename($file));
+	public function addFolder(string $path, string $name): void {
+		$this->zip->addEmptyDir($name);
+		try {
+			$files = Finder::findFiles('*')->in($path);
+			foreach ($files as $file => $fileObject) {
+				$fileName = $name . '/' . basename($file);
+				$this->addFile($file, $fileName);
+			}
+		} catch (UnexpectedValueException $e) {
+			// Does nothing - an empty folder
 		}
-		$directories = Finder::findDirectories('*')->in($path);
-		foreach ($directories as $directory => $directoryObject) {
-			$this->addFolder($directory, $folderName . '/' . basename($directory));
+		try {
+			$directories = Finder::findDirectories('*')->in($path);
+			foreach ($directories as $directory => $directoryObject) {
+				$directoryName = $name . '/' . basename($directory);
+				$this->addFolder($directory, $directoryName);
+			}
+		} catch (UnexpectedValueException $e) {
+			// Does nothing - an empty directory
 		}
 	}
 
@@ -104,16 +115,15 @@ class ZipArchiveManager {
 	public function exist($var): bool {
 		if (is_string($var)) {
 			return ($this->zip->locateName('/' . $var, ZipArchive::FL_NOCASE)) !== false;
-		} else {
-			if (is_array($var) || (is_object($var) && $var instanceof ArrayHash)) {
-				foreach ($var as $file) {
-					$result = $this->zip->locateName('/' . $file, ZipArchive::FL_NOCASE);
-					if (!is_int($result)) {
-						return false;
-					}
+		}
+		if (is_array($var) || (is_object($var) && $var instanceof ArrayHash)) {
+			foreach ($var as $file) {
+				$result = $this->zip->locateName('/' . $file, ZipArchive::FL_NOCASE);
+				if (!is_int($result)) {
+					return false;
 				}
-				return true;
 			}
+			return true;
 		}
 		return false;
 	}
