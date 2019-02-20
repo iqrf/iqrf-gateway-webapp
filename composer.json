@@ -40,7 +40,7 @@
 		"nette/safe-stream": "^2.3",
 		"nette/security": "^2.4",
 		"nette/utils": "^2.5",
-		"latte/latte": "^2.4",
+		"latte/latte": "2.4.8",
 		"tracy/tracy": "^2.5",
 		"instante/bootstrap-3-renderer": "^2.0",
 		"guzzlehttp/guzzle": "^6.3",
