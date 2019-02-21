@@ -43,11 +43,6 @@ class SchedulerManager {
 	private $genericConfigManager;
 
 	/**
-	 * @var MainManager Main configuration manager
-	 */
-	private $mainConfigManager;
-
-	/**
 	 * @var JsonFileManager JSON file manager
 	 */
 	private $fileManager;
@@ -58,52 +53,25 @@ class SchedulerManager {
 	private $fileName;
 
 	/**
+	 * @var TaskTimeManager Scheduler's task time specification manager
+	 */
+	private $timeManager;
+
+	/**
 	 * Constructor
 	 * @param MainManager $mainManager Main configuration manager
 	 * @param GenericManager $genericManager Generic configuration manager
+	 * @param TaskTimeManager $timeManager Scheduler's task time specification manager
 	 */
-	public function __construct(MainManager $mainManager, GenericManager $genericManager) {
+	public function __construct(MainManager $mainManager, GenericManager $genericManager, TaskTimeManager $timeManager) {
 		$this->genericConfigManager = $genericManager;
-		$this->mainConfigManager = $mainManager;
+		$this->timeManager = $timeManager;
 		try {
-			$path = $this->mainConfigManager->load()['cacheDir'] . '/scheduler/';
+			$path = $mainManager->load()['cacheDir'] . '/scheduler/';
 		} catch (IOException | JsonException $e) {
 			$path = '/var/cache/iqrf-gateway-daemon/scheduler/';
 		}
 		$this->fileManager = new JsonFileManager($path);
-	}
-
-	/**
-	 * Adds a new task
-	 * @param string $type Task type
-	 * @throws JsonException
-	 */
-	public function add(string $type): void {
-		$task = $this->loadType($type);
-		if ($task !== null) {
-			$this->save($task);
-		}
-	}
-
-	/**
-	 * Converts a cron time from a string to an array
-	 * @param mixed[] $config Tasks's configuration
-	 */
-	private function cronToArray(array &$config): void {
-		$cron = &$config['timeSpec']['cronTime'];
-		$length = 7;
-		$cron = explode(' ', $cron);
-		$cron = array_slice($cron, 0, $length);
-		$cron = array_pad($cron, $length, '');
-	}
-
-	/**
-	 * Converts a cron time from an array to a string
-	 * @param mixed[] $config Task's configuration
-	 */
-	private function cronToString(array &$config): void {
-		$cron = &$config['timeSpec']['cronTime'];
-		$cron = Strings::trim(implode(' ', $cron));
 	}
 
 	/**
@@ -139,49 +107,6 @@ class SchedulerManager {
 		}
 		asort($files);
 		return $files;
-	}
-
-	/**
-	 * Gets task's time
-	 * @param mixed[] $task Task
-	 * @return string Task's time
-	 */
-	private function getTime(array $task): string {
-		$timeSpec = $task['timeSpec'];
-		if ($timeSpec['cronTime'] !== '') {
-			return $timeSpec['cronTime'];
-		}
-		if ($timeSpec['exactTime']) {
-			return 'one shot (' . $timeSpec['startTime'] . ')';
-		}
-		if ($timeSpec['periodic']) {
-			$period = $timeSpec['period'];
-			if ($period < 60) {
-				$format = 'every %s seconds';
-			} elseif ($period < 3600) {
-				$format = 'every %i:%S minutes';
-			} else {
-				$format = 'every %h:%I:%S hours';
-			}
-			return $this->formatPeriod($period, $format) ?? '';
-		}
-		return '';
-	}
-
-	/**
-	 * Formats a period in seconds
-	 * @param int $seconds Perion in seconds
-	 * @param string $format Period's format
-	 * @return string|null Formatted period
-	 */
-	private function formatPeriod(int $seconds, string $format): ?string {
-		try {
-			$date0 = new DateTime('@0');
-			$date1 = new DateTime('@0' . $seconds);
-			return $date1->diff($date0)->format($format);
-		} catch (Throwable $e) {
-			return null;
-		}
 	}
 
 	/**
@@ -221,7 +146,7 @@ class SchedulerManager {
 			$message = $data['task']['message'];
 			$task = [
 				'id' => $data['taskId'],
-				'time' => $this->getTime($data),
+				'time' => $this->timeManager->getTime($data),
 				'service' => $data['clientId'],
 				'messaging' => $data['task']['messaging'],
 				'mType' => $message['mType'] ?? '',
@@ -286,7 +211,7 @@ class SchedulerManager {
 		}
 		$this->fileName = strval($files[$id]);
 		$config = $this->fileManager->read($this->fileName);
-		$this->cronToString($config);
+		$this->timeManager->cronToString($config);
 		return $config;
 	}
 
@@ -323,7 +248,7 @@ class SchedulerManager {
 		if (!isset($config['task']['message']['data']['timeout'])) {
 			unset($config['task']['message']['data']['timeout']);
 		}
-		$this->cronToArray($config);
+		$this->timeManager->cronToArray($config);
 		$this->fileManager->write($this->fileName, $config);
 	}
 

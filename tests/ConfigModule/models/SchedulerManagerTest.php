@@ -13,9 +13,9 @@ namespace Test\ConfigModule\Models;
 use App\ConfigModule\Models\GenericManager;
 use App\ConfigModule\Models\MainManager;
 use App\ConfigModule\Models\SchedulerManager;
+use App\ConfigModule\Models\TaskTimeManager;
 use App\CoreModule\Models\JsonFileManager;
 use App\CoreModule\Models\JsonSchemaManager;
-use DateTime;
 use Mockery;
 use Tester\Assert;
 use Tester\Environment;
@@ -44,13 +44,18 @@ class SchedulerManagerTest extends TestCase {
 	private $managerTemp;
 
 	/**
+	 * @var TaskTimeManager Scheduler's task time specification manager
+	 */
+	private $timeManager;
+
+	/**
 	 * @var mixed[string] Scheduler's task settings
 	 */
 	private $array = [
 		'taskId' => 1,
 		'clientId' => 'SchedulerMessaging',
 		'timeSpec' => [
-			'cronTime' => '*/5 * 1 * * * *',
+			'cronTime' => ['*/5', '*', '1', '*', '*', '*', '*'],
 			'exactTime' => false,
 			'periodic' => false,
 			'period' => 0,
@@ -69,38 +74,6 @@ class SchedulerManagerTest extends TestCase {
 			],
 		],
 	];
-
-	/**
-	 * Test function to add configuration of Scheduler
-	 */
-	public function testAdd(): void {
-		Environment::lock('config_scheduler', __DIR__ . '/../../temp/');
-		$this->managerTemp->add('raw');
-		$timestamp = (new DateTime())->getTimestamp();
-		$expected = [
-			'taskId' => $timestamp,
-			'clientId' => '',
-			'timeSpec' => [
-				'cronTime' => ['', '', '', '', '', '', ''],
-				'exactTime' => false,
-				'periodic' => false,
-				'period' => 0,
-				'startTime' => '',
-			],
-			'task' => [
-				'messaging' => '',
-				'message' => [
-					'mType' => 'iqrfRaw',
-					'data' => [
-						'msgId' => '',
-						'req' => ['rData' => ''],
-					],
-					'returnVerbose' => true,
-				],
-			],
-		];
-		Assert::equal($expected, $this->fileManagerTemp->read(strval($timestamp)));
-	}
 
 	/**
 	 * Test function to delete configuration of Scheduler
@@ -180,7 +153,9 @@ class SchedulerManagerTest extends TestCase {
 	 * Test function to load configuration of Scheduler
 	 */
 	public function testLoad(): void {
-		Assert::equal($this->array, $this->manager->load(1));
+		$expected = $this->array;
+		$expected['timeSpec']['cronTime'] = '*/5 * 1 * * * *';
+		Assert::equal($expected, $this->manager->load(1));
 		Assert::equal([], $this->manager->load(10));
 	}
 
@@ -190,9 +165,10 @@ class SchedulerManagerTest extends TestCase {
 	public function testSave(): void {
 		Environment::lock('config_scheduler', __DIR__ . '/../../temp/');
 		$expected = $this->array;
-		$expected['message']['nadr'] = '0';
-		$this->managerTemp->save($expected);
-		$expected['timeSpec']['cronTime'] = ['*/5', '*', '1', '*', '*', '*', '*'];
+		$expected['task']['message']['returnVerbose'] = false;
+		$config = $expected;
+		$config['timeSpec']['cronTime'] = '*/5 * 1 * * * *';
+		$this->managerTemp->save($config);
 		Assert::equal($expected, $this->fileManagerTemp->read('1'));
 	}
 
@@ -211,8 +187,9 @@ class SchedulerManagerTest extends TestCase {
 		$mainConfigManager->shouldReceive('load')->andReturn(['cacheDir' => $configPath]);
 		$mainConfigManagerTemp = Mockery::mock(MainManager::class);
 		$mainConfigManagerTemp->shouldReceive('load')->andReturn(['cacheDir' => $configTempPath]);
-		$this->manager = new SchedulerManager($mainConfigManager, $genericConfigManager);
-		$this->managerTemp = new SchedulerManager($mainConfigManagerTemp, $genericConfigManager);
+		$this->timeManager = new TaskTimeManager();
+		$this->manager = new SchedulerManager($mainConfigManager, $genericConfigManager, $this->timeManager);
+		$this->managerTemp = new SchedulerManager($mainConfigManagerTemp, $genericConfigManager, $this->timeManager);
 	}
 
 	/**

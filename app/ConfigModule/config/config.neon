@@ -37,4 +37,5 @@ services:
 	- App\ConfigModule\Models\MigrationManager(%daemon.configDir%)
 	- App\ConfigModule\Models\SchedulerManager
 	- App\ConfigModule\Models\SchedulerMigrationManager
+	- App\ConfigModule\Models\TaskTimeManager
 	- App\ConfigModule\Models\WebSocketManager

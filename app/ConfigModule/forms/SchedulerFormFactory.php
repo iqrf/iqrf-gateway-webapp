@@ -162,7 +162,8 @@ class SchedulerFormFactory {
 		$timeSpec->addCheckbox('exactTime', 'timeSpec.exactTime');
 		$timeSpec->addCheckbox('periodic', 'timeSpec.periodic');
 		$timeSpec->addInteger('period', 'timeSpec.period');
-		$timeSpec->addText('startTime', 'timeSpec.startTime');
+		$timeSpec->addText('startTime', 'timeSpec.startTime')
+			->setHtmlType('datetime-local');
 		$timeSpec['period']
 			->addConditionOn($timeSpec['periodic'], Form::EQUAL, true)
 			->setRequired('messages.timeSpec.period');
