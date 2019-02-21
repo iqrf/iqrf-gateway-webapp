@@ -135,7 +135,7 @@ class SecurityManager {
 		} else {
 			throw new UnsupportedInputFormatException();
 		}
-		$array = explode('.', Strings::trim(Strings::lower(chunk_split(Strings::padLeft($data, 32, '0'), 2, '.')), '.'));
+		$array = explode('.', Strings::trim(Strings::lower(chunk_split(Strings::padRight($data, 32, '0'), 2, '.')), '.'));
 		foreach ($array as &$chunk) {
 			$chunk = hexdec($chunk);
 		}

@@ -40,9 +40,9 @@ class SecurityManagerTest extends WebSocketTestCase {
 	}
 
 	/**
-	 * Tests the function to set an access password in HEX format
+	 * Tests the function to set an access password in HEX format (max length)
 	 */
-	public function testSetAccessPassword(): void {
+	public function testSetAccessPasswordHexMax(): void {
 		$request = [
 			'mType' => 'iqrfEmbedOs_SetSecurity',
 			'data' => [
@@ -62,9 +62,54 @@ class SecurityManagerTest extends WebSocketTestCase {
 	}
 
 	/**
-	 * Tests the function to set an user key in ASCII format
+	 * Tests the function to set an access password in HEX format (short length)
 	 */
-	public function testSetUserKey(): void {
+	public function testSetAccessPasswordHexShort(): void {
+		$request = [
+			'mType' => 'iqrfEmbedOs_SetSecurity',
+			'data' => [
+				'req' => [
+					'nAdr' => $this->address,
+					'param' => [
+						'type' => 0,
+						'data' => [1, 2, 3, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+					],
+				],
+				'returnVerbose' => true,
+			],
+		];
+		$this->assertRequest($request, function (): void {
+			$this->manager->setAccessPassword($this->address, '01020304', DataFormat::HEX);
+		});
+	}
+
+	/**
+	 * Tests the function to set an access password in ASCII format (short length)
+	 */
+	public function testSetAccessPasswordAsciiShort(): void {
+		$request = [
+			'mType' => 'iqrfEmbedOs_SetSecurity',
+			'data' => [
+				'req' => [
+					'nAdr' => $this->address,
+					'param' => [
+						'type' => 0,
+						'data' => [49, 50, 51, 52, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+					],
+				],
+				'returnVerbose' => true,
+			],
+		];
+		$this->assertRequest($request, function (): void {
+			$this->manager->setAccessPassword($this->address, '1234', DataFormat::ASCII);
+		});
+	}
+
+
+	/**
+	 * Tests the function to set an user key in ASCII format (max length)
+	 */
+	public function testSetUserKeyAsciiMax(): void {
 		$request = [
 			'mType' => 'iqrfEmbedOs_SetSecurity',
 			'data' => [
