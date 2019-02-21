@@ -1,22 +1,22 @@
 title: Service
-description: Control daemon service.
+description: Control IQRF Gateway Daemon's service.
 
 actions:
 	start:
 		title: Start
-		description: Start IQRF Daemon service.
-		message: IQRF Daemon has been started.
+		description: Start IQRF Gateway Daemon's service.
+		message: IQRF Gateway Daemon has been started.
 	stop:
 		title: Stop
-		description: Stop IQRF Daemon service.
-		message: IQRF Daemon has been stopped.
+		description: Stop IQRF Gateway Daemon's service.
+		message: IQRF Gateway Daemon has been stopped.
 	restart:
 		title: Restart
-		description: Restart IQRF Daemon service.
-		message: IQRF Daemon has been restarted.
+		description: Restart IQRF Gateway Daemon's service.
+		message: IQRF Gateway Daemon has been restarted.
 	status:
 		title: Status
-		description: Get status of IQRF Daemon service.
+		description: Get status of IQRF Gateway Daemon's service.
 
 errors:
 	unsupportedInit: Not supported init system is used.
