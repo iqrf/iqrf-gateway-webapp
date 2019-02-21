@@ -1,5 +1,5 @@
 title: Clouds
-description: Control cloud services.
+description: Add MQTT connection into cloud services.
 
 messages:
 	downloadFailure: The webapp has not been able to download the root CA certificate. Probably the gateway has not been connected into the Internet.
@@ -7,9 +7,9 @@ messages:
 
 amazonAws:
 	title: Amazon AWS IoT
-	description: Add a new MQTT connection into Amazon AWS IoT.
+	description: Adds a new MQTT connection into Amazon AWS IoT.
 	form:
-		title: Add a new MQTT connection into Amazon AWS IoT
+		title: Amazon AWS IoT MQTT connection wizard
 		endpoint: Endpoint
 		certificate: Certificate
 		key: Private key
@@ -24,9 +24,9 @@ amazonAws:
 
 ibmCloud:
 	title: IBM Cloud
-	description: Add a new MQTT connection into IBM Cloud.
+	description: Adds a new MQTT connection into IBM Cloud.
 	form:
-		title: Add a new MQTT connection into IBM Cloud
+		title: IBM Cloud MQTT connection wizard
 		organizationId: Organization ID
 		deviceType: Device type
 		deviceId: Device ID
@@ -43,9 +43,9 @@ ibmCloud:
 
 intelimentsInteliGlue:
 	title: Inteliments InteliGlue
-	description: Add a new MQTT connection into Inteliments InteliGlue.
+	description: Adds a new MQTT connection into Inteliments InteliGlue.
 	form:
-		title: Add a new MQTT connection into Inteliments InteliGlue
+		title: Inteliments InteliGlue MQTT connection wizard
 		rootTopic: Root Topic
 		assignedPort: Assigned Port
 		clientId: Client ID
@@ -61,9 +61,9 @@ intelimentsInteliGlue:
 
 msAzure:
 	title: Microsoft Azure IoT hub
-	description: Add a new MQTT connection into Microsoft Azure IoT Hub.
+	description: Adds a new MQTT connection into Microsoft Azure IoT Hub.
 	form:
-		title: Add a new MQTT connection into Azure IoT hub
+		title: Microsoft Azure IoT Hub MQTT connection wizard
 		connectionString: IoT Hub Connection String for Device
 		messages:
 			connectionString: Please enter IoT Hub Connection String for Device.
