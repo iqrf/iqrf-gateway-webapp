@@ -17,9 +17,11 @@
 
 {block title}{_install.title}{/block}
 {block content}
-<h2>{_install.gwInfo.title}</h2>
-<div class='panel panel-default'>
-	<div class='panel-body'>
+<div class='box box-primary'>
+	<header class='box-header with-border'>
+		<h2 class='box-title'>{_install.gwInfo.title}</h2>
+	</header>
+	<section class='box-body'>
 		<table class='table table-striped'>
 			<tr>
 				<th>{_gateway.info.board}</th>
@@ -70,5 +72,5 @@
 				<td>{$webAppVersion}</td>
 			</tr>
 		</table>
-	</div>
+	</section>
 </div>

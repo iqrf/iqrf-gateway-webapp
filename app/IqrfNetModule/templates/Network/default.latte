@@ -18,23 +18,31 @@
 {block title}{_iqrfnet.network-manager.title}{/block}
 {block content}
 <ul class='nav nav-tabs'>
-	<li role='presentation' class='active'><a n:href='Network:default'>{_iqrfnet.network-manager.control}</a></li>
+	<li role='presentation' class='active'>
+		<a n:href='Network:default'>{_iqrfnet.network-manager.control}</a>
+	</li>
 </ul>
-<div class='col-sm-6'>
-	<h2>{_iqrfnet.bonding.title}</h2>
-	<div class='panel panel-default'>
-		<div class='panel-body'>
+<br>
+<div class='col-md-6'>
+	<div class='box box-primary'>
+		<header class='box-header with-border'>
+			<h2 class='box-title'>{_iqrfnet.bonding.title}</h2>
+		</header>
+		<section class='box-body'>
 			{control iqrfNetBondingForm}
-		</div>
+		</section>
 	</div>
-	<h2>{_iqrfnet.discovery.title}</h2>
-	<div class='panel panel-default'>
-		<div class='panel-body'>
+	<div class='box box-primary'>
+		<header class='box-header with-border'>
+			<h2 class='box-title'>{_iqrfnet.discovery.title}</h2>
+		</header>
+		<section class='box-body'>
 			{control iqrfNetDiscoveryForm}
-		</div>
+		</section>
 	</div>
 </div>
-
-{ifset $devices}
-	{include 'devices.latte', base => $base, devices => $devices}
-{/ifset}
+<div class='col-md-6'>
+	{ifset $devices}
+		{include 'devices.latte'}
+	{/ifset}
+</div>

@@ -25,10 +25,10 @@
 				</a>
 			</li>
 			<li n:if='$user->loggedIn' class='treeview'>
-				<a n:href=':Gateway:Homepage:default' role="button">
+				<a n:href=':Gateway:Homepage:default' role='button'>
 					<i class='glyphicon glyphicon-hdd'></i>
 					<span>{_gateway.title}</span>
-					<span class="pull-right-container"><i class="caret"></i></span>
+					<span class='pull-right-container'><i class='caret'></i></span>
 				</a>
 				<ul class='treeview-menu'>
 					<li><a n:href=':Gateway:Info:default'>{_gateway.info.title}</a></li>
@@ -40,10 +40,10 @@
 				</ul>
 			</li>
 			<li n:if='$user->loggedIn' class='treeview'>
-				<a n:href=':Config:Homepage:default' role="button">
+				<a n:href=':Config:Homepage:default' role='button'>
 					<i class='glyphicon glyphicon-wrench'></i>
 					<span>{_config.title}</span>
-					<span class="pull-right-container"><i class="caret"></i></span>
+					<span class='pull-right-container'><i class='caret'></i></span>
 				</a>
 				<ul class='treeview-menu'>
 					<li><a n:href=':Config:Main:default'>{_config.main.title}</a></li>
@@ -84,10 +84,10 @@
 				</a>
 			</li>
 			<li n:if='$user->loggedIn' class='treeview'>
-				<a n:href=':IqrfNet:Homepage:default' role="button">
+				<a n:href=':IqrfNet:Homepage:default' role='button'>
 					<i class='glyphicon glyphicon-signal'></i>
 					<span>{_iqrfnet.title}</span>
-					<span class="pull-right-container"><i class="caret"></i></span>
+					<span class='pull-right-container'><i class='caret'></i></span>
 				</a>
 				<ul class='treeview-menu'>
 					<li><a n:href=':IqrfNet:SendRaw:default'>{_iqrfnet.send-packet.title}</a></li>
@@ -98,10 +98,10 @@
 				</ul>
 			</li>
 			<li n:if='$user->loggedIn' class='treeview'>
-				<a n:href=':Cloud:Homepage:default' role="button">
+				<a n:href=':Cloud:Homepage:default' role='button'>
 					<i class='glyphicon glyphicon-cloud'></i>
 					<span>{_cloud.title}</span>
-					<span class="pull-right-container"><i class="caret"></i></span>
+					<span class='pull-right-container'><i class='caret'></i></span>
 				</a>
 				<ul class='treeview-menu'>
 					<li><a n:href=':Cloud:IbmCloud:default'>{_cloud.ibmCloud.title}</a></li>
@@ -124,10 +124,10 @@
 			</li>
 
 			<li n:if='$user->loggedIn && $iqrfGw' class='treeview'>
-				<a n:href=':IqrfNet:Homepage:default' role="button">
+				<a n:href=':IqrfNet:Homepage:default' role='button'>
 					<i class='glyphicon glyphicon-tasks'></i>
 					<span>{_core.node-red.title}</span>
-					<span class="pull-right-container"><i class="caret"></i></span>
+					<span class='pull-right-container'><i class='caret'></i></span>
 				</a>
 				<ul class='treeview-menu'>
 					<li><a href='/node-red/'>{_core.node-red.title}</a></li>

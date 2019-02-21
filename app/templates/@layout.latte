@@ -49,10 +49,10 @@
 			<div class='navbar-custom-menu'>
 				<ul class='nav navbar-nav'>
 					<li n:if='$offlineMode'>
-						<a style="background-color: #f39c12;">{_core.update.offline-tag}</a>
+						<a n:nonce style='background-color: #f39c12;'>{_core.update.offline-tag}</a>
 					</li>
 					<li n:ifset='$newVersion'>
-						<a style="background-color: #dd4b39;">{_$newVersion}</a>
+						<a n:nonce style='background-color: #dd4b39;'>{_$newVersion}</a>
 					</li>
 					<li class='dropdown user user-menu'>
 					<li n:if='!$user->loggedIn'><a n:href=':Core:Sign:in'>{_core.sign.in}</a></li>
@@ -77,8 +77,8 @@
 		<section class='content container-fluid'>
 			{snippet flashes}
 				<div n:foreach='$flashes as $flash' class='alert alert-{$flash->type} alert-dismissible' role='alert'>
-					<button type='button' class='close' data-dismiss='alert' aria-label='Close'>
-						<span aria-hidden='true'>&times;</span>
+					<button type='button' class='close' data-dismiss='alert'>
+						<span>&times;</span>
 					</button>
 					{_$flash->message}
 				</div>

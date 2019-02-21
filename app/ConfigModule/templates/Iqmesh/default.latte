@@ -17,9 +17,11 @@
 
 {block title}{_config.iqmesh.title}{/block}
 {block content}
-<h2>{_config.iqmesh.otaUpload.title}</h2>
-<div class='panel panel-default'>
-	<div class='panel-body'>
+<div class='box box-primary'>
+	<header class='box-header with-border'>
+		<h2 class='box-title'>{_config.iqmesh.otaUpload.title}</h2>
+	</header>
+	<section class='box-body'>
 		{control configOtaUploadForm}
-	</div>
+	</section>
 </div>

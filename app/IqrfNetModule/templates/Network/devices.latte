@@ -16,54 +16,58 @@
 *}
 
 {snippet showDevices}
-	<div class='col-sm-6'>
-		<h2>{_iqrfnet.devices.title}</h2>
-		<div class='panel panel-default'>
-			<div class='panel-body'>
-				<table class='table text-center'>
-					<tr>
-						<td><span n:nonce class='glyphicon glyphicon-home text-info' aria-hidden='true'></span> {_iqrfnet.devices.coordinator}</td>
-						<td><span n:nonce class='glyphicon glyphicon-signal text-primary' aria-hidden='true'></span> {_iqrfnet.devices.discovered}</td>
-					</tr>
-					<tr>
-						<td><span n:nonce class='glyphicon glyphicon-remove text-danger' aria-hidden='true'></span> {_iqrfnet.devices.unbonded}</td>
-						<td><span n:nonce class='glyphicon glyphicon-ok text-success' aria-hidden='true'></span> {_iqrfnet.devices.bonded}</td>
-					</tr>
-				</table>
-				<table class='table table-striped'>
-					<tr>
-						<th>&nbsp;</th>
-						<th n:for='$i = 0; $i < $base; $i++'>{$i}</th>
-					</tr>
-					<tr n:foreach='$devices as $tens => $line'>
-						<th>{$tens}0</th>
-						<td n:foreach='$line as $units => $device'>
-							{var $address = $tens * 10 + $units}
-							{switch $device}
-								{case 1}
-									{var $icon = 'ok', $color = 'text-success'}
-								{case 2}
-									{var $icon = 'signal', $color = 'text-primary'}
-								{case 3}
-									{var $icon = 'home', $color = 'text-info'}
-								{default}
-									{var $icon = 'remove', $color = 'text-danger'}
-							{/switch}
-							{if $device === 0}
-								<span class='glyphicon glyphicon-{$icon} {$color}' aria-hidden='true'></span>
-							{else}
-								<a n:href='Enumeration:default address => $address'>
-									<span class='glyphicon glyphicon-{$icon} {$color}' aria-hidden='true'></span>
-								</a>
-							{/if}
-						</td>
-					</tr>
-				</table>
-				{foreach $devices as $tens => $line}
-					{foreach $line as $units => $device}
-					{/foreach}
-				{/foreach}
-			</div>
-		</div>
+	<div class='box box-primary'>
+		<header class='box-header with-border'>
+			<h2 class='box-title'>{_iqrfnet.devices.title}</h2>
+		</header>
+		<section class='box-body table-responsive'>
+			<table class='table text-center'>
+				<tr>
+					<td>
+						<span class='glyphicon glyphicon-home text-info'></span> {_iqrfnet.devices.coordinator}
+					</td>
+					<td>
+						<span class='glyphicon glyphicon-signal text-primary'></span> {_iqrfnet.devices.discovered}
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class='glyphicon glyphicon-remove text-danger'></span> {_iqrfnet.devices.unbonded}
+					</td>
+					<td>
+						<span class='glyphicon glyphicon-ok text-success'></span> {_iqrfnet.devices.bonded}
+					</td>
+				</tr>
+			</table>
+			<table class='table table-striped'>
+				<tr>
+					<th>&nbsp;</th>
+					<th n:for='$i = 0; $i < $base; $i++'>{$i}</th>
+				</tr>
+				<tr n:foreach='$devices as $tens => $line'>
+					<th>{$tens}0</th>
+					<td n:foreach='$line as $units => $device'>
+						{var $address = $tens * 10 + $units}
+						{switch $device}
+							{case 1}
+							{var $icon = 'ok', $color = 'text-success'}
+							{case 2}
+							{var $icon = 'signal', $color = 'text-primary'}
+							{case 3}
+							{var $icon = 'home', $color = 'text-info'}
+							{default}
+							{var $icon = 'remove', $color = 'text-danger'}
+						{/switch}
+						{if $device === 0}
+							<span class='glyphicon glyphicon-{$icon} {$color}'></span>
+						{else}
+							<a n:href='Enumeration:default address => $address'>
+								<span class='glyphicon glyphicon-{$icon} {$color}'></span>
+							</a>
+						{/if}
+					</td>
+				</tr>
+			</table>
+		</section>
 	</div>
 {/snippet}

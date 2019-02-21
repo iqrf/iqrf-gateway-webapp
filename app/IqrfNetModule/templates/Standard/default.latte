@@ -18,39 +18,39 @@
 {block title}{_iqrfnet.standard.title}{/block}
 {block content}
 <div class='col-sm-6'>
-	<div class='panel panel-default'>
-		<div class='panel-heading'>
-			<h3 class='panel-title'>{_iqrfnet.standard.binaryOutput.title}</h3>
-		</div>
-		<div class='panel-body'>
+	<div class='box box-primary'>
+		<header class='box-header with-border'>
+			<h2 class='box-title'>{_iqrfnet.standard.binaryOutput.title}</h2>
+		</header>
+		<section class='box-body'>
 			{control binaryOutputForm}
-		</div>
-		<div n:ifset='$binaryOutputData' class='panel-footer table-responsive'>
+		</section>
+		<footer n:ifset='$binaryOutputData' class='box-footer table-responsive'>
 			{include 'binaryOutput.latte', data => $binaryOutputData}
-		</div>
+		</footer>
 	</div>
-	<div class='panel panel-default'>
-		<div class='panel-heading'>
-			<h3 class='panel-title'>{_iqrfnet.standard.sensor.title}</h3>
-		</div>
-		<div class='panel-body'>
+	<div class='box box-primary'>
+		<header class='box-header with-border'>
+			<h2 class='box-title'>{_iqrfnet.standard.sensor.title}</h2>
+		</header>
+		<section class='box-body'>
 			{control sensorForm}
-		</div>
-		<div n:ifset='$sensorData' class='panel-footer table-responsive'>
+		</section>
+		<footer n:ifset='$sensorData' class='box-footer table-responsive'>
 			{include 'sensor.latte', data => $sensorData}
-		</div>
+		</footer>
 	</div>
 </div>
 <div class='col-sm-6'>
-	<div class='panel panel-default'>
-		<div class='panel-heading'>
-			<h3 class='panel-title'>{_iqrfnet.standard.light.title}</h3>
-		</div>
-		<div class='panel-body'>
+	<div class='box box-primary'>
+		<header class='box-header with-border'>
+			<h2 class='box-title'>{_iqrfnet.standard.light.title}</h2>
+		</header>
+		<section class='box-body'>
 			{control lightForm}
-		</div>
-		<div n:ifset='$lightData' class='panel-footer table-responsive'>
+		</section>
+		<footer n:ifset='$lightData' class='box-footer table-responsive'>
 			{include 'light.latte', data => $lightData}
-		</div>
+		</footer>
 	</div>
 </div>

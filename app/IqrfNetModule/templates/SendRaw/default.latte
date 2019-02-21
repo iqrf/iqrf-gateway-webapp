@@ -18,60 +18,58 @@
 {block title}{_iqrfnet.send-packet.title}{/block}
 {block content}
 <div class='panel panel-default'>
-	<div class='panel-body'>
-		<form n:name=sendRawForm class=form>
-			<label n:name=packet for='packet'>{_iqrfnet.send-packet.packet}</label>
-			<input n:name=packet class='form-control'>
+	<section class='panel-body'>
+		{form sendRawForm}
+			{label packet}
+			{input packet}
 			<div class='row'>
 				<div class='col-md-6'>
-					<div class="form-group">
-						<div class="checkbox">
-							<label n:name=overwriteAddress for='overwriteAddress'>
-								<input n:name=overwriteAddress type="checkbox">{_iqrfnet.send-packet.overwriteAddress}
-							</label>
-						</div>
+					<div class='form-group checkbox'>
+						<label>
+							{input overwriteAddress}
+							{_iqrfnet.send-packet.overwriteAddress}
+						</label>
 					</div>
-					<div class="form-group">
-						<label n:name=address for="address">{_iqrfnet.send-packet.customAddress}</label>
-						<input n:name=address type="text" class="form-control">
+					<div class='form-group'>
+						{label address /}
+						{input address}
 					</div>
 				</div>
 				<div class='col-md-6'>
-					<div class="form-group">
-						<div class="checkbox">
-							<label n:name=timeoutEnabled for='timeoutEnabled'>
-								<input n:name=timeoutEnabled type="checkbox">{_iqrfnet.send-packet.overwriteTimeout}
-							</label>
-						</div>
+					<div class='form-group checkbox'>
+						<label>
+							{input timeoutEnabled}
+							{_iqrfnet.send-packet.overwriteTimeout}
+						</label>
 					</div>
-					<div class="form-group">
-						<label n:name=timeout for="timeout">{_iqrfnet.send-packet.customTimeout}</label>
-						<input n:name=timeout type="text" class="form-control">
+					<div class='form-group'>
+						{label timeout /}
+						{input timeout}
 					</div>
 				</div>
 			</div>
-			<input n:name=send class='btn btn-primary navbar-btn'>
-		</form>
-	</div>
+			{input send}
+		{/form}
+	</section>
 </div>
-<h2>{_iqrfnet.macros.title}</h2>
-<div class='panel panel-default'>
-	<div class='panel-body'>
-		<div class="btn-toolbar" role="toolbar">
-			<div n:foreach="$macros as $macro" class="btn-group">
-				<button type="button" class="btn btn-primary btn-block dropdown-toggle" data-toggle="dropdown"
-				        aria-haspopup="true" aria-expanded="false">
-					{$macro['name']} <span class="caret"></span>
-				</button>
-				<ul class="dropdown-menu">
-					<li n:foreach="$macro['macros'] as $item"><a n:if="$item['enabled']" class='btn-packet'
-					                                                                     data-packet='{$item['request']}'>{$item['name']}</a>
-					</li>
-				</ul>
-			</div>
+<div class='box box-primary'>
+	<header class='box-header with-border'>
+		<h2 class='box-title'>{_iqrfnet.macros.title}</h2>
+	</header>
+	<section class='box-body btn-group dropup' role='group'>
+		<div n:foreach='$macros as $macro' class='btn-group' role='group'>
+			<button type='button' class='btn btn-primary dropdown-toggle' data-toggle='dropdown'>
+				{$macro['name']} <span class=caret></span>
+			</button>
+			<ul class='dropdown-menu'>
+				<li n:foreach='$macro["macros"] as $item'>
+					<a n:if='$item["enabled"]' class='btn-packet' data-packet='{$item['request']}'>{$item['name']}</a>
+				</li>
+			</ul>
 		</div>
-	</div>
+	</section>
 </div>
+
 {ifset $json}
-	{include 'response.latte', json => $json}
+	{include 'response.latte'}
 {/ifset}

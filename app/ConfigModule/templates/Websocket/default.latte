@@ -18,9 +18,9 @@
 {block title}{_config.websocket.title}{/block}
 {block content}
 {if $user->isInRole('power')}
-	<h2>{_config.websocket.messaging.title}</h2>
+	<h3>{_config.websocket.messaging.title}</h3>
 	{control configWebSocketMessagingDataGrid}
-	<h2>{_config.websocket.service.title}</h2>
+	<h3>{_config.websocket.service.title}</h3>
 	{control configWebSocketServiceDataGrid}
 {else}
 	{control configWebSocketDataGrid}

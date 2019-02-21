@@ -17,9 +17,11 @@
 
 {block title}{_core.profile.title}{/block}
 {block content}
-<h2>{_core.changePassword.title}</h2>
-<div class='panel panel-default'>
-	<div class='panel-body'>
+<div class='box box-primary'>
+	<header class='box-header with-border'>
+		<h2 class='box-title'>{_core.changePassword.title}</h2>
+	</header>
+	<section class='box-body'>
 		{control changePasswordForm}
-	</div>
+	</section>
 </div>

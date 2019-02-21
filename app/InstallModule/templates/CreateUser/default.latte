@@ -17,9 +17,11 @@
 
 {block title}{_install.title}{/block}
 {block content}
-<h2>{_install.createUser.title}</h2>
-<div class='panel panel-default'>
-	<div class='panel-body'>
+<div class='box box-primary'>
+	<header class='box-header with-border'>
+		<h2 class='box-title'>{_install.createUser.title}</h2>
+	</header>
+	<section class='box-body'>
 		{control createUserForm}
-	</div>
+	</section>
 </div>

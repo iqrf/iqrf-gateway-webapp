@@ -20,7 +20,7 @@
 <div class='panel panel-default'>
 	<div class='panel-body'>
 		{var $taskTypes = ['raw', 'raw-hdp']}
-		<div class="btn-group" role="group" aria-label="add" n:foreach="$taskTypes as $type">
+		<div class="btn-group" role="group" n:foreach="$taskTypes as $type">
 			<a class="btn btn-xs btn-success" n:href="Scheduler:add type => $type" role="button">Add {$type}</a>
 		</div>
 	</div>

@@ -16,22 +16,24 @@
 *}
 
 {snippet responseChange}
-	<div class="row">
-		<div class="col-xs-6">
-			<h2>{_iqrfnet.send-packet.request}</h2>
-			<div class='panel panel-default'>
-				<div class='panel-body'>
-					<pre><code class='json'>{$json['request']}</code></pre>
-				</div>
-			</div>
+	<div class='col-sm-6'>
+		<div class='box box-primary'>
+			<header class='box-header with-border'>
+				<h2 class='box-title'>{_iqrfnet.send-json.request}</h2>
+			</header>
+			<section class='box-body'>
+				<pre><code class='json'>{$json['request']}</code></pre>
+			</section>
 		</div>
-		<div class="col-xs-6">
-			<h2>{_iqrfnet.send-packet.response}</h2>
-			<div class='panel panel-default'>
-				<div class='panel-body'>
-					<pre><code class='json'>{$json['response']}</code></pre>
-				</div>
-			</div>
+	</div>
+	<div class='col-sm-6'>
+		<div class='box box-primary'>
+			<header class='box-header with-border'>
+				<h2 class='box-title'>{_iqrfnet.send-json.response}</h2>
+			</header>
+			<section class='box-body'>
+				<pre><code class='json'>{$json['response']}</code></pre>
+			</section>
 		</div>
 	</div>
 {/snippet}

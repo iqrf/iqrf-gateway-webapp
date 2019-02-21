@@ -22,11 +22,11 @@
 		<table class='table table-striped'>
 			<tr>
 				<th>{_iqrfnet.standard.binaryOutput.table.outputs}</th>
-				<td>{$response["data"]["rsp"]["result"]["binouts"]}</td>
+				<td>{$response['data']['rsp']['result']['binouts']}</td>
 			</tr>
 		</table>
 		{case 'iqrfBinaryoutput_SetOutput'}
-		{var $outputs = $response["data"]["rsp"]["result"]["prevVals"]}
+		{var $outputs = $response['data']['rsp']['result']['prevVals']}
 		<table class='table table-striped'>
 			<tr>
 				<th>{_iqrfnet.standard.binaryOutput.table.index}</th>
@@ -43,7 +43,7 @@
 						{case false}
 						{var $icon = 'remove', $color = 'text-danger'}
 					{/switch}
-					<span class='glyphicon glyphicon-{$icon} {$color}' aria-hidden='true'></span>
+					<span class='glyphicon glyphicon-{$icon} {$color}'></span>
 				</td>
 			</tr>
 		</table>
