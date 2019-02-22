@@ -84,13 +84,10 @@ class BondingFormFactory {
 		$form->addText('smartConnectCode', 'smartConnectCode')
 			->addConditionOn($form['method'], Form::EQUAL, 'smartConnect')
 			->setRequired('messages.smartConnectCode');
-		$form->addSubmit('bond', 'bondNode')
+		$form->addSubmit('add', 'addBond')
 			->setHtmlId('frm-iqrfNetBondingForm-bondNode')
 			->onClick[] = [$this, 'bondNode'];
-		$form->addSubmit('rebond', 'rebondNode')
-			->setHtmlId('frm-iqrfNetBondingForm-rebond')
-			->onClick[] = [$this, 'rebondNode'];
-		$form->addSubmit('remove', 'removeNode')
+		$form->addSubmit('remove', 'removeBond')
 			->setHtmlId('frm-iqrfNetBondingForm-remove')
 			->onClick[] = [$this, 'removeNode'];
 		$form->addSubmit('clear', 'clearAllBonds')
@@ -114,10 +111,10 @@ class BondingFormFactory {
 	}
 
 	/**
-	 * Bonds a new node
-	 * @param SubmitButton $button Submit button for bonding a new node
+	 * Adds a new bond
+	 * @param SubmitButton $button Submit button for adding a new bond
 	 */
-	public function bondNode(SubmitButton $button): void {
+	public function addBond(SubmitButton $button): void {
 		$values = $button->getForm()->getValues();
 		$address = $values['autoAddress'] ? 0 : $values['address'];
 		try {
@@ -129,9 +126,9 @@ class BondingFormFactory {
 					$this->manager->bondSmartConnect($address, $values['smartConnectCode']);
 					break;
 			}
-			$this->presenter->flashMessage('iqrfnet.bonding.messages.bond.success', 'success');
+			$this->presenter->flashMessage('iqrfnet.bonding.messages.add.success', 'success');
 		} catch (EmptyResponseException | DpaErrorException | JsonException $e) {
-			$this->presenter->flashMessage('iqrfnet.bonding.messages.bond.failure', 'danger');
+			$this->presenter->flashMessage('iqrfnet.bonding.messages.add.failure', 'danger');
 		}
 	}
 
@@ -149,24 +146,10 @@ class BondingFormFactory {
 	}
 
 	/**
-	 * Rebonds a node
-	 * @param SubmitButton $button Submit button for rebonding a node
+	 * Removes a bond
+	 * @param SubmitButton $button Submit button for removing a bond
 	 */
-	public function rebondNode(SubmitButton $button): void {
-		$values = $button->getForm()->getValues();
-		try {
-			$this->manager->rebond($values['address']);
-			$this->presenter->flashMessage('iqrfnet.bonding.messages.rebond.success', 'success');
-		} catch (EmptyResponseException | DpaErrorException | JsonException $e) {
-			$this->presenter->flashMessage('iqrfnet.bonding.messages.rebond.failure', 'danger');
-		}
-	}
-
-	/**
-	 * Removes a node
-	 * @param SubmitButton $button Submit button for removing a node
-	 */
-	public function removeNode(SubmitButton $button): void {
+	public function removeBond(SubmitButton $button): void {
 		$values = $button->getForm()->getValues();
 		try {
 			$this->manager->remove($values['address']);

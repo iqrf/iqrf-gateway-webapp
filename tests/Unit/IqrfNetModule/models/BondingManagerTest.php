@@ -95,26 +95,6 @@ class BondingManagerTest extends WebSocketTestCase {
 	}
 
 	/**
-	 * Tests the function to rebond a node
-	 */
-	public function testRebond(): void {
-		$request = [
-			'mType' => 'iqrfEmbedCoordinator_RebondNode',
-			'data' => [
-				'req' => [
-					'nAdr' => 0,
-					'param' => [
-						'bondAddr' => $this->address,
-					],
-				],
-			],
-		];
-		$this->assertRequest($request, function (): void {
-			$this->manager->rebond($this->address);
-		});
-	}
-
-	/**
 	 * Tests the function to remove a bond
 	 */
 	public function testRemove(): void {
