@@ -18,7 +18,7 @@
 	},
 	"homepage": "https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp",
 	"dependencies": {
-		"@sentry/browser": "^4.5",
+		"@sentry/browser": "^4.6",
 		"admin-lte": "^2.4",
 		"autosize": "^4.0",
 		"cronstrue": "^1.60",
@@ -30,19 +30,19 @@
 		"ublaboo-datagrid": "^5.7"
 	},
 	"devDependencies": {
-		"@babel/core": "^7.2",
+		"@babel/core": "^7.3",
 		"@babel/preset-env": "^7.2",
 		"babel-eslint": "^10.0",
 		"babel-loader": "^8.0",
 		"css-loader": "^2.1",
-		"eslint": "^5.12",
+		"eslint": "^5.14",
 		"eslint-loader": "^2.1",
 		"eslint-plugin-jquery": "^1.5",
 		"file-loader": "^3.0",
 		"mini-css-extract-plugin": "^0.5",
 		"optimize-css-assets-webpack-plugin": "^5.0",
 		"uglifyjs-webpack-plugin": "^2.1",
-		"webpack": "^4.28",
+		"webpack": "^4.29",
 		"webpack-cli": "^3.2"
 	}
 }

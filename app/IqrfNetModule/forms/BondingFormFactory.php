@@ -86,10 +86,10 @@ class BondingFormFactory {
 			->setRequired('messages.smartConnectCode');
 		$form->addSubmit('add', 'addBond')
 			->setHtmlId('frm-iqrfNetBondingForm-bondNode')
-			->onClick[] = [$this, 'bondNode'];
+			->onClick[] = [$this, 'addBond'];
 		$form->addSubmit('remove', 'removeBond')
 			->setHtmlId('frm-iqrfNetBondingForm-remove')
-			->onClick[] = [$this, 'removeNode'];
+			->onClick[] = [$this, 'removeBond'];
 		$form->addSubmit('clear', 'clearAllBonds')
 			->setHtmlId('frm-iqrfNetBondingForm-clear')
 			->onClick[] = [$this, 'clearAllBonds'];
