@@ -344,6 +344,7 @@ websocket:
 		instance: Name of instance
 		acceptAsyncMsg: Accept asynchronous messages
 		WebsocketPort: WebSocket port
+		acceptOnlyLocalhost: Accept only connection from localhost
 		requiredInterface:
 			name: Required interface name
 			instance: Required WebSocket service

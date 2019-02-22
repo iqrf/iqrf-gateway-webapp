@@ -83,6 +83,11 @@ class WebSocketDataGridFactory {
 			->addOption(false, 'config.components.form.disabled')
 			->setIcon('remove')->setClass('btn btn-xs btn-danger')->endOption()
 			->onChange[] = [$this, 'changeAsyncMsg'];
+		$grid->addColumnStatus('acceptOnlyLocalhost', 'config.websocket.form.acceptOnlyLocalhost')
+			->addOption(true, 'config.components.form.enabled')->setIcon('ok')->endOption()
+			->addOption(false, 'config.components.form.disabled')
+			->setIcon('remove')->setClass('btn btn-xs btn-danger')->endOption()
+			->onChange[] = [$this, 'changeOnlyLocalhost'];
 		$grid->addAction('edit', 'config.actions.Edit')->setIcon('pencil')
 			->setClass('btn btn-xs btn-info');
 		$grid->addAction('delete', 'config.actions.Remove')->setIcon('remove')
@@ -102,6 +107,32 @@ class WebSocketDataGridFactory {
 	public function changeAsyncMsg(int $id, bool $status): void {
 		$config = $this->configManager->load($id);
 		$config['acceptAsyncMsg'] = $status;
+		try {
+			$this->configManager->save($config);
+			$this->presenter->flashMessage('config.messages.success', 'success');
+		} catch (IOException $e) {
+			$this->presenter->flashMessage('config.messages.writeFailures.ioError', 'danger');
+		} catch (NonExistingJsonSchemaException $e) {
+			$this->presenter->flashMessage('config.messages.writeFailures.nonExistingJsonSchema', 'danger');
+		} finally {
+			if ($this->presenter->isAjax()) {
+				$this->presenter->redrawControl('flashes');
+				$dataGrid = $this->presenter['configWebSocketDataGrid'];
+				$dataGrid->setDataSource($this->configManager->list());
+				$dataGrid->redrawItem($id);
+			}
+		}
+	}
+
+	/**
+	 * Changes the status of accepting connections only from localhost
+	 * @param int $id Component ID
+	 * @param bool $status New accepting connections only from localhost status
+	 * @throws JsonException
+	 */
+	public function changeOnlyLocalhost(int $id, bool $status): void {
+		$config = $this->configManager->load($id);
+		$config['acceptOnlyLocalhost'] = $status;
 		try {
 			$this->configManager->save($config);
 			$this->presenter->flashMessage('config.messages.success', 'success');

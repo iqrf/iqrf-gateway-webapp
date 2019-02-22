@@ -1,5 +1,6 @@
 {
 	"component": "shape::WebsocketCppService",
 	"instance": "WebsocketCppServiceMobileApp",
-	"WebsocketPort": 1339
+	"WebsocketPort": 1339,
+	"acceptOnlyLocalhost": false
 }

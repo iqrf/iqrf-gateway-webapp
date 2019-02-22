@@ -185,6 +185,7 @@ class WebSocketManager {
 			'component' => $this->components['service'],
 			'instance' => $instances['service'],
 			'WebsocketPort' => $values['port'],
+			'acceptOnlyLocalhost' => $values['acceptOnlyLocalhost'],
 		];
 	}
 
@@ -221,13 +222,13 @@ class WebSocketManager {
 			'messaging' => $messaging['instance'],
 			'service' => $service['instance'],
 		];
-		$array = [
+		return [
 			'messagingInstance' => $messaging['instance'],
 			'acceptAsyncMsg' => $messaging['acceptAsyncMsg'],
 			'serviceInstance' => $service['instance'],
 			'port' => $service['WebsocketPort'],
+			'acceptOnlyLocalhost' => $service['acceptOnlyLocalhost'] ?? false,
 		];
-		return $array;
 	}
 
 }
