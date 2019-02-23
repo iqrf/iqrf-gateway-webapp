@@ -47,6 +47,7 @@ class WebSocketServiceFormFactory extends GenericConfigFormFactory {
 			->setRequired('messages.serviceInstance');
 		$form->addInteger('WebsocketPort', 'WebsocketPort')
 			->setRequired('messages.WebsocketPort');
+		$form->addCheckbox('acceptOnlyLocalhost', 'acceptOnlyLocalhost');
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');
 		$id = $presenter->getParameter('id');

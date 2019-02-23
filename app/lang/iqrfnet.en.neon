@@ -13,21 +13,17 @@ bonding:
 	messages:
 		address: Please enter a valid address. Its has to be a decimal number from 1 to 239.
 		smartConnectCode: Please enter IQRF Smart Connect Code.
-		bond:
+		add:
 			failure: An error occurred while bonding a new device.
 			success: A new device has been bonded successfully.
 		clearAll:
 			failure: An error occurred while clearing all bonds.
 			success: All bonds have been cleared successfully.
-		rebond:
-			failure: An error occurred while rebonding a device.
-			success: A device has been rebonded successfully.
 		remove:
 			failure: An error occurred while removing a device from the network.
 			success: A device has been removed successfully from the network.
-	bondNode: Bond Node
-	rebondNode: Rebond Node
-	removeNode: Remove Node
+	addBond: Bond Node
+	removeBond: Unbond Node
 	clearAllBonds: Clear All Bonds
 
 changeAddress:

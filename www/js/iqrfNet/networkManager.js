@@ -23,7 +23,6 @@ if (autoAddress !== null) {
 	autoAddress.addEventListener('click', function (event) {
 		let checked = event.currentTarget.checked;
 		document.getElementById('frm-iqrfNetBondingForm-address').disabled = checked;
-		document.getElementById('frm-iqrfNetBondingForm-rebond').disabled = checked;
 		document.getElementById('frm-iqrfNetBondingForm-remove').disabled = checked;
 	});
 }

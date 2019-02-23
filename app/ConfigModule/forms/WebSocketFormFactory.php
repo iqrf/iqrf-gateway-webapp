@@ -72,6 +72,7 @@ class WebSocketFormFactory {
 		$form = $this->factory->create('config.websocket.form');
 		$form->addInteger('port', 'WebsocketPort')
 			->setRequired('messages.WebsocketPort');
+		$form->addCheckbox('acceptOnlyLocalhost', 'acceptOnlyLocalhost');
 		$form->addCheckbox('acceptAsyncMsg', 'acceptAsyncMsg');
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');

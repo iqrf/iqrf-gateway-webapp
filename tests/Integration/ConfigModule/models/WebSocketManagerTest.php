@@ -55,6 +55,7 @@ class WebSocketManagerTest extends JsonConfigTestCase {
 	private $values = [
 		'acceptAsyncMsg' => true,
 		'port' => 1338,
+		'acceptOnlyLocalhost' => true,
 	];
 
 	/**
@@ -89,6 +90,7 @@ class WebSocketManagerTest extends JsonConfigTestCase {
 			'acceptAsyncMsg' => true,
 			'serviceInstance' => $this->instances['service'],
 			'port' => 1338,
+			'acceptOnlyLocalhost' => false,
 		];
 		Assert::same($expected, $this->manager->load(0));
 	}
@@ -101,11 +103,25 @@ class WebSocketManagerTest extends JsonConfigTestCase {
 		$this->copyConfiguration();
 		$this->managerTemp->load(0);
 		$this->managerTemp->save($this->values);
-		$expectedMessaging = $this->fileManager->read($this->fileNames['messaging']);
-		$expectedMessaging['RequiredInterfaces'][0]['target']['instance'] = 'WebsocketCppService';
-		unset($expectedMessaging['RequiredInterfaces'][0]['target']['WebsocketPort']);
+		$expectedMessaging = [
+			'component' => 'iqrf::WebsocketMessaging',
+			'instance' => 'WebsocketMessaging',
+			'acceptAsyncMsg' => true,
+			'RequiredInterfaces' => [
+				[
+					'name' => 'shape::IWebsocketService',
+					'target' => ['instance' => 'WebsocketCppService'],
+				],
+			],
+		];
 		Assert::same($expectedMessaging, $this->fileManagerTemp->read($this->fileNames['messaging']));
-		Assert::same($this->fileManager->read($this->fileNames['service']), $this->fileManagerTemp->read($this->fileNames['service']));
+		$expectedService = [
+			'component' => 'shape::WebsocketCppService',
+			'instance' => 'WebsocketCppService',
+			'WebsocketPort' => 1338,
+			'acceptOnlyLocalhost' => true,
+		];
+		Assert::same($expectedService, $this->fileManagerTemp->read($this->fileNames['service']));
 	}
 
 	/**
@@ -119,21 +135,24 @@ class WebSocketManagerTest extends JsonConfigTestCase {
 				'acceptAsyncMsg' => true,
 				'serviceInstance' => 'WebsocketCppService',
 				'port' => 1338,
+				'acceptOnlyLocalhost' => false,
 			], [
 				'id' => 1,
 				'messagingInstance' => 'WebsocketMessagingMobileApp',
 				'acceptAsyncMsg' => true,
 				'serviceInstance' => 'WebsocketCppServiceMobileApp',
 				'port' => 1339,
+				'acceptOnlyLocalhost' => false,
 			], [
 				'id' => 2,
 				'messagingInstance' => 'WebsocketMessagingWebApp',
 				'acceptAsyncMsg' => true,
 				'serviceInstance' => 'WebsocketCppServiceWebApp',
 				'port' => 1340,
+				'acceptOnlyLocalhost' => true,
 			],
 		];
-		Assert::same($expected, $this->manager->list());
+		Assert::equal($expected, $this->manager->list());
 	}
 
 	/**
@@ -164,6 +183,7 @@ class WebSocketManagerTest extends JsonConfigTestCase {
 			'component' => 'shape::WebsocketCppService',
 			'instance' => $this->instances['service'],
 			'WebsocketPort' => $this->values['port'],
+			'acceptOnlyLocalhost' => $this->values['acceptOnlyLocalhost'],
 		];
 		Assert::same($expected, $this->manager->createService($this->values, $this->instances));
 	}
