@@ -1,0 +1,3 @@
+services:
+	- App\CoreModule\Datagrids\DataGridFactory
+	- App\CoreModule\Datagrids\UserDataGridFactory

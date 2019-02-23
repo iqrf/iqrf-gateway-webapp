@@ -1,7 +1,3 @@
-services:
-	- App\GatewayModule\Datagrids\UpgradablePackagesDataGridFactory
-	- App\GatewayModule\Models\DiagnosticsManager(%daemon.configDir%, %daemon.logDir%)
-	- App\GatewayModule\Models\InfoManager
-	- App\GatewayModule\Models\LogManager(%daemon.logDir%)
-	- App\GatewayModule\Models\PowerManager
-	- App\GatewayModule\Models\UpdaterManager
+includes:
+	- datagrids.neon
+	- models.neon

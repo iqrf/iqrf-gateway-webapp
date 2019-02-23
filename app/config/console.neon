@@ -1,0 +1,16 @@
+extensions:
+	console: Contributte\Console\DI\ConsoleExtension(%consoleMode%)
+	console.extra: Contributte\Console\Extra\DI\ConsoleBridgesExtension
+
+console:
+	name: IQRF Gateway Webapp manager
+	version: 2.0.0-beta
+	catchExceptions: true
+	autoExit: true
+	url: http://localhost/
+	lazy: true
+	#helperSet: @customHelperSet
+
+console.extra:
+	security: false
+	utils: false

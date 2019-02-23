@@ -1,35 +1,8 @@
 services:
-	- App\IqrfNetModule\Forms\BondingFormFactory
-	- App\IqrfNetModule\Forms\ChangeAddressFormFactory
-	- App\IqrfNetModule\Forms\DiscoveryFormFactory
-	- App\IqrfNetModule\Forms\DpaConfigFormFactory
-	- App\IqrfNetModule\Forms\OsConfigFormFactory
-	- App\IqrfNetModule\Forms\SecurityFormFactory
-	sendJsonFormFactory:
-		factory: App\IqrfNetModule\Forms\SendJsonFormFactory
-		arguments: [@jsonSchemaManagerApi]
-	- App\IqrfNetModule\Forms\SendRawFormFactory
-	- App\IqrfNetModule\Forms\StandardBinaryOutputFormFactory
-	- App\IqrfNetModule\Forms\StandardLightFormFactory
-	- App\IqrfNetModule\Forms\StandardSensorFormFactory
-	- App\IqrfNetModule\Models\BondingManager
-	- App\IqrfNetModule\Models\DevicesManager
-	- App\IqrfNetModule\Models\DiscoveryManager
-	- App\IqrfNetModule\Models\DpaRawManager
-	- App\IqrfNetModule\Models\EnumerationManager
-	- App\IqrfNetModule\Models\GwModeManager
-	- App\IqrfNetModule\Models\MessageIdManager
-	- App\IqrfNetModule\Models\SecurityManager
-	- App\IqrfNetModule\Models\StandardBinaryOutputManager
-	- App\IqrfNetModule\Models\StandardLightManager
-	- App\IqrfNetModule\Models\StandardSensorManager
-	- App\IqrfNetModule\Models\TrConfigManager
-	- App\IqrfNetModule\Models\WebSocketClient(%daemon.wsServer%)
-	- App\IqrfNetModule\Parsers\CoordinatorParser
-	- App\IqrfNetModule\Parsers\EnumerationParser
-	- App\IqrfNetModule\Parsers\OsParser
-	- App\IqrfNetModule\Presenters\SendRawPresenter(%macroPath%)
-	- App\IqrfNetModule\Requests\ApiRequest
-	dpaRequest:
-		factory: App\IqrfNetModule\Requests\DpaRequest
-		autowired: self
+	- Iqrf\IdeMacros\MacroFileParser(%macroPath%)
+
+includes:
+	- forms.neon
+	- models.neon
+	- parsers.neon
+	- requests.neon

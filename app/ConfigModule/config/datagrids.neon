@@ -1,0 +1,10 @@
+services:
+	- App\ConfigModule\Datagrids\ComponentsDataGridFactory
+	- App\ConfigModule\Datagrids\MqMessagingDataGridFactory
+	- App\ConfigModule\Datagrids\MqttMessagingDataGridFactory
+	- App\ConfigModule\Datagrids\SchedulerDataGridFactory
+	- App\ConfigModule\Datagrids\TraceFileDataGridFactory
+	- App\ConfigModule\Datagrids\UdpMessagingDataGridFactory
+	- App\ConfigModule\Datagrids\WebSocketDataGridFactory
+	- App\ConfigModule\Datagrids\WebSocketMessagingDataGridFactory
+	- App\ConfigModule\Datagrids\WebSocketServiceDataGridFactory

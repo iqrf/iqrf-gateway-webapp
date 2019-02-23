@@ -1,9 +1,3 @@
-services:
-	- App\ConsoleModule\Commands\UserAddCommand
-	- App\ConsoleModule\Commands\UserEditCommand
-	- App\ConsoleModule\Commands\UserListCommand
-	- App\ConsoleModule\Commands\UserPasswordCommand
-	- App\ConsoleModule\Commands\UserRemoveCommand
-	consoleUserManager:
-		factory: App\ConsoleModule\Models\ConsoleUserManager
-		autowired: self
+includes:
+	- commands.neon
+	- models.neon

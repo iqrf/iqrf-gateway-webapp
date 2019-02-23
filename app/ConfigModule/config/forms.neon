@@ -1,0 +1,23 @@
+services:
+	- App\ConfigModule\Forms\ComponentsFormFactory
+	- App\ConfigModule\Forms\GenericConfigFormFactory
+	- App\ConfigModule\Forms\IqrfCdcFormFactory
+	- App\ConfigModule\Forms\IqrfDpaFormFactory
+	- App\ConfigModule\Forms\IqrfRepositoryFormFactory
+	- App\ConfigModule\Forms\IqrfSpiFormFactory
+	- App\ConfigModule\Forms\IqrfUartFormFactory
+	- App\ConfigModule\Forms\JsonMngMetaDataApiFormFactory
+	- App\ConfigModule\Forms\JsonDpaApiRawFormFactory
+	- App\ConfigModule\Forms\JsonSplitterFormFactory
+	- App\ConfigModule\Forms\MainFormFactory
+	- App\ConfigModule\Forms\MigrationFormFactory
+	- App\ConfigModule\Forms\MqFormFactory
+	- App\ConfigModule\Forms\MqttFormFactory
+	- App\ConfigModule\Forms\OtaUploadFormFactory
+	- App\ConfigModule\Forms\SchedulerFormFactory
+	- App\ConfigModule\Forms\SchedulerMigrationFormFactory
+	- App\ConfigModule\Forms\TraceFileFormFactory
+	- App\ConfigModule\Forms\UdpFormFactory
+	- App\ConfigModule\Forms\WebSocketFormFactory
+	- App\ConfigModule\Forms\WebSocketMessagingFormFactory
+	- App\ConfigModule\Forms\WebSocketServiceFormFactory

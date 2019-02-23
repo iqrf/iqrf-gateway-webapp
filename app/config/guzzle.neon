@@ -1,0 +1,5 @@
+extensions:
+	guzzle: Contributte\Guzzlette\DI\GuzzleExtension
+
+guzzle:
+	debug: true

@@ -1,0 +1,14 @@
+extensions:
+	monolog: Contributte\Monolog\DI\MonologExtension
+
+monolog:
+	tracy:
+		hook: true
+	channel:
+		default:
+			handlers:
+				- Monolog\Handler\RavenHandler(Raven_Client(%sentry.dsn%))
+			processors:
+				- Monolog\Processor\GitProcessor()
+				- Monolog\Processor\MemoryPeakUsageProcessor()
+				- Monolog\Processor\WebProcessor()

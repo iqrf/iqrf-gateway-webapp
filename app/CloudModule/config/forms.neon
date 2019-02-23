@@ -1,0 +1,5 @@
+services:
+	- App\CloudModule\Forms\AwsFormFactory
+	- App\CloudModule\Forms\AzureFormFactory
+	- App\CloudModule\Forms\IbmCloudFormFactory
+	- App\CloudModule\Forms\InteliGlueFormFactory

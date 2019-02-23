@@ -1,0 +1,6 @@
+services:
+	- App\CoreModule\Forms\ChangePasswordFormFactory
+	- App\CoreModule\Forms\FormFactory
+	- App\CoreModule\Forms\SignInFormFactory
+	- App\CoreModule\Forms\UserAddFormFactory
+	- App\CoreModule\Forms\UserEditFormFactory

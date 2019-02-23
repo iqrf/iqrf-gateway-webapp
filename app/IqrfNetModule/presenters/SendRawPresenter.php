@@ -54,10 +54,11 @@ class SendRawPresenter extends ProtectedPresenter {
 	/**
 	 * Constructor
 	 * @param DpaRawManager $manager DPA request and response manager
+	 * @param MacroFileParser $macroParser IQRF IDE Macros file parser
 	 */
-	public function __construct(string $fileName, DpaRawManager $manager) {
+	public function __construct(DpaRawManager $manager, MacroFileParser $macroParser) {
 		$this->dpaManager = $manager;
-		$this->macroParser = new MacroFileParser($fileName);
+		$this->macroParser = $macroParser;
 		parent::__construct();
 	}
 

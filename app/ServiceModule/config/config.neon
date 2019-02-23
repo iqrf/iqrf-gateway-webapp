@@ -1,5 +1,2 @@
-services:
-	- App\ServiceModule\Models\DockerSupervisorManager
-	- App\ServiceModule\Models\ServiceManager(%initDaemon%)
-	- App\ServiceModule\Models\SystemDManager
-	- App\ServiceModule\Models\UnknownManager
+includes:
+	- models.neon

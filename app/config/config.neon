@@ -34,44 +34,7 @@ database:
 	dsn: 'sqlite:%appDir%/config/database.db'
 
 extensions:
-	console: Contributte\Console\DI\ConsoleExtension(%consoleMode%)
-	console.extra: Contributte\Console\Extra\DI\ConsoleBridgesExtension
 	extendedFormMacros: Instante\ExtendedFormMacros\DI\ExtendedFormMacrosExtension
-	guzzle: Contributte\Guzzlette\DI\GuzzleExtension
-	monolog: Contributte\Monolog\DI\MonologExtension
-	translation: Kdyby\Translation\DI\TranslationExtension
-
-console:
-	name: IQRF Gateway Webapp manager
-	version: 2.0.0-beta
-	catchExceptions: true
-	autoExit: true
-	url: http://localhost/
-	lazy: true
-	#helperSet: @customHelperSet
-
-console.extra:
-	security: false
-	utils: false
-
-guzzle:
-	debug: true
-
-translation:
-	default: en
-	fallback: [en]
-
-monolog:
-	tracy:
-		hook: true
-	channel:
-		default:
-			handlers:
-				- Monolog\Handler\RavenHandler(Raven_Client(%sentry.dsn%))
-			processors:
-				- Monolog\Processor\GitProcessor()
-				- Monolog\Processor\MemoryPeakUsageProcessor()
-				- Monolog\Processor\WebProcessor()
 
 session:
 	expiration: 14 days
@@ -101,9 +64,12 @@ tracy:
 	email: 'roman.ondracek@iqrf.com'
 	strictMode: true
 	maxDepth: 10
-	maxLen: 100
 
 includes:
+	- console.neon
+	- guzzle.neon
+	- monolog.neon
+	- translation.neon
 	- ../CloudModule/config/config.neon
 	- ../ConfigModule/config/config.neon
 	- ../ConsoleModule/config/config.neon

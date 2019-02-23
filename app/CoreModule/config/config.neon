@@ -1,21 +1,4 @@
-services:
-	- App\CoreModule\Datagrids\DataGridFactory
-	- App\CoreModule\Datagrids\UserDataGridFactory
-	- App\CoreModule\Forms\ChangePasswordFormFactory
-	- App\CoreModule\Forms\FormFactory
-	- App\CoreModule\Forms\SignInFormFactory
-	- App\CoreModule\Forms\UserAddFormFactory
-	- App\CoreModule\Forms\UserEditFormFactory
-	authenticator: App\CoreModule\Models\AppAuthenticator
-	- App\CoreModule\Models\CertificateManager
-	- App\CoreModule\Models\CommandManager(%sudo%)
-	- App\CoreModule\Models\FileManager(%daemon.configDir%)
-	- App\CoreModule\Models\JsonFileManager(%daemon.configDir%)
-	jsonSchemaManagerApi:
-		factory: App\CoreModule\Models\JsonSchemaManager(%daemon.apiSchemaDir%)
-		autowired: false
-	jsonSchemaManagerDaemon:
-		factory: App\CoreModule\Models\JsonSchemaManager(%daemon.schemaDir%)
-		autowired: self
-	- App\CoreModule\Models\UserManager
-	- App\CoreModule\Models\VersionManager
+includes:
+	- datagrids.neon
+	- forms.neon
+	- models.neon

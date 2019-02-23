@@ -1,0 +1,6 @@
+services:
+	- App\ConsoleModule\Commands\UserAddCommand
+	- App\ConsoleModule\Commands\UserEditCommand
+	- App\ConsoleModule\Commands\UserListCommand
+	- App\ConsoleModule\Commands\UserPasswordCommand
+	- App\ConsoleModule\Commands\UserRemoveCommand
