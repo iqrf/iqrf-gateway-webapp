@@ -122,7 +122,8 @@ class UserAddFormFactory {
 			$userTypes[$type] = 'userTypes.' . $type;
 			unset($userTypes[$key]);
 		}
-		if ($this->presenter instanceof CreateUserPresenter) {
+		if ($this->presenter instanceof CreateUserPresenter ||
+			!$this->presenter->getUser()->isInRole('power')) {
 			unset($userTypes['power']);
 		}
 		return $userTypes;
