@@ -13,6 +13,12 @@ parameters:
 		- '#Call to an undefined method Mockery\\ExpectationInterface|Mockery\\HigherOrderMessage::with\(\).#'
 		- '#PHPDoc tag @throws with type (|[a-zA-Z0-9\\_]+\|)GuzzleHttp\\Exception\\GuzzleException(|\|[a-zA-Z0-9\\_]+) is not subtype of Throwable#'
 		- '#Return type \(void\) of method App\\ConsoleModule\\Commands\\[a-zA-Z0-9_]+::execute() should be compatible with return type \(int|null\) of method Symfony\\Component\\Console\\Command\\Command::execute\(\)#'
+		-
+			message: '#Result of (&&|\|\|) is always true.#'
+			path: %currentWorkingDirectory%/app/CoreModule/models/ZipArchiveManager.php
+		-
+			message: '#Call to function is_array\(\) with iterable&Nette\\Utils\\ArrayHash will always evaluate to false.#'
+			path: %currentWorkingDirectory%/app/CoreModule/models/ZipArchiveManager.php
 	fileExtensions:
 		- php
 		- phpt
