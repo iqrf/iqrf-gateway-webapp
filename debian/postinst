@@ -5,9 +5,9 @@ set -e
 
 composer_init() {
 	if [ ! -d /usr/share/iqrf-gateway-webapp/vendor ] ; then
-		composer install -d /usr/share/iqrf-gateway-webapp
+		php7.2 /usr/bin/composer install -d /usr/share/iqrf-gateway-webapp
 	else
-		composer update -d /usr/share/iqrf-gateway-webapp
+		php7.2 /usr/bin/composer update -d /usr/share/iqrf-gateway-webapp
 	fi
 }
 
