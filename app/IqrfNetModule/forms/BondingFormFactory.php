@@ -92,6 +92,7 @@ class BondingFormFactory {
 			->onClick[] = [$this, 'removeBond'];
 		$form->addSubmit('clear', 'clearAllBonds')
 			->setHtmlId('frm-iqrfNetBondingForm-clear')
+			->setValidationScope(false)
 			->onClick[] = [$this, 'clearAllBonds'];
 		$form->addProtection('core.errors.form-timeout');
 		return $form;
