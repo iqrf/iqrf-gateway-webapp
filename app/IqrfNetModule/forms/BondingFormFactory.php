@@ -126,7 +126,7 @@ class BondingFormFactory {
 					$this->manager->bondLocal($address);
 					break;
 				case 'smartConnect':
-					$code = values['smartConnectCode'];
+					$code = $values['smartConnectCode'];
 					$testRetries = $values['testRetries'] ?? 1;
 					$this->manager->bondSmartConnect($address, $code, $testRetries);
 					break;
