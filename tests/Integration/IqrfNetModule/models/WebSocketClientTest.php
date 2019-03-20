@@ -38,7 +38,7 @@ class WebSocketClientTest extends TestCase {
 	/**
 	 * @var string URL to IQRF Gateway Daemon's WebSocket server
 	 */
-	private $wsServer = 'ws://echo.socketo.me:9000';
+	private $wsServer = 'wss://echo.websocket.org';
 
 	/**
 	 * Tests the function to send a JSON DPA request via WebSocket (success)
