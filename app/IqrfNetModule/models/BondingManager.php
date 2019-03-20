@@ -82,13 +82,14 @@ class BondingManager {
 	 * Bonds a node via IQRF Smart Connect
 	 * @param int $address Address to bond the device to
 	 * @param string $code Smart connect code of the device
+	 * @param int $testRetries Maximum number of FRCs used to test whether the Node was successfully bonded.
 	 * @return mixed[] API request and response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws UserErrorException
 	 * @throws JsonException
 	 */
-	public function bondSmartConnect(int $address, string $code): array {
+	public function bondSmartConnect(int $address, string $code, int $testRetries = 1): array {
 		$array = [
 			'mType' => 'iqmeshNetwork_SmartConnect',
 			'data' => [
@@ -96,6 +97,7 @@ class BondingManager {
 				'req' => [
 					'deviceAddr' => $address,
 					'smartConnectCode' => $code,
+					'bondingTestRetries' => $testRetries,
 				],
 				'returnVerbose' => true,
 			],

@@ -84,6 +84,8 @@ class BondingFormFactory {
 		$form->addText('smartConnectCode', 'smartConnectCode')
 			->addConditionOn($form['method'], Form::EQUAL, 'smartConnect')
 			->setRequired('messages.smartConnectCode');
+		$form->addInteger('testRetries', 'testRetries')
+			->setDefaultValue(1);
 		$form->addSubmit('add', 'addBond')
 			->setHtmlId('frm-iqrfNetBondingForm-bondNode')
 			->onClick[] = [$this, 'addBond'];
@@ -124,7 +126,9 @@ class BondingFormFactory {
 					$this->manager->bondLocal($address);
 					break;
 				case 'smartConnect':
-					$this->manager->bondSmartConnect($address, $values['smartConnectCode']);
+					$code = values['smartConnectCode'];
+					$testRetries = $values['testRetries'] ?? 1;
+					$this->manager->bondSmartConnect($address, $code, $testRetries);
 					break;
 			}
 			$this->presenter->flashMessage('iqrfnet.bonding.messages.add.success', 'success');

@@ -68,6 +68,7 @@ class BondingManagerTest extends WebSocketTestCase {
 				'req' => [
 					'deviceAddr' => $this->address,
 					'smartConnectCode' => 'smartConnectCode',
+					'bondingTestRetries' => 1,
 				],
 				'returnVerbose' => true,
 			],

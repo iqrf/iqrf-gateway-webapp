@@ -31,13 +31,20 @@ if (autoAddress !== null) {
 let bondingMethod = document.getElementById('frm-iqrfNetBondingForm-method');
 if (bondingMethod !== null) {
 	bondingMethod.addEventListener('change', function (event) {
-		document.getElementById('frm-iqrfNetBondingForm-smartConnectCode').disabled = event.currentTarget.value !== 'smartConnect';
+		let disableSmartConnect = event.currentTarget.value !== 'smartConnect';
+		document.getElementById('frm-iqrfNetBondingForm-smartConnectCode').disabled = disableSmartConnect;
+		document.getElementById('frm-iqrfNetBondingForm-testRetries').disabled = disableSmartConnect;
 	});
 }
 
 let smartConnectCode = document.getElementById('frm-iqrfNetBondingForm-smartConnectCode');
 if (smartConnectCode !== null) {
 	smartConnectCode.disabled = true;
+}
+
+let testRetries = document.getElementById('frm-iqrfNetBondingForm-testRetries');
+if (testRetries !== null) {
+	testRetries.disabled = true;
 }
 
 // Add warning if the interoperability will be violated

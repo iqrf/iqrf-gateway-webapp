@@ -10,6 +10,7 @@ bonding:
 	address: 'Address'
 	autoAddress: Auto address
 	smartConnectCode: IQRF Smart Connect Code
+	testRetries: Bonding test retries
 	messages:
 		address: Please enter a valid address. Its has to be a decimal number from 1 to 239.
 		smartConnectCode: Please enter IQRF Smart Connect Code.
