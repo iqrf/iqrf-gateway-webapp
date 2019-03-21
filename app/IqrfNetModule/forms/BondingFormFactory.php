@@ -28,6 +28,7 @@ use App\IqrfNetModule\Presenters\NetworkPresenter;
 use Nette\Forms\Controls\SubmitButton;
 use Nette\Forms\Form;
 use Nette\SmartObject;
+use Nette\Utils\Html;
 use Nette\Utils\JsonException;
 
 /**
@@ -70,34 +71,47 @@ class BondingFormFactory {
 	public function create(NetworkPresenter $presenter): Form {
 		$this->presenter = $presenter;
 		$form = $this->factory->create('iqrfnet.bonding');
-		$form->addSelect('method', 'method', $this->getBondingMethods());
+		$form->addSelect('method', 'method', $this->getBondingMethods())
+			->addCondition(Form::EQUAL, 'smartConnect')
+			->toggle('smartConnect', true)
+			->elseCondition()
+			->toggle('smartConnect', false);
 		$form->addInteger('address', 'address')
 			->setDefaultValue(1)
 			->addRule(Form::RANGE, 'messages.address', [1, 239]);
 		$form->addCheckbox('autoAddress', 'autoAddress')
 			->addCondition(Form::EQUAL, false)
-			->toggle('frm-iqrfNetBondingForm-rebond')
-			->toggle('frm-iqrfNetBondingForm-remove');
+			->toggle('removeBond');
 		$form['address']->addConditionOn($form['autoAddress'], Form::EQUAL, false)
 			->addRule(Form::PATTERN, 'messages.address', '[0-9a-fA-F]{1,2}')
 			->setRequired('messages.address');
+		$this->addSmartConnectInputs($form);
+		$form->addSubmit('add', 'addBond')
+			->onClick[] = [$this, 'addBond'];
+		$form->addSubmit('remove', 'removeBond')
+			->setValidationScope([$form['address']])
+			->setHtmlId('removeBond')
+			->onClick[] = [$this, 'removeBond'];
+		$form->addSubmit('clear', 'clearAllBonds')
+			->setValidationScope(false)
+			->onClick[] = [$this, 'clearAllBonds'];
+		$form->addProtection('core.errors.form-timeout');
+		return $form;
+	}
+
+	/**
+	 * Add inputs fo IQRF SmartConnect
+	 * @param Form $form IQMESH Bonding form
+	 */
+	private function addSmartConnectInputs(Form $form): void {
+		$form->addGroup()
+			->setOption('container', Html::el('fieldset')->id('smartConnect'));
 		$form->addText('smartConnectCode', 'smartConnectCode')
 			->addConditionOn($form['method'], Form::EQUAL, 'smartConnect')
 			->setRequired('messages.smartConnectCode');
 		$form->addInteger('testRetries', 'testRetries')
 			->setDefaultValue(1);
-		$form->addSubmit('add', 'addBond')
-			->setHtmlId('frm-iqrfNetBondingForm-bondNode')
-			->onClick[] = [$this, 'addBond'];
-		$form->addSubmit('remove', 'removeBond')
-			->setHtmlId('frm-iqrfNetBondingForm-remove')
-			->onClick[] = [$this, 'removeBond'];
-		$form->addSubmit('clear', 'clearAllBonds')
-			->setHtmlId('frm-iqrfNetBondingForm-clear')
-			->setValidationScope(false)
-			->onClick[] = [$this, 'clearAllBonds'];
-		$form->addProtection('core.errors.form-timeout');
-		return $form;
+		$form->addGroup();
 	}
 
 	/**

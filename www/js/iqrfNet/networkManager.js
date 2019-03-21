@@ -21,30 +21,8 @@
 let autoAddress = document.getElementById('frm-iqrfNetBondingForm-autoAddress');
 if (autoAddress !== null) {
 	autoAddress.addEventListener('click', function (event) {
-		let checked = event.currentTarget.checked;
-		document.getElementById('frm-iqrfNetBondingForm-address').disabled = checked;
-		document.getElementById('frm-iqrfNetBondingForm-remove').disabled = checked;
+		document.getElementById('frm-iqrfNetBondingForm-address').disabled = event.currentTarget.checked;
 	});
-}
-
-// Enable or disable IQRF Smart Connect Code input
-let bondingMethod = document.getElementById('frm-iqrfNetBondingForm-method');
-if (bondingMethod !== null) {
-	bondingMethod.addEventListener('change', function (event) {
-		let disableSmartConnect = event.currentTarget.value !== 'smartConnect';
-		document.getElementById('frm-iqrfNetBondingForm-smartConnectCode').disabled = disableSmartConnect;
-		document.getElementById('frm-iqrfNetBondingForm-testRetries').disabled = disableSmartConnect;
-	});
-}
-
-let smartConnectCode = document.getElementById('frm-iqrfNetBondingForm-smartConnectCode');
-if (smartConnectCode !== null) {
-	smartConnectCode.disabled = true;
-}
-
-let testRetries = document.getElementById('frm-iqrfNetBondingForm-testRetries');
-if (testRetries !== null) {
-	testRetries.disabled = true;
 }
 
 // Add warning if the interoperability will be violated
