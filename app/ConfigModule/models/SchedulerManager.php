@@ -21,6 +21,8 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Models;
 
 use App\CoreModule\Models\JsonFileManager;
+use App\ServiceModule\Exceptions\NotSupportedInitSystemException;
+use App\ServiceModule\Models\ServiceManager;
 use DateTime;
 use Nette\IOException;
 use Nette\SmartObject;
@@ -53,6 +55,11 @@ class SchedulerManager {
 	private $fileName;
 
 	/**
+	 * @var ServiceManager IQRF Gateway Daemon's service manager
+	 */
+	private $serviceManager;
+
+	/**
 	 * @var TaskTimeManager Scheduler's task time specification manager
 	 */
 	private $timeManager;
@@ -62,9 +69,11 @@ class SchedulerManager {
 	 * @param MainManager $mainManager Main configuration manager
 	 * @param GenericManager $genericManager Generic configuration manager
 	 * @param TaskTimeManager $timeManager Scheduler's task time specification manager
+	 * @param ServiceManager $serviceManager IQRF Gateway Daemon's service manager
 	 */
-	public function __construct(MainManager $mainManager, GenericManager $genericManager, TaskTimeManager $timeManager) {
+	public function __construct(MainManager $mainManager, GenericManager $genericManager, TaskTimeManager $timeManager, ServiceManager $serviceManager) {
 		$this->genericConfigManager = $genericManager;
+		$this->serviceManager = $serviceManager;
 		$this->timeManager = $timeManager;
 		try {
 			$path = $mainManager->load()['cacheDir'] . '/scheduler/';
@@ -83,6 +92,11 @@ class SchedulerManager {
 		$files = $this->getTaskFiles();
 		if (isset($files[$id])) {
 			$this->fileManager->delete($files[$id]);
+			try {
+				$this->serviceManager->restart();
+			} catch (NotSupportedInitSystemException $e) {
+				// Do nothing
+			}
 		}
 	}
 

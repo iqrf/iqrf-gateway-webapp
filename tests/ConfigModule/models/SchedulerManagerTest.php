@@ -16,7 +16,9 @@ use App\ConfigModule\Models\SchedulerManager;
 use App\ConfigModule\Models\TaskTimeManager;
 use App\CoreModule\Models\JsonFileManager;
 use App\CoreModule\Models\JsonSchemaManager;
+use App\ServiceModule\Models\ServiceManager;
 use Mockery;
+use Mockery\MockInterface;
 use Tester\Assert;
 use Tester\Environment;
 use Tester\TestCase;
@@ -42,6 +44,11 @@ class SchedulerManagerTest extends TestCase {
 	 * @var SchedulerManager Scheduler's task configuration manager (with temporary files)
 	 */
 	private $managerTemp;
+
+	/**
+	 * @var ServiceManager|MockInterface IQRF Gateway Daemon's service manager
+	 */
+	private $serviceManager;
 
 	/**
 	 * @var TaskTimeManager Scheduler's task time specification manager
@@ -81,6 +88,7 @@ class SchedulerManagerTest extends TestCase {
 	public function testDelete(): void {
 		Environment::lock('config_scheduler', __DIR__ . '/../../temp/');
 		$fileName = '1';
+		$this->serviceManager->shouldReceive('restart');
 		$this->fileManagerTemp->write($fileName, $this->array);
 		Assert::true($this->fileManagerTemp->exists($fileName));
 		$this->managerTemp->delete(1);
@@ -188,8 +196,9 @@ class SchedulerManagerTest extends TestCase {
 		$mainConfigManagerTemp = Mockery::mock(MainManager::class);
 		$mainConfigManagerTemp->shouldReceive('load')->andReturn(['cacheDir' => $configTempPath]);
 		$this->timeManager = new TaskTimeManager();
-		$this->manager = new SchedulerManager($mainConfigManager, $genericConfigManager, $this->timeManager);
-		$this->managerTemp = new SchedulerManager($mainConfigManagerTemp, $genericConfigManager, $this->timeManager);
+		$this->serviceManager = Mockery::mock(ServiceManager::class);
+		$this->manager = new SchedulerManager($mainConfigManager, $genericConfigManager, $this->timeManager, $this->serviceManager);
+		$this->managerTemp = new SchedulerManager($mainConfigManagerTemp, $genericConfigManager, $this->timeManager, $this->serviceManager);
 	}
 
 	/**
