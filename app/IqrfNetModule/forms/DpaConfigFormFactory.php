@@ -55,18 +55,20 @@ class DpaConfigFormFactory extends TrConfigFormFactory {
 	 */
 	private function addEmbeddedPeripherals(Form &$form): void {
 		$form->addGroup($form->getTranslator()->translate('embeddedPeripherals'));
-		$embPers = $form->addContainer('embPers');
-		$unchangablePeripherals = ['coordinator', 'node', 'os'];
-		foreach ($unchangablePeripherals as $peripheral) {
-			$embPers->addCheckbox($peripheral, 'embPers.' . $peripheral)
-				->setDisabled();
-			if (array_key_exists('embPers', $this->configuration)) {
-				$embPers[$peripheral]->setValue($this->configuration['embPers'][$peripheral]);
+		$embeddedPeripherals = $form->addContainer('embPers');
+		$unchangeablePeripherals = ['coordinator', 'node', 'os'];
+		if ($this->presenter->getUser()->isInRole('power')) {
+			foreach ($unchangeablePeripherals as $peripheral) {
+				$embeddedPeripherals->addCheckbox($peripheral, 'embPers.' . $peripheral)
+					->setDisabled();
+				if (array_key_exists('embPers', $this->configuration)) {
+					$embeddedPeripherals[$peripheral]->setValue($this->configuration['embPers'][$peripheral]);
+				}
 			}
 		}
-		$peripherals = ['eeprom', 'eeeprom', 'ram','ledr', 'ledg', 'spi', 'io', 'thermometer', 'uart', 'frc'];
-		foreach ($peripherals as $peripheral) {
-			$embPers->addCheckbox($peripheral, 'embPers.' . $peripheral);
+		$changeablePeripherals = ['eeprom', 'eeeprom', 'ram','ledr', 'ledg', 'spi', 'io', 'thermometer', 'uart', 'frc'];
+		foreach ($changeablePeripherals as $peripheral) {
+			$embeddedPeripherals->addCheckbox($peripheral, 'embPers.' . $peripheral);
 		}
 	}
 
