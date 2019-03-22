@@ -24,6 +24,7 @@ use App\CoreModule\Datagrids\UserDataGridFactory;
 use App\CoreModule\Forms\UserAddFormFactory;
 use App\CoreModule\Forms\UserEditFormFactory;
 use App\CoreModule\Models\UserManager;
+use App\CoreModule\Traits\TPresenterFlashMessage;
 use Nette\Forms\Form;
 use Ublaboo\DataGrid\DataGrid;
 use Ublaboo\DataGrid\Exception\DataGridException;
@@ -32,6 +33,8 @@ use Ublaboo\DataGrid\Exception\DataGridException;
  * User presenter
  */
 class UserPresenter extends ProtectedPresenter {
+
+	use TPresenterFlashMessage;
 
 	/**
 	 * @var UserAddFormFactory Add a new user form factory
@@ -84,7 +87,7 @@ class UserPresenter extends ProtectedPresenter {
 			$this->user->logout(true);
 		}
 		$message = $this->translator->translate('core.user.form.messages.successDelete', ['username' => $user['username']]);
-		$this->flashMessage($message, 'success');
+		$this->flashSuccess($message);
 		$this->redirect('User:default');
 		$this->setView('default');
 	}

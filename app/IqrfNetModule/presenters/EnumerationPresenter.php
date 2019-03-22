@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\IqrfNetModule\Presenters;
 
 use App\CoreModule\Presenters\ProfilePresenter;
+use App\CoreModule\Traits\TPresenterFlashMessage;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Models\EnumerationManager;
@@ -30,6 +31,8 @@ use Nette\Utils\JsonException;
  * IQMESH device enumeration presenter
  */
 class EnumerationPresenter extends ProfilePresenter {
+
+	use TPresenterFlashMessage;
 
 	/**
 	 * @var EnumerationManager IQMESH Enumeration manager
@@ -58,11 +61,11 @@ class EnumerationPresenter extends ProfilePresenter {
 				$this->template->osData = $data['osRead'];
 				$this->template->peripheralData = $data['peripheralEnumeration'];
 			} else {
-				$this->flashMessage('iqrfnet.enumeration.messages.failure', 'danger');
+				$this->flashError('iqrfnet.enumeration.messages.failure');
 				$this->redirect('Network:default');
 			}
 		} catch (DpaErrorException | EmptyResponseException | JsonException $e) {
-			$this->flashMessage('iqrfnet.enumeration.messages.failure', 'danger');
+			$this->flashError('iqrfnet.enumeration.messages.failure');
 			$this->redirect('Network:default');
 		}
 	}

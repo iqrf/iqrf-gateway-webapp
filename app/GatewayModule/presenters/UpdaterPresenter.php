@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Presenters;
 
 use App\CoreModule\Presenters\ProtectedPresenter;
+use App\CoreModule\Traits\TPresenterFlashMessage;
 use App\GatewayModule\Datagrids\UpgradablePackagesDataGridFactory;
 use App\GatewayModule\Exceptions\UnsupportedPackageManagerException;
 use App\GatewayModule\Models\UpdaterManager;
@@ -32,6 +33,8 @@ use Ublaboo\DataGrid\Exception\DataGridException;
  * IQRF Gateway updater presenter
  */
 class UpdaterPresenter extends ProtectedPresenter {
+
+	use TPresenterFlashMessage;
 
 	/**
 	 * @var UpgradablePackagesDataGridFactory Upgradable packages data grid factory
@@ -73,7 +76,7 @@ class UpdaterPresenter extends ProtectedPresenter {
 			$this->template->upgradablePackages = true;
 			$this->redrawControl('upgradablePackages');
 		} catch (UnsupportedPackageManagerException $e) {
-			$this->flashMessage('gateway.updater.messages.unsupportedManager', 'danger');
+			$this->flashError('gateway.updater.messages.unsupportedManager');
 			$this->redrawControl('flashes');
 		}
 	}
@@ -88,7 +91,7 @@ class UpdaterPresenter extends ProtectedPresenter {
 				$this->redrawControl('outputChange');
 			});
 		} catch (UnsupportedPackageManagerException $e) {
-			$this->flashMessage('gateway.updater.messages.unsupportedManager', 'danger');
+			$this->flashError('gateway.updater.messages.unsupportedManager');
 			$this->redrawControl('flashes');
 		}
 	}
@@ -100,7 +103,7 @@ class UpdaterPresenter extends ProtectedPresenter {
 		try {
 			$this->manager->upgrade([$this, 'showCommandOutput']);
 		} catch (UnsupportedPackageManagerException $e) {
-			$this->flashMessage('gateway.updater.messages.unsupportedManager', 'danger');
+			$this->flashError('gateway.updater.messages.unsupportedManager');
 			$this->redrawControl('flashes');
 		}
 	}

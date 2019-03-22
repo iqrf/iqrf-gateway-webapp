@@ -23,6 +23,7 @@ namespace App\ConfigModule\Presenters;
 use App\ConfigModule\Models\GenericManager;
 use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
 use App\CoreModule\Presenters\ProtectedPresenter;
+use App\CoreModule\Traits\TPresenterFlashMessage;
 use Nette\IOException;
 use Nette\Utils\JsonException;
 
@@ -30,6 +31,8 @@ use Nette\Utils\JsonException;
  * Presenter for generic IQRF Gateway Daemon's configuration
  */
 abstract class GenericPresenter extends ProtectedPresenter {
+
+	use TPresenterFlashMessage;
 
 	/**
 	 * @var string[] IQRF Gateway Daemon's components
@@ -59,13 +62,13 @@ abstract class GenericPresenter extends ProtectedPresenter {
 		try {
 			$this->checkInstanceFiles();
 		} catch (NonExistingJsonSchemaException $e) {
-			$this->flashMessage('config.messages.readFailures.nonExistingJsonSchema', 'danger');
+			$this->flashError('config.messages.readFailures.nonExistingJsonSchema');
 			$this->redirect('Homepage:default');
 		} catch (IOException $e) {
-			$this->flashMessage('config.messages.readFailures.ioError', 'danger');
+			$this->flashError('config.messages.readFailures.ioError');
 			$this->redirect('Homepage:default');
 		} catch (JsonException $e) {
-			$this->flashMessage('config.messages.readFailures.invalidJson', 'danger');
+			$this->flashError('config.messages.readFailures.invalidJson');
 			$this->redirect('Homepage:default');
 		}
 	}

@@ -24,6 +24,7 @@ use App\ConfigModule\Datagrids\SchedulerDataGridFactory;
 use App\ConfigModule\Forms\SchedulerFormFactory;
 use App\ConfigModule\Models\SchedulerManager;
 use App\CoreModule\Presenters\ProtectedPresenter;
+use App\CoreModule\Traits\TPresenterFlashMessage;
 use Nette\Forms\Form;
 use Nette\IOException;
 use Nette\Utils\JsonException;
@@ -34,6 +35,8 @@ use Ublaboo\DataGrid\Exception\DataGridException;
  * Scheduler configuration presenter
  */
 class SchedulerPresenter extends ProtectedPresenter {
+
+	use TPresenterFlashMessage;
 
 	/**
 	 * @var SchedulerDataGridFactory Scheduler's tasks data grid
@@ -68,10 +71,10 @@ class SchedulerPresenter extends ProtectedPresenter {
 		try {
 			$this->template->tasks = $this->configManager->list();
 		} catch (IOException $e) {
-			$this->flashMessage('config.messages.readFailures.ioError', 'danger');
+			$this->flashError('config.messages.readFailures.ioError');
 			$this->redirect('Homepage:default');
 		} catch (JsonException $e) {
-			$this->flashMessage('config.messages.readFailures.invalidJson', 'danger');
+			$this->flashError('config.messages.readFailures.invalidJson');
 			$this->redirect('Homepage:default');
 		}
 	}
@@ -102,10 +105,10 @@ class SchedulerPresenter extends ProtectedPresenter {
 			$this->redirect('Scheduler:default');
 			$this->setView('default');
 		} catch (IOException $e) {
-			$this->flashMessage('config.messages.writeFailures.ioError', 'danger');
+			$this->flashError('config.messages.writeFailures.ioError');
 			$this->redirect('Homepage:default');
 		} catch (JsonException $e) {
-			$this->flashMessage('config.messages.writeFailures.invalidJson', 'danger');
+			$this->flashError('config.messages.writeFailures.invalidJson');
 			$this->redirect('Homepage:default');
 		}
 	}

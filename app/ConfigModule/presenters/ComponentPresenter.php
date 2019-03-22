@@ -24,6 +24,7 @@ use App\ConfigModule\Datagrids\ComponentsDataGridFactory;
 use App\ConfigModule\Forms\ComponentsFormFactory;
 use App\ConfigModule\Models\ComponentManager;
 use App\CoreModule\Presenters\ProtectedPresenter;
+use App\CoreModule\Traits\TPresenterFlashMessage;
 use Nette\Forms\Form;
 use Nette\IOException;
 use Nette\Utils\JsonException;
@@ -35,6 +36,8 @@ use Ublaboo\DataGrid\Exception\DataGridException;
  * Component configuration presenter
  */
 class ComponentPresenter extends ProtectedPresenter {
+
+	use TPresenterFlashMessage;
 
 	/**
 	 * @var ComponentsDataGridFactory Daemon's components data grid
@@ -69,10 +72,10 @@ class ComponentPresenter extends ProtectedPresenter {
 		try {
 			$this->configManager->list();
 		} catch (IOException $e) {
-			$this->flashMessage('config.messages.readFailures.ioError', 'danger');
+			$this->flashError('config.messages.readFailures.ioError');
 			$this->redirect('Homepage:default');
 		} catch (JsonException $e) {
-			$this->flashMessage('config.messages.readFailures.invalidJson', 'danger');
+			$this->flashError('config.messages.readFailures.invalidJson');
 			$this->redirect('Homepage:default');
 		}
 	}

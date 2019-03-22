@@ -21,12 +21,15 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Presenters;
 
 use App\CoreModule\Presenters\ProtectedPresenter;
+use App\CoreModule\Traits\TPresenterFlashMessage;
 use App\GatewayModule\Models\PowerManager;
 
 /**
  * IQRF Gateway Daemon's power manager presenter
  */
 class PowerPresenter extends ProtectedPresenter {
+
+	use TPresenterFlashMessage;
 
 	/**
 	 * @var PowerManager IQRF Gateway Daemon's power manager
@@ -47,8 +50,7 @@ class PowerPresenter extends ProtectedPresenter {
 	 */
 	public function handleOff(): void {
 		if ($this->isAjax()) {
-			$this->flashMessage('gateway.power.powerOff.success', 'success');
-			$this->redrawControl();
+			$this->flashSuccess('gateway.power.powerOff.success');
 			$this->manager->powerOff();
 		}
 	}
@@ -58,8 +60,7 @@ class PowerPresenter extends ProtectedPresenter {
 	 */
 	public function handleReboot(): void {
 		if ($this->isAjax()) {
-			$this->flashMessage('gateway.power.reboot.success', 'success');
-			$this->redrawControl();
+			$this->flashSuccess('gateway.power.reboot.success');
 			$this->manager->reboot();
 		}
 	}

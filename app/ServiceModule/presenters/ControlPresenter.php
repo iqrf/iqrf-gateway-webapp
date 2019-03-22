@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\ServiceModule\Presenters;
 
 use App\CoreModule\Presenters\ProtectedPresenter;
+use App\CoreModule\Traits\TPresenterFlashMessage;
 use App\ServiceModule\Exceptions\NotSupportedInitSystemException;
 use App\ServiceModule\Models\ServiceManager;
 
@@ -28,6 +29,8 @@ use App\ServiceModule\Models\ServiceManager;
  * Service control presenter.
  */
 class ControlPresenter extends ProtectedPresenter {
+
+	use TPresenterFlashMessage;
 
 	/**
 	 * @var ServiceManager Service manager
@@ -67,9 +70,9 @@ class ControlPresenter extends ProtectedPresenter {
 					$this->serviceManager->restart();
 					break;
 			}
-			$this->flashMessage('service.actions.' . $action . '.message', 'success');
+			$this->flashSuccess('service.actions.' . $action . '.message');
 		} catch (NotSupportedInitSystemException $ex) {
-			$this->flashMessage('service.errors.unsupportedInit', 'danger');
+			$this->flashError('service.errors.unsupportedInit');
 		} finally {
 			$this->redirect('Control:default');
 			$this->setView('default');

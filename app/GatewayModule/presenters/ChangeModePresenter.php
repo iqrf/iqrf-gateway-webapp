@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Presenters;
 
 use App\CoreModule\Presenters\ProtectedPresenter;
+use App\CoreModule\Traits\TPresenterFlashMessage;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Exceptions\InvalidOperationModeException;
@@ -31,6 +32,8 @@ use Nette\Utils\JsonException;
  * Change IQRF Gateway Daemon's operational mode presenter
  */
 class ChangeModePresenter extends ProtectedPresenter {
+
+	use TPresenterFlashMessage;
 
 	/**
 	 * @var GwModeManager IQRF Gateway Daemon's mode manager
@@ -67,10 +70,10 @@ class ChangeModePresenter extends ProtectedPresenter {
 		$this->setView('default');
 		try {
 			$this->manager->changeMode($mode);
-			$this->flashMessage('gateway.mode.modes.' . $mode . '.message', 'info');
+			$this->flashInfo('gateway.mode.modes.' . $mode . '.message');
 			$this->redirect('ChangeMode:default');
 		} catch (EmptyResponseException | DpaErrorException $e) {
-			$this->flashMessage('iqrfnet.webSocketClient.messages.emptyResponse', 'danger');
+			$this->flashError('iqrfnet.webSocketClient.messages.emptyResponse');
 		}
 	}
 

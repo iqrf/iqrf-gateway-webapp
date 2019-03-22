@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\ServiceModule\Presenters;
 
 use App\CoreModule\Presenters\ProtectedPresenter;
+use App\CoreModule\Traits\TPresenterFlashMessage;
 use App\ServiceModule\Exceptions\NotSupportedInitSystemException;
 use App\ServiceModule\Models\ServiceManager;
 
@@ -28,6 +29,8 @@ use App\ServiceModule\Models\ServiceManager;
  * Service status presenter
  */
 class StatusPresenter extends ProtectedPresenter {
+
+	use TPresenterFlashMessage;
 
 	/**
 	 * @var ServiceManager Service manager
@@ -51,7 +54,7 @@ class StatusPresenter extends ProtectedPresenter {
 			$status = $this->serviceManager->getStatus();
 			$this->template->status = $status;
 		} catch (NotSupportedInitSystemException $ex) {
-			$this->flashMessage('gateway.errors.unsupportedInit', 'danger');
+			$this->flashError('gateway.errors.unsupportedInit');
 			$this->redirect('Control:default');
 			$this->setView('default');
 		}

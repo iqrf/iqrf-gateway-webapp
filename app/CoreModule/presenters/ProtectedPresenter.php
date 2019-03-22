@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\CoreModule\Presenters;
 
 use App\CoreModule\Models\VersionManager;
+use App\CoreModule\Traits\TPresenterFlashMessage;
 use GuzzleHttp\Exception\TransferException;
 use Kdyby\Translation\Phrase;
 use Nette\Reflection\ClassType;
@@ -32,6 +33,8 @@ use Nette\Utils\JsonException;
  * Protected presenter for protected application presenters
  */
 abstract class ProtectedPresenter extends BasePresenter {
+
+	use TPresenterFlashMessage;
 
 	/**
 	 * @var VersionManager Version manager
@@ -63,7 +66,7 @@ abstract class ProtectedPresenter extends BasePresenter {
 	public function checkRequirements($element): void {
 		if (!$this->user->isLoggedIn()) {
 			if ($this->user->getLogoutReason() === IUserStorage::INACTIVITY) {
-				$this->flashMessage('core.signOut.inactivity', 'info');
+				$this->flashInfo('core.signOut.inactivity');
 			}
 			$this->redirect(':Core:Sign:In', ['backlink' => $this->storeRequest()]);
 		}

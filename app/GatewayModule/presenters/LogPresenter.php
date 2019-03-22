@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Presenters;
 
 use App\CoreModule\Presenters\ProtectedPresenter;
+use App\CoreModule\Traits\TPresenterFlashMessage;
 use App\GatewayModule\Models\LogManager;
 use Nette\Application\BadRequestException;
 use Nette\IOException;
@@ -30,6 +31,8 @@ use UnexpectedValueException;
  * IQRF Gateway Daemon's log presenter
  */
 class LogPresenter extends ProtectedPresenter {
+
+	use TPresenterFlashMessage;
 
 	/**
 	 * @var LogManager IQRF Gateway Daemon's log manager
@@ -52,9 +55,9 @@ class LogPresenter extends ProtectedPresenter {
 		try {
 			$this->template->log = $this->manager->load();
 		} catch (UnexpectedValueException $e) {
-			$this->flashMessage('gateway.log.messages.nonExistingDir', 'danger');
+			$this->flashError('gateway.log.messages.nonExistingDir');
 		} catch (IOException $e) {
-			$this->flashMessage('gateway.log.messages.readError', 'danger');
+			$this->flashError('gateway.log.messages.readError');
 		}
 	}
 
@@ -65,11 +68,11 @@ class LogPresenter extends ProtectedPresenter {
 		try {
 			$this->sendResponse($this->manager->download());
 		} catch (UnexpectedValueException $e) {
-			$this->flashMessage('gateway.log.messages.nonExistingDir', 'danger');
+			$this->flashError('gateway.log.messages.nonExistingDir');
 			$this->redirect('Log:default');
 			$this->setView('default');
 		} catch (BadRequestException $e) {
-			$this->flashMessage('gateway.log.messages.readError', 'danger');
+			$this->flashError('gateway.log.messages.readError');
 			$this->redirect('Log:default');
 			$this->setView('default');
 		}

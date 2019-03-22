@@ -25,14 +25,16 @@ use App\ConfigModule\Forms\SchedulerMigrationFormFactory;
 use App\ConfigModule\Models\MigrationManager;
 use App\ConfigModule\Models\SchedulerMigrationManager;
 use App\CoreModule\Presenters\ProtectedPresenter;
+use App\CoreModule\Traits\TPresenterFlashMessage;
 use Nette\Application\BadRequestException;
 use Nette\Forms\Form;
-use Tracy\Debugger;
 
 /**
  * Configuration migration presenter
  */
 class MigrationPresenter extends ProtectedPresenter {
+
+	use TPresenterFlashMessage;
 
 	/**
 	 * @var MigrationFormFactory Configuration import form factory
@@ -59,6 +61,7 @@ class MigrationPresenter extends ProtectedPresenter {
 	/**
 	 * Constructor
 	 * @param MigrationManager $manager Configuration migration manager
+	 * @param SchedulerMigrationManager $schedulerManager Scheduler's configuration migration manager
 	 */
 	public function __construct(MigrationManager $manager, SchedulerMigrationManager $schedulerManager) {
 		$this->manager = $manager;
@@ -73,8 +76,7 @@ class MigrationPresenter extends ProtectedPresenter {
 		try {
 			$this->sendResponse($this->manager->download());
 		} catch (BadRequestException $e) {
-			Debugger::log('Cannot read zip archive with a configuration.');
-			$this->flashMessage('config.migration.errors.readConfig', 'danger');
+			$this->flashError('config.migration.errors.readConfig');
 			$this->redirect('Migration:default');
 			$this->setView('default');
 		}
@@ -87,8 +89,7 @@ class MigrationPresenter extends ProtectedPresenter {
 		try {
 			$this->sendResponse($this->schedulerManager->download());
 		} catch (BadRequestException $e) {
-			Debugger::log('Cannot read JSON file with a scheduler\'s configuration.');
-			$this->flashMessage('config.schedulerMigration.errors.readConfig', 'danger');
+			$this->flashError('config.schedulerMigration.errors.readConfig');
 			$this->redirect('Migration:default');
 			$this->setView('default');
 		}
