@@ -1,7 +1,9 @@
 includes:
+	- vendor/phpstan/phpstan-deprecation-rules/rules.neon
 	- vendor/phpstan/phpstan-nette/extension.neon
 	- vendor/phpstan/phpstan-nette/rules.neon
-	#- vendor/phpstan/phpstan-strict-rules/rules.neon
+	- vendor/phpstan/phpstan-mockery/extension.neon
+	- vendor/phpstan/phpstan-strict-rules/rules.neon
 
 parameters:
 	ignoreErrors:
@@ -10,15 +12,38 @@ parameters:
 		- '#Call to an undefined method Nette\\ComponentModel\\IComponent::setDefaultValue\(\).#'
 		- '#Call to an undefined method Nette\\ComponentModel\\IComponent::setValue\(\).#'
 		- '#Call to an undefined method Mockery\\Mock::[a-zA-Z0-9_]+\(\).#'
-		- '#Call to an undefined method Mockery\\ExpectationInterface|Mockery\\HigherOrderMessage::with\(\).#'
 		- '#PHPDoc tag @throws with type (|[a-zA-Z0-9\\_]+\|)GuzzleHttp\\Exception\\GuzzleException(|\|[a-zA-Z0-9\\_]+) is not subtype of Throwable#'
 		- '#Return type \(void\) of method App\\ConsoleModule\\Commands\\[a-zA-Z0-9_]+::execute() should be compatible with return type \(int|null\) of method Symfony\\Component\\Console\\Command\\Command::execute\(\)#'
+		-
+			message: '#Parameter \#(1|2) \$(message|type) \(string\) of method App\\CoreModule\\Presenters\\ProtectedPresenter::flashMessage\(\) should be contravariant with parameter \$(message|type) \(mixed\) of method Nette\\Application\\UI\\Control::flashMessage\(\)#'
+			path: %currentWorkingDirectory%/app/CoreModule/traits/TPresenterFlashMessage.php
+		-
+			message: '#Parameter \#1 \$credentials \(array<string>\) of method App\\CoreModule\\Models\\AppAuthenticator::authenticate\(\) should be contravariant with parameter \$credentials \(array\) of method Nette\\Security\\IAuthenticator::authenticate\(\)#'
+			path: %currentWorkingDirectory%/app/CoreModule/models/AppAuthenticator.php
 		-
 			message: '#Result of (&&|\|\|) is always true.#'
 			path: %currentWorkingDirectory%/app/CoreModule/models/ZipArchiveManager.php
 		-
 			message: '#Call to function is_array\(\) with iterable&Nette\\Utils\\ArrayHash will always evaluate to false.#'
 			path: %currentWorkingDirectory%/app/CoreModule/models/ZipArchiveManager.php
+		-
+			message: '#Strict comparison using !== between int and false will always evaluate to true.#'
+			path: %currentWorkingDirectory%/app/CoreModule/models/ZipArchiveManager.php
+		-
+			message: '#Call to function is_object\(\) with iterable&Nette\\Utils\\ArrayHash will always evaluate to true.#'
+			path: %currentWorkingDirectory%/app/CoreModule/models/ZipArchiveManager.php
+		-
+			message: '#Instanceof between Nette\\Utils\\ArrayHash and Nette\\Utils\\ArrayHash will always evaluate to true.#'
+			path: %currentWorkingDirectory%/app/CoreModule/models/ZipArchiveManager.php
+		-
+			message: '#Call to function is_int\(\) with int will always evaluate to true.#'
+			path: %currentWorkingDirectory%/app/CoreModule/models/ZipArchiveManager.php
+		-
+			message: '#Parameter \#1 \$element \(Nette\\Reflection\\ClassType\|Nette\\Reflection\\Method\) of method App\\CoreModule\\Presenters\\ProtectedPresenter::checkRequirements\(\) should be contravariant with parameter \$element \(mixed\) of method Nette\\Application\\UI\\Presenter::checkRequirements\(\)#'
+			path: %currentWorkingDirectory%/app/CoreModule/presenters/ProtectedPresenter.php
+		-
+			message: '#Foreach overwrites \$unit with its value variable.#'
+			path: %currentWorkingDirectory%/app/GatewayModule/models/InfoManager.php
 	fileExtensions:
 		- php
 		- phpt

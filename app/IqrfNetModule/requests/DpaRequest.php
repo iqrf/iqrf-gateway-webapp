@@ -21,7 +21,6 @@ declare(strict_types = 1);
 namespace App\IqrfNetModule\Requests;
 
 use Nette\Utils\Strings;
-use stdClass;
 
 /**
  * JSON DPA request
@@ -53,10 +52,8 @@ class DpaRequest extends ApiRequest {
 	private function fixRequest(): void {
 		if (is_array($this->request)) {
 			$mType = $this->request['mType'];
-		} elseif ($this->request instanceof stdClass) {
-			$mType = $this->request->mType;
 		} else {
-			$mType = 'unknown';
+			$mType = $this->request->mType;
 		}
 		switch ($mType) {
 			case 'iqrfRaw':

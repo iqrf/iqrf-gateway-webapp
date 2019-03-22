@@ -99,12 +99,12 @@ class SendRawFormFactory {
 	public function onSuccess(Form $form): void {
 		$values = $form->getValues();
 		$packet = $values['packet'];
-		$timeout = $values['timeoutEnabled'] ? $values['timeout'] : null;
+		$timeout = ($values['timeoutEnabled'] === true) ? $values['timeout'] : null;
 		if (!$this->manager->validatePacket($packet)) {
 			$this->presenter->flashMessage('iqrfnet.send-packet.messages.invalidPacket', 'danger');
 			return;
 		}
-		if ($values['overwriteAddress']) {
+		if ($values['overwriteAddress'] === true) {
 			$nadr = $values['address'];
 			$this->manager->updateNadr($packet, $nadr);
 		}

@@ -37,6 +37,7 @@ class TaskTimeManagerTest extends TestCase {
 	 * Tests the function to convert CRON alias to an array
 	 */
 	public function testCronToArrayAlias(): void {
+		$config = $expected = [];
 		$config['timeSpec']['cronTime'] = '@daily';
 		$expected['timeSpec']['cronTime'] = ['@daily', '', '', '', '', '', ''];
 		$this->manager->cronToArray($config);
@@ -47,6 +48,7 @@ class TaskTimeManagerTest extends TestCase {
 	 * Tests the function to convert an invalid CRON alias to an array
 	 */
 	public function testCronToArrayAliasInvalid(): void {
+		$config = $expected = [];
 		$config['timeSpec']['cronTime'] = '@invalid';
 		$expected['timeSpec']['cronTime'] = ['', '', '', '', '', '', ''];
 		$this->manager->cronToArray($config);
@@ -57,6 +59,7 @@ class TaskTimeManagerTest extends TestCase {
 	 * Tests the function to convert CRON without seconds and year section to an array
 	 */
 	public function testCronToArrayWithoutSecondsAndYear(): void {
+		$config = $expected = [];
 		$config['timeSpec']['cronTime'] = '0 0 * * *';
 		$expected['timeSpec']['cronTime'] = ['0', '0', '0', '*', '*', '*', '*'];
 		$this->manager->cronToArray($config);
@@ -67,6 +70,7 @@ class TaskTimeManagerTest extends TestCase {
 	 * Tests the function to convert CRON without year section to an array
 	 */
 	public function testCronToArrayWithoutYear(): void {
+		$config = $expected = [];
 		$config['timeSpec']['cronTime'] = '0 0 0 * * *';
 		$expected['timeSpec']['cronTime'] = ['0', '0', '0', '*', '*', '*', '*'];
 		$this->manager->cronToArray($config);
@@ -77,6 +81,7 @@ class TaskTimeManagerTest extends TestCase {
 	 * Tests the function to convert CRON without seconds section to an array
 	 */
 	public function testCronToArrayWithoutSeconds(): void {
+		$config = $expected = [];
 		$config['timeSpec']['cronTime'] = '0 0 * * * 2020';
 		$expected['timeSpec']['cronTime'] = ['0', '0', '0', '*', '*', '*', '2020'];
 		$this->manager->cronToArray($config);
@@ -87,6 +92,7 @@ class TaskTimeManagerTest extends TestCase {
 	 * Tests the function to convert an invalid CRON to an array
 	 */
 	public function testCronToArrayInvalid(): void {
+		$config = $expected = [];
 		$config['timeSpec']['cronTime'] = 'INVALID *';
 		$expected['timeSpec']['cronTime'] = ['', '', '', '', '', '', ''];
 		$this->manager->cronToArray($config);
@@ -97,6 +103,7 @@ class TaskTimeManagerTest extends TestCase {
 	 * Tests the function to convert CRON in an array to a string
 	 */
 	public function testCronToString(): void {
+		$config = $expected = [];
 		$config['timeSpec']['cronTime'] = ['0', '0', '0', '*', '*', '*', '*'];
 		$expected['timeSpec']['cronTime'] = '0 0 0 * * * *';
 		$this->manager->cronToString($config);

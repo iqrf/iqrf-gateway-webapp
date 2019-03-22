@@ -133,7 +133,7 @@ class BondingFormFactory {
 	 */
 	public function addBond(SubmitButton $button): void {
 		$values = $button->getForm()->getValues();
-		$address = $values['autoAddress'] ? 0 : $values['address'];
+		$address = ($values['autoAddress'] === true) ? 0 : $values['address'];
 		try {
 			switch ($values['method']) {
 				case 'local':
