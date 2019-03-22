@@ -108,10 +108,12 @@ class TaskTimeManagerTest extends TestCase {
 	 */
 	public function testGetTimeCron(): void {
 		$expected = '0 0 0 * * * *';
-		$config['timeSpec'] = [
-			'cronTime' => $expected,
-			'exactTime' => false,
-			'periodic' => false,
+		$config = [
+			'timeSpec' => [
+				'cronTime' => $expected,
+				'exactTime' => false,
+				'periodic' => false,
+			],
 		];
 		Assert::same($expected, $this->manager->getTime($config));
 	}
@@ -121,10 +123,12 @@ class TaskTimeManagerTest extends TestCase {
 	 */
 	public function testGetTimeOneShot(): void {
 		$expected = 'one shot (2019-01-01T00:00:00)';
-		$config['timeSpec'] = [
-			'exactTime' => true,
-			'startTime' => '2019-01-01T00:00:00',
-			'periodic' => false,
+		$config = [
+			'timeSpec' => [
+				'exactTime' => true,
+				'startTime' => '2019-01-01T00:00:00',
+				'periodic' => false,
+			],
 		];
 		Assert::same($expected, $this->manager->getTime($config));
 	}
@@ -134,10 +138,12 @@ class TaskTimeManagerTest extends TestCase {
 	 */
 	public function testGetTimePeriodicSeconds(): void {
 		$expected = 'every 30 seconds';
-		$config['timeSpec'] = [
-			'exactTime' => false,
-			'periodic' => true,
-			'period' => 30,
+		$config = [
+			'timeSpec' => [
+				'exactTime' => false,
+				'periodic' => true,
+				'period' => 30,
+			],
 		];
 		Assert::same($expected, $this->manager->getTime($config));
 	}
@@ -147,10 +153,12 @@ class TaskTimeManagerTest extends TestCase {
 	 */
 	public function testGetTimePeriodicMinutes(): void {
 		$expected = 'every 30:00 minutes';
-		$config['timeSpec'] = [
-			'exactTime' => false,
-			'periodic' => true,
-			'period' => 1800,
+		$config = [
+			'timeSpec' => [
+				'exactTime' => false,
+				'periodic' => true,
+				'period' => 1800,
+			],
 		];
 		Assert::same($expected, $this->manager->getTime($config));
 	}
@@ -160,10 +168,12 @@ class TaskTimeManagerTest extends TestCase {
 	 */
 	public function testGetTimePeriodicHours(): void {
 		$expected = 'every 12:00:00 hours';
-		$config['timeSpec'] = [
-			'exactTime' => false,
-			'periodic' => true,
-			'period' => 12 * 3600,
+		$config = [
+			'timeSpec' => [
+				'exactTime' => false,
+				'periodic' => true,
+				'period' => 12 * 3600,
+			],
 		];
 		Assert::same($expected, $this->manager->getTime($config));
 	}

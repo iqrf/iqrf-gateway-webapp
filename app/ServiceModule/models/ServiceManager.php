@@ -50,11 +50,9 @@ class ServiceManager {
 	 * @param CommandManager $commandManager Command manager
 	 */
 	public function __construct(string $initDaemon, CommandManager $commandManager) {
-		if (array_key_exists($initDaemon, $this->initDaemons)) {
-			$this->initDaemon = new $this->initDaemons[$initDaemon]($commandManager);
-		} else {
-			$this->initDaemon = new UnknownManager($commandManager);
-		}
+		$this->initDaemon = array_key_exists($initDaemon, $this->initDaemons) ?
+			new $this->initDaemons[$initDaemon]($commandManager) :
+			new UnknownManager($commandManager);
 	}
 
 	/**

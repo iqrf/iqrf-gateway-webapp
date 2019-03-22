@@ -63,7 +63,7 @@
 		"phpstan/phpstan-nette": "^0.11",
 		"phpstan/phpstan-strict-rules": "^0.11",
 		"phpstan/phpstan-mockery": "^0.11",
-		"ninjify/qa": "^0.8"
+		"ninjify/qa": "^0.9"
 	},
 	"autoload-dev": {
 		"classmap": [

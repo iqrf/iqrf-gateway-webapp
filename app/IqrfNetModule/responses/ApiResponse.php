@@ -89,9 +89,8 @@ class ApiResponse {
 		}
 		if (array_key_exists($status, $this->exceptions)) {
 			throw new $this->exceptions[$status]();
-		} else {
-			throw new UserErrorException();
 		}
+		throw new UserErrorException();
 	}
 
 	/**

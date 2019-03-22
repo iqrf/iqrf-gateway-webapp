@@ -76,11 +76,12 @@ class AptGetPackageManager implements IPackageManager {
 			[$name, $oldVersion, $newVersion] = sscanf($line, ' %s (%s => %s)');
 			if ($name !== null && $oldVersion !== null && $newVersion !== null) {
 				$packages[] = [
-					'id' => $id++,
+					'id' => $id,
 					'name' => $name,
 					'oldVersion' => Strings::trim($oldVersion, '() '),
 					'newVersion' => Strings::trim($newVersion, '() '),
 				];
+				$id++;
 			}
 		}
 		return $packages;

@@ -25,7 +25,7 @@ require __DIR__ . '/../../../bootstrap.php';
 class RouterFactoryTest extends TestCase {
 
 	/**
-	 * @var array[string[]] Routes
+	 * @var mixed[] Routes
 	 */
 	private $expected = [
 		['Cloud:' => [

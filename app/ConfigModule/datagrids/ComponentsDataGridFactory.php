@@ -104,16 +104,15 @@ class ComponentsDataGridFactory {
 	private function load(): array {
 		if ($this->presenter->user->isInRole('power')) {
 			return $this->configManager->list();
-		} else {
-			$visible = ['iqrf::IqrfCdc', 'iqrf::IqrfSpi', 'iqrf::IqrfUart'];
-			$components = [];
-			foreach ($this->configManager->list() as $component) {
-				if (in_array($component['name'], $visible, true)) {
-					$components[] = $component;
-				}
-			}
-			return $components;
 		}
+		$visible = ['iqrf::IqrfCdc', 'iqrf::IqrfSpi', 'iqrf::IqrfUart'];
+		$components = [];
+		foreach ($this->configManager->list() as $component) {
+			if (in_array($component['name'], $visible, true)) {
+				$components[] = $component;
+			}
+		}
+		return $components;
 	}
 
 	/**

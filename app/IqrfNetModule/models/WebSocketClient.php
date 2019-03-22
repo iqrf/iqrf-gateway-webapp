@@ -55,16 +55,12 @@ class WebSocketClient {
 
 	/**
 	 * Constructor
-	 * @param string $serverUrl URL to IQRF Gateway Daemon's WebSocket server
+	 * @param string $url URL to IQRF Gateway Daemon's WebSocket server
 	 */
-	public function __construct(string $serverUrl) {
+	public function __construct(string $url) {
 		$this->loop = EventLoop\Factory::create();
-		$serverUrlEnv = getenv('IQRFGD_WS_SERVER');
-		if ($serverUrlEnv !== false) {
-			$this->serverUrl = $serverUrlEnv;
-		} else {
-			$this->serverUrl = $serverUrl;
-		}
+		$envUrl = getenv('IQRFGD_WS_SERVER');
+		$this->serverUrl = ($envUrl !== false) ? $envUrl : $url;
 	}
 
 	/**

@@ -78,8 +78,7 @@ abstract class WebSocketTestCase extends TestCase {
 	public function readJsonResponse(string $mType): array {
 		$path = __DIR__ . '/../../data/apiResponses/';
 		$file = FileSystem::read($path . $mType . '.json');
-		$response['response'] = Json::decode($file, Json::FORCE_ARRAY);
-		return $response;
+		return ['response' => Json::decode($file, Json::FORCE_ARRAY)];
 	}
 
 }
