@@ -6,7 +6,7 @@ parameters:
 	iqrf-gw: false
 	supervisord: false
 	# path to IQRF IDE macros
-	macroPath: '../iqrf/DPA-macros_181017.iqrfmcr'
+	macroPath: '../iqrf/DPA-macros_190301.iqrfmcr'
 	# Daemon configuration
 	daemon:
 		# Path to directory with IQRF Gateway Daemon's JSON API schemas
