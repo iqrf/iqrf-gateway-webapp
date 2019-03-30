@@ -168,10 +168,10 @@ migration:
 	description: "Migration of IQRF Gateway Daemon's configuration"
 	export: Export configuration
 	import: Import configuration
-	configuration: "IQRF Gateway Daemon's configuration to import"
+	configuration: Configuration to import
 	messages:
-		configuration: "Please select a ZIP archive with IQRF Gateway Daemon's configuration to import."
-		importedConfig: "IQRF Gateway Daemon's configuration has been imported."
+		configuration: Please select a ZIP archive with a configuration to import.
+		importedConfig: The configuration has been imported.
 	errors:
 		invalidConfig: The ZIP archive contains invalid configuration.
 		invalidFormat: Uploaded invalid file format.
@@ -290,10 +290,10 @@ schedulerMigration:
 	title: Scheduler's configuration migration
 	export: Export scheduler's configuration
 	import: Import scheduler's configuration
-	configuration: "IQRF Gateway Daemon's scheduler's configuration to import"
+	configuration: "Scheduler's configuration to import"
 	messages:
-		configuration: "Please select a JSON file with IQRF Gateway Daemon's scheduler's configuration to import."
-		importedConfig: "IQRF Gateway Daemon's scheduler's configuration has been imported."
+		configuration: "Please select a ZIP archive with a scheduler's configuration to import."
+		importedConfig: The scheduler's configuration has been imported.
 	errors:
 		invalidConfig: The JSON file contains invalid configuration.
 		invalidFormat: Uploaded invalid file format.

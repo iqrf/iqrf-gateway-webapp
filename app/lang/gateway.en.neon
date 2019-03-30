@@ -47,20 +47,20 @@ mode:
 	modes:
 		operational:
 			title: Operational mode
-			description: Change IQRF Daemon mode to operational mode.
-			message: Gateway mode has been changed to operational mode.
+			description: Change IQRF Gateway Daemon's mode to operational mode.
+			message: IQRF Gateway Daemon's mode has been changed to operational mode.
 		service:
 			title: Service mode
-			description: Change IQRF Daemon mode to service mode.
-			message: Gateway mode has been changed to service mode.
+			description: Change IQRF Gateway Daemon's mode to service mode.
+			message: IQRF Gateway Daemon's mode has been changed to service mode.
 		forwarding:
 			title: Forwarding mode
-			description: Change IQRF Daemon mode to forwarding mode.
-			message: Gateway mode has been changed to forwarding mode.
+			description: Change IQRF Gateway Daemon's mode to forwarding mode.
+			message: IQRF Gateway Daemon's mode has been changed to forwarding mode.
 
 power:
 	title: Power control
-	description: Powers off or reboots this IQRF Gateway.
+	description: Powers off or reboots this gateway.
 	powerOff:
 		title: Power off
 		description: Powers off the operating system of your device.
@@ -73,9 +73,9 @@ power:
 		success: Your device has been restarted successfully.
 
 updater:
-	title: IQRF Gateway updater
-	description: IQRF Gateway updater.
-	warning: IQRF Gateway updater is an experimental feature and could change at any time. Please wait until the process displays its output.
+	title: Gateway updater
+	description: Gateway updater.
+	warning: Gateway updater is an experimental feature and could change at any time. Please wait until the process displays its output.
 	update: Update packages list
 	listUpgradable: List upgradable packages
 	upgrade: Upgrade packages

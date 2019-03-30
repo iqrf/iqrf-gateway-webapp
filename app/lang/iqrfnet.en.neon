@@ -1,4 +1,4 @@
-title: IQRF Net
+title: IQRF network
 description: Control IQRF network.
 
 bonding:
@@ -91,7 +91,7 @@ dpaConfig:
 	save: Save
 
 enumeration:
-	title: IQMESH Device enumeration
+	title: Device enumeration
 	deviceInfo: Device info
 	deviceAddr: Device address
 	manufacturer: Manufacturer
@@ -103,7 +103,7 @@ enumeration:
 	dpaVersion: DPA version
 	rssi: RSSI
 	supplyVoltage: Supply voltage
-	back: Back to IQMESH Network manager
+	back: Back to Network manager
 	messages:
 		failure: An error occurred while the device enumeration.
 
@@ -111,8 +111,8 @@ macros:
 	title: Macros
 
 network-manager:
-	title: IQMESH Network manager
-	description: IQMESH Network manager.
+	title: Network manager
+	description: Network manager.
 	control: Control
 
 osConfig:
@@ -174,13 +174,13 @@ security:
 		success: The user key has been set successfully.
 
 send-json:
-	title: Send IQRF JSON request
-	description: Send IQRF JSON request.
+	title: Send JSON request
+	description: Send JSON request.
 	documentation: Show API documentation.
-	json: IQRF JSON request
+	json: JSON request
 	messages:
 		invalidJson: Invalid JSON request.
-		json: Please enter IQRF JSON request.
+		json: Please enter JSON request.
 	send: Send
 	response: Response
 	request: Request
@@ -204,10 +204,10 @@ send-packet:
 	request: Request
 
 standard:
-	title: IQRF Standard manager
-	description: IQRF Standard manager.
+	title: Standard manager
+	description: Standard manager.
 	binaryOutput:
-		title: IQRF Standard binary output
+		title: Standard binary output
 		address: Address
 		index: Index of the binary output
 		state: State of the binary output
@@ -215,8 +215,8 @@ standard:
 			address: Address has to be an integer from 0 to 239.
 			index: Index has to be an integer from 0 to 31.
 			enumerateError: An error occurred while IQRF Standared binary output enumeration.
-			getError: An error occurred while IQRF Standard binary output's state getting.
-			setError: An error occurred while IQRF Standard binary output's state setting.
+			getError: An error occurred while Standard binary output's state getting.
+			setError: An error occurred while Standard binary output's state setting.
 		enumerate: Enumerate
 		get: Get states
 		set: Set state
@@ -225,7 +225,7 @@ standard:
 			index: Index
 			state: State
 	light:
-		title: IQRF Standard light
+		title: Standard light
 		address: Address
 		index: Index of the light
 		power: Power of the light
@@ -234,10 +234,10 @@ standard:
 			index: Index has to be an integer from 0 to 31.
 			power: Power has to be an integer from 0 to 100.
 			enumerateError: An error occurred while IQRF Standared light enumeration.
-			getError: An error occurred while IQRF Standard light's power getting.
-			setError: An error occurred while IQRF Standard light's power setting.
-			incrementError: An error occurred while IQRF Standard light's power incrementing.
-			decrementError: An error occurred while IQRF Standard light's power decrementing.
+			getError: An error occurred while Standard light's power getting.
+			setError: An error occurred while Standard light's power setting.
+			incrementError: An error occurred while Standard light's power incrementing.
+			decrementError: An error occurred while Standard light's power decrementing.
 		enumerate: Enumerate
 		get: Get power
 		set: Set power
@@ -252,7 +252,7 @@ standard:
 			address: Address has to be an integer from 0 to 239.
 			index: Index of the binary output gas to be an integer from 0 to 31.
 			enumerateError: An error occurred while IQRF Standared sensor enumeration.
-			readError: An error occurred while IQRF Standared sensor reading values.
+			readError: An error occurred while Standared sensor reading values.
 		enumerate: Enumerate
 		readAll: Read all
 		type: Type
