@@ -19,7 +19,7 @@
 {block content}
 <ul class='nav nav-tabs'>
 	{var $address = $presenter->getParameter('address')}
-	<li role='presentation'><a n:href='OsConfig:default, address => $address'>{_iqrfnet.osConfig.title}</a></li>
+	<li role='presentation'><a n:href='RfConfig:default, address => $address'>{_iqrfnet.rfConfig.title}</a></li>
 	<li role='presentation' class='active'><a n:href='DpaConfig:default, address => $address'>{_iqrfnet.dpaConfig.title}</a></li>
 	<li role='presentation'><a n:href='TrSecurity:default, address => $address'>{_iqrfnet.security.title}</a></li>
 </ul>

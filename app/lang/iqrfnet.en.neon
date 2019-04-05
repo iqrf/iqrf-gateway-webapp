@@ -115,9 +115,8 @@ network-manager:
 	description: Network manager.
 	control: Control
 
-osConfig:
-	title: OS
-	rf: RF
+rfConfig:
+	title: RF
 	networkType: Network Type
 	networkTypes:
 		std: STD

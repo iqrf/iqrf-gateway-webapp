@@ -26,7 +26,7 @@ use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\IqrfNetModule\Models\TrConfigManager;
 use App\IqrfNetModule\Presenters\DpaConfigPresenter;
-use App\IqrfNetModule\Presenters\OsConfigPresenter;
+use App\IqrfNetModule\Presenters\RfConfigPresenter;
 use Nette\Forms\Form;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;
@@ -54,7 +54,7 @@ abstract class TrConfigFormFactory {
 	protected $factory;
 
 	/**
-	 * @var DpaConfigPresenter|OsConfigPresenter IQMESH Network security presenter
+	 * @var DpaConfigPresenter|RfConfigPresenter IQMESH Network security presenter
 	 */
 	protected $presenter;
 

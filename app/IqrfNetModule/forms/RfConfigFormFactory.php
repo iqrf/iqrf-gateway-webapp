@@ -20,27 +20,27 @@ declare(strict_types = 1);
 
 namespace App\IqrfNetModule\Forms;
 
-use App\IqrfNetModule\Presenters\OsConfigPresenter;
+use App\IqrfNetModule\Presenters\RfConfigPresenter;
 use Nette\Forms\Controls\TextInput;
 use Nette\Forms\Form;
 use Nette\SmartObject;
 
 /**
- * IQRF OS configuration form factory
+ * IQRF RF configuration form factory
  */
-class OsConfigFormFactory extends TrConfigFormFactory {
+class RfConfigFormFactory extends TrConfigFormFactory {
 
 	use SmartObject;
 
 	/**
-	 * Creates IQRF OS configuration form
-	 * @param OsConfigPresenter $presenter IQRF OS configuration presenter
-	 * @return Form IQRF OS configuration form
+	 * Creates IQRF RF configuration form
+	 * @param RfConfigPresenter $presenter IQRF RF configuration presenter
+	 * @return Form IQRF RF configuration form
 	 */
-	public function create(OsConfigPresenter $presenter): Form {
+	public function create(RfConfigPresenter $presenter): Form {
 		$this->presenter = $presenter;
 		$this->load();
-		$form = $this->factory->create('iqrfnet.osConfig');
+		$form = $this->factory->create('iqrfnet.rfConfig');
 		$this->addRfConfiguration($form);
 		$this->addRfpgwConfiguration($form);
 		$form->addSubmit('save', 'save');
@@ -52,10 +52,9 @@ class OsConfigFormFactory extends TrConfigFormFactory {
 
 	/**
 	 * Adds RF configuration to the form
-	 * @param Form $form IQRF OS configuration form
+	 * @param Form $form IQRF RF configuration form
 	 */
 	private function addRfConfiguration(Form &$form): void {
-		$form->addGroup($form->getTranslator()->translate('rf'));
 		$rfBands = ['433', '868', '916'];
 		foreach ($rfBands as $key => $rfBand) {
 			$rfBands[$rfBand] = 'rfBands.' . $rfBand;
@@ -95,7 +94,7 @@ class OsConfigFormFactory extends TrConfigFormFactory {
 
 	/**
 	 * Adds RFPGM configuration to the form
-	 * @param Form $form IQRF OS configuration form
+	 * @param Form $form IQRF RF configuration form
 	 */
 	private function addRfpgwConfiguration(Form &$form): void {
 		$form->addGroup($form->getTranslator()->translate('rfPgm'));

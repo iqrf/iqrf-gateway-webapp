@@ -19,7 +19,7 @@
 {block content}
 <ul class='nav nav-tabs'>
 	{var $address = $presenter->getParameter('address')}
-	<li role='presentation' class='active'><a n:href='OsConfig:default, address => $address'>{_iqrfnet.osConfig.title}</a></li>
+	<li role='presentation' class='active'><a n:href='RfConfig:default, address => $address'>{_iqrfnet.rfConfig.title}</a></li>
 	<li role='presentation'><a n:href='DpaConfig:default, address => $address'>{_iqrfnet.dpaConfig.title}</a></li>
 	<li role='presentation'><a n:href='TrSecurity:default, address => $address'>{_iqrfnet.security.title}</a></li>
 </ul>
@@ -33,9 +33,9 @@
 </div>
 <div class='box box-primary'>
 	<header class='box-header with-border'>
-		<h2 class='box-title'>{_iqrfnet.osConfig.title}</h2>
+		<h2 class='box-title'>{_iqrfnet.rfConfig.title}</h2>
 	</header>
 	<section class='box-body'>
-		{control iqrfNetOsForm}
+		{control iqrfNetRfForm}
 	</section>
 </div>

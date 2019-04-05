@@ -3,7 +3,7 @@ services:
 	- App\IqrfNetModule\Forms\ChangeAddressFormFactory
 	- App\IqrfNetModule\Forms\DiscoveryFormFactory
 	- App\IqrfNetModule\Forms\DpaConfigFormFactory
-	- App\IqrfNetModule\Forms\OsConfigFormFactory
+	- App\IqrfNetModule\Forms\RfConfigFormFactory
 	- App\IqrfNetModule\Forms\SecurityFormFactory
 	sendJsonFormFactory:
 		factory: App\IqrfNetModule\Forms\SendJsonFormFactory

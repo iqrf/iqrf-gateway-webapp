@@ -20,25 +20,25 @@ declare(strict_types = 1);
 
 namespace App\IqrfNetModule\Presenters;
 
-use App\IqrfNetModule\Forms\OsConfigFormFactory;
+use App\IqrfNetModule\Forms\RfConfigFormFactory;
 use Nette\Forms\Form;
 
 /**
- * IQRF OS configuration presenter
+ * IQRF RF configuration presenter
  */
-class OsConfigPresenter extends TrConfigPresenter {
+class RfConfigPresenter extends TrConfigPresenter {
 
 	/**
-	 * @var OsConfigFormFactory IQRF OS configuration form
+	 * @var RfConfigFormFactory IQRF RF configuration form
 	 * @inject
 	 */
 	public $form;
 
 	/**
-	 * Createa the IQRF OS configuration form
-	 * @return Form IQRF OS configuration form
+	 * Createa the IQRF RF configuration form
+	 * @return Form IQRF RF configuration form
 	 */
-	protected function createComponentIqrfNetOsForm(): Form {
+	protected function createComponentIqrfNetRfForm(): Form {
 		return $this->form->create($this);
 	}
 
