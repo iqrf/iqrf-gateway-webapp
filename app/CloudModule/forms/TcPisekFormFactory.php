@@ -54,7 +54,8 @@ class TcPisekFormFactory extends CloudFormFactory {
 		$this->presenter = $presenter;
 		$form = $this->factory->create('cloud.tcPisek.form');
 		$form->addText('broker', 'broker')
-			->setRequired('messages.broker');
+			->setRequired('messages.broker')
+			->setDefaultValue('connect.iot.tcpisek.cz');
 		$form->addText('username', 'username')
 			->setRequired('messages.username');
 		$form->addText('password', 'password')
