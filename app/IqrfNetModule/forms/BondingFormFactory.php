@@ -85,6 +85,8 @@ class BondingFormFactory {
 		$form['address']->addConditionOn($form['autoAddress'], Form::EQUAL, false)
 			->addRule(Form::PATTERN, 'messages.address', '[0-9a-fA-F]{1,2}')
 			->setRequired('messages.address');
+		$form->addInteger('testRetries', 'testRetries')
+			->setDefaultValue(1);
 		$this->addSmartConnectInputs($form);
 		$form->addSubmit('add', 'addBond')
 			->onClick[] = [$this, 'addBond'];
@@ -109,8 +111,6 @@ class BondingFormFactory {
 		$form->addText('smartConnectCode', 'smartConnectCode')
 			->addConditionOn($form['method'], Form::EQUAL, 'smartConnect')
 			->setRequired('messages.smartConnectCode');
-		$form->addInteger('testRetries', 'testRetries')
-			->setDefaultValue(1);
 		$form->addGroup();
 	}
 
