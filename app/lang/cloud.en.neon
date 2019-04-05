@@ -73,10 +73,10 @@ msAzure:
 		invalidConnectionString: Invalid MS Azure IoT Hub connection string for device.
 
 tcPisek:
-	title: TC Písek IoT Platform
-	description: Adds a new MQTT connection into TC Písek IoT Platform.
+	title: TC Pisek IoT Platform
+	description: Adds a new MQTT connection into TC Pisek IoT Platform.
 	form:
-		title: TC Písek IoT Platform MQTT connection wizard
+		title: TC Pisek IoT Platform MQTT connection wizard
 		broker: MQTT broker address
 		username: Username
 		password: Password
