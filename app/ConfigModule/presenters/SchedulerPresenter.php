@@ -72,11 +72,10 @@ class SchedulerPresenter extends ProtectedPresenter {
 			$this->template->tasks = $this->configManager->list();
 		} catch (IOException $e) {
 			$this->flashError('config.messages.readFailures.ioError');
-			$this->redirect('Homepage:default');
 		} catch (JsonException $e) {
 			$this->flashError('config.messages.readFailures.invalidJson');
-			$this->redirect('Homepage:default');
 		}
+		$this->redirect('Homepage:default');
 	}
 
 	/**
@@ -102,15 +101,13 @@ class SchedulerPresenter extends ProtectedPresenter {
 	public function actionDelete(int $id): void {
 		try {
 			$this->configManager->delete($id);
-			$this->redirect('Scheduler:default');
-			$this->setView('default');
+			$this->flashSuccess('config.messages.successes.delete');
 		} catch (IOException $e) {
 			$this->flashError('config.messages.writeFailures.ioError');
-			$this->redirect('Homepage:default');
 		} catch (JsonException $e) {
 			$this->flashError('config.messages.writeFailures.invalidJson');
-			$this->redirect('Homepage:default');
 		}
+		$this->redirect('Scheduler:default');
 	}
 
 	/**

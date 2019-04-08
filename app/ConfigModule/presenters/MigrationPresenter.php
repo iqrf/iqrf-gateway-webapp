@@ -78,7 +78,6 @@ class MigrationPresenter extends ProtectedPresenter {
 		} catch (BadRequestException $e) {
 			$this->flashError('config.migration.errors.readConfig');
 			$this->redirect('Migration:default');
-			$this->setView('default');
 		}
 	}
 
@@ -91,7 +90,6 @@ class MigrationPresenter extends ProtectedPresenter {
 		} catch (BadRequestException $e) {
 			$this->flashError('config.schedulerMigration.errors.readConfig');
 			$this->redirect('Migration:default');
-			$this->setView('default');
 		}
 	}
 

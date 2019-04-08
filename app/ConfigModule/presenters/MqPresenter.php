@@ -24,6 +24,7 @@ use App\ConfigModule\Datagrids\MqMessagingDataGridFactory;
 use App\ConfigModule\Forms\MqFormFactory;
 use App\ConfigModule\Models\GenericManager;
 use Nette\Forms\Form;
+use Nette\IOException;
 use Nette\Utils\JsonException;
 use Ublaboo\DataGrid\DataGrid;
 use Ublaboo\DataGrid\Exception\DataGridColumnStatusException;
@@ -70,9 +71,13 @@ class MqPresenter extends GenericPresenter {
 	 */
 	public function actionDelete(int $id): void {
 		$this->configManager->setComponent('iqrf::MqMessaging');
-		$this->configManager->delete($id);
+		try {
+			$this->configManager->delete($id);
+			$this->flashSuccess('config.messages.successes.delete');
+		} catch (IOException $e) {
+			$this->flashError('config.messages.deleteFailures.ioError');
+		}
 		$this->redirect('Mq:default');
-		$this->setView('default');
 	}
 
 	/**

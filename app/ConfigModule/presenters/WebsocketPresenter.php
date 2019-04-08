@@ -29,6 +29,7 @@ use App\ConfigModule\Forms\WebSocketServiceFormFactory;
 use App\ConfigModule\Models\GenericManager;
 use App\ConfigModule\Models\WebSocketManager;
 use Nette\Forms\Form;
+use Nette\IOException;
 use Nette\Utils\JsonException;
 use Ublaboo\DataGrid\DataGrid;
 use Ublaboo\DataGrid\Exception\DataGridColumnStatusException;
@@ -130,9 +131,13 @@ class WebsocketPresenter extends GenericPresenter {
 	 * @throws JsonException
 	 */
 	public function actionDelete(int $id): void {
-		$this->webSocketManager->delete($id);
+		try {
+			$this->webSocketManager->delete($id);
+			$this->flashSuccess('config.messages.successes.delete');
+		} catch (IOException $e) {
+			$this->flashError('config.messages.deleteFailures.ioError');
+		}
 		$this->redirect('Websocket:default');
-		$this->setView('default');
 	}
 
 	/**
@@ -142,9 +147,13 @@ class WebsocketPresenter extends GenericPresenter {
 	 */
 	public function actionDeleteMessaging(int $id): void {
 		$this->configManager->setComponent($this->components['messaging']);
-		$this->configManager->delete($id);
+		try {
+			$this->configManager->delete($id);
+			$this->flashSuccess('config.messages.successes.delete');
+		} catch (IOException $e) {
+			$this->flashError('config.messages.deleteFailures.ioError');
+		}
 		$this->redirect('Websocket:default');
-		$this->setView('default');
 	}
 
 	/**
@@ -154,9 +163,13 @@ class WebsocketPresenter extends GenericPresenter {
 	 */
 	public function actionDeleteService(int $id): void {
 		$this->configManager->setComponent($this->components['service']);
-		$this->configManager->delete($id);
+		try {
+			$this->configManager->delete($id);
+			$this->flashSuccess('config.messages.successes.delete');
+		} catch (IOException $e) {
+			$this->flashError('config.messages.deleteFailures.ioError');
+		}
 		$this->redirect('Websocket:default');
-		$this->setView('default');
 	}
 
 	/**

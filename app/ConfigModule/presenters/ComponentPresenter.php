@@ -103,10 +103,14 @@ class ComponentPresenter extends ProtectedPresenter {
 	 */
 	public function actionDelete(int $id): void {
 		if ($this->user->isInRole('power')) {
-			$this->configManager->delete($id);
+			try {
+				$this->configManager->delete($id);
+				$this->flashSuccess('config.messages.successes.delete');
+			} catch (IOException $e) {
+				$this->flashError('config.messages.deleteFailures.ioError');
+			}
 		}
 		$this->redirect('Component:default');
-		$this->setView('default');
 	}
 
 	/**

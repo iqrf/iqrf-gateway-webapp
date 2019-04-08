@@ -7,6 +7,8 @@ actions:
 	Remove: Remove
 
 messages:
+	deleteFailures:
+		ioError: The configuration has not been deleted because the webapp is unable to delete the configuration file.
 	readFailures:
 		invalidJson: The configuration has not been loaded because the configuration file is corrupted.
 		ioError: The configuration has not been loaded because the webapp is unable to read the configuration file.
@@ -17,6 +19,10 @@ messages:
 		multipleInstances: This component has to have one instance maximally.
 		nonExistingJsonSchema: The configuration has not been saved because the corresponding JSON schema not found.
 	success: The configuration has been saved successfully.
+	successes:
+		add: The configuration has been added successfully.
+		delete: The configuration has been deleted successfully.
+		save: The configuration has been saved successfully.
 
 components:
 	title: Components

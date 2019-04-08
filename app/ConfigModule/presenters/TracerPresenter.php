@@ -24,6 +24,7 @@ use App\ConfigModule\Datagrids\TraceFileDataGridFactory;
 use App\ConfigModule\Forms\TraceFileFormFactory;
 use App\ConfigModule\Models\GenericManager;
 use Nette\Forms\Form;
+use Nette\IOException;
 use Nette\Utils\JsonException;
 use Ublaboo\DataGrid\DataGrid;
 use Ublaboo\DataGrid\Exception\DataGridException;
@@ -69,9 +70,13 @@ class TracerPresenter extends GenericPresenter {
 	 */
 	public function actionDelete(int $id): void {
 		$this->configManager->setComponent('shape::TraceFileService');
-		$this->configManager->delete($id);
+		try {
+			$this->configManager->delete($id);
+			$this->flashSuccess('config.messages.successes.delete');
+		} catch (IOException $e) {
+			$this->flashError('config.messages.deleteFailures.ioError');
+		}
 		$this->redirect('TracerFile:default');
-		$this->setView('default');
 	}
 
 	/**
