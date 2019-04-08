@@ -68,7 +68,7 @@ class UdpFormFactory extends GenericConfigFormFactory {
 		$instances = $this->manager->getInstanceFiles();
 		$id = intval($this->presenter->getParameter('id'));
 		if (array_key_exists($id, $instances) && count($instances) >= 1) {
-			$this->presenter->flashMessage('config.messages.writeFailures.multipleInstancesFailure', 'danger');
+			$this->presenter->flashMessage('config.messages.writeFailures.multipleInstances', 'danger');
 			$this->presenter->redirect('Udp:default');
 		}
 		parent::save($form);
