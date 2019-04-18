@@ -28,6 +28,7 @@
 					<li><a n:href=':Gateway:Info:default'>{_gateway.info.title}</a></li>
 					<li><a n:href=':Gateway:Log:default'>{_gateway.log.title}</a></li>
 					<li><a n:href=':Gateway:ChangeMode:default'>{_gateway.mode.title}</a></li>
+					<li><a n:href=':Service:Control:default'>{_service.title}</a></li>
 					<li><a n:href=':Gateway:Updater:default'>{_gateway.updater.title}</a></li>
 					<li><a n:href=':Gateway:Power:default'>{_gateway.power.title}</a></li>
 				</ul>
@@ -72,12 +73,6 @@
 					<li><a n:href=':Config:Tracer:default'>{_config.tracer.title}</a></li>
 					<li><a n:href=':Config:Migration:default'>{_config.migration.title}</a></li>
 				</ul>
-			</li>
-			<li n:if='$user->loggedIn'>
-				<a n:href=':Service:Control:default'>
-					<i class='glyphicon glyphicon-off'></i>
-					<span>{_service.title}</span>
-				</a>
 			</li>
 			<li n:if='$user->loggedIn' class='treeview'>
 				<a n:href=':IqrfNet:Homepage:default' role='button'>
