@@ -1,7 +1,7 @@
 title: Gateway
 
 info:
-	title: Gateway Info
+	title: Information
 	description: Show information about this gateway.
 	board: Board
 	gwId: IQRF Gateway ID
@@ -34,7 +34,7 @@ diagnostics:
 	download: Download diagnostics
 
 log:
-	title: IQRF Gateway Daemon log
+	title: Logger file
 	description: Shows log of IQRF Gateway Daemon.
 	download: Download
 	messages:
@@ -73,9 +73,9 @@ power:
 		success: Your device has been restarted successfully.
 
 updater:
-	title: Gateway updater
-	description: Gateway updater.
-	warning: Gateway updater is an experimental feature and could change at any time. Please wait until the process displays its output.
+	title: System updater
+	description: System updater.
+	warning: System updater is an experimental feature and could change at any time. Please wait until the process displays its output.
 	update: Update packages list
 	listUpgradable: List upgradable packages
 	upgrade: Upgrade packages

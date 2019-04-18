@@ -18,7 +18,7 @@
 {block title}{_config.title}{/block}
 {block content}
 <div class='list-group'>
-	<a n:href='Main:default' class='list-group-item'>
+	<a n:if='$user->isInRole("power")' n:href='Main:default' class='list-group-item'>
 		<header class='list-group-item-heading'>{_config.main.title}</header>
 		<p class='list-group-item-text'>{_config.main.description}</p>
 	</a>
@@ -97,5 +97,9 @@
 	<a n:href='Tracer:default' class='list-group-item'>
 		<header class='list-group-item-heading'>{_config.tracer.title}</header>
 		<p class='list-group-item-text'>{_config.tracer.description}</p>
+	</a>
+	<a n:href=':Config:Migration:default' class='list-group-item'>
+		<header class='list-group-item-heading'>{_config.migration.title}</header>
+		<p class='list-group-item-text'>{_config.migration.description}</p>
 	</a>
 </div>
