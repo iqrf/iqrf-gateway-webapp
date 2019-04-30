@@ -204,6 +204,7 @@ send-packet:
 
 standard:
 	title: IQRF Standard manager
+	menu: Standard manager
 	description: IQRF Standard manager.
 	binaryOutput:
 		title: IQRF Binary output
