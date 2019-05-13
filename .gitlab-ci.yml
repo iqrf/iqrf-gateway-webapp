@@ -66,7 +66,7 @@ build-docker:latest-amd64:
   tags:
     - linux, docker, amd64
   variables:
-    DOCKER_FILE: docker/latest/amd64.Dockerfile
+    DOCKER_FILE: docker/latest/Dockerfile
     DOCKER_TAG: latest-amd64
 
 build-docker:stable-amd64:
@@ -77,7 +77,7 @@ build-docker:stable-amd64:
   tags:
     - linux, docker, amd64
   variables:
-    DOCKER_FILE: docker/stable/amd64.Dockerfile
+    DOCKER_FILE: docker/stable/Dockerfile
     DOCKER_TAG: stable-amd64
 
 build-docker:tests-buster:
