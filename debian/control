@@ -6,9 +6,9 @@ Build-Depends: debhelper (>= 10), pkg-php-tools (>= 1.35), composer,
  php7.2-common, php7.2-cli, php7.2-curl, php7.2-json, php7.2-mbstring,
  php7.2-sqlite3, php7.2-xml, php7.2-zip
 Standards-Version: 4.1.5
-Homepage: https://github.com/iqrfsdk/iqrf-gateway-webapp
-Vcs-Git: https://github.com/iqrfsdk/iqrf-gateway-webapp.git
-Vcs-Browser: https://github.com/iqrfsdk/iqrf-gateway-webapp
+Homepage: https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp
+Vcs-Git: https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp.git
+Vcs-Browser: https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp
 
 Package: iqrf-gateway-webapp
 Architecture: all
