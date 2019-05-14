@@ -213,16 +213,3 @@ deploy-package-stable:
     - ssh www-deploy@iqrfsdk.org "rm -f /data/nginx/dl/iqrf-gateway-webapp/all/stable/*"
     - rsync -hrvz --delete -e ssh iqrf-gateway-webapp_*all.deb www-deploy@iqrfsdk.org:/data/nginx/dl/iqrf-gateway-webapp/all/stable
   <<: *ssh_template
-
-deploy-user-docs:
-  image: iqrfsdk/iqrf-gateway-webapp:tests-buster
-  stage: deploy-docs
-  environment:
-    name: user-docs
-    url: https://docs.iqrfsdk.org/iqrf-gateway-webapp/
-  only:
-    - master
-  script:
-    - cd docs/; make html
-    - rsync -hrvz --delete -e ssh build/html/ www-deploy@iqrfsdk.org:/data/nginx/docs/iqrf-gateway-webapp/
-  <<: *ssh_template
