@@ -1,4 +1,4 @@
-image: iqrfsdk/iqrf-gateway-webapp:tests-stretch
+image: iqrftech/iqrf-gateway-webapp:tests-stretch
 
 stages:
   - build-docker-testing
@@ -111,7 +111,7 @@ test:php7.2:
   <<: *test_template
 
 test:php7.3:
-  image: iqrfsdk/iqrf-gateway-webapp:tests-buster
+  image: iqrftech/iqrf-gateway-webapp:tests-buster
   before_script:
     - update-alternatives --set php /usr/bin/php7.3
     - composer install --no-progress
@@ -121,7 +121,7 @@ test:php7.3:
   <<: *test_template
 
 coverage:
-  image: iqrfsdk/iqrf-gateway-webapp:tests-buster
+  image: iqrftech/iqrf-gateway-webapp:tests-buster
   before_script:
     - update-alternatives --set php /usr/bin/php7.3
     - composer install --no-progress
@@ -172,11 +172,11 @@ build-package:
     expire_in: 2 weeks
 
 deploy-api-docs:
-  image: iqrfsdk/iqrf-gateway-webapp:tests-buster
+  image: iqrftech/iqrf-gateway-webapp:tests-buster
   stage: deploy-docs
   environment:
     name: api-docs
-    url: https://apidocs.iqrfsdk.org/iqrf-gateway-webapp/
+    url: https://apidocs.iqrf.org/iqrf-gateway-webapp/
   only:
     - master
   script:
@@ -192,7 +192,7 @@ deploy-package-devel:
     - build-package
   environment:
     name: package-devel
-    url: https://dl.iqrfsdk.org/iqrf-gateway-webapp/all/devel
+    url: https://dl.iqrf.org/iqrf-gateway-webapp/all/devel
   only:
     - master
   script:
@@ -206,7 +206,7 @@ deploy-package-stable:
     - build-package
   environment:
     name: package-stable
-    url: https://dl.iqrfsdk.org/iqrf-gateway-webapp/all/stable
+    url: https://dl.iqrf.org/iqrf-gateway-webapp/all/stable
   only:
     - stable
   script:
