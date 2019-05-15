@@ -23,12 +23,21 @@
 		<table class='table table-striped text-center'>
 			<tr>
 				<th>{_iqrfnet.standard.sensor.type}</th>
-				<td n:foreach='$sensors as $sensor'>{$sensor['name']}</td>
+				<td n:foreach='$sensors as $sensor'>
+					{var name = $sensor['name']}
+					{ifset $sensor['breakdown'][0]}
+						{var $name = $sensor['breakdown'][0]['name']}
+					{/ifset}
+					{$name}
+				</td>
 			</tr>
 			<tr>
 				<th>{_iqrfnet.standard.sensor.unit}</th>
 				<td n:foreach='$sensors as $sensor'>
 					{var $unit = $sensor['unit'] !== '?' ? ' ' . $sensor['unit']}
+					{ifset $sensor['breakdown'][0]}
+						{var $unit = $sensor['breakdown'][0]['unit']}
+					{/ifset}
 					{$unit}
 				</td>
 			</tr>
@@ -38,13 +47,23 @@
 		<table class='table table-striped text-center'>
 			<tr>
 				<th>{_iqrfnet.standard.sensor.type}</th>
-				<td n:foreach='$sensors as $sensor'>{$sensor['name']}</td>
+				<td n:foreach='$sensors as $sensor'>
+					{var name = $sensor['name']}
+					{ifset $sensor['breakdown'][0]}
+						{var $name = $sensor['breakdown'][0]['name']}
+					{/ifset}
+					{$name}
+				</td>
 			</tr>
 			<tr>
 				<th>{_iqrfnet.standard.sensor.value}</th>
 				<td n:foreach='$sensors as $sensor'>
 					{var $value = round($sensor['value'], 2)}
 					{var $unit = $sensor['unit'] !== '?' ? ' ' . $sensor['unit']}
+					{ifset $sensor['breakdown'][0]}
+						{var $value = round($sensor['breakdown'][0]['value'], 2)}
+						{var $unit = $sensor['breakdown'][0]['unit'] !== '?' ? ' ' . $sensor['breakdown'][0]['unit']}
+					{/ifset}
 					{$value}{$unit}
 				</td>
 			</tr>
