@@ -180,6 +180,7 @@ send-json:
 	messages:
 		invalidJson: Invalid JSON request.
 		json: Please enter JSON request.
+		missingSchema: Corresponding JSON schema for this request not found.
 	send: Send
 	response: Response
 	request: Request

@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\IqrfNetModule\Forms;
 
+use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
 use App\CoreModule\Forms\FormFactory;
 use App\CoreModule\Models\JsonSchemaManager;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
@@ -109,6 +110,8 @@ class SendJsonFormFactory {
 			}
 		} catch (JsonException $e) {
 			$this->presenter->flashMessage('iqrfnet.send-json.messages.invalidJson', 'danger');
+		} catch (NonExistingJsonSchemaException $e) {
+			$this->presenter->flashMessage('iqrfnet.send-json.messages.missingSchema', 'danger');
 		}
 		try {
 			$this->request->setRequest($json);
