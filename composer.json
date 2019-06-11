@@ -47,7 +47,7 @@
 		"justinrainbow/json-schema": "^5.2",
 		"ratchet/pawl": "^0.3",
 		"ublaboo/datagrid": "^5.7",
-		"contributte/guzzlette": "2.1.x-dev",
+		"contributte/guzzlette": "dev-master",
 		"contributte/console": "^0.5",
 		"contributte/console-extra": "^0.4",
 		"contributte/monolog": "^0.1",
@@ -94,5 +94,7 @@
 			"linter app bin tests",
 			"codesniffer app bin tests"
 		]
-	}
+	},
+	"minimum-stability": "dev",
+	"prefer-stable": true
 }
