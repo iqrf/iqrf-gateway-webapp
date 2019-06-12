@@ -9,14 +9,185 @@ Copyright:
  2017-2019 IQRF Tech s.r.o.
 License: Apache-2.0
 
+Files: vendor/composer/*
+Copyright: 2016, Nils Adermann <naderman@naderman.de>
+           2016, Jordi Boggiano <j.boggiano@seld.be>
+License: MIT
+
+Files: vendor/contributte/console/*
+       vendor/contributte/console-extra/*
+Copyright: 2016, Contributte
+License: MIT
+
+Files: vendor/contributte/monolog/*
+Copyright: 2018, Contributte
+License: MPL-2.0
+
+Files: vendor/evenement/evenement/*
+Copyright: 2011, Igor Wiedler <igor@wiedler.ch>
+License: MIT
+
+Files: vendor/guzzlehttp/guzzle/*
+Copyright: 2011-2018, Michael Dowling <mtdowling@gmail.com>
+License: MIT
+
+Files: vendor/guzzlehttp/promises/*
+Copyright: 2015-2016, Michael Dowling <mtdowling@gmail.com>
+License: MIT
+
+Files: vendor/guzzlehttp/psr7/*
+Copyright: 2015, Michael Dowling <mtdowling@gmail.com>
+License: MIT
+
+Files: vendor/instante/bootstrap-3-renderer/*
+       vendor/instante/utils/*
+Copyright: 2015, Proof & Reason, s.r.o.
+License: BSD-3-Clause or GPL-2.0 or GPL-3.0
+
+Files: vendor/instante/extended-form-macros/*
+Copyright: 2016, Proof & Reason, s.r.o.
+License: BSD-3-Clause or GPL-2.0 or GPL-3.0
+
+Files: vendor/iqrf/iqrf-ide-macros-parser/*
+Copyright: 2018-2019, IQRF Tech s.r.o.
 License: Apache-2.0
- Grant of Copyright License. Subject to the terms and conditions of
- this License, each Contributor hereby grants to You a perpetual,
- worldwide, non-exclusive, no-charge, royalty-free, irrevocable
- copyright license to reproduce, prepare Derivative Works of,
- publicly display, publicly perform, sublicense, and distribute the
- Work and such Derivative Works in Source or Object form.
- .
- On Debian systems, the full text of Apache-2.0 License can be found
- in the file
+
+Files: vendor/justinrainbow/json-schema/*
+Copyright: 2016, Justin Rainbow <justin.rainbow@gmail.com>
+           2016, Bruno Prieto Reis <bruno.p.reis@gmail.com>
+           2016, Igor Wiedler <igor@wiedler.ch>
+           2016, Robert Schönthal <seroscho@googlemail.com>
+License: MIT
+
+Files: vendor/kdyby/strict-objects/*
+       vendor/kdyby/translation/*
+Copyright: 2008, Filip Procházka <filip@prochazka.su>
+License: BSD-3-Clause or GPL-2.0 or GPL-3.0
+
+Files: vendor/latte/latte/*
+       vendor/nette/*
+       vendor/tracy/tracy/*
+Copyright: 2004, 2014 David Grudl <david@grudl.com>
+License: BSD-3-Clause or GPL-2.0 or GPL-3.0
+
+Files: vendor/monolog/monolog/*
+Copyright: 2011-2016, Jordi Boggiano
+License: MIT
+
+Files: vendor/namshi/cuzzle/*
+Copyright: 2014, Alessandro Cinelli <alessandro.cinelli@gmail.com>
+           2014, Nikita Nefedov <inefedor@gmail.com>
+License: MIT
+
+Files: vendor/psr/http-message/*
+Copyright: 2014, PHP Framework Interoperability Group
+License: MIT
+
+Files: vendor/psr/log/*
+Copyright: 2012, PHP Framework Interoperability Group
+License: MIT
+
+Files: vendor/ralouphie/getallheaders/*
+Copyright: 2014, Ralph Khattar <ralph.khattar@gmail.com>
+License: MIT
+
+Files: vendor/ratchet/pawl/*
+Copyright: 2015, Chris Boden <cboden@gmail.com>
+License: MIT
+
+Files: vendor/ratchet/rfc6455/*
+Copyright: 2011-2016, Chris Boden <cboden@gmail.com>
+License: MIT
+
+Files: vendor/react/dns/*
+       vendor/react/event-loop/*
+       vendor/react/socket/*
+       vendor/react/stream/*
+Copyright: 2012, Igor Wiedler, Chris Boden
+License: MIT
+
+Files: vendor/react/promise/*
+Copyright: 2012-2016, Jan Sorgalla <jsorgalla@gmail.com>
+License: MIT
+
+Files: vendor/react/promise-timer/*
+Copyright: 2015, Christian Lück <christian@lueck.tv>
+License: MIT
+
+Files: vendor/sentry/sentry/*
+Copyright: 2012, Sentry Team and individual contributors
+License: BSD-3-Clause
+
+Files: vendor/symfony/*
+Copyright: 2004-2019, Fabien Potencier <fabien@symfony.com>
+License: MIT
+
+Files: vendor/ublaboo/datagrid/*
+Copyright: 2015, Pavel Janda <me@paveljanda.com>
+           2016, COntributte
+License: MIT
+
+Files: vendor/ublaboo/responses/*
+Copyright: 2015, Pavel Janda <me@paveljanda.com>
+License: MIT
+
+License: Apache-2.0
+ The complete text of the Apache-2.0 License can be found in the file
  `/usr/share/common-licenses/Apache-2.0'.
+
+License: BSD-3-Clause
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+ .
+ 1. Redistributions of source code must retain the above copyright notice, this
+ list of conditions and the following disclaimer.
+ .
+ 2. Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+ and/or other materials provided with the distribution.
+ .
+ 3. Neither the name of the copyright holder nor the names of its contributors
+ may be used to endorse or promote products derived from this software without
+ specific prior written permission.
+ .
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+License: GPL-2.0
+ The complete text of the GNU General Public License 2.0 can be found in
+ the file `/usr/share/common-licenses/GPL-2'.
+
+License: GPL-3.0
+ The complete text of the GNU General Public License 3.0 can be found in
+ the file `/usr/share/common-licenses/GPL-3'.
+
+License: MIT
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+ .
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Software.
+ .
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ THE SOFTWARE.
+
+License: MPL-2.0
+ The complete text of the Mozilla Public License 2.0 can be found in
+ the file `/usr/share/common-licenses/MPL-2.0'.

@@ -3,14 +3,6 @@
 
 set -e
 
-composer_init() {
-	if [ ! -d /usr/share/iqrf-gateway-webapp/vendor ] ; then
-		php7.2 /usr/bin/composer install -d /usr/share/iqrf-gateway-webapp
-	else
-		php7.2 /usr/bin/composer update -d /usr/share/iqrf-gateway-webapp
-	fi
-}
-
 nginx_virtualhost_install() {
 	nginx_virtualhost_old_remove
 	if [ ! -L /etc/nginx/sites-available/iqrf-gateway-webapp.localhost ] ; then
@@ -59,5 +51,4 @@ if [ "$1" = "configure" ]; then
 	openssl_create_ca
 	nginx_virtualhost_install
 	webapp_remove_cache
-	composer_init
 fi

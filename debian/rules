@@ -13,7 +13,7 @@ override_dh_fixperms:
 
 override_dh_auto_build:
 	sed -i "s/\t\"commit\"\: .*/\t\"commit\"\: \"`git rev-parse --verify HEAD`\"/" version.json
-#	composer install
+	composer install --no-dev
 
 #override_dh_auto_test:
 #	vendor/bin/tester -p phpdbg -c ./tests/php.ini -s ./tests
