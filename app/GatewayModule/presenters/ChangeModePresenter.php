@@ -69,7 +69,7 @@ class ChangeModePresenter extends ProtectedPresenter {
 	private function changeMode(string $mode): void {
 		$this->setView('default');
 		try {
-			$this->manager->changeMode($mode);
+			$this->manager->set($mode);
 			$this->flashInfo('gateway.mode.modes.' . $mode . '.message');
 			$this->redirect('ChangeMode:default');
 		} catch (EmptyResponseException | DpaErrorException $e) {

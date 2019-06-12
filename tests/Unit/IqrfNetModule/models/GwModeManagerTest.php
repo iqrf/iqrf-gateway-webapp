@@ -28,18 +28,32 @@ class GwModeManagerTest extends WebSocketTestCase {
 	private $manager;
 
 	/**
-	 * Tests the function to change IQRF Gateway Daemon's mode (invalid mode)
+	 * Tests the function to get current IQRF Gateway Daemon's mode
 	 */
-	public function testChangeOperationModeInvalid(): void {
+	public function testGet(): void {
+		$request = [
+			'mType' => 'mngDaemon_Mode',
+			'data' => [
+				'req' => ['operMode' => ''],
+				'returnVerbose' => true,
+			],
+		];
+		$this->assertRequest($request, [$this->manager, 'get']);
+	}
+
+	/**
+	 * Tests the function to set IQRF Gateway Daemon's mode (invalid mode)
+	 */
+	public function testSetInvalid(): void {
 		Assert::exception(function (): void {
-			$this->manager->changeMode('invalid');
+			$this->manager->set('invalid');
 		}, IqrfException\InvalidOperationModeException::class);
 	}
 
 	/**
-	 * Tests the function to change IQRF Gateway Daemon's mode (valid mode)
+	 * Tests the function to set IQRF Gateway Daemon's mode (valid mode)
 	 */
-	public function testChangeOperationModeValid(): void {
+	public function testSetValid(): void {
 		$modes = ['forwarding', 'operational', 'service'];
 		foreach ($modes as $mode) {
 			$request = [
@@ -50,7 +64,7 @@ class GwModeManagerTest extends WebSocketTestCase {
 				],
 			];
 			$this->assertRequest($request, function () use ($mode): void {
-				$this->manager->changeMode($mode);
+				$this->manager->set($mode);
 			});
 		}
 	}

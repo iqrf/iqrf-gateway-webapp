@@ -56,21 +56,20 @@ class GwModeManager {
 	}
 
 	/**
-	 * Changes IQRF Gateway Daemon's operation mode
+	 * Sets IQRF Gateway Daemon's operation mode
 	 * @param string $mode IQRF Gateway Daemon's operation mode
-	 * @return mixed[] JSON API request and response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws InvalidOperationModeException
-	 * @throws UserErrorException
 	 * @throws JsonException
+	 * @throws UserErrorException
 	 */
-	public function changeMode(string $mode): array {
+	public function set(string $mode): void {
 		$modes = ['forwarding', 'operational', 'service'];
 		if (!in_array($mode, $modes, true)) {
 			throw new InvalidOperationModeException();
 		}
-		$array = [
+		$request = [
 			'mType' => 'mngDaemon_Mode',
 			'data' => [
 				'req' => [
@@ -79,8 +78,31 @@ class GwModeManager {
 				'returnVerbose' => true,
 			],
 		];
-		$this->request->setRequest($array);
-		return $this->wsClient->sendSync($this->request);
+		$this->request->setRequest($request);
+		$this->wsClient->sendSync($this->request);
+	}
+
+	/**
+	 * Returns the current IQRF Gateway Daemon's operation mode
+	 * @return string Current IQRF Gateway Daemon's operation mode
+	 * @throws DpaErrorException
+	 * @throws EmptyResponseException
+	 * @throws JsonException
+	 * @throws UserErrorException
+	 */
+	public function get(): string {
+		$request = [
+			'mType' => 'mngDaemon_Mode',
+			'data' => [
+				'req' => [
+					'operMode' => '',
+				],
+				'returnVerbose' => true,
+			],
+		];
+		$this->request->setRequest($request);
+		$api = $this->wsClient->sendSync($this->request);
+		return $api['response']['data']['rsp']['operMode'] ?? 'unknown';
 	}
 
 }

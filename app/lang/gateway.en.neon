@@ -30,6 +30,12 @@ info:
 		disks: Disk usages
 		swap: Swap usage
 		used: Used
+	gwMode: Gateway mode
+	gwModes:
+		operational: Operational mode
+		service: Service mode
+		forwarding: Forwarding mode
+		unknown: An error occured while getting the current gateway mode
 
 diagnostics:
 	download: Download diagnostics

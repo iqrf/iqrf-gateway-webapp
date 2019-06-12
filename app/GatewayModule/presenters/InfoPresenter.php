@@ -25,6 +25,7 @@ use App\GatewayModule\Models\DiagnosticsManager;
 use App\GatewayModule\Models\InfoManager;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
+use App\IqrfNetModule\Models\GwModeManager;
 use Nette\Application\BadRequestException;
 use Nette\Utils\JsonException;
 use Tracy\Debugger;
@@ -45,13 +46,20 @@ class InfoPresenter extends ProtectedPresenter {
 	private $infoManager;
 
 	/**
+	 * @var GwModeManager IQRF Gateway Daemon's mode manager
+	 */
+	private $gwModeManager;
+
+	/**
 	 * Constructor
 	 * @param InfoManager $infoManager IQRF Gateway Info manager
 	 * @param DiagnosticsManager $diagnosticsManager IQRF Gateway Diagnostic manager
+	 * @param GwModeManager $gwModeManager IQRF Gateway Daemon's mode manager
 	 */
-	public function __construct(InfoManager $infoManager, DiagnosticsManager $diagnosticsManager) {
+	public function __construct(InfoManager $infoManager, DiagnosticsManager $diagnosticsManager, GwModeManager $gwModeManager) {
 		$this->diagnosticsManager = $diagnosticsManager;
 		$this->infoManager = $infoManager;
+		$this->gwModeManager = $gwModeManager;
 		parent::__construct();
 	}
 
@@ -75,6 +83,11 @@ class InfoPresenter extends ProtectedPresenter {
 			$this->template->module = $this->infoManager->getCoordinatorInfo()['response']['data']['rsp'];
 		} catch (DpaErrorException | EmptyResponseException $e) {
 			$this->presenter->flashMessage('gateway.info.tr.error', 'danger');
+		}
+		try {
+			$this->template->gwMode = $this->gwModeManager->get();
+		} catch (DpaErrorException | EmptyResponseException $e) {
+			$this->template->gwMode = 'unknown';
 		}
 	}
 
