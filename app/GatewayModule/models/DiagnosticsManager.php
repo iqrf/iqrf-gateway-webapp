@@ -55,6 +55,11 @@ class DiagnosticsManager {
 	private $networkManager;
 
 	/**
+	 * @var VersionManager Version manager
+	 */
+	private $versionManager;
+
+	/**
 	 * @var ZipArchiveManager ZIP archive manager
 	 */
 	private $zipManager;
@@ -87,8 +92,9 @@ class DiagnosticsManager {
 	 * @param InfoManager $infoManager Gateway Info manager
 	 * @param MainManager $mainManager Main configuration manager
 	 * @param NetworkManager $networkManager Network manager
+	 * @param VersionManager $versionManager Version manager
 	 */
-	public function __construct(string $confDir, string $logDir, CommandManager $commandManager, InfoManager $infoManager, MainManager $mainManager, NetworkManager $networkManager) {
+	public function __construct(string $confDir, string $logDir, CommandManager $commandManager, InfoManager $infoManager, MainManager $mainManager, NetworkManager $networkManager, VersionManager $versionManager) {
 		$this->commandManager = $commandManager;
 		$this->infoManager = $infoManager;
 		try {
@@ -99,6 +105,7 @@ class DiagnosticsManager {
 		$this->confDir = $confDir;
 		$this->logDir = $logDir;
 		$this->networkManager = $networkManager;
+		$this->versionManager = $versionManager;
 	}
 
 	/**
@@ -170,8 +177,8 @@ class DiagnosticsManager {
 	public function addInfo(): void {
 		$array = [];
 		$array['board'] = $this->infoManager->getBoard();
-		$array['daemonVersion'] = $this->infoManager->getDaemonVersion();
-		$array['webappVersion'] = $this->infoManager->getWebAppVersion();
+		$array['daemonVersion'] = $this->versionManager->getWebapp();
+		$array['webappVersion'] = $this->versionManager->getDaemon();
 		try {
 			$array['coordinator'] = $this->infoManager->getCoordinatorInfo();
 		} catch (DpaErrorException | EmptyResponseException $e) {

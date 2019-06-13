@@ -22,6 +22,7 @@ namespace App\InstallModule\Presenters;
 
 use App\GatewayModule\Models\InfoManager;
 use App\GatewayModule\Models\NetworkManager;
+use App\GatewayModule\Models\VersionManager;
 
 /**
  * IQRF Gateway info presenter
@@ -39,13 +40,20 @@ class GatewayInfoPresenter extends InstallationPresenter {
 	private $networkManager;
 
 	/**
+	 * @var VersionManager Version manager
+	 */
+	private $versionManager;
+
+	/**
 	 * Constructor
 	 * @param InfoManager $infoManager IQRF GW Info manager
 	 * @param NetworkManager $networkManager Network manager
+	 * @param VersionManager $versionManager Version manager
 	 */
-	public function __construct(InfoManager $infoManager, NetworkManager $networkManager) {
+	public function __construct(InfoManager $infoManager, NetworkManager $networkManager, VersionManager $versionManager) {
 		$this->infoManager = $infoManager;
 		$this->networkManager = $networkManager;
+		$this->versionManager = $versionManager;
 		parent::__construct();
 	}
 
@@ -57,8 +65,8 @@ class GatewayInfoPresenter extends InstallationPresenter {
 		$this->template->macAddresses = $this->networkManager->getMacAddresses();
 		$this->template->board = $this->infoManager->getBoard();
 		$this->template->hostname = $this->networkManager->getHostname();
-		$this->template->daemonVersion = $this->infoManager->getDaemonVersion();
-		$this->template->webAppVersion = $this->infoManager->getWebAppVersion();
+		$this->template->daemonVersion = $this->versionManager->getDaemon(true);
+		$this->template->webAppVersion = $this->versionManager->getWebapp(true);
 		$this->template->gwId = $this->infoManager->getId();
 		$this->template->gwmonId = $this->infoManager->getPixlaToken();
 	}

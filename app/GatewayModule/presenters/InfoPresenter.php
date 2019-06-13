@@ -24,6 +24,7 @@ use App\CoreModule\Presenters\ProtectedPresenter;
 use App\GatewayModule\Models\DiagnosticsManager;
 use App\GatewayModule\Models\InfoManager;
 use App\GatewayModule\Models\NetworkManager;
+use App\GatewayModule\Models\VersionManager;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Models\GwModeManager;
@@ -57,17 +58,24 @@ class InfoPresenter extends ProtectedPresenter {
 	private $networkManager;
 
 	/**
+	 * @var VersionManager Version manager
+	 */
+	private $swVersionManager;
+
+	/**
 	 * Constructor
 	 * @param InfoManager $infoManager IQRF Gateway Info manager
 	 * @param DiagnosticsManager $diagnosticsManager IQRF Gateway Diagnostic manager
 	 * @param GwModeManager $gwModeManager IQRF Gateway Daemon's mode manager
 	 * @param NetworkManager $networkManager Network manager
+	 * @param VersionManager $versionManager Version manager
 	 */
-	public function __construct(InfoManager $infoManager, DiagnosticsManager $diagnosticsManager, GwModeManager $gwModeManager, NetworkManager $networkManager) {
+	public function __construct(InfoManager $infoManager, DiagnosticsManager $diagnosticsManager, GwModeManager $gwModeManager, NetworkManager $networkManager, VersionManager $versionManager) {
 		$this->diagnosticsManager = $diagnosticsManager;
 		$this->infoManager = $infoManager;
 		$this->gwModeManager = $gwModeManager;
 		$this->networkManager = $networkManager;
+		$this->swVersionManager = $versionManager;
 		parent::__construct();
 	}
 
@@ -80,8 +88,8 @@ class InfoPresenter extends ProtectedPresenter {
 		$this->template->macAddresses = $this->networkManager->getMacAddresses();
 		$this->template->board = $this->infoManager->getBoard();
 		$this->template->hostname = $this->networkManager->getHostname();
-		$this->template->daemonVersion = $this->infoManager->getDaemonVersion();
-		$this->template->webAppVersion = $this->infoManager->getWebAppVersion();
+		$this->template->daemonVersion = $this->swVersionManager->getDaemon();
+		$this->template->webAppVersion = $this->swVersionManager->getWebapp();
 		$this->template->diskUsages = $this->infoManager->getDiskUsages();
 		$this->template->memoryUsage = $this->infoManager->getMemoryUsage();
 		$this->template->swapUsage = $this->infoManager->getSwapUsage();

@@ -12,7 +12,8 @@ override_dh_fixperms:
 	chmod 755 debian/iqrf-gateway-webapp/usr/share/iqrf-gateway-webapp/temp/
 
 override_dh_auto_build:
-	sed -i "s/\t\"commit\"\: .*/\t\"commit\"\: \"`git rev-parse --verify HEAD`\"/" version.json
+	sed -i "s/\t\"commit\"\: .*/\t\"commit\"\: \"`git rev-parse --verify HEAD`\",/" version.json
+	sed -i "s/\t\"pipeline\"\: .*/\t\"pipeline\"\: \"${CI_PIPELINE_ID}\"/" version.json
 	composer install --no-dev
 
 #override_dh_auto_test:

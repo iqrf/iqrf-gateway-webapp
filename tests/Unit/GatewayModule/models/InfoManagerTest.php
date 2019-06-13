@@ -10,7 +10,6 @@ declare(strict_types = 1);
 
 namespace Tests\Unit\GatewayModule\Models;
 
-use App\CoreModule\Models\VersionManager;
 use App\GatewayModule\Models\InfoManager;
 use App\IqrfNetModule\Models\EnumerationManager;
 use Mockery;
@@ -36,15 +35,9 @@ class InfoManagerTest extends CommandTestCase {
 	private $manager;
 
 	/**
-	 * @var MockInterface|VersionManager Mocked version manager
-	 */
-	private $versionManager;
-
-	/**
 	 * @var string[] Mocked commands
 	 */
 	private $commands = [
-		'daemonVersion' => 'iqrfgd2 version',
 		'deviceTreeName' => 'cat /proc/device-tree/model',
 		'dmiBoardName' => 'cat /sys/class/dmi/id/board_name',
 		'dmiBoardVendor' => 'cat /sys/class/dmi/id/board_vendor',
@@ -112,42 +105,6 @@ class InfoManagerTest extends CommandTestCase {
 		$expected = ['request' => [], 'response' => []];
 		$this->enumerationManager->shouldReceive('device')->with(0)->andReturn($expected);
 		Assert::same($expected, $this->manager->getCoordinatorInfo());
-	}
-
-	/**
-	 * Tests the function to get IQRF Gateway Daemon's version
-	 */
-	public function testGetDaemonVersion(): void {
-		$expected = 'v2.0.0dev 2018-07-04T10:30:51';
-		$this->commandManager->shouldReceive('commandExist')->with('iqrfgd2')->andReturn(true);
-		$this->receiveCommand($this->commands['daemonVersion'], null, $expected);
-		Assert::same($expected, $this->manager->getDaemonVersion());
-	}
-
-	/**
-	 * Tests the function to get IQRF Gateway Daemon's version (IQRF Gateway Daemon is not installed)
-	 */
-	public function testGetDaemonVersionNotInstalled(): void {
-		$this->commandManager->shouldReceive('commandExist')->with('iqrfgd2')->andReturn(false);
-		Assert::same('none', $this->manager->getDaemonVersion());
-	}
-
-	/**
-	 * Tests the function to get IQRF Gateway Daemon's version (unknown version)
-	 */
-	public function testGetDaemonVersionUnknown(): void {
-		$this->commandManager->shouldReceive('commandExist')->with('iqrfgd2')->andReturn(true);
-		$this->receiveCommand($this->commands['daemonVersion']);
-		Assert::same('unknown', $this->manager->getDaemonVersion());
-	}
-
-	/**
-	 * Tests the function to get version of the webapp
-	 */
-	public function testGetWebAppVersion(): void {
-		$expected = 'v1.1.6';
-		$this->versionManager->shouldReceive('getInstalledWebapp')->andReturn($expected);
-		Assert::same($expected, $this->manager->getWebAppVersion());
 	}
 
 	/**
@@ -233,9 +190,8 @@ class InfoManagerTest extends CommandTestCase {
 	 */
 	protected function setUp(): void {
 		parent::setUp();
-		$this->versionManager = Mockery::mock(VersionManager::class);
 		$this->enumerationManager = Mockery::mock(EnumerationManager::class);
-		$this->manager = new InfoManager($this->commandManager, $this->enumerationManager, $this->versionManager);
+		$this->manager = new InfoManager($this->commandManager, $this->enumerationManager);
 	}
 
 }

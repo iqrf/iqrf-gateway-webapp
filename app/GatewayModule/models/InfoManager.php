@@ -21,7 +21,6 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Models;
 
 use App\CoreModule\Models\CommandManager;
-use App\CoreModule\Models\VersionManager;
 use App\GatewayModule\Models\BoardManagers\DeviceTreeBoardManager;
 use App\GatewayModule\Models\BoardManagers\DmiBoardManager;
 use App\GatewayModule\Models\BoardManagers\IqrfBoardManager;
@@ -60,19 +59,12 @@ class InfoManager {
 	private $enumerationManager;
 
 	/**
-	 * @var VersionManager Version manager
-	 */
-	private $versionManager;
-
-	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
 	 * @param EnumerationManager $enumerationManager IQMESH Enumeration manager
-	 * @param VersionManager $versionManager Version manager
 	 */
-	public function __construct(CommandManager $commandManager, EnumerationManager $enumerationManager, VersionManager $versionManager) {
+	public function __construct(CommandManager $commandManager, EnumerationManager $enumerationManager) {
 		$this->commandManager = $commandManager;
-		$this->versionManager = $versionManager;
 		$this->enumerationManager = $enumerationManager;
 	}
 
@@ -105,23 +97,6 @@ class InfoManager {
 			}
 		}
 		return null;
-	}
-
-	/**
-	 * Gets version of IQRF Gateway Daemon
-	 * @return string IQRF Gateway Daemon version
-	 */
-	public function getDaemonVersion(): string {
-		$cmd = 'iqrfgd2 version';
-		$daemonExistence = $this->commandManager->commandExist('iqrfgd2');
-		if (!$daemonExistence) {
-			return 'none';
-		}
-		$result = $this->commandManager->run($cmd);
-		if ($result !== '') {
-			return $result;
-		}
-		return 'unknown';
 	}
 
 	/**
@@ -163,15 +138,6 @@ class InfoManager {
 		} elseif (array_key_exists('rfModeLp', $flags) && $flags['rfModeLp']) {
 			$array = 'LP';
 		}
-	}
-
-	/**
-	 * Gets a current version of this wab application
-	 * @return string Version of this web application
-	 * @throws JsonException
-	 */
-	public function getWebAppVersion(): string {
-		return $this->versionManager->getInstalledWebapp();
 	}
 
 	/**
