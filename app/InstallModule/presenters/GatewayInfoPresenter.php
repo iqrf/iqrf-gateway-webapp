@@ -21,7 +21,7 @@ declare(strict_types = 1);
 namespace App\InstallModule\Presenters;
 
 use App\GatewayModule\Models\InfoManager;
-use Nette\Utils\JsonException;
+use App\GatewayModule\Models\NetworkManager;
 
 /**
  * IQRF Gateway info presenter
@@ -34,23 +34,29 @@ class GatewayInfoPresenter extends InstallationPresenter {
 	private $infoManager;
 
 	/**
+	 * @var NetworkManager Network manager
+	 */
+	private $networkManager;
+
+	/**
 	 * Constructor
 	 * @param InfoManager $infoManager IQRF GW Info manager
+	 * @param NetworkManager $networkManager Network manager
 	 */
-	public function __construct(InfoManager $infoManager) {
+	public function __construct(InfoManager $infoManager, NetworkManager $networkManager) {
 		$this->infoManager = $infoManager;
+		$this->networkManager = $networkManager;
 		parent::__construct();
 	}
 
 	/**
 	 * Renders a default page
-	 * @throws JsonException
 	 */
 	public function renderDefault(): void {
-		$this->template->ipAddresses = $this->infoManager->getIpAddresses();
-		$this->template->macAddresses = $this->infoManager->getMacAddresses();
+		$this->template->ipAddresses = $this->networkManager->getIpAddresses();
+		$this->template->macAddresses = $this->networkManager->getMacAddresses();
 		$this->template->board = $this->infoManager->getBoard();
-		$this->template->hostname = $this->infoManager->getHostname();
+		$this->template->hostname = $this->networkManager->getHostname();
 		$this->template->daemonVersion = $this->infoManager->getDaemonVersion();
 		$this->template->webAppVersion = $this->infoManager->getWebAppVersion();
 		$this->template->gwId = $this->infoManager->getId();

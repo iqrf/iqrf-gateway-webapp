@@ -23,6 +23,7 @@ namespace App\GatewayModule\Presenters;
 use App\CoreModule\Presenters\ProtectedPresenter;
 use App\GatewayModule\Models\DiagnosticsManager;
 use App\GatewayModule\Models\InfoManager;
+use App\GatewayModule\Models\NetworkManager;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Models\GwModeManager;
@@ -51,15 +52,22 @@ class InfoPresenter extends ProtectedPresenter {
 	private $gwModeManager;
 
 	/**
+	 * @var NetworkManager Network manager
+	 */
+	private $networkManager;
+
+	/**
 	 * Constructor
 	 * @param InfoManager $infoManager IQRF Gateway Info manager
 	 * @param DiagnosticsManager $diagnosticsManager IQRF Gateway Diagnostic manager
 	 * @param GwModeManager $gwModeManager IQRF Gateway Daemon's mode manager
+	 * @param NetworkManager $networkManager Network manager
 	 */
-	public function __construct(InfoManager $infoManager, DiagnosticsManager $diagnosticsManager, GwModeManager $gwModeManager) {
+	public function __construct(InfoManager $infoManager, DiagnosticsManager $diagnosticsManager, GwModeManager $gwModeManager, NetworkManager $networkManager) {
 		$this->diagnosticsManager = $diagnosticsManager;
 		$this->infoManager = $infoManager;
 		$this->gwModeManager = $gwModeManager;
+		$this->networkManager = $networkManager;
 		parent::__construct();
 	}
 
@@ -68,10 +76,10 @@ class InfoPresenter extends ProtectedPresenter {
 	 * @throws JsonException
 	 */
 	public function renderDefault(): void {
-		$this->template->ipAddresses = $this->infoManager->getIpAddresses();
-		$this->template->macAddresses = $this->infoManager->getMacAddresses();
+		$this->template->ipAddresses = $this->networkManager->getIpAddresses();
+		$this->template->macAddresses = $this->networkManager->getMacAddresses();
 		$this->template->board = $this->infoManager->getBoard();
-		$this->template->hostname = $this->infoManager->getHostname();
+		$this->template->hostname = $this->networkManager->getHostname();
 		$this->template->daemonVersion = $this->infoManager->getDaemonVersion();
 		$this->template->webAppVersion = $this->infoManager->getWebAppVersion();
 		$this->template->diskUsages = $this->infoManager->getDiskUsages();

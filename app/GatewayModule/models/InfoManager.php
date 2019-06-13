@@ -108,45 +108,6 @@ class InfoManager {
 	}
 
 	/**
-	 * Gets IPv4 and IPv6 addresses of the gateway
-	 * @return string[][] IPv4 and IPv6 addresses
-	 */
-	public function getIpAddresses(): array {
-		$addresses = [];
-		$lsInterfaces = $this->commandManager->run('ls /sys/class/net | awk \'{ print $0 }\'', true);
-		$interfaces = explode(PHP_EOL, $lsInterfaces);
-		foreach ($interfaces as $interface) {
-			if ($interface === 'lo') {
-				continue;
-			}
-			$cmd = 'ip a s ' . $interface . ' | grep inet | grep global | grep -v temporary | awk \'{print $2}\'';
-			$output = $this->commandManager->run($cmd, true);
-			if ($output !== '') {
-				$addresses[$interface] = explode(PHP_EOL, $output);
-			}
-		}
-		return $addresses;
-	}
-
-	/**
-	 * Gets MAC addresses of the gateway
-	 * @return string[] MAC addresses array
-	 */
-	public function getMacAddresses(): array {
-		$addresses = [];
-		$lsInterfaces = $this->commandManager->run('ls /sys/class/net | awk \'{ print $0 }\'', true);
-		$interfaces = explode(PHP_EOL, $lsInterfaces);
-		foreach ($interfaces as $interface) {
-			if ($interface === 'lo') {
-				continue;
-			}
-			$cmd = 'cat /sys/class/net/' . $interface . '/address';
-			$addresses[$interface] = $this->commandManager->run($cmd, true);
-		}
-		return $addresses;
-	}
-
-	/**
 	 * Gets version of IQRF Gateway Daemon
 	 * @return string IQRF Gateway Daemon version
 	 */
@@ -161,15 +122,6 @@ class InfoManager {
 			return $result;
 		}
 		return 'unknown';
-	}
-
-	/**
-	 * Gets a hostname of the gateway
-	 * @return string Hostname
-	 */
-	public function getHostname(): string {
-		$cmd = 'hostname -f';
-		return $this->commandManager->run($cmd);
 	}
 
 	/**

@@ -50,6 +50,11 @@ class DiagnosticsManager {
 	private $infoManager;
 
 	/**
+	 * @var NetworkManager Network manager
+	 */
+	private $networkManager;
+
+	/**
 	 * @var ZipArchiveManager ZIP archive manager
 	 */
 	private $zipManager;
@@ -81,8 +86,9 @@ class DiagnosticsManager {
 	 * @param CommandManager $commandManager Command manager
 	 * @param InfoManager $infoManager Gateway Info manager
 	 * @param MainManager $mainManager Main configuration manager
+	 * @param NetworkManager $networkManager Network manager
 	 */
-	public function __construct(string $confDir, string $logDir, CommandManager $commandManager, InfoManager $infoManager, MainManager $mainManager) {
+	public function __construct(string $confDir, string $logDir, CommandManager $commandManager, InfoManager $infoManager, MainManager $mainManager, NetworkManager $networkManager) {
 		$this->commandManager = $commandManager;
 		$this->infoManager = $infoManager;
 		try {
@@ -92,6 +98,7 @@ class DiagnosticsManager {
 		}
 		$this->confDir = $confDir;
 		$this->logDir = $logDir;
+		$this->networkManager = $networkManager;
 	}
 
 	/**
@@ -170,7 +177,7 @@ class DiagnosticsManager {
 		} catch (DpaErrorException | EmptyResponseException $e) {
 			$array['coordinator'] = 'ERROR';
 		}
-		$array['hostname'] = $this->infoManager->getHostname();
+		$array['hostname'] = $this->networkManager->getHostname();
 		$array['uname'] = $this->commandManager->run('uname -a', true);
 		$array['uptime'] = $this->commandManager->run('uptime -p', true);
 		$array['diskUsages'] = $this->infoManager->getDiskUsages();
