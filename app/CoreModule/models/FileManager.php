@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Models;
 
+use Nette\IOException;
 use Nette\SmartObject;
 use Nette\Utils\FileSystem;
 
@@ -54,6 +55,7 @@ class FileManager {
 	/**
 	 * Deletes the file
 	 * @param string $fileName File name
+	 * @throws IOException
 	 */
 	public function delete(string $fileName): void {
 		FileSystem::delete($this->directory . '/' . $fileName);
@@ -72,6 +74,7 @@ class FileManager {
 	 * Reads the file
 	 * @param string $fileName File name
 	 * @return mixed File content
+	 * @throws IOException
 	 */
 	public function read(string $fileName) {
 		return FileSystem::read($this->directory . '/' . $fileName);
@@ -81,6 +84,7 @@ class FileManager {
 	 * Writes into the file
 	 * @param string $fileName File name
 	 * @param mixed $content File content
+	 * @throws IOException
 	 */
 	public function write(string $fileName, $content): void {
 		$fileName = 'nette.safe://' . $this->directory . '/' . $fileName;

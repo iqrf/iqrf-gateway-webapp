@@ -20,12 +20,14 @@ declare(strict_types = 1);
 
 namespace App\CloudModule\Models;
 
+use App\CloudModule\Exceptions\CannotCreateCertificateDirectoryException;
 use App\CloudModule\Exceptions\InvalidPrivateKeyForCertificateException;
 use App\ConfigModule\Models\GenericManager;
 use App\CoreModule\Models\CertificateManager;
 use DateTime;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use Nette\IOException;
 use Nette\SmartObject;
 use Nette\Utils\FileSystem;
 use Nette\Utils\JsonException;
@@ -58,9 +60,9 @@ class AwsManager implements IManager {
 	private $client;
 
 	/**
-	 * @var string MQTT interface name
+	 * CA certificate filename
 	 */
-	private $interfaceName = 'MqttMessagingAws';
+	private const CA_FILENAME = 'aws-ca.crt';
 
 	/**
 	 * Constructor
@@ -70,11 +72,24 @@ class AwsManager implements IManager {
 	 * @param Client $client HTTP(S) client
 	 */
 	public function __construct(string $certPath, CertificateManager $certManager, GenericManager $configManager, Client $client) {
-		FileSystem::createDir($certPath);
-		$this->certPath = realpath($certPath) . '/';
+		$this->certPath = $certPath;
 		$this->certManager = $certManager;
 		$this->client = $client;
 		$this->configManager = $configManager;
+	}
+
+	/**
+	 * Create a directory for certificates
+	 * @throws CannotCreateCertificateDirectoryException
+	 */
+	private function createDirectory(): void {
+		try {
+			FileSystem::createDir($this->certPath);
+		} catch (IOException $e) {
+			throw new CannotCreateCertificateDirectoryException();
+		}
+		$realPath = realpath($this->certPath);
+		$this->certPath = (($realPath === false) ? $this->certPath : $realPath) . '/';
 	}
 
 	/**
@@ -85,6 +100,7 @@ class AwsManager implements IManager {
 	 * @throws JsonException
 	 */
 	public function createMqttInterface(array $values): void {
+		$this->createDirectory();
 		$paths = $this->createPaths();
 		$this->downloadCaCertificate();
 		$this->checkCertificate($values);
@@ -92,7 +108,7 @@ class AwsManager implements IManager {
 		$this->configManager->setComponent('iqrf::MqttMessaging');
 		$this->configManager->setFileName('iqrf__MqttMessaging_Aws');
 		$interface = [
-			'instance' => $this->interfaceName,
+			'instance' => 'MqttMessagingAws',
 			'BrokerAddr' => 'ssl://' . $values['endpoint'] . ':8883',
 			'ClientId' => 'IqrfDpaMessaging1',
 			'Persistence' => 1,
@@ -106,7 +122,7 @@ class AwsManager implements IManager {
 			'ConnectTimeout' => 5,
 			'MinReconnect' => 1,
 			'MaxReconnect' => 64,
-			'TrustStore' => $this->certPath . 'aws-ca.crt',
+			'TrustStore' => $this->certPath . self::CA_FILENAME,
 			'KeyStore' => $paths['cert'],
 			'PrivateKey' => $paths['key'],
 			'PrivateKeyPassword' => '',
@@ -133,11 +149,12 @@ class AwsManager implements IManager {
 	/**
 	 * Downloads the root CA certificate
 	 * @throws GuzzleException
+	 * @throws IOException
 	 */
 	public function downloadCaCertificate(): void {
 		$caCertUrl = 'https://www.amazontrust.com/repository/AmazonRootCA2.pem';
 		$caCert = $this->client->request('GET', $caCertUrl)->getBody();
-		FileSystem::write($this->certPath . 'aws-ca.crt', $caCert);
+		FileSystem::write($this->certPath . self::CA_FILENAME, $caCert->getContents());
 	}
 
 	/**

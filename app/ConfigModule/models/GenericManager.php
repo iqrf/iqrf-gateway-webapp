@@ -22,6 +22,7 @@ namespace App\ConfigModule\Models;
 
 use App\CoreModule\Models\JsonFileManager;
 use App\CoreModule\Models\JsonSchemaManager;
+use Nette\IOException;
 use Nette\SmartObject;
 use Nette\Utils\Arrays;
 use Nette\Utils\Finder;
@@ -69,6 +70,7 @@ class GenericManager {
 	/**
 	 * Deletes a configuration
 	 * @param int $id Configuration ID
+	 * @throws IOException
 	 * @throws JsonException
 	 */
 	public function delete(int $id): void {
@@ -81,6 +83,7 @@ class GenericManager {
 	/**
 	 * Gets component's instance files
 	 * @return string[] Files with component's instances
+	 * @throws IOException
 	 * @throws JsonException
 	 */
 	public function getInstanceFiles(): array {
@@ -100,6 +103,7 @@ class GenericManager {
 	/**
 	 * Get a list of  configurations
 	 * @return mixed[] Configurations
+	 * @throws IOException
 	 * @throws JsonException
 	 */
 	public function list(): array {
@@ -115,6 +119,7 @@ class GenericManager {
 	 * Loads the configuration
 	 * @param int $id Configuration ID
 	 * @return mixed[] Configuration in an array
+	 * @throws IOException
 	 * @throws JsonException
 	 */
 	public function load(int $id): array {
@@ -131,6 +136,7 @@ class GenericManager {
 	/**
 	 * Fixes the required interfaces in the configuration
 	 * @param mixed[] $configuration Configuration to fix
+	 * @throws IOException
 	 * @throws JsonException
 	 */
 	public function fixRequiredInterfaces(array &$configuration): void {
@@ -155,6 +161,7 @@ class GenericManager {
 	 * @param string $type Property type
 	 * @param mixed $value Property value
 	 * @return string|null Instance file name
+	 * @throws IOException
 	 * @throws JsonException
 	 */
 	public function getInstanceByProperty(string $type, $value): ?string {
@@ -172,6 +179,7 @@ class GenericManager {
 	/**
 	 * Saves the configuration
 	 * @param mixed[] $array Configuration in an array
+	 * @throws IOException
 	 * @throws JsonException
 	 */
 	public function save(array $array): void {

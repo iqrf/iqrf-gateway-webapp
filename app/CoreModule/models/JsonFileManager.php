@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Models;
 
+use Nette\IOException;
 use Nette\SmartObject;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
@@ -42,6 +43,7 @@ class JsonFileManager extends FileManager {
 	/**
 	 * Deletes the JSON file
 	 * @param string $fileName File name
+	 * @throws IOException
 	 */
 	public function delete(string $fileName): void {
 		parent::delete($fileName . '.json');
@@ -60,6 +62,7 @@ class JsonFileManager extends FileManager {
 	 * Reads the JSON file and decode it to array
 	 * @param string $fileName File name (without .json)
 	 * @return mixed[] JSON data in array
+	 * @throws IOException
 	 * @throws JsonException
 	 */
 	public function read(string $fileName): array {
@@ -71,6 +74,7 @@ class JsonFileManager extends FileManager {
 	 * Encodes the JSON from array and write into the JSON file
 	 * @param string $name File name (without .json)
 	 * @param mixed $array JSON data in array
+	 * @throws IOException
 	 * @throws JsonException
 	 */
 	public function write(string $name, $array): void {

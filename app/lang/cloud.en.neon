@@ -3,6 +3,7 @@ description: Add MQTT connection into cloud services.
 
 messages:
 	downloadFailure: The webapp has not been able to download the root CA certificate. Probably the gateway has not been connected into the Internet.
+	cannotCreateDir: The webapp has not been able to create a directory for the certificates.
 	success: The new connection to the cloud service has been created successfully.
 
 amazonAws:

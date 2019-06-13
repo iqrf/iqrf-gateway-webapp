@@ -19,6 +19,7 @@ declare(strict_types = 1);
 
 namespace App\CloudModule\Forms;
 
+use App\CloudModule\Exceptions\CannotCreateCertificateDirectoryException;
 use App\CloudModule\Exceptions\InvalidConnectionStringException;
 use App\CloudModule\Exceptions\InvalidPrivateKeyForCertificateException;
 use App\CloudModule\Models\IManager;
@@ -81,25 +82,27 @@ abstract class CloudFormFactory {
 		$success = false;
 		try {
 			$this->manager->createMqttInterface($values);
-			$this->presenter->flashMessage('cloud.messages.success', 'success');
+			$this->presenter->flashSuccess('cloud.messages.success');
 			$success = true;
 		} catch (InvalidConnectionStringException $e) {
-			$this->presenter->flashMessage('cloud.msAzure.messages.invalidConnectionString', 'danger');
+			$this->presenter->flashError('cloud.msAzure.messages.invalidConnectionString');
 		} catch (InvalidPrivateKeyForCertificateException $e) {
-			$this->presenter->flashMessage('cloud.amazonAws.messages.mismatchedCrtAndKey', 'danger');
+			$this->presenter->flashError('cloud.amazonAws.messages.mismatchedCrtAndKey');
 		} catch (NonExistingJsonSchemaException $e) {
-			$this->presenter->flashMessage('config.messages.writeFailures.nonExistingJsonSchema', 'danger');
+			$this->presenter->flashError('config.messages.writeFailures.nonExistingJsonSchema');
 		} catch (IOException $e) {
-			$this->presenter->flashMessage('config.messages.writeFailures.ioError', 'danger');
+			$this->presenter->flashError('config.messages.writeFailures.ioError');
 		} catch (TransferException $e) {
-			$this->presenter->flashMessage('cloud.messages.downloadFailure', 'danger');
+			$this->presenter->flashError('cloud.messages.downloadFailure');
+		} catch (CannotCreateCertificateDirectoryException $e) {
+			$this->presenter->flashError('cloud.messages.cannotCreateDir');
 		}
 		if ($needRestart) {
 			try {
 				$this->serviceManager->restart();
-				$this->presenter->flashMessage('service.actions.restart.message', 'info');
+				$this->presenter->flashInfo('service.actions.restart.message');
 			} catch (NotSupportedInitSystemException $e) {
-				$this->presenter->flashMessage('service.errors.unsupportedInit', 'danger');
+				$this->presenter->flashError('service.errors.unsupportedInit');
 			}
 		}
 		if ($success) {

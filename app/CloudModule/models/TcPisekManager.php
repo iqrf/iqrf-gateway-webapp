@@ -20,9 +20,11 @@ declare(strict_types = 1);
 
 namespace App\CloudModule\Models;
 
+use App\CloudModule\Exceptions\CannotCreateCertificateDirectoryException;
 use App\ConfigModule\Models\GenericManager;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use Nette\IOException;
 use Nette\SmartObject;
 use Nette\Utils\FileSystem;
 use Nette\Utils\JsonException;
@@ -50,9 +52,9 @@ class TcPisekManager implements IManager {
 	private $configManager;
 
 	/**
-	 * @var string MQTT interface name
+	 * CA certificate file name
 	 */
-	private $interfaceName = 'MqttMessagingTcPisek';
+	private const CA_FILENAME = 'tcPisek-ca.crt';
 
 	/**
 	 * Constructor
@@ -61,10 +63,23 @@ class TcPisekManager implements IManager {
 	 * @param Client $client HTTP(S) client
 	 */
 	public function __construct(string $certPath, GenericManager $configManager, Client $client) {
-		FileSystem::createDir($certPath);
-		$this->certPath = realpath($certPath);
+		$this->certPath = $certPath;
 		$this->client = $client;
 		$this->configManager = $configManager;
+	}
+
+	/**
+	 * Creates a directory for certificates
+	 * @throws CannotCreateCertificateDirectoryException
+	 */
+	private function createDirectory(): void {
+		try {
+			FileSystem::createDir($this->certPath);
+		} catch (IOException $e) {
+			throw new CannotCreateCertificateDirectoryException();
+		}
+		$realPath = realpath($this->certPath);
+		$this->certPath = (($realPath === false) ? $this->certPath : $realPath) . '/';
 	}
 
 	/**
@@ -74,11 +89,12 @@ class TcPisekManager implements IManager {
 	 * @throws JsonException
 	 */
 	public function createMqttInterface(array $values): void {
+		$this->createDirectory();
 		$this->downloadCaCertificate();
 		$this->configManager->setComponent('iqrf::MqttMessaging');
 		$this->configManager->setFileName('iqrf__MqttMessaging_TcPisek');
 		$interface = [
-			'instance' => $this->interfaceName,
+			'instance' => 'MqttMessagingTcPisek',
 			'BrokerAddr' => 'ssl://' . $values['broker'] . ':8883',
 			'ClientId' => 'IqrfDpaMessaging1',
 			'Persistence' => 1,
@@ -92,7 +108,7 @@ class TcPisekManager implements IManager {
 			'ConnectTimeout' => 5,
 			'MinReconnect' => 1,
 			'MaxReconnect' => 64,
-			'TrustStore' => $this->certPath . '/tcPisek-ca.crt',
+			'TrustStore' => $this->certPath . self::CA_FILENAME,
 			'KeyStore' => '',
 			'PrivateKey' => '',
 			'PrivateKeyPassword' => '',
@@ -106,11 +122,12 @@ class TcPisekManager implements IManager {
 	/**
 	 * Downloads the root CA certificate
 	 * @throws GuzzleException
+	 * @throws IOException
 	 */
 	public function downloadCaCertificate(): void {
 		$caCertUrl = 'https://letsencrypt.org/certs/isrgrootx1.pem.txt';
 		$caCert = $this->client->request('GET', $caCertUrl)->getBody();
-		FileSystem::write($this->certPath . '/tcPisek-ca.crt', $caCert);
+		FileSystem::write($this->certPath . self::CA_FILENAME, $caCert->getContents());
 	}
 
 }

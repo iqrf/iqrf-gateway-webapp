@@ -40,11 +40,6 @@ class AzureManager implements IManager {
 	private $configManager;
 
 	/**
-	 * @var string MQTT interface name
-	 */
-	private $interfaceName = 'MqttMessagingAzure';
-
-	/**
 	 * Constructor
 	 * @param GenericManager $configManager Generic config manager
 	 */
@@ -67,7 +62,7 @@ class AzureManager implements IManager {
 		$this->configManager->setComponent('iqrf::MqttMessaging');
 		$this->configManager->setFileName('iqrf__MqttMessaging_Azure');
 		$interface = [
-			'instance' => $this->interfaceName,
+			'instance' => 'MqttMessagingAzure',
 			'BrokerAddr' => 'ssl://' . $data['HostName'] . ':8883',
 			'ClientId' => $data['DeviceId'],
 			'Persistence' => 1,
