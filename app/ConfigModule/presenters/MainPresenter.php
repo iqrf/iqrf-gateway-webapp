@@ -63,10 +63,11 @@ class MainPresenter extends ProtectedPresenter {
 			$this->configManager->load();
 		} catch (IOException $e) {
 			$this->flashError('config.messages.readFailures.ioError');
+			$this->redirect('Homepage:default');
 		} catch (JsonException $e) {
 			$this->flashError('config.messages.readFailures.invalidJson');
+			$this->redirect('Homepage:default');
 		}
-		$this->redirect('Homepage:default');
 	}
 
 	/**
