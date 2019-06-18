@@ -149,6 +149,7 @@ class VersionManager {
 			Strings::endsWith($version, '-rc')) {
 			return $version . '~' . $array['pipeline'] . ($verbose ? ' (' . $commit . ')' : '');
 		}
+		return $version . ($verbose ? ' (' . $commit . ')' : '');
 	}
 
 }
