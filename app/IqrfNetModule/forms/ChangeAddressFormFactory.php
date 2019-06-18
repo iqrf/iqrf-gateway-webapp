@@ -66,7 +66,7 @@ class ChangeAddressFormFactory {
 
 	/**
 	 * Redirects on success
-	 * @param Form $form Change a netwotk device address form
+	 * @param Form $form Change a network device address form
 	 */
 	public function onSuccess(Form $form): void {
 		$this->presenter->redirect('this', ['address' => $form->getValues()->address]);

@@ -62,8 +62,8 @@ class DiscoveryManager {
 	 * @return mixed[] API request and response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
-	 * @throws UserErrorException
 	 * @throws JsonException
+	 * @throws UserErrorException
 	 */
 	public function run(int $txPower = 6, int $maxAddress = 0): array {
 		$array = [

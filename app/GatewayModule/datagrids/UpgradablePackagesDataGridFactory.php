@@ -26,8 +26,6 @@ use App\GatewayModule\Models\UpdaterManager;
 use App\GatewayModule\Presenters\UpdaterPresenter;
 use Nette\SmartObject;
 use Ublaboo\DataGrid\DataGrid;
-use Ublaboo\DataGrid\Exception\DataGridColumnStatusException;
-use Ublaboo\DataGrid\Exception\DataGridException;
 
 /**
  * Upgradable packages data grid
@@ -61,8 +59,6 @@ class UpgradablePackagesDataGridFactory {
 	 * @param UpdaterPresenter $presenter IQRF Gateway Updater presenter
 	 * @param string $name Data grid's component name
 	 * @return DataGrid User data grid
-	 * @throws DataGridColumnStatusException
-	 * @throws DataGridException
 	 */
 	public function create(UpdaterPresenter $presenter, string $name): DataGrid {
 		$grid = $this->dataGridFactory->create($presenter, $name);

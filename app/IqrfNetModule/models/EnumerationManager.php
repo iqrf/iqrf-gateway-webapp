@@ -60,8 +60,8 @@ class EnumerationManager {
 	 * @return mixed[] API request and response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
-	 * @throws UserErrorException
 	 * @throws JsonException
+	 * @throws UserErrorException
 	 */
 	public function device(int $address): array {
 		$array = [

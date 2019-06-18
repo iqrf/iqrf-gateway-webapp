@@ -27,6 +27,7 @@ use App\CoreModule\Models\UserManager;
 use App\CoreModule\Traits\TPresenterFlashMessage;
 use Nette\Forms\Form;
 use Ublaboo\DataGrid\DataGrid;
+use Ublaboo\DataGrid\Exception\DataGridColumnStatusException;
 use Ublaboo\DataGrid\Exception\DataGridException;
 
 /**
@@ -103,7 +104,8 @@ class UserPresenter extends ProtectedPresenter {
 	/**
 	 * Creates the data grid
 	 * @param string $name Component name
-	 * @return DataGrid Datagrid wirh users
+	 * @return DataGrid Datagrid with users
+	 * @throws DataGridColumnStatusException
 	 * @throws DataGridException
 	 */
 	protected function createComponentUserGrid(string $name): DataGrid {

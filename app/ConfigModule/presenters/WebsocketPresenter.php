@@ -220,6 +220,7 @@ class WebsocketPresenter extends GenericPresenter {
 	 * @return DataGrid WebSocket service data grid
 	 * @throws JsonException
 	 * @throws DataGridException
+	 * @throws DataGridColumnStatusException
 	 */
 	protected function createComponentConfigWebSocketServiceDataGrid(string $name): DataGrid {
 		return $this->serviceDataGridFactory->create($this, $name);

@@ -61,8 +61,8 @@ class TrConfigManager {
 	 * @return mixed[] API request and response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
-	 * @throws UserErrorException
 	 * @throws JsonException
+	 * @throws UserErrorException
 	 */
 	public function read(int $address = 0): array {
 		$array = [
@@ -86,8 +86,8 @@ class TrConfigManager {
 	 * @return mixed[] DPA request and response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
-	 * @throws UserErrorException
 	 * @throws JsonException
+	 * @throws UserErrorException
 	 */
 	public function write(int $address = 0, array $config = []): array {
 		$array = [

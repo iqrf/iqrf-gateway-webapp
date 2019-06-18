@@ -24,6 +24,7 @@ use App\CoreModule\Presenters\ProtectedPresenter;
 use App\IqrfNetModule\Forms\SendJsonFormFactory;
 use Nette\Forms\Form;
 use Nette\Utils\Json;
+use Nette\Utils\JsonException;
 
 /**
  * Send IQRF JSON request presenter
@@ -42,7 +43,11 @@ class SendJsonPresenter extends ProtectedPresenter {
 	 */
 	public function handleShowResponse(array $data): void {
 		foreach ($data as &$json) {
-			$json = Json::encode($json, Json::PRETTY);
+			try {
+				$json = Json::encode($json, Json::PRETTY);
+			} catch (JsonException $e) {
+				// Do nothing
+			}
 		}
 		$this->template->json = $data;
 		$this->redrawControl('responseChange');

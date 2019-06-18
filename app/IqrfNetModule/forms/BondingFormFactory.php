@@ -153,9 +153,8 @@ class BondingFormFactory {
 
 	/**
 	 * Clears all bonds
-	 * @param SubmitButton $button Submit button for cleaning all bonds
 	 */
-	public function clearAllBonds(SubmitButton $button): void {
+	public function clearAllBonds(): void {
 		try {
 			$this->manager->clearAll();
 			$this->presenter->flashSuccess('iqrfnet.bonding.messages.clearAll.success');

@@ -90,7 +90,7 @@ class StandardLightFormFactory {
 	}
 
 	/**
-	 * Enumerates a IQRF STandard light device
+	 * Enumerates a IQRF Standard light device
 	 * @param SubmitButton $button Submit button
 	 */
 	public function enumerate(SubmitButton $button): void {

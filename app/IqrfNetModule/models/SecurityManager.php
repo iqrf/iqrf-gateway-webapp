@@ -65,9 +65,9 @@ class SecurityManager {
 	 * @return mixed[] API request and response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
+	 * @throws JsonException
 	 * @throws UnsupportedInputFormatException
 	 * @throws UserErrorException
-	 * @throws JsonException
 	 */
 	public function setAccessPassword(int $address, string $password = '', string $inputFormat = DataFormat::ASCII): array {
 		return $this->setSecurity($address, $password, $inputFormat, 0);
@@ -81,9 +81,9 @@ class SecurityManager {
 	 * @return mixed[] API request and response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
+	 * @throws JsonException
 	 * @throws UnsupportedInputFormatException
 	 * @throws UserErrorException
-	 * @throws JsonException
 	 */
 	public function setUserKey(int $address, string $password = '', string $inputFormat = DataFormat::ASCII): array {
 		return $this->setSecurity($address, $password, $inputFormat, 1);
@@ -98,9 +98,9 @@ class SecurityManager {
 	 * @return mixed[] API request and response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
+	 * @throws JsonException
 	 * @throws UnsupportedInputFormatException
 	 * @throws UserErrorException
-	 * @throws JsonException
 	 */
 	private function setSecurity(int $address, string $password, string $inputFormat, int $type): array {
 		$array = [

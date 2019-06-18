@@ -61,8 +61,8 @@ class StandardBinaryOutputManager {
 	 * @return mixed[] API request and response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
-	 * @throws UserErrorException
 	 * @throws JsonException
+	 * @throws UserErrorException
 	 */
 	public function enumerate(int $address): array {
 		$array = [

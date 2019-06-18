@@ -27,7 +27,6 @@ use App\IqrfNetModule\Models\DiscoveryManager;
 use App\IqrfNetModule\Presenters\NetworkPresenter;
 use Nette\Forms\Form;
 use Nette\SmartObject;
-use Nette\Utils\ArrayHash;
 use Nette\Utils\JsonException;
 
 /**
@@ -87,10 +86,10 @@ class DiscoveryFormFactory {
 	/**
 	 * Runs IQMESH discovery
 	 * @param Form $form IQMESH discovery form
-	 * @param ArrayHash $values Values from IQMESH discovery form
 	 */
-	public function onSuccess(Form $form, ArrayHash $values): void {
+	public function onSuccess(Form $form): void {
 		try {
+			$values = $form->getValues();
 			$this->manager->run($values['txPower'], $values['maxNode']);
 			$this->presenter->flashSuccess('iqrfnet.discovery.messages.success');
 		} catch (EmptyResponseException | DpaErrorException | JsonException $e) {

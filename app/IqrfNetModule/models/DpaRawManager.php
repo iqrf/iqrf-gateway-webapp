@@ -75,8 +75,8 @@ class DpaRawManager {
 	 * @return mixed[] DPA request and response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
-	 * @throws UserErrorException
 	 * @throws JsonException
+	 * @throws UserErrorException
 	 */
 	public function send(string $packet, ?int $timeout = null): array {
 		$array = [
