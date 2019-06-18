@@ -101,10 +101,10 @@ class UserEditFormFactory {
 				$this->presenter->user->logout();
 			}
 			$message = $form->getTranslator()->translate('messages.successEdit', ['username' => $values['username']]);
-			$this->presenter->flashMessage($message, 'success');
+			$this->presenter->flashSuccess($message);
 			$this->presenter->redirect('User:default');
 		} catch (UsernameAlreadyExistsException $e) {
-			$this->presenter->flashMessage('core.user.form.messages.usernameAlreadyExists', 'danger');
+			$this->presenter->flashError('core.user.form.messages.usernameAlreadyExists');
 		}
 	}
 

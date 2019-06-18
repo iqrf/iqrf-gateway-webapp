@@ -109,11 +109,11 @@ class WebSocketDataGridFactory {
 		$config['acceptAsyncMsg'] = $status;
 		try {
 			$this->configManager->save($config);
-			$this->presenter->flashMessage('config.messages.success', 'success');
+			$this->presenter->flashSuccess('config.messages.success');
 		} catch (IOException $e) {
-			$this->presenter->flashMessage('config.messages.writeFailures.ioError', 'danger');
+			$this->presenter->flashError('config.messages.writeFailures.ioError');
 		} catch (NonExistingJsonSchemaException $e) {
-			$this->presenter->flashMessage('config.messages.writeFailures.nonExistingJsonSchema', 'danger');
+			$this->presenter->flashError('config.messages.writeFailures.nonExistingJsonSchema');
 		} finally {
 			if ($this->presenter->isAjax()) {
 				$this->presenter->redrawControl('flashes');
@@ -135,11 +135,11 @@ class WebSocketDataGridFactory {
 		$config['acceptOnlyLocalhost'] = $status;
 		try {
 			$this->configManager->save($config);
-			$this->presenter->flashMessage('config.messages.success', 'success');
+			$this->presenter->flashSuccess('config.messages.success');
 		} catch (IOException $e) {
-			$this->presenter->flashMessage('config.messages.writeFailures.ioError', 'danger');
+			$this->presenter->flashError('config.messages.writeFailures.ioError');
 		} catch (NonExistingJsonSchemaException $e) {
-			$this->presenter->flashMessage('config.messages.writeFailures.nonExistingJsonSchema', 'danger');
+			$this->presenter->flashError('config.messages.writeFailures.nonExistingJsonSchema');
 		} finally {
 			if ($this->presenter->isAjax()) {
 				$this->presenter->redrawControl('flashes');

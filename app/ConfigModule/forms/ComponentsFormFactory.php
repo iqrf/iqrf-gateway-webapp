@@ -107,11 +107,11 @@ class ComponentsFormFactory {
 			} else {
 				$this->manager->add($array);
 			}
-			$this->presenter->flashMessage('config.messages.success', 'success');
+			$this->presenter->flashSuccess('config.messages.success');
 		} catch (IOException $e) {
-			$this->presenter->flashMessage('config.messages.writeFailures.ioError', 'danger');
+			$this->presenter->flashError('config.messages.writeFailures.ioError');
 		} catch (NonExistingJsonSchemaException $e) {
-			$this->presenter->flashMessage('config.messages.writeFailures.nonExistingJsonSchema', 'danger');
+			$this->presenter->flashError('config.messages.writeFailures.nonExistingJsonSchema');
 		} finally {
 			$this->presenter->redirect('Component:default');
 		}

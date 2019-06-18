@@ -89,7 +89,7 @@ class StandardSensorFormFactory {
 			$data = $this->manager->enumerate($values['address']);
 			$this->presenter->handleSensorResponse($data);
 		} catch (UserErrorException | DpaErrorException | EmptyResponseException | JsonException $e) {
-			$this->presenter->flashMessage('iqrfnet.standard.sensor.messages.enumerateError', 'danger');
+			$this->presenter->flashError('iqrfnet.standard.sensor.messages.enumerateError');
 		}
 	}
 
@@ -103,7 +103,7 @@ class StandardSensorFormFactory {
 			$data = $this->manager->readAll($values['address']);
 			$this->presenter->handleSensorResponse($data);
 		} catch (UserErrorException | DpaErrorException | EmptyResponseException | JsonException $e) {
-			$this->presenter->flashMessage('iqrfnet.standard.sensor.messages.readError', 'danger');
+			$this->presenter->flashError('iqrfnet.standard.sensor.messages.readError');
 		}
 	}
 

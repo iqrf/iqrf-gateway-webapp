@@ -101,7 +101,7 @@ class SendRawFormFactory {
 		$packet = $values['packet'];
 		$timeout = ($values['timeoutEnabled'] === true) ? $values['timeout'] : null;
 		if (!$this->manager->validatePacket($packet)) {
-			$this->presenter->flashMessage('iqrfnet.send-packet.messages.invalidPacket', 'danger');
+			$this->presenter->flashError('iqrfnet.send-packet.messages.invalidPacket');
 			return;
 		}
 		if ($values['overwriteAddress'] === true) {
@@ -112,7 +112,7 @@ class SendRawFormFactory {
 			$response = $this->manager->send($packet, $timeout);
 			$this->presenter->handleShowResponse($response);
 		} catch (EmptyResponseException | DpaErrorException $e) {
-			$this->presenter->flashMessage('iqrfnet.webSocketClient.messages.emptyResponse', 'danger');
+			$this->presenter->flashError('iqrfnet.webSocketClient.messages.emptyResponse');
 		}
 	}
 

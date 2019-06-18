@@ -93,10 +93,10 @@ class ChangePasswordFormFactory {
 			$userId = $this->user->getId();
 			$this->userManager->changePassword($userId, $values['oldPassword'], $values['newPassword']);
 			$this->user->logout();
-			$this->presenter->flashMessage('core.changePassword.form.messages.success', 'success');
+			$this->presenter->flashSuccess('core.changePassword.form.messages.success');
 			$this->presenter->redirect('Sign:in');
 		} catch (InvalidPasswordException $e) {
-			$this->presenter->flashMessage('core.changePassword.form.messages.invalidOldPassword', 'danger');
+			$this->presenter->flashError('core.changePassword.form.messages.invalidOldPassword');
 		}
 	}
 

@@ -145,9 +145,9 @@ class BondingFormFactory {
 					$this->manager->bondSmartConnect($address, $code, $testRetries);
 					break;
 			}
-			$this->presenter->flashMessage('iqrfnet.bonding.messages.add.success', 'success');
+			$this->presenter->flashSuccess('iqrfnet.bonding.messages.add.success');
 		} catch (EmptyResponseException | DpaErrorException | JsonException $e) {
-			$this->presenter->flashMessage('iqrfnet.bonding.messages.add.failure', 'danger');
+			$this->presenter->flashError('iqrfnet.bonding.messages.add.failure');
 		}
 	}
 
@@ -158,9 +158,9 @@ class BondingFormFactory {
 	public function clearAllBonds(SubmitButton $button): void {
 		try {
 			$this->manager->clearAll();
-			$this->presenter->flashMessage('iqrfnet.bonding.messages.clearAll.success', 'success');
+			$this->presenter->flashSuccess('iqrfnet.bonding.messages.clearAll.success');
 		} catch (EmptyResponseException | DpaErrorException | JsonException $e) {
-			$this->presenter->flashMessage('iqrfnet.bonding.messages.clearAll.failure', 'danger');
+			$this->presenter->flashError('iqrfnet.bonding.messages.clearAll.failure');
 		}
 	}
 
@@ -172,9 +172,9 @@ class BondingFormFactory {
 		$values = $button->getForm()->getValues();
 		try {
 			$this->manager->remove($values['address']);
-			$this->presenter->flashMessage('iqrfnet.bonding.messages.remove.success', 'success');
+			$this->presenter->flashSuccess('iqrfnet.bonding.messages.remove.success');
 		} catch (EmptyResponseException | DpaErrorException | JsonException $e) {
-			$this->presenter->flashMessage('iqrfnet.bonding.messages.remove.failure', 'danger');
+			$this->presenter->flashError('iqrfnet.bonding.messages.remove.failure');
 		}
 	}
 

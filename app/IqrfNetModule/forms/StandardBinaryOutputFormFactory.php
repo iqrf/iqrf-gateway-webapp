@@ -95,7 +95,7 @@ class StandardBinaryOutputFormFactory {
 			$data = $this->manager->enumerate($values['address']);
 			$this->presenter->handleBinaryOutputResponse($data);
 		} catch (UserErrorException | DpaErrorException | EmptyResponseException | JsonException $e) {
-			$this->presenter->flashMessage('iqrfnet.standard.binaryOutput.messages.enumerateError', 'danger');
+			$this->presenter->flashError('iqrfnet.standard.binaryOutput.messages.enumerateError');
 		}
 	}
 
@@ -109,7 +109,7 @@ class StandardBinaryOutputFormFactory {
 			$data = $this->manager->getOutputs($values['address']);
 			$this->presenter->handleBinaryOutputResponse($data);
 		} catch (UserErrorException | DpaErrorException | EmptyResponseException | JsonException $e) {
-			$this->presenter->flashMessage('iqrfnet.standard.binaryOutput.messages.getError', 'danger');
+			$this->presenter->flashError('iqrfnet.standard.binaryOutput.messages.getError');
 		}
 	}
 
@@ -124,7 +124,7 @@ class StandardBinaryOutputFormFactory {
 			$data = $this->manager->setOutputs($values['address'], [$output]);
 			$this->presenter->handleBinaryOutputResponse($data);
 		} catch (UserErrorException | DpaErrorException | EmptyResponseException | JsonException $e) {
-			$this->presenter->flashMessage('iqrfnet.standard.binaryOutput.messages.setError', 'danger');
+			$this->presenter->flashError('iqrfnet.standard.binaryOutput.messages.setError');
 		}
 	}
 

@@ -99,7 +99,7 @@ class StandardLightFormFactory {
 			$data = $this->manager->enumerate($values['address']);
 			$this->presenter->handleLightResponse($data);
 		} catch (UserErrorException | DpaErrorException | EmptyResponseException | JsonException $e) {
-			$this->presenter->flashMessage('iqrfnet.standard.light.messages.enumerateError', 'danger');
+			$this->presenter->flashError('iqrfnet.standard.light.messages.enumerateError');
 		}
 	}
 
@@ -114,7 +114,7 @@ class StandardLightFormFactory {
 			$data = $this->manager->getPower($values['address'], [$light]);
 			$this->presenter->handleLightResponse($data);
 		} catch (UserErrorException | DpaErrorException | EmptyResponseException | JsonException $e) {
-			$this->presenter->flashMessage('iqrfnet.standard.light.messages.getError', 'danger');
+			$this->presenter->flashError('iqrfnet.standard.light.messages.getError');
 		}
 	}
 
@@ -129,7 +129,7 @@ class StandardLightFormFactory {
 			$data = $this->manager->setPower($values['address'], [$light]);
 			$this->presenter->handleLightResponse($data);
 		} catch (UserErrorException | DpaErrorException | EmptyResponseException | JsonException $e) {
-			$this->presenter->flashMessage('iqrfnet.standard.light.messages.setError', 'danger');
+			$this->presenter->flashError('iqrfnet.standard.light.messages.setError');
 		}
 	}
 
@@ -144,7 +144,7 @@ class StandardLightFormFactory {
 			$data = $this->manager->incrementPower($values['address'], [$light]);
 			$this->presenter->handleLightResponse($data);
 		} catch (UserErrorException | DpaErrorException | EmptyResponseException | JsonException $e) {
-			$this->presenter->flashMessage('iqrfnet.standard.light.messages.incrementError', 'danger');
+			$this->presenter->flashError('iqrfnet.standard.light.messages.incrementError');
 		}
 	}
 
@@ -159,7 +159,7 @@ class StandardLightFormFactory {
 			$data = $this->manager->decrementPower($values['address'], [$light]);
 			$this->presenter->handleLightResponse($data);
 		} catch (UserErrorException | DpaErrorException | EmptyResponseException | JsonException $e) {
-			$this->presenter->flashMessage('iqrfnet.standard.light.messages.decrementError', 'danger');
+			$this->presenter->flashError('iqrfnet.standard.light.messages.decrementError');
 		}
 	}
 

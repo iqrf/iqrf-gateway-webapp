@@ -105,10 +105,10 @@ class UserDataGridFactory {
 				$this->presenter->user->logout();
 			}
 			$message = new Phrase('core.user.form.messages.successEdit', null, ['username' => $user['username']]);
-			$this->presenter->flashMessage($message, 'success');
+			$this->presenter->flashSuccess($message->message);
 			$this->presenter->redirect('User:default');
 		} catch (UsernameAlreadyExistsException $e) {
-			$this->presenter->flashMessage('core.user.form.messages.usernameAlreadyExists', 'danger');
+			$this->presenter->flashError('core.user.form.messages.usernameAlreadyExists');
 		} finally {
 			if ($this->presenter->isAjax()) {
 				$this->presenter->redrawControl('flashes');
@@ -132,10 +132,10 @@ class UserDataGridFactory {
 				$this->presenter->user->logout();
 			}
 			$message = new Phrase('core.user.form.messages.successEdit', null, ['username' => $user['username']]);
-			$this->presenter->flashMessage($message, 'success');
+			$this->presenter->flashSuccess($message->message);
 			$this->presenter->redirect('User:default');
 		} catch (UsernameAlreadyExistsException $e) {
-			$this->presenter->flashMessage('core.user.form.messages.usernameAlreadyExists', 'danger');
+			$this->presenter->flashError('core.user.form.messages.usernameAlreadyExists');
 		} finally {
 			if ($this->presenter->isAjax()) {
 				$this->presenter->redrawControl('flashes');

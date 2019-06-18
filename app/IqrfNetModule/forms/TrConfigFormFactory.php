@@ -99,9 +99,9 @@ abstract class TrConfigFormFactory {
 		}
 		try {
 			$this->manager->write($address, $config);
-			$this->presenter->flashMessage('iqrfnet.trConfiguration.write.success', 'success');
+			$this->presenter->flashSuccess('iqrfnet.trConfiguration.write.success');
 		} catch (DpaErrorException | EmptyResponseException | JsonException | UserErrorException $e) {
-			$this->presenter->flashMessage('iqrfnet.trConfiguration.write.failure', 'danger');
+			$this->presenter->flashError('iqrfnet.trConfiguration.write.failure');
 		}
 	}
 

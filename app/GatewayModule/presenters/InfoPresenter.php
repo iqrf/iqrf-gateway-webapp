@@ -98,7 +98,7 @@ class InfoPresenter extends ProtectedPresenter {
 		try {
 			$this->template->module = $this->infoManager->getCoordinatorInfo()['response']['data']['rsp'];
 		} catch (DpaErrorException | EmptyResponseException $e) {
-			$this->presenter->flashMessage('gateway.info.tr.error', 'danger');
+			$this->flashError('gateway.info.tr.error');
 		}
 		try {
 			$this->template->gwMode = $this->gwModeManager->get();

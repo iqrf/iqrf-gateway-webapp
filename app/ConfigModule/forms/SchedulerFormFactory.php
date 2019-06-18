@@ -213,13 +213,13 @@ class SchedulerFormFactory {
 		try {
 			$values = $button->getForm()->getValues(true);
 			$this->manager->save($values);
-			$this->presenter->flashMessage('config.messages.success', 'success');
+			$this->presenter->flashSuccess('config.messages.success');
 		} catch (NonExistingJsonSchemaException $e) {
-			$this->presenter->flashMessage('config.messages.writeFailures.nonExistingJsonSchema', 'danger');
+			$this->presenter->flashError('config.messages.writeFailures.nonExistingJsonSchema');
 		} catch (IOException $e) {
-			$this->presenter->flashMessage('config.messages.writeFailures.ioError', 'danger');
+			$this->presenter->flashError('config.messages.writeFailures.ioError');
 		} catch (JsonException $e) {
-			$this->presenter->flashMessage('config.messages.writeFailures.invalidJson', 'danger');
+			$this->presenter->flashError('config.messages.writeFailures.invalidJson');
 		} finally {
 			$this->presenter->redirect('Scheduler:default');
 		}
@@ -232,9 +232,9 @@ class SchedulerFormFactory {
 	public function saveAndRestart(SubmitButton $button): void {
 		try {
 			$this->serviceManager->restart();
-			$this->presenter->flashMessage('service.actions.restart.message', 'info');
+			$this->presenter->flashInfo('service.actions.restart.message');
 		} catch (NotSupportedInitSystemException $e) {
-			$this->presenter->flashMessage('service.errors.unsupportedInit', 'danger');
+			$this->presenter->flashError('service.errors.unsupportedInit');
 		} finally {
 			$this->save($button);
 		}

@@ -92,11 +92,11 @@ class MainFormFactory {
 	public function save(Form $form): void {
 		try {
 			$this->manager->save($form->getValues(true));
-			$this->presenter->flashMessage('config.messages.success', 'success');
+			$this->presenter->flashSuccess('config.messages.success');
 		} catch (NonExistingJsonSchemaException $e) {
-			$this->presenter->flashMessage('config.messages.writeFailures.nonExistingJsonSchema', 'danger');
+			$this->presenter->flashError('config.messages.writeFailures.nonExistingJsonSchema');
 		} catch (IOException $e) {
-			$this->presenter->flashMessage('config.messages.writeFailures.ioError', 'danger');
+			$this->presenter->flashError('config.messages.writeFailures.ioError');
 		} finally {
 			$this->presenter->redirect('Homepage:default');
 		}

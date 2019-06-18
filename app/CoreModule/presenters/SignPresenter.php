@@ -22,12 +22,15 @@ namespace App\CoreModule\Presenters;
 
 use App\CoreModule\Forms\SignInFormFactory;
 use App\CoreModule\Models\UserManager;
+use App\CoreModule\Traits\TPresenterFlashMessage;
 use Nette\Forms\Form;
 
 /**
  * Sign in/out presenter
  */
 class SignPresenter extends BasePresenter {
+
+	use TPresenterFlashMessage;
 
 	/**
 	 * @var string Back link

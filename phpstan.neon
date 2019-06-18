@@ -15,7 +15,7 @@ parameters:
 		- '#PHPDoc tag @throws with type (|[a-zA-Z0-9\\_]+\|)GuzzleHttp\\Exception\\GuzzleException(|\|[a-zA-Z0-9\\_]+) is not subtype of Throwable#'
 		- '#Return type \(void\) of method App\\ConsoleModule\\Commands\\[a-zA-Z0-9_]+::execute() should be compatible with return type \(int|null\) of method Symfony\\Component\\Console\\Command\\Command::execute\(\)#'
 		-
-			message: '#Parameter \#(1|2) \$(message|type) \(string\) of method App\\CoreModule\\Presenters\\ProtectedPresenter::flashMessage\(\) should be contravariant with parameter \$(message|type) \(mixed\) of method Nette\\Application\\UI\\Control::flashMessage\(\)#'
+			message: '#Parameter \#(1|2) \$(message|type) \(string\) of method App\\CoreModule\\Presenters\\(Protected|Sign)Presenter::flashMessage\(\) should be contravariant with parameter \$(message|type) \(mixed\) of method Nette\\Application\\UI\\Control::flashMessage\(\)#'
 			path: %currentWorkingDirectory%/app/CoreModule/traits/TPresenterFlashMessage.php
 		-
 			message: '#Parameter \#1 \$credentials \(array<string>\) of method App\\CoreModule\\Models\\AppAuthenticator::authenticate\(\) should be contravariant with parameter \$credentials \(array\) of method Nette\\Security\\IAuthenticator::authenticate\(\)#'

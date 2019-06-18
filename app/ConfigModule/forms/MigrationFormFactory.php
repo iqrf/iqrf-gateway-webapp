@@ -89,18 +89,18 @@ class MigrationFormFactory {
 	public function import(Form $form): void {
 		try {
 			$this->manager->upload($form->getValues(true));
-			$this->presenter->flashMessage('config.migration.messages.importedConfig', 'success');
+			$this->presenter->flashSuccess('config.migration.messages.importedConfig');
 		} catch (IncompleteConfigurationException $e) {
-			$this->presenter->flashMessage('config.migration.errors.invalidConfig', 'danger');
+			$this->presenter->flashError('config.migration.errors.invalidConfig');
 		} catch (InvalidConfigurationFormatException $e) {
-			$this->presenter->flashMessage('config.migration.errors.invalidFormat', 'danger');
+			$this->presenter->flashError('config.migration.errors.invalidFormat');
 		} catch (NonExistingJsonSchemaException $e) {
-			$this->presenter->flashMessage('config.messages.writeFailures.nonExistingJsonSchema', 'danger');
+			$this->presenter->flashError('config.messages.writeFailures.nonExistingJsonSchema');
 		} catch (NotSupportedInitSystemException $e) {
-			$this->presenter->flashMessage('service.errors.unsupportedInit', 'danger');
+			$this->presenter->flashError('service.errors.unsupportedInit');
 		} catch (IOException $e) {
 			/// TODO: Use custom error message.
-			$this->presenter->flashMessage('config.messages.writeFailures.ioError', 'danger');
+			$this->presenter->flashError('config.messages.writeFailures.ioError');
 		} finally {
 			$this->presenter->redirect('Homepage:default');
 		}

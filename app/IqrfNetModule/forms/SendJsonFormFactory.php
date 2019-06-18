@@ -109,16 +109,16 @@ class SendJsonFormFactory {
 				$this->jsonSchemaManager->validate($json, true);
 			}
 		} catch (JsonException $e) {
-			$this->presenter->flashMessage('iqrfnet.send-json.messages.invalidJson', 'danger');
+			$this->presenter->flashError('iqrfnet.send-json.messages.invalidJson');
 		} catch (NonExistingJsonSchemaException $e) {
-			$this->presenter->flashMessage('iqrfnet.send-json.messages.missingSchema', 'danger');
+			$this->presenter->flashError('iqrfnet.send-json.messages.missingSchema');
 		}
 		try {
 			$this->request->setRequest($json);
 			$response = $this->wsClient->sendSync($this->request, false);
 			$this->presenter->handleShowResponse($response);
 		} catch (EmptyResponseException | DpaErrorException | JsonException $e) {
-			$this->presenter->flashMessage('iqrfnet.webSocketClient.messages.emptyResponse', 'danger');
+			$this->presenter->flashError('iqrfnet.webSocketClient.messages.emptyResponse');
 		}
 	}
 
