@@ -5,8 +5,15 @@ set -e
 
 nginx_virtualhost_install() {
 	nginx_virtualhost_old_remove
-	if [ ! -L /etc/nginx/sites-available/iqrf-gateway-webapp.localhost ] ; then
+	if [ -e /etc/nginx/sites-available/iqrf-gateway-webapp.localhost ] ; then
+		rm /etc/nginx/sites-available/iqrf-gateway-webapp.localhost
+	fi
+	if [ -e /run/php/php7.3-fpm.sock ] ; then
+		ln -s /etc/iqrf-gateway-webapp/nginx/iqrf-gateway-webapp_php7-3.localhost /etc/nginx/sites-available/iqrf-gateway-webapp.localhost
+	elif [ -e /run/php/php7.2-fpm.sock ] ; then
 		ln -s /etc/iqrf-gateway-webapp/nginx/iqrf-gateway-webapp_php7-2.localhost /etc/nginx/sites-available/iqrf-gateway-webapp.localhost
+	elif [ -e /run/php/php7.1-fpm.sock ] ; then
+		ln -s /etc/iqrf-gateway-webapp/nginx/iqrf-gateway-webapp_php7-1.localhost /etc/nginx/sites-available/iqrf-gateway-webapp.localhost
 	fi
 	if [ ! -L /etc/nginx/sites-enabled/iqrf-gateway-webapp.localhost ] ; then
 		ln -s /etc/nginx/sites-available/iqrf-gateway-webapp.localhost /etc/nginx/sites-enabled/iqrf-gateway-webapp.localhost
