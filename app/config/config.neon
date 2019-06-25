@@ -2,9 +2,6 @@ parameters:
 	# init deamon used in out system (e.g. systemd)
 	initDaemon: 'systemd'
 	sudo: true
-	# enable IQRF GW mode
-	iqrf-gw: false
-	supervisord: false
 	# path to IQRF IDE macros
 	macroPath: '../iqrf/DPA-macros_190301.iqrfmcr'
 	# Daemon configuration
@@ -24,6 +21,15 @@ parameters:
 	# Sentry configuration
 	sentry:
 		dsn: 'https://31687391bccd475da4e2082861076d65:5f28e74fa9e34754ab1c7226c3a342ca@sentry.iqrf.org/2'
+	features:
+		# Node-RED
+		node-red: false
+		# SPI upload
+		spiUpload: false
+		# Supervisord dashboard
+		supervisord: false
+		# System updater
+		updater: false
 
 application:
 	errorPresenter: Core:Error

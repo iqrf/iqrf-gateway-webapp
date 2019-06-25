@@ -47,8 +47,7 @@ abstract class BasePresenter extends Presenter {
 		parent::afterRender();
 		$this->template->newVersion = null;
 		$this->template->offlineMode = false;
-		$this->template->iqrfGw = $this->context->parameters['iqrf-gw'];
-		$this->template->supervisord = $this->context->parameters['supervisord'];
+		$this->template->features = $this->context->parameters['features'];
 	}
 
 	/**

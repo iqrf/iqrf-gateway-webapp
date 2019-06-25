@@ -93,6 +93,7 @@ updater:
 		newVersion: New version
 	output: Command output
 	messages:
+		disabled: System updater is disabled.
 		unsupportedManager: This device is using an unsupported package manager.
 
 errors:
