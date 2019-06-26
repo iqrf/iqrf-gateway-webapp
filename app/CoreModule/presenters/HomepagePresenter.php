@@ -23,7 +23,6 @@ namespace App\CoreModule\Presenters;
 use App\CoreModule\Models\VersionManager;
 use App\CoreModule\Traits\TPresenterFlashMessage;
 use GuzzleHttp\Exception\TransferException;
-use Kdyby\Translation\Phrase;
 use Nette\Utils\JsonException;
 
 /**
@@ -48,8 +47,8 @@ class HomepagePresenter extends ProtectedPresenter {
 		try {
 			if ($this->versionManager->availableWebappUpdate()) {
 				$version = ['version' => $this->versionManager->getCurrentWebapp()];
-				$phrase = new Phrase('core.update.available-webapp', null, $version);
-				$this->flashError((string) $phrase);
+				$message = $this->getTranslator()->translate('core.update.available-webapp', null, $version);
+				$this->flashError($message);
 			}
 		} catch (TransferException $e) {
 			$this->flashWarning('core.update.error');

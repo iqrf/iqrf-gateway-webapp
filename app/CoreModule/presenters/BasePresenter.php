@@ -59,6 +59,14 @@ abstract class BasePresenter extends Presenter {
 	}
 
 	/**
+	 * Returns the translator
+	 * @return Translator Transtalor
+	 */
+	public function getTranslator(): Translator {
+		return $this->translator;
+	}
+
+	/**
 	 * Creates an template
 	 * @return ITemplate Template
 	 */

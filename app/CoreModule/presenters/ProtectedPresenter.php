@@ -23,7 +23,6 @@ namespace App\CoreModule\Presenters;
 use App\CoreModule\Models\VersionManager;
 use App\CoreModule\Traits\TPresenterFlashMessage;
 use GuzzleHttp\Exception\TransferException;
-use Kdyby\Translation\Phrase;
 use Nette\Reflection\ClassType;
 use Nette\Reflection\Method;
 use Nette\Security\IUserStorage;
@@ -51,7 +50,7 @@ abstract class ProtectedPresenter extends BasePresenter {
 		try {
 			if ($this->versionManager->availableWebappUpdate()) {
 				$version = ['version' => $this->versionManager->getCurrentWebapp()];
-				$phrase = new Phrase('core.update.new-version-tag', null, $version);
+				$phrase = $this->getTranslator()->translate('core.update.new-version-tag', null, $version);
 				$this->template->newVersion = $phrase;
 			}
 		} catch (TransferException $e) {

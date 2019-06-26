@@ -83,7 +83,7 @@ user:
 			password: Please enter the password.
 			successAdd: User %username% has been added successfully.
 			successDelete: User %username% has been deleted successfully.
-			successEdit: Used %username% has been edited successfully.
+			successEdit: User %username% has been edited successfully.
 			usernameAlreadyExists: Username is already used.
 
 update:

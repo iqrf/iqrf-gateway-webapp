@@ -23,7 +23,6 @@ namespace App\CoreModule\Datagrids;
 use App\CoreModule\Exceptions\UsernameAlreadyExistsException;
 use App\CoreModule\Models\UserManager;
 use App\CoreModule\Presenters\UserPresenter;
-use Kdyby\Translation\Phrase;
 use Nette\SmartObject;
 use Ublaboo\DataGrid\DataGrid;
 use Ublaboo\DataGrid\Exception\DataGridColumnStatusException;
@@ -99,24 +98,7 @@ class UserDataGridFactory {
 	 */
 	public function changeRole(int $id, string $role): void {
 		$user = $this->manager->getInfo($id);
-		try {
-			$this->manager->edit($id, $user['username'], $role, $user['language']);
-			if ($this->presenter->user->id === $id) {
-				$this->presenter->user->logout();
-			}
-			$message = new Phrase('core.user.form.messages.successEdit', null, ['username' => $user['username']]);
-			$this->presenter->flashSuccess($message->message);
-			$this->presenter->redirect('User:default');
-		} catch (UsernameAlreadyExistsException $e) {
-			$this->presenter->flashError('core.user.form.messages.usernameAlreadyExists');
-		} finally {
-			if ($this->presenter->isAjax()) {
-				$this->presenter->redrawControl('flashes');
-				$dataGrid = $this->presenter['userGrid'];
-				$dataGrid->setDataSource($this->manager->getUsers());
-				$dataGrid->redrawItem($id);
-			}
-		}
+		$this->edit($id, $user['username'], $role, $user['language']);
 	}
 
 	/**
@@ -126,13 +108,25 @@ class UserDataGridFactory {
 	 */
 	public function changeLanguage(int $id, string $language): void {
 		$user = $this->manager->getInfo($id);
+		$this->edit($id, $user['username'], $user['role'], $language);
+	}
+
+	/**
+	 * Changes the user
+	 * @param int $id User's ID
+	 * @param string $username Username
+	 * @param string $role User's role
+	 * @param string $language User's language
+	 */
+	private function edit(int $id, string $username, string $role, string $language): void {
 		try {
-			$this->manager->edit($id, $user['username'], $user['role'], $language);
+			$this->manager->edit($id, $username, $role, $language);
 			if ($this->presenter->user->id === $id) {
 				$this->presenter->user->logout();
 			}
-			$message = new Phrase('core.user.form.messages.successEdit', null, ['username' => $user['username']]);
-			$this->presenter->flashSuccess($message->message);
+			$translator = $this->presenter->getTranslator();
+			$message = $translator->translate('core.user.form.messages.successEdit', null, ['username' => $username]);
+			$this->presenter->flashSuccess($message);
 			$this->presenter->redirect('User:default');
 		} catch (UsernameAlreadyExistsException $e) {
 			$this->presenter->flashError('core.user.form.messages.usernameAlreadyExists');
