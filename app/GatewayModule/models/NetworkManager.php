@@ -68,7 +68,7 @@ class NetworkManager {
 			if ($interface === 'lo') {
 				continue;
 			}
-			$cmd = 'ip a s ' . $interface . ' | grep inet | grep global | grep -v temporary | awk \'{print $2}\'';
+			$cmd = 'ip a s ' . $interface . ' | grep inet | grep global | grep -v temporary | grep -v mngtmpaddr | awk \'{print $2}\'';
 			$output = $this->commandManager->run($cmd, true);
 			if ($output !== '') {
 				$addresses[$interface] = explode(PHP_EOL, $output);
