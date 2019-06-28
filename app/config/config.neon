@@ -26,6 +26,8 @@ parameters:
 		nativeUpload: false
 		# Node-RED
 		node-red: false
+		# PIXLA mamagement system
+		pixla: false
 		# Supervisord dashboard
 		supervisord: false
 		# System updater

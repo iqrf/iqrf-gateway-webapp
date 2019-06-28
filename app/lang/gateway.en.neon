@@ -83,6 +83,22 @@ nativeUpload:
 		start: The upload process has been started.
 		success: The file has been sucessfuly uploaded into the coordinator.
 
+pixla:
+	title: PIXLA
+	description: Manages PIXLA client service.
+	disable: Disable service
+	enable: Enable service
+	status: Service status
+	statuses:
+		enabled: Enabled
+		disabled: Disabled
+		'': Missing
+	token: Token
+	messages:
+		disabled: PIXLA manager is disabled.
+		disable: PIXLA client service has been disabled.
+		enable: PIXLA client service has been enabled.
+
 power:
 	title: Power control
 	description: Powers off or reboots this gateway.
