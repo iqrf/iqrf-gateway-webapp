@@ -1,7 +1,7 @@
 const webpack = require('webpack');
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
@@ -18,10 +18,10 @@ module.exports = {
 	module: {
 		rules: [
 			{
-				enforce: "pre",
+				enforce: 'pre',
 				test: /\.js$/,
 				exclude: /node_modules/,
-				loader: "eslint-loader",
+				loader: 'eslint-loader',
 			},
 			{
 				test: /\.js$/,
@@ -29,10 +29,10 @@ module.exports = {
 				loader: 'babel-loader',
 				query: {
 					cacheDirectory: true,
-					"presets": [
+					'presets': [
 						[
-							"@babel/preset-env", {
-								"targets": "> 0.25%, not dead"
+							'@babel/preset-env', {
+								'targets': '> 0.25%, not dead'
 							}
 						]
 					]
@@ -62,10 +62,11 @@ module.exports = {
 			$: 'jquery',
 			jQuery: 'jquery',
 			'window.jQuery': 'jquery',
+			Nette: 'nette-forms',
 			'window.Nette': 'nette-forms',
 		}),
 		new MiniCssExtractPlugin({
-			filename: "[name].bundle.css",
+			filename: '[name].bundle.css',
 		}),
 	],
 	optimization: {

@@ -21,7 +21,7 @@
 		"@sentry/browser": "^4.6",
 		"admin-lte": "^2.4",
 		"autosize": "^4.0",
-		"cronstrue": "^1.60",
+		"cronstrue": "^1.79",
 		"highlight.js": "^9.13",
 		"jquery": "^3.3",
 		"morris.js": "github:morrisjs/morris.js",
@@ -42,7 +42,7 @@
 		"mini-css-extract-plugin": "^0.5",
 		"optimize-css-assets-webpack-plugin": "^5.0",
 		"uglifyjs-webpack-plugin": "^2.1",
-		"webpack": "^4.29",
-		"webpack-cli": "^3.2"
+		"webpack": "^4.35",
+		"webpack-cli": "^3.3"
 	}
 }

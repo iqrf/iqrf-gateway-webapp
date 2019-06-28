@@ -22,10 +22,10 @@ parameters:
 	sentry:
 		dsn: 'https://31687391bccd475da4e2082861076d65:5f28e74fa9e34754ab1c7226c3a342ca@sentry.iqrf.org/2'
 	features:
+		# IQRF TR native upload
+		nativeUpload: false
 		# Node-RED
 		node-red: false
-		# SPI upload
-		spiUpload: false
 		# Supervisord dashboard
 		supervisord: false
 		# System updater

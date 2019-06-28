@@ -11,4 +11,5 @@ services:
 	- App\IqrfNetModule\Models\StandardLightManager
 	- App\IqrfNetModule\Models\StandardSensorManager
 	- App\IqrfNetModule\Models\TrConfigManager
+	- App\IqrfNetModule\Models\UploadManager
 	- App\IqrfNetModule\Models\WebSocketClient(%daemon.wsServer%)

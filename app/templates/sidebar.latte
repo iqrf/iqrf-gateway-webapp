@@ -31,6 +31,7 @@
 					<li><a n:href=':Service:Control:default'>{_service.title}</a></li>
 					<li n:if='$features["updater"]'><a n:href=':Gateway:Updater:default'>{_gateway.updater.title}</a></li>
 					<li><a n:href=':Gateway:Power:default'>{_gateway.power.title}</a></li>
+					<li n:if='$features["nativeUpload"]'><a n:href=':Gateway:NativeUpload:default'>{_gateway.nativeUpload.title}</a></li>
 				</ul>
 			</li>
 			<li n:if='$user->loggedIn' class='treeview'>

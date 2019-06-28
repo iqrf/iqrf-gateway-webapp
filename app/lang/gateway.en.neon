@@ -65,6 +65,24 @@ mode:
 			description: Change IQRF Gateway Daemon's mode to forwarding mode.
 			message: IQRF Gateway Daemon's mode has been changed to forwarding mode.
 
+nativeUpload:
+	title: Native upload
+	description: IQRF TR native upload.
+	file: File to upload
+	fileFormat: Target of upload
+	fileFormats:
+		hex: HEX
+		iqrf: IQRF
+		trcnfg: TRCNFG
+	upload: Upload
+	messages:
+		disabled: SPI upload is disabled.
+		failure: An error occured while the upload.
+		file: Please select the file to upload.
+		fileFormat: Please select the target of upload.
+		start: The upload process has been started.
+		success: The file has been sucessfuly uploaded into the coordinator.
+
 power:
 	title: Power control
 	description: Powers off or reboots this gateway.

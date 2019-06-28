@@ -18,6 +18,9 @@
 		<exclude name="PEAR.Classes.ClassDeclaration.OpenBraceNewLine"/>
 	</rule>
 
+	<rule ref="SlevomatCodingStandard.Classes.UnusedPrivateElements">
+		<exclude name="SlevomatCodingStandard.Classes.UnusedPrivateElements.UnusedConstant"/>
+	</rule>
 	<rule ref="SlevomatCodingStandard.Commenting">
 		<exclude name="SlevomatCodingStandard.Commenting.DocCommentSpacing.IncorrectLinesCountBetweenDescriptionAndAnnotations"/>
 		<exclude name="SlevomatCodingStandard.Commenting.RequireOneLinePropertyDocComment.MultiLinePropertyComment"/>
