@@ -77,13 +77,12 @@ class BondingFormFactory {
 			->elseCondition()
 			->toggle('smartConnect', false);
 		$form->addInteger('address', 'address')
-			->setDefaultValue(1)
-			->addRule(Form::RANGE, 'messages.address', [1, 239]);
+			->setDefaultValue(1);
 		$form->addCheckbox('autoAddress', 'autoAddress')
 			->addCondition(Form::EQUAL, false)
 			->toggle('removeBond');
 		$form['address']->addConditionOn($form['autoAddress'], Form::EQUAL, false)
-			->addRule(Form::PATTERN, 'messages.address', '[0-9a-fA-F]{1,2}')
+			->addRule(Form::RANGE, 'messages.address', [1, 239])
 			->setRequired('messages.address');
 		$form->addInteger('testRetries', 'testRetries')
 			->setDefaultValue(1);
