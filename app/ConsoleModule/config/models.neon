@@ -2,3 +2,4 @@ services:
 	consoleUserManager:
 		factory: App\ConsoleModule\Models\ConsoleUserManager
 		autowired: self
+	- App\ConsoleModule\Models\FeatureManager
