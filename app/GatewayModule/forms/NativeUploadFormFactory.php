@@ -102,9 +102,6 @@ class NativeUploadFormFactory {
 	 * @param Form $form IQRF TR native upload form
 	 */
 	public function upload(Form $form): void {
-		if ($this->presenter->isAjax()) {
-			$this->presenter->flashInfo('gateway.nativeUpload.messages.start');
-		}
 		$values = $form->getValues();
 		$fileFormat = $values['fileFormat'];
 		if ($fileFormat !== null) {
