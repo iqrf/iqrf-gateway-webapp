@@ -29,6 +29,7 @@ use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Exceptions\UserErrorException;
 use Nette\Forms\Form;
+use Nette\IOException;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;
 
@@ -116,6 +117,8 @@ class NativeUploadFormFactory {
 			$this->presenter->flashError('gateway.nativeUpload.messages.corruptedFile');
 		} catch (DpaErrorException | EmptyResponseException | JsonException | UserErrorException $e) {
 			$this->presenter->flashError('gateway.nativeUpload.messages.failure');
+		} catch (IOException $e) {
+			$this->presenter->flashError('gateway.nativeUpload.messages.moveFailure');
 		}
 	}
 

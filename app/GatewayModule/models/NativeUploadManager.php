@@ -85,6 +85,7 @@ class NativeUploadManager {
 	 * @throws UserErrorException
 	 */
 	public function upload(FileUpload $file, ?UploadFormats $format = null): void {
+		FileSystem::createDir($this->path);
 		if (!$file->isOk()) {
 			throw new CorruptedFileException();
 		}
