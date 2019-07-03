@@ -1,1 +1,1 @@
-usr/share/iqrf-gateway-webapp/bin/manager                               usr/bin/iqrf-gateway-webapp-manager
+usr/share/iqrf-gateway-webapp/bin/manager	usr/sbin/iqrf-gateway-webapp-manager
