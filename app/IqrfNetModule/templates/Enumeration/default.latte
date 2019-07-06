@@ -57,6 +57,16 @@
 				<td>{$peripheralData['dpaVer']}</td>
 			</tr>
 			<tr>
+				<th>{_iqrfnet.enumeration.rfMode}</th>
+				<td>
+					{if $peripheralData['flags']['rfModeStd']}
+						<img alt='STD' class='icon' src='/img/std-black.svg'> <strong>{_iqrfnet.enumeration.rfModes.std}</strong>
+					{elseif $peripheralData['flags']['rfModeStd']}
+						<img alt='LP' class='icon' src='/img/lp-black.svg'> <strong>{_iqrfnet.enumeration.rfModes.lp}</strong>
+					{/if}
+				</td>
+			</tr>
+			<tr>
 				<th>{_iqrfnet.enumeration.rssi}</th>
 				<td>{$osData['rssi']}</td>
 			</tr>

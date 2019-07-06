@@ -19,3 +19,8 @@
 @import url('~bootstrap/dist/css/bootstrap.min.css');
 @import url('~ublaboo-datagrid/assets/dist/datagrid.css');
 @import url('~ublaboo-datagrid/assets/dist/datagrid-spinners.css');
+
+.icon {
+	height: 1em;
+	width: 1em;
+}

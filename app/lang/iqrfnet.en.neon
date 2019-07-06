@@ -101,6 +101,10 @@ enumeration:
 	mid: Module ID
 	osVersion: IQRF OS version
 	dpaVersion: DPA version
+	rfMode: RF mode
+	rfModes:
+		lp: LP
+		std: STD
 	rssi: RSSI
 	supplyVoltage: Supply voltage
 	back: Back to Network manager
