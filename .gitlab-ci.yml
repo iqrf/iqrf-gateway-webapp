@@ -1,4 +1,4 @@
-image: iqrftech/iqrf-gateway-webapp:tests-stretch
+image: iqrftech/iqrf-gateway-webapp:tests-buster
 
 stages:
   - build-docker-testing
@@ -93,6 +93,7 @@ build-docker:tests-stretch:
     DOCKER_TAG: tests-stretch
 
 test:php7.1:
+  image: iqrftech/iqrf-gateway-webapp:tests-stretch
   before_script:
     - update-alternatives --set php /usr/bin/php7.1
     - composer install --no-progress
@@ -102,6 +103,8 @@ test:php7.1:
   <<: *test_template
 
 test:php7.2:
+  image: iqrftech/iqrf-gateway-webapp:tests-stretch
+  allow_failure: true
   before_script:
     - update-alternatives --set php /usr/bin/php7.2
     - composer install --no-progress
@@ -111,7 +114,6 @@ test:php7.2:
   <<: *test_template
 
 test:php7.3:
-  image: iqrftech/iqrf-gateway-webapp:tests-buster
   before_script:
     - update-alternatives --set php /usr/bin/php7.3
     - composer install --no-progress
@@ -121,7 +123,6 @@ test:php7.3:
   <<: *test_template
 
 coverage:
-  image: iqrftech/iqrf-gateway-webapp:tests-buster
   before_script:
     - update-alternatives --set php /usr/bin/php7.3
     - composer install --no-progress
@@ -136,7 +137,7 @@ coverage:
 coding-style:
   stage: coding-style
   before_script:
-    - update-alternatives --set php /usr/bin/php7.2
+    - update-alternatives --set php /usr/bin/php7.3
     - composer install-cs
   script:
     - composer check-cs
@@ -144,7 +145,7 @@ coding-style:
 phpstan:
   stage: coding-style
   before_script:
-    - update-alternatives --set php /usr/bin/php7.2
+    - update-alternatives --set php /usr/bin/php7.3
     - composer install --no-progress
   script:
     - composer phpstan
@@ -152,12 +153,13 @@ phpstan:
 qa:
   stage: coding-style
   before_script:
-    - update-alternatives --set php /usr/bin/php7.2
+    - update-alternatives --set php /usr/bin/php7.3
     - composer install --no-progress
   script:
     - composer qa
 
 build-package:
+  image: iqrftech/iqrf-gateway-webapp:tests-stretch
   stage: build-package
   before_script:
     - update-alternatives --set php /usr/bin/php7.2
@@ -172,7 +174,6 @@ build-package:
     expire_in: 2 weeks
 
 deploy-api-docs:
-  image: iqrftech/iqrf-gateway-webapp:tests-buster
   stage: deploy-docs
   environment:
     name: api-docs
