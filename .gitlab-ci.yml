@@ -159,10 +159,8 @@ qa:
     - composer qa
 
 build-package:
-  image: iqrftech/iqrf-gateway-webapp:tests-stretch
   stage: build-package
   before_script:
-    - update-alternatives --set php /usr/bin/php7.2
     - git checkout -B "$CI_COMMIT_REF_NAME" "$CI_COMMIT_SHA"
   script:
     - gbp dch -a -S --ignore-branch --snapshot-number="$CI_PIPELINE_ID"
