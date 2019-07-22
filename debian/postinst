@@ -43,8 +43,18 @@ openssl_create_ca() {
 }
 
 webapp_remove_cache() {
-	if [ -d /usr/share/iqrf-gateway-webapp/temp/cache ] ; then
-		rm -rf /usr/share/iqrf-gateway-webapp/temp/cache
+	if [ -d /var/cache/iqrf-gateway-webapp/cache ] ; then
+		rm -rf /var/cache/iqrf-gateway-webapp/cache
+	fi
+}
+
+webapp_remove_old_dirs() {
+	if [ -d /usr/share/iqrf-gateway-webapp/log ] ; then
+		mv /usr/share/iqrf-gateway-webapp/log/* /var/log/iqrf-gateway-webapp/
+		rm -rf /usr/share/iqrf-gateway-webapp/log
+	fi
+	if [ -d /usr/share/iqrf-gateway-webapp/temp ] ; then
+		rm -rf /usr/share/iqrf-gateway-webapp/temp
 	fi
 }
 
@@ -52,4 +62,5 @@ if [ "$1" = "configure" ]; then
 	openssl_create_ca
 	nginx_virtualhost_install
 	webapp_remove_cache
+	webapp_remove_old_dirs
 fi

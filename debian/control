@@ -5,7 +5,7 @@ Maintainer: Roman Ondráček <roman.ondracek@iqrf.com>
 Build-Depends: debhelper (>= 10), pkg-php-tools (>= 1.35), composer,
  php7.3-common, php7.3-cli, php7.3-curl, php7.3-json, php7.3-mbstring,
  php7.3-sqlite3, php7.3-xml, php7.3-zip
-Standards-Version: 4.1.5
+Standards-Version: 4.4.0
 Homepage: https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp
 Vcs-Git: https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp.git
 Vcs-Browser: https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp
@@ -13,7 +13,8 @@ Vcs-Browser: https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp
 Package: iqrf-gateway-webapp
 Architecture: all
 Depends: ${misc:Depends}, iqrf-gateway-daemon | iqrf-gateway-daemon-dbg,
- openssl, php7.3-common, php7.3-cli, php7.3-curl, php7.3-fpm, php7.3-json,
- php7.3-mbstring, php7.3-sqlite3, php7.3-xml, php7.3-zip, nginx-full, sudo
+ openssl, php7.3-common, php7.3-cli, php-cli (>= 7.1), php7.3-curl, php7.3-fpm,
+ php7.3-json, php7.3-mbstring, php7.3-sqlite3, php7.3-xml, php7.3-zip,
+ nginx-full, sudo
 Description: Web user interface for IQRF Gateway Daemon
  IQRF Gateway webapp is an PHP web application for IQRF Gateway configuration.

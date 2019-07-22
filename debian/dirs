@@ -1,6 +1,5 @@
 etc/iqrf-gateway-webapp
 etc/iqrf-gateway-webapp/certs
 usr/share/iqrf-gateway-webapp
-usr/share/iqrf-gateway-webapp/log
-usr/share/iqrf-gateway-webapp/temp
-usr/share/iqrf-gateway-webapp/tests
+var/cache/iqrf-gateway-webapp
+var/log/iqrf-gateway-webapp

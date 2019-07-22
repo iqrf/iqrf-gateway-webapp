@@ -1,20 +1,60 @@
 #!/usr/bin/make -f
 
+ROOT_DIR=debian/iqrf-gateway-webapp
+
+CACHE_DIR=${ROOT_DIR}/var/cache/iqrf-gateway-webapp/
+LOG_DIR=${ROOT_DIR}/var/log/iqrf-gateway-webapp/
+VENDOR_DIR=${ROOT_DIR}/usr/share/iqrf-gateway-webapp/vendor
+
 %:
 	dh $@ --with phpcomposer
 
 override_dh_fixperms:
 	dh_fixperms
-	chown -R www-data:www-data debian/iqrf-gateway-webapp/usr/share/iqrf-gateway-webapp/
-	chmod -R 644 debian/iqrf-gateway-webapp/usr/share/iqrf-gateway-webapp/log/
-	chmod -R 644 debian/iqrf-gateway-webapp/usr/share/iqrf-gateway-webapp/temp/
-	chmod 755 debian/iqrf-gateway-webapp/usr/share/iqrf-gateway-webapp/log/
-	chmod 755 debian/iqrf-gateway-webapp/usr/share/iqrf-gateway-webapp/temp/
+	chown -R www-data:www-data ${ROOT_DIR}/usr/share/iqrf-gateway-webapp/
+	chown -R www-data:www-data ${CACHE_DIR}
+	chown -R www-data:www-data ${LOG_DIR}
+	chmod -R 644 ${LOG_DIR}
+	chmod -R 644 ${CACHE_DIR}
+	chmod 755 ${LOG_DIR}
+	chmod 755 ${CACHE_DIR}
 
 override_dh_auto_build:
 	sed -i "s/\t\"commit\"\: .*/\t\"commit\"\: \"`git rev-parse --verify HEAD`\",/" version.json
 	sed -i "s/\t\"pipeline\"\: .*/\t\"pipeline\"\: \"${CI_PIPELINE_ID}\"/" version.json
 	composer install --no-dev
+
+override_dh_install:
+	dh_install
+	find ${VENDOR_DIR} -type f -name "AUTHORS*" -delete
+	find ${VENDOR_DIR} -type f -name "LICENSE*" -delete
+	find ${VENDOR_DIR} -type f -name "README*" -delete
+	find ${VENDOR_DIR} -type f -name ".eslintrc.js" -delete
+	find ${VENDOR_DIR} -type f -name "composer.json" -delete
+	find ${VENDOR_DIR} -type f -name "bower.json" -delete
+	find ${VENDOR_DIR} -type f -name "package.json" -delete
+	find ${VENDOR_DIR} -type d -name ".git" -print0 | xargs -0 rm -rf
+	find ${VENDOR_DIR} -type f -name ".npmignore" -delete
+	find ${VENDOR_DIR} -type f -name "appveyor.yml" -delete
+	find ${VENDOR_DIR} -type f -regex ".*/\(appveyor\|\.gitlab-ci\|\.scrutinizer\|\.travis\)\.yml" -delete
+	find ${VENDOR_DIR} -type f -name ".php_cs" -delete
+	find ${VENDOR_DIR} -type f -name ".php_cs.dist" -delete
+	find ${VENDOR_DIR} -type f -name "Makefile" -delete
+	find ${VENDOR_DIR} -type f -name "phpstan.neon" -delete
+	find ${VENDOR_DIR} -type f -name "ruleset.xml" -delete
+	find ${VENDOR_DIR} -type f -name "phpunit.xml" -delete
+	find ${VENDOR_DIR} -type f -name "phpunit.xml.dist" -delete
+	find ${VENDOR_DIR} -type d -name "bin" -print0 | xargs -0 rm -rf
+	find ${VENDOR_DIR} -type d -name ".docs" -print0 | xargs -0 rm -rf
+	find ${VENDOR_DIR} -type d -name "docs" -print0 | xargs -0 rm -rf
+	find ${VENDOR_DIR} -type d -name "demo" -print0 | xargs -0 rm -rf
+	find ${VENDOR_DIR} -type d -regex ".*/[Ee]xample\(s\)?/*" -print0 | xargs -0 rm -rf
+	find ${VENDOR_DIR} -type d -regex ".*/[Tt]est\(s\)?/*" -print0 | xargs -0 rm -rf
+	find ${VENDOR_DIR} -type d -name "tools" -print0 | xargs -0 rm -rf
+	find ${VENDOR_DIR} -type f -name "*.md" -delete
+	find ${VENDOR_DIR} -type f -name "*.sh" -delete
+	find ${VENDOR_DIR} -type f -print0 | xargs -0 chmod -x
+	find ${VENDOR_DIR} -type d -empty -delete
 
 #override_dh_auto_test:
 #	vendor/bin/tester -p phpdbg -c ./tests/php.ini -s ./tests

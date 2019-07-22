@@ -26,15 +26,27 @@ sudoers_rule_remove() {
 	fi
 }
 
+webapp_remove_cache() {
+	if [ -d /var/cache/iqrf-gateway-webapp ] ; then
+		rm -rf /var/cache/iqrf-gateway-webapp
+	fi
+}
+
 webapp_remove_config() {
-	if [ -d /etc/iqrf-gateway-webapp/ ] ; then
+	if [ -d /etc/iqrf-gateway-webapp ] ; then
 		rm -rf /etc/iqrf-gateway-webapp/
 	fi
 }
 
 webapp_remove_data() {
-	if [ -d /usr/share/iqrf-gateway-webapp/ ] ; then
+	if [ -d /usr/share/iqrf-gateway-webapp ] ; then
 		rm -rf /usr/share/iqrf-gateway-webapp/
+	fi
+}
+
+webapp_remove_logs() {
+	if [ -d /var/log/iqrf-gateway-webapp/ ] ; then
+		rm -rf /var/log/iqrf-gateway-webapp
 	fi
 }
 
@@ -46,12 +58,15 @@ webapp_remove_manager() {
 
 if [ "$1" = "remove" ] || [ "$1" = "purge" ]; then
 	nginx_remove
+	webapp_remove_cache
 	webapp_remove_data
+	webapp_remove_logs
 	webapp_remove_manager
-	if [ "$1" = "purge" ]; then
-		webapp_remove_config
-	fi
 	if [ ! -f /etc/sudoers.d/iqrf-gateway-webapp ] ; then
 		rm -rf /etc/sudoers.d/iqrf-gateway-webapp
 	fi
+fi
+
+if [ "$1" = "purge" ]; then
+	webapp_remove_config
 fi

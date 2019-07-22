@@ -1,0 +1,16 @@
+Index: iqrf-gateway-webapp/app/Kernel.php
+===================================================================
+--- iqrf-gateway-webapp.orig/app/Kernel.php
++++ iqrf-gateway-webapp/app/Kernel.php
+@@ -33,9 +33,9 @@ class Kernel {
+ 	 */
+ 	public static function boot(): Configurator {
+ 		$configurator = new Configurator();
+-		$configurator->enableTracy(__DIR__ . '/../log');
++		$configurator->enableTracy('/var/log/iqrf-gateway-webapp');
+ 		$configurator->setTimeZone('Europe/Prague');
+-		$configurator->setTempDirectory(__DIR__ . '/../temp');
++		$configurator->setTempDirectory('/var/cache/iqrf-gateway-webapp');
+ 		$configurator->createRobotLoader()->addDirectory(__DIR__)->register();
+ 		$configurator->addConfig(__DIR__ . '/config/config.neon');
+ 		return $configurator;
