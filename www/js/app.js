@@ -31,7 +31,7 @@ import * as Sentry from '@sentry/browser';
 import '../css/app.css';
 
 Sentry.init({
-	dsn: 'https://31687391bccd475da4e2082861076d65@sentry.iqrf.org/2'
+	dsn: 'https://dcc3c60024154484afbca5e250a861a9@sentry.iqrf.org/2'
 });
 
 Nette.initOnLoad();
