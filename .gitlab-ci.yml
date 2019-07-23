@@ -50,6 +50,7 @@ cache:
 
 .docker_template_testing:
   extends: .docker_template
+  allow_failure: true
   stage: build-docker-testing
   only:
     refs:
