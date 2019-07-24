@@ -1,1 +1,3 @@
-fix-cache-and-log-dir-paths
+fix-cache-dir-path.diff
+fix-config-dir-path.diff
+fix-log-dir-path.diff

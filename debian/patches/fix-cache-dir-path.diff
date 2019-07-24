@@ -1,13 +1,11 @@
+Fixes cache directory path
 Index: iqrf-gateway-webapp/app/Kernel.php
 ===================================================================
 --- iqrf-gateway-webapp.orig/app/Kernel.php
 +++ iqrf-gateway-webapp/app/Kernel.php
-@@ -33,9 +33,9 @@ class Kernel {
- 	 */
- 	public static function boot(): Configurator {
+@@ -35,7 +35,7 @@ class Kernel {
  		$configurator = new Configurator();
--		$configurator->enableTracy(__DIR__ . '/../log');
-+		$configurator->enableTracy('/var/log/iqrf-gateway-webapp');
+ 		$configurator->enableTracy(__DIR__ . '/../log');
  		$configurator->setTimeZone('Europe/Prague');
 -		$configurator->setTempDirectory(__DIR__ . '/../temp');
 +		$configurator->setTempDirectory('/var/cache/iqrf-gateway-webapp');

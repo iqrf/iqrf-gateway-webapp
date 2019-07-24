@@ -1,0 +1,58 @@
+Fixes configuration directory path
+Index: iqrf-gateway-webapp/app/ConsoleModule/models/FeatureManager.php
+===================================================================
+--- iqrf-gateway-webapp.orig/app/ConsoleModule/models/FeatureManager.php
++++ iqrf-gateway-webapp/app/ConsoleModule/models/FeatureManager.php
+@@ -35,7 +35,7 @@ class FeatureManager {
+ 	/**
+ 	 * Path to the webapp's configuration file
+ 	 */
+-	private const CONF_PATH = __DIR__ . '/../../config/features.neon';
++	private const CONF_PATH = '/etc/iqrf-gateway-webapp/features.neon';
+ 
+ 	/**
+ 	 * @var Translator Translator
+Index: iqrf-gateway-webapp/app/Kernel.php
+===================================================================
+--- iqrf-gateway-webapp.orig/app/Kernel.php
++++ iqrf-gateway-webapp/app/Kernel.php
+@@ -37,7 +37,7 @@ class Kernel {
+ 		$configurator->setTimeZone('Europe/Prague');
+ 		$configurator->setTempDirectory('/var/cache/iqrf-gateway-webapp');
+ 		$configurator->createRobotLoader()->addDirectory(__DIR__)->register();
+-		$configurator->addConfig(__DIR__ . '/config/config.neon');
++		$configurator->addConfig('/etc/iqrf-gateway-webapp/config.neon');
+ 		return $configurator;
+ 	}
+ 
+Index: iqrf-gateway-webapp/app/config/config.neon
+===================================================================
+--- iqrf-gateway-webapp.orig/app/config/config.neon
++++ iqrf-gateway-webapp/app/config/config.neon
+@@ -3,7 +3,7 @@ parameters:
+ 	initDaemon: 'systemd'
+ 	sudo: true
+ 	# path to IQRF IDE macros
+-	macroPath: '../iqrf/DPA-macros_190301.iqrfmcr'
++	macroPath: '/usr/share/iqrf-gateway-webapp/iqrf/DPA-macros_190301.iqrfmcr'
+ 	# Daemon configuration
+ 	daemon:
+ 		# Path to directory with IQRF Gateway Daemon's JSON API schemas
+@@ -68,10 +68,10 @@ includes:
+ 	- guzzle.neon
+ 	- monolog.neon
+ 	- translation.neon
+-	- ../CloudModule/config/config.neon
+-	- ../ConfigModule/config/config.neon
+-	- ../ConsoleModule/config/config.neon
+-	- ../CoreModule/config/config.neon
+-	- ../GatewayModule/config/config.neon
+-	- ../IqrfNetModule/config/config.neon
+-	- ../ServiceModule/config/config.neon
++	- /usr/share/iqrf-gateway-webapp/app/CloudModule/config/config.neon
++	- /usr/share/iqrf-gateway-webapp/app/ConfigModule/config/config.neon
++	- /usr/share/iqrf-gateway-webapp/app/ConsoleModule/config/config.neon
++	- /usr/share/iqrf-gateway-webapp/app/CoreModule/config/config.neon
++	- /usr/share/iqrf-gateway-webapp/app/GatewayModule/config/config.neon
++	- /usr/share/iqrf-gateway-webapp/app/IqrfNetModule/config/config.neon
++	- /usr/share/iqrf-gateway-webapp/app/ServiceModule/config/config.neon
