@@ -32,6 +32,7 @@
 		"grifart/enum": "^0.2",
 		"instante/bootstrap-3-renderer": "^2.0",
 		"iqrf/iqrf-ide-macros-parser": "^1.1",
+		"iqrf/iqrf-repository": "dev-master",
 		"justinrainbow/json-schema": "^5.2",
 		"kdyby/translation": "^2.5",
 		"latte/latte": "^2.5",

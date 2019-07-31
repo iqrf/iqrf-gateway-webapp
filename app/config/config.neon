@@ -32,6 +32,7 @@ database:
 
 extensions:
 	extendedFormMacros: Instante\ExtendedFormMacros\DI\ExtendedFormMacrosExtension
+	iqrfRepository: Iqrf\Repository\DI\IqrfRepositoryExtension
 
 session:
 	expiration: 14 days

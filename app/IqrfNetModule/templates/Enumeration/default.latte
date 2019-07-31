@@ -31,7 +31,11 @@
 			</tr>
 			<tr>
 				<th>{_iqrfnet.enumeration.product}</th>
-				<td>{$data['product']}</td>
+				<td><a href='{$product->getHomepage()}'>{$data["product"]}</a></td>
+			</tr>
+			<tr>
+				<th>{_iqrfnet.enumeration.picture}</th>
+				<td><img alt='{$data["product"]}' src='{$product->getPicture()}' style='max-width: 100%'/></td>
 			</tr>
 		</table>
 	</div>

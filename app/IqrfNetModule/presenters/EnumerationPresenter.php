@@ -25,6 +25,7 @@ use App\CoreModule\Traits\TPresenterFlashMessage;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Models\EnumerationManager;
+use Iqrf\Repository\Models\ProductManager;
 use Nette\Utils\JsonException;
 
 /**
@@ -40,11 +41,18 @@ class EnumerationPresenter extends ProfilePresenter {
 	private $manager;
 
 	/**
+	 * @var ProductManager IQRF Repository product manager
+	 */
+	private $productManager;
+
+	/**
 	 * Constructor
 	 * @param EnumerationManager $manager IQMESH Enumeration manager
+	 * @param ProductManager $productManager IQRF Repository product manager
 	 */
-	public function __construct(EnumerationManager $manager) {
+	public function __construct(EnumerationManager $manager, ProductManager $productManager) {
 		$this->manager = $manager;
+		$this->productManager = $productManager;
 		parent::__construct();
 	}
 
@@ -60,6 +68,7 @@ class EnumerationPresenter extends ProfilePresenter {
 				$this->template->data = $data;
 				$this->template->osData = $data['osRead'];
 				$this->template->peripheralData = $data['peripheralEnumeration'];
+				$this->template->product = $this->productManager->get($data['peripheralEnumeration']['hwpId']);
 			} else {
 				$this->flashError('iqrfnet.enumeration.messages.failure');
 				$this->redirect('Network:default');

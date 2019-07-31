@@ -96,6 +96,7 @@ enumeration:
 	deviceAddr: Device address
 	manufacturer: Manufacturer
 	product: Product name
+	picture: Product picture
 	trInfo: TR info
 	trType: TR type
 	mid: Module ID
