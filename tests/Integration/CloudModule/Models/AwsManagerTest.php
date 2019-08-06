@@ -8,7 +8,7 @@
  */
 declare(strict_types = 1);
 
-namespace Tests\Integration\ServiceModule\Models;
+namespace Tests\Integration\CloudModule\Models;
 
 use App\CloudModule\Exceptions\InvalidPrivateKeyForCertificateException;
 use App\CloudModule\Models\AwsManager;

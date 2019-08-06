@@ -8,7 +8,7 @@
  */
 declare(strict_types = 1);
 
-namespace Tests\Integration\CoreModule\Model;
+namespace Tests\Integration\CoreModule\Models;
 
 use App\CoreModule\Models\AppAuthenticator;
 use Nette\Security\AuthenticationException;

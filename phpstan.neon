@@ -16,34 +16,34 @@ parameters:
 		- '#Return type \(void\) of method App\\ConsoleModule\\Commands\\[a-zA-Z0-9_]+::execute() should be compatible with return type \(int|null\) of method Symfony\\Component\\Console\\Command\\Command::execute\(\)#'
 		-
 			message: '#Parameter \#(1|2) \$(message|type) \(string\) of method App\\CoreModule\\Presenters\\(Protected|Sign)Presenter::flashMessage\(\) should be contravariant with parameter \$(message|type) \(mixed\) of method Nette\\Application\\UI\\Control::flashMessage\(\)#'
-			path: %currentWorkingDirectory%/app/CoreModule/traits/TPresenterFlashMessage.php
+			path: %currentWorkingDirectory%/app/CoreModule/Traits/TPresenterFlashMessage.php
 		-
 			message: '#Parameter \#1 \$credentials \(array<string>\) of method App\\CoreModule\\Models\\AppAuthenticator::authenticate\(\) should be contravariant with parameter \$credentials \(array\) of method Nette\\Security\\IAuthenticator::authenticate\(\)#'
-			path: %currentWorkingDirectory%/app/CoreModule/models/AppAuthenticator.php
+			path: %currentWorkingDirectory%/app/CoreModule/Models/AppAuthenticator.php
 		-
 			message: '#Result of (&&|\|\|) is always true.#'
-			path: %currentWorkingDirectory%/app/CoreModule/models/ZipArchiveManager.php
+			path: %currentWorkingDirectory%/app/CoreModule/Models/ZipArchiveManager.php
 		-
 			message: '#Call to function is_array\(\) with iterable&Nette\\Utils\\ArrayHash will always evaluate to false.#'
-			path: %currentWorkingDirectory%/app/CoreModule/models/ZipArchiveManager.php
+			path: %currentWorkingDirectory%/app/CoreModule/Models/ZipArchiveManager.php
 		-
 			message: '#Strict comparison using !== between int and false will always evaluate to true.#'
-			path: %currentWorkingDirectory%/app/CoreModule/models/ZipArchiveManager.php
+			path: %currentWorkingDirectory%/app/CoreModule/Models/ZipArchiveManager.php
 		-
 			message: '#Call to function is_object\(\) with iterable&Nette\\Utils\\ArrayHash will always evaluate to true.#'
-			path: %currentWorkingDirectory%/app/CoreModule/models/ZipArchiveManager.php
+			path: %currentWorkingDirectory%/app/CoreModule/Models/ZipArchiveManager.php
 		-
 			message: '#Instanceof between Nette\\Utils\\ArrayHash and Nette\\Utils\\ArrayHash will always evaluate to true.#'
-			path: %currentWorkingDirectory%/app/CoreModule/models/ZipArchiveManager.php
+			path: %currentWorkingDirectory%/app/CoreModule/Models/ZipArchiveManager.php
 		-
 			message: '#Call to function is_int\(\) with int will always evaluate to true.#'
-			path: %currentWorkingDirectory%/app/CoreModule/models/ZipArchiveManager.php
+			path: %currentWorkingDirectory%/app/CoreModule/Models/ZipArchiveManager.php
 		-
 			message: '#Parameter \#1 \$element \(Nette\\Reflection\\ClassType\|Nette\\Reflection\\Method\) of method App\\CoreModule\\Presenters\\ProtectedPresenter::checkRequirements\(\) should be contravariant with parameter \$element \(mixed\) of method Nette\\Application\\UI\\Presenter::checkRequirements\(\)#'
-			path: %currentWorkingDirectory%/app/CoreModule/presenters/ProtectedPresenter.php
+			path: %currentWorkingDirectory%/app/CoreModule/Presenters/ProtectedPresenter.php
 		-
 			message: '#Foreach overwrites \$unit with its value variable.#'
-			path: %currentWorkingDirectory%/app/GatewayModule/models/InfoManager.php
+			path: %currentWorkingDirectory%/app/GatewayModule/Models/InfoManager.php
 	fileExtensions:
 		- php
 		- phpt

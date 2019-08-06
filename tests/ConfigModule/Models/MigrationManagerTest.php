@@ -8,7 +8,7 @@
  */
 declare(strict_types = 1);
 
-namespace Test\ConfigModule\Models;
+namespace Tests\ConfigModule\Models;
 
 use App\ConfigModule\Exceptions\InvalidConfigurationFormatException;
 use App\ConfigModule\Models\MigrationManager;

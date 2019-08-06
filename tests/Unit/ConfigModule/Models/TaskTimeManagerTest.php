@@ -8,7 +8,7 @@
  */
 declare(strict_types = 1);
 
-namespace Tests\Unit\CoreModule\Model;
+namespace Tests\Unit\ConfigModule\Models;
 
 use App\ConfigModule\Models\TaskTimeManager;
 use Tester\Assert;

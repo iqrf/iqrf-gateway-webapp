@@ -1,16 +1,16 @@
 <?php
 
 /**
- * TEST: App\CloudModule\Models\InteliGlueManager
- * @covers App\CloudModule\Models\InteliGlueManager
+ * TEST: App\CloudModule\Models\IbmCloudManager
+ * @covers App\CloudModule\Models\IbmCloudManager
  * @phpVersion >= 7.1
  * @testCase
  */
 declare(strict_types = 1);
 
-namespace Tests\Integration\ServiceModule\Models;
+namespace Tests\Integration\CloudModule\Models;
 
-use App\CloudModule\Models\InteliGlueManager;
+use App\CloudModule\Models\IbmCloudManager;
 use GuzzleHttp\Client;
 use Mockery;
 use Mockery\Mock;
@@ -21,22 +21,23 @@ use Tests\Toolkit\TestCases\CloudIntegrationTestCase;
 require __DIR__ . '/../../../bootstrap.php';
 
 /**
- * Tests for Inteliment InteliGlue manager
+ * Tests for IBM Cloud manager
  */
-class InteliGlueManagerTest extends CloudIntegrationTestCase {
+class IbmCloudManagerTest extends CloudIntegrationTestCase {
 
 	/**
-	 * @var mixed[] Values from Inteliments InteliGlue form
+	 * @var string[] Values from IBM Cloud form
 	 */
 	private $formValues = [
-		'assignedPort' => 1234,
-		'clientId' => 'client1234',
-		'password' => 'pass1234',
-		'rootTopic' => 'root',
+		'deviceId' => 'gw00',
+		'deviceType' => 'gateway',
+		'eventId' => 'event1234',
+		'organizationId' => 'org1234',
+		'token' => 'token1234',
 	];
 
 	/**
-	 * @var Mock|InteliGlueManager Inteliments InteliGlue manager
+	 * @var Mock|IbmCloudManager IBM Cloud manager
 	 */
 	private $manager;
 
@@ -46,21 +47,21 @@ class InteliGlueManagerTest extends CloudIntegrationTestCase {
 	public function testCreateMqttInterface(): void {
 		$mqtt = [
 			'component' => 'iqrf::MqttMessaging',
-			'instance' => 'MqttMessagingInteliGlue',
-			'BrokerAddr' => 'ssl://mqtt.inteliglue.com:1234',
-			'ClientId' => 'client1234',
+			'instance' => 'MqttMessagingIbmCloud',
+			'BrokerAddr' => 'ssl://org1234.messaging.internetofthings.ibmcloud.com:8883',
+			'ClientId' => 'd:org1234:gateway:gw00',
 			'Persistence' => 1,
 			'Qos' => 0,
-			'TopicRequest' => 'root/Iqrf/DpaRequest',
-			'TopicResponse' => 'root/Iqrf/DpaResponse',
-			'User' => 'client1234',
-			'Password' => 'pass1234',
+			'TopicRequest' => 'iot-2/cmd/event1234/fmt/json',
+			'TopicResponse' => 'iot-2/evt/event1234/fmt/json',
+			'User' => 'use-token-auth',
+			'Password' => 'token1234',
 			'EnabledSSL' => true,
 			'KeepAliveInterval' => 20,
 			'ConnectTimeout' => 5,
 			'MinReconnect' => 1,
 			'MaxReconnect' => 64,
-			'TrustStore' => $this->certPath . 'inteliments-ca.crt',
+			'TrustStore' => $this->certPath . 'ibm-cloud-ca.crt',
 			'KeyStore' => '',
 			'PrivateKey' => '',
 			'PrivateKeyPassword' => '',
@@ -69,15 +70,15 @@ class InteliGlueManagerTest extends CloudIntegrationTestCase {
 			'acceptAsyncMsg' => false,
 		];
 		$this->manager->createMqttInterface($this->formValues);
-		Assert::same($mqtt, $this->fileManager->read('iqrf__MqttMessaging_InteliGlue'));
+		Assert::same($mqtt, $this->fileManager->read('iqrf__MqttMessaging_IbmCloud'));
 	}
 
 	/**
 	 * Tests the function to download the root CA certificate
 	 */
 	public function testDownloadCaCertificate(): void {
-		$expected = 'inteliments-ca.crt';
-		$manager = new InteliGlueManager($this->certPath, $this->configManager, $this->mockHttpClient($expected));
+		$expected = 'ibm-cloud-ca.crt';
+		$manager = new IbmCloudManager($this->certPath, $this->configManager, $this->mockHttpClient($expected));
 		$manager->downloadCaCertificate();
 		Assert::same($expected, FileSystem::read($this->certPath . $expected));
 	}
@@ -87,11 +88,11 @@ class InteliGlueManagerTest extends CloudIntegrationTestCase {
 	 */
 	protected function setUp(): void {
 		$client = new Client();
-		$this->manager = Mockery::mock(InteliGlueManager::class, [$this->certPath, $this->configManager, $client])->makePartial();
+		$this->manager = Mockery::mock(IbmCloudManager::class, [$this->certPath, $this->configManager, $client])->makePartial();
 		$this->manager->shouldReceive('downloadCaCertificate')->andReturn(null);
 	}
 
 }
 
-$test = new InteliGlueManagerTest();
+$test = new IbmCloudManagerTest();
 $test->run();

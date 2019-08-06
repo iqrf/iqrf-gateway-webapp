@@ -1,39 +1,40 @@
 <?php
 
 /**
- * TEST: App\CoreModule\Models\FileManager
- * @covers App\CoreModule\Models\FileManager
+ * TEST: App\CoreModule\Models\JsonFileManager
+ * @covers App\CoreModule\Models\JsonFileManager
  * @phpVersion >= 7.1
  * @testCase
  */
 declare(strict_types = 1);
 
-namespace Tests\Integration\CoreModule\Model;
+namespace Tests\Integration\CoreModule\Models;
 
-use App\CoreModule\Models\FileManager;
+use App\CoreModule\Models\JsonFileManager;
 use Nette\Utils\FileSystem;
+use Nette\Utils\Json;
 use Tester\Assert;
 use Tester\TestCase;
 
 require __DIR__ . '/../../../bootstrap.php';
 
 /**
- * Tests for text file manager
+ * Tests for JSON file manager
  */
-class FileManagerTest extends TestCase {
+class JsonFileManagerTest extends TestCase {
 
 	/**
-	 * @var string FIle name
+	 * @var string File name
 	 */
-	private $fileName = 'config.json';
+	private $fileName = 'config';
 
 	/**
-	 * @var FileManager Text file manager
+	 * @var JsonFileManager JSON File manager
 	 */
 	private $manager;
 
 	/**
-	 * @var FileManager Text file manager
+	 * @var JsonFileManager JSON File manager
 	 */
 	private $managerTest;
 
@@ -55,10 +56,10 @@ class FileManagerTest extends TestCase {
 	}
 
 	/**
-	 * Tests the function to delete a file
+	 * Tests the function to delete the JSON file
 	 */
 	public function testDelete(): void {
-		$fileName = 'test-delete.json';
+		$fileName = 'test-delete';
 		$this->managerTest->write($fileName, $this->manager->read($this->fileName));
 		Assert::true($this->managerTest->exists($fileName));
 		$this->managerTest->delete($fileName);
@@ -66,32 +67,33 @@ class FileManagerTest extends TestCase {
 	}
 
 	/**
-	 * Tests the function to check if the file exists (the file is not exist)
+	 * Tests the function to check if the JSON file exists (the file is not exist)
 	 */
 	public function testExistsFail(): void {
 		Assert::false($this->manager->exists('nonsense'));
 	}
 
 	/**
-	 * Tests the function to check if the file exists (the file is exist)
+	 * Tests the function to check if the JSON file exists (the file is exist)
 	 */
 	public function testExistsSuccess(): void {
 		Assert::true($this->manager->exists($this->fileName));
 	}
 
 	/**
-	 * Tests the function to read a text file
+	 * Tests the function to read a JSON file
 	 */
 	public function testRead(): void {
-		$expected = FileSystem::read($this->path . $this->fileName);
+		$text = FileSystem::read($this->path . $this->fileName . '.json');
+		$expected = Json::decode($text, Json::FORCE_ARRAY);
 		Assert::equal($expected, $this->manager->read($this->fileName));
 	}
 
 	/**
-	 * Tests the function to write a text file
+	 * Tests the function to write a JSON file
 	 */
 	public function testWrite(): void {
-		$fileName = 'config-test.json';
+		$fileName = 'config-test';
 		$expected = $this->manager->read($this->fileName);
 		$this->managerTest->write($fileName, $expected);
 		Assert::equal($expected, $this->managerTest->read($fileName));
@@ -101,11 +103,11 @@ class FileManagerTest extends TestCase {
 	 * Sets up the test environment
 	 */
 	protected function setUp(): void {
-		$this->manager = new FileManager($this->path);
-		$this->managerTest = new FileManager($this->pathTest);
+		$this->manager = new JsonFileManager($this->path);
+		$this->managerTest = new JsonFileManager($this->pathTest);
 	}
 
 }
 
-$test = new FileManagerTest();
+$test = new JsonFileManagerTest();
 $test->run();
