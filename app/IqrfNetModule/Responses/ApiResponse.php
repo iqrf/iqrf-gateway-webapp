@@ -49,6 +49,11 @@ use Nette\Utils\JsonException;
 class ApiResponse {
 
 	/**
+	 * @var mixed[] JSON API response
+	 */
+	protected $response;
+
+	/**
 	 * @var string[] IQRF JSON API exceptions
 	 */
 	private $exceptions = [
@@ -71,11 +76,6 @@ class ApiResponse {
 		9 => CustomHandlerConsumedInterfaceDataException::class,
 		10 => MissingCustomDpaHandlerException::class,
 	];
-
-	/**
-	 * @var mixed[] JSON API response
-	 */
-	protected $response;
 
 	/**
 	 * Checks a status from the IQRF JSON API response

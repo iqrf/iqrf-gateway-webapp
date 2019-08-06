@@ -24,7 +24,7 @@ use App\ConfigModule\Models\GenericManager;
 use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
 use App\CoreModule\Forms\FormFactory;
 use App\CoreModule\Presenters\ProtectedPresenter;
-use Nette\Forms\Form;
+use Nette\Application\UI\Form;
 use Nette\IOException;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;

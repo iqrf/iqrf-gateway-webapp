@@ -21,7 +21,7 @@ declare(strict_types = 1);
 namespace App\InstallModule\Presenters;
 
 use App\CoreModule\Forms\UserAddFormFactory;
-use Nette\Forms\Form;
+use Nette\Application\UI\Form;
 
 /**
  * Create the first webapp's user presenter

@@ -26,9 +26,9 @@ use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
 use App\CoreModule\Forms\FormFactory;
 use App\ServiceModule\Exceptions\NotSupportedInitSystemException;
 use App\ServiceModule\Models\ServiceManager;
+use Nette\Application\UI\Form;
 use Nette\Forms\Container;
 use Nette\Forms\Controls\SubmitButton;
-use Nette\Forms\Form;
 use Nette\IOException;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;
@@ -126,6 +126,39 @@ class SchedulerFormFactory {
 	}
 
 	/**
+	 * Loads the task's configuration
+	 * @param mixed[] $parameters Presenter's parameters
+	 * @throws JsonException
+	 */
+	private function load(array $parameters): void {
+		if (array_key_exists('id', $parameters)) {
+			$this->task = $this->manager->load(intval($parameters['id']));
+		} elseif (array_key_exists('type', $parameters)) {
+			$this->task = $this->manager->loadType($parameters['type']);
+		}
+	}
+
+	/**
+	 * Adds the time specification
+	 * @param Form $form Task's configuration form
+	 */
+	private function addTimeSpec(Form $form): void {
+		$timeSpec = $form->addContainer('timeSpec');
+		$timeSpec->addText('cronTime', 'timeSpec.cronTime');
+		$timeSpec->addCheckbox('exactTime', 'timeSpec.exactTime');
+		$timeSpec->addCheckbox('periodic', 'timeSpec.periodic');
+		$timeSpec->addInteger('period', 'timeSpec.period');
+		$timeSpec->addText('startTime', 'timeSpec.startTime')
+			->setHtmlType('datetime-local');
+		$timeSpec['period']
+			->addConditionOn($timeSpec['periodic'], Form::EQUAL, true)
+			->setRequired('messages.timeSpec.period');
+		$timeSpec['startTime']
+			->addConditionOn($timeSpec['exactTime'], Form::EQUAL, true)
+			->setRequired('messages.timeSpec.startTime');
+	}
+
+	/**
 	 * Adds the message
 	 * @param Container $task Task container
 	 */
@@ -153,26 +186,6 @@ class SchedulerFormFactory {
 	}
 
 	/**
-	 * Adds the time specification
-	 * @param Form $form Task's configuration form
-	 */
-	private function addTimeSpec(Form $form): void {
-		$timeSpec = $form->addContainer('timeSpec');
-		$timeSpec->addText('cronTime', 'timeSpec.cronTime');
-		$timeSpec->addCheckbox('exactTime', 'timeSpec.exactTime');
-		$timeSpec->addCheckbox('periodic', 'timeSpec.periodic');
-		$timeSpec->addInteger('period', 'timeSpec.period');
-		$timeSpec->addText('startTime', 'timeSpec.startTime')
-			->setHtmlType('datetime-local');
-		$timeSpec['period']
-			->addConditionOn($timeSpec['periodic'], Form::EQUAL, true)
-			->setRequired('messages.timeSpec.period');
-		$timeSpec['startTime']
-			->addConditionOn($timeSpec['exactTime'], Form::EQUAL, true)
-			->setRequired('messages.timeSpec.startTime');
-	}
-
-	/**
 	 * Adds the inputs for DPA raw request
 	 * @param Container $req Form request container
 	 */
@@ -193,15 +206,17 @@ class SchedulerFormFactory {
 	}
 
 	/**
-	 * Loads the task's configuration
-	 * @param mixed[] $parameters Presenter's parameters
-	 * @throws JsonException
+	 * Saves the task's configuration and restart IQRF Gateway Daemon
+	 * @param SubmitButton $button Submit button
 	 */
-	private function load(array $parameters): void {
-		if (array_key_exists('id', $parameters)) {
-			$this->task = $this->manager->load(intval($parameters['id']));
-		} elseif (array_key_exists('type', $parameters)) {
-			$this->task = $this->manager->loadType($parameters['type']);
+	public function saveAndRestart(SubmitButton $button): void {
+		try {
+			$this->serviceManager->restart();
+			$this->presenter->flashInfo('service.actions.restart.message');
+		} catch (NotSupportedInitSystemException $e) {
+			$this->presenter->flashError('service.errors.unsupportedInit');
+		} finally {
+			$this->save($button);
 		}
 	}
 
@@ -222,21 +237,6 @@ class SchedulerFormFactory {
 			$this->presenter->flashError('config.messages.writeFailures.invalidJson');
 		} finally {
 			$this->presenter->redirect('Scheduler:default');
-		}
-	}
-
-	/**
-	 * Saves the task's configuration and restart IQRF Gateway Daemon
-	 * @param SubmitButton $button Submit button
-	 */
-	public function saveAndRestart(SubmitButton $button): void {
-		try {
-			$this->serviceManager->restart();
-			$this->presenter->flashInfo('service.actions.restart.message');
-		} catch (NotSupportedInitSystemException $e) {
-			$this->presenter->flashError('service.errors.unsupportedInit');
-		} finally {
-			$this->save($button);
 		}
 	}
 

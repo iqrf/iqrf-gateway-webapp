@@ -40,6 +40,11 @@ class AwsManager implements IManager {
 	use SmartObject;
 
 	/**
+	 * CA certificate filename
+	 */
+	private const CA_FILENAME = 'aws-ca.crt';
+
+	/**
 	 * @var GenericManager Generic configuration manager
 	 */
 	private $configManager;
@@ -60,11 +65,6 @@ class AwsManager implements IManager {
 	private $client;
 
 	/**
-	 * CA certificate filename
-	 */
-	private const CA_FILENAME = 'aws-ca.crt';
-
-	/**
 	 * Constructor
 	 * @param string $certPath Path to the certificates
 	 * @param CertificateManager $certManager Manager for certificates
@@ -76,20 +76,6 @@ class AwsManager implements IManager {
 		$this->certManager = $certManager;
 		$this->client = $client;
 		$this->configManager = $configManager;
-	}
-
-	/**
-	 * Create a directory for certificates
-	 * @throws CannotCreateCertificateDirectoryException
-	 */
-	private function createDirectory(): void {
-		try {
-			FileSystem::createDir($this->certPath);
-		} catch (IOException $e) {
-			throw new CannotCreateCertificateDirectoryException();
-		}
-		$realPath = realpath($this->certPath);
-		$this->certPath = (($realPath === false) ? $this->certPath : $realPath) . '/';
 	}
 
 	/**
@@ -131,6 +117,20 @@ class AwsManager implements IManager {
 			'acceptAsyncMsg' => false,
 		];
 		$this->configManager->save($interface);
+	}
+
+	/**
+	 * Create a directory for certificates
+	 * @throws CannotCreateCertificateDirectoryException
+	 */
+	private function createDirectory(): void {
+		try {
+			FileSystem::createDir($this->certPath);
+		} catch (IOException $e) {
+			throw new CannotCreateCertificateDirectoryException();
+		}
+		$realPath = realpath($this->certPath);
+		$this->certPath = (($realPath === false) ? $this->certPath : $realPath) . '/';
 	}
 
 	/**

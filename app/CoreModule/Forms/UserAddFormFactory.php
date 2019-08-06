@@ -25,7 +25,7 @@ use App\CoreModule\Models\UserManager;
 use App\CoreModule\Presenters\BasePresenter;
 use App\CoreModule\Presenters\UserPresenter;
 use App\InstallModule\Presenters\CreateUserPresenter;
-use Nette\Forms\Form;
+use Nette\Application\UI\Form;
 use Nette\SmartObject;
 
 /**
@@ -80,6 +80,36 @@ class UserAddFormFactory {
 	}
 
 	/**
+	 * Gets user types
+	 * @return string[] User types
+	 */
+	private function getUserTypes(): array {
+		$userTypes = ['normal', 'power'];
+		foreach ($userTypes as $key => $type) {
+			$userTypes[$type] = 'userTypes.' . $type;
+			unset($userTypes[$key]);
+		}
+		if ($this->presenter instanceof CreateUserPresenter ||
+			!$this->presenter->getUser()->isInRole('power')) {
+			unset($userTypes['power']);
+		}
+		return $userTypes;
+	}
+
+	/**
+	 * Gets languages
+	 * @return string[] Available languages
+	 */
+	private function getLanguages(): array {
+		$languages = ['en'];
+		foreach ($languages as $key => $language) {
+			$languages[$language] = 'languages.' . $language;
+			unset($languages[$key]);
+		}
+		return $languages;
+	}
+
+	/**
 	 * Adds a new user
 	 * @param Form $form Register a new user form
 	 */
@@ -97,36 +127,6 @@ class UserAddFormFactory {
 		} catch (UsernameAlreadyExistsException $e) {
 			$this->presenter->flashMessage('core.user.form.messages.usernameAlreadyExists', 'danger');
 		}
-	}
-
-	/**
-	 * Gets languages
-	 * @return string[] Available languages
-	 */
-	private function getLanguages(): array {
-		$languages = ['en'];
-		foreach ($languages as $key => $language) {
-			$languages[$language] = 'languages.' . $language;
-			unset($languages[$key]);
-		}
-		return $languages;
-	}
-
-	/**
-	 * Gets user types
-	 * @return string[] User types
-	 */
-	private function getUserTypes(): array {
-		$userTypes = ['normal', 'power'];
-		foreach ($userTypes as $key => $type) {
-			$userTypes[$type] = 'userTypes.' . $type;
-			unset($userTypes[$key]);
-		}
-		if ($this->presenter instanceof CreateUserPresenter ||
-			!$this->presenter->getUser()->isInRole('power')) {
-			unset($userTypes['power']);
-		}
-		return $userTypes;
 	}
 
 }

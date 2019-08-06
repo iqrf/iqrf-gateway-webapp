@@ -43,17 +43,6 @@ class PixlaPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Checks if the PIXLA manager is enabled
-	 */
-	protected function startup(): void {
-		parent::startup();
-		if (!$this->context->parameters['features']['pixla']) {
-			$this->flashError('gateway.pixla.messages.disabled');
-			$this->redirect('Homepage:default');
-		}
-	}
-
-	/**
 	 * Disables and stops PIXLA client
 	 */
 	public function actionDisable(): void {
@@ -79,6 +68,17 @@ class PixlaPresenter extends ProtectedPresenter {
 	public function renderDefault(): void {
 		$this->template->status = $this->manager->getServiceStatus()->toScalar();
 		$this->template->token = $this->manager->getToken();
+	}
+
+	/**
+	 * Checks if the PIXLA manager is enabled
+	 */
+	protected function startup(): void {
+		parent::startup();
+		if (!$this->context->parameters['features']['pixla']) {
+			$this->flashError('gateway.pixla.messages.disabled');
+			$this->redirect('Homepage:default');
+		}
 	}
 
 }

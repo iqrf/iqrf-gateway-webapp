@@ -63,7 +63,7 @@ class RouterFactoryTest extends TestCase {
 		/** @var RouteList $routeList */
 		$routeList = RouterFactory::createRouter();
 		Assert::type(RouteList::class, $routeList);
-		Assert::same('', $routeList->getModule());
+		Assert::null($routeList->getModule());
 		Assert::same($this->expected, array_map(function (IRouter $type) {
 			if ($type instanceof Route) {
 				return $type->getMask();

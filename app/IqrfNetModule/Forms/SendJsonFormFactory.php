@@ -28,7 +28,7 @@ use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Models\WebSocketClient;
 use App\IqrfNetModule\Presenters\SendJsonPresenter;
 use App\IqrfNetModule\Requests\DpaRequest;
-use Nette\Forms\Form;
+use Nette\Application\UI\Form;
 use Nette\SmartObject;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;

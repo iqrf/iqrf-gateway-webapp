@@ -23,7 +23,7 @@ namespace App\CloudModule\Presenters;
 use App\CloudModule\Forms\AzureFormFactory;
 use App\CoreModule\Models\JsonFileManager;
 use App\CoreModule\Presenters\ProtectedPresenter;
-use Nette\Forms\Form;
+use Nette\Application\UI\Form;
 use Nette\Utils\JsonException;
 
 /**
@@ -51,19 +51,19 @@ class AzurePresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Creates Microsoft Azure IoT Hub form
-	 * @return Form Microsoft Azure IoT Hub form
-	 */
-	protected function createComponentCloudAzureForm(): Form {
-		return $this->formFactory->create($this);
-	}
-
-	/**
 	 * Renders guides for Microsoft Azure IoT Hub form
 	 * @throws JsonException
 	 */
 	public function renderDefault(): void {
 		$this->template->guides = $this->fileManager->read('guides')['azure'];
+	}
+
+	/**
+	 * Creates Microsoft Azure IoT Hub form
+	 * @return Form Microsoft Azure IoT Hub form
+	 */
+	protected function createComponentCloudAzureForm(): Form {
+		return $this->formFactory->create($this);
 	}
 
 }

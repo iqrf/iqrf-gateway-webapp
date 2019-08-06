@@ -39,14 +39,14 @@ class FeatureEnableCommand extends Command {
 	use SmartObject;
 
 	/**
-	 * @var FeatureManager Webapp's optional features manager
-	 */
-	private $manager;
-
-	/**
 	 * @var string Command name
 	 */
 	protected static $defaultName = 'feature:enable';
+
+	/**
+	 * @var FeatureManager Webapp's optional features manager
+	 */
+	private $manager;
 
 	/**
 	 * Constructor

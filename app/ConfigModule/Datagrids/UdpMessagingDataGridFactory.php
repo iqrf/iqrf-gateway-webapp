@@ -25,6 +25,7 @@ use App\ConfigModule\Presenters\UdpPresenter;
 use App\CoreModule\Datagrids\DataGridFactory;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;
+use Ublaboo\DataGrid\Column\Action\Confirmation\StringConfirmation;
 use Ublaboo\DataGrid\DataGrid;
 use Ublaboo\DataGrid\Exception\DataGridException;
 
@@ -74,7 +75,7 @@ class UdpMessagingDataGridFactory {
 			->setClass('btn btn-xs btn-info');
 		$grid->addAction('delete', 'config.actions.Remove')->setIcon('remove')
 			->setClass('btn btn-xs btn-danger ajax')
-			->setConfirm('config.udp.form.messages.confirmDelete', 'instance');
+			->setConfirmation(new StringConfirmation('config.udp.form.messages.confirmDelete', 'instance'));
 		$grid->addToolbarButton('add', 'config.actions.Add')
 			->setClass('btn btn-xs btn-success');
 		return $grid;

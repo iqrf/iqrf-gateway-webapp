@@ -31,7 +31,7 @@ database:
 	dsn: 'sqlite:%appDir%/config/database.db'
 
 extensions:
-	extendedFormMacros: Instante\ExtendedFormMacros\DI\ExtendedFormMacrosExtension
+	formRenderer: Nepada\Bridges\FormRendererDI\FormRendererExtension
 	iqrfRepository: Iqrf\Repository\DI\IqrfRepositoryExtension
 
 session:
@@ -39,7 +39,6 @@ session:
 
 services:
 	router: App\CoreModule\Router\RouterFactory::createRouter
-	formFactory: Instante\Bootstrap3Renderer\BootstrapFormFactory
 
 http:
 	csp:

@@ -24,7 +24,7 @@ use App\ConfigModule\Forms\MainFormFactory;
 use App\ConfigModule\Models\MainManager;
 use App\CoreModule\Presenters\ProtectedPresenter;
 use App\CoreModule\Traits\TPresenterFlashMessage;
-use Nette\Forms\Form;
+use Nette\Application\UI\Form;
 use Nette\IOException;
 use Nette\Utils\JsonException;
 

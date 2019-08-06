@@ -22,7 +22,7 @@ namespace App\CloudModule\Presenters;
 
 use App\CloudModule\Forms\TcPisekFormFactory;
 use App\CoreModule\Presenters\ProtectedPresenter;
-use Nette\Forms\Form;
+use Nette\Application\UI\Form;
 
 /**
  * TC Písek IoT platform presenter

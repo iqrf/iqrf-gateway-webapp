@@ -65,6 +65,26 @@ class VersionManager {
 	}
 
 	/**
+	 * Returns IQRF Gateway Daemon's version
+	 * @param bool $verbose Is verbose mode enabled?
+	 * @return string IQRF Gateway Daemon's version
+	 */
+	public function getDaemon(bool $verbose = false): string {
+		$version = $this->getDaemonCli();
+		if ($version === 'none' || $version === 'unknown') {
+			try {
+				$version = $this->getDaemonWs();
+			} catch (UserErrorException | DpaErrorException | EmptyResponseException | JsonException $e) {
+				// Use version from CLI
+			}
+		}
+		if ($verbose) {
+			return $version;
+		}
+		return explode(' ', $version)[0] ?? 'unknown';
+	}
+
+	/**
 	 * Returns IQRF Gateway Daemon's version from CLI
 	 * @return string IQRF Gateway Daemon's version
 	 */
@@ -97,26 +117,6 @@ class VersionManager {
 		$this->apiRequest->setRequest($request);
 		$api = $this->wsClient->sendSync($this->apiRequest);
 		return $api['response']['data']['rsp']['version'];
-	}
-
-	/**
-	 * Returns IQRF Gateway Daemon's version
-	 * @param bool $verbose Is verbose mode enabled?
-	 * @return string IQRF Gateway Daemon's version
-	 */
-	public function getDaemon(bool $verbose = false): string {
-		$version = $this->getDaemonCli();
-		if ($version === 'none' || $version === 'unknown') {
-			try {
-				$version = $this->getDaemonWs();
-			} catch (UserErrorException | DpaErrorException | EmptyResponseException | JsonException $e) {
-				// Use version from CLI
-			}
-		}
-		if ($verbose) {
-			return $version;
-		}
-		return explode(' ', $version)[0] ?? 'unknown';
 	}
 
 	/**

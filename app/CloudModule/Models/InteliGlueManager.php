@@ -37,6 +37,11 @@ class InteliGlueManager implements IManager {
 	use SmartObject;
 
 	/**
+	 * CA certificate filename
+	 */
+	private const CA_FILENAME = 'inteliments-ca.crt';
+
+	/**
 	 * @var string Path to the certificates
 	 */
 	private $certPath;
@@ -52,11 +57,6 @@ class InteliGlueManager implements IManager {
 	private $configManager;
 
 	/**
-	 * CA certificate filename
-	 */
-	private const CA_FILENAME = 'inteliments-ca.crt';
-
-	/**
 	 * Constructor
 	 * @param string $certPath Path to the certificates
 	 * @param GenericManager $configManager Generic config manager
@@ -66,20 +66,6 @@ class InteliGlueManager implements IManager {
 		$this->certPath = $certPath;
 		$this->client = $client;
 		$this->configManager = $configManager;
-	}
-
-	/**
-	 * Creates a directory for certificates
-	 * @throws CannotCreateCertificateDirectoryException
-	 */
-	private function createDirectory(): void {
-		try {
-			FileSystem::createDir($this->certPath);
-		} catch (IOException $e) {
-			throw new CannotCreateCertificateDirectoryException();
-		}
-		$realPath = realpath($this->certPath);
-		$this->certPath = (($realPath === false) ? $this->certPath : $realPath) . '/';
 	}
 
 	/**
@@ -117,6 +103,20 @@ class InteliGlueManager implements IManager {
 			'acceptAsyncMsg' => false,
 		];
 		$this->configManager->save($interface);
+	}
+
+	/**
+	 * Creates a directory for certificates
+	 * @throws CannotCreateCertificateDirectoryException
+	 */
+	private function createDirectory(): void {
+		try {
+			FileSystem::createDir($this->certPath);
+		} catch (IOException $e) {
+			throw new CannotCreateCertificateDirectoryException();
+		}
+		$realPath = realpath($this->certPath);
+		$this->certPath = (($realPath === false) ? $this->certPath : $realPath) . '/';
 	}
 
 	/**

@@ -119,6 +119,30 @@ class BondingManager {
 	}
 
 	/**
+	 * Removes a bond
+	 * @param int $address Address of the node to be removed
+	 * @return mixed[] API request and response
+	 * @throws DpaErrorException
+	 * @throws EmptyResponseException
+	 * @throws UserErrorException
+	 * @throws JsonException
+	 */
+	public function remove(int $address): array {
+		$array = [
+			'mType' => 'iqmeshNetwork_RemoveBond',
+			'data' => [
+				'repeat' => 2,
+				'req' => [
+					'deviceAddr' => $address,
+				],
+				'returnVerbose' => true,
+			],
+		];
+		$this->request->setRequest($array);
+		return $this->wsClient->sendSync($this->request);
+	}
+
+	/**
 	 * Re-bonds a node
 	 * @param int $address Address of the node to be re-bonded
 	 * @return mixed[] API request and response
@@ -137,30 +161,6 @@ class BondingManager {
 						'bondAddr' => $address,
 					],
 				],
-			],
-		];
-		$this->request->setRequest($array);
-		return $this->wsClient->sendSync($this->request);
-	}
-
-	/**
-	 * Removes a bond
-	 * @param int $address Address of the node to be removed
-	 * @return mixed[] API request and response
-	 * @throws DpaErrorException
-	 * @throws EmptyResponseException
-	 * @throws UserErrorException
-	 * @throws JsonException
-	 */
-	public function remove(int $address): array {
-		$array = [
-			'mType' => 'iqmeshNetwork_RemoveBond',
-			'data' => [
-				'repeat' => 2,
-				'req' => [
-					'deviceAddr' => $address,
-				],
-				'returnVerbose' => true,
 			],
 		];
 		$this->request->setRequest($array);

@@ -27,6 +27,7 @@ use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
 use Nette\IOException;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;
+use Ublaboo\DataGrid\Column\Action\Confirmation\StringConfirmation;
 use Ublaboo\DataGrid\DataGrid;
 use Ublaboo\DataGrid\Exception\DataGridColumnStatusException;
 use Ublaboo\DataGrid\Exception\DataGridException;
@@ -92,7 +93,7 @@ class WebSocketDataGridFactory {
 			->setClass('btn btn-xs btn-info');
 		$grid->addAction('delete', 'config.actions.Remove')->setIcon('remove')
 			->setClass('btn btn-xs btn-danger ajax')
-			->setConfirm('config.websocket.interface.messages.confirmDelete', 'messagingInstance');
+			->setConfirmation(new StringConfirmation('config.websocket.interface.messages.confirmDelete', 'messagingInstance'));
 		$grid->addToolbarButton('add', 'config.actions.Add')
 			->setClass('btn btn-xs btn-success');
 		return $grid;
@@ -100,13 +101,25 @@ class WebSocketDataGridFactory {
 
 	/**
 	 * Changes the status of the asynchronous messaging
-	 * @param int $id Component ID
-	 * @param bool $status New asynchronous messaging status
+	 * @param string $id Component ID
+	 * @param string $status New asynchronous messaging status
 	 * @throws JsonException
 	 */
-	public function changeAsyncMsg(int $id, bool $status): void {
+	public function changeAsyncMsg(string $id, string $status): void {
+		$this->changeConfiguration($id, 'acceptAsyncMsg', boolval($status));
+	}
+
+	/**
+	 * Changes the WebSocket messaging configuration
+	 * @param string $id WebSocket messaging configuration ID
+	 * @param string $key Key to change
+	 * @param mixed $value New value
+	 * @throws JsonException
+	 */
+	private function changeConfiguration(string $id, string $key, $value): void {
+		$id = intval($id);
 		$config = $this->configManager->load($id);
-		$config['acceptAsyncMsg'] = $status;
+		$config[$key] = $value;
 		try {
 			$this->configManager->save($config);
 			$this->presenter->flashSuccess('config.messages.success');
@@ -126,28 +139,12 @@ class WebSocketDataGridFactory {
 
 	/**
 	 * Changes the status of accepting connections only from localhost
-	 * @param int $id Component ID
-	 * @param bool $status New accepting connections only from localhost status
+	 * @param string $id Component ID
+	 * @param string $status New accepting connections only from localhost status
 	 * @throws JsonException
 	 */
-	public function changeOnlyLocalhost(int $id, bool $status): void {
-		$config = $this->configManager->load($id);
-		$config['acceptOnlyLocalhost'] = $status;
-		try {
-			$this->configManager->save($config);
-			$this->presenter->flashSuccess('config.messages.success');
-		} catch (IOException $e) {
-			$this->presenter->flashError('config.messages.writeFailures.ioError');
-		} catch (NonExistingJsonSchemaException $e) {
-			$this->presenter->flashError('config.messages.writeFailures.nonExistingJsonSchema');
-		} finally {
-			if ($this->presenter->isAjax()) {
-				$this->presenter->redrawControl('flashes');
-				$dataGrid = $this->presenter['configWebSocketDataGrid'];
-				$dataGrid->setDataSource($this->configManager->list());
-				$dataGrid->redrawItem($id);
-			}
-		}
+	public function changeOnlyLocalhost(string $id, string $status): void {
+		$this->changeConfiguration($id, 'acceptOnlyLocalhost', boolval($status));
 	}
 
 }

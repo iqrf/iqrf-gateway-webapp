@@ -25,6 +25,7 @@ use App\ConfigModule\Presenters\SchedulerPresenter;
 use App\CoreModule\Datagrids\DataGridFactory;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;
+use Ublaboo\DataGrid\Column\Action\Confirmation\StringConfirmation;
 use Ublaboo\DataGrid\DataGrid;
 use Ublaboo\DataGrid\Exception\DataGridException;
 
@@ -75,7 +76,7 @@ class SchedulerDataGridFactory {
 			->setClass('btn btn-xs btn-info');
 		$grid->addAction('delete', 'config.actions.Remove')->setIcon('remove')
 			->setClass('btn btn-xs btn-danger ajax')
-			->setConfirm('config.scheduler.form.messages.confirmDelete', 'id');
+			->setConfirmation(new StringConfirmation('config.scheduler.form.messages.confirmDelete', 'id'));
 		return $grid;
 	}
 

@@ -27,8 +27,8 @@ use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\IqrfNetModule\Models\StandardLightManager;
 use App\IqrfNetModule\Presenters\StandardPresenter;
+use Nette\Application\UI\Form;
 use Nette\Forms\Controls\SubmitButton;
-use Nette\Forms\Form;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;
 

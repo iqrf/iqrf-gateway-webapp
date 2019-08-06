@@ -20,9 +20,9 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Forms;
 
-use Instante\ExtendedFormMacros\IFormFactory;
 use Kdyby\Translation\Translator;
-use Nette\Forms\Form;
+use Nepada\FormRenderer\IBootstrap3RendererFactory;
+use Nette\Application\UI\Form;
 use Nette\SmartObject;
 
 /**
@@ -33,9 +33,9 @@ class FormFactory {
 	use SmartObject;
 
 	/**
-	 * @var IFormFactory Form factory interface
+	 * @var IBootstrap3RendererFactory Form renderer factory interface
 	 */
-	public $iFormFactory;
+	public $rendererFactory;
 
 	/**
 	 * @var Translator Translator
@@ -45,11 +45,11 @@ class FormFactory {
 	/**
 	 * Constructor
 	 * @param Translator $translator Translator service
-	 * @param IFormFactory $iFormFactory Form factory interface
+	 * @param IBootstrap3RendererFactory $rendererFactory Form renderer factory interface
 	 */
-	public function __construct(Translator $translator, IFormFactory $iFormFactory) {
-		$this->iFormFactory = $iFormFactory;
+	public function __construct(Translator $translator, IBootstrap3RendererFactory $rendererFactory) {
 		$this->translator = $translator;
+		$this->rendererFactory = $rendererFactory;
 	}
 
 	/**
@@ -58,13 +58,15 @@ class FormFactory {
 	 * @return Form Form
 	 */
 	public function create(?string $translationPrefix = null): Form {
-		$form = $this->iFormFactory->create();
+		$form = new Form();
+		$renderer = $this->rendererFactory->create();
 		if ($translationPrefix === null) {
 			$form->setTranslator($this->translator);
 		} else {
 			$translator = $this->translator->domain($translationPrefix);
 			$form->setTranslator($translator);
 		}
+		$form->setRenderer($renderer);
 		return $form;
 	}
 

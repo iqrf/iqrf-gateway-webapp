@@ -63,6 +63,16 @@ class UserManager {
 	}
 
 	/**
+	 * Edits rhe user's password
+	 * @param int $id User ID
+	 * @param string $password New User's password
+	 */
+	public function editPassword(int $id, string $password): void {
+		$data = ['password' => password_hash($password, PASSWORD_DEFAULT)];
+		$this->table->where('id', $id)->update($data);
+	}
+
+	/**
 	 * Deletes the user
 	 * @param int $id User ID
 	 */
@@ -80,7 +90,7 @@ class UserManager {
 	 */
 	public function edit(int $id, string $username, string $role, string $language): void {
 		$row = $this->table->where('username', $username)->fetch();
-		if ($row && $row['id'] !== $id) {
+		if ($row !== null && $row['id'] !== $id) {
 			throw new UsernameAlreadyExistsException();
 		}
 		$data = [
@@ -88,16 +98,6 @@ class UserManager {
 			'role' => $role,
 			'language' => $language,
 		];
-		$this->table->where('id', $id)->update($data);
-	}
-
-	/**
-	 * Edits rhe user's password
-	 * @param int $id User ID
-	 * @param string $password New User's password
-	 */
-	public function editPassword(int $id, string $password): void {
-		$data = ['password' => password_hash($password, PASSWORD_DEFAULT)];
 		$this->table->where('id', $id)->update($data);
 	}
 
@@ -136,7 +136,7 @@ class UserManager {
 	 */
 	public function register(string $username, string $password, string $role, string $language): void {
 		$row = $this->table->where('username', $username)->fetch();
-		if ($row) {
+		if ($row !== null) {
 			throw new UsernameAlreadyExistsException();
 		}
 		$data = [

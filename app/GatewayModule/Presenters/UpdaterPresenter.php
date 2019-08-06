@@ -57,28 +57,6 @@ class UpdaterPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Checks if the updater is enabled
-	 */
-	protected function startup(): void {
-		parent::startup();
-		if (!$this->context->parameters['features']['updater']) {
-			$this->flashError('gateway.updater.messages.disabled');
-			$this->redirect('Homepage:default');
-		}
-	}
-
-	/**
-	 * Creates the data grid with upgradable packages
-	 * @param string $name Component name
-	 * @return DataGrid Datagrid with upgradable packages
-	 * @throws DataGridColumnStatusException
-	 * @throws DataGridException
-	 */
-	protected function createComponentUpgradablePackagesGrid(string $name): DataGrid {
-		return $this->dataGridFactory->create($this, $name);
-	}
-
-	/**
 	 * Handles listing of upgradable packages
 	 */
 	public function handleList(): void {
@@ -108,6 +86,20 @@ class UpdaterPresenter extends ProtectedPresenter {
 	}
 
 	/**
+	 * Shows shell command output
+	 * @param string $type Output type
+	 * @param string|null $buffer Output buffer
+	 */
+	public function showCommandOutput(string $type, ?string $buffer): void {
+		if (isset($this->template->outputBuffer)) {
+			$this->template->outputBuffer .= $buffer;
+		} else {
+			$this->template->outputBuffer = $buffer;
+		}
+		$this->redrawControl('outputChange');
+	}
+
+	/**
 	 * Handles updating packages
 	 */
 	public function handleUpgrade(): void {
@@ -120,17 +112,25 @@ class UpdaterPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Shows shell command output
-	 * @param string $type Output type
-	 * @param string|null $buffer Output buffer
+	 * Checks if the updater is enabled
 	 */
-	public function showCommandOutput(string $type, ?string $buffer): void {
-		if (isset($this->template->outputBuffer)) {
-			$this->template->outputBuffer .= $buffer;
-		} else {
-			$this->template->outputBuffer = $buffer;
+	protected function startup(): void {
+		parent::startup();
+		if (!$this->context->parameters['features']['updater']) {
+			$this->flashError('gateway.updater.messages.disabled');
+			$this->redirect('Homepage:default');
 		}
-		$this->redrawControl('outputChange');
+	}
+
+	/**
+	 * Creates the data grid with upgradable packages
+	 * @param string $name Component name
+	 * @return DataGrid Datagrid with upgradable packages
+	 * @throws DataGridColumnStatusException
+	 * @throws DataGridException
+	 */
+	protected function createComponentUpgradablePackagesGrid(string $name): DataGrid {
+		return $this->dataGridFactory->create($this, $name);
 	}
 
 }

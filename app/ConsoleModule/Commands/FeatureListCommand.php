@@ -45,6 +45,10 @@ class FeatureListCommand extends Command {
 	 */
 	private $manager;
 
+	/**
+	 * Constructor
+	 * @param FeatureManager $manager Webapp's optional feature manager
+	 */
 	public function __construct(FeatureManager $manager) {
 		$this->manager = $manager;
 		parent::__construct();

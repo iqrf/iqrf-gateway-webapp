@@ -39,14 +39,14 @@ class FeatureDisableCommand extends Command {
 	use SmartObject;
 
 	/**
-	 * @var FeatureManager Webapp's optional features manager
-	 */
-	private $manager;
-
-	/**
 	 * @var string Command name
 	 */
 	protected static $defaultName = 'feature:disable';
+
+	/**
+	 * @var FeatureManager Webapp's optional features manager
+	 */
+	private $manager;
 
 	/**
 	 * Constructor

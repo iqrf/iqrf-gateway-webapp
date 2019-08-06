@@ -80,6 +80,26 @@ class StandardLightManager {
 	}
 
 	/**
+	 * Gets power of the lights
+	 * @param int $address Network device address
+	 * @param StandardLight[] $lights Array of IQRF Standard light entities
+	 * @return mixed[] API request and response
+	 * @throws DpaErrorException
+	 * @throws EmptyResponseException
+	 * @throws JsonException
+	 * @throws UserErrorException
+	 */
+	public function getPower(int $address, array $lights): array {
+		/**
+		 * @var StandardLight $light Light
+		 */
+		foreach ($lights as $light) {
+			$light->setPower(127);
+		}
+		return $this->setPower($address, $lights);
+	}
+
+	/**
 	 * Sets a power of the lights
 	 * @param int $address Network device address
 	 * @param StandardLight[] $lights Array of IQRF Standard light entities
@@ -108,23 +128,17 @@ class StandardLightManager {
 	}
 
 	/**
-	 * Gets power of the lights
-	 * @param int $address Network device address
+	 * Converts IQRF Standard light entities to arrays
+	 * @param mixed[] $request API request
 	 * @param StandardLight[] $lights Array of IQRF Standard light entities
-	 * @return mixed[] API request and response
-	 * @throws DpaErrorException
-	 * @throws EmptyResponseException
-	 * @throws JsonException
-	 * @throws UserErrorException
 	 */
-	public function getPower(int $address, array $lights): array {
+	private function convertEntityToArray(array &$request, array $lights): void {
 		/**
-		 * @var StandardLight $light Light
+		 * @var StandardLight $light Standard light
 		 */
 		foreach ($lights as $light) {
-			$light->setPower(127);
+			$request['data']['req']['param']['lights'][] = $light->toArray();
 		}
-		return $this->setPower($address, $lights);
 	}
 
 	/**
@@ -181,20 +195,6 @@ class StandardLightManager {
 		$this->convertEntityToArray($array, $lights);
 		$this->request->setRequest($array);
 		return $this->wsClient->sendSync($this->request);
-	}
-
-	/**
-	 * Converts IQRF Standard light entities to arrays
-	 * @param mixed[] $request API request
-	 * @param StandardLight[] $lights Array of IQRF Standard light entities
-	 */
-	private function convertEntityToArray(array &$request, array $lights): void {
-		/**
-		 * @var StandardLight $light Standard light
-		 */
-		foreach ($lights as $light) {
-			$request['data']['req']['param']['lights'][] = $light->toArray();
-		}
 	}
 
 }

@@ -52,7 +52,7 @@ class DataGridFactory {
 	 * @return DataGrid Data grid
 	 */
 	public function create(BasePresenter $presenter, string $name): DataGrid {
-		DataGrid::$icon_prefix = 'glyphicon glyphicon-';
+		DataGrid::$iconPrefix = 'glyphicon glyphicon-';
 		$grid = new DataGrid($presenter, $name);
 		$grid->setTranslator($this->translator);
 		$grid->setPagination(false);

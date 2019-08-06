@@ -30,27 +30,27 @@ use stdClass;
 trait TPresenterFlashMessage {
 
 	/**
-	 * Saves the flash message to template, that can be displayed after redirect or AJAX request
-	 * @internal
-	 * @param string $message Message
-	 * @param string $type Message's type
-	 * @return stdClass Flash message object
-	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
-	 */
-	public function flashMessage($message, $type = 'info'): stdClass {
-		if ($this->isAjax()) {
-			$this->redrawControl('flashes');
-		}
-		return parent::flashMessage($message, $type);
-	}
-
-	/**
 	 * Saves the info flash message to template, that can be displayed after redirect or AJAX request
 	 * @param string $message Message
 	 * @return stdClass Flash message object
 	 */
 	public function flashInfo(string $message): stdClass {
 		return $this->flashMessage($message, 'info');
+	}
+
+	/**
+	 * Saves the flash message to template, that can be displayed after redirect or AJAX request
+	 * @param string $message Message
+	 * @param string $type Message's type
+	 * @return stdClass Flash message object
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
+	 * @internal
+	 */
+	public function flashMessage($message, string $type = 'info'): stdClass {
+		if ($this->isAjax()) {
+			$this->redrawControl('flashes');
+		}
+		return parent::flashMessage($message, $type);
 	}
 
 	/**
@@ -61,6 +61,7 @@ trait TPresenterFlashMessage {
 	public function flashSuccess(string $message): stdClass {
 		return $this->flashMessage($message, 'success');
 	}
+
 	/**
 	 * Saves the warning flash message to template, that can be displayed after redirect or AJAX request
 	 * @param string $message Message

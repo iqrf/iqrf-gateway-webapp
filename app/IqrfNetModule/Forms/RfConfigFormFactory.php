@@ -21,8 +21,8 @@ declare(strict_types = 1);
 namespace App\IqrfNetModule\Forms;
 
 use App\IqrfNetModule\Presenters\RfConfigPresenter;
+use Nette\Application\UI\Form;
 use Nette\Forms\Controls\TextInput;
-use Nette\Forms\Form;
 use Nette\SmartObject;
 
 /**
@@ -93,23 +93,6 @@ class RfConfigFormFactory extends TrConfigFormFactory {
 	}
 
 	/**
-	 * Adds RFPGM configuration to the form
-	 * @param Form $form IQRF RF configuration form
-	 */
-	private function addRfpgwConfiguration(Form &$form): void {
-		$form->addGroup($form->getTranslator()->translate('rfPgm'));
-		$form->addCheckbox('rfPgmEnableAfterReset', 'rfPgmEnableAfterReset');
-		$form->addCheckbox('rfPgmTerminateAfter1Min', 'rfPgmTerminateAfter1Min');
-		$form->addCheckbox('rfPgmTerminateMcuPin', 'rfPgmTerminateMcuPin');
-		$form->addCheckbox('rfPgmDualChannel', 'rfPgmDualChannel');
-		$form->addCheckbox('rfPgmLpMode', 'rfPgmLpMode');
-		$form->addCheckbox('rfPgmIncorrectUpload', 'rfPgmIncorrectUpload')->setDisabled();
-		if (array_key_exists('rfPgmIncorrectUpload', $this->configuration)) {
-			$form['rfPgmIncorrectUpload']->setDefaultValue($this->configuration['rfPgmIncorrectUpload']);
-		}
-	}
-
-	/**
 	 * Sets rules for RF channel input
 	 * @param TextInput $input RF channel input
 	 */
@@ -128,6 +111,23 @@ class RfConfigFormFactory extends TrConfigFormFactory {
 			default:
 				$input->setDisabled();
 				break;
+		}
+	}
+
+	/**
+	 * Adds RFPGM configuration to the form
+	 * @param Form $form IQRF RF configuration form
+	 */
+	private function addRfpgwConfiguration(Form &$form): void {
+		$form->addGroup($form->getTranslator()->translate('rfPgm'));
+		$form->addCheckbox('rfPgmEnableAfterReset', 'rfPgmEnableAfterReset');
+		$form->addCheckbox('rfPgmTerminateAfter1Min', 'rfPgmTerminateAfter1Min');
+		$form->addCheckbox('rfPgmTerminateMcuPin', 'rfPgmTerminateMcuPin');
+		$form->addCheckbox('rfPgmDualChannel', 'rfPgmDualChannel');
+		$form->addCheckbox('rfPgmLpMode', 'rfPgmLpMode');
+		$form->addCheckbox('rfPgmIncorrectUpload', 'rfPgmIncorrectUpload')->setDisabled();
+		if (array_key_exists('rfPgmIncorrectUpload', $this->configuration)) {
+			$form['rfPgmIncorrectUpload']->setDefaultValue($this->configuration['rfPgmIncorrectUpload']);
 		}
 	}
 

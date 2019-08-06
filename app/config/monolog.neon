@@ -2,8 +2,9 @@ extensions:
 	monolog: Contributte\Monolog\DI\MonologExtension
 
 monolog:
-	tracy:
-		hook: true
+	hook:
+		fromTracy: true
+		toTracy: true
 	channel:
 		default:
 			handlers:

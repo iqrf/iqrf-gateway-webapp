@@ -28,7 +28,7 @@ use App\ConfigModule\Forms\WebSocketMessagingFormFactory;
 use App\ConfigModule\Forms\WebSocketServiceFormFactory;
 use App\ConfigModule\Models\GenericManager;
 use App\ConfigModule\Models\WebSocketManager;
-use Nette\Forms\Form;
+use Nette\Application\UI\Form;
 use Nette\IOException;
 use Nette\Utils\JsonException;
 use Ublaboo\DataGrid\DataGrid;

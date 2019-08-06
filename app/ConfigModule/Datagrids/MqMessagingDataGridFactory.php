@@ -27,6 +27,7 @@ use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
 use Nette\IOException;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;
+use Ublaboo\DataGrid\Column\Action\Confirmation\StringConfirmation;
 use Ublaboo\DataGrid\DataGrid;
 use Ublaboo\DataGrid\Exception\DataGridColumnStatusException;
 use Ublaboo\DataGrid\Exception\DataGridException;
@@ -89,7 +90,7 @@ class MqMessagingDataGridFactory {
 			->setClass('btn btn-xs btn-info');
 		$grid->addAction('delete', 'config.actions.Remove')->setIcon('remove')
 			->setClass('btn btn-xs btn-danger ajax')
-			->setConfirm('config.mq.form.messages.confirmDelete', 'instance');
+			->setConfirmation(new StringConfirmation('config.mq.form.messages.confirmDelete', 'instance'));
 		$grid->addToolbarButton('add', 'config.actions.Add')
 			->setClass('btn btn-xs btn-success');
 		return $grid;
@@ -97,13 +98,14 @@ class MqMessagingDataGridFactory {
 
 	/**
 	 * Changes status of the asynchronous messaging
-	 * @param int $id Component ID
-	 * @param bool $status New asynchronous messaging status
+	 * @param string $id Component ID
+	 * @param string $status New asynchronous messaging status
 	 * @throws JsonException
 	 */
-	public function changeAsyncMsg(int $id, bool $status): void {
+	public function changeAsyncMsg(string $id, string $status): void {
+		$id = intval($id);
 		$config = $this->configManager->load($id);
-		$config['acceptAsyncMsg'] = $status;
+		$config['acceptAsyncMsg'] = boolval($status);
 		try {
 			$this->configManager->save($config);
 			$this->presenter->flashSuccess('config.messages.success');

@@ -23,7 +23,7 @@ namespace App\CloudModule\Presenters;
 use App\CloudModule\Forms\IbmCloudFormFactory;
 use App\CoreModule\Models\JsonFileManager;
 use App\CoreModule\Presenters\ProtectedPresenter;
-use Nette\Forms\Form;
+use Nette\Application\UI\Form;
 use Nette\Utils\JsonException;
 
 /**
@@ -51,19 +51,19 @@ class IbmCloudPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Creates the IBM Cloud form
-	 * @return Form IBM Cloud form
-	 */
-	protected function createComponentCloudIbmForm(): Form {
-		return $this->formFactory->create($this);
-	}
-
-	/**
 	 * Renders guides for IBM Cloud form
 	 * @throws JsonException
 	 */
 	public function renderDefault(): void {
 		$this->template->guides = $this->fileManager->read('guides')['ibm-cloud'];
+	}
+
+	/**
+	 * Creates the IBM Cloud form
+	 * @return Form IBM Cloud form
+	 */
+	protected function createComponentCloudIbmForm(): Form {
+		return $this->formFactory->create($this);
 	}
 
 }

@@ -27,7 +27,7 @@ use App\ConfigModule\Models\SchedulerMigrationManager;
 use App\CoreModule\Presenters\ProtectedPresenter;
 use App\CoreModule\Traits\TPresenterFlashMessage;
 use Nette\Application\BadRequestException;
-use Nette\Forms\Form;
+use Nette\Application\UI\Form;
 
 /**
  * Configuration migration presenter

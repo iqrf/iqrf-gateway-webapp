@@ -50,15 +50,6 @@ class NetworkManager {
 	}
 
 	/**
-	 * Returns network interfaces
-	 * @return string[] Network interfaces
-	 */
-	private function getInterfaces(): array {
-		$interfaces = $this->commandManager->run('ls /sys/class/net | awk \'{ print $0 }\'', true);
-		return explode(PHP_EOL, $interfaces);
-	}
-
-	/**
 	 * Returns IPv4 and IPv6 addresses of the gateway
 	 * @return string[][] IPv4 and IPv6 addresses
 	 */
@@ -75,6 +66,15 @@ class NetworkManager {
 			}
 		}
 		return $addresses;
+	}
+
+	/**
+	 * Returns network interfaces
+	 * @return string[] Network interfaces
+	 */
+	private function getInterfaces(): array {
+		$interfaces = $this->commandManager->run('ls /sys/class/net | awk \'{ print $0 }\'', true);
+		return explode(PHP_EOL, $interfaces);
 	}
 
 	/**

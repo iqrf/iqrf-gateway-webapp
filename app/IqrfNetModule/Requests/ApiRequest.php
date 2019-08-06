@@ -50,17 +50,6 @@ class ApiRequest {
 	}
 
 	/**
-	 * Adds a message ID to the IQRF JSON API request
-	 */
-	protected function addMsgId(): void {
-		if (is_array($this->request) && !isset($this->request['data']['msgId'])) {
-			$this->request['data']['msgId'] = $this->msgIdManager->generate();
-		} elseif ($this->request instanceof stdClass && !isset($this->request->data->msgId)) {
-			$this->request->data->msgId = $this->msgIdManager->generate();
-		}
-	}
-
-	/**
 	 * Sets the IQRF JSON API request
 	 * @param mixed $request IQRF JSON API request
 	 */
@@ -70,6 +59,17 @@ class ApiRequest {
 		}
 		$this->request = $request;
 		$this->addMsgId();
+	}
+
+	/**
+	 * Adds a message ID to the IQRF JSON API request
+	 */
+	protected function addMsgId(): void {
+		if (is_array($this->request) && !isset($this->request['data']['msgId'])) {
+			$this->request['data']['msgId'] = $this->msgIdManager->generate();
+		} elseif ($this->request instanceof stdClass && !isset($this->request->data->msgId)) {
+			$this->request->data->msgId = $this->msgIdManager->generate();
+		}
 	}
 
 	/**

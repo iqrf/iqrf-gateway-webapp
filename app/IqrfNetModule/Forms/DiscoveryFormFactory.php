@@ -25,7 +25,7 @@ use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Models\DiscoveryManager;
 use App\IqrfNetModule\Presenters\NetworkPresenter;
-use Nette\Forms\Form;
+use Nette\Application\UI\Form;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;
 

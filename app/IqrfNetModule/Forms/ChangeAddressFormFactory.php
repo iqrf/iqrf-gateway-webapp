@@ -22,7 +22,7 @@ namespace App\IqrfNetModule\Forms;
 
 use App\CoreModule\Forms\FormFactory;
 use App\CoreModule\Presenters\ProtectedPresenter;
-use Nette\Forms\Form;
+use Nette\Application\UI\Form;
 use Nette\SmartObject;
 
 class ChangeAddressFormFactory {

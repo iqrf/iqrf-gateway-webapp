@@ -25,7 +25,7 @@ use App\CoreModule\Forms\UserAddFormFactory;
 use App\CoreModule\Forms\UserEditFormFactory;
 use App\CoreModule\Models\UserManager;
 use App\CoreModule\Traits\TPresenterFlashMessage;
-use Nette\Forms\Form;
+use Nette\Application\UI\Form;
 use Ublaboo\DataGrid\DataGrid;
 use Ublaboo\DataGrid\Exception\DataGridColumnStatusException;
 use Ublaboo\DataGrid\Exception\DataGridException;

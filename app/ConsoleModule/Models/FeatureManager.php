@@ -51,17 +51,14 @@ class FeatureManager {
 	}
 
 	/**
-	 * Reads the configuration of optional features
-	 * @return array<string,bool> Optional feature configuration
+	 * Disables optional features
+	 * @param string[] $names Names of disabled optional features
+	 * @throws IOException
 	 * @throws NeonException
+	 * @throws UnknownFeatureException
 	 */
-	private function readConfig(): array {
-		try {
-			$config = FileSystem::read(self::CONF_PATH);
-		} catch (IOException $e) {
-			return [];
-		}
-		return Neon::decode($config)['parameters']['features'] ?? [];
+	public function disable(array $names): void {
+		$this->editConfig($names, false);
 	}
 
 	/**
@@ -86,6 +83,20 @@ class FeatureManager {
 	}
 
 	/**
+	 * Reads the configuration of optional features
+	 * @return array<string,bool> Optional feature configuration
+	 * @throws NeonException
+	 */
+	private function readConfig(): array {
+		try {
+			$config = FileSystem::read(self::CONF_PATH);
+		} catch (IOException $e) {
+			return [];
+		}
+		return Neon::decode($config)['parameters']['features'] ?? [];
+	}
+
+	/**
 	 * Saves the configuration of optional features
 	 * @param array<string,bool> $config Optional feature configuration
 	 * @throws IOException
@@ -95,17 +106,6 @@ class FeatureManager {
 		$neon = ['parameters' => ['features' => $config]];
 		$fileContent = Neon::encode($neon, Neon::BLOCK);
 		FileSystem::write(self::CONF_PATH, $fileContent);
-	}
-
-	/**
-	 * Disables optional features
-	 * @param string[] $names Names of disabled optional features
-	 * @throws IOException
-	 * @throws NeonException
-	 * @throws UnknownFeatureException
-	 */
-	public function disable(array $names): void {
-		$this->editConfig($names, false);
 	}
 
 	/**

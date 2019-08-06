@@ -27,6 +27,7 @@ use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
 use Nette\IOException;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;
+use Ublaboo\DataGrid\Column\Action\Confirmation\StringConfirmation;
 use Ublaboo\DataGrid\DataGrid;
 use Ublaboo\DataGrid\Exception\DataGridColumnStatusException;
 use Ublaboo\DataGrid\Exception\DataGridException;
@@ -96,7 +97,7 @@ class MqttMessagingDataGridFactory {
 			->setClass('btn btn-xs btn-info');
 		$grid->addAction('delete', 'config.actions.Remove')->setIcon('remove')
 			->setClass('btn btn-xs btn-danger ajax')
-			->setConfirm('config.mqtt.form.messages.confirmDelete', 'instance');
+			->setConfirmation(new StringConfirmation('config.mqtt.form.messages.confirmDelete', 'instance'));
 		$grid->addToolbarButton('add', 'config.actions.Add')
 			->setClass('btn btn-xs btn-success');
 		return $grid;
@@ -104,22 +105,23 @@ class MqttMessagingDataGridFactory {
 
 	/**
 	 * Changes the status of the asynchronous messaging
-	 * @param int $id Component ID
-	 * @param bool $status New asynchronous messaging status
+	 * @param string $id Component ID
+	 * @param string $status New asynchronous messaging status
 	 * @throws JsonException
 	 */
-	public function changeAsyncMsg(int $id, bool $status): void {
-		$this->changeConfiguration($id, 'acceptAsyncMsg', $status);
+	public function changeAsyncMsg(string $id, string $status): void {
+		$this->changeConfiguration($id, 'acceptAsyncMsg', boolval($status));
 	}
 
 	/**
 	 * Changes the MQTT messaging configuration
-	 * @param int $id MQTT messaging configuration ID
+	 * @param string $id MQTT messaging configuration ID
 	 * @param string $key Key to change
 	 * @param mixed $value New value
 	 * @throws JsonException
 	 */
-	private function changeConfiguration(int $id, string $key, $value): void {
+	private function changeConfiguration(string $id, string $key, $value): void {
+		$id = intval($id);
 		$config = $this->configManager->load($id);
 		$config[$key] = $value;
 		try {
@@ -141,12 +143,12 @@ class MqttMessagingDataGridFactory {
 
 	/**
 	 * Changes the status of TLS support
-	 * @param int $id Component ID
-	 * @param bool $status New TLS support
+	 * @param string $id Component ID
+	 * @param string $status New TLS support
 	 * @throws JsonException
 	 */
-	public function changeTls(int $id, bool $status): void {
-		$this->changeConfiguration($id, 'EnabledSSL', $status);
+	public function changeTls(string $id, string $status): void {
+		$this->changeConfiguration($id, 'EnabledSSL', boolval($status));
 	}
 
 }

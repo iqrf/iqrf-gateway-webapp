@@ -27,7 +27,7 @@ use App\ConfigModule\Presenters\MigrationPresenter;
 use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
 use App\CoreModule\Forms\FormFactory;
 use App\ServiceModule\Exceptions\NotSupportedInitSystemException;
-use Nette\Forms\Form;
+use Nette\Application\UI\Form;
 use Nette\IOException;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;

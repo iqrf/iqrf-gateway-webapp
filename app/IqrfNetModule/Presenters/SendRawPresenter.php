@@ -27,7 +27,7 @@ use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\IqrfNetModule\Forms\SendRawFormFactory;
 use App\IqrfNetModule\Models\DpaRawManager;
 use Iqrf\IdeMacros\MacroFileParser;
-use Nette\Forms\Form;
+use Nette\Application\UI\Form;
 use Nette\Utils\JsonException;
 
 /**

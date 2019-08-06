@@ -28,22 +28,12 @@ use Nette\Utils\Strings;
 class DpaRequest extends ApiRequest {
 
 	/**
-	 * Fixes a DPA packet
+	 * Sets the JSON DPA request
+	 * @param mixed $request JSON DPA request
 	 */
-	private function fixRawPacket(): void {
-		if (is_array($this->request)) {
-			$packet = &$this->request['data']['req']['rData'];
-		} else {
-			$packet = &$this->request->data->req->rData;
-		}
-		$data = explode('.', trim($packet, '.'));
-		$nadrLo = $data[0];
-		$nadrHi = $data[1];
-		if ($nadrHi !== '00' && $nadrLo === '00') {
-			$data[1] = $nadrLo;
-			$data[0] = $nadrHi;
-		}
-		$packet = Strings::lower(implode('.', $data));
+	public function setRequest($request): void {
+		parent::setRequest($request);
+		$this->fixRequest();
 	}
 
 	/**
@@ -63,12 +53,22 @@ class DpaRequest extends ApiRequest {
 	}
 
 	/**
-	 * Sets the JSON DPA request
-	 * @param mixed $request JSON DPA request
+	 * Fixes a DPA packet
 	 */
-	public function setRequest($request): void {
-		parent::setRequest($request);
-		$this->fixRequest();
+	private function fixRawPacket(): void {
+		if (is_array($this->request)) {
+			$packet = &$this->request['data']['req']['rData'];
+		} else {
+			$packet = &$this->request->data->req->rData;
+		}
+		$data = explode('.', trim($packet, '.'));
+		$nadrLo = $data[0];
+		$nadrHi = $data[1];
+		if ($nadrHi !== '00' && $nadrLo === '00') {
+			$data[1] = $nadrLo;
+			$data[0] = $nadrHi;
+		}
+		$packet = Strings::lower(implode('.', $data));
 	}
 
 }

@@ -22,7 +22,7 @@ namespace App\IqrfNetModule\Presenters;
 
 use App\CoreModule\Presenters\ProtectedPresenter;
 use App\IqrfNetModule\Forms\SendJsonFormFactory;
-use Nette\Forms\Form;
+use Nette\Application\UI\Form;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 

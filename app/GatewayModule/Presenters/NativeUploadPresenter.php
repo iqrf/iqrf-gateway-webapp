@@ -23,7 +23,7 @@ namespace App\GatewayModule\Presenters;
 use App\CoreModule\Presenters\ProtectedPresenter;
 use App\CoreModule\Traits\TPresenterFlashMessage;
 use App\GatewayModule\Forms\NativeUploadFormFactory;
-use Nette\Forms\Form;
+use Nette\Application\UI\Form;
 
 /**
  * IQRF TR native upload presenter

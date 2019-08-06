@@ -61,49 +61,19 @@ class DevicesManager {
 	}
 
 	/**
-	 * Gets bonded devices
-	 * @return mixed[] API request and response
-	 * @throws DpaErrorException
-	 * @throws EmptyResponseException
-	 * @throws UserErrorException
-	 * @throws JsonException
+	 * Gets table of bonded and discovered devices
+	 * @param int $base Base
+	 * @return mixed[]|null Table of bonded and discovered devices
 	 */
-	public function getBonded(): array {
-		$array = [
-			'mType' => 'iqrfEmbedCoordinator_BondedDevices',
-			'data' => [
-				'req' => [
-					'nAdr' => 0,
-					'param' => (object) [],
-				],
-				'returnVerbose' => true,
-			],
-		];
-		$this->request->setRequest($array);
-		return $this->wsClient->sendSync($this->request);
-	}
-
-	/**
-	 * Gets discovered devices
-	 * @return mixed[] API request and response
-	 * @throws DpaErrorException
-	 * @throws EmptyResponseException
-	 * @throws UserErrorException
-	 * @throws JsonException
-	 */
-	public function getDiscovered(): array {
-		$array = [
-			'mType' => 'iqrfEmbedCoordinator_DiscoveredDevices',
-			'data' => [
-				'req' => [
-					'nAdr' => 0,
-					'param' => (object) [],
-				],
-				'returnVerbose' => true,
-			],
-		];
-		$this->request->setRequest($array);
-		return $this->wsClient->sendSync($this->request);
+	public function getTable(int $base): ?array {
+		if ($base !== 10 && $base !== 16) {
+			$base = 10;
+		}
+		$this->createEmptyTable($base);
+		$this->table[0][0] = DeviceTypes::COORDINATOR;
+		$this->fillTable(DeviceTypes::BONDED, $base);
+		$this->fillTable(DeviceTypes::DISCOVERED, $base);
+		return $this->table;
 	}
 
 	/**
@@ -148,19 +118,49 @@ class DevicesManager {
 	}
 
 	/**
-	 * Gets table of bonded and discovered devices
-	 * @param int $base Base
-	 * @return mixed[]|null Table of bonded and discovered devices
+	 * Gets bonded devices
+	 * @return mixed[] API request and response
+	 * @throws DpaErrorException
+	 * @throws EmptyResponseException
+	 * @throws UserErrorException
+	 * @throws JsonException
 	 */
-	public function getTable(int $base): ?array {
-		if ($base !== 10 && $base !== 16) {
-			$base = 10;
-		}
-		$this->createEmptyTable($base);
-		$this->table[0][0] = DeviceTypes::COORDINATOR;
-		$this->fillTable(DeviceTypes::BONDED, $base);
-		$this->fillTable(DeviceTypes::DISCOVERED, $base);
-		return $this->table;
+	public function getBonded(): array {
+		$array = [
+			'mType' => 'iqrfEmbedCoordinator_BondedDevices',
+			'data' => [
+				'req' => [
+					'nAdr' => 0,
+					'param' => (object) [],
+				],
+				'returnVerbose' => true,
+			],
+		];
+		$this->request->setRequest($array);
+		return $this->wsClient->sendSync($this->request);
+	}
+
+	/**
+	 * Gets discovered devices
+	 * @return mixed[] API request and response
+	 * @throws DpaErrorException
+	 * @throws EmptyResponseException
+	 * @throws UserErrorException
+	 * @throws JsonException
+	 */
+	public function getDiscovered(): array {
+		$array = [
+			'mType' => 'iqrfEmbedCoordinator_DiscoveredDevices',
+			'data' => [
+				'req' => [
+					'nAdr' => 0,
+					'param' => (object) [],
+				],
+				'returnVerbose' => true,
+			],
+		];
+		$this->request->setRequest($array);
+		return $this->wsClient->sendSync($this->request);
 	}
 
 }

@@ -28,7 +28,7 @@ use App\IqrfNetModule\Enums\UploadFormats;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Exceptions\UserErrorException;
-use Nette\Forms\Form;
+use Nette\Application\UI\Form;
 use Nette\IOException;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;
@@ -73,7 +73,7 @@ class NativeUploadFormFactory {
 	public function create(NativeUploadPresenter $presenter): Form {
 		$this->presenter = $presenter;
 		$form = $this->factory->create('gateway.nativeUpload');
-		$form->addUpload('file', 'file', false)
+		$form->addUpload('file', 'file')
 			->setHtmlAttribute('accept', '.hex,.iqrf,.trcnfg')
 			->setRequired('messages.file');
 		$form->addSelect('fileFormat', 'fileFormat', $this->getFileFormats())

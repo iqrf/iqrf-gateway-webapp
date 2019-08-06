@@ -24,6 +24,7 @@ use App\CoreModule\Exceptions\UsernameAlreadyExistsException;
 use App\CoreModule\Models\UserManager;
 use App\CoreModule\Presenters\UserPresenter;
 use Nette\SmartObject;
+use Ublaboo\DataGrid\Column\Action\Confirmation\StringConfirmation;
 use Ublaboo\DataGrid\DataGrid;
 use Ublaboo\DataGrid\Exception\DataGridColumnStatusException;
 use Ublaboo\DataGrid\Exception\DataGridException;
@@ -85,7 +86,7 @@ class UserDataGridFactory {
 			->setClass('btn btn-xs btn-info');
 		$grid->addAction('delete', 'config.actions.Remove')->setIcon('remove')
 			->setClass('btn btn-xs btn-danger ajax')
-			->setConfirm('core.user.form.messages.confirmDelete', 'username');
+			->setConfirmation(new StringConfirmation('core.user.form.messages.confirmDelete', 'username'));
 		$grid->addToolbarButton('add', 'config.actions.Add')
 			->setClass('btn btn-xs btn-success');
 		return $grid;
@@ -93,22 +94,13 @@ class UserDataGridFactory {
 
 	/**
 	 * Changes user's role
-	 * @param int $id User ID
+	 * @param string $id User ID
 	 * @param string $role User's role
 	 */
-	public function changeRole(int $id, string $role): void {
+	public function changeRole(string $id, string $role): void {
+		$id = intval($id);
 		$user = $this->manager->getInfo($id);
 		$this->edit($id, $user['username'], $role, $user['language']);
-	}
-
-	/**
-	 * Changes user's language
-	 * @param int $id User ID
-	 * @param string $language User's language
-	 */
-	public function changeLanguage(int $id, string $language): void {
-		$user = $this->manager->getInfo($id);
-		$this->edit($id, $user['username'], $user['role'], $language);
 	}
 
 	/**
@@ -138,6 +130,17 @@ class UserDataGridFactory {
 				$dataGrid->redrawItem($id);
 			}
 		}
+	}
+
+	/**
+	 * Changes user's language
+	 * @param string $id User ID
+	 * @param string $language User's language
+	 */
+	public function changeLanguage(string $id, string $language): void {
+		$id = intval($id);
+		$user = $this->manager->getInfo($id);
+		$this->edit($id, $user['username'], $user['role'], $language);
 	}
 
 }

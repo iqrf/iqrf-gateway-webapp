@@ -23,7 +23,7 @@ namespace App\CoreModule\Forms;
 use App\CoreModule\Exceptions\InvalidPasswordException;
 use App\CoreModule\Models\UserManager;
 use App\CoreModule\Presenters\ProfilePresenter;
-use Nette\Forms\Form;
+use Nette\Application\UI\Form;
 use Nette\Security\User;
 use Nette\SmartObject;
 

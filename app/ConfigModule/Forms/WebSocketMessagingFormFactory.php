@@ -21,7 +21,7 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Forms;
 
 use App\ConfigModule\Presenters\WebsocketPresenter;
-use Nette\Forms\Form;
+use Nette\Application\UI\Form;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;
 

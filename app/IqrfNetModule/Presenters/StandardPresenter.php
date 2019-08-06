@@ -24,7 +24,7 @@ use App\CoreModule\Presenters\ProtectedPresenter;
 use App\IqrfNetModule\Forms\StandardBinaryOutputFormFactory;
 use App\IqrfNetModule\Forms\StandardLightFormFactory;
 use App\IqrfNetModule\Forms\StandardSensorFormFactory;
-use Nette\Forms\Form;
+use Nette\Application\UI\Form;
 
 /**
  * IQRF Standard manager presenter

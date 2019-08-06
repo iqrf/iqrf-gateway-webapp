@@ -26,6 +26,7 @@ use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
 use Nette\IOException;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;
+use Ublaboo\DataGrid\Column\Action\Confirmation\StringConfirmation;
 use Ublaboo\DataGrid\DataGrid;
 use Ublaboo\DataGrid\Exception\DataGridColumnStatusException;
 use Ublaboo\DataGrid\Exception\DataGridException;
@@ -87,7 +88,7 @@ class ComponentsDataGridFactory {
 			->setClass('btn btn-xs btn-info');
 		$grid->addAction('delete', 'config.actions.Remove')->setIcon('remove')
 			->setClass('btn btn-xs btn-danger ajax')
-			->setConfirm('config.components.form.messages.confirmDelete', 'name');
+			->setConfirmation(new StringConfirmation('config.components.form.messages.confirmDelete', 'name'));
 		$grid->allowRowsAction('delete', function () {
 			return $this->presenter->user->isInRole('power');
 		});
@@ -117,13 +118,14 @@ class ComponentsDataGridFactory {
 
 	/**
 	 * Changes the status of the component
-	 * @param int $id Component ID
-	 * @param bool $status New component's status
+	 * @param string $id Component ID
+	 * @param string $status New component's status
 	 * @throws JsonException
 	 */
-	public function changeStatus(int $id, bool $status): void {
+	public function changeStatus(string $id, string $status): void {
+		$id = intval($id);
 		$config = $this->configManager->load($id);
-		$config['enabled'] = $status;
+		$config['enabled'] = boolval($status);
 		try {
 			$this->configManager->save($config, $id);
 			$this->presenter->flashSuccess('config.messages.success');

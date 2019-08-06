@@ -72,6 +72,16 @@ class ConsoleUserManager extends UserManager {
 	}
 
 	/**
+	 * Removes hashes from the information about the users
+	 * @param mixed[] $users Information about the users
+	 */
+	private function removeHashes(array &$users): void {
+		foreach ($users as &$user) {
+			unset($user['password']);
+		}
+	}
+
+	/**
 	 * Lists user names of all webapp's users
 	 * @return mixed[] User names of all webapp's users
 	 */
@@ -81,16 +91,6 @@ class ConsoleUserManager extends UserManager {
 			$users[] = $user['username'];
 		}
 		return $users;
-	}
-
-	/**
-	 * Removes hashes from the information about the users
-	 * @param mixed[] $users Information about the users
-	 */
-	private function removeHashes(array &$users): void {
-		foreach ($users as &$user) {
-			unset($user['password']);
-		}
 	}
 
 }

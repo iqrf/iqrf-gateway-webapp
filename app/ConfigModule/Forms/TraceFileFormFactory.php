@@ -21,7 +21,7 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Forms;
 
 use App\ConfigModule\Presenters\TracerPresenter;
-use Nette\Forms\Form;
+use Nette\Application\UI\Form;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;
 use Nette\Utils\Strings;

@@ -172,6 +172,23 @@ class SchedulerManager {
 	}
 
 	/**
+	 * Loads the task's configuration
+	 * @param int $id Task ID
+	 * @return mixed[] Array for the form
+	 * @throws JsonException
+	 */
+	public function load(int $id): array {
+		$files = $this->getTaskFiles();
+		if (!isset($files[$id])) {
+			return [];
+		}
+		$this->fileName = strval($files[$id]);
+		$config = $this->fileManager->read($this->fileName);
+		$this->timeManager->cronToString($config);
+		return $config;
+	}
+
+	/**
 	 * Gets DPA request from JSON
 	 * @param mixed[] $data JSON
 	 * @return string DPA request
@@ -210,23 +227,6 @@ class SchedulerManager {
 		$data = Strings::padLeft(dechex($hwpId & 255), 2, '0') . '.';
 		$data .= Strings::padLeft(dechex($hwpId >> 8), 2, '0');
 		return $data;
-	}
-
-	/**
-	 * Loads the task's configuration
-	 * @param int $id Task ID
-	 * @return mixed[] Array for the form
-	 * @throws JsonException
-	 */
-	public function load(int $id): array {
-		$files = $this->getTaskFiles();
-		if (!isset($files[$id])) {
-			return [];
-		}
-		$this->fileName = strval($files[$id]);
-		$config = $this->fileManager->read($this->fileName);
-		$this->timeManager->cronToString($config);
-		return $config;
 	}
 
 	/**

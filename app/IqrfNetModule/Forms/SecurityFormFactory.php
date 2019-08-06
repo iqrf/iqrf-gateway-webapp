@@ -27,8 +27,8 @@ use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Exceptions\UnsupportedInputFormatException;
 use App\IqrfNetModule\Models\SecurityManager;
 use App\IqrfNetModule\Presenters\TrSecurityPresenter;
+use Nette\Application\UI\Form;
 use Nette\Forms\Controls\SubmitButton;
-use Nette\Forms\Form;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;
 

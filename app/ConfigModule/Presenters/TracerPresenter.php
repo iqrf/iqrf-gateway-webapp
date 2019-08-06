@@ -23,7 +23,7 @@ namespace App\ConfigModule\Presenters;
 use App\ConfigModule\Datagrids\TraceFileDataGridFactory;
 use App\ConfigModule\Forms\TraceFileFormFactory;
 use App\ConfigModule\Models\GenericManager;
-use Nette\Forms\Form;
+use Nette\Application\UI\Form;
 use Nette\IOException;
 use Nette\Utils\JsonException;
 use Ublaboo\DataGrid\DataGrid;

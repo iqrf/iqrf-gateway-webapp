@@ -25,7 +25,7 @@ use App\ConfigModule\Forms\SchedulerFormFactory;
 use App\ConfigModule\Models\SchedulerManager;
 use App\CoreModule\Presenters\ProtectedPresenter;
 use App\CoreModule\Traits\TPresenterFlashMessage;
-use Nette\Forms\Form;
+use Nette\Application\UI\Form;
 use Nette\IOException;
 use Nette\Utils\JsonException;
 use Ublaboo\DataGrid\DataGrid;

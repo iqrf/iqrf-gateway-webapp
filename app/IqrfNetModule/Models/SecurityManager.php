@@ -74,22 +74,6 @@ class SecurityManager {
 	}
 
 	/**
-	 * Sets an user key
-	 * @param int $address Network device address
-	 * @param string $password An user key
-	 * @param string $inputFormat Input data format (ASCII or HEX)
-	 * @return mixed[] API request and response
-	 * @throws DpaErrorException
-	 * @throws EmptyResponseException
-	 * @throws JsonException
-	 * @throws UnsupportedInputFormatException
-	 * @throws UserErrorException
-	 */
-	public function setUserKey(int $address, string $password = '', string $inputFormat = DataFormat::ASCII): array {
-		return $this->setSecurity($address, $password, $inputFormat, 1);
-	}
-
-	/**
 	 * Sets IQMESH security
 	 * @param int $address Network device address
 	 * @param string $password An access password or an user key
@@ -140,6 +124,22 @@ class SecurityManager {
 			$chunk = hexdec($chunk);
 		}
 		return $array;
+	}
+
+	/**
+	 * Sets an user key
+	 * @param int $address Network device address
+	 * @param string $password An user key
+	 * @param string $inputFormat Input data format (ASCII or HEX)
+	 * @return mixed[] API request and response
+	 * @throws DpaErrorException
+	 * @throws EmptyResponseException
+	 * @throws JsonException
+	 * @throws UnsupportedInputFormatException
+	 * @throws UserErrorException
+	 */
+	public function setUserKey(int $address, string $password = '', string $inputFormat = DataFormat::ASCII): array {
+		return $this->setSecurity($address, $password, $inputFormat, 1);
 	}
 
 }

@@ -23,7 +23,7 @@ namespace App\ConfigModule\Presenters;
 use App\ConfigModule\Forms\IqrfCdcFormFactory;
 use App\ConfigModule\Models\GenericManager;
 use App\ConfigModule\Models\IqrfManager;
-use Nette\Forms\Form;
+use Nette\Application\UI\Form;
 use Nette\Utils\JsonException;
 
 /**

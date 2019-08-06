@@ -24,7 +24,7 @@ use App\ConfigModule\Forms\IqrfUartFormFactory;
 use App\ConfigModule\Models\GenericManager;
 use App\ConfigModule\Models\IqrfManager;
 use App\CoreModule\Models\JsonFileManager;
-use Nette\Forms\Form;
+use Nette\Application\UI\Form;
 use Nette\Utils\JsonException;
 
 /**

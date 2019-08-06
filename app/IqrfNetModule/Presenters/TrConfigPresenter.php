@@ -22,7 +22,7 @@ namespace App\IqrfNetModule\Presenters;
 
 use App\CoreModule\Presenters\ProtectedPresenter;
 use App\IqrfNetModule\Forms\ChangeAddressFormFactory;
-use Nette\Forms\Form;
+use Nette\Application\UI\Form;
 
 /**
  * TR configuration presenter

@@ -24,7 +24,7 @@ use App\ConfigModule\Models\WebSocketManager;
 use App\ConfigModule\Presenters\WebsocketPresenter;
 use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
 use App\CoreModule\Forms\FormFactory;
-use Nette\Forms\Form;
+use Nette\Application\UI\Form;
 use Nette\IOException;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;

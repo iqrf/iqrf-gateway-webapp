@@ -21,7 +21,7 @@ declare(strict_types = 1);
 namespace App\IqrfNetModule\Forms;
 
 use App\IqrfNetModule\Presenters\DpaConfigPresenter;
-use Nette\Forms\Form;
+use Nette\Application\UI\Form;
 use Nette\SmartObject;
 
 /**
@@ -66,7 +66,7 @@ class DpaConfigFormFactory extends TrConfigFormFactory {
 				}
 			}
 		}
-		$changeablePeripherals = ['eeprom', 'eeeprom', 'ram','ledr', 'ledg', 'spi', 'io', 'thermometer', 'uart', 'frc'];
+		$changeablePeripherals = ['eeprom', 'eeeprom', 'ram', 'ledr', 'ledg', 'spi', 'io', 'thermometer', 'uart', 'frc'];
 		foreach ($changeablePeripherals as $peripheral) {
 			$embeddedPeripherals->addCheckbox($peripheral, 'embPers.' . $peripheral);
 		}

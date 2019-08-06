@@ -72,7 +72,7 @@ class AppAuthenticator implements IAuthenticator {
 	public function authenticate(array $credentials): IIdentity {
 		[$username, $password] = $credentials;
 		$row = $this->table->where('username', $username)->fetch();
-		if (!$row) {
+		if ($row === null) {
 			throw new AuthenticationException('User not found.');
 		}
 		if (!password_verify($password, $row['password'])) {

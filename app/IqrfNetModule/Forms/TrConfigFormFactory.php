@@ -27,7 +27,7 @@ use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\IqrfNetModule\Models\TrConfigManager;
 use App\IqrfNetModule\Presenters\DpaConfigPresenter;
 use App\IqrfNetModule\Presenters\RfConfigPresenter;
-use Nette\Forms\Form;
+use Nette\Application\UI\Form;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;
 
@@ -69,6 +69,24 @@ abstract class TrConfigFormFactory {
 	}
 
 	/**
+	 * Writes IQRF TR configuration from the form
+	 * @param Form $form Set TR configuration form
+	 */
+	public function save(Form $form): void {
+		$address = $this->presenter->getParameter('id', 0);
+		$config = $form->getValues(true);
+		if (array_key_exists('stdAndLpNetwork', $config)) {
+			$config['stdAndLpNetwork'] = boolval($config['stdAndLpNetwork']);
+		}
+		try {
+			$this->manager->write($address, $config);
+			$this->presenter->flashSuccess('iqrfnet.trConfiguration.write.success');
+		} catch (DpaErrorException | EmptyResponseException | JsonException | UserErrorException $e) {
+			$this->presenter->flashError('iqrfnet.trConfiguration.write.failure');
+		}
+	}
+
+	/**
 	 * Loads IQRF TR configuration into the form
 	 */
 	protected function load(): void {
@@ -84,24 +102,6 @@ abstract class TrConfigFormFactory {
 		$this->configuration = $dpa['response']['data']['rsp'];
 		if (array_key_exists('stdAndLpNetwork', $this->configuration)) {
 			$this->configuration['stdAndLpNetwork'] = intval($this->configuration['stdAndLpNetwork']);
-		}
-	}
-
-	/**
-	 * Writes IQRF TR configuration from the form
-	 * @param Form $form Set TR configuration form
-	 */
-	public function save(Form $form): void {
-		$address = $this->presenter->getParameter('id', 0);
-		$config = $form->getValues(true);
-		if (array_key_exists('stdAndLpNetwork', $config)) {
-			$config['stdAndLpNetwork'] = boolval($config['stdAndLpNetwork']);
-		}
-		try {
-			$this->manager->write($address, $config);
-			$this->presenter->flashSuccess('iqrfnet.trConfiguration.write.success');
-		} catch (DpaErrorException | EmptyResponseException | JsonException | UserErrorException $e) {
-			$this->presenter->flashError('iqrfnet.trConfiguration.write.failure');
 		}
 	}
 

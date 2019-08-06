@@ -21,7 +21,7 @@ declare(strict_types = 1);
 namespace App\CoreModule\Presenters;
 
 use App\CoreModule\Forms\ChangePasswordFormFactory;
-use Nette\Forms\Form;
+use Nette\Application\UI\Form;
 
 /**
  * Profile presenter

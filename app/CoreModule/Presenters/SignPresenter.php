@@ -23,7 +23,7 @@ namespace App\CoreModule\Presenters;
 use App\CoreModule\Forms\SignInFormFactory;
 use App\CoreModule\Models\UserManager;
 use App\CoreModule\Traits\TPresenterFlashMessage;
-use Nette\Forms\Form;
+use Nette\Application\UI\Form;
 
 /**
  * Sign in/out presenter

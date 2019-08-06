@@ -23,7 +23,7 @@ namespace App\ConfigModule\Presenters;
 use App\ConfigModule\Forms\OtaUploadFormFactory;
 use App\ConfigModule\Models\GenericManager;
 use Nette\Application\BadRequestException;
-use Nette\Forms\Form;
+use Nette\Application\UI\Form;
 use Nette\Utils\JsonException;
 
 /**

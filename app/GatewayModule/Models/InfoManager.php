@@ -163,6 +163,25 @@ class InfoManager {
 	}
 
 	/**
+	 * Converts bytes to human readable sizes
+	 * @param mixed $bytes Bytes to convert
+	 * @param int $precision Conversion precision
+	 * @return string Human readable size
+	 */
+	public function convertSizes($bytes, int $precision = 2): string {
+		$bytes = round(floatval($bytes));
+		$units = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB'];
+		$unit = 'B';
+		foreach ($units as $unit) {
+			if (abs($bytes) < 1024 || $unit === end($units)) {
+				break;
+			}
+			$bytes /= 1024;
+		}
+		return round($bytes, $precision) . ' ' . $unit;
+	}
+
+	/**
 	 * Gets a memory usage
 	 * @return string[] Memory usage
 	 */
@@ -199,25 +218,6 @@ class InfoManager {
 			'usage' => round($segments[1] / $segments[0] * 100, 2) . '%',
 		];
 		return $usages;
-	}
-
-	/**
-	 * Converts bytes to human readable sizes
-	 * @param mixed $bytes Bytes to convert
-	 * @param int $precision Conversion precision
-	 * @return string Human readable size
-	 */
-	public function convertSizes($bytes, int $precision = 2): string {
-		$bytes = round(floatval($bytes));
-		$units = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB'];
-		$unit = 'B';
-		foreach ($units as $unit) {
-			if (abs($bytes) < 1024 || $unit === end($units)) {
-				break;
-			}
-			$bytes /= 1024;
-		}
-		return round($bytes, $precision) . ' ' . $unit;
 	}
 
 	/**

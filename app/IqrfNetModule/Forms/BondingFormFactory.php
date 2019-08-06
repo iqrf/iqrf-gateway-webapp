@@ -25,8 +25,8 @@ use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Models\BondingManager;
 use App\IqrfNetModule\Presenters\NetworkPresenter;
+use Nette\Application\UI\Form;
 use Nette\Forms\Controls\SubmitButton;
-use Nette\Forms\Form;
 use Nette\SmartObject;
 use Nette\Utils\Html;
 use Nette\Utils\JsonException;
@@ -101,19 +101,6 @@ class BondingFormFactory {
 	}
 
 	/**
-	 * Add inputs fo IQRF SmartConnect
-	 * @param Form $form IQMESH Bonding form
-	 */
-	private function addSmartConnectInputs(Form $form): void {
-		$form->addGroup()
-			->setOption('container', Html::el('fieldset')->id('smartConnect'));
-		$form->addText('smartConnectCode', 'smartConnectCode')
-			->addConditionOn($form['method'], Form::EQUAL, 'smartConnect')
-			->setRequired('messages.smartConnectCode');
-		$form->addGroup();
-	}
-
-	/**
 	 * Returns bonding methods
 	 * @return mixed[] Bonding methods
 	 */
@@ -124,6 +111,19 @@ class BondingFormFactory {
 			unset($methods[$id]);
 		}
 		return $methods;
+	}
+
+	/**
+	 * Add inputs fo IQRF SmartConnect
+	 * @param Form $form IQMESH Bonding form
+	 */
+	private function addSmartConnectInputs(Form $form): void {
+		$form->addGroup()
+			->setOption('container', Html::el('fieldset')->id('smartConnect'));
+		$form->addText('smartConnectCode', 'smartConnectCode')
+			->addConditionOn($form['method'], Form::EQUAL, 'smartConnect')
+			->setRequired('messages.smartConnectCode');
+		$form->addGroup();
 	}
 
 	/**

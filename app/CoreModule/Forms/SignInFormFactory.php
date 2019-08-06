@@ -21,7 +21,7 @@ declare(strict_types = 1);
 namespace App\CoreModule\Forms;
 
 use App\CoreModule\Presenters\SignPresenter;
-use Nette\Forms\Form;
+use Nette\Application\UI\Form;
 use Nette\Security\AuthenticationException;
 use Nette\Security\User;
 use Nette\SmartObject;

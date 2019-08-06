@@ -21,7 +21,7 @@ declare(strict_types = 1);
 namespace App\IqrfNetModule\Presenters;
 
 use App\IqrfNetModule\Forms\SecurityFormFactory;
-use Nette\Forms\Form;
+use Nette\Application\UI\Form;
 
 /**
  * IQMESH security presenter

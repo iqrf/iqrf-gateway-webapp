@@ -23,7 +23,7 @@ namespace App\CoreModule\Forms;
 use App\CoreModule\Exceptions\UsernameAlreadyExistsException;
 use App\CoreModule\Models\UserManager;
 use App\CoreModule\Presenters\UserPresenter;
-use Nette\Forms\Form;
+use Nette\Application\UI\Form;
 use Nette\SmartObject;
 
 /**
