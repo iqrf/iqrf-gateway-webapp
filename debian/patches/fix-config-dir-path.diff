@@ -1,8 +1,8 @@
 Fixes configuration directory path
-Index: iqrf-gateway-webapp/app/ConsoleModule/models/FeatureManager.php
+Index: iqrf-gateway-webapp/app/ConsoleModule/Models/FeatureManager.php
 ===================================================================
---- iqrf-gateway-webapp.orig/app/ConsoleModule/models/FeatureManager.php
-+++ iqrf-gateway-webapp/app/ConsoleModule/models/FeatureManager.php
+--- iqrf-gateway-webapp.orig/app/ConsoleModule/Models/FeatureManager.php
++++ iqrf-gateway-webapp/app/ConsoleModule/Models/FeatureManager.php
 @@ -35,7 +35,7 @@ class FeatureManager {
  	/**
  	 * Path to the webapp's configuration file
