@@ -1,6 +1,5 @@
 language: php
 php:
-  - 7.1
   - 7.2
   - 7.3
 env:
@@ -20,20 +19,20 @@ after_failure:
 jobs:
   include:
     - stage: Code Coverage
-      php: 7.2
+      php: 7.3
       script:
         - travis_retry vendor/bin/tester -p phpdbg -c ./tests/php.ini -s --coverage ./coverage.xml --coverage-src ./app ./tests
       after_script:
         - bash <(curl -s https://codecov.io/bash)
     - stage: Code Standard Checker
-      php: 7.2
+      php: 7.3
       install:
         # Install Nette Code Checker
         - travis_retry composer install-cs
       script:
         - composer check-cs
     - stage: Static Analysis
-      php: 7.2
+      php: 7.3
       script:
         - composer phpstan
   allow_failures:

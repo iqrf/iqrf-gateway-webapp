@@ -9,11 +9,11 @@ This is web application for managing IQRF Gateway Daemon's configuration.
 
 ## Installation
 
-See the installation guide [here](INSTALL.md).
+See the installation guide [here](https://docs.iqrf.org/iqrf-gateway/webapp-install.html).
 
 ## Requirements
 
-PHP 7.1 or higher. To check whether server configuration meets the minimum requirements for [Nette Framework](https://doc.nette.org/2.4/requirements).
+PHP 7.2 or higher. To check whether server configuration meets the minimum requirements for [Nette Framework](https://doc.nette.org/3.0/requirements).
 
 ### Web server
 

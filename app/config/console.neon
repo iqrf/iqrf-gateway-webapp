@@ -12,5 +12,13 @@ console:
 	#helperSet: @customHelperSet
 
 console.extra:
+	advancedCache: false
+	cache:
+		purge:
+			- %tempDir%/cache
+	caching: false
+	di: false
+	latte: false
+	router: false
 	security: false
 	utils: false
