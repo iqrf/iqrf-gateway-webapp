@@ -21,7 +21,7 @@ declare(strict_types = 1);
 namespace App\CoreModule\Datagrids;
 
 use App\CoreModule\Presenters\BasePresenter;
-use Contributte\Translation\Translator;
+use Nette\Localization\ITranslator;
 use Nette\SmartObject;
 use Ublaboo\DataGrid\DataGrid;
 
@@ -33,15 +33,15 @@ class DataGridFactory {
 	use SmartObject;
 
 	/**
-	 * @var Translator Translator
+	 * @var ITranslator Translator
 	 */
 	private $translator;
 
 	/**
 	 * Constructor
-	 * @param Translator $translator Translator
+	 * @param ITranslator $translator Translator
 	 */
-	public function __construct(Translator $translator) {
+	public function __construct(ITranslator $translator) {
 		$this->translator = $translator;
 	}
 

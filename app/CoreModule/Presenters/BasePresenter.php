@@ -20,9 +20,9 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Presenters;
 
-use Contributte\Translation\Translator;
 use Nette\Application\UI\ITemplate;
 use Nette\Application\UI\Presenter;
+use Nette\Localization\ITranslator;
 
 /**
  * Base presenter for all application presenters
@@ -36,7 +36,7 @@ abstract class BasePresenter extends Presenter {
 	public $lang;
 
 	/**
-	 * @var Translator Translator
+	 * @var ITranslator Translator
 	 */
 	protected $translator;
 
@@ -52,17 +52,17 @@ abstract class BasePresenter extends Presenter {
 
 	/**
 	 * Injects the translator service
-	 * @param Translator $translator Translator
+	 * @param ITranslator $translator Translator
 	 */
-	public function injectTranslator(Translator $translator): void {
+	public function injectTranslator(ITranslator $translator): void {
 		$this->translator = $translator;
 	}
 
 	/**
 	 * Returns the translator
-	 * @return Translator Transtalor
+	 * @return ITranslator Transtalor
 	 */
-	public function getTranslator(): Translator {
+	public function getTranslator(): ITranslator {
 		return $this->translator;
 	}
 

@@ -23,6 +23,7 @@ namespace App\CoreModule\Forms;
 use Contributte\Translation\Translator;
 use Nepada\FormRenderer\IBootstrap3RendererFactory;
 use Nette\Application\UI\Form;
+use Nette\Localization\ITranslator;
 use Nette\SmartObject;
 
 /**
@@ -44,10 +45,10 @@ class FormFactory {
 
 	/**
 	 * Constructor
-	 * @param Translator $translator Translator service
+	 * @param ITranslator $translator Translator service
 	 * @param IBootstrap3RendererFactory $rendererFactory Form renderer factory interface
 	 */
-	public function __construct(Translator $translator, IBootstrap3RendererFactory $rendererFactory) {
+	public function __construct(ITranslator $translator, IBootstrap3RendererFactory $rendererFactory) {
 		$this->translator = $translator;
 		$this->rendererFactory = $rendererFactory;
 	}

@@ -21,8 +21,8 @@ declare(strict_types = 1);
 namespace App\ConsoleModule\Models;
 
 use App\ConsoleModule\Exceptions\UnknownFeatureException;
-use Kdyby\Translation\Translator;
 use Nette\IOException;
+use Nette\Localization\ITranslator;
 use Nette\Neon\Exception as NeonException;
 use Nette\Neon\Neon;
 use Nette\Utils\FileSystem;
@@ -38,15 +38,15 @@ class FeatureManager {
 	private const CONF_PATH = __DIR__ . '/../../config/features.neon';
 
 	/**
-	 * @var Translator Translator
+	 * @var ITranslator Translator
 	 */
 	private $translator;
 
 	/**
 	 * Constructor
-	 * @param Translator $translator Translator
+	 * @param ITranslator $translator ITranslator
 	 */
-	public function __construct(Translator $translator) {
+	public function __construct(ITranslator $translator) {
 		$this->translator = $translator;
 	}
 
