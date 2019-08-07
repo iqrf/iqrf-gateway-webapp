@@ -1,9 +1,7 @@
 Fixes configuration directory path
-Index: iqrf-gateway-webapp/app/ConsoleModule/Models/FeatureManager.php
-===================================================================
---- iqrf-gateway-webapp.orig/app/ConsoleModule/Models/FeatureManager.php
-+++ iqrf-gateway-webapp/app/ConsoleModule/Models/FeatureManager.php
-@@ -35,7 +35,7 @@ class FeatureManager {
+--- a/app/ConsoleModule/Models/FeatureManager.php
++++ b/app/ConsoleModule/Models/FeatureManager.php
+@@ -35,7 +35,7 @@
  	/**
  	 * Path to the webapp's configuration file
  	 */
@@ -11,12 +9,10 @@ Index: iqrf-gateway-webapp/app/ConsoleModule/Models/FeatureManager.php
 +	private const CONF_PATH = '/etc/iqrf-gateway-webapp/features.neon';
  
  	/**
- 	 * @var Translator Translator
-Index: iqrf-gateway-webapp/app/Kernel.php
-===================================================================
---- iqrf-gateway-webapp.orig/app/Kernel.php
-+++ iqrf-gateway-webapp/app/Kernel.php
-@@ -37,7 +37,7 @@ class Kernel {
+ 	 * @var ITranslator Translator
+--- a/app/Kernel.php
++++ b/app/Kernel.php
+@@ -37,7 +37,7 @@
  		$configurator->setTimeZone('Europe/Prague');
  		$configurator->setTempDirectory('/var/cache/iqrf-gateway-webapp');
  		$configurator->createRobotLoader()->addDirectory(__DIR__)->register();
@@ -25,11 +21,9 @@ Index: iqrf-gateway-webapp/app/Kernel.php
  		return $configurator;
  	}
  
-Index: iqrf-gateway-webapp/app/config/config.neon
-===================================================================
---- iqrf-gateway-webapp.orig/app/config/config.neon
-+++ iqrf-gateway-webapp/app/config/config.neon
-@@ -3,7 +3,7 @@ parameters:
+--- a/app/config/config.neon
++++ b/app/config/config.neon
+@@ -3,7 +3,7 @@
  	initDaemon: 'systemd'
  	sudo: true
  	# path to IQRF IDE macros
@@ -38,7 +32,7 @@ Index: iqrf-gateway-webapp/app/config/config.neon
  	# Daemon configuration
  	daemon:
  		# Path to directory with IQRF Gateway Daemon's JSON API schemas
-@@ -68,10 +68,10 @@ includes:
+@@ -68,10 +68,10 @@
  	- guzzle.neon
  	- monolog.neon
  	- translation.neon

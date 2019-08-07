@@ -1,9 +1,7 @@
 Fixes log directory path
-Index: iqrf-gateway-webapp/app/Kernel.php
-===================================================================
---- iqrf-gateway-webapp.orig/app/Kernel.php
-+++ iqrf-gateway-webapp/app/Kernel.php
-@@ -33,7 +33,7 @@ class Kernel {
+--- a/app/Kernel.php
++++ b/app/Kernel.php
+@@ -33,7 +33,7 @@
  	 */
  	public static function boot(): Configurator {
  		$configurator = new Configurator();

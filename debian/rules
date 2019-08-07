@@ -43,8 +43,11 @@ override_dh_install:
 	find ${VENDOR_DIR} -type f -name "package.json" -delete
 	# Delete ESLint files
 	find ${VENDOR_DIR} -type f -name ".eslintrc.js" -delete
-	# Delete git repositories
+	# Delete git files
 	find ${VENDOR_DIR} -type d -name ".git" -print0 | xargs -0 rm -rf
+	find ${VENDOR_DIR} -type f -name ".gitattributes" -delete
+	find ${VENDOR_DIR} -type f -name ".gitignore" -delete
+	find ${VENDOR_DIR} -type f -name ".gitmodules" -delete
 	# Delete CI files
 	find ${VENDOR_DIR} -type f -regex ".*/\(appveyor\|\.gitlab-ci\|\.scrutinizer\|\.travis\)\.yml" -delete
 	# Delete PHP Coding Standards Fixer files
