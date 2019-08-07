@@ -1,10 +1,9 @@
 extensions:
 	translation: Contributte\Translation\DI\TranslationExtension
 
-
 translation:
-    locales:
-        whitelist: [en]
-        default: en
-    dirs:
-        - %appDir%/lang
+	locales:
+		whitelist: [en]
+		default: en
+	dirs:
+		- %appDir%/lang
