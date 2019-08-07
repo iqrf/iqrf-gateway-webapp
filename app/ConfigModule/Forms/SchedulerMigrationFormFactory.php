@@ -27,6 +27,7 @@ use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
 use App\CoreModule\Forms\FormFactory;
 use App\ServiceModule\Exceptions\NotSupportedInitSystemException;
 use Nette\Application\UI\Form;
+use Nette\Forms\Controls\SubmitButton;
 use Nette\IOException;
 use Nette\SmartObject;
 
@@ -73,19 +74,24 @@ class SchedulerMigrationFormFactory {
 		$form->addUpload('configuration', 'configuration')
 			->setRequired('messages.configuration')
 			->setHtmlAttribute('accept', '.zip');
-		$form->addSubmit('import', 'import');
+		$form->addSubmit('import', 'import')
+			->setHtmlAttribute('class', 'btn btn-primary')
+			->onClick[] = [$this, 'import'];
+		$form->addSubmit('export', 'export')
+			->setValidationScope([])
+			->setHtmlAttribute('class', 'btn btn-primary')
+			->onClick[] = [$this, 'export'];
 		$form->addProtection('core.errors.form-timeout');
-		$form->onSuccess[] = [$this, 'import'];
 		return $form;
 	}
 
 	/**
 	 * Imports the scheduler's configuration
-	 * @param Form $form Scheduler's configuration migration form
+	 * @param SubmitButton $button Scheduler's configuration import button
 	 */
-	public function import(Form $form): void {
+	public function import(SubmitButton $button): void {
 		try {
-			$this->manager->upload($form->getValues(true));
+			$this->manager->upload($button->getForm()->getValues(true));
 			$this->presenter->flashSuccess('config.migration.messages.importedConfig');
 		} catch (InvalidConfigurationFormatException $e) {
 			$this->presenter->flashError('config.migration.errors.invalidFormat');
@@ -99,6 +105,13 @@ class SchedulerMigrationFormFactory {
 		} finally {
 			$this->presenter->redirect('Homepage:default');
 		}
+	}
+
+	/**
+	 * Exports the configuration
+	 */
+	public function export(): void {
+		$this->presenter->redirect('Migration:schedulerExport');
 	}
 
 }

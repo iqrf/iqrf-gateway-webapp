@@ -19,21 +19,11 @@
 {block content}
 <div class='panel panel-default'>
 	<div class='panel-body'>
-		<form n:name=configImportForm class=form>
-			<label n:name=configuration for='configuration'>{_config.migration.configuration}</label>
-			<input n:name=configuration>
-			<input n:name=import class='btn btn-primary navbar-btn'>
-			<a class="btn btn-primary" n:href="Migration:export" role="button">{_config.migration.export}</a>
-		</form>
+		{control configImportForm}
 	</div>
 </div>
 <div class='panel panel-default'>
 	<div class='panel-body'>
-		<form n:name=configSchedulerImportForm class=form>
-			<label n:name=configuration for='configuration'>{_config.schedulerMigration.configuration}</label>
-			<input n:name=configuration>
-			<input n:name=import class='btn btn-primary navbar-btn'>
-			<a class="btn btn-primary" n:href="Migration:schedulerExport" role="button">{_config.schedulerMigration.export}</a>
-		</form>
+		{control configSchedulerImportForm}
 	</div>
 </div>

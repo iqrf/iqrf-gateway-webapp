@@ -28,6 +28,7 @@ use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
 use App\CoreModule\Forms\FormFactory;
 use App\ServiceModule\Exceptions\NotSupportedInitSystemException;
 use Nette\Application\UI\Form;
+use Nette\Forms\Controls\SubmitButton;
 use Nette\IOException;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;
@@ -75,20 +76,25 @@ class MigrationFormFactory {
 		$form->addUpload('configuration', 'configuration')
 			->setRequired('messages.configuration')
 			->setHtmlAttribute('accept', '.zip');
-		$form->addSubmit('import', 'import');
+		$form->addSubmit('import', 'import')
+			->setHtmlAttribute('class', 'btn btn-primary')
+			->onClick[] = [$this, 'import'];
+		$form->addSubmit('export', 'export')
+			->setValidationScope([])
+			->setHtmlAttribute('class', 'btn btn-primary')
+			->onClick[] = [$this, 'export'];
 		$form->addProtection('core.errors.form-timeout');
-		$form->onSuccess[] = [$this, 'import'];
 		return $form;
 	}
 
 	/**
 	 * Imports the configuration
-	 * @param Form $form Configuration migration form
+	 * @param SubmitButton $button Configuration import button
 	 * @throws JsonException
 	 */
-	public function import(Form $form): void {
+	public function import(SubmitButton $button): void {
 		try {
-			$this->manager->upload($form->getValues(true));
+			$this->manager->upload($button->getForm()->getValues(true));
 			$this->presenter->flashSuccess('config.migration.messages.importedConfig');
 		} catch (IncompleteConfigurationException $e) {
 			$this->presenter->flashError('config.migration.errors.invalidConfig');
@@ -104,6 +110,13 @@ class MigrationFormFactory {
 		} finally {
 			$this->presenter->redirect('Homepage:default');
 		}
+	}
+
+	/**
+	 * Exports the configuration
+	 */
+	public function export(): void {
+		$this->presenter->redirect('Migration:export');
 	}
 
 }
