@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\IqrfNetModule\Presenters;
 
-use App\CoreModule\Presenters\ProfilePresenter;
+use App\CoreModule\Presenters\ProtectedPresenter;
 use App\CoreModule\Traits\TPresenterFlashMessage;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
@@ -31,7 +31,7 @@ use Nette\Utils\JsonException;
 /**
  * IQMESH device enumeration presenter
  */
-class EnumerationPresenter extends ProfilePresenter {
+class EnumerationPresenter extends ProtectedPresenter {
 
 	use TPresenterFlashMessage;
 
