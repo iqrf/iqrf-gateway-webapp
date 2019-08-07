@@ -21,34 +21,28 @@
 	<section class='panel-body'>
 		{form sendRawForm}
 			{label packet}
-			{input packet}
+			<input n:name=packet class='form-control'>
 			<div class='row'>
 				<div class='col-md-6'>
 					<div class='form-group checkbox'>
-						<label>
-							{input overwriteAddress}
-							{_iqrfnet.send-packet.overwriteAddress}
-						</label>
+						{input overwriteAddress}
 					</div>
 					<div class='form-group'>
-						{label address /}
-						{input address}
+						{label address}
+						<input n:name=address class='form-control'>
 					</div>
 				</div>
 				<div class='col-md-6'>
 					<div class='form-group checkbox'>
-						<label>
-							{input timeoutEnabled}
-							{_iqrfnet.send-packet.overwriteTimeout}
-						</label>
+						{input timeoutEnabled}
 					</div>
 					<div class='form-group'>
-						{label timeout /}
-						{input timeout}
+						{label timeout}
+						<input n:name=timeout class='form-control'>
 					</div>
 				</div>
 			</div>
-			{input send}
+			<input n:name=send class='btn btn-primary'>
 		{/form}
 	</section>
 </div>

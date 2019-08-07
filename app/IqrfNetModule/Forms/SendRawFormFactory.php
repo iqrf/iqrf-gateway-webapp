@@ -72,15 +72,17 @@ class SendRawFormFactory {
 		$form->addText('packet', 'packet')
 			->setRequired('messages.packet');
 		$form->addCheckbox('overwriteAddress', 'overwriteAddress')
-			->setDefaultValue(false);
-		$form->addText('address', 'customAddress')
-			->setDefaultValue('00')
+			->setDefaultValue(false)
+			->addCondition(Form::EQUAL, true);
+		$form->addInteger('address', 'customAddress')
+			->setDefaultValue(0)
 			->setRequired(false)
-			->addRule(Form::PATTERN, 'messages.address-rule', '[0-9A-Fa-f]{1,2}')
-			->addRule(Form::MAX_LENGTH, 'messages.address-length', 2)
-			->addConditionOn($form['overwriteAddress'], Form::EQUAL, true);
+			->addConditionOn($form['overwriteAddress'], Form::EQUAL, true)
+				->addRule(Form::RANGE, 'messages.address', [0, 239])
+				->setRequired('messages.address');
 		$form->addCheckbox('timeoutEnabled', 'overwriteTimeout')
-			->setDefaultValue(true);
+			->setDefaultValue(true)
+			->addCondition(Form::EQUAL, true);
 		$form->addInteger('timeout', 'customTimeout')
 			->setDefaultValue(1000)
 			->addConditionOn($form['timeoutEnabled'], Form::EQUAL, true)
@@ -105,7 +107,7 @@ class SendRawFormFactory {
 			return;
 		}
 		if ($values['overwriteAddress'] === true) {
-			$nadr = $values['address'];
+			$nadr = dechex($values['address']);
 			$this->manager->updateNadr($packet, $nadr);
 		}
 		try {

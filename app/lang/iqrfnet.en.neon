@@ -199,8 +199,7 @@ send-packet:
 	overwriteTimeout: Set own DPA timeout
 	customTimeout: 'DPA timeout (ms)'
 	messages:
-		address-length: It has to have maximal length of 2 chars.
-		address-rule: It has to contain hexadecimal number - NADR.
+		address: Please enter a valid address. Its has to be a decimal number from 1 to 239.
 		invalidPacket: Invalid DPA packet.
 		packet: Please enter DPA packet.
 	send: Send
