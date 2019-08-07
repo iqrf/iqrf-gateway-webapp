@@ -71,6 +71,7 @@ class BondingFormFactory {
 	public function create(NetworkPresenter $presenter): Form {
 		$this->presenter = $presenter;
 		$form = $this->factory->create('iqrfnet.bonding');
+		$form->addGroup();
 		$form->addSelect('method', 'method', $this->getBondingMethods())
 			->addCondition(Form::EQUAL, 'smartConnect')
 			->toggle('smartConnect', true)
@@ -87,16 +88,19 @@ class BondingFormFactory {
 		$form->addInteger('testRetries', 'testRetries')
 			->setDefaultValue(1);
 		$this->addSmartConnectInputs($form);
+		$form->addProtection('core.errors.form-timeout');
 		$form->addSubmit('add', 'addBond')
+			->setHtmlAttribute('class', 'btn btn-primary')
 			->onClick[] = [$this, 'addBond'];
 		$form->addSubmit('remove', 'removeBond')
+			->setHtmlAttribute('class', 'btn btn-primary')
 			->setValidationScope([$form['address']])
 			->setHtmlId('removeBond')
 			->onClick[] = [$this, 'removeBond'];
 		$form->addSubmit('clear', 'clearAllBonds')
-			->setValidationScope(false)
+			->setHtmlAttribute('class', 'btn btn-primary')
+			->setValidationScope(null)
 			->onClick[] = [$this, 'clearAllBonds'];
-		$form->addProtection('core.errors.form-timeout');
 		return $form;
 	}
 
@@ -118,8 +122,7 @@ class BondingFormFactory {
 	 * @param Form $form IQMESH Bonding form
 	 */
 	private function addSmartConnectInputs(Form $form): void {
-		$form->addGroup()
-			->setOption('container', Html::el('fieldset')->id('smartConnect'));
+		$form->addGroup()->setOption('id', 'smartConnect');
 		$form->addText('smartConnectCode', 'smartConnectCode')
 			->addConditionOn($form['method'], Form::EQUAL, 'smartConnect')
 			->setRequired('messages.smartConnectCode');
