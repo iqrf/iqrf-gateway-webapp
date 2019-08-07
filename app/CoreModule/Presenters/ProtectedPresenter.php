@@ -27,6 +27,7 @@ use Nette\Reflection\ClassType;
 use Nette\Reflection\Method;
 use Nette\Security\IUserStorage;
 use Nette\Utils\JsonException;
+use ReflectionMethod;
 
 /**
  * Protected presenter for protected application presenters
@@ -60,7 +61,7 @@ abstract class ProtectedPresenter extends BasePresenter {
 
 	/**
 	 * Checks requirements
-	 * @param ClassType|Method $element Element
+	 * @param mixed $element Element
 	 */
 	public function checkRequirements($element): void {
 		if (!$this->user->isLoggedIn()) {

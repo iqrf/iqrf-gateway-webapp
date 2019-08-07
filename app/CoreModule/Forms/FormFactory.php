@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Forms;
 
-use Kdyby\Translation\Translator;
+use Contributte\Translation\Translator;
 use Nepada\FormRenderer\IBootstrap3RendererFactory;
 use Nette\Application\UI\Form;
 use Nette\SmartObject;
@@ -63,7 +63,7 @@ class FormFactory {
 		if ($translationPrefix === null) {
 			$form->setTranslator($this->translator);
 		} else {
-			$translator = $this->translator->domain($translationPrefix);
+			$translator = $this->translator->createPrefixedTranslator($translationPrefix);
 			$form->setTranslator($translator);
 		}
 		$form->setRenderer($renderer);

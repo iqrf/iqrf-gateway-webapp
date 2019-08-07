@@ -21,7 +21,7 @@ declare(strict_types = 1);
 namespace App\CoreModule\Datagrids;
 
 use App\CoreModule\Presenters\BasePresenter;
-use Kdyby\Translation\Translator;
+use Contributte\Translation\Translator;
 use Nette\SmartObject;
 use Ublaboo\DataGrid\DataGrid;
 

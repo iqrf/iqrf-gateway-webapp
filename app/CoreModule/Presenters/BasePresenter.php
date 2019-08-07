@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Presenters;
 
-use Kdyby\Translation\Translator;
+use Contributte\Translation\Translator;
 use Nette\Application\UI\ITemplate;
 use Nette\Application\UI\Presenter;
 

@@ -40,9 +40,6 @@ parameters:
 			message: '#Call to function is_int\(\) with int will always evaluate to true.#'
 			path: %currentWorkingDirectory%/app/CoreModule/Models/ZipArchiveManager.php
 		-
-			message: '#Parameter \#1 \$element \(Nette\\Reflection\\ClassType\|Nette\\Reflection\\Method\) of method App\\CoreModule\\Presenters\\ProtectedPresenter::checkRequirements\(\) should be contravariant with parameter \$element \(mixed\) of method Nette\\Application\\UI\\Presenter::checkRequirements\(\)#'
-			path: %currentWorkingDirectory%/app/CoreModule/Presenters/ProtectedPresenter.php
-		-
 			message: '#Foreach overwrites \$unit with its value variable.#'
 			path: %currentWorkingDirectory%/app/GatewayModule/Models/InfoManager.php
 	fileExtensions:

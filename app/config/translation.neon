@@ -1,6 +1,10 @@
 extensions:
-	translation: Kdyby\Translation\DI\TranslationExtension
+	translation: Contributte\Translation\DI\TranslationExtension
+
 
 translation:
-	default: en
-	fallback: [en]
+    locales:
+        whitelist: [en]
+        default: en
+    dirs:
+        - %appDir%/lang
