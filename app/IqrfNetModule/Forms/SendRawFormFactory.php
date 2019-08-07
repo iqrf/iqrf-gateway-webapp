@@ -72,17 +72,15 @@ class SendRawFormFactory {
 		$form->addText('packet', 'packet')
 			->setRequired('messages.packet');
 		$form->addCheckbox('overwriteAddress', 'overwriteAddress')
-			->setDefaultValue(false)
-			->addCondition(Form::EQUAL, true);
+			->setDefaultValue(false);
 		$form->addInteger('address', 'customAddress')
 			->setDefaultValue(0)
 			->setRequired(false)
 			->addConditionOn($form['overwriteAddress'], Form::EQUAL, true)
-				->addRule(Form::RANGE, 'messages.address', [0, 239])
-				->setRequired('messages.address');
+			->addRule(Form::RANGE, 'messages.address', [0, 239])
+			->setRequired('messages.address');
 		$form->addCheckbox('timeoutEnabled', 'overwriteTimeout')
-			->setDefaultValue(true)
-			->addCondition(Form::EQUAL, true);
+			->setDefaultValue(true);
 		$form->addInteger('timeout', 'customTimeout')
 			->setDefaultValue(1000)
 			->addConditionOn($form['timeoutEnabled'], Form::EQUAL, true)

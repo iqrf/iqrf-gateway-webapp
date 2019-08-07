@@ -98,7 +98,7 @@ class BondingFormFactory {
 			->onClick[] = [$this, 'removeBond'];
 		$form->addSubmit('clear', 'clearAllBonds')
 			->setHtmlAttribute('class', 'btn btn-primary')
-			->setValidationScope(null)
+			->setValidationScope([])
 			->onClick[] = [$this, 'clearAllBonds'];
 		return $form;
 	}
