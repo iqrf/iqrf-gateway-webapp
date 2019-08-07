@@ -28,7 +28,6 @@ use App\IqrfNetModule\Presenters\NetworkPresenter;
 use Nette\Application\UI\Form;
 use Nette\Forms\Controls\SubmitButton;
 use Nette\SmartObject;
-use Nette\Utils\Html;
 use Nette\Utils\JsonException;
 
 /**
