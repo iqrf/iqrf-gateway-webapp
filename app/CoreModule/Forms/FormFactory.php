@@ -20,7 +20,6 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Forms;
 
-use Contributte\Translation\Translator;
 use Nepada\FormRenderer\IBootstrap3RendererFactory;
 use Nette\Application\UI\Form;
 use Nette\Localization\ITranslator;
@@ -39,7 +38,7 @@ class FormFactory {
 	public $rendererFactory;
 
 	/**
-	 * @var Translator Translator
+	 * @var ITranslator Translator
 	 */
 	private $translator;
 
@@ -73,9 +72,9 @@ class FormFactory {
 
 	/**
 	 * Returns the translator service
-	 * @return Translator Translator service
+	 * @return ITranslator Translator service
 	 */
-	public function getTranslator(): Translator {
+	public function getTranslator(): ITranslator {
 		return $this->translator;
 	}
 

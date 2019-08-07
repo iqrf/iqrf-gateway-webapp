@@ -23,11 +23,8 @@ namespace App\CoreModule\Presenters;
 use App\CoreModule\Models\VersionManager;
 use App\CoreModule\Traits\TPresenterFlashMessage;
 use GuzzleHttp\Exception\TransferException;
-use Nette\Reflection\ClassType;
-use Nette\Reflection\Method;
 use Nette\Security\IUserStorage;
 use Nette\Utils\JsonException;
-use ReflectionMethod;
 
 /**
  * Protected presenter for protected application presenters

@@ -12,6 +12,7 @@ parameters:
 		- '#Call to an undefined method Nette\\ComponentModel\\IComponent::setDefaultValue\(\).#'
 		- '#Call to an undefined method Nette\\ComponentModel\\IComponent::setValue\(\).#'
 		- '#Call to an undefined method Nette\\Database\\IRow::toArray\(\).#'
+		- '#Call to an undefined method Nette\\Localization\\ITranslator::createPrefixedTranslator\(\).#'
 		- '#Call to an undefined method Mockery\\Mock::[a-zA-Z0-9_]+\(\).#'
 		- '#PHPDoc tag @throws with type (|[a-zA-Z0-9\\_]+\|)GuzzleHttp\\Exception\\GuzzleException(|\|[a-zA-Z0-9\\_]+) is not subtype of Throwable#'
 		- '#Return type \(void\) of method App\\ConsoleModule\\Commands\\[a-zA-Z0-9_]+::execute() should be compatible with return type \(int|null\) of method Symfony\\Component\\Console\\Command\\Command::execute\(\)#'
