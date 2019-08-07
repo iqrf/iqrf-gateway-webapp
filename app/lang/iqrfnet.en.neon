@@ -274,6 +274,25 @@ trConfiguration:
 		failure: An error occurred while TR configuration saving.
 		success: The TR configuration has been saved successfully.
 
+trUpload:
+	title: TR upload
+	description: IQRF TR native upload.
+	file: File to upload
+	fileFormat: Target of upload
+	fileFormats:
+		hex: HEX
+		iqrf: IQRF
+		trcnfg: TRCNFG
+	upload: Upload
+	messages:
+		disabled: TR upload is disabled.
+		failure: An error occured while the upload.
+		file: Please select the file to upload.
+		fileFormat: Please select the target of upload.
+		moveFailure: The file has not been uploaded due wrong permissions.
+		start: The upload process has been started.
+		success: The file has been sucessfuly uploaded into the coordinator.
+
 webSocketClient:
 	messages:
 		emptyResponse: No response from IQRF Gateway Daemon.

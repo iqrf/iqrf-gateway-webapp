@@ -31,7 +31,6 @@
 					<li><a n:href=':Service:Control:default'>{_service.title}</a></li>
 					<li n:if='$features["updater"]'><a n:href=':Gateway:Updater:default'>{_gateway.updater.title}</a></li>
 					<li><a n:href=':Gateway:Power:default'>{_gateway.power.title}</a></li>
-					<li n:if='$features["nativeUpload"]'><a n:href=':Gateway:NativeUpload:default'>{_gateway.nativeUpload.title}</a></li>
 					<li n:if='$features["pixla"]'><a n:href=':Gateway:Pixla:default'>{_gateway.pixla.title}</a></li>
 				</ul>
 			</li>
@@ -86,6 +85,7 @@
 					<li><a n:href=':IqrfNet:SendRaw:default'>{_iqrfnet.send-packet.title}</a></li>
 					<li><a n:href=':IqrfNet:SendJson:default'>{_iqrfnet.send-json.title}</a></li>
 					<li><a n:href=':IqrfNet:RfConfig:default'>{_iqrfnet.trConfiguration.title}</a></li>
+					<li n:if='$features["trUpload"]'><a n:href=':IqrfNet:TrUpload:default'>{_iqrfnet.trUpload.title}</a></li>
 					<li><a n:href=':IqrfNet:Network:default'>{_iqrfnet.network-manager.title}</a></li>
 					<li><a n:href=':IqrfNet:Standard:default'>{_iqrfnet.standard.menu}</a></li>
 				</ul>

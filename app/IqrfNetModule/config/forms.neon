@@ -12,3 +12,4 @@ services:
 	- App\IqrfNetModule\Forms\StandardBinaryOutputFormFactory
 	- App\IqrfNetModule\Forms\StandardLightFormFactory
 	- App\IqrfNetModule\Forms\StandardSensorFormFactory
+	- App\IqrfNetModule\Forms\TrUploadFormFactory

@@ -18,22 +18,22 @@
  */
 declare(strict_types = 1);
 
-namespace App\GatewayModule\Presenters;
+namespace App\IqrfNetModule\Presenters;
 
 use App\CoreModule\Presenters\ProtectedPresenter;
 use App\CoreModule\Traits\TPresenterFlashMessage;
-use App\GatewayModule\Forms\NativeUploadFormFactory;
+use App\IqrfNetModule\Forms\TrUploadFormFactory;
 use Nette\Application\UI\Form;
 
 /**
  * IQRF TR native upload presenter
  */
-class NativeUploadPresenter extends ProtectedPresenter {
+class TrUploadPresenter extends ProtectedPresenter {
 
 	use TPresenterFlashMessage;
 
 	/**
-	 * @var NativeUploadFormFactory IQRF TR native upload form factory
+	 * @var TrUploadFormFactory IQRF TR native upload form factory
 	 * @inject
 	 */
 	public $formFactory;
@@ -43,8 +43,8 @@ class NativeUploadPresenter extends ProtectedPresenter {
 	 */
 	protected function startup(): void {
 		parent::startup();
-		if (!$this->context->parameters['features']['nativeUpload']) {
-			$this->flashError('gateway.nativeUpload.messages.disabled');
+		if (!$this->context->parameters['features']['trUpload']) {
+			$this->flashError('iqrfnet.trUpload.messages.disabled');
 			$this->redirect('Homepage:default');
 		}
 	}
@@ -53,7 +53,7 @@ class NativeUploadPresenter extends ProtectedPresenter {
 	 * Creates IQRF TR native upload form
 	 * @return Form IQRF TR native upload form
 	 */
-	protected function createComponentNativeUploadForm(): Form {
+	protected function createComponentTrUploadForm(): Form {
 		return $this->formFactory->create($this);
 	}
 

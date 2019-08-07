@@ -1,7 +1,7 @@
 parameters:
 	features:
 		# IQRF TR native upload
-		nativeUpload: false
+		trUpload: true
 		# Node-RED
 		node-red: false
 		# PIXLA mamagement system

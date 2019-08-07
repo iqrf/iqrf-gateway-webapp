@@ -18,16 +18,16 @@
  */
 declare(strict_types = 1);
 
-namespace App\GatewayModule\Forms;
+namespace App\IqrfNetModule\Forms;
 
 use App\CoreModule\Forms\FormFactory;
 use App\GatewayModule\Exceptions\CorruptedFileException;
 use App\GatewayModule\Models\NativeUploadManager;
-use App\GatewayModule\Presenters\NativeUploadPresenter;
 use App\IqrfNetModule\Enums\UploadFormats;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Exceptions\UserErrorException;
+use App\IqrfNetModule\Presenters\TrUploadPresenter;
 use Nette\Application\UI\Form;
 use Nette\IOException;
 use Nette\SmartObject;
@@ -36,7 +36,7 @@ use Nette\Utils\JsonException;
 /**
  * IQRF TR native upload form factory
  */
-class NativeUploadFormFactory {
+class TrUploadFormFactory {
 
 	use SmartObject;
 
@@ -46,7 +46,7 @@ class NativeUploadFormFactory {
 	private $factory;
 
 	/**
-	 * @var NativeUploadPresenter IQRF TR native upload presenter
+	 * @var TrUploadPresenter IQRF TR native upload presenter
 	 */
 	private $presenter;
 
@@ -67,12 +67,12 @@ class NativeUploadFormFactory {
 
 	/**
 	 * Creates IQRF TR native upload form
-	 * @param NativeUploadPresenter $presenter IQRF TR native upload presenter
+	 * @param TrUploadPresenter $presenter IQRF TR native upload presenter
 	 * @return Form IQRF TR native upload form
 	 */
-	public function create(NativeUploadPresenter $presenter): Form {
+	public function create(TrUploadPresenter $presenter): Form {
 		$this->presenter = $presenter;
-		$form = $this->factory->create('gateway.nativeUpload');
+		$form = $this->factory->create('iqrfnet.trUpload');
 		$form->addUpload('file', 'file')
 			->setHtmlAttribute('accept', '.hex,.iqrf,.trcnfg')
 			->setRequired('messages.file');
@@ -109,13 +109,13 @@ class NativeUploadFormFactory {
 		}
 		try {
 			$this->manager->upload($values['file'], $fileFormat);
-			$this->presenter->flashSuccess('gateway.nativeUpload.messages.success');
+			$this->presenter->flashSuccess('iqrfnet.trUpload.messages.success');
 		} catch (CorruptedFileException $e) {
-			$this->presenter->flashError('gateway.nativeUpload.messages.corruptedFile');
+			$this->presenter->flashError('iqrfnet.trUpload.messages.corruptedFile');
 		} catch (DpaErrorException | EmptyResponseException | JsonException | UserErrorException $e) {
-			$this->presenter->flashError('gateway.nativeUpload.messages.failure');
+			$this->presenter->flashError('iqrfnet.trUpload.messages.failure');
 		} catch (IOException $e) {
-			$this->presenter->flashError('gateway.nativeUpload.messages.moveFailure');
+			$this->presenter->flashError('iqrfnet.trUpload.messages.moveFailure');
 		}
 	}
 
