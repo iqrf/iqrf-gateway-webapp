@@ -41,6 +41,7 @@ class RfConfigFormFactory extends TrConfigFormFactory {
 		$this->presenter = $presenter;
 		$this->load();
 		$form = $this->factory->create('iqrfnet.rfConfig');
+		$form->addGroup();
 		$this->addRfConfiguration($form);
 		$this->addRfpgwConfiguration($form);
 		$form->addSubmit('save', 'save');
@@ -119,7 +120,7 @@ class RfConfigFormFactory extends TrConfigFormFactory {
 	 * @param Form $form IQRF RF configuration form
 	 */
 	private function addRfpgwConfiguration(Form &$form): void {
-		$form->addGroup($form->getTranslator()->translate('rfPgm'));
+		$form->addGroup('rfPgm');
 		$form->addCheckbox('rfPgmEnableAfterReset', 'rfPgmEnableAfterReset');
 		$form->addCheckbox('rfPgmTerminateAfter1Min', 'rfPgmTerminateAfter1Min');
 		$form->addCheckbox('rfPgmTerminateMcuPin', 'rfPgmTerminateMcuPin');

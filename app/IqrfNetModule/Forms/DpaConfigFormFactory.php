@@ -54,7 +54,7 @@ class DpaConfigFormFactory extends TrConfigFormFactory {
 	 * @param Form $form DPA configuration form
 	 */
 	private function addEmbeddedPeripherals(Form &$form): void {
-		$form->addGroup($form->getTranslator()->translate('embeddedPeripherals'));
+		$form->addGroup('embeddedPeripherals');
 		$embeddedPeripherals = $form->addContainer('embPers');
 		$unchangeablePeripherals = ['coordinator', 'node', 'os'];
 		if ($this->presenter->getUser()->isInRole('power')) {
@@ -77,7 +77,7 @@ class DpaConfigFormFactory extends TrConfigFormFactory {
 	 * @param Form $form DPA configuration form
 	 */
 	private function addOtherConfiguration(Form &$form): void {
-		$form->addGroup($form->getTranslator()->translate('other'));
+		$form->addGroup('other');
 		$form->addCheckbox('customDpaHandler', 'customDpaHandler');
 		$form->addCheckbox('ioSetup', 'ioSetup');
 		$form->addCheckbox('dpaAutoexec', 'dpaAutoexec');
