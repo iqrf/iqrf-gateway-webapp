@@ -77,7 +77,7 @@ class WebSocketServiceDataGridFactory {
 		$this->presenter = $presenter;
 		$grid = $this->dataGridFactory->create($presenter, $name);
 		$this->configManager->setComponent('shape::WebsocketCppService');
-		$grid->setDataSource($this->configManager->list());
+		$grid->setDataSource($this->list());
 		$grid->addColumnText('instance', 'config.websocket.form.instance');
 		$grid->addColumnNumber('WebsocketPort', 'config.websocket.form.WebsocketPort');
 		$grid->addColumnStatus('acceptOnlyLocalhost', 'config.websocket.form.acceptOnlyLocalhost')
@@ -120,6 +120,21 @@ class WebSocketServiceDataGridFactory {
 				$dataGrid->redrawItem($id);
 			}
 		}
+	}
+
+	/**
+	 * Lists all available Websocket services
+	 * @return mixed[] Available Websocket services
+	 * @throws JsonException
+	 */
+	private function list(): array {
+		$services = $this->configManager->list();
+		foreach ($services as &$service) {
+			if (!array_key_exists('acceptOnlyLocalhost', $service)) {
+				$service['acceptOnlyLocalhost'] = false;
+			}
+		}
+		return $services;
 	}
 
 }
