@@ -11,7 +11,6 @@ declare(strict_types = 1);
 namespace Tests\Unit\IqrfNetModule\Models;
 
 use App\IqrfNetModule\Models\MessageIdManager;
-use DateTime;
 use Ramsey\Uuid\Uuid;
 use Tester\Assert;
 use Tester\TestCase;
