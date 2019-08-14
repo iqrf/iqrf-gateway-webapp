@@ -12,6 +12,7 @@ namespace Tests\Unit\IqrfNetModule\Models;
 
 use App\IqrfNetModule\Models\MessageIdManager;
 use DateTime;
+use Ramsey\Uuid\Uuid;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -26,9 +27,8 @@ class MessageIdManagerTest extends TestCase {
 	 * Tests the function to generate a message ID
 	 */
 	public function testGenerate(): void {
-		$expected = strval((new DateTime())->getTimestamp());
 		$manager = new MessageIdManager();
-		Assert::same($expected, $manager->generate());
+		Assert::same(4, Uuid::fromString($manager->generate())->getVersion());
 	}
 
 }

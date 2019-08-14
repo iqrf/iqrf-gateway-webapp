@@ -21,6 +21,8 @@ declare(strict_types = 1);
 namespace App\IqrfNetModule\Models;
 
 use DateTime;
+use Ramsey\Uuid\Uuid;
+use Throwable;
 
 /**
  * Tool for a message ID generation
@@ -44,7 +46,11 @@ class MessageIdManager {
 	 * @return string Message ID
 	 */
 	public function generate(): string {
-		return strval($this->dateTime->getTimestamp());
+		try {
+			return Uuid::uuid4()->toString();
+		} catch (Throwable $e) {
+			return strval($this->dateTime->getTimestamp());
+		}
 	}
 
 }
