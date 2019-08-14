@@ -46,8 +46,13 @@ http:
 		default-src: self
 		frame-ancestors: none
 		form-action: self
+		font-src: [
+			self,
+			'data:'
+		]
 		img-src: [
 			self,
+			'data:',
 			https://repository.iqrfalliance.org/
 		]
 		report-uri: 'https://sentry.iqrf.org/api/2/security/?sentry_key=dcc3c60024154484afbca5e250a861a9'
@@ -55,7 +60,7 @@ http:
 			# for browsers that support CSP3
 			nonce
 			# for browsers that support CSP2
-			self
+			self, unsafe-eval
 		]
 		style-src: [
 			# for browsers that support CSP3
@@ -63,10 +68,6 @@ http:
 			# for browsers that support CSP2
 			self, unsafe-inline
 		]
-		upgrade-insecure-requests: true
-	featurePolicy: [
-		'*': none
-	]
 
 tracy:
 	email: 'roman.ondracek@iqrf.com'
