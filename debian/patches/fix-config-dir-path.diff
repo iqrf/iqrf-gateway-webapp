@@ -20,33 +20,3 @@ Fixes configuration directory path
 +		$configurator->addConfig('/etc/iqrf-gateway-webapp/config.neon');
  		return $configurator;
  	}
- 
---- a/app/config/config.neon
-+++ b/app/config/config.neon
-@@ -3,7 +3,7 @@
- 	initDaemon: 'systemd'
- 	sudo: true
- 	# path to IQRF IDE macros
--	macroPath: '../iqrf/DPA-macros_190301.iqrfmcr'
-+	macroPath: '/usr/share/iqrf-gateway-webapp/iqrf/DPA-macros_190301.iqrfmcr'
- 	# Daemon configuration
- 	daemon:
- 		# Path to directory with IQRF Gateway Daemon's JSON API schemas
-@@ -68,10 +68,10 @@
- 	- guzzle.neon
- 	- monolog.neon
- 	- translation.neon
--	- ../CloudModule/config/config.neon
--	- ../ConfigModule/config/config.neon
--	- ../ConsoleModule/config/config.neon
--	- ../CoreModule/config/config.neon
--	- ../GatewayModule/config/config.neon
--	- ../IqrfNetModule/config/config.neon
--	- ../ServiceModule/config/config.neon
-+	- /usr/share/iqrf-gateway-webapp/app/CloudModule/config/config.neon
-+	- /usr/share/iqrf-gateway-webapp/app/ConfigModule/config/config.neon
-+	- /usr/share/iqrf-gateway-webapp/app/ConsoleModule/config/config.neon
-+	- /usr/share/iqrf-gateway-webapp/app/CoreModule/config/config.neon
-+	- /usr/share/iqrf-gateway-webapp/app/GatewayModule/config/config.neon
-+	- /usr/share/iqrf-gateway-webapp/app/IqrfNetModule/config/config.neon
-+	- /usr/share/iqrf-gateway-webapp/app/ServiceModule/config/config.neon

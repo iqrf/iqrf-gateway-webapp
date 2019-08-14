@@ -3,7 +3,7 @@ parameters:
 	initDaemon: 'systemd'
 	sudo: true
 	# path to IQRF IDE macros
-	macroPath: '../iqrf/DPA-macros_190301.iqrfmcr'
+	macroPath: '%appDir%/../iqrf/DPA-macros_190301.iqrfmcr'
 	# Daemon configuration
 	daemon:
 		# Path to directory with IQRF Gateway Daemon's JSON API schemas
@@ -80,10 +80,10 @@ includes:
 	- guzzle.neon
 	- monolog.neon
 	- translation.neon
-	- ../CloudModule/config/config.neon
-	- ../ConfigModule/config/config.neon
-	- ../ConsoleModule/config/config.neon
-	- ../CoreModule/config/config.neon
-	- ../GatewayModule/config/config.neon
-	- ../IqrfNetModule/config/config.neon
-	- ../ServiceModule/config/config.neon
+	- %appDir%/CloudModule/config/config.neon
+	- %appDir%/ConfigModule/config/config.neon
+	- %appDir%/ConsoleModule/config/config.neon
+	- %appDir%/CoreModule/config/config.neon
+	- %appDir%/GatewayModule/config/config.neon
+	- %appDir%/IqrfNetModule/config/config.neon
+	- %appDir%/ServiceModule/config/config.neon
