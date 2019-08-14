@@ -75,11 +75,9 @@ class SchedulerMigrationFormFactory {
 			->setRequired('messages.configuration')
 			->setHtmlAttribute('accept', '.zip');
 		$form->addSubmit('import', 'import')
-			->setHtmlAttribute('class', 'btn btn-primary')
 			->onClick[] = [$this, 'import'];
 		$form->addSubmit('export', 'export')
 			->setValidationScope([])
-			->setHtmlAttribute('class', 'btn btn-primary')
 			->onClick[] = [$this, 'export'];
 		$form->addProtection('core.errors.form-timeout');
 		return $form;

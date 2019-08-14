@@ -89,15 +89,12 @@ class BondingFormFactory {
 		$this->addSmartConnectInputs($form);
 		$form->addProtection('core.errors.form-timeout');
 		$form->addSubmit('add', 'addBond')
-			->setHtmlAttribute('class', 'btn btn-primary')
 			->onClick[] = [$this, 'addBond'];
 		$form->addSubmit('remove', 'removeBond')
-			->setHtmlAttribute('class', 'btn btn-primary')
 			->setValidationScope([$form['address']])
 			->setHtmlId('removeBond')
 			->onClick[] = [$this, 'removeBond'];
 		$form->addSubmit('clear', 'clearAllBonds')
-			->setHtmlAttribute('class', 'btn btn-primary')
 			->setValidationScope([])
 			->onClick[] = [$this, 'clearAllBonds'];
 		return $form;
