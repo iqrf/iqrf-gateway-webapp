@@ -22,11 +22,11 @@ namespace App\IqrfNetModule\Forms;
 
 use App\CoreModule\Forms\FormFactory;
 use App\GatewayModule\Exceptions\CorruptedFileException;
-use App\GatewayModule\Models\NativeUploadManager;
 use App\IqrfNetModule\Enums\UploadFormats;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Exceptions\UserErrorException;
+use App\IqrfNetModule\Models\NativeUploadManager;
 use App\IqrfNetModule\Presenters\TrUploadPresenter;
 use Nette\Application\UI\Form;
 use Nette\IOException;

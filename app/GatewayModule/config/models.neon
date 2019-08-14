@@ -2,7 +2,6 @@ services:
 	- App\GatewayModule\Models\DiagnosticsManager(%daemon.configDir%, %daemon.logDir%)
 	- App\GatewayModule\Models\InfoManager
 	- App\GatewayModule\Models\LogManager(%daemon.logDir%)
-	- App\GatewayModule\Models\NativeUploadManager
 	- App\GatewayModule\Models\NetworkManager
 	- App\GatewayModule\Models\PixlaManager
 	- App\GatewayModule\Models\PowerManager

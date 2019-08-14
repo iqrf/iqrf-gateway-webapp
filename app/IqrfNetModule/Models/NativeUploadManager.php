@@ -18,7 +18,7 @@
  */
 declare(strict_types = 1);
 
-namespace App\GatewayModule\Models;
+namespace App\IqrfNetModule\Models;
 
 use App\ConfigModule\Models\GenericManager;
 use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
@@ -28,7 +28,6 @@ use App\IqrfNetModule\Enums\UploadFormats;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Exceptions\UserErrorException;
-use App\IqrfNetModule\Models\UploadManager;
 use Nette\Http\FileUpload;
 use Nette\IOException;
 use Nette\Utils\FileSystem;
