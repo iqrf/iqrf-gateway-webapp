@@ -89,6 +89,17 @@ class TaskTimeManagerTest extends TestCase {
 	}
 
 	/**
+	 * Tests the function to convert CRON with question mark to an array
+	 */
+	public function testCronToArrayWithQuestionMark(): void {
+		$config = $expected = [];
+		$config['timeSpec']['cronTime'] = '0 0 12 ? * 1,2,3,4,5 *';
+		$expected['timeSpec']['cronTime'] = ['0', '0', '12', '*', '*', '1,2,3,4,5', '*'];
+		$this->manager->cronToArray($config);
+		Assert::same($expected, $config);
+	}
+
+	/**
 	 * Tests the function to convert an invalid CRON to an array
 	 */
 	public function testCronToArrayInvalid(): void {

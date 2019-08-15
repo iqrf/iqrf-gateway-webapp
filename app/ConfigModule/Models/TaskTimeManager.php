@@ -40,7 +40,7 @@ class TaskTimeManager {
 	 */
 	public function cronToArray(array &$config): void {
 		$cron = &$config['timeSpec']['cronTime'];
-		$cron = trim($cron);
+		$cron = Strings::replace(Strings::trim($cron), '~\?~', '*');
 		if (in_array($cron, $this->aliases, true)) {
 			$cron = [$cron, '', '', '', '', '', ''];
 			return;
