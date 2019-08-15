@@ -4,7 +4,6 @@ includes:
 	- vendor/phpstan/phpstan-nette/rules.neon
 	- vendor/phpstan/phpstan-mockery/extension.neon
 	- vendor/phpstan/phpstan-strict-rules/rules.neon
-	- vendor/grifart/phpstan-oneline/config.neon
 
 parameters:
 	level: 5
