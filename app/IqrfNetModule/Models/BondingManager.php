@@ -108,61 +108,67 @@ class BondingManager {
 
 	/**
 	 * Clears all bonds
+	 * @param bool $coordinatorOnly Removes a bond only in the coordinator
 	 * @return mixed[] API request and response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws UserErrorException
 	 * @throws JsonException
 	 */
-	public function clearAll(): array {
-		return $this->remove(255);
+	public function clearAll(bool $coordinatorOnly = false): array {
+		if ($coordinatorOnly) {
+			$array = [
+				'mType' => 'iqrfEmbedCoordinator_ClearAllBonds',
+				'data' => [
+					'req' => [
+						'nAdr' => 0,
+						'param' => (object) [],
+					],
+					'returnVerbose' => true,
+				],
+			];
+			$this->request->setRequest($array);
+			return $this->wsClient->sendSync($this->request);
+		}
+		return $this->remove(255, false);
 	}
 
 	/**
 	 * Removes a bond
 	 * @param int $address Address of the node to be removed
+	 * @param bool $coordinatorOnly Removes a bond only in the coordinator
 	 * @return mixed[] API request and response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws UserErrorException
 	 * @throws JsonException
 	 */
-	public function remove(int $address): array {
-		$array = [
-			'mType' => 'iqmeshNetwork_RemoveBond',
-			'data' => [
-				'repeat' => 2,
-				'req' => [
-					'deviceAddr' => $address,
-				],
-				'returnVerbose' => true,
-			],
-		];
-		$this->request->setRequest($array);
-		return $this->wsClient->sendSync($this->request);
-	}
-
-	/**
-	 * Re-bonds a node
-	 * @param int $address Address of the node to be re-bonded
-	 * @return mixed[] API request and response
-	 * @throws DpaErrorException
-	 * @throws EmptyResponseException
-	 * @throws UserErrorException
-	 * @throws JsonException
-	 */
-	public function rebond(int $address): array {
-		$array = [
-			'mType' => 'iqrfEmbedCoordinator_RebondNode',
-			'data' => [
-				'req' => [
-					'nAdr' => 0,
-					'param' => [
-						'bondAddr' => $address,
+	public function remove(int $address, bool $coordinatorOnly = false): array {
+		if ($coordinatorOnly) {
+			$array = [
+				'mType' => 'iqrfEmbedCoordinator_RemoveBond',
+				'data' => [
+					'req' => [
+						'nAdr' => 0,
+						'param' => [
+							'bondAddr' => $address,
+						],
 					],
+					'returnVerbose' => true,
 				],
-			],
-		];
+			];
+		} else {
+			$array = [
+				'mType' => 'iqmeshNetwork_RemoveBond',
+				'data' => [
+					'repeat' => 2,
+					'req' => [
+						'deviceAddr' => $address,
+					],
+					'returnVerbose' => true,
+				],
+			];
+		}
 		$this->request->setRequest($array);
 		return $this->wsClient->sendSync($this->request);
 	}
