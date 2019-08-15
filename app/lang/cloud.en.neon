@@ -73,6 +73,22 @@ msAzure:
 	messages:
 		invalidConnectionString: Invalid MS Azure IoT Hub connection string for device.
 
+pixla:
+	title: PIXLA
+	description: Manages PIXLA client service.
+	disable: Disable service
+	enable: Enable service
+	status: Service status
+	statuses:
+		enabled: Enabled
+		disabled: Disabled
+		'': Missing
+	token: Token
+	messages:
+		disabled: PIXLA manager is disabled.
+		disable: PIXLA client service has been disabled.
+		enable: PIXLA client service has been enabled.
+
 tcPisek:
 	title: TC Pisek IoT Platform
 	description: Adds a new MQTT connection into TC Pisek IoT Platform.

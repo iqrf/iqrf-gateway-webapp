@@ -18,10 +18,10 @@
  */
 declare(strict_types = 1);
 
-namespace App\GatewayModule\Models;
+namespace App\CloudModule\Models;
 
+use App\CloudModule\Enums\PixlaService;
 use App\CoreModule\Models\CommandManager;
-use App\GatewayModule\Enums\PixlaService;
 
 /**
  * PIXLA management system manager

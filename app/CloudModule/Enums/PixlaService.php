@@ -1,4 +1,6 @@
-{**
+<?php
+
+/**
  * Copyright 2017 MICRORISC s.r.o.
  * Copyright 2017-2019 IQRF Tech s.r.o.
  *
@@ -13,26 +15,37 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*}
+ */
+declare(strict_types = 1);
 
-{block title}{_gateway.pixla.title}{/block}
-{block content}
-<div class='panel panel-default'>
-	<div class='panel-body'>
-		<table class='table table-striped'>
-			<tr>
-				<th>{_gateway.pixla.token}</th>
-				<td>{$token}</td>
-			</tr>
-			<tr>
-				<th>{_gateway.pixla.status}</th>
-				<td>{_gateway.pixla.statuses.$status}</td>
-			</tr>
-		</table>
-		{dump $status}
-		{if $status !== ''}
-			<a class='ajax btn btn-success' n:href='enable' role='button'>{_gateway.pixla.enable}</a>
-			<a class='ajax btn btn-danger' n:href='disable' role='button'>{_gateway.pixla.disable}</a>
-		{/if}
-	</div>
-</div>
+namespace App\CloudModule\Enums;
+
+use Grifart\Enum\AutoInstances;
+use Grifart\Enum\Enum;
+
+/**
+ * PIXLA client service status enum
+ * @method static PixlaService DISABLED()
+ * @method static PixlaService ENABLED()
+ * @method static PixlaService MISSING()
+ */
+final class PixlaService extends Enum {
+
+	use AutoInstances;
+
+	/**
+	 * Disabled PIXLA client service
+	 */
+	private const DISABLED = 'disabled';
+
+	/**
+	 * Enabled PIXLA client service
+	 */
+	private const ENABLED = 'enabled';
+
+	/**
+	 * Missing PIXLA client service
+	 */
+	private const MISSING = '';
+
+}

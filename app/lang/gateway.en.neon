@@ -65,22 +65,6 @@ mode:
 			description: Change IQRF Gateway Daemon's mode to forwarding mode.
 			message: IQRF Gateway Daemon's mode has been changed to forwarding mode.
 
-pixla:
-	title: PIXLA
-	description: Manages PIXLA client service.
-	disable: Disable service
-	enable: Enable service
-	status: Service status
-	statuses:
-		enabled: Enabled
-		disabled: Disabled
-		'': Missing
-	token: Token
-	messages:
-		disabled: PIXLA manager is disabled.
-		disable: PIXLA client service has been disabled.
-		enable: PIXLA client service has been enabled.
-
 power:
 	title: Power control
 	description: Powers off or reboots this gateway.

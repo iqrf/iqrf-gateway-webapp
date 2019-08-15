@@ -3,4 +3,5 @@ services:
 	- App\CloudModule\Models\AzureManager
 	- App\CloudModule\Models\IbmCloudManager(%daemon.certDir%)
 	- App\CloudModule\Models\InteliGlueManager(%daemon.certDir%)
+	- App\CloudModule\Models\PixlaManager
 	- App\CloudModule\Models\TcPisekManager(%daemon.certDir%)

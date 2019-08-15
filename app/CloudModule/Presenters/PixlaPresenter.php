@@ -18,10 +18,10 @@
  */
 declare(strict_types = 1);
 
-namespace App\GatewayModule\Presenters;
+namespace App\CloudModule\Presenters;
 
+use App\CloudModule\Models\PixlaManager;
 use App\CoreModule\Presenters\ProtectedPresenter;
-use App\GatewayModule\Models\PixlaManager;
 
 /**
  * PIXLA management system presenter
