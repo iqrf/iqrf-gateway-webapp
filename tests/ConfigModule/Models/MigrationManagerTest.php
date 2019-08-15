@@ -3,7 +3,7 @@
 /**
  * TEST: App\ConfigModule\Models\MigrationManager
  * @covers App\ConfigModule\Models\MigrationManager
- * @phpVersion >= 7.0
+ * @phpVersion >= 7.1
  * @testCase
  */
 declare(strict_types = 1);
@@ -19,7 +19,7 @@ use App\CoreModule\Models\ZipArchiveManager;
 use App\ServiceModule\Models\ServiceManager;
 use DateTime;
 use Mockery;
-use Mockery\Mock;
+use Mockery\MockInterface;
 use Nette\Application\Responses\FileResponse;
 use Nette\Http\FileUpload;
 use Nette\Utils\FileSystem;
@@ -37,7 +37,7 @@ require __DIR__ . '/../../bootstrap.php';
 class MigrationManagerTest extends TestCase {
 
 	/**
-	 * @var Mock Mocker command manager
+	 * @var MockInterface Mocker command manager
 	 */
 	private $commandManager;
 
