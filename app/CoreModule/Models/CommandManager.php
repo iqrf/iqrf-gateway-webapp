@@ -20,8 +20,9 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Models;
 
+use App\CoreModule\Entities\Command;
+use App\CoreModule\Entities\CommandStack;
 use Nette\SmartObject;
-use Nette\Utils\Strings;
 use Symfony\Component\Process\Process;
 use Tracy\Debugger;
 
@@ -38,11 +39,18 @@ class CommandManager {
 	private $sudo;
 
 	/**
+	 * @var CommandStack Command stack
+	 */
+	private $stack;
+
+	/**
 	 * Constructor
 	 * @param bool $sudo Is sudo required?
+	 * @param CommandStack $stack Command stack
 	 */
-	public function __construct(bool $sudo) {
+	public function __construct(bool $sudo, CommandStack $stack) {
 		$this->sudo = $sudo;
+		$this->stack = $stack;
 	}
 
 	/**
@@ -64,14 +72,9 @@ class CommandManager {
 		$command = ($this->sudo && $needSudo ? 'sudo ' : '') . $cmd;
 		$process = Process::fromShellCommandline($command);
 		$process->run();
-		$output = [
-			'command' => $command,
-			'stdout' => $process->getOutput(),
-			'stderr' => $process->getErrorOutput(),
-			'returnValue' => $process->getExitCode(),
-		];
-		Debugger::barDump($output, 'Command manager');
-		return Strings::trim($output['stdout']);
+		$entity = new Command($command, $process);
+		$this->stack->addCommand($entity);
+		return $entity->getStdout();
 	}
 
 	/**
@@ -87,13 +90,8 @@ class CommandManager {
 		$process->setTimeout($timeout);
 		$process->start($callback);
 		$process->wait();
-		$output = [
-			'command' => $command,
-			'stdout' => $process->getOutput(),
-			'stderr' => $process->getErrorOutput(),
-			'returnValue' => $process->getExitCode(),
-		];
-		Debugger::barDump($output, 'Command manager');
+		$entity = new Command($command, $process);
+		$this->stack->addCommand($entity);
 	}
 
 }

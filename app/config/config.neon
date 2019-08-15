@@ -70,6 +70,8 @@ http:
 		]
 
 tracy:
+	bar:
+		- App\CoreModule\Tracy\CommandPanel(@commandStack)
 	email: 'roman.ondracek@iqrf.com'
 	strictMode: true
 	maxDepth: 10
