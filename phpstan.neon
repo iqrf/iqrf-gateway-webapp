@@ -4,8 +4,14 @@ includes:
 	- vendor/phpstan/phpstan-nette/rules.neon
 	- vendor/phpstan/phpstan-mockery/extension.neon
 	- vendor/phpstan/phpstan-strict-rules/rules.neon
+	- vendor/grifart/phpstan-oneline/config.neon
 
 parameters:
+	level: 5
+	paths:
+		- app
+		- bin
+		- tests
 	ignoreErrors:
 		- '#Call to an undefined method Nette\\Application\\UI\\ITemplate::setTranslator\(\).#'
 		- '#Call to an undefined method Nette\\ComponentModel\\IComponent::addConditionOn\(\).#'
@@ -13,6 +19,8 @@ parameters:
 		- '#Call to an undefined method Nette\\ComponentModel\\IComponent::setValue\(\).#'
 		- '#Call to an undefined method Nette\\Database\\IRow::toArray\(\).#'
 		- '#Call to an undefined method Nette\\Localization\\ITranslator::createPrefixedTranslator\(\).#'
+		- '#Parameter \#1 \$control of method Nette\\Forms\\Controls\\BaseControl::addConditionOn\(\) expects Nette\\Forms\\IControl, Nette\\ComponentModel\\IComponent given.#'
+		- '#Parameter \#1 \$control of method Nette\\Forms\\Rules::addConditionOn\(\) expects Nette\\Forms\\IControl, Nette\\ComponentModel\\IComponent given.#'
 		- '#PHPDoc tag @throws with type (|[a-zA-Z0-9\\_]+\|)GuzzleHttp\\Exception\\GuzzleException(|\|[a-zA-Z0-9\\_]+) is not subtype of Throwable#'
 		- '#Return type \(void\) of method App\\ConsoleModule\\Commands\\[a-zA-Z0-9_]+::execute() should be compatible with return type \(int|null\) of method Symfony\\Component\\Console\\Command\\Command::execute\(\)#'
 		-
@@ -42,6 +50,9 @@ parameters:
 		-
 			message: '#Foreach overwrites \$unit with its value variable.#'
 			path: %currentWorkingDirectory%/app/GatewayModule/Models/InfoManager.php
+		-
+			message: '#Parameter \#1 \$input of method App\\IqrfNetModule\\Forms\\RfConfigFormFactory::setRfChannelRule\(\) expects Nette\\Forms\\Controls\\TextInput, Nette\\ComponentModel\\IComponent given.#'
+			path: %currentWorkingDirectory%/app/IqrfNetModule/Forms/RfConfigFormFactory.php
 	fileExtensions:
 		- php
 		- phpt

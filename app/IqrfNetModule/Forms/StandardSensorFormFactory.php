@@ -84,9 +84,9 @@ class StandardSensorFormFactory {
 	 * @param SubmitButton $button Submit button
 	 */
 	public function enumerate(SubmitButton $button): void {
-		$values = $button->getForm()->getValues(true);
+		$values = $button->getForm()->getValues();
 		try {
-			$data = $this->manager->enumerate($values['address']);
+			$data = $this->manager->enumerate($values->address);
 			$this->presenter->handleSensorResponse($data);
 		} catch (UserErrorException | DpaErrorException | EmptyResponseException | JsonException $e) {
 			$this->presenter->flashError('iqrfnet.standard.sensor.messages.enumerateError');
@@ -98,9 +98,9 @@ class StandardSensorFormFactory {
 	 * @param SubmitButton $button Submit button
 	 */
 	public function readAll(SubmitButton $button): void {
-		$values = $button->getForm()->getValues(true);
+		$values = $button->getForm()->getValues();
 		try {
-			$data = $this->manager->readAll($values['address']);
+			$data = $this->manager->readAll($values->address);
 			$this->presenter->handleSensorResponse($data);
 		} catch (UserErrorException | DpaErrorException | EmptyResponseException | JsonException $e) {
 			$this->presenter->flashError('iqrfnet.standard.sensor.messages.readError');

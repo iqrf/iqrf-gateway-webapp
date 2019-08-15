@@ -115,7 +115,7 @@ class SecurityFormFactory {
 		$values = $button->getForm()->getValues();
 		try {
 			$address = $this->presenter->getParameter('address', 0);
-			$this->manager->setUserKey($address, $values['password'], $values['format']);
+			$this->manager->setUserKey($address, $values->password, $values->format);
 			$this->presenter->flashSuccess('iqrfnet.security.userKey.success');
 		} catch (DpaErrorException | EmptyResponseException | JsonException | UnsupportedInputFormatException $e) {
 			$this->presenter->flashError('iqrfnet.security.userKey.failure');

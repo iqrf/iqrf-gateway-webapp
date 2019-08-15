@@ -78,7 +78,7 @@ abstract class CloudFormFactory {
 	 * @param bool $needRestart Is restart needed?
 	 */
 	public function save(SubmitButton $button, bool $needRestart = false): void {
-		$values = $button->getForm()->getValues(true);
+		$values = $button->getForm()->getValues('array');
 		$success = false;
 		try {
 			$this->manager->createMqttInterface($values);

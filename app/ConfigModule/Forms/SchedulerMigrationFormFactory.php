@@ -89,7 +89,7 @@ class SchedulerMigrationFormFactory {
 	 */
 	public function import(SubmitButton $button): void {
 		try {
-			$this->manager->upload($button->getForm()->getValues(true));
+			$this->manager->upload($button->getForm()->getValues('array'));
 			$this->presenter->flashSuccess('config.migration.messages.importedConfig');
 		} catch (InvalidConfigurationFormatException $e) {
 			$this->presenter->flashError('config.migration.errors.invalidFormat');

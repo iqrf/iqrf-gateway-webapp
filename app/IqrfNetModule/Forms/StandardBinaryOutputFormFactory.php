@@ -90,9 +90,9 @@ class StandardBinaryOutputFormFactory {
 	 * @param SubmitButton $button Submit button
 	 */
 	public function enumerate(SubmitButton $button): void {
-		$values = $button->getForm()->getValues(true);
+		$values = $button->getForm()->getValues();
 		try {
-			$data = $this->manager->enumerate($values['address']);
+			$data = $this->manager->enumerate($values->address);
 			$this->presenter->handleBinaryOutputResponse($data);
 		} catch (UserErrorException | DpaErrorException | EmptyResponseException | JsonException $e) {
 			$this->presenter->flashError('iqrfnet.standard.binaryOutput.messages.enumerateError');
@@ -104,9 +104,9 @@ class StandardBinaryOutputFormFactory {
 	 * @param SubmitButton $button Submit button
 	 */
 	public function get(SubmitButton $button): void {
-		$values = $button->getForm()->getValues(true);
+		$values = $button->getForm()->getValues();
 		try {
-			$data = $this->manager->getOutputs($values['address']);
+			$data = $this->manager->getOutputs($values->address);
 			$this->presenter->handleBinaryOutputResponse($data);
 		} catch (UserErrorException | DpaErrorException | EmptyResponseException | JsonException $e) {
 			$this->presenter->flashError('iqrfnet.standard.binaryOutput.messages.getError');
@@ -118,10 +118,10 @@ class StandardBinaryOutputFormFactory {
 	 * @param SubmitButton $button Submit button
 	 */
 	public function set(SubmitButton $button): void {
-		$values = $button->getForm()->getValues(true);
+		$values = $button->getForm()->getValues();
 		try {
-			$output = new StandardBinaryOutput($values['index'], $values['state']);
-			$data = $this->manager->setOutputs($values['address'], [$output]);
+			$output = new StandardBinaryOutput($values->index, $values->state);
+			$data = $this->manager->setOutputs($values->address, [$output]);
 			$this->presenter->handleBinaryOutputResponse($data);
 		} catch (UserErrorException | DpaErrorException | EmptyResponseException | JsonException $e) {
 			$this->presenter->flashError('iqrfnet.standard.binaryOutput.messages.setError');

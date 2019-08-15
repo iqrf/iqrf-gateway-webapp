@@ -226,7 +226,7 @@ class SchedulerFormFactory {
 	 */
 	public function save(SubmitButton $button): void {
 		try {
-			$values = $button->getForm()->getValues(true);
+			$values = $button->getForm()->getValues('array');
 			$this->manager->save($values);
 			$this->presenter->flashSuccess('config.messages.success');
 		} catch (NonExistingJsonSchemaException $e) {

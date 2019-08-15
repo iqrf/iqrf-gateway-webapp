@@ -101,7 +101,7 @@ class ComponentsFormFactory {
 	 */
 	public function save(Form $form): void {
 		try {
-			$array = $form->getValues(true);
+			$array = $form->getValues('array');
 			if (isset($this->id)) {
 				$this->manager->save($array, $this->id);
 			} else {
