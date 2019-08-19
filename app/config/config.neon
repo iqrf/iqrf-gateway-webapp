@@ -2,8 +2,6 @@ parameters:
 	# init deamon used in out system (e.g. systemd)
 	initDaemon: 'systemd'
 	sudo: true
-	# path to IQRF IDE macros
-	macroPath: '%appDir%/../iqrf/DPA-macros_190301.iqrfmcr'
 	# Daemon configuration
 	daemon:
 		# Path to directory with IQRF Gateway Daemon's JSON API schemas
@@ -33,6 +31,11 @@ database:
 extensions:
 	formRenderer: Nepada\Bridges\FormRendererDI\FormRendererExtension
 	iqrfRepository: Iqrf\Repository\DI\IqrfRepositoryExtension
+	iqrfMacros: Iqrf\IdeMacros\DI\IqrfMacrosExtension
+
+iqrfMacros:
+	# path to IQRF IDE macros
+	path: '%appDir%/../iqrf/DPA-macros_190301.iqrfmcr'
 
 session:
 	expiration: 14 days

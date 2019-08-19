@@ -31,7 +31,7 @@
 		"contributte/monolog": "^0.3",
 		"contributte/translation": "^0.4",
 		"grifart/enum": "^0.2",
-		"iqrf/iqrf-ide-macros-parser": "^1.1",
+		"iqrf/iqrf-ide-macros-parser": "^1.2",
 		"iqrf/iqrf-repository": "dev-master",
 		"justinrainbow/json-schema": "^5.2",
 		"latte/latte": "^2.5",
