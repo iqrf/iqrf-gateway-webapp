@@ -109,7 +109,7 @@ class StandardBinaryOutputManager {
 				'req' => [
 					'nAdr' => $address,
 					'param' => [
-						'binouts' => [],
+						'binOuts' => [],
 					],
 				],
 				'returnVerbose' => true,
@@ -119,7 +119,7 @@ class StandardBinaryOutputManager {
 		 * @var StandardBinaryOutput $output Standard binary output
 		 */
 		foreach ($outputs as $output) {
-			$array['data']['req']['param']['binouts'][] = $output->toArray();
+			$array['data']['req']['param']['binOuts'][] = $output->toArray();
 		}
 		$this->request->setRequest($array);
 		return $this->wsClient->sendSync($this->request);

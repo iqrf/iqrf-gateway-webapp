@@ -68,7 +68,7 @@ class StandardBinaryOutputManagerTest extends WebSocketTestCase {
 				'req' => [
 					'nAdr' => $this->address,
 					'param' => [
-						'binouts' => [],
+						'binOuts' => [],
 					],
 				],
 				'returnVerbose' => true,
@@ -89,7 +89,7 @@ class StandardBinaryOutputManagerTest extends WebSocketTestCase {
 				'req' => [
 					'nAdr' => $this->address,
 					'param' => [
-						'binouts' => [
+						'binOuts' => [
 							[
 								'index' => 0,
 								'state' => true,
