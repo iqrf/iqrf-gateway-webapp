@@ -32,6 +32,7 @@ extensions:
 	formRenderer: Nepada\Bridges\FormRendererDI\FormRendererExtension
 	iqrfRepository: Iqrf\Repository\DI\IqrfRepositoryExtension
 	iqrfMacros: Iqrf\IdeMacros\DI\IqrfMacrosExtension
+	- Contributte\FormMultiplier\DI\MultiplierExtension
 
 iqrfMacros:
 	# path to IQRF IDE macros
@@ -91,4 +92,5 @@ includes:
 	- %appDir%/CoreModule/config/config.neon
 	- %appDir%/GatewayModule/config/config.neon
 	- %appDir%/IqrfNetModule/config/config.neon
+	- %appDir%/NetworkModule/config/config.neon
 	- %appDir%/ServiceModule/config/config.neon

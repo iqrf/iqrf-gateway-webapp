@@ -1,0 +1,63 @@
+title: Network manager
+description: Controls the network.
+
+ethernet:
+	title: Ethernet connections
+	description: Controls the Ethernet connections.
+	edit:
+		title: Edit Ethernet connection
+	datagrid:
+		name: Interface name
+		state: Interface status
+		edit: Edit
+	form:
+		ipv4:
+			title: IPv4 configuration
+			method: Connection method
+			methods:
+				auto: DHCP
+				disabled: Disabled
+				manual: Manual
+				link-local: Link-local
+				shared: Shared with other computers
+			address: IPv4 address
+			addresses:
+				add: Add IPv4 address
+				remove: Remove IPv4 address
+			mask: Subnet mask
+			gateway: IPv4 gateway address
+			dns:
+				title: IPv4 DNS servers
+				address: IPv4 address
+				add: Add DNS server
+				remove: Remove DNS server
+		ipv6:
+			title: IPv6 configuration
+			method: Connection method
+			methods:
+				auto: SLAAC
+				disabled: Disabled
+				dhcp: DHCPv6
+				ignore: Ignore
+				link-local: Link-local
+				manual: Manual
+				shared: Shared with other computers
+			address: IPv6 address
+			addresses:
+				add: Add IPv6 address
+				remove: Remove IPv6 address
+			prefix: Subnet prefix
+			gateway: IPv6 gateway address
+			dns:
+				title: IPv6 DNS servers
+				address: IPv6 address
+				add: Add DNS server
+				remove: Remove DNS server
+		prompts:
+			ipv4:
+				method: Please select IPv4 connection method
+			ipv6:
+				method: Please select IPv6 connection method
+		messages:
+			success: The configuration has been saved successfully.
+		save: Save

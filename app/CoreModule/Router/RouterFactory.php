@@ -58,6 +58,9 @@ final class RouterFactory {
 		$iqrfNet[] = new Route('[<lang [a-z]{2}>/]iqrfnet/tr-security/<address>', 'TrSecurity:default');
 		$iqrfNet[] = new Route('[<lang [a-z]{2}>/]iqrfnet/<presenter>/<action>', 'Homepage:default');
 		$router[] = $iqrfNet;
+		$network = new RouteList('Network');
+		$network[] = new Route('[<lang [a-z]{2}>/]network/<presenter>/<action>[/<uuid>]', 'Homepage:default');
+		$router[] = $network;
 		$service = new RouteList('Service');
 		$service[] = new Route('[<lang [a-z]{2}>/]service/<presenter>/<action>', 'Control:default');
 		$router[] = $service;

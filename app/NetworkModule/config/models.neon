@@ -1,0 +1,3 @@
+services:
+	- App\NetworkModule\Models\ConnectionManager
+	- App\NetworkModule\Models\InterfaceManager
