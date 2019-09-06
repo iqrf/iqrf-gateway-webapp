@@ -7,7 +7,7 @@ parameters:
 		# PIXLA mamagement system
 		pixla: false
 		# Network manager
-		networkManager: true
+		networkManager: false
 		# Supervisord dashboard
 		supervisord: false
 		# System updater

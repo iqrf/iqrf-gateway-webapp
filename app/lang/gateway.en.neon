@@ -41,7 +41,7 @@ diagnostics:
 	download: Download diagnostics
 
 log:
-	title: Logger file
+	title: Log file
 	description: Shows log of IQRF Gateway Daemon.
 	download: Download
 	messages:
