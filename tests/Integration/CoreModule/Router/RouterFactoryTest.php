@@ -11,9 +11,9 @@ declare(strict_types = 1);
 namespace Tests\Integration\CoreModule\Router;
 
 use App\CoreModule\Router\RouterFactory;
-use Nette\Application\IRouter;
 use Nette\Application\Routers\Route;
 use Nette\Application\Routers\RouteList;
+use Nette\Routing\Router;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -48,6 +48,9 @@ class RouterFactoryTest extends TestCase {
 			'[<lang [a-z]{2}>/]iqrfnet/tr-security/<address>',
 			'[<lang [a-z]{2}>/]iqrfnet/<presenter>/<action>',
 		],],
+		['Network:' => [
+			'[<lang [a-z]{2}>/]network/<presenter>/<action>[/<uuid>]',
+		],],
 		['Service:' => [
 			'[<lang [a-z]{2}>/]service/<presenter>/<action>',
 		],],
@@ -64,7 +67,7 @@ class RouterFactoryTest extends TestCase {
 		$routeList = RouterFactory::createRouter();
 		Assert::type(RouteList::class, $routeList);
 		Assert::null($routeList->getModule());
-		Assert::same($this->expected, array_map(function (IRouter $type) {
+		Assert::same($this->expected, array_map(function (Router $type) {
 			if ($type instanceof Route) {
 				return $type->getMask();
 			} else {

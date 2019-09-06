@@ -74,7 +74,7 @@ abstract class TrConfigFormFactory {
 	 */
 	public function save(Form $form): void {
 		$address = $this->presenter->getParameter('id', 0);
-		$config = $form->getValues(true);
+		$config = $form->getValues('array');
 		if (array_key_exists('stdAndLpNetwork', $config)) {
 			$config['stdAndLpNetwork'] = boolval($config['stdAndLpNetwork']);
 		}

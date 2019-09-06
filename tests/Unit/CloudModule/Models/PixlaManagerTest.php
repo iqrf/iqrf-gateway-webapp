@@ -1,17 +1,17 @@
 <?php
 /**
- * TEST: App\GatewayModule\Models\PixlaManager
- * @covers App\GatewayModule\Models\PixlaManager
+ * TEST: App\CloudModule\Models\PixlaManager
+ * @covers App\CloudModule\Models\PixlaManager
  * @phpVersion >= 7.1
  * @testCase
  */
 
 declare(strict_types = 1);
 
-namespace Tests\Unit\GatewayModule\Models;
+namespace Tests\Unit\CloudModule\Models;
 
-use App\GatewayModule\Enums\PixlaService;
-use App\GatewayModule\Models\PixlaManager;
+use App\CloudModule\Enums\PixlaService;
+use App\CloudModule\Models\PixlaManager;
 use Tester\Assert;
 use Tests\Toolkit\TestCases\CommandTestCase;
 

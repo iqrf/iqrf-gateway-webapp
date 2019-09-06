@@ -2,8 +2,6 @@ parameters:
 	# init deamon used in out system (e.g. systemd)
 	initDaemon: 'systemd'
 	sudo: true
-	# path to IQRF IDE macros
-	macroPath: '../iqrf/DPA-macros_190301.iqrfmcr'
 	# Daemon configuration
 	daemon:
 		# Path to directory with IQRF Gateway Daemon's JSON API schemas
@@ -33,6 +31,12 @@ database:
 extensions:
 	formRenderer: Nepada\Bridges\FormRendererDI\FormRendererExtension
 	iqrfRepository: Iqrf\Repository\DI\IqrfRepositoryExtension
+	iqrfMacros: Iqrf\IdeMacros\DI\IqrfMacrosExtension
+	- Contributte\FormMultiplier\DI\MultiplierExtension
+
+iqrfMacros:
+	# path to IQRF IDE macros
+	path: '%appDir%/../iqrf/DPA-macros_190301.iqrfmcr'
 
 session:
 	expiration: 14 days
@@ -41,9 +45,21 @@ services:
 	router: App\CoreModule\Router\RouterFactory::createRouter
 
 http:
+	cookieSecure: auto
 	csp:
+		default-src: self
 		frame-ancestors: none
 		form-action: self
+		font-src: [
+			self,
+			'data:'
+		]
+		img-src: [
+			self,
+			'data:',
+			https://repository.iqrfalliance.org/
+		]
+		report-uri: 'https://sentry.iqrf.org/api/2/security/?sentry_key=dcc3c60024154484afbca5e250a861a9'
 		script-src: [
 			# for browsers that support CSP3
 			nonce
@@ -54,10 +70,12 @@ http:
 			# for browsers that support CSP3
 			#nonce
 			# for browsers that support CSP2
-			self, 'unsafe-inline'
+			self, unsafe-inline
 		]
 
 tracy:
+	bar:
+		- App\CoreModule\Tracy\CommandPanel(@commandStack)
 	email: 'roman.ondracek@iqrf.com'
 	strictMode: true
 	maxDepth: 10
@@ -68,10 +86,11 @@ includes:
 	- guzzle.neon
 	- monolog.neon
 	- translation.neon
-	- ../CloudModule/config/config.neon
-	- ../ConfigModule/config/config.neon
-	- ../ConsoleModule/config/config.neon
-	- ../CoreModule/config/config.neon
-	- ../GatewayModule/config/config.neon
-	- ../IqrfNetModule/config/config.neon
-	- ../ServiceModule/config/config.neon
+	- %appDir%/CloudModule/config/config.neon
+	- %appDir%/ConfigModule/config/config.neon
+	- %appDir%/ConsoleModule/config/config.neon
+	- %appDir%/CoreModule/config/config.neon
+	- %appDir%/GatewayModule/config/config.neon
+	- %appDir%/IqrfNetModule/config/config.neon
+	- %appDir%/NetworkModule/config/config.neon
+	- %appDir%/ServiceModule/config/config.neon

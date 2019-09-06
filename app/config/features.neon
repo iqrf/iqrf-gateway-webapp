@@ -1,11 +1,13 @@
 parameters:
 	features:
 		# IQRF TR native upload
-		trUpload: true
+		trUpload: false
 		# Node-RED
 		node-red: false
 		# PIXLA mamagement system
 		pixla: false
+		# Network manager
+		networkManager: false
 		# Supervisord dashboard
 		supervisord: false
 		# System updater

@@ -3,7 +3,6 @@ services:
 	- App\GatewayModule\Models\InfoManager
 	- App\GatewayModule\Models\LogManager(%daemon.logDir%)
 	- App\GatewayModule\Models\NetworkManager
-	- App\GatewayModule\Models\PixlaManager
 	- App\GatewayModule\Models\PowerManager
 	- App\GatewayModule\Models\UpdaterManager
 	- App\GatewayModule\Models\VersionManager

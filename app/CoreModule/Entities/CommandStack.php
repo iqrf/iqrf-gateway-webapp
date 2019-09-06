@@ -18,34 +18,32 @@
  */
 declare(strict_types = 1);
 
-namespace App\GatewayModule\Enums;
-
-use Grifart\Enum\AutoInstances;
-use Grifart\Enum\Enum;
+namespace App\CoreModule\Entities;
 
 /**
- * PIXLA client service status enum
- * @method static PixlaService DISABLED()
- * @method static PixlaService ENABLED()
- * @method static PixlaService MISSING()
+ * Command stack entity
  */
-final class PixlaService extends Enum {
-
-	use AutoInstances;
+class CommandStack {
 
 	/**
-	 * Disabled PIXLA client service
+	 * @var Command[] Commands
 	 */
-	private const DISABLED = 'disabled';
+	private $commands = [];
 
 	/**
-	 * Enabled PIXLA client service
+	 * Adds a command in to the stack
+	 * @param Command $command Command to add
 	 */
-	private const ENABLED = 'enabled';
+	public function addCommand(Command $command): void {
+		$this->commands[] = $command;
+	}
 
 	/**
-	 * Missing PIXLA client service
+	 * Returns commands in the stack
+	 * @return Command[] Commands in the stack
 	 */
-	private const MISSING = '';
+	public function getCommands(): array {
+		return $this->commands;
+	}
 
 }

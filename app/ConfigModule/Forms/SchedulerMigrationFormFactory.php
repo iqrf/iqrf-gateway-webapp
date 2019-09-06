@@ -75,11 +75,9 @@ class SchedulerMigrationFormFactory {
 			->setRequired('messages.configuration')
 			->setHtmlAttribute('accept', '.zip');
 		$form->addSubmit('import', 'import')
-			->setHtmlAttribute('class', 'btn btn-primary')
 			->onClick[] = [$this, 'import'];
 		$form->addSubmit('export', 'export')
 			->setValidationScope([])
-			->setHtmlAttribute('class', 'btn btn-primary')
 			->onClick[] = [$this, 'export'];
 		$form->addProtection('core.errors.form-timeout');
 		return $form;
@@ -91,7 +89,7 @@ class SchedulerMigrationFormFactory {
 	 */
 	public function import(SubmitButton $button): void {
 		try {
-			$this->manager->upload($button->getForm()->getValues(true));
+			$this->manager->upload($button->getForm()->getValues('array'));
 			$this->presenter->flashSuccess('config.migration.messages.importedConfig');
 		} catch (InvalidConfigurationFormatException $e) {
 			$this->presenter->flashError('config.migration.errors.invalidFormat');

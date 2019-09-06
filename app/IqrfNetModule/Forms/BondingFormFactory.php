@@ -87,17 +87,15 @@ class BondingFormFactory {
 		$form->addInteger('testRetries', 'testRetries')
 			->setDefaultValue(1);
 		$this->addSmartConnectInputs($form);
+		$form->addCheckbox('coordinatorOnly', 'coordinatorOnly');
 		$form->addProtection('core.errors.form-timeout');
 		$form->addSubmit('add', 'addBond')
-			->setHtmlAttribute('class', 'btn btn-primary')
 			->onClick[] = [$this, 'addBond'];
 		$form->addSubmit('remove', 'removeBond')
-			->setHtmlAttribute('class', 'btn btn-primary')
 			->setValidationScope([$form['address']])
 			->setHtmlId('removeBond')
 			->onClick[] = [$this, 'removeBond'];
 		$form->addSubmit('clear', 'clearAllBonds')
-			->setHtmlAttribute('class', 'btn btn-primary')
 			->setValidationScope([])
 			->onClick[] = [$this, 'clearAllBonds'];
 		return $form;
@@ -154,10 +152,12 @@ class BondingFormFactory {
 
 	/**
 	 * Clears all bonds
+	 * @param SubmitButton $button Submit button for cleaning al bonds
 	 */
-	public function clearAllBonds(): void {
+	public function clearAllBonds(SubmitButton $button): void {
+		$values = $button->getForm()->getValues();
 		try {
-			$this->manager->clearAll();
+			$this->manager->clearAll($values['coordinatorOnly']);
 			$this->presenter->flashSuccess('iqrfnet.bonding.messages.clearAll.success');
 		} catch (EmptyResponseException | DpaErrorException | JsonException $e) {
 			$this->presenter->flashError('iqrfnet.bonding.messages.clearAll.failure');
@@ -171,7 +171,7 @@ class BondingFormFactory {
 	public function removeBond(SubmitButton $button): void {
 		$values = $button->getForm()->getValues();
 		try {
-			$this->manager->remove($values['address']);
+			$this->manager->remove($values['address'], $values['coordinatorOnly']);
 			$this->presenter->flashSuccess('iqrfnet.bonding.messages.remove.success');
 		} catch (EmptyResponseException | DpaErrorException | JsonException $e) {
 			$this->presenter->flashError('iqrfnet.bonding.messages.remove.failure');

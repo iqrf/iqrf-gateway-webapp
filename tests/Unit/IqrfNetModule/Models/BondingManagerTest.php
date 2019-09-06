@@ -96,6 +96,25 @@ class BondingManagerTest extends WebSocketTestCase {
 	}
 
 	/**
+	 * Tests the function to clear all bonds (coordinator only)
+	 */
+	public function testClearAllCoordinatorOnly(): void {
+		$request = [
+			'mType' => 'iqrfEmbedCoordinator_ClearAllBonds',
+			'data' => [
+				'req' => [
+					'nAdr' => 0,
+					'param' => (object) [],
+				],
+				'returnVerbose' => true,
+			],
+		];
+		$this->assertRequest($request, function (): void {
+			$this->manager->clearAll(true);
+		});
+	}
+
+	/**
 	 * Tests the function to remove a bond
 	 */
 	public function testRemove(): void {
@@ -111,6 +130,27 @@ class BondingManagerTest extends WebSocketTestCase {
 		];
 		$this->assertRequest($request, function (): void {
 			$this->manager->remove($this->address);
+		});
+	}
+
+	/**
+	 * Tests the function to remove a bond (coordinator only)
+	 */
+	public function testRemoveCoordinatorOnly(): void {
+		$request = [
+			'mType' => 'iqrfEmbedCoordinator_RemoveBond',
+			'data' => [
+				'req' => [
+					'nAdr' => 0,
+					'param' => [
+						'bondAddr' => $this->address,
+					],
+				],
+				'returnVerbose' => true,
+			],
+		];
+		$this->assertRequest($request, function (): void {
+			$this->manager->remove($this->address, true);
 		});
 	}
 

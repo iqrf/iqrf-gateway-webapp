@@ -3,7 +3,7 @@
 /**
  * TEST: App\ConfigModule\Models\MigrationManager
  * @covers App\ConfigModule\Models\MigrationManager
- * @phpVersion >= 7.0
+ * @phpVersion >= 7.1
  * @testCase
  */
 declare(strict_types = 1);
@@ -12,6 +12,7 @@ namespace Tests\ConfigModule\Models;
 
 use App\ConfigModule\Exceptions\InvalidConfigurationFormatException;
 use App\ConfigModule\Models\MigrationManager;
+use App\CoreModule\Entities\CommandStack;
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FileManager;
 use App\CoreModule\Models\JsonSchemaManager;
@@ -19,7 +20,7 @@ use App\CoreModule\Models\ZipArchiveManager;
 use App\ServiceModule\Models\ServiceManager;
 use DateTime;
 use Mockery;
-use Mockery\Mock;
+use Mockery\MockInterface;
 use Nette\Application\Responses\FileResponse;
 use Nette\Http\FileUpload;
 use Nette\Utils\FileSystem;
@@ -37,7 +38,7 @@ require __DIR__ . '/../../bootstrap.php';
 class MigrationManagerTest extends TestCase {
 
 	/**
-	 * @var Mock Mocker command manager
+	 * @var MockInterface Mocker command manager
 	 */
 	private $commandManager;
 
@@ -195,7 +196,8 @@ class MigrationManagerTest extends TestCase {
 		$this->fileManager = new FileManager($this->configPath);
 		$schemaManager = new JsonSchemaManager($this->schemaPath);
 		$schemaManagerCorrupted = new JsonSchemaManager($this->schemaCorruptedPath);
-		$this->commandManager = Mockery::mock(CommandManager::class, [false])->makePartial();
+		$commandStack = new CommandStack();
+		$this->commandManager = Mockery::mock(CommandManager::class, [false, $commandStack])->makePartial();
 		$serviceManager = Mockery::mock(ServiceManager::class);
 		$serviceManager->shouldReceive('restart');
 		$this->manager = new MigrationManager($this->configTempPath, $this->commandManager, $schemaManager, $serviceManager);

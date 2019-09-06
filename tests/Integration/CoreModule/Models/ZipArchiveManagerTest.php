@@ -11,6 +11,7 @@ declare(strict_types = 1);
 namespace Tests\Integration\CoreModule\Models;
 
 use App\CoreModule\Models\ZipArchiveManager;
+use Nette\Utils\ArrayHash;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
 use Tester\Assert;
@@ -121,7 +122,7 @@ class ZipArchiveManagerTest extends TestCase {
 	 */
 	public function testExistFiles(): void {
 		$files = $this->createList($this->configDir);
-		Assert::true($this->manager->exist($files));
+		Assert::true($this->manager->exist(ArrayHash::from($files)));
 	}
 
 	/**

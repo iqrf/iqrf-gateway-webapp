@@ -73,7 +73,7 @@ class GenericConfigFormFactory {
 	 */
 	public function save(Form $form): void {
 		try {
-			$this->manager->save($form->getValues(true));
+			$this->manager->save($form->getValues('array'));
 			$this->presenter->flashSuccess('config.messages.success');
 		} catch (NonExistingJsonSchemaException $e) {
 			$this->presenter->flashError('config.messages.writeFailures.nonExistingJsonSchema');

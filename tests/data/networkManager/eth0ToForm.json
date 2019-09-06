@@ -1,0 +1,37 @@
+{
+	"id": "eth0",
+	"uuid": "25ab1b06-2a86-40a9-950f-1c576ddcd35a",
+	"type": "802-3-ethernet",
+	"interface-name": "eth0",
+	"ipv4": {
+		"method": "manual",
+		"addresses": [
+			{
+				"address": "192.168.1.2",
+				"prefix": 24,
+				"mask": "255.255.255.0"
+			}
+		],
+		"gateway": "192.168.1.1",
+		"dns": [
+			{
+				"address": "192.168.1.1"
+			}
+		]
+	},
+	"ipv6": {
+		"method": "manual",
+		"addresses": [
+			{
+				"address": "2001:470:5bb2::2",
+				"prefix": 64,
+				"gateway": "fe80::1"
+			}
+		],
+		"dns": [
+			{
+				"address": "2001:470:5bb2::1"
+			}
+		]
+	}
+}

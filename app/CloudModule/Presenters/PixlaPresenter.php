@@ -18,10 +18,10 @@
  */
 declare(strict_types = 1);
 
-namespace App\GatewayModule\Presenters;
+namespace App\CloudModule\Presenters;
 
+use App\CloudModule\Models\PixlaManager;
 use App\CoreModule\Presenters\ProtectedPresenter;
-use App\GatewayModule\Models\PixlaManager;
 
 /**
  * PIXLA management system presenter
@@ -47,7 +47,7 @@ class PixlaPresenter extends ProtectedPresenter {
 	 */
 	public function actionDisable(): void {
 		$this->manager->disableService();
-		$this->flashSuccess('gateway.pixla.messages.disable');
+		$this->flashSuccess('cloud.pixla.messages.disable');
 		$this->setView('default');
 		$this->redirect('Pixla:default');
 	}
@@ -57,7 +57,7 @@ class PixlaPresenter extends ProtectedPresenter {
 	 */
 	public function actionEnable(): void {
 		$this->manager->enableService();
-		$this->flashSuccess('gateway.pixla.messages.enable');
+		$this->flashSuccess('cloud.pixla.messages.enable');
 		$this->setView('default');
 		$this->redirect('Pixla:default');
 	}
@@ -76,7 +76,7 @@ class PixlaPresenter extends ProtectedPresenter {
 	protected function startup(): void {
 		parent::startup();
 		if (!$this->context->parameters['features']['pixla']) {
-			$this->flashError('gateway.pixla.messages.disabled');
+			$this->flashError('cloud.pixla.messages.disabled');
 			$this->redirect('Homepage:default');
 		}
 	}

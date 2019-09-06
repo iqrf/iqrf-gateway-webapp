@@ -1,6 +1,3 @@
-services:
-	- Iqrf\IdeMacros\MacroFileParser(%macroPath%)
-
 includes:
 	- forms.neon
 	- models.neon

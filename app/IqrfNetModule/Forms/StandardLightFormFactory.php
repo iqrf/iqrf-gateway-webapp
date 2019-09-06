@@ -94,9 +94,9 @@ class StandardLightFormFactory {
 	 * @param SubmitButton $button Submit button
 	 */
 	public function enumerate(SubmitButton $button): void {
-		$values = $button->getForm()->getValues(true);
+		$values = $button->getForm()->getValues();
 		try {
-			$data = $this->manager->enumerate($values['address']);
+			$data = $this->manager->enumerate($values->address);
 			$this->presenter->handleLightResponse($data);
 		} catch (UserErrorException | DpaErrorException | EmptyResponseException | JsonException $e) {
 			$this->presenter->flashError('iqrfnet.standard.light.messages.enumerateError');
@@ -108,10 +108,10 @@ class StandardLightFormFactory {
 	 * @param SubmitButton $button Submit button
 	 */
 	public function getPower(SubmitButton $button): void {
-		$values = $button->getForm()->getValues(true);
+		$values = $button->getForm()->getValues();
 		try {
-			$light = new StandardLight($values['index'], $values['power']);
-			$data = $this->manager->getPower($values['address'], [$light]);
+			$light = new StandardLight($values->index, $values->power);
+			$data = $this->manager->getPower($values->address, [$light]);
 			$this->presenter->handleLightResponse($data);
 		} catch (UserErrorException | DpaErrorException | EmptyResponseException | JsonException $e) {
 			$this->presenter->flashError('iqrfnet.standard.light.messages.getError');
@@ -123,10 +123,10 @@ class StandardLightFormFactory {
 	 * @param SubmitButton $button Submit button
 	 */
 	public function setPower(SubmitButton $button): void {
-		$values = $button->getForm()->getValues(true);
+		$values = $button->getForm()->getValues();
 		try {
-			$light = new StandardLight($values['index'], $values['power']);
-			$data = $this->manager->setPower($values['address'], [$light]);
+			$light = new StandardLight($values->index, $values->power);
+			$data = $this->manager->setPower($values->address, [$light]);
 			$this->presenter->handleLightResponse($data);
 		} catch (UserErrorException | DpaErrorException | EmptyResponseException | JsonException $e) {
 			$this->presenter->flashError('iqrfnet.standard.light.messages.setError');
@@ -138,10 +138,10 @@ class StandardLightFormFactory {
 	 * @param SubmitButton $button Submit button
 	 */
 	public function incrementPower(SubmitButton $button): void {
-		$values = $button->getForm()->getValues(true);
+		$values = $button->getForm()->getValues();
 		try {
-			$light = new StandardLight($values['index'], $values['power']);
-			$data = $this->manager->incrementPower($values['address'], [$light]);
+			$light = new StandardLight($values->index, $values->power);
+			$data = $this->manager->incrementPower($values->address, [$light]);
 			$this->presenter->handleLightResponse($data);
 		} catch (UserErrorException | DpaErrorException | EmptyResponseException | JsonException $e) {
 			$this->presenter->flashError('iqrfnet.standard.light.messages.incrementError');
@@ -153,10 +153,10 @@ class StandardLightFormFactory {
 	 * @param SubmitButton $button Submit button
 	 */
 	public function decrementPower(SubmitButton $button): void {
-		$values = $button->getForm()->getValues(true);
+		$values = $button->getForm()->getValues();
 		try {
-			$light = new StandardLight($values['index'], $values['power']);
-			$data = $this->manager->decrementPower($values['address'], [$light]);
+			$light = new StandardLight($values->index, $values->power);
+			$data = $this->manager->decrementPower($values->address, [$light]);
 			$this->presenter->handleLightResponse($data);
 		} catch (UserErrorException | DpaErrorException | EmptyResponseException | JsonException $e) {
 			$this->presenter->flashError('iqrfnet.standard.light.messages.decrementError');

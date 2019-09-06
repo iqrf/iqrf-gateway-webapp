@@ -2,5 +2,6 @@ features:
 	trUpload: IQRF TR native upload
 	node-red: Node-RED in the menu
 	pixla: PIXLA
+	networkManager: Network manager
 	supervisord: Supervisord in the menu
 	updater: System updater

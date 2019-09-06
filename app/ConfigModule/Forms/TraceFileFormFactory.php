@@ -37,10 +37,10 @@ class TraceFileFormFactory extends GenericConfigFormFactory {
 	 * @var string[] Verbosity levels
 	 */
 	private $verbosityLevels = [
-		'err' => 'VerbosityLevels.Error',
-		'war' => 'VerbosityLevels.Warning',
-		'inf' => 'VerbosityLevels.Info',
-		'dbg' => 'VerbosityLevels.Debug',
+		'ERR' => 'VerbosityLevels.Error',
+		'WAR' => 'VerbosityLevels.Warning',
+		'INF' => 'VerbosityLevels.Info',
+		'DBG' => 'VerbosityLevels.Debug',
 	];
 
 	/**
@@ -64,7 +64,7 @@ class TraceFileFormFactory extends GenericConfigFormFactory {
 			$container = $verbosityLevels->addContainer($id);
 			$container->addInteger('channel', 'channel');
 			$container->addSelect('level', 'level', $this->verbosityLevels)
-				->setDefaultValue(Strings::lower($verbosityLevel['level']));
+				->setDefaultValue(Strings::upper($verbosityLevel['level']));
 			unset($defaults['VerbosityLevels'][$id]['level']);
 		}
 		$form->addSubmit('save', 'Save');

@@ -15,24 +15,11 @@
  * limitations under the License.
 *}
 
-{block title}{_gateway.pixla.title}{/block}
+{block title}{_network.title}{/block}
 {block content}
-<div class='panel panel-default'>
-	<div class='panel-body'>
-		<table class='table table-striped'>
-			<tr>
-				<th>{_gateway.pixla.token}</th>
-				<td>{$token}</td>
-			</tr>
-			<tr>
-				<th>{_gateway.pixla.status}</th>
-				<td>{_gateway.pixla.statuses.$status}</td>
-			</tr>
-		</table>
-		{dump $status}
-		{if $status !== ''}
-			<a class='ajax btn btn-success' n:href='enable' role='button'>{_gateway.pixla.enable}</a>
-			<a class='ajax btn btn-danger' n:href='disable' role='button'>{_gateway.pixla.disable}</a>
-		{/if}
-	</div>
+<div class='list-group'>
+	<a n:href='Ethernet:default' class='list-group-item'>
+		<header class='list-group-item-heading'>{_network.ethernet.title}</header>
+		<p class='list-group-item-text'>{_network.ethernet.description}</p>
+	</a>
 </div>

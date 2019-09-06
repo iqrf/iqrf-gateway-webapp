@@ -31,7 +31,8 @@
 		"contributte/monolog": "^0.3",
 		"contributte/translation": "^0.4",
 		"grifart/enum": "^0.2",
-		"iqrf/iqrf-ide-macros-parser": "^1.1",
+		"iqrf/iqrf-ide-macros-parser": "^1.2",
+		"iqrf/iqrf-repository": "dev-master",
 		"justinrainbow/json-schema": "^5.2",
 		"latte/latte": "^2.5",
 		"nepada/form-renderer": "^1.1",
@@ -40,7 +41,7 @@
 		"nette/caching": "^3.0",
 		"nette/database": "^3.0",
 		"nette/di": "^3.0",
-		"nette/finder": "3.0.0-RC1 as 2.5.0",
+		"nette/finder": "^2.5",
 		"nette/forms": "^3.0",
 		"nette/http": "^3.0",
 		"nette/neon": "^3.0",
@@ -49,12 +50,14 @@
 		"nette/safe-stream": "^2.4",
 		"nette/security": "^3.0",
 		"nette/utils": "^3.0",
+		"ramsey/uuid": "^3.8",
 		"ratchet/pawl": "^0.3",
 		"sentry/sentry": "^1.10",
 		"symfony/process": "^4.2",
 		"tracy/tracy": "^2.6",
 		"ublaboo/datagrid": "^6.2",
-		"iqrf/iqrf-repository": "dev-master"
+		"darsyn/ip": "^4.0",
+		"contributte/forms-multiplier": "^3.0"
 	},
 	"require-dev": {
 		"mockery/mockery": "^1.1",
@@ -95,7 +98,7 @@
 		"install-cs": "composer create-project nette/code-checker temp/code-checker --no-interaction",
 		"check-cs": "php temp/code-checker/code-checker -l --no-progress --strict-types -i \"coverage.*\" -i \"docs/\" -i \"tests/temp/\" -i \"www/dist/\"",
 		"fix-cs": "php temp/code-checker/code-checker -f -l --no-progress --strict-types -i \"coverage.*\" -i \"docs/\" -i \"tests/temp/\" -i \"www/dist/\"",
-		"phpstan": "vendor/bin/phpstan analyse -c phpstan.neon -l 4 app bin tests",
+		"phpstan": "NETTE_TESTER_RUNNER=1 vendor/bin/phpstan analyse -c phpstan.neon",
 		"qa": [
 			"linter app bin tests",
 			"codesniffer app bin tests"

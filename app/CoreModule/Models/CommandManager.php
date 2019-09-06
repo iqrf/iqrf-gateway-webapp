@@ -20,10 +20,10 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Models;
 
+use App\CoreModule\Entities\Command;
+use App\CoreModule\Entities\CommandStack;
 use Nette\SmartObject;
-use Nette\Utils\Strings;
 use Symfony\Component\Process\Process;
-use Tracy\Debugger;
 
 /**
  * Tool for executing commands
@@ -38,11 +38,18 @@ class CommandManager {
 	private $sudo;
 
 	/**
+	 * @var CommandStack Command stack
+	 */
+	private $stack;
+
+	/**
 	 * Constructor
 	 * @param bool $sudo Is sudo required?
+	 * @param CommandStack $stack Command stack
 	 */
-	public function __construct(bool $sudo) {
+	public function __construct(bool $sudo, CommandStack $stack) {
 		$this->sudo = $sudo;
+		$this->stack = $stack;
 	}
 
 	/**
@@ -55,45 +62,44 @@ class CommandManager {
 	}
 
 	/**
-	 * Executes shell command and returns output
+	 * Creates the process
 	 * @param string $cmd Command to execute
-	 * @param bool $needSudo Is the command needs sudo?
+	 * @param bool $needSudo Does the command need sudo?
+	 * @return Process Created process
+	 */
+	private function createProcess(string $cmd, bool $needSudo): Process {
+		$command = ($this->sudo && $needSudo ? 'sudo ' : '') . $cmd;
+		return Process::fromShellCommandline($command);
+	}
+
+	/**
+	 * Executes shell command and returns output
+	 * @param string $command Command to execute
+	 * @param bool $needSudo Does the command need sudo?
 	 * @return string Output
 	 */
-	public function run(string $cmd, bool $needSudo = false): string {
-		$command = ($this->sudo && $needSudo ? 'sudo ' : '') . $cmd;
-		$process = Process::fromShellCommandline($command);
+	public function run(string $command, bool $needSudo = false): string {
+		$process = $this->createProcess($command, $needSudo);
 		$process->run();
-		$output = [
-			'command' => $command,
-			'stdout' => $process->getOutput(),
-			'stderr' => $process->getErrorOutput(),
-			'returnValue' => $process->getExitCode(),
-		];
-		Debugger::barDump($output, 'Command manager');
-		return Strings::trim($output['stdout']);
+		$entity = new Command($command, $process);
+		$this->stack->addCommand($entity);
+		return $entity->getStdout();
 	}
 
 	/**
 	 * Executes the command asynchronously
 	 * @param callable $callback Callback to run whenever there is some output available on STDOUT or STDERR
-	 * @param string $cmd Command to execute
-	 * @param bool $needSudo Is the command needs sudo?
+	 * @param string $command Command to execute
+	 * @param bool $needSudo Does the command need sudo?
 	 * @param int $timeout Command's timeout
 	 */
-	public function runAsync(callable $callback, string $cmd, bool $needSudo = false, int $timeout = 36000): void {
-		$command = ($this->sudo && $needSudo ? 'sudo ' : '') . $cmd;
-		$process = Process::fromShellCommandline($command);
+	public function runAsync(callable $callback, string $command, bool $needSudo = false, int $timeout = 36000): void {
+		$process = $this->createProcess($command, $needSudo);
 		$process->setTimeout($timeout);
 		$process->start($callback);
 		$process->wait();
-		$output = [
-			'command' => $command,
-			'stdout' => $process->getOutput(),
-			'stderr' => $process->getErrorOutput(),
-			'returnValue' => $process->getExitCode(),
-		];
-		Debugger::barDump($output, 'Command manager');
+		$entity = new Command($command, $process);
+		$this->stack->addCommand($entity);
 	}
 
 }

@@ -10,6 +10,7 @@ declare(strict_types = 1);
 
 namespace Tests\Integration\CoreModule\Models;
 
+use App\CoreModule\Entities\CommandStack;
 use App\CoreModule\Models\CommandManager;
 use Nette\Utils\Strings;
 use Symfony\Component\Process\Process;
@@ -63,7 +64,8 @@ class CommandManagerTest extends TestCase {
 	 * Sets up the test environment
 	 */
 	protected function setUp(): void {
-		$this->manager = new CommandManager(false);
+		$commandStack = new CommandStack();
+		$this->manager = new CommandManager(false, $commandStack);
 	}
 
 }

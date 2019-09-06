@@ -103,7 +103,7 @@ class SchedulerFormFactory {
 			$services = [];
 		}
 		$form->addInteger('taskId', 'taskId');
-		$form->addSelect('clientId', 'config.scheduler.form.clientId')
+		$form->addSelect('clientId', 'clientId')
 			->setItems($services, false)
 			->setTranslator($translator)
 			->setPrompt('config.scheduler.form.messages.clientId-prompt')
@@ -111,7 +111,7 @@ class SchedulerFormFactory {
 			->checkDefaultValue(false);
 		$this->addTimeSpec($form);
 		$task = $form->addContainer('task');
-		$task->addSelect('messaging', 'config.scheduler.form.messaging')
+		$task->addSelect('messaging', 'messaging')
 			->setItems($messagings, false)
 			->setTranslator($translator)
 			->setPrompt('config.scheduler.form.messages.messaging-prompt')
@@ -226,7 +226,7 @@ class SchedulerFormFactory {
 	 */
 	public function save(SubmitButton $button): void {
 		try {
-			$values = $button->getForm()->getValues(true);
+			$values = $button->getForm()->getValues('array');
 			$this->manager->save($values);
 			$this->presenter->flashSuccess('config.messages.success');
 		} catch (NonExistingJsonSchemaException $e) {

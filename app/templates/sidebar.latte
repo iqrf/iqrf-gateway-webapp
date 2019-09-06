@@ -31,7 +31,6 @@
 					<li><a n:href=':Service:Control:default'>{_service.title}</a></li>
 					<li n:if='$features["updater"]'><a n:href=':Gateway:Updater:default'>{_gateway.updater.title}</a></li>
 					<li><a n:href=':Gateway:Power:default'>{_gateway.power.title}</a></li>
-					<li n:if='$features["pixla"]'><a n:href=':Gateway:Pixla:default'>{_gateway.pixla.title}</a></li>
 				</ul>
 			</li>
 			<li n:if='$user->loggedIn' class='treeview'>
@@ -90,6 +89,16 @@
 					<li><a n:href=':IqrfNet:Standard:default'>{_iqrfnet.standard.menu}</a></li>
 				</ul>
 			</li>
+			<li n:if='$user->loggedIn && $features["networkManager"]' class='treeview'>
+				<a n:href=':Network:Homepage:default' role='button'>
+					<i class='glyphicon glyphicon-globe'></i>
+					<span>{_network.title}</span>
+					<span class='pull-right-container'><i class='caret'></i></span>
+				</a>
+				<ul class='treeview-menu'>
+					<li><a n:href=':Network:Ethernet:default'>{_network.ethernet.title}</a></li>
+				</ul>
+			</li>
 			<li n:if='$user->loggedIn' class='treeview'>
 				<a n:href=':Cloud:Homepage:default' role='button'>
 					<i class='glyphicon glyphicon-cloud'></i>
@@ -102,6 +111,7 @@
 					<li><a n:href=':Cloud:Aws:default'>{_cloud.amazonAws.title}</a></li>
 					<li><a n:href=':Cloud:TcPisek:default'>{_cloud.tcPisek.title}</a></li>
 					<li><a n:href=':Cloud:InteliGlue:default'>{_cloud.intelimentsInteliGlue.title}</a></li>
+					<li n:if='$features["pixla"]'><a n:href=':Cloud:Pixla:default'>{_cloud.pixla.title}</a></li>
 				</ul>
 			</li>
 			<li n:if='$user->loggedIn'>
