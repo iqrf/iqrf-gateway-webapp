@@ -20,9 +20,23 @@ declare(strict_types = 1);
 
 namespace App\NetworkModule\Presenters;
 
+use App\CoreModule\Presenters\ProtectedPresenter;
+
 /**
- * Network manager disambiguation presenter
+ * Base presenter for network module
  */
-class HomepagePresenter extends BasePresenter {
+class BasePresenter extends ProtectedPresenter {
+
+	/**
+	 * Checks requirements
+	 * @param mixed $element Element
+	 */
+	public function checkRequirements($element): void {
+		parent::checkRequirements($element);
+		if (!$this->context->parameters['features']['networkManager']) {
+			$this->flashError('network.messages.disabled');
+			$this->redirect(':Core:Homepage:default');
+		}
+	}
 
 }

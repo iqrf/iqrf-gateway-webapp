@@ -6,6 +6,8 @@ parameters:
 		node-red: false
 		# PIXLA mamagement system
 		pixla: false
+		# Network manager
+		networkManager: true
 		# Supervisord dashboard
 		supervisord: false
 		# System updater

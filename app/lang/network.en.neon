@@ -61,3 +61,6 @@ ethernet:
 		messages:
 			success: The configuration has been saved successfully.
 		save: Save
+
+messages:
+	disabled: Network manager is disabled

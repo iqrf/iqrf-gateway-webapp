@@ -89,7 +89,7 @@
 					<li><a n:href=':IqrfNet:Standard:default'>{_iqrfnet.standard.menu}</a></li>
 				</ul>
 			</li>
-			<li n:if='$user->loggedIn' class='treeview'>
+			<li n:if='$user->loggedIn && $features["networkManager"]' class='treeview'>
 				<a n:href=':Network:Homepage:default' role='button'>
 					<i class='glyphicon glyphicon-globe'></i>
 					<span>{_network.title}</span>

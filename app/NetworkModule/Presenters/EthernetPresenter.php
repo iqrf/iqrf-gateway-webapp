@@ -20,7 +20,6 @@ declare(strict_types = 1);
 
 namespace App\NetworkModule\Presenters;
 
-use App\CoreModule\Presenters\ProtectedPresenter;
 use App\NetworkModule\Datagrids\EthernetDatagridFactory;
 use App\NetworkModule\Forms\EthernetFormFactory;
 use Nette\Application\UI\Form;
@@ -29,7 +28,7 @@ use Ublaboo\DataGrid\DataGrid;
 /**
  * Ethernet network manager presenter
  */
-class EthernetPresenter extends ProtectedPresenter {
+class EthernetPresenter extends BasePresenter {
 
 	/**
 	 * @var EthernetDatagridFactory Ethernet network connection datagrid
