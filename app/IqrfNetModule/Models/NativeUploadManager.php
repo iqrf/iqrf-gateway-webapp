@@ -84,15 +84,28 @@ class NativeUploadManager {
 	 * @throws UserErrorException
 	 */
 	public function upload(FileUpload $file, ?UploadFormats $format = null): void {
-		FileSystem::createDir($this->path);
 		if (!$file->isOk()) {
 			throw new CorruptedFileException();
 		}
+		$this->uploadFile($file->getTemporaryFile(), $format);
+	}
+
+	/**
+	 * Uploads the file into IQRF TR module
+	 * @param string $file File path
+	 * @param UploadFormats|null $format File format
+	 * @throws DpaErrorException
+	 * @throws EmptyResponseException
+	 * @throws JsonException
+	 * @throws UserErrorException
+	 */
+	public function uploadFile(string $file, ?UploadFormats $format = null): void {
+		FileSystem::createDir($this->path);
+		$fileName = basename($file);
+		FileSystem::copy($file, $this->path . '/' . $fileName);
 		if ($format === null) {
 			$format = $this->recognizeFormat($file);
 		}
-		$fileName = $file->getSanitizedName();
-		$file->move($this->path . '/' . $fileName);
 		$this->uploadManager->upload($fileName, $format);
 		try {
 			FileSystem::delete($this->path . '/' . $fileName);
@@ -103,12 +116,12 @@ class NativeUploadManager {
 
 	/**
 	 * Recognizes a file format
-	 * @param FileUpload $file File to upload
+	 * @param string $file File name
 	 * @return UploadFormats File format
 	 * @throws UnknownFileFormatExceptions
 	 */
-	private function recognizeFormat(FileUpload $file): UploadFormats {
-		$fileName = Strings::lower($file->getName());
+	private function recognizeFormat(string $file): UploadFormats {
+		$fileName = Strings::lower($file);
 		if (Strings::endsWith($fileName, '.hex')) {
 			return UploadFormats::HEX();
 		}

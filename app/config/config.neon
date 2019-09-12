@@ -26,7 +26,10 @@ application:
 		*: App\*Module\Presenters\*Presenter
 
 database:
-	dsn: 'sqlite:%appDir%/config/database.db'
+	default:
+		dsn: 'sqlite:%appDir%/config/database.db'
+	iqrf_os:
+		dsn: 'sqlite:%appDir%/../iqrf/os.db'
 
 extensions:
 	formRenderer: Nepada\Bridges\FormRendererDI\FormRendererExtension

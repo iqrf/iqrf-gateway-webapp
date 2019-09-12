@@ -5,6 +5,7 @@ services:
 	- App\IqrfNetModule\Models\DpaRawManager
 	- App\IqrfNetModule\Models\EnumerationManager
 	- App\IqrfNetModule\Models\GwModeManager
+	- App\IqrfNetModule\Models\IqrfOsManager(@database.iqrf_os.context)
 	- App\IqrfNetModule\Models\MessageIdManager
 	- App\IqrfNetModule\Models\NativeUploadManager
 	- App\IqrfNetModule\Models\SecurityManager

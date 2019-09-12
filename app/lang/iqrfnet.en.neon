@@ -121,6 +121,11 @@ network-manager:
 	description: Network manager.
 	control: Control
 
+osUpload:
+	title: IQRF OS upload
+	version: IQRF OS version
+	upload: Upload
+
 rfConfig:
 	title: RF
 	networkType: Network Type
@@ -276,7 +281,10 @@ trConfiguration:
 
 trUpload:
 	title: TR upload
-	description: IQRF TR native upload.
+	description: IQRF TR upload.
+	coordinator: Coordinator upload
+	osUpload: IQRF OS upload
+	dpaUpload: DPA upload
 	file: File to upload
 	fileFormat: Target of upload
 	fileFormats:
