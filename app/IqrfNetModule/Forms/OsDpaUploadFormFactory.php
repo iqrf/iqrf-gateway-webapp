@@ -29,6 +29,7 @@ use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\IqrfNetModule\Models\IqrfOsManager;
 use App\IqrfNetModule\Models\NativeUploadManager;
 use App\IqrfNetModule\Presenters\TrUploadPresenter;
+use GuzzleHttp\Exception\ClientException;
 use Nette\Application\UI\Form;
 use Nette\IOException;
 use Nette\SmartObject;
@@ -110,6 +111,8 @@ class OsDpaUploadFormFactory {
 			$this->presenter->flashError('iqrfnet.trUpload.messages.failure');
 		} catch (IOException $e) {
 			$this->presenter->flashError('iqrfnet.trUpload.messages.moveFailure');
+		} catch (ClientException $e) {
+			$this->presenter->flashError('iqrfnet.trUpload.messages.downloadFailure');
 		}
 	}
 

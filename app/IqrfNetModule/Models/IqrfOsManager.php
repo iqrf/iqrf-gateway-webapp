@@ -77,6 +77,10 @@ class IqrfOsManager {
 	/**
 	 * Lists available IQRF OS changes
 	 * @return string[] Available IQRF OS changes
+	 * @throws DpaErrorException
+	 * @throws EmptyResponseException
+	 * @throws JsonException
+	 * @throws UserErrorException
 	 */
 	public function list(): array {
 		$array = [];

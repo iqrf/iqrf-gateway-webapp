@@ -300,6 +300,7 @@ trUpload:
 		moveFailure: The file has not been uploaded due wrong permissions.
 		start: The upload process has been started.
 		success: The file has been sucessfuly uploaded into the coordinator.
+		downloadFailure: The webapp has not been able to download the DPA file. Probably the gateway has not been connected into the Internet.
 
 webSocketClient:
 	messages:
