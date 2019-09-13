@@ -171,9 +171,9 @@ class IqrfOsManager {
 		$this->filesManager->setPath($path);
 		$files = $this->filesManager->list()->getFiles();
 		$filePrefixes = [
-			'./GeneralHWP-Coordinator-' . $rfMode . '-SPI-' . $trSeries->toScalar() . '-',
-			'./HWP-Coordinator-' . $rfMode . '-SPI-' . $trSeries->toScalar() . '-',
-			'./DPA-Coordinator-SPI-' . $trSeries->toScalar() . '-',
+			'GeneralHWP-Coordinator-' . $rfMode . '-SPI-' . $trSeries->toScalar() . '-',
+			'HWP-Coordinator-' . $rfMode . '-SPI-' . $trSeries->toScalar() . '-',
+			'DPA-Coordinator-SPI-' . $trSeries->toScalar() . '-',
 		];
 		foreach ($files as $file) {
 			foreach ($filePrefixes as $filePrefix) {
