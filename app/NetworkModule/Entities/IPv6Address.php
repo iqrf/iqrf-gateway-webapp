@@ -38,7 +38,7 @@ class IPv6Address {
 	private $prefix;
 
 	/**
-	 * @var IPv6 IPv6 gateway address
+	 * @var IPv6|null IPv6 gateway address
 	 */
 	private $gateway;
 
@@ -61,7 +61,7 @@ class IPv6Address {
 	 * @return IPv6Address IPv6 address entity
 	 */
 	public static function fromPrefix(string $addr, ?string $gwAddr = null): self {
-		$array = explode('/', $addr);
+		$array = explode('/', trim($addr));
 		$address = IPv6::factory($array[0]);
 		$prefix = intval($array[1]);
 		$gateway = ($gwAddr !== null) ? IPv6::factory($gwAddr) : null;
@@ -86,9 +86,9 @@ class IPv6Address {
 
 	/**
 	 * Returns the IPv6 gateway prefix
-	 * @return IPv6 IPv6 gateway address
+	 * @return IPv6|null IPv6 gateway address
 	 */
-	public function getGateway(): IPv6 {
+	public function getGateway(): ?IPv6 {
 		return $this->gateway;
 	}
 
@@ -97,11 +97,15 @@ class IPv6Address {
 	 * @return array<string,mixed> IPv6 address entity in the array
 	 */
 	public function toArray(): array {
-		return [
+		$array = [
 			'address' => $this->address->getCompactedAddress(),
 			'prefix' => $this->prefix,
-			'gateway' => $this->gateway->getCompactedAddress(),
+			'gateway' => '',
 		];
+		if ($this->gateway !== null) {
+			$array['gateway'] = $this->gateway->getCompactedAddress();
+		}
+		return $array;
 	}
 
 	/**

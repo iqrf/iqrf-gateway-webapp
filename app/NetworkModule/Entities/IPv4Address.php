@@ -76,7 +76,7 @@ class IPv4Address {
 	 * @return IPv4Address IPv4 address entity
 	 */
 	public static function fromPrefix(string $string): self {
-		$array = explode('/', $string);
+		$array = explode('/', trim($string));
 		$address = IPv4::factory($array[0]);
 		return new self($address, intval($array[1]));
 	}
