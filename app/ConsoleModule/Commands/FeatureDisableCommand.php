@@ -76,7 +76,7 @@ class FeatureDisableCommand extends Command {
 		$style->title('Disable features');
 		$names = $input->getArgument('names');
 		try {
-			$this->manager->enable($names);
+			$this->manager->disable($names);
 		} catch (IOException | NeonException $e) {
 			$style->error('An error occurred while disabling features.');
 		} catch (UnknownFeatureException $e) {
