@@ -51,6 +51,9 @@ class IPv4AddressTest extends TestCase {
 		$this->entity = new IPv4Address($this->address, $this->prefix);
 	}
 
+	/**
+	 * Tests the function to create a new entity from IPv4 address and subnet mask
+	 */
 	public function testFromMask(): void {
 		Assert::equal($this->entity, IPv4Address::fromMask('192.168.1.2', '255.255.255.0'));
 	}
