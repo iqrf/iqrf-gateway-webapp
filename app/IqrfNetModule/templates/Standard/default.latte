@@ -53,4 +53,18 @@
 			{include 'light.latte', data => $lightData}
 		</footer>
 	</div>
+	<div class='box box-primary'>
+		<header class='box-header with-border'>
+			<h2 class='box-title'>{_iqrfnet.standard.dali.title}</h2>
+		</header>
+		<section class='box-body'>
+			<div class='alert alert-warning'>
+				{_iqrfnet.standard.dali.warning}
+			</div>
+            {control daliForm}
+		</section>
+		<footer n:ifset='$daliData' class='box-footer table-responsive'>
+            {include 'dali.latte', data => $daliData}
+		</footer>
+	</div>
 </div>

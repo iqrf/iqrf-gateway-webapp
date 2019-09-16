@@ -223,7 +223,7 @@ standard:
 		index: Index of the binary output
 		state: State of the binary output
 		messages:
-			address: Address has to be an integer from 0 to 239.
+			address: Address has to be an integer from 1 to 239.
 			index: Index has to be an integer from 0 to 31.
 			enumerateError: An error occurred while IQRF Binary output enumeration.
 			getError: An error occurred while IQRF Binary output's state getting.
@@ -235,13 +235,29 @@ standard:
 			outputs: Outputs
 			index: Index
 			state: State
+	dali:
+		title: IQRF DALI
+		address: Address
+		answer:
+			status: Status
+			value: Value
+		command: DALI command
+		commands:
+			add: Add command
+			remove: Remove command
+		messages:
+			address: Address has to be an integer from 1 to 239.
+			command: Command has to be an integer from 0 to 65535.
+			sendError: An error occured while IQRF DALI command sending.
+		send: Send commands
+		warning: This feature works on IQRF Gateway Daemon 2.2.0 and later.
 	light:
 		title: IQRF Light
 		address: Address
 		index: Index of the light
 		power: Power of the light
 		messages:
-			address: Address has to be an integer from 0 to 239.
+			address: Address has to be an integer from 1 to 239.
 			index: Index has to be an integer from 0 to 31.
 			power: Power has to be an integer from 0 to 100.
 			enumerateError: An error occurred while IQRF Light enumeration.

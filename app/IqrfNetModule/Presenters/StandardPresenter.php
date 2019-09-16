@@ -22,6 +22,7 @@ namespace App\IqrfNetModule\Presenters;
 
 use App\CoreModule\Presenters\ProtectedPresenter;
 use App\IqrfNetModule\Forms\StandardBinaryOutputFormFactory;
+use App\IqrfNetModule\Forms\StandardDaliFormFactory;
 use App\IqrfNetModule\Forms\StandardLightFormFactory;
 use App\IqrfNetModule\Forms\StandardSensorFormFactory;
 use Nette\Application\UI\Form;
@@ -36,6 +37,12 @@ class StandardPresenter extends ProtectedPresenter {
 	 * @inject
 	 */
 	public $binaryOutputForm;
+
+	/**
+	 * @var StandardDaliFormFactory IQRF Standard DALI form factory
+	 * @inject
+	 */
+	public $daliForm;
 
 	/**
 	 * @var StandardLightFormFactory IQRF Standard light form factory
@@ -56,6 +63,15 @@ class StandardPresenter extends ProtectedPresenter {
 	public function handleBinaryOutputResponse(array $data): void {
 		$this->template->binaryOutputData = $data;
 		$this->redrawControl('binaryOutputs');
+	}
+
+	/**
+	 * AJAX handler for showing IQRF Standard DALI info
+	 * @param mixed[] $data API request and response
+	 */
+	public function handleDaliResponse(array $data): void {
+		$this->template->daliData = $data;
+		$this->redrawControl('dali');
 	}
 
 	/**
@@ -82,6 +98,14 @@ class StandardPresenter extends ProtectedPresenter {
 	 */
 	protected function createComponentBinaryOutputForm(): Form {
 		return $this->binaryOutputForm->create($this);
+	}
+
+	/**
+	 * Creates the IQRF Standard DALI form
+	 * @return Form IQRF Standard DALI form
+	 */
+	protected function createComponentDaliForm(): Form {
+		return $this->daliForm->create($this);
 	}
 
 	/**

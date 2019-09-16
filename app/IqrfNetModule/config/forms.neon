@@ -11,6 +11,7 @@ services:
 		arguments: [@jsonSchemaManagerApi]
 	- App\IqrfNetModule\Forms\SendRawFormFactory
 	- App\IqrfNetModule\Forms\StandardBinaryOutputFormFactory
+	- App\IqrfNetModule\Forms\StandardDaliFormFactory
 	- App\IqrfNetModule\Forms\StandardLightFormFactory
 	- App\IqrfNetModule\Forms\StandardSensorFormFactory
 	- App\IqrfNetModule\Forms\TrUploadFormFactory

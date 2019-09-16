@@ -12,6 +12,7 @@ parameters:
 		- bin
 		- tests
 	ignoreErrors:
+		- '#Call to an undefined method Nette\\Application\\UI\\Form::addMultiplier\(\).#'
 		- '#Call to an undefined method Nette\\Application\\UI\\ITemplate::setTranslator\(\).#'
 		- '#Call to an undefined method Nette\\ComponentModel\\IComponent::addConditionOn\(\).#'
 		- '#Call to an undefined method Nette\\ComponentModel\\IComponent::setDefaultValue\(\).#'
