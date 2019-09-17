@@ -83,6 +83,9 @@ class DpaConfigFormFactory extends TrConfigFormFactory {
 		$form->addCheckbox('dpaAutoexec', 'dpaAutoexec');
 		$form->addCheckbox('routingOff', 'routingOff');
 		$form->addCheckbox('peerToPeer', 'peerToPeer');
+		if (array_key_exists('dpaPeerToPeer', $this->configuration)) {
+			$form->addCheckbox('dpaPeerToPeer', 'dpaPeerToPeer');
+		}
 		if (array_key_exists('neverSleep', $this->configuration)) {
 			$form->addCheckbox('neverSleep', 'neverSleep');
 		}

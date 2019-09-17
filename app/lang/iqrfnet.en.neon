@@ -75,7 +75,8 @@ dpaConfig:
 	ioSetup: IO Setup
 	dpaAutoexec: Autoexec
 	routingOff: Routing off
-	peerToPeer: Allow peer to peer
+	peerToPeer: Enable peer to peer
+	dpaPeerToPeer: Enable DPA peer to peer
 	neverSleep: Stay awake when not bonded
 	uartBaudrate: UART interface baud rate
 	uartBaudrates:
