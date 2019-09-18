@@ -38,7 +38,7 @@ class UnattendedUpgradesManagerTest extends TestCase {
 	/**
 	 * Sets up the test environment
 	 */
-	protected function setUp() {
+	protected function setUp(): void {
 		parent::setUp();
 		$this->serviceManager = Mockery::mock(SystemDManager::class);
 		$this->manager = new UnattendedUpgradesManager($this->serviceManager);

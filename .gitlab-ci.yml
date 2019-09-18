@@ -127,11 +127,8 @@ coverage:
 
 coding-style:
   stage: coding-style
-  before_script:
-    - update-alternatives --set php /usr/bin/php7.3
-    - composer install-cs
   script:
-    - composer check-cs
+    - make cc
 
 phpstan:
   stage: coding-style
@@ -139,7 +136,7 @@ phpstan:
     - update-alternatives --set php /usr/bin/php7.3
     - composer install --no-progress
   script:
-    - composer phpstan
+    - make phpstan
 
 qa:
   stage: coding-style
@@ -147,7 +144,7 @@ qa:
     - update-alternatives --set php /usr/bin/php7.3
     - composer install --no-progress
   script:
-    - composer qa
+    - make qa
 
 build-package:
   stage: build-package
