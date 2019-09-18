@@ -50,40 +50,39 @@ class ServiceManager {
 	 * @param CommandManager $commandManager Command manager
 	 */
 	public function __construct(string $initDaemon, CommandManager $commandManager) {
-		$this->initDaemon = array_key_exists($initDaemon, $this->initDaemons) ?
-			new $this->initDaemons[$initDaemon]($commandManager) :
-			new UnknownManager($commandManager);
+		if (array_key_exists($initDaemon, $this->initDaemons)) {
+			$this->initDaemon = new $this->initDaemons[$initDaemon]($commandManager);
+		} else {
+			$this->initDaemon = new UnknownManager($commandManager);
+		}
 	}
 
 	/**
-	 * Starts IQRF Gateway Daemon's service
-	 * @return string Output from init daemon
+	 * Starts the service
 	 * @throws NotSupportedInitSystemException
 	 */
-	public function start(): string {
-		return $this->initDaemon->start();
+	public function start(): void {
+		$this->initDaemon->start();
 	}
 
 	/**
-	 * Stops IQRF Gateway Daemon's service
-	 * @return string Output from init daemon
+	 * Stops the service
 	 * @throws NotSupportedInitSystemException
 	 */
-	public function stop(): string {
-		return $this->initDaemon->stop();
+	public function stop(): void {
+		$this->initDaemon->stop();
 	}
 
 	/**
-	 * Restarts IQRF Gateway Daemon's service
-	 * @return string Output from init daemon
+	 * Restarts the service
 	 * @throws NotSupportedInitSystemException
 	 */
-	public function restart(): string {
-		return $this->initDaemon->restart();
+	public function restart(): void {
+		$this->initDaemon->restart();
 	}
 
 	/**
-	 * Gets status of IQRF Gateway Daemon's service
+	 * Gets status of the service
 	 * @return string Output from init daemon
 	 * @throws NotSupportedInitSystemException
 	 */

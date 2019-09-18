@@ -76,6 +76,7 @@ msAzure:
 pixla:
 	title: PIXLA
 	description: Manages PIXLA client service.
+	dashboard: Visit dashboard
 	disable: Disable service
 	enable: Enable service
 	status: Service status

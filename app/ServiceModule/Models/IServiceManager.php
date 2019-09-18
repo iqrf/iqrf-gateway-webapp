@@ -23,36 +23,34 @@ namespace App\ServiceModule\Models;
 use App\CoreModule\Models\CommandManager;
 
 /**
- * Interface for tools for managing IQRF Gateway Daemon's service
+ * Interface for tools for managing service
  */
 interface IServiceManager {
 
 	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
+	 * @param string|null $serviceName Service name
 	 */
-	public function __construct(CommandManager $commandManager);
+	public function __construct(CommandManager $commandManager, ?string $serviceName = null);
 
 	/**
-	 * Starts IQRF Gateway Daemon's service
-	 * @return string Output from init daemon
+	 * Starts the service
 	 */
-	public function start(): string;
+	public function start(): void;
 
 	/**
-	 * Stops IQRF Gateway Daemon's service
-	 * @return string Output from init daemon
+	 * Stops the service
 	 */
-	public function stop(): string;
+	public function stop(): void;
 
 	/**
-	 * Restarts IQRF Gateway Daemon's service
-	 * @return string Output from init daemon
+	 * Restarts the service
 	 */
-	public function restart(): string;
+	public function restart(): void;
 
 	/**
-	 * Gets status of IQRF Gateway Daemon's service
+	 * Gets status of the service
 	 * @return string Output from init daemon
 	 */
 	public function getStatus(): string;

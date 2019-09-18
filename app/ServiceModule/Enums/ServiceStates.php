@@ -18,33 +18,33 @@
  */
 declare(strict_types = 1);
 
-namespace App\CloudModule\Enums;
+namespace App\ServiceModule\Enums;
 
 use Grifart\Enum\AutoInstances;
 use Grifart\Enum\Enum;
 
 /**
- * PIXLA client service status enum
- * @method static PixlaService DISABLED()
- * @method static PixlaService ENABLED()
- * @method static PixlaService MISSING()
+ * Service status enum
+ * @method static ServiceStates DISABLED()
+ * @method static ServiceStates ENABLED()
+ * @method static ServiceStates MISSING()
  */
-final class PixlaService extends Enum {
+final class ServiceStates extends Enum {
 
 	use AutoInstances;
 
 	/**
-	 * Disabled PIXLA client service
+	 * Disabled service
 	 */
 	private const DISABLED = 'disabled';
 
 	/**
-	 * Enabled PIXLA client service
+	 * Enabled service
 	 */
 	private const ENABLED = 'enabled';
 
 	/**
-	 * Missing PIXLA client service
+	 * Missing service
 	 */
 	private const MISSING = '';
 

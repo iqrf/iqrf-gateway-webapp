@@ -10,6 +10,7 @@ declare(strict_types = 1);
 
 namespace Tests\Unit\ServiceModule\Models;
 
+use App\ServiceModule\Enums\ServiceStates;
 use App\ServiceModule\Models\SystemDManager;
 use Tester\Assert;
 use Tests\Toolkit\TestCases\CommandTestCase;
@@ -29,44 +30,79 @@ class SystemDManagerTest extends CommandTestCase {
 	/**
 	 * @var string Name of service
 	 */
-	private $serviceName = 'iqrf-gateway-daemon';
+	private $serviceName = 'iqrf-gateway-daemon.service';
 
 	/**
-	 * Tests the function to start IQRF Gateway Daemon's service via systemD
+	 * Tests the function to disable the service via systemD
+	 */
+	public function testDisable(): void {
+		$commands = [
+			'systemctl stop ' . $this->serviceName,
+			'systemctl disable ' . $this->serviceName,
+		];
+		foreach ($commands as $command) {
+			$this->receiveCommand($command, true);
+		}
+		Assert::noError([$this->manager, 'disable']);
+	}
+
+	/**
+	 * Tests the function to enable the service via systemD
+	 */
+	public function testEnable(): void {
+		$commands = [
+			'systemctl enable ' . $this->serviceName,
+			'systemctl start ' . $this->serviceName,
+		];
+		foreach ($commands as $command) {
+			$this->receiveCommand($command, true);
+		}
+		Assert::noError([$this->manager, 'enable']);
+	}
+
+	/**
+	 * Tests the function to check if the service is enabled via systemD
+	 */
+	public function testIsEnabled(): void {
+		$expected = ServiceStates::ENABLED();
+		$command = 'systemctl is-enabled ' . $this->serviceName;
+		$this->receiveCommand($command, true, 'enabled');
+		Assert::same($expected, $this->manager->isEnabled());
+	}
+
+	/**
+	 * Tests the function to start the service via systemD
 	 */
 	public function testStart(): void {
-		$expected = 'start';
-		$command = 'systemctl start ' . $this->serviceName . '.service';
-		$this->receiveCommand($command, true, $expected);
-		Assert::same($expected, $this->manager->start());
+		$command = 'systemctl start ' . $this->serviceName;
+		$this->receiveCommand($command, true);
+		Assert::noError([$this->manager, 'start']);
 	}
 
 	/**
-	 * Tests the function to stop IQRF Gateway Daemon's service via systemD
+	 * Tests the function to stop the service via systemD
 	 */
 	public function testStop(): void {
-		$expected = 'stop';
-		$command = 'systemctl stop ' . $this->serviceName . '.service';
-		$this->receiveCommand($command, true, $expected);
-		Assert::same($expected, $this->manager->stop());
+		$command = 'systemctl stop ' . $this->serviceName;
+		$this->receiveCommand($command, true);
+		Assert::noError([$this->manager, 'stop']);
 	}
 
 	/**
-	 * Tests the function to restart IQRF Gateway Daemon's service via systemD
+	 * Tests the function to restart the service via systemD
 	 */
 	public function testRestart(): void {
-		$expected = 'restart';
-		$command = 'systemctl restart ' . $this->serviceName . '.service';
-		$this->receiveCommand($command, true, $expected);
-		Assert::same($expected, $this->manager->restart());
+		$command = 'systemctl restart ' . $this->serviceName;
+		$this->receiveCommand($command, true);
+		Assert::noError([$this->manager, 'restart']);
 	}
 
 	/**
-	 * Tests the function to get status of IQRF Gateway Daemon's service via systemD
+	 * Tests the function to get status of the service via systemD
 	 */
 	public function testGetStatus(): void {
 		$expected = 'status';
-		$command = 'systemctl status ' . $this->serviceName . '.service';
+		$command = 'systemctl status ' . $this->serviceName;
 		$this->receiveCommand($command, true, $expected);
 		Assert::same($expected, $this->manager->getStatus());
 	}
@@ -76,7 +112,7 @@ class SystemDManagerTest extends CommandTestCase {
 	 */
 	protected function setUp(): void {
 		parent::setUp();
-		$this->manager = new SystemDManager($this->commandManager);
+		$this->manager = new SystemDManager($this->commandManager, 'iqrf-gateway-daemon');
 	}
 
 }

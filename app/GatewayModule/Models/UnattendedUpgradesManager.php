@@ -18,22 +18,15 @@
  */
 declare(strict_types = 1);
 
-namespace App\CloudModule\Models;
+namespace App\GatewayModule\Models;
 
-use App\CoreModule\Models\FileManager;
 use App\ServiceModule\Enums\ServiceStates;
 use App\ServiceModule\Models\SystemDManager;
-use Nette\IOException;
 
 /**
- * PIXLA management system manager
+ * Unattended upgrades manager
  */
-class PixlaManager {
-
-	/**
-	 * @var FileManager File manager
-	 */
-	private $fileManager;
+class UnattendedUpgradesManager {
 
 	/**
 	 * @var SystemDManager SystemD service manager
@@ -42,45 +35,31 @@ class PixlaManager {
 
 	/**
 	 * Constructor
-	 * @param FileManager $fileManager File manager
 	 * @param SystemDManager $serviceManager SystemD service manager
 	 */
-	public function __construct(FileManager $fileManager, SystemDManager $serviceManager) {
-		$this->fileManager = $fileManager;
+	public function __construct(SystemDManager $serviceManager) {
 		$this->serviceManager = $serviceManager;
 	}
 
 	/**
-	 * Disables and stops PIXLA client service
+	 * Disables and stops the unattended upgrades service
 	 */
 	public function disableService(): void {
 		$this->serviceManager->disable();
 	}
 
 	/**
-	 * Enables and starts PIXLA client service
+	 * Enables and starts the unattended upgrades service
 	 */
 	public function enableService(): void {
 		$this->serviceManager->enable();
 	}
 
 	/**
-	 * Returns PIXLA client service status
+	 * Returns the unattended upgrades service status
 	 */
 	public function getServiceStatus(): ServiceStates {
 		return $this->serviceManager->isEnabled();
-	}
-
-	/**
-	 * Returns PIXLA token
-	 * @return string|null PIXLA token
-	 */
-	public function getToken(): ?string {
-		try {
-			return $this->fileManager->read('customer_id');
-		} catch (IOException $e) {
-			return null;
-		}
 	}
 
 }

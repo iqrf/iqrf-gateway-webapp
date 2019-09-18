@@ -79,6 +79,21 @@ power:
 		button: Perform reboot
 		success: Your device has been restarted successfully.
 
+unattendedUpgrades:
+	title: Unattended upgrades
+	description: Controls the unattended upgrades service.
+	status: Service status
+	statuses:
+		enabled: Enabled
+		disabled: Disabled
+		'': Missing
+	enable: Enable service
+	disable: Disable service
+	messages:
+		disabled: Unattended upgrades are disabled.
+		disable: Unattended upgrades service has been disabled.
+		enable: Unattended upgrades service has been enabled.
+
 updater:
 	title: System updater
 	description: System updater.

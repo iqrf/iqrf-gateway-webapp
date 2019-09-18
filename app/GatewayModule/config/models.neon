@@ -4,5 +4,7 @@ services:
 	- App\GatewayModule\Models\LogManager(%daemon.logDir%)
 	- App\GatewayModule\Models\NetworkManager
 	- App\GatewayModule\Models\PowerManager
+	- App\GatewayModule\Models\UnattendedUpgradesManager(@upgrade.serviceManager)
 	- App\GatewayModule\Models\UpdaterManager
 	- App\GatewayModule\Models\VersionManager
+	upgrade.serviceManager: App\ServiceModule\Models\SystemDManager(@commandManager, 'unattended-upgrades')

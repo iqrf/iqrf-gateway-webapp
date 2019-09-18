@@ -32,37 +32,34 @@ class DockerSupervisorManagerTest extends CommandTestCase {
 	private $serviceName = 'iqrf-gateway-daemon';
 
 	/**
-	 * Tests the function to start IQRF Gateway Daemon's service via supervisord in Docker container
+	 * Tests the function to start the service via supervisord in Docker container
 	 */
 	public function testStartDockerSupervisorD(): void {
-		$expected = 'start';
 		$command = 'supervisorctl start ' . $this->serviceName;
-		$this->receiveCommand($command, true, $expected);
-		Assert::same($expected, $this->manager->start());
+		$this->receiveCommand($command, true);
+		Assert::noError([$this->manager, 'start']);
 	}
 
 	/**
-	 * Tests the function to stop IQRF Gateway Daemon's service via supervisord in Docker container
+	 * Tests the function to stop the service via supervisord in Docker container
 	 */
 	public function testStop(): void {
-		$expected = 'stop';
 		$command = 'supervisorctl stop ' . $this->serviceName;
-		$this->receiveCommand($command, true, $expected);
-		Assert::same($expected, $this->manager->stop());
+		$this->receiveCommand($command, true);
+		Assert::noError([$this->manager, 'stop']);
 	}
 
 	/**
-	 * Tests the function to restart IQRF Gateway Daemon's service via supervisord in Docker container
+	 * Tests the function to restart the service via supervisord in Docker container
 	 */
 	public function testRestart(): void {
-		$expected = 'restart';
 		$command = 'supervisorctl restart ' . $this->serviceName;
-		$this->receiveCommand($command, true, $expected);
-		Assert::same($expected, $this->manager->restart());
+		$this->receiveCommand($command, true);
+		Assert::noError([$this->manager, 'restart']);
 	}
 
 	/**
-	 * Tests the function to get status of IQRF Gateway Daemon's service via supervisord in Docker container
+	 * Tests the function to get status of the service via supervisord in Docker container
 	 */
 	public function testGetStatus(): void {
 		$expected = 'status';
@@ -76,7 +73,7 @@ class DockerSupervisorManagerTest extends CommandTestCase {
 	 */
 	protected function setUp(): void {
 		parent::setUp();
-		$this->manager = new DockerSupervisorManager($this->commandManager);
+		$this->manager = new DockerSupervisorManager($this->commandManager, $this->serviceName);
 	}
 
 }

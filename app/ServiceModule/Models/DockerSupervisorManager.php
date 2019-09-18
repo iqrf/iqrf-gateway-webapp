@@ -43,40 +43,41 @@ class DockerSupervisorManager implements IServiceManager {
 	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
+	 * @param string|null $serviceName Service name
 	 */
-	public function __construct(CommandManager $commandManager) {
+	public function __construct(CommandManager $commandManager, ?string $serviceName = null) {
 		$this->commandManager = $commandManager;
+		if ($serviceName !== null) {
+			$this->serviceName = $serviceName;
+		}
 	}
 
 	/**
-	 * Starts IQRF Gateway Daemon's service
-	 * @return string Output from init daemon
+	 * Starts the service
 	 */
-	public function start(): string {
+	public function start(): void {
 		$cmd = 'supervisorctl start ' . $this->serviceName;
-		return $this->commandManager->run($cmd, true);
+		$this->commandManager->run($cmd, true);
 	}
 
 	/**
-	 * Stops IQRF Gateway Daemon's service
-	 * @return string Output from init daemon
+	 * Stops the service
 	 */
-	public function stop(): string {
+	public function stop(): void {
 		$cmd = 'supervisorctl stop ' . $this->serviceName;
-		return $this->commandManager->run($cmd, true);
+		$this->commandManager->run($cmd, true);
 	}
 
 	/**
-	 * Restarts IQRF Gateway Daemon's service
-	 * @return string Output from init daemon
+	 * Restarts the service
 	 */
-	public function restart(): string {
+	public function restart(): void {
 		$cmd = 'supervisorctl restart ' . $this->serviceName;
-		return $this->commandManager->run($cmd, true);
+		$this->commandManager->run($cmd, true);
 	}
 
 	/**
-	 * Gets status of IQRF Gateway Daemon's service
+	 * Gets status of the service
 	 * @return string Output from init daemon
 	 */
 	public function getStatus(): string {

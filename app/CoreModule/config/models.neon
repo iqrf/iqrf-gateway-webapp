@@ -1,7 +1,7 @@
 services:
 	authenticator: App\CoreModule\Models\AppAuthenticator
 	- App\CoreModule\Models\CertificateManager
-	- App\CoreModule\Models\CommandManager(%sudo%)
+	commandManager: App\CoreModule\Models\CommandManager(%sudo%)
 	- App\CoreModule\Models\FileManager(%daemon.configDir%)
 	- App\CoreModule\Models\JsonFileManager(%daemon.configDir%)
 	jsonSchemaManagerApi:

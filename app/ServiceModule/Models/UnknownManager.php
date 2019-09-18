@@ -34,37 +34,39 @@ class UnknownManager implements IServiceManager {
 	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
+	 * @param string|null $serviceName Service name
 	 */
-	public function __construct(CommandManager $commandManager) {
+	public function __construct(CommandManager $commandManager, ?string $serviceName = null) {
 		$commandManager;
+		$serviceName;
 	}
 
 	/**
 	 * Starts IQRF Gateway Daemon
 	 * @throws NotSupportedInitSystemException
 	 */
-	public function start(): string {
+	public function start(): void {
 		throw new NotSupportedInitSystemException();
 	}
 
 	/**
-	 * Stops IQRF Gateway Daemon's service
+	 * Stops the service
 	 * @throws NotSupportedInitSystemException
 	 */
-	public function stop(): string {
+	public function stop(): void {
 		throw new NotSupportedInitSystemException();
 	}
 
 	/**
-	 * Restarts IQRF Gateway Daemon's service
+	 * Restarts the service
 	 * @throws NotSupportedInitSystemException
 	 */
-	public function restart(): string {
+	public function restart(): void {
 		throw new NotSupportedInitSystemException();
 	}
 
 	/**
-	 * Gets status of IQRF Gateway Daemon's service
+	 * Gets status of the service
 	 * @throws NotSupportedInitSystemException
 	 */
 	public function getStatus(): string {

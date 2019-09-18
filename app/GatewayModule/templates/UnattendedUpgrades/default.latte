@@ -15,24 +15,19 @@
  * limitations under the License.
 *}
 
-{block title}{_cloud.pixla.title}{/block}
+{block title}{_gateway.unattendedUpgrades.title}{/block}
 {block content}
 <div class='panel panel-default'>
 	<div class='panel-body'>
 		<table class='table table-striped'>
 			<tr>
-				<th>{_cloud.pixla.token}</th>
-				<td>{$token}</td>
-			</tr>
-			<tr>
-				<th>{_cloud.pixla.status}</th>
-				<td>{_cloud.pixla.statuses.$status}</td>
+				<th>{_gateway.unattendedUpgrades.status}</th>
+				<td>{_gateway.unattendedUpgrades.statuses.$status}</td>
 			</tr>
 		</table>
-		{if $status !== ''}
-			<a class='ajax btn btn-success' n:href='enable' role='button'>{_cloud.pixla.enable}</a>
-			<a class='ajax btn btn-danger' n:href='disable' role='button'>{_cloud.pixla.disable}</a>
-			<a class='btn btn-primary' href='https://www.pixla.online/'>{_cloud.pixla.dashboard}</a>
-		{/if}
+        {if $status !== ''}
+			<a class='ajax btn btn-success' n:href='enable' role='button'>{_gateway.unattendedUpgrades.enable}</a>
+			<a class='ajax btn btn-danger' n:href='disable' role='button'>{_gateway.unattendedUpgrades.disable}</a>
+        {/if}
 	</div>
 </div>

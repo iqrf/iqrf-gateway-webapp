@@ -38,58 +38,55 @@ class ServiceManagerTest extends CommandTestCase {
 	private $serviceName = 'iqrf-gateway-daemon';
 
 	/**
-	 * Tests the function to start IQRF Gateway Daemon's service via systemD
+	 * Tests the function to start the service via systemD
 	 */
 	public function testStartSystemD(): void {
-		$expected = 'start';
 		$command = 'systemctl start ' . $this->serviceName . '.service';
-		$this->receiveCommand($command, true, $expected);
-		Assert::same($expected, $this->managerSystemD->start());
+		$this->receiveCommand($command, true);
+		Assert::noError([$this->managerSystemD, 'start']);
 	}
 
 	/**
-	 * Tests the function to start IQRF Gateway Daemon's service via unknown init daemon
+	 * Tests the function to start the service via unknown init daemon
 	 */
 	public function testStartUnknown(): void {
 		Assert::exception([$this->managerUnknown, 'start'], NotSupportedInitSystemException::class);
 	}
 
 	/**
-	 * Tests the function to stop IQRF Gateway Daemon's service via systemD
+	 * Tests the function to stop the service via systemD
 	 */
 	public function testStopSystemD(): void {
-		$expected = 'stop';
 		$command = 'systemctl stop ' . $this->serviceName . '.service';
-		$this->receiveCommand($command, true, $expected);
-		Assert::same($expected, $this->managerSystemD->stop());
+		$this->receiveCommand($command, true);
+		Assert::noError([$this->managerSystemD, 'stop']);
 	}
 
 	/**
-	 * Tests the function to stop IQRF Gateway Daemon's service via unknown init daemon
+	 * Tests the function to stop the service via unknown init daemon
 	 */
 	public function testStopUnknown(): void {
 		Assert::exception([$this->managerUnknown, 'stop'], NotSupportedInitSystemException::class);
 	}
 
 	/**
-	 * Tests the function to restart IQRF Gateway Daemon's service via systemD
+	 * Tests the function to restart the service via systemD
 	 */
 	public function testRestartSystemD(): void {
-		$expected = 'restart';
 		$command = 'systemctl restart ' . $this->serviceName . '.service';
-		$this->receiveCommand($command, true, $expected);
-		Assert::same($expected, $this->managerSystemD->restart());
+		$this->receiveCommand($command, true);
+		Assert::noError([$this->managerSystemD, 'restart']);
 	}
 
 	/**
-	 * Tests the function to restart IQRF Gateway Daemon's service via unknown init daemon
+	 * Tests the function to restart the service via unknown init daemon
 	 */
 	public function testRestartUnknown(): void {
 		Assert::exception([$this->managerUnknown, 'restart'], NotSupportedInitSystemException::class);
 	}
 
 	/**
-	 * Tests the function to get status of IQRF Gateway Daemon's service via systemD
+	 * Tests the function to get status of the service via systemD
 	 */
 	public function testGetStatusSystemD(): void {
 		$expected = 'status';
@@ -99,7 +96,7 @@ class ServiceManagerTest extends CommandTestCase {
 	}
 
 	/**
-	 * Tests the function to get status of IQRF Gateway Daemon's service via unknown init daemon
+	 * Tests the function to get status of the service via unknown init daemon
 	 */
 	public function testGetStatusUnknown(): void {
 		Assert::exception([$this->managerUnknown, 'getStatus'], NotSupportedInitSystemException::class);
