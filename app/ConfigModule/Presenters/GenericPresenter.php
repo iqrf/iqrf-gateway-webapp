@@ -56,9 +56,10 @@ abstract class GenericPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Catches exceptions
+	 * Checks if the files are readable
 	 */
-	public function actionDefault(): void {
+	protected function startup(): void {
+		parent::startup();
 		try {
 			$this->checkInstanceFiles();
 		} catch (NonExistingJsonSchemaException $e) {
@@ -74,7 +75,7 @@ abstract class GenericPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Checkes the component's instance files
+	 * Checks the component's instance files
 	 * @throws JsonException
 	 */
 	private function checkInstanceFiles(): void {
