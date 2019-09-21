@@ -50,6 +50,10 @@ services:
 http:
 	cookieSecure: auto
 	csp:
+		connect-src: [
+			self,
+			https://sentry.iqrf.org
+		]
 		default-src: self
 		frame-ancestors: none
 		form-action: self
