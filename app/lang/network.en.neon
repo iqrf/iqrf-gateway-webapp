@@ -68,6 +68,8 @@ ethernet:
 		messages:
 			success: The configuration has been saved successfully.
 		save: Save
+	messages:
+		invalidUuid: Invalid network connection UUID.
 
 messages:
 	disabled: Network manager is disabled
