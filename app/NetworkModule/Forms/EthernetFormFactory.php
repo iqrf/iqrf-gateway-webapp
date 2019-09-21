@@ -101,8 +101,8 @@ class EthernetFormFactory {
 		$form->addGroup('ipv4.title');
 		$ipv4 = $form->addContainer('ipv4');
 		$ipv4->addSelect('method', 'ipv4.method')
-			->setPrompt('prompts.ipv4.method')
-			->setRequired()
+			->setPrompt('ipv4.prompts.method')
+			->setRequired('ipv4.messages.method')
 			->setItems($this->getIpv4Methods())
 			->setDisabled(['shared']);
 		$addresses = $ipv4->addMultiplier('addresses', [$this, 'createIPv4AddressMultiplier'], 1);
@@ -126,10 +126,10 @@ class EthernetFormFactory {
 	public function createIpv4AddressMultiplier(Container $container, Form $form): void {
 		$container->addText('address', 'ipv4.address')
 			->addConditionOn($form['ipv4-method'], Form::EQUAL, 'manual')
-			->setRequired();
+			->setRequired('ipv4.messages.address');
 		$container->addText('mask', 'ipv4.mask')
 			->addConditionOn($form['ipv4-method'], Form::EQUAL, 'manual')
-			->setRequired();
+			->setRequired('ipv4.messages.mask');
 	}
 
 	/**
@@ -148,8 +148,8 @@ class EthernetFormFactory {
 		$form->addGroup('ipv6.title');
 		$ipv6 = $form->addContainer('ipv6');
 		$ipv6->addSelect('method', 'ipv6.method')
-			->setPrompt('prompts.ipv6.method')
-			->setRequired()
+			->setPrompt('ipv6.prompts.method')
+			->setRequired('ipv6.messages.method')
 			->setItems($this->getIpv6Methods())
 			->setDisabled(['disabled', 'ignore', 'shared']);
 		$addresses = $ipv6->addMultiplier('addresses', [$this, 'createIPv6AddressMultiplier'], 1);
@@ -172,10 +172,10 @@ class EthernetFormFactory {
 	public function createIpv6AddressMultiplier(Container $container, Form $form): void {
 		$container->addText('address', 'ipv6.address')
 			->addConditionOn($form['ipv6-method'], Form::EQUAL, 'manual')
-			->setRequired();
+			->setRequired('ipv6.messages.address');
 		$container->addInteger('prefix', 'ipv6.prefix')
 			->addConditionOn($form['ipv6-method'], Form::EQUAL, 'manual')
-			->setRequired();
+			->setRequired('ipv6.messages.prefix');
 		$container->addText('gateway', 'ipv6.gateway');
 	}
 

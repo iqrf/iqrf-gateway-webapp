@@ -24,13 +24,19 @@ ethernet:
 			addresses:
 				add: Add IPv4 address
 				remove: Remove IPv4 address
-			mask: Subnet mask
+			mask: IPv4 subnet mask
 			gateway: IPv4 gateway address
 			dns:
 				title: IPv4 DNS servers
 				address: IPv4 address
 				add: Add DNS server
 				remove: Remove DNS server
+			prompts:
+				method: Please select IPv4 connection method
+			messages:
+				method: Please select the IPv4 connection method.
+				address: Please enter a valid IPv4 address.
+				mask: Please enter a valid IPv4 subnet mask.
 		ipv6:
 			title: IPv6 configuration
 			method: Connection method
@@ -46,18 +52,19 @@ ethernet:
 			addresses:
 				add: Add IPv6 address
 				remove: Remove IPv6 address
-			prefix: Subnet prefix
+			prefix: IPv6 prefix
 			gateway: IPv6 gateway address
 			dns:
 				title: IPv6 DNS servers
 				address: IPv6 address
 				add: Add DNS server
 				remove: Remove DNS server
-		prompts:
-			ipv4:
-				method: Please select IPv4 connection method
-			ipv6:
+			prompts:
 				method: Please select IPv6 connection method
+			messages:
+				method: Please select the IPv6 connection method
+				address: Please enter a valid IPv6 address.
+				prefix: Please enter a valid IPv6 prefix.
 		messages:
 			success: The configuration has been saved successfully.
 		save: Save
