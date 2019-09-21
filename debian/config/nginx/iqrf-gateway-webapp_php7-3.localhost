@@ -17,6 +17,24 @@ server {
 		try_files $uri $uri/ /index.php?$args;
 	}
 
+	location /ws {
+		proxy_pass http://localhost:1338;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header Upgrade $http_upgrade;
+		proxy_set_header Connection "upgrade";
+		proxy_set_header Host $host;
+		proxy_http_version 1.1;
+	}
+
+	location /wsMonitor {
+		proxy_pass http://localhost:1438;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header Upgrade $http_upgrade;
+		proxy_set_header Connection "upgrade";
+		proxy_set_header Host $host;
+		proxy_http_version 1.1;
+	}
+
 	location ~ /\. {
 		access_log off;
 		log_not_found off;
