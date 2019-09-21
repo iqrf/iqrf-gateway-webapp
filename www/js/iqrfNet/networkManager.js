@@ -21,7 +21,15 @@
 let autoAddress = document.getElementById('frm-iqrfNetBondingForm-autoAddress');
 if (autoAddress !== null) {
 	autoAddress.addEventListener('click', function (event) {
-		document.getElementById('frm-iqrfNetBondingForm-address').disabled = event.currentTarget.checked;
+		let elementIds = [
+			'frm-iqrfNetBondingForm-address',
+			'frm-iqrfNetBondingForm-coordinatorOnly',
+			'frm-iqrfNetBondingForm-clearAllBonds',
+			'frm-iqrfNetBondingForm-removeBond',
+		];
+		for (let elementId of elementIds) {
+			document.getElementById(elementId).disabled = event.currentTarget.checked;
+		}
 	});
 }
 

@@ -21,7 +21,6 @@ import 'admin-lte';
 import 'autosize';
 import 'bootstrap';
 import 'jquery';
-import 'nette-forms';
 import 'nette.ajax.js';
 import 'ublaboo-datagrid';
 import autosize from 'autosize';

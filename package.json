@@ -21,7 +21,7 @@
 		"@sentry/browser": "^5.6",
 		"admin-lte": "^2.4",
 		"autosize": "^4.0",
-		"cronstrue": "^1.81",
+		"cronstrue": "^1.83",
 		"highlight.js": "^9.15",
 		"jquery": "^3.3",
 		"morris.js": "github:morrisjs/morris.js",
@@ -30,19 +30,19 @@
 		"ublaboo-datagrid": "^5.7"
 	},
 	"devDependencies": {
-		"@babel/core": "^7.5",
-		"@babel/preset-env": "^7.5",
+		"@babel/core": "^7.6",
+		"@babel/preset-env": "^7.6",
 		"babel-eslint": "^10.0",
 		"babel-loader": "^8.0",
 		"css-loader": "^3.2",
-		"eslint": "^6.1",
+		"eslint": "^6.4.0",
 		"eslint-loader": "^2.2",
 		"eslint-plugin-jquery": "^1.5",
-		"file-loader": "^4.1",
+		"file-loader": "^4.2",
 		"mini-css-extract-plugin": "^0.8",
 		"optimize-css-assets-webpack-plugin": "^5.0",
 		"uglifyjs-webpack-plugin": "^2.2",
-		"webpack": "^4.39",
+		"webpack": "^4.40",
 		"webpack-cli": "^3.3"
 	}
 }

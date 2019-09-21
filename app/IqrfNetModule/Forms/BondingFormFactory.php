@@ -78,9 +78,7 @@ class BondingFormFactory {
 			->toggle('smartConnect', false);
 		$form->addInteger('address', 'address')
 			->setDefaultValue(1);
-		$form->addCheckbox('autoAddress', 'autoAddress')
-			->addCondition(Form::EQUAL, false)
-			->toggle('removeBond');
+		$form->addCheckbox('autoAddress', 'autoAddress');
 		$form['address']->addConditionOn($form['autoAddress'], Form::EQUAL, false)
 			->addRule(Form::RANGE, 'messages.address', [1, 239])
 			->setRequired('messages.address');
@@ -92,10 +90,10 @@ class BondingFormFactory {
 		$form->addSubmit('add', 'addBond')
 			->onClick[] = [$this, 'addBond'];
 		$form->addSubmit('remove', 'removeBond')
-			->setValidationScope([$form['address']])
-			->setHtmlId('removeBond')
+			->setHtmlId('frm-iqrfNetBondingForm-removeBond')
 			->onClick[] = [$this, 'removeBond'];
 		$form->addSubmit('clear', 'clearAllBonds')
+			->setHtmlId('frm-iqrfNetBondingForm-clearAllBonds')
 			->setValidationScope([])
 			->onClick[] = [$this, 'clearAllBonds'];
 		return $form;
@@ -169,7 +167,12 @@ class BondingFormFactory {
 	 * @param SubmitButton $button Submit button for removing a bond
 	 */
 	public function removeBond(SubmitButton $button): void {
-		$values = $button->getForm()->getValues();
+		$form = $button->getForm();
+		$values = $form->getValues();
+		if ($values['address'] === null) {
+			$form['address']->addError('messages.address');
+			return;
+		}
 		try {
 			$this->manager->remove($values['address'], $values['coordinatorOnly']);
 			$this->presenter->flashSuccess('iqrfnet.bonding.messages.remove.success');
