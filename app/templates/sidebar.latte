@@ -29,10 +29,8 @@
 					<li><a n:href=':Gateway:Log:default'>{_gateway.log.title}</a></li>
 					<li><a n:href=':Gateway:ChangeMode:default'>{_gateway.mode.title}</a></li>
 					<li><a n:href=':Service:Control:default'>{_service.title}</a></li>
-					{if $features['updater']}
-						<li><a n:href=':Gateway:UnattendedUpgrades:default'>{_gateway.unattendedUpgrades.title}</a></li>
-						<li><a n:href=':Gateway:Updater:default'>{_gateway.updater.title}</a></li>
-					{/if}
+					<li><a n:if='$features["unattendedUpgrades"]' n:href=':Gateway:UnattendedUpgrades:default'>{_gateway.unattendedUpgrades.title}</a></li>
+					<li><a n:if='$features["updater"]' n:href=':Gateway:Updater:default'>{_gateway.updater.title}</a></li>
 					<li><a n:href=':Gateway:Power:default'>{_gateway.power.title}</a></li>
 				</ul>
 			</li>

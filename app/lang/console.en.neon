@@ -5,3 +5,4 @@ features:
 	networkManager: Network manager
 	supervisord: Supervisord in the menu
 	updater: System updater
+	unattendedUpgrades: Unattended upgrades

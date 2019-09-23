@@ -74,7 +74,7 @@ class UnattendedUpgradesPresenter extends ProtectedPresenter {
 	 */
 	protected function startup(): void {
 		parent::startup();
-		if (!$this->context->parameters['features']['updater']) {
+		if (!$this->context->parameters['features']['unattendedUpgrades']) {
 			$this->flashError('gateway.unattendedUpgrades.messages.disabled');
 			$this->redirect('Homepage:default');
 		}

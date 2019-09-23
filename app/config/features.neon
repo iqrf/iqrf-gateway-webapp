@@ -12,3 +12,5 @@ parameters:
 		supervisord: false
 		# System updater
 		updater: false
+		# Unattended upgrades
+		unattendedUpgrades: false
