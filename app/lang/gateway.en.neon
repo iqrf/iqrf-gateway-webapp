@@ -80,8 +80,8 @@ power:
 		success: Your device has been restarted successfully.
 
 unattendedUpgrades:
-	title: Unattended upgrades
-	description: Controls the unattended upgrades service.
+	title: Automatic upgrades
+	description: Controls the automatic unattended upgrades service.
 	status: Service status
 	statuses:
 		enabled: Enabled
@@ -90,9 +90,9 @@ unattendedUpgrades:
 	enable: Enable service
 	disable: Disable service
 	messages:
-		disabled: Unattended upgrades are disabled.
-		disable: Unattended upgrades service has been disabled.
-		enable: Unattended upgrades service has been enabled.
+		disabled: Automatic upgrades are disabled.
+		disable: Automatic upgrades service has been disabled.
+		enable: Automatic upgrades service has been enabled.
 
 updater:
 	title: System updater
