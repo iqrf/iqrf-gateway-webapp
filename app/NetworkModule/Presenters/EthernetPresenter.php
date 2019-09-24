@@ -23,9 +23,7 @@ namespace App\NetworkModule\Presenters;
 use App\NetworkModule\Datagrids\EthernetDatagridFactory;
 use App\NetworkModule\Forms\EthernetFormFactory;
 use Nette\Application\UI\Form;
-use Ramsey\Uuid\Exception\InvalidUuidStringException;
 use Ramsey\Uuid\Uuid;
-use Ramsey\Uuid\UuidInterface;
 use Ublaboo\DataGrid\DataGrid;
 use Ublaboo\DataGrid\Exception\DataGridException;
 
@@ -47,18 +45,11 @@ class EthernetPresenter extends BasePresenter {
 	public $formFactory;
 
 	/**
-	 * @var UuidInterface|null Network connection UUID
-	 */
-	private $interfaceUuid = null;
-
-	/**
 	 * Edits the network connection configuration
 	 * @param string $uuid Network connection UUID
 	 */
 	public function renderEdit(string $uuid): void {
-		try {
-			$this->interfaceUuid = Uuid::fromString($uuid);
-		} catch (InvalidUuidStringException $e) {
+		if (!Uuid::isValid($uuid)) {
 			$this->flashError('network.ethernet.messages.invalidUuid');
 			$this->redirect('Ethernet:default');
 		}
@@ -79,7 +70,7 @@ class EthernetPresenter extends BasePresenter {
 	 * @return Form Ethernet network configuration form
 	 */
 	protected function createComponentEthernetForm(): Form {
-		return $this->formFactory->create($this, $this->interfaceUuid);
+		return $this->formFactory->create($this);
 	}
 
 }

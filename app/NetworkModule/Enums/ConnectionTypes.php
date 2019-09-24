@@ -27,6 +27,7 @@ use Grifart\Enum\Enum;
  * Network connection type enum
  * @method static ConnectionTypes BRIDGE()
  * @method static ConnectionTypes ETHERNET()
+ * @methdo static ConnectionTypes GSM()
  * @method static ConnectionTypes TUN()
  * @method static ConnectionTypes VLAN()
  * @method static ConnectionTypes VPN()
@@ -45,6 +46,11 @@ final class ConnectionTypes extends Enum {
 	 * Ethernet connection
 	 */
 	private const ETHERNET = '802-3-ethernet';
+
+	/**
+	 * GSM connection
+	 */
+	private const GSM = 'gsm';
 
 	/**
 	 * TUN connection

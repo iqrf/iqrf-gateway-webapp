@@ -29,7 +29,7 @@ use App\NetworkModule\Presenters\EthernetPresenter;
 use Nette\Application\UI\Form;
 use Nette\Forms\Container;
 use Nette\SmartObject;
-use Ramsey\Uuid\UuidInterface;
+use Ramsey\Uuid\Uuid;
 
 /**
  * Ethernet network configuration form factory
@@ -71,11 +71,11 @@ class EthernetFormFactory {
 	/**
 	 * Creates the Ethernet network configuration form
 	 * @param EthernetPresenter $presenter Ethernet network configuration presenter
-	 * @param UuidInterface $uuid Network connection interface
 	 * @return Form Ethernet network configuration form
 	 */
-	public function create(EthernetPresenter $presenter, UuidInterface $uuid): Form {
+	public function create(EthernetPresenter $presenter): Form {
 		$this->presenter = $presenter;
+		$uuid = Uuid::fromString($this->presenter->getParameter('uuid'));
 		$this->connection = $this->manager->get($uuid);
 		$form = $this->factory->create('network.ethernet.form');
 		$this->createIpv4($form);

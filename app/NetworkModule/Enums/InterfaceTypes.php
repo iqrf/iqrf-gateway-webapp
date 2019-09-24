@@ -24,7 +24,7 @@ use Grifart\Enum\AutoInstances;
 use Grifart\Enum\Enum;
 
 /**
- * Device type enum
+ * Interface type enum
  * @method static InterfaceTypes BOND()
  * @method static InterfaceTypes BRIDGE()
  * @method static InterfaceTypes DUMMY()
@@ -33,6 +33,7 @@ use Grifart\Enum\Enum;
  * @method static InterfaceTypes TUN()
  * @method static InterfaceTypes VLAN()
  * @method static InterfaceTypes WIFI()
+ * @method static InterfaceTypes WIFI_P2P()
  */
 final class InterfaceTypes extends Enum {
 
@@ -74,8 +75,13 @@ final class InterfaceTypes extends Enum {
 	private const VLAN = 'vlan';
 
 	/**
-	 * 802.11 Wi-Fi interface
+	 * 802.11 WiFi interface
 	 */
 	private const WIFI = 'wifi';
+
+	/**
+	 * WiFi P2P interface
+	 */
+	private const WIFI_P2P = 'wifi-p2p';
 
 }
