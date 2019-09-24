@@ -27,7 +27,7 @@ use Grifart\Enum\Enum;
  * Network connection type enum
  * @method static ConnectionTypes BRIDGE()
  * @method static ConnectionTypes ETHERNET()
- * @methdo static ConnectionTypes GSM()
+ * @method static ConnectionTypes GSM()
  * @method static ConnectionTypes TUN()
  * @method static ConnectionTypes VLAN()
  * @method static ConnectionTypes VPN()
