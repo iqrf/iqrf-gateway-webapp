@@ -84,12 +84,12 @@ class WebSocketMessagingFormFactory extends GenericConfigFormFactory {
 		$requiredInterfaces = $form->addContainer('RequiredInterfaces');
 		foreach ($data['RequiredInterfaces'] as $interfaceId => $requiredInterface) {
 			$container = $requiredInterfaces->addContainer($interfaceId);
-			$container->addSelect('name', 'config.websocket.form.requiredInterface.name')
+			$container->addSelect('name', 'requiredInterface.name')
 				->setItems(['shape::IWebsocketService'], false)
 				->setTranslator($translator)
 				->setRequired('messages.requiredInterface.name');
 			$target = $container->addContainer('target');
-			$target->addSelect('instance', 'config.websocket.form.requiredInterface.instance')
+			$target->addSelect('instance', 'requiredInterface.instance')
 				->setItems($this->manager->getComponentInstances('shape::WebsocketCppService'), false)
 				->setTranslator($translator)
 				->setRequired('messages.requiredInterface.instance');
