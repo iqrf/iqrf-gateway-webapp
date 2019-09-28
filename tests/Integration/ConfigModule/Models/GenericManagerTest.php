@@ -104,11 +104,7 @@ class GenericManagerTest extends JsonConfigTestCase {
 			'config.mq.title' => ['MqMessaging'],
 			'config.mqtt.title' => ['MqttMessaging'],
 			'config.udp.title' => ['UdpMessaging'],
-			'config.websocket.title' => [
-				'WebsocketMessaging',
-				'WebsocketMessagingMobileApp',
-				'WebsocketMessagingWebApp',
-			],
+			'config.websocket.title' => ['WebsocketMessaging'],
 		];
 		Assert::same($expected, $this->manager->getMessagings());
 	}

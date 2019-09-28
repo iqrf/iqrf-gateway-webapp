@@ -2,7 +2,7 @@
 	"$schema": "https://apidocs.iqrf.org/iqrf-gateway-daemon/com.iqrftech.self-desc/schema/jsonschema/1-0-0#",
 	"self": {
 		"vendor": "com.iqrftech.self-desc",
-		"name": "schema__shape__LauncherService",
+		"name": "schema__iqrf__JsonMngMetaDataApi",
 		"format": "jsonschema",
 		"version": "1-0-0"
 	},
@@ -12,13 +12,18 @@
 			"type": "string",
 			"description": "Name of component.",
 			"enum": [
-				"shape::LauncherService"
+				"iqrf::JsonMngMetaDataApi"
 			]
 		},
 		"instance": {
 			"type": "string",
-			"description": "Recomended shape::LauncherService-(id)",
-			"default": "shape::LauncherService-1"
+			"description": "Recomended iqrf::JsonMngMetaDataApi-(id)",
+			"default": "iqrf::JsonMngMetaDataApi-1"
+		},
+		"metaDataToMessages": {
+			"type": "boolean",
+			"description": "Append MetaData to outcomming messages",
+			"default": false
 		},
 		"RequiredInterfaces": {
 			"type": "array",

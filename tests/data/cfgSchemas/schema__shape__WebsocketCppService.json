@@ -1,5 +1,5 @@
 {
-	"$schema": "http://apidocs.iqrfsdk.org/iqrfgd2-schemas/com.iqrftech.self-desc/schema/jsonschema/1-0-0#",
+	"$schema": "https://apidocs.iqrf.org/iqrf-gateway-daemon/com.iqrftech.self-desc/schema/jsonschema/1-0-0#",
 	"self": {
 		"vendor": "com.iqrftech.self-desc",
 		"name": "schema__shape__WebsocketCppService",
@@ -24,6 +24,11 @@
 			"type": "integer",
 			"description": "Number of port",
 			"default": "1338"
+		},
+		"acceptOnlyLocalhost": {
+			"type": "boolean",
+			"description": "accepts only connections from localhost",
+			"default": "false"
 		},
 		"RequiredInterfaces": {
 			"type": "array",

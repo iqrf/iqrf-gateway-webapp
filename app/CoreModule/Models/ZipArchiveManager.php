@@ -21,7 +21,6 @@ declare(strict_types = 1);
 namespace App\CoreModule\Models;
 
 use Nette\SmartObject;
-use Nette\Utils\ArrayHash;
 use Nette\Utils\Finder;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
@@ -109,14 +108,14 @@ class ZipArchiveManager {
 
 	/**
 	 * Checks if the file or the files exist in the archive
-	 * @param string|mixed[]|ArrayHash $var File(s) to check
+	 * @param string|mixed[]|iterable $var File(s) to check
 	 * @return bool Is file exist
 	 */
 	public function exist($var): bool {
 		if (is_string($var)) {
 			return ($this->zip->locateName('/' . $var, ZipArchive::FL_NOCASE)) !== false;
 		}
-		if (is_array($var) || (is_object($var) && $var instanceof ArrayHash)) {
+		if (is_iterable($var)) {
 			foreach ($var as $file) {
 				$result = $this->zip->locateName('/' . $file, ZipArchive::FL_NOCASE);
 				if (!is_int($result)) {

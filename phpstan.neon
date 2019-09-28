@@ -34,19 +34,10 @@ parameters:
 			message: '#Parameter \#1 \$credentials \(array<string>\) of method App\\CoreModule\\Models\\AppAuthenticator::authenticate\(\) should be contravariant with parameter \$credentials \(array\) of method Nette\\Security\\IAuthenticator::authenticate\(\)#'
 			path: %currentWorkingDirectory%/app/CoreModule/Models/AppAuthenticator.php
 		-
-			message: '#Result of (&&|\|\|) is always true.#'
-			path: %currentWorkingDirectory%/app/CoreModule/Models/ZipArchiveManager.php
-		-
-			message: '#Call to function is_array\(\) with iterable&Nette\\Utils\\ArrayHash will always evaluate to false.#'
+			message: '#Call to function is_iterable\(\) with iterable will always evaluate to true.#'
 			path: %currentWorkingDirectory%/app/CoreModule/Models/ZipArchiveManager.php
 		-
 			message: '#Strict comparison using !== between int and false will always evaluate to true.#'
-			path: %currentWorkingDirectory%/app/CoreModule/Models/ZipArchiveManager.php
-		-
-			message: '#Call to function is_object\(\) with iterable&Nette\\Utils\\ArrayHash will always evaluate to true.#'
-			path: %currentWorkingDirectory%/app/CoreModule/Models/ZipArchiveManager.php
-		-
-			message: '#Instanceof between Nette\\Utils\\ArrayHash and Nette\\Utils\\ArrayHash will always evaluate to true.#'
 			path: %currentWorkingDirectory%/app/CoreModule/Models/ZipArchiveManager.php
 		-
 			message: '#Call to function is_int\(\) with int will always evaluate to true.#'

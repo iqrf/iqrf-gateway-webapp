@@ -2,7 +2,7 @@
 	"$schema": "https://apidocs.iqrf.org/iqrf-gateway-daemon/com.iqrftech.self-desc/schema/jsonschema/1-0-0#",
 	"self": {
 		"vendor": "com.iqrftech.self-desc",
-		"name": "schema__shape__LauncherService",
+		"name": "schema__shape__CurlRestApiService",
 		"format": "jsonschema",
 		"version": "1-0-0"
 	},
@@ -12,13 +12,13 @@
 			"type": "string",
 			"description": "Name of component.",
 			"enum": [
-				"shape::LauncherService"
+				"shape::CurlRestApiService"
 			]
 		},
 		"instance": {
 			"type": "string",
-			"description": "Recomended shape::LauncherService-(id)",
-			"default": "shape::LauncherService-1"
+			"description": "Recomended shape::CurlRestApiService-(id)",
+			"default": "shape::CurlRestApiService-1"
 		},
 		"RequiredInterfaces": {
 			"type": "array",

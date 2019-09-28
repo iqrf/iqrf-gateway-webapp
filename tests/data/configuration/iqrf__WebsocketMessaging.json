@@ -3,11 +3,11 @@
 	"instance": "WebsocketMessaging",
 	"acceptAsyncMsg": true,
 	"RequiredInterfaces": [
-		{
-			"name": "shape::IWebsocketService",
-			"target": {
-				"WebsocketPort": 1338
-			}
+	{
+		"name": "shape::IWebsocketService",
+		"target": {
+		"WebsocketPort": 1338
 		}
+	}
 	]
 }

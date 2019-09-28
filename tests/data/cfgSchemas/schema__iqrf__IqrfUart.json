@@ -1,0 +1,47 @@
+{
+	"$schema": "https://apidocs.iqrf.org/iqrf-gateway-daemon/com.iqrftech.self-desc/schema/jsonschema/1-0-0#",
+	"self": {
+		"vendor": "com.iqrftech.self-desc",
+		"name": "schema__iqrf__IqrfUart",
+		"format": "jsonschema",
+		"version": "1-0-0"
+	},
+	"type": "object",
+	"properties": {
+		"component": {
+			"type": "string",
+			"description": "Name of component.",
+			"enum": [
+				"iqrf::IqrfUart"
+			]
+		},
+		"instance": {
+			"type": "string",
+			"description": "Recomended iqrf::IqrfUart-(id)",
+			"default": "iqrf::IqrfUart-1"
+		},
+		"IqrfInterface": {
+			"type": "string",
+			"description": "UART interface",
+			"default": "/dev/ttyS0"
+		},
+		"baudRate": {
+			"type": "integer",
+			"description": "DPA UART baudrate"
+		},
+		"powerEnableGpioPin": {
+			"type": "integer",
+			"description": "Enable power to TR module",
+			"default": 23
+		},
+		"busEnableGpioPin": {
+			"type": "integer",
+			"description": "Connect bus lines of TR module to control MCU",
+			"default": 7
+		}
+	},
+	"required": [
+		"component",
+		"instance"
+	]
+}

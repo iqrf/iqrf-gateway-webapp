@@ -1,5 +1,5 @@
 {
-	"$schema": "http://apidocs.iqrfsdk.org/iqrfgd2-schemas/com.iqrftech.self-desc/schema/jsonschema/1-0-0#",
+	"$schema": "https://apidocs.iqrf.org/iqrf-gateway-daemon/com.iqrftech.self-desc/schema/jsonschema/1-0-0#",
 	"self": {
 		"vendor": "com.iqrftech.self-desc",
 		"name": "schema__iqrf__IqrfDpa",
@@ -24,35 +24,6 @@
 			"type": "integer",
 			"description": "...",
 			"default": 500
-		},
-		"CommunicationMode": {
-			"type": "string",
-			"description": "...",
-			"default": "STD"
-		},
-		"BondedNodes": {
-			"type": "integer",
-			"description": "...",
-			"default": 10
-		},
-		"DiscoveredNodes": {
-			"type": "integer",
-			"description": "...",
-			"default": 10
-		},
-		"ResponseTime": {
-			"type": "string",
-			"description": "...",
-			"enum": [
-				"k40Ms",
-				"k360Ms",
-				"k680Ms",
-				"k1320Ms",
-				"k2600Ms",
-				"k5160Ms",
-				"k10280Ms",
-				"k20620Ms"
-			]
 		},
 		"RequiredInterfaces": {
 			"type": "array",

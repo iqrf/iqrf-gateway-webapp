@@ -1,5 +1,5 @@
 {
-	"$schema": "http://apidocs.iqrfsdk.org/iqrfgd2-schemas/com.iqrftech.self-desc/schema/jsonschema/1-0-0#",
+	"$schema": "https://apidocs.iqrf.org/iqrf-gateway-daemon/com.iqrftech.self-desc/schema/jsonschema/1-0-0#",
 	"self": {
 		"vendor": "com.iqrftech.self-desc",
 		"name": "schema__iqrf__IqrfSpi",
@@ -22,23 +22,28 @@
 		},
 		"IqrfInterface": {
 			"type": "string",
-			"description": "...",
+			"description": "SPI interface",
 			"default": "/dev/spidev0.0"
 		},
-		"enableGpioPin": {
+		"powerEnableGpioPin": {
 			"type": "integer",
-			"description": "...",
+			"description": "Enable power to TR module",
 			"default": 23
 		},
-		"spiMasterEnGpioPin": {
+		"busEnableGpioPin": {
 			"type": "integer",
-			"description": "...",
+			"description": "Connect bus lines of TR module to control MCU",
 			"default": 7
 		},
-		"pgmSwGpioPin": {
+		"pgmSwitchGpioPin": {
 			"type": "integer",
-			"description": "...",
+			"description": "Switch TR module to programming mode",
 			"default": 22
+		},
+		"spiReset": {
+			"type": "boolean",
+			"description": "Reset SPI in component activation",
+			"default": true
 		},
 		"RequiredInterfaces": {
 			"type": "array",

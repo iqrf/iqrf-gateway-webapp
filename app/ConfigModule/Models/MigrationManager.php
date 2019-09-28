@@ -155,15 +155,14 @@ class MigrationManager {
 			if (!is_array($matches)) {
 				continue;
 			}
-			$jsonFile = $zipManager->openFile($file);
-			$json = Json::decode($jsonFile, Json::FORCE_ARRAY);
+			$json = Json::decode($zipManager->openFile($file));
 			try {
-				$this->schemaManager->setSchemaFromComponent($json['component']);
+				$this->schemaManager->setSchemaFromComponent($json->component);
 			} catch (NonExistingJsonSchemaException $e) {
 				continue;
 			}
 			try {
-				$this->schemaManager->validate(Json::decode($jsonFile));
+				$this->schemaManager->validate($json);
 			} catch (InvalidJsonException $e) {
 				return false;
 			}

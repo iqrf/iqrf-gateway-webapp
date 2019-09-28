@@ -136,20 +136,6 @@ class WebSocketManagerTest extends JsonConfigTestCase {
 				'serviceInstance' => 'WebsocketCppService',
 				'port' => 1338,
 				'acceptOnlyLocalhost' => false,
-			], [
-				'id' => 1,
-				'messagingInstance' => 'WebsocketMessagingMobileApp',
-				'acceptAsyncMsg' => true,
-				'serviceInstance' => 'WebsocketCppServiceMobileApp',
-				'port' => 1339,
-				'acceptOnlyLocalhost' => false,
-			], [
-				'id' => 2,
-				'messagingInstance' => 'WebsocketMessagingWebApp',
-				'acceptAsyncMsg' => true,
-				'serviceInstance' => 'WebsocketCppServiceWebApp',
-				'port' => 1340,
-				'acceptOnlyLocalhost' => true,
 			],
 		];
 		Assert::equal($expected, $this->manager->list());

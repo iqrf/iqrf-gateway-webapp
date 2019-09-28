@@ -2,7 +2,7 @@
 	"$schema": "https://apidocs.iqrf.org/iqrf-gateway-daemon/com.iqrftech.self-desc/schema/jsonschema/1-0-0#",
 	"self": {
 		"vendor": "com.iqrftech.self-desc",
-		"name": "schema__shape__LauncherService",
+		"name": "schema__iqrf__RemoveBondService",
 		"format": "jsonschema",
 		"version": "1-0-0"
 	},
@@ -12,13 +12,13 @@
 			"type": "string",
 			"description": "Name of component.",
 			"enum": [
-				"shape::LauncherService"
+				"iqrf::RemoveBondService"
 			]
 		},
 		"instance": {
 			"type": "string",
-			"description": "Recomended shape::LauncherService-(id)",
-			"default": "shape::LauncherService-1"
+			"description": "Recomended iqrf::RemoveBondService-(id)",
+			"default": "iqrf::RemoveBondService-1"
 		},
 		"RequiredInterfaces": {
 			"type": "array",

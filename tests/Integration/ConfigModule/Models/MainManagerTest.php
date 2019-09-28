@@ -45,11 +45,11 @@ class MainManagerTest extends JsonConfigTestCase {
 		$array = [
 			'applicationName' => 'IqrfGatewayDaemon',
 			'resourceDir' => '',
-			'dataDir' => '/usr/share/iqrfgd2',
-			'cacheDir' => '/var/cache/iqrfgd2',
+			'dataDir' => '/usr/share/iqrf-gateway-daemon',
+			'cacheDir' => '/var/cache/iqrf-gateway-daemon',
 			'userDir' => '',
 			'configurationDir' => '/etc/iqrf-daemon',
-			'deploymentDir' => '/usr/lib/iqrfgd2',
+			'deploymentDir' => '/usr/lib/iqrf-gateway-daemon',
 		];
 		$expected = $this->readFile($this->fileName);
 		$this->copyFile($this->fileName);

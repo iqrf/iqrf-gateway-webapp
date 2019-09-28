@@ -1,5 +1,5 @@
 {
-	"$schema": "http://apidocs.iqrfsdk.org/iqrfgd2-schemas/com.iqrftech.self-desc/schema/jsonschema/1-0-0#",
+	"$schema": "https://apidocs.iqrf.org/iqrf-gateway-daemon/com.iqrftech.self-desc/schema/jsonschema/1-0-0#",
 	"self": {
 		"vendor": "com.iqrftech.self-desc",
 		"name": "schema__iqrf__IdeCounterpart",
@@ -19,6 +19,42 @@
 			"type": "string",
 			"description": "Recomended iqrf::IdeCounterpart-(id)",
 			"default": "iqrf::IdeCounterpart-1"
+		},
+		"gwIdentModeByte": {
+			"type": "integer",
+			"description": "GW ident Mode Byte",
+			"default": 32
+		},
+		"gwIdentName": {
+			"type": "string",
+			"description": "GW ident Name",
+			"default": "iqrf-gateway-daemon"
+		},
+		"gwIdentIpStack": {
+			"type": "string",
+			"description": "GW ident IP Stack version",
+			"default": "N/A"
+		},
+		"gwIdentNetBios": {
+			"type": "string",
+			"description": "GW ident Net BIOS",
+			"default": "N/A"
+		},
+		"gwIdentPublicIp": {
+			"type": "string",
+			"description": "GW ident Public IP",
+			"default": "N/A"
+		},
+		"operMode": {
+			"type": "string",
+			"description": "startup Operation mode.",
+			"enum": [
+				"operational",
+				"service",
+				"forwarding",
+				""
+			],
+			"default": "operational"
 		},
 		"RequiredInterfaces": {
 			"type": "array",

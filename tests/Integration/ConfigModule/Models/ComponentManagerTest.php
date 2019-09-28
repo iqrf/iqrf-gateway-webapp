@@ -65,6 +65,7 @@ class ComponentManagerTest extends JsonConfigTestCase {
 		$expected = $this->readFile($this->fileName);
 		$this->copyFile($this->fileName);
 		unset($expected['components'][30]);
+		$expected['components'] = array_values($expected['components']);
 		$this->managerTemp->delete(30);
 		Assert::same($expected, $this->readTempFile($this->fileName));
 	}
