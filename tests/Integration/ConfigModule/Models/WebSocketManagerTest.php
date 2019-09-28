@@ -156,39 +156,6 @@ class WebSocketManagerTest extends JsonConfigTestCase {
 	}
 
 	/**
-	 * Tests the function to create a WebSocket messaging
-	 */
-	public function testCreateMessaging(): void {
-		$expected = [
-			'component' => 'iqrf::WebsocketMessaging',
-			'instance' => $this->instances['messaging'],
-			'acceptAsyncMsg' => $this->values['acceptAsyncMsg'],
-			'RequiredInterfaces' => [
-				(object) [
-					'name' => 'shape::IWebsocketService',
-					'target' => (object) [
-						'instance' => $this->instances['service'],
-					],
-				],
-			],
-		];
-		Assert::equal($expected, $this->manager->createMessaging($this->values, $this->instances));
-	}
-
-	/**
-	 * Tests the function to create a WebSocket service
-	 */
-	public function testCreateService(): void {
-		$expected = [
-			'component' => 'shape::WebsocketCppService',
-			'instance' => $this->instances['service'],
-			'WebsocketPort' => $this->values['port'],
-			'acceptOnlyLocalhost' => $this->values['acceptOnlyLocalhost'],
-		];
-		Assert::same($expected, $this->manager->createService($this->values, $this->instances));
-	}
-
-	/**
 	 * Tests the function to get WebSocket service file name by instance name
 	 */
 	public function testGetServiceFile(): void {
@@ -203,8 +170,8 @@ class WebSocketManagerTest extends JsonConfigTestCase {
 		parent::setUp();
 		$genericManager = new GenericManager($this->fileManager, $this->schemaManager);
 		$genericManagerTest = new GenericManager($this->fileManagerTemp, $this->schemaManager);
-		$this->manager = new WebSocketManager($genericManager, $this->fileManager, $this->schemaManager);
-		$this->managerTemp = new WebSocketManager($genericManagerTest, $this->fileManagerTemp, $this->schemaManager);
+		$this->manager = new WebSocketManager($genericManager, $this->schemaManager);
+		$this->managerTemp = new WebSocketManager($genericManagerTest, $this->schemaManager);
 	}
 
 }

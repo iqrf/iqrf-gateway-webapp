@@ -81,6 +81,14 @@ class GenericManager {
 	}
 
 	/**
+	 * Deletes a configuration
+	 * @throws IOException
+	 */
+	public function deleteFile(): void {
+		$this->fileManager->delete($this->fileName);
+	}
+
+	/**
 	 * Gets component's instance files
 	 * @return string[] Files with component's instances
 	 * @throws IOException
@@ -128,9 +136,7 @@ class GenericManager {
 			return [];
 		}
 		$this->fileName = $instanceFiles[$id];
-		$configuration = $this->fileManager->read($this->fileName);
-		$this->fixRequiredInterfaces($configuration);
-		return $configuration;
+		return $this->read();
 	}
 
 	/**
@@ -174,6 +180,17 @@ class GenericManager {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Reads the configuration
+	 * @return mixed[] Configuration in an array
+	 * @throws JsonException
+	 */
+	public function read(): array {
+		$configuration = $this->fileManager->read($this->fileName);
+		$this->fixRequiredInterfaces($configuration);
+		return $configuration;
 	}
 
 	/**

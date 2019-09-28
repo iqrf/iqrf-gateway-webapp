@@ -20,12 +20,10 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Models;
 
-use App\CoreModule\Models\JsonFileManager;
 use App\CoreModule\Models\JsonSchemaManager;
 use DateTime;
 use Nette\SmartObject;
 use Nette\Utils\Arrays;
-use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 
 /**
@@ -44,11 +42,6 @@ class WebSocketManager {
 	];
 
 	/**
-	 * @var JsonFileManager JSON file manager
-	 */
-	private $fileManager;
-
-	/**
 	 * @var string[] WebSocket messaging and service file names
 	 */
 	private $fileNames;
@@ -59,9 +52,9 @@ class WebSocketManager {
 	private $genericManager;
 
 	/**
-	 * @var string[] WebSocket instances
+	 * @var array<string,string|null> WebSocket instances
 	 */
-	private $instances;
+	private $instances = [];
 
 	/**
 	 * @var JsonSchemaManager JSON schema manager
@@ -71,12 +64,10 @@ class WebSocketManager {
 	/**
 	 * Constructor
 	 * @param GenericManager $genericManager Generic configuration manager
-	 * @param JsonFileManager $fileManager JSON file manager
 	 * @param JsonSchemaManager $schemaManager JSON schema manager
 	 */
-	public function __construct(GenericManager $genericManager, JsonFileManager $fileManager, JsonSchemaManager $schemaManager) {
+	public function __construct(GenericManager $genericManager, JsonSchemaManager $schemaManager) {
 		$this->genericManager = $genericManager;
-		$this->fileManager = $fileManager;
 		$this->schemaManager = $schemaManager;
 	}
 
@@ -89,23 +80,12 @@ class WebSocketManager {
 		$this->genericManager->setComponent($this->components['messaging']);
 		$instances = $this->genericManager->getInstanceFiles();
 		$this->fileNames['messaging'] = Arrays::pick($instances, $id);
-		$messaging = $this->read($this->fileNames['messaging']);
-		$serviceInstance = $messaging['RequiredInterfaces'][0]['target']['instance'];
-		$this->fileNames['service'] = $this->getServiceFile($serviceInstance);
-		$this->fileManager->delete($this->fileNames['messaging']);
-		$this->fileManager->delete($this->fileNames['service']);
-	}
-
-	/**
-	 * Reads a configuration
-	 * @param string $fileName File name (without .json)
-	 * @return mixed[] Parsed configuration
-	 * @throws JsonException
-	 */
-	private function read(string $fileName): array {
-		$configuration = $this->fileManager->read($fileName);
-		$this->genericManager->fixRequiredInterfaces($configuration);
-		return $configuration;
+		$this->genericManager->setFileName($this->fileNames['messaging']);
+		$messaging = $this->genericManager->read();
+		$instance = $messaging['RequiredInterfaces'][0]['target']['instance'];
+		$this->genericManager->deleteFile();
+		$this->genericManager->setFileName($this->getServiceFile($instance));
+		$this->genericManager->deleteFile();
 	}
 
 	/**
@@ -118,7 +98,8 @@ class WebSocketManager {
 		$this->genericManager->setComponent($this->components['service']);
 		$services = $this->genericManager->getInstanceFiles();
 		foreach ($services as $service) {
-			$json = $this->read($service);
+			$this->genericManager->setFileName($service);
+			$json = $this->genericManager->read();
 			if (Arrays::pick($json, 'instance') === $instanceName) {
 				return $service;
 			}
@@ -133,41 +114,45 @@ class WebSocketManager {
 	 */
 	public function save(array $array): void {
 		$timestamp = (new DateTime())->getTimestamp();
-		$instances = [
-			'messaging' => $this->instances['messaging'] ?? 'WebsocketMessaging' . $timestamp,
-			'service' => $this->instances['service'] ?? 'WebsocketCppService' . $timestamp,
-		];
+		if (!isset($this->instances['messaging'])) {
+			$this->instances['messaging'] = 'WebsocketMessaging' . $timestamp;
+		}
+		if (!isset($this->instances['service'])) {
+			$this->instances['service'] = 'WebsocketCppService' . $timestamp;
+		}
 		$settings = [
-			'messaging' => $this->createMessaging($array, $instances),
-			'service' => $this->createService($array, $instances),
+			'messaging' => $this->createMessaging($array),
+			'service' => $this->createService($array),
 		];
 		foreach ($settings as $component => $config) {
 			$this->schemaManager->setSchemaFromComponent($this->components[$component]);
-			$json = Json::encode($config);
-			$this->schemaManager->validate(Json::decode($json));
+			$this->schemaManager->validate((object) $config);
 		}
-		$messagingFileName = $this->fileNames['messaging'] ?? 'iqrf__' . $instances['messaging'];
-		$serviceFileName = $this->fileNames['service'] ?? 'shape__' . $instances['service'];
-		$this->fileManager->write($messagingFileName, $settings['messaging']);
-		$this->fileManager->write($serviceFileName, $settings['service']);
+		$messagingFileName = $this->fileNames['messaging'] ?? 'iqrf__' . $this->instances['messaging'];
+		$serviceFileName = $this->fileNames['service'] ?? 'shape__' . $this->instances['service'];
+		$this->genericManager->setComponent($this->components['service']);
+		$this->genericManager->setFileName($serviceFileName);
+		$this->genericManager->save($settings['service']);
+		$this->genericManager->setComponent($this->components['messaging']);
+		$this->genericManager->setFileName($messagingFileName);
+		$this->genericManager->save($settings['messaging']);
 	}
 
 	/**
 	 * Creates a messaging configuration
 	 * @param mixed[] $values Values from form
-	 * @param string[] $instances Names of messaging and service instances
 	 * @return mixed[] Messaging configuration
 	 */
-	public function createMessaging(array $values, array $instances): array {
+	private function createMessaging(array $values): array {
 		return [
 			'component' => $this->components['messaging'],
-			'instance' => $instances['messaging'],
+			'instance' => $this->instances['messaging'],
 			'acceptAsyncMsg' => $values['acceptAsyncMsg'],
 			'RequiredInterfaces' => [
 				(object) [
 					'name' => 'shape::IWebsocketService',
 					'target' => (object) [
-						'instance' => $instances['service'],
+						'instance' => $this->instances['service'],
 					],
 				],
 			],
@@ -176,14 +161,13 @@ class WebSocketManager {
 
 	/**
 	 * Creates a service configuration
-	 * @param mixed[] $values Values from form
-	 * @param string[] $instances Names of messaging and service instances
+	 * @param mixed[] $values Values from the form
 	 * @return mixed[] Service configuration
 	 */
-	public function createService(array $values, array $instances): array {
+	private function createService(array $values): array {
 		return [
 			'component' => $this->components['service'],
-			'instance' => $instances['service'],
+			'instance' => $this->instances['service'],
 			'WebsocketPort' => $values['port'],
 			'acceptOnlyLocalhost' => $values['acceptOnlyLocalhost'],
 		];
@@ -214,10 +198,13 @@ class WebSocketManager {
 		$this->genericManager->setComponent($this->components['messaging']);
 		$instances = $this->genericManager->getInstanceFiles();
 		$this->fileNames['messaging'] = Arrays::pick($instances, $id);
-		$messaging = $this->read($this->fileNames['messaging']);
+		$this->genericManager->setFileName($this->fileNames['messaging']);
+		$messaging = $this->genericManager->read();
 		$serviceInstance = $messaging['RequiredInterfaces'][0]['target']['instance'];
 		$this->fileNames['service'] = $this->getServiceFile($serviceInstance);
-		$service = $this->read($this->fileNames['service']);
+		$this->genericManager->setComponent($this->components['service']);
+		$this->genericManager->setFileName($this->fileNames['service']);
+		$service = $this->genericManager->read();
 		$this->instances = [
 			'messaging' => $messaging['instance'],
 			'service' => $service['instance'],
