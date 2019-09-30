@@ -11,6 +11,7 @@ services:
 	- App\ConfigModule\Forms\JsonSplitterFormFactory
 	- App\ConfigModule\Forms\MainFormFactory
 	- App\ConfigModule\Forms\MigrationFormFactory
+	- App\ConfigModule\Forms\MonitorFormFactory
 	- App\ConfigModule\Forms\MqFormFactory
 	- App\ConfigModule\Forms\MqttFormFactory
 	- App\ConfigModule\Forms\OtaUploadFormFactory

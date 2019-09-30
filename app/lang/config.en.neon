@@ -183,6 +183,22 @@ migration:
 		invalidFormat: Uploaded invalid file format.
 		readConfig: Cannot read zip archive with a configuration.
 
+monitor:
+	title: Monitoring service
+	description: Monitoring service configuration.
+	add: Add a new monitoring service
+	edit: Edit the monitoring service
+	form:
+		reportPeriod: Reporting period in seconds
+		WebsocketPort: WebSocket server port
+		acceptOnlyLocalhost: Accept only connection from localhost
+		messages:
+			reportPeriod: Please enter the reporting period in seconds.
+			WebSocketPort: Please enter the port of monitoring WebSocket server.
+		save: Save
+	messages:
+		confirmDelete: Do you really want to delete Monitoring service %s?
+
 mq:
 	title: MQ interface
 	description: MQ interface settings.
