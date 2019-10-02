@@ -28,6 +28,7 @@ use Nette\SmartObject;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
 use Nette\Utils\Strings;
+use SplFileInfo;
 
 /**
  * Tool for downloading and reading IQRF Gateway Daemon's log files
@@ -69,7 +70,13 @@ class LogManager {
 	 */
 	public function getLogFiles(): array {
 		$logFiles = [];
+		/**
+		 * @var SplFileInfo $file File info object
+		 */
 		foreach (Finder::findFiles('*iqrf-gateway-daemon.log')->from($this->logDir) as $file) {
+			if ($file->getSize() === 0) {
+				continue;
+			}
 			$path = $file->getRealPath();
 			$pattern = ['~^' . realpath($this->logDir) . '/~', '/(-iqrf-gateway-daemon|)\.log$/'];
 			$fileName = Strings::trim(Strings::replace($path, $pattern, ''), '-');
