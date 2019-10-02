@@ -54,15 +54,15 @@
 		"ratchet/pawl": "^0.3",
 		"sentry/sentry": "^1.10",
 		"symfony/process": "^4.2",
-		"tracy/tracy": "^2.6",
+		"tracy/tracy": "2.7.0 as 2.6.5",
 		"ublaboo/datagrid": "^6.2",
 		"darsyn/ip": "^4.0",
 		"contributte/forms-multiplier": "^3.0"
 	},
 	"require-dev": {
 		"mockery/mockery": "^1.1",
-		"nette/tester": "^2.2",
-		"ninjify/qa": "^0.9",
+		"nette/tester": "^2.3",
+		"ninjify/qa": "^0.10",
 		"phpstan/phpstan-deprecation-rules": "^0.11",
 		"phpstan/phpstan-mockery": "^0.11",
 		"phpstan/phpstan-nette": "^0.11",
