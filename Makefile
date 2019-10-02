@@ -17,6 +17,9 @@
 
 all: qa phpstan cc tests
 
+cache-purge:
+	rm -rf temp/cache/
+
 coverage: vendor
 	vendor/bin/tester -p phpdbg -c ./tests/php.ini --coverage ./coverage.html --coverage-src ./app ./tests
 
@@ -48,3 +51,6 @@ tests: vendor
 
 vendor: composer.json
 	composer install
+
+webpack:
+	webpack --mode production

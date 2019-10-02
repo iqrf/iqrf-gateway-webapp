@@ -8,6 +8,7 @@ module.exports = {
 	entry: {
 		app: './www/js/app.js',
 		config: './www/js/config.js',
+		error500: './www/js/error500.js',
 		iqrfNet: './www/js/iqrfNet.js',
 		highlight:'./www/js/highlight.js',
 	},
