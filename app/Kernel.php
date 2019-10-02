@@ -21,6 +21,8 @@ declare(strict_types = 1);
 namespace App;
 
 use Nette\Configurator;
+use Nette\Utils\Finder;
+use SplFileInfo;
 
 /**
  * Application's kernel
@@ -38,6 +40,12 @@ class Kernel {
 		$configurator->setTempDirectory(__DIR__ . '/../temp');
 		$configurator->createRobotLoader()->addDirectory(__DIR__)->register();
 		$configurator->addConfig(__DIR__ . '/config/config.neon');
+		/**
+		 * @var SplFileInfo $file File info object
+		 */
+		foreach (Finder::findFiles('*Module/config/config.neon')->from(__DIR__) as $file) {
+			$configurator->addConfig($file->getRealPath());
+		}
 		return $configurator;
 	}
 
