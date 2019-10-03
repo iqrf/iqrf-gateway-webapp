@@ -1,7 +1,9 @@
 Fixes cache directory path
---- a/app/Kernel.php
-+++ b/app/Kernel.php
-@@ -35,7 +35,7 @@
+Index: iqrf-gateway-webapp/app/Kernel.php
+===================================================================
+--- iqrf-gateway-webapp.orig/app/Kernel.php
++++ iqrf-gateway-webapp/app/Kernel.php
+@@ -37,7 +37,7 @@ class Kernel {
  		$configurator = new Configurator();
  		$configurator->enableTracy(__DIR__ . '/../log');
  		$configurator->setTimeZone('Europe/Prague');
@@ -9,4 +11,4 @@ Fixes cache directory path
 +		$configurator->setTempDirectory('/var/cache/iqrf-gateway-webapp');
  		$configurator->createRobotLoader()->addDirectory(__DIR__)->register();
  		$configurator->addConfig(__DIR__ . '/config/config.neon');
- 		return $configurator;
+ 		/**

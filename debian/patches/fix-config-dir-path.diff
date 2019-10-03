@@ -1,7 +1,9 @@
 Fixes configuration directory path
---- a/app/ConsoleModule/Models/FeatureManager.php
-+++ b/app/ConsoleModule/Models/FeatureManager.php
-@@ -35,7 +35,7 @@
+Index: iqrf-gateway-webapp/app/ConsoleModule/Models/FeatureManager.php
+===================================================================
+--- iqrf-gateway-webapp.orig/app/ConsoleModule/Models/FeatureManager.php
++++ iqrf-gateway-webapp/app/ConsoleModule/Models/FeatureManager.php
+@@ -35,7 +35,7 @@ class FeatureManager {
  	/**
  	 * Path to the webapp's configuration file
  	 */
@@ -10,13 +12,16 @@ Fixes configuration directory path
  
  	/**
  	 * @var ITranslator Translator
---- a/app/Kernel.php
-+++ b/app/Kernel.php
-@@ -37,7 +37,7 @@
+Index: iqrf-gateway-webapp/app/Kernel.php
+===================================================================
+--- iqrf-gateway-webapp.orig/app/Kernel.php
++++ iqrf-gateway-webapp/app/Kernel.php
+@@ -39,7 +39,7 @@ class Kernel {
  		$configurator->setTimeZone('Europe/Prague');
  		$configurator->setTempDirectory('/var/cache/iqrf-gateway-webapp');
  		$configurator->createRobotLoader()->addDirectory(__DIR__)->register();
 -		$configurator->addConfig(__DIR__ . '/config/config.neon');
 +		$configurator->addConfig('/etc/iqrf-gateway-webapp/config.neon');
- 		return $configurator;
- 	}
+ 		/**
+ 		 * @var SplFileInfo $file File info object
+ 		 */

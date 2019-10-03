@@ -1,7 +1,13 @@
 Fixes log directory path
---- a/app/Kernel.php
-+++ b/app/Kernel.php
-@@ -33,7 +33,7 @@
+---
+ app/Kernel.php |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+Index: iqrf-gateway-webapp/app/Kernel.php
+===================================================================
+--- iqrf-gateway-webapp.orig/app/Kernel.php
++++ iqrf-gateway-webapp/app/Kernel.php
+@@ -35,7 +35,7 @@ class Kernel {
  	 */
  	public static function boot(): Configurator {
  		$configurator = new Configurator();
