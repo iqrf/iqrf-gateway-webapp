@@ -20,6 +20,11 @@
 @import url('~ublaboo-datagrid/assets/dist/datagrid.css');
 @import url('~ublaboo-datagrid/assets/dist/datagrid-spinners.css');
 
+.datagrid {
+	padding: 0;
+	overflow-x: auto;
+}
+
 .icon {
 	height: 1em;
 	width: 1em;
