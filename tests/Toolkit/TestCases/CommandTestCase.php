@@ -24,6 +24,7 @@ use App\CoreModule\Models\CommandManager;
 use Mockery;
 use Mockery\MockInterface;
 use Tester\TestCase;
+use Tests\Stubs\CoreModule\Models\Command;
 
 /**
  * Shell command test case
@@ -53,18 +54,17 @@ abstract class CommandTestCase extends TestCase {
 	 * Receives a command
 	 * @param string $command Command
 	 * @param bool $needSudo Is sudo needed?
-	 * @param string $output Command's output
+	 * @param string $stdout Command's standard output
 	 */
-	protected function receiveCommand(string $command, ?bool $needSudo = null, ?string $output = null): void {
+	protected function receiveCommand(string $command, ?bool $needSudo = null, string $stdout = '', string $stderr = '', int $exitCode = 0): void {
 		$process = $this->commandManager->shouldReceive('run');
+		$entity = new Command($needSudo ? 'sudo ' : '' . $command, $stdout, $stderr, $exitCode);
 		if ($needSudo === null) {
 			$process->with($command);
 		} else {
 			$process->with($command, $needSudo);
 		}
-		if ($output !== null) {
-			$process->andReturn($output);
-		}
+		$process->andReturn($entity);
 	}
 
 	/**

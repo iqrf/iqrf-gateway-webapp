@@ -50,7 +50,7 @@ class ConnectionManager {
 	 * @return ConnectionDetail Detailed network connection entity
 	 */
 	public function get(UuidInterface $uuid): ConnectionDetail {
-		$output = $this->commandManager->run('nmcli -t connection show ' . $uuid->toString(), true);
+		$output = $this->commandManager->run('nmcli -t connection show ' . $uuid->toString(), true)->getStdout();
 		return ConnectionDetail::fromNmCli($output);
 	}
 
@@ -59,7 +59,7 @@ class ConnectionManager {
 	 * @return Connection[] Network connections
 	 */
 	public function list(): array {
-		$output = $this->commandManager->run('nmcli -t connection show', true);
+		$output = $this->commandManager->run('nmcli -t connection show', true)->getStdout();
 		$array = explode(PHP_EOL, trim($output));
 		foreach ($array as &$row) {
 			$row = Connection::fromString($row);

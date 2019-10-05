@@ -18,13 +18,12 @@
  */
 declare(strict_types = 1);
 
-namespace App\CoreModule\Entities;
+namespace Tests\Stubs\CoreModule\Models;
 
-use Nette\Utils\Strings;
-use Symfony\Component\Process\Process;
+use App\CoreModule\Entities\ICommand;
 
 /**
- * Command entity
+ * Command entity stub
  */
 class Command implements ICommand {
 
@@ -51,13 +50,15 @@ class Command implements ICommand {
 	/**
 	 * Constructor
 	 * @param string $command Command
-	 * @param Process $process Process
+	 * @param string $stdout Standard output
+	 * @param string $stderr Standard error output
+	 * @param int $exitCode Exit code
 	 */
-	public function __construct(string $command, Process $process) {
+	public function __construct(string $command, string $stdout, string $stderr, int $exitCode) {
 		$this->command = $command;
-		$this->stdout = Strings::trim($process->getOutput());
-		$this->stderr = Strings::trim($process->getErrorOutput());
-		$this->exitCode = $process->getExitCode();
+		$this->stdout = $stdout;
+		$this->stderr = $stderr;
+		$this->exitCode = $exitCode;
 	}
 
 	/**

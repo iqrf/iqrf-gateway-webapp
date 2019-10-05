@@ -22,6 +22,7 @@ tests/output/
 tests/*/output/
 tests/*/*/output/
 tests/*/*/*/output/
+tests/*/*/*/*/output/
 tests/temp/
 coverage.html
 coverage.xml

@@ -17,6 +17,7 @@ use App\IqrfNetModule\Requests\ApiRequest;
 use Mockery;
 use Mockery\MockInterface;
 use Tester\Assert;
+use Tests\Stubs\CoreModule\Models\Command;
 use Tests\Toolkit\TestCases\WebSocketTestCase;
 
 require __DIR__ . '/../../../bootstrap.php';
@@ -50,6 +51,11 @@ class VersionManagerTest extends WebSocketTestCase {
 	private const DAEMON_VERSION = 'v2.1.0';
 
 	/**
+	 * IQRF Gateway Daemon's version command
+	 */
+	private const DAEMON_VERSION_CMD = 'iqrfgd2 version';
+
+	/**
 	 * IQRF Gateway Daemon's version with build time
 	 */
 	private const DAEMON_VERSION_FULL = 'v2.1.0 2019-06-12T20:44:25';
@@ -67,8 +73,12 @@ class VersionManagerTest extends WebSocketTestCase {
 	 * Tests the function to get IQRF Gateway Daemon's version
 	 */
 	public function testGetDaemonCli(): void {
-		$this->commandManager->shouldReceive('commandExist')->with('iqrfgd2')->andReturn(true);
-		$this->commandManager->shouldReceive('run')->with('iqrfgd2 version')->andReturn(self::DAEMON_VERSION_FULL);
+		$this->commandManager->shouldReceive('commandExist')
+			->with('iqrfgd2')
+			->andReturn(true);
+		$this->commandManager->shouldReceive('run')
+			->with(self::DAEMON_VERSION_CMD)
+			->andReturn(new Command(self::DAEMON_VERSION_CMD, self::DAEMON_VERSION_FULL, '', 0));
 		Assert::same(self::DAEMON_VERSION, $this->manager->getDaemon());
 	}
 
@@ -76,8 +86,12 @@ class VersionManagerTest extends WebSocketTestCase {
 	 * Tests the function to get IQRF Gateway Daemon's version
 	 */
 	public function testGetDaemonCliVerbose(): void {
-		$this->commandManager->shouldReceive('commandExist')->with('iqrfgd2')->andReturn(true);
-		$this->commandManager->shouldReceive('run')->with('iqrfgd2 version')->andReturn(self::DAEMON_VERSION_FULL);
+		$this->commandManager->shouldReceive('commandExist')
+			->with('iqrfgd2')
+			->andReturn(true);
+		$this->commandManager->shouldReceive('run')
+			->with(self::DAEMON_VERSION_CMD)
+			->andReturn(new Command(self::DAEMON_VERSION_CMD, self::DAEMON_VERSION_FULL, '', 0));
 		Assert::same(self::DAEMON_VERSION_FULL, $this->manager->getDaemon(true));
 	}
 
@@ -98,10 +112,17 @@ class VersionManagerTest extends WebSocketTestCase {
 				],
 			],
 		];
-		$this->commandManager->shouldReceive('commandExist')->with('iqrfgd2')->andReturn(true);
-		$this->commandManager->shouldReceive('run')->with('iqrfgd2 version')->andReturn('none');
-		$this->request->shouldReceive('setRequest')->with(self::DAEMON_API_REQUEST);
-		$this->wsClient->shouldReceive('sendSync')->with(Mockery::type(ApiRequest::class))->andReturn($response);
+		$this->commandManager->shouldReceive('commandExist')
+			->with('iqrfgd2')
+			->andReturn(true);
+		$this->commandManager->shouldReceive('run')
+			->with(self::DAEMON_VERSION_CMD)
+			->andReturn(new Command(self::DAEMON_VERSION_CMD, 'none', '', 0));
+		$this->request->shouldReceive('setRequest')
+			->with(self::DAEMON_API_REQUEST);
+		$this->wsClient->shouldReceive('sendSync')
+			->with(Mockery::type(ApiRequest::class))
+			->andReturn($response);
 		Assert::same(self::DAEMON_VERSION, $this->manager->getDaemon());
 	}
 
@@ -110,9 +131,14 @@ class VersionManagerTest extends WebSocketTestCase {
 	 * Tests the function to get IQRF Gateway Daemon's version (IQRF Gateway Daemon is not installed)
 	 */
 	public function testGetDaemonNotInstalled(): void {
-		$this->commandManager->shouldReceive('commandExist')->with('iqrfgd2')->andReturn(false);
-		$this->request->shouldReceive('setRequest')->with(self::DAEMON_API_REQUEST);
-		$this->wsClient->shouldReceive('sendSync')->withAnyArgs()->andThrow(EmptyResponseException::class);
+		$this->commandManager->shouldReceive('commandExist')
+			->with('iqrfgd2')
+			->andReturn(false);
+		$this->request->shouldReceive('setRequest')
+			->with(self::DAEMON_API_REQUEST);
+		$this->wsClient->shouldReceive('sendSync')
+			->withAnyArgs()
+			->andThrow(EmptyResponseException::class);
 		Assert::same('none', $this->manager->getDaemon());
 	}
 
@@ -120,10 +146,17 @@ class VersionManagerTest extends WebSocketTestCase {
 	 * Tests the function to get IQRF Gateway Daemon's version (unknown version)
 	 */
 	public function testGetDaemonUnknown(): void {
-		$this->commandManager->shouldReceive('commandExist')->with('iqrfgd2')->andReturn(true);
-		$this->commandManager->shouldReceive('run')->with('iqrfgd2 version')->andReturn('');
-		$this->request->shouldReceive('setRequest')->with(self::DAEMON_API_REQUEST);
-		$this->wsClient->shouldReceive('sendSync')->withAnyArgs()->andThrow(EmptyResponseException::class);
+		$this->commandManager->shouldReceive('commandExist')
+			->with('iqrfgd2')
+			->andReturn(true);
+		$this->commandManager->shouldReceive('run')
+			->with(self::DAEMON_VERSION_CMD)
+			->andReturn(new Command(self::DAEMON_VERSION_CMD, '', '', 1));
+		$this->request->shouldReceive('setRequest')
+			->with(self::DAEMON_API_REQUEST);
+		$this->wsClient->shouldReceive('sendSync')
+			->withAnyArgs()
+			->andThrow(EmptyResponseException::class);
 		Assert::same('unknown', $this->manager->getDaemon());
 	}
 
@@ -138,8 +171,14 @@ class VersionManagerTest extends WebSocketTestCase {
 	 * Tests the function to get IQRF Gateway Webapp's version (verbose)
 	 */
 	public function testGetWebappVerbose(): void {
-		$this->commandManager->shouldReceive('run')->with('git rev-parse --is-inside-work-tree')->andReturn('true');
-		$this->commandManager->shouldReceive('run')->with('git rev-parse --verify HEAD')->andReturn('commit');
+		$command = 'git rev-parse --is-inside-work-tree';
+		$this->commandManager->shouldReceive('run')
+			->with($command)
+			->andReturn(new Command($command, 'true', '', 0));
+		$command = 'git rev-parse --verify HEAD';
+		$this->commandManager->shouldReceive('run')
+			->with($command)
+			->andReturn(new Command($command, 'commit', '', 0));
 		Assert::same('v2.0.0-beta (commit)', $this->manager->getWebapp(true));
 	}
 

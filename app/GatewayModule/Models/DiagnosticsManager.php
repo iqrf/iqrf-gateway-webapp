@@ -166,7 +166,7 @@ class DiagnosticsManager {
 	 * Adds information from dmesg command
 	 */
 	public function addDmesg(): void {
-		$output = $this->commandManager->run('dmesg', true);
+		$output = $this->commandManager->run('dmesg', true)->getStdout();
 		$this->zipManager->addFileFromText('dmesg.log', $output);
 	}
 
@@ -185,8 +185,8 @@ class DiagnosticsManager {
 			$array['coordinator'] = 'ERROR';
 		}
 		$array['hostname'] = $this->networkManager->getHostname();
-		$array['uname'] = $this->commandManager->run('uname -a', true);
-		$array['uptime'] = $this->commandManager->run('uptime -p', true);
+		$array['uname'] = $this->commandManager->run('uname -a', true)->getStdout();
+		$array['uptime'] = $this->commandManager->run('uptime -p', true)->getStdout();
 		$array['diskUsages'] = $this->infoManager->getDiskUsages();
 		$array['memoryUsage'] = $this->infoManager->getMemoryUsage();
 		$array['swapUsage'] = $this->infoManager->getSwapUsage();
@@ -198,7 +198,7 @@ class DiagnosticsManager {
 	 */
 	public function addServices(): void {
 		if ($this->commandManager->commandExist('systemctl')) {
-			$output = $this->commandManager->run('systemctl list-units --type=service', true);
+			$output = $this->commandManager->run('systemctl list-units --type=service', true)->getStdout();
 			$this->zipManager->addFileFromText('services.log', $output);
 		}
 	}
@@ -207,7 +207,7 @@ class DiagnosticsManager {
 	 * Adds information about available SPI interfaces
 	 */
 	public function addSpi(): void {
-		$output = $this->commandManager->run('ls /dev/spidev*', true);
+		$output = $this->commandManager->run('ls /dev/spidev*', true)->getStdout();
 		if ($output !== '') {
 			$this->zipManager->addFileFromText('spidev.log', $output);
 		}
@@ -218,7 +218,7 @@ class DiagnosticsManager {
 	 */
 	public function addUsb(): void {
 		if ($this->commandManager->commandExist('lsusb')) {
-			$output = $this->commandManager->run('lsusb -v -d 1de6:', true);
+			$output = $this->commandManager->run('lsusb -v -d 1de6:', true)->getStdout();
 			if ($output !== '') {
 				$this->zipManager->addFileFromText('lsusb.log', $output);
 			}

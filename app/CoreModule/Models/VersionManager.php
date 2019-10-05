@@ -94,9 +94,9 @@ class VersionManager {
 		if (isset($file['commit']) && $file['commit'] !== '') {
 			return $version . ' (' . $file['commit'] . ')';
 		}
-		$isRepo = $this->commandManager->run('git rev-parse --is-inside-work-tree');
+		$isRepo = $this->commandManager->run('git rev-parse --is-inside-work-tree')->getStdout();
 		if ($isRepo === 'true') {
-			$commit = $this->commandManager->run('git rev-parse --verify HEAD');
+			$commit = $this->commandManager->run('git rev-parse --verify HEAD')->getStdout();
 			return $version . ' (' . $commit . ')';
 		}
 		return $version;

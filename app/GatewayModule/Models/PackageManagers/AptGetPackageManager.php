@@ -68,7 +68,7 @@ class AptGetPackageManager implements IPackageManager {
 	 * @return mixed[] Upgradable packages
 	 */
 	public function getUpgradable(): array {
-		$stdout = $this->commandManager->run('apt-get -s upgrade -V', true);
+		$stdout = $this->commandManager->run('apt-get -s upgrade -V', true)->getStdout();
 		$lines = explode(PHP_EOL, $stdout);
 		$packages = [];
 		$id = 0;

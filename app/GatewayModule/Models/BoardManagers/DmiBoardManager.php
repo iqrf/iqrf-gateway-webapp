@@ -45,9 +45,9 @@ class DmiBoardManager implements IBoardManager {
 	 * @return string|null Board's name
 	 */
 	public function getName(): ?string {
-		$vendor = $this->commandManager->run('cat /sys/class/dmi/id/board_vendor', true);
-		$name = $this->commandManager->run('cat /sys/class/dmi/id/board_name', true);
-		$version = $this->commandManager->run('cat /sys/class/dmi/id/board_version', true);
+		$vendor = $this->commandManager->run('cat /sys/class/dmi/id/board_vendor', true)->getStdout();
+		$name = $this->commandManager->run('cat /sys/class/dmi/id/board_name', true)->getStdout();
+		$version = $this->commandManager->run('cat /sys/class/dmi/id/board_version', true)->getStdout();
 		if ($name !== '' && $vendor !== '' && $version !== '') {
 			return $vendor . ' ' . $name . ' (' . $version . ')';
 		}

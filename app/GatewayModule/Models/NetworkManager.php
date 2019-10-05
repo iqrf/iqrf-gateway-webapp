@@ -46,7 +46,7 @@ class NetworkManager {
 	 */
 	public function getHostname(): string {
 		$cmd = 'hostname -f';
-		return $this->commandManager->run($cmd);
+		return $this->commandManager->run($cmd)->getStdout();
 	}
 
 	/**
@@ -60,7 +60,7 @@ class NetworkManager {
 				continue;
 			}
 			$cmd = 'ip a s ' . $interface . ' | grep inet | grep global | grep -v temporary | grep -v mngtmpaddr | awk \'{print $2}\'';
-			$output = $this->commandManager->run($cmd, true);
+			$output = $this->commandManager->run($cmd, true)->getStdout();
 			if ($output !== '') {
 				$addresses[$interface] = explode(PHP_EOL, $output);
 			}
@@ -73,7 +73,7 @@ class NetworkManager {
 	 * @return string[] Network interfaces
 	 */
 	private function getInterfaces(): array {
-		$interfaces = $this->commandManager->run('ls /sys/class/net | awk \'{ print $0 }\'', true);
+		$interfaces = $this->commandManager->run('ls /sys/class/net | awk \'{ print $0 }\'', true)->getStdout();
 		return explode(PHP_EOL, $interfaces);
 	}
 
@@ -88,7 +88,7 @@ class NetworkManager {
 				continue;
 			}
 			$cmd = 'cat /sys/class/net/' . $interface . '/address';
-			$addresses[$interface] = $this->commandManager->run($cmd, true);
+			$addresses[$interface] = $this->commandManager->run($cmd, true)->getStdout();
 		}
 		return $addresses;
 	}

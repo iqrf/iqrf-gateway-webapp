@@ -45,7 +45,7 @@ class DeviceTreeBoardManager implements IBoardManager {
 	 * @return string|null Board's name
 	 */
 	public function getName(): ?string {
-		$deviceTree = $this->commandManager->run('cat /proc/device-tree/model', true);
+		$deviceTree = $this->commandManager->run('cat /proc/device-tree/model', true)->getStdout();
 		if ($deviceTree !== '') {
 			return $deviceTree;
 		}

@@ -62,7 +62,7 @@ class InterfaceManager {
 	 * @return InterfaceStatus[] Network interfaces
 	 */
 	public function list(): array {
-		$output = $this->commandManager->run('nmcli -t device status', true);
+		$output = $this->commandManager->run('nmcli -t device status', true)->getStdout();
 		$array = explode(PHP_EOL, trim($output));
 		foreach ($array as &$row) {
 			$row = InterfaceStatus::fromString($row);

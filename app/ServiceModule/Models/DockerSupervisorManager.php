@@ -82,7 +82,7 @@ class DockerSupervisorManager implements IServiceManager {
 	 */
 	public function getStatus(): string {
 		$cmd = 'supervisorctl status ' . $this->serviceName;
-		return $this->commandManager->run($cmd, true);
+		return $this->commandManager->run($cmd, true)->getStdout();
 	}
 
 }

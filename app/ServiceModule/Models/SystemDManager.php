@@ -77,7 +77,7 @@ class SystemDManager implements IServiceManager {
 	 */
 	public function isEnabled(): ServiceStates {
 		$cmd = 'systemctl is-enabled ' . $this->serviceName . '.service';
-		$state = $this->commandManager->run($cmd, true);
+		$state = $this->commandManager->run($cmd, true)->getStdout();
 		return ServiceStates::fromScalar($state);
 	}
 
@@ -111,7 +111,7 @@ class SystemDManager implements IServiceManager {
 	 */
 	public function getStatus(): string {
 		$cmd = 'systemctl status ' . $this->serviceName . '.service';
-		return $this->commandManager->run($cmd, true);
+		return $this->commandManager->run($cmd, true)->getStdout();
 	}
 
 }

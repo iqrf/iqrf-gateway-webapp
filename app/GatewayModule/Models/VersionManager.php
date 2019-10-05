@@ -92,7 +92,7 @@ class VersionManager {
 		if (!$this->commandManager->commandExist('iqrfgd2')) {
 			return 'none';
 		}
-		$result = $this->commandManager->run('iqrfgd2 version');
+		$result = $this->commandManager->run('iqrfgd2 version')->getStdout();
 		if ($result !== '') {
 			return $result;
 		}
@@ -134,9 +134,9 @@ class VersionManager {
 		$version = $array['version'] ?? 'unknown';
 		$commit = $array['commit'] ?? '';
 		if ($verbose && $commit === '') {
-			$isRepo = $this->commandManager->run('git rev-parse --is-inside-work-tree');
+			$isRepo = $this->commandManager->run('git rev-parse --is-inside-work-tree')->getStdout();
 			if ($isRepo === 'true') {
-				$commit = $this->commandManager->run('git rev-parse --verify HEAD');
+				$commit = $this->commandManager->run('git rev-parse --verify HEAD')->getStdout();
 			}
 		}
 		$pipeline = $array['pipeline'] ?? '';

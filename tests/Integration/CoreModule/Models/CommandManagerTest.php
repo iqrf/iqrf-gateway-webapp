@@ -33,7 +33,12 @@ class CommandManagerTest extends TestCase {
 	 * Tests the function to execute a shell command
 	 */
 	public function testRun(): void {
-		Assert::same('OK', $this->manager->run('echo "OK"'));
+		$command = 'echo "OK"';
+		$actual = $this->manager->run($command);
+		Assert::same($command, $actual->getCommand());
+		Assert::same('OK', $actual->getStdout());
+		Assert::same('', $actual->getStderr());
+		Assert::same(0, $actual->getExitCode());
 	}
 
 	/**

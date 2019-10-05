@@ -20,76 +20,33 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Entities;
 
-use Nette\Utils\Strings;
-use Symfony\Component\Process\Process;
-
 /**
- * Command entity
+ * Interface for command entities
  */
-class Command implements ICommand {
-
-	/**
-	 * @var string Command
-	 */
-	private $command;
-
-	/**
-	 * @var string Standard output
-	 */
-	private $stdout;
-
-	/**
-	 * @var string Standard error output
-	 */
-	private $stderr;
-
-	/**
-	 * @var int|null Exit code
-	 */
-	private $exitCode;
-
-	/**
-	 * Constructor
-	 * @param string $command Command
-	 * @param Process $process Process
-	 */
-	public function __construct(string $command, Process $process) {
-		$this->command = $command;
-		$this->stdout = Strings::trim($process->getOutput());
-		$this->stderr = Strings::trim($process->getErrorOutput());
-		$this->exitCode = $process->getExitCode();
-	}
+interface ICommand {
 
 	/**
 	 * Returns the command
 	 * @return string Command
 	 */
-	public function getCommand(): string {
-		return $this->command;
-	}
+	public function getCommand(): string;
 
 	/**
 	 * Returns the standard output
 	 * @return string Standard output
 	 */
-	public function getStdout(): string {
-		return $this->stdout;
-	}
+	public function getStdout(): string;
 
 	/**
 	 * Returns the standard error output
 	 * @return string Standard error output
 	 */
-	public function getStderr(): string {
-		return $this->stderr;
-	}
+	public function getStderr(): string;
 
 	/**
 	 * Returns the exit code
 	 * @return int|null Exit code
 	 */
-	public function getExitCode(): ?int {
-		return $this->exitCode;
-	}
+	public function getExitCode(): ?int;
 
 }

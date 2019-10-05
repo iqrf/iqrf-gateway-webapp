@@ -87,11 +87,12 @@ class InfoManager {
 	 * @return string|null Gateway ID
 	 */
 	public function getId(): ?string {
-		$gwJson = $this->commandManager->run('cat /etc/iqrf-gateway.json', true);
-		if ($gwJson !== '') {
+		$command = 'cat /etc/iqrf-gateway.json';
+		$output = $this->commandManager->run($command, true)->getStdout();
+		if ($output !== '') {
 			try {
-				$gw = Json::decode($gwJson, Json::FORCE_ARRAY);
-				return $gw['gwId'];
+				$json = Json::decode($output, Json::FORCE_ARRAY);
+				return $json['gwId'];
 			} catch (JsonException $e) {
 				// Skip IQRF GW info file parsing
 			}
@@ -145,7 +146,8 @@ class InfoManager {
 	 * @return string[][] Disk usages
 	 */
 	public function getDiskUsages(): array {
-		$output = $this->commandManager->run('df -B1 -x tmpfs -x devtmpfs -T -P | awk \'{if (NR!=1) {$6="";print}}\'');
+		$command = 'df -B1 -x tmpfs -x devtmpfs -T -P | awk \'{if (NR!=1) {$6="";print}}\'';
+		$output = $this->commandManager->run($command)->getStdout();
 		$usages = [];
 		foreach (explode(PHP_EOL, $output) as $disk) {
 			$segments = explode(' ', $disk);
@@ -186,7 +188,8 @@ class InfoManager {
 	 * @return string[] Memory usage
 	 */
 	public function getMemoryUsage(): array {
-		$output = $this->commandManager->run('free -bw | awk \'{{if (NR==2) print $2,$3,$4,$5,$6,$7,$8}}\'');
+		$command = 'free -bw | awk \'{{if (NR==2) print $2,$3,$4,$5,$6,$7,$8}}\'';
+		$output = $this->commandManager->run($command)->getStdout();
 		$segments = explode(' ', $output);
 		$usages = [
 			'size' => $this->convertSizes($segments[0]),
@@ -206,7 +209,8 @@ class InfoManager {
 	 * @return string[]|null Swap usage
 	 */
 	public function getSwapUsage(): ?array {
-		$output = $this->commandManager->run('free -b | awk \'{{if (NR==3) print $2,$3,$4}}\'');
+		$command = 'free -b | awk \'{{if (NR==3) print $2,$3,$4}}\'';
+		$output = $this->commandManager->run($command)->getStdout();
 		$segments = explode(' ', $output);
 		if ($segments[0] === '0') {
 			return null;
@@ -225,9 +229,10 @@ class InfoManager {
 	 * @return string|null PIXLA token
 	 */
 	public function getPixlaToken(): ?string {
-		$gwmonId = $this->commandManager->run('cat /etc/gwman/customer_id', true);
-		if ($gwmonId !== '') {
-			return $gwmonId;
+		$command = 'cat /etc/gwman/customer_id';
+		$output = $this->commandManager->run($command, true)->getStdout();
+		if ($output !== '') {
+			return $output;
 		}
 		return null;
 	}

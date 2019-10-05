@@ -22,6 +22,7 @@ namespace App\CoreModule\Models;
 
 use App\CoreModule\Entities\Command;
 use App\CoreModule\Entities\CommandStack;
+use App\CoreModule\Entities\ICommand;
 use Nette\SmartObject;
 use Symfony\Component\Process\Process;
 
@@ -58,7 +59,7 @@ class CommandManager {
 	 * @return bool Is the command exists?
 	 */
 	public function commandExist(string $cmd): bool {
-		return $this->run('which ' . $cmd) !== '';
+		return $this->run('which ' . $cmd)->getExitCode() === 0;
 	}
 
 	/**
@@ -76,14 +77,14 @@ class CommandManager {
 	 * Executes shell command and returns output
 	 * @param string $command Command to execute
 	 * @param bool $needSudo Does the command need sudo?
-	 * @return string Output
+	 * @return ICommand Command entity
 	 */
-	public function run(string $command, bool $needSudo = false): string {
+	public function run(string $command, bool $needSudo = false): ICommand {
 		$process = $this->createProcess($command, $needSudo);
 		$process->run();
 		$entity = new Command($command, $process);
 		$this->stack->addCommand($entity);
-		return $entity->getStdout();
+		return $entity;
 	}
 
 	/**
