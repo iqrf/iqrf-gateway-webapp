@@ -23,6 +23,7 @@ namespace App\NetworkModule\Models;
 use App\CoreModule\Models\CommandManager;
 use App\NetworkModule\Entities\Connection;
 use App\NetworkModule\Entities\ConnectionDetail;
+use App\NetworkModule\Exceptions\NetworkManagerException;
 use Ramsey\Uuid\UuidInterface;
 use stdClass;
 
@@ -71,13 +72,31 @@ class ConnectionManager {
 	 * Sets the network connection's configuration
 	 * @param ConnectionDetail $connection Detailed network connection entity
 	 * @param stdClass $values Network connection configuration form values
+	 * @throws NetworkManagerException
 	 */
 	public function set(ConnectionDetail $connection, stdClass $values): void {
 		$connection->fromForm($values);
 		$uuid = $connection->getUuid()->toString();
 		$configuration = $connection->toNmCli();
 		$command = sprintf('nmcli -t connection modify %s %s', $uuid, $configuration);
-		$this->commandManager->run($command, true);
+		$output = $this->commandManager->run($command, true);
+		if ($output->getExitCode() !== 0) {
+			throw new NetworkManagerException($output->getStderr());
+		}
+	}
+
+	/**
+	 * Activate a connection on the interface
+	 * @param ConnectionDetail $connection Detailed network connection entity
+	 * @throws NetworkManagerException
+	 */
+	public function up(ConnectionDetail $connection): void {
+		$uuid = $connection->getUuid()->toString();
+		$command = sprintf('nmcli -t connection up %s', $uuid);
+		$output = $this->commandManager->run($command, true);
+		if ($output->getExitCode() !== 0) {
+			throw new NetworkManagerException($output->getStderr());
+		}
 	}
 
 }

@@ -24,8 +24,10 @@ use App\CoreModule\Forms\FormFactory;
 use App\NetworkModule\Entities\ConnectionDetail;
 use App\NetworkModule\Enums\IPv4Methods;
 use App\NetworkModule\Enums\IPv6Methods;
+use App\NetworkModule\Exceptions\NetworkManagerException;
 use App\NetworkModule\Models\ConnectionManager;
 use App\NetworkModule\Presenters\EthernetPresenter;
+use Contributte\FormMultiplier\Multiplier;
 use Nette\Application\UI\Form;
 use Nette\Forms\Container;
 use Nette\SmartObject;
@@ -83,6 +85,7 @@ class EthernetFormFactory {
 		$form->setDefaults($this->connection->toForm());
 		$form->addGroup();
 		$form->addSubmit('save', 'save');
+		$form->onValidate[] = [$this, 'validate'];
 		$form->onSuccess[] = [$this, 'save'];
 		return $form;
 	}
@@ -99,13 +102,21 @@ class EthernetFormFactory {
 			->setRequired('ipv4.messages.method')
 			->setItems($this->getIpv4Methods())
 			->setDisabled(['shared']);
-		$addresses = $ipv4->addMultiplier('addresses', [$this, 'createIPv4AddressMultiplier'], 1);
+		/**
+		 * @var Multiplier $addresses IPv4 addresses multiplier
+		 */
+		$addresses = $ipv4->addMultiplier('addresses', [$this, 'createIPv4AddressMultiplier'], 0);
 		$addresses->addCreateButton('ipv4.addresses.add')
 			->addClass('btn btn-success');
 		$addresses->addRemoveButton('ipv4.addresses.remove')
 			->addClass('btn btn-danger');
-		$ipv4->addText('gateway', 'ipv4.gateway');
-		$dns = $ipv4->addMultiplier('dns', [$this, 'createIPv4DnsMultiplier'], 1);
+		$ipv4->addText('gateway', 'ipv4.gateway')
+			->addConditionOn($ipv4['method'], Form::EQUAL, 'manual')
+			->setRequired('ipv4.messages.gateway');
+		/**
+		 * @var Multiplier $dns IPv4 DNS servers multiplier
+		 */
+		$dns = $ipv4->addMultiplier('dns', [$this, 'createIPv4DnsMultiplier'], 0);
 		$dns->addCreateButton('ipv4.dns.add')
 			->addClass('btn btn-success');
 		$dns->addRemoveButton('ipv4.dns.remove')
@@ -115,14 +126,11 @@ class EthernetFormFactory {
 	/**
 	 * Creates IPv4 address configuration form multiplier
 	 * @param Container $container Container for IPv4 address form controls
-	 * @param Form $form Network connection configuration form
 	 */
-	public function createIpv4AddressMultiplier(Container $container, Form $form): void {
+	public function createIpv4AddressMultiplier(Container $container): void {
 		$container->addText('address', 'ipv4.address')
-			->addConditionOn($form['ipv4-method'], Form::EQUAL, 'manual')
 			->setRequired('ipv4.messages.address');
 		$container->addText('mask', 'ipv4.mask')
-			->addConditionOn($form['ipv4-method'], Form::EQUAL, 'manual')
 			->setRequired('ipv4.messages.mask');
 	}
 
@@ -146,12 +154,18 @@ class EthernetFormFactory {
 			->setRequired('ipv6.messages.method')
 			->setItems($this->getIpv6Methods())
 			->setDisabled(['disabled', 'ignore', 'shared']);
-		$addresses = $ipv6->addMultiplier('addresses', [$this, 'createIPv6AddressMultiplier'], 1);
+		/**
+		 * @var Multiplier $addresses
+		 */
+		$addresses = $ipv6->addMultiplier('addresses', [$this, 'createIPv6AddressMultiplier'], 0);
 		$addresses->addCreateButton('ipv6.addresses.add')
 			->addClass('btn btn-success');
 		$addresses->addRemoveButton('ipv6.addresses.remove')
 			->addClass('btn btn-danger');
-		$dns = $ipv6->addMultiplier('dns', [$this, 'createIPv6DnsMultiplier'], 1);
+		/**
+		 * @var Multiplier $dns
+		 */
+		$dns = $ipv6->addMultiplier('dns', [$this, 'createIPv6DnsMultiplier'], 0);
 		$dns->addCreateButton('ipv6.dns.add')
 			->addClass('btn btn-success');
 		$dns->addRemoveButton('ipv6.dns.remove')
@@ -161,14 +175,11 @@ class EthernetFormFactory {
 	/**
 	 * Creates IPv6 address configuration form multiplier
 	 * @param Container $container Container for IPv6 address form controls
-	 * @param Form $form Network connection configuration form
 	 */
-	public function createIpv6AddressMultiplier(Container $container, Form $form): void {
+	public function createIpv6AddressMultiplier(Container $container): void {
 		$container->addText('address', 'ipv6.address')
-			->addConditionOn($form['ipv6-method'], Form::EQUAL, 'manual')
 			->setRequired('ipv6.messages.address');
 		$container->addInteger('prefix', 'ipv6.prefix')
-			->addConditionOn($form['ipv6-method'], Form::EQUAL, 'manual')
 			->setRequired('ipv6.messages.prefix');
 		$container->addText('gateway', 'ipv6.gateway');
 	}
@@ -206,13 +217,42 @@ class EthernetFormFactory {
 	}
 
 	/**
+	 * Validates Ethernet network connection configuration
+	 * @param Form $form Ethernet network connection form
+	 */
+	public function validate(Form $form): void  {
+		$values = $form->getValues();
+		if (($values['ipv4']['method'] === 'manual')) {
+			if ($values['ipv4']['addresses']->count() === 0) {
+				$form->addError('ipv4.messages.addresses', false);
+			}
+			if ($values['ipv4']['dns']->count() === 0) {
+				$form->addError('ipv4.messages.dns', false);
+			}
+		}
+		if (($values['ipv6']['method'] === 'manual')) {
+			if ($values['ipv6']['addresses']->count() === 0) {
+				$form->addError('ipv6.messages.addresses', false);
+			}
+			if ($values['ipv6']['dns']->count() === 0) {
+				$form->addError('ipv6.messages.dns', false);
+			}
+		}
+	}
+
+	/**
 	 * Saves the Ethernet network connection form
 	 * @param Form $form Ethernet network connection form
 	 */
 	public function save(Form $form): void {
-		$this->manager->set($this->connection, $form->getValues());
-		$this->presenter->flashSuccess('network.ethernet.form.messages.success');
-		$this->presenter->redirect('Ethernet:default');
+		try {
+			$this->manager->set($this->connection, $form->getValues());
+			$this->manager->up($this->connection);
+			$this->presenter->flashSuccess('network.ethernet.form.messages.success');
+			$this->presenter->redirect('Ethernet:default');
+		} catch (NetworkManagerException $e) {
+			$this->presenter->flashError('network.ethernet.form.messages.error');
+		}
 	}
 
 }

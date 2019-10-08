@@ -124,6 +124,18 @@ class ConnectionManagerTest extends CommandTestCase {
 		});
 	}
 
+	/**
+	 * Tests the function to activate a connection on the interface
+	 */
+	public function testUp(): void {
+		$connection = $this->createDetailedConnection();
+		$command = 'nmcli -t connection up 25ab1b06-2a86-40a9-950f-1c576ddcd35a';
+		$this->receiveCommand($command, true);
+		Assert::noError(function () use ($connection): void {
+			$this->manager->up($connection);
+		});
+	}
+
 }
 
 $test = new ConnectionManagerTest();
