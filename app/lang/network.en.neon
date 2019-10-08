@@ -78,4 +78,5 @@ ethernet:
 		invalidUuid: Invalid network connection UUID.
 
 messages:
+	missingNetworkManager: Network manager is not installed.
 	disabled: Network manager is disabled

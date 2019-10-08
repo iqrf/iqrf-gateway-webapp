@@ -61,6 +61,9 @@ class ConnectionManager {
 	 */
 	public function list(): array {
 		$output = $this->commandManager->run('nmcli -t connection show', true)->getStdout();
+		if ($output === '') {
+			return [];
+		}
 		$array = explode(PHP_EOL, trim($output));
 		foreach ($array as &$row) {
 			$row = Connection::fromString($row);

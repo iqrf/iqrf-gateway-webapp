@@ -111,6 +111,15 @@ class ConnectionManagerTest extends CommandTestCase {
 	}
 
 	/**
+	 * Tests the function to list network connections (empty list)
+	 */
+	public function testListEmpty(): void {
+		$this->receiveCommand('nmcli -t connection show', true, '');
+		$expected = [];
+		Assert::equal($expected, $this->manager->list());
+	}
+
+	/**
 	 * Tests the function to set the network connection
 	 */
 	public function testSet(): void {
