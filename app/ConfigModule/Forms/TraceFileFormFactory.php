@@ -22,9 +22,9 @@ namespace App\ConfigModule\Forms;
 
 use App\ConfigModule\Presenters\TracerPresenter;
 use Nette\Application\UI\Form;
+use Nette\Forms\Container;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;
-use Nette\Utils\Strings;
 
 /**
  * Tracer configuration form factory
@@ -37,10 +37,10 @@ class TraceFileFormFactory extends GenericConfigFormFactory {
 	 * @var string[] Verbosity levels
 	 */
 	private $verbosityLevels = [
-		'ERR' => 'VerbosityLevels.Error',
-		'WAR' => 'VerbosityLevels.Warning',
-		'INF' => 'VerbosityLevels.Info',
-		'DBG' => 'VerbosityLevels.Debug',
+		'ERR' => 'levels.Error',
+		'WAR' => 'levels.Warning',
+		'INF' => 'levels.Info',
+		'DBG' => 'levels.Debug',
 	];
 
 	/**
@@ -52,26 +52,36 @@ class TraceFileFormFactory extends GenericConfigFormFactory {
 		$this->manager->setComponent('shape::TraceFileService');
 		$this->redirect = 'Tracer:default';
 		$this->presenter = $presenter;
-		$defaults = $this->load();
 		$form = $this->factory->create('config.tracer.form');
+		$form->addGroup();
 		$form->addText('instance', 'instance');
 		$form->addText('path', 'path');
 		$form->addText('filename', 'filename');
 		$form->addInteger('maxSizeMB', 'maxSizeMB');
 		$form->addCheckbox('timestampFiles', 'timestampFiles');
-		$verbosityLevels = $form->addContainer('VerbosityLevels');
-		foreach ($defaults['VerbosityLevels'] as $id => $verbosityLevel) {
-			$container = $verbosityLevels->addContainer($id);
-			$container->addInteger('channel', 'channel');
-			$container->addSelect('level', 'level', $this->verbosityLevels)
-				->setDefaultValue(Strings::upper($verbosityLevel['level']));
-			unset($defaults['VerbosityLevels'][$id]['level']);
-		}
+		$form->addGroup('verbosityLevels.title');
+		$verbosityLevels = $form->addMultiplier('VerbosityLevels', [$this, 'createVerbosityLevelsMultiplier'], 1);
+		$verbosityLevels->addCreateButton('verbosityLevels.add')
+			->addClass('btn btn-success');
+		$verbosityLevels->addRemoveButton('verbosityLevels.remove')
+			->addClass('btn btn-danger');
+		$form->addGroup();
 		$form->addSubmit('save', 'Save');
-		$form->setDefaults($defaults);
+		$form->setDefaults($this->load());
 		$form->addProtection('core.errors.form-timeout');
 		$form->onSuccess[] = [$this, 'save'];
 		return $form;
+	}
+
+	/**
+	 * Creates trace file verbosity levels
+	 * @param Container $container Container for verbosity levels
+	 */
+	public function createVerbosityLevelsMultiplier(Container $container): void {
+		$container->addInteger('channel', 'channel')
+			->setRequired('messages.verbosityLevels.channel');
+		$container->addSelect('level', 'level', $this->verbosityLevels)
+			->setRequired('messages.verbosityLevels.level');
 	}
 
 	/**
