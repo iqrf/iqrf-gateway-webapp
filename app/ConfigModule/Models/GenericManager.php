@@ -21,7 +21,6 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Models;
 
 use App\CoreModule\Models\JsonFileManager;
-use App\CoreModule\Models\JsonSchemaManager;
 use Nette\IOException;
 use Nette\SmartObject;
 use Nette\Utils\Arrays;
@@ -53,16 +52,16 @@ class GenericManager {
 	private $fileName;
 
 	/**
-	 * @var JsonSchemaManager JSON schema manager
+	 * @var ComponentSchemaManager JSON schema manager
 	 */
 	private $schemaManager;
 
 	/**
 	 * Constructor
 	 * @param JsonFileManager $fileManager JSON file manager
-	 * @param JsonSchemaManager $schemaManager JSON schema manager
+	 * @param ComponentSchemaManager $schemaManager JSON schema manager
 	 */
-	public function __construct(JsonFileManager $fileManager, JsonSchemaManager $schemaManager) {
+	public function __construct(JsonFileManager $fileManager, ComponentSchemaManager $schemaManager) {
 		$this->fileManager = $fileManager;
 		$this->schemaManager = $schemaManager;
 	}
@@ -278,7 +277,7 @@ class GenericManager {
 	 */
 	public function setComponent(string $component): void {
 		$this->component = $component;
-		$this->schemaManager->setSchemaFromComponent($component);
+		$this->schemaManager->setSchema($component);
 	}
 
 }

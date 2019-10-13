@@ -6,9 +6,7 @@ services:
 	- App\IqrfNetModule\Forms\OsDpaUploadFormFactory
 	- App\IqrfNetModule\Forms\RfConfigFormFactory
 	- App\IqrfNetModule\Forms\SecurityFormFactory
-	sendJsonFormFactory:
-		factory: App\IqrfNetModule\Forms\SendJsonFormFactory
-		arguments: [@jsonSchemaManagerApi]
+	- App\IqrfNetModule\Forms\SendJsonFormFactory
 	- App\IqrfNetModule\Forms\SendRawFormFactory
 	- App\IqrfNetModule\Forms\StandardBinaryOutputFormFactory
 	- App\IqrfNetModule\Forms\StandardDaliFormFactory

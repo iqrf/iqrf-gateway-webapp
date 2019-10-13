@@ -10,12 +10,12 @@ declare(strict_types = 1);
 
 namespace Tests\ConfigModule\Models;
 
+use App\ConfigModule\Models\ComponentSchemaManager;
 use App\ConfigModule\Models\GenericManager;
 use App\ConfigModule\Models\MainManager;
 use App\ConfigModule\Models\SchedulerManager;
 use App\ConfigModule\Models\TaskTimeManager;
 use App\CoreModule\Models\JsonFileManager;
-use App\CoreModule\Models\JsonSchemaManager;
 use App\ServiceModule\Models\ServiceManager;
 use Mockery;
 use Mockery\MockInterface;
@@ -185,7 +185,7 @@ class SchedulerManagerTest extends TestCase {
 		$schemaPath = __DIR__ . '/../../data/cfgSchemas/';
 		$this->fileManagerTemp = new JsonFileManager($configTempPath . 'scheduler/');
 		$fileManager = new JsonFileManager($configPath);
-		$schemaManager = new JsonSchemaManager($schemaPath);
+		$schemaManager = new ComponentSchemaManager($schemaPath);
 		$genericConfigManager = new GenericManager($fileManager, $schemaManager);
 		$mainConfigManager = Mockery::mock(MainManager::class);
 		$mainConfigManager->shouldReceive('load')->andReturn(['cacheDir' => $configPath]);

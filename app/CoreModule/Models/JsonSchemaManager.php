@@ -26,7 +26,6 @@ use JsonSchema\Constraints\Constraint;
 use JsonSchema\Validator;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;
-use Nette\Utils\Strings;
 use stdClass;
 
 /**
@@ -50,31 +49,14 @@ class JsonSchemaManager extends JsonFileManager {
 	}
 
 	/**
-	 * Sets the file name of JSON schema from the component name
-	 * @param string $component Component name
-	 * @throws NonExistingJsonSchemaException
+	 * Sets the JSON schema file name
+	 * @param string $fileName JSON schema file name
 	 */
-	public function setSchemaFromComponent(string $component): void {
-		$schema = 'schema__' . Strings::replace($component, '~::~', '__');
-		if (parent::exists($schema)) {
-			$this->schema = $schema;
+	public function setSchema(string $fileName): void {
+		if (parent::exists($fileName)) {
+			$this->schema = $fileName;
 		} else {
-			$message = 'Non-existing JSON schema ' . $schema . '.';
-			throw new NonExistingJsonSchemaException($message);
-		}
-	}
-
-	/**
-	 * Sets the file name of JSON schema from the API message type
-	 * @param string $mType Message type
-	 * @throws NonExistingJsonSchemaException
-	 */
-	public function setSchemaFromMessageType(string $mType): void {
-		$schema = $mType . '-request-1-0-0';
-		if (parent::exists($schema)) {
-			$this->schema = $schema;
-		} else {
-			$message = 'Non-existing JSON schema ' . parent::getDirectory() . $schema . '.';
+			$message = 'Non-existing JSON schema ' . $fileName . '.';
 			throw new NonExistingJsonSchemaException($message);
 		}
 	}

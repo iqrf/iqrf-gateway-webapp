@@ -1,38 +1,38 @@
 <?php
 
 /**
- * TEST: App\CoreModule\Models\JsonSchemaManager
- * @covers App\CoreModule\Models\JsonSchemaManager
+ * TEST: App\ConfigModule\Models\ComponentSchemaManager
+ * @covers App\ConfigModule\Models\ComponentSchemaManager
  * @phpVersion >= 7.1
  * @testCase
  */
 declare(strict_types = 1);
 
-namespace Tests\Integration\CoreModule\Models;
+namespace Tests\Integration\ConfigModule\Models;
 
+use App\ConfigModule\Models\ComponentSchemaManager;
 use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
 use App\CoreModule\Models\JsonFileManager;
-use App\CoreModule\Models\JsonSchemaManager;
 use Tester\Assert;
 use Tester\TestCase;
 
 require __DIR__ . '/../../../bootstrap.php';
 
 /**
- * Tests for JSON file manager
+ * Tests for component JSON file manager
  */
-class JsonSchemaManagerTest extends TestCase {
+class ComponentSchemaManagerTest extends TestCase {
+
+	/**
+	 * MQTT component name
+	 */
+	private const COMPONENT_NAME = 'iqrf::MqttMessaging';
 
 	/**
 	 * Directory with configuration files
 	 */
 	private const FILE_PATH = __DIR__ . '/../../../data/configuration/';
-
-	/**
-	 * JSON schema file name
-	 */
-	private const SCHEMA_NAME = 'schema__iqrf__MqttMessaging';
 
 	/**
 	 * JSON schema directory path
@@ -45,7 +45,7 @@ class JsonSchemaManagerTest extends TestCase {
 	private $fileManager;
 
 	/**
-	 * @var JsonSchemaManager JSON schema manager
+	 * @var ComponentSchemaManager Component JSON schema manager
 	 */
 	private $manager;
 
@@ -63,7 +63,7 @@ class JsonSchemaManagerTest extends TestCase {
 	 */
 	public function testSetSchemaSuccess(): void {
 		Assert::noError(function (): void {
-			$this->manager->setSchema(self::SCHEMA_NAME);
+			$this->manager->setSchema(self::COMPONENT_NAME);
 		});
 	}
 
@@ -71,7 +71,7 @@ class JsonSchemaManagerTest extends TestCase {
 	 * Tests the function to validate a JSON (invalid JSON)
 	 */
 	public function testValidateInvalid(): void {
-		$this->manager->setSchema(self::SCHEMA_NAME);
+		$this->manager->setSchema(self::COMPONENT_NAME);
 		Assert::exception(function (): void {
 			$json = (object) $this->fileManager->read('iqrf__MqMessaging');
 			$this->manager->validate($json);
@@ -82,7 +82,7 @@ class JsonSchemaManagerTest extends TestCase {
 	 * Tests the function to validate a JSON (valid JSON)
 	 */
 	public function testValidateValid(): void {
-		$this->manager->setSchema(self::SCHEMA_NAME);
+		$this->manager->setSchema(self::COMPONENT_NAME);
 		$json = (object) $this->fileManager->read('iqrf__MqttMessaging');
 		Assert::true($this->manager->validate($json));
 	}
@@ -92,10 +92,10 @@ class JsonSchemaManagerTest extends TestCase {
 	 */
 	protected function setUp(): void {
 		$this->fileManager = new JsonFileManager(self::FILE_PATH);
-		$this->manager = new JsonSchemaManager(self::SCHEMA_PATH);
+		$this->manager = new ComponentSchemaManager(self::SCHEMA_PATH);
 	}
 
 }
 
-$test = new JsonSchemaManagerTest();
+$test = new ComponentSchemaManagerTest();
 $test->run();

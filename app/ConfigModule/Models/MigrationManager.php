@@ -25,7 +25,6 @@ use App\ConfigModule\Exceptions\InvalidConfigurationFormatException;
 use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
 use App\CoreModule\Models\CommandManager;
-use App\CoreModule\Models\JsonSchemaManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use App\ServiceModule\Exceptions\NotSupportedInitSystemException;
 use App\ServiceModule\Models\ServiceManager;
@@ -52,7 +51,7 @@ class MigrationManager {
 	private $commandManager;
 
 	/**
-	 * @var JsonSchemaManager JSON schema manager
+	 * @var ComponentSchemaManager JSON schema manager
 	 */
 	private $schemaManager;
 
@@ -85,10 +84,10 @@ class MigrationManager {
 	 * Constructor
 	 * @param string $configDirectory Path to a directory with a configuration of IQRF Gateway Daemon
 	 * @param CommandManager $commandManager Command manager
-	 * @param JsonSchemaManager $schemaManager JSON schema manager
+	 * @param ComponentSchemaManager $schemaManager JSON schema manager
 	 * @param ServiceManager $serviceManager Service manager
 	 */
-	public function __construct(string $configDirectory, CommandManager $commandManager, JsonSchemaManager $schemaManager, ServiceManager $serviceManager) {
+	public function __construct(string $configDirectory, CommandManager $commandManager, ComponentSchemaManager $schemaManager, ServiceManager $serviceManager) {
 		$this->configDirectory = $configDirectory;
 		$this->commandManager = $commandManager;
 		$this->schemaManager = $schemaManager;
@@ -157,7 +156,7 @@ class MigrationManager {
 			}
 			$json = Json::decode($zipManager->openFile($file));
 			try {
-				$this->schemaManager->setSchemaFromComponent($json->component);
+				$this->schemaManager->setSchema($json->component);
 			} catch (NonExistingJsonSchemaException $e) {
 				continue;
 			}

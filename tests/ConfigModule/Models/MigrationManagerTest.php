@@ -11,11 +11,11 @@ declare(strict_types = 1);
 namespace Tests\ConfigModule\Models;
 
 use App\ConfigModule\Exceptions\InvalidConfigurationFormatException;
+use App\ConfigModule\Models\ComponentSchemaManager;
 use App\ConfigModule\Models\MigrationManager;
 use App\CoreModule\Entities\CommandStack;
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FileManager;
-use App\CoreModule\Models\JsonSchemaManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use App\ServiceModule\Models\ServiceManager;
 use DateTime;
@@ -38,7 +38,7 @@ require __DIR__ . '/../../bootstrap.php';
 class MigrationManagerTest extends TestCase {
 
 	/**
-	 * @var MockInterface Mocker command manager
+	 * @var CommandManager|MockInterface Mocker command manager
 	 */
 	private $commandManager;
 
@@ -194,8 +194,8 @@ class MigrationManagerTest extends TestCase {
 		Environment::lock('migration', __DIR__ . '/../../temp/');
 		$this->copyFiles();
 		$this->fileManager = new FileManager($this->configPath);
-		$schemaManager = new JsonSchemaManager($this->schemaPath);
-		$schemaManagerCorrupted = new JsonSchemaManager($this->schemaCorruptedPath);
+		$schemaManager = new ComponentSchemaManager($this->schemaPath);
+		$schemaManagerCorrupted = new ComponentSchemaManager($this->schemaCorruptedPath);
 		$commandStack = new CommandStack();
 		$this->commandManager = Mockery::mock(CommandManager::class, [false, $commandStack])->makePartial();
 		$serviceManager = Mockery::mock(ServiceManager::class);

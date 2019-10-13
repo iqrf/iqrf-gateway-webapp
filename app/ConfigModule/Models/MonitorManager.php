@@ -20,7 +20,6 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Models;
 
-use App\CoreModule\Models\JsonSchemaManager;
 use DateTime;
 use Nette\SmartObject;
 use Nette\Utils\Arrays;
@@ -57,16 +56,16 @@ class MonitorManager {
 	private $instances = [];
 
 	/**
-	 * @var JsonSchemaManager JSON schema manager
+	 * @var ComponentSchemaManager JSON schema manager
 	 */
 	private $schemaManager;
 
 	/**
 	 * Constructor
 	 * @param GenericManager $genericManager Generic configuration manager
-	 * @param JsonSchemaManager $schemaManager JSON schema manager
+	 * @param ComponentSchemaManager $schemaManager JSON schema manager
 	 */
-	public function __construct(GenericManager $genericManager, JsonSchemaManager $schemaManager) {
+	public function __construct(GenericManager $genericManager, ComponentSchemaManager $schemaManager) {
 		$this->genericManager = $genericManager;
 		$this->schemaManager = $schemaManager;
 	}
@@ -170,7 +169,7 @@ class MonitorManager {
 			'webSocket' => $this->createWebSocketService($array),
 		];
 		foreach ($configuration as $component => $config) {
-			$this->schemaManager->setSchemaFromComponent($this->components[$component]);
+			$this->schemaManager->setSchema($this->components[$component]);
 			$this->schemaManager->validate((object) $config);
 		}
 		$this->fileNames['monitor'] = $this->fileNames['monitor'] ?? 'iqrf__' . $this->instances['monitor'];

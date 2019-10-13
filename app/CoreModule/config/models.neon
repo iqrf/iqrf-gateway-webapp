@@ -4,11 +4,5 @@ services:
 	commandManager: App\CoreModule\Models\CommandManager(%sudo%)
 	- App\CoreModule\Models\FileManager(%daemon.configDir%)
 	- App\CoreModule\Models\JsonFileManager(%daemon.configDir%)
-	jsonSchemaManagerApi:
-		factory: App\CoreModule\Models\JsonSchemaManager(%daemon.apiSchemaDir%)
-		autowired: false
-	jsonSchemaManagerDaemon:
-		factory: App\CoreModule\Models\JsonSchemaManager(%daemon.schemaDir%)
-		autowired: self
 	- App\CoreModule\Models\UserManager
 	- App\CoreModule\Models\VersionManager

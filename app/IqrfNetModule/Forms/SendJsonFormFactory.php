@@ -22,9 +22,9 @@ namespace App\IqrfNetModule\Forms;
 
 use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
 use App\CoreModule\Forms\FormFactory;
-use App\CoreModule\Models\JsonSchemaManager;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
+use App\IqrfNetModule\Models\ApiSchemaManager;
 use App\IqrfNetModule\Models\WebSocketClient;
 use App\IqrfNetModule\Presenters\SendJsonPresenter;
 use App\IqrfNetModule\Requests\DpaRequest;
@@ -46,7 +46,7 @@ class SendJsonFormFactory {
 	private $factory;
 
 	/**
-	 * @var JsonSchemaManager API JSON schema manager
+	 * @var ApiSchemaManager API JSON schema manager
 	 */
 	private $jsonSchemaManager;
 
@@ -67,14 +67,14 @@ class SendJsonFormFactory {
 
 	/**
 	 * Constructor
-	 * @param JsonSchemaManager $jsonSchemaManager API JSON schema manager
+	 * @param ApiSchemaManager $schemaManager API JSON schema manager
 	 * @param FormFactory $factory Generic form factory
 	 * @param DpaRequest $request IQRF JSON API request
 	 * @param WebSocketClient $wsClient WebSocket client
 	 */
-	public function __construct(JsonSchemaManager $jsonSchemaManager, FormFactory $factory, DpaRequest $request, WebSocketClient $wsClient) {
+	public function __construct(ApiSchemaManager $schemaManager, FormFactory $factory, DpaRequest $request, WebSocketClient $wsClient) {
 		$this->factory = $factory;
-		$this->jsonSchemaManager = $jsonSchemaManager;
+		$this->jsonSchemaManager = $schemaManager;
 		$this->request = $request;
 		$this->wsClient = $wsClient;
 	}
@@ -105,7 +105,7 @@ class SendJsonFormFactory {
 		try {
 			$json = Json::decode($values['json']);
 			if (isset($json->mType)) {
-				$this->jsonSchemaManager->setSchemaFromMessageType($json->mType);
+				$this->jsonSchemaManager->setSchemaForRequest($json->mType);
 				$this->jsonSchemaManager->validate($json, true);
 			}
 		} catch (JsonException $e) {

@@ -20,8 +20,8 @@ declare(strict_types = 1);
 
 namespace Tests\Toolkit\TestCases;
 
+use App\ConfigModule\Models\ComponentSchemaManager;
 use App\CoreModule\Models\JsonFileManager;
-use App\CoreModule\Models\JsonSchemaManager;
 use Mockery;
 use Nette\Utils\JsonException;
 use Tester\Environment;
@@ -43,7 +43,7 @@ abstract class JsonConfigTestCase extends TestCase {
 	protected $fileManagerTemp;
 
 	/**
-	 * @var JsonSchemaManager JSON schema manager
+	 * @var ComponentSchemaManager JSON schema manager
 	 */
 	protected $schemaManager;
 
@@ -93,7 +93,7 @@ abstract class JsonConfigTestCase extends TestCase {
 		$schemaPath = __DIR__ . '/../../data/cfgSchemas/';
 		$this->fileManager = new JsonFileManager($configPath);
 		$this->fileManagerTemp = new JsonFileManager($configTempPath);
-		$this->schemaManager = new JsonSchemaManager($schemaPath);
+		$this->schemaManager = new ComponentSchemaManager($schemaPath);
 	}
 
 	/**
