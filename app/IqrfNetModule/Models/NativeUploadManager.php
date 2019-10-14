@@ -40,11 +40,6 @@ use Nette\Utils\Strings;
 class NativeUploadManager {
 
 	/**
-	 * @var GenericManager Generic configuration manager
-	 */
-	private $configManager;
-
-	/**
 	 * @var string Path to the directory for uploaded files
 	 */
 	private $path = '/var/cache/iqrf-gateway-daemon/upload';
@@ -60,12 +55,11 @@ class NativeUploadManager {
 	 * @param UploadManager $uploadManager IQRF TR native upload manager
 	 */
 	public function __construct(GenericManager $configManager, UploadManager $uploadManager) {
-		$this->configManager = $configManager;
 		try {
-			$this->configManager->setComponent('iqrf::NativeUploadService');
-			$instances = $this->configManager->list();
-			if ($instances !== []) {
-				$this->path = reset($instances)['uploadPath'];
+			$configManager->setComponent('iqrf::NativeUploadService');
+			$instances = $configManager->list();
+			if (isset($instances[0]['uploadPath'])) {
+				$this->path = $instances[0]['uploadPath'];
 			}
 		} catch (JsonException | NonExistingJsonSchemaException $e) {
 			$this->path = '/var/cache/iqrf-gateway-daemon/upload';
