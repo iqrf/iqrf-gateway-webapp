@@ -11,6 +11,12 @@
 		"busEnableGpioPin": 10,
 		"pgmSwitchGpioPin": 3
 	},
+	"UniPi Axon": {
+		"IqrfInterface": "/dev/spidev0.3",
+		"powerEnableGpioPin": 2,
+		"busEnableGpioPin": 18,
+		"pgmSwitchGpioPin": 19
+	},
 	"UP": {
 		"IqrfInterface": "/dev/spidev2.0",
 		"powerEnableGpioPin": 23,
