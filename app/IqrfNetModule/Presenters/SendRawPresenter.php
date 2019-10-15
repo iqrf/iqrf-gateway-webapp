@@ -81,6 +81,7 @@ class SendRawPresenter extends ProtectedPresenter {
 	public function handleShowResponse(array $data): void {
 		$this->template->json = $data;
 		$this->template->parsedResponse = $this->dpaManager->parseResponse($data);
+		$this->redrawControl('responseWrapper');
 		$this->redrawControl('responseChange');
 	}
 

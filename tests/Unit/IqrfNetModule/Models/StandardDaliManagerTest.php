@@ -44,7 +44,7 @@ class StandardDaliManagerTest extends WebSocketTestCase {
 				'req' => [
 					'nAdr' => 4,
 					'param' => [
-						'commands' => (object) $commands,
+						'commands' => $commands,
 					],
 				],
 				'returnVerbose' => true,

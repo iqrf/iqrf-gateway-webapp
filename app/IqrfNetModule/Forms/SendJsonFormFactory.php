@@ -89,7 +89,8 @@ class SendJsonFormFactory {
 		$form = $this->factory->create('iqrfnet.send-json');
 		$form->addTextArea('json', 'json')
 			->setRequired('messages.json');
-		$form->addSubmit('send', 'send');
+		$form->addSubmit('send', 'send')
+			->setHtmlAttribute('class', 'ajax');
 		$form->addProtection('core.errors.form-timeout');
 		$form->onSuccess[] = [$this, 'onSuccess'];
 		return $form;

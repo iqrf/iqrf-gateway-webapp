@@ -16,19 +16,21 @@
 *}
 
 {snippet dali}
-    {var $response = $data['response']}
-    {switch $response['mType']}
-        {case 'iqrfDali_SendCommands'}
-        {var $answers = $response['data']['rsp']['result']['answers']}
-		<table class='table table-striped text-center'>
-			<tr>
-				<th>{_iqrfnet.dali.answer.status}</th>
-				<th>{_iqrfnet.dali.answer.value}</th>
-			</tr>
-			<tr n:foreach='$answers as $answer'>
-				<td>{$answer['status']}</td>
-				<td>{$answer['value']}</td>
-			</tr>
-		</table>
-    {/switch}
+	<footer n:ifset='$daliData' class='box-footer table-responsive'>
+        {var $response = $data['response']}
+        {switch $response['mType']}
+            {case 'iqrfDali_SendCommands'}
+            {var $answers = $response['data']['rsp']['result']['answers']}
+			<table class='table table-striped text-center'>
+				<tr>
+					<th>{_iqrfnet.dali.answer.status}</th>
+					<th>{_iqrfnet.dali.answer.value}</th>
+				</tr>
+				<tr n:foreach='$answers as $answer'>
+					<td>{$answer['status']}</td>
+					<td>{$answer['value']}</td>
+				</tr>
+			</table>
+        {/switch}
+	</footer>
 {/snippet}

@@ -16,36 +16,38 @@
 *}
 
 {snippet binaryOutputs}
-	{var $response = $data['response']}
-	{switch $response['mType']}
-		{case 'iqrfBinaryoutput_Enumerate'}
-		<table class='table table-striped'>
-			<tr>
-				<th>{_iqrfnet.standard.binaryOutput.table.outputs}</th>
-				<td>{$response['data']['rsp']['result']['binOuts']}</td>
-			</tr>
-		</table>
-		{case 'iqrfBinaryoutput_SetOutput'}
-		{var $outputs = $response['data']['rsp']['result']['prevVals']}
-		<table class='table table-striped'>
-			<tr>
-				<th>{_iqrfnet.standard.binaryOutput.table.index}</th>
-				<td n:foreach='$outputs as $index => $state'>
-					{$index}
-				</td>
-			</tr>
-			<tr>
-				<th>{_iqrfnet.standard.binaryOutput.table.state}</th>
-				<td n:foreach='$outputs as $index => $state'>
-					{switch $state}
-						{case true}
-						{var $icon = 'ok', $color = 'text-success'}
-						{case false}
-						{var $icon = 'remove', $color = 'text-danger'}
-					{/switch}
-					<span class='glyphicon glyphicon-{$icon} {$color}'></span>
-				</td>
-			</tr>
-		</table>
-	{/switch}
+	<footer n:ifset='$binaryOutputData' class='box-footer table-responsive'>
+        {var $response = $data['response']}
+        {switch $response['mType']}
+            {case 'iqrfBinaryoutput_Enumerate'}
+			<table class='table table-striped'>
+				<tr>
+					<th>{_iqrfnet.standard.binaryOutput.table.outputs}</th>
+					<td>{$response['data']['rsp']['result']['binOuts']}</td>
+				</tr>
+			</table>
+        {case 'iqrfBinaryoutput_SetOutput'}
+        {var $outputs = $response['data']['rsp']['result']['prevVals']}
+			<table class='table table-striped'>
+				<tr>
+					<th>{_iqrfnet.standard.binaryOutput.table.index}</th>
+					<td n:foreach='$outputs as $index => $state'>
+                        {$index}
+					</td>
+				</tr>
+				<tr>
+					<th>{_iqrfnet.standard.binaryOutput.table.state}</th>
+					<td n:foreach='$outputs as $index => $state'>
+                        {switch $state}
+                            {case true}
+                            {var $icon = 'ok', $color = 'text-success'}
+                            {case false}
+                            {var $icon = 'remove', $color = 'text-danger'}
+                        {/switch}
+						<span class='glyphicon glyphicon-{$icon} {$color}'></span>
+					</td>
+				</tr>
+			</table>
+        {/switch}
+	</footer>
 {/snippet}

@@ -42,7 +42,7 @@
 					</div>
 				</div>
 			</div>
-			<input n:name=send class='btn btn-primary'>
+			<input n:name=send class='ajax btn btn-primary'>
 		{/form}
 	</section>
 </div>
@@ -64,6 +64,6 @@
 	</section>
 </div>
 
-{ifset $json}
+{snippetArea responseWrapper}
 	{include 'response.latte'}
-{/ifset}
+{/snippetArea}

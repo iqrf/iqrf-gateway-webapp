@@ -16,27 +16,29 @@
 *}
 
 {snippet responseChange}
-	{ifset $parsedResponse}
-		{include 'parsedResponse.latte'}
-	{/ifset}
-	<div class='col-sm-6'>
-		<div class='box box-primary'>
-			<header class='box-header with-border'>
-				<h2 class='box-title'>{_iqrfnet.send-packet.request}</h2>
-			</header>
-			<section class='box-body'>
-				<pre><code class='json'>{$json['request']}</code></pre>
-			</section>
+    {ifset $parsedResponse}
+        {include 'parsedResponse.latte'}
+    {/ifset}
+    {ifset $json}
+		<div class='col-sm-6'>
+			<div class='box box-primary'>
+				<header class='box-header with-border'>
+					<h2 class='box-title'>{_iqrfnet.send-packet.request}</h2>
+				</header>
+				<section class='box-body'>
+					<pre><code class='json'>{$json['request']}</code></pre>
+				</section>
+			</div>
 		</div>
-	</div>
-	<div class='col-sm-6'>
-		<div class='box box-primary'>
-			<header class='box-header with-border'>
-				<h2 class='box-title'>{_iqrfnet.send-packet.response}</h2>
-			</header>
-			<section class='box-body'>
-				<pre><code class='json'>{$json['response']}</code></pre>
-			</section>
+		<div class='col-sm-6'>
+			<div class='box box-primary'>
+				<header class='box-header with-border'>
+					<h2 class='box-title'>{_iqrfnet.send-packet.response}</h2>
+				</header>
+				<section class='box-body'>
+					<pre><code class='json'>{$json['response']}</code></pre>
+				</section>
+			</div>
 		</div>
-	</div>
+    {/ifset}
 {/snippet}

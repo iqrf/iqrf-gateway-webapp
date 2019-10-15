@@ -85,7 +85,8 @@ class OsDpaUploadFormFactory {
 		$form->addSelect('version', 'version')
 			->setItems($this->osManager->list())
 			->setTranslator($this->formFactory->getTranslator());
-		$form->addSubmit('upload', 'upload');
+		$form->addSubmit('upload', 'upload')
+			->setHtmlAttribute('class', 'ajax');
 		$form->onSuccess[] = [$this, 'upload'];
 		return $form;
 	}

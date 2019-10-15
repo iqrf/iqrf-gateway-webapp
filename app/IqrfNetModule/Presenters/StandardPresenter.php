@@ -62,6 +62,7 @@ class StandardPresenter extends ProtectedPresenter {
 	 */
 	public function handleBinaryOutputResponse(array $data): void {
 		$this->template->binaryOutputData = $data;
+		$this->redrawControl('binaryOutputWrapper');
 		$this->redrawControl('binaryOutputs');
 	}
 
@@ -71,6 +72,7 @@ class StandardPresenter extends ProtectedPresenter {
 	 */
 	public function handleDaliResponse(array $data): void {
 		$this->template->daliData = $data;
+		$this->redrawControl('daliWrapper');
 		$this->redrawControl('dali');
 	}
 
@@ -80,6 +82,7 @@ class StandardPresenter extends ProtectedPresenter {
 	 */
 	public function handleLightResponse(array $data): void {
 		$this->template->lightData = $data;
+		$this->redrawControl('lightWrapper');
 		$this->redrawControl('lights');
 	}
 
@@ -89,6 +92,7 @@ class StandardPresenter extends ProtectedPresenter {
 	 */
 	public function handleSensorResponse(array $data): void {
 		$this->template->sensorData = $data;
+		$this->redrawControl('sensorWrapper');
 		$this->redrawControl('sensors');
 	}
 

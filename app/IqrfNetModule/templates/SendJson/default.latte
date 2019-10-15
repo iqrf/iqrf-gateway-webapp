@@ -25,6 +25,6 @@
 		{control sendJsonForm}
 	</div>
 </div>
-{ifset $json}
-	{include 'response.latte', json => $json}
-{/ifset}
+{snippetArea responseWrapper}
+	{include 'response.latte'}
+{/snippetArea}

@@ -78,9 +78,15 @@ class StandardBinaryOutputFormFactory {
 			->setDefaultValue(0)
 			->addRule(Form::RANGE, 'messages.index', [0, 31]);
 		$form->addCheckbox('state', 'state');
-		$form->addSubmit('enumerate', 'enumerate')->onClick[] = [$this, 'enumerate'];
-		$form->addSubmit('get', 'get')->onClick[] = [$this, 'get'];
-		$form->addSubmit('set', 'set')->onClick[] = [$this, 'set'];
+		$form->addSubmit('enumerate', 'enumerate')
+			->setHtmlAttribute('class', 'ajax')
+			->onClick[] = [$this, 'enumerate'];
+		$form->addSubmit('get', 'get')
+			->setHtmlAttribute('class', 'ajax')
+			->onClick[] = [$this, 'get'];
+		$form->addSubmit('set', 'set')
+			->setHtmlAttribute('class', 'ajax')
+			->onClick[] = [$this, 'set'];
 		$form->addProtection('core.errors.form-timeout');
 		return $form;
 	}

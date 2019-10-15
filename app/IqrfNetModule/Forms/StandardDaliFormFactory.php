@@ -72,6 +72,7 @@ class StandardDaliFormFactory {
 	public function create(StandardPresenter $presenter): Form {
 		$this->presenter = $presenter;
 		$form = $this->factory->create('iqrfnet.standard.dali');
+		$form->addGroup();
 		$form->addInteger('address', 'address')
 			->setRequired('messages.address');
 		$commands = $form->addMultiplier('commands', [$this, 'createCommandMultiplier'], 1);
@@ -79,8 +80,10 @@ class StandardDaliFormFactory {
 			->addClass('btn btn-success');
 		$commands->addRemoveButton('commands.remove')
 			->addClass('btn btn-danger');
+		$form->addGroup();
 		$form->addProtection('core.errors.form-timeout');
 		$form->addSubmit('send', 'send')
+			->setHtmlAttribute('class', 'ajax')
 			->onClick[] = [$this, 'send'];
 		return $form;
 	}
@@ -99,9 +102,15 @@ class StandardDaliFormFactory {
 	 * @param SubmitButton $button Submit button
 	 */
 	public function send(SubmitButton $button): void {
-		$values = $button->getForm()->getValues();
+		/**
+		 * @var array<string,mixed> $values Values from the form
+		 */
+		$values = $button->getForm()->getValues('array');
 		try {
-			$data = $this->manager->send($values->address, $values->commands);
+			$commands = array_map(function (array $array): int {
+				return $array['command'];
+			}, $values['commands']);
+			$data = $this->manager->send($values['address'], $commands);
 			$this->presenter->handleDaliResponse($data);
 		} catch (UserErrorException | DpaErrorException | EmptyResponseException | JsonException $e) {
 			$this->presenter->flashError('iqrfnet.standard.dali.messages.sendError');

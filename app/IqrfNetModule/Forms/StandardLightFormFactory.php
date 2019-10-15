@@ -80,11 +80,21 @@ class StandardLightFormFactory {
 		$form->addInteger('power', 'power')
 			->setDefaultValue(50)
 			->addRule(Form::RANGE, 'messages.power', [0, 100]);
-		$form->addSubmit('enumerate', 'enumerate')->onClick[] = [$this, 'enumerate'];
-		$form->addSubmit('get', 'get')->onClick[] = [$this, 'getPower'];
-		$form->addSubmit('set', 'set')->onClick[] = [$this, 'setPower'];
-		$form->addSubmit('increment', 'increment')->onClick[] = [$this, 'incrementPower'];
-		$form->addSubmit('decrement', 'decrement')->onClick[] = [$this, 'decrementPower'];
+		$form->addSubmit('enumerate', 'enumerate')
+			->setHtmlAttribute('class', 'ajax')
+			->onClick[] = [$this, 'enumerate'];
+		$form->addSubmit('get', 'get')
+			->setHtmlAttribute('class', 'ajax')
+			->onClick[] = [$this, 'getPower'];
+		$form->addSubmit('set', 'set')
+			->setHtmlAttribute('class', 'ajax')
+			->onClick[] = [$this, 'setPower'];
+		$form->addSubmit('increment', 'increment')
+			->setHtmlAttribute('class', 'ajax')
+			->onClick[] = [$this, 'incrementPower'];
+		$form->addSubmit('decrement', 'decrement')
+			->setHtmlAttribute('class', 'ajax')
+			->onClick[] = [$this, 'decrementPower'];
 		$form->addProtection('core.errors.form-timeout');
 		return $form;
 	}

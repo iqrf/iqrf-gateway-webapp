@@ -71,7 +71,7 @@ class StandardDaliManager {
 				'req' => [
 					'nAdr' => $address,
 					'param' => [
-						'commands' => (object) $commands,
+						'commands' => $commands,
 					],
 				],
 				'returnVerbose' => true,

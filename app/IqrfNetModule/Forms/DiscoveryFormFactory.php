@@ -77,7 +77,8 @@ class DiscoveryFormFactory {
 			->setDefaultValue(239)
 			->addRule(Form::RANGE, 'messages.maxNodeAddress', [0, 239])
 			->setRequired('messages.maxNodeAddress');
-		$form->addSubmit('send', 'send');
+		$form->addSubmit('send', 'send')
+			->setHtmlAttribute('class', 'ajax');
 		$form->addProtection('core.errors.form-timeout');
 		$form->onSuccess[] = [$this, 'onSuccess'];
 		return $form;

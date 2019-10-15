@@ -25,9 +25,9 @@
 		<section class='box-body'>
 			{control binaryOutputForm}
 		</section>
-		<footer n:ifset='$binaryOutputData' class='box-footer table-responsive'>
-			{include 'binaryOutput.latte', data => $binaryOutputData}
-		</footer>
+		{snippetArea binaryOutputWrapper}
+            {include 'binaryOutput.latte', data => $binaryOutputData}
+		{/snippetArea}
 	</div>
 	<div class='box box-primary'>
 		<header class='box-header with-border'>
@@ -36,9 +36,9 @@
 		<section class='box-body'>
 			{control sensorForm}
 		</section>
-		<footer n:ifset='$sensorData' class='box-footer table-responsive'>
+		{snippetArea sensorWrapper}
 			{include 'sensor.latte', data => $sensorData}
-		</footer>
+		{/snippetArea}
 	</div>
 </div>
 <div class='col-sm-6'>
@@ -49,9 +49,9 @@
 		<section class='box-body'>
 			{control lightForm}
 		</section>
-		<footer n:ifset='$lightData' class='box-footer table-responsive'>
+		{snippetArea lightWrapper}
 			{include 'light.latte', data => $lightData}
-		</footer>
+		{/snippetArea}
 	</div>
 	<div class='box box-primary'>
 		<header class='box-header with-border'>
@@ -63,8 +63,8 @@
 			</div>
             {control daliForm}
 		</section>
-		<footer n:ifset='$daliData' class='box-footer table-responsive'>
+		{snippetArea daliWrapper}
             {include 'dali.latte', data => $daliData}
-		</footer>
+		{/snippetArea}
 	</div>
 </div>

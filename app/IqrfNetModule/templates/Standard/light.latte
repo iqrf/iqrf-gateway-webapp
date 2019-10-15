@@ -16,14 +16,16 @@
 *}
 
 {snippet lights}
-	{var $response = $data['response']}
-	{switch $response['mType']}
-		{case 'iqrfLight_Enumerate'}
-		<table class='table table-striped'>
-			<tr>
-				<th>{_iqrfnet.standard.light.table.lights}</th>
-				<td>{$response['data']['rsp']['result']['lights']}</td>
-			</tr>
-		</table>
-	{/switch}
+	<footer n:ifset='$lightData' class='box-footer table-responsive'>
+        {var $response = $data['response']}
+        {switch $response['mType']}
+            {case 'iqrfLight_Enumerate'}
+			<table class='table table-striped'>
+				<tr>
+					<th>{_iqrfnet.standard.light.table.lights}</th>
+					<td>{$response['data']['rsp']['result']['lights']}</td>
+				</tr>
+			</table>
+        {/switch}
+	</footer>
 {/snippet}

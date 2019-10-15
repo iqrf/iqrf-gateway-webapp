@@ -73,8 +73,12 @@ class StandardSensorFormFactory {
 		$form = $this->factory->create('iqrfnet.standard.sensor');
 		$form->addInteger('address', 'address')
 			->setRequired('messages.address');
-		$form->addSubmit('enumerate', 'enumerate')->onClick[] = [$this, 'enumerate'];
-		$form->addSubmit('readAll', 'readAll')->onClick[] = [$this, 'readAll'];
+		$form->addSubmit('enumerate', 'enumerate')
+			->setHtmlAttribute('class', 'ajax')
+			->onClick[] = [$this, 'enumerate'];
+		$form->addSubmit('readAll', 'readAll')
+			->setHtmlAttribute('class', 'ajax')
+			->onClick[] = [$this, 'readAll'];
 		$form->addProtection('core.errors.form-timeout');
 		return $form;
 	}

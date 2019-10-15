@@ -88,11 +88,14 @@ class BondingFormFactory {
 		$form->addCheckbox('coordinatorOnly', 'coordinatorOnly');
 		$form->addProtection('core.errors.form-timeout');
 		$form->addSubmit('add', 'addBond')
+			->setHtmlAttribute('class', 'ajax')
 			->onClick[] = [$this, 'addBond'];
 		$form->addSubmit('remove', 'removeBond')
+			->setHtmlAttribute('class', 'ajax')
 			->setHtmlId('frm-iqrfNetBondingForm-removeBond')
 			->onClick[] = [$this, 'removeBond'];
 		$form->addSubmit('clear', 'clearAllBonds')
+			->setHtmlAttribute('class', 'ajax')
 			->setHtmlId('frm-iqrfNetBondingForm-clearAllBonds')
 			->setValidationScope([])
 			->onClick[] = [$this, 'clearAllBonds'];

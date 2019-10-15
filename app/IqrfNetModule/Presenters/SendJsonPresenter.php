@@ -50,7 +50,17 @@ class SendJsonPresenter extends ProtectedPresenter {
 			}
 		}
 		$this->template->json = $data;
+		$this->redrawControl('responseWrapper');
 		$this->redrawControl('responseChange');
+	}
+
+	/**
+	 * Renders the default page
+	 */
+	public function renderDefault(): void {
+		if (!isset($this->template->json)) {
+			$this->template->json = null;
+		}
 	}
 
 	/**
