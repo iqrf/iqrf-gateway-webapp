@@ -111,7 +111,7 @@ class InfoManagerTest extends CommandTestCase {
 	 * Tests the function to get disk usages
 	 */
 	public function testGetDiskUsages(): void {
-		$command = 'df -B1 -x tmpfs -x devtmpfs -T -P | awk \'{if (NR!=1) {$6="";print}}\'';
+		$command = 'df -l -B1 -x tmpfs -x devtmpfs -T -P | awk \'{if (NR!=1) {$6="";print}}\'';
 		$output = '/dev/sda1 ext4 243735838720 205705183232 25625583616  /';
 		$this->receiveCommand($command, null, $output);
 		$expected = [
