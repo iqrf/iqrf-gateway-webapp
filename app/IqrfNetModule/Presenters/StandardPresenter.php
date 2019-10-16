@@ -87,6 +87,16 @@ class StandardPresenter extends ProtectedPresenter {
 	}
 
 	/**
+	 * Renders the default page
+	 */
+	public function renderDefault(): void {
+		$this->template->binaryOutputData = null;
+		$this->template->daliData = null;
+		$this->template->lightData = null;
+		$this->template->sensorData = null;
+	}
+
+	/**
 	 * AJAX handler for showing IQRF Standard sensor info
 	 * @param mixed[] $data API request and response
 	 */
