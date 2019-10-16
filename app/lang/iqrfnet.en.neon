@@ -113,6 +113,7 @@ enumeration:
 	back: Back to Network manager
 	messages:
 		failure: An error occurred while the device enumeration.
+		repositoryUnavailable: IQRF Repository is unavailable.
 
 macros:
 	title: Macros

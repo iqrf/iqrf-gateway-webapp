@@ -25,6 +25,7 @@ use App\CoreModule\Traits\TPresenterFlashMessage;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Models\EnumerationManager;
+use Iqrf\Repository\Exceptions\ServiceUnavailable;
 use Iqrf\Repository\Models\ProductManager;
 use Nette\Utils\JsonException;
 
@@ -62,13 +63,17 @@ class EnumerationPresenter extends ProtectedPresenter {
 	 */
 	public function renderDefault(int $address = 0): void {
 		try {
-			$enumeration = $this->manager->device($address);
-			$data = $enumeration['response']['data']['rsp'];
+			$data = $this->manager->device($address)['response']['data']['rsp'];
 			if (isset($data)) {
 				$this->template->data = $data;
 				$this->template->osData = $data['osRead'];
 				$this->template->peripheralData = $data['peripheralEnumeration'];
-				$this->template->product = $this->productManager->get($data['peripheralEnumeration']['hwpId']);
+				try {
+					$hwpId = $data['peripheralEnumeration']['hwpId'];
+					$this->template->product = $this->productManager->get($hwpId);
+				} catch (ServiceUnavailable $e) {
+					$this->flashWarning('iqrfnet.enumeration.messages.repositoryUnavailable');
+				}
 			} else {
 				$this->flashError('iqrfnet.enumeration.messages.failure');
 				$this->redirect('Network:default');
