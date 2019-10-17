@@ -15,8 +15,8 @@
  * limitations under the License.
 *}
 
-{snippet sensors}
-	<footer n:ifset='$sensorData' class='box-footer table-responsive'>
+<footer n:snippet='sensors' class='box-footer table-responsive'>
+	{ifset $data}
         {var $response = $data['response']}
         {switch $response['mType']}
             {case 'iqrfSensor_Enumerate'}
@@ -70,5 +70,5 @@
 				</tr>
 			</table>
         {/switch}
-	</footer>
-{/snippet}
+	{/ifset}
+</footer>

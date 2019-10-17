@@ -15,8 +15,8 @@
  * limitations under the License.
 *}
 
-{snippet lights}
-	<footer n:ifset='$lightData' class='box-footer table-responsive'>
+<footer n:snippet='lights' class='box-footer table-responsive'>
+	{ifset $lightData}
         {var $response = $data['response']}
         {switch $response['mType']}
             {case 'iqrfLight_Enumerate'}
@@ -27,5 +27,5 @@
 				</tr>
 			</table>
         {/switch}
-	</footer>
-{/snippet}
+	{/ifset}
+</footer>

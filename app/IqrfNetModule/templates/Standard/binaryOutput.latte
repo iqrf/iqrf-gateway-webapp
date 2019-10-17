@@ -15,8 +15,8 @@
  * limitations under the License.
 *}
 
-{snippet binaryOutputs}
-	<footer n:ifset='$binaryOutputData' class='box-footer table-responsive'>
+<footer n:snippet='binaryOutputs' class='box-footer table-responsive'>
+	{ifset $data}
         {var $response = $data['response']}
         {switch $response['mType']}
             {case 'iqrfBinaryoutput_Enumerate'}
@@ -49,5 +49,5 @@
 				</tr>
 			</table>
         {/switch}
-	</footer>
-{/snippet}
+	{/ifset}
+</footer>

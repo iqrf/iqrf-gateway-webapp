@@ -90,10 +90,18 @@ class StandardPresenter extends ProtectedPresenter {
 	 * Renders the default page
 	 */
 	public function renderDefault(): void {
-		$this->template->binaryOutputData = null;
-		$this->template->daliData = null;
-		$this->template->lightData = null;
-		$this->template->sensorData = null;
+		if (!isset($this->template->binaryOutputData)) {
+			$this->template->binaryOutputData = null;
+		}
+		if (!isset($this->template->daliData)) {
+			$this->template->daliData = null;
+		}
+		if (!isset($this->template->lightData)) {
+			$this->template->lightData = null;
+		}
+		if (!isset($this->template->sensorData)) {
+			$this->template->sensorData = null;
+		}
 	}
 
 	/**
