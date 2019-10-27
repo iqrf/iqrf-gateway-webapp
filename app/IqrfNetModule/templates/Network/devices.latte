@@ -16,7 +16,7 @@
 *}
 
 {snippet showDevices}
-	<div class='box box-primary'>
+	<div n:ifset='$devices' class='box box-primary'>
 		<header class='box-header with-border'>
 			<h2 class='box-title'>{_iqrfnet.devices.title}</h2>
 		</header>
@@ -47,7 +47,7 @@
 				<tr n:foreach='$devices as $tens => $line'>
 					<th>{$tens}0</th>
 					<td n:foreach='$line as $units => $device'>
-						{var $address = $tens * 10 + $units}
+						{var $address = $tens * $base + $units}
 						{switch $device}
 							{case 1}
 							{var $icon = 'ok', $color = 'text-success'}

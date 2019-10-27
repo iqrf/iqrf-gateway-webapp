@@ -96,6 +96,7 @@ class DiscoveryFormFactory {
 		} catch (EmptyResponseException | DpaErrorException | JsonException $e) {
 			$this->presenter->flashError('iqrfnet.discovery.messages.failure');
 		}
+		$this->presenter->handleShowNodes();
 	}
 
 }

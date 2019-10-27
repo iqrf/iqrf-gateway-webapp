@@ -64,6 +64,7 @@ class NetworkPresenter extends ProtectedPresenter {
 		$base = 10;
 		$this->template->base = $base;
 		$this->template->devices = $this->devicesManager->getTable($base);
+		$this->redrawControl('devicesWrapper');
 		$this->redrawControl('showDevices');
 	}
 
@@ -71,9 +72,7 @@ class NetworkPresenter extends ProtectedPresenter {
 	 * Renders a default page
 	 */
 	public function renderDefault(): void {
-		$base = 10;
-		$this->template->base = $base;
-		$this->template->devices = $this->devicesManager->getTable($base);
+		$this->handleShowNodes();
 	}
 
 	/**

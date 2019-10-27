@@ -149,6 +149,7 @@ class BondingFormFactory {
 		} catch (EmptyResponseException | DpaErrorException | JsonException $e) {
 			$this->presenter->flashError('iqrfnet.bonding.messages.add.failure');
 		}
+		$this->presenter->handleShowNodes();
 	}
 
 	/**
@@ -163,6 +164,7 @@ class BondingFormFactory {
 		} catch (EmptyResponseException | DpaErrorException | JsonException $e) {
 			$this->presenter->flashError('iqrfnet.bonding.messages.clearAll.failure');
 		}
+		$this->presenter->handleShowNodes();
 	}
 
 	/**
@@ -182,6 +184,7 @@ class BondingFormFactory {
 		} catch (EmptyResponseException | DpaErrorException | JsonException $e) {
 			$this->presenter->flashError('iqrfnet.bonding.messages.remove.failure');
 		}
+		$this->presenter->handleShowNodes();
 	}
 
 }
