@@ -1,5 +1,5 @@
 title: Clouds
-description: Add MQTT connection into cloud services.
+description: Add a connection into cloud services.
 
 messages:
 	downloadFailure: The webapp has not been able to download the root CA certificate. Probably the gateway has not been connected into the Internet.
@@ -74,7 +74,7 @@ msAzure:
 		invalidConnectionString: Invalid MS Azure IoT Hub connection string for device.
 
 pixla:
-	title: PIXLA
+	title: PIXLA device management
 	description: Manages PIXLA client service.
 	dashboard: Visit dashboard
 	disable: Disable service
