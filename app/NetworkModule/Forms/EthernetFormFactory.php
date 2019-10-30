@@ -85,7 +85,6 @@ class EthernetFormFactory {
 		$form->setDefaults($this->connection->toForm());
 		$form->addGroup();
 		$form->addSubmit('save', 'save');
-		$form->onValidate[] = [$this, 'validate'];
 		$form->onSuccess[] = [$this, 'save'];
 		return $form;
 	}
@@ -220,7 +219,7 @@ class EthernetFormFactory {
 	 * Validates Ethernet network connection configuration
 	 * @param Form $form Ethernet network connection form
 	 */
-	public function validate(Form $form): void  {
+	public function validate(Form $form): void {
 		$values = $form->getValues();
 		if (($values['ipv4']['method'] === 'manual')) {
 			if ($values['ipv4']['addresses']->count() === 0) {
@@ -245,6 +244,10 @@ class EthernetFormFactory {
 	 * @param Form $form Ethernet network connection form
 	 */
 	public function save(Form $form): void {
+		$this->validate($form);
+		if (!$form->isValid()) {
+			return;
+		}
 		try {
 			$this->manager->set($this->connection, $form->getValues());
 			$this->manager->up($this->connection);
