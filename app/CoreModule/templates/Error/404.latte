@@ -15,13 +15,11 @@
  * limitations under the License.
 *}
 
+{block title}{_core.error.404.title}{/block}
 {block content}
-<h1 n:block=title>Page Not Found</h1>
-
-<p>The page you requested could not be found. It is possible that the address is
-	incorrect, or that the page no longer exists. Please use a search engine to find
-	what you are looking for.</p>
-
-<p>
-	<small>error 404</small>
-</p>
+<div class='box box-primary'>
+	<header class='box-header with-border'>
+		<h1 class='box-title'>{_core.error.404.header}</h1>
+	</header>
+	<section class='box-body'>{_core.error.404.message}</section>
+</div>

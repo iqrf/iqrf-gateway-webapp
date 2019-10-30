@@ -15,11 +15,11 @@
  * limitations under the License.
 *}
 
+{block title}{_core.error.405.title}{/block}
 {block content}
-<h1 n:block=title>Method Not Allowed</h1>
-
-<p>The requested method is not allowed for the URL.</p>
-
-<p>
-	<small>error 405</small>
-</p>
+<div class='box box-primary'>
+	<header class='box-header with-border'>
+		<h1 class='box-title'>{_core.error.405.header}</h1>
+	</header>
+	<section class='box-body'>{_core.error.405.message}</section>
+</div>

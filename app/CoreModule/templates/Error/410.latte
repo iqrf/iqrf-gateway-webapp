@@ -15,11 +15,11 @@
  * limitations under the License.
 *}
 
+{block title}{_core.error.410.title}{/block}
 {block content}
-<h1 n:block=title>Page Not Found</h1>
-
-<p>The page you requested has been taken off the site. We apologize for the inconvenience.</p>
-
-<p>
-	<small>error 410</small>
-</p>
+<div class='box box-primary'>
+	<header class='box-header with-border'>
+		<h1 class='box-title'>{_core.error.410.header}</h1>
+	</header>
+	<section class='box-body'>{_core.error.410.message}</section>
+</div>

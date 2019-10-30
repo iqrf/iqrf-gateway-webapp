@@ -15,7 +15,11 @@
  * limitations under the License.
 *}
 
+{block title}{_core.error.4xx.title}{/block}
 {block content}
-<h1 n:block=title>Oops...</h1>
-
-<p>Your browser sent a request that this server could not understand or process.</p>
+<div class='box box-primary'>
+	<header class='box-header with-border'>
+		<h1 class='box-title'>{_core.error.4xx.header}</h1>
+	</header>
+	<section class='box-body'>{_core.error.4xx.message}</section>
+</div>

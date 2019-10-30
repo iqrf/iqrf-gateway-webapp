@@ -15,12 +15,11 @@
  * limitations under the License.
 *}
 
+{block title}{_core.error.403.title}{/block}
 {block content}
-<h1 n:block=title>Access Denied</h1>
-
-<p>You do not have permission to view this page. Please try contact the web
-	site administrator if you believe you should be able to view this page.</p>
-
-<p>
-	<small>error 403</small>
-</p>
+<div class='box box-primary'>
+	<header class='box-header with-border'>
+		<h1 class='box-title'>{_core.error.403.header}</h1>
+	</header>
+	<section class='box-body'>{_core.error.403.message}</section>
+</div>
