@@ -25,6 +25,7 @@ use App\CoreModule\Traits\TPresenterFlashMessage;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Models\EnumerationManager;
+use Iqrf\Repository\Exceptions\ProductNotFound;
 use Iqrf\Repository\Exceptions\ServiceUnavailable;
 use Iqrf\Repository\Models\ProductManager;
 use Nette\Utils\JsonException;
@@ -71,6 +72,9 @@ class EnumerationPresenter extends ProtectedPresenter {
 				try {
 					$hwpId = $data['peripheralEnumeration']['hwpId'];
 					$this->template->product = $this->productManager->get($hwpId);
+				} catch (ProductNotFound $e) {
+					// Do nothing
+					// TODO: add info flash message
 				} catch (ServiceUnavailable $e) {
 					$this->flashWarning('iqrfnet.enumeration.messages.repositoryUnavailable');
 				}
