@@ -27,18 +27,27 @@
 						<span class='glyphicon glyphicon-home text-info'></span> {_iqrfnet.devices.coordinator}
 					</td>
 					<td>
+						<span class='glyphicon glyphicon-remove text-danger'></span> {_iqrfnet.devices.unbonded}
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class='glyphicon glyphicon-ok text-primary'></span> {_iqrfnet.devices.bonded}
+					</td>
+					<td>
 						<span class='glyphicon glyphicon-signal text-primary'></span> {_iqrfnet.devices.discovered}
 					</td>
 				</tr>
 				<tr>
 					<td>
-						<span class='glyphicon glyphicon-remove text-danger'></span> {_iqrfnet.devices.unbonded}
+						<span class='glyphicon glyphicon-ok text-success'></span> {_iqrfnet.devices.bondedOnline}
 					</td>
 					<td>
-						<span class='glyphicon glyphicon-ok text-success'></span> {_iqrfnet.devices.bonded}
+						<span class='glyphicon glyphicon-signal text-success'></span> {_iqrfnet.devices.discoveredOnline}
 					</td>
 				</tr>
 			</table>
+			<a n:href='showNodes! true' class='ajax btn btn-primary center-block'>{_iqrfnet.devices.pingNodes}</a>
 			<table class='table table-striped'>
 				<tr>
 					<th>&nbsp;</th>
@@ -50,11 +59,15 @@
 						{var $address = $tens * $base + $units}
 						{switch $device}
 							{case 1}
-							{var $icon = 'ok', $color = 'text-success'}
+                            {var $icon = 'home', $color = 'text-info'}
 							{case 2}
-							{var $icon = 'signal', $color = 'text-primary'}
+                            {var $icon = 'ok', $color = 'text-primary'}
 							{case 3}
-							{var $icon = 'home', $color = 'text-info'}
+                            {var $icon = 'signal', $color = 'text-primary'}
+                            {case 5}
+                            {var $icon = 'ok', $color = 'text-success'}
+                            {case 6}
+                            {var $icon = 'signal', $color = 'text-success'}
 							{default}
 							{var $icon = 'remove', $color = 'text-danger'}
 						{/switch}

@@ -38,9 +38,12 @@ changeAddress:
 devices:
 	title: Devices Info
 	bonded: Bonded device
+	bondedOnline: Online bonded device
 	coordinator: Coordinator
 	discovered: Discovered device
+	discoveredOnline: Online discovered device
 	unbonded: Unbonded device
+	pingNodes: Ping nodes
 
 discovery:
 	title: Discovery

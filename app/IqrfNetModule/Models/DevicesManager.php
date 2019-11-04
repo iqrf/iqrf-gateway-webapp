@@ -61,23 +61,23 @@ class DevicesManager {
 	}
 
 	/**
-	 * Gets table of bonded and discovered devices
+	 * Gets table of devices
 	 * @param int $base Base
-	 * @return mixed[]|null Table of bonded and discovered devices
+	 * @param bool $ping Perform ping?
+	 * @return mixed[]|null Table of devices
 	 */
-	public function getTable(int $base): ?array {
+	public function getTable(int $base, bool $ping = false): ?array {
 		if ($base !== 10 && $base !== 16) {
 			$base = 10;
 		}
 		$this->createEmptyTable($base);
+		$this->fillTable($base, $ping);
 		$this->table[0][0] = DeviceTypes::COORDINATOR;
-		$this->fillTable(DeviceTypes::BONDED, $base);
-		$this->fillTable(DeviceTypes::DISCOVERED, $base);
 		return $this->table;
 	}
 
 	/**
-	 * Creates an empty table for bonded and discovered devices
+	 * Creates an empty table for devices
 	 * @param int $base Base
 	 */
 	private function createEmptyTable(int $base): void {
@@ -89,44 +89,51 @@ class DevicesManager {
 	}
 
 	/**
-	 * Fills table with bonded or discovered devices
-	 * @param int $deviceType Bonded or discovered devices
+	 * Fills table with devices
 	 * @param int $base Base
+	 * @param bool $ping Perform ping?
 	 */
-	private function fillTable(int $deviceType, int $base): void {
-		switch ($deviceType) {
-			case DeviceTypes::BONDED:
-				try {
-					$devices = $this->getBonded()['response']['data']['rsp']['result']['bondedDevices'] ?? [];
-				} catch (UserErrorException | DpaErrorException | EmptyResponseException | JsonException $e) {
-					$devices = [];
-				}
-				break;
-			case DeviceTypes::DISCOVERED:
-				try {
-					$devices = $this->getDiscovered()['response']['data']['rsp']['result']['discoveredDevices'] ?? [];
-				} catch (UserErrorException | DpaErrorException | EmptyResponseException | JsonException $e) {
-					$devices = [];
-				}
-				break;
-			default:
-				$devices = [];
+	private function fillTable(int $base, bool $ping = false): void {
+		$devices = [];
+		$deviceTypes = [DeviceTypes::BONDED, DeviceTypes::DISCOVERED];
+		if ($ping) {
+			$deviceTypes[] = DeviceTypes::ONLINE;
 		}
-		foreach ($devices as $node) {
-			$this->table[intdiv($node, $base)][$node % $base] = $deviceType;
+
+		foreach ($deviceTypes as $deviceType) {
+			try {
+				switch ($deviceType) {
+					case DeviceTypes::BONDED:
+						$devices = $this->getBonded();
+						break;
+					case DeviceTypes::DISCOVERED:
+						$devices = $this->getDiscovered();
+						break;
+					case DeviceTypes::ONLINE:
+						$devices = $this->ping();
+						break;
+				}
+			} catch (UserErrorException | DpaErrorException | EmptyResponseException | JsonException $e) {
+				$devices = [];
+			}
+			foreach ($devices as $node) {
+				$i = intdiv($node, $base);
+				$j = $node % $base;
+				$this->table[$i][$j] = $deviceType === DeviceTypes::ONLINE ? $this->table[$i][$j] + 3 : $deviceType;
+			}
 		}
 	}
 
 	/**
 	 * Gets bonded devices
-	 * @return mixed[] API request and response
+	 * @return mixed[] Bonded devices
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws UserErrorException
 	 * @throws JsonException
 	 */
 	public function getBonded(): array {
-		$array = [
+		$request = [
 			'mType' => 'iqrfEmbedCoordinator_BondedDevices',
 			'data' => [
 				'req' => [
@@ -136,20 +143,21 @@ class DevicesManager {
 				'returnVerbose' => true,
 			],
 		];
-		$this->request->setRequest($array);
-		return $this->wsClient->sendSync($this->request);
+		$this->request->setRequest($request);
+		$apiData = $this->wsClient->sendSync($this->request);
+		return $apiData['response']['data']['rsp']['result']['bondedDevices'] ?? [];
 	}
 
 	/**
 	 * Gets discovered devices
-	 * @return mixed[] API request and response
+	 * @return mixed[] Discovered devices
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws UserErrorException
 	 * @throws JsonException
 	 */
 	public function getDiscovered(): array {
-		$array = [
+		$request = [
 			'mType' => 'iqrfEmbedCoordinator_DiscoveredDevices',
 			'data' => [
 				'req' => [
@@ -159,8 +167,46 @@ class DevicesManager {
 				'returnVerbose' => true,
 			],
 		];
-		$this->request->setRequest($array);
-		return $this->wsClient->sendSync($this->request);
+		$this->request->setRequest($request);
+		$apiData = $this->wsClient->sendSync($this->request);
+		return $apiData['response']['data']['rsp']['result']['discoveredDevices'] ?? [];
+	}
+
+	/**
+	 * Perform FRC Ping
+	 * @return mixed[] Online devices
+	 * @throws DpaErrorException
+	 * @throws EmptyResponseException
+	 * @throws JsonException
+	 * @throws UserErrorException
+	 */
+	public function ping(): array {
+		$request = [
+			'mType' => 'iqrfEmbedFrc_Send',
+			'data' => [
+				'req' => [
+					'nAdr' => 0,
+					'param' => [
+						'frcCommand' => 0,
+						'userData' => [0, 0],
+					],
+					'returnVerbose' => true,
+				],
+			],
+		];
+		$this->request->setRequest($request);
+		$apiData = $this->wsClient->sendSync($this->request);
+		$frcData = $apiData['response']['data']['rsp']['result']['frcData'] ?? [];
+		$data = [];
+		foreach ($frcData as $i => $byte) {
+			for ($j = 0; $j < 7; ++$j) {
+				$bool = ($byte & (1 << $j)) >> $j;
+				if ($bool === 1) {
+					$data[] = ($i << 3) + $j;
+				}
+			}
+		}
+		return $data;
 	}
 
 }

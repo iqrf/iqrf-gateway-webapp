@@ -31,18 +31,33 @@ class DeviceTypes {
 	public const NONE = 0;
 
 	/**
+	 * Coordinator
+	 */
+	public const COORDINATOR = 1;
+
+	/**
 	 * Bonded device
 	 */
-	public const BONDED = 1;
+	public const BONDED = 2;
 
 	/**
 	 * Discovered device
 	 */
-	public const DISCOVERED = 2;
+	public const DISCOVERED = 3;
 
 	/**
-	 * Coordinator
+	 * Online device
 	 */
-	public const COORDINATOR = 3;
+	public const ONLINE = 4;
+
+	/**
+	 * Bonded online device
+	 */
+	public const BONDED_ONLINE = 5;
+
+	/**
+	 * Discovered online device
+	 */
+	public const DISCOVERED_ONLINE = 6;
 
 }

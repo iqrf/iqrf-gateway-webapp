@@ -58,12 +58,13 @@ class NetworkPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Shows bonded and discovered devices
+	 * Shows table with devices
+	 * @param bool $ping Perform ping?
 	 */
-	public function handleShowNodes(): void {
+	public function handleShowNodes(bool $ping = false): void {
 		$base = 10;
 		$this->template->base = $base;
-		$this->template->devices = $this->devicesManager->getTable($base);
+		$this->template->devices = $this->devicesManager->getTable($base, $ping);
 		$this->redrawControl('devicesWrapper');
 		$this->redrawControl('showDevices');
 	}
@@ -72,7 +73,9 @@ class NetworkPresenter extends ProtectedPresenter {
 	 * Renders a default page
 	 */
 	public function renderDefault(): void {
-		$this->handleShowNodes();
+		if (!$this->isAjax()) {
+			$this->handleShowNodes();
+		}
 	}
 
 	/**

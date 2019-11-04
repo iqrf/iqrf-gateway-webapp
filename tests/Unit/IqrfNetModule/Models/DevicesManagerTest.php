@@ -81,7 +81,7 @@ class DevicesManagerTest extends WebSocketTestCase {
 		$this->manager->shouldReceive('getDiscovered')
 			->andThrow(DpaErrorException::class);
 		$expected = [
-			[3, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+			[1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -113,12 +113,12 @@ class DevicesManagerTest extends WebSocketTestCase {
 	 * Tests the function to get table of devices in IQMESH Network (success)
 	 */
 	public function testGetTableSuccess(): void {
-		$bonded = $this->readJsonResponse('iqrfEmbedCoordinator_BondedDevices');
-		$discovered = $this->readJsonResponse('iqrfEmbedCoordinator_DiscoveredDevices');
+		$bonded = $this->readJsonResponse('iqrfEmbedCoordinator_BondedDevices')['response']['data']['rsp']['result']['bondedDevices'];
+		$discovered = $this->readJsonResponse('iqrfEmbedCoordinator_DiscoveredDevices')['response']['data']['rsp']['result']['discoveredDevices'];
 		$this->manager->shouldReceive('getBonded')->andReturn($bonded);
 		$this->manager->shouldReceive('getDiscovered')->andReturn($discovered);
 		$expected = [
-			[3, 1, 1, 1, 0, 0, 0, 0, 0, 0],
+			[1, 2, 2, 2, 0, 0, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
