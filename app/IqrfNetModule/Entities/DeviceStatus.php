@@ -21,7 +21,6 @@ declare(strict_types = 1);
 namespace App\IqrfNetModule\Entities;
 
 use App\IqrfNetModule\Enums\DeviceTypes;
-use Nette\Application\LinkGenerator;
 
 /**
  * Device status entity

@@ -163,6 +163,26 @@ class DevicesManagerTest extends WebSocketTestCase {
 		Assert::equal($expected, $this->manager->getTable(10));
 	}
 
+	/**
+	 * Tests the function to ping devices
+	 */
+	public function testPing(): void {
+		$request = [
+			'mType' => 'iqrfEmbedFrc_Send',
+			'data' => [
+				'req' => [
+					'nAdr' => 0,
+					'param' => [
+						'frcCommand' => 0,
+						'userData' => [0, 0],
+					],
+					'returnVerbose' => true,
+				],
+			],
+		];
+		$this->assertRequest($request, [$this->manager, 'ping']);
+	}
+
 }
 
 $test = new DevicesManagerTest();
