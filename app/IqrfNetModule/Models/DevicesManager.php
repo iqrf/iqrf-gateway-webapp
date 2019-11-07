@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\IqrfNetModule\Models;
 
+use App\IqrfNetModule\Entities\DeviceStatus;
 use App\IqrfNetModule\Enums\DeviceTypes;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
@@ -72,7 +73,7 @@ class DevicesManager {
 		}
 		$this->createEmptyTable($base);
 		$this->fillTable($base, $ping);
-		$this->table[0][0] = DeviceTypes::COORDINATOR;
+		$this->table[0][0]->setType(DeviceTypes::COORDINATOR);
 		return $this->table;
 	}
 
@@ -81,9 +82,9 @@ class DevicesManager {
 	 * @param int $base Base
 	 */
 	private function createEmptyTable(int $base): void {
-		for ($i = 0; $i < (240 / $base); $i++) {
+		for ($i = 0; $i < intdiv(240, $base); $i++) {
 			for ($j = 0; $j < $base; $j++) {
-				$this->table[$i][$j] = DeviceTypes::NONE;
+				$this->table[$i][$j] = new DeviceStatus($i * $base + $j);
 			}
 		}
 	}
@@ -119,7 +120,7 @@ class DevicesManager {
 			foreach ($devices as $node) {
 				$i = intdiv($node, $base);
 				$j = $node % $base;
-				$this->table[$i][$j] = $deviceType === DeviceTypes::ONLINE ? $this->table[$i][$j] + 3 : $deviceType;
+				$this->table[$i][$j]->setType($deviceType);
 			}
 		}
 	}

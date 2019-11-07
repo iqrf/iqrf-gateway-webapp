@@ -10,6 +10,7 @@ declare(strict_types = 1);
 
 namespace Tests\Unit\IqrfNetModule\Models;
 
+use App\IqrfNetModule\Entities\DeviceStatus;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Models\DevicesManager;
 use Mockery;
@@ -80,7 +81,7 @@ class DevicesManagerTest extends WebSocketTestCase {
 			->andThrow(DpaErrorException::class);
 		$this->manager->shouldReceive('getDiscovered')
 			->andThrow(DpaErrorException::class);
-		$expected = [
+		$table = [
 			[1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -106,7 +107,15 @@ class DevicesManagerTest extends WebSocketTestCase {
 			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 		];
-		Assert::same($expected, $this->manager->getTable(0));
+		$expected = [];
+		foreach ($table as $x => $row) {
+			foreach ($row as $y => $item) {
+				$status = new DeviceStatus($x * 10 + $y);
+				$status->setType($item);
+				$expected[$x][$y] = $status;
+			}
+		}
+		Assert::equal($expected, $this->manager->getTable(0));
 	}
 
 	/**
@@ -117,7 +126,7 @@ class DevicesManagerTest extends WebSocketTestCase {
 		$discovered = $this->readJsonResponse('iqrfEmbedCoordinator_DiscoveredDevices')['response']['data']['rsp']['result']['discoveredDevices'];
 		$this->manager->shouldReceive('getBonded')->andReturn($bonded);
 		$this->manager->shouldReceive('getDiscovered')->andReturn($discovered);
-		$expected = [
+		$table = [
 			[1, 2, 2, 2, 0, 0, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -143,7 +152,15 @@ class DevicesManagerTest extends WebSocketTestCase {
 			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 		];
-		Assert::same($expected, $this->manager->getTable(10));
+		$expected = [];
+		foreach ($table as $x => $row) {
+			foreach ($row as $y => $item) {
+				$status = new DeviceStatus($x * 10 + $y);
+				$status->setType($item);
+				$expected[$x][$y] = $status;
+			}
+		}
+		Assert::equal($expected, $this->manager->getTable(10));
 	}
 
 }
