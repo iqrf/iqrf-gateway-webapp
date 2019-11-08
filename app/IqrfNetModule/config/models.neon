@@ -5,6 +5,7 @@ services:
 	- App\IqrfNetModule\Models\BondingManager
 	- App\IqrfNetModule\Models\DevicesManager
 	- App\IqrfNetModule\Models\DiscoveryManager
+	- App\IqrfNetModule\Models\DpaManager
 	- App\IqrfNetModule\Models\DpaRawManager
 	- App\IqrfNetModule\Models\EnumerationManager
 	- App\IqrfNetModule\Models\GwModeManager
