@@ -27,7 +27,7 @@ use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\IqrfNetModule\Models\IqrfOsManager;
-use App\IqrfNetModule\Models\NativeUploadManager;
+use App\IqrfNetModule\Models\UploadManager;
 use App\IqrfNetModule\Presenters\TrUploadPresenter;
 use GuzzleHttp\Exception\ClientException;
 use Nette\Application\UI\Form;
@@ -58,7 +58,7 @@ class OsDpaUploadFormFactory {
 	private $osManager;
 
 	/**
-	 * @var NativeUploadManager Native upload service manager
+	 * @var UploadManager Native upload service manager
 	 */
 	private $uploadManager;
 
@@ -66,9 +66,9 @@ class OsDpaUploadFormFactory {
 	 * Constructor
 	 * @param FormFactory $formFactory Generic form factory
 	 * @param IqrfOsManager $osManager IQRF OS manager
-	 * @param NativeUploadManager $uploadManager Native upload service manager
+	 * @param UploadManager $uploadManager Native upload service manager
 	 */
-	public function __construct(FormFactory $formFactory, IqrfOsManager $osManager, NativeUploadManager $uploadManager) {
+	public function __construct(FormFactory $formFactory, IqrfOsManager $osManager, UploadManager $uploadManager) {
 		$this->formFactory = $formFactory;
 		$this->osManager = $osManager;
 		$this->uploadManager = $uploadManager;

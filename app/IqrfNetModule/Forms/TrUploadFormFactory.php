@@ -26,7 +26,7 @@ use App\IqrfNetModule\Enums\UploadFormats;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Exceptions\UserErrorException;
-use App\IqrfNetModule\Models\NativeUploadManager;
+use App\IqrfNetModule\Models\UploadManager;
 use App\IqrfNetModule\Presenters\TrUploadPresenter;
 use Nette\Application\UI\Form;
 use Nette\IOException;
@@ -51,16 +51,16 @@ class TrUploadFormFactory {
 	private $presenter;
 
 	/**
-	 * @var NativeUploadManager IQRF TR native upload manager
+	 * @var UploadManager IQRF TR native upload manager
 	 */
 	private $manager;
 
 	/**
 	 * Constructor
 	 * @param FormFactory $factory Generic form factory
-	 * @param NativeUploadManager $manager IQRF TR native upload manager
+	 * @param UploadManager $manager IQRF TR native upload manager
 	 */
-	public function __construct(FormFactory $factory, NativeUploadManager $manager) {
+	public function __construct(FormFactory $factory, UploadManager $manager) {
 		$this->factory = $factory;
 		$this->manager = $manager;
 	}

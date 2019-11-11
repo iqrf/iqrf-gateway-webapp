@@ -20,62 +20,112 @@ declare(strict_types = 1);
 
 namespace App\IqrfNetModule\Models;
 
+use App\ConfigModule\Models\GenericManager;
+use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
+use App\GatewayModule\Exceptions\CorruptedFileException;
+use App\GatewayModule\Exceptions\UnknownFileFormatExceptions;
 use App\IqrfNetModule\Enums\UploadFormats;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Exceptions\UserErrorException;
-use App\IqrfNetModule\Requests\ApiRequest;
+use Nette\Http\FileUpload;
+use Nette\IOException;
+use Nette\Utils\FileSystem;
 use Nette\Utils\JsonException;
+use Nette\Utils\Strings;
 
 /**
- * Upload manager
+ * IQRF TR native upload manager
  */
 class UploadManager {
 
 	/**
-	 * @var ApiRequest IQRF Gateway Daemon's JSON API request
+	 * @var string Path to the directory for uploaded files
 	 */
-	private $apiRequest;
+	private $path = '/var/cache/iqrf-gateway-daemon/upload';
 
 	/**
-	 * @var WebSocketClient WebSocket client
+	 * @var NativeUploadManager IQRF TR native upload manager
 	 */
-	private $wsClient;
+	private $uploadManager;
 
 	/**
 	 * Constructor
-	 * @param ApiRequest $apiRequest IQRF Gateway Daemon's JSON API request
-	 * @param WebSocketClient $wsClient WebSocket client
+	 * @param GenericManager $configManager Generic configuration manager
+	 * @param NativeUploadManager $uploadManager IQRF TR native upload manager
 	 */
-	public function __construct(ApiRequest $apiRequest, WebSocketClient $wsClient) {
-		$this->apiRequest = $apiRequest;
-		$this->wsClient = $wsClient;
+	public function __construct(GenericManager $configManager, NativeUploadManager $uploadManager) {
+		try {
+			$configManager->setComponent('iqrf::NativeUploadService');
+			$instances = $configManager->list();
+			if (isset($instances[0]['uploadPath'])) {
+				$this->path = $instances[0]['uploadPath'];
+			}
+		} catch (JsonException | NonExistingJsonSchemaException $e) {
+			$this->path = '/var/cache/iqrf-gateway-daemon/upload';
+		}
+		$this->uploadManager = $uploadManager;
 	}
 
 	/**
-	 * Uploads a file into the coordinator
-	 * @param string $filePath Path to the file to upload
+	 * Uploads the file into IQRF TR module
+	 * @param FileUpload $file File to upload
 	 * @param UploadFormats|null $format File format
-	 * @return mixed[] API request and response
+	 * @throws CorruptedFileException
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws JsonException
 	 * @throws UserErrorException
 	 */
-	public function upload(string $filePath, ?UploadFormats $format = null): array {
-		$request = [
-			'mType' => 'mngDaemon_Upload',
-			'data' => [
-				'req' => [
-					'fileName' => $filePath,
-				],
-			],
-		];
-		if ($format !== null) {
-			$request['data']['req']['target'] = $format->toScalar();
+	public function upload(FileUpload $file, ?UploadFormats $format = null): void {
+		if (!$file->isOk()) {
+			throw new CorruptedFileException();
 		}
-		$this->apiRequest->setRequest($request);
-		return $this->wsClient->sendSync($this->apiRequest);
+		$this->uploadFile($file->getTemporaryFile(), $format);
+	}
+
+	/**
+	 * Uploads the file into IQRF TR module
+	 * @param string $file File path
+	 * @param UploadFormats|null $format File format
+	 * @throws DpaErrorException
+	 * @throws EmptyResponseException
+	 * @throws JsonException
+	 * @throws UserErrorException
+	 */
+	public function uploadFile(string $file, ?UploadFormats $format = null): void {
+		FileSystem::createDir($this->path);
+		$fileName = basename($file);
+		FileSystem::copy($file, $this->path . '/' . $fileName);
+		if ($format === null) {
+			$format = $this->recognizeFormat($file);
+		}
+		$this->uploadManager->upload($fileName, $format);
+		try {
+			FileSystem::delete($this->path . '/' . $fileName);
+		} catch (IOException $e) {
+			// Do nothing
+		}
+	}
+
+	/**
+	 * Recognizes a file format
+	 * @param string $file File name
+	 * @return UploadFormats File format
+	 * @throws UnknownFileFormatExceptions
+	 */
+	private function recognizeFormat(string $file): UploadFormats {
+		$fileName = Strings::lower($file);
+		if (Strings::endsWith($fileName, '.hex')) {
+			return UploadFormats::HEX();
+		}
+		if (Strings::endsWith($fileName, '.iqrf')) {
+			return UploadFormats::IQRF();
+		}
+		if (Strings::endsWith($fileName, '.trcnfg')) {
+			return UploadFormats::TRCNFG();
+		}
+		throw new UnknownFileFormatExceptions();
 	}
 
 }

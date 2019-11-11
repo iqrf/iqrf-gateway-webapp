@@ -12,6 +12,7 @@ services:
 	- App\IqrfNetModule\Models\IqrfOsManager(@database.iqrf_os.context)
 	- App\IqrfNetModule\Models\MessageIdManager
 	- App\IqrfNetModule\Models\NativeUploadManager
+	- App\IqrfNetModule\Models\OsManager
 	- App\IqrfNetModule\Models\SecurityManager
 	- App\IqrfNetModule\Models\StandardBinaryOutputManager
 	- App\IqrfNetModule\Models\StandardDaliManager

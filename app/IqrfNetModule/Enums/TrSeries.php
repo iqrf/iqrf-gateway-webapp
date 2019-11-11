@@ -36,7 +36,7 @@ final class TrSeries extends Enum {
 	/**
 	 * IQRF (DC)TR-7xD
 	 */
-	private const TR_7XD = '7xD';
+	private const TR_7XD = 'TR7x';
 
 	/**
 	 * Creates IQRF TR series enum from the IQRF TR type
@@ -48,6 +48,24 @@ final class TrSeries extends Enum {
 			return self::TR_7XD();
 		}
 		throw new DomainException();
+	}
+
+	/**
+	 * Creates IQRF TR series enum from DPA OS read TR&MCU type
+	 * @param int $trMcuType DPA OS read TR&MCU type
+	 * @return TrSeries IQRF TR series enum
+	 */
+	public static function fromTrMcuType(int $trMcuType): self {
+		switch ($trMcuType >> 4) {
+			case 2:
+			case 4:
+			case 11:
+			case 12:
+			case 13:
+				return self::TR_7XD();
+			default:
+				throw new DomainException();
+		}
 	}
 
 }

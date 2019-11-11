@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\IqrfNetModule\Models;
 
+use App\IqrfNetModule\Entities\IqrfOs;
 use App\IqrfNetModule\Enums\TrSeries;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
@@ -28,7 +29,6 @@ use Nette\Database\Context;
 use Nette\Database\Table\ActiveRow;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;
-use Nette\Utils\Strings;
 
 /**
  * IQRF OS manager
@@ -48,20 +48,33 @@ class IqrfOsManager {
 	private $dpaManager;
 
 	/**
-	 * @var EnumerationManager IQMESH enumeration manager
+	 * @var OsManager DPA OS peripheral manager
 	 */
-	private $enumerationManager;
+	private $osManager;
 
 	/**
 	 * Constructor
 	 * @param Context $database Database context
 	 * @param DpaManager $dpaManager DPA manager
-	 * @param EnumerationManager $enumeration IQMESH enumeration manager
+	 * @param OsManager $osManager DPA OS peripheral manager
 	 */
-	public function __construct(Context $database, DpaManager $dpaManager, EnumerationManager $enumeration) {
+	public function __construct(Context $database, DpaManager $dpaManager, OsManager $osManager) {
 		$this->database = $database;
 		$this->dpaManager = $dpaManager;
-		$this->enumerationManager = $enumeration;
+		$this->osManager = $osManager;
+	}
+
+	/**
+	 * Returns IQRF OS entity
+	 * @return IqrfOs Current IQRF OS entity
+	 * @throws DpaErrorException
+	 * @throws EmptyResponseException
+	 * @throws JsonException
+	 * @throws UserErrorException
+	 */
+	private function getCurrent(): IqrfOs {
+		$osRead = $this->osManager->read(0);
+		return IqrfOs::fromOsRead($osRead);
 	}
 
 	/**
@@ -74,19 +87,17 @@ class IqrfOsManager {
 	 */
 	public function list(): array {
 		$array = [];
-		$enumeration = $this->enumerationManager->device(0);
-		$build = $enumeration['response']['data']['rsp']['osRead']['osBuild'];
-		$version = $enumeration['response']['data']['rsp']['osRead']['osVersion'];
-		$osVersions = $this->listVersions($build, $version);
-		foreach ($osVersions as $osVersion => $osBuild) {
-			foreach ($this->dpaManager->list($osVersion) as $dpa) {
-				$index = $osVersion . ',' . $dpa->getDpa();
-				$version = $osBuild . ', DPA ' . $dpa->getDpa(true);
+		$os = $this->getCurrent();
+		$osVersions = $this->listVersions($os);
+		foreach ($osVersions as $osBuild => $osVersion) {
+			foreach ($this->dpaManager->list($osBuild) as $dpa) {
+				$index = $osBuild . ',' . $dpa->getDpa();
+				$versions = $osVersion . ', DPA ' . $dpa->getDpa(true);
 				if (hexdec($dpa->getDpa()) < 0x400) {
-					$array[$index . ',LP'] = $version . ', LP RF mode';
-					$array[$index . ',STD'] = $version . ', STD RF mode';
+					$array[$index . ',LP'] = $versions . ', LP RF mode';
+					$array[$index . ',STD'] = $versions . ', STD RF mode';
 				} else {
-					$array[$index] = $version;
+					$array[$index] = $versions;
 				}
 			}
 		}
@@ -96,28 +107,28 @@ class IqrfOsManager {
 
 	/**
 	 * Lists IQRF OS versions
-	 * @param string $build Current IQRF OS build
-	 * @param string $version Current IQRF OS version
+	 * @param IqrfOs $os Current IQRF OS
 	 * @return array<string,string> IQRF OS versions
 	 */
-	private function listVersions(string $build, string $version): array {
+	private function listVersions(IqrfOs $os): array {
 		$versions = [];
-		$versions[$build] = 'IQRF OS ' . $version . ' (' . $build . ')';
+		$versions[$os->getBuild()] = $os->getDescription();
 		$table = $this->database->table('os_patches');
-		$table->where('from_build = ? AND part = ?', $build, 1);
+		$table->where('from_build = ? AND part = ?', $os->getBuild(), 1);
 		/**
-		 * @var ActiveRow $os Database active row
+		 * @var ActiveRow $row Database active row
 		 */
-		foreach ($table->fetchAll() as $os) {
-			$osVersion = $this->getPrettyVersion((string) $os->to_version);
-			$versions[$os->to_build] = 'IQRF OS ' . $osVersion . ' (' . $os->to_build . ')';
+		foreach ($table->fetchAll() as $row) {
+			$trType = TrSeries::fromScalar($row->module_type);
+			$entity = new IqrfOs((string) $row->to_build, (string) $row->to_version, $trType);
+			$versions[$row->to_build] = $entity->getDescription();
 		}
 		return $versions;
 	}
 
 	/**
 	 * Returns files to upload
-	 * @param string $os IQRF OS build
+	 * @param string $build IQRF OS build
 	 * @param string $dpa DPA version
 	 * @param string|null $rfMode RF mode
 	 * @return string[] Files to upload
@@ -126,11 +137,10 @@ class IqrfOsManager {
 	 * @throws UserErrorException
 	 * @throws JsonException
 	 */
-	public function getFiles(string $os, string $dpa, ?string $rfMode = null): array {
-		$osRead = $this->enumerationManager->device(0)['response']['data']['rsp']['osRead'];
-		$files = $this->getOsFiles($osRead['osBuild'], $os);
-		$trSeries = TrSeries::fromTrType($osRead['trMcuType']['trType']);
-		$files[] = $this->dpaManager->getFile($os, $dpa, $trSeries, $rfMode);
+	public function getFiles(string $build, string $dpa, ?string $rfMode = null): array {
+		$os = $this->getCurrent();
+		$files = $this->getOsFiles($os->getBuild(), $build);
+		$files[] = $this->dpaManager->getFile($build, $dpa, $os->getTrSeries(), $rfMode);
 		return $files;
 	}
 
@@ -148,17 +158,6 @@ class IqrfOsManager {
 		return array_map(function (ActiveRow $row): string {
 			return __DIR__ . '/../../../iqrf/os/' . $row->filename;
 		}, $table->fetchAll());
-	}
-
-	/**
-	 * @param string $osVersion IQRF OS version
-	 * @return string Pretty formatted IQRF OS version
-	 */
-	private function getPrettyVersion(string $osVersion): string {
-		$versionInt = hexdec($osVersion);
-		$version = strval($versionInt >> 8) . '.';
-		$version .= Strings::padLeft(dechex($versionInt & 0xff), 2, '0') . 'D';
-		return $version;
 	}
 
 }

@@ -1,5 +1,6 @@
 <?php
 
+
 /**
  * Copyright 2017 MICRORISC s.r.o.
  * Copyright 2017-2019 IQRF Tech s.r.o.
@@ -16,21 +17,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 declare(strict_types = 1);
 
 namespace App\IqrfNetModule\Models;
 
-use App\IqrfNetModule\Enums\UploadFormats;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\IqrfNetModule\Requests\ApiRequest;
+use Nette\SmartObject;
 use Nette\Utils\JsonException;
 
 /**
- * Upload manager
+ * DPA OS peripheral manager
  */
-class NativeUploadManager {
+class OsManager {
+
+	use SmartObject;
 
 	/**
 	 * @var ApiRequest IQRF Gateway Daemon's JSON API request
@@ -53,27 +57,25 @@ class NativeUploadManager {
 	}
 
 	/**
-	 * Uploads a file into the coordinator
-	 * @param string $filePath Path to the file to upload
-	 * @param UploadFormats|null $format File format
+	 * Reads IQRF OS information
+	 * @param int $address Network device address
 	 * @return mixed[] API request and response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws JsonException
 	 * @throws UserErrorException
 	 */
-	public function upload(string $filePath, ?UploadFormats $format = null): array {
+	public function read(int $address): array {
 		$request = [
-			'mType' => 'mngDaemon_Upload',
+			'mType' => 'iqrfEmbedOs_Read',
 			'data' => [
 				'req' => [
-					'fileName' => $filePath,
+					'nAdr' => $address,
+					'param' => (object) [],
 				],
+				'returnVerbose' => true,
 			],
 		];
-		if ($format !== null) {
-			$request['data']['req']['target'] = $format->toScalar();
-		}
 		$this->apiRequest->setRequest($request);
 		return $this->wsClient->sendSync($this->apiRequest);
 	}
