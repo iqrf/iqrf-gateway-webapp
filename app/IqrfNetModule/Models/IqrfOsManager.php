@@ -48,46 +48,26 @@ class IqrfOsManager {
 	private $dpaManager;
 
 	/**
-	 * @var OsManager DPA OS peripheral manager
-	 */
-	private $osManager;
-
-	/**
 	 * Constructor
 	 * @param Context $database Database context
 	 * @param DpaManager $dpaManager DPA manager
-	 * @param OsManager $osManager DPA OS peripheral manager
 	 */
-	public function __construct(Context $database, DpaManager $dpaManager, OsManager $osManager) {
+	public function __construct(Context $database, DpaManager $dpaManager) {
 		$this->database = $database;
 		$this->dpaManager = $dpaManager;
-		$this->osManager = $osManager;
-	}
-
-	/**
-	 * Returns IQRF OS entity
-	 * @return IqrfOs Current IQRF OS entity
-	 * @throws DpaErrorException
-	 * @throws EmptyResponseException
-	 * @throws JsonException
-	 * @throws UserErrorException
-	 */
-	private function getCurrent(): IqrfOs {
-		$osRead = $this->osManager->read(0);
-		return IqrfOs::fromOsRead($osRead);
 	}
 
 	/**
 	 * Lists available IQRF OS changes
+	 * @param IqrfOs $os Current IQRF OS entity
 	 * @return string[] Available IQRF OS changes
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws JsonException
 	 * @throws UserErrorException
 	 */
-	public function list(): array {
+	public function list(IqrfOs $os): array {
 		$array = [];
-		$os = $this->getCurrent();
 		$osVersions = $this->listVersions($os);
 		foreach ($osVersions as $osBuild => $osVersion) {
 			foreach ($this->dpaManager->list($osBuild) as $dpa) {
@@ -119,7 +99,7 @@ class IqrfOsManager {
 		 * @var ActiveRow $row Database active row
 		 */
 		foreach ($table->fetchAll() as $row) {
-			$trType = TrSeries::fromScalar($row->module_type);
+			$trType = TrSeries::fromIqrfOsFileName((string) $row->module_type);
 			$entity = new IqrfOs((string) $row->to_build, (string) $row->to_version, $trType);
 			$versions[$row->to_build] = $entity->getDescription();
 		}
@@ -128,7 +108,8 @@ class IqrfOsManager {
 
 	/**
 	 * Returns files to upload
-	 * @param string $build IQRF OS build
+	 * @param IqrfOs $currentOs Current IQRF OS entity
+	 * @param string $toBuild Target IQRF OS build
 	 * @param string $dpa DPA version
 	 * @param string|null $rfMode RF mode
 	 * @return string[] Files to upload
@@ -137,10 +118,9 @@ class IqrfOsManager {
 	 * @throws UserErrorException
 	 * @throws JsonException
 	 */
-	public function getFiles(string $build, string $dpa, ?string $rfMode = null): array {
-		$os = $this->getCurrent();
-		$files = $this->getOsFiles($os->getBuild(), $build);
-		$files[] = $this->dpaManager->getFile($build, $dpa, $os->getTrSeries(), $rfMode);
+	public function getFiles(IqrfOs $currentOs, string $toBuild, string $dpa, ?string $rfMode = null): array {
+		$files = $this->getOsFiles($currentOs->getBuild(), $toBuild);
+		$files[] = $this->dpaManager->getFile($toBuild, $dpa, $currentOs->getTrSeries(), $rfMode);
 		return $files;
 	}
 

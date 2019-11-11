@@ -27,10 +27,11 @@ use App\IqrfNetModule\Enums\UploadFormats;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Exceptions\UserErrorException;
-use App\IqrfNetModule\Models\IqrfOsManager;
+use App\IqrfNetModule\Models\DpaManager;
 use App\IqrfNetModule\Models\OsManager;
 use App\IqrfNetModule\Models\UploadManager;
 use App\IqrfNetModule\Presenters\TrUploadPresenter;
+use Contributte\Translation\Wrappers\NotTranslate;
 use GuzzleHttp\Exception\ClientException;
 use Nette\Application\UI\Form;
 use Nette\IOException;
@@ -38,21 +39,21 @@ use Nette\SmartObject;
 use Nette\Utils\JsonException;
 
 /**
- * IQRF OS Upload form factory
+ * DPA upload form factory
  */
-class OsDpaUploadFormFactory {
+class DpaUploadFormFactory {
 
 	use SmartObject;
+
+	/**
+	 * @var DpaManager DPA manager
+	 */
+	private $dpaManager;
 
 	/**
 	 * @var FormFactory Generic form factory
 	 */
 	private $formFactory;
-
-	/**
-	 * @var IqrfOsManager IQRF OS manager
-	 */
-	private $iqrfOsManager;
 
 	/**
 	 * @var IqrfOs Current IQRF OS entity
@@ -78,27 +79,26 @@ class OsDpaUploadFormFactory {
 	 * Constructor
 	 * @param FormFactory $formFactory Generic form factory
 	 * @param OsManager $osManager DPA OS peripheral manager
-	 * @param IqrfOsManager $iqrfOsManager IQRF OS manager
+	 * @param DpaManager $dpaManager DPA manager
 	 * @param UploadManager $uploadManager Native upload service manager
 	 */
-	public function __construct(FormFactory $formFactory, OsManager $osManager, IqrfOsManager $iqrfOsManager, UploadManager $uploadManager) {
+	public function __construct(FormFactory $formFactory, OsManager $osManager, DpaManager $dpaManager, UploadManager $uploadManager) {
 		$this->formFactory = $formFactory;
 		$this->osManager = $osManager;
-		$this->iqrfOsManager = $iqrfOsManager;
+		$this->dpaManager = $dpaManager;
 		$this->uploadManager = $uploadManager;
 	}
 
 	/**
-	 * Creates IQRF OS and DPA upgrade form
+	 * Creates DPA upload form
 	 * @param TrUploadPresenter $presenter IQRF TR upload presenter
-	 * @return Form IQRF OS and DPA upgrade form
+	 * @return Form DPA upload form
 	 */
 	public function create(TrUploadPresenter $presenter): Form {
 		$this->presenter = $presenter;
-		$form = $this->formFactory->create('iqrfnet.osUpload');
+		$form = $this->formFactory->create('iqrfnet.dpaUpload');
 		$form->addSelect('version', 'version')
 			->setItems($this->list())
-			->setTranslator($this->formFactory->getTranslator())
 			->setRequired('messages.version');
 		$form->addSubmit('upload', 'upload')
 			->setHtmlAttribute('class', 'ajax');
@@ -107,14 +107,18 @@ class OsDpaUploadFormFactory {
 	}
 
 	/**
-	 * Returns available IQRF OS changes
-	 * @return string[] Available IQRF OS changes
+	 * Returns available DPA versions
+	 * @return array<string, NotTranslate> Available DPA versions
 	 */
 	private function list(): array {
 		try {
 			$osRead = $this->osManager->read(0);
 			$this->osEntity = IqrfOs::fromOsRead($osRead);
-			return $this->iqrfOsManager->list($this->osEntity);
+			$versions = [];
+			foreach ($this->dpaManager->list($this->osEntity->getBuild()) as $version) {
+				$versions[$version->getDpa()] = new NotTranslate($version->getDpa(true));
+			}
+			return $versions;
 		} catch (UserErrorException | DpaErrorException | EmptyResponseException | JsonException $e) {
 			return [];
 		}
@@ -128,12 +132,11 @@ class OsDpaUploadFormFactory {
 		$array = explode(',', $form->getValues()->version);
 		$osBuild = $array[0];
 		$dpa = $array[1];
+		$trSeries = $this->osEntity->getTrSeries();
 		$rfMode = $array[2] ?? null;
 		try {
-			$files = $this->iqrfOsManager->getFiles($this->osEntity, $osBuild, $dpa, $rfMode);
-			foreach ($files as $file) {
-				$this->uploadManager->uploadFile($file, UploadFormats::IQRF());
-			}
+			$file = $this->dpaManager->getFile($osBuild, $dpa, $trSeries, $rfMode);
+			$this->uploadManager->uploadFile($file, UploadFormats::IQRF());
 			$this->presenter->flashSuccess('iqrfnet.trUpload.messages.success');
 		} catch (CorruptedFileException $e) {
 			$this->presenter->flashError('iqrfnet.trUpload.messages.corruptedFile');

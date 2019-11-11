@@ -36,7 +36,7 @@ final class TrSeries extends Enum {
 	/**
 	 * IQRF (DC)TR-7xD
 	 */
-	private const TR_7XD = 'TR7x';
+	private const TR_7XD = '7xD';
 
 	/**
 	 * Creates IQRF TR series enum from the IQRF TR type
@@ -62,6 +62,20 @@ final class TrSeries extends Enum {
 			case 11:
 			case 12:
 			case 13:
+				return self::TR_7XD();
+			default:
+				throw new DomainException();
+		}
+	}
+
+	/**
+	 * Creates IQRF TR series enum from IQRF OS diff file name
+	 * @param string $trSeries IQRF TR series
+	 * @return TrSeries IQRF TR series enum
+	 */
+	public static function fromIqrfOsFileName(string $trSeries): self {
+		switch ($trSeries) {
+			case 'TR7x':
 				return self::TR_7XD();
 			default:
 				throw new DomainException();

@@ -22,6 +22,7 @@ namespace App\IqrfNetModule\Presenters;
 
 use App\CoreModule\Presenters\ProtectedPresenter;
 use App\CoreModule\Traits\TPresenterFlashMessage;
+use App\IqrfNetModule\Forms\DpaUploadFormFactory;
 use App\IqrfNetModule\Forms\OsDpaUploadFormFactory;
 use App\IqrfNetModule\Forms\TrUploadFormFactory;
 use Nette\Application\UI\Form;
@@ -32,6 +33,12 @@ use Nette\Application\UI\Form;
 class TrUploadPresenter extends ProtectedPresenter {
 
 	use TPresenterFlashMessage;
+
+	/**
+	 * @var DpaUploadFormFactory DPA upload form factory
+	 * @inject
+	 */
+	public $dpaFormFactory;
 
 	/**
 	 * @var OsDpaUploadFormFactory IQRF OS upload form factory
@@ -54,6 +61,14 @@ class TrUploadPresenter extends ProtectedPresenter {
 			$this->flashError('iqrfnet.trUpload.messages.disabled');
 			$this->redirect('Homepage:default');
 		}
+	}
+
+	/**
+	 * Creates DPA upload form
+	 * @return Form DPA upload form
+	 */
+	protected function createComponentDpaUploadForm(): Form {
+		return $this->dpaFormFactory->create($this);
 	}
 
 	/**

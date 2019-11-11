@@ -22,15 +22,25 @@
 		<h2 class='box-title'>{_iqrfnet.trUpload.coordinator}</h2>
 	</header>
 	<section class='box-body btn-group dropup' role='group'>
-        {control trUploadForm}
+		{control trUploadForm}
 	</section>
 </div>
 
-<div class='box box-primary'>
+<div  class='box box-primary'>
 	<header class='box-header with-border'>
-		<h2 class='box-title'>{_iqrfnet.osUpload.title}</h2>
+		<h2 class='box-title'>
+			{if $user->isInRole("power")}
+				{_iqrfnet.osUpload.title}
+			{else}
+				{_iqrfnet.dpaUpload.title}
+			{/if}
+		</h2>
 	</header>
 	<section class='box-body btn-group dropup' role='group'>
-        {control osUploadForm}
+		{if $user->isInRole("power")}
+			{control osUploadForm}
+		{else}
+			{control dpaUploadForm}
+		{/if}
 	</section>
 </div>

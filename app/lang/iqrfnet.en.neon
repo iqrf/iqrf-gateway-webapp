@@ -95,6 +95,13 @@ dpaConfig:
 	nodeDpaInterface: Node DPA interface
 	save: Save
 
+dpaUpload:
+	title: DPA upload
+	version: DPA version
+	messages:
+		version: Please select DPA version to upload.
+	upload: Upload
+
 enumeration:
 	title: Device enumeration
 	deviceInfo: Device info
@@ -129,6 +136,7 @@ network-manager:
 osUpload:
 	title: IQRF OS upload
 	version: IQRF OS version
+	messages: Please select IQRF OS version to upload.
 	upload: Upload
 
 rfConfig:
