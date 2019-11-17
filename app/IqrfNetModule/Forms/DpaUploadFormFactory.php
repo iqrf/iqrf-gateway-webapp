@@ -130,10 +130,10 @@ class DpaUploadFormFactory {
 	 */
 	public function upload(Form $form): void {
 		$array = explode(',', $form->getValues()->version);
-		$osBuild = $array[0];
-		$dpa = $array[1];
+		$osBuild = $this->osEntity->getBuild();
+		$dpa = $array[0];
 		$trSeries = $this->osEntity->getTrSeries();
-		$rfMode = $array[2] ?? null;
+		$rfMode = $array[1] ?? null;
 		try {
 			$file = $this->dpaManager->getFile($osBuild, $dpa, $trSeries, $rfMode);
 			$this->uploadManager->uploadFile($file, UploadFormats::IQRF());
