@@ -312,6 +312,7 @@ trUpload:
 	title: TR upload
 	description: IQRF TR upload.
 	coordinator: Coordinator upload
+	dpaHandlerUpload: Coordinator DPA Handler upload
 	osUpload: IQRF OS upload
 	dpaUpload: DPA upload
 	file: File to upload

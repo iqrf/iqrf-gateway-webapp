@@ -72,12 +72,18 @@ class TrUploadFormFactory {
 	 */
 	public function create(TrUploadPresenter $presenter): Form {
 		$this->presenter = $presenter;
+		$files = '.hex';
+		if ($this->presenter->getUser()->isInRole('power')) {
+			$files .= ',.iqrf,.trcnfg';
+		}
 		$form = $this->factory->create('iqrfnet.trUpload');
 		$form->addUpload('file', 'file')
-			->setHtmlAttribute('accept', '.hex,.iqrf,.trcnfg')
+			->setHtmlAttribute('accept', $files)
 			->setRequired('messages.file');
-		$form->addSelect('fileFormat', 'fileFormat', $this->getFileFormats())
-			->setPrompt('messages.fileFormat');
+		if ($this->presenter->getUser()->isInRole('power')) {
+			$form->addSelect('fileFormat', 'fileFormat', $this->getFileFormats())
+				->setPrompt('messages.fileFormat');
+		}
 		$form->addSubmit('upload', 'upload')
 			->setHtmlAttribute('class', 'ajax');
 		$form->onSuccess[] = [$this, 'upload'];
@@ -103,9 +109,13 @@ class TrUploadFormFactory {
 	 */
 	public function upload(Form $form): void {
 		$values = $form->getValues();
-		$fileFormat = $values['fileFormat'];
-		if ($fileFormat !== null) {
-			$fileFormat = UploadFormats::fromScalar($fileFormat);
+		if ($this->presenter->getUser()->isInRole('power')) {
+			$fileFormat = $values['fileFormat'];
+			if ($fileFormat !== null) {
+				$fileFormat = UploadFormats::fromScalar($fileFormat);
+			}
+		} else {
+			$fileFormat = UploadFormats::HEX();
 		}
 		try {
 			$this->manager->upload($values['file'], $fileFormat);
