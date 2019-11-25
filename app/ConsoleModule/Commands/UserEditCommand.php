@@ -73,12 +73,14 @@ class UserEditCommand extends Command {
 	 * Executes the user edit command
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
+	 * @return int Exit code
 	 */
-	protected function execute(InputInterface $input, OutputInterface $output): void {
+	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$user = $this->askUserName($input, $output);
 		$role = $this->askRole($user, $input, $output);
 		$language = $this->askLanguage($user, $input, $output);
 		$this->userManager->edit($user['id'], $user['username'], $role, $language);
+		return 0;
 	}
 
 	/**

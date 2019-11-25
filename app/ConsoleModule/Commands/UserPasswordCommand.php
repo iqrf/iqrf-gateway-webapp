@@ -73,11 +73,13 @@ class UserPasswordCommand extends Command {
 	 * Executes the change user's password command
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
+	 * @return int Exit code
 	 */
-	protected function execute(InputInterface $input, OutputInterface $output): void {
+	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$user = $this->askUserName($input, $output);
 		$pass = $this->askPassword($input, $output);
 		$this->userManager->editPassword($user['id'], $pass);
+		return 0;
 	}
 
 	/**

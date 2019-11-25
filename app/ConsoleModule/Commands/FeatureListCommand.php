@@ -66,8 +66,9 @@ class FeatureListCommand extends Command {
 	 * Executes the features list command
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
+	 * @return int Exit code
 	 */
-	protected function execute(InputInterface $input, OutputInterface $output): void {
+	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$header = ['Full name', 'Name', 'Status'];
 		$style = new SymfonyStyle($input, $output);
 		$style->title('Feature list');
@@ -77,6 +78,7 @@ class FeatureListCommand extends Command {
 		} catch (Exception $e) {
 			$style->error('An error occurred while reading configuration file.');
 		}
+		return 0;
 	}
 
 }

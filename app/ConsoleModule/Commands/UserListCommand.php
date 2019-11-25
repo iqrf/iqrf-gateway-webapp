@@ -65,13 +65,15 @@ class UserListCommand extends Command {
 	 * Executes the user list command
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
+	 * @return int Exit code
 	 */
-	protected function execute(InputInterface $input, OutputInterface $output): void {
+	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$header = ['ID', 'Username', 'Role', 'Language'];
 		$table = new Table($output);
 		$table->setHeaders($header);
 		$table->setRows($this->userManager->listUsers());
 		$table->render();
+		return 0;
 	}
 
 }

@@ -70,8 +70,9 @@ class FeatureEnableCommand extends Command {
 	 * Executes the feature enable command
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
+	 * @return int Exit code
 	 */
-	protected function execute(InputInterface $input, OutputInterface $output): void {
+	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$style = new SymfonyStyle($input, $output);
 		$style->title('Enable features');
 		$names = $input->getArgument('names');
@@ -88,6 +89,7 @@ class FeatureEnableCommand extends Command {
 			$style->success(sprintf('Features %s have been successfully enabled.', implode(', ', $names)));
 		}
 		$this->getApplication()->find('nette:cache:purge')->execute($input, $output);
+		return 0;
 	}
 
 }

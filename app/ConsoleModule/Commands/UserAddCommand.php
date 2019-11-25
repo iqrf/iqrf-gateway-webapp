@@ -75,13 +75,15 @@ class UserAddCommand extends Command {
 	 * Executes the user add command
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
+	 * @return int Exit code
 	 */
-	protected function execute(InputInterface $input, OutputInterface $output): void {
+	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$name = $this->askUserName($input, $output);
 		$pass = $this->askPassword($input, $output);
 		$role = $this->askRole($input, $output);
 		$lang = $this->askLanguage($input, $output);
 		$this->userManager->register($name, $pass, $role, $lang);
+		return 0;
 	}
 
 	/**

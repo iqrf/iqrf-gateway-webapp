@@ -70,8 +70,9 @@ class FeatureDisableCommand extends Command {
 	 * Executes the feature disable command
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
+	 * @return int Exit code
 	 */
-	protected function execute(InputInterface $input, OutputInterface $output): void {
+	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$style = new SymfonyStyle($input, $output);
 		$style->title('Disable features');
 		$names = $input->getArgument('names');
@@ -88,6 +89,7 @@ class FeatureDisableCommand extends Command {
 			$style->success(sprintf('Features %s have been successfully disabled.', implode(', ', $names)));
 		}
 		$this->getApplication()->find('nette:cache:purge')->execute($input, $output);
+		return 0;
 	}
 
 }
