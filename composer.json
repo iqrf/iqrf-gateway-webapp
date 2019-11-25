@@ -29,7 +29,7 @@
 		"contributte/console": "^0.7",
 		"contributte/guzzlette": "^3.0",
 		"contributte/monolog": "^0.3",
-		"contributte/translation": "^0.4",
+		"contributte/translation": "^0.5",
 		"grifart/enum": "^0.2",
 		"iqrf/iqrf-ide-macros-parser": "^1.2",
 		"iqrf/iqrf-repository": "dev-master",

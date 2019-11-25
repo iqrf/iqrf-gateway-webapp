@@ -18,7 +18,7 @@
 	},
 	"homepage": "https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp",
 	"dependencies": {
-		"@sentry/browser": "^5.7",
+		"@sentry/browser": "^5.9",
 		"admin-lte": "^2.4",
 		"autosize": "^4.0",
 		"cronstrue": "^1.84",
@@ -27,18 +27,18 @@
 		"morris.js": "github:morrisjs/morris.js",
 		"nette-forms": "^3.0",
 		"nette.ajax.js": "^2.3",
-		"ublaboo-datagrid": "^5.7"
+		"ublaboo-datagrid": "^6.0"
 	},
 	"devDependencies": {
-		"@babel/core": "^7.6",
-		"@babel/preset-env": "^7.6",
+		"@babel/core": "^7.7",
+		"@babel/preset-env": "^7.7",
 		"babel-eslint": "^10.0",
 		"babel-loader": "^8.0",
 		"css-loader": "^3.2",
-		"eslint": "^6.6",
+		"eslint": "^6.7",
 		"eslint-loader": "^2.2",
 		"eslint-plugin-jquery": "^1.5",
-		"file-loader": "^4.2",
+		"file-loader": "^4.3",
 		"mini-css-extract-plugin": "^0.8",
 		"optimize-css-assets-webpack-plugin": "^5.0",
 		"uglifyjs-webpack-plugin": "^2.2",
