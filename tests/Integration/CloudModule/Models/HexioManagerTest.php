@@ -1,8 +1,8 @@
 <?php
 
 /**
- * TEST: App\CloudModule\Models\TcPisekManager
- * @covers App\CloudModule\Models\TcPisekManager
+ * TEST: App\CloudModule\Models\HexioManager
+ * @covers App\CloudModule\Models\HexioManager
  * @phpVersion >= 7.1
  * @testCase
  */
@@ -10,7 +10,7 @@ declare(strict_types = 1);
 
 namespace Tests\Integration\CloudModule\Models;
 
-use App\CloudModule\Models\TcPisekManager;
+use App\CloudModule\Models\HexioManager;
 use GuzzleHttp\Client;
 use Mockery;
 use Mockery\MockInterface;
@@ -23,10 +23,10 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for TC Písek IoT platform manager
  */
-class TcPisekManagerTest extends CloudIntegrationTestCase {
+class HexioManagerTest extends CloudIntegrationTestCase {
 
 	/**
-	 * @var TcPisekManager|MockInterface TC Písek IoT platform manager
+	 * @var HexioManager|MockInterface Hexio IoT platform manager
 	 */
 	private $manager;
 
@@ -34,7 +34,7 @@ class TcPisekManagerTest extends CloudIntegrationTestCase {
 	 * @var array<string,mixed> Values from the configuration form
 	 */
 	private $values = [
-		'broker' => 'connect.iot.tcpisek.cz',
+		'broker' => 'connect.hexio.cloud',
 		'username' => 'user',
 		'password' => 'pass',
 	];
@@ -45,11 +45,11 @@ class TcPisekManagerTest extends CloudIntegrationTestCase {
 	public function testCreateMqttInterface(): void {
 		$mqtt = [
 			'component' => 'iqrf::MqttMessaging',
-			'instance' => 'MqttMessagingTcPisek',
-			'BrokerAddr' => 'ssl://connect.iot.tcpisek.cz:8883',
+			'instance' => 'MqttMessagingHexio',
+			'BrokerAddr' => 'ssl://connect.hexio.cloud:8883',
 			'ClientId' => 'IqrfDpaMessaging1',
 			'Persistence' => 1,
-			'Qos' => 0,
+			'Qos' => 1,
 			'TopicRequest' => 'Iqrf/DpaRequest',
 			'TopicResponse' => 'Iqrf/DpaResponse',
 			'User' => 'user',
@@ -59,7 +59,7 @@ class TcPisekManagerTest extends CloudIntegrationTestCase {
 			'ConnectTimeout' => 5,
 			'MinReconnect' => 1,
 			'MaxReconnect' => 64,
-			'TrustStore' => $this->certPath . 'tcPisek-ca.crt',
+			'TrustStore' => $this->certPath . 'hexio-ca.crt',
 			'KeyStore' => '',
 			'PrivateKey' => '',
 			'PrivateKeyPassword' => '',
@@ -68,15 +68,15 @@ class TcPisekManagerTest extends CloudIntegrationTestCase {
 			'acceptAsyncMsg' => false,
 		];
 		$this->manager->createMqttInterface($this->values);
-		Assert::same($mqtt, $this->fileManager->read('iqrf__MqttMessaging_TcPisek'));
+		Assert::same($mqtt, $this->fileManager->read('iqrf__MqttMessaging_Hexio'));
 	}
 
 	/**
 	 * Tests the function to download the root CA certificate
 	 */
 	public function testDownloadCaCertificate(): void {
-		$expected = 'tcPisek-ca.crt';
-		$manager = new TcPisekManager($this->certPath, $this->configManager, $this->mockHttpClient($expected));
+		$expected = 'hexio-ca.crt';
+		$manager = new HexioManager($this->certPath, $this->configManager, $this->mockHttpClient($expected));
 		$manager->downloadCaCertificate();
 		Assert::same($expected, FileSystem::read($this->certPath . $expected));
 	}
@@ -86,11 +86,11 @@ class TcPisekManagerTest extends CloudIntegrationTestCase {
 	 */
 	protected function setUp(): void {
 		$client = new Client();
-		$this->manager = Mockery::mock(TcPisekManager::class, [$this->certPath, $this->configManager, $client])->makePartial();
+		$this->manager = Mockery::mock(HexioManager::class, [$this->certPath, $this->configManager, $client])->makePartial();
 		$this->manager->shouldReceive('downloadCaCertificate');
 	}
 
 }
 
-$test = new TcPisekManagerTest();
+$test = new HexioManagerTest();
 $test->run();

@@ -30,16 +30,16 @@ use Nette\Utils\FileSystem;
 use Nette\Utils\JsonException;
 
 /**
- * Tool for managing TC Písek IoT platform
+ * Tool for managing Hexio IoT platform
  */
-class TcPisekManager implements IManager {
+class HexioManager implements IManager {
 
 	use SmartObject;
 
 	/**
 	 * CA certificate file name
 	 */
-	private const CA_FILENAME = 'tcPisek-ca.crt';
+	private const CA_FILENAME = 'hexio-ca.crt';
 
 	/**
 	 * @var string Path to the certificates
@@ -78,13 +78,13 @@ class TcPisekManager implements IManager {
 		$this->createDirectory();
 		$this->downloadCaCertificate();
 		$this->configManager->setComponent('iqrf::MqttMessaging');
-		$this->configManager->setFileName('iqrf__MqttMessaging_TcPisek');
+		$this->configManager->setFileName('iqrf__MqttMessaging_Hexio');
 		$interface = [
-			'instance' => 'MqttMessagingTcPisek',
+			'instance' => 'MqttMessagingHexio',
 			'BrokerAddr' => 'ssl://' . $values['broker'] . ':8883',
 			'ClientId' => 'IqrfDpaMessaging1',
 			'Persistence' => 1,
-			'Qos' => 0,
+			'Qos' => 1,
 			'TopicRequest' => 'Iqrf/DpaRequest',
 			'TopicResponse' => 'Iqrf/DpaResponse',
 			'User' => $values['username'],

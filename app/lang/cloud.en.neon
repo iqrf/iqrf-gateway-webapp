@@ -23,6 +23,21 @@ amazonAws:
 	messages:
 		mismatchedCrtAndKey: The private key does not correspond to the certificate.
 
+hexio:
+	title: Hexio IoT Platform
+	description: Adds a new MQTT connection into Hexio IoT Platform.
+	form:
+		title: Hexio IoT Platform MQTT connection wizard
+		broker: MQTT broker address
+		username: Username
+		password: Password
+		messages:
+			broker: Please enter the MQTT broker address.
+			username: Please enter the username.
+			password: Please enter the password.
+		save: Save
+		save_restart: Save and restart
+
 ibmCloud:
 	title: IBM Cloud
 	description: Adds a new MQTT connection into IBM Cloud.
@@ -89,21 +104,6 @@ pixla:
 		disabled: PIXLA manager is disabled.
 		disable: PIXLA client service has been disabled.
 		enable: PIXLA client service has been enabled.
-
-tcPisek:
-	title: TC Pisek IoT Platform
-	description: Adds a new MQTT connection into TC Pisek IoT Platform.
-	form:
-		title: TC Pisek IoT Platform MQTT connection wizard
-		broker: MQTT broker address
-		username: Username
-		password: Password
-		messages:
-			broker: Please enter the MQTT broker address.
-			username: Please enter the username.
-			password: Please enter the password.
-		save: Save
-		save_restart: Save and restart
 
 guides:
 	pdf: PDF guide

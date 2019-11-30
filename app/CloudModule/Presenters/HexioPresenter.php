@@ -20,26 +20,26 @@ declare(strict_types = 1);
 
 namespace App\CloudModule\Presenters;
 
-use App\CloudModule\Forms\TcPisekFormFactory;
+use App\CloudModule\Forms\HexioFormFactory;
 use App\CoreModule\Presenters\ProtectedPresenter;
 use Nette\Application\UI\Form;
 
 /**
- * TC Písek IoT platform presenter
+ * Hexio IoT platform presenter
  */
-class TcPisekPresenter extends ProtectedPresenter {
+class HexioPresenter extends ProtectedPresenter {
 
 	/**
-	 * @var TcPisekFormFactory TC Písek IoT platform form factory
+	 * @var HexioFormFactory Hexio IoT platform form factory
 	 * @inject
 	 */
 	public $formFactory;
 
 	/**
-	 * Creates the TC Písek IoT platform form
-	 * @return Form TC Písek IoT platform form
+	 * Creates the Hexio IoT platform form
+	 * @return Form Hexio IoT platform form
 	 */
-	protected function createComponentCloudTcPisekForm(): Form {
+	protected function createComponentCloudHexioForm(): Form {
 		return $this->formFactory->create($this);
 	}
 

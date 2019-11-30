@@ -20,8 +20,8 @@ declare(strict_types = 1);
 
 namespace App\CloudModule\Forms;
 
-use App\CloudModule\Models\TcPisekManager;
-use App\CloudModule\Presenters\TcPisekPresenter;
+use App\CloudModule\Models\HexioManager;
+use App\CloudModule\Presenters\HexioPresenter;
 use App\CoreModule\Forms\FormFactory;
 use App\ServiceModule\Models\ServiceManager;
 use Nette\Application\UI\Form;
@@ -29,33 +29,33 @@ use Nette\Forms\Controls\SubmitButton;
 use Nette\SmartObject;
 
 /**
- * Form for creating MQTT connection into TC Písek IoT platform
+ * Form for creating MQTT connection into Hexio IoT platform
  */
-class TcPisekFormFactory extends CloudFormFactory {
+class HexioFormFactory extends CloudFormFactory {
 
 	use SmartObject;
 
 	/**
 	 * Constructor
-	 * @param TcPisekManager $manager TC Písek IoT platform manager
+	 * @param HexioManager $manager Hexio IoT platform manager
 	 * @param FormFactory $factory Generic form factory
 	 * @param ServiceManager $serviceManager Service manager
 	 */
-	public function __construct(TcPisekManager $manager, FormFactory $factory, ServiceManager $serviceManager) {
+	public function __construct(HexioManager $manager, FormFactory $factory, ServiceManager $serviceManager) {
 		parent::__construct($manager, $factory, $serviceManager);
 	}
 
 	/**
-	 * Creates the TC Písek IoT platform form
-	 * @param TcPisekPresenter $presenter TC Písek IoT platform presenter
-	 * @return Form TC Písek IoT platform form
+	 * Creates the Hexio IoT platform form
+	 * @param HexioPresenter $presenter Hexio IoT platform presenter
+	 * @return Form Hexio IoT platform form
 	 */
-	public function create(TcPisekPresenter $presenter): Form {
+	public function create(HexioPresenter $presenter): Form {
 		$this->presenter = $presenter;
-		$form = $this->factory->create('cloud.tcPisek.form');
+		$form = $this->factory->create('cloud.hexio.form');
 		$form->addText('broker', 'broker')
 			->setRequired('messages.broker')
-			->setDefaultValue('connect.iot.tcpisek.cz');
+			->setDefaultValue('connect.hexio.cloud');
 		$form->addText('username', 'username')
 			->setRequired('messages.username');
 		$form->addText('password', 'password')

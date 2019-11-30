@@ -1,9 +1,9 @@
 services:
 	- App\CloudModule\Models\AwsManager(%daemon.certDir%)
 	- App\CloudModule\Models\AzureManager
+	- App\CloudModule\Models\HexioManager(%daemon.certDir%)
 	- App\CloudModule\Models\IbmCloudManager(%daemon.certDir%)
 	- App\CloudModule\Models\InteliGlueManager(%daemon.certDir%)
 	pixla.fileManager: App\CoreModule\Models\FileManager('/etc/gwman/')
 	pixla.serviceManager: App\ServiceModule\Models\SystemDManager(@commandManager, 'gwman-client')
 	pixla.manager: App\CloudModule\Models\PixlaManager(@pixla.fileManager, @pixla.serviceManager)
-	- App\CloudModule\Models\TcPisekManager(%daemon.certDir%)
