@@ -47,7 +47,7 @@ module.exports = {
 				],
 			},
 			{
-				test: /glyphicons-halflings-regular\.(ttf|eot|svg|woff(|2))(\?[\s\S]+)?$/,
+				test: /\.(ttf|eot|svg|woff(|2))(\?[\s\S]+)?$/,
 				use: 'file-loader?name=fonts/[name].[ext]',
 			},
 			{
