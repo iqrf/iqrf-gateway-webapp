@@ -20,7 +20,6 @@ declare(strict_types = 1);
 
 namespace App\ServiceModule\Models;
 
-use App\CoreModule\Models\CommandManager;
 use App\ServiceModule\Exceptions\NotSupportedInitSystemException;
 use Nette\SmartObject;
 

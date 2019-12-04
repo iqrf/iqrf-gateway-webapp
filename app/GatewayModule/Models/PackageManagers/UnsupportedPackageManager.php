@@ -31,6 +31,7 @@ class UnsupportedPackageManager implements IPackageManager {
 	 * Installs the packages
 	 * @param callable $callback Callback
 	 * @param string[] $packages Packages to install
+	 * @throws UnsupportedPackageManagerException
 	 */
 	public function install(callable $callback, array $packages): void {
 		throw new UnsupportedPackageManagerException();
@@ -39,6 +40,7 @@ class UnsupportedPackageManager implements IPackageManager {
 	/**
 	 * Lists upgradable packages
 	 * @param callable $callback Callback
+	 * @throws UnsupportedPackageManagerException
 	 */
 	public function listUpgradable(callable $callback): void {
 		throw new UnsupportedPackageManagerException();
@@ -46,7 +48,8 @@ class UnsupportedPackageManager implements IPackageManager {
 
 	/**
 	 * Returns list of upgradable packages
-	 * @return mixed[] Upgradable packages
+	 * @throws UnsupportedPackageManagerException
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingTraversableReturnTypeHintSpecification
 	 */
 	public function getUpgradable(): array {
 		throw new UnsupportedPackageManagerException();
@@ -56,6 +59,7 @@ class UnsupportedPackageManager implements IPackageManager {
 	 * Purges the packages
 	 * @param callable $callback Callback
 	 * @param string[] $packages Packages to purge
+	 * @throws UnsupportedPackageManagerException
 	 */
 	public function purge(callable $callback, array $packages): void {
 		throw new UnsupportedPackageManagerException();
@@ -65,6 +69,7 @@ class UnsupportedPackageManager implements IPackageManager {
 	 * Removes the packages
 	 * @param callable $callback Callback
 	 * @param string[] $packages Packages to remove
+	 * @throws UnsupportedPackageManagerException
 	 */
 	public function remove(callable $callback, array $packages): void {
 		throw new UnsupportedPackageManagerException();
@@ -73,6 +78,7 @@ class UnsupportedPackageManager implements IPackageManager {
 	/**
 	 * Updates a list of packages
 	 * @param callable $callback Callback
+	 * @throws UnsupportedPackageManagerException
 	 */
 	public function update(callable $callback): void {
 		throw new UnsupportedPackageManagerException();
@@ -81,6 +87,7 @@ class UnsupportedPackageManager implements IPackageManager {
 	/**
 	 * Upgrades packages
 	 * @param callable $callback Callback
+	 * @throws UnsupportedPackageManagerException
 	 */
 	public function upgrade(callable $callback): void {
 		throw new UnsupportedPackageManagerException();
