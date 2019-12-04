@@ -56,7 +56,6 @@ class StatusPresenter extends ProtectedPresenter {
 		} catch (NotSupportedInitSystemException $ex) {
 			$this->flashError('gateway.errors.unsupportedInit');
 			$this->redirect('Control:default');
-			$this->setView('default');
 		}
 	}
 

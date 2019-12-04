@@ -60,7 +60,7 @@ class UnknownManagerTest extends CommandTestCase {
 	 */
 	protected function setUp(): void {
 		parent::setUp();
-		$this->manager = new UnknownManager($this->commandManager);
+		$this->manager = new UnknownManager();
 	}
 
 }

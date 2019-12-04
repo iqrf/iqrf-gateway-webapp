@@ -29,7 +29,7 @@ use stdClass;
 /**
  * IPv6 connection entity
  */
-class IPv6Connection {
+final class IPv6Connection {
 
 	/**
 	 * @var IPv6Methods Connection method
@@ -146,10 +146,10 @@ class IPv6Connection {
 	public function toForm(): array {
 		return [
 			'method' => $this->method->toScalar(),
-			'addresses' => array_map(function (IPv6Address $a) {
+			'addresses' => array_map(function (IPv6Address $a): array {
 				return $a->toArray();
 			}, $this->addresses),
-			'dns' => array_map(function (IPv6 $a) {
+			'dns' => array_map(function (IPv6 $a): array {
 				return ['address' => $a->getCompactedAddress()];
 			}, $this->dns),
 		];

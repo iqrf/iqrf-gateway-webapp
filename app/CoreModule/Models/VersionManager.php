@@ -108,7 +108,7 @@ class VersionManager {
 	 * @throws JsonException
 	 */
 	public function getCurrentWebapp(): string {
-		$json = $this->cache->load('current', function (&$dependencies) {
+		$json = $this->cache->load('current', function (&$dependencies): string {
 			$dependencies = [Cache::EXPIRE => '1 hour'];
 			$repoUrl = 'https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp/raw/';
 			try {

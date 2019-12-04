@@ -70,11 +70,9 @@ class LogPresenter extends ProtectedPresenter {
 		} catch (UnexpectedValueException $e) {
 			$this->flashError('gateway.log.messages.nonExistingDir');
 			$this->redirect('Log:default');
-			$this->setView('default');
 		} catch (BadRequestException $e) {
 			$this->flashError('gateway.log.messages.readError');
 			$this->redirect('Log:default');
-			$this->setView('default');
 		}
 	}
 

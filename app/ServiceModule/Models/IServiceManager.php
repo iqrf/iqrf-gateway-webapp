@@ -20,19 +20,10 @@ declare(strict_types = 1);
 
 namespace App\ServiceModule\Models;
 
-use App\CoreModule\Models\CommandManager;
-
 /**
  * Interface for tools for managing service
  */
 interface IServiceManager {
-
-	/**
-	 * Constructor
-	 * @param CommandManager $commandManager Command manager
-	 * @param string|null $serviceName Service name
-	 */
-	public function __construct(CommandManager $commandManager, ?string $serviceName = null);
 
 	/**
 	 * Starts the service

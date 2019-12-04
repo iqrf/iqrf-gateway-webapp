@@ -32,16 +32,6 @@ class UnknownManager implements IServiceManager {
 	use SmartObject;
 
 	/**
-	 * Constructor
-	 * @param CommandManager $commandManager Command manager
-	 * @param string|null $serviceName Service name
-	 */
-	public function __construct(CommandManager $commandManager, ?string $serviceName = null) {
-		$commandManager;
-		$serviceName;
-	}
-
-	/**
 	 * Starts IQRF Gateway Daemon
 	 * @throws NotSupportedInitSystemException
 	 */

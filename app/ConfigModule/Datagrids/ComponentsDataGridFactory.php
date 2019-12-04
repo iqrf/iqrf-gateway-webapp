@@ -89,7 +89,7 @@ class ComponentsDataGridFactory {
 		$grid->addAction('delete', 'config.actions.Remove')->setIcon('remove')
 			->setClass('btn btn-xs btn-danger ajax')
 			->setConfirmation(new StringConfirmation('config.components.form.messages.confirmDelete', 'name'));
-		$grid->allowRowsAction('delete', function () {
+		$grid->allowRowsAction('delete', function (): bool {
 			return $this->presenter->user->isInRole('power');
 		});
 		$grid->addToolbarButton('add', 'config.actions.Add')

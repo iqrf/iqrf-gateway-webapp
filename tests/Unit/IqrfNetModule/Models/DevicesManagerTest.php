@@ -14,6 +14,7 @@ use App\IqrfNetModule\Entities\DeviceStatus;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Models\DevicesManager;
 use Mockery;
+use Mockery\Exception;
 use Mockery\Mock;
 use Tester\Assert;
 use Tests\Toolkit\TestCases\WebSocketTestCase;

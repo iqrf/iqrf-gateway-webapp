@@ -52,8 +52,10 @@ class VersionManagerTest extends CommandTestCase {
 	 * Tests the function to check if an update is available for the webapp
 	 */
 	public function testAvailableWebappUpdateNo(): void {
-		$this->manager->shouldReceive('getInstalledWebapp')->with(false)->andReturn($this->currentVersion);
-		$this->manager->shouldReceive('getCurrentWebapp')->with()->andReturn($this->currentVersion);
+		$this->manager->shouldReceive('getInstalledWebapp')
+			->withArgs([false])->andReturn($this->currentVersion);
+		$this->manager->shouldReceive('getCurrentWebapp')
+			->withArgs([])->andReturn($this->currentVersion);
 		Assert::false($this->manager->availableWebappUpdate());
 	}
 
@@ -61,8 +63,10 @@ class VersionManagerTest extends CommandTestCase {
 	 * Tests the function to check if an update is available for the webapp
 	 */
 	public function testAvailableWebappUpdateYes(): void {
-		$this->manager->shouldReceive('getInstalledWebapp')->with(false)->andReturn($this->stableVersion);
-		$this->manager->shouldReceive('getCurrentWebapp')->with()->andReturn($this->currentVersion);
+		$this->manager->shouldReceive('getInstalledWebapp')
+			->withArgs([false])->andReturn($this->stableVersion);
+		$this->manager->shouldReceive('getCurrentWebapp')
+			->withArgs([])->andReturn($this->currentVersion);
 		Assert::true($this->manager->availableWebappUpdate());
 	}
 

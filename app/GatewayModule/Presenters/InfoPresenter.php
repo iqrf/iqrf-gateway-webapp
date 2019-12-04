@@ -117,7 +117,6 @@ class InfoPresenter extends ProtectedPresenter {
 		} catch (BadRequestException $e) {
 			Debugger::log('Cannot read zip archive with diagnostic data.');
 			$this->redirect('Info:default');
-			$this->setView('default');
 		}
 	}
 

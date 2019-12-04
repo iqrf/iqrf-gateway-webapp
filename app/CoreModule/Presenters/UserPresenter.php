@@ -90,7 +90,6 @@ class UserPresenter extends ProtectedPresenter {
 		$message = $this->translator->translate('core.user.form.messages.successDelete', ['username' => $user['username']]);
 		$this->flashSuccess($message);
 		$this->redirect('User:default');
-		$this->setView('default');
 	}
 
 	/**

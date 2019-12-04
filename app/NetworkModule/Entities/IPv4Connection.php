@@ -29,7 +29,7 @@ use stdClass;
 /**
  * IPv4 connection entity
  */
-class IPv4Connection {
+final class IPv4Connection {
 
 	/**
 	 * @var IPv4Methods Connection method
@@ -161,11 +161,11 @@ class IPv4Connection {
 	public function toForm(): array {
 		return [
 			'method' => $this->method->toScalar(),
-			'addresses' => array_map(function (IPv4Address $a) {
+			'addresses' => array_map(function (IPv4Address $a): array {
 				return $a->toArray();
 			}, $this->addresses),
 			'gateway' => $this->gateway !== null ? $this->gateway->getDotAddress() : '',
-			'dns' => array_map(function (IPv4 $a) {
+			'dns' => array_map(function (IPv4 $a): array {
 				return ['address' => $a->getDotAddress()];
 			}, $this->dns),
 		];

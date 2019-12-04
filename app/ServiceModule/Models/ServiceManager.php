@@ -53,7 +53,7 @@ class ServiceManager {
 		if (array_key_exists($initDaemon, $this->initDaemons)) {
 			$this->initDaemon = new $this->initDaemons[$initDaemon]($commandManager);
 		} else {
-			$this->initDaemon = new UnknownManager($commandManager);
+			$this->initDaemon = new UnknownManager();
 		}
 	}
 

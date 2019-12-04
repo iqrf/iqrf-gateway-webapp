@@ -26,7 +26,7 @@ use App\NetworkModule\Enums\InterfaceTypes;
 /**
  * Network interface entity
  */
-class InterfaceStatus {
+final class InterfaceStatus {
 
 	/**
 	 * @var string Network interface name

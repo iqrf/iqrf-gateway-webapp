@@ -108,12 +108,12 @@ class ZipArchiveManager {
 
 	/**
 	 * Checks if the file or the files exist in the archive
-	 * @param string|mixed[]|iterable $var File(s) to check
+	 * @param string|mixed[]|iterable|mixed $var File(s) to check
 	 * @return bool Is file exist
 	 */
 	public function exist($var): bool {
 		if (is_string($var)) {
-			return ($this->zip->locateName('/' . $var, ZipArchive::FL_NOCASE)) !== false;
+			return $this->zip->locateName('/' . $var, ZipArchive::FL_NOCASE) !== false;
 		}
 		if (is_iterable($var)) {
 			foreach ($var as $file) {

@@ -27,7 +27,7 @@ use Ramsey\Uuid\UuidInterface;
 /**
  * Network connection entity
  */
-class Connection {
+final class Connection {
 
 	/**
 	 * @var string Network connection name

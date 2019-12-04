@@ -12,6 +12,7 @@ parameters:
 		- bin
 		- tests
 	ignoreErrors:
+		- '#Call to an undefined method Mockery\\ExpectationInterface|Mockery\\HigherOrderMessage::andThrow\(\).#'
 		- '#Call to an undefined method Nette\\Application\\UI\\Form::addMultiplier\(\).#'
 		- '#Call to an undefined method Nette\\Application\\UI\\ITemplate::setTranslator\(\).#'
 		- '#Call to an undefined method Nette\\ComponentModel\\IComponent::addConditionOn\(\).#'
@@ -31,15 +32,6 @@ parameters:
 		-
 			message: '#Parameter \#1 \$credentials \(array<string>\) of method App\\CoreModule\\Models\\AppAuthenticator::authenticate\(\) should be contravariant with parameter \$credentials \(array\) of method Nette\\Security\\IAuthenticator::authenticate\(\)#'
 			path: %currentWorkingDirectory%/app/CoreModule/Models/AppAuthenticator.php
-		-
-			message: '#Call to function is_iterable\(\) with iterable will always evaluate to true.#'
-			path: %currentWorkingDirectory%/app/CoreModule/Models/ZipArchiveManager.php
-		-
-			message: '#Strict comparison using !== between int and false will always evaluate to true.#'
-			path: %currentWorkingDirectory%/app/CoreModule/Models/ZipArchiveManager.php
-		-
-			message: '#Call to function is_int\(\) with int will always evaluate to true.#'
-			path: %currentWorkingDirectory%/app/CoreModule/Models/ZipArchiveManager.php
 		-
 			message: '#Foreach overwrites \$unit with its value variable.#'
 			path: %currentWorkingDirectory%/app/GatewayModule/Models/InfoManager.php

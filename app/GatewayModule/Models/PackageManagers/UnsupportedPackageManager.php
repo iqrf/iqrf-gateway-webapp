@@ -50,7 +50,6 @@ class UnsupportedPackageManager implements IPackageManager {
 	 */
 	public function getUpgradable(): array {
 		throw new UnsupportedPackageManagerException();
-		return [];
 	}
 
 	/**

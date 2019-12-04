@@ -72,13 +72,13 @@ class RouterFactoryTest extends TestCase {
 				return $type->getMask();
 			} else {
 				if ($type instanceof RouteList) {
-					$routeMask = array_map(function (Route $route) {
+					$routeMask = array_map(function (Route $route): string {
 						return $route->getMask();
 					}, $type->getIterator()->getArrayCopy());
 					return [$type->getModule() => $routeMask];
 				}
 			}
-			return;
+			return null;
 		}, $routeList->getIterator()->getArrayCopy()));
 	}
 

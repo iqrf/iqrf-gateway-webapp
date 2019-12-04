@@ -75,7 +75,6 @@ class ControlPresenter extends ProtectedPresenter {
 			$this->flashError('service.errors.unsupportedInit');
 		} finally {
 			$this->redirect('Control:default');
-			$this->setView('default');
 		}
 	}
 
