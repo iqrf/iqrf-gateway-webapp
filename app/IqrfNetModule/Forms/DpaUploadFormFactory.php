@@ -31,6 +31,7 @@ use App\IqrfNetModule\Models\DpaManager;
 use App\IqrfNetModule\Models\OsManager;
 use App\IqrfNetModule\Models\UploadManager;
 use App\IqrfNetModule\Presenters\TrUploadPresenter;
+use App\ServiceModule\Models\ServiceManager;
 use Contributte\Translation\Wrappers\NotTranslate;
 use GuzzleHttp\Exception\ClientException;
 use Nette\Application\UI\Form;
@@ -71,6 +72,11 @@ class DpaUploadFormFactory {
 	private $presenter;
 
 	/**
+	 * @var ServiceManager IQRF Gateway Daemon service manager
+	 */
+	private $serviceManager;
+
+	/**
 	 * @var UploadManager Native upload service manager
 	 */
 	private $uploadManager;
@@ -80,12 +86,14 @@ class DpaUploadFormFactory {
 	 * @param FormFactory $formFactory Generic form factory
 	 * @param OsManager $osManager DPA OS peripheral manager
 	 * @param DpaManager $dpaManager DPA manager
+	 * @param ServiceManager $serviceManager IQRF Gateway Daemon service manager
 	 * @param UploadManager $uploadManager Native upload service manager
 	 */
-	public function __construct(FormFactory $formFactory, OsManager $osManager, DpaManager $dpaManager, UploadManager $uploadManager) {
+	public function __construct(FormFactory $formFactory, OsManager $osManager, DpaManager $dpaManager, ServiceManager $serviceManager, UploadManager $uploadManager) {
 		$this->formFactory = $formFactory;
 		$this->osManager = $osManager;
 		$this->dpaManager = $dpaManager;
+		$this->serviceManager = $serviceManager;
 		$this->uploadManager = $uploadManager;
 	}
 
@@ -137,6 +145,7 @@ class DpaUploadFormFactory {
 		try {
 			$file = $this->dpaManager->getFile($osBuild, $dpa, $trSeries, $rfMode);
 			$this->uploadManager->uploadFile($file, UploadFormats::IQRF());
+			$this->serviceManager->restart();
 			$this->presenter->flashSuccess('iqrfnet.trUpload.messages.success');
 		} catch (CorruptedFileException $e) {
 			$this->presenter->flashError('iqrfnet.trUpload.messages.corruptedFile');
