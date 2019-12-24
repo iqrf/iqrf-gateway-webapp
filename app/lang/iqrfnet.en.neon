@@ -327,6 +327,7 @@ trUpload:
 		failure: An error occured while the upload.
 		file: Please select the file to upload.
 		fileFormat: Please select the target of upload.
+		invalidDpaHandler: The uploaded file is not valid DPA Handler.
 		moveFailure: The file has not been uploaded due wrong permissions.
 		start: The upload process has been started.
 		success: The file has been sucessfuly uploaded into the coordinator.

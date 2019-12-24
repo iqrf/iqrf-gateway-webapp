@@ -32,6 +32,7 @@ use Nette\Application\UI\Form;
 use Nette\IOException;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;
+use Nette\Utils\Strings;
 
 /**
  * IQRF TR native upload form factory
@@ -116,6 +117,12 @@ class TrUploadFormFactory {
 			}
 		} else {
 			$fileFormat = UploadFormats::HEX();
+			$fileName = Strings::lower($values['file']->getName());
+			if (!Strings::endsWith($fileName, '.hex')) {
+				$this->presenter->flashError('iqrfnet.trUpload.messages.invalidDpaHandler');
+				$form['file']->addError('iqrfnet.trUpload.messages.invalidDpaHandler');
+				return;
+			}
 		}
 		try {
 			$this->manager->upload($values['file'], $fileFormat);
