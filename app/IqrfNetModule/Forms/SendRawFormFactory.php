@@ -80,7 +80,7 @@ class SendRawFormFactory {
 			->addRule(Form::RANGE, 'messages.address', [0, 239])
 			->setRequired('messages.address');
 		$form->addCheckbox('timeoutEnabled', 'overwriteTimeout')
-			->setDefaultValue(true);
+			->setDefaultValue(false);
 		$form->addInteger('timeout', 'customTimeout')
 			->setDefaultValue(1000)
 			->addConditionOn($form['timeoutEnabled'], Form::EQUAL, true)

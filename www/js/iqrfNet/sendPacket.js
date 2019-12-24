@@ -131,3 +131,9 @@ if (overwriteNadr !== null) {
 		document.getElementById('frm-sendRawForm-address').disabled = !event.currentTarget.checked;
 	});
 }
+
+// Disable DPA timeout by default
+let timeout = document.getElementById('frm-sendRawForm-timeout');
+if (timeout !== null) {
+	timeout.disabled = true;
+}
