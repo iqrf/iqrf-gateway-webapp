@@ -1,5 +1,6 @@
 const webpack = require('webpack');
 const path = require('path');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
@@ -69,6 +70,12 @@ module.exports = {
 		new MiniCssExtractPlugin({
 			filename: '[name].bundle.css',
 		}),
+		new CopyWebpackPlugin([
+			{
+				from: './node_modules/live-form-validation/live-form-validation.js',
+				to: './',
+			},
+		]),
 	],
 	optimization: {
 		minimize: true,
