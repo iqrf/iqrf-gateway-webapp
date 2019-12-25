@@ -27,7 +27,10 @@ import 'ublaboo-datagrid';
 import autosize from 'autosize';
 import Nette from 'nette-forms';
 import * as Sentry from '@sentry/browser';
+import hljs from 'highlight.js/lib/highlight';
+import json from 'highlight.js/lib/languages/json';
 
+import 'highlight.js/styles/github.css';
 import '../css/app.css';
 
 Sentry.init({
@@ -41,6 +44,9 @@ $(function () {
 });
 
 autosize(document.querySelectorAll('textarea'));
+
+hljs.initHighlightingOnLoad();
+hljs.registerLanguage('json', json);
 
 function showSpinner() {
 	let spinner = document.createElement('div');
@@ -65,5 +71,8 @@ $.nette.ext({
 	},
 	complete: function () {
 		hideSpinner();
+		document.querySelectorAll('pre code').forEach((block) => {
+			hljs.highlightBlock(block);
+		});
 	}
 });

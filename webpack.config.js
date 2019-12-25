@@ -11,7 +11,6 @@ module.exports = {
 		config: './www/js/config.js',
 		error500: './www/js/error500.js',
 		iqrfNet: './www/js/iqrfNet.js',
-		highlight:'./www/js/highlight.js',
 	},
 	output: {
 		filename: '[name].bundle.js',
