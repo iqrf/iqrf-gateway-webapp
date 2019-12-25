@@ -1,0 +1,22 @@
+--- a/app/config/features.neon
++++ b/app/config/features.neon
+@@ -1,16 +1,16 @@
+ parameters:
+ 	features:
+ 		# IQRF TR native upload
+-		trUpload: false
++		trUpload: true
+ 		# Node-RED
+ 		node-red: false
+ 		# PIXLA mamagement system
+-		pixla: false
++		pixla: true
+ 		# Network manager
+ 		networkManager: false
+ 		# Supervisord dashboard
+ 		supervisord: false
+ 		# System updater
+ 		updater: false
+ 		# Unattended upgrades
+-		unattendedUpgrades: false
++		unattendedUpgrades: true
