@@ -152,7 +152,22 @@ build-package:
     - git checkout -B "$CI_COMMIT_REF_NAME" "$CI_COMMIT_SHA"
   script:
     - gbp dch -a -S --ignore-branch --snapshot-number="$CI_PIPELINE_ID"
-    - dpkg-buildpackage -b -rfakeroot -us -uc -tc
+    - debuild -e CI_PIPELINE_ID -b -us -uc -tc
+    - cp ../iqrf-gateway-webapp_*all.deb .
+  artifacts:
+    paths:
+      - 'iqrf-gateway-webapp_*all.deb'
+    expire_in: 2 weeks
+
+build-package_iqd-gw-01:
+  stage: build-package
+  before_script:
+    - git checkout -B "$CI_COMMIT_REF_NAME" "$CI_COMMIT_SHA"
+  script:
+    - cp debian/iqd-gw-01/patches/* debian/patches
+    - ls --format=single-column debian/iqd-gw-01/patches/ >> debian/patches/series
+    - gbp dch -a -S --ignore-branch --snapshot-number="$CI_PIPELINE_ID"
+    - debuild -e CI_PIPELINE_ID -b -us -uc -tc
     - cp ../iqrf-gateway-webapp_*all.deb .
   artifacts:
     paths:
@@ -187,6 +202,20 @@ deploy-package-devel:
     - rsync -hrvz --delete -e ssh iqrf-gateway-webapp_*all.deb www-deploy@iqrfsdk.org:/data/nginx/dl/iqrf-gateway-webapp/all/devel
   <<: *ssh_template
 
+deploy-package-devel_iqd-gw-01:
+  stage: deploy-package
+  dependencies:
+    - build-package_iqd-gw-01
+  environment:
+    name: package-devel_iqd-gw-01
+    url: https://dl.iqrf.org/iqrf-gateway-webapp/iqd-gw-01/devel
+  only:
+    - master
+  script:
+    - ssh www-deploy@iqrfsdk.org "rm -f /data/nginx/dl/iqrf-gateway-webapp/iqd-gw-01/devel/*"
+    - rsync -hrvz --delete -e ssh iqrf-gateway-webapp_*all.deb www-deploy@iqrfsdk.org:/data/nginx/dl/iqrf-gateway-webapp/iqd-gw-01/devel
+  <<: *ssh_template
+
 deploy-package-stable:
   stage: deploy-package
   dependencies:
@@ -197,6 +226,20 @@ deploy-package-stable:
   only:
     - stable
   script:
-    - ssh www-deploy@iqrfsdk.org "rm -f /data/nginx/dl/iqrf-gateway-webapp/all/stable/*"
+    - ssh www-deploy@iqrfsdk.org "rm -f /data/nginx/dl/iqrf-gateway-webapp/all/stable/*.changes"
     - rsync -hrvz --delete -e ssh iqrf-gateway-webapp_*all.deb www-deploy@iqrfsdk.org:/data/nginx/dl/iqrf-gateway-webapp/all/stable
+  <<: *ssh_template
+
+deploy-package-stable_iqd-gw-01:
+  stage: deploy-package
+  dependencies:
+    - build-package_iqd-gw-01
+  environment:
+    name: package-stable_iqd-gw-01
+    url: https://dl.iqrf.org/iqrf-gateway-webapp/iqd-gw-01/stable
+  only:
+    - stable
+  script:
+    - ssh www-deploy@iqrfsdk.org "rm -f /data/nginx/dl/iqrf-gateway-webapp/iqd-gw-01/stable/*.changes"
+    - rsync -hrvz --delete -e ssh iqrf-gateway-webapp_*all.deb www-deploy@iqrfsdk.org:/data/nginx/dl/iqrf-gateway-webapp/iqd-gw-01/stable
   <<: *ssh_template
