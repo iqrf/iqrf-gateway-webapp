@@ -58,9 +58,14 @@ webapp_remove_old_dirs() {
 	fi
 }
 
+webapp_repair_premissions() {
+	chown -R www-data:www-data /var/log/iqrf-gateway-webapp
+}
+
 if [ "$1" = "configure" ]; then
 	openssl_create_ca
 	nginx_virtualhost_install
 	webapp_remove_cache
 	webapp_remove_old_dirs
+	webapp_repair_premissions
 fi
