@@ -22,6 +22,7 @@ namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Datagrids\SchedulerDataGridFactory;
 use App\ConfigModule\Forms\SchedulerFormFactory;
+use App\ConfigModule\Forms\SchedulerImportFormFactory;
 use App\ConfigModule\Models\SchedulerManager;
 use App\CoreModule\Presenters\ProtectedPresenter;
 use App\CoreModule\Traits\TPresenterFlashMessage;
@@ -49,6 +50,12 @@ class SchedulerPresenter extends ProtectedPresenter {
 	 * @inject
 	 */
 	public $formFactory;
+
+	/**
+	 * @var SchedulerImportFormFactory Scheduler's task import form factory
+	 * @inject
+	 */
+	public $importFormFactory;
 
 	/**
 	 * @var SchedulerManager Scheduler's task manager
@@ -129,6 +136,15 @@ class SchedulerPresenter extends ProtectedPresenter {
 	 */
 	protected function createComponentConfigSchedulerForm(): Form {
 		return $this->formFactory->create($this);
+	}
+
+	/**
+	 * Creates the tash import form
+	 * @return Form Task import form
+	 * @throws JsonException
+	 */
+	protected function createComponentConfigSchedulerImportForm(): Form {
+		return $this->importFormFactory->create($this);
 	}
 
 }

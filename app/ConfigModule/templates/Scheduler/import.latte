@@ -15,21 +15,10 @@
  * limitations under the License.
 *}
 
-{block title}{_config.scheduler.title}{/block}
+{block title}{_config.scheduler.import}{/block}
 {block content}
-<div class='box'>
-	<header class='box-header'>
-        {var $taskTypes = ['raw', 'raw-hdp']}
-		<div class='btn-group' role='group' n:foreach='$taskTypes as $type'>
-			<a class='btn btn-xs btn-success' n:href='Scheduler:add type => $type' role='button'>
-				{_config.actions.Add} {$type}
-			</a>
-		</div>
-		<a class='btn btn-xs btn-primary' n:href='Scheduler:import' role='button'>
-			{_config.actions.Import}
-		</a>
-	</header>
-	<section class='box-body'>
-        {control configSchedulerDataGrid}
-	</section>
+<div class='panel panel-default'>
+	<div class='panel-body'>
+        {control configSchedulerImportForm}
+	</div>
 </div>

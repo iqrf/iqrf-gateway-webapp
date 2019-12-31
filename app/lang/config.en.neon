@@ -4,6 +4,7 @@ description: Edit configuration.
 actions:
 	Add: Add
 	Edit: Edit
+	Import: Import
 	Remove: Remove
 
 messages:
@@ -262,6 +263,15 @@ scheduler:
 	title: Scheduler
 	description: Scheduler settings.
 	add: Add task
+	import: Import task
+	importForm:
+		file: JSON Task file
+		import: Import
+		messages:
+			invalidFormat: The uploaded file is not JSON file.
+			invalidFile: The uploaded file is invalid.
+			file: Please select the file to import.
+			success: The task has been imported successfully.
 	edit: Edit task
 	form:
 		id: ID
