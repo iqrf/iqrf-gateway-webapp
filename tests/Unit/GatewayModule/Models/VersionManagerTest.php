@@ -71,6 +71,11 @@ class VersionManagerTest extends WebSocketTestCase {
 	private const DAEMON_VERSION_FULL = 'v2.1.0 2019-06-12T20:44:25';
 
 	/**
+	 * IQRF Gateway Webapp's version
+	 */
+	private const WEBAPP_VERSION = 'v2.0.0-rc1';
+
+	/**
 	 * Sets up the test environment
 	 */
 	protected function setUp(): void {
@@ -187,7 +192,7 @@ class VersionManagerTest extends WebSocketTestCase {
 	 * Tests the function to get IQRF Gateway Webapp's version
 	 */
 	public function testGetWebapp(): void {
-		Assert::same('v2.0.0-beta', $this->manager->getWebapp());
+		Assert::same(self::WEBAPP_VERSION, $this->manager->getWebapp());
 	}
 
 	/**
@@ -202,7 +207,7 @@ class VersionManagerTest extends WebSocketTestCase {
 		$this->commandManager->shouldReceive('run')
 			->with($command)
 			->andReturn(new Command($command, 'commit', '', 0));
-		Assert::same('v2.0.0-beta (commit)', $this->manager->getWebapp(true));
+		Assert::same(self::WEBAPP_VERSION . ' (commit)', $this->manager->getWebapp(true));
 	}
 
 }
