@@ -46,6 +46,16 @@ class VersionManagerTest extends WebSocketTestCase {
 	];
 
 	/**
+	 * IQRF Gateway Controller's version
+	 */
+	private const CONTROLLER_VERSION = '0.3.4';
+
+	/**
+	 * IQRF Gateway Controller's version command
+	 */
+	private const CONTROLLER_VERSION_CMD = 'iqrf-gateway-controller --version';
+
+	/**
 	 * IQRF Gateway Daemon's version
 	 */
 	private const DAEMON_VERSION = 'v2.1.0';
@@ -67,6 +77,19 @@ class VersionManagerTest extends WebSocketTestCase {
 		parent::setUp();
 		$this->commandManager = Mockery::mock(CommandManager::class);
 		$this->manager = new VersionManager($this->commandManager, $this->request, $this->wsClient);
+	}
+
+	/**
+	 * Tests the function to get IQRF Gateway Controller's version
+	 */
+	public function testGetController(): void {
+		$this->commandManager->shouldReceive('commandExist')
+			->with('iqrf-gateway-controller')
+			->andReturn(true);
+		$this->commandManager->shouldReceive('run')
+			->with(self::CONTROLLER_VERSION_CMD)
+			->andReturn(new Command(self::CONTROLLER_VERSION_CMD, 'iqrf-gateway-controller 0.3.4', '', 0));
+		Assert::same(self::CONTROLLER_VERSION, $this->manager->getController());
 	}
 
 	/**

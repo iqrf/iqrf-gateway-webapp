@@ -128,10 +128,10 @@ class DiagnosticsManager {
 		$this->addServices();
 		$this->addSpi();
 		$this->addUsb();
+		$this->addControllerLog();
 		$this->addWebappLog();
 		$this->zipManager->close();
-		$response = new FileResponse($this->path, $fileName, $contentType, true);
-		return $response;
+		return new FileResponse($this->path, $fileName, $contentType, true);
 	}
 
 	/**
@@ -177,8 +177,9 @@ class DiagnosticsManager {
 	public function addInfo(): void {
 		$array = [];
 		$array['board'] = $this->infoManager->getBoard();
-		$array['daemonVersion'] = $this->versionManager->getWebapp();
-		$array['webappVersion'] = $this->versionManager->getDaemon();
+		$array['controllerVersion'] = $this->versionManager->getController();
+		$array['daemonVersion'] = $this->versionManager->getDaemon(true);
+		$array['webappVersion'] = $this->versionManager->getWebapp(true);
 		try {
 			$array['coordinator'] = $this->infoManager->getCoordinatorInfo();
 		} catch (DpaErrorException | EmptyResponseException $e) {
@@ -222,6 +223,16 @@ class DiagnosticsManager {
 			if ($output !== '') {
 				$this->zipManager->addFileFromText('lsusb.log', $output);
 			}
+		}
+	}
+
+	/**
+	 * Adds logs of IQRF Gateway Controller
+	 */
+	public function addControllerLog(): void {
+		$command = $this->commandManager->run('journalctl --unit iqrf-gateway-controller.service --no-pager', true);
+		if ($command->getExitCode() === 0) {
+			$this->zipManager->addFileFromText('logs/iqrf-gateway-controller.log', $command->getStdout());
 		}
 	}
 

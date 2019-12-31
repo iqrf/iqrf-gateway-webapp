@@ -88,6 +88,7 @@ class InfoPresenter extends ProtectedPresenter {
 		$this->template->macAddresses = $this->networkManager->getMacAddresses();
 		$this->template->board = $this->infoManager->getBoard();
 		$this->template->hostname = $this->networkManager->getHostname();
+		$this->template->controllerVersion = $this->swVersionManager->getController();
 		$this->template->daemonVersion = $this->swVersionManager->getDaemon();
 		$this->template->webAppVersion = $this->swVersionManager->getWebapp();
 		$this->template->diskUsages = $this->infoManager->getDiskUsages();

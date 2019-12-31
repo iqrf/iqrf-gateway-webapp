@@ -24,18 +24,18 @@
 				<th>{_gateway.info.board}</th>
 				<td>{$board}</td>
 			</tr>
-			{ifset $gwId}
-				<tr>
-					<th>{_gateway.info.gwId}</th>
-					<td>{$gwId}</td>
-				</tr>
-			{/ifset}
-			{ifset $gwmonId}
-				<tr>
-					<th><a href='https://www.pixla.online/'>{_gateway.info.gwmonId}</a></th>
-					<td>{$gwmonId}</td>
-				</tr>
-			{/ifset}
+			<tr n:ifset='$gwId'>
+				<th>{_gateway.info.gwId}</th>
+				<td>{$gwId}</td>
+			</tr>
+			<tr n:ifset='$gwmonId'>
+				<th><a href='https://www.pixla.online/'>{_gateway.info.gwmonId}</a></th>
+				<td>{$gwmonId}</td>
+			</tr>
+			<tr n:ifset='$controllerVersion'>
+				<th>{_gateway.info.version.iqrf-gw-controller}</th>
+				<td>{$controllerVersion}</td>
+			</tr>
 			<tr>
 				<th>{_gateway.info.version.iqrf-gw-daemon}</th>
 				<td>{$daemonVersion}</td>
@@ -95,20 +95,18 @@
 					</div>
 				</td>
 			</tr>
-			{ifset $swapUsage}
-				<tr>
-					<th>{_gateway.info.usages.swap}</th>
-					<td>
-						<span>{_gateway.info.usages.used} {$swapUsage['used']} / {$swapUsage['size']}</span>
-						<div class='progress'>
-							<div n:nonce class='progress-bar usage-progress-bar' role='progressbar'
-							     style='width: {$swapUsage['usage']|noescape};'>
-								{$swapUsage['used']} ({$swapUsage['usage']})
-							</div>
+			<tr n:ifset='$swapUsage'>
+				<th>{_gateway.info.usages.swap}</th>
+				<td>
+					<span>{_gateway.info.usages.used} {$swapUsage['used']} / {$swapUsage['size']}</span>
+					<div class='progress'>
+						<div n:nonce class='progress-bar usage-progress-bar' role='progressbar'
+						     style='width: {$swapUsage['usage']|noescape};'>
+							{$swapUsage['used']} ({$swapUsage['usage']})
 						</div>
-					</td>
-				</tr>
-			{/ifset}
+					</div>
+				</td>
+			</tr>
 			<tr>
 				<th>{_gateway.info.tr.title}</th>
 				<td>

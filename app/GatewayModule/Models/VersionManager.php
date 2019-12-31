@@ -65,6 +65,21 @@ class VersionManager {
 	}
 
 	/**
+	 * Returns IQRF Gateway Controller's version
+	 * @return string|null IQRF Gateway Controller's version
+	 */
+	public function getController(): ?string {
+		if (!$this->commandManager->commandExist('iqrf-gateway-controller')) {
+			return null;
+		}
+		$result = $this->commandManager->run('iqrf-gateway-controller --version')->getStdout();
+		if ($result !== '') {
+			return explode(' ', $result)[1];
+		}
+		return null;
+	}
+
+	/**
 	 * Returns IQRF Gateway Daemon's version
 	 * @param bool $verbose Is verbose mode enabled?
 	 * @return string IQRF Gateway Daemon's version

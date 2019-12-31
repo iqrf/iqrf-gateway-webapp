@@ -8,6 +8,7 @@ info:
 	gwId: IQRF Gateway ID
 	gwmonId: PIXLA token
 	version:
+		iqrf-gw-controller: IQRF Gateway Controller
 		iqrf-gw-daemon: IQRF Gateway Daemon
 		iqrf-gw-webapp: IQRF Gateway Webapp
 	hostname: Hostname
