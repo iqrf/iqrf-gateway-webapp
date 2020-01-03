@@ -66,7 +66,7 @@ http:
 			'data:',
 			https://repository.iqrfalliance.org/
 		]
-		report-uri: 'https://sentry.iqrf.org/api/2/security/?sentry_key=dcc3c60024154484afbca5e250a861a9'
+		report-uri: 'https://sentry.iqrf.org/api/2/security/?sentry_key=4f490a0339024820b1f3321491bd6b23'
 		script-src: [
 			# for browsers that support CSP3
 			nonce

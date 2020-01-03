@@ -21,7 +21,9 @@ declare(strict_types = 1);
 namespace App;
 
 use Nette\Configurator;
+use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
+use Nette\Utils\Json;
 use SplFileInfo;
 
 /**
@@ -35,11 +37,18 @@ class Kernel {
 	 */
 	public static function boot(): Configurator {
 		$configurator = new Configurator();
+		$configurator->setDebugMode(false);
 		$configurator->enableTracy(__DIR__ . '/../log');
 		$configurator->setTimeZone('Europe/Prague');
 		$configurator->setTempDirectory(__DIR__ . '/../temp');
 		$configurator->createRobotLoader()->addDirectory(__DIR__)->register();
 		$configurator->addConfig(__DIR__ . '/config/config.neon');
+		$version = Json::decode(FileSystem::read(__DIR__ . '/../version.json'));
+		$configurator->addParameters([
+			'sentry' => [
+				'release' => $version->version . ($version->pipeline !== '' ? '~' . $version->pipeline : ''),
+			],
+		]);
 		/**
 		 * @var SplFileInfo $file File info object
 		 */

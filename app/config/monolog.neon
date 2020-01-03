@@ -1,6 +1,12 @@
 extensions:
 	monolog: Contributte\Monolog\DI\MonologExtension
 
+services:
+	sentryClientBuilder: Sentry\ClientBuilder::create(%sentry%)
+	sentryClient:
+		class: Sentry\ClientInterface
+		factory: @sentryClientBuilder::getClient()
+	sentryHub: Sentry\State\Hub
 monolog:
 	hook:
 		fromTracy: true
@@ -8,7 +14,7 @@ monolog:
 	channel:
 		default:
 			handlers:
-				- Monolog\Handler\RavenHandler(Raven_Client(%sentry.dsn%))
+				- Sentry\Monolog\Handler()
 			processors:
 				- Monolog\Processor\GitProcessor()
 				- Monolog\Processor\MemoryPeakUsageProcessor()

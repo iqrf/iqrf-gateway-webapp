@@ -67,7 +67,7 @@ class OsParserTest extends DpaParserTestCase {
 	 */
 	public function testParseReadInfo(): void {
 		Assert::equal($this->expected['osInfo'], $this->parser->parseReadInfo($this->packet['osInfo']));
-		$failPacket = preg_replace('/\.24\./', '\.ff\.', $this->packet['osInfo']);
+		$failPacket = preg_replace('/\.24\./', '.ff.', $this->packet['osInfo']);
 		$failExpected = $this->expected['osInfo'];
 		$failExpected['TrType'] = $failExpected['McuType'] = 'UNKNOWN';
 		Assert::equal($failExpected, $this->parser->parseReadInfo($failPacket));
