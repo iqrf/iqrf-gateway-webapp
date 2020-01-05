@@ -3,7 +3,7 @@ Index: iqrf-gateway-webapp/app/Kernel.php
 ===================================================================
 --- iqrf-gateway-webapp.orig/app/Kernel.php
 +++ iqrf-gateway-webapp/app/Kernel.php
-@@ -37,7 +37,7 @@ class Kernel {
+@@ -39,7 +39,7 @@
  		$configurator = new Configurator();
  		$configurator->enableTracy(__DIR__ . '/../log');
  		$configurator->setTimeZone('Europe/Prague');
@@ -11,4 +11,4 @@ Index: iqrf-gateway-webapp/app/Kernel.php
 +		$configurator->setTempDirectory('/var/cache/iqrf-gateway-webapp');
  		$configurator->createRobotLoader()->addDirectory(__DIR__)->register();
  		$configurator->addConfig(__DIR__ . '/config/config.neon');
- 		/**
+ 		$version = Json::decode(FileSystem::read(__DIR__ . '/../version.json'));

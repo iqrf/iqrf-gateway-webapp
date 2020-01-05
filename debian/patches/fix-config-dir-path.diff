@@ -16,12 +16,12 @@ Index: iqrf-gateway-webapp/app/Kernel.php
 ===================================================================
 --- iqrf-gateway-webapp.orig/app/Kernel.php
 +++ iqrf-gateway-webapp/app/Kernel.php
-@@ -39,7 +39,7 @@ class Kernel {
+@@ -41,7 +41,7 @@ class Kernel {
  		$configurator->setTimeZone('Europe/Prague');
  		$configurator->setTempDirectory('/var/cache/iqrf-gateway-webapp');
  		$configurator->createRobotLoader()->addDirectory(__DIR__)->register();
 -		$configurator->addConfig(__DIR__ . '/config/config.neon');
 +		$configurator->addConfig('/etc/iqrf-gateway-webapp/config.neon');
- 		/**
- 		 * @var SplFileInfo $file File info object
- 		 */
+ 		$version = Json::decode(FileSystem::read(__DIR__ . '/../version.json'));
+ 		$configurator->addParameters([
+ 			'sentry' => [
