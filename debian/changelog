@@ -1,3 +1,13 @@
+iqrf-gateway-webapp (2.0.0-rc2) testing; urgency=medium
+
+  * Tests: fix tests for the webapp's version
+  * GitLab CI: fix stable package deployment
+  * Add PHP 7.4 support, update Monolog and Sentry (fix #179)
+  * Debian packaging: fix patches
+  * Add Rector, fix coding style
+
+ -- Roman Ondráček <roman@romanondracek.cz>  Mon, 06 Jan 2020 13:37:07 +0100
+
 iqrf-gateway-webapp (2.0.0-rc1) testing; urgency=medium
 
   [ Roman Ondráček ]
