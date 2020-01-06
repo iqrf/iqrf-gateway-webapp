@@ -90,7 +90,7 @@ abstract class TrConfigFormFactory {
 	 * Loads IQRF TR configuration into the form
 	 */
 	protected function load(): void {
-		$address = intval($this->presenter->getParameter('address', 0));
+		$address = (int) $this->presenter->getParameter('address', 0);
 		try {
 			$dpa = $this->manager->read($address);
 		} catch (DpaErrorException | EmptyResponseException | JsonException | UserErrorException $e) {
@@ -101,7 +101,7 @@ abstract class TrConfigFormFactory {
 		}
 		$this->configuration = $dpa['response']['data']['rsp'];
 		if (array_key_exists('stdAndLpNetwork', $this->configuration)) {
-			$this->configuration['stdAndLpNetwork'] = intval($this->configuration['stdAndLpNetwork']);
+			$this->configuration['stdAndLpNetwork'] = (int) $this->configuration['stdAndLpNetwork'];
 		}
 	}
 

@@ -80,7 +80,7 @@ class MonitorFormFactory {
 		$id = $presenter->getParameter('id');
 		if (isset($id)) {
 			if (array_key_exists($id, $this->manager->list())) {
-				$form->setDefaults($this->manager->load(intval($id)));
+				$form->setDefaults($this->manager->load((int) $id));
 			}
 		}
 		$form->onSuccess[] = [$this, 'save'];

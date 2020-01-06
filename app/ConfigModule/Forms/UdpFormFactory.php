@@ -53,7 +53,7 @@ class UdpFormFactory extends GenericConfigFormFactory {
 		$form->addProtection('core.errors.form-timeout');
 		$id = $presenter->getParameter('id');
 		if (isset($id)) {
-			$form->setDefaults($this->manager->load(intval($id)));
+			$form->setDefaults($this->manager->load((int) $id));
 		}
 		$form->onSuccess[] = [$this, 'save'];
 		return $form;
@@ -66,7 +66,7 @@ class UdpFormFactory extends GenericConfigFormFactory {
 	 */
 	public function save(Form $form): void {
 		$instances = $this->manager->getInstanceFiles();
-		$id = intval($this->presenter->getParameter('id'));
+		$id = (int) $this->presenter->getParameter('id');
 		if (array_key_exists($id, $instances) && count($instances) >= 1) {
 			$this->presenter->flashError('config.messages.writeFailures.multipleInstances');
 			$this->presenter->redirect('Udp:default');

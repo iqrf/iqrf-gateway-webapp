@@ -44,7 +44,7 @@ final class TrSeries extends Enum {
 	 * @return TrSeries IQRF TR series enum
 	 */
 	public static function fromTrType(string $trType): self {
-		if (Strings::match($trType, '~(\(DC\))?TR-7[0-9]Dx~') !== null) {
+		if (Strings::match($trType, '~(\(DC\))?TR-7\dDx~') !== null) {
 			return self::TR_7XD();
 		}
 		throw new DomainException();

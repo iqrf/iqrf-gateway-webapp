@@ -78,7 +78,7 @@ class WebSocketFormFactory {
 		$form->addProtection('core.errors.form-timeout');
 		$parameter = $presenter->getParameter('id');
 		if (isset($parameter)) {
-			$id = intval($parameter);
+			$id = (int) $parameter;
 			if (array_key_exists($id, $this->manager->list())) {
 				$form->setDefaults($this->manager->load($id));
 			}

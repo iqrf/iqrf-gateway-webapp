@@ -103,8 +103,7 @@ class MqMessagingDataGridFactory {
 	 * @throws JsonException
 	 */
 	public function changeAsyncMsg(string $id, string $status): void {
-		$id = intval($id);
-		$config = $this->configManager->load($id);
+		$config = $this->configManager->load((int) $id);
 		$config['acceptAsyncMsg'] = boolval($status);
 		try {
 			$this->configManager->save($config);

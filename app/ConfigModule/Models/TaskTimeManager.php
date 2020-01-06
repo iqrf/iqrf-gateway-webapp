@@ -49,13 +49,13 @@ class TaskTimeManager {
 		switch (count($cron)) {
 			case 5:
 				array_unshift($cron, '0');
-				array_push($cron, '*');
+				$cron[] = '*';
 				break;
 			case 6:
 				if (strlen($cron[5]) === 4) {
 					array_unshift($cron, '0');
 				} else {
-					array_push($cron, '*');
+					$cron[] = '*';
 				}
 				break;
 			case 7:

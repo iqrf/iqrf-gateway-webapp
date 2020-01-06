@@ -77,11 +77,7 @@ final class IPv4Connection {
 				$this->addresses[] = IPv4Address::fromMask($address->address, $address->mask);
 			}
 		}
-		if ($form->gateway !== '') {
-			$this->gateway = IPv4::factory($form->gateway);
-		} else {
-			$this->gateway = null;
-		}
+		$this->gateway = $form->gateway !== '' ? IPv4::factory($form->gateway) : null;
 		$this->dns = [];
 		foreach ($form->dns as $dns) {
 			if ($dns->address !== '') {

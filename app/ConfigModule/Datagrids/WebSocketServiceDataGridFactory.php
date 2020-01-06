@@ -102,8 +102,7 @@ class WebSocketServiceDataGridFactory {
 	 * @throws JsonException
 	 */
 	public function changeOnlyLocalhost(string $id, string $status): void {
-		$id = intval($id);
-		$config = $this->configManager->load($id);
+		$config = $this->configManager->load((int) $id);
 		$config['acceptOnlyLocalhost'] = boolval($status);
 		try {
 			$this->configManager->save($config);

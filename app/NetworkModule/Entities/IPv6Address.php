@@ -63,7 +63,7 @@ class IPv6Address {
 	public static function fromPrefix(string $addr, ?string $gwAddr = null): self {
 		$array = explode('/', trim($addr));
 		$address = IPv6::factory($array[0]);
-		$prefix = intval($array[1]);
+		$prefix = (int) $array[1];
 		$gateway = ($gwAddr !== null) ? IPv6::factory($gwAddr) : null;
 		return new self($address, $prefix, $gateway);
 	}

@@ -40,11 +40,7 @@ class DpaRequest extends ApiRequest {
 	 * Fixes DPA requests
 	 */
 	private function fixRequest(): void {
-		if (is_array($this->request)) {
-			$mType = $this->request['mType'];
-		} else {
-			$mType = $this->request->mType;
-		}
+		$mType = is_array($this->request) ? $this->request['mType'] : $this->request->mType;
 		switch ($mType) {
 			case 'iqrfRaw':
 				$this->fixRawPacket();

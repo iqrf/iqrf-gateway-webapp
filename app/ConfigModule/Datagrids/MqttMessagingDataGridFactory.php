@@ -121,8 +121,7 @@ class MqttMessagingDataGridFactory {
 	 * @throws JsonException
 	 */
 	private function changeConfiguration(string $id, string $key, $value): void {
-		$id = intval($id);
-		$config = $this->configManager->load($id);
+		$config = $this->configManager->load((int) $id);
 		$config[$key] = $value;
 		try {
 			$this->configManager->save($config);

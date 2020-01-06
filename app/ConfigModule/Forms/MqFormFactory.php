@@ -54,7 +54,7 @@ class MqFormFactory extends GenericConfigFormFactory {
 		$form->addProtection('core.errors.form-timeout');
 		$id = $presenter->getParameter('id');
 		if (isset($id)) {
-			$form->setDefaults($this->manager->load(intval($id)));
+			$form->setDefaults($this->manager->load((int) $id));
 		}
 		$form->onSuccess[] = [$this, 'save'];
 		return $form;

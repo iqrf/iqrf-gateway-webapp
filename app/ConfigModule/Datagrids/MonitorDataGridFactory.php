@@ -102,8 +102,7 @@ class MonitorDataGridFactory {
 	 * @throws JsonException
 	 */
 	private function changeConfiguration(string $id, string $key, $value): void {
-		$id = intval($id);
-		$config = $this->manager->load($id);
+		$config = $this->manager->load((int) $id);
 		$config[$key] = $value;
 		try {
 			$this->manager->save($config);

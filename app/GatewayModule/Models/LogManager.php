@@ -98,8 +98,7 @@ class LogManager {
 		$fileName = 'iqrf-gateway-daemon-logs' . $now->format('c') . '.zip';
 		$contentType = 'application/zip';
 		$zipManager->close();
-		$response = new FileResponse($this->path, $fileName, $contentType, true);
-		return $response;
+		return new FileResponse($this->path, $fileName, $contentType, true);
 	}
 
 }

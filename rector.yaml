@@ -1,0 +1,13 @@
+parameters:
+  exclude_rectors:
+    - 'Rector\SOLID\Rector\ClassMethod\UseInterfaceOverImplementationInConstructorRector'
+  paths:
+    - 'app'
+    - 'bin'
+  php_version_features: '7.2'
+  sets:
+    - 'code-quality'
+    - 'nette-30'
+    - 'php72'
+    - 'php73'
+    - 'php74'

@@ -25,7 +25,7 @@ use App\CloudModule\Exceptions\InvalidPrivateKeyForCertificateException;
 use App\ConfigModule\Models\GenericManager;
 use App\CoreModule\Models\CertificateManager;
 use DateTime;
-use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use Nette\IOException;
 use Nette\SmartObject;
@@ -60,7 +60,7 @@ class AwsManager implements IManager {
 	private $certPath;
 
 	/**
-	 * @var Client HTTP(S) client
+	 * @var ClientInterface HTTP(S) client
 	 */
 	private $client;
 
@@ -69,9 +69,9 @@ class AwsManager implements IManager {
 	 * @param string $certPath Path to the certificates
 	 * @param CertificateManager $certManager Manager for certificates
 	 * @param GenericManager $configManager Generic config manager
-	 * @param Client $client HTTP(S) client
+	 * @param ClientInterface $client HTTP(S) client
 	 */
-	public function __construct(string $certPath, CertificateManager $certManager, GenericManager $configManager, Client $client) {
+	public function __construct(string $certPath, CertificateManager $certManager, GenericManager $configManager, ClientInterface $client) {
 		$this->certPath = $certPath;
 		$this->certManager = $certManager;
 		$this->client = $client;

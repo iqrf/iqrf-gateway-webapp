@@ -62,7 +62,7 @@ class IqrfManager {
 		$ls = $this->commandManager->run($command, true)->getStdout();
 		foreach (explode(PHP_EOL, $ls) as $interface) {
 			if ($interface !== '') {
-				array_push($interfaces, $interface);
+				$interfaces[] = $interface;
 			}
 		}
 		return $interfaces;

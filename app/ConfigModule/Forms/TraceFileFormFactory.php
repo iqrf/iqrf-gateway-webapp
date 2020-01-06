@@ -89,7 +89,7 @@ class TraceFileFormFactory extends GenericConfigFormFactory {
 	 * @return mixed[] Tracer configuration
 	 */
 	private function load(): array {
-		$id = intval($this->presenter->getParameter('id'));
+		$id = (int) $this->presenter->getParameter('id');
 		try {
 			$defaults = $this->manager->load($id);
 		} catch (JsonException $e) {

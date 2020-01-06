@@ -83,7 +83,7 @@ class SignInFormFactory {
 	public function signIn(Form $form): void {
 		$values = $form->getValues();
 		try {
-			$this->user->setExpiration($values->remember ? '14 days' : '20 minutes');
+			$this->user->setExpiration($values->remember === true ? '14 days' : '20 minutes');
 			$this->user->login($values->username, $values->password);
 			$this->presenter->flashSuccess('core.sign.inForm.messages.success');
 			if ($this->presenter->backlink === null) {

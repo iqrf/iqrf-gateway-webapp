@@ -132,7 +132,7 @@ class SchedulerFormFactory {
 	 */
 	private function load(array $parameters): void {
 		if (array_key_exists('id', $parameters)) {
-			$this->task = $this->manager->load(intval($parameters['id']));
+			$this->task = $this->manager->load((int) $parameters['id']);
 		} elseif (array_key_exists('type', $parameters)) {
 			$this->task = $this->manager->loadType($parameters['type']);
 		}

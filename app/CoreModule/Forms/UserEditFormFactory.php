@@ -70,7 +70,7 @@ class UserEditFormFactory {
 	 */
 	public function create(UserPresenter $presenter): Form {
 		$this->presenter = $presenter;
-		$this->id = intval($presenter->getParameter('id'));
+		$this->id = (int) $presenter->getParameter('id');
 		$userTypes = [
 			'normal' => 'userTypes.normal',
 			'power' => 'userTypes.power',
@@ -96,11 +96,11 @@ class UserEditFormFactory {
 	public function save(Form $form): void {
 		$values = $form->getValues();
 		try {
-			$this->userManager->edit($this->id, $values['username'], $values['user_type'], $values['language']);
+			$this->userManager->edit($this->id, $values->username, $values->user_type, $values->language);
 			if ($this->presenter->user->id === $this->id) {
 				$this->presenter->user->logout();
 			}
-			$message = $form->getTranslator()->translate('messages.successEdit', ['username' => $values['username']]);
+			$message = $form->getTranslator()->translate('messages.successEdit', ['username' => $values->username]);
 			$this->presenter->flashSuccess($message);
 			$this->presenter->redirect('User:default');
 		} catch (UsernameAlreadyExistsException $e) {

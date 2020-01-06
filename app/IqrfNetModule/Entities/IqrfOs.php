@@ -105,8 +105,7 @@ class IqrfOs {
 		}
 		$int = hexdec($this->version);
 		$version = strval($int >> 8) . '.';
-		$version .= Strings::padLeft(dechex($int & 0xff), 2, '0') . 'D';
-		return $version;
+		return $version . Strings::padLeft(dechex($int & 0xff), 2, '0') . 'D';
 	}
 
 }

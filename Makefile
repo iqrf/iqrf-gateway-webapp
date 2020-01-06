@@ -43,6 +43,9 @@ lint: vendor
 phpstan: vendor
 	NETTE_TESTER_RUNNER=1 vendor/bin/phpstan analyse -c phpstan.neon
 
+rector: vendor
+	vendor/bin/rector process
+
 temp/code-checker:
 	composer create-project nette/code-checker temp/code-checker --no-interaction
 

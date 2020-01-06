@@ -89,8 +89,7 @@ class SchedulerMigrationManager {
 		$contentType = 'application/zip';
 		$zipManager->addFolder($this->configDirectory, '');
 		$zipManager->close();
-		$response = new FileResponse($this->path, $fileName, $contentType, true);
-		return $response;
+		return new FileResponse($this->path, $fileName, $contentType, true);
 	}
 
 	/**

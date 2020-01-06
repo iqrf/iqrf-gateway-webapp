@@ -22,7 +22,7 @@ namespace App\CloudModule\Models;
 
 use App\CloudModule\Exceptions\CannotCreateCertificateDirectoryException;
 use App\ConfigModule\Models\GenericManager;
-use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use Nette\IOException;
 use Nette\SmartObject;
@@ -47,7 +47,7 @@ class InteliGlueManager implements IManager {
 	private $certPath;
 
 	/**
-	 * @var Client HTTP(S) client
+	 * @var ClientInterface HTTP(S) client
 	 */
 	private $client;
 
@@ -60,9 +60,9 @@ class InteliGlueManager implements IManager {
 	 * Constructor
 	 * @param string $certPath Path to the certificates
 	 * @param GenericManager $configManager Generic config manager
-	 * @param Client $client HTTP(S) client
+	 * @param ClientInterface $client HTTP(S) client
 	 */
-	public function __construct(string $certPath, GenericManager $configManager, Client $client) {
+	public function __construct(string $certPath, GenericManager $configManager, ClientInterface $client) {
 		$this->certPath = $certPath;
 		$this->client = $client;
 		$this->configManager = $configManager;

@@ -191,7 +191,7 @@ class InfoManager {
 		$command = 'free -bw | awk \'{{if (NR==2) print $2,$3,$4,$5,$6,$7,$8}}\'';
 		$output = $this->commandManager->run($command)->getStdout();
 		$segments = explode(' ', $output);
-		$usages = [
+		return [
 			'size' => $this->convertSizes($segments[0]),
 			'used' => $this->convertSizes($segments[1]),
 			'free' => $this->convertSizes($segments[2]),
@@ -201,7 +201,6 @@ class InfoManager {
 			'available' => $this->convertSizes($segments[6]),
 			'usage' => round($segments[1] / $segments[0] * 100, 2) . '%',
 		];
-		return $usages;
 	}
 
 	/**
@@ -215,13 +214,12 @@ class InfoManager {
 		if ($segments[0] === '0') {
 			return null;
 		}
-		$usages = [
+		return [
 			'size' => $this->convertSizes($segments[0]),
 			'used' => $this->convertSizes($segments[1]),
 			'free' => $this->convertSizes($segments[2]),
 			'usage' => round($segments[1] / $segments[0] * 100, 2) . '%',
 		];
-		return $usages;
 	}
 
 	/**

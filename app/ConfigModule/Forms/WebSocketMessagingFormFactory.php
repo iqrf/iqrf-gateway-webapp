@@ -65,7 +65,7 @@ class WebSocketMessagingFormFactory extends GenericConfigFormFactory {
 		$data = [];
 		$id = $presenter->getParameter('id');
 		if (isset($id)) {
-			$data = $this->manager->load(intval($id));
+			$data = $this->manager->load((int) $id);
 		}
 		if (!isset($id) || $data === []) {
 			$data = ['RequiredInterfaces' => [['name' => 'shape::IWebsocketService', 'target' => ['instance' => '']]]];

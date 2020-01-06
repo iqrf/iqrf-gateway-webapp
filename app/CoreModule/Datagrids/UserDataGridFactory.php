@@ -98,7 +98,7 @@ class UserDataGridFactory {
 	 * @param string $role User's role
 	 */
 	public function changeRole(string $id, string $role): void {
-		$id = intval($id);
+		$id = (int) $id;
 		$user = $this->manager->getInfo($id);
 		$this->edit($id, $user['username'], $role, $user['language']);
 	}
@@ -138,7 +138,7 @@ class UserDataGridFactory {
 	 * @param string $language User's language
 	 */
 	public function changeLanguage(string $id, string $language): void {
-		$id = intval($id);
+		$id = (int) $id;
 		$user = $this->manager->getInfo($id);
 		$this->edit($id, $user['username'], $user['role'], $language);
 	}

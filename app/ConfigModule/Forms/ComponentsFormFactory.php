@@ -86,7 +86,7 @@ class ComponentsFormFactory {
 		$form->addSubmit('save', 'Save');
 		$id = $presenter->getParameter('id');
 		if (isset($id)) {
-			$this->id = intval($id);
+			$this->id = (int) $id;
 			$form->setDefaults($this->manager->load($this->id));
 		}
 		$form->addProtection('core.errors.form-timeout');

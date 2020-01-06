@@ -69,7 +69,7 @@ class OsParser implements IParser {
 			$data['TrType'] = 'UNKNOWN';
 		}
 		$mcuType = hexdec($packetArray[13]) & 7;
-		$data['McuType'] = array_key_exists($mcuType, $mcuTypes) ? $mcuTypes[$mcuType] : 'UNKNOWN';
+		$data['McuType'] = $mcuTypes[$mcuType] ?? 'UNKNOWN';
 		$data['OsBuild'] = strtoupper($packetArray[15] . $packetArray[14]);
 		$data['Rssi'] = (hexdec($packetArray[16]) - 130) . ' dBm';
 		$data['SupplyVoltage'] = number_format((261.12 / (127 - hexdec($packetArray[17]))), 2, '.', '') . ' V';
@@ -126,7 +126,7 @@ class OsParser implements IParser {
 	 */
 	public function getRfBand(string $byte): string {
 		$bands = ['868 MHz', '916 MHz', '433 MHz'];
-		$bit = intval(base_convert($byte, 16, 2)) & 0x3;
+		$bit = (int) base_convert($byte, 16, 2) & 0x3;
 		return $bands[$bit];
 	}
 

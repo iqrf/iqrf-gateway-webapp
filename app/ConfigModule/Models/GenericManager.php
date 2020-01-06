@@ -152,7 +152,7 @@ class GenericManager {
 		foreach ($requiredInterfaces as $id => $requiredInterface) {
 			if (!array_key_exists('instance', $requiredInterface['target'])) {
 				$value = reset($requiredInterface['target']);
-				$property = strval(key($requiredInterface['target']));
+				$property = strval(array_key_first($requiredInterface['target']));
 				$instanceFileName = $this->getInstanceByProperty($property, $value);
 				$instanceName = $this->fileManager->read($instanceFileName)['instance'];
 				unset($configuration['RequiredInterfaces'][$id]['target']);

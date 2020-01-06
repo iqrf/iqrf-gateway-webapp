@@ -123,11 +123,10 @@ class ComponentsDataGridFactory {
 	 * @throws JsonException
 	 */
 	public function changeStatus(string $id, string $status): void {
-		$id = intval($id);
-		$config = $this->configManager->load($id);
+		$config = $this->configManager->load((int) $id);
 		$config['enabled'] = boolval($status);
 		try {
-			$this->configManager->save($config, $id);
+			$this->configManager->save($config, (int) $id);
 			$this->presenter->flashSuccess('config.messages.success');
 		} catch (IOException $e) {
 			$this->presenter->flashError('config.messages.writeFailures.ioError');

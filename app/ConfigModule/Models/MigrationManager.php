@@ -106,8 +106,7 @@ class MigrationManager {
 		$contentType = 'application/zip';
 		$this->zipManagerDownload->addFolder($this->configDirectory, '');
 		$this->zipManagerDownload->close();
-		$response = new FileResponse($this->path, $fileName, $contentType, true);
-		return $response;
+		return new FileResponse($this->path, $fileName, $contentType, true);
 	}
 
 	/**

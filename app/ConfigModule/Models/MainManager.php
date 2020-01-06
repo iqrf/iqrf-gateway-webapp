@@ -55,8 +55,7 @@ class MainManager {
 	 * @throws JsonException
 	 */
 	public function load(): array {
-		$json = $this->fileManager->read($this->fileName);
-		return $json;
+		return $this->fileManager->read($this->fileName);
 	}
 
 	/**

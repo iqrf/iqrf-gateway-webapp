@@ -166,7 +166,7 @@ class SchedulerManager {
 				'mType' => $message['mType'] ?? '',
 				'request' => $this->getRequest($message),
 			];
-			array_push($tasks, $task);
+			$tasks[] = $task;
 		}
 		return $tasks;
 	}
@@ -225,8 +225,7 @@ class SchedulerManager {
 	 */
 	public function fixHwpid(?int $hwpId = null): string {
 		$data = Strings::padLeft(dechex($hwpId & 255), 2, '0') . '.';
-		$data .= Strings::padLeft(dechex($hwpId >> 8), 2, '0');
-		return $data;
+		return $data . Strings::padLeft(dechex($hwpId >> 8), 2, '0');
 	}
 
 	/**
