@@ -263,7 +263,6 @@ standard:
 			command: Command has to be an integer from 0 to 65535.
 			sendError: An error occured while IQRF DALI command sending.
 		send: Send commands
-		warning: This feature works on IQRF Gateway Daemon 2.2.0 and later.
 	light:
 		title: IQRF Light
 		address: Address
