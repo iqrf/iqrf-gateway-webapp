@@ -200,7 +200,7 @@ class DevicesManager {
 		$frcData = $apiData['response']['data']['rsp']['result']['frcData'] ?? [];
 		$data = [];
 		foreach ($frcData as $i => $byte) {
-			for ($j = 0; $j < 7; ++$j) {
+			for ($j = 0; $j < 8; ++$j) {
 				$bool = ($byte & (1 << $j)) >> $j;
 				if ($bool === 1) {
 					$data[] = ($i << 3) + $j;
