@@ -65,12 +65,34 @@ function hideSpinner() {
 	}
 }
 
-$.nette.ext({
-	before: function () {
+$.nette.ext('spinner', {
+	start: function () {
 		showSpinner();
 	},
 	complete: function () {
 		hideSpinner();
+	}
+});
+
+$.nette.ext('confirm', {
+	before: function (xhr, settings) {
+		if (!settings.nette) {
+			return;
+		}
+
+		let question = settings.nette.el.data('confirm');
+		if (question) {
+			let retVal = confirm(question);
+			if (retVal) {
+				hideSpinner();
+			}
+			return retVal;
+		}
+	}
+});
+
+$.nette.ext('highlighter', {
+	complete: function () {
 		document.querySelectorAll('pre code').forEach((block) => {
 			hljs.highlightBlock(block);
 		});

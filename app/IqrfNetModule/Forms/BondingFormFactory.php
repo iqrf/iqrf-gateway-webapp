@@ -25,6 +25,7 @@ use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Models\BondingManager;
 use App\IqrfNetModule\Presenters\NetworkPresenter;
+use Contributte\Translation\Wrappers\Message;
 use Nette\Application\UI\Form;
 use Nette\Forms\Controls\SubmitButton;
 use Nette\SmartObject;
@@ -90,13 +91,17 @@ class BondingFormFactory {
 		$form->addSubmit('add', 'addBond')
 			->setHtmlAttribute('class', 'ajax')
 			->onClick[] = [$this, 'addBond'];
+		$confirmMessage = $this->presenter->getTranslator()->translate('iqrfnet.bonding.messages.remove.confirm');
 		$form->addSubmit('remove', 'removeBond')
 			->setHtmlAttribute('class', 'ajax')
 			->setHtmlId('frm-iqrfNetBondingForm-removeBond')
+			->setHtmlAttribute('data-confirm', $confirmMessage)
 			->onClick[] = [$this, 'removeBond'];
+		$confirmMessage = $this->presenter->getTranslator()->translate('iqrfnet.bonding.messages.clearAll.confirm');
 		$form->addSubmit('clear', 'clearAllBonds')
 			->setHtmlAttribute('class', 'ajax')
 			->setHtmlId('frm-iqrfNetBondingForm-clearAllBonds')
+			->setHtmlAttribute('data-confirm', $confirmMessage)
 			->setValidationScope([])
 			->onClick[] = [$this, 'clearAllBonds'];
 		return $form;

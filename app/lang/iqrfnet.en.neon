@@ -19,9 +19,11 @@ bonding:
 			failure: An error occurred while bonding a new device.
 			success: A new device has been bonded successfully.
 		clearAll:
+			confirm: Do you really want to clear all bonds?
 			failure: An error occurred while clearing all bonds.
 			success: All bonds have been cleared successfully.
 		remove:
+			confirm: Do you really want to remove this node from the network?
 			failure: An error occurred while removing a device from the network.
 			success: A device has been removed successfully from the network.
 	addBond: Bond Node
