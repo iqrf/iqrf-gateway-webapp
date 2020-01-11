@@ -8,7 +8,7 @@ nginx_virtualhost_install() {
 	if [ -e /etc/nginx/sites-available/iqrf-gateway-webapp.localhost ] ; then
 		rm /etc/nginx/sites-available/iqrf-gateway-webapp.localhost
 	fi
-	ln -s /etc/iqrf-gateway-webapp/nginx/iqrf-gateway-webapp_php7-3.localhost /etc/nginx/sites-available/iqrf-gateway-webapp.localhost
+	ln -s /etc/iqrf-gateway-webapp/nginx/iqrf-gateway-webapp.localhost /etc/nginx/sites-available/iqrf-gateway-webapp.localhost
 	if [ ! -L /etc/nginx/sites-enabled/iqrf-gateway-webapp.localhost ] ; then
 		ln -s /etc/nginx/sites-available/iqrf-gateway-webapp.localhost /etc/nginx/sites-enabled/iqrf-gateway-webapp.localhost
 	fi
@@ -64,8 +64,24 @@ webapp_repair_premissions() {
 
 if [ "$1" = "configure" ]; then
 	openssl_create_ca
-	nginx_virtualhost_install
+	if [ -d /etc/nginx/ ] ; then
+		nginx_virtualhost_install
+	fi
 	webapp_remove_cache
 	webapp_remove_old_dirs
 	webapp_repair_premissions
+fi
+
+if [ -e /usr/share/apache2/apache2-maintscript-helper ] ; then
+	a2enmod deflate filter headers http2 rewrite ssl
+	a2dissite 000-default.conf
+fi
+
+if true; then
+	if [ -e /usr/share/apache2/apache2-maintscript-helper ] ; then
+		. /usr/share/apache2/apache2-maintscript-helper
+		for conf in iqrf-gateway-webapp.conf  ; do
+			apache2_invoke ensite $conf  || exit 1
+		done
+	fi
 fi

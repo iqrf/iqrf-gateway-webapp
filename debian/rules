@@ -7,7 +7,7 @@ LOG_DIR=${ROOT_DIR}/var/log/iqrf-gateway-webapp/
 VENDOR_DIR=${ROOT_DIR}/usr/share/iqrf-gateway-webapp/vendor
 
 %:
-	dh $@ --with phpcomposer
+	dh $@ --with apache2,phpcomposer
 
 override_dh_fixperms:
 	dh_fixperms

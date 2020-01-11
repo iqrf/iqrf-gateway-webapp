@@ -17,8 +17,8 @@ nginx_remove() {
 		rm /etc/nginx/sites-available/iqrf-gateway-webapp.localhost
 	fi
 	if deb-systemd-invoke is-enabled nginx.service ; then
-    	deb-systemd-invoke reload nginx.service
-    fi
+		deb-systemd-invoke reload nginx.service
+	fi
 }
 sudoers_rule_remove() {
 	if [ -e /etc/sudoers.d/iqrf-gateway-webapp ] ; then
@@ -57,7 +57,9 @@ webapp_remove_manager() {
 }
 
 if [ "$1" = "remove" ] || [ "$1" = "purge" ]; then
-	nginx_remove
+	if [ -d /etc/nginx ] ; then
+		nginx_remove
+	fi
 	webapp_remove_cache
 	webapp_remove_data
 	webapp_remove_logs
@@ -69,4 +71,16 @@ fi
 
 if [ "$1" = "purge" ]; then
 	webapp_remove_config
+fi
+
+if [ "$1" = "remove" ] || [ "$1" = "purge" ] ; then
+	if true; then
+		if [ -e /usr/share/apache2/apache2-maintscript-helper ] ; then
+			. /usr/share/apache2/apache2-maintscript-helper
+
+			for conf in iqrf-gateway-webapp.conf  ; do
+				apache2_invoke dissite $conf  || exit 1
+			done
+		fi
+	fi
 fi
