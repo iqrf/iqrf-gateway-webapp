@@ -25,7 +25,6 @@ use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Models\BondingManager;
 use App\IqrfNetModule\Presenters\NetworkPresenter;
-use Contributte\Translation\Wrappers\Message;
 use Nette\Application\UI\Form;
 use Nette\Forms\Controls\SubmitButton;
 use Nette\SmartObject;
