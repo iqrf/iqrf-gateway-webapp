@@ -44,7 +44,7 @@ class RouterFactoryTest extends TestCase {
 		['IqrfNet:' => [
 			'[<lang [a-z]{2}>/]iqrfnet/dpa-config/<address>',
 			'[<lang [a-z]{2}>/]iqrfnet/enumeration/<address>',
-			'[<lang [a-z]{2}>/]iqrfnet/os-config/<address>',
+			'[<lang [a-z]{2}>/]iqrfnet/rf-config/<address>',
 			'[<lang [a-z]{2}>/]iqrfnet/tr-security/<address>',
 			'[<lang [a-z]{2}>/]iqrfnet/<presenter>/<action>',
 		],],
