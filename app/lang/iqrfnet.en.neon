@@ -32,10 +32,10 @@ bonding:
 
 changeAddress:
 	title: Change network address
-	address: New address
+	address: Address
 	messages:
 		address: Address has to be an integer from 0 to 239.
-	set: Set
+	read: Read
 
 devices:
 	title: Devices Info
@@ -207,6 +207,8 @@ send-json:
 		invalidJson: Invalid JSON request.
 		json: Please enter JSON request.
 		missingSchema: Corresponding JSON schema for this request not found.
+		failure: An error occurred while proccesing JSON request.
+		success: JSON request has been sent successfully.
 	send: Send
 	response: Response
 	request: Request
@@ -223,6 +225,7 @@ send-packet:
 		address: Please enter a valid address. Its has to be a decimal number from 1 to 239.
 		invalidPacket: Invalid DPA packet.
 		packet: Please enter DPA packet.
+		success: DPA packet has been sent successfully.
 	send: Send
 	parsed-response: Parsed response
 	response: Response

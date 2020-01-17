@@ -57,8 +57,9 @@ class ChangeAddressFormFactory {
 		$form = $this->factory->create('iqrfnet.changeAddress');
 		$form->addInteger('address', 'address')
 			->addRule(Form::RANGE, 'messages.address', [0, 239])
-			->setRequired('messages.address');
-		$form->addSubmit('set', 'set');
+			->setRequired('messages.address')
+			->setDefaultValue($this->presenter->getParameter('address') ?? 0);
+		$form->addSubmit('read', 'read');
 		$form->addProtection('core.errors.form-timeout');
 		$form->onSuccess[] = [$this, 'onSuccess'];
 		return $form;

@@ -28,6 +28,7 @@ use App\IqrfNetModule\Models\ApiSchemaManager;
 use App\IqrfNetModule\Models\WebSocketClient;
 use App\IqrfNetModule\Presenters\SendJsonPresenter;
 use App\IqrfNetModule\Requests\DpaRequest;
+use App\IqrfNetModule\Responses\ApiResponse;
 use Nette\Application\UI\Form;
 use Nette\SmartObject;
 use Nette\Utils\Json;
@@ -104,7 +105,7 @@ class SendJsonFormFactory {
 		$values = $form->getValues();
 		$json = [];
 		try {
-			$json = Json::decode($values['json']);
+			$json = Json::decode($values->json);
 			if (isset($json->mType)) {
 				$this->jsonSchemaManager->setSchemaForRequest($json->mType);
 				$this->jsonSchemaManager->validate($json, true);
@@ -118,8 +119,14 @@ class SendJsonFormFactory {
 			$this->request->setRequest($json);
 			$response = $this->wsClient->sendSync($this->request, false);
 			$this->presenter->handleShowResponse($response);
-		} catch (EmptyResponseException | DpaErrorException | JsonException $e) {
+			$rsp = new ApiResponse();
+			$rsp->setResponse(Json::encode($response['response']));
+			$rsp->checkStatus();
+			$this->presenter->flashSuccess('iqrfnet.send-json.messages.success');
+		} catch (EmptyResponseException $e) {
 			$this->presenter->flashError('iqrfnet.webSocketClient.messages.emptyResponse');
+		} catch (DpaErrorException | JsonException $e) {
+			$this->presenter->flashError('iqrfnet.send-json.messages.failure');
 		}
 	}
 

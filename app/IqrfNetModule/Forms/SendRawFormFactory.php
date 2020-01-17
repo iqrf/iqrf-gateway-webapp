@@ -98,19 +98,20 @@ class SendRawFormFactory {
 	 */
 	public function onSuccess(Form $form): void {
 		$values = $form->getValues();
-		$packet = $values['packet'];
-		$timeout = ($values['timeoutEnabled'] === true) ? $values['timeout'] : null;
+		$packet = $values->packet;
+		$timeout = ($values->timeoutEnabled === true) ? $values->timeout : null;
 		if (!$this->manager->validatePacket($packet)) {
 			$this->presenter->flashError('iqrfnet.send-packet.messages.invalidPacket');
 			return;
 		}
-		if ($values['overwriteAddress'] === true) {
-			$nadr = dechex($values['address']);
+		if ($values->overwriteAddress === true) {
+			$nadr = dechex($values->address);
 			$this->manager->updateNadr($packet, $nadr);
 		}
 		try {
 			$response = $this->manager->send($packet, $timeout);
 			$this->presenter->handleShowResponse($response);
+			$this->presenter->flashSuccess('iqrfnet.send-packet.messages.success');
 		} catch (EmptyResponseException | DpaErrorException $e) {
 			$this->presenter->flashError('iqrfnet.webSocketClient.messages.emptyResponse');
 		}
