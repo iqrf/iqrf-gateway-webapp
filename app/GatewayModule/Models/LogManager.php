@@ -60,15 +60,14 @@ class LogManager {
 	 * @return string IQRF Gateway Daemon's log
 	 */
 	public function load(): string {
-		$logFiles = $this->getLogFiles();
-		return FileSystem::read(reset($logFiles));
+		return FileSystem::read($this->getLatestLog());
 	}
 
 	/**
-	 * Gets IQRF Gateway Daemon's log files
-	 * @return string[] IQRF Gateway Daemon's log files
+	 * Returns IQRF Gateway Daemon's latest log file path
+	 * @return string IQRF Gateway Daemon's latest log file path
 	 */
-	public function getLogFiles(): array {
+	public function getLatestLog(): string {
 		$logFiles = [];
 		/**
 		 * @var SplFileInfo $file File info object
@@ -77,13 +76,10 @@ class LogManager {
 			if ($file->getSize() === 0) {
 				continue;
 			}
-			$path = $file->getRealPath();
-			$pattern = ['~^' . realpath($this->logDir) . '/~', '/(-iqrf-gateway-daemon|)\.log$/'];
-			$fileName = Strings::trim(Strings::replace($path, $pattern, ''), '-');
-			$logFiles[$fileName] = $path;
+			$logFiles[$file->getMTime()] = $file->getRealPath();
 		}
 		krsort($logFiles);
-		return $logFiles;
+		return reset($logFiles);
 	}
 
 	/**

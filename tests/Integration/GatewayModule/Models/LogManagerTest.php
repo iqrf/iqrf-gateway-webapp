@@ -42,17 +42,6 @@ class LogManagerTest extends TestCase {
 	private $manager;
 
 	/**
-	 * Tests the function to get IQRF Gateway Daemon's log files
-	 */
-	public function testGetLogFiles(): void {
-		$expected = [
-			'2018-08-13-13-37-834' => $this->logDir . '/2018-08-13-13-37-834-iqrf-gateway-daemon.log',
-			'2018-08-13-13-37-496' => $this->logDir . '/2018-08-13-13-37-496-iqrf-gateway-daemon.log',
-		];
-		Assert::same($expected, $this->manager->getLogFiles());
-	}
-
-	/**
 	 * Tests the function to load the latest IQRF Gateway Daemon's log
 	 */
 	public function testLoad(): void {
