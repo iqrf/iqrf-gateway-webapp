@@ -158,10 +158,7 @@ class VersionManager {
 		if ($pipeline === '') {
 			return $version . ($verbose ? ' (' . $commit . ')' : '');
 		}
-		if (Strings::endsWith($version, '-alpha') ||
-			Strings::endsWith($version, '-beta') ||
-			Strings::endsWith($version, '-dev') ||
-			Strings::endsWith($version, '-rc')) {
+		if (Strings::match($version, '/^[A-Za-z0-9.]*\-(alpha|beta|dev|rc)[A-Za-z0-9]*$/i') !== null) {
 			return $version . '~' . $array['pipeline'] . ($verbose ? ' (' . $commit . ')' : '');
 		}
 		return $version . ($verbose ? ' (' . $commit . ')' : '');

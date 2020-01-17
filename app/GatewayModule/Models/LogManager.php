@@ -27,7 +27,6 @@ use Nette\Application\Responses\FileResponse;
 use Nette\SmartObject;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
-use Nette\Utils\Strings;
 use SplFileInfo;
 
 /**
