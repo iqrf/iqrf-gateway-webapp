@@ -18,111 +18,179 @@
 <aside class='main-sidebar'>
 	<section class='sidebar'>
 		<ul class='sidebar-menu' data-widget='tree'>
-			<li n:if='$user->loggedIn' class='treeview'>
+			<li n:if='$user->loggedIn' n:class='((isModuleCurrent("Gateway") || isModuleCurrent("Service")) ? "active menu-open ") . "treeview"'>
 				<a n:href=':Gateway:Homepage:default' role='button'>
 					<i class='glyphicon glyphicon-hdd'></i>
 					<span>{_gateway.title}</span>
 					<span class='pull-right-container'><i class='caret'></i></span>
 				</a>
 				<ul class='treeview-menu'>
-					<li><a n:href=':Gateway:Info:default'>{_gateway.info.title}</a></li>
-					<li><a n:href=':Gateway:Log:default'>{_gateway.log.title}</a></li>
-					<li><a n:href=':Gateway:ChangeMode:default'>{_gateway.mode.title}</a></li>
-					<li><a n:href=':Service:Control:default'>{_service.title}</a></li>
-					<li><a n:if='$features["unattendedUpgrades"]' n:href=':Gateway:UnattendedUpgrades:default'>{_gateway.unattendedUpgrades.title}</a></li>
-					<li><a n:if='$features["updater"]' n:href=':Gateway:Updater:default'>{_gateway.updater.title}</a></li>
-					<li><a n:href=':Gateway:Power:default'>{_gateway.power.title}</a></li>
+					<li n:class='isLinkCurrent(":Gateway:Info:*") ? "active"'>
+						<a n:href=':Gateway:Info:default'>{_gateway.info.title}</a>
+					</li>
+					<li n:class='isLinkCurrent(":Gateway:Log:*") ? "active"'>
+						<a n:href=':Gateway:Log:default'>{_gateway.log.title}</a>
+					</li>
+					<li n:class='isLinkCurrent(":Gateway:ChangeMode:*") ? "active"'>
+						<a n:href=':Gateway:ChangeMode:default'>{_gateway.mode.title}</a>
+					</li>
+					<li n:class='isLinkCurrent(":Service:Control:*") ? "active"'>
+						<a n:href=':Service:Control:default'>{_service.title}</a>
+					</li>
+					<li n:if='$features["unattendedUpgrades"]' n:class='isLinkCurrent(":Gateway:UnattendedUpgrades:*") ? "active"'>
+						<a n:href=':Gateway:UnattendedUpgrades:default'>{_gateway.unattendedUpgrades.title}</a>
+					</li>
+					<li n:if='$features["updater"]' n:class='isLinkCurrent(":Gateway:Updater:*") ? "active"'>
+						<a n:href=':Gateway:Updater:default'>{_gateway.updater.title}</a>
+					</li>
+					<li n:class='isLinkCurrent(":Gateway:Power:*") ? "active"'>
+						<a n:href=':Gateway:Power:default'>{_gateway.power.title}</a>
+					</li>
 				</ul>
 			</li>
-			<li n:if='$user->loggedIn' class='treeview'>
+			<li n:if='$user->loggedIn' n:class='(isModuleCurrent("Config") ? "active menu-open ") . "treeview"'>
 				<a n:href=':Config:Homepage:default' role='button'>
 					<i class='glyphicon glyphicon-wrench'></i>
 					<span>{_config.title}</span>
 					<span class='pull-right-container'><i class='caret'></i></span>
 				</a>
 				<ul class='treeview-menu'>
-					<li n:if='$user->isInRole("power")'>
+					<li n:if='$user->isInRole("power")' n:class='isLinkCurrent(":Config:Main:*") ? "active"'>
 						<a n:href=':Config:Main:default'>{_config.main.title}</a>
 					</li>
-					<li><a n:href=':Config:Component:default'>
+					<li n:class='isLinkCurrent(":Config:Component:*") ? "active"'>
+						<a n:href=':Config:Component:default'>
 							{if $user->isInRole('power')}
 								{_config.components.title}
 							{else}
 								{_config.selected-components.title}
 							{/if}
-						</a></li>
-					<li><a n:href=':Config:IqrfSpi:default'>{_config.iqrfSpi.title}</a></li>
-					<li><a n:href=':Config:IqrfCdc:default'>{_config.iqrfCdc.title}</a></li>
-					<li><a n:href=':Config:IqrfUart:default'>{_config.iqrfUart.title}</a></li>
-					<li><a n:href=':Config:IqrfDpa:default'>{_config.iqrfDpa.title}</a></li>
-					<li><a n:href=':Config:IqrfRepository:default'>{_config.iqrfRepository.title}</a></li>
-					{*<li><a n:href=':Config:Iqmesh:default'>{_config.iqmesh.title}</a></li>*}
-					<li><a n:href=':Config:Mqtt:default'>{_config.mqtt.title}</a></li>
-					<li><a n:href=':Config:Websocket:default'>{_config.websocket.title}</a></li>
-					<li><a n:href=':Config:Mq:default'>{_config.mq.title}</a></li>
-					<li><a n:href=':Config:Udp:default'>{_config.udp.title}</a></li>
-					<li n:if='$user->isInRole("power")'>
+						</a>
+					</li>
+					<li n:class='isLinkCurrent(":Config:IqrfSpi:*") ? "active"'>
+						<a n:href=':Config:IqrfSpi:default'>{_config.iqrfSpi.title}</a>
+					</li>
+					<li n:class='isLinkCurrent(":Config:IqrfCdc:*") ? "active"'>
+						<a n:href=':Config:IqrfCdc:default'>{_config.iqrfCdc.title}</a>
+					</li>
+					<li n:class='isLinkCurrent(":Config:IqrfUart:*") ? "active"'>
+						<a n:href=':Config:IqrfUart:default'>{_config.iqrfUart.title}</a>
+					</li>
+					<li n:class='isLinkCurrent(":Config:IqrfDpa:*") ? "active"'>
+						<a n:href=':Config:IqrfDpa:default'>{_config.iqrfDpa.title}</a>
+					</li>
+					<li n:class='isLinkCurrent(":Config:IqrfRepository:*") ? "active"'>
+						<a n:href=':Config:IqrfRepository:default'>{_config.iqrfRepository.title}</a>
+					</li>
+					<li n:if='$user->isInRole("power")' n:class='isLinkCurrent(":Config:Iqmesh:*") ? "active"'>
+						<a n:href=':Config:Iqmesh:default'>{_config.iqmesh.title}</a>
+					</li>
+					<li n:class='isLinkCurrent(":Config:Mqtt:*") ? "active"'>
+						<a n:href=':Config:Mqtt:default'>{_config.mqtt.title}</a>
+					</li>
+					<li n:class='isLinkCurrent(":Config:Websocket:*") ? "active"'>
+						<a n:href=':Config:Websocket:default'>{_config.websocket.title}</a>
+					</li>
+					<li n:class='isLinkCurrent(":Config:Mq:*") ? "active"'>
+						<a n:href=':Config:Mq:default'>{_config.mq.title}</a>
+					</li>
+					<li n:class='isLinkCurrent(":Config:Udp:*") ? "active"'>
+						<a n:href=':Config:Udp:default'>{_config.udp.title}</a>
+					</li>
+					<li n:if='$user->isInRole("power")' n:class='isLinkCurrent(":Config:JsonRawApi:*") ? "active"'>
 						<a n:href=':Config:JsonRawApi:default'>{_config.jsonRawApi.title}</a>
 					</li>
-					<li n:if='$user->isInRole("power")'>
+					<li n:if='$user->isInRole("power")' n:class='isLinkCurrent(":Config:JsonMngMetaDataApi:*") ? "active"'>
 						<a n:href=':Config:JsonMngMetaDataApi:default'>{_config.jsonMngMetaDataApi.title}</a>
 					</li>
-					<li n:if='$user->isInRole("power")'>
+					<li n:if='$user->isInRole("power")' n:class='isLinkCurrent(":Config:JsonSplitter:*") ? "active"'>
 						<a n:href=':Config:JsonSplitter:default'>{_config.jsonSplitter.title}</a>
 					</li>
-					<li><a n:href=':Config:Scheduler:default'>{_config.scheduler.title}</a></li>
-					<li><a n:href=':Config:Tracer:default'>{_config.tracer.title}</a></li>
-					<li><a n:href=':Config:Monitor:default'>{_config.monitor.title}</a></li>
-					<li><a n:href=':Config:Migration:default'>{_config.migration.title}</a></li>
+					<li n:class='isLinkCurrent(":Config:Scheduler:*") ? "active"'>
+						<a n:href=':Config:Scheduler:default'>{_config.scheduler.title}</a>
+					</li>
+					<li n:class='isLinkCurrent(":Config:Tracer:*") ? "active"'>
+						<a n:href=':Config:Tracer:default'>{_config.tracer.title}</a>
+					</li>
+					<li n:class='isLinkCurrent(":Config:Monitor:*") ? "active"'>
+						<a n:href=':Config:Monitor:default'>{_config.monitor.title}</a>
+					</li>
+					<li n:class='isLinkCurrent(":Config:Migration:*") ? "active"'>
+						<a n:href=':Config:Migration:default'>{_config.migration.title}</a>
+					</li>
 				</ul>
 			</li>
-			<li n:if='$user->loggedIn' class='treeview'>
+			<li n:if='$user->loggedIn' n:class='(isModuleCurrent("IqrfNet") ? "active menu-open ") . "treeview"'>
 				<a n:href=':IqrfNet:Homepage:default' role='button'>
 					<i class='glyphicon glyphicon-signal'></i>
 					<span>{_iqrfnet.title}</span>
 					<span class='pull-right-container'><i class='caret'></i></span>
 				</a>
 				<ul class='treeview-menu'>
-					<li><a n:href=':IqrfNet:SendRaw:default'>{_iqrfnet.send-packet.title}</a></li>
-					<li><a n:href=':IqrfNet:SendJson:default'>{_iqrfnet.send-json.title}</a></li>
-					<li><a n:href=':IqrfNet:RfConfig:default'>{_iqrfnet.trConfiguration.title}</a></li>
-					<li n:if='$features["trUpload"]'><a n:href=':IqrfNet:TrUpload:default'>{_iqrfnet.trUpload.title}</a></li>
-					<li><a n:href=':IqrfNet:Network:default'>{_iqrfnet.network-manager.title}</a></li>
-					<li><a n:href=':IqrfNet:Standard:default'>{_iqrfnet.standard.menu}</a></li>
+					<li n:class='isLinkCurrent(":IqrfNet:SendRaw:*") ? "active"'>
+						<a n:href=':IqrfNet:SendRaw:default'>{_iqrfnet.send-packet.title}</a>
+					</li>
+					<li n:class='isLinkCurrent(":IqrfNet:SendJson:*") ? "active"'>
+						<a n:href=':IqrfNet:SendJson:default'>{_iqrfnet.send-json.title}</a>
+					</li>
+					<li n:class='isLinkCurrent(":IqrfNet:TrConfig:*") ? "active"'>
+						<a n:href=':IqrfNet:TrConfig:default'>{_iqrfnet.trConfiguration.title}</a>
+					</li>
+					<li n:if='$features["trUpload"]' n:class='isLinkCurrent(":IqrfNet:TrUpload:*") ? "active"'>
+						<a n:href=':IqrfNet:TrUpload:default'>{_iqrfnet.trUpload.title}</a>
+					</li>
+					<li n:class='isLinkCurrent(":IqrfNet:Network:*") ? "active"'>
+						<a n:href=':IqrfNet:Network:default'>{_iqrfnet.network-manager.title}</a>
+					</li>
+					<li n:class='isLinkCurrent(":IqrfNet:Standard:*") ? "active"'>
+						<a n:href=':IqrfNet:Standard:default'>{_iqrfnet.standard.menu}</a>
+					</li>
 				</ul>
 			</li>
-			<li n:if='$user->loggedIn && $features["networkManager"]' class='treeview'>
+			<li n:if='$user->loggedIn && $features["networkManager"]' n:class='(isModuleCurrent("Network") ? "active menu-open ") . "treeview"'>
 				<a n:href=':Network:Homepage:default' role='button'>
 					<i class='glyphicon glyphicon-globe'></i>
 					<span>{_network.title}</span>
 					<span class='pull-right-container'><i class='caret'></i></span>
 				</a>
 				<ul class='treeview-menu'>
-					<li><a n:href=':Network:Ethernet:default'>{_network.ethernet.title}</a></li>
+					<li n:class='isLinkCurrent(":Network:Ethernet:*") ? "active"'><a n:href=':Network:Ethernet:default'>{_network.ethernet.title}</a></li>
 				</ul>
 			</li>
-			<li n:if='$user->loggedIn' class='treeview'>
+			<li n:if='$user->loggedIn' n:class='(isModuleCurrent("Cloud") ? "active menu-open ") . "treeview"'>
 				<a n:href=':Cloud:Homepage:default' role='button'>
 					<i class='glyphicon glyphicon-cloud'></i>
 					<span>{_cloud.title}</span>
 					<span class='pull-right-container'><i class='caret'></i></span>
 				</a>
 				<ul class='treeview-menu'>
-					<li><a n:href=':Cloud:IbmCloud:default'>{_cloud.ibmCloud.title}</a></li>
-					<li><a n:href=':Cloud:Azure:default'>{_cloud.msAzure.title}</a></li>
-					<li><a n:href=':Cloud:Aws:default'>{_cloud.amazonAws.title}</a></li>
-					<li><a n:href=':Cloud:Hexio:default'>{_cloud.hexio.title}</a></li>
-					<li><a n:href=':Cloud:InteliGlue:default'>{_cloud.intelimentsInteliGlue.title}</a></li>
-					<li n:if='$features["pixla"]'><a n:href=':Cloud:Pixla:default'>{_cloud.pixla.title}</a></li>
+					<li n:class='isLinkCurrent(":Cloud:IbmCloud:*") ? "active"'>
+						<a n:href=':Cloud:IbmCloud:default'>{_cloud.ibmCloud.title}</a>
+					</li>
+					<li n:class='isLinkCurrent(":Cloud:Azure:*") ? "active"'>
+						<a n:href=':Cloud:Azure:default'>{_cloud.msAzure.title}</a>
+					</li>
+					<li n:class='isLinkCurrent(":Cloud:Aws:*") ? "active"'>
+						<a n:href=':Cloud:Aws:default'>{_cloud.amazonAws.title}</a>
+					</li>
+					<li n:class='isLinkCurrent(":Cloud:Hexio:*") ? "active"'>
+						<a n:href=':Cloud:Hexio:default'>{_cloud.hexio.title}</a>
+					</li>
+					<li n:class='isLinkCurrent(":Cloud:InteliGlue:*") ? "active"'>
+						<a n:href=':Cloud:InteliGlue:default'>{_cloud.intelimentsInteliGlue.title}</a>
+					</li>
+					<li n:if='$features["pixla"]' n:class='isLinkCurrent(":Cloud:Pixla:*") ? "active"'>
+						<a n:href=':Cloud:Pixla:default'>{_cloud.pixla.title}</a>
+					</li>
 				</ul>
 			</li>
-			<li n:if='$user->loggedIn'>
+			<li n:if='$user->loggedIn' n:class='isLinkCurrent(":Core:User:*") ? "active"'>
 				<a n:href=':Core:User:default'>
 					<i class='glyphicon glyphicon-user'></i>
 					<span>{_core.user.title}</span>
 				</a>
 			</li>
-			<li n:if='!$user->loggedIn'>
+			<li n:if='!$user->loggedIn' n:class='isLinkCurrent(":Core:Sign:In") ? "active"'>
 				<a n:href=':Core:Sign:in'>
 					<i class='glyphicon glyphicon-log-in'></i>
 					<span>{_core.sign.in}</span>
@@ -130,7 +198,7 @@
 			</li>
 
 			<li n:if='$user->loggedIn && $features["node-red"]' class='treeview'>
-				<a n:href=':IqrfNet:Homepage:default' role='button'>
+				<a n:href=':Core:Homepage:default' role='button'>
 					<i class='glyphicon glyphicon-tasks'></i>
 					<span>{_core.node-red.title}</span>
 					<span class='pull-right-container'><i class='caret'></i></span>

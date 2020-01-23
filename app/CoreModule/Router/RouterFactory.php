@@ -52,10 +52,8 @@ final class RouterFactory {
 		$install[] = new Route('[<lang [a-z]{2}>/]install/<presenter>/<action>', 'Homepage:default');
 		$router[] = $install;
 		$iqrfNet = new RouteList('IqrfNet');
-		$iqrfNet[] = new Route('[<lang [a-z]{2}>/]iqrfnet/dpa-config/<address>', 'DpaConfig:default');
 		$iqrfNet[] = new Route('[<lang [a-z]{2}>/]iqrfnet/enumeration/<address>', 'Enumeration:default');
-		$iqrfNet[] = new Route('[<lang [a-z]{2}>/]iqrfnet/rf-config/<address>', 'RfConfig:default');
-		$iqrfNet[] = new Route('[<lang [a-z]{2}>/]iqrfnet/tr-security/<address>', 'TrSecurity:default');
+		$iqrfNet[] = new Route('[<lang [a-z]{2}>/]iqrfnet/tr-config/<address>', 'TrConfig:default');
 		$iqrfNet[] = new Route('[<lang [a-z]{2}>/]iqrfnet/<presenter>/<action>', 'Homepage:default');
 		$router[] = $iqrfNet;
 		$network = new RouteList('Network');

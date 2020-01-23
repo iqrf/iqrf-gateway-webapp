@@ -26,7 +26,7 @@ use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Exceptions\UnsupportedInputFormatException;
 use App\IqrfNetModule\Models\SecurityManager;
-use App\IqrfNetModule\Presenters\TrSecurityPresenter;
+use App\IqrfNetModule\Presenters\TrConfigPresenter;
 use Nette\Application\UI\Form;
 use Nette\Forms\Controls\SubmitButton;
 use Nette\SmartObject;
@@ -50,7 +50,7 @@ class SecurityFormFactory {
 	private $factory;
 
 	/**
-	 * @var TrSecurityPresenter IQMESH security presenter
+	 * @var TrConfigPresenter IQMESH security presenter
 	 */
 	private $presenter;
 
@@ -66,28 +66,32 @@ class SecurityFormFactory {
 
 	/**
 	 * Creates IQMESH security form
-	 * @param TrSecurityPresenter $presenter IQMESH security presenter
+	 * @param TrConfigPresenter $presenter IQMESH security presenter
 	 * @return Form IQMESH security form
 	 */
-	public function create(TrSecurityPresenter $presenter): Form {
+	public function create(TrConfigPresenter $presenter): Form {
 		$this->presenter = $presenter;
 		$form = $this->factory->create('iqrfnet.security');
 		$inputFormats = [
 			DataFormat::ASCII => 'input-formats.ascii',
 			DataFormat::HEX => 'input-formats.hex',
 		];
-		$form->addSelect('format', 'input-format', $inputFormats)
+		$format = $form->addSelect('format', 'input-format', $inputFormats)
 			->setDefaultValue(DataFormat::ASCII);
 		$form->addText('password', 'password')
 			->setRequired(false)
-			->addConditionOn($form['format'], Form::EQUAL, DataFormat::ASCII)
+			->addConditionOn($format, Form::EQUAL, DataFormat::ASCII)
 			->addRule(Form::MAX_LENGTH, 'messages.ascii-password-length', 16)
 			->endCondition()
-			->addConditionOn($form['format'], Form::EQUAL, DataFormat::HEX)
+			->addConditionOn($format, Form::EQUAL, DataFormat::HEX)
 			->addRule(Form::PATTERN, 'messages.hex-password-format', '[0-9A-Fa-f]{0,32}')
 			->addRule(Form::MAX_LENGTH, 'messages.hex-password-length', 32);
-		$form->addSubmit('setAccessPassword', 'setAccessPassword')->onClick[] = [$this, 'accessPassword'];
-		$form->addSubmit('setUserKey', 'setUserKey')->onClick[] = [$this, 'userKey'];
+		$form->addSubmit('setAccessPassword', 'setAccessPassword')
+			->setHtmlAttribute('class', 'ajax btn btn-primary')
+			->onClick[] = [$this, 'accessPassword'];
+		$form->addSubmit('setUserKey', 'setUserKey')
+			->setHtmlAttribute('class', 'ajax btn btn-primary')
+			->onClick[] = [$this, 'userKey'];
 		$form->addProtection('core.errors.form-timeout');
 		return $form;
 	}
@@ -100,7 +104,7 @@ class SecurityFormFactory {
 		$values = $button->getForm()->getValues();
 		try {
 			$address = $this->presenter->getParameter('address', 0);
-			$this->manager->setAccessPassword($address, $values['password'], $values['format']);
+			$this->manager->setAccessPassword($address, $values->password, $values->format);
 			$this->presenter->flashSuccess('iqrfnet.security.accessPassword.success');
 		} catch (DpaErrorException | EmptyResponseException | JsonException | UnsupportedInputFormatException $e) {
 			$this->presenter->flashError('iqrfnet.security.accessPassword.failure');

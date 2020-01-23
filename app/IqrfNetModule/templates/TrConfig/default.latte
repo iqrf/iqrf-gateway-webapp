@@ -17,25 +17,27 @@
 
 {block title}{_iqrfnet.trConfiguration.title}{/block}
 {block content}
-<ul class='nav nav-tabs'>
-	{var $address = $presenter->getParameter('address')}
-	<li role='presentation' class='active'><a n:href='RfConfig:default, address => $address'>{_iqrfnet.rfConfig.title}</a></li>
-	<li role='presentation'><a n:href='DpaConfig:default, address => $address'>{_iqrfnet.dpaConfig.title}</a></li>
-	<li role='presentation'><a n:href='TrSecurity:default, address => $address'>{_iqrfnet.security.title}</a></li>
-</ul>
-<div class='panel panel-default'>
-	<div class='panel-heading'>
+<div class='box box-default'>
+	<div class='box-header'>
 		{_iqrfnet.changeAddress.title}
 	</div>
-	<div class='panel-body'>
+	<div class='box-body'>
 		{control iqrfNetAddressForm}
 	</div>
 </div>
 <div class='box box-primary'>
 	<header class='box-header with-border'>
-		<h2 class='box-title'>{_iqrfnet.rfConfig.title}</h2>
+		<h2 class='box-title'>{_iqrfnet.trConfig.title}</h2>
 	</header>
 	<section class='box-body'>
-		{control iqrfNetRfForm}
+		{control iqrfNetTrForm}
+	</section>
+</div>
+<div class='box box-primary'>
+	<header class='box-header with-border'>
+		<h2 class='box-title'>{_iqrfnet.security.title}</h2>
+	</header>
+	<section class='box-body'>
+		{control iqrfNetSecurityForm}
 	</section>
 </div>

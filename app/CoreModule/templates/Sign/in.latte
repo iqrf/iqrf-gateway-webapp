@@ -15,10 +15,53 @@
  * limitations under the License.
 *}
 
-{block title}{_core.sign.inForm.title}{/block}
-{block content}
-<div class='panel panel-default'>
-	<div class='panel-body'>
+{layout false}
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset='utf-8'>
+	<meta http-equiv='X-UA-Compatible' content='IE=edge'>
+	<meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no'>
+	<meta name='description' content='Web configurator for iqrf-daemon'>
+	<meta name='author' content='IQRF Tech.r.o.'>
+	<title>{ifset title}{include title|stripHtml|trim} | {/ifset}{_core.title}</title>
+	<link n:nonce rel='stylesheet' href='/dist/app.bundle.css'>
+	<link n:nonce rel='stylesheet' href='/dist/highlight.bundle.css'>
+	<link rel='apple-touch-icon' sizes='180x180' href='/img/favicon/apple-touch-icon.png'>
+	<link rel='icon' type='image/png' sizes='32x32' href='/img/favicon/favicon-32x32.png'>
+	<link rel='icon' type='image/png' sizes='16x16' href='/img/favicon/favicon-16x16.png'>
+	<link rel='manifest' href='/img/favicon/site.webmanifest'>
+	<link rel='mask-icon' href='/img/favicon/safari-pinned-tab.svg' color='#367fa9'>
+	<link rel='shortcut icon' href='/img/favicon/favicon.ico'>
+	<meta name='msapplication-TileColor' content='#367fa9'>
+	<meta name='msapplication-config' content='/img/favicon/browserconfig.xml'>
+	<meta name='theme-color' content='#ffffff'>
+</head>
+<body class='hold-transition skin-blue login-page'>
+
+<div class='login-box'>
+	<header class='login-logo'>
+		<img alt='IQRF Gateway' src='/img/logo-big.svg' style="min-width: 320px">
+	</header>
+	<section class='login-box-body'>
+		<h3 class='login-box-msg' n:block='title'>{_core.sign.inForm.title}</h3>
+		{snippet flashes}
+			<div n:foreach='$flashes as $flash' class='alert alert-{$flash->type} alert-dismissible' role='alert'>
+				<button type='button' class='close' data-dismiss='alert'>
+					<span>&times;</span>
+				</button>
+				{_$flash->message}
+			</div>
+		{/snippet}
 		{control signInForm}
-	</div>
+	</section>
 </div>
+{block scripts}
+	<script n:nonce src='/dist/app.bundle.js'></script>
+	<script n:nonce src='/dist/config.bundle.js'></script>
+	<script n:nonce src='/dist/iqrfNet.bundle.js'></script>
+	<script n:nonce src='/dist/live-form-validation.js'></script>
+{/block}
+</body>
+</html>

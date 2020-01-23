@@ -22,6 +22,8 @@ namespace App\IqrfNetModule\Presenters;
 
 use App\CoreModule\Presenters\ProtectedPresenter;
 use App\IqrfNetModule\Forms\ChangeAddressFormFactory;
+use App\IqrfNetModule\Forms\SecurityFormFactory;
+use App\IqrfNetModule\Forms\TrConfigFormFactory;
 use Nette\Application\UI\Form;
 
 /**
@@ -36,11 +38,39 @@ class TrConfigPresenter extends ProtectedPresenter {
 	public $changeAddressForm;
 
 	/**
+	 * @var TrConfigFormFactory IQRF RF configuration form
+	 * @inject
+	 */
+	public $trFormFactory;
+
+	/**
+	 * @var SecurityFormFactory IQMESH Security configuration form
+	 * @inject
+	 */
+	public $securityFormFactory;
+
+	/**
 	 * Create the change a network device address form
 	 * @return Form Change a network device address form
 	 */
 	protected function createComponentIqrfNetAddressForm(): Form {
 		return $this->changeAddressForm->create($this);
+	}
+
+	/**
+	 * Createa the IQRF TR configuration form
+	 * @return Form IQRF TR configuration form
+	 */
+	protected function createComponentIqrfNetTrForm(): Form {
+		return $this->trFormFactory->create($this);
+	}
+
+	/**
+	 * Creates the IQMESH Security configuration form
+	 * @return Form IQMESH Security configuration form
+	 */
+	protected function createComponentIqrfNetSecurityForm(): Form {
+		return $this->securityFormFactory->create($this);
 	}
 
 }

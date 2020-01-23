@@ -22,7 +22,6 @@ namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\OtaUploadFormFactory;
 use App\ConfigModule\Models\GenericManager;
-use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
 use Nette\Utils\JsonException;
 
@@ -44,15 +43,6 @@ class IqmeshPresenter extends GenericPresenter {
 	public function __construct(GenericManager $genericManager) {
 		$components = ['iqrf::OtaUploadService'];
 		parent::__construct($components, $genericManager);
-	}
-
-	/**
-	 * Temporary hides the presenter
-	 * @throws BadRequestException
-	 */
-	protected function startup(): void {
-		parent::startup();
-		throw new BadRequestException();
 	}
 
 	/**

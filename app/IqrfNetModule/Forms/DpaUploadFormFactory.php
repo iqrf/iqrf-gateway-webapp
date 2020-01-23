@@ -126,6 +126,7 @@ class DpaUploadFormFactory {
 			foreach ($this->dpaManager->list($this->osEntity->getBuild()) as $version) {
 				$versions[$version->getDpa()] = new NotTranslate($version->getDpa(true));
 			}
+			krsort($versions);
 			return $versions;
 		} catch (UserErrorException | DpaErrorException | EmptyResponseException | JsonException $e) {
 			return [];

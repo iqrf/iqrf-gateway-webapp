@@ -2,10 +2,9 @@ services:
 	- App\IqrfNetModule\Forms\BondingFormFactory
 	- App\IqrfNetModule\Forms\ChangeAddressFormFactory
 	- App\IqrfNetModule\Forms\DiscoveryFormFactory
-	- App\IqrfNetModule\Forms\DpaConfigFormFactory
 	- App\IqrfNetModule\Forms\DpaUploadFormFactory
 	- App\IqrfNetModule\Forms\OsDpaUploadFormFactory
-	- App\IqrfNetModule\Forms\RfConfigFormFactory
+	- App\IqrfNetModule\Forms\TrConfigFormFactory
 	- App\IqrfNetModule\Forms\SecurityFormFactory
 	- App\IqrfNetModule\Forms\SendJsonFormFactory
 	- App\IqrfNetModule\Forms\SendRawFormFactory

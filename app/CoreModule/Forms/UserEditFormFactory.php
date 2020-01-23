@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Forms;
 
+use App\CoreModule\Exceptions\InvalidPasswordException;
 use App\CoreModule\Exceptions\UsernameAlreadyExistsException;
 use App\CoreModule\Models\UserManager;
 use App\CoreModule\Presenters\UserPresenter;
@@ -81,9 +82,20 @@ class UserEditFormFactory {
 		$form = $this->factory->create('core.user.form');
 		$form->addText('username', 'username')
 			->setRequired('messages.username');
-		$form->addSelect('user_type', 'userType', $userTypes);
-		$form->addSelect('language', 'language', $languages);
+		if ($this->presenter->getUser()->isInRole('power')) {
+			$form->addSelect('role', 'userType', $userTypes);
+			$form->addSelect('language', 'language', $languages);
+		}
+		if ($this->presenter->getUser()->getId() === $this->id) {
+			$oldPassword = $form->addPassword('oldPassword', 'oldPassword');
+			$newPassword = $form->addPassword('newPassword', 'newPassword');
+			$oldPassword->addConditionOn($newPassword, Form::FILLED)
+				->setRequired('messages.oldPassword');
+			$newPassword->addConditionOn($oldPassword, Form::FILLED)
+				->setRequired('messages.newPassword');
+		}
 		$form->setDefaults($this->userManager->getInfo($this->id));
+		$form->addProtection('core.errors.form-timeout');
 		$form->addSubmit('edit', 'edit');
 		$form->onSuccess[] = [$this, 'save'];
 		return $form;
@@ -96,7 +108,12 @@ class UserEditFormFactory {
 	public function save(Form $form): void {
 		$values = $form->getValues();
 		try {
-			$this->userManager->edit($this->id, $values->username, $values->user_type, $values->language);
+			if ($this->presenter->user->id === $this->id &&
+				$values->oldPassword !== '' &&
+				$values->newPassword !== '') {
+				$this->userManager->changePassword($this->id, $values->oldPassword, $values->newPassword);
+			}
+			$this->userManager->edit($this->id, $values->username, $values->role, $values->language);
 			if ($this->presenter->user->id === $this->id) {
 				$this->presenter->user->logout();
 			}
@@ -105,6 +122,8 @@ class UserEditFormFactory {
 			$this->presenter->redirect('User:default');
 		} catch (UsernameAlreadyExistsException $e) {
 			$this->presenter->flashError('core.user.form.messages.usernameAlreadyExists');
+		} catch (InvalidPasswordException $e) {
+			$this->presenter->flashError('core.user.form.messages.invalidOldPassword');
 		}
 	}
 

@@ -64,21 +64,6 @@ supervisor:
 	title: Supervisor
 	description: Open Supervisor Dashboard.
 
-profile:
-	title: User profile
-
-changePassword:
-	title: "Change user's password"
-	form:
-		oldPassword: Old password
-		newPassword: New password
-		messages:
-			oldPassword: Please enter the old password.
-			newPassword: Please enter the new password.
-			success: The password has been changed successfully.
-			invalidOldPassword: The old password is mismatched.
-		change: Change password
-
 user:
 	title: User manager
 	description: Manage users of this webapp.
@@ -97,6 +82,8 @@ user:
 		language: Language
 		languages:
 			en: English
+		oldPassword: 'Old password (only if you want change password)'
+		newPassword: 'New password (only if you want change password)'
 		add: Add
 		edit: Edit
 		messages:
@@ -106,6 +93,9 @@ user:
 			successAdd: User %username% has been added successfully.
 			successDelete: User %username% has been deleted successfully.
 			successEdit: User %username% has been edited successfully.
+			oldPassword: Please enter the old password.
+			newPassword: Please enter the new password.
+			invalidOldPassword: The old password is mismatched.
 			usernameAlreadyExists: Username is already used.
 
 update:

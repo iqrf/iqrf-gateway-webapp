@@ -37,7 +37,7 @@
 		"iqrf/iqrf-ide-macros-parser": "^1.2",
 		"iqrf/iqrf-repository": "dev-master",
 		"justinrainbow/json-schema": "^5.2",
-		"latte/latte": "^2.5",
+		"latte/latte": "^2.6",
 		"nepada/form-renderer": "~1.1.0",
 		"nette/application": "^3.0",
 		"nette/bootstrap": "^3.0",

@@ -58,45 +58,6 @@ discovery:
 		success: The discovery has been finished successfully.
 	send: Discovery
 
-dpaConfig:
-	title: DPA
-	embeddedPeripherals: Embedded peripherals
-	embPers:
-		coordinator: Coordinator
-		node: Node
-		os: OS
-		eeprom: EEPROM
-		eeeprom: EEEPROM
-		ram: RAM
-		ledr: LEDR
-		ledg: LEDG
-		spi: SPI
-		io: IO
-		thermometer: Thermometer
-		uart: UART
-		frc: FRC
-	other: Other
-	customDpaHandler: Custom DPA Handler
-	ioSetup: IO Setup
-	dpaAutoexec: Autoexec
-	routingOff: Routing off
-	peerToPeer: Enable peer to peer
-	dpaPeerToPeer: Enable DPA peer to peer
-	neverSleep: Stay awake when not bonded
-	uartBaudrate: UART interface baud rate
-	uartBaudrates:
-		1200: 1200 Bd
-		2400: 2400 Bd
-		4800: 4800 Bd
-		9600: 9600 Bd
-		19200: 19200 Bd
-		38400: 38400 Bd
-		57600: 57600 Bd
-		115200: 115200 Bd
-		230400: 230400 Bd
-	nodeDpaInterface: Node DPA interface
-	save: Save
-
 dpaUpload:
 	title: DPA upload
 	version: DPA version
@@ -141,8 +102,9 @@ osUpload:
 	messages: Please select IQRF OS version to upload.
 	upload: Upload
 
-rfConfig:
-	title: RF
+trConfig:
+	title: TR configuration
+	rf: RF
 	networkType: Network Type
 	networkTypes:
 		std: STD
@@ -168,6 +130,41 @@ rfConfig:
 	rfPgmDualChannel: Dual channel
 	rfPgmLpMode: LP mode
 	rfPgmIncorrectUpload: Incorrect upload
+	dpaEmbeddedPeripherals: DPA - Embedded peripherals
+	embPers:
+		coordinator: Coordinator
+		node: Node
+		os: OS
+		eeprom: EEPROM
+		eeeprom: EEEPROM
+		ram: RAM
+		ledr: LEDR
+		ledg: LEDG
+		spi: SPI
+		io: IO
+		thermometer: Thermometer
+		uart: UART
+		frc: FRC
+	dpaOther: DPA - Other
+	customDpaHandler: Custom DPA Handler
+	ioSetup: IO Setup
+	dpaAutoexec: Autoexec
+	routingOff: Routing off
+	peerToPeer: Enable peer to peer
+	dpaPeerToPeer: Enable DPA peer to peer
+	neverSleep: Stay awake when not bonded
+	uartBaudrate: UART interface baud rate
+	uartBaudrates:
+		1200: 1200 Bd
+		2400: 2400 Bd
+		4800: 4800 Bd
+		9600: 9600 Bd
+		19200: 19200 Bd
+		38400: 38400 Bd
+		57600: 57600 Bd
+		115200: 115200 Bd
+		230400: 230400 Bd
+	nodeDpaInterface: Node DPA interface
 	messages:
 		breakInteroperability: You will break interoperability if you disable STD and LP network.
 		lpRxTimeout: LP RX timeout has to be in range from 1 to 255.

@@ -23,7 +23,6 @@ parameters:
 		- '#Call to an undefined method Nette\\Forms\\Container::addMultiplier\(\).#'
 		- '#Call to an undefined method Nette\\Localization\\ITranslator::createPrefixedTranslator\(\).#'
 		- '#Parameter \#1 \$control of method Nette\\Forms\\Controls\\BaseControl::addConditionOn\(\) expects Nette\\Forms\\IControl, Nette\\ComponentModel\\IComponent given.#'
-		- '#Parameter \#1 \$control of method Nette\\Forms\\Rules::addConditionOn\(\) expects Nette\\Forms\\IControl, Nette\\ComponentModel\\IComponent given.#'
 		- '#Method App\\NetworkModule\\Models\\ConnectionManager::list\(\) should return array<App\\NetworkModule\\Entities\\Connection> but returns array<int, string>.#'
 		- '#Method App\\NetworkModule\\Models\\InterfaceManager::list\(\) should return array<App\\NetworkModule\\Entities\\InterfaceStatus> but returns array<int, string>.#'
 		-
@@ -36,8 +35,8 @@ parameters:
 			message: '#Foreach overwrites \$unit with its value variable.#'
 			path: %currentWorkingDirectory%/app/GatewayModule/Models/InfoManager.php
 		-
-			message: '#Parameter \#1 \$input of method App\\IqrfNetModule\\Forms\\RfConfigFormFactory::setRfChannelRule\(\) expects Nette\\Forms\\Controls\\TextInput, Nette\\ComponentModel\\IComponent given.#'
-			path: %currentWorkingDirectory%/app/IqrfNetModule/Forms/RfConfigFormFactory.php
+			message: '#Parameter \#1 \$input of method App\\IqrfNetModule\\Forms\\TrConfigFormFactory::setRfChannelRule\(\) expects Nette\\Forms\\Controls\\TextInput, Nette\\ComponentModel\\IComponent given.#'
+			path: %currentWorkingDirectory%/app/IqrfNetModule/Forms/TrConfigFormFactory.php
 	fileExtensions:
 		- php
 		- phpt
