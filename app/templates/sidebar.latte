@@ -100,7 +100,7 @@
 					<li n:if='$user->isInRole("power")' n:class='isLinkCurrent(":Config:JsonRawApi:*") ? "active"'>
 						<a n:href=':Config:JsonRawApi:default'>{_config.jsonRawApi.title}</a>
 					</li>
-					<li n:if='$user->isInRole("power")' n:class='isLinkCurrent(":Config:JsonMngMetaDataApi:*") ? "active"'>
+					<li n:class='isLinkCurrent(":Config:JsonMngMetaDataApi:*") ? "active"'>
 						<a n:href=':Config:JsonMngMetaDataApi:default'>{_config.jsonMngMetaDataApi.title}</a>
 					</li>
 					<li n:if='$user->isInRole("power")' n:class='isLinkCurrent(":Config:JsonSplitter:*") ? "active"'>
