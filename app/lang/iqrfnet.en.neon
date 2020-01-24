@@ -99,7 +99,8 @@ network-manager:
 osUpload:
 	title: IQRF OS upload
 	version: IQRF OS version
-	messages: Please select IQRF OS version to upload.
+	messages:
+		version: Please select IQRF OS version to upload.
 	upload: Upload
 
 trConfig:
@@ -310,10 +311,9 @@ trConfiguration:
 		success: The TR configuration has been saved successfully.
 
 trUpload:
-	title: TR upload
-	description: IQRF TR upload.
-	coordinator: Coordinator upload
-	dpaHandlerUpload: Coordinator DPA Handler upload
+	title: Coordinator upload
+	description: IQRF Coordinator upload.
+	dpaHandlerUpload: DPA Handler upload
 	osUpload: IQRF OS upload
 	dpaUpload: DPA upload
 	file: File to upload
@@ -325,6 +325,7 @@ trUpload:
 	upload: Upload
 	messages:
 		disabled: TR upload is disabled.
+		info: These actions can take tens of seconds.
 		failure: An error occured while the upload.
 		file: Please select the file to upload.
 		fileFormat: Please select the target of upload.

@@ -17,11 +17,14 @@
 
 {block title}{_iqrfnet.trUpload.title}{/block}
 {block content}
+<div class='alert alert-info' role='alert'>
+	{_iqrfnet.trUpload.messages.info}
+</div>
 <div class='box box-primary'>
 	<header class='box-header with-border'>
 		<h2 class='box-title'>
             {if $user->isInRole("power")}
-				{_iqrfnet.trUpload.coordinator}
+				{_iqrfnet.trUpload.title}
 			{else}
 	            {_iqrfnet.trUpload.dpaHandlerUpload}
 			{/if}
