@@ -48,9 +48,8 @@ sign:
 	out: Sign out
 
 signOut:
-	title: You have been signed out
 	inactivity: You have been logged out for inactivity
-	message: Sign in to another account
+	message: You have been signed out
 
 node-red:
 	title: Node RED

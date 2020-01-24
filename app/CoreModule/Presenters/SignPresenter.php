@@ -66,6 +66,8 @@ class SignPresenter extends BasePresenter {
 			$this->redirect('Sign:in');
 		} else {
 			$this->getUser()->logout();
+			$this->flashSuccess('core.signOut.message');
+			$this->redirect('Sign:in');
 		}
 	}
 
