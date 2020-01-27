@@ -69,6 +69,7 @@ enumeration:
 	title: Device enumeration
 	deviceInfo: Device info
 	deviceAddr: Device address
+	hwpid: HWPID
 	manufacturer: Manufacturer
 	product: Product name
 	picture: Product picture
