@@ -30,6 +30,10 @@
 	width: 1em;
 }
 
+.log {
+	max-height: 75vh;
+}
+
 #nette-error {
 	all: initial;
 	position: absolute;
