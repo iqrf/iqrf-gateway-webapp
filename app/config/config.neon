@@ -39,7 +39,7 @@ extensions:
 
 iqrfMacros:
 	# path to IQRF IDE macros
-	path: '%appDir%/../iqrf/DPA-macros_190301.iqrfmcr'
+	path: '%appDir%/../iqrf/DPA-macros_190301_webapp.iqrfmcr'
 
 session:
 	expiration: 14 days
