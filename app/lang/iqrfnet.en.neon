@@ -59,7 +59,7 @@ discovery:
 	send: Discovery
 
 dpaUpload:
-	title: DPA upload
+	title: DPA plug-in
 	version: DPA version
 	messages:
 		version: Please select DPA version to upload.
@@ -314,9 +314,7 @@ trConfiguration:
 trUpload:
 	title: Coordinator upload
 	description: IQRF Coordinator upload.
-	dpaHandlerUpload: DPA Handler upload
-	osUpload: IQRF OS upload
-	dpaUpload: DPA upload
+	dpaHandlerUpload: Custom DPA Handler
 	file: File to upload
 	fileFormat: Target of upload
 	fileFormats:

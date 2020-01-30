@@ -133,11 +133,11 @@
 					<li n:class='isLinkCurrent(":IqrfNet:SendJson:*") ? "active"'>
 						<a n:href=':IqrfNet:SendJson:default'>{_iqrfnet.send-json.title}</a>
 					</li>
-					<li n:class='isLinkCurrent(":IqrfNet:TrConfig:*") ? "active"'>
-						<a n:href=':IqrfNet:TrConfig:default'>{_iqrfnet.trConfiguration.title}</a>
-					</li>
 					<li n:if='$features["trUpload"]' n:class='isLinkCurrent(":IqrfNet:TrUpload:*") ? "active"'>
 						<a n:href=':IqrfNet:TrUpload:default'>{_iqrfnet.trUpload.title}</a>
+					</li>
+					<li n:class='isLinkCurrent(":IqrfNet:TrConfig:*") ? "active"'>
+						<a n:href=':IqrfNet:TrConfig:default'>{_iqrfnet.trConfiguration.title}</a>
 					</li>
 					<li n:class='isLinkCurrent(":IqrfNet:Network:*") ? "active"'>
 						<a n:href=':IqrfNet:Network:default'>{_iqrfnet.network-manager.title}</a>
