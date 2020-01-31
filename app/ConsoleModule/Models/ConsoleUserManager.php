@@ -62,26 +62,6 @@ class ConsoleUserManager extends UserManager {
 	}
 
 	/**
-	 * Lists all registered users
-	 * @return mixed[] Registered users
-	 */
-	public function listUsers(): array {
-		$users = $this->getUsers();
-		$this->removeHashes($users);
-		return $users;
-	}
-
-	/**
-	 * Removes hashes from the information about the users
-	 * @param mixed[] $users Information about the users
-	 */
-	private function removeHashes(array &$users): void {
-		foreach ($users as &$user) {
-			unset($user['password']);
-		}
-	}
-
-	/**
 	 * Lists user names of all webapp's users
 	 * @return mixed[] User names of all webapp's users
 	 */

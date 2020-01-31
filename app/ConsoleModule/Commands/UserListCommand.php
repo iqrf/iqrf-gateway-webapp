@@ -71,7 +71,7 @@ class UserListCommand extends Command {
 		$header = ['ID', 'Username', 'Role', 'Language'];
 		$table = new Table($output);
 		$table->setHeaders($header);
-		$table->setRows($this->userManager->listUsers());
+		$table->setRows($this->userManager->getUsers());
 		$table->render();
 		return 0;
 	}

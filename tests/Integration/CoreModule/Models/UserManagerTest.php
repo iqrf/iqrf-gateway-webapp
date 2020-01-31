@@ -136,8 +136,12 @@ class UserManagerTest extends DatabaseTestCase {
 	 */
 	public function testGetUsersOne(): void {
 		$this->createUser();
-		$expected = [['id' => 1]];
-		$expected[0] += $this->data;
+		$expected = [[
+			'id' => 1,
+			'username' => 'admin',
+			'role' => 'power',
+			'language' => 'en',
+		]];
 		Assert::same($expected, $this->manager->getUsers());
 	}
 

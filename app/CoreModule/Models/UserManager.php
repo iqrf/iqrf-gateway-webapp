@@ -121,7 +121,9 @@ class UserManager {
 	public function getUsers(): array {
 		$users = [];
 		foreach ($this->table->fetchAll() as $user) {
-			$users[] = $user->toArray();
+			$array = $user->toArray();
+			unset($array['password']);
+			$users[] = $array;
 		}
 		return $users;
 	}
