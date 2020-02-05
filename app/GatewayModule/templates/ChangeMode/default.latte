@@ -17,17 +17,24 @@
 
 {block title}{_gateway.mode.title}{/block}
 {block content}
-<div class='list-group'>
-	<a n:href='ChangeMode:operational' class='list-group-item'>
-		<header class='list-group-item-heading'>{_gateway.mode.modes.operational.title}</header>
-		<p class='list-group-item-text'>{_gateway.mode.modes.operational.description}</p>
-	</a>
-	<a n:href='ChangeMode:service' class='list-group-item'>
-		<header class='list-group-item-heading'>{_gateway.mode.modes.service.title}</header>
-		<p class='list-group-item-text'>{_gateway.mode.modes.service.description}</p>
-	</a>
-	<a n:href='ChangeMode:forwarding' class='list-group-item'>
-		<header class='list-group-item-heading'>{_gateway.mode.modes.forwarding.title}</header>
-		<p class='list-group-item-text'>{_gateway.mode.modes.forwarding.description}</p>
-	</a>
+<div class='panel panel-default'>
+	<div n:snippet='mode' class='panel-body'>
+		<table class='table table-striped'>
+			<tr>
+				<th>{_gateway.info.gwMode}</th>
+				<td>{_gateway.info.gwModes.$gwMode}</td>
+			</tr>
+		</table>
+		{if $gwMode !== 'unknown'}
+			<a class='ajax btn btn-primary' n:href='operational!' role='button'>
+				{_gateway.mode.modes.operational.title}
+			</a>
+			<a class='ajax btn btn-primary' n:href='service!' role='button'>
+				{_gateway.mode.modes.service.title}
+			</a>
+			<a class='ajax btn btn-primary' n:href='forwarding!' role='button'>
+				{_gateway.mode.modes.forwarding.title}
+			</a>
+		{/if}
+	</div>
 </div>

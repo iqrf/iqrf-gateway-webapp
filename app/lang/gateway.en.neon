@@ -55,15 +55,12 @@ mode:
 	modes:
 		operational:
 			title: Operational mode
-			description: Change IQRF Gateway Daemon's mode to operational mode.
 			message: IQRF Gateway Daemon's mode has been changed to operational mode.
 		service:
 			title: Service mode
-			description: Change IQRF Gateway Daemon's mode to service mode.
 			message: IQRF Gateway Daemon's mode has been changed to service mode.
 		forwarding:
 			title: Forwarding mode
-			description: Change IQRF Gateway Daemon's mode to forwarding mode.
 			message: IQRF Gateway Daemon's mode has been changed to forwarding mode.
 
 power:

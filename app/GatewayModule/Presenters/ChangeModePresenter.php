@@ -29,7 +29,7 @@ use App\IqrfNetModule\Models\GwModeManager;
 use Nette\Utils\JsonException;
 
 /**
- * Change IQRF Gateway Daemon's operational mode presenter
+ * Change IQRF Gateway Daemon's gateway mode presenter
  */
 class ChangeModePresenter extends ProtectedPresenter {
 
@@ -50,16 +50,6 @@ class ChangeModePresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Changes IQRF Gateway's mode to Forwarding mode
-	 * @throws EmptyResponseException
-	 * @throws InvalidOperationModeException
-	 * @throws JsonException
-	 */
-	public function actionForwarding(): void {
-		$this->changeMode('forwarding');
-	}
-
-	/**
 	 * Changes IQRF Gateway Daemon's mode
 	 * @param string $mode New IQRF Gateway's mode
 	 * @throws EmptyResponseException
@@ -70,11 +60,20 @@ class ChangeModePresenter extends ProtectedPresenter {
 		$this->setView('default');
 		try {
 			$this->manager->set($mode);
-			$this->flashInfo('gateway.mode.modes.' . $mode . '.message');
-			$this->redirect('ChangeMode:default');
+			$this->flashSuccess('gateway.mode.modes.' . $mode . '.message');
 		} catch (EmptyResponseException | DpaErrorException $e) {
 			$this->flashError('iqrfnet.webSocketClient.messages.emptyResponse');
 		}
+	}
+
+	/**
+	 * Changes IQRF Gateway's mode to Forwarding mode
+	 * @throws EmptyResponseException
+	 * @throws InvalidOperationModeException
+	 * @throws JsonException
+	 */
+	public function handleForwarding(): void {
+		$this->changeMode('forwarding');
 	}
 
 	/**
@@ -83,7 +82,7 @@ class ChangeModePresenter extends ProtectedPresenter {
 	 * @throws InvalidOperationModeException
 	 * @throws JsonException
 	 */
-	public function actionOperational(): void {
+	public function handleOperational(): void {
 		$this->changeMode('operational');
 	}
 
@@ -93,8 +92,20 @@ class ChangeModePresenter extends ProtectedPresenter {
 	 * @throws InvalidOperationModeException
 	 * @throws JsonException
 	 */
-	public function actionService(): void {
+	public function handleService(): void {
 		$this->changeMode('service');
+	}
+
+	/**
+	 * Renders gateway mode control panel
+	 */
+	public function renderDefault(): void {
+		try {
+			$this->template->gwMode = $this->manager->get();
+			$this->redrawControl('mode');
+		} catch (DpaErrorException | EmptyResponseException $e) {
+			$this->template->gwMode = 'unknown';
+		}
 	}
 
 }
