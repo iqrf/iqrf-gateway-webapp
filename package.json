@@ -18,7 +18,7 @@
 	},
 	"homepage": "https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp",
 	"dependencies": {
-		"@sentry/browser": "^5.11",
+		"@sentry/browser": "^5.12",
 		"admin-lte": "^2.4",
 		"autosize": "^4.0",
 		"cronstrue": "^1.88",

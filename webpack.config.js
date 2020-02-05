@@ -7,10 +7,10 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
 	entry: {
-		app: './www/js/app.js',
-		config: './www/js/config.js',
-		error500: './www/js/error500.js',
-		iqrfNet: './www/js/iqrfNet.js',
+		app: './js/app.js',
+		config: './js/config.js',
+		error500: './js/error500.js',
+		iqrfNet: './js/iqrfNet.js',
 	},
 	output: {
 		filename: '[name].bundle.js',
