@@ -17,21 +17,21 @@
 
 {block title}{_service.title}{/block}
 {block content}
-<div class='list-group'>
-	<a n:href='Control:start' class='list-group-item'>
-		<header class='list-group-item-heading'>{_service.actions.start.title}</header>
-		<p class='list-group-item-text'>{_service.actions.start.description}</p>
-	</a>
-	<a n:href='Control:stop' class='list-group-item'>
-		<header class='list-group-item-heading'>{_service.actions.stop.title}</header>
-		<p class='list-group-item-text'>{_service.actions.stop.description}</p>
-	</a>
-	<a n:href='Control:restart' class='list-group-item'>
-		<header class='list-group-item-heading'>{_service.actions.restart.title}</header>
-		<p class='list-group-item-text'>{_service.actions.restart.description}</p>
-	</a>
-	<a n:href='Status:default' class='list-group-item'>
-		<header class='list-group-item-heading'>{_service.actions.status.title}</header>
-		<p class='list-group-item-text'>{_service.actions.status.description}</p>
-	</a>
+<div class='panel panel-default'>
+	<div class='panel-body'>
+		<a class='ajax btn btn-success' n:href='start!' role='button'>
+			{_service.actions.start.title}
+		</a>
+		<a class='ajax btn btn-danger' n:href='stop!' role='button'>
+			{_service.actions.stop.title}
+		</a>
+		<a class='ajax btn btn-primary' n:href='restart!' role='button'>
+			{_service.actions.restart.title}
+		</a>
+		<a class='ajax btn btn-default' n:href='status!' role='button'>
+			{_service.actions.status.title}
+		</a>
+		<br/><br/>
+		<pre n:snippet='status' class='log'>{$status}</pre>
+	</div>
 </div>

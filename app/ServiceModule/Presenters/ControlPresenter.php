@@ -47,13 +47,6 @@ class ControlPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Starts IQRF Gateway Daemon's service
-	 */
-	public function actionStart(): void {
-		$this->action('start');
-	}
-
-	/**
 	 * Starts, stops or restarts IQRF Gateway Daemon's service
 	 * @param string $action Type of action (start/stop/restart)
 	 */
@@ -73,23 +66,57 @@ class ControlPresenter extends ProtectedPresenter {
 			$this->flashSuccess('service.actions.' . $action . '.message');
 		} catch (NotSupportedInitSystemException $ex) {
 			$this->flashError('service.errors.unsupportedInit');
-		} finally {
-			$this->redirect('Control:default');
 		}
+		$this->readStatus();
+	}
+
+	/**
+	 * Starts IQRF Gateway Daemon's service
+	 */
+	public function handleStart(): void {
+		$this->action('start');
 	}
 
 	/**
 	 * Stops IQRF Gateway Daemon's service
 	 */
-	public function actionStop(): void {
+	public function handleStop(): void {
 		$this->action('stop');
 	}
 
 	/**
 	 * Restarts IQRF Gateway Daemon's service
 	 */
-	public function actionRestart(): void {
+	public function handleRestart(): void {
 		$this->action('restart');
+	}
+
+	/**
+	 * Refreshes IQRF Gateway Daemon's service status
+	 */
+	public function handleStatus(): void {
+		$this->readStatus();
+	}
+
+	/**
+	 * Reads IQRF Gateway Daemon's service status
+	 */
+	private function readStatus(): void {
+		try {
+			$this->template->status = $this->serviceManager->getStatus();
+			$this->redrawControl('status');
+		} catch (NotSupportedInitSystemException $ex) {
+			$this->flashError('gateway.errors.unsupportedInit');
+		}
+	}
+
+	/**
+	 * Renders IQRF Gateway Daemon's service status
+	 */
+	public function renderDefault(): void {
+		if (!$this->isAjax()) {
+			$this->readStatus();
+		}
 	}
 
 }
