@@ -10,6 +10,8 @@ declare(strict_types = 1);
 
 namespace Tests\Integration\CoreModule\Models;
 
+use App\CoreModule\Entities\CommandStack;
+use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\JsonFileManager;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
@@ -103,8 +105,10 @@ class JsonFileManagerTest extends TestCase {
 	 * Sets up the test environment
 	 */
 	protected function setUp(): void {
-		$this->manager = new JsonFileManager($this->path);
-		$this->managerTest = new JsonFileManager($this->pathTest);
+		$commandStack = new CommandStack();
+		$commandManager = new CommandManager(false, $commandStack);
+		$this->manager = new JsonFileManager($this->path, $commandManager);
+		$this->managerTest = new JsonFileManager($this->pathTest, $commandManager);
 	}
 
 }

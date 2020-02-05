@@ -193,9 +193,11 @@ class MigrationManagerTest extends TestCase {
 	protected function setUp(): void {
 		Environment::lock('migration', __DIR__ . '/../../temp/');
 		$this->copyFiles();
-		$this->fileManager = new FileManager($this->configPath);
-		$schemaManager = new ComponentSchemaManager($this->schemaPath);
-		$schemaManagerCorrupted = new ComponentSchemaManager($this->schemaCorruptedPath);
+		$commandStack = new CommandStack();
+		$commandManager = new CommandManager(false, $commandStack);
+		$this->fileManager = new FileManager($this->configPath, $commandManager);
+		$schemaManager = new ComponentSchemaManager($this->schemaPath, $commandManager);
+		$schemaManagerCorrupted = new ComponentSchemaManager($this->schemaCorruptedPath, $commandManager);
 		$commandStack = new CommandStack();
 		$this->commandManager = Mockery::mock(CommandManager::class, [false, $commandStack])->makePartial();
 		$serviceManager = Mockery::mock(ServiceManager::class);

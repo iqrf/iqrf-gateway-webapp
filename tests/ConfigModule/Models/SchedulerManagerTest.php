@@ -15,6 +15,8 @@ use App\ConfigModule\Models\GenericManager;
 use App\ConfigModule\Models\MainManager;
 use App\ConfigModule\Models\SchedulerManager;
 use App\ConfigModule\Models\TaskTimeManager;
+use App\CoreModule\Entities\CommandStack;
+use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\JsonFileManager;
 use App\ServiceModule\Models\ServiceManager;
 use Mockery;
@@ -183,9 +185,11 @@ class SchedulerManagerTest extends TestCase {
 		$configPath = __DIR__ . '/../../data/';
 		$configTempPath = __DIR__ . '/../../temp/configuration/';
 		$schemaPath = __DIR__ . '/../../data/cfgSchemas/';
-		$this->fileManagerTemp = new JsonFileManager($configTempPath . 'scheduler/');
-		$fileManager = new JsonFileManager($configPath);
-		$schemaManager = new ComponentSchemaManager($schemaPath);
+		$commandStack = new CommandStack();
+		$commandManager = new CommandManager(false, $commandStack);
+		$this->fileManagerTemp = new JsonFileManager($configTempPath . 'scheduler/', $commandManager);
+		$fileManager = new JsonFileManager($configPath, $commandManager);
+		$schemaManager = new ComponentSchemaManager($schemaPath, $commandManager);
 		$genericConfigManager = new GenericManager($fileManager, $schemaManager);
 		$mainConfigManager = Mockery::mock(MainManager::class);
 		$mainConfigManager->shouldReceive('load')->andReturn(['cacheDir' => $configPath]);
@@ -193,8 +197,8 @@ class SchedulerManagerTest extends TestCase {
 		$mainConfigManagerTemp->shouldReceive('load')->andReturn(['cacheDir' => $configTempPath]);
 		$this->timeManager = new TaskTimeManager();
 		$this->serviceManager = Mockery::mock(ServiceManager::class);
-		$this->manager = new SchedulerManager($mainConfigManager, $genericConfigManager, $this->timeManager, $this->serviceManager);
-		$this->managerTemp = new SchedulerManager($mainConfigManagerTemp, $genericConfigManager, $this->timeManager, $this->serviceManager);
+		$this->manager = new SchedulerManager($mainConfigManager, $genericConfigManager, $this->timeManager, $this->serviceManager, $commandManager);
+		$this->managerTemp = new SchedulerManager($mainConfigManagerTemp, $genericConfigManager, $this->timeManager, $this->serviceManager, $commandManager);
 	}
 
 	/**

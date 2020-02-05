@@ -10,6 +10,8 @@ declare(strict_types = 1);
 
 namespace Tests\Unit\IqrfNetModule\Models;
 
+use App\CoreModule\Entities\CommandStack;
+use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FileManager;
 use App\CoreModule\Models\JsonFileManager;
 use App\IqrfNetModule\Models\DpaRawManager;
@@ -46,8 +48,10 @@ class DpaRawManagerTest extends WebSocketTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 		$path = __DIR__ . '/../../../data/iqrf/';
-		$this->fileManager = new FileManager($path);
-		$this->jsonFileManager = new JsonFileManager($path);
+		$commandStack = new CommandStack();
+		$commandManager = new CommandManager(false, $commandStack);
+		$this->fileManager = new FileManager($path, $commandManager);
+		$this->jsonFileManager = new JsonFileManager($path, $commandManager);
 		$this->request = Mockery::mock(DpaRequest::class);
 		$this->manager = new DpaRawManager($this->request, $this->wsClient);
 	}

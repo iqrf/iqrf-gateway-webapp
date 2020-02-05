@@ -78,10 +78,8 @@ class MonitorFormFactory {
 		$form->addSubmit('save', 'save');
 		$form->addProtection('core.errors.form-timeout');
 		$id = $presenter->getParameter('id');
-		if (isset($id)) {
-			if (array_key_exists($id, $this->manager->list())) {
-				$form->setDefaults($this->manager->load((int) $id));
-			}
+		if (isset($id) && array_key_exists($id, $this->manager->list())) {
+			$form->setDefaults($this->manager->load((int) $id));
 		}
 		$form->onSuccess[] = [$this, 'save'];
 		return $form;

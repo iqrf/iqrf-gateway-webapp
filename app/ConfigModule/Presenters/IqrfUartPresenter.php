@@ -23,6 +23,7 @@ namespace App\ConfigModule\Presenters;
 use App\ConfigModule\Forms\IqrfUartFormFactory;
 use App\ConfigModule\Models\GenericManager;
 use App\ConfigModule\Models\IqrfManager;
+use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\JsonFileManager;
 use Nette\Application\UI\Form;
 use Nette\Utils\JsonException;
@@ -52,10 +53,11 @@ class IqrfUartPresenter extends GenericPresenter {
 	 * Constructor
 	 * @param IqrfManager $iqrfManager IQRF interface manager
 	 * @param GenericManager $genericManager Generic configuration manager
+	 * @param CommandManager $commandManager Command manager
 	 */
-	public function __construct(IqrfManager $iqrfManager, GenericManager $genericManager) {
+	public function __construct(IqrfManager $iqrfManager, GenericManager $genericManager, CommandManager $commandManager) {
 		$this->iqrfManager = $iqrfManager;
-		$this->fileManager = new JsonFileManager(__DIR__ . '/../json/');
+		$this->fileManager = new JsonFileManager(__DIR__ . '/../json/', $commandManager);
 		$components = ['iqrf::IqrfUart'];
 		parent::__construct($components, $genericManager);
 	}

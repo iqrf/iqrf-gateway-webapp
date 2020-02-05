@@ -43,9 +43,10 @@ class JsonSchemaManager extends JsonFileManager {
 	/**
 	 * Constructor
 	 * @param string $configDir Directory with JSON schemas
+	 * @param CommandManager $commandManager Command manager
 	 */
-	public function __construct(string $configDir) {
-		parent::__construct($configDir);
+	public function __construct(string $configDir, CommandManager $commandManager) {
+		parent::__construct($configDir, $commandManager);
 	}
 
 	/**

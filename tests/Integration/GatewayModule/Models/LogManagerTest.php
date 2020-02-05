@@ -10,6 +10,8 @@ declare(strict_types = 1);
 
 namespace Tests\Integration\GatewayModule\Models;
 
+use App\CoreModule\Entities\CommandStack;
+use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FileManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use App\GatewayModule\Models\LogManager;
@@ -76,7 +78,9 @@ class LogManagerTest extends TestCase {
 	 */
 	protected function setUp(): void {
 		$this->logDir = realpath(__DIR__ . '/../../../data/logs/');
-		$this->fileManager = new FileManager($this->logDir);
+		$commandStack = new CommandStack();
+		$commandManager = new CommandManager(false, $commandStack);
+		$this->fileManager = new FileManager($this->logDir, $commandManager);
 		$this->manager = new LogManager($this->logDir);
 	}
 

@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\CloudModule\Presenters;
 
 use App\CloudModule\Forms\AzureFormFactory;
+use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\JsonFileManager;
 use App\CoreModule\Presenters\ProtectedPresenter;
 use Nette\Application\UI\Form;
@@ -44,9 +45,10 @@ class AzurePresenter extends ProtectedPresenter {
 
 	/**
 	 * Constructor
+	 * @param CommandManager $commandManager Command manager
 	 */
-	public function __construct() {
-		$this->fileManager = new JsonFileManager(__DIR__ . '/../json/');
+	public function __construct(CommandManager $commandManager) {
+		$this->fileManager = new JsonFileManager(__DIR__ . '/../json/', $commandManager);
 		parent::__construct();
 	}
 

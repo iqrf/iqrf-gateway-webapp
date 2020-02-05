@@ -65,7 +65,7 @@ class VersionManager {
 		$this->cache = new Cache($storage, 'version_manager');
 		$this->client = $client;
 		$this->commandManager = $commandManager;
-		$this->jsonFileManager = new JsonFileManager(__DIR__ . '/../../../');
+		$this->jsonFileManager = new JsonFileManager(__DIR__ . '/../../../', $commandManager);
 	}
 
 	/**

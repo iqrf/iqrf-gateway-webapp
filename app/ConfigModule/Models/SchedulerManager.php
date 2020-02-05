@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Models;
 
+use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\JsonFileManager;
 use App\ServiceModule\Exceptions\NotSupportedInitSystemException;
 use App\ServiceModule\Models\ServiceManager;
@@ -38,6 +39,11 @@ use Throwable;
 class SchedulerManager {
 
 	use SmartObject;
+
+	/**
+	 * @var CommandManager Command manager
+	 */
+	private $commandManager;
 
 	/**
 	 * @var GenericManager Generic config manager
@@ -70,8 +76,9 @@ class SchedulerManager {
 	 * @param GenericManager $genericManager Generic configuration manager
 	 * @param TaskTimeManager $timeManager Scheduler's task time specification manager
 	 * @param ServiceManager $serviceManager IQRF Gateway Daemon's service manager
+	 * @param CommandManager $commandManager Command manager
 	 */
-	public function __construct(MainManager $mainManager, GenericManager $genericManager, TaskTimeManager $timeManager, ServiceManager $serviceManager) {
+	public function __construct(MainManager $mainManager, GenericManager $genericManager, TaskTimeManager $timeManager, ServiceManager $serviceManager, CommandManager $commandManager) {
 		$this->genericConfigManager = $genericManager;
 		$this->serviceManager = $serviceManager;
 		$this->timeManager = $timeManager;
@@ -80,7 +87,8 @@ class SchedulerManager {
 		} catch (IOException | JsonException $e) {
 			$path = '/var/cache/iqrf-gateway-daemon/scheduler/';
 		}
-		$this->fileManager = new JsonFileManager($path);
+		$this->fileManager = new JsonFileManager($path, $commandManager);
+		$this->commandManager = $commandManager;
 	}
 
 	/**
@@ -235,7 +243,7 @@ class SchedulerManager {
 	 * @throws JsonException
 	 */
 	public function loadType(string $type): ?array {
-		$taskManager = new JsonFileManager(__DIR__ . '/../json');
+		$taskManager = new JsonFileManager(__DIR__ . '/../json', $this->commandManager);
 		$tasks = $taskManager->read('Scheduler');
 		if (array_key_exists($type, $tasks)) {
 			$task = $tasks[$type];

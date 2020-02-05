@@ -35,9 +35,10 @@ class JsonFileManager extends FileManager {
 	/**
 	 * Constructor
 	 * @param string $configDir Directory with configuration files
+	 * @param CommandManager $commandManager Command manager
 	 */
-	public function __construct(string $configDir) {
-		parent::__construct($configDir);
+	public function __construct(string $configDir, CommandManager $commandManager) {
+		parent::__construct($configDir, $commandManager);
 	}
 
 	/**

@@ -20,6 +20,8 @@ declare(strict_types = 1);
 
 namespace Tests\Toolkit\TestCases;
 
+use App\CoreModule\Entities\CommandStack;
+use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\JsonFileManager;
 use Mockery;
 use Nette\Utils\JsonException;
@@ -55,7 +57,9 @@ abstract class DpaParserTestCase extends TestCase {
 	 */
 	protected function setUp(): void {
 		$data = __DIR__ . '/../../data/iqrf/';
-		$this->fileManager = new JsonFileManager($data);
+		$commandStack = new CommandStack();
+		$commandManager = new CommandManager(false, $commandStack);
+		$this->fileManager = new JsonFileManager($data, $commandManager);
 	}
 
 	/**

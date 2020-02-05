@@ -22,6 +22,8 @@ namespace Tests\Toolkit\TestCases;
 
 use App\ConfigModule\Models\ComponentSchemaManager;
 use App\ConfigModule\Models\GenericManager;
+use App\CoreModule\Entities\CommandStack;
+use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\JsonFileManager;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
@@ -57,8 +59,10 @@ abstract class CloudIntegrationTestCase extends TestCase {
 		$this->certPath = realpath(__DIR__ . '/../../temp/certificates/') . '/';
 		$configPath = __DIR__ . '/../../temp/configuration/';
 		$schemaPath = __DIR__ . '/../../data/cfgSchemas/';
-		$this->fileManager = new JsonFileManager($configPath);
-		$schemaManager = new ComponentSchemaManager($schemaPath);
+		$commandStack = new CommandStack();
+		$commandManager = new CommandManager(false, $commandStack);
+		$this->fileManager = new JsonFileManager($configPath, $commandManager);
+		$schemaManager = new ComponentSchemaManager($schemaPath, $commandManager);
 		$this->configManager = new GenericManager($this->fileManager, $schemaManager);
 	}
 

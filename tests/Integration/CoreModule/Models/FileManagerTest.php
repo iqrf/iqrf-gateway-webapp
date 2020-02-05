@@ -10,6 +10,8 @@ declare(strict_types = 1);
 
 namespace Tests\Integration\CoreModule\Models;
 
+use App\CoreModule\Entities\CommandStack;
+use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FileManager;
 use Nette\Utils\FileSystem;
 use Tester\Assert;
@@ -101,8 +103,10 @@ class FileManagerTest extends TestCase {
 	 * Sets up the test environment
 	 */
 	protected function setUp(): void {
-		$this->manager = new FileManager($this->path);
-		$this->managerTest = new FileManager($this->pathTest);
+		$commandStack = new CommandStack();
+		$commandManager = new CommandManager(false, $commandStack);
+		$this->manager = new FileManager($this->path, $commandManager);
+		$this->managerTest = new FileManager($this->pathTest, $commandManager);
 	}
 
 }

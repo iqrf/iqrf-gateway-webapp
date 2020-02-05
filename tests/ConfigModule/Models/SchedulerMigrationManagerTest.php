@@ -12,6 +12,8 @@ namespace Tests\ConfigModule\Models;
 
 use App\ConfigModule\Models\MainManager;
 use App\ConfigModule\Models\SchedulerMigrationManager;
+use App\CoreModule\Entities\CommandStack;
+use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FileManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use App\ServiceModule\Models\ServiceManager;
@@ -130,7 +132,9 @@ class SchedulerMigrationManagerTest extends TestCase {
 	protected function setUp(): void {
 		Environment::lock('migration', __DIR__ . '/../../temp/');
 		$this->copyFiles();
-		$this->fileManager = new FileManager($this->configPath);
+		$commandStack = new CommandStack();
+		$commandManager = new CommandManager(false, $commandStack);
+		$this->fileManager = new FileManager($this->configPath, $commandManager);
 		$mainConfigManager = Mockery::mock(MainManager::class);
 		$mainConfigManager->shouldReceive('load')->andReturn(['cacheDir' => $this->configTempPath . '/..']);
 		$serviceManager = Mockery::mock(ServiceManager::class);

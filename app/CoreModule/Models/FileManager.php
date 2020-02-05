@@ -37,11 +37,18 @@ class FileManager {
 	private $directory;
 
 	/**
+	 * @var CommandManager Command manager
+	 */
+	private $commandManager;
+
+	/**
 	 * Constructor
 	 * @param string $directory Directory with files
+	 * @param CommandManager $commandManager Command managers
 	 */
-	public function __construct(string $directory) {
+	public function __construct(string $directory, CommandManager $commandManager) {
 		$this->directory = $directory;
+		$this->commandManager = $commandManager;
 	}
 
 	/**
@@ -58,7 +65,12 @@ class FileManager {
 	 * @throws IOException
 	 */
 	public function delete(string $fileName): void {
-		FileSystem::delete($this->directory . '/' . $fileName);
+		try {
+			FileSystem::delete($this->directory . '/' . $fileName);
+		} catch (IOException $e) {
+			$this->fixPermissions($fileName);
+			FileSystem::delete($this->directory . '/' . $fileName);
+		}
 	}
 
 	/**
@@ -77,7 +89,12 @@ class FileManager {
 	 * @throws IOException
 	 */
 	public function read(string $fileName) {
-		return FileSystem::read($this->directory . '/' . $fileName);
+		try {
+			return FileSystem::read($this->directory . '/' . $fileName);
+		} catch (IOException $e) {
+			$this->fixPermissions($fileName);
+			return FileSystem::read($this->directory . '/' . $fileName);
+		}
 	}
 
 	/**
@@ -88,7 +105,21 @@ class FileManager {
 	 */
 	public function write(string $fileName, $content): void {
 		$fileName = 'nette.safe://' . $this->directory . '/' . $fileName;
-		FileSystem::write($fileName, $content, null);
+		try {
+			FileSystem::write($fileName, $content, null);
+		} catch (IOException $e) {
+			$this->fixPermissions($fileName);
+			FileSystem::write($fileName, $content, null);
+		}
+	}
+
+	/**
+	 * Fixes the permissions
+	 * @param string $fileName File name
+	 */
+	private function fixPermissions(string $fileName): void {
+		$this->commandManager->run('chmod 777 ' . $this->directory);
+		$this->commandManager->run('chmod 666 ' . $this->directory . '/' . $fileName);
 	}
 
 }

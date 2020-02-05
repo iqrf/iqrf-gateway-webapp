@@ -10,8 +10,10 @@ declare(strict_types = 1);
 
 namespace Tests\Integration\CoreModule\Models;
 
+use App\CoreModule\Entities\CommandStack;
 use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
+use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\JsonFileManager;
 use App\CoreModule\Models\JsonSchemaManager;
 use Tester\Assert;
@@ -91,8 +93,10 @@ class JsonSchemaManagerTest extends TestCase {
 	 * Sets up the test environment
 	 */
 	protected function setUp(): void {
-		$this->fileManager = new JsonFileManager(self::FILE_PATH);
-		$this->manager = new JsonSchemaManager(self::SCHEMA_PATH);
+		$commandStack = new CommandStack();
+		$commandManager = new CommandManager(false, $commandStack);
+		$this->fileManager = new JsonFileManager(self::FILE_PATH, $commandManager);
+		$this->manager = new JsonSchemaManager(self::SCHEMA_PATH, $commandManager);
 	}
 
 }
