@@ -46,31 +46,31 @@ class UnattendedUpgradesPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Disables and stops PIXLA client
+	 * Disables and stops unattended upgrades
 	 */
-	public function actionDisable(): void {
+	public function handleDisable(): void {
 		$this->manager->disableService();
 		$this->flashSuccess('gateway.unattendedUpgrades.messages.disable');
-		$this->setView('default');
-		$this->redirect('UnattendedUpgrades:default');
 	}
 
 	/**
-	 * Enables and starts PIXLA client
+	 * Enables and starts unattended upgrades
 	 */
-	public function actionEnable(): void {
+	public function handleEnable(): void {
 		$this->manager->enableService();
 		$this->flashSuccess('gateway.unattendedUpgrades.messages.enable');
-		$this->setView('default');
-		$this->redirect('UnattendedUpgrades:default');
-	}
-
-	public function renderDefault(): void {
-		$this->template->status = $this->manager->getServiceStatus();
 	}
 
 	/**
-	 * Checks if the PIXLA manager is enabled
+	 * Renders unattended upgrade control panel
+	 */
+	public function renderDefault(): void {
+		$this->template->status = $this->manager->getServiceStatus();
+		$this->redrawControl('status');
+	}
+
+	/**
+	 * Checks if the unattended upgrades is enabled
 	 */
 	protected function startup(): void {
 		parent::startup();
