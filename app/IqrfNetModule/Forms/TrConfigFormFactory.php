@@ -75,6 +75,7 @@ class TrConfigFormFactory {
 	 */
 	public function create(TrConfigPresenter $presenter): Form {
 		$this->presenter = $presenter;
+		$this->configuration = $presenter->template->configuration ?? [];
 		$form = $this->factory->create('iqrfnet.trConfig');
 		$this->addRfConfiguration($form);
 		$this->addRfpgwConfiguration($form);
@@ -83,7 +84,7 @@ class TrConfigFormFactory {
 		$form->addSubmit('save', 'save')
 			->setHtmlAttribute('class', 'ajax btn btn-primary');
 		$form->addProtection('core.errors.form-timeout');
-		$form->setDefaults($presenter->template->configuration ?? []);
+		$form->setDefaults($this->configuration);
 		$form->onSuccess[] = [$this, 'save'];
 		return $form;
 	}
