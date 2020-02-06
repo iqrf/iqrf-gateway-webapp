@@ -28,7 +28,6 @@ use Ublaboo\DataGrid\Column\Action\Confirmation\StringConfirmation;
 use Ublaboo\DataGrid\DataGrid;
 use Ublaboo\DataGrid\Exception\DataGridColumnStatusException;
 use Ublaboo\DataGrid\Exception\DataGridException;
-use Ublaboo\DataGrid\Row;
 
 /**
  * User data grid
@@ -74,23 +73,30 @@ class UserDataGridFactory {
 		$this->presenter = $presenter;
 		$grid = $this->dataGridFactory->create($presenter, $name);
 		$grid->setDataSource($this->manager->getUsers());
-		$grid->addColumnNumber('id', 'core.user.form.id')->setAlign('left');
+		$grid->addColumnNumber('id', 'core.user.form.id')
+			->setAlign('left');
 		$grid->addColumnText('username', 'core.user.form.username');
 		if ($this->presenter->getUser()->isInRole('power')) {
 			$grid->addColumnStatus('role', 'core.user.form.userType')
-				->addOption('normal', 'core.user.form.userTypes.normal')->endOption()
-				->addOption('power', 'core.user.form.userTypes.power')->endOption()
+				->addOption('normal', 'core.user.form.userTypes.normal')
+				->endOption()
+				->addOption('power', 'core.user.form.userTypes.power')
+				->endOption()
 				->onChange[] = [$this, 'changeRole'];
 			$grid->addColumnStatus('language', 'core.user.form.language')
-				->addOption('en', 'core.user.form.languages.en')->endOption()
+				->addOption('en', 'core.user.form.languages.en')
+				->endOption()
 				->onChange[] = [$this, 'changeLanguage'];
 		}
-		$grid->addAction('edit', 'config.actions.Edit')->setIcon('pencil')
+		$grid->addAction('edit', 'config.actions.Edit')
+			->setIcon('pencil')
 			->setClass('btn btn-xs btn-info');
-		$grid->addAction('delete', 'config.actions.Remove')->setIcon('remove')
+		$grid->addAction('delete', 'config.actions.Remove')
+			->setIcon('remove')
 			->setClass('btn btn-xs btn-danger ajax')
 			->setConfirmation(new StringConfirmation('core.user.form.messages.confirmDelete', 'username'));
 		$grid->addToolbarButton('add', 'config.actions.Add')
+			->setIcon('plus')
 			->setClass('btn btn-xs btn-success');
 		if (!$this->presenter->getUser()->isInRole('power')) {
 			$grid->allowRowsAction('edit', function (array $row): bool {
@@ -106,33 +112,33 @@ class UserDataGridFactory {
 	 * @param string $role User's role
 	 */
 	public function changeRole(string $id, string $role): void {
-		$id = (int) $id;
-		$user = $this->manager->getInfo($id);
-		$this->edit($id, $user['username'], $role, $user['language']);
+		$this->edit((int) $id, null, $role, null);
 	}
 
 	/**
 	 * Changes the user
 	 * @param int $id User's ID
-	 * @param string $username Username
-	 * @param string $role User's role
-	 * @param string $language User's language
+	 * @param string|null $username Username
+	 * @param string|null $role User's role
+	 * @param string|null $language User's language
 	 */
-	private function edit(int $id, string $username, string $role, string $language): void {
+	private function edit(int $id, ?string $username, ?string $role, ?string $language): void {
 		try {
 			$this->manager->edit($id, $username, $role, $language);
-			if ($this->presenter->user->id === $id) {
-				$this->presenter->user->logout();
+			$user = $this->presenter->getUser();
+			if ($user->getId() === $id) {
+				$user->logout();
 			}
 			$translator = $this->presenter->getTranslator();
 			$message = $translator->translate('core.user.form.messages.successEdit', null, ['username' => $username]);
 			$this->presenter->flashSuccess($message);
-			$this->presenter->redirect('User:default');
+			if (!$this->presenter->isAjax()) {
+				$this->presenter->redirect('User:default');
+			}
 		} catch (UsernameAlreadyExistsException $e) {
 			$this->presenter->flashError('core.user.form.messages.usernameAlreadyExists');
 		} finally {
 			if ($this->presenter->isAjax()) {
-				$this->presenter->redrawControl('flashes');
 				$dataGrid = $this->presenter['userGrid'];
 				$dataGrid->setDataSource($this->manager->getUsers());
 				$dataGrid->redrawItem($id);
@@ -146,9 +152,7 @@ class UserDataGridFactory {
 	 * @param string $language User's language
 	 */
 	public function changeLanguage(string $id, string $language): void {
-		$id = (int) $id;
-		$user = $this->manager->getInfo($id);
-		$this->edit($id, $user['username'], $user['role'], $language);
+		$this->edit((int) $id, null, null, $language);
 	}
 
 }
