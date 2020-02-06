@@ -84,20 +84,22 @@ class UserManager {
 	 * Edits the user
 	 * @param int $id User ID
 	 * @param string $username New username
-	 * @param string $role New user role
-	 * @param string $language New user's language
+	 * @param string|null $role New user role
+	 * @param string|null $language New user's language
 	 * @throws UsernameAlreadyExistsException
 	 */
-	public function edit(int $id, string $username, string $role, string $language): void {
+	public function edit(int $id, string $username, ?string $role, ?string $language): void {
 		$row = $this->table->where('username', $username)->fetch();
 		if ($row !== null && $row['id'] !== $id) {
 			throw new UsernameAlreadyExistsException();
 		}
-		$data = [
-			'username' => $username,
-			'role' => $role,
-			'language' => $language,
-		];
+		$data = ['username' => $username];
+		if ($role !== null) {
+			$data['role'] = $role;
+		}
+		if ($language !== null) {
+			$data['language'] = $language;
+		}
 		$this->table->where('id', $id)->update($data);
 	}
 

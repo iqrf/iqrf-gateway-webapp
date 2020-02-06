@@ -113,7 +113,9 @@ class UserEditFormFactory {
 				$values->newPassword !== '') {
 				$this->userManager->changePassword($this->id, $values->oldPassword, $values->newPassword);
 			}
-			$this->userManager->edit($this->id, $values->username, $values->role, $values->language);
+			$role = $values->role ?? null;
+			$language = $values->language ?? null;
+			$this->userManager->edit($this->id, $values->username, $role, $language);
 			if ($this->presenter->user->id === $this->id) {
 				$this->presenter->user->logout();
 			}
