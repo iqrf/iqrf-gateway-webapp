@@ -21,7 +21,7 @@ declare(strict_types = 1);
 namespace App\IqrfNetModule\Forms;
 
 use App\CoreModule\Forms\FormFactory;
-use App\CoreModule\Presenters\ProtectedPresenter;
+use App\IqrfNetModule\Presenters\TrConfigPresenter;
 use Nette\Application\UI\Form;
 use Nette\SmartObject;
 
@@ -35,7 +35,7 @@ class ChangeAddressFormFactory {
 	private $factory;
 
 	/**
-	 * @var ProtectedPresenter Protected presenter
+	 * @var TrConfigPresenter TR configuration presenter
 	 */
 	private $presenter;
 
@@ -49,10 +49,10 @@ class ChangeAddressFormFactory {
 
 	/**
 	 * Creates change a network device address form
-	 * @param ProtectedPresenter $presenter Protected presenter
+	 * @param TrConfigPresenter $presenter TR configuration presenter
 	 * @return Form Change a network device address
 	 */
-	public function create(ProtectedPresenter $presenter): Form {
+	public function create(TrConfigPresenter $presenter): Form {
 		$this->presenter = $presenter;
 		$form = $this->factory->create('iqrfnet.changeAddress');
 		$form->addInteger('address', 'address')

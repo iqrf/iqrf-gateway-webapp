@@ -25,19 +25,24 @@
 		{control iqrfNetAddressForm}
 	</div>
 </div>
-<div class='box box-primary'>
-	<header class='box-header with-border'>
-		<h2 class='box-title'>{_iqrfnet.trConfig.title}</h2>
-	</header>
-	<section class='box-body'>
-		{control iqrfNetTrForm}
-	</section>
-</div>
-<div class='box box-primary'>
-	<header class='box-header with-border'>
-		<h2 class='box-title'>{_iqrfnet.security.title}</h2>
-	</header>
-	<section class='box-body'>
-		{control iqrfNetSecurityForm}
-	</section>
-</div>
+
+{snippet forms}
+	{if $configuration !== null}
+		<div class='box box-primary'>
+			<header class='box-header with-border'>
+				<h2 class='box-title'>{_iqrfnet.trConfig.title}</h2>
+			</header>
+			<section class='box-body'>
+				{control iqrfNetTrForm}
+			</section>
+		</div>
+		<div class='box box-primary'>
+			<header class='box-header with-border'>
+				<h2 class='box-title'>{_iqrfnet.security.title}</h2>
+			</header>
+			<section class='box-body'>
+				{control iqrfNetSecurityForm}
+			</section>
+		</div>
+	{/if}
+{/snippet}

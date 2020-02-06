@@ -21,10 +21,15 @@ declare(strict_types = 1);
 namespace App\IqrfNetModule\Presenters;
 
 use App\CoreModule\Presenters\ProtectedPresenter;
+use App\IqrfNetModule\Exceptions\DpaErrorException;
+use App\IqrfNetModule\Exceptions\EmptyResponseException;
+use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\IqrfNetModule\Forms\ChangeAddressFormFactory;
 use App\IqrfNetModule\Forms\SecurityFormFactory;
 use App\IqrfNetModule\Forms\TrConfigFormFactory;
+use App\IqrfNetModule\Models\TrConfigManager;
 use Nette\Application\UI\Form;
+use Nette\Utils\JsonException;
 
 /**
  * TR configuration presenter
@@ -50,6 +55,20 @@ class TrConfigPresenter extends ProtectedPresenter {
 	public $securityFormFactory;
 
 	/**
+	 * @var TrConfigManager IQRF TR configuration manager
+	 */
+	protected $manager;
+
+	/**
+	 * Constructor
+	 * @param TrConfigManager $manager IQRF TR configuration manager
+	 */
+	public function __construct(TrConfigManager $manager) {
+		$this->manager = $manager;
+		parent::__construct();
+	}
+
+	/**
 	 * Create the change a network device address form
 	 * @return Form Change a network device address form
 	 */
@@ -71,6 +90,39 @@ class TrConfigPresenter extends ProtectedPresenter {
 	 */
 	protected function createComponentIqrfNetSecurityForm(): Form {
 		return $this->securityFormFactory->create($this);
+	}
+
+	/**
+	 * Loads TR configuration
+	 */
+	public function loadConfiguration(): void {
+		try {
+			$dpa = $this->manager->read((int) $this->getParameter('address'));
+			if (!array_key_exists('response', $dpa)) {
+				$this->template->configuration = null;
+				$this->flashError('iqrfnet.trConfiguration.read.failure');
+				return;
+			}
+			$configuration = $dpa['response']['data']['rsp'];
+			if (array_key_exists('stdAndLpNetwork', $configuration)) {
+				$configuration['stdAndLpNetwork'] = (int) $configuration['stdAndLpNetwork'];
+			}
+			$this->template->configuration = $configuration;
+		} catch (DpaErrorException | EmptyResponseException | JsonException | UserErrorException $e) {
+			$this->template->configuration = null;
+			$this->flashError('iqrfnet.trConfiguration.read.failure');
+		}
+		$this->redrawControl('forms');
+	}
+
+	/**
+	 * Renders TR configuration page
+	 * @param int $address TR address
+	 */
+	public function renderDefault(int $address = 0): void {
+		if (!$this->isAjax()) {
+			$this->loadConfiguration();
+		}
 	}
 
 }

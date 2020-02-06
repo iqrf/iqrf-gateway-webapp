@@ -75,15 +75,15 @@ class TrConfigFormFactory {
 	 */
 	public function create(TrConfigPresenter $presenter): Form {
 		$this->presenter = $presenter;
-		$this->load();
 		$form = $this->factory->create('iqrfnet.trConfig');
 		$this->addRfConfiguration($form);
 		$this->addRfpgwConfiguration($form);
 		$this->addDpaEmbeddedPeripherals($form);
 		$this->addDpaOtherConfiguration($form);
-		$form->addSubmit('save', 'save');
+		$form->addSubmit('save', 'save')
+			->setHtmlAttribute('class', 'ajax btn btn-primary');
 		$form->addProtection('core.errors.form-timeout');
-		$form->setDefaults($this->configuration);
+		$form->setDefaults($presenter->template->configuration ?? []);
 		$form->onSuccess[] = [$this, 'save'];
 		return $form;
 	}
@@ -222,33 +222,14 @@ class TrConfigFormFactory {
 	}
 
 	/**
-	 * Loads IQRF TR configuration into the form
-	 */
-	private function load(): void {
-		$address = (int) $this->presenter->getParameter('address', 0);
-		try {
-			$dpa = $this->manager->read($address);
-		} catch (DpaErrorException | EmptyResponseException | JsonException | UserErrorException $e) {
-			return;
-		}
-		if (!array_key_exists('response', $dpa)) {
-			return;
-		}
-		$this->configuration = $dpa['response']['data']['rsp'];
-		if (array_key_exists('stdAndLpNetwork', $this->configuration)) {
-			$this->configuration['stdAndLpNetwork'] = (int) $this->configuration['stdAndLpNetwork'];
-		}
-	}
-
-	/**
 	 * Writes IQRF TR configuration from the form
 	 * @param Form $form Set TR configuration form
 	 */
 	public function save(Form $form): void {
-		$address = $this->presenter->getParameter('id', 0);
+		$address = $this->presenter->getParameter('address', 0);
 		$config = $form->getValues('array');
 		if (array_key_exists('stdAndLpNetwork', $config)) {
-			$config['stdAndLpNetwork'] = boolval($config['stdAndLpNetwork']);
+			$config['stdAndLpNetwork'] = (bool) $config['stdAndLpNetwork'];
 		}
 		try {
 			$this->manager->write($address, $config);
