@@ -28,6 +28,7 @@ use Ublaboo\DataGrid\Column\Action\Confirmation\StringConfirmation;
 use Ublaboo\DataGrid\DataGrid;
 use Ublaboo\DataGrid\Exception\DataGridColumnStatusException;
 use Ublaboo\DataGrid\Exception\DataGridException;
+use Ublaboo\DataGrid\Row;
 
 /**
  * User data grid
@@ -75,13 +76,15 @@ class UserDataGridFactory {
 		$grid->setDataSource($this->manager->getUsers());
 		$grid->addColumnNumber('id', 'core.user.form.id')->setAlign('left');
 		$grid->addColumnText('username', 'core.user.form.username');
-		$grid->addColumnStatus('role', 'core.user.form.userType')
-			->addOption('normal', 'core.user.form.userTypes.normal')->endOption()
-			->addOption('power', 'core.user.form.userTypes.power')->endOption()
-			->onChange[] = [$this, 'changeRole'];
-		$grid->addColumnStatus('language', 'core.user.form.language')
-			->addOption('en', 'core.user.form.languages.en')->endOption()
-			->onChange[] = [$this, 'changeLanguage'];
+		if ($this->presenter->getUser()->isInRole('power')) {
+			$grid->addColumnStatus('role', 'core.user.form.userType')
+				->addOption('normal', 'core.user.form.userTypes.normal')->endOption()
+				->addOption('power', 'core.user.form.userTypes.power')->endOption()
+				->onChange[] = [$this, 'changeRole'];
+			$grid->addColumnStatus('language', 'core.user.form.language')
+				->addOption('en', 'core.user.form.languages.en')->endOption()
+				->onChange[] = [$this, 'changeLanguage'];
+		}
 		$grid->addAction('edit', 'config.actions.Edit')->setIcon('pencil')
 			->setClass('btn btn-xs btn-info');
 		$grid->addAction('delete', 'config.actions.Remove')->setIcon('remove')
@@ -89,6 +92,11 @@ class UserDataGridFactory {
 			->setConfirmation(new StringConfirmation('core.user.form.messages.confirmDelete', 'username'));
 		$grid->addToolbarButton('add', 'config.actions.Add')
 			->setClass('btn btn-xs btn-success');
+		if (!$this->presenter->getUser()->isInRole('power')) {
+			$grid->allowRowsAction('edit', function (array $row): bool {
+				return $row['id'] === $this->presenter->getUser()->getId();
+			});
+		}
 		return $grid;
 	}
 
