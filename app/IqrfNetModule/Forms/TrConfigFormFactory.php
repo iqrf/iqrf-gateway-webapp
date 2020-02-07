@@ -227,7 +227,7 @@ class TrConfigFormFactory {
 	 * @param Form $form Set TR configuration form
 	 */
 	public function save(Form $form): void {
-		$address = $this->presenter->getParameter('address', 0);
+		$address = (int) $this->presenter->getParameter('address', 0);
 		$config = $form->getValues('array');
 		if (array_key_exists('stdAndLpNetwork', $config)) {
 			$config['stdAndLpNetwork'] = (bool) $config['stdAndLpNetwork'];
