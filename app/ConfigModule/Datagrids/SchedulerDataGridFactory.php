@@ -82,6 +82,9 @@ class SchedulerDataGridFactory {
 		$grid->addToolbarButton('import', 'config.actions.Import')
 			->setIcon('arrow-up')
 			->setClass('btn btn-xs btn-primary');
+		$grid->addToolbarButton('export', 'config.actions.Export')
+			->setIcon('arrow-down')
+			->setClass('btn btn-xs btn-default');
 		return $grid;
 	}
 

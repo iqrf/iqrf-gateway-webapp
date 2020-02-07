@@ -27,6 +27,7 @@ use App\ServiceModule\Models\ServiceManager;
 use DateTime;
 use Nette\Application\BadRequestException;
 use Nette\Application\Responses\FileResponse;
+use Nette\Http\FileUpload;
 use Nette\IOException;
 use Nette\SmartObject;
 use Nette\Utils\FileSystem;
@@ -94,12 +95,11 @@ class SchedulerMigrationManager {
 
 	/**
 	 * Uploads a configuration
-	 * @param mixed[] $formValues Values from form
+	 * @param FileUpload $zip ZIP archive with scheduler configuration
 	 * @throws InvalidConfigurationFormatException
 	 * @throws NotSupportedInitSystemException
 	 */
-	public function upload(array $formValues): void {
-		$zip = $formValues['configuration'];
+	public function upload(FileUpload $zip): void {
 		if (!$zip->isOk()) {
 			throw new InvalidConfigurationFormatException();
 		}

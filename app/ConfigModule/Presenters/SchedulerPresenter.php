@@ -24,8 +24,10 @@ use App\ConfigModule\Datagrids\SchedulerDataGridFactory;
 use App\ConfigModule\Forms\SchedulerFormFactory;
 use App\ConfigModule\Forms\SchedulerImportFormFactory;
 use App\ConfigModule\Models\SchedulerManager;
+use App\ConfigModule\Models\SchedulerMigrationManager;
 use App\CoreModule\Presenters\ProtectedPresenter;
 use App\CoreModule\Traits\TPresenterFlashMessage;
+use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
 use Nette\IOException;
 use Nette\Utils\JsonException;
@@ -58,16 +60,23 @@ class SchedulerPresenter extends ProtectedPresenter {
 	public $importFormFactory;
 
 	/**
-	 * @var SchedulerManager Scheduler's task manager
+	 * @var SchedulerManager Scheduler's configuration manager
 	 */
-	private $configManager;
+	private $manager;
+
+	/**
+	 * @var SchedulerMigrationManager Scheduler's migration manager
+	 */
+	private $migrationManager;
 
 	/**
 	 * Constructor
-	 * @param SchedulerManager $configManager Scheduler's task manager
+	 * @param SchedulerManager $manager Scheduler's configuration manager
+	 * @param SchedulerMigrationManager $migrationManager Scheduler's migration manager
 	 */
-	public function __construct(SchedulerManager $configManager) {
-		$this->configManager = $configManager;
+	public function __construct(SchedulerManager $manager, SchedulerMigrationManager $migrationManager) {
+		$this->manager = $manager;
+		$this->migrationManager = $migrationManager;
 		parent::__construct();
 	}
 
@@ -76,7 +85,7 @@ class SchedulerPresenter extends ProtectedPresenter {
 	 */
 	public function renderDefault(): void {
 		try {
-			$this->template->tasks = $this->configManager->list();
+			$this->template->tasks = $this->manager->list();
 		} catch (IOException $e) {
 			$this->flashError('config.messages.readFailures.ioError');
 			$this->redirect('Homepage:default');
@@ -100,7 +109,7 @@ class SchedulerPresenter extends ProtectedPresenter {
 	 */
 	public function actionDelete(int $id): void {
 		try {
-			$this->configManager->delete($id);
+			$this->manager->delete($id);
 			$this->flashSuccess('config.messages.successes.delete');
 		} catch (IOException $e) {
 			$this->flashError('config.messages.writeFailures.ioError');
@@ -108,6 +117,18 @@ class SchedulerPresenter extends ProtectedPresenter {
 			$this->flashError('config.messages.writeFailures.invalidJson');
 		}
 		$this->redirect('Scheduler:default');
+	}
+
+	/**
+	 * Exports a scheduler's configuration action
+	 */
+	public function actionExport(): void {
+		try {
+			$this->sendResponse($this->migrationManager->download());
+		} catch (BadRequestException $e) {
+			$this->flashError('config.schedulerMigration.errors.readConfig');
+			$this->redirect('Scheduler:default');
+		}
 	}
 
 	/**

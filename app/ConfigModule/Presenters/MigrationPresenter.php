@@ -21,9 +21,7 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\MigrationFormFactory;
-use App\ConfigModule\Forms\SchedulerMigrationFormFactory;
 use App\ConfigModule\Models\MigrationManager;
-use App\ConfigModule\Models\SchedulerMigrationManager;
 use App\CoreModule\Presenters\ProtectedPresenter;
 use App\CoreModule\Traits\TPresenterFlashMessage;
 use Nette\Application\BadRequestException;
@@ -43,29 +41,16 @@ class MigrationPresenter extends ProtectedPresenter {
 	public $formFactory;
 
 	/**
-	 * @var SchedulerMigrationFormFactory Scheduler's configuration import form factory
-	 * @inject
-	 */
-	public $schedulerFormFactory;
-
-	/**
 	 * @var MigrationManager Configuration migration manager
 	 */
 	private $manager;
 
 	/**
-	 * @var SchedulerMigrationManager Scheduler's configuration migration manager
-	 */
-	private $schedulerManager;
-
-	/**
 	 * Constructor
 	 * @param MigrationManager $manager Configuration migration manager
-	 * @param SchedulerMigrationManager $schedulerManager Scheduler's configuration migration manager
 	 */
-	public function __construct(MigrationManager $manager, SchedulerMigrationManager $schedulerManager) {
+	public function __construct(MigrationManager $manager) {
 		$this->manager = $manager;
-		$this->schedulerManager = $schedulerManager;
 		parent::__construct();
 	}
 
@@ -82,31 +67,11 @@ class MigrationPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Exports a scheduler's configuration action
-	 */
-	public function actionSchedulerExport(): void {
-		try {
-			$this->sendResponse($this->schedulerManager->download());
-		} catch (BadRequestException $e) {
-			$this->flashError('config.schedulerMigration.errors.readConfig');
-			$this->redirect('Migration:default');
-		}
-	}
-
-	/**
 	 * Creates the configuration import form
 	 * @return Form Configuration import form
 	 */
 	protected function createComponentConfigImportForm(): Form {
 		return $this->formFactory->create($this);
-	}
-
-	/**
-	 * Creates the scheduler's configuration import form
-	 * @return Form Scheduler's configuration import form
-	 */
-	protected function createComponentConfigSchedulerImportForm(): Form {
-		return $this->schedulerFormFactory->create($this);
 	}
 
 }

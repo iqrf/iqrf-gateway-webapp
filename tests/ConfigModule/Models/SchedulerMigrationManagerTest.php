@@ -111,10 +111,9 @@ class SchedulerMigrationManagerTest extends TestCase {
 
 	/**
 	 * Mock an uploaded configuration
-	 * @return FileUpload[] Mocked form values
+	 * @return FileUpload Mocked file upload
 	 */
-	private function mockUploadedArchive(): array {
-		$values = [];
+	private function mockUploadedArchive(): FileUpload {
 		$file = [
 			'name' => 'iqrf-gateway-scheduler.zip',
 			'type' => 'application/zip',
@@ -122,8 +121,7 @@ class SchedulerMigrationManagerTest extends TestCase {
 			'error' => UPLOAD_ERR_OK,
 			'size' => filesize($this->tempPath),
 		];
-		$values['configuration'] = new FileUpload($file);
-		return $values;
+		return new FileUpload($file);
 	}
 
 	/**

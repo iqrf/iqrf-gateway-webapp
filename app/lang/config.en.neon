@@ -4,6 +4,7 @@ description: Edit configuration.
 actions:
 	Add: Add
 	Edit: Edit
+	Export: Export
 	Import: Import
 	Remove: Remove
 
@@ -268,10 +269,10 @@ scheduler:
 		file: JSON Task file
 		import: Import
 		messages:
-			invalidFormat: The uploaded file is not JSON file.
+			invalidFormat: The uploaded file is not JSON file or ZIP archive.
 			invalidFile: The uploaded file is invalid.
 			file: Please select the file to import.
-			success: The task has been imported successfully.
+			success: The tasks has been imported successfully.
 	edit: Edit task
 	form:
 		id: ID
@@ -291,6 +292,7 @@ scheduler:
 			remove: Remove task
 		messaging: Messaging
 		message: Message
+		mType: Message types
 		msgId: Message ID
 		returnVerbose: Enable verbose response
 		messages:

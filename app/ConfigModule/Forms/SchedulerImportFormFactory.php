@@ -20,10 +20,13 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Forms;
 
+use App\ConfigModule\Exceptions\InvalidConfigurationFormatException;
 use App\ConfigModule\Models\SchedulerManager;
+use App\ConfigModule\Models\SchedulerMigrationManager;
 use App\ConfigModule\Presenters\SchedulerPresenter;
 use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
 use App\CoreModule\Forms\FormFactory;
+use App\ServiceModule\Exceptions\NotSupportedInitSystemException;
 use Nette\Application\UI\Form;
 use Nette\Http\FileUpload;
 use Nette\IOException;
@@ -39,11 +42,6 @@ class SchedulerImportFormFactory {
 	use SmartObject;
 
 	/**
-	 * @var SchedulerManager Scheduler manager
-	 */
-	private $manager;
-
-	/**
 	 * @var FormFactory Generic form factory
 	 */
 	private $factory;
@@ -54,6 +52,16 @@ class SchedulerImportFormFactory {
 	private $presenter;
 
 	/**
+	 * @var SchedulerManager Scheduler manager
+	 */
+	private $manager;
+
+	/**
+	 * @var SchedulerMigrationManager Scheduler migration manager
+	 */
+	private $migrationManager;
+
+	/**
 	 * Translator prefix
 	 */
 	private const TRANSLATOR_PREFIX = 'config.scheduler.importForm';
@@ -62,10 +70,12 @@ class SchedulerImportFormFactory {
 	 * Constructor
 	 * @param FormFactory $factory Generic form factory
 	 * @param SchedulerManager $manager Scheduler manager
+	 * @param SchedulerMigrationManager $migrationManager Scheduler migration manager
 	 */
-	public function __construct(FormFactory $factory, SchedulerManager $manager) {
-		$this->manager = $manager;
+	public function __construct(FormFactory $factory, SchedulerManager $manager, SchedulerMigrationManager $migrationManager) {
 		$this->factory = $factory;
+		$this->manager = $manager;
+		$this->migrationManager = $migrationManager;
 	}
 
 	/**
@@ -78,21 +88,37 @@ class SchedulerImportFormFactory {
 		$form = $this->factory->create(self::TRANSLATOR_PREFIX);
 		$form->addUpload('file', 'file')
 			->setRequired('messages.file')
-			->setHtmlAttribute('accept', 'application/json');
+			->setHtmlAttribute('accept', 'application/json,application/zip');
 		$form->addSubmit('import', 'import');
 		$form->addProtection('core.errors.form-timeout');
 		$form->onSuccess[] = [$this, 'import'];
 		return $form;
 	}
 
+	/**
+	 * Imports a file
+	 * @param Form $form Scheduler configuration import form
+	 */
 	public function import(Form $form): void {
-		$values = $form->getValues('array');
 		/**
 		 * @var FileUpload $file JSON file
 		 */
-		$file = $values['file'];
+		$file = $form->getValues()->file;
+		if ($file->getContentType() === 'application/json') {
+			$this->importJson($form, $file);
+		} elseif ($file->getContentType() === 'application/zip') {
+			$this->importZip($form, $file);
+		}
+	}
+
+	/**
+	 * Imports JSON file with task configuration
+	 * @param Form $form Scheduler configuration import form
+	 * @param FileUpload $file JSON file with task configuration
+	 */
+	private function importJson(Form $form, FileUpload $file): void {
 		try {
-			$json = Json::decode($file->getContents(), Json::FORCE_ARRAY);
+			$json = Json::decode($file->getContents());
 		} catch (JsonException $e) {
 			$form['file']->addError('messages.invalidFile');
 			$this->presenter->flashError(self::TRANSLATOR_PREFIX . '.messages.invalidFile');
@@ -101,6 +127,7 @@ class SchedulerImportFormFactory {
 		try {
 			$this->manager->save($json);
 			$this->presenter->flashSuccess(self::TRANSLATOR_PREFIX . '.messages.success');
+			$this->presenter->redirect('Scheduler:default');
 		} catch (NonExistingJsonSchemaException $e) {
 			$this->presenter->flashError('config.messages.writeFailures.nonExistingJsonSchema');
 		} catch (IOException $e) {
@@ -108,7 +135,28 @@ class SchedulerImportFormFactory {
 		} catch (JsonException $e) {
 			$this->presenter->flashError('config.messages.writeFailures.invalidJson');
 		}
-		$this->presenter->redirect('Scheduler:default');
+	}
+
+	/**
+	 * Imports ZIP archive with scheduler configuration
+	 * @param Form $form Scheduler configuration import form
+	 * @param FileUpload $file ZIP archive with scheduler configuration
+	 */
+	private function importZip(Form $form, FileUpload $file): void {
+		try {
+			$this->migrationManager->upload($file);
+			$this->presenter->flashSuccess('config.migration.messages.importedConfig');
+			$this->presenter->redirect('Scheduler:default');
+		} catch (InvalidConfigurationFormatException $e) {
+			$this->presenter->flashError('config.migration.errors.invalidFormat');
+		} catch (NonExistingJsonSchemaException $e) {
+			$this->presenter->flashError('config.messages.writeFailures.nonExistingJsonSchema');
+		} catch (NotSupportedInitSystemException $e) {
+			$this->presenter->flashError('service.errors.unsupportedInit');
+		} catch (IOException $e) {
+			/// TODO: Use custom error message.
+			$this->presenter->flashError('config.messages.writeFailures.ioError');
+		}
 	}
 
 }
