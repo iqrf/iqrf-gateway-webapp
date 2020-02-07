@@ -22,6 +22,7 @@ namespace App\ConfigModule\Models;
 
 use DateTime;
 use Nette\Utils\Strings;
+use stdClass;
 use Throwable;
 
 /**
@@ -36,10 +37,10 @@ class TaskTimeManager {
 
 	/**
 	 * Converts a cron time from a string to an array
-	 * @param mixed[] $config Tasks's configuration
+	 * @param stdClass $config Tasks's configuration
 	 */
-	public function cronToArray(array &$config): void {
-		$cron = &$config['timeSpec']['cronTime'];
+	public function cronToArray(stdClass &$config): void {
+		$cron = &$config->timeSpec->cronTime;
 		$cron = Strings::replace(Strings::trim($cron), '~\?~', '*');
 		if (in_array($cron, $this->aliases, true)) {
 			$cron = [$cron, '', '', '', '', '', ''];
@@ -67,25 +68,25 @@ class TaskTimeManager {
 
 	/**
 	 * Converts a cron time from an array to a string
-	 * @param mixed[] $config Task's configuration
+	 * @param stdClass $config Task's configuration
 	 */
-	public function cronToString(array &$config): void {
-		$cron = &$config['timeSpec']['cronTime'];
+	public function cronToString(stdClass &$config): void {
+		$cron = &$config->timeSpec->cronTime;
 		$cron = Strings::trim(implode(' ', $cron));
 	}
 
 	/**
 	 * Returns task's time
-	 * @param mixed[] $task Task
+	 * @param stdClass $task Task
 	 * @return string Task's time
 	 */
-	public function getTime(array $task): string {
-		$timeSpec = $task['timeSpec'];
-		if ($timeSpec['exactTime']) {
-			return 'one shot (' . $timeSpec['startTime'] . ')';
+	public function getTime(stdClass $task): string {
+		$timeSpec = $task->timeSpec;
+		if ($timeSpec->exactTime) {
+			return 'one shot (' . $timeSpec->startTime . ')';
 		}
-		if ($timeSpec['periodic']) {
-			$period = $timeSpec['period'];
+		if ($timeSpec->periodic) {
+			$period = $timeSpec->period;
 			if ($period < 60) {
 				$format = 'every %s seconds';
 			} elseif ($period < 3600) {
@@ -95,7 +96,7 @@ class TaskTimeManager {
 			}
 			return $this->formatPeriod($period, $format) ?? '';
 		}
-		return $task['timeSpec']['cronTime'];
+		return $timeSpec->cronTime;
 	}
 
 	/**

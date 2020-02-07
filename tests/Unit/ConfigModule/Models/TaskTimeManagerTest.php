@@ -37,88 +37,144 @@ class TaskTimeManagerTest extends TestCase {
 	 * Tests the function to convert CRON alias to an array
 	 */
 	public function testCronToArrayAlias(): void {
-		$config = $expected = [];
-		$config['timeSpec']['cronTime'] = '@daily';
-		$expected['timeSpec']['cronTime'] = ['@daily', '', '', '', '', '', ''];
+		$config = (object) [
+			'timeSpec' => (object) [
+				'cronTime' => '@daily',
+			],
+		];
+		$expected = (object) [
+			'timeSpec' => (object) [
+				'cronTime' => ['@daily', '', '', '', '', '', ''],
+			],
+		];
 		$this->manager->cronToArray($config);
-		Assert::same($expected, $config);
+		Assert::equal($expected, $config);
 	}
 
 	/**
 	 * Tests the function to convert an invalid CRON alias to an array
 	 */
 	public function testCronToArrayAliasInvalid(): void {
-		$config = $expected = [];
-		$config['timeSpec']['cronTime'] = '@invalid';
-		$expected['timeSpec']['cronTime'] = ['', '', '', '', '', '', ''];
+		$config = (object) [
+			'timeSpec' => (object) [
+				'cronTime' => '@invalid',
+			],
+		];
+		$expected = (object) [
+			'timeSpec' => (object) [
+				'cronTime' => ['', '', '', '', '', '', ''],
+			],
+		];
 		$this->manager->cronToArray($config);
-		Assert::same($expected, $config);
+		Assert::equal($expected, $config);
 	}
 
 	/**
 	 * Tests the function to convert CRON without seconds and year section to an array
 	 */
 	public function testCronToArrayWithoutSecondsAndYear(): void {
-		$config = $expected = [];
-		$config['timeSpec']['cronTime'] = '0 0 * * *';
-		$expected['timeSpec']['cronTime'] = ['0', '0', '0', '*', '*', '*', '*'];
+		$config = (object) [
+			'timeSpec' => (object) [
+				'cronTime' => '0 0 * * *',
+			],
+		];
+		$expected = (object) [
+			'timeSpec' => (object) [
+				'cronTime' => ['0', '0', '0', '*', '*', '*', '*'],
+			],
+		];
 		$this->manager->cronToArray($config);
-		Assert::same($expected, $config);
+		Assert::equal($expected, $config);
 	}
 
 	/**
 	 * Tests the function to convert CRON without year section to an array
 	 */
 	public function testCronToArrayWithoutYear(): void {
-		$config = $expected = [];
-		$config['timeSpec']['cronTime'] = '0 0 0 * * *';
-		$expected['timeSpec']['cronTime'] = ['0', '0', '0', '*', '*', '*', '*'];
+		$config = (object) [
+			'timeSpec' => (object) [
+				'cronTime' => '0 0 0 * * *',
+			],
+		];
+		$expected = (object) [
+			'timeSpec' => (object) [
+				'cronTime' => ['0', '0', '0', '*', '*', '*', '*'],
+			],
+		];
 		$this->manager->cronToArray($config);
-		Assert::same($expected, $config);
+		Assert::equal($expected, $config);
 	}
 
 	/**
 	 * Tests the function to convert CRON without seconds section to an array
 	 */
 	public function testCronToArrayWithoutSeconds(): void {
-		$config = $expected = [];
-		$config['timeSpec']['cronTime'] = '0 0 * * * 2020';
-		$expected['timeSpec']['cronTime'] = ['0', '0', '0', '*', '*', '*', '2020'];
+		$config = (object) [
+			'timeSpec' => (object) [
+				'cronTime' => '0 0 * * * 2020',
+			],
+		];
+		$expected = (object) [
+			'timeSpec' => (object) [
+				'cronTime' => ['0', '0', '0', '*', '*', '*', '2020'],
+			],
+		];
 		$this->manager->cronToArray($config);
-		Assert::same($expected, $config);
+		Assert::equal($expected, $config);
 	}
 
 	/**
 	 * Tests the function to convert CRON with question mark to an array
 	 */
 	public function testCronToArrayWithQuestionMark(): void {
-		$config = $expected = [];
-		$config['timeSpec']['cronTime'] = '0 0 12 ? * 1,2,3,4,5 *';
-		$expected['timeSpec']['cronTime'] = ['0', '0', '12', '*', '*', '1,2,3,4,5', '*'];
+		$config = (object) [
+			'timeSpec' => (object) [
+				'cronTime' => '0 0 12 ? * 1,2,3,4,5 *',
+			],
+		];
+		$expected = (object) [
+			'timeSpec' => (object) [
+				'cronTime' => ['0', '0', '12', '*', '*', '1,2,3,4,5', '*'],
+			],
+		];
 		$this->manager->cronToArray($config);
-		Assert::same($expected, $config);
+		Assert::equal($expected, $config);
 	}
 
 	/**
 	 * Tests the function to convert an invalid CRON to an array
 	 */
 	public function testCronToArrayInvalid(): void {
-		$config = $expected = [];
-		$config['timeSpec']['cronTime'] = 'INVALID *';
-		$expected['timeSpec']['cronTime'] = ['', '', '', '', '', '', ''];
+		$config = (object) [
+			'timeSpec' => (object) [
+				'cronTime' => 'INVALID *',
+			],
+		];
+		$expected = (object) [
+			'timeSpec' => (object) [
+				'cronTime' => ['', '', '', '', '', '', ''],
+			],
+		];
 		$this->manager->cronToArray($config);
-		Assert::same($expected, $config);
+		Assert::equal($expected, $config);
 	}
 
 	/**
 	 * Tests the function to convert CRON in an array to a string
 	 */
 	public function testCronToString(): void {
-		$config = $expected = [];
-		$config['timeSpec']['cronTime'] = ['0', '0', '0', '*', '*', '*', '*'];
-		$expected['timeSpec']['cronTime'] = '0 0 0 * * * *';
+		$config = (object) [
+			'timeSpec' => (object) [
+				'cronTime' => ['0', '0', '0', '*', '*', '*', '*'],
+			],
+		];
+		$expected = (object) [
+			'timeSpec' => (object) [
+				'cronTime' => '0 0 0 * * * *',
+			],
+		];
 		$this->manager->cronToString($config);
-		Assert::same($expected, $config);
+		Assert::equal($expected, $config);
 	}
 
 	/**
@@ -126,8 +182,8 @@ class TaskTimeManagerTest extends TestCase {
 	 */
 	public function testGetTimeCron(): void {
 		$expected = '0 0 0 * * * *';
-		$config = [
-			'timeSpec' => [
+		$config = (object) [
+			'timeSpec' => (object) [
 				'cronTime' => $expected,
 				'exactTime' => false,
 				'periodic' => false,
@@ -141,8 +197,8 @@ class TaskTimeManagerTest extends TestCase {
 	 */
 	public function testGetTimeOneShot(): void {
 		$expected = 'one shot (2019-01-01T00:00:00)';
-		$config = [
-			'timeSpec' => [
+		$config = (object) [
+			'timeSpec' => (object) [
 				'exactTime' => true,
 				'startTime' => '2019-01-01T00:00:00',
 				'periodic' => false,
@@ -156,8 +212,8 @@ class TaskTimeManagerTest extends TestCase {
 	 */
 	public function testGetTimePeriodicSeconds(): void {
 		$expected = 'every 30 seconds';
-		$config = [
-			'timeSpec' => [
+		$config = (object) [
+			'timeSpec' => (object) [
 				'exactTime' => false,
 				'periodic' => true,
 				'period' => 30,
@@ -171,8 +227,8 @@ class TaskTimeManagerTest extends TestCase {
 	 */
 	public function testGetTimePeriodicMinutes(): void {
 		$expected = 'every 30:00 minutes';
-		$config = [
-			'timeSpec' => [
+		$config = (object) [
+			'timeSpec' => (object) [
 				'exactTime' => false,
 				'periodic' => true,
 				'period' => 1800,
@@ -186,8 +242,8 @@ class TaskTimeManagerTest extends TestCase {
 	 */
 	public function testGetTimePeriodicHours(): void {
 		$expected = 'every 12:00:00 hours';
-		$config = [
-			'timeSpec' => [
+		$config = (object) [
+			'timeSpec' => (object) [
 				'exactTime' => false,
 				'periodic' => true,
 				'period' => 12 * 3600,

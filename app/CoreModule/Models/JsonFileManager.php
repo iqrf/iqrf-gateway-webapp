@@ -24,6 +24,7 @@ use Nette\IOException;
 use Nette\SmartObject;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
+use stdClass;
 
 /**
  * Tool for reading and writing JSON files
@@ -62,13 +63,15 @@ class JsonFileManager extends FileManager {
 	/**
 	 * Reads the JSON file and decode it to array
 	 * @param string $fileName File name (without .json)
-	 * @return mixed[] JSON data in array
+	 * @param bool $forceArray Force object to array conversion
+	 * @return mixed[]|stdClass JSON data in array
 	 * @throws IOException
 	 * @throws JsonException
 	 */
-	public function read(string $fileName): array {
+	public function read(string $fileName, bool $forceArray = true) {
 		$file = parent::read($fileName . '.json');
-		return Json::decode($file, Json::FORCE_ARRAY);
+		$flags = $forceArray ? Json::FORCE_ARRAY : 0;
+		return Json::decode($file, $flags);
 	}
 
 	/**

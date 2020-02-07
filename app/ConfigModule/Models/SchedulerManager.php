@@ -24,14 +24,13 @@ use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\JsonFileManager;
 use App\ServiceModule\Exceptions\NotSupportedInitSystemException;
 use App\ServiceModule\Models\ServiceManager;
-use DateTime;
 use Nette\IOException;
 use Nette\SmartObject;
 use Nette\Utils\Finder;
 use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
 use SplFileInfo;
-use Throwable;
+use stdClass;
 
 /**
  * Scheduler configuration manager
@@ -39,11 +38,6 @@ use Throwable;
 class SchedulerManager {
 
 	use SmartObject;
-
-	/**
-	 * @var CommandManager Command manager
-	 */
-	private $commandManager;
 
 	/**
 	 * @var GenericManager Generic config manager
@@ -88,7 +82,6 @@ class SchedulerManager {
 			$path = '/var/cache/iqrf-gateway-daemon/scheduler/';
 		}
 		$this->fileManager = new JsonFileManager($path, $commandManager);
-		$this->commandManager = $commandManager;
 	}
 
 	/**
@@ -165,14 +158,12 @@ class SchedulerManager {
 		$tasks = [];
 		foreach ($this->getTaskFiles() as $id => $fileName) {
 			$data = $this->load($id);
-			$message = $data['task']['message'];
 			$task = [
-				'id' => $data['taskId'],
+				'id' => $data->taskId,
 				'time' => $this->timeManager->getTime($data),
-				'service' => $data['clientId'],
-				'messaging' => $data['task']['messaging'],
-				'mType' => $message['mType'] ?? '',
-				'request' => $this->getRequest($message),
+				'service' => $data->clientId,
+				'messaging' => $this->getTaskMessagings($data->task),
+				'mType' => $this->getTaskMessageTypes($data->task),
 			];
 			$tasks[] = $task;
 		}
@@ -180,50 +171,47 @@ class SchedulerManager {
 	}
 
 	/**
-	 * Loads the task's configuration
-	 * @param int $id Task ID
-	 * @return mixed[] Array for the form
-	 * @throws JsonException
+	 * Returns messagings used in tasks
+	 * @param mixed[] $tasks Tasks
+	 * @return string Messagings used in tasks
 	 */
-	public function load(int $id): array {
-		$files = $this->getTaskFiles();
-		if (!isset($files[$id])) {
-			return [];
+	private function getTaskMessagings(array $tasks): string {
+		$messagings = [];
+		foreach ($tasks as $task) {
+			$messagings[] = $task->messaging;
 		}
-		$this->fileName = strval($files[$id]);
-		$config = $this->fileManager->read($this->fileName);
-		$this->timeManager->cronToString($config);
-		return $config;
+		return implode(', ', $messagings);
 	}
 
 	/**
-	 * Gets DPA request from JSON
-	 * @param mixed[] $data JSON
-	 * @return string DPA request
+	 * Returns message types used in tasks
+	 * @param mixed[] $tasks Tasks
+	 * @return string Message types used in tasks
 	 */
-	public function getRequest(array $data): string {
-		if ((!isset($data['mType'])) || (!isset($data['data']['req']))) {
-			return '';
+	private function getTaskMessageTypes(array $tasks): string {
+		$mTypes  = [];
+		foreach ($tasks as $task) {
+			$mTypes[] = $task->message->mType;
 		}
-		$request = $data['data']['req'];
-		switch ($data['mType']) {
-			case 'iqrfRaw':
-				return $request['rData'];
-			case 'iqrfRawHdp':
-				$packet = Strings::padLeft(dechex($request['nAdr']), 2, '0') . '.00.';
-				$packet .= Strings::padLeft(dechex($request['pNum']), 2, '0') . '.';
-				$packet .= Strings::padLeft(dechex($request['pCmd']), 2, '0') . '.';
-				$packet .= $this->fixHwpid($request['hwpId'] ?? 65535);
-				if (isset($request['pData']) && $request['pData'] !== []) {
-					foreach ($request['pData'] as &$byte) {
-						$byte = Strings::padLeft(dechex($byte), 2, '0');
-					}
-					$packet .= '.' . implode('.', $request['pData']);
-				}
-				return $packet;
-			default:
-				return '';
+		return implode(', ', $mTypes);
+	}
+
+	/**
+	 * Loads the task's configuration
+	 * @param int $id Task ID
+	 * @return stdClass Array for the form
+	 * @throws JsonException
+	 */
+	public function load(int $id): stdClass {
+		$files = $this->getTaskFiles();
+		if (!isset($files[$id])) {
+			return new stdClass();
 		}
+		$this->fileName = strval($files[$id]);
+		$config = $this->fileManager->read($this->fileName, false);
+		$this->timeManager->cronToString($config);
+		$this->fixTasks($config);
+		return $config;
 	}
 
 	/**
@@ -237,37 +225,28 @@ class SchedulerManager {
 	}
 
 	/**
-	 * Loads the task's configuration from the task's message type
-	 * @param string $type Task's message type
-	 * @return mixed[]|null Array for the form
-	 * @throws JsonException
+	 * Fixes the task specification
+	 * @param stdClass $config Scheduler task
 	 */
-	public function loadType(string $type): ?array {
-		$taskManager = new JsonFileManager(__DIR__ . '/../json', $this->commandManager);
-		$tasks = $taskManager->read('Scheduler');
-		if (array_key_exists($type, $tasks)) {
-			$task = $tasks[$type];
-			try {
-				$task['taskId'] = (new DateTime())->getTimestamp();
-			} catch (Throwable $e) {
-				$task['taskId'] = null;
-			}
-			return $task;
+	public function fixTasks(stdClass &$config): void {
+		if (!is_array($config->task) && isset($config->task->message)) {
+			$config->task = [$config->task];
 		}
-		return null;
 	}
 
 	/**
 	 * Saves the task's configuration
-	 * @param mixed[] $config Task's configuration
+	 * @param stdClass $config Task's configuration
 	 * @throws JsonException
 	 */
-	public function save(array $config): void {
+	public function save(stdClass $config): void {
 		if (!isset($this->fileName)) {
-			$this->fileName = strval($config['taskId']);
+			$this->fileName = strval($config->taskId);
 		}
-		if (!isset($config['task']['message']['data']['timeout'])) {
-			unset($config['task']['message']['data']['timeout']);
+		foreach ($config->task as &$task) {
+			if (!isset($task->message->data->timeout)) {
+				unset($task->message->data->timeout);
+			}
 		}
 		$this->timeManager->cronToArray($config);
 		$this->fileManager->write($this->fileName, $config);

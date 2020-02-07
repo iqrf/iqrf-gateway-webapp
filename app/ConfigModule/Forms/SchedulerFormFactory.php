@@ -22,16 +22,23 @@ namespace App\ConfigModule\Forms;
 
 use App\ConfigModule\Models\SchedulerManager;
 use App\ConfigModule\Presenters\SchedulerPresenter;
+use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
 use App\CoreModule\Forms\FormFactory;
+use App\IqrfNetModule\Models\ApiSchemaManager;
 use App\ServiceModule\Exceptions\NotSupportedInitSystemException;
 use App\ServiceModule\Models\ServiceManager;
+use Contributte\FormMultiplier\Multiplier;
+use Contributte\Translation\Wrappers\NotTranslate;
 use Nette\Application\UI\Form;
 use Nette\Forms\Container;
 use Nette\Forms\Controls\SubmitButton;
+use Nette\Forms\Controls\TextArea;
 use Nette\IOException;
 use Nette\SmartObject;
+use Nette\Utils\Json;
 use Nette\Utils\JsonException;
+use stdClass;
 
 /**
  * Scheduler's task configuration form factory
@@ -56,22 +63,16 @@ class SchedulerFormFactory {
 	private $presenter;
 
 	/**
-	 * @var string[] Message types
+	 * @var ApiSchemaManager JSON API schema manager
 	 */
-	private $mTypes = [
-		'iqrfRaw' => 'mTypes.iqrfRaw',
-		'iqrfRawHdp' => 'mTypes.iqrfRawHdp',
-	];
+	private $schemaManager;
 
 	/**
 	 * @var ServiceManager Service manager
 	 */
 	private $serviceManager;
 
-	/**
-	 * @var mixed[] Task's settings
-	 */
-	private $task;
+	private const PREFIX = 'config.scheduler.form.';
 
 	/**
 	 * Constructor
@@ -79,10 +80,11 @@ class SchedulerFormFactory {
 	 * @param SchedulerManager $manager Scheduler manager
 	 * @param ServiceManager $serviceManager Service manager
 	 */
-	public function __construct(FormFactory $factory, SchedulerManager $manager, ServiceManager $serviceManager) {
+	public function __construct(FormFactory $factory, SchedulerManager $manager, ServiceManager $serviceManager, ApiSchemaManager $schemaManager) {
 		$this->manager = $manager;
 		$this->factory = $factory;
 		$this->serviceManager = $serviceManager;
+		$this->schemaManager = $schemaManager;
 	}
 
 	/**
@@ -92,50 +94,68 @@ class SchedulerFormFactory {
 	 */
 	public function create(SchedulerPresenter $presenter): Form {
 		$this->presenter = $presenter;
-		$form = $this->factory->create('config.scheduler.form');
-		$translator = $this->factory->getTranslator();
+		$form = $this->factory->create();
 		try {
-			$this->load($presenter->getParameters());
-			$messagings = $this->manager->getMessagings();
 			$services = $this->manager->getServices();
 		} catch (JsonException $e) {
-			$messagings = [];
 			$services = [];
 		}
-		$form->addInteger('taskId', 'taskId');
-		$form->addSelect('clientId', 'clientId')
+		$form->addGroup();
+		$form->addInteger('taskId', self::PREFIX . 'taskId');
+		$form->addSelect('clientId', self::PREFIX . 'clientId')
 			->setItems($services, false)
-			->setTranslator($translator)
-			->setPrompt('config.scheduler.form.messages.clientId-prompt')
-			->setRequired('messages.clientId')
+			->setPrompt(self::PREFIX . 'messages.clientId-prompt')
+			->setRequired(self::PREFIX . 'messages.clientId')
 			->checkDefaultValue(false);
 		$this->addTimeSpec($form);
-		$task = $form->addContainer('task');
-		$task->addSelect('messaging', 'messaging')
-			->setItems($messagings, false)
-			->setTranslator($translator)
-			->setPrompt('config.scheduler.form.messages.messaging-prompt')
-			->setRequired('messages.messaging')
-			->checkDefaultValue(false);
-		$this->addMessage($task);
-		$form->addSubmit('save', 'save')->onClick[] = [$this, 'save'];
-		$form->addSubmit('saveAndRestart', 'saveAndRestart')->onClick[] = [$this, 'saveAndRestart'];
-		$form->setDefaults($this->task);
+		$form->addGroup(self::PREFIX . 'tasks.title');
+		/**
+		 * @var Multiplier $tasks
+		 */
+		$tasks = $form->addMultiplier('task', [$this, 'createTasksMultiplier'], 1);
+		$tasks->addCreateButton(self::PREFIX . 'tasks.add')
+			->addClass('btn btn-success');
+		$tasks->addRemoveButton(self::PREFIX . 'tasks.remove')
+			->addClass('btn btn-danger');
+		$form->addGroup();
+		$form->addSubmit('save', self::PREFIX . 'save')->onClick[] = [$this, 'save'];
+		$form->addSubmit('saveAndRestart', self::PREFIX . 'saveAndRestart')->onClick[] = [$this, 'saveAndRestart'];
+		$form->onValidate[] = [$this, 'validate'];
+		$id = $presenter->getParameter('id');
+		if (isset($id)) {
+			$form->setDefaults($this->load((int) $id));
+		}
 		$form->addProtection('core.errors.form-timeout');
 		return $form;
 	}
 
 	/**
-	 * Loads the task's configuration
-	 * @param mixed[] $parameters Presenter's parameters
+	 * Creates tasks multiplier
+	 * @param Container $container Form container
 	 * @throws JsonException
 	 */
-	private function load(array $parameters): void {
-		if (array_key_exists('id', $parameters)) {
-			$this->task = $this->manager->load((int) $parameters['id']);
-		} elseif (array_key_exists('type', $parameters)) {
-			$this->task = $this->manager->loadType($parameters['type']);
+	public function createTasksMultiplier(Container $container): void {
+		$container->addSelect('messaging', self::PREFIX . 'messaging')
+			->setItems($this->getMessagings())
+			->setPrompt(self::PREFIX . 'messages.messaging-prompt')
+			->setRequired(self::PREFIX . 'messages.messaging')
+			->checkDefaultValue(false);
+		$container->addTextArea('message', self::PREFIX . 'message')
+			->setRequired(self::PREFIX . 'messages.message');
+	}
+
+	/**
+	 * Loads the task
+	 * @param int $id Task ID
+	 * @return stdClass Task
+	 * @throws JsonException
+	 */
+	private function load(int $id): stdClass {
+		$configuration = $this->manager->load($id);
+		foreach ($configuration->task as &$task) {
+			$task->message = Json::encode($task->message, Json::PRETTY);
 		}
+		return $configuration;
 	}
 
 	/**
@@ -144,65 +164,61 @@ class SchedulerFormFactory {
 	 */
 	private function addTimeSpec(Form $form): void {
 		$timeSpec = $form->addContainer('timeSpec');
-		$timeSpec->addText('cronTime', 'timeSpec.cronTime');
-		$timeSpec->addCheckbox('exactTime', 'timeSpec.exactTime');
-		$timeSpec->addCheckbox('periodic', 'timeSpec.periodic');
-		$timeSpec->addInteger('period', 'timeSpec.period');
-		$timeSpec->addText('startTime', 'timeSpec.startTime')
+		$timeSpec->addText('cronTime', self::PREFIX . 'timeSpec.cronTime');
+		$timeSpec->addCheckbox('exactTime', self::PREFIX . 'timeSpec.exactTime');
+		$timeSpec->addCheckbox('periodic', self::PREFIX . 'timeSpec.periodic');
+		$timeSpec->addInteger('period', self::PREFIX . 'timeSpec.period');
+		$timeSpec->addText('startTime', self::PREFIX . 'timeSpec.startTime')
 			->setHtmlType('datetime-local');
 		$timeSpec['period']
 			->addConditionOn($timeSpec['periodic'], Form::EQUAL, true)
-			->setRequired('messages.timeSpec.period');
+			->setRequired(self::PREFIX . 'messages.timeSpec.period');
 		$timeSpec['startTime']
 			->addConditionOn($timeSpec['exactTime'], Form::EQUAL, true)
-			->setRequired('messages.timeSpec.startTime');
+			->setRequired(self::PREFIX . 'messages.timeSpec.startTime');
 	}
 
 	/**
-	 * Adds the message
-	 * @param Container $task Task container
+	 * Returns available messagings
+	 * @return array<string,NotTranslate> Messagings
+	 * @throws JsonException
 	 */
-	private function addMessage(Container $task): void {
-		$message = $task->addContainer('message');
-		$message->addSelect('mType', 'mType', $this->mTypes)
-			->setPrompt('messages.mType-prompt')
-			->setRequired('messages.mType')
-			->checkDefaultValue(false);
-		$data = $message->addContainer('data');
-		$data->addText('msgId', 'msgId');
-		$data->addInteger('timeout', 'timeout');
-		$req = $data->addContainer('req');
-		switch ($this->task['task']['message']['mType']) {
-			case 'iqrfRaw':
-				$this->addRaw($req);
-				break;
-			case 'iqrfRawHdp':
-				$pData = &$this->task['task']['message']['data']['req']['pData'];
-				$pData = implode('.', $pData);
-				$this->addRawHdp($req);
-				break;
+	private function getMessagings(): array {
+		$data = [];
+		foreach ($this->manager->getMessagings() as $messagings) {
+			foreach ($messagings as $messaging) {
+				$data[$messaging] = new NotTranslate($messaging);
+			}
 		}
-		$data->addCheckbox('returnVerbose', 'returnVerbose');
+		return $data;
 	}
 
-	/**
-	 * Adds the inputs for DPA raw request
-	 * @param Container $req Form request container
-	 */
-	private function addRaw(Container $req): void {
-		$req->addText('rData', 'request');
-	}
-
-	/**
-	 * Adds the inputs for DPA raw HDP request
-	 * @param Container $req Form request container
-	 */
-	private function addRawHdp(Container $req): void {
-		$req->addInteger('nAdr', 'nAdr');
-		$req->addInteger('pNum', 'pNum');
-		$req->addInteger('pCmd', 'pCmd');
-		$req->addInteger('hwpId', 'hwpId');
-		$req->addText('pData', 'pData');
+	public function validate(Form $form): void {
+		/**
+		 * @var Multiplier $tasks
+		 */
+		$tasks = $form['task'];
+		foreach ($tasks->getContainers() as $task) {
+			/**
+			 * @var TextArea $message
+			 */
+			$message = $task->getComponent('message');
+			$value = $message->getValue();
+			if ($value === '') {
+				continue;
+			}
+			try {
+				$json = Json::decode($value);
+				$this->schemaManager->setSchemaForRequest($json->mType ?? 'unknown');
+				$this->schemaManager->validate($json, true);
+			} catch (JsonException $e) {
+				$message->addError(self::PREFIX . 'messages.messageInvalidJson');
+			} catch (NonExistingJsonSchemaException $e) {
+				$message->addError(self::PREFIX . 'messages.messageInvalidType');
+			} catch (InvalidJsonException $e) {
+				$message->addError(new NotTranslate($e->getMessage()));
+			}
+		}
 	}
 
 	/**
@@ -211,12 +227,11 @@ class SchedulerFormFactory {
 	 */
 	public function saveAndRestart(SubmitButton $button): void {
 		try {
+			$this->save($button);
 			$this->serviceManager->restart();
 			$this->presenter->flashInfo('service.actions.restart.message');
 		} catch (NotSupportedInitSystemException $e) {
 			$this->presenter->flashError('service.errors.unsupportedInit');
-		} finally {
-			$this->save($button);
 		}
 	}
 
@@ -227,16 +242,18 @@ class SchedulerFormFactory {
 	public function save(SubmitButton $button): void {
 		try {
 			$values = $button->getForm()->getValues('array');
+			foreach ($values['task'] as &$task) {
+				$task['message'] = Json::decode($task['message']);
+			}
 			$this->manager->save($values);
 			$this->presenter->flashSuccess('config.messages.success');
+			$this->presenter->redirect('Scheduler:default');
 		} catch (NonExistingJsonSchemaException $e) {
 			$this->presenter->flashError('config.messages.writeFailures.nonExistingJsonSchema');
 		} catch (IOException $e) {
 			$this->presenter->flashError('config.messages.writeFailures.ioError');
 		} catch (JsonException $e) {
 			$this->presenter->flashError('config.messages.writeFailures.invalidJson');
-		} finally {
-			$this->presenter->redirect('Scheduler:default');
 		}
 	}
 

@@ -285,19 +285,12 @@ scheduler:
 			periodic: Periodic
 			period: Period in seconds
 			startTime: Start time
+		tasks:
+			title: Tasks
+			add: Add task
+			remove: Remove task
 		messaging: Messaging
-		mType: Message type
-		mTypes:
-			iqrfRaw: DPA Raw
-			iqrfRawHdp: DPA Raw HDP
-		request: DPA request
-		nAdr: NADR
-		cmd: Command
-		pNum: PNUM
-		pCmd: PCMD
-		hwpId: HWPID
-		pData: Data
-		timeout: Timeout
+		message: Message
 		msgId: Message ID
 		returnVerbose: Enable verbose response
 		messages:
@@ -306,10 +299,9 @@ scheduler:
 			clientId-prompt: Select service
 			hwpid-rule: HWPID has to contain hexadecimal number of maximal length of 4 chars.
 			nadr-rule: NADR has to contain hexadecimal number of maximal length of 2 chars.
+			message: Please enter message.
 			messaging: Please select messaging.
 			messaging-prompt: Select messaging
-			mType: Please select message type.
-			mType-prompt: Select message type
 			timeSpec:
 				period: Please enter a period.
 				startTime: Please enter the start time.

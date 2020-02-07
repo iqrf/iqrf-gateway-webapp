@@ -87,14 +87,6 @@ class SchedulerPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Adds the task into scheduler
-	 * @param string $type Task's message type
-	 */
-	public function renderAdd(string $type): void {
-		$this->template->type = $type;
-	}
-
-	/**
 	 * Edits the task in scheduler
 	 * @param int $id ID of task in Scheduler
 	 */

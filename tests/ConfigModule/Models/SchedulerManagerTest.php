@@ -21,6 +21,7 @@ use App\CoreModule\Models\JsonFileManager;
 use App\ServiceModule\Models\ServiceManager;
 use Mockery;
 use Mockery\MockInterface;
+use stdClass;
 use Tester\Assert;
 use Tester\Environment;
 use Tester\TestCase;
@@ -58,31 +59,9 @@ class SchedulerManagerTest extends TestCase {
 	private $timeManager;
 
 	/**
-	 * @var mixed[string] Scheduler's task settings
+	 * @var stdClass Scheduler's task settings
 	 */
-	private $array = [
-		'taskId' => 1,
-		'clientId' => 'SchedulerMessaging',
-		'timeSpec' => [
-			'cronTime' => ['*/5', '*', '1', '*', '*', '*', '*'],
-			'exactTime' => false,
-			'periodic' => false,
-			'period' => 0,
-			'startTime' => '',
-		],
-		'task' => [
-			'messaging' => 'WebsocketMessaging',
-			'message' => [
-				'mType' => 'iqrfRaw',
-				'data' => [
-					'msgId' => '1',
-					'timeout' => 1000,
-					'req' => ['rData' => '00.00.06.03.ff.ff'],
-				],
-				'returnVerbose' => true,
-			],
-		],
-	];
+	private $array;
 
 	/**
 	 * Test function to delete configuration of Scheduler
@@ -141,14 +120,12 @@ class SchedulerManagerTest extends TestCase {
 				'service' => 'SchedulerMessaging',
 				'messaging' => 'WebsocketMessaging',
 				'mType' => 'iqrfRaw',
-				'request' => '00.00.06.03.ff.ff',
 				'id' => 1,
 			], [
 				'time' => '*/5 * 1 * * * *',
 				'service' => 'SchedulerMessaging',
 				'messaging' => 'WebsocketMessaging',
 				'mType' => 'iqrfRawHdp',
-				'request' => '00.00.06.03.ff.ff',
 				'id' => 2,
 			],
 		];
@@ -160,9 +137,9 @@ class SchedulerManagerTest extends TestCase {
 	 */
 	public function testLoad(): void {
 		$expected = $this->array;
-		$expected['timeSpec']['cronTime'] = '*/5 * 1 * * * *';
+		$expected->timeSpec->cronTime = '*/5 * 1 * * * *';
 		Assert::equal($expected, $this->manager->load(1));
-		Assert::equal([], $this->manager->load(10));
+		Assert::equal(new stdClass(), $this->manager->load(10));
 	}
 
 	/**
@@ -171,11 +148,39 @@ class SchedulerManagerTest extends TestCase {
 	public function testSave(): void {
 		Environment::lock('config_scheduler', __DIR__ . '/../../temp/');
 		$expected = $this->array;
-		$expected['task']['message']['returnVerbose'] = false;
+		$expected->task[0]->message->returnVerbose = false;
 		$config = $expected;
-		$config['timeSpec']['cronTime'] = '*/5 * 1 * * * *';
+		$config->timeSpec->cronTime = '*/5 * 1 * * * *';
 		$this->managerTemp->save($config);
-		Assert::equal($expected, $this->fileManagerTemp->read('1'));
+		Assert::equal($expected, $this->fileManagerTemp->read('1', false));
+	}
+
+	public function __construct() {
+		$this->array = (object) [
+			'taskId' => 1,
+			'clientId' => 'SchedulerMessaging',
+			'timeSpec' => (object) [
+				'cronTime' => ['*/5', '*', '1', '*', '*', '*', '*'],
+				'exactTime' => false,
+				'periodic' => false,
+				'period' => 0,
+				'startTime' => '',
+			],
+			'task' => [
+				(object) [
+					'messaging' => 'WebsocketMessaging',
+					'message' => (object) [
+						'mType' => 'iqrfRaw',
+						'data' => (object) [
+							'msgId' => '1',
+							'timeout' => 1000,
+							'req' => (object) ['rData' => '00.00.06.03.ff.ff'],
+						],
+						'returnVerbose' => true,
+					],
+				],
+			],
+		];
 	}
 
 	/**
