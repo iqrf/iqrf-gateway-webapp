@@ -29,10 +29,16 @@ hexio:
 	form:
 		title: Hexio IoT Platform MQTT connection wizard
 		broker: MQTT broker address
+		ClientId: Client ID
+		TopicRequest: Topic for requests
+		TopicResponse: Topic for responses
 		username: Username
 		password: Password
 		messages:
 			broker: Please enter the MQTT broker address.
+			ClientId: Please enter client ID.
+			TopicRequest: Please enter topic for requests.
+			TopicResponse: Please enter topic for responses.
 			username: Please enter the username.
 			password: Please enter the password.
 		save: Save
