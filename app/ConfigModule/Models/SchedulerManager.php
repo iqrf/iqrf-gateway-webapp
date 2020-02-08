@@ -104,7 +104,6 @@ class SchedulerManager {
 	/**
 	 * Gets task's files
 	 * @return string[] Files with tasks
-	 * @throws JsonException
 	 */
 	public function getTaskFiles(): array {
 		$dir = $this->fileManager->getDirectory();
@@ -115,9 +114,13 @@ class SchedulerManager {
 		foreach (Finder::findFiles('*.json')->from($dir) as $file) {
 			$dirPathPattern = ['~^' . realpath($dir) . '/~', '/.json$/'];
 			$fileName = Strings::replace($file->getRealPath(), $dirPathPattern, '');
-			$json = $this->fileManager->read($fileName);
-			if (array_key_exists('taskId', $json)) {
-				$files[$json['taskId']] = $fileName;
+			try {
+				$json = $this->fileManager->read($fileName);
+				if (array_key_exists('taskId', $json)) {
+					$files[$json['taskId']] = $fileName;
+				}
+			} catch (JsonException $e) {
+				// Skip invalid JSON files
 			}
 		}
 		asort($files);

@@ -100,6 +100,9 @@ class SchedulerPresenter extends ProtectedPresenter {
 	 * @param int $id ID of task in Scheduler
 	 */
 	public function renderEdit(int $id): void {
+		if (!array_key_exists($id, $this->manager->getTaskFiles())) {
+			$this->redirect('Scheduler:default');
+		}
 		$this->template->id = $id;
 	}
 
