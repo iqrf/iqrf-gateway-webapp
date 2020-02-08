@@ -72,6 +72,9 @@ class SchedulerFormFactory {
 	 */
 	private $serviceManager;
 
+	/**
+	 * Translation prefix
+	 */
 	private const PREFIX = 'config.scheduler.form.';
 
 	/**
@@ -118,9 +121,12 @@ class SchedulerFormFactory {
 		$tasks->addRemoveButton(self::PREFIX . 'tasks.remove')
 			->addClass('btn btn-danger');
 		$form->addGroup();
-		$form->addSubmit('save', self::PREFIX . 'save')->onClick[] = [$this, 'save'];
-		$form->addSubmit('saveAndRestart', self::PREFIX . 'saveAndRestart')->onClick[] = [$this, 'saveAndRestart'];
+		$form->addSubmit('save', self::PREFIX . 'save')
+			->setHtmlAttribute('class', 'btn btn-primary');
+		$form->addSubmit('saveAndRestart', self::PREFIX . 'saveAndRestart')
+			->setHtmlAttribute('class', 'btn btn-primary');
 		$form->onValidate[] = [$this, 'validate'];
+		$form->onSubmit[] = [$this, 'save'];
 		$id = $presenter->getParameter('id');
 		if (isset($id)) {
 			$form->setDefaults($this->load((int) $id));
@@ -193,6 +199,10 @@ class SchedulerFormFactory {
 		return $data;
 	}
 
+	/**
+	 * Validates scheduler task configuration from values
+	 * @param Form $form Scheduler task configuration from
+	 */
 	public function validate(Form $form): void {
 		/**
 		 * @var Multiplier $tasks
@@ -222,31 +232,26 @@ class SchedulerFormFactory {
 	}
 
 	/**
-	 * Saves the task's configuration and restart IQRF Gateway Daemon
-	 * @param SubmitButton $button Submit button
-	 */
-	public function saveAndRestart(SubmitButton $button): void {
-		try {
-			$this->save($button);
-			$this->serviceManager->restart();
-			$this->presenter->flashInfo('service.actions.restart.message');
-		} catch (NotSupportedInitSystemException $e) {
-			$this->presenter->flashError('service.errors.unsupportedInit');
-		}
-	}
-
-	/**
 	 * Saves the task's configuration
-	 * @param SubmitButton $button Submit button
+	 * @param Form $form Scheduler task configuration form
 	 */
-	public function save(SubmitButton $button): void {
+	public function save(Form $form): void {
 		try {
-			$values = $button->getForm()->getValues('array');
-			foreach ($values['task'] as &$task) {
-				$task['message'] = Json::decode($task['message']);
+			$values = $form->getValues();
+			foreach ($values->task as &$task) {
+				$task->message = Json::decode($task->message);
 			}
+			$values->task = (array) $values->task;
 			$this->manager->save($values);
 			$this->presenter->flashSuccess('config.messages.success');
+			/**
+			 * @var SubmitButton $restartButton Save and restart submit button
+			 */
+			$restartButton = $form['saveAndRestart'];
+			if ($restartButton->isSubmittedBy()) {
+				$this->serviceManager->restart();
+				$this->presenter->flashInfo('service.actions.restart.message');
+			}
 			$this->presenter->redirect('Scheduler:default');
 		} catch (NonExistingJsonSchemaException $e) {
 			$this->presenter->flashError('config.messages.writeFailures.nonExistingJsonSchema');
@@ -254,6 +259,8 @@ class SchedulerFormFactory {
 			$this->presenter->flashError('config.messages.writeFailures.ioError');
 		} catch (JsonException $e) {
 			$this->presenter->flashError('config.messages.writeFailures.invalidJson');
+		} catch (NotSupportedInitSystemException $e) {
+			$this->presenter->flashError('service.errors.unsupportedInit');
 		}
 	}
 
