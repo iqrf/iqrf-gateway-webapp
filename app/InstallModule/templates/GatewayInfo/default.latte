@@ -27,18 +27,26 @@
 				<th>{_gateway.info.board}</th>
 				<td>{$board}</td>
 			</tr>
-			{ifset $gwId}
-				<tr>
-					<th>{_gateway.info.gwId}</th>
-					<td>{$gwId}</td>
-				</tr>
-			{/ifset}
-			{ifset $gwmonId}
-				<tr>
-					<th>{_gateway.info.gwmonId}</th>
-					<td>{$gwmonId}</td>
-				</tr>
-			{/ifset}
+			<tr n:ifset='$gwId'>
+				<th>{_gateway.info.gwId}</th>
+				<td>{$gwId}</td>
+			</tr>
+			<tr n:ifset='$gwmonId'>
+				<th><a href='https://www.pixla.online/'>{_gateway.info.gwmonId}</a></th>
+				<td>{$gwmonId}</td>
+			</tr>
+			<tr n:ifset='$controllerVersion'>
+				<th>{_gateway.info.version.iqrf-gw-controller}</th>
+				<td>{$controllerVersion}</td>
+			</tr>
+			<tr>
+				<th>{_gateway.info.version.iqrf-gw-daemon}</th>
+				<td>{$daemonVersion}</td>
+			</tr>
+			<tr>
+				<th>{_gateway.info.version.iqrf-gw-webapp}</th>
+				<td>{$webAppVersion}</td>
+			</tr>
 			<tr>
 				<th>{_gateway.info.hostname}</th>
 				<td>{$hostname}</td>
@@ -64,13 +72,28 @@
 				</td>
 			</tr>
 			<tr>
-				<th>{_gateway.info.version.iqrf-gw-daemon}</th>
-				<td>{$daemonVersion}</td>
-			</tr>
-			<tr>
-				<th>{_gateway.info.version.iqrf-gw-webapp}</th>
-				<td>{$webAppVersion}</td>
+				<th>{_gateway.info.tr.title}</th>
+				<td>
+					{ifset $module}
+						{var $osInfo = $module->osRead}
+						{var $enumeration = $module->peripheralEnumeration}
+						<strong>{_gateway.info.tr.moduleType}:</strong> {$osInfo->trMcuType->trType}<br>
+						<strong>{_gateway.info.tr.mcuType}:</strong> {$osInfo->trMcuType->mcuType}<br>
+						<strong>{_gateway.info.tr.moduleId}:</strong> {$osInfo->mid}<br>
+						<strong>{_gateway.info.tr.os}:</strong> {$osInfo->osVersion} ({$osInfo->osBuild})<br>
+						<strong>{_gateway.info.tr.dpa}:</strong> {$enumeration->dpaVer}<br>
+						{ifset $enumeration->flags->rfMode}
+							<strong>{_gateway.info.tr.rfMode}:</strong> {$enumeration->flags->rfMode}<br>
+						{elseifset $enumeration->flags->networkType}
+							<strong>{_gateway.info.tr.networkType}:</strong> {$enumeration->flags->networkType}<br>
+						{/ifset}
+						<strong>{_gateway.info.tr.voltage}:</strong> {$osInfo->supplyVoltage}
+					{else}
+						{_gateway.info.tr.error}
+					{/ifset}
+				</td>
 			</tr>
 		</table>
+		<a class='btn btn-primary' n:href='download' role='button'>{_install.gwInfo.download}</a>
 	</section>
 </div>

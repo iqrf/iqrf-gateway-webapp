@@ -23,6 +23,9 @@ namespace App\InstallModule\Presenters;
 use App\GatewayModule\Models\InfoManager;
 use App\GatewayModule\Models\NetworkManager;
 use App\GatewayModule\Models\VersionManager;
+use App\IqrfNetModule\Exceptions\DpaErrorException;
+use App\IqrfNetModule\Exceptions\EmptyResponseException;
+use Nette\Utils\JsonException;
 
 /**
  * IQRF Gateway info presenter
@@ -65,10 +68,39 @@ class GatewayInfoPresenter extends InstallationPresenter {
 		$this->template->macAddresses = $this->networkManager->getMacAddresses();
 		$this->template->board = $this->infoManager->getBoard();
 		$this->template->hostname = $this->networkManager->getHostname();
+		$this->template->controllerVersion = $this->versionManager->getController();
 		$this->template->daemonVersion = $this->versionManager->getDaemon(true);
 		$this->template->webAppVersion = $this->versionManager->getWebapp(true);
 		$this->template->gwId = $this->infoManager->getId();
 		$this->template->gwmonId = $this->infoManager->getPixlaToken();
+		try {
+			$this->template->module = $this->infoManager->getCoordinatorInfo()['response']->data->rsp;
+		} catch (DpaErrorException | EmptyResponseException | JsonException $e) {
+			$this->flashError('gateway.info.tr.error');
+		}
+	}
+
+	/**
+	 * Downloads gateway information as JSON
+	 */
+	public function actionDownload(): void {
+		$data = [
+			'board' => $this->infoManager->getBoard(),
+			'gwId' => $this->infoManager->getId(),
+			'pixla' => $this->infoManager->getPixlaToken(),
+			'controllerVersion' => $this->versionManager->getController(),
+			'daemonVersion' => $this->versionManager->getDaemon(true),
+			'webappVersion' => $this->versionManager->getWebapp(true),
+			'hostname' => $this->networkManager->getHostname(),
+			'ipAddresses' => $this->networkManager->getIpAddresses(),
+			'macAddresses' => $this->networkManager->getMacAddresses(),
+		];
+		try {
+			$data['coordinator'] = $this->infoManager->getCoordinatorInfo();
+		} catch (DpaErrorException | EmptyResponseException | JsonException $e) {
+			$data['coordinator'] = 'ERROR';
+		}
+		$this->sendJson($data);
 	}
 
 }

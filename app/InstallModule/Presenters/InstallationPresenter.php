@@ -22,11 +22,14 @@ namespace App\InstallModule\Presenters;
 
 use App\CoreModule\Models\UserManager;
 use App\CoreModule\Presenters\BasePresenter;
+use App\CoreModule\Traits\TPresenterFlashMessage;
 
 /**
  * Installation presenter
  */
 abstract class InstallationPresenter extends BasePresenter {
+
+	use TPresenterFlashMessage;
 
 	/**
 	 * @var UserManager User manager
