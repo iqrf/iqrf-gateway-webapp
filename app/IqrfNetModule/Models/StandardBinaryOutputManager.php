@@ -75,7 +75,7 @@ class StandardBinaryOutputManager {
 				'returnVerbose' => true,
 			],
 		];
-		$this->request->setRequest($array);
+		$this->request->set($array);
 		return $this->wsClient->sendSync($this->request);
 	}
 
@@ -121,7 +121,7 @@ class StandardBinaryOutputManager {
 		foreach ($outputs as $output) {
 			$array['data']['req']['param']['binOuts'][] = $output->toArray();
 		}
-		$this->request->setRequest($array);
+		$this->request->set($array);
 		return $this->wsClient->sendSync($this->request);
 	}
 

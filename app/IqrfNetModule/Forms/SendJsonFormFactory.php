@@ -116,11 +116,11 @@ class SendJsonFormFactory {
 			$this->presenter->flashError('iqrfnet.send-json.messages.missingSchema');
 		}
 		try {
-			$this->request->setRequest($json);
+			$this->request->set($json);
 			$response = $this->wsClient->sendSync($this->request, false);
 			$this->presenter->handleShowResponse($response);
 			$rsp = new ApiResponse();
-			$rsp->setResponse(Json::encode($response['response']));
+			$rsp->set(Json::encode($response['response']));
 			$rsp->checkStatus();
 			$this->presenter->flashSuccess('iqrfnet.send-json.messages.success');
 		} catch (EmptyResponseException $e) {

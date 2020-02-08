@@ -50,10 +50,18 @@ class ApiRequest {
 	}
 
 	/**
+	 * Returns the IQRF JSON API request
+	 * @return mixed[]|stdClass IQRF JSON API request
+	 */
+	public function get() {
+		return $this->request;
+	}
+
+	/**
 	 * Sets the IQRF JSON API request
 	 * @param mixed $request IQRF JSON API request
 	 */
-	public function setRequest($request): void {
+	public function set($request): void {
 		if (!is_array($request) && !($request instanceof stdClass)) {
 			throw new InvalidJsonException();
 		}
@@ -70,15 +78,6 @@ class ApiRequest {
 		} elseif ($this->request instanceof stdClass && !isset($this->request->data->msgId)) {
 			$this->request->data->msgId = $this->msgIdManager->generate();
 		}
-	}
-
-	/**
-	 * Converts the IQRF JSON API request to a array
-	 * @return mixed[] IQRF JSON API request
-	 * @throws JsonException
-	 */
-	public function toArray(): array {
-		return Json::decode($this->toJson(), Json::FORCE_ARRAY);
 	}
 
 	/**

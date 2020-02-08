@@ -50,7 +50,7 @@ abstract class WebSocketTestCase extends TestCase {
 	 * @param callable $callback Callback
 	 */
 	protected function assertRequest(array $request, callable $callback): void {
-		$this->request->shouldReceive('setRequest')->with($request);
+		$this->request->shouldReceive('set')->with($request);
 		$this->wsClient->shouldReceive('sendSync')->with(Mockery::type(ApiRequest::class));
 		Assert::noError($callback);
 	}
@@ -78,7 +78,7 @@ abstract class WebSocketTestCase extends TestCase {
 	public function readJsonResponse(string $mType): array {
 		$path = __DIR__ . '/../../data/apiResponses/';
 		$file = FileSystem::read($path . $mType . '.json');
-		return ['response' => Json::decode($file, Json::FORCE_ARRAY)];
+		return ['response' => Json::decode($file)];
 	}
 
 }

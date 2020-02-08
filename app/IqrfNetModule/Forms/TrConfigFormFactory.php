@@ -30,6 +30,7 @@ use Nette\Application\UI\Form;
 use Nette\Forms\Controls\TextInput;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;
+use stdClass;
 
 /**
  * IQRF TR configuration form factory
@@ -39,9 +40,9 @@ class TrConfigFormFactory {
 	use SmartObject;
 
 	/**
-	 * @var mixed[] TR configuration
+	 * @var stdClass TR configuration
 	 */
-	protected $configuration = [];
+	protected $configuration;
 
 	/**
 	 * @var TrConfigManager IQRF TR configuration manager
@@ -66,6 +67,7 @@ class TrConfigFormFactory {
 	public function __construct(FormFactory $factory, TrConfigManager $manager) {
 		$this->factory = $factory;
 		$this->manager = $manager;
+		$this->configuration = new stdClass();
 	}
 
 	/**
@@ -101,8 +103,8 @@ class TrConfigFormFactory {
 			unset($rfBands[$key]);
 		}
 		$form->addSelect('rfBand', 'rfBand', $rfBands)->setDisabled();
-		if (array_key_exists('rfBand', $this->configuration)) {
-			$form['rfBand']->setDefaultValue($this->configuration['rfBand']);
+		if (isset($this->configuration->rfBand)) {
+			$form['rfBand']->setDefaultValue($this->configuration->rfBand);
 		}
 		$rfChannels = ['rfChannelA', 'rfChannelB'];
 		foreach ($rfChannels as $rfChannel) {
@@ -111,12 +113,12 @@ class TrConfigFormFactory {
 		}
 		$subChannels = ['rfSubChannelA', 'rfSubChannelB'];
 		foreach ($subChannels as $subChannel) {
-			if (array_key_exists($subChannel, $this->configuration)) {
+			if (isset($this->configuration->$subChannel)) {
 				$form->addInteger($subChannel, $subChannel);
 				$this->setRfChannelRule($form[$subChannel]);
 			}
 		}
-		if (array_key_exists('stdAndLpNetwork', $this->configuration)) {
+		if (isset($this->configuration->stdAndLpNetwork)) {
 			$warning = $form->getTranslator()->translate('messages.breakInteroperability');
 			$form->addCheckbox('stdAndLpNetwork', 'stdAndLpNetwork')
 				->setHtmlAttribute('data-warning', $warning);
@@ -137,7 +139,7 @@ class TrConfigFormFactory {
 	 * @param TextInput $input RF channel input
 	 */
 	private function setRfChannelRule(TextInput $input): void {
-		$rfBand = $this->configuration['rfBand'] ?? null;
+		$rfBand = $this->configuration->rfBand ?? null;
 		switch ($rfBand) {
 			case '443':
 				$input->addRule(Form::RANGE, 'messages.rfChannel443', [0, 16]);
@@ -166,8 +168,8 @@ class TrConfigFormFactory {
 		$form->addCheckbox('rfPgmDualChannel', 'rfPgmDualChannel');
 		$form->addCheckbox('rfPgmLpMode', 'rfPgmLpMode');
 		$form->addCheckbox('rfPgmIncorrectUpload', 'rfPgmIncorrectUpload')->setDisabled();
-		if (array_key_exists('rfPgmIncorrectUpload', $this->configuration)) {
-			$form['rfPgmIncorrectUpload']->setDefaultValue($this->configuration['rfPgmIncorrectUpload']);
+		if (isset($this->configuration->rfPgmIncorrectUpload)) {
+			$form['rfPgmIncorrectUpload']->setDefaultValue($this->configuration->rfPgmIncorrectUpload);
 		}
 	}
 
@@ -183,8 +185,8 @@ class TrConfigFormFactory {
 			foreach ($unchangeablePeripherals as $peripheral) {
 				$embeddedPeripherals->addCheckbox($peripheral, 'embPers.' . $peripheral)
 					->setDisabled();
-				if (array_key_exists('embPers', $this->configuration)) {
-					$embeddedPeripherals[$peripheral]->setValue($this->configuration['embPers'][$peripheral]);
+				if (isset($this->configuration->embPers)) {
+					$embeddedPeripherals[$peripheral]->setValue($this->configuration->embPers->$peripheral);
 				}
 			}
 		}
@@ -205,10 +207,10 @@ class TrConfigFormFactory {
 		$form->addCheckbox('dpaAutoexec', 'dpaAutoexec');
 		$form->addCheckbox('routingOff', 'routingOff');
 		$form->addCheckbox('peerToPeer', 'peerToPeer');
-		if (array_key_exists('dpaPeerToPeer', $this->configuration)) {
+		if (isset($this->configuration->dpaPeerToPeer)) {
 			$form->addCheckbox('dpaPeerToPeer', 'dpaPeerToPeer');
 		}
-		if (array_key_exists('neverSleep', $this->configuration)) {
+		if (isset($this->configuration->neverSleep)) {
 			$form->addCheckbox('neverSleep', 'neverSleep');
 		}
 		$uartBaudrates = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400];
@@ -217,7 +219,7 @@ class TrConfigFormFactory {
 			unset($uartBaudrates[$key]);
 		}
 		$form->addSelect('uartBaudrate', 'uartBaudrate', $uartBaudrates);
-		if (array_key_exists('nodeDpaInterface', $this->configuration)) {
+		if (isset($this->configuration->nodeDpaInterface)) {
 			$form->addCheckbox('nodeDpaInterface', 'nodeDpaInterface');
 		}
 	}

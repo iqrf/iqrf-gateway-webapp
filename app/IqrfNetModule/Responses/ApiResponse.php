@@ -42,6 +42,7 @@ use App\IqrfNetModule\Exceptions\TimeoutException;
 use App\IqrfNetModule\Exceptions\UserErrorException;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
+use stdClass;
 
 /**
  * IQRF JSON API request
@@ -49,7 +50,7 @@ use Nette\Utils\JsonException;
 class ApiResponse {
 
 	/**
-	 * @var mixed[] JSON API response
+	 * @var stdClass JSON API response
 	 */
 	protected $response;
 
@@ -83,7 +84,7 @@ class ApiResponse {
 	 * @throws UserErrorException
 	 */
 	public function checkStatus(): void {
-		$status = $this->response['data']['status'];
+		$status = $this->response->data->status;
 		if ($status === 0) {
 			return;
 		}
@@ -94,23 +95,23 @@ class ApiResponse {
 	}
 
 	/**
-	 * Sets the IQRF JSON API response
-	 * @param string $response IQRF JSON API response
+	 * Returns the IQRF JSON API response
+	 * @return stdClass IQRF JSON API response
 	 */
-	public function setResponse(string $response): void {
-		try {
-			$this->response = Json::decode($response, Json::FORCE_ARRAY);
-		} catch (JsonException $e) {
-			$this->response = [];
-		}
+	public function get(): stdClass {
+		return $this->response;
 	}
 
 	/**
-	 * Converts IQRF JSON API request to a array
-	 * @return mixed[] JSON API request
+	 * Sets the IQRF JSON API response
+	 * @param string $response IQRF JSON API response
 	 */
-	public function toArray(): array {
-		return $this->response;
+	public function set(string $response): void {
+		try {
+			$this->response = Json::decode($response);
+		} catch (JsonException $e) {
+			$this->response = (object) [];
+		}
 	}
 
 	/**

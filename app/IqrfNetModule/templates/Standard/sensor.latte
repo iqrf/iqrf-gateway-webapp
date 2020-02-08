@@ -18,16 +18,16 @@
 <footer n:snippet='sensors' class='box-footer table-responsive'>
 	{ifset $data}
         {var $response = $data['response']}
-        {switch $response['mType']}
+        {switch $response->mType}
             {case 'iqrfSensor_Enumerate'}
-            {var $sensors = $response['data']['rsp']['result']['sensors']}
+            {var $sensors = $response->data->rsp->result->sensors}
 			<table class='table table-striped text-center'>
 				<tr>
 					<th>{_iqrfnet.standard.sensor.type}</th>
 					<td n:foreach='$sensors as $sensor'>
-                        {var name = $sensor['name']}
-                        {ifset $sensor['breakdown'][0]}
-                            {var $name = $sensor['breakdown'][0]['name']}
+                        {var name = $sensor->name}
+                        {ifset $sensor->breakdown[0]}
+                            {var $name = $sensor->breakdown[0]->name}
                         {/ifset}
                         {$name}
 					</td>
@@ -35,23 +35,23 @@
 				<tr>
 					<th>{_iqrfnet.standard.sensor.unit}</th>
 					<td n:foreach='$sensors as $sensor'>
-                        {var $unit = $sensor['unit'] !== '?' ? ' ' . $sensor['unit']}
-                        {ifset $sensor['breakdown'][0]}
-                            {var $unit = $sensor['breakdown'][0]['unit']}
+                        {var $unit = $sensor->unit !== '?' ? ' ' . $sensor->unit}
+                        {ifset $sensor->breakdown[0]}
+                            {var $unit = $sensor->breakdown[0]->unit}
                         {/ifset}
                         {$unit}
 					</td>
 				</tr>
 			</table>
         {case 'iqrfSensor_ReadSensorsWithTypes'}
-        {var $sensors = $response['data']['rsp']['result']['sensors']}
+        {var $sensors = $response->data->rsp->result->sensors}
 			<table class='table table-striped text-center'>
 				<tr>
 					<th>{_iqrfnet.standard.sensor.type}</th>
 					<td n:foreach='$sensors as $sensor'>
-                        {var name = $sensor['name']}
-                        {ifset $sensor['breakdown'][0]}
-                            {var $name = $sensor['breakdown'][0]['name']}
+                        {var name = $sensor->name}
+                        {ifset $sensor->breakdown[0]}
+                            {var $name = $sensor->breakdown[0]->name}
                         {/ifset}
                         {$name}
 					</td>
@@ -59,11 +59,11 @@
 				<tr>
 					<th>{_iqrfnet.standard.sensor.value}</th>
 					<td n:foreach='$sensors as $sensor'>
-                        {var $value = round($sensor['value'], 2)}
-                        {var $unit = $sensor['unit'] !== '?' ? ' ' . $sensor['unit']}
-                        {ifset $sensor['breakdown'][0]}
-                            {var $value = round($sensor['breakdown'][0]['value'], 2)}
-                            {var $unit = $sensor['breakdown'][0]['unit'] !== '?' ? ' ' . $sensor['breakdown'][0]['unit']}
+                        {var $value = round($sensor->value, 2)}
+                        {var $unit = $sensor->unit !== '?' ? ' ' . $sensor->unit}
+                        {ifset $sensor->breakdown[0]}
+                            {var $value = round($sensor->breakdown[0]->value, 2)}
+                            {var $unit = $sensor->breakdown[0]->unit !== '?' ? ' ' . $sensor->breakdown[0]->unit}
                         {/ifset}
                         {$value}{$unit}
 					</td>

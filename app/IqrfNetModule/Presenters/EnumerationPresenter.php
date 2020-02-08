@@ -64,13 +64,13 @@ class EnumerationPresenter extends ProtectedPresenter {
 	 */
 	public function renderDefault(int $address = 0): void {
 		try {
-			$data = $this->manager->device($address)['response']['data']['rsp'];
+			$data = $this->manager->device($address)['response']->data->rsp;
 			if (isset($data)) {
 				$this->template->data = $data;
-				$this->template->osData = $data['osRead'];
-				$this->template->peripheralData = $data['peripheralEnumeration'];
+				$this->template->osData = $data->osRead;
+				$this->template->peripheralData = $data->peripheralEnumeration;
 				try {
-					$hwpId = $data['peripheralEnumeration']['hwpId'];
+					$hwpId = $data->peripheralEnumeration->hwpId;
 					$this->template->product = $this->productManager->get($hwpId);
 				} catch (ProductNotFound $e) {
 					// Do nothing

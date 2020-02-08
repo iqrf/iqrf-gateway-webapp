@@ -13,6 +13,7 @@ namespace Tests\Unit\IqrfNetModule\Responses;
 use App\IqrfNetModule\Exceptions as IqrfException;
 use App\IqrfNetModule\Responses\ApiResponse;
 use Nette\Utils\Json;
+use stdClass;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -24,16 +25,9 @@ require __DIR__ . '/../../../bootstrap.php';
 class ApiResponseTest extends TestCase {
 
 	/**
-	 * @var mixed[] JSON API response in an array
+	 * @var stdClass JSON API response in an object
 	 */
-	private $array = [
-		'mType' => 'mngDaemon_Mode',
-		'data' => [
-			'rsp' => ['operMode' => 'service'],
-			'msgId' => '1',
-			'status' => 0,
-		],
-	];
+	private $object;
 
 	/**
 	 * @var string JSON API response in a string
@@ -46,25 +40,27 @@ class ApiResponseTest extends TestCase {
 	private $response;
 
 	/**
-	 * Constructor
-	 */
-	public function __construct() {
-		$this->json = Json::encode($this->array);
-	}
-
-	/**
 	 * Starts up test environment
 	 */
 	protected function setUp(): void {
+		$this->object = (object) [
+			'mType' => 'mngDaemon_Mode',
+			'data' => (object) [
+				'rsp' => (object) ['operMode' => 'service'],
+				'msgId' => '1',
+				'status' => 0,
+			],
+		];
+		$this->json = Json::encode($this->object);
 		$this->response = new ApiResponse();
 	}
 
 	/**
 	 * Tests the function to set the request (success)
 	 */
-	public function testSetRequestOk(): void {
+	public function testSetOk(): void {
 		Assert::noError(function (): void {
-			$this->response->setResponse($this->json);
+			$this->response->set($this->json);
 		});
 	}
 
@@ -73,10 +69,10 @@ class ApiResponseTest extends TestCase {
 	 */
 	public function testCheckStatusUserError(): void {
 		Assert::exception(function (): void {
-			$array = $this->array;
-			$array['data']['status'] = 20;
+			$array = $this->object;
+			$array->data->status = 20;
 			$json = Json::encode($array);
-			$this->response->setResponse($json);
+			$this->response->set($json);
 			$this->response->checkStatus();
 		}, IqrfException\UserErrorException::class);
 	}
@@ -86,32 +82,28 @@ class ApiResponseTest extends TestCase {
 	 */
 	public function testCheckStatusTimeout(): void {
 		Assert::exception(function (): void {
-			$array = $this->array;
-			$array['data']['status'] = -1;
+			$array = $this->object;
+			$array->data->status = -1;
 			$json = Json::encode($array);
-			$this->response->setResponse($json);
+			$this->response->set($json);
 			$this->response->checkStatus();
 		}, IqrfException\TimeoutException::class);
 	}
 
 	/**
-	 * Tests the function to get the request as array
+	 * Tests the function to get the request
 	 */
-	public function testToArray(): void {
-		$this->response->setResponse($this->json);
-		$expected = $this->array;
-		$expected['data']['msgId'] = '1';
-		Assert::equal($expected, $this->response->toArray());
+	public function testGet(): void {
+		$this->response->set($this->json);
+		Assert::equal($this->object, $this->response->get());
 	}
 
 	/**
 	 * Tests the function to get the request as JSON string
 	 */
 	public function testToJson(): void {
-		$this->response->setResponse($this->json);
-		$array = $this->array;
-		$array['data']['msgId'] = '1';
-		$expected = Json::encode($array, Json::PRETTY);
+		$this->response->set($this->json);
+		$expected = Json::encode($this->object, Json::PRETTY);
 		Assert::equal($expected, $this->response->toJson(true));
 	}
 

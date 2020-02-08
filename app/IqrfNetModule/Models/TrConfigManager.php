@@ -75,7 +75,7 @@ class TrConfigManager {
 				'returnVerbose' => true,
 			],
 		];
-		$this->request->setRequest($array);
+		$this->request->set($array);
 		return $this->wsClient->sendSync($this->request);
 	}
 
@@ -101,7 +101,7 @@ class TrConfigManager {
 			],
 		];
 		$array['data']['req'] = Arrays::mergeTree($array['data']['req'], $config);
-		$this->request->setRequest($array);
+		$this->request->set($array);
 		return $this->wsClient->sendSync($this->request);
 	}
 

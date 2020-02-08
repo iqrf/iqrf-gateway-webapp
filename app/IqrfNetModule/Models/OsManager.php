@@ -76,7 +76,7 @@ class OsManager {
 				'returnVerbose' => true,
 			],
 		];
-		$this->apiRequest->setRequest($request);
+		$this->apiRequest->set($request);
 		return $this->wsClient->sendSync($this->apiRequest);
 	}
 

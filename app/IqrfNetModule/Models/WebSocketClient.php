@@ -149,10 +149,10 @@ class WebSocketClient {
 	 * @throws JsonException
 	 */
 	private function checkMessage(ApiRequest $request, MessageInterface $response): bool {
-		$requestJson = Json::decode($request->toJson(), Json::FORCE_ARRAY);
-		$responseJson = Json::decode($response->getPayload(), Json::FORCE_ARRAY);
-		$correctMsqId = $requestJson['data']['msgId'] === $responseJson['data']['msgId'];
-		$correctMType = $requestJson['mType'] === $responseJson['mType'];
+		$requestJson = Json::decode($request->toJson());
+		$responseJson = Json::decode($response->getPayload());
+		$correctMsqId = $requestJson->data->msgId === $responseJson->data->msgId;
+		$correctMType = $requestJson->mType === $responseJson->mType;
 		return $correctMsqId && $correctMType;
 	}
 
@@ -163,23 +163,22 @@ class WebSocketClient {
 	 * @param bool $checkStatus Check response status
 	 * @return mixed[] IQRF JSON API response in an array
 	 * @throws EmptyResponseException
-	 * @throws JsonException
 	 * @throws DpaErrorException
 	 * @throws UserErrorException
 	 */
 	private function parseResponse(ApiRequest $request, ?MessageInterface $response, bool $checkStatus): array {
-		$data = ['request' => $request->toArray()];
+		$data = ['request' => $request->get()];
 		if ($response === null) {
 			$data['status'] = 'Empty response.';
 			Debugger::barDump($data, 'WebSocket client');
 			throw new EmptyResponseException();
 		}
 		$apiResponse = new ApiResponse();
-		$apiResponse->setResponse($response->getPayload());
+		$apiResponse->set($response->getPayload());
 		if ($checkStatus) {
 			$apiResponse->checkStatus();
 		}
-		$data['response'] = $apiResponse->toArray();
+		$data['response'] = $apiResponse->get();
 		Debugger::barDump($data, 'WebSocket client');
 		return $data;
 	}

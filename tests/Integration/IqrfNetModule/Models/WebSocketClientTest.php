@@ -44,9 +44,9 @@ class WebSocketClientTest extends TestCase {
 	 * Tests the function to send a JSON DPA request via WebSocket (success)
 	 */
 	public function testSendSyncSuccess(): void {
-		$array = [
+		$array = (object) [
 			'mType' => 'test',
-			'data' => [
+			'data' => (object) [
 				'msgId' => '1',
 				'status' => 0,
 			],
@@ -55,8 +55,8 @@ class WebSocketClientTest extends TestCase {
 			'request' => $array,
 			'response' => $array,
 		];
-		$this->request->setRequest($array);
-		Assert::same($expected, $this->client->sendSync($this->request));
+		$this->request->set($array);
+		Assert::equal($expected, $this->client->sendSync($this->request));
 	}
 
 	/**
@@ -67,7 +67,7 @@ class WebSocketClientTest extends TestCase {
 			$wsServer = 'ws://localhost:9000';
 			$manager = new WebSocketClient($wsServer);
 			$array = ['data' => ['msgId' => '1']];
-			$this->request->setRequest($array);
+			$this->request->set($array);
 			$manager->sendSync($this->request, true, 1);
 		}, IqrfException\EmptyResponseException::class);
 	}

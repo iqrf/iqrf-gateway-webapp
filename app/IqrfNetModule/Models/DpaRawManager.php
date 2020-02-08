@@ -92,7 +92,7 @@ class DpaRawManager {
 		if (!isset($timeout)) {
 			unset($array['data']['timeout']);
 		}
-		$this->request->setRequest($array);
+		$this->request->set($array);
 		$data = $this->wsClient->sendSync($this->request);
 		foreach ($data as &$json) {
 			$json = Json::encode($json, Json::PRETTY);

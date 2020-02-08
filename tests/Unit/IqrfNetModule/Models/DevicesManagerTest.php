@@ -122,8 +122,8 @@ class DevicesManagerTest extends WebSocketTestCase {
 	 * Tests the function to get table of devices in IQMESH Network (success)
 	 */
 	public function testGetTableSuccess(): void {
-		$bonded = $this->readJsonResponse('iqrfEmbedCoordinator_BondedDevices')['response']['data']['rsp']['result']['bondedDevices'];
-		$discovered = $this->readJsonResponse('iqrfEmbedCoordinator_DiscoveredDevices')['response']['data']['rsp']['result']['discoveredDevices'];
+		$bonded = $this->readJsonResponse('iqrfEmbedCoordinator_BondedDevices')['response']->data->rsp->result->bondedDevices;
+		$discovered = $this->readJsonResponse('iqrfEmbedCoordinator_DiscoveredDevices')['response']->data->rsp->result->discoveredDevices;
 		$this->manager->shouldReceive('getBonded')->andReturn($bonded);
 		$this->manager->shouldReceive('getDiscovered')->andReturn($discovered);
 		$table = [

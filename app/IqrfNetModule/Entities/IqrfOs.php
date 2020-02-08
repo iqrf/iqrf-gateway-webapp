@@ -61,12 +61,12 @@ class IqrfOs {
 	 * @return IqrfOs IQRF OS entity
 	 */
 	public static function fromOsRead(array $api): self {
-		$data = $api['response']['data']['rsp']['result'];
-		$build = Strings::upper(Strings::padLeft(dechex($data['osBuild']), 4, '0'));
-		$versionHi = dechex($data['osVersion'] >> 4);
-		$versionLo = Strings::padLeft(dechex($data['osVersion'] & 0xf), 2, '0');
+		$data = $api['response']->data->rsp->result;
+		$build = Strings::upper(Strings::padLeft(dechex($data->osBuild), 4, '0'));
+		$versionHi = dechex($data->osVersion >> 4);
+		$versionLo = Strings::padLeft(dechex($data->osVersion & 0xf), 2, '0');
 		$version = Strings::upper($versionHi . $versionLo);
-		$trSeries = TrSeries::fromTrMcuType($data['trMcuType']);
+		$trSeries = TrSeries::fromTrMcuType($data->trMcuType);
 		return new self($build, $version, $trSeries);
 	}
 

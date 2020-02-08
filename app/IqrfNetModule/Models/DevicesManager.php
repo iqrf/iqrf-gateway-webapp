@@ -144,9 +144,9 @@ class DevicesManager {
 				'returnVerbose' => true,
 			],
 		];
-		$this->request->setRequest($request);
+		$this->request->set($request);
 		$apiData = $this->wsClient->sendSync($this->request);
-		return $apiData['response']['data']['rsp']['result']['bondedDevices'] ?? [];
+		return $apiData['response']->data->rsp->result->bondedDevices ?? [];
 	}
 
 	/**
@@ -168,9 +168,9 @@ class DevicesManager {
 				'returnVerbose' => true,
 			],
 		];
-		$this->request->setRequest($request);
+		$this->request->set($request);
 		$apiData = $this->wsClient->sendSync($this->request);
-		return $apiData['response']['data']['rsp']['result']['discoveredDevices'] ?? [];
+		return $apiData['response']->data->rsp->result->discoveredDevices ?? [];
 	}
 
 	/**
@@ -195,9 +195,9 @@ class DevicesManager {
 				],
 			],
 		];
-		$this->request->setRequest($request);
+		$this->request->set($request);
 		$apiData = $this->wsClient->sendSync($this->request);
-		$frcData = $apiData['response']['data']['rsp']['result']['frcData'] ?? [];
+		$frcData = $apiData['response']->data->rsp->result->frcData ?? [];
 		$data = [];
 		foreach ($frcData as $i => $byte) {
 			for ($j = 0; $j < 8; ++$j) {

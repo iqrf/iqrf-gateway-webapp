@@ -129,9 +129,9 @@ class VersionManager {
 				'returnVerbose' => true,
 			],
 		];
-		$this->apiRequest->setRequest($request);
+		$this->apiRequest->set($request);
 		$api = $this->wsClient->sendSync($this->apiRequest);
-		return $api['response']['data']['rsp']['version'];
+		return $api['response']->data->rsp->version;
 	}
 
 	/**

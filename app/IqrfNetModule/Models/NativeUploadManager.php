@@ -74,7 +74,7 @@ class NativeUploadManager {
 		if ($format !== null) {
 			$request['data']['req']['target'] = $format->toScalar();
 		}
-		$this->apiRequest->setRequest($request);
+		$this->apiRequest->set($request);
 		return $this->wsClient->sendSync($this->apiRequest);
 	}
 

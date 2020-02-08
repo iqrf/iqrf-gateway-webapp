@@ -103,9 +103,9 @@ class TrConfigPresenter extends ProtectedPresenter {
 				$this->flashError('iqrfnet.trConfiguration.read.failure');
 				return;
 			}
-			$configuration = $dpa['response']['data']['rsp'];
-			if (array_key_exists('stdAndLpNetwork', $configuration)) {
-				$configuration['stdAndLpNetwork'] = (int) $configuration['stdAndLpNetwork'];
+			$configuration = $dpa['response']->data->rsp;
+			if (property_exists($configuration, 'stdAndLpNetwork')) {
+				$configuration->stdAndLpNetwork = (int) $configuration->stdAndLpNetwork;
 			}
 			$this->template->configuration = $configuration;
 		} catch (DpaErrorException | EmptyResponseException | JsonException | UserErrorException $e) {

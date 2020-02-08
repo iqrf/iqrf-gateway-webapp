@@ -31,8 +31,8 @@ class DpaRequest extends ApiRequest {
 	 * Sets the JSON DPA request
 	 * @param mixed $request JSON DPA request
 	 */
-	public function setRequest($request): void {
-		parent::setRequest($request);
+	public function set($request): void {
+		parent::set($request);
 		$this->fixRequest();
 	}
 

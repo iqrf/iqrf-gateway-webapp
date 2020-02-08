@@ -53,36 +53,36 @@ class ApiRequestTest extends TestCase {
 	/**
 	 * Tests the function to set the request (valid request)
 	 */
-	public function testSetRequestValid(): void {
+	public function testSetValid(): void {
 		Assert::noError(function (): void {
-			$this->request->setRequest($this->array);
+			$this->request->set($this->array);
 		});
 	}
 
 	/**
 	 * Tests the function to set the request (invalid request)
 	 */
-	public function testSetRequestInvalid(): void {
+	public function testSetInvalid(): void {
 		Assert::exception(function (): void {
-			$this->request->setRequest(null);
+			$this->request->set(null);
 		}, InvalidJsonException::class);
 	}
 
 	/**
 	 * Tests the function to get the request as array
 	 */
-	public function testToArray(): void {
-		$this->request->setRequest($this->array);
+	public function testGet(): void {
+		$this->request->set($this->array);
 		$expected = $this->array;
 		$expected['data']['msgId'] = '1';
-		Assert::equal($expected, $this->request->toArray());
+		Assert::equal($expected, $this->request->get());
 	}
 
 	/**
 	 * Tests the function to get the request as JSON string
 	 */
 	public function testToJson(): void {
-		$this->request->setRequest($this->array);
+		$this->request->set($this->array);
 		$array = $this->array;
 		$array['data']['msgId'] = '1';
 		$expected = Json::encode($array, Json::PRETTY);

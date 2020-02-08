@@ -128,10 +128,10 @@ class VersionManagerTest extends WebSocketTestCase {
 	 */
 	public function testGetDaemonWs(): void {
 		$response = [
-			'response' => [
+			'response' => (object) [
 				'mType' => 'mngDaemon_Version',
-				'data' => [
-					'rsp' => [
+				'data' => (object) [
+					'rsp' => (object) [
 						'version' => self::DAEMON_VERSION_FULL,
 					],
 					'insId' => 'iqrfgd2-default',
@@ -146,7 +146,7 @@ class VersionManagerTest extends WebSocketTestCase {
 		$this->commandManager->shouldReceive('run')
 			->with(self::DAEMON_VERSION_CMD)
 			->andReturn(new Command(self::DAEMON_VERSION_CMD, 'none', '', 0));
-		$this->request->shouldReceive('setRequest')
+		$this->request->shouldReceive('set')
 			->with(self::DAEMON_API_REQUEST);
 		$this->wsClient->shouldReceive('sendSync')
 			->with(Mockery::type(ApiRequest::class))
@@ -162,7 +162,7 @@ class VersionManagerTest extends WebSocketTestCase {
 		$this->commandManager->shouldReceive('commandExist')
 			->with('iqrfgd2')
 			->andReturn(false);
-		$this->request->shouldReceive('setRequest')
+		$this->request->shouldReceive('set')
 			->with(self::DAEMON_API_REQUEST);
 		$this->wsClient->shouldReceive('sendSync')
 			->withAnyArgs()
@@ -180,7 +180,7 @@ class VersionManagerTest extends WebSocketTestCase {
 		$this->commandManager->shouldReceive('run')
 			->with(self::DAEMON_VERSION_CMD)
 			->andReturn(new Command(self::DAEMON_VERSION_CMD, '', '', 1));
-		$this->request->shouldReceive('setRequest')
+		$this->request->shouldReceive('set')
 			->with(self::DAEMON_API_REQUEST);
 		$this->wsClient->shouldReceive('sendSync')
 			->withAnyArgs()

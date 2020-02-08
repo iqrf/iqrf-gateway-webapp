@@ -97,7 +97,7 @@ class InfoPresenter extends ProtectedPresenter {
 		$this->template->gwId = $this->infoManager->getId();
 		$this->template->gwmodId = $this->infoManager->getPixlaToken();
 		try {
-			$this->template->module = $this->infoManager->getCoordinatorInfo()['response']['data']['rsp'];
+			$this->template->module = $this->infoManager->getCoordinatorInfo()['response']->data->rsp;
 		} catch (DpaErrorException | EmptyResponseException $e) {
 			$this->flashError('gateway.info.tr.error');
 		}

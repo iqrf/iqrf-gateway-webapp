@@ -18,16 +18,16 @@
 <footer n:snippet='binaryOutputs' class='box-footer table-responsive'>
 	{ifset $data}
         {var $response = $data['response']}
-        {switch $response['mType']}
+        {switch $response->mType}
             {case 'iqrfBinaryoutput_Enumerate'}
 			<table class='table table-striped'>
 				<tr>
 					<th>{_iqrfnet.standard.binaryOutput.table.outputs}</th>
-					<td>{$response['data']['rsp']['result']['binOuts']}</td>
+					<td>{$response->data->rsp->result->binOuts}</td>
 				</tr>
 			</table>
         {case 'iqrfBinaryoutput_SetOutput'}
-        {var $outputs = $response['data']['rsp']['result']['prevVals']}
+        {var $outputs = $response->data->rsp->result->prevVals}
 			<table class='table table-striped'>
 				<tr>
 					<th>{_iqrfnet.standard.binaryOutput.table.index}</th>

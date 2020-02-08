@@ -74,7 +74,7 @@ class StandardSensorManager {
 				'returnVerbose' => true,
 			],
 		];
-		$this->request->setRequest($array);
+		$this->request->set($array);
 		return $this->wsClient->sendSync($this->request);
 	}
 
@@ -98,7 +98,7 @@ class StandardSensorManager {
 				'returnVerbose' => true,
 			],
 		];
-		$this->request->setRequest($array);
+		$this->request->set($array);
 		return $this->wsClient->sendSync($this->request);
 	}
 

@@ -74,7 +74,7 @@ class BondingManager {
 				'returnVerbose' => true,
 			],
 		];
-		$this->request->setRequest($array);
+		$this->request->set($array);
 		return $this->wsClient->sendSync($this->request);
 	}
 
@@ -102,7 +102,7 @@ class BondingManager {
 				'returnVerbose' => true,
 			],
 		];
-		$this->request->setRequest($array);
+		$this->request->set($array);
 		return $this->wsClient->sendSync($this->request);
 	}
 
@@ -127,7 +127,7 @@ class BondingManager {
 					'returnVerbose' => true,
 				],
 			];
-			$this->request->setRequest($array);
+			$this->request->set($array);
 			return $this->wsClient->sendSync($this->request);
 		}
 		return $this->remove(255, false);
@@ -169,7 +169,7 @@ class BondingManager {
 				],
 			];
 		}
-		$this->request->setRequest($array);
+		$this->request->set($array);
 		return $this->wsClient->sendSync($this->request);
 	}
 

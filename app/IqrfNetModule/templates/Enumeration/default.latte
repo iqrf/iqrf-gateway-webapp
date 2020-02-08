@@ -23,33 +23,33 @@
 		<table class='table table-striped'>
 			<tr>
 				<th>{_iqrfnet.enumeration.deviceAddr}</th>
-				<td>{$data['deviceAddr']}</td>
+				<td>{$data->deviceAddr}</td>
 			</tr>
 			<tr>
 				<th>{_iqrfnet.enumeration.hwpid}</th>
-				<td>{$peripheralData['hwpId']}</td>
+				<td>{$peripheralData->hwpId}</td>
 			</tr>
 			<tr>
 				<th>{_iqrfnet.enumeration.manufacturer}</th>
-				<td>{$data['manufacturer']}</td>
+				<td>{$data->manufacturer}</td>
 			</tr>
             {ifset $product}
 				<tr>
 					<th>{_iqrfnet.enumeration.product}</th>
 					<td>
-						<a href='{$product->getHomepage()}'>{$data["product"]}</a>
+						<a href='{$product->getHomepage()}'>{$data->product}</a>
 					</td>
 				</tr>
 				<tr>
 					<th>{_iqrfnet.enumeration.picture}</th>
 					<td>
-						<img alt='{$data["product"]}' class='productPicture' src='{$product->getPicture()}'/>
+						<img alt='{$data->product}' class='productPicture' src='{$product->getPicture()}'/>
 					</td>
 				</tr>
             {else}
 				<tr>
 					<th>{_iqrfnet.enumeration.product}</th>
-					<td>{$data["product"]}</td>
+					<td>{$data->product}</td>
 				</tr>
             {/ifset}
 		</table>
@@ -61,27 +61,27 @@
 		<table class='table table-striped'>
 			<tr>
 				<th>{_iqrfnet.enumeration.trType}</th>
-				<td>{$osData['trMcuType']['trType']}</td>
+				<td>{$osData->trMcuType->trType}</td>
 			</tr>
 			<tr>
 				<th>{_iqrfnet.enumeration.mid}</th>
-				<td>{$osData['mid']}</td>
+				<td>{$osData->mid}</td>
 			</tr>
 			<tr>
 				<th>{_iqrfnet.enumeration.osVersion}</th>
-				<td>{$osData['osVersion']} ({$osData['osBuild']})</td>
+				<td>{$osData->osVersion} ({$osData->osBuild})</td>
 			</tr>
 			<tr>
 				<th>{_iqrfnet.enumeration.dpaVersion}</th>
-				<td>{$peripheralData['dpaVer']}</td>
+				<td>{$peripheralData->dpaVer}</td>
 			</tr>
 			<tr>
 				<th>{_iqrfnet.enumeration.rfMode}</th>
 				<td>
-                    {if $peripheralData['flags']['rfModeStd']}
+                    {if $peripheralData->flags->rfModeStd}
 						<img alt='STD' class='icon' src='/img/std-black.svg'>
 						<strong>{_iqrfnet.enumeration.rfModes.std}</strong>
-                    {elseif $peripheralData['flags']['rfModeLp']}
+                    {elseif $peripheralData->flags->rfModeLp}
 						<img alt='LP' class='icon' src='/img/lp-black.svg'>
 						<strong>{_iqrfnet.enumeration.rfModes.lp}</strong>
                     {/if}
@@ -89,11 +89,11 @@
 			</tr>
 			<tr>
 				<th>{_iqrfnet.enumeration.rssi}</th>
-				<td>{$osData['rssi']}</td>
+				<td>{$osData->rssi}</td>
 			</tr>
 			<tr>
 				<th>{_iqrfnet.enumeration.supplyVoltage}</th>
-				<td>{$osData['supplyVoltage']}</td>
+				<td>{$osData->supplyVoltage}</td>
 			</tr>
 		</table>
 		<a class='btn btn-primary' n:href='Network:default' role='button'>

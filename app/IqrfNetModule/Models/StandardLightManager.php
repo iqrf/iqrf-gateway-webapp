@@ -75,7 +75,7 @@ class StandardLightManager {
 				'returnVerbose' => true,
 			],
 		];
-		$this->request->setRequest($array);
+		$this->request->set($array);
 		return $this->wsClient->sendSync($this->request);
 	}
 
@@ -123,7 +123,7 @@ class StandardLightManager {
 			],
 		];
 		$this->convertEntityToArray($array, $lights);
-		$this->request->setRequest($array);
+		$this->request->set($array);
 		return $this->wsClient->sendSync($this->request);
 	}
 
@@ -165,7 +165,7 @@ class StandardLightManager {
 			],
 		];
 		$this->convertEntityToArray($array, $lights);
-		$this->request->setRequest($array);
+		$this->request->set($array);
 		return $this->wsClient->sendSync($this->request);
 	}
 
@@ -193,7 +193,7 @@ class StandardLightManager {
 			],
 		];
 		$this->convertEntityToArray($array, $lights);
-		$this->request->setRequest($array);
+		$this->request->set($array);
 		return $this->wsClient->sendSync($this->request);
 	}
 

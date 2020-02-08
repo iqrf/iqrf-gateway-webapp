@@ -78,7 +78,7 @@ class GwModeManager {
 				'returnVerbose' => true,
 			],
 		];
-		$this->request->setRequest($request);
+		$this->request->set($request);
 		$this->wsClient->sendSync($this->request);
 	}
 
@@ -100,9 +100,9 @@ class GwModeManager {
 				'returnVerbose' => true,
 			],
 		];
-		$this->request->setRequest($request);
+		$this->request->set($request);
 		$api = $this->wsClient->sendSync($this->request);
-		return $api['response']['data']['rsp']['operMode'] ?? 'unknown';
+		return $api['response']->data->rsp->operMode ?? 'unknown';
 	}
 
 }
