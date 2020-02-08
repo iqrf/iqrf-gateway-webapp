@@ -81,17 +81,24 @@ class WebSocketServiceDataGridFactory {
 		$grid->addColumnText('instance', 'config.websocket.form.instance');
 		$grid->addColumnNumber('WebsocketPort', 'config.websocket.form.WebsocketPort');
 		$grid->addColumnStatus('acceptOnlyLocalhost', 'config.websocket.form.acceptOnlyLocalhost')
-			->addOption(true, 'config.components.form.enabled')->setIcon('ok')->endOption()
+			->addOption(true, 'config.components.form.enabled')
+			->setIcon('ok')
+			->endOption()
 			->addOption(false, 'config.components.form.disabled')
-			->setIcon('remove')->setClass('btn btn-xs btn-danger')->endOption()
+			->setIcon('remove')
+			->setClass('btn btn-xs btn-danger')
+			->endOption()
 			->onChange[] = [$this, 'changeOnlyLocalhost'];
-		$grid->addAction('edit-service', 'config.actions.Edit')->setIcon('pencil')
+		$grid->addAction('edit-service', 'config.actions.Edit')
+			->setIcon('pencil')
 			->setClass('btn btn-xs btn-info');
-		$grid->addAction('delete-service', 'config.actions.Remove')->setIcon('remove')
+		$grid->addAction('delete-service', 'config.actions.Remove')
+			->setIcon('remove')
 			->setClass('btn btn-xs btn-danger ajax')
 			->setConfirmation(new StringConfirmation('config.websocket.service.messages.confirmDelete', 'instance'));
 		$grid->addToolbarButton('add-service', 'config.actions.Add')
-			->setClass('btn btn-xs btn-success');
+			->setClass('btn btn-xs btn-success')
+			->setIcon('plus');
 		return $grid;
 	}
 
@@ -116,7 +123,7 @@ class WebSocketServiceDataGridFactory {
 				$this->presenter->redrawControl('flashes');
 				$dataGrid = $this->presenter['configWebSocketServiceDataGrid'];
 				$dataGrid->setDataSource($this->configManager->list());
-				$dataGrid->redrawItem($id);
+				$dataGrid->reloadTheWholeGrid();
 			}
 		}
 	}

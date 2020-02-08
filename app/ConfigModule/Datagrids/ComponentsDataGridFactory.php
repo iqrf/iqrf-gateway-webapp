@@ -80,19 +80,26 @@ class ComponentsDataGridFactory {
 		$grid->addColumnText('libraryPath', 'config.components.form.libraryPath');
 		$grid->addColumnText('libraryName', 'config.components.form.libraryName');
 		$grid->addColumnStatus('enabled', 'config.components.form.enabled')
-			->addOption(true, 'config.components.form.enabled')->setIcon('ok')->endOption()
-			->addOption(false, 'config.components.form.disabled')->setIcon('remove')
-			->setClass('btn btn-xs btn-danger')->endOption()
+			->addOption(true, 'config.components.form.enabled')
+			->setIcon('ok')
+			->endOption()
+			->addOption(false, 'config.components.form.disabled')
+			->setIcon('remove')
+			->setClass('btn btn-xs btn-danger')
+			->endOption()
 			->onChange[] = [$this, 'changeStatus'];
-		$grid->addAction('edit', 'config.actions.Edit')->setIcon('pencil')
+		$grid->addAction('edit', 'config.actions.Edit')
+			->setIcon('pencil')
 			->setClass('btn btn-xs btn-info');
-		$grid->addAction('delete', 'config.actions.Remove')->setIcon('remove')
+		$grid->addAction('delete', 'config.actions.Remove')
+			->setIcon('remove')
 			->setClass('btn btn-xs btn-danger ajax')
 			->setConfirmation(new StringConfirmation('config.components.form.messages.confirmDelete', 'name'));
 		$grid->allowRowsAction('delete', function (): bool {
-			return $this->presenter->user->isInRole('power');
+			return $this->presenter->getUser()->isInRole('power');
 		});
 		$grid->addToolbarButton('add', 'config.actions.Add')
+			->setIcon('plus')
 			->setClass('btn btn-xs btn-success');
 		return $grid;
 	}
@@ -103,7 +110,7 @@ class ComponentsDataGridFactory {
 	 * @throws JsonException
 	 */
 	private function load(): array {
-		if ($this->presenter->user->isInRole('power')) {
+		if ($this->presenter->getUser()->isInRole('power')) {
 			return $this->configManager->list();
 		}
 		$visible = ['iqrf::IqrfCdc', 'iqrf::IqrfSpi', 'iqrf::IqrfUart'];
@@ -134,10 +141,9 @@ class ComponentsDataGridFactory {
 			$this->presenter->flashError('config.messages.writeFailures.nonExistingJsonSchema');
 		} finally {
 			if ($this->presenter->isAjax()) {
-				$this->presenter->redrawControl('flashes');
 				$dataGrid = $this->presenter['configComponentsDataGrid'];
 				$dataGrid->setDataSource($this->load());
-				$dataGrid->redrawItem($id);
+				$dataGrid->reloadTheWholeGrid();
 			}
 		}
 	}

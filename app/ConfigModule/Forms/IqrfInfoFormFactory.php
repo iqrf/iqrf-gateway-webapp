@@ -20,7 +20,6 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Forms;
 
-
 use App\ConfigModule\Presenters\IqrfInfoPresenter;
 use Nette\Application\UI\Form;
 use Nette\SmartObject;
@@ -55,4 +54,5 @@ class IqrfInfoFormFactory extends GenericConfigFormFactory {
 		$form->onSuccess[] = [$this, 'save'];
 		return $form;
 	}
+
 }

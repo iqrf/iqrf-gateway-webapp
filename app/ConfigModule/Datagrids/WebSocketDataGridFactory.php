@@ -80,22 +80,33 @@ class WebSocketDataGridFactory {
 		$grid->addColumnText('messagingInstance', 'config.websocket.form.instance');
 		$grid->addColumnNumber('port', 'config.websocket.form.WebsocketPort');
 		$grid->addColumnStatus('acceptAsyncMsg', 'config.websocket.form.acceptAsyncMsg')
-			->addOption(true, 'config.components.form.enabled')->setIcon('ok')->endOption()
+			->addOption(true, 'config.components.form.enabled')
+			->setIcon('ok')
+			->endOption()
 			->addOption(false, 'config.components.form.disabled')
-			->setIcon('remove')->setClass('btn btn-xs btn-danger')->endOption()
+			->setIcon('remove')
+			->setClass('btn btn-xs btn-danger')
+			->endOption()
 			->onChange[] = [$this, 'changeAsyncMsg'];
 		$grid->addColumnStatus('acceptOnlyLocalhost', 'config.websocket.form.acceptOnlyLocalhost')
-			->addOption(true, 'config.components.form.enabled')->setIcon('ok')->endOption()
+			->addOption(true, 'config.components.form.enabled')
+			->setIcon('ok')
+			->endOption()
 			->addOption(false, 'config.components.form.disabled')
-			->setIcon('remove')->setClass('btn btn-xs btn-danger')->endOption()
+			->setIcon('remove')
+			->setClass('btn btn-xs btn-danger')
+			->endOption()
 			->onChange[] = [$this, 'changeOnlyLocalhost'];
-		$grid->addAction('edit', 'config.actions.Edit')->setIcon('pencil')
+		$grid->addAction('edit', 'config.actions.Edit')
+			->setIcon('pencil')
 			->setClass('btn btn-xs btn-info');
-		$grid->addAction('delete', 'config.actions.Remove')->setIcon('remove')
+		$grid->addAction('delete', 'config.actions.Remove')
+			->setIcon('remove')
 			->setClass('btn btn-xs btn-danger ajax')
 			->setConfirmation(new StringConfirmation('config.websocket.interface.messages.confirmDelete', 'messagingInstance'));
 		$grid->addToolbarButton('add', 'config.actions.Add')
-			->setClass('btn btn-xs btn-success');
+			->setClass('btn btn-xs btn-success')
+			->setIcon('plus');
 		return $grid;
 	}
 
@@ -128,10 +139,9 @@ class WebSocketDataGridFactory {
 			$this->presenter->flashError('config.messages.writeFailures.nonExistingJsonSchema');
 		} finally {
 			if ($this->presenter->isAjax()) {
-				$this->presenter->redrawControl('flashes');
 				$dataGrid = $this->presenter['configWebSocketDataGrid'];
 				$dataGrid->setDataSource($this->configManager->list());
-				$dataGrid->redrawItem($id);
+				$dataGrid->reloadTheWholeGrid();
 			}
 		}
 	}

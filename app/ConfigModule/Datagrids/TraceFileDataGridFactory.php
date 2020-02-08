@@ -71,13 +71,16 @@ class TraceFileDataGridFactory {
 		$grid->addColumnText('instance', 'config.tracer.form.instance');
 		$grid->addColumnText('path', 'config.tracer.form.path');
 		$grid->addColumnText('filename', 'config.tracer.form.filename');
-		$grid->addAction('edit', 'config.actions.Edit')->setIcon('pencil')
+		$grid->addAction('edit', 'config.actions.Edit')
+			->setIcon('pencil')
 			->setClass('btn btn-xs btn-info');
-		$grid->addAction('delete', 'config.actions.Remove')->setIcon('remove')
+		$grid->addAction('delete', 'config.actions.Remove')
+			->setIcon('remove')
 			->setClass('btn btn-xs btn-danger ajax')
 			->setConfirmation(new StringConfirmation('config.tracer.form.messages.confirmDelete', 'instance'));
 		$grid->addToolbarButton('add', 'config.actions.Add')
-			->setClass('btn btn-xs btn-success');
+			->setClass('btn btn-xs btn-success')
+			->setIcon('plus');
 		return $grid;
 	}
 

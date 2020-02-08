@@ -141,7 +141,7 @@ class UserDataGridFactory {
 			if ($this->presenter->isAjax()) {
 				$dataGrid = $this->presenter['userGrid'];
 				$dataGrid->setDataSource($this->manager->getUsers());
-				$dataGrid->redrawItem($id);
+				$dataGrid->reloadTheWholeGrid();
 			}
 		}
 	}

@@ -71,9 +71,11 @@ class SchedulerDataGridFactory {
 		$grid->addColumnText('time', 'config.scheduler.form.time');
 		$grid->addColumnText('service', 'config.scheduler.form.service');
 		$grid->addColumnText('mType', 'config.scheduler.form.mType');
-		$grid->addAction('edit', 'config.actions.Edit')->setIcon('pencil')
+		$grid->addAction('edit', 'config.actions.Edit')
+			->setIcon('pencil')
 			->setClass('btn btn-xs btn-info');
-		$grid->addAction('delete', 'config.actions.Remove')->setIcon('remove')
+		$grid->addAction('delete', 'config.actions.Remove')
+			->setIcon('remove')
 			->setClass('btn btn-xs btn-danger ajax')
 			->setConfirmation(new StringConfirmation('config.scheduler.form.messages.confirmDelete', 'id'));
 		$grid->addToolbarButton('add', 'config.actions.Add')

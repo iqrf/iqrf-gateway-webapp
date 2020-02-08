@@ -80,17 +80,24 @@ class MonitorDataGridFactory {
 		$grid->addColumnNumber('reportPeriod', 'config.monitor.form.reportPeriod');
 		$grid->addColumnNumber('port', 'config.monitor.form.WebsocketPort');
 		$grid->addColumnStatus('acceptOnlyLocalhost', 'config.websocket.form.acceptOnlyLocalhost')
-			->addOption(true, 'config.components.form.enabled')->setIcon('ok')->endOption()
+			->addOption(true, 'config.components.form.enabled')
+			->setIcon('ok')
+			->endOption()
 			->addOption(false, 'config.components.form.disabled')
-			->setIcon('remove')->setClass('btn btn-xs btn-danger')->endOption()
+			->setIcon('remove')
+			->setClass('btn btn-xs btn-danger')
+			->endOption()
 			->onChange[] = [$this, 'changeOnlyLocalhost'];
-		$grid->addAction('edit', 'config.actions.Edit')->setIcon('pencil')
+		$grid->addAction('edit', 'config.actions.Edit')
+			->setIcon('pencil')
 			->setClass('btn btn-xs btn-info');
-		$grid->addAction('delete', 'config.actions.Remove')->setIcon('remove')
+		$grid->addAction('delete', 'config.actions.Remove')
+			->setIcon('remove')
 			->setClass('btn btn-xs btn-danger ajax')
 			->setConfirmation(new StringConfirmation('config.monitor.messages.confirmDelete', 'monitorInstance'));
 		$grid->addToolbarButton('add', 'config.actions.Add')
-			->setClass('btn btn-xs btn-success');
+			->setClass('btn btn-xs btn-success')
+			->setIcon('plus');
 		return $grid;
 	}
 
@@ -116,7 +123,7 @@ class MonitorDataGridFactory {
 				$this->presenter->redrawControl('flashes');
 				$dataGrid = $this->presenter['configMonitorDataGrid'];
 				$dataGrid->setDataSource($this->manager->list());
-				$dataGrid->redrawItem($id);
+				$dataGrid->reloadTheWholeGrid();
 			}
 		}
 	}

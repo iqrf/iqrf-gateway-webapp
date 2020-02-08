@@ -71,13 +71,16 @@ class UdpMessagingDataGridFactory {
 		$grid->addColumnText('instance', 'config.udp.form.instance');
 		$grid->addColumnNumber('RemotePort', 'config.udp.form.RemotePort');
 		$grid->addColumnNumber('LocalPort', 'config.udp.form.LocalPort');
-		$grid->addAction('edit', 'config.actions.Edit')->setIcon('pencil')
+		$grid->addAction('edit', 'config.actions.Edit')
+			->setIcon('pencil')
 			->setClass('btn btn-xs btn-info');
-		$grid->addAction('delete', 'config.actions.Remove')->setIcon('remove')
+		$grid->addAction('delete', 'config.actions.Remove')
+			->setIcon('remove')
 			->setClass('btn btn-xs btn-danger ajax')
 			->setConfirmation(new StringConfirmation('config.udp.form.messages.confirmDelete', 'instance'));
 		$grid->addToolbarButton('add', 'config.actions.Add')
-			->setClass('btn btn-xs btn-success');
+			->setClass('btn btn-xs btn-success')
+			->setIcon('plus');
 		return $grid;
 	}
 

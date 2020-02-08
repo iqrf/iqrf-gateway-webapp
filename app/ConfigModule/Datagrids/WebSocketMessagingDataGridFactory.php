@@ -79,18 +79,25 @@ class WebSocketMessagingDataGridFactory {
 		$grid->setDataSource($this->getData());
 		$grid->addColumnText('instance', 'config.websocket.form.instance');
 		$grid->addColumnStatus('acceptAsyncMsg', 'config.websocket.form.acceptAsyncMsg')
-			->addOption(true, 'config.components.form.enabled')->setIcon('ok')->endOption()
+			->addOption(true, 'config.components.form.enabled')
+			->setIcon('ok')
+			->endOption()
 			->addOption(false, 'config.components.form.disabled')
-			->setIcon('remove')->setClass('btn btn-xs btn-danger')->endOption()
+			->setIcon('remove')
+			->setClass('btn btn-xs btn-danger')
+			->endOption()
 			->onChange[] = [$this, 'changeAsyncMsg'];
 		$grid->addColumnText('requiredInterfaces', 'config.websocket.form.requiredInterface.instance');
-		$grid->addAction('edit-messaging', 'config.actions.Edit')->setIcon('pencil')
+		$grid->addAction('edit-messaging', 'config.actions.Edit')
+			->setIcon('pencil')
 			->setClass('btn btn-xs btn-info');
-		$grid->addAction('delete-messaging', 'config.actions.Remove')->setIcon('remove')
+		$grid->addAction('delete-messaging', 'config.actions.Remove')
+			->setIcon('remove')
 			->setClass('btn btn-xs btn-danger ajax')
 			->setConfirmation(new StringConfirmation('config.websocket.messaging.messages.confirmDelete', 'instance'));
 		$grid->addToolbarButton('add-messaging', 'config.actions.Add')
-			->setClass('btn btn-xs btn-success');
+			->setClass('btn btn-xs btn-success')
+			->setIcon('plus');
 		return $grid;
 	}
 
@@ -133,7 +140,7 @@ class WebSocketMessagingDataGridFactory {
 				$this->presenter->redrawControl('flashes');
 				$dataGrid = $this->presenter['configWebSocketMessagingDataGrid'];
 				$dataGrid->setDataSource($this->getData());
-				$dataGrid->redrawItem($id);
+				$dataGrid->reloadTheWholeGrid();
 			}
 		}
 	}
