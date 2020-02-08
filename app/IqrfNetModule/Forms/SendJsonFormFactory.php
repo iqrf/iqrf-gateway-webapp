@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\IqrfNetModule\Forms;
 
+use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
 use App\CoreModule\Forms\FormFactory;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
@@ -29,7 +30,9 @@ use App\IqrfNetModule\Models\WebSocketClient;
 use App\IqrfNetModule\Presenters\SendJsonPresenter;
 use App\IqrfNetModule\Requests\DpaRequest;
 use App\IqrfNetModule\Responses\ApiResponse;
+use Contributte\Translation\Wrappers\NotTranslate;
 use Nette\Application\UI\Form;
+use Nette\Forms\Controls\TextArea;
 use Nette\SmartObject;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
@@ -67,6 +70,11 @@ class SendJsonFormFactory {
 	private $wsClient;
 
 	/**
+	 * Translation prefix
+	 */
+	private const PREFIX = 'iqrfnet.send-json.';
+
+	/**
 	 * Constructor
 	 * @param ApiSchemaManager $schemaManager API JSON schema manager
 	 * @param FormFactory $factory Generic form factory
@@ -87,34 +95,48 @@ class SendJsonFormFactory {
 	 */
 	public function create(SendJsonPresenter $presenter): Form {
 		$this->presenter = $presenter;
-		$form = $this->factory->create('iqrfnet.send-json');
-		$form->addTextArea('json', 'json')
-			->setRequired('messages.json');
-		$form->addSubmit('send', 'send')
-			->setHtmlAttribute('class', 'ajax');
+		$form = $this->factory->create();
+		$form->addTextArea('json', self::PREFIX . 'json')
+			->setRequired(self::PREFIX . 'messages.json');
+		$form->addSubmit('send', self::PREFIX . 'send')
+			->setHtmlAttribute('class', self::PREFIX . 'ajax');
 		$form->addProtection('core.errors.form-timeout');
-		$form->onSuccess[] = [$this, 'onSuccess'];
+		$form->onValidate[] = [$this, 'validate'];
+		$form->onSuccess[] = [$this, 'send'];
 		return $form;
+	}
+
+	/**
+	 * Validates the IQRF JSON API request
+	 * @param Form $form Send IQRF JSON request form
+	 */
+	public function validate(Form $form): void {
+		/**
+		 * @var TextArea $request JSON request textarea
+		 */
+		$request = $form['json'];
+		try {
+			$json = Json::decode($form->getValues()->json);
+			if (isset($json->mType)) {
+				$this->jsonSchemaManager->setSchemaForRequest($json->mType);
+				$this->jsonSchemaManager->validate($json);
+			}
+		} catch (JsonException $e) {
+			$request->addError(self::PREFIX . 'messages.invalidJson');
+		} catch (NonExistingJsonSchemaException $e) {
+			$request->addError(self::PREFIX . 'messages.missingSchema');
+		} catch (InvalidJsonException $e) {
+			$request->addError(new NotTranslate($e->getMessage()));
+		}
+		$this->presenter->redrawControl('form');
 	}
 
 	/**
 	 * Sends IQRF JSON API request
 	 * @param Form $form Send IQRF JSON request form
 	 */
-	public function onSuccess(Form $form): void {
-		$values = $form->getValues();
-		$json = [];
-		try {
-			$json = Json::decode($values->json);
-			if (isset($json->mType)) {
-				$this->jsonSchemaManager->setSchemaForRequest($json->mType);
-				$this->jsonSchemaManager->validate($json, true);
-			}
-		} catch (JsonException $e) {
-			$this->presenter->flashError('iqrfnet.send-json.messages.invalidJson');
-		} catch (NonExistingJsonSchemaException $e) {
-			$this->presenter->flashError('iqrfnet.send-json.messages.missingSchema');
-		}
+	public function send(Form $form): void {
+		$json = Json::decode($form->getValues()->json);
 		try {
 			$this->request->set($json);
 			$response = $this->wsClient->sendSync($this->request, false);
