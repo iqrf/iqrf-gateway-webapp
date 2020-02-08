@@ -88,6 +88,19 @@ iqrfDpa:
 			DpaHandlerTimeout-rule: DPA Handler timeout must be bigger than 0.
 		Save: Save
 
+iqrfInfo:
+	title: IQRF Info
+	description: IQRF Info database settings.
+	form:
+		instance: Name of instance
+		enumAtStartUp: Initialize network full enumeration just after startup
+		enumPeriod: Period in minutes of regular check enumeration
+		enumUniformDpaVer: Obtain only HWPID and HWPID version from nodes
+		messages:
+			instance: Please enter name of IQRF Info instance.
+			enumPeriod: Period must be bigger than 0.
+		save: Save
+
 iqrfRepository:
 	title: IQRF Repository
 	description: "Manage IQRF Repository's settings."

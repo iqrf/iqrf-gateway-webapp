@@ -82,6 +82,9 @@
 					<li n:class='isLinkCurrent(":Config:IqrfRepository:*") ? "active"'>
 						<a n:href=':Config:IqrfRepository:default'>{_config.iqrfRepository.title}</a>
 					</li>
+					<li n:if='$user->isInRole("power")' n:class='isLinkCurrent(":Config:IqrfInfo:*") ? "active"'>
+						<a n:href=':Config:IqrfInfo:default'>{_config.iqrfInfo.title}</a>
+					</li>
 					<li n:if='$user->isInRole("power")' n:class='isLinkCurrent(":Config:Iqmesh:*") ? "active"'>
 						<a n:href=':Config:Iqmesh:default'>{_config.iqmesh.title}</a>
 					</li>

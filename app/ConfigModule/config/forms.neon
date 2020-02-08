@@ -3,6 +3,7 @@ services:
 	- App\ConfigModule\Forms\GenericConfigFormFactory
 	- App\ConfigModule\Forms\IqrfCdcFormFactory
 	- App\ConfigModule\Forms\IqrfDpaFormFactory
+	- App\ConfigModule\Forms\IqrfInfoFormFactory
 	- App\ConfigModule\Forms\IqrfRepositoryFormFactory
 	- App\ConfigModule\Forms\IqrfSpiFormFactory
 	- App\ConfigModule\Forms\IqrfUartFormFactory
