@@ -26,7 +26,7 @@ parameters:
 		- '#Method App\\NetworkModule\\Models\\ConnectionManager::list\(\) should return array<App\\NetworkModule\\Entities\\Connection> but returns array<int, string>.#'
 		- '#Method App\\NetworkModule\\Models\\InterfaceManager::list\(\) should return array<App\\NetworkModule\\Entities\\InterfaceStatus> but returns array<int, string>.#'
 		-
-			message: '#Parameter \#(1|2) \$(message|type) \(string\) of method App\\CoreModule\\Presenters\\(Protected|Sign)Presenter::flashMessage\(\) should be contravariant with parameter \$(message|type) \(mixed\) of method Nette\\Application\\UI\\Control::flashMessage\(\)#'
+			message: '#Parameter \#(1|2) \$(message|type) \(string\) of method App\\(Core|Install)Module\\Presenters\\(Protected|Installation|Sign)Presenter::flashMessage\(\) should be contravariant with parameter \$(message|type) \(mixed\) of method Nette\\Application\\UI\\Control::flashMessage\(\)#'
 			path: %currentWorkingDirectory%/app/CoreModule/Traits/TPresenterFlashMessage.php
 		-
 			message: '#Parameter \#1 \$credentials \(array<string>\) of method App\\CoreModule\\Models\\AppAuthenticator::authenticate\(\) should be contravariant with parameter \$credentials \(array\) of method Nette\\Security\\IAuthenticator::authenticate\(\)#'
