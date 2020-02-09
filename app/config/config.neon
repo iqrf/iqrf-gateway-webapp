@@ -88,6 +88,7 @@ tracy:
 	maxDepth: 10
 
 includes:
+	- api.neon
 	- console.neon
 	- features.neon
 	- guzzle.neon

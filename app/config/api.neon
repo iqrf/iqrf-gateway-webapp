@@ -1,0 +1,28 @@
+extensions:
+	api: Apitte\Core\DI\ApiExtension
+
+api:
+	debug: %debugMode%
+	plugins:
+		Apitte\Core\DI\Plugin\CoreDecoratorPlugin:
+		Apitte\Debug\DI\DebugPlugin:
+			debug:
+				panel: %debugMode%
+				negotiation: %debugMode%
+		Apitte\Negotiation\DI\NegotiationPlugin:
+		Apitte\OpenApi\DI\OpenApiPlugin:
+			definition:
+				info:
+					title: IQRF Gateway Webapp API specification
+					version: '0.0.1'
+					license:
+						name: Apache 2.0
+						url: https://www.apache.org/licenses/LICENSE-2.0.html
+					contact:
+						name: Roman Ondráček
+						email: roman.ondracek@iqrf.com
+			swaggerUi:
+				url: null # default url
+				expansion: full # list|full|none
+				filter: true # true|false|string
+				panel: true

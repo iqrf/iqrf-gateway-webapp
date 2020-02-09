@@ -18,21 +18,33 @@
  */
 declare(strict_types = 1);
 
-use Apitte\Core\Application\IApplication as ApiApplication;
-use App\Kernel;
-use Nette\Application\Application as UiApplication;
+namespace App\ApiModule\Version0\Entities;
 
-require_once __DIR__ . '/../vendor/autoload.php';
+use Apitte\Core\Mapping\Request\BasicEntity;
 
-$isApi = substr($_SERVER['REQUEST_URI'], 0, 4) === '/api';
+/**
+ * User create entity
+ */
+class UserCreateEntity extends BasicEntity {
 
-// Creates DI container
-$container = Kernel::boot()->createContainer();
-// Gets application from DI container
-if ($isApi) {
-	$application = $container->getByType(ApiApplication::class);
-} else {
-	$application = $container->getByType(UiApplication::class);
+	/**
+	 * @var string User name
+	 */
+	public $username;
+
+	/**
+	 * @var string Password
+	 */
+	public $password;
+
+	/**
+	 * @var string User role
+	 */
+	public $role = 'normal';
+
+	/**
+	 * @var string Language
+	 */
+	public $language = 'en';
+
 }
-// Runs application
-$application->run();

@@ -18,21 +18,15 @@
  */
 declare(strict_types = 1);
 
-use Apitte\Core\Application\IApplication as ApiApplication;
-use App\Kernel;
-use Nette\Application\Application as UiApplication;
+namespace App\ApiModule\Version0\Controllers;
 
-require_once __DIR__ . '/../vendor/autoload.php';
+use Apitte\Core\Annotation\Controller\Path;
+use Apitte\Core\UI\Controller\IController;
 
-$isApi = substr($_SERVER['REQUEST_URI'], 0, 4) === '/api';
+/**
+ * Base API controller
+ * @Path("/api/v0")
+ */
+abstract class BaseController implements IController {
 
-// Creates DI container
-$container = Kernel::boot()->createContainer();
-// Gets application from DI container
-if ($isApi) {
-	$application = $container->getByType(ApiApplication::class);
-} else {
-	$application = $container->getByType(UiApplication::class);
 }
-// Runs application
-$application->run();
