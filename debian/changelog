@@ -1,3 +1,52 @@
+iqrf-gateway-webapp (2.0.0-rc3) testing; urgency=medium
+
+  * IQRF Net: remove DALI support message
+  * IQRF Net: fix ping nodes
+  * Debian packaging: support also Apache2 web server and support multiple PHP versions
+  * IQRF net: add confirmation messages for removing a node and clearing all bonds
+  * Core: fix version
+  * Fix coding style
+  * Core: update router
+  * IQRF net: add missing flash messages at Send DPA package and Send JSON request pages (fix #204)
+  * Gateway: show the latest modified log file (fix #209)
+  * Gateway: fix version and coding style
+  * IQRF Net: merge TR configuration forms Core: refactor menu, user edit form and sign in
+  * Core: update sign in logo, refactor sign out
+  * Core: fix error pages
+  * Config: enable JSON Metadata API configuration tool also for normal users
+  * IQRF Net: rename TR upload to Coordinator upload, add info message (fix #202)
+  * IQRF Net: show HWPID on Device enumeration page
+  * Gateway: fix log viewer
+  * IQRF Net: remove Autonetwork emdedded from DPA Macros (fix #216)
+  * IQRF Net: edit texts on Coordinator upload page (fix #202)
+  * Core: remove password hash from user list method
+  * Core: try to fix permissions after file manipulation failure (fix #214)
+  * Core: move CSS and JS source directories to the root directory
+  * IQRF Net: remove old IQRF IDE Macros files
+  * Gateway: refactor service control
+  * Gateway: refactor unattended upgrade control panel
+  * Gateway: refactor gateway mode control panel (fix #210)
+  * IQRF Net: refactor TR configuration
+  * IQRF Net: fix RF channel inputs in TR configuration
+  * Core: fix password change for normal users
+  * Gateway: remove one extra button for log downloading
+  * Core: hide role and language columns in user datagrid for normal users
+  * Core: fix coding style, refactor user datagrid
+  * IQRF Net: fix TR configuration writing for nodes
+  * Config: refactor scheduler configuration form, add support for multiple messages in one task (fix #219)
+  * Config: fix scheduler configuration migration
+  * IQRF Net: remove JSON API messages conversion to array (fix #194)
+  * Config: fix save and restart button in scheduler task configuration form
+  * Config: add redirect to datagrid if scheduler task does not exist
+  * IQRF Net: add JSON API request validation on Send JSON request page
+  * Config: add IQRF Info configuration tool (fix #200)
+  * Config: fix datagrids - fix CSS overflow, fix AJAX snippet
+  * Cloud: improve Hexio IoT Platform MQTT connection wizard
+  * Install: add GW information download button (fix #218)
+  * PHPStan: fix rule
+
+ -- Roman Ondráček <roman@romanondracek.cz>  Sun, 09 Feb 2020 20:45:00 +0100
+
 iqrf-gateway-webapp (2.0.0-rc2) testing; urgency=medium
 
   * Tests: fix tests for the webapp's version
