@@ -120,6 +120,8 @@ class SendJsonFormFactory {
 			if (isset($json->mType)) {
 				$this->jsonSchemaManager->setSchemaForRequest($json->mType);
 				$this->jsonSchemaManager->validate($json);
+			} else {
+				throw new JsonException();
 			}
 		} catch (JsonException $e) {
 			$request->addError(self::PREFIX . 'messages.invalidJson');
