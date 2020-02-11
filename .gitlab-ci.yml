@@ -87,14 +87,7 @@ build-docker:tests-buster:
     DOCKER_FILE: docker/tests/buster.Dockerfile
     DOCKER_TAG: tests-buster
 
-build-docker:tests-stretch:
-  extends: .docker_template_testing
-  variables:
-    DOCKER_FILE: docker/tests/stretch.Dockerfile
-    DOCKER_TAG: tests-stretch
-
 test:php7.2:
-  image: iqrftech/iqrf-gateway-webapp:tests-stretch
   allow_failure: true
   before_script:
     - update-alternatives --set php /usr/bin/php7.2
@@ -110,6 +103,15 @@ test:php7.3:
     - composer install --no-progress
   script:
     - vendor/bin/tester -p phpdbg7.3 -c ./tests/php.ini -s ./tests
+    - 'for i in $(find ./tests -name \*.actual); do echo "--- $i"; cat $i; echo; echo; done'
+  <<: *test_template
+
+test:php7.4:
+  before_script:
+    - update-alternatives --set php /usr/bin/php7.4
+    - composer install --no-progress
+  script:
+    - vendor/bin/tester -p phpdbg7.4 -c ./tests/php.ini -s ./tests
     - 'for i in $(find ./tests -name \*.actual); do echo "--- $i"; cat $i; echo; echo; done'
   <<: *test_template
 
