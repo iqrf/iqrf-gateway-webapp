@@ -31,7 +31,10 @@ use Nette\Http\FileUpload;
 use Nette\SmartObject;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
+use Nette\Utils\Json;
+use Nette\Utils\Strings;
 use SplFileInfo;
+use Throwable;
 use ZipArchive;
 
 /**
@@ -47,9 +50,9 @@ class SchedulerMigrationManager {
 	private $configDirectory;
 
 	/**
-	 * @var string Path to ZIP archive
+	 * @var SchedulerSchemaManager Scheduler JSON schema manager
 	 */
-	private $path = '/tmp/iqrf-daemon-scheduler.zip';
+	private $schemaManager;
 
 	/**
 	 * @var ServiceManager Service manager
@@ -61,9 +64,10 @@ class SchedulerMigrationManager {
 	 * @param MainManager $mainManager Main configuration manager
 	 * @param ServiceManager $serviceManager Service manager
 	 */
-	public function __construct(MainManager $mainManager, ServiceManager $serviceManager) {
+	public function __construct(MainManager $mainManager, ServiceManager $serviceManager, SchedulerSchemaManager $schemaManager) {
 		$this->configDirectory = $mainManager->getCacheDir() . '/scheduler/';
 		$this->serviceManager = $serviceManager;
+		$this->schemaManager = $schemaManager;
 	}
 
 	/**
@@ -72,13 +76,18 @@ class SchedulerMigrationManager {
 	 * @throws BadRequestException
 	 */
 	public function download(): FileResponse {
-		$zipManager = new ZipArchiveManager($this->path);
-		$now = new DateTime();
-		$fileName = 'iqrf-gateway-scheduler_' . $now->format('c') . '.zip';
+		try {
+			$now = new DateTime();
+			$timestamp = '_' . $now->format('c');
+		} catch (Throwable $e) {
+			$timestamp = '';
+		}
+		$fileName = 'iqrf-gateway-scheduler' . $timestamp . '.zip';
+		$zipManager = new ZipArchiveManager('/tmp/' . $fileName);
 		$contentType = 'application/zip';
 		$zipManager->addFolder($this->configDirectory, '');
 		$zipManager->close();
-		return new FileResponse($this->path, $fileName, $contentType, true);
+		return new FileResponse('/tmp/' . $fileName, $fileName, $contentType, true);
 	}
 
 	/**
@@ -94,12 +103,17 @@ class SchedulerMigrationManager {
 		if ($zip->getContentType() !== 'application/zip') {
 			throw new InvalidConfigurationFormatException();
 		}
-		$zip->move($this->path);
-		$zipManagerUpload = new ZipArchiveManager($this->path, ZipArchive::CREATE);
+		$zipManager = new ZipArchiveManager($zip->getTemporaryFile(), ZipArchive::CREATE);
+		foreach ($zipManager->listFiles() as $fileName) {
+			if (Strings::startsWith($fileName, 'schema/')) {
+				continue;
+			}
+			$json = Json::decode($zipManager->openFile($fileName));
+			$this->schemaManager->validate($json);
+		}
 		$this->removeOldConfiguration();
-		$zipManagerUpload->extract($this->configDirectory);
-		$zipManagerUpload->close();
-		FileSystem::delete($this->path);
+		$zipManager->extract($this->configDirectory);
+		$zipManager->close();
 		$this->serviceManager->restart();
 	}
 

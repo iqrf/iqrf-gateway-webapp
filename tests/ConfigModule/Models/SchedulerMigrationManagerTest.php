@@ -12,6 +12,7 @@ namespace Tests\ConfigModule\Models;
 
 use App\ConfigModule\Models\MainManager;
 use App\ConfigModule\Models\SchedulerMigrationManager;
+use App\ConfigModule\Models\SchedulerSchemaManager;
 use App\CoreModule\Entities\CommandStack;
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FileManager;
@@ -26,6 +27,7 @@ use Nette\Utils\Finder;
 use Tester\Assert;
 use Tester\Environment;
 use Tester\TestCase;
+use Throwable;
 use ZipArchive;
 
 require __DIR__ . '/../../bootstrap.php';
@@ -56,11 +58,6 @@ class SchedulerMigrationManagerTest extends TestCase {
 	private $manager;
 
 	/**
-	 * @var string Path to the ZIP archive with IQRF Gateway Daemon's configuration
-	 */
-	private $path = '/tmp/iqrf-daemon-scheduler.zip';
-
-	/**
 	 * @var string Path to a temporary ZIP archive with IQRF Gateway Daemon's configuration
 	 */
 	private $tempPath = __DIR__ . '/../../temp/iqrf-gateway-scheduler.zip';
@@ -69,14 +66,18 @@ class SchedulerMigrationManagerTest extends TestCase {
 	 * Test function to download IQRF Gateway Daemon's configuration in a ZIP archive
 	 */
 	public function testDownload(): void {
-		$timestamp = (new DateTime())->format('c');
+		try {
+			$timestamp = '_' . (new DateTime())->format('c');
+		} catch (Throwable $e) {
+			$timestamp = '';
+		}
 		$actual = $this->manager->download();
-		$fileName = 'iqrf-gateway-scheduler_' . $timestamp . '.zip';
+		$fileName = 'iqrf-gateway-scheduler' . $timestamp . '.zip';
 		$contentType = 'application/zip';
-		$expected = new FileResponse($this->path, $fileName, $contentType, true);
+		$expected = new FileResponse('/tmp/' . $fileName, $fileName, $contentType, true);
 		Assert::equal($expected, $actual);
 		$files = $this->createList($this->configPath);
-		$zipManager = new ZipArchiveManager($this->path, ZipArchive::CREATE);
+		$zipManager = new ZipArchiveManager('/tmp/' . $fileName, ZipArchive::CREATE);
 		foreach ($files as $file) {
 			$expected = $this->fileManager->read($file);
 			Assert::same($expected, $zipManager->openFile($file));
@@ -137,7 +138,9 @@ class SchedulerMigrationManagerTest extends TestCase {
 		$mainConfigManager->shouldReceive('getCacheDir')->andReturn($this->configTempPath . '/..');
 		$serviceManager = Mockery::mock(ServiceManager::class);
 		$serviceManager->shouldReceive('restart');
-		$this->manager = new SchedulerMigrationManager($mainConfigManager, $serviceManager);
+		$schemaManager = Mockery::mock(SchedulerSchemaManager::class);
+		$schemaManager->shouldReceive('validate')->andReturn(true);
+		$this->manager = new SchedulerMigrationManager($mainConfigManager, $serviceManager, $schemaManager);
 	}
 
 	/**
