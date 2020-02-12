@@ -197,9 +197,9 @@ class SchedulerManagerTest extends TestCase {
 		$schemaManager = new ComponentSchemaManager($schemaPath, $commandManager);
 		$genericConfigManager = new GenericManager($fileManager, $schemaManager);
 		$mainConfigManager = Mockery::mock(MainManager::class);
-		$mainConfigManager->shouldReceive('load')->andReturn(['cacheDir' => $configPath]);
+		$mainConfigManager->shouldReceive('getCacheDir')->andReturn($configPath);
 		$mainConfigManagerTemp = Mockery::mock(MainManager::class);
-		$mainConfigManagerTemp->shouldReceive('load')->andReturn(['cacheDir' => $configTempPath]);
+		$mainConfigManagerTemp->shouldReceive('getCacheDir')->andReturn($configTempPath);
 		$this->timeManager = new TaskTimeManager();
 		$this->serviceManager = Mockery::mock(ServiceManager::class);
 		$this->manager = new SchedulerManager($mainConfigManager, $genericConfigManager, $this->timeManager, $this->serviceManager, $commandManager);

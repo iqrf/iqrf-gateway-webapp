@@ -28,11 +28,9 @@ use DateTime;
 use Nette\Application\BadRequestException;
 use Nette\Application\Responses\FileResponse;
 use Nette\Http\FileUpload;
-use Nette\IOException;
 use Nette\SmartObject;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
-use Nette\Utils\JsonException;
 use SplFileInfo;
 use ZipArchive;
 
@@ -47,11 +45,6 @@ class SchedulerMigrationManager {
 	 * @var string Path to a directory with scheduler's configuration
 	 */
 	private $configDirectory;
-
-	/**
-	 * @var MainManager Main configuration manager
-	 */
-	private $mainConfigManager;
 
 	/**
 	 * @var string Path to ZIP archive
@@ -69,12 +62,7 @@ class SchedulerMigrationManager {
 	 * @param ServiceManager $serviceManager Service manager
 	 */
 	public function __construct(MainManager $mainManager, ServiceManager $serviceManager) {
-		$this->mainConfigManager = $mainManager;
-		try {
-			$this->configDirectory = $this->mainConfigManager->load()['cacheDir'] . '/scheduler/';
-		} catch (IOException | JsonException $e) {
-			$this->configDirectory = '/var/cache/iqrfgd2/scheduler/';
-		}
+		$this->configDirectory = $mainManager->getCacheDir() . '/scheduler/';
 		$this->serviceManager = $serviceManager;
 	}
 

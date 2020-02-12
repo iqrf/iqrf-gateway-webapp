@@ -134,7 +134,7 @@ class SchedulerMigrationManagerTest extends TestCase {
 		$commandManager = new CommandManager(false, $commandStack);
 		$this->fileManager = new FileManager($this->configPath, $commandManager);
 		$mainConfigManager = Mockery::mock(MainManager::class);
-		$mainConfigManager->shouldReceive('load')->andReturn(['cacheDir' => $this->configTempPath . '/..']);
+		$mainConfigManager->shouldReceive('getCacheDir')->andReturn($this->configTempPath . '/..');
 		$serviceManager = Mockery::mock(ServiceManager::class);
 		$serviceManager->shouldReceive('restart');
 		$this->manager = new SchedulerMigrationManager($mainConfigManager, $serviceManager);
