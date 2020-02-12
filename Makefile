@@ -15,7 +15,7 @@
 
 .PHONY: all
 
-all: qa phpstan cc tests
+all: qa phpstan cc test
 
 cache-purge:
 	rm -rf temp/cache/
@@ -49,7 +49,7 @@ rector: vendor
 temp/code-checker:
 	composer create-project nette/code-checker temp/code-checker --no-interaction
 
-tests: vendor
+test: vendor
 	vendor/bin/tester -p phpdbg -c ./tests/php.ini ./tests
 
 vendor: composer.json
