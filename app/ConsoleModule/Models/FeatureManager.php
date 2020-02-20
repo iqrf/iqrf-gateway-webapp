@@ -121,7 +121,7 @@ class FeatureManager {
 
 	/**
 	 * Lists the optional features
-	 * @return array<array<string,string,string>> Optional features
+	 * @return string[][] Optional features
 	 * @throws NeonException
 	 */
 	public function list(): array {

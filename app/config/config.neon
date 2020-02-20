@@ -18,7 +18,7 @@ parameters:
 		wsServer: 'ws://localhost:1338'
 	# Sentry configuration
 	sentry:
-		dsn: 'https://4f490a0339024820b1f3321491bd6b23:1fd5b1b93b2a40eabb6be78451d0f034@sentry.iqrf.org/2'
+		dsn: 'https://7cd0252aae6d491b98514b9486cd2771@sentry.iqrf.org/2'
 
 application:
 	errorPresenter: Core:Error
@@ -66,7 +66,7 @@ http:
 			'data:',
 			https://repository.iqrfalliance.org/
 		]
-		report-uri: 'https://sentry.iqrf.org/api/2/security/?sentry_key=4f490a0339024820b1f3321491bd6b23'
+		report-uri: 'https://sentry.iqrf.org/api/2/security/?sentry_key=7cd0252aae6d491b98514b9486cd2771'
 		script-src: [
 			# for browsers that support CSP3
 			nonce

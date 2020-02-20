@@ -24,7 +24,6 @@ use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\JsonFileManager;
 use App\ServiceModule\Exceptions\NotSupportedInitSystemException;
 use App\ServiceModule\Models\ServiceManager;
-use Nette\IOException;
 use Nette\SmartObject;
 use Nette\Utils\Finder;
 use Nette\Utils\JsonException;
@@ -76,11 +75,7 @@ class SchedulerManager {
 		$this->genericConfigManager = $genericManager;
 		$this->serviceManager = $serviceManager;
 		$this->timeManager = $timeManager;
-		try {
-			$path = $mainManager->load()['cacheDir'] . '/scheduler/';
-		} catch (IOException | JsonException $e) {
-			$path = '/var/cache/iqrf-gateway-daemon/scheduler/';
-		}
+		$path = $mainManager->getCacheDir() . '/scheduler/';
 		$this->fileManager = new JsonFileManager($path, $commandManager);
 	}
 

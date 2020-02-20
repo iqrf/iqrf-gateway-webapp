@@ -24,6 +24,7 @@ use App\ConfigModule\Exceptions\InvalidConfigurationFormatException;
 use App\ConfigModule\Models\SchedulerManager;
 use App\ConfigModule\Models\SchedulerMigrationManager;
 use App\ConfigModule\Presenters\SchedulerPresenter;
+use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
 use App\CoreModule\Forms\FormFactory;
 use App\ServiceModule\Exceptions\NotSupportedInitSystemException;
@@ -150,7 +151,9 @@ class SchedulerImportFormFactory {
 		} catch (InvalidConfigurationFormatException $e) {
 			$this->presenter->flashError('config.migration.errors.invalidFormat');
 		} catch (NonExistingJsonSchemaException $e) {
-			$this->presenter->flashError('config.messages.writeFailures.nonExistingJsonSchema');
+			$this->presenter->flashError($e->getMessage());
+		} catch (InvalidJsonException $e) {
+			$this->presenter->flashError($e->getMessage());
 		} catch (NotSupportedInitSystemException $e) {
 			$this->presenter->flashError('service.errors.unsupportedInit');
 		} catch (IOException $e) {

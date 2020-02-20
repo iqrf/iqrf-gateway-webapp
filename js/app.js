@@ -34,7 +34,7 @@ import 'highlight.js/styles/github.css';
 import '../css/app.css';
 
 Sentry.init({
-	dsn: 'https://4f490a0339024820b1f3321491bd6b23@sentry.iqrf.org/2'
+	dsn: 'https://7cd0252aae6d491b98514b9486cd2771@sentry.iqrf.org/2'
 });
 
 Nette.initOnLoad();

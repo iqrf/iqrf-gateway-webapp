@@ -28,7 +28,6 @@ use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use DateTime;
 use Nette\Application\BadRequestException;
 use Nette\Application\Responses\FileResponse;
-use Nette\IOException;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;
 
@@ -97,11 +96,7 @@ class DiagnosticsManager {
 	public function __construct(string $confDir, string $logDir, CommandManager $commandManager, InfoManager $infoManager, MainManager $mainManager, NetworkManager $networkManager, VersionManager $versionManager) {
 		$this->commandManager = $commandManager;
 		$this->infoManager = $infoManager;
-		try {
-			$this->cacheDir = $mainManager->load()['cacheDir'];
-		} catch (JsonException | IOException $e) {
-			$this->cacheDir = '/var/cache/iqrf-gateway-daemon/';
-		}
+		$this->cacheDir = $mainManager->getCacheDir();
 		$this->confDir = $confDir;
 		$this->logDir = $logDir;
 		$this->networkManager = $networkManager;

@@ -203,7 +203,7 @@ send-json:
 	documentation: Show API documentation.
 	json: JSON request
 	messages:
-		invalidJson: Invalid JSON request.
+		invalidJson: Invalid JSON API request.
 		json: Please enter JSON request.
 		missingSchema: Corresponding JSON schema for this request not found.
 		failure: An error occurred while proccesing JSON request.

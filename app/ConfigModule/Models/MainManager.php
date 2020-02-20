@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Models;
 
 use App\CoreModule\Models\JsonFileManager;
+use Nette\IOException;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;
 
@@ -47,6 +48,18 @@ class MainManager {
 	 */
 	public function __construct(JsonFileManager $fileManager) {
 		$this->fileManager = $fileManager;
+	}
+
+	/**
+	 * Returns the path of cache directory
+	 * @return string Cache directory path
+	 */
+	public function getCacheDir(): string {
+		try {
+			return $this->load()['cacheDir'];
+		} catch (IOException | JsonException $e) {
+			return '/var/cache/iqrf-gateway-daemon/';
+		}
 	}
 
 	/**

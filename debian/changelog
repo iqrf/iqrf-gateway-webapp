@@ -1,3 +1,16 @@
+iqrf-gateway-webapp (2.0.0-rc4) testing; urgency=medium
+
+  * Sentry: update DSN keys
+  * IQRF Net: fix JSON API request validation
+  * GitLab CI: remove Debian 9 Stretch image generation for testing
+  * GitLab CI: update phpDocumentator
+  * Makefile: fix test target
+  * Config: refactor scheduler manager
+  * Debian packaging: skip tests
+  * Config: add JSON schema validations for imported scheduler's tasks
+
+ -- Roman Ondráček <roman@romanondracek.cz>  Wed, 12 Feb 2020 10:50:00 +0100
+
 iqrf-gateway-webapp (2.0.0-rc3) testing; urgency=medium
 
   * IQRF Net: remove DALI support message

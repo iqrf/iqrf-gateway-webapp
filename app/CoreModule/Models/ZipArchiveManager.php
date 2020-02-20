@@ -157,7 +157,11 @@ class ZipArchiveManager {
 	 * @return string Content of file
 	 */
 	public function openFile(string $fileName): string {
-		return $this->zip->getFromName('/' . $fileName);
+		$content = $this->zip->getFromName('/' . $fileName);
+		if (!is_bool($content)) {
+			return $content;
+		}
+		return $this->zip->getFromName($fileName);
 	}
 
 	/**

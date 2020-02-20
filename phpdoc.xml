@@ -1,20 +1,37 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<phpdocumentor>
-    <title>IQRF Gateway Webapp</title>
-    <parser>
-        <target>temp/api-cache/</target>
-    </parser>
-    <transformer>
-        <target>docs/api/</target>
-    </transformer>
-    <files>
-        <directory>app/</directory>
-        <directory>tests/</directory>
-    </files>
-    <plugins>
-        <plugin path="Core"/>
-    </plugins>
-    <transformations>
-        <template name="clean"/>
-    </transformations>
+<phpdocumentor
+configVersion="3"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns="http://www.phpdoc.org"
+xsi:noNamespaceSchemaLocation="data/xsd/phpdoc.xsd"
+>
+<paths>
+	<output>docs/api</output>
+</paths>
+<version number="3.0.0">
+	<folder>latest</folder>
+	<api>
+		<source dsn=".">
+			<path>app/</path>
+		</source>
+		<output>api</output>
+		<ignore hidden="true" symlinks="true">
+			<path>tests/**/*</path>
+			<path>build/**/*</path>
+			<path>var/**/*</path>
+			<path>vendor/**/*</path>
+		</ignore>
+		<extensions>
+			<extension>php</extension>
+		</extensions>
+		<default-package-name>IQRF Gateway Webapp</default-package-name>
+	</api>
+	<guide>
+		<source dsn=".">
+			<path>docs</path>
+		</source>
+		<output>dox</output>
+	</guide>
+</version>
+<template name="clean"/>
 </phpdocumentor>
