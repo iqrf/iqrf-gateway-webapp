@@ -11,6 +11,8 @@ declare(strict_types = 1);
 namespace Tests\Unit\GatewayModule\Models;
 
 use App\GatewayModule\Models\InfoManager;
+use App\GatewayModule\Models\NetworkManager;
+use App\GatewayModule\Models\VersionManager;
 use App\IqrfNetModule\Models\EnumerationManager;
 use Mockery;
 use Mockery\MockInterface;
@@ -30,9 +32,19 @@ class InfoManagerTest extends CommandTestCase {
 	private $enumerationManager;
 
 	/**
+	 * @var MockInterface|NetworkManager Mocked network manager
+	 */
+	private $networkManager;
+
+	/**
 	 * @var InfoManager Gateway Info manager with mocked command manager
 	 */
 	private $manager;
+
+	/**
+	 * @var MockInterface|VersionManager Mocked version manager
+	 */
+	private $versionManager;
 
 	/**
 	 * @var string[] Mocked commands
@@ -191,7 +203,9 @@ class InfoManagerTest extends CommandTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 		$this->enumerationManager = Mockery::mock(EnumerationManager::class);
-		$this->manager = new InfoManager($this->commandManager, $this->enumerationManager);
+		$this->networkManager = Mockery::mock(NetworkManager::class);
+		$this->versionManager = Mockery::mock(VersionManager::class);
+		$this->manager = new InfoManager($this->commandManager, $this->enumerationManager, $this->networkManager, $this->versionManager);
 	}
 
 }

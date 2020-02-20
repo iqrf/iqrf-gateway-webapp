@@ -97,7 +97,7 @@ class UsersController extends BaseController {
 	 * @Path("/{id}")
 	 * @Method("GET")
 	 * @RequestParameters({
-	 *      @RequestParameter(name="id", type="int", description="User ID")
+	 *      @RequestParameter(name="id", type="integer", description="User ID")
 	 * })
 	 * @Responses({
 	 *      @Response(code="200", description="Success"),
@@ -121,7 +121,7 @@ class UsersController extends BaseController {
 	 * @Method("DELETE")
 	 * @RequestBody(description="Deletes a user")
 	 * @RequestParameters({
-	 *      @RequestParameter(name="id", type="int", description="User ID")
+	 *      @RequestParameter(name="id", type="integer", description="User ID")
 	 * })
 	 * @Responses({
 	 *      @Response(code="200", description="Success")

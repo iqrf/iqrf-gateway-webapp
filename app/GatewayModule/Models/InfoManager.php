@@ -59,13 +59,57 @@ class InfoManager {
 	private $enumerationManager;
 
 	/**
+	 * @var NetworkManager Network manager
+	 */
+	private $networkManager;
+
+	/**
+	 * @var VersionManager Version manager
+	 */
+	private $versionManager;
+
+	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
 	 * @param EnumerationManager $enumerationManager IQMESH Enumeration manager
+	 * @param NetworkManager $networkManager Network manager
+	 * @param VersionManager $versionManager Version manager
 	 */
-	public function __construct(CommandManager $commandManager, EnumerationManager $enumerationManager) {
+	public function __construct(CommandManager $commandManager, EnumerationManager $enumerationManager, NetworkManager $networkManager, VersionManager $versionManager) {
 		$this->commandManager = $commandManager;
 		$this->enumerationManager = $enumerationManager;
+		$this->networkManager = $networkManager;
+		$this->versionManager = $versionManager;
+	}
+
+	/**
+	 * Returns information about the gateway
+	 * @param bool $verbose Verbose output
+	 * @return array<string,mixed> Gateway information
+	 */
+	public function get(bool $verbose = false): array {
+		$info = [
+			'board' => $this->getBoard(),
+			'gwId' => $this->getId(),
+			'pixla' => $this->getPixlaToken(),
+			'versions' => [
+				'controller' => $this->versionManager->getController(),
+				'daemon' => $this->versionManager->getDaemon($verbose),
+				'webapp' => $this->versionManager->getWebapp($verbose),
+			],
+			'hostname' => $this->networkManager->getHostname(),
+			'ipAddresses' => $this->networkManager->getIpAddresses(),
+			'macAddresses' => $this->networkManager->getMacAddresses(),
+			'diskUsages' => $this->getDiskUsages(),
+			'memoryUsage' => $this->getMemoryUsage(),
+			'swapUsage' => $this->getSwapUsage(),
+		];
+		try {
+			$info['coordinator'] = $this->getCoordinatorInfo();
+		} catch (DpaErrorException | EmptyResponseException | JsonException $e) {
+			$info['coordinator'] = null;
+		}
+		return $info;
 	}
 
 	/**

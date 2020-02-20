@@ -81,19 +81,23 @@ class LogManager {
 		return reset($logFiles);
 	}
 
+	public function getArchive(): string {
+		$zipManager = new ZipArchiveManager($this->path);
+		$zipManager->addFolder($this->logDir, '');
+		$zipManager->close();
+		return $this->path;
+	}
+
 	/**
 	 * Downloads logs of IQRF Gateway Daemon
 	 * @return FileResponse HTTP response with the logs
 	 * @throws BadRequestException
 	 */
 	public function download(): FileResponse {
-		$zipManager = new ZipArchiveManager($this->path);
-		$zipManager->addFolder($this->logDir, '');
 		$now = new DateTime();
 		$fileName = 'iqrf-gateway-daemon-logs' . $now->format('c') . '.zip';
 		$contentType = 'application/zip';
-		$zipManager->close();
-		return new FileResponse($this->path, $fileName, $contentType, true);
+		return new FileResponse($this->getArchive(), $fileName, $contentType, true);
 	}
 
 }
