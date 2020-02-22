@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\ApiModule\Version0\Controllers;
 
 use Apitte\Core\Annotation\Controller\Method;
+use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\RequestParameter;
 use Apitte\Core\Annotation\Controller\RequestParameters;
@@ -50,9 +51,11 @@ class UserController extends BaseController {
 	}
 
 	/**
-	 * Get an information about logged in user
 	 * @Path("/")
 	 * @Method("GET")
+	 * @OpenApi("
+	 *   summary: Returns information about logged in user
+	 * ")
 	 * @Responses({
 	 *      @Response(code="200", description="Success"),
 	 *      @Response(code="401", description="Unauthorized")
@@ -81,6 +84,9 @@ class UserController extends BaseController {
 	/**
 	 * @Path("/signIn")
 	 * @Method("POST")
+	 * @OpenApi("
+	 *   summary: Signs in the user
+	 * ")
 	 * @Responses({
 	 *      @Response(code="200", description="Success"),
 	 *      @Response(code="400", description="Bad request")
@@ -105,6 +111,9 @@ class UserController extends BaseController {
 	/**
 	 * @Path("/signOut")
 	 * @Method("GET")
+	 * @OpenApi("
+	 *   summary: Signs out the user
+	 * ")
 	 * @Responses({
 	 *      @Response(code="200", description="Success")
 	 * })

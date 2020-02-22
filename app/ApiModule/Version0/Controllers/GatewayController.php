@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\ApiModule\Version0\Controllers;
 
 use Apitte\Core\Annotation\Controller\Method;
+use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\Response;
 use Apitte\Core\Annotation\Controller\Responses;
@@ -32,6 +33,7 @@ use App\GatewayModule\Models\LogManager;
 use App\GatewayModule\Models\PowerManager;
 use DateTime;
 use Nette\Utils\FileSystem;
+use Throwable;
 
 /**
  * Gateway manager controller
@@ -68,11 +70,13 @@ class GatewayController extends BaseController {
 	}
 
 	/**
-	 * Returns information about the gateway
 	 * @Path("/info")
 	 * @Method("GET")
+	 * @OpenApi("
+	 *   summary: Returns information about the gateway
+	 * ")
 	 * @Responses({
-	 *      @Response(code="200", description="Success")
+	 *      @Response(code="200", description="Success", entity="\App\ApiModule\Version0\Entities\GatewayInfoEntity")
 	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -84,12 +88,18 @@ class GatewayController extends BaseController {
 	}
 
 	/**
-	 * Returns latest IQRF Gateway Daemon's log
 	 * @Path("/log")
 	 * @Method("GET")
-	 * @Responses({
-	 *      @Response(code="200", description="Success")
-	 * })
+	 * @OpenApi("
+	 *   summary: 'Returns latest IQRF Gateway Daemon log'
+	 *   responses:
+	 *     '200':
+	 *       description: 'Success'
+	 *       content:
+	 *         text/plain:
+	 *           schema:
+	 *             type: string
+	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
@@ -103,20 +113,31 @@ class GatewayController extends BaseController {
 	}
 
 	/**
-	 * Returns archive with IQRF Gateway Daemon's logs
 	 * @Path("/logs")
 	 * @Method("GET")
-	 * @Responses({
-	 *      @Response(code="200", description="Success")
-	 * })
+	 * @OpenApi("
+	 *   summary: Returns archive with IQRF Gateway Daemon logs
+	 *   responses:
+	 *     '200':
+	 *       description: 'Success'
+	 *       content:
+	 *         application/zip:
+	 *           schema:
+	 *             type: string
+	 *             format: binary
+	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
 	public function logArchive(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$path = $this->logManager->getArchive();
-		$now = new DateTime();
-		$fileName = 'iqrf-gateway-daemon-logs' . $now->format('c') . '.zip';
+		try {
+			$now = new DateTime();
+			$fileName = 'iqrf-gateway-daemon-logs_' . $now->format('c') . '.zip';
+		} catch (Throwable $e) {
+			$fileName = 'iqrf-gateway-daemon-logs.zip';
+		}
 		$headers = [
 			'Content-Type' => 'application/zip',
 			'Content-Disposition' => 'attachment; filename="' . $fileName . '"; filename*=utf-8\'\'' . rawurlencode($fileName),
@@ -127,9 +148,11 @@ class GatewayController extends BaseController {
 	}
 
 	/**
-	 * Powers off the gateway
 	 * @Path("/poweroff")
 	 * @Method("POST")
+	 * @OpenApi("
+	 *   summary: Powers off the gateway
+	 * ")
 	 * @Responses({
 	 *      @Response(code="200", description="Success")
 	 * })
@@ -143,9 +166,11 @@ class GatewayController extends BaseController {
 	}
 
 	/**
-	 * Reboots the gateway
 	 * @Path("/reboot")
 	 * @Method("POST")
+	 * @OpenApi("
+	 *   summary: Reboots the gateway
+	 * ")
 	 * @Responses({
 	 *      @Response(code="200", description="Success")
 	 * })

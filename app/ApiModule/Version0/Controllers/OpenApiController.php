@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\ApiModule\Version0\Controllers;
 
 use Apitte\Core\Annotation\Controller\Method;
+use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\Response;
 use Apitte\Core\Annotation\Controller\Responses;
@@ -50,9 +51,11 @@ class OpenApiController extends BaseController {
 	}
 
 	/**
-	 * Returns OpenAPI schema
 	 * @Path("/")
 	 * @Method("GET")
+	 * @OpenApi("
+	 *  summary: Returns OpenAPI schema
+	 * ")
 	 * @Responses({
 	 *      @Response(code="200", description="Success")
 	 * })

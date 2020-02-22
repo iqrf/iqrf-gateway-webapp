@@ -50,15 +50,30 @@ class NetworkManager {
 	}
 
 	/**
+	 * Returns information about network interfaces
+	 * @return mixed[] Network interfaces
+	 */
+	public function getInterfaces(): array {
+		$interfaces = [];
+		$ipAddresses = $this->getIpAddresses();
+		$macAddresses = $this->getMacAddresses();
+		foreach ($this->listsInterfaces() as $interface) {
+			$interfaces[] = [
+				'name' => $interface,
+				'macAddress' => $macAddresses[$interface] ?? null,
+				'ipAddresses' => $ipAddresses[$interface] ?? null,
+			];
+		}
+		return $interfaces;
+	}
+
+	/**
 	 * Returns IPv4 and IPv6 addresses of the gateway
 	 * @return string[][] IPv4 and IPv6 addresses
 	 */
 	public function getIpAddresses(): array {
 		$addresses = [];
-		foreach ($this->getInterfaces() as $interface) {
-			if ($interface === 'lo') {
-				continue;
-			}
+		foreach ($this->listsInterfaces() as $interface) {
 			$cmd = 'ip a s ' . $interface . ' | grep inet | grep global | grep -v temporary | grep -v mngtmpaddr | awk \'{print $2}\'';
 			$output = $this->commandManager->run($cmd, true)->getStdout();
 			if ($output !== '') {
@@ -69,12 +84,12 @@ class NetworkManager {
 	}
 
 	/**
-	 * Returns network interfaces
+	 * Lists network interfaces
 	 * @return string[] Network interfaces
 	 */
-	private function getInterfaces(): array {
+	private function listsInterfaces(): array {
 		$interfaces = $this->commandManager->run('ls /sys/class/net | awk \'{ print $0 }\'', true)->getStdout();
-		return explode(PHP_EOL, $interfaces);
+		return array_diff(explode(PHP_EOL, $interfaces), ['lo']);
 	}
 
 	/**
@@ -83,10 +98,7 @@ class NetworkManager {
 	 */
 	public function getMacAddresses(): array {
 		$addresses = [];
-		foreach ($this->getInterfaces() as $interface) {
-			if ($interface === 'lo') {
-				continue;
-			}
+		foreach ($this->listsInterfaces() as $interface) {
 			$cmd = 'cat /sys/class/net/' . $interface . '/address';
 			$addresses[$interface] = $this->commandManager->run($cmd, true)->getStdout();
 		}
