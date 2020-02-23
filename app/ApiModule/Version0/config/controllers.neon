@@ -6,6 +6,7 @@ services:
 	- App\ApiModule\Version0\Controllers\IqrfController
 	- App\ApiModule\Version0\Controllers\PixlaController
 	- App\ApiModule\Version0\Controllers\ServiceController
+	- App\ApiModule\Version0\Controllers\UnattendedUpgradesController
 	- App\ApiModule\Version0\Controllers\UserController
 	- App\ApiModule\Version0\Controllers\UsersController
 	- App\ApiModule\Version0\Controllers\VersionController
