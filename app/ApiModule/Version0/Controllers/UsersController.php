@@ -145,7 +145,7 @@ class UsersController extends BaseController {
 
 	/**
 	 * @Path("/{id}")
-	 * @Method("POST")
+	 * @Method("PUT")
 	 * @OpenApi("
 	 *   summary: Edits user
 	 * ")

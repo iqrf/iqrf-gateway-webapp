@@ -28,6 +28,7 @@ use Nette\Application\BadRequestException;
 use Nette\Application\Responses\FileResponse;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;
+use Throwable;
 
 /**
  * Gateway diagnostics tool
@@ -67,11 +68,6 @@ class DiagnosticsManager {
 	private $logDir;
 
 	/**
-	 * @var string Path to ZIP archive
-	 */
-	private $path = '/tmp/iqrf-gateway-webapp.zip';
-
-	/**
 	 * Constructor
 	 * @param string $confDir Path to a directory with IQRF Gateway Daemon's configuration
 	 * @param string $logDir Path to a directory with log files of IQRF Gateway Daemon
@@ -88,16 +84,17 @@ class DiagnosticsManager {
 	}
 
 	/**
-	 * Downloads a diagnostic data
-	 * @return FileResponse HTTP response with the diagnostic data
-	 * @throws BadRequestException
-	 * @throws JsonException
+	 * Create an archive with diagnostics data
+	 * @return string Path to archive with diagnostics data
 	 */
-	public function download(): FileResponse {
-		$this->zipManager = new ZipArchiveManager($this->path);
-		$now = new DateTime();
-		$fileName = 'iqrf-gateway-diagnostics_' . $now->format('c') . '.zip';
-		$contentType = 'application/zip';
+	public function createArchive(): string {
+		try {
+			$now = new DateTime();
+			$path = '/tmp/iqrf-gateway-diagnostics_' . $now->format('c') . '.zip';
+		} catch (Throwable $e) {
+			$path = '/tmp/iqrf-gateway-diagnostics.zip';
+		}
+		$this->zipManager = new ZipArchiveManager($path);
 		$this->addConfiguration();
 		$this->addMetadata();
 		$this->addScheduler();
@@ -110,7 +107,20 @@ class DiagnosticsManager {
 		$this->addControllerLog();
 		$this->addWebappLog();
 		$this->zipManager->close();
-		return new FileResponse($this->path, $fileName, $contentType, true);
+		return $path;
+	}
+
+	/**
+	 * Downloads a diagnostic data
+	 * @return FileResponse HTTP response with the diagnostic data
+	 * @throws BadRequestException
+	 * @throws JsonException
+	 */
+	public function download(): FileResponse {
+		$path = $this->createArchive();
+		$fileName = basename($path);
+		$contentType = 'application/zip';
+		return new FileResponse($path, $fileName, $contentType, true);
 	}
 
 	/**

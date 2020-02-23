@@ -81,7 +81,11 @@ class LogManager {
 		return reset($logFiles);
 	}
 
-	public function getArchive(): string {
+	/**
+	 * Creates a archive with logs
+	 * @return string Path to archive with logs
+	 */
+	public function createArchive(): string {
 		$zipManager = new ZipArchiveManager($this->path);
 		$zipManager->addFolder($this->logDir, '');
 		$zipManager->close();
@@ -97,7 +101,7 @@ class LogManager {
 		$now = new DateTime();
 		$fileName = 'iqrf-gateway-daemon-logs' . $now->format('c') . '.zip';
 		$contentType = 'application/zip';
-		return new FileResponse($this->getArchive(), $fileName, $contentType, true);
+		return new FileResponse($this->createArchive(), $fileName, $contentType, true);
 	}
 
 }

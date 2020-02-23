@@ -131,7 +131,7 @@ class GatewayController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function logArchive(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$path = $this->logManager->getArchive();
+		$path = $this->logManager->createArchive();
 		try {
 			$now = new DateTime();
 			$fileName = 'iqrf-gateway-daemon-logs_' . $now->format('c') . '.zip';
