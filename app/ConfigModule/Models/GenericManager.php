@@ -88,6 +88,22 @@ class GenericManager {
 	}
 
 	/**
+	 * Returns instance configuration file name
+	 * @param string $instance Instance name
+	 * @return string|null Instance file name
+	 */
+	public function getInstanceFileName(string $instance): ?string {
+		$files = $this->getInstanceFiles();
+		foreach ($files as $id => $fileName) {
+			$configuration = $this->load($id);
+			if ($configuration['instance'] === $instance) {
+				return $fileName;
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * Gets component's instance files
 	 * @return string[] Files with component's instances
 	 * @throws IOException
@@ -135,6 +151,21 @@ class GenericManager {
 			return [];
 		}
 		$this->fileName = $instanceFiles[$id];
+		return $this->read();
+	}
+
+	/**
+	 * Loads the configuration
+	 * @param string $instance Instance name
+	 * @return mixed[] Configuration in an array
+	 * @throws JsonException
+	 */
+	public function loadInstance(string $instance): array {
+		$fileName = $this->getInstanceFileName($instance);
+		if ($fileName === null) {
+			return [];
+		}
+		$this->fileName = $fileName;
 		return $this->read();
 	}
 
