@@ -24,6 +24,7 @@ use App\CoreModule\Models\FileManager;
 use App\ServiceModule\Enums\ServiceStates;
 use App\ServiceModule\Models\SystemDManager;
 use Nette\IOException;
+use Nette\Utils\Strings;
 
 /**
  * PIXLA management system manager
@@ -77,7 +78,7 @@ class PixlaManager {
 	 */
 	public function getToken(): ?string {
 		try {
-			return $this->fileManager->read('customer_id');
+			return Strings::trim($this->fileManager->read('customer_id'), "\n");
 		} catch (IOException $e) {
 			return null;
 		}
