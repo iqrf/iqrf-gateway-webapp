@@ -123,7 +123,7 @@ class GatewayController extends BaseController {
 	 *       content:
 	 *         application/zip:
 	 *           schema:
-	 *             type: string
+	 *             type: file
 	 *             format: binary
 	 * ")
 	 * @param ApiRequest $request API request

@@ -33,6 +33,7 @@ if ($isApi) {
 	header('Access-Control-Allow-Origin: *');
 	header('Access-Control-Allow-Headers: Accept, Content-Type, Authorization');
 	header('Access-Control-Allow-Methods: GET, POST, OPTIONS, DELETE, PUT');
+	header('Access-Control-Expose-Headers: *');
 	$application = $container->getByType(ApiApplication::class);
 } else {
 	$application = $container->getByType(UiApplication::class);
