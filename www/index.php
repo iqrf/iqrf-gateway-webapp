@@ -30,6 +30,9 @@ $isApi = substr($_SERVER['REQUEST_URI'], 0, 4) === '/api';
 $container = Kernel::boot()->createContainer();
 // Gets application from DI container
 if ($isApi) {
+	header('Access-Control-Allow-Origin: *');
+	header('Access-Control-Allow-Headers: Accept, Content-Type, Authorization');
+	header('Access-Control-Allow-Methods: GET, POST, OPTIONS, DELETE, PUT');
 	$application = $container->getByType(ApiApplication::class);
 } else {
 	$application = $container->getByType(UiApplication::class);
