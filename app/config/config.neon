@@ -36,10 +36,14 @@ extensions:
 	iqrfRepository: Iqrf\Repository\DI\IqrfRepositoryExtension
 	iqrfMacros: Iqrf\IdeMacros\DI\IqrfMacrosExtension
 	- Contributte\FormMultiplier\DI\MultiplierExtension
+	middleware: Contributte\Middlewares\DI\NetteMiddlewaresExtension
 
 iqrfMacros:
 	# path to IQRF IDE macros
 	path: '%appDir%/../iqrf/DPA-macros_190301_webapp.iqrfmcr'
+
+middleware:
+	debug: %debugMode%
 
 session:
 	expiration: 14 days

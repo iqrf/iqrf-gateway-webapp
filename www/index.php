@@ -18,8 +18,8 @@
  */
 declare(strict_types = 1);
 
-use Apitte\Core\Application\IApplication as ApiApplication;
 use App\Kernel;
+use Contributte\Middlewares\Application\IApplication as ApiApplication;
 use Nette\Application\Application as UiApplication;
 
 require_once __DIR__ . '/../vendor/autoload.php';

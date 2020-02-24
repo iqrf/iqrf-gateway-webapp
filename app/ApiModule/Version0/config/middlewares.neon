@@ -1,0 +1,5 @@
+
+services:
+    authMiddleware:
+        factory: App\ApiModule\Version0\Middlewares\AuthenticationMiddleware
+        tags: [middleware: [priority: 10]]
