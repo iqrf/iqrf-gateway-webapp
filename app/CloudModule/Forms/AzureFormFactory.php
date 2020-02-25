@@ -53,7 +53,7 @@ class AzureFormFactory extends CloudFormFactory {
 	public function create(AzurePresenter $presenter): Form {
 		$this->presenter = $presenter;
 		$form = $this->factory->create('cloud.msAzure.form');
-		$form->addText('ConnectionString', 'connectionString')
+		$form->addText('connectionString', 'connectionString')
 			->setRequired('messages.connectionString');
 		$form->addSubmit('save', 'save')
 			->onClick[] = function (SubmitButton $button): void {

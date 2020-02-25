@@ -61,7 +61,7 @@ class AuthenticationMiddleware implements IMiddleware {
 		}
 		$user = $this->authenticator->authenticate($request);
 		// If we have a identity, then go to next middleware, otherwise stop and return current response
-		if (!$user) {
+		if ($user !== null) {
 			$response->getBody()->write(Json::encode([
 				'error' => 'Client authentication failed',
 			]));
@@ -87,4 +87,5 @@ class AuthenticationMiddleware implements IMiddleware {
 		}
 		return false;
 	}
+
 }

@@ -54,7 +54,7 @@ class AzureManager implements IManager {
 	 * @throws JsonException
 	 */
 	public function createMqttInterface(array $values): void {
-		$connectionString = $values['ConnectionString'];
+		$connectionString = $values['connectionString'];
 		$this->checkConnectionString($connectionString);
 		$data = $this->parseConnectionString($connectionString);
 		$endpoint = $data['HostName'] . '/devices/' . $data['DeviceId'];

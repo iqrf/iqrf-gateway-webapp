@@ -56,12 +56,12 @@ class HexioFormFactory extends CloudFormFactory {
 		$form->addText('broker', 'broker')
 			->setRequired('messages.broker')
 			->setDefaultValue('connect.hexio.cloud');
-		$form->addText('ClientId', 'ClientId')
+		$form->addText('clientId', 'ClientId')
 			->setRequired('messages.ClientId');
-		$form->addText('TopicRequest', 'TopicRequest')
+		$form->addText('topicRequest', 'TopicRequest')
 			->setDefaultValue('Iqrf/DpaRequest')
 			->setRequired('messages.TopicRequest');
-		$form->addText('TopicResponse', 'TopicResponse')
+		$form->addText('topicResponse', 'TopicResponse')
 			->setDefaultValue('Iqrf/DpaResponse')
 			->setRequired('messages.TopicResponse');
 		$form->addText('username', 'username')

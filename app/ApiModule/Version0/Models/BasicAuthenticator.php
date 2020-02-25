@@ -20,7 +20,6 @@ declare(strict_types = 1);
 
 namespace App\ApiModule\Version0\Models;
 
-
 use Contributte\Middlewares\Security\IAuthenticator;
 use Nette\Database\Context;
 use Nette\Security\Identity;
@@ -77,4 +76,5 @@ class BasicAuthenticator implements IAuthenticator {
 			'password' => $header[1] ?? '',
 		];
 	}
+
 }

@@ -18,18 +18,33 @@
  */
 declare(strict_types = 1);
 
-namespace App\ApiModule\Version0;
+namespace App\ApiModule\Version0\Entities;
 
-use Apitte\Core\Http\RequestAttributes as ApitteRequestAttributes;
+use Apitte\Core\Mapping\Request\BasicEntity;
 
 /**
- * API request attributes
+ * Inteliments InteliGlue connection entity
  */
-interface RequestAttributes extends ApitteRequestAttributes {
+class InteliGlueEntity extends BasicEntity {
 
 	/**
-	 * Logged user
+	 * @var string MQTT root topic
 	 */
-	public const APP_LOGGED_USER = 'app.logged.user';
+	public $rootTopic;
+
+	/**
+	 * @var int Assigned MQTT broker port
+	 */
+	public $assignedPort;
+
+	/**
+	 * @var string MQTT client ID
+	 */
+	public $clientId;
+
+	/**
+	 * @var string MQTT password
+	 */
+	public $password;
 
 }

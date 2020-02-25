@@ -18,18 +18,18 @@
  */
 declare(strict_types = 1);
 
-namespace App\ApiModule\Version0;
+namespace App\ApiModule\Version0\Entities;
 
-use Apitte\Core\Http\RequestAttributes as ApitteRequestAttributes;
+use Apitte\Core\Mapping\Request\BasicEntity;
 
 /**
- * API request attributes
+ * Microsoft Azure IoT hub connection entity
  */
-interface RequestAttributes extends ApitteRequestAttributes {
+class AzureEntity extends BasicEntity {
 
 	/**
-	 * Logged user
+	 * @var string Microsoft Azure IoT Hub connection string
 	 */
-	public const APP_LOGGED_USER = 'app.logged.user';
+	public $connectionString;
 
 }

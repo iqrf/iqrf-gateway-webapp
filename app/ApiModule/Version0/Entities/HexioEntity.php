@@ -18,18 +18,43 @@
  */
 declare(strict_types = 1);
 
-namespace App\ApiModule\Version0;
+namespace App\ApiModule\Version0\Entities;
 
-use Apitte\Core\Http\RequestAttributes as ApitteRequestAttributes;
+use Apitte\Core\Mapping\Request\BasicEntity;
 
 /**
- * API request attributes
+ * Hexio IoT Platform connection entity
  */
-interface RequestAttributes extends ApitteRequestAttributes {
+class HexioEntity extends BasicEntity {
 
 	/**
-	 * Logged user
+	 * @var string MQTT broker address
 	 */
-	public const APP_LOGGED_USER = 'app.logged.user';
+	public $broker;
+
+	/**
+	 * @var string MQTT client ID
+	 */
+	public $clientId;
+
+	/**
+	 * @var string MQTT topic for JSON API requests
+	 */
+	public $topicRequests;
+
+	/**
+	 * @var string MQTT topic for JSON API responses
+	 */
+	public $topicResponses;
+
+	/**
+	 * @var string MQTT username
+	 */
+	public $username;
+
+	/**
+	 * @var string MQTT password
+	 */
+	public $password;
 
 }

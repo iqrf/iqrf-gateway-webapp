@@ -18,18 +18,33 @@
  */
 declare(strict_types = 1);
 
-namespace App\ApiModule\Version0;
+namespace App\ApiModule\Version0\Entities;
 
-use Apitte\Core\Http\RequestAttributes as ApitteRequestAttributes;
+use Apitte\Core\Mapping\Request\BasicEntity;
 
 /**
- * API request attributes
+ * IBM Cloud connection entity
  */
-interface RequestAttributes extends ApitteRequestAttributes {
+class IbmCloudEntity extends BasicEntity {
 
 	/**
-	 * Logged user
+	 * @var string Organization ID
 	 */
-	public const APP_LOGGED_USER = 'app.logged.user';
+	public $organizationId;
+
+	/**
+	 * @var string Device type
+	 */
+	public $deviceType;
+
+	/**
+	 * @var string Authentication token
+	 */
+	public $token;
+
+	/**
+	 * @var string Command and event ID
+	 */
+	public $eventId;
 
 }

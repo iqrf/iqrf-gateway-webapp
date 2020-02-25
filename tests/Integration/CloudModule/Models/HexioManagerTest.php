@@ -35,9 +35,9 @@ class HexioManagerTest extends CloudIntegrationTestCase {
 	 */
 	private $values = [
 		'broker' => 'connect.hexio.cloud',
-		'ClientId' => 'IqrfDpaMessaging1',
-		'TopicRequest' => 'Iqrf/DpaRequest',
-		'TopicResponse' => 'Iqrf/DpaResponse',
+		'clientId' => 'IqrfDpaMessaging1',
+		'topicRequest' => 'Iqrf/DpaRequest',
+		'topicResponse' => 'Iqrf/DpaResponse',
 		'username' => 'user',
 		'password' => 'pass',
 	];
