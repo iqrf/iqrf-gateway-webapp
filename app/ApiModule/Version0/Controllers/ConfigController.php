@@ -81,6 +81,45 @@ class ConfigController extends BaseController {
 	}
 
 	/**
+	 * @Path("/{component}")
+	 * @Method("PUT")
+	 * @OpenApi("
+	 *   summary: Edits instance configuration by name
+	 *   requestBody:
+	 *     required: true
+	 *     content:
+	 *      application/json:
+	 *          schema:
+	 *              type: string
+	 * ")
+	 * @RequestParameters({
+	 *      @RequestParameter(name="component", type="string", description="Component name")
+	 * })
+	 * @Responses({
+	 *      @Response(code="200", description="Success"),
+	 *      @Response(code="404", description="Not found")
+	 * })
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function editInstance(ApiRequest $request, ApiResponse $response): ApiResponse {
+		try {
+			$json = $request->getJsonBody(true);
+			$component = urldecode($request->getParameter('component'));
+			$this->manager->setComponent($component);
+			$fileName = $this->manager->getInstanceFileName($json['instance']);
+			$this->manager->setFileName($fileName);
+			$this->manager->save($json);
+		} catch (NonExistingJsonSchemaException $e) {
+			return $response->withStatus(404, 'Component not found.');
+		} catch (JsonException $e) {
+			return $response->withStatus(500);
+		}
+		return $response;
+	}
+
+	/**
 	 * @Path("/{component}/{instance}")
 	 * @Method("GET")
 	 * @OpenApi("
