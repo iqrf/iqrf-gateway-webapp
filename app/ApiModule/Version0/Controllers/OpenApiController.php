@@ -54,7 +54,7 @@ class OpenApiController extends BaseController {
 	 * @Path("/")
 	 * @Method("GET")
 	 * @OpenApi("
-	 *  summary: Returns OpenAPI schema
+	 *   summary: Returns OpenAPI schema
 	 *   security:
 	 *     - []
 	 * ")
