@@ -20,45 +20,37 @@ declare(strict_types = 1);
 
 namespace App\ApiModule\Version0\Models;
 
+use App\CoreModule\Models\AppAuthenticator;
 use Contributte\Middlewares\Security\IAuthenticator;
-use Nette\Database\Context;
-use Nette\Security\Identity;
 use Nette\Security\IIdentity;
 use Psr\Http\Message\ServerRequestInterface;
+use Throwable;
 
 class BasicAuthenticator implements IAuthenticator {
 
 	/**
-	 * @var Context Database context
+	 * @var AppAuthenticator Application authenticator
 	 */
-	private $context;
+	private $authenticator;
 
 	/**
 	 * Constructor
-	 * @param Context $context Database context
+	 * @param AppAuthenticator $authenticator Application authenticator
 	 */
-	public function __construct(Context $context) {
-		$this->context = $context;
+	public function __construct(AppAuthenticator $authenticator) {
+		$this->authenticator = $authenticator;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public function authenticate(ServerRequestInterface $request): ?IIdentity {
-		$table = $this->context->table('users');
 		$credentials = $this->parseAuthorizationHeader($request->getHeader('Authorization')[0] ?? '');
-		if ($credentials === null) {
+		try {
+			return $this->authenticator->authenticate($credentials);
+		} catch (Throwable $e) {
 			return null;
 		}
-		$row = $table->where('username', $credentials['username'])->fetch();
-		if ($row === null) {
-			return null;
-		}
-		if (!password_verify($credentials['password'], $row['password'])) {
-			return null;
-		}
-		$data = ['username' => $row['username'], 'language' => $row['language']];
-		return new Identity($row['id'], $row['role'], $data);
 	}
 
 	/**
@@ -71,10 +63,7 @@ class BasicAuthenticator implements IAuthenticator {
 			return null;
 		}
 		$header = explode(':', (string) base64_decode(substr($header, 6), true), 2);
-		return [
-			'username' => $header[0],
-			'password' => $header[1] ?? '',
-		];
+		return [$header[0],$header[1] ?? ''];
 	}
 
 }

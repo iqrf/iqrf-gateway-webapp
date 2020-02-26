@@ -30,6 +30,7 @@ use Apitte\Core\Annotation\Controller\Responses;
 use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
+use App\ApiModule\Version0\RequestAttributes;
 use Nette\Security\AuthenticationException;
 use Nette\Security\Identity;
 use Nette\Security\User;
@@ -65,13 +66,8 @@ class UserController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
-		if (!$this->user->isLoggedIn()) {
-			return $response->withStatus(401);
-		}
-		/**
-		 * @var Identity Identity
-		 */
-		$identity = $this->user->getIdentity();
+		/** @var Identity $identity */
+		$identity = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
 		$data = $identity->getData();
 		return $response->writeJsonBody([
 				'id' => $this->user->getId(),
@@ -86,6 +82,8 @@ class UserController extends BaseController {
 	 * @Method("POST")
 	 * @OpenApi("
 	 *   summary: Signs in the user
+	 *   security:
+	 *     - []
 	 * ")
 	 * @Responses({
 	 *      @Response(code="200", description="Success"),

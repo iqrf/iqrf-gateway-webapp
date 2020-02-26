@@ -55,6 +55,8 @@ class OpenApiController extends BaseController {
 	 * @Method("GET")
 	 * @OpenApi("
 	 *  summary: Returns OpenAPI schema
+	 *   security:
+	 *     - []
 	 * ")
 	 * @Responses({
 	 *      @Response(code="200", description="Success")
