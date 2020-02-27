@@ -31,6 +31,7 @@ use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ConfigModule\Models\GenericManager;
+use App\ConfigModule\Models\MainManager;
 use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
 use Nette\Utils\JsonException;
 
@@ -42,16 +43,67 @@ use Nette\Utils\JsonException;
 class ConfigController extends BaseController {
 
 	/**
-	 * @var GenericManager Configuration  manager
+	 * @var MainManager Main configuration manager
+	 */
+	private $mainManager;
+
+	/**
+	 * @var GenericManager Configuration manager
 	 */
 	private $manager;
 
 	/**
 	 * Constructor
+	 * @param MainManager $mainManager Main configuration manager
 	 * @param GenericManager $manager Configuration manager
 	 */
-	public function __construct(GenericManager $manager) {
+	public function __construct(MainManager $mainManager, GenericManager $manager) {
+		$this->mainManager = $mainManager;
 		$this->manager = $manager;
+	}
+
+	/**
+	 * @Path("/")
+	 * @Method("GET")
+	 * @OpenApi("
+	 *   summary: Returns main configuration
+	 * ")
+	 * @Responses({
+	 *      @Response(code="200", description="Success"),
+	 *      @Response(code="404", description="Not found")
+	 * })
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
+		return $response->writeJsonBody($this->mainManager->load());
+	}
+
+	/**
+	 * @Path("/")
+	 * @Method("PUT")
+	 * @OpenApi("
+	 *   summary: Edits main configuration
+	 *   requestBody:
+	 *     required: true
+	 *     content:
+	 *       application/json:
+	 *         schema:
+	 *           type: string
+	 * ")
+	 * @Responses({
+	 *      @Response(code="200", description="Success"),
+	 *      @Response(code="404", description="Not found")
+	 * })
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$json = $request->getJsonBody(true);
+		$this->mainManager->save($json);
+		return $response;
 	}
 
 	/**
