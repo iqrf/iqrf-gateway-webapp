@@ -47,9 +47,9 @@ class GenericManager {
 	private $fileManager;
 
 	/**
-	 * @var string File name (without .json)
+	 * @var string|null File name (without .json)
 	 */
-	private $fileName;
+	private $fileName = null;
 
 	/**
 	 * @var ComponentSchemaManager JSON schema manager
@@ -73,18 +73,25 @@ class GenericManager {
 	 * @throws JsonException
 	 */
 	public function delete(int $id): void {
-		$instanceFiles = $this->getInstanceFiles();
-		if (isset($instanceFiles[$id])) {
-			$this->fileManager->delete($instanceFiles[$id]);
+		$fileName = $this->getFileNameById($id);
+		if ($fileName !== null) {
+			$this->fileManager->delete($fileName);
 		}
 	}
 
 	/**
 	 * Deletes a configuration
+	 * @param string|null $fileName File name
 	 * @throws IOException
 	 */
-	public function deleteFile(): void {
-		$this->fileManager->delete($this->fileName);
+	public function deleteFile(?string $fileName = null): void {
+		if ($fileName === null && $this->fileName === null) {
+			return;
+		}
+		if ($fileName === null) {
+			$fileName = $this->fileName;
+		}
+		$this->fileManager->delete($fileName);
 	}
 
 	/**
@@ -133,7 +140,7 @@ class GenericManager {
 		$files = array_keys($this->getInstanceFiles());
 		$instances = [];
 		foreach ($files as $id) {
-			$instances[] = Arrays::mergeTree(['id' => $id], $this->load($id));
+			$instances[] = Arrays::mergeTree(['id' => $id], $this->read($this->getFileNameById($id)));
 		}
 		return $instances;
 	}
@@ -146,11 +153,7 @@ class GenericManager {
 	 * @throws JsonException
 	 */
 	public function load(int $id): array {
-		$instanceFiles = $this->getInstanceFiles();
-		if (!isset($instanceFiles[$id])) {
-			return [];
-		}
-		$this->fileName = $instanceFiles[$id];
+		$this->fileName = $this->getFileNameById($id);
 		return $this->read();
 	}
 
@@ -214,11 +217,18 @@ class GenericManager {
 
 	/**
 	 * Reads the configuration
+	 * @param string|null $fileName File name
 	 * @return mixed[] Configuration in an array
 	 * @throws JsonException
 	 */
-	public function read(): array {
-		$configuration = $this->fileManager->read($this->fileName);
+	public function read(?string $fileName = null): array {
+		if ($fileName === null && $this->fileName === null) {
+			return [];
+		}
+		if ($fileName === null) {
+			$fileName = $this->fileName;
+		}
+		$configuration = $this->fileManager->read($fileName);
 		$this->fixRequiredInterfaces($configuration);
 		return $configuration;
 	}
@@ -226,18 +236,22 @@ class GenericManager {
 	/**
 	 * Saves the configuration
 	 * @param mixed[] $array Configuration in an array
+	 * @param string|null $fileName File name
 	 * @throws IOException
 	 * @throws JsonException
 	 */
-	public function save(array $array): void {
-		if (!isset($this->fileName)) {
+	public function save(array $array, ?string $fileName = null): void {
+		if ($fileName === null && $this->fileName === null) {
 			$this->generateFileName($array);
+		}
+		if ($fileName === null) {
+			$fileName = $this->fileName;
 		}
 		$component = ['component' => $this->component];
 		$configuration = Arrays::mergeTree($component, $array);
 		$json = Json::encode($configuration);
 		$this->schemaManager->validate(Json::decode($json));
-		$this->fileManager->write($this->fileName, $configuration);
+		$this->fileManager->write($fileName, $configuration);
 	}
 
 	/**
@@ -251,17 +265,31 @@ class GenericManager {
 
 	/**
 	 * Gets the file name
-	 * @return string File name (without .json)
+	 * @return string|null File name (without .json)
 	 */
-	public function getFileName(): string {
+	public function getFileName(): ?string {
 		return $this->fileName;
 	}
 
 	/**
-	 * Sets the file name
-	 * @param string $fileName File name (without .json)
+	 * Returns instance file name from instance ID
+	 * @param int $id Instance ID
+	 * @return string|null File name
+	 * @throws JsonException
 	 */
-	public function setFileName(string $fileName): void {
+	public function getFileNameById(int $id): ?string {
+		$instanceFiles = $this->getInstanceFiles();
+		if (!isset($instanceFiles[$id])) {
+			return null;
+		}
+		return $instanceFiles[$id];
+	}
+
+	/**
+	 * Sets the file name
+	 * @param string|null $fileName File name (without .json)
+	 */
+	public function setFileName(?string $fileName): void {
 		$this->fileName = $fileName;
 	}
 

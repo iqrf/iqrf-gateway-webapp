@@ -78,7 +78,6 @@ class HexioManager implements IManager {
 		$this->createDirectory();
 		$this->downloadCaCertificate();
 		$this->configManager->setComponent('iqrf::MqttMessaging');
-		$this->configManager->setFileName('iqrf__MqttMessaging_Hexio');
 		$interface = [
 			'instance' => 'MqttMessagingHexio',
 			'BrokerAddr' => 'ssl://' . $values['broker'] . ':8883',
@@ -102,7 +101,7 @@ class HexioManager implements IManager {
 			'EnableServerCertAuth' => false,
 			'acceptAsyncMsg' => false,
 		];
-		$this->configManager->save($interface);
+		$this->configManager->save($interface, 'iqrf__MqttMessaging_Hexio');
 	}
 
 	/**

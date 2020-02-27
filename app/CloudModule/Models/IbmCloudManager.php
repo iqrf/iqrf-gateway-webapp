@@ -78,7 +78,6 @@ class IbmCloudManager implements IManager {
 		$this->createDirectory();
 		$this->downloadCaCertificate();
 		$this->configManager->setComponent('iqrf::MqttMessaging');
-		$this->configManager->setFileName('iqrf__MqttMessaging_IbmCloud');
 		$interface = [
 			'instance' => 'MqttMessagingIbmCloud',
 			'BrokerAddr' => 'ssl://' . $values['organizationId'] . '.messaging.internetofthings.ibmcloud.com:8883',
@@ -102,7 +101,7 @@ class IbmCloudManager implements IManager {
 			'EnableServerCertAuth' => false,
 			'acceptAsyncMsg' => false,
 		];
-		$this->configManager->save($interface);
+		$this->configManager->save($interface, 'iqrf__MqttMessaging_IbmCloud');
 	}
 
 	/**

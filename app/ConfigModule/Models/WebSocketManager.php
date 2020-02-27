@@ -83,8 +83,7 @@ class WebSocketManager {
 		$messaging = $this->genericManager->read();
 		$instance = $messaging['RequiredInterfaces'][0]['target']['instance'];
 		$this->genericManager->deleteFile();
-		$this->genericManager->setFileName($this->getServiceFile($instance));
-		$this->genericManager->deleteFile();
+		$this->genericManager->deleteFile($this->getServiceFile($instance));
 	}
 
 	/**
@@ -130,11 +129,9 @@ class WebSocketManager {
 		$messagingFileName = $this->fileNames['messaging'] ?? 'iqrf__' . $this->instances['messaging'];
 		$serviceFileName = $this->fileNames['service'] ?? 'shape__' . $this->instances['service'];
 		$this->genericManager->setComponent($this->components['service']);
-		$this->genericManager->setFileName($serviceFileName);
-		$this->genericManager->save($settings['service']);
+		$this->genericManager->save($settings['service'], $serviceFileName);
 		$this->genericManager->setComponent($this->components['messaging']);
-		$this->genericManager->setFileName($messagingFileName);
-		$this->genericManager->save($settings['messaging']);
+		$this->genericManager->save($settings['messaging'], $messagingFileName);
 	}
 
 	/**

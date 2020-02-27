@@ -83,8 +83,7 @@ class MonitorManager {
 		$messaging = $this->genericManager->read();
 		$instance = $messaging['RequiredInterfaces'][0]['target']['instance'];
 		$this->genericManager->deleteFile();
-		$this->genericManager->setFileName($this->getWebSocketFile($instance));
-		$this->genericManager->deleteFile();
+		$this->genericManager->deleteFile($this->getWebSocketFile($instance));
 	}
 
 	/**
@@ -175,11 +174,9 @@ class MonitorManager {
 		$this->fileNames['monitor'] = $this->fileNames['monitor'] ?? 'iqrf__' . $this->instances['monitor'];
 		$this->fileNames['webSocket'] = $this->fileNames['webSocket'] ?? 'shape__' . $this->instances['webSocket'];
 		$this->genericManager->setComponent($this->components['webSocket']);
-		$this->genericManager->setFileName($this->fileNames['webSocket']);
-		$this->genericManager->save($configuration['webSocket']);
+		$this->genericManager->save($configuration['webSocket'], $this->fileNames['webSocket']);
 		$this->genericManager->setComponent($this->components['monitor']);
-		$this->genericManager->setFileName($this->fileNames['monitor']);
-		$this->genericManager->save($configuration['monitor']);
+		$this->genericManager->save($configuration['monitor'], $this->fileNames['monitor']);
 	}
 
 	/**

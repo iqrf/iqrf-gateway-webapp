@@ -82,6 +82,80 @@ class ConfigController extends BaseController {
 
 	/**
 	 * @Path("/{component}")
+	 * @Method("POST")
+	 * @OpenApi("
+	 *   summary: Creates instance configuration by name
+	 *   requestBody:
+	 *     required: true
+	 *     content:
+	 *      application/json:
+	 *          schema:
+	 *              type: string
+	 * ")
+	 * @RequestParameters({
+	 *      @RequestParameter(name="component", type="string", description="Component name")
+	 * })
+	 * @Responses({
+	 *      @Response(code="200", description="Success"),
+	 *      @Response(code="404", description="Not found")
+	 * })
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function createInstance(ApiRequest $request, ApiResponse $response): ApiResponse {
+		try {
+			$json = $request->getJsonBody(true);
+			$component = urldecode($request->getParameter('component'));
+			$this->manager->setComponent($component);
+			if (!isset($json['instance'])) {
+				return $response->withStatus(400, 'Missing instance name');
+			}
+			$fileName = $this->manager->getInstanceFileName($json['instance']);
+			if ($fileName !== null) {
+				return $response->withStatus(400, 'Instance already exits');
+			}
+			$this->manager->save($json, $fileName);
+		} catch (NonExistingJsonSchemaException $e) {
+			return $response->withStatus(404, 'Component not found.');
+		} catch (JsonException $e) {
+			return $response->withStatus(500);
+		}
+		return $response;
+	}
+
+	/**
+	 * @Path("/{component}/{instance}")
+	 * @Method("DELETE")
+	 * @OpenApi("
+	 *   summary: Deletes instance configuration by name
+	 * ")
+	 * @RequestParameters({
+	 *      @RequestParameter(name="component", type="string", description="Component name"),
+	 *      @RequestParameter(name="instance", type="string", description="Instance name")
+	 * })
+	 * @Responses({
+	 *      @Response(code="200", description="Success"),
+	 *      @Response(code="404", description="Not found")
+	 * })
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function deleteInstance(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$component = urldecode($request->getParameter('component'));
+		$this->manager->setComponent($component);
+		$instance = urldecode($request->getParameter('instance'));
+		$fileName = $this->manager->getInstanceFileName($instance);
+		if ($fileName === null) {
+			return $response;
+		}
+		$this->manager->deleteFile($fileName);
+		return $response;
+	}
+
+	/**
+	 * @Path("/{component}")
 	 * @Method("PUT")
 	 * @OpenApi("
 	 *   summary: Edits instance configuration by name
@@ -108,9 +182,11 @@ class ConfigController extends BaseController {
 			$json = $request->getJsonBody(true);
 			$component = urldecode($request->getParameter('component'));
 			$this->manager->setComponent($component);
+			if (!isset($json['instance'])) {
+				return $response->withStatus(400, 'Missing instance name');
+			}
 			$fileName = $this->manager->getInstanceFileName($json['instance']);
-			$this->manager->setFileName($fileName);
-			$this->manager->save($json);
+			$this->manager->save($json, $fileName);
 		} catch (NonExistingJsonSchemaException $e) {
 			return $response->withStatus(404, 'Component not found.');
 		} catch (JsonException $e) {
