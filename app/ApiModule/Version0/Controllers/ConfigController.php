@@ -30,6 +30,7 @@ use Apitte\Core\Annotation\Controller\Responses;
 use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
+use App\ConfigModule\Models\ComponentManager;
 use App\ConfigModule\Models\GenericManager;
 use App\ConfigModule\Models\MainManager;
 use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
@@ -43,6 +44,11 @@ use Nette\Utils\JsonException;
 class ConfigController extends BaseController {
 
 	/**
+	 * @var ComponentManager Component configuration manager
+	 */
+	private $componentManager;
+
+	/**
 	 * @var MainManager Main configuration manager
 	 */
 	private $mainManager;
@@ -54,10 +60,12 @@ class ConfigController extends BaseController {
 
 	/**
 	 * Constructor
+	 * @param ComponentManager $componentManager Component configuration manager
 	 * @param MainManager $mainManager Main configuration manager
 	 * @param GenericManager $manager Configuration manager
 	 */
-	public function __construct(MainManager $mainManager, GenericManager $manager) {
+	public function __construct(ComponentManager $componentManager, MainManager $mainManager, GenericManager $manager) {
+		$this->componentManager = $componentManager;
 		$this->mainManager = $mainManager;
 		$this->manager = $manager;
 	}
@@ -107,6 +115,36 @@ class ConfigController extends BaseController {
 	}
 
 	/**
+	 * @Path("/")
+	 * @Method("POST")
+	 * @OpenApi("
+	 *   summary: Creates component configuration
+	 *   requestBody:
+	 *     required: true
+	 *     content:
+	 *      application/json:
+	 *          schema:
+	 *              type: string
+	 * ")
+	 * @Responses({
+	 *      @Response(code="200", description="Success"),
+	 *      @Response(code="404", description="Not found")
+	 * })
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function createComponent(ApiRequest $request, ApiResponse $response): ApiResponse {
+		try {
+			$json = $request->getJsonBody(true);
+			$this->componentManager->add($json);
+		} catch (JsonException $e) {
+			return $response->withStatus(500);
+		}
+		return $response;
+	}
+
+	/**
 	 * @Path("/{component}")
 	 * @Method("GET")
 	 * @OpenApi("
@@ -136,7 +174,7 @@ class ConfigController extends BaseController {
 	 * @Path("/{component}")
 	 * @Method("POST")
 	 * @OpenApi("
-	 *   summary: Creates instance configuration by name
+	 *   summary: Creates instance configuration
 	 *   requestBody:
 	 *     required: true
 	 *     content:
@@ -207,7 +245,7 @@ class ConfigController extends BaseController {
 	}
 
 	/**
-	 * @Path("/{component}")
+	 * @Path("/{component}/{instance}")
 	 * @Method("PUT")
 	 * @OpenApi("
 	 *   summary: Edits instance configuration by name
@@ -219,7 +257,8 @@ class ConfigController extends BaseController {
 	 *              type: string
 	 * ")
 	 * @RequestParameters({
-	 *      @RequestParameter(name="component", type="string", description="Component name")
+	 *      @RequestParameter(name="component", type="string", description="Component name"),
+	 *      @RequestParameter(name="instance", type="string", description="Instance name")
 	 * })
 	 * @Responses({
 	 *      @Response(code="200", description="Success"),
@@ -237,7 +276,8 @@ class ConfigController extends BaseController {
 			if (!isset($json['instance'])) {
 				return $response->withStatus(400, 'Missing instance name');
 			}
-			$fileName = $this->manager->getInstanceFileName($json['instance']);
+			$instance = urldecode($request->getParameter('instance'));
+			$fileName = $this->manager->getInstanceFileName($instance);
 			$this->manager->save($json, $fileName);
 		} catch (NonExistingJsonSchemaException $e) {
 			return $response->withStatus(404, 'Component not found.');
