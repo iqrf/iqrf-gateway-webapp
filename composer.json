@@ -66,7 +66,7 @@
 		"symfony/process": "^5.0",
 		"tracy/tracy": "^2.7",
 		"ublaboo/datagrid": "^6.2",
-		"lcobucci/jwt": "^3.3"
+		"lcobucci/jwt": "^4.0@alpha"
 	},
 	"require-dev": {
 		"mockery/mockery": "^1.1",

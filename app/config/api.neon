@@ -30,17 +30,14 @@ api:
 								default: http://localhost:8080
 				components:
 					securitySchemes:
-						basicAuth:
-							type: http
-							scheme: 'basic'
 						bearerAuth:
 							type: http
 							scheme: 'bearer'
 							bearerFormat: JWT
 				security:
-					- basicAuth: []
+					- bearerAuth: []
 			swaggerUi:
 				url: null # default url
-				expansion: full # list|full|none
+				expansion: list # list|full|none
 				filter: true # true|false|string
 				panel: true

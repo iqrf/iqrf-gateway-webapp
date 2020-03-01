@@ -1,2 +1,3 @@
 services:
-	- App\ApiModule\Version0\Models\BasicAuthenticator
+	- App\ApiModule\Version0\Models\JwtAuthenticator
+	- App\ApiModule\Version0\Models\JwtConfigurator

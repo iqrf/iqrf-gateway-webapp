@@ -30,7 +30,10 @@ use Apitte\Core\Annotation\Controller\Responses;
 use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
+use App\ApiModule\Version0\Models\JwtConfigurator;
 use App\ApiModule\Version0\RequestAttributes;
+use DateTimeImmutable;
+use Lcobucci\JWT\Configuration;
 use Nette\Security\AuthenticationException;
 use Nette\Security\Identity;
 use Nette\Security\User;
@@ -43,11 +46,22 @@ use Nette\Security\User;
 class UserController extends BaseController {
 
 	/**
+	 * @var Configuration JWT configuration
+	 */
+	private $configuration;
+
+	/**
 	 * @var User User
 	 */
 	private $user;
 
-	public function __construct(User $user) {
+	/**
+	 * Constructor
+	 * @param JwtConfigurator $configurator JWT configurator
+	 * @param User $user User
+	 */
+	public function __construct(JwtConfigurator $configurator, User $user) {
+		$this->configuration = $configurator->create();
 		$this->user = $user;
 	}
 
@@ -103,7 +117,14 @@ class UserController extends BaseController {
 		} catch (AuthenticationException $e) {
 			return $response->withStatus(400);
 		}
-		return $response;
+		$now  = new DateTimeImmutable();
+		$token = $this->configuration->createBuilder()
+			->identifiedBy(gethostname())
+			->issuedAt($now)
+			->expiresAt($now->modify('+1 hour'))
+			->withClaim('uid', $this->user->getId())
+			->getToken($this->configuration->getSigner(), $this->configuration->getSigningKey());
+		return $response->writeJsonBody(['token' => (string) $token]);
 	}
 
 	/**
