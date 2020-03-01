@@ -21,13 +21,14 @@ declare(strict_types = 1);
 namespace App\NetworkModule\Entities;
 
 use App\NetworkModule\Enums\ConnectionTypes;
+use JsonSerializable;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 /**
  * Network connection entity
  */
-final class Connection {
+final class Connection implements JsonSerializable {
 
 	/**
 	 * @var string Network connection name
@@ -105,6 +106,18 @@ final class Connection {
 	 */
 	public function getInterfaceName(): string {
 		return $this->interfaceName;
+	}
+
+	/**
+	 * Returns JSON serialized data
+	 * @return array<string,mixed> JSON serialized data
+	 */
+	public function jsonSerialize(): array {
+		return [
+			'name' => $this->name,
+			'uuid' => $this->uuid,
+			'type' => $this->type->toScalar(),
+		];
 	}
 
 }

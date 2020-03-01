@@ -22,11 +22,12 @@ namespace App\NetworkModule\Entities;
 
 use App\NetworkModule\Enums\InterfaceStates;
 use App\NetworkModule\Enums\InterfaceTypes;
+use JsonSerializable;
 
 /**
  * Network interface entity
  */
-final class InterfaceStatus {
+final class InterfaceStatus implements JsonSerializable {
 
 	/**
 	 * @var string Network interface name
@@ -104,6 +105,19 @@ final class InterfaceStatus {
 	 */
 	public function getConnectionName(): string {
 		return $this->connectionName;
+	}
+
+	/**
+	 * Returns JSON serialized data
+	 * @return array<string,mixed> JSON serialized data
+	 */
+	public function jsonSerialize(): array {
+		return [
+			'name' => $this->name,
+			'type' => $this->type->toScalar(),
+			'state' => $this->state->toScalar(),
+			'connectionName' => $this->connectionName,
+		];
 	}
 
 }
