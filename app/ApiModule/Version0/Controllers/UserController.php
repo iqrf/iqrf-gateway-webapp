@@ -119,6 +119,7 @@ class UserController extends BaseController {
 		}
 		$now  = new DateTimeImmutable();
 		$token = $this->configuration->createBuilder()
+			->issuedBy(gethostname())
 			->identifiedBy(gethostname())
 			->issuedAt($now)
 			->expiresAt($now->modify('+1 hour'))

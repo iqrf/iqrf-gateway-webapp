@@ -63,10 +63,12 @@ class JwtAuthenticator implements IAuthenticator {
 		/** @var Plain $token */
 		$token = $this->configurator->create()->getParser()->parse($jwt);
 		$now = new DateTimeImmutable();
+		$hostname = gethostname();
 		if ($token->isExpired($now) ||
 			!$token->claims()->has('uid') ||
-			$token->hasBeenIssuedBefore($now) ||
-			$token->hasBeenIssuedBy(gethostname())) {
+			!$token->hasBeenIssuedBefore($now) ||
+			!$token->hasBeenIssuedBy($hostname) ||
+			!$token->isIdentifiedBy($hostname)) {
 			return null;
 		}
 		try {
