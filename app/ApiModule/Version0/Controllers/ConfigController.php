@@ -204,7 +204,7 @@ class ConfigController extends BaseController {
 	 * @Path("/{component}")
 	 * @Method("GET")
 	 * @OpenApi("
-	 *   summary: Lists instances of the component
+	 *   summary: Returns the component configuration and instances of the component
 	 * ")
 	 * @RequestParameters({
 	 *      @RequestParameter(name="component", type="string", description="Component name")
@@ -217,13 +217,19 @@ class ConfigController extends BaseController {
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
-	public function listInstances(ApiRequest $request, ApiResponse $response): ApiResponse {
+	public function getComponent(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$component = urldecode($request->getParameter('component'));
 		try {
-			$this->manager->setComponent(urldecode($request->getParameter('component')));
+			$this->manager->setComponent($component);
 		} catch (NonExistingJsonSchemaException $e) {
 			return $response->withStatus(404);
 		}
-		return $response->writeJsonBody($this->manager->list());
+		$id = $this->componentManager->getId($component);
+		$body = [
+			'configuration' => $this->componentManager->load($id),
+			'instances' => $this->manager->list(),
+		];
+		return $response->writeJsonBody($body);
 	}
 
 	/**
