@@ -146,6 +146,62 @@ class ConfigController extends BaseController {
 
 	/**
 	 * @Path("/{component}")
+	 * @Method("DELETE")
+	 * @OpenApi("
+	 *   summary: Deletes the component
+	 * ")
+	 * @RequestParameters({
+	 *      @RequestParameter(name="component", type="string", description="Component name")
+	 * })
+	 * @Responses({
+	 *      @Response(code="200", description="Success")
+	 * })
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function deleteComponent(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$id = $this->componentManager->getId(urldecode($request->getParameter('component')));
+		if ($id === null) {
+			return $response;
+		}
+		$this->componentManager->delete($id);
+		return $response;
+	}
+
+	/**
+	 * @Path("/{component}")
+	 * @Method("PUT")
+	 * @OpenApi("
+	 *   summary: Edits the component
+	 *   requestBody:
+	 *     required: true
+	 *     content:
+	 *      application/json:
+	 *          schema:
+	 *              type: string
+	 * ")
+	 * @RequestParameters({
+	 *      @RequestParameter(name="component", type="string", description="Component name")
+	 * })
+	 * @Responses({
+	 *      @Response(code="200", description="Success")
+	 * })
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function editComponent(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$id = $this->componentManager->getId(urldecode($request->getParameter('component')));
+		if ($id === null) {
+			return $response->withStatus(400, 'Unknown component name');
+		}
+		$this->componentManager->save($request->getJsonBody(), $id);
+		return $response;
+	}
+
+	/**
+	 * @Path("/{component}")
 	 * @Method("GET")
 	 * @OpenApi("
 	 *   summary: Lists instances of the component
