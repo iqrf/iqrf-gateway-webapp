@@ -23,6 +23,8 @@ namespace App\ApiModule\Version0\Controllers;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
+use Apitte\Core\Annotation\Controller\RequestParameter;
+use Apitte\Core\Annotation\Controller\RequestParameters;
 use Apitte\Core\Annotation\Controller\Response;
 use Apitte\Core\Annotation\Controller\Responses;
 use Apitte\Core\Annotation\Controller\Tag;
@@ -92,6 +94,48 @@ class NetworkController extends BaseController {
 	public function listInterfaces(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$list = $this->interfaceManager->list();
 		return $response->writeJsonBody($list);
+	}
+
+	/**
+	 * @Path("/interfaces/connect/{name}")
+	 * @Method("POST")
+	 * @OpenApi("
+	 *   summary: Connects network interface
+	 * ")
+	 * @RequestParameters(
+	 *     @RequestParameter(name="name", type="string", description="Network interface name")
+	 * )
+	 * @Responses({
+	 *      @Response(code="200", description="Success")
+	 * })
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function connectInterface(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->interfaceManager->connect($request->getParameter('name'));
+		return $response;
+	}
+
+	/**
+	 * @Path("/interfaces/disconnect/{name}")
+	 * @Method("POST")
+	 * @OpenApi("
+	 *   summary: Disconnects network interface
+	 * ")
+	 * @RequestParameters(
+	 *     @RequestParameter(name="name", type="string", description="Network interface name")
+	 * )
+	 * @Responses({
+	 *      @Response(code="200", description="Success")
+	 * })
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function disconnectInterface(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->interfaceManager->disconnect($request->getParameter('name'));
+		return $response;
 	}
 
 }
