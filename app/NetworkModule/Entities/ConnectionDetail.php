@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\NetworkModule\Entities;
 
 use App\NetworkModule\Enums\ConnectionTypes;
+use JsonSerializable;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Strings;
 use Ramsey\Uuid\Uuid;
@@ -30,7 +31,7 @@ use stdClass;
 /**
  * Detailed network connection entity
  */
-class ConnectionDetail {
+class ConnectionDetail implements JsonSerializable {
 
 	/**
 	 * @var string Network connection ID
@@ -180,6 +181,21 @@ class ConnectionDetail {
 	 */
 	public function toNmCli(): string {
 		return $this->ipv4->toNmCli() . $this->ipv6->toNmCli();
+	}
+
+	/**
+	 * Returns JSON serialized data
+	 * @return array<string,mixed> JSON serialized data
+	 */
+	public function jsonSerialize(): array {
+		return [
+			'id' => $this->id,
+			'uuid' => $this->uuid->toString(),
+			'type' => $this->type->toScalar(),
+			'interface-name' => $this->interfaceName,
+			'ipv4' => $this->ipv4->toForm(),
+			'ipv6' => $this->ipv6->toForm(),
+		];
 	}
 
 }

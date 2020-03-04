@@ -32,6 +32,7 @@ use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\NetworkModule\Models\ConnectionManager;
 use App\NetworkModule\Models\InterfaceManager;
+use Ramsey\Uuid\Uuid;
 
 /**
  * Network manager
@@ -79,6 +80,27 @@ class NetworkController extends BaseController {
 	}
 
 	/**
+	 * @Path("/connections/{uuid}")
+	 * @Method("GET")
+	 * @OpenApi("
+	 *   summary: Returns network connection by its UUID
+	 * ")
+	 * @RequestParameters({
+	 *      @RequestParameter(name="uuid", type="string", description="Connection UUID")
+	 * })
+	 * @Responses({
+	 *      @Response(code="200", description="Success")
+	 * })
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function getConnection(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$uuid = Uuid::fromString($request->getParameter('uuid'));
+		return $response->writeJsonObject($this->connectionManger->get($uuid));
+	}
+
+	/**
 	 * @Path("/interfaces")
 	 * @Method("GET")
 	 * @OpenApi("
@@ -97,7 +119,7 @@ class NetworkController extends BaseController {
 	}
 
 	/**
-	 * @Path("/interfaces/connect/{name}")
+	 * @Path("/interfaces/{name}/connect")
 	 * @Method("POST")
 	 * @OpenApi("
 	 *   summary: Connects network interface
@@ -118,7 +140,7 @@ class NetworkController extends BaseController {
 	}
 
 	/**
-	 * @Path("/interfaces/disconnect/{name}")
+	 * @Path("/interfaces/{name}/disconnect")
 	 * @Method("POST")
 	 * @OpenApi("
 	 *   summary: Disconnects network interface
