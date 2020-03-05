@@ -86,7 +86,7 @@ class CloudsController extends BaseController {
 	 * @OpenApi("
 	 *   summary: Creates a new MQTT connection into Microsoft Azure IoT Hub
 	 * ")
-	 * @RequestBody(entity="\App\ApiModule\Version0\Entities\AzureEntity")
+	 * @RequestBody(entity="\App\ApiModule\Version0\Entities\Request\AzureEntity")
 	 * @Responses({
 	 *      @Response(code="201", description="Created"),
 	 *      @Response(code="400", description="Bad response"),
@@ -119,7 +119,7 @@ class CloudsController extends BaseController {
 	 * @OpenApi("
 	 *   summary: Creates a new MQTT connection into Hexio IoT Platform
 	 * ")
-	 * @RequestBody(entity="\App\ApiModule\Version0\Entities\HexioEntity")
+	 * @RequestBody(entity="\App\ApiModule\Version0\Entities\Request\HexioEntity")
 	 * @Responses({
 	 *      @Response(code="201", description="Created"),
 	 *      @Response(code="400", description="Bad response"),
@@ -150,7 +150,7 @@ class CloudsController extends BaseController {
 	 * @OpenApi("
 	 *   summary: Creates a new MQTT connection into IBM Cloud
 	 * ")
-	 * @RequestBody(entity="\App\ApiModule\Version0\Entities\IbmCloudEntity")
+	 * @RequestBody(entity="\App\ApiModule\Version0\Entities\Request\IbmCloudEntity")
 	 * @Responses({
 	 *      @Response(code="201", description="Created"),
 	 *      @Response(code="400", description="Bad response"),
@@ -181,7 +181,7 @@ class CloudsController extends BaseController {
 	 * @OpenApi("
 	 *   summary: Creates a new MQTT connection into Inteliments InteliGlue
 	 * ")
-	 * @RequestBody(entity="\App\ApiModule\Version0\Entities\InteliGlueEntity")
+	 * @RequestBody(entity="\App\ApiModule\Version0\Entities\Request\InteliGlueEntity")
 	 * @Responses({
 	 *      @Response(code="201", description="Created"),
 	 *      @Response(code="400", description="Bad response"),

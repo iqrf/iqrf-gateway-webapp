@@ -18,9 +18,10 @@
  */
 declare(strict_types = 1);
 
-namespace App\ApiModule\Version0\Entities;
+namespace App\ApiModule\Version0\Entities\Response;
 
-use Apitte\Core\Mapping\Request\BasicEntity;
+use Apitte\Core\Mapping\Response\BasicEntity;
+use App\ApiModule\Version0\Entities\Request\InterfaceEntity;
 
 /**
  * Gateway info entity

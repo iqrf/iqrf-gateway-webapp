@@ -18,53 +18,33 @@
  */
 declare(strict_types = 1);
 
-namespace App\ApiModule\Version0\Entities;
+namespace App\ApiModule\Version0\Entities\Request;
 
 use Apitte\Core\Mapping\Request\BasicEntity;
 
 /**
- * Memory usage entity
+ * Inteliments InteliGlue connection entity
  */
-class MemoryUsageEntity extends BasicEntity {
+class InteliGlueEntity extends BasicEntity {
 
 	/**
-	 * @var string Total memory size
+	 * @var string MQTT root topic
 	 */
-	public $size;
+	public $rootTopic;
 
 	/**
-	 * @var string Used memory size
+	 * @var int Assigned MQTT broker port
 	 */
-	public $used;
+	public $assignedPort;
 
 	/**
-	 * @var string Free memory size
+	 * @var string MQTT client ID
 	 */
-	public $free;
+	public $clientId;
 
 	/**
-	 * @var string Shared memory size
+	 * @var string MQTT password
 	 */
-	public $shared;
-
-	/**
-	 * @var string Buffers memory size
-	 */
-	public $buffers;
-
-	/**
-	 * @var string Cache memory size
-	 */
-	public $cache;
-
-	/**
-	 * @var string Available memory size
-	 */
-	public $available;
-
-	/**
-	 * @var string Memory usage
-	 */
-	public $usage;
+	public $password;
 
 }

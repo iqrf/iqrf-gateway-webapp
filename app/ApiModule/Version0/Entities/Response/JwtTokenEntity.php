@@ -18,33 +18,18 @@
  */
 declare(strict_types = 1);
 
-namespace App\ApiModule\Version0\Entities;
+namespace App\ApiModule\Version0\Entities\Response;
 
-use Apitte\Core\Mapping\Request\BasicEntity;
+use Apitte\Core\Mapping\Response\BasicEntity;
 
 /**
- * User create entity
+ * JWT token entity
  */
-class UserCreateEntity extends BasicEntity {
+class JwtTokenEntity extends BasicEntity {
 
 	/**
-	 * @var string User name
+	 * @var string JWT token
 	 */
-	public $username;
-
-	/**
-	 * @var string Password
-	 */
-	public $password;
-
-	/**
-	 * @var string User role
-	 */
-	public $role = 'normal';
-
-	/**
-	 * @var string Language
-	 */
-	public $language = 'en';
+	public $token;
 
 }

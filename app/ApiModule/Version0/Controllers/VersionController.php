@@ -45,7 +45,7 @@ class VersionController extends BaseController {
 	 *   summary: Returns IQRF Gateway Webapp version
 	 * ")
 	 * @Responses({
-	 *      @Response(code="200", description="Success")
+	 *      @Response(code="200", description="Success", entity="\App\ApiModule\Version0\Entities\Response\VersionEntity")
 	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response

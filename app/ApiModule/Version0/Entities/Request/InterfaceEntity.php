@@ -18,18 +18,28 @@
  */
 declare(strict_types = 1);
 
-namespace App\ApiModule\Version0\Entities;
+namespace App\ApiModule\Version0\Entities\Request;
 
 use Apitte\Core\Mapping\Request\BasicEntity;
 
 /**
- * Microsoft Azure IoT hub connection entity
+ * Interface entity
  */
-class AzureEntity extends BasicEntity {
+class InterfaceEntity extends BasicEntity {
 
 	/**
-	 * @var string Microsoft Azure IoT Hub connection string
+	 * @var string Interface name
 	 */
-	public $connectionString;
+	public $name;
+
+	/**
+	 * @var string|null Interface MAC address
+	 */
+	public $macAddress;
+
+	/**
+	 * @var string[]|null Interface IP addresses
+	 */
+	public $ipAddresses;
 
 }

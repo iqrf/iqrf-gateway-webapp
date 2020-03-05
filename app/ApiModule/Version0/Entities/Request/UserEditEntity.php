@@ -18,7 +18,7 @@
  */
 declare(strict_types = 1);
 
-namespace App\ApiModule\Version0\Entities;
+namespace App\ApiModule\Version0\Entities\Request;
 
 use Apitte\Core\Mapping\Request\BasicEntity;
 

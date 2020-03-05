@@ -18,33 +18,28 @@
  */
 declare(strict_types = 1);
 
-namespace App\ApiModule\Version0\Entities;
+namespace App\ApiModule\Version0\Entities\Response;
 
-use Apitte\Core\Mapping\Request\BasicEntity;
+use Apitte\Core\Mapping\Response\BasicEntity;
 
 /**
- * Swap usage entity
+ * Gateway versions entity
  */
-class SwapUsageEntity extends BasicEntity {
+class GatewayVersionsEntity extends BasicEntity{
 
 	/**
-	 * @var string Total swap size
+	 * @var string|null IQRF Gateway Controller version
 	 */
-	public $size;
+	public $controller;
 
 	/**
-	 * @var string Used swap size
+	 * @var string|null IQRF Gateway Daemon version
 	 */
-	public $used;
+	public $daemon;
 
 	/**
-	 * @var string Free swap size
+	 * @var string IQRF Gateway Webapp version
 	 */
-	public $free;
-
-	/**
-	 * @var string Swap usage
-	 */
-	public $usage;
+	public $webapp;
 
 }

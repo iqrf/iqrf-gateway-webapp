@@ -23,8 +23,7 @@ namespace App\ApiModule\Version0\Controllers;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
-use Apitte\Core\Annotation\Controller\RequestParameter;
-use Apitte\Core\Annotation\Controller\RequestParameters;
+use Apitte\Core\Annotation\Controller\RequestBody;
 use Apitte\Core\Annotation\Controller\Response;
 use Apitte\Core\Annotation\Controller\Responses;
 use Apitte\Core\Annotation\Controller\Tag;
@@ -84,7 +83,7 @@ class UserController extends BaseController {
 		$identity = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
 		$data = $identity->getData();
 		return $response->writeJsonBody([
-				'id' => $this->user->getId(),
+				'id' => $identity->getId(),
 				'username' => $data['username'],
 				'language' => $data['language'],
 				'roles' => $this->user->getRoles(),
@@ -99,21 +98,19 @@ class UserController extends BaseController {
 	 *   security:
 	 *     - []
 	 * ")
+	 * @RequestBody(entity="\App\ApiModule\Version0\Entities\Request\UserSignInEntity")
 	 * @Responses({
-	 *      @Response(code="200", description="Success"),
+	 *      @Response(code="200", description="Success", entity="\App\ApiModule\Version0\Entities\Response\JwtTokenEntity"),
 	 *      @Response(code="400", description="Bad request")
-	 * })
-	 * @RequestParameters({
-	 *      @RequestParameter(name="username", type="string", in="query", description="Username"),
-	 *      @RequestParameter(name="password", type="string", in="query", description="Password")
 	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
 	public function signIn(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$credentials = $request->getJsonBody();
 		try {
-			$this->user->login($request->getParameter('username'), $request->getParameter('password'));
+			$this->user->login($credentials['username'], $credentials['password']);
 		} catch (AuthenticationException $e) {
 			return $response->withStatus(400);
 		}
@@ -122,28 +119,10 @@ class UserController extends BaseController {
 			->issuedBy(gethostname())
 			->identifiedBy(gethostname())
 			->issuedAt($now)
-			->expiresAt($now->modify('+1 hour'))
+			->expiresAt($now->modify('+1 day'))
 			->withClaim('uid', $this->user->getId())
 			->getToken($this->configuration->getSigner(), $this->configuration->getSigningKey());
 		return $response->writeJsonBody(['token' => (string) $token]);
-	}
-
-	/**
-	 * @Path("/signOut")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *   summary: Signs out the user
-	 * ")
-	 * @Responses({
-	 *      @Response(code="200", description="Success")
-	 * })
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
-	public function signOut(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->user->logout();
-		return $response;
 	}
 
 }

@@ -57,7 +57,7 @@ class PixlaController extends BaseController {
 	 *   summary: Returns status of PIXLA client service and PIXLA token
 	 * ")
 	 * @Responses({
-	 *      @Response(code="200", description="Success")
+	 *      @Response(code="200", description="Success", entity="\App\ApiModule\Version0\Entities\Response\PixlaStatusEntity")
 	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response

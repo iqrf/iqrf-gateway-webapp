@@ -78,7 +78,7 @@ class UsersController extends BaseController {
 	 * @OpenApi("
 	 *   summary: Creates a new user
 	 * ")
-	 * @RequestBody(entity="\App\ApiModule\Version0\Entities\UserCreateEntity")
+	 * @RequestBody(entity="\App\ApiModule\Version0\Entities\Request\UserCreateEntity")
 	 * @Responses({
 	 *      @Response(code="201", description="Created"),
 	 *      @Response(code="400", description="Bad Request")
@@ -149,7 +149,7 @@ class UsersController extends BaseController {
 	 * @OpenApi("
 	 *   summary: Edits user
 	 * ")
-	 * @RequestBody(entity="\App\ApiModule\Version0\Entities\UserEditEntity")
+	 * @RequestBody(entity="\App\ApiModule\Version0\Entities\Request\UserEditEntity")
 	 * @RequestParameters({
 	 *      @RequestParameter(name="id", type="integer", description="User ID")
 	 * })

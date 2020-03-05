@@ -18,33 +18,43 @@
  */
 declare(strict_types = 1);
 
-namespace App\ApiModule\Version0\Entities;
+namespace App\ApiModule\Version0\Entities\Request;
 
 use Apitte\Core\Mapping\Request\BasicEntity;
 
 /**
- * IBM Cloud connection entity
+ * Hexio IoT Platform connection entity
  */
-class IbmCloudEntity extends BasicEntity {
+class HexioEntity extends BasicEntity {
 
 	/**
-	 * @var string Organization ID
+	 * @var string MQTT broker address
 	 */
-	public $organizationId;
+	public $broker;
 
 	/**
-	 * @var string Device type
+	 * @var string MQTT client ID
 	 */
-	public $deviceType;
+	public $clientId;
 
 	/**
-	 * @var string Authentication token
+	 * @var string MQTT topic for JSON API requests
 	 */
-	public $token;
+	public $topicRequests;
 
 	/**
-	 * @var string Command and event ID
+	 * @var string MQTT topic for JSON API responses
 	 */
-	public $eventId;
+	public $topicResponses;
+
+	/**
+	 * @var string MQTT username
+	 */
+	public $username;
+
+	/**
+	 * @var string MQTT password
+	 */
+	public $password;
 
 }

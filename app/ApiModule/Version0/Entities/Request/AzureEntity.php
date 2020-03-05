@@ -18,33 +18,18 @@
  */
 declare(strict_types = 1);
 
-namespace App\ApiModule\Version0\Entities;
+namespace App\ApiModule\Version0\Entities\Request;
 
 use Apitte\Core\Mapping\Request\BasicEntity;
 
 /**
- * Inteliments InteliGlue connection entity
+ * Microsoft Azure IoT hub connection entity
  */
-class InteliGlueEntity extends BasicEntity {
+class AzureEntity extends BasicEntity {
 
 	/**
-	 * @var string MQTT root topic
+	 * @var string Microsoft Azure IoT Hub connection string
 	 */
-	public $rootTopic;
-
-	/**
-	 * @var int Assigned MQTT broker port
-	 */
-	public $assignedPort;
-
-	/**
-	 * @var string MQTT client ID
-	 */
-	public $clientId;
-
-	/**
-	 * @var string MQTT password
-	 */
-	public $password;
+	public $connectionString;
 
 }

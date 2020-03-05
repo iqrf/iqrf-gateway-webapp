@@ -18,28 +18,23 @@
  */
 declare(strict_types = 1);
 
-namespace App\ApiModule\Version0\Entities;
+namespace App\ApiModule\Version0\Entities\Request;
 
 use Apitte\Core\Mapping\Request\BasicEntity;
 
 /**
- * Interface entity
+ * User sign in entity
  */
-class InterfaceEntity extends BasicEntity {
+class UserSignInEntity extends BasicEntity {
 
 	/**
-	 * @var string Interface name
+	 * @var string Username
 	 */
-	public $name;
+	public $username;
 
 	/**
-	 * @var string|null Interface MAC address
+	 * @var string Password
 	 */
-	public $macAddress;
-
-	/**
-	 * @var string[]|null Interface IP addresses
-	 */
-	public $ipAddresses;
+	public $password;
 
 }
