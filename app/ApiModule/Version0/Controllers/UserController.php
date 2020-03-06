@@ -71,7 +71,7 @@ class UserController extends BaseController {
 	 *   summary: Returns information about logged in user
 	 * ")
 	 * @Responses({
-	 *      @Response(code="200", description="Success"),
+	 *      @Response(code="200", description="Success", entity="\App\ApiModule\Version0\Entities\Response\UserDetailEntity"),
 	 *      @Response(code="401", description="Unauthorized")
 	 * })
 	 * @param ApiRequest $request API request
@@ -86,7 +86,7 @@ class UserController extends BaseController {
 				'id' => $identity->getId(),
 				'username' => $data['username'],
 				'language' => $data['language'],
-				'roles' => $this->user->getRoles(),
+				'role' => $identity->getRoles()[0],
 			]);
 	}
 

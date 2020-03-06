@@ -24,10 +24,15 @@ api:
 						email: roman.ondracek@iqrf.com
 				servers:
 					-
-						url: '{server}'
+						url: '{protocol}://{server}/'
 						variables:
+							protocol:
+								enum:
+									- http
+									- https
+								default: http
 							server:
-								default: http://localhost:8080
+								default: localhost:8080
 				components:
 					securitySchemes:
 						bearerAuth:

@@ -60,7 +60,7 @@ class DiagnosticsController extends BaseController {
 	 *       content:
 	 *         application/zip:
 	 *           schema:
-	 *             type: file
+	 *             type: string
 	 *             format: binary
 	 * ")
 	 * @param ApiRequest $request API request

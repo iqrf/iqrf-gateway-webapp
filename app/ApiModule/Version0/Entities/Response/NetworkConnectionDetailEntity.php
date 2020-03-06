@@ -18,28 +18,43 @@
  */
 declare(strict_types = 1);
 
-namespace App\ApiModule\Version0\Entities\Request;
+namespace App\ApiModule\Version0\Entities\Response;
 
-use Apitte\Core\Mapping\Request\BasicEntity;
+use Apitte\Core\Mapping\Response\BasicEntity;
 
 /**
- * Interface entity
+ * Network connection detail entity
  */
-class InterfaceEntity extends BasicEntity {
+class NetworkConnectionDetailEntity extends BasicEntity {
 
 	/**
-	 * @var string Interface name
+	 * @var string Network connection ID
 	 */
-	public $name;
+	public $id;
 
 	/**
-	 * @var string|null Interface MAC address
+	 * @var string Network connection UUID
 	 */
-	public $macAddress;
+	public $uuid;
 
 	/**
-	 * @var string[]|null Interface IP addresses
+	 * @var string Network connection type
 	 */
-	public $ipAddresses;
+	public $type;
+
+	/**
+	 * @var string Network interface name
+	 */
+	public $interfaceName;
+
+	/**
+	 * @var IPv4ConnectionEntity IPv4 network connection entity
+	 */
+	public $ipv4;
+
+	/**
+	 * @var IPv6ConnectionEntity IPv6 network connection entity
+	 */
+	public $ipv6;
 
 }

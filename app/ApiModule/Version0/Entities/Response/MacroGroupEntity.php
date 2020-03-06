@@ -23,23 +23,28 @@ namespace App\ApiModule\Version0\Entities\Response;
 use Apitte\Core\Mapping\Response\BasicEntity;
 
 /**
- * Gateway versions entity
+ * IQRF IDE Macro group entity
  */
-class GatewayVersionsEntity extends BasicEntity {
+class MacroGroupEntity extends BasicEntity {
 
 	/**
-	 * @var string|null IQRF Gateway Controller version
+	 * @var string Group name
 	 */
-	public $controller;
+	public $name;
 
 	/**
-	 * @var string|null IQRF Gateway Daemon version
+	 * @var int Group ID
 	 */
-	public $daemon;
+	public $id;
 
 	/**
-	 * @var string IQRF Gateway Webapp version
+	 * @var bool Is group enabled?
 	 */
-	public $webapp;
+	public $enabled;
+
+	/**
+	 * @var MacroEntity[] Array of macros
+	 */
+	public $macros;
 
 }

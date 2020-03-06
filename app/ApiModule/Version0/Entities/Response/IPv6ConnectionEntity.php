@@ -23,23 +23,23 @@ namespace App\ApiModule\Version0\Entities\Response;
 use Apitte\Core\Mapping\Response\BasicEntity;
 
 /**
- * Gateway versions entity
+ * IPv6 connection entity
  */
-class GatewayVersionsEntity extends BasicEntity {
+class IPv6ConnectionEntity extends BasicEntity {
 
 	/**
-	 * @var string|null IQRF Gateway Controller version
+	 * @var string Connection method
 	 */
-	public $controller;
+	public $method;
 
 	/**
-	 * @var string|null IQRF Gateway Daemon version
+	 * @var string[] IPv6 addresses
 	 */
-	public $daemon;
+	public $addresses;
 
 	/**
-	 * @var string IQRF Gateway Webapp version
+	 * @var string[] IPv6 addresses of DNS servers
 	 */
-	public $webapp;
+	public $dns;
 
 }

@@ -68,7 +68,7 @@ class NetworkController extends BaseController {
 	 *   summary: Returns network connections
 	 * ")
 	 * @Responses({
-	 *      @Response(code="200", description="Success")
+	 *      @Response(code="200", description="Success", entity="\App\ApiModule\Version0\Entities\Response\NetworkConnectionEntity[]")
 	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -89,7 +89,7 @@ class NetworkController extends BaseController {
 	 *      @RequestParameter(name="uuid", type="string", description="Connection UUID")
 	 * })
 	 * @Responses({
-	 *      @Response(code="200", description="Success")
+	 *      @Response(code="200", description="Success", entity="\App\ApiModule\Version0\Entities\Response\NetworkConnectionDetailEntity")
 	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -107,7 +107,7 @@ class NetworkController extends BaseController {
 	 *   summary: Returns network interfaces
 	 * ")
 	 * @Responses({
-	 *      @Response(code="200", description="Success")
+	 *      @Response(code="200", description="Success", entity="\App\ApiModule\Version0\Entities\Response\NetworkInterfaceEntity[]")
 	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response

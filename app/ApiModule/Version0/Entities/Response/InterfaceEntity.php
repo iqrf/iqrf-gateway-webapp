@@ -20,26 +20,26 @@ declare(strict_types = 1);
 
 namespace App\ApiModule\Version0\Entities\Response;
 
-use Apitte\Core\Mapping\Response\BasicEntity;
+use Apitte\Core\Mapping\Request\BasicEntity;
 
 /**
- * Gateway versions entity
+ * Interface entity
  */
-class GatewayVersionsEntity extends BasicEntity {
+class InterfaceEntity extends BasicEntity {
 
 	/**
-	 * @var string|null IQRF Gateway Controller version
+	 * @var string Interface name
 	 */
-	public $controller;
+	public $name;
 
 	/**
-	 * @var string|null IQRF Gateway Daemon version
+	 * @var string|null Interface MAC address
 	 */
-	public $daemon;
+	public $macAddress;
 
 	/**
-	 * @var string IQRF Gateway Webapp version
+	 * @var string[]|null Interface IP addresses
 	 */
-	public $webapp;
+	public $ipAddresses;
 
 }

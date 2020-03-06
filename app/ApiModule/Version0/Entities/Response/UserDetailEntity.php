@@ -23,23 +23,28 @@ namespace App\ApiModule\Version0\Entities\Response;
 use Apitte\Core\Mapping\Response\BasicEntity;
 
 /**
- * Gateway versions entity
+ * User detail entity
  */
-class GatewayVersionsEntity extends BasicEntity {
+class UserDetailEntity extends BasicEntity {
 
 	/**
-	 * @var string|null IQRF Gateway Controller version
+	 * @var int User ID
 	 */
-	public $controller;
+	public $id;
 
 	/**
-	 * @var string|null IQRF Gateway Daemon version
+	 * @var string User name
 	 */
-	public $daemon;
+	public $username;
 
 	/**
-	 * @var string IQRF Gateway Webapp version
+	 * @var string User role
 	 */
-	public $webapp;
+	public $role;
+
+	/**
+	 * @var string User language
+	 */
+	public $language;
 
 }

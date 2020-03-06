@@ -57,7 +57,7 @@ class IqrfController extends BaseController {
 	 *   summary: Returns IQRF IDE macros
 	 * ")
 	 * @Responses({
-	 *      @Response(code="200", description="Success")
+	 *      @Response(code="200", description="Success", entity="\App\ApiModule\Version0\Entities\Response\MacroGroupEntity[]")
 	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response

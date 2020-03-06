@@ -61,7 +61,7 @@ class UsersController extends BaseController {
 	 *   summary: Lists all users
 	 * ")
 	 * @Responses({
-	 *      @Response(code="200", description="Success")
+	 *      @Response(code="200", description="Success", entity="\App\ApiModule\Version0\Entities\Response\UserDetailEntity[]")
 	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -107,7 +107,7 @@ class UsersController extends BaseController {
 	 *      @RequestParameter(name="id", type="integer", description="User ID")
 	 * })
 	 * @Responses({
-	 *      @Response(code="200", description="Success"),
+	 *      @Response(code="200", description="Success", entity="\App\ApiModule\Version0\Entities\Response\UserDetailEntity"),
 	 *      @Response(code="404", description="Not found")
 	 * })
 	 * @param ApiRequest $request API request
@@ -119,6 +119,7 @@ class UsersController extends BaseController {
 		if ($user === null) {
 			return $response->withStatus(404);
 		}
+		unset($user['password']);
 		return $response->writeJsonBody($user);
 	}
 
