@@ -96,7 +96,7 @@ class UserEditFormFactory {
 		}
 		$form->setDefaults($this->userManager->getInfo($this->id));
 		$form->addProtection('core.errors.form-timeout');
-		$form->addSubmit('edit', 'edit');
+		$form->addSubmit('save', 'save');
 		$form->onSuccess[] = [$this, 'save'];
 		return $form;
 	}
