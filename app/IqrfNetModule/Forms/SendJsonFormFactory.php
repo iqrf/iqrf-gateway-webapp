@@ -147,9 +147,9 @@ class SendJsonFormFactory {
 			$rsp->set(Json::encode($response['response']));
 			$rsp->checkStatus();
 			$this->presenter->flashSuccess('iqrfnet.send-json.messages.success');
-		} catch (EmptyResponseException $e) {
+		} catch (DpaErrorException | EmptyResponseException $e) {
 			$this->presenter->flashError('iqrfnet.webSocketClient.messages.emptyResponse');
-		} catch (DpaErrorException | JsonException $e) {
+		} catch (JsonException $e) {
 			$this->presenter->flashError('iqrfnet.send-json.messages.failure');
 		}
 	}

@@ -336,4 +336,4 @@ trUpload:
 
 webSocketClient:
 	messages:
-		emptyResponse: No response from IQRF Gateway Daemon.
+		emptyResponse: No response from IQRF network.
