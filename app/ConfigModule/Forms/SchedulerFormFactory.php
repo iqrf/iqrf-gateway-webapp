@@ -82,6 +82,7 @@ class SchedulerFormFactory {
 	 * @param FormFactory $factory Generic form factory
 	 * @param SchedulerManager $manager Scheduler manager
 	 * @param ServiceManager $serviceManager Service manager
+	 * @param ApiSchemaManager $schemaManager JSON API schema manager
 	 */
 	public function __construct(FormFactory $factory, SchedulerManager $manager, ServiceManager $serviceManager, ApiSchemaManager $schemaManager) {
 		$this->manager = $manager;
@@ -220,11 +221,11 @@ class SchedulerFormFactory {
 			try {
 				$json = Json::decode($value);
 				$this->schemaManager->setSchemaForRequest($json->mType ?? 'unknown');
-				$this->schemaManager->validate($json, true);
+				$this->schemaManager->validate($json);
 			} catch (JsonException $e) {
 				$message->addError(self::PREFIX . 'messages.messageInvalidJson');
 			} catch (NonExistingJsonSchemaException $e) {
-				$message->addError(self::PREFIX . 'messages.messageInvalidType');
+				$message->addError(new NotTranslate($e->getMessage()));
 			} catch (InvalidJsonException $e) {
 				$message->addError(new NotTranslate($e->getMessage()));
 			}

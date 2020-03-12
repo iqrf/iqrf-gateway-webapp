@@ -63,6 +63,7 @@ class SchedulerMigrationManager {
 	 * Constructor
 	 * @param MainManager $mainManager Main configuration manager
 	 * @param ServiceManager $serviceManager Service manager
+	 * @param SchedulerSchemaManager $schemaManager Scheduler JSON schema manager
 	 */
 	public function __construct(MainManager $mainManager, ServiceManager $serviceManager, SchedulerSchemaManager $schemaManager) {
 		$this->configDirectory = $mainManager->getCacheDir() . '/scheduler/';

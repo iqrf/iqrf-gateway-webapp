@@ -105,10 +105,13 @@ class SchedulerImportFormFactory {
 		 * @var FileUpload $file JSON file
 		 */
 		$file = $form->getValues()->file;
-		if ($file->getContentType() === 'application/json') {
+		if ($file->getContentType() === 'text/plain' ||
+			$file->getContentType() === 'application/json') {
 			$this->importJson($form, $file);
 		} elseif ($file->getContentType() === 'application/zip') {
 			$this->importZip($form, $file);
+		} else {
+			$this->presenter->flashError(self::TRANSLATOR_PREFIX . '.messages.invalidFile');
 		}
 	}
 
@@ -129,12 +132,14 @@ class SchedulerImportFormFactory {
 			$this->manager->save($json);
 			$this->presenter->flashSuccess(self::TRANSLATOR_PREFIX . '.messages.success');
 			$this->presenter->redirect('Scheduler:default');
-		} catch (NonExistingJsonSchemaException $e) {
-			$this->presenter->flashError('config.messages.writeFailures.nonExistingJsonSchema');
 		} catch (IOException $e) {
 			$this->presenter->flashError('config.messages.writeFailures.ioError');
 		} catch (JsonException $e) {
 			$this->presenter->flashError('config.messages.writeFailures.invalidJson');
+		} catch (NonExistingJsonSchemaException $e) {
+			$this->presenter->flashError($e->getMessage());
+		} catch (InvalidJsonException $e) {
+			$this->presenter->flashError($e->getMessage());
 		}
 	}
 

@@ -54,6 +54,11 @@ class SchedulerManager {
 	private $fileName;
 
 	/**
+	 * @var SchedulerSchemaManager Scheduler JSON schema manager
+	 */
+	private $schemaManager;
+
+	/**
 	 * @var ServiceManager IQRF Gateway Daemon's service manager
 	 */
 	private $serviceManager;
@@ -70,13 +75,15 @@ class SchedulerManager {
 	 * @param TaskTimeManager $timeManager Scheduler's task time specification manager
 	 * @param ServiceManager $serviceManager IQRF Gateway Daemon's service manager
 	 * @param CommandManager $commandManager Command manager
+	 * @param SchedulerSchemaManager $schemaManager Scheduler JSON schema manager
 	 */
-	public function __construct(MainManager $mainManager, GenericManager $genericManager, TaskTimeManager $timeManager, ServiceManager $serviceManager, CommandManager $commandManager) {
+	public function __construct(MainManager $mainManager, GenericManager $genericManager, TaskTimeManager $timeManager, ServiceManager $serviceManager, CommandManager $commandManager, SchedulerSchemaManager $schemaManager) {
 		$this->genericConfigManager = $genericManager;
 		$this->serviceManager = $serviceManager;
 		$this->timeManager = $timeManager;
 		$path = $mainManager->getCacheDir() . '/scheduler/';
 		$this->fileManager = new JsonFileManager($path, $commandManager);
+		$this->schemaManager = $schemaManager;
 	}
 
 	/**
@@ -246,6 +253,7 @@ class SchedulerManager {
 				unset($task->message->data->timeout);
 			}
 		}
+		$this->schemaManager->validate($config);
 		$this->timeManager->cronToArray($config);
 		$this->fileManager->write($this->fileName, $config);
 	}
