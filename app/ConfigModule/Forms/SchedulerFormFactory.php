@@ -174,7 +174,8 @@ class SchedulerFormFactory {
 		$timeSpec->addText('cronTime', self::PREFIX . 'timeSpec.cronTime');
 		$timeSpec->addCheckbox('exactTime', self::PREFIX . 'timeSpec.exactTime');
 		$timeSpec->addCheckbox('periodic', self::PREFIX . 'timeSpec.periodic');
-		$timeSpec->addInteger('period', self::PREFIX . 'timeSpec.period');
+		$timeSpec->addInteger('period', self::PREFIX . 'timeSpec.period')
+			->setDefaultValue(0);
 		$timeSpec->addText('startTime', self::PREFIX . 'timeSpec.startTime')
 			->setHtmlType('datetime-local');
 		$timeSpec['period']

@@ -253,8 +253,8 @@ class SchedulerManager {
 				unset($task->message->data->timeout);
 			}
 		}
-		$this->schemaManager->validate($config);
 		$this->timeManager->cronToArray($config);
+		$this->schemaManager->validate($config);
 		$this->fileManager->write($this->fileName, $config);
 	}
 
