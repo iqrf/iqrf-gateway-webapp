@@ -112,14 +112,14 @@ class SchedulerFormFactory {
 			->setRequired(self::PREFIX . 'messages.clientId')
 			->checkDefaultValue(false);
 		$this->addTimeSpec($form);
-		$form->addGroup(self::PREFIX . 'tasks.title');
+		$form->addGroup(self::PREFIX . 'message.title');
 		/**
 		 * @var Multiplier $tasks
 		 */
 		$tasks = $form->addMultiplier('task', [$this, 'createTasksMultiplier'], 1);
-		$tasks->addCreateButton(self::PREFIX . 'tasks.add')
+		$tasks->addCreateButton(self::PREFIX . 'message.add')
 			->addClass('btn btn-success');
-		$tasks->addRemoveButton(self::PREFIX . 'tasks.remove')
+		$tasks->addRemoveButton(self::PREFIX . 'message.remove')
 			->addClass('btn btn-danger');
 		$form->addGroup();
 		$form->addSubmit('save', self::PREFIX . 'save')
@@ -147,7 +147,7 @@ class SchedulerFormFactory {
 			->setPrompt(self::PREFIX . 'messages.messaging-prompt')
 			->setRequired(self::PREFIX . 'messages.messaging')
 			->checkDefaultValue(false);
-		$container->addTextArea('message', self::PREFIX . 'message')
+		$container->addTextArea('message', self::PREFIX . 'message.label')
 			->setRequired(self::PREFIX . 'messages.message');
 	}
 
