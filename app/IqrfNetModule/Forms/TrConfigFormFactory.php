@@ -27,7 +27,6 @@ use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\IqrfNetModule\Models\TrConfigManager;
 use App\IqrfNetModule\Presenters\TrConfigPresenter;
 use Nette\Application\UI\Form;
-use Nette\Forms\Controls\Checkbox;
 use Nette\Forms\Controls\TextInput;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;
