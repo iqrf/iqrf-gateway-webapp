@@ -27,6 +27,7 @@ use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\IqrfNetModule\Models\TrConfigManager;
 use App\IqrfNetModule\Presenters\TrConfigPresenter;
 use Nette\Application\UI\Form;
+use Nette\Forms\Controls\Checkbox;
 use Nette\Forms\Controls\TextInput;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;
@@ -190,9 +191,21 @@ class TrConfigFormFactory {
 				}
 			}
 		}
-		$changeablePeripherals = ['eeprom', 'eeeprom', 'ram', 'ledr', 'ledg', 'spi', 'io', 'thermometer', 'uart', 'frc'];
+		$changeablePeripherals = ['eeprom', 'eeeprom', 'ram', 'ledr', 'ledg', 'spi', 'io', 'thermometer', 'uart'];
 		foreach ($changeablePeripherals as $peripheral) {
 			$embeddedPeripherals->addCheckbox($peripheral, 'embPers.' . $peripheral);
+		}
+		$dpaVersion = $this->presenter->template->dpaVersion ?? '99.99';
+		if (version_compare($dpaVersion, '4.00', '>=')) {
+			if ($this->presenter->getUser()->isInRole('power')) {
+				$frc = $embeddedPeripherals->addCheckbox('frc', 'embPers.frc')
+					->setDisabled();
+				if (isset($this->configuration->embPers)) {
+					$frc->setDefaultValue($this->configuration->embPers->frc);
+				}
+			}
+		} else {
+			$embeddedPeripherals->addCheckbox('frc', 'embPers.frc');
 		}
 	}
 

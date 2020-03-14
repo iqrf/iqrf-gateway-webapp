@@ -27,6 +27,7 @@ use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\IqrfNetModule\Forms\ChangeAddressFormFactory;
 use App\IqrfNetModule\Forms\SecurityFormFactory;
 use App\IqrfNetModule\Forms\TrConfigFormFactory;
+use App\IqrfNetModule\Models\EnumerationManager;
 use App\IqrfNetModule\Models\TrConfigManager;
 use Nette\Application\UI\Form;
 use Nette\Utils\JsonException;
@@ -55,15 +56,22 @@ class TrConfigPresenter extends ProtectedPresenter {
 	public $securityFormFactory;
 
 	/**
+	 * @var EnumerationManager IQRF TR enumeration manager
+	 */
+	private $enumerationManager;
+
+	/**
 	 * @var TrConfigManager IQRF TR configuration manager
 	 */
 	protected $manager;
 
 	/**
 	 * Constructor
+	 * @param EnumerationManager $enumerationManager IQRF TR enumeration manager
 	 * @param TrConfigManager $manager IQRF TR configuration manager
 	 */
-	public function __construct(TrConfigManager $manager) {
+	public function __construct(EnumerationManager $enumerationManager, TrConfigManager $manager) {
+		$this->enumerationManager = $enumerationManager;
 		$this->manager = $manager;
 		parent::__construct();
 	}
@@ -97,7 +105,11 @@ class TrConfigPresenter extends ProtectedPresenter {
 	 */
 	public function loadConfiguration(): void {
 		try {
-			$dpa = $this->manager->read((int) $this->getParameter('address'));
+			$address = (int) $this->getParameter('address');
+			$enumeration = $this->enumerationManager->device($address);
+			$dpaVersion = $enumeration['response']->data->rsp->peripheralEnumeration->dpaVer ?? '99.99';
+			$this->template->dpaVersion = ltrim($dpaVersion, '0');
+			$dpa = $this->manager->read($address);
 			if (!array_key_exists('response', $dpa)) {
 				$this->template->configuration = null;
 				$this->flashError('iqrfnet.trConfiguration.read.failure');
