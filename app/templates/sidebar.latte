@@ -217,6 +217,12 @@
 					<span>{_core.supervisor.title}</span>
 				</a>
 			</li>
+			<li n:if='$features["docs"]' n:ifset='$docs'>
+				<a href='{$docs}' target='_blank'>
+					<i class='glyphicon glyphicon-book'></i>
+					<span>{_core.documentation.title}</span>
+				</a>
+			</li>
 		</ul>
 	</section>
 </aside>

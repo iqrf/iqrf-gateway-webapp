@@ -2,6 +2,10 @@ title: IQRF Gateway
 
 dashboard: Dashboard
 
+documentation:
+	title: Documentation
+	description: Opens the documentation in a new tab.
+
 navigation:
 	toogle: Toggle navigation
 

@@ -1,8 +1,12 @@
 --- a/app/config/features.neon
 +++ b/app/config/features.neon
-@@ -1,16 +1,16 @@
+@@ -1,14 +1,14 @@
  parameters:
+-	docs: https://docs.iqrf.org/iqrf-gateway/
++	docs: https://docs.iqrf.org/iqd-gw-01/
  	features:
+ 		# Show documentation
+ 		docs: true
  		# IQRF TR native upload
 -		trUpload: false
 +		trUpload: true
@@ -14,7 +18,7 @@
  		# Network manager
  		networkManager: false
  		# Supervisord dashboard
- 		supervisord: false
+@@ -16,4 +16,4 @@
  		# System updater
  		updater: false
  		# Unattended upgrades
