@@ -10,7 +10,7 @@ actions:
 		message: IQRF Gateway Daemon has been stopped.
 	restart:
 		title: Restart
-		message: IQRF Gateway Daemon has been restarted.
+		message: IQRF Gateway Daemon has been restarted. It takes couple of seconds before the system is ready.
 	status:
 		title: Refresh status
 
