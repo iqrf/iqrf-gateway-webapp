@@ -107,8 +107,9 @@ class UserEditFormFactory {
 	 */
 	public function save(Form $form): void {
 		$values = $form->getValues();
+		$user = $this->presenter->getUser();
 		try {
-			if ($this->presenter->user->id === $this->id &&
+			if ($user->getId() === $this->id &&
 				$values->oldPassword !== '' &&
 				$values->newPassword !== '') {
 				$this->userManager->changePassword($this->id, $values->oldPassword, $values->newPassword);
@@ -116,8 +117,8 @@ class UserEditFormFactory {
 			$role = $values->role ?? null;
 			$language = $values->language ?? null;
 			$this->userManager->edit($this->id, $values->username, $role, $language);
-			if ($this->presenter->user->id === $this->id) {
-				$this->presenter->user->logout();
+			if ($user->getId() === $this->id) {
+				$user->logout();
 			}
 			$message = $form->getTranslator()->translate('messages.successEdit', ['username' => $values->username]);
 			$this->presenter->flashSuccess($message);

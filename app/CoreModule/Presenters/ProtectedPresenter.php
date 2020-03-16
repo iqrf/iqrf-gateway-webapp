@@ -61,8 +61,8 @@ abstract class ProtectedPresenter extends BasePresenter {
 	 * @param mixed $element Element
 	 */
 	public function checkRequirements($element): void {
-		if (!$this->user->isLoggedIn()) {
-			if ($this->user->getLogoutReason() === IUserStorage::INACTIVITY) {
+		if (!$this->getUser()->isLoggedIn()) {
+			if ($this->getUser()->getLogoutReason() === IUserStorage::INACTIVITY) {
 				$this->flashInfo('core.signOut.inactivity');
 			}
 			$this->redirect(':Core:Sign:In', ['backlink' => $this->storeRequest()]);
