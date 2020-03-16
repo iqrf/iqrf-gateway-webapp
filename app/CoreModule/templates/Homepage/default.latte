@@ -50,4 +50,8 @@
 		<header class='list-group-item-heading'>{_core.supervisor.title}</header>
 		<p class='list-group-item-text'>{_core.supervisor.description}</p>
 	</a>
+	<a n:if='$features["docs"]' n:ifset='$docs' href='{$docs}' target='_blank' class='list-group-item'>
+		<header class='list-group-item-heading'>{_core.documentation.title}</header>
+		<p class='list-group-item-text'>{_core.documentation.description}</p>
+	</a>
 </div>

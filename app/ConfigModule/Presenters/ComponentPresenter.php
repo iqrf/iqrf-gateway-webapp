@@ -102,7 +102,7 @@ class ComponentPresenter extends ProtectedPresenter {
 	 * @throws JsonException
 	 */
 	public function actionDelete(int $id): void {
-		if ($this->user->isInRole('power')) {
+		if ($this->getUser()->isInRole('power')) {
 			try {
 				$this->configManager->delete($id);
 				$this->flashSuccess('config.messages.successes.delete');

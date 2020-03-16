@@ -1,5 +1,8 @@
 parameters:
+	docs: https://docs.iqrf.org/iqrf-gateway/
 	features:
+		# Show documentation
+		docs: true
 		# IQRF TR native upload
 		trUpload: false
 		# Node-RED

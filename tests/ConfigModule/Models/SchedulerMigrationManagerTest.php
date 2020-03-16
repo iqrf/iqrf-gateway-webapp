@@ -140,7 +140,8 @@ class SchedulerMigrationManagerTest extends TestCase {
 		$serviceManager->shouldReceive('restart');
 		$schemaManager = Mockery::mock(SchedulerSchemaManager::class);
 		$schemaManager->shouldReceive('validate')->andReturn(true);
-		$this->manager = new SchedulerMigrationManager($mainConfigManager, $serviceManager, $schemaManager);
+		$commandManager = Mockery::mock(CommandManager::class);
+		$this->manager = new SchedulerMigrationManager($mainConfigManager, $serviceManager, $schemaManager, $commandManager);
 	}
 
 	/**

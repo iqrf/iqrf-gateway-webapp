@@ -299,12 +299,12 @@ scheduler:
 			periodic: Periodic
 			period: Period in seconds
 			startTime: Start time
-		tasks:
-			title: Tasks
-			add: Add task
-			remove: Remove task
+		message:
+			title: Messages
+			label: 'Message (JSON request)'
+			add: Add message
+			remove: Remove message
 		messaging: Messaging
-		message: Message
 		mType: Message types
 		msgId: Message ID
 		returnVerbose: Enable verbose response

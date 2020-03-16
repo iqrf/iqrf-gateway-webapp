@@ -53,7 +53,7 @@ class SignPresenter extends BasePresenter {
 	 * Signs user in
 	 */
 	public function actionIn(): void {
-		if ($this->user->isLoggedIn()) {
+		if ($this->getUser()->isLoggedIn()) {
 			$this->redirect('Homepage:');
 		}
 	}
@@ -62,13 +62,11 @@ class SignPresenter extends BasePresenter {
 	 * Signs user out
 	 */
 	public function actionOut(): void {
-		if (!$this->user->isLoggedIn()) {
-			$this->redirect('Sign:in');
-		} else {
+		if ($this->getUser()->isLoggedIn()) {
 			$this->getUser()->logout();
 			$this->flashSuccess('core.signOut.message');
-			$this->redirect('Sign:in');
 		}
+		$this->redirect('Sign:in');
 	}
 
 	/**

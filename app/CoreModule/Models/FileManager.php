@@ -79,7 +79,11 @@ class FileManager {
 	 * @return bool Is file exists?
 	 */
 	public function exists(string $fileName): bool {
-		return file_exists($this->directory . '/' . $fileName);
+		$path = $this->directory . '/' . $fileName;
+		if (!is_readable($this->directory) || !is_readable($path)) {
+			$this->fixPermissions($fileName);
+		}
+		return file_exists($path);
 	}
 
 	/**

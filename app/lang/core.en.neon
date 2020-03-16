@@ -2,6 +2,10 @@ title: IQRF Gateway
 
 dashboard: Dashboard
 
+documentation:
+	title: Documentation
+	description: Opens the documentation in a new tab.
+
 navigation:
 	toogle: Toggle navigation
 
@@ -84,7 +88,7 @@ user:
 		oldPassword: 'Old password (only if you want change password)'
 		newPassword: 'New password (only if you want change password)'
 		add: Add
-		edit: Edit
+		save: Save
 		messages:
 			confirmDelete: Do you really want to delete user %s?
 			username: Please enter the username.

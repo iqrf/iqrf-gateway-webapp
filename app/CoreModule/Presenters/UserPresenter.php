@@ -84,8 +84,8 @@ class UserPresenter extends ProtectedPresenter {
 	public function actionDelete(int $id): void {
 		$user = $this->userManager->getInfo($id);
 		$this->userManager->delete($id);
-		if ($this->user->id === $id) {
-			$this->user->logout(true);
+		if ($this->getUser()->getId() === $id) {
+			$this->getUser()->logout(true);
 		}
 		$message = $this->translator->translate('core.user.form.messages.successDelete', ['username' => $user['username']]);
 		$this->flashSuccess($message);

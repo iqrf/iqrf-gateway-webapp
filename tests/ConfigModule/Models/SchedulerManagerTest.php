@@ -14,6 +14,7 @@ use App\ConfigModule\Models\ComponentSchemaManager;
 use App\ConfigModule\Models\GenericManager;
 use App\ConfigModule\Models\MainManager;
 use App\ConfigModule\Models\SchedulerManager;
+use App\ConfigModule\Models\SchedulerSchemaManager;
 use App\ConfigModule\Models\TaskTimeManager;
 use App\CoreModule\Entities\CommandStack;
 use App\CoreModule\Models\CommandManager;
@@ -155,6 +156,9 @@ class SchedulerManagerTest extends TestCase {
 		Assert::equal($expected, $this->fileManagerTemp->read('1', false));
 	}
 
+	/**
+	 * Constructor
+	 */
 	public function __construct() {
 		$this->array = (object) [
 			'taskId' => 1,
@@ -202,8 +206,10 @@ class SchedulerManagerTest extends TestCase {
 		$mainConfigManagerTemp->shouldReceive('getCacheDir')->andReturn($configTempPath);
 		$this->timeManager = new TaskTimeManager();
 		$this->serviceManager = Mockery::mock(ServiceManager::class);
-		$this->manager = new SchedulerManager($mainConfigManager, $genericConfigManager, $this->timeManager, $this->serviceManager, $commandManager);
-		$this->managerTemp = new SchedulerManager($mainConfigManagerTemp, $genericConfigManager, $this->timeManager, $this->serviceManager, $commandManager);
+		$schedulerSchemaManager = Mockery::mock(SchedulerSchemaManager::class);
+		$schedulerSchemaManager->shouldReceive('validate');
+		$this->manager = new SchedulerManager($mainConfigManager, $genericConfigManager, $this->timeManager, $this->serviceManager, $commandManager, $schedulerSchemaManager);
+		$this->managerTemp = new SchedulerManager($mainConfigManagerTemp, $genericConfigManager, $this->timeManager, $this->serviceManager, $commandManager, $schedulerSchemaManager);
 	}
 
 	/**

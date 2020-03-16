@@ -23,7 +23,6 @@ namespace App\CoreModule\Forms;
 use App\CoreModule\Presenters\SignPresenter;
 use Nette\Application\UI\Form;
 use Nette\Security\AuthenticationException;
-use Nette\Security\User;
 use Nette\SmartObject;
 
 /**
@@ -44,18 +43,11 @@ class SignInFormFactory {
 	private $presenter;
 
 	/**
-	 * @var User User object
-	 */
-	private $user;
-
-	/**
 	 * Constructor
 	 * @param FormFactory $factory Generic form factory
-	 * @param User $user User object
 	 */
-	public function __construct(FormFactory $factory, User $user) {
+	public function __construct(FormFactory $factory) {
 		$this->factory = $factory;
-		$this->user = $user;
 	}
 
 	/**
@@ -83,8 +75,9 @@ class SignInFormFactory {
 	public function signIn(Form $form): void {
 		$values = $form->getValues();
 		try {
-			$this->user->setExpiration($values->remember === true ? '14 days' : '20 minutes');
-			$this->user->login($values->username, $values->password);
+			$user = $this->presenter->getUser();
+			$user->setExpiration($values->remember === true ? '14 days' : '30 minutes');
+			$user->login($values->username, $values->password);
 			$this->presenter->flashSuccess('core.sign.inForm.messages.success');
 			if ($this->presenter->backlink === null) {
 				$this->presenter->redirect('Homepage:default');

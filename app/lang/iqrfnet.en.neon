@@ -175,7 +175,7 @@ trConfig:
 		rfChannel916: RF Channel has to be in range from 0 to 255.
 		rxFilter: RX filter have to be integer from 0 to 63.
 		txPower: TX Power have to be integer from 0 to 7.
-	save: Save
+	save: Write
 
 security:
 	title: Security
@@ -336,4 +336,4 @@ trUpload:
 
 webSocketClient:
 	messages:
-		emptyResponse: No response from IQRF Gateway Daemon.
+		emptyResponse: No response from IQRF network.

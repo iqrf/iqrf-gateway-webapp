@@ -82,6 +82,7 @@ class SchedulerFormFactory {
 	 * @param FormFactory $factory Generic form factory
 	 * @param SchedulerManager $manager Scheduler manager
 	 * @param ServiceManager $serviceManager Service manager
+	 * @param ApiSchemaManager $schemaManager JSON API schema manager
 	 */
 	public function __construct(FormFactory $factory, SchedulerManager $manager, ServiceManager $serviceManager, ApiSchemaManager $schemaManager) {
 		$this->manager = $manager;
@@ -111,14 +112,14 @@ class SchedulerFormFactory {
 			->setRequired(self::PREFIX . 'messages.clientId')
 			->checkDefaultValue(false);
 		$this->addTimeSpec($form);
-		$form->addGroup(self::PREFIX . 'tasks.title');
+		$form->addGroup(self::PREFIX . 'message.title');
 		/**
 		 * @var Multiplier $tasks
 		 */
 		$tasks = $form->addMultiplier('task', [$this, 'createTasksMultiplier'], 1);
-		$tasks->addCreateButton(self::PREFIX . 'tasks.add')
+		$tasks->addCreateButton(self::PREFIX . 'message.add')
 			->addClass('btn btn-success');
-		$tasks->addRemoveButton(self::PREFIX . 'tasks.remove')
+		$tasks->addRemoveButton(self::PREFIX . 'message.remove')
 			->addClass('btn btn-danger');
 		$form->addGroup();
 		$form->addSubmit('save', self::PREFIX . 'save')
@@ -146,7 +147,7 @@ class SchedulerFormFactory {
 			->setPrompt(self::PREFIX . 'messages.messaging-prompt')
 			->setRequired(self::PREFIX . 'messages.messaging')
 			->checkDefaultValue(false);
-		$container->addTextArea('message', self::PREFIX . 'message')
+		$container->addTextArea('message', self::PREFIX . 'message.label')
 			->setRequired(self::PREFIX . 'messages.message');
 	}
 
@@ -173,7 +174,8 @@ class SchedulerFormFactory {
 		$timeSpec->addText('cronTime', self::PREFIX . 'timeSpec.cronTime');
 		$timeSpec->addCheckbox('exactTime', self::PREFIX . 'timeSpec.exactTime');
 		$timeSpec->addCheckbox('periodic', self::PREFIX . 'timeSpec.periodic');
-		$timeSpec->addInteger('period', self::PREFIX . 'timeSpec.period');
+		$timeSpec->addInteger('period', self::PREFIX . 'timeSpec.period')
+			->setDefaultValue(0);
 		$timeSpec->addText('startTime', self::PREFIX . 'timeSpec.startTime')
 			->setHtmlType('datetime-local');
 		$timeSpec['period']
@@ -220,11 +222,11 @@ class SchedulerFormFactory {
 			try {
 				$json = Json::decode($value);
 				$this->schemaManager->setSchemaForRequest($json->mType ?? 'unknown');
-				$this->schemaManager->validate($json, true);
+				$this->schemaManager->validate($json);
 			} catch (JsonException $e) {
 				$message->addError(self::PREFIX . 'messages.messageInvalidJson');
 			} catch (NonExistingJsonSchemaException $e) {
-				$message->addError(self::PREFIX . 'messages.messageInvalidType');
+				$message->addError(new NotTranslate($e->getMessage()));
 			} catch (InvalidJsonException $e) {
 				$message->addError(new NotTranslate($e->getMessage()));
 			}
@@ -254,7 +256,9 @@ class SchedulerFormFactory {
 			}
 			$this->presenter->redirect('Scheduler:default');
 		} catch (NonExistingJsonSchemaException $e) {
-			$this->presenter->flashError('config.messages.writeFailures.nonExistingJsonSchema');
+			$this->presenter->flashError($e->getMessage());
+		} catch (InvalidJsonException $e) {
+			$this->presenter->flashError($e->getMessage());
 		} catch (IOException $e) {
 			$this->presenter->flashError('config.messages.writeFailures.ioError');
 		} catch (JsonException $e) {

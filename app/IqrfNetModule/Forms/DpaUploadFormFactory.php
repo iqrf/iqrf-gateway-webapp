@@ -148,6 +148,7 @@ class DpaUploadFormFactory {
 			$this->uploadManager->uploadFile($file, UploadFormats::IQRF());
 			$this->serviceManager->restart();
 			$this->presenter->flashSuccess('iqrfnet.trUpload.messages.success');
+			$this->presenter->flashInfo('service.actions.restart.message');
 		} catch (CorruptedFileException $e) {
 			$this->presenter->flashError('iqrfnet.trUpload.messages.corruptedFile');
 		} catch (DpaErrorException | EmptyResponseException | JsonException | UserErrorException $e) {

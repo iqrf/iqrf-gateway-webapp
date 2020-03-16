@@ -47,6 +47,7 @@ abstract class BasePresenter extends Presenter {
 		parent::afterRender();
 		$this->template->newVersion = null;
 		$this->template->offlineMode = false;
+		$this->template->docs = $this->context->parameters['docs'];
 		$this->template->features = $this->context->parameters['features'];
 	}
 
@@ -60,7 +61,7 @@ abstract class BasePresenter extends Presenter {
 
 	/**
 	 * Returns the translator
-	 * @return ITranslator Transtalor
+	 * @return ITranslator Translator
 	 */
 	public function getTranslator(): ITranslator {
 		return $this->translator;
