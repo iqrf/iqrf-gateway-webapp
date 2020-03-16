@@ -46,13 +46,29 @@ class ConnectionManager {
 	}
 
 	/**
+	 * Deletes the network connection
+	 * @param UuidInterface $uuid Network connection UUID
+	 * @throws NetworkManagerException
+	 */
+	public function delete(UuidInterface $uuid): void {
+		$output = $this->commandManager->run('nmcli -t connection delete ' . $uuid->toString(), true);
+		if ($output->getExitCode() !== 0) {
+			throw new NetworkManagerException($output->getStderr());
+		}
+	}
+
+	/**
 	 * Returns the detailed network connection entity
 	 * @param UuidInterface $uuid Network connection UUID
 	 * @return ConnectionDetail Detailed network connection entity
+	 * @throws NetworkManagerException
 	 */
 	public function get(UuidInterface $uuid): ConnectionDetail {
-		$output = $this->commandManager->run('nmcli -t connection show ' . $uuid->toString(), true)->getStdout();
-		return ConnectionDetail::fromNmCli($output);
+		$output = $this->commandManager->run('nmcli -t connection show ' . $uuid->toString(), true);
+		if ($output->getExitCode() !== 0) {
+			throw new NetworkManagerException($output->getStderr());
+		}
+		return ConnectionDetail::fromNmCli($output->getStdout());
 	}
 
 	/**
@@ -90,12 +106,11 @@ class ConnectionManager {
 
 	/**
 	 * Activate a connection on the interface
-	 * @param ConnectionDetail $connection Detailed network connection entity
+	 * @param UuidInterface $uuid Network connection UUID
 	 * @throws NetworkManagerException
 	 */
-	public function up(ConnectionDetail $connection): void {
-		$uuid = $connection->getUuid()->toString();
-		$command = sprintf('nmcli -t connection up %s', $uuid);
+	public function up(UuidInterface $uuid): void {
+		$command = sprintf('nmcli -t connection up %s', $uuid->toString());
 		$output = $this->commandManager->run($command, true);
 		if ($output->getExitCode() !== 0) {
 			throw new NetworkManagerException($output->getStderr());

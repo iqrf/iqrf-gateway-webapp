@@ -85,6 +85,18 @@ class ConnectionManagerTest extends CommandTestCase {
 	}
 
 	/**
+	 * Tests the function to delete network connection
+	 */
+	public function testDelete(): void {
+		$uuid = '25ab1b06-2a86-40a9-950f-1c576ddcd35a';
+		$command = 'nmcli -t connection delete ' . $uuid;
+		$this->receiveCommand($command, true, '');
+		Assert::noError(function () use ($uuid): void {
+			$this->manager->delete(Uuid::fromString($uuid));
+		});
+	}
+
+	/**
 	 * Tests the function to get detailed network connection entity
 	 */
 	public function testGet(): void {
@@ -141,7 +153,7 @@ class ConnectionManagerTest extends CommandTestCase {
 		$command = 'nmcli -t connection up 25ab1b06-2a86-40a9-950f-1c576ddcd35a';
 		$this->receiveCommand($command, true);
 		Assert::noError(function () use ($connection): void {
-			$this->manager->up($connection);
+			$this->manager->up($connection->getUuid());
 		});
 	}
 
