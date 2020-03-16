@@ -72,12 +72,12 @@ class ConnectionManager {
 	}
 
 	/**
-	 * Sets the network connection's configuration
+	 * Edits the network connection's configuration
 	 * @param ConnectionDetail $connection Detailed network connection entity
 	 * @param stdClass $values Network connection configuration form values
 	 * @throws NetworkManagerException
 	 */
-	public function set(ConnectionDetail $connection, stdClass $values): void {
+	public function edit(ConnectionDetail $connection, stdClass $values): void {
 		$connection->fromForm($values);
 		$uuid = $connection->getUuid()->toString();
 		$configuration = $connection->toNmCli();

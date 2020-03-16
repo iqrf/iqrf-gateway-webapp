@@ -120,16 +120,16 @@ class ConnectionManagerTest extends CommandTestCase {
 	}
 
 	/**
-	 * Tests the function to set the network connection
+	 * Tests the function to edit the network connection
 	 */
-	public function testSet(): void {
+	public function testEdit(): void {
 		$connection = $this->createDetailedConnection();
 		$json = FileSystem::read(__DIR__ . '/../../../data/networkManager/eth0FromForm.json');
 		$jsonData = Json::decode($json);
 		$command = 'nmcli -t connection modify 25ab1b06-2a86-40a9-950f-1c576ddcd35a ipv4.method "manual" ipv4.addresses "10.0.0.2/16" ipv4.gateway "10.0.0.1" ipv4.dns "10.0.0.1 1.1.1.1" ipv6.method "manual" ipv6.addresses "2001:470:5bb2:2::2/64" ipv6.gateway "fe80::1" ipv6.dns "2001:470:5bb2:2::1" ';
 		$this->receiveCommand($command, true);
 		Assert::noError(function () use ($connection, $jsonData): void {
-			$this->manager->set($connection, $jsonData);
+			$this->manager->edit($connection, $jsonData);
 		});
 	}
 

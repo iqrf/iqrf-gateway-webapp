@@ -23,6 +23,7 @@ namespace App\ApiModule\Version0\Controllers;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
+use Apitte\Core\Annotation\Controller\RequestBody;
 use Apitte\Core\Annotation\Controller\RequestParameter;
 use Apitte\Core\Annotation\Controller\RequestParameters;
 use Apitte\Core\Annotation\Controller\Response;
@@ -32,6 +33,7 @@ use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\NetworkModule\Models\ConnectionManager;
 use App\NetworkModule\Models\InterfaceManager;
+use Ramsey\Uuid\Exception\InvalidUuidStringException;
 use Ramsey\Uuid\Uuid;
 
 /**
@@ -81,6 +83,34 @@ class NetworkController extends BaseController {
 
 	/**
 	 * @Path("/connections/{uuid}")
+	 * @Method("PUT")
+	 * @OpenApi("
+	 *   summary: Edits network connection by its UUID
+	 * ")
+	 * @RequestBody(entity="\App\ApiModule\Version0\Entities\Response\NetworkConnectionDetailEntity", description="Network connection")
+	 * @RequestParameters({
+	 *      @RequestParameter(name="uuid", type="string", description="Connection UUID")
+	 * })
+	 * @Responses({
+	 *      @Response(code="200", description="Success")
+	 * })
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function editConnection(ApiRequest $request, ApiResponse $response): ApiResponse {
+		try {
+			$uuid = Uuid::fromString($request->getParameter('uuid'));
+		} catch (InvalidUuidStringException $e) {
+			return $response->withStatus(400)->writeJsonBody(['error' => 'Invalid UUID']);
+		}
+		$connection = $this->connectionManger->get($uuid);
+		$this->connectionManger->edit($connection, $request->getJsonBody(false));
+		return $response;
+	}
+
+	/**
+	 * @Path("/connections/{uuid}")
 	 * @Method("GET")
 	 * @OpenApi("
 	 *   summary: Returns network connection by its UUID
@@ -89,14 +119,19 @@ class NetworkController extends BaseController {
 	 *      @RequestParameter(name="uuid", type="string", description="Connection UUID")
 	 * })
 	 * @Responses({
-	 *      @Response(code="200", description="Success", entity="\App\ApiModule\Version0\Entities\Response\NetworkConnectionDetailEntity")
+	 *     @Response(code="200", description="Success", entity="\App\ApiModule\Version0\Entities\Response\NetworkConnectionDetailEntity"),
+	 *     @Response(code="400", description="Bad request")
 	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
 	public function getConnection(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$uuid = Uuid::fromString($request->getParameter('uuid'));
+		try {
+			$uuid = Uuid::fromString($request->getParameter('uuid'));
+		} catch (InvalidUuidStringException $e) {
+			return $response->withStatus(400)->writeJsonBody(['error' => 'Invalid UUID']);
+		}
 		return $response->writeJsonObject($this->connectionManger->get($uuid));
 	}
 
