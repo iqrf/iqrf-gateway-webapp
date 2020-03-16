@@ -254,6 +254,9 @@ class SchedulerManager {
 			}
 		}
 		$this->timeManager->cronToArray($config);
+		if (!isset($config->timeSpec->period)) {
+			$config->timeSpec->period = 0;
+		}
 		$this->schemaManager->validate($config);
 		$this->fileManager->write($this->fileName, $config);
 	}

@@ -256,7 +256,9 @@ class SchedulerFormFactory {
 			}
 			$this->presenter->redirect('Scheduler:default');
 		} catch (NonExistingJsonSchemaException $e) {
-			$this->presenter->flashError('config.messages.writeFailures.nonExistingJsonSchema');
+			$this->presenter->flashError($e->getMessage());
+		} catch (InvalidJsonException $e) {
+			$this->presenter->flashError($e->getMessage());
 		} catch (IOException $e) {
 			$this->presenter->flashError('config.messages.writeFailures.ioError');
 		} catch (JsonException $e) {
