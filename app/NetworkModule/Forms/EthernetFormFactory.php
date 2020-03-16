@@ -250,7 +250,7 @@ class EthernetFormFactory {
 		}
 		try {
 			$this->manager->edit($this->connection, $form->getValues());
-			$this->manager->up($this->connection);
+			$this->manager->up($this->connection->getUuid());
 			$this->presenter->flashSuccess('network.ethernet.form.messages.success');
 			$this->presenter->redirect('Ethernet:default');
 		} catch (NetworkManagerException $e) {
