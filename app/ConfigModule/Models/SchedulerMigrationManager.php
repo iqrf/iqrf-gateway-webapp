@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Models;
 
 use App\ConfigModule\Exceptions\InvalidConfigurationFormatException;
+use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use App\ServiceModule\Exceptions\NotSupportedInitSystemException;
 use App\ServiceModule\Models\ServiceManager;
@@ -64,9 +65,14 @@ class SchedulerMigrationManager {
 	 * @param MainManager $mainManager Main configuration manager
 	 * @param ServiceManager $serviceManager Service manager
 	 * @param SchedulerSchemaManager $schemaManager Scheduler JSON schema manager
+	 * @param CommandManager $commandManager Command
 	 */
-	public function __construct(MainManager $mainManager, ServiceManager $serviceManager, SchedulerSchemaManager $schemaManager) {
-		$this->configDirectory = $mainManager->getCacheDir() . '/scheduler/';
+	public function __construct(MainManager $mainManager, ServiceManager $serviceManager, SchedulerSchemaManager $schemaManager, CommandManager $commandManager) {
+		$cacheDir = $mainManager->getCacheDir();
+		if (!is_readable($cacheDir) || !is_writable($cacheDir)) {
+			$commandManager->run('chmod 777 ' . $cacheDir, true);
+		}
+		$this->configDirectory = $cacheDir . '/scheduler/';
 		$this->serviceManager = $serviceManager;
 		$this->schemaManager = $schemaManager;
 	}

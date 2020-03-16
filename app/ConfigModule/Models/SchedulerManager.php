@@ -81,7 +81,11 @@ class SchedulerManager {
 		$this->genericConfigManager = $genericManager;
 		$this->serviceManager = $serviceManager;
 		$this->timeManager = $timeManager;
-		$path = $mainManager->getCacheDir() . '/scheduler/';
+		$cacheDir = $mainManager->getCacheDir();
+		if (!is_readable($cacheDir) || !is_writable($cacheDir)) {
+			$commandManager->run('chmod 777 ' . $cacheDir, true);
+		}
+		$path = $cacheDir . '/scheduler/';
 		$this->fileManager = new JsonFileManager($path, $commandManager);
 		$this->schemaManager = $schemaManager;
 	}
