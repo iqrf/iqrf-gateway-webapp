@@ -11,6 +11,8 @@ parameters:
 		pixla: false
 		# Network manager
 		networkManager: false
+		# SSH daemon manager
+		ssh: false
 		# Supervisord dashboard
 		supervisord: false
 		# System updater

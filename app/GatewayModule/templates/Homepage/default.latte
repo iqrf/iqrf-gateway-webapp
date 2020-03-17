@@ -34,6 +34,10 @@
 		<header class='list-group-item-heading'>{_service.title}</header>
 		<p class='list-group-item-text'>{_service.description}</p>
 	</a>
+	<a n:if='$features["ssh"]' n:href='Ssh:default' class='list-group-item'>
+		<header class='list-group-item-heading'>{_gateway.ssh.title}</header>
+		<p class='list-group-item-text'>{_gateway.ssh.description}</p>
+	</a>
 	<a n:if='$features["unattendedUpgrades"]' n:href='UnattendedUpgrades:default' class='list-group-item'>
 		<header class='list-group-item-heading'>{_gateway.unattendedUpgrades.title}</header>
 		<p class='list-group-item-text'>{_gateway.unattendedUpgrades.description}</p>
