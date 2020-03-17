@@ -77,6 +77,21 @@ power:
 		button: Perform reboot
 		success: Your device has been restarted successfully.
 
+ssh:
+	title: SSH daemon control
+	description: Controls the SSH daemon service.
+	status: Service status
+	statuses:
+		enabled: Enabled
+		disabled: Disabled
+		'': Missing
+	enable: Enable service
+	disable: Disable service
+	messages:
+		disabled: SSH daemon manager is disabled.
+		disable: SSH daemon service has been disabled.
+		enable: SSH daemon service has been enabled.
+
 unattendedUpgrades:
 	title: Automatic upgrades
 	description: Controls the automatic unattended upgrades service.
