@@ -26,6 +26,7 @@ use Lcobucci\JWT\Token\Plain;
 use Nette\Database\Context;
 use Nette\Security\Identity;
 use Nette\Security\IIdentity;
+use Nette\Utils\Strings;
 use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
 
@@ -94,9 +95,9 @@ class JwtAuthenticator implements IAuthenticator {
 		if (strpos($header, 'Bearer') !== 0) {
 			return null;
 		}
-		$str = substr($header, 7);
-		if ($str === false) {
-			$str = null;
+		$str = Strings::substring($header, 7);
+		if ($str === '') {
+			return null;
 		}
 		return $str;
 	}
