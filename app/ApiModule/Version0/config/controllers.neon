@@ -8,6 +8,7 @@ services:
 	- App\ApiModule\Version0\Controllers\NetworkController
 	- App\ApiModule\Version0\Controllers\PixlaController
 	- App\ApiModule\Version0\Controllers\ServiceController
+	- App\ApiModule\Version0\Controllers\SshController
 	- App\ApiModule\Version0\Controllers\UnattendedUpgradesController
 	- App\ApiModule\Version0\Controllers\UserController
 	- App\ApiModule\Version0\Controllers\UsersController
