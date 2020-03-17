@@ -94,7 +94,11 @@ class JwtAuthenticator implements IAuthenticator {
 		if (strpos($header, 'Bearer') !== 0) {
 			return null;
 		}
-		return substr($header, 7);
+		$str = substr($header, 7);
+		if ($str === false) {
+			$str = null;
+		}
+		return $str;
 	}
 
 }
