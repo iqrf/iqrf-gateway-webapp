@@ -31,6 +31,7 @@ use Apitte\Core\Annotation\Controller\Responses;
 use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
+use App\NetworkModule\Exceptions\NetworkManagerException;
 use App\NetworkModule\Models\ConnectionManager;
 use App\NetworkModule\Models\InterfaceManager;
 use Ramsey\Uuid\Exception\InvalidUuidStringException;
@@ -83,6 +84,37 @@ class NetworkController extends BaseController {
 
 	/**
 	 * @Path("/connections/{uuid}")
+	 * @Method("DELETE")
+	 * @OpenApi("
+	 *   summary: Deletes network connection by its UUID
+	 * ")
+	 * @RequestParameters({
+	 *      @RequestParameter(name="uuid", type="string", description="Connection UUID")
+	 * })
+	 * @Responses({
+	 *     @Response(code="200", description="Success"),
+	 *     @Response(code="400", description="Bad request")
+	 * })
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function deleteConnection(ApiRequest $request, ApiResponse $response): ApiResponse {
+		try {
+			$uuid = Uuid::fromString($request->getParameter('uuid'));
+			$this->connectionManger->delete($uuid);
+		} catch (InvalidUuidStringException $e) {
+			return $response->withStatus(400)
+				->writeJsonBody(['error' => 'Invalid UUID']);
+		} catch (NetworkManagerException $e) {
+			return $response->withStatus(400)
+				->writeJsonBody(['error' => $e->getMessage()]);
+		}
+		return $response;
+	}
+
+	/**
+	 * @Path("/connections/{uuid}")
 	 * @Method("PUT")
 	 * @OpenApi("
 	 *   summary: Edits network connection by its UUID
@@ -92,7 +124,8 @@ class NetworkController extends BaseController {
 	 *      @RequestParameter(name="uuid", type="string", description="Connection UUID")
 	 * })
 	 * @Responses({
-	 *      @Response(code="200", description="Success")
+	 *     @Response(code="200", description="Success"),
+	 *     @Response(code="400", description="Bad request")
 	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -101,11 +134,15 @@ class NetworkController extends BaseController {
 	public function editConnection(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
 			$uuid = Uuid::fromString($request->getParameter('uuid'));
+			$connection = $this->connectionManger->get($uuid);
+			$this->connectionManger->edit($connection, $request->getJsonBody(false));
 		} catch (InvalidUuidStringException $e) {
-			return $response->withStatus(400)->writeJsonBody(['error' => 'Invalid UUID']);
+			return $response->withStatus(400)
+				->writeJsonBody(['error' => 'Invalid UUID']);
+		} catch (NetworkManagerException $e) {
+			return $response->withStatus(400)
+				->writeJsonBody(['error' => $e->getMessage()]);
 		}
-		$connection = $this->connectionManger->get($uuid);
-		$this->connectionManger->edit($connection, $request->getJsonBody(false));
 		return $response;
 	}
 
@@ -129,10 +166,14 @@ class NetworkController extends BaseController {
 	public function getConnection(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
 			$uuid = Uuid::fromString($request->getParameter('uuid'));
+			return $response->writeJsonObject($this->connectionManger->get($uuid));
 		} catch (InvalidUuidStringException $e) {
-			return $response->withStatus(400)->writeJsonBody(['error' => 'Invalid UUID']);
+			return $response->withStatus(400)
+				->writeJsonBody(['error' => 'Invalid UUID']);
+		} catch (NetworkManagerException $e) {
+			return $response->withStatus(400)
+				->writeJsonBody(['error' => $e->getMessage()]);
 		}
-		return $response->writeJsonObject($this->connectionManger->get($uuid));
 	}
 
 	/**
