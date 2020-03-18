@@ -118,6 +118,9 @@ class DevicesManager {
 				$devices = [];
 			}
 			foreach ($devices as $node) {
+				if ($node > 239) {
+					break;
+				}
 				$i = intdiv($node, $base);
 				$j = $node % $base;
 				$this->table[$i][$j]->setType($deviceType);
