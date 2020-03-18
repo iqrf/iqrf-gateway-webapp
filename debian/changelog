@@ -1,3 +1,25 @@
+iqrf-gateway-webapp (2.0.0-rc5) testing; urgency=medium
+
+  * Update dependencies
+  * IQRF net: rename error message "No response from IQRF Gateway Daemon." (fix #221)
+  * Core: rename user edit form save button (fix #222)
+  * IQRF net: fix coding style in IQRF Standard Sensor form template
+  * Config: add scheduler's task validation
+  * Config: fix scheduler's task validation
+  * Config: rename labels in the scheduler's task configuration form
+  * IQRF net: disable FRC embedded peripheral configuration for DPA 4.xx, rename TR configuration write button (fix #220)
+  * IQRF net: fix coding style
+  * Core: add link to docs (fix #223)
+  * IQRF net: add information about the daemon restarting  at Coordinator upload page (fix #224)
+  * Core: fix bug at sign in page (fix #226)
+  * Config: fix uncatched exception in scheduler task editor
+  * Config: add cache directory permissions workaround
+  * Network: check exit code when reading network connection, add network connection deletion
+  * Gateway: add SSH daemon service manager (fix #227)
+  * IQRF net: skip devices with invalid address in device map
+
+ -- Roman Ondráček <roman@romanondracek.cz>  Wed, 18 Mar 2020 19:40:00 +0100
+
 iqrf-gateway-webapp (2.0.0-rc4) testing; urgency=medium
 
   * Sentry: update DSN keys
