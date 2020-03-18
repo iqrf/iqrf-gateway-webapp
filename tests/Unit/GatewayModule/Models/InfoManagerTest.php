@@ -13,6 +13,7 @@ namespace Tests\Unit\GatewayModule\Models;
 use App\GatewayModule\Models\InfoManager;
 use App\GatewayModule\Models\NetworkManager;
 use App\GatewayModule\Models\VersionManager;
+use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Models\EnumerationManager;
 use Mockery;
 use Mockery\MockInterface;
@@ -56,6 +57,57 @@ class InfoManagerTest extends CommandTestCase {
 		'dmiBoardVersion' => 'cat /sys/class/dmi/id/board_version',
 		'gw' => 'cat /etc/iqrf-gateway.json',
 		'gitBranches' => 'git branch -v --no-abbrev',
+		'pixlaToken' => 'cat /etc/gwman/customer_id',
+	];
+
+	/**
+	 * @var array<string, mixed> Expected outputs
+	 */
+	private $expected = [
+		'board' => 'MICRORISC s.r.o. IQD-GW-01',
+		'gwId' => '0242fc1e6f85b296',
+		'pixla' => null,
+		'versions' => [
+			'controller' => 'v1.0.0',
+			'daemon' => 'v2.3.0',
+			'webapp' => 'v2.0.0',
+		],
+		'hostname' => 'gateway',
+		'interfaces' => [
+			[
+				'name' => 'eth0',
+				'macAddress' => '01:02:03:04:05:06',
+				'ipAddresses' => ['192.168.1.100', 'fda9:d95:d5b1::64'],
+			],
+		],
+		'diskUsages' => [
+			[
+				'fsName' => '/dev/sda1',
+				'fsType' => 'ext4',
+				'size' => '227 GB',
+				'used' => '191.58 GB',
+				'available' => '23.87 GB',
+				'usage' => '84.4%',
+				'mount' => '/',
+			],
+		],
+		'memoryUsage' => [
+			'size' => '7.66 GB',
+			'used' => '6.25 GB',
+			'free' => '244.56 MB',
+			'shared' => '344.99 MB',
+			'buffers' => '110.46 MB',
+			'cache' => '1.06 GB',
+			'available' => '838.5 MB',
+			'usage' => '81.6%',
+		],
+		'swapUsage' => [
+			'size' => '7.72 GB',
+			'used' => '2.1 GB',
+			'free' => '5.63 GB',
+			'usage' => '27.15%',
+		],
+		'coordinator' => null,
 	];
 
 	/**
@@ -64,7 +116,7 @@ class InfoManagerTest extends CommandTestCase {
 	public function testGetBoardGw(): void {
 		$output = '{"gwProduct":"IQD-GW-01","gwManufacturer":"MICRORISC s.r.o."}';
 		$this->receiveCommand($this->commands['gw'], true, $output);
-		Assert::same('MICRORISC s.r.o. IQD-GW-01', $this->manager->getBoard());
+		Assert::same($this->expected['board'], $this->manager->getBoard());
 	}
 
 	/**
@@ -107,7 +159,7 @@ class InfoManagerTest extends CommandTestCase {
 	public function testGetId(): void {
 		$output = '{"gwId":"0242fc1e6f85b296"}';
 		$this->receiveCommand($this->commands['gw'], true, $output);
-		Assert::same('0242fc1e6f85b296', $this->manager->getId());
+		Assert::same($this->expected['gwId'], $this->manager->getId());
 	}
 
 	/**
@@ -126,18 +178,7 @@ class InfoManagerTest extends CommandTestCase {
 		$command = 'df -l -B1 -x tmpfs -x devtmpfs -T -P | awk \'{if (NR!=1) {$6="";print}}\'';
 		$output = '/dev/sda1 ext4 243735838720 205705183232 25625583616  /';
 		$this->receiveCommand($command, null, $output);
-		$expected = [
-			[
-				'fsName' => '/dev/sda1',
-				'fsType' => 'ext4',
-				'size' => '227 GB',
-				'used' => '191.58 GB',
-				'available' => '23.87 GB',
-				'usage' => '84.4%',
-				'mount' => '/',
-			],
-		];
-		Assert::same($expected, $this->manager->getDiskUsages());
+		Assert::same($this->expected['diskUsages'], $this->manager->getDiskUsages());
 	}
 
 	/**
@@ -147,17 +188,7 @@ class InfoManagerTest extends CommandTestCase {
 		$command = 'free -bw | awk \'{{if (NR==2) print $2,$3,$4,$5,$6,$7,$8}}\'';
 		$output = '8220397568 6708125696 256442368 361750528 115830784 1139998720 879230976';
 		$this->receiveCommand($command, null, $output);
-		$expected = [
-			'size' => '7.66 GB',
-			'used' => '6.25 GB',
-			'free' => '244.56 MB',
-			'shared' => '344.99 MB',
-			'buffers' => '110.46 MB',
-			'cache' => '1.06 GB',
-			'available' => '838.5 MB',
-			'usage' => '81.6%',
-		];
-		Assert::same($expected, $this->manager->getMemoryUsage());
+		Assert::same($this->expected['memoryUsage'], $this->manager->getMemoryUsage());
 	}
 
 
@@ -168,13 +199,7 @@ class InfoManagerTest extends CommandTestCase {
 		$command = 'free -b | awk \'{{if (NR==3) print $2,$3,$4}}\'';
 		$output = '8291086336 2250952704 6040133632';
 		$this->receiveCommand($command, null, $output);
-		$expected = [
-			'size' => '7.72 GB',
-			'used' => '2.1 GB',
-			'free' => '5.63 GB',
-			'usage' => '27.15%',
-		];
-		Assert::same($expected, $this->manager->getSwapUsage());
+		Assert::same($this->expected['swapUsage'], $this->manager->getSwapUsage());
 	}
 
 
@@ -195,6 +220,58 @@ class InfoManagerTest extends CommandTestCase {
 		Assert::same('1000 B', $this->manager->convertSizes(1e3));
 		Assert::same('953.67 MB', $this->manager->convertSizes(1e9));
 		Assert::same('953.6743164063 MB', $this->manager->convertSizes(1e9, 10));
+	}
+
+	/**
+	 * Tests the function to return PIXLA token (failure)
+	 */
+	public function testGetPixlaTokenFailure(): void {
+		$this->receiveCommand($this->commands['pixlaToken'], true, '');
+		Assert::null($this->manager->getPixlaToken());
+	}
+
+	/**
+	 * Tests the function to return PIXLA token (success)
+	 */
+	public function testGetPixlaTokenSuccess(): void {
+		$token = 'secretPixlaToken';
+		$this->receiveCommand($this->commands['pixlaToken'], true, $token);
+		Assert::same($token, $this->manager->getPixlaToken());
+	}
+
+	/**
+	 * Tests the function to return information about the gateway
+	 */
+	public function testGet(): void {
+		$verbose = false;
+		$manager = Mockery::mock(InfoManager::class, [$this->commandManager, $this->enumerationManager, $this->networkManager, $this->versionManager])->makePartial();
+		$manager->shouldReceive('getBoard')
+			->andReturn($this->expected['board']);
+		$manager->shouldReceive('getId')
+			->andReturn($this->expected['gwId']);
+		$manager->shouldReceive('getPixlaToken')
+			->andReturn($this->expected['pixla']);
+		$this->versionManager->shouldReceive('getController')
+			->andReturn($this->expected['versions']['controller']);
+		$this->versionManager->shouldReceive('getDaemon')
+			->withArgs([$verbose])
+			->andReturn($this->expected['versions']['daemon']);
+		$this->versionManager->shouldReceive('getWebapp')
+			->withArgs([$verbose])
+			->andReturn($this->expected['versions']['webapp']);
+		$this->networkManager->shouldReceive('getHostname')
+			->andReturn($this->expected['hostname']);
+		$this->networkManager->shouldReceive('getInterfaces')
+			->andReturn($this->expected['interfaces']);
+		$manager->shouldReceive('getDiskUsages')
+			->andReturn($this->expected['diskUsages']);
+		$manager->shouldReceive('getMemoryUsage')
+			->andReturn($this->expected['memoryUsage']);
+		$manager->shouldReceive('getSwapUsage')
+			->andReturn($this->expected['swapUsage']);
+		$manager->shouldReceive('getCoordinatorInfo')
+			->andThrow(EmptyResponseException::class);
+		Assert::same($this->expected, $manager->get($verbose));
 	}
 
 	/**

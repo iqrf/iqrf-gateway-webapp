@@ -10,7 +10,10 @@ declare(strict_types = 1);
 
 namespace Tests\Unit\GatewayModule\Models\PackageManagers;
 
+use App\CoreModule\Models\CommandManager;
+use App\GatewayModule\Exceptions\UnsupportedPackageManagerException;
 use App\GatewayModule\Models\PackageManagers\AptGetPackageManager;
+use Mockery;
 use Tester\Assert;
 use Tests\Toolkit\TestCases\CommandTestCase;
 
@@ -38,6 +41,18 @@ class AptGetPackageManagerTest extends CommandTestCase {
 		parent::setUp();
 		$this->checkCommandExistence();
 		$this->manager = new AptGetPackageManager($this->commandManager);
+	}
+
+	/**
+	 * Tests the constructor (failure)
+	 */
+	public function testConstructorFailure(): void {
+		$commandManager = Mockery::mock(CommandManager::class);
+		$commandManager->shouldReceive('commandExist')
+			->withArgs(['apt-get'])->andReturn(false);
+		Assert::throws(function () use ($commandManager): void {
+			$manager = new AptGetPackageManager($commandManager);
+		}, UnsupportedPackageManagerException::class);
 	}
 
 	/**

@@ -85,6 +85,29 @@ class VersionManagerTest extends WebSocketTestCase {
 	}
 
 	/**
+	 * Tests the function to get IQRF Gateway Controller's version (empty stdout)
+	 */
+	public function testGetControllerEmpty(): void {
+		$this->commandManager->shouldReceive('commandExist')
+			->with('iqrf-gateway-controller')
+			->andReturn(true);
+		$this->commandManager->shouldReceive('run')
+			->with(self::CONTROLLER_VERSION_CMD)
+			->andReturn(new Command(self::CONTROLLER_VERSION_CMD, '', '', 0));
+		Assert::null($this->manager->getController());
+	}
+
+	/**
+	 * Tests the function to get IQRF Gateway Controller's version (not installed)
+	 */
+	public function testGetControllerNotInstalled(): void {
+		$this->commandManager->shouldReceive('commandExist')
+			->with('iqrf-gateway-controller')
+			->andReturnFalse();
+		Assert::null($this->manager->getController());
+	}
+
+	/**
 	 * Tests the function to get IQRF Gateway Controller's version
 	 */
 	public function testGetController(): void {

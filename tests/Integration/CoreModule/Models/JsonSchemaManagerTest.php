@@ -81,6 +81,16 @@ class JsonSchemaManagerTest extends TestCase {
 	}
 
 	/**
+	 * Tests the function to validate a JSON (invalid format)
+	 */
+	public function testValidateInvalidFormat(): void {
+		$this->manager->setSchema(self::SCHEMA_NAME);
+		Assert::exception(function (): void {
+			$this->manager->validate('nonsense');
+		}, InvalidJsonException::class);
+	}
+
+	/**
 	 * Tests the function to validate a JSON (valid JSON)
 	 */
 	public function testValidateValid(): void {

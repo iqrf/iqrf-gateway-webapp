@@ -94,6 +94,18 @@ class ConnectionTest extends TestCase {
 		Assert::same($this->interfaceName, $this->entity->getInterfaceName());
 	}
 
+	/**
+	 * Tests the function to return JSON serialized data
+	 */
+	public function testJsonSerialize(): void {
+		$expected = [
+			'name' => $this->name,
+			'uuid' => $this->uuid->toString(),
+			'type' => $this->type->toScalar(),
+		];
+		Assert::same($expected, $this->entity->jsonSerialize());
+	}
+
 }
 
 $test = new ConnectionTest();

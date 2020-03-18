@@ -192,6 +192,15 @@ class ConnectionDetailTest extends TestCase {
 		Assert::same($expected, $this->entity->toForm());
 	}
 
+	/**
+	 * Tests the function to return JSON serialized data
+	 */
+	public function testJsonSerialize(): void {
+		$json = FileSystem::read(__DIR__ . '/../../../data/networkManager/eth0ToForm.json');
+		$expected = Json::decode($json, Json::FORCE_ARRAY);
+		Assert::same($expected, $this->entity->jsonSerialize());
+	}
+
 }
 
 $test = new ConnectionDetailTest();

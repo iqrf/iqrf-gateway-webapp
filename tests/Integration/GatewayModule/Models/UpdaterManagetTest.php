@@ -10,7 +10,10 @@ declare(strict_types = 1);
 
 namespace Tests\Integration\GatewayModule\Models;
 
+use App\CoreModule\Models\CommandManager;
+use App\GatewayModule\Exceptions\UnsupportedPackageManagerException;
 use App\GatewayModule\Models\UpdaterManager;
+use Mockery;
 use Tester\Assert;
 use Tests\Toolkit\TestCases\CommandTestCase;
 
@@ -33,6 +36,19 @@ class UpdaterManagetTest extends CommandTestCase {
 		parent::setUp();
 		$this->checkCommandExistence();
 		$this->manager = new UpdaterManager($this->commandManager);
+	}
+
+	/**
+	 * Tests the constructor (unsupported package manager)
+	 */
+	public function testConstructorFailure(): void {
+		$commandManager = Mockery::mock(CommandManager::class);
+		$commandManager->shouldReceive('commandExist')
+			->withArgs(['apt-get'])->andReturn(false);
+		Assert::throws(function () use ($commandManager): void {
+			$manager = new UpdaterManager($commandManager);
+			$manager->getUpgradable();
+		}, UnsupportedPackageManagerException::class);
 	}
 
 	/**

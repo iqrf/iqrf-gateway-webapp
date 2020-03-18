@@ -165,14 +165,7 @@ class ConnectionDetail implements JsonSerializable {
 	 * @return array<string,mixed> Array for the form
 	 */
 	public function toForm(): array {
-		return [
-			'id' => $this->id,
-			'uuid' => $this->uuid->toString(),
-			'type' => $this->type->toScalar(),
-			'interface-name' => $this->interfaceName,
-			'ipv4' => $this->ipv4->toForm(),
-			'ipv6' => $this->ipv6->toForm(),
-		];
+		return $this->jsonSerialize();
 	}
 
 	/**

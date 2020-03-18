@@ -115,7 +115,7 @@ final class Connection implements JsonSerializable {
 	public function jsonSerialize(): array {
 		return [
 			'name' => $this->name,
-			'uuid' => $this->uuid,
+			'uuid' => $this->uuid->toString(),
 			'type' => $this->type->toScalar(),
 		];
 	}
