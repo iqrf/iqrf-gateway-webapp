@@ -33,6 +33,7 @@ use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\NetworkModule\Exceptions\NetworkManagerException;
 use App\NetworkModule\Models\ConnectionManager;
+use App\NetworkModule\Models\ConnectivityManager;
 use App\NetworkModule\Models\InterfaceManager;
 use Ramsey\Uuid\Exception\InvalidUuidStringException;
 use Ramsey\Uuid\Uuid;
@@ -50,6 +51,11 @@ class NetworkController extends BaseController {
 	private $connectionManger;
 
 	/**
+	 * @var ConnectivityManager Network connectivity manager
+	 */
+	private $connectivityManager;
+
+	/**
 	 * @var InterfaceManager Network interface manager
 	 */
 	private $interfaceManager;
@@ -57,10 +63,12 @@ class NetworkController extends BaseController {
 	/**
 	 * Constructor
 	 * @param ConnectionManager $connectionManager Network connection manager
+	 * @param ConnectivityManager $connectivityManager Network connectivity manager
 	 * @param InterfaceManager $interfaceManager Network interface manager
 	 */
-	public function __construct(ConnectionManager $connectionManager, InterfaceManager $interfaceManager) {
+	public function __construct(ConnectionManager $connectionManager, ConnectivityManager $connectivityManager, InterfaceManager $interfaceManager) {
 		$this->connectionManger = $connectionManager;
+		$this->connectivityManager = $connectivityManager;
 		$this->interfaceManager = $interfaceManager;
 	}
 
@@ -170,6 +178,30 @@ class NetworkController extends BaseController {
 		} catch (InvalidUuidStringException $e) {
 			return $response->withStatus(400)
 				->writeJsonBody(['error' => 'Invalid UUID']);
+		} catch (NetworkManagerException $e) {
+			return $response->withStatus(400)
+				->writeJsonBody(['error' => $e->getMessage()]);
+		}
+	}
+
+	/**
+	 * @Path("/connectivity")
+	 * @Method("GET")
+	 * @OpenApi("
+	 *   summary: Checks network connectivity
+	 * ")
+	 * @Responses({
+	 *     @Response(code="200", description="Success"),
+	 *     @Response(code="400", description="Bad request")
+	 * })
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function checkConnectivity(ApiRequest $request, ApiResponse $response): ApiResponse {
+		try {
+			$state = $this->connectivityManager->check()->toScalar();
+			return $response->writeJsonBody(['state' => $state]);
 		} catch (NetworkManagerException $e) {
 			return $response->withStatus(400)
 				->writeJsonBody(['error' => $e->getMessage()]);
