@@ -22,7 +22,7 @@ use Tester\TestCase;
 require __DIR__ . '/../../../bootstrap.php';
 
 /**
- * Tests for JSON file manager
+ * Tests for JSON schema manager
  */
 class JsonSchemaManagerTest extends TestCase {
 

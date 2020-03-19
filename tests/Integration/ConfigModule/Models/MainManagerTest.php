@@ -11,6 +11,9 @@ declare(strict_types = 1);
 namespace Tests\Integration\ConfigModule\Models;
 
 use App\ConfigModule\Models\MainManager;
+use App\CoreModule\Models\JsonFileManager;
+use Mockery;
+use Nette\IOException;
 use Tester\Assert;
 use Tester\Environment;
 use Tests\Toolkit\TestCases\JsonConfigTestCase;
@@ -28,12 +31,37 @@ class MainManagerTest extends JsonConfigTestCase {
 	private $fileName = 'config';
 
 	/**
+	 * @var MainManager Main configuration manager
+	 */
+	private $manager;
+
+	/**
+	 * Tests the function to get cache directory (failure)
+	 */
+	public function testGetCacheDirFailure(): void {
+		$fileManager = Mockery::mock(JsonFileManager::class);
+		$fileManager->shouldReceive('read')
+			->withArgs([$this->fileName])
+			->andThrows(IOException::class);
+		$manager = new MainManager($fileManager);
+		$expected = '/var/cache/iqrf-gateway-daemon/';
+		Assert::same($expected, $manager->getCacheDir());
+	}
+
+	/**
+	 * Tests the function to get cache directory (success)
+	 */
+	public function testGetCacheDirSuccess(): void {
+		$expected = '/var/cache/iqrf-gateway-daemon';
+		Assert::same($expected, $this->manager->getCacheDir());
+	}
+
+	/**
 	 * Tests the function to load main configuration of daemon
 	 */
 	public function testLoad(): void {
-		$manager = new MainManager($this->fileManager);
 		$expected = $this->readFile($this->fileName);
-		Assert::equal($expected, $manager->load());
+		Assert::equal($expected, $this->manager->load());
 	}
 
 	/**
@@ -56,6 +84,14 @@ class MainManagerTest extends JsonConfigTestCase {
 		$expected['configurationDir'] = '/etc/iqrf-daemon';
 		$manager->save($array);
 		Assert::equal($expected, $this->readTempFile($this->fileName));
+	}
+
+	/**
+	 * Sets up the testing environment
+	 */
+	protected function setUp(): void {
+		parent::setUp();
+		$this->manager = new MainManager($this->fileManager);
 	}
 
 }
