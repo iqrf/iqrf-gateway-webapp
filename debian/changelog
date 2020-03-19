@@ -1,3 +1,11 @@
+iqrf-gateway-webapp (2.0.0-rc6) testing; urgency=medium
+
+  * Core: hide unnecessary inputs in user add form
+  * Gateway: rename IQRF Gateway Daemon and SSH daemon service managers
+  * Gateway: redesign power control
+
+ -- Roman Ondráček <roman@romanondracek.cz>  Thu, 19 Mar 2020 13:20:00 +0100
+
 iqrf-gateway-webapp (2.0.0-rc5) testing; urgency=medium
 
   * Update dependencies
