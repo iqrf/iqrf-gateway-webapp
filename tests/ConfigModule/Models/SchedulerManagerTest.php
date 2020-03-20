@@ -207,7 +207,8 @@ class SchedulerManagerTest extends TestCase {
 		$this->timeManager = new TaskTimeManager();
 		$this->serviceManager = Mockery::mock(ServiceManager::class);
 		$schedulerSchemaManager = Mockery::mock(SchedulerSchemaManager::class);
-		$schedulerSchemaManager->shouldReceive('validate');
+		$schedulerSchemaManager->shouldReceive('validate')
+			->andReturnTrue();
 		$this->manager = new SchedulerManager($mainConfigManager, $genericConfigManager, $this->timeManager, $this->serviceManager, $commandManager, $schedulerSchemaManager);
 		$this->managerTemp = new SchedulerManager($mainConfigManagerTemp, $genericConfigManager, $this->timeManager, $this->serviceManager, $commandManager, $schedulerSchemaManager);
 	}
