@@ -119,6 +119,9 @@ class TrConfigPresenter extends ProtectedPresenter {
 			if (property_exists($configuration, 'stdAndLpNetwork')) {
 				$configuration->stdAndLpNetwork = (int) $configuration->stdAndLpNetwork;
 			}
+			if (!$this->getUser()->isInRole('power')) {
+				$this->flashSuccess('iqrfnet.trConfiguration.read.success');
+			}
 			$this->template->configuration = $configuration;
 		} catch (DpaErrorException | EmptyResponseException | JsonException | UserErrorException $e) {
 			$this->template->configuration = null;

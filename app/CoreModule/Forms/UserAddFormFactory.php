@@ -72,8 +72,11 @@ class UserAddFormFactory {
 			->setRequired('messages.username');
 		$form->addPassword('password', 'password')
 			->setRequired('messages.password');
-		$form->addSelect('userType', 'userType', $this->getUserTypes());
-		$form->addSelect('language', 'language', $this->getLanguages());
+		if (!$this->presenter instanceof CreateUserPresenter &&
+			$this->presenter->getUser()->isInRole('power')) {
+			$form->addSelect('userType', 'userType', $this->getUserTypes());
+			$form->addSelect('language', 'language', $this->getLanguages());
+		}
 		$form->addSubmit('add', 'add');
 		$form->onSuccess[] = [$this, 'add'];
 		return $form;
@@ -116,8 +119,11 @@ class UserAddFormFactory {
 	public function add(Form $form): void {
 		$values = $form->getValues();
 		try {
-			$this->userManager->register($values['username'], $values['password'], $values['userType'], $values['language']);
-			$message = $form->getTranslator()->translate('messages.successAdd', ['username' => $values['username']]);
+			$username = $values['username'];
+			$role = $values['userType'] ?? 'normal';
+			$language = $values['language'] ?? 'en';
+			$this->userManager->register($username, $values['password'], $role, $language);
+			$message = $form->getTranslator()->translate('messages.successAdd', ['username' => $username]);
 			$this->presenter->flashMessage($message, 'success');
 			if ($this->presenter instanceof UserPresenter) {
 				$this->presenter->redirect('User:default');

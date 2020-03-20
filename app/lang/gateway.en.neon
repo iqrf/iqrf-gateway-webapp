@@ -78,7 +78,7 @@ power:
 		success: Your device has been restarted successfully.
 
 ssh:
-	title: SSH daemon control
+	title: SSH service
 	description: Controls the SSH daemon service.
 	status: Service status
 	statuses:

@@ -17,13 +17,15 @@
 
 {block title}{_gateway.power.title}{/block}
 {block content}
-<div class='list-group'>
-	<a class='list-group-item ajax' n:href='off!'>
-		<header class='list-group-item-heading'>{_gateway.power.powerOff.title}</header>
-		<p class='list-group-item-text'>{_gateway.power.powerOff.description}</p>
-	</a>
-	<a class='list-group-item ajax' n:href='reboot!'>
-		<header class='list-group-item-heading'>{_gateway.power.reboot.title}</header>
-		<p class='list-group-item-text'>{_gateway.power.reboot.description}</p>
-	</a>
+<div class='panel panel-default'>
+	<div n:snippet='status' class='panel-body'>
+		<a class='ajax btn btn-danger' n:href='off!' role='button'>
+			<span class='glyphicon glyphicon-off'></span>
+			{_gateway.power.powerOff.title}
+		</a>
+		<a class='ajax btn btn-primary' n:href='reboot!' role='button'>
+			<span class='glyphicon glyphicon-repeat'></span>
+			{_gateway.power.reboot.title}
+		</a>
+	</div>
 </div>

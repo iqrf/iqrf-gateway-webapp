@@ -307,6 +307,7 @@ trConfiguration:
 	description: Edit TR configuration.
 	read:
 		failure: An error occurred while TR configuration reading.
+		success: The TR configuration has been read successfully.
 	write:
 		failure: An error occurred while TR configuration saving.
 		success: The TR configuration has been saved successfully.

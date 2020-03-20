@@ -20,10 +20,12 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Models;
 
+use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\JsonFileManager;
 use App\ServiceModule\Exceptions\NotSupportedInitSystemException;
 use App\ServiceModule\Models\ServiceManager;
+use Nette\IOException;
 use Nette\SmartObject;
 use Nette\Utils\Finder;
 use Nette\Utils\JsonException;
@@ -161,20 +163,23 @@ class SchedulerManager {
 	/**
 	 * Gets tasks
 	 * @return mixed[] Tasks
-	 * @throws JsonException
 	 */
 	public function list(): array {
 		$tasks = [];
 		foreach ($this->getTaskFiles() as $id => $fileName) {
-			$data = $this->load($id);
-			$task = [
-				'id' => $data->taskId,
-				'time' => $this->timeManager->getTime($data),
-				'service' => $data->clientId,
-				'messaging' => $this->getTaskMessagings($data->task),
-				'mType' => $this->getTaskMessageTypes($data->task),
-			];
-			$tasks[] = $task;
+			try {
+				$data = $this->load($id);
+				$task = [
+					'id' => $data->taskId,
+					'time' => $this->timeManager->getTime($data),
+					'service' => $data->clientId,
+					'messaging' => $this->getTaskMessagings($data->task),
+					'mType' => $this->getTaskMessageTypes($data->task),
+				];
+				$tasks[] = $task;
+			} catch (InvalidJsonException | IOException | JsonException $e) {
+				// Do nothing
+			}
 		}
 		return $tasks;
 	}
@@ -218,6 +223,9 @@ class SchedulerManager {
 		}
 		$this->fileName = strval($files[$id]);
 		$config = $this->fileManager->read($this->fileName, false);
+		if (!$this->schemaManager->validate($config)) {
+			throw new InvalidJsonException();
+		}
 		$this->timeManager->cronToString($config);
 		$this->fixTasks($config);
 		return $config;
