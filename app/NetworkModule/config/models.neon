@@ -2,3 +2,4 @@ services:
 	- App\NetworkModule\Models\ConnectionManager
 	- App\NetworkModule\Models\ConnectivityManager
 	- App\NetworkModule\Models\InterfaceManager
+	- App\NetworkModule\Models\WifiManager

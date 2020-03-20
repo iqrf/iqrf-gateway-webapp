@@ -35,6 +35,7 @@ use App\NetworkModule\Exceptions\NetworkManagerException;
 use App\NetworkModule\Models\ConnectionManager;
 use App\NetworkModule\Models\ConnectivityManager;
 use App\NetworkModule\Models\InterfaceManager;
+use App\NetworkModule\Models\WifiManager;
 use Ramsey\Uuid\Exception\InvalidUuidStringException;
 use Ramsey\Uuid\Uuid;
 
@@ -61,15 +62,22 @@ class NetworkController extends BaseController {
 	private $interfaceManager;
 
 	/**
+	 * @var WifiManager WiFi network manager
+	 */
+	private $wifiManager;
+
+	/**
 	 * Constructor
 	 * @param ConnectionManager $connectionManager Network connection manager
 	 * @param ConnectivityManager $connectivityManager Network connectivity manager
 	 * @param InterfaceManager $interfaceManager Network interface manager
+	 * @param WifiManager $wifiManager WiFi network manager
 	 */
-	public function __construct(ConnectionManager $connectionManager, ConnectivityManager $connectivityManager, InterfaceManager $interfaceManager) {
+	public function __construct(ConnectionManager $connectionManager, ConnectivityManager $connectivityManager, InterfaceManager $interfaceManager, WifiManager $wifiManager) {
 		$this->connectionManger = $connectionManager;
 		$this->connectivityManager = $connectivityManager;
 		$this->interfaceManager = $interfaceManager;
+		$this->wifiManager = $wifiManager;
 	}
 
 	/**
@@ -266,6 +274,29 @@ class NetworkController extends BaseController {
 	public function disconnectInterface(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->interfaceManager->disconnect($request->getParameter('name'));
 		return $response;
+	}
+
+	/**
+	 * @Path("/wifi/list")
+	 * @Method("GET")
+	 * @OpenApi("
+	 *   summary: Lists available WiFi access points
+	 * ")
+	 * @Responses({
+	 *      @Response(code="200", description="Success"),
+	 *     @Response(code="400", description="Bad request")
+	 * })
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function listWifi(ApiRequest $request, ApiResponse $response): ApiResponse {
+		try {
+			return $response->writeJsonBody($this->wifiManager->list());
+		} catch (NetworkManagerException $e) {
+			return $response->withStatus(400)
+				->writeJsonBody(['error' => $e->getMessage()]);
+		}
 	}
 
 }
