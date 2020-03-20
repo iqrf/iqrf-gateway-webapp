@@ -71,6 +71,9 @@ class SchedulerSchemaManager extends JsonSchemaManager {
 			$tasks = $json->task;
 		}
 		foreach ($tasks as $id => $task) {
+			if (!isset($task->message) || !isset($task->message->mType)) {
+				throw new InvalidJsonException();
+			}
 			$this->apiSchemaManager->setSchemaForRequest($task->message->mType);
 			$this->apiSchemaManager->validate($task->message);
 		}

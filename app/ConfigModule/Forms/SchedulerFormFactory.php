@@ -30,6 +30,7 @@ use App\ServiceModule\Exceptions\NotSupportedInitSystemException;
 use App\ServiceModule\Models\ServiceManager;
 use Contributte\FormMultiplier\Multiplier;
 use Contributte\Translation\Wrappers\NotTranslate;
+use DateTime;
 use Nette\Application\UI\Form;
 use Nette\Forms\Container;
 use Nette\Forms\Controls\SubmitButton;
@@ -39,6 +40,7 @@ use Nette\SmartObject;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 use stdClass;
+use Throwable;
 
 /**
  * Scheduler's task configuration form factory
@@ -105,7 +107,13 @@ class SchedulerFormFactory {
 			$services = [];
 		}
 		$form->addGroup();
-		$form->addInteger('taskId', self::PREFIX . 'taskId');
+		$taskId = $form->addInteger('taskId', self::PREFIX . 'taskId');
+		try {
+			$now = new DateTime();
+			$taskId->setDefaultValue($now->getTimestamp());
+		} catch (Throwable $e) {
+			// Do nothing
+		}
 		$form->addSelect('clientId', self::PREFIX . 'clientId')
 			->setItems($services, false)
 			->setPrompt(self::PREFIX . 'messages.clientId-prompt')
@@ -155,14 +163,17 @@ class SchedulerFormFactory {
 	 * Loads the task
 	 * @param int $id Task ID
 	 * @return stdClass Task
-	 * @throws JsonException
 	 */
 	private function load(int $id): stdClass {
-		$configuration = $this->manager->load($id);
-		foreach ($configuration->task as &$task) {
-			$task->message = Json::encode($task->message, Json::PRETTY);
+		try {
+			$configuration = $this->manager->load($id);
+			foreach ($configuration->task as &$task) {
+				$task->message = Json::encode($task->message, Json::PRETTY);
+			}
+			return $configuration;
+		} catch (InvalidJsonException | IOException | JsonException $e) {
+			return new stdClass();
 		}
-		return $configuration;
 	}
 
 	/**
