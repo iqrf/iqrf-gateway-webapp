@@ -73,8 +73,11 @@ class UserDataGridFactory {
 		$this->presenter = $presenter;
 		$grid = $this->dataGridFactory->create($presenter, $name);
 		$grid->setDataSource($this->manager->getUsers());
-		$grid->addColumnNumber('id', 'core.user.form.id')
-			->setAlign('left');
+
+		if ($this->presenter->getUser()->isInRole('power')) {
+			$grid->addColumnNumber('id', 'core.user.form.id')
+				->setAlign('left');
+		}
 		$grid->addColumnText('username', 'core.user.form.username');
 		if ($this->presenter->getUser()->isInRole('power')) {
 			$grid->addColumnStatus('role', 'core.user.form.userType')
