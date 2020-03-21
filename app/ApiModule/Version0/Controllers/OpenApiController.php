@@ -29,6 +29,7 @@ use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use Apitte\OpenApi\ISchemaBuilder;
+use stdClass;
 
 /**
  * OpenAPI controller
@@ -63,8 +64,10 @@ class OpenApiController extends BaseController {
 	 * })
 	 */
 	public function index(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$openApi = $this->schemaBuilder->build();
-		return $response->writeJsonBody($openApi->toArray());
+		$openApi = $this->schemaBuilder->build()->toArray();
+		$openApi['paths']['/api/v0/openapi']['get']['security'] = [new stdClass()];
+		$openApi['paths']['/api/v0/user/signIn']['post']['security'] = [new stdClass()];
+		return $response->writeJsonBody($openApi);
 	}
 
 }
