@@ -66,7 +66,7 @@ class AuthenticationMiddleware implements IMiddleware {
 				'error' => 'Client authentication failed',
 			]));
 			return $response->withStatus(401)
-				->withHeader('WWW-Authenticate', 'Basic');
+				->withHeader('WWW-Authenticate', 'Bearer');
 		}
 		// Add info about current logged user to request attributes
 		$request = $request->withAttribute(RequestAttributes::APP_LOGGED_USER, $user);

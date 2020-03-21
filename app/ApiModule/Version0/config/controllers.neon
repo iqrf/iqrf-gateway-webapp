@@ -1,5 +1,6 @@
 services:
 	- App\ApiModule\Version0\Controllers\OpenApiController
+	- App\ApiModule\Version0\Controllers\CertificateController
 	- App\ApiModule\Version0\Controllers\CloudsController
 	- App\ApiModule\Version0\Controllers\ConfigController
 	- App\ApiModule\Version0\Controllers\DiagnosticsController

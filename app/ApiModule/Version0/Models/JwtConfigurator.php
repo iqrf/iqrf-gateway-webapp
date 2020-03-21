@@ -20,9 +20,14 @@ declare(strict_types = 1);
 
 namespace App\ApiModule\Version0\Models;
 
+use App\GatewayModule\Models\CertificateManager;
 use Lcobucci\JWT\Configuration;
+use Lcobucci\JWT\Signer\Ecdsa\Sha256 as EcdsaSha256;
 use Lcobucci\JWT\Signer\Key;
-use Lcobucci\JWT\Signer\Rsa\Sha256;
+use Lcobucci\JWT\Signer\Rsa\Sha256 as RsaSha256;
+use Throwable;
+use const OPENSSL_KEYTYPE_EC;
+use const OPENSSL_KEYTYPE_RSA;
 
 /**
  * JWT configurator
@@ -30,19 +35,40 @@ use Lcobucci\JWT\Signer\Rsa\Sha256;
 class JwtConfigurator {
 
 	/**
-	 * Private key path
+	 * @var CertificateManager TLS certificate manager
 	 */
-	private const KEY_PATH = '/etc/iqrf-gateway-webapp/certs/privkey.pem';
+	private $certificateManager;
+
+	/**
+	 * Constructor
+	 * @param CertificateManager $certificateManager TLS certificate manager
+	 */
+	public function __construct(CertificateManager $certificateManager) {
+		$this->certificateManager = $certificateManager;
+	}
 
 	/**
 	 * Creates a JWT configuration
 	 * @return Configuration JWT configuration
 	 */
 	public function create(): Configuration {
-		if (is_readable(self::KEY_PATH)) {
-			return Configuration::forSymmetricSigner(new Sha256(), new Key('file://' . self::KEY_PATH));
+		try {
+			$privateKey = $this->certificateManager->getPrivateKey()->getPEM();
+			$parsedKey = $this->certificateManager->getParsedPrivateKey();
+			switch ($parsedKey->getType()) {
+				case OPENSSL_KEYTYPE_RSA:
+					$signer = new RsaSha256();
+					break;
+				case OPENSSL_KEYTYPE_EC:
+					$signer = EcdsaSha256::create();
+					break;
+				default:
+					return Configuration::forUnsecuredSigner();
+			}
+			return Configuration::forSymmetricSigner($signer, new Key($privateKey));
+		} catch (Throwable $e) {
+			return Configuration::forUnsecuredSigner();
 		}
-		return Configuration::forUnsecuredSigner();
 	}
 
 }

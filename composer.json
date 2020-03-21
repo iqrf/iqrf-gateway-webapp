@@ -25,6 +25,8 @@
 		"ext-openssl": "*",
 		"ext-posix": "*",
 		"ext-zip": "*",
+		"acmephp/ssl": "^1.2",
+		"acmephp/core": "^1.2",
 		"apitte/console": "^0.7",
 		"apitte/core": "^0.7",
 		"apitte/debug": "^0.7",
@@ -44,6 +46,7 @@
 		"iqrf/iqrf-repository": "dev-master",
 		"justinrainbow/json-schema": "^5.2",
 		"latte/latte": "^2.6",
+		"lcobucci/jwt": "^4.0@alpha",
 		"nepada/form-renderer": "~1.1.0",
 		"nette/application": "^3.0",
 		"nette/bootstrap": "^3.0",
@@ -65,8 +68,7 @@
 		"sentry/sdk": "^2.0",
 		"symfony/process": "^5.0",
 		"tracy/tracy": "^2.7",
-		"ublaboo/datagrid": "^6.2",
-		"lcobucci/jwt": "^4.0@alpha"
+		"ublaboo/datagrid": "^6.2"
 	},
 	"require-dev": {
 		"mockery/mockery": "^1.1",
