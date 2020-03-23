@@ -35,9 +35,6 @@ parameters:
 			message: '#Foreach overwrites \$unit with its value variable.#'
 			path: %currentWorkingDirectory%/app/GatewayModule/Models/InfoManager.php
 		-
-			message: '#Parameter \#1 \$input of method App\\IqrfNetModule\\Forms\\TrConfigFormFactory::setRfChannelRule\(\) expects Nette\\Forms\\Controls\\TextInput, Nette\\ComponentModel\\IComponent given.#'
-			path: %currentWorkingDirectory%/app/IqrfNetModule/Forms/TrConfigFormFactory.php
-		-
 			message: '#Variable property access on mixed.#'
 			path: %currentWorkingDirectory%/app/IqrfNetModule/Forms/TrConfigFormFactory.php
 	fileExtensions:
