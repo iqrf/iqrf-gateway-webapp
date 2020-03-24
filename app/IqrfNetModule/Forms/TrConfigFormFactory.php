@@ -125,7 +125,7 @@ class TrConfigFormFactory {
 			$input = $form->addInteger($rfChannel, $rfChannel);
 			$this->setRfChannelRule($input);
 		}
-		$subChannels = ['rfSubChannelA', 'rfSubChannelB'];
+		$subChannels = ['rfSubChannelA', 'rfSubChannelB', 'rfAltDsmChannel'];
 		foreach ($subChannels as $subChannel) {
 			if (isset($this->configuration->$subChannel)) {
 				$input = $form->addInteger($subChannel, $subChannel);

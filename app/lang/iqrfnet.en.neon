@@ -121,6 +121,7 @@ trConfig:
 	rfChannelB: RF channel B
 	rfSubChannelA: RF channel 2nd network
 	rfSubChannelB: Alternative DSM channel
+	rfAltDsmChannel: Alternative DSM channel
 	stdAndLpNetwork: STD and LP network
 	txPower: TX power
 	rxFilter: RX filter
@@ -152,8 +153,8 @@ trConfig:
 	ioSetup: IO Setup
 	dpaAutoexec: Autoexec
 	routingOff: Routing off
-	peerToPeer: Enable peer to peer
-	dpaPeerToPeer: Enable DPA peer to peer
+	peerToPeer: Peer to peer
+	dpaPeerToPeer: DPA peer to peer
 	neverSleep: Stay awake when not bonded
 	uartBaudrate: UART interface baud rate
 	uartBaudrates:
