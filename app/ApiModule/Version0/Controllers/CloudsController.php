@@ -31,6 +31,7 @@ use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\CloudModule\Exceptions\CannotCreateCertificateDirectoryException;
 use App\CloudModule\Exceptions\InvalidConnectionStringException;
+use App\CloudModule\Models\AwsManager;
 use App\CloudModule\Models\AzureManager;
 use App\CloudModule\Models\HexioManager;
 use App\CloudModule\Models\IbmCloudManager;
@@ -45,6 +46,11 @@ use Nette\IOException;
  * @Tag("Clouds manager")
  */
 class CloudsController extends BaseController {
+
+	/**
+	 * @var AwsManager Azure AWS IoT connection manager
+	 */
+	private $awsManager;
 
 	/**
 	 * @var AzureManager Microsoft Azure IoT Hub connection manager
@@ -68,16 +74,51 @@ class CloudsController extends BaseController {
 
 	/**
 	 * Constructor
+	 * @param AwsManager $awsManager Amazon AWS IoT connection manager
 	 * @param AzureManager $azureManager Microsoft Azure IoT Hub connection manager
 	 * @param HexioManager $hexioManager Hexio IoT Platform connection manager
 	 * @param IbmCloudManager $ibmManager IBM CLoud IoT connection manager
 	 * @param InteliGlueManager $inteliGlueManager Inteliments InteliGlue connection manager
 	 */
-	public function __construct(AzureManager $azureManager, HexioManager $hexioManager, IbmCloudManager $ibmManager, InteliGlueManager $inteliGlueManager) {
+	public function __construct(AwsManager $awsManager, AzureManager $azureManager, HexioManager $hexioManager, IbmCloudManager $ibmManager, InteliGlueManager $inteliGlueManager) {
+		$this->awsManager = $awsManager;
 		$this->azureManager = $azureManager;
 		$this->hexioManager = $hexioManager;
 		$this->ibmCloudManager = $ibmManager;
 		$this->inteliGlueManager = $inteliGlueManager;
+	}
+
+	/**
+	 * @Path("/aws")
+	 * @Method("POST")
+	 * @OpenApi("
+	 *   summary: Creates a new MQTT connection into Amazon AWS IoT
+	 * ")
+	 * @RequestBody(entity="\App\ApiModule\Version0\Entities\Request\AwsEntity")
+	 * @Responses({
+	 *      @Response(code="201", description="Created"),
+	 *      @Response(code="400", description="Bad response"),
+	 *      @Response(code="500", description="Server error")
+	 * })
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function createAws(ApiRequest $request, ApiResponse $response): ApiResponse {
+		try {
+			$this->awsManager->createMqttInterface($request->getJsonBody());
+			return $response->withStatus(201, 'Created');
+		} catch (InvalidConnectionStringException $e) {
+			return $response->withStatus(400, 'Invalid connection string');
+		} catch (NonExistingJsonSchemaException $e) {
+			return $response->withStatus(400, 'Nonexisting JSON schema');
+		} catch (IOException $e) {
+			return $response->withStatus(500, 'Write failure');
+		} catch (TransferException $e) {
+			return $response->withStatus(500, 'Download failure');
+		} catch (CannotCreateCertificateDirectoryException $e) {
+			return $response->withStatus(500, 'Certificate directory creation failure');
+		}
 	}
 
 	/**

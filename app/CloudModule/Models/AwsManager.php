@@ -27,6 +27,7 @@ use App\CoreModule\Models\CertificateManager;
 use DateTime;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
+use Nette\Http\FileUpload;
 use Nette\IOException;
 use Nette\SmartObject;
 use Nette\Utils\FileSystem;
@@ -89,8 +90,10 @@ class AwsManager implements IManager {
 		$this->createDirectory();
 		$paths = $this->createPaths();
 		$this->downloadCaCertificate();
-		$this->checkCertificate($values);
-		$this->uploadCertsAndKey($values, $paths);
+		$cert = $values['certificate'] instanceof FileUpload ? $values['certificate']->getContents() : $values['certificate'];
+		$pKey = $values['privateKey'] instanceof FileUpload ? $values['privateKey']->getContents() : $values['privateKey'];
+		$this->checkCertificate($cert, $pKey);
+		$this->uploadCertsAndKey($paths, $cert, $pKey);
 		$this->configManager->setComponent('iqrf::MqttMessaging');
 		$this->configManager->setFileName('iqrf__MqttMessaging_Aws');
 		$interface = [
@@ -159,31 +162,25 @@ class AwsManager implements IManager {
 
 	/**
 	 * Checks a certificate and a private key
-	 * @param mixed[] $values Form values
+	 * @param string $certificate Certificate
+	 * @param string $privateKey Private key
 	 * @throws InvalidPrivateKeyForCertificateException
 	 */
-	public function checkCertificate(array $values): void {
-		$cert = $values['cert']->getContents();
-		$pKey = $values['key']->getContents();
-		if (!$this->certManager->checkPrivateKey($cert, $pKey)) {
+	public function checkCertificate(string $certificate, string $privateKey): void {
+		if (!$this->certManager->checkPrivateKey($certificate, $privateKey)) {
 			throw new InvalidPrivateKeyForCertificateException();
 		}
 	}
 
 	/**
-	 * Uploads root CA certificate, certificate and private key
-	 * @param mixed[] $values Form values
-	 * @param string[] $paths Paths for root CA certificate, certificate and private key
+	 * Uploads certificate and private key
+	 * @param string[] $paths Paths for certificate and private key
+	 * @param string $certificate Certificate
+	 * @param string $privateKey Private key
 	 */
-	public function uploadCertsAndKey(array $values, array $paths): void {
-		$cert = $values['cert'];
-		$key = $values['key'];
-		if ($cert->isOk()) {
-			$cert->move($paths['cert']);
-		}
-		if ($key->isOk()) {
-			$key->move($paths['key']);
-		}
+	public function uploadCertsAndKey(array $paths, string $certificate, string $privateKey): void {
+		FileSystem::write($paths['cert'], $certificate);
+		FileSystem::write($paths['key'], $privateKey);
 	}
 
 }

@@ -93,18 +93,10 @@ class AwsManagerTest extends CloudIntegrationTestCase {
 	 * Tests the function to check a certificate and a private key (invalid private key)
 	 */
 	public function testCheckCertificateInvalid(): void {
-		$array = $this->mockUploadedFiles($this->certPathReal);
-		$pKeyFile = $this->certPathReal . 'pkey1.key';
-		$pKeyValue = [
-			'name' => 'pkey1.key',
-			'type' => 'text/plain',
-			'tmp_name' => $pKeyFile,
-			'error' => UPLOAD_ERR_OK,
-			'size' => filesize($pKeyFile),
-		];
-		$array['key'] = new FileUpload($pKeyValue);
-		Assert::exception(function () use ($array): void {
-			$this->manager->checkCertificate($array);
+		Assert::exception(function (): void {
+			$certificate = FileSystem::read($this->certPathReal . 'cert0.pem');
+			$privateKey = FileSystem::read($this->certPathReal . 'pkey1.key');
+			$this->manager->checkCertificate($certificate, $privateKey);
 		}, InvalidPrivateKeyForCertificateException::class);
 	}
 
@@ -112,9 +104,10 @@ class AwsManagerTest extends CloudIntegrationTestCase {
 	 * Tests the function to check a certificate and a private key (valid private key)
 	 */
 	public function testCheckCertificateValid(): void {
-		$array = $this->mockUploadedFiles($this->certPathReal);
-		Assert::noError(function () use ($array): void {
-			$this->manager->checkCertificate($array);
+		Assert::noError(function (): void {
+			$certificate = FileSystem::read($this->certPathReal . 'cert0.pem');
+			$privateKey = FileSystem::read($this->certPathReal . 'pkey0.key');
+			$this->manager->checkCertificate($certificate, $privateKey);
 		});
 	}
 
@@ -135,17 +128,14 @@ class AwsManagerTest extends CloudIntegrationTestCase {
 	 * Tests the function to upload the certificate and the private key
 	 */
 	public function testUploadCertsAndKey(): void {
-		$certFile = $this->certPath . 'cert0.pem';
-		$pKeyFile = $this->certPath . 'pkey0.key';
-		FileSystem::copy($this->certPathReal . 'cert0.pem', $certFile);
-		FileSystem::copy($this->certPathReal . 'pkey0.key', $pKeyFile);
-		$array = $this->mockUploadedFiles($this->certPath);
 		$paths = [
 			'cert' => $this->certPath . 'cert.pem',
 			'key' => $this->certPath . 'pKey.key',
 		];
-		Assert::noError(function () use ($array, $paths): void {
-			$this->manager->uploadCertsAndKey($array, $paths);
+		Assert::noError(function () use ($paths): void {
+			$certificate = FileSystem::read($this->certPathReal . 'cert0.pem');
+			$privateKey = FileSystem::read($this->certPathReal . 'pkey0.key');
+			$this->manager->uploadCertsAndKey($paths, $certificate, $privateKey);
 		});
 	}
 
@@ -167,6 +157,7 @@ class AwsManagerTest extends CloudIntegrationTestCase {
 		$this->certManager = new CertificateManager();
 		$client = new Client();
 		$this->manager = new AwsManager($this->certPath, $this->certManager, $this->configManager, $client);
+		$this->formValues = array_merge($this->formValues, $this->mockUploadedFiles($this->certPathReal));
 	}
 
 	/**
@@ -192,8 +183,8 @@ class AwsManagerTest extends CloudIntegrationTestCase {
 			'size' => filesize($pKeyFile),
 		];
 		return [
-			'cert' => new FileUpload($certValue),
-			'key' => new FileUpload($pKeyValue),
+			'certificate' => new FileUpload($certValue),
+			'privateKey' => new FileUpload($pKeyValue),
 		];
 	}
 
