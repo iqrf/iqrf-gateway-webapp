@@ -42,7 +42,9 @@ iqrfMacros:
 	path: '%appDir%/../iqrf/DPA-macros_190301_webapp.iqrfmcr'
 
 session:
+	autoStart: true
 	expiration: 14 days
+	savePath: %tempDir%/sessions
 
 services:
 	router: App\CoreModule\Router\RouterFactory::createRouter

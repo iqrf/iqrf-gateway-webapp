@@ -1,8 +1,4 @@
 Fixes log directory path
----
- app/Kernel.php |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
 --- a/app/Kernel.php
 +++ b/app/Kernel.php
 @@ -37,7 +37,7 @@
@@ -12,5 +8,5 @@ Fixes log directory path
 -		$configurator->enableTracy(__DIR__ . '/../log');
 +		$configurator->enableTracy('/var/log/iqrf-gateway-webapp');
  		$configurator->setTimeZone('Europe/Prague');
- 		$configurator->setTempDirectory('/var/cache/iqrf-gateway-webapp');
- 		$configurator->createRobotLoader()->addDirectory(__DIR__)->register();
+ 		$tempDir = '/var/cache/iqrf-gateway-webapp';
+ 		$configurator->setTempDirectory($tempDir);
