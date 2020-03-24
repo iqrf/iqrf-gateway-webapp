@@ -176,6 +176,8 @@ class SchedulerImportFormFactory {
 		} catch (IOException $e) {
 			/// TODO: Use custom error message.
 			$this->presenter->flashError('config.messages.writeFailures.ioError');
+		} catch (JsonException $e) {
+			$this->presenter->flashError('config.messages.writeFailures.invalidJson');
 		}
 	}
 

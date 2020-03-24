@@ -23,13 +23,13 @@ namespace App\ConfigModule\Models;
 use App\ConfigModule\Exceptions\InvalidConfigurationFormatException;
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\ZipArchiveManager;
-use App\ServiceModule\Exceptions\NotSupportedInitSystemException;
 use DateTime;
 use Nette\Application\BadRequestException;
 use Nette\Application\Responses\FileResponse;
 use Nette\Http\FileUpload;
 use Nette\SmartObject;
 use Nette\Utils\Json;
+use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
 use Throwable;
 use ZipArchive;
@@ -90,7 +90,7 @@ class SchedulerMigrationManager {
 	 * Uploads a configuration
 	 * @param FileUpload $zip ZIP archive with scheduler configuration
 	 * @throws InvalidConfigurationFormatException
-	 * @throws NotSupportedInitSystemException
+	 * @throws JsonException
 	 */
 	public function upload(FileUpload $zip): void {
 		if (!$zip->isOk()) {
