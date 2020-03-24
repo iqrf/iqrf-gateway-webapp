@@ -208,6 +208,12 @@ send-json:
 		missingSchema: Corresponding JSON schema for this request not found.
 		failure: An error occurred while proccesing JSON request.
 		success: JSON request has been sent successfully.
+		incorrectNadr: Sent JSON request contains incorrect NADR.
+		incorrectPcmd: Sent JSON request contains incorrect PCMD.
+		incorrectPnum: Sent JSON request contains incorrect PNUM.
+		incorrectHwpid: Sent JSON request contains incorrect HWPID has been used.
+		incorrectData: Sent JSON request contains incorrect data.
+		incorrectDataLength: Sent JSON request contains incorrect data length.
 	send: Send
 	response: Response
 	request: Request
@@ -225,6 +231,12 @@ send-packet:
 		invalidPacket: Invalid DPA packet.
 		packet: Please enter DPA packet.
 		success: DPA packet has been sent successfully.
+		incorrectNadr: Sent DPA packet contains incorrect NADR.
+		incorrectPcmd: Sent DPA packet contains incorrect PCMD.
+		incorrectPnum: Sent DPA packet contains incorrect PNUM.
+		incorrectHwpid: Sent DPA packet contains incorrect HWPID has been used.
+		incorrectData: Sent DPA packet contains incorrect data.
+		incorrectDataLength: Sent DPA packet contains incorrect data length.
 	send: Send
 	parsed-response: Parsed response
 	response: Response

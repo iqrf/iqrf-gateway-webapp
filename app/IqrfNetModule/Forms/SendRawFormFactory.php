@@ -23,6 +23,12 @@ namespace App\IqrfNetModule\Forms;
 use App\CoreModule\Forms\FormFactory;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
+use App\IqrfNetModule\Exceptions\IncorrectDataException;
+use App\IqrfNetModule\Exceptions\IncorrectDataLengthException;
+use App\IqrfNetModule\Exceptions\IncorrectHwpidUsedException;
+use App\IqrfNetModule\Exceptions\IncorrectNadrException;
+use App\IqrfNetModule\Exceptions\IncorrectPcmdException;
+use App\IqrfNetModule\Exceptions\IncorrectPnumException;
 use App\IqrfNetModule\Models\DpaRawManager;
 use App\IqrfNetModule\Presenters\SendRawPresenter;
 use Nette\Application\UI\Form;
@@ -50,6 +56,11 @@ class SendRawFormFactory {
 	 * @var SendRawPresenter Send DPA packet presenter
 	 */
 	private $presenter;
+
+	/**
+	 * Translation prefix
+	 */
+	private const PREFIX = 'iqrfnet.send-packet.';
 
 	/**
 	 * Constructor
@@ -101,7 +112,7 @@ class SendRawFormFactory {
 		$packet = $values->packet;
 		$timeout = ($values->timeoutEnabled === true) ? $values->timeout : null;
 		if (!$this->manager->validatePacket($packet)) {
-			$this->presenter->flashError('iqrfnet.send-packet.messages.invalidPacket');
+			$this->presenter->flashError(self::PREFIX . 'messages.invalidPacket');
 			return;
 		}
 		if ($values->overwriteAddress === true) {
@@ -111,7 +122,19 @@ class SendRawFormFactory {
 		try {
 			$response = $this->manager->send($packet, $timeout);
 			$this->presenter->handleShowResponse($response);
-			$this->presenter->flashSuccess('iqrfnet.send-packet.messages.success');
+			$this->presenter->flashSuccess(self::PREFIX . 'messages.success');
+		} catch (IncorrectNadrException $e) {
+			$this->presenter->flashError(self::PREFIX . 'messages.incorrectNadr');
+		} catch (IncorrectPnumException $e) {
+			$this->presenter->flashError(self::PREFIX . 'messages.incorrectPnum');
+		} catch (IncorrectPcmdException $e) {
+			$this->presenter->flashError(self::PREFIX . 'messages.incorrectPcmd');
+		} catch (IncorrectHwpidUsedException $e) {
+			$this->presenter->flashError(self::PREFIX . 'messages.incorrectHwpid');
+		} catch (IncorrectDataException $e) {
+			$this->presenter->flashError(self::PREFIX . 'messages.incorrectData');
+		} catch (IncorrectDataLengthException $e) {
+			$this->presenter->flashError(self::PREFIX . 'messages.incorrectDataLength');
 		} catch (EmptyResponseException | DpaErrorException $e) {
 			$this->presenter->flashError('iqrfnet.webSocketClient.messages.emptyResponse');
 		}

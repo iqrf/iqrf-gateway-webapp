@@ -25,6 +25,12 @@ use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
 use App\CoreModule\Forms\FormFactory;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
+use App\IqrfNetModule\Exceptions\IncorrectDataException;
+use App\IqrfNetModule\Exceptions\IncorrectDataLengthException;
+use App\IqrfNetModule\Exceptions\IncorrectHwpidUsedException;
+use App\IqrfNetModule\Exceptions\IncorrectNadrException;
+use App\IqrfNetModule\Exceptions\IncorrectPcmdException;
+use App\IqrfNetModule\Exceptions\IncorrectPnumException;
 use App\IqrfNetModule\Models\ApiSchemaManager;
 use App\IqrfNetModule\Models\WebSocketClient;
 use App\IqrfNetModule\Presenters\SendJsonPresenter;
@@ -146,11 +152,23 @@ class SendJsonFormFactory {
 			$rsp = new ApiResponse();
 			$rsp->set(Json::encode($response['response']));
 			$rsp->checkStatus();
-			$this->presenter->flashSuccess('iqrfnet.send-json.messages.success');
+			$this->presenter->flashSuccess(self::PREFIX . 'messages.success');
+		} catch (IncorrectNadrException $e) {
+			$this->presenter->flashError(self::PREFIX . 'messages.incorrectNadr');
+		} catch (IncorrectPnumException $e) {
+			$this->presenter->flashError(self::PREFIX . 'messages.incorrectPnum');
+		} catch (IncorrectPcmdException $e) {
+			$this->presenter->flashError(self::PREFIX . 'messages.incorrectPcmd');
+		} catch (IncorrectHwpidUsedException $e) {
+			$this->presenter->flashError(self::PREFIX . 'messages.incorrectHwpid');
+		} catch (IncorrectDataException $e) {
+			$this->presenter->flashError(self::PREFIX . 'messages.incorrectData');
+		} catch (IncorrectDataLengthException $e) {
+			$this->presenter->flashError(self::PREFIX . 'messages.incorrectDataLength');
 		} catch (DpaErrorException | EmptyResponseException $e) {
 			$this->presenter->flashError('iqrfnet.webSocketClient.messages.emptyResponse');
 		} catch (JsonException $e) {
-			$this->presenter->flashError('iqrfnet.send-json.messages.failure');
+			$this->presenter->flashError(self::PREFIX . 'messages.failure');
 		}
 	}
 
