@@ -39,7 +39,9 @@ class Kernel {
 		$configurator = new Configurator();
 		$configurator->enableTracy(__DIR__ . '/../log');
 		$configurator->setTimeZone('Europe/Prague');
-		$configurator->setTempDirectory(__DIR__ . '/../temp');
+		$tempDir = __DIR__ . '/../temp';
+		$configurator->setTempDirectory($tempDir);
+		FileSystem::createDir($tempDir . '/sessions');
 		$configurator->createRobotLoader()->addDirectory(__DIR__)->register();
 		$configurator->addConfig(__DIR__ . '/config/config.neon');
 		$version = Json::decode(FileSystem::read(__DIR__ . '/../version.json'));

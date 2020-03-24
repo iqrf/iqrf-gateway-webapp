@@ -46,7 +46,9 @@ middleware:
 	debug: %debugMode%
 
 session:
+	autoStart: true
 	expiration: 14 days
+	savePath: %tempDir%/sessions
 
 services:
 	router: App\CoreModule\Router\RouterFactory::createRouter

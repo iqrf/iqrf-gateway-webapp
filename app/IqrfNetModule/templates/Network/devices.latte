@@ -16,7 +16,7 @@
 *}
 
 {snippet showDevices}
-	<div n:ifset='$devices' class='box box-primary'>
+	<div class='box box-primary'>
 		<header class='box-header with-border'>
 			<h2 class='box-title'>{_iqrfnet.devices.title}</h2>
 		</header>
@@ -48,20 +48,27 @@
 				</tr>
 			</table>
 			<a n:href='showNodes! true' class='ajax btn btn-primary center-block'>{_iqrfnet.devices.pingNodes}</a>
-			<table class='table table-striped'>
-				<tr>
-					<th>&nbsp;</th>
-					<th n:for='$i = 0; $i < $base; $i++'>{$i}</th>
-				</tr>
-				<tr n:foreach='$devices as $tens => $line'>
-					<th>{$tens}0</th>
-					<td n:foreach='$line as $units => $device'>
-						<a n:tag-if='$device->getType() !== 0' n:href='Enumeration:default address => $device->getAddress()'>
-							{$device->getIcon()|noescape}
-						</a>
-					</td>
-				</tr>
-			</table>
+			{ifset $devices}
+				<table class='table table-striped'>
+					<tr>
+						<th>&nbsp;</th>
+						<th n:for='$i = 0; $i < $base; $i++'>{$i}</th>
+					</tr>
+					<tr n:foreach='$devices as $tens => $line'>
+						<th>{$tens}0</th>
+						<td n:foreach='$line as $units => $device'>
+							<a n:tag-if='$device->getType() !== 0' n:href='Enumeration:default address => $device->getAddress()'>
+								{$device->getIcon()|noescape}
+							</a>
+						</td>
+					</tr>
+				</table>
+			{else}
+				<br>
+				<div class='alert alert-danger' role='alert'>
+					{_iqrfnet.webSocketClient.messages.emptyResponse}
+				</div>
+			{/ifset}
 		</section>
 	</div>
 {/snippet}

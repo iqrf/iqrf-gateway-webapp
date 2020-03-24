@@ -27,6 +27,8 @@ use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\IqrfNetModule\Models\TrConfigManager;
 use App\IqrfNetModule\Presenters\TrConfigPresenter;
 use Nette\Application\UI\Form;
+use Nette\Caching\Cache;
+use Nette\Caching\IStorage;
 use Nette\Forms\Controls\TextInput;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;
@@ -40,9 +42,19 @@ class TrConfigFormFactory {
 	use SmartObject;
 
 	/**
+	 * @var int Address
+	 */
+	private $address;
+
+	/**
 	 * @var stdClass TR configuration
 	 */
 	protected $configuration;
+
+	/**
+	 * @var Cache Chache
+	 */
+	private $cache;
 
 	/**
 	 * @var TrConfigManager IQRF TR configuration manager
@@ -63,11 +75,12 @@ class TrConfigFormFactory {
 	 * Constructor
 	 * @param FormFactory $factory Generic form factory
 	 * @param TrConfigManager $manager IQRF TR configuration manager
+	 * @param IStorage $storage Cache storage
 	 */
-	public function __construct(FormFactory $factory, TrConfigManager $manager) {
+	public function __construct(FormFactory $factory, TrConfigManager $manager, IStorage $storage) {
+		$this->cache = new Cache($storage, 'trConfiguration');
 		$this->factory = $factory;
 		$this->manager = $manager;
-		$this->configuration = new stdClass();
 	}
 
 	/**
@@ -77,7 +90,8 @@ class TrConfigFormFactory {
 	 */
 	public function create(TrConfigPresenter $presenter): Form {
 		$this->presenter = $presenter;
-		$this->configuration = $presenter->template->configuration ?? [];
+		$this->address = (int) $presenter->getParameter('address', 0);
+		$this->configuration = $this->cache->load('trConfiguration' . $this->address) ?? new stdClass();
 		$form = $this->factory->create('iqrfnet.trConfig');
 		$this->addRfConfiguration($form);
 		$this->addRfpgwConfiguration($form);
@@ -108,14 +122,14 @@ class TrConfigFormFactory {
 		}
 		$rfChannels = ['rfChannelA', 'rfChannelB'];
 		foreach ($rfChannels as $rfChannel) {
-			$form->addInteger($rfChannel, $rfChannel);
-			$this->setRfChannelRule($form[$rfChannel]);
+			$input = $form->addInteger($rfChannel, $rfChannel);
+			$this->setRfChannelRule($input);
 		}
-		$subChannels = ['rfSubChannelA', 'rfSubChannelB'];
+		$subChannels = ['rfSubChannelA', 'rfSubChannelB', 'rfAltDsmChannel'];
 		foreach ($subChannels as $subChannel) {
 			if (isset($this->configuration->$subChannel)) {
-				$form->addInteger($subChannel, $subChannel);
-				$this->setRfChannelRule($form[$subChannel]);
+				$input = $form->addInteger($subChannel, $subChannel);
+				$this->setRfChannelRule($input);
 			}
 		}
 		if (isset($this->configuration->stdAndLpNetwork)) {
@@ -194,7 +208,7 @@ class TrConfigFormFactory {
 		foreach ($changeablePeripherals as $peripheral) {
 			$embeddedPeripherals->addCheckbox($peripheral, 'embPers.' . $peripheral);
 		}
-		$dpaVersion = $this->presenter->template->dpaVersion ?? '99.99';
+		$dpaVersion = $this->cache->load('dpaVersion' . $this->address) ?? '99.99';
 		if (version_compare($dpaVersion, '4.00', '>=')) {
 			if ($this->presenter->getUser()->isInRole('power')) {
 				$frc = $embeddedPeripherals->addCheckbox('frc', 'embPers.frc')
@@ -214,7 +228,10 @@ class TrConfigFormFactory {
 	 */
 	private function addDpaOtherConfiguration(Form &$form): void {
 		$form->addGroup('dpaOther');
-		$form->addCheckbox('customDpaHandler', 'customDpaHandler');
+		$dpaCustomHandler = $form->addCheckbox('customDpaHandler', 'customDpaHandler');
+		if ($this->cache->load('dpaHandlerDetected' . $this->address) !== true) {
+			$dpaCustomHandler->setDisabled();
+		}
 		$form->addCheckbox('ioSetup', 'ioSetup');
 		$form->addCheckbox('dpaAutoexec', 'dpaAutoexec');
 		$form->addCheckbox('routingOff', 'routingOff');
@@ -241,13 +258,13 @@ class TrConfigFormFactory {
 	 * @param Form $form Set TR configuration form
 	 */
 	public function save(Form $form): void {
-		$address = (int) $this->presenter->getParameter('address', 0);
 		$config = $form->getValues('array');
 		if (array_key_exists('stdAndLpNetwork', $config)) {
 			$config['stdAndLpNetwork'] = (bool) $config['stdAndLpNetwork'];
 		}
 		try {
-			$this->manager->write($address, $config);
+			$this->manager->write($this->address, $config);
+			$this->cache->remove('trConfiguration' . $this->address);
 			$this->presenter->flashSuccess('iqrfnet.trConfiguration.write.success');
 		} catch (DpaErrorException | EmptyResponseException | JsonException | UserErrorException $e) {
 			$this->presenter->flashError('iqrfnet.trConfiguration.write.failure');

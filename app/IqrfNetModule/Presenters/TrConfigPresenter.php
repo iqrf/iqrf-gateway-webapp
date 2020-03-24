@@ -30,12 +30,19 @@ use App\IqrfNetModule\Forms\TrConfigFormFactory;
 use App\IqrfNetModule\Models\EnumerationManager;
 use App\IqrfNetModule\Models\TrConfigManager;
 use Nette\Application\UI\Form;
+use Nette\Caching\Cache;
+use Nette\Caching\IStorage;
 use Nette\Utils\JsonException;
 
 /**
  * TR configuration presenter
  */
 class TrConfigPresenter extends ProtectedPresenter {
+
+	/**
+	 * @var Cache Cache
+	 */
+	private $cache;
 
 	/**
 	 * @var ChangeAddressFormFactory Change device address form
@@ -68,11 +75,11 @@ class TrConfigPresenter extends ProtectedPresenter {
 	/**
 	 * Constructor
 	 * @param EnumerationManager $enumerationManager IQRF TR enumeration manager
-	 * @param TrConfigManager $manager IQRF TR configuration manager
+	 * @param IStorage $storage Cache storage
 	 */
-	public function __construct(EnumerationManager $enumerationManager, TrConfigManager $manager) {
+	public function __construct(EnumerationManager $enumerationManager, IStorage $storage) {
+		$this->cache = new Cache($storage, 'trConfiguration');
 		$this->enumerationManager = $enumerationManager;
-		$this->manager = $manager;
 		parent::__construct();
 	}
 
@@ -102,32 +109,44 @@ class TrConfigPresenter extends ProtectedPresenter {
 
 	/**
 	 * Loads TR configuration
+	 * @param int $address TR address
 	 */
-	public function loadConfiguration(): void {
+	public function loadConfiguration(int $address): void {
+		$this->template->configuration = false;
+		if ($this->cache->load('trConfiguration' . $address) !== null &&
+			$this->cache->load('dpaVersion' . $address) !== null &&
+			$this->cache->load('dpaHandlerDetected' . $address) !== null) {
+			if (!$this->getUser()->isInRole('power')) {
+				$this->flashSuccess('iqrfnet.trConfiguration.read.success');
+			}
+			$this->template->configuration = true;
+			return;
+		}
 		try {
-			$address = (int) $this->getParameter('address');
 			$enumeration = $this->enumerationManager->device($address);
-			$dpaVersion = $enumeration['response']->data->rsp->peripheralEnumeration->dpaVer ?? '99.99';
-			$this->template->dpaVersion = ltrim($dpaVersion, '0');
-			$dpa = $this->manager->read($address);
-			if (!array_key_exists('response', $dpa)) {
-				$this->template->configuration = null;
+			if (!array_key_exists('response', $enumeration)) {
+				$this->cache->clean([Cache::ALL]);
 				$this->flashError('iqrfnet.trConfiguration.read.failure');
+				$this->redrawControl('forms');
 				return;
 			}
-			$configuration = $dpa['response']->data->rsp;
+			$response = $enumeration['response']->data->rsp;
+			$dpaVersion = $response->peripheralEnumeration->dpaVer ?? '99.99';
+			$this->cache->save('dpaVersion' . $address, ltrim($dpaVersion, '0'));
+			$this->cache->save('dpaHandlerDetected' . $address, $response->osRead->flags->dpaHandlerDetected);
+			$configuration = $response->trConfiguration;
 			if (property_exists($configuration, 'stdAndLpNetwork')) {
 				$configuration->stdAndLpNetwork = (int) $configuration->stdAndLpNetwork;
 			}
 			if (!$this->getUser()->isInRole('power')) {
 				$this->flashSuccess('iqrfnet.trConfiguration.read.success');
 			}
-			$this->template->configuration = $configuration;
+			$this->template->configuration = true;
+			$this->cache->save('trConfiguration' . $address, $configuration, [Cache::EXPIRE => '5 minutes']);
 		} catch (DpaErrorException | EmptyResponseException | JsonException | UserErrorException $e) {
-			$this->template->configuration = null;
+			$this->cache->clean([Cache::ALL]);
 			$this->flashError('iqrfnet.trConfiguration.read.failure');
 		}
-		$this->redrawControl('forms');
 	}
 
 	/**
@@ -135,8 +154,9 @@ class TrConfigPresenter extends ProtectedPresenter {
 	 * @param int $address TR address
 	 */
 	public function renderDefault(int $address = 0): void {
-		if (!$this->isAjax()) {
-			$this->loadConfiguration();
+		$this->loadConfiguration($address);
+		if ($this->isAjax()) {
+			$this->redrawControl('forms');
 		}
 	}
 

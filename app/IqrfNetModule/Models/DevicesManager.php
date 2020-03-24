@@ -72,7 +72,11 @@ class DevicesManager {
 			$base = 10;
 		}
 		$this->createEmptyTable($base);
-		$this->fillTable($base, $ping);
+		try {
+			$this->fillTable($base, $ping);
+		} catch (UserErrorException | DpaErrorException | EmptyResponseException | JsonException $e) {
+			return null;
+		}
 		$this->table[0][0]->setType(DeviceTypes::COORDINATOR);
 		return $this->table;
 	}
@@ -93,6 +97,10 @@ class DevicesManager {
 	 * Fills table with devices
 	 * @param int $base Base
 	 * @param bool $ping Perform ping?
+	 * @throws DpaErrorException
+	 * @throws EmptyResponseException
+	 * @throws JsonException
+	 * @throws UserErrorException
 	 */
 	private function fillTable(int $base, bool $ping = false): void {
 		$devices = [];
@@ -102,20 +110,16 @@ class DevicesManager {
 		}
 
 		foreach ($deviceTypes as $deviceType) {
-			try {
-				switch ($deviceType) {
-					case DeviceTypes::BONDED:
-						$devices = $this->getBonded();
-						break;
-					case DeviceTypes::DISCOVERED:
-						$devices = $this->getDiscovered();
-						break;
-					case DeviceTypes::ONLINE:
-						$devices = $this->ping();
-						break;
-				}
-			} catch (UserErrorException | DpaErrorException | EmptyResponseException | JsonException $e) {
-				$devices = [];
+			switch ($deviceType) {
+				case DeviceTypes::BONDED:
+					$devices = $this->getBonded();
+					break;
+				case DeviceTypes::DISCOVERED:
+					$devices = $this->getDiscovered();
+					break;
+				case DeviceTypes::ONLINE:
+					$devices = $this->ping();
+					break;
 			}
 			foreach ($devices as $node) {
 				if ($node > 239) {
