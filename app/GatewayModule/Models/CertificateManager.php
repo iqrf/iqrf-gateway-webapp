@@ -25,6 +25,7 @@ use AcmePhp\Ssl\ParsedKey;
 use AcmePhp\Ssl\Parser\CertificateParser;
 use AcmePhp\Ssl\Parser\KeyParser;
 use AcmePhp\Ssl\PrivateKey;
+use AcmePhp\Ssl\PublicKey;
 use App\CoreModule\Models\CommandManager;
 use Nette\IOException;
 
@@ -49,6 +50,11 @@ class CertificateManager {
 	private $certificateParser;
 
 	/**
+	 * @var KeyParser Private key parser
+	 */
+	private $keyParser;
+
+	/**
 	 * @var string Path to directory with certificate and private key
 	 */
 	private $path;
@@ -57,11 +63,6 @@ class CertificateManager {
 	 * @var PrivateKey|null Private key
 	 */
 	private $privateKey;
-
-	/**
-	 * @var KeyParser Private key parser
-	 */
-	private $privateKeyParser;
 
 	/**
 	 * Constructor
@@ -79,7 +80,7 @@ class CertificateManager {
 		if ($privateKey !== '') {
 			$this->privateKey = new PrivateKey($privateKey);
 		}
-		$this->privateKeyParser = new KeyParser();
+		$this->keyParser = new KeyParser();
 	}
 
 	/**
@@ -99,6 +100,14 @@ class CertificateManager {
 	}
 
 	/**
+	 * Returns TLS certificate
+	 * @return Certificate TLS certificate
+	 */
+	public function getCertificate(): Certificate {
+		return $this->certificate;
+	}
+
+	/**
 	 * Returns private key
 	 * @return PrivateKey Private key
 	 */
@@ -107,11 +116,19 @@ class CertificateManager {
 	}
 
 	/**
+	 * Returns public key
+	 * @return PublicKey Public key
+	 */
+	public function getPublicKey(): PublicKey {
+		return $this->certificate->getPublicKey();
+	}
+
+	/**
 	 * Returns parsed private key
 	 * @return ParsedKey Parsed private key
 	 */
 	public function getParsedPrivateKey(): ParsedKey {
-		return $this->privateKeyParser->parse($this->privateKey);
+		return $this->keyParser->parse($this->privateKey);
 	}
 
 	/**

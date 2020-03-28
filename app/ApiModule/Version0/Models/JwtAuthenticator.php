@@ -23,6 +23,7 @@ namespace App\ApiModule\Version0\Models;
 use Contributte\Middlewares\Security\IAuthenticator;
 use DateTimeImmutable;
 use Lcobucci\JWT\Token\Plain;
+use Lcobucci\JWT\Validation\Constraint\SignedWith;
 use Nette\Database\Context;
 use Nette\Security\Identity;
 use Nette\Security\IIdentity;
@@ -61,11 +62,15 @@ class JwtAuthenticator implements IAuthenticator {
 		if ($jwt === null) {
 			return null;
 		}
+		$configuration = $this->configurator->create();
 		/** @var Plain $token */
-		$token = $this->configurator->create()->getParser()->parse($jwt);
+		$token = $configuration->getParser()->parse($jwt);
+		$validator = $configuration->getValidator();
 		$now = new DateTimeImmutable();
 		$hostname = gethostname();
-		if ($token->isExpired($now) ||
+		$signedWith = new SignedWith($configuration->getSigner(), $configuration->getVerificationKey());
+		if (!$validator->validate($token, $signedWith) ||
+			$token->isExpired($now) ||
 			!$token->claims()->has('uid') ||
 			!$token->hasBeenIssuedBefore($now) ||
 			!$token->hasBeenIssuedBy($hostname) ||

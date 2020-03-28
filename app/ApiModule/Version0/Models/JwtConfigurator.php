@@ -22,7 +22,7 @@ namespace App\ApiModule\Version0\Models;
 
 use App\GatewayModule\Models\CertificateManager;
 use Lcobucci\JWT\Configuration;
-use Lcobucci\JWT\Signer\Ecdsa\Sha256 as EcdsaSha256;
+use Lcobucci\JWT\Signer\Ecdsa\Sha384 as EcdsaSha256;
 use Lcobucci\JWT\Signer\Key;
 use Lcobucci\JWT\Signer\Rsa\Sha256 as RsaSha256;
 use Throwable;
@@ -54,6 +54,7 @@ class JwtConfigurator {
 	public function create(): Configuration {
 		try {
 			$privateKey = $this->certificateManager->getPrivateKey()->getPEM();
+			$publicKey = $this->certificateManager->getPublicKey()->getPEM();
 			$parsedKey = $this->certificateManager->getParsedPrivateKey();
 			switch ($parsedKey->getType()) {
 				case OPENSSL_KEYTYPE_RSA:
@@ -65,7 +66,7 @@ class JwtConfigurator {
 				default:
 					return Configuration::forUnsecuredSigner();
 			}
-			return Configuration::forSymmetricSigner($signer, new Key($privateKey));
+			return Configuration::forAsymmetricSigner($signer, new Key($privateKey), new Key($publicKey));
 		} catch (Throwable $e) {
 			return Configuration::forUnsecuredSigner();
 		}
