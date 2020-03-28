@@ -53,8 +53,7 @@ class VersionController extends BaseController {
 	 */
 	public function index(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$json = Json::decode(FileSystem::read(__DIR__ . '/../../../../version.json'), Json::FORCE_ARRAY);
-		$response = $response->writeJsonBody($json);
-		return $response;
+		return $response->writeJsonBody($json);
 	}
 
 }

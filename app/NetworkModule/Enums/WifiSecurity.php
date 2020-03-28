@@ -91,26 +91,26 @@ final class WifiSecurity extends Enum {
 	 */
 	public static function fromNmCli(string $nmCli): self {
 		$array = explode(' ', $nmCli);
-		if (array_search('OWE', $array, true) !== false) {
+		if (in_array('OWE', $array, true)) {
 			return self::OWE();
 		}
-		if (array_search('WEP', $array, true) !== false) {
+		if (in_array('WEP', $array, true)) {
 			return self::WEP();
 		}
-		if (array_search('WPA3', $array, true) !== false) {
-			if (array_search('802.1X', $array, true) !== false) {
+		if (in_array('WPA3', $array, true)) {
+			if (in_array('802.1X', $array, true)) {
 				return self::WPA3_ENTERPRISE();
 			}
 			return self::WPA3_PERSONAL();
 		}
-		if (array_search('WPA2', $array, true) !== false) {
-			if (array_search('802.1X', $array, true) !== false) {
+		if (in_array('WPA2', $array, true)) {
+			if (in_array('802.1X', $array, true)) {
 				return self::WPA2_ENTERPRISE();
 			}
 			return self::WPA2_PERSONAL();
 		}
-		if (array_search('WPA', $array, true) !== false) {
-			if (array_search('802.1X', $array, true) !== false) {
+		if (in_array('WPA', $array, true)) {
+			if (in_array('802.1X', $array, true)) {
 				return self::WPA_ENTERPRISE();
 			}
 			return self::WPA_PERSONAL();

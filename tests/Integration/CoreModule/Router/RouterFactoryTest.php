@@ -68,13 +68,12 @@ class RouterFactoryTest extends TestCase {
 		Assert::same($this->expected, array_map(function (Router $type) {
 			if ($type instanceof Route) {
 				return $type->getMask();
-			} else {
-				if ($type instanceof RouteList) {
-					$routeMask = array_map(function (Route $route): string {
-						return $route->getMask();
-					}, $type->getIterator()->getArrayCopy());
-					return [$type->getModule() => $routeMask];
-				}
+			}
+			if ($type instanceof RouteList) {
+				$routeMask = array_map(function (Route $route): string {
+					return $route->getMask();
+				}, $type->getIterator()->getArrayCopy());
+				return [$type->getModule() => $routeMask];
 			}
 			return null;
 		}, $routeList->getIterator()->getArrayCopy()));

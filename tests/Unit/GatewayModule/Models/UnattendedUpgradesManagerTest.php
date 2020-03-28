@@ -49,7 +49,9 @@ class UnattendedUpgradesManagerTest extends TestCase {
 	 */
 	public function testDisableService(): void {
 		$this->serviceManager->shouldReceive('disable');
-		Assert::noError([$this->manager, 'disableService']);
+		Assert::noError(function (): void {
+			$this->manager->disableService();
+		});
 	}
 
 	/**
@@ -57,7 +59,9 @@ class UnattendedUpgradesManagerTest extends TestCase {
 	 */
 	public function testEnableService(): void {
 		$this->serviceManager->shouldReceive('enable');
-		Assert::noError([$this->manager, 'enableService']);
+		Assert::noError(function (): void {
+			$this->manager->enableService();
+		});
 	}
 
 	/**

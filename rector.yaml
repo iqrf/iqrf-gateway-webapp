@@ -4,6 +4,7 @@ parameters:
   paths:
     - 'app'
     - 'bin'
+    - 'tests'
   php_version_features: '7.2'
   sets:
     - 'code-quality'

@@ -48,8 +48,7 @@ abstract class DpaParserTestCase extends TestCase {
 		} catch (JsonException $e) {
 			return null;
 		}
-		$packet = $content['data']['rsp']['rData'] ?? null;
-		return $packet;
+		return $content['data']['rsp']['rData'] ?? null;
 	}
 
 	/**
