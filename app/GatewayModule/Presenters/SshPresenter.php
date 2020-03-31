@@ -50,7 +50,7 @@ class SshPresenter extends ProtectedPresenter {
 	 */
 	public function handleDisable(): void {
 		$this->manager->disableService();
-		$this->flashSuccess('gateway.unattendedUpgrades.messages.disable');
+		$this->flashSuccess('gateway.ssh.messages.disable');
 	}
 
 	/**
@@ -58,7 +58,7 @@ class SshPresenter extends ProtectedPresenter {
 	 */
 	public function handleEnable(): void {
 		$this->manager->enableService();
-		$this->flashSuccess('gateway.unattendedUpgrades.messages.enable');
+		$this->flashSuccess('gateway.ssh.messages.enable');
 	}
 
 	/**
