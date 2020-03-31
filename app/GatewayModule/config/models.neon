@@ -4,7 +4,7 @@ services:
 	- App\GatewayModule\Models\LogManager(%daemon.logDir%)
 	- App\GatewayModule\Models\NetworkManager
 	- App\GatewayModule\Models\PowerManager
-	ssh.serviceManager: App\ServiceModule\Models\SystemDManager(@commandManager, 'sshd')
+	ssh.serviceManager: App\ServiceModule\Models\SystemDManager(@commandManager, 'ssh')
 	ssh.manager: App\GatewayModule\Models\SshManager(@ssh.serviceManager)
 	- App\GatewayModule\Models\UnattendedUpgradesManager(@upgrade.serviceManager)
 	- App\GatewayModule\Models\UpdaterManager
