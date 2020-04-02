@@ -17,7 +17,6 @@ use App\CoreModule\Entities\CommandStack;
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FileManager;
 use App\CoreModule\Models\ZipArchiveManager;
-use App\ServiceModule\Models\ServiceManager;
 use DateTime;
 use Mockery;
 use Nette\Application\Responses\FileResponse;
@@ -136,12 +135,10 @@ class SchedulerMigrationManagerTest extends TestCase {
 		$this->fileManager = new FileManager($this->configPath, $commandManager);
 		$mainConfigManager = Mockery::mock(MainManager::class);
 		$mainConfigManager->shouldReceive('getCacheDir')->andReturn($this->configTempPath . '/..');
-		$serviceManager = Mockery::mock(ServiceManager::class);
-		$serviceManager->shouldReceive('restart');
 		$schemaManager = Mockery::mock(SchedulerSchemaManager::class);
 		$schemaManager->shouldReceive('validate')->andReturn(true);
 		$commandManager = Mockery::mock(CommandManager::class);
-		$this->manager = new SchedulerMigrationManager($mainConfigManager, $serviceManager, $schemaManager, $commandManager);
+		$this->manager = new SchedulerMigrationManager($mainConfigManager, $schemaManager, $commandManager);
 	}
 
 	/**

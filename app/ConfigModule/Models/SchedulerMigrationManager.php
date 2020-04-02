@@ -23,18 +23,14 @@ namespace App\ConfigModule\Models;
 use App\ConfigModule\Exceptions\InvalidConfigurationFormatException;
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\ZipArchiveManager;
-use App\ServiceModule\Exceptions\NotSupportedInitSystemException;
-use App\ServiceModule\Models\ServiceManager;
 use DateTime;
 use Nette\Application\BadRequestException;
 use Nette\Application\Responses\FileResponse;
 use Nette\Http\FileUpload;
 use Nette\SmartObject;
-use Nette\Utils\FileSystem;
-use Nette\Utils\Finder;
 use Nette\Utils\Json;
+use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
-use SplFileInfo;
 use Throwable;
 use ZipArchive;
 
@@ -56,24 +52,17 @@ class SchedulerMigrationManager {
 	private $schemaManager;
 
 	/**
-	 * @var ServiceManager Service manager
-	 */
-	private $serviceManager;
-
-	/**
 	 * Constructor
 	 * @param MainManager $mainManager Main configuration manager
-	 * @param ServiceManager $serviceManager Service manager
 	 * @param SchedulerSchemaManager $schemaManager Scheduler JSON schema manager
-	 * @param CommandManager $commandManager Command
+	 * @param CommandManager $commandManager Command manager
 	 */
-	public function __construct(MainManager $mainManager, ServiceManager $serviceManager, SchedulerSchemaManager $schemaManager, CommandManager $commandManager) {
+	public function __construct(MainManager $mainManager, SchedulerSchemaManager $schemaManager, CommandManager $commandManager) {
 		$cacheDir = $mainManager->getCacheDir();
 		if (!is_readable($cacheDir) || !is_writable($cacheDir)) {
 			$commandManager->run('chmod 777 ' . $cacheDir, true);
 		}
 		$this->configDirectory = $cacheDir . '/scheduler/';
-		$this->serviceManager = $serviceManager;
 		$this->schemaManager = $schemaManager;
 	}
 
@@ -101,7 +90,7 @@ class SchedulerMigrationManager {
 	 * Uploads a configuration
 	 * @param FileUpload $zip ZIP archive with scheduler configuration
 	 * @throws InvalidConfigurationFormatException
-	 * @throws NotSupportedInitSystemException
+	 * @throws JsonException
 	 */
 	public function upload(FileUpload $zip): void {
 		if (!$zip->isOk()) {
@@ -118,22 +107,8 @@ class SchedulerMigrationManager {
 			$json = Json::decode($zipManager->openFile($fileName));
 			$this->schemaManager->validate($json);
 		}
-		$this->removeOldConfiguration();
 		$zipManager->extract($this->configDirectory);
 		$zipManager->close();
-		$this->serviceManager->restart();
-	}
-
-	/**
-	 * Removes an old scheduler's configuration
-	 */
-	private function removeOldConfiguration(): void {
-		/**
-		 * @var SplFileInfo $file File info
-		 */
-		foreach (Finder::findFiles('*.json')->in($this->configDirectory) as $file) {
-			FileSystem::delete($file->getPath());
-		}
 	}
 
 }
