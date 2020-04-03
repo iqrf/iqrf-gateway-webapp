@@ -29,6 +29,7 @@ use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use Apitte\OpenApi\ISchemaBuilder;
+use Nette\Utils\Strings;
 use stdClass;
 
 /**
@@ -67,6 +68,13 @@ class OpenApiController extends BaseController {
 		$openApi = $this->schemaBuilder->build()->toArray();
 		$openApi['paths']['/api/v0/openapi']['get']['security'] = [new stdClass()];
 		$openApi['paths']['/api/v0/user/signIn']['post']['security'] = [new stdClass()];
+		foreach ($openApi['servers'] as &$server) {
+			$server['url'] .= 'api/v0/';
+		}
+		foreach ($openApi['paths'] as $uri => $path) {
+			$openApi['paths'][Strings::replace($uri, '~/api/v0~', '')] = $path;
+			unset($openApi['paths'][$uri]);
+		}
 		return $response->writeJsonBody($openApi);
 	}
 
