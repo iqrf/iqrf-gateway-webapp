@@ -16,6 +16,5 @@ monolog:
 			handlers:
 				- Sentry\Monolog\Handler()
 			processors:
-				- Monolog\Processor\GitProcessor()
 				- Monolog\Processor\MemoryPeakUsageProcessor()
 				- Monolog\Processor\WebProcessor()

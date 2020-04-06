@@ -22,7 +22,15 @@
 
 .datagrid {
 	padding: 0;
-	overflow-x: visible;
+	overflow-x: scroll;
+}
+
+.main-header .sidebar-toggle {
+	font-family: 'Glyphicons Halflings';
+}
+
+.main-header .sidebar-toggle::before {
+	content: "\e236";
 }
 
 .icon {

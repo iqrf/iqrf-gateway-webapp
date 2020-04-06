@@ -277,9 +277,9 @@ scheduler:
 	title: Scheduler
 	description: Scheduler settings.
 	add: Add task
-	import: Import task
+	import: 'Import task(s)'
 	importForm:
-		file: JSON Task file
+		file: JSON task file or ZIP archive with tasks
 		import: Import
 		messages:
 			invalidFormat: The uploaded file is not JSON file or ZIP archive.

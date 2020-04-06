@@ -28,6 +28,7 @@ use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
 use App\CoreModule\Forms\FormFactory;
 use App\ServiceModule\Exceptions\NotSupportedInitSystemException;
+use App\ServiceModule\Models\ServiceManager;
 use Nette\Application\UI\Form;
 use Nette\Http\FileUpload;
 use Nette\IOException;
@@ -63,6 +64,11 @@ class SchedulerImportFormFactory {
 	private $migrationManager;
 
 	/**
+	 * @var ServiceManager IQRF Gateway Daemon service manager
+	 */
+	private $serviceManager;
+
+	/**
 	 * Translator prefix
 	 */
 	private const TRANSLATOR_PREFIX = 'config.scheduler.importForm';
@@ -72,11 +78,13 @@ class SchedulerImportFormFactory {
 	 * @param FormFactory $factory Generic form factory
 	 * @param SchedulerManager $manager Scheduler manager
 	 * @param SchedulerMigrationManager $migrationManager Scheduler migration manager
+	 * @param ServiceManager $serviceManager IQRF Gateway Daemon service manager
 	 */
-	public function __construct(FormFactory $factory, SchedulerManager $manager, SchedulerMigrationManager $migrationManager) {
+	public function __construct(FormFactory $factory, SchedulerManager $manager, SchedulerMigrationManager $migrationManager, ServiceManager $serviceManager) {
 		$this->factory = $factory;
 		$this->manager = $manager;
 		$this->migrationManager = $migrationManager;
+		$this->serviceManager = $serviceManager;
 	}
 
 	/**
@@ -130,7 +138,9 @@ class SchedulerImportFormFactory {
 		}
 		try {
 			$this->manager->save($json);
+			$this->serviceManager->restart();
 			$this->presenter->flashSuccess(self::TRANSLATOR_PREFIX . '.messages.success');
+			$this->presenter->flashInfo('service.actions.restart.message');
 			$this->presenter->redirect('Scheduler:default');
 		} catch (IOException $e) {
 			$this->presenter->flashError('config.messages.writeFailures.ioError');
@@ -151,7 +161,9 @@ class SchedulerImportFormFactory {
 	private function importZip(Form $form, FileUpload $file): void {
 		try {
 			$this->migrationManager->upload($file);
+			$this->serviceManager->restart();
 			$this->presenter->flashSuccess('config.migration.messages.importedConfig');
+			$this->presenter->flashInfo('service.actions.restart.message');
 			$this->presenter->redirect('Scheduler:default');
 		} catch (InvalidConfigurationFormatException $e) {
 			$this->presenter->flashError('config.migration.errors.invalidFormat');
@@ -164,6 +176,8 @@ class SchedulerImportFormFactory {
 		} catch (IOException $e) {
 			/// TODO: Use custom error message.
 			$this->presenter->flashError('config.messages.writeFailures.ioError');
+		} catch (JsonException $e) {
+			$this->presenter->flashError('config.messages.writeFailures.invalidJson');
 		}
 	}
 
