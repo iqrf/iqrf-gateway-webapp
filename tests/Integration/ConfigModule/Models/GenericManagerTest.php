@@ -46,19 +46,6 @@ class GenericManagerTest extends JsonConfigTestCase {
 	/**
 	 * Tests the function to delete the instance of component
 	 */
-	public function testDelete(): void {
-		Environment::lock('config_mqtt', __DIR__ . '/../../../temp/');
-		$this->managerTemp->setComponent($this->component);
-		$this->copyFile($this->fileName);
-		Assert::true($this->fileManagerTemp->exists($this->fileName));
-		$id = array_search($this->fileName, $this->managerTemp->getInstanceFiles(), true);
-		$this->managerTemp->delete($id);
-		Assert::false($this->fileManagerTemp->exists($this->fileName));
-	}
-
-	/**
-	 * Tests the function to delete the instance of component
-	 */
 	public function testDeleteFile(): void {
 		Environment::lock('config_mqtt', __DIR__ . '/../../../temp/');
 		$this->managerTemp->setComponent($this->component);
@@ -96,8 +83,7 @@ class GenericManagerTest extends JsonConfigTestCase {
 	public function testGenerateFileName(): void {
 		$this->manager->setComponent($this->component);
 		$array = $this->readFile($this->fileName);
-		$this->manager->generateFileName($array);
-		Assert::equal($this->fileName, $this->manager->getFileName());
+		Assert::equal($this->fileName, $this->manager->generateFileName($array));
 	}
 
 	/**

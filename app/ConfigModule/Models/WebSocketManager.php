@@ -79,10 +79,9 @@ class WebSocketManager {
 		$this->genericManager->setComponent($this->components['messaging']);
 		$instances = $this->genericManager->getInstanceFiles();
 		$this->fileNames['messaging'] = Arrays::pick($instances, $id);
-		$this->genericManager->setFileName($this->fileNames['messaging']);
-		$messaging = $this->genericManager->read();
+		$messaging = $this->genericManager->read($this->fileNames['messaging']);
 		$instance = $messaging['RequiredInterfaces'][0]['target']['instance'];
-		$this->genericManager->deleteFile();
+		$this->genericManager->deleteFile($this->fileNames['messaging']);
 		$this->genericManager->deleteFile($this->getServiceFile($instance));
 	}
 
@@ -96,8 +95,7 @@ class WebSocketManager {
 		$this->genericManager->setComponent($this->components['service']);
 		$services = $this->genericManager->getInstanceFiles();
 		foreach ($services as $service) {
-			$this->genericManager->setFileName($service);
-			$json = $this->genericManager->read();
+			$json = $this->genericManager->read($service);
 			if (Arrays::pick($json, 'instance') === $instanceName) {
 				return $service;
 			}
@@ -194,13 +192,11 @@ class WebSocketManager {
 		$this->genericManager->setComponent($this->components['messaging']);
 		$instances = $this->genericManager->getInstanceFiles();
 		$this->fileNames['messaging'] = Arrays::pick($instances, $id);
-		$this->genericManager->setFileName($this->fileNames['messaging']);
-		$messaging = $this->genericManager->read();
+		$messaging = $this->genericManager->read($this->fileNames['messaging']);
 		$serviceInstance = $messaging['RequiredInterfaces'][0]['target']['instance'];
 		$this->fileNames['service'] = $this->getServiceFile($serviceInstance);
 		$this->genericManager->setComponent($this->components['service']);
-		$this->genericManager->setFileName($this->fileNames['service']);
-		$service = $this->genericManager->read();
+		$service = $this->genericManager->read($this->fileNames['service']);
 		$this->instances = [
 			'messaging' => $messaging['instance'],
 			'service' => $service['instance'],

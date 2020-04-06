@@ -95,7 +95,6 @@ class AwsManager implements IManager {
 		$this->checkCertificate($cert, $pKey);
 		$this->uploadCertsAndKey($paths, $cert, $pKey);
 		$this->configManager->setComponent('iqrf::MqttMessaging');
-		$this->configManager->setFileName('iqrf__MqttMessaging_Aws');
 		$interface = [
 			'instance' => 'MqttMessagingAws',
 			'BrokerAddr' => 'ssl://' . $values['endpoint'] . ':8883',
@@ -119,7 +118,7 @@ class AwsManager implements IManager {
 			'EnableServerCertAuth' => false,
 			'acceptAsyncMsg' => false,
 		];
-		$this->configManager->save($interface);
+		$this->configManager->save($interface, 'iqrf__MqttMessaging_Aws');
 	}
 
 	/**

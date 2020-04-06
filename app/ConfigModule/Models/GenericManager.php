@@ -68,28 +68,12 @@ class GenericManager {
 
 	/**
 	 * Deletes a configuration
-	 * @param int $id Configuration ID
-	 * @throws IOException
-	 * @throws JsonException
-	 */
-	public function delete(int $id): void {
-		$fileName = $this->getFileNameById($id);
-		if ($fileName !== null) {
-			$this->fileManager->delete($fileName);
-		}
-	}
-
-	/**
-	 * Deletes a configuration
 	 * @param string|null $fileName File name
 	 * @throws IOException
 	 */
 	public function deleteFile(?string $fileName = null): void {
-		if ($fileName === null && $this->fileName === null) {
-			return;
-		}
 		if ($fileName === null) {
-			$fileName = $this->fileName;
+			return;
 		}
 		$this->fileManager->delete($fileName);
 	}
@@ -101,8 +85,8 @@ class GenericManager {
 	 */
 	public function getInstanceFileName(string $instance): ?string {
 		$files = $this->getInstanceFiles();
-		foreach ($files as $id => $fileName) {
-			$configuration = $this->load($id);
+		foreach ($files as $fileName) {
+			$configuration = $this->read($fileName);
 			if ($configuration['instance'] === $instance) {
 				return $fileName;
 			}
@@ -168,8 +152,7 @@ class GenericManager {
 		if ($fileName === null) {
 			return [];
 		}
-		$this->fileName = $fileName;
-		return $this->read();
+		return $this->read($fileName);
 	}
 
 	/**
@@ -242,7 +225,7 @@ class GenericManager {
 	 */
 	public function save(array $array, ?string $fileName = null): void {
 		if ($fileName === null && $this->fileName === null) {
-			$this->generateFileName($array);
+			$fileName = $this->generateFileName($array);
 		}
 		if ($fileName === null) {
 			$fileName = $this->fileName;
@@ -257,10 +240,11 @@ class GenericManager {
 	/**
 	 * Generates a configuration file name
 	 * @param mixed[] $array Configuration from form
+	 * @return string Generated file name
 	 */
-	public function generateFileName(array $array): void {
+	public function generateFileName(array $array): string {
 		$prefix = explode('::', $this->component)[0];
-		$this->fileName = $prefix . '__' . $array['instance'];
+		return $prefix . '__' . $array['instance'];
 	}
 
 	/**
@@ -279,18 +263,7 @@ class GenericManager {
 	 */
 	public function getFileNameById(int $id): ?string {
 		$instanceFiles = $this->getInstanceFiles();
-		if (!isset($instanceFiles[$id])) {
-			return null;
-		}
-		return $instanceFiles[$id];
-	}
-
-	/**
-	 * Sets the file name
-	 * @param string|null $fileName File name (without .json)
-	 */
-	public function setFileName(?string $fileName): void {
-		$this->fileName = $fileName;
+		return $instanceFiles[$id] ?? null;
 	}
 
 	/**
@@ -321,10 +294,8 @@ class GenericManager {
 	public function getComponentInstances(string $component): array {
 		$instances = [];
 		$this->setComponent($component);
-		$files = array_keys($this->getInstanceFiles());
-		foreach ($files as $id) {
-			$instance = $this->load($id);
-			$instances[] = $instance['instance'];
+		foreach ($this->getInstanceFiles() as $file) {
+			$instances[] = $this->read($file)['instance'];
 		}
 		sort($instances);
 		return $instances;

@@ -148,7 +148,8 @@ class WebsocketPresenter extends GenericPresenter {
 	public function actionDeleteMessaging(int $id): void {
 		$this->configManager->setComponent($this->components['messaging']);
 		try {
-			$this->configManager->delete($id);
+			$fileName = $this->configManager->getFileNameById($id);
+			$this->configManager->deleteFile($fileName);
 			$this->flashSuccess('config.messages.successes.delete');
 		} catch (IOException $e) {
 			$this->flashError('config.messages.deleteFailures.ioError');
@@ -164,7 +165,8 @@ class WebsocketPresenter extends GenericPresenter {
 	public function actionDeleteService(int $id): void {
 		$this->configManager->setComponent($this->components['service']);
 		try {
-			$this->configManager->delete($id);
+			$fileName = $this->configManager->getFileNameById($id);
+			$this->configManager->deleteFile($fileName);
 			$this->flashSuccess('config.messages.successes.delete');
 		} catch (IOException $e) {
 			$this->flashError('config.messages.deleteFailures.ioError');

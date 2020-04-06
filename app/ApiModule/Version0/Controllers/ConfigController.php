@@ -127,8 +127,9 @@ class ConfigController extends BaseController {
 	 *              type: string
 	 * ")
 	 * @Responses({
-	 *      @Response(code="200", description="Success"),
-	 *      @Response(code="404", description="Not found")
+	 *     @Response(code="201", description="Created"),
+	 *     @Response(code="400", description="Bad request"),
+	 *     @Response(code="404", description="Not found")
 	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -138,10 +139,10 @@ class ConfigController extends BaseController {
 		try {
 			$json = $request->getJsonBody(true);
 			$this->componentManager->add($json);
+			return $response->withStatus(201);
 		} catch (JsonException $e) {
 			return $response->withStatus(500);
 		}
-		return $response;
 	}
 
 	/**
@@ -248,8 +249,9 @@ class ConfigController extends BaseController {
 	 *      @RequestParameter(name="component", type="string", description="Component name")
 	 * })
 	 * @Responses({
-	 *      @Response(code="200", description="Success"),
-	 *      @Response(code="404", description="Not found")
+	 *     @Response(code="201", description="Created"),
+	 *     @Response(code="400", description="Bad request"),
+	 *     @Response(code="404", description="Not found")
 	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -266,14 +268,16 @@ class ConfigController extends BaseController {
 			$fileName = $this->manager->getInstanceFileName($json['instance']);
 			if ($fileName !== null) {
 				return $response->withStatus(400, 'Instance already exits');
+			} else {
+				$fileName = $this->manager->generateFileName($json);
 			}
 			$this->manager->save($json, $fileName);
+			return $response->withStatus(201);
 		} catch (NonExistingJsonSchemaException $e) {
 			return $response->withStatus(404, 'Component not found.');
 		} catch (JsonException $e) {
 			return $response->withStatus(500);
 		}
-		return $response;
 	}
 
 	/**

@@ -81,9 +81,9 @@ abstract class GenericPresenter extends ProtectedPresenter {
 	private function checkInstanceFiles(): void {
 		foreach ($this->components as $component) {
 			$this->configManager->setComponent($component);
-			$files = array_keys($this->configManager->getInstanceFiles());
-			foreach ($files as $id) {
-				$this->configManager->load($id);
+			$files = $this->configManager->getInstanceFiles();
+			foreach ($files as $file) {
+				$this->configManager->read($file);
 			}
 		}
 	}
