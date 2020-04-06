@@ -17,7 +17,6 @@
 
 'use strict';
 
-import '@fortawesome/fontawesome-free/js/solid';
 import 'admin-lte';
 import 'autosize';
 import 'bootstrap';
