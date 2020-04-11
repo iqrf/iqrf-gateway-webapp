@@ -1,7 +1,7 @@
 #!/bin/sh
 # postinst script for iqrf-gateway-webapp
 
-set -e
+set -ex
 
 nginx_virtualhost_install() {
 	nginx_virtualhost_old_remove
@@ -33,12 +33,20 @@ nginx_virtualhost_old_remove() {
 }
 
 openssl_create_ca() {
-	if [ ! -f /etc/iqrf-gateway-webapp/certs/cert.pem ] || [ ! -f /etc/iqrf-gateway-webapp/certs/privkey.pem ] ; then
-		openssl req -new -x509 -days 3650 \
-			-subj "/C=CZ/ST=Hradec Kralove Region/L=Jicin/O=IQRF Tech s.r.o." \
-			-newkey rsa:4096 -nodes -keyout /etc/iqrf-gateway-webapp/certs/privkey.pem \
-			-out /etc/iqrf-gateway-webapp/certs/cert.pem
-		chmod 600 /etc/iqrf-gateway-webapp/certs/*.pem
+	DAEMON_CERT_DIR=/etc/iqrf-gateway-daemon/certs/core
+	WEBAPP_CERT_DIR=/etc/iqrf-gateway-webapp/certs
+	if [ -f "${DAEMON_CERT_DIR}/cert.pem" ] && [ -f "${DAEMON_CERT_DIR}/privkey.pem" ] ; then
+		rm -rf "${WEBAPP_CERT_DIR}/cert.pem" "${WEBAPP_CERT_DIR}/privkey.pem"
+		ln -s "${DAEMON_CERT_DIR}/cert.pem" "${WEBAPP_CERT_DIR}/cert.pem"
+		ln -s "${DAEMON_CERT_DIR}/privkey.pem" "${WEBAPP_CERT_DIR}/privkey.pem"
+		chmod 600 ${WEBAPP_CERT_DIR}/*.pem
+	fi
+	if [ ! -f "${WEBAPP_CERT_DIR}/cert.pem" ] || [ ! -f "${WEBAPP_CERT_DIR}/privkey.pem" ] ; then
+		openssl ecparam -name secp384r1 -genkey -param_enc named_curve -out ${WEBAPP_CERT_DIR}/privkey.pem
+    openssl req -new -x509 -sha256 -nodes -days 3650 \
+      -subj "/CN=IQRF Gateway/C=CZ/ST=Hradec Kralove Region/L=Jicin/O=IQRF Tech s.r.o." \
+      -key ${WEBAPP_CERT_DIR}/privkey.pem -out ${WEBAPP_CERT_DIR}/cert.pem
+		chmod 600 ${WEBAPP_CERT_DIR}/*.pem
 	fi
 }
 
@@ -59,7 +67,12 @@ webapp_remove_old_dirs() {
 }
 
 webapp_repair_premissions() {
+	chown -R www-data:www-data /var/cache/iqrf-gateway-webapp
 	chown -R www-data:www-data /var/log/iqrf-gateway-webapp
+}
+
+webapp_warmup_templates() {
+	iqrf-gateway-webapp-manager nette:latte:warmup > /dev/null
 }
 
 if [ "$1" = "configure" ]; then
@@ -69,19 +82,13 @@ if [ "$1" = "configure" ]; then
 	fi
 	webapp_remove_cache
 	webapp_remove_old_dirs
+	webapp_warmup_templates
 	webapp_repair_premissions
 fi
 
 if [ -e /usr/share/apache2/apache2-maintscript-helper ] ; then
-	a2enmod deflate filter headers http2 rewrite ssl
-	a2dissite 000-default.conf
-fi
-
-if true; then
-	if [ -e /usr/share/apache2/apache2-maintscript-helper ] ; then
-		. /usr/share/apache2/apache2-maintscript-helper
-		for conf in iqrf-gateway-webapp.conf  ; do
-			apache2_invoke ensite $conf  || exit 1
-		done
-	fi
+	. /usr/share/apache2/apache2-maintscript-helper
+	apache2_invoke enmod deflate filter headers http2 rewrite ssl
+	apache2_invoke dissite 000-default.conf
+	apache2_invoke ensite iqrf-gateway-webapp.conf || exit 1
 fi
