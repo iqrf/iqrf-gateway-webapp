@@ -66,10 +66,13 @@ class ZipArchiveManager {
 	 */
 	public function addFolder(string $path, string $name): void {
 		$this->zip->addEmptyDir($name);
+		if ($name !== '' && !Strings::endsWith($name, '/')) {
+			$name .= '/';
+		}
 		try {
 			$files = Finder::findFiles('*')->in($path);
 			foreach ($files as $file => $fileObject) {
-				$fileName = $name . '/' . basename($file);
+				$fileName = $name . basename($file);
 				$this->addFile($file, $fileName);
 			}
 		} catch (UnexpectedValueException $e) {
@@ -78,7 +81,7 @@ class ZipArchiveManager {
 		try {
 			$directories = Finder::findDirectories('*')->in($path);
 			foreach ($directories as $directory => $directoryObject) {
-				$directoryName = $name . '/' . basename($directory);
+				$directoryName = $name . basename($directory);
 				$this->addFolder($directory, $directoryName);
 			}
 		} catch (UnexpectedValueException $e) {
@@ -107,17 +110,41 @@ class ZipArchiveManager {
 	}
 
 	/**
+	 * Deletes the directory
+	 * @param string $name Name of the directory to delete
+	 */
+	public function deleteDirectory(string $name): void {
+		if (!Strings::endsWith($name, '/')) {
+			$name .= '/';
+		}
+		foreach ($this->listFiles() as $file) {
+			if (Strings::startsWith($file, $name)) {
+				$this->deleteFile($file);
+			}
+		}
+		$this->zip->deleteName($name);
+	}
+
+	/**
+	 * Deletes the file
+	 * @param string $name Name of the file to delete
+	 */
+	public function deleteFile(string $name): void {
+		$this->zip->deleteName($name);
+	}
+
+	/**
 	 * Checks if the file or the files exist in the archive
 	 * @param string|mixed[]|iterable|mixed $var File(s) to check
 	 * @return bool Is file exist
 	 */
 	public function exist($var): bool {
 		if (is_string($var)) {
-			return $this->zip->locateName('/' . $var, ZipArchive::FL_NOCASE) !== false;
+			return $this->zip->locateName($var, ZipArchive::FL_NOCASE) !== false;
 		}
 		if (is_iterable($var)) {
 			foreach ($var as $file) {
-				$result = $this->zip->locateName('/' . $file, ZipArchive::FL_NOCASE);
+				$result = $this->zip->locateName($file, ZipArchive::FL_NOCASE);
 				if (!is_int($result)) {
 					return false;
 				}
@@ -141,10 +168,14 @@ class ZipArchiveManager {
 	 */
 	public function listFiles(): array {
 		$files = [];
-		for ($i = 0; $i < $this->zip->numFiles; $i++) {
-			$name = $this->zip->statIndex($i)['name'];
+		for ($i = 0; $i < $this->zip->count(); $i++) {
+			$stat = $this->zip->statIndex($i);
+			if ($stat === false) {
+				continue;
+			}
+			$name = $stat['name'];
 			if (!Strings::endsWith($name, '/')) {
-				$files[] = Strings::trim($name, '/');
+				$files[] = $name;
 			}
 		}
 		sort($files);
@@ -157,11 +188,11 @@ class ZipArchiveManager {
 	 * @return string Content of file
 	 */
 	public function openFile(string $fileName): string {
-		$content = $this->zip->getFromName('/' . $fileName);
+		$content = $this->zip->getFromName($fileName);
 		if (!is_bool($content)) {
 			return $content;
 		}
-		return $this->zip->getFromName($fileName);
+		return $this->zip->getFromName('/' . $fileName);
 	}
 
 	/**
