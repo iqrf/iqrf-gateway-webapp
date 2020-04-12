@@ -1,3 +1,30 @@
+iqrf-gateway-webapp (2.0.0-rc7) testing; urgency=medium
+
+  * Core: fix redirect after sign in
+  * Core: hide User ID column for normal users
+  * IQRF net: add TR configuration success read flash message for BFUs
+  * Prepare for version 2.0.0-rc7
+  * Config: skip invalid scheduler task files
+  * Tests: fix scheduler tests
+  * Config: enable IQRF Info component configuration tool for all users
+  * IQRF net: add error message for device info table if daemon is not correctly responding
+  * Core: add another redirect if the user is signed in (fix #226)
+  * IQRF net: fix TR configuration form (fix #220)
+  * Core: use own directory for sessions (fix #230)
+  * IQRF net: add error messages for incorrect DPA sections (fix #221)
+  * IQRF net: add missing Alternative DSM channel input field in TR configuration (fix #220)
+  * Config: restart IQRF Gateway Daemon after scheduler task import
+  * Config: fix texts on Scheduler task import page
+  * IQRF net: fix typos in error messages for incorrect HWPID in DPA packet/JSON request
+  * Gateway: fix SSH daemon service manager (fix #231)
+  * Monolog: disable Git processor
+  * Core: fix datagrid overflow (fix #233), fix sidabar toggle icon, update dependencies
+  * Debian packaging: use IQRF Gateway Daemon's certificate for HTTPS, warmup templates during installation
+  * Debian packaging: disable command printing
+  * Config: fix scheduler ZIP archive import
+
+ -- Roman Ondráček <roman@romanondracek.cz>  Mon, 13 Apr 2020 00:25:00 +0200
+
 iqrf-gateway-webapp (2.0.0-rc6) testing; urgency=medium
 
   * Core: hide unnecessary inputs in user add form
