@@ -64,6 +64,15 @@ class TrUploadPresenter extends ProtectedPresenter {
 	}
 
 	/**
+	 * Renders the page
+	 */
+	public function renderDefault(): void {
+		if (!$this->isAjax()) {
+			$this->flashInfo('iqrfnet.trUpload.messages.info');
+		}
+	}
+
+	/**
 	 * Creates DPA upload form
 	 * @return Form DPA upload form
 	 */
