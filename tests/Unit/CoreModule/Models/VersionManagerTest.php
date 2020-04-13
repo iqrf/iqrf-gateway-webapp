@@ -36,7 +36,7 @@ class VersionManagerTest extends CommandTestCase {
 	/**
 	 * @var string Current version of the webapp
 	 */
-	private $currentVersion = '2.0.0-rc8';
+	private $currentVersion = '2.0.0-rc9';
 
 	/**
 	 * @var string Current stable version of the webapp
