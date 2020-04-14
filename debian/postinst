@@ -1,7 +1,7 @@
 #!/bin/sh
 # postinst script for iqrf-gateway-webapp
 
-set -e
+set -ex
 
 nginx_virtualhost_install() {
 	nginx_virtualhost_old_remove
@@ -86,9 +86,13 @@ if [ "$1" = "configure" ]; then
 	webapp_repair_premissions
 fi
 
-if [ -e /usr/share/apache2/apache2-maintscript-helper ] ; then
-	. /usr/share/apache2/apache2-maintscript-helper
-	apache2_invoke enmod deflate filter headers http2 rewrite ssl
-	apache2_invoke dissite 000-default.conf
-	apache2_invoke ensite iqrf-gateway-webapp.conf || exit 1
+if true; then
+	if [ -e /usr/share/apache2/apache2-maintscript-helper ] ; then
+		. /usr/share/apache2/apache2-maintscript-helper
+		for mod in deflate filter headers http2 rewrite ssl ; do
+			apache2_invoke enmod $mod || true
+		done
+		apache2_invoke dissite 000-default.conf || true
+		apache2_invoke ensite iqrf-gateway-webapp.conf || exit 1
+	fi
 fi
