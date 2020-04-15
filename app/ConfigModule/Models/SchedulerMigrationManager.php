@@ -59,8 +59,12 @@ class SchedulerMigrationManager {
 	 */
 	public function __construct(MainManager $mainManager, SchedulerSchemaManager $schemaManager, CommandManager $commandManager) {
 		$cacheDir = $mainManager->getCacheDir();
-		if (!is_readable($cacheDir) || !is_writable($cacheDir)) {
-			$commandManager->run('chmod 777 ' . $cacheDir, true);
+		$dirs = [$cacheDir, $cacheDir . '/scheduler/'];
+		foreach ($dirs as $dir) {
+			if (!is_readable($dir) || !is_writable($dir)) {
+				var_dump($dir);
+				$commandManager->run('chmod 777 ' . $dir, true);
+			}
 		}
 		$this->configDirectory = $cacheDir . '/scheduler/';
 		$this->schemaManager = $schemaManager;
@@ -82,6 +86,7 @@ class SchedulerMigrationManager {
 		$zipManager = new ZipArchiveManager('/tmp/' . $fileName);
 		$contentType = 'application/zip';
 		$zipManager->addFolder($this->configDirectory, '');
+		$zipManager->deleteDirectory('schema');
 		$zipManager->close();
 		return new FileResponse('/tmp/' . $fileName, $fileName, $contentType, true);
 	}
@@ -107,6 +112,7 @@ class SchedulerMigrationManager {
 			$json = Json::decode($zipManager->openFile($fileName));
 			$this->schemaManager->validate($json);
 		}
+		$zipManager->deleteDirectory('schema');
 		$zipManager->extract($this->configDirectory);
 		$zipManager->close();
 	}

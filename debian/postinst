@@ -69,6 +69,11 @@ webapp_remove_old_dirs() {
 webapp_repair_premissions() {
 	chown -R www-data:www-data /var/cache/iqrf-gateway-webapp
 	chown -R www-data:www-data /var/log/iqrf-gateway-webapp
+	chown www-data:www-data /usr/share/iqrf-gateway-webapp/app/config/database.db
+}
+
+webapp_warmup_templates() {
+	iqrf-gateway-webapp-manager nette:latte:warmup > /dev/null
 }
 
 webapp_warmup_templates() {
@@ -86,9 +91,13 @@ if [ "$1" = "configure" ]; then
 	webapp_repair_premissions
 fi
 
-if [ -e /usr/share/apache2/apache2-maintscript-helper ] ; then
-	. /usr/share/apache2/apache2-maintscript-helper
-	apache2_invoke enmod deflate filter headers http2 rewrite ssl
-	apache2_invoke dissite 000-default.conf
-	apache2_invoke ensite iqrf-gateway-webapp.conf || exit 1
+if true; then
+	if [ -e /usr/share/apache2/apache2-maintscript-helper ] ; then
+		. /usr/share/apache2/apache2-maintscript-helper
+		a2dissite 000-default.conf
+		for mod in deflate filter headers http2 proxy proxy_fcgi proxy_wstunnel rewrite ssl ; do
+			apache2_invoke enmod $mod || true
+		done
+		apache2_invoke ensite iqrf-gateway-webapp.conf || exit 1
+	fi
 fi

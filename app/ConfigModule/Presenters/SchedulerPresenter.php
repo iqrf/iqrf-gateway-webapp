@@ -115,7 +115,7 @@ class SchedulerPresenter extends ProtectedPresenter {
 			$this->manager->delete($id);
 			$this->flashSuccess('config.messages.successes.delete');
 		} catch (IOException $e) {
-			$this->flashError('config.messages.writeFailures.ioError');
+			$this->flashError('config.messages.deleteFailures.ioError');
 		} catch (JsonException $e) {
 			$this->flashError('config.messages.writeFailures.invalidJson');
 		}
