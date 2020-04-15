@@ -1,5 +1,0 @@
-etc/iqrf-gateway-webapp
-etc/iqrf-gateway-webapp/certs
-usr/share/iqrf-gateway-webapp
-var/cache/iqrf-gateway-webapp
-var/log/iqrf-gateway-webapp
