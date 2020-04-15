@@ -4,25 +4,14 @@
 set -e
 
 nginx_remove() {
-	if [ -e /etc/nginx/sites-enabled/iqrf-daemon-webapp.localhost ] ; then
-		rm /etc/nginx/sites-enabled/iqrf-daemon-webapp.localhost
-	fi
 	if [ -e /etc/nginx/sites-enabled/iqrf-gateway-webapp.localhost ] ; then
 		rm /etc/nginx/sites-enabled/iqrf-gateway-webapp.localhost
-	fi
-	if [ -e /etc/nginx/sites-available/iqrf-daemon-webapp.localhost ] ; then
-		rm /etc/nginx/sites-available/iqrf-daemon-webapp.localhost
 	fi
 	if [ -e /etc/nginx/sites-available/iqrf-gateway-webapp.localhost ] ; then
 		rm /etc/nginx/sites-available/iqrf-gateway-webapp.localhost
 	fi
 	if deb-systemd-invoke is-enabled nginx.service ; then
 		deb-systemd-invoke reload nginx.service
-	fi
-}
-sudoers_rule_remove() {
-	if [ -e /etc/sudoers.d/iqrf-gateway-webapp ] ; then
-		rm /etc/sudoers.d/iqrf-gateway-webapp
 	fi
 }
 
@@ -50,12 +39,6 @@ webapp_remove_logs() {
 	fi
 }
 
-webapp_remove_manager() {
-	if [ -e /usr/bin/iqrf-gateway-webapp-manager ] ; then
-		rm /usr/bin/iqrf-gateway-webapp-manager
-	fi
-}
-
 if [ "$1" = "remove" ] || [ "$1" = "purge" ]; then
 	if [ -d /etc/nginx ] ; then
 		nginx_remove
@@ -63,24 +46,14 @@ if [ "$1" = "remove" ] || [ "$1" = "purge" ]; then
 	webapp_remove_cache
 	webapp_remove_data
 	webapp_remove_logs
-	webapp_remove_manager
-	if [ ! -f /etc/sudoers.d/iqrf-gateway-webapp ] ; then
-		rm -rf /etc/sudoers.d/iqrf-gateway-webapp
+	if true; then
+		if [ -e /usr/share/apache2/apache2-maintscript-helper ] ; then
+			. /usr/share/apache2/apache2-maintscript-helper
+			apache2_invoke dissite iqrf-gateway-webapp.conf || exit 1
+		fi
 	fi
 fi
 
 if [ "$1" = "purge" ]; then
 	webapp_remove_config
-fi
-
-if [ "$1" = "remove" ] || [ "$1" = "purge" ] ; then
-	if true; then
-		if [ -e /usr/share/apache2/apache2-maintscript-helper ] ; then
-			. /usr/share/apache2/apache2-maintscript-helper
-
-			for conf in iqrf-gateway-webapp.conf  ; do
-				apache2_invoke dissite $conf  || exit 1
-			done
-		fi
-	fi
 fi
