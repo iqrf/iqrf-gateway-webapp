@@ -1,3 +1,14 @@
+iqrf-gateway-webapp (2.0.0-rc9) testing; urgency=medium
+
+  * Prepare for version 2.0.0-rc9
+  * Debian packaging: fix Apache2 configuration installation
+  * Debian packaging: use PHP-FPM in Apache2 site configuration
+  * Makefile: add skeleton of install target
+  * Debian packaging: fix SQLite database owner
+  * Debian packaging: update mainteiner scripts
+
+ -- Roman Ondráček <roman@romanondracek.cz>  Wed, 15 Apr 2020 23:30:00 +0200
+
 iqrf-gateway-webapp (2.0.0-rc8) testing; urgency=medium
 
   * Prepare for version 2.0.0-rc8
