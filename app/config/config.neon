@@ -44,6 +44,7 @@ iqrfMacros:
 session:
 	autoStart: true
 	expiration: 14 days
+	cookieSecure: false
 	savePath: %tempDir%/sessions
 
 services:
