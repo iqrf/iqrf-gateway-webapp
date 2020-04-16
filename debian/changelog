@@ -1,3 +1,11 @@
+iqrf-gateway-webapp (2.0.0-rc10) testing; urgency=medium
+
+  * Prepare for version 2.0.0-rc10
+  * Debian packaging: fix iqrf-gateway-webapp-manager installation
+  * Disable secure flag in session cookies
+
+ -- Roman Ondráček <roman@romanondracek.cz>  Fri, 17 Apr 2020 00:22:05 +0200
+
 iqrf-gateway-webapp (2.0.0-rc9) testing; urgency=medium
 
   * Prepare for version 2.0.0-rc9
