@@ -65,8 +65,6 @@ install:
 	cp -r vendor/ $(DATA_DIR)
 	cp -r www/ $(DATA_DIR)
 	install -d -o www-data $(LOG_DIR)
-	install -d $(SBIN_DIR)
-	ln -s ${DATA_DIR}/bin/manager $(SBIN_DIR)/iqrf-gateway-webapp-manager
 	# Delete documentation
 	find ${VENDOR_DIR} -type f -name "AUTHORS*" -delete
 	find ${VENDOR_DIR} -type f -name "LICENSE*" -delete
