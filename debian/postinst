@@ -1,7 +1,7 @@
 #!/bin/sh
 # postinst script for iqrf-gateway-webapp
 
-set -ex
+set -e
 
 nginx_virtualhost_install() {
 	nginx_virtualhost_old_remove
