@@ -23,7 +23,6 @@ namespace App\ApiModule\Version0\Controllers;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
-use Apitte\Core\Annotation\Controller\RequestBody;
 use Apitte\Core\Annotation\Controller\RequestParameter;
 use Apitte\Core\Annotation\Controller\RequestParameters;
 use Apitte\Core\Annotation\Controller\Response;
@@ -58,11 +57,17 @@ class UsersController extends BaseController {
 	 * @Path("/")
 	 * @Method("GET")
 	 * @OpenApi("
-	 *   summary: Lists all users
+	 *  summary: Lists all users
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *          content:
+	 *              application/json:
+	 *                  schema:
+	 *                      type: array
+	 *                      items:
+	 *                          $ref: '#/components/schemas/UserDetail'
 	 * ")
-	 * @Responses({
-	 *      @Response(code="200", description="Success", entity="\App\ApiModule\Version0\Entities\Response\UserDetailEntity[]")
-	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
@@ -76,9 +81,14 @@ class UsersController extends BaseController {
 	 * @Path("/")
 	 * @Method("POST")
 	 * @OpenApi("
-	 *   summary: Creates a new user
+	 *  summary: Creates a new user
+	 *  requestBody:
+	 *      required: true
+	 *      content:
+	 *          application/json:
+	 *              schema:
+	 *                  $ref: '#/components/schemas/UserCreate'
 	 * ")
-	 * @RequestBody(entity="\App\ApiModule\Version0\Entities\Request\UserCreateEntity")
 	 * @Responses({
 	 *      @Response(code="201", description="Created"),
 	 *      @Response(code="400", description="Bad Request")
@@ -101,14 +111,19 @@ class UsersController extends BaseController {
 	 * @Path("/{id}")
 	 * @Method("GET")
 	 * @OpenApi("
-	 *   summary: Finds user by ID
+	 *  summary: Finds user by ID
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *          content:
+	 *              application/json:
+	 *                  schema:
+	 *                      $ref: '#/components/schemas/UserDetail'
+	 *      '404':
+	 *          description: Not found
 	 * ")
 	 * @RequestParameters({
 	 *      @RequestParameter(name="id", type="integer", description="User ID")
-	 * })
-	 * @Responses({
-	 *      @Response(code="200", description="Success", entity="\App\ApiModule\Version0\Entities\Response\UserDetailEntity"),
-	 *      @Response(code="404", description="Not found")
 	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -148,14 +163,20 @@ class UsersController extends BaseController {
 	 * @Path("/{id}")
 	 * @Method("PUT")
 	 * @OpenApi("
-	 *   summary: Edits user
+	 *  summary: Edits user
+	 *  requestBody:
+	 *      required: true
+	 *      content:
+	 *          application/json:
+	 *              schema:
+	 *                  $ref: '#/components/schemas/UserEdit'
 	 * ")
-	 * @RequestBody(entity="\App\ApiModule\Version0\Entities\Request\UserEditEntity")
 	 * @RequestParameters({
 	 *      @RequestParameter(name="id", type="integer", description="User ID")
 	 * })
 	 * @Responses({
 	 *      @Response(code="200", description="Success"),
+	 *      @Response(code="400", description="Bad request"),
 	 *      @Response(code="404", description="Not found")
 	 * })
 	 * @param ApiRequest $request API request
