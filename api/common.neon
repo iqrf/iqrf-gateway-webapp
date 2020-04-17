@@ -1,0 +1,103 @@
+info:
+	title: IQRF Gateway Webapp API specification
+	version: '0.0.1'
+	license:
+		name: Apache 2.0
+		url: https://www.apache.org/licenses/LICENSE-2.0.html
+	contact:
+		name: Roman Ondráček
+		email: roman.ondracek@iqrf.com
+servers:
+	-
+		url: '{protocol}://{server}/'
+		variables:
+			protocol:
+				enum:
+					- http
+					- https
+				default: http
+			server:
+				default: localhost:8080
+components:
+	schemas:
+		DaemonConfiguration:
+			anyOf:
+				- $ref: https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__AutonetworkService.json
+				  title: 'iqrf::AutonetworkService'
+				- $ref: https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__BondNodeLocalService.json
+				  title: 'iqrf::BondNodeLocalService'
+				- $ref: https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__EnumerateDeviceService.json
+				  title: 'iqrf::EnumerateDeviceService'
+				- $ref: https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__IdeCounterpart.json
+				  title: 'iqrf::IdeCounterpart'
+				- $ref: https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__IqrfCdc.json
+				  title: 'iqrf::IqrfCdc'
+				- $ref: https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__IqrfDpa.json
+				  title: 'iqrf::IqrfDpa'
+				- $ref: https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__IqrfInfo.json
+				  title: 'iqrf::IqrfInfo'
+				- $ref: https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__IqrfSpi.json
+				  title: 'iqrf::IqrfSpi'
+				- $ref: https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__IqrfUart.json
+				  title: 'iqrf::IqrfUart'
+				- $ref: https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__JsCache.json
+				  title: 'iqrf::JsCache'
+				- $ref: https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__JsonCfgApi.json
+				  title: 'iqrf::JsonCfgApi'
+				- $ref: https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__JsonDpaApiIqrfStandard.json
+				  title: 'iqrf::JsonDpaApiIqrfStandard'
+				- $ref: https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__JsonDpaApiIqrfStdExt.json
+				  title: 'iqrf::JsonDpaApiIqrfStdExt'
+				- $ref: https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__JsonDpaApiRaw.json
+				  title: 'iqrf::JsonDpaApiRaw'
+				- $ref: https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__JsonIqrfInfoApi.json
+				  title: 'iqrf::JsonIqrfInfoApi'
+				- $ref: https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__JsonMngApi.json
+				  title: 'iqrf::JsonMngApi'
+				- $ref: https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__JsonSplitter.json
+				  title: 'iqrf::JsonSplitter'
+				- $ref: https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__LegacyApiSupport.json
+				  title: 'iqrf::LegacyApiSupport'
+				- $ref: https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__MonitorService.json
+				  title: 'iqrf::MonitorService'
+				- $ref: https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__MqMessaging.json
+				  title: 'iqrf::MqMessaging'
+				- $ref: https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__MqttMessaging.json
+				  title: 'iqrf::MqttMessaging'
+				- $ref: https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__NativeUploadService.json
+				  title: 'iqrf::NativeUploadService'
+				- $ref: https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__OtaUploadService.json
+				  title: 'iqrf::OtaUploadService'
+				- $ref: https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__ReadTrConfService.json
+				  title: 'iqrf::ReadTrConfService'
+				- $ref: https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__RemoveBondService.json
+				  title: 'iqrf::RemoveBond'
+				- $ref: https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__Scheduler.json
+				  title: 'iqrf::Scheduler'
+				- $ref: https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__SmartConnectService.json
+				  title: 'iqrf::SmartConnectService'
+				- $ref: https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__UdpMessaging.json
+				  title: 'iqrf::UdpMessaging'
+				- $ref: https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__WebsocketMessaging.json
+				  title: 'iqrf::WebsocketMessaging'
+				- $ref: https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__WriteTrConfService.json
+				  title: 'iqrf::WriteTrConfService'
+				- $ref: https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__shape__ConfigurationService.json
+				  title: 'shape::ConfigurationService'
+				- $ref: https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__shape__CurlRestApiService.json
+				  title: 'shape::CurlRestApiService'
+				- $ref: https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__shape__LauncherService.json
+				  title: 'shape::LauncherService'
+				- $ref: https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__shape__TraceFileService.json
+				  title: 'shape::TraceFileService'
+				- $ref: https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__shape__TraceFormatService.json
+				  title: 'shape::TraceFormatService'
+				- $ref: https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__shape__WebsocketCppService.json
+				  title: 'shape::WebsocketCppService'
+	securitySchemes:
+		bearerAuth:
+			type: http
+			scheme: 'bearer'
+			bearerFormat: JWT
+security:
+	- bearerAuth: []

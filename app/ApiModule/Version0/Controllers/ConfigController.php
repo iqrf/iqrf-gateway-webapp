@@ -273,7 +273,7 @@ class ConfigController extends BaseController {
 	 *     content:
 	 *      application/json:
 	 *          schema:
-	 *              type: string
+	 *              $ref: '#/components/schemas/DaemonConfiguration'
 	 * ")
 	 * @RequestParameters({
 	 *      @RequestParameter(name="component", type="string", description="Component name")
@@ -352,7 +352,7 @@ class ConfigController extends BaseController {
 	 *     content:
 	 *      application/json:
 	 *          schema:
-	 *              type: string
+	 *              $ref: '#/components/schemas/DaemonConfiguration'
 	 * ")
 	 * @RequestParameters({
 	 *      @RequestParameter(name="component", type="string", description="Component name"),
@@ -392,16 +392,22 @@ class ConfigController extends BaseController {
 	 * @Path("/{component}/{instance}")
 	 * @Method("GET")
 	 * @OpenApi("
-	 *   summary: Finds instance configuration by name
+	 *  summary: Finds instance configuration by name
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *          content:
+	 *              application/json:
+	 *                  schema:
+	 *                      $ref: '#/components/schemas/DaemonConfiguration'
+	 *      '404':
+	 *          description: Not found
+	 *      '500':
+	 *          description: Server error
 	 * ")
 	 * @RequestParameters({
 	 *      @RequestParameter(name="component", type="string", description="Component name"),
 	 *      @RequestParameter(name="instance", type="string", description="Instance name")
-	 * })
-	 * @Responses({
-	 *      @Response(code="200", description="Success"),
-	 *      @Response(code="404", description="Not found"),
-	 *      @Response(code="500", description="Server error")
 	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response

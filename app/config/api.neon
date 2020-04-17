@@ -12,35 +12,8 @@ api:
 		Apitte\Middlewares\DI\MiddlewaresPlugin:
 		Apitte\Negotiation\DI\NegotiationPlugin:
 		Apitte\OpenApi\DI\OpenApiPlugin:
-			definition:
-				info:
-					title: IQRF Gateway Webapp API specification
-					version: '0.0.1'
-					license:
-						name: Apache 2.0
-						url: https://www.apache.org/licenses/LICENSE-2.0.html
-					contact:
-						name: Roman Ondráček
-						email: roman.ondracek@iqrf.com
-				servers:
-					-
-						url: '{protocol}://{server}/'
-						variables:
-							protocol:
-								enum:
-									- http
-									- https
-								default: http
-							server:
-								default: localhost:8080
-				components:
-					securitySchemes:
-						bearerAuth:
-							type: http
-							scheme: 'bearer'
-							bearerFormat: JWT
-				security:
-					- bearerAuth: []
+			files:
+				- %appDir%/../api/common.neon
 			swaggerUi:
 				url: null # default url
 				expansion: list # list|full|none
