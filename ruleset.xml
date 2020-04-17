@@ -42,6 +42,10 @@
 		<exclude name="Squiz.Functions.MultiLineFunctionDeclaration.BraceOnSameLine"/>
 	</rule>
 
+	<rule ref="Squiz.Arrays.ArrayDeclaration">
+		<exclude name="Squiz.Arrays.ArrayDeclaration.ValueNoNewline"/>
+	</rule>
+
 	<!--Exclude folders -->
 	<exclude-pattern>./tests/temp</exclude-pattern>
 </ruleset>
