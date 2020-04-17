@@ -97,15 +97,17 @@ class GenericManager {
 	/**
 	 * Gets component's instance files
 	 * @return string[] Files with component's instances
-	 * @throws IOException
-	 * @throws JsonException
 	 */
 	public function getInstanceFiles(): array {
 		$dir = $this->fileManager->getDirectory();
 		$instances = [];
 		foreach (Finder::findFiles('*.json')->exclude('config.json')->from($dir) as $file) {
 			$fileName = Strings::replace($file->getRealPath(), ['~^' . realpath($dir) . '/~', '/.json$/'], '');
-			$json = $this->fileManager->read($fileName);
+			try {
+				$json = $this->fileManager->read($fileName);
+			} catch (IOException | JsonException $e) {
+				continue;
+			}
 			if (array_key_exists('component', $json) && $json['component'] === $this->component) {
 				$instances[] = $fileName;
 			}
@@ -183,14 +185,16 @@ class GenericManager {
 	 * @param string $type Property type
 	 * @param mixed $value Property value
 	 * @return string|null Instance file name
-	 * @throws IOException
-	 * @throws JsonException
 	 */
 	public function getInstanceByProperty(string $type, $value): ?string {
 		$dir = $this->fileManager->getDirectory();
 		foreach (Finder::findFiles('*.json')->exclude('config.json')->from($dir) as $file) {
 			$fileName = Strings::replace($file->getRealPath(), ['~^' . realpath($dir) . '/~', '/.json$/'], '');
-			$json = $this->fileManager->read($fileName);
+			try {
+				$json = $this->fileManager->read($fileName);
+			} catch (IOException | JsonException $e) {
+				continue;
+			}
 			if (array_key_exists($type, $json) && $json[$type] === $value) {
 				return $fileName;
 			}
@@ -202,6 +206,7 @@ class GenericManager {
 	 * Reads the configuration
 	 * @param string|null $fileName File name
 	 * @return mixed[] Configuration in an array
+	 * @throws IOException
 	 * @throws JsonException
 	 */
 	public function read(?string $fileName = null): array {
@@ -295,7 +300,11 @@ class GenericManager {
 		$instances = [];
 		$this->setComponent($component);
 		foreach ($this->getInstanceFiles() as $file) {
-			$instances[] = $this->read($file)['instance'];
+			try {
+				$instances[] = $this->read($file)['instance'];
+			} catch (IOException | JsonException $e) {
+				continue;
+			}
 		}
 		sort($instances);
 		return $instances;
