@@ -79,14 +79,19 @@ class ConfigController extends BaseController {
 	 * ")
 	 * @Responses({
 	 *      @Response(code="200", description="Success"),
-	 *      @Response(code="404", description="Not found")
+	 *      @Response(code="500", description="Server error")
 	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
-		return $response->writeJsonBody($this->mainManager->load());
+		try {
+			$config = $this->mainManager->load();
+			return $response->writeJsonBody($config);
+		} catch (JsonException $e) {
+			return $response->withStatus(500, 'Invalid JSON syntax');
+		}
 	}
 
 	/**
@@ -103,6 +108,7 @@ class ConfigController extends BaseController {
 	 * ")
 	 * @Responses({
 	 *      @Response(code="200", description="Success"),
+	 *      @Response(code="400", description="Bad request"),
 	 *      @Response(code="404", description="Not found")
 	 * })
 	 * @param ApiRequest $request API request
@@ -110,9 +116,13 @@ class ConfigController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$json = $request->getJsonBody(true);
-		$this->mainManager->save($json);
-		return $response;
+		try {
+			$json = $request->getJsonBody(true);
+			$this->mainManager->save($json);
+			return $response;
+		} catch (JsonException $e) {
+			return $response->withStatus(400, 'Invalid JSON syntax');
+		}
 	}
 
 	/**
@@ -129,8 +139,7 @@ class ConfigController extends BaseController {
 	 * ")
 	 * @Responses({
 	 *     @Response(code="201", description="Created"),
-	 *     @Response(code="400", description="Bad request"),
-	 *     @Response(code="404", description="Not found")
+	 *     @Response(code="400", description="Bad request")
 	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -142,7 +151,7 @@ class ConfigController extends BaseController {
 			$this->componentManager->add($json);
 			return $response->withStatus(201);
 		} catch (JsonException $e) {
-			return $response->withStatus(500);
+			return $response->withStatus(400, 'Invalid JSON syntax');
 		}
 	}
 
@@ -156,19 +165,26 @@ class ConfigController extends BaseController {
 	 *      @RequestParameter(name="component", type="string", description="Component name")
 	 * })
 	 * @Responses({
-	 *      @Response(code="200", description="Success")
+	 *      @Response(code="200", description="Success"),
+	 *      @Response(code="404", description="Not found"),
+	 *      @Response(code="500", description="Server error")
 	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
 	public function deleteComponent(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$id = $this->componentManager->getId(urldecode($request->getParameter('component')));
+		$component = urldecode($request->getParameter('component'));
+		$id = $this->componentManager->getId($component);
 		if ($id === null) {
-			return $response;
+			return $response->withStatus(404, 'Unknown component');
 		}
-		$this->componentManager->delete($id);
-		return $response;
+		try {
+			$this->componentManager->delete($id);
+			return $response;
+		} catch (JsonException $e) {
+			return $response->withStatus(500, 'Invalid JSON syntax');
+		}
 	}
 
 	/**
@@ -187,18 +203,24 @@ class ConfigController extends BaseController {
 	 *      @RequestParameter(name="component", type="string", description="Component name")
 	 * })
 	 * @Responses({
-	 *      @Response(code="200", description="Success")
+	 *      @Response(code="200", description="Success"),
+	 *      @Response(code="400", description="Bad request")
 	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
 	public function editComponent(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$id = $this->componentManager->getId(urldecode($request->getParameter('component')));
+		$component = urldecode($request->getParameter('component'));
+		$id = $this->componentManager->getId($component);
 		if ($id === null) {
 			return $response->withStatus(400, 'Unknown component name');
 		}
-		$this->componentManager->save($request->getJsonBody(), $id);
+		try {
+			$this->componentManager->save($request->getJsonBody(), $id);
+		} catch (JsonException $e) {
+			return $response->withStatus(400, 'Invalid JSON syntax');
+		}
 		return $response;
 	}
 
@@ -227,11 +249,18 @@ class ConfigController extends BaseController {
 			return $response->withStatus(404);
 		}
 		$id = $this->componentManager->getId($component);
-		$body = [
-			'configuration' => $this->componentManager->load($id),
-			'instances' => $this->manager->list(),
-		];
-		return $response->writeJsonBody($body);
+		if ($id === null) {
+			return $response->withStatus(404, 'Component not found');
+		}
+		try {
+			$body = [
+				'configuration' => $this->componentManager->load($id),
+				'instances' => $this->manager->list(),
+			];
+			return $response->writeJsonBody($body);
+		} catch (JsonException $e) {
+			return $response->withStatus(500, 'Invalid JSON syntax');
+		}
 	}
 
 	/**
@@ -275,9 +304,9 @@ class ConfigController extends BaseController {
 			$this->manager->save($json, $fileName);
 			return $response->withStatus(201);
 		} catch (NonExistingJsonSchemaException $e) {
-			return $response->withStatus(404, 'Component not found.');
+			return $response->withStatus(404, 'Component not found');
 		} catch (JsonException $e) {
-			return $response->withStatus(500);
+			return $response->withStatus(400, 'Invalid JSON syntax');
 		} catch (InvalidJsonException $e) {
 			return $response->withStatus(400, $e->getMessage());
 		}
@@ -307,7 +336,7 @@ class ConfigController extends BaseController {
 		$instance = urldecode($request->getParameter('instance'));
 		$fileName = $this->manager->getInstanceFileName($instance);
 		if ($fileName === null) {
-			return $response;
+			return $response->withStatus(404, 'Component not found');
 		}
 		$this->manager->deleteFile($fileName);
 		return $response;
@@ -331,6 +360,7 @@ class ConfigController extends BaseController {
 	 * })
 	 * @Responses({
 	 *      @Response(code="200", description="Success"),
+	 *      @Response(code="400", description="Bad request"),
 	 *      @Response(code="404", description="Not found")
 	 * })
 	 * @param ApiRequest $request API request
@@ -349,9 +379,9 @@ class ConfigController extends BaseController {
 			$fileName = $this->manager->getInstanceFileName($instance);
 			$this->manager->save($json, $fileName);
 		} catch (NonExistingJsonSchemaException $e) {
-			return $response->withStatus(404, 'Component not found.');
+			return $response->withStatus(404, 'Component not found');
 		} catch (JsonException $e) {
-			return $response->withStatus(500);
+			return $response->withStatus(400, 'Invalid JSON syntax');
 		} catch (InvalidJsonException $e) {
 			return $response->withStatus(400, $e->getMessage());
 		}
@@ -370,7 +400,8 @@ class ConfigController extends BaseController {
 	 * })
 	 * @Responses({
 	 *      @Response(code="200", description="Success"),
-	 *      @Response(code="404", description="Not found")
+	 *      @Response(code="404", description="Not found"),
+	 *      @Response(code="500", description="Server error")
 	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -378,15 +409,17 @@ class ConfigController extends BaseController {
 	 */
 	public function getInstance(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
-			$this->manager->setComponent(urldecode($request->getParameter('component')));
-			$configuration = $this->manager->loadInstance(urldecode($request->getParameter('instance')));
+			$component = urldecode($request->getParameter('component'));
+			$this->manager->setComponent($component);
+			$instance = urldecode($request->getParameter('instance'));
+			$configuration = $this->manager->loadInstance($instance);
 		} catch (NonExistingJsonSchemaException $e) {
-			return $response->withStatus(404, 'Component not found.');
+			return $response->withStatus(404, 'Component not found');
 		} catch (JsonException $e) {
-			return $response->withStatus(500);
+			return $response->withStatus(500, 'Invalid JSON syntax');
 		}
 		if ($configuration === []) {
-			return $response->withStatus(404, 'Instance not found.');
+			return $response->withStatus(404, 'Instance not found');
 		}
 		return $response->writeJsonBody($configuration);
 	}
