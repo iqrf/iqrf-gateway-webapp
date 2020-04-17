@@ -33,6 +33,7 @@ use Apitte\Core\Http\ApiResponse;
 use App\ConfigModule\Models\ComponentManager;
 use App\ConfigModule\Models\GenericManager;
 use App\ConfigModule\Models\MainManager;
+use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
 use Nette\Utils\JsonException;
 
@@ -277,6 +278,8 @@ class ConfigController extends BaseController {
 			return $response->withStatus(404, 'Component not found.');
 		} catch (JsonException $e) {
 			return $response->withStatus(500);
+		} catch (InvalidJsonException $e) {
+			return $response->withStatus(400, $e->getMessage());
 		}
 	}
 
@@ -349,6 +352,8 @@ class ConfigController extends BaseController {
 			return $response->withStatus(404, 'Component not found.');
 		} catch (JsonException $e) {
 			return $response->withStatus(500);
+		} catch (InvalidJsonException $e) {
+			return $response->withStatus(400, $e->getMessage());
 		}
 		return $response;
 	}

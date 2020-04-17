@@ -123,10 +123,9 @@ class GenericManager {
 	 * @throws JsonException
 	 */
 	public function list(): array {
-		$files = array_keys($this->getInstanceFiles());
 		$instances = [];
-		foreach ($files as $id) {
-			$instances[] = Arrays::mergeTree(['id' => $id], $this->read($this->getFileNameById($id)));
+		foreach ($this->getInstanceFiles() as $id => $fileName) {
+			$instances[] = Arrays::mergeTree(['id' => $id], $this->read($fileName));
 		}
 		return $instances;
 	}
