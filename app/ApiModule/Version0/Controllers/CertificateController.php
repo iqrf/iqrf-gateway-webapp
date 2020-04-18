@@ -24,8 +24,6 @@ use AcmePhp\Ssl\Exception\AcmeSslException;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
-use Apitte\Core\Annotation\Controller\Response;
-use Apitte\Core\Annotation\Controller\Responses;
 use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
@@ -55,12 +53,17 @@ class CertificateController extends BaseController {
 	 * @Path("/")
 	 * @Method("GET")
 	 * @OpenApi("
-	 *   summary: Returns information about TLS certificate
+	 *  summary: Returns information about TLS certificate
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *          content:
+	 *              application/json:
+	 *                  schema:
+	 *                      $ref: '#/components/schemas/CertificateDetail'
+	 *      '500':
+	 *          description: Server error
 	 * ")
-	 * @Responses({
-	 *      @Response(code="200", description="Success"),
-	 *      @Response(code="500", description="Server error")
-	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response

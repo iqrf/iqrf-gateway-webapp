@@ -23,8 +23,6 @@ namespace App\ApiModule\Version0\Controllers;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
-use Apitte\Core\Annotation\Controller\Response;
-use Apitte\Core\Annotation\Controller\Responses;
 use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
@@ -54,11 +52,15 @@ class IqrfController extends BaseController {
 	 * @Path("/macros")
 	 * @Method("GET")
 	 * @OpenApi("
-	 *   summary: Returns IQRF IDE macros
+	 *  summary: Returns IQRF IDE macros
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *          content:
+	 *              application/json:
+	 *                  schema:
+	 *                      $ref: '#/components/schemas/IqrfIdeMacros'
 	 * ")
-	 * @Responses({
-	 *      @Response(code="200", description="Success", entity="\App\ApiModule\Version0\Entities\Response\MacroGroupEntity[]")
-	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response

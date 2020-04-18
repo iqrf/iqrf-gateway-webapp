@@ -1,0 +1,419 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/gatewayInfo.json",
+	"type": "object",
+	"title": "Gateway Information",
+	"additionalProperties": false,
+	"required": [
+		"board",
+		"gwId",
+		"pixla",
+		"versions",
+		"hostname",
+		"interfaces",
+		"diskUsages",
+		"memoryUsage",
+		"swapUsage",
+		"coordinator"
+	],
+	"properties": {
+		"board": {
+			"$id": "#/properties/board",
+			"type": "string",
+			"title": "Board",
+			"example": "MICRORISC s.r.o. IQD-GW-01"
+		},
+		"gwId": {
+			"$id": "#/properties/gwId",
+			"type": "string",
+			"title": "IQRF Gateway ID",
+			"example": "02424D1D2D2E7580"
+		},
+		"pixla": {
+			"$id": "#/properties/pixla",
+			"oneOf": [
+				{
+					"type": "string"
+				},
+				{
+					"type": "null"
+				}
+			],
+			"title": "PIXLA token",
+			"example": null
+		},
+		"versions": {
+			"$id": "#/properties/versions",
+			"type": "object",
+			"title": "IQRF software versions",
+			"example": {
+				"webapp": "v2.0.0",
+				"controller": "v1.0.0",
+				"daemon": "v2.3.0"
+			},
+			"additionalProperties": false,
+			"required": [
+				"controller",
+				"daemon",
+				"webapp"
+			],
+			"properties": {
+				"controller": {
+					"$id": "#/properties/versions/properties/controller",
+					"oneOf": [
+						{
+							"type": "string"
+						},
+						{
+							"type": "null"
+						}
+					],
+					"title": "IQRF Gateway Controller version",
+					"example": "v1.0.0"
+				},
+				"daemon": {
+					"$id": "#/properties/versions/properties/daemon",
+					"type": "string",
+					"title": "IQRF Gateway Daemon version",
+					"example": "v2.3.0"
+				},
+				"webapp": {
+					"$id": "#/properties/versions/properties/webapp",
+					"type": "string",
+					"title": "IQRF Gateway Webapp version",
+					"example": "v2.0.0"
+				}
+			}
+		},
+		"hostname": {
+			"$id": "#/properties/hostname",
+			"type": "string",
+			"title": "Hostname",
+			"example": "iqd-gw-01.local"
+		},
+		"interfaces": {
+			"$id": "#/properties/interfaces",
+			"type": "array",
+			"title": "Network interfaces",
+			"example": [
+				{
+					"macAddress": "02:42:4d:2e:75:80",
+					"name": "eth0",
+					"ipAddresses": [
+						"192.168.1.130/24"
+					]
+				}
+			],
+			"additionalItems": false,
+			"items": {
+				"$id": "#/properties/interfaces/items",
+				"type": "object",
+				"title": "Network interface",
+				"example": {
+					"ipAddresses": [
+						"192.168.1.130/24"
+					],
+					"macAddress": "02:42:4d:2e:75:80",
+					"name": "eth0"
+				},
+				"additionalProperties": false,
+				"required": [
+					"name",
+					"macAddress",
+					"ipAddresses"
+				],
+				"properties": {
+					"name": {
+						"$id": "#/properties/interfaces/items/properties/name",
+						"type": "string",
+						"title": "Interface name",
+						"example": "eth0"
+					},
+					"macAddress": {
+						"$id": "#/properties/interfaces/items/properties/macAddress",
+						"type": "string",
+						"title": "MAC address",
+						"example": "02:42:4d:2e:75:80"
+					},
+					"ipAddresses": {
+						"$id": "#/properties/interfaces/items/properties/ipAddresses",
+						"oneOf": [
+							{
+								"type": "array"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"title": "IP addresses",
+						"example": [
+							"192.168.1.130/24"
+						],
+						"additionalItems": false,
+						"items": {
+							"$id": "#/properties/interfaces/items/properties/ipAddresses/items",
+							"type": "string",
+							"title": "IP address",
+							"oneOf": [
+								{
+									"format": "ipv4"
+								},
+								{
+									"format": "ipv6"
+								}
+							],
+							"example": "192.168.1.130/24"
+						}
+					}
+				}
+			}
+		},
+		"diskUsages": {
+			"$id": "#/properties/diskUsages",
+			"type": "array",
+			"title": "Disk usages",
+			"examples": [
+				[
+					{
+						"size": "7 GB",
+						"available": "4.88 GB",
+						"fsName": "/dev/mmcblk0p1",
+						"mount": "/",
+						"used": "2.01 GB",
+						"fsType": "ext4",
+						"usage": "28.78%"
+					},
+					{
+						"fsName": "/dev/zram0",
+						"mount": "/var/log",
+						"used": "3.46 MB",
+						"fsType": "ext4",
+						"usage": "7.15%",
+						"size": "48.42 MB",
+						"available": "41.46 MB"
+					}
+				]
+			],
+			"additionalItems": false,
+			"items": {
+				"$id": "#/properties/diskUsages/items",
+				"type": "object",
+				"title": "Disk usage",
+				"example": {
+					"used": "2.01 GB",
+					"fsType": "ext4",
+					"usage": "28.78%",
+					"size": "7 GB",
+					"available": "4.88 GB",
+					"fsName": "/dev/mmcblk0p1",
+					"mount": "/"
+				},
+				"additionalProperties": false,
+				"required": [
+					"fsName",
+					"fsType",
+					"size",
+					"used",
+					"available",
+					"usage",
+					"mount"
+				],
+				"properties": {
+					"fsName": {
+						"$id": "#/properties/diskUsages/items/properties/fsName",
+						"type": "string",
+						"title": "Name",
+						"example": "/dev/mmcblk0p1"
+					},
+					"fsType": {
+						"$id": "#/properties/diskUsages/items/properties/fsType",
+						"type": "string",
+						"title": "Filesystem",
+						"example": "ext4"
+					},
+					"size": {
+						"$id": "#/properties/diskUsages/items/properties/size",
+						"type": "string",
+						"title": "Total size",
+						"example": "7 GB"
+					},
+					"used": {
+						"$id": "#/properties/diskUsages/items/properties/used",
+						"type": "string",
+						"title": "Used",
+						"example": "2.01 GB"
+					},
+					"available": {
+						"$id": "#/properties/diskUsages/items/properties/available",
+						"type": "string",
+						"title": "Available",
+						"example": "4.88 GB"
+					},
+					"usage": {
+						"$id": "#/properties/diskUsages/items/properties/usage",
+						"type": "string",
+						"title": "Usage",
+						"example": "28.78%"
+					},
+					"mount": {
+						"$id": "#/properties/diskUsages/items/properties/mount",
+						"type": "string",
+						"title": "Mount",
+						"example": "/"
+					}
+				}
+			}
+		},
+		"memoryUsage": {
+			"$id": "#/properties/memoryUsage",
+			"type": "object",
+			"title": "Memory usage",
+			"example": {
+				"cache": "259.53 MB",
+				"buffers": "14.23 MB",
+				"used": "164.84 MB",
+				"usage": "33.42%",
+				"free": "54.62 MB",
+				"size": "493.21 MB",
+				"available": "222.13 MB",
+				"shared": "96.43 MB"
+			},
+			"additionalProperties": false,
+			"required": [
+				"size",
+				"used",
+				"free",
+				"shared",
+				"buffers",
+				"cache",
+				"available",
+				"usage"
+			],
+			"properties": {
+				"size": {
+					"$id": "#/properties/memoryUsage/properties/size",
+					"type": "string",
+					"title": "Total size",
+					"example": "493.21 MB"
+				},
+				"used": {
+					"$id": "#/properties/memoryUsage/properties/used",
+					"type": "string",
+					"title": "Used",
+					"example": "164.84 MB"
+				},
+				"free": {
+					"$id": "#/properties/memoryUsage/properties/free",
+					"type": "string",
+					"title": "Free",
+					"example": "54.62 MB"
+				},
+				"shared": {
+					"$id": "#/properties/memoryUsage/properties/shared",
+					"type": "string",
+					"title": "Shared",
+					"example": "96.43 MB"
+				},
+				"buffers": {
+					"$id": "#/properties/memoryUsage/properties/buffers",
+					"type": "string",
+					"title": "Buffers",
+					"example": "14.23 MB"
+				},
+				"cache": {
+					"$id": "#/properties/memoryUsage/properties/cache",
+					"type": "string",
+					"title": "Cache",
+					"example": "259.53 MB"
+				},
+				"available": {
+					"$id": "#/properties/memoryUsage/properties/available",
+					"type": "string",
+					"title": "Available",
+					"example": "222.13 MB"
+				},
+				"usage": {
+					"$id": "#/properties/memoryUsage/properties/usage",
+					"type": "string",
+					"title": "Usage",
+					"example": "33.42%"
+				}
+			}
+		},
+		"swapUsage": {
+			"$id": "#/properties/swapUsage",
+			"oneOf": [
+				{
+					"type": "object"
+				},
+				{
+					"type": "null"
+				}
+			],
+			"title": "Swap usage",
+			"example": {
+				"usage": "32.54%",
+				"free": "166.35 MB",
+				"size": "246.6 MB",
+				"used": "80.25 MB"
+			},
+			"additionalProperties": false,
+			"required": [
+				"size",
+				"used",
+				"free",
+				"usage"
+			],
+			"properties": {
+				"size": {
+					"$id": "#/properties/swapUsage/properties/size",
+					"type": "string",
+					"title": "Total Size",
+					"example": "246.6 MB"
+				},
+				"used": {
+					"$id": "#/properties/swapUsage/properties/used",
+					"type": "string",
+					"title": "Used",
+					"example": "80.25 MB"
+				},
+				"free": {
+					"$id": "#/properties/swapUsage/properties/free",
+					"type": "string",
+					"title": "Free",
+					"example": "166.35 MB"
+				},
+				"usage": {
+					"$id": "#/properties/swapUsage/properties/usage",
+					"type": "string",
+					"title": "Usage",
+					"example": "32.54%"
+				}
+			}
+		},
+		"coordinator": {
+			"$id": "#/properties/coordinator",
+			"type": "object",
+			"title": "Coordinator information",
+			"additionalProperties": false,
+			"required": [
+				"request",
+				"response"
+			],
+			"properties": {
+				"request": {
+					"$id": "#/properties/coordinator/properties/request",
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqmeshNetwork_EnumerateDevice-request-1-0-0.json",
+					"title": "Request",
+					"additionalProperties": false
+				},
+				"response": {
+					"$id": "#/properties/coordinator/properties/response",
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqmeshNetwork_EnumerateDevice-response-1-0-0.json",
+					"title": "Response",
+					"additionalProperties": false
+				}
+			}
+		}
+	}
+}

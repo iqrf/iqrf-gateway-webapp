@@ -73,11 +73,15 @@ class GatewayController extends BaseController {
 	 * @Path("/info")
 	 * @Method("GET")
 	 * @OpenApi("
-	 *   summary: Returns information about the gateway
+	 *  summary: Returns information about the gateway
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *          content:
+	 *              application/json:
+	 *                  schema:
+	 *                      $ref: '#/components/schemas/GatewayInfo'
 	 * ")
-	 * @Responses({
-	 *      @Response(code="200", description="Success", entity="\App\ApiModule\Version0\Entities\Response\GatewayInfoEntity")
-	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response

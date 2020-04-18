@@ -40,12 +40,12 @@ class HexioEntity extends BasicEntity {
 	/**
 	 * @var string MQTT topic for JSON API requests
 	 */
-	public $topicRequests;
+	public $topicRequest;
 
 	/**
 	 * @var string MQTT topic for JSON API responses
 	 */
-	public $topicResponses;
+	public $topicResponse;
 
 	/**
 	 * @var string MQTT username

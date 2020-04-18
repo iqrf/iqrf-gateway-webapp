@@ -1,0 +1,61 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/certificate.json",
+	"type": "object",
+	"title": "TLS certificate detail",
+	"additionalProperties": false,
+	"required": [
+		"subject",
+		"issuer",
+		"subjectAlternativeNames",
+		"validTo",
+		"expired",
+		"selfSigned"
+	],
+	"properties": {
+		"subject": {
+			"$id": "#/properties/subject",
+			"type": "string",
+			"title": "Certificate subject",
+			"example": "IQRF Gateway"
+		},
+		"issuer": {
+			"$id": "#/properties/issuer",
+			"type": "string",
+			"title": "Certificate issuer",
+			"example": "IQRF Gateway"
+		},
+		"subjectAlternativeNames": {
+			"$id": "#/properties/subjectAlternativeNames",
+			"type": "array",
+			"title": "Certificate subject alternative names",
+			"example": [],
+			"additionalItems": false,
+			"items": {
+				"$id": "#/properties/subjectAlternativeNames/items",
+				"type": "string",
+				"title": "Certificate subject alternative name",
+				"example": ""
+			}
+		},
+		"validTo": {
+			"$id": "#/properties/validTo",
+			"type": "string",
+			"title": "Certificate is valid until",
+			"format": "date-time",
+			"example": "2030-04-09T20:47:51+00:00"
+		},
+		"expired": {
+			"$id": "#/properties/expired",
+			"type": "boolean",
+			"title": "Expired certificate",
+			"example": false
+		},
+		"selfSigned": {
+			"$id": "#/properties/selfSigned",
+			"type": "boolean",
+			"title": "Self-signed certificate",
+			"example": true
+		}
+	}
+}

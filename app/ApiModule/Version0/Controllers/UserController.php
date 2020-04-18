@@ -23,9 +23,6 @@ namespace App\ApiModule\Version0\Controllers;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
-use Apitte\Core\Annotation\Controller\RequestBody;
-use Apitte\Core\Annotation\Controller\Response;
-use Apitte\Core\Annotation\Controller\Responses;
 use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
@@ -36,6 +33,8 @@ use Lcobucci\JWT\Configuration;
 use Nette\Security\AuthenticationException;
 use Nette\Security\Identity;
 use Nette\Security\User;
+use Nette\Utils\JsonException;
+use Throwable;
 
 /**
  * User manager API controller
@@ -88,38 +87,58 @@ class UserController extends BaseController {
 		$identity = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
 		$data = $identity->getData();
 		return $response->writeJsonBody([
-				'id' => $identity->getId(),
-				'username' => $data['username'],
-				'language' => $data['language'],
-				'role' => $identity->getRoles()[0],
-			]);
+			'id' => $identity->getId(),
+			'username' => $data['username'],
+			'language' => $data['language'],
+			'role' => $identity->getRoles()[0],
+		]);
 	}
 
 	/**
 	 * @Path("/signIn")
 	 * @Method("POST")
 	 * @OpenApi("
-	 *   summary: Signs in the user
-	 *   security:
+	 *  summary: Signs in the user
+	 *  security:
 	 *     - []
+	 *  requestBody:
+	 *      required: true
+	 *      content:
+	 *          application/json:
+	 *              schema:
+	 *                  $ref: '#/components/schemas/UserSignIn'
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *          content:
+	 *              application/json:
+	 *                  schema:
+	 *                      $ref: '#/components/schemas/UserToken'
+	 *      '400':
+	 *          description: Bad request
+	 *      '500':
+	 *          description: Server error
 	 * ")
-	 * @RequestBody(entity="\App\ApiModule\Version0\Entities\Request\UserSignInEntity")
-	 * @Responses({
-	 *      @Response(code="200", description="Success", entity="\App\ApiModule\Version0\Entities\Response\JwtTokenEntity"),
-	 *      @Response(code="400", description="Bad request")
-	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
 	public function signIn(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$credentials = $request->getJsonBody();
+		try {
+			$credentials = $request->getJsonBody();
+		} catch (JsonException $e) {
+			return $response->withStatus(400, 'Invalid JSON syntax');
+		}
 		try {
 			$this->user->login($credentials['username'], $credentials['password']);
 		} catch (AuthenticationException $e) {
 			return $response->withStatus(400);
 		}
-		$now  = new DateTimeImmutable();
+		try {
+			$now = new DateTimeImmutable();
+		} catch (Throwable $e) {
+			return $response->withStatus(500);
+		}
 		$token = $this->configuration->createBuilder()
 			->issuedBy(gethostname())
 			->identifiedBy(gethostname())

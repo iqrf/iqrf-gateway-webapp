@@ -26,8 +26,10 @@ use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
+use Nette\IOException;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
+use Nette\Utils\JsonException;
 
 /**
  * Version API controller
@@ -48,14 +50,20 @@ class VersionController extends BaseController {
 	 *              application/json:
 	 *                  schema:
 	 *                      $ref: '#/components/schemas/Version'
+	 *      '500':
+	 *          description: Server error
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
 	public function index(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$json = Json::decode(FileSystem::read(__DIR__ . '/../../../../version.json'), Json::FORCE_ARRAY);
-		return $response->writeJsonBody($json);
+		try {
+			$json = Json::decode(FileSystem::read(__DIR__ . '/../../../../version.json'), Json::FORCE_ARRAY);
+			return $response->writeJsonBody($json);
+		} catch (IOException | JsonException $e) {
+			return $response->withStatus(500, 'Invalid JSON syntax');
+		}
 	}
 
 }

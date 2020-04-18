@@ -23,8 +23,6 @@ namespace App\ApiModule\Version0\Controllers;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
-use Apitte\Core\Annotation\Controller\Response;
-use Apitte\Core\Annotation\Controller\Responses;
 use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
@@ -56,13 +54,17 @@ class OpenApiController extends BaseController {
 	 * @Path("/")
 	 * @Method("GET")
 	 * @OpenApi("
-	 *   summary: Returns OpenAPI schema
-	 *   security:
+	 *  summary: Returns OpenAPI schema
+	 *  security:
 	 *     - []
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *          content:
+	 *              application/json:
+	 *                  schema:
+	 *                      $ref: '#/components/schemas/OpenApiSpecification'
 	 * ")
-	 * @Responses({
-	 *      @Response(code="200", description="Success")
-	 * })
 	 */
 	public function index(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$openApi = $this->schemaBuilder->build()->toArray();

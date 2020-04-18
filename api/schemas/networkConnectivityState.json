@@ -1,0 +1,25 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/networkConnectivityState.json",
+	"type": "object",
+	"title": "Network connectivity state",
+	"additionalProperties": false,
+	"required": [
+		"state"
+	],
+	"properties": {
+		"state": {
+			"$id": "#/properties/state",
+			"type": "string",
+			"enum": [
+				"full",
+				"limited",
+				"portal",
+				"none",
+				"unknown"
+			],
+			"title": "Connectivity state",
+			"example": "full"
+		}
+	}
+}

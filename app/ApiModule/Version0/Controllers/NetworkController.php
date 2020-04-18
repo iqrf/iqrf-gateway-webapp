@@ -196,12 +196,17 @@ class NetworkController extends BaseController {
 	 * @Path("/connectivity")
 	 * @Method("GET")
 	 * @OpenApi("
-	 *   summary: Checks network connectivity
+	 *  summary: Checks network connectivity
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *          content:
+	 *              application/json:
+	 *                  schema:
+	 *                      $ref: '#/components/schemas/NetworkConnectivityState'
+	 *      '500':
+	 *          description: Server error
 	 * ")
-	 * @Responses({
-	 *     @Response(code="200", description="Success"),
-	 *     @Response(code="400", description="Bad request")
-	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
@@ -211,7 +216,7 @@ class NetworkController extends BaseController {
 			$state = $this->connectivityManager->check()->toScalar();
 			return $response->writeJsonBody(['state' => $state]);
 		} catch (NetworkManagerException $e) {
-			return $response->withStatus(400)
+			return $response->withStatus(500)
 				->writeJsonBody(['error' => $e->getMessage()]);
 		}
 	}

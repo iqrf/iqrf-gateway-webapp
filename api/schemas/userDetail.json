@@ -1,0 +1,43 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/userDetail.json",
+	"type": "object",
+	"title": "User Detail",
+	"additionalProperties": false,
+	"required": [
+		"id",
+		"username",
+		"language",
+		"role"
+	],
+	"properties": {
+		"id": {
+			"$id": "#/properties/id",
+			"type": "integer",
+			"title": "User ID",
+			"example": 1
+		},
+		"username": {
+			"$id": "#/properties/username",
+			"type": "string",
+			"title": "Username",
+			"example": "iqrf"
+		},
+		"language": {
+			"$id": "#/properties/language",
+			"type": "string",
+			"title": "Language",
+			"enum": ["en"],
+			"default": "en",
+			"example": "en"
+		},
+		"role": {
+			"$id": "#/properties/role",
+			"type": "string",
+			"title": "Role",
+			"enum": ["normal", "power"],
+			"default": "normal",
+			"example": "power"
+		}
+	}
+}
