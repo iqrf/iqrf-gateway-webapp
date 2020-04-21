@@ -96,7 +96,7 @@ class CloudsController extends BaseController {
 	 * @OpenApi("
 	 *  summary: Creates a new MQTT connection into Amazon AWS IoT
 	 *  requestBody:
-	 *      description: Network connection configuration
+	 *      description: Amazon AWS IoT connection configuration
 	 *      required: true
 	 *      content:
 	 *          application/json:
@@ -139,7 +139,7 @@ class CloudsController extends BaseController {
 	 * @OpenApi("
 	 *  summary: Creates a new MQTT connection into Microsoft Azure IoT Hub
 	 *  requestBody:
-	 *      description: Network connection configuration
+	 *      description: Microsoft Azure IoT Hub connection configuration
 	 *      required: true
 	 *      content:
 	 *          application/json:
@@ -180,7 +180,7 @@ class CloudsController extends BaseController {
 	 * @OpenApi("
 	 *  summary: Creates a new MQTT connection into Hexio IoT Platform
 	 *  requestBody:
-	 *      description: Network connection configuration
+	 *      description: Hexio IoT Platform connection configuration
 	 *      required: true
 	 *      content:
 	 *          application/json:
@@ -219,7 +219,7 @@ class CloudsController extends BaseController {
 	 * @OpenApi("
 	 *  summary: Creates a new MQTT connection into IBM Cloud
 	 *  requestBody:
-	 *      description: Network connection configuration
+	 *      description: IBM Cloud connection configuration
 	 *      required: true
 	 *      content:
 	 *          application/json:
@@ -258,7 +258,7 @@ class CloudsController extends BaseController {
 	 * @OpenApi("
 	 *  summary: Creates a new MQTT connection into Inteliments InteliGlue
 	 *  requestBody:
-	 *      description: Network connection configuration
+	 *      description: Inteliments InteliGlue connection configuration
 	 *      required: true
 	 *      content:
 	 *          application/json:
