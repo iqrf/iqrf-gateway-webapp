@@ -4,7 +4,7 @@
 	"type": "object",
 	"title": "IQRF Gateway Daemon configuration",
 	"additionalProperties": false,
-	"anyOf": [
+	"oneOf": [
 		{
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__iqrf__AutonetworkService.json",
 			"title": "iqrf::AutonetworkService"

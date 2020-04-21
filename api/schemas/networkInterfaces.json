@@ -1,0 +1,67 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/networkInterfaces.json",
+	"type": "array",
+	"title": "Network interfaces",
+	"additionalItems": false,
+	"items": {
+		"$id": "#/items",
+		"type": "object",
+		"title": "Network interface",
+		"example": {
+			"type": "ethernet",
+			"name": "eno1",
+			"state": "connected",
+			"connectionName": "Wired connection 1"
+		},
+		"additionalProperties": false,
+		"required": [
+			"name",
+			"type",
+			"state",
+			"connectionName"
+		],
+		"properties": {
+			"name": {
+				"$id": "#/items/properties/name",
+				"type": "string",
+				"title": "Interface name",
+				"example": "eno1"
+			},
+			"type": {
+				"$id": "#/items/properties/type",
+				"type": "string",
+				"enum": [
+					"bond",
+					"bridge",
+					"dummy",
+					"ethernet",
+					"loopback",
+					"tun",
+					"vlan",
+					"wifi",
+					"wifi-p2p"
+				],
+				"title": "Interface type",
+				"example": "ethernet"
+			},
+			"state": {
+				"$id": "#/items/properties/state",
+				"type": "string",
+				"enum": [
+					"connected",
+					"disconnected",
+					"unavailable",
+					"unmanaged"
+				],
+				"example": "connected"
+			},
+			"connectionName": {
+				"$id": "#/items/properties/connectionName",
+				"type": "string",
+				"title": "Connection name",
+				"example": "Wired connection 1"
+			}
+		}
+	}
+}

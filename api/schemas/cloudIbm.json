@@ -1,0 +1,47 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/cloudIbm.json",
+	"type": "object",
+	"title": "IBM Cloud connection",
+	"additionalProperties": false,
+	"required": [
+		"organizationId",
+		"deviceType",
+		"deviceId",
+		"token",
+		"eventId"
+	],
+	"properties": {
+		"organizationId": {
+			"$id": "#/properties/organizationId",
+			"type": "string",
+			"title": "Organization ID",
+			"example": "3j1ozv"
+		},
+		"deviceType": {
+			"$id": "#/properties/deviceType",
+			"type": "string",
+			"title": "Device type",
+			"example": "IQRF_GW2"
+		},
+		"deviceId": {
+			"$id": "#/properties/deviceId",
+			"type": "string",
+			"title": "Device ID",
+			"example": "UP_IQRF_GW2"
+		},
+		"token": {
+			"$id": "#/properties/token",
+			"type": "string",
+			"title": "Authentication token",
+			"example": "UP_IQRF_GW2_token"
+		},
+		"eventId": {
+			"$id": "#/properties/eventId",
+			"type": "string",
+			"title": "Command and event ID",
+			"default": "iqrf",
+			"example": "iqrf"
+		}
+	}
+}

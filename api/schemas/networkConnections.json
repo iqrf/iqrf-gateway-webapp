@@ -1,0 +1,44 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/networkConnections.json",
+	"type": "array",
+	"title": "Network connections",
+	"additionalItems": false,
+	"items": {
+		"$id": "#/items",
+		"type": "object",
+		"title": "Network connection",
+		"example": {
+			"type": "802-3-ethernet",
+			"name": "Wired connection 1",
+			"uuid": "c8fb6f29-ec85-4ff5-b1bb-1d1761196d16"
+		},
+		"additionalProperties": false,
+		"required": [
+			"name",
+			"uuid",
+			"type"
+		],
+		"properties": {
+			"name": {
+				"$id": "#/items/properties/name",
+				"type": "string",
+				"title": "Connection name",
+				"example": "Wired connection 1"
+			},
+			"uuid": {
+				"$id": "#/items/properties/uuid",
+				"type": "string",
+				"title": "Connection UUID",
+				"example": "c8fb6f29-ec85-4ff5-b1bb-1d1761196d16"
+			},
+			"type": {
+				"$id": "#/items/properties/type",
+				"type": "string",
+				"enum": ["bridge", "802-3-ethernet", "gsm", "tun", "vlan", "vpn", "802-11-wireless", "wireguard"],
+				"title": "Connection type",
+				"example": "802-3-ethernet"
+			}
+		}
+	}
+}

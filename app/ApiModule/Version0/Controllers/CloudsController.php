@@ -31,6 +31,7 @@ use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\CloudModule\Exceptions\CannotCreateCertificateDirectoryException;
 use App\CloudModule\Exceptions\InvalidConnectionStringException;
+use App\CloudModule\Exceptions\InvalidPrivateKeyForCertificateException;
 use App\CloudModule\Models\AwsManager;
 use App\CloudModule\Models\AzureManager;
 use App\CloudModule\Models\HexioManager;
@@ -39,6 +40,7 @@ use App\CloudModule\Models\InteliGlueManager;
 use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
 use GuzzleHttp\Exception\TransferException;
 use Nette\IOException;
+use Nette\Utils\JsonException;
 
 /**
  * Cloud manager controller
@@ -118,6 +120,10 @@ class CloudsController extends BaseController {
 			return $response->withStatus(500, 'Download failure');
 		} catch (CannotCreateCertificateDirectoryException $e) {
 			return $response->withStatus(500, 'Certificate directory creation failure');
+		} catch (JsonException $e) {
+			return $response->withStatus(400, 'Bad JSON syntax');
+		} catch (InvalidPrivateKeyForCertificateException $e) {
+			return $response->withStatus(400, 'The private key does not correspond to the certificate');
 		}
 	}
 
@@ -125,9 +131,15 @@ class CloudsController extends BaseController {
 	 * @Path("/azure")
 	 * @Method("POST")
 	 * @OpenApi("
-	 *   summary: Creates a new MQTT connection into Microsoft Azure IoT Hub
+	 *  summary: Creates a new MQTT connection into Microsoft Azure IoT Hub
+	 *  requestBody:
+	 *      description: Network connection configuration
+	 *      required: true
+	 *      content:
+	 *          application/json:
+	 *              schema:
+	 *                  $ref: '#/components/schemas/CloudAzure'
 	 * ")
-	 * @RequestBody(entity="\App\ApiModule\Version0\Entities\Request\AzureEntity")
 	 * @Responses({
 	 *      @Response(code="201", description="Created"),
 	 *      @Response(code="400", description="Bad response"),
@@ -151,6 +163,8 @@ class CloudsController extends BaseController {
 			return $response->withStatus(500, 'Download failure');
 		} catch (CannotCreateCertificateDirectoryException $e) {
 			return $response->withStatus(500, 'Certificate directory creation failure');
+		} catch (JsonException $e) {
+			return $response->withStatus(400, 'Bad JSON syntax');
 		}
 	}
 
@@ -158,9 +172,15 @@ class CloudsController extends BaseController {
 	 * @Path("/hexio")
 	 * @Method("POST")
 	 * @OpenApi("
-	 *   summary: Creates a new MQTT connection into Hexio IoT Platform
+	 *  summary: Creates a new MQTT connection into Hexio IoT Platform
+	 *  requestBody:
+	 *      description: Network connection configuration
+	 *      required: true
+	 *      content:
+	 *          application/json:
+	 *              schema:
+	 *                  $ref: '#/components/schemas/CloudHexio'
 	 * ")
-	 * @RequestBody(entity="\App\ApiModule\Version0\Entities\Request\HexioEntity")
 	 * @Responses({
 	 *      @Response(code="201", description="Created"),
 	 *      @Response(code="400", description="Bad response"),
@@ -182,6 +202,8 @@ class CloudsController extends BaseController {
 			return $response->withStatus(500, 'Download failure');
 		} catch (CannotCreateCertificateDirectoryException $e) {
 			return $response->withStatus(500, 'Certificate directory creation failure');
+		} catch (JsonException $e) {
+			return $response->withStatus(400, 'Bad JSON syntax');
 		}
 	}
 
@@ -189,9 +211,15 @@ class CloudsController extends BaseController {
 	 * @Path("/ibmCloud")
 	 * @Method("POST")
 	 * @OpenApi("
-	 *   summary: Creates a new MQTT connection into IBM Cloud
+	 *  summary: Creates a new MQTT connection into IBM Cloud
+	 *  requestBody:
+	 *      description: Network connection configuration
+	 *      required: true
+	 *      content:
+	 *          application/json:
+	 *              schema:
+	 *                  $ref: '#/components/schemas/CloudIbm'
 	 * ")
-	 * @RequestBody(entity="\App\ApiModule\Version0\Entities\Request\IbmCloudEntity")
 	 * @Responses({
 	 *      @Response(code="201", description="Created"),
 	 *      @Response(code="400", description="Bad response"),
@@ -213,6 +241,8 @@ class CloudsController extends BaseController {
 			return $response->withStatus(500, 'Download failure');
 		} catch (CannotCreateCertificateDirectoryException $e) {
 			return $response->withStatus(500, 'Certificate directory creation failure');
+		} catch (JsonException $e) {
+			return $response->withStatus(400, 'Bad JSON syntax');
 		}
 	}
 
@@ -220,9 +250,15 @@ class CloudsController extends BaseController {
 	 * @Path("/inteliGlue")
 	 * @Method("POST")
 	 * @OpenApi("
-	 *   summary: Creates a new MQTT connection into Inteliments InteliGlue
+	 *  summary: Creates a new MQTT connection into Inteliments InteliGlue
+	 *  requestBody:
+	 *      description: Network connection configuration
+	 *      required: true
+	 *      content:
+	 *          application/json:
+	 *              schema:
+	 *                  $ref: '#/components/schemas/CloudInteliGlue'
 	 * ")
-	 * @RequestBody(entity="\App\ApiModule\Version0\Entities\Request\InteliGlueEntity")
 	 * @Responses({
 	 *      @Response(code="201", description="Created"),
 	 *      @Response(code="400", description="Bad response"),
@@ -244,6 +280,8 @@ class CloudsController extends BaseController {
 			return $response->withStatus(500, 'Download failure');
 		} catch (CannotCreateCertificateDirectoryException $e) {
 			return $response->withStatus(500, 'Certificate directory creation failure');
+		} catch (JsonException $e) {
+			return $response->withStatus(400, 'Bad JSON syntax');
 		}
 	}
 

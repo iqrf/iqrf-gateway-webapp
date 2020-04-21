@@ -23,7 +23,6 @@ namespace App\ApiModule\Version0\Controllers;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
-use Apitte\Core\Annotation\Controller\RequestBody;
 use Apitte\Core\Annotation\Controller\RequestParameter;
 use Apitte\Core\Annotation\Controller\RequestParameters;
 use Apitte\Core\Annotation\Controller\Response;
@@ -84,11 +83,15 @@ class NetworkController extends BaseController {
 	 * @Path("/connections")
 	 * @Method("GET")
 	 * @OpenApi("
-	 *   summary: Returns network connections
+	 *  summary: Returns network connections
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *          content:
+	 *              application/json:
+	 *                  schema:
+	 *                      $ref: '#/components/schemas/NetworkConnections'
 	 * ")
-	 * @Responses({
-	 *      @Response(code="200", description="Success", entity="\App\ApiModule\Version0\Entities\Response\NetworkConnectionEntity[]")
-	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
@@ -133,9 +136,15 @@ class NetworkController extends BaseController {
 	 * @Path("/connections/{uuid}")
 	 * @Method("PUT")
 	 * @OpenApi("
-	 *   summary: Edits network connection by its UUID
+	 *  summary: Edits network connection by its UUID
+	 *  requestBody:
+	 *      description: Network connection configuration
+	 *      required: true
+	 *      content:
+	 *          application/json:
+	 *              schema:
+	 *                  $ref: '#/components/schemas/NetworkConnection'
 	 * ")
-	 * @RequestBody(entity="\App\ApiModule\Version0\Entities\Response\NetworkConnectionDetailEntity", description="Network connection")
 	 * @RequestParameters({
 	 *      @RequestParameter(name="uuid", type="string", description="Connection UUID")
 	 * })
@@ -166,14 +175,19 @@ class NetworkController extends BaseController {
 	 * @Path("/connections/{uuid}")
 	 * @Method("GET")
 	 * @OpenApi("
-	 *   summary: Returns network connection by its UUID
+	 *  summary: Returns network connection by its UUID
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *          content:
+	 *              application/json:
+	 *                  schema:
+	 *                      $ref: '#/components/schemas/NetworkConnection'
+	 *      '400':
+	 *          description: Bad request
 	 * ")
 	 * @RequestParameters({
 	 *      @RequestParameter(name="uuid", type="string", description="Connection UUID")
-	 * })
-	 * @Responses({
-	 *     @Response(code="200", description="Success", entity="\App\ApiModule\Version0\Entities\Response\NetworkConnectionDetailEntity"),
-	 *     @Response(code="400", description="Bad request")
 	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -225,11 +239,15 @@ class NetworkController extends BaseController {
 	 * @Path("/interfaces")
 	 * @Method("GET")
 	 * @OpenApi("
-	 *   summary: Returns network interfaces
+	 *  summary: Returns network interfaces
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *          content:
+	 *              application/json:
+	 *                  schema:
+	 *                      $ref: '#/components/schemas/NetworkInterfaces'
 	 * ")
-	 * @Responses({
-	 *      @Response(code="200", description="Success", entity="\App\ApiModule\Version0\Entities\Response\NetworkInterfaceEntity[]")
-	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
