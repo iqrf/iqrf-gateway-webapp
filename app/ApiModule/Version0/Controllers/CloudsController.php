@@ -23,7 +23,6 @@ namespace App\ApiModule\Version0\Controllers;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
-use Apitte\Core\Annotation\Controller\RequestBody;
 use Apitte\Core\Annotation\Controller\Response;
 use Apitte\Core\Annotation\Controller\Responses;
 use Apitte\Core\Annotation\Controller\Tag;
@@ -38,6 +37,7 @@ use App\CloudModule\Models\HexioManager;
 use App\CloudModule\Models\IbmCloudManager;
 use App\CloudModule\Models\InteliGlueManager;
 use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\TransferException;
 use Nette\IOException;
 use Nette\Utils\JsonException;
@@ -94,9 +94,15 @@ class CloudsController extends BaseController {
 	 * @Path("/aws")
 	 * @Method("POST")
 	 * @OpenApi("
-	 *   summary: Creates a new MQTT connection into Amazon AWS IoT
+	 *  summary: Creates a new MQTT connection into Amazon AWS IoT
+	 *  requestBody:
+	 *      description: Network connection configuration
+	 *      required: true
+	 *      content:
+	 *          application/json:
+	 *              schema:
+	 *                  $ref: '#/components/schemas/CloudAws'
 	 * ")
-	 * @RequestBody(entity="\App\ApiModule\Version0\Entities\Request\AwsEntity")
 	 * @Responses({
 	 *      @Response(code="201", description="Created"),
 	 *      @Response(code="400", description="Bad response"),
@@ -116,7 +122,7 @@ class CloudsController extends BaseController {
 			return $response->withStatus(400, 'Nonexisting JSON schema');
 		} catch (IOException $e) {
 			return $response->withStatus(500, 'Write failure');
-		} catch (TransferException $e) {
+		} catch (GuzzleException $e) {
 			return $response->withStatus(500, 'Download failure');
 		} catch (CannotCreateCertificateDirectoryException $e) {
 			return $response->withStatus(500, 'Certificate directory creation failure');
@@ -198,7 +204,7 @@ class CloudsController extends BaseController {
 			return $response->withStatus(400, 'Nonexisting JSON schema');
 		} catch (IOException $e) {
 			return $response->withStatus(500, 'Write failure');
-		} catch (TransferException $e) {
+		} catch (GuzzleException $e) {
 			return $response->withStatus(500, 'Download failure');
 		} catch (CannotCreateCertificateDirectoryException $e) {
 			return $response->withStatus(500, 'Certificate directory creation failure');
@@ -237,7 +243,7 @@ class CloudsController extends BaseController {
 			return $response->withStatus(400, 'Nonexisting JSON schema');
 		} catch (IOException $e) {
 			return $response->withStatus(500, 'Write failure');
-		} catch (TransferException $e) {
+		} catch (GuzzleException $e) {
 			return $response->withStatus(500, 'Download failure');
 		} catch (CannotCreateCertificateDirectoryException $e) {
 			return $response->withStatus(500, 'Certificate directory creation failure');
@@ -276,7 +282,7 @@ class CloudsController extends BaseController {
 			return $response->withStatus(400, 'Nonexisting JSON schema');
 		} catch (IOException $e) {
 			return $response->withStatus(500, 'Write failure');
-		} catch (TransferException $e) {
+		} catch (GuzzleException $e) {
 			return $response->withStatus(500, 'Download failure');
 		} catch (CannotCreateCertificateDirectoryException $e) {
 			return $response->withStatus(500, 'Certificate directory creation failure');

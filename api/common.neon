@@ -22,6 +22,8 @@ components:
 	schemas:
 		CertificateDetail:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/certificate.json
+		CloudAws:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/cloudAws.json
 		CloudAzure:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/cloudAzure.json
 		CloudHexio:
