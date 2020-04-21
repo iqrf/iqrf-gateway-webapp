@@ -26,24 +26,54 @@ namespace App\ServiceModule\Models;
 interface IServiceManager {
 
 	/**
-	 * Starts the service
+	 * Disables the service
+	 * @var string|null $serviceName Service name
 	 */
-	public function start(): void;
+	public function disable(?string $serviceName = null): void;
+
+	/**
+	 * Enables the service
+	 * @var string|null $serviceName Service name
+	 */
+	public function enable(?string $serviceName = null): void;
+
+	/**
+	 * Checks if the service is active
+	 * @var string|null $serviceName Service name
+	 * @return bool Is service active?
+	 */
+	public function isActive(?string $serviceName = null): bool;
+
+	/**
+	 * Checks if the service is enabled
+	 * @var string|null $serviceName Service name
+	 * @return bool Is service enabled?
+	 */
+	public function isEnabled(?string $serviceName = null): bool;
+
+	/**
+	 * Starts the service
+	 * @var string|null $serviceName Service name
+	 */
+	public function start(?string $serviceName = null): void;
 
 	/**
 	 * Stops the service
+	 * @var string|null $serviceName Service name
 	 */
-	public function stop(): void;
+	public function stop(?string $serviceName = null): void;
 
 	/**
 	 * Restarts the service
+	 * @var string|null $serviceName Service name
 	 */
-	public function restart(): void;
+	public function restart(?string $serviceName = null): void;
 
 	/**
-	 * Gets status of the service
-	 * @return string Output from init daemon
+	 * Returns status of the service
+	 * @var string|null $serviceName Service name
+	 * @return string Service status
 	 */
-	public function getStatus(): string;
+	public function getStatus(?string $serviceName = null): string;
 
 }

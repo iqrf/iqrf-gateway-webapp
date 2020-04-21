@@ -18,34 +18,13 @@
  */
 declare(strict_types = 1);
 
-namespace App\ServiceModule\Enums;
+namespace App\ServiceModule\Exceptions;
 
-use Grifart\Enum\AutoInstances;
-use Grifart\Enum\Enum;
+use BadMethodCallException;
 
 /**
- * Service status enum
- * @method static ServiceStates DISABLED()
- * @method static ServiceStates ENABLED()
- * @method static ServiceStates MISSING()
+ * The exception that indicates not implemented feature
  */
-final class ServiceStates extends Enum {
-
-	use AutoInstances;
-
-	/**
-	 * Disabled service
-	 */
-	private const DISABLED = 'disabled';
-
-	/**
-	 * Enabled service
-	 */
-	private const ENABLED = 'enabled';
-
-	/**
-	 * Missing service
-	 */
-	private const MISSING = '';
+class NotImplementedException extends BadMethodCallException{
 
 }

@@ -29,6 +29,7 @@ use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\CloudModule\Models\PixlaManager;
+use App\ServiceModule\Exceptions\NonexistentServiceException;
 
 /**
  * PIXLA controller
@@ -70,8 +71,12 @@ class PixlaController extends BaseController {
 	public function status(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$status = [
 			'token' => $this->manager->getToken(),
-			'status' => $this->manager->getServiceStatus()->toScalar(),
 		];
+		try {
+			$status['status'] = $this->manager->getServiceStatus() ? 'enabled' : 'disabled';
+		} catch (NonexistentServiceException $e) {
+			$status['status'] = 'missing';
+		}
 		return $response->writeJsonBody($status);
 	}
 

@@ -22,7 +22,8 @@ namespace App\GatewayModule\Presenters;
 
 use App\CoreModule\Presenters\ProtectedPresenter;
 use App\CoreModule\Traits\TPresenterFlashMessage;
-use App\GatewayModule\Models\UnattendedUpgradesManager;
+use App\ServiceModule\Exceptions\NonexistentServiceException;
+use App\ServiceModule\Models\ServiceManager;
 
 /**
  * Unattended upgrades presenter
@@ -32,15 +33,20 @@ class UnattendedUpgradesPresenter extends ProtectedPresenter {
 	use TPresenterFlashMessage;
 
 	/**
-	 * @var UnattendedUpgradesManager Unattended upgrades manager
+	 * @var ServiceManager Service manager
 	 */
 	private $manager;
 
 	/**
-	 * Constructor
-	 * @param UnattendedUpgradesManager $manager Unattended upgrades manager
+	 * Service name
 	 */
-	public function __construct(UnattendedUpgradesManager $manager) {
+	private const SERVICE_NAME = 'unattended-upgrades';
+
+	/**
+	 * Constructor
+	 * @param ServiceManager $manager Service manager
+	 */
+	public function __construct(ServiceManager $manager) {
 		$this->manager = $manager;
 		parent::__construct();
 	}
@@ -49,7 +55,7 @@ class UnattendedUpgradesPresenter extends ProtectedPresenter {
 	 * Disables and stops unattended upgrades
 	 */
 	public function handleDisable(): void {
-		$this->manager->disableService();
+		$this->manager->disable(self::SERVICE_NAME);
 		$this->flashSuccess('gateway.unattendedUpgrades.messages.disable');
 	}
 
@@ -57,7 +63,7 @@ class UnattendedUpgradesPresenter extends ProtectedPresenter {
 	 * Enables and starts unattended upgrades
 	 */
 	public function handleEnable(): void {
-		$this->manager->enableService();
+		$this->manager->enable(self::SERVICE_NAME);
 		$this->flashSuccess('gateway.unattendedUpgrades.messages.enable');
 	}
 
@@ -65,7 +71,11 @@ class UnattendedUpgradesPresenter extends ProtectedPresenter {
 	 * Renders unattended upgrade control panel
 	 */
 	public function renderDefault(): void {
-		$this->template->status = $this->manager->getServiceStatus();
+		try {
+			$this->template->status = $this->manager->isEnabled(self::SERVICE_NAME) ? 'enabled' : 'disabled';
+		} catch (NonexistentServiceException $e) {
+			$this->template->status = 'missing';
+		}
 		$this->redrawControl('status');
 	}
 

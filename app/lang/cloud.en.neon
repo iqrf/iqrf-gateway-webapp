@@ -104,7 +104,7 @@ pixla:
 	statuses:
 		enabled: Enabled
 		disabled: Disabled
-		'': Missing
+		missing: Missing
 	token: Token
 	messages:
 		disabled: PIXLA manager is disabled.

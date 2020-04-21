@@ -1,0 +1,30 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/serviceStatus.json",
+	"type": "object",
+	"title": "Service status",
+	"additionalProperties": false,
+	"required": [
+		"status"
+	],
+	"properties": {
+		"enabled": {
+			"$id": "#/properties/enabled",
+			"type": "boolean",
+			"title": "Enabled service",
+			"example": true
+		},
+		"active": {
+			"$id": "#/properties/active",
+			"type": "boolean",
+			"title": "Active service",
+			"example": true
+		},
+		"status": {
+			"$id": "#/properties/status",
+			"type": "string",
+			"title": "Service status",
+			"example": "● iqrf-gateway-daemon.service - IQRF Gateway Daemon\n     Loaded: loaded (/lib/systemd/system/iqrf-gateway-daemon.service; enabled; vendor preset: enabled)\n     Active: active (running) since Tue 2020-04-21 17:35:04 CEST; 1h 43min ago\n       Docs: man:iqrfgd2(1)\n             https://docs.iqrf.org/iqrf-gateway/\n   Main PID: 1945768 (iqrfgd2)\n      Tasks: 24 (limit: 17871)\n     Memory: 27.6M\n     CGroup: /system.slice/iqrf-gateway-daemon.service\n             └─1945768 /usr/bin/iqrfgd2 /etc/iqrf-gateway-daemon/config.json\n\nApr 21 17:35:04 ASUS-B85-PRO-GAMER iqrfgd2[1945768]: DAEMON_VERSION=\"v2.3.0-beta~2644\"\nApr 21 17:35:04 ASUS-B85-PRO-GAMER iqrfgd2[1945768]: Copyright 2015 - 2017 MICRORISC s.r.o.\nApr 21 17:35:04 ASUS-B85-PRO-GAMER iqrfgd2[1945768]: Copyright 2018 IQRF Tech s.r.o.\nApr 21 17:35:04 ASUS-B85-PRO-GAMER iqrfgd2[1945768]: ============================================================================\nApr 21 17:35:04 ASUS-B85-PRO-GAMER iqrfgd2[1945768]: startup ...\nApr 21 17:35:04 ASUS-B85-PRO-GAMER iqrfgd2[1945768]: Running on Shape component system https://github.com/logimic/shape\nApr 21 17:35:04 ASUS-B85-PRO-GAMER iqrfgd2[1945768]: Launcher: Loading configuration file: /etc/iqrf-gateway-daemon/config.json\nApr 21 17:35:04 ASUS-B85-PRO-GAMER iqrfgd2[1945768]: Configuration directory set to: /etc/iqrf-gateway-daemon\nApr 21 17:35:07 ASUS-B85-PRO-GAMER iqrfgd2[1945768]: Loading cache ...\nApr 21 17:35:08 ASUS-B85-PRO-GAMER iqrfgd2[1945768]: Loading cache success"
+		}
+	}
+}

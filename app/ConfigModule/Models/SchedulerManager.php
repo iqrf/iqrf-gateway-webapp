@@ -23,7 +23,7 @@ namespace App\ConfigModule\Models;
 use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\JsonFileManager;
-use App\ServiceModule\Exceptions\NotSupportedInitSystemException;
+use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
 use App\ServiceModule\Models\ServiceManager;
 use Nette\IOException;
 use Nette\SmartObject;
@@ -103,7 +103,7 @@ class SchedulerManager {
 			$this->fileManager->delete($files[$id]);
 			try {
 				$this->serviceManager->restart();
-			} catch (NotSupportedInitSystemException $e) {
+			} catch (UnsupportedInitSystemException $e) {
 				// Do nothing
 			}
 		}

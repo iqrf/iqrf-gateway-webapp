@@ -26,7 +26,7 @@ use App\ConfigModule\Models\MigrationManager;
 use App\ConfigModule\Presenters\MigrationPresenter;
 use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
 use App\CoreModule\Forms\FormFactory;
-use App\ServiceModule\Exceptions\NotSupportedInitSystemException;
+use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
 use Nette\Application\UI\Form;
 use Nette\Forms\Controls\SubmitButton;
 use Nette\IOException;
@@ -100,7 +100,7 @@ class MigrationFormFactory {
 			$this->presenter->flashError('config.migration.errors.invalidFormat');
 		} catch (NonExistingJsonSchemaException $e) {
 			$this->presenter->flashError('config.messages.writeFailures.nonExistingJsonSchema');
-		} catch (NotSupportedInitSystemException $e) {
+		} catch (UnsupportedInitSystemException $e) {
 			$this->presenter->flashError('service.errors.unsupportedInit');
 		} catch (IOException $e) {
 			/// TODO: Use custom error message.

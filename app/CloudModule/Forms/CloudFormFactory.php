@@ -26,7 +26,7 @@ use App\CloudModule\Models\IManager;
 use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
 use App\CoreModule\Forms\FormFactory;
 use App\CoreModule\Presenters\ProtectedPresenter;
-use App\ServiceModule\Exceptions\NotSupportedInitSystemException;
+use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
 use App\ServiceModule\Models\ServiceManager;
 use GuzzleHttp\Exception\TransferException;
 use Nette\Forms\Controls\SubmitButton;
@@ -101,7 +101,7 @@ abstract class CloudFormFactory {
 			try {
 				$this->serviceManager->restart();
 				$this->presenter->flashInfo('service.actions.restart.message');
-			} catch (NotSupportedInitSystemException $e) {
+			} catch (UnsupportedInitSystemException $e) {
 				$this->presenter->flashError('service.errors.unsupportedInit');
 			}
 		}

@@ -10,7 +10,7 @@ declare(strict_types = 1);
 
 namespace Tests\Integration\ServiceModule\Models;
 
-use App\ServiceModule\Exceptions\NotSupportedInitSystemException;
+use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
 use App\ServiceModule\Models\ServiceManager;
 use Tester\Assert;
 use Tests\Toolkit\TestCases\CommandTestCase;
@@ -38,19 +38,71 @@ class ServiceManagerTest extends CommandTestCase {
 	private $serviceName = 'iqrf-gateway-daemon';
 
 	/**
+	 * Tests the function to disable the service via systemD
+	 */
+	public function testDisableSystemD(): void {
+		$commands = [
+			'systemctl disable ' . $this->serviceName . '.service',
+			'systemctl stop ' . $this->serviceName . '.service',
+		];
+		foreach ($commands as $command) {
+			$this->receiveCommand($command, true);
+		}
+		Assert::noError(function (): void {
+			$this->managerSystemD->disable();
+		});
+	}
+
+	/**
+	 * Tests the function to disable the service via unknown init daemon
+	 */
+	public function testDisableUnknown(): void {
+		Assert::exception(function (): void {
+			$this->managerUnknown->disable();
+		}, UnsupportedInitSystemException::class);
+	}
+
+	/**
+	 * Tests the function to enable the service via systemD
+	 */
+	public function testEnableSystemD(): void {
+		$commands = [
+			'systemctl enable ' . $this->serviceName . '.service',
+			'systemctl start ' . $this->serviceName . '.service',
+		];
+		foreach ($commands as $command) {
+			$this->receiveCommand($command, true);
+		}
+		Assert::noError(function (): void {
+			$this->managerSystemD->enable();
+		});
+	}
+
+	/**
+	 * Tests the function to enable the service via unknown init daemon
+	 */
+	public function testEnableUnknown(): void {
+		Assert::exception(function (): void {
+			$this->managerUnknown->enable();
+		}, UnsupportedInitSystemException::class);
+	}
+
+	/**
 	 * Tests the function to start the service via systemD
 	 */
 	public function testStartSystemD(): void {
 		$command = 'systemctl start ' . $this->serviceName . '.service';
 		$this->receiveCommand($command, true);
-		Assert::noError([$this->managerSystemD, 'start']);
+		Assert::noError(function (): void {
+			$this->managerSystemD->start();
+		});
 	}
 
 	/**
 	 * Tests the function to start the service via unknown init daemon
 	 */
 	public function testStartUnknown(): void {
-		Assert::exception([$this->managerUnknown, 'start'], NotSupportedInitSystemException::class);
+		Assert::exception([$this->managerUnknown, 'start'], UnsupportedInitSystemException::class);
 	}
 
 	/**
@@ -66,7 +118,7 @@ class ServiceManagerTest extends CommandTestCase {
 	 * Tests the function to stop the service via unknown init daemon
 	 */
 	public function testStopUnknown(): void {
-		Assert::exception([$this->managerUnknown, 'stop'], NotSupportedInitSystemException::class);
+		Assert::exception([$this->managerUnknown, 'stop'], UnsupportedInitSystemException::class);
 	}
 
 	/**
@@ -82,7 +134,7 @@ class ServiceManagerTest extends CommandTestCase {
 	 * Tests the function to restart the service via unknown init daemon
 	 */
 	public function testRestartUnknown(): void {
-		Assert::exception([$this->managerUnknown, 'restart'], NotSupportedInitSystemException::class);
+		Assert::exception([$this->managerUnknown, 'restart'], UnsupportedInitSystemException::class);
 	}
 
 	/**
@@ -99,7 +151,7 @@ class ServiceManagerTest extends CommandTestCase {
 	 * Tests the function to get status of the service via unknown init daemon
 	 */
 	public function testGetStatusUnknown(): void {
-		Assert::exception([$this->managerUnknown, 'getStatus'], NotSupportedInitSystemException::class);
+		Assert::exception([$this->managerUnknown, 'getStatus'], UnsupportedInitSystemException::class);
 	}
 
 	/**

@@ -26,7 +26,7 @@ use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\ZipArchiveManager;
-use App\ServiceModule\Exceptions\NotSupportedInitSystemException;
+use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
 use App\ServiceModule\Models\ServiceManager;
 use DateTime;
 use Nette\Application\BadRequestException;
@@ -115,7 +115,7 @@ class MigrationManager {
 	 * @throws IncompleteConfigurationException
 	 * @throws InvalidConfigurationFormatException
 	 * @throws JsonException
-	 * @throws NotSupportedInitSystemException
+	 * @throws UnsupportedInitSystemException
 	 */
 	public function upload(array $formValues): void {
 		$zip = $formValues['configuration'];

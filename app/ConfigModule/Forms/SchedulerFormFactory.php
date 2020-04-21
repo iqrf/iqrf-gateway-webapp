@@ -26,7 +26,7 @@ use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
 use App\CoreModule\Forms\FormFactory;
 use App\IqrfNetModule\Models\ApiSchemaManager;
-use App\ServiceModule\Exceptions\NotSupportedInitSystemException;
+use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
 use App\ServiceModule\Models\ServiceManager;
 use Contributte\FormMultiplier\Multiplier;
 use Contributte\Translation\Wrappers\NotTranslate;
@@ -274,7 +274,7 @@ class SchedulerFormFactory {
 			$this->presenter->flashError('config.messages.writeFailures.ioError');
 		} catch (JsonException $e) {
 			$this->presenter->flashError('config.messages.writeFailures.invalidJson');
-		} catch (NotSupportedInitSystemException $e) {
+		} catch (UnsupportedInitSystemException $e) {
 			$this->presenter->flashError('service.errors.unsupportedInit');
 		}
 	}

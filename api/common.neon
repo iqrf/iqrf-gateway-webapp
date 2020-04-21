@@ -48,6 +48,10 @@ components:
 			$ref: https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/schemas/v3.0/schema.json
 		PixlaStatus:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/pixlaStatus.json
+		ServiceList:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/serviceList.json
+		ServiceStatus:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/serviceStatus.json
 		UserCreate:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/userCreate.json
 		UserDetail:

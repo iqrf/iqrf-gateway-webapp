@@ -22,7 +22,8 @@ namespace App\GatewayModule\Presenters;
 
 use App\CoreModule\Presenters\ProtectedPresenter;
 use App\CoreModule\Traits\TPresenterFlashMessage;
-use App\GatewayModule\Models\SshManager;
+use App\ServiceModule\Exceptions\NonexistentServiceException;
+use App\ServiceModule\Models\ServiceManager;
 
 /**
  * SSH daemon manager presenter
@@ -32,15 +33,20 @@ class SshPresenter extends ProtectedPresenter {
 	use TPresenterFlashMessage;
 
 	/**
-	 * @var SshManager SSH daemon manager
+	 * @var ServiceManager Service manager
 	 */
 	private $manager;
 
 	/**
-	 * Constructor
-	 * @param SshManager $manager SSH daemon manager
+	 * Service name
 	 */
-	public function __construct(SshManager $manager) {
+	private const SERVICE_NAME = 'ssh';
+
+	/**
+	 * Constructor
+	 * @param ServiceManager $manager Service manager
+	 */
+	public function __construct(ServiceManager $manager) {
 		$this->manager = $manager;
 		parent::__construct();
 	}
@@ -49,7 +55,7 @@ class SshPresenter extends ProtectedPresenter {
 	 * Disables and stops SSH daemon
 	 */
 	public function handleDisable(): void {
-		$this->manager->disableService();
+		$this->manager->disable(self::SERVICE_NAME);
 		$this->flashSuccess('gateway.ssh.messages.disable');
 	}
 
@@ -57,7 +63,7 @@ class SshPresenter extends ProtectedPresenter {
 	 * Enables and starts SSH daemon
 	 */
 	public function handleEnable(): void {
-		$this->manager->enableService();
+		$this->manager->enable(self::SERVICE_NAME);
 		$this->flashSuccess('gateway.ssh.messages.enable');
 	}
 
@@ -65,7 +71,11 @@ class SshPresenter extends ProtectedPresenter {
 	 * Renders SSH daemon control panel
 	 */
 	public function renderDefault(): void {
-		$this->template->status = $this->manager->getServiceStatus();
+		try {
+			$this->template->status = $this->manager->isEnabled(self::SERVICE_NAME) ? 'enabled' : 'disabled';
+		} catch (NonexistentServiceException $e) {
+			$this->template->status = 'missing';
+		}
 		$this->redrawControl('status');
 	}
 

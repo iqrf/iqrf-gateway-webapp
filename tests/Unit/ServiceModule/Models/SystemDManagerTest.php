@@ -10,7 +10,6 @@ declare(strict_types = 1);
 
 namespace Tests\Unit\ServiceModule\Models;
 
-use App\ServiceModule\Enums\ServiceStates;
 use App\ServiceModule\Models\SystemDManager;
 use Tester\Assert;
 use Tests\Toolkit\TestCases\CommandTestCase;
@@ -43,7 +42,9 @@ class SystemDManagerTest extends CommandTestCase {
 		foreach ($commands as $command) {
 			$this->receiveCommand($command, true);
 		}
-		Assert::noError([$this->manager, 'disable']);
+		Assert::noError(function (): void {
+			$this->manager->disable();
+		});
 	}
 
 	/**
@@ -57,17 +58,27 @@ class SystemDManagerTest extends CommandTestCase {
 		foreach ($commands as $command) {
 			$this->receiveCommand($command, true);
 		}
-		Assert::noError([$this->manager, 'enable']);
+		Assert::noError(function (): void {
+			$this->manager->enable();
+		});
+	}
+
+	/**
+	 * Tests the function to check if the service is active via systemD
+	 */
+	public function testIsActive(): void {
+		$command = 'systemctl is-active ' . $this->serviceName;
+		$this->receiveCommand($command, true, 'active');
+		Assert::true($this->manager->isActive());
 	}
 
 	/**
 	 * Tests the function to check if the service is enabled via systemD
 	 */
 	public function testIsEnabled(): void {
-		$expected = ServiceStates::ENABLED();
 		$command = 'systemctl is-enabled ' . $this->serviceName;
 		$this->receiveCommand($command, true, 'enabled');
-		Assert::same($expected, $this->manager->isEnabled());
+		Assert::true($this->manager->isEnabled());
 	}
 
 	/**
@@ -76,7 +87,9 @@ class SystemDManagerTest extends CommandTestCase {
 	public function testStart(): void {
 		$command = 'systemctl start ' . $this->serviceName;
 		$this->receiveCommand($command, true);
-		Assert::noError([$this->manager, 'start']);
+		Assert::noError(function (): void {
+			$this->manager->start();
+		});
 	}
 
 	/**
@@ -85,7 +98,9 @@ class SystemDManagerTest extends CommandTestCase {
 	public function testStop(): void {
 		$command = 'systemctl stop ' . $this->serviceName;
 		$this->receiveCommand($command, true);
-		Assert::noError([$this->manager, 'stop']);
+		Assert::noError(function (): void {
+			$this->manager->stop();
+		});
 	}
 
 	/**
@@ -94,7 +109,9 @@ class SystemDManagerTest extends CommandTestCase {
 	public function testRestart(): void {
 		$command = 'systemctl restart ' . $this->serviceName;
 		$this->receiveCommand($command, true);
-		Assert::noError([$this->manager, 'restart']);
+		Assert::noError(function (): void {
+			$this->manager->restart();
+		});
 	}
 
 	/**

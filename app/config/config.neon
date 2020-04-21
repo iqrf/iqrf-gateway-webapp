@@ -59,6 +59,7 @@ http:
 	csp:
 		connect-src: [
 			self,
+			https://apidocs.iqrf.org,
 			https://sentry.iqrf.org
 		]
 		default-src: self

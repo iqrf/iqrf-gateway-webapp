@@ -21,13 +21,13 @@ declare(strict_types = 1);
 namespace App\ServiceModule\Models;
 
 use App\CoreModule\Models\CommandManager;
-use App\ServiceModule\Exceptions\NonexistentServiceException;
+use App\ServiceModule\Exceptions\NotImplementedException;
 use Nette\SmartObject;
 
 /**
- * Tool for managing services (systemD init daemon)
+ * Tool for managing services (supervisord init daemon in a Docker container)
  */
-class SystemDManager implements IServiceManager {
+class SupervisordManager implements IServiceManager {
 
 	use SmartObject;
 
@@ -56,111 +56,74 @@ class SystemDManager implements IServiceManager {
 	/**
 	 * Disables the service
 	 * @var string|null $serviceName Service name
-	 * @throws NonexistentServiceException
 	 */
 	public function disable(?string $serviceName = null): void {
-		$serviceName = $serviceName ?? $this->serviceName;
-		$cmd = 'systemctl disable ' . $serviceName . '.service';
-		$command = $this->commandManager->run($cmd, true);
-		if ($command->getExitCode() !== 0) {
-			throw new NonexistentServiceException($command->getStderr());
-		}
-		$this->stop($serviceName);
+		throw new NotImplementedException();
 	}
 
 	/**
 	 * Enables the service
 	 * @var string|null $serviceName Service name
-	 * @throws NonexistentServiceException
 	 */
 	public function enable(?string $serviceName = null): void {
-		$serviceName = $serviceName ?? $this->serviceName;
-		$cmd = 'systemctl enable ' . $serviceName . '.service';
-		$command = $this->commandManager->run($cmd, true);
-		if ($command->getExitCode() !== 0) {
-			throw new NonexistentServiceException($command->getStderr());
-		}
-		$this->start($serviceName);
+		throw new NotImplementedException();
 	}
 
 	/**
 	 * Checks if the service is active
 	 * @var string|null $serviceName Service name
-	 * @return bool Is service active?
 	 */
 	public function isActive(?string $serviceName = null): bool {
-		$serviceName = $serviceName ?? $this->serviceName;
-		$cmd = 'systemctl is-active ' . $serviceName . '.service';
-		$command = $this->commandManager->run($cmd, true);
-		return $command->getStdout() === 'active';
+		throw new NotImplementedException();
 	}
 
 	/**
 	 * Checks if the service is enabled
 	 * @var string|null $serviceName Service name
-	 * @return bool Is service enabled?
-	 * @throws NonexistentServiceException
 	 */
 	public function isEnabled(?string $serviceName = null): bool {
-		$serviceName = $serviceName ?? $this->serviceName;
-		$cmd = 'systemctl is-enabled ' . $serviceName . '.service';
-		$command = $this->commandManager->run($cmd, true);
-		return $command->getStdout() === 'enabled';
+		throw new NotImplementedException();
 	}
 
 	/**
 	 * Starts the service
 	 * @var string|null $serviceName Service name
-	 * @throws NonexistentServiceException
 	 */
 	public function start(?string $serviceName = null): void {
 		$serviceName = $serviceName ?? $this->serviceName;
-		$cmd = 'systemctl start ' . $serviceName . '.service';
-		$command = $this->commandManager->run($cmd, true);
-		if ($command->getExitCode() !== 0) {
-			throw new NonexistentServiceException($command->getStderr());
-		}
+		$cmd = 'supervisorctl start ' . $serviceName;
+		$this->commandManager->run($cmd, true);
 	}
 
 	/**
 	 * Stops the service
 	 * @var string|null $serviceName Service name
-	 * @throws NonexistentServiceException
 	 */
 	public function stop(?string $serviceName = null): void {
 		$serviceName = $serviceName ?? $this->serviceName;
-		$cmd = 'systemctl stop ' . $serviceName . '.service';
-		$command = $this->commandManager->run($cmd, true);
-		if ($command->getExitCode() !== 0) {
-			throw new NonexistentServiceException($command->getStderr());
-		}
+		$cmd = 'supervisorctl stop ' . $serviceName;
+		$this->commandManager->run($cmd, true);
 	}
 
 	/**
 	 * Restarts the service
 	 * @var string|null $serviceName Service name
-	 * @throws NonexistentServiceException
 	 */
 	public function restart(?string $serviceName = null): void {
 		$serviceName = $serviceName ?? $this->serviceName;
-		$cmd = 'systemctl restart ' . $serviceName . '.service';
-		$command = $this->commandManager->run($cmd, true);
-		if ($command->getExitCode() !== 0) {
-			throw new NonexistentServiceException($command->getStderr());
-		}
+		$cmd = 'supervisorctl restart ' . $serviceName;
+		$this->commandManager->run($cmd, true);
 	}
 
 	/**
 	 * Returns status of the service
 	 * @var string|null $serviceName Service name
 	 * @return string Service status
-	 * @throws NonexistentServiceException
 	 */
 	public function getStatus(?string $serviceName = null): string {
 		$serviceName = $serviceName ?? $this->serviceName;
-		$cmd = 'systemctl status ' . $serviceName . '.service';
-		$command = $this->commandManager->run($cmd, true);
-		return $command->getStdout();
+		$cmd = 'supervisorctl status ' . $serviceName;
+		return $this->commandManager->run($cmd, true)->getStdout();
 	}
 
 }

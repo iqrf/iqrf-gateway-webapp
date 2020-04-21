@@ -23,8 +23,8 @@ namespace App\ServiceModule\Exceptions;
 use Exception;
 
 /**
- * The exception that indicates not supported init system
+ * The exception that indicates unsupported init system
  */
-class NotSupportedInitSystemException extends Exception {
+class UnsupportedInitSystemException extends Exception {
 
 }

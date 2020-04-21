@@ -1,0 +1,33 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/serviceList.json",
+	"type": "object",
+	"title": "Supported service list",
+	"additionalProperties": false,
+	"required": [
+		"services"
+	],
+	"properties": {
+		"services": {
+			"$id": "#/properties/services",
+			"type": "array",
+			"title": "Supported services",
+			"example": [
+				"iqrf-gateway-daemon",
+				"unattended-upgrades",
+				"ssh"
+			],
+			"additionalItems": false,
+			"items": {
+				"$id": "#/properties/services/items",
+				"type": "string",
+				"title": "Supported service",
+				"examples": [
+					"iqrf-gateway-daemon",
+					"unattended-upgrades",
+					"ssh"
+				]
+			}
+		}
+	}
+}
