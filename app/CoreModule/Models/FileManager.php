@@ -27,7 +27,7 @@ use Nette\Utils\FileSystem;
 /**
  * Tool for reading and writing text files
  */
-class FileManager {
+class FileManager implements IFileManager {
 
 	use SmartObject;
 
