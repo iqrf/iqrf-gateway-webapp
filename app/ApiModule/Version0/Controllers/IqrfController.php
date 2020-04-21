@@ -26,6 +26,7 @@ use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
+use App\ConfigModule\Models\IqrfManager;
 use Iqrf\IdeMacros\MacroFileParser;
 
 /**
@@ -36,16 +37,49 @@ use Iqrf\IdeMacros\MacroFileParser;
 class IqrfController extends BaseController {
 
 	/**
+	 * @var IqrfManager IQRF interfaces manager
+	 */
+	private $interfacesManager;
+
+	/**
 	 * @var MacroFileParser IQRF IDE Macros parser
 	 */
 	private $macroParser;
 
 	/**
 	 * Constructor
+	 * @param IqrfManager $interfacesManager IQRF interfaces manager
 	 * @param MacroFileParser $macroParser IQRF IDE Macros parser
 	 */
-	public function __construct(MacroFileParser $macroParser) {
+	public function __construct(IqrfManager $interfacesManager, MacroFileParser $macroParser) {
+		$this->interfacesManager = $interfacesManager;
 		$this->macroParser = $macroParser;
+	}
+
+	/**
+	 * @Path("/interfaces")
+	 * @Method("GET")
+	 * @OpenApi("
+	 *  summary: Returns IQRF interfaces
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *          content:
+	 *              application/json:
+	 *                  schema:
+	 *                      $ref: '#/components/schemas/IqrfInterfaces'
+	 * ")
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function interfaces(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$interfaces = [
+			'cdc' => $this->interfacesManager->getCdcInterfaces(),
+			'spi' => $this->interfacesManager->getSpiInterfaces(),
+			'uart' => $this->interfacesManager->getUartInterfaces(),
+		];
+		return $response->writeJsonBody($interfaces);
 	}
 
 	/**

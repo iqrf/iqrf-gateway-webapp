@@ -48,7 +48,7 @@ class IqrfManager {
 	 * @return string[] USB CDC interfaces available in the system
 	 */
 	public function getCdcInterfaces(): array {
-		$command = "ls /dev/ttyACM* | awk '{ print $0 }'";
+		$command = 'ls -1 /dev/ttyACM*';
 		return $this->getInterfaces($command);
 	}
 
@@ -73,7 +73,7 @@ class IqrfManager {
 	 * @return string[] SPI interfaces available in the system
 	 */
 	public function getSpiInterfaces(): array {
-		$command = "ls /dev/spidev* | awk '{ print $0 }'";
+		$command = 'ls -1 /dev/spidev*';
 		return $this->getInterfaces($command);
 	}
 
@@ -82,7 +82,7 @@ class IqrfManager {
 	 * @return string[] UART interfaces available in the system
 	 */
 	public function getUartInterfaces(): array {
-		$command = "ls /dev/ttyAMA* /dev/ttyS* | awk '{ print $0 }'";
+		$command = 'ls -1 /dev/ttyAMA* /dev/ttyS*';
 		return $this->getInterfaces($command);
 	}
 

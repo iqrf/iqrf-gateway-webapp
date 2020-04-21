@@ -64,7 +64,7 @@ class ServicesController extends BaseController {
 	 * @Path("/")
 	 * @Method("GET")
 	 * @OpenApi("
-	 *  summary: Returns the supported service list
+	 *  summary: Returns the supported services
 	 *  responses:
 	 *      '200':
 	 *          description: Success
@@ -202,7 +202,7 @@ class ServicesController extends BaseController {
 	 * @Path("/{name}/start")
 	 * @Method("POST")
 	 * @OpenApi("
-	 *   summary: Starts IQRF Gateway Daemon's service
+	 *   summary: Starts the service
 	 * ")
 	 * @RequestParameters({
 	 *      @RequestParameter(name="name", type="string", description="Service name")
@@ -236,7 +236,7 @@ class ServicesController extends BaseController {
 	 * @Path("/{name}/stop")
 	 * @Method("POST")
 	 * @OpenApi("
-	 *   summary: Stops IQRF Gateway Daemon's service
+	 *   summary: Stops the service
 	 * ")
 	 * @RequestParameters({
 	 *      @RequestParameter(name="name", type="string", description="Service name")
@@ -270,7 +270,7 @@ class ServicesController extends BaseController {
 	 * @Path("/{name}/restart")
 	 * @Method("POST")
 	 * @OpenApi("
-	 *   summary: Restarts IQRF Gateway Daemon's service
+	 *   summary: Restarts the service
 	 * ")
 	 * @RequestParameters({
 	 *      @RequestParameter(name="name", type="string", description="Service name")
