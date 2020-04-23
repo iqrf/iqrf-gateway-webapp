@@ -73,7 +73,7 @@ webapp_repair_premissions() {
 }
 
 webapp_warmup_templates() {
-	iqrf-gateway-webapp-manager nette:latte:warmup > /dev/null
+	su - www-data -s /bin/bash -c '/usr/sbin/iqrf-gateway-webapp-manager nette:latte:warmup > /dev/null'
 }
 
 if [ "$1" = "configure" ]; then
@@ -83,8 +83,8 @@ if [ "$1" = "configure" ]; then
 	fi
 	webapp_remove_cache
 	webapp_remove_old_dirs
-	webapp_warmup_templates
 	webapp_repair_premissions
+	webapp_warmup_templates
 fi
 
 if true; then
