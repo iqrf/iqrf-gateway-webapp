@@ -69,7 +69,6 @@ webapp_remove_old_dirs() {
 webapp_repair_premissions() {
 	chown -R www-data:www-data /var/cache/iqrf-gateway-webapp
 	chown -R www-data:www-data /var/log/iqrf-gateway-webapp
-	chown www-data:www-data /usr/share/iqrf-gateway-webapp/app/config/database.db
 }
 
 webapp_warmup_templates() {
