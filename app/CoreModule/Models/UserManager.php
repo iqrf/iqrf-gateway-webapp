@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\CoreModule\Models;
 
 use App\CoreModule\Exceptions\InvalidPasswordException;
+use App\CoreModule\Exceptions\NonexistentUserException;
 use App\CoreModule\Exceptions\UsernameAlreadyExistsException;
 use App\Models\Database\Entities\User;
 use App\Models\Database\EntityManager;
@@ -76,9 +77,13 @@ class UserManager {
 	/**
 	 * Deletes the user
 	 * @param int $id User ID
+	 * @throws NonexistentUserException
 	 */
 	public function delete(int $id): void {
 		$user = $this->entityManager->getUserRepository()->find($id);
+		if ($user === null) {
+			throw new NonexistentUserException();
+		}
 		$this->entityManager->remove($user);
 		$this->entityManager->flush();
 	}
@@ -89,11 +94,15 @@ class UserManager {
 	 * @param string|null $username New username
 	 * @param string|null $role New user role
 	 * @param string|null $language New user's language
+	 * @throws NonexistentUserException
 	 * @throws UsernameAlreadyExistsException
 	 */
 	public function edit(int $id, ?string $username, ?string $role, ?string $language): void {
 		$userRepository = $this->entityManager->getUserRepository();
 		$user = $userRepository->find($id);
+		if ($user === null) {
+			throw new NonexistentUserException();
+		}
 		if ($username !== null) {
 			$userWithName = $userRepository->findOneByUserName($username);
 			if ($userWithName !== null && $userWithName->getId() !== $id) {

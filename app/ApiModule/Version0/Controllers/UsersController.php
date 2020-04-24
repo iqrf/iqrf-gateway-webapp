@@ -30,6 +30,7 @@ use Apitte\Core\Annotation\Controller\Responses;
 use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
+use App\CoreModule\Exceptions\NonexistentUserException;
 use App\CoreModule\Exceptions\UsernameAlreadyExistsException;
 use App\CoreModule\Models\UserManager;
 
@@ -104,7 +105,7 @@ class UsersController extends BaseController {
 		} catch (UsernameAlreadyExistsException $e) {
 			return $response->withStatus(400);
 		}
-		return $response;
+		return $response->withStatus(201);
 	}
 
 	/**
@@ -148,15 +149,20 @@ class UsersController extends BaseController {
 	 *      @RequestParameter(name="id", type="integer", description="User ID")
 	 * })
 	 * @Responses({
-	 *      @Response(code="200", description="Success")
+	 *      @Response(code="200", description="Success"),
+	 *      @Response(code="404", description="Not found")
 	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->userManager->delete((int) $request->getParameter('id'));
-		return $response;
+		try {
+			$this->userManager->delete((int) $request->getParameter('id'));
+			return $response->withStatus(200);
+		} catch (NonexistentUserException $e) {
+			return $response->withStatus(404, 'User not found');
+		}
 	}
 
 	/**
@@ -185,16 +191,14 @@ class UsersController extends BaseController {
 	 */
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$id = (int) $request->getParameter('id');
-		$user = $this->userManager->getInfo($id);
-		if ($user === null) {
-			return $response->withStatus(400, 'Unknown user ID.');
-		}
 		$json = $request->getJsonBody();
 		try {
 			$this->userManager->edit($id, $json['username'], $json['role'], $json['language']);
-			return $response->writeJsonBody($user);
+			return $response->withStatus(200);
 		} catch (UsernameAlreadyExistsException $e) {
 			return $response->withStatus(400, 'Username already exists.');
+		} catch (NonexistentUserException $e) {
+			return $response->withStatus(404, 'User not found.');
 		}
 	}
 

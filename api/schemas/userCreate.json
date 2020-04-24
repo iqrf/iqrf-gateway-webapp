@@ -6,6 +6,7 @@
 	"additionalProperties": false,
 	"required": [
 		"username",
+		"password",
 		"language",
 		"role"
 	],
@@ -14,6 +15,13 @@
 			"$id": "#/properties/username",
 			"type": "string",
 			"title": "Username",
+			"minLength": 1,
+			"example": "iqrf"
+		},
+		"password": {
+			"$id": "#/properties/password",
+			"type": "string",
+			"title": "Password",
 			"minLength": 1,
 			"example": "iqrf"
 		},
