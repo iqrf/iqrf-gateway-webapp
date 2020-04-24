@@ -54,7 +54,7 @@
 		"nette/security": "^3.0",
 		"nette/utils": "^3.0",
 		"nettrine/annotations": "^0.6",
-		"nettrine/dbal": "^0.5",
+		"nettrine/dbal": "^0.6",
 		"nettrine/fixtures": "^0.5",
 		"nettrine/migrations": "^0.6",
 		"nettrine/orm": "^0.6",
@@ -102,5 +102,10 @@
 		]
 	},
 	"minimum-stability": "dev",
-	"prefer-stable": true
+	"prefer-stable": true,
+	"config": {
+		"platform": {
+			"php": "7.2.5"
+		}
+	}
 }
