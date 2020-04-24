@@ -1,3 +1,16 @@
+iqrf-gateway-webapp (2.0.0-rc11) testing; urgency=medium
+
+  * Prepare for version 2.0.0-rc11
+  * Debian packaging: disable debug info in postinst
+  * Config: skip corrupted files in listings
+  * Tests: fix coding style
+  * Composer: update UUID library
+  * Debian packaging: fix tempates warmup
+  * Debian packaging: fix postint script
+  * Use Doctrine instead of Nette Database
+
+ -- Roman Ondráček <roman@romanondracek.cz>  Fri, 24 Apr 2020 15:00:00 +0200
+
 iqrf-gateway-webapp (2.0.0-rc10) testing; urgency=medium
 
   * Prepare for version 2.0.0-rc10
