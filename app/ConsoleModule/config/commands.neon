@@ -1,4 +1,5 @@
 services:
+	- App\ConsoleModule\Commands\DatabaseCreateCommand
 	- App\ConsoleModule\Commands\FeatureDisableCommand
 	- App\ConsoleModule\Commands\FeatureEnableCommand
 	- App\ConsoleModule\Commands\FeatureListCommand

@@ -19,7 +19,6 @@ parameters:
 		- '#Call to an undefined method Nette\\ComponentModel\\IComponent::addError\(\).#'
 		- '#Call to an undefined method Nette\\ComponentModel\\IComponent::setDefaultValue\(\).#'
 		- '#Call to an undefined method Nette\\ComponentModel\\IComponent::setValue\(\).#'
-		- '#Call to an undefined method Nette\\Database\\IRow::toArray\(\).#'
 		- '#Call to an undefined method Nette\\Forms\\Container::addMultiplier\(\).#'
 		- '#Call to an undefined method Nette\\Localization\\ITranslator::createPrefixedTranslator\(\).#'
 		- '#Parameter \#1 \$control of method Nette\\Forms\\Controls\\BaseControl::addConditionOn\(\) expects Nette\\Forms\\IControl, Nette\\ComponentModel\\IComponent given.#'

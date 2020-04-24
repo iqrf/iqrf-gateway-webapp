@@ -60,11 +60,13 @@ install:
 	install -d $(DATA_DIR)
 	cp -r app/ $(DATA_DIR)
 	cp -r bin/ $(DATA_DIR)
+	cp -r db/ $(DATA_DIR)
 	cp -r iqrf/ $(DATA_DIR)
 	cp version.json $(DATA_DIR)
 	cp -r vendor/ $(DATA_DIR)
 	cp -r www/ $(DATA_DIR)
 	install -d -o www-data $(LOG_DIR)
+	install -d -o www-data ${DESTDIR}/var/lib/iqrf-gateway-webapp
 	# Delete documentation
 	find ${VENDOR_DIR} -type f -name "AUTHORS*" -delete
 	find ${VENDOR_DIR} -type f -name "LICENSE*" -delete

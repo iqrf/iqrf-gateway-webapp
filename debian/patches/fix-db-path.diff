@@ -1,0 +1,12 @@
+Fixes SQLite DB path
+--- a/app/config/doctrine.neon
++++ b/app/config/doctrine.neon
+@@ -15,7 +15,7 @@
+ nettrine.dbal:
+ 	connection:
+ 		driver: pdo_sqlite
+-		path: %appDir%/config/database.db
++		path: /var/lib/iqrf-gateway-webapp/database.db
+ 	debug:
+ 		panel: %debugMode%
+ 

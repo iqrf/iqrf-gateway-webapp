@@ -1,5 +1,10 @@
 #!/usr/bin/make -f
 
+ROOT_DIR=debian/iqrf-gateway-webapp
+
+CACHE_DIR=${ROOT_DIR}/var/cache/iqrf-gateway-webapp/
+LOG_DIR=${ROOT_DIR}/var/log/iqrf-gateway-webapp/
+
 %:
 	dh $@ --with apache2,phpcomposer
 
@@ -10,6 +15,13 @@ override_dh_auto_build:
 	sed -i "s/\t\"pipeline\"\: .*/\t\"pipeline\"\: \"${CI_PIPELINE_ID}\"/" version.json
 	# Install PHP dependencies
 	composer install --no-dev
+
+override_dh_fixperms:
+	dh_fixperms
+	chown -R www-data:www-data ${ROOT_DIR}/usr/share/iqrf-gateway-webapp/
+	chown -R www-data:www-data ${CACHE_DIR}
+	chown -R www-data:www-data ${ROOT_DIR}/var/lib/iqrf-gateway-webapp/
+	chown -R www-data:www-data ${LOG_DIR}
 
 override_dh_auto_test:
 	# Do nothing

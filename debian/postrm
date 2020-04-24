@@ -33,6 +33,12 @@ webapp_remove_data() {
 	fi
 }
 
+webapp_remove_database() {
+	if [ -d /var/lib/iqrf-gateway-webapp ] ; then
+		rm -rf /var/lib/iqrf-gateway-webapp/
+	fi
+}
+
 webapp_remove_logs() {
 	if [ -d /var/log/iqrf-gateway-webapp/ ] ; then
 		rm -rf /var/log/iqrf-gateway-webapp
@@ -56,4 +62,5 @@ fi
 
 if [ "$1" = "purge" ]; then
 	webapp_remove_config
+	webapp_remove_database
 fi
