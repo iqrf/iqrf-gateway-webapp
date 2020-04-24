@@ -120,15 +120,18 @@ class UserAddFormFactory {
 		$values = $form->getValues();
 		try {
 			$username = $values['username'];
+			$password = $values['password'];
 			$role = $values['userType'] ?? 'normal';
 			$language = $values['language'] ?? 'en';
-			$this->userManager->register($username, $values['password'], $role, $language);
+			$this->userManager->register($username, $password, $role, $language);
 			$message = $form->getTranslator()->translate('messages.successAdd', ['username' => $username]);
 			$this->presenter->flashMessage($message, 'success');
 			if ($this->presenter instanceof UserPresenter) {
 				$this->presenter->redirect('User:default');
 			} else {
-				$this->presenter->redirect(':Core:Sign:in');
+				$user = $this->presenter->getUser();
+				$user->login($username, $password);
+				$this->presenter->redirect(':Core:Homepage:default');
 			}
 		} catch (UsernameAlreadyExistsException $e) {
 			$this->presenter->flashMessage('core.user.form.messages.usernameAlreadyExists', 'danger');
