@@ -98,6 +98,7 @@ tracy:
 includes:
 	- api.neon
 	- console.neon
+	- doctrine.neon
 	- features.neon
 	- guzzle.neon
 	- monolog.neon

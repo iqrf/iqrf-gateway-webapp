@@ -22,9 +22,8 @@ namespace App\CoreModule\Models;
 
 use App\CoreModule\Exceptions\InvalidPasswordException;
 use App\CoreModule\Exceptions\UsernameAlreadyExistsException;
-use Nette\Database\Context;
-use Nette\Database\Table\ActiveRow;
-use Nette\Database\Table\Selection;
+use App\Models\Database\Entities\User;
+use App\Models\Database\EntityManager;
 use Nette\SmartObject;
 
 /**
@@ -35,16 +34,16 @@ class UserManager {
 	use SmartObject;
 
 	/**
-	 * @var Selection Database table selection
+	 * @var EntityManager Entity manager
 	 */
-	private $table;
+	private $entityManager;
 
 	/**
 	 * Constructor
-	 * @param Context $database Database context
+	 * @param EntityManager $entityManager Entity manager
 	 */
-	public function __construct(Context $database) {
-		$this->table = $database->table('users');
+	public function __construct(EntityManager $entityManager) {
+		$this->entityManager = $entityManager;
 	}
 
 	/**
@@ -55,8 +54,8 @@ class UserManager {
 	 * @throws InvalidPasswordException
 	 */
 	public function changePassword(int $id, string $oldPassword, string $newPassword): void {
-		$row = $this->table->where('id', $id)->fetch();
-		if (!password_verify($oldPassword, $row['password'])) {
+		$user = $this->entityManager->getUserRepository()->find($id);
+		if (!$user->verifyPassword($oldPassword)) {
 			throw new InvalidPasswordException();
 		}
 		$this->editPassword($id, $newPassword);
@@ -68,8 +67,10 @@ class UserManager {
 	 * @param string $password New User's password
 	 */
 	public function editPassword(int $id, string $password): void {
-		$data = ['password' => password_hash($password, PASSWORD_DEFAULT)];
-		$this->table->where('id', $id)->update($data);
+		$user = $this->entityManager->getUserRepository()->find($id);
+		$user->setPassword($password);
+		$this->entityManager->persist($user);
+		$this->entityManager->flush();
 	}
 
 	/**
@@ -77,7 +78,9 @@ class UserManager {
 	 * @param int $id User ID
 	 */
 	public function delete(int $id): void {
-		$this->table->where('id', $id)->delete();
+		$user = $this->entityManager->getUserRepository()->find($id);
+		$this->entityManager->remove($user);
+		$this->entityManager->flush();
 	}
 
 	/**
@@ -89,21 +92,23 @@ class UserManager {
 	 * @throws UsernameAlreadyExistsException
 	 */
 	public function edit(int $id, ?string $username, ?string $role, ?string $language): void {
-		$data = [];
+		$userRepository = $this->entityManager->getUserRepository();
+		$user = $userRepository->find($id);
 		if ($username !== null) {
-			$row = $this->table->where('username', $username)->fetch();
-			if ($row !== null && $row['id'] !== $id) {
+			$userWithName = $userRepository->findOneByUserName($username);
+			if ($userWithName !== null && $userWithName->getId() !== $id) {
 				throw new UsernameAlreadyExistsException();
 			}
-			$data['username'] = $username;
+			$user->setUserName($username);
 		}
 		if ($role !== null) {
-			$data['role'] = $role;
+			$user->setRole($role);
 		}
 		if ($language !== null) {
-			$data['language'] = $language;
+			$user->setLanguage($language);
 		}
-		$this->table->where('id', $id)->update($data);
+		$this->entityManager->persist($user);
+		$this->entityManager->flush();
 	}
 
 	/**
@@ -112,11 +117,11 @@ class UserManager {
 	 * @return mixed[]|null Information about the user or null
 	 */
 	public function getInfo(int $id): ?array {
-		$row = $this->table->get($id);
-		if ($row instanceof ActiveRow) {
-			return $row->toArray();
+		$user = $this->entityManager->getUserRepository()->find($id);
+		if ($user === null) {
+			return null;
 		}
-		return null;
+		return $user->toArray();
 	}
 
 	/**
@@ -125,7 +130,7 @@ class UserManager {
 	 */
 	public function getUsers(): array {
 		$users = [];
-		foreach ($this->table->fetchAll() as $user) {
+		foreach ($this->entityManager->getUserRepository()->findAll() as $user) {
 			$array = $user->toArray();
 			unset($array['password']);
 			$users[] = $array;
@@ -142,17 +147,14 @@ class UserManager {
 	 * @throws UsernameAlreadyExistsException
 	 */
 	public function register(string $username, string $password, string $role, string $language): void {
-		$row = $this->table->where('username', $username)->fetch();
-		if ($row !== null) {
+		$user = $this->entityManager->getUserRepository()->findOneByUserName($username);
+		$hash = password_hash($password, PASSWORD_DEFAULT);
+		if ($user !== null) {
 			throw new UsernameAlreadyExistsException();
 		}
-		$data = [
-			'username' => $username,
-			'password' => password_hash($password, PASSWORD_DEFAULT),
-			'role' => $role,
-			'language' => $language,
-		];
-		$this->table->insert($data);
+		$user = new User($username, $hash, $role, $language);
+		$this->entityManager->persist($user);
+		$this->entityManager->flush();
 	}
 
 }

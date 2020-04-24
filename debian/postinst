@@ -50,6 +50,15 @@ openssl_create_ca() {
 	fi
 }
 
+webapp_database_migration() {
+	if [ ! -f /var/lib/iqrf-gateway-webapp/database.db ] && [ -f /usr/share/iqrf-gateway-webapp/app/config/database.db ] ; then
+		mv /usr/share/iqrf-gateway-webapp/app/config/database.db /var/lib/iqrf-gateway-webapp/database.db
+		chown www-data:www-data /var/lib/iqrf-gateway-webapp/database.db
+	fi
+	su - www-data -s /bin/bash -c '/usr/sbin/iqrf-gateway-webapp-manager database:create > /dev/null'
+	su - www-data -s /bin/bash -c '/usr/sbin/iqrf-gateway-webapp-manager migrations:migrate --no-interaction > /dev/null'
+}
+
 webapp_remove_cache() {
 	if [ -d /var/cache/iqrf-gateway-webapp/cache ] ; then
 		rm -rf /var/cache/iqrf-gateway-webapp/cache
@@ -68,12 +77,12 @@ webapp_remove_old_dirs() {
 
 webapp_repair_premissions() {
 	chown -R www-data:www-data /var/cache/iqrf-gateway-webapp
+	chown -R www-data:www-data /var/lib/iqrf-gateway-webapp
 	chown -R www-data:www-data /var/log/iqrf-gateway-webapp
-	chown www-data:www-data /usr/share/iqrf-gateway-webapp/app/config/database.db
 }
 
 webapp_warmup_templates() {
-	iqrf-gateway-webapp-manager nette:latte:warmup > /dev/null
+	su - www-data -s /bin/bash -c '/usr/sbin/iqrf-gateway-webapp-manager nette:latte:warmup > /dev/null'
 }
 
 webapp_warmup_templates() {
@@ -87,8 +96,9 @@ if [ "$1" = "configure" ]; then
 	fi
 	webapp_remove_cache
 	webapp_remove_old_dirs
-	webapp_warmup_templates
 	webapp_repair_premissions
+	webapp_database_migration
+	webapp_warmup_templates
 fi
 
 if true; then

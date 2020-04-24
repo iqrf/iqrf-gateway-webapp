@@ -20,11 +20,9 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Models;
 
-use Nette\Database\Context;
-use Nette\Database\Table\Selection;
+use App\Models\Database\EntityManager;
 use Nette\Security\AuthenticationException;
 use Nette\Security\IAuthenticator;
-use Nette\Security\Identity;
 use Nette\Security\IIdentity;
 use Nette\SmartObject;
 
@@ -36,31 +34,16 @@ class AppAuthenticator implements IAuthenticator {
 	use SmartObject;
 
 	/**
-	 * @var Selection Database table selection
+	 * @var EntityManager Entity manager
 	 */
-	private $table;
+	private $entityManager;
 
 	/**
 	 * Constructor
-	 * @param Context $database Database context
+	 * @param EntityManager $entityManager Entity manager
 	 */
-	public function __construct(Context $database) {
-		$this->createTable($database);
-		$this->table = $database->table('users');
-	}
-
-	/**
-	 * Creates the database table
-	 * @param Context $database Database context
-	 */
-	private function createTable(Context $database): void {
-		$sql = 'CREATE TABLE IF NOT EXISTS `users` (';
-		$sql .= '`id`		INTEGER PRIMARY KEY AUTOINCREMENT,';
-		$sql .= '`username`	TEXT NOT NULL UNIQUE,';
-		$sql .= '`password`	TEXT NOT NULL,';
-		$sql .= '`role`		TEXT NOT NULL,';
-		$sql .= '`language`	TEXT DEFAULT \'en\');';
-		$database->query($sql);
+	public function __construct(EntityManager $entityManager) {
+		$this->entityManager = $entityManager;
 	}
 
 	/**
@@ -71,15 +54,15 @@ class AppAuthenticator implements IAuthenticator {
 	 */
 	public function authenticate(array $credentials): IIdentity {
 		[$username, $password] = $credentials;
-		$row = $this->table->where('username', $username)->fetch();
-		if ($row === null) {
+		$user = $this->entityManager->getUserRepository()->findOneByUserName($username);
+		if ($user === null) {
 			throw new AuthenticationException('User not found.');
 		}
-		if (!password_verify($password, $row['password'])) {
+		if (!password_verify($password, $user->getPassword())) {
 			throw new AuthenticationException('Invalid password.');
 		}
-		$data = ['username' => $row['username'], 'language' => $row['language']];
-		return new Identity($row['id'], $row['role'], $data);
+		$this->entityManager->flush();
+		return $user->toIdentity();
 	}
 
 }
