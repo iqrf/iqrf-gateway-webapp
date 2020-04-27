@@ -38,5 +38,4 @@ if (basename(__DIR__) === 'tests') {
 }
 date_default_timezone_set('Etc/GMT-2');
 
-$container = $configurator->createContainer();
-return $container;
+return $configurator->createContainer();

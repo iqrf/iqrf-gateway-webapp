@@ -1,0 +1,25 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/userSignIn.json",
+	"type": "object",
+	"title": "User sign in",
+	"additionalProperties": false,
+	"required": [
+		"username",
+		"password"
+	],
+	"properties": {
+		"username": {
+			"$id": "#/properties/username",
+			"type": "string",
+			"title": "Username",
+			"example": "iqrf"
+		},
+		"password": {
+			"$id": "#/properties/password",
+			"type": "string",
+			"title": "Password",
+			"example": "iqrf"
+		}
+	}
+}

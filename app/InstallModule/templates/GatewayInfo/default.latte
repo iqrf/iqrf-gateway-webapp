@@ -25,38 +25,39 @@
 		<table class='table table-striped'>
 			<tr>
 				<th>{_gateway.info.board}</th>
-				<td>{$board}</td>
+				<td>{$info['board']}</td>
 			</tr>
-			<tr n:ifset='$gwId'>
+			<tr n:ifset='$info["gwId"]'>
 				<th>{_gateway.info.gwId}</th>
-				<td>{$gwId}</td>
+				<td>{$info['gwId']}</td>
 			</tr>
-			<tr n:ifset='$gwmonId'>
+			<tr n:ifset='$info["pixla"]'>
 				<th><a href='https://www.pixla.online/'>{_gateway.info.gwmonId}</a></th>
-				<td>{$gwmonId}</td>
+				<td>{$info['pixla']}</td>
 			</tr>
-			<tr n:ifset='$controllerVersion'>
+			<tr n:ifset='$info["versions"]["controller"]'>
 				<th>{_gateway.info.version.iqrf-gw-controller}</th>
-				<td>{$controllerVersion}</td>
+				<td>{$info['versions']['controller']}</td>
 			</tr>
 			<tr>
 				<th>{_gateway.info.version.iqrf-gw-daemon}</th>
-				<td>{$daemonVersion}</td>
+				<td>{$info['versions']['daemon']}</td>
 			</tr>
 			<tr>
 				<th>{_gateway.info.version.iqrf-gw-webapp}</th>
-				<td>{$webAppVersion}</td>
+				<td>{$info['versions']['webapp']}</td>
 			</tr>
 			<tr>
 				<th>{_gateway.info.hostname}</th>
-				<td>{$hostname}</td>
+				<td>{$info['hostname']}</td>
 			</tr>
 			<tr>
 				<th>{_gateway.info.addresses.ip}</th>
 				<td>
-					{foreach $ipAddresses as $interface => $addresses}
-						<strong>{$interface}:</strong>
-						{foreach $addresses as $ipAddress}
+					{foreach $info['interfaces'] as $interface}
+						{continueIf $interface['ipAddresses'] === null}
+						<strong>{$interface['name']}:</strong>
+						{foreach $interface['ipAddresses'] as $ipAddress}
 							{$ipAddress}{sep}, {/sep}
 						{/foreach}
 						{sep}<br>{/sep}
@@ -66,17 +67,19 @@
 			<tr>
 				<th>{_gateway.info.addresses.mac}</th>
 				<td>
-					{foreach $macAddresses as $interface => $macAddress}
-						<strong>{$interface}:</strong> {$macAddress}{sep}<br>{/sep}
+					{foreach $info['interfaces'] as $interface}
+						{continueIf $interface['macAddress'] === null}
+						<strong>{$interface['name']}:</strong> {$interface['macAddress']}{sep}<br>{/sep}
 					{/foreach}
 				</td>
 			</tr>
 			<tr>
 				<th>{_gateway.info.tr.title}</th>
 				<td>
-					{ifset $module}
-						{var $osInfo = $module->osRead}
-						{var $enumeration = $module->peripheralEnumeration}
+					{ifset $info['coordinator']['response']->data->rsp}
+						{var $coordinator = $info['coordinator']['response']->data->rsp}
+						{var $osInfo = $coordinator->osRead}
+						{var $enumeration = $coordinator->peripheralEnumeration}
 						<strong>{_gateway.info.tr.moduleType}:</strong> {$osInfo->trMcuType->trType}<br>
 						<strong>{_gateway.info.tr.mcuType}:</strong> {$osInfo->trMcuType->mcuType}<br>
 						<strong>{_gateway.info.tr.moduleId}:</strong> {$osInfo->mid}<br>

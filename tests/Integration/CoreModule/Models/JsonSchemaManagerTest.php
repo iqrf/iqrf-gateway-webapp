@@ -22,7 +22,7 @@ use Tester\TestCase;
 require __DIR__ . '/../../../bootstrap.php';
 
 /**
- * Tests for JSON file manager
+ * Tests for JSON schema manager
  */
 class JsonSchemaManagerTest extends TestCase {
 
@@ -77,6 +77,16 @@ class JsonSchemaManagerTest extends TestCase {
 		Assert::exception(function (): void {
 			$json = (object) $this->fileManager->read('iqrf__MqMessaging');
 			$this->manager->validate($json);
+		}, InvalidJsonException::class);
+	}
+
+	/**
+	 * Tests the function to validate a JSON (invalid format)
+	 */
+	public function testValidateInvalidFormat(): void {
+		$this->manager->setSchema(self::SCHEMA_NAME);
+		Assert::exception(function (): void {
+			$this->manager->validate('nonsense');
 		}, InvalidJsonException::class);
 	}
 

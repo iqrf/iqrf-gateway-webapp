@@ -55,6 +55,24 @@ class NetworkManagerTest extends CommandTestCase {
 	}
 
 	/**
+	 * Tests the function to get information about network interfaces
+	 */
+	public function testGetInterfaces(): void {
+		$this->receiveCommand($this->commands['networkAdapters'], true, 'eth0' . PHP_EOL . 'lo');
+		$this->receiveCommand($this->commands['ipAddressesEth0'], true, '192.168.1.100' . PHP_EOL . 'fda9:d95:d5b1::64');
+		$this->receiveCommand($this->commands['networkAdapters'], true, 'eth0' . PHP_EOL . 'lo');
+		$this->receiveCommand($this->commands['macAddresses'], true, '01:02:03:04:05:06');
+		$expected = [
+			[
+				'name' => 'eth0',
+				'macAddress' => '01:02:03:04:05:06',
+				'ipAddresses' => ['192.168.1.100', 'fda9:d95:d5b1::64'],
+			],
+		];
+		Assert::same($expected, $this->manager->getInterfaces());
+	}
+
+	/**
 	 * Tests the function to get IPv4 and IPv6 addresses of the gateway
 	 */
 	public function testGetIpAddresses(): void {

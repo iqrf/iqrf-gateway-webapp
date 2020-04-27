@@ -63,7 +63,7 @@ class AzureManagerTest extends CloudIntegrationTestCase {
 			'EnableServerCertAuth' => false,
 			'acceptAsyncMsg' => false,
 		];
-		$array = ['ConnectionString' => $this->connectionString];
+		$array = ['connectionString' => $this->connectionString];
 		$this->manager->shouldReceive('generateSasToken')->andReturn('generatedSasToken');
 		$this->manager->createMqttInterface($array);
 		Assert::same($mqtt, $this->fileManager->read('iqrf__MqttMessaging_Azure'));

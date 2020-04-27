@@ -21,9 +21,9 @@ declare(strict_types = 1);
 namespace App\CloudModule\Models;
 
 use App\CoreModule\Models\FileManager;
-use App\ServiceModule\Enums\ServiceStates;
 use App\ServiceModule\Models\SystemDManager;
 use Nette\IOException;
+use Nette\Utils\Strings;
 
 /**
  * PIXLA management system manager
@@ -67,7 +67,7 @@ class PixlaManager {
 	/**
 	 * Returns PIXLA client service status
 	 */
-	public function getServiceStatus(): ServiceStates {
+	public function getServiceStatus(): bool {
 		return $this->serviceManager->isEnabled();
 	}
 
@@ -77,7 +77,7 @@ class PixlaManager {
 	 */
 	public function getToken(): ?string {
 		try {
-			return $this->fileManager->read('customer_id');
+			return Strings::trim($this->fileManager->read('customer_id'), "\n");
 		} catch (IOException $e) {
 			return null;
 		}

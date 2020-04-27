@@ -23,13 +23,12 @@ namespace App\GatewayModule\Models;
 use App\ConfigModule\Models\MainManager;
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\ZipArchiveManager;
-use App\IqrfNetModule\Exceptions\DpaErrorException;
-use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use DateTime;
 use Nette\Application\BadRequestException;
 use Nette\Application\Responses\FileResponse;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;
+use Throwable;
 
 /**
  * Gateway diagnostics tool
@@ -47,16 +46,6 @@ class DiagnosticsManager {
 	 * @var InfoManager Gateway info manager
 	 */
 	private $infoManager;
-
-	/**
-	 * @var NetworkManager Network manager
-	 */
-	private $networkManager;
-
-	/**
-	 * @var VersionManager Version manager
-	 */
-	private $versionManager;
 
 	/**
 	 * @var ZipArchiveManager ZIP archive manager
@@ -79,41 +68,33 @@ class DiagnosticsManager {
 	private $logDir;
 
 	/**
-	 * @var string Path to ZIP archive
-	 */
-	private $path = '/tmp/iqrf-gateway-webapp.zip';
-
-	/**
 	 * Constructor
 	 * @param string $confDir Path to a directory with IQRF Gateway Daemon's configuration
 	 * @param string $logDir Path to a directory with log files of IQRF Gateway Daemon
 	 * @param CommandManager $commandManager Command manager
 	 * @param InfoManager $infoManager Gateway Info manager
 	 * @param MainManager $mainManager Main configuration manager
-	 * @param NetworkManager $networkManager Network manager
-	 * @param VersionManager $versionManager Version manager
 	 */
-	public function __construct(string $confDir, string $logDir, CommandManager $commandManager, InfoManager $infoManager, MainManager $mainManager, NetworkManager $networkManager, VersionManager $versionManager) {
+	public function __construct(string $confDir, string $logDir, CommandManager $commandManager, InfoManager $infoManager, MainManager $mainManager) {
 		$this->commandManager = $commandManager;
 		$this->infoManager = $infoManager;
 		$this->cacheDir = $mainManager->getCacheDir();
 		$this->confDir = $confDir;
 		$this->logDir = $logDir;
-		$this->networkManager = $networkManager;
-		$this->versionManager = $versionManager;
 	}
 
 	/**
-	 * Downloads a diagnostic data
-	 * @return FileResponse HTTP response with the diagnostic data
-	 * @throws BadRequestException
-	 * @throws JsonException
+	 * Create an archive with diagnostics data
+	 * @return string Path to archive with diagnostics data
 	 */
-	public function download(): FileResponse {
-		$this->zipManager = new ZipArchiveManager($this->path);
-		$now = new DateTime();
-		$fileName = 'iqrf-gateway-diagnostics_' . $now->format('c') . '.zip';
-		$contentType = 'application/zip';
+	public function createArchive(): string {
+		try {
+			$now = new DateTime();
+			$path = '/tmp/iqrf-gateway-diagnostics_' . $now->format('c') . '.zip';
+		} catch (Throwable $e) {
+			$path = '/tmp/iqrf-gateway-diagnostics.zip';
+		}
+		$this->zipManager = new ZipArchiveManager($path);
 		$this->addConfiguration();
 		$this->addMetadata();
 		$this->addScheduler();
@@ -126,7 +107,20 @@ class DiagnosticsManager {
 		$this->addControllerLog();
 		$this->addWebappLog();
 		$this->zipManager->close();
-		return new FileResponse($this->path, $fileName, $contentType, true);
+		return $path;
+	}
+
+	/**
+	 * Downloads a diagnostic data
+	 * @return FileResponse HTTP response with the diagnostic data
+	 * @throws BadRequestException
+	 * @throws JsonException
+	 */
+	public function download(): FileResponse {
+		$path = $this->createArchive();
+		$fileName = basename($path);
+		$contentType = 'application/zip';
+		return new FileResponse($path, $fileName, $contentType, true);
 	}
 
 	/**
@@ -170,22 +164,9 @@ class DiagnosticsManager {
 	 * @throws JsonException
 	 */
 	public function addInfo(): void {
-		$array = [];
-		$array['board'] = $this->infoManager->getBoard();
-		$array['controllerVersion'] = $this->versionManager->getController();
-		$array['daemonVersion'] = $this->versionManager->getDaemon(true);
-		$array['webappVersion'] = $this->versionManager->getWebapp(true);
-		try {
-			$array['coordinator'] = $this->infoManager->getCoordinatorInfo();
-		} catch (DpaErrorException | EmptyResponseException $e) {
-			$array['coordinator'] = 'ERROR';
-		}
-		$array['hostname'] = $this->networkManager->getHostname();
+		$array = $this->infoManager->get();
 		$array['uname'] = $this->commandManager->run('uname -a', true)->getStdout();
 		$array['uptime'] = $this->commandManager->run('uptime -p', true)->getStdout();
-		$array['diskUsages'] = $this->infoManager->getDiskUsages();
-		$array['memoryUsage'] = $this->infoManager->getMemoryUsage();
-		$array['swapUsage'] = $this->infoManager->getSwapUsage();
 		$this->zipManager->addJsonFromArray('info.json', $array);
 	}
 

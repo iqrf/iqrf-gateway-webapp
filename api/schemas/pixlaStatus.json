@@ -1,0 +1,30 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/pixlaStatus.json",
+	"type": "object",
+	"title": "PIXLA device management status",
+	"additionalProperties": false,
+	"required": [
+		"token",
+		"status"
+	],
+	"properties": {
+		"token": {
+			"$id": "#/properties/token",
+			"type": "string",
+			"title": "PIXLA token",
+			"example": "secret-pixla-token"
+		},
+		"status": {
+			"$id": "#/properties/status",
+			"type": "string",
+			"enum": [
+				"disabled",
+				"enabled",
+				""
+			],
+			"title": "PIXLA client service status",
+			"example": "enabled"
+		}
+	}
+}

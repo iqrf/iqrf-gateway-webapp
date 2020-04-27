@@ -1,0 +1,120 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/iqrfIdeMacros.json",
+	"type": "array",
+	"title": "IQRF IDE Macros",
+	"additionalItems": false,
+	"items": {
+		"$id": "#/items",
+		"type": "object",
+		"title": "Macro category",
+		"example": {
+			"enabled": true,
+			"id": 0,
+			"macros": [
+				{
+					"name": "Get number of Nodes",
+					"request": "00.00.00.00.ff.ff",
+					"note": "",
+					"enabled": true,
+					"confirmation": false
+				}
+			],
+			"name": "Coordinator"
+		},
+		"additionalProperties": false,
+		"required": [
+			"name",
+			"id",
+			"enabled",
+			"macros"
+		],
+		"properties": {
+			"name": {
+				"$id": "#/items/properties/name",
+				"type": "string",
+				"title": "Macro category name",
+				"example": "Coordinator"
+			},
+			"id": {
+				"$id": "#/items/properties/id",
+				"type": "integer",
+				"title": "Macro category ID",
+				"example": 0
+			},
+			"enabled": {
+				"$id": "#/items/properties/enabled",
+				"type": "boolean",
+				"title": "Enabled macro category",
+				"default": false,
+				"example": true
+			},
+			"macros": {
+				"$id": "#/items/properties/macros",
+				"type": "array",
+				"title": "Macros",
+				"example": [
+					{
+						"name": "Get number of Nodes",
+						"request": "00.00.00.00.ff.ff",
+						"note": "",
+						"enabled": true,
+						"confirmation": false
+					}
+				],
+				"additionalItems": false,
+				"items": {
+					"$id": "#/items/properties/macros/items",
+					"type": "object",
+					"title": "Macro",
+					"example": {
+						"enabled": true,
+						"confirmation": false,
+						"name": "Get number of Nodes",
+						"request": "00.00.00.00.ff.ff",
+						"note": ""
+					},
+					"additionalProperties": false,
+					"required": [
+						"name",
+						"request",
+						"enabled",
+						"confirmation"
+					],
+					"properties": {
+						"name": {
+							"$id": "#/items/properties/macros/items/properties/name",
+							"type": "string",
+							"title": "Macro name",
+							"example": "Get number of Nodes"
+						},
+						"request": {
+							"$id": "#/items/properties/macros/items/properties/request",
+							"type": "string",
+							"title": "DPA request",
+							"example": "00.00.00.00.ff.ff"
+						},
+						"note": {
+							"$id": "#/items/properties/macros/items/properties/note",
+							"type": "string",
+							"title": "Macro note",
+							"example": ""
+						},
+						"enabled": {
+							"$id": "#/items/properties/macros/items/properties/enabled",
+							"type": "boolean",
+							"title": "Enabled macro",
+							"example": true
+						},
+						"confirmation": {
+							"$id": "#/items/properties/macros/items/properties/confirmation",
+							"type": "boolean",
+							"title": "Confirmation",
+							"example": false
+						}
+					}
+				}
+			}
+		}
+	}
+}

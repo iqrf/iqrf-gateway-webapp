@@ -1,0 +1,32 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/cloudAws.json",
+	"type": "object",
+	"title": "Amazon AWS IoT connection",
+	"additionalProperties": false,
+	"required": [
+		"endpoint",
+		"certificate",
+		"privateKey"
+	],
+	"properties": {
+		"endpoint": {
+			"$id": "#/properties/endpoint",
+			"type": "string",
+			"title": "Endpoint",
+			"example": "localhost"
+		},
+		"certificate": {
+			"$id": "#/properties/certificate",
+			"type": "string",
+			"title": "Certificate",
+			"example": "-----BEGIN CERTIFICATE-----\nMIIDCTCCAfGgAwIBAgIJANdNoLOShg5AMA0GCSqGSIb3DQEBBQUAMBsxGTAXBgNV\nBAMMEHRlc3QuaXFyZnNkay5vcmcwHhcNMTgwMjA2MTYyMDI0WhcNMjgwMjA0MTYy\nMDI0WjAbMRkwFwYDVQQDDBB0ZXN0LmlxcmZzZGsub3JnMIIBIjANBgkqhkiG9w0B\nAQEFAAOCAQ8AMIIBCgKCAQEAtuYQlUvcYv1K4Y1SREa+Rk3P/iNCJE20ajtGlICr\nL2+ktqkoE2zWANYpjp2Dk+3+/K9n9+z/rOrHF2DyXyq3eetEqxllO/k2nCpZkmU+\n1qjlD8fSOu3qdNkDkGuZyTDmAPfrHsGgfWUBEdaC0sQSeO0cgfcuTsMRPYPMf/yG\nVxoBSHCUuYiysSsOFNpF+YB8QyZFL5+HVDsBleZeEX0kBYlq/A7+RQqnDLjlewk3\n+M739CrQ6+mFFUKgFLCLHTSRlrMOt3ZoeSq1w6DydIhwVY2eF5OSLMsWzoTEZuN+\nwZm1Tq8x+Wxa/21TfkhdHYC11H4C5r8AjF1Vk1/J3jeD/QIDAQABo1AwTjAdBgNV\nHQ4EFgQUw45k8SvyIbU+akpaHcAe5mmk3lswHwYDVR0jBBgwFoAUw45k8SvyIbU+\nakpaHcAe5mmk3lswDAYDVR0TBAUwAwEB/zANBgkqhkiG9w0BAQUFAAOCAQEAUIEb\nuXr/q3g5OrEzSNhbWHPq+9nPDL2xz1jrWCsvY8yLXzp49mg4bBAGksCpMQXbhRHz\nyReFNVbHfShKNr1aUlx0630A7Qdz9V6ec4Uf26Qe6D8HpnXYBnkUykujBQgwc2E7\nmChrxh6aqjTw6DAAxL7mABqRYg7oGJxKPLRAoCY5EHwH1xAq5zH8eEJY4B3wW0RY\n8WLefyi47QrQRTmN+5dY347V3L8rDFPUVVVNfVmkPLySVh+IkQiYg82Ty+BOUjul\n8ccCKFRVZUKqv8/HFqSrsjOtIO5cT06V41Ign/niGwVapxrZ7AQPzFe+PhZIT8In\nhHicmQ1ggzh02vzK6A==\n-----END CERTIFICATE-----\n"
+		},
+		"privateKey": {
+			"$id": "#/properties/privateKey",
+			"type": "string",
+			"title": "Private key",
+			"example": "-----BEGIN RSA PRIVATE KEY-----\nMIIEpAIBAAKCAQEAtuYQlUvcYv1K4Y1SREa+Rk3P/iNCJE20ajtGlICrL2+ktqko\nE2zWANYpjp2Dk+3+/K9n9+z/rOrHF2DyXyq3eetEqxllO/k2nCpZkmU+1qjlD8fS\nOu3qdNkDkGuZyTDmAPfrHsGgfWUBEdaC0sQSeO0cgfcuTsMRPYPMf/yGVxoBSHCU\nuYiysSsOFNpF+YB8QyZFL5+HVDsBleZeEX0kBYlq/A7+RQqnDLjlewk3+M739CrQ\n6+mFFUKgFLCLHTSRlrMOt3ZoeSq1w6DydIhwVY2eF5OSLMsWzoTEZuN+wZm1Tq8x\n+Wxa/21TfkhdHYC11H4C5r8AjF1Vk1/J3jeD/QIDAQABAoIBAQCzdSnwU2768ez3\nQuLle0RXVyIuCgpr9JKBaYfnThipgrHrSC66YJ/aUkiUVpk0HOGErdclvLVhxTt0\nBPvLxO4iAmZuO4zJO84JjMQ2kIEHvtCCm1371FWoMQb+PZW3gvMrIBbjJrmCUAis\np/3VL+2wGXdPTmlxfpT79sZBDlYCPyapf9ZQJWq6rDWh3YMAw9bJkDb5cJ3lSufe\nv96yR2/xNKZvvtd1/pjH8lqvUMhOxl+0sObANnsZy1JCe/nkelrJFIY4Mno+rFHK\nszpUu2AMxDDTnZUshYTCDoLfrVmT450AdWvQDzRreucVbN+mYGQiTue2clj7mJUk\ngcN4yJFBAoGBAPGm8pgx5WCYz8jcEgqkknZVYmbfSTnn4TWME6MAZjX/aAWhprTa\nQAog8yaKJNRcIxiCG121Je6bW2zCH4eSOt+fvxCj2E5hr/wDIvWgKeK7t9zaeZCJ\n1FzPhK0ZKu/Hj1nXEBbAJ/D/s1c3ERFYw93WcMxREHCY3iFPZ63LHXWnAoGBAMHC\nFFAqJaqBv4dpPk6z4Btnt8OFv8GVdtq2y2pq0JlV7NCqdDuz9Kh85QLFqN2H2PoG\n6zlvl9ioHzTL2niuPzEnnuU/aCP10i4ps0hHgvgSFDAa1rT35MI/IXLoYJ6Dkwxn\nDO+BZH/umDcyb1RazwTzuHSrG51V94aS/X3/0TW7AoGAUrG51OFGSG8is+6zcdbt\nk/cWLHP+oAU86VEdKyuozpOvajXuUXdacNzjuG2Puugozms/qCqkZ2ncuHQZzA/7\ne6kz/iLDk9cUHR6JqRp9Guz4N2jALvkrpfMRyRaSvelBohHZnJ93S56FJbRfb9s7\nc7+9a/3VrWJyqV198lhOpYMCgYBd4rkNDx8pO62e47Q5VpelL+CvcUO1fcMVv7VZ\nX2CsrCIQCkhAFbbbXYlqinSEw6qznF6mehhN90kHwC+ggm5EVzp7QvonUpoBnFsv\nDte7dKcrmBWpouTJ6uU+VLNcm8zJGbX+5+fWxbokJOAlM8tUTvR2M+MxndJO9zK1\ntxucuQKBgQCGbspRbxMKg2h64xhLkcpu3H6pdqwAYa0wmwTLMfNa5y2QaHSz9srU\npeEDBsRCcdg/+g2XcYoIQAVpQ3sVbhyeOkmi/Vrhc3EvC9mEm8HtLZR+LZtK0Kr9\n6R4I6x2z7AcMv/FYL3abeC8LnqB2UZhQ0WESu78B7IdCQjJgm4xDTQ==\n-----END RSA PRIVATE KEY-----\n"
+		}
+	}
+}

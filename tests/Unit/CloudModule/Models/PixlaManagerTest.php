@@ -12,7 +12,6 @@ namespace Tests\Unit\CloudModule\Models;
 
 use App\CloudModule\Models\PixlaManager;
 use App\CoreModule\Models\FileManager;
-use App\ServiceModule\Enums\ServiceStates;
 use App\ServiceModule\Models\SystemDManager;
 use Mockery;
 use Mockery\MockInterface;
@@ -56,7 +55,9 @@ class PixlaManagerTest extends CommandTestCase {
 	 */
 	public function testDisableService(): void {
 		$this->serviceManager->shouldReceive('disable');
-		Assert::noError([$this->manager, 'disableService']);
+		Assert::noError(function (): void {
+			$this->manager->disableService();
+		});
 	}
 
 	/**
@@ -64,17 +65,18 @@ class PixlaManagerTest extends CommandTestCase {
 	 */
 	public function testEnableService(): void {
 		$this->serviceManager->shouldReceive('enable');
-		Assert::noError([$this->manager, 'enableService']);
+		Assert::noError(function (): void {
+			$this->manager->enableService();
+		});
 	}
 
 	/**
 	 * Tests the function to get status of PIXLA client service
 	 */
 	public function testGetServiceStatus(): void {
-		$expected = ServiceStates::ENABLED();
 		$this->serviceManager->shouldReceive('isEnabled')
-			->andReturn($expected);
-		Assert::same($expected, $this->manager->getServiceStatus());
+			->andReturnTrue();
+		Assert::true($this->manager->getServiceStatus());
 	}
 
 	/**

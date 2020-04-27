@@ -1,0 +1,14 @@
+services:
+	- App\ApiModule\Version0\Controllers\OpenApiController
+	- App\ApiModule\Version0\Controllers\CertificateController
+	- App\ApiModule\Version0\Controllers\CloudsController
+	- App\ApiModule\Version0\Controllers\ConfigController
+	- App\ApiModule\Version0\Controllers\DiagnosticsController
+	- App\ApiModule\Version0\Controllers\GatewayController
+	- App\ApiModule\Version0\Controllers\IqrfController
+	- App\ApiModule\Version0\Controllers\NetworkController
+	- App\ApiModule\Version0\Controllers\PixlaController
+	- App\ApiModule\Version0\Controllers\ServicesController
+	- App\ApiModule\Version0\Controllers\UserController
+	- App\ApiModule\Version0\Controllers\UsersController
+	- App\ApiModule\Version0\Controllers\VersionController

@@ -23,8 +23,6 @@ namespace App\GatewayModule\Presenters;
 use App\CoreModule\Presenters\ProtectedPresenter;
 use App\GatewayModule\Models\DiagnosticsManager;
 use App\GatewayModule\Models\InfoManager;
-use App\GatewayModule\Models\NetworkManager;
-use App\GatewayModule\Models\VersionManager;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Models\GwModeManager;
@@ -53,29 +51,15 @@ class InfoPresenter extends ProtectedPresenter {
 	private $gwModeManager;
 
 	/**
-	 * @var NetworkManager Network manager
-	 */
-	private $networkManager;
-
-	/**
-	 * @var VersionManager Version manager
-	 */
-	private $swVersionManager;
-
-	/**
 	 * Constructor
 	 * @param InfoManager $infoManager IQRF Gateway Info manager
 	 * @param DiagnosticsManager $diagnosticsManager IQRF Gateway Diagnostic manager
 	 * @param GwModeManager $gwModeManager IQRF Gateway Daemon's mode manager
-	 * @param NetworkManager $networkManager Network manager
-	 * @param VersionManager $versionManager Version manager
 	 */
-	public function __construct(InfoManager $infoManager, DiagnosticsManager $diagnosticsManager, GwModeManager $gwModeManager, NetworkManager $networkManager, VersionManager $versionManager) {
+	public function __construct(InfoManager $infoManager, DiagnosticsManager $diagnosticsManager, GwModeManager $gwModeManager) {
 		$this->diagnosticsManager = $diagnosticsManager;
 		$this->infoManager = $infoManager;
 		$this->gwModeManager = $gwModeManager;
-		$this->networkManager = $networkManager;
-		$this->swVersionManager = $versionManager;
 		parent::__construct();
 	}
 
@@ -84,21 +68,9 @@ class InfoPresenter extends ProtectedPresenter {
 	 * @throws JsonException
 	 */
 	public function renderDefault(): void {
-		$this->template->ipAddresses = $this->networkManager->getIpAddresses();
-		$this->template->macAddresses = $this->networkManager->getMacAddresses();
-		$this->template->board = $this->infoManager->getBoard();
-		$this->template->hostname = $this->networkManager->getHostname();
-		$this->template->controllerVersion = $this->swVersionManager->getController();
-		$this->template->daemonVersion = $this->swVersionManager->getDaemon();
-		$this->template->webAppVersion = $this->swVersionManager->getWebapp();
-		$this->template->diskUsages = $this->infoManager->getDiskUsages();
-		$this->template->memoryUsage = $this->infoManager->getMemoryUsage();
-		$this->template->swapUsage = $this->infoManager->getSwapUsage();
-		$this->template->gwId = $this->infoManager->getId();
-		$this->template->gwmodId = $this->infoManager->getPixlaToken();
-		try {
-			$this->template->module = $this->infoManager->getCoordinatorInfo()['response']->data->rsp;
-		} catch (DpaErrorException | EmptyResponseException $e) {
+		$info = $this->infoManager->get();
+		$this->template->info = $info;
+		if (!isset($info['coordinator'])) {
 			$this->flashError('gateway.info.tr.error');
 		}
 		try {

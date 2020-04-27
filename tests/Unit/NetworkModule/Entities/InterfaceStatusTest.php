@@ -93,6 +93,19 @@ class InterfaceStatusTest extends TestCase {
 		Assert::same($this->connectionName, $this->entity->getConnectionName());
 	}
 
+	/**
+	 * Tests the function to return JSON serialized data
+	 */
+	public function testJsonSerialize(): void {
+		$expected = [
+			'name' => $this->name,
+			'type' => $this->type->toScalar(),
+			'state' => $this->state->toScalar(),
+			'connectionName' => $this->connectionName,
+		];
+		Assert::same($expected, $this->entity->jsonSerialize());
+	}
+
 }
 
 $test = new InterfaceStatusTest();

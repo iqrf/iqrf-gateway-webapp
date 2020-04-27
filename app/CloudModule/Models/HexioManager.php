@@ -78,15 +78,14 @@ class HexioManager implements IManager {
 		$this->createDirectory();
 		$this->downloadCaCertificate();
 		$this->configManager->setComponent('iqrf::MqttMessaging');
-		$this->configManager->setFileName('iqrf__MqttMessaging_Hexio');
 		$interface = [
 			'instance' => 'MqttMessagingHexio',
 			'BrokerAddr' => 'ssl://' . $values['broker'] . ':8883',
-			'ClientId' => $values['ClientId'],
+			'ClientId' => $values['clientId'],
 			'Persistence' => 1,
 			'Qos' => 1,
-			'TopicRequest' => '{no-process}/' . preg_replace('/^\{no\-process\}\//', '', $values['TopicRequest']),
-			'TopicResponse' => $values['TopicResponse'],
+			'TopicRequest' => '{no-process}/' . preg_replace('/^\{no\-process\}\//', '', $values['topicRequest']),
+			'TopicResponse' => $values['topicResponse'],
 			'User' => $values['username'],
 			'Password' => $values['password'],
 			'EnabledSSL' => true,
@@ -102,7 +101,7 @@ class HexioManager implements IManager {
 			'EnableServerCertAuth' => false,
 			'acceptAsyncMsg' => false,
 		];
-		$this->configManager->save($interface);
+		$this->configManager->save($interface, 'iqrf__MqttMessaging_Hexio');
 	}
 
 	/**

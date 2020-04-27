@@ -78,7 +78,6 @@ class InteliGlueManager implements IManager {
 		$this->createDirectory();
 		$this->downloadCaCertificate();
 		$this->configManager->setComponent('iqrf::MqttMessaging');
-		$this->configManager->setFileName('iqrf__MqttMessaging_InteliGlue');
 		$interface = [
 			'instance' => 'MqttMessagingInteliGlue',
 			'BrokerAddr' => 'ssl://mqtt.inteliglue.com:' . $values['assignedPort'],
@@ -102,7 +101,7 @@ class InteliGlueManager implements IManager {
 			'EnableServerCertAuth' => false,
 			'acceptAsyncMsg' => false,
 		];
-		$this->configManager->save($interface);
+		$this->configManager->save($interface, 'iqrf__MqttMessaging_InteliGlue');
 	}
 
 	/**

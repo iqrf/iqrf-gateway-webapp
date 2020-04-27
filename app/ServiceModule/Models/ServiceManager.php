@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\ServiceModule\Models;
 
 use App\CoreModule\Models\CommandManager;
+use App\ServiceModule\Exceptions\NotImplementedException;
 use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
 use Nette\SmartObject;
 
@@ -40,7 +41,7 @@ class ServiceManager {
 	 * @var string[] Init daemon service managers
 	 */
 	private $initDaemons = [
-		'docker-supervisor' => DockerSupervisorManager::class,
+		'docker-supervisor' => SupervisordManager::class,
 		'systemd' => SystemDManager::class,
 	];
 
@@ -58,36 +59,80 @@ class ServiceManager {
 	}
 
 	/**
-	 * Starts the service
+	 * Disables the service
+	 * @var string|null $serviceName Service name
+	 * @throws NotImplementedException
 	 * @throws UnsupportedInitSystemException
 	 */
-	public function start(): void {
-		$this->initDaemon->start();
+	public function disable(?string $serviceName = null): void {
+		$this->initDaemon->disable($serviceName);
+	}
+
+	/**
+	 * Enables the service
+	 * @var string|null $serviceName Service name
+	 * @throws NotImplementedException
+	 * @throws UnsupportedInitSystemException
+	 */
+	public function enable(?string $serviceName = null): void {
+		$this->initDaemon->enable($serviceName);
+	}
+
+	/**
+	 * Checks if the service is active
+	 * @var string|null $serviceName Service name
+	 * @throws NotImplementedException
+	 * @throws UnsupportedInitSystemException
+	 */
+	public function isActive(?string $serviceName = null): bool {
+		return $this->initDaemon->isActive($serviceName);
+	}
+
+	/**
+	 * Checks if the service is enabled
+	 * @var string|null $serviceName Service name
+	 * @throws NotImplementedException
+	 * @throws UnsupportedInitSystemException
+	 */
+	public function isEnabled(?string $serviceName = null): bool {
+		return $this->initDaemon->isEnabled($serviceName);
+	}
+
+	/**
+	 * Starts the service
+	 * @var string|null $serviceName Service name
+	 * @throws UnsupportedInitSystemException
+	 */
+	public function start(?string $serviceName = null): void {
+		$this->initDaemon->start($serviceName);
 	}
 
 	/**
 	 * Stops the service
+	 * @var string|null $serviceName Service name
 	 * @throws UnsupportedInitSystemException
 	 */
-	public function stop(): void {
-		$this->initDaemon->stop();
+	public function stop(?string $serviceName = null): void {
+		$this->initDaemon->stop($serviceName);
 	}
 
 	/**
 	 * Restarts the service
+	 * @var string|null $serviceName Service name
 	 * @throws UnsupportedInitSystemException
 	 */
-	public function restart(): void {
-		$this->initDaemon->restart();
+	public function restart(?string $serviceName = null): void {
+		$this->initDaemon->restart($serviceName);
 	}
 
 	/**
-	 * Gets status of the service
-	 * @return string Output from init daemon
+	 * Returns status of the service
+	 * @var string|null $serviceName Service name
+	 * @return string Service status
 	 * @throws UnsupportedInitSystemException
 	 */
-	public function getStatus(): string {
-		return $this->initDaemon->getStatus();
+	public function getStatus(?string $serviceName = null): string {
+		return $this->initDaemon->getStatus($serviceName);
 	}
 
 }

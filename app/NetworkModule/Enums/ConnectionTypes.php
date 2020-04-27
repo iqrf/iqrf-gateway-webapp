@@ -32,6 +32,7 @@ use Grifart\Enum\Enum;
  * @method static ConnectionTypes VLAN()
  * @method static ConnectionTypes VPN()
  * @method static ConnectionTypes WIFI()
+ * @method static ConnectionTypes WIREGUARD()
  */
 final class ConnectionTypes extends Enum {
 
@@ -71,5 +72,10 @@ final class ConnectionTypes extends Enum {
 	 * WiFi connection
 	 */
 	private const WIFI = '802-11-wireless';
+
+	/**
+	 * WireGuard connection
+	 */
+	private const WIREGUARD = 'wireguard';
 
 }

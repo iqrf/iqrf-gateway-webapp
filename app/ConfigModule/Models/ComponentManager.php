@@ -74,6 +74,25 @@ class ComponentManager implements IConfigManager {
 	}
 
 	/**
+	 * Returns component ID
+	 * @param string $name Components name
+	 * @return int|null Component ID
+	 */
+	public function getId(string $name): ?int {
+		try {
+			$json = $this->fileManager->read($this->fileName);
+		} catch (JsonException $e) {
+			return null;
+		}
+		foreach ($json['components'] as $id => $component) {
+			if ($component['name'] === $name) {
+				return $id;
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * Loads the component from main configuration JSON
 	 * @param int $id Component ID
 	 * @return mixed[] Array for form

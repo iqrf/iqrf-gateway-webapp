@@ -71,6 +71,14 @@ class ComponentManagerTest extends JsonConfigTestCase {
 	}
 
 	/**
+	 * Tests the function to get component ID
+	 */
+	public function testGetId(): void {
+		Assert::same(8, $this->manager->getId('iqrf::IqrfSpi'));
+		Assert::null($this->manager->getId('nonsense'));
+	}
+
+	/**
 	 * Tests the function to load configuration of components
 	 */
 	public function testList(): void {

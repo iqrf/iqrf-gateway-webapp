@@ -79,12 +79,10 @@ class MonitorManager {
 		$this->genericManager->setComponent($this->components['monitor']);
 		$instances = $this->genericManager->getInstanceFiles();
 		$this->fileNames['monitor'] = Arrays::pick($instances, $id);
-		$this->genericManager->setFileName($this->fileNames['monitor']);
-		$messaging = $this->genericManager->read();
+		$messaging = $this->genericManager->read($this->fileNames['monitor']);
 		$instance = $messaging['RequiredInterfaces'][0]['target']['instance'];
-		$this->genericManager->deleteFile();
-		$this->genericManager->setFileName($this->getWebSocketFile($instance));
-		$this->genericManager->deleteFile();
+		$this->genericManager->deleteFile($this->fileNames['monitor']);
+		$this->genericManager->deleteFile($this->getWebSocketFile($instance));
 	}
 
 	/**
@@ -97,8 +95,7 @@ class MonitorManager {
 		$this->genericManager->setComponent($this->components['webSocket']);
 		$services = $this->genericManager->getInstanceFiles();
 		foreach ($services as $service) {
-			$this->genericManager->setFileName($service);
-			$json = $this->genericManager->read();
+			$json = $this->genericManager->read($service);
 			if (Arrays::pick($json, 'instance') === $instance) {
 				return $service;
 			}
@@ -131,13 +128,11 @@ class MonitorManager {
 		$this->genericManager->setComponent($this->components['monitor']);
 		$instances = $this->genericManager->getInstanceFiles();
 		$this->fileNames['monitor'] = Arrays::pick($instances, $id);
-		$this->genericManager->setFileName($this->fileNames['monitor']);
-		$monitor = $this->genericManager->read();
+		$monitor = $this->genericManager->read($this->fileNames['monitor']);
 		$webSocketInstance = $monitor['RequiredInterfaces'][0]['target']['instance'];
 		$this->fileNames['webSocket'] = $this->getWebSocketFile($webSocketInstance);
 		$this->genericManager->setComponent($this->components['webSocket']);
-		$this->genericManager->setFileName($this->fileNames['webSocket']);
-		$webSocket = $this->genericManager->read();
+		$webSocket = $this->genericManager->read($this->fileNames['webSocket']);
 		$this->instances = [
 			'monitor' => $monitor['instance'],
 			'webSocket' => $webSocket['instance'],
@@ -175,11 +170,9 @@ class MonitorManager {
 		$this->fileNames['monitor'] = $this->fileNames['monitor'] ?? 'iqrf__' . $this->instances['monitor'];
 		$this->fileNames['webSocket'] = $this->fileNames['webSocket'] ?? 'shape__' . $this->instances['webSocket'];
 		$this->genericManager->setComponent($this->components['webSocket']);
-		$this->genericManager->setFileName($this->fileNames['webSocket']);
-		$this->genericManager->save($configuration['webSocket']);
+		$this->genericManager->save($configuration['webSocket'], $this->fileNames['webSocket']);
 		$this->genericManager->setComponent($this->components['monitor']);
-		$this->genericManager->setFileName($this->fileNames['monitor']);
-		$this->genericManager->save($configuration['monitor']);
+		$this->genericManager->save($configuration['monitor'], $this->fileNames['monitor']);
 	}
 
 	/**

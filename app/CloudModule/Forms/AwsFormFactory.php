@@ -55,9 +55,9 @@ class AwsFormFactory extends CloudFormFactory {
 		$form = $this->factory->create('cloud.amazonAws.form');
 		$form->addText('endpoint', 'endpoint')
 			->setRequired('messages.endpoint');
-		$form->addUpload('cert', 'certificate')
+		$form->addUpload('certificate', 'certificate')
 			->setRequired('messages.certificate');
-		$form->addUpload('key', 'key')
+		$form->addUpload('privateKey', 'key')
 			->setRequired('messages.key');
 		$form->addSubmit('save', 'save')
 			->onClick[] = function (SubmitButton $button): void {

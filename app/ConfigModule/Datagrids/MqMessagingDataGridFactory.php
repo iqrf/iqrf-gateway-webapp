@@ -110,10 +110,11 @@ class MqMessagingDataGridFactory {
 	 * @throws JsonException
 	 */
 	public function changeAsyncMsg(string $id, string $status): void {
-		$config = $this->configManager->load((int) $id);
+		$fileName = $this->configManager->getFileNameById((int) $id);
+		$config = $this->configManager->read($fileName);
 		$config['acceptAsyncMsg'] = boolval($status);
 		try {
-			$this->configManager->save($config);
+			$this->configManager->save($config, $fileName);
 			$this->presenter->flashSuccess('config.messages.success');
 		} catch (IOException $e) {
 			$this->presenter->flashError('config.messages.writeFailures.ioError');

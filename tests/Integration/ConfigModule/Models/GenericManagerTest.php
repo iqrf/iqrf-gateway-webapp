@@ -46,14 +46,23 @@ class GenericManagerTest extends JsonConfigTestCase {
 	/**
 	 * Tests the function to delete the instance of component
 	 */
-	public function testDelete(): void {
+	public function testDeleteFile(): void {
 		Environment::lock('config_mqtt', __DIR__ . '/../../../temp/');
 		$this->managerTemp->setComponent($this->component);
 		$this->copyFile($this->fileName);
 		Assert::true($this->fileManagerTemp->exists($this->fileName));
-		$id = array_search($this->fileName, $this->managerTemp->getInstanceFiles(), true);
-		$this->managerTemp->delete($id);
+		$this->managerTemp->deleteFile($this->fileName);
 		Assert::false($this->fileManagerTemp->exists($this->fileName));
+	}
+
+	/**
+	 * Tests the function to delete the instance of component (missing file name)
+	 */
+	public function testDeleteFileInvalid(): void {
+		$this->manager->setComponent($this->component);
+		Assert::noError(function (): void {
+			$this->manager->deleteFile(null);
+		});
 	}
 
 	/**
@@ -74,8 +83,7 @@ class GenericManagerTest extends JsonConfigTestCase {
 	public function testGenerateFileName(): void {
 		$this->manager->setComponent($this->component);
 		$array = $this->readFile($this->fileName);
-		$this->manager->generateFileName($array);
-		Assert::equal($this->fileName, $this->manager->getFileName());
+		Assert::equal($this->fileName, $this->manager->generateFileName($array));
 	}
 
 	/**
@@ -85,6 +93,24 @@ class GenericManagerTest extends JsonConfigTestCase {
 		Assert::same($this->fileName, $this->manager->getInstanceByProperty('instance', 'MqttMessaging'));
 		Assert::same($this->fileName, $this->manager->getInstanceByProperty('BrokerAddr', 'tcp://127.0.0.1:1883'));
 		Assert::null($this->manager->getInstanceByProperty('foo', 'bar'));
+	}
+
+	/**
+	 * Tests the function to get instance configuration file name (failure)
+	 */
+	public function testGetInstanceFileNameFailure(): void {
+		$this->manager->setComponent($this->component);
+		$instanceName = 'nonsense';
+		Assert::null($this->manager->getInstanceFileName($instanceName));
+	}
+
+	/**
+	 * Tests the function to get instance configuration file name (success)
+	 */
+	public function testGetInstanceFileNameSuccess(): void {
+		$this->manager->setComponent($this->component);
+		$instanceName = 'MqttMessaging';
+		Assert::same($this->fileName, $this->manager->getInstanceFileName($instanceName));
 	}
 
 	/**
@@ -125,6 +151,24 @@ class GenericManagerTest extends JsonConfigTestCase {
 		$this->manager->setComponent($this->component);
 		Assert::same([], $this->manager->load(-1));
 	}
+
+	/**
+	 * Tests the function to load the existing configuration
+	 */
+	public function testLoadInstanceExisting(): void {
+		$this->manager->setComponent($this->component);
+		$expected = $this->readFile($this->fileName);
+		Assert::equal($expected, $this->manager->loadInstance('MqttMessaging'));
+	}
+
+	/**
+	 * Tests the function to load a nonexistent configuration
+	 */
+	public function testLoadInstanceNonexisting(): void {
+		$this->manager->setComponent($this->component);
+		Assert::same([], $this->manager->loadInstance('nonsense'));
+	}
+
 
 	/**
 	 * Tests the function to list configurations

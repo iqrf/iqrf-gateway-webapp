@@ -71,7 +71,8 @@ class UdpPresenter extends GenericPresenter {
 	public function actionDelete(int $id): void {
 		$this->configManager->setComponent('iqrf::UdpMessaging');
 		try {
-			$this->configManager->delete($id);
+			$fileName = $this->configManager->getFileNameById($id);
+			$this->configManager->deleteFile($fileName);
 			$this->flashSuccess('config.messages.successes.delete');
 		} catch (IOException $e) {
 			$this->flashError('config.messages.deleteFailures.ioError');

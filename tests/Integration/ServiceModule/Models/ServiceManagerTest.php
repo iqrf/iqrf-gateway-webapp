@@ -38,12 +38,64 @@ class ServiceManagerTest extends CommandTestCase {
 	private $serviceName = 'iqrf-gateway-daemon';
 
 	/**
+	 * Tests the function to disable the service via systemD
+	 */
+	public function testDisableSystemD(): void {
+		$commands = [
+			'systemctl disable ' . $this->serviceName . '.service',
+			'systemctl stop ' . $this->serviceName . '.service',
+		];
+		foreach ($commands as $command) {
+			$this->receiveCommand($command, true);
+		}
+		Assert::noError(function (): void {
+			$this->managerSystemD->disable();
+		});
+	}
+
+	/**
+	 * Tests the function to disable the service via unknown init daemon
+	 */
+	public function testDisableUnknown(): void {
+		Assert::exception(function (): void {
+			$this->managerUnknown->disable();
+		}, UnsupportedInitSystemException::class);
+	}
+
+	/**
+	 * Tests the function to enable the service via systemD
+	 */
+	public function testEnableSystemD(): void {
+		$commands = [
+			'systemctl enable ' . $this->serviceName . '.service',
+			'systemctl start ' . $this->serviceName . '.service',
+		];
+		foreach ($commands as $command) {
+			$this->receiveCommand($command, true);
+		}
+		Assert::noError(function (): void {
+			$this->managerSystemD->enable();
+		});
+	}
+
+	/**
+	 * Tests the function to enable the service via unknown init daemon
+	 */
+	public function testEnableUnknown(): void {
+		Assert::exception(function (): void {
+			$this->managerUnknown->enable();
+		}, UnsupportedInitSystemException::class);
+	}
+
+	/**
 	 * Tests the function to start the service via systemD
 	 */
 	public function testStartSystemD(): void {
 		$command = 'systemctl start ' . $this->serviceName . '.service';
 		$this->receiveCommand($command, true);
-		Assert::noError([$this->managerSystemD, 'start']);
+		Assert::noError(function (): void {
+			$this->managerSystemD->start();
+		});
 	}
 
 	/**

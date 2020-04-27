@@ -18,34 +18,36 @@
  */
 declare(strict_types = 1);
 
-namespace App\ServiceModule\Enums;
+namespace App\CoreModule\Models;
 
-use Grifart\Enum\AutoInstances;
-use Grifart\Enum\Enum;
+use Nette\IOException;
 
 /**
- * Service status enum
- * @method static ServiceStates DISABLED()
- * @method static ServiceStates ENABLED()
- * @method static ServiceStates MISSING()
+ * File manager interface
  */
-final class ServiceStates extends Enum {
-
-	use AutoInstances;
+interface IFileManager {
 
 	/**
-	 * Disabled service
+	 * Deletes the file
+	 * @param string $fileName File name
+	 * @throws IOException
 	 */
-	private const DISABLED = 'disabled';
+	public function delete(string $fileName): void;
 
 	/**
-	 * Enabled service
+	 * Reads the file
+	 * @param string $fileName File name
+	 * @return mixed File content
+	 * @throws IOException
 	 */
-	private const ENABLED = 'enabled';
+	public function read(string $fileName);
 
 	/**
-	 * Missing service
+	 * Writes into the file
+	 * @param string $fileName File name
+	 * @param mixed $content File content
+	 * @throws IOException
 	 */
-	private const MISSING = '';
+	public function write(string $fileName, $content): void;
 
 }

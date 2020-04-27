@@ -54,13 +54,12 @@ class AzureManager implements IManager {
 	 * @throws JsonException
 	 */
 	public function createMqttInterface(array $values): void {
-		$connectionString = $values['ConnectionString'];
+		$connectionString = $values['connectionString'];
 		$this->checkConnectionString($connectionString);
 		$data = $this->parseConnectionString($connectionString);
 		$endpoint = $data['HostName'] . '/devices/' . $data['DeviceId'];
 		$token = $this->generateSasToken($endpoint, $data['SharedAccessKey']);
 		$this->configManager->setComponent('iqrf::MqttMessaging');
-		$this->configManager->setFileName('iqrf__MqttMessaging_Azure');
 		$interface = [
 			'instance' => 'MqttMessagingAzure',
 			'BrokerAddr' => 'ssl://' . $data['HostName'] . ':8883',
@@ -84,7 +83,7 @@ class AzureManager implements IManager {
 			'EnableServerCertAuth' => false,
 			'acceptAsyncMsg' => false,
 		];
-		$this->configManager->save($interface);
+		$this->configManager->save($interface, 'iqrf__MqttMessaging_Azure');
 	}
 
 	/**

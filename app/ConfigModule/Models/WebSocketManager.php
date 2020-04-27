@@ -79,12 +79,10 @@ class WebSocketManager {
 		$this->genericManager->setComponent($this->components['messaging']);
 		$instances = $this->genericManager->getInstanceFiles();
 		$this->fileNames['messaging'] = Arrays::pick($instances, $id);
-		$this->genericManager->setFileName($this->fileNames['messaging']);
-		$messaging = $this->genericManager->read();
+		$messaging = $this->genericManager->read($this->fileNames['messaging']);
 		$instance = $messaging['RequiredInterfaces'][0]['target']['instance'];
-		$this->genericManager->deleteFile();
-		$this->genericManager->setFileName($this->getServiceFile($instance));
-		$this->genericManager->deleteFile();
+		$this->genericManager->deleteFile($this->fileNames['messaging']);
+		$this->genericManager->deleteFile($this->getServiceFile($instance));
 	}
 
 	/**
@@ -97,8 +95,7 @@ class WebSocketManager {
 		$this->genericManager->setComponent($this->components['service']);
 		$services = $this->genericManager->getInstanceFiles();
 		foreach ($services as $service) {
-			$this->genericManager->setFileName($service);
-			$json = $this->genericManager->read();
+			$json = $this->genericManager->read($service);
 			if (Arrays::pick($json, 'instance') === $instanceName) {
 				return $service;
 			}
@@ -130,11 +127,9 @@ class WebSocketManager {
 		$messagingFileName = $this->fileNames['messaging'] ?? 'iqrf__' . $this->instances['messaging'];
 		$serviceFileName = $this->fileNames['service'] ?? 'shape__' . $this->instances['service'];
 		$this->genericManager->setComponent($this->components['service']);
-		$this->genericManager->setFileName($serviceFileName);
-		$this->genericManager->save($settings['service']);
+		$this->genericManager->save($settings['service'], $serviceFileName);
 		$this->genericManager->setComponent($this->components['messaging']);
-		$this->genericManager->setFileName($messagingFileName);
-		$this->genericManager->save($settings['messaging']);
+		$this->genericManager->save($settings['messaging'], $messagingFileName);
 	}
 
 	/**
@@ -197,13 +192,11 @@ class WebSocketManager {
 		$this->genericManager->setComponent($this->components['messaging']);
 		$instances = $this->genericManager->getInstanceFiles();
 		$this->fileNames['messaging'] = Arrays::pick($instances, $id);
-		$this->genericManager->setFileName($this->fileNames['messaging']);
-		$messaging = $this->genericManager->read();
+		$messaging = $this->genericManager->read($this->fileNames['messaging']);
 		$serviceInstance = $messaging['RequiredInterfaces'][0]['target']['instance'];
 		$this->fileNames['service'] = $this->getServiceFile($serviceInstance);
 		$this->genericManager->setComponent($this->components['service']);
-		$this->genericManager->setFileName($this->fileNames['service']);
-		$service = $this->genericManager->read();
+		$service = $this->genericManager->read($this->fileNames['service']);
 		$this->instances = [
 			'messaging' => $messaging['instance'],
 			'service' => $service['instance'],

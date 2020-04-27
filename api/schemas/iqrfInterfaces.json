@@ -1,0 +1,61 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/iqrfInterfaces.json",
+	"type": "object",
+	"title": "IQRF interfaces",
+	"additionalProperties": false,
+	"required": [
+		"cdc",
+		"spi",
+		"uart"
+	],
+	"properties": {
+		"cdc": {
+			"$id": "#/properties/cdc",
+			"type": "array",
+			"title": "USB CDC interfaces",
+			"example": [
+				"/dev/ttyACM0"
+			],
+			"additionalItems": false,
+			"items": {
+				"$id": "#/properties/cdc/items",
+				"type": "string",
+				"title": "USB CDC interface",
+				"example": "/dev/ttyACM0"
+			}
+		},
+		"spi": {
+			"$id": "#/properties/spi",
+			"type": "array",
+			"title": "SPI interfaces",
+			"example": [
+				"/dev/spidev1.0"
+			],
+			"additionalItems": false,
+			"items": {
+				"$id": "#/properties/spi/items",
+				"type": "string",
+				"title": "SPI interface",
+				"example": "/dev/spidev1.0"
+			}
+		},
+		"uart": {
+			"$id": "#/properties/uart",
+			"type": "array",
+			"title": "UART interfaces",
+			"example": [
+				"/dev/ttyS0",
+				"/dev/ttyS1",
+				"/dev/ttyS2"
+			],
+			"additionalItems": false,
+			"items": {
+				"$id": "#/properties/uart/items",
+				"type": "string",
+				"title": "UART interface",
+				"example": "/dev/ttyS0"
+			}
+		}
+	}
+}

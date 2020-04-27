@@ -1,0 +1,88 @@
+info:
+	title: IQRF Gateway Webapp API specification
+	version: '0.0.1'
+	license:
+		name: Apache 2.0
+		url: https://www.apache.org/licenses/LICENSE-2.0.html
+	contact:
+		name: Roman Ondráček
+		email: roman.ondracek@iqrf.com
+servers:
+	-
+		url: '{protocol}://{server}/'
+		variables:
+			protocol:
+				enum:
+					- http
+					- https
+				default: http
+			server:
+				default: localhost:8080
+components:
+	schemas:
+		CertificateDetail:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/certificate.json
+		CloudAws:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/cloudAws.json
+		CloudAzure:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/cloudAzure.json
+		CloudHexio:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/cloudHexio.json
+		CloudIbm:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/cloudIbm.json
+		CloudInteliGlue:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/cloudInteliGlue.json
+		DaemonConfiguration:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/daemonConfiguration.json
+		GatewayInfo:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/gatewayInfo.json
+		IqrfIdeMacros:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/iqrfIdeMacros.json
+		IqrfInterfaces:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/iqrfInterfaces.json
+		NetworkConnection:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/networkConnection.json
+		NetworkConnections:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/networkConnections.json
+		NetworkInterfaces:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/networkInterfaces.json
+		NetworkConnectivityState:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/networkConnectivityState.json
+		OpenApiSpecification:
+			$ref: https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/schemas/v3.0/schema.json
+		PixlaStatus:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/pixlaStatus.json
+		ServiceList:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/serviceList.json
+		ServiceStatus:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/serviceStatus.json
+		UserCreate:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/userCreate.json
+		UserDetail:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/userDetail.json
+		UserEdit:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/userEdit.json
+		UserSignIn:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/userSignIn.json
+		UserToken:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/jwt.json
+		Version:
+			type: object
+			properties:
+				version:
+					type: string
+				commit:
+					type: string
+				pipeline:
+					type: string
+			required:
+				- version
+				- commit
+				- pipeline
+	securitySchemes:
+		bearerAuth:
+			type: http
+			scheme: 'bearer'
+			bearerFormat: JWT
+security:
+	- bearerAuth: []

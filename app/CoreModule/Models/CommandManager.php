@@ -77,10 +77,12 @@ class CommandManager {
 	 * Executes shell command and returns output
 	 * @param string $command Command to execute
 	 * @param bool $needSudo Does the command need sudo?
+	 * @param mixed $input Command's input
 	 * @return ICommand Command entity
 	 */
-	public function run(string $command, bool $needSudo = false): ICommand {
+	public function run(string $command, bool $needSudo = false, $input = null): ICommand {
 		$process = $this->createProcess($command, $needSudo);
+		$process->setInput($input);
 		$process->run();
 		$entity = new Command($command, $process);
 		$this->stack->addCommand($entity);
@@ -93,10 +95,12 @@ class CommandManager {
 	 * @param string $command Command to execute
 	 * @param bool $needSudo Does the command need sudo?
 	 * @param int $timeout Command's timeout
+	 * @param mixed $input Command's input
 	 */
-	public function runAsync(callable $callback, string $command, bool $needSudo = false, int $timeout = 36000): void {
+	public function runAsync(callable $callback, string $command, bool $needSudo = false, int $timeout = 36000, $input = null): void {
 		$process = $this->createProcess($command, $needSudo);
-		$process->setTimeout($timeout);
+		$process->setInput($input);
+		$process->setTimeout((float) $timeout);
 		$process->start($callback);
 		$process->wait();
 		$entity = new Command($command, $process);

@@ -22,6 +22,7 @@ namespace App\CloudModule\Presenters;
 
 use App\CloudModule\Models\PixlaManager;
 use App\CoreModule\Presenters\ProtectedPresenter;
+use App\ServiceModule\Exceptions\NonexistentServiceException;
 
 /**
  * PIXLA management system presenter
@@ -66,7 +67,11 @@ class PixlaPresenter extends ProtectedPresenter {
 	 * Renders the default page
 	 */
 	public function renderDefault(): void {
-		$this->template->status = $this->manager->getServiceStatus()->toScalar();
+		try {
+			$this->template->status = $this->manager->getServiceStatus() ? 'enabled' : 'disabled';
+		} catch (NonexistentServiceException $e) {
+			$this->template->status = 'missing';
+		}
 		$this->template->token = $this->manager->getToken();
 	}
 

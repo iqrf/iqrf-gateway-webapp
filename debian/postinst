@@ -85,6 +85,10 @@ webapp_warmup_templates() {
 	su - www-data -s /bin/bash -c '/usr/sbin/iqrf-gateway-webapp-manager nette:latte:warmup > /dev/null'
 }
 
+webapp_warmup_templates() {
+	iqrf-gateway-webapp-manager nette:latte:warmup > /dev/null
+}
+
 if [ "$1" = "configure" ]; then
 	openssl_create_ca
 	if [ -d /etc/nginx/ ] ; then
