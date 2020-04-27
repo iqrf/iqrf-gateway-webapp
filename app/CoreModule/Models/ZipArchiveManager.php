@@ -25,6 +25,7 @@ use Nette\Utils\Finder;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
+use SplFileInfo;
 use UnexpectedValueException;
 use ZipArchive;
 
@@ -71,18 +72,18 @@ class ZipArchiveManager {
 		}
 		try {
 			$files = Finder::findFiles('*')->in($path);
-			foreach ($files as $file => $fileObject) {
-				$fileName = $name . basename($file);
-				$this->addFile($file, $fileName);
+			foreach ($files as $file) {
+				assert($file instanceof SplFileInfo);
+				$this->addFile($file->getRealPath(), $name . $file->getFilename());
 			}
 		} catch (UnexpectedValueException $e) {
 			// Does nothing - an empty folder
 		}
 		try {
 			$directories = Finder::findDirectories('*')->in($path);
-			foreach ($directories as $directory => $directoryObject) {
-				$directoryName = $name . basename($directory);
-				$this->addFolder($directory, $directoryName);
+			foreach ($directories as $directory) {
+				assert($directory instanceof SplFileInfo);
+				$this->addFolder($directory->getRealPath(), $name . $directory->getBasename());
 			}
 		} catch (UnexpectedValueException $e) {
 			// Does nothing - an empty directory

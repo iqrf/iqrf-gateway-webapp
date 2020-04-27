@@ -166,7 +166,7 @@ class SchedulerManager {
 	 */
 	public function list(): array {
 		$tasks = [];
-		foreach ($this->getTaskFiles() as $id => $fileName) {
+		foreach (array_keys($this->getTaskFiles()) as $id) {
 			try {
 				$data = $this->load($id);
 				$task = [
