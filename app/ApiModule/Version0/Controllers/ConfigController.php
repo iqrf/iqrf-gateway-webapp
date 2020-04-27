@@ -34,7 +34,7 @@ use App\ConfigModule\Models\ComponentManager;
 use App\ConfigModule\Models\GenericManager;
 use App\ConfigModule\Models\MainManager;
 use App\CoreModule\Exceptions\InvalidJsonException;
-use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
+use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use Nette\Utils\JsonException;
 
 /**
@@ -245,7 +245,7 @@ class ConfigController extends BaseController {
 		$component = urldecode($request->getParameter('component'));
 		try {
 			$this->manager->setComponent($component);
-		} catch (NonExistingJsonSchemaException $e) {
+		} catch (NonexistentJsonSchemaException $e) {
 			return $response->withStatus(404);
 		}
 		$id = $this->componentManager->getId($component);
@@ -303,7 +303,7 @@ class ConfigController extends BaseController {
 			}
 			$this->manager->save($json, $fileName);
 			return $response->withStatus(201);
-		} catch (NonExistingJsonSchemaException $e) {
+		} catch (NonexistentJsonSchemaException $e) {
 			return $response->withStatus(404, 'Component not found');
 		} catch (JsonException $e) {
 			return $response->withStatus(400, 'Invalid JSON syntax');
@@ -378,7 +378,7 @@ class ConfigController extends BaseController {
 			$instance = urldecode($request->getParameter('instance'));
 			$fileName = $this->manager->getInstanceFileName($instance);
 			$this->manager->save($json, $fileName);
-		} catch (NonExistingJsonSchemaException $e) {
+		} catch (NonexistentJsonSchemaException $e) {
 			return $response->withStatus(404, 'Component not found');
 		} catch (JsonException $e) {
 			return $response->withStatus(400, 'Invalid JSON syntax');
@@ -419,7 +419,7 @@ class ConfigController extends BaseController {
 			$this->manager->setComponent($component);
 			$instance = urldecode($request->getParameter('instance'));
 			$configuration = $this->manager->loadInstance($instance);
-		} catch (NonExistingJsonSchemaException $e) {
+		} catch (NonexistentJsonSchemaException $e) {
 			return $response->withStatus(404, 'Component not found');
 		} catch (JsonException $e) {
 			return $response->withStatus(500, 'Invalid JSON syntax');

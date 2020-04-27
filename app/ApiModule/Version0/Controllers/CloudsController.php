@@ -36,7 +36,7 @@ use App\CloudModule\Models\AzureManager;
 use App\CloudModule\Models\HexioManager;
 use App\CloudModule\Models\IbmCloudManager;
 use App\CloudModule\Models\InteliGlueManager;
-use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
+use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\TransferException;
 use Nette\IOException;
@@ -118,8 +118,8 @@ class CloudsController extends BaseController {
 			return $response->withStatus(201, 'Created');
 		} catch (InvalidConnectionStringException $e) {
 			return $response->withStatus(400, 'Invalid connection string');
-		} catch (NonExistingJsonSchemaException $e) {
-			return $response->withStatus(400, 'Nonexisting JSON schema');
+		} catch (NonexistentJsonSchemaException $e) {
+			return $response->withStatus(400, 'Nonexistent JSON schema');
 		} catch (IOException $e) {
 			return $response->withStatus(500, 'Write failure');
 		} catch (GuzzleException $e) {
@@ -161,8 +161,8 @@ class CloudsController extends BaseController {
 			return $response->withStatus(201, 'Created');
 		} catch (InvalidConnectionStringException $e) {
 			return $response->withStatus(400, 'Invalid connection string');
-		} catch (NonExistingJsonSchemaException $e) {
-			return $response->withStatus(400, 'Nonexisting JSON schema');
+		} catch (NonexistentJsonSchemaException $e) {
+			return $response->withStatus(400, 'Nonexistent JSON schema');
 		} catch (IOException $e) {
 			return $response->withStatus(500, 'Write failure');
 		} catch (TransferException $e) {
@@ -200,8 +200,8 @@ class CloudsController extends BaseController {
 		try {
 			$this->hexioManager->createMqttInterface($request->getJsonBody());
 			return $response->withStatus(201, 'Created');
-		} catch (NonExistingJsonSchemaException $e) {
-			return $response->withStatus(400, 'Nonexisting JSON schema');
+		} catch (NonexistentJsonSchemaException $e) {
+			return $response->withStatus(400, 'Nonexistent JSON schema');
 		} catch (IOException $e) {
 			return $response->withStatus(500, 'Write failure');
 		} catch (GuzzleException $e) {
@@ -239,8 +239,8 @@ class CloudsController extends BaseController {
 		try {
 			$this->ibmCloudManager->createMqttInterface($request->getJsonBody());
 			return $response->withStatus(201, 'Created');
-		} catch (NonExistingJsonSchemaException $e) {
-			return $response->withStatus(400, 'Nonexisting JSON schema');
+		} catch (NonexistentJsonSchemaException $e) {
+			return $response->withStatus(400, 'Nonexistent JSON schema');
 		} catch (IOException $e) {
 			return $response->withStatus(500, 'Write failure');
 		} catch (GuzzleException $e) {
@@ -278,8 +278,8 @@ class CloudsController extends BaseController {
 		try {
 			$this->inteliGlueManager->createMqttInterface($request->getJsonBody());
 			return $response->withStatus(201, 'Created');
-		} catch (NonExistingJsonSchemaException $e) {
-			return $response->withStatus(400, 'Nonexisting JSON schema');
+		} catch (NonexistentJsonSchemaException $e) {
+			return $response->withStatus(400, 'Nonexistent JSON schema');
 		} catch (IOException $e) {
 			return $response->withStatus(500, 'Write failure');
 		} catch (GuzzleException $e) {
