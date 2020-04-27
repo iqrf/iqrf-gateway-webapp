@@ -21,7 +21,7 @@ declare(strict_types = 1);
 namespace App\CoreModule\Models;
 
 use App\CoreModule\Exceptions\InvalidJsonException;
-use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
+use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use JsonSchema\Constraints\Constraint;
 use JsonSchema\Validator;
 use Nette\SmartObject;
@@ -52,14 +52,14 @@ class JsonSchemaManager extends JsonFileManager {
 	/**
 	 * Sets the JSON schema file name
 	 * @param string $fileName JSON schema file name
-	 * @throws NonExistingJsonSchemaException
+	 * @throws NonexistentJsonSchemaException
 	 */
 	public function setSchema(string $fileName): void {
 		if (parent::exists($fileName)) {
 			$this->schema = $fileName;
 		} else {
 			$message = 'Non-existing JSON schema ' . $fileName . '.';
-			throw new NonExistingJsonSchemaException($message);
+			throw new NonexistentJsonSchemaException($message);
 		}
 	}
 

@@ -10,7 +10,7 @@ declare(strict_types = 1);
 
 namespace Tests\Unit\ServiceModule\Models;
 
-use App\ServiceModule\Exceptions\NotSupportedInitSystemException;
+use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
 use App\ServiceModule\Models\UnknownManager;
 use Tester\Assert;
 use Tests\Toolkit\TestCases\CommandTestCase;
@@ -31,28 +31,28 @@ class UnknownManagerTest extends CommandTestCase {
 	 * Tests the function to start IQRF Gateway Daemon's service via unknown init daemon
 	 */
 	public function testStart(): void {
-		Assert::exception([$this->manager, 'start'], NotSupportedInitSystemException::class);
+		Assert::exception([$this->manager, 'start'], UnsupportedInitSystemException::class);
 	}
 
 	/**
 	 * Tests the function to stop IQRF Gateway Daemon's service via unknown init daemon
 	 */
 	public function testStop(): void {
-		Assert::exception([$this->manager, 'stop'], NotSupportedInitSystemException::class);
+		Assert::exception([$this->manager, 'stop'], UnsupportedInitSystemException::class);
 	}
 
 	/**
 	 * Tests the function to restart IQRF Gateway Daemon's service via unknown init daemon
 	 */
 	public function testRestart(): void {
-		Assert::exception([$this->manager, 'restart'], NotSupportedInitSystemException::class);
+		Assert::exception([$this->manager, 'restart'], UnsupportedInitSystemException::class);
 	}
 
 	/**
 	 * Tests the function to get status of IQRF Gateway Daemon's service via unknown init daemon
 	 */
 	public function testGetStatus(): void {
-		Assert::exception([$this->manager, 'getStatus'], NotSupportedInitSystemException::class);
+		Assert::exception([$this->manager, 'getStatus'], UnsupportedInitSystemException::class);
 	}
 
 	/**

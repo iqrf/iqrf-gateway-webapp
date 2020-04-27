@@ -22,7 +22,7 @@ namespace App\ServiceModule\Presenters;
 
 use App\CoreModule\Presenters\ProtectedPresenter;
 use App\CoreModule\Traits\TPresenterFlashMessage;
-use App\ServiceModule\Exceptions\NotSupportedInitSystemException;
+use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
 use App\ServiceModule\Models\ServiceManager;
 
 /**
@@ -64,7 +64,7 @@ class ControlPresenter extends ProtectedPresenter {
 					break;
 			}
 			$this->flashSuccess('service.actions.' . $action . '.message');
-		} catch (NotSupportedInitSystemException $ex) {
+		} catch (UnsupportedInitSystemException $ex) {
 			$this->flashError('service.errors.unsupportedInit');
 		}
 		$this->readStatus();
@@ -105,7 +105,7 @@ class ControlPresenter extends ProtectedPresenter {
 		try {
 			$this->template->status = $this->serviceManager->getStatus();
 			$this->redrawControl('status');
-		} catch (NotSupportedInitSystemException $ex) {
+		} catch (UnsupportedInitSystemException $ex) {
 			$this->flashError('gateway.errors.unsupportedInit');
 		}
 	}

@@ -23,8 +23,8 @@ namespace App\CoreModule\Exceptions;
 use InvalidArgumentException;
 
 /**
- * The exception that indicates non-existing JSON schema
+ * The exception that indicates nonexistent JSON schema
  */
-class NonExistingJsonSchemaException extends InvalidArgumentException {
+class NonexistentJsonSchemaException extends InvalidArgumentException {
 
 }

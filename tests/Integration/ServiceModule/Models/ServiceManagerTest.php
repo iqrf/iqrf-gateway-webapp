@@ -10,7 +10,7 @@ declare(strict_types = 1);
 
 namespace Tests\Integration\ServiceModule\Models;
 
-use App\ServiceModule\Exceptions\NotSupportedInitSystemException;
+use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
 use App\ServiceModule\Models\ServiceManager;
 use Tester\Assert;
 use Tests\Toolkit\TestCases\CommandTestCase;
@@ -50,7 +50,7 @@ class ServiceManagerTest extends CommandTestCase {
 	 * Tests the function to start the service via unknown init daemon
 	 */
 	public function testStartUnknown(): void {
-		Assert::exception([$this->managerUnknown, 'start'], NotSupportedInitSystemException::class);
+		Assert::exception([$this->managerUnknown, 'start'], UnsupportedInitSystemException::class);
 	}
 
 	/**
@@ -66,7 +66,7 @@ class ServiceManagerTest extends CommandTestCase {
 	 * Tests the function to stop the service via unknown init daemon
 	 */
 	public function testStopUnknown(): void {
-		Assert::exception([$this->managerUnknown, 'stop'], NotSupportedInitSystemException::class);
+		Assert::exception([$this->managerUnknown, 'stop'], UnsupportedInitSystemException::class);
 	}
 
 	/**
@@ -82,7 +82,7 @@ class ServiceManagerTest extends CommandTestCase {
 	 * Tests the function to restart the service via unknown init daemon
 	 */
 	public function testRestartUnknown(): void {
-		Assert::exception([$this->managerUnknown, 'restart'], NotSupportedInitSystemException::class);
+		Assert::exception([$this->managerUnknown, 'restart'], UnsupportedInitSystemException::class);
 	}
 
 	/**
@@ -99,7 +99,7 @@ class ServiceManagerTest extends CommandTestCase {
 	 * Tests the function to get status of the service via unknown init daemon
 	 */
 	public function testGetStatusUnknown(): void {
-		Assert::exception([$this->managerUnknown, 'getStatus'], NotSupportedInitSystemException::class);
+		Assert::exception([$this->managerUnknown, 'getStatus'], UnsupportedInitSystemException::class);
 	}
 
 	/**

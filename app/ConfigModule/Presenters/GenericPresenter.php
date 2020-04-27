@@ -21,7 +21,7 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Models\GenericManager;
-use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
+use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use App\CoreModule\Presenters\ProtectedPresenter;
 use App\CoreModule\Traits\TPresenterFlashMessage;
 use Nette\IOException;
@@ -62,7 +62,7 @@ abstract class GenericPresenter extends ProtectedPresenter {
 		parent::startup();
 		try {
 			$this->checkInstanceFiles();
-		} catch (NonExistingJsonSchemaException $e) {
+		} catch (NonexistentJsonSchemaException $e) {
 			$this->flashError('config.messages.readFailures.nonExistingJsonSchema');
 			$this->redirect('Homepage:default');
 		} catch (IOException $e) {

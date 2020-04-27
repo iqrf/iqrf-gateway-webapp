@@ -23,10 +23,10 @@ use App\CloudModule\Exceptions\CannotCreateCertificateDirectoryException;
 use App\CloudModule\Exceptions\InvalidConnectionStringException;
 use App\CloudModule\Exceptions\InvalidPrivateKeyForCertificateException;
 use App\CloudModule\Models\IManager;
-use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
+use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use App\CoreModule\Forms\FormFactory;
 use App\CoreModule\Presenters\ProtectedPresenter;
-use App\ServiceModule\Exceptions\NotSupportedInitSystemException;
+use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
 use App\ServiceModule\Models\ServiceManager;
 use GuzzleHttp\Exception\TransferException;
 use Nette\Forms\Controls\SubmitButton;
@@ -88,7 +88,7 @@ abstract class CloudFormFactory {
 			$this->presenter->flashError('cloud.msAzure.messages.invalidConnectionString');
 		} catch (InvalidPrivateKeyForCertificateException $e) {
 			$this->presenter->flashError('cloud.amazonAws.messages.mismatchedCrtAndKey');
-		} catch (NonExistingJsonSchemaException $e) {
+		} catch (NonexistentJsonSchemaException $e) {
 			$this->presenter->flashError('config.messages.writeFailures.nonExistingJsonSchema');
 		} catch (IOException $e) {
 			$this->presenter->flashError('config.messages.writeFailures.ioError');
@@ -101,7 +101,7 @@ abstract class CloudFormFactory {
 			try {
 				$this->serviceManager->restart();
 				$this->presenter->flashInfo('service.actions.restart.message');
-			} catch (NotSupportedInitSystemException $e) {
+			} catch (UnsupportedInitSystemException $e) {
 				$this->presenter->flashError('service.errors.unsupportedInit');
 			}
 		}

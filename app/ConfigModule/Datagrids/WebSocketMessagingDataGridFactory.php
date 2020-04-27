@@ -23,7 +23,7 @@ namespace App\ConfigModule\Datagrids;
 use App\ConfigModule\Models\GenericManager;
 use App\ConfigModule\Presenters\WebsocketPresenter;
 use App\CoreModule\Datagrids\DataGridFactory;
-use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
+use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use Nette\IOException;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;
@@ -133,7 +133,7 @@ class WebSocketMessagingDataGridFactory {
 			$this->presenter->flashSuccess('config.messages.success');
 		} catch (IOException $e) {
 			$this->presenter->flashError('config.messages.writeFailures.ioError');
-		} catch (NonExistingJsonSchemaException $e) {
+		} catch (NonexistentJsonSchemaException $e) {
 			$this->presenter->flashError('config.messages.writeFailures.nonExistingJsonSchema');
 		} finally {
 			if ($this->presenter->isAjax()) {

@@ -21,7 +21,7 @@ declare(strict_types = 1);
 namespace App\IqrfNetModule\Forms;
 
 use App\CoreModule\Exceptions\InvalidJsonException;
-use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
+use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use App\CoreModule\Forms\FormFactory;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
@@ -131,7 +131,7 @@ class SendJsonFormFactory {
 			}
 		} catch (JsonException $e) {
 			$request->addError(self::PREFIX . 'messages.invalidJson');
-		} catch (NonExistingJsonSchemaException $e) {
+		} catch (NonexistentJsonSchemaException $e) {
 			$request->addError(self::PREFIX . 'messages.missingSchema');
 		} catch (InvalidJsonException $e) {
 			$request->addError(new NotTranslate($e->getMessage()));

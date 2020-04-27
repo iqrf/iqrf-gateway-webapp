@@ -13,7 +13,7 @@ namespace Tests\Integration\ConfigModule\Models;
 use App\ConfigModule\Models\ComponentSchemaManager;
 use App\CoreModule\Entities\CommandStack;
 use App\CoreModule\Exceptions\InvalidJsonException;
-use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
+use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\JsonFileManager;
 use Tester\Assert;
@@ -57,7 +57,7 @@ class ComponentSchemaManagerTest extends TestCase {
 	public function testSetSchemaFail(): void {
 		Assert::exception(function (): void {
 			$this->manager->setSchema('nonsense');
-		}, NonExistingJsonSchemaException::class);
+		}, NonexistentJsonSchemaException::class);
 	}
 
 	/**

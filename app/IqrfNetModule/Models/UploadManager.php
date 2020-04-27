@@ -21,7 +21,7 @@ declare(strict_types = 1);
 namespace App\IqrfNetModule\Models;
 
 use App\ConfigModule\Models\GenericManager;
-use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
+use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use App\GatewayModule\Exceptions\CorruptedFileException;
 use App\GatewayModule\Exceptions\UnknownFileFormatExceptions;
 use App\IqrfNetModule\Enums\UploadFormats;
@@ -61,7 +61,7 @@ class UploadManager {
 			if (isset($instances[0]['uploadPath'])) {
 				$this->path = $instances[0]['uploadPath'];
 			}
-		} catch (JsonException | NonExistingJsonSchemaException $e) {
+		} catch (JsonException | NonexistentJsonSchemaException $e) {
 			$this->path = '/var/cache/iqrf-gateway-daemon/upload';
 		}
 		$this->uploadManager = $uploadManager;

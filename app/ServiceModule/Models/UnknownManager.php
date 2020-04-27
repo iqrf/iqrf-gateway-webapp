@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ServiceModule\Models;
 
-use App\ServiceModule\Exceptions\NotSupportedInitSystemException;
+use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
 use Nette\SmartObject;
 
 /**
@@ -32,34 +32,34 @@ class UnknownManager implements IServiceManager {
 
 	/**
 	 * Starts IQRF Gateway Daemon
-	 * @throws NotSupportedInitSystemException
+	 * @throws UnsupportedInitSystemException
 	 */
 	public function start(): void {
-		throw new NotSupportedInitSystemException();
+		throw new UnsupportedInitSystemException();
 	}
 
 	/**
 	 * Stops the service
-	 * @throws NotSupportedInitSystemException
+	 * @throws UnsupportedInitSystemException
 	 */
 	public function stop(): void {
-		throw new NotSupportedInitSystemException();
+		throw new UnsupportedInitSystemException();
 	}
 
 	/**
 	 * Restarts the service
-	 * @throws NotSupportedInitSystemException
+	 * @throws UnsupportedInitSystemException
 	 */
 	public function restart(): void {
-		throw new NotSupportedInitSystemException();
+		throw new UnsupportedInitSystemException();
 	}
 
 	/**
 	 * Gets status of the service
-	 * @throws NotSupportedInitSystemException
+	 * @throws UnsupportedInitSystemException
 	 */
 	public function getStatus(): string {
-		throw new NotSupportedInitSystemException();
+		throw new UnsupportedInitSystemException();
 	}
 
 }

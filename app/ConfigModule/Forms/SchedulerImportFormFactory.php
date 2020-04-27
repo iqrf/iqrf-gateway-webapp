@@ -25,9 +25,9 @@ use App\ConfigModule\Models\SchedulerManager;
 use App\ConfigModule\Models\SchedulerMigrationManager;
 use App\ConfigModule\Presenters\SchedulerPresenter;
 use App\CoreModule\Exceptions\InvalidJsonException;
-use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
+use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use App\CoreModule\Forms\FormFactory;
-use App\ServiceModule\Exceptions\NotSupportedInitSystemException;
+use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
 use App\ServiceModule\Models\ServiceManager;
 use Nette\Application\UI\Form;
 use Nette\Http\FileUpload;
@@ -146,7 +146,7 @@ class SchedulerImportFormFactory {
 			$this->presenter->flashError('config.messages.writeFailures.ioError');
 		} catch (JsonException $e) {
 			$this->presenter->flashError('config.messages.writeFailures.invalidJson');
-		} catch (NonExistingJsonSchemaException $e) {
+		} catch (NonexistentJsonSchemaException $e) {
 			$this->presenter->flashError($e->getMessage());
 		} catch (InvalidJsonException $e) {
 			$this->presenter->flashError($e->getMessage());
@@ -167,11 +167,11 @@ class SchedulerImportFormFactory {
 			$this->presenter->redirect('Scheduler:default');
 		} catch (InvalidConfigurationFormatException $e) {
 			$this->presenter->flashError('config.migration.errors.invalidFormat');
-		} catch (NonExistingJsonSchemaException $e) {
+		} catch (NonexistentJsonSchemaException $e) {
 			$this->presenter->flashError($e->getMessage());
 		} catch (InvalidJsonException $e) {
 			$this->presenter->flashError($e->getMessage());
-		} catch (NotSupportedInitSystemException $e) {
+		} catch (UnsupportedInitSystemException $e) {
 			$this->presenter->flashError('service.errors.unsupportedInit');
 		} catch (IOException $e) {
 			/// TODO: Use custom error message.

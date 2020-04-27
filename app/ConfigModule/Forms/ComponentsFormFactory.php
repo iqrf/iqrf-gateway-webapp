@@ -22,7 +22,7 @@ namespace App\ConfigModule\Forms;
 
 use App\ConfigModule\Models\ComponentManager;
 use App\ConfigModule\Presenters\ComponentPresenter;
-use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
+use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use App\CoreModule\Forms\FormFactory;
 use Nette\Application\UI\Form;
 use Nette\IOException;
@@ -110,7 +110,7 @@ class ComponentsFormFactory {
 			$this->presenter->flashSuccess('config.messages.success');
 		} catch (IOException $e) {
 			$this->presenter->flashError('config.messages.writeFailures.ioError');
-		} catch (NonExistingJsonSchemaException $e) {
+		} catch (NonexistentJsonSchemaException $e) {
 			$this->presenter->flashError('config.messages.writeFailures.nonExistingJsonSchema');
 		} finally {
 			$this->presenter->redirect('Component:default');

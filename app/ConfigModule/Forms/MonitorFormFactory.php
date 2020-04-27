@@ -22,7 +22,7 @@ namespace App\ConfigModule\Forms;
 
 use App\ConfigModule\Models\MonitorManager;
 use App\ConfigModule\Presenters\MonitorPresenter;
-use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
+use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use App\CoreModule\Forms\FormFactory;
 use Nette\Application\UI\Form;
 use Nette\IOException;
@@ -94,7 +94,7 @@ class MonitorFormFactory {
 		try {
 			$this->manager->save($form->getValues('array'));
 			$this->presenter->flashSuccess('config.messages.success');
-		} catch (NonExistingJsonSchemaException $e) {
+		} catch (NonexistentJsonSchemaException $e) {
 			$this->presenter->flashError('config.messages.writeFailures.nonExistingJsonSchema');
 		} catch (IOException $e) {
 			$this->presenter->flashError('config.messages.writeFailures.ioError');

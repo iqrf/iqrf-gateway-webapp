@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Models;
 
-use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
+use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use App\CoreModule\Models\JsonSchemaManager;
 use Nette\Utils\Strings;
 
@@ -32,7 +32,7 @@ class ComponentSchemaManager extends JsonSchemaManager {
 	/**
 	 * Sets the file name of JSON schema from the component name
 	 * @param string $component Component name
-	 * @throws NonExistingJsonSchemaException
+	 * @throws NonexistentJsonSchemaException
 	 */
 	public function setSchema(string $component): void {
 		$fileName = 'schema__' . Strings::replace($component, '~::~', '__');

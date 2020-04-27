@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\IqrfNetModule\Models;
 
-use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
+use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use App\CoreModule\Models\JsonSchemaManager;
 
 /**
@@ -31,7 +31,7 @@ class ApiSchemaManager extends JsonSchemaManager {
 	/**
 	 * Sets the file name of JSON schema from the API message type
 	 * @param string $mType Message type
-	 * @throws NonExistingJsonSchemaException
+	 * @throws NonexistentJsonSchemaException
 	 */
 	public function setSchemaForRequest(string $mType): void {
 		$fileName = $mType . '-request-1-0-0';
@@ -41,7 +41,7 @@ class ApiSchemaManager extends JsonSchemaManager {
 	/**
 	 * Sets the file name of JSON schema from the API message type
 	 * @param string $mType Message type
-	 * @throws NonExistingJsonSchemaException
+	 * @throws NonexistentJsonSchemaException
 	 */
 	public function setSchemaForResponse(string $mType): void {
 		$fileName = $mType . '-response-1-0-0';

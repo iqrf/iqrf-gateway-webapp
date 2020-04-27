@@ -23,10 +23,10 @@ namespace App\ConfigModule\Forms;
 use App\ConfigModule\Models\SchedulerManager;
 use App\ConfigModule\Presenters\SchedulerPresenter;
 use App\CoreModule\Exceptions\InvalidJsonException;
-use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
+use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use App\CoreModule\Forms\FormFactory;
 use App\IqrfNetModule\Models\ApiSchemaManager;
-use App\ServiceModule\Exceptions\NotSupportedInitSystemException;
+use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
 use App\ServiceModule\Models\ServiceManager;
 use Contributte\FormMultiplier\Multiplier;
 use Contributte\Translation\Wrappers\NotTranslate;
@@ -236,7 +236,7 @@ class SchedulerFormFactory {
 				$this->schemaManager->validate($json);
 			} catch (JsonException $e) {
 				$message->addError(self::PREFIX . 'messages.messageInvalidJson');
-			} catch (NonExistingJsonSchemaException $e) {
+			} catch (NonexistentJsonSchemaException $e) {
 				$message->addError(new NotTranslate($e->getMessage()));
 			} catch (InvalidJsonException $e) {
 				$message->addError(new NotTranslate($e->getMessage()));
@@ -266,7 +266,7 @@ class SchedulerFormFactory {
 				$this->presenter->flashInfo('service.actions.restart.message');
 			}
 			$this->presenter->redirect('Scheduler:default');
-		} catch (NonExistingJsonSchemaException $e) {
+		} catch (NonexistentJsonSchemaException $e) {
 			$this->presenter->flashError($e->getMessage());
 		} catch (InvalidJsonException $e) {
 			$this->presenter->flashError($e->getMessage());
@@ -274,7 +274,7 @@ class SchedulerFormFactory {
 			$this->presenter->flashError('config.messages.writeFailures.ioError');
 		} catch (JsonException $e) {
 			$this->presenter->flashError('config.messages.writeFailures.invalidJson');
-		} catch (NotSupportedInitSystemException $e) {
+		} catch (UnsupportedInitSystemException $e) {
 			$this->presenter->flashError('service.errors.unsupportedInit');
 		}
 	}

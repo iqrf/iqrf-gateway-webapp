@@ -21,7 +21,7 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Models;
 
 use App\CoreModule\Exceptions\InvalidJsonException;
-use App\CoreModule\Exceptions\NonExistingJsonSchemaException;
+use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\JsonSchemaManager;
 use App\IqrfNetModule\Models\ApiSchemaManager;
@@ -60,7 +60,7 @@ class SchedulerSchemaManager extends JsonSchemaManager {
 	 * @return bool Is the JSON valid?
 	 * @throws InvalidJsonException
 	 * @throws JsonException
-	 * @throws NonExistingJsonSchemaException
+	 * @throws NonexistentJsonSchemaException
 	 */
 	public function validate($json, bool $tryFix = false): bool {
 		parent::setSchema('schema_cache_record');

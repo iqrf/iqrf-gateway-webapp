@@ -21,7 +21,7 @@ declare(strict_types = 1);
 namespace App\ServiceModule\Models;
 
 use App\CoreModule\Models\CommandManager;
-use App\ServiceModule\Exceptions\NotSupportedInitSystemException;
+use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
 use Nette\SmartObject;
 
 /**
@@ -59,7 +59,7 @@ class ServiceManager {
 
 	/**
 	 * Starts the service
-	 * @throws NotSupportedInitSystemException
+	 * @throws UnsupportedInitSystemException
 	 */
 	public function start(): void {
 		$this->initDaemon->start();
@@ -67,7 +67,7 @@ class ServiceManager {
 
 	/**
 	 * Stops the service
-	 * @throws NotSupportedInitSystemException
+	 * @throws UnsupportedInitSystemException
 	 */
 	public function stop(): void {
 		$this->initDaemon->stop();
@@ -75,7 +75,7 @@ class ServiceManager {
 
 	/**
 	 * Restarts the service
-	 * @throws NotSupportedInitSystemException
+	 * @throws UnsupportedInitSystemException
 	 */
 	public function restart(): void {
 		$this->initDaemon->restart();
@@ -84,7 +84,7 @@ class ServiceManager {
 	/**
 	 * Gets status of the service
 	 * @return string Output from init daemon
-	 * @throws NotSupportedInitSystemException
+	 * @throws UnsupportedInitSystemException
 	 */
 	public function getStatus(): string {
 		return $this->initDaemon->getStatus();
