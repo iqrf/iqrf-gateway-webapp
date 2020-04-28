@@ -22,8 +22,10 @@ namespace App\ServiceModule\Presenters;
 
 use App\CoreModule\Presenters\ProtectedPresenter;
 use App\CoreModule\Traits\TPresenterFlashMessage;
+use App\ServiceModule\Exceptions\NonexistentServiceException;
 use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
 use App\ServiceModule\Models\ServiceManager;
+use Nette\Application\BadRequestException;
 
 /**
  * Service control presenter.
@@ -33,89 +35,146 @@ class ControlPresenter extends ProtectedPresenter {
 	use TPresenterFlashMessage;
 
 	/**
+	 * Whitelisted services
+	 */
+	private const WHITELISTED = ['iqrf-gateway-daemon', 'ssh', 'unattended-upgrades'];
+
+	/**
 	 * @var ServiceManager Service manager
 	 */
-	private $serviceManager;
+	protected $manager;
 
 	/**
 	 * Constructor
-	 * @param ServiceManager $serviceManager Service manager
+	 * @param ServiceManager $manager Service manager
 	 */
-	public function __construct(ServiceManager $serviceManager) {
-		$this->serviceManager = $serviceManager;
+	public function __construct(ServiceManager $manager) {
+		$this->manager = $manager;
 		parent::__construct();
 	}
 
 	/**
-	 * Starts, stops or restarts IQRF Gateway Daemon's service
-	 * @param string $action Type of action (start/stop/restart)
+	 * Disables, enables, starts, stops or restarts service
+	 * @param string $action Type of action
+	 * @var string $name Service name
 	 */
-	private function action(string $action): void {
+	private function action(string $action, string $name): void {
 		try {
 			switch ($action) {
+				case 'disable':
+					$this->manager->disable($name);
+					break;
+				case 'enable':
+					$this->manager->enable($name);
+					break;
 				case 'start':
-					$this->serviceManager->start();
+					$this->manager->start($name);
 					break;
 				case 'stop':
-					$this->serviceManager->stop();
+					$this->manager->stop($name);
 					break;
 				case 'restart':
-					$this->serviceManager->restart();
+					$this->manager->restart($name);
 					break;
 			}
-			$this->flashSuccess('service.actions.' . $action . '.message');
+			$this->flashSuccess('service.' . $name . '.messages.' . $action);
 		} catch (UnsupportedInitSystemException $ex) {
 			$this->flashError('service.errors.unsupportedInit');
 		}
-		$this->readStatus();
+		$this->readStatus($name);
 	}
 
 	/**
-	 * Starts IQRF Gateway Daemon's service
+	 * Disables service
+	 * @var string $name Service name
 	 */
-	public function handleStart(): void {
-		$this->action('start');
+	public function handleDisable(string $name): void {
+		$this->action('disable', $name);
 	}
 
 	/**
-	 * Stops IQRF Gateway Daemon's service
+	 * Enables service
+	 * @var string $name Service name
 	 */
-	public function handleStop(): void {
-		$this->action('stop');
+	public function handleEnable(string $name): void {
+		$this->action('enable', $name);
 	}
 
 	/**
-	 * Restarts IQRF Gateway Daemon's service
+	 * Starts service
+	 * @var string $name Service name
 	 */
-	public function handleRestart(): void {
-		$this->action('restart');
+	public function handleStart(string $name): void {
+		$this->action('start', $name);
 	}
 
 	/**
-	 * Refreshes IQRF Gateway Daemon's service status
+	 * Stops service
+	 * @var string $name Service name
 	 */
-	public function handleStatus(): void {
-		$this->readStatus();
+	public function handleStop(string $name): void {
+		$this->action('stop', $name);
 	}
 
 	/**
-	 * Reads IQRF Gateway Daemon's service status
+	 * Restarts service
+	 * @var string $name Service name
 	 */
-	private function readStatus(): void {
+	public function handleRestart(string $name): void {
+		$this->action('restart', $name);
+	}
+
+	/**
+	 * Refreshes service status
+	 * @var string $name Service name
+	 */
+	public function handleStatus(string $name): void {
+		$this->readStatus($name);
+	}
+
+	/**
+	 * Reads service status
+	 * @var string $name Service name
+	 */
+	private function readStatus(string $name): void {
 		try {
-			$this->template->status = $this->serviceManager->getStatus();
-			$this->redrawControl('status');
+			$this->template->active = $this->manager->isActive($name);
+			$this->template->enabled = $this->manager->isEnabled($name);
+			$this->template->status = $this->manager->getStatus($name);
+		} catch (NonexistentServiceException $e) {
+			$this->template->active = null;
+			$this->template->enabled = null;
+			$this->template->status = null;
 		} catch (UnsupportedInitSystemException $ex) {
 			$this->flashError('gateway.errors.unsupportedInit');
+		}
+		$this->redrawControl('status');
+	}
+
+	/**
+	 * Renders service status
+	 * @var string $name Service name
+	 */
+	public function renderDefault(string $name): void {
+		$this->template->service = $name;
+		if (!$this->isAjax()) {
+			$this->readStatus($name);
 		}
 	}
 
 	/**
-	 * Renders IQRF Gateway Daemon's service status
+	 * Checks if the service is whitelisted
+	 * @param string $name Service name
+	 * @throws BadRequestException
 	 */
-	public function renderDefault(): void {
-		if (!$this->isAjax()) {
-			$this->readStatus();
+	public function actionDefault(string $name): void {
+		if (!in_array($name, self::WHITELISTED, true)) {
+			throw new BadRequestException('Unsupported service ' . $name);
+		}
+		if ($name === 'unattended-upgrades' && !$this->context->parameters['features']['unattendedUpgrades'] ||
+			$name === 'ssh' && !$this->context->parameters['features']['ssh']) {
+			$this->flashError('service.' . $name . '.messages.disabled');
+			$this->redirect(':Gateway:Homepage:default');
 		}
 	}
 

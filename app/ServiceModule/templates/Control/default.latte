@@ -15,23 +15,48 @@
  * limitations under the License.
 *}
 
-{block title}{_service.title}{/block}
+{block title}{_service.$service.title}{/block}
 {block content}
 <div class='panel panel-default'>
-	<div class='panel-body'>
-		<a class='ajax btn btn-success' n:href='start!' role='button'>
-			{_service.actions.start.title}
-		</a>
-		<a class='ajax btn btn-danger' n:href='stop!' role='button'>
-			{_service.actions.stop.title}
-		</a>
-		<a class='ajax btn btn-primary' n:href='restart!' role='button'>
-			{_service.actions.restart.title}
-		</a>
-		<a class='ajax btn btn-default' n:href='status!' role='button'>
-			{_service.actions.status.title}
-		</a>
-		<br/><br/>
-		<pre n:snippet='status' class='log'>{$status}</pre>
+	<div n:snippet='status' class='panel-body'>
+		{varType bool $active}
+		{varType bool $enabled}
+		{varType string $status}
+		{ifset $enabled}
+			<a class='ajax btn btn-success' n:href='enable!' n:if='!$enabled' role='button'>
+				{_service.actions.enable}
+			</a>
+			<a class='ajax btn btn-danger' n:href='disable!' n:if='$enabled' role='button'>
+				{_service.actions.disable}
+			</a>
+			<a class='ajax btn btn-success' n:href='start!' n:if='!$active' role='button'>
+				{_service.actions.start}
+			</a>
+			<a class='ajax btn btn-danger' n:href='stop!' n:if='$active' role='button'>
+				{_service.actions.stop}
+			</a>
+			<a class='ajax btn btn-primary' n:href='restart!' n:if='$active' role='button'>
+				{_service.actions.restart}
+			</a>
+			<a class='ajax btn btn-default' n:href='status!' role='button'>
+				{_service.actions.status}
+			</a>
+			<br/><br/>
+		{/ifset}
+		<table class='table table-striped'>
+			<tr>
+				<th>{_service.status}</th>
+				<td>
+					{ifset $enabled}
+						{var string $activeStr = $active ? 'active' : 'inactive'}
+						{var string $enabledStr = $enabled ? 'enabled' : 'disabled'}
+						{_service.states.$enabledStr}, {_service.states.$activeStr}
+					{else}
+						{_service.states.missing}
+					{/ifset}
+				</td>
+			</tr>
+		</table>
+		<pre n:ifset='$status' class='log'>{$status}</pre>
 	</div>
 </div>

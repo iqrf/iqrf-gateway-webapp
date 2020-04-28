@@ -34,14 +34,20 @@
 					<li n:class='isLinkCurrent(":Gateway:ChangeMode:*") ? "active"'>
 						<a n:href=':Gateway:ChangeMode:default'>{_gateway.mode.title}</a>
 					</li>
-					<li n:class='isLinkCurrent(":Service:Control:*") ? "active"'>
-						<a n:href=':Service:Control:default'>{_service.title}</a>
+					<li n:class='isLinkCurrent(":Service:Control:default", ["name"=> "iqrf-gateway-daemon"]) ? "active"'>
+						<a n:href=':Service:Control:default, name => "iqrf-gateway-daemon"'>
+							{_service.iqrf-gateway-daemon.title}
+						</a>
 					</li>
-					<li n:if='$features["ssh"]' n:class='isLinkCurrent(":Gateway:Ssh:*") ? "active"'>
-						<a n:href=':Gateway:Ssh:default'>{_gateway.ssh.title}</a>
+					<li n:if='$features["ssh"]' n:class='isLinkCurrent(":Service:Control:default", ["name"=> "ssh"]) ? "active"'>
+						<a n:href=':Service:Control:default, name => "ssh"'>
+							{_service.ssh.title}
+						</a>
 					</li>
-					<li n:if='$features["unattendedUpgrades"]' n:class='isLinkCurrent(":Gateway:UnattendedUpgrades:*") ? "active"'>
-						<a n:href=':Gateway:UnattendedUpgrades:default'>{_gateway.unattendedUpgrades.title}</a>
+					<li n:if='$features["unattendedUpgrades"]' n:class='isLinkCurrent(":Service:Control:default", ["name"=> "unattended-upgrades"]) ? "active"'>
+						<a n:href=':Service:Control:default, name => "unattended-upgrades"'>
+							{_service.unattended-upgrades.title}
+						</a>
 					</li>
 					<li n:if='$features["updater"]' n:class='isLinkCurrent(":Gateway:Updater:*") ? "active"'>
 						<a n:href=':Gateway:Updater:default'>{_gateway.updater.title}</a>

@@ -30,17 +30,17 @@
 		<header class='list-group-item-heading'>{_gateway.mode.title}</header>
 		<p class='list-group-item-text'>{_gateway.mode.description}</p>
 	</a>
-	<a n:href=':Service:Control:default' class='list-group-item'>
-		<header class='list-group-item-heading'>{_service.title}</header>
-		<p class='list-group-item-text'>{_service.description}</p>
+	<a n:href=':Service:Control:default, name => "iqrf-gateway-daemon"' class='list-group-item'>
+		<header class='list-group-item-heading'>{_service.iqrf-gateway-daemon.title}</header>
+		<p class='list-group-item-text'>{_service.iqrf-gateway-daemon.description}</p>
 	</a>
-	<a n:if='$features["ssh"]' n:href='Ssh:default' class='list-group-item'>
-		<header class='list-group-item-heading'>{_gateway.ssh.title}</header>
-		<p class='list-group-item-text'>{_gateway.ssh.description}</p>
+	<a n:if='$features["ssh"]' n:href=':Service:Control:default, name => "ssh"' class='list-group-item'>
+		<header class='list-group-item-heading'>{_service.ssh.title}</header>
+		<p class='list-group-item-text'>{_service.ssh.description}</p>
 	</a>
-	<a n:if='$features["unattendedUpgrades"]' n:href='UnattendedUpgrades:default' class='list-group-item'>
-		<header class='list-group-item-heading'>{_gateway.unattendedUpgrades.title}</header>
-		<p class='list-group-item-text'>{_gateway.unattendedUpgrades.description}</p>
+	<a n:if='$features["unattendedUpgrades"]' n:href=':Service:Control:default, name => "unattended-upgrades"' class='list-group-item'>
+		<header class='list-group-item-heading'>{_service.unattended-upgrades.title}</header>
+		<p class='list-group-item-text'>{_service.unattended-upgrades.description}</p>
 	</a>
 	<a n:if='$features["updater"]' n:href='Updater:default' class='list-group-item'>
 		<header class='list-group-item-heading'>{_gateway.updater.title}</header>

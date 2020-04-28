@@ -77,36 +77,6 @@ power:
 		button: Perform reboot
 		success: Your device has been restarted successfully.
 
-ssh:
-	title: SSH service
-	description: Controls the SSH daemon service.
-	status: Service status
-	statuses:
-		enabled: Enabled
-		disabled: Disabled
-		'': Missing
-	enable: Enable service
-	disable: Disable service
-	messages:
-		disabled: SSH daemon manager is disabled.
-		disable: SSH daemon service has been disabled.
-		enable: SSH daemon service has been enabled.
-
-unattendedUpgrades:
-	title: Automatic upgrades
-	description: Controls the automatic unattended upgrades service.
-	status: Service status
-	statuses:
-		enabled: Enabled
-		disabled: Disabled
-		'': Missing
-	enable: Enable service
-	disable: Disable service
-	messages:
-		disabled: Automatic upgrades are disabled.
-		disable: Automatic upgrades service has been disabled.
-		enable: Automatic upgrades service has been enabled.
-
 updater:
 	title: System updater
 	description: System updater.

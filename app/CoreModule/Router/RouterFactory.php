@@ -21,7 +21,6 @@ declare(strict_types = 1);
 namespace App\CoreModule\Router;
 
 use Nette;
-use Nette\Application\Routers\Route;
 use Nette\Application\Routers\RouteList;
 use Nette\Routing\Router;
 
@@ -38,33 +37,40 @@ final class RouterFactory {
 	 */
 	public static function createRouter(): Router {
 		$router = new RouteList();
-		$cloud = new RouteList('Cloud');
-		$cloud[] = new Route('[<lang [a-z]{2}>/]cloud/<presenter>/<action>[/<id>]', 'Homepage:default');
-		$router[] = $cloud;
-		$config = new RouteList('Config');
-		$config[] = new Route('[<lang [a-z]{2}>/]config/scheduler/add/<type>', 'Scheduler:add');
-		$config[] = new Route('[<lang [a-z]{2}>/]config/<presenter>/<action>[/<id>]', 'Homepage:default');
-		$router[] = $config;
-		$gateway = new RouteList('Gateway');
-		$gateway[] = new Route('[<lang [a-z]{2}>/]gateway/<presenter>/<action>', 'Homepage:default');
-		$router[] = $gateway;
-		$install = new RouteList('Install');
-		$install[] = new Route('[<lang [a-z]{2}>/]install/<presenter>/<action>', 'Homepage:default');
-		$router[] = $install;
-		$iqrfNet = new RouteList('IqrfNet');
-		$iqrfNet[] = new Route('[<lang [a-z]{2}>/]iqrfnet/enumeration/<address>', 'Enumeration:default');
-		$iqrfNet[] = new Route('[<lang [a-z]{2}>/]iqrfnet/tr-config/<address>', 'TrConfig:default');
-		$iqrfNet[] = new Route('[<lang [a-z]{2}>/]iqrfnet/<presenter>/<action>', 'Homepage:default');
-		$router[] = $iqrfNet;
-		$network = new RouteList('Network');
-		$network[] = new Route('[<lang [a-z]{2}>/]network/<presenter>/<action>[/<uuid>]', 'Homepage:default');
-		$router[] = $network;
-		$service = new RouteList('Service');
-		$service[] = new Route('[<lang [a-z]{2}>/]service/<presenter>/<action>', 'Control:default');
-		$router[] = $service;
-		$core = new RouteList('Core');
-		$core[] = new Route('[<lang [a-z]{2}>/]<presenter>/<action>[/<id>]', 'Homepage:default');
-		$router[] = $core;
+		$cloud = $router->withModule('Cloud');
+		$cloud->addRoute('[<lang [a-z]{2}>/]cloud/<presenter>/<action>[/<id>]', 'Homepage:default');
+		$config = $router->withModule('Config');
+		$config->addRoute('[<lang [a-z]{2}>/]config/scheduler/add/<type>', 'Scheduler:add');
+		$config->addRoute('[<lang [a-z]{2}>/]config/<presenter>/<action>[/<id>]', 'Homepage:default');
+		$install = $router->withModule('Install');
+		$install->addRoute('[<lang [a-z]{2}>/]install/<presenter>/<action>', 'Homepage:default');
+		$iqrfNet = $router->withModule('IqrfNet');
+		$iqrfNet->addRoute('[<lang [a-z]{2}>/]iqrfnet/enumeration/<address>', 'Enumeration:default');
+		$iqrfNet->addRoute('[<lang [a-z]{2}>/]iqrfnet/tr-config/<address>', 'TrConfig:default');
+		$iqrfNet->addRoute('[<lang [a-z]{2}>/]iqrfnet/<presenter>/<action>', 'Homepage:default');
+		$network = $router->withModule('Network');
+		$network->addRoute('[<lang [a-z]{2}>/]network/<presenter>/<action>[/<uuid>]', 'Homepage:default');
+		$service = $router->withModule('Service');
+		$service->addRoute('[<lang [a-z]{2}>/]gateway/ssh', [
+			'presenter' => 'Control',
+			'action' => 'default',
+			'name' => 'ssh',
+		], $router::ONE_WAY);
+		$service->addRoute('[<lang [a-z]{2}>/]gateway/unattended-upgrades', [
+			'presenter' => 'Control',
+			'action' => 'default',
+			'name' => 'unattended-upgrades',
+		], $router::ONE_WAY);
+		$service->addRoute('[<lang [a-z]{2}>/]service', [
+			'presenter' => 'Control',
+			'action' => 'default',
+			'name' => 'iqrf-gateway-daemon',
+		], $router::ONE_WAY);
+		$service->addRoute('[<lang [a-z]{2}>/]service/<name>', 'Control:default');
+		$gateway = $router->withModule('Gateway');
+		$gateway->addRoute('[<lang [a-z]{2}>/]gateway/<presenter>/<action>', 'Homepage:default');
+		$core = $router->withModule('Core');
+		$core->addRoute('[<lang [a-z]{2}>/]<presenter>/<action>[/<id>]', 'Homepage:default');
 		return $router;
 	}
 

@@ -37,11 +37,7 @@ class RouterFactoryTest extends TestCase {
 				'[<lang [a-z]{2}>/]config/scheduler/add/<type>',
 				'[<lang [a-z]{2}>/]config/<presenter>/<action>[/<id>]',
 			],
-		], [
-			'Gateway:' => [
-				'[<lang [a-z]{2}>/]gateway/<presenter>/<action>',
-			],
-		], [
+		],  [
 			'Install:' => [
 				'[<lang [a-z]{2}>/]install/<presenter>/<action>',
 			],
@@ -57,7 +53,14 @@ class RouterFactoryTest extends TestCase {
 			],
 		], [
 			'Service:' => [
-				'[<lang [a-z]{2}>/]service/<presenter>/<action>',
+				'[<lang [a-z]{2}>/]gateway/ssh',
+				'[<lang [a-z]{2}>/]gateway/unattended-upgrades',
+				'[<lang [a-z]{2}>/]service',
+				'[<lang [a-z]{2}>/]service/<name>',
+			],
+		], [
+			'Gateway:' => [
+				'[<lang [a-z]{2}>/]gateway/<presenter>/<action>',
 			],
 		], [
 			'Core:' => [
