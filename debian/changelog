@@ -1,3 +1,80 @@
+iqrf-gateway-webapp (2.0.0-rc12) testing; urgency=medium
+
+  * Api: add REST API skeleton
+  * API: add gateway endpoints
+  * API: update annotations
+  * API: add enpoint for IQRF IDE Macros
+  * API: add diagnostics endpoint
+  * API: add enponts to get and list component instances's configuration
+  * API: add API endpoints for IQRF Gateway Daemon service manipulation
+  * API: add endpoints for PIXLA client service manipulation
+  * API: add API endpoints for Unattended upgrades service manipulation
+  * API: add CORS policy
+  * API: expose headers, fix annotations
+  * API: add Basic authorization
+  * Gateway: fix TR info displaying
+  * API: add some clouds manager endpoints, fix coding style
+  * API: fix authenticator
+  * API: fix indentation in annotations
+  * API: add endpoint for configuration component instance editing
+  * API: add endpoints for component instance creating and deleting
+  * API: add endpoints for editing and returning main configuration
+  * API: add endpoint to create new component
+  * API: use JWT authorization
+  * API: fix JWT authorization
+  * API: add endpoints to list network connections and interfaces
+  * API: fix CORS headers
+  * API: add API endpoints for connecting and disconnecting network interfaces
+  * API: add endpoints for component configuration deleting and editing
+  * API: edits the endpoint to get information about the configuration component
+  * API: add endpoint to get network connection detail
+  * API: add middleware for OPTION HTTP method handeling
+  * API: Add respose entities
+  * API: fix annotations, add entities
+  * API: add endpoint to edit network connection
+  * API: add endpoint to delete the network connection
+  * API: fix bug in JWT authorization
+  * API: fix coding style in JWT authorization
+  * API: add SSH daemon service manager endpoints
+  * Tests: add missing tests
+  * Tests: add missing tests
+  * API: add endpoint for network connectivity check
+  * Network: add method to list available WiFi networks
+  * Core: fix redirect after sign in
+  * Gateway: add simple TLS certificate manager API: fix JWT signer
+  * API: fix OpenAPI schema endpoint
+  * API: add Amazon AWS IoT connection endpoint
+  * Fix coding style
+  * API: add JWT signature validation
+  * Gateway: fix SSH daemon service manager (fix #231)
+  * API: refactor OpenAPI specification endpoint
+  * Config: fix creating a new component instance
+  * Debian packaging: use IQRF Gateway Daemon's certificate for HTTPS, warmup templates during installation
+  * API: catch invalid JSON exception
+  * API: handle more error states in the configuration manager
+  * API: add IQRF Gateway Daemon configuration schemas
+  * API: add schemas for User manager and IQRF Gateway Webapp version endpoint
+  * API: add more JSON schemas
+  * API: add more JSON schemas
+  * API: refactor service manager
+  * GitLab CI: allow coverage stage to fail
+  * Core: add privileged file manager
+  * API: add endpoint to get IQRF interfaces
+  * API: add JSON schema for Amazon AWS IoT connection creation
+  * API: fix specification
+  * API: fix User manager endpoints
+  * Prepare for version 2.0.0-rc12
+  * Composer: fix dependencies on older PHP versions
+  * Fix typos
+  * Fix coding style
+  * API: fix typo in exception
+  * Gateway: refactor system service controlling
+  * IQRF net: remove DPA response parsers
+  * Debian packaging: fix template warmup
+  * Service: redesign status page
+
+ -- Roman Ondráček <roman@romanondracek.cz>  Mon, 04 May 2020 22:00:00 +0200
+
 iqrf-gateway-webapp (2.0.0-rc11) testing; urgency=medium
 
   * Prepare for version 2.0.0-rc11
