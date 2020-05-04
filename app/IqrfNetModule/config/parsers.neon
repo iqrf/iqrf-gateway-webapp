@@ -1,4 +1,0 @@
-services:
-	- App\IqrfNetModule\Parsers\CoordinatorParser
-	- App\IqrfNetModule\Parsers\EnumerationParser
-	- App\IqrfNetModule\Parsers\OsParser

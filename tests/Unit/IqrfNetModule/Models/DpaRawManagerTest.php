@@ -13,7 +13,6 @@ namespace Tests\Unit\IqrfNetModule\Models;
 use App\CoreModule\Entities\CommandStack;
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FileManager;
-use App\CoreModule\Models\JsonFileManager;
 use App\IqrfNetModule\Models\DpaRawManager;
 use App\IqrfNetModule\Requests\DpaRequest;
 use Mockery;
@@ -38,11 +37,6 @@ class DpaRawManagerTest extends WebSocketTestCase {
 	private $fileManager;
 
 	/**
-	 * @var JsonFileManager JSON file manager
-	 */
-	private $jsonFileManager;
-
-	/**
 	 * Sets up the test environment
 	 */
 	protected function setUp(): void {
@@ -51,7 +45,6 @@ class DpaRawManagerTest extends WebSocketTestCase {
 		$commandStack = new CommandStack();
 		$commandManager = new CommandManager(false, $commandStack);
 		$this->fileManager = new FileManager($path, $commandManager);
-		$this->jsonFileManager = new JsonFileManager($path, $commandManager);
 		$this->request = Mockery::mock(DpaRequest::class);
 		$this->manager = new DpaRawManager($this->request, $this->wsClient);
 	}
@@ -115,36 +108,6 @@ class DpaRawManagerTest extends WebSocketTestCase {
 		$expected = '0f.00.06.03.ff.ff';
 		$this->manager->updateNadr($packet, $nadr);
 		Assert::same($expected, $packet);
-	}
-
-
-	/**
-	 * Tests the function to parse a broadcast DPA response
-	 */
-	public function testParseResponseBroadcast(): void {
-		$array = [
-			'request' => $this->fileManager->read('request-broadcast.json'),
-			'response' => $this->fileManager->read('response-broadcast.json'),
-		];
-		Assert::null($this->manager->parseResponse($array));
-	}
-
-	/**
-	 * Tests the function to parse DPA OS response
-	 */
-	public function testParseResponseOsParser(): void {
-		$array = ['response' => $this->fileManager->read('response-os-read.json')];
-		$expected = $this->jsonFileManager->read('data-os-read');
-		$actual = $this->manager->parseResponse($array);
-		Assert::equal($expected, $actual);
-	}
-
-	/**
-	 * Tests the function to parse DPA response (without parser)
-	 */
-	public function testParseResponseWithoutParser(): void {
-		$array = ['response' => $this->fileManager->read('response-ledr-on.json')];
-		Assert::null($this->manager->parseResponse($array));
 	}
 
 	/**

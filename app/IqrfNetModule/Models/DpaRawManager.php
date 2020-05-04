@@ -23,9 +23,6 @@ namespace App\IqrfNetModule\Models;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Exceptions\UserErrorException;
-use App\IqrfNetModule\Parsers\CoordinatorParser;
-use App\IqrfNetModule\Parsers\EnumerationParser;
-use App\IqrfNetModule\Parsers\OsParser;
 use App\IqrfNetModule\Requests\DpaRequest;
 use Nette\SmartObject;
 use Nette\Utils\Json;
@@ -48,15 +45,6 @@ class DpaRawManager {
 	 * @var WebSocketClient WebSocket client
 	 */
 	private $wsClient;
-
-	/**
-	 * @var string[] DPA parsers
-	 */
-	private $parsers = [
-		CoordinatorParser::class,
-		EnumerationParser::class,
-		OsParser::class,
-	];
 
 	/**
 	 * Constructor
@@ -120,33 +108,6 @@ class DpaRawManager {
 		$data[0] = Strings::padLeft($nadr, 2, '0');
 		$data[1] = '00';
 		$packet = Strings::lower(implode('.', $data));
-	}
-
-	/**
-	 * Parses DPA response
-	 * @param mixed[] $json JSON DPA response
-	 * @return mixed[]|null Parsed response in array
-	 * @throws EmptyResponseException
-	 * @throws JsonException
-	 */
-	public function parseResponse(array $json): ?array {
-		$packet = $this->getPacket($json, 'response');
-		if (array_key_exists('request', $json)) {
-			$nadr = explode('.', $this->getPacket($json, 'request'))[0];
-			if ($packet !== '' && $nadr === 'ff') {
-				return null;
-			}
-		}
-		if ($packet === '') {
-			throw new EmptyResponseException();
-		}
-		foreach ($this->parsers as $parser) {
-			$parsedData = (new $parser())->parse($packet);
-			if (isset($parsedData)) {
-				return $parsedData;
-			}
-		}
-		return null;
 	}
 
 	/**

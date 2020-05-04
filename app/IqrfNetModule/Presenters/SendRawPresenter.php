@@ -21,14 +21,9 @@ declare(strict_types = 1);
 namespace App\IqrfNetModule\Presenters;
 
 use App\CoreModule\Presenters\ProtectedPresenter;
-use App\IqrfNetModule\Exceptions\DpaErrorException;
-use App\IqrfNetModule\Exceptions\EmptyResponseException;
-use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\IqrfNetModule\Forms\SendRawFormFactory;
-use App\IqrfNetModule\Models\DpaRawManager;
 use Iqrf\IdeMacros\MacroFileParser;
 use Nette\Application\UI\Form;
-use Nette\Utils\JsonException;
 
 /**
  * Send DPA packet presenter
@@ -42,22 +37,15 @@ class SendRawPresenter extends ProtectedPresenter {
 	public $sendRawFactory;
 
 	/**
-	 * @var DpaRawManager DPA request and response manager
-	 */
-	private $dpaManager;
-
-	/**
 	 * @var MacroFileParser IQRF IDE Macros parser
 	 */
 	private $macroParser;
 
 	/**
 	 * Constructor
-	 * @param DpaRawManager $manager DPA request and response manager
 	 * @param MacroFileParser $macroParser IQRF IDE Macros file parser
 	 */
-	public function __construct(DpaRawManager $manager, MacroFileParser $macroParser) {
-		$this->dpaManager = $manager;
+	public function __construct(MacroFileParser $macroParser) {
 		$this->macroParser = $macroParser;
 		parent::__construct();
 	}
@@ -73,14 +61,9 @@ class SendRawPresenter extends ProtectedPresenter {
 	/**
 	 * AJAX handler for showing DPA request and response
 	 * @param mixed[] $data DPA request and response
-	 * @throws DpaErrorException
-	 * @throws EmptyResponseException
-	 * @throws JsonException
-	 * @throws UserErrorException
 	 */
 	public function handleShowResponse(array $data): void {
 		$this->template->json = $data;
-		$this->template->parsedResponse = $this->dpaManager->parseResponse($data);
 		$this->redrawControl('responseWrapper');
 		$this->redrawControl('responseChange');
 	}
