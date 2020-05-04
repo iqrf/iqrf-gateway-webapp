@@ -43,20 +43,16 @@
 			</a>
 			<br/><br/>
 		{/ifset}
-		<table class='table table-striped'>
-			<tr>
-				<th>{_service.status}</th>
-				<td>
-					{ifset $enabled}
-						{var string $activeStr = $active ? 'active' : 'inactive'}
-						{var string $enabledStr = $enabled ? 'enabled' : 'disabled'}
-						{_service.states.$enabledStr}, {_service.states.$activeStr}
-					{else}
-						{_service.states.missing}
-					{/ifset}
-				</td>
-			</tr>
-		</table>
+		<strong>{_service.status}:</strong>
+		{ifset $enabled}
+			{var string $activeStr = $active ? 'active' : 'inactive'}
+			{var string $enabledStr = $enabled ? 'enabled' : 'disabled'}
+			{_service.states.$enabledStr}, {_service.states.$activeStr}
+		{else}
+			{_service.states.missing}
+		{/ifset}
+		<br>
+		<br>
 		<pre n:ifset='$status' class='log'>{$status}</pre>
 	</div>
 </div>
