@@ -140,7 +140,7 @@ class SchedulerImportFormFactory {
 			$this->manager->save($json);
 			$this->serviceManager->restart();
 			$this->presenter->flashSuccess(self::TRANSLATOR_PREFIX . '.messages.success');
-			$this->presenter->flashInfo('service.actions.restart.message');
+			$this->presenter->flashInfo('service.iqrf-gateway-daemon.messages.restart');
 			$this->presenter->redirect('Scheduler:default');
 		} catch (IOException $e) {
 			$this->presenter->flashError('config.messages.writeFailures.ioError');
@@ -163,7 +163,7 @@ class SchedulerImportFormFactory {
 			$this->migrationManager->upload($file);
 			$this->serviceManager->restart();
 			$this->presenter->flashSuccess('config.migration.messages.importedConfig');
-			$this->presenter->flashInfo('service.actions.restart.message');
+			$this->presenter->flashInfo('service.iqrf-gateway-daemon.messages.restart');
 			$this->presenter->redirect('Scheduler:default');
 		} catch (InvalidConfigurationFormatException $e) {
 			$this->presenter->flashError('config.migration.errors.invalidFormat');

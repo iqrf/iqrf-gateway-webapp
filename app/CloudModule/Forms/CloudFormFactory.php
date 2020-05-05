@@ -100,7 +100,7 @@ abstract class CloudFormFactory {
 		if ($needRestart) {
 			try {
 				$this->serviceManager->restart();
-				$this->presenter->flashInfo('service.actions.restart.message');
+				$this->presenter->flashInfo('service.iqrf-gateway-daemon.messages.restart');
 			} catch (UnsupportedInitSystemException $e) {
 				$this->presenter->flashError('service.errors.unsupportedInit');
 			}

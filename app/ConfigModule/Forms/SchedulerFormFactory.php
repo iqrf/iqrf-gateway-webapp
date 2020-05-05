@@ -263,7 +263,7 @@ class SchedulerFormFactory {
 			$restartButton = $form['saveAndRestart'];
 			if ($restartButton->isSubmittedBy()) {
 				$this->serviceManager->restart();
-				$this->presenter->flashInfo('service.actions.restart.message');
+				$this->presenter->flashInfo('service.iqrf-gateway-daemon.messages.restart');
 			}
 			$this->presenter->redirect('Scheduler:default');
 		} catch (NonexistentJsonSchemaException $e) {
