@@ -153,8 +153,8 @@ trConfig:
 	ioSetup: IO Setup
 	dpaAutoexec: Autoexec
 	routingOff: Routing off
-	peerToPeer: Peer to peer
-	dpaPeerToPeer: DPA peer to peer
+	peerToPeer: User Peer-to-Peer
+	dpaPeerToPeer: DPA Peer-to-Peer
 	neverSleep: Stay awake when not bonded
 	uartBaudrate: UART interface baud rate
 	uartBaudrates:
