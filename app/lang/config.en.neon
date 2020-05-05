@@ -315,6 +315,8 @@ scheduler:
 			hwpid-rule: HWPID has to contain hexadecimal number of maximal length of 4 chars.
 			nadr-rule: NADR has to contain hexadecimal number of maximal length of 2 chars.
 			message: Please enter message.
+			invalidMessage: Invalid message structure.
+			invalidJsonMessage: The message contains invalid JSON syntax.
 			messaging: Please select messaging.
 			messaging-prompt: Select messaging
 			timeSpec:

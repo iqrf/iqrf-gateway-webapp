@@ -20,7 +20,9 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Models;
 
+use App\ConfigModule\Exceptions\InvalidTaskMessageException;
 use App\CoreModule\Exceptions\InvalidJsonException;
+use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\JsonFileManager;
 use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
@@ -214,7 +216,10 @@ class SchedulerManager {
 	 * Loads the task's configuration
 	 * @param int $id Task ID
 	 * @return stdClass Array for the form
+	 * @throws InvalidJsonException
+	 * @throws InvalidTaskMessageException
 	 * @throws JsonException
+	 * @throws NonexistentJsonSchemaException
 	 */
 	public function load(int $id): stdClass {
 		$files = $this->getTaskFiles();
@@ -223,9 +228,7 @@ class SchedulerManager {
 		}
 		$this->fileName = strval($files[$id]);
 		$config = $this->fileManager->read($this->fileName, false);
-		if (!$this->schemaManager->validate($config)) {
-			throw new InvalidJsonException();
-		}
+		$this->schemaManager->validate($config);
 		$this->timeManager->cronToString($config);
 		$this->fixTasks($config);
 		return $config;
@@ -254,6 +257,7 @@ class SchedulerManager {
 	/**
 	 * Saves the task's configuration
 	 * @param stdClass $config Task's configuration
+	 * @throws InvalidTaskMessageException
 	 * @throws JsonException
 	 */
 	public function save(stdClass $config): void {

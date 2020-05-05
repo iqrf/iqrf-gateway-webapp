@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Models;
 
+use App\ConfigModule\Exceptions\InvalidTaskMessageException;
 use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use App\CoreModule\Models\CommandManager;
@@ -59,6 +60,7 @@ class SchedulerSchemaManager extends JsonSchemaManager {
 	 * @param bool $tryFix Try fix JSON?
 	 * @return bool Is the JSON valid?
 	 * @throws InvalidJsonException
+	 * @throws InvalidTaskMessageException
 	 * @throws JsonException
 	 * @throws NonexistentJsonSchemaException
 	 */
@@ -68,7 +70,7 @@ class SchedulerSchemaManager extends JsonSchemaManager {
 		$tasks = !is_array($json->task) ? [$json->task] : $json->task;
 		foreach ($tasks as $id => $task) {
 			if (!isset($task->message) || !isset($task->message->mType)) {
-				throw new InvalidJsonException();
+				throw new InvalidTaskMessageException();
 			}
 			$this->apiSchemaManager->setSchemaForRequest($task->message->mType);
 			$this->apiSchemaManager->validate($task->message);

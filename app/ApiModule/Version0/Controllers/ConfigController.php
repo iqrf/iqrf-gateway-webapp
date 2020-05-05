@@ -30,6 +30,7 @@ use Apitte\Core\Annotation\Controller\Responses;
 use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
+use App\ConfigModule\Exceptions\InvalidTaskMessageException;
 use App\ConfigModule\Models\ComponentManager;
 use App\ConfigModule\Models\GenericManager;
 use App\ConfigModule\Models\MainManager;
@@ -309,6 +310,8 @@ class ConfigController extends BaseController {
 			return $response->withStatus(400, 'Invalid JSON syntax');
 		} catch (InvalidJsonException $e) {
 			return $response->withStatus(400, $e->getMessage());
+		} catch (InvalidTaskMessageException $e) {
+			return $response->withStatus(400, 'Invalid message');
 		}
 	}
 
@@ -384,6 +387,8 @@ class ConfigController extends BaseController {
 			return $response->withStatus(400, 'Invalid JSON syntax');
 		} catch (InvalidJsonException $e) {
 			return $response->withStatus(400, $e->getMessage());
+		} catch (InvalidTaskMessageException $e) {
+			return $response->withStatus(400, 'Invalid message');
 		}
 		return $response;
 	}

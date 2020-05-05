@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Forms;
 
+use App\ConfigModule\Exceptions\InvalidTaskMessageException;
 use App\ConfigModule\Models\SchedulerManager;
 use App\ConfigModule\Presenters\SchedulerPresenter;
 use App\CoreModule\Exceptions\InvalidJsonException;
@@ -135,7 +136,7 @@ class SchedulerFormFactory {
 		$form->addSubmit('saveAndRestart', self::PREFIX . 'saveAndRestart')
 			->setHtmlAttribute('class', 'btn btn-primary');
 		$form->onValidate[] = [$this, 'validate'];
-		$form->onSubmit[] = [$this, 'save'];
+		$form->onSuccess[] = [$this, 'save'];
 		$id = $presenter->getParameter('id');
 		if (isset($id)) {
 			$form->setDefaults($this->load((int) $id));
@@ -171,7 +172,7 @@ class SchedulerFormFactory {
 				$task->message = Json::encode($task->message, Json::PRETTY);
 			}
 			return $configuration;
-		} catch (InvalidJsonException | IOException | JsonException $e) {
+		} catch (InvalidJsonException | InvalidTaskMessageException | IOException | JsonException $e) {
 			return new stdClass();
 		}
 	}
@@ -232,14 +233,20 @@ class SchedulerFormFactory {
 			}
 			try {
 				$json = Json::decode($value);
-				$this->schemaManager->setSchemaForRequest($json->mType ?? 'unknown');
+				if (!isset($json->mType)) {
+					$message->addError(self::PREFIX . 'messages.invalidMessage');
+					return;
+				}
+				$this->schemaManager->setSchemaForRequest($json->mType);
 				$this->schemaManager->validate($json);
 			} catch (JsonException $e) {
-				$message->addError(self::PREFIX . 'messages.messageInvalidJson');
+				$message->addError(self::PREFIX . 'messages.invalidJsonMessage');
 			} catch (NonexistentJsonSchemaException $e) {
 				$message->addError(new NotTranslate($e->getMessage()));
 			} catch (InvalidJsonException $e) {
 				$message->addError(new NotTranslate($e->getMessage()));
+			} catch (InvalidTaskMessageException $e) {
+				$message->addError(self::PREFIX . 'messages.invalidMessage');
 			}
 		}
 	}
@@ -270,6 +277,8 @@ class SchedulerFormFactory {
 			$this->presenter->flashError($e->getMessage());
 		} catch (InvalidJsonException $e) {
 			$this->presenter->flashError($e->getMessage());
+		} catch (InvalidTaskMessageException $e) {
+			$this->presenter->flashError(self::PREFIX . 'messages.invalidMessage');
 		} catch (IOException $e) {
 			$this->presenter->flashError('config.messages.writeFailures.ioError');
 		} catch (JsonException $e) {
