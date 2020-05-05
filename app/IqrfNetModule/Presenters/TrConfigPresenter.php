@@ -154,6 +154,9 @@ class TrConfigPresenter extends ProtectedPresenter {
 	 * @param int $address TR address
 	 */
 	public function renderDefault(int $address = 0): void {
+		if (!$this->isAjax()) {
+			$this->cache->remove('trConfiguration' . $address);
+		}
 		$this->loadConfiguration($address);
 		if ($this->isAjax()) {
 			$this->redrawControl('forms');

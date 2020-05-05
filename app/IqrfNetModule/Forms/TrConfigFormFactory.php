@@ -209,15 +209,7 @@ class TrConfigFormFactory {
 			$embeddedPeripherals->addCheckbox($peripheral, 'embPers.' . $peripheral);
 		}
 		$dpaVersion = $this->cache->load('dpaVersion' . $this->address) ?? '99.99';
-		if (version_compare($dpaVersion, '4.00', '>=')) {
-			if ($this->presenter->getUser()->isInRole('power')) {
-				$frc = $embeddedPeripherals->addCheckbox('frc', 'embPers.frc')
-					->setDisabled();
-				if (isset($this->configuration->embPers)) {
-					$frc->setDefaultValue($this->configuration->embPers->frc);
-				}
-			}
-		} else {
+		if (version_compare($dpaVersion, '4.00', '<')) {
 			$embeddedPeripherals->addCheckbox('frc', 'embPers.frc');
 		}
 	}
