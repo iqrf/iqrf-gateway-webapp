@@ -175,11 +175,11 @@ class WebSocketClient {
 		}
 		$apiResponse = new ApiResponse();
 		$apiResponse->set($response->getPayload());
+		$data['response'] = $apiResponse->get();
+		Debugger::barDump($data, 'WebSocket client');
 		if ($checkStatus) {
 			$apiResponse->checkStatus();
 		}
-		$data['response'] = $apiResponse->get();
-		Debugger::barDump($data, 'WebSocket client');
 		return $data;
 	}
 
