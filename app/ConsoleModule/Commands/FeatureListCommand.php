@@ -20,10 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ConsoleModule\Commands;
 
-use App\ConsoleModule\Models\FeatureManager;
 use Nette\Neon\Exception;
-use Nette\SmartObject;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -31,28 +28,12 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * CLI command for listing features
  */
-class FeatureListCommand extends Command {
-
-	use SmartObject;
+class FeatureListCommand extends FeatureCommand {
 
 	/**
 	 * @var string Command name
 	 */
 	protected static $defaultName = 'feature:list';
-
-	/**
-	 * @var FeatureManager Webapp's optional feature manager
-	 */
-	private $manager;
-
-	/**
-	 * Constructor
-	 * @param FeatureManager $manager Webapp's optional feature manager
-	 */
-	public function __construct(FeatureManager $manager) {
-		$this->manager = $manager;
-		parent::__construct();
-	}
 
 	/**
 	 * Configures the user list command

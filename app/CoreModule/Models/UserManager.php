@@ -37,7 +37,7 @@ class UserManager {
 	/**
 	 * @var EntityManager Entity manager
 	 */
-	private $entityManager;
+	protected $entityManager;
 
 	/**
 	 * Constructor

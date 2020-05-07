@@ -54,7 +54,7 @@ class DatabaseCreateCommand extends Command {
 	 * Configures the database create command
 	 */
 	protected function configure(): void {
-		$this->setName('database:create');
+		$this->setName(self::$defaultName);
 		$this->setDescription('Creates webapp\'s database');
 	}
 

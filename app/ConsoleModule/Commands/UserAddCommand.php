@@ -60,7 +60,7 @@ class UserAddCommand extends Command {
 	 * Configures the user add command
 	 */
 	protected function configure(): void {
-		$this->setName('user:add');
+		$this->setName(self::$defaultName);
 		$this->setDescription('Adds webapp\'s user');
 		$definitions = [
 			new InputOption('username', ['u', 'user'], InputOption::VALUE_OPTIONAL, 'Username of the new user'),

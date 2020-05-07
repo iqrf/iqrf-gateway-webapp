@@ -21,11 +21,8 @@ declare(strict_types = 1);
 namespace App\ConsoleModule\Commands;
 
 use App\ConsoleModule\Exceptions\UnknownFeatureException;
-use App\ConsoleModule\Models\FeatureManager;
 use Nette\IOException;
 use Nette\Neon\Exception as NeonException;
-use Nette\SmartObject;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -34,28 +31,12 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * CLI command for disabling features
  */
-class FeatureDisableCommand extends Command {
-
-	use SmartObject;
+class FeatureDisableCommand extends FeatureCommand {
 
 	/**
 	 * @var string Command name
 	 */
 	protected static $defaultName = 'feature:disable';
-
-	/**
-	 * @var FeatureManager Webapp's optional features manager
-	 */
-	private $manager;
-
-	/**
-	 * Constructor
-	 * @param FeatureManager $manager Webapp's optional features manager
-	 */
-	public function __construct(FeatureManager $manager) {
-		$this->manager = $manager;
-		parent::__construct();
-	}
 
 	/**
 	 * Configures the feature disable command

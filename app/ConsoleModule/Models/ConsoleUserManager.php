@@ -32,33 +32,27 @@ class ConsoleUserManager extends UserManager {
 
 	/**
 	 * Gets information about the user from the username
-	 * @param string|null $username Username
+	 * @param string $username Username
 	 * @return mixed[]|null Information about the user
 	 */
 	public function getUser(?string $username): ?array {
-		foreach ($this->getUsers() as $user) {
-			if ($user['username'] === $username) {
-				return $user;
-			}
+		$user = $this->entityManager->getUserRepository()->findOneByUserName($username);
+		if ($user === null) {
+			return null;
 		}
-		return null;
+		$array = $user->toArray();
+		unset($array['password']);
+		return $array;
 	}
 
 	/**
 	 * Checks if the username is unique
-	 * @param string|null $username Username to check
+	 * @param string $username Username to check
 	 * @return bool Is username unique?
 	 */
-	public function uniqueUserName(?string $username): bool {
-		if ($username === null) {
-			return false;
-		}
-		foreach ($this->getUsers() as $user) {
-			if ($user['username'] === $username) {
-				return false;
-			}
-		}
-		return true;
+	public function uniqueUserName(string $username): bool {
+		$user = $this->entityManager->getUserRepository()->findOneByUserName($username);
+		return $user === null;
 	}
 
 	/**

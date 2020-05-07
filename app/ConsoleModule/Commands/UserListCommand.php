@@ -20,9 +20,6 @@ declare(strict_types = 1);
 
 namespace App\ConsoleModule\Commands;
 
-use App\ConsoleModule\Models\ConsoleUserManager;
-use Nette\SmartObject;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -30,9 +27,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * CLI command for user management
  */
-class UserListCommand extends Command {
-
-	use SmartObject;
+class UserListCommand extends UserCommand {
 
 	/**
 	 * @var string Command name
@@ -40,24 +35,10 @@ class UserListCommand extends Command {
 	protected static $defaultName = 'user:list';
 
 	/**
-	 * @var ConsoleUserManager User manager
-	 */
-	protected $userManager;
-
-	/**
-	 * Constructor
-	 * @param ConsoleUserManager $userManager User manager
-	 */
-	public function __construct(ConsoleUserManager $userManager) {
-		parent::__construct();
-		$this->userManager = $userManager;
-	}
-
-	/**
 	 * Configures the user list command
 	 */
 	protected function configure(): void {
-		$this->setName('user:list');
+		$this->setName(self::$defaultName);
 		$this->setDescription('Lists webapp\'s users');
 	}
 

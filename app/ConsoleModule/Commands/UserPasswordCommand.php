@@ -20,22 +20,16 @@ declare(strict_types = 1);
 
 namespace App\ConsoleModule\Commands;
 
-use App\ConsoleModule\Models\ConsoleUserManager;
-use Nette\SmartObject;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
 
 /**
  * CLI command for user management
  */
-class UserPasswordCommand extends Command {
-
-	use SmartObject;
+class UserPasswordCommand extends UserCommand {
 
 	/**
 	 * @var string Command name
@@ -43,24 +37,10 @@ class UserPasswordCommand extends Command {
 	protected static $defaultName = 'user:password';
 
 	/**
-	 * @var ConsoleUserManager User manager
-	 */
-	protected $userManager;
-
-	/**
-	 * Constructor
-	 * @param ConsoleUserManager $userManager User manager
-	 */
-	public function __construct(ConsoleUserManager $userManager) {
-		parent::__construct();
-		$this->userManager = $userManager;
-	}
-
-	/**
 	 * Configures the change user's password command
 	 */
 	protected function configure(): void {
-		$this->setName('user:password');
+		$this->setName(self::$defaultName);
 		$this->setDescription('Change webapp\'s user\'s password');
 		$definitions = [
 			new InputOption('username', ['u', 'user'], InputOption::VALUE_OPTIONAL, 'Username of the edited user'),
@@ -80,25 +60,6 @@ class UserPasswordCommand extends Command {
 		$pass = $this->askPassword($input, $output);
 		$this->userManager->editPassword($user['id'], $pass);
 		return 0;
-	}
-
-	/**
-	 * Asks for the username
-	 * @param InputInterface $input Command input
-	 * @param OutputInterface $output Command output
-	 * @return mixed[] Information about the user
-	 */
-	private function askUserName(InputInterface $input, OutputInterface $output): array {
-		$username = $input->getOption('username');
-		$user = $this->userManager->getUser($username);
-		while ($user === null) {
-			$helper = $this->getHelper('question');
-			$userNames = $this->userManager->listUserNames();
-			$question = new ChoiceQuestion('Please enter the username: ', $userNames);
-			$username = $helper->ask($input, $output, $question);
-			$user = $this->userManager->getUser($username);
-		}
-		return $user;
 	}
 
 	/**
