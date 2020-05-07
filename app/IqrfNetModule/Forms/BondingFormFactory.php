@@ -69,6 +69,7 @@ class BondingFormFactory {
 	 */
 	public function create(NetworkPresenter $presenter): Form {
 		$this->presenter = $presenter;
+		$translator = $presenter->getTranslator();
 		$form = $this->factory->create('iqrfnet.bonding');
 		$form->addGroup();
 		$form->addSelect('method', 'method', $this->getBondingMethods())
@@ -76,10 +77,10 @@ class BondingFormFactory {
 			->toggle('smartConnect', true)
 			->elseCondition()
 			->toggle('smartConnect', false);
-		$form->addInteger('address', 'address')
+		$address = $form->addInteger('address', 'address')
 			->setDefaultValue(1);
-		$form->addCheckbox('autoAddress', 'autoAddress');
-		$form['address']->addConditionOn($form['autoAddress'], Form::EQUAL, false)
+		$autoAddress = $form->addCheckbox('autoAddress', 'autoAddress');
+		$address->addConditionOn($autoAddress, Form::EQUAL, false)
 			->addRule(Form::RANGE, 'messages.address', [1, 239])
 			->setRequired('messages.address');
 		$form->addInteger('testRetries', 'testRetries')
@@ -90,13 +91,13 @@ class BondingFormFactory {
 		$form->addSubmit('add', 'addBond')
 			->setHtmlAttribute('class', 'ajax')
 			->onClick[] = [$this, 'addBond'];
-		$confirmMessage = $this->presenter->getTranslator()->translate('iqrfnet.bonding.messages.remove.confirm');
+		$confirmMessage = $translator->translate('iqrfnet.bonding.messages.remove.confirm');
 		$form->addSubmit('remove', 'removeBond')
 			->setHtmlAttribute('class', 'ajax')
 			->setHtmlId('frm-iqrfNetBondingForm-removeBond')
 			->setHtmlAttribute('data-confirm', $confirmMessage)
 			->onClick[] = [$this, 'removeBond'];
-		$confirmMessage = $this->presenter->getTranslator()->translate('iqrfnet.bonding.messages.clearAll.confirm');
+		$confirmMessage = $translator->translate('iqrfnet.bonding.messages.clearAll.confirm');
 		$form->addSubmit('clear', 'clearAllBonds')
 			->setHtmlAttribute('class', 'ajax')
 			->setHtmlId('frm-iqrfNetBondingForm-clearAllBonds')
@@ -137,15 +138,15 @@ class BondingFormFactory {
 	 */
 	public function addBond(SubmitButton $button): void {
 		$values = $button->getForm()->getValues();
-		$address = ($values['autoAddress'] === true) ? 0 : $values['address'];
+		$address = ($values->autoAddress === true) ? 0 : $values->address;
 		try {
-			switch ($values['method']) {
+			switch ($values->method) {
 				case 'local':
 					$this->manager->bondLocal($address);
 					break;
 				case 'smartConnect':
-					$code = $values['smartConnectCode'];
-					$testRetries = $values['testRetries'] ?? 1;
+					$code = $values->smartConnectCode;
+					$testRetries = $values->testRetries ?? 1;
 					$this->manager->bondSmartConnect($address, $code, $testRetries);
 					break;
 			}
@@ -163,7 +164,7 @@ class BondingFormFactory {
 	public function clearAllBonds(SubmitButton $button): void {
 		$values = $button->getForm()->getValues();
 		try {
-			$this->manager->clearAll($values['coordinatorOnly']);
+			$this->manager->clearAll($values->coordinatorOnly);
 			$this->presenter->flashSuccess('iqrfnet.bonding.messages.clearAll.success');
 		} catch (EmptyResponseException | DpaErrorException | JsonException $e) {
 			$this->presenter->flashError('iqrfnet.bonding.messages.clearAll.failure');
@@ -178,12 +179,12 @@ class BondingFormFactory {
 	public function removeBond(SubmitButton $button): void {
 		$form = $button->getForm();
 		$values = $form->getValues();
-		if ($values['address'] === null) {
+		if (!isset($values->address)) {
 			$form['address']->addError('messages.address');
 			return;
 		}
 		try {
-			$this->manager->remove($values['address'], $values['coordinatorOnly']);
+			$this->manager->remove($values->address, $values->coordinatorOnly);
 			$this->presenter->flashSuccess('iqrfnet.bonding.messages.remove.success');
 		} catch (EmptyResponseException | DpaErrorException | JsonException $e) {
 			$this->presenter->flashError('iqrfnet.bonding.messages.remove.failure');

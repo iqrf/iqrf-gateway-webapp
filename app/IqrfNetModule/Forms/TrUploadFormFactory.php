@@ -111,13 +111,13 @@ class TrUploadFormFactory {
 	public function upload(Form $form): void {
 		$values = $form->getValues();
 		if ($this->presenter->getUser()->isInRole('power')) {
-			$fileFormat = $values['fileFormat'];
+			$fileFormat = $values->fileFormat;
 			if ($fileFormat !== null) {
 				$fileFormat = UploadFormats::fromScalar($fileFormat);
 			}
 		} else {
 			$fileFormat = UploadFormats::HEX();
-			$fileName = Strings::lower($values['file']->getName());
+			$fileName = Strings::lower($values->file->getName());
 			if (!Strings::endsWith($fileName, '.hex')) {
 				$this->presenter->flashError('iqrfnet.trUpload.messages.invalidDpaHandler');
 				$form['file']->addError('iqrfnet.trUpload.messages.invalidDpaHandler');
@@ -125,7 +125,7 @@ class TrUploadFormFactory {
 			}
 		}
 		try {
-			$this->manager->upload($values['file'], $fileFormat);
+			$this->manager->upload($values->file, $fileFormat);
 			$this->presenter->flashSuccess('iqrfnet.trUpload.messages.success');
 		} catch (CorruptedFileException $e) {
 			$this->presenter->flashError('iqrfnet.trUpload.messages.corruptedFile');

@@ -91,7 +91,7 @@ class DiscoveryFormFactory {
 	public function onSuccess(Form $form): void {
 		try {
 			$values = $form->getValues();
-			$this->manager->run($values['txPower'], $values['maxNode']);
+			$this->manager->run($values->txPower, $values->maxNode);
 			$this->presenter->flashSuccess('iqrfnet.discovery.messages.success');
 		} catch (EmptyResponseException | DpaErrorException | JsonException $e) {
 			$this->presenter->flashError('iqrfnet.discovery.messages.failure');
