@@ -1,3 +1,17 @@
+iqrf-gateway-webapp (2.0.0-rc13) testing; urgency=medium
+
+  * Prepare for version v2.0.0-rc13
+  * Service: fix flash messages in different modules
+  * IQRF net: update P2P input labels in the TR configuration form
+  * Config: fix scheduler form validation
+  * IQRF net: partially disable TR configuration cache, fix FRC checkbox
+  * Console: refactor commands
+  * IQRF network: fix WebSocket client debug panel
+  * IQRF network: refactor form factories
+  * Config: hide disabled IQRF interfaces
+
+ -- Roman Ondráček <roman@romanondracek.cz>  Fri, 08 May 2020 00:30:00 +0200
+
 iqrf-gateway-webapp (2.0.0-rc12) testing; urgency=medium
 
   * Api: add REST API skeleton
