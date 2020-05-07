@@ -34,15 +34,15 @@
 		<header class='list-group-item-heading'>{_service.iqrf-gateway-daemon.title}</header>
 		<p class='list-group-item-text'>{_service.iqrf-gateway-daemon.description}</p>
 	</a>
-	<a n:if='$features["ssh"]' n:href=':Service:Control:default, name => "ssh"' class='list-group-item'>
+	<a n:if='$features["ssh"] ?? false' n:href=':Service:Control:default, name => "ssh"' class='list-group-item'>
 		<header class='list-group-item-heading'>{_service.ssh.title}</header>
 		<p class='list-group-item-text'>{_service.ssh.description}</p>
 	</a>
-	<a n:if='$features["unattendedUpgrades"]' n:href=':Service:Control:default, name => "unattended-upgrades"' class='list-group-item'>
+	<a n:if='$features["unattendedUpgrades"] ?? false' n:href=':Service:Control:default, name => "unattended-upgrades"' class='list-group-item'>
 		<header class='list-group-item-heading'>{_service.unattended-upgrades.title}</header>
 		<p class='list-group-item-text'>{_service.unattended-upgrades.description}</p>
 	</a>
-	<a n:if='$features["updater"]' n:href='Updater:default' class='list-group-item'>
+	<a n:if='$features["updater"] ?? false' n:href='Updater:default' class='list-group-item'>
 		<header class='list-group-item-heading'>{_gateway.updater.title}</header>
 		<p class='list-group-item-text'>{_gateway.updater.description}</p>
 	</a>

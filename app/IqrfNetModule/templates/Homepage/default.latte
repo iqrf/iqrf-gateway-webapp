@@ -26,7 +26,7 @@
 		<header class='list-group-item-heading'>{_iqrfnet.send-json.title}</header>
 		<p class='list-group-item-text'>{_iqrfnet.send-json.description}</p>
 	</a>
-	<a n:if='$features["trUpload"]' n:href='TrUpload:default' class='list-group-item'>
+	<a n:if='$features["trUpload"] ?? false' n:href='TrUpload:default' class='list-group-item'>
 		<header class='list-group-item-heading'>{_iqrfnet.trUpload.title}</header>
 		<p class='list-group-item-text'>{_iqrfnet.trUpload.description}</p>
 	</a>

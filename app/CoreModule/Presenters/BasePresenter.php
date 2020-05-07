@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Presenters;
 
+use App\ConfigModule\Models\ComponentManager;
 use Nette\Application\UI\ITemplate;
 use Nette\Application\UI\Presenter;
 use Nette\Localization\ITranslator;
@@ -28,6 +29,11 @@ use Nette\Localization\ITranslator;
  * Base presenter for all application presenters
  */
 abstract class BasePresenter extends Presenter {
+
+	/**
+	 * @var ComponentManager Component manager
+	 */
+	protected $componentManager;
 
 	/**
 	 * @var string Language
@@ -49,6 +55,15 @@ abstract class BasePresenter extends Presenter {
 		$this->template->offlineMode = false;
 		$this->template->docs = $this->context->parameters['docs'];
 		$this->template->features = $this->context->parameters['features'];
+		$this->template->disabledComponents = $this->componentManager->listDisabled();
+	}
+
+	/**
+	 * Injects the component manager
+	 * @param ComponentManager $componentManager Component manager
+	 */
+	public function injectComponentManager(ComponentManager $componentManager): void {
+		$this->componentManager = $componentManager;
 	}
 
 	/**

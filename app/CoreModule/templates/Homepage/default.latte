@@ -30,7 +30,7 @@
 		<header class='list-group-item-heading'>{_iqrfnet.title}</header>
 		<p class='list-group-item-text'>{_iqrfnet.description}</p>
 	</a>
-	<a n:if='$features["networkManager"]' n:href=':Network:Homepage:default' class='list-group-item'>
+	<a n:if='$features["networkManager"] ?? false' n:href=':Network:Homepage:default' class='list-group-item'>
 		<header class='list-group-item-heading'>{_network.title}</header>
 		<p class='list-group-item-text'>{_network.description}</p>
 	</a>
@@ -38,19 +38,19 @@
 		<header class='list-group-item-heading'>{_cloud.title}</header>
 		<p class='list-group-item-text'>{_cloud.description}</p>
 	</a>
-	<a n:if='$features["node-red"]' href='/node-red/' class='list-group-item'>
+	<a n:if='$features["node-red"] ?? false' href='/node-red/' class='list-group-item'>
 		<header class='list-group-item-heading'>{_core.node-red.title}</header>
 		<p class='list-group-item-text'>{_core.node-red.description}</p>
 	</a>
-	<a n:if='$features["node-red"]' href='/node-red/ui/' class='list-group-item'>
+	<a n:if='$features["node-red"] ?? false' href='/node-red/ui/' class='list-group-item'>
 		<header class='list-group-item-heading'>{_core.node-red-dashboard.title}</header>
 		<p class='list-group-item-text'>{_core.node-red-dashboard.description}</p>
 	</a>
-	<a n:if='$features["supervisord"]' href='/supervisor/' class='list-group-item'>
+	<a n:if='$features["supervisord"] ?? false' href='/supervisor/' class='list-group-item'>
 		<header class='list-group-item-heading'>{_core.supervisor.title}</header>
 		<p class='list-group-item-text'>{_core.supervisor.description}</p>
 	</a>
-	<a n:if='$features["docs"]' n:ifset='$docs' href='{$docs}' target='_blank' class='list-group-item'>
+	<a n:if='$features["docs"] ?? false' n:ifset='$docs' href='{$docs}' target='_blank' class='list-group-item'>
 		<header class='list-group-item-heading'>{_core.documentation.title}</header>
 		<p class='list-group-item-text'>{_core.documentation.description}</p>
 	</a>

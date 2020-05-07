@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Models;
 
 use App\CoreModule\Models\JsonFileManager;
+use Nette\IOException;
 use Nette\SmartObject;
 use Nette\Utils\Arrays;
 use Nette\Utils\JsonException;
@@ -84,12 +85,8 @@ class ComponentManager implements IConfigManager {
 		} catch (JsonException $e) {
 			return null;
 		}
-		foreach ($json['components'] as $id => $component) {
-			if ($component['name'] === $name) {
-				return $id;
-			}
-		}
-		return null;
+		$search = array_search($name, array_column($json['components'], 'name'), true);
+		return $search !== false ? $search : null;
 	}
 
 	/**
@@ -118,6 +115,25 @@ class ComponentManager implements IConfigManager {
 			$components[$id] = Arrays::mergeTree(['id' => $id], $config);
 		}
 		return $components;
+	}
+
+	/**
+	 * Returns disabled components
+	 * @return array<string, bool>|null Disabled components
+	 */
+	public function listDisabled(): ?array {
+		$disabled = [];
+		try {
+			$components = $this->fileManager->read($this->fileName)['components'];
+			foreach ($components as $component) {
+				if ($component['enabled'] !== true) {
+					$disabled[$component['name']] = false;
+				}
+			}
+		} catch (IOException | JsonException $e) {
+			return null;
+		}
+		return $disabled;
 	}
 
 	/**

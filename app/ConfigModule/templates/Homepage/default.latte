@@ -38,15 +38,15 @@
 			{/if}
 		</p>
 	</a>
-	<a n:href='IqrfSpi:default' class='list-group-item'>
+	<a n:if='$user->isInRole("power") || ($disabledComponents["iqrf::IqrfSpi"] ?? true)' n:href='IqrfSpi:default' class='list-group-item'>
 		<header class='list-group-item-heading'>{_config.iqrfSpi.title}</header>
 		<p class='list-group-item-text'>{_config.iqrfSpi.description}</p>
 	</a>
-	<a n:href='IqrfCdc:default' class='list-group-item'>
+	<a n:if='$user->isInRole("power") || ($disabledComponents["iqrf::IqrfCdc"] ?? true)' n:href='IqrfCdc:default' class='list-group-item'>
 		<header class='list-group-item-heading'>{_config.iqrfCdc.title}</header>
 		<p class='list-group-item-text'>{_config.iqrfCdc.description}</p>
 	</a>
-	<a n:href='IqrfUart:default' class='list-group-item'>
+	<a n:if='$user->isInRole("power") || ($disabledComponents["iqrf::IqrfUart"] ?? true)' n:href='IqrfUart:default' class='list-group-item'>
 		<header class='list-group-item-heading'>{_config.iqrfUart.title}</header>
 		<p class='list-group-item-text'>{_config.iqrfUart.description}</p>
 	</a>
