@@ -58,6 +58,7 @@ install:
 	cp app/config/* $(CONFIG_DIR)
 	install -d $(CONFIG_DIR)/certs
 	install -d $(DATA_DIR)
+	cp -r api/ $(DATA_DIR)
 	cp -r app/ $(DATA_DIR)
 	cp -r bin/ $(DATA_DIR)
 	cp -r db/ $(DATA_DIR)
