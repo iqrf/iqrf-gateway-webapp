@@ -15,17 +15,17 @@
  * limitations under the License.
 *}
 
-<footer n:snippet='lights' class='box-footer table-responsive'>
-	{ifset $lightData}
-        {var $response = $data['response']}
-        {switch $response->mType}
-            {case 'iqrfLight_Enumerate'}
+{snippet lights}
+	<footer n:ifset='$data' class='box-footer table-responsive'>
+		{var $response = $data['response']}
+		{switch $response->mType}
+			{case 'iqrfLight_Enumerate'}
 			<table class='table table-striped'>
 				<tr>
 					<th>{_iqrfnet.standard.light.table.lights}</th>
 					<td>{$response->data->rsp->result->lights}</td>
 				</tr>
 			</table>
-        {/switch}
-	{/ifset}
-</footer>
+		{/switch}
+	</footer>
+{/snippet}

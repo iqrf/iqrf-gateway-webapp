@@ -14,13 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 *}
-
-<footer n:snippet='dali' class='box-footer table-responsive'>
-	{ifset $daliData}
-        {var $response = $data['response']}
-        {switch $response->mType}
-            {case 'iqrfDali_SendCommands'}
-            {var $answers = $response->data->rsp->result->answers}
+{snippet dali}
+	<footer n:ifset='data' class='box-footer table-responsive'>
+		{var $response = $data['response']}
+		{switch $response->mType}
+			{case 'iqrfDali_SendCommands'}
+			{var $answers = $response->data->rsp->result->answers}
 			<table class='table table-striped text-center'>
 				<tr>
 					<th>{_iqrfnet.dali.answer.status}</th>
@@ -31,6 +30,6 @@
 					<td>{$answer->value}</td>
 				</tr>
 			</table>
-        {/switch}
-	{/ifset}
-</footer>
+		{/switch}
+	</footer>
+{/snippet}
