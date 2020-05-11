@@ -26,6 +26,24 @@
 					<td>{$response->data->rsp->result->lights}</td>
 				</tr>
 			</table>
+		{default}
+			{ifset $response->data->rsp->result->prevVals}
+				{var $outputs = $response->data->rsp->result->prevVals}
+				<table class='table table-striped'>
+					<tr>
+						<th>{_iqrfnet.standard.light.table.index}</th>
+						<td n:foreach='array_keys($outputs) as $index'>
+							{$index}
+						</td>
+					</tr>
+					<tr>
+						<th>{_iqrfnet.standard.light.table.prevPower}</th>
+						<td n:foreach='$outputs as $state'>
+							{$state}
+						</td>
+					</tr>
+				</table>
+			{/ifset}
 		{/switch}
 	</footer>
 {/snippet}

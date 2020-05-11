@@ -301,6 +301,8 @@ standard:
 		decrement: Decrement power
 		table:
 			lights: Lights
+			index: Index
+			prevPower: Previous power
 	sensor:
 		title: IQRF Sensor
 		address: Address
