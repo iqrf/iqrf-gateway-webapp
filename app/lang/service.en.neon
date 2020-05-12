@@ -23,7 +23,7 @@ iqrf-gateway-daemon:
 		enable: IQRF Gateway Daemon has been enabled.
 		start: IQRF Gateway Daemon has been started.
 		stop: IQRF Gateway Daemon has been stopped.
-		restart: IQRF Gateway Daemon has been restarted. It takes couple of seconds before the system is ready.
+		restart: IQRF Gateway Daemon has been restarted. It takes tens of seconds before the system is ready.
 
 ssh:
 	title: SSH service

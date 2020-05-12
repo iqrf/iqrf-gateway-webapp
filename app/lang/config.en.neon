@@ -302,7 +302,7 @@ scheduler:
 		message:
 			title: Messages
 			label: 'Message (JSON request)'
-			add: Add message
+			add: Add another message
 			remove: Remove message
 		messaging: Messaging
 		mType: Message types
