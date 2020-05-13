@@ -367,7 +367,7 @@ tracer:
 		messages:
 			verbosityLevels:
 				channel: Please enter the verbosity channel.
-				level: Please enter the verbosity level.
+				level: Please select the verbosity level.
 		Save: Save
 
 udp:

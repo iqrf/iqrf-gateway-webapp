@@ -25,6 +25,7 @@ use Nette\Application\UI\Form;
 use Nette\Forms\Container;
 use Nette\SmartObject;
 use Nette\Utils\JsonException;
+use Nette\Utils\Strings;
 
 /**
  * Tracer configuration form factory
@@ -81,7 +82,8 @@ class TraceFileFormFactory extends GenericConfigFormFactory {
 		$container->addInteger('channel', 'channel')
 			->setRequired('messages.verbosityLevels.channel');
 		$container->addSelect('level', 'level', $this->verbosityLevels)
-			->setRequired('messages.verbosityLevels.level');
+			->setRequired('messages.verbosityLevels.level')
+			->setPrompt('messages.verbosityLevels.level');
 	}
 
 	/**
@@ -92,6 +94,14 @@ class TraceFileFormFactory extends GenericConfigFormFactory {
 		$id = (int) $this->presenter->getParameter('id');
 		try {
 			$defaults = $this->manager->load($id);
+			foreach ($defaults['VerbosityLevels'] as &$verbosityLevel) {
+				$level = Strings::upper($verbosityLevel['level']);
+				if (array_key_exists($level, $this->verbosityLevels)) {
+					$verbosityLevel['level'] = $level;
+				} else {
+					unset($verbosityLevel['level']);
+				}
+			}
 		} catch (JsonException $e) {
 			$defaults = [];
 		}
