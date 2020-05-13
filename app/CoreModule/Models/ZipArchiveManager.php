@@ -74,7 +74,9 @@ class ZipArchiveManager {
 			$files = Finder::findFiles('*')->in($path);
 			foreach ($files as $file) {
 				assert($file instanceof SplFileInfo);
-				$this->addFile($file->getRealPath(), $name . $file->getFilename());
+				if ($file->isReadable()) {
+					$this->addFile($file->getRealPath(), $name . $file->getFilename());
+				}
 			}
 		} catch (UnexpectedValueException $e) {
 			// Does nothing - an empty folder
@@ -83,7 +85,9 @@ class ZipArchiveManager {
 			$directories = Finder::findDirectories('*')->in($path);
 			foreach ($directories as $directory) {
 				assert($directory instanceof SplFileInfo);
-				$this->addFolder($directory->getRealPath(), $name . $directory->getBasename());
+				if ($directory->isReadable()) {
+					$this->addFolder($directory->getRealPath(), $name . $directory->getBasename());
+				}
 			}
 		} catch (UnexpectedValueException $e) {
 			// Does nothing - an empty directory
