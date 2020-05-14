@@ -108,12 +108,12 @@ class FileManager implements IFileManager {
 	 * @throws IOException
 	 */
 	public function write(string $fileName, $content): void {
-		$fileName = 'nette.safe://' . $this->directory . '/' . $fileName;
+		$path = 'nette.safe://' . $this->directory . '/' . $fileName;
 		try {
-			FileSystem::write($fileName, $content, null);
+			FileSystem::write($path, $content, null);
 		} catch (IOException $e) {
 			$this->fixPermissions($fileName);
-			FileSystem::write($fileName, $content, null);
+			FileSystem::write($path, $content, null);
 		}
 	}
 
