@@ -172,7 +172,7 @@ class SchedulerFormFactory {
 				$task->message = Json::encode($task->message, Json::PRETTY);
 			}
 			return $configuration;
-		} catch (InvalidJsonException | InvalidTaskMessageException | IOException | JsonException $e) {
+		} catch (InvalidJsonException | InvalidTaskMessageException | IOException | JsonException | NonexistentJsonSchemaException $e) {
 			return new stdClass();
 		}
 	}
@@ -184,17 +184,17 @@ class SchedulerFormFactory {
 	private function addTimeSpec(Form $form): void {
 		$timeSpec = $form->addContainer('timeSpec');
 		$timeSpec->addText('cronTime', self::PREFIX . 'timeSpec.cronTime');
-		$timeSpec->addCheckbox('exactTime', self::PREFIX . 'timeSpec.exactTime');
-		$timeSpec->addCheckbox('periodic', self::PREFIX . 'timeSpec.periodic');
+		$exactTime = $timeSpec->addCheckbox('exactTime', self::PREFIX . 'timeSpec.exactTime');
+		$periodic = $timeSpec->addCheckbox('periodic', self::PREFIX . 'timeSpec.periodic');
 		$timeSpec->addInteger('period', self::PREFIX . 'timeSpec.period')
 			->setDefaultValue(0);
 		$timeSpec->addText('startTime', self::PREFIX . 'timeSpec.startTime')
 			->setHtmlType('datetime-local');
 		$timeSpec['period']
-			->addConditionOn($timeSpec['periodic'], Form::EQUAL, true)
+			->addConditionOn($periodic, Form::EQUAL, true)
 			->setRequired(self::PREFIX . 'messages.timeSpec.period');
 		$timeSpec['startTime']
-			->addConditionOn($timeSpec['exactTime'], Form::EQUAL, true)
+			->addConditionOn($exactTime, Form::EQUAL, true)
 			->setRequired(self::PREFIX . 'messages.timeSpec.startTime');
 	}
 

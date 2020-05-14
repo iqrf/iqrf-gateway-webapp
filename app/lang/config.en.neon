@@ -324,6 +324,7 @@ scheduler:
 				startTime: Please enter the start time.
 			type: Please select type of the DPA message.
 			type-prompt: Select message type
+			missingJsonSchema: The task has not been loaded because the corresponding JSON schema not found.
 		save: Save
 		saveAndRestart: Save and restart
 

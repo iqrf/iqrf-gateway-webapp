@@ -129,7 +129,7 @@ class SchedulerManager {
 				if (array_key_exists('taskId', $json)) {
 					$files[$json['taskId']] = $fileName;
 				}
-			} catch (JsonException $e) {
+			} catch (IOException | JsonException $e) {
 				// Skip invalid JSON files
 			}
 		}

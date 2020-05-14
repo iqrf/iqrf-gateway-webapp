@@ -25,6 +25,7 @@ use App\ConfigModule\Forms\SchedulerFormFactory;
 use App\ConfigModule\Forms\SchedulerImportFormFactory;
 use App\ConfigModule\Models\SchedulerManager;
 use App\ConfigModule\Models\SchedulerMigrationManager;
+use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use App\CoreModule\Presenters\ProtectedPresenter;
 use App\CoreModule\Traits\TPresenterFlashMessage;
 use Nette\Application\BadRequestException;
@@ -91,6 +92,9 @@ class SchedulerPresenter extends ProtectedPresenter {
 			$this->redirect('Homepage:default');
 		} catch (JsonException $e) {
 			$this->flashError('config.messages.readFailures.invalidJson');
+			$this->redirect('Homepage:default');
+		} catch (NonexistentJsonSchemaException $e) {
+			$this->flashError('config.messages.readFailures.nonExistingJsonSchema');
 			$this->redirect('Homepage:default');
 		}
 	}
