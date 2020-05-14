@@ -1,3 +1,18 @@
+iqrf-gateway-webapp (2.0.0-rc14) testing; urgency=medium
+
+  * Prepare for version 2.0.0-rc14
+  * Makefile: install also files for API
+  * IQRF net: hide empty footers in Standard manager
+  * IQRF net: add previous light level indication (fix #234)
+  * Update messages
+  * Core: skip unreadable directories and files in ZIP archive
+  * Config: trace verbosity level input make case insensitive
+  * Core: fix permission fixing
+  * Config: catch exceptions in scheduler task manager
+  * Core: fix permission fixing while writing into file
+
+ -- Roman Ondráček <roman@romanondracek.cz>  Thu, 14 May 2020 23:45:00 +0200
+
 iqrf-gateway-webapp (2.0.0-rc13) testing; urgency=medium
 
   * Prepare for version v2.0.0-rc13
