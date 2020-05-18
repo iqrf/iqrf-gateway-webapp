@@ -28,7 +28,6 @@ use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\IqrfNetModule\Models\EnumerationManager;
-use Nette\SmartObject;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 
@@ -36,8 +35,6 @@ use Nette\Utils\JsonException;
  * Tool for getting information about this gateway
  */
 class InfoManager {
-
-	use SmartObject;
 
 	/**
 	 * @var string[] Board managers

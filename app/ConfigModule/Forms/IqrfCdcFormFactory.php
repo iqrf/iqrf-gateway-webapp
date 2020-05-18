@@ -22,21 +22,16 @@ namespace App\ConfigModule\Forms;
 
 use App\ConfigModule\Presenters\IqrfCdcPresenter;
 use Nette\Application\UI\Form;
-use Nette\SmartObject;
-use Nette\Utils\JsonException;
 
 /**
  * IQRF CDC configuration form factory
  */
 class IqrfCdcFormFactory extends GenericConfigFormFactory {
 
-	use SmartObject;
-
 	/**
 	 * Creates the IQRF CDC interface configuration form
 	 * @param IqrfCdcPresenter $presenter IQRF CDC interface configuration presenter
 	 * @return Form IQRF CDC interface configuration form
-	 * @throws JsonException
 	 */
 	public function create(IqrfCdcPresenter $presenter): Form {
 		$this->manager->setComponent('iqrf::IqrfCdc');
@@ -48,7 +43,6 @@ class IqrfCdcFormFactory extends GenericConfigFormFactory {
 			->setRequired('messages.IqrfInterface');
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');
-		$form->setDefaults($this->manager->load(0));
 		$form->onSuccess[] = [$this, 'save'];
 		return $form;
 	}

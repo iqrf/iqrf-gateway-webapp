@@ -32,15 +32,12 @@ use App\IqrfNetModule\Exceptions\IncorrectPnumException;
 use App\IqrfNetModule\Models\DpaRawManager;
 use App\IqrfNetModule\Presenters\SendRawPresenter;
 use Nette\Application\UI\Form;
-use Nette\SmartObject;
 use Nette\Utils\JsonException;
 
 /**
  * Send DPA packet form factory
  */
 class SendRawFormFactory {
-
-	use SmartObject;
 
 	/**
 	 * @var DpaRawManager JSON DPA request and response manager
@@ -82,19 +79,19 @@ class SendRawFormFactory {
 		$form = $this->factory->create('iqrfnet.send-packet');
 		$form->addText('packet', 'packet')
 			->setRequired('messages.packet');
-		$form->addCheckbox('overwriteAddress', 'overwriteAddress')
+		$overwriteAddress = $form->addCheckbox('overwriteAddress', 'overwriteAddress')
 			->setDefaultValue(false);
 		$form->addInteger('address', 'customAddress')
 			->setDefaultValue(0)
 			->setRequired(false)
-			->addConditionOn($form['overwriteAddress'], Form::EQUAL, true)
+			->addConditionOn($overwriteAddress, Form::EQUAL, true)
 			->addRule(Form::RANGE, 'messages.address', [0, 239])
 			->setRequired('messages.address');
-		$form->addCheckbox('timeoutEnabled', 'overwriteTimeout')
+		$timeoutEnabled = $form->addCheckbox('timeoutEnabled', 'overwriteTimeout')
 			->setDefaultValue(false);
 		$form->addInteger('timeout', 'customTimeout')
 			->setDefaultValue(1000)
-			->addConditionOn($form['timeoutEnabled'], Form::EQUAL, true)
+			->addConditionOn($timeoutEnabled, Form::EQUAL, true)
 			->setRequired('customTimeout');
 		$form->addSubmit('send', 'send');
 		$form->addProtection('core.errors.form-timeout');

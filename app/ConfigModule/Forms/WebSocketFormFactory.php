@@ -26,15 +26,12 @@ use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use App\CoreModule\Forms\FormFactory;
 use Nette\Application\UI\Form;
 use Nette\IOException;
-use Nette\SmartObject;
 use Nette\Utils\JsonException;
 
 /**
  * WebSocket interface configuration form factory
  */
 class WebSocketFormFactory {
-
-	use SmartObject;
 
 	/**
 	 * @var WebSocketManager WebSocket configuration manager
@@ -65,7 +62,6 @@ class WebSocketFormFactory {
 	 * Creates the WebSocket interface configuration form
 	 * @param WebsocketPresenter $presenter WebSocket interface configuration presenter
 	 * @return Form WebSocket interface configuration form
-	 * @throws JsonException
 	 */
 	public function create(WebsocketPresenter $presenter): Form {
 		$this->presenter = $presenter;
@@ -76,13 +72,6 @@ class WebSocketFormFactory {
 		$form->addCheckbox('acceptAsyncMsg', 'acceptAsyncMsg');
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');
-		$parameter = $presenter->getParameter('id');
-		if (isset($parameter)) {
-			$id = (int) $parameter;
-			if (array_key_exists($id, $this->manager->list())) {
-				$form->setDefaults($this->manager->load($id));
-			}
-		}
 		$form->onSuccess[] = [$this, 'save'];
 		return $form;
 	}
@@ -94,7 +83,9 @@ class WebSocketFormFactory {
 	 */
 	public function save(Form $form): void {
 		try {
-			$this->manager->save($form->getValues('array'));
+			$values = $form->getValues('array');
+			assert(is_array($values));
+			$this->manager->save($values);
 			$this->presenter->flashSuccess('config.messages.success');
 		} catch (NonexistentJsonSchemaException $e) {
 			$this->presenter->flashError('config.messages.writeFailures.nonExistingJsonSchema');

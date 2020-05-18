@@ -22,81 +22,66 @@ namespace App\ConfigModule\Forms;
 
 use App\ConfigModule\Presenters\WebsocketPresenter;
 use Nette\Application\UI\Form;
-use Nette\SmartObject;
-use Nette\Utils\JsonException;
+use Nette\Forms\Container;
 
 /**
  * WebSocket messaging configuration form factory
  */
 class WebSocketMessagingFormFactory extends GenericConfigFormFactory {
 
-	use SmartObject;
+	/**
+	 * Translation prefix
+	 */
+	private const PREFIX = 'config.websocket.form';
 
 	/**
 	 * Creates the WebSocket messaging configuration form
 	 * @param WebsocketPresenter $presenter WebSocket interface configuration presenter
 	 * @return Form WebSocket messaging configuration form
-	 * @throws JsonException
 	 */
 	public function create(WebsocketPresenter $presenter): Form {
 		$this->manager->setComponent('iqrf::WebsocketMessaging');
 		$this->redirect = 'Websocket:default';
 		$this->presenter = $presenter;
-		$form = $this->factory->create('config.websocket.form');
-		$defaults = $this->loadData($presenter);
+		$form = $this->factory->create(self::PREFIX);
+		$form->addGroup();
 		$form->addText('instance', 'instance')
 			->setRequired('messages.messagingInstance');
 		$form->addCheckbox('acceptAsyncMsg', 'acceptAsyncMsg');
-		$this->addRequiredInterfaces($form, $defaults);
+		$form->addGroup('requiredInterfaces');
+		$interfaces = $form->addMultiplier('RequiredInterfaces', [$this, 'addRequiredInterfaces'], 0);
+		$interfaces->addRemoveButton('messages.requiredInterface.remove')
+			->addClass('btn btn-danger');
+		$interfaces->addCreateButton('messages.requiredInterface.add')
+			->addClass('btn btn-success');
+		$form->addGroup();
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');
-		$form->setDefaults($defaults);
 		$form->onSuccess[] = [$this, 'save'];
 		return $form;
 	}
 
 	/**
-	 * Loads the configuration data for the form
-	 * @param WebsocketPresenter $presenter WebSocket configuration presenter
-	 * @return mixed[] Configuration in an array
-	 * @throws JsonException
-	 */
-	public function loadData(WebsocketPresenter $presenter): array {
-		$data = [];
-		$id = $presenter->getParameter('id');
-		if (isset($id)) {
-			$data = $this->manager->load((int) $id);
-		}
-		if (!isset($id) || $data === []) {
-			$data = ['RequiredInterfaces' => [['name' => 'shape::IWebsocketService', 'target' => ['instance' => '']]]];
-		}
-		return $data;
-	}
-
-	/**
-	 * Adds the required interfaces into the form
+	 * Adds the required interfaces into the
+	 * @param Container $container FOrm container
 	 * @param Form $form Configuration form
-	 * @param mixed[] $data Configuration data
-	 * @throws JsonException
 	 */
-	private function addRequiredInterfaces(Form $form, array &$data): void {
-		$translator = $this->factory->getTranslator();
-		$requiredInterfaces = $form->addContainer('RequiredInterfaces');
-		foreach ($data['RequiredInterfaces'] as $interfaceId => $requiredInterface) {
-			$container = $requiredInterfaces->addContainer($interfaceId);
-			$container->addSelect('name', 'requiredInterface.name')
-				->setItems(['shape::IWebsocketService'], false)
-				->setTranslator($translator)
-				->setRequired('messages.requiredInterface.name');
-			$target = $container->addContainer('target');
-			$target->addSelect('instance', 'requiredInterface.instance')
-				->setItems($this->manager->getComponentInstances('shape::WebsocketCppService'), false)
-				->setTranslator($translator)
-				->setRequired('messages.requiredInterface.instance');
-			if ($requiredInterface['target']['instance'] === '') {
-				unset($data['RequiredInterfaces'][$interfaceId]['target']['instance']);
-			}
-		}
+	public function addRequiredInterfaces(Container $container, Form $form): void {
+		$translator = $form->getTranslator();
+		$prompt = 'messages.requiredInterface.name';
+		$container->addSelect('name', 'requiredInterface.name')
+			->setItems(['shape::IWebsocketService'], false)
+			->setTranslator(null)
+			->setRequired($prompt)
+			->setPrompt($translator->translate($prompt));
+		$instances = $this->manager->getComponentInstances('shape::WebsocketCppService');
+		$prompt = 'messages.requiredInterface.instance';
+		$target = $container->addContainer('target');
+		$target->addSelect('instance', 'requiredInterface.instance')
+			->setItems($instances, false)
+			->setTranslator(null)
+			->setRequired($prompt)
+			->setPrompt($translator->translate($prompt));
 	}
 
 }

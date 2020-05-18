@@ -23,7 +23,6 @@ namespace App\ConsoleModule\Commands;
 use App\ConsoleModule\Exceptions\UnknownFeatureException;
 use Nette\IOException;
 use Nette\Neon\Exception as NeonException;
-use Nette\SmartObject;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -33,8 +32,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * CLI command for enabling features
  */
 class FeatureEnableCommand extends FeatureCommand {
-
-	use SmartObject;
 
 	/**
 	 * @var string Command name

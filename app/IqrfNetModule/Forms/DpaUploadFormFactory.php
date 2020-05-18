@@ -36,15 +36,12 @@ use Contributte\Translation\Wrappers\NotTranslate;
 use GuzzleHttp\Exception\ClientException;
 use Nette\Application\UI\Form;
 use Nette\IOException;
-use Nette\SmartObject;
 use Nette\Utils\JsonException;
 
 /**
  * DPA upload form factory
  */
 class DpaUploadFormFactory {
-
-	use SmartObject;
 
 	/**
 	 * @var DpaManager DPA manager

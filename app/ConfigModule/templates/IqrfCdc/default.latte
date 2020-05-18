@@ -22,7 +22,7 @@
 		{control configIqrfCdcForm}
 	</div>
 </div>
-<div class='box box-primary'>
+<div n:if='$interfaces ?? [] !== []' class='box box-primary'>
 	<header class='box-header with-border'>
 		<h2 class='box-title'>{_config.interfaceMapping.cdc}</h2>
 	</header>

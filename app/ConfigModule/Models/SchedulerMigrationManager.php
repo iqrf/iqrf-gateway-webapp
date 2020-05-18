@@ -27,7 +27,6 @@ use DateTime;
 use Nette\Application\BadRequestException;
 use Nette\Application\Responses\FileResponse;
 use Nette\Http\FileUpload;
-use Nette\SmartObject;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
@@ -38,8 +37,6 @@ use ZipArchive;
  * Scheduler configuration migration manager
  */
 class SchedulerMigrationManager {
-
-	use SmartObject;
 
 	/**
 	 * @var string Path to a directory with scheduler's configuration

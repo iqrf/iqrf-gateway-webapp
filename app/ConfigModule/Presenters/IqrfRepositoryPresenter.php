@@ -21,7 +21,6 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\IqrfRepositoryFormFactory;
-use App\ConfigModule\Models\GenericManager;
 use Nette\Application\UI\Form;
 use Nette\Utils\JsonException;
 
@@ -31,18 +30,21 @@ use Nette\Utils\JsonException;
 class IqrfRepositoryPresenter extends GenericPresenter {
 
 	/**
+	 * IQRF Gateway Daemon component name
+	 */
+	private const COMPONENT = 'iqrf::JsCache';
+
+	/**
 	 * @var IqrfRepositoryFormFactory IQRF Repository configuration form factory
 	 * @inject
 	 */
 	public $formFactory;
 
 	/**
-	 * Constructor
-	 * @param GenericManager $genericManager Generic configuration manager
+	 * Renders the IQRF Repository configurator
 	 */
-	public function __construct(GenericManager $genericManager) {
-		$components = ['iqrf::JsCache'];
-		parent::__construct($components, $genericManager);
+	public function actionDefault(): void {
+		$this->loadFormConfiguration($this['configIqrfRepositoryForm'], self::COMPONENT, null);
 	}
 
 	/**

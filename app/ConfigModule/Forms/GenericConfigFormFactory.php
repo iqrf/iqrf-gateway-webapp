@@ -26,15 +26,12 @@ use App\CoreModule\Forms\FormFactory;
 use App\CoreModule\Presenters\ProtectedPresenter;
 use Nette\Application\UI\Form;
 use Nette\IOException;
-use Nette\SmartObject;
 use Nette\Utils\JsonException;
 
 /**
  * Generic configuration form factory
  */
-class GenericConfigFormFactory {
-
-	use SmartObject;
+abstract class GenericConfigFormFactory {
 
 	/**
 	 * @var GenericManager Generic config manager
@@ -69,16 +66,19 @@ class GenericConfigFormFactory {
 	/**
 	 * Saves the generic configuration
 	 * @param Form $form Configuration form
-	 * @throws JsonException
 	 */
 	public function save(Form $form): void {
 		try {
-			$this->manager->save($form->getValues('array'));
+			$values = $form->getValues('array');
+			assert(is_array($values));
+			$this->manager->save($values);
 			$this->presenter->flashSuccess('config.messages.success');
 		} catch (NonexistentJsonSchemaException $e) {
 			$this->presenter->flashError('config.messages.writeFailures.nonExistingJsonSchema');
 		} catch (IOException $e) {
 			$this->presenter->flashError('config.messages.writeFailures.ioError');
+		} catch (JsonException $e) {
+			$this->presenter->flashError('config.messages.writeFailures.invalidJson');
 		} finally {
 			$this->presenter->redirect($this->redirect);
 		}

@@ -26,15 +26,12 @@ use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\IqrfNetModule\Requests\ApiRequest;
-use Nette\SmartObject;
 use Nette\Utils\JsonException;
 
 /**
  * DPA OS peripheral manager
  */
 class OsManager {
-
-	use SmartObject;
 
 	/**
 	 * @var ApiRequest IQRF Gateway Daemon's JSON API request

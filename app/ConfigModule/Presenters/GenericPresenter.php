@@ -24,6 +24,7 @@ use App\ConfigModule\Models\GenericManager;
 use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use App\CoreModule\Presenters\ProtectedPresenter;
 use App\CoreModule\Traits\TPresenterFlashMessage;
+use Nette\Application\UI\Form;
 use Nette\IOException;
 use Nette\Utils\JsonException;
 
@@ -35,56 +36,69 @@ abstract class GenericPresenter extends ProtectedPresenter {
 	use TPresenterFlashMessage;
 
 	/**
-	 * @var string[] IQRF Gateway Daemon's components
-	 */
-	protected $components;
-
-	/**
 	 * @var GenericManager Generic configuration manager
 	 */
-	protected $configManager;
+	protected $manager;
 
 	/**
 	 * Constructor
-	 * @param string[] $components IQRF Gateway Daemon's components
 	 * @param GenericManager $manager Generic configuration manager
 	 */
-	public function __construct(array $components, GenericManager $manager) {
-		$this->components = $components;
-		$this->configManager = $manager;
+	public function __construct(GenericManager $manager) {
+		$this->manager = $manager;
 		parent::__construct();
 	}
 
 	/**
-	 * Checks if the files are readable
+	 * Deletes the instance
+	 * @param string $component IQRF Gateway Daemon component name
+	 * @param int $id Instance ID
+	 * @param string|null $redirect Redirect destination
 	 */
-	protected function startup(): void {
-		parent::startup();
+	protected function deleteInstance(string $component, int $id, ?string $redirect = null): void {
+		$redirect = $redirect ?? 'Homepage:default';
+		$this->manager->setComponent($component);
 		try {
-			$this->checkInstanceFiles();
-		} catch (NonexistentJsonSchemaException $e) {
-			$this->flashError('config.messages.readFailures.nonExistingJsonSchema');
-			$this->redirect('Homepage:default');
+			$fileName = $this->manager->getFileNameById($id);
+			$this->manager->deleteFile($fileName);
+			$this->flashSuccess('config.messages.successes.delete');
 		} catch (IOException $e) {
-			$this->flashError('config.messages.readFailures.ioError');
-			$this->redirect('Homepage:default');
-		} catch (JsonException $e) {
-			$this->flashError('config.messages.readFailures.invalidJson');
-			$this->redirect('Homepage:default');
+			$this->flashError('config.messages.deleteFailures.ioError');
 		}
+		$this->redirect($redirect);
 	}
 
 	/**
-	 * Checks the component's instance files
-	 * @throws JsonException
+	 * Loads the configuration into the form
+	 * @param Form $form Configuration form
+	 * @param string $component IQRF Gateway Daemon component name
+	 * @param int|null $id Configuration ID
+	 * @param string|null $redirect Redirect destination
+	 * @param callable|null $load Load configuration callback
 	 */
-	private function checkInstanceFiles(): void {
-		foreach ($this->components as $component) {
-			$this->configManager->setComponent($component);
-			$files = $this->configManager->getInstanceFiles();
-			foreach ($files as $file) {
-				$this->configManager->read($file);
+	protected function loadFormConfiguration(Form $form, string $component, ?int $id, ?string $redirect = null, ?callable $load = null): void {
+		$redirect = $redirect ?? 'Homepage:default';
+		try {
+			$this->manager->setComponent($component);
+			if ($load === null) {
+				$configuration = $this->manager->load($id ?? 0);
+			} else {
+				$configuration = $load($id ?? 0);
 			}
+			if ($id !== null && $configuration === []) {
+				$this->flashError('config.messages.readFailures.notFound');
+				$this->redirect($redirect);
+			}
+			$form->setDefaults($configuration);
+		} catch (NonexistentJsonSchemaException $e) {
+			$this->flashError('config.messages.readFailures.nonExistingJsonSchema');
+			$this->redirect($redirect);
+		} catch (IOException $e) {
+			$this->flashError('config.messages.readFailures.ioError');
+			$this->redirect($redirect);
+		} catch (JsonException $e) {
+			$this->flashError('config.messages.readFailures.invalidJson');
+			$this->redirect($redirect);
 		}
 	}
 

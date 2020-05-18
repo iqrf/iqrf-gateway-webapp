@@ -24,7 +24,6 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use Nette\Caching\Cache;
 use Nette\Caching\IStorage;
-use Nette\SmartObject;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 
@@ -32,8 +31,6 @@ use Nette\Utils\JsonException;
  * Tool for getting versions of IQRF Gateway Daemon and IQRF Gateway Daemon webapp
  */
 class VersionManager {
-
-	use SmartObject;
 
 	/**
 	 * @var Cache Cache

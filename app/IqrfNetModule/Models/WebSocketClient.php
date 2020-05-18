@@ -25,7 +25,6 @@ use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\IqrfNetModule\Requests\ApiRequest;
 use App\IqrfNetModule\Responses\ApiResponse;
-use Nette\SmartObject;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 use Ratchet\Client;
@@ -40,8 +39,6 @@ use Tracy\Debugger;
  * WebSocket client
  */
 class WebSocketClient {
-
-	use SmartObject;
 
 	/**
 	 * @var EventLoop\LoopInterface Event loop

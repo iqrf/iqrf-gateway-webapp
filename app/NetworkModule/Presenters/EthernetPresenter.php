@@ -20,8 +20,10 @@ declare(strict_types = 1);
 
 namespace App\NetworkModule\Presenters;
 
+use App\CoreModule\Models\CommandManager;
 use App\NetworkModule\Datagrids\EthernetDatagridFactory;
 use App\NetworkModule\Forms\EthernetFormFactory;
+use App\NetworkModule\Models\ConnectionManager;
 use Nette\Application\UI\Form;
 use Ramsey\Uuid\Uuid;
 use Ublaboo\DataGrid\DataGrid;
@@ -45,14 +47,31 @@ class EthernetPresenter extends BasePresenter {
 	public $formFactory;
 
 	/**
+	 * @var ConnectionManager Network connection manager
+	 */
+	public $manager;
+
+	/**
+	 * Constructor
+	 * @param CommandManager $commandManager Command manager
+	 * @param ConnectionManager $manager Network connection manager
+	 */
+	public function __construct(CommandManager $commandManager, ConnectionManager $manager) {
+		parent::__construct($commandManager);
+		$this->manager = $manager;
+	}
+
+	/**
 	 * Edits the network connection configuration
 	 * @param string $uuid Network connection UUID
 	 */
-	public function renderEdit(string $uuid): void {
+	public function actionEdit(string $uuid): void {
 		if (!Uuid::isValid($uuid)) {
 			$this->flashError('network.ethernet.messages.invalidUuid');
 			$this->redirect('Ethernet:default');
 		}
+		$connection = $this->manager->get(Uuid::fromString($uuid));
+		$this['ethernetForm']->setDefaults($connection->toForm());
 	}
 
 	/**

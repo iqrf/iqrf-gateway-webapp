@@ -21,15 +21,12 @@ declare(strict_types = 1);
 namespace App\CoreModule\Models;
 
 use Nette\IOException;
-use Nette\SmartObject;
 use Nette\Utils\FileSystem;
 
 /**
  * Tool for reading and writing text files
  */
 class FileManager implements IFileManager {
-
-	use SmartObject;
 
 	/**
 	 * @var string Directory with files

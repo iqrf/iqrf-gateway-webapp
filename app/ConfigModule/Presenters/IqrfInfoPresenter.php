@@ -21,14 +21,17 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\IqrfInfoFormFactory;
-use App\ConfigModule\Models\GenericManager;
 use Nette\Application\UI\Form;
-use Nette\Utils\JsonException;
 
 /**
  * IQRF Info configuration presenter
  */
 class IqrfInfoPresenter extends GenericPresenter {
+
+	/**
+	 * IQRF Gateway Daemon component name
+	 */
+	private const COMPONENT = 'iqrf::IqrfInfo';
 
 	/**
 	 * @var IqrfInfoFormFactory IQRF Info configuration form factory
@@ -37,18 +40,15 @@ class IqrfInfoPresenter extends GenericPresenter {
 	public $formFactory;
 
 	/**
-	 * Constructor
-	 * @param GenericManager $genericManager Generic configuration manager
+	 * Renders the IQRF DPA interface configurator
 	 */
-	public function __construct(GenericManager $genericManager) {
-		$components = ['iqrf::IqrfInfo'];
-		parent::__construct($components, $genericManager);
+	public function actionDefault(): void {
+		$this->loadFormConfiguration($this['configIqrfInfoForm'], self::COMPONENT, null);
 	}
 
 	/**
 	 * Creates the IQRF Info configuration form
 	 * @return Form IQRF Info configuration form
-	 * @throws JsonException
 	 */
 	protected function createComponentConfigIqrfInfoForm(): Form {
 		return $this->formFactory->create($this);

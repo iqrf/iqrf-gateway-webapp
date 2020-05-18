@@ -22,21 +22,16 @@ namespace App\ConfigModule\Forms;
 
 use App\ConfigModule\Presenters\IqrfInfoPresenter;
 use Nette\Application\UI\Form;
-use Nette\SmartObject;
-use Nette\Utils\JsonException;
 
 /**
  * IQRF Info configuration form factory
  */
 class IqrfInfoFormFactory extends GenericConfigFormFactory {
 
-	use SmartObject;
-
 	/**
 	 * Creates the IQRF Info configuration form
 	 * @param IqrfInfoPresenter $presenter IQRF Info configuration presenter
 	 * @return Form IQRF Info configuration form
-	 * @throws JsonException
 	 */
 	public function create(IqrfInfoPresenter $presenter): Form {
 		$this->manager->setComponent('iqrf::IqrfInfo');
@@ -50,7 +45,6 @@ class IqrfInfoFormFactory extends GenericConfigFormFactory {
 		$form->addCheckbox('enumUniformDpaVer', 'enumUniformDpaVer');
 		$form->addSubmit('save', 'save');
 		$form->addProtection('core.errors.form-timeout');
-		$form->setDefaults($this->manager->load(0));
 		$form->onSuccess[] = [$this, 'save'];
 		return $form;
 	}

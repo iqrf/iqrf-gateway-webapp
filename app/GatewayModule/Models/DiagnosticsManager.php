@@ -26,7 +26,6 @@ use App\CoreModule\Models\ZipArchiveManager;
 use DateTime;
 use Nette\Application\BadRequestException;
 use Nette\Application\Responses\FileResponse;
-use Nette\SmartObject;
 use Nette\Utils\JsonException;
 use Throwable;
 
@@ -34,8 +33,6 @@ use Throwable;
  * Gateway diagnostics tool
  */
 class DiagnosticsManager {
-
-	use SmartObject;
 
 	/**
 	 * @var CommandManager Command manager

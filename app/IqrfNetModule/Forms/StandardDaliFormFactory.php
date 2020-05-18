@@ -29,15 +29,12 @@ use App\IqrfNetModule\Presenters\StandardPresenter;
 use Nette\Application\UI\Form;
 use Nette\Forms\Container;
 use Nette\Forms\Controls\SubmitButton;
-use Nette\SmartObject;
 use Nette\Utils\JsonException;
 
 /**
  * IQRF Standard DALI form factory
  */
 class StandardDaliFormFactory {
-
-	use SmartObject;
 
 	/**
 	 * @var FormFactory Generic form factory

@@ -24,14 +24,11 @@ use App\Models\Database\EntityManager;
 use Nette\Security\AuthenticationException;
 use Nette\Security\IAuthenticator;
 use Nette\Security\IIdentity;
-use Nette\SmartObject;
 
 /**
  * Custom Authenticator
  */
 class AppAuthenticator implements IAuthenticator {
-
-	use SmartObject;
 
 	/**
 	 * @var EntityManager Entity manager

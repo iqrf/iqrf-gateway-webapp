@@ -23,14 +23,11 @@ namespace App\CoreModule\Forms;
 use App\CoreModule\Presenters\SignPresenter;
 use Nette\Application\UI\Form;
 use Nette\Security\AuthenticationException;
-use Nette\SmartObject;
 
 /**
  * Sign in form factory
  */
 class SignInFormFactory {
-
-	use SmartObject;
 
 	/**
 	 * @var FormFactory Generic form factory

@@ -39,7 +39,6 @@ use App\IqrfNetModule\Responses\ApiResponse;
 use Contributte\Translation\Wrappers\NotTranslate;
 use Nette\Application\UI\Form;
 use Nette\Forms\Controls\TextArea;
-use Nette\SmartObject;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 
@@ -47,8 +46,6 @@ use Nette\Utils\JsonException;
  * Send IQRF JSON request form factory
  */
 class SendJsonFormFactory {
-
-	use SmartObject;
 
 	/**
 	 * @var FormFactory Generic form factory

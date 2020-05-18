@@ -28,7 +28,6 @@ use App\CoreModule\Models\JsonFileManager;
 use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
 use App\ServiceModule\Models\ServiceManager;
 use Nette\IOException;
-use Nette\SmartObject;
 use Nette\Utils\Finder;
 use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
@@ -39,8 +38,6 @@ use stdClass;
  * Scheduler configuration manager
  */
 class SchedulerManager {
-
-	use SmartObject;
 
 	/**
 	 * @var GenericManager Generic config manager
@@ -97,7 +94,6 @@ class SchedulerManager {
 	/**
 	 * Deletes a task
 	 * @param int $id Task ID
-	 * @throws JsonException
 	 */
 	public function delete(int $id): void {
 		$files = $this->getTaskFiles();

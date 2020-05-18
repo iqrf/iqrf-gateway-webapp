@@ -28,15 +28,12 @@ use App\IqrfNetModule\Models\StandardSensorManager;
 use App\IqrfNetModule\Presenters\StandardPresenter;
 use Nette\Application\UI\Form;
 use Nette\Forms\Controls\SubmitButton;
-use Nette\SmartObject;
 use Nette\Utils\JsonException;
 
 /**
  * IQRF Standard sensor form factory
  */
 class StandardSensorFormFactory {
-
-	use SmartObject;
 
 	/**
 	 * @var FormFactory Generic form factory

@@ -24,15 +24,12 @@ use App\CoreModule\Datagrids\DataGridFactory;
 use App\GatewayModule\Exceptions\UnsupportedPackageManagerException;
 use App\GatewayModule\Models\UpdaterManager;
 use App\GatewayModule\Presenters\UpdaterPresenter;
-use Nette\SmartObject;
 use Ublaboo\DataGrid\DataGrid;
 
 /**
  * Upgradable packages data grid
  */
 class UpgradablePackagesDataGridFactory {
-
-	use SmartObject;
 
 	/**
 	 * @var DataGridFactory Data grid factory

@@ -25,15 +25,12 @@ use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\IqrfNetModule\Requests\ApiRequest;
-use Nette\SmartObject;
 use Nette\Utils\JsonException;
 
 /**
  * Tool for managing standard binary output in the IQMESH network
  */
 class StandardBinaryOutputManager {
-
-	use SmartObject;
 
 	/**
 	 * @var ApiRequest JSON API request

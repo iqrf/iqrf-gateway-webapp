@@ -26,15 +26,12 @@ use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use App\CoreModule\Forms\FormFactory;
 use Nette\Application\UI\Form;
 use Nette\IOException;
-use Nette\SmartObject;
 use Nette\Utils\JsonException;
 
 /**
  * Main configuration form factory
  */
 class MainFormFactory {
-
-	use SmartObject;
 
 	/**
 	 * @var MainManager Main configuration manager
@@ -65,7 +62,6 @@ class MainFormFactory {
 	 * Creates the main configuration form
 	 * @param MainPresenter $presenter Main configuration presenter
 	 * @return Form Main configuration form
-	 * @throws JsonException
 	 */
 	public function create(MainPresenter $presenter): Form {
 		$this->presenter = $presenter;
@@ -78,7 +74,6 @@ class MainFormFactory {
 		$form->addText('configurationDir', 'configurationDir');
 		$form->addText('deploymentDir', 'deploymentDir');
 		$form->addSubmit('save', 'Save');
-		$form->setDefaults($this->manager->load());
 		$form->addProtection('core.errors.form-timeout');
 		$form->onSuccess[] = [$this, 'save'];
 		return $form;
@@ -91,7 +86,9 @@ class MainFormFactory {
 	 */
 	public function save(Form $form): void {
 		try {
-			$this->manager->save($form->getValues('array'));
+			$values = $form->getValues('array');
+			assert(is_array($values));
+			$this->manager->save($values);
 			$this->presenter->flashSuccess('config.messages.success');
 		} catch (NonexistentJsonSchemaException $e) {
 			$this->presenter->flashError('config.messages.writeFailures.nonExistingJsonSchema');

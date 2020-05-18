@@ -20,7 +20,6 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Models;
 
-use Nette\SmartObject;
 use Nette\Utils\Finder;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
@@ -33,8 +32,6 @@ use ZipArchive;
  * Tool for creating a new zip archive
  */
 class ZipArchiveManager {
-
-	use SmartObject;
 
 	/**
 	 * @var ZipArchive ZIP archive

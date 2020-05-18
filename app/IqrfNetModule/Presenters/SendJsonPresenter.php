@@ -35,7 +35,7 @@ class SendJsonPresenter extends ProtectedPresenter {
 	 * @var SendJsonFormFactory Send IQRF JSON request form
 	 * @inject
 	 */
-	public $sendJsonFactory;
+	public $formFactory;
 
 	/**
 	 * AJAX handler for showing IQRF JSON API request and response
@@ -68,7 +68,7 @@ class SendJsonPresenter extends ProtectedPresenter {
 	 * @return Form Send IQRF JSON API request form
 	 */
 	protected function createComponentSendJsonForm(): Form {
-		return $this->sendJsonFactory->create($this);
+		return $this->formFactory->create($this);
 	}
 
 }

@@ -22,9 +22,7 @@ namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Datagrids\MqttMessagingDataGridFactory;
 use App\ConfigModule\Forms\MqttFormFactory;
-use App\ConfigModule\Models\GenericManager;
 use Nette\Application\UI\Form;
-use Nette\IOException;
 use Nette\Utils\JsonException;
 use Ublaboo\DataGrid\DataGrid;
 use Ublaboo\DataGrid\Exception\DataGridColumnStatusException;
@@ -34,6 +32,11 @@ use Ublaboo\DataGrid\Exception\DataGridException;
  * MQTT interface configuration presenter
  */
 class MqttPresenter extends GenericPresenter {
+
+	/**
+	 * IQRF Gateway Daemon component name
+	 */
+	private const COMPONENT = 'iqrf::MqttMessaging';
 
 	/**
 	 * @var MqttFormFactory MQTT interface configuration form factory
@@ -48,37 +51,19 @@ class MqttPresenter extends GenericPresenter {
 	public $dataGridFactory;
 
 	/**
-	 * Constructor
-	 * @param GenericManager $genericManager Generic configuration manager
-	 */
-	public function __construct(GenericManager $genericManager) {
-		$components = ['iqrf::MqttMessaging'];
-		parent::__construct($components, $genericManager);
-	}
-
-	/**
 	 * Edits the MQTT interface
 	 * @param int $id ID of MQTT interface
 	 */
-	public function renderEdit(int $id): void {
-		$this->template->id = $id;
+	public function actionEdit(int $id): void {
+		$this->loadFormConfiguration($this['configMqttForm'], self::COMPONENT, $id, 'Mqtt::default');
 	}
 
 	/**
 	 * Deletes the MQTT interface
 	 * @param int $id ID of MQTT interface
-	 * @throws JsonException
 	 */
 	public function actionDelete(int $id): void {
-		$this->configManager->setComponent('iqrf::MqttMessaging');
-		try {
-			$fileName = $this->configManager->getFileNameById($id);
-			$this->configManager->deleteFile($fileName);
-			$this->flashSuccess('config.messages.successes.delete');
-		} catch (IOException $e) {
-			$this->flashError('config.messages.deleteFailures.ioError');
-		}
-		$this->redirect('Mqtt:default');
+		$this->deleteInstance(self::COMPONENT, $id, 'Mqtt:default');
 	}
 
 	/**
@@ -96,7 +81,6 @@ class MqttPresenter extends GenericPresenter {
 	/**
 	 * Creates the MQTT interface configuration form
 	 * @return Form MQTT interface configuration form
-	 * @throws JsonException
 	 */
 	protected function createComponentConfigMqttForm(): Form {
 		return $this->formFactory->create($this);

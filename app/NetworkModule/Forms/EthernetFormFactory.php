@@ -21,7 +21,6 @@ declare(strict_types = 1);
 namespace App\NetworkModule\Forms;
 
 use App\CoreModule\Forms\FormFactory;
-use App\NetworkModule\Entities\ConnectionDetail;
 use App\NetworkModule\Enums\IPv4Methods;
 use App\NetworkModule\Enums\IPv6Methods;
 use App\NetworkModule\Exceptions\NetworkManagerException;
@@ -30,20 +29,12 @@ use App\NetworkModule\Presenters\EthernetPresenter;
 use Contributte\FormMultiplier\Multiplier;
 use Nette\Application\UI\Form;
 use Nette\Forms\Container;
-use Nette\SmartObject;
 use Ramsey\Uuid\Uuid;
 
 /**
  * Ethernet network configuration form factory
  */
 class EthernetFormFactory {
-
-	use SmartObject;
-
-	/**
-	 * @var ConnectionDetail Detailed network connection entity
-	 */
-	private $connection;
 
 	/**
 	 * @var FormFactory Generic form factory
@@ -77,12 +68,9 @@ class EthernetFormFactory {
 	 */
 	public function create(EthernetPresenter $presenter): Form {
 		$this->presenter = $presenter;
-		$uuid = Uuid::fromString($this->presenter->getParameter('uuid'));
-		$this->connection = $this->manager->get($uuid);
 		$form = $this->factory->create('network.ethernet.form');
 		$this->createIpv4($form);
 		$this->createIpv6($form);
-		$form->setDefaults($this->connection->toForm());
 		$form->addGroup();
 		$form->addSubmit('save', 'save');
 		$form->onSuccess[] = [$this, 'save'];
@@ -96,7 +84,7 @@ class EthernetFormFactory {
 	private function createIpv4(Form &$form): void {
 		$form->addGroup('ipv4.title');
 		$ipv4 = $form->addContainer('ipv4');
-		$ipv4->addSelect('method', 'ipv4.method')
+		$method = $ipv4->addSelect('method', 'ipv4.method')
 			->setPrompt('ipv4.prompts.method')
 			->setRequired('ipv4.messages.method')
 			->setItems($this->getIpv4Methods())
@@ -110,7 +98,7 @@ class EthernetFormFactory {
 		$addresses->addRemoveButton('ipv4.addresses.remove')
 			->addClass('btn btn-danger');
 		$ipv4->addText('gateway', 'ipv4.gateway')
-			->addConditionOn($ipv4['method'], Form::EQUAL, 'manual')
+			->addConditionOn($method, Form::EQUAL, 'manual')
 			->setRequired('ipv4.messages.gateway');
 		/**
 		 * @var Multiplier $dns IPv4 DNS servers multiplier
@@ -198,7 +186,7 @@ class EthernetFormFactory {
 	private function getIpv4Methods(): array {
 		$methods = [];
 		foreach (IPv4Methods::getAvailableValues() as $method) {
-			$methods[$method->toScalar()] = 'ipv4.methods.' . $method->toScalar();
+			$methods[(string) $method->toScalar()] = 'ipv4.methods.' . $method->toScalar();
 		}
 		return $methods;
 	}
@@ -210,7 +198,7 @@ class EthernetFormFactory {
 	private function getIpv6Methods(): array {
 		$methods = [];
 		foreach (IPv6Methods::getAvailableValues() as $method) {
-			$methods[$method->toScalar()] = 'ipv6.methods.' . $method->toScalar();
+			$methods[(string) $method->toScalar()] = 'ipv6.methods.' . $method->toScalar();
 		}
 		return $methods;
 	}
@@ -249,8 +237,10 @@ class EthernetFormFactory {
 			return;
 		}
 		try {
-			$this->manager->edit($this->connection, $form->getValues());
-			$this->manager->up($this->connection->getUuid());
+			$uuid = Uuid::fromString($this->presenter->getParameter('uuid'));
+			$connection = $this->manager->get($uuid);
+			$this->manager->edit($connection, $form->getValues());
+			$this->manager->up($connection->getUuid());
 			$this->presenter->flashSuccess('network.ethernet.form.messages.success');
 			$this->presenter->redirect('Ethernet:default');
 		} catch (NetworkManagerException $e) {

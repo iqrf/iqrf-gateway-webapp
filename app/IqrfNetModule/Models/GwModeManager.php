@@ -25,15 +25,12 @@ use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Exceptions\InvalidOperationModeException;
 use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\IqrfNetModule\Requests\ApiRequest;
-use Nette\SmartObject;
 use Nette\Utils\JsonException;
 
 /**
  * Tool for controlling IQRF Gateway Daemon's mode
  */
 class GwModeManager {
-
-	use SmartObject;
 
 	/**
 	 * @var ApiRequest JSON API request

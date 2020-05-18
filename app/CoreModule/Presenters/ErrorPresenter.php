@@ -27,15 +27,12 @@ use Nette\Application\IResponse;
 use Nette\Application\Request;
 use Nette\Application\Responses\CallbackResponse;
 use Nette\Application\Responses\ForwardResponse;
-use Nette\SmartObject;
 use Tracy\ILogger;
 
 /**
  * Error presenter
  */
 class ErrorPresenter implements IPresenter {
-
-	use SmartObject;
 
 	/**
 	 * @var ILogger Logger

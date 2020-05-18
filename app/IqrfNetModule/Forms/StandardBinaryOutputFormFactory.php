@@ -29,15 +29,12 @@ use App\IqrfNetModule\Models\StandardBinaryOutputManager;
 use App\IqrfNetModule\Presenters\StandardPresenter;
 use Nette\Application\UI\Form;
 use Nette\Forms\Controls\SubmitButton;
-use Nette\SmartObject;
 use Nette\Utils\JsonException;
 
 /**
  * IQRF Standard binary output form factory
  */
 class StandardBinaryOutputFormFactory {
-
-	use SmartObject;
 
 	/**
 	 * @var FormFactory Generic form factory

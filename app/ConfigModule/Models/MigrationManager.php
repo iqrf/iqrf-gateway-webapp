@@ -31,7 +31,6 @@ use App\ServiceModule\Models\ServiceManager;
 use DateTime;
 use Nette\Application\BadRequestException;
 use Nette\Application\Responses\FileResponse;
-use Nette\SmartObject;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
@@ -42,8 +41,6 @@ use ZipArchive;
  * Tool for migrating configuration
  */
 class MigrationManager {
-
-	use SmartObject;
 
 	/**
 	 * @var CommandManager Command manager

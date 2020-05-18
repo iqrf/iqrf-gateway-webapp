@@ -24,12 +24,16 @@ use App\ConfigModule\Forms\IqrfCdcFormFactory;
 use App\ConfigModule\Models\GenericManager;
 use App\ConfigModule\Models\IqrfManager;
 use Nette\Application\UI\Form;
-use Nette\Utils\JsonException;
 
 /**
  * IQRF CDC configuration presenter
  */
 class IqrfCdcPresenter extends GenericPresenter {
+
+	/**
+	 * IQRF Gateway Daemon component name
+	 */
+	private const COMPONENT = 'iqrf::IqrfCdc';
 
 	/**
 	 * @var IqrfCdcFormFactory IQRF CDC interface configuration form factory
@@ -49,21 +53,20 @@ class IqrfCdcPresenter extends GenericPresenter {
 	 */
 	public function __construct(IqrfManager $iqrfManager, GenericManager $genericManager) {
 		$this->iqrfManager = $iqrfManager;
-		$components = ['iqrf::IqrfCdc'];
-		parent::__construct($components, $genericManager);
+		parent::__construct($genericManager);
 	}
 
 	/**
 	 * Renders the IQRF CDC interface configurator
 	 */
-	public function renderDefault(): void {
+	public function actionDefault(): void {
 		$this->template->interfaces = $this->iqrfManager->getCdcInterfaces();
+		$this->loadFormConfiguration($this['configIqrfCdcForm'], self::COMPONENT, null);
 	}
 
 	/**
 	 * Creates the IQRF CDC interface configuration form
 	 * @return Form IQRF CDC interface configuration form
-	 * @throws JsonException
 	 */
 	protected function createComponentConfigIqrfCdcForm(): Form {
 		return $this->formFactory->create($this);

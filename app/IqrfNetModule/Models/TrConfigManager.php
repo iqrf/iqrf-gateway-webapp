@@ -24,7 +24,6 @@ use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\IqrfNetModule\Requests\ApiRequest;
-use Nette\SmartObject;
 use Nette\Utils\Arrays;
 use Nette\Utils\JsonException;
 
@@ -32,8 +31,6 @@ use Nette\Utils\JsonException;
  * Tool for managing TR configuration
  */
 class TrConfigManager {
-
-	use SmartObject;
 
 	/**
 	 * @var ApiRequest JSON API request

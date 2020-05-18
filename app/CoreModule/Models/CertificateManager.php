@@ -20,14 +20,10 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Models;
 
-use Nette\SmartObject;
-
 /**
  * Tool for managing certificates
  */
 class CertificateManager {
-
-	use SmartObject;
 
 	/**
 	 * Checks if a certificate corresponds to a CA certificate

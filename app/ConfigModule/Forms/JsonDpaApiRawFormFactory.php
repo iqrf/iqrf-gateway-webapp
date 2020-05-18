@@ -22,21 +22,16 @@ namespace App\ConfigModule\Forms;
 
 use App\ConfigModule\Presenters\JsonRawApiPresenter;
 use Nette\Application\UI\Form;
-use Nette\SmartObject;
-use Nette\Utils\JsonException;
 
 /**
  * JSON Raw API configuration form factory
  */
 class JsonDpaApiRawFormFactory extends GenericConfigFormFactory {
 
-	use SmartObject;
-
 	/**
 	 * Creates the JSON Raw API configuration form
 	 * @param JsonRawApiPresenter $presenter JSON Raw API configuration presenter
 	 * @return Form JSON Raw API configuration form
-	 * @throws JsonException
 	 */
 	public function create(JsonRawApiPresenter $presenter): Form {
 		$this->manager->setComponent('iqrf::JsonDpaApiRaw');
@@ -47,7 +42,6 @@ class JsonDpaApiRawFormFactory extends GenericConfigFormFactory {
 		$form->addCheckbox('asyncDpaMessage', 'asyncDpaMessage');
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');
-		$form->setDefaults($this->manager->load(0));
 		$form->onSuccess[] = [$this, 'save'];
 		return $form;
 	}

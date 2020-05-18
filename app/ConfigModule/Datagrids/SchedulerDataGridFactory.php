@@ -23,7 +23,6 @@ namespace App\ConfigModule\Datagrids;
 use App\ConfigModule\Models\SchedulerManager;
 use App\ConfigModule\Presenters\SchedulerPresenter;
 use App\CoreModule\Datagrids\DataGridFactory;
-use Nette\SmartObject;
 use Nette\Utils\JsonException;
 use Ublaboo\DataGrid\Column\Action\Confirmation\StringConfirmation;
 use Ublaboo\DataGrid\DataGrid;
@@ -33,8 +32,6 @@ use Ublaboo\DataGrid\Exception\DataGridException;
  * Scheduler's tasks data grid
  */
 class SchedulerDataGridFactory {
-
-	use SmartObject;
 
 	/**
 	 * @var SchedulerManager Scheduler's tasks manager

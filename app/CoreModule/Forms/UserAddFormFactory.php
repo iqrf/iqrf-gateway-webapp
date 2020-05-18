@@ -26,14 +26,16 @@ use App\CoreModule\Presenters\BasePresenter;
 use App\CoreModule\Presenters\UserPresenter;
 use App\InstallModule\Presenters\CreateUserPresenter;
 use Nette\Application\UI\Form;
-use Nette\SmartObject;
 
 /**
  * Register a new user form factory
  */
 class UserAddFormFactory {
 
-	use SmartObject;
+	/**
+	 * Translation prefix
+	 */
+	private const PREFIX = 'core.user';
 
 	/**
 	 * @var FormFactory Generic form factory
@@ -67,7 +69,7 @@ class UserAddFormFactory {
 	 */
 	public function create(BasePresenter $presenter): Form {
 		$this->presenter = $presenter;
-		$form = $this->factory->create('core.user.form');
+		$form = $this->factory->create(self::PREFIX);
 		$form->addText('username', 'username')
 			->setRequired('messages.username');
 		$form->addPassword('password', 'password')
@@ -77,7 +79,7 @@ class UserAddFormFactory {
 			$form->addSelect('userType', 'userType', $this->getUserTypes());
 			$form->addSelect('language', 'language', $this->getLanguages());
 		}
-		$form->addSubmit('add', 'add');
+		$form->addSubmit('add', 'add.submit');
 		$form->onSuccess[] = [$this, 'add'];
 		return $form;
 	}
@@ -134,7 +136,7 @@ class UserAddFormFactory {
 				$this->presenter->redirect(':Core:Homepage:default');
 			}
 		} catch (UsernameAlreadyExistsException $e) {
-			$this->presenter->flashMessage('core.user.form.messages.usernameAlreadyExists', 'danger');
+			$this->presenter->flashMessage(self::PREFIX . '.messages.usernameAlreadyExists', 'danger');
 		}
 	}
 

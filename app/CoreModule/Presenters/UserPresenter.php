@@ -73,8 +73,13 @@ class UserPresenter extends ProtectedPresenter {
 	 * Renders the form for editing users
 	 * @param int $id User ID
 	 */
-	public function renderEdit(int $id): void {
-		$this->template->id = $id;
+	public function actionEdit(int $id): void {
+		$defaults = $this->userManager->getInfo($id);
+		if ($defaults === null) {
+			$this->flashError('core.user.messages.notFound');
+			$this->redirect('User:default');
+		}
+		$this['userEditForm']->setDefaults($defaults);
 	}
 
 	/**
@@ -87,7 +92,7 @@ class UserPresenter extends ProtectedPresenter {
 		if ($this->getUser()->getId() === $id) {
 			$this->getUser()->logout(true);
 		}
-		$message = $this->translator->translate('core.user.form.messages.successDelete', ['username' => $user['username']]);
+		$message = $this->translator->translate('core.user.messages.successDelete', ['username' => $user['username']]);
 		$this->flashSuccess($message);
 		$this->redirect('User:default');
 	}

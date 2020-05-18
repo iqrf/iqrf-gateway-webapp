@@ -30,15 +30,12 @@ use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
 use Nette\Application\UI\Form;
 use Nette\Forms\Controls\SubmitButton;
 use Nette\IOException;
-use Nette\SmartObject;
 use Nette\Utils\JsonException;
 
 /**
  * Configuration migration form factory
  */
 class MigrationFormFactory {
-
-	use SmartObject;
 
 	/**
 	 * @var MigrationManager Configuration migration manager
@@ -92,7 +89,9 @@ class MigrationFormFactory {
 	 */
 	public function import(SubmitButton $button): void {
 		try {
-			$this->manager->upload($button->getForm()->getValues('array'));
+			$values = $button->getForm()->getValues('array');
+			assert(is_array($values));
+			$this->manager->upload($values);
 			$this->presenter->flashSuccess('config.migration.messages.importedConfig');
 		} catch (IncompleteConfigurationException $e) {
 			$this->presenter->flashError('config.migration.errors.invalidConfig');

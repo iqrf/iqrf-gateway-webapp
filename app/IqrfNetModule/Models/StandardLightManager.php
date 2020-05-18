@@ -25,15 +25,12 @@ use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\IqrfNetModule\Requests\ApiRequest;
-use Nette\SmartObject;
 use Nette\Utils\JsonException;
 
 /**
  * Tool for managing standard lights in the IQMESH network
  */
 class StandardLightManager {
-
-	use SmartObject;
 
 	/**
 	 * @var ApiRequest JSON API request

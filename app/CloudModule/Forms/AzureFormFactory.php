@@ -26,14 +26,11 @@ use App\CoreModule\Forms\FormFactory;
 use App\ServiceModule\Models\ServiceManager;
 use Nette\Application\UI\Form;
 use Nette\Forms\Controls\SubmitButton;
-use Nette\SmartObject;
 
 /**
  * Form for creating MQTT connection into Microsoft Azure IoT Hub
  */
 class AzureFormFactory extends CloudFormFactory {
-
-	use SmartObject;
 
 	/**
 	 * Constructor

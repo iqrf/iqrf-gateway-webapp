@@ -29,7 +29,6 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use Nette\Http\FileUpload;
 use Nette\IOException;
-use Nette\SmartObject;
 use Nette\Utils\FileSystem;
 use Nette\Utils\JsonException;
 
@@ -37,8 +36,6 @@ use Nette\Utils\JsonException;
  * Tool for managing Amazon AWS IoT
  */
 class AwsManager implements IManager {
-
-	use SmartObject;
 
 	/**
 	 * CA certificate filename

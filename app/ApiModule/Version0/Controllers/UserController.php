@@ -139,13 +139,18 @@ class UserController extends BaseController {
 		} catch (Throwable $e) {
 			return $response->withStatus(500);
 		}
-		$token = $this->configuration->createBuilder()
-			->issuedBy(gethostname())
-			->identifiedBy(gethostname())
+		$hostname = gethostname();
+		$builder = $this->configuration->createBuilder()
 			->issuedAt($now)
 			->expiresAt($now->modify('+1 day'))
-			->withClaim('uid', $this->user->getId())
-			->getToken($this->configuration->getSigner(), $this->configuration->getSigningKey());
+			->withClaim('uid', $this->user->getId());
+		if ($hostname !== false) {
+			$builder->issuedBy($hostname)
+				->identifiedBy($hostname);
+		}
+		$signer = $this->configuration->getSigner();
+		$signingKey = $this->configuration->getSigningKey();
+		$token = $builder->getToken($signer, $signingKey);
 		return $response->writeJsonBody(['token' => (string) $token]);
 	}
 

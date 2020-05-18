@@ -25,14 +25,16 @@ use App\CoreModule\Exceptions\UsernameAlreadyExistsException;
 use App\CoreModule\Models\UserManager;
 use App\CoreModule\Presenters\UserPresenter;
 use Nette\Application\UI\Form;
-use Nette\SmartObject;
 
 /**
  * Edit an existing user form factory
  */
 class UserEditFormFactory {
 
-	use SmartObject;
+	/**
+	 * Translation prefix
+	 */
+	private const PREFIX = 'core.user';
 
 	/**
 	 * @var FormFactory Generic form factory
@@ -72,6 +74,7 @@ class UserEditFormFactory {
 	public function create(UserPresenter $presenter): Form {
 		$this->presenter = $presenter;
 		$this->id = (int) $presenter->getParameter('id');
+		$user = $presenter->getUser();
 		$userTypes = [
 			'normal' => 'userTypes.normal',
 			'power' => 'userTypes.power',
@@ -79,14 +82,14 @@ class UserEditFormFactory {
 		$languages = [
 			'en' => 'languages.en',
 		];
-		$form = $this->factory->create('core.user.form');
+		$form = $this->factory->create(self::PREFIX);
 		$form->addText('username', 'username')
 			->setRequired('messages.username');
-		if ($this->presenter->getUser()->isInRole('power')) {
+		if ($user->isInRole('power')) {
 			$form->addSelect('role', 'userType', $userTypes);
 			$form->addSelect('language', 'language', $languages);
 		}
-		if ($this->presenter->getUser()->getId() === $this->id) {
+		if ($user->getId() === $this->id) {
 			$oldPassword = $form->addPassword('oldPassword', 'oldPassword');
 			$newPassword = $form->addPassword('newPassword', 'newPassword');
 			$oldPassword->addConditionOn($newPassword, Form::FILLED)
@@ -94,7 +97,6 @@ class UserEditFormFactory {
 			$newPassword->addConditionOn($oldPassword, Form::FILLED)
 				->setRequired('messages.newPassword');
 		}
-		$form->setDefaults($this->userManager->getInfo($this->id));
 		$form->addProtection('core.errors.form-timeout');
 		$form->addSubmit('save', 'save');
 		$form->onSuccess[] = [$this, 'save'];
@@ -124,9 +126,9 @@ class UserEditFormFactory {
 			$this->presenter->flashSuccess($message);
 			$this->presenter->redirect('User:default');
 		} catch (UsernameAlreadyExistsException $e) {
-			$this->presenter->flashError('core.user.form.messages.usernameAlreadyExists');
+			$this->presenter->flashError(self::PREFIX . '.messages.usernameAlreadyExists');
 		} catch (InvalidPasswordException $e) {
-			$this->presenter->flashError('core.user.form.messages.invalidOldPassword');
+			$this->presenter->flashError(self::PREFIX . '.messages.invalidOldPassword');
 		}
 	}
 

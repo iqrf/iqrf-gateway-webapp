@@ -72,34 +72,34 @@ user:
 	description: Manage users of this webapp.
 	add:
 		title: Add a new user
+		submit: Add
 	edit:
 		title: Edit an existing user
-	form:
-		id: User ID
-		username: User name
-		password: Password
-		userType: User type
-		userTypes:
-			normal: Normal user
-			power: Power user
-		language: Language
-		languages:
-			en: English
-		oldPassword: 'Old password (only if you want change password)'
-		newPassword: 'New password (only if you want change password)'
-		add: Add
-		save: Save
-		messages:
-			confirmDelete: Do you really want to delete user %s?
-			username: Please enter the username.
-			password: Please enter the password.
-			successAdd: User %username% has been added successfully.
-			successDelete: User %username% has been deleted successfully.
-			successEdit: User %username% has been edited successfully.
-			oldPassword: Please enter the old password.
-			newPassword: Please enter the new password.
-			invalidOldPassword: The old password is mismatched.
-			usernameAlreadyExists: Username is already used.
+	id: User ID
+	username: User name
+	password: Password
+	userType: User type
+	userTypes:
+		normal: Normal user
+		power: Power user
+	language: Language
+	languages:
+		en: English
+	oldPassword: 'Old password (only if you want change password)'
+	newPassword: 'New password (only if you want change password)'
+	save: Save
+	messages:
+		username: Please enter the username.
+		password: Please enter the password.
+		successAdd: User %username% has been added successfully.
+		successEdit: User %username% has been edited successfully.
+		oldPassword: Please enter the old password.
+		newPassword: Please enter the new password.
+		invalidOldPassword: The old password is mismatched.
+		usernameAlreadyExists: Username is already used.
+		confirmDelete: Do you really want to delete user %s?
+		successDelete: User %username% has been deleted successfully.
+		notFound: User not found.
 
 update:
 	available-webapp: 'There is an available update of the webapp to the version %version%.'

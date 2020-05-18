@@ -54,46 +54,36 @@ class ComponentPresenter extends ProtectedPresenter {
 	/**
 	 * @var ComponentManager Component manager
 	 */
-	private $configManager;
+	private $manager;
 
 	/**
 	 * Constructor
 	 * @param ComponentManager $componentManager Component manager
 	 */
 	public function __construct(ComponentManager $componentManager) {
-		$this->configManager = $componentManager;
+		$this->manager = $componentManager;
 		parent::__construct();
-	}
-
-	/**
-	 * Catches exceptions
-	 */
-	public function actionDefault(): void {
-		try {
-			$this->configManager->list();
-		} catch (IOException $e) {
-			$this->flashError('config.messages.readFailures.ioError');
-			$this->redirect('Homepage:default');
-		} catch (JsonException $e) {
-			$this->flashError('config.messages.readFailures.invalidJson');
-			$this->redirect('Homepage:default');
-		}
-	}
-
-	/**
-	 * Renders a list of components
-	 * @throws JsonException
-	 */
-	public function renderDefault(): void {
-		$this->template->components = $this->configManager->list();
 	}
 
 	/**
 	 * Edits the component
 	 * @param int $id Component ID
 	 */
-	public function renderEdit(int $id): void {
-		$this->template->id = $id;
+	public function actionEdit(int $id): void {
+		try {
+			$configuration = $this->manager->load($id);
+			if ($configuration === []) {
+				$this->flashError('config.messages.readFailures.notFound');
+				$this->redirect('Component:default');
+			}
+			$this['configComponentsForm']->setDefaults($configuration);
+		} catch (IOException $e) {
+			$this->flashError('config.messages.readFailures.ioError');
+			$this->redirect('Component:default');
+		} catch (JsonException $e) {
+			$this->flashError('config.messages.readFailures.invalidJson');
+			$this->redirect('Component:default');
+		}
 	}
 
 	/**
@@ -104,7 +94,7 @@ class ComponentPresenter extends ProtectedPresenter {
 	public function actionDelete(int $id): void {
 		if ($this->getUser()->isInRole('power')) {
 			try {
-				$this->configManager->delete($id);
+				$this->manager->delete($id);
 				$this->flashSuccess('config.messages.successes.delete');
 			} catch (IOException $e) {
 				$this->flashError('config.messages.deleteFailures.ioError');
@@ -128,7 +118,6 @@ class ComponentPresenter extends ProtectedPresenter {
 	/**
 	 * Creates the components configuration form
 	 * @return Form Components configuration form
-	 * @throws JsonException
 	 */
 	protected function createComponentConfigComponentsForm(): Form {
 		return $this->formFactory->create($this);

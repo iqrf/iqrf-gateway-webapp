@@ -23,16 +23,11 @@ namespace App\ConfigModule\Forms;
 use App\ConfigModule\Presenters\TracerPresenter;
 use Nette\Application\UI\Form;
 use Nette\Forms\Container;
-use Nette\SmartObject;
-use Nette\Utils\JsonException;
-use Nette\Utils\Strings;
 
 /**
  * Tracer configuration form factory
  */
 class TraceFileFormFactory extends GenericConfigFormFactory {
-
-	use SmartObject;
 
 	/**
 	 * @var string[] Verbosity levels
@@ -61,14 +56,13 @@ class TraceFileFormFactory extends GenericConfigFormFactory {
 		$form->addInteger('maxSizeMB', 'maxSizeMB');
 		$form->addCheckbox('timestampFiles', 'timestampFiles');
 		$form->addGroup('verbosityLevels.title');
-		$verbosityLevels = $form->addMultiplier('VerbosityLevels', [$this, 'createVerbosityLevelsMultiplier'], 1);
+		$verbosityLevels = $form->addMultiplier('VerbosityLevels', [$this, 'createVerbosityLevelsMultiplier'], 0);
 		$verbosityLevels->addCreateButton('verbosityLevels.add')
 			->addClass('btn btn-success');
 		$verbosityLevels->addRemoveButton('verbosityLevels.remove')
 			->addClass('btn btn-danger');
 		$form->addGroup();
 		$form->addSubmit('save', 'Save');
-		$form->setDefaults($this->load());
 		$form->addProtection('core.errors.form-timeout');
 		$form->onSuccess[] = [$this, 'save'];
 		return $form;
@@ -84,28 +78,6 @@ class TraceFileFormFactory extends GenericConfigFormFactory {
 		$container->addSelect('level', 'level', $this->verbosityLevels)
 			->setRequired('messages.verbosityLevels.level')
 			->setPrompt('messages.verbosityLevels.level');
-	}
-
-	/**
-	 * Loads the tracer configuration
-	 * @return mixed[] Tracer configuration
-	 */
-	private function load(): array {
-		$id = (int) $this->presenter->getParameter('id');
-		try {
-			$defaults = $this->manager->load($id);
-			foreach ($defaults['VerbosityLevels'] as &$verbosityLevel) {
-				$level = Strings::upper($verbosityLevel['level']);
-				if (array_key_exists($level, $this->verbosityLevels)) {
-					$verbosityLevel['level'] = $level;
-				} else {
-					unset($verbosityLevel['level']);
-				}
-			}
-		} catch (JsonException $e) {
-			$defaults = [];
-		}
-		return $defaults;
 	}
 
 }

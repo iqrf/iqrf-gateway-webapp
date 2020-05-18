@@ -73,8 +73,8 @@ class JwtAuthenticator implements IAuthenticator {
 			$token->isExpired($now) ||
 			!$token->claims()->has('uid') ||
 			!$token->hasBeenIssuedBefore($now) ||
-			!$token->hasBeenIssuedBy($hostname) ||
-			!$token->isIdentifiedBy($hostname)) {
+			!($hostname !== false && $token->hasBeenIssuedBy($hostname) &&
+				$token->isIdentifiedBy($hostname))) {
 			return null;
 		}
 		try {

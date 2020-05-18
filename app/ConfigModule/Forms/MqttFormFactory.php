@@ -22,21 +22,16 @@ namespace App\ConfigModule\Forms;
 
 use App\ConfigModule\Presenters\MqttPresenter;
 use Nette\Application\UI\Form;
-use Nette\SmartObject;
-use Nette\Utils\JsonException;
 
 /**
  * MQTT interface configuration form factory
  */
 class MqttFormFactory extends GenericConfigFormFactory {
 
-	use SmartObject;
-
 	/**
 	 * Creates the MQTT interface configuration form
 	 * @param MqttPresenter $presenter MQTT interface configuration presenter
 	 * @return Form MQTT interface configuration form
-	 * @throws JsonException
 	 */
 	public function create(MqttPresenter $presenter): Form {
 		$this->manager->setComponent('iqrf::MqttMessaging');
@@ -78,10 +73,6 @@ class MqttFormFactory extends GenericConfigFormFactory {
 		$form->addCheckbox('acceptAsyncMsg', 'acceptAsyncMsg');
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');
-		$id = $presenter->getParameter('id');
-		if (isset($id)) {
-			$form->setDefaults($this->manager->load((int) $id));
-		}
 		$form->onSuccess[] = [$this, 'save'];
 		return $form;
 	}

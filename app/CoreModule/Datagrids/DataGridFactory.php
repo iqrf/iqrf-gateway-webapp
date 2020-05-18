@@ -22,15 +22,12 @@ namespace App\CoreModule\Datagrids;
 
 use App\CoreModule\Presenters\BasePresenter;
 use Nette\Localization\ITranslator;
-use Nette\SmartObject;
 use Ublaboo\DataGrid\DataGrid;
 
 /**
  * Generic data grid factory
  */
 class DataGridFactory {
-
-	use SmartObject;
 
 	/**
 	 * @var ITranslator Translator

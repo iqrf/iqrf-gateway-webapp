@@ -24,15 +24,12 @@ use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\IqrfNetModule\Requests\ApiRequest;
-use Nette\SmartObject;
 use Nette\Utils\JsonException;
 
 /**
  * Tool for managing standard DALI devices in the IQMESH network
  */
 class StandardDaliManager {
-
-	use SmartObject;
 
 	/**
 	 * @var ApiRequest JSON API request

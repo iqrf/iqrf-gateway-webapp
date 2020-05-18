@@ -22,7 +22,6 @@ namespace App\ConfigModule\Models;
 
 use App\CoreModule\Models\JsonFileManager;
 use Nette\IOException;
-use Nette\SmartObject;
 use Nette\Utils\Arrays;
 use Nette\Utils\Finder;
 use Nette\Utils\Json;
@@ -33,8 +32,6 @@ use Nette\Utils\Strings;
  * Generic configuration form factory
  */
 class GenericManager {
-
-	use SmartObject;
 
 	/**
 	 * @var string Component type
@@ -136,6 +133,7 @@ class GenericManager {
 	 * @return mixed[] Configuration in an array
 	 * @throws IOException
 	 * @throws JsonException
+	 * @todo Handle nonexistent IDs
 	 */
 	public function load(int $id): array {
 		$this->fileName = $this->getFileNameById($id);
@@ -263,7 +261,6 @@ class GenericManager {
 	 * Returns instance file name from instance ID
 	 * @param int $id Instance ID
 	 * @return string|null File name
-	 * @throws JsonException
 	 */
 	public function getFileNameById(int $id): ?string {
 		$instanceFiles = $this->getInstanceFiles();
@@ -273,7 +270,6 @@ class GenericManager {
 	/**
 	 * Gets available messagings
 	 * @return string[][] Available messagings
-	 * @throws JsonException
 	 */
 	public function getMessagings(): array {
 		$components = [
@@ -293,7 +289,6 @@ class GenericManager {
 	 * Gets available instances of component
 	 * @param string $component Component
 	 * @return string[] Available instances of component
-	 * @throws JsonException
 	 */
 	public function getComponentInstances(string $component): array {
 		$instances = [];

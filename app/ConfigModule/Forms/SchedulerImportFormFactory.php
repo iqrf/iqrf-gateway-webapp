@@ -32,7 +32,6 @@ use App\ServiceModule\Models\ServiceManager;
 use Nette\Application\UI\Form;
 use Nette\Http\FileUpload;
 use Nette\IOException;
-use Nette\SmartObject;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 
@@ -40,8 +39,6 @@ use Nette\Utils\JsonException;
  * Scheduler's task import form factory
  */
 class SchedulerImportFormFactory {
-
-	use SmartObject;
 
 	/**
 	 * @var FormFactory Generic form factory

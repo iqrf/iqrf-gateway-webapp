@@ -27,7 +27,6 @@ use App\IqrfNetModule\Models\BondingManager;
 use App\IqrfNetModule\Presenters\NetworkPresenter;
 use Nette\Application\UI\Form;
 use Nette\Forms\Controls\SubmitButton;
-use Nette\SmartObject;
 use Nette\Utils\JsonException;
 
 /**
@@ -35,7 +34,10 @@ use Nette\Utils\JsonException;
  */
 class BondingFormFactory {
 
-	use SmartObject;
+	/**
+	 * Translation prefix
+	 */
+	private const PREFIX = 'iqrfnet.bonding';
 
 	/**
 	 * @var BondingManager IQMESH Bonding manager
@@ -70,13 +72,14 @@ class BondingFormFactory {
 	public function create(NetworkPresenter $presenter): Form {
 		$this->presenter = $presenter;
 		$translator = $presenter->getTranslator();
-		$form = $this->factory->create('iqrfnet.bonding');
+		$form = $this->factory->create(self::PREFIX);
 		$form->addGroup();
-		$form->addSelect('method', 'method', $this->getBondingMethods())
-			->addCondition(Form::EQUAL, 'smartConnect')
+		$method = $form->addSelect('method', 'method', $this->getBondingMethods());
+		$method->addCondition(Form::EQUAL, 'smartConnect')
 			->toggle('smartConnect', true)
 			->elseCondition()
-			->toggle('smartConnect', false);
+			->toggle('smartConnect', false)
+			->endCondition();
 		$address = $form->addInteger('address', 'address')
 			->setDefaultValue(1);
 		$autoAddress = $form->addCheckbox('autoAddress', 'autoAddress');
@@ -85,19 +88,23 @@ class BondingFormFactory {
 			->setRequired('messages.address');
 		$form->addInteger('testRetries', 'testRetries')
 			->setDefaultValue(1);
-		$this->addSmartConnectInputs($form);
+		$form->addGroup()->setOption('id', 'smartConnect');
+		$form->addText('smartConnectCode', 'smartConnectCode')
+			->addConditionOn($method, Form::EQUAL, 'smartConnect')
+			->setRequired('messages.smartConnectCode');
+		$form->addGroup();
 		$form->addCheckbox('coordinatorOnly', 'coordinatorOnly');
 		$form->addProtection('core.errors.form-timeout');
 		$form->addSubmit('add', 'addBond')
 			->setHtmlAttribute('class', 'ajax')
 			->onClick[] = [$this, 'addBond'];
-		$confirmMessage = $translator->translate('iqrfnet.bonding.messages.remove.confirm');
+		$confirmMessage = $translator->translate(self::PREFIX . '.messages.remove.confirm');
 		$form->addSubmit('remove', 'removeBond')
 			->setHtmlAttribute('class', 'ajax')
 			->setHtmlId('frm-iqrfNetBondingForm-removeBond')
 			->setHtmlAttribute('data-confirm', $confirmMessage)
 			->onClick[] = [$this, 'removeBond'];
-		$confirmMessage = $translator->translate('iqrfnet.bonding.messages.clearAll.confirm');
+		$confirmMessage = $translator->translate(self::PREFIX . '.messages.clearAll.confirm');
 		$form->addSubmit('clear', 'clearAllBonds')
 			->setHtmlAttribute('class', 'ajax')
 			->setHtmlId('frm-iqrfNetBondingForm-clearAllBonds')
@@ -121,18 +128,6 @@ class BondingFormFactory {
 	}
 
 	/**
-	 * Add inputs fo IQRF SmartConnect
-	 * @param Form $form IQMESH Bonding form
-	 */
-	private function addSmartConnectInputs(Form $form): void {
-		$form->addGroup()->setOption('id', 'smartConnect');
-		$form->addText('smartConnectCode', 'smartConnectCode')
-			->addConditionOn($form['method'], Form::EQUAL, 'smartConnect')
-			->setRequired('messages.smartConnectCode');
-		$form->addGroup();
-	}
-
-	/**
 	 * Adds a new bond
 	 * @param SubmitButton $button Submit button for adding a new bond
 	 */
@@ -150,9 +145,9 @@ class BondingFormFactory {
 					$this->manager->bondSmartConnect($address, $code, $testRetries);
 					break;
 			}
-			$this->presenter->flashSuccess('iqrfnet.bonding.messages.add.success');
+			$this->presenter->flashSuccess(self::PREFIX . '.messages.add.success');
 		} catch (EmptyResponseException | DpaErrorException | JsonException $e) {
-			$this->presenter->flashError('iqrfnet.bonding.messages.add.failure');
+			$this->presenter->flashError(self::PREFIX . '.messages.add.failure');
 		}
 		$this->presenter->handleShowNodes();
 	}
@@ -165,9 +160,9 @@ class BondingFormFactory {
 		$values = $button->getForm()->getValues();
 		try {
 			$this->manager->clearAll($values->coordinatorOnly);
-			$this->presenter->flashSuccess('iqrfnet.bonding.messages.clearAll.success');
+			$this->presenter->flashSuccess(self::PREFIX . '.messages.clearAll.success');
 		} catch (EmptyResponseException | DpaErrorException | JsonException $e) {
-			$this->presenter->flashError('iqrfnet.bonding.messages.clearAll.failure');
+			$this->presenter->flashError(self::PREFIX . '.messages.clearAll.failure');
 		}
 		$this->presenter->handleShowNodes();
 	}
@@ -185,9 +180,9 @@ class BondingFormFactory {
 		}
 		try {
 			$this->manager->remove($values->address, $values->coordinatorOnly);
-			$this->presenter->flashSuccess('iqrfnet.bonding.messages.remove.success');
+			$this->presenter->flashSuccess(self::PREFIX . '.messages.remove.success');
 		} catch (EmptyResponseException | DpaErrorException | JsonException $e) {
-			$this->presenter->flashError('iqrfnet.bonding.messages.remove.failure');
+			$this->presenter->flashError(self::PREFIX . '.messages.remove.failure');
 		}
 		$this->presenter->handleShowNodes();
 	}

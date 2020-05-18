@@ -22,21 +22,16 @@ namespace App\ConfigModule\Forms;
 
 use App\ConfigModule\Presenters\JsonSplitterPresenter;
 use Nette\Application\UI\Form;
-use Nette\SmartObject;
-use Nette\Utils\JsonException;
 
 /**
  * JSON Splitter form factory
  */
 class JsonSplitterFormFactory extends GenericConfigFormFactory {
 
-	use SmartObject;
-
 	/**
 	 * Creates the JSON splitter service configuration form
 	 * @param JsonSplitterPresenter $presenter JSON Splitter configuration presenter
 	 * @return Form JSON splitter configuration form
-	 * @throws JsonException
 	 */
 	public function create(JsonSplitterPresenter $presenter): Form {
 		$this->manager->setComponent('iqrf::JsonSplitter');
@@ -47,7 +42,6 @@ class JsonSplitterFormFactory extends GenericConfigFormFactory {
 		$form->addCheckbox('validateJsonResponse', 'validateJsonResponse');
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');
-		$form->setDefaults($this->manager->load(0));
 		$form->onSuccess[] = [$this, 'save'];
 		return $form;
 	}

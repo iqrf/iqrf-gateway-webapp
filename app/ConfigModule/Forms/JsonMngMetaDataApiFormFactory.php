@@ -22,21 +22,16 @@ namespace App\ConfigModule\Forms;
 
 use App\ConfigModule\Presenters\JsonMngMetaDataApiPresenter;
 use Nette\Application\UI\Form;
-use Nette\SmartObject;
-use Nette\Utils\JsonException;
 
 /**
  * JSON Metadata API configuration form factory
  */
 class JsonMngMetaDataApiFormFactory extends GenericConfigFormFactory {
 
-	use SmartObject;
-
 	/**
 	 * Creates the JSON Metadata API configuration form
 	 * @param JsonMngMetaDataApiPresenter $presenter JSON Metadata API configuration presenter
 	 * @return Form JSON Metadata API configuration form
-	 * @throws JsonException
 	 */
 	public function create(JsonMngMetaDataApiPresenter $presenter): Form {
 		$this->manager->setComponent('iqrf::JsonMngMetaDataApi');
@@ -47,7 +42,6 @@ class JsonMngMetaDataApiFormFactory extends GenericConfigFormFactory {
 		$form->addCheckbox('metaDataToMessages', 'metaDataToMessages');
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');
-		$form->setDefaults($this->manager->load(0));
 		$form->onSuccess[] = [$this, 'save'];
 		return $form;
 	}

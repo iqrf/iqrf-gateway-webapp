@@ -78,15 +78,6 @@ class SignPresenter extends BasePresenter {
 	}
 
 	/**
-	 * Renders sign in page
-	 */
-	public function renderIn(): void {
-		if ($this->getUser()->isLoggedIn()) {
-			$this->redirect('Homepage:');
-		}
-	}
-
-	/**
 	 * Creates the sign in form
 	 * @return Form Sign in form
 	 */

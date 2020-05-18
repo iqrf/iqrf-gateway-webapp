@@ -48,7 +48,7 @@ class Error4xxPresenter extends BasePresenter {
 		$directory = __DIR__ . '/../templates/Error/';
 		$file = $directory . $exception->getCode() . '.latte';
 		$template = is_file($file) ? $file : $directory . '4xx.latte';
-		$this->template->setFile($template);
+		$this->getTemplate()->setFile($template);
 	}
 
 }

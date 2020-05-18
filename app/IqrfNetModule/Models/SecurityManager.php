@@ -26,7 +26,6 @@ use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Exceptions\UnsupportedInputFormatException;
 use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\IqrfNetModule\Requests\ApiRequest;
-use Nette\SmartObject;
 use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
 
@@ -34,8 +33,6 @@ use Nette\Utils\Strings;
  * Tool for setting an access password and an user key
  */
 class SecurityManager {
-
-	use SmartObject;
 
 	/**
 	 * @var ApiRequest JSON API request

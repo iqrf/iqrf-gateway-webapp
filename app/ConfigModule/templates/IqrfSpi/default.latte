@@ -34,14 +34,12 @@
 				   role='button' {foreach $pin as $pinName => $pinNumber} data-{$pinName}={$pinNumber}{/foreach}>{$board}</a>
 			{/foreach}
 		</div>
-		<div class='col-md-6'>
+		<div n:if='$interfaces !== []' class='col-md-6'>
 			<h4>{_config.interfaceMapping.interfaces}</h4>
-			{if !empty($interfaces)}
-				{foreach $interfaces as $interface}
-					<a class='btn btn-default btn-spi-port' role='button'
-					   data-port='{$interface}'>{$interface}</a>
-				{/foreach}
-			{/if}
+			{foreach $interfaces as $interface}
+				<a class='btn btn-default btn-spi-port' role='button'
+				   data-port='{$interface}'>{$interface}</a>
+			{/foreach}
 		</div>
 	</section>
 </div>

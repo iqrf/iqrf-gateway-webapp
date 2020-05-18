@@ -37,18 +37,14 @@ use Nette\Forms\Container;
 use Nette\Forms\Controls\SubmitButton;
 use Nette\Forms\Controls\TextArea;
 use Nette\IOException;
-use Nette\SmartObject;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
-use stdClass;
 use Throwable;
 
 /**
  * Scheduler's task configuration form factory
  */
 class SchedulerFormFactory {
-
-	use SmartObject;
 
 	/**
 	 * @var SchedulerManager Scheduler manager
@@ -125,7 +121,7 @@ class SchedulerFormFactory {
 		/**
 		 * @var Multiplier $tasks
 		 */
-		$tasks = $form->addMultiplier('task', [$this, 'createTasksMultiplier'], 1);
+		$tasks = $form->addMultiplier('task', [$this, 'createTasksMultiplier'], 0);
 		$tasks->addCreateButton(self::PREFIX . 'message.add')
 			->addClass('btn btn-success');
 		$tasks->addRemoveButton(self::PREFIX . 'message.remove')
@@ -135,13 +131,9 @@ class SchedulerFormFactory {
 			->setHtmlAttribute('class', 'btn btn-primary');
 		$form->addSubmit('saveAndRestart', self::PREFIX . 'saveAndRestart')
 			->setHtmlAttribute('class', 'btn btn-primary');
+		$form->addProtection('core.errors.form-timeout');
 		$form->onValidate[] = [$this, 'validate'];
 		$form->onSuccess[] = [$this, 'save'];
-		$id = $presenter->getParameter('id');
-		if (isset($id)) {
-			$form->setDefaults($this->load((int) $id));
-		}
-		$form->addProtection('core.errors.form-timeout');
 		return $form;
 	}
 
@@ -161,23 +153,6 @@ class SchedulerFormFactory {
 	}
 
 	/**
-	 * Loads the task
-	 * @param int $id Task ID
-	 * @return stdClass Task
-	 */
-	private function load(int $id): stdClass {
-		try {
-			$configuration = $this->manager->load($id);
-			foreach ($configuration->task as &$task) {
-				$task->message = Json::encode($task->message, Json::PRETTY);
-			}
-			return $configuration;
-		} catch (InvalidJsonException | InvalidTaskMessageException | IOException | JsonException | NonexistentJsonSchemaException $e) {
-			return new stdClass();
-		}
-	}
-
-	/**
 	 * Adds the time specification
 	 * @param Form $form Task's configuration form
 	 */
@@ -186,15 +161,13 @@ class SchedulerFormFactory {
 		$timeSpec->addText('cronTime', self::PREFIX . 'timeSpec.cronTime');
 		$exactTime = $timeSpec->addCheckbox('exactTime', self::PREFIX . 'timeSpec.exactTime');
 		$periodic = $timeSpec->addCheckbox('periodic', self::PREFIX . 'timeSpec.periodic');
-		$timeSpec->addInteger('period', self::PREFIX . 'timeSpec.period')
+		$period = $timeSpec->addInteger('period', self::PREFIX . 'timeSpec.period')
 			->setDefaultValue(0);
-		$timeSpec->addText('startTime', self::PREFIX . 'timeSpec.startTime')
+		$startTime = $timeSpec->addText('startTime', self::PREFIX . 'timeSpec.startTime')
 			->setHtmlType('datetime-local');
-		$timeSpec['period']
-			->addConditionOn($periodic, Form::EQUAL, true)
+		$period->addConditionOn($periodic, Form::EQUAL, true)
 			->setRequired(self::PREFIX . 'messages.timeSpec.period');
-		$timeSpec['startTime']
-			->addConditionOn($exactTime, Form::EQUAL, true)
+		$startTime->addConditionOn($exactTime, Form::EQUAL, true)
 			->setRequired(self::PREFIX . 'messages.timeSpec.startTime');
 	}
 

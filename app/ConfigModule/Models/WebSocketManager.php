@@ -21,7 +21,6 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Models;
 
 use DateTime;
-use Nette\SmartObject;
 use Nette\Utils\Arrays;
 use Nette\Utils\JsonException;
 
@@ -29,8 +28,6 @@ use Nette\Utils\JsonException;
  * WebSocket configuration manager
  */
 class WebSocketManager {
-
-	use SmartObject;
 
 	/**
 	 * @var string[] WebSocket components

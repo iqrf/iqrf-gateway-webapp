@@ -30,7 +30,6 @@ use App\IqrfNetModule\Models\UploadManager;
 use App\IqrfNetModule\Presenters\TrUploadPresenter;
 use Nette\Application\UI\Form;
 use Nette\IOException;
-use Nette\SmartObject;
 use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
 
@@ -38,8 +37,6 @@ use Nette\Utils\Strings;
  * IQRF TR native upload form factory
  */
 class TrUploadFormFactory {
-
-	use SmartObject;
 
 	/**
 	 * @var FormFactory Generic form factory
@@ -97,11 +94,12 @@ class TrUploadFormFactory {
 	 */
 	private function getFileFormats(): array {
 		$formats = UploadFormats::getAvailableValues();
+		$array = [];
 		foreach ($formats as $id => $format) {
-			$formats[$format->toScalar()] = 'fileFormats.' . $format->toScalar();
-			unset($formats[$id]);
+			$formatStr = (string) $format->toScalar();
+			$array[$formatStr] = 'fileFormats.' . $formatStr;
 		}
-		return $formats;
+		return $array;
 	}
 
 	/**

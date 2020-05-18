@@ -31,14 +31,11 @@ use App\ServiceModule\Models\ServiceManager;
 use GuzzleHttp\Exception\TransferException;
 use Nette\Forms\Controls\SubmitButton;
 use Nette\IOException;
-use Nette\SmartObject;
 
 /**
  * Generic form factory for the cloud services
  */
 abstract class CloudFormFactory {
-
-	use SmartObject;
 
 	/**
 	 * @var FormFactory Generic form factory
@@ -79,6 +76,7 @@ abstract class CloudFormFactory {
 	 */
 	public function save(SubmitButton $button, bool $needRestart = false): void {
 		$values = $button->getForm()->getValues('array');
+		assert(is_array($values));
 		$success = false;
 		try {
 			$this->manager->createMqttInterface($values);

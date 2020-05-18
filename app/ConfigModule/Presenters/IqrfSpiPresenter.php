@@ -26,12 +26,16 @@ use App\ConfigModule\Models\IqrfManager;
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\JsonFileManager;
 use Nette\Application\UI\Form;
-use Nette\Utils\JsonException;
 
 /**
  * IQRF SPI interface configuration presenter
  */
 class IqrfSpiPresenter extends GenericPresenter {
+
+	/**
+	 * IQRF Gateway Daemon component name
+	 */
+	private const COMPONENT = 'iqrf::IqrfSpi';
 
 	/**
 	 * @var IqrfSpiFormFactory IQRF SPI interface configuration form factory
@@ -58,23 +62,21 @@ class IqrfSpiPresenter extends GenericPresenter {
 	public function __construct(IqrfManager $iqrfManager, GenericManager $genericManager, CommandManager $commandManager) {
 		$this->iqrfManager = $iqrfManager;
 		$this->fileManager = new JsonFileManager(__DIR__ . '/../json/', $commandManager);
-		$components = ['iqrf::IqrfSpi'];
-		parent::__construct($components, $genericManager);
+		parent::__construct($genericManager);
 	}
 
 	/**
 	 * Renders the IQRF SPI interface configurator
-	 * @throws JsonException
 	 */
-	public function renderDefault(): void {
+	public function actionDefault(): void {
 		$this->template->interfaces = $this->iqrfManager->getSpiInterfaces();
 		$this->template->pins = $this->fileManager->read('SpiPins');
+		$this->loadFormConfiguration($this['configIqrfSpiForm'], self::COMPONENT, null);
 	}
 
 	/**
 	 * Creates the IQRF SPI interface configuration form
 	 * @return Form IQRF SPI interface configuration form
-	 * @throws JsonException
 	 */
 	protected function createComponentConfigIqrfSpiForm(): Form {
 		return $this->formFactory->create($this);

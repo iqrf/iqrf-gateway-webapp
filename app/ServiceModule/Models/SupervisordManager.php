@@ -22,14 +22,11 @@ namespace App\ServiceModule\Models;
 
 use App\CoreModule\Models\CommandManager;
 use App\ServiceModule\Exceptions\NotImplementedException;
-use Nette\SmartObject;
 
 /**
  * Tool for managing services (supervisord init daemon in a Docker container)
  */
 class SupervisordManager implements IServiceManager {
-
-	use SmartObject;
 
 	/**
 	 * @var CommandManager Command Manager

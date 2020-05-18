@@ -26,15 +26,12 @@ use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use App\CoreModule\Forms\FormFactory;
 use Nette\Application\UI\Form;
 use Nette\IOException;
-use Nette\SmartObject;
 use Nette\Utils\JsonException;
 
 /**
  * Daemon's monitor service configuration form factory
  */
 class MonitorFormFactory {
-
-	use SmartObject;
 
 	/**
 	 * @var FormFactory Generic form factory
@@ -65,7 +62,6 @@ class MonitorFormFactory {
 	 * Creates the daemon's monitor service configuration form
 	 * @param MonitorPresenter $presenter Daemon's monitor service configuration presenter
 	 * @return Form Daemon's monitor service configuration form
-	 * @throws JsonException
 	 */
 	public function create(MonitorPresenter $presenter): Form {
 		$this->presenter = $presenter;
@@ -77,10 +73,6 @@ class MonitorFormFactory {
 		$form->addCheckbox('acceptOnlyLocalhost', 'acceptOnlyLocalhost');
 		$form->addSubmit('save', 'save');
 		$form->addProtection('core.errors.form-timeout');
-		$id = $presenter->getParameter('id');
-		if (isset($id) && array_key_exists($id, $this->manager->list())) {
-			$form->setDefaults($this->manager->load((int) $id));
-		}
 		$form->onSuccess[] = [$this, 'save'];
 		return $form;
 	}
@@ -92,7 +84,9 @@ class MonitorFormFactory {
 	 */
 	public function save(Form $form): void {
 		try {
-			$this->manager->save($form->getValues('array'));
+			$values = $form->getValues('array');
+			assert(is_array($values));
+			$this->manager->save($values);
 			$this->presenter->flashSuccess('config.messages.success');
 		} catch (NonexistentJsonSchemaException $e) {
 			$this->presenter->flashError('config.messages.writeFailures.nonExistingJsonSchema');

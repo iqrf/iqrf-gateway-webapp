@@ -26,15 +26,12 @@ use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Models\DiscoveryManager;
 use App\IqrfNetModule\Presenters\NetworkPresenter;
 use Nette\Application\UI\Form;
-use Nette\SmartObject;
 use Nette\Utils\JsonException;
 
 /**
  * IQMESH Discovery form factory
  */
 class DiscoveryFormFactory {
-
-	use SmartObject;
 
 	/**
 	 * @var DiscoveryManager IQMESH Discovery manager

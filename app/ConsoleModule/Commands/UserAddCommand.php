@@ -21,7 +21,6 @@ declare(strict_types = 1);
 namespace App\ConsoleModule\Commands;
 
 use App\ConsoleModule\Models\ConsoleUserManager;
-use Nette\SmartObject;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
@@ -34,8 +33,6 @@ use Symfony\Component\Console\Question\Question;
  * CLI command for user management
  */
 class UserAddCommand extends Command {
-
-	use SmartObject;
 
 	/**
 	 * @var string Command name

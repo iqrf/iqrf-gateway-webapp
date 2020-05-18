@@ -21,14 +21,11 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Models;
 
 use App\CoreModule\Models\CommandManager;
-use Nette\SmartObject;
 
 /**
  * Tool for powering off and rebooting IQRF Gateway
  */
 class PowerManager {
-
-	use SmartObject;
 
 	/**
 	 * @var CommandManager Command manager

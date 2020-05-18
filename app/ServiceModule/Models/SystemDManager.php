@@ -22,14 +22,11 @@ namespace App\ServiceModule\Models;
 
 use App\CoreModule\Models\CommandManager;
 use App\ServiceModule\Exceptions\NonexistentServiceException;
-use Nette\SmartObject;
 
 /**
  * Tool for managing services (systemD init daemon)
  */
 class SystemDManager implements IServiceManager {
-
-	use SmartObject;
 
 	/**
 	 * @var CommandManager Command Manager

@@ -33,7 +33,9 @@ class UserRepository extends EntityRepository {
 	 * @return User|null User entity
 	 */
 	public function findOneByUserName(string $userName): ?User {
-		return $this->findOneBy(['username' => $userName]);
+		$user = $this->findOneBy(['username' => $userName]);
+		assert($user instanceof User);
+		return $user;
 	}
 
 }

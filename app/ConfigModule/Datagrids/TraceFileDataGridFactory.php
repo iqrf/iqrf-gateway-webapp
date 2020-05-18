@@ -23,7 +23,6 @@ namespace App\ConfigModule\Datagrids;
 use App\ConfigModule\Models\GenericManager;
 use App\ConfigModule\Presenters\TracerPresenter;
 use App\CoreModule\Datagrids\DataGridFactory;
-use Nette\SmartObject;
 use Nette\Utils\JsonException;
 use Ublaboo\DataGrid\Column\Action\Confirmation\StringConfirmation;
 use Ublaboo\DataGrid\DataGrid;
@@ -33,8 +32,6 @@ use Ublaboo\DataGrid\Exception\DataGridException;
  * Tracer files data grid
  */
 class TraceFileDataGridFactory {
-
-	use SmartObject;
 
 	/**
 	 * @var GenericManager Generic configuration manager

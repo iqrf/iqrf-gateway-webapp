@@ -26,12 +26,16 @@ use App\ConfigModule\Models\IqrfManager;
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\JsonFileManager;
 use Nette\Application\UI\Form;
-use Nette\Utils\JsonException;
 
 /**
  * IQRF UART configuration presenter
  */
 class IqrfUartPresenter extends GenericPresenter {
+
+	/**
+	 * IQRF Gateway Daemon component name
+	 */
+	private const COMPONENT = 'iqrf::IqrfUart';
 
 	/**
 	 * @var IqrfUartFormFactory IQRF UART interface configuration form factory
@@ -58,23 +62,21 @@ class IqrfUartPresenter extends GenericPresenter {
 	public function __construct(IqrfManager $iqrfManager, GenericManager $genericManager, CommandManager $commandManager) {
 		$this->iqrfManager = $iqrfManager;
 		$this->fileManager = new JsonFileManager(__DIR__ . '/../json/', $commandManager);
-		$components = ['iqrf::IqrfUart'];
-		parent::__construct($components, $genericManager);
+		parent::__construct($genericManager);
 	}
 
 	/**
 	 * Renders the IQRF UART interface configurator
-	 * @throws JsonException
 	 */
-	public function renderDefault(): void {
+	public function actionDefault(): void {
 		$this->template->interfaces = $this->iqrfManager->getUartInterfaces();
 		$this->template->pins = $this->fileManager->read('UartPins');
+		$this->loadFormConfiguration($this['configIqrfUartForm'], self::COMPONENT, null);
 	}
 
 	/**
 	 * Creates the IQRF UART interface configuration form
 	 * @return Form IQRF UART interface configuration form
-	 * @throws JsonException
 	 */
 	protected function createComponentConfigIqrfUartForm(): Form {
 		return $this->formFactory->create($this);

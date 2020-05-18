@@ -25,7 +25,6 @@ use App\ConfigModule\Presenters\MqPresenter;
 use App\CoreModule\Datagrids\DataGridFactory;
 use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use Nette\IOException;
-use Nette\SmartObject;
 use Nette\Utils\JsonException;
 use Ublaboo\DataGrid\Column\Action\Confirmation\StringConfirmation;
 use Ublaboo\DataGrid\DataGrid;
@@ -36,8 +35,6 @@ use Ublaboo\DataGrid\Exception\DataGridException;
  * MQ messaging data grid
  */
 class MqMessagingDataGridFactory {
-
-	use SmartObject;
 
 	/**
 	 * @var GenericManager Generic configuration manager

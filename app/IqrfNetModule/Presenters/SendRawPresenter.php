@@ -34,7 +34,7 @@ class SendRawPresenter extends ProtectedPresenter {
 	 * @var SendRawFormFactory Send DPA packet form
 	 * @inject
 	 */
-	public $sendRawFactory;
+	public $formFactory;
 
 	/**
 	 * @var MacroFileParser IQRF IDE Macros parser
@@ -73,7 +73,7 @@ class SendRawPresenter extends ProtectedPresenter {
 	 * @return Form Send DPA packet form
 	 */
 	protected function createComponentSendRawForm(): Form {
-		return $this->sendRawFactory->create($this);
+		return $this->formFactory->create($this);
 	}
 
 }

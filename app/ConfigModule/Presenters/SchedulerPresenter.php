@@ -21,16 +21,19 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Datagrids\SchedulerDataGridFactory;
+use App\ConfigModule\Exceptions\InvalidTaskMessageException;
 use App\ConfigModule\Forms\SchedulerFormFactory;
 use App\ConfigModule\Forms\SchedulerImportFormFactory;
 use App\ConfigModule\Models\SchedulerManager;
 use App\ConfigModule\Models\SchedulerMigrationManager;
+use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use App\CoreModule\Presenters\ProtectedPresenter;
 use App\CoreModule\Traits\TPresenterFlashMessage;
 use Nette\Application\BadRequestException;
 use Nette\Application\UI\Form;
 use Nette\IOException;
+use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 use Ublaboo\DataGrid\DataGrid;
 use Ublaboo\DataGrid\Exception\DataGridException;
@@ -103,11 +106,28 @@ class SchedulerPresenter extends ProtectedPresenter {
 	 * Edits the task in scheduler
 	 * @param int $id ID of task in Scheduler
 	 */
-	public function renderEdit(int $id): void {
-		if (!array_key_exists($id, $this->manager->getTaskFiles())) {
-			$this->redirect('Scheduler:default');
+	public function actionEdit(int $id): void {
+		$redirect = 'Scheduler:default';
+		try {
+			$configuration = $this->manager->load($id);
+			if (get_object_vars($configuration) === []) {
+				$this->flashError('config.messages.readFailures.notFound');
+				$this->redirect($redirect);
+			}
+			foreach ($configuration->task as &$task) {
+				$task->message = Json::encode($task->message, Json::PRETTY);
+			}
+			$this['configSchedulerForm']->setDefaults($configuration);
+		} catch (IOException $e) {
+			$this->flashError('config.messages.readFailures.ioError');
+			$this->redirect($redirect);
+		} catch (JsonException | InvalidJsonException | InvalidTaskMessageException $e) {
+			$this->flashError('config.messages.readFailures.invalidJson');
+			$this->redirect($redirect);
+		} catch (NonexistentJsonSchemaException $e) {
+			$this->flashError('config.messages.readFailures.nonExistingJsonSchema');
+			$this->redirect($redirect);
 		}
-		$this->template->id = $id;
 	}
 
 	/**
@@ -152,7 +172,6 @@ class SchedulerPresenter extends ProtectedPresenter {
 	/**
 	 * Creates the Edit task form
 	 * @return Form Edit task form
-	 * @throws JsonException
 	 */
 	protected function createComponentConfigSchedulerForm(): Form {
 		return $this->formFactory->create($this);
@@ -161,7 +180,6 @@ class SchedulerPresenter extends ProtectedPresenter {
 	/**
 	 * Creates the tash import form
 	 * @return Form Task import form
-	 * @throws JsonException
 	 */
 	protected function createComponentConfigSchedulerImportForm(): Form {
 		return $this->importFormFactory->create($this);

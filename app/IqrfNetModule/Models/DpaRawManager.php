@@ -24,7 +24,6 @@ use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\IqrfNetModule\Requests\DpaRequest;
-use Nette\SmartObject;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
@@ -33,8 +32,6 @@ use Nette\Utils\Strings;
  * Tool for sending and parsing JSON DPA Raw requests and responses
  */
 class DpaRawManager {
-
-	use SmartObject;
 
 	/**
 	 * @var DpaRequest JSON DPA request

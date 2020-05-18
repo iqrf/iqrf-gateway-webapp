@@ -24,10 +24,14 @@ use App\ConfigModule\Datagrids\MonitorDataGridFactory;
 use App\ConfigModule\Forms\MonitorFormFactory;
 use App\ConfigModule\Models\GenericManager;
 use App\ConfigModule\Models\MonitorManager;
+use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use Nette\Application\UI\Form;
+use Nette\InvalidArgumentException;
 use Nette\IOException;
 use Nette\Utils\JsonException;
 use Ublaboo\DataGrid\DataGrid;
+use Ublaboo\DataGrid\Exception\DataGridColumnStatusException;
+use Ublaboo\DataGrid\Exception\DataGridException;
 
 /**
  * Daemon's monitor service configuration presenter
@@ -57,7 +61,7 @@ class MonitorPresenter extends GenericPresenter {
 	/**
 	 * @var MonitorManager Daemon's monitor service configuration manager
 	 */
-	private $manager;
+	private $monitorManager;
 
 	/**
 	 * Constructor
@@ -65,8 +69,8 @@ class MonitorPresenter extends GenericPresenter {
 	 * @param MonitorManager $monitorManager Daemon's monitor service configuration manager
 	 */
 	public function __construct(GenericManager $genericManager, MonitorManager $monitorManager) {
-		$this->manager = $monitorManager;
-		parent::__construct($this->components, $genericManager);
+		$this->monitorManager = $monitorManager;
+		parent::__construct($genericManager);
 	}
 
 	/**
@@ -76,7 +80,7 @@ class MonitorPresenter extends GenericPresenter {
 	 */
 	public function actionDelete(int $id): void {
 		try {
-			$this->manager->delete($id);
+			$this->monitorManager->delete($id);
 			$this->flashSuccess('config.messages.successes.delete');
 		} catch (IOException $e) {
 			$this->flashError('config.messages.deleteFailures.ioError');
@@ -88,14 +92,37 @@ class MonitorPresenter extends GenericPresenter {
 	 * Edits the Daemon's monitor service
 	 * @param int $id Daemon's monitor service ID
 	 */
-	public function renderEdit(int $id): void {
-		$this->template->id = $id;
+	public function actionEdit(int $id): void {
+		$redirect = 'Monitor:default';
+		try {
+			$configuration = $this->monitorManager->load($id);
+			if ($configuration === []) {
+				$this->flashError('config.messages.readFailures.notFound');
+				$this->redirect($redirect);
+			}
+			$this['configMonitorForm']->setDefaults($configuration);
+		} catch (NonexistentJsonSchemaException $e) {
+			$this->flashError('config.messages.readFailures.nonExistingJsonSchema');
+			$this->redirect($redirect);
+		} catch (IOException $e) {
+			$this->flashError('config.messages.readFailures.ioError');
+			$this->redirect($redirect);
+		} catch (JsonException $e) {
+			$this->flashError('config.messages.readFailures.invalidJson');
+			$this->redirect($redirect);
+		} catch (InvalidArgumentException $e) {
+			$this->flashError('config.messages.readFailures.notFound');
+			$this->redirect($redirect);
+		}
 	}
 
 	/**
 	 * Creates the daemon's monitor service data grid
 	 * @param string $name Data grid's component name
 	 * @return DataGrid Daemon's monitor service data grid
+	 * @throws DataGridColumnStatusException
+	 * @throws DataGridException
+	 * @throws JsonException
 	 */
 	protected function createComponentConfigMonitorDataGrid(string $name): DataGrid {
 		return $this->dataGridFactory->create($this, $name);

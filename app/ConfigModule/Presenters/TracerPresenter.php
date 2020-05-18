@@ -22,10 +22,9 @@ namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Datagrids\TraceFileDataGridFactory;
 use App\ConfigModule\Forms\TraceFileFormFactory;
-use App\ConfigModule\Models\GenericManager;
 use Nette\Application\UI\Form;
-use Nette\IOException;
 use Nette\Utils\JsonException;
+use Nette\Utils\Strings;
 use Ublaboo\DataGrid\DataGrid;
 use Ublaboo\DataGrid\Exception\DataGridException;
 
@@ -33,6 +32,11 @@ use Ublaboo\DataGrid\Exception\DataGridException;
  * Tracer configuration presenter
  */
 class TracerPresenter extends GenericPresenter {
+
+	/**
+	 * IQRF Gateway Daemon component name
+	 */
+	private const COMPONENT = 'shape::TraceFileService';
 
 	/**
 	 * @var TraceFileFormFactory Daemon's tracer configuration form factory
@@ -47,37 +51,39 @@ class TracerPresenter extends GenericPresenter {
 	public $dataGridFactory;
 
 	/**
-	 * Constructor
-	 * @param GenericManager $genericManager Generic configuration manager
-	 */
-	public function __construct(GenericManager $genericManager) {
-		$components = ['shape::TraceFileService'];
-		parent::__construct($components, $genericManager);
-	}
-
-	/**
 	 * Edits the tracer configuration
 	 * @param int $id ID of UDP interface
 	 */
-	public function renderEdit(int $id): void {
-		$this->template->id = $id;
+	public function actionEdit(int $id): void {
+		$this->loadFormConfiguration($this['configTracerForm'], self::COMPONENT, $id, 'Tracer:default', [$this, 'configurationLoad']);
+	}
+
+	/**
+	 * Loads the instance configuration
+	 * @param int $id Instance ID
+	 * @return array<string, mixed> Instance configuration
+	 * @throws JsonException
+	 */
+	public function configurationLoad(int $id): array {
+		$defaults = $this->manager->load($id);
+		foreach ($defaults['VerbosityLevels'] as &$verbosityLevel) {
+			$level = Strings::upper($verbosityLevel['level']);
+			$verbosityLevels = ['ERR', 'WAR', 'INF', 'DBG'];
+			if (in_array($level, $verbosityLevels, true)) {
+				$verbosityLevel['level'] = $level;
+			} else {
+				unset($verbosityLevel['level']);
+			}
+		}
+		return $defaults;
 	}
 
 	/**
 	 * Deletes the tracer service
 	 * @param int $id ID of tracer service
-	 * @throws JsonException
 	 */
 	public function actionDelete(int $id): void {
-		$this->configManager->setComponent('shape::TraceFileService');
-		try {
-			$fileName = $this->configManager->getFileNameById($id);
-			$this->configManager->deleteFile($fileName);
-			$this->flashSuccess('config.messages.successes.delete');
-		} catch (IOException $e) {
-			$this->flashError('config.messages.deleteFailures.ioError');
-		}
-		$this->redirect('TracerFile:default');
+		$this->deleteInstance(self::COMPONENT, $id, 'TracerFile:default');
 	}
 
 	/**

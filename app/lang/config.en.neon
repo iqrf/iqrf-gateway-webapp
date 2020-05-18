@@ -15,6 +15,7 @@ messages:
 		invalidJson: The configuration has not been loaded because the configuration file is corrupted.
 		ioError: The configuration has not been loaded because the webapp is unable to read the configuration file.
 		nonExistingJsonSchema: The configuration has not been loaded because the corresponding JSON schema not found.
+		notFound: The configuration not found.
 	writeFailures:
 		invalidJson: The configuration has not been saved because the configuration file is corrupted.
 		ioError: The configuration has not been saved because the webapp is unable to write the configuration file.
@@ -29,8 +30,11 @@ messages:
 components:
 	title: Components
 	description: Manage components.
-	form:
+	add:
+		title: Add component
+	edit:
 		title: Edit component
+	form:
 		name: Name
 		libraryPath: Library path
 		libraryName: Library name
@@ -43,7 +47,8 @@ components:
 			libraryName: "Please enter name of component's library file."
 			startLevel: "Please enter component's start level."
 			confirmDelete: Do you really want to delete component %s?
-		Save: Save
+		save: Save
+		add: Add
 
 interfaceMapping:
 	cdc: Available CDC mappings
@@ -140,6 +145,7 @@ iqrfUart:
 		messages:
 			instance: Please enter name of IQRF UART instance.
 			IqrfInterface: Please enter IQRF UART interface.
+			baudRate: Please select UART baud rate.
 		Save: Save
 
 jsonMngMetaDataApi:
@@ -395,6 +401,7 @@ websocket:
 		acceptAsyncMsg: Accept asynchronous messages
 		WebsocketPort: WebSocket port
 		acceptOnlyLocalhost: Accept only connection from localhost
+		requiredInterfaces: Required interfaces
 		requiredInterface:
 			name: Required interface name
 			instance: Required WebSocket service
@@ -403,8 +410,10 @@ websocket:
 			serviceInstance: Please enter name of WebSocket service.
 			WebsocketPort: Please enter port of WebSocket service.
 			requiredInterface:
-				name: Please enter the name of required interface.
-				instance: Please enter the required WebSocket service instance.
+				add: Add another interface
+				remove: Remove this interface
+				name: Please select the name of required interface.
+				instance: Please select the required WebSocket service instance.
 		Save: Save
 	interface:
 		add: Add WebSocket interface

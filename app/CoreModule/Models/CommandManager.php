@@ -23,15 +23,12 @@ namespace App\CoreModule\Models;
 use App\CoreModule\Entities\Command;
 use App\CoreModule\Entities\CommandStack;
 use App\CoreModule\Entities\ICommand;
-use Nette\SmartObject;
 use Symfony\Component\Process\Process;
 
 /**
  * Tool for executing commands
  */
 class CommandManager {
-
-	use SmartObject;
 
 	/**
 	 * @var bool Is sudo required?

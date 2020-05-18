@@ -21,14 +21,11 @@ declare(strict_types = 1);
 namespace App\ServiceModule\Models;
 
 use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
-use Nette\SmartObject;
 
 /**
  * Tool for managing services (unknown init daemon)
  */
 class UnknownManager implements IServiceManager {
-
-	use SmartObject;
 
 	/**
 	 * Disables the service

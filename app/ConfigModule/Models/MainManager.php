@@ -22,15 +22,12 @@ namespace App\ConfigModule\Models;
 
 use App\CoreModule\Models\JsonFileManager;
 use Nette\IOException;
-use Nette\SmartObject;
 use Nette\Utils\JsonException;
 
 /**
  * Main configuration form factory
  */
 class MainManager {
-
-	use SmartObject;
 
 	/**
 	 * @var JsonFileManager JSON file manager
@@ -77,7 +74,7 @@ class MainManager {
 	 * @throws JsonException
 	 */
 	public function save(array $array): void {
-		$json = $this->fileManager->read($this->fileName);
+		$json = (array) $this->fileManager->read($this->fileName);
 		$this->fileManager->write($this->fileName, array_merge($json, $array));
 	}
 

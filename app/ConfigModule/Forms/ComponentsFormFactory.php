@@ -26,15 +26,12 @@ use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use App\CoreModule\Forms\FormFactory;
 use Nette\Application\UI\Form;
 use Nette\IOException;
-use Nette\SmartObject;
 use Nette\Utils\JsonException;
 
 /**
  * Component configuration form factory
  */
 class ComponentsFormFactory {
-
-	use SmartObject;
 
 	/**
 	 * @var ComponentManager Component configuration manager
@@ -45,11 +42,6 @@ class ComponentsFormFactory {
 	 * @var FormFactory Generic form factory
 	 */
 	private $factory;
-
-	/**
-	 * @var int Component ID
-	 */
-	private $id;
 
 	/**
 	 * @var ComponentPresenter Component presenter
@@ -70,7 +62,6 @@ class ComponentsFormFactory {
 	 * Creates the components configuration form
 	 * @param ComponentPresenter $presenter Component presenter
 	 * @return Form Components configuration form
-	 * @throws JsonException
 	 */
 	public function create(ComponentPresenter $presenter): Form {
 		$this->presenter = $presenter;
@@ -83,11 +74,10 @@ class ComponentsFormFactory {
 		$form->addCheckbox('enabled', 'enabled');
 		$form->addInteger('startlevel', 'startlevel')
 			->setRequired('messages.startLevel');
-		$form->addSubmit('save', 'Save');
-		$id = $presenter->getParameter('id');
-		if (isset($id)) {
-			$this->id = (int) $id;
-			$form->setDefaults($this->manager->load($this->id));
+		if ($presenter->getParameter('id') === null) {
+			$form->addSubmit('add', 'add');
+		} else {
+			$form->addSubmit('save', 'save');
 		}
 		$form->addProtection('core.errors.form-timeout');
 		$form->onSuccess[] = [$this, 'save'];
@@ -97,21 +87,24 @@ class ComponentsFormFactory {
 	/**
 	 * Saves the component configuration
 	 * @param Form $form Component configuration form
-	 * @throws JsonException
 	 */
 	public function save(Form $form): void {
 		try {
-			$array = $form->getValues('array');
-			if (isset($this->id)) {
-				$this->manager->save($array, $this->id);
+			$values = $form->getValues('array');
+			assert(is_array($values));
+			$id = $this->presenter->getParameter('id');
+			if (isset($id)) {
+				$this->manager->save($values, (int) $id);
 			} else {
-				$this->manager->add($array);
+				$this->manager->add($values);
 			}
 			$this->presenter->flashSuccess('config.messages.success');
 		} catch (IOException $e) {
 			$this->presenter->flashError('config.messages.writeFailures.ioError');
 		} catch (NonexistentJsonSchemaException $e) {
 			$this->presenter->flashError('config.messages.writeFailures.nonExistingJsonSchema');
+		} catch (JsonException $e) {
+			$this->presenter->flashError('config.messages.writeFailures.invalidJson');
 		} finally {
 			$this->presenter->redirect('Component:default');
 		}

@@ -24,15 +24,12 @@ use App\CloudModule\Exceptions\InvalidConnectionStringException;
 use App\ConfigModule\Models\GenericManager;
 use DateInterval;
 use DateTime;
-use Nette\SmartObject;
 use Nette\Utils\JsonException;
 
 /**
  * Tool for managing Azure IoT Hub
  */
 class AzureManager implements IManager {
-
-	use SmartObject;
 
 	/**
 	 * @var GenericManager Generic configuration manager

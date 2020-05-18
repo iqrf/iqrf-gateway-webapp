@@ -21,14 +21,11 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Models;
 
 use App\CoreModule\Models\CommandManager;
-use Nette\SmartObject;
 
 /**
  * IQRF CDC/SPI/UART interface manager
  */
 class IqrfManager {
-
-	use SmartObject;
 
 	/**
 	 * @var CommandManager Command manager

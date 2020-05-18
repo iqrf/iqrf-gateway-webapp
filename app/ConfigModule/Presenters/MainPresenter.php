@@ -56,11 +56,12 @@ class MainPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Catches exceptions
+	 * Renders main configuration
 	 */
 	public function actionDefault(): void {
 		try {
-			$this->configManager->load();
+			$defaults = $this->configManager->load();
+			$this['configMainForm']->setDefaults($defaults);
 		} catch (IOException $e) {
 			$this->flashError('config.messages.readFailures.ioError');
 			$this->redirect('Homepage:default');
@@ -73,7 +74,6 @@ class MainPresenter extends ProtectedPresenter {
 	/**
 	 * Creates the Main daemon's configuration form
 	 * @return Form Main daemon's configuration form
-	 * @throws JsonException
 	 */
 	protected function createComponentConfigMainForm(): Form {
 		return $this->formFactory->create($this);

@@ -21,7 +21,6 @@ declare(strict_types = 1);
 namespace App\CoreModule\Models;
 
 use Nette\IOException;
-use Nette\SmartObject;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 use stdClass;
@@ -30,8 +29,6 @@ use stdClass;
  * Tool for reading and writing JSON files
  */
 class JsonFileManager extends FileManager {
-
-	use SmartObject;
 
 	/**
 	 * Constructor

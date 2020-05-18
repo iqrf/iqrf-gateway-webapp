@@ -21,14 +21,17 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\JsonDpaApiRawFormFactory;
-use App\ConfigModule\Models\GenericManager;
 use Nette\Application\UI\Form;
-use Nette\Utils\JsonException;
 
 /**
  * JSON Raw API configuration presenter
  */
 class JsonRawApiPresenter extends GenericPresenter {
+
+	/**
+	 * IQRF Gateway Daemon component name
+	 */
+	private const COMPONENT = 'iqrf::JsonDpaApiRaw';
 
 	/**
 	 * @var JsonDpaApiRawFormFactory JSON Raw API form factory
@@ -37,18 +40,15 @@ class JsonRawApiPresenter extends GenericPresenter {
 	public $formFactory;
 
 	/**
-	 * Constructor
-	 * @param GenericManager $genericManager Generic configuration manager
+	 * Renders the JSON Raw API configurator
 	 */
-	public function __construct(GenericManager $genericManager) {
-		$components = ['iqrf::JsonDpaApiRaw'];
-		parent::__construct($components, $genericManager);
+	public function actionDefault(): void {
+		$this->loadFormConfiguration($this['configJsonDpaApiRawForm'], self::COMPONENT, null);
 	}
 
 	/**
 	 * Creates the JSON Raw API configuration form
 	 * @return Form JSON Raw API configuration form
-	 * @throws JsonException
 	 */
 	protected function createComponentConfigJsonDpaApiRawForm(): Form {
 		return $this->formFactory->create($this);

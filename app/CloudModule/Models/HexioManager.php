@@ -25,7 +25,6 @@ use App\ConfigModule\Models\GenericManager;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use Nette\IOException;
-use Nette\SmartObject;
 use Nette\Utils\FileSystem;
 use Nette\Utils\JsonException;
 
@@ -33,8 +32,6 @@ use Nette\Utils\JsonException;
  * Tool for managing Hexio IoT platform
  */
 class HexioManager implements IManager {
-
-	use SmartObject;
 
 	/**
 	 * CA certificate file name

@@ -27,15 +27,12 @@ use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Exceptions\UserErrorException;
 use Nette\Database\Context;
 use Nette\Database\Table\ActiveRow;
-use Nette\SmartObject;
 use Nette\Utils\JsonException;
 
 /**
  * IQRF OS manager
  */
 class IqrfOsManager {
-
-	use SmartObject;
 
 	/**
 	 * @var Context Database context
@@ -101,7 +98,7 @@ class IqrfOsManager {
 		foreach ($table->fetchAll() as $row) {
 			$trType = TrSeries::fromIqrfOsFileName((string) $row->module_type);
 			$entity = new IqrfOs((string) $row->to_build, (string) $row->to_version, $trType);
-			$versions[$row->to_build] = $entity->getDescription();
+			$versions[(string) $row->to_build] = $entity->getDescription();
 		}
 		return $versions;
 	}

@@ -29,15 +29,12 @@ use App\IqrfNetModule\Models\StandardLightManager;
 use App\IqrfNetModule\Presenters\StandardPresenter;
 use Nette\Application\UI\Form;
 use Nette\Forms\Controls\SubmitButton;
-use Nette\SmartObject;
 use Nette\Utils\JsonException;
 
 /**
  * IQRF Standard light form factory
  */
 class StandardLightFormFactory {
-
-	use SmartObject;
 
 	/**
 	 * @var FormFactory Generic form factory

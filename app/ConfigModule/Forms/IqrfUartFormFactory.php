@@ -21,27 +21,18 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Forms;
 
 use App\ConfigModule\Presenters\IqrfUartPresenter;
+use Contributte\Translation\Wrappers\NotTranslate;
 use Nette\Application\UI\Form;
-use Nette\SmartObject;
-use Nette\Utils\JsonException;
 
 /**
  * IQRF UART configuration form factory
  */
 class IqrfUartFormFactory extends GenericConfigFormFactory {
 
-	use SmartObject;
-
-	/**
-	 * @var int[] UART baud rates
-	 */
-	private $baudRates = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400];
-
 	/**
 	 * Creates the IQRF UART interface configuration form
-	 * @param IqrfUartPresenter $presenter IQRF UART interfaceconfiguration presenter
+	 * @param IqrfUartPresenter $presenter IQRF UART interface configuration presenter
 	 * @return Form IQRF UART interface configuration form
-	 * @throws JsonException
 	 */
 	public function create(IqrfUartPresenter $presenter): Form {
 		$this->manager->setComponent('iqrf::IqrfUart');
@@ -52,15 +43,28 @@ class IqrfUartFormFactory extends GenericConfigFormFactory {
 		$form->addText('IqrfInterface', 'IqrfInterface')
 			->setRequired('messages.IqrfInterface');
 		$form->addSelect('baudRate', 'baudRate')
-			->setTranslator($this->factory->getTranslator())
-			->setItems($this->baudRates, false);
+			->setRequired('messages.baudRate')
+			->setPrompt('messages.baudRate')
+			->setItems($this->getBaudRates(), true);
 		$form->addInteger('powerEnableGpioPin', 'powerEnableGpioPin');
 		$form->addInteger('busEnableGpioPin', 'busEnableGpioPin');
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');
-		$form->setDefaults($this->manager->load(0));
 		$form->onSuccess[] = [$this, 'save'];
 		return $form;
+	}
+
+	/**
+	 * Returns available baud rates
+	 * @return array<int, NotTranslate> Baud rates
+	 */
+	private function getBaudRates(): array {
+		$array = [];
+		$baudRates = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400];
+		foreach ($baudRates as $baudRate) {
+			$array[$baudRate] = new NotTranslate((string) $baudRate);
+		}
+		return $array;
 	}
 
 }

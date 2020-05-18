@@ -25,14 +25,11 @@ use App\CoreModule\Exceptions\NonexistentUserException;
 use App\CoreModule\Exceptions\UsernameAlreadyExistsException;
 use App\Models\Database\Entities\User;
 use App\Models\Database\EntityManager;
-use Nette\SmartObject;
 
 /**
  * Tool for managing users
  */
 class UserManager {
-
-	use SmartObject;
 
 	/**
 	 * @var EntityManager Entity manager
@@ -56,6 +53,7 @@ class UserManager {
 	 */
 	public function changePassword(int $id, string $oldPassword, string $newPassword): void {
 		$user = $this->entityManager->getUserRepository()->find($id);
+		assert($user instanceof User);
 		if (!$user->verifyPassword($oldPassword)) {
 			throw new InvalidPasswordException();
 		}
@@ -69,6 +67,7 @@ class UserManager {
 	 */
 	public function editPassword(int $id, string $password): void {
 		$user = $this->entityManager->getUserRepository()->find($id);
+		assert($user instanceof User);
 		$user->setPassword($password);
 		$this->entityManager->persist($user);
 		$this->entityManager->flush();
@@ -103,6 +102,7 @@ class UserManager {
 		if ($user === null) {
 			throw new NonexistentUserException();
 		}
+		assert($user instanceof User);
 		if ($username !== null) {
 			$userWithName = $userRepository->findOneByUserName($username);
 			if ($userWithName !== null && $userWithName->getId() !== $id) {
@@ -130,6 +130,7 @@ class UserManager {
 		if ($user === null) {
 			return null;
 		}
+		assert($user instanceof User);
 		return $user->toArray();
 	}
 
@@ -140,6 +141,7 @@ class UserManager {
 	public function getUsers(): array {
 		$users = [];
 		foreach ($this->entityManager->getUserRepository()->findAll() as $user) {
+			assert($user instanceof User);
 			$array = $user->toArray();
 			unset($array['password']);
 			$users[] = $array;

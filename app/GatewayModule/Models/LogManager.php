@@ -24,7 +24,6 @@ use App\CoreModule\Models\ZipArchiveManager;
 use DateTime;
 use Nette\Application\BadRequestException;
 use Nette\Application\Responses\FileResponse;
-use Nette\SmartObject;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
 use SplFileInfo;
@@ -33,8 +32,6 @@ use SplFileInfo;
  * Tool for downloading and reading IQRF Gateway Daemon's log files
  */
 class LogManager {
-
-	use SmartObject;
 
 	/**
 	 * @var string Path to a directory with log files of IQRF Gateway Daemon

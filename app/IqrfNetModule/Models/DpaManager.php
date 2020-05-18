@@ -25,7 +25,6 @@ use App\IqrfNetModule\Enums\TrSeries;
 use Iqrf\Repository\Entities\OsDpa;
 use Iqrf\Repository\Models\FilesManager;
 use Iqrf\Repository\Models\OsAndDpaManager;
-use Nette\SmartObject;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
 
@@ -33,8 +32,6 @@ use Nette\Utils\Strings;
  * DPA manager
  */
 class DpaManager {
-
-	use SmartObject;
 
 	/**
 	 * @var FilesManager Files manager

@@ -23,11 +23,8 @@ namespace App\IqrfNetModule\Forms;
 use App\CoreModule\Forms\FormFactory;
 use App\IqrfNetModule\Presenters\TrConfigPresenter;
 use Nette\Application\UI\Form;
-use Nette\SmartObject;
 
 class ChangeAddressFormFactory {
-
-	use SmartObject;
 
 	/**
 	 * @var FormFactory Generic form factory

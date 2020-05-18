@@ -23,14 +23,11 @@ namespace App\CoreModule\Forms;
 use Nepada\FormRenderer\IBootstrap3RendererFactory;
 use Nette\Application\UI\Form;
 use Nette\Localization\ITranslator;
-use Nette\SmartObject;
 
 /**
  * Generic form factory
  */
 class FormFactory {
-
-	use SmartObject;
 
 	/**
 	 * @var IBootstrap3RendererFactory Form renderer factory interface

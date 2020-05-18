@@ -28,7 +28,9 @@ use App\ConfigModule\Forms\WebSocketMessagingFormFactory;
 use App\ConfigModule\Forms\WebSocketServiceFormFactory;
 use App\ConfigModule\Models\GenericManager;
 use App\ConfigModule\Models\WebSocketManager;
+use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use Nette\Application\UI\Form;
+use Nette\InvalidArgumentException;
 use Nette\IOException;
 use Nette\Utils\JsonException;
 use Ublaboo\DataGrid\DataGrid;
@@ -96,33 +98,60 @@ class WebsocketPresenter extends GenericPresenter {
 	 */
 	public function __construct(GenericManager $genericManager, WebSocketManager $webSocketManager) {
 		$this->webSocketManager = $webSocketManager;
-		parent::__construct($this->components, $genericManager);
+		parent::__construct($genericManager);
 	}
 
 	/**
 	 * Edits the WebSocket interface
 	 * @param int $id ID of WebSocket interface
 	 */
-	public function renderEdit(int $id): void {
-		$this->template->id = $id;
+	public function actionEdit(int $id): void {
+		$redirect = 'Websocket:default';
+		try {
+			$configuration = $this->webSocketManager->load($id);
+			if ($configuration === []) {
+				$this->flashError('config.messages.readFailures.notFound');
+				$this->redirect('Websocket:default');
+			}
+			$this['configWebSocketForm']->setDefaults($configuration);
+		} catch (NonexistentJsonSchemaException $e) {
+			$this->flashError('config.messages.readFailures.nonExistingJsonSchema');
+			$this->redirect($redirect);
+		} catch (IOException $e) {
+			$this->flashError('config.messages.readFailures.ioError');
+			$this->redirect($redirect);
+		} catch (JsonException $e) {
+			$this->flashError('config.messages.readFailures.invalidJson');
+			$this->redirect($redirect);
+		} catch (InvalidArgumentException $e) {
+			$this->flashError('config.messages.readFailures.notFound');
+			$this->redirect($redirect);
+		}
+	}
+
+	/**
+	 * Adds a new instance of WebSocket messaging
+	 */
+	public function actionAddMessaging(): void {
+		$this->manager->setComponent($this->components['messaging']);
+		$defaults = ['RequiredInterfaces' => [['name' => 'shape::IWebsocketService', 'target' => ['instance' => null]]]];
+		$this['configWebSocketMessagingForm']->setDefaults($defaults);
 	}
 
 	/**
 	 * Edits the WebSocket messaging
 	 * @param int $id ID of WebSocket messaging
 	 */
-	public function renderEditMessaging(int $id): void {
-		$this->configManager->setComponent($this->components['messaging']);
-		$this->template->id = $id;
+	public function actionEditMessaging(int $id): void {
+		$this->loadFormConfiguration($this['configWebSocketMessagingForm'], $this->components['messaging'], $id, 'Websocket:default');
 	}
 
 	/**
 	 * Edits the Websocket service
 	 * @param int $id ID of WebSocket service
 	 */
-	public function renderEditService(int $id): void {
-		$this->configManager->setComponent($this->components['service']);
-		$this->template->id = $id;
+	public function actionEditService(int $id): void {
+		$this->loadFormConfiguration($this['configWebSocketServiceForm'], $this->components['service'], $id, 'Websocket:default');
 	}
 
 	/**
@@ -143,35 +172,17 @@ class WebsocketPresenter extends GenericPresenter {
 	/**
 	 * Deletes the WebSocket messaging
 	 * @param int $id ID of WebSocket messaging
-	 * @throws JsonException
 	 */
 	public function actionDeleteMessaging(int $id): void {
-		$this->configManager->setComponent($this->components['messaging']);
-		try {
-			$fileName = $this->configManager->getFileNameById($id);
-			$this->configManager->deleteFile($fileName);
-			$this->flashSuccess('config.messages.successes.delete');
-		} catch (IOException $e) {
-			$this->flashError('config.messages.deleteFailures.ioError');
-		}
-		$this->redirect('Websocket:default');
+		$this->deleteInstance($this->components['messaging'], $id, 'Websocket:default');
 	}
 
 	/**
 	 * Deletes the WebSocket service
 	 * @param int $id ID of WebSocket service
-	 * @throws JsonException
 	 */
 	public function actionDeleteService(int $id): void {
-		$this->configManager->setComponent($this->components['service']);
-		try {
-			$fileName = $this->configManager->getFileNameById($id);
-			$this->configManager->deleteFile($fileName);
-			$this->flashSuccess('config.messages.successes.delete');
-		} catch (IOException $e) {
-			$this->flashError('config.messages.deleteFailures.ioError');
-		}
-		$this->redirect('Websocket:default');
+		$this->deleteInstance($this->components['service'], $id, 'Websocket:default');
 	}
 
 	/**
@@ -189,7 +200,6 @@ class WebsocketPresenter extends GenericPresenter {
 	/**
 	 * Creates the WebSocket interface configuration form
 	 * @return Form WebSocket interface configuration form
-	 * @throws JsonException
 	 */
 	protected function createComponentConfigWebSocketForm(): Form {
 		return $this->basicFormFactory->create($this);
@@ -197,7 +207,7 @@ class WebsocketPresenter extends GenericPresenter {
 
 	/**
 	 * Creates the WebSocket messaging data grid
-	 * @param string $name Data grid's component name
+	 * @param string $name Component name
 	 * @return DataGrid WebSocket messaging data grid
 	 * @throws DataGridColumnStatusException
 	 * @throws DataGridException
@@ -210,7 +220,6 @@ class WebsocketPresenter extends GenericPresenter {
 	/**
 	 * Creates the WebSocket messaging configuration form
 	 * @return Form WebSocket messaging configuration form
-	 * @throws JsonException
 	 */
 	protected function createComponentConfigWebSocketMessagingForm(): Form {
 		return $this->messagingFormFactory->create($this);
@@ -231,7 +240,6 @@ class WebsocketPresenter extends GenericPresenter {
 	/**
 	 * Creates WebSocket service configuration form
 	 * @return Form WebSocket service configuration form
-	 * @throws JsonException
 	 */
 	protected function createComponentConfigWebSocketServiceForm(): Form {
 		return $this->serviceFormFactory->create($this);

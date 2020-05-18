@@ -21,14 +21,11 @@ declare(strict_types = 1);
 namespace App\ConsoleModule\Models;
 
 use App\CoreModule\Models\UserManager;
-use Nette\SmartObject;
 
 /**
  * Tool for managing users from CLI
  */
 class ConsoleUserManager extends UserManager {
-
-	use SmartObject;
 
 	/**
 	 * Gets information about the user from the username

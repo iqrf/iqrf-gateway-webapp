@@ -22,21 +22,16 @@ namespace App\ConfigModule\Forms;
 
 use App\ConfigModule\Presenters\WebsocketPresenter;
 use Nette\Application\UI\Form;
-use Nette\SmartObject;
-use Nette\Utils\JsonException;
 
 /**
  * WebSocket service configuration service form factory
  */
 class WebSocketServiceFormFactory extends GenericConfigFormFactory {
 
-	use SmartObject;
-
 	/**
 	 * Creates the WebSocket service configuration form
 	 * @param WebsocketPresenter $presenter WebSocket interface configuration presenter
 	 * @return Form WebSocket service configuration form
-	 * @throws JsonException
 	 */
 	public function create(WebsocketPresenter $presenter): Form {
 		$this->manager->setComponent('shape::WebsocketCppService');
@@ -50,10 +45,6 @@ class WebSocketServiceFormFactory extends GenericConfigFormFactory {
 		$form->addCheckbox('acceptOnlyLocalhost', 'acceptOnlyLocalhost');
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');
-		$id = $presenter->getParameter('id');
-		if (isset($id)) {
-			$form->setDefaults($this->manager->load((int) $id));
-		}
 		$form->onSuccess[] = [$this, 'save'];
 		return $form;
 	}

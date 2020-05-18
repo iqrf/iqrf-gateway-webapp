@@ -25,17 +25,18 @@
 		"ext-openssl": "*",
 		"ext-posix": "*",
 		"ext-zip": "*",
-		"acmephp/ssl": "^1.2",
 		"acmephp/core": "^1.2",
+		"acmephp/ssl": "^1.2",
 		"apitte/console": "^0.7",
 		"apitte/core": "^0.7",
 		"apitte/debug": "^0.7",
-		"apitte/openapi": "^0.7",
 		"apitte/middlewares": "^0.7",
 		"apitte/negotiation": "^0.7",
+		"apitte/openapi": "^0.7",
 		"bgalati/monolog-sentry-handler": "^1.2",
-		"contributte/console-extra": "^0.5",
 		"contributte/console": "^0.8",
+		"contributte/console-extra": "^0.5",
+		"contributte/forms": "^0.4.0",
 		"contributte/forms-multiplier": "^3.0",
 		"contributte/guzzlette": "^3.0",
 		"contributte/monolog": "^0.4",
@@ -115,6 +116,7 @@
 	"config": {
 		"platform": {
 			"php": "7.2.5"
-		}
+		},
+		"sort-packages": true
 	}
 }

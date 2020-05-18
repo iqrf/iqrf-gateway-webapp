@@ -21,14 +21,17 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\OtaUploadFormFactory;
-use App\ConfigModule\Models\GenericManager;
 use Nette\Application\UI\Form;
-use Nette\Utils\JsonException;
 
 /**
  * IQMESH services configuration presenter
  */
 class IqmeshPresenter extends GenericPresenter {
+
+	/**
+	 * IQRF Gateway Daemon component name
+	 */
+	private const COMPONENT = 'iqrf::OtaUploadService';
 
 	/**
 	 * @var OtaUploadFormFactory IQRF OTA upload service configuration form factory
@@ -37,18 +40,15 @@ class IqmeshPresenter extends GenericPresenter {
 	public $otaFormFactory;
 
 	/**
-	 * Constructor
-	 * @param GenericManager $genericManager Generic configuration manager
+	 * Renders the IQMESH service configurator
 	 */
-	public function __construct(GenericManager $genericManager) {
-		$components = ['iqrf::OtaUploadService'];
-		parent::__construct($components, $genericManager);
+	public function actionDefault(): void {
+		$this->loadFormConfiguration($this['configOtaUploadForm'], self::COMPONENT, null);
 	}
 
 	/**
 	 * Creates the IQRF OTA upload service form
 	 * @return Form IQRF OTA upload service form
-	 * @throws JsonException
 	 */
 	protected function createComponentConfigOtaUploadForm(): Form {
 		return $this->otaFormFactory->create($this);

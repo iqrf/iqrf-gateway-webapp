@@ -24,7 +24,6 @@ use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use JsonSchema\Constraints\Constraint;
 use JsonSchema\Validator;
-use Nette\SmartObject;
 use Nette\Utils\JsonException;
 use stdClass;
 
@@ -32,8 +31,6 @@ use stdClass;
  * Tool for reading and validating JSON schemas
  */
 class JsonSchemaManager extends JsonFileManager {
-
-	use SmartObject;
 
 	/**
 	 * @var string JSON schema file name

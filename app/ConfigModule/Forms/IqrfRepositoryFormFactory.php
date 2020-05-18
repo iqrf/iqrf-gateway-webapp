@@ -22,21 +22,16 @@ namespace App\ConfigModule\Forms;
 
 use App\ConfigModule\Presenters\IqrfRepositoryPresenter;
 use Nette\Application\UI\Form;
-use Nette\SmartObject;
-use Nette\Utils\JsonException;
 
 /**
  * IQRF Repository form factory
  */
 class IqrfRepositoryFormFactory extends GenericConfigFormFactory {
 
-	use SmartObject;
-
 	/**
 	 * Creates the IQRF Repository configuration form
 	 * @param IqrfRepositoryPresenter $presenter IQRF Repository configuration presenter
 	 * @return Form IQRF Repository configuration form
-	 * @throws JsonException
 	 */
 	public function create(IqrfRepositoryPresenter $presenter): Form {
 		$this->manager->setComponent('iqrf::JsCache');
@@ -49,7 +44,6 @@ class IqrfRepositoryFormFactory extends GenericConfigFormFactory {
 		$form->addInteger('checkPeriodInMinutes', 'checkPeriodInMinutes');
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');
-		$form->setDefaults($this->manager->load(0));
 		$form->onSuccess[] = [$this, 'save'];
 		return $form;
 	}

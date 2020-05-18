@@ -30,7 +30,6 @@ use Nette\Application\UI\Form;
 use Nette\Caching\Cache;
 use Nette\Caching\IStorage;
 use Nette\Forms\Controls\TextInput;
-use Nette\SmartObject;
 use Nette\Utils\JsonException;
 use stdClass;
 
@@ -38,8 +37,6 @@ use stdClass;
  * IQRF TR configuration form factory
  */
 class TrConfigFormFactory {
-
-	use SmartObject;
 
 	/**
 	 * @var int Address
@@ -52,7 +49,7 @@ class TrConfigFormFactory {
 	protected $configuration;
 
 	/**
-	 * @var Cache Chache
+	 * @var Cache Cache
 	 */
 	private $cache;
 
@@ -116,9 +113,10 @@ class TrConfigFormFactory {
 			$rfBands[$rfBand] = 'rfBands.' . $rfBand;
 			unset($rfBands[$key]);
 		}
-		$form->addSelect('rfBand', 'rfBand', $rfBands)->setDisabled();
+		$rfBand = $form->addSelect('rfBand', 'rfBand', $rfBands)
+			->setDisabled();
 		if (isset($this->configuration->rfBand)) {
-			$form['rfBand']->setDefaultValue($this->configuration->rfBand);
+			$rfBand->setDefaultValue($this->configuration->rfBand);
 		}
 		$rfChannels = ['rfChannelA', 'rfChannelB'];
 		foreach ($rfChannels as $rfChannel) {
@@ -181,9 +179,10 @@ class TrConfigFormFactory {
 		$form->addCheckbox('rfPgmTerminateMcuPin', 'rfPgmTerminateMcuPin');
 		$form->addCheckbox('rfPgmDualChannel', 'rfPgmDualChannel');
 		$form->addCheckbox('rfPgmLpMode', 'rfPgmLpMode');
-		$form->addCheckbox('rfPgmIncorrectUpload', 'rfPgmIncorrectUpload')->setDisabled();
+		$rfPgmIncorrectUpload = $form->addCheckbox('rfPgmIncorrectUpload', 'rfPgmIncorrectUpload')
+			->setDisabled();
 		if (isset($this->configuration->rfPgmIncorrectUpload)) {
-			$form['rfPgmIncorrectUpload']->setDefaultValue($this->configuration->rfPgmIncorrectUpload);
+			$rfPgmIncorrectUpload->setDefaultValue($this->configuration->rfPgmIncorrectUpload);
 		}
 	}
 
@@ -197,10 +196,10 @@ class TrConfigFormFactory {
 		$unchangeablePeripherals = ['coordinator', 'node', 'os'];
 		if ($this->presenter->getUser()->isInRole('power')) {
 			foreach ($unchangeablePeripherals as $peripheral) {
-				$embeddedPeripherals->addCheckbox($peripheral, 'embPers.' . $peripheral)
+				$checkbox = $embeddedPeripherals->addCheckbox($peripheral, 'embPers.' . $peripheral)
 					->setDisabled();
 				if (isset($this->configuration->embPers)) {
-					$embeddedPeripherals[$peripheral]->setValue($this->configuration->embPers->$peripheral);
+					$checkbox->setDefaultValue($this->configuration->embPers->$peripheral);
 				}
 			}
 		}
@@ -251,6 +250,7 @@ class TrConfigFormFactory {
 	 */
 	public function save(Form $form): void {
 		$config = $form->getValues('array');
+		assert(is_array($config));
 		if (array_key_exists('stdAndLpNetwork', $config)) {
 			$config['stdAndLpNetwork'] = (bool) $config['stdAndLpNetwork'];
 		}

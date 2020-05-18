@@ -22,21 +22,16 @@ namespace App\ConfigModule\Forms;
 
 use App\ConfigModule\Presenters\IqrfDpaPresenter;
 use Nette\Application\UI\Form;
-use Nette\SmartObject;
-use Nette\Utils\JsonException;
 
 /**
  * IQRF DPA configuration form factory
  */
 class IqrfDpaFormFactory extends GenericConfigFormFactory {
 
-	use SmartObject;
-
 	/**
 	 * Creates the IQRF DPA configuration form
 	 * @param IqrfDpaPresenter $presenter IQRF DPA configuration presenter
 	 * @return Form IQRF DPA configuration form
-	 * @throws JsonException
 	 */
 	public function create(IqrfDpaPresenter $presenter): Form {
 		$this->manager->setComponent('iqrf::IqrfDpa');
@@ -48,7 +43,6 @@ class IqrfDpaFormFactory extends GenericConfigFormFactory {
 			->setRequired('messages.DpaHandlerTimeout')
 			->addRule(Form::MIN, 'messages.DpaHandlerTimeout-rule', 0);
 		$form->addSubmit('save', 'Save');
-		$form->setDefaults($this->manager->load(0));
 		$form->addProtection('core.errors.form-timeout');
 		$form->onSuccess[] = [$this, 'save'];
 		return $form;

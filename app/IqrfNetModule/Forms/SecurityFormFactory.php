@@ -29,15 +29,12 @@ use App\IqrfNetModule\Models\SecurityManager;
 use App\IqrfNetModule\Presenters\TrConfigPresenter;
 use Nette\Application\UI\Form;
 use Nette\Forms\Controls\SubmitButton;
-use Nette\SmartObject;
 use Nette\Utils\JsonException;
 
 /**
  * IQMESH security form factory
  */
 class SecurityFormFactory {
-
-	use SmartObject;
 
 	/**
 	 * @var SecurityManager IQMESH security manager

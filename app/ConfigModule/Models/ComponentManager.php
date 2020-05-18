@@ -22,7 +22,6 @@ namespace App\ConfigModule\Models;
 
 use App\CoreModule\Models\JsonFileManager;
 use Nette\IOException;
-use Nette\SmartObject;
 use Nette\Utils\Arrays;
 use Nette\Utils\JsonException;
 
@@ -30,8 +29,6 @@ use Nette\Utils\JsonException;
  * Component configuration manager
  */
 class ComponentManager implements IConfigManager {
-
-	use SmartObject;
 
 	/**
 	 * @var JsonFileManager JSON file manager

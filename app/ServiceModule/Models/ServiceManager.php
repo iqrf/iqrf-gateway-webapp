@@ -23,14 +23,11 @@ namespace App\ServiceModule\Models;
 use App\CoreModule\Models\CommandManager;
 use App\ServiceModule\Exceptions\NotImplementedException;
 use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
-use Nette\SmartObject;
 
 /**
  * Tool for managing services
  */
 class ServiceManager {
-
-	use SmartObject;
 
 	/**
 	 * @var IServiceManager Init daemon service manager

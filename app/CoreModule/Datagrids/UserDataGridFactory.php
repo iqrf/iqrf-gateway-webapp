@@ -23,7 +23,6 @@ namespace App\CoreModule\Datagrids;
 use App\CoreModule\Exceptions\UsernameAlreadyExistsException;
 use App\CoreModule\Models\UserManager;
 use App\CoreModule\Presenters\UserPresenter;
-use Nette\SmartObject;
 use Ublaboo\DataGrid\Column\Action\Confirmation\StringConfirmation;
 use Ublaboo\DataGrid\DataGrid;
 use Ublaboo\DataGrid\Exception\DataGridColumnStatusException;
@@ -34,7 +33,10 @@ use Ublaboo\DataGrid\Exception\DataGridException;
  */
 class UserDataGridFactory {
 
-	use SmartObject;
+	/**
+	 * Translation prefix
+	 */
+	private const PREFIX = 'core.user';
 
 	/**
 	 * @var DataGridFactory Data grid factory
@@ -75,19 +77,19 @@ class UserDataGridFactory {
 		$grid->setDataSource($this->manager->getUsers());
 
 		if ($this->presenter->getUser()->isInRole('power')) {
-			$grid->addColumnNumber('id', 'core.user.form.id')
+			$grid->addColumnNumber('id', self::PREFIX . '.id')
 				->setAlign('left');
 		}
-		$grid->addColumnText('username', 'core.user.form.username');
+		$grid->addColumnText('username', self::PREFIX . '.username');
 		if ($this->presenter->getUser()->isInRole('power')) {
-			$grid->addColumnStatus('role', 'core.user.form.userType')
-				->addOption('normal', 'core.user.form.userTypes.normal')
+			$grid->addColumnStatus('role', self::PREFIX . '.userType')
+				->addOption('normal', self::PREFIX . '.userTypes.normal')
 				->endOption()
-				->addOption('power', 'core.user.form.userTypes.power')
+				->addOption('power', self::PREFIX . '.userTypes.power')
 				->endOption()
 				->onChange[] = [$this, 'changeRole'];
-			$grid->addColumnStatus('language', 'core.user.form.language')
-				->addOption('en', 'core.user.form.languages.en')
+			$grid->addColumnStatus('language', self::PREFIX . '.language')
+				->addOption('en', self::PREFIX . '.languages.en')
 				->endOption()
 				->onChange[] = [$this, 'changeLanguage'];
 		}
@@ -97,7 +99,7 @@ class UserDataGridFactory {
 		$grid->addAction('delete', 'config.actions.Remove')
 			->setIcon('remove')
 			->setClass('btn btn-xs btn-danger ajax')
-			->setConfirmation(new StringConfirmation('core.user.form.messages.confirmDelete', 'username'));
+			->setConfirmation(new StringConfirmation(self::PREFIX . '.messages.confirmDelete', 'username'));
 		$grid->addToolbarButton('add', 'config.actions.Add')
 			->setIcon('plus')
 			->setClass('btn btn-xs btn-success');
@@ -133,13 +135,13 @@ class UserDataGridFactory {
 				$user->logout();
 			}
 			$translator = $this->presenter->getTranslator();
-			$message = $translator->translate('core.user.form.messages.successEdit', null, ['username' => $username]);
+			$message = $translator->translate(self::PREFIX . '.messages.successEdit', null, ['username' => $username]);
 			$this->presenter->flashSuccess($message);
 			if (!$this->presenter->isAjax()) {
 				$this->presenter->redirect('User:default');
 			}
 		} catch (UsernameAlreadyExistsException $e) {
-			$this->presenter->flashError('core.user.form.messages.usernameAlreadyExists');
+			$this->presenter->flashError(self::PREFIX . '.messages.usernameAlreadyExists');
 		} finally {
 			if ($this->presenter->isAjax()) {
 				$dataGrid = $this->presenter['userGrid'];

@@ -28,7 +28,7 @@ ethernet:
 			gateway: IPv4 gateway address
 			dns:
 				title: IPv4 DNS servers
-				address: IPv4 address
+				address: DNS server IPv4 address
 				add: Add DNS server
 				remove: Remove DNS server
 			prompts:
@@ -59,7 +59,7 @@ ethernet:
 			gateway: IPv6 gateway address
 			dns:
 				title: IPv6 DNS servers
-				address: IPv6 address
+				address: DNS server IPv6 address
 				add: Add DNS server
 				remove: Remove DNS server
 			prompts:

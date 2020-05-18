@@ -25,7 +25,6 @@ use App\ConfigModule\Presenters\MonitorPresenter;
 use App\CoreModule\Datagrids\DataGridFactory;
 use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use Nette\IOException;
-use Nette\SmartObject;
 use Nette\Utils\JsonException;
 use Ublaboo\DataGrid\Column\Action\Confirmation\StringConfirmation;
 use Ublaboo\DataGrid\DataGrid;
@@ -36,8 +35,6 @@ use Ublaboo\DataGrid\Exception\DataGridException;
  * Daemon's monitor service data grid factory
  */
 class MonitorDataGridFactory {
-
-	use SmartObject;
 
 	/**
 	 * @var DataGridFactory Data grid factory

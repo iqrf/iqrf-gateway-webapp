@@ -21,14 +21,17 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\JsonMngMetaDataApiFormFactory;
-use App\ConfigModule\Models\GenericManager;
 use Nette\Application\UI\Form;
-use Nette\Utils\JsonException;
 
 /**
  * JSON Metadata API configuration presenter
  */
 class JsonMngMetaDataApiPresenter extends GenericPresenter {
+
+	/**
+	 * IQRF Gateway Daemon component name
+	 */
+	private const COMPONENT = 'iqrf::JsonMngMetaDataApi';
 
 	/**
 	 * @var JsonMngMetaDataApiFormFactory JSON Metadata API form factory
@@ -37,18 +40,15 @@ class JsonMngMetaDataApiPresenter extends GenericPresenter {
 	public $formFactory;
 
 	/**
-	 * Constructor
-	 * @param GenericManager $genericManager Generic configuration manager
+	 * Renders the JSON Raw API configurator
 	 */
-	public function __construct(GenericManager $genericManager) {
-		$components = ['iqrf::JsonMngMetaDataApi'];
-		parent::__construct($components, $genericManager);
+	public function actionDefault(): void {
+		$this->loadFormConfiguration($this['configJsonMngMetaDataApiForm'], self::COMPONENT, null);
 	}
 
 	/**
 	 * Creates the JSON Metadata API configuration form
 	 * @return Form JSON Metadata API configuration form
-	 * @throws JsonException
 	 */
 	protected function createComponentConfigJsonMngMetaDataApiForm(): Form {
 		return $this->formFactory->create($this);

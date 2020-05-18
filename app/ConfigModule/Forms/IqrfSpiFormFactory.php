@@ -22,21 +22,16 @@ namespace App\ConfigModule\Forms;
 
 use App\ConfigModule\Presenters\IqrfSpiPresenter;
 use Nette\Application\UI\Form;
-use Nette\SmartObject;
-use Nette\Utils\JsonException;
 
 /**
  * IQRF SPI configuration form factory
  */
 class IqrfSpiFormFactory extends GenericConfigFormFactory {
 
-	use SmartObject;
-
 	/**
 	 * Creates the IQRF SPI interface configuration form
 	 * @param IqrfSpiPresenter $presenter IQRF SPI interface configuration presenter
 	 * @return Form IQRF SPI interface configuration form
-	 * @throws JsonException
 	 */
 	public function create(IqrfSpiPresenter $presenter): Form {
 		$this->manager->setComponent('iqrf::IqrfSpi');
@@ -52,7 +47,6 @@ class IqrfSpiFormFactory extends GenericConfigFormFactory {
 		$form->addCheckbox('spiReset', 'spiReset');
 		$form->addSubmit('save', 'Save');
 		$form->addProtection('core.errors.form-timeout');
-		$form->setDefaults($this->manager->load(0));
 		$form->onSuccess[] = [$this, 'save'];
 		return $form;
 	}

@@ -35,15 +35,12 @@ use App\ServiceModule\Models\ServiceManager;
 use GuzzleHttp\Exception\ClientException;
 use Nette\Application\UI\Form;
 use Nette\IOException;
-use Nette\SmartObject;
 use Nette\Utils\JsonException;
 
 /**
  * IQRF OS Upload form factory
  */
 class OsDpaUploadFormFactory {
-
-	use SmartObject;
 
 	/**
 	 * @var FormFactory Generic form factory
