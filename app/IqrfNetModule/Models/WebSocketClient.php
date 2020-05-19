@@ -25,11 +25,13 @@ use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\IqrfNetModule\Requests\ApiRequest;
 use App\IqrfNetModule\Responses\ApiResponse;
+use InvalidArgumentException;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 use Ratchet\Client;
 use Ratchet\Client\WebSocket as WsClient;
 use Ratchet\RFC6455\Messaging\MessageInterface;
+use React\Dns\Config\Config as DnsConfig;
 use React\EventLoop;
 use React\Promise\PromiseInterface;
 use React\Socket as ReactSocket;
@@ -68,7 +70,6 @@ class WebSocketClient {
 	 * @return mixed[] IQRF JSON API response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
-	 * @throws JsonException
 	 * @throws UserErrorException
 	 */
 	public function sendSync(ApiRequest $request, bool $checkStatus = true, int $timeout = 13): array {
@@ -100,7 +101,19 @@ class WebSocketClient {
 	 * @return PromiseInterface React promise
 	 */
 	private function createConnection(int $timeout): PromiseInterface {
-		$reactConnector = new ReactSocket\Connector($this->loop, ['timeout' => $timeout]);
+		$options = ['timeout' => $timeout];
+		$dnsConfig = DnsConfig::loadSystemConfigBlocking();
+		$options['dns'] = false;
+		$reactConnector = new ReactSocket\Connector($this->loop, $options);
+		foreach ($dnsConfig->nameservers as $nameserver) {
+			try {
+				$options['dns'] = $nameserver;
+				$reactConnector = new ReactSocket\Connector($this->loop, $options);
+				break;
+			} catch (InvalidArgumentException $e) {
+				continue;
+			}
+		}
 		$connector = new Client\Connector($this->loop, $reactConnector);
 		return $connector($this->serverUrl);
 	}
