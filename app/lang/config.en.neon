@@ -354,6 +354,8 @@ selected-components:
 tracer:
 	title: Tracer file
 	description: Tracer file settings.
+	add: Add tracer file configuration
+	edit: Edit tracer file configuration
 	form:
 		instance: Instance name
 		path: Path to directory with logs
