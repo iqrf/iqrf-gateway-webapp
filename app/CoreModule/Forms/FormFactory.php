@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Forms;
 
-use Nepada\FormRenderer\IBootstrap3RendererFactory;
+use Contributte\Forms\Rendering\Bootstrap3VerticalRenderer;
 use Nette\Application\UI\Form;
 use Nette\Localization\ITranslator;
 
@@ -30,11 +30,6 @@ use Nette\Localization\ITranslator;
 class FormFactory {
 
 	/**
-	 * @var IBootstrap3RendererFactory Form renderer factory interface
-	 */
-	public $rendererFactory;
-
-	/**
 	 * @var ITranslator Translator
 	 */
 	private $translator;
@@ -42,11 +37,9 @@ class FormFactory {
 	/**
 	 * Constructor
 	 * @param ITranslator $translator Translator service
-	 * @param IBootstrap3RendererFactory $rendererFactory Form renderer factory interface
 	 */
-	public function __construct(ITranslator $translator, IBootstrap3RendererFactory $rendererFactory) {
+	public function __construct(ITranslator $translator) {
 		$this->translator = $translator;
-		$this->rendererFactory = $rendererFactory;
 	}
 
 	/**
@@ -56,7 +49,7 @@ class FormFactory {
 	 */
 	public function create(?string $translationPrefix = null): Form {
 		$form = new Form();
-		$renderer = $this->rendererFactory->create();
+		$renderer = new Bootstrap3VerticalRenderer();
 		if ($translationPrefix === null) {
 			$form->setTranslator($this->translator);
 		} else {

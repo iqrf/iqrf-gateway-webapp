@@ -56,7 +56,7 @@ class TraceFileFormFactory extends GenericConfigFormFactory {
 		$form->addInteger('maxSizeMB', 'maxSizeMB');
 		$form->addCheckbox('timestampFiles', 'timestampFiles');
 		$form->addGroup('verbosityLevels.title');
-		$verbosityLevels = $form->addMultiplier('VerbosityLevels', [$this, 'createVerbosityLevelsMultiplier'], 0);
+		$verbosityLevels = $form->addMultiplier('VerbosityLevels', [$this, 'createVerbosityLevelsMultiplier'], 1);
 		$verbosityLevels->addCreateButton('verbosityLevels.add')
 			->addClass('btn btn-success');
 		$verbosityLevels->addRemoveButton('verbosityLevels.remove')

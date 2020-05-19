@@ -49,7 +49,7 @@ class WebSocketMessagingFormFactory extends GenericConfigFormFactory {
 			->setRequired('messages.messagingInstance');
 		$form->addCheckbox('acceptAsyncMsg', 'acceptAsyncMsg');
 		$form->addGroup('requiredInterfaces');
-		$interfaces = $form->addMultiplier('RequiredInterfaces', [$this, 'addRequiredInterfaces'], 0);
+		$interfaces = $form->addMultiplier('RequiredInterfaces', [$this, 'addRequiredInterfaces'], 1);
 		$interfaces->addRemoveButton('messages.requiredInterface.remove')
 			->addClass('btn btn-danger');
 		$interfaces->addCreateButton('messages.requiredInterface.add')

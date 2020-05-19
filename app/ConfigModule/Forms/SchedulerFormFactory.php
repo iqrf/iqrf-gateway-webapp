@@ -121,7 +121,7 @@ class SchedulerFormFactory {
 		/**
 		 * @var Multiplier $tasks
 		 */
-		$tasks = $form->addMultiplier('task', [$this, 'createTasksMultiplier'], 0);
+		$tasks = $form->addMultiplier('task', [$this, 'createTasksMultiplier'], 1);
 		$tasks->addCreateButton(self::PREFIX . 'message.add')
 			->addClass('btn btn-success');
 		$tasks->addRemoveButton(self::PREFIX . 'message.remove')

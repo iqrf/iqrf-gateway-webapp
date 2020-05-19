@@ -32,7 +32,7 @@ database:
 		dsn: 'sqlite:%appDir%/../iqrf/os.db'
 
 extensions:
-	formRenderer: Nepada\Bridges\FormRendererDI\FormRendererExtension
+	formRenderer: Contributte\Forms\DI\ApplicationFormFactoryExtension
 	iqrfRepository: Iqrf\Repository\DI\IqrfRepositoryExtension
 	iqrfMacros: Iqrf\IdeMacros\DI\IqrfMacrosExtension
 	- Contributte\FormMultiplier\DI\MultiplierExtension

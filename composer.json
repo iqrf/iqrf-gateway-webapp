@@ -48,7 +48,6 @@
 		"justinrainbow/json-schema": "^5.2",
 		"latte/latte": "^2.6",
 		"lcobucci/jwt": "^4.0@alpha",
-		"nepada/form-renderer": "~1.1.0",
 		"nette/application": "^3.0",
 		"nette/bootstrap": "^3.0",
 		"nette/caching": "^3.0",
