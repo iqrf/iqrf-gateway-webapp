@@ -34,6 +34,11 @@ use Ublaboo\DataGrid\Exception\DataGridException;
 class TraceFileDataGridFactory {
 
 	/**
+	 * Translation prefix
+	 */
+	private const PREFIX = 'config.tracer.';
+
+	/**
 	 * @var GenericManager Generic configuration manager
 	 */
 	private $configManager;
@@ -65,16 +70,16 @@ class TraceFileDataGridFactory {
 		$grid = $this->dataGridFactory->create($presenter, $name);
 		$this->configManager->setComponent('shape::TraceFileService');
 		$grid->setDataSource($this->configManager->list());
-		$grid->addColumnText('instance', 'config.tracer.form.instance');
-		$grid->addColumnText('path', 'config.tracer.form.path');
-		$grid->addColumnText('filename', 'config.tracer.form.filename');
+		$grid->addColumnText('instance', self::PREFIX . 'form.instance');
+		$grid->addColumnText('path', self::PREFIX . 'form.path');
+		$grid->addColumnText('filename', self::PREFIX . 'form.filename');
 		$grid->addAction('edit', 'config.actions.Edit')
 			->setIcon('pencil')
 			->setClass('btn btn-xs btn-info');
 		$grid->addAction('delete', 'config.actions.Remove')
 			->setIcon('remove')
 			->setClass('btn btn-xs btn-danger ajax')
-			->setConfirmation(new StringConfirmation('config.tracer.form.messages.confirmDelete', 'instance'));
+			->setConfirmation(new StringConfirmation(self::PREFIX . 'messages.confirmDelete', 'instance'));
 		$grid->addToolbarButton('add', 'config.actions.Add')
 			->setClass('btn btn-xs btn-success')
 			->setIcon('plus');

@@ -50,9 +50,11 @@ class TraceFileFormFactory extends GenericConfigFormFactory {
 		$this->presenter = $presenter;
 		$form = $this->factory->create('config.tracer.form');
 		$form->addGroup();
-		$form->addText('instance', 'instance');
+		$form->addText('instance', 'instance')
+			->setRequired('messages.instance');
 		$form->addText('path', 'path');
-		$form->addText('filename', 'filename');
+		$form->addText('filename', 'filename')
+			->setRequired('messages.filename');
 		$form->addInteger('maxSizeMB', 'maxSizeMB');
 		$form->addCheckbox('timestampFiles', 'timestampFiles');
 		$form->addGroup('verbosityLevels.title');

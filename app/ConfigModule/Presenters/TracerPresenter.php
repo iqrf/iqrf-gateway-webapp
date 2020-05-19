@@ -83,7 +83,7 @@ class TracerPresenter extends GenericPresenter {
 	 * @param int $id ID of tracer service
 	 */
 	public function actionDelete(int $id): void {
-		$this->deleteInstance(self::COMPONENT, $id, 'TracerFile:default');
+		$this->deleteInstance(self::COMPONENT, $id, 'Tracer:default');
 	}
 
 	/**

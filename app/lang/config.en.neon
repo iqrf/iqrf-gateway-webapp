@@ -374,10 +374,14 @@ tracer:
 			Info: Info
 			Debug: Debug
 		messages:
+			instance: Please enter name of Tracer file interface.
+			filename: Please enter tracer file name.
 			verbosityLevels:
 				channel: Please enter the verbosity channel.
 				level: Please select the verbosity level.
 		Save: Save
+	messages:
+		confirmDelete: Do you really want to delete Tracer file %s?
 
 udp:
 	title: UDP interface
