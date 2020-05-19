@@ -27,6 +27,7 @@ use DateTime;
 use Nette\Application\BadRequestException;
 use Nette\Application\Responses\FileResponse;
 use Nette\Utils\JsonException;
+use Nette\Utils\Strings;
 use Throwable;
 
 /**
@@ -103,6 +104,7 @@ class DiagnosticsManager {
 		$this->addUsb();
 		$this->addControllerLog();
 		$this->addWebappLog();
+		$this->addInstalledPackages();
 		$this->zipManager->close();
 		return $path;
 	}
@@ -158,13 +160,16 @@ class DiagnosticsManager {
 
 	/**
 	 * Adds basic information about the gateway
-	 * @throws JsonException
 	 */
 	public function addInfo(): void {
 		$array = $this->infoManager->get();
 		$array['uname'] = $this->commandManager->run('uname -a', true)->getStdout();
 		$array['uptime'] = $this->commandManager->run('uptime -p', true)->getStdout();
-		$this->zipManager->addJsonFromArray('info.json', $array);
+		try {
+			$this->zipManager->addJsonFromArray('info.json', $array);
+		} catch (JsonException $e) {
+			return;
+		}
 	}
 
 	/**
@@ -215,6 +220,17 @@ class DiagnosticsManager {
 	public function addWebappLog(): void {
 		$logDir = __DIR__ . '/../../../log/';
 		$this->zipManager->addFolder($logDir, 'logs/iqrf-gateway-webapp');
+	}
+
+	/**
+	 * Adds list of installed packages
+	 */
+	public function addInstalledPackages(): void {
+		if ($this->commandManager->commandExist('apt')) {
+			$command = $this->commandManager->run('apt list --installed', true);
+			$packages = Strings::replace($command->getStdout(), '/Listing...\n/');
+			$this->zipManager->addFileFromText('installed_packages.txt', $packages);
+		}
 	}
 
 }
