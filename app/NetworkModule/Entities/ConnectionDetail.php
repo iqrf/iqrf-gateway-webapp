@@ -162,7 +162,7 @@ class ConnectionDetail implements JsonSerializable {
 
 	/**
 	 * Converts network connection entity to an array for the form
-	 * @return array<string,mixed> Array for the form
+	 * @return array<string, string|array> Array for the form
 	 */
 	public function toForm(): array {
 		return $this->jsonSerialize();
@@ -178,13 +178,13 @@ class ConnectionDetail implements JsonSerializable {
 
 	/**
 	 * Returns JSON serialized data
-	 * @return array<string,mixed> JSON serialized data
+	 * @return array<string, string|array> JSON serialized data
 	 */
 	public function jsonSerialize(): array {
 		return [
 			'id' => $this->id,
 			'uuid' => $this->uuid->toString(),
-			'type' => $this->type->toScalar(),
+			'type' => (string) $this->type->toScalar(),
 			'interface-name' => $this->interfaceName,
 			'ipv4' => $this->ipv4->toForm(),
 			'ipv6' => $this->ipv6->toForm(),

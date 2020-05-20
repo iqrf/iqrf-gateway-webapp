@@ -61,7 +61,7 @@ class MainManager {
 
 	/**
 	 * Converts the main configuration form array to JSON array
-	 * @return mixed[] Array for form
+	 * @return array<string, array<array<string, bool|int|string>>|string> Array for form
 	 * @throws JsonException
 	 */
 	public function load(): array {
@@ -70,7 +70,7 @@ class MainManager {
 
 	/**
 	 * Saves the main daemon configuration
-	 * @param mixed[] $array Main configuration
+	 * @param array<string, array<array<string, bool|int|string>>|string> $array Main configuration
 	 * @throws JsonException
 	 */
 	public function save(array $array): void {

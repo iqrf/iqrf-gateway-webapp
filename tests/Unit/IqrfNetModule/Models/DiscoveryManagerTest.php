@@ -49,7 +49,9 @@ class DiscoveryManagerTest extends WebSocketTestCase {
 				],
 			],
 		];
-		$this->assertRequest($request, [$this->manager, 'run']);
+		$this->assertRequest($request, function (): array {
+			return $this->manager->run();
+		});
 	}
 
 }

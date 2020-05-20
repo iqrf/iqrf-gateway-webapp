@@ -67,7 +67,7 @@ class InteliGlueManager implements IManager {
 
 	/**
 	 * Creates a new MQTT interface
-	 * @param mixed[] $values Values from form
+	 * @param array<string, int|string> $values Values from form
 	 * @throws GuzzleException
 	 * @throws JsonException
 	 */

@@ -78,7 +78,7 @@ class AwsManager implements IManager {
 
 	/**
 	 * Creates a new MQTT interface
-	 * @param mixed[] $values Values from form
+	 * @param array<string, FileUpload|int|string> $values Values from form
 	 * @throws GuzzleException
 	 * @throws InvalidPrivateKeyForCertificateException
 	 * @throws JsonException
@@ -134,7 +134,7 @@ class AwsManager implements IManager {
 
 	/**
 	 * Creates paths for root CA certificate, certificate and private key
-	 * @return string[] Paths for root CA certificate, certificate and private key
+	 * @return array<string> Paths for root CA certificate, certificate and private key
 	 */
 	public function createPaths(): array {
 		$timestamp = (new DateTime())->format(DateTime::ISO8601);
@@ -170,7 +170,7 @@ class AwsManager implements IManager {
 
 	/**
 	 * Uploads certificate and private key
-	 * @param string[] $paths Paths for certificate and private key
+	 * @param array<string> $paths Paths for certificate and private key
 	 * @param string $certificate Certificate
 	 * @param string $privateKey Private key
 	 */

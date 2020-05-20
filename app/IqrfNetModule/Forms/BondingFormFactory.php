@@ -116,7 +116,7 @@ class BondingFormFactory {
 
 	/**
 	 * Returns bonding methods
-	 * @return mixed[] Bonding methods
+	 * @return array<mixed> Bonding methods
 	 */
 	private function getBondingMethods(): array {
 		$methods = ['local', 'smartConnect'];

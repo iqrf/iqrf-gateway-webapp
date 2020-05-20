@@ -58,10 +58,10 @@ class SchedulerMigrationManager {
 		$cacheDir = $mainManager->getCacheDir();
 		$dirs = [$cacheDir, $cacheDir . '/scheduler/'];
 		foreach ($dirs as $dir) {
-			if (!is_readable($dir) || !is_writable($dir)) {
-				var_dump($dir);
-				$commandManager->run('chmod 777 ' . $dir, true);
+			if (is_readable($dir) && is_writable($dir)) {
+				continue;
 			}
+			$commandManager->run('chmod 777 ' . $dir, true);
 		}
 		$this->configDirectory = $cacheDir . '/scheduler/';
 		$this->schemaManager = $schemaManager;

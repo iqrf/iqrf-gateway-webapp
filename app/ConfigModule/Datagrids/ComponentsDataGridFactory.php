@@ -103,7 +103,7 @@ class ComponentsDataGridFactory {
 
 	/**
 	 * Loads the data to the data grid
-	 * @return mixed[] Data for the data grid
+	 * @return array<int, array<string, bool|int|string>> Data for the data grid
 	 * @throws JsonException
 	 */
 	private function load(): array {

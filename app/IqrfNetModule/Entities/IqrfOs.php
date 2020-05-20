@@ -57,7 +57,7 @@ class IqrfOs {
 
 	/**
 	 * Creates a new IQRF OS entity from DPA OS Read response
-	 * @param mixed[] $api API request and response
+	 * @param array<mixed> $api API request and response
 	 * @return IqrfOs IQRF OS entity
 	 */
 	public static function fromOsRead(array $api): self {

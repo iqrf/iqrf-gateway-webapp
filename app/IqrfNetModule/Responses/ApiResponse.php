@@ -55,7 +55,7 @@ class ApiResponse {
 	protected $response;
 
 	/**
-	 * @var string[] IQRF JSON API exceptions
+	 * @var array<string> IQRF JSON API exceptions
 	 */
 	private $exceptions = [
 		-8 => ExclusiveAccessException::class,

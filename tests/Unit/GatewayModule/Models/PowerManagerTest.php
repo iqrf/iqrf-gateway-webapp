@@ -39,7 +39,9 @@ class PowerManagerTest extends CommandTestCase {
 	 */
 	public function testPowerOff(): void {
 		$this->receiveCommand('poweroff', true, '');
-		Assert::noError([$this->manager, 'powerOff']);
+		Assert::noError(function (): void {
+			$this->manager->powerOff();
+		});
 	}
 
 	/**
@@ -47,7 +49,9 @@ class PowerManagerTest extends CommandTestCase {
 	 */
 	public function testReboot(): void {
 		$this->receiveCommand('reboot', true, '');
-		Assert::noError([$this->manager, 'reboot']);
+		Assert::noError(function (): void {
+			$this->manager->reboot();
+		});
 	}
 
 }

@@ -92,6 +92,70 @@ final class WifiNetwork implements JsonSerializable {
 	}
 
 	/**
+	 * Checks if the WiFI network is used
+	 * @return bool Is used?
+	 */
+	public function isUsed(): bool {
+		return $this->inUse;
+	}
+
+	/**
+	 * Returns the network's BSSID (Basic Services Set Identifier)
+	 * @return string BSSID
+	 */
+	public function getBssid(): string {
+		return $this->bssid;
+	}
+
+	/**
+	 * Returns the network's SSID (Service Set Identifier)
+	 * @return string SSID
+	 */
+	public function getSsid(): string {
+		return $this->ssid;
+	}
+
+	/**
+	 * Returns the network's mode
+	 * @return WifiMode Network's mode
+	 */
+	public function getMode(): WifiMode {
+		return $this->mode;
+	}
+
+	/**
+	 * Returns the network's channel
+	 * @return int Network's channel
+	 */
+	public function getChannel(): int {
+		return $this->channel;
+	}
+
+	/**
+	 * Returns the network's speed rate
+	 * @return string Speed rate
+	 */
+	public function getRate(): string {
+		return $this->rate;
+	}
+
+	/**
+	 * Returns the network signal strength
+	 * @return int Signal strength
+	 */
+	public function getSignal(): int {
+		return $this->signal;
+	}
+
+	/**
+	 * Returns the network's security
+	 * @return WifiSecurity Network security
+	 */
+	public function getSecurity(): WifiSecurity {
+		return $this->security;
+	}
+
+	/**
 	 * Creates a new WiFi network entity from nmcli
 	 * @param string $nmCli nmcli
 	 * @return WifiNetwork WiFi network
@@ -111,18 +175,18 @@ final class WifiNetwork implements JsonSerializable {
 
 	/**
 	 * Returns JSON serialized data
-	 * @return array<string,mixed> JSON serialized data
+	 * @return array<string, bool|int|string> JSON serialized data
 	 */
 	public function jsonSerialize(): array {
 		return [
 			'inUse' => $this->inUse,
 			'bssid' => $this->bssid,
 			'ssid' => $this->ssid,
-			'mode' => $this->mode->toScalar(),
+			'mode' => (string) $this->mode->toScalar(),
 			'channel' => $this->channel,
 			'rate' => $this->rate,
 			'signal' => $this->signal,
-			'security' => $this->security->toScalar(),
+			'security' => (string) $this->security->toScalar(),
 		];
 	}
 

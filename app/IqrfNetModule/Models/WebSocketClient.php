@@ -67,7 +67,7 @@ class WebSocketClient {
 	 * @param ApiRequest $request IQRF JSON API request
 	 * @param bool $checkStatus Check response status
 	 * @param int $timeout WebSocket client timeout
-	 * @return mixed[] IQRF JSON API response
+	 * @return array<mixed> IQRF JSON API response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws UserErrorException
@@ -171,7 +171,7 @@ class WebSocketClient {
 	 * @param ApiRequest $request JSON DPA request
 	 * @param MessageInterface|null $response IQRF JSON API response
 	 * @param bool $checkStatus Check response status
-	 * @return mixed[] IQRF JSON API response in an array
+	 * @return array<mixed> IQRF JSON API response in an array
 	 * @throws EmptyResponseException
 	 * @throws DpaErrorException
 	 * @throws UserErrorException

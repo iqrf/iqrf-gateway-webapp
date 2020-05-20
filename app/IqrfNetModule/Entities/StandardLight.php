@@ -63,7 +63,7 @@ class StandardLight {
 
 	/**
 	 * Convert an object to an array
-	 * @return int[] Properties in array
+	 * @return array<string, int> Properties in array
 	 */
 	public function toArray(): array {
 		return [

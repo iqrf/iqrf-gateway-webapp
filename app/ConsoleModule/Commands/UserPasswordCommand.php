@@ -58,7 +58,7 @@ class UserPasswordCommand extends UserCommand {
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$user = $this->askUserName($input, $output);
 		$pass = $this->askPassword($input, $output);
-		$this->userManager->editPassword($user['id'], $pass);
+		$this->userManager->editPassword($user->getId(), $pass);
 		return 0;
 	}
 

@@ -93,7 +93,7 @@ class GenericManager {
 
 	/**
 	 * Gets component's instance files
-	 * @return string[] Files with component's instances
+	 * @return array<string> Files with component's instances
 	 */
 	public function getInstanceFiles(): array {
 		$dir = $this->fileManager->getDirectory();
@@ -115,7 +115,7 @@ class GenericManager {
 
 	/**
 	 * Get a list of  configurations
-	 * @return mixed[] Configurations
+	 * @return array<mixed> Configurations
 	 * @throws IOException
 	 * @throws JsonException
 	 */
@@ -130,7 +130,7 @@ class GenericManager {
 	/**
 	 * Loads the configuration
 	 * @param int $id Configuration ID
-	 * @return mixed[] Configuration in an array
+	 * @return array<mixed> Configuration in an array
 	 * @throws IOException
 	 * @throws JsonException
 	 * @todo Handle nonexistent IDs
@@ -143,7 +143,7 @@ class GenericManager {
 	/**
 	 * Loads the configuration
 	 * @param string $instance Instance name
-	 * @return mixed[] Configuration in an array
+	 * @return array<mixed> Configuration in an array
 	 * @throws JsonException
 	 */
 	public function loadInstance(string $instance): array {
@@ -156,7 +156,7 @@ class GenericManager {
 
 	/**
 	 * Fixes the required interfaces in the configuration
-	 * @param mixed[] $configuration Configuration to fix
+	 * @param array<mixed> $configuration Configuration to fix
 	 * @throws IOException
 	 * @throws JsonException
 	 */
@@ -202,7 +202,7 @@ class GenericManager {
 	/**
 	 * Reads the configuration
 	 * @param string|null $fileName File name
-	 * @return mixed[] Configuration in an array
+	 * @return array<mixed> Configuration in an array
 	 * @throws IOException
 	 * @throws JsonException
 	 */
@@ -220,7 +220,7 @@ class GenericManager {
 
 	/**
 	 * Saves the configuration
-	 * @param mixed[] $array Configuration in an array
+	 * @param array<mixed> $array Configuration in an array
 	 * @param string|null $fileName File name
 	 * @throws IOException
 	 * @throws JsonException
@@ -241,7 +241,7 @@ class GenericManager {
 
 	/**
 	 * Generates a configuration file name
-	 * @param mixed[] $array Configuration from form
+	 * @param array<mixed> $array Configuration from form
 	 * @return string Generated file name
 	 */
 	public function generateFileName(array $array): string {
@@ -269,7 +269,7 @@ class GenericManager {
 
 	/**
 	 * Gets available messagings
-	 * @return string[][] Available messagings
+	 * @return array<string, array<string>> Available messagings
 	 */
 	public function getMessagings(): array {
 		$components = [
@@ -288,7 +288,7 @@ class GenericManager {
 	/**
 	 * Gets available instances of component
 	 * @param string $component Component
-	 * @return string[] Available instances of component
+	 * @return array<string> Available instances of component
 	 */
 	public function getComponentInstances(string $component): array {
 		$instances = [];

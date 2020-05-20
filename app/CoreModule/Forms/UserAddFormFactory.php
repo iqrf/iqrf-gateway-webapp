@@ -86,7 +86,7 @@ class UserAddFormFactory {
 
 	/**
 	 * Gets user types
-	 * @return string[] User types
+	 * @return array<string> User types
 	 */
 	private function getUserTypes(): array {
 		$userTypes = ['normal', 'power'];
@@ -103,7 +103,7 @@ class UserAddFormFactory {
 
 	/**
 	 * Gets languages
-	 * @return string[] Available languages
+	 * @return array<string> Available languages
 	 */
 	private function getLanguages(): array {
 		$languages = ['en'];

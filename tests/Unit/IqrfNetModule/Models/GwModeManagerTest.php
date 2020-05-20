@@ -38,7 +38,9 @@ class GwModeManagerTest extends WebSocketTestCase {
 				'returnVerbose' => true,
 			],
 		];
-		$this->assertRequest($request, [$this->manager, 'get']);
+		$this->assertRequest($request, function (): string {
+			return $this->manager->get();
+		});
 	}
 
 	/**

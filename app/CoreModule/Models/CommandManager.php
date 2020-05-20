@@ -24,6 +24,7 @@ use App\CoreModule\Entities\Command;
 use App\CoreModule\Entities\CommandStack;
 use App\CoreModule\Entities\ICommand;
 use Symfony\Component\Process\Process;
+use Traversable;
 
 /**
  * Tool for executing commands
@@ -74,7 +75,7 @@ class CommandManager {
 	 * Executes shell command and returns output
 	 * @param string $command Command to execute
 	 * @param bool $needSudo Does the command need sudo?
-	 * @param mixed $input Command's input
+	 * @param string|int|float|bool|resource|Traversable|null $input Command's input
 	 * @return ICommand Command entity
 	 */
 	public function run(string $command, bool $needSudo = false, $input = null): ICommand {
@@ -92,7 +93,7 @@ class CommandManager {
 	 * @param string $command Command to execute
 	 * @param bool $needSudo Does the command need sudo?
 	 * @param int $timeout Command's timeout
-	 * @param mixed $input Command's input
+	 * @param string|int|float|bool|resource|Traversable|null $input Command's input
 	 */
 	public function runAsync(callable $callback, string $command, bool $needSudo = false, int $timeout = 36000, $input = null): void {
 		$process = $this->createProcess($command, $needSudo);

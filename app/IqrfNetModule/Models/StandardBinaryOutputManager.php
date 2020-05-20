@@ -55,7 +55,7 @@ class StandardBinaryOutputManager {
 	/**
 	 * Enumerates a IQRF Standard binary output device
 	 * @param int $address Network device address
-	 * @return mixed[] API request and response
+	 * @return array<mixed> API request and response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws JsonException
@@ -79,7 +79,7 @@ class StandardBinaryOutputManager {
 	/**
 	 * Gets states of IQRF Standard binary outputs
 	 * @param int $address Network device address
-	 * @return mixed[] API request and response
+	 * @return array<mixed> API request and response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws JsonException
@@ -92,8 +92,8 @@ class StandardBinaryOutputManager {
 	/**
 	 * Sets states of IQRF Standard binary outputs
 	 * @param int $address Network device address
-	 * @param StandardBinaryOutput[] $outputs Standard binary output
-	 * @return mixed[] API request and response
+	 * @param array<StandardBinaryOutput> $outputs Standard binary output
+	 * @return array<mixed> API request and response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws JsonException

@@ -32,7 +32,7 @@ class IPv4ConnectionTest extends TestCase {
 	private $method;
 
 	/**
-	 * @var IPv4Address[] IPv4 addresses
+	 * @var array<IPv4Address> IPv4 addresses
 	 */
 	private $addresses;
 
@@ -42,7 +42,7 @@ class IPv4ConnectionTest extends TestCase {
 	private $gateway;
 
 	/**
-	 * @var IPv4[] IPv4 addresses of DNS servers
+	 * @var array<IPv4> IPv4 addresses of DNS servers
 	 */
 	private $dns;
 

@@ -85,7 +85,7 @@ class CertificateManager {
 
 	/**
 	 * Returns information about the certificate
-	 * @return array<string, mixed> Information about the certificate
+	 * @return array<string, array<string>|bool|string> Information about the certificate
 	 */
 	public function getInfo(): array {
 		$certificate = $this->certificateParser->parse($this->certificate);

@@ -24,7 +24,7 @@ require __DIR__ . '/../../../bootstrap.php';
 class WebSocketManagerTest extends JsonConfigTestCase {
 
 	/**
-	 * @var string[] WebSocket messaging and service file names
+	 * @var array<string, string> WebSocket messaging and service file names
 	 */
 	private $fileNames = [
 		'messaging' => 'iqrf__WebsocketMessaging',
@@ -32,7 +32,7 @@ class WebSocketManagerTest extends JsonConfigTestCase {
 	];
 
 	/**
-	 * @var string[] WebSocket instances
+	 * @var array<string, string> WebSocket instances
 	 */
 	private $instances = [
 		'messaging' => 'WebsocketMessaging',
@@ -50,7 +50,7 @@ class WebSocketManagerTest extends JsonConfigTestCase {
 	private $managerTemp;
 
 	/**
-	 * @var mixed[] Values from configuration form
+	 * @var array<string, bool|int> Values from configuration form
 	 */
 	private $values = [
 		'acceptAsyncMsg' => true,

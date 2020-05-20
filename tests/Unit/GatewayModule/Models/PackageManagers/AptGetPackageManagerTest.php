@@ -25,7 +25,7 @@ require __DIR__ . '/../../../../bootstrap.php';
 class AptGetPackageManagerTest extends CommandTestCase {
 
 	/**
-	 * @var string[] Packages
+	 * @var array<string> Packages
 	 */
 	private $packages = ['iqrf-gateway-daemon', 'iqrf-gateway-webapp'];
 

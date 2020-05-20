@@ -45,7 +45,7 @@ class AppAuthenticator implements IAuthenticator {
 
 	/**
 	 * Authenticates the user
-	 * @param string[] $credentials Authentication credentials
+	 * @param array<string> $credentials Authentication credentials
 	 * @return IIdentity Nette Identity
 	 * @throws AuthenticationException
 	 */

@@ -109,7 +109,7 @@ class SchedulerManager {
 
 	/**
 	 * Gets task's files
-	 * @return string[] Files with tasks
+	 * @return array<string> Files with tasks
 	 */
 	public function getTaskFiles(): array {
 		$dir = $this->fileManager->getDirectory();
@@ -135,7 +135,7 @@ class SchedulerManager {
 
 	/**
 	 * Gets available messagings
-	 * @return string[][] Available messagings
+	 * @return array<array<string>> Available messagings
 	 * @throws JsonException
 	 */
 	public function getMessagings(): array {
@@ -146,7 +146,7 @@ class SchedulerManager {
 
 	/**
 	 * Gets scheduler's services
-	 * @return string[] Scheduler's services
+	 * @return array<string> Scheduler's services
 	 * @throws JsonException
 	 */
 	public function getServices(): array {
@@ -160,7 +160,7 @@ class SchedulerManager {
 
 	/**
 	 * Gets tasks
-	 * @return mixed[] Tasks
+	 * @return array<mixed> Tasks
 	 */
 	public function list(): array {
 		$tasks = [];
@@ -184,7 +184,7 @@ class SchedulerManager {
 
 	/**
 	 * Returns messagings used in tasks
-	 * @param mixed[] $tasks Tasks
+	 * @param array<mixed> $tasks Tasks
 	 * @return string Messagings used in tasks
 	 */
 	private function getTaskMessagings(array $tasks): string {
@@ -197,7 +197,7 @@ class SchedulerManager {
 
 	/**
 	 * Returns message types used in tasks
-	 * @param mixed[] $tasks Tasks
+	 * @param array<mixed> $tasks Tasks
 	 * @return string Message types used in tasks
 	 */
 	private function getTaskMessageTypes(array $tasks): string {

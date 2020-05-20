@@ -54,7 +54,7 @@ class EnumerationManager {
 	/**
 	 * Enumerates a device
 	 * @param int $address Device address to enumerate
-	 * @return mixed[] API request and response
+	 * @return array<mixed> API request and response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws JsonException

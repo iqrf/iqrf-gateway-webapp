@@ -55,7 +55,7 @@ class TrConfigManager {
 	/**
 	 * Reads TR's configuration
 	 * @param int $address Device address to read the configuration from
-	 * @return mixed[] API request and response
+	 * @return array<mixed> API request and response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws JsonException
@@ -79,8 +79,8 @@ class TrConfigManager {
 	/**
 	 * Writes TR's configuration
 	 * @param int $address Device address to write the configuration to
-	 * @param mixed[] $config New TR configuration
-	 * @return mixed[] DPA request and response
+	 * @param array<mixed> $config New TR configuration
+	 * @return array<mixed> DPA request and response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws JsonException

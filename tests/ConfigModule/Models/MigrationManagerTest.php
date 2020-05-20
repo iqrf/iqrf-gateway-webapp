@@ -109,7 +109,7 @@ class MigrationManagerTest extends TestCase {
 	/**
 	 * Create list of files
 	 * @param string $path Path to the directory
-	 * @return string[] List of files in the directory
+	 * @return array<string> List of files in the directory
 	 */
 	private function createList(string $path): array {
 		$path = realpath($path) . '/';
@@ -151,7 +151,7 @@ class MigrationManagerTest extends TestCase {
 
 	/**
 	 * Mock an uploaded configuration
-	 * @return FileUpload[] Mocked form values
+	 * @return array<FileUpload> Mocked form values
 	 */
 	private function mockUploadedArchive(): array {
 		$values = [];

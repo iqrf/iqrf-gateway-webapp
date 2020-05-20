@@ -40,7 +40,7 @@ class AwsManagerTest extends CloudIntegrationTestCase {
 	protected $certPathReal;
 
 	/**
-	 * @var string[] Values from Amazon AWS IoT form
+	 * @var array<string> Values from Amazon AWS IoT form
 	 */
 	private $formValues = [
 		'endpoint' => 'localhost',
@@ -163,7 +163,7 @@ class AwsManagerTest extends CloudIntegrationTestCase {
 	/**
 	 * Mocks uploaded certificate and private key
 	 * @param string $path Path to certificate and private key
-	 * @return FileUpload[] Mocked uploaded certificate and private key
+	 * @return array<FileUpload> Mocked uploaded certificate and private key
 	 */
 	private function mockUploadedFiles(string $path): array {
 		$certFile = $path . '/cert0.pem';

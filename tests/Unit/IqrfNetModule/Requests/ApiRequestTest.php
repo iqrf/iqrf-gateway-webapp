@@ -26,7 +26,7 @@ require __DIR__ . '/../../../bootstrap.php';
 class ApiRequestTest extends TestCase {
 
 	/**
-	 * @var mixed[] IQRF JSON API request in an array
+	 * @var array<mixed> IQRF JSON API request in an array
 	 */
 	private $array = [
 		'mType' => 'mngDaemon_Mode',

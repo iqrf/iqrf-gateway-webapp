@@ -67,7 +67,7 @@ class IbmCloudManager implements IManager {
 
 	/**
 	 * Creates a new MQTT interface
-	 * @param mixed[] $values Values from form
+	 * @param array<string, string|int> $values Values from form
 	 * @throws GuzzleException
 	 * @throws JsonException
 	 */

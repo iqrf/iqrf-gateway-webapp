@@ -37,7 +37,7 @@ final class IPv4Connection {
 	private $method;
 
 	/**
-	 * @var IPv4Address[] IPv4 addresses
+	 * @var array<IPv4Address> IPv4 addresses
 	 */
 	private $addresses;
 
@@ -47,16 +47,16 @@ final class IPv4Connection {
 	private $gateway;
 
 	/**
-	 * @var IPv4[] IPv4 addresses of DNS servers
+	 * @var array<IPv4> IPv4 addresses of DNS servers
 	 */
 	private $dns;
 
 	/**
 	 * IPv4 connection entity constructor
 	 * @param IPv4Methods $method Connection method
-	 * @param IPv4Address[] $addresses IPv4 addresses
+	 * @param array<IPv4Address> $addresses IPv4 addresses
 	 * @param IPv4|null $gateway IPv4 gateway address
-	 * @param IPv4[] $dns DNS servers
+	 * @param array<IPv4> $dns DNS servers
 	 */
 	public function __construct(IPv4Methods $method, array $addresses, ?IPv4 $gateway, array $dns) {
 		$this->method = $method;
@@ -128,7 +128,7 @@ final class IPv4Connection {
 
 	/**
 	 * Returns the IPv4 addresses
-	 * @return IPv4Address[] IPv4 addresses
+	 * @return array<IPv4Address> IPv4 addresses
 	 */
 	public function getAddresses(): array {
 		return $this->addresses;
@@ -144,7 +144,7 @@ final class IPv4Connection {
 
 	/**
 	 * Returns the IPv4 addresses of DNS servers
-	 * @return IPv4[] IPv4 addresses of DNS servers
+	 * @return array<IPv4> IPv4 addresses of DNS servers
 	 */
 	public function getDns(): array {
 		return $this->dns;
@@ -152,7 +152,7 @@ final class IPv4Connection {
 
 	/**
 	 * Converts IPv4 connection entity to an array for the form
-	 * @return array<string,mixed> Array for the array
+	 * @return array<string, array<array<string, int|string>>|string|null> Array for the array
 	 */
 	public function toForm(): array {
 		return [
@@ -160,7 +160,7 @@ final class IPv4Connection {
 			'addresses' => array_map(function (IPv4Address $a): array {
 				return $a->toArray();
 			}, $this->addresses),
-			'gateway' => $this->gateway !== null ? $this->gateway->getDotAddress() : '',
+			'gateway' => $this->gateway !== null ? $this->gateway->getDotAddress() : null,
 			'dns' => array_map(function (IPv4 $a): array {
 				return ['address' => $a->getDotAddress()];
 			}, $this->dns),

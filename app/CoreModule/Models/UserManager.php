@@ -123,7 +123,7 @@ class UserManager {
 	/**
 	 * Gets information about the user
 	 * @param int $id User ID
-	 * @return mixed[]|null Information about the user or null
+	 * @return array<string, int|string>|null Information about the user or null
 	 */
 	public function getInfo(int $id): ?array {
 		$user = $this->entityManager->getUserRepository()->find($id);
@@ -136,7 +136,7 @@ class UserManager {
 
 	/**
 	 * Gets all registered users
-	 * @return mixed[] Registered users
+	 * @return array<int, array<string, int|string>> Registered users
 	 */
 	public function getUsers(): array {
 		$users = [];

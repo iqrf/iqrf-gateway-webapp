@@ -65,7 +65,7 @@ abstract class JsonConfigTestCase extends TestCase {
 	/**
 	 * Reads the JSON file
 	 * @param string $fileName JSON file name to read
-	 * @return mixed[] JSON file's content
+	 * @return array<mixed> JSON file's content
 	 */
 	protected function readFile(string $fileName): array {
 		try {
@@ -79,7 +79,7 @@ abstract class JsonConfigTestCase extends TestCase {
 	/**
 	 * Reads the temporary JSON file
 	 * @param string $fileName Temporary JSON file name to read
-	 * @return mixed[] Temporary JSON file's content
+	 * @return array<mixed> Temporary JSON file's content
 	 * @throws JsonException
 	 */
 	protected function readTempFile(string $fileName): array {

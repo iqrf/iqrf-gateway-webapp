@@ -54,7 +54,7 @@ class StandardSensorManager {
 	/**
 	 * Enumerates a standard sensor
 	 * @param int $address Network device address
-	 * @return mixed[] API request and response
+	 * @return array<mixed> API request and response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws JsonException
@@ -78,7 +78,7 @@ class StandardSensorManager {
 	/**
 	 * Reads all sensors with types
 	 * @param int $address Network device address
-	 * @return mixed[] API request and response
+	 * @return array<mixed> API request and response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws JsonException

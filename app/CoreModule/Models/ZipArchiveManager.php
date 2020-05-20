@@ -103,7 +103,7 @@ class ZipArchiveManager {
 	/**
 	 * Adds a JSON file to the ZIP archive using its contents
 	 * @param string $filename File name
-	 * @param mixed[] $jsonData JSON data in an array
+	 * @param array<mixed> $jsonData JSON data in an array
 	 * @throws JsonException
 	 */
 	public function addJsonFromArray(string $filename, array $jsonData): void {
@@ -137,7 +137,7 @@ class ZipArchiveManager {
 
 	/**
 	 * Checks if the file or the files exist in the archive
-	 * @param string|mixed[]|iterable|mixed $var File(s) to check
+	 * @param string|array<mixed>|iterable|mixed $var File(s) to check
 	 * @return bool Is file exist
 	 */
 	public function exist($var): bool {
@@ -166,7 +166,7 @@ class ZipArchiveManager {
 
 	/**
 	 * Lists files in the archive
-	 * @return string[] List of files in the archive
+	 * @return array<string> List of files in the archive
 	 */
 	public function listFiles(): array {
 		$files = [];

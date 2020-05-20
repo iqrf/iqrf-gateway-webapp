@@ -63,7 +63,7 @@ class StandardBinaryOutput {
 
 	/**
 	 * Convert an object to an array
-	 * @return mixed[] Properties in array
+	 * @return array<string, bool|int> Properties in array
 	 */
 	public function toArray(): array {
 		return [

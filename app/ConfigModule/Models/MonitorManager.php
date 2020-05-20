@@ -23,6 +23,7 @@ namespace App\ConfigModule\Models;
 use DateTime;
 use Nette\Utils\Arrays;
 use Nette\Utils\JsonException;
+use stdClass;
 
 /**
  * IQRF Gateway Daemon Monitor service manager
@@ -38,7 +39,7 @@ class MonitorManager {
 	];
 
 	/**
-	 * @var string[] JSON file names
+	 * @var array<string> JSON file names
 	 */
 	private $fileNames = [];
 
@@ -102,7 +103,7 @@ class MonitorManager {
 
 	/**
 	 * Lists Daemon's monitor instances
-	 * @return mixed[] Daemon's monitor instances
+	 * @return array<int, array<string, bool|int|string>> Daemon's monitor instances
 	 * @throws JsonException
 	 */
 	public function list(): array {
@@ -118,7 +119,7 @@ class MonitorManager {
 	/**
 	 * Loads Daemon's monitor service configuration
 	 * @param int $id Daemon's monitor service ID
-	 * @return mixed[] Array for the configuration form
+	 * @return array<string, bool|int|string> Array for the configuration form
 	 * @throws JsonException
 	 */
 	public function load(int $id): array {
@@ -145,7 +146,7 @@ class MonitorManager {
 
 	/**
 	 * Saves Daemon's monitor service configuration
-	 * @param array<string,mixed> $array Daemon's monitor service configuration
+	 * @param array<string, bool|int|string> $array Daemon's monitor service configuration
 	 * @throws JsonException
 	 */
 	public function save(array $array): void {
@@ -174,8 +175,8 @@ class MonitorManager {
 
 	/**
 	 * Creates a Monitor service configuration
-	 * @param mixed[] $values Values from the form
-	 * @return mixed[] Monitor service configuration
+	 * @param array<string, bool|int|string> $values Values from the form
+	 * @return array<string, array<int, stdClass>|bool|string> Monitor service configuration
 	 */
 	private function createMonitorService(array $values): array {
 		return [
@@ -195,8 +196,8 @@ class MonitorManager {
 
 	/**
 	 * Creates a WebSocket service configuration
-	 * @param mixed[] $values Values from the form
-	 * @return mixed[] WebSocket service configuration
+	 * @param array<string, bool|int|string> $values Values from the form
+	 * @return array<string, bool|int|string> WebSocket service configuration
 	 */
 	private function createWebSocketService(array $values): array {
 		return [

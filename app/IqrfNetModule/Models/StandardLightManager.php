@@ -55,7 +55,7 @@ class StandardLightManager {
 	/**
 	 * Enumerates a IQRF Standard light device
 	 * @param int $address Network device address
-	 * @return mixed[] API request and response
+	 * @return array<mixed> API request and response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws JsonException
@@ -79,8 +79,8 @@ class StandardLightManager {
 	/**
 	 * Gets power of the lights
 	 * @param int $address Network device address
-	 * @param StandardLight[] $lights Array of IQRF Standard light entities
-	 * @return mixed[] API request and response
+	 * @param array<StandardLight> $lights Array of IQRF Standard light entities
+	 * @return array<mixed> API request and response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws JsonException
@@ -99,8 +99,8 @@ class StandardLightManager {
 	/**
 	 * Sets a power of the lights
 	 * @param int $address Network device address
-	 * @param StandardLight[] $lights Array of IQRF Standard light entities
-	 * @return mixed[] API request and response
+	 * @param array<StandardLight> $lights Array of IQRF Standard light entities
+	 * @return array<mixed> API request and response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws JsonException
@@ -126,8 +126,8 @@ class StandardLightManager {
 
 	/**
 	 * Converts IQRF Standard light entities to arrays
-	 * @param mixed[] $request API request
-	 * @param StandardLight[] $lights Array of IQRF Standard light entities
+	 * @param array<mixed> $request API request
+	 * @param array<StandardLight> $lights Array of IQRF Standard light entities
 	 */
 	private function convertEntityToArray(array &$request, array $lights): void {
 		/**
@@ -141,8 +141,8 @@ class StandardLightManager {
 	/**
 	 * Increments power of the lights
 	 * @param int $address Network device address
-	 * @param StandardLight[] $lights Array of IQRF Standard light entities
-	 * @return mixed[] API request and response
+	 * @param array<StandardLight> $lights Array of IQRF Standard light entities
+	 * @return array<mixed> API request and response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws JsonException
@@ -169,8 +169,8 @@ class StandardLightManager {
 	/**
 	 * Decrements power of the lights
 	 * @param int $address Network device address
-	 * @param StandardLight[] $lights Array of IQRF Standard light entities
-	 * @return mixed[] API request and response
+	 * @param array<StandardLight> $lights Array of IQRF Standard light entities
+	 * @return array<mixed> API request and response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws JsonException

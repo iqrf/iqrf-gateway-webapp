@@ -128,7 +128,7 @@ class WebSocketServiceDataGridFactory {
 
 	/**
 	 * Lists all available Websocket services
-	 * @return mixed[] Available Websocket services
+	 * @return array<mixed> Available Websocket services
 	 * @throws JsonException
 	 */
 	private function list(): array {

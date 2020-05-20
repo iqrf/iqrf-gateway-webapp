@@ -92,7 +92,9 @@ class BondingManagerTest extends WebSocketTestCase {
 				'returnVerbose' => true,
 			],
 		];
-		$this->assertRequest($request, [$this->manager, 'clearAll']);
+		$this->assertRequest($request, function (): array {
+			return $this->manager->clearAll();
+		});
 	}
 
 	/**

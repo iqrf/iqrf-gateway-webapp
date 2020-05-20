@@ -31,7 +31,7 @@ class HexioManagerTest extends CloudIntegrationTestCase {
 	private $manager;
 
 	/**
-	 * @var array<string,mixed> Values from the configuration form
+	 * @var array<string,string> Values from the configuration form
 	 */
 	private $values = [
 		'broker' => 'connect.hexio.cloud',

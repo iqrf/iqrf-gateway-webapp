@@ -61,7 +61,7 @@ class TracerPresenter extends GenericPresenter {
 	/**
 	 * Loads the instance configuration
 	 * @param int $id Instance ID
-	 * @return array<string, mixed> Instance configuration
+	 * @return array<string, array<array<string, int|string>|bool|int|string>> Instance configuration
 	 * @throws JsonException
 	 */
 	public function configurationLoad(int $id): array {

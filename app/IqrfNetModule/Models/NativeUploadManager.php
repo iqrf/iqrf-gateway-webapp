@@ -56,7 +56,7 @@ class NativeUploadManager {
 	 * Uploads a file into the coordinator
 	 * @param string $filePath Path to the file to upload
 	 * @param UploadFormats|null $format File format
-	 * @return mixed[] API request and response
+	 * @return array<mixed> API request and response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws JsonException

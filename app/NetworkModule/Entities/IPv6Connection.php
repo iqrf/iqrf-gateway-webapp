@@ -37,20 +37,20 @@ final class IPv6Connection {
 	private $method;
 
 	/**
-	 * @var IPv6Address[] IPv6 addresses
+	 * @var array<IPv6Address> IPv6 addresses
 	 */
 	private $addresses;
 
 	/**
-	 * @var IPv6[] IPv6 addresses of DNS servers
+	 * @var array<IPv6> IPv6 addresses of DNS servers
 	 */
 	private $dns;
 
 	/**
 	 * IPv6 connection entity constructor
 	 * @param IPv6Methods $method IPv6 connection method
-	 * @param IPv6Address[] $addresses IPv6 addresses
-	 * @param IPv6[] $dns IPv6 addresses of DNS servers
+	 * @param array<IPv6Address> $addresses IPv6 addresses
+	 * @param array<IPv6> $dns IPv6 addresses of DNS servers
 	 */
 	public function __construct(IPv6Methods $method, array $addresses, array $dns) {
 		$this->method = $method;
@@ -126,14 +126,14 @@ final class IPv6Connection {
 
 	/**
 	 * Returns the IPv6 addresses
-	 * @return IPv6Address[] IPv6 addresses
+	 * @return array<IPv6Address> IPv6 addresses
 	 */
 	public function getAddresses(): array {
 		return $this->addresses;
 	}
 	/**
 	 * Returns the IPv6 addresses of DNS servers
-	 * @return IPv6[] IPv6 addresses of DNS servers
+	 * @return array<IPv6> IPv6 addresses of DNS servers
 	 */
 	public function getDns(): array {
 		return $this->dns;
@@ -141,7 +141,7 @@ final class IPv6Connection {
 
 	/**
 	 * Converts IPv6 connection entity to an array for the form
-	 * @return array<string,mixed> Array for the form
+	 * @return array<string, array<array<string, int|string>>|array<string, string>|string> Array for the form
 	 */
 	public function toForm(): array {
 		return [

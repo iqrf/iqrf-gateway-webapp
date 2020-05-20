@@ -149,7 +149,7 @@ class User {
 
 	/**
 	 * Converts this entity to an array
-	 * @return array<string, mixed> User entity as an array
+	 * @return array<string, int|string> User entity as an array
 	 */
 	public function toArray(): array {
 		return [

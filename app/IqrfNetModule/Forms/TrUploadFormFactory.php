@@ -90,7 +90,7 @@ class TrUploadFormFactory {
 
 	/**
 	 * Returns File formats to upload
-	 * @return string[] File formats to upload
+	 * @return array<string> File formats to upload
 	 */
 	private function getFileFormats(): array {
 		$formats = UploadFormats::getAvailableValues();

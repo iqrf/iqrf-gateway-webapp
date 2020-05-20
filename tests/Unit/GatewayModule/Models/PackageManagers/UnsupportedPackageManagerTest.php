@@ -23,7 +23,7 @@ require __DIR__ . '/../../../../bootstrap.php';
 class UnsupportedPackageManagerTest extends CommandTestCase {
 
 	/**
-	 * @var string[] Packages
+	 * @var array<string> Packages
 	 */
 	private $packages = ['iqrf-gateway-daemon', 'iqrf-gateway-webapp'];
 

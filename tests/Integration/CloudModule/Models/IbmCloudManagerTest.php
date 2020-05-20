@@ -26,7 +26,7 @@ require __DIR__ . '/../../../bootstrap.php';
 class IbmCloudManagerTest extends CloudIntegrationTestCase {
 
 	/**
-	 * @var string[] Values from IBM Cloud form
+	 * @var array<string> Values from IBM Cloud form
 	 */
 	private $formValues = [
 		'deviceId' => 'gw00',

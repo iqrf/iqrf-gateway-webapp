@@ -31,6 +31,7 @@ use App\ServiceModule\Models\ServiceManager;
 use DateTime;
 use Nette\Application\BadRequestException;
 use Nette\Application\Responses\FileResponse;
+use Nette\Http\FileUpload;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
@@ -108,7 +109,7 @@ class MigrationManager {
 
 	/**
 	 * Uploads a configuration
-	 * @param mixed[] $formValues Values from form
+	 * @param array<string, FileUpload> $formValues Values from form
 	 * @throws IncompleteConfigurationException
 	 * @throws InvalidConfigurationFormatException
 	 * @throws JsonException

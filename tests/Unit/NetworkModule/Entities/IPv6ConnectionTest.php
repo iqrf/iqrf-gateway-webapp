@@ -32,12 +32,12 @@ class IPv6ConnectionTest extends TestCase {
 	private $method;
 
 	/**
-	 * @var IPv6Address[] IPv6 addresses
+	 * @var array<IPv6Address> IPv6 addresses
 	 */
 	private $addresses;
 
 	/**
-	 * @var IPv6[] IPv6 addresses of DNS servers
+	 * @var array<IPv6> IPv6 addresses of DNS servers
 	 */
 	private $dns;
 

@@ -86,7 +86,7 @@ class EthernetDatagridFactory {
 
 	/**
 	 * Lists Ethernet network connections
-	 * @return array<string,mixed> Ethernet network connections
+	 * @return array<string, array<string, string>> Ethernet network connections
 	 */
 	private function list(): array {
 		$array = [];

@@ -44,7 +44,7 @@ class WifiManager {
 
 	/**
 	 * Lists available WiFi networks
-	 * @return WifiNetwork[] Available WiFi networks
+	 * @return array<WifiNetwork> Available WiFi networks
 	 */
 	public function list(): array {
 		$output = $this->commandManager->run('nmcli -t device wifi list --rescan auto', true);
@@ -52,7 +52,7 @@ class WifiManager {
 			throw new NetworkManagerException($output->getStderr());
 		}
 		$networks = [];
-		foreach (explode(PHP_EOL, $output->getStdout()) as $network) {
+		foreach (explode(PHP_EOL, trim($output->getStdout(), PHP_EOL)) as $network) {
 			$networks[] = WifiNetwork::fromNmCli($network);
 		}
 		return $networks;

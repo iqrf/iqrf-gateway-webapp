@@ -37,7 +37,7 @@ class ApiRequest {
 	protected $msgIdManager;
 
 	/**
-	 * @var mixed[]|stdClass IQRF JSON API request
+	 * @var array<mixed>|stdClass IQRF JSON API request
 	 */
 	protected $request;
 
@@ -51,7 +51,7 @@ class ApiRequest {
 
 	/**
 	 * Returns the IQRF JSON API request
-	 * @return mixed[]|stdClass IQRF JSON API request
+	 * @return array<mixed>|stdClass IQRF JSON API request
 	 */
 	public function get() {
 		return $this->request;

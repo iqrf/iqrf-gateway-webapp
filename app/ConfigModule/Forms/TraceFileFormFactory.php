@@ -30,7 +30,7 @@ use Nette\Forms\Container;
 class TraceFileFormFactory extends GenericConfigFormFactory {
 
 	/**
-	 * @var string[] Verbosity levels
+	 * @var array<string> Verbosity levels
 	 */
 	private $verbosityLevels = [
 		'ERR' => 'levels.Error',

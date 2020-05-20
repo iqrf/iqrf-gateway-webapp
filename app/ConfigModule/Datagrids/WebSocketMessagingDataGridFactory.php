@@ -100,7 +100,7 @@ class WebSocketMessagingDataGridFactory {
 
 	/**
 	 * Parses the data for this data grid
-	 * @return mixed[] Data for data grid
+	 * @return array<int, array<string, array<int, array<string, array<string, string>>|string>|bool|string>> Data for data grid
 	 * @throws JsonException
 	 */
 	private function getData(): array {

@@ -26,7 +26,7 @@ require __DIR__ . '/../../../bootstrap.php';
 class InteliGlueManagerTest extends CloudIntegrationTestCase {
 
 	/**
-	 * @var mixed[] Values from Inteliments InteliGlue form
+	 * @var array<string, string|int> Values from Inteliments InteliGlue form
 	 */
 	private $formValues = [
 		'assignedPort' => 1234,

@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\ConsoleModule\Models;
 
 use App\CoreModule\Models\UserManager;
+use App\Models\Database\Entities\User;
 
 /**
  * Tool for managing users from CLI
@@ -30,16 +31,14 @@ class ConsoleUserManager extends UserManager {
 	/**
 	 * Gets information about the user from the username
 	 * @param string $username Username
-	 * @return mixed[]|null Information about the user
+	 * @return User|null Information about the user
 	 */
-	public function getUser(?string $username): ?array {
+	public function getUser(?string $username): ?User {
 		$user = $this->entityManager->getUserRepository()->findOneByUserName($username);
 		if ($user === null) {
 			return null;
 		}
-		$array = $user->toArray();
-		unset($array['password']);
-		return $array;
+		return $user;
 	}
 
 	/**
@@ -54,7 +53,7 @@ class ConsoleUserManager extends UserManager {
 
 	/**
 	 * Lists user names of all webapp's users
-	 * @return mixed[] User names of all webapp's users
+	 * @return array<string> User names of all webapp's users
 	 */
 	public function listUserNames(): array {
 		$users = [];

@@ -27,7 +27,7 @@ class DmiBoardInfoManagerTest extends CommandTestCase {
 	private $manager;
 
 	/**
-	 * @var string[] Mocked commands
+	 * @var array<string> Mocked commands
 	 */
 	private $commands = [
 		'dmiBoardName' => 'cat /sys/class/dmi/id/board_name',

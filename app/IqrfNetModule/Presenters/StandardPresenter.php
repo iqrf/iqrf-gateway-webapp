@@ -58,7 +58,7 @@ class StandardPresenter extends ProtectedPresenter {
 
 	/**
 	 * AJAX handler for showing IQRF Standard binary output info
-	 * @param mixed[] $data API request and response
+	 * @param array<mixed> $data API request and response
 	 */
 	public function handleBinaryOutputResponse(array $data): void {
 		$this->template->binaryOutputData = $data;
@@ -68,7 +68,7 @@ class StandardPresenter extends ProtectedPresenter {
 
 	/**
 	 * AJAX handler for showing IQRF Standard DALI info
-	 * @param mixed[] $data API request and response
+	 * @param array<mixed> $data API request and response
 	 */
 	public function handleDaliResponse(array $data): void {
 		$this->template->daliData = $data;
@@ -78,7 +78,7 @@ class StandardPresenter extends ProtectedPresenter {
 
 	/**
 	 * AJAX handler for showing IQRF Standard light info
-	 * @param mixed[] $data API request and response
+	 * @param array<mixed> $data API request and response
 	 */
 	public function handleLightResponse(array $data): void {
 		$this->template->lightData = $data;
@@ -106,7 +106,7 @@ class StandardPresenter extends ProtectedPresenter {
 
 	/**
 	 * AJAX handler for showing IQRF Standard sensor info
-	 * @param mixed[] $data API request and response
+	 * @param array<mixed> $data API request and response
 	 */
 	public function handleSensorResponse(array $data): void {
 		$this->template->sensorData = $data;

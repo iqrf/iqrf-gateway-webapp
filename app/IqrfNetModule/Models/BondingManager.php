@@ -54,7 +54,7 @@ class BondingManager {
 	/**
 	 * Bonds a node locally
 	 * @param int $address A requested address for the bonded node. If this parameter equals to 0, then the first free address is assigned to the node.
-	 * @return mixed[] API request and response
+	 * @return array<mixed> API request and response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws UserErrorException
@@ -80,7 +80,7 @@ class BondingManager {
 	 * @param int $address Address to bond the device to
 	 * @param string $code Smart connect code of the device
 	 * @param int $testRetries Maximum number of FRCs used to test whether the Node was successfully bonded.
-	 * @return mixed[] API request and response
+	 * @return array<mixed> API request and response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws UserErrorException
@@ -106,7 +106,7 @@ class BondingManager {
 	/**
 	 * Clears all bonds
 	 * @param bool $coordinatorOnly Removes a bond only in the coordinator
-	 * @return mixed[] API request and response
+	 * @return array<mixed> API request and response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws UserErrorException
@@ -134,7 +134,7 @@ class BondingManager {
 	 * Removes a bond
 	 * @param int $address Address of the node to be removed
 	 * @param bool $coordinatorOnly Removes a bond only in the coordinator
-	 * @return mixed[] API request and response
+	 * @return array<mixed> API request and response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws UserErrorException

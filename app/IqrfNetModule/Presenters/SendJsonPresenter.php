@@ -39,7 +39,7 @@ class SendJsonPresenter extends ProtectedPresenter {
 
 	/**
 	 * AJAX handler for showing IQRF JSON API request and response
-	 * @param mixed[] $data IQRF JSON API request and response
+	 * @param array<mixed> $data IQRF JSON API request and response
 	 */
 	public function handleShowResponse(array $data): void {
 		foreach ($data as &$json) {

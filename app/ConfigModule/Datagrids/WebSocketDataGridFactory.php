@@ -121,7 +121,7 @@ class WebSocketDataGridFactory {
 	 * Changes the WebSocket messaging configuration
 	 * @param string $id WebSocket messaging configuration ID
 	 * @param string $key Key to change
-	 * @param mixed $value New value
+	 * @param bool|int|string $value New value
 	 * @throws JsonException
 	 */
 	private function changeConfiguration(string $id, string $key, $value): void {

@@ -59,7 +59,7 @@ class SecurityManager {
 	 * @param int $address Network device address
 	 * @param string $password An access password
 	 * @param string $inputFormat Input data format (ASCII or HEX)
-	 * @return mixed[] API request and response
+	 * @return array<mixed> API request and response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws JsonException
@@ -76,7 +76,7 @@ class SecurityManager {
 	 * @param string $password An access password or an user key
 	 * @param string $inputFormat Input data format (ASCII or HEX)
 	 * @param int $type Security type (access password, user key)
-	 * @return mixed[] API request and response
+	 * @return array<mixed> API request and response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws JsonException
@@ -105,7 +105,7 @@ class SecurityManager {
 	 * Converts an access password or an user key to HEX format
 	 * @param string $password Access password or user key
 	 * @param string $inputFormat Input data format (ASCII or HEX)
-	 * @return mixed[] Converted an access password or an user key
+	 * @return array<int> Converted an access password or an user key
 	 * @throws UnsupportedInputFormatException
 	 */
 	private function convertToHex(string $password, string $inputFormat): array {
@@ -116,9 +116,10 @@ class SecurityManager {
 		} else {
 			throw new UnsupportedInputFormatException();
 		}
-		$array = explode('.', Strings::trim(Strings::lower(chunk_split(Strings::padRight($data, 32, '0'), 2, '.')), '.'));
-		foreach ($array as &$chunk) {
-			$chunk = hexdec($chunk);
+		$data = Strings::trim(chunk_split(Strings::padRight($data, 32, '0'), 2, '.'), '.');
+		$array = [];
+		foreach (explode('.', $data) as $chunk) {
+			$array[] = hexdec($chunk);
 		}
 		return $array;
 	}
@@ -128,7 +129,7 @@ class SecurityManager {
 	 * @param int $address Network device address
 	 * @param string $password An user key
 	 * @param string $inputFormat Input data format (ASCII or HEX)
-	 * @return mixed[] API request and response
+	 * @return array<mixed> API request and response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws JsonException

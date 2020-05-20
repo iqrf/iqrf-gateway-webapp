@@ -60,7 +60,7 @@ class SendRawPresenter extends ProtectedPresenter {
 
 	/**
 	 * AJAX handler for showing DPA request and response
-	 * @param mixed[] $data DPA request and response
+	 * @param array<mixed> $data DPA request and response
 	 */
 	public function handleShowResponse(array $data): void {
 		$this->template->json = $data;

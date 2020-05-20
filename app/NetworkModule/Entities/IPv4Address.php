@@ -115,7 +115,7 @@ class IPv4Address {
 
 	/**
 	 * Converts the IPv4 address entity to an array
-	 * @return array<string,mixed> IPv4 address entity in the array
+	 * @return array<string, int|string> IPv4 address entity in the array
 	 */
 	public function toArray(): array {
 		return [

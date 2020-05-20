@@ -48,7 +48,7 @@ class AptGetPackageManager implements IPackageManager {
 	/**
 	 * Installs the packages
 	 * @param callable $callback Callback
-	 * @param string[] $packages Packages to install
+	 * @param array<string> $packages Packages to install
 	 */
 	public function install(callable $callback, array $packages): void {
 		$command = 'apt-get install -y ' . implode(' ', $packages);
@@ -65,7 +65,7 @@ class AptGetPackageManager implements IPackageManager {
 
 	/**
 	 * Returns list of upgradable packages
-	 * @return mixed[] Upgradable packages
+	 * @return array<int, array<string, int|string>> Upgradable packages
 	 */
 	public function getUpgradable(): array {
 		$stdout = $this->commandManager->run('apt-get -s upgrade -V', true)->getStdout();
@@ -74,15 +74,16 @@ class AptGetPackageManager implements IPackageManager {
 		$id = 0;
 		foreach ($lines as $line) {
 			[$name, $oldVersion, $newVersion] = sscanf($line, ' %s (%s => %s)');
-			if ($name !== null && $oldVersion !== null && $newVersion !== null) {
-				$packages[] = [
-					'id' => $id,
-					'name' => $name,
-					'oldVersion' => Strings::trim($oldVersion, '() '),
-					'newVersion' => Strings::trim($newVersion, '() '),
-				];
-				$id++;
+			if ($name === null || $oldVersion === null || $newVersion === null) {
+				continue;
 			}
+			$packages[] = [
+				'id' => $id,
+				'name' => (string) $name,
+				'oldVersion' => Strings::trim($oldVersion, '() '),
+				'newVersion' => Strings::trim($newVersion, '() '),
+			];
+			$id++;
 		}
 		return $packages;
 	}
@@ -90,7 +91,7 @@ class AptGetPackageManager implements IPackageManager {
 	/**
 	 * Purges the packages
 	 * @param callable $callback Callback
-	 * @param string[] $packages Packages to purge
+	 * @param array<string> $packages Packages to purge
 	 */
 	public function purge(callable $callback, array $packages): void {
 		$command = 'apt-get purge -y ' . implode(' ', $packages);
@@ -100,7 +101,7 @@ class AptGetPackageManager implements IPackageManager {
 	/**
 	 * Removes the packages
 	 * @param callable $callback Callback
-	 * @param string[] $packages Packages to remove
+	 * @param array<string> $packages Packages to remove
 	 */
 	public function remove(callable $callback, array $packages): void {
 		$command = 'apt-get remove -y ' . implode(' ', $packages);

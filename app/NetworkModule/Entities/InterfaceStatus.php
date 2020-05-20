@@ -109,7 +109,7 @@ final class InterfaceStatus implements JsonSerializable {
 
 	/**
 	 * Returns JSON serialized data
-	 * @return array<string,mixed> JSON serialized data
+	 * @return array<string, string> JSON serialized data
 	 */
 	public function jsonSerialize(): array {
 		return [

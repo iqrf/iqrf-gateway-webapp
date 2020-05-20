@@ -56,7 +56,7 @@ class DpaManager {
 	/**
 	 * Lists DPA versions for IQRF OS build
 	 * @param string $osBuild IQRF OS build
-	 * @return OsDpa[] IQRF OS and DPA versions
+	 * @return array<OsDpa> IQRF OS and DPA versions
 	 */
 	public function list(string $osBuild): array {
 		return $this->osDpaManager->get($osBuild);

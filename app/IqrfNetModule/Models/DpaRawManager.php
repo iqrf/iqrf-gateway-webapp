@@ -57,7 +57,7 @@ class DpaRawManager {
 	 * Sends RAW IQRF packet
 	 * @param string $packet RAW IQRF packet
 	 * @param int|null $timeout DPA timeout in milliseconds
-	 * @return mixed[] DPA request and response
+	 * @return array<mixed> DPA request and response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws JsonException
@@ -109,7 +109,7 @@ class DpaRawManager {
 
 	/**
 	 * Gets a DPA packet from JSON DPA request and response
-	 * @param mixed[] $json JSON DPA request and response
+	 * @param array<mixed> $json JSON DPA request and response
 	 * @param string $type Data type (request|response)
 	 * @return string DPA packet
 	 * @throws JsonException

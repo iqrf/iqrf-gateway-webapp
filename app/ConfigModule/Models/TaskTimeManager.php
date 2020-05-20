@@ -31,7 +31,7 @@ use Throwable;
 class TaskTimeManager {
 
 	/**
-	 * @var string[] CRON aliases
+	 * @var array<string> CRON aliases
 	 */
 	private $aliases = ['@reboot', '@yearly', '@annually', '@monthly', '@weekly', '@daily', '@hourly'];
 

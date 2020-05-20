@@ -51,7 +51,7 @@ class NetworkManager {
 
 	/**
 	 * Returns information about network interfaces
-	 * @return mixed[] Network interfaces
+	 * @return array<int, array<string, array<array<string>>|string|null>> Network interfaces
 	 */
 	public function getInterfaces(): array {
 		$interfaces = [];
@@ -69,7 +69,7 @@ class NetworkManager {
 
 	/**
 	 * Returns IPv4 and IPv6 addresses of the gateway
-	 * @return string[][] IPv4 and IPv6 addresses
+	 * @return array<array<string>> IPv4 and IPv6 addresses
 	 */
 	public function getIpAddresses(): array {
 		$addresses = [];
@@ -85,7 +85,7 @@ class NetworkManager {
 
 	/**
 	 * Lists network interfaces
-	 * @return string[] Network interfaces
+	 * @return array<string> Network interfaces
 	 */
 	private function listsInterfaces(): array {
 		$interfaces = $this->commandManager->run('ls /sys/class/net | awk \'{ print $0 }\'', true)->getStdout();
@@ -94,7 +94,7 @@ class NetworkManager {
 
 	/**
 	 * Returns MAC addresses of the gateway
-	 * @return string[] MAC addresses array
+	 * @return array<string> MAC addresses array
 	 */
 	public function getMacAddresses(): array {
 		$addresses = [];

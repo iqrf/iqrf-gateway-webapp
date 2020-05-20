@@ -50,7 +50,7 @@ class MonitorManagerTest extends JsonConfigTestCase {
 	private $managerTemp;
 
 	/**
-	 * @var array<string,mixed> Values from the configuration form
+	 * @var array<string, bool|int> Values from the configuration form
 	 */
 	private $values = [
 		'reportPeriod' => 15,

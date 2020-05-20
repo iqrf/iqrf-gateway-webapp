@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ConsoleModule\Commands;
 
+use App\Models\Database\Entities\User;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -60,23 +61,23 @@ class UserEditCommand extends UserCommand {
 		$user = $this->askUserName($input, $output);
 		$role = $this->askRole($user, $input, $output);
 		$language = $this->askLanguage($user, $input, $output);
-		$this->userManager->edit($user['id'], $user['username'], $role, $language);
+		$this->userManager->edit($user->getId(), $user->getUserName(), $role, $language);
 		return 0;
 	}
 
 	/**
 	 * Asks for the user's role
-	 * @param mixed[] $user Information about the user
+	 * @param User $user Information about the user
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
 	 * @return string New user's role
 	 */
-	private function askRole(array $user, InputInterface $input, OutputInterface $output): string {
+	private function askRole(User $user, InputInterface $input, OutputInterface $output): string {
 		$role = $input->getOption('role');
 		$roles = ['power', 'normal'];
 		while ($role === null || !in_array($role, $roles, true)) {
 			$helper = $this->getHelper('question');
-			$question = new ChoiceQuestion('Please enter the user\'s role: ', $roles, $user['role']);
+			$question = new ChoiceQuestion('Please enter the user\'s role: ', $roles, $user->getRole());
 			$role = $helper->ask($input, $output, $question);
 		}
 		return $role;
@@ -84,17 +85,17 @@ class UserEditCommand extends UserCommand {
 
 	/**
 	 * Asks for the user's language
-	 * @param mixed[] $user Information about the user
+	 * @param User $user Information about the user
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
 	 * @return string New user's language
 	 */
-	private function askLanguage(array $user, InputInterface $input, OutputInterface $output): string {
+	private function askLanguage(User $user, InputInterface $input, OutputInterface $output): string {
 		$language = $input->getOption('language');
 		$languages = ['en'];
 		while ($language === null || !in_array($language, $languages, true)) {
 			$helper = $this->getHelper('question');
-			$question = new ChoiceQuestion('Please enter the user\'s language: ', $languages, $user['language']);
+			$question = new ChoiceQuestion('Please enter the user\'s language: ', $languages, $user->getLanguage());
 			$language = $helper->ask($input, $output, $question);
 		}
 		return $language;

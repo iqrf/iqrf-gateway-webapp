@@ -39,7 +39,7 @@ class DevicesManager {
 	private $request;
 
 	/**
-	 * @var mixed[] Table with bonded and discovered devices
+	 * @var array<mixed> Table with bonded and discovered devices
 	 */
 	private $table;
 
@@ -62,7 +62,7 @@ class DevicesManager {
 	 * Gets table of devices
 	 * @param int $base Base
 	 * @param bool $ping Perform ping?
-	 * @return mixed[]|null Table of devices
+	 * @return array<mixed>|null Table of devices
 	 */
 	public function getTable(int $base, bool $ping = false): ?array {
 		if ($base !== 10 && $base !== 16) {
@@ -131,7 +131,7 @@ class DevicesManager {
 
 	/**
 	 * Gets bonded devices
-	 * @return mixed[] Bonded devices
+	 * @return array<mixed> Bonded devices
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws UserErrorException
@@ -155,7 +155,7 @@ class DevicesManager {
 
 	/**
 	 * Gets discovered devices
-	 * @return mixed[] Discovered devices
+	 * @return array<mixed> Discovered devices
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws UserErrorException
@@ -179,7 +179,7 @@ class DevicesManager {
 
 	/**
 	 * Perform FRC Ping
-	 * @return mixed[] Online devices
+	 * @return array<mixed> Online devices
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws JsonException

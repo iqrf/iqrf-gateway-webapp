@@ -54,8 +54,8 @@ class StandardDaliManager {
 	/**
 	 * Sends DALI commands
 	 * @param int $address Network device address
-	 * @param int[] $commands DALI commands
-	 * @return mixed[] API request and response
+	 * @param array<int> $commands DALI commands
+	 * @return array<mixed> API request and response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws JsonException

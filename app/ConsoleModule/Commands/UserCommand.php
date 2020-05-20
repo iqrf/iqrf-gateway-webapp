@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\ConsoleModule\Commands;
 
 use App\ConsoleModule\Models\ConsoleUserManager;
+use App\Models\Database\Entities\User;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -49,9 +50,9 @@ abstract class UserCommand extends Command {
 	 * Asks for the username
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
-	 * @return mixed[] Information about the user
+	 * @return User Information about the user
 	 */
-	protected function askUserName(InputInterface $input, OutputInterface $output): array {
+	protected function askUserName(InputInterface $input, OutputInterface $output): User {
 		$username = $input->getOption('username');
 		$user = null;
 		if ($username !== null) {

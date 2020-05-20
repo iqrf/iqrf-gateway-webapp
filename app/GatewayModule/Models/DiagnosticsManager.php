@@ -196,11 +196,12 @@ class DiagnosticsManager {
 	 * Adds information from lsusb about USB gateways and programmers
 	 */
 	public function addUsb(): void {
-		if ($this->commandManager->commandExist('lsusb')) {
-			$output = $this->commandManager->run('lsusb -v -d 1de6:', true)->getStdout();
-			if ($output !== '') {
-				$this->zipManager->addFileFromText('lsusb.log', $output);
-			}
+		if (!$this->commandManager->commandExist('lsusb')) {
+			return;
+		}
+		$output = $this->commandManager->run('lsusb -v -d 1de6:', true)->getStdout();
+		if ($output !== '') {
+			$this->zipManager->addFileFromText('lsusb.log', $output);
 		}
 	}
 

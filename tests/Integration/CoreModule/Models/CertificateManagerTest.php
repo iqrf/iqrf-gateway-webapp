@@ -23,12 +23,12 @@ require __DIR__ . '/../../../bootstrap.php';
 class CertificateManagerTest extends TestCase {
 
 	/**
-	 * @var string[] Certificates
+	 * @var array<string> Certificates
 	 */
 	private $certificates = [];
 
 	/**
-	 * @var string[] Private keys
+	 * @var array<string> Private keys
 	 */
 	private $keys = [];
 

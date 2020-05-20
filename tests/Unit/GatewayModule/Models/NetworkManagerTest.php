@@ -27,7 +27,7 @@ class NetworkManagerTest extends CommandTestCase {
 	private $manager;
 
 	/**
-	 * @var string[] Mocked commands
+	 * @var array<string> Mocked commands
 	 */
 	private $commands = [
 		'hostname' => 'hostname -f',

@@ -30,7 +30,7 @@ class UnsupportedPackageManager implements IPackageManager {
 	/**
 	 * Installs the packages
 	 * @param callable $callback Callback
-	 * @param string[] $packages Packages to install
+	 * @param array<string> $packages Packages to install
 	 * @throws UnsupportedPackageManagerException
 	 */
 	public function install(callable $callback, array $packages): void {
@@ -58,7 +58,7 @@ class UnsupportedPackageManager implements IPackageManager {
 	/**
 	 * Purges the packages
 	 * @param callable $callback Callback
-	 * @param string[] $packages Packages to purge
+	 * @param array<string> $packages Packages to purge
 	 * @throws UnsupportedPackageManagerException
 	 */
 	public function purge(callable $callback, array $packages): void {
@@ -68,7 +68,7 @@ class UnsupportedPackageManager implements IPackageManager {
 	/**
 	 * Removes the packages
 	 * @param callable $callback Callback
-	 * @param string[] $packages Packages to remove
+	 * @param array<string> $packages Packages to remove
 	 * @throws UnsupportedPackageManagerException
 	 */
 	public function remove(callable $callback, array $packages): void {

@@ -61,7 +61,7 @@ class JsonFileManager extends FileManager {
 	 * Reads the JSON file and decode it to array
 	 * @param string $fileName File name (without .json)
 	 * @param bool $forceArray Force object to array conversion
-	 * @return mixed[]|stdClass JSON data in array
+	 * @return array<mixed>|stdClass JSON data in array
 	 * @throws IOException
 	 * @throws JsonException
 	 */

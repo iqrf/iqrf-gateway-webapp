@@ -26,7 +26,7 @@ namespace App\CoreModule\Entities;
 class CommandStack {
 
 	/**
-	 * @var Command[] Commands
+	 * @var array<Command> Commands
 	 */
 	private $commands = [];
 
@@ -40,7 +40,7 @@ class CommandStack {
 
 	/**
 	 * Returns commands in the stack
-	 * @return Command[] Commands in the stack
+	 * @return array<Command> Commands in the stack
 	 */
 	public function getCommands(): array {
 		return $this->commands;

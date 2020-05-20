@@ -46,7 +46,7 @@ class AzureManager implements IManager {
 
 	/**
 	 * Creates a new MQTT interface
-	 * @param mixed[] $values Values from form
+	 * @param array<string, int|string> $values Values from form
 	 * @throws InvalidConnectionStringException
 	 * @throws JsonException
 	 */
@@ -100,7 +100,7 @@ class AzureManager implements IManager {
 	/**
 	 * Parses Microsoft Azure IoT Hub connection string
 	 * @param string $connectionString MS Azure IoT Hub Connection string
-	 * @return string[] Values from the connection string
+	 * @return array<string> Values from the connection string
 	 * @throws InvalidConnectionStringException
 	 */
 	public function parseConnectionString(string $connectionString): array {

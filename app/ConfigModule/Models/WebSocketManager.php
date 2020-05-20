@@ -30,7 +30,7 @@ use Nette\Utils\JsonException;
 class WebSocketManager {
 
 	/**
-	 * @var string[] WebSocket components
+	 * @var array<string> WebSocket components
 	 */
 	private $components = [
 		'messaging' => 'iqrf::WebsocketMessaging',
@@ -38,7 +38,7 @@ class WebSocketManager {
 	];
 
 	/**
-	 * @var string[] WebSocket messaging and service file names
+	 * @var array<string> WebSocket messaging and service file names
 	 */
 	private $fileNames;
 
@@ -102,7 +102,7 @@ class WebSocketManager {
 
 	/**
 	 * Saves the configuration
-	 * @param mixed[] $array Websocket settings
+	 * @param array<mixed> $array Websocket settings
 	 * @throws JsonException
 	 */
 	public function save(array $array): void {
@@ -131,8 +131,8 @@ class WebSocketManager {
 
 	/**
 	 * Creates a messaging configuration
-	 * @param mixed[] $values Values from form
-	 * @return mixed[] Messaging configuration
+	 * @param array<mixed> $values Values from form
+	 * @return array<mixed> Messaging configuration
 	 */
 	private function createMessaging(array $values): array {
 		return [
@@ -152,8 +152,8 @@ class WebSocketManager {
 
 	/**
 	 * Creates a service configuration
-	 * @param mixed[] $values Values from the form
-	 * @return mixed[] Service configuration
+	 * @param array<mixed> $values Values from the form
+	 * @return array<mixed> Service configuration
 	 */
 	private function createService(array $values): array {
 		return [
@@ -166,7 +166,7 @@ class WebSocketManager {
 
 	/**
 	 * Gets WebSocket instances
-	 * @return mixed[] WebSocket instances
+	 * @return array<mixed> WebSocket instances
 	 * @throws JsonException
 	 */
 	public function list(): array {
@@ -182,7 +182,7 @@ class WebSocketManager {
 	/**
 	 * Loads a configuration
 	 * @param int $id WebSocket interface ID
-	 * @return mixed[] Array for form
+	 * @return array<mixed> Array for form
 	 * @throws JsonException
 	 */
 	public function load(int $id): array {

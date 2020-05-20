@@ -113,7 +113,7 @@ class OsDpaUploadFormFactory {
 
 	/**
 	 * Returns available IQRF OS changes
-	 * @return string[] Available IQRF OS changes
+	 * @return array<string> Available IQRF OS changes
 	 */
 	private function list(): array {
 		try {

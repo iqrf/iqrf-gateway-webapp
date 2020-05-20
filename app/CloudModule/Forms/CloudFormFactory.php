@@ -77,11 +77,14 @@ abstract class CloudFormFactory {
 	public function save(SubmitButton $button, bool $needRestart = false): void {
 		$values = $button->getForm()->getValues('array');
 		assert(is_array($values));
-		$success = false;
 		try {
 			$this->manager->createMqttInterface($values);
 			$this->presenter->flashSuccess('cloud.messages.success');
-			$success = true;
+			if ($needRestart) {
+				$this->serviceManager->restart();
+				$this->presenter->flashInfo('service.iqrf-gateway-daemon.messages.restart');
+			}
+			$this->presenter->redirect(':Config:Mqtt:default');
 		} catch (InvalidConnectionStringException $e) {
 			$this->presenter->flashError('cloud.msAzure.messages.invalidConnectionString');
 		} catch (InvalidPrivateKeyForCertificateException $e) {
@@ -94,16 +97,8 @@ abstract class CloudFormFactory {
 			$this->presenter->flashError('cloud.messages.downloadFailure');
 		} catch (CannotCreateCertificateDirectoryException $e) {
 			$this->presenter->flashError('cloud.messages.cannotCreateDir');
-		}
-		if ($needRestart) {
-			try {
-				$this->serviceManager->restart();
-				$this->presenter->flashInfo('service.iqrf-gateway-daemon.messages.restart');
-			} catch (UnsupportedInitSystemException $e) {
-				$this->presenter->flashError('service.errors.unsupportedInit');
-			}
-		}
-		if ($success) {
+		} catch (UnsupportedInitSystemException $e) {
+			$this->presenter->flashError('service.errors.unsupportedInit');
 			$this->presenter->redirect(':Config:Mqtt:default');
 		}
 	}

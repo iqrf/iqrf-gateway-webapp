@@ -52,7 +52,7 @@ class FeatureManager {
 
 	/**
 	 * Disables optional features
-	 * @param string[] $names Names of disabled optional features
+	 * @param array<string> $names Names of disabled optional features
 	 * @throws IOException
 	 * @throws NeonException
 	 * @throws UnknownFeatureException
@@ -63,7 +63,7 @@ class FeatureManager {
 
 	/**
 	 * Edits the configuration of optional features
-	 * @param string[] $names Names of edited optional features
+	 * @param array<string> $names Names of edited optional features
 	 * @param bool $state State of optional features
 	 * @throws IOException
 	 * @throws NeonException
@@ -110,7 +110,7 @@ class FeatureManager {
 
 	/**
 	 * Enables optional features
-	 * @param string[] $names Names of enabled optional features
+	 * @param array<string> $names Names of enabled optional features
 	 * @throws IOException
 	 * @throws NeonException
 	 * @throws UnknownFeatureException
@@ -121,7 +121,7 @@ class FeatureManager {
 
 	/**
 	 * Lists the optional features
-	 * @return string[][] Optional features
+	 * @return array<array<string>> Optional features
 	 * @throws NeonException
 	 */
 	public function list(): array {

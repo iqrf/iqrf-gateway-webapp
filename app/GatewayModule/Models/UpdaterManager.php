@@ -37,7 +37,7 @@ class UpdaterManager {
 	private $packageManager;
 
 	/**
-	 * @var string[] Adapters for package managers
+	 * @var array<string> Adapters for package managers
 	 */
 	private $packageManagers = [
 		AptGetPackageManager::class,
@@ -68,7 +68,7 @@ class UpdaterManager {
 
 	/**
 	 * Returns list of upgradable packages
-	 * @return mixed[] Upgradable packages
+	 * @return array<int, array<string, int|string>> Upgradable packages
 	 */
 	public function getUpgradable(): ?array {
 		return $this->packageManager->getUpgradable();

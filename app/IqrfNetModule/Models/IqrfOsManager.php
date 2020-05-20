@@ -57,7 +57,7 @@ class IqrfOsManager {
 	/**
 	 * Lists available IQRF OS changes
 	 * @param IqrfOs $os Current IQRF OS entity
-	 * @return string[] Available IQRF OS changes
+	 * @return array<string> Available IQRF OS changes
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws JsonException
@@ -109,7 +109,7 @@ class IqrfOsManager {
 	 * @param string $toBuild Target IQRF OS build
 	 * @param string $dpa DPA version
 	 * @param string|null $rfMode RF mode
-	 * @return string[] Files to upload
+	 * @return array<string> Files to upload
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws UserErrorException
@@ -125,7 +125,7 @@ class IqrfOsManager {
 	 * Returns IQRF OS diff files
 	 * @param string $fromBuild From IQRF OS build
 	 * @param string $toBuild To IQRF OS build
-	 * @return string[] Array of IQRF OS diff files
+	 * @return array<string> Array of IQRF OS diff files
 	 */
 	public function getOsFiles(string $fromBuild, string $toBuild): array {
 		$table = $this->database->table('os_patches');

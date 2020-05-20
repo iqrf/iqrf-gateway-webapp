@@ -48,7 +48,7 @@ class InfoManagerTest extends CommandTestCase {
 	private $versionManager;
 
 	/**
-	 * @var string[] Mocked commands
+	 * @var array<string, string> Mocked commands
 	 */
 	private $commands = [
 		'deviceTreeName' => 'cat /proc/device-tree/model',
@@ -61,7 +61,7 @@ class InfoManagerTest extends CommandTestCase {
 	];
 
 	/**
-	 * @var array<string, mixed> Expected outputs
+	 * @var array<string, array<int|string, array<string, array<int, string>|string>|string>|string|null> Expected outputs
 	 */
 	private $expected = [
 		'board' => 'MICRORISC s.r.o. IQD-GW-01',

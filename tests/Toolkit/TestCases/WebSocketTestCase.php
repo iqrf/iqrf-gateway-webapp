@@ -46,7 +46,7 @@ abstract class WebSocketTestCase extends TestCase {
 
 	/**
 	 * Asserts the IQRF JSON API request
-	 * @param mixed[] $request IQRF JSON API request
+	 * @param array<mixed> $request IQRF JSON API request
 	 * @param callable $callback Callback
 	 */
 	protected function assertRequest(array $request, callable $callback): void {
@@ -73,7 +73,7 @@ abstract class WebSocketTestCase extends TestCase {
 	/**
 	 * Reads the IQRF JSON API response
 	 * @param string $mType Message type
-	 * @return mixed[] IQRF JSON API response
+	 * @return array<mixed> IQRF JSON API response
 	 */
 	public function readJsonResponse(string $mType): array {
 		$path = __DIR__ . '/../../data/apiResponses/';

@@ -59,7 +59,7 @@ class InterfaceManager {
 
 	/**
 	 * Lists network interfaces
-	 * @return InterfaceStatus[] Network interfaces
+	 * @return array<InterfaceStatus> Network interfaces
 	 */
 	public function list(): array {
 		$output = $this->commandManager->run('nmcli -t device status', true)->getStdout();

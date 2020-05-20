@@ -73,7 +73,7 @@ class ConnectionManager {
 
 	/**
 	 * Lists the network connections
-	 * @return Connection[] Network connections
+	 * @return array<Connection> Network connections
 	 */
 	public function list(): array {
 		$output = $this->commandManager->run('nmcli -t connection show', true)->getStdout();

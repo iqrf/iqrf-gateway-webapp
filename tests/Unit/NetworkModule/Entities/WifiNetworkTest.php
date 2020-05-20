@@ -91,6 +91,62 @@ class WifiNetworkTest extends TestCase {
 		Assert::equal($this->entity, $actual);
 	}
 
+	/**
+	 * Tests the function to check if the network is used
+	 */
+	public function testIsUsed(): void {
+		Assert::true($this->entity->isUsed());
+	}
+
+	/**
+	 * Tests the function to get the network's BSSID
+	 */
+	public function testGetBssid(): void {
+		Assert::same($this->bssid, $this->entity->getBssid());
+	}
+
+	/**
+	 * Tests the function to get the network's SSID
+	 */
+	public function testGetSsid(): void {
+		Assert::same($this->ssid, $this->entity->getSsid());
+	}
+
+	/**
+	 * Tests the function to get the network's mode
+	 */
+	public function testGetMode(): void {
+		Assert::equal($this->mode, $this->entity->getMode());
+	}
+
+	/**
+	 * Tests the function to get the network's channel
+	 */
+	public function testGetChannel(): void {
+		Assert::same($this->channel, $this->entity->getChannel());
+	}
+
+	/**
+	 * Tests the function to get the network's speed rate
+	 */
+	public function testGetRate(): void {
+		Assert::same($this->rate, $this->entity->getRate());
+	}
+
+	/**
+	 * Tests the function to get the network's signal strength
+	 */
+	public function testGetSignal(): void {
+		Assert::same($this->signal, $this->entity->getSignal());
+	}
+
+	/**
+	 * Tests the function to get the network's security
+	 */
+	public function testGetSecurity(): void {
+		Assert::equal($this->security, $this->entity->getSecurity());
+	}
+
 }
 
 $test = new WifiNetworkTest();

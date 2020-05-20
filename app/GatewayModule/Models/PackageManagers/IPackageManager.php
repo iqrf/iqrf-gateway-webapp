@@ -28,7 +28,7 @@ interface IPackageManager {
 	/**
 	 * Installs the packages
 	 * @param callable $callback Callback
-	 * @param string[] $packages Packages to install
+	 * @param array<string> $packages Packages to install
 	 */
 	public function install(callable $callback, array $packages): void;
 
@@ -40,21 +40,21 @@ interface IPackageManager {
 
 	/**
 	 * Returns list of upgradable packages
-	 * @return mixed[] Upgradable packages
+	 * @return array<int, array<string, int|string>> Upgradable packages
 	 */
 	public function getUpgradable(): array;
 
 	/**
 	 * Purges the packages
 	 * @param callable $callback Callback
-	 * @param string[] $packages Packages to purge
+	 * @param array<string> $packages Packages to purge
 	 */
 	public function purge(callable $callback, array $packages): void;
 
 	/**
 	 * Removes the packages
 	 * @param callable $callback Callback
-	 * @param string[] $packages Packages to remove
+	 * @param array<string> $packages Packages to remove
 	 */
 	public function remove(callable $callback, array $packages): void;
 

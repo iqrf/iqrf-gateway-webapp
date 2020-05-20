@@ -52,12 +52,11 @@ class JsonSchemaManager extends JsonFileManager {
 	 * @throws NonexistentJsonSchemaException
 	 */
 	public function setSchema(string $fileName): void {
-		if (parent::exists($fileName)) {
-			$this->schema = $fileName;
-		} else {
+		if (!parent::exists($fileName)) {
 			$message = 'Non-existing JSON schema ' . $fileName . '.';
 			throw new NonexistentJsonSchemaException($message);
 		}
+		$this->schema = $fileName;
 	}
 
 	/**

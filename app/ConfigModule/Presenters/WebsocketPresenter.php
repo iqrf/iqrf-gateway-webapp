@@ -79,7 +79,7 @@ class WebsocketPresenter extends GenericPresenter {
 	public $serviceFormFactory;
 
 	/**
-	 * @var string[] WebSocket components
+	 * @var array<string> WebSocket components
 	 */
 	protected $components = [
 		'messaging' => 'iqrf::WebsocketMessaging',

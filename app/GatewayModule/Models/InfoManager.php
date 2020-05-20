@@ -37,7 +37,7 @@ use Nette\Utils\JsonException;
 class InfoManager {
 
 	/**
-	 * @var string[] Board managers
+	 * @var array<string> Board managers
 	 */
 	private $boardManagers = [
 		IqrfBoardManager::class,
@@ -82,7 +82,7 @@ class InfoManager {
 	/**
 	 * Returns information about the gateway
 	 * @param bool $verbose Verbose output
-	 * @return array<string,mixed> Gateway information
+	 * @return array<string, array<int|string, array<string, array<int, string>|string>|string>|string|null> Gateway information
 	 */
 	public function get(bool $verbose = false): array {
 		$info = [
@@ -142,7 +142,7 @@ class InfoManager {
 
 	/**
 	 * Gets information about the Coordinator
-	 * @return mixed[] Information about the Coordinator
+	 * @return array<mixed> Information about the Coordinator
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws JsonException
@@ -156,7 +156,7 @@ class InfoManager {
 
 	/**
 	 * Parses RF mode from information about the Coordinator
-	 * @param mixed[] $dpa Information about the Coordinator
+	 * @param array<mixed> $dpa Information about the Coordinator
 	 */
 	private function parseRfMode(array &$dpa): void {
 		if (!isset($dpa['response']->data->rsp->peripheralEnumeration)) {
@@ -180,7 +180,7 @@ class InfoManager {
 
 	/**
 	 * Gets disk usages
-	 * @return string[][] Disk usages
+	 * @return array<array<string>> Disk usages
 	 */
 	public function getDiskUsages(): array {
 		$command = 'df -l -B1 -x tmpfs -x devtmpfs -T -P | awk \'{if (NR!=1) {$6="";print}}\'';
@@ -191,9 +191,9 @@ class InfoManager {
 			$usages[] = [
 				'fsName' => $segments[0],
 				'fsType' => $segments[1],
-				'size' => $this->convertSizes($segments[2]),
-				'used' => $this->convertSizes($segments[3]),
-				'available' => $this->convertSizes($segments[4]),
+				'size' => $this->convertSizes((int) $segments[2]),
+				'used' => $this->convertSizes((int) $segments[3]),
+				'available' => $this->convertSizes((int) $segments[4]),
 				'usage' => round($segments[3] / $segments[2] * 100, 2) . '%',
 				'mount' => $segments[6],
 			];
@@ -203,7 +203,7 @@ class InfoManager {
 
 	/**
 	 * Converts bytes to human readable sizes
-	 * @param mixed $bytes Bytes to convert
+	 * @param int|float $bytes Bytes to convert
 	 * @param int $precision Conversion precision
 	 * @return string Human readable size
 	 */
@@ -222,27 +222,27 @@ class InfoManager {
 
 	/**
 	 * Gets a memory usage
-	 * @return string[] Memory usage
+	 * @return array<string> Memory usage
 	 */
 	public function getMemoryUsage(): array {
 		$command = 'free -bw | awk \'{{if (NR==2) print $2,$3,$4,$5,$6,$7,$8}}\'';
 		$output = $this->commandManager->run($command)->getStdout();
 		$segments = explode(' ', $output);
 		return [
-			'size' => $this->convertSizes($segments[0]),
-			'used' => $this->convertSizes($segments[1]),
-			'free' => $this->convertSizes($segments[2]),
-			'shared' => $this->convertSizes($segments[3]),
-			'buffers' => $this->convertSizes($segments[4]),
-			'cache' => $this->convertSizes($segments[5]),
-			'available' => $this->convertSizes($segments[6]),
+			'size' => $this->convertSizes((int) $segments[0]),
+			'used' => $this->convertSizes((int) $segments[1]),
+			'free' => $this->convertSizes((int) $segments[2]),
+			'shared' => $this->convertSizes((int) $segments[3]),
+			'buffers' => $this->convertSizes((int) $segments[4]),
+			'cache' => $this->convertSizes((int) $segments[5]),
+			'available' => $this->convertSizes((int) $segments[6]),
 			'usage' => round($segments[1] / $segments[0] * 100, 2) . '%',
 		];
 	}
 
 	/**
 	 * Gets a swap usage
-	 * @return string[]|null Swap usage
+	 * @return array<string>|null Swap usage
 	 */
 	public function getSwapUsage(): ?array {
 		$command = 'free -b | awk \'{{if (NR==3) print $2,$3,$4}}\'';
@@ -252,9 +252,9 @@ class InfoManager {
 			return null;
 		}
 		return [
-			'size' => $this->convertSizes($segments[0]),
-			'used' => $this->convertSizes($segments[1]),
-			'free' => $this->convertSizes($segments[2]),
+			'size' => $this->convertSizes((int) $segments[0]),
+			'used' => $this->convertSizes((int) $segments[1]),
+			'free' => $this->convertSizes((int) $segments[2]),
 			'usage' => round($segments[1] / $segments[0] * 100, 2) . '%',
 		];
 	}
