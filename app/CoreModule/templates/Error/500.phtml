@@ -2,7 +2,7 @@
 <meta charset='utf-8'>
 <meta name='robots' content='noindex'>
 <title>Server Error</title>
-<link rel='stylesheet' href='/dist/error500.bundle.css'>
+<link <?= $nonce ?? ''; ?> rel='stylesheet' href='/dist/error500.bundle.css'>
 
 <div id='nette-error'>
 	<div>
@@ -13,4 +13,4 @@
 	</div>
 </div>
 
-<script src='/dist/error500.bundle.js'></script>
+<script <?= $nonce ?? ''; ?> src='/dist/error500.bundle.js'></script>

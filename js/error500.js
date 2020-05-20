@@ -17,6 +17,8 @@
 
 'use strict';
 
+import '../css/error500.css';
+
 let errorMsg = document.getElementById('nette-error');
 document.body.insertBefore(errorMsg, document.body.firstChild);
 

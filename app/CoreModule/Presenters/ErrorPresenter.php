@@ -27,6 +27,7 @@ use Nette\Application\IResponse;
 use Nette\Application\Request;
 use Nette\Application\Responses\CallbackResponse;
 use Nette\Application\Responses\ForwardResponse;
+use Tracy\Helpers as TracyHelpers;
 use Tracy\ILogger;
 
 /**
@@ -60,6 +61,7 @@ class ErrorPresenter implements IPresenter {
 		}
 		$this->logger->log($exception, ILogger::EXCEPTION);
 		return new CallbackResponse(function (): void {
+			$nonce = 'nonce=\'' . TracyHelpers::getNonce() . '\'';
 			require __DIR__ . '/../templates/Error/500.phtml';
 		});
 	}
