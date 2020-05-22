@@ -21,9 +21,11 @@ declare(strict_types = 1);
 namespace App;
 
 use Nette\Configurator;
+use Nette\IOException;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
 use Nette\Utils\Json;
+use Nette\Utils\JsonException;
 use SplFileInfo;
 
 /**
@@ -44,12 +46,16 @@ class Kernel {
 		FileSystem::createDir($tempDir . '/sessions');
 		$configurator->createRobotLoader()->addDirectory(__DIR__)->register();
 		$configurator->addConfig(__DIR__ . '/config/config.neon');
-		$version = Json::decode(FileSystem::read(__DIR__ . '/../version.json'));
-		$configurator->addParameters([
-			'sentry' => [
-				'release' => $version->version . ($version->pipeline !== '' ? '~' . $version->pipeline : ''),
-			],
-		]);
+		try {
+			$version = Json::decode(FileSystem::read(__DIR__ . '/../version.json'));
+			$configurator->addParameters([
+				'sentry' => [
+					'release' => $version->version . ($version->pipeline !== '' ? '~' . $version->pipeline : ''),
+				],
+			]);
+		} catch (IOException | JsonException $e) {
+			// Skip Sentry version settings
+		}
 		/**
 		 * @var SplFileInfo $file File info object
 		 */
