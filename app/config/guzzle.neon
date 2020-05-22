@@ -3,3 +3,5 @@ extensions:
 
 guzzle:
 	debug: true
+	client:
+		timeout: 10
