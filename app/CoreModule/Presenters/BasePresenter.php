@@ -21,8 +21,11 @@ declare(strict_types = 1);
 namespace App\CoreModule\Presenters;
 
 use App\ConfigModule\Models\ComponentManager;
+use App\CoreModule\Models\FeatureManager;
+use Latte\Macros\MacroSet;
 use Nette\Application\UI\ITemplate;
 use Nette\Application\UI\Presenter;
+use Nette\Bridges\ApplicationLatte\Template;
 use Nette\Localization\ITranslator;
 
 /**
@@ -34,6 +37,11 @@ abstract class BasePresenter extends Presenter {
 	 * @var ComponentManager Component manager
 	 */
 	protected $componentManager;
+
+	/**
+	 * @var FeatureManager Optional feature manager
+	 */
+	protected $featureManager;
 
 	/**
 	 * @var string Language
@@ -51,10 +59,12 @@ abstract class BasePresenter extends Presenter {
 	 */
 	public function afterRender(): void {
 		parent::afterRender();
-		$this->template->newVersion = null;
-		$this->template->offlineMode = false;
-		$this->template->docs = $this->context->parameters['docs'];
-		$this->template->features = $this->context->parameters['features'];
+		if ($this->featureManager->isEnabled('versionChecker')) {
+			$this->template->newVersion = null;
+			$this->template->offlineMode = false;
+		}
+		$this->template->featureManager = $this->featureManager;
+		$this->template->urls = $this->featureManager->listUrl();
 		$this->template->disabledComponents = $this->componentManager->listDisabled();
 	}
 
@@ -64,6 +74,14 @@ abstract class BasePresenter extends Presenter {
 	 */
 	public function injectComponentManager(ComponentManager $componentManager): void {
 		$this->componentManager = $componentManager;
+	}
+
+	/**
+	 * Injects the optional feature manager
+	 * @param FeatureManager $manager Optional feature manager
+	 */
+	public function injectFeatureManager(FeatureManager $manager): void {
+		$this->featureManager = $manager;
 	}
 
 	/**
@@ -88,6 +106,12 @@ abstract class BasePresenter extends Presenter {
 	 */
 	public function createTemplate(): ITemplate {
 		$template = parent::createTemplate();
+		assert($template instanceof Template);
+		$compiler = $template->getLatte()->getCompiler();
+		$macroSet = new MacroSet($compiler);
+		$macroSet->addMacro('ifFeature', 'if ($featureManager->isEnabled(%node.args)):', 'endif');
+		$macroSet->addMacro('ifComponent', 'if ($user->isInRole("power") || ($disabledComponents[%node.args] ?? true)):', 'endif');
+		$macroSet->addMacro('isModuleActive', null, null, 'echo \' class="\' . ($presenter->isModuleCurrent(%node.args) ? \'active menu-open \' : \'\') . \'treeview"\'');
 		$template->setTranslator($this->translator);
 		return $template;
 	}

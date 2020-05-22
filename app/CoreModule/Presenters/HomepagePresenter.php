@@ -44,6 +44,9 @@ class HomepagePresenter extends ProtectedPresenter {
 	 */
 	public function afterRender(): void {
 		parent::afterRender();
+		if (!$this->featureManager->isEnabled('versionChecker')) {
+			return;
+		}
 		try {
 			if ($this->versionManager->availableWebappUpdate()) {
 				$version = ['version' => $this->versionManager->getCurrentWebapp()];

@@ -116,7 +116,7 @@ class UpdaterPresenter extends ProtectedPresenter {
 	 */
 	protected function startup(): void {
 		parent::startup();
-		if (!$this->context->parameters['features']['updater']) {
+		if (!$this->featureManager->isEnabled('updater')) {
 			$this->flashError('gateway.updater.messages.disabled');
 			$this->redirect('Homepage:default');
 		}

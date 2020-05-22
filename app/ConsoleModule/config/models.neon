@@ -2,4 +2,6 @@ services:
 	consoleUserManager:
 		factory: App\ConsoleModule\Models\ConsoleUserManager
 		autowired: self
-	- App\ConsoleModule\Models\FeatureManager
+	consoleFeatureManager:
+		factory: App\ConsoleModule\Models\FeatureManager(%confDir%/features.neon)
+		autowired: self

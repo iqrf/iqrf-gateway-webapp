@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ConsoleModule\Commands;
 
-use App\ConsoleModule\Exceptions\UnknownFeatureException;
+use App\CoreModule\Exceptions\FeatureNotFoundException;
 use Nette\IOException;
 use Nette\Neon\Exception as NeonException;
 use Symfony\Component\Console\Input\InputArgument;
@@ -58,10 +58,10 @@ class FeatureEnableCommand extends FeatureCommand {
 		$style->title('Enable features');
 		$names = $input->getArgument('names');
 		try {
-			$this->manager->enable($names);
+			$this->manager->setEnabled($names, true);
 		} catch (IOException | NeonException $e) {
 			$style->error('An error occurred while enabling features.');
-		} catch (UnknownFeatureException $e) {
+		} catch (FeatureNotFoundException $e) {
 			$style->error('Unknown feature ' . $e->getMessage() . '.');
 		}
 		if (count($names) === 1) {

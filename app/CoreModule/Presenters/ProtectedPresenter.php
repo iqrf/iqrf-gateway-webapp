@@ -45,14 +45,16 @@ abstract class ProtectedPresenter extends BasePresenter {
 	 */
 	public function afterRender(): void {
 		parent::afterRender();
-		try {
-			if ($this->versionManager->availableWebappUpdate()) {
-				$version = ['version' => $this->versionManager->getCurrentWebapp()];
-				$phrase = $this->getTranslator()->translate('core.update.new-version-tag', null, $version);
-				$this->template->newVersion = $phrase;
+		if ($this->featureManager->isEnabled('versionChecker')) {
+			try {
+				if ($this->versionManager->availableWebappUpdate()) {
+					$version = ['version' => $this->versionManager->getCurrentWebapp()];
+					$phrase = $this->getTranslator()->translate('core.update.new-version-tag', null, $version);
+					$this->template->newVersion = $phrase;
+				}
+			} catch (TransferException $e) {
+				$this->template->offlineMode = true;
 			}
-		} catch (TransferException $e) {
-			$this->template->offlineMode = true;
 		}
 	}
 

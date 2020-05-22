@@ -47,7 +47,7 @@
 			</a>
 			<div class='navbar-custom-menu'>
 				<ul class='nav navbar-nav'>
-					<li n:if='$offlineMode'>
+					<li n:if='$offlineMode ?? false'>
 						<a n:nonce style='background-color: #f39c12;'>{_core.update.offline-tag}</a>
 					</li>
 					<li n:ifset='$newVersion'>

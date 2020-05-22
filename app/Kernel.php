@@ -45,7 +45,8 @@ class Kernel {
 		$configurator->setTempDirectory($tempDir);
 		FileSystem::createDir($tempDir . '/sessions');
 		$configurator->createRobotLoader()->addDirectory(__DIR__)->register();
-		$configurator->addConfig(__DIR__ . '/config/config.neon');
+		$confDir = __DIR__ . '/config';
+		$configurator->addConfig($confDir . '/config.neon');
 		try {
 			$version = Json::decode(FileSystem::read(__DIR__ . '/../version.json'));
 			$configurator->addParameters([
@@ -56,6 +57,7 @@ class Kernel {
 		} catch (IOException | JsonException $e) {
 			// Skip Sentry version settings
 		}
+		$configurator->addParameters(['confDir' => $confDir]);
 		/**
 		 * @var SplFileInfo $file File info object
 		 */

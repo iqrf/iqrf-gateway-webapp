@@ -80,7 +80,7 @@ class PixlaPresenter extends ProtectedPresenter {
 	 */
 	protected function startup(): void {
 		parent::startup();
-		if (!$this->context->parameters['features']['pixla']) {
+		if (!$this->featureManager->isEnabled('pixla')) {
 			$this->flashError('cloud.pixla.messages.disabled');
 			$this->redirect('Homepage:default');
 		}

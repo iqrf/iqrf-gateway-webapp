@@ -48,7 +48,7 @@ class BasePresenter extends ProtectedPresenter {
 	 */
 	public function checkRequirements($element): void {
 		parent::checkRequirements($element);
-		if (!$this->context->parameters['features']['networkManager']) {
+		if (!$this->featureManager->isEnabled('networkManager')) {
 			$this->flashError('network.messages.disabled');
 			$this->redirect(':Core:Homepage:default');
 		}

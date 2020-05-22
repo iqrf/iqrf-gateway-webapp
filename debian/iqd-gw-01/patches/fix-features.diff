@@ -1,29 +1,37 @@
 --- a/app/config/features.neon
 +++ b/app/config/features.neon
-@@ -1,21 +1,21 @@
- parameters:
--	docs: https://docs.iqrf.org/iqrf-gateway/
-+	docs: https://docs.iqrf.org/iqd-gw-01/
- 	features:
- 		# Show documentation
- 		docs: true
- 		# IQRF TR native upload
--		trUpload: false
-+		trUpload: true
- 		# Node-RED
- 		node-red: false
- 		# PIXLA mamagement system
--		pixla: false
-+		pixla: true
- 		# Network manager
- 		networkManager: false
- 		# SSH daemon manager
--		ssh: false
-+		ssh: true
- 		# Supervisord dashboard
- 		supervisord: false
- 		# System updater
- 		updater: false
- 		# Unattended upgrades
--		unattendedUpgrades: false
-+		unattendedUpgrades: true
+@@ -1,7 +1,7 @@
+ # Show documentation
+ docs:
+ 	enabled: true
+-	url: https://docs.iqrf.org/iqrf-gateway/
++	url: https://docs.iqrf.org/iqd-gw-01/
+ grafana:
+ 	enabled: false
+ 	url: /grafana/
+@@ -14,10 +14,10 @@
+ 	url: /node-red/
+ # PIXLA mamagement system
+ pixla:
+-	enabled: false
++	enabled: true
+ # SSH daemon manager
+ ssh:
+-	enabled: false
++	enabled: true
+ # Supervisord dashboard
+ supervisord:
+ 	enabled: false
+@@ -27,10 +27,10 @@
+ 	enabled: false
+ # IQRF TR native upload
+ trUpload:
+-	enabled: false
++	enabled: true
+ # Unattended upgrades
+ unattendedUpgrades:
+-	enabled: false
++	enabled: true
+ # IQRF Gateway Webapp version checker
+ versionChecker:
+ 	enabled: false

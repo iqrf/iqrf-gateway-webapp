@@ -22,11 +22,11 @@ ssh:
 supervisord:
 	enabled: false
 	url: /supervisord/
-# System updater
-updater:
-	enabled: false
 # IQRF TR native upload
 trUpload:
+	enabled: false
+# System updater
+updater:
 	enabled: false
 # Unattended upgrades
 unattendedUpgrades:

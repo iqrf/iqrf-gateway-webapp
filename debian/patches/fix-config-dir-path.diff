@@ -1,23 +1,12 @@
 Fixes configuration directory path
---- a/app/ConsoleModule/Models/FeatureManager.php
-+++ b/app/ConsoleModule/Models/FeatureManager.php
-@@ -35,7 +35,7 @@
- 	/**
- 	 * Path to the webapp's configuration file
- 	 */
--	private const CONF_PATH = __DIR__ . '/../../config/features.neon';
-+	private const CONF_PATH = '/etc/iqrf-gateway-webapp/features.neon';
- 
- 	/**
- 	 * @var ITranslator Translator
 --- a/app/Kernel.php
 +++ b/app/Kernel.php
-@@ -43,7 +43,7 @@
+@@ -45,7 +45,7 @@
  		$configurator->setTempDirectory($tempDir);
  		FileSystem::createDir($tempDir . '/sessions');
  		$configurator->createRobotLoader()->addDirectory(__DIR__)->register();
--		$configurator->addConfig(__DIR__ . '/config/config.neon');
-+		$configurator->addConfig('/etc/iqrf-gateway-webapp/config.neon');
- 		$version = Json::decode(FileSystem::read(__DIR__ . '/../version.json'));
- 		$configurator->addParameters([
- 			'sentry' => [
+-		$confDir = __DIR__ . '/config';
++		$confDir = '/etc/iqrf-gateway-webapp';
+ 		$configurator->addConfig($confDir . '/config.neon');
+ 		try {
+ 			$version = Json::decode(FileSystem::read(__DIR__ . '/../version.json'));

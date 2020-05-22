@@ -57,7 +57,7 @@ class TrUploadPresenter extends ProtectedPresenter {
 	 */
 	protected function startup(): void {
 		parent::startup();
-		if (!$this->context->parameters['features']['trUpload']) {
+		if (!$this->featureManager->isEnabled('trUpload')) {
 			$this->flashError('iqrfnet.trUpload.messages.disabled');
 			$this->redirect('Homepage:default');
 		}

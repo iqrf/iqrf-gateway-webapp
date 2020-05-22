@@ -1,7 +1,7 @@
 Fixes log directory path
 --- a/app/Kernel.php
 +++ b/app/Kernel.php
-@@ -37,7 +37,7 @@
+@@ -39,7 +39,7 @@
  	 */
  	public static function boot(): Configurator {
  		$configurator = new Configurator();

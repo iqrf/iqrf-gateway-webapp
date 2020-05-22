@@ -1,7 +1,7 @@
 Fixes cache directory path
 --- a/app/Kernel.php
 +++ b/app/Kernel.php
-@@ -39,7 +39,7 @@
+@@ -41,7 +41,7 @@
  		$configurator = new Configurator();
  		$configurator->enableTracy(__DIR__ . '/../log');
  		$configurator->setTimeZone('Europe/Prague');

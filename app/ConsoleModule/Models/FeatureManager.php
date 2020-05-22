@@ -20,22 +20,13 @@ declare(strict_types = 1);
 
 namespace App\ConsoleModule\Models;
 
-use App\ConsoleModule\Exceptions\UnknownFeatureException;
-use Nette\IOException;
+use App\CoreModule\Models\FeatureManager as CoreFeatureManager;
 use Nette\Localization\ITranslator;
-use Nette\Neon\Exception as NeonException;
-use Nette\Neon\Neon;
-use Nette\Utils\FileSystem;
 
 /**
  * Webapp's optional feature manager
  */
-class FeatureManager {
-
-	/**
-	 * Path to the webapp's configuration file
-	 */
-	private const CONF_PATH = __DIR__ . '/../../config/features.neon';
+class FeatureManager extends CoreFeatureManager {
 
 	/**
 	 * @var ITranslator Translator
@@ -44,90 +35,21 @@ class FeatureManager {
 
 	/**
 	 * Constructor
+	 * @param string $path Path to the configuration file
 	 * @param ITranslator $translator ITranslator
 	 */
-	public function __construct(ITranslator $translator) {
+	public function __construct(string $path, ITranslator $translator) {
+		parent::__construct($path);
 		$this->translator = $translator;
 	}
-
-	/**
-	 * Disables optional features
-	 * @param array<string> $names Names of disabled optional features
-	 * @throws IOException
-	 * @throws NeonException
-	 * @throws UnknownFeatureException
-	 */
-	public function disable(array $names): void {
-		$this->editConfig($names, false);
-	}
-
-	/**
-	 * Edits the configuration of optional features
-	 * @param array<string> $names Names of edited optional features
-	 * @param bool $state State of optional features
-	 * @throws IOException
-	 * @throws NeonException
-	 * @throws UnknownFeatureException
-	 */
-	private function editConfig(array $names, bool $state): void {
-		$config = $this->readConfig();
-		foreach ($names as $name) {
-			if (!array_key_exists($name, $config)) {
-				throw new UnknownFeatureException($name);
-			}
-		}
-		foreach ($names as $name) {
-			$config[$name] = $state;
-		}
-		$this->saveConfig($config);
-	}
-
-	/**
-	 * Reads the configuration of optional features
-	 * @return array<string,bool> Optional feature configuration
-	 * @throws NeonException
-	 */
-	private function readConfig(): array {
-		try {
-			$config = FileSystem::read(self::CONF_PATH);
-		} catch (IOException $e) {
-			return [];
-		}
-		return Neon::decode($config)['parameters']['features'] ?? [];
-	}
-
-	/**
-	 * Saves the configuration of optional features
-	 * @param array<string,bool> $config Optional feature configuration
-	 * @throws IOException
-	 * @throws NeonException
-	 */
-	private function saveConfig(array $config): void {
-		$neon = ['parameters' => ['features' => $config]];
-		$fileContent = Neon::encode($neon, Neon::BLOCK);
-		FileSystem::write(self::CONF_PATH, $fileContent);
-	}
-
-	/**
-	 * Enables optional features
-	 * @param array<string> $names Names of enabled optional features
-	 * @throws IOException
-	 * @throws NeonException
-	 * @throws UnknownFeatureException
-	 */
-	public function enable(array $names): void {
-		$this->editConfig($names, true);
-	}
-
 	/**
 	 * Lists the optional features
 	 * @return array<array<string>> Optional features
-	 * @throws NeonException
 	 */
 	public function list(): array {
 		$features = [];
-		foreach ($this->readConfig() as $name => $status) {
-			$statusStr = $status ? 'enabled' : 'disabled';
+		foreach ($this->read() as $name => $configuration) {
+			$statusStr = ($configuration['enabled'] ?? false) ? 'enabled' : 'disabled';
 			$fullName = $this->translator->translate('console.features.' . $name);
 			$features[] = [$fullName, $name, $statusStr];
 		}

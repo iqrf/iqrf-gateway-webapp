@@ -15,6 +15,8 @@
  * limitations under the License.
 *}
 
+{varType array $urls}
+
 <aside class='main-sidebar'>
 	<section class='sidebar'>
 		<ul class='sidebar-menu' data-widget='tree'>
@@ -39,17 +41,17 @@
 							{_service.iqrf-gateway-daemon.title}
 						</a>
 					</li>
-					<li n:if='$features["ssh"] ?? false' n:class='isLinkCurrent(":Service:Control:default", ["name"=> "ssh"]) ? "active"'>
+					<li n:ifFeature="ssh" n:class='isLinkCurrent(":Service:Control:default", ["name"=> "ssh"]) ? "active"'>
 						<a n:href=':Service:Control:default, name => "ssh"'>
 							{_service.ssh.title}
 						</a>
 					</li>
-					<li n:if='$features["unattendedUpgrades"] ?? false' n:class='isLinkCurrent(":Service:Control:default", ["name"=> "unattended-upgrades"]) ? "active"'>
+					<li n:ifFeature='unattendedUpgrades' n:class='isLinkCurrent(":Service:Control:default", ["name"=> "unattended-upgrades"]) ? "active"'>
 						<a n:href=':Service:Control:default, name => "unattended-upgrades"'>
 							{_service.unattended-upgrades.title}
 						</a>
 					</li>
-					<li n:if='$features["updater"] ?? false' n:class='isLinkCurrent(":Gateway:Updater:*") ? "active"'>
+					<li n:ifFeature='updater' n:class='isLinkCurrent(":Gateway:Updater:*") ? "active"'>
 						<a n:href=':Gateway:Updater:default'>{_gateway.updater.title}</a>
 					</li>
 					<li n:class='isLinkCurrent(":Gateway:Power:*") ? "active"'>
@@ -57,7 +59,7 @@
 					</li>
 				</ul>
 			</li>
-			<li n:if='$user->loggedIn' n:class='(isModuleCurrent("Config") ? "active menu-open ") . "treeview"'>
+			<li n:if='$user->loggedIn' n:isModuleActive='Config'>
 				<a n:href=':Config:Homepage:default' role='button'>
 					<i class='glyphicon glyphicon-wrench'></i>
 					<span>{_config.title}</span>
@@ -76,13 +78,13 @@
 							{/if}
 						</a>
 					</li>
-					<li n:if='$user->isInRole("power") || ($disabledComponents["iqrf::IqrfSpi"] ?? true)' n:class='isLinkCurrent(":Config:IqrfSpi:*") ? "active"'>
+					<li n:ifComponent='"iqrf::IqrfSpi"' n:class='isLinkCurrent(":Config:IqrfSpi:*") ? "active"'>
 						<a n:href=':Config:IqrfSpi:default'>{_config.iqrfSpi.title}</a>
 					</li>
-					<li n:if='$user->isInRole("power") || ($disabledComponents["iqrf::IqrfCdc"] ?? true)' n:class='isLinkCurrent(":Config:IqrfCdc:*") ? "active"'>
+					<li n:ifComponent='"iqrf::IqrfCdc"' n:class='isLinkCurrent(":Config:IqrfCdc:*") ? "active"'>
 						<a n:href=':Config:IqrfCdc:default'>{_config.iqrfCdc.title}</a>
 					</li>
-					<li n:if='$user->isInRole("power") || ($disabledComponents["iqrf::IqrfUart"] ?? true)' n:class='isLinkCurrent(":Config:IqrfUart:*") ? "active"'>
+					<li n:ifComponent='"iqrf::IqrfUart"' n:class='isLinkCurrent(":Config:IqrfUart:*") ? "active"'>
 						<a n:href=':Config:IqrfUart:default'>{_config.iqrfUart.title}</a>
 					</li>
 					<li n:class='isLinkCurrent(":Config:IqrfDpa:*") ? "active"'>
@@ -132,7 +134,7 @@
 					</li>
 				</ul>
 			</li>
-			<li n:if='$user->loggedIn' n:class='(isModuleCurrent("IqrfNet") ? "active menu-open ") . "treeview"'>
+			<li n:if='$user->loggedIn' n:isModuleActive='IqrfNet'>
 				<a n:href=':IqrfNet:Homepage:default' role='button'>
 					<i class='glyphicon glyphicon-signal'></i>
 					<span>{_iqrfnet.title}</span>
@@ -145,7 +147,7 @@
 					<li n:class='isLinkCurrent(":IqrfNet:SendJson:*") ? "active"'>
 						<a n:href=':IqrfNet:SendJson:default'>{_iqrfnet.send-json.title}</a>
 					</li>
-					<li n:if='$features["trUpload"] ?? false' n:class='isLinkCurrent(":IqrfNet:TrUpload:*") ? "active"'>
+					<li n:ifFeature='trUpload' n:class='isLinkCurrent(":IqrfNet:TrUpload:*") ? "active"'>
 						<a n:href=':IqrfNet:TrUpload:default'>{_iqrfnet.trUpload.title}</a>
 					</li>
 					<li n:class='isLinkCurrent(":IqrfNet:TrConfig:*") ? "active"'>
@@ -159,17 +161,19 @@
 					</li>
 				</ul>
 			</li>
-			<li n:if='$user->loggedIn && $features["networkManager"] ?? false' n:class='(isModuleCurrent("Network") ? "active menu-open ") . "treeview"'>
+			<li n:if='$user->loggedIn' n:ifFeature='networkManager' n:isModuleActive='Network'>
 				<a n:href=':Network:Homepage:default' role='button'>
 					<i class='glyphicon glyphicon-globe'></i>
 					<span>{_network.title}</span>
 					<span class='pull-right-container'><i class='caret'></i></span>
 				</a>
 				<ul class='treeview-menu'>
-					<li n:class='isLinkCurrent(":Network:Ethernet:*") ? "active"'><a n:href=':Network:Ethernet:default'>{_network.ethernet.title}</a></li>
+					<li n:class='isLinkCurrent(":Network:Ethernet:*") ? "active"'>
+						<a n:href=':Network:Ethernet:default'>{_network.ethernet.title}</a>
+					</li>
 				</ul>
 			</li>
-			<li n:if='$user->loggedIn' n:class='(isModuleCurrent("Cloud") ? "active menu-open ") . "treeview"'>
+			<li n:if='$user->loggedIn' n:isModuleActive='Cloud'>
 				<a n:href=':Cloud:Homepage:default' role='button'>
 					<i class='glyphicon glyphicon-cloud'></i>
 					<span>{_cloud.title}</span>
@@ -191,7 +195,7 @@
 					<li n:class='isLinkCurrent(":Cloud:InteliGlue:*") ? "active"'>
 						<a n:href=':Cloud:InteliGlue:default'>{_cloud.intelimentsInteliGlue.title}</a>
 					</li>
-					<li n:if='$features["pixla"] ?? false' n:class='isLinkCurrent(":Cloud:Pixla:*") ? "active"'>
+					<li n:ifFeature='pixla' n:class='isLinkCurrent(":Cloud:Pixla:*") ? "active"'>
 						<a n:href=':Cloud:Pixla:default'>{_cloud.pixla.title}</a>
 					</li>
 				</ul>
@@ -209,25 +213,25 @@
 				</a>
 			</li>
 
-			<li n:if='$user->loggedIn && $features["node-red"] ?? false' class='treeview'>
+			<li n:if='$user->loggedIn' n:ifFeature='nodeRed' n:ifset='$urls["nodeRed"]' class='treeview'>
 				<a n:href=':Core:Homepage:default' role='button'>
 					<i class='glyphicon glyphicon-tasks'></i>
 					<span>{_core.node-red.title}</span>
 					<span class='pull-right-container'><i class='caret'></i></span>
 				</a>
 				<ul class='treeview-menu'>
-					<li><a href='/node-red/'>{_core.node-red.title}</a></li>
-					<li><a href='/node-red/ui/'>{_core.node-red-dashboard.title}</a></li>
+					<li><a href='{$urls["nodeRed"]}'>{_core.node-red.title}</a></li>
+					<li><a href='{$urls["nodeRed"]}ui/'>{_core.node-red-dashboard.title}</a></li>
 				</ul>
 			</li>
-			<li n:if='$user->loggedIn && $features["supervisord"] ?? false'>
-				<a href='/supervisor/'>
+			<li n:if='$user->loggedIn' n:ifFeature='supervisord' n:ifset='$urls["supervisord"]'>
+				<a href='{$urls["supervisord"]}'>
 					<i class='glyphicon glyphicon-off'></i>
 					<span>{_core.supervisor.title}</span>
 				</a>
 			</li>
-			<li n:if='$features["docs"] ?? false' n:ifset='$docs'>
-				<a href='{$docs}' target='_blank'>
+			<li n:ifFeature='docs' n:ifset='$urls["docs"]'>
+				<a href='{$urls["docs"]}' target='_blank'>
 					<i class='glyphicon glyphicon-book'></i>
 					<span>{_core.documentation.title}</span>
 				</a>

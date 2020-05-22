@@ -18,13 +18,13 @@
  */
 declare(strict_types = 1);
 
-namespace App\ConsoleModule\Exceptions;
+namespace App\CoreModule\Exceptions;
 
-use UnexpectedValueException;
+use InvalidArgumentException;
 
 /**
- * The exception that indicates an unknown webapp's feature
+ * The exception that indicates nonexistent feature
  */
-class UnknownFeatureException extends UnexpectedValueException {
+class FeatureNotFoundException extends InvalidArgumentException {
 
 }

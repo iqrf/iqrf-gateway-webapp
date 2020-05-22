@@ -171,8 +171,8 @@ class ControlPresenter extends ProtectedPresenter {
 		if (!in_array($name, self::WHITELISTED, true)) {
 			throw new BadRequestException('Unsupported service ' . $name);
 		}
-		if ($name === 'unattended-upgrades' && !$this->context->parameters['features']['unattendedUpgrades'] ||
-			$name === 'ssh' && !$this->context->parameters['features']['ssh']) {
+		if ($name === 'unattended-upgrades' && !$this->featureManager->isEnabled('unattendedUpgrades') ||
+			$name === 'ssh' && !$this->featureManager->isEnabled('ssh')) {
 			$this->flashError('service.' . $name . '.messages.disabled');
 			$this->redirect(':Gateway:Homepage:default');
 		}

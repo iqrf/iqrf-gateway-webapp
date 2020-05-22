@@ -1,8 +1,12 @@
 features:
-	trUpload: IQRF TR native upload
-	node-red: Node-RED in the menu
-	pixla: PIXLA
+	docs: Show documentation
+	grafana: Grafana in the menu
 	networkManager: Network manager
+	nodeRed: Node-RED in the menu
+	pixla: PIXLA device management
+	ssh: SSH daemon manager
 	supervisord: Supervisord in the menu
+	trUpload: IQRF TR native upload
 	updater: System updater
 	unattendedUpgrades: Unattended upgrades
+	versionChecker: Version checker
