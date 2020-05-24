@@ -23,6 +23,9 @@ namespace App\CoreModule\Models;
 use App\CoreModule\Entities\Command;
 use App\CoreModule\Entities\CommandStack;
 use App\CoreModule\Entities\ICommand;
+use Symfony\Component\Process\Exception\ProcessSignaledException;
+use Symfony\Component\Process\Exception\ProcessTimedOutException;
+use Symfony\Component\Process\Exception\RuntimeException;
 use Symfony\Component\Process\Process;
 use Traversable;
 
@@ -77,6 +80,9 @@ class CommandManager {
 	 * @param bool $needSudo Does the command need sudo?
 	 * @param string|int|float|bool|resource|Traversable|null $input Command's input
 	 * @return ICommand Command entity
+	 * @throws RuntimeException When process can't be launched
+	 * @throws ProcessTimedOutException When process timed out
+	 * @throws ProcessSignaledException When process stopped after receiving signal
 	 */
 	public function run(string $command, bool $needSudo = false, $input = null): ICommand {
 		$process = $this->createProcess($command, $needSudo);

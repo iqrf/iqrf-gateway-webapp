@@ -26,6 +26,7 @@ use App\ServiceModule\Exceptions\NonexistentServiceException;
 use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
 use App\ServiceModule\Models\ServiceManager;
 use Nette\Application\BadRequestException;
+use Symfony\Component\Process\Exception\ProcessTimedOutException;
 
 /**
  * Service control presenter.
@@ -80,6 +81,8 @@ class ControlPresenter extends ProtectedPresenter {
 			$this->flashSuccess('service.' . $name . '.messages.' . $action);
 		} catch (UnsupportedInitSystemException $ex) {
 			$this->flashError('service.errors.unsupportedInit');
+		} catch (ProcessTimedOutException $e) {
+			$this->flashError('service.errors.processTimeout');
 		}
 		$this->readStatus($name);
 	}

@@ -49,3 +49,4 @@ unattended-upgrades:
 
 errors:
 	unsupportedInit: Not supported init system is used.
+	processTimeout: Service manager process timed out.
