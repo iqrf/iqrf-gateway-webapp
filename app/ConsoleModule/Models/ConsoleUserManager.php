@@ -34,11 +34,8 @@ class ConsoleUserManager extends UserManager {
 	 * @return User|null Information about the user
 	 */
 	public function getUser(?string $username): ?User {
-		$user = $this->entityManager->getUserRepository()->findOneByUserName($username);
-		if ($user === null) {
-			return null;
-		}
-		return $user;
+		$repository = $this->entityManager->getUserRepository();
+		return $repository->findOneByUserName($username);
 	}
 
 	/**
@@ -47,8 +44,7 @@ class ConsoleUserManager extends UserManager {
 	 * @return bool Is username unique?
 	 */
 	public function uniqueUserName(string $username): bool {
-		$user = $this->entityManager->getUserRepository()->findOneByUserName($username);
-		return $user === null;
+		return $this->getUser($username) === null;
 	}
 
 	/**
