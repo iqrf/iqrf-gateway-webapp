@@ -26,18 +26,15 @@ use AcmePhp\Ssl\Parser\CertificateParser;
 use AcmePhp\Ssl\Parser\KeyParser;
 use AcmePhp\Ssl\PrivateKey;
 use AcmePhp\Ssl\PublicKey;
-use App\CoreModule\Models\CommandManager;
+use App\CoreModule\Models\PrivilegedFileManager;
+use App\GatewayModule\Exceptions\CertificateNotFoundException;
+use App\GatewayModule\Exceptions\PrivateKeyNotFoundException;
 use Nette\IOException;
 
 /**
  * TLS certificate manager
  */
 class CertificateManager {
-
-	/**
-	 * @var CommandManager Command manager
-	 */
-	private $commandManager;
 
 	/**
 	 * @var Certificate|null TLS certificate
@@ -50,14 +47,14 @@ class CertificateManager {
 	private $certificateParser;
 
 	/**
+	 * @var PrivilegedFileManager Privileged file manager
+	 */
+	private $fileManager;
+
+	/**
 	 * @var KeyParser Private key parser
 	 */
 	private $keyParser;
-
-	/**
-	 * @var string Path to directory with certificate and private key
-	 */
-	private $path;
 
 	/**
 	 * @var PrivateKey|null Private key
@@ -66,29 +63,33 @@ class CertificateManager {
 
 	/**
 	 * Constructor
-	 * @param CommandManager $commandManager Command manager
+	 * @param PrivilegedFileManager $fileManager Privileged file manager
 	 */
-	public function __construct(CommandManager $commandManager) {
-		$this->commandManager = $commandManager;
-		$this->path = '/etc/iqrf-gateway-daemon/certs/core/';
-		$certificate = $this->readFile('cert.pem');
-		if ($certificate !== '') {
-			$this->certificate = new Certificate($certificate);
-		}
+	public function __construct(PrivilegedFileManager $fileManager) {
+		$this->fileManager = $fileManager;
 		$this->certificateParser = new CertificateParser();
-		$privateKey = $this->readFile('privkey.pem');
-		if ($privateKey !== '') {
-			$this->privateKey = new PrivateKey($privateKey);
-		}
 		$this->keyParser = new KeyParser();
+		try {
+			$certificate = $this->fileManager->read('cert.pem');
+			$this->certificate = $certificate === '' ? null : new Certificate($certificate);
+		} catch (IOException $e) {
+			$this->certificate = null;
+		}
+		try {
+			$privateKey = $this->fileManager->read('privkey.pem');
+			$this->privateKey = $privateKey === '' ? null : new PrivateKey($privateKey);
+		} catch (IOException $e) {
+			$this->privateKey = null;
+		}
 	}
 
 	/**
 	 * Returns information about the certificate
 	 * @return array<string, array<string>|bool|string> Information about the certificate
+	 * @throws CertificateNotFoundException
 	 */
 	public function getInfo(): array {
-		$certificate = $this->certificateParser->parse($this->certificate);
+		$certificate = $this->certificateParser->parse($this->getCertificate());
 		return [
 			'subject' => $certificate->getSubject(),
 			'issuer' => $certificate->getIssuer(),
@@ -102,47 +103,43 @@ class CertificateManager {
 	/**
 	 * Returns TLS certificate
 	 * @return Certificate TLS certificate
+	 * @throws CertificateNotFoundException
 	 */
 	public function getCertificate(): Certificate {
+		if ($this->certificate === null) {
+			throw new CertificateNotFoundException();
+		}
 		return $this->certificate;
 	}
 
 	/**
 	 * Returns private key
 	 * @return PrivateKey Private key
+	 * @throws PrivateKeyNotFoundException
 	 */
 	public function getPrivateKey(): PrivateKey {
+		if ($this->privateKey === null) {
+			throw new PrivateKeyNotFoundException();
+		}
 		return $this->privateKey;
 	}
 
 	/**
 	 * Returns public key
 	 * @return PublicKey Public key
+	 * @throws CertificateNotFoundException
 	 */
 	public function getPublicKey(): PublicKey {
-		return $this->certificate->getPublicKey();
+		return $this->getCertificate()->getPublicKey();
 	}
 
 	/**
 	 * Returns parsed private key
 	 * @return ParsedKey Parsed private key
+	 * @throws PrivateKeyNotFoundException
 	 */
 	public function getParsedPrivateKey(): ParsedKey {
-		return $this->keyParser->parse($this->privateKey);
-	}
-
-	/**
-	 * Reads the file
-	 * @param string $fileName File name
-	 * @return string File content
-	 * @throws IOException
-	 */
-	private function readFile(string $fileName): string {
-		$command = $this->commandManager->run('cat ' . $this->path . $fileName, true);
-		if ($command->getExitCode() !== 0) {
-			throw new IOException();
-		}
-		return $command->getStdout();
+		return $this->keyParser->parse($this->getPrivateKey());
 	}
 
 }

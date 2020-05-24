@@ -27,6 +27,7 @@ use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
+use App\GatewayModule\Exceptions\CertificateNotFoundException;
 use App\GatewayModule\Models\CertificateManager;
 
 /**
@@ -73,6 +74,8 @@ class CertificateController extends BaseController {
 			return $response->writeJsonBody($this->manager->getInfo());
 		} catch (AcmeSslException $e) {
 			return $response->withStatus(500, 'Certificate parsing error');
+		} catch (CertificateNotFoundException $e) {
+			return $response->withStatus(500, 'Certificate not found');
 		}
 	}
 

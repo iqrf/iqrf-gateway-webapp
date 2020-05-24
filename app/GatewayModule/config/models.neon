@@ -1,5 +1,6 @@
 services:
-	- App\GatewayModule\Models\CertificateManager
+	certificateFileManager: App\CoreModule\Models\PrivilegedFileManager(%daemon.configDir%/certs/core)
+	certificateManager: App\GatewayModule\Models\CertificateManager
 	- App\GatewayModule\Models\DiagnosticsManager(%daemon.configDir%, %daemon.logDir%)
 	- App\GatewayModule\Models\InfoManager
 	- App\GatewayModule\Models\LogManager(%daemon.logDir%)
