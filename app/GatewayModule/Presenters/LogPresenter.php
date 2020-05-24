@@ -22,6 +22,7 @@ namespace App\GatewayModule\Presenters;
 
 use App\CoreModule\Presenters\ProtectedPresenter;
 use App\CoreModule\Traits\TPresenterFlashMessage;
+use App\GatewayModule\Exceptions\LogNotFoundException;
 use App\GatewayModule\Models\LogManager;
 use Nette\Application\BadRequestException;
 use Nette\IOException;
@@ -58,6 +59,8 @@ class LogPresenter extends ProtectedPresenter {
 			$this->flashError('gateway.log.messages.nonExistingDir');
 		} catch (IOException $e) {
 			$this->flashError('gateway.log.messages.readError');
+		} catch (LogNotFoundException $e) {
+			$this->flashError('gateway.log.messages.notFound');
 		}
 	}
 

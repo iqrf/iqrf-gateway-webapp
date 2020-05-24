@@ -48,6 +48,7 @@ log:
 	messages:
 		nonExistingDir: IQRF Gateway Daemon's log directory does not exist.
 		readError: Cannot read IQRF Gateway Daemon's log file.
+		notFound: IQRF Gateway Daemon log file cannot be found.
 
 mode:
 	title: Change mode

@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Models;
 
 use App\CoreModule\Models\ZipArchiveManager;
+use App\GatewayModule\Exceptions\LogNotFoundException;
 use DateTime;
 use Nette\Application\BadRequestException;
 use Nette\Application\Responses\FileResponse;
@@ -54,6 +55,7 @@ class LogManager {
 	/**
 	 * Loads the latest log of IQRF Gateway Daemon
 	 * @return string IQRF Gateway Daemon's log
+	 * @throws LogNotFoundException
 	 */
 	public function load(): string {
 		return FileSystem::read($this->getLatestLog());
@@ -62,6 +64,7 @@ class LogManager {
 	/**
 	 * Returns IQRF Gateway Daemon's latest log file path
 	 * @return string IQRF Gateway Daemon's latest log file path
+	 * @throws LogNotFoundException
 	 */
 	public function getLatestLog(): string {
 		$logFiles = [];
@@ -73,6 +76,9 @@ class LogManager {
 				continue;
 			}
 			$logFiles[$file->getMTime()] = $file->getRealPath();
+		}
+		if ($logFiles === []) {
+			throw new LogNotFoundException();
 		}
 		krsort($logFiles);
 		return reset($logFiles);

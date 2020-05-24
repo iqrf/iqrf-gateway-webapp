@@ -28,6 +28,7 @@ use Apitte\Core\Annotation\Controller\Responses;
 use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
+use App\GatewayModule\Exceptions\LogNotFoundException;
 use App\GatewayModule\Models\InfoManager;
 use App\GatewayModule\Models\LogManager;
 use App\GatewayModule\Models\PowerManager;
@@ -112,8 +113,12 @@ class GatewayController extends BaseController {
 		$headers = [
 			'Content-Type' => 'text/plain; charset=utf-8',
 		];
-		return $response->withHeaders($headers)
-			->writeBody($this->logManager->load());
+		try {
+			return $response->withHeaders($headers)
+				->writeBody($this->logManager->load());
+		} catch (LogNotFoundException $e) {
+			return $response->withStatus(500, 'Log file not found');
+		}
 	}
 
 	/**
