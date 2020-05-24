@@ -1,3 +1,24 @@
+iqrf-gateway-webapp (2.0.0-rc15) testing; urgency=medium
+
+  * Prepare for version 2.0.0-rc15
+  * Config: fix Tracer file configuration forms
+  * Core: replace form renderer
+  * Config: fix TRacer file confuguration tool
+  * Gateway: add list of installed packages into diagnostics archive
+  * IQRF net: add workaround for DNS servers with scoped IPv6 address
+  * Add tests, fix coding style
+  * NPM: update dependencies
+  * Fix Server Error page
+  * Kernel: handle invalid or nonexistent version file
+  * Guzzle: set timeout to 10 seconds
+  * Core: refactor optional feature management, disable version checker
+  * Gateway: check certificate and private key existence (fixes IQRF-GATEWAY-WEBAPP-1Q)
+  * Console: fix coding style
+  * Service: handle service manager process timeout (fixes IQRF-GATEWAY-WEBAPP-32)
+  * Gateway: handle nonexistent IQRF Gateway Daemon log file (fixes IQRF-GATEWAY-WEBAPP-18)
+
+ -- Roman Ondráček <roman@romanondracek.cz>  Sun, 24 May 2020 23:30:00 +0200
+
 iqrf-gateway-webapp (2.0.0-rc14) testing; urgency=medium
 
   * Prepare for version 2.0.0-rc14
