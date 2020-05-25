@@ -189,7 +189,8 @@ build-package_iqd-gw-01:
   before_script:
     - git checkout -B "$CI_COMMIT_REF_NAME" "$CI_COMMIT_SHA"
   script:
-    - cp debian/iqd-gw-01/patches/* debian/patches
+    - mkdir -p debian/patches
+    - cp debian/iqd-gw-01/patches/* debian/patches/
     - ls --format=single-column debian/iqd-gw-01/patches/ >> debian/patches/series
     - gbp dch -a -S --ignore-branch --snapshot-number="$CI_PIPELINE_ID"
     - debuild -e CI_PIPELINE_ID -b -us -uc -tc
