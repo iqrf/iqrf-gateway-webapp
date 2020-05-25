@@ -70,9 +70,19 @@ install:
 	install -d -o www-data ${DESTDIR}/var/lib/iqrf-gateway-webapp
 	# Delete documentation
 	find ${VENDOR_DIR} -type f -name "AUTHORS*" -delete
+	find ${VENDOR_DIR} -type f -name "CHANGELOG*" -delete
+	find ${VENDOR_DIR} -type f -name "CONTRIBUTING.md" -delete
+	find ${VENDOR_DIR} -type f -name "contributing.md" -delete
+	find ${VENDOR_DIR} -type f -name "COPYRIGHT*" -delete
 	find ${VENDOR_DIR} -type f -name "LICENSE*" -delete
+	find ${VENDOR_DIR} -type f -name "license.md" -delete
 	find ${VENDOR_DIR} -type f -name "README*" -delete
-	find ${VENDOR_DIR} -type d -name -regex ".*/\(\.\)?[Dd]oc\(s\)?" -print0 | xargs -0 rm -rf
+	find ${VENDOR_DIR} -type f -name "readme.md" -delete
+	find ${VENDOR_DIR} -type f -name "SECURITY.md" -delete
+	find ${VENDOR_DIR} -type f -name "STABILITY.md" -delete
+	find ${VENDOR_DIR} -type f -name "UPGRADE*.md" -delete
+	find ${VENDOR_DIR} -type f -name "UPGRADING.md" -delete
+	find ${VENDOR_DIR} -type d -regextype sed -regex ".*/\(\.\)\?[Dd]oc\(s\)\?" -print0 | xargs -0 rm -rf
 	# Delete composer files
 	find ${VENDOR_DIR} -type f -name "composer.json" -delete
 	# Delete bower files
