@@ -1,1 +1,1 @@
-site debian/config/apache2/iqrf-gateway-webapp.conf nginx
+site install/config/apache2/iqrf-gateway-webapp.conf nginx

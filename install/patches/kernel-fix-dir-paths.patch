@@ -1,7 +1,15 @@
-Fixes configuration directory path
+Fixes directory paths in Kernel.php
 --- a/app/Kernel.php
 +++ b/app/Kernel.php
-@@ -45,7 +45,7 @@
+@@ -39,13 +39,13 @@
+ 	 */
+ 	public static function boot(): Configurator {
+ 		$configurator = new Configurator();
+-		$configurator->enableTracy(__DIR__ . '/../log');
++		$configurator->enableTracy('/var/log/iqrf-gateway-webapp');
+ 		$configurator->setTimeZone('Europe/Prague');
+-		$tempDir = __DIR__ . '/../temp';
++		$tempDir = '/var/cache/iqrf-gateway-webapp';
  		$configurator->setTempDirectory($tempDir);
  		FileSystem::createDir($tempDir . '/sessions');
  		$configurator->createRobotLoader()->addDirectory(__DIR__)->register();

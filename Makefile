@@ -110,6 +110,9 @@ install:
 	find ${VENDOR_DIR} -type f -print0 | xargs -0 chmod -x
 	# Delete empty directories
 	find ${VENDOR_DIR} -type d -empty -delete
+	# Patch files
+	patch $(DATA_DIR)/app/Kernel.php install/patches/kernel-fix-dir-paths.patch
+	patch $(DATA_DIR)/app/config/doctrine.neon install/patches/nettrine-fix-db-path.diff
 
 lint: deps
 	vendor/bin/linter app bin tests

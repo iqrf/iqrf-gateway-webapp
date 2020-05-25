@@ -1,2 +1,2 @@
-debian/config/nginx							etc/iqrf-gateway-webapp
-debian/config/sudoers/iqrf-gateway-webapp	etc/sudoers.d
+install/config/nginx						etc/iqrf-gateway-webapp
+install/config/sudoers/iqrf-gateway-webapp	etc/sudoers.d
