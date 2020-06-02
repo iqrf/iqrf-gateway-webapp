@@ -52,7 +52,10 @@ class WifiManager {
 			throw new NetworkManagerException($output->getStderr());
 		}
 		$networks = [];
-		foreach (explode(PHP_EOL, trim($output->getStdout(), PHP_EOL)) as $network) {
+		foreach (explode(PHP_EOL, $output->getStdout()) as $network) {
+			if ($network === '') {
+				continue;
+			}
 			$networks[] = WifiNetwork::fromNmCli($network);
 		}
 		return $networks;

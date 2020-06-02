@@ -46,6 +46,6 @@ final class WifiMode extends Enum {
 	/**
 	 * 802.11s mesh point
 	 */
-	private const MESH = 'mesh';
+	private const MESH = 'Mesh';
 
 }

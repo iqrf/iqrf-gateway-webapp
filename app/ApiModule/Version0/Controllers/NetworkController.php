@@ -303,12 +303,17 @@ class NetworkController extends BaseController {
 	 * @Path("/wifi/list")
 	 * @Method("GET")
 	 * @OpenApi("
-	 *   summary: Lists available WiFi access points
+	 *  summary: Lists available WiFi access points
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *          content:
+	 *              application/json:
+	 *                  schema:
+	 *                      $ref: '#/components/schemas/NetworkWifiList'
+	 *      '500':
+	 *          description: Server error
 	 * ")
-	 * @Responses({
-	 *      @Response(code="200", description="Success"),
-	 *     @Response(code="400", description="Bad request")
-	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
@@ -317,7 +322,7 @@ class NetworkController extends BaseController {
 		try {
 			return $response->writeJsonBody($this->wifiManager->list());
 		} catch (NetworkManagerException $e) {
-			return $response->withStatus(400)
+			return $response->withStatus(500)
 				->writeJsonBody(['error' => $e->getMessage()]);
 		}
 	}

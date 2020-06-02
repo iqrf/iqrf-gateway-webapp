@@ -1,0 +1,104 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/networkWifiList.json",
+	"type": "array",
+	"title": "WiFI network list",
+	"description": "List of available WiFi networks.",
+	"example": [
+		{
+			"inUse": true,
+			"bssid": "04:F0:21:24:1E:53",
+			"ssid": "WIFI MAGDA",
+			"mode": "Infra",
+			"channel": 36,
+			"rate": "405 Mbit/s",
+			"signal": 60,
+			"security": "WPA2-Personal"
+		}
+	],
+	"additionalItems": false,
+	"items": {
+		"$id": "#/items",
+		"type": "object",
+		"title": "WiFi network",
+		"description": "Information about WiFI network.",
+		"example": {
+			"inUse": true,
+			"bssid": "04:F0:21:24:1E:53",
+			"ssid": "WIFI MAGDA",
+			"mode": "Infra",
+			"channel": 36,
+			"rate": "405 Mbit/s",
+			"signal": 60,
+			"security": "WPA2-Personal"
+		},
+		"required": [
+			"inUse",
+			"bssid",
+			"ssid",
+			"mode",
+			"channel",
+			"rate",
+			"signal",
+			"security"
+		],
+		"additionalProperties": false,
+		"properties": {
+			"inUse": {
+				"$id": "#/items/properties/inUse",
+				"type": "boolean",
+				"title": "Is in use?",
+				"example": true
+			},
+			"bssid": {
+				"$id": "#/items/properties/bssid",
+				"type": "string",
+				"title": "BSSID",
+				"description": "Basic Services Set Identifier",
+				"example": "04:F0:21:24:1E:53"
+			},
+			"ssid": {
+				"$id": "#/items/properties/ssid",
+				"type": "string",
+				"title": "SSID",
+				"description": "Service Set Identifier",
+				"example": "WIFI MAGDA"
+			},
+			"mode": {
+				"$id": "#/items/properties/mode",
+				"type": "string",
+				"title": "Network mode",
+				"enum": [
+					"Ad-Hoc",
+					"Infra",
+					"Mesh"
+				],
+				"example": "Infra"
+			},
+			"channel": {
+				"$id": "#/items/properties/channel",
+				"type": "integer",
+				"title": "Network channel",
+				"example": 36
+			},
+			"rate": {
+				"$id": "#/items/properties/rate",
+				"type": "string",
+				"title": "Speed rate",
+				"example": "405 Mbit/s"
+			},
+			"signal": {
+				"$id": "#/items/properties/signal",
+				"type": "integer",
+				"title": "Signal strength",
+				"example": 60
+			},
+			"security": {
+				"$id": "#/items/properties/security",
+				"type": "string",
+				"title": "Network security",
+				"example": "WPA2-Personal"
+			}
+		}
+	}
+}
