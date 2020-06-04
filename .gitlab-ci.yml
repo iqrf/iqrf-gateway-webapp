@@ -83,7 +83,8 @@ build-docker:stable-amd64:
 
 build-docker:tests-buster:
   extends: .docker_template_testing
-  only: schedules
+  only:
+    - schedules
   variables:
     DOCKER_FILE: docker/tests/buster.Dockerfile
     DOCKER_TAG: tests-buster
