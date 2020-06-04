@@ -101,6 +101,18 @@ class UsersController extends BaseController {
 	 */
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$json = $request->getJsonBody();
+		if (!array_key_exists('username', $json)) {
+			return $response->withStatus(400, 'Missing username');
+		}
+		if (!array_key_exists('password', $json)) {
+			return $response->withStatus(400, 'Missing password');
+		}
+		if (!array_key_exists('role', $json)) {
+			return $response->withStatus(400, 'Missing role');
+		}
+		if (!array_key_exists('language', $json)) {
+			return $response->withStatus(400, 'Missing language');
+		}
 		try {
 			$this->userManager->register($json['username'], $json['password'], $json['role'], $json['language']);
 		} catch (UsernameAlreadyExistsException $e) {
