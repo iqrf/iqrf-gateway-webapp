@@ -38,6 +38,10 @@
 		<header class='list-group-item-heading'>{_cloud.title}</header>
 		<p class='list-group-item-text'>{_cloud.description}</p>
 	</a>
+	<a n:ifFeature='grafana' n:ifset='$urls["grafana"]' href='{$urls["grafana"]}' class='list-group-item'>
+		<header class='list-group-item-heading'>{_core.grafana.title}</header>
+		<p class='list-group-item-text'>{_core.grafana.description}</p>
+	</a>
 	<a n:ifFeature='nodeRed' n:ifset='$urls["nodeRed"]' href='{$urls["nodeRed"]}' class='list-group-item'>
 		<header class='list-group-item-heading'>{_core.node-red.title}</header>
 		<p class='list-group-item-text'>{_core.node-red.description}</p>
@@ -49,6 +53,10 @@
 	<a n:ifFeature='supervisord' n:ifset='$urls["supervisord"]' href='{$urls["supervisord"]}' class='list-group-item'>
 		<header class='list-group-item-heading'>{_core.supervisor.title}</header>
 		<p class='list-group-item-text'>{_core.supervisor.description}</p>
+	</a>
+	<a n:href=':Core:User:default' class='list-group-item'>
+		<header class='list-group-item-heading'>{_core.user.title}</header>
+		<p class='list-group-item-text'>{_core.user.description}</p>
 	</a>
 	<a n:ifFeature='docs' n:ifset='$urls["docs"]' href='{$urls["docs"]}' target='_blank' class='list-group-item'>
 		<header class='list-group-item-heading'>{_core.documentation.title}</header>

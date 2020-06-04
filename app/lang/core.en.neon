@@ -55,6 +55,10 @@ signOut:
 	inactivity: You have been logged out for inactivity
 	message: You have been signed out
 
+grafana:
+	title: Grafana
+	description: Open Grafana dashboard.
+
 node-red:
 	title: Node RED
 	description: Open Node RED workflow.

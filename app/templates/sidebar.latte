@@ -200,19 +200,18 @@
 					</li>
 				</ul>
 			</li>
-			<li n:if='$user->loggedIn' n:class='isLinkCurrent(":Core:User:*") ? "active"'>
-				<a n:href=':Core:User:default'>
-					<i class='glyphicon glyphicon-user'></i>
-					<span>{_core.user.title}</span>
-				</a>
-			</li>
 			<li n:if='!$user->loggedIn' n:class='isLinkCurrent(":Core:Sign:In") ? "active"'>
 				<a n:href=':Core:Sign:in'>
 					<i class='glyphicon glyphicon-log-in'></i>
 					<span>{_core.sign.in}</span>
 				</a>
 			</li>
-
+			<li n:if='$user->loggedIn' n:ifFeature='grafana' n:ifset='$urls["grafana"]'>
+				<a href='{$urls["grafana"]}'>
+					<i class='glyphicon glyphicon-dashboard'></i>
+					<span>{_core.grafana.title}</span>
+				</a>
+			</li>
 			<li n:if='$user->loggedIn' n:ifFeature='nodeRed' n:ifset='$urls["nodeRed"]' class='treeview'>
 				<a n:href=':Core:Homepage:default' role='button'>
 					<i class='glyphicon glyphicon-tasks'></i>
@@ -228,6 +227,12 @@
 				<a href='{$urls["supervisord"]}'>
 					<i class='glyphicon glyphicon-off'></i>
 					<span>{_core.supervisor.title}</span>
+				</a>
+			</li>
+			<li n:if='$user->loggedIn' n:class='isLinkCurrent(":Core:User:*") ? "active"'>
+				<a n:href=':Core:User:default'>
+					<i class='glyphicon glyphicon-user'></i>
+					<span>{_core.user.title}</span>
 				</a>
 			</li>
 			<li n:ifFeature='docs' n:ifset='$urls["docs"]'>
