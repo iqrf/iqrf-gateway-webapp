@@ -106,6 +106,16 @@ class FeatureContext implements Context {
 	}
 
 	/**
+	 * @When I create HTTP :method request to :url with body :body
+	 */
+	public function iCreateHttpRequestToWithBody(string $method, string $url, string $body): void {
+		$options = $this->getClientOptions();
+		$options['body'] = $body;
+		$this->response = $this->client->request($method, self::API_PATH . $url, $options);
+	}
+
+
+	/**
 	 * @Then HTTP status code is :statusCode
 	 * @param int $statusCode HTTP status code
 	 */

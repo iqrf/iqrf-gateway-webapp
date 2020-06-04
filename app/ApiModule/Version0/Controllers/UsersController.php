@@ -33,6 +33,7 @@ use Apitte\Core\Http\ApiResponse;
 use App\CoreModule\Exceptions\NonexistentUserException;
 use App\CoreModule\Exceptions\UsernameAlreadyExistsException;
 use App\CoreModule\Models\UserManager;
+use Nette\Utils\JsonException;
 
 /**
  * User manager API controller
@@ -191,9 +192,13 @@ class UsersController extends BaseController {
 	 */
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$id = (int) $request->getParameter('id');
-		$json = $request->getJsonBody();
 		try {
-			$this->userManager->edit($id, $json['username'], $json['role'], $json['language']);
+			$json = $request->getJsonBody();
+		} catch (JsonException $e) {
+			return $response->withStatus(400, 'Invalid JSON syntax');
+		}
+		try {
+			$this->userManager->edit($id, $json['username'] ?? null, $json['role'] ?? null, $json['language'] ?? null);
 			return $response->withStatus(200);
 		} catch (UsernameAlreadyExistsException $e) {
 			return $response->withStatus(400, 'Username already exists.');
