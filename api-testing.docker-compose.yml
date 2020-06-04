@@ -1,0 +1,30 @@
+version: "3.3"
+services:
+  behat:
+    image: iqrf-gateway-webapp-behat
+    container_name: behat
+    command: make behat
+    depends_on:
+      - webapp
+    networks:
+      iqrf-gateway-webapp-api:
+        ipv4_address: 172.16.10.3
+  webapp:
+    image: iqrf-gateway-webapp-behat
+    container_name: webapp
+    build:
+      context: .
+      dockerfile: docker/behat/Dockerfile
+    expose:
+      - 8080
+    networks:
+      iqrf-gateway-webapp-api:
+        ipv4_address: 172.16.10.2
+
+networks:
+  iqrf-gateway-webapp-api:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.10.0/24

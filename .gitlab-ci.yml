@@ -115,6 +115,17 @@ test:php7.4:
     - 'for i in $(find ./tests -name \*.actual); do echo "--- $i"; cat $i; echo; echo; done'
   <<: *test_template
 
+behat:
+  stage: test
+  allow_failure: true
+  image: docker:latest
+  services:
+    - docker:dind
+  before_script:
+    - apk add  --no-cache docker-compose
+  script:
+    - docker-compose -f apitesting.docker-compose.yml up --build --abort-on-container-exit
+
 coverage:
   before_script:
     - update-alternatives --set php /usr/bin/php7.4
