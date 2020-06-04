@@ -29,6 +29,9 @@ build:
 
 all: qa phpstan cc test
 
+behat:
+	vendor/bin/behat
+
 cache-purge:
 	rm -rf temp/cache/
 

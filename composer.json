@@ -63,6 +63,7 @@
 		"nette/security": "^3.0",
 		"nette/utils": "^3.0",
 		"nettrine/annotations": "^0.6",
+		"nettrine/cache": "0.2.0 as 0.1.0",
 		"nettrine/dbal": "^0.6",
 		"nettrine/fixtures": "^0.5",
 		"nettrine/migrations": "^0.6",
@@ -76,16 +77,17 @@
 		"ublaboo/datagrid": "^6.2"
 	},
 	"require-dev": {
+		"behat/behat": "^3.7",
 		"mockery/mockery": "^1.1",
 		"nette/tester": "^2.3",
 		"ninjify/coding-standard": "0.10.0 as 0.9.0",
 		"ninjify/qa": "^0.10",
 		"phpstan/phpdoc-parser": "0.4.7 as 0.3.5",
+		"phpstan/phpstan": "^0.12",
 		"phpstan/phpstan-deprecation-rules": "^0.12",
 		"phpstan/phpstan-mockery": "^0.12",
 		"phpstan/phpstan-nette": "^0.12",
 		"phpstan/phpstan-strict-rules": "^0.12",
-		"phpstan/phpstan": "^0.12",
 		"rector/rector": "^0.7"
 	},
 	"autoload": {

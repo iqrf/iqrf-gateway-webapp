@@ -1,0 +1,7 @@
+default:
+  suites:
+    default:
+      contexts:
+        - \Tests\features\bootstrap\FeatureContext
+      paths:
+        features: "tests/features/"
