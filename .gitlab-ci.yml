@@ -83,6 +83,7 @@ build-docker:stable-amd64:
 
 build-docker:tests-buster:
   extends: .docker_template_testing
+  only: schedules
   variables:
     DOCKER_FILE: docker/tests/buster.Dockerfile
     DOCKER_TAG: tests-buster
@@ -124,7 +125,9 @@ behat:
   before_script:
     - apk add  --no-cache docker-compose
   script:
-    - docker-compose -f apitesting.docker-compose.yml up --build --abort-on-container-exit
+    - docker-compose -f api-testing.docker-compose.yml up --build --abort-on-container-exit
+  tags:
+    - linux, docker, amd64
 
 coverage:
   before_script:
