@@ -18,7 +18,7 @@
 	},
 	"homepage": "https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp",
 	"dependencies": {
-		"@sentry/browser": "^5.15",
+		"@sentry/browser": "^5.16",
 		"admin-lte": "^2.4",
 		"autosize": "^4.0",
 		"cronstrue": "^1.94",
@@ -30,8 +30,8 @@
 		"ublaboo-datagrid": "^6.2"
 	},
 	"devDependencies": {
-		"@babel/core": "^7.9",
-		"@babel/preset-env": "^7.9",
+		"@babel/core": "^7.10",
+		"@babel/preset-env": "^7.10",
 		"babel-eslint": "^10.1",
 		"babel-loader": "^8.1",
 		"copy-webpack-plugin": "^5.1",

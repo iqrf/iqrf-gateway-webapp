@@ -8,6 +8,26 @@ createUser:
 	title: Add a new user
 	button: Add a new user
 
+error:
+	missingTable:
+		title: Some table is missing
+		text: """
+		IQRF Gateway Webapp cannot find some table in SQLite3 database.
+		<h4>How to fix it</h4>
+		Run these commands in terminal:
+		<pre><code class='bash'>sudo iqrf-gateway-webapp-manager database:create
+sudo iqrf-gateway-webapp-manager migrations:migrate --no-interaction</code></pre>
+		"""
+	missingSqlDriver:
+		title: SQLite3 Driver is missing
+		text: """
+		IQRF Gateway Webapp cannot open SQLite3 database beacuse SQLite3 driver is missing.
+		<h4>How to fix it on Debian-based systems</h4>
+		Run these commands in terminal:
+		<pre><code class='bash'>sudo apt update
+sudo apt install -y php-sqlite3</code></pre>
+		"""
+
 gwInfo:
 	title: Some information about this gateway
 	button: Show GW info

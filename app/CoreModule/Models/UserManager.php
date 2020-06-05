@@ -121,7 +121,15 @@ class UserManager {
 	}
 
 	/**
-	 * Gets information about the user
+	 * Returns user count
+	 * @return int User count
+	 */
+	public function getCount(): int {
+		return $this->entityManager->getUserRepository()->count([]);
+	}
+
+	/**
+	 * Returns information about the user
 	 * @param int $id User ID
 	 * @return array<string, int|string>|null Information about the user or null
 	 */
@@ -135,7 +143,7 @@ class UserManager {
 	}
 
 	/**
-	 * Gets all registered users
+	 * Returns all registered users
 	 * @return array<int, array<string, int|string>> Registered users
 	 */
 	public function getUsers(): array {

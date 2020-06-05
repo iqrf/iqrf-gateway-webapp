@@ -27,6 +27,7 @@ import autosize from 'autosize';
 import Nette from 'nette-forms';
 import * as Sentry from '@sentry/browser';
 import hljs from 'highlight.js/lib/highlight';
+import bash from 'highlight.js/lib/languages/bash';
 import json from 'highlight.js/lib/languages/json';
 
 import 'highlight.js/styles/github.css';
@@ -45,6 +46,7 @@ $(function () {
 autosize(document.querySelectorAll('textarea'));
 
 hljs.initHighlightingOnLoad();
+hljs.registerLanguage('bash', bash);
 hljs.registerLanguage('json', json);
 
 function showSpinner() {

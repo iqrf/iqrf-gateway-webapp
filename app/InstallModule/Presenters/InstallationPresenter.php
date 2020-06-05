@@ -23,6 +23,8 @@ namespace App\InstallModule\Presenters;
 use App\CoreModule\Models\UserManager;
 use App\CoreModule\Presenters\BasePresenter;
 use App\CoreModule\Traits\TPresenterFlashMessage;
+use Doctrine\DBAL\Exception\DriverException;
+use Doctrine\DBAL\Exception\TableNotFoundException;
 
 /**
  * Installation presenter
@@ -49,8 +51,22 @@ abstract class InstallationPresenter extends BasePresenter {
 	 */
 	protected function startup(): void {
 		parent::startup();
-		if ($this->userManager->getUsers() !== []) {
-			$this->redirect(':Core:Sign:in');
+		try {
+			if ($this->userManager->getCount() !== 0) {
+				$this->redirect(':Core:Sign:in');
+			}
+			if ($this->isLinkCurrent(':Install:Error:missingTable') ||
+				$this->isLinkCurrent(':Install:Error:missingSqlDriver')) {
+				$this->redirect(':Install:Homepage:default');
+			}
+		} catch (TableNotFoundException $e) {
+			if (!$this->isLinkCurrent(':Install:Error:missingTable')) {
+				$this->redirect(':Install:Error:missingTable');
+			}
+		} catch (DriverException $e) {
+			if (!$this->isLinkCurrent(':Install:Error:missingSqlDriver')) {
+				$this->redirect(':Install:Error:missingSqlDriver');
+			}
 		}
 	}
 

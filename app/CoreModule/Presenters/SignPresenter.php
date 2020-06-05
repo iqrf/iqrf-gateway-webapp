@@ -23,6 +23,8 @@ namespace App\CoreModule\Presenters;
 use App\CoreModule\Forms\SignInFormFactory;
 use App\CoreModule\Models\UserManager;
 use App\CoreModule\Traits\TPresenterFlashMessage;
+use Doctrine\DBAL\Exception\DriverException;
+use Doctrine\DBAL\Exception\TableNotFoundException;
 use Nette\Application\UI\Form;
 
 /**
@@ -90,8 +92,14 @@ class SignPresenter extends BasePresenter {
 	 */
 	protected function startup(): void {
 		parent::startup();
-		if ($this->userManager->getUsers() === []) {
-			$this->redirect(':Install:Homepage:default');
+		try {
+			if ($this->userManager->getCount() === 0) {
+				$this->redirect(':Install:Homepage:default');
+			}
+		} catch (TableNotFoundException $e) {
+			$this->redirect(':Install:Error:missingTable');
+		} catch (DriverException $e) {
+			$this->redirect(':Install:Error:missingSqlDriver');
 		}
 	}
 
