@@ -163,11 +163,11 @@ class FeatureContext implements Context {
 		$expected = $table->getHash()[0];
 		foreach ($expected as $key => $value) {
 			if (is_bool($actual[$key])) {
-				$value = (bool)$value;
+				$value = (bool) $value;
 			} elseif (is_float($actual[$key])) {
-				$value = (float)$value;
+				$value = (float) $value;
 			} elseif (is_int($actual[$key])) {
-				$value = (int)$value;
+				$value = (int) $value;
 			}
 			if ((!array_key_exists($key, $actual)) ||
 				$actual[$key] !== $value) {
@@ -187,11 +187,11 @@ class FeatureContext implements Context {
 		foreach ($expected as $index => $object) {
 			foreach ($object as $key => $value) {
 				if (is_bool($actual[$index][$key])) {
-					$value = (bool)$value;
+					$value = (bool) $value;
 				} elseif (is_float($actual[$index][$key])) {
-					$value = (float)$value;
+					$value = (float) $value;
 				} elseif (is_int($actual[$index][$key])) {
-					$value = (int)$value;
+					$value = (int) $value;
 				}
 				if ((!array_key_exists($key, $actual[$index])) ||
 					$actual[$index][$key] !== $value) {
