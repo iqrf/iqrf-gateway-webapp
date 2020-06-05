@@ -188,13 +188,15 @@ class InfoManager {
 		$usages = [];
 		foreach (explode(PHP_EOL, $output) as $disk) {
 			$segments = explode(' ', $disk);
+			$size = (float) $segments[2];
+			$used = (float) $segments[3];
 			$usages[] = [
 				'fsName' => $segments[0],
 				'fsType' => $segments[1],
-				'size' => $this->convertSizes((int) $segments[2]),
-				'used' => $this->convertSizes((int) $segments[3]),
-				'available' => $this->convertSizes((int) $segments[4]),
-				'usage' => round($segments[3] / $segments[2] * 100, 2) . '%',
+				'size' => $this->convertSizes($size),
+				'used' => $this->convertSizes($used),
+				'available' => $this->convertSizes((float) $segments[4]),
+				'usage' => round($used / $size * 100, 2) . '%',
 				'mount' => $segments[6],
 			];
 		}
@@ -203,12 +205,11 @@ class InfoManager {
 
 	/**
 	 * Converts bytes to human readable sizes
-	 * @param int|float $bytes Bytes to convert
+	 * @param float $bytes Bytes to convert
 	 * @param int $precision Conversion precision
 	 * @return string Human readable size
 	 */
-	public function convertSizes($bytes, int $precision = 2): string {
-		$bytes = round(floatval($bytes));
+	public function convertSizes(float $bytes, int $precision = 2): string {
 		$units = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB'];
 		$unit = 'B';
 		foreach ($units as $unit) {
@@ -229,13 +230,13 @@ class InfoManager {
 		$output = $this->commandManager->run($command)->getStdout();
 		$segments = explode(' ', $output);
 		return [
-			'size' => $this->convertSizes((int) $segments[0]),
-			'used' => $this->convertSizes((int) $segments[1]),
-			'free' => $this->convertSizes((int) $segments[2]),
-			'shared' => $this->convertSizes((int) $segments[3]),
-			'buffers' => $this->convertSizes((int) $segments[4]),
-			'cache' => $this->convertSizes((int) $segments[5]),
-			'available' => $this->convertSizes((int) $segments[6]),
+			'size' => $this->convertSizes((float) $segments[0]),
+			'used' => $this->convertSizes((float) $segments[1]),
+			'free' => $this->convertSizes((float) $segments[2]),
+			'shared' => $this->convertSizes((float) $segments[3]),
+			'buffers' => $this->convertSizes((float) $segments[4]),
+			'cache' => $this->convertSizes((float) $segments[5]),
+			'available' => $this->convertSizes((float) $segments[6]),
 			'usage' => round($segments[1] / $segments[0] * 100, 2) . '%',
 		];
 	}
@@ -252,9 +253,9 @@ class InfoManager {
 			return null;
 		}
 		return [
-			'size' => $this->convertSizes((int) $segments[0]),
-			'used' => $this->convertSizes((int) $segments[1]),
-			'free' => $this->convertSizes((int) $segments[2]),
+			'size' => $this->convertSizes((float) $segments[0]),
+			'used' => $this->convertSizes((float) $segments[1]),
+			'free' => $this->convertSizes((float) $segments[2]),
 			'usage' => round($segments[1] / $segments[0] * 100, 2) . '%',
 		];
 	}
