@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace Tests\features\bootstrap;
 
 use Behat\Behat\Context\Context;
+use Behat\Gherkin\Node\TableNode;
 use Exception;
 use GuzzleHttp\Client;
 use Nette\Utils\Json;
@@ -107,10 +108,25 @@ class FeatureContext implements Context {
 
 	/**
 	 * @When I create HTTP :method request to :url with body :body
+	 * @param string $method HTTP method
+	 * @param string $url Requested URL
+	 * @param string $body HTTP request body
 	 */
 	public function iCreateHttpRequestToWithBody(string $method, string $url, string $body): void {
 		$options = $this->getClientOptions();
 		$options['body'] = $body;
+		$this->response = $this->client->request($method, self::API_PATH . $url, $options);
+	}
+
+	/**
+	 * @When I create HTTP :method request to :url with JSON object body:
+	 * @param string $method HTTP method
+	 * @param string $url Requested URL
+	 * @param TableNode $table JSON object body in table
+	 */
+	public function iCreateHttpRequestToWithJsonObjectBody(string $method, string $url, TableNode $table): void {
+		$options = $this->getClientOptions();
+		$options['body'] = Json::encode($table->getHash()[0]);
 		$this->response = $this->client->request($method, self::API_PATH . $url, $options);
 	}
 
@@ -134,6 +150,54 @@ class FeatureContext implements Context {
 		$actual = $this->response->getBody()->getContents();
 		if ($actual !== $response) {
 			throw new Exception('Unexpected HTTP response body: ' . $actual);
+		}
+	}
+
+	/**
+	 * @Then HTTP response contains JSON object:
+	 * @param TableNode $table JSON object in table
+	 */
+	public function httpResponseContainsJsonObject(TableNode $table): void {
+		$body = $this->response->getBody()->getContents();
+		$actual = Json::decode($body, Json::FORCE_ARRAY);
+		$expected = $table->getHash()[0];
+		foreach ($expected as $key => $value) {
+			if (is_bool($actual[$key])) {
+				$value = (bool)$value;
+			} elseif (is_float($actual[$key])) {
+				$value = (float)$value;
+			} elseif (is_int($actual[$key])) {
+				$value = (int)$value;
+			}
+			if ((!array_key_exists($key, $actual)) ||
+				$actual[$key] !== $value) {
+				throw new Exception('Unexpected HTTP response body: ' . $body);
+			}
+		}
+	}
+
+	/**
+	 * @Then HTTP response contains JSON array of objects:
+	 * @param TableNode $table JSON array of objects in table
+	 */
+	public function httpResponseContainsJsonArrayOfObjects(TableNode $table): void {
+		$body = $this->response->getBody()->getContents();
+		$actual = Json::decode($body, Json::FORCE_ARRAY);
+		$expected = $table->getHash();
+		foreach ($expected as $index => $object) {
+			foreach ($object as $key => $value) {
+				if (is_bool($actual[$index][$key])) {
+					$value = (bool)$value;
+				} elseif (is_float($actual[$index][$key])) {
+					$value = (float)$value;
+				} elseif (is_int($actual[$index][$key])) {
+					$value = (int)$value;
+				}
+				if ((!array_key_exists($key, $actual[$index])) ||
+					$actual[$index][$key] !== $value) {
+					throw new Exception('Unexpected HTTP response body: ' . $body);
+				}
+			}
 		}
 	}
 
