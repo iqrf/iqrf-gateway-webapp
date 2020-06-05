@@ -20,11 +20,12 @@ declare(strict_types = 1);
 
 namespace App\ApiModule\Version0\Models;
 
+use App\Models\Database\Entities\User;
+use App\Models\Database\EntityManager;
 use Contributte\Middlewares\Security\IAuthenticator;
 use DateTimeImmutable;
 use Lcobucci\JWT\Token\Plain;
 use Lcobucci\JWT\Validation\Constraint\SignedWith;
-use Nette\Database\Context;
 use Nette\Security\Identity;
 use Nette\Security\IIdentity;
 use Nette\Utils\Strings;
@@ -34,9 +35,9 @@ use Throwable;
 class JwtAuthenticator implements IAuthenticator {
 
 	/**
-	 * @var Context Database context
+	 * @var EntityManager Entity manager
 	 */
-	private $database;
+	private $entityManager;
 
 	/**
 	 * @var JwtConfigurator JWT configurator
@@ -46,11 +47,11 @@ class JwtAuthenticator implements IAuthenticator {
 	/**
 	 * Constructor
 	 * @param JwtConfigurator $configurator JWT configurator
-	 * @param Context $database Database context
+	 * @param EntityManager $entityManager Entity manager
 	 */
-	public function __construct(JwtConfigurator $configurator, Context $database) {
+	public function __construct(JwtConfigurator $configurator, EntityManager $entityManager) {
 		$this->configurator = $configurator;
-		$this->database = $database;
+		$this->entityManager = $entityManager;
 	}
 
 	/**
@@ -78,14 +79,17 @@ class JwtAuthenticator implements IAuthenticator {
 			return null;
 		}
 		try {
+			$repository = $this->entityManager->getUserRepository();
 			$id = $token->claims()->get('uid');
-			$table = $this->database->table('users');
-			$row = $table->where('id', $id)->fetch();
-			if ($row === null) {
+			$user = $repository->find($id);
+			if (!($user instanceof User)) {
 				return null;
 			}
-			$data = ['username' => $row['username'], 'language' => $row['language']];
-			return new Identity($row['id'], $row['role'], $data);
+			$data = [
+				'username' => $user->getUserName(),
+				'language' => $user->getLanguage(),
+			];
+			return new Identity($user->getId(), $user->getRole(), $data);
 		} catch (Throwable $e) {
 			return null;
 		}
