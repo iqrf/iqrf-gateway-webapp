@@ -1,3 +1,27 @@
+iqrf-gateway-webapp (2.0.0-rc16) testing; urgency=medium
+
+  * Prepare for version v2.0.0-rc16
+  * Makefile: apply patches for installation
+  * GitLab CI: fix Debian package creation for IQD-GW-01
+  * Makefile: do not install documentations for dependencies
+  * API: add JSON schema for WiFi network list
+  * Feature: add link to Grafana dashboard
+  * Tests: add skeleton for API automated testing
+  * API: fix user edit Tests: add features
+  * GitLab CI: add API testing
+  * GitLab CI: fix configuration
+  * GitLab CI: fix syntax
+  * API: fix API endpoint for user creation
+  * API: fix JWT authenticator
+  * Behat: refactor features
+  * Behat: fix coding style
+  * Gateway: fix disk, memory and swap sizes on 32-bit systems
+  * Install: add error messages for SQL driver is missing (fix IQRF-GATEWAY-WEBAPP-3B) and database table is missing (fix IQRF-GATEWAY-WEBAPP-28)
+  * Docker: fix images for latest tags
+  * GitLab CI: fix IQD-GW-01 stable package build
+
+ -- Roman Ondráček <roman@romanondracek.cz>  Sat, 06 Jun 2020 10:30:51 +0200
+
 iqrf-gateway-webapp (2.0.0-rc15) testing; urgency=medium
 
   * Prepare for version 2.0.0-rc15
