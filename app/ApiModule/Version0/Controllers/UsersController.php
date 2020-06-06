@@ -33,6 +33,8 @@ use Apitte\Core\Http\ApiResponse;
 use App\CoreModule\Exceptions\NonexistentUserException;
 use App\CoreModule\Exceptions\UsernameAlreadyExistsException;
 use App\CoreModule\Models\UserManager;
+use App\Exceptions\InvalidUserLanguageException;
+use App\Exceptions\InvalidUserRoleException;
 use Nette\Utils\JsonException;
 
 /**
@@ -116,7 +118,11 @@ class UsersController extends BaseController {
 		try {
 			$this->userManager->register($json['username'], $json['password'], $json['role'], $json['language']);
 		} catch (UsernameAlreadyExistsException $e) {
-			return $response->withStatus(400);
+			return $response->withStatus(400, 'Username already exists');
+		} catch (InvalidUserLanguageException $e) {
+			return $response->withStatus(400, 'Invalid user language');
+		} catch (InvalidUserRoleException $e) {
+			return $response->withStatus(400, 'Invalid user role');
 		}
 		return $response->withStatus(201);
 	}
@@ -216,6 +222,10 @@ class UsersController extends BaseController {
 			return $response->withStatus(400, 'Username already exists.');
 		} catch (NonexistentUserException $e) {
 			return $response->withStatus(404, 'User not found.');
+		} catch (InvalidUserLanguageException $e) {
+			return $response->withStatus(400, 'Invalid user language');
+		} catch (InvalidUserRoleException $e) {
+			return $response->withStatus(400, 'Invalid user role');
 		}
 	}
 

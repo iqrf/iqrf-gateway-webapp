@@ -11,6 +11,8 @@ declare(strict_types = 1);
 
 namespace Tests\Unit\Models\Database\Entities;
 
+use App\Exceptions\InvalidUserLanguageException;
+use App\Exceptions\InvalidUserRoleException;
 use App\Models\Database\Entities\User;
 use Nette\Security\Identity;
 use Tester\Assert;
@@ -41,12 +43,12 @@ class UserTest extends TestCase {
 	/**
 	 * @var string User role
 	 */
-	private $role = 'power';
+	private $role = User::ROLE_POWER;
 
 	/**
 	 * @var string User language
 	 */
-	private $language = 'en';
+	private $language = User::LANGUAGE_ENGLISH;
 
 	/**
 	 * @var User User entity
@@ -118,18 +120,38 @@ class UserTest extends TestCase {
 	 * Tests the function to set the user's role
 	 */
 	public function testSetRole(): void {
-		$role = 'normal';
+		$role = User::ROLE_NORMAL;
 		$this->entity->setRole($role);
 		Assert::same($role, $this->entity->getRole());
+	}
+
+	/**
+	 * Tests the function to set the user's role
+	 */
+	public function testSetRoleInvalid(): void {
+		Assert::exception(function (): void {
+			$this->entity->setRole('invalid');
+		}, InvalidUserRoleException::class);
+		Assert::same(User::ROLE_POWER, $this->entity->getRole());
 	}
 
 	/**
 	 * Tests the function to set the user's language
 	 */
 	public function testSetLanguage(): void {
-		$language = 'cs';
+		$language = User::LANGUAGE_ENGLISH;
 		$this->entity->setLanguage($language);
 		Assert::same($language, $this->entity->getLanguage());
+	}
+
+	/**
+	 * Tests the function to set the user's language
+	 */
+	public function testSetLanguageInvalid(): void {
+		Assert::exception(function (): void {
+			$this->entity->setLanguage('invalid');
+		}, InvalidUserLanguageException::class);
+		Assert::same(User::LANGUAGE_DEFAULT, $this->entity->getLanguage());
 	}
 
 	/**

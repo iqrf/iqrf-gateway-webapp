@@ -28,7 +28,7 @@ Feature: User manager
 	Then HTTP status code is 404
 
   @api
-  Scenario: Create a new user
+  Scenario: Create a new normal user
 	Given I log in as "admin" with password "iqrf"
 	And I am an authenticated user
 	When I create HTTP "POST" request to "/users" with JSON object body:
@@ -64,12 +64,30 @@ Feature: User manager
 	Then HTTP status code is 400
 
   @api
+  Scenario: Create a new user with invalid role
+	Given I log in as "admin" with password "iqrf"
+	And I am an authenticated user
+	When I create HTTP "POST" request to "/users" with JSON object body:
+	  | username     | password | language | role    |
+	  | invalid_role | iqrf     | en       | invalid |
+	Then HTTP status code is 400
+
+  @api
   Scenario: Create a new user without language
 	Given I log in as "admin" with password "iqrf"
 	And I am an authenticated user
 	When I create HTTP "POST" request to "/users" with JSON object body:
 	  | username | password | role   |
 	  | user     | iqrf     | normal |
+	Then HTTP status code is 400
+
+  @api
+  Scenario: Create a new user with invalid language
+	Given I log in as "admin" with password "iqrf"
+	And I am an authenticated user
+	When I create HTTP "POST" request to "/users" with JSON object body:
+	  | username         | password | language | role   |
+	  | invalid_language | iqrf     | invalid  | normal |
 	Then HTTP status code is 400
 
   @api
@@ -117,6 +135,24 @@ Feature: User manager
 	When I create HTTP "PUT" request to "/users/2" with JSON object body:
 	  | username |
 	  | admin    |
+	Then HTTP status code is 400
+
+  @api
+  Scenario: Change username with invalid language
+	Given I log in as "admin" with password "iqrf"
+	And I am an authenticated user
+	When I create HTTP "PUT" request to "/users/2" with JSON object body:
+	  | language |
+	  | invalid  |
+	Then HTTP status code is 400
+
+  @api
+  Scenario: Change username with invalid role
+	Given I log in as "admin" with password "iqrf"
+	And I am an authenticated user
+	When I create HTTP "PUT" request to "/users/2" with JSON object body:
+	  | role    |
+	  | invalid |
 	Then HTTP status code is 400
 
   @api

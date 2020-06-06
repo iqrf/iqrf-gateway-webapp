@@ -20,10 +20,15 @@ declare(strict_types = 1);
 
 namespace App\Models\Database\Entities;
 
+use App\Exceptions\InvalidUserLanguageException;
+use App\Exceptions\InvalidUserRoleException;
 use App\Models\Database\Attributes\TId;
 use Doctrine\ORM\Mapping as ORM;
 use Nette\Security\Identity;
 use Nette\Security\IIdentity;
+use function in_array;
+use function password_hash;
+use function password_verify;
 use const PASSWORD_DEFAULT;
 
 /**
@@ -35,6 +40,41 @@ use const PASSWORD_DEFAULT;
 class User {
 
 	use TId;
+
+	/**
+	 * Language: English
+	 */
+	public const LANGUAGE_ENGLISH = 'en';
+
+	/**
+	 * Default language
+	 */
+	public const LANGUAGE_DEFAULT = self::LANGUAGE_ENGLISH;
+
+	/**
+	 * Supported languages
+	 */
+	private const LANGUAGES = [self::LANGUAGE_ENGLISH];
+
+	/**
+	 * User role: Normal user
+	 */
+	public const ROLE_NORMAL = 'normal';
+
+	/**
+	 * User role: Power user
+	 */
+	public const ROLE_POWER = 'power';
+
+	/**
+	 * Default user role
+	 */
+	public const ROLE_DEFAULT = self::ROLE_NORMAL;
+
+	/**
+	 * Supported user roles
+	 */
+	private const ROLES = [self::ROLE_NORMAL, self::ROLE_POWER];
 
 	/**
 	 * @var string User name
@@ -70,8 +110,8 @@ class User {
 	public function __construct(string $username, string $password, ?string $role = null, ?string $language = null) {
 		$this->username = $username;
 		$this->password = $password;
-		$this->role = $role;
-		$this->language = $language;
+		$this->setRole($role ?? self::ROLE_DEFAULT);
+		$this->setLanguage($language ?? self::LANGUAGE_DEFAULT);
 	}
 
 	/**
@@ -127,6 +167,9 @@ class User {
 	 * @param string $role User role
 	 */
 	public function setRole(string $role): void {
+		if (!in_array($role, self::ROLES, true)) {
+			throw new InvalidUserRoleException();
+		}
 		$this->role = $role;
 	}
 
@@ -135,6 +178,9 @@ class User {
 	 * @param string $language User language
 	 */
 	public function setLanguage(string $language): void {
+		if (!in_array($language, self::LANGUAGES, true)) {
+			throw new InvalidUserLanguageException();
+		}
 		$this->language = $language;
 	}
 
