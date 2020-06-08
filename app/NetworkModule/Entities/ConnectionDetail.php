@@ -64,6 +64,11 @@ class ConnectionDetail implements JsonSerializable {
 	private $ipv6;
 
 	/**
+	 * @var WifiConnection|null WiFi network connection entity
+	 */
+	private $wifi;
+
+	/**
 	 * Network connection entity constructor
 	 * @param string $id Network connection ID
 	 * @param UuidInterface $uuid Network connection UUID
@@ -71,14 +76,16 @@ class ConnectionDetail implements JsonSerializable {
 	 * @param string $name Network connection name
 	 * @param IPv4Connection $ipv4 IPv4 network connection entity
 	 * @param IPv6Connection $ipv6 IPv6 network connection entity
+	 * @param WifiConnection|null $wifi WiFi network connection entity
 	 */
-	public function __construct(string $id, UuidInterface $uuid, ConnectionTypes $type, string $name, IPv4Connection $ipv4, IPv6Connection $ipv6) {
+	public function __construct(string $id, UuidInterface $uuid, ConnectionTypes $type, string $name, IPv4Connection $ipv4, IPv6Connection $ipv6, ?WifiConnection $wifi = null) {
 		$this->id = $id;
 		$this->uuid = $uuid;
 		$this->type = $type;
 		$this->interfaceName = $name;
 		$this->ipv4 = $ipv4;
 		$this->ipv6 = $ipv6;
+		$this->wifi = $wifi;
 	}
 
 	/**
@@ -109,7 +116,8 @@ class ConnectionDetail implements JsonSerializable {
 		$type = ConnectionTypes::fromScalar($array['type']);
 		$ipv4 = IPv4Connection::fromNmCli($nmCli);
 		$ipv6 = IPv6Connection::fromNmCli($nmCli);
-		return new self($array['id'], $uuid, $type, $array['interface-name'], $ipv4, $ipv6);
+		$wifi = $type === ConnectionTypes::WIFI() ? WifiConnection::fromNmCli($nmCli) : null;
+		return new self($array['id'], $uuid, $type, $array['interface-name'], $ipv4, $ipv6, $wifi);
 	}
 
 	/**
@@ -181,7 +189,7 @@ class ConnectionDetail implements JsonSerializable {
 	 * @return array<string, string|array> JSON serialized data
 	 */
 	public function jsonSerialize(): array {
-		return [
+		$json = [
 			'id' => $this->id,
 			'uuid' => $this->uuid->toString(),
 			'type' => (string) $this->type->toScalar(),
@@ -189,6 +197,10 @@ class ConnectionDetail implements JsonSerializable {
 			'ipv4' => $this->ipv4->toForm(),
 			'ipv6' => $this->ipv6->toForm(),
 		];
+		if ($this->wifi !== null) {
+			$json['wifi'] = $this->wifi->jsonSerialize();
+		}
+		return $json;
 	}
 
 }

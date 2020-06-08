@@ -308,6 +308,41 @@
 					}
 				}
 			}
+		},
+		"wifi": {
+			"$id": "#/properties/ipv6",
+			"type": "object",
+			"title": "WiFi connection",
+			"example": {
+				"ssid": "WIFI MAGDA",
+				"mode": "infrastructure"
+			},
+			"additionalProperties": false,
+			"required": [
+				"ssid",
+				"mode"
+			],
+			"properties": {
+				"ssid": {
+					"$id": "#/properties/wifi/properties/ssid",
+					"type": "string",
+					"title": "SSID",
+					"description": "Service Set Identifier",
+					"example": "WIFI MAGDA"
+				},
+				"mode": {
+					"$id": "#/properties/wifi/properties/mode",
+					"type": "string",
+					"title": "Network mode",
+					"enum": [
+						"adhoc",
+						"ap",
+						"infrastructure",
+						"mesh"
+					],
+					"example": "infrastructure"
+				}
+			}
 		}
 	}
 }

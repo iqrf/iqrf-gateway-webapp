@@ -166,7 +166,7 @@ final class WifiNetwork implements JsonSerializable {
 		$inUse = $matches['inUse'] === '*';
 		$bssid = preg_replace('/\\\\:/', ':', $matches['bssid']);
 		$ssid = preg_replace('/\\\\:/', ':', $matches['ssid']);
-		$mode = WifiMode::fromScalar($matches['mode']);
+		$mode = WifiMode::fromNetworkList($matches['mode']);
 		$channel = (int) $matches['channel'];
 		$signal = (int) $matches['signal'];
 		$security = WifiSecurity::fromNmCli($matches['security']);
