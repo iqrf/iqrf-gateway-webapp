@@ -32,7 +32,7 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for network connection entity
  */
-class ConnectionDetailTest extends TestCase {
+class ConnectionDetailEthernetTest extends TestCase {
 
 	/**
 	 * @var string Network connection ID
@@ -203,5 +203,5 @@ class ConnectionDetailTest extends TestCase {
 
 }
 
-$test = new ConnectionDetailTest();
+$test = new ConnectionDetailEthernetTest();
 $test->run();

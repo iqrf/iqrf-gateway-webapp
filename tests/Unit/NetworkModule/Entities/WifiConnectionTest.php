@@ -51,7 +51,7 @@ class WifiConnectionTest extends TestCase {
 	 * Tests the function to create a new IPv6 connection entity from nmcli connection configuration
 	 */
 	public function testFromNmCli(): void {
-		$configuration = FileSystem::read(__DIR__ . '/../../../data/WIFI MADGA.conf');
+		$configuration = FileSystem::read(__DIR__ . '/../../../data/WIFI MAGDA.conf');
 		Assert::equal($this->entity, WifiConnection::fromNmCli($configuration));
 	}
 
