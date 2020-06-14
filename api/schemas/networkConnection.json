@@ -310,17 +310,22 @@
 			}
 		},
 		"wifi": {
-			"$id": "#/properties/ipv6",
+			"$id": "#/properties/wifi",
 			"type": "object",
 			"title": "WiFi connection",
 			"example": {
 				"ssid": "WIFI MAGDA",
-				"mode": "infrastructure"
+				"mode": "infrastructure",
+				"security": {
+					"keyManagement": "wpa-psk",
+					"psk": "password"
+				}
 			},
 			"additionalProperties": false,
 			"required": [
 				"ssid",
-				"mode"
+				"mode",
+				"security"
 			],
 			"properties": {
 				"ssid": {
@@ -341,6 +346,41 @@
 						"mesh"
 					],
 					"example": "infrastructure"
+				},
+				"security": {
+					"$id": "#/properties/wifi/security",
+					"type": "object",
+					"title": "WiFi connection security",
+					"example": {
+						"keyManagement": "wpa-psk",
+						"psk": "password"
+					},
+					"additionalProperties": false,
+					"required": [
+						"keyManagement"
+					],
+					"properties": {
+						"keyManagement": {
+							"$id": "#/properties/wifi/properties/security/properties/keyManagement",
+							"type": "string",
+							"title": "Key management",
+							"enum": [
+								"ieee8021x",
+								"owe",
+								"sae",
+								"none",
+								"wpa-eap",
+								"wpa-psk"
+							],
+							"example": "wpa-psk"
+						},
+						"psk": {
+							"$id": "#/properties/wifi/properties/security/properties/psk",
+							"type": "string",
+							"title": "Pre-shared key",
+							"example": "password"
+						}
+					}
 				}
 			}
 		}

@@ -15,9 +15,11 @@ use App\NetworkModule\Entities\ConnectionDetail;
 use App\NetworkModule\Entities\IPv4Connection;
 use App\NetworkModule\Entities\IPv6Connection;
 use App\NetworkModule\Entities\WifiConnection;
+use App\NetworkModule\Entities\WifiConnectionSecurity;
 use App\NetworkModule\Enums\ConnectionTypes;
 use App\NetworkModule\Enums\IPv4Methods;
 use App\NetworkModule\Enums\IPv6Methods;
+use App\NetworkModule\Enums\WifiKeyManagement;
 use App\NetworkModule\Enums\WifiMode;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
@@ -118,7 +120,10 @@ class ConnectionDetailWifiTest extends TestCase {
 	private function createWifiConnection(): void {
 		$ssid = 'WIFI MAGDA';
 		$mode = WifiMode::INFRA();
-		$this->wifi = new WifiConnection($ssid, $mode);
+		$keyMgmt = WifiKeyManagement::WPA_PSK();
+		$psk = 'password';
+		$security = new WifiConnectionSecurity($keyMgmt, $psk);
+		$this->wifi = new WifiConnection($ssid, $mode, $security);
 	}
 
 	/**

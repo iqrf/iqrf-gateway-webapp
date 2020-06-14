@@ -16,6 +16,10 @@
 	},
 	"wifi": {
 		"ssid": "WIFI MAGDA",
-		"mode": "infrastructure"
+		"mode": "infrastructure",
+		"security": {
+			"keyManagement": "wpa-psk",
+			"psk": "password"
+		}
 	}
 }

@@ -35,13 +35,25 @@ final class WifiConnection implements JsonSerializable {
 	private $ssid;
 
 	/**
-	 * @var WifiMode WiFI network mode
+	 * @var WifiMode WiFi network mode
 	 */
 	private $mode;
 
-	public function __construct(string $ssid, WifiMode $mode) {
+	/**
+	 * @var WifiConnectionSecurity Wifi connection security entity
+	 */
+	private $security;
+
+	/**
+	 * Constructor
+	 * @param string $ssid SSID
+	 * @param WifiMode $mode WiFi network mode
+	 * @param WifiConnectionSecurity $security WiFi connection security entity
+	 */
+	public function __construct(string $ssid, WifiMode $mode, WifiConnectionSecurity $security) {
 		$this->ssid = $ssid;
 		$this->mode = $mode;
+		$this->security = $security;
 	}
 
 	/**
@@ -60,7 +72,8 @@ final class WifiConnection implements JsonSerializable {
 			unset($array[$i]);
 		}
 		$mode = WifiMode::INFRA();
-		return new static($array['ssid'], $mode);
+		$security = WifiConnectionSecurity::fromNmCli($nmCli);
+		return new static($array['ssid'], $mode, $security);
 	}
 
 	/**
@@ -87,6 +100,7 @@ final class WifiConnection implements JsonSerializable {
 		return [
 			'ssid' => $this->ssid,
 			'mode' => $this->mode->toScalar(),
+			'security' => $this->security->jsonSerialize(),
 		];
 	}
 
