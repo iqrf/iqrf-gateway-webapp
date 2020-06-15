@@ -34,6 +34,11 @@ use stdClass;
 class ConnectionDetail implements JsonSerializable {
 
 	/**
+	 * nmcli configuration prefix
+	 */
+	private const NMCLI_PREFIX = 'connection';
+
+	/**
 	 * @var string Network connection ID
 	 */
 	private $id;
@@ -95,6 +100,9 @@ class ConnectionDetail implements JsonSerializable {
 	public function fromForm(stdClass $form): void {
 		$this->ipv4->fromForm($form->ipv4);
 		$this->ipv6->fromForm($form->ipv6);
+		if ($this->type->equals(ConnectionTypes::WIFI())) {
+			$this->wifi->fromJson($form->wifi);
+		}
 	}
 
 	/**
@@ -106,8 +114,8 @@ class ConnectionDetail implements JsonSerializable {
 		$array = explode(PHP_EOL, Strings::trim($nmCli));
 		foreach ($array as $i => $row) {
 			$temp = explode(':', $row, 2);
-			if (Strings::startsWith($temp[0], 'connection.')) {
-				$key = Strings::replace($temp[0], '~connection\.~', '');
+			if (Strings::startsWith($temp[0], self::NMCLI_PREFIX . '.')) {
+				$key = Strings::replace($temp[0], '~' . self::NMCLI_PREFIX . '\.~', '');
 				$array[$key] = $temp[1];
 			}
 			unset($array[$i]);
@@ -181,7 +189,11 @@ class ConnectionDetail implements JsonSerializable {
 	 * @return string nmcli configuration
 	 */
 	public function toNmCli(): string {
-		return $this->ipv4->toNmCli() . $this->ipv6->toNmCli();
+		$nmcli = $this->ipv4->toNmCli() . $this->ipv6->toNmCli();
+		if ($this->type->equals(ConnectionTypes::WIFI())) {
+			$nmcli .= $this->wifi->toNmCli();
+		}
+		return $nmcli;
 	}
 
 	/**

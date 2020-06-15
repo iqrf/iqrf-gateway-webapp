@@ -143,7 +143,14 @@
 				},
 				"gateway": {
 					"$id": "#/properties/ipv4/properties/gateway",
-					"type": "string",
+					"oneOf": [
+						{
+							"type": "string"
+						},
+						{
+							"type": "null"
+						}
+					],
 					"format": "ipv4",
 					"title": "IPv4 gateway address",
 					"example": "192.168.1.1"
@@ -267,7 +274,14 @@
 							},
 							"gateway": {
 								"$id": "#/properties/ipv6/properties/addresses/items/properties/gateway",
-								"type": "string",
+								"oneOf": [
+									{
+										"type": "string"
+									},
+									{
+										"type": "null"
+									}
+								],
 								"format": "ipv6",
 								"title": "IPv6 gateway address",
 								"example": "fe80::6f0:21ff:fe24:1e53"
@@ -384,5 +398,27 @@
 				}
 			}
 		}
-	}
+	},
+	"allOf": [
+		{
+			"if": {
+				"properties": {
+					"type": {
+						"const": "802-11-wireless"
+					}
+				}
+			},
+			"then": {
+				"required": [
+					"id",
+					"uuid",
+					"type",
+					"interface-name",
+					"ipv4",
+					"ipv6",
+					"wifi"
+				]
+			}
+		}
+	]
 }

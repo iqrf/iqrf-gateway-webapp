@@ -64,7 +64,7 @@ class ConnectionManager {
 	 * @throws NetworkManagerException
 	 */
 	public function get(UuidInterface $uuid): ConnectionDetail {
-		$output = $this->commandManager->run('nmcli -t connection show ' . $uuid->toString(), true);
+		$output = $this->commandManager->run('nmcli -t -s connection show ' . $uuid->toString(), true);
 		if ($output->getExitCode() !== 0) {
 			throw new NetworkManagerException($output->getStderr());
 		}

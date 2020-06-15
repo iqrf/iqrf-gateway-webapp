@@ -23,11 +23,17 @@ namespace App\NetworkModule\Entities;
 use App\NetworkModule\Enums\WifiMode;
 use JsonSerializable;
 use Nette\Utils\Strings;
+use stdClass;
 
 /**
  * WiFi connection entity
  */
 final class WifiConnection implements JsonSerializable {
+
+	/**
+	 * nmcli configuration prefix
+	 */
+	private const NMCLI_PREFIX = '802-11-wireless';
 
 	/**
 	 * @var string SSID
@@ -57,16 +63,26 @@ final class WifiConnection implements JsonSerializable {
 	}
 
 	/**
+	 * Sets the values from the network connection configuration JSON
+	 * @param stdClass $json Values from the network connection configuration JSON
+	 */
+	public function fromJson(stdClass $json): void {
+		$this->ssid = $json->ssid;
+		$this->mode = WifiMode::fromScalar($json->mode);
+		$this->security->fromJson($json->security);
+	}
+
+	/**
 	 * Creates a new WiFI connection entity from nmcli connection configuration
 	 * @param string $nmCli nmcli connection configuration
-	 * @return WifiConnection IPv6 connection entity
+	 * @return WifiConnection WiFi connection entity
 	 */
 	public static function fromNmCli(string $nmCli): self {
 		$array = explode(PHP_EOL, Strings::trim($nmCli));
 		foreach ($array as $i => $row) {
 			$temp = explode(':', $row, 2);
-			if (Strings::startsWith($temp[0], '802-11-wireless.')) {
-				$key = Strings::replace($temp[0], '~802-11-wireless\.~', '');
+			if (Strings::startsWith($temp[0], self::NMCLI_PREFIX . '.')) {
+				$key = Strings::replace($temp[0], '~' . self::NMCLI_PREFIX . '\.~', '');
 				$array[$key] = $temp[1];
 			}
 			unset($array[$i]);
@@ -77,11 +93,19 @@ final class WifiConnection implements JsonSerializable {
 	}
 
 	/**
-	 * Returns WiFi netwotk mode
+	 * Returns WiFi network mode
 	 * @return WifiMode WiFi network mode
 	 */
 	public function getMode(): WifiMode {
 		return $this->mode;
+	}
+
+	/**
+	 * Returns WiFi connection security entity
+	 * @return WifiConnectionSecurity WiFi connection security entity
+	 */
+	public function getSecurity(): WifiConnectionSecurity {
+		return $this->security;
 	}
 
 	/**
@@ -102,6 +126,23 @@ final class WifiConnection implements JsonSerializable {
 			'mode' => $this->mode->toScalar(),
 			'security' => $this->security->jsonSerialize(),
 		];
+	}
+
+	/**
+	 * Converts WiFi connection entity to nmcli configuration string
+	 * @return string nmcli configuration
+	 */
+	public function toNmCli(): string {
+		$array = [
+			'ssid' => $this->ssid,
+			'mode' => $this->mode->toScalar(),
+		];
+		$string = '';
+		foreach ($array as $key => $value) {
+			$string .= sprintf('%s.%s "%s" ', self::NMCLI_PREFIX, $key, $value);
+		}
+		$string .= $this->security->toNmCli();
+		return $string;
 	}
 
 }

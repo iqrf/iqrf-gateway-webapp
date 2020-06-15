@@ -23,11 +23,17 @@ namespace App\NetworkModule\Entities;
 use App\NetworkModule\Enums\WifiKeyManagement;
 use JsonSerializable;
 use Nette\Utils\Strings;
+use stdClass;
 
 /**
  * WiFi connection security entity
  */
 final class WifiConnectionSecurity implements JsonSerializable {
+
+	/**
+	 * nmcli configuration prefix
+	 */
+	private const NMCLI_PREFIX = '802-11-wireless-security';
 
 	/**
 	 * @var WifiKeyManagement Key management used for the connection
@@ -50,6 +56,15 @@ final class WifiConnectionSecurity implements JsonSerializable {
 	}
 
 	/**
+	 * Sets the values from the network connection configuration JSON
+	 * @param stdClass $json Values from the network connection configuration JSON
+	 */
+	public function fromJson(stdClass $json): void {
+		$this->keyManagement = WifiKeyManagement::fromScalar($json->keyManagement);
+		$this->psk = $json->psk;
+	}
+
+	/**
 	 * Creates a new WiFI connection security entity from nmcli connection configuration
 	 * @param string $nmCli nmcli connection configuration
 	 * @return WifiConnectionSecurity WiFI connection security entity
@@ -58,8 +73,8 @@ final class WifiConnectionSecurity implements JsonSerializable {
 		$array = explode(PHP_EOL, Strings::trim($nmCli));
 		foreach ($array as $i => $row) {
 			$temp = explode(':', $row, 2);
-			if (Strings::startsWith($temp[0], '802-11-wireless-security.')) {
-				$key = Strings::replace($temp[0], '~802-11-wireless-security\.~', '');
+			if (Strings::startsWith($temp[0], self::NMCLI_PREFIX . '.')) {
+				$key = Strings::replace($temp[0], '~' . self::NMCLI_PREFIX . '\.~', '');
 				$array[$key] = $temp[1];
 			}
 			unset($array[$i]);
@@ -78,6 +93,22 @@ final class WifiConnectionSecurity implements JsonSerializable {
 			'keyManagement' => $this->keyManagement->toScalar(),
 			'psk' => $this->psk,
 		];
+	}
+
+	/**
+	 * Converts WiFi connection security entity to nmcli configuration string
+	 * @return string nmcli configuration
+	 */
+	public function toNmCli(): string {
+		$array = [
+			'key-mgmt' => $this->keyManagement->toScalar(),
+			'psk' => $this->psk,
+		];
+		$string = '';
+		foreach ($array as $key => $value) {
+			$string .= sprintf('%s.%s "%s" ', self::NMCLI_PREFIX, $key, $value);
+		}
+		return $string;
 	}
 
 }

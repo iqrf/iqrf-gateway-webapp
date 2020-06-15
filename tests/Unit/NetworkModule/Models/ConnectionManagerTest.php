@@ -103,7 +103,7 @@ class ConnectionManagerTest extends CommandTestCase {
 		$uuid = '25ab1b06-2a86-40a9-950f-1c576ddcd35a';
 		$output = FileSystem::read(__DIR__ . '/../../../data/eth0.conf');
 		$expected = $this->createDetailedConnection();
-		$command = 'nmcli -t connection show ' . $uuid;
+		$command = 'nmcli -t -s connection show ' . $uuid;
 		$this->receiveCommand($command, true, $output);
 		Assert::equal($expected, $this->manager->get(Uuid::fromString($uuid)));
 	}

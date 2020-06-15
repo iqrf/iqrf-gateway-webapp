@@ -32,6 +32,11 @@ use stdClass;
 final class IPv4Connection {
 
 	/**
+	 * nmcli configuration prefix
+	 */
+	private const NMCLI_PREFIX = 'ipv4';
+
+	/**
 	 * @var IPv4Methods Connection method
 	 */
 	private $method;
@@ -66,7 +71,7 @@ final class IPv4Connection {
 	}
 
 	/**
-	 * Sets the values from the network comnnection configuration form
+	 * Sets the values from the network connection configuration form
 	 * @param stdClass|ArrayHash $form Values from the network connection configuration form
 	 */
 	public function fromForm(stdClass $form): void {
@@ -95,8 +100,8 @@ final class IPv4Connection {
 		$array = explode(PHP_EOL, Strings::trim($nmCli));
 		foreach ($array as $i => $row) {
 			$temp = explode(':', $row, 2);
-			if (Strings::startsWith($temp[0], 'ipv4.')) {
-				$key = Strings::replace($temp[0], '~ipv4\.~', '');
+			if (Strings::startsWith($temp[0], self::NMCLI_PREFIX . '.')) {
+				$key = Strings::replace($temp[0], '~' . self::NMCLI_PREFIX . '\.~', '');
 				$array[$key] = $temp[1];
 			}
 			unset($array[$i]);
@@ -173,18 +178,18 @@ final class IPv4Connection {
 	 */
 	public function toNmCli(): string {
 		$array = [
-			'ipv4.method' => $this->method->toScalar(),
-			'ipv4.addresses' => implode(' ', array_map(function (IPv4Address $address): string {
+			'method' => $this->method->toScalar(),
+			'addresses' => implode(' ', array_map(function (IPv4Address $address): string {
 				return $address->toString();
 			}, $this->addresses)),
-			'ipv4.gateway' => ($this->gateway !== null) ? $this->gateway->getDotAddress() : '',
-			'ipv4.dns' => implode(' ', array_map(function (IPv4 $ipv4): string {
+			'gateway' => ($this->gateway !== null) ? $this->gateway->getDotAddress() : '',
+			'dns' => implode(' ', array_map(function (IPv4 $ipv4): string {
 				return $ipv4->getDotAddress();
 			}, $this->dns)),
 		];
 		$string = '';
 		foreach ($array as $key => $value) {
-			$string .= sprintf('%s "%s" ', $key, $value);
+			$string .= sprintf('%s.%s "%s" ', self::NMCLI_PREFIX, $key, $value);
 		}
 		return $string;
 	}

@@ -32,6 +32,11 @@ use stdClass;
 final class IPv6Connection {
 
 	/**
+	 * nmcli configuration prefix
+	 */
+	private const NMCLI_PREFIX = 'ipv6';
+
+	/**
 	 * @var IPv6Methods Connection method
 	 */
 	private $method;
@@ -89,8 +94,8 @@ final class IPv6Connection {
 		$array = explode(PHP_EOL, Strings::trim($nmCli));
 		foreach ($array as $i => $row) {
 			$temp = explode(':', $row, 2);
-			if (Strings::startsWith($temp[0], 'ipv6.')) {
-				$key = Strings::replace($temp[0], '~ipv6\.~', '');
+			if (Strings::startsWith($temp[0], self::NMCLI_PREFIX . '.')) {
+				$key = Strings::replace($temp[0], '~' . self::NMCLI_PREFIX . '\.~', '');
 				$array[$key] = $temp[1];
 			}
 			unset($array[$i]);
@@ -161,20 +166,20 @@ final class IPv6Connection {
 	 */
 	public function toNmCli(): string {
 		$array = [
-			'ipv6.method' => $this->method->toScalar(),
-			'ipv6.addresses' => implode(' ', array_map(function (IPv6Address $address): string {
+			'method' => $this->method->toScalar(),
+			'addresses' => implode(' ', array_map(function (IPv6Address $address): string {
 				return $address->toString();
 			}, $this->addresses)),
-			'ipv6.gateway' => implode(' ', array_map(function (IPv6Address $address): string {
+			'gateway' => implode(' ', array_map(function (IPv6Address $address): string {
 				return $address->getGateway()->getCompactedAddress();
 			}, $this->addresses)),
-			'ipv6.dns' => implode(' ', array_map(function (IPv6 $ipv6): string {
+			'dns' => implode(' ', array_map(function (IPv6 $ipv6): string {
 				return $ipv6->getCompactedAddress();
 			}, $this->dns)),
 		];
 		$string = '';
 		foreach ($array as $key => $value) {
-			$string .= sprintf('%s "%s" ', $key, $value);
+			$string .= sprintf('%s.%s "%s" ', self::NMCLI_PREFIX, $key, $value);
 		}
 		return $string;
 	}
