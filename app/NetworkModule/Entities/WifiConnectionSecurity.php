@@ -21,8 +21,8 @@ declare(strict_types = 1);
 namespace App\NetworkModule\Entities;
 
 use App\NetworkModule\Enums\WifiKeyManagement;
+use App\NetworkModule\Utils\NmCliConnection;
 use JsonSerializable;
-use Nette\Utils\Strings;
 use stdClass;
 
 /**
@@ -70,15 +70,7 @@ final class WifiConnectionSecurity implements JsonSerializable {
 	 * @return WifiConnectionSecurity WiFI connection security entity
 	 */
 	public static function fromNmCli(string $nmCli): self {
-		$array = explode(PHP_EOL, Strings::trim($nmCli));
-		foreach ($array as $i => $row) {
-			$temp = explode(':', $row, 2);
-			if (Strings::startsWith($temp[0], self::NMCLI_PREFIX . '.')) {
-				$key = Strings::replace($temp[0], '~' . self::NMCLI_PREFIX . '\.~', '');
-				$array[$key] = $temp[1];
-			}
-			unset($array[$i]);
-		}
+		$array = NmCliConnection::decode($nmCli, self::NMCLI_PREFIX);
 		$keyManagement = WifiKeyManagement::fromScalar($array['key-mgmt']);
 		return new static($keyManagement, $array['psk']);
 	}
@@ -104,11 +96,7 @@ final class WifiConnectionSecurity implements JsonSerializable {
 			'key-mgmt' => $this->keyManagement->toScalar(),
 			'psk' => $this->psk,
 		];
-		$string = '';
-		foreach ($array as $key => $value) {
-			$string .= sprintf('%s.%s "%s" ', self::NMCLI_PREFIX, $key, $value);
-		}
-		return $string;
+		return NmCliConnection::encode($array, self::NMCLI_PREFIX);
 	}
 
 }

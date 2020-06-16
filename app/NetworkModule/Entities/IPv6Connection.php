@@ -21,9 +21,9 @@ declare(strict_types = 1);
 namespace App\NetworkModule\Entities;
 
 use App\NetworkModule\Enums\IPv6Methods;
+use App\NetworkModule\Utils\NmCliConnection;
 use Darsyn\IP\Version\IPv6;
 use Nette\Utils\ArrayHash;
-use Nette\Utils\Strings;
 use stdClass;
 
 /**
@@ -91,15 +91,7 @@ final class IPv6Connection {
 	 * @return IPv6Connection IPv6 connection entity
 	 */
 	public static function fromNmCli(string $nmCli): self {
-		$array = explode(PHP_EOL, Strings::trim($nmCli));
-		foreach ($array as $i => $row) {
-			$temp = explode(':', $row, 2);
-			if (Strings::startsWith($temp[0], self::NMCLI_PREFIX . '.')) {
-				$key = Strings::replace($temp[0], '~' . self::NMCLI_PREFIX . '\.~', '');
-				$array[$key] = $temp[1];
-			}
-			unset($array[$i]);
-		}
+		$array = NmCliConnection::decode($nmCli, self::NMCLI_PREFIX);
 		$method = IPv6Methods::fromScalar($array['method']);
 		$addresses = [];
 		$gateways = [];
@@ -177,11 +169,7 @@ final class IPv6Connection {
 				return $ipv6->getCompactedAddress();
 			}, $this->dns)),
 		];
-		$string = '';
-		foreach ($array as $key => $value) {
-			$string .= sprintf('%s.%s "%s" ', self::NMCLI_PREFIX, $key, $value);
-		}
-		return $string;
+		return NmCliConnection::encode($array, self::NMCLI_PREFIX);
 	}
 
 }

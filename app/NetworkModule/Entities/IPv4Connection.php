@@ -21,9 +21,9 @@ declare(strict_types = 1);
 namespace App\NetworkModule\Entities;
 
 use App\NetworkModule\Enums\IPv4Methods;
+use App\NetworkModule\Utils\NmCliConnection;
 use Darsyn\IP\Version\IPv4;
 use Nette\Utils\ArrayHash;
-use Nette\Utils\Strings;
 use stdClass;
 
 /**
@@ -97,15 +97,7 @@ final class IPv4Connection {
 	 * @return IPv4Connection IPv4 connection entity
 	 */
 	public static function fromNmCli(string $nmCli): self {
-		$array = explode(PHP_EOL, Strings::trim($nmCli));
-		foreach ($array as $i => $row) {
-			$temp = explode(':', $row, 2);
-			if (Strings::startsWith($temp[0], self::NMCLI_PREFIX . '.')) {
-				$key = Strings::replace($temp[0], '~' . self::NMCLI_PREFIX . '\.~', '');
-				$array[$key] = $temp[1];
-			}
-			unset($array[$i]);
-		}
+		$array = NmCliConnection::decode($nmCli, self::NMCLI_PREFIX);
 		$method = IPv4Methods::fromScalar($array['method']);
 		$addresses = [];
 		if ($array['addresses'] !== '') {
@@ -187,11 +179,7 @@ final class IPv4Connection {
 				return $ipv4->getDotAddress();
 			}, $this->dns)),
 		];
-		$string = '';
-		foreach ($array as $key => $value) {
-			$string .= sprintf('%s.%s "%s" ', self::NMCLI_PREFIX, $key, $value);
-		}
-		return $string;
+		return NmCliConnection::encode($array, self::NMCLI_PREFIX);
 	}
 
 }

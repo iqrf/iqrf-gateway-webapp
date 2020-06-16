@@ -21,9 +21,9 @@ declare(strict_types = 1);
 namespace App\NetworkModule\Entities;
 
 use App\NetworkModule\Enums\ConnectionTypes;
+use App\NetworkModule\Utils\NmCliConnection;
 use JsonSerializable;
 use Nette\Utils\ArrayHash;
-use Nette\Utils\Strings;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use stdClass;
@@ -111,15 +111,7 @@ class ConnectionDetail implements JsonSerializable {
 	 * @return ConnectionDetail Detailed network connection entity
 	 */
 	public static function fromNmCli(string $nmCli): self {
-		$array = explode(PHP_EOL, Strings::trim($nmCli));
-		foreach ($array as $i => $row) {
-			$temp = explode(':', $row, 2);
-			if (Strings::startsWith($temp[0], self::NMCLI_PREFIX . '.')) {
-				$key = Strings::replace($temp[0], '~' . self::NMCLI_PREFIX . '\.~', '');
-				$array[$key] = $temp[1];
-			}
-			unset($array[$i]);
-		}
+		$array = NmCliConnection::decode($nmCli, self::NMCLI_PREFIX);
 		$uuid = Uuid::fromString($array['uuid']);
 		$type = ConnectionTypes::fromScalar($array['type']);
 		$ipv4 = IPv4Connection::fromNmCli($nmCli);
@@ -174,14 +166,6 @@ class ConnectionDetail implements JsonSerializable {
 	 */
 	public function getIpv6(): IPv6Connection {
 		return $this->ipv6;
-	}
-
-	/**
-	 * Converts network connection entity to an array for the form
-	 * @return array<string, string|array> Array for the form
-	 */
-	public function toForm(): array {
-		return $this->jsonSerialize();
 	}
 
 	/**

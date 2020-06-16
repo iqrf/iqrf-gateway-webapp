@@ -71,7 +71,7 @@ class EthernetPresenter extends BasePresenter {
 			$this->redirect('Ethernet:default');
 		}
 		$connection = $this->manager->get(Uuid::fromString($uuid));
-		$this['ethernetForm']->setDefaults($connection->toForm());
+		$this['ethernetForm']->setDefaults($connection->jsonSerialize());
 	}
 
 	/**

@@ -184,15 +184,6 @@ class ConnectionDetailEthernetTest extends TestCase {
 	}
 
 	/**
-	 * Tests the function to convert the network connection entity to an array for the form
-	 */
-	public function testToForm(): void {
-		$json = FileSystem::read(__DIR__ . '/../../../data/networkManager/eth0ToForm.json');
-		$expected = Json::decode($json, Json::FORCE_ARRAY);
-		Assert::same($expected, $this->entity->toForm());
-	}
-
-	/**
 	 * Tests the function to return JSON serialized data
 	 */
 	public function testJsonSerialize(): void {
