@@ -35,6 +35,16 @@ require __DIR__ . '/../../../bootstrap.php';
 class ConnectionDetailEthernetTest extends TestCase {
 
 	/**
+	 * NetworkManager data directory
+	 */
+	private const NM_DATA = __DIR__ . '/../../../data/networkManager/';
+
+	/**
+	 * Connection UUID
+	 */
+	private const UUID = '25ab1b06-2a86-40a9-950f-1c576ddcd35a';
+
+	/**
 	 * @var string Network connection ID
 	 */
 	private $id = 'eth0';
@@ -73,7 +83,7 @@ class ConnectionDetailEthernetTest extends TestCase {
 	 * Sets up the test environment
 	 */
 	public function __construct() {
-		$this->uuid = Uuid::fromString('25ab1b06-2a86-40a9-950f-1c576ddcd35a');
+		$this->uuid = Uuid::fromString(self::UUID);
 		$this->type = ConnectionTypes::ETHERNET();
 	}
 
@@ -91,13 +101,9 @@ class ConnectionDetailEthernetTest extends TestCase {
 	 */
 	private function createIpv4Connection(): void {
 		$method = IPv4Methods::MANUAL();
-		$addresses = [
-			new IPv4Address(IPv4::factory('192.168.1.2'), 24),
-		];
+		$addresses = [new IPv4Address(IPv4::factory('192.168.1.2'), 24)];
 		$gateway = IPv4::factory('192.168.1.1');
-		$dns = [
-			IPv4::factory('192.168.1.1'),
-		];
+		$dns = [IPv4::factory('192.168.1.1')];
 		$this->ipv4 = new IPv4Connection($method, $addresses, $gateway, $dns);
 	}
 
@@ -109,9 +115,7 @@ class ConnectionDetailEthernetTest extends TestCase {
 		$addresses = [
 			new IPv6Address(IPv6::factory('2001:470:5bb2::2'), 64, IPv6::factory('fe80::1')),
 		];
-		$dns = [
-			IPv6::factory('2001:470:5bb2::1'),
-		];
+		$dns = [IPv6::factory('2001:470:5bb2::1')];
 		$this->ipv6 = new IPv6Connection($method, $addresses, $dns);
 	}
 
@@ -119,9 +123,8 @@ class ConnectionDetailEthernetTest extends TestCase {
 	 * Tests the function to set the network connection configuration from the form
 	 */
 	public function testFromForm(): void {
-		$json = FileSystem::read(__DIR__ . '/../../../data/networkManager/eth0FromForm.json');
-		$arrayHash = Json::decode($json);
-		$this->entity->fromForm($arrayHash);
+		$json = Json::decode(FileSystem::read(self::NM_DATA . 'fromForm/' . self::UUID . '.json'));
+		$this->entity->fromForm($json);
 		$ipv4Addresses = [IPv4Address::fromPrefix('10.0.0.2/16')];
 		$ipv4Gateway = IPv4::factory('10.0.0.1');
 		$ipv4Dns = [IPv4::factory('10.0.0.1'), IPv4::factory('1.1.1.1')];
@@ -137,7 +140,7 @@ class ConnectionDetailEthernetTest extends TestCase {
 	 * Tests the function to create a detailed network connection entity from nmcli connection configuration
 	 */
 	public function testFromNmCli(): void {
-		$nmCli = FileSystem::read(__DIR__ . '/../../../data/eth0.conf');
+		$nmCli = FileSystem::read(self::NM_DATA . self::UUID . '.conf');
 		Assert::equal($this->entity, ConnectionDetail::fromNmCli($nmCli));
 	}
 
@@ -187,7 +190,7 @@ class ConnectionDetailEthernetTest extends TestCase {
 	 * Tests the function to return JSON serialized data
 	 */
 	public function testJsonSerialize(): void {
-		$json = FileSystem::read(__DIR__ . '/../../../data/networkManager/eth0ToForm.json');
+		$json = FileSystem::read(self::NM_DATA . 'toForm/' . self::UUID . '.json');
 		$expected = Json::decode($json, Json::FORCE_ARRAY);
 		Assert::same($expected, $this->entity->jsonSerialize());
 	}

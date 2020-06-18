@@ -36,6 +36,16 @@ require __DIR__ . '/../../../bootstrap.php';
 class ConnectionManagerTest extends CommandTestCase {
 
 	/**
+	 * NetworkManager data directory
+	 */
+	private const NM_DATA = __DIR__ . '/../../../data/networkManager/';
+
+	/**
+	 * Connection UUID
+	 */
+	private const UUID = '25ab1b06-2a86-40a9-950f-1c576ddcd35a';
+
+	/**
 	 * @var ConnectionManager Network connection manager
 	 */
 	private $manager;
@@ -53,8 +63,7 @@ class ConnectionManagerTest extends CommandTestCase {
 	 * @return ConnectionDetail Detailed network connection entity
 	 */
 	private function createDetailedConnection(): ConnectionDetail {
-		$uuidStr = '25ab1b06-2a86-40a9-950f-1c576ddcd35a';
-		$uuid = Uuid::fromString($uuidStr);
+		$uuid = Uuid::fromString(self::UUID);
 		$type = ConnectionTypes::ETHERNET();
 		$ipv4 = $this->createIpv4Connection();
 		$ipv6 = $this->createIpv6Connection();
@@ -88,11 +97,10 @@ class ConnectionManagerTest extends CommandTestCase {
 	 * Tests the function to delete network connection
 	 */
 	public function testDelete(): void {
-		$uuid = '25ab1b06-2a86-40a9-950f-1c576ddcd35a';
-		$command = 'nmcli -t connection delete ' . $uuid;
+		$command = 'nmcli -t connection delete ' . self::UUID;
 		$this->receiveCommand($command, true, '');
-		Assert::noError(function () use ($uuid): void {
-			$this->manager->delete(Uuid::fromString($uuid));
+		Assert::noError(function (): void {
+			$this->manager->delete(Uuid::fromString(self::UUID));
 		});
 	}
 
@@ -100,12 +108,11 @@ class ConnectionManagerTest extends CommandTestCase {
 	 * Tests the function to get detailed network connection entity
 	 */
 	public function testGet(): void {
-		$uuid = '25ab1b06-2a86-40a9-950f-1c576ddcd35a';
-		$output = FileSystem::read(__DIR__ . '/../../../data/eth0.conf');
+		$output = FileSystem::read(self::NM_DATA . self::UUID . '.conf');
 		$expected = $this->createDetailedConnection();
-		$command = 'nmcli -t -s connection show ' . $uuid;
+		$command = 'nmcli -t -s connection show ' . self::UUID;
 		$this->receiveCommand($command, true, $output);
-		Assert::equal($expected, $this->manager->get(Uuid::fromString($uuid)));
+		Assert::equal($expected, $this->manager->get(Uuid::fromString(self::UUID)));
 	}
 
 	/**
@@ -136,7 +143,7 @@ class ConnectionManagerTest extends CommandTestCase {
 	 */
 	public function testEdit(): void {
 		$connection = $this->createDetailedConnection();
-		$json = FileSystem::read(__DIR__ . '/../../../data/networkManager/eth0FromForm.json');
+		$json = FileSystem::read(self::NM_DATA . 'fromForm/' . self::UUID . '.json');
 		$jsonData = Json::decode($json);
 		$command = 'nmcli -t connection modify 25ab1b06-2a86-40a9-950f-1c576ddcd35a ipv4.method "manual" ipv4.addresses "10.0.0.2/16" ipv4.gateway "10.0.0.1" ipv4.dns "10.0.0.1 1.1.1.1" ipv6.method "manual" ipv6.addresses "2001:470:5bb2:2::2/64" ipv6.gateway "fe80::1" ipv6.dns "2001:470:5bb2:2::1" ';
 		$this->receiveCommand($command, true);
@@ -150,7 +157,7 @@ class ConnectionManagerTest extends CommandTestCase {
 	 */
 	public function testUp(): void {
 		$connection = $this->createDetailedConnection();
-		$command = 'nmcli -t connection up 25ab1b06-2a86-40a9-950f-1c576ddcd35a';
+		$command = 'nmcli -t connection up ' . self::UUID;
 		$this->receiveCommand($command, true);
 		Assert::noError(function () use ($connection): void {
 			$this->manager->up($connection->getUuid());

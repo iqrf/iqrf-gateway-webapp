@@ -27,6 +27,11 @@ require __DIR__ . '/../../../bootstrap.php';
 class IPv6ConnectionTest extends TestCase {
 
 	/**
+	 * NetworkManager data directory
+	 */
+	private const NM_DATA = __DIR__ . '/../../../data/networkManager/';
+
+	/**
 	 * @var IPv6Methods IPv6 connection method
 	 */
 	private $method;
@@ -94,7 +99,7 @@ class IPv6ConnectionTest extends TestCase {
 	 * Tests the function to create a new IPv6 connection entity from nmcli connection configuration
 	 */
 	public function testFromNmCli(): void {
-		$configuration = FileSystem::read(__DIR__ . '/../../../data/eth0.conf');
+		$configuration = FileSystem::read(self::NM_DATA . '25ab1b06-2a86-40a9-950f-1c576ddcd35a.conf');
 		Assert::equal($this->entity, IPv6Connection::fromNmCli($configuration));
 	}
 

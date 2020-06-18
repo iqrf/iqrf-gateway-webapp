@@ -36,6 +36,16 @@ require __DIR__ . '/../../../bootstrap.php';
 class ConnectionDetailWifiTest extends TestCase {
 
 	/**
+	 * NetworkManager data directory
+	 */
+	private const NM_DATA = __DIR__ . '/../../../data/networkManager/';
+
+	/**
+	 * Connection UUID
+	 */
+	private const UUID = '5c7010a8-88f6-48e6-8ab2-5ad713217831';
+
+	/**
 	 * @var string Network connection ID
 	 */
 	private $id = 'WIFI MAGDA';
@@ -79,7 +89,7 @@ class ConnectionDetailWifiTest extends TestCase {
 	 * Sets up the test environment
 	 */
 	public function __construct() {
-		$this->uuid = Uuid::fromString('5c7010a8-88f6-48e6-8ab2-5ad713217831');
+		$this->uuid = Uuid::fromString(self::UUID);
 		$this->type = ConnectionTypes::WIFI();
 	}
 
@@ -130,7 +140,7 @@ class ConnectionDetailWifiTest extends TestCase {
 	 * Tests the function to create a detailed network connection entity from nmcli connection configuration
 	 */
 	public function testFromNmCli(): void {
-		$nmCli = FileSystem::read(__DIR__ . '/../../../data/WIFI MAGDA.conf');
+		$nmCli = FileSystem::read(self::NM_DATA . self::UUID . '.conf');
 		Assert::equal($this->entity, ConnectionDetail::fromNmCli($nmCli));
 	}
 
@@ -180,7 +190,7 @@ class ConnectionDetailWifiTest extends TestCase {
 	 * Tests the function to return JSON serialized data
 	 */
 	public function testJsonSerialize(): void {
-		$json = FileSystem::read(__DIR__ . '/../../../data/networkManager/wifiToForm.json');
+		$json = FileSystem::read(self::NM_DATA . 'toForm/' . self::UUID . '.json');
 		$expected = Json::decode($json, Json::FORCE_ARRAY);
 		Assert::same($expected, $this->entity->jsonSerialize());
 	}

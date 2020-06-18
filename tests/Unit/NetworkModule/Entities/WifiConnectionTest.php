@@ -26,6 +26,11 @@ require __DIR__ . '/../../../bootstrap.php';
 class WifiConnectionTest extends TestCase {
 
 	/**
+	 * NetworkManager data directory
+	 */
+	private const NM_DATA = __DIR__ . '/../../../data/networkManager/';
+
+	/**
 	 * @var WifiConnection WiFi connection entity
 	 */
 	private $entity;
@@ -59,7 +64,7 @@ class WifiConnectionTest extends TestCase {
 	 * Tests the function to create a new IPv6 connection entity from nmcli connection configuration
 	 */
 	public function testFromNmCli(): void {
-		$configuration = FileSystem::read(__DIR__ . '/../../../data/WIFI MAGDA.conf');
+		$configuration = FileSystem::read(self::NM_DATA . '5c7010a8-88f6-48e6-8ab2-5ad713217831.conf');
 		Assert::equal($this->entity, WifiConnection::fromNmCli($configuration));
 	}
 
@@ -90,6 +95,14 @@ class WifiConnectionTest extends TestCase {
 			],
 		];
 		Assert::same($expected, $this->entity->jsonSerialize());
+	}
+
+	/**
+	 * Tests the function to convert WiFi connection entity to nmcli configuration string
+	 */
+	public function testToNmCli(): void {
+		$expected = '802-11-wireless.ssid "WIFI MAGDA" 802-11-wireless.mode "infrastructure" 802-11-wireless-security.key-mgmt "wpa-psk" 802-11-wireless-security.psk "password" ';
+		Assert::same($expected, $this->entity->toNmCli());
 	}
 
 }
