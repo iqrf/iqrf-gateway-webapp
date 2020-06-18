@@ -101,7 +101,7 @@ if true; then
 	if [ -e /usr/share/apache2/apache2-maintscript-helper ] ; then
 		. /usr/share/apache2/apache2-maintscript-helper
 		a2dissite 000-default.conf
-		for mod in deflate filter headers http2 proxy proxy_fcgi proxy_wstunnel rewrite ssl ; do
+		for mod in deflate filter headers http2 proxy proxy_http proxy_fcgi proxy_wstunnel rewrite ssl ; do
 			apache2_invoke enmod $mod || true
 		done
 		apache2_invoke ensite iqrf-gateway-webapp.conf || exit 1
