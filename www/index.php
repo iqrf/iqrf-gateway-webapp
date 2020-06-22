@@ -24,7 +24,8 @@ use Nette\Application\Application as UiApplication;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-$isApi = substr($_SERVER['REQUEST_URI'], 0, 4) === '/api';
+//$isApi = substr($_SERVER['REQUEST_URI'], 0, 4) === '/api';
+$isApi = false;
 
 // Creates DI container
 $container = Kernel::boot()->createContainer();
