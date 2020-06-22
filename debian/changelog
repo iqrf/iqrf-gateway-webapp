@@ -1,3 +1,28 @@
+iqrf-gateway-webapp (2.1.0-alpha~1.gbp92e50f) UNRELEASED; urgency=medium
+
+  ** SNAPSHOT build @92e50fc33f432f0a086905068c5d6eade4705ac4 **
+
+  * UNRELEASED
+
+ -- Roman Ondráček <roman@romanondracek.cz>  Mon, 22 Jun 2020 21:00:00 +0200
+
+iqrf-gateway-webapp (2.0.0) testing; urgency=medium
+
+  * Prepare for version v2.0.0-rc18
+  * Debian packaging: enable proxy_http apache2 mod during install
+  * Apache2: fix PHP-FPM configuration
+  * API: Disable API for release 2.0.0
+
+ -- Roman Ondráček <roman@romanondracek.cz>  Mon, 22 Jun 2020 20:45:00 +0200
+
+iqrf-gateway-webapp (2.0.0-rc17) testing; urgency=medium
+
+  * Prepare for version 2.0.0-rc17
+  * API: check user language and role while user creation and editing
+  * Makefile: fix patch for Doctrine ORM
+
+ -- Roman Ondráček <roman@romanondracek.cz>  Wed, 10 Jun 2020 21:15:00 +0200
+
 iqrf-gateway-webapp (2.0.0-rc16) testing; urgency=medium
 
   * Prepare for version v2.0.0-rc16

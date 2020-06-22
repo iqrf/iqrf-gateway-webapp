@@ -1,6 +1,6 @@
 {
 	"name": "iqrf-gateway-webapp",
-	"version": "2.0.0-rc17",
+	"version": "2.1.0-alpha",
 	"repository": {
 		"type": "git",
 		"url": "https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp.git"
@@ -18,12 +18,12 @@
 	},
 	"homepage": "https://gitlab.iqrf.org/open-source/iqrf-gateway-webapp",
 	"dependencies": {
-		"@sentry/browser": "^5.16",
+		"@sentry/browser": "^5.17",
 		"admin-lte": "^2.4",
 		"autosize": "^4.0",
 		"cronstrue": "^1.94",
 		"highlight.js": "^9.18",
-		"jquery": "^3.5.1",
+		"jquery": "^3.5",
 		"live-form-validation": "^1.9",
 		"nette-forms": "^3.0",
 		"nette.ajax.js": "^2.3",
@@ -35,7 +35,7 @@
 		"babel-eslint": "^10.1",
 		"babel-loader": "^8.1",
 		"copy-webpack-plugin": "^5.1",
-		"css-loader": "^3.5",
+		"css-loader": "^3.6",
 		"eslint": "^6.8",
 		"eslint-loader": "^3.0",
 		"eslint-plugin-jquery": "^1.5",
