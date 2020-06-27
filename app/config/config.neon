@@ -26,8 +26,6 @@ application:
 		*: App\*Module\Presenters\*Presenter
 
 database:
-	default:
-		dsn: 'sqlite:%appDir%/config/database.db'
 	iqrf_os:
 		dsn: 'sqlite:%appDir%/../iqrf/os.db'
 

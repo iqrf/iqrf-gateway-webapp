@@ -23,10 +23,8 @@ nettrine.orm:
 	entityManagerDecoratorClass: App\Models\Database\EntityManager
 
 nettrine.orm.annotations:
-	namespaces:
-		- App\Models\Database\Entities
-	paths:
-		- %appDir%/Models/Database/Entities
+	mapping:
+		App\Models\Database\Entities: %appDir%/Models/Database/Entities
 
 nettrine.migrations:
 	table: doctrine_migrations
