@@ -51,6 +51,7 @@ class ComponentManager implements IConfigManager {
 	/**
 	 * Adds a new component
 	 * @param array<mixed> $array Component's settings
+	 * @throws IOException
 	 * @throws JsonException
 	 */
 	public function add(array $array): void {
@@ -62,6 +63,7 @@ class ComponentManager implements IConfigManager {
 	/**
 	 * Deletes the component
 	 * @param int $id Component ID
+	 * @throws IOException
 	 * @throws JsonException
 	 */
 	public function delete(int $id): void {
@@ -90,6 +92,7 @@ class ComponentManager implements IConfigManager {
 	 * Loads the component from main configuration JSON
 	 * @param int $id Component ID
 	 * @return array<mixed> Array for form
+	 * @throws IOException
 	 * @throws JsonException
 	 */
 	public function load(int $id): array {
@@ -103,6 +106,7 @@ class ComponentManager implements IConfigManager {
 	/**
 	 * Loads components from main configuration JSON
 	 * @return array<array<string, bool|int|string>> Array for form
+	 * @throws IOException
 	 * @throws JsonException
 	 */
 	public function list(): array {
@@ -137,6 +141,7 @@ class ComponentManager implements IConfigManager {
 	 * Saves the component's configuration
 	 * @param array<mixed> $components Component's configuration
 	 * @param int $id Component ID
+	 * @throws IOException
 	 * @throws JsonException
 	 */
 	public function save(array $components, int $id): void {

@@ -66,6 +66,19 @@ class ComponentPresenter extends ProtectedPresenter {
 	}
 
 	/**
+	 * Renders the datagrid
+	 */
+	public function actionDefault(): void {
+		try {
+			$this['configComponentsDataGrid']->setDataSource($this->dataGridFactory->load());
+		} catch (IOException $e) {
+			$this->flashError('config.messages.readFailures.ioError');
+		} catch (JsonException $e) {
+			$this->flashError('config.messages.readFailures.invalidJson');
+		}
+	}
+
+	/**
 	 * Edits the component
 	 * @param int $id Component ID
 	 */
@@ -89,7 +102,6 @@ class ComponentPresenter extends ProtectedPresenter {
 	/**
 	 * Deletes the component
 	 * @param int $id Component ID
-	 * @throws JsonException
 	 */
 	public function actionDelete(int $id): void {
 		if ($this->getUser()->isInRole('power')) {
@@ -98,6 +110,8 @@ class ComponentPresenter extends ProtectedPresenter {
 				$this->flashSuccess('config.messages.successes.delete');
 			} catch (IOException $e) {
 				$this->flashError('config.messages.deleteFailures.ioError');
+			} catch (JsonException $e) {
+				$this->flashError('config.messages.deleteFailures.invalidJson');
 			}
 		}
 		$this->redirect('Component:default');

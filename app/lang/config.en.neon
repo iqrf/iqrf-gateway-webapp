@@ -10,6 +10,7 @@ actions:
 
 messages:
 	deleteFailures:
+		invalidJson: The configuration has not been deleted because the configuration file is corrupted.
 		ioError: The configuration has not been deleted because the webapp is unable to delete the configuration file.
 	readFailures:
 		invalidJson: The configuration has not been loaded because the configuration file is corrupted.
