@@ -23,12 +23,12 @@ namespace App\ApiModule\Version0\Controllers;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
+use Apitte\Core\Annotation\Controller\RequestParameter;
+use Apitte\Core\Annotation\Controller\RequestParameters;
 use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\CoreModule\Models\FeatureManager;
-use Nette\IOException;
-use Nette\Neon\Exception as NeonException;
 
 /**
  * Optional feature manager controller
@@ -69,15 +69,42 @@ class FeatureController extends BaseController {
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
+	public function getAll(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$config = $this->manager->read();
+		return $response->writeJsonBody($config);
+	}
+
+	/**
+	 * @Path("/{feature}")
+	 * @Method("GET")
+	 * @OpenApi("
+	 *  summary: Returns optional feature configuration
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *          content:
+	 *              application/json:
+	 *                  schema:
+	 *                      $ref: '#/components/schemas/Feature'
+	 *      '404':
+	 *          description: Feature not found
+	 *      '500':
+	 *          description: Server error
+	 * ")
+	 * @RequestParameters({
+	 *      @RequestParameter(name="feature", type="string", description="Feature name")
+	 * })
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
-		try {
-			$config = $this->manager->read();
-			return $response->writeJsonBody($config);
-		} catch (NeonException $e) {
-			return $response->withStatus(500, 'Invalid NEON syntax');
-		} catch (IOException $e) {
-			return $response->withStatus(500, $e->getMessage());
+		$name = urldecode($request->getParameter('feature'));
+		$config = $this->manager->read();
+		if (array_key_exists($name, $config)) {
+			return $response->writeJsonBody($config[$name]);
 		}
+		return $response->withStatus(404, 'Feature not found');
 	}
 
 }
