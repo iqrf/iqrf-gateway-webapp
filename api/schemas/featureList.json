@@ -1,0 +1,55 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/featureList.json",
+	"type": "object",
+	"title": "Optional features configuration",
+	"required": [
+		"docs",
+		"grafana",
+		"networkManager",
+		"nodeRed",
+		"pixla",
+		"ssh",
+		"supervisord",
+		"trUpload",
+		"updater",
+		"unattendedUpgrades",
+		"versionChecker"
+	],
+	"additionalProperties": false,
+	"properties": {
+		"docs": {
+			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/docs.json"
+		},
+		"grafana": {
+			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/grafana.json"
+		},
+		"networkManager": {
+			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/networkManager.json"
+		},
+		"nodeRed": {
+			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/nodeRed.json"
+		},
+		"pixla": {
+			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/pixla.json"
+		},
+		"ssh": {
+			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/ssh.json"
+		},
+		"supervisord": {
+			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/supervisord.json"
+		},
+		"trUpload": {
+			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/trUpload.json"
+		},
+		"updater": {
+			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/updater.json"
+		},
+		"unattendedUpgrades": {
+			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/unattendedUpgrades.json"
+		},
+		"versionChecker": {
+			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/versionChecker.json"
+		}
+	}
+}

@@ -1,0 +1,29 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/features/nodeRed.json",
+	"type": "object",
+	"title": "Link to Node-RED",
+	"example": {
+		"enabled": false,
+		"url": "/node-red/"
+	},
+	"required": [
+		"enabled",
+		"url"
+	],
+	"additionalProperties": false,
+	"properties": {
+		"enabled": {
+			"$id": "#/properties/enabled",
+			"type": "boolean",
+			"title": "Node-RED enablement",
+			"example": false
+		},
+		"url": {
+			"$id": "#/properties/url",
+			"type": "string",
+			"title": "Node-RED URL",
+			"example": "/node-red/"
+		}
+	}
+}

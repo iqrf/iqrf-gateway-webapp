@@ -91,7 +91,7 @@ class FeatureManager {
 	 * Reads features configuration
 	 * @return array<string, array<string, bool|int|string>> Features configuration
 	 */
-	protected function read(): array {
+	public function read(): array {
 		try {
 			$content = FileSystem::read($this->path);
 			$configuration = Neon::decode($content) ?? [];
