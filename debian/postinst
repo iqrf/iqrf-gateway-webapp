@@ -59,6 +59,10 @@ webapp_database_migration() {
 	su - www-data -s /bin/bash -c '/usr/sbin/iqrf-gateway-webapp-manager migrations:migrate --no-interaction > /dev/null'
 }
 
+webapp_iqrf_os_patches_import() {
+	su - www-data -s /bin/bash -c '/usr/sbin/iqrf-gateway-webapp-manager iqrf-os:import-patches > /dev/null'
+}
+
 webapp_remove_cache() {
 	if [ -d /var/cache/iqrf-gateway-webapp/cache ] ; then
 		rm -rf /var/cache/iqrf-gateway-webapp/cache
@@ -94,6 +98,7 @@ if [ "$1" = "configure" ]; then
 	webapp_remove_old_dirs
 	webapp_repair_premissions
 	webapp_database_migration
+	webapp_iqrf_os_patches_import
 	webapp_warmup_templates
 fi
 
