@@ -152,7 +152,7 @@ class FeatureController extends BaseController {
 		$name = urldecode($request->getParameter('feature'));
 		try {
 			$this->validator->validate('features/' . $name, $request->getJsonBody(false));
-			$this->manager->edit($name,$request->getJsonBody());
+			$this->manager->edit($name, $request->getJsonBody());
 		} catch (FeatureNotFoundException | NonexistentJsonSchemaException $e) {
 			return $response->withStatus(404, 'Feature not found');
 		} catch (JsonException $e) {

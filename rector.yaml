@@ -1,6 +1,7 @@
 parameters:
   exclude_rectors:
     - 'Rector\SOLID\Rector\ClassMethod\UseInterfaceOverImplementationInConstructorRector'
+    - 'Rector\CodeQuality\Rector\Array_\CallableThisArrayToAnonymousFunctionRector'
   paths:
     - 'app'
     - 'bin'
