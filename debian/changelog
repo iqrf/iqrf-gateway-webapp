@@ -1,10 +1,24 @@
-iqrf-gateway-webapp (2.1.0-alpha~1.gbp92e50f) UNRELEASED; urgency=medium
+iqrf-gateway-webapp (2.1.0~alpha~3167.gbpdb8557) UNRELEASED; urgency=medium
 
-  ** SNAPSHOT build @92e50fc33f432f0a086905068c5d6eade4705ac4 **
+  ** SNAPSHOT build @db8557f5ae8b16c7a14082b1e9b611b32f49fea0 **
 
   * UNRELEASED
+  * Prepare for version 2.1.0-alpha
+  * Docker: fix stable Dockerfiles
+  * API: enable after release
+  * Composer: update Nettrine ORM
+  * Tests: use PCOV for coverage
+  * Composer: update dependencies
+  * Config: catch Nette\IOException in component manager datagrid (fix #243)
+  * IQRF net: use Doctrine ORM for IQRF OS patches
+  * Tests: remove unused database test case
+  * API: add endpoint to get optional feature configuration
+  * API: add endpoint to get optional feature configuration
+  * API: add endpoint for optional feature configuration editing
+  * API: fix coding style in optional feature manager
+  * API: add tests for optional feature manager
 
- -- Roman Ondráček <roman@romanondracek.cz>  Mon, 22 Jun 2020 21:00:00 +0200
+ -- Roman Ondráček <roman@romanondracek.cz>  Mon, 06 Jul 2020 18:45:00 +0200
 
 iqrf-gateway-webapp (2.0.0) testing; urgency=medium
 
