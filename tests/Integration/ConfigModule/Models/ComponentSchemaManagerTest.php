@@ -84,9 +84,11 @@ class ComponentSchemaManagerTest extends TestCase {
 	 * Tests the function to validate a JSON (valid JSON)
 	 */
 	public function testValidateValid(): void {
-		$this->manager->setSchema(self::COMPONENT_NAME);
-		$json = (object) $this->fileManager->read('iqrf__MqttMessaging');
-		Assert::true($this->manager->validate($json));
+		Assert::noError(function (): void {
+			$this->manager->setSchema(self::COMPONENT_NAME);
+			$json = (object) $this->fileManager->read('iqrf__MqttMessaging');
+			$this->manager->validate($json);
+		});
 	}
 
 	/**

@@ -28,7 +28,13 @@ use Apitte\Core\Annotation\Controller\RequestParameters;
 use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
+use App\ApiModule\Version0\Models\JsonSchemaValidator;
+use App\CoreModule\Exceptions\FeatureNotFoundException;
+use App\CoreModule\Exceptions\InvalidJsonException;
+use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use App\CoreModule\Models\FeatureManager;
+use Nette\IOException;
+use Nette\Utils\JsonException;
 
 /**
  * Optional feature manager controller
@@ -43,11 +49,18 @@ class FeatureController extends BaseController {
 	private $manager;
 
 	/**
-	 * onstructor
-	 * @param FeatureManager $manager Optional feature manager
+	 * @var JsonSchemaValidator API JSON schema validator
 	 */
-	public function __construct(FeatureManager $manager) {
+	private $validator;
+
+	/**
+	 * Constructor
+	 * @param FeatureManager $manager Optional feature manager
+	 * @param JsonSchemaValidator $validator API JSON schema validator
+	 */
+	public function __construct(FeatureManager $manager, JsonSchemaValidator $validator) {
 		$this->manager = $manager;
+		$this->validator = $validator;
 	}
 
 	/**
@@ -100,11 +113,56 @@ class FeatureController extends BaseController {
 	 */
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$name = urldecode($request->getParameter('feature'));
-		$config = $this->manager->read();
-		if (array_key_exists($name, $config)) {
-			return $response->writeJsonBody($config[$name]);
+		try {
+			return $response->writeJsonBody($this->manager->get($name));
+		} catch (FeatureNotFoundException $e) {
+			return $response->withStatus(404, 'Feature not found');
 		}
-		return $response->withStatus(404, 'Feature not found');
+	}
+
+	/**
+	 * @Path("/{feature}")
+	 * @Method("PUT")
+	 * @OpenApi("
+	 *  summary: Edits optional feature configuration
+	 *  requestBody:
+	 *     required: true
+	 *     content:
+	 *      application/json:
+	 *          schema:
+	 *              $ref: '#/components/schemas/Feature'
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '400':
+	 *          description: Bad request
+	 *      '404':
+	 *          description: Feature not found
+	 *      '500':
+	 *          description: Server error
+	 * ")
+	 * @RequestParameters({
+	 *      @RequestParameter(name="feature", type="string", description="Feature name")
+	 * })
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$name = urldecode($request->getParameter('feature'));
+		try {
+			$this->validator->validate('features/' . $name, $request->getJsonBody(false));
+			$this->manager->edit($name,$request->getJsonBody());
+		} catch (FeatureNotFoundException | NonexistentJsonSchemaException $e) {
+			return $response->withStatus(404, 'Feature not found');
+		} catch (JsonException $e) {
+			return $response->withStatus(400, 'Invalid JSON syntax');
+		} catch (InvalidJsonException $e) {
+			return $response->withStatus(400, $e->getMessage());
+		} catch (IOException $e) {
+			return $response->withStatus(500, $e->getMessage());
+		}
+		return $response;
 	}
 
 }
