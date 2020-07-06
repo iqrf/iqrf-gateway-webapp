@@ -30,24 +30,24 @@ use Psr\Http\Message\ResponseInterface;
 /**
  * Defines application features from the specific context.
  */
-class FeatureContext implements Context {
+class BaseContext implements Context {
 
 	/**
 	 * @var Client HTTP(S) client
 	 */
-	private $client;
+	protected $client;
 
 	/**
 	 * @var ResponseInterface HTTP(S) response
 	 */
-	private $response;
+	protected $response;
 
 	/**
 	 * @var string|null JWT
 	 */
-	private $jwt;
+	protected $jwt;
 
-	private const API_PATH = '/api/v0/';
+	protected const API_PATH = '/api/v0/';
 
 	/**
 	 * Initializes context.
@@ -162,13 +162,7 @@ class FeatureContext implements Context {
 		$actual = Json::decode($body, Json::FORCE_ARRAY);
 		$expected = $table->getHash()[0];
 		foreach ($expected as $key => $value) {
-			if (is_bool($actual[$key])) {
-				$value = (bool) $value;
-			} elseif (is_float($actual[$key])) {
-				$value = (float) $value;
-			} elseif (is_int($actual[$key])) {
-				$value = (int) $value;
-			}
+			$this->correctType($actual[$key], $value);
 			if ((!array_key_exists($key, $actual)) ||
 				$actual[$key] !== $value) {
 				throw new Exception('Unexpected HTTP response body: ' . $body);
@@ -186,18 +180,64 @@ class FeatureContext implements Context {
 		$expected = $table->getHash();
 		foreach ($expected as $index => $object) {
 			foreach ($object as $key => $value) {
-				if (is_bool($actual[$index][$key])) {
-					$value = (bool) $value;
-				} elseif (is_float($actual[$index][$key])) {
-					$value = (float) $value;
-				} elseif (is_int($actual[$index][$key])) {
-					$value = (int) $value;
-				}
+				$this->correctType($actual[$index][$key], $value);
 				if ((!array_key_exists($key, $actual[$index])) ||
 					$actual[$index][$key] !== $value) {
 					throw new Exception('Unexpected HTTP response body: ' . $body);
 				}
 			}
+		}
+	}
+
+	/**
+	 * @When I edit optional feature :name:
+	 * @param string $name Feature name
+	 * @param TableNode $table Feature configuration
+	 */
+	public function iEditOptionalFeature(string $name, TableNode $table): void {
+		$options = $this->getClientOptions();
+		$row = $table->getHash()[0];
+		$row['enabled'] = $row['enabled'] === 'true';
+		$options['body'] = Json::encode($row);
+		var_dump($options['body']);
+		$this->response = $this->client->request('PUT', self::API_PATH . '/features/' . $name, $options);
+	}
+
+
+	/**
+	 * @Then Optional feature :feature has configuration:
+	 * @param string $feature Optional feature name
+	 * @param TableNode $table Optional feature configuration in table
+	 */
+	public function optionalFeatureHasConfiguration(string $feature, TableNode $table): void {
+		$response = $this->client->get(self::API_PATH . '/features/' . $feature, $this->getClientOptions());
+		if ($response->getStatusCode() !== 200) {
+			throw new Exception('Unexpected HTTP status code: ' . $response->getStatusCode());
+		}
+		$body = $response->getBody()->getContents();
+		$actual = Json::decode($body, Json::FORCE_ARRAY);
+		$expected = $table->getHash()[0];
+		foreach ($expected as $key => $value) {
+			$this->correctType($actual[$key], $value);
+			if ((!array_key_exists($key, $actual)) ||
+				$actual[$key] !== $value) {
+				throw new Exception('Unexpected key "' . $key . '" value: ' . $value);
+			}
+		}
+	}
+
+	/**
+	 * Corrects types
+	 * @param mixed $actual Actual value
+	 * @param mixed $expected Expected value
+	 */
+	private function correctType($actual, &$expected): void {
+		if (is_bool($actual)) {
+			$expected = mb_strtolower($expected, 'UTF-8') === 'true';
+		} elseif (is_float($actual)) {
+			$expected = (float) $expected;
+		} elseif (is_int($actual)) {
+			$expected = (int) $expected;
 		}
 	}
 

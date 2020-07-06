@@ -58,13 +58,12 @@ class SchedulerSchemaManager extends JsonSchemaManager {
 	 * Validates JSON
 	 * @param mixed $json JSON to validate
 	 * @param bool $tryFix Try fix JSON?
-	 * @return bool Is the JSON valid?
 	 * @throws InvalidJsonException
 	 * @throws InvalidTaskMessageException
 	 * @throws JsonException
 	 * @throws NonexistentJsonSchemaException
 	 */
-	public function validate($json, bool $tryFix = false): bool {
+	public function validate($json, bool $tryFix = false): void {
 		parent::setSchema('schema_cache_record');
 		parent::validate($json, $tryFix);
 		$tasks = !is_array($json->task) ? [$json->task] : $json->task;
@@ -75,7 +74,6 @@ class SchedulerSchemaManager extends JsonSchemaManager {
 			$this->apiSchemaManager->setSchemaForRequest($task->message->mType);
 			$this->apiSchemaManager->validate($task->message);
 		}
-		return true;
 	}
 
 }

@@ -1,3 +1,6 @@
 services:
+	apiJsonSchemaValidator:
+		factory: App\ApiModule\Version0\Models\JsonSchemaValidator
+		autowired: self
 	- App\ApiModule\Version0\Models\JwtAuthenticator
 	- App\ApiModule\Version0\Models\JwtConfigurator

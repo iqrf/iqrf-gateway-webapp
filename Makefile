@@ -134,7 +134,7 @@ phpstan: deps
 	NETTE_TESTER_RUNNER=1 vendor/bin/phpstan analyse -c phpstan.neon
 
 rector: deps
-	vendor/bin/rector process
+	NETTE_TESTER_RUNNER=1 vendor/bin/rector process --dry-run
 
 temp/code-checker:
 	composer create-project nette/code-checker temp/code-checker --no-interaction

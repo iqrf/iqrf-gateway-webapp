@@ -18,68 +18,52 @@
  */
 declare(strict_types = 1);
 
-namespace App\CoreModule\Models;
+namespace App\ApiModule\Version0\Models;
 
+use Apitte\Core\Http\ApiRequest;
 use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
-use JsonSchema\Constraints\Constraint;
+use App\CoreModule\Models\CommandManager;
+use App\CoreModule\Models\JsonFileManager;
 use JsonSchema\Validator;
 use Nette\Utils\JsonException;
 use stdClass;
 
 /**
- * Tool for reading and validating JSON schemas
+ * API JSON schema validator
  */
-class JsonSchemaManager extends JsonFileManager {
-
-	/**
-	 * @var string JSON schema file name
-	 */
-	private $schema;
+class JsonSchemaValidator extends JsonFileManager {
 
 	/**
 	 * Constructor
-	 * @param string $configDir Directory with JSON schemas
 	 * @param CommandManager $commandManager Command manager
 	 */
-	public function __construct(string $configDir, CommandManager $commandManager) {
+	public function __construct(CommandManager $commandManager) {
+		$configDir = __DIR__ . '/../../../../api/schemas';
 		parent::__construct($configDir, $commandManager);
 	}
 
 	/**
-	 * Sets the JSON schema file name
-	 * @param string $fileName JSON schema file name
-	 * @throws NonexistentJsonSchemaException
-	 */
-	public function setSchema(string $fileName): void {
-		if (!parent::exists($fileName)) {
-			$message = 'Non-existing JSON schema ' . $fileName . '.';
-			throw new NonexistentJsonSchemaException($message);
-		}
-		$this->schema = $fileName;
-	}
-
-	/**
 	 * Validates JSON
-	 * @param mixed $json JSON to validate
-	 * @param bool $tryFix Try fix JSON?
+	 * @param string $schema JSON schema file name
+	 * @param ApiRequest $request API request
 	 * @throws InvalidJsonException
 	 * @throws JsonException
 	 */
-	public function validate($json, bool $tryFix = false): void {
+	public function validate(string $schema, ApiRequest $request): void {
+		if (!parent::exists($schema)) {
+			$message = 'Non-existing JSON schema ' . $schema . '.';
+			throw new NonexistentJsonSchemaException($message);
+		}
+		$json = $request->getJsonBody(false);
 		if (!is_array($json) && !($json instanceof stdClass)) {
 			$message = 'Invalid JSON format';
 			throw new InvalidJsonException($message);
 		}
-		$schema = parent::read($this->schema);
 		$validator = new Validator();
-		$checkMode = null;
-		if ($tryFix) {
-			$checkMode = Constraint::CHECK_MODE_TYPE_CAST | Constraint::CHECK_MODE_COERCE_TYPES | Constraint::CHECK_MODE_APPLY_DEFAULTS | Constraint::CHECK_MODE_ONLY_REQUIRED_DEFAULTS;
-		}
-		$validator->validate($json, $schema, $checkMode);
+		$validator->validate($json, parent::read($schema));
 		if (!$validator->isValid()) {
-			$message = 'JSON does not validate. JSON schema: ' . $this->schema . ' Violations:';
+			$message = 'JSON does not validate. JSON schema: ' . $schema . ' Violations:';
 			foreach ($validator->getErrors() as $error) {
 				$message .= PHP_EOL . '[' . $error['property'] . '] ' . $error['message'];
 			}

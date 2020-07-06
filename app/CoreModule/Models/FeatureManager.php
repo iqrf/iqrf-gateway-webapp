@@ -91,7 +91,7 @@ class FeatureManager {
 	 * Reads features configuration
 	 * @return array<string, array<string, bool|int|string>> Features configuration
 	 */
-	protected function read(): array {
+	public function read(): array {
 		try {
 			$content = FileSystem::read($this->path);
 			$configuration = Neon::decode($content) ?? [];
@@ -99,6 +99,36 @@ class FeatureManager {
 		} catch (IOException | NeonException $e) {
 			return self::DEFAULTS;
 		}
+	}
+
+	/**
+	 * Edits feature configuration
+	 * @param string $name Feature name
+	 * @param array<string, bool|int|string> $config Feature configuration
+	 * @throws FeatureNotFoundException
+	 * @throws IOException
+	 */
+	public function edit(string $name, array $config): void {
+		$configuration = $this->read();
+		if (!array_key_exists($name, $configuration)) {
+			throw new FeatureNotFoundException();
+		}
+		$configuration[$name] = $config;
+		$this->write($configuration);
+	}
+
+	/**
+	 * Returns feature configuration
+	 * @param string $name Feature name
+	 * @return array<string, bool|int|string> Feature configuration
+	 * @throws FeatureNotFoundException
+	 */
+	public function get(string $name): array {
+		$configuration = $this->read();
+		if (!array_key_exists($name, $configuration)) {
+			throw new FeatureNotFoundException();
+		}
+		return $configuration[$name];
 	}
 
 	/**
@@ -118,12 +148,8 @@ class FeatureManager {
 	 * @throws FeatureNotFoundException
 	 */
 	public function isEnabled(string $name): bool {
-		if (!array_key_exists($name, self::DEFAULTS)) {
-			throw new FeatureNotFoundException();
-		}
-		$configuration = $this->read();
-		$feature = $configuration[$name] ?? self::DEFAULTS[$name];
-		return $feature['enabled'] ?? self::DEFAULTS[$name]['enabled'];
+		$feature = $this->get($name);
+		return $feature['enabled'];
 	}
 
 	/**
@@ -132,11 +158,7 @@ class FeatureManager {
 	 * @return bool Has the feature URL?
 	 */
 	public function hasUrl(string $name): bool {
-		if (!array_key_exists($name, self::DEFAULTS)) {
-			throw new FeatureNotFoundException();
-		}
-		$configuration = $this->read();
-		$feature = $configuration[$name] ?? self::DEFAULTS[$name];
+		$feature = $this->get($name);
 		return isset($feature['url']);
 	}
 
@@ -176,6 +198,7 @@ class FeatureManager {
 	 * Sets features enablement
 	 * @param array<string> $names Feature names
 	 * @param bool $enabled Are features enabled?
+	 * @throws IOException
 	 */
 	public function setEnabled(array $names, bool $enabled = true): void {
 		$config = $this->read();
