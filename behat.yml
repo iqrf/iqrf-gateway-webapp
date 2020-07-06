@@ -2,6 +2,6 @@ default:
   suites:
     default:
       contexts:
-        - \Tests\features\bootstrap\FeatureContext
+        - \Tests\features\bootstrap\BaseContext
       paths:
         features: "tests/features/"

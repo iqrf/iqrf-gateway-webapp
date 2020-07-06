@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ApiModule\Version0\Models;
 
+use Apitte\Core\Http\ApiRequest;
 use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use App\CoreModule\Models\CommandManager;
@@ -45,15 +46,16 @@ class JsonSchemaValidator extends JsonFileManager {
 	/**
 	 * Validates JSON
 	 * @param string $schema JSON schema file name
-	 * @param mixed $json JSON to validate
+	 * @param ApiRequest $request API request
 	 * @throws InvalidJsonException
 	 * @throws JsonException
 	 */
-	public function validate(string $schema, $json): void {
+	public function validate(string $schema, ApiRequest $request): void {
 		if (!parent::exists($schema)) {
 			$message = 'Non-existing JSON schema ' . $schema . '.';
 			throw new NonexistentJsonSchemaException($message);
 		}
+		$json = $request->getJsonBody(false);
 		if (!is_array($json) && !($json instanceof stdClass)) {
 			$message = 'Invalid JSON format';
 			throw new InvalidJsonException($message);

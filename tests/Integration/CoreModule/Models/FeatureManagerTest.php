@@ -48,8 +48,28 @@ class FeatureManagerTest extends TestCase {
 	 * Tests the constructor with nonexistent path
 	 */
 	public function testConstructorNonexistent(): void {
-		$manager = new FeatureManager(self::TMP_PATH . '/nonsence');
+		$manager = new FeatureManager(self::TMP_PATH . '/nonsense');
 		Assert::same(['docs'], $manager->listEnabled());
+	}
+
+	/**
+	 * Tests the function to edit feature configuration (nonexistent feature)
+	 */
+	public function testEditNotFound(): void {
+		Assert::exception(function (): void {
+			$this->manager->edit('nonsense', ['enabled' => true]);
+		}, FeatureNotFoundException::class);
+	}
+
+	/**
+	 * Tests the function to get optional feature configuration
+	 */
+	public function testGet(): void {
+		$expected = [
+			'enabled' => false,
+			'url' => '/grafana/',
+		];
+		Assert::same($expected, $this->manager->get('grafana'));
 	}
 
 	/**
@@ -104,7 +124,7 @@ class FeatureManagerTest extends TestCase {
 	 */
 	public function testSetEnabledNotFound(): void {
 		Assert::exception(function (): void {
-			$this->manager->setEnabled(['nonsence']);
+			$this->manager->setEnabled(['nonsense']);
 		}, FeatureNotFoundException::class);
 	}
 

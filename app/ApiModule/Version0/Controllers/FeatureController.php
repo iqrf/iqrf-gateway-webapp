@@ -151,18 +151,18 @@ class FeatureController extends BaseController {
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$name = urldecode($request->getParameter('feature'));
 		try {
-			$this->validator->validate('features/' . $name, $request->getJsonBody(false));
+			$this->validator->validate('features/' . $name, $request);
 			$this->manager->edit($name, $request->getJsonBody());
+			return $response;
 		} catch (FeatureNotFoundException | NonexistentJsonSchemaException $e) {
 			return $response->withStatus(404, 'Feature not found');
 		} catch (JsonException $e) {
 			return $response->withStatus(400, 'Invalid JSON syntax');
 		} catch (InvalidJsonException $e) {
-			return $response->withStatus(400, $e->getMessage());
+			return $response->withStatus(400, 'Invalid JSON structure');
 		} catch (IOException $e) {
 			return $response->withStatus(500, $e->getMessage());
 		}
-		return $response;
 	}
 
 }
