@@ -1,4 +1,6 @@
 services:
+	- App\ConsoleModule\Commands\ApiKeyAddCommand
+	- App\ConsoleModule\Commands\ApiKeyListCommand
 	- App\ConsoleModule\Commands\DatabaseCreateCommand
 	- App\ConsoleModule\Commands\FeatureDisableCommand
 	- App\ConsoleModule\Commands\FeatureEnableCommand

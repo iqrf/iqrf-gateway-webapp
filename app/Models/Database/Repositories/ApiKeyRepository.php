@@ -33,7 +33,7 @@ class ApiKeyRepository extends EntityRepository {
 	 * @param string $key API key
 	 * @return ApiKey|null API key entity
 	 */
-	public function findOneByUserName(string $key): ?ApiKey {
+	public function findOneKey(string $key): ?ApiKey {
 		$apiKey = $this->findOneBy(['key' => $key]);
 		assert($apiKey instanceof ApiKey || $apiKey === null);
 		return $apiKey;

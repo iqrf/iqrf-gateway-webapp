@@ -47,21 +47,21 @@ class ApiKey {
 	private $description;
 
 	/**
-	 * @var DateTime API key is valid to date
+	 * @var DateTime|null API key expiration
 	 * @ORM\Column(type="date", nullable=true)
 	 */
-	private $validTo;
+	private $expiration;
 
 	/**
 	 * Constructor
 	 * @param string $key API key
 	 * @param string $description API key description
-	 * @param DateTime|null $validTo API key is valid to date
+	 * @param DateTime|null $expiration API key expiration
 	 */
-	public function __construct(string $key, string $description, ?DateTime $validTo) {
+	public function __construct(string $key, string $description, ?DateTime $expiration) {
 		$this->key = $key;
 		$this->description = $description;
-		$this->validTo = $validTo;
+		$this->expiration = $expiration;
 	}
 
 	/**
@@ -70,6 +70,14 @@ class ApiKey {
 	 */
 	public function getDescription(): string {
 		return $this->description;
+	}
+
+	/**
+	 * Returns API key expiration
+	 * @return DateTime|null API key expiration
+	 */
+	public function getExpiration(): ?DateTime {
+		return $this->expiration;
 	}
 
 	/**
@@ -85,11 +93,11 @@ class ApiKey {
 	 * @return bool Is API key expired
 	 */
 	public function isExpired(): bool {
-		if ($this->validTo === null) {
+		if ($this->expiration === null) {
 			return false;
 		}
 		$now = new DateTime();
-		return $this->validTo < $now;
+		return $this->expiration < $now;
 	}
 
 	/**

@@ -39,12 +39,17 @@ class ApiKeyTest extends TestCase {
 	private $key = '098a141333b044f3f08de9826f0c6c1bbd76407de73ed7eb95c8d2ae7cde52a6';
 
 	/**
+	 * @var DateTime API key expiration
+	 */
+	private $expiration;
+
+	/**
 	 * Sets up the test environment
 	 */
 	protected function setUp(): void {
 		parent::setUp();
-		$validTo = new DateTime('2020-01-01T00:00');
-		$this->entity = new ApiKey($this->key, $this->description, $validTo);
+		$this->expiration = new DateTime('2020-01-01T00:00');
+		$this->entity = new ApiKey($this->key, $this->description, $this->expiration);
 	}
 
 	/**
@@ -52,6 +57,13 @@ class ApiKeyTest extends TestCase {
 	 */
 	public function testGetDescription(): void {
 		Assert::same($this->description, $this->entity->getDescription());
+	}
+
+	/**
+	 * Tests the function to return API key expiration
+	 */
+	public function testGetExpiration(): void {
+		Assert::same($this->expiration, $this->entity->getExpiration());
 	}
 
 	/**
