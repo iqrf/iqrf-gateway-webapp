@@ -23,6 +23,7 @@ namespace App\Models\Database\Entities;
 use App\Models\Database\Attributes\TId;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 
 /**
  * API key entity
@@ -30,7 +31,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="`api_keys`")
  * @ORM\HasLifecycleCallbacks()
  */
-class ApiKey {
+class ApiKey implements JsonSerializable {
 
 	use TId;
 
@@ -106,6 +107,18 @@ class ApiKey {
 	 */
 	public static function generate(): string {
 		return bin2hex(random_bytes(32));
+	}
+
+	/**
+	 * Returns JSON serialized data
+	 * @return array<string, int|string|null> JSON serialized data
+	 */
+	public function jsonSerialize(): array {
+		return [
+			'id' => $this->getId(),
+			'description' => $this->getDescription(),
+			'expiration' => $this->getExpiration() === null ? null : $this->getExpiration()->format('c'),
+		];
 	}
 
 }

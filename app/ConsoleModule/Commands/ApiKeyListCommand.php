@@ -56,11 +56,11 @@ class ApiKeyListCommand extends EntityManagerCommand {
 		foreach ($repository->findAll() as $apiKey) {
 			assert($apiKey instanceof ApiKey);
 			$expiration = $apiKey->getExpiration() === null ? 'none' : $apiKey->getExpiration()->format('c');
-			$apiKeys[] = [$apiKey->getKey(), $apiKey->getDescription(), $expiration];
+			$apiKeys[] = [$apiKey->getId(), $apiKey->getDescription(), $expiration];
 		}
 		$style = new SymfonyStyle($input, $output);
 		$style->title('List API keys');
-		$style->table(['Key', 'Description', 'Expiration date'], $apiKeys);
+		$style->table(['Key ID', 'Description', 'Expiration date'], $apiKeys);
 		return 0;
 	}
 
