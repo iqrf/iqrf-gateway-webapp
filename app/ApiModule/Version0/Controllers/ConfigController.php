@@ -36,6 +36,7 @@ use App\ConfigModule\Models\GenericManager;
 use App\ConfigModule\Models\MainManager;
 use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
+use Nette\IOException;
 use Nette\Utils\JsonException;
 
 /**
@@ -92,6 +93,8 @@ class ConfigController extends BaseController {
 			return $response->writeJsonBody($config);
 		} catch (JsonException $e) {
 			return $response->withStatus(500, 'Invalid JSON syntax');
+		} catch (IOException $e) {
+			return $response->withStatus(500, $e->getMessage());
 		}
 	}
 
@@ -123,6 +126,8 @@ class ConfigController extends BaseController {
 			return $response;
 		} catch (JsonException $e) {
 			return $response->withStatus(400, 'Invalid JSON syntax');
+		} catch (IOException $e) {
+			return $response->withStatus(500, $e->getMessage());
 		}
 	}
 
@@ -153,6 +158,8 @@ class ConfigController extends BaseController {
 			return $response->withStatus(201);
 		} catch (JsonException $e) {
 			return $response->withStatus(400, 'Invalid JSON syntax');
+		} catch (IOException $e) {
+			return $response->withStatus(500, $e->getMessage());
 		}
 	}
 
@@ -185,6 +192,8 @@ class ConfigController extends BaseController {
 			return $response;
 		} catch (JsonException $e) {
 			return $response->withStatus(500, 'Invalid JSON syntax');
+		} catch (IOException $e) {
+			return $response->withStatus(500, $e->getMessage());
 		}
 	}
 
@@ -221,6 +230,8 @@ class ConfigController extends BaseController {
 			$this->componentManager->save($request->getJsonBody(), $id);
 		} catch (JsonException $e) {
 			return $response->withStatus(400, 'Invalid JSON syntax');
+		} catch (IOException $e) {
+			return $response->withStatus(500, $e->getMessage());
 		}
 		return $response;
 	}
@@ -261,6 +272,8 @@ class ConfigController extends BaseController {
 			return $response->writeJsonBody($body);
 		} catch (JsonException $e) {
 			return $response->withStatus(500, 'Invalid JSON syntax');
+		} catch (IOException $e) {
+			return $response->withStatus(500, $e->getMessage());
 		}
 	}
 
@@ -312,6 +325,8 @@ class ConfigController extends BaseController {
 			return $response->withStatus(400, $e->getMessage());
 		} catch (InvalidTaskMessageException $e) {
 			return $response->withStatus(400, 'Invalid message');
+		} catch (IOException $e) {
+			return $response->withStatus(500, $e->getMessage());
 		}
 	}
 
@@ -389,6 +404,8 @@ class ConfigController extends BaseController {
 			return $response->withStatus(400, $e->getMessage());
 		} catch (InvalidTaskMessageException $e) {
 			return $response->withStatus(400, 'Invalid message');
+		} catch (IOException $e) {
+			return $response->withStatus(500, $e->getMessage());
 		}
 		return $response;
 	}
@@ -428,6 +445,8 @@ class ConfigController extends BaseController {
 			return $response->withStatus(404, 'Component not found');
 		} catch (JsonException $e) {
 			return $response->withStatus(500, 'Invalid JSON syntax');
+		} catch (IOException $e) {
+			return $response->withStatus(500, $e->getMessage());
 		}
 		if ($configuration === []) {
 			return $response->withStatus(404, 'Instance not found');

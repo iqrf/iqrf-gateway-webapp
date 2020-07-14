@@ -25,12 +25,6 @@ application:
 	mapping:
 		*: App\*Module\Presenters\*Presenter
 
-database:
-	default:
-		dsn: 'sqlite:%appDir%/config/database.db'
-	iqrf_os:
-		dsn: 'sqlite:%appDir%/../iqrf/os.db'
-
 extensions:
 	formRenderer: Contributte\Forms\DI\ApplicationFormFactoryExtension
 	iqrfRepository: Iqrf\Repository\DI\IqrfRepositoryExtension

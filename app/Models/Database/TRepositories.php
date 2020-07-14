@@ -20,13 +20,25 @@ declare(strict_types = 1);
 
 namespace App\Models\Database;
 
+use App\Models\Database\Entities\IqrfOsPatch;
 use App\Models\Database\Entities\User;
+use App\Models\Database\Repositories\IqrfOsPatchRepository;
 use App\Models\Database\Repositories\UserRepository;
 
 /**
  * @mixin EntityManager
  */
 trait TRepositories {
+
+	/**
+	 * Returns the IQRF OS pach repository
+	 * @return IqrfOsPatchRepository IQRF OS patch repository
+	 */
+	public function getIqrfOsPatchRepository(): IqrfOsPatchRepository {
+		$repository = $this->getRepository(IqrfOsPatch::class);
+		assert($repository instanceof IqrfOsPatchRepository);
+		return $repository;
+	}
 
 	/**
 	 * Returns the user repository

@@ -4,6 +4,7 @@ services:
     image: iqrf-gateway-webapp-behat
     container_name: behat
     command: make behat
+    tty: true
     depends_on:
       - webapp
     networks:

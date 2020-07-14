@@ -36,6 +36,11 @@ use Ublaboo\DataGrid\Exception\DataGridException;
 class ComponentsDataGridFactory {
 
 	/**
+	 * Prefix for translator
+	 */
+	private const TRANSLATE_PREFIX = 'config.components.form.';
+
+	/**
 	 * @var ComponentManager Component manager
 	 */
 	private $configManager;
@@ -72,18 +77,26 @@ class ComponentsDataGridFactory {
 	public function create(ComponentPresenter $presenter, string $name): DataGrid {
 		$this->presenter = $presenter;
 		$grid = $this->dataGridFactory->create($presenter, $name);
-		$grid->setDataSource($this->load());
-		$grid->addColumnText('name', 'config.components.form.name');
-		$grid->addColumnText('libraryPath', 'config.components.form.libraryPath');
-		$grid->addColumnText('libraryName', 'config.components.form.libraryName');
-		$grid->addColumnStatus('enabled', 'config.components.form.enabled')
-			->addOption(true, 'config.components.form.enabled')
+		$grid->setDataSource([]);
+		$grid->addColumnText('name', self::TRANSLATE_PREFIX . 'name')
+			->setSortable();
+		if ($this->presenter->getUser()->isInRole('power')) {
+			$grid->addColumnNumber('startlevel', self::TRANSLATE_PREFIX . 'startlevel')
+				->setSortable();
+		}
+		$grid->addColumnText('libraryPath', self::TRANSLATE_PREFIX . 'libraryPath')
+			->setSortable();
+		$grid->addColumnText('libraryName', self::TRANSLATE_PREFIX . 'libraryName')
+			->setSortable();
+		$grid->addColumnStatus('enabled', self::TRANSLATE_PREFIX . 'enabled')
+			->addOption(true, self::TRANSLATE_PREFIX . 'enabled')
 			->setIcon('ok')
 			->endOption()
-			->addOption(false, 'config.components.form.disabled')
+			->addOption(false, self::TRANSLATE_PREFIX . 'disabled')
 			->setIcon('remove')
 			->setClass('btn btn-xs btn-danger')
 			->endOption()
+			->setSortable()
 			->onChange[] = [$this, 'changeStatus'];
 		$grid->addAction('edit', 'config.actions.Edit')
 			->setIcon('pencil')
@@ -91,7 +104,7 @@ class ComponentsDataGridFactory {
 		$grid->addAction('delete', 'config.actions.Remove')
 			->setIcon('remove')
 			->setClass('btn btn-xs btn-danger ajax')
-			->setConfirmation(new StringConfirmation('config.components.form.messages.confirmDelete', 'name'));
+			->setConfirmation(new StringConfirmation(self::TRANSLATE_PREFIX . 'messages.confirmDelete', 'name'));
 		$grid->allowRowsAction('delete', function (): bool {
 			return $this->presenter->getUser()->isInRole('power');
 		});
@@ -104,20 +117,20 @@ class ComponentsDataGridFactory {
 	/**
 	 * Loads the data to the data grid
 	 * @return array<int, array<string, bool|int|string>> Data for the data grid
-	 * @throws JsonException
 	 */
-	private function load(): array {
+	public function load(): array {
+		$components = $this->configManager->list();
 		if ($this->presenter->getUser()->isInRole('power')) {
-			return $this->configManager->list();
+			return $components;
 		}
-		$visible = ['iqrf::IqrfCdc', 'iqrf::IqrfSpi', 'iqrf::IqrfUart'];
-		$components = [];
-		foreach ($this->configManager->list() as $component) {
-			if (in_array($component['name'], $visible, true)) {
-				$components[] = $component;
+		$whitelisted = ['iqrf::IqrfCdc', 'iqrf::IqrfSpi', 'iqrf::IqrfUart'];
+		$filtered = [];
+		foreach ($components as $component) {
+			if (in_array($component['name'], $whitelisted, true)) {
+				$filtered[] = $component;
 			}
 		}
-		return $components;
+		return $filtered;
 	}
 
 	/**
@@ -139,7 +152,12 @@ class ComponentsDataGridFactory {
 		} finally {
 			if ($this->presenter->isAjax()) {
 				$dataGrid = $this->presenter['configComponentsDataGrid'];
-				$dataGrid->setDataSource($this->load());
+				try {
+					$dataSource = $this->load();
+				} catch (IOException | JsonException $e) {
+					$dataSource = [];
+				}
+				$dataGrid->setDataSource($dataSource);
 				$dataGrid->reloadTheWholeGrid();
 			}
 		}

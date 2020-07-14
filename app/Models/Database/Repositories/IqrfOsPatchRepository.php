@@ -18,32 +18,13 @@
  */
 declare(strict_types = 1);
 
-namespace Tests\Toolkit\TestCases;
+namespace App\Models\Database\Repositories;
 
-use Nette\Caching\Storages\MemoryStorage;
-use Nette\Database\Connection;
-use Nette\Database\Context;
-use Nette\Database\Structure;
-use Tester\TestCase;
+use Doctrine\ORM\EntityRepository;
 
 /**
- * Database test case
+ * IQRF OS patch repository
  */
-abstract class DatabaseTestCase extends TestCase {
-
-	/**
-	 * @var Context Nette Database context
-	 */
-	protected $context;
-
-	/**
-	 * Sets up the test environment
-	 */
-	protected function setUp(): void {
-		$connection = new Connection('sqlite::memory:');
-		$cacheStorage = new MemoryStorage();
-		$structure = new Structure($connection, $cacheStorage);
-		$this->context = new Context($connection, $structure);
-	}
+class IqrfOsPatchRepository extends EntityRepository {
 
 }

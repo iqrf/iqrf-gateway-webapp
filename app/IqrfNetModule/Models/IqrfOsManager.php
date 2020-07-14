@@ -25,8 +25,8 @@ use App\IqrfNetModule\Enums\TrSeries;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Exceptions\UserErrorException;
-use Nette\Database\Context;
-use Nette\Database\Table\ActiveRow;
+use App\Models\Database\Entities\IqrfOsPatch;
+use App\Models\Database\EntityManager;
 use Nette\Utils\JsonException;
 
 /**
@@ -35,23 +35,23 @@ use Nette\Utils\JsonException;
 class IqrfOsManager {
 
 	/**
-	 * @var Context Database context
-	 */
-	private $database;
-
-	/**
 	 * @var DpaManager DPA manager
 	 */
 	private $dpaManager;
 
 	/**
-	 * Constructor
-	 * @param Context $database Database context
-	 * @param DpaManager $dpaManager DPA manager
+	 * @var EntityManager Entity manager
 	 */
-	public function __construct(Context $database, DpaManager $dpaManager) {
-		$this->database = $database;
+	private $entityManager;
+
+	/**
+	 * Constructor
+	 * @param DpaManager $dpaManager DPA manager
+	 * @param EntityManager $entityManager Entity manager
+	 */
+	public function __construct(DpaManager $dpaManager, EntityManager $entityManager) {
 		$this->dpaManager = $dpaManager;
+		$this->entityManager = $entityManager;
 	}
 
 	/**
@@ -90,15 +90,14 @@ class IqrfOsManager {
 	private function listVersions(IqrfOs $os): array {
 		$versions = [];
 		$versions[$os->getBuild()] = $os->getDescription();
-		$table = $this->database->table('os_patches');
-		$table->where('from_build = ? AND part = ?', $os->getBuild(), 1);
-		/**
-		 * @var ActiveRow $row Database active row
-		 */
-		foreach ($table->fetchAll() as $row) {
-			$trType = TrSeries::fromIqrfOsFileName((string) $row->module_type);
-			$entity = new IqrfOs((string) $row->to_build, (string) $row->to_version, $trType);
-			$versions[(string) $row->to_build] = $entity->getDescription();
+		$repository = $this->entityManager->getIqrfOsPatchRepository();
+		$patches = $repository->findBy(['fromBuild' => $os->getBuild(), 'part' => 1]);
+		foreach ($patches as $patch) {
+			assert($patch instanceof IqrfOsPatch);
+			$trType = TrSeries::fromIqrfOsFileName($patch->getModuleType());
+			$toBuild = dechex($patch->getToBuild());
+			$entity = new IqrfOs($toBuild, (string) $patch->getToVersion(), $trType);
+			$versions[$toBuild] = $entity->getDescription();
 		}
 		return $versions;
 	}
@@ -128,13 +127,14 @@ class IqrfOsManager {
 	 * @return array<string> Array of IQRF OS diff files
 	 */
 	public function getOsFiles(string $fromBuild, string $toBuild): array {
-		$table = $this->database->table('os_patches');
-		$table->select('filename');
-		$table->where('from_build = ? AND to_build = ?', $fromBuild, $toBuild);
-		$table->order('part ASC');
-		return array_map(function (ActiveRow $row): string {
-			return __DIR__ . '/../../../iqrf/os/' . $row->filename;
-		}, $table->fetchAll());
+		$repository = $this->entityManager->getIqrfOsPatchRepository();
+		$patches = $repository->findBy([
+			'fromBuild' => hexdec($fromBuild),
+			'toBuild' => hexdec($toBuild),
+		], ['part' => 'ASC']);
+		return array_map(function (IqrfOsPatch $patch): string {
+			return __DIR__ . '/../../../iqrf/os/' . $patch->getFileName();
+		}, $patches);
 	}
 
 }
