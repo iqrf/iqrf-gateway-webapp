@@ -29,6 +29,7 @@ use Doctrine\ORM\EntityRepository;
 class UserRepository extends EntityRepository {
 
 	/**
+	 * Finds the user by username
 	 * @param string $userName User name
 	 * @return User|null User entity
 	 */
@@ -36,6 +37,19 @@ class UserRepository extends EntityRepository {
 		$user = $this->findOneBy(['username' => $userName]);
 		assert($user instanceof User || $user === null);
 		return $user;
+	}
+
+	/**
+	 * Lists user names
+	 * @return array<string> User names
+	 */
+	public function listUserNames(): array {
+		$usernames = [];
+		foreach ($this->findAll() as $user) {
+			assert($user instanceof User);
+			$usernames[] = $user->getUserName();
+		}
+		return $usernames;
 	}
 
 }

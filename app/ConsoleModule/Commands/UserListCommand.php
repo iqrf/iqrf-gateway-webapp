@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ConsoleModule\Commands;
 
+use App\Models\Database\Entities\User;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -52,9 +53,22 @@ class UserListCommand extends UserCommand {
 		$header = ['ID', 'Username', 'Role', 'Language'];
 		$table = new Table($output);
 		$table->setHeaders($header);
-		$table->setRows($this->userManager->getUsers());
+		$table->setRows($this->getUsers());
 		$table->render();
 		return 0;
+	}
+
+	/**
+	 * Returns all registered users
+	 * @return array<int, array<string, int|string>> Registered users
+	 */
+	private function getUsers(): array {
+		$users = [];
+		foreach ($this->repository->findAll() as $user) {
+			assert($user instanceof User);
+			$users[] = $user->jsonSerialize();
+		}
+		return $users;
 	}
 
 }

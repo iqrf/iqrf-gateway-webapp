@@ -30,11 +30,11 @@ use Apitte\Core\Annotation\Controller\Responses;
 use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
-use App\CoreModule\Exceptions\NonexistentUserException;
-use App\CoreModule\Exceptions\UsernameAlreadyExistsException;
-use App\CoreModule\Models\UserManager;
 use App\Exceptions\InvalidUserLanguageException;
 use App\Exceptions\InvalidUserRoleException;
+use App\Models\Database\Entities\User;
+use App\Models\Database\EntityManager;
+use App\Models\Database\Repositories\UserRepository;
 use Nette\Utils\JsonException;
 
 /**
@@ -45,16 +45,22 @@ use Nette\Utils\JsonException;
 class UsersController extends BaseController {
 
 	/**
-	 * @var UserManager
+	 * @var EntityManager Entity manager
 	 */
-	private $userManager;
+	private $entityManager;
+
+	/**
+	 * @var UserRepository User database repository
+	 */
+	private $repository;
 
 	/**
 	 * Constructor
-	 * @param UserManager $userManager User manager
+	 * @param EntityManager $entityManager Entity manager
 	 */
-	public function __construct(UserManager $userManager) {
-		$this->userManager = $userManager;
+	public function __construct(EntityManager $entityManager) {
+		$this->entityManager = $entityManager;
+		$this->repository = $entityManager->getUserRepository();
 	}
 
 	/**
@@ -77,7 +83,7 @@ class UsersController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$users = $this->userManager->getUsers();
+		$users = $this->repository->findAll();
 		return $response->writeJsonBody($users);
 	}
 
@@ -116,9 +122,13 @@ class UsersController extends BaseController {
 			return $response->withStatus(400, 'Missing language');
 		}
 		try {
-			$this->userManager->register($json['username'], $json['password'], $json['role'], $json['language']);
-		} catch (UsernameAlreadyExistsException $e) {
-			return $response->withStatus(400, 'Username already exists');
+			$user = $this->repository->findOneByUserName($json['username']);
+			if ($user !== null) {
+				return $response->withStatus(400, 'Username already exists');
+			}
+			$user = new User($json['username'], $json['password'], $json['role'], $json['language']);
+			$this->entityManager->persist($user);
+			$this->entityManager->flush();
 		} catch (InvalidUserLanguageException $e) {
 			return $response->withStatus(400, 'Invalid user language');
 		} catch (InvalidUserRoleException $e) {
@@ -150,12 +160,13 @@ class UsersController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$user = $this->userManager->getInfo((int) $request->getParameter('id'));
+		$id = (int) $request->getParameter('id');
+		$user = $this->repository->find($id);
 		if ($user === null) {
 			return $response->withStatus(404);
 		}
-		unset($user['password']);
-		return $response->writeJsonBody($user);
+		assert($user instanceof User);
+		return $response->writeJsonObject($user);
 	}
 
 	/**
@@ -176,12 +187,14 @@ class UsersController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
-		try {
-			$this->userManager->delete((int) $request->getParameter('id'));
-			return $response->withStatus(200);
-		} catch (NonexistentUserException $e) {
+		$id = (int) $request->getParameter('id');
+		$user = $this->repository->find($id);
+		if ($user === null) {
 			return $response->withStatus(404, 'User not found');
 		}
+		$this->entityManager->remove($user);
+		$this->entityManager->flush();
+		return $response->withStatus(200);
 	}
 
 	/**
@@ -215,18 +228,35 @@ class UsersController extends BaseController {
 		} catch (JsonException $e) {
 			return $response->withStatus(400, 'Invalid JSON syntax');
 		}
-		try {
-			$this->userManager->edit($id, $json['username'] ?? null, $json['role'] ?? null, $json['language'] ?? null);
-			return $response->withStatus(200);
-		} catch (UsernameAlreadyExistsException $e) {
-			return $response->withStatus(400, 'Username already exists.');
-		} catch (NonexistentUserException $e) {
+		$user = $this->repository->find($id);
+		if ($user === null) {
 			return $response->withStatus(404, 'User not found.');
-		} catch (InvalidUserLanguageException $e) {
-			return $response->withStatus(400, 'Invalid user language');
-		} catch (InvalidUserRoleException $e) {
-			return $response->withStatus(400, 'Invalid user role');
 		}
+		assert($user instanceof User);
+		if (array_key_exists('username', $json)) {
+			$userWithName = $this->repository->findOneByUserName($json['username']);
+			if ($userWithName !== null && $userWithName->getId() !== $id) {
+				return $response->withStatus(400, 'Username already exists.');
+			}
+			$user->setUserName($json['username']);
+		}
+		if (array_key_exists('role', $json)) {
+			try {
+				$user->setRole($json['role']);
+			} catch (InvalidUserRoleException $e) {
+				return $response->withStatus(400, 'Invalid user role');
+			}
+		}
+		if (array_key_exists('language', $json)) {
+			try {
+				$user->setLanguage($json['language']);
+			} catch (InvalidUserLanguageException $e) {
+				return $response->withStatus(400, 'Invalid user language');
+			}
+		}
+		$this->entityManager->persist($user);
+		$this->entityManager->flush();
+		return $response->withStatus(200);
 	}
 
 }

@@ -20,7 +20,9 @@ declare(strict_types = 1);
 
 namespace App\ConsoleModule\Commands;
 
-use App\ConsoleModule\Models\ConsoleUserManager;
+use App\Models\Database\Entities\User;
+use App\Models\Database\EntityManager;
+use App\Models\Database\Repositories\UserRepository;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
@@ -40,17 +42,23 @@ class UserAddCommand extends Command {
 	protected static $defaultName = 'user:add';
 
 	/**
-	 * @var ConsoleUserManager User manager
+	 * @var UserRepository User database repository
 	 */
-	protected $userManager;
+	protected $repository;
+
+	/**
+	 * @var EntityManager Entity manager
+	 */
+	protected $entityManager;
 
 	/**
 	 * Constructor
-	 * @param ConsoleUserManager $userManager User manager
+	 * @param EntityManager $entityManager Entity manager
 	 */
-	public function __construct(ConsoleUserManager $userManager) {
+	public function __construct(EntityManager $entityManager) {
 		parent::__construct();
-		$this->userManager = $userManager;
+		$this->entityManager = $entityManager;
+		$this->repository = $entityManager->getUserRepository();
 	}
 
 	/**
@@ -79,7 +87,9 @@ class UserAddCommand extends Command {
 		$pass = $this->askPassword($input, $output);
 		$role = $this->askRole($input, $output);
 		$lang = $this->askLanguage($input, $output);
-		$this->userManager->register($name, $pass, $role, $lang);
+		$user = new User($name, $pass, $role, $lang);
+		$this->entityManager->persist($user);
+		$this->entityManager->flush();
 		return 0;
 	}
 
@@ -95,8 +105,10 @@ class UserAddCommand extends Command {
 			$helper = $this->getHelper('question');
 			$question = new Question('Please enter the username: ');
 			$name = $helper->ask($input, $output, $question);
-			if ($this->userManager->uniqueUserName($name)) {
+			if ($name !== null && $this->repository->findOneByUserName($name) === null) {
 				$username = $name;
+			} else {
+				$output->writeln('This username is already taken. Please choose another username.');
 			}
 		}
 		return $username;
@@ -126,10 +138,9 @@ class UserAddCommand extends Command {
 	 */
 	private function askRole(InputInterface $input, OutputInterface $output): string {
 		$role = $input->getOption('role');
-		$roles = ['power', 'normal'];
-		while ($role === null || !in_array($role, $roles, true)) {
+		while ($role === null || !in_array($role, User::ROLES, true)) {
 			$helper = $this->getHelper('question');
-			$question = new ChoiceQuestion('Please enter the user\'s role: ', $roles, 'normal');
+			$question = new ChoiceQuestion('Please enter the user\'s role: ', User::ROLES, User::ROLE_DEFAULT);
 			$role = $helper->ask($input, $output, $question);
 		}
 		return $role;
@@ -143,10 +154,9 @@ class UserAddCommand extends Command {
 	 */
 	private function askLanguage(InputInterface $input, OutputInterface $output): string {
 		$language = $input->getOption('language');
-		$languages = ['en'];
-		while ($language === null || !in_array($language, $languages, true)) {
+		while ($language === null || !in_array($language, User::LANGUAGES, true)) {
 			$helper = $this->getHelper('question');
-			$question = new ChoiceQuestion('Please enter the user\'s language: ', $languages, 'en');
+			$question = new ChoiceQuestion('Please enter the user\'s language: ', User::LANGUAGES, User::LANGUAGE_DEFAULT);
 			$language = $helper->ask($input, $output, $question);
 		}
 		return $language;

@@ -21,8 +21,8 @@ declare(strict_types = 1);
 namespace App\CoreModule\Presenters;
 
 use App\CoreModule\Forms\SignInFormFactory;
-use App\CoreModule\Models\UserManager;
 use App\CoreModule\Traits\TPresenterFlashMessage;
+use App\Models\Database\EntityManager;
 use Doctrine\DBAL\Exception\DriverException;
 use Doctrine\DBAL\Exception\TableNotFoundException;
 use Nette\Application\UI\Form;
@@ -47,9 +47,9 @@ class SignPresenter extends BasePresenter {
 	public $signInFactory;
 
 	/**
-	 * @var UserManager User manager
+	 * @var EntityManager Entity manager
 	 */
-	private $userManager;
+	private $entityManager;
 
 	/**
 	 * Signs user in
@@ -72,11 +72,11 @@ class SignPresenter extends BasePresenter {
 	}
 
 	/**
-	 * Injects the user manager
-	 * @param UserManager $userManager User manager
+	 * Injects the entity manager
+	 * @param EntityManager $entityManager Entity manager
 	 */
-	public function injectUserManager(UserManager $userManager): void {
-		$this->userManager = $userManager;
+	public function injectEntityManager(EntityManager $entityManager): void {
+		$this->entityManager = $entityManager;
 	}
 
 	/**
@@ -93,7 +93,7 @@ class SignPresenter extends BasePresenter {
 	protected function startup(): void {
 		parent::startup();
 		try {
-			if ($this->userManager->getCount() === 0) {
+			if ($this->entityManager->getUserRepository()->count([]) === 0) {
 				$this->redirect(':Install:Homepage:default');
 			}
 		} catch (TableNotFoundException $e) {

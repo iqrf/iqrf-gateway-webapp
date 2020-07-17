@@ -55,7 +55,7 @@ class User implements JsonSerializable {
 	/**
 	 * Supported languages
 	 */
-	private const LANGUAGES = [self::LANGUAGE_ENGLISH];
+	public const LANGUAGES = [self::LANGUAGE_ENGLISH];
 
 	/**
 	 * User role: Normal user
@@ -75,7 +75,7 @@ class User implements JsonSerializable {
 	/**
 	 * Supported user roles
 	 */
-	private const ROLES = [self::ROLE_NORMAL, self::ROLE_POWER];
+	public const ROLES = [self::ROLE_NORMAL, self::ROLE_POWER];
 
 	/**
 	 * @var string User name

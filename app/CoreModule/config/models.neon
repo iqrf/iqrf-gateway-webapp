@@ -5,5 +5,4 @@ services:
 	featureManager: App\CoreModule\Models\FeatureManager(%confDir%/features.neon)
 	- App\CoreModule\Models\FileManager(%daemon.configDir%)
 	- App\CoreModule\Models\JsonFileManager(%daemon.configDir%)
-	- App\CoreModule\Models\UserManager
 	- App\CoreModule\Models\VersionManager
