@@ -139,7 +139,7 @@ class UserManager {
 			return null;
 		}
 		assert($user instanceof User);
-		return $user->toArray();
+		return $user->jsonSerialize();
 	}
 
 	/**
@@ -150,9 +150,7 @@ class UserManager {
 		$users = [];
 		foreach ($this->entityManager->getUserRepository()->findAll() as $user) {
 			assert($user instanceof User);
-			$array = $user->toArray();
-			unset($array['password']);
-			$users[] = $array;
+			$users[] = $user->jsonSerialize();
 		}
 		return $users;
 	}
@@ -171,7 +169,7 @@ class UserManager {
 		if ($user !== null) {
 			throw new UsernameAlreadyExistsException();
 		}
-		$user = new User($username, $hash, $role, $language);
+		$user = new User($username, $password, $role, $language);
 		$this->entityManager->persist($user);
 		$this->entityManager->flush();
 	}
