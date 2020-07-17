@@ -36,7 +36,7 @@ class ApiKeyTest extends TestCase {
 	/**
 	 * @var string API key
 	 */
-	private $key = '098a141333b044f3f08de9826f0c6c1bbd76407de73ed7eb95c8d2ae7cde52a6';
+	private $key;
 
 	/**
 	 * @var DateTime API key expiration
@@ -49,7 +49,8 @@ class ApiKeyTest extends TestCase {
 	protected function setUp(): void {
 		parent::setUp();
 		$this->expiration = new DateTime('2020-01-01T00:00');
-		$this->entity = new ApiKey($this->key, $this->description, $this->expiration);
+		$this->entity = new ApiKey($this->description, $this->expiration);
+		$this->key = $this->entity->getKey();
 	}
 
 	/**
@@ -67,10 +68,10 @@ class ApiKeyTest extends TestCase {
 	}
 
 	/**
-	 * Tests the function to return API key
+	 * Tests the function to return API key hash
 	 */
-	public function testGetKey(): void {
-		Assert::same($this->key, $this->entity->getKey());
+	public function testGetHash(): void {
+		Assert::true(password_verify($this->key, $this->entity->getHash()));
 	}
 
 	/**
@@ -78,9 +79,9 @@ class ApiKeyTest extends TestCase {
 	 */
 	public function testIsExpired(): void {
 		Assert::true($this->entity->isExpired());
-		$entity = new ApiKey($this->key, $this->description, null);
+		$entity = new ApiKey($this->description, null);
 		Assert::false($entity->isExpired());
-		$entity = new ApiKey($this->key, $this->description, new DateTime('2050-01-01T00:00'));
+		$entity = new ApiKey($this->description, new DateTime('2050-01-01T00:00'));
 		Assert::false($entity->isExpired());
 	}
 

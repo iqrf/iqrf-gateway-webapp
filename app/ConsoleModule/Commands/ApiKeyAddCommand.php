@@ -63,7 +63,7 @@ class ApiKeyAddCommand extends EntityManagerCommand {
 		$style->title('Add a new API key');
 		$description = $this->askDescription($input, $output);
 		$expiration = $this->askExpiration($input, $output);
-		$apiKey = new ApiKey(ApiKey::generate(), $description, $expiration);
+		$apiKey = new ApiKey($description, $expiration);
 		$this->entityManager->persist($apiKey);
 		$this->entityManager->flush();
 		$style->success('API key ' . $apiKey->getKey() . ' has been added!');

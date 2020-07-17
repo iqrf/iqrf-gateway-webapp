@@ -36,10 +36,15 @@ class ApiKey implements JsonSerializable {
 	use TId;
 
 	/**
-	 * @var string API key
-	 * @ORM\Column(type="string", length=255, nullable=false, unique=true)
+	 * @var string|null API key
 	 */
 	private $key;
+
+	/**
+	 * @var string API key hash
+	 * @ORM\Column(type="string", length=255, nullable=false, unique=true)
+	 */
+	private $hash;
 
 	/**
 	 * @var string API key description
@@ -55,14 +60,30 @@ class ApiKey implements JsonSerializable {
 
 	/**
 	 * Constructor
-	 * @param string $key API key
 	 * @param string $description API key description
 	 * @param DateTime|null $expiration API key expiration
 	 */
-	public function __construct(string $key, string $description, ?DateTime $expiration) {
-		$this->key = $key;
+	public function __construct(string $description, ?DateTime $expiration) {
+		$this->key = bin2hex(random_bytes(32));
+		$this->hash = password_hash($this->key, PASSWORD_DEFAULT);
 		$this->description = $description;
 		$this->expiration = $expiration;
+	}
+
+	/**
+	 * Returns API key
+	 * @return string|null API key
+	 */
+	public function getKey(): ?string {
+		return $this->key;
+	}
+
+	/**
+	 * Returns API key hash
+	 * @return string API key hash
+	 */
+	public function getHash(): string {
+		return $this->hash;
 	}
 
 	/**
@@ -82,14 +103,6 @@ class ApiKey implements JsonSerializable {
 	}
 
 	/**
-	 * Returns API key
-	 * @return string API key
-	 */
-	public function getKey(): string {
-		return $this->key;
-	}
-
-	/**
 	 * Checks if API key is expired
 	 * @return bool Is API key expired
 	 */
@@ -99,14 +112,6 @@ class ApiKey implements JsonSerializable {
 		}
 		$now = new DateTime();
 		return $this->expiration < $now;
-	}
-
-	/**
-	 * Generates API key
-	 * @return string API key
-	 */
-	public static function generate(): string {
-		return bin2hex(random_bytes(32));
 	}
 
 	/**
