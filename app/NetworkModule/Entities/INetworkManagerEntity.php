@@ -39,7 +39,7 @@ interface INetworkManagerEntity extends JsonSerializable {
 	 * @param string $nmCli nmcli configuration
 	 * @return INetworkManagerEntity Entity
 	 */
-	public static function nmCliDeserialize(string $nmCli): self;
+	public static function nmCliDeserialize(string $nmCli): INetworkManagerEntity;
 
 	/**
 	 * Serializes the entity into nmcli configuration

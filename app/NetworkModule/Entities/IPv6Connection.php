@@ -90,7 +90,7 @@ final class IPv6Connection implements INetworkManagerEntity {
 	 * @param string $nmCli nmcli connection configuration
 	 * @return IPv6Connection IPv6 connection entity
 	 */
-	public static function nmCliDeserialize(string $nmCli): self {
+	public static function nmCliDeserialize(string $nmCli): INetworkManagerEntity {
 		$array = NmCliConnection::decode($nmCli, self::NMCLI_PREFIX);
 		$method = IPv6Methods::fromScalar($array['method']);
 		$addresses = [];

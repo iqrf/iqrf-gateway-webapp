@@ -76,7 +76,7 @@ final class WifiConnection implements INetworkManagerEntity {
 	 * @param string $nmCli nmcli connection configuration
 	 * @return WifiConnection WiFi connection entity
 	 */
-	public static function nmCliDeserialize(string $nmCli): self {
+	public static function nmCliDeserialize(string $nmCli): INetworkManagerEntity {
 		$array = NmCliConnection::decode($nmCli, self::NMCLI_PREFIX);
 		$mode = WifiMode::fromScalar($array['mode']);
 		$security = WifiConnectionSecurity::nmCliDeserialize($nmCli);

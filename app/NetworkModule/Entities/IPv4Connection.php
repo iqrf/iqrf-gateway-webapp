@@ -96,7 +96,7 @@ final class IPv4Connection implements INetworkManagerEntity {
 	 * @param string $nmCli nmcli connection configuration
 	 * @return IPv4Connection IPv4 connection entity
 	 */
-	public static function nmCliDeserialize(string $nmCli): self {
+	public static function nmCliDeserialize(string $nmCli): INetworkManagerEntity {
 		$array = NmCliConnection::decode($nmCli, self::NMCLI_PREFIX);
 		$method = IPv4Methods::fromScalar($array['method']);
 		$addresses = [];

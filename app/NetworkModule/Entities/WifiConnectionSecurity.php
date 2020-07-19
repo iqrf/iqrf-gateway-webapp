@@ -68,7 +68,7 @@ final class WifiConnectionSecurity implements INetworkManagerEntity {
 	 * @param string $nmCli nmcli connection configuration
 	 * @return WifiConnectionSecurity WiFI connection security entity
 	 */
-	public static function nmCliDeserialize(string $nmCli): self {
+	public static function nmCliDeserialize(string $nmCli): INetworkManagerEntity {
 		$array = NmCliConnection::decode($nmCli, self::NMCLI_PREFIX);
 		$keyManagement = WifiKeyManagement::fromScalar($array['key-mgmt']);
 		return new static($keyManagement, $array['psk']);

@@ -109,7 +109,7 @@ class ConnectionDetail implements INetworkManagerEntity {
 	 * @param string $nmCli nmcli connection configuration
 	 * @return ConnectionDetail Detailed network connection entity
 	 */
-	public static function nmCliDeserialize(string $nmCli): self {
+	public static function nmCliDeserialize(string $nmCli): INetworkManagerEntity {
 		$array = NmCliConnection::decode($nmCli, self::NMCLI_PREFIX);
 		$uuid = Uuid::fromString($array['uuid']);
 		$type = ConnectionTypes::fromScalar($array['type']);
