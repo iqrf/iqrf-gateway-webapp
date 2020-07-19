@@ -122,9 +122,9 @@ class ConnectionDetailEthernetTest extends TestCase {
 	/**
 	 * Tests the function to set the network connection configuration from the form
 	 */
-	public function testFromForm(): void {
+	public function testJsonDeserialize(): void {
 		$json = Json::decode(FileSystem::read(self::NM_DATA . 'fromForm/' . self::UUID . '.json'));
-		$this->entity->fromForm($json);
+		$this->entity->jsonDeserialize($json);
 		$ipv4Addresses = [IPv4Address::fromPrefix('10.0.0.2/16')];
 		$ipv4Gateway = IPv4::factory('10.0.0.1');
 		$ipv4Dns = [IPv4::factory('10.0.0.1'), IPv4::factory('1.1.1.1')];
@@ -139,9 +139,9 @@ class ConnectionDetailEthernetTest extends TestCase {
 	/**
 	 * Tests the function to create a detailed network connection entity from nmcli connection configuration
 	 */
-	public function testFromNmCli(): void {
+	public function testNmCliDeserialize(): void {
 		$nmCli = FileSystem::read(self::NM_DATA . self::UUID . '.conf');
-		Assert::equal($this->entity, ConnectionDetail::fromNmCli($nmCli));
+		Assert::equal($this->entity, ConnectionDetail::nmCliDeserialize($nmCli));
 	}
 
 	/**

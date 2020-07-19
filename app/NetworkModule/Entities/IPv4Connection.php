@@ -29,7 +29,7 @@ use stdClass;
 /**
  * IPv4 connection entity
  */
-final class IPv4Connection {
+final class IPv4Connection implements INetworkManagerEntity {
 
 	/**
 	 * nmcli configuration prefix
@@ -74,7 +74,7 @@ final class IPv4Connection {
 	 * Sets the values from the network connection configuration form
 	 * @param stdClass|ArrayHash $form Values from the network connection configuration form
 	 */
-	public function fromForm(stdClass $form): void {
+	public function jsonDeserialize(stdClass $form): void {
 		$this->method = IPv4Methods::fromScalar($form->method);
 		$this->addresses = [];
 		foreach ($form->addresses as $address) {
@@ -96,7 +96,7 @@ final class IPv4Connection {
 	 * @param string $nmCli nmcli connection configuration
 	 * @return IPv4Connection IPv4 connection entity
 	 */
-	public static function fromNmCli(string $nmCli): self {
+	public static function nmCliDeserialize(string $nmCli): self {
 		$array = NmCliConnection::decode($nmCli, self::NMCLI_PREFIX);
 		$method = IPv4Methods::fromScalar($array['method']);
 		$addresses = [];
@@ -151,7 +151,7 @@ final class IPv4Connection {
 	 * Converts IPv4 connection entity to an array for the form
 	 * @return array<string, array<array<string, int|string>>|string|null> Array for the array
 	 */
-	public function toForm(): array {
+	public function jsonSerialize(): array {
 		return [
 			'method' => $this->method->toScalar(),
 			'addresses' => array_map(function (IPv4Address $a): array {
@@ -168,7 +168,7 @@ final class IPv4Connection {
 	 * Converts IPv4 connection entity to nmcli configuration string
 	 * @return string nmcli configuration
 	 */
-	public function toNmCli(): string {
+	public function nmCliSerialize(): string {
 		$array = [
 			'method' => $this->method->toScalar(),
 			'addresses' => implode(' ', array_map(function (IPv4Address $address): string {

@@ -29,7 +29,7 @@ use stdClass;
 /**
  * IPv6 connection entity
  */
-final class IPv6Connection {
+final class IPv6Connection implements INetworkManagerEntity {
 
 	/**
 	 * nmcli configuration prefix
@@ -67,7 +67,7 @@ final class IPv6Connection {
 	 * Sets the value from the network connection configuration form
 	 * @param stdClass|ArrayHash $form Values from the network connection configuration form
 	 */
-	public function fromForm(stdClass $form): void {
+	public function jsonDeserialize(stdClass $form): void {
 		$this->method = IPv6Methods::fromScalar($form->method);
 		$this->addresses = [];
 		foreach ($form->addresses as $value) {
@@ -90,7 +90,7 @@ final class IPv6Connection {
 	 * @param string $nmCli nmcli connection configuration
 	 * @return IPv6Connection IPv6 connection entity
 	 */
-	public static function fromNmCli(string $nmCli): self {
+	public static function nmCliDeserialize(string $nmCli): self {
 		$array = NmCliConnection::decode($nmCli, self::NMCLI_PREFIX);
 		$method = IPv6Methods::fromScalar($array['method']);
 		$addresses = [];
@@ -140,7 +140,7 @@ final class IPv6Connection {
 	 * Converts IPv6 connection entity to an array for the form
 	 * @return array<string, array<array<string, int|string>>|array<string, string>|string> Array for the form
 	 */
-	public function toForm(): array {
+	public function jsonSerialize(): array {
 		return [
 			'method' => $this->method->toScalar(),
 			'addresses' => array_map(function (IPv6Address $a): array {
@@ -156,7 +156,7 @@ final class IPv6Connection {
 	 * Converts IPv6 connection entity to nmcli configuration string
 	 * @return string nmcli configuration
 	 */
-	public function toNmCli(): string {
+	public function nmCliSerialize(): string {
 		$array = [
 			'method' => $this->method->toScalar(),
 			'addresses' => implode(' ', array_map(function (IPv6Address $address): string {

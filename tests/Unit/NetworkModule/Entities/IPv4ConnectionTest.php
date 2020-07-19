@@ -78,7 +78,7 @@ class IPv4ConnectionTest extends TestCase {
 	/**
 	 * Tests the function to set values from the network connection form
 	 */
-	public function testFromForm(): void {
+	public function testJsonDeserialize(): void {
 		$arrayHash = ArrayHash::from([
 			'method' => 'manual',
 			'addresses' => [
@@ -99,16 +99,16 @@ class IPv4ConnectionTest extends TestCase {
 		$gateway = IPv4::factory('10.0.0.1');
 		$dns = [IPv4::factory('10.0.0.1'), IPv4::factory('1.1.1.1')];
 		$expected = new IPv4Connection($this->method, $addresses, $gateway, $dns);
-		$this->entity->fromForm($arrayHash);
+		$this->entity->jsonDeserialize($arrayHash);
 		Assert::equal($expected, $this->entity);
 	}
 
 	/**
 	 * Tests the function to create a new IPv4 connection entity from nmcli connection configuration
 	 */
-	public function testFromNmCli(): void {
+	public function testNmCliDeserialize(): void {
 		$configuration = FileSystem::read(self::NM_DATA . '25ab1b06-2a86-40a9-950f-1c576ddcd35a.conf');
-		Assert::equal($this->entity, IPv4Connection::fromNmCli($configuration));
+		Assert::equal($this->entity, IPv4Connection::nmCliDeserialize($configuration));
 	}
 
 	/**
@@ -142,7 +142,7 @@ class IPv4ConnectionTest extends TestCase {
 	/**
 	 * Tests the function to convert the IPv4 connection entity to an array for the form
 	 */
-	public function testToForm(): void {
+	public function testJsonSerialize(): void {
 		$expected = [
 			'method' => 'manual',
 			'addresses' => [
@@ -155,15 +155,15 @@ class IPv4ConnectionTest extends TestCase {
 			'gateway' => '192.168.1.1',
 			'dns' => [['address' => '192.168.1.1']],
 		];
-		Assert::same($expected, $this->entity->toForm());
+		Assert::same($expected, $this->entity->jsonSerialize());
 	}
 
 	/**
 	 * Tests the function to convert IPv4 connection entity to nmcli configuration string
 	 */
-	public function testToNmCli(): void {
+	public function testNmCliSerialize(): void {
 		$expected = 'ipv4.method "manual" ipv4.addresses "192.168.1.2/24" ipv4.gateway "192.168.1.1" ipv4.dns "192.168.1.1" ';
-		Assert::same($expected, $this->entity->toNmCli());
+		Assert::same($expected, $this->entity->nmCliSerialize());
 	}
 
 }

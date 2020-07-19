@@ -22,13 +22,12 @@ namespace App\NetworkModule\Entities;
 
 use App\NetworkModule\Enums\WifiMode;
 use App\NetworkModule\Utils\NmCliConnection;
-use JsonSerializable;
 use stdClass;
 
 /**
  * WiFi connection entity
  */
-final class WifiConnection implements JsonSerializable {
+final class WifiConnection implements INetworkManagerEntity {
 
 	/**
 	 * nmcli configuration prefix
@@ -66,10 +65,10 @@ final class WifiConnection implements JsonSerializable {
 	 * Sets the values from the network connection configuration JSON
 	 * @param stdClass $json Values from the network connection configuration JSON
 	 */
-	public function fromJson(stdClass $json): void {
+	public function jsonDeserialize(stdClass $json): void {
 		$this->ssid = $json->ssid;
 		$this->mode = WifiMode::fromScalar($json->mode);
-		$this->security->fromJson($json->security);
+		$this->security->jsonDeserialize($json->security);
 	}
 
 	/**
@@ -77,10 +76,10 @@ final class WifiConnection implements JsonSerializable {
 	 * @param string $nmCli nmcli connection configuration
 	 * @return WifiConnection WiFi connection entity
 	 */
-	public static function fromNmCli(string $nmCli): self {
+	public static function nmCliDeserialize(string $nmCli): self {
 		$array = NmCliConnection::decode($nmCli, self::NMCLI_PREFIX);
 		$mode = WifiMode::fromScalar($array['mode']);
-		$security = WifiConnectionSecurity::fromNmCli($nmCli);
+		$security = WifiConnectionSecurity::nmCliDeserialize($nmCli);
 		return new static($array['ssid'], $mode, $security);
 	}
 
@@ -124,13 +123,13 @@ final class WifiConnection implements JsonSerializable {
 	 * Converts WiFi connection entity to nmcli configuration string
 	 * @return string nmcli configuration
 	 */
-	public function toNmCli(): string {
+	public function nmCliSerialize(): string {
 		$array = [
 			'ssid' => $this->ssid,
 			'mode' => $this->mode->toScalar(),
 		];
 		$string = NmCliConnection::encode($array, self::NMCLI_PREFIX);
-		$string .= $this->security->toNmCli();
+		$string .= $this->security->nmCliSerialize();
 		return $string;
 	}
 

@@ -74,7 +74,7 @@ class IPv6ConnectionTest extends TestCase {
 	/**
 	 * Tests the function to set values from the network connection configuration form
 	 */
-	public function testFromForm(): void {
+	public function testJsonDeserialize(): void {
 		$arrayHash = ArrayHash::from([
 			'method' => 'manual',
 			'addresses' => [
@@ -91,16 +91,16 @@ class IPv6ConnectionTest extends TestCase {
 		];
 		$dns = [IPv6::factory('fd50:ccd6:13ed::1')];
 		$expected = new IPv6Connection($this->method, $addresses, $dns);
-		$this->entity->fromForm($arrayHash);
+		$this->entity->jsonDeserialize($arrayHash);
 		Assert::equal($expected, $this->entity);
 	}
 
 	/**
 	 * Tests the function to create a new IPv6 connection entity from nmcli connection configuration
 	 */
-	public function testFromNmCli(): void {
+	public function testNmCliDeserialize(): void {
 		$configuration = FileSystem::read(self::NM_DATA . '25ab1b06-2a86-40a9-950f-1c576ddcd35a.conf');
-		Assert::equal($this->entity, IPv6Connection::fromNmCli($configuration));
+		Assert::equal($this->entity, IPv6Connection::nmCliDeserialize($configuration));
 	}
 
 	/**
@@ -127,7 +127,7 @@ class IPv6ConnectionTest extends TestCase {
 	/**
 	 * Tests the function to convert the IPv6 connection entity to an array for the form
 	 */
-	public function testToForm(): void {
+	public function testJsonSerialize(): void {
 		$expected = [
 			'method' => 'manual',
 			'addresses' => [
@@ -139,15 +139,15 @@ class IPv6ConnectionTest extends TestCase {
 			],
 			'dns' => [['address' => '2001:470:5bb2::1']],
 		];
-		Assert::same($expected, $this->entity->toForm());
+		Assert::same($expected, $this->entity->jsonSerialize());
 	}
 
 	/**
 	 * Tests the function to convert IPv6 connection entity to nmcli configuration string
 	 */
-	public function testToNmCli(): void {
+	public function testNmCliSerialize(): void {
 		$expected = 'ipv6.method "manual" ipv6.addresses "2001:470:5bb2::2/64" ipv6.gateway "fe80::1" ipv6.dns "2001:470:5bb2::1" ';
-		Assert::same($expected, $this->entity->toNmCli());
+		Assert::same($expected, $this->entity->nmCliSerialize());
 	}
 
 }

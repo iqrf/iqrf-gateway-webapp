@@ -139,9 +139,9 @@ class ConnectionDetailWifiTest extends TestCase {
 	/**
 	 * Tests the function to create a detailed network connection entity from nmcli connection configuration
 	 */
-	public function testFromNmCli(): void {
+	public function testNmCliDeserialize(): void {
 		$nmCli = FileSystem::read(self::NM_DATA . self::UUID . '.conf');
-		Assert::equal($this->entity, ConnectionDetail::fromNmCli($nmCli));
+		Assert::equal($this->entity, ConnectionDetail::nmCliDeserialize($nmCli));
 	}
 
 	/**

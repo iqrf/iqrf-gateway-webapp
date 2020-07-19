@@ -22,13 +22,12 @@ namespace App\NetworkModule\Entities;
 
 use App\NetworkModule\Enums\WifiKeyManagement;
 use App\NetworkModule\Utils\NmCliConnection;
-use JsonSerializable;
 use stdClass;
 
 /**
  * WiFi connection security entity
  */
-final class WifiConnectionSecurity implements JsonSerializable {
+final class WifiConnectionSecurity implements INetworkManagerEntity {
 
 	/**
 	 * nmcli configuration prefix
@@ -59,7 +58,7 @@ final class WifiConnectionSecurity implements JsonSerializable {
 	 * Sets the values from the network connection configuration JSON
 	 * @param stdClass $json Values from the network connection configuration JSON
 	 */
-	public function fromJson(stdClass $json): void {
+	public function jsonDeserialize(stdClass $json): void {
 		$this->keyManagement = WifiKeyManagement::fromScalar($json->keyManagement);
 		$this->psk = $json->psk;
 	}
@@ -69,7 +68,7 @@ final class WifiConnectionSecurity implements JsonSerializable {
 	 * @param string $nmCli nmcli connection configuration
 	 * @return WifiConnectionSecurity WiFI connection security entity
 	 */
-	public static function fromNmCli(string $nmCli): self {
+	public static function nmCliDeserialize(string $nmCli): self {
 		$array = NmCliConnection::decode($nmCli, self::NMCLI_PREFIX);
 		$keyManagement = WifiKeyManagement::fromScalar($array['key-mgmt']);
 		return new static($keyManagement, $array['psk']);
@@ -91,7 +90,7 @@ final class WifiConnectionSecurity implements JsonSerializable {
 	 * Converts WiFi connection security entity to nmcli configuration string
 	 * @return string nmcli configuration
 	 */
-	public function toNmCli(): string {
+	public function nmCliSerialize(): string {
 		$array = [
 			'key-mgmt' => $this->keyManagement->toScalar(),
 			'psk' => $this->psk,

@@ -68,7 +68,7 @@ class ConnectionManager {
 		if ($output->getExitCode() !== 0) {
 			throw new NetworkManagerException($output->getStderr());
 		}
-		return ConnectionDetail::fromNmCli($output->getStdout());
+		return ConnectionDetail::nmCliDeserialize($output->getStdout());
 	}
 
 	/**
@@ -94,9 +94,9 @@ class ConnectionManager {
 	 * @throws NetworkManagerException
 	 */
 	public function edit(ConnectionDetail $connection, stdClass $values): void {
-		$connection->fromForm($values);
+		$connection->jsonDeserialize($values);
 		$uuid = $connection->getUuid()->toString();
-		$configuration = $connection->toNmCli();
+		$configuration = $connection->nmCliSerialize();
 		$command = sprintf('nmcli -t connection modify %s %s', $uuid, $configuration);
 		$output = $this->commandManager->run($command, true);
 		if ($output->getExitCode() !== 0) {
