@@ -107,11 +107,10 @@ class WebSocketMessagingDataGridFactory {
 		$this->configManager->setComponent('iqrf::WebsocketMessaging');
 		$configurations = $this->configManager->list();
 		foreach ($configurations as &$configuration) {
-			$requiredInterfaces = '';
-			foreach ($configuration['RequiredInterfaces'] as $interfaces) {
-				$requiredInterfaces .= $interfaces['target']['instance'] . ', ';
-			}
-			$configuration['requiredInterfaces'] = trim($requiredInterfaces, ', ');
+			$requiredInterfaces = array_map(function (array $interface): string {
+				return $interface['target']['instance'];
+			}, $configuration['RequiredInterfaces']);
+			$configuration['requiredInterfaces'] = implode(', ', $requiredInterfaces);
 		}
 		return $configurations;
 	}
