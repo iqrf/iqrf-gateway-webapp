@@ -32,11 +32,12 @@ use DateTime;
 use Nette\Application\BadRequestException;
 use Nette\Application\Responses\FileResponse;
 use Nette\Http\FileUpload;
-use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
+use Throwable;
 use ZipArchive;
+use function basename;
 
 /**
  * Tool for migrating configuration
@@ -54,24 +55,9 @@ class MigrationManager {
 	private $schemaManager;
 
 	/**
-	 * @var ZipArchiveManager ZIP archive manager for a downloaded configuration
-	 */
-	private $zipManagerDownload;
-
-	/**
-	 * @var ZipArchiveManager ZIP archive manager for a uploaded configuration
-	 */
-	private $zipManagerUpload;
-
-	/**
 	 * @var string Path to a directory with a configuration of IQRF Gateway Daemon
 	 */
 	private $configDirectory;
-
-	/**
-	 * @var string Path to ZIP archive
-	 */
-	private $path = '/tmp/iqrf-daemon-configuration.zip';
 
 	/**
 	 * @var ServiceManager Service manager
@@ -93,50 +79,71 @@ class MigrationManager {
 	}
 
 	/**
+	 * Create an archive with the configuration
+	 * @return string Path to archive with the configuration
+	 */
+	public function createArchive(): string {
+		try {
+			$now = new DateTime();
+			$path = '/tmp/iqrf-gateway-configuration_' . $now->format('c') . '.zip';
+		} catch (Throwable $e) {
+			$path = '/tmp/iqrf-gateway-configuration.zip';
+		}
+		$zipManager = new ZipArchiveManager($path);
+		$zipManager->addFolder($this->configDirectory, '');
+		$zipManager->close();
+		return $path;
+	}
+
+	/**
 	 * Downloads a configuration
 	 * @return FileResponse HTTP response with a configuration
 	 * @throws BadRequestException
 	 */
 	public function download(): FileResponse {
-		$this->zipManagerDownload = new ZipArchiveManager($this->path);
-		$now = new DateTime();
-		$fileName = 'iqrf-gateway-configuration_' . $now->format('c') . '.zip';
 		$contentType = 'application/zip';
-		$this->zipManagerDownload->addFolder($this->configDirectory, '');
-		$this->zipManagerDownload->close();
-		return new FileResponse($this->path, $fileName, $contentType, true);
+		$path = $this->createArchive();
+		$fileName = basename($path);
+		return new FileResponse($path, $fileName, $contentType, true);
+	}
+
+	/**
+	 * Extracts an archive with scheduler configuration
+	 * @param string $path Path to archive with scheduler configuration
+	 * @throws IncompleteConfigurationException
+	 * @throws JsonException
+	 * @throws UnsupportedInitSystemException
+	 */
+	public function extractArchive(string $path): void {
+		$zipManager = new ZipArchiveManager($path, ZipArchive::CREATE);
+		if (!$this->validate($zipManager)) {
+			$zipManager->close();
+			throw new IncompleteConfigurationException();
+		}
+		$this->commandManager->run('rm -rf ' . $this->configDirectory, true);
+		$this->commandManager->run('mkdir ' . $this->configDirectory, true);
+		$this->changeOwner();
+		$zipManager->extract($this->configDirectory);
+		$zipManager->close();
+		$this->serviceManager->restart();
 	}
 
 	/**
 	 * Uploads a configuration
-	 * @param array<string, FileUpload> $formValues Values from form
+	 * @param FileUpload $zip IP archive with the configuration
 	 * @throws IncompleteConfigurationException
 	 * @throws InvalidConfigurationFormatException
 	 * @throws JsonException
 	 * @throws UnsupportedInitSystemException
 	 */
-	public function upload(array $formValues): void {
-		$zip = $formValues['configuration'];
+	public function upload(FileUpload $zip): void {
 		if (!$zip->isOk()) {
 			throw new InvalidConfigurationFormatException();
 		}
 		if ($zip->getContentType() !== 'application/zip') {
 			throw new InvalidConfigurationFormatException();
 		}
-		$zip->move($this->path);
-		$this->zipManagerUpload = new ZipArchiveManager($this->path, ZipArchive::CREATE);
-		if (!$this->validate($this->zipManagerUpload)) {
-			$this->zipManagerUpload->close();
-			FileSystem::delete($this->path);
-			throw new IncompleteConfigurationException();
-		}
-		$this->commandManager->run('rm -rf ' . $this->configDirectory, true);
-		$this->commandManager->run('mkdir ' . $this->configDirectory, true);
-		$this->changeOwner();
-		$this->zipManagerUpload->extract($this->configDirectory);
-		$this->zipManagerUpload->close();
-		FileSystem::delete($this->path);
-		$this->serviceManager->restart();
+		$this->extractArchive($zip->getTemporaryFile());
 	}
 
 	/**
@@ -147,7 +154,7 @@ class MigrationManager {
 	 */
 	public function validate(ZipArchiveManager $zipManager): bool {
 		foreach ($zipManager->listFiles() as $file) {
-			$matches = Strings::match($file, '~^[a-zA-Z0-9]+\_\_[a-zA-Z0-9]+\.json$~');
+			$matches = Strings::match($file, '~^\w+\_\_\w+\.json$~');
 			if (!is_array($matches)) {
 				continue;
 			}
