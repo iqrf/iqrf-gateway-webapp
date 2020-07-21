@@ -134,7 +134,7 @@ class SchedulerImportFormFactory {
 			return;
 		}
 		try {
-			$this->manager->save($json);
+			$this->manager->save($json, null);
 			$this->serviceManager->restart();
 			$this->presenter->flashSuccess(self::TRANSLATOR_PREFIX . '.messages.success');
 			$this->presenter->flashInfo('service.iqrf-gateway-daemon.messages.restart');

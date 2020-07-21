@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Forms;
 
 use App\ConfigModule\Exceptions\InvalidTaskMessageException;
+use App\ConfigModule\Exceptions\TaskNotFoundException;
 use App\ConfigModule\Models\SchedulerManager;
 use App\ConfigModule\Presenters\SchedulerPresenter;
 use App\CoreModule\Exceptions\InvalidJsonException;
@@ -235,7 +236,12 @@ class SchedulerFormFactory {
 				$task->message = Json::decode($task->message);
 			}
 			$values->task = (array) $values->task;
-			$this->manager->save($values);
+			try {
+				$fileName = $this->manager->getFileName($values->taskId);
+			} catch (TaskNotFoundException $e) {
+				$fileName = null;
+			}
+			$this->manager->save($values, $fileName);
 			$this->presenter->flashSuccess('config.messages.success');
 			/**
 			 * @var SubmitButton $restartButton Save and restart submit button

@@ -26,8 +26,6 @@ use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\RequestParameter;
 use Apitte\Core\Annotation\Controller\RequestParameters;
-use Apitte\Core\Annotation\Controller\Response;
-use Apitte\Core\Annotation\Controller\Responses;
 use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
@@ -87,6 +85,50 @@ class SchedulerController extends BaseController {
 	}
 
 	/**
+	 * @Path("/")
+	 * @Method("POST")
+	 * @OpenApi("
+	 *  summary: Creates a new task
+	 *  requestBody:
+	 *      required: true
+	 *      content:
+	 *          application/json:
+	 *              schema:
+	 *                  $ref: '#/components/schemas/Task'
+	 *  responses:
+	 *      '201':
+	 *          description: Created
+	 *      '400':
+	 *          description: 'Bad request'
+	 *      '409':
+	 *          description: 'Task already exists'
+	 * ")
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
+		try {
+			$task = $request->getJsonBody(false);
+		} catch (JsonException $e) {
+			return $response->withStatus(ApiResponse::S400_BAD_REQUEST, 'Invalid JSON syntax');
+		}
+		$taskId = $task->taskId;
+		if ($this->manager->exist($taskId)) {
+			$this->manager->getFileName($taskId);
+			return $response->withStatus(ApiResponse::S409_CONFLICT, 'Task already exists');
+		}
+		try {
+			$this->manager->save($task, null);
+		} catch (InvalidTaskMessageException $e) {
+			$response->withStatus(ApiResponse::S400_BAD_REQUEST, 'Invalid mType');
+		} catch (JsonException $e) {
+			$response->withStatus(ApiResponse::S400_BAD_REQUEST, 'Invalid JSON');
+		}
+		return $response->withStatus(ApiResponse::S201_CREATED);
+	}
+
+	/**
 	 * @Path("/{taskId}")
 	 * @Method("GET")
 	 * @OpenApi("
@@ -114,7 +156,7 @@ class SchedulerController extends BaseController {
 			$task = (array) $this->manager->load($taskId);
 			return $response->writeJsonBody($task);
 		} catch (TaskNotFoundException $e) {
-			return $response->withStatus(404);
+			return $response->withStatus(ApiResponse::S404_NOT_FOUND);
 		}
 	}
 
@@ -122,14 +164,15 @@ class SchedulerController extends BaseController {
 	 * @Path("/{taskId}")
 	 * @Method("DELETE")
 	 * @OpenApi("
-	 *   summary: Deletes a task
+	 *  summary: Deletes a task
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '404':
+	 *          description: 'Task not found'
 	 * ")
 	 * @RequestParameters({
 	 *      @RequestParameter(name="taskId", type="integer", description="Task ID")
-	 * })
-	 * @Responses({
-	 *      @Response(code="200", description="Success"),
-	 *      @Response(code="404", description="Not found")
 	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -141,8 +184,56 @@ class SchedulerController extends BaseController {
 			$this->manager->delete($taskId);
 			return $response;
 		} catch (TaskNotFoundException $e) {
-			return $response->withStatus(404);
+			return $response->withStatus(ApiResponse::S404_NOT_FOUND);
 		}
+	}
+
+	/**
+	 * @Path("/{taskId}")
+	 * @Method("PUT")
+	 * @OpenApi("
+	 *  summary: Edits a task
+	 *  requestBody:
+	 *      required: true
+	 *      content:
+	 *          application/json:
+	 *              schema:
+	 *                  $ref: '#/components/schemas/Task'
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '400':
+	 *          description: 'Bad request'
+	 *      '404':
+	 *          description: 'Task not found'
+	 * ")
+	 * @RequestParameters({
+	 *      @RequestParameter(name="taskId", type="integer", description="Task ID")
+	 * })
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
+		try {
+			$task = $request->getJsonBody(false);
+		} catch (JsonException $e) {
+			return $response->withStatus(ApiResponse::S400_BAD_REQUEST, 'Invalid JSON syntax');
+		}
+		$taskId = (int) $request->getParameter('taskId');
+		try {
+			$fileName = $this->manager->getFileName($taskId);
+		} catch (TaskNotFoundException $e) {
+			return $response->withStatus(ApiResponse::S404_NOT_FOUND, 'Task not found');
+		}
+		try {
+			$this->manager->save($task, $fileName);
+		} catch (InvalidTaskMessageException $e) {
+			$response->withStatus(ApiResponse::S400_BAD_REQUEST, 'Invalid mType');
+		} catch (JsonException $e) {
+			$response->withStatus(ApiResponse::S400_BAD_REQUEST, 'Invalid JSON');
+		}
+		return $response->withStatus(ApiResponse::S200_OK);
 	}
 
 	/**
@@ -176,6 +267,7 @@ class SchedulerController extends BaseController {
 	 * @OpenApi("
 	 *  summary: Imports scheduler configuration
 	 *  requestBody:
+	 *      required: true
 	 *      content:
 	 *          application/json:
 	 *              schema:
@@ -205,19 +297,19 @@ class SchedulerController extends BaseController {
 				try {
 					$this->migrationManager->extractArchive($path);
 				} catch (InvalidTaskMessageException $e) {
-					$response->withStatus(400, 'Invalid mType');
+					$response->withStatus(ApiResponse::S400_BAD_REQUEST, 'Invalid mType');
 				} catch (JsonException $e) {
-					$response->withStatus(400, 'Invalid JSON');
+					$response->withStatus(ApiResponse::S400_BAD_REQUEST, 'Invalid JSON');
 				}
 				FileSystem::delete($path);
 				break;
 			case 'application/json':
 				try {
-					$this->manager->save($request->getJsonBody(false));
+					$this->manager->save($request->getJsonBody(false), null);
 				} catch (InvalidTaskMessageException $e) {
-					$response->withStatus(400, 'Invalid mType');
+					$response->withStatus(ApiResponse::S400_BAD_REQUEST, 'Invalid mType');
 				} catch (JsonException $e) {
-					$response->withStatus(400, 'Invalid JSON');
+					$response->withStatus(ApiResponse::S400_BAD_REQUEST, 'Invalid JSON');
 				}
 				break;
 			default:

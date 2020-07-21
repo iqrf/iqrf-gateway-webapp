@@ -106,7 +106,7 @@ class SchedulerManager {
 	 * @return string File name
 	 * @throws TaskNotFoundException
 	 */
-	protected function getFileName(int $taskId): string {
+	public function getFileName(int $taskId): string {
 		$dir = $this->fileManager->getDirectory();
 		foreach (Finder::findFiles('*.json')->in($dir) as $file) {
 			assert($file instanceof SplFileInfo);
@@ -121,6 +121,20 @@ class SchedulerManager {
 			}
 		}
 		throw new TaskNotFoundException();
+	}
+
+	/**
+	 * Checks if the task exists
+	 * @param int $taskId Task ID
+	 * @return bool Is task exist?
+	 */
+	public function exist(int $taskId): bool {
+		try {
+			$this->getFileName($taskId);
+			return true;
+		} catch (TaskNotFoundException $e) {
+			return false;
+		}
 	}
 
 	/**
@@ -241,13 +255,12 @@ class SchedulerManager {
 	/**
 	 * Saves the task's configuration
 	 * @param stdClass $config Task's configuration
+	 * @param string|null $fileName Task file name
 	 * @throws InvalidTaskMessageException
 	 * @throws JsonException
 	 */
-	public function save(stdClass $config): void {
-		try {
-			$fileName = $this->getFileName($config->taskId);
-		} catch (TaskNotFoundException $e) {
+	public function save(stdClass $config, ?string $fileName): void {
+		if ($fileName === null) {
 			$fileName = strval($config->taskId);
 		}
 		foreach ($config->task as &$task) {

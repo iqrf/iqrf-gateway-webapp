@@ -88,7 +88,31 @@ class SchedulerManagerTest extends TestCase {
 	}
 
 	/**
-	 * Test function to get avaiable messagings
+	 * Tests function to get task file name
+	 */
+	public function testGetFileName(): void {
+		Assert::same('1', $this->manager->getFileName(1));
+	}
+
+	/**
+	 * Tests function to get task file name (nonexistent task)
+	 */
+	public function testGetFileNameNonexistent(): void {
+		Assert::throws(function (): void {
+			$this->manager->getFileName(-1);
+		}, TaskNotFoundException::class);
+	}
+
+	/**
+	 * Tests function to check task existence
+	 */
+	public function testExist(): void {
+		Assert::true($this->manager->exist(1));
+		Assert::false($this->manager->exist(-1));
+	}
+
+	/**
+	 * Test function to get available messagings
 	 */
 	public function testGetMessagings(): void {
 		$expected = [
@@ -156,7 +180,7 @@ class SchedulerManagerTest extends TestCase {
 		$expected->task[0]->message->returnVerbose = false;
 		$config = $expected;
 		$config->timeSpec->cronTime = '*/5 * 1 * * * *';
-		$this->managerTemp->save($config);
+		$this->managerTemp->save($config, null);
 		Assert::equal($expected, $this->fileManagerTemp->read('1', false));
 	}
 
