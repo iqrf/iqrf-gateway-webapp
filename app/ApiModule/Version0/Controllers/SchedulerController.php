@@ -151,6 +151,9 @@ class SchedulerController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
+		if (!is_numeric($request->getParameter('taskId'))) {
+			return $response->withStatus(ApiResponse::S400_BAD_REQUEST, 'Invalid task ID');
+		}
 		$taskId = (int) $request->getParameter('taskId');
 		try {
 			$task = (array) $this->manager->load($taskId);
@@ -179,6 +182,9 @@ class SchedulerController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
+		if (!is_numeric($request->getParameter('taskId'))) {
+			return $response->withStatus(ApiResponse::S400_BAD_REQUEST, 'Invalid task ID');
+		}
 		$taskId = (int) $request->getParameter('taskId');
 		try {
 			$this->manager->delete($taskId);
@@ -215,12 +221,15 @@ class SchedulerController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
+		if (!is_numeric($request->getParameter('taskId'))) {
+			return $response->withStatus(ApiResponse::S400_BAD_REQUEST, 'Invalid task ID');
+		}
+		$taskId = (int) $request->getParameter('taskId');
 		try {
 			$task = $request->getJsonBody(false);
 		} catch (JsonException $e) {
 			return $response->withStatus(ApiResponse::S400_BAD_REQUEST, 'Invalid JSON syntax');
 		}
-		$taskId = (int) $request->getParameter('taskId');
 		try {
 			$fileName = $this->manager->getFileName($taskId);
 		} catch (TaskNotFoundException $e) {
