@@ -66,6 +66,10 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/serviceList.json
 		ServiceStatus:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/serviceStatus.json
+		Task:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/task.json
+		TaskList:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/taskList.json
 		UserCreate:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/userCreate.json
 		UserDetail:

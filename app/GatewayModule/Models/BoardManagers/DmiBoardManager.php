@@ -48,8 +48,9 @@ class DmiBoardManager implements IBoardManager {
 		$vendor = $this->commandManager->run('cat /sys/class/dmi/id/board_vendor', true)->getStdout();
 		$name = $this->commandManager->run('cat /sys/class/dmi/id/board_name', true)->getStdout();
 		$version = $this->commandManager->run('cat /sys/class/dmi/id/board_version', true)->getStdout();
-		if ($name !== '' && $vendor !== '' && $version !== '') {
-			return $vendor . ' ' . $name . ' (' . $version . ')';
+		if ($name !== '' && $vendor !== '') {
+			$versionStr = $version === '' ? '' : ' (' . $version . ')';
+			return $vendor . ' ' . $name . $versionStr;
 		}
 		return null;
 	}

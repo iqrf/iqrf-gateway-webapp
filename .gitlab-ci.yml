@@ -96,6 +96,7 @@ test:php7.2:
     - composer install --no-progress
   script:
     - vendor/bin/tester -p phpdbg7.2 -c ./tests/php.ini -s ./tests
+  after_script:
     - 'for i in $(find ./tests -name \*.actual); do echo "--- $i"; cat $i; echo; echo; done'
   <<: *test_template
 
@@ -105,6 +106,7 @@ test:php7.3:
     - composer install --no-progress
   script:
     - vendor/bin/tester -p phpdbg7.3 -c ./tests/php.ini -s ./tests
+  after_script:
     - 'for i in $(find ./tests -name \*.actual); do echo "--- $i"; cat $i; echo; echo; done'
   <<: *test_template
 
@@ -114,6 +116,7 @@ test:php7.4:
     - composer install --no-progress
   script:
     - vendor/bin/tester -p phpdbg7.4 -c ./tests/php.ini -s ./tests
+  after_script:
     - 'for i in $(find ./tests -name \*.actual); do echo "--- $i"; cat $i; echo; echo; done'
   <<: *test_template
 

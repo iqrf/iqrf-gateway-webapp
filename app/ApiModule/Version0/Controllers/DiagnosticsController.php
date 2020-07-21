@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ApiModule\Version0\Controllers;
 
+use Apitte\Core\Adjuster\FileResponseAdjuster;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
@@ -70,13 +71,8 @@ class DiagnosticsController extends BaseController {
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$path = $this->manager->createArchive();
 		$fileName = basename($path);
-		$headers = [
-			'Content-Type' => 'application/zip',
-			'Content-Disposition' => 'attachment; filename="' . $fileName . '"; filename*=utf-8\'\'' . rawurlencode($fileName),
-			'Content-Length' => (string) filesize($path),
-		];
-		return $response->withHeaders($headers)
-			->writeBody(FileSystem::read($path));
+		$response->writeBody(FileSystem::read($path));
+		return FileResponseAdjuster::adjust($response, $response->getBody(), $fileName, 'application/zip');
 	}
 
 }

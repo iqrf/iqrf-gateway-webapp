@@ -46,6 +46,16 @@ class DmiBoardInfoManagerTest extends CommandTestCase {
 	}
 
 	/**
+	 * Tests the function to get board's name from DMI (without version)
+	 */
+	public function testGetNameWithoutVersion(): void {
+		$this->receiveCommand($this->commands['dmiBoardVendor'], true, 'ASRock');
+		$this->receiveCommand($this->commands['dmiBoardName'], true, 'X570 Extreme4');
+		$this->receiveCommand($this->commands['dmiBoardVersion'], true, '');
+		Assert::same('ASRock X570 Extreme4', $this->manager->getName());
+	}
+
+	/**
 	 * Tests the function to get board's name from DMI (fail)
 	 */
 	public function testGetNameFail(): void {

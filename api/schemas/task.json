@@ -1,0 +1,442 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/task.json",
+	"type": "object",
+	"title": "Task",
+	"additionalProperties": false,
+	"required": [
+		"taskId",
+		"clientId",
+		"timeSpec",
+		"task"
+	],
+	"properties": {
+		"taskId": {
+			"$id": "#/properties/taskId",
+			"type": "integer",
+			"title": "Task ID",
+			"example": 2
+		},
+		"clientId": {
+			"$id": "#/properties/clientId",
+			"type": "string",
+			"title": "Scheduler messaging instance",
+			"example": "SchedulerMessaging"
+		},
+		"timeSpec": {
+			"$id": "#/properties/timeSpec",
+			"type": "object",
+			"title": "Time specification",
+			"additionalProperties": false,
+			"required": [
+				"cronTime",
+				"exactTime",
+				"periodic",
+				"period",
+				"startTime"
+			],
+			"properties": {
+				"cronTime": {
+					"$id": "#/properties/timeSpec/cronTime",
+					"type": "array",
+					"title": "CRON time expression with seconds and year",
+					"minItems": 7,
+					"maxItems": 7,
+					"additionalItems": false,
+					"items": {
+						"$id": "#/properties/timeSpec/cronTime/items",
+						"type": "string"
+					},
+					"example": [
+						"0",
+						"*/2",
+						"*",
+						"*",
+						"*",
+						"*",
+						"*"
+					]
+				},
+				"exactTime": {
+					"$id": "#/properties/timeSpec/exactTime",
+					"type": "boolean",
+					"title": "Exact time task",
+					"example": false
+				},
+				"periodic": {
+					"$id": "#/properties/timeSpec/periodic",
+					"type": "boolean",
+					"title": "Periodic task",
+					"example": false
+				},
+				"period": {
+					"$id": "#/properties/timeSpec/periodic",
+					"type": "number",
+					"title": "Task period",
+					"example": 0
+				},
+				"startTime": {
+					"$id": "#/properties/timeSpec/startTime",
+					"type": "string",
+					"title": "Exact start time",
+					"example": "2020-12-31T23:59:59.999999"
+				}
+			}
+		},
+		"task": {
+			"$id": "#/properties/task",
+			"title": "Task(s)",
+			"oneOf": [
+				{
+					"$ref": "#/definitions/task"
+				},
+				{
+					"type": "array",
+					"items": {
+						"$id": "#/properties/task/items",
+						"$ref": "#/definitions/task"
+					}
+				}
+			],
+			"example": {
+				"messaging": "MqttMessaging",
+				"message": {
+					"mType": "iqrfEmbedLedr_Pulse",
+					"data": {
+						"msgId": "testEmbedLedr",
+						"req": {
+							"nAdr": 2,
+							"param": {}
+						},
+						"returnVerbose": true
+					}
+				}
+			}
+		}
+	},
+	"definitions": {
+		"task": {
+			"$id": "#/definitions/task",
+			"oneOf": [
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/infoDaemon_Enumeration-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/infoDaemon_GetBinaryOutputs-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/infoDaemon_GetDalis-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/infoDaemon_GetLights-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/infoDaemon_GetMidMetaData-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/infoDaemon_GetNodeMetaData-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/infoDaemon_GetNodes-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/infoDaemon_GetSensors-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/infoDaemon_MidMetaDataAnnotate-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/infoDaemon_OrphanedMids-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/infoDaemon_SetMidMetaData-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/infoDaemon_SetNodeMetaData-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqmeshNetwork_AutoNetwork-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqmeshNetwork_BondNodeLocal-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqmeshNetwork_EnumerateDevice-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqmeshNetwork_OtaUpload-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqmeshNetwork_ReadTrConf-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqmeshNetwork_RemoveBond-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqmeshNetwork_SmartConnect-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqmeshNetwork_WriteTrConf-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfBinaryoutput_Enumerate-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfBinaryoutput_SetOutput-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfDali_Frc-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfDali_SendCommandsAsync-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfDali_SendCommands-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedCoordinator_AddrInfo-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedCoordinator_AuthorizeBond-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedCoordinator_Backup-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedCoordinator_BondedDevices-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedCoordinator_BondNode-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedCoordinator_ClearAllBonds-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedCoordinator_ClearRemotelyBondedMid-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedCoordinator_DiscoveredDevices-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedCoordinator_DiscoveryData-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedCoordinator_Discovery-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedCoordinator_EnableRemoteBonding-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedCoordinator_ReadRemotelyBondedMid-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedCoordinator_RebondNode-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedCoordinator_RemoveBond-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedCoordinator_Restore-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedCoordinator_SetDpaParams-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedCoordinator_SetHops-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedCoordinator_SetMid-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedCoordinator_SmartConnect-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedEeeprom_Read-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedEeeprom_Write-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedEeprom_Read-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedEeprom_Write-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedExplore_Enumerate-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedExplore_MorePeripheralsInformation-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedExplore_PeripheralInformation-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedFrc_ExtraResult-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedFrc_Send-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedFrc_SendSelective-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedFrc_SetParams-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedIo_Direction-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedIo_Get-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedIo_Set-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedLedg_Flashing-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedLedg_Get-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedLedg_Pulse-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedLedg_Set-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedLedr_Flashing-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedLedr_Get-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedLedr_Pulse-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedLedr_Set-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedNode_Backup-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedNode_ClearRemotelyBondedMid-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedNode_EnableRemoteBonding-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedNode_ReadRemotelyBondedMid-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedNode_Read-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedNode_RemoveBond-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedNode_Restore-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedNode_ValidateBonds-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedOs_Batch-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedOs_FactorySettings-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedOs_Indicate-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedOs_LoadCode-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedOs_ReadCfg-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedOs_Read-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedOs_Reset-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedOs_Restart-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedOs_Rfpgm-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedOs_SelectiveBatch-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedOs_SetSecurity-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedOs_Sleep-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedOs_TestRfSignal-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedOs_WriteCfgByte-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedOs_WriteCfg-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedRam_Read-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedRam_Write-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedSpi_WriteRead-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedThermometer_Read-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedUart_ClearWriteRead-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedUart_Close-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedUart_Open-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfEmbedUart_WriteRead-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfLight_DecrementPower-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfLight_Enumerate-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfLight_IncrementPower-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfLight_SetPower-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfRawHdp-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfRaw-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfSensor_Enumerate-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfSensor_Frc-request-1-0-0.json"
+				},
+				{
+					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqrfSensor_ReadSensorsWithTypes-request-1-0-0.json"
+				}
+			]
+		}
+	}
+}

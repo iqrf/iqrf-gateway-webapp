@@ -114,15 +114,17 @@ class GenericManager {
 	}
 
 	/**
-	 * Get a list of  configurations
+	 * Get a list of configurations
 	 * @return array<mixed> Configurations
-	 * @throws IOException
-	 * @throws JsonException
 	 */
 	public function list(): array {
 		$instances = [];
 		foreach ($this->getInstanceFiles() as $id => $fileName) {
-			$instances[] = Arrays::mergeTree(['id' => $id], $this->read($fileName));
+			try {
+				$instances[] = Arrays::mergeTree(['id' => $id], $this->read($fileName));
+			} catch (IOException | JsonException $e) {
+				continue;
+			}
 		}
 		return $instances;
 	}

@@ -68,11 +68,6 @@ class MigrationManagerTest extends TestCase {
 	private $managerCorrupted;
 
 	/**
-	 * @var string Path to the ZIP archive with IQRF Gateway Daemon's configuration
-	 */
-	private $path = '/tmp/iqrf-daemon-configuration.zip';
-
-	/**
 	 * @var string Path to a directory with correct JSON schemas
 	 */
 	private $schemaPath = __DIR__ . '/../../data/cfgSchemas/';
@@ -95,10 +90,12 @@ class MigrationManagerTest extends TestCase {
 		$actual = $this->manager->download();
 		$fileName = 'iqrf-gateway-configuration_' . $timestamp . '.zip';
 		$contentType = 'application/zip';
-		$expected = new FileResponse($this->path, $fileName, $contentType, true);
+		$path = '/tmp/' . $fileName;
+		$expected = new FileResponse($path, $fileName, $contentType, true);
 		Assert::equal($expected, $actual);
+		Assert::equal('application/zip', $actual->getContentType());
 		$files = $this->createList($this->configPath);
-		$zipManager = new ZipArchiveManager($this->path, ZipArchive::CREATE);
+		$zipManager = new ZipArchiveManager($path, ZipArchive::CREATE);
 		foreach ($files as $file) {
 			$expected = $this->fileManager->read($file);
 			Assert::same($expected, $zipManager->openFile($file));
@@ -133,9 +130,9 @@ class MigrationManagerTest extends TestCase {
 			'error' => UPLOAD_ERR_OK,
 			'size' => filesize($filePath),
 		];
-		$values = ['configuration' => new FileUpload($file)];
-		Assert::exception(function () use ($values): void {
-			$this->manager->upload($values);
+		$fileUpload = new FileUpload($file);
+		Assert::exception(function () use ($fileUpload): void {
+			$this->manager->upload($fileUpload);
 		}, InvalidConfigurationFormatException::class);
 	}
 
@@ -151,10 +148,9 @@ class MigrationManagerTest extends TestCase {
 
 	/**
 	 * Mock an uploaded configuration
-	 * @return array<FileUpload> Mocked form values
+	 * @return FileUpload Mocked file upload
 	 */
-	private function mockUploadedArchive(): array {
-		$values = [];
+	private function mockUploadedArchive(): FileUpload {
 		$file = [
 			'name' => 'iqrf-gateway-configuration.zip',
 			'type' => 'application/zip',
@@ -162,8 +158,7 @@ class MigrationManagerTest extends TestCase {
 			'error' => UPLOAD_ERR_OK,
 			'size' => filesize($this->tempPath),
 		];
-		$values['configuration'] = new FileUpload($file);
-		return $values;
+		return new FileUpload($file);
 	}
 
 	/**

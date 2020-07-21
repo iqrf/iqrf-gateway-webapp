@@ -10,6 +10,7 @@ declare(strict_types = 1);
 
 namespace Tests\ConfigModule\Models;
 
+use App\ConfigModule\Exceptions\TaskNotFoundException;
 use App\ConfigModule\Models\ComponentSchemaManager;
 use App\ConfigModule\Models\GenericManager;
 use App\ConfigModule\Models\MainManager;
@@ -78,21 +79,40 @@ class SchedulerManagerTest extends TestCase {
 	}
 
 	/**
-	 * Test function to fix HWPID format
+	 * Test function to delete nonexistent task
 	 */
-	public function testFixHwpid(): void {
-		Assert::equal('01.00', $this->manager->fixHwpid(1));
+	public function testDeleteNonexistent(): void {
+		Assert::throws(function (): void {
+			$this->manager->delete(-1);
+		}, TaskNotFoundException::class);
 	}
 
 	/**
-	 * Test function to fix HWPID format (empty)
+	 * Tests function to get task file name
 	 */
-	public function testFixHwpidEmpty(): void {
-		Assert::equal('00.00', $this->manager->fixHwpid());
+	public function testGetFileName(): void {
+		Assert::same('1', $this->manager->getFileName(1));
 	}
 
 	/**
-	 * Test function to get avaiable messagings
+	 * Tests function to get task file name (nonexistent task)
+	 */
+	public function testGetFileNameNonexistent(): void {
+		Assert::throws(function (): void {
+			$this->manager->getFileName(-1);
+		}, TaskNotFoundException::class);
+	}
+
+	/**
+	 * Tests function to check task existence
+	 */
+	public function testExist(): void {
+		Assert::true($this->manager->exist(1));
+		Assert::false($this->manager->exist(-1));
+	}
+
+	/**
+	 * Test function to get available messagings
 	 */
 	public function testGetMessagings(): void {
 		$expected = [
@@ -119,14 +139,14 @@ class SchedulerManagerTest extends TestCase {
 			[
 				'time' => '*/5 * 1 * * * *',
 				'service' => 'SchedulerMessaging',
-				'messaging' => 'WebsocketMessaging',
-				'mType' => 'iqrfRaw',
+				'messagings' => 'WebsocketMessaging',
+				'mTypes' => 'iqrfRaw',
 				'id' => 1,
 			], [
 				'time' => '*/5 * 1 * * * *',
 				'service' => 'SchedulerMessaging',
-				'messaging' => 'WebsocketMessaging',
-				'mType' => 'iqrfRawHdp',
+				'messagings' => 'WebsocketMessaging',
+				'mTypes' => 'iqrfRawHdp',
 				'id' => 2,
 			],
 		];
@@ -140,7 +160,15 @@ class SchedulerManagerTest extends TestCase {
 		$expected = $this->array;
 		$expected->timeSpec->cronTime = '*/5 * 1 * * * *';
 		Assert::equal($expected, $this->manager->load(1));
-		Assert::equal(new stdClass(), $this->manager->load(10));
+	}
+
+	/**
+	 * Test function to load nonexistent task
+	 */
+	public function testLoadNonexistent(): void {
+		Assert::throws(function (): void {
+			$this->manager->load(-1);
+		}, TaskNotFoundException::class);
 	}
 
 	/**
@@ -152,7 +180,7 @@ class SchedulerManagerTest extends TestCase {
 		$expected->task[0]->message->returnVerbose = false;
 		$config = $expected;
 		$config->timeSpec->cronTime = '*/5 * 1 * * * *';
-		$this->managerTemp->save($config);
+		$this->managerTemp->save($config, null);
 		Assert::equal($expected, $this->fileManagerTemp->read('1', false));
 	}
 

@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Models;
 
 use App\ConfigModule\Exceptions\InvalidConfigurationFormatException;
+use App\ConfigModule\Exceptions\InvalidTaskMessageException;
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use DateTime;
@@ -68,40 +69,43 @@ class SchedulerMigrationManager {
 	}
 
 	/**
+	 * Create an archive with scheduler configuration
+	 * @return string Path to archive with scheduler configuration
+	 */
+	public function createArchive(): string {
+		try {
+			$now = new DateTime();
+			$path = '/tmp/iqrf-gateway-scheduler_' . $now->format('c') . '.zip';
+		} catch (Throwable $e) {
+			$path = '/tmp/iqrf-gateway-scheduler.zip';
+		}
+		$zipManager = new ZipArchiveManager($path);
+		$zipManager->addFolder($this->configDirectory, '');
+		$zipManager->deleteDirectory('schema');
+		$zipManager->close();
+		return $path;
+	}
+
+	/**
 	 * Downloads a scheduler's configuration
 	 * @return FileResponse HTTP response with a scheduler's configuration
 	 * @throws BadRequestException
 	 */
 	public function download(): FileResponse {
-		try {
-			$now = new DateTime();
-			$timestamp = '_' . $now->format('c');
-		} catch (Throwable $e) {
-			$timestamp = '';
-		}
-		$fileName = 'iqrf-gateway-scheduler' . $timestamp . '.zip';
-		$zipManager = new ZipArchiveManager('/tmp/' . $fileName);
 		$contentType = 'application/zip';
-		$zipManager->addFolder($this->configDirectory, '');
-		$zipManager->deleteDirectory('schema');
-		$zipManager->close();
-		return new FileResponse('/tmp/' . $fileName, $fileName, $contentType, true);
+		$path = $this->createArchive();
+		$fileName = basename($path);
+		return new FileResponse($path, $fileName, $contentType, true);
 	}
 
 	/**
-	 * Uploads a configuration
-	 * @param FileUpload $zip ZIP archive with scheduler configuration
-	 * @throws InvalidConfigurationFormatException
+	 * Extracts an archive with scheduler configuration
+	 * @param string $path Path to archive with scheduler configuration
 	 * @throws JsonException
+	 * @throws InvalidTaskMessageException
 	 */
-	public function upload(FileUpload $zip): void {
-		if (!$zip->isOk()) {
-			throw new InvalidConfigurationFormatException();
-		}
-		if ($zip->getContentType() !== 'application/zip') {
-			throw new InvalidConfigurationFormatException();
-		}
-		$zipManager = new ZipArchiveManager($zip->getTemporaryFile(), ZipArchive::CREATE);
+	public function extractArchive(string $path): void {
+		$zipManager = new ZipArchiveManager($path, ZipArchive::CREATE);
 		foreach ($zipManager->listFiles() as $fileName) {
 			if (Strings::startsWith($fileName, 'schema/')) {
 				continue;
@@ -112,6 +116,23 @@ class SchedulerMigrationManager {
 		$zipManager->deleteDirectory('schema');
 		$zipManager->extract($this->configDirectory);
 		$zipManager->close();
+	}
+
+	/**
+	 * Uploads a configuration
+	 * @param FileUpload $zip ZIP archive with scheduler configuration
+	 * @throws InvalidConfigurationFormatException
+	 * @throws InvalidTaskMessageException
+	 * @throws JsonException
+	 */
+	public function upload(FileUpload $zip): void {
+		if (!$zip->isOk()) {
+			throw new InvalidConfigurationFormatException();
+		}
+		if ($zip->getContentType() !== 'application/zip') {
+			throw new InvalidConfigurationFormatException();
+		}
+		$this->extractArchive($zip->getTemporaryFile());
 	}
 
 }

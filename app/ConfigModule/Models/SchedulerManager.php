@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Models;
 
 use App\ConfigModule\Exceptions\InvalidTaskMessageException;
+use App\ConfigModule\Exceptions\TaskNotFoundException;
 use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use App\CoreModule\Models\CommandManager;
@@ -30,7 +31,6 @@ use App\ServiceModule\Models\ServiceManager;
 use Nette\IOException;
 use Nette\Utils\Finder;
 use Nette\Utils\JsonException;
-use Nette\Utils\Strings;
 use SplFileInfo;
 use stdClass;
 
@@ -48,11 +48,6 @@ class SchedulerManager {
 	 * @var JsonFileManager JSON file manager
 	 */
 	private $fileManager;
-
-	/**
-	 * @var string File name (without .json)
-	 */
-	private $fileName;
 
 	/**
 	 * @var SchedulerSchemaManager Scheduler JSON schema manager
@@ -94,49 +89,57 @@ class SchedulerManager {
 	/**
 	 * Deletes a task
 	 * @param int $id Task ID
+	 * @throws TaskNotFoundException
 	 */
 	public function delete(int $id): void {
-		$files = $this->getTaskFiles();
-		if (isset($files[$id])) {
-			$this->fileManager->delete($files[$id]);
-			try {
-				$this->serviceManager->restart();
-			} catch (UnsupportedInitSystemException $e) {
-				// Do nothing
-			}
+		$this->fileManager->delete($this->getFileName($id));
+		try {
+			$this->serviceManager->restart();
+		} catch (UnsupportedInitSystemException $e) {
+			// Do nothing
 		}
 	}
 
 	/**
-	 * Gets task's files
-	 * @return array<string> Files with tasks
+	 * Returns task file name
+	 * @param int $taskId Task ID
+	 * @return string File name
+	 * @throws TaskNotFoundException
 	 */
-	public function getTaskFiles(): array {
+	public function getFileName(int $taskId): string {
 		$dir = $this->fileManager->getDirectory();
-		$files = [];
-		/**
-		 * @var SplFileInfo $file File info
-		 */
-		foreach (Finder::findFiles('*.json')->from($dir) as $file) {
-			$dirPathPattern = ['~^' . realpath($dir) . '/~', '/.json$/'];
-			$fileName = Strings::replace($file->getRealPath(), $dirPathPattern, '');
+		foreach (Finder::findFiles('*.json')->in($dir) as $file) {
+			assert($file instanceof SplFileInfo);
+			$fileName = $file->getBasename('.json');
 			try {
-				$json = $this->fileManager->read($fileName);
-				if (array_key_exists('taskId', $json)) {
-					$files[$json['taskId']] = $fileName;
+				$task = $this->fileManager->read($fileName);
+				if ($task['taskId'] === $taskId) {
+					return $fileName;
 				}
-			} catch (IOException | JsonException $e) {
-				// Skip invalid JSON files
+			} catch (JsonException $e) {
+				continue;
 			}
 		}
-		asort($files);
-		return $files;
+		throw new TaskNotFoundException();
+	}
+
+	/**
+	 * Checks if the task exists
+	 * @param int $taskId Task ID
+	 * @return bool Is task exist?
+	 */
+	public function exist(int $taskId): bool {
+		try {
+			$this->getFileName($taskId);
+			return true;
+		} catch (TaskNotFoundException $e) {
+			return false;
+		}
 	}
 
 	/**
 	 * Gets available messagings
 	 * @return array<array<string>> Available messagings
-	 * @throws JsonException
 	 */
 	public function getMessagings(): array {
 		$messagings = $this->genericConfigManager->getMessagings();
@@ -147,15 +150,12 @@ class SchedulerManager {
 	/**
 	 * Gets scheduler's services
 	 * @return array<string> Scheduler's services
-	 * @throws JsonException
 	 */
 	public function getServices(): array {
-		$services = [];
 		$this->genericConfigManager->setComponent('iqrf::SchedulerMessaging');
-		foreach ($this->genericConfigManager->list() as $instance) {
-			$services[] = $instance['instance'];
-		}
-		return $services;
+		return array_map(function (array $instance): string {
+			return $instance['instance'];
+		}, $this->genericConfigManager->list());
 	}
 
 	/**
@@ -164,18 +164,21 @@ class SchedulerManager {
 	 */
 	public function list(): array {
 		$tasks = [];
-		foreach (array_keys($this->getTaskFiles()) as $id) {
+		$dir = $this->fileManager->getDirectory();
+		foreach (Finder::findFiles('*.json')->in($dir) as $file) {
+			assert($file instanceof SplFileInfo);
+			$fileName = $file->getBasename('.json');
 			try {
-				$data = $this->load($id);
+				$data = $this->readFile($fileName);
 				$task = [
 					'id' => $data->taskId,
 					'time' => $this->timeManager->getTime($data),
 					'service' => $data->clientId,
-					'messaging' => $this->getTaskMessagings($data->task),
-					'mType' => $this->getTaskMessageTypes($data->task),
+					'messagings' => $this->getTaskMessagings($data->task),
+					'mTypes' => $this->getTaskMessageTypes($data->task),
 				];
 				$tasks[] = $task;
-			} catch (InvalidJsonException | IOException | JsonException $e) {
+			} catch (InvalidJsonException | InvalidTaskMessageException | IOException | JsonException | TaskNotFoundException $e) {
 				// Do nothing
 			}
 		}
@@ -188,10 +191,9 @@ class SchedulerManager {
 	 * @return string Messagings used in tasks
 	 */
 	private function getTaskMessagings(array $tasks): string {
-		$messagings = [];
-		foreach ($tasks as $task) {
-			$messagings[] = $task->messaging;
-		}
+		$messagings = array_map(function (stdClass $task): string {
+			return $task->messaging;
+		}, $tasks);
 		return implode(', ', $messagings);
 	}
 
@@ -201,10 +203,9 @@ class SchedulerManager {
 	 * @return string Message types used in tasks
 	 */
 	private function getTaskMessageTypes(array $tasks): string {
-		$mTypes  = [];
-		foreach ($tasks as $task) {
-			$mTypes[] = $task->message->mType;
-		}
+		$mTypes = array_map(function (stdClass $task): string {
+			return $task->message->mType;
+		}, $tasks);
 		return implode(', ', $mTypes);
 	}
 
@@ -216,14 +217,35 @@ class SchedulerManager {
 	 * @throws InvalidTaskMessageException
 	 * @throws JsonException
 	 * @throws NonexistentJsonSchemaException
+	 * @throws TaskNotFoundException
 	 */
 	public function load(int $id): stdClass {
-		$files = $this->getTaskFiles();
-		if (!isset($files[$id])) {
-			return new stdClass();
+		$fileName = $this->getFileName($id);
+		return $this->readFile($fileName);
+	}
+
+	/**
+	 * Fixes the task specification
+	 * @param stdClass $config Scheduler task
+	 */
+	private function fixTasks(stdClass &$config): void {
+		if (!is_array($config->task) && isset($config->task->message)) {
+			$config->task = [$config->task];
 		}
-		$this->fileName = strval($files[$id]);
-		$config = $this->fileManager->read($this->fileName, false);
+	}
+
+	/**
+	 * Reads a task
+	 * @param string $fileName Task file name
+	 * @return stdClass Task configuration
+	 * @throws InvalidJsonException
+	 * @throws InvalidTaskMessageException
+	 * @throws JsonException
+	 * @throws NonexistentJsonSchemaException
+	 * @throws TaskNotFoundException
+	 */
+	private function readFile(string $fileName): stdClass {
+		$config = $this->fileManager->read($fileName, false);
 		$this->schemaManager->validate($config);
 		$this->timeManager->cronToString($config);
 		$this->fixTasks($config);
@@ -231,34 +253,15 @@ class SchedulerManager {
 	}
 
 	/**
-	 * Fixes the HWPID format
-	 * @param int|null $hwpId HWPID to fix
-	 * @return string Fixed HWPID
-	 */
-	public function fixHwpid(?int $hwpId = null): string {
-		$data = Strings::padLeft(dechex($hwpId & 255), 2, '0') . '.';
-		return $data . Strings::padLeft(dechex($hwpId >> 8), 2, '0');
-	}
-
-	/**
-	 * Fixes the task specification
-	 * @param stdClass $config Scheduler task
-	 */
-	public function fixTasks(stdClass &$config): void {
-		if (!is_array($config->task) && isset($config->task->message)) {
-			$config->task = [$config->task];
-		}
-	}
-
-	/**
 	 * Saves the task's configuration
 	 * @param stdClass $config Task's configuration
+	 * @param string|null $fileName Task file name
 	 * @throws InvalidTaskMessageException
 	 * @throws JsonException
 	 */
-	public function save(stdClass $config): void {
-		if (!isset($this->fileName)) {
-			$this->fileName = strval($config->taskId);
+	public function save(stdClass $config, ?string $fileName): void {
+		if ($fileName === null) {
+			$fileName = strval($config->taskId);
 		}
 		foreach ($config->task as &$task) {
 			if (!isset($task->message->data->timeout)) {
@@ -270,7 +273,7 @@ class SchedulerManager {
 			$config->timeSpec->period = 0;
 		}
 		$this->schemaManager->validate($config);
-		$this->fileManager->write($this->fileName, $config);
+		$this->fileManager->write($fileName, $config);
 	}
 
 }
