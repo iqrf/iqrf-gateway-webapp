@@ -23,6 +23,8 @@ namespace App\ApiModule\Version0\Middlewares;
 use App\ApiModule\Version0\RequestAttributes;
 use Contributte\Middlewares\IMiddleware;
 use Contributte\Middlewares\Security\IAuthenticator;
+use InvalidArgumentException;
+use Lcobucci\Jose\Parsing\Exception as JwtParsingException;
 use Nette\Utils\Json;
 use Nette\Utils\Strings;
 use Psr\Http\Message\ResponseInterface;
@@ -59,7 +61,15 @@ class AuthenticationMiddleware implements IMiddleware {
 			// Pass to next middleware
 			return $next($request, $response);
 		}
-		$user = $this->authenticator->authenticate($request);
+		try {
+			$user = $this->authenticator->authenticate($request);
+		} catch (JwtParsingException | InvalidArgumentException $e) {
+			$response->getBody()->write(Json::encode([
+				'error' => 'Invalid JWT',
+			]));
+			return $response->withStatus(401)
+				->withHeader('WWW-Authenticate', 'Bearer');
+		}
 		// If we have a identity, then go to next middleware, otherwise stop and return current response
 		if ($user === null) {
 			$response->getBody()->write(Json::encode([

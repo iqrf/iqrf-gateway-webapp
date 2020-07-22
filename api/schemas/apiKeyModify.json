@@ -1,8 +1,8 @@
 {
 	"$schema": "http://json-schema.org/draft-07/schema",
-	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/apiKeyCreate.json",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/apiKeyModify.json",
 	"type": "object",
-	"title": "API key creation",
+	"title": "API key to modify",
 	"additionalProperties": false,
 	"required": [
 		"description",

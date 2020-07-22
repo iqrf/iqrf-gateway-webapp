@@ -95,11 +95,27 @@ class ApiKey implements JsonSerializable {
 	}
 
 	/**
+	 * Sets API key description
+	 * @param string $description API key description
+	 */
+	public function setDescription(string $description): void {
+		$this->description = $description;
+	}
+
+	/**
 	 * Returns API key expiration
 	 * @return DateTime|null API key expiration
 	 */
 	public function getExpiration(): ?DateTime {
 		return $this->expiration;
+	}
+
+	/**
+	 * Sets API key expiration
+	 * @param DateTime|null $expiration API key expiration
+	 */
+	public function setExpiration(?DateTime $expiration): void {
+		$this->expiration = $expiration;
 	}
 
 	/**
@@ -119,11 +135,15 @@ class ApiKey implements JsonSerializable {
 	 * @return array<string, int|string|null> JSON serialized data
 	 */
 	public function jsonSerialize(): array {
-		return [
+		$array = [
 			'id' => $this->getId(),
 			'description' => $this->getDescription(),
 			'expiration' => $this->getExpiration() === null ? null : $this->getExpiration()->format('c'),
 		];
+		if (isset($this->key)) {
+			$array['key'] = $this->getKey();
+		}
+		return $array;
 	}
 
 }

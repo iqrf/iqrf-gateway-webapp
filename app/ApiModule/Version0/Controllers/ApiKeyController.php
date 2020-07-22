@@ -32,6 +32,10 @@ use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\Models\Database\Entities\ApiKey;
 use App\Models\Database\EntityManager;
+use App\Models\Database\Repositories\ApiKeyRepository;
+use DateTime;
+use Nette\Utils\JsonException;
+use Throwable;
 use function assert;
 
 /**
@@ -47,11 +51,17 @@ class ApiKeyController extends BaseController {
 	private $entityManager;
 
 	/**
+	 * @var ApiKeyRepository API key database repository
+	 */
+	private $repository;
+
+	/**
 	 * Constructor
 	 * @param EntityManager $entityManager Entity manager
 	 */
 	public function __construct(EntityManager $entityManager) {
 		$this->entityManager = $entityManager;
+		$this->repository = $entityManager->getApiKeyRepository();
 	}
 
 	/**
@@ -74,9 +84,55 @@ class ApiKeyController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$repository = $this->entityManager->getApiKeyRepository();
-		$apiKeys = $repository->findAll();
+		$apiKeys = $this->repository->findAll();
 		return $response->writeJsonBody($apiKeys);
+	}
+
+	/**
+	 * @Path("/")
+	 * @Method("POST")
+	 * @OpenApi("
+	 *  summary: Creates a new API key
+	 *  requestBody:
+	 *      required: true
+	 *      content:
+	 *          application/json:
+	 *              schema:
+	 *                  $ref: '#/components/schemas/ApiKeyModify'
+	 *  responses:
+	 *      '201':
+	 *          description: Created
+	 *          content:
+	 *              application/json:
+	 *                  schema:
+	 *                      $ref: '#/components/schemas/ApiKeyCreated'
+	 *      '400':
+	 *          description: 'Bad request'
+	 * ")
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
+		try {
+			$json = $request->getJsonBody(false);
+		} catch (JsonException $e) {
+			return $response->withStatus(ApiResponse::S400_BAD_REQUEST, 'Invalid JSON syntax');
+		}
+		if ($json->expiration === null) {
+			$expiration = null;
+		} else {
+			try {
+				$expiration = new DateTime($json->expiration);
+			} catch (Throwable $e) {
+				return $response->withStatus(ApiResponse::S400_BAD_REQUEST, 'Invalid expiration date');
+			}
+		}
+		$apiKey = new ApiKey($json->description, $expiration);
+		$this->entityManager->persist($apiKey);
+		$this->entityManager->flush();
+		return $response->writeJsonObject($apiKey)
+			->withStatus(ApiResponse::S201_CREATED);
 	}
 
 	/**
@@ -102,10 +158,10 @@ class ApiKeyController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$repository = $this->entityManager->getApiKeyRepository();
-		$apiKey = $repository->find((int) $request->getParameter('id'));
+		$id = (int) $request->getParameter('id');
+		$apiKey = $this->repository->find($id);
 		if ($apiKey === null) {
-			return $response->withStatus(404);
+			return $response->withStatus(ApiResponse::S404_NOT_FOUND, 'API key not found');
 		}
 		assert($apiKey instanceof ApiKey);
 		return $response->writeJsonObject($apiKey);
@@ -129,12 +185,66 @@ class ApiKeyController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$repository = $this->entityManager->getApiKeyRepository();
-		$apiKey = $repository->find((int) $request->getParameter('id'));
+		$id = (int) $request->getParameter('id');
+		$apiKey = $this->repository->find($id);
 		if ($apiKey === null) {
-			return $response->withStatus(404);
+			return $response->withStatus(ApiResponse::S404_NOT_FOUND, 'API key not found');
 		}
 		$this->entityManager->remove($apiKey);
+		$this->entityManager->flush();
+		return $response;
+	}
+
+	/**
+	 * @Path("/{id}")
+	 * @Method("PUT")
+	 * @OpenApi("
+	 *  summary: Edits the API key
+	 *  requestBody:
+	 *      required: true
+	 *      content:
+	 *          application/json:
+	 *              schema:
+	 *                  $ref: '#/components/schemas/ApiKeyModify'
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '400':
+	 *          description: 'Bad request'
+	 *      '404':
+	 *          description: 'API key not found'
+	 * ")
+	 * @RequestParameters({
+	 *      @RequestParameter(name="id", type="integer", description="API key ID")
+	 * })
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$id = (int) $request->getParameter('id');
+		$apiKey = $this->repository->find($id);
+		if ($apiKey === null) {
+			return $response->withStatus(ApiResponse::S404_NOT_FOUND, 'API key not found');
+		}
+		assert($apiKey instanceof ApiKey);
+		try {
+			$json = $request->getJsonBody(false);
+		} catch (JsonException $e) {
+			return $response->withStatus(ApiResponse::S400_BAD_REQUEST, 'Invalid JSON syntax');
+		}
+		$apiKey->setDescription($json->description);
+		if ($json->expiration === null) {
+			$expiration = null;
+		} else {
+			try {
+				$expiration = new DateTime($json->expiration);
+			} catch (Throwable $e) {
+				return $response->withStatus(ApiResponse::S400_BAD_REQUEST, 'Invalid expiration date');
+			}
+		}
+		$apiKey->setExpiration($expiration);
+		$this->entityManager->persist($apiKey);
 		$this->entityManager->flush();
 		return $response;
 	}
