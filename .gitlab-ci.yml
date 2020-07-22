@@ -308,3 +308,6 @@ deploy-package-stable_iqd-gw-01:
     - ssh www-deploy@iqrfsdk.org "rm -f /data/nginx/dl/iqrf-gateway-webapp/iqd-gw-01/stable/*.changes"
     - rsync -hrvz --delete -e ssh iqrf-gateway-webapp_*all.deb www-deploy@iqrfsdk.org:/data/nginx/dl/iqrf-gateway-webapp/iqd-gw-01/stable
   <<: *ssh_template
+
+include:
+  - template: Code-Quality.gitlab-ci.yml
