@@ -24,6 +24,7 @@ use App\Models\Database\Entities\User;
 use App\Models\Database\EntityManager;
 use Contributte\Middlewares\Security\IAuthenticator;
 use DateTimeImmutable;
+use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Token\Plain;
 use Lcobucci\JWT\Validation\Constraint\SignedWith;
 use Nette\Security\Identity;
@@ -31,6 +32,8 @@ use Nette\Security\IIdentity;
 use Nette\Utils\Strings;
 use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
+use function assert;
+use function strpos;
 
 class JwtAuthenticator implements IAuthenticator {
 
@@ -40,9 +43,9 @@ class JwtAuthenticator implements IAuthenticator {
 	private $entityManager;
 
 	/**
-	 * @var JwtConfigurator JWT configurator
+	 * @var Configuration JWT configuration
 	 */
-	private $configurator;
+	private $configuration;
 
 	/**
 	 * Constructor
@@ -50,7 +53,7 @@ class JwtAuthenticator implements IAuthenticator {
 	 * @param EntityManager $entityManager Entity manager
 	 */
 	public function __construct(JwtConfigurator $configurator, EntityManager $entityManager) {
-		$this->configurator = $configurator;
+		$this->configuration = $configurator->create();
 		$this->entityManager = $entityManager;
 	}
 
@@ -63,19 +66,9 @@ class JwtAuthenticator implements IAuthenticator {
 		if ($jwt === null) {
 			return null;
 		}
-		$configuration = $this->configurator->create();
-		/** @var Plain $token */
-		$token = $configuration->getParser()->parse($jwt);
-		$validator = $configuration->getValidator();
-		$now = new DateTimeImmutable();
-		$hostname = gethostname();
-		$signedWith = new SignedWith($configuration->getSigner(), $configuration->getVerificationKey());
-		if (!$validator->validate($token, $signedWith) ||
-			$token->isExpired($now) ||
-			!$token->claims()->has('uid') ||
-			!$token->hasBeenIssuedBefore($now) ||
-			!($hostname !== false && $token->hasBeenIssuedBy($hostname) &&
-				$token->isIdentifiedBy($hostname))) {
+		$token = $this->configuration->getParser()->parse($jwt);
+		assert($token instanceof Plain);
+		if (!$this->isJwtValid($token)) {
 			return null;
 		}
 		try {
@@ -93,6 +86,26 @@ class JwtAuthenticator implements IAuthenticator {
 		} catch (Throwable $e) {
 			return null;
 		}
+	}
+
+	/**
+	 * Validates JWT
+	 * @param Plain $token JWT to validate
+	 * @return bool Is JWT valid?
+	 */
+	private function isJwtValid(Plain $token): bool {
+		$hostname = gethostname();
+		$now = new DateTimeImmutable();
+		$validator = $this->configuration->getValidator();
+		$signer = $this->configuration->getSigner();
+		$verificationKey = $this->configuration->getVerificationKey();
+		$signedWith = new SignedWith($signer, $verificationKey);
+		return $validator->validate($token, $signedWith) ||
+			!$token->isExpired($now) ||
+			$token->claims()->has('uid') ||
+			$token->hasBeenIssuedBefore($now) ||
+			($hostname !== false && $token->hasBeenIssuedBy($hostname) &&
+				$token->isIdentifiedBy($hostname));
 	}
 
 	/**
