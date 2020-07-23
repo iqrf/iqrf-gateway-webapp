@@ -32,6 +32,10 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/cloudIbm.json
 		CloudInteliGlue:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/cloudInteliGlue.json
+		DaemonComponent:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/daemonComponent.json
+		DaemonComponentDetail:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/daemonComponentDetail.json
 		DaemonConfiguration:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/daemonConfiguration.json
 		GatewayInfo:

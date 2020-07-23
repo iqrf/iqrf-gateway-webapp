@@ -1,0 +1,39 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/daemonComponentDetail.json",
+	"type": "object",
+	"title": "IQRF Gateway Daemon component detailed information",
+	"required": [
+		"configuration",
+		"instances"
+	],
+	"properties": {
+		"configuration": {
+			"$id": "#/properties/configuration",
+			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/daemonComponent.json"
+		},
+		"instances": {
+			"$id": "#/properties/instances",
+			"type": "array",
+			"title": "Component instances",
+			"example": [
+					{
+						"id": 0,
+						"component": "iqrf::IqrfSpi",
+						"instance": "iqrf::IqrfSpi-/dev/spidev0.0",
+						"IqrfInterface": "/dev/spidev0.0",
+						"powerEnableGpioPin": 23,
+						"busEnableGpioPin": 7,
+						"pgmSwitchGpioPin": 22,
+						"spiReset": true
+					}
+			],
+			"additionalItems": false,
+			"items": {
+				"$id": "#/properties/instances/items",
+				"$ref": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/daemonConfiguration.json"
+			}
+		}
+	},
+	"additionalProperties": false
+}
