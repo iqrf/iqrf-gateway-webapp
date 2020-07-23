@@ -20,13 +20,13 @@ declare(strict_types = 1);
 
 namespace App\ApiModule\Version0\Middlewares;
 
+use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\RequestAttributes;
 use Contributte\Middlewares\IMiddleware;
 use Contributte\Middlewares\Security\IAuthenticator;
 use InvalidArgumentException;
 use Lcobucci\Jose\Parsing\Exception as JwtParsingException;
 use Nette\Utils\Json;
-use Nette\Utils\Strings;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -67,7 +67,7 @@ class AuthenticationMiddleware implements IMiddleware {
 			$response->getBody()->write(Json::encode([
 				'error' => 'Invalid JWT',
 			]));
-			return $response->withStatus(401)
+			return $response->withStatus(ApiResponse::S401_UNAUTHORIZED)
 				->withHeader('WWW-Authenticate', 'Bearer');
 		}
 		// If we have a identity, then go to next middleware, otherwise stop and return current response
@@ -75,7 +75,7 @@ class AuthenticationMiddleware implements IMiddleware {
 			$response->getBody()->write(Json::encode([
 				'error' => 'Client authentication failed',
 			]));
-			return $response->withStatus(401)
+			return $response->withStatus(ApiResponse::S401_UNAUTHORIZED)
 				->withHeader('WWW-Authenticate', 'Bearer');
 		}
 		// Add info about current logged user to request attributes
@@ -91,7 +91,8 @@ class AuthenticationMiddleware implements IMiddleware {
 	 */
 	protected function isWhitelisted(ServerRequestInterface $request): bool {
 		foreach (self::WHITELISTED_PATHS as $path) {
-			if (Strings::startsWith($request->getUri()->getPath(), $path)) {
+			$requestUrl = rtrim($request->getUri()->getPath(), '/');
+			if ($requestUrl === $path) {
 				return true;
 			}
 		}
