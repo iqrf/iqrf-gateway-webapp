@@ -77,18 +77,7 @@ components:
 		UserToken:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/jwt.json
 		Version:
-			type: object
-			properties:
-				version:
-					type: string
-				commit:
-					type: string
-				pipeline:
-					type: string
-			required:
-				- version
-				- commit
-				- pipeline
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/version.json
 	securitySchemes:
 		bearerAuth:
 			type: http
