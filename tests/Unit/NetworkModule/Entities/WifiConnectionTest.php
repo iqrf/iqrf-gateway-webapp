@@ -76,6 +76,13 @@ class WifiConnectionTest extends TestCase {
 	}
 
 	/**
+	 * Tests the function to get WiFi network security
+	 */
+	public function testGetSecurity(): void {
+		Assert::equal($this->security, $this->entity->getSecurity());
+	}
+
+	/**
 	 * Tests teh function to get SSID
 	 */
 	public function testGetSsid(): void {

@@ -79,7 +79,7 @@ class WifiNetworkTest extends TestCase {
 	/**
 	 * Sets up the test environment
 	 */
-	protected function setUp(): void  {
+	protected function setUp(): void {
 		$this->entity = new WifiNetwork($this->inUse, $this->bssid, $this->ssid, $this->mode, $this->channel, $this->rate, $this->signal, $this->security);
 	}
 
@@ -145,6 +145,24 @@ class WifiNetworkTest extends TestCase {
 	 */
 	public function testGetSecurity(): void {
 		Assert::equal($this->security, $this->entity->getSecurity());
+	}
+
+	/**
+	 * Tests the function to get JSON serialized data
+	 */
+	public function testJsonSerialize(): void {
+		$expected = [
+			'inUse' => true,
+			'bssid' => '1A:E8:29:E5:CB:9A',
+			'ssid' => 'WIFI MAGDA',
+			'mode' => 'infrastructure',
+			'channel' => 56,
+			'rate' => '405 Mbit/s',
+			'signal' => 70,
+			'security' => 'WPA2-Personal',
+
+		];
+		Assert::same($expected, $this->entity->jsonSerialize());
 	}
 
 }
