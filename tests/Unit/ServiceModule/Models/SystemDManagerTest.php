@@ -3,13 +3,14 @@
 /**
  * TEST: App\ServiceModule\Models\SystemDManager
  * @covers App\ServiceModule\Models\SystemDManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
 
 namespace Tests\Unit\ServiceModule\Models;
 
+use App\ServiceModule\Exceptions\NonexistentServiceException;
 use App\ServiceModule\Models\SystemDManager;
 use Tester\Assert;
 use Tests\Toolkit\TestCases\CommandTestCase;
@@ -22,22 +23,27 @@ require __DIR__ . '/../../../bootstrap.php';
 class SystemDManagerTest extends CommandTestCase {
 
 	/**
+	 * IQRF Gateway Daemon service name
+	 */
+	private const DAEMON_SERVICE_NAME = 'iqrf-gateway-daemon';
+
+	/**
+	 * Unknown service name
+	 */
+	private const UNKNOWN_SERVICE_NAME = 'unknown';
+
+	/**
 	 * @var SystemDManager Service manager for systemD init daemon
 	 */
 	private $manager;
-
-	/**
-	 * @var string Name of service
-	 */
-	private $serviceName = 'iqrf-gateway-daemon.service';
 
 	/**
 	 * Tests the function to disable the service via systemD
 	 */
 	public function testDisable(): void {
 		$commands = [
-			'systemctl stop ' . $this->serviceName,
-			'systemctl disable ' . $this->serviceName,
+			'systemctl stop ' . self::DAEMON_SERVICE_NAME . '.service',
+			'systemctl disable ' . self::DAEMON_SERVICE_NAME . '.service',
 		];
 		foreach ($commands as $command) {
 			$this->receiveCommand($command, true);
@@ -48,12 +54,24 @@ class SystemDManagerTest extends CommandTestCase {
 	}
 
 	/**
+	 * Tests the function to disable the service via systemD - unknown service
+	 */
+	public function testDisableUnknown(): void {
+		$command = 'systemctl disable ' . self::UNKNOWN_SERVICE_NAME . '.service';
+		$stderr = 'Failed to disable unit: Unit file unknown.service does not exist.';
+		$this->receiveCommand($command, true, '', $stderr, 1);
+		Assert::throws(function (): void {
+			$this->manager->disable(self::UNKNOWN_SERVICE_NAME);
+		}, NonexistentServiceException::class, $stderr);
+	}
+
+	/**
 	 * Tests the function to enable the service via systemD
 	 */
 	public function testEnable(): void {
 		$commands = [
-			'systemctl enable ' . $this->serviceName,
-			'systemctl start ' . $this->serviceName,
+			'systemctl enable ' . self::DAEMON_SERVICE_NAME . '.service',
+			'systemctl start ' . self::DAEMON_SERVICE_NAME . '.service',
 		];
 		foreach ($commands as $command) {
 			$this->receiveCommand($command, true);
@@ -64,28 +82,61 @@ class SystemDManagerTest extends CommandTestCase {
 	}
 
 	/**
+	 * Tests the function to enable the service via systemD - unknown service
+	 */
+	public function testEnableUnknown(): void {
+		$command = 'systemctl enable ' . self::UNKNOWN_SERVICE_NAME . '.service';
+		$stderr = 'Failed to enable unit: Unit file unknown.service does not exist.';
+		$this->receiveCommand($command, true, '', $stderr, 1);
+		Assert::throws(function (): void {
+			$this->manager->enable(self::UNKNOWN_SERVICE_NAME);
+		}, NonexistentServiceException::class, $stderr);
+	}
+
+	/**
 	 * Tests the function to check if the service is active via systemD
 	 */
 	public function testIsActive(): void {
-		$command = 'systemctl is-active ' . $this->serviceName;
+		$command = 'systemctl is-active ' . self::DAEMON_SERVICE_NAME . '.service';
 		$this->receiveCommand($command, true, 'active');
 		Assert::true($this->manager->isActive());
+	}
+
+	/**
+	 * Tests the function to check if the service is active via systemD - unknown service
+	 */
+	public function testIsActiveUnknown(): void {
+		$command = 'systemctl is-active ' . self::UNKNOWN_SERVICE_NAME . '.service';
+		$this->receiveCommand($command, true, 'inactive');
+		Assert::false($this->manager->isActive(self::UNKNOWN_SERVICE_NAME));
 	}
 
 	/**
 	 * Tests the function to check if the service is enabled via systemD
 	 */
 	public function testIsEnabled(): void {
-		$command = 'systemctl is-enabled ' . $this->serviceName;
+		$command = 'systemctl is-enabled ' . self::DAEMON_SERVICE_NAME . '.service';
 		$this->receiveCommand($command, true, 'enabled');
 		Assert::true($this->manager->isEnabled());
+	}
+
+	/**
+	 * Tests the function to check if the service is enabled via systemD - unknown service
+	 */
+	public function testIsEnabledUnknown(): void {
+		$command = 'systemctl is-enabled ' . self::UNKNOWN_SERVICE_NAME . '.service';
+		$stderr = 'Failed to get unit file state for unknown.service: No such file or directory';
+		$this->receiveCommand($command, true, '', $stderr, 1);
+		Assert::throws(function (): void {
+			$this->manager->isEnabled(self::UNKNOWN_SERVICE_NAME);
+		}, NonexistentServiceException::class, $stderr);
 	}
 
 	/**
 	 * Tests the function to start the service via systemD
 	 */
 	public function testStart(): void {
-		$command = 'systemctl start ' . $this->serviceName;
+		$command = 'systemctl start ' . self::DAEMON_SERVICE_NAME . '.service';
 		$this->receiveCommand($command, true);
 		Assert::noError(function (): void {
 			$this->manager->start();
@@ -93,10 +144,22 @@ class SystemDManagerTest extends CommandTestCase {
 	}
 
 	/**
+	 * Tests the function to start the service via systemD - unknown service
+	 */
+	public function testStartUnknown(): void {
+		$command = 'systemctl start ' . self::UNKNOWN_SERVICE_NAME . '.service';
+		$stderr = 'Failed to start unknown.service: Unit unknown.service not found.';
+		$this->receiveCommand($command, true, '', $stderr, 5);
+		Assert::throws(function (): void {
+			$this->manager->start(self::UNKNOWN_SERVICE_NAME);
+		}, NonexistentServiceException::class, $stderr);
+	}
+
+	/**
 	 * Tests the function to stop the service via systemD
 	 */
 	public function testStop(): void {
-		$command = 'systemctl stop ' . $this->serviceName;
+		$command = 'systemctl stop ' . self::DAEMON_SERVICE_NAME . '.service';
 		$this->receiveCommand($command, true);
 		Assert::noError(function (): void {
 			$this->manager->stop();
@@ -104,10 +167,22 @@ class SystemDManagerTest extends CommandTestCase {
 	}
 
 	/**
+	 * Tests the function to stop the service via systemD - unknown service
+	 */
+	public function testStopUnknown(): void {
+		$command = 'systemctl stop ' . self::UNKNOWN_SERVICE_NAME . '.service';
+		$stderr = 'Failed to stop unknown.service: Unit unknown.service not found.';
+		$this->receiveCommand($command, true, '', $stderr, 5);
+		Assert::throws(function (): void {
+			$this->manager->stop(self::UNKNOWN_SERVICE_NAME);
+		}, NonexistentServiceException::class, $stderr);
+	}
+
+	/**
 	 * Tests the function to restart the service via systemD
 	 */
 	public function testRestart(): void {
-		$command = 'systemctl restart ' . $this->serviceName;
+		$command = 'systemctl restart ' . self::DAEMON_SERVICE_NAME . '.service';
 		$this->receiveCommand($command, true);
 		Assert::noError(function (): void {
 			$this->manager->restart();
@@ -115,13 +190,37 @@ class SystemDManagerTest extends CommandTestCase {
 	}
 
 	/**
+	 * Tests the function to restart the service via systemD - unknown service
+	 */
+	public function testRestartUnknown(): void {
+		$command = 'systemctl restart ' . self::UNKNOWN_SERVICE_NAME . '.service';
+		$stderr = 'Failed to restart unknown.service: Unit unknown.service not found.';
+		$this->receiveCommand($command, true, '', $stderr, 5);
+		Assert::throws(function (): void {
+			$this->manager->restart(self::UNKNOWN_SERVICE_NAME);
+		}, NonexistentServiceException::class, $stderr);
+	}
+
+	/**
 	 * Tests the function to get status of the service via systemD
 	 */
 	public function testGetStatus(): void {
 		$expected = 'status';
-		$command = 'systemctl status ' . $this->serviceName;
+		$command = 'systemctl status ' . self::DAEMON_SERVICE_NAME . '.service';
 		$this->receiveCommand($command, true, $expected);
 		Assert::same($expected, $this->manager->getStatus());
+	}
+
+	/**
+	 * Tests the function to get status of the service via systemD - unknown service
+	 */
+	public function testGetStatusUnknown(): void {
+		$command = 'systemctl status ' . self::UNKNOWN_SERVICE_NAME . '.service';
+		$stderr = 'Unit unknown.service could not be found.';
+		$this->receiveCommand($command, true, '', $stderr, 4);
+		Assert::throws(function (): void {
+			$this->manager->getStatus('unknown');
+		}, NonexistentServiceException::class, $stderr);
 	}
 
 	/**

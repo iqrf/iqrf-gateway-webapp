@@ -102,6 +102,9 @@ class SystemDManager implements IServiceManager {
 		$serviceName = $serviceName ?? $this->serviceName;
 		$cmd = 'systemctl is-enabled ' . $serviceName . '.service';
 		$command = $this->commandManager->run($cmd, true);
+		if ($command->getStderr() !== '') {
+			throw new NonexistentServiceException($command->getStderr());
+		}
 		return $command->getStdout() === 'enabled';
 	}
 
@@ -157,6 +160,9 @@ class SystemDManager implements IServiceManager {
 		$serviceName = $serviceName ?? $this->serviceName;
 		$cmd = 'systemctl status ' . $serviceName . '.service';
 		$command = $this->commandManager->run($cmd, true);
+		if ($command->getStderr() !== '') {
+			throw new NonexistentServiceException($command->getStderr());
+		}
 		return $command->getStdout();
 	}
 
