@@ -61,10 +61,27 @@ class ApiKeyTest extends TestCase {
 	}
 
 	/**
+	 * Tests the function to set API key description
+	 */
+	public function testSetDescription(): void {
+		$expected = 'New description';
+		$this->entity->setDescription($expected);
+		Assert::same($expected, $this->entity->getDescription());
+	}
+
+	/**
 	 * Tests the function to return API key expiration
 	 */
 	public function testGetExpiration(): void {
 		Assert::same($this->expiration, $this->entity->getExpiration());
+	}
+
+	/**
+	 * Tests the function to set API key expiration
+	 */
+	public function testSetExpiration(): void {
+		$this->entity->setExpiration(null);
+		Assert::null($this->entity->getExpiration());
 	}
 
 	/**
@@ -83,6 +100,21 @@ class ApiKeyTest extends TestCase {
 		Assert::false($entity->isExpired());
 		$entity = new ApiKey($this->description, new DateTime('2050-01-01T00:00'));
 		Assert::false($entity->isExpired());
+	}
+
+	/**
+	 * Tests the function to get JSON serialized entity
+	 */
+	public function testJsonSerialize(): void {
+		$expected = [
+			'id' => null,
+			'description' => 'Example API key',
+			'expiration' => '2020-01-01T00:00:00+02:00',
+		];
+		$actual = $this->entity->jsonSerialize();
+		Assert::match('~^[0-9a-f]{64}$~', $actual['key']);
+		unset($actual['key']);
+		Assert::same($expected, $actual);
 	}
 
 }
