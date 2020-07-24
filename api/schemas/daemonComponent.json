@@ -1,0 +1,46 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/daemonComponent.json",
+	"type": "object",
+	"title": "IQRF Gateway Daemon component configuration",
+	"required": [
+		"name",
+		"libraryPath",
+		"libraryName",
+		"enabled",
+		"startlevel"
+	],
+	"properties": {
+		"name": {
+			"$id": "#/properties/name",
+			"type": "string",
+			"title": "Component name",
+			"example": "iqrf::IqrfSpi"
+		},
+		"libraryPath": {
+			"$id": "#/properties/libraryPath",
+			"type": "string",
+			"title": "Component library path",
+			"example": ""
+		},
+		"libraryName": {
+			"$id": "#/properties/libraryName",
+			"type": "string",
+			"title": "Component library name",
+			"example": "IqrfSpi"
+		},
+		"enabled": {
+			"$id": "#/properties/enabled",
+			"type": "boolean",
+			"title": "Component enablement",
+			"example": false
+		},
+		"startlevel": {
+			"$id": "#/properties/startlevel",
+			"type": "integer",
+			"title": "Component start level",
+			"example": 0
+		}
+	},
+	"additionalProperties": false
+}

@@ -1,0 +1,32 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/version.json",
+	"type": "object",
+	"title": "IQRF Gateway Webapp version",
+	"required": [
+		"version",
+		"commit",
+		"pipeline"
+	],
+	"properties": {
+		"version": {
+			"$id": "#/properties/version",
+			"type": "string",
+			"title": "IQRF Gateway Webapp version",
+			"example": "v2.1.0-alpha"
+		},
+		"commit": {
+			"$id": "#/properties/commit",
+			"type": "string",
+			"title": "IQRF Gateway Webapp git commit",
+			"example": "b5e6ab29b192bc027615b5d4a712eebcbbe35eb9"
+		},
+		"pipeline": {
+			"$id": "#/properties/pipeline",
+			"type": "string",
+			"title": "IQRF Gateway Webapp GitLab CI pipeline ID",
+			"example": "3160"
+		}
+	},
+	"additionalProperties": false
+}

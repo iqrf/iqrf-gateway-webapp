@@ -137,20 +137,20 @@ class SchedulerManagerTest extends TestCase {
 	public function testList(): void {
 		$expected = [
 			[
+				'id' => 1,
 				'time' => '*/5 * 1 * * * *',
 				'service' => 'SchedulerMessaging',
 				'messagings' => 'WebsocketMessaging',
 				'mTypes' => 'iqrfRaw',
-				'id' => 1,
 			], [
+				'id' => 2,
 				'time' => '*/5 * 1 * * * *',
 				'service' => 'SchedulerMessaging',
 				'messagings' => 'WebsocketMessaging',
 				'mTypes' => 'iqrfRawHdp',
-				'id' => 2,
 			],
 		];
-		Assert::equal($expected, $this->manager->list());
+		Assert::same($expected, $this->manager->list());
 	}
 
 	/**

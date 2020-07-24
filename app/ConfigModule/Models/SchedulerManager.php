@@ -182,6 +182,12 @@ class SchedulerManager {
 				// Do nothing
 			}
 		}
+		usort($tasks, function (array $a, array $b): int {
+			if ($a['id'] === $b['id']) {
+				return 0;
+			}
+			return ($a['id'] < $b['id']) ? -1 : 1;
+		});
 		return $tasks;
 	}
 
