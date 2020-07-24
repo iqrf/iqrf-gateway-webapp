@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ConsoleModule\Commands;
 
-use App\Models\Database\Entities\ApiKey;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -28,44 +28,46 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * CLI command for adding a new API key
+ * CLI command for editing API keys
  */
-class ApiKeyAddCommand extends ApiKeyCommand {
+class ApiKeyEditCommand extends ApiKeyCommand {
 
 	/**
 	 * @var string Command name
 	 */
-	protected static $defaultName = 'api-key:add';
+	protected static $defaultName = 'api-key:edit';
 
 	/**
 	 * Configures the user add command
 	 */
 	protected function configure(): void {
 		$this->setName(self::$defaultName);
-		$this->setDescription('Adds a new API key');
+		$this->setDescription('Editss an API key');
 		$definitions = [
-			new InputOption('description', ['d'], InputOption::VALUE_OPTIONAL, 'API key description'),
-			new InputOption('expiration', ['e'], InputOption::VALUE_OPTIONAL, 'API key expiration date'),
+			new InputOption('id', ['i'], InputOption::VALUE_OPTIONAL, 'API key ID to edit'),
+			new InputOption('description', ['d'], InputOption::VALUE_OPTIONAL, 'New API key description'),
+			new InputOption('expiration', ['e'], InputOption::VALUE_OPTIONAL, 'New API key expiration'),
 		];
 		$this->setDefinition(new InputDefinition($definitions));
 	}
 
 	/**
-	 * Executes the API key add command
+	 * Executes the API key edit command
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
 	 * @return int Exit code
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$style = new SymfonyStyle($input, $output);
-		$style->title('Add a new API key');
+		$apiKey = $this->askId($input, $output);
 		$description = $this->askDescription($input, $output);
+		$apiKey->setDescription($description);
 		$expiration = $this->askExpiration($input, $output);
-		$apiKey = new ApiKey($description, $expiration);
+		$apiKey->setExpiration($expiration);
 		$this->entityManager->persist($apiKey);
 		$this->entityManager->flush();
-		$style->success('API key ' . $apiKey->getKey() . ' has been added!');
-		return 0;
+		$style->success('API key "' . $apiKey->getDescription() . '" has been edited.');
+		return Command::SUCCESS;
 	}
 
 }

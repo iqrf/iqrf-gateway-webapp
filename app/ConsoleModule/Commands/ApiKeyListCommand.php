@@ -29,7 +29,7 @@ use function assert;
 /**
  * CLI command for listing API keys
  */
-class ApiKeyListCommand extends EntityManagerCommand {
+class ApiKeyListCommand extends ApiKeyCommand {
 
 	/**
 	 * @var string Command name
@@ -51,9 +51,8 @@ class ApiKeyListCommand extends EntityManagerCommand {
 	 * @return int Exit code
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
-		$repository = $this->entityManager->getApiKeyRepository();
 		$apiKeys = [];
-		foreach ($repository->findAll() as $apiKey) {
+		foreach ($this->repository->findAll() as $apiKey) {
 			assert($apiKey instanceof ApiKey);
 			$expiration = $apiKey->getExpiration() === null ? 'none' : $apiKey->getExpiration()->format('c');
 			$apiKeys[] = [$apiKey->getId(), $apiKey->getDescription(), $expiration];

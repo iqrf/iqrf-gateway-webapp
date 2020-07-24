@@ -1,5 +1,7 @@
 services:
 	- App\ConsoleModule\Commands\ApiKeyAddCommand
+	- App\ConsoleModule\Commands\ApiKeyDeleteCommand
+	- App\ConsoleModule\Commands\ApiKeyEditCommand
 	- App\ConsoleModule\Commands\ApiKeyListCommand
 	- App\ConsoleModule\Commands\DatabaseCreateCommand
 	- App\ConsoleModule\Commands\FeatureDisableCommand

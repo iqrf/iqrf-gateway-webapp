@@ -22,6 +22,7 @@ namespace App\Models\Database\Repositories;
 
 use App\Models\Database\Entities\ApiKey;
 use Doctrine\ORM\EntityRepository;
+use function assert;
 
 /**
  * API key repository
@@ -37,6 +38,20 @@ class ApiKeyRepository extends EntityRepository {
 		$apiKey = $this->findOneBy(['hash' => $hash]);
 		assert($apiKey instanceof ApiKey || $apiKey === null);
 		return $apiKey;
+	}
+
+	/**
+	 * Lists API keys as qrray of strings with description and expiration
+	 * @return array<int, string> API keys
+	 */
+	public function listWithDescription(): array {
+		$array = [];
+		foreach ($this->findAll() as $apiKey) {
+			assert($apiKey instanceof ApiKey);
+			$expiration = $apiKey->getExpiration() === null ? 'none' : $apiKey->getExpiration()->format('c');
+			$array[$apiKey->getId()] = sprintf('ID: %d, description: %s, expiration: %s', $apiKey->getId(), $apiKey->getDescription(), $expiration);
+		}
+		return $array;
 	}
 
 }
