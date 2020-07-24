@@ -141,7 +141,7 @@ class ConfigController extends BaseController {
 	 *     content:
 	 *      application/json:
 	 *          schema:
-	 *              type: string
+	 *              $ref: '#/components/schemas/DaemonComponent'
 	 * ")
 	 * @Responses({
 	 *     @Response(code="201", description="Created"),
@@ -207,7 +207,7 @@ class ConfigController extends BaseController {
 	 *     content:
 	 *      application/json:
 	 *          schema:
-	 *              type: string
+	 *              $ref: '#/components/schemas/DaemonComponent'
 	 * ")
 	 * @RequestParameters({
 	 *      @RequestParameter(name="component", type="string", description="Component name")
@@ -240,14 +240,21 @@ class ConfigController extends BaseController {
 	 * @Path("/{component}")
 	 * @Method("GET")
 	 * @OpenApi("
-	 *   summary: Returns the component configuration and instances of the component
+	 *  summary: Returns the component configuration and instances of the component
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *          content:
+	 *              application/json:
+	 *                  schema:
+	 *                      $ref: '#/components/schemas/DaemonComponentDetail'
+	 *      '404':
+	 *          description: Not found
+	 *      '500':
+	 *          description: Server error
 	 * ")
 	 * @RequestParameters({
 	 *      @RequestParameter(name="component", type="string", description="Component name")
-	 * })
-	 * @Responses({
-	 *      @Response(code="200", description="Success"),
-	 *      @Response(code="404", description="Not found")
 	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -267,7 +274,7 @@ class ConfigController extends BaseController {
 		try {
 			$body = [
 				'configuration' => $this->componentManager->load($id),
-				'instances' => $this->manager->list(),
+				'instances' => $this->manager->list(false),
 			];
 			return $response->writeJsonBody($body);
 		} catch (JsonException $e) {

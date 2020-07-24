@@ -31,6 +31,12 @@ class CorsMiddleware implements IMiddleware {
 
 	public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next): ResponseInterface {
 		// Add CORS headers
+		if ($request->getMethod() === 'OPTIONS') {
+			return $response->withHeader('Access-Control-Allow-Origin', '*')
+				->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, OPTIONS, DELETE')
+				->withHeader('Access-Control-Allow-Headers', 'Accept, Content-Type, Authorization')
+				->withHeader('Access-Control-Expose-Headers', '*');
+		}
 		$response = $response->withHeader('Access-Control-Allow-Origin', '*')
 			->withHeader('Access-Control-Allow-Headers', 'Accept, Content-Type, Authorization')
 			->withHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, DELETE, PUT')

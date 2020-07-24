@@ -22,12 +22,9 @@ namespace App\IqrfNetModule\Models;
 
 use App\IqrfNetModule\Entities\IqrfOs;
 use App\IqrfNetModule\Enums\TrSeries;
-use App\IqrfNetModule\Exceptions\DpaErrorException;
-use App\IqrfNetModule\Exceptions\EmptyResponseException;
-use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\Models\Database\Entities\IqrfOsPatch;
 use App\Models\Database\EntityManager;
-use Nette\Utils\JsonException;
+use App\Models\Database\Repositories\IqrfOsPatchRepository;
 
 /**
  * IQRF OS manager
@@ -40,9 +37,9 @@ class IqrfOsManager {
 	private $dpaManager;
 
 	/**
-	 * @var EntityManager Entity manager
+	 * @var IqrfOsPatchRepository IQRF OS patch database repository
 	 */
-	private $entityManager;
+	private $repository;
 
 	/**
 	 * Constructor
@@ -51,17 +48,13 @@ class IqrfOsManager {
 	 */
 	public function __construct(DpaManager $dpaManager, EntityManager $entityManager) {
 		$this->dpaManager = $dpaManager;
-		$this->entityManager = $entityManager;
+		$this->repository = $entityManager->getIqrfOsPatchRepository();
 	}
 
 	/**
 	 * Lists available IQRF OS changes
 	 * @param IqrfOs $os Current IQRF OS entity
 	 * @return array<string> Available IQRF OS changes
-	 * @throws DpaErrorException
-	 * @throws EmptyResponseException
-	 * @throws JsonException
-	 * @throws UserErrorException
 	 */
 	public function list(IqrfOs $os): array {
 		$array = [];
@@ -90,8 +83,7 @@ class IqrfOsManager {
 	private function listVersions(IqrfOs $os): array {
 		$versions = [];
 		$versions[$os->getBuild()] = $os->getDescription();
-		$repository = $this->entityManager->getIqrfOsPatchRepository();
-		$patches = $repository->findBy(['fromBuild' => $os->getBuild(), 'part' => 1]);
+		$patches = $this->repository->findBy(['fromBuild' => $os->getBuild(), 'part' => 1]);
 		foreach ($patches as $patch) {
 			assert($patch instanceof IqrfOsPatch);
 			$trType = TrSeries::fromIqrfOsFileName($patch->getModuleType());
@@ -109,10 +101,6 @@ class IqrfOsManager {
 	 * @param string $dpa DPA version
 	 * @param string|null $rfMode RF mode
 	 * @return array<string> Files to upload
-	 * @throws DpaErrorException
-	 * @throws EmptyResponseException
-	 * @throws UserErrorException
-	 * @throws JsonException
 	 */
 	public function getFiles(IqrfOs $currentOs, string $toBuild, string $dpa, ?string $rfMode = null): array {
 		$files = $this->getOsFiles($currentOs->getBuild(), $toBuild);
@@ -127,8 +115,7 @@ class IqrfOsManager {
 	 * @return array<string> Array of IQRF OS diff files
 	 */
 	public function getOsFiles(string $fromBuild, string $toBuild): array {
-		$repository = $this->entityManager->getIqrfOsPatchRepository();
-		$patches = $repository->findBy([
+		$patches = $this->repository->findBy([
 			'fromBuild' => hexdec($fromBuild),
 			'toBuild' => hexdec($toBuild),
 		], ['part' => 'ASC']);

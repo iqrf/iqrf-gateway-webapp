@@ -1,7 +1,4 @@
 services:
-	allowOptionsMethodMiddleware:
-		factory: App\ApiModule\Version0\Middlewares\AllowOptionsMethodMiddleware
-		tags: [middleware: [priority: 5]]
 	authMiddleware:
 		factory: App\ApiModule\Version0\Middlewares\AuthenticationMiddleware
 		tags: [middleware: [priority: 10]]

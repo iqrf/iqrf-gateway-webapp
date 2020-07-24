@@ -22,6 +22,7 @@ namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Datagrids\SchedulerDataGridFactory;
 use App\ConfigModule\Exceptions\InvalidTaskMessageException;
+use App\ConfigModule\Exceptions\TaskNotFoundException;
 use App\ConfigModule\Forms\SchedulerFormFactory;
 use App\ConfigModule\Forms\SchedulerImportFormFactory;
 use App\ConfigModule\Models\SchedulerManager;
@@ -35,6 +36,7 @@ use Nette\Application\UI\Form;
 use Nette\IOException;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
+use stdClass;
 use Ublaboo\DataGrid\DataGrid;
 use Ublaboo\DataGrid\Exception\DataGridException;
 
@@ -109,7 +111,11 @@ class SchedulerPresenter extends ProtectedPresenter {
 	public function actionEdit(int $id): void {
 		$redirect = 'Scheduler:default';
 		try {
-			$configuration = $this->manager->load($id);
+			try {
+				$configuration = $this->manager->load($id);
+			} catch (TaskNotFoundException $e) {
+				$configuration = new stdClass();
+			}
 			if (get_object_vars($configuration) === []) {
 				$this->flashError('config.messages.readFailures.notFound');
 				$this->redirect($redirect);
@@ -142,6 +148,8 @@ class SchedulerPresenter extends ProtectedPresenter {
 			$this->flashError('config.messages.deleteFailures.ioError');
 		} catch (JsonException $e) {
 			$this->flashError('config.messages.writeFailures.invalidJson');
+		} catch (TaskNotFoundException $e) {
+			// Ignore
 		}
 		$this->redirect('Scheduler:default');
 	}

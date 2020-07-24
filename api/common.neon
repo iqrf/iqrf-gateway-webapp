@@ -32,6 +32,10 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/cloudIbm.json
 		CloudInteliGlue:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/cloudInteliGlue.json
+		DaemonComponent:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/daemonComponent.json
+		DaemonComponentDetail:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/daemonComponentDetail.json
 		DaemonConfiguration:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/daemonConfiguration.json
 		GatewayInfo:
@@ -62,6 +66,10 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/serviceList.json
 		ServiceStatus:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/serviceStatus.json
+		Task:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/task.json
+		TaskList:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/taskList.json
 		UserCreate:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/userCreate.json
 		UserDetail:
@@ -73,18 +81,7 @@ components:
 		UserToken:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/jwt.json
 		Version:
-			type: object
-			properties:
-				version:
-					type: string
-				commit:
-					type: string
-				pipeline:
-					type: string
-			required:
-				- version
-				- commit
-				- pipeline
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/version.json
 	securitySchemes:
 		bearerAuth:
 			type: http

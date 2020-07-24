@@ -89,9 +89,8 @@ class MigrationFormFactory {
 	 */
 	public function import(SubmitButton $button): void {
 		try {
-			$values = $button->getForm()->getValues('array');
-			assert(is_array($values));
-			$this->manager->upload($values);
+			$values = $button->getForm()->getValues();
+			$this->manager->upload($values->configuration);
 			$this->presenter->flashSuccess('config.migration.messages.importedConfig');
 		} catch (IncompleteConfigurationException $e) {
 			$this->presenter->flashError('config.migration.errors.invalidConfig');

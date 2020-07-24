@@ -1,0 +1,52 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/taskList.json",
+	"type": "array",
+	"title": "Task list",
+	"additionalItems": false,
+	"items": {
+		"$id": "#/items",
+		"type": "object",
+		"title": "Task",
+		"required": [
+			"id",
+			"time",
+			"service",
+			"messagings",
+			"mTypes"
+		],
+		"additionalProperties": false,
+		"properties": {
+			"id": {
+				"$id": "#/items/properties/id",
+				"type": "integer",
+				"title": "Task ID",
+				"example": 2
+			},
+			"time": {
+				"$id": "#/items/properties/time",
+				"type": "string",
+				"title": "Time",
+				"example": "0 */2 * * * * *"
+			},
+			"service": {
+				"$id": "#/items/properties/service",
+				"type": "string",
+				"title": "Scheduler service",
+				"example": "SchedulerMessaging"
+			},
+			"messagings": {
+				"$id": "#/items/properties/messagings",
+				"type": "string",
+				"title": "Messagings",
+				"example": "MqttMessaging"
+			},
+			"mTypes": {
+				"$id": "#/items/properties/mTypes",
+				"type": "string",
+				"title": "Message types",
+				"example": "iqrfEmbedLedr_Pulse"
+			}
+		}
+	}
+}
