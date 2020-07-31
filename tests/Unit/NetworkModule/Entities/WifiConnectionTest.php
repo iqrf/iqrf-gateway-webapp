@@ -3,7 +3,7 @@
 /**
  * TEST: App\NetworkModule\Entities\WifiConnection
  * @covers App\NetworkModule\Entities\WifiConnection
- * @phpVersion >= 7.3
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
@@ -12,8 +12,11 @@ namespace Tests\Unit\NetworkModule\Entities;
 
 use App\NetworkModule\Entities\WifiConnection;
 use App\NetworkModule\Entities\WifiConnectionSecurity;
-use App\NetworkModule\Enums\WifiKeyManagement;
+use App\NetworkModule\Entities\WifiSecurity\Leap;
+use App\NetworkModule\Entities\WifiSecurity\Wep;
+use App\NetworkModule\Enums\WepKeyType;
 use App\NetworkModule\Enums\WifiMode;
+use App\NetworkModule\Enums\WifiSecurityType;
 use Nette\Utils\FileSystem;
 use Tester\Assert;
 use Tester\TestCase;
@@ -36,28 +39,15 @@ class WifiConnectionTest extends TestCase {
 	private $entity;
 
 	/**
-	 * @var string SSID
-	 */
-	private $ssid;
-
-	/**
-	 * @var WifiMode WiFi network mode
-	 */
-	private $mode;
-
-	/**
-	 * @var WifiConnectionSecurity WiFi connection security entity
-	 */
-	private $security;
-
-	/**
 	 * Sets up the testing environment
 	 */
 	protected function setUp(): void {
-		$this->ssid = 'WIFI MAGDA';
-		$this->mode = WifiMode::INFRA();
-		$this->security = new WifiConnectionSecurity(WifiKeyManagement::WPA_PSK(), 'password');
-		$this->entity = new WifiConnection($this->ssid, $this->mode, $this->security);
+		$ssid = 'WIFI MAGDA';
+		$mode = WifiMode::INFRA();
+		$leap = new Leap('', '');
+		$wep = new Wep(WepKeyType::UNKNOWN(), 0, ['', '', '', '']);
+		$security = new WifiConnectionSecurity(WifiSecurityType::WPA_PSK(), 'password', $leap, $wep);
+		$this->entity = new WifiConnection($ssid, $mode, $security);
 	}
 
 	/**
@@ -69,27 +59,6 @@ class WifiConnectionTest extends TestCase {
 	}
 
 	/**
-	 * Tests the function to get WiFI network mode
-	 */
-	public function testGetMode(): void {
-		Assert::equal($this->mode, $this->entity->getMode());
-	}
-
-	/**
-	 * Tests the function to get WiFi network security
-	 */
-	public function testGetSecurity(): void {
-		Assert::equal($this->security, $this->entity->getSecurity());
-	}
-
-	/**
-	 * Tests teh function to get SSID
-	 */
-	public function testGetSsid(): void {
-		Assert::same($this->ssid, $this->entity->getSsid());
-	}
-
-	/**
 	 * Tests the function to return JSON serialized data
 	 */
 	public function testJsonSerialize(): void {
@@ -97,8 +66,17 @@ class WifiConnectionTest extends TestCase {
 			'ssid' => 'WIFI MAGDA',
 			'mode' => 'infrastructure',
 			'security' => [
-				'keyManagement' => 'wpa-psk',
+				'type' => 'wpa-psk',
 				'psk' => 'password',
+				'leap' => [
+					'username' => '',
+					'password' => '',
+				],
+				'wep' => [
+					'type' => 'unknown',
+					'index' => 0,
+					'keys' => ['', '', '', ''],
+				],
 			],
 		];
 		Assert::same($expected, $this->entity->jsonSerialize());
@@ -108,7 +86,7 @@ class WifiConnectionTest extends TestCase {
 	 * Tests the function to convert WiFi connection entity to nmcli configuration string
 	 */
 	public function testNmCliSerialize(): void {
-		$expected = '802-11-wireless.ssid "WIFI MAGDA" 802-11-wireless.mode "infrastructure" 802-11-wireless-security.key-mgmt "wpa-psk" 802-11-wireless-security.psk "password" ';
+		$expected = '802-11-wireless.ssid "WIFI MAGDA" 802-11-wireless.mode "infrastructure" 802-11-wireless-security.key-mgmt "wpa-psk" 802-11-wireless-security.psk "password" 802-11-wireless-security.leap-password "" 802-11-wireless-security.leap-username "" 802-11-wireless-security.wep-key-type "unknown" 802-11-wireless-security.wep-tx-keyidx "0" 802-11-wireless-security.wep-key0 "" 802-11-wireless-security.wep-key1 "" 802-11-wireless-security.wep-key2 "" 802-11-wireless-security.wep-key3 "" ';
 		Assert::same($expected, $this->entity->nmCliSerialize());
 	}
 

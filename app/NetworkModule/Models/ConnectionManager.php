@@ -82,22 +82,26 @@ class ConnectionManager {
 		}
 		$array = explode(PHP_EOL, trim($output));
 		foreach ($array as &$row) {
-			$row = Connection::fromString($row);
+			$row = Connection::nmCliDeserialize($row);
 		}
 		return $array;
 	}
 
 	/**
 	 * Edits the network connection's configuration
-	 * @param ConnectionDetail $connection Detailed network connection entity
+	 * @param UuidInterface $uuid Network connection UUID
 	 * @param stdClass $values Network connection configuration form values
 	 * @throws NetworkManagerException
 	 */
-	public function edit(ConnectionDetail $connection, stdClass $values): void {
-		$connection->jsonDeserialize($values);
-		$uuid = $connection->getUuid()->toString();
-		$configuration = $connection->nmCliSerialize();
-		$command = sprintf('nmcli -t connection modify %s %s', $uuid, $configuration);
+	public function edit(UuidInterface $uuid, stdClass $values): void {
+		$currentConnection = $this->get($uuid);
+		$values->id = $currentConnection->getId();
+		$values->uuid = $currentConnection->getUuid()->toString();
+		$values->type = $currentConnection->getType()->toScalar();
+		$values->interfaceName = $currentConnection->getInterfaceName();
+		$newConnection = ConnectionDetail::jsonDeserialize($values);
+		$configuration = $newConnection->nmCliSerialize();
+		$command = sprintf('nmcli -t connection modify %s %s', $uuid->toString(), $configuration);
 		$output = $this->commandManager->run($command, true);
 		if ($output->getExitCode() !== 0) {
 			throw new NetworkManagerException($output->getStderr());

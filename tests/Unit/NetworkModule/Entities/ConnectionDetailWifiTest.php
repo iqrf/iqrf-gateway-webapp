@@ -16,11 +16,14 @@ use App\NetworkModule\Entities\IPv4Connection;
 use App\NetworkModule\Entities\IPv6Connection;
 use App\NetworkModule\Entities\WifiConnection;
 use App\NetworkModule\Entities\WifiConnectionSecurity;
+use App\NetworkModule\Entities\WifiSecurity\Leap;
+use App\NetworkModule\Entities\WifiSecurity\Wep;
 use App\NetworkModule\Enums\ConnectionTypes;
 use App\NetworkModule\Enums\IPv4Methods;
 use App\NetworkModule\Enums\IPv6Methods;
-use App\NetworkModule\Enums\WifiKeyManagement;
+use App\NetworkModule\Enums\WepKeyType;
 use App\NetworkModule\Enums\WifiMode;
+use App\NetworkModule\Enums\WifiSecurityType;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
 use Ramsey\Uuid\Uuid;
@@ -130,25 +133,20 @@ class ConnectionDetailWifiTest extends TestCase {
 	private function createWifiConnection(): void {
 		$ssid = 'WIFI MAGDA';
 		$mode = WifiMode::INFRA();
-		$keyMgmt = WifiKeyManagement::WPA_PSK();
+		$securityType = WifiSecurityType::WPA_PSK();
 		$psk = 'password';
-		$security = new WifiConnectionSecurity($keyMgmt, $psk);
+		$leap = new Leap('', '');
+		$wep = new Wep(WepKeyType::UNKNOWN(), 0, ['', '', '', '']);
+		$security = new WifiConnectionSecurity($securityType, $psk, $leap, $wep);
 		$this->wifi = new WifiConnection($ssid, $mode, $security);
 	}
 
 	/**
-	 * Tests the function to create a detailed network connection entity from nmcli connection configuration
+	 * Tests the function to deserialize network connection entity from nmcli connection configuration
 	 */
 	public function testNmCliDeserialize(): void {
 		$nmCli = FileSystem::read(self::NM_DATA . self::UUID . '.conf');
 		Assert::equal($this->entity, ConnectionDetail::nmCliDeserialize($nmCli));
-	}
-
-	/**
-	 * Tests the function to get the network connection ID
-	 */
-	public function testGetId(): void {
-		Assert::same($this->id, $this->entity->getId());
 	}
 
 	/**
@@ -173,21 +171,7 @@ class ConnectionDetailWifiTest extends TestCase {
 	}
 
 	/**
-	 * Tests the function to get the IPv4 network connection entity
-	 */
-	public function testGetIpv4(): void {
-		Assert::same($this->ipv4, $this->entity->getIpv4());
-	}
-
-	/**
-	 * Tests the function to get the IPv6 network connection entity
-	 */
-	public function testGetIpv6(): void {
-		Assert::same($this->ipv6, $this->entity->getIpv6());
-	}
-
-	/**
-	 * Tests the function to return JSON serialized data
+	 * Tests the function to serialize network connection entity into JSON
 	 */
 	public function testJsonSerialize(): void {
 		$json = FileSystem::read(self::NM_DATA . 'toForm/' . self::UUID . '.json');

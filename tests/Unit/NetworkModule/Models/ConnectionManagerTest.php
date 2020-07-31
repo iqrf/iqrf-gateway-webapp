@@ -19,6 +19,7 @@ use App\NetworkModule\Entities\IPv6Connection;
 use App\NetworkModule\Enums\ConnectionTypes;
 use App\NetworkModule\Enums\IPv4Methods;
 use App\NetworkModule\Enums\IPv6Methods;
+use App\NetworkModule\Exceptions\NetworkManagerException;
 use App\NetworkModule\Models\ConnectionManager;
 use Darsyn\IP\Version\IPv4;
 use Darsyn\IP\Version\IPv6;
@@ -105,6 +106,19 @@ class ConnectionManagerTest extends CommandTestCase {
 	}
 
 	/**
+	 * Tests the function to delete network connection (nonexistent connection)
+	 */
+	public function testDeleteNonexistent(): void {
+		$command = 'nmcli -t connection delete ' . self::UUID;
+		$stderr = 'Error: unknown connection \'' . self::UUID . '\'.' .
+			PHP_EOL . 'Error: cannot delete unknown connection(s): \'' . self::UUID . '\'.';
+		$this->receiveCommand($command, true, '', $stderr, 10);
+		Assert::throws(function (): void {
+			$this->manager->delete(Uuid::fromString(self::UUID));
+		}, NetworkManagerException::class, $stderr);
+	}
+
+	/**
 	 * Tests the function to get detailed network connection entity
 	 */
 	public function testGet(): void {
@@ -113,6 +127,18 @@ class ConnectionManagerTest extends CommandTestCase {
 		$command = 'nmcli -t -s connection show ' . self::UUID;
 		$this->receiveCommand($command, true, $output);
 		Assert::equal($expected, $this->manager->get(Uuid::fromString(self::UUID)));
+	}
+
+	/**
+	 * Tests the function to get detailed network connection entity (nonexistent connection)
+	 */
+	public function testGetNonexistent(): void {
+		$command = 'nmcli -t -s connection show ' . self::UUID;
+		$stderr = 'Error: ' . self::UUID . ' - no such connection profile.';
+		$this->receiveCommand($command, true, '', $stderr, 10);
+		Assert::throws(function (): void {
+			$this->manager->get(Uuid::fromString(self::UUID));
+		}, NetworkManagerException::class, $stderr);
 	}
 
 	/**
@@ -142,13 +168,16 @@ class ConnectionManagerTest extends CommandTestCase {
 	 * Tests the function to edit the network connection
 	 */
 	public function testEdit(): void {
-		$connection = $this->createDetailedConnection();
+		$output = FileSystem::read(self::NM_DATA . self::UUID . '.conf');
+		$command = 'nmcli -t -s connection show ' . self::UUID;
+		$this->receiveCommand($command, true, $output);
 		$json = FileSystem::read(self::NM_DATA . 'fromForm/' . self::UUID . '.json');
 		$jsonData = Json::decode($json);
 		$command = 'nmcli -t connection modify 25ab1b06-2a86-40a9-950f-1c576ddcd35a ipv4.method "manual" ipv4.addresses "10.0.0.2/16" ipv4.gateway "10.0.0.1" ipv4.dns "10.0.0.1 1.1.1.1" ipv6.method "manual" ipv6.addresses "2001:470:5bb2:2::2/64" ipv6.gateway "fe80::1" ipv6.dns "2001:470:5bb2:2::1" ';
 		$this->receiveCommand($command, true);
-		Assert::noError(function () use ($connection, $jsonData): void {
-			$this->manager->edit($connection, $jsonData);
+		Assert::noError(function () use ($jsonData): void {
+			$uuid = Uuid::fromString(self::UUID);
+			$this->manager->edit($uuid, $jsonData);
 		});
 	}
 
@@ -162,6 +191,19 @@ class ConnectionManagerTest extends CommandTestCase {
 		Assert::noError(function () use ($connection): void {
 			$this->manager->up($connection->getUuid());
 		});
+	}
+
+	/**
+	 * Tests the function to activate a connection on the interface (nonexistent connection)
+	 */
+	public function testUpNonexistent(): void {
+		$connection = $this->createDetailedConnection();
+		$command = 'nmcli -t connection up ' . self::UUID;
+		$stderr = 'Error: unknown connection \'' . self::UUID . '\'.';
+		$this->receiveCommand($command, true, '', $stderr, 10);
+		Assert::throws(function () use ($connection): void {
+			$this->manager->up($connection->getUuid());
+		}, NetworkManagerException::class, $stderr);
 	}
 
 }

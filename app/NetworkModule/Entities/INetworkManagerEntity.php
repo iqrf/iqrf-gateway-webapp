@@ -31,8 +31,9 @@ interface INetworkManagerEntity extends JsonSerializable {
 	/**
 	 * Deserializes the entity from JSON configuration
 	 * @param stdClass $json JSON configuration
+	 * @return INetworkManagerEntity Entity
 	 */
-	public function jsonDeserialize(stdClass $json): void;
+	public static function jsonDeserialize(stdClass $json): INetworkManagerEntity;
 
 	/**
 	 * Deserializes the entity from nmcli configuration

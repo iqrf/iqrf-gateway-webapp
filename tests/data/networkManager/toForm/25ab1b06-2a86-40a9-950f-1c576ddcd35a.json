@@ -2,7 +2,7 @@
 	"id": "eth0",
 	"uuid": "25ab1b06-2a86-40a9-950f-1c576ddcd35a",
 	"type": "802-3-ethernet",
-	"interface-name": "eth0",
+	"interfaceName": "eth0",
 	"ipv4": {
 		"method": "manual",
 		"addresses": [

@@ -20,7 +20,9 @@ declare(strict_types = 1);
 
 namespace App\NetworkModule\Entities;
 
-use App\NetworkModule\Enums\WifiKeyManagement;
+use App\NetworkModule\Entities\WifiSecurity\Leap;
+use App\NetworkModule\Entities\WifiSecurity\Wep;
+use App\NetworkModule\Enums\WifiSecurityType;
 use App\NetworkModule\Utils\NmCliConnection;
 use stdClass;
 
@@ -32,70 +34,104 @@ final class WifiConnectionSecurity implements INetworkManagerEntity {
 	/**
 	 * nmcli configuration prefix
 	 */
-	private const NMCLI_PREFIX = '802-11-wireless-security';
+	public const NMCLI_PREFIX = '802-11-wireless-security';
 
 	/**
-	 * @var WifiKeyManagement Key management used for the connection
+	 * @var WifiSecurityType WiFi security type
 	 */
-	private $keyManagement;
+	private $type;
 
 	/**
-	 * @var string Pre-shared key
+	 * @var string|null Pre-shared key
 	 */
 	private $psk;
 
 	/**
+	 * @var Leap|null Cisco LEAP entity
+	 */
+	private $leap;
+
+	/**
+	 * @var Wep|null WEP entity
+	 */
+	private $wep;
+
+	/**
 	 * Constructor
-	 * @param WifiKeyManagement $keyManagement Key management used for the connection
-	 * @param string $psk Pre-shared key
+	 * @param WifiSecurityType $type WiFi security type
+	 * @param string|null $psk Pre-shared key
+	 * @param Leap|null $leap Cisco LEAP entity
+	 * @param Wep|null $wep WEP entity
 	 */
-	public function __construct(WifiKeyManagement $keyManagement, string $psk) {
-		$this->keyManagement = $keyManagement;
+	public function __construct(WifiSecurityType $type, ?string $psk, ?Leap $leap, ?Wep $wep) {
+		$this->type = $type;
 		$this->psk = $psk;
+		$this->leap = $leap;
+		$this->wep = $wep;
 	}
 
 	/**
-	 * Sets the values from the network connection configuration JSON
-	 * @param stdClass $json Values from the network connection configuration JSON
+	 * Deserializes WiFi connection security entity from JSON
+	 * @param stdClass $json JSON serialized entity
+	 * @return WifiConnectionSecurity WiFI connection security entity
 	 */
-	public function jsonDeserialize(stdClass $json): void {
-		$this->keyManagement = WifiKeyManagement::fromScalar($json->keyManagement);
-		$this->psk = $json->psk;
+	public static function jsonDeserialize(stdClass $json): INetworkManagerEntity {
+		$type = WifiSecurityType::fromScalar($json->type);
+		$leap = Leap::jsonDeserialize($json->leap);
+		assert($leap instanceof Leap);
+		$wep = Wep::jsonDeserialize($json->wep);
+		assert($wep instanceof Wep);
+		return new static($type, $json->psk, $leap, $wep);
+	}
+
+
+	/**
+	 * Serializes WiFi connection security entity into JSON
+	 * @return array<string, string|array> JSON serialized entity
+	 */
+	public function jsonSerialize(): array {
+		return [
+			'type' => $this->type->toScalar(),
+			'psk' => $this->psk,
+			'leap' => $this->leap->jsonSerialize(),
+			'wep' => $this->wep->jsonSerialize(),
+		];
 	}
 
 	/**
-	 * Creates a new WiFI connection security entity from nmcli connection configuration
+	 * Deserializes WiFi connection security entity from nmcli connection configuration
 	 * @param string $nmCli nmcli connection configuration
 	 * @return WifiConnectionSecurity WiFI connection security entity
 	 */
 	public static function nmCliDeserialize(string $nmCli): INetworkManagerEntity {
 		$array = NmCliConnection::decode($nmCli, self::NMCLI_PREFIX);
-		$keyManagement = WifiKeyManagement::fromScalar($array['key-mgmt']);
-		return new static($keyManagement, $array['psk']);
-	}
-
-
-	/**
-	 * Returns JSON serialized data
-	 * @return array<string, string|array> JSON serialized data
-	 */
-	public function jsonSerialize(): array {
-		return [
-			'keyManagement' => $this->keyManagement->toScalar(),
-			'psk' => $this->psk,
-		];
+		$type = WifiSecurityType::nmCliDeserialize($nmCli);
+		if ($type->equals(WifiSecurityType::OPEN())) {
+			return new static($type, null, null, null);
+		}
+		$leap = Leap::nmCliDeserialize($nmCli);
+		assert($leap instanceof Leap);
+		$wep = Wep::nmCliDeserialize($nmCli);
+		assert($wep instanceof Wep);
+		return new static($type, $array['psk'], $leap, $wep);
 	}
 
 	/**
-	 * Converts WiFi connection security entity to nmcli configuration string
+	 * Serializes WiFi connection security entity into nmcli configuration string
 	 * @return string nmcli configuration
 	 */
 	public function nmCliSerialize(): string {
+		$config = $this->type->nmCliSerialize();
+		if ($this->type->equals(WifiSecurityType::OPEN())) {
+			return $config;
+		}
 		$array = [
-			'key-mgmt' => $this->keyManagement->toScalar(),
 			'psk' => $this->psk,
 		];
-		return NmCliConnection::encode($array, self::NMCLI_PREFIX);
+		$config .= NmCliConnection::encode($array, self::NMCLI_PREFIX);
+		$config .= $this->leap->nmCliSerialize();
+		$config .= $this->wep->nmCliSerialize();
+		return $config;
 	}
 
 }

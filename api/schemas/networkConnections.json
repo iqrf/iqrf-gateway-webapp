@@ -11,13 +11,15 @@
 		"example": {
 			"type": "802-3-ethernet",
 			"name": "Wired connection 1",
-			"uuid": "c8fb6f29-ec85-4ff5-b1bb-1d1761196d16"
+			"uuid": "c8fb6f29-ec85-4ff5-b1bb-1d1761196d16",
+			"interfaceName": "eth0"
 		},
 		"additionalProperties": false,
 		"required": [
 			"name",
 			"uuid",
-			"type"
+			"type",
+			"interfaceName"
 		],
 		"properties": {
 			"name": {
@@ -38,6 +40,15 @@
 				"enum": ["bridge", "802-3-ethernet", "gsm", "tun", "vlan", "vpn", "802-11-wireless", "wireguard"],
 				"title": "Connection type",
 				"example": "802-3-ethernet"
+			},
+			"interfaceName": {
+				"$id": "#/items/properties/interfaceName",
+				"oneOf": [
+					{"type": "null"},
+					{"type": "string"}
+				],
+				"title": "Network interface name",
+				"example": "eth0"
 			}
 		}
 	}

@@ -78,4 +78,12 @@ final class ConnectionTypes extends Enum {
 	 */
 	private const WIREGUARD = 'wireguard';
 
+	/**
+	 * Serializes network connection type enum into JSON string
+	 * @return string JSON serialized string
+	 */
+	public function jsonSerialize(): string {
+		return (string) $this->toScalar();
+	}
+
 }

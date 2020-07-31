@@ -64,29 +64,47 @@ final class IPv6Connection implements INetworkManagerEntity {
 	}
 
 	/**
-	 * Sets the value from the network connection configuration form
-	 * @param stdClass|ArrayHash $form Values from the network connection configuration form
+	 * Deserializes IPv6 connection entity from JSON
+	 * @param stdClass|ArrayHash $json JSON serialized entity
+	 * @return IPv6Connection IPv6 connection entity
 	 */
-	public function jsonDeserialize(stdClass $form): void {
-		$this->method = IPv6Methods::fromScalar($form->method);
-		$this->addresses = [];
-		foreach ($form->addresses as $value) {
+	public static function jsonDeserialize(stdClass $json): INetworkManagerEntity {
+		$method = IPv6Methods::fromScalar($json->method);
+		$addresses = [];
+		foreach ($json->addresses as $value) {
 			if (($value->address !== '') && ($value->prefix !== null)) {
 				$address = IPv6::factory($value->address);
 				$gateway = ($value->gateway !== '') ? IPv6::factory($value->gateway) : null;
-				$this->addresses[] = new IPv6Address($address, $value->prefix, $gateway);
+				$addresses[] = new IPv6Address($address, $value->prefix, $gateway);
 			}
 		}
-		$this->dns = [];
-		foreach ($form->dns as $dns) {
-			if ($dns->address !== '') {
-				$this->dns[] = IPv6::factory($dns->address);
+		$dns = [];
+		foreach ($json->dns as $dnsServer) {
+			if ($dnsServer->address !== '') {
+				$dns[] = IPv6::factory($dnsServer->address);
 			}
 		}
+		return new static($method, $addresses, $dns);
 	}
 
 	/**
-	 * Creates a new IPv6 connection entity from nmcli connection configuration
+	 * Serializes IPv6 connection entity into JSON
+	 * @return array<string, array<array<string, int|string>>|array<string, string>|string> JSON serialized entity
+	 */
+	public function jsonSerialize(): array {
+		return [
+			'method' => $this->method->toScalar(),
+			'addresses' => array_map(function (IPv6Address $a): array {
+				return $a->toArray();
+			}, $this->addresses),
+			'dns' => array_map(function (IPv6 $a): array {
+				return ['address' => $a->getCompactedAddress()];
+			}, $this->dns),
+		];
+	}
+
+	/**
+	 * Deserializes IPv6 connection entity from nmcli connection configuration
 	 * @param string $nmCli nmcli connection configuration
 	 * @return IPv6Connection IPv6 connection entity
 	 */
@@ -114,46 +132,7 @@ final class IPv6Connection implements INetworkManagerEntity {
 	}
 
 	/**
-	 * Returns the IPv6 connection method
-	 * @return IPv6Methods IPv6 connection method
-	 */
-	public function getMethod(): IPv6Methods {
-		return $this->method;
-	}
-
-	/**
-	 * Returns the IPv6 addresses
-	 * @return array<IPv6Address> IPv6 addresses
-	 */
-	public function getAddresses(): array {
-		return $this->addresses;
-	}
-	/**
-	 * Returns the IPv6 addresses of DNS servers
-	 * @return array<IPv6> IPv6 addresses of DNS servers
-	 */
-	public function getDns(): array {
-		return $this->dns;
-	}
-
-	/**
-	 * Converts IPv6 connection entity to an array for the form
-	 * @return array<string, array<array<string, int|string>>|array<string, string>|string> Array for the form
-	 */
-	public function jsonSerialize(): array {
-		return [
-			'method' => $this->method->toScalar(),
-			'addresses' => array_map(function (IPv6Address $a): array {
-				return $a->toArray();
-			}, $this->addresses),
-			'dns' => array_map(function (IPv6 $a): array {
-				return ['address' => $a->getCompactedAddress()];
-			}, $this->dns),
-		];
-	}
-
-	/**
-	 * Converts IPv6 connection entity to nmcli configuration string
+	 * Serializes IPv6 connection entity into nmcli configuration string
 	 * @return string nmcli configuration
 	 */
 	public function nmCliSerialize(): string {

@@ -87,7 +87,7 @@ class WifiNetworkTest extends TestCase {
 	 * Tests the function to create a new WiFi network entity from nmcli
 	 */
 	public function testFromNmCli(): void {
-		$actual = WifiNetwork::fromNmCli('*:1A\:E8\:29\:E5\:CB\:9A:WIFI MAGDA:Infra:56:405 Mbit/s:70:▂▄▆_:WPA2');
+		$actual = WifiNetwork::nmCliDeserialize('*:1A\:E8\:29\:E5\:CB\:9A:WIFI MAGDA:Infra:56:405 Mbit/s:70:▂▄▆_:WPA2');
 		Assert::equal($this->entity, $actual);
 	}
 

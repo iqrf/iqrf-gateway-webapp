@@ -99,8 +99,8 @@ class IPv4ConnectionTest extends TestCase {
 		$gateway = IPv4::factory('10.0.0.1');
 		$dns = [IPv4::factory('10.0.0.1'), IPv4::factory('1.1.1.1')];
 		$expected = new IPv4Connection($this->method, $addresses, $gateway, $dns);
-		$this->entity->jsonDeserialize($arrayHash);
-		Assert::equal($expected, $this->entity);
+		$actual = IPv4Connection::jsonDeserialize($arrayHash);
+		Assert::equal($expected, $actual);
 	}
 
 	/**
@@ -109,34 +109,6 @@ class IPv4ConnectionTest extends TestCase {
 	public function testNmCliDeserialize(): void {
 		$configuration = FileSystem::read(self::NM_DATA . '25ab1b06-2a86-40a9-950f-1c576ddcd35a.conf');
 		Assert::equal($this->entity, IPv4Connection::nmCliDeserialize($configuration));
-	}
-
-	/**
-	 * Tests the function to get IPv4 connection method
-	 */
-	public function testGetMethod(): void {
-		Assert::same($this->method, $this->entity->getMethod());
-	}
-
-	/**
-	 * Tests the function to get IPv4 addresses
-	 */
-	public function testGetAddresses(): void {
-		Assert::same($this->addresses, $this->entity->getAddresses());
-	}
-
-	/**
-	 * Tests the function to get IPv4 gateway address
-	 */
-	public function testGetGateway(): void {
-		Assert::same($this->gateway, $this->entity->getGateway());
-	}
-
-	/**
-	 * Tests the function to get IPv4 addresses of DNS servers
-	 */
-	public function testGetDns(): void {
-		Assert::same($this->dns, $this->entity->getDns());
 	}
 
 	/**

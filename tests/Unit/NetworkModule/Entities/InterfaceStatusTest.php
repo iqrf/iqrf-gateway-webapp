@@ -3,7 +3,7 @@
 /**
  * TEST: App\NetworkModule\Entities\InterfaceStatus
  * @covers App\NetworkModule\Entities\InterfaceStatus
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
@@ -58,11 +58,11 @@ class InterfaceStatusTest extends TestCase {
 	}
 
 	/**
-	 * Tests the function to create network interface entity from a string
+	 * Tests the function to deserialize network interface entity from a nmcli row
 	 */
-	public function testFromString(): void {
+	public function testNmCliDeserialize(): void {
 		$string = 'eth0:ethernet:connected:eth0';
-		Assert::equal($this->entity, InterfaceStatus::fromString($string));
+		Assert::equal($this->entity, InterfaceStatus::nmCliDeserialize($string));
 	}
 
 	/**
@@ -94,7 +94,7 @@ class InterfaceStatusTest extends TestCase {
 	}
 
 	/**
-	 * Tests the function to return JSON serialized data
+	 * Tests the function to serialize network interface status entity into JSON
 	 */
 	public function testJsonSerialize(): void {
 		$expected = [

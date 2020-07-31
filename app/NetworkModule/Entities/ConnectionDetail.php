@@ -82,7 +82,7 @@ class ConnectionDetail implements INetworkManagerEntity {
 	 * @param IPv6Connection $ipv6 IPv6 network connection entity
 	 * @param WifiConnection|null $wifi WiFi network connection entity
 	 */
-	public function __construct(string $id, UuidInterface $uuid, ConnectionTypes $type, string $name, IPv4Connection $ipv4, IPv6Connection $ipv6, ?WifiConnection $wifi = null) {
+	public function __construct(?string $id, UuidInterface $uuid, ConnectionTypes $type, string $name, IPv4Connection $ipv4, IPv6Connection $ipv6, ?WifiConnection $wifi = null) {
 		$this->id = $id;
 		$this->uuid = $uuid;
 		$this->type = $type;
@@ -90,33 +90,6 @@ class ConnectionDetail implements INetworkManagerEntity {
 		$this->ipv4 = $ipv4;
 		$this->ipv6 = $ipv6;
 		$this->wifi = $wifi;
-	}
-
-	/**
-	 * Sets the values from the network connection configuration form
-	 * @param stdClass|ArrayHash $form Network connection configuration form values
-	 */
-	public function jsonDeserialize(stdClass $form): void {
-		$this->ipv4->jsonDeserialize($form->ipv4);
-		$this->ipv6->jsonDeserialize($form->ipv6);
-		if ($this->type->equals(ConnectionTypes::WIFI())) {
-			$this->wifi->jsonDeserialize($form->wifi);
-		}
-	}
-
-	/**
-	 * Creates a new detailed network connection entity from nmcli connection configuration
-	 * @param string $nmCli nmcli connection configuration
-	 * @return ConnectionDetail Detailed network connection entity
-	 */
-	public static function nmCliDeserialize(string $nmCli): INetworkManagerEntity {
-		$array = NmCliConnection::decode($nmCli, self::NMCLI_PREFIX);
-		$uuid = Uuid::fromString($array['uuid']);
-		$type = ConnectionTypes::fromScalar($array['type']);
-		$ipv4 = IPv4Connection::nmCliDeserialize($nmCli);
-		$ipv6 = IPv6Connection::nmCliDeserialize($nmCli);
-		$wifi = $type === ConnectionTypes::WIFI() ? WifiConnection::nmCliDeserialize($nmCli) : null;
-		return new self($array['id'], $uuid, $type, $array['interface-name'], $ipv4, $ipv6, $wifi);
 	}
 
 	/**
@@ -152,23 +125,57 @@ class ConnectionDetail implements INetworkManagerEntity {
 	}
 
 	/**
-	 * Returns the IPv4 network connection entity
-	 * @return IPv4Connection IPv4 network connection entity
+	 * Deserializes network connection entity from JSON
+	 * @param stdClass|ArrayHash $json Network connection configuration form values
 	 */
-	public function getIpv4(): IPv4Connection {
-		return $this->ipv4;
+	public static function jsonDeserialize(stdClass $json): INetworkManagerEntity {
+		$uuid = Uuid::fromString($json->uuid);
+		$ipv4 = IPv4Connection::jsonDeserialize($json->ipv4);
+		$ipv6 = IPv6Connection::jsonDeserialize($json->ipv6);
+		$type = ConnectionTypes::fromScalar($json->type);
+		$wifi = null;
+		if ($type->equals(ConnectionTypes::WIFI())) {
+			$wifi = WifiConnection::jsonDeserialize($json->wifi);
+		}
+		return new self($json->id, $uuid, $type, $json->interfaceName, $ipv4, $ipv6, $wifi);
 	}
 
 	/**
-	 * Returns the IPv6 network connection entity
-	 * @return IPv6Connection IPv4 network connection entity
+	 * Serializes network connection entity into JSON
+	 * @return array<string, string|array> JSON serialized data
 	 */
-	public function getIpv6(): IPv6Connection {
-		return $this->ipv6;
+	public function jsonSerialize(): array {
+		$json = [
+			'id' => $this->id,
+			'uuid' => $this->uuid->toString(),
+			'type' => (string) $this->type->toScalar(),
+			'interfaceName' => $this->interfaceName,
+			'ipv4' => $this->ipv4->jsonSerialize(),
+			'ipv6' => $this->ipv6->jsonSerialize(),
+		];
+		if ($this->wifi !== null) {
+			$json['wifi'] = $this->wifi->jsonSerialize();
+		}
+		return $json;
 	}
 
 	/**
-	 * Converts the network connection entity to nmcli configuration string
+	 * Deserializes network connection entity from nmcli configuration
+	 * @param string $nmCli nmcli connection configuration
+	 * @return ConnectionDetail Detailed network connection entity
+	 */
+	public static function nmCliDeserialize(string $nmCli): INetworkManagerEntity {
+		$array = NmCliConnection::decode($nmCli, self::NMCLI_PREFIX);
+		$uuid = Uuid::fromString($array['uuid']);
+		$type = ConnectionTypes::fromScalar($array['type']);
+		$ipv4 = IPv4Connection::nmCliDeserialize($nmCli);
+		$ipv6 = IPv6Connection::nmCliDeserialize($nmCli);
+		$wifi = $type === ConnectionTypes::WIFI() ? WifiConnection::nmCliDeserialize($nmCli) : null;
+		return new self($array['id'], $uuid, $type, $array['interface-name'], $ipv4, $ipv6, $wifi);
+	}
+
+	/**
+	 * Serializes network connection entity into nmcli configuration
 	 * @return string nmcli configuration
 	 */
 	public function nmCliSerialize(): string {
@@ -177,25 +184,6 @@ class ConnectionDetail implements INetworkManagerEntity {
 			$nmcli .= $this->wifi->nmCliSerialize();
 		}
 		return $nmcli;
-	}
-
-	/**
-	 * Returns JSON serialized data
-	 * @return array<string, string|array> JSON serialized data
-	 */
-	public function jsonSerialize(): array {
-		$json = [
-			'id' => $this->id,
-			'uuid' => $this->uuid->toString(),
-			'type' => (string) $this->type->toScalar(),
-			'interface-name' => $this->interfaceName,
-			'ipv4' => $this->ipv4->jsonSerialize(),
-			'ipv6' => $this->ipv6->jsonSerialize(),
-		];
-		if ($this->wifi !== null) {
-			$json['wifi'] = $this->wifi->jsonSerialize();
-		}
-		return $json;
 	}
 
 }

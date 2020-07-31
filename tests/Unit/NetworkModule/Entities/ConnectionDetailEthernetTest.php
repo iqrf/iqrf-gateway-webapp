@@ -120,11 +120,15 @@ class ConnectionDetailEthernetTest extends TestCase {
 	}
 
 	/**
-	 * Tests the function to set the network connection configuration from the form
+	 * Tests the function to deserialize connection configuration from JSON
 	 */
 	public function testJsonDeserialize(): void {
 		$json = Json::decode(FileSystem::read(self::NM_DATA . 'fromForm/' . self::UUID . '.json'));
-		$this->entity->jsonDeserialize($json);
+		$json->id = $this->id;
+		$json->uuid = self::UUID;
+		$json->type = $this->type->toScalar();
+		$json->interfaceName = $this->interfaceName;
+		$actual = ConnectionDetail::jsonDeserialize($json);
 		$ipv4Addresses = [IPv4Address::fromPrefix('10.0.0.2/16')];
 		$ipv4Gateway = IPv4::factory('10.0.0.1');
 		$ipv4Dns = [IPv4::factory('10.0.0.1'), IPv4::factory('1.1.1.1')];
@@ -133,22 +137,15 @@ class ConnectionDetailEthernetTest extends TestCase {
 		$ipv6Dns = [IPv6::factory('2001:470:5bb2:2::1')];
 		$ipv6 = new IPv6Connection(IPv6Methods::MANUAL(), $ipv6Addresses, $ipv6Dns);
 		$expected = new ConnectionDetail($this->id, $this->uuid, $this->type, $this->interfaceName, $ipv4, $ipv6);
-		Assert::equal($expected, $this->entity);
+		Assert::equal($expected, $actual);
 	}
 
 	/**
-	 * Tests the function to create a detailed network connection entity from nmcli connection configuration
+	 * Tests the function to deserialize network connection entity from nmcli connection configuration
 	 */
 	public function testNmCliDeserialize(): void {
 		$nmCli = FileSystem::read(self::NM_DATA . self::UUID . '.conf');
 		Assert::equal($this->entity, ConnectionDetail::nmCliDeserialize($nmCli));
-	}
-
-	/**
-	 * Tests the function to get the network connection ID
-	 */
-	public function testGetId(): void {
-		Assert::same($this->id, $this->entity->getId());
 	}
 
 	/**
@@ -173,21 +170,7 @@ class ConnectionDetailEthernetTest extends TestCase {
 	}
 
 	/**
-	 * Tests the function to get the IPv4 network connection entity
-	 */
-	public function testGetIpv4(): void {
-		Assert::same($this->ipv4, $this->entity->getIpv4());
-	}
-
-	/**
-	 * Tests the function to get the IPv6 network connection entity
-	 */
-	public function testGetIpv6(): void {
-		Assert::same($this->ipv6, $this->entity->getIpv6());
-	}
-
-	/**
-	 * Tests the function to return JSON serialized data
+	 * Tests the function to serialize network connection entity into JSON
 	 */
 	public function testJsonSerialize(): void {
 		$json = FileSystem::read(self::NM_DATA . 'toForm/' . self::UUID . '.json');

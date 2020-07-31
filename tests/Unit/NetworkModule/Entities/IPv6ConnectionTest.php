@@ -91,8 +91,8 @@ class IPv6ConnectionTest extends TestCase {
 		];
 		$dns = [IPv6::factory('fd50:ccd6:13ed::1')];
 		$expected = new IPv6Connection($this->method, $addresses, $dns);
-		$this->entity->jsonDeserialize($arrayHash);
-		Assert::equal($expected, $this->entity);
+		$actual = IPv6Connection::jsonDeserialize($arrayHash);
+		Assert::equal($expected, $actual);
 	}
 
 	/**
@@ -101,27 +101,6 @@ class IPv6ConnectionTest extends TestCase {
 	public function testNmCliDeserialize(): void {
 		$configuration = FileSystem::read(self::NM_DATA . '25ab1b06-2a86-40a9-950f-1c576ddcd35a.conf');
 		Assert::equal($this->entity, IPv6Connection::nmCliDeserialize($configuration));
-	}
-
-	/**
-	 * Tests the function to get IPv6 connection method
-	 */
-	public function testGetMethod(): void {
-		Assert::same($this->method, $this->entity->getMethod());
-	}
-
-	/**
-	 * Tests the function to get IPv6 addresses
-	 */
-	public function testGetAddresses(): void {
-		Assert::same($this->addresses, $this->entity->getAddresses());
-	}
-
-	/**
-	 * Tests the function to get IPv6 addresses of DNS servers
-	 */
-	public function testGetDns(): void {
-		Assert::same($this->dns, $this->entity->getDns());
 	}
 
 	/**

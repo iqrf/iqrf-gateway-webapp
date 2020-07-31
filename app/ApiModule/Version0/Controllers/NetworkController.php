@@ -159,8 +159,8 @@ class NetworkController extends BaseController {
 	public function editConnection(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
 			$uuid = Uuid::fromString($request->getParameter('uuid'));
-			$connection = $this->connectionManger->get($uuid);
-			$this->connectionManger->edit($connection, $request->getJsonBody(false));
+			$json = $request->getJsonBody(false);
+			$this->connectionManger->edit($uuid, $json);
 		} catch (InvalidUuidStringException $e) {
 			return $response->withStatus(400)
 				->writeJsonBody(['error' => 'Invalid UUID']);

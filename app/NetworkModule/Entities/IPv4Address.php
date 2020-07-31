@@ -126,7 +126,7 @@ class IPv4Address {
 	}
 
 	/**
-	 * COnverts the IPv4 address entity to a string
+	 * Converts the IPv4 address entity to a string
 	 * @return string IPv4 address with prefix
 	 */
 	public function toString(): string {

@@ -8,7 +8,7 @@
 		"id",
 		"uuid",
 		"type",
-		"interface-name",
+		"interfaceName",
 		"ipv4",
 		"ipv6"
 	],
@@ -41,8 +41,8 @@
 			"title": "Connection type",
 			"example": "802-3-ethernet"
 		},
-		"interface-name": {
-			"$id": "#/properties/interface-name",
+		"interfaceName": {
+			"$id": "#/properties/interfaceName",
 			"type": "string",
 			"title": "Interface name",
 			"example": "eth0"
@@ -371,22 +371,91 @@
 					},
 					"additionalProperties": false,
 					"required": [
-						"keyManagement"
+						"type"
 					],
 					"properties": {
 						"keyManagement": {
-							"$id": "#/properties/wifi/properties/security/properties/keyManagement",
+							"$id": "#/properties/wifi/properties/security/properties/type",
 							"type": "string",
-							"title": "Key management",
+							"title": "Security type",
 							"enum": [
-								"ieee8021x",
-								"owe",
-								"sae",
-								"none",
+								"open",
+								"wep",
+								"leap",
 								"wpa-eap",
 								"wpa-psk"
 							],
 							"example": "wpa-psk"
+						},
+						"leap": {
+							"$id": "#/properties/wifi/properties/security/properties/leap",
+							"type": "object",
+							"title": "Cisco LEAP",
+							"additionalProperties": false,
+							"required": [
+								"username",
+								"password"
+							],
+							"properties": {
+								"username": {
+									"$id": "#/properties/wifi/properties/security/properties/leap/username",
+									"type": "string",
+									"title": "Cisco LEAP username",
+									"example": "username"
+								},
+								"password": {
+									"$id": "#/properties/wifi/properties/security/properties/leap/password",
+									"type": "string",
+									"title": "Cisco LEAP password",
+									"example": "password"
+								}
+							}
+						},
+						"wep": {
+							"$id": "#/properties/wifi/properties/security/properties/wep",
+							"type": "object",
+							"title": "WEP",
+							"additionalProperties": false,
+							"required": [
+								"type",
+								"index",
+								"keys"
+							],
+							"properties": {
+								"type": {
+									"$id": "#/properties/wifi/properties/security/properties/wep/type",
+									"type": "string",
+									"title": "WEP key type",
+									"enum": [
+										"key",
+										"passphrase",
+										"unknown"
+									],
+									"example": "key"
+								},
+								"index": {
+									"$id": "#/properties/wifi/properties/security/properties/wep/index",
+									"type": "integer",
+									"title": "WEP transfer key index",
+									"minimum": 0,
+									"maximum": 3,
+									"example": 0
+								},
+								"keys": {
+									"$id": "#/properties/wifi/properties/security/properties/wep/keys",
+									"type": "array",
+									"title": "WEP keys",
+									"minItems": 4,
+									"maximum": 4,
+									"additionalItems": false,
+									"items": {
+										"$id": "#/properties/wifi/properties/security/properties/wep/keys/items",
+										"type": "string",
+										"title": "WEP key",
+										"example": "4b70797e57534a5c4833493352"
+									}
+								}
+							}
 						},
 						"psk": {
 							"$id": "#/properties/wifi/properties/security/properties/psk",
@@ -394,7 +463,54 @@
 							"title": "Pre-shared key",
 							"example": "password"
 						}
-					}
+					},
+					"allOf": [
+						{
+							"if": {
+								"properties": {
+									"type": {
+										"const": "leap"
+									}
+								}
+							},
+							"then": {
+								"required": [
+									"type",
+									"leap"
+								]
+							}
+						},
+						{
+							"if": {
+								"properties": {
+									"type": {
+										"const": "wep"
+									}
+								}
+							},
+							"then": {
+								"required": [
+									"type",
+									"wep"
+								]
+							}
+						},
+						{
+							"if": {
+								"properties": {
+									"type": {
+										"const": "wpa-psk"
+									}
+								}
+							},
+							"then": {
+								"required": [
+									"type",
+									"psk"
+								]
+							}
+						}
+					]
 				}
 			}
 		}
@@ -413,7 +529,7 @@
 					"id",
 					"uuid",
 					"type",
-					"interface-name",
+					"interfaceName",
 					"ipv4",
 					"ipv6",
 					"wifi"

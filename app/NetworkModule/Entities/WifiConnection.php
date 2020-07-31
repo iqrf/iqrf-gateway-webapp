@@ -23,6 +23,7 @@ namespace App\NetworkModule\Entities;
 use App\NetworkModule\Enums\WifiMode;
 use App\NetworkModule\Utils\NmCliConnection;
 use stdClass;
+use Throwable;
 
 /**
  * WiFi connection entity
@@ -45,7 +46,7 @@ final class WifiConnection implements INetworkManagerEntity {
 	private $mode;
 
 	/**
-	 * @var WifiConnectionSecurity Wifi connection security entity
+	 * @var WifiConnectionSecurity|null Wifi connection security entity
 	 */
 	private $security;
 
@@ -53,74 +54,55 @@ final class WifiConnection implements INetworkManagerEntity {
 	 * Constructor
 	 * @param string $ssid SSID
 	 * @param WifiMode $mode WiFi network mode
-	 * @param WifiConnectionSecurity $security WiFi connection security entity
+	 * @param WifiConnectionSecurity|null $security WiFi connection security entity
 	 */
-	public function __construct(string $ssid, WifiMode $mode, WifiConnectionSecurity $security) {
+	public function __construct(string $ssid, WifiMode $mode, ?WifiConnectionSecurity $security) {
 		$this->ssid = $ssid;
 		$this->mode = $mode;
 		$this->security = $security;
 	}
 
 	/**
-	 * Sets the values from the network connection configuration JSON
-	 * @param stdClass $json Values from the network connection configuration JSON
+	 * Deserializes WiFi connection entity from JSON
+	 * @param stdClass $json JSON serialized entity
+	 * @return WifiConnection WiFi connection entity
 	 */
-	public function jsonDeserialize(stdClass $json): void {
-		$this->ssid = $json->ssid;
-		$this->mode = WifiMode::fromScalar($json->mode);
-		$this->security->jsonDeserialize($json->security);
+	public static function jsonDeserialize(stdClass $json): INetworkManagerEntity {
+		$mode = WifiMode::fromScalar($json->mode);
+		$security = ($json->security === null) ? null : WifiConnectionSecurity::jsonDeserialize($json->security);
+		return new static($json->ssid, $mode, $security);
 	}
 
 	/**
-	 * Creates a new WiFI connection entity from nmcli connection configuration
+	 * Serializes WiFi connection entity into JSON
+	 * @return array<string, string|array> JSON serialized entity
+	 */
+	public function jsonSerialize(): array {
+		return [
+			'ssid' => $this->ssid,
+			'mode' => $this->mode->toScalar(),
+			'security' => $this->security === null ? null : $this->security->jsonSerialize(),
+		];
+	}
+
+	/**
+	 * Deserializes WiFI connection entity from nmcli connection configuration
 	 * @param string $nmCli nmcli connection configuration
 	 * @return WifiConnection WiFi connection entity
 	 */
 	public static function nmCliDeserialize(string $nmCli): INetworkManagerEntity {
 		$array = NmCliConnection::decode($nmCli, self::NMCLI_PREFIX);
 		$mode = WifiMode::fromScalar($array['mode']);
-		$security = WifiConnectionSecurity::nmCliDeserialize($nmCli);
+		try {
+			$security = WifiConnectionSecurity::nmCliDeserialize($nmCli);
+		} catch (Throwable $e) {
+			$security = null;
+		}
 		return new static($array['ssid'], $mode, $security);
 	}
 
 	/**
-	 * Returns WiFi network mode
-	 * @return WifiMode WiFi network mode
-	 */
-	public function getMode(): WifiMode {
-		return $this->mode;
-	}
-
-	/**
-	 * Returns WiFi connection security entity
-	 * @return WifiConnectionSecurity WiFi connection security entity
-	 */
-	public function getSecurity(): WifiConnectionSecurity {
-		return $this->security;
-	}
-
-	/**
-	 * Returns SSID
-	 * @return string SSID
-	 */
-	public function getSsid(): string {
-		return $this->ssid;
-	}
-
-	/**
-	 * Returns JSON serialized data
-	 * @return array<string, string|array> JSON serialized data
-	 */
-	public function jsonSerialize(): array {
-		return [
-			'ssid' => $this->ssid,
-			'mode' => $this->mode->toScalar(),
-			'security' => $this->security->jsonSerialize(),
-		];
-	}
-
-	/**
-	 * Converts WiFi connection entity to nmcli configuration string
+	 * Serializes WiFi connection entity into nmcli configuration string
 	 * @return string nmcli configuration
 	 */
 	public function nmCliSerialize(): string {
@@ -129,7 +111,9 @@ final class WifiConnection implements INetworkManagerEntity {
 			'mode' => $this->mode->toScalar(),
 		];
 		$string = NmCliConnection::encode($array, self::NMCLI_PREFIX);
-		$string .= $this->security->nmCliSerialize();
+		if ($this->security !== null) {
+			$string .= $this->security->nmCliSerialize();
+		}
 		return $string;
 	}
 

@@ -65,7 +65,7 @@ class InterfaceManager {
 		$output = $this->commandManager->run('nmcli -t device status', true)->getStdout();
 		$array = explode(PHP_EOL, trim($output));
 		foreach ($array as &$row) {
-			$row = InterfaceStatus::fromString($row);
+			$row = InterfaceStatus::nmCliDeserialize($row);
 		}
 		return $array;
 	}

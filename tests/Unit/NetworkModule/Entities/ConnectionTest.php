@@ -3,7 +3,7 @@
 /**
  * TEST: App\NetworkModule\Entities\Connection
  * @covers App\NetworkModule\Entities\Connection
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
@@ -59,11 +59,11 @@ class ConnectionTest extends TestCase {
 	}
 
 	/**
-	 * Tests the function to create network connection entity from a string
+	 * Tests the function to deserialize network connection entity from nmcli row
 	 */
-	public function testFromString(): void {
+	public function testNmCliDeserialize(): void {
 		$string = 'eth0:25ab1b06-2a86-40a9-950f-1c576ddcd35a:802-3-ethernet:eth0';
-		Assert::equal($this->entity, Connection::fromString($string));
+		Assert::equal($this->entity, Connection::nmCliDeserialize($string));
 	}
 
 	/**
@@ -95,13 +95,14 @@ class ConnectionTest extends TestCase {
 	}
 
 	/**
-	 * Tests the function to return JSON serialized data
+	 * Tests the function to serialize network connection entity into JSON
 	 */
 	public function testJsonSerialize(): void {
 		$expected = [
 			'name' => $this->name,
 			'uuid' => $this->uuid->toString(),
 			'type' => $this->type->toScalar(),
+			'interfaceName' => $this->interfaceName,
 		];
 		Assert::same($expected, $this->entity->jsonSerialize());
 	}
