@@ -28,7 +28,7 @@ module.exports = {
 				test: /\.js$/,
 				exclude: /node_modules/,
 				loader: 'babel-loader',
-				query: {
+				options: {
 					cacheDirectory: true,
 					'presets': [
 						[
@@ -69,12 +69,14 @@ module.exports = {
 		new MiniCssExtractPlugin({
 			filename: '[name].bundle.css',
 		}),
-		new CopyWebpackPlugin([
-			{
-				from: './node_modules/live-form-validation/live-form-validation.js',
-				to: './',
-			},
-		]),
+		new CopyWebpackPlugin({
+			patterns: [
+				{
+					from: './node_modules/live-form-validation/live-form-validation.js',
+					to: './',
+				},
+			]
+		}),
 	],
 	optimization: {
 		minimize: true,
