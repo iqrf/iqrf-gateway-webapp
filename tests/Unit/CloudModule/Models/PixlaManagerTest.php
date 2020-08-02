@@ -2,7 +2,7 @@
 /**
  * TEST: App\CloudModule\Models\PixlaManager
  * @covers App\CloudModule\Models\PixlaManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 
@@ -24,7 +24,12 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for PIXLA management system manager
  */
-class PixlaManagerTest extends CommandTestCase {
+final class PixlaManagerTest extends CommandTestCase {
+
+	/**
+	 * PIXLA token
+	 */
+	private const TOKEN = 'pixla-token';
 
 	/**
 	 * @var FileManager|MockInterface File manager
@@ -83,11 +88,10 @@ class PixlaManagerTest extends CommandTestCase {
 	 * Tests the function to get PIXLA token (success)
 	 */
 	public function testGetTokenSuccess(): void {
-		$token = 'pixla-token';
 		$this->fileManager->shouldReceive('read')
 			->withArgs(['customer_id'])
-			->andReturn($token);
-		Assert::same($token, $this->manager->getToken());
+			->andReturn(self::TOKEN);
+		Assert::same(self::TOKEN, $this->manager->getToken());
 	}
 
 	/**

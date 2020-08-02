@@ -3,7 +3,7 @@
 /**
  * TEST: App\CoreModule\Router\RouterFactory
  * @covers App\CoreModule\Router\RouterFactory
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
@@ -22,12 +22,12 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for the router factory
  */
-class RouterFactoryTest extends TestCase {
+final class RouterFactoryTest extends TestCase {
 
 	/**
-	 * @var array<array<string, array<string>>> Routes
+	 * Expected routes
 	 */
-	private $expected = [
+	private const EXPECTED = [
 		[
 			'Cloud:' => [
 				'[<lang [a-z]{2}>/]cloud/<presenter>/<action>[/<id>]',
@@ -77,7 +77,7 @@ class RouterFactoryTest extends TestCase {
 		$routeList = RouterFactory::createRouter();
 		Assert::type(RouteList::class, $routeList);
 		Assert::null($routeList->getModule());
-		Assert::same($this->expected, array_map(function (Router $type) {
+		Assert::same(self::EXPECTED, array_map(function (Router $type) {
 			if ($type instanceof Route) {
 				return $type->getMask();
 			}

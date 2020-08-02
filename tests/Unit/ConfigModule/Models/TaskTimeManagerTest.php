@@ -3,7 +3,7 @@
 /**
  * TEST: App\ConfigModule\Models\TaskTimeManager
  * @covers App\ConfigModule\Models\TaskTimeManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
@@ -11,6 +11,7 @@ declare(strict_types = 1);
 namespace Tests\Unit\ConfigModule\Models;
 
 use App\ConfigModule\Models\TaskTimeManager;
+use Nette\Utils\DateTime;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -19,7 +20,7 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for scheduler's task time specification manager
  */
-class TaskTimeManagerTest extends TestCase {
+final class TaskTimeManagerTest extends TestCase {
 
 	/**
 	 * @var TaskTimeManager Scheduler's task time specification manager
@@ -246,7 +247,7 @@ class TaskTimeManagerTest extends TestCase {
 			'timeSpec' => (object) [
 				'exactTime' => false,
 				'periodic' => true,
-				'period' => 12 * 3600,
+				'period' => 12 * DateTime::HOUR,
 			],
 		];
 		Assert::same($expected, $this->manager->getTime($config));

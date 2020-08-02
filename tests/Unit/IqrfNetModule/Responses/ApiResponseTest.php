@@ -3,7 +3,7 @@
 /**
  * TEST: App\IqrfNetModule\Responses\ApiResponse
  * @covers App\IqrfNetModule\Requests\ApiResponse
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
@@ -22,7 +22,7 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for JSON API response manager
  */
-class ApiResponseTest extends TestCase {
+final class ApiResponseTest extends TestCase {
 
 	/**
 	 * @var stdClass JSON API response in an object

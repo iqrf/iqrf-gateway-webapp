@@ -3,7 +3,7 @@
 /**
  * TEST: App\GatewayModule\Models\LogManager
  * @covers App\GatewayModule\Models\LogManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
@@ -26,7 +26,7 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for Gateway info manager
  */
-class LogManagerTest extends TestCase {
+final class LogManagerTest extends TestCase {
 
 	/**
 	 * @var FileManager Text file manager

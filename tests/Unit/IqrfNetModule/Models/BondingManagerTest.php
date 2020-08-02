@@ -2,7 +2,7 @@
 /**
  * TEST: App\IqrfNetModule\Models\BondingManager
  * @covers App\IqrfNetModule\Models\BondingManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 
@@ -18,12 +18,12 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Test for IQMESH Bonding manager
  */
-class BondingManagerTest extends WebSocketTestCase {
+final class BondingManagerTest extends WebSocketTestCase {
 
 	/**
-	 * @var int Network device address
+	 * Network device address
 	 */
-	private $address = 1;
+	private const ADDRESS = 1;
 
 	/**
 	 * @var BondingManager IQMESH Bonding manager
@@ -47,13 +47,13 @@ class BondingManagerTest extends WebSocketTestCase {
 			'data' => [
 				'repeat' => 2,
 				'req' => [
-					'deviceAddr' => $this->address,
+					'deviceAddr' => self::ADDRESS,
 				],
 				'returnVerbose' => true,
 			],
 		];
 		$this->assertRequest($request, function (): void {
-			$this->manager->bondLocal($this->address);
+			$this->manager->bondLocal(self::ADDRESS);
 		});
 	}
 
@@ -66,7 +66,7 @@ class BondingManagerTest extends WebSocketTestCase {
 			'data' => [
 				'repeat' => 2,
 				'req' => [
-					'deviceAddr' => $this->address,
+					'deviceAddr' => self::ADDRESS,
 					'smartConnectCode' => 'smartConnectCode',
 					'bondingTestRetries' => 1,
 				],
@@ -74,7 +74,7 @@ class BondingManagerTest extends WebSocketTestCase {
 			],
 		];
 		$this->assertRequest($request, function (): void {
-			$this->manager->bondSmartConnect($this->address, 'smartConnectCode');
+			$this->manager->bondSmartConnect(self::ADDRESS, 'smartConnectCode');
 		});
 	}
 
@@ -125,13 +125,13 @@ class BondingManagerTest extends WebSocketTestCase {
 			'data' => [
 				'repeat' => 2,
 				'req' => [
-					'deviceAddr' => $this->address,
+					'deviceAddr' => self::ADDRESS,
 				],
 				'returnVerbose' => true,
 			],
 		];
 		$this->assertRequest($request, function (): void {
-			$this->manager->remove($this->address);
+			$this->manager->remove(self::ADDRESS, false);
 		});
 	}
 
@@ -145,14 +145,14 @@ class BondingManagerTest extends WebSocketTestCase {
 				'req' => [
 					'nAdr' => 0,
 					'param' => [
-						'bondAddr' => $this->address,
+						'bondAddr' => self::ADDRESS,
 					],
 				],
 				'returnVerbose' => true,
 			],
 		];
 		$this->assertRequest($request, function (): void {
-			$this->manager->remove($this->address, true);
+			$this->manager->remove(self::ADDRESS, true);
 		});
 	}
 

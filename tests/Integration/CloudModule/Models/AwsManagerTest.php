@@ -3,7 +3,7 @@
 /**
  * TEST: App\CloudModule\Models\AwsManager
  * @covers App\CloudModule\Models\AwsManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
@@ -27,7 +27,7 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for Amazon AWS IoT
  */
-class AwsManagerTest extends CloudIntegrationTestCase {
+final class AwsManagerTest extends CloudIntegrationTestCase {
 
 	/**
 	 * @var CertificateManager Certificate manager

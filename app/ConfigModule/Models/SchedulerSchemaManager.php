@@ -67,7 +67,7 @@ class SchedulerSchemaManager extends JsonSchemaManager {
 		parent::setSchema('schema_cache_record');
 		parent::validate($json, $tryFix);
 		$tasks = !is_array($json->task) ? [$json->task] : $json->task;
-		foreach ($tasks as $id => $task) {
+		foreach ($tasks as $task) {
 			if (!isset($task->message) || !isset($task->message->mType)) {
 				throw new InvalidTaskMessageException();
 			}

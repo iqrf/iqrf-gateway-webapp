@@ -3,7 +3,7 @@
 /**
  * TEST: App\IqrfNetModule\Entities\StandardBinaryOutput
  * @covers App\IqrfNetModule\Entities\StandardBinaryOutput
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
@@ -19,12 +19,17 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for IQRF Standard binary output entity
  */
-class StandardBinaryOutputTest extends TestCase {
+final class StandardBinaryOutputTest extends TestCase {
 
 	/**
-	 * @var int IQRF Standard binary output index
+	 * IQRF Standard binary output index
 	 */
-	private $index = 0;
+	private const INDEX = 0;
+
+	/**
+	 * IQRF Standard binary output's state
+	 */
+	private const STATE = true;
 
 	/**
 	 * @var StandardBinaryOutput IQRF Standard binary output entity
@@ -32,42 +37,38 @@ class StandardBinaryOutputTest extends TestCase {
 	private $entity;
 
 	/**
-	 * @var bool IQRF Standard binary output's state
-	 */
-	private $state = true;
-
-	/**
 	 * Sets up the test environment
 	 */
 	protected function setUp(): void {
 		parent::setUp();
-		$this->entity = new StandardBinaryOutput($this->index, $this->state);
+		$this->entity = new StandardBinaryOutput(self::INDEX, self::STATE);
 	}
 
 	/**
 	 * Tests the function to get binary output's state
 	 */
 	public function testGetState(): void {
-		Assert::same($this->state, $this->entity->getState());
+		Assert::same(self::STATE, $this->entity->getState());
 	}
 
 	/**
 	 * Tests the function to set binary outputs's state
 	 */
 	public function testSetState(): void {
-		$this->entity->setState(!$this->state);
-		Assert::same(!$this->state, $this->entity->getState());
+		$newState = false;
+		$this->entity->setState($newState);
+		Assert::same($newState, $this->entity->getState());
 	}
 
 	/**
 	 * Tests the function to convert the entity to an array
 	 */
-	public function testToArray(): void {
+	public function testJsonSerialize(): void {
 		$expected = [
-			'index' => $this->index,
-			'state' => $this->state,
+			'index' => self::INDEX,
+			'state' => self::STATE,
 		];
-		Assert::same($expected, $this->entity->toArray());
+		Assert::same($expected, $this->entity->jsonSerialize());
 	}
 
 }

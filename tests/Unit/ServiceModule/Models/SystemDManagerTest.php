@@ -20,7 +20,7 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for systemD service manager
  */
-class SystemDManagerTest extends CommandTestCase {
+final class SystemDManagerTest extends CommandTestCase {
 
 	/**
 	 * IQRF Gateway Daemon service name

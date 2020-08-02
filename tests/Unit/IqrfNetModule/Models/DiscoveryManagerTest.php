@@ -2,7 +2,7 @@
 /**
  * TEST: App\IqrfNetModule\Models\DiscoveryManager
  * @covers App\IqrfNetModule\Models\DiscoveryManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 
@@ -18,7 +18,7 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Test for IQMESH Discovery manager
  */
-class DiscoveryManagerTest extends WebSocketTestCase {
+final class DiscoveryManagerTest extends WebSocketTestCase {
 
 	/**
 	 * @var DiscoveryManager IQMESH Discovery manager

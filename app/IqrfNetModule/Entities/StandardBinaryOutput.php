@@ -20,10 +20,12 @@ declare(strict_types = 1);
 
 namespace App\IqrfNetModule\Entities;
 
+use JsonSerializable;
+
 /**
  * IQRF Standard binary output
  */
-class StandardBinaryOutput {
+class StandardBinaryOutput implements JsonSerializable {
 
 	/**
 	 * @var int Index of the binary output
@@ -62,10 +64,10 @@ class StandardBinaryOutput {
 	}
 
 	/**
-	 * Convert an object to an array
-	 * @return array<string, bool|int> Properties in array
+	 * Serializes IQRF Standard binary output entity into JSON
+	 * @return array<string, bool|int> JSON serialized data
 	 */
-	public function toArray(): array {
+	public function jsonSerialize(): array {
 		return [
 			'index' => $this->index,
 			'state' => $this->state,

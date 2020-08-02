@@ -3,7 +3,7 @@
 /**
  * TEST: App\ConfigModule\Models\SchedulerManager
  * @covers App\ConfigModule\Models\SchedulerManager
- * @phpVersion >= 7.0
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
@@ -33,7 +33,7 @@ require __DIR__ . '/../../bootstrap.php';
 /**
  * Tests for scheduler's task configuration manager
  */
-class SchedulerManagerTest extends TestCase {
+final class SchedulerManagerTest extends TestCase {
 
 	/**
 	 * @var JsonFileManager JSON file manager

@@ -79,9 +79,9 @@ class WebsocketPresenter extends GenericPresenter {
 	public $serviceFormFactory;
 
 	/**
-	 * @var array<string> WebSocket components
+	 * WebSocket components
 	 */
-	protected $components = [
+	protected const COMPONENTS = [
 		'messaging' => 'iqrf::WebsocketMessaging',
 		'service' => 'shape::WebsocketCppService',
 	];
@@ -133,7 +133,7 @@ class WebsocketPresenter extends GenericPresenter {
 	 * Adds a new instance of WebSocket messaging
 	 */
 	public function actionAddMessaging(): void {
-		$this->manager->setComponent($this->components['messaging']);
+		$this->manager->setComponent(self::COMPONENTS['messaging']);
 		$defaults = ['RequiredInterfaces' => [['name' => 'shape::IWebsocketService', 'target' => ['instance' => null]]]];
 		$this['configWebSocketMessagingForm']->setDefaults($defaults);
 	}
@@ -143,7 +143,7 @@ class WebsocketPresenter extends GenericPresenter {
 	 * @param int $id ID of WebSocket messaging
 	 */
 	public function actionEditMessaging(int $id): void {
-		$this->loadFormConfiguration($this['configWebSocketMessagingForm'], $this->components['messaging'], $id, 'Websocket:default');
+		$this->loadFormConfiguration($this['configWebSocketMessagingForm'], self::COMPONENTS['messaging'], $id, 'Websocket:default');
 	}
 
 	/**
@@ -151,7 +151,7 @@ class WebsocketPresenter extends GenericPresenter {
 	 * @param int $id ID of WebSocket service
 	 */
 	public function actionEditService(int $id): void {
-		$this->loadFormConfiguration($this['configWebSocketServiceForm'], $this->components['service'], $id, 'Websocket:default');
+		$this->loadFormConfiguration($this['configWebSocketServiceForm'], self::COMPONENTS['service'], $id, 'Websocket:default');
 	}
 
 	/**
@@ -174,7 +174,7 @@ class WebsocketPresenter extends GenericPresenter {
 	 * @param int $id ID of WebSocket messaging
 	 */
 	public function actionDeleteMessaging(int $id): void {
-		$this->deleteInstance($this->components['messaging'], $id, 'Websocket:default');
+		$this->deleteInstance(self::COMPONENTS['messaging'], $id, 'Websocket:default');
 	}
 
 	/**
@@ -182,7 +182,7 @@ class WebsocketPresenter extends GenericPresenter {
 	 * @param int $id ID of WebSocket service
 	 */
 	public function actionDeleteService(int $id): void {
-		$this->deleteInstance($this->components['service'], $id, 'Websocket:default');
+		$this->deleteInstance(self::COMPONENTS['service'], $id, 'Websocket:default');
 	}
 
 	/**

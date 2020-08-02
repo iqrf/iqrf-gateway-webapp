@@ -80,11 +80,7 @@ abstract class GenericPresenter extends ProtectedPresenter {
 		$redirect = $redirect ?? 'Homepage:default';
 		try {
 			$this->manager->setComponent($component);
-			if ($load === null) {
-				$configuration = $this->manager->load($id ?? 0);
-			} else {
-				$configuration = $load($id ?? 0);
-			}
+			$configuration = $load === null ? $this->manager->load($id ?? 0) : $load($id ?? 0);
 			if ($id !== null && $configuration === []) {
 				$this->flashError('config.messages.readFailures.notFound');
 				$this->redirect($redirect);

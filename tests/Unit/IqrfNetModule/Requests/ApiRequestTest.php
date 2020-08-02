@@ -3,7 +3,7 @@
 /**
  * TEST: App\IqrfNetModule\Requests\ApiRequest
  * @covers App\IqrfNetModule\Requests\ApiRequest
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
@@ -23,12 +23,12 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for JSON API request manager
  */
-class ApiRequestTest extends TestCase {
+final class ApiRequestTest extends TestCase {
 
 	/**
-	 * @var array<mixed> IQRF JSON API request in an array
+	 * IQRF JSON API request in an array
 	 */
-	private $array = [
+	private const REQUEST = [
 		'mType' => 'mngDaemon_Mode',
 		'data' => [
 			'req' => ['operMode' => 'service'],
@@ -55,7 +55,7 @@ class ApiRequestTest extends TestCase {
 	 */
 	public function testSetValid(): void {
 		Assert::noError(function (): void {
-			$this->request->set($this->array);
+			$this->request->set(self::REQUEST);
 		});
 	}
 
@@ -72,8 +72,8 @@ class ApiRequestTest extends TestCase {
 	 * Tests the function to get the request as array
 	 */
 	public function testGet(): void {
-		$this->request->set($this->array);
-		$expected = $this->array;
+		$this->request->set(self::REQUEST);
+		$expected = self::REQUEST;
 		$expected['data']['msgId'] = '1';
 		Assert::equal($expected, $this->request->get());
 	}
@@ -82,8 +82,8 @@ class ApiRequestTest extends TestCase {
 	 * Tests the function to get the request as JSON string
 	 */
 	public function testToJson(): void {
-		$this->request->set($this->array);
-		$array = $this->array;
+		$this->request->set(self::REQUEST);
+		$array = self::REQUEST;
 		$array['data']['msgId'] = '1';
 		$expected = Json::encode($array, Json::PRETTY);
 		Assert::equal($expected, $this->request->toJson(true));

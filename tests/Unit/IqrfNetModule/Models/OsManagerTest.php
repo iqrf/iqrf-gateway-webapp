@@ -2,7 +2,7 @@
 /**
  * TEST: App\IqrfNetModule\Models\OsManager
  * @covers App\IqrfNetModule\Models\OsManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 
@@ -18,12 +18,12 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Test for DPA OS peripheral manager
  */
-class OsManagerTest extends WebSocketTestCase {
+final class OsManagerTest extends WebSocketTestCase {
 
 	/**
-	 * @var int Network device address
+	 * Network device address
 	 */
-	private $address = 1;
+	private const ADDRESS = 1;
 
 	/**
 	 * @var OsManager DPA OS peripheral manager
@@ -46,14 +46,14 @@ class OsManagerTest extends WebSocketTestCase {
 			'mType' => 'iqrfEmbedOs_Read',
 			'data' => [
 				'req' => [
-					'nAdr' => $this->address,
+					'nAdr' => self::ADDRESS,
 					'param' => (object) [],
 				],
 				'returnVerbose' => true,
 			],
 		];
 		$this->assertRequest($request, function (): void {
-			$this->manager->read($this->address);
+			$this->manager->read(self::ADDRESS);
 		});
 	}
 

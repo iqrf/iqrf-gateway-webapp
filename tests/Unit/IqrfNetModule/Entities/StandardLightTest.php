@@ -3,7 +3,7 @@
 /**
  * TEST: App\IqrfNetModule\Entities\StandardLight
  * @covers App\IqrfNetModule\Entities\StandardLight
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
@@ -19,12 +19,17 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for IQRF Standard light entity
  */
-class StandardLightTest extends TestCase {
+final class StandardLightTest extends TestCase {
 
 	/**
-	 * @var int IQRF Standard light index
+	 * IQRF Standard light index
 	 */
-	private $index = 0;
+	private const INDEX = 0;
+
+	/**
+	 * IQRF Standard light power
+	 */
+	private const POWER = 50;
 
 	/**
 	 * @var StandardLight IQRF Standard light entity
@@ -32,31 +37,26 @@ class StandardLightTest extends TestCase {
 	private $entity;
 
 	/**
-	 * @var int IQRF Standard light power
-	 */
-	private $power = 50;
-
-	/**
 	 * Sets up the test environment
 	 */
 	protected function setUp(): void {
 		parent::setUp();
-		$this->entity = new StandardLight($this->index, $this->power);
+		$this->entity = new StandardLight(self::INDEX, self::POWER);
 	}
 
 	/**
 	 * Tests the function to get light's power
 	 */
 	public function testGetPower(): void {
-		Assert::same($this->power, $this->entity->getPower());
+		Assert::same(self::POWER, $this->entity->getPower());
 	}
 
 	/**
 	 * Tests the function to set light's power
 	 */
 	public function testSetPower(): void {
-		$this->entity->setPower($this->power / 2);
-		Assert::same($this->power / 2, $this->entity->getPower());
+		$this->entity->setPower(self::POWER / 2);
+		Assert::same(self::POWER / 2, $this->entity->getPower());
 	}
 
 	/**
@@ -64,10 +64,10 @@ class StandardLightTest extends TestCase {
 	 */
 	public function testToArray(): void {
 		$expected = [
-			'index' => $this->index,
-			'power' => $this->power,
+			'index' => self::INDEX,
+			'power' => self::POWER,
 		];
-		Assert::same($expected, $this->entity->toArray());
+		Assert::same($expected, $this->entity->jsonSerialize());
 	}
 
 }

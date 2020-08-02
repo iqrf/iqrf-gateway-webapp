@@ -3,7 +3,7 @@
 /**
  * TEST: App\ConfigModule\Models\WebSocketManager
  * @covers App\ConfigModule\Models\WebSocketManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
@@ -21,22 +21,31 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for WebSocket interface configuration manager
  */
-class WebSocketManagerTest extends JsonConfigTestCase {
+final class WebSocketManagerTest extends JsonConfigTestCase {
 
 	/**
-	 * @var array<string, string> WebSocket messaging and service file names
+	 * WebSocket messaging and service file names
 	 */
-	private $fileNames = [
+	private const FILE_NAMES = [
 		'messaging' => 'iqrf__WebsocketMessaging',
 		'service' => 'shape__WebsocketCppService',
 	];
 
 	/**
-	 * @var array<string, string> WebSocket instances
+	 * WebSocket instances
 	 */
-	private $instances = [
+	private const INSTANCES = [
 		'messaging' => 'WebsocketMessaging',
 		'service' => 'WebsocketCppService',
+	];
+
+	/**
+	 * Values from configuration form
+	 */
+	private const VALUES = [
+		'acceptAsyncMsg' => true,
+		'port' => 1338,
+		'acceptOnlyLocalhost' => true,
 	];
 
 	/**
@@ -50,32 +59,23 @@ class WebSocketManagerTest extends JsonConfigTestCase {
 	private $managerTemp;
 
 	/**
-	 * @var array<string, bool|int> Values from configuration form
-	 */
-	private $values = [
-		'acceptAsyncMsg' => true,
-		'port' => 1338,
-		'acceptOnlyLocalhost' => true,
-	];
-
-	/**
 	 * Tests the function to delete a WebSocket interface configuration
 	 */
 	public function testDelete(): void {
 		Environment::lock('config_websocket', __DIR__ . '/../../../temp/');
 		$this->copyConfiguration();
-		Assert::true($this->fileManagerTemp->exists($this->fileNames['messaging']));
-		Assert::true($this->fileManagerTemp->exists($this->fileNames['service']));
+		Assert::true($this->fileManagerTemp->exists(self::FILE_NAMES['messaging']));
+		Assert::true($this->fileManagerTemp->exists(self::FILE_NAMES['service']));
 		$this->managerTemp->delete(0);
-		Assert::false($this->fileManagerTemp->exists($this->fileNames['messaging']));
-		Assert::false($this->fileManagerTemp->exists($this->fileNames['service']));
+		Assert::false($this->fileManagerTemp->exists(self::FILE_NAMES['messaging']));
+		Assert::false($this->fileManagerTemp->exists(self::FILE_NAMES['service']));
 	}
 
 	/**
 	 * Copies a configuration
 	 */
 	private function copyConfiguration(): void {
-		foreach ($this->fileNames as $fileName) {
+		foreach (self::FILE_NAMES as $fileName) {
 			$json = $this->fileManager->read($fileName);
 			$this->fileManagerTemp->write($fileName, $json);
 		}
@@ -86,9 +86,9 @@ class WebSocketManagerTest extends JsonConfigTestCase {
 	 */
 	public function testLoad(): void {
 		$expected = [
-			'messagingInstance' => $this->instances['messaging'],
+			'messagingInstance' => self::INSTANCES['messaging'],
 			'acceptAsyncMsg' => true,
-			'serviceInstance' => $this->instances['service'],
+			'serviceInstance' => self::INSTANCES['service'],
 			'port' => 1338,
 			'acceptOnlyLocalhost' => false,
 		];
@@ -102,7 +102,7 @@ class WebSocketManagerTest extends JsonConfigTestCase {
 		Environment::lock('config_websocket', __DIR__ . '/../../../temp/');
 		$this->copyConfiguration();
 		$this->managerTemp->load(0);
-		$this->managerTemp->save($this->values);
+		$this->managerTemp->save(self::VALUES);
 		$expectedMessaging = [
 			'component' => 'iqrf::WebsocketMessaging',
 			'instance' => 'WebsocketMessaging',
@@ -114,14 +114,14 @@ class WebSocketManagerTest extends JsonConfigTestCase {
 				],
 			],
 		];
-		Assert::same($expectedMessaging, $this->fileManagerTemp->read($this->fileNames['messaging']));
+		Assert::same($expectedMessaging, $this->fileManagerTemp->read(self::FILE_NAMES['messaging']));
 		$expectedService = [
 			'component' => 'shape::WebsocketCppService',
 			'instance' => 'WebsocketCppService',
 			'WebsocketPort' => 1338,
 			'acceptOnlyLocalhost' => true,
 		];
-		Assert::same($expectedService, $this->fileManagerTemp->read($this->fileNames['service']));
+		Assert::same($expectedService, $this->fileManagerTemp->read(self::FILE_NAMES['service']));
 	}
 
 	/**
@@ -145,7 +145,7 @@ class WebSocketManagerTest extends JsonConfigTestCase {
 	 * Tests the function to get WebSocket service file name by instance name
 	 */
 	public function testGetServiceFile(): void {
-		Assert::same($this->fileNames['service'], $this->manager->getServiceFile($this->instances['service']));
+		Assert::same(self::FILE_NAMES['service'], $this->manager->getServiceFile(self::INSTANCES['service']));
 		Assert::null($this->manager->getServiceFile('foobar'));
 	}
 

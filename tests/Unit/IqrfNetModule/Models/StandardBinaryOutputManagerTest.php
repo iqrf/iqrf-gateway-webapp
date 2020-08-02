@@ -2,7 +2,7 @@
 /**
  * TEST: App\IqrfNetModule\Models\StandardBinaryOutputManager
  * @covers App\IqrfNetModule\Models\StandardBinaryOutputManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 
@@ -19,12 +19,12 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Test for IQRF Standard binary output manager
  */
-class StandardBinaryOutputManagerTest extends WebSocketTestCase {
+final class StandardBinaryOutputManagerTest extends WebSocketTestCase {
 
 	/**
-	 * @var int IQRF Standard binary output network device address
+	 * IQRF Standard binary output network device address
 	 */
-	private $address = 2;
+	private const ADDRESS = 2;
 
 	/**
 	 * @var StandardBinaryOutputManager IQRF Standard binary output manager
@@ -47,14 +47,14 @@ class StandardBinaryOutputManagerTest extends WebSocketTestCase {
 			'mType' => 'iqrfBinaryoutput_Enumerate',
 			'data' => [
 				'req' => [
-					'nAdr' => $this->address,
+					'nAdr' => self::ADDRESS,
 					'param' => (object) [],
 				],
 				'returnVerbose' => true,
 			],
 		];
 		$this->assertRequest($request, function (): void {
-			$this->manager->enumerate($this->address);
+			$this->manager->enumerate(self::ADDRESS);
 		});
 	}
 
@@ -66,7 +66,7 @@ class StandardBinaryOutputManagerTest extends WebSocketTestCase {
 			'mType' => 'iqrfBinaryoutput_SetOutput',
 			'data' => [
 				'req' => [
-					'nAdr' => $this->address,
+					'nAdr' => self::ADDRESS,
 					'param' => [
 						'binOuts' => [],
 					],
@@ -75,7 +75,7 @@ class StandardBinaryOutputManagerTest extends WebSocketTestCase {
 			],
 		];
 		$this->assertRequest($request, function (): void {
-			$this->manager->getOutputs($this->address);
+			$this->manager->getOutputs(self::ADDRESS);
 		});
 	}
 
@@ -87,7 +87,7 @@ class StandardBinaryOutputManagerTest extends WebSocketTestCase {
 			'mType' => 'iqrfBinaryoutput_SetOutput',
 			'data' => [
 				'req' => [
-					'nAdr' => $this->address,
+					'nAdr' => self::ADDRESS,
 					'param' => [
 						'binOuts' => [
 							[
@@ -102,7 +102,7 @@ class StandardBinaryOutputManagerTest extends WebSocketTestCase {
 		];
 		$this->assertRequest($request, function (): void {
 			$output = new StandardBinaryOutput(0, true);
-			$this->manager->setOutputs($this->address, [$output]);
+			$this->manager->setOutputs(self::ADDRESS, [$output]);
 		});
 	}
 

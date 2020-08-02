@@ -39,6 +39,11 @@ use Ublaboo\DataGrid\Exception\DataGridException;
 class MonitorPresenter extends GenericPresenter {
 
 	/**
+	 * Redirect
+	 */
+	private const REDIRECT = 'Monitor:default';
+
+	/**
 	 * @var MonitorDataGridFactory Daemon's monitor service data grid factory
 	 * @inject
 	 */
@@ -49,14 +54,6 @@ class MonitorPresenter extends GenericPresenter {
 	 * @inject
 	 */
 	public $formFactory;
-
-	/**
-	 * @var array<string,string> Components
-	 */
-	protected $components = [
-		'monitor' => 'iqrf::MonitorService',
-		'webSocket' => 'shape::WebsocketCppService',
-	];
 
 	/**
 	 * @var MonitorManager Daemon's monitor service configuration manager
@@ -85,7 +82,7 @@ class MonitorPresenter extends GenericPresenter {
 		} catch (IOException $e) {
 			$this->flashError('config.messages.deleteFailures.ioError');
 		}
-		$this->redirect('Monitor:default');
+		$this->redirect(self::REDIRECT);
 	}
 
 	/**
@@ -93,26 +90,25 @@ class MonitorPresenter extends GenericPresenter {
 	 * @param int $id Daemon's monitor service ID
 	 */
 	public function actionEdit(int $id): void {
-		$redirect = 'Monitor:default';
 		try {
 			$configuration = $this->monitorManager->load($id);
 			if ($configuration === []) {
 				$this->flashError('config.messages.readFailures.notFound');
-				$this->redirect($redirect);
+				$this->redirect(self::REDIRECT);
 			}
 			$this['configMonitorForm']->setDefaults($configuration);
 		} catch (NonexistentJsonSchemaException $e) {
 			$this->flashError('config.messages.readFailures.nonExistingJsonSchema');
-			$this->redirect($redirect);
+			$this->redirect(self::REDIRECT);
 		} catch (IOException $e) {
 			$this->flashError('config.messages.readFailures.ioError');
-			$this->redirect($redirect);
+			$this->redirect(self::REDIRECT);
 		} catch (JsonException $e) {
 			$this->flashError('config.messages.readFailures.invalidJson');
-			$this->redirect($redirect);
+			$this->redirect(self::REDIRECT);
 		} catch (InvalidArgumentException $e) {
 			$this->flashError('config.messages.readFailures.notFound');
-			$this->redirect($redirect);
+			$this->redirect(self::REDIRECT);
 		}
 	}
 

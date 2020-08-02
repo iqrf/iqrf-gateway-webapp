@@ -3,7 +3,7 @@
 /**
  * TEST: App\CoreModule\Models\JsonSchemaManager
  * @covers App\CoreModule\Models\JsonSchemaManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
@@ -24,7 +24,12 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for JSON schema manager
  */
-class JsonSchemaManagerTest extends TestCase {
+final class JsonSchemaManagerTest extends TestCase {
+
+	/**
+	 * JSON file name
+	 */
+	private const FILE_NAME = 'iqrf__MqttMessaging';
 
 	/**
 	 * Directory with configuration files
@@ -96,7 +101,7 @@ class JsonSchemaManagerTest extends TestCase {
 	public function testValidateValid(): void {
 		Assert::noError(function (): void {
 			$this->manager->setSchema(self::SCHEMA_NAME);
-			$json = (object) $this->fileManager->read('iqrf__MqttMessaging');
+			$json = (object) $this->fileManager->read(self::FILE_NAME);
 			$this->manager->validate($json);
 		});
 	}

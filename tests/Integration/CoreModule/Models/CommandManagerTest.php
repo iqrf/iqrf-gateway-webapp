@@ -3,7 +3,7 @@
 /**
  * TEST: App\CoreModule\Models\CommandManager
  * @covers App\CoreModule\Models\CommandManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
@@ -22,7 +22,12 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for command manager
  */
-class CommandManagerTest extends TestCase {
+final class CommandManagerTest extends TestCase {
+
+	/**
+	 * Executed command
+	 */
+	private const COMMAND = 'echo "OK"';
 
 	/**
 	 * @var CommandManager Command manager
@@ -33,9 +38,8 @@ class CommandManagerTest extends TestCase {
 	 * Tests the function to execute a shell command
 	 */
 	public function testRun(): void {
-		$command = 'echo "OK"';
-		$actual = $this->manager->run($command);
-		Assert::same($command, $actual->getCommand());
+		$actual = $this->manager->run(self::COMMAND);
+		Assert::same(self::COMMAND, $actual->getCommand());
 		Assert::same('OK', $actual->getStdout());
 		Assert::same('', $actual->getStderr());
 		Assert::same(0, $actual->getExitCode());
@@ -48,7 +52,7 @@ class CommandManagerTest extends TestCase {
 		$this->manager->runAsync(function (string $type, ?string $buffer): void {
 			Assert::same(Process::OUT, $type);
 			Assert::same('OK', Strings::trim($buffer));
-		}, 'echo "OK"', false, 10);
+		}, self::COMMAND, false, 10);
 	}
 
 	/**
