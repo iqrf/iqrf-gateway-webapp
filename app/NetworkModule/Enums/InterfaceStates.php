@@ -22,6 +22,7 @@ namespace App\NetworkModule\Enums;
 
 use Grifart\Enum\AutoInstances;
 use Grifart\Enum\Enum;
+use Nette\Utils\Strings;
 
 /**
  * Network interface states enum
@@ -119,7 +120,7 @@ final class InterfaceStates extends Enum {
 	 * @return static Network interface state
 	 */
 	public static function fromNmCli(string $nmCli): self {
-		$state = preg_replace('/ \(externally\)/', '', $nmCli);
+		$state = Strings::replace($nmCli, '/ \(externally\)/', '');
 		return self::fromScalar($state);
 	}
 

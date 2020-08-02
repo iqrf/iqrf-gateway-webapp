@@ -26,7 +26,7 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for WiFi connection entity
  */
-class WifiConnectionTest extends TestCase {
+final class WifiConnectionTest extends TestCase {
 
 	/**
 	 * NetworkManager data directory

@@ -20,7 +20,7 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for WiFi mode enum
  */
-class WifiModeTest extends TestCase {
+final class WifiModeTest extends TestCase {
 
 	/**
 	 * Tests the function for creating WiFi mode enum - Ad-Hoc

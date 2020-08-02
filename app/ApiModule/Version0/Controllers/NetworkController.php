@@ -30,11 +30,13 @@ use Apitte\Core\Annotation\Controller\Responses;
 use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
+use App\NetworkModule\Enums\ConnectionTypes;
 use App\NetworkModule\Exceptions\NetworkManagerException;
 use App\NetworkModule\Models\ConnectionManager;
 use App\NetworkModule\Models\ConnectivityManager;
 use App\NetworkModule\Models\InterfaceManager;
 use App\NetworkModule\Models\WifiManager;
+use Grifart\Enum\MissingValueDeclarationException;
 use Ramsey\Uuid\Exception\InvalidUuidStringException;
 use Ramsey\Uuid\Uuid;
 
@@ -84,6 +86,27 @@ class NetworkController extends BaseController {
 	 * @Method("GET")
 	 * @OpenApi("
 	 *  summary: Returns network connections
+	 *  parameters:
+	 *      - in: query
+	 *        name: type
+	 *        schema:
+	 *          type: string
+	 *          enum:
+	 *              - 'bluetooth'
+	 *              - 'bridge'
+	 *              - 'dummy'
+	 *              - '802-3-ethernet'
+	 *              - 'gsm'
+	 *              - 'infiniband'
+	 *              - 'tun'
+	 *              - 'vlan'
+	 *              - 'vpn'
+	 *              - '802-11-wireless'
+	 *              - 'wimax'
+	 *              - 'wireguard'
+	 *              - 'wpan'
+	 *        required: false
+	 *        description: Connection type
 	 *  responses:
 	 *      '200':
 	 *          description: Success
@@ -97,7 +120,13 @@ class NetworkController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function listConnections(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$list = $this->connectionManger->list();
+		$typeParam = $request->getQueryParam('type', null);
+		try {
+			$type = $typeParam === null ? null : ConnectionTypes::fromScalar($typeParam);
+		} catch (MissingValueDeclarationException $e) {
+			$type = null;
+		}
+		$list = $this->connectionManger->list($type);
 		return $response->writeJsonBody($list);
 	}
 

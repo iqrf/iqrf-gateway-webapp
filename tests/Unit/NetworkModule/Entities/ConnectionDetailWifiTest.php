@@ -4,13 +4,14 @@
 /**
  * TEST: App\NetworkModule\Entities\ConnectionDetail
  * @covers App\NetworkModule\Entities\ConnectionDetail
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
 
 namespace Tests\Unit\NetworkModule\Entities;
 
+use App\NetworkModule\Entities\AutoConnect;
 use App\NetworkModule\Entities\ConnectionDetail;
 use App\NetworkModule\Entities\IPv4Connection;
 use App\NetworkModule\Entities\IPv6Connection;
@@ -36,7 +37,7 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for network connection entity
  */
-class ConnectionDetailWifiTest extends TestCase {
+final class ConnectionDetailWifiTest extends TestCase {
 
 	/**
 	 * NetworkManager data directory
@@ -44,14 +45,19 @@ class ConnectionDetailWifiTest extends TestCase {
 	private const NM_DATA = __DIR__ . '/../../../data/networkManager/';
 
 	/**
+	 * Network connection ID
+	 */
+	private const ID = 'WIFI MAGDA';
+
+	/**
+	 * Network interface name
+	 */
+	private const INTERFACE = 'wlp4s0';
+
+	/**
 	 * Connection UUID
 	 */
 	private const UUID = '5c7010a8-88f6-48e6-8ab2-5ad713217831';
-
-	/**
-	 * @var string Network connection ID
-	 */
-	private $id = 'WIFI MAGDA';
 
 	/**
 	 * @var UuidInterface Network connection UUID
@@ -62,11 +68,6 @@ class ConnectionDetailWifiTest extends TestCase {
 	 * @var ConnectionTypes Network connection type
 	 */
 	private $type;
-
-	/**
-	 * @var string Network interface name
-	 */
-	private $interfaceName = 'wlp4s0';
 
 	/**
 	 * @var IPv4Connection IPv4 network connection entity
@@ -100,10 +101,11 @@ class ConnectionDetailWifiTest extends TestCase {
 	 * Sets up the test environment
 	 */
 	protected function setUp(): void {
+		$autoConnect = new AutoConnect(true, 0, -1);
 		$this->createIpv4Connection();
 		$this->createIpv6Connection();
 		$this->createWifiConnection();
-		$this->entity = new ConnectionDetail($this->id, $this->uuid, $this->type, $this->interfaceName, $this->ipv4, $this->ipv6, $this->wifi);
+		$this->entity = new ConnectionDetail(self::ID, $this->uuid, $this->type, self::INTERFACE, $autoConnect, $this->ipv4, $this->ipv6, $this->wifi);
 	}
 
 	/**
@@ -167,7 +169,7 @@ class ConnectionDetailWifiTest extends TestCase {
 	 * Tests the function to get the network interface name
 	 */
 	public function testGetInterfaceName(): void {
-		Assert::same($this->interfaceName, $this->entity->getInterfaceName());
+		Assert::same(self::INTERFACE, $this->entity->getInterfaceName());
 	}
 
 	/**

@@ -3,13 +3,14 @@
 /**
  * TEST: App\NetworkModule\Entities\ConnectionDetail
  * @covers App\NetworkModule\Entities\ConnectionDetail
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
 
 namespace Tests\Unit\NetworkModule\Entities;
 
+use App\NetworkModule\Entities\AutoConnect;
 use App\NetworkModule\Entities\ConnectionDetail;
 use App\NetworkModule\Entities\IPv4Address;
 use App\NetworkModule\Entities\IPv4Connection;
@@ -32,7 +33,7 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for network connection entity
  */
-class ConnectionDetailEthernetTest extends TestCase {
+final class ConnectionDetailEthernetTest extends TestCase {
 
 	/**
 	 * NetworkManager data directory
@@ -40,14 +41,19 @@ class ConnectionDetailEthernetTest extends TestCase {
 	private const NM_DATA = __DIR__ . '/../../../data/networkManager/';
 
 	/**
+	 * Network interface name
+	 */
+	private const INTERFACE = 'eth0';
+
+	/**
+	 * Network connection name
+	 */
+	private const NAME = 'eth0';
+
+	/**
 	 * Connection UUID
 	 */
 	private const UUID = '25ab1b06-2a86-40a9-950f-1c576ddcd35a';
-
-	/**
-	 * @var string Network connection ID
-	 */
-	private $id = 'eth0';
 
 	/**
 	 * @var UuidInterface Network connection UUID
@@ -58,11 +64,6 @@ class ConnectionDetailEthernetTest extends TestCase {
 	 * @var ConnectionTypes Network connection type
 	 */
 	private $type;
-
-	/**
-	 * @var string Network interface name
-	 */
-	private $interfaceName = 'eth0';
 
 	/**
 	 * @var IPv4Connection IPv4 network connection entity
@@ -91,9 +92,10 @@ class ConnectionDetailEthernetTest extends TestCase {
 	 * Sets up the test environment
 	 */
 	protected function setUp(): void {
+		$autoConnect = new AutoConnect(true, 0, -1);
 		$this->createIpv4Connection();
 		$this->createIpv6Connection();
-		$this->entity = new ConnectionDetail($this->id, $this->uuid, $this->type, $this->interfaceName, $this->ipv4, $this->ipv6);
+		$this->entity = new ConnectionDetail(self::NAME, $this->uuid, $this->type, self::INTERFACE, $autoConnect, $this->ipv4, $this->ipv6);
 	}
 
 	/**
@@ -124,11 +126,11 @@ class ConnectionDetailEthernetTest extends TestCase {
 	 */
 	public function testJsonDeserialize(): void {
 		$json = Json::decode(FileSystem::read(self::NM_DATA . 'fromForm/' . self::UUID . '.json'));
-		$json->id = $this->id;
 		$json->uuid = self::UUID;
 		$json->type = $this->type->toScalar();
-		$json->interfaceName = $this->interfaceName;
+		$json->interface = self::INTERFACE;
 		$actual = ConnectionDetail::jsonDeserialize($json);
+		$autoConnect = new AutoConnect(true, 1, 10);
 		$ipv4Addresses = [IPv4Address::fromPrefix('10.0.0.2/16')];
 		$ipv4Gateway = IPv4::factory('10.0.0.1');
 		$ipv4Dns = [IPv4::factory('10.0.0.1'), IPv4::factory('1.1.1.1')];
@@ -136,7 +138,7 @@ class ConnectionDetailEthernetTest extends TestCase {
 		$ipv6Addresses = [IPv6Address::fromPrefix('2001:470:5bb2:2::2/64', 'fe80::1')];
 		$ipv6Dns = [IPv6::factory('2001:470:5bb2:2::1')];
 		$ipv6 = new IPv6Connection(IPv6Methods::MANUAL(), $ipv6Addresses, $ipv6Dns);
-		$expected = new ConnectionDetail($this->id, $this->uuid, $this->type, $this->interfaceName, $ipv4, $ipv6);
+		$expected = new ConnectionDetail(self::NAME, $this->uuid, $this->type, self::INTERFACE, $autoConnect, $ipv4, $ipv6);
 		Assert::equal($expected, $actual);
 	}
 
@@ -166,7 +168,7 @@ class ConnectionDetailEthernetTest extends TestCase {
 	 * Tests the function to get the network interface name
 	 */
 	public function testGetInterfaceName(): void {
-		Assert::same($this->interfaceName, $this->entity->getInterfaceName());
+		Assert::same(self::INTERFACE, $this->entity->getInterfaceName());
 	}
 
 	/**

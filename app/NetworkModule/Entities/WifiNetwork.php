@@ -23,6 +23,7 @@ namespace App\NetworkModule\Entities;
 use App\NetworkModule\Enums\WifiMode;
 use App\NetworkModule\Enums\WifiSecurity;
 use JsonSerializable;
+use Nette\Utils\Strings;
 
 /**
  * WiFi network entity
@@ -162,10 +163,10 @@ final class WifiNetwork implements JsonSerializable {
 	 */
 	public static function nmCliDeserialize(string $nmCli): self {
 		$pattern = '/^(?\'inUse\'[^:]*):(?\'bssid\'([A-Fa-f\d]{2}\\\\:){5}[A-Fa-f\d]{2}):(?\'ssid\'[^:]*):(?\'mode\'[^:]*):(?\'channel\'[^:]*):(?\'rate\'[^:]*):(?\'signal\'[^:]*):(?\'bars\'[^:]*):(?\'security\'[^:]*)$/';
-		preg_match($pattern, $nmCli, $matches);
+		$matches = Strings::match($nmCli, $pattern);
 		$inUse = $matches['inUse'] === '*';
-		$bssid = preg_replace('/\\\\:/', ':', $matches['bssid']);
-		$ssid = preg_replace('/\\\\:/', ':', $matches['ssid']);
+		$bssid = Strings::replace($matches['bssid'], '/\\\\:/', ':');
+		$ssid = Strings::replace($matches['ssid'], '/\\\\:/', ':');
 		$mode = WifiMode::fromNetworkList($matches['mode']);
 		$channel = (int) $matches['channel'];
 		$signal = (int) $matches['signal'];

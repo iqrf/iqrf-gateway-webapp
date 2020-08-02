@@ -23,7 +23,7 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for WiFi connection security entity
  */
-class WifiConnectionSecurityTest extends TestCase {
+final class WifiConnectionSecurityTest extends TestCase {
 
 	/**
 	 * @var WifiConnectionSecurity WiFi connection security entity

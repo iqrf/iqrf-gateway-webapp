@@ -21,12 +21,17 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for network interface entity
  */
-class InterfaceStatusTest extends TestCase {
+final class InterfaceStatusTest extends TestCase {
 
 	/**
-	 * @var string Network interface name
+	 * Network connection name
 	 */
-	private $name = 'eth0';
+	private const CONNECTION = 'eth0';
+
+	/**
+	 * Network interface name
+	 */
+	private const NAME = 'eth0';
 
 	/**
 	 * @var InterfaceTypes Network interface type
@@ -39,11 +44,6 @@ class InterfaceStatusTest extends TestCase {
 	private $state;
 
 	/**
-	 * @var string Network connection name
-	 */
-	private $connectionName = 'eth0';
-
-	/**
 	 * @var InterfaceStatus Network interface entity
 	 */
 	private $entity;
@@ -54,7 +54,7 @@ class InterfaceStatusTest extends TestCase {
 	public function __construct() {
 		$this->type = InterfaceTypes::ETHERNET();
 		$this->state = InterfaceStates::CONNECTED();
-		$this->entity = new InterfaceStatus($this->name, $this->type, $this->state, $this->connectionName);
+		$this->entity = new InterfaceStatus(self::NAME, $this->type, $this->state, self::CONNECTION);
 	}
 
 	/**
@@ -69,7 +69,7 @@ class InterfaceStatusTest extends TestCase {
 	 * Tests the function to get network interface name
 	 */
 	public function testGetName(): void {
-		Assert::same($this->name, $this->entity->getName());
+		Assert::same(self::NAME, $this->entity->getName());
 	}
 
 	/**
@@ -90,7 +90,7 @@ class InterfaceStatusTest extends TestCase {
 	 * Tests the function to get network connection name
 	 */
 	public function testGetConnectionName(): void {
-		Assert::same($this->connectionName, $this->entity->getConnectionName());
+		Assert::same(self::CONNECTION, $this->entity->getConnectionName());
 	}
 
 	/**
@@ -98,10 +98,10 @@ class InterfaceStatusTest extends TestCase {
 	 */
 	public function testJsonSerialize(): void {
 		$expected = [
-			'name' => $this->name,
+			'name' => self::NAME,
 			'type' => $this->type->toScalar(),
 			'state' => $this->state->toScalar(),
-			'connectionName' => $this->connectionName,
+			'connectionName' => self::CONNECTION,
 		];
 		Assert::same($expected, $this->entity->jsonSerialize());
 	}

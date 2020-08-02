@@ -19,7 +19,7 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for WiFi security enum
  */
-class WifiSecurityTest extends TestCase {
+final class WifiSecurityTest extends TestCase {
 
 	/**
 	 * Tests the function for creating WiFi security enum - OWE

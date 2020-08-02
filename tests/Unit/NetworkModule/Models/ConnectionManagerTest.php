@@ -2,7 +2,7 @@
 /**
  * TEST: App\NetworkModule\Models\ConnectionManager
  * @covers App\NetworkModule\Models\ConnectionManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 
@@ -10,6 +10,7 @@ declare(strict_types = 1);
 
 namespace Tests\Unit\NetworkModule\Models;
 
+use App\NetworkModule\Entities\AutoConnect;
 use App\NetworkModule\Entities\Connection;
 use App\NetworkModule\Entities\ConnectionDetail;
 use App\NetworkModule\Entities\IPv4Address;
@@ -34,7 +35,7 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for network connection manager
  */
-class ConnectionManagerTest extends CommandTestCase {
+final class ConnectionManagerTest extends CommandTestCase {
 
 	/**
 	 * NetworkManager data directory
@@ -66,9 +67,10 @@ class ConnectionManagerTest extends CommandTestCase {
 	private function createDetailedConnection(): ConnectionDetail {
 		$uuid = Uuid::fromString(self::UUID);
 		$type = ConnectionTypes::ETHERNET();
+		$autoConnect = new AutoConnect(true, 0, -1);
 		$ipv4 = $this->createIpv4Connection();
 		$ipv6 = $this->createIpv6Connection();
-		return new ConnectionDetail('eth0', $uuid, $type, 'eth0', $ipv4, $ipv6);
+		return new ConnectionDetail('eth0', $uuid, $type, 'eth0', $autoConnect, $ipv4, $ipv6);
 	}
 
 	/**
@@ -99,7 +101,7 @@ class ConnectionManagerTest extends CommandTestCase {
 	 */
 	public function testDelete(): void {
 		$command = 'nmcli -t connection delete ' . self::UUID;
-		$this->receiveCommand($command, true, '');
+		$this->receiveCommand($command, true);
 		Assert::noError(function (): void {
 			$this->manager->delete(Uuid::fromString(self::UUID));
 		});
@@ -173,7 +175,7 @@ class ConnectionManagerTest extends CommandTestCase {
 		$this->receiveCommand($command, true, $output);
 		$json = FileSystem::read(self::NM_DATA . 'fromForm/' . self::UUID . '.json');
 		$jsonData = Json::decode($json);
-		$command = 'nmcli -t connection modify 25ab1b06-2a86-40a9-950f-1c576ddcd35a ipv4.method "manual" ipv4.addresses "10.0.0.2/16" ipv4.gateway "10.0.0.1" ipv4.dns "10.0.0.1 1.1.1.1" ipv6.method "manual" ipv6.addresses "2001:470:5bb2:2::2/64" ipv6.gateway "fe80::1" ipv6.dns "2001:470:5bb2:2::1" ';
+		$command = 'nmcli -t connection modify 25ab1b06-2a86-40a9-950f-1c576ddcd35a connection.id "eth0" connection.autoconnect "1" connection.autoconnect-priority "1" connection.autoconnect-retries "10" ipv4.method "manual" ipv4.addresses "10.0.0.2/16" ipv4.gateway "10.0.0.1" ipv4.dns "10.0.0.1 1.1.1.1" ipv6.method "manual" ipv6.addresses "2001:470:5bb2:2::2/64" ipv6.gateway "fe80::1" ipv6.dns "2001:470:5bb2:2::1" ';
 		$this->receiveCommand($command, true);
 		Assert::noError(function () use ($jsonData): void {
 			$uuid = Uuid::fromString(self::UUID);

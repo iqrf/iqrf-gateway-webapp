@@ -3,7 +3,7 @@
 /**
  * TEST: App\NetworkModule\Models\WifiManager
  * @covers App\NetworkModule\Models\WifiManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 
@@ -24,7 +24,7 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for WiFi network manager
  */
-class WifiManagerTest extends CommandTestCase {
+final class WifiManagerTest extends CommandTestCase {
 
 	/**
 	 * NetworkManager WiFi list command

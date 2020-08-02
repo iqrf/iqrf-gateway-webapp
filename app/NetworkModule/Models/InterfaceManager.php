@@ -22,6 +22,7 @@ namespace App\NetworkModule\Models;
 
 use App\CoreModule\Models\CommandManager;
 use App\NetworkModule\Entities\InterfaceStatus;
+use App\NetworkModule\Enums\InterfaceTypes;
 
 /**
  * Network interface manager
@@ -50,7 +51,7 @@ class InterfaceManager {
 	}
 
 	/**
-	 * Discoonnects the network interface
+	 * Disconnects the network interface
 	 * @param string $name Network interface name
 	 */
 	public function disconnect(string $name): void {
@@ -59,15 +60,20 @@ class InterfaceManager {
 
 	/**
 	 * Lists network interfaces
+	 * @param InterfaceTypes|null $type Network interface type
 	 * @return array<InterfaceStatus> Network interfaces
 	 */
-	public function list(): array {
+	public function list(?InterfaceTypes $type = null): array {
 		$output = $this->commandManager->run('nmcli -t device status', true)->getStdout();
 		$array = explode(PHP_EOL, trim($output));
-		foreach ($array as &$row) {
-			$row = InterfaceStatus::nmCliDeserialize($row);
+		$interfaces = [];
+		foreach ($array as $row) {
+			$interface = InterfaceStatus::nmCliDeserialize($row);
+			if ($type === null || $type->equals($interface->getType())) {
+				$interfaces[] = $interface;
+			}
 		}
-		return $array;
+		return $interfaces;
 	}
 
 }

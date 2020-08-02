@@ -3,7 +3,7 @@
 /**
  * TEST: App\NetworkModule\Entities\IPv4Connection
  * @covers App\NetworkModule\Entities\IPv4Connection
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
@@ -24,7 +24,7 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for network connection entity
  */
-class IPv4ConnectionTest extends TestCase {
+final class IPv4ConnectionTest extends TestCase {
 
 	/**
 	 * NetworkManager data directory

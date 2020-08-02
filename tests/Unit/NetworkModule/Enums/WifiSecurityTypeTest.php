@@ -19,7 +19,7 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for WiFi security type enum
  */
-class WifiSecurityTypeTest extends TestCase {
+final class WifiSecurityTypeTest extends TestCase {
 
 	/**
 	 * Tests the function to deserialize WiFi security type from nmcli configuration string - Open

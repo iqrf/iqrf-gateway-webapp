@@ -8,13 +8,13 @@
 		"id",
 		"uuid",
 		"type",
-		"interfaceName",
+		"interface",
 		"ipv4",
 		"ipv6"
 	],
 	"properties": {
 		"id": {
-			"$id": "#/properties/id",
+			"$id": "#/properties/name",
 			"type": "string",
 			"title": "Connection name",
 			"example": "Wired connection 1"
@@ -29,20 +29,25 @@
 			"$id": "#/properties/type",
 			"type": "string",
 			"enum": [
+				"bluetooth",
 				"bridge",
+				"dummy",
 				"802-3-ethernet",
 				"gsm",
+				"infiniband",
 				"tun",
 				"vlan",
 				"vpn",
 				"802-11-wireless",
-				"wireguard"
+				"wimax",
+				"wireguard",
+				"wpan"
 			],
 			"title": "Connection type",
 			"example": "802-3-ethernet"
 		},
-		"interfaceName": {
-			"$id": "#/properties/interfaceName",
+		"interface": {
+			"$id": "#/properties/interface",
 			"type": "string",
 			"title": "Interface name",
 			"example": "eth0"
@@ -526,10 +531,10 @@
 			},
 			"then": {
 				"required": [
-					"id",
+					"name",
 					"uuid",
 					"type",
-					"interfaceName",
+					"interface",
 					"ipv4",
 					"ipv6",
 					"wifi"
