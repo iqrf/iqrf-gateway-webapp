@@ -64,24 +64,30 @@ class AuthenticationMiddleware implements IMiddleware {
 		try {
 			$user = $this->authenticator->authenticate($request);
 		} catch (JwtParsingException | InvalidArgumentException $e) {
-			$response->getBody()->write(Json::encode([
-				'error' => 'Invalid JWT',
-			]));
-			return $response->withStatus(ApiResponse::S401_UNAUTHORIZED)
-				->withHeader('WWW-Authenticate', 'Bearer');
+			return $this->createUnauthorizedResponse($response, 'Invalid JWT');
 		}
 		// If we have a identity, then go to next middleware, otherwise stop and return current response
 		if ($user === null) {
-			$response->getBody()->write(Json::encode([
-				'error' => 'Client authentication failed',
-			]));
-			return $response->withStatus(ApiResponse::S401_UNAUTHORIZED)
-				->withHeader('WWW-Authenticate', 'Bearer');
+			return $this->createUnauthorizedResponse($response, 'Client authentication failed');
 		}
 		// Add info about current logged user to request attributes
 		$request = $request->withAttribute(RequestAttributes::APP_LOGGED_USER, $user);
 		// Pass to next middleware
 		return $next($request, $response);
+	}
+
+	/**
+	 * Creates unauthorized response
+	 * @param ResponseInterface $response Response to modify
+	 * @param string $message Message
+	 * @return ResponseInterface Response
+	 */
+	private function createUnauthorizedResponse(ResponseInterface $response, string $message): ResponseInterface {
+		$json = Json::encode(['error' => $message]);
+		$response->getBody()->write($json);
+		return $response->withStatus(ApiResponse::S401_UNAUTHORIZED)
+			->withHeader('WWW-Authenticate', 'Bearer')
+			->withHeader('Content-Type', 'application/json');
 	}
 
 	/**
