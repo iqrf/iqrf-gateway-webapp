@@ -3,7 +3,7 @@
 /**
  * TEST: App\ConfigModule\Models\MainManager
  * @covers App\ConfigModule\Models\MainManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
@@ -23,12 +23,12 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for main configuration manager
  */
-class MainManagerTest extends JsonConfigTestCase {
+final class MainManagerTest extends JsonConfigTestCase {
 
 	/**
-	 * @var string File name (without .json)
+	 * File name (without .json)
 	 */
-	private $fileName = 'config';
+	private const FILE_NAME = 'config';
 
 	/**
 	 * @var MainManager Main configuration manager
@@ -41,7 +41,7 @@ class MainManagerTest extends JsonConfigTestCase {
 	public function testGetCacheDirFailure(): void {
 		$fileManager = Mockery::mock(JsonFileManager::class);
 		$fileManager->shouldReceive('read')
-			->withArgs([$this->fileName])
+			->withArgs([self::FILE_NAME])
 			->andThrows(IOException::class);
 		$manager = new MainManager($fileManager);
 		$expected = '/var/cache/iqrf-gateway-daemon/';
@@ -60,7 +60,7 @@ class MainManagerTest extends JsonConfigTestCase {
 	 * Tests the function to load main configuration of daemon
 	 */
 	public function testLoad(): void {
-		$expected = $this->readFile($this->fileName);
+		$expected = $this->readFile(self::FILE_NAME);
 		Assert::equal($expected, $this->manager->load());
 	}
 
@@ -79,11 +79,11 @@ class MainManagerTest extends JsonConfigTestCase {
 			'configurationDir' => '/etc/iqrf-daemon',
 			'deploymentDir' => '/usr/lib/iqrf-gateway-daemon',
 		];
-		$expected = $this->readFile($this->fileName);
-		$this->copyFile($this->fileName);
+		$expected = $this->readFile(self::FILE_NAME);
+		$this->copyFile(self::FILE_NAME);
 		$expected['configurationDir'] = '/etc/iqrf-daemon';
 		$manager->save($array);
-		Assert::equal($expected, $this->readTempFile($this->fileName));
+		Assert::equal($expected, $this->readTempFile(self::FILE_NAME));
 	}
 
 	/**

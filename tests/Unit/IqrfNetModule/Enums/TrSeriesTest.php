@@ -3,7 +3,7 @@
 /**
  * TEST: App\IqrfNetModule\Enums\TrSeries
  * @covers App\IqrfNetModule\Enums\TrSeries
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
@@ -20,7 +20,7 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests IQRF TR series enum
  */
-class TrSeriesTest extends TestCase {
+final class TrSeriesTest extends TestCase {
 
 	/**
 	 * Tests the function to create IQRF TR series enum from the IQRF TR type - (DC)TR-76D

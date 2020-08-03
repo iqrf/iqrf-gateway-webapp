@@ -2,7 +2,7 @@
 /**
  * TEST: App\IqrfNetModule\Models\DevicesManager
  * @covers App\IqrfNetModule\Models\DevicesManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 
@@ -23,7 +23,7 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Test for showing devices in IQMESH Network
  */
-class DevicesManagerTest extends WebSocketTestCase {
+final class DevicesManagerTest extends WebSocketTestCase {
 
 	/**
 	 * @var DevicesManager|Mock IQMESH Devices manager

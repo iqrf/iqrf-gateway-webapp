@@ -3,7 +3,7 @@
 /**
  * TEST: App\IqrfNetModule\Requests\DpaRequest
  * @covers App\IqrfNetModule\Requests\DpaRequest
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
@@ -23,7 +23,7 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for JSON DPA request manager
  */
-class DpaRequestTest extends TestCase {
+final class DpaRequestTest extends TestCase {
 
 	/**
 	 * @var stdClass JSON DPA request in an object

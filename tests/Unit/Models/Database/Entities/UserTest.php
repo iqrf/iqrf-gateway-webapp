@@ -3,7 +3,7 @@
 /**
  * TEST: App\Models\Database\Entities\User
  * @covers App\Models\Database\Entities\User
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 
@@ -23,27 +23,27 @@ require __DIR__ . '/../../../../bootstrap.php';
 /**
  * Tests for user database entity
  */
-class UserTest extends TestCase {
+final class UserTest extends TestCase {
 
 	/**
-	 * @var string User name
+	 * User name
 	 */
-	private $username = 'admin';
+	private const USERNAME = 'admin';
 
 	/**
-	 * @var string Password
+	 * Password
 	 */
-	private $password = 'iqrf';
+	private const PASSWORD = 'iqrf';
 
 	/**
-	 * @var string User role
+	 * User role
 	 */
-	private $role = User::ROLE_POWER;
+	private const ROLE = User::ROLE_POWER;
 
 	/**
-	 * @var string User language
+	 * User language
 	 */
-	private $language = User::LANGUAGE_ENGLISH;
+	private const LANGUAGE = User::LANGUAGE_ENGLISH;
 
 	/**
 	 * @var User User entity
@@ -55,7 +55,7 @@ class UserTest extends TestCase {
 	 */
 	protected function setUp(): void {
 		parent::setUp();
-		$this->entity = new User($this->username, $this->password, $this->role, $this->language);
+		$this->entity = new User(self::USERNAME, self::PASSWORD, self::ROLE, self::LANGUAGE);
 	}
 
 	/**
@@ -69,7 +69,7 @@ class UserTest extends TestCase {
 	 * Tests the function to get the user name
 	 */
 	public function testGetUserName(): void {
-		Assert::same($this->username, $this->entity->getUserName());
+		Assert::same(self::USERNAME, $this->entity->getUserName());
 	}
 
 	/**
@@ -77,21 +77,21 @@ class UserTest extends TestCase {
 	 */
 	public function testGetPassword(): void {
 		$hash = $this->entity->getPassword();
-		Assert::true(password_verify($this->password, $hash));
+		Assert::true(password_verify(self::PASSWORD, $hash));
 	}
 
 	/**
 	 * Tests the function to get the user's role
 	 */
 	public function testGetRole(): void {
-		Assert::same($this->role, $this->entity->getRole());
+		Assert::same(self::ROLE, $this->entity->getRole());
 	}
 
 	/**
 	 * Tests the function to get the user's language
 	 */
 	public function testGetLanguage(): void {
-		Assert::same($this->language, $this->entity->getLanguage());
+		Assert::same(self::LANGUAGE, $this->entity->getLanguage());
 	}
 
 	/**
@@ -154,7 +154,7 @@ class UserTest extends TestCase {
 	 * Tests the function to verify the user's password
 	 */
 	public function testVerifyPassword(): void {
-		Assert::true($this->entity->verifyPassword($this->password));
+		Assert::true($this->entity->verifyPassword(self::PASSWORD));
 		Assert::false($this->entity->verifyPassword('admin'));
 	}
 
@@ -164,9 +164,9 @@ class UserTest extends TestCase {
 	public function testJsonSerialize(): void {
 		$expected = [
 			'id' => null,
-			'username' => $this->username,
-			'role' => $this->role,
-			'language' => $this->language,
+			'username' => self::USERNAME,
+			'role' => self::ROLE,
+			'language' => self::LANGUAGE,
 		];
 		Assert::same($expected, $this->entity->jsonSerialize());
 	}
@@ -176,13 +176,13 @@ class UserTest extends TestCase {
 	 */
 	public function testToIdentity(): void {
 		$data = [
-			'username' => $this->username,
-			'language' => $this->language,
+			'username' => self::USERNAME,
+			'language' => self::LANGUAGE,
 		];
-		$expected = new Identity(null, [$this->role], $data);
+		$expected = new Identity(null, [self::ROLE], $data);
 		$actual = $this->entity->toIdentity();
 		Assert::equal($expected, $actual);
-		Assert::same([$this->role], $actual->getRoles());
+		Assert::same([self::ROLE], $actual->getRoles());
 		Assert::null($actual->getId());
 	}
 

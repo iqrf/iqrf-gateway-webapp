@@ -2,7 +2,7 @@
 /**
  * TEST: App\GatewayModule\Models\PackageManagers\UnsupportedPackageManager
  * @covers App\GatewayModule\Models\PackageManagers\UnsupportedPackageManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 
@@ -20,12 +20,12 @@ require __DIR__ . '/../../../../bootstrap.php';
 /**
  * Tests for tool for unsupported package manager
  */
-class UnsupportedPackageManagerTest extends CommandTestCase {
+final class UnsupportedPackageManagerTest extends CommandTestCase {
 
 	/**
-	 * @var array<string> Packages
+	 * Packages
 	 */
-	private $packages = ['iqrf-gateway-daemon', 'iqrf-gateway-webapp'];
+	private const PACKAGES = ['iqrf-gateway-daemon', 'iqrf-gateway-webapp'];
 
 	/**
 	 * @var UnsupportedPackageManager Tool for updating IQRF Gateway
@@ -45,7 +45,7 @@ class UnsupportedPackageManagerTest extends CommandTestCase {
 	 */
 	public function testInstall(): void {
 		Assert::throws(function (): void {
-			$this->manager->install([$this, 'callback'], $this->packages);
+			$this->manager->install([$this, 'callback'], self::PACKAGES);
 		}, UnsupportedPackageManagerException::class);
 	}
 
@@ -70,7 +70,7 @@ class UnsupportedPackageManagerTest extends CommandTestCase {
 	 */
 	public function testRemove(): void {
 		Assert::throws(function (): void {
-			$this->manager->remove([$this, 'callback'], $this->packages);
+			$this->manager->remove([$this, 'callback'], self::PACKAGES);
 		}, UnsupportedPackageManagerException::class);
 	}
 
@@ -79,7 +79,7 @@ class UnsupportedPackageManagerTest extends CommandTestCase {
 	 */
 	public function testPurge(): void {
 		Assert::throws(function (): void {
-			$this->manager->purge([$this, 'callback'], $this->packages);
+			$this->manager->purge([$this, 'callback'], self::PACKAGES);
 		}, UnsupportedPackageManagerException::class);
 	}
 

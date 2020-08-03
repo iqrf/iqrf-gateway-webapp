@@ -2,7 +2,7 @@
 /**
  * TEST: App\IqrfNetModule\Models\SecurityManager
  * @covers App\IqrfNetModule\Models\SecurityManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 
@@ -19,12 +19,12 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Test for IQMESH Security manager
  */
-class SecurityManagerTest extends WebSocketTestCase {
+final class SecurityManagerTest extends WebSocketTestCase {
 
 	/**
-	 * @var int Network device address
+	 * Network device address
 	 */
-	private $address = 0;
+	private const ADDRESS = 0;
 
 	/**
 	 * @var SecurityManager IQMESH Security manager
@@ -47,7 +47,7 @@ class SecurityManagerTest extends WebSocketTestCase {
 			'mType' => 'iqrfEmbedOs_SetSecurity',
 			'data' => [
 				'req' => [
-					'nAdr' => $this->address,
+					'nAdr' => self::ADDRESS,
 					'param' => [
 						'type' => 0,
 						'data' => [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
@@ -57,7 +57,7 @@ class SecurityManagerTest extends WebSocketTestCase {
 			],
 		];
 		$this->assertRequest($request, function (): void {
-			$this->manager->setAccessPassword($this->address, '000102030405060708090A0B0C0D0E0F', DataFormat::HEX);
+			$this->manager->setAccessPassword(self::ADDRESS, '000102030405060708090A0B0C0D0E0F', DataFormat::HEX);
 		});
 	}
 
@@ -69,7 +69,7 @@ class SecurityManagerTest extends WebSocketTestCase {
 			'mType' => 'iqrfEmbedOs_SetSecurity',
 			'data' => [
 				'req' => [
-					'nAdr' => $this->address,
+					'nAdr' => self::ADDRESS,
 					'param' => [
 						'type' => 0,
 						'data' => [1, 2, 3, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -79,7 +79,7 @@ class SecurityManagerTest extends WebSocketTestCase {
 			],
 		];
 		$this->assertRequest($request, function (): void {
-			$this->manager->setAccessPassword($this->address, '01020304', DataFormat::HEX);
+			$this->manager->setAccessPassword(self::ADDRESS, '01020304', DataFormat::HEX);
 		});
 	}
 
@@ -91,7 +91,7 @@ class SecurityManagerTest extends WebSocketTestCase {
 			'mType' => 'iqrfEmbedOs_SetSecurity',
 			'data' => [
 				'req' => [
-					'nAdr' => $this->address,
+					'nAdr' => self::ADDRESS,
 					'param' => [
 						'type' => 0,
 						'data' => [49, 50, 51, 52, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -101,7 +101,7 @@ class SecurityManagerTest extends WebSocketTestCase {
 			],
 		];
 		$this->assertRequest($request, function (): void {
-			$this->manager->setAccessPassword($this->address, '1234', DataFormat::ASCII);
+			$this->manager->setAccessPassword(self::ADDRESS, '1234', DataFormat::ASCII);
 		});
 	}
 
@@ -114,7 +114,7 @@ class SecurityManagerTest extends WebSocketTestCase {
 			'mType' => 'iqrfEmbedOs_SetSecurity',
 			'data' => [
 				'req' => [
-					'nAdr' => $this->address,
+					'nAdr' => self::ADDRESS,
 					'param' => [
 						'type' => 1,
 						'data' => [48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 65, 66, 67, 68, 69, 70],
@@ -124,7 +124,7 @@ class SecurityManagerTest extends WebSocketTestCase {
 			],
 		];
 		$this->assertRequest($request, function (): void {
-			$this->manager->setUserKey($this->address, '0123456789ABCDEF', DataFormat::ASCII);
+			$this->manager->setUserKey(self::ADDRESS, '0123456789ABCDEF', DataFormat::ASCII);
 		});
 	}
 

@@ -2,7 +2,7 @@
 /**
  * TEST: App\IqrfNetModule\Models\StandardSensorManager
  * @covers App\IqrfNetModule\Models\StandardSensorManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 
@@ -18,12 +18,12 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Test for IQRF Standard sensor manager
  */
-class StandardSensorManagerTest extends WebSocketTestCase {
+final class StandardSensorManagerTest extends WebSocketTestCase {
 
 	/**
-	 * @var int IQRF Standard sensor network device address
+	 * IQRF Standard sensor network device address
 	 */
-	private $address = 1;
+	private const ADDRESS = 1;
 
 	/**
 	 * @var StandardSensorManager IQRF Standard sensor manager
@@ -46,14 +46,14 @@ class StandardSensorManagerTest extends WebSocketTestCase {
 			'mType' => 'iqrfSensor_Enumerate',
 			'data' => [
 				'req' => [
-					'nAdr' => $this->address,
+					'nAdr' => self::ADDRESS,
 					'param' => (object) [],
 				],
 				'returnVerbose' => true,
 			],
 		];
 		$this->assertRequest($request, function (): void {
-			$this->manager->enumerate($this->address);
+			$this->manager->enumerate(self::ADDRESS);
 		});
 	}
 
@@ -65,14 +65,14 @@ class StandardSensorManagerTest extends WebSocketTestCase {
 			'mType' => 'iqrfSensor_ReadSensorsWithTypes',
 			'data' => [
 				'req' => [
-					'nAdr' => $this->address,
+					'nAdr' => self::ADDRESS,
 					'param' => ['sensorIndexes' => -1],
 				],
 				'returnVerbose' => true,
 			],
 		];
 		$this->assertRequest($request, function (): void {
-			$this->manager->readAll($this->address);
+			$this->manager->readAll(self::ADDRESS);
 		});
 	}
 

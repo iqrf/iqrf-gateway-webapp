@@ -2,7 +2,7 @@
 /**
  * TEST: App\GatewayModule\Models\PowerManager
  * @covers App\GatewayModule\Models\PowerManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 
@@ -19,7 +19,7 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for tool for powering off and rebooting IQRF Gateway
  */
-class PowerManagerTest extends CommandTestCase {
+final class PowerManagerTest extends CommandTestCase {
 
 	/**
 	 * @var PowerManager Tool for powering off and rebooting IQRF Gateway
@@ -38,7 +38,7 @@ class PowerManagerTest extends CommandTestCase {
 	 * Tests the function to power off IQRF Gateway
 	 */
 	public function testPowerOff(): void {
-		$this->receiveCommand('poweroff', true, '');
+		$this->receiveCommand('poweroff', true);
 		Assert::noError(function (): void {
 			$this->manager->powerOff();
 		});
@@ -48,7 +48,7 @@ class PowerManagerTest extends CommandTestCase {
 	 * Tests the function to reboot IQRF Gateway
 	 */
 	public function testReboot(): void {
-		$this->receiveCommand('reboot', true, '');
+		$this->receiveCommand('reboot', true);
 		Assert::noError(function (): void {
 			$this->manager->reboot();
 		});

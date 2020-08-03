@@ -21,17 +21,17 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for command stack entity
  */
-class CommandStackTest extends TestCase {
+final class CommandStackTest extends TestCase {
+
+	/**
+	 * Command
+	 */
+	private const COMMAND = 'ls -al';
 
 	/**
 	 * @var Command Command entity
 	 */
 	private $entity;
-
-	/**
-	 * @var string Command
-	 */
-	private $command = 'ls -al';
 
 	/**
 	 * @var CommandStack Command stack
@@ -52,16 +52,16 @@ class CommandStackTest extends TestCase {
 		$this->stack->addCommand($this->entity);
 		$commands = $this->stack->getCommands();
 		Assert::same(1, count($commands));
-		Assert::same($this->command, $commands[0]->getCommand());
+		Assert::same(self::COMMAND, $commands[0]->getCommand());
 	}
 
 	/**
 	 * Sets up the testing environment
 	 */
 	protected function setUp(): void {
-		$process = Process::fromShellCommandline($this->command);
+		$process = Process::fromShellCommandline(self::COMMAND);
 		$process->run();
-		$this->entity = new Command($this->command, $process);
+		$this->entity = new Command(self::COMMAND, $process);
 		$this->stack = new CommandStack();
 		parent::setUp();
 	}

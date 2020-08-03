@@ -2,7 +2,7 @@
 /**
  * TEST: App\IqrfNetModule\Models\StandardDaliManager
  * @covers App\IqrfNetModule\Models\StandardDaliManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 
@@ -18,7 +18,12 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for IQRF Standard DALI manager
  */
-class StandardDaliManagerTest extends WebSocketTestCase {
+final class StandardDaliManagerTest extends WebSocketTestCase {
+
+	/**
+	 * DALI commands
+	 */
+	private const COMMANDS = [49409, 65521];
 
 	/**
 	 * @var StandardDaliManager IQRF Standard DALI manager
@@ -37,21 +42,20 @@ class StandardDaliManagerTest extends WebSocketTestCase {
 	 * Tests the function to send DALI commands
 	 */
 	public function testSend(): void {
-		$commands = [49409, 65521];
 		$request = [
 			'mType' => 'iqrfDali_SendCommands',
 			'data' => [
 				'req' => [
 					'nAdr' => 4,
 					'param' => [
-						'commands' => $commands,
+						'commands' => self::COMMANDS,
 					],
 				],
 				'returnVerbose' => true,
 			],
 		];
-		$this->assertRequest($request, function () use ($commands): void {
-			$this->manager->send(4, $commands);
+		$this->assertRequest($request, function (): void {
+			$this->manager->send(4, self::COMMANDS);
 		});
 	}
 

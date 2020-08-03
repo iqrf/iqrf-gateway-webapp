@@ -3,7 +3,7 @@
 /**
  * TEST: App\CoreModule\Models\ZipArchiveManager
  * @covers App\CoreModule\Models\ZipArchiveManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
@@ -23,12 +23,17 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for ZIP archive manager manager
  */
-class ZipArchiveManagerTest extends TestCase {
+final class ZipArchiveManagerTest extends TestCase {
 
 	/**
-	 * @var string Path to the directory with IQRF Gateway Daemon's configuration
+	 * Path to the directory with IQRF Gateway Daemon's configuration
 	 */
-	private $configDir = __DIR__ . '/../../../data/configuration/';
+	private const CONFIG_DIR = __DIR__ . '/../../../data/configuration/';
+
+	/**
+	 * File name
+	 */
+	private const FILE_NAME = 'config.json';
 
 	/**
 	 * @var ZipArchiveManager ZIP archive manager for new archive creation
@@ -44,10 +49,9 @@ class ZipArchiveManagerTest extends TestCase {
 	 * Tests the function to add a file to the ZIP archive
 	 */
 	public function testAddFile(): void {
-		$fileName = 'config.json';
-		$path = $this->configDir . $fileName;
-		$this->managerNew->addFile($path, $fileName);
-		Assert::same([$fileName], $this->managerNew->listFiles());
+		$path = self::CONFIG_DIR . self::FILE_NAME;
+		$this->managerNew->addFile($path, self::FILE_NAME);
+		Assert::same([self::FILE_NAME], $this->managerNew->listFiles());
 	}
 
 	/**
@@ -64,8 +68,8 @@ class ZipArchiveManagerTest extends TestCase {
 	 * Tests the function to add a directory into the ZIP archive
 	 */
 	public function testAddFolder(): void {
-		$this->managerNew->addFolder($this->configDir, '');
-		$expected = $this->createList($this->configDir);
+		$this->managerNew->addFolder(self::CONFIG_DIR, '');
+		$expected = $this->createList(self::CONFIG_DIR);
 		Assert::same($expected, $this->managerNew->listFiles());
 	}
 
@@ -107,7 +111,7 @@ class ZipArchiveManagerTest extends TestCase {
 	 * Tests the function to check if the file(s) exist(s) in the archive (a single file)
 	 */
 	public function testExistFile(): void {
-		Assert::true($this->manager->exist('config.json'));
+		Assert::true($this->manager->exist(self::FILE_NAME));
 	}
 
 	/**
@@ -121,7 +125,7 @@ class ZipArchiveManagerTest extends TestCase {
 	 * Tests the function to check if the file(s) exist(s) in the archive (multiple files)
 	 */
 	public function testExistFiles(): void {
-		$files = $this->createList($this->configDir);
+		$files = $this->createList(self::CONFIG_DIR);
 		Assert::true($this->manager->exist(ArrayHash::from($files)));
 	}
 
@@ -129,14 +133,14 @@ class ZipArchiveManagerTest extends TestCase {
 	 * Tests the function to extract the archive content
 	 */
 	public function testExtract(): void {
-		$originalPath = realpath($this->configDir);
+		$originalPath = realpath(self::CONFIG_DIR);
 		$destinationPath = realpath(__DIR__ . '/../../../temp/zip');
 		$this->manager->extract($destinationPath);
 		$expected = $this->createList($originalPath);
 		$actual = $this->createList($destinationPath);
 		Assert::same($expected, $actual);
-		$expectedFile = FileSystem::read($originalPath . '/config.json');
-		$actualFile = FileSystem::read($destinationPath . '/config.json');
+		$expectedFile = FileSystem::read($originalPath . '/' . self::FILE_NAME);
+		$actualFile = FileSystem::read($destinationPath . '/' . self::FILE_NAME);
 		Assert::same($expectedFile, $actualFile);
 	}
 
@@ -144,7 +148,7 @@ class ZipArchiveManagerTest extends TestCase {
 	 * Tests the function to list files in the archive
 	 */
 	public function testListFiles(): void {
-		$expected = $this->createList($this->configDir);
+		$expected = $this->createList(self::CONFIG_DIR);
 		Assert::same($expected, $this->manager->listFiles());
 	}
 
@@ -152,9 +156,8 @@ class ZipArchiveManagerTest extends TestCase {
 	 * Tests the function to open a file in the archive
 	 */
 	public function testOpenFile(): void {
-		$fileName = 'config.json';
-		$expected = FileSystem::read($this->configDir . $fileName);
-		Assert::same($expected, $this->manager->openFile($fileName));
+		$expected = FileSystem::read(self::CONFIG_DIR . self::FILE_NAME);
+		Assert::same($expected, $this->manager->openFile(self::FILE_NAME));
 	}
 
 	/**

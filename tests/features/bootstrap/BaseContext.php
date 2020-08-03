@@ -30,7 +30,7 @@ use Psr\Http\Message\ResponseInterface;
 /**
  * Defines application features from the specific context.
  */
-class BaseContext implements Context {
+final class BaseContext implements Context {
 
 	/**
 	 * @var Client HTTP(S) client
@@ -47,7 +47,20 @@ class BaseContext implements Context {
 	 */
 	protected $jwt;
 
+	/**
+	 * API path
+	 */
 	protected const API_PATH = '/api/v0/';
+
+	/**
+	 * HTTP body
+	 */
+	private const HTTP_BODY = 'body';
+
+	/**
+	 * HTTP headers
+	 */
+	private const HTTP_HEADERS = 'headers';
 
 	/**
 	 * Initializes context.
@@ -114,7 +127,7 @@ class BaseContext implements Context {
 	 */
 	public function iCreateHttpRequestToWithBody(string $method, string $url, string $body): void {
 		$options = $this->getClientOptions();
-		$options['body'] = $body;
+		$options[self::HTTP_BODY] = $body;
 		$this->response = $this->client->request($method, self::API_PATH . $url, $options);
 	}
 
@@ -126,7 +139,7 @@ class BaseContext implements Context {
 	 */
 	public function iCreateHttpRequestToWithJsonObjectBody(string $method, string $url, TableNode $table): void {
 		$options = $this->getClientOptions();
-		$options['body'] = Json::encode($table->getHash()[0]);
+		$options[self::HTTP_BODY] = Json::encode($table->getHash()[0]);
 		$this->response = $this->client->request($method, self::API_PATH . $url, $options);
 	}
 
@@ -198,8 +211,7 @@ class BaseContext implements Context {
 		$options = $this->getClientOptions();
 		$row = $table->getHash()[0];
 		$row['enabled'] = $row['enabled'] === 'true';
-		$options['body'] = Json::encode($row);
-		var_dump($options['body']);
+		$options[self::HTTP_BODY] = Json::encode($row);
 		$this->response = $this->client->request('PUT', self::API_PATH . '/features/' . $name, $options);
 	}
 
@@ -248,7 +260,7 @@ class BaseContext implements Context {
 	private function getClientOptions(): array {
 		$options = [];
 		if (isset($this->jwt)) {
-			$options['headers'] = ['Authorization' => 'Bearer ' . $this->jwt];
+			$options[self::HTTP_HEADERS] = ['Authorization' => 'Bearer ' . $this->jwt];
 		}
 		return $options;
 	}

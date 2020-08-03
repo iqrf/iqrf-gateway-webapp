@@ -3,7 +3,7 @@
 /**
  * TEST: App\ConfigModule\Models\IqrfManager
  * @covers App\ConfigModule\Models\IqrfManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
@@ -19,7 +19,7 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for IQRF interface manager
  */
-class IqrfManagerTest extends CommandTestCase {
+final class IqrfManagerTest extends CommandTestCase {
 
 	/**
 	 * @var IqrfManager IQRF interface manager

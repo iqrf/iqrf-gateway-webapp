@@ -25,7 +25,7 @@ use App\CoreModule\Entities\ICommand;
 /**
  * Command entity stub
  */
-class Command implements ICommand {
+final class Command implements ICommand {
 
 	/**
 	 * @var string Command

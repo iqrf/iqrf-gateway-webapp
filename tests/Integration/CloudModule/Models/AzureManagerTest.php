@@ -3,7 +3,7 @@
 /**
  * TEST: App\CloudModule\Models\AzureManager
  * @covers App\CloudModule\Models\AzureManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
@@ -23,12 +23,12 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Test for MS Azure IoT Hub manager
  */
-class AzureManagerTest extends CloudIntegrationTestCase {
+final class AzureManagerTest extends CloudIntegrationTestCase {
 
 	/**
-	 * @var string MS Azure IoT Hub connection string for the device
+	 * MS Azure IoT Hub connection string for the device
 	 */
-	private $connectionString = 'HostName=iqrf.azure-devices.net;DeviceId=IQRFGW;SharedAccessKey=1234567890abcdefghijklmnopqrstuvwxyzABCDEFG=';
+	private const CONNECTION_STRING = 'HostName=iqrf.azure-devices.net;DeviceId=IQRFGW;SharedAccessKey=1234567890abcdefghijklmnopqrstuvwxyzABCDEFG=';
 
 	/**
 	 * @var Mock|AzureManager Microsoft Azure IoT Hub manager
@@ -63,7 +63,7 @@ class AzureManagerTest extends CloudIntegrationTestCase {
 			'EnableServerCertAuth' => false,
 			'acceptAsyncMsg' => false,
 		];
-		$array = ['connectionString' => $this->connectionString];
+		$array = ['connectionString' => self::CONNECTION_STRING];
 		$this->manager->shouldReceive('generateSasToken')->andReturn('generatedSasToken');
 		$this->manager->createMqttInterface($array);
 		Assert::same($mqtt, $this->fileManager->read('iqrf__MqttMessaging_Azure'));
@@ -84,7 +84,7 @@ class AzureManagerTest extends CloudIntegrationTestCase {
 	 */
 	public function testCheckConnectionStringValid(): void {
 		Assert::noError(function (): void {
-			$this->manager->checkConnectionString($this->connectionString);
+			$this->manager->checkConnectionString(self::CONNECTION_STRING);
 		});
 	}
 
@@ -111,7 +111,7 @@ class AzureManagerTest extends CloudIntegrationTestCase {
 			'DeviceId' => 'IQRFGW',
 			'SharedAccessKey' => '1234567890abcdefghijklmnopqrstuvwxyzABCDEFG',
 		];
-		Assert::same($expected, $this->manager->parseConnectionString($this->connectionString));
+		Assert::same($expected, $this->manager->parseConnectionString(self::CONNECTION_STRING));
 	}
 
 	/**

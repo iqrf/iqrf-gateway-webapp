@@ -3,7 +3,7 @@
 /**
  * TEST: App\CoreModule\Models\VersionManager
  * @covers App\CoreModule\Models\VersionManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
@@ -26,22 +26,22 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for version manager
  */
-class VersionManagerTest extends CommandTestCase {
+final class VersionManagerTest extends CommandTestCase {
+
+	/**
+	 * Current version of the webapp
+	 */
+	private const CURRENT_VERSION = '2.1.0-alpha';
+
+	/**
+	 * Current stable version of the webapp
+	 */
+	private const STABLE_VERSION = '2.0.0';
 
 	/**
 	 * @var DevNullStorage Cache storage for testing
 	 */
 	private $cacheStorage;
-
-	/**
-	 * @var string Current version of the webapp
-	 */
-	private $currentVersion = '2.1.0-alpha';
-
-	/**
-	 * @var string Current stable version of the webapp
-	 */
-	private $stableVersion = '2.0.0';
 
 	/**
 	 * @var Mock|VersionManager Version manager
@@ -53,9 +53,9 @@ class VersionManagerTest extends CommandTestCase {
 	 */
 	public function testAvailableWebappUpdateNo(): void {
 		$this->manager->shouldReceive('getInstalledWebapp')
-			->withArgs([false])->andReturn($this->currentVersion);
+			->withArgs([false])->andReturn(self::CURRENT_VERSION);
 		$this->manager->shouldReceive('getCurrentWebapp')
-			->withArgs([])->andReturn($this->currentVersion);
+			->withArgs([])->andReturn(self::CURRENT_VERSION);
 		Assert::false($this->manager->availableWebappUpdate());
 	}
 
@@ -64,9 +64,9 @@ class VersionManagerTest extends CommandTestCase {
 	 */
 	public function testAvailableWebappUpdateYes(): void {
 		$this->manager->shouldReceive('getInstalledWebapp')
-			->withArgs([false])->andReturn($this->stableVersion);
+			->withArgs([false])->andReturn(self::STABLE_VERSION);
 		$this->manager->shouldReceive('getCurrentWebapp')
-			->withArgs([])->andReturn($this->currentVersion);
+			->withArgs([])->andReturn(self::CURRENT_VERSION);
 		Assert::true($this->manager->availableWebappUpdate());
 	}
 
@@ -75,12 +75,12 @@ class VersionManagerTest extends CommandTestCase {
 	 */
 	public function testGetCurrentWebappStable(): void {
 		$responseMock = new MockHandler([
-			new Response(200, [], '{"version": "' . $this->currentVersion . '"}'),
+			new Response(200, [], '{"version": "' . self::STABLE_VERSION . '"}'),
 		]);
 		$handler = HandlerStack::create($responseMock);
 		$client = new Client(['handler' => $handler]);
 		$manager = new VersionManager($this->commandManager, $this->cacheStorage, $client);
-		Assert::same($this->currentVersion, $manager->getCurrentWebapp());
+		Assert::same(self::STABLE_VERSION, $manager->getCurrentWebapp());
 	}
 
 	/**
@@ -89,19 +89,19 @@ class VersionManagerTest extends CommandTestCase {
 	public function testGetCurrentWebappMaster(): void {
 		$responseMock = new MockHandler([
 			new Response(404),
-			new Response(200, [], '{"version": "' . $this->currentVersion . '"}'),
+			new Response(200, [], '{"version": "' . self::STABLE_VERSION . '"}'),
 		]);
 		$handler = HandlerStack::create($responseMock);
 		$client = new Client(['handler' => $handler]);
 		$manager = new VersionManager($this->commandManager, $this->cacheStorage, $client);
-		Assert::same($this->currentVersion, $manager->getCurrentWebapp());
+		Assert::same(self::STABLE_VERSION, $manager->getCurrentWebapp());
 	}
 
 	/**
 	 * Tests the function to get the installed webapp version
 	 */
 	public function testGetInstalledWebapp(): void {
-		Assert::same($this->currentVersion, $this->manager->getInstalledWebapp(false));
+		Assert::same(self::CURRENT_VERSION, $this->manager->getInstalledWebapp(false));
 	}
 
 	/**
@@ -110,7 +110,7 @@ class VersionManagerTest extends CommandTestCase {
 	public function testGetInstalledWebappGit(): void {
 		$this->receiveCommand('git rev-parse --is-inside-work-tree', null, 'true');
 		$this->receiveCommand('git rev-parse --verify HEAD', null, 'commit');
-		$expected = 'v' . $this->currentVersion . ' (commit)';
+		$expected = 'v' . self::CURRENT_VERSION . ' (commit)';
 		Assert::same($expected, $this->manager->getInstalledWebapp());
 	}
 
@@ -119,7 +119,7 @@ class VersionManagerTest extends CommandTestCase {
 	 */
 	public function testGetInstalledWebappFallback(): void {
 		$this->receiveCommand('git rev-parse --is-inside-work-tree', null, 'false');
-		$expected = 'v' . $this->currentVersion;
+		$expected = 'v' . self::CURRENT_VERSION;
 		Assert::same($expected, $this->manager->getInstalledWebapp());
 	}
 

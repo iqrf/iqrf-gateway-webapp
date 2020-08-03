@@ -3,7 +3,7 @@
 /**
  * TEST: App\ConfigModule\Models\SchedulerMigrationManager
  * @covers App\ConfigModule\Models\SchedulerMigrationManager
- * @phpVersion >= 7.0
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
@@ -34,17 +34,32 @@ require __DIR__ . '/../../bootstrap.php';
 /**
  * Tests for scheduler's configuration migration manager
  */
-class SchedulerMigrationManagerTest extends TestCase {
+final class SchedulerMigrationManagerTest extends TestCase {
 
 	/**
-	 * @var string Path to a directory with scheduler's configuration
+	 * Path to a directory with scheduler's configuration
 	 */
-	private $configPath = __DIR__ . '/../../data/scheduler/';
+	private const CONFIG_PATH = __DIR__ . '/../../data/scheduler/';
 
 	/**
-	 * @var string Path to a temporary directory with scheduler's configuration
+	 * Path to a temporary directory with scheduler's configuration
 	 */
-	private $configTempPath = __DIR__ . '/../../temp/migrations/scheduler/';
+	private const CONFIG_TEMP_PATH = __DIR__ . '/../../temp/migrations/scheduler/';
+
+	/**
+	 * IP archive content type
+	 */
+	private const CONTENT_TYPE = 'application/zip';
+
+	/**
+	 * Path to the ZIP archive with IQRF Gateway Daemon's configuration
+	 */
+	private const ZIP_PATH = __DIR__ . '/../../data/iqrf-gateway-scheduler.zip';
+
+	/**
+	 * Path to the temporary ZIP archive with IQRF Gateway Daemon's configuration
+	 */
+	private const ZIP_TEMP_PATH = __DIR__ . '/../../temp/iqrf-gateway-scheduler.zip';
 
 	/**
 	 * @var FileManager Text file manager
@@ -57,11 +72,6 @@ class SchedulerMigrationManagerTest extends TestCase {
 	private $manager;
 
 	/**
-	 * @var string Path to a temporary ZIP archive with IQRF Gateway Daemon's configuration
-	 */
-	private $tempPath = __DIR__ . '/../../temp/iqrf-gateway-scheduler.zip';
-
-	/**
 	 * Test function to download IQRF Gateway Daemon's configuration in a ZIP archive
 	 */
 	public function testDownload(): void {
@@ -72,10 +82,9 @@ class SchedulerMigrationManagerTest extends TestCase {
 		}
 		$actual = $this->manager->download();
 		$fileName = 'iqrf-gateway-scheduler' . $timestamp . '.zip';
-		$contentType = 'application/zip';
-		$expected = new FileResponse('/tmp/' . $fileName, $fileName, $contentType, true);
+		$expected = new FileResponse('/tmp/' . $fileName, $fileName, self::CONTENT_TYPE, true);
 		Assert::equal($expected, $actual);
-		$files = $this->createList($this->configPath);
+		$files = $this->createList(self::CONFIG_PATH);
 		$zipManager = new ZipArchiveManager('/tmp/' . $fileName, ZipArchive::CREATE);
 		foreach ($files as $file) {
 			$expected = $this->fileManager->read($file);
@@ -104,8 +113,8 @@ class SchedulerMigrationManagerTest extends TestCase {
 	 */
 	public function testUploadSuccess(): void {
 		$this->manager->upload($this->mockUploadedArchive());
-		$expected = $this->createList($this->configPath);
-		$actual = $this->createList($this->configTempPath);
+		$expected = $this->createList(self::CONFIG_PATH);
+		$actual = $this->createList(self::CONFIG_TEMP_PATH);
 		Assert::same($expected, $actual);
 	}
 
@@ -116,10 +125,10 @@ class SchedulerMigrationManagerTest extends TestCase {
 	private function mockUploadedArchive(): FileUpload {
 		$file = [
 			'name' => 'iqrf-gateway-scheduler.zip',
-			'type' => 'application/zip',
-			'tmp_name' => $this->tempPath,
+			'type' => self::CONTENT_TYPE,
+			'tmp_name' => self::ZIP_TEMP_PATH,
 			'error' => UPLOAD_ERR_OK,
-			'size' => filesize($this->tempPath),
+			'size' => filesize(self::ZIP_TEMP_PATH),
 		];
 		return new FileUpload($file);
 	}
@@ -132,11 +141,13 @@ class SchedulerMigrationManagerTest extends TestCase {
 		$this->copyFiles();
 		$commandStack = new CommandStack();
 		$commandManager = new CommandManager(false, $commandStack);
-		$this->fileManager = new FileManager($this->configPath, $commandManager);
+		$this->fileManager = new FileManager(self::CONFIG_PATH, $commandManager);
 		$mainConfigManager = Mockery::mock(MainManager::class);
-		$mainConfigManager->shouldReceive('getCacheDir')->andReturn($this->configTempPath . '/..');
+		$mainConfigManager->shouldReceive('getCacheDir')
+			->andReturn(self::CONFIG_TEMP_PATH . '/..');
 		$schemaManager = Mockery::mock(SchedulerSchemaManager::class);
-		$schemaManager->shouldReceive('validate')->andReturn(true);
+		$schemaManager->shouldReceive('validate')
+			->andReturn(true);
 		$commandManager = Mockery::mock(CommandManager::class);
 		$this->manager = new SchedulerMigrationManager($mainConfigManager, $schemaManager, $commandManager);
 	}
@@ -145,9 +156,8 @@ class SchedulerMigrationManagerTest extends TestCase {
 	 * Copy files for testing
 	 */
 	private function copyFiles(): void {
-		FileSystem::copy($this->configPath, $this->configTempPath);
-		$zipSource = __DIR__ . '/../../data/iqrf-gateway-scheduler.zip';
-		FileSystem::copy($zipSource, $this->tempPath);
+		FileSystem::copy(self::CONFIG_PATH, self::CONFIG_TEMP_PATH);
+		FileSystem::copy(self::ZIP_PATH, self::ZIP_TEMP_PATH);
 	}
 
 	/**

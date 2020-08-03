@@ -3,7 +3,7 @@
 /**
  * TEST: App\CloudModule\Models\InteliGlueManager
  * @covers App\CloudModule\Models\InteliGlueManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
@@ -23,12 +23,12 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for Inteliment InteliGlue manager
  */
-class InteliGlueManagerTest extends CloudIntegrationTestCase {
+final class InteliGlueManagerTest extends CloudIntegrationTestCase {
 
 	/**
-	 * @var array<string, string|int> Values from Inteliments InteliGlue form
+	 * Values from Inteliments InteliGlue form
 	 */
-	private $formValues = [
+	private const VALUES = [
 		'assignedPort' => 1234,
 		'clientId' => 'client1234',
 		'password' => 'pass1234',
@@ -68,7 +68,7 @@ class InteliGlueManagerTest extends CloudIntegrationTestCase {
 			'EnableServerCertAuth' => false,
 			'acceptAsyncMsg' => false,
 		];
-		$this->manager->createMqttInterface($this->formValues);
+		$this->manager->createMqttInterface(self::VALUES);
 		Assert::same($mqtt, $this->fileManager->read('iqrf__MqttMessaging_InteliGlue'));
 	}
 

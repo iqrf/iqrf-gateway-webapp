@@ -3,7 +3,7 @@
 /**
  * TEST: App\CoreModule\Models\FeatureManager
  * @covers App\CoreModule\Models\FeatureManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 
@@ -22,7 +22,7 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for optional feature manager
  */
-class FeatureManagerTest extends TestCase {
+final class FeatureManagerTest extends TestCase {
 
 	/**
 	 * Path to the temporary directory

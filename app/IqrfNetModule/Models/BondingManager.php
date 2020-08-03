@@ -140,7 +140,7 @@ class BondingManager {
 	 * @throws UserErrorException
 	 * @throws JsonException
 	 */
-	public function remove(int $address, bool $coordinatorOnly = false): array {
+	public function remove(int $address, bool $coordinatorOnly): array {
 		if ($coordinatorOnly) {
 			$array = [
 				'mType' => 'iqrfEmbedCoordinator_RemoveBond',
