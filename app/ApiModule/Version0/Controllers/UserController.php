@@ -79,7 +79,7 @@ class UserController extends BaseController {
 	 *      '401':
 	 *          description: Unauthorized
 	 *      '403':
-	 *          description: Forbidden (API key is used)
+	 *          description: Forbidden - API key is used
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
