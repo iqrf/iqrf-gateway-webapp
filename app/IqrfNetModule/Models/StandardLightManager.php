@@ -134,7 +134,7 @@ class StandardLightManager {
 		 * @var StandardLight $light Standard light
 		 */
 		foreach ($lights as $light) {
-			$request['data']['req']['param']['lights'][] = $light->toArray();
+			$request['data']['req']['param']['lights'][] = $light->jsonSerialize();
 		}
 	}
 

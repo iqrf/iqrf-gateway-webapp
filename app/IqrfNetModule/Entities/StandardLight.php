@@ -20,10 +20,12 @@ declare(strict_types = 1);
 
 namespace App\IqrfNetModule\Entities;
 
+use JsonSerializable;
+
 /**
  * IQRF Standard light
  */
-class StandardLight {
+class StandardLight implements JsonSerializable {
 
 	/**
 	 * @var int Index of the light
@@ -62,10 +64,10 @@ class StandardLight {
 	}
 
 	/**
-	 * Convert an object to an array
-	 * @return array<string, int> Properties in array
+	 * Serializes IQRF Standard light entity into JSON
+	 * @return array<string, int> JSON serialized data
 	 */
-	public function toArray(): array {
+	public function jsonSerialize(): array {
 		return [
 			'index' => $this->index,
 			'power' => $this->power,

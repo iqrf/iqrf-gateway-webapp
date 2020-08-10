@@ -3,7 +3,7 @@
 /**
  * TEST: App\GatewayModule\Models\NetworkManager
  * @covers App\GatewayModule\Models\NetworkManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
@@ -19,7 +19,7 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for Network manager
  */
-class NetworkManagerTest extends CommandTestCase {
+final class NetworkManagerTest extends CommandTestCase {
 
 	/**
 	 * @var NetworkManager Network manager with mocked command manager
@@ -27,9 +27,9 @@ class NetworkManagerTest extends CommandTestCase {
 	private $manager;
 
 	/**
-	 * @var array<string> Mocked commands
+	 * Executed commands
 	 */
-	private $commands = [
+	private const COMMANDS = [
 		'hostname' => 'hostname -f',
 		'ipAddressesEth0' => 'ip a s eth0 | grep inet | grep global | grep -v temporary | grep -v mngtmpaddr | awk \'{print $2}\'',
 		'ipAddressesWlan0' => 'ip a s wlan0 | grep inet | grep global | grep -v temporary | grep -v mngtmpaddr | awk \'{print $2}\'',
@@ -50,7 +50,7 @@ class NetworkManagerTest extends CommandTestCase {
 	 */
 	public function testGetHostname(): void {
 		$expected = 'gateway';
-		$this->receiveCommand($this->commands['hostname'], null, $expected);
+		$this->receiveCommand(self::COMMANDS['hostname'], null, $expected);
 		Assert::same($expected, $this->manager->getHostname());
 	}
 
@@ -58,10 +58,10 @@ class NetworkManagerTest extends CommandTestCase {
 	 * Tests the function to get information about network interfaces
 	 */
 	public function testGetInterfaces(): void {
-		$this->receiveCommand($this->commands['networkAdapters'], true, 'eth0' . PHP_EOL . 'lo');
-		$this->receiveCommand($this->commands['ipAddressesEth0'], true, '192.168.1.100' . PHP_EOL . 'fda9:d95:d5b1::64');
-		$this->receiveCommand($this->commands['networkAdapters'], true, 'eth0' . PHP_EOL . 'lo');
-		$this->receiveCommand($this->commands['macAddresses'], true, '01:02:03:04:05:06');
+		$this->receiveCommand(self::COMMANDS['networkAdapters'], true, 'eth0' . PHP_EOL . 'lo');
+		$this->receiveCommand(self::COMMANDS['ipAddressesEth0'], true, '192.168.1.100' . PHP_EOL . 'fda9:d95:d5b1::64');
+		$this->receiveCommand(self::COMMANDS['networkAdapters'], true, 'eth0' . PHP_EOL . 'lo');
+		$this->receiveCommand(self::COMMANDS['macAddresses'], true, '01:02:03:04:05:06');
 		$expected = [
 			[
 				'name' => 'eth0',
@@ -76,9 +76,9 @@ class NetworkManagerTest extends CommandTestCase {
 	 * Tests the function to get IPv4 and IPv6 addresses of the gateway
 	 */
 	public function testGetIpAddresses(): void {
-		$this->receiveCommand($this->commands['networkAdapters'], true, 'eth0' . PHP_EOL . 'wlan0' . PHP_EOL . 'lo');
-		$this->receiveCommand($this->commands['ipAddressesEth0'], true, '192.168.1.100' . PHP_EOL . 'fda9:d95:d5b1::64');
-		$this->receiveCommand($this->commands['ipAddressesWlan0'], true, '');
+		$this->receiveCommand(self::COMMANDS['networkAdapters'], true, 'eth0' . PHP_EOL . 'wlan0' . PHP_EOL . 'lo');
+		$this->receiveCommand(self::COMMANDS['ipAddressesEth0'], true, '192.168.1.100' . PHP_EOL . 'fda9:d95:d5b1::64');
+		$this->receiveCommand(self::COMMANDS['ipAddressesWlan0'], true);
 		$expected = ['eth0' => ['192.168.1.100', 'fda9:d95:d5b1::64']];
 		Assert::same($expected, $this->manager->getIpAddresses());
 	}
@@ -87,8 +87,8 @@ class NetworkManagerTest extends CommandTestCase {
 	 * Tests the function to get MAC addresses of the gateway
 	 */
 	public function testGetMacAddresses(): void {
-		$this->receiveCommand($this->commands['networkAdapters'], true, 'eth0' . PHP_EOL . 'lo');
-		$this->receiveCommand($this->commands['macAddresses'], true, '01:02:03:04:05:06');
+		$this->receiveCommand(self::COMMANDS['networkAdapters'], true, 'eth0' . PHP_EOL . 'lo');
+		$this->receiveCommand(self::COMMANDS['macAddresses'], true, '01:02:03:04:05:06');
 		$expected = ['eth0' => '01:02:03:04:05:06'];
 		Assert::same($expected, $this->manager->getMacAddresses());
 	}

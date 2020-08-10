@@ -2,7 +2,7 @@
 /**
  * TEST: App\GatewayModule\Models\UpdaterManager
  * @covers App\GatewayModule\Models\UpdaterManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 
@@ -22,7 +22,7 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for tool for updating packages of IQRF Gateways
  */
-class UpdaterManagetTest extends CommandTestCase {
+final class UpdaterManagetTest extends CommandTestCase {
 
 	/**
 	 * @var UpdaterManager Tool for updating IQRF Gateway

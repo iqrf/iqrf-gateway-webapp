@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Models;
 
-use DateTime;
+use Nette\Utils\DateTime;
 use Nette\Utils\Strings;
 use stdClass;
 use Throwable;
@@ -90,9 +90,9 @@ class TaskTimeManager {
 		}
 		if ($timeSpec->periodic) {
 			$period = $timeSpec->period;
-			if ($period < 60) {
+			if ($period < DateTime::MINUTE) {
 				$format = 'every %s seconds';
-			} elseif ($period < 3600) {
+			} elseif ($period < DateTime::HOUR) {
 				$format = 'every %i:%S minutes';
 			} else {
 				$format = 'every %h:%I:%S hours';

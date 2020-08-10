@@ -95,7 +95,7 @@ class TrUploadFormFactory {
 	private function getFileFormats(): array {
 		$formats = UploadFormats::getAvailableValues();
 		$array = [];
-		foreach ($formats as $id => $format) {
+		foreach ($formats as $format) {
 			$formatStr = (string) $format->toScalar();
 			$array[$formatStr] = 'fileFormats.' . $formatStr;
 		}

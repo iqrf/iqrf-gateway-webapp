@@ -116,7 +116,7 @@ class StandardBinaryOutputManager {
 		 * @var StandardBinaryOutput $output Standard binary output
 		 */
 		foreach ($outputs as $output) {
-			$array['data']['req']['param']['binOuts'][] = $output->toArray();
+			$array['data']['req']['param']['binOuts'][] = $output->jsonSerialize();
 		}
 		$this->request->set($array);
 		return $this->wsClient->sendSync($this->request);

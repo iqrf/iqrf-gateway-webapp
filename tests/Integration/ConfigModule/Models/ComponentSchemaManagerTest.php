@@ -3,7 +3,7 @@
 /**
  * TEST: App\ConfigModule\Models\ComponentSchemaManager
  * @covers App\ConfigModule\Models\ComponentSchemaManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
@@ -24,7 +24,7 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for component JSON file manager
  */
-class ComponentSchemaManagerTest extends TestCase {
+final class ComponentSchemaManagerTest extends TestCase {
 
 	/**
 	 * MQTT component name

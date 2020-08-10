@@ -3,7 +3,7 @@
 /**
  * TEST: App\ServiceModule\Models\UnknownManager
  * @covers App\ServiceModule\Models\UnknownManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
@@ -20,7 +20,7 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for service manager
  */
-class UnknownManagerTest extends TestCase {
+final class UnknownManagerTest extends TestCase {
 
 	/**
 	 * @var UnknownManager Service manager for unknown init daemon

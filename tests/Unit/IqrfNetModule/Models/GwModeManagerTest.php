@@ -3,7 +3,7 @@
 /**
  * TEST: App\IqrfNetModule\Models\GwModeManager
  * @covers App\IqrfNetModule\Models\GwModeManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
@@ -20,7 +20,12 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for IQRF Gateway Daemon's mode manager
  */
-class GwModeManagerTest extends WebSocketTestCase {
+final class GwModeManagerTest extends WebSocketTestCase {
+
+	/**
+	 * IQRF Gateway Daemon's operational modes
+	 */
+	private const MODES = ['forwarding', 'operational', 'service'];
 
 	/**
 	 * @var GwModeManager IQRF Gateway Daemon's mode manager
@@ -56,8 +61,7 @@ class GwModeManagerTest extends WebSocketTestCase {
 	 * Tests the function to set IQRF Gateway Daemon's mode (valid mode)
 	 */
 	public function testSetValid(): void {
-		$modes = ['forwarding', 'operational', 'service'];
-		foreach ($modes as $mode) {
+		foreach (self::MODES as $mode) {
 			$request = [
 				'mType' => 'mngDaemon_Mode',
 				'data' => [

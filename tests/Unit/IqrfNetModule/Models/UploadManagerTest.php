@@ -3,7 +3,7 @@
 /**
  * TEST: App\IqrfNetModule\Models\UploadManager
  * @covers App\IqrfNetModule\Models\UploadManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 
@@ -26,7 +26,7 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Test for IQRF TR upload manager
  */
-class UploadManagerTest extends WebSocketTestCase {
+final class UploadManagerTest extends WebSocketTestCase {
 
 	/**
 	 * Data dir path

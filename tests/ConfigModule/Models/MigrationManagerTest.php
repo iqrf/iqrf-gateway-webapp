@@ -3,7 +3,7 @@
 /**
  * TEST: App\ConfigModule\Models\MigrationManager
  * @covers App\ConfigModule\Models\MigrationManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
@@ -20,7 +20,6 @@ use App\CoreModule\Models\ZipArchiveManager;
 use App\ServiceModule\Models\ServiceManager;
 use DateTime;
 use Mockery;
-use Mockery\MockInterface;
 use Nette\Application\Responses\FileResponse;
 use Nette\Http\FileUpload;
 use Nette\Utils\FileSystem;
@@ -35,22 +34,42 @@ require __DIR__ . '/../../bootstrap.php';
 /**
  * Tests for IQRF interface manager
  */
-class MigrationManagerTest extends TestCase {
+final class MigrationManagerTest extends TestCase {
 
 	/**
-	 * @var CommandManager|MockInterface Mocker command manager
+	 * Path to a directory with IQRF Gateway Daemon's configuration
 	 */
-	private $commandManager;
+	private const CONFIG_PATH = __DIR__ . '/../../data/configuration/';
 
 	/**
-	 * @var string Path to a directory with IQRF Gateway Daemon's configuration
+	 * Path to a temporary directory with IQRF Gateway Daemon's configuration
 	 */
-	private $configPath = __DIR__ . '/../../data/configuration/';
+	private const CONFIG_TEMP_PATH = __DIR__ . '/../../temp/migrated-configuration/';
 
 	/**
-	 * @var string Path to a temporary directory with IQRF Gateway Daemon's configuration
+	 * Path to a directory with correct JSON schemas
 	 */
-	private $configTempPath = __DIR__ . '/../../temp/migrated-configuration/';
+	private const SCHEMA_PATH = __DIR__ . '/../../data/cfgSchemas/';
+
+	/**
+	 * Path to a directory with corrupted JSON schemas
+	 */
+	private const SCHEMA_CORRUPTED_PATH = __DIR__ . '/../../temp/cfgSchemas/';
+
+	/**
+	 * ZIP archive content type
+	 */
+	private const ZIP_CONTENT_TYPE = 'application/zip';
+
+	/**
+	 * Path to ZIP archive with IQRF Gateway Daemon's configuration
+	 */
+	private const ZIP_PATH  = __DIR__ . '/../../data/iqrf-gateway-configuration.zip';
+
+	/**
+	 * Path to a temporary ZIP archive with IQRF Gateway Daemon's configuration
+	 */
+	private const ZIP_TEMP_PATH = __DIR__ . '/../../temp/iqrf-gateway-configuration.zip';
 
 	/**
 	 * @var FileManager Text file manager
@@ -68,33 +87,17 @@ class MigrationManagerTest extends TestCase {
 	private $managerCorrupted;
 
 	/**
-	 * @var string Path to a directory with correct JSON schemas
-	 */
-	private $schemaPath = __DIR__ . '/../../data/cfgSchemas/';
-
-	/**
-	 * @var string Path to a directory with corrupted JSON schemas
-	 */
-	private $schemaCorruptedPath = __DIR__ . '/../../temp/cfgSchemas/';
-
-	/**
-	 * @var string Path to a temporary ZIP archive with IQRF Gateway Daemon's configuration
-	 */
-	private $tempPath = __DIR__ . '/../../temp/iqrf-gateway-configuration.zip';
-
-	/**
 	 * Test function to download IQRF Gateway Daemon's configuration in a ZIP archive
 	 */
 	public function testDownload(): void {
 		$timestamp = (new DateTime())->format('c');
 		$actual = $this->manager->download();
 		$fileName = 'iqrf-gateway-configuration_' . $timestamp . '.zip';
-		$contentType = 'application/zip';
 		$path = '/tmp/' . $fileName;
-		$expected = new FileResponse($path, $fileName, $contentType, true);
+		$expected = new FileResponse($path, $fileName, self::ZIP_CONTENT_TYPE, true);
 		Assert::equal($expected, $actual);
-		Assert::equal('application/zip', $actual->getContentType());
-		$files = $this->createList($this->configPath);
+		Assert::equal(self::ZIP_CONTENT_TYPE, $actual->getContentType());
+		$files = $this->createList(self::CONFIG_PATH);
 		$zipManager = new ZipArchiveManager($path, ZipArchive::CREATE);
 		foreach ($files as $file) {
 			$expected = $this->fileManager->read($file);
@@ -122,7 +125,7 @@ class MigrationManagerTest extends TestCase {
 	 * Test function to upload IQRF Gateway Daemon's configuration (incorrect MIME type)
 	 */
 	public function testUploadBadMime(): void {
-		$filePath = $this->configTempPath . '/config.json';
+		$filePath = self::CONFIG_TEMP_PATH . '/config.json';
 		$file = [
 			'name' => 'config.json',
 			'type' => 'application/json',
@@ -141,8 +144,8 @@ class MigrationManagerTest extends TestCase {
 	 */
 	public function testUploadSuccess(): void {
 		$this->manager->upload($this->mockUploadedArchive());
-		$expected = $this->createList($this->configPath);
-		$actual = $this->createList($this->configTempPath);
+		$expected = $this->createList(self::CONFIG_PATH);
+		$actual = $this->createList(self::CONFIG_TEMP_PATH);
 		Assert::same($expected, $actual);
 	}
 
@@ -153,10 +156,10 @@ class MigrationManagerTest extends TestCase {
 	private function mockUploadedArchive(): FileUpload {
 		$file = [
 			'name' => 'iqrf-gateway-configuration.zip',
-			'type' => 'application/zip',
-			'tmp_name' => $this->tempPath,
+			'type' => self::ZIP_CONTENT_TYPE,
+			'tmp_name' => self::ZIP_TEMP_PATH,
 			'error' => UPLOAD_ERR_OK,
-			'size' => filesize($this->tempPath),
+			'size' => filesize(self::ZIP_TEMP_PATH),
 		];
 		return new FileUpload($file);
 	}
@@ -165,9 +168,8 @@ class MigrationManagerTest extends TestCase {
 	 * Test function to validate IQRF Gateway Daemon's configuration (missing JSON schema)
 	 */
 	public function testValidateMissingJsonSchema(): void {
-		FileSystem::delete($this->schemaCorruptedPath . 'schema__iqrf__MqttMessaging.json');
-		$path = __DIR__ . '/../data/iqrf-gateway-configuration.zip';
-		$zipManager = new ZipArchiveManager($path, ZipArchive::CREATE);
+		FileSystem::delete(self::SCHEMA_CORRUPTED_PATH . 'schema__iqrf__MqttMessaging.json');
+		$zipManager = new ZipArchiveManager(self::ZIP_PATH, ZipArchive::CREATE);
 		Assert::true($this->managerCorrupted->validate($zipManager));
 		$zipManager->close();
 	}
@@ -176,8 +178,7 @@ class MigrationManagerTest extends TestCase {
 	 * Test function to validate IQRF Gateway Daemon's configuration (success)
 	 */
 	public function testValidateSuccess(): void {
-		$path = __DIR__ . '/../data/iqrf-gateway-configuration.zip';
-		$zipManager = new ZipArchiveManager($path, ZipArchive::CREATE);
+		$zipManager = new ZipArchiveManager(self::ZIP_PATH, ZipArchive::CREATE);
 		Assert::true($this->manager->validate($zipManager));
 		$zipManager->close();
 	}
@@ -190,25 +191,24 @@ class MigrationManagerTest extends TestCase {
 		$this->copyFiles();
 		$commandStack = new CommandStack();
 		$commandManager = new CommandManager(false, $commandStack);
-		$this->fileManager = new FileManager($this->configPath, $commandManager);
-		$schemaManager = new ComponentSchemaManager($this->schemaPath, $commandManager);
-		$schemaManagerCorrupted = new ComponentSchemaManager($this->schemaCorruptedPath, $commandManager);
+		$this->fileManager = new FileManager(self::CONFIG_PATH, $commandManager);
+		$schemaManager = new ComponentSchemaManager(self::SCHEMA_PATH, $commandManager);
+		$schemaManagerCorrupted = new ComponentSchemaManager(self::SCHEMA_CORRUPTED_PATH, $commandManager);
 		$commandStack = new CommandStack();
-		$this->commandManager = Mockery::mock(CommandManager::class, [false, $commandStack])->makePartial();
+		$commandManagerMock = Mockery::mock(CommandManager::class, [false, $commandStack])->makePartial();
 		$serviceManager = Mockery::mock(ServiceManager::class);
 		$serviceManager->shouldReceive('restart');
-		$this->manager = new MigrationManager($this->configTempPath, $this->commandManager, $schemaManager, $serviceManager);
-		$this->managerCorrupted = new MigrationManager($this->configTempPath, $this->commandManager, $schemaManagerCorrupted, $serviceManager);
+		$this->manager = new MigrationManager(self::CONFIG_TEMP_PATH, $commandManagerMock, $schemaManager, $serviceManager);
+		$this->managerCorrupted = new MigrationManager(self::CONFIG_TEMP_PATH, $commandManagerMock, $schemaManagerCorrupted, $serviceManager);
 	}
 
 	/**
 	 * Copy files for testing
 	 */
 	private function copyFiles(): void {
-		FileSystem::copy($this->schemaPath, $this->schemaCorruptedPath);
-		FileSystem::copy($this->configPath, $this->configTempPath);
-		$zipSource = __DIR__ . '/../../data/iqrf-gateway-configuration.zip';
-		FileSystem::copy($zipSource, $this->tempPath);
+		FileSystem::copy(self::SCHEMA_PATH, self::SCHEMA_CORRUPTED_PATH);
+		FileSystem::copy(self::CONFIG_PATH, self::CONFIG_TEMP_PATH);
+		FileSystem::copy(self::ZIP_PATH, self::ZIP_TEMP_PATH);
 	}
 
 	/**

@@ -55,6 +55,8 @@ abstract class CommandTestCase extends TestCase {
 	 * @param string $command Command
 	 * @param bool $needSudo Is sudo needed?
 	 * @param string $stdout Command's standard output
+	 * @param string $stderr Command's standard error output
+	 * @param int $exitCode Command's exit code
 	 */
 	protected function receiveCommand(string $command, ?bool $needSudo = null, string $stdout = '', string $stderr = '', int $exitCode = 0): void {
 		$process = $this->commandManager->shouldReceive('run');

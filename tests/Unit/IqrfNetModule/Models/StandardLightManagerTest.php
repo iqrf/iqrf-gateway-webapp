@@ -2,7 +2,7 @@
 /**
  * TEST: App\IqrfNetModule\Models\StandardLightManager
  * @covers App\IqrfNetModule\Models\StandardLightManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 
@@ -19,12 +19,12 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Test for IQRF Standard light manager
  */
-class StandardLightManagerTest extends WebSocketTestCase {
+final class StandardLightManagerTest extends WebSocketTestCase {
 
 	/**
-	 * @var int IQRF Standard light network device address
+	 * IQRF Standard light network device address
 	 */
-	private $address = 3;
+	private const ADDRESS = 3;
 
 	/**
 	 * @var StandardLightManager IQRF Standard light manager
@@ -47,14 +47,14 @@ class StandardLightManagerTest extends WebSocketTestCase {
 			'mType' => 'iqrfLight_Enumerate',
 			'data' => [
 				'req' => [
-					'nAdr' => $this->address,
+					'nAdr' => self::ADDRESS,
 					'param' => (object) [],
 				],
 				'returnVerbose' => true,
 			],
 		];
 		$this->assertRequest($request, function (): void {
-			$this->manager->enumerate($this->address);
+			$this->manager->enumerate(self::ADDRESS);
 		});
 	}
 
@@ -66,7 +66,7 @@ class StandardLightManagerTest extends WebSocketTestCase {
 			'mType' => 'iqrfLight_SetPower',
 			'data' => [
 				'req' => [
-					'nAdr' => $this->address,
+					'nAdr' => self::ADDRESS,
 					'param' => [
 						'lights' => [
 							[
@@ -81,7 +81,7 @@ class StandardLightManagerTest extends WebSocketTestCase {
 		];
 		$this->assertRequest($request, function (): void {
 			$light = new StandardLight(0, 50);
-			$this->manager->setPower($this->address, [$light]);
+			$this->manager->setPower(self::ADDRESS, [$light]);
 		});
 	}
 
@@ -93,7 +93,7 @@ class StandardLightManagerTest extends WebSocketTestCase {
 			'mType' => 'iqrfLight_SetPower',
 			'data' => [
 				'req' => [
-					'nAdr' => $this->address,
+					'nAdr' => self::ADDRESS,
 					'param' => [
 						'lights' => [
 							[
@@ -108,7 +108,7 @@ class StandardLightManagerTest extends WebSocketTestCase {
 		];
 		$this->assertRequest($request, function (): void {
 			$light = new StandardLight(0, 50);
-			$this->manager->getPower($this->address, [$light]);
+			$this->manager->getPower(self::ADDRESS, [$light]);
 		});
 	}
 
@@ -120,7 +120,7 @@ class StandardLightManagerTest extends WebSocketTestCase {
 			'mType' => 'iqrfLight_IncrementPower',
 			'data' => [
 				'req' => [
-					'nAdr' => $this->address,
+					'nAdr' => self::ADDRESS,
 					'param' => [
 						'lights' => [
 							[
@@ -135,7 +135,7 @@ class StandardLightManagerTest extends WebSocketTestCase {
 		];
 		$this->assertRequest($request, function (): void {
 			$light = new StandardLight(0, 50);
-			$this->manager->incrementPower($this->address, [$light]);
+			$this->manager->incrementPower(self::ADDRESS, [$light]);
 		});
 	}
 
@@ -147,7 +147,7 @@ class StandardLightManagerTest extends WebSocketTestCase {
 			'mType' => 'iqrfLight_DecrementPower',
 			'data' => [
 				'req' => [
-					'nAdr' => $this->address,
+					'nAdr' => self::ADDRESS,
 					'param' => [
 						'lights' => [
 							[
@@ -162,7 +162,7 @@ class StandardLightManagerTest extends WebSocketTestCase {
 		];
 		$this->assertRequest($request, function (): void {
 			$light = new StandardLight(0, 50);
-			$this->manager->decrementPower($this->address, [$light]);
+			$this->manager->decrementPower(self::ADDRESS, [$light]);
 		});
 	}
 

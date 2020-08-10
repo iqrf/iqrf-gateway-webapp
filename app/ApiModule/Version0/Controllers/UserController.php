@@ -35,6 +35,8 @@ use Nette\Security\Identity;
 use Nette\Security\User;
 use Nette\Utils\JsonException;
 use Throwable;
+use function assert;
+use function gethostname;
 
 /**
  * User manager API controller
@@ -83,8 +85,8 @@ class UserController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
-		/** @var Identity $identity */
 		$identity = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
+		assert($identity instanceof Identity);
 		$data = $identity->getData();
 		return $response->writeJsonBody([
 			'id' => $identity->getId(),
@@ -127,17 +129,19 @@ class UserController extends BaseController {
 		try {
 			$credentials = $request->getJsonBody();
 		} catch (JsonException $e) {
-			return $response->withStatus(400, 'Invalid JSON syntax');
+			return $response->withStatus(ApiResponse::S400_BAD_REQUEST, 'Invalid JSON syntax');
 		}
 		try {
 			$this->user->login($credentials['username'], $credentials['password']);
 		} catch (AuthenticationException $e) {
-			return $response->withStatus(400);
+			return $response->withStatus(ApiResponse::S400_BAD_REQUEST, 'Invalid credentials');
 		}
 		try {
 			$now = new DateTimeImmutable();
+			$us = $now->format('u');
+			$now = $now->modify('-' . $us . ' usec');
 		} catch (Throwable $e) {
-			return $response->withStatus(500);
+			return $response->withStatus(ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
 		$hostname = gethostname();
 		$builder = $this->configuration->createBuilder()

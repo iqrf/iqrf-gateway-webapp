@@ -2,7 +2,7 @@
 /**
  * TEST: App\GatewayModule\Models\VersionManager
  * @covers App\GatewayModule\Models\VersionManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 
@@ -25,7 +25,7 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for version manager
  */
-class VersionManagerTest extends WebSocketTestCase {
+final class VersionManagerTest extends WebSocketTestCase {
 
 	/**
 	 * @var CommandManager|MockInterface Mocked command manager

@@ -3,7 +3,7 @@
 /**
  * TEST: App\CloudModule\Models\IbmCloudManager
  * @covers App\CloudModule\Models\IbmCloudManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
@@ -23,12 +23,12 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for IBM Cloud manager
  */
-class IbmCloudManagerTest extends CloudIntegrationTestCase {
+final class IbmCloudManagerTest extends CloudIntegrationTestCase {
 
 	/**
-	 * @var array<string> Values from IBM Cloud form
+	 * Values from IBM Cloud form
 	 */
-	private $formValues = [
+	private const VALUES = [
 		'deviceId' => 'gw00',
 		'deviceType' => 'gateway',
 		'eventId' => 'event1234',
@@ -69,7 +69,7 @@ class IbmCloudManagerTest extends CloudIntegrationTestCase {
 			'EnableServerCertAuth' => false,
 			'acceptAsyncMsg' => false,
 		];
-		$this->manager->createMqttInterface($this->formValues);
+		$this->manager->createMqttInterface(self::VALUES);
 		Assert::same($mqtt, $this->fileManager->read('iqrf__MqttMessaging_IbmCloud'));
 	}
 

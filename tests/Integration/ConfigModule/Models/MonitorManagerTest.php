@@ -3,7 +3,7 @@
 /**
  * TEST: App\ConfigModule\Models\MonitorManager
  * @covers App\ConfigModule\Models\MonitorManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
@@ -21,22 +21,31 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests fot Daemon's monitor service manager
  */
-class MonitorManagerTest extends JsonConfigTestCase {
+final class MonitorManagerTest extends JsonConfigTestCase {
 
 	/**
-	 * @var array<string,string> Service file names
+	 * Service file names
 	 */
-	private $fileNames = [
+	private const FILE_NAMES = [
 		'monitor' => 'iqrf__MonitorService',
 		'webSocket' => 'shape__WebsocketCppService_Monitor',
 	];
 
 	/**
-	 * @var array<string,string> Service instances
+	 * Service instances
 	 */
-	private $instances = [
+	private const INSTANCES = [
 		'monitor' => 'iqrf::MonitorService',
 		'webSocket' => 'WebsocketCppService_Monitor',
+	];
+
+	/**
+	 * Values from the configuration form
+	 */
+	private const VALUES = [
+		'reportPeriod' => 15,
+		'port' => 1339,
+		'acceptOnlyLocalhost' => true,
 	];
 
 	/**
@@ -50,19 +59,10 @@ class MonitorManagerTest extends JsonConfigTestCase {
 	private $managerTemp;
 
 	/**
-	 * @var array<string, bool|int> Values from the configuration form
-	 */
-	private $values = [
-		'reportPeriod' => 15,
-		'port' => 1339,
-		'acceptOnlyLocalhost' => true,
-	];
-
-	/**
 	 * Copies a configuration
 	 */
 	private function copyConfiguration(): void {
-		foreach ($this->fileNames as $fileName) {
+		foreach (self::FILE_NAMES as $fileName) {
 			$json = $this->fileManager->read($fileName);
 			$this->fileManagerTemp->write($fileName, $json);
 		}
@@ -85,11 +85,11 @@ class MonitorManagerTest extends JsonConfigTestCase {
 	public function testDelete(): void {
 		Environment::lock('config_monitor', __DIR__ . '/../../../temp/');
 		$this->copyConfiguration();
-		Assert::true($this->fileManagerTemp->exists($this->fileNames['monitor']));
-		Assert::true($this->fileManagerTemp->exists($this->fileNames['webSocket']));
+		Assert::true($this->fileManagerTemp->exists(self::FILE_NAMES['monitor']));
+		Assert::true($this->fileManagerTemp->exists(self::FILE_NAMES['webSocket']));
 		$this->managerTemp->delete(0);
-		Assert::false($this->fileManagerTemp->exists($this->fileNames['monitor']));
-		Assert::false($this->fileManagerTemp->exists($this->fileNames['webSocket']));
+		Assert::false($this->fileManagerTemp->exists(self::FILE_NAMES['monitor']));
+		Assert::false($this->fileManagerTemp->exists(self::FILE_NAMES['webSocket']));
 	}
 
 	/**
@@ -114,9 +114,9 @@ class MonitorManagerTest extends JsonConfigTestCase {
 	 */
 	public function testLoad(): void {
 		$expected = [
-			'monitorInstance' => $this->instances['monitor'],
+			'monitorInstance' => self::INSTANCES['monitor'],
 			'reportPeriod' => 10,
-			'webSocketInstance' => $this->instances['webSocket'],
+			'webSocketInstance' => self::INSTANCES['webSocket'],
 			'port' => 1438,
 			'acceptOnlyLocalhost' => false,
 		];
@@ -127,14 +127,14 @@ class MonitorManagerTest extends JsonConfigTestCase {
 		Environment::lock('config_monitor', __DIR__ . '/../../../temp/');
 		$this->copyConfiguration();
 		$this->managerTemp->load(0);
-		$this->managerTemp->save($this->values);
+		$this->managerTemp->save(self::VALUES);
 		$expectedWebSocket = [
 			'component' => 'shape::WebsocketCppService',
 			'instance' => 'WebsocketCppService_Monitor',
 			'WebsocketPort' => 1339,
 			'acceptOnlyLocalhost' => true,
 		];
-		Assert::same($expectedWebSocket, $this->fileManagerTemp->read($this->fileNames['webSocket']));
+		Assert::same($expectedWebSocket, $this->fileManagerTemp->read(self::FILE_NAMES['webSocket']));
 		$expectedMonitor = [
 			'component' => 'iqrf::MonitorService',
 			'instance' => 'iqrf::MonitorService',
@@ -146,7 +146,7 @@ class MonitorManagerTest extends JsonConfigTestCase {
 				],
 			],
 		];
-		Assert::same($expectedMonitor, $this->fileManagerTemp->read($this->fileNames['monitor']));
+		Assert::same($expectedMonitor, $this->fileManagerTemp->read(self::FILE_NAMES['monitor']));
 	}
 
 }

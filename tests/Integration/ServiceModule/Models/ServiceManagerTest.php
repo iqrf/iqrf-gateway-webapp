@@ -3,7 +3,7 @@
 /**
  * TEST: App\ServiceModule\Models\ServiceManager
  * @covers App\ServiceModule\Models\ServiceManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
@@ -20,7 +20,7 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for service manager
  */
-class ServiceManagerTest extends CommandTestCase {
+final class ServiceManagerTest extends CommandTestCase {
 
 	/**
 	 * @var ServiceManager Service manager for systemD init daemon
@@ -33,17 +33,17 @@ class ServiceManagerTest extends CommandTestCase {
 	private $managerUnknown;
 
 	/**
-	 * @var string Name of service
+	 * Name of service
 	 */
-	private $serviceName = 'iqrf-gateway-daemon';
+	private const SERVICE_NAME = 'iqrf-gateway-daemon';
 
 	/**
 	 * Tests the function to disable the service via systemD
 	 */
 	public function testDisableSystemD(): void {
 		$commands = [
-			'systemctl disable ' . $this->serviceName . '.service',
-			'systemctl stop ' . $this->serviceName . '.service',
+			'systemctl disable ' . self::SERVICE_NAME . '.service',
+			'systemctl stop ' . self::SERVICE_NAME . '.service',
 		];
 		foreach ($commands as $command) {
 			$this->receiveCommand($command, true);
@@ -67,8 +67,8 @@ class ServiceManagerTest extends CommandTestCase {
 	 */
 	public function testEnableSystemD(): void {
 		$commands = [
-			'systemctl enable ' . $this->serviceName . '.service',
-			'systemctl start ' . $this->serviceName . '.service',
+			'systemctl enable ' . self::SERVICE_NAME . '.service',
+			'systemctl start ' . self::SERVICE_NAME . '.service',
 		];
 		foreach ($commands as $command) {
 			$this->receiveCommand($command, true);
@@ -91,7 +91,7 @@ class ServiceManagerTest extends CommandTestCase {
 	 * Tests the function to start the service via systemD
 	 */
 	public function testStartSystemD(): void {
-		$command = 'systemctl start ' . $this->serviceName . '.service';
+		$command = 'systemctl start ' . self::SERVICE_NAME . '.service';
 		$this->receiveCommand($command, true);
 		Assert::noError(function (): void {
 			$this->managerSystemD->start();
@@ -109,7 +109,7 @@ class ServiceManagerTest extends CommandTestCase {
 	 * Tests the function to stop the service via systemD
 	 */
 	public function testStopSystemD(): void {
-		$command = 'systemctl stop ' . $this->serviceName . '.service';
+		$command = 'systemctl stop ' . self::SERVICE_NAME . '.service';
 		$this->receiveCommand($command, true);
 		Assert::noError([$this->managerSystemD, 'stop']);
 	}
@@ -125,7 +125,7 @@ class ServiceManagerTest extends CommandTestCase {
 	 * Tests the function to restart the service via systemD
 	 */
 	public function testRestartSystemD(): void {
-		$command = 'systemctl restart ' . $this->serviceName . '.service';
+		$command = 'systemctl restart ' . self::SERVICE_NAME . '.service';
 		$this->receiveCommand($command, true);
 		Assert::noError([$this->managerSystemD, 'restart']);
 	}
@@ -142,7 +142,7 @@ class ServiceManagerTest extends CommandTestCase {
 	 */
 	public function testGetStatusSystemD(): void {
 		$expected = 'status';
-		$command = 'systemctl status ' . $this->serviceName . '.service';
+		$command = 'systemctl status ' . self::SERVICE_NAME . '.service';
 		$this->receiveCommand($command, true, $expected);
 		Assert::same($expected, $this->managerSystemD->getStatus());
 	}

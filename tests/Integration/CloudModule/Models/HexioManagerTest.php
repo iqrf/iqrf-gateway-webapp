@@ -3,7 +3,7 @@
 /**
  * TEST: App\CloudModule\Models\HexioManager
  * @covers App\CloudModule\Models\HexioManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
@@ -23,7 +23,7 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for TC Písek IoT platform manager
  */
-class HexioManagerTest extends CloudIntegrationTestCase {
+final class HexioManagerTest extends CloudIntegrationTestCase {
 
 	/**
 	 * @var HexioManager|MockInterface Hexio IoT platform manager
@@ -31,9 +31,9 @@ class HexioManagerTest extends CloudIntegrationTestCase {
 	private $manager;
 
 	/**
-	 * @var array<string,string> Values from the configuration form
+	 * Values from the configuration form
 	 */
-	private $values = [
+	private const VALUES = [
 		'broker' => 'connect.hexio.cloud',
 		'clientId' => 'IqrfDpaMessaging1',
 		'topicRequest' => 'Iqrf/DpaRequest',
@@ -70,7 +70,7 @@ class HexioManagerTest extends CloudIntegrationTestCase {
 			'EnableServerCertAuth' => false,
 			'acceptAsyncMsg' => false,
 		];
-		$this->manager->createMqttInterface($this->values);
+		$this->manager->createMqttInterface(self::VALUES);
 		Assert::same($mqtt, $this->fileManager->read('iqrf__MqttMessaging_Hexio'));
 	}
 

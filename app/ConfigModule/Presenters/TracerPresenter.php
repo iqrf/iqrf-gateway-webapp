@@ -39,6 +39,11 @@ class TracerPresenter extends GenericPresenter {
 	private const COMPONENT = 'shape::TraceFileService';
 
 	/**
+	 * Verbosity levels
+	 */
+	private const VERBOSITY_LEVELS = ['ERR', 'WAR', 'INF', 'DBG'];
+
+	/**
 	 * @var TraceFileFormFactory Daemon's tracer configuration form factory
 	 * @inject
 	 */
@@ -68,8 +73,7 @@ class TracerPresenter extends GenericPresenter {
 		$defaults = $this->manager->load($id);
 		foreach ($defaults['VerbosityLevels'] as &$verbosityLevel) {
 			$level = Strings::upper($verbosityLevel['level']);
-			$verbosityLevels = ['ERR', 'WAR', 'INF', 'DBG'];
-			if (in_array($level, $verbosityLevels, true)) {
+			if (in_array($level, self::VERBOSITY_LEVELS, true)) {
 				$verbosityLevel['level'] = $level;
 			} else {
 				unset($verbosityLevel['level']);

@@ -2,7 +2,7 @@
 /**
  * TEST: App\IqrfNetModule\Models\UploadManager
  * @covers App\IqrfNetModule\Models\UploadManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 
@@ -19,12 +19,12 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Test for IQRF TR Native upload manager
  */
-class NativeUploadManagerTest extends WebSocketTestCase {
+final class NativeUploadManagerTest extends WebSocketTestCase {
 
 	/**
-	 * @var string File name to
+	 * File name to upload
 	 */
-	private $fileName = 'DPA-Coordinator-SPI-7xD-V403-190612.iqrf';
+	private const FILE_NAME = 'DPA-Coordinator-SPI-7xD-V403-190612.iqrf';
 
 	/**
 	 * @var NativeUploadManager IQRF TR native upload manager
@@ -47,12 +47,12 @@ class NativeUploadManagerTest extends WebSocketTestCase {
 			'mType' => 'mngDaemon_Upload',
 			'data' => [
 				'req' => [
-					'fileName' => $this->fileName,
+					'fileName' => self::FILE_NAME,
 				],
 			],
 		];
 		$this->assertRequest($request, function (): void {
-			$this->manager->upload($this->fileName);
+			$this->manager->upload(self::FILE_NAME);
 		});
 	}
 
@@ -64,13 +64,13 @@ class NativeUploadManagerTest extends WebSocketTestCase {
 			'mType' => 'mngDaemon_Upload',
 			'data' => [
 				'req' => [
-					'fileName' => $this->fileName,
+					'fileName' => self::FILE_NAME,
 					'target' => 'iqrf',
 				],
 			],
 		];
 		$this->assertRequest($request, function (): void {
-			$this->manager->upload($this->fileName, UploadFormats::IQRF());
+			$this->manager->upload(self::FILE_NAME, UploadFormats::IQRF());
 		});
 	}
 

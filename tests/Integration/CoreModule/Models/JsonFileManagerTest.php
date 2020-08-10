@@ -3,7 +3,7 @@
 /**
  * TEST: App\CoreModule\Models\JsonFileManager
  * @covers App\CoreModule\Models\JsonFileManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
@@ -23,12 +23,22 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for JSON file manager
  */
-class JsonFileManagerTest extends TestCase {
+final class JsonFileManagerTest extends TestCase {
 
 	/**
-	 * @var string File name
+	 * Directory with configuration files
 	 */
-	private $fileName = 'config';
+	private const CONFIG_PATH = __DIR__ . '/../../../data/configuration/';
+
+	/**
+	 * Directory with temporary configuration files
+	 */
+	private const CONFIG_TEMP_PATH = __DIR__ . '/../../../temp/configuration/';
+
+	/**
+	 * File name
+	 */
+	private const FILE_NAME = 'config';
 
 	/**
 	 * @var JsonFileManager JSON File manager
@@ -41,20 +51,10 @@ class JsonFileManagerTest extends TestCase {
 	private $managerTest;
 
 	/**
-	 * @var string Directory with configuration files
-	 */
-	private $path = __DIR__ . '/../../../data/configuration/';
-
-	/**
-	 * @var string Directory with configuration files
-	 */
-	private $pathTest = __DIR__ . '/../../../temp/configuration/';
-
-	/**
 	 * Tests the function to get a directory with files
 	 */
 	public function testGetDirectory(): void {
-		Assert::same($this->path, $this->manager->getDirectory());
+		Assert::same(self::CONFIG_PATH, $this->manager->getDirectory());
 	}
 
 	/**
@@ -62,7 +62,7 @@ class JsonFileManagerTest extends TestCase {
 	 */
 	public function testDelete(): void {
 		$fileName = 'test-delete';
-		$this->managerTest->write($fileName, $this->manager->read($this->fileName));
+		FileSystem::copy(self::CONFIG_PATH . self::FILE_NAME . '.json', self::CONFIG_TEMP_PATH . $fileName . '.json');
 		Assert::true($this->managerTest->exists($fileName));
 		$this->managerTest->delete($fileName);
 		Assert::false($this->managerTest->exists($fileName));
@@ -79,16 +79,16 @@ class JsonFileManagerTest extends TestCase {
 	 * Tests the function to check if the JSON file exists (the file is exist)
 	 */
 	public function testExistsSuccess(): void {
-		Assert::true($this->manager->exists($this->fileName));
+		Assert::true($this->manager->exists(self::FILE_NAME));
 	}
 
 	/**
 	 * Tests the function to read a JSON file
 	 */
 	public function testRead(): void {
-		$text = FileSystem::read($this->path . $this->fileName . '.json');
+		$text = FileSystem::read(self::CONFIG_PATH . self::FILE_NAME . '.json');
 		$expected = Json::decode($text, Json::FORCE_ARRAY);
-		Assert::equal($expected, $this->manager->read($this->fileName));
+		Assert::equal($expected, $this->manager->read(self::FILE_NAME));
 	}
 
 	/**
@@ -96,7 +96,7 @@ class JsonFileManagerTest extends TestCase {
 	 */
 	public function testWrite(): void {
 		$fileName = 'config-test';
-		$expected = $this->manager->read($this->fileName);
+		$expected = $this->manager->read(self::FILE_NAME);
 		$this->managerTest->write($fileName, $expected);
 		Assert::equal($expected, $this->managerTest->read($fileName));
 	}
@@ -107,8 +107,8 @@ class JsonFileManagerTest extends TestCase {
 	protected function setUp(): void {
 		$commandStack = new CommandStack();
 		$commandManager = new CommandManager(false, $commandStack);
-		$this->manager = new JsonFileManager($this->path, $commandManager);
-		$this->managerTest = new JsonFileManager($this->pathTest, $commandManager);
+		$this->manager = new JsonFileManager(self::CONFIG_PATH, $commandManager);
+		$this->managerTest = new JsonFileManager(self::CONFIG_TEMP_PATH, $commandManager);
 	}
 
 }

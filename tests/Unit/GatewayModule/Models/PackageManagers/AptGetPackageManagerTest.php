@@ -2,7 +2,7 @@
 /**
  * TEST: App\GatewayModule\Models\PackageManagers\AptGetPackageManager
  * @covers App\GatewayModule\Models\PackageManagers\AptGetPackageManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 
@@ -22,12 +22,12 @@ require __DIR__ . '/../../../../bootstrap.php';
 /**
  * Tests for tool for apt-get package manager
  */
-class AptGetPackageManagerTest extends CommandTestCase {
+final class AptGetPackageManagerTest extends CommandTestCase {
 
 	/**
-	 * @var array<string> Packages
+	 * Packages
 	 */
-	private $packages = ['iqrf-gateway-daemon', 'iqrf-gateway-webapp'];
+	private const PACKAGES = ['iqrf-gateway-daemon', 'iqrf-gateway-webapp'];
 
 	/**
 	 * @var AptGetPackageManager Tool for updating IQRF Gateway
@@ -62,7 +62,7 @@ class AptGetPackageManagerTest extends CommandTestCase {
 		$command = 'apt-get install -y iqrf-gateway-daemon iqrf-gateway-webapp';
 		$this->receiveAsyncCommand([$this, 'callback'], $command, true);
 		Assert::noError(function (): void {
-			$this->manager->install([$this, 'callback'], $this->packages);
+			$this->manager->install([$this, 'callback'], self::PACKAGES);
 		});
 	}
 
@@ -142,7 +142,7 @@ Conf node-lru-cache (5.1.1-4 Debian:unstable [all])';
 		$command = 'apt-get remove -y iqrf-gateway-daemon iqrf-gateway-webapp';
 		$this->receiveAsyncCommand([$this, 'callback'], $command, true);
 		Assert::noError(function (): void {
-			$this->manager->remove([$this, 'callback'], $this->packages);
+			$this->manager->remove([$this, 'callback'], self::PACKAGES);
 		});
 	}
 
@@ -153,7 +153,7 @@ Conf node-lru-cache (5.1.1-4 Debian:unstable [all])';
 		$command = 'apt-get purge -y iqrf-gateway-daemon iqrf-gateway-webapp';
 		$this->receiveAsyncCommand([$this, 'callback'], $command, true);
 		Assert::noError(function (): void {
-			$this->manager->purge([$this, 'callback'], $this->packages);
+			$this->manager->purge([$this, 'callback'], self::PACKAGES);
 		});
 	}
 

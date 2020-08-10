@@ -3,7 +3,7 @@
 /**
  * TEST: App\IqrfNetModule\Models\DpaRawManager
  * @covers App\IqrfNetModule\Models\DpaRawManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
@@ -24,7 +24,7 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for DPA Raw request and response manager
  */
-class DpaRawManagerTest extends WebSocketTestCase {
+final class DpaRawManagerTest extends WebSocketTestCase {
 
 	/**
 	 * @var DpaRawManager DPA Raw request and response manager

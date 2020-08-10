@@ -3,7 +3,7 @@
 /**
  * TEST: App\ConfigModule\Models\ComponentManager
  * @covers App\ConfigModule\Models\ComponentManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
@@ -21,12 +21,12 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for component configuration manager
  */
-class ComponentManagerTest extends JsonConfigTestCase {
+final class ComponentManagerTest extends JsonConfigTestCase {
 
 	/**
-	 * @var string File name (without .json)
+	 * File name (without .json)
 	 */
-	private $fileName = 'config';
+	private const FILE_NAME = 'config';
 
 	/**
 	 * @var ComponentManager Component configuration manager
@@ -43,8 +43,8 @@ class ComponentManagerTest extends JsonConfigTestCase {
 	 */
 	public function testAdd(): void {
 		Environment::lock('config_main', __DIR__ . '/../../../temp/');
-		$expected = $this->readFile($this->fileName);
-		$this->copyFile($this->fileName);
+		$expected = $this->readFile(self::FILE_NAME);
+		$this->copyFile(self::FILE_NAME);
 		$array = [
 			'name' => 'test::Test',
 			'libraryPath' => '',
@@ -54,7 +54,7 @@ class ComponentManagerTest extends JsonConfigTestCase {
 		];
 		$expected['components'][] = $array;
 		$this->managerTemp->add($array);
-		Assert::same($expected, $this->readTempFile($this->fileName));
+		Assert::same($expected, $this->readTempFile(self::FILE_NAME));
 	}
 
 	/**
@@ -62,12 +62,12 @@ class ComponentManagerTest extends JsonConfigTestCase {
 	 */
 	public function testDelete(): void {
 		Environment::lock('config_main', __DIR__ . '/../../../temp/');
-		$expected = $this->readFile($this->fileName);
-		$this->copyFile($this->fileName);
+		$expected = $this->readFile(self::FILE_NAME);
+		$this->copyFile(self::FILE_NAME);
 		unset($expected['components'][30]);
 		$expected['components'] = array_values($expected['components']);
 		$this->managerTemp->delete(30);
-		Assert::same($expected, $this->readTempFile($this->fileName));
+		Assert::same($expected, $this->readTempFile(self::FILE_NAME));
 	}
 
 	/**
@@ -82,7 +82,7 @@ class ComponentManagerTest extends JsonConfigTestCase {
 	 * Tests the function to load configuration of components
 	 */
 	public function testList(): void {
-		$components = $this->readFile($this->fileName)['components'];
+		$components = $this->readFile(self::FILE_NAME)['components'];
 		$expected = [];
 		foreach ($components as $id => $config) {
 			$expected[$id] = Arrays::mergeTree(['id' => $id], $config);
@@ -94,7 +94,7 @@ class ComponentManagerTest extends JsonConfigTestCase {
 	 * Tests the function to load configuration of components
 	 */
 	public function testLoad(): void {
-		$json = $this->readFile($this->fileName);
+		$json = $this->readFile(self::FILE_NAME);
 		$expected = $json['components'][0];
 		Assert::equal($expected, $this->manager->load(0));
 		Assert::equal([], $this->manager->load(100));
@@ -112,11 +112,11 @@ class ComponentManagerTest extends JsonConfigTestCase {
 			'enabled' => false,
 			'startlevel' => 1,
 		];
-		$expected = $this->readFile($this->fileName);
-		$this->copyFile($this->fileName);
+		$expected = $this->readFile(self::FILE_NAME);
+		$this->copyFile(self::FILE_NAME);
 		$expected['components'][6]['enabled'] = false;
 		$this->managerTemp->save($array, 6);
-		Assert::equal($expected, $this->fileManagerTemp->read($this->fileName));
+		Assert::equal($expected, $this->fileManagerTemp->read(self::FILE_NAME));
 	}
 
 	/**

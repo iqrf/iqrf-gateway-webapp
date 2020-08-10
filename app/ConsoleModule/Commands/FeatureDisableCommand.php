@@ -65,10 +65,11 @@ class FeatureDisableCommand extends FeatureCommand {
 			$style->error('Unknown feature ' . $e->getMessage() . '.');
 		}
 		if (count($names) === 1) {
-			$style->success(sprintf('Feature %s has been successfully disabled.', $names[0]));
+			$message = sprintf('Feature %s has been successfully disabled.', $names[0]);
 		} else {
-			$style->success(sprintf('Features %s have been successfully disabled.', implode(', ', $names)));
+			$message = sprintf('Features %s have been successfully disabled.', implode(', ', $names));
 		}
+		$style->success($message);
 		$this->getApplication()->find('nette:cache:purge')->execute($input, $output);
 		return 0;
 	}

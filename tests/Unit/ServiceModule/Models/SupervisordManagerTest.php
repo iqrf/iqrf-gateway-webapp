@@ -3,7 +3,7 @@
 /**
  * TEST: App\ServiceModule\Models\SupervisordManager
  * @covers App\ServiceModule\Models\SupervisordManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
@@ -20,7 +20,7 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for supervisord service manager in a Docker container
  */
-class SupervisordManagerTest extends CommandTestCase {
+final class SupervisordManagerTest extends CommandTestCase {
 
 	/**
 	 * @var SupervisordManager Service manager for supervisord init daemon in a Docker container
@@ -28,9 +28,9 @@ class SupervisordManagerTest extends CommandTestCase {
 	private $manager;
 
 	/**
-	 * @var string Name of service
+	 * Name of service
 	 */
-	private $serviceName = 'iqrf-gateway-daemon';
+	private const SERVICE_NAME = 'iqrf-gateway-daemon';
 
 	/**
 	 * Tests the function to disable IQRF Gateway Daemon's service via supervisord
@@ -64,7 +64,7 @@ class SupervisordManagerTest extends CommandTestCase {
 	 * Tests the function to start the service via supervisord
 	 */
 	public function testStart(): void {
-		$command = 'supervisorctl start ' . $this->serviceName;
+		$command = 'supervisorctl start ' . self::SERVICE_NAME;
 		$this->receiveCommand($command, true);
 		Assert::noError([$this->manager, 'start']);
 	}
@@ -73,7 +73,7 @@ class SupervisordManagerTest extends CommandTestCase {
 	 * Tests the function to stop the service via supervisord
 	 */
 	public function testStop(): void {
-		$command = 'supervisorctl stop ' . $this->serviceName;
+		$command = 'supervisorctl stop ' . self::SERVICE_NAME;
 		$this->receiveCommand($command, true);
 		Assert::noError([$this->manager, 'stop']);
 	}
@@ -82,7 +82,7 @@ class SupervisordManagerTest extends CommandTestCase {
 	 * Tests the function to restart the service via supervisord
 	 */
 	public function testRestart(): void {
-		$command = 'supervisorctl restart ' . $this->serviceName;
+		$command = 'supervisorctl restart ' . self::SERVICE_NAME;
 		$this->receiveCommand($command, true);
 		Assert::noError([$this->manager, 'restart']);
 	}
@@ -92,7 +92,7 @@ class SupervisordManagerTest extends CommandTestCase {
 	 */
 	public function testGetStatus(): void {
 		$expected = 'status';
-		$command = 'supervisorctl status ' . $this->serviceName;
+		$command = 'supervisorctl status ' . self::SERVICE_NAME;
 		$this->receiveCommand($command, true, $expected);
 		Assert::same($expected, $this->manager->getStatus());
 	}
@@ -102,7 +102,7 @@ class SupervisordManagerTest extends CommandTestCase {
 	 */
 	protected function setUp(): void {
 		parent::setUp();
-		$this->manager = new SupervisordManager($this->commandManager, $this->serviceName);
+		$this->manager = new SupervisordManager($this->commandManager, self::SERVICE_NAME);
 	}
 
 }

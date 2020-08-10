@@ -2,7 +2,7 @@
 /**
  * TEST: App\IqrfNetModule\Models\TrConfigManager
  * @covers App\IqrfNetModule\Models\TrConfigManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 
@@ -18,12 +18,12 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Test for IQMESH TrConfig manager
  */
-class TrConfigManagerTest extends WebSocketTestCase {
+final class TrConfigManagerTest extends WebSocketTestCase {
 
 	/**
-	 * @var int Network device address
+	 * Network device address
 	 */
-	private $address = 1;
+	private const ADDRESS = 1;
 
 	/**
 	 * @var TrConfigManager IQRF TR configuration manager
@@ -47,13 +47,13 @@ class TrConfigManagerTest extends WebSocketTestCase {
 			'data' => [
 				'repeat' => 2,
 				'req' => [
-					'deviceAddr' => $this->address,
+					'deviceAddr' => self::ADDRESS,
 				],
 				'returnVerbose' => true,
 			],
 		];
 		$this->assertRequest($request, function (): void {
-			$this->manager->read($this->address);
+			$this->manager->read(self::ADDRESS);
 		});
 	}
 
@@ -66,7 +66,7 @@ class TrConfigManagerTest extends WebSocketTestCase {
 			'data' => [
 				'repeat' => 2,
 				'req' => [
-					'deviceAddr' => $this->address,
+					'deviceAddr' => self::ADDRESS,
 					'rfChannelA' => 48,
 				],
 				'returnVerbose' => true,
@@ -74,7 +74,7 @@ class TrConfigManagerTest extends WebSocketTestCase {
 		];
 		$this->assertRequest($request, function (): void {
 			$configuration = ['rfChannelA' => 48];
-			$this->manager->write($this->address, $configuration);
+			$this->manager->write(self::ADDRESS, $configuration);
 		});
 	}
 

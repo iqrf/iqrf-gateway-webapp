@@ -3,7 +3,7 @@
 /**
  * TEST: App\IqrfNetModule\Models\MessageIdManager
  * @covers App\IqrfNetModule\Models\MessageIdManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
@@ -22,7 +22,7 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for message ID generator
  */
-class MessageIdManagerTest extends TestCase {
+final class MessageIdManagerTest extends TestCase {
 
 	/**
 	 * Tests the function to generate a message ID

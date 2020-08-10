@@ -3,7 +3,7 @@
 /**
  * TEST: App\IqrfNetModule\Entities\DeviceStatus
  * @covers App\IqrfNetModule\Entities\DeviceStatus
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
@@ -20,7 +20,7 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for device status entity
  */
-class DeviceStatusTest extends TestCase {
+final class DeviceStatusTest extends TestCase {
 
 	/**
 	 * @var DeviceStatus Device status entity
@@ -28,9 +28,9 @@ class DeviceStatusTest extends TestCase {
 	private $entity;
 
 	/**
-	 * @var array<int,string> Device status icons
+	 * Device status icons
 	 */
-	private $icons = [
+	private const ICONS = [
 		DeviceTypes::NONE => '<span class=\'glyphicon glyphicon-remove text-danger\'></span>',
 		DeviceTypes::COORDINATOR => '<span class=\'glyphicon glyphicon-home text-info\'></span>',
 		DeviceTypes::BONDED => '<span class=\'glyphicon glyphicon-ok text-primary\'></span>',
@@ -57,7 +57,7 @@ class DeviceStatusTest extends TestCase {
 	 * Tests the function to get device status icon
 	 */
 	public function testGetIcon(): void {
-		foreach ($this->icons as $type => $icon) {
+		foreach (self::ICONS as $type => $icon) {
 			$this->entity->setType($type);
 			Assert::same($icon, $this->entity->getIcon());
 		}

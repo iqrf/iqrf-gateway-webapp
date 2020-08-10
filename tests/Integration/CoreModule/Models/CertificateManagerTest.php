@@ -3,7 +3,7 @@
 /**
  * TEST: App\CoreModule\Models\CertificateManager
  * @covers App\CoreModule\Models\CertificateManager
- * @phpVersion >= 7.0
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
@@ -20,7 +20,7 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for certificate manager
  */
-class CertificateManagerTest extends TestCase {
+final class CertificateManagerTest extends TestCase {
 
 	/**
 	 * @var array<string> Certificates
@@ -38,21 +38,21 @@ class CertificateManagerTest extends TestCase {
 	private $manager;
 
 	/**
-	 * @var string Path to a directory with certificates and private keys
+	 * Path to a directory with certificates and private keys
 	 */
-	private $path = __DIR__ . '/../../../data/certificates/';
+	private const PATH = __DIR__ . '/../../../data/certificates/';
 
 	/**
 	 * Constructor
 	 */
 	public function __construct() {
-		$this->certificates['ca0'] = FileSystem::read($this->path . 'ca0.pem');
-		$this->certificates['ca1'] = FileSystem::read($this->path . 'ca1.pem');
-		$this->certificates['intermediate0'] = FileSystem::read($this->path . 'intermediate0.pem');
-		$this->certificates['0'] = FileSystem::read($this->path . 'cert0.pem');
-		$this->certificates['1'] = FileSystem::read($this->path . 'cert1.pem');
-		$this->keys['0'] = FileSystem::read($this->path . 'pkey0.key');
-		$this->keys['1'] = FileSystem::read($this->path . 'pkey1.key');
+		$this->certificates['ca0'] = FileSystem::read(self::PATH . 'ca0.pem');
+		$this->certificates['ca1'] = FileSystem::read(self::PATH . 'ca1.pem');
+		$this->certificates['intermediate0'] = FileSystem::read(self::PATH . 'intermediate0.pem');
+		$this->certificates['0'] = FileSystem::read(self::PATH . 'cert0.pem');
+		$this->certificates['1'] = FileSystem::read(self::PATH . 'cert1.pem');
+		$this->keys['0'] = FileSystem::read(self::PATH . 'pkey0.key');
+		$this->keys['1'] = FileSystem::read(self::PATH . 'pkey1.key');
 	}
 
 	/**

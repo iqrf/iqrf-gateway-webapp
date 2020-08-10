@@ -2,7 +2,7 @@
 /**
  * TEST: App\IqrfNetModule\Models\EnumerationManager
  * @covers App\IqrfNetModule\Models\EnumerationManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 
@@ -18,12 +18,12 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Test for IQMESH Enumeration manager
  */
-class EnumerationManagerTest extends WebSocketTestCase {
+final class EnumerationManagerTest extends WebSocketTestCase {
 
 	/**
-	 * @var int Network device address
+	 * Network device address
 	 */
-	private $address = 1;
+	private const ADDRESS = 1;
 
 	/**
 	 * @var EnumerationManager IQMESH Enumeration manager
@@ -47,14 +47,14 @@ class EnumerationManagerTest extends WebSocketTestCase {
 			'data' => [
 				'repeat' => 2,
 				'req' => [
-					'deviceAddr' => $this->address,
+					'deviceAddr' => self::ADDRESS,
 					'morePeripheralsInfo' => true,
 				],
 				'returnVerbose' => true,
 			],
 		];
 		$this->assertRequest($request, function (): void {
-			$this->manager->device($this->address);
+			$this->manager->device(self::ADDRESS);
 		});
 	}
 

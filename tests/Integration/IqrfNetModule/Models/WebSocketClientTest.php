@@ -3,7 +3,7 @@
 /**
  * TEST: App\IqrfNetModule\Models\WebSocketClient
  * @covers App\IqrfNetModule\Models\WebSocketClient
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
@@ -23,7 +23,7 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for WebSocket client
  */
-class WebSocketClientTest extends TestCase {
+final class WebSocketClientTest extends TestCase {
 
 	/**
 	 * @var WebSocketClient IQRF App manager
@@ -36,9 +36,9 @@ class WebSocketClientTest extends TestCase {
 	private $request;
 
 	/**
-	 * @var string URL to IQRF Gateway Daemon's WebSocket server
+	 * URL to IQRF Gateway Daemon's WebSocket server
 	 */
-	private $wsServer = 'wss://echo.websocket.org';
+	private const WS_SERVER = 'wss://echo.websocket.org';
 
 	/**
 	 * Tests the function to send a JSON DPA request via WebSocket (success)
@@ -79,7 +79,7 @@ class WebSocketClientTest extends TestCase {
 		$msgIdManager = Mockery::mock(MessageIdManager::class);
 		$msgIdManager->shouldReceive('generate')->andReturn('1');
 		$this->request = new ApiRequest($msgIdManager);
-		$this->client = new WebSocketClient($this->wsServer);
+		$this->client = new WebSocketClient(self::WS_SERVER);
 	}
 
 	/**

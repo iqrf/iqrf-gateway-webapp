@@ -3,7 +3,7 @@
 /**
  * TEST: App\GatewayModule\Models\InfoManager
  * @covers App\GatewayModule\Models\InfoManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
@@ -25,7 +25,7 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for Gateway info manager
  */
-class InfoManagerTest extends CommandTestCase {
+final class InfoManagerTest extends CommandTestCase {
 
 	/**
 	 * @var MockInterface|EnumerationManager Mocked IQMESH enumeration manager
@@ -48,9 +48,9 @@ class InfoManagerTest extends CommandTestCase {
 	private $versionManager;
 
 	/**
-	 * @var array<string, string> Mocked commands
+	 * Executed commands
 	 */
-	private $commands = [
+	private const COMMANDS = [
 		'deviceTreeName' => 'cat /proc/device-tree/model',
 		'dmiBoardName' => 'cat /sys/class/dmi/id/board_name',
 		'dmiBoardVendor' => 'cat /sys/class/dmi/id/board_vendor',
@@ -61,9 +61,9 @@ class InfoManagerTest extends CommandTestCase {
 	];
 
 	/**
-	 * @var array<string, array<int|string, array<string, array<int, string>|string>|string>|string|null> Expected outputs
+	 * Expected outputs
 	 */
-	private $expected = [
+	private const EXPECTED = [
 		'board' => 'MICRORISC s.r.o. IQD-GW-01',
 		'gwId' => '0242fc1e6f85b296',
 		'pixla' => null,
@@ -115,8 +115,8 @@ class InfoManagerTest extends CommandTestCase {
 	 */
 	public function testGetBoardGw(): void {
 		$output = '{"gwProduct":"IQD-GW-01","gwManufacturer":"MICRORISC s.r.o."}';
-		$this->receiveCommand($this->commands['gw'], true, $output);
-		Assert::same($this->expected['board'], $this->manager->getBoard());
+		$this->receiveCommand(self::COMMANDS['gw'], true, $output);
+		Assert::same(self::EXPECTED['board'], $this->manager->getBoard());
 	}
 
 	/**
@@ -124,8 +124,8 @@ class InfoManagerTest extends CommandTestCase {
 	 */
 	public function testGetBoardDeviceTree(): void {
 		$expected = 'Raspberry Pi 2 Models B Rev 1.1';
-		$this->receiveCommand($this->commands['gw'], true);
-		$this->receiveCommand($this->commands['deviceTreeName'], true, $expected);
+		$this->receiveCommand(self::COMMANDS['gw'], true);
+		$this->receiveCommand(self::COMMANDS['deviceTreeName'], true, $expected);
 		Assert::same($expected, $this->manager->getBoard());
 	}
 
@@ -133,11 +133,11 @@ class InfoManagerTest extends CommandTestCase {
 	 * Tests the function to get information about the board (via DMI)
 	 */
 	public function testGetBoardDmi(): void {
-		$this->receiveCommand($this->commands['gw'], true);
-		$this->receiveCommand($this->commands['deviceTreeName'], true);
-		$this->receiveCommand($this->commands['dmiBoardVendor'], true, 'AAEON');
-		$this->receiveCommand($this->commands['dmiBoardName'], true, 'UP-APL01');
-		$this->receiveCommand($this->commands['dmiBoardVersion'], true, 'V0.4');
+		$this->receiveCommand(self::COMMANDS['gw'], true);
+		$this->receiveCommand(self::COMMANDS['deviceTreeName'], true);
+		$this->receiveCommand(self::COMMANDS['dmiBoardVendor'], true, 'AAEON');
+		$this->receiveCommand(self::COMMANDS['dmiBoardName'], true, 'UP-APL01');
+		$this->receiveCommand(self::COMMANDS['dmiBoardVersion'], true, 'V0.4');
 		Assert::same('AAEON UP-APL01 (V0.4)', $this->manager->getBoard());
 	}
 
@@ -145,11 +145,11 @@ class InfoManagerTest extends CommandTestCase {
 	 * Tests the function to get information about the board (unknown method)
 	 */
 	public function testGetBoardUnknown(): void {
-		$this->receiveCommand($this->commands['gw'], true);
-		$this->receiveCommand($this->commands['deviceTreeName'], true);
-		$this->receiveCommand($this->commands['dmiBoardVendor'], true);
-		$this->receiveCommand($this->commands['dmiBoardName'], true);
-		$this->receiveCommand($this->commands['dmiBoardVersion'], true);
+		$this->receiveCommand(self::COMMANDS['gw'], true);
+		$this->receiveCommand(self::COMMANDS['deviceTreeName'], true);
+		$this->receiveCommand(self::COMMANDS['dmiBoardVendor'], true);
+		$this->receiveCommand(self::COMMANDS['dmiBoardName'], true);
+		$this->receiveCommand(self::COMMANDS['dmiBoardVersion'], true);
 		Assert::same('UNKNOWN', $this->manager->getBoard());
 	}
 
@@ -158,8 +158,8 @@ class InfoManagerTest extends CommandTestCase {
 	 */
 	public function testGetId(): void {
 		$output = '{"gwId":"0242fc1e6f85b296"}';
-		$this->receiveCommand($this->commands['gw'], true, $output);
-		Assert::same($this->expected['gwId'], $this->manager->getId());
+		$this->receiveCommand(self::COMMANDS['gw'], true, $output);
+		Assert::same(self::EXPECTED['gwId'], $this->manager->getId());
 	}
 
 	/**
@@ -178,7 +178,7 @@ class InfoManagerTest extends CommandTestCase {
 		$command = 'df -l -B1 -x tmpfs -x devtmpfs -T -P | awk \'{if (NR!=1) {$6="";print}}\'';
 		$output = '/dev/sda1 ext4 243735838720 205705183232 25625583616  /';
 		$this->receiveCommand($command, null, $output);
-		Assert::same($this->expected['diskUsages'], $this->manager->getDiskUsages());
+		Assert::same(self::EXPECTED['diskUsages'], $this->manager->getDiskUsages());
 	}
 
 	/**
@@ -188,7 +188,7 @@ class InfoManagerTest extends CommandTestCase {
 		$command = 'free -bw | awk \'{{if (NR==2) print $2,$3,$4,$5,$6,$7,$8}}\'';
 		$output = '8220397568 6708125696 256442368 361750528 115830784 1139998720 879230976';
 		$this->receiveCommand($command, null, $output);
-		Assert::same($this->expected['memoryUsage'], $this->manager->getMemoryUsage());
+		Assert::same(self::EXPECTED['memoryUsage'], $this->manager->getMemoryUsage());
 	}
 
 
@@ -199,7 +199,7 @@ class InfoManagerTest extends CommandTestCase {
 		$command = 'free -b | awk \'{{if (NR==3) print $2,$3,$4}}\'';
 		$output = '8291086336 2250952704 6040133632';
 		$this->receiveCommand($command, null, $output);
-		Assert::same($this->expected['swapUsage'], $this->manager->getSwapUsage());
+		Assert::same(self::EXPECTED['swapUsage'], $this->manager->getSwapUsage());
 	}
 
 
@@ -226,7 +226,7 @@ class InfoManagerTest extends CommandTestCase {
 	 * Tests the function to return PIXLA token (failure)
 	 */
 	public function testGetPixlaTokenFailure(): void {
-		$this->receiveCommand($this->commands['pixlaToken'], true, '');
+		$this->receiveCommand(self::COMMANDS['pixlaToken'], true);
 		Assert::null($this->manager->getPixlaToken());
 	}
 
@@ -235,7 +235,7 @@ class InfoManagerTest extends CommandTestCase {
 	 */
 	public function testGetPixlaTokenSuccess(): void {
 		$token = 'secretPixlaToken';
-		$this->receiveCommand($this->commands['pixlaToken'], true, $token);
+		$this->receiveCommand(self::COMMANDS['pixlaToken'], true, $token);
 		Assert::same($token, $this->manager->getPixlaToken());
 	}
 
@@ -246,32 +246,32 @@ class InfoManagerTest extends CommandTestCase {
 		$verbose = false;
 		$manager = Mockery::mock(InfoManager::class, [$this->commandManager, $this->enumerationManager, $this->networkManager, $this->versionManager])->makePartial();
 		$manager->shouldReceive('getBoard')
-			->andReturn($this->expected['board']);
+			->andReturn(self::EXPECTED['board']);
 		$manager->shouldReceive('getId')
-			->andReturn($this->expected['gwId']);
+			->andReturn(self::EXPECTED['gwId']);
 		$manager->shouldReceive('getPixlaToken')
-			->andReturn($this->expected['pixla']);
+			->andReturn(self::EXPECTED['pixla']);
 		$this->versionManager->shouldReceive('getController')
-			->andReturn($this->expected['versions']['controller']);
+			->andReturn(self::EXPECTED['versions']['controller']);
 		$this->versionManager->shouldReceive('getDaemon')
 			->withArgs([$verbose])
-			->andReturn($this->expected['versions']['daemon']);
+			->andReturn(self::EXPECTED['versions']['daemon']);
 		$this->versionManager->shouldReceive('getWebapp')
 			->withArgs([$verbose])
-			->andReturn($this->expected['versions']['webapp']);
+			->andReturn(self::EXPECTED['versions']['webapp']);
 		$this->networkManager->shouldReceive('getHostname')
-			->andReturn($this->expected['hostname']);
+			->andReturn(self::EXPECTED['hostname']);
 		$this->networkManager->shouldReceive('getInterfaces')
-			->andReturn($this->expected['interfaces']);
+			->andReturn(self::EXPECTED['interfaces']);
 		$manager->shouldReceive('getDiskUsages')
-			->andReturn($this->expected['diskUsages']);
+			->andReturn(self::EXPECTED['diskUsages']);
 		$manager->shouldReceive('getMemoryUsage')
-			->andReturn($this->expected['memoryUsage']);
+			->andReturn(self::EXPECTED['memoryUsage']);
 		$manager->shouldReceive('getSwapUsage')
-			->andReturn($this->expected['swapUsage']);
+			->andReturn(self::EXPECTED['swapUsage']);
 		$manager->shouldReceive('getCoordinatorInfo')
 			->andThrow(EmptyResponseException::class);
-		Assert::same($this->expected, $manager->get($verbose));
+		Assert::same(self::EXPECTED, $manager->get($verbose));
 	}
 
 	/**

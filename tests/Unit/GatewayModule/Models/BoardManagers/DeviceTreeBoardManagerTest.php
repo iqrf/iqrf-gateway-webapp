@@ -3,7 +3,7 @@
 /**
  * TEST: App\GatewayModule\Models\DeviceTreeBoardManager
  * @covers App\GatewayModule\Models\DeviceTreeBoardManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
@@ -19,7 +19,7 @@ require __DIR__ . '/../../../../bootstrap.php';
 /**
  * Tests for Device tree board manager
  */
-class DeviceTreeBoardManagerTest extends CommandTestCase {
+final class DeviceTreeBoardManagerTest extends CommandTestCase {
 
 	/**
 	 * @var DeviceTreeBoardManager Device tree board manager
@@ -27,16 +27,16 @@ class DeviceTreeBoardManagerTest extends CommandTestCase {
 	private $manager;
 
 	/**
-	 * @var string Command
+	 * Executed command
 	 */
-	private $command = 'cat /proc/device-tree/model';
+	private const COMMAND = 'cat /proc/device-tree/model';
 
 	/**
 	 * Tests the function to get board's name from DMI (success)
 	 */
 	public function testGetNameSuccess(): void {
 		$expected = 'Raspberry Pi 2 Models B Rev 1.1';
-		$this->receiveCommand($this->command, true, $expected);
+		$this->receiveCommand(self::COMMAND, true, $expected);
 		Assert::same($expected, $this->manager->getName());
 	}
 
@@ -44,7 +44,7 @@ class DeviceTreeBoardManagerTest extends CommandTestCase {
 	 * Tests the function to get board's name from DMI (fail)
 	 */
 	public function testGetNameFail(): void {
-		$this->receiveCommand($this->command, true);
+		$this->receiveCommand(self::COMMAND, true);
 		Assert::null($this->manager->getName());
 	}
 
