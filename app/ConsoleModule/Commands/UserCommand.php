@@ -20,8 +20,9 @@ declare(strict_types = 1);
 
 namespace App\ConsoleModule\Commands;
 
-use App\ConsoleModule\Models\ConsoleUserManager;
 use App\Models\Database\Entities\User;
+use App\Models\Database\EntityManager;
+use App\Models\Database\Repositories\UserRepository;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -33,17 +34,23 @@ use Symfony\Component\Console\Question\ChoiceQuestion;
 abstract class UserCommand extends Command {
 
 	/**
-	 * @var ConsoleUserManager User manager
+	 * @var UserRepository User database repository
 	 */
-	protected $userManager;
+	protected $repository;
+
+	/**
+	 * @var EntityManager Entity manager
+	 */
+	protected $entityManager;
 
 	/**
 	 * Constructor
-	 * @param ConsoleUserManager $userManager User manager
+	 * @param EntityManager $entityManager Entity manager
 	 */
-	public function __construct(ConsoleUserManager $userManager) {
+	public function __construct(EntityManager $entityManager) {
 		parent::__construct();
-		$this->userManager = $userManager;
+		$this->entityManager = $entityManager;
+		$this->repository = $entityManager->getUserRepository();
 	}
 
 	/**
@@ -56,14 +63,14 @@ abstract class UserCommand extends Command {
 		$username = $input->getOption('username');
 		$user = null;
 		if ($username !== null) {
-			$user = $this->userManager->getUser($username);
+			$user = $this->repository->findOneByUserName($username);
 		}
 		while ($user === null) {
 			$helper = $this->getHelper('question');
-			$userNames = $this->userManager->listUserNames();
+			$userNames = $this->repository->listUserNames();
 			$question = new ChoiceQuestion('Please enter the username: ', $userNames);
 			$username = $helper->ask($input, $output, $question);
-			$user = $this->userManager->getUser($username);
+			$user = $this->repository->findOneByUserName($username);
 		}
 		return $user;
 	}

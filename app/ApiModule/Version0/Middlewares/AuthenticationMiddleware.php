@@ -20,11 +20,15 @@ declare(strict_types = 1);
 
 namespace App\ApiModule\Version0\Middlewares;
 
+use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\RequestAttributes;
+use App\Models\Database\Entities\ApiKey;
+use App\Models\Database\Entities\User;
 use Contributte\Middlewares\IMiddleware;
 use Contributte\Middlewares\Security\IAuthenticator;
+use InvalidArgumentException;
+use Lcobucci\Jose\Parsing\Exception as JwtParsingException;
 use Nette\Utils\Json;
-use Nette\Utils\Strings;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -59,19 +63,38 @@ class AuthenticationMiddleware implements IMiddleware {
 			// Pass to next middleware
 			return $next($request, $response);
 		}
-		$user = $this->authenticator->authenticate($request);
-		// If we have a identity, then go to next middleware, otherwise stop and return current response
-		if ($user === null) {
-			$response->getBody()->write(Json::encode([
-				'error' => 'Client authentication failed',
-			]));
-			return $response->withStatus(401)
-				->withHeader('WWW-Authenticate', 'Bearer');
+		try {
+			$identity = $this->authenticator->authenticate($request);
+		} catch (JwtParsingException | InvalidArgumentException $e) {
+			return $this->createUnauthorizedResponse($response, 'Invalid JWT');
 		}
-		// Add info about current logged user to request attributes
-		$request = $request->withAttribute(RequestAttributes::APP_LOGGED_USER, $user);
+		// If we have a identity, then go to next middleware, otherwise stop and return current response
+		if ($identity === null) {
+			return $this->createUnauthorizedResponse($response, 'Client authentication failed');
+		}
+		if ($identity instanceof User) {
+			// Add info about current logged user to request attributes
+			$request = $request->withAttribute(RequestAttributes::APP_LOGGED_USER, $identity);
+		} elseif ($identity instanceof ApiKey) {
+			// Add info about current logged application to request attributes
+			$request = $request->withAttribute(RequestAttributes::APP_LOGGED_APP, $identity);
+		}
 		// Pass to next middleware
 		return $next($request, $response);
+	}
+
+	/**
+	 * Creates unauthorized response
+	 * @param ResponseInterface $response Response to modify
+	 * @param string $message Message
+	 * @return ResponseInterface Response
+	 */
+	private function createUnauthorizedResponse(ResponseInterface $response, string $message): ResponseInterface {
+		$json = Json::encode(['error' => $message]);
+		$response->getBody()->write($json);
+		return $response->withStatus(ApiResponse::S401_UNAUTHORIZED)
+			->withHeader('WWW-Authenticate', 'Bearer')
+			->withHeader('Content-Type', 'application/json');
 	}
 
 	/**
@@ -81,7 +104,8 @@ class AuthenticationMiddleware implements IMiddleware {
 	 */
 	protected function isWhitelisted(ServerRequestInterface $request): bool {
 		foreach (self::WHITELISTED_PATHS as $path) {
-			if (Strings::startsWith($request->getUri()->getPath(), $path)) {
+			$requestUrl = rtrim($request->getUri()->getPath(), '/');
+			if ($requestUrl === $path) {
 				return true;
 			}
 		}

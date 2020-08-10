@@ -20,9 +20,10 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Datagrids;
 
-use App\CoreModule\Exceptions\UsernameAlreadyExistsException;
-use App\CoreModule\Models\UserManager;
 use App\CoreModule\Presenters\UserPresenter;
+use App\Models\Database\Entities\User;
+use App\Models\Database\EntityManager;
+use App\Models\Database\Repositories\UserRepository;
 use Ublaboo\DataGrid\Column\Action\Confirmation\StringConfirmation;
 use Ublaboo\DataGrid\DataGrid;
 use Ublaboo\DataGrid\Exception\DataGridColumnStatusException;
@@ -44,9 +45,9 @@ class UserDataGridFactory {
 	private $dataGridFactory;
 
 	/**
-	 * @var UserManager User manager
+	 * @var EntityManager Entity manager
 	 */
-	private $manager;
+	private $entityManager;
 
 	/**
 	 * @var UserPresenter User manager presenter
@@ -54,13 +55,19 @@ class UserDataGridFactory {
 	private $presenter;
 
 	/**
+	 * @var UserRepository User database repository
+	 */
+	private $repository;
+
+	/**
 	 * Constructor
 	 * @param DataGridFactory $dataGridFactory Generic data grid factory
-	 * @param UserManager $manager User manager
+	 * @param EntityManager $entityManager Entity manager
 	 */
-	public function __construct(DataGridFactory $dataGridFactory, UserManager $manager) {
+	public function __construct(DataGridFactory $dataGridFactory, EntityManager $entityManager) {
 		$this->dataGridFactory = $dataGridFactory;
-		$this->manager = $manager;
+		$this->entityManager = $entityManager;
+		$this->repository = $entityManager->getUserRepository();
 	}
 
 	/**
@@ -74,7 +81,7 @@ class UserDataGridFactory {
 	public function create(UserPresenter $presenter, string $name): DataGrid {
 		$this->presenter = $presenter;
 		$grid = $this->dataGridFactory->create($presenter, $name);
-		$grid->setDataSource($this->manager->getUsers());
+		$grid->setDataSource($this->repository->createQueryBuilder('u'));
 
 		if ($this->presenter->getUser()->isInRole('power')) {
 			$grid->addColumnNumber('id', self::PREFIX . '.id')
@@ -117,38 +124,12 @@ class UserDataGridFactory {
 	 * @param string $role User's role
 	 */
 	public function changeRole(string $id, string $role): void {
-		$this->edit((int) $id, null, $role, null);
-	}
-
-	/**
-	 * Changes the user
-	 * @param int $id User's ID
-	 * @param string|null $username Username
-	 * @param string|null $role User's role
-	 * @param string|null $language User's language
-	 */
-	private function edit(int $id, ?string $username, ?string $role, ?string $language): void {
-		try {
-			$this->manager->edit($id, $username, $role, $language);
-			$user = $this->presenter->getUser();
-			if ($user->getId() === $id) {
-				$user->logout();
-			}
-			$translator = $this->presenter->getTranslator();
-			$message = $translator->translate(self::PREFIX . '.messages.successEdit', null, ['username' => $username]);
-			$this->presenter->flashSuccess($message);
-			if (!$this->presenter->isAjax()) {
-				$this->presenter->redirect('User:default');
-			}
-		} catch (UsernameAlreadyExistsException $e) {
-			$this->presenter->flashError(self::PREFIX . '.messages.usernameAlreadyExists');
-		} finally {
-			if ($this->presenter->isAjax()) {
-				$dataGrid = $this->presenter['userGrid'];
-				$dataGrid->setDataSource($this->manager->getUsers());
-				$dataGrid->reloadTheWholeGrid();
-			}
-		}
+		$user = $this->repository->find($id);
+		assert($user instanceof User);
+		$user->setRole($role);
+		$this->entityManager->persist($user);
+		$this->entityManager->flush();
+		$this->finishChange($user);
 	}
 
 	/**
@@ -157,7 +138,32 @@ class UserDataGridFactory {
 	 * @param string $language User's language
 	 */
 	public function changeLanguage(string $id, string $language): void {
-		$this->edit((int) $id, null, null, $language);
+		$user = $this->repository->find($id);
+		assert($user instanceof User);
+		$user->setLanguage($language);
+		$this->finishChange($user);
+	}
+
+	/**
+	 * Finishes changes in the user entity
+	 * @param User $user User entity
+	 */
+	private function finishChange(User $user): void {
+		$this->entityManager->persist($user);
+		$this->entityManager->flush();
+		$loggedUser = $this->presenter->getUser();
+		if ($loggedUser->getId() === $user->getId()) {
+			$loggedUser->logout();
+		}
+		$translator = $this->presenter->getTranslator();
+		$message = $translator->translate(self::PREFIX . '.messages.successEdit', null, ['username' => $user->getUserName()]);
+		$this->presenter->flashSuccess($message);
+		if (!$this->presenter->isAjax()) {
+			$this->presenter->redirect('User:default');
+		}
+		if ($this->presenter->isAjax()) {
+			$this->presenter['userGrid']->redrawItem($user->getId());
+		}
 	}
 
 }

@@ -20,55 +20,47 @@ declare(strict_types = 1);
 
 namespace App\ConsoleModule\Commands;
 
-use App\Models\Database\Entities\User;
-use Symfony\Component\Console\Helper\Table;
+use App\Models\Database\Entities\ApiKey;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
+use function assert;
 
 /**
- * CLI command for user management
+ * CLI command for listing API keys
  */
-class UserListCommand extends UserCommand {
+class ApiKeyListCommand extends ApiKeyCommand {
 
 	/**
 	 * @var string Command name
 	 */
-	protected static $defaultName = 'user:list';
+	protected static $defaultName = 'api-key:list';
 
 	/**
-	 * Configures the user list command
+	 * Configures the user add command
 	 */
 	protected function configure(): void {
 		$this->setName(self::$defaultName);
-		$this->setDescription('Lists webapp\'s users');
+		$this->setDescription('Lists API keys');
 	}
 
 	/**
-	 * Executes the user list command
+	 * Executes the API key list command
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
 	 * @return int Exit code
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
-		$header = ['ID', 'Username', 'Role', 'Language'];
-		$table = new Table($output);
-		$table->setHeaders($header);
-		$table->setRows($this->getUsers());
-		$table->render();
-		return 0;
-	}
-
-	/**
-	 * Returns all registered users
-	 * @return array<int, array<string, int|string>> Registered users
-	 */
-	private function getUsers(): array {
-		$users = [];
-		foreach ($this->repository->findAll() as $user) {
-			assert($user instanceof User);
-			$users[] = $user->jsonSerialize();
+		$apiKeys = [];
+		foreach ($this->repository->findAll() as $apiKey) {
+			assert($apiKey instanceof ApiKey);
+			$expiration = $apiKey->getExpiration() === null ? 'none' : $apiKey->getExpiration()->format('c');
+			$apiKeys[] = [$apiKey->getId(), $apiKey->getDescription(), $expiration];
 		}
-		return $users;
+		$style = new SymfonyStyle($input, $output);
+		$style->title('List API keys');
+		$style->table(['Key ID', 'Description', 'Expiration date'], $apiKeys);
+		return 0;
 	}
 
 }

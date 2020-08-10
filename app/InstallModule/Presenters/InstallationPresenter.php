@@ -20,9 +20,9 @@ declare(strict_types = 1);
 
 namespace App\InstallModule\Presenters;
 
-use App\CoreModule\Models\UserManager;
 use App\CoreModule\Presenters\BasePresenter;
 use App\CoreModule\Traits\TPresenterFlashMessage;
+use App\Models\Database\EntityManager;
 use Doctrine\DBAL\Exception\DriverException;
 use Doctrine\DBAL\Exception\TableNotFoundException;
 
@@ -34,16 +34,16 @@ abstract class InstallationPresenter extends BasePresenter {
 	use TPresenterFlashMessage;
 
 	/**
-	 * @var UserManager User manager
+	 * @var EntityManager Entity manager
 	 */
-	protected $userManager;
+	protected $entityManager;
 
 	/**
-	 * Inject user manager
-	 * @param UserManager $userManager User manager
+	 * Inject the entity manager
+	 * @param EntityManager $entityManager Entity manager
 	 */
-	public function injectUserManager(UserManager $userManager): void {
-		$this->userManager = $userManager;
+	public function injectUserManager(EntityManager $entityManager): void {
+		$this->entityManager = $entityManager;
 	}
 
 	/**
@@ -52,7 +52,7 @@ abstract class InstallationPresenter extends BasePresenter {
 	protected function startup(): void {
 		parent::startup();
 		try {
-			if ($this->userManager->getCount() !== 0) {
+			if ($this->entityManager->getUserRepository()->count([]) !== 0) {
 				$this->redirect(':Core:Sign:in');
 			}
 			if ($this->isLinkCurrent(':Install:Error:missingTable') ||

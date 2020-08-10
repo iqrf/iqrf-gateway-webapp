@@ -24,6 +24,7 @@ use App\Exceptions\InvalidUserLanguageException;
 use App\Exceptions\InvalidUserRoleException;
 use App\Models\Database\Attributes\TId;
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 use Nette\Security\Identity;
 use Nette\Security\IIdentity;
 use function in_array;
@@ -37,7 +38,7 @@ use const PASSWORD_DEFAULT;
  * @ORM\Table(name="`users`")
  * @ORM\HasLifecycleCallbacks()
  */
-class User {
+class User implements JsonSerializable {
 
 	use TId;
 
@@ -54,7 +55,7 @@ class User {
 	/**
 	 * Supported languages
 	 */
-	private const LANGUAGES = [self::LANGUAGE_ENGLISH];
+	public const LANGUAGES = [self::LANGUAGE_ENGLISH];
 
 	/**
 	 * User role: Normal user
@@ -74,7 +75,7 @@ class User {
 	/**
 	 * Supported user roles
 	 */
-	private const ROLES = [self::ROLE_NORMAL, self::ROLE_POWER];
+	public const ROLES = [self::ROLE_NORMAL, self::ROLE_POWER];
 
 	/**
 	 * @var string User name
@@ -109,7 +110,7 @@ class User {
 	 */
 	public function __construct(string $username, string $password, ?string $role = null, ?string $language = null) {
 		$this->username = $username;
-		$this->password = $password;
+		$this->setPassword($password);
 		$this->setRole($role ?? self::ROLE_DEFAULT);
 		$this->setLanguage($language ?? self::LANGUAGE_DEFAULT);
 	}
@@ -194,20 +195,6 @@ class User {
 	}
 
 	/**
-	 * Converts this entity to an array
-	 * @return array<string, int|string> User entity as an array
-	 */
-	public function toArray(): array {
-		return [
-			'id' => $this->id,
-			'username' => $this->username,
-			'password' => $this->password,
-			'role' => $this->role,
-			'language' => $this->language,
-		];
-	}
-
-	/**
 	 * Returns user's identity
 	 * @return IIdentity User's identity
 	 */
@@ -216,6 +203,19 @@ class User {
 			'username' => $this->username,
 			'language' => $this->language,
 		]);
+	}
+
+	/**
+	 * Returns the JSON serialized User entity
+	 * @return array<string, int|string> JSON serialized User entity
+	 */
+	public function jsonSerialize(): array {
+		return [
+			'id' => $this->id,
+			'username' => $this->username,
+			'role' => $this->role,
+			'language' => $this->language,
+		];
 	}
 
 }

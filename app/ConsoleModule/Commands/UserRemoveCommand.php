@@ -57,7 +57,8 @@ class UserRemoveCommand extends UserCommand {
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$user = $this->askUserName($input, $output);
 		$this->confirmAction($input, $output);
-		$this->userManager->delete($user->getId());
+		$this->entityManager->remove($user);
+		$this->entityManager->flush();
 		return 0;
 	}
 

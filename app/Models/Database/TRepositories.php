@@ -20,8 +20,10 @@ declare(strict_types = 1);
 
 namespace App\Models\Database;
 
+use App\Models\Database\Entities\ApiKey;
 use App\Models\Database\Entities\IqrfOsPatch;
 use App\Models\Database\Entities\User;
+use App\Models\Database\Repositories\ApiKeyRepository;
 use App\Models\Database\Repositories\IqrfOsPatchRepository;
 use App\Models\Database\Repositories\UserRepository;
 
@@ -29,6 +31,16 @@ use App\Models\Database\Repositories\UserRepository;
  * @mixin EntityManager
  */
 trait TRepositories {
+
+	/**
+	 * Returns the API key repository
+	 * @return ApiKeyRepository API key repository
+	 */
+	public function getApiKeyRepository(): ApiKeyRepository {
+		$repository = $this->getRepository(ApiKey::class);
+		assert($repository instanceof ApiKeyRepository);
+		return $repository;
+	}
 
 	/**
 	 * Returns the IQRF OS pach repository

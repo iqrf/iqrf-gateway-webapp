@@ -20,6 +20,12 @@ servers:
 				default: localhost:8080
 components:
 	schemas:
+		ApiKeyCreated:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/apiKeyCreated.json
+		ApiKeyDetail:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/apiKeyDetail.json
+		ApiKeyModify:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/apiKeyModify.json
 		CertificateDetail:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/certificate.json
 		CloudAws:

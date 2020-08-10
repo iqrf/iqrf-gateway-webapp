@@ -18,13 +18,29 @@
  */
 declare(strict_types = 1);
 
-namespace App\CoreModule\Exceptions;
+namespace App\ConsoleModule\Commands;
 
-use InvalidArgumentException;
+use App\Models\Database\EntityManager;
+use Symfony\Component\Console\Command\Command;
 
 /**
- * The exception that indicates an invalid password
+ * CLI command with entity manager
  */
-class InvalidPasswordException extends InvalidArgumentException {
+abstract class EntityManagerCommand extends Command {
+
+	/**
+	 * @var EntityManager Entity manager
+	 */
+	protected $entityManager;
+
+	/**
+	 * Constructor
+	 * @param EntityManager $entityManager Entity manager
+	 * @param string|null $name Command name
+	 */
+	public function __construct(EntityManager $entityManager, ?string $name = null) {
+		parent::__construct($name);
+		$this->entityManager = $entityManager;
+	}
 
 }
