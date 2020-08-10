@@ -30,12 +30,12 @@ use function assert;
 class ApiKeyRepository extends EntityRepository {
 
 	/**
-	 * Finds one API key by its value
-	 * @param string $hash API key hash
+	 * Finds one API key by its hash salt value
+	 * @param string $salt API key hash salt
 	 * @return ApiKey|null API key entity
 	 */
-	public function findOneByHash(string $hash): ?ApiKey {
-		$apiKey = $this->findOneBy(['hash' => $hash]);
+	public function findOneBySalt(string $salt): ?ApiKey {
+		$apiKey = $this->findOneBy(['salt' => $salt]);
 		assert($apiKey instanceof ApiKey || $apiKey === null);
 		return $apiKey;
 	}

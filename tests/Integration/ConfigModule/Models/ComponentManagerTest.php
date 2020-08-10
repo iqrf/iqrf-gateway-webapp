@@ -91,6 +91,14 @@ final class ComponentManagerTest extends JsonConfigTestCase {
 	}
 
 	/**
+	 * Tests the function to list disabled components
+	 */
+	public function testListDisabled(): void {
+		$expected = ['iqrf::IqrfCdc' => false, 'iqrf::IqrfUart' => false];
+		Assert::equal($expected, $this->manager->listDisabled());
+	}
+
+	/**
 	 * Tests the function to load configuration of components
 	 */
 	public function testLoad(): void {

@@ -22,6 +22,8 @@ namespace App\ApiModule\Version0\Middlewares;
 
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\RequestAttributes;
+use App\Models\Database\Entities\ApiKey;
+use App\Models\Database\Entities\User;
 use Contributte\Middlewares\IMiddleware;
 use Contributte\Middlewares\Security\IAuthenticator;
 use InvalidArgumentException;
@@ -62,16 +64,21 @@ class AuthenticationMiddleware implements IMiddleware {
 			return $next($request, $response);
 		}
 		try {
-			$user = $this->authenticator->authenticate($request);
+			$identity = $this->authenticator->authenticate($request);
 		} catch (JwtParsingException | InvalidArgumentException $e) {
 			return $this->createUnauthorizedResponse($response, 'Invalid JWT');
 		}
 		// If we have a identity, then go to next middleware, otherwise stop and return current response
-		if ($user === null) {
+		if ($identity === null) {
 			return $this->createUnauthorizedResponse($response, 'Client authentication failed');
 		}
-		// Add info about current logged user to request attributes
-		$request = $request->withAttribute(RequestAttributes::APP_LOGGED_USER, $user);
+		if ($identity instanceof User) {
+			// Add info about current logged user to request attributes
+			$request = $request->withAttribute(RequestAttributes::APP_LOGGED_USER, $identity);
+		} elseif ($identity instanceof ApiKey) {
+			// Add info about current logged application to request attributes
+			$request = $request->withAttribute(RequestAttributes::APP_LOGGED_APP, $identity);
+		}
 		// Pass to next middleware
 		return $next($request, $response);
 	}

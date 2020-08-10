@@ -24,6 +24,11 @@ use App\Models\Database\Attributes\TId;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
+use Nette\Utils\Strings;
+use function base64_encode;
+use function password_hash;
+use function random_bytes;
+use const PASSWORD_BCRYPT;
 
 /**
  * API key entity
@@ -47,6 +52,12 @@ class ApiKey implements JsonSerializable {
 	private $hash;
 
 	/**
+	 * @var string API key hash salt
+	 * @ORM\Column(type="string", length=22, nullable=false, unique=true)
+	 */
+	private $salt;
+
+	/**
 	 * @var string API key description
 	 * @ORM\Column(type="string", length=255, nullable=false, unique=false)
 	 */
@@ -64,8 +75,10 @@ class ApiKey implements JsonSerializable {
 	 * @param DateTime|null $expiration API key expiration
 	 */
 	public function __construct(string $description, ?DateTime $expiration) {
-		$this->key = bin2hex(random_bytes(32));
-		$this->hash = password_hash($this->key, PASSWORD_DEFAULT);
+		$this->key = base64_encode(random_bytes(32));
+		$this->hash = password_hash($this->key, PASSWORD_BCRYPT);
+		$saltHash = explode('$', $this->hash);
+		$this->salt = Strings::substring(end($saltHash), 0, 22);
 		$this->description = $description;
 		$this->expiration = $expiration;
 	}
@@ -75,7 +88,7 @@ class ApiKey implements JsonSerializable {
 	 * @return string|null API key
 	 */
 	public function getKey(): ?string {
-		return $this->key;
+		return $this->salt . '.' . $this->key;
 	}
 
 	/**
@@ -128,6 +141,15 @@ class ApiKey implements JsonSerializable {
 		}
 		$now = new DateTime();
 		return $this->expiration < $now;
+	}
+
+	/**
+	 * Verifies API key
+	 * @param string $key API key
+	 * @return bool Is API key
+	 */
+	public function verify(string $key): bool {
+		return password_verify(Strings::substring($key, 23), $this->hash);
 	}
 
 	/**

@@ -13,6 +13,7 @@ namespace Tests\Unit\Models\Database\Entities;
 
 use App\Models\Database\Entities\ApiKey;
 use DateTime;
+use Nette\Utils\Strings;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -88,7 +89,8 @@ class ApiKeyTest extends TestCase {
 	 * Tests the function to return API key hash
 	 */
 	public function testGetHash(): void {
-		Assert::true(password_verify($this->key, $this->entity->getHash()));
+		$key = Strings::substring($this->key, 23);
+		Assert::true(password_verify($key, $this->entity->getHash()));
 	}
 
 	/**
@@ -103,6 +105,13 @@ class ApiKeyTest extends TestCase {
 	}
 
 	/**
+	 * Tests the function to verify API key
+	 */
+	public function testVerify(): void {
+		Assert::true($this->entity->verify($this->key));
+	}
+
+	/**
 	 * Tests the function to get JSON serialized entity
 	 */
 	public function testJsonSerialize(): void {
@@ -112,7 +121,7 @@ class ApiKeyTest extends TestCase {
 			'expiration' => '2020-01-01T00:00:00+02:00',
 		];
 		$actual = $this->entity->jsonSerialize();
-		Assert::match('~^[0-9a-f]{64}$~', $actual['key']);
+		Assert::match('~^[./A-Za-z0-9]{22}\.[A-Za-z0-9+/=]{44}$~', $actual['key']);
 		unset($actual['key']);
 		Assert::same($expected, $actual);
 	}

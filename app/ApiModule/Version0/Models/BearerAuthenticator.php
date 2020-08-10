@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ApiModule\Version0\Models;
 
+use App\Models\Database\Entities\ApiKey;
 use App\Models\Database\Entities\User;
 use App\Models\Database\EntityManager;
 use Contributte\Middlewares\Security\IAuthenticator;
@@ -27,15 +28,14 @@ use DateTimeImmutable;
 use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Token\Plain;
 use Lcobucci\JWT\Validation\Constraint\SignedWith;
-use Nette\Security\Identity;
-use Nette\Security\IIdentity;
 use Nette\Utils\Strings;
 use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
 use function assert;
+use function preg_match;
 use function strpos;
 
-class JwtAuthenticator implements IAuthenticator {
+class BearerAuthenticator implements IAuthenticator {
 
 	/**
 	 * @var EntityManager Entity manager
@@ -60,12 +60,35 @@ class JwtAuthenticator implements IAuthenticator {
 	/**
 	 * @inheritDoc
 	 */
-	public function authenticate(ServerRequestInterface $request): ?IIdentity {
+	public function authenticate(ServerRequestInterface $request) {
 		$header = $request->getHeader('Authorization')[0] ?? '';
-		$jwt = $this->parseAuthorizationHeader($header);
-		if ($jwt === null) {
+		$token = $this->parseAuthorizationHeader($header);
+		if ($token === null) {
 			return null;
 		}
+		if (preg_match('~^[./A-Za-z0-9]{22}\.[A-Za-z0-9+/=]{44}$~', $token)) {
+			return $this->authenticateApp($token);
+		}
+		return $this->authenticateUser($token);
+	}
+
+	/**
+	 * @param string $key API key
+	 * @return ApiKey|null API key entity
+	 */
+	private function authenticateApp(string $key): ?ApiKey {
+		$repository = $this->entityManager->getApiKeyRepository();
+		$salt = Strings::substring($key, 0, 22);
+		$apiKey = $repository->findOneBySalt($salt);
+		return $apiKey->verify($key) ? $apiKey : null;
+	}
+
+	/**
+	 * Authenticates the user
+	 * @param string $jwt JWT
+	 * @return User|null User entity
+	 */
+	private function authenticateUser(string $jwt): ?User {
 		$token = $this->configuration->getParser()->parse($jwt);
 		assert($token instanceof Plain);
 		if (!$this->isJwtValid($token)) {
@@ -78,11 +101,7 @@ class JwtAuthenticator implements IAuthenticator {
 			if (!($user instanceof User)) {
 				return null;
 			}
-			$data = [
-				'username' => $user->getUserName(),
-				'language' => $user->getLanguage(),
-			];
-			return new Identity($user->getId(), $user->getRole(), $data);
+			return $user;
 		} catch (Throwable $e) {
 			return null;
 		}

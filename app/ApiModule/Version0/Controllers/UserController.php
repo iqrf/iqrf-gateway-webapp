@@ -28,14 +28,13 @@ use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\JwtConfigurator;
 use App\ApiModule\Version0\RequestAttributes;
+use App\Models\Database\Entities\User;
 use DateTimeImmutable;
 use Lcobucci\JWT\Configuration;
 use Nette\Security\AuthenticationException;
-use Nette\Security\Identity;
-use Nette\Security\User;
+use Nette\Security\User as NetteUser;
 use Nette\Utils\JsonException;
 use Throwable;
-use function assert;
 use function gethostname;
 
 /**
@@ -51,16 +50,16 @@ class UserController extends BaseController {
 	private $configuration;
 
 	/**
-	 * @var User User
+	 * @var NetteUser User
 	 */
 	private $user;
 
 	/**
 	 * Constructor
 	 * @param JwtConfigurator $configurator JWT configurator
-	 * @param User $user User
+	 * @param NetteUser $user User
 	 */
-	public function __construct(JwtConfigurator $configurator, User $user) {
+	public function __construct(JwtConfigurator $configurator, NetteUser $user) {
 		$this->configuration = $configurator->create();
 		$this->user = $user;
 	}
@@ -79,21 +78,19 @@ class UserController extends BaseController {
 	 *                      $ref: '#/components/schemas/UserDetail'
 	 *      '401':
 	 *          description: Unauthorized
+	 *      '403':
+	 *          description: Forbidden (API key is used)
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$identity = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
-		assert($identity instanceof Identity);
-		$data = $identity->getData();
-		return $response->writeJsonBody([
-			'id' => $identity->getId(),
-			'username' => $data['username'],
-			'language' => $data['language'],
-			'role' => $identity->getRoles()[0],
-		]);
+		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
+		if ($user instanceof User) {
+			return $response->writeJsonObject($user);
+		}
+		return $response->withStatus(ApiResponse::S403_FORBIDDEN);
 	}
 
 	/**
