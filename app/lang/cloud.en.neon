@@ -105,6 +105,12 @@ pixla:
 		enabled: Enabled
 		disabled: Disabled
 		missing: Missing
+	form:
+		token: Set new PIXLA platform token
+		save: Save
+		missingParam: Please enter PIXLA platform token.
+		editSuccess: New PIXLA token has been successfully saved.
+		editFailure: New PIXLA token has not been saved.
 	token: Token
 	messages:
 		disabled: PIXLA manager is disabled.

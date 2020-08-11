@@ -14,7 +14,7 @@ nodeRed:
 	url: /node-red/
 # PIXLA mamagement system
 pixla:
-	enabled: false
+	enabled: true
 # SSH daemon manager
 ssh:
 	enabled: false

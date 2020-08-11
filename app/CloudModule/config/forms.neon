@@ -4,3 +4,4 @@ services:
 	- App\CloudModule\Forms\HexioFormFactory
 	- App\CloudModule\Forms\IbmCloudFormFactory
 	- App\CloudModule\Forms\InteliGlueFormFactory
+	- App\CloudModule\Forms\PixlaFormFactory

@@ -19,7 +19,7 @@
 {block content}
 <div class='panel panel-default'>
 	<div class='panel-body'>
-		<table class='table table-striped'>
+		<table n:snippet='pixlaToken' class='table table-striped'>
 			<tr>
 				<th>{_cloud.pixla.token}</th>
 				<td>{$token}</td>
@@ -27,6 +27,11 @@
 			<tr>
 				<th>{_cloud.pixla.status}</th>
 				<td>{_cloud.pixla.statuses.$status}</td>
+			</tr>
+		</table>
+		<table class='table table-striped'>
+			<tr>
+				<th>{control pixlaForm}</th>
 			</tr>
 		</table>
 		{if $status !== ''}

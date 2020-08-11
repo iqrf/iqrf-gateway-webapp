@@ -136,6 +136,9 @@ phpstan: deps
 rector: deps
 	NETTE_TESTER_RUNNER=1 vendor/bin/rector process --dry-run
 
+run:
+	php -S [::]:8080 -t www/
+
 temp/code-checker:
 	composer create-project nette/code-checker temp/code-checker --no-interaction
 

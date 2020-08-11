@@ -20,14 +20,22 @@ declare(strict_types = 1);
 
 namespace App\CloudModule\Presenters;
 
+use App\CloudModule\Forms\PixlaFormFactory;
 use App\CloudModule\Models\PixlaManager;
 use App\CoreModule\Presenters\ProtectedPresenter;
 use App\ServiceModule\Exceptions\NonexistentServiceException;
+use Nette\Application\UI\Form;
 
 /**
  * PIXLA management system presenter
  */
 class PixlaPresenter extends ProtectedPresenter {
+
+	/**
+	 * @var PixlaFormFactory Generic form factory
+	 * @inject
+	 */
+	public $formFactory;
 
 	/**
 	 * @var PixlaManager PIXLA management system manager
@@ -72,7 +80,7 @@ class PixlaPresenter extends ProtectedPresenter {
 		} catch (NonexistentServiceException $e) {
 			$this->template->status = 'missing';
 		}
-		$this->template->token = $this->manager->getToken();
+		$this->displayToken();
 	}
 
 	/**
@@ -84,6 +92,21 @@ class PixlaPresenter extends ProtectedPresenter {
 			$this->flashError('cloud.pixla.messages.disabled');
 			$this->redirect('Homepage:default');
 		}
+	}
+
+	/**
+	 * Creates the PIXLA form
+	 * @return Form PIXLA form
+	 */
+	protected function createComponentPixlaForm(): Form {
+		return $this->formFactory->create($this);
+	}
+
+	/**
+	 * Inserts token string into the template.
+	 */
+	public function displayToken(): void {
+		$this->template->token = $this->manager->getToken();
 	}
 
 }
