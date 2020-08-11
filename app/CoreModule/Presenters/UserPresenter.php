@@ -23,8 +23,9 @@ namespace App\CoreModule\Presenters;
 use App\CoreModule\Datagrids\UserDataGridFactory;
 use App\CoreModule\Forms\UserAddFormFactory;
 use App\CoreModule\Forms\UserEditFormFactory;
-use App\CoreModule\Models\UserManager;
 use App\CoreModule\Traits\TPresenterFlashMessage;
+use App\Models\Database\Entities\User;
+use App\Models\Database\EntityManager;
 use Nette\Application\UI\Form;
 use Ublaboo\DataGrid\DataGrid;
 use Ublaboo\DataGrid\Exception\DataGridColumnStatusException;
@@ -56,16 +57,16 @@ class UserPresenter extends ProtectedPresenter {
 	public $editFormFactory;
 
 	/**
-	 * @var UserManager User manager
+	 * @var EntityManager Entity manager
 	 */
-	private $userManager;
+	private $entityManager;
 
 	/**
 	 * Constructor
-	 * @param UserManager $userManager User manager
+	 * @param EntityManager $entityManager Entity manager
 	 */
-	public function __construct(UserManager $userManager) {
-		$this->userManager = $userManager;
+	public function __construct(EntityManager $entityManager) {
+		$this->entityManager = $entityManager;
 		parent::__construct();
 	}
 
@@ -74,12 +75,13 @@ class UserPresenter extends ProtectedPresenter {
 	 * @param int $id User ID
 	 */
 	public function actionEdit(int $id): void {
-		$defaults = $this->userManager->getInfo($id);
-		if ($defaults === null) {
+		$user = $this->entityManager->getUserRepository()->find($id);
+		if ($user === null) {
 			$this->flashError('core.user.messages.notFound');
 			$this->redirect('User:default');
 		}
-		$this['userEditForm']->setDefaults($defaults);
+		assert($user instanceof User);
+		$this['userEditForm']->setDefaults($user->jsonSerialize());
 	}
 
 	/**
@@ -87,12 +89,18 @@ class UserPresenter extends ProtectedPresenter {
 	 * @param int $id User ID
 	 */
 	public function actionDelete(int $id): void {
-		$user = $this->userManager->getInfo($id);
-		$this->userManager->delete($id);
+		$user = $this->entityManager->getUserRepository()->find($id);
+		if ($user === null) {
+			$this->flashError('core.user.messages.notFound');
+			$this->redirect('User:default');
+		}
+		assert($user instanceof User);
+		$this->entityManager->remove($user);
+		$this->entityManager->flush();
 		if ($this->getUser()->getId() === $id) {
 			$this->getUser()->logout(true);
 		}
-		$message = $this->translator->translate('core.user.messages.successDelete', ['username' => $user['username']]);
+		$message = $this->translator->translate('core.user.messages.successDelete', ['username' => $user->getUserName()]);
 		$this->flashSuccess($message);
 		$this->redirect('User:default');
 	}

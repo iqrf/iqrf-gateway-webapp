@@ -61,7 +61,10 @@ class UserEditCommand extends UserCommand {
 		$user = $this->askUserName($input, $output);
 		$role = $this->askRole($user, $input, $output);
 		$language = $this->askLanguage($user, $input, $output);
-		$this->userManager->edit($user->getId(), $user->getUserName(), $role, $language);
+		$user->setRole($role);
+		$user->setLanguage($language);
+		$this->entityManager->persist($user);
+		$this->entityManager->flush();
 		return 0;
 	}
 
@@ -74,10 +77,9 @@ class UserEditCommand extends UserCommand {
 	 */
 	private function askRole(User $user, InputInterface $input, OutputInterface $output): string {
 		$role = $input->getOption('role');
-		$roles = ['power', 'normal'];
-		while ($role === null || !in_array($role, $roles, true)) {
+		while ($role === null || !in_array($role, User::ROLES, true)) {
 			$helper = $this->getHelper('question');
-			$question = new ChoiceQuestion('Please enter the user\'s role: ', $roles, $user->getRole());
+			$question = new ChoiceQuestion('Please enter the user\'s role: ', User::ROLES, $user->getRole());
 			$role = $helper->ask($input, $output, $question);
 		}
 		return $role;
@@ -92,10 +94,9 @@ class UserEditCommand extends UserCommand {
 	 */
 	private function askLanguage(User $user, InputInterface $input, OutputInterface $output): string {
 		$language = $input->getOption('language');
-		$languages = ['en'];
-		while ($language === null || !in_array($language, $languages, true)) {
+		while ($language === null || !in_array($language, User::LANGUAGES, true)) {
 			$helper = $this->getHelper('question');
-			$question = new ChoiceQuestion('Please enter the user\'s language: ', $languages, $user->getLanguage());
+			$question = new ChoiceQuestion('Please enter the user\'s language: ', User::LANGUAGES, $user->getLanguage());
 			$language = $helper->ask($input, $output, $question);
 		}
 		return $language;

@@ -20,11 +20,11 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Forms;
 
-use App\CoreModule\Exceptions\UsernameAlreadyExistsException;
-use App\CoreModule\Models\UserManager;
 use App\CoreModule\Presenters\BasePresenter;
 use App\CoreModule\Presenters\UserPresenter;
 use App\InstallModule\Presenters\CreateUserPresenter;
+use App\Models\Database\Entities\User;
+use App\Models\Database\EntityManager;
 use Nette\Application\UI\Form;
 
 /**
@@ -38,6 +38,11 @@ class UserAddFormFactory {
 	private const PREFIX = 'core.user';
 
 	/**
+	 * @var EntityManager Entity manager
+	 */
+	private $entityManager;
+
+	/**
 	 * @var FormFactory Generic form factory
 	 */
 	private $factory;
@@ -48,18 +53,13 @@ class UserAddFormFactory {
 	private $presenter;
 
 	/**
-	 * @var UserManager User manager
-	 */
-	private $userManager;
-
-	/**
 	 * Constructor
 	 * @param FormFactory $factory Generic form factory
-	 * @param UserManager $userManager User manager
+	 * @param EntityManager $entityManager Entity manager
 	 */
-	public function __construct(FormFactory $factory, UserManager $userManager) {
+	public function __construct(FormFactory $factory, EntityManager $entityManager) {
 		$this->factory = $factory;
-		$this->userManager = $userManager;
+		$this->entityManager = $entityManager;
 	}
 
 	/**
@@ -89,7 +89,7 @@ class UserAddFormFactory {
 	 * @return array<string> User types
 	 */
 	private function getUserTypes(): array {
-		$userTypes = ['normal', 'power'];
+		$userTypes = User::ROLES;
 		foreach ($userTypes as $key => $type) {
 			$userTypes[$type] = 'userTypes.' . $type;
 			unset($userTypes[$key]);
@@ -106,7 +106,7 @@ class UserAddFormFactory {
 	 * @return array<string> Available languages
 	 */
 	private function getLanguages(): array {
-		$languages = ['en'];
+		$languages = User::LANGUAGES;
 		foreach ($languages as $key => $language) {
 			$languages[$language] = 'languages.' . $language;
 			unset($languages[$key]);
@@ -120,24 +120,22 @@ class UserAddFormFactory {
 	 */
 	public function add(Form $form): void {
 		$values = $form->getValues();
-		try {
-			$username = $values['username'];
-			$password = $values['password'];
-			$role = $values['userType'] ?? 'normal';
-			$language = $values['language'] ?? 'en';
-			$this->userManager->register($username, $password, $role, $language);
-			$message = $form->getTranslator()->translate('messages.successAdd', ['username' => $username]);
-			$this->presenter->flashMessage($message, 'success');
-			if ($this->presenter instanceof UserPresenter) {
-				$this->presenter->redirect('User:default');
-			} else {
-				$user = $this->presenter->getUser();
-				$user->login($username, $password);
-				$this->presenter->redirect(':Core:Homepage:default');
-			}
-		} catch (UsernameAlreadyExistsException $e) {
+		$username = $values['username'];
+		if ($this->entityManager->getUserRepository()->findOneByUserName($username) !== null) {
 			$this->presenter->flashMessage(self::PREFIX . '.messages.usernameAlreadyExists', 'danger');
+			return;
 		}
+		$user = new User($username, $values['password'], $values['userType'], $values['language']);
+		$this->entityManager->persist($user);
+		$this->entityManager->flush();
+		$message = $form->getTranslator()->translate('messages.successAdd', ['username' => $username]);
+		$this->presenter->flashMessage($message, 'success');
+		if ($this->presenter instanceof UserPresenter) {
+			$this->presenter->redirect('User:default');
+		}
+		$user = $this->presenter->getUser();
+		$user->login($username, $values['password']);
+		$this->presenter->redirect(':Core:Homepage:default');
 	}
 
 }

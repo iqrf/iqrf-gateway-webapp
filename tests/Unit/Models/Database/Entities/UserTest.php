@@ -36,11 +36,6 @@ final class UserTest extends TestCase {
 	private const PASSWORD = 'iqrf';
 
 	/**
-	 * Password hash
-	 */
-	private const HASH = '$2b$10$F91udIyWuySXoRsPlXDmSeNwM9vcuRWW/V0LXWtZ9tUfpC6YjUM8q';
-
-	/**
 	 * User role
 	 */
 	private const ROLE = User::ROLE_POWER;
@@ -60,7 +55,7 @@ final class UserTest extends TestCase {
 	 */
 	protected function setUp(): void {
 		parent::setUp();
-		$this->entity = new User(self::USERNAME, self::HASH, self::ROLE, self::LANGUAGE);
+		$this->entity = new User(self::USERNAME, self::PASSWORD, self::ROLE, self::LANGUAGE);
 	}
 
 	/**
@@ -81,7 +76,8 @@ final class UserTest extends TestCase {
 	 * Tests the function to get the user's password hash
 	 */
 	public function testGetPassword(): void {
-		Assert::same(self::HASH, $this->entity->getPassword());
+		$hash = $this->entity->getPassword();
+		Assert::true(password_verify(self::PASSWORD, $hash));
 	}
 
 	/**
@@ -163,17 +159,16 @@ final class UserTest extends TestCase {
 	}
 
 	/**
-	 * Tests the function to convert the entity into an array
+	 * Tests the function to return JSON serialized entity
 	 */
-	public function testToArray(): void {
+	public function testJsonSerialize(): void {
 		$expected = [
 			'id' => null,
 			'username' => self::USERNAME,
-			'password' => self::HASH,
 			'role' => self::ROLE,
 			'language' => self::LANGUAGE,
 		];
-		Assert::same($expected, $this->entity->toArray());
+		Assert::same($expected, $this->entity->jsonSerialize());
 	}
 
 	/**

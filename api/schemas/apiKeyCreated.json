@@ -1,0 +1,47 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/apiKeyCreated.json",
+	"type": "object",
+	"title": "Created API key",
+	"additionalProperties": false,
+	"required": [
+		"id",
+		"description",
+		"expiration",
+		"key"
+	],
+	"properties": {
+		"id": {
+			"$id": "#/properties/id",
+			"type": "integer",
+			"title": "API key ID",
+			"example": 1
+		},
+		"description": {
+			"$id": "#/properties/description",
+			"type": "string",
+			"title": "API key description",
+			"example": "My awesome app"
+		},
+		"expiration": {
+			"$id": "#/properties/expiration",
+			"oneOf": [
+				{
+					"type": "string",
+					"format": "date-time"
+				},
+				{
+					"type": "null"
+				}
+			],
+			"title": "API key expiration",
+			"example": null
+		},
+		"key": {
+			"$id": "#/properties/key",
+			"type": "string",
+			"title": "API key",
+			"example": "ec8eca92c12774f564c0224eb7ec48d2028f42038a7fea9bf84ec2d565ed0750"
+		}
+	}
+}

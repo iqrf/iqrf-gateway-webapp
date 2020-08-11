@@ -20,10 +20,9 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Forms;
 
-use App\CoreModule\Exceptions\InvalidPasswordException;
-use App\CoreModule\Exceptions\UsernameAlreadyExistsException;
-use App\CoreModule\Models\UserManager;
 use App\CoreModule\Presenters\UserPresenter;
+use App\Models\Database\Entities\User;
+use App\Models\Database\EntityManager;
 use Nette\Application\UI\Form;
 
 /**
@@ -52,18 +51,18 @@ class UserEditFormFactory {
 	private $presenter;
 
 	/**
-	 * @var UserManager User manager
+	 * @var EntityManager Entity manager
 	 */
-	private $userManager;
+	private $entityManager;
 
 	/**
 	 * Constructor
 	 * @param FormFactory $factory Generic form factory
-	 * @param UserManager $userManager User manager
+	 * @param EntityManager $entityManager Entity manager
 	 */
-	public function __construct(FormFactory $factory, UserManager $userManager) {
+	public function __construct(FormFactory $factory, EntityManager $entityManager) {
 		$this->factory = $factory;
-		$this->userManager = $userManager;
+		$this->entityManager = $entityManager;
 	}
 
 	/**
@@ -109,27 +108,40 @@ class UserEditFormFactory {
 	 */
 	public function save(Form $form): void {
 		$values = $form->getValues();
-		$user = $this->presenter->getUser();
-		try {
-			if ($user->getId() === $this->id &&
-				$values->oldPassword !== '' &&
-				$values->newPassword !== '') {
-				$this->userManager->changePassword($this->id, $values->oldPassword, $values->newPassword);
+		$loggedUser = $this->presenter->getUser();
+		$repository = $this->entityManager->getUserRepository();
+		$user = $repository->find($this->id);
+		assert($user instanceof User);
+		if ($loggedUser->getId() === $this->id && $values->oldPassword !== '' &&
+			$values->newPassword !== '') {
+			if (!$user->verifyPassword($values->oldPassword)) {
+				$this->presenter->flashError(self::PREFIX . '.messages.invalidOldPassword');
+				return;
 			}
-			$role = $values->role ?? null;
-			$language = $values->language ?? null;
-			$this->userManager->edit($this->id, $values->username, $role, $language);
-			if ($user->getId() === $this->id) {
-				$user->logout();
-			}
-			$message = $form->getTranslator()->translate('messages.successEdit', ['username' => $values->username]);
-			$this->presenter->flashSuccess($message);
-			$this->presenter->redirect('User:default');
-		} catch (UsernameAlreadyExistsException $e) {
-			$this->presenter->flashError(self::PREFIX . '.messages.usernameAlreadyExists');
-		} catch (InvalidPasswordException $e) {
-			$this->presenter->flashError(self::PREFIX . '.messages.invalidOldPassword');
+			$user->setPassword($values->newPassword);
 		}
+		if (isset($values->username)) {
+			$userWithName = $repository->findOneByUserName($values->username);
+			if ($userWithName !== null && $userWithName->getId() !== $this->id) {
+				$this->presenter->flashError(self::PREFIX . '.messages.usernameAlreadyExists');
+				return;
+			}
+			$user->setUserName($values->username);
+		}
+		if (isset($values->role)) {
+			$user->setRole($values->role);
+		}
+		if (isset($values->language)) {
+			$user->setLanguage($values->language);
+		}
+		$this->entityManager->persist($user);
+		$this->entityManager->flush();
+		if ($loggedUser->getId() === $this->id) {
+			$loggedUser->logout();
+		}
+		$message = $form->getTranslator()->translate('messages.successEdit', ['username' => $user->getUserName()]);
+		$this->presenter->flashSuccess($message);
+		$this->presenter->redirect('User:default');
 	}
 
 }

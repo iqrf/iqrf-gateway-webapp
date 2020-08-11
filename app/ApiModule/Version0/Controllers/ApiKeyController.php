@@ -30,19 +30,20 @@ use Apitte\Core\Annotation\Controller\Responses;
 use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
-use App\Exceptions\InvalidUserLanguageException;
-use App\Exceptions\InvalidUserRoleException;
-use App\Models\Database\Entities\User;
+use App\Models\Database\Entities\ApiKey;
 use App\Models\Database\EntityManager;
-use App\Models\Database\Repositories\UserRepository;
+use App\Models\Database\Repositories\ApiKeyRepository;
+use DateTime;
 use Nette\Utils\JsonException;
+use Throwable;
+use function assert;
 
 /**
- * User manager API controller
- * @Path("/users")
- * @Tag("User manager")
+ * API keys controller
+ * @Path("/apiKeys")
+ * @Tag("API key manager")
  */
-class UsersController extends BaseController {
+class ApiKeyController extends BaseController {
 
 	/**
 	 * @var EntityManager Entity manager
@@ -50,7 +51,7 @@ class UsersController extends BaseController {
 	private $entityManager;
 
 	/**
-	 * @var UserRepository User database repository
+	 * @var ApiKeyRepository API key database repository
 	 */
 	private $repository;
 
@@ -60,14 +61,14 @@ class UsersController extends BaseController {
 	 */
 	public function __construct(EntityManager $entityManager) {
 		$this->entityManager = $entityManager;
-		$this->repository = $entityManager->getUserRepository();
+		$this->repository = $entityManager->getApiKeyRepository();
 	}
 
 	/**
 	 * @Path("/")
 	 * @Method("GET")
 	 * @OpenApi("
-	 *  summary: Lists all users
+	 *  summary: Lists all API keys
 	 *  responses:
 	 *      '200':
 	 *          description: Success
@@ -76,84 +77,81 @@ class UsersController extends BaseController {
 	 *                  schema:
 	 *                      type: array
 	 *                      items:
-	 *                          $ref: '#/components/schemas/UserDetail'
+	 *                          $ref: '#/components/schemas/ApiKeyDetail'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
 	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$users = $this->repository->findAll();
-		return $response->writeJsonBody($users);
+		$apiKeys = $this->repository->findAll();
+		return $response->writeJsonBody($apiKeys);
 	}
 
 	/**
 	 * @Path("/")
 	 * @Method("POST")
 	 * @OpenApi("
-	 *  summary: Creates a new user
+	 *  summary: Creates a new API key
 	 *  requestBody:
 	 *      required: true
 	 *      content:
 	 *          application/json:
 	 *              schema:
-	 *                  $ref: '#/components/schemas/UserCreate'
+	 *                  $ref: '#/components/schemas/ApiKeyModify'
+	 *  responses:
+	 *      '201':
+	 *          description: Created
+	 *          content:
+	 *              application/json:
+	 *                  schema:
+	 *                      $ref: '#/components/schemas/ApiKeyCreated'
+	 *      '400':
+	 *          description: 'Bad request'
 	 * ")
-	 * @Responses({
-	 *      @Response(code="201", description="Created"),
-	 *      @Response(code="400", description="Bad Request")
-	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$json = $request->getJsonBody();
-		if (!array_key_exists('username', $json)) {
-			return $response->withStatus(400, 'Missing username');
-		}
-		if (!array_key_exists('password', $json)) {
-			return $response->withStatus(400, 'Missing password');
-		}
-		if (!array_key_exists('role', $json)) {
-			return $response->withStatus(400, 'Missing role');
-		}
-		if (!array_key_exists('language', $json)) {
-			return $response->withStatus(400, 'Missing language');
-		}
 		try {
-			$user = $this->repository->findOneByUserName($json['username']);
-			if ($user !== null) {
-				return $response->withStatus(400, 'Username already exists');
-			}
-			$user = new User($json['username'], $json['password'], $json['role'], $json['language']);
-			$this->entityManager->persist($user);
-			$this->entityManager->flush();
-		} catch (InvalidUserLanguageException $e) {
-			return $response->withStatus(400, 'Invalid user language');
-		} catch (InvalidUserRoleException $e) {
-			return $response->withStatus(400, 'Invalid user role');
+			$json = $request->getJsonBody(false);
+		} catch (JsonException $e) {
+			return $response->withStatus(ApiResponse::S400_BAD_REQUEST, 'Invalid JSON syntax');
 		}
-		return $response->withStatus(201);
+		if ($json->expiration === null) {
+			$expiration = null;
+		} else {
+			try {
+				$expiration = new DateTime($json->expiration);
+			} catch (Throwable $e) {
+				return $response->withStatus(ApiResponse::S400_BAD_REQUEST, 'Invalid expiration date');
+			}
+		}
+		$apiKey = new ApiKey($json->description, $expiration);
+		$this->entityManager->persist($apiKey);
+		$this->entityManager->flush();
+		return $response->writeJsonObject($apiKey)
+			->withStatus(ApiResponse::S201_CREATED);
 	}
 
 	/**
 	 * @Path("/{id}")
 	 * @Method("GET")
 	 * @OpenApi("
-	 *  summary: Finds user by ID
+	 *  summary: Finds API key by ID
 	 *  responses:
 	 *      '200':
 	 *          description: Success
 	 *          content:
 	 *              application/json:
 	 *                  schema:
-	 *                      $ref: '#/components/schemas/UserDetail'
+	 *                      $ref: '#/components/schemas/ApiKeyDetail'
 	 *      '404':
 	 *          description: Not found
 	 * ")
 	 * @RequestParameters({
-	 *      @RequestParameter(name="id", type="integer", description="User ID")
+	 *      @RequestParameter(name="id", type="integer", description="API key ID")
 	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -161,22 +159,22 @@ class UsersController extends BaseController {
 	 */
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$id = (int) $request->getParameter('id');
-		$user = $this->repository->find($id);
-		if ($user === null) {
-			return $response->withStatus(404);
+		$apiKey = $this->repository->find($id);
+		if ($apiKey === null) {
+			return $response->withStatus(ApiResponse::S404_NOT_FOUND, 'API key not found');
 		}
-		assert($user instanceof User);
-		return $response->writeJsonObject($user);
+		assert($apiKey instanceof ApiKey);
+		return $response->writeJsonObject($apiKey);
 	}
 
 	/**
 	 * @Path("/{id}")
 	 * @Method("DELETE")
 	 * @OpenApi("
-	 *   summary: Deletes a user
+	 *   summary: Deletes a API key
 	 * ")
 	 * @RequestParameters({
-	 *      @RequestParameter(name="id", type="integer", description="User ID")
+	 *      @RequestParameter(name="id", type="integer", description="API key ID")
 	 * })
 	 * @Responses({
 	 *      @Response(code="200", description="Success"),
@@ -188,34 +186,36 @@ class UsersController extends BaseController {
 	 */
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$id = (int) $request->getParameter('id');
-		$user = $this->repository->find($id);
-		if ($user === null) {
-			return $response->withStatus(404, 'User not found');
+		$apiKey = $this->repository->find($id);
+		if ($apiKey === null) {
+			return $response->withStatus(ApiResponse::S404_NOT_FOUND, 'API key not found');
 		}
-		$this->entityManager->remove($user);
+		$this->entityManager->remove($apiKey);
 		$this->entityManager->flush();
-		return $response->withStatus(200);
+		return $response;
 	}
 
 	/**
 	 * @Path("/{id}")
 	 * @Method("PUT")
 	 * @OpenApi("
-	 *  summary: Edits user
+	 *  summary: Edits the API key
 	 *  requestBody:
 	 *      required: true
 	 *      content:
 	 *          application/json:
 	 *              schema:
-	 *                  $ref: '#/components/schemas/UserEdit'
+	 *                  $ref: '#/components/schemas/ApiKeyModify'
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '400':
+	 *          description: 'Bad request'
+	 *      '404':
+	 *          description: 'API key not found'
 	 * ")
 	 * @RequestParameters({
-	 *      @RequestParameter(name="id", type="integer", description="User ID")
-	 * })
-	 * @Responses({
-	 *      @Response(code="200", description="Success"),
-	 *      @Response(code="400", description="Bad request"),
-	 *      @Response(code="404", description="Not found")
+	 *      @RequestParameter(name="id", type="integer", description="API key ID")
 	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -223,40 +223,30 @@ class UsersController extends BaseController {
 	 */
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$id = (int) $request->getParameter('id');
+		$apiKey = $this->repository->find($id);
+		if ($apiKey === null) {
+			return $response->withStatus(ApiResponse::S404_NOT_FOUND, 'API key not found');
+		}
+		assert($apiKey instanceof ApiKey);
 		try {
-			$json = $request->getJsonBody();
+			$json = $request->getJsonBody(false);
 		} catch (JsonException $e) {
-			return $response->withStatus(400, 'Invalid JSON syntax');
+			return $response->withStatus(ApiResponse::S400_BAD_REQUEST, 'Invalid JSON syntax');
 		}
-		$user = $this->repository->find($id);
-		if ($user === null) {
-			return $response->withStatus(404, 'User not found.');
-		}
-		assert($user instanceof User);
-		if (array_key_exists('username', $json)) {
-			$userWithName = $this->repository->findOneByUserName($json['username']);
-			if ($userWithName !== null && $userWithName->getId() !== $id) {
-				return $response->withStatus(400, 'Username already exists.');
-			}
-			$user->setUserName($json['username']);
-		}
-		if (array_key_exists('role', $json)) {
+		$apiKey->setDescription($json->description);
+		if ($json->expiration === null) {
+			$expiration = null;
+		} else {
 			try {
-				$user->setRole($json['role']);
-			} catch (InvalidUserRoleException $e) {
-				return $response->withStatus(400, 'Invalid user role');
+				$expiration = new DateTime($json->expiration);
+			} catch (Throwable $e) {
+				return $response->withStatus(ApiResponse::S400_BAD_REQUEST, 'Invalid expiration date');
 			}
 		}
-		if (array_key_exists('language', $json)) {
-			try {
-				$user->setLanguage($json['language']);
-			} catch (InvalidUserLanguageException $e) {
-				return $response->withStatus(400, 'Invalid user language');
-			}
-		}
-		$this->entityManager->persist($user);
+		$apiKey->setExpiration($expiration);
+		$this->entityManager->persist($apiKey);
 		$this->entityManager->flush();
-		return $response->withStatus(200);
+		return $response;
 	}
 
 }
