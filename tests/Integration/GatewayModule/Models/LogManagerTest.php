@@ -34,11 +34,6 @@ final class LogManagerTest extends TestCase {
 	private $fileManager;
 
 	/**
-	 * @var string Directory with IQRF Gateway Daemon's logs
-	 */
-	private $logDir;
-
-	/**
 	 * @var LogManager IQRF Gateway Daemon's log manager
 	 */
 	private $manager;
@@ -77,11 +72,18 @@ final class LogManagerTest extends TestCase {
 	 * Sets up the test environment
 	 */
 	protected function setUp(): void {
-		$this->logDir = realpath(__DIR__ . '/../../../data/logs/');
+		$logDir = realpath(__DIR__ . '/../../../data/logs/');
 		$commandStack = new CommandStack();
 		$commandManager = new CommandManager(false, $commandStack);
-		$this->fileManager = new FileManager($this->logDir, $commandManager);
-		$this->manager = new LogManager($this->logDir);
+		$this->fileManager = new FileManager($logDir, $commandManager);
+		$this->manager = new LogManager($logDir);
+		$modifyDates = [
+			'2018-08-13T13:37:13.107090' => '2018-08-13-13-37-496-iqrf-gateway-daemon.log',
+			'2018-08-13T13:37:18.262028' => '2018-08-13-13-37-834-iqrf-gateway-daemon.log',
+		];
+		foreach ($modifyDates as $date => $fileName) {
+			$commandManager->run('touch -m -d ' . $date . ' ' . $logDir . '/' . $fileName);
+		}
 	}
 
 }
