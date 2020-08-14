@@ -20,14 +20,22 @@ declare(strict_types = 1);
 
 namespace App\CloudModule\Presenters;
 
+use App\CloudModule\Forms\PixlaFormFactory;
 use App\CloudModule\Models\PixlaManager;
 use App\CoreModule\Presenters\ProtectedPresenter;
 use App\ServiceModule\Exceptions\NonexistentServiceException;
+use Nette\Application\UI\Form;
 
 /**
  * PIXLA management system presenter
  */
 class PixlaPresenter extends ProtectedPresenter {
+
+	/**
+	 * @var PixlaFormFactory Generic form factory
+	 * @inject
+	 */
+	public $formFactory;
 
 	/**
 	 * @var PixlaManager PIXLA management system manager
@@ -46,21 +54,25 @@ class PixlaPresenter extends ProtectedPresenter {
 	/**
 	 * Disables and stops PIXLA client
 	 */
-	public function actionDisable(): void {
+	public function handleDisable(): void {
 		$this->manager->disableService();
 		$this->flashSuccess('cloud.pixla.messages.disable');
-		$this->setView('default');
-		$this->redirect('Pixla:default');
+		if (!$this->isAjax()) {
+			$this->setView('default');
+			$this->redirect('Pixla:default');
+		}
 	}
 
 	/**
 	 * Enables and starts PIXLA client
 	 */
-	public function actionEnable(): void {
+	public function handleEnable(): void {
 		$this->manager->enableService();
 		$this->flashSuccess('cloud.pixla.messages.enable');
-		$this->setView('default');
-		$this->redirect('Pixla:default');
+		if (!$this->isAjax()) {
+			$this->setView('default');
+			$this->redirect('Pixla:default');
+		}
 	}
 
 	/**
@@ -73,6 +85,9 @@ class PixlaPresenter extends ProtectedPresenter {
 			$this->template->status = 'missing';
 		}
 		$this->template->token = $this->manager->getToken();
+		if ($this->isAjax()) {
+			$this->presenter->redrawControl('pixla');
+		}
 	}
 
 	/**
@@ -84,6 +99,14 @@ class PixlaPresenter extends ProtectedPresenter {
 			$this->flashError('cloud.pixla.messages.disabled');
 			$this->redirect('Homepage:default');
 		}
+	}
+
+	/**
+	 * Creates the PIXLA form
+	 * @return Form PIXLA form
+	 */
+	protected function createComponentPixlaForm(): Form {
+		return $this->formFactory->create($this);
 	}
 
 }

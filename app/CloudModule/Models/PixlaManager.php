@@ -41,6 +41,11 @@ class PixlaManager {
 	private $serviceManager;
 
 	/**
+	 * File containing PIXLA token
+	 */
+	private const FILE_NAME = 'customer_id';
+
+	/**
 	 * Constructor
 	 * @param FileManager $fileManager File manager
 	 * @param SystemDManager $serviceManager SystemD service manager
@@ -77,10 +82,20 @@ class PixlaManager {
 	 */
 	public function getToken(): ?string {
 		try {
-			return Strings::trim($this->fileManager->read('customer_id'), "\n");
+			return Strings::trim($this->fileManager->read(self::FILE_NAME), "\n");
 		} catch (IOException $e) {
 			return null;
 		}
+	}
+
+	/**
+	 * Sets new PIXLA token
+	 * @param string $token PIXLA token
+	 * @throws IOException IO error
+	 */
+	public function setToken(string $token): void {
+		$content = Strings::trim($token);
+		$this->fileManager->write(self::FILE_NAME, $content);
 	}
 
 }
