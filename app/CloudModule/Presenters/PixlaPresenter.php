@@ -54,21 +54,25 @@ class PixlaPresenter extends ProtectedPresenter {
 	/**
 	 * Disables and stops PIXLA client
 	 */
-	public function actionDisable(): void {
+	public function handleDisable(): void {
 		$this->manager->disableService();
 		$this->flashSuccess('cloud.pixla.messages.disable');
-		$this->setView('default');
-		$this->redirect('Pixla:default');
+		if (!$this->isAjax()) {
+			$this->setView('default');
+			$this->redirect('Pixla:default');
+		}
 	}
 
 	/**
 	 * Enables and starts PIXLA client
 	 */
-	public function actionEnable(): void {
+	public function handleEnable(): void {
 		$this->manager->enableService();
 		$this->flashSuccess('cloud.pixla.messages.enable');
-		$this->setView('default');
-		$this->redirect('Pixla:default');
+		if (!$this->isAjax()) {
+			$this->setView('default');
+			$this->redirect('Pixla:default');
+		}
 	}
 
 	/**
@@ -80,7 +84,10 @@ class PixlaPresenter extends ProtectedPresenter {
 		} catch (NonexistentServiceException $e) {
 			$this->template->status = 'missing';
 		}
-		$this->displayToken();
+		$this->template->token = $this->manager->getToken();
+		if ($this->isAjax()) {
+			$this->presenter->redrawControl('pixla');
+		}
 	}
 
 	/**
@@ -100,13 +107,6 @@ class PixlaPresenter extends ProtectedPresenter {
 	 */
 	protected function createComponentPixlaForm(): Form {
 		return $this->formFactory->create($this);
-	}
-
-	/**
-	 * Inserts token string into the template.
-	 */
-	public function displayToken(): void {
-		$this->template->token = $this->manager->getToken();
 	}
 
 }

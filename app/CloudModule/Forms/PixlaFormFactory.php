@@ -69,7 +69,8 @@ class PixlaFormFactory {
 		$form = $this->factory->create(self::PREFIX);
 		$form->addText('token', 'token')
 			->setRequired('missingParam');
-		$form->addSubmit('save', 'save');
+		$form->addSubmit('save', 'save')
+			->setHtmlAttribute('class', 'ajax btn btn-primary');
 		$form->onSubmit[] = [$this, 'save'];
 		return $form;
 	}
@@ -82,11 +83,7 @@ class PixlaFormFactory {
 		$token = $form->getValues()->token;
 		try {
 			$this->manager->setToken($token);
-			$tokenInput = $form['token'];
-			assert($tokenInput instanceof TextInput);
-			$tokenInput->setValue('');
-			$this->presenter->displayToken();
-			$this->presenter->redrawControl('pixlaToken');
+			$form->setValues([], true);
 			$this->presenter->flashSuccess(self::PREFIX . '.editSuccess');
 		} catch (IOException $e) {
 			$this->presenter->flashError(self::PREFIX . '.editFailure');

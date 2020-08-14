@@ -86,26 +86,25 @@ class PixlaController extends BaseController {
 	 * @Path("/token")
 	 * @Method("PUT")
 	 * @OpenApi("
-	 * 	summary: Sets new PIXLA token string
-	 * 	requestBody:
-	 * 		required: true
-	 * 		content:
-	 * 			application/json:
-	 * 				schema:
-	 * 					$ref: '#/components/schemas/PixlaToken'
+	 *  summary: Sets new PIXLA token string
+	 *  requestBody:
+	 *      required: true
+	 *      content:
+	 *          application/json:
+	 *              schema:
+	 *                  $ref: '#/components/schemas/PixlaToken'
 	 * ")
 	 * @Responses({
-	 * 		@Response(code="200", description="Success"),
-	 *		@Response(code="400", description="Bad request"),
-	 *		@Response(code="500", description="Server error")
+	 *      @Response(code="200", description="Success"),
+	 *      @Response(code="400", description="Bad request"),
+	 *      @Response(code="500", description="Server error")
 	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
-	public function set(ApiRequest $request, ApiResponse $response): ApiResponse {
+	public function setToken(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
-			$tok = $request->getJsonBody();
 			$this->manager->setToken($request->getJsonBody()['token']);
 			return $response;
 		} catch (JsonException $e) {
