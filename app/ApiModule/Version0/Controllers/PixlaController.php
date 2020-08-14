@@ -30,6 +30,8 @@ use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\CloudModule\Models\PixlaManager;
 use App\ServiceModule\Exceptions\NonexistentServiceException;
+use Nette\IOException;
+use Nette\Utils\JsonException;
 
 /**
  * PIXLA controller
@@ -78,6 +80,39 @@ class PixlaController extends BaseController {
 			$status['status'] = 'missing';
 		}
 		return $response->writeJsonBody($status);
+	}
+
+	/**
+	 * @Path("/token")
+	 * @Method("PUT")
+	 * @OpenApi("
+	 * 	summary: Sets new PIXLA token string
+	 * 	requestBody:
+	 * 		required: true
+	 * 		content:
+	 * 			application/json:
+	 * 				schema:
+	 * 					$ref: '#/components/schemas/PixlaToken'
+	 * ")
+	 * @Responses({
+	 * 		@Response(code="200", description="Success"),
+	 *		@Response(code="400", description="Bad request"),
+	 *		@Response(code="500", description="Server error")
+	 * })
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function set(ApiRequest $request, ApiResponse $response): ApiResponse {
+		try {
+			$tok = $request->getJsonBody();
+			$this->manager->setToken($request->getJsonBody()['token']);
+			return $response;
+		} catch (JsonException $e) {
+			return $response->withStatus(ApiResponse::S400_BAD_REQUEST, 'Invalid JSON syntax.');
+		} catch (IOException $e) {
+			return $response->withStatus(ApiResponse::S500_INTERNAL_SERVER_ERROR, $e->getMessage());
+		}
 	}
 
 	/**
