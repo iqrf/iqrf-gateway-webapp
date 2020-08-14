@@ -111,8 +111,8 @@ class UserDataGridFactory {
 			->setIcon('plus')
 			->setClass('btn btn-xs btn-success');
 		if (!$this->presenter->getUser()->isInRole('power')) {
-			$grid->allowRowsAction('edit', function (array $row): bool {
-				return $row['id'] === $this->presenter->getUser()->getId();
+			$grid->allowRowsAction('edit', function (User $user): bool {
+				return $user->getId() === $this->presenter->getUser()->getId();
 			});
 		}
 		return $grid;
