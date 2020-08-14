@@ -24,7 +24,6 @@ use App\CloudModule\Models\PixlaManager;
 use App\CloudModule\Presenters\PixlaPresenter;
 use App\CoreModule\Forms\FormFactory;
 use Nette\Application\UI\Form;
-use Nette\Forms\Controls\TextInput;
 use Nette\IOException;
 
 class PixlaFormFactory {
