@@ -77,6 +77,13 @@ class OpenApiController extends BaseController {
 			$openApi['paths'][Strings::replace($uri, '~/api/v0~', '')] = $path;
 			unset($openApi['paths'][$uri]);
 		}
+		foreach ($openApi['paths'] as &$path) {
+			foreach ($path as &$method) {
+				if (!array_key_exists('security', $method)) {
+					$method['responses']['401'] = ['$ref' => '#/components/responses/UnauthorizedError'];
+				}
+			}
+		}
 		return $response->writeJsonBody($openApi);
 	}
 

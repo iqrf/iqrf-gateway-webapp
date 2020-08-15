@@ -19,6 +19,13 @@ servers:
 			server:
 				default: localhost:8080
 components:
+	responses:
+		UnauthorizedError:
+			description: API key or user token is missing or invalid
+			headers:
+				WWW-Authenticate:
+					schema:
+						type: string
 	schemas:
 		ApiKeyCreated:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/apiKeyCreated.json
