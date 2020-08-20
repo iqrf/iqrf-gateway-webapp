@@ -1,0 +1,178 @@
+{
+	"core": {
+		"title": "IQRF Gateway Webapp"
+	},
+	"gateway": {
+		"title": "Gateway",
+		"description": "Control this gateway.",
+		"info": {
+			"title": "Information",
+			"description": "Show information about this gateway.",
+			"board": "Board",
+			"gwId": "IQRF Gateway ID",
+			"gwmonId": "PIXLA token",
+			"version": {
+				"iqrf-gw-controller": "IQRF Gateway Controller",
+				"iqrf-gw-daemon": "IQRF Gateway Daemon",
+				"iqrf-gw-webapp": "IQRF Gateway Webapp"
+			},
+			"hostname": "Hostname",
+			"addresses": {
+				"ip": "IP addresses",
+				"mac": "MAC addresses"
+			},
+			"tr": {
+				"title": "TR info",
+				"error": "Cannot get information about the Coordinator.",
+				"moduleType": "Module type",
+				"mcuType": "MCU type",
+				"moduleId": "MID",
+				"os": "OS",
+				"dpa": "DPA",
+				"rfMode": "RF mode",
+				"networkType": "Network type",
+				"voltage": "Supply voltage"
+			},
+			"usages": {
+				"memory": "Memory usage",
+				"disks": "Disk usages",
+				"swap": "Swap usage",
+				"used": "Used"
+			},
+			"gwMode": "Gateway mode",
+			"gwModes": {
+				"operational": "Operational mode",
+				"service": "Service mode",
+				"forwarding": "Forwarding mode",
+				"unknown": "An error occured while getting the current gateway mode",
+				"": "gateway.info.gwModes."
+			}
+		},
+		"diagnostics": {
+			"download": "Download diagnostics"
+		},
+		"log": {
+			"title": "Log file",
+			"description": "Shows log of IQRF Gateway Daemon.",
+			"download": "Download",
+			"messages": {
+				"nonExistingDir": "IQRF Gateway Daemon's log directory does not exist.",
+				"readError": "Cannot read IQRF Gateway Daemon's log file.",
+				"notFound": "IQRF Gateway Daemon log file cannot be found."
+			}
+		},
+		"mode": {
+			"title": "Change mode",
+			"description": "Change gateway mode.",
+			"modes": {
+				"operational": {
+					"title": "Operational mode",
+					"message": "IQRF Gateway Daemon's mode has been changed to operational mode."
+				},
+				"service": {
+					"title": "Service mode",
+					"message": "IQRF Gateway Daemon's mode has been changed to service mode."
+				},
+				"forwarding": {
+					"title": "Forwarding mode",
+					"message": "IQRF Gateway Daemon's mode has been changed to forwarding mode."
+				}
+			}
+		},
+		"power": {
+			"title": "Power control",
+			"description": "Powers off or reboots this gateway.",
+			"powerOff": {
+				"title": "Power off",
+				"description": "Powers off the operating system of your device.",
+				"button": "Perform power off",
+				"success": "Your device has been powered off successfully."
+			},
+			"reboot": {
+				"title": "Reboot",
+				"description": "Reboots the operating system of your device.",
+				"button": "Perform reboot",
+				"success": "Your device has been restarted successfully."
+			}
+		},
+		"updater": {
+			"title": "System updater",
+			"description": "System updater.",
+			"warning": "System updater is an experimental feature and could change at any time. Please wait until the process displays its output.",
+			"update": "Update packages list",
+			"listUpgradable": "List upgradable packages",
+			"upgrade": "Upgrade packages",
+			"upgradablePackages": {
+				"title": "List of upgradable packages",
+				"packageName": "Name",
+				"oldVersion": "Old version",
+				"newVersion": "New version"
+			},
+			"output": "Command output",
+			"messages": {
+				"disabled": "System updater is disabled.",
+				"unsupportedManager": "This device is using an unsupported package manager."
+			}
+		},
+		"errors": {
+			"log-read": "Cannot read log file."
+		}
+	},
+	"service": {
+		"actions": {
+			"disable": "Disable",
+			"enable": "Enable",
+			"start": "Start",
+			"stop": "Stop",
+			"restart": "Restart",
+			"status": "Refresh status"
+		},
+		"status": "Service status",
+		"states": {
+			"active": "active",
+			"inactive": "inactive",
+			"disabled": "Disabled",
+			"enabled": "Enabled",
+			"missing": "Missing"
+		},
+		"iqrf-gateway-daemon": {
+			"title": "IQRF service",
+			"description": "Control IQRF Gateway Daemon's service.",
+			"messages": {
+				"disable": "IQRF Gateway Daemon has been disabled.",
+				"enable": "IQRF Gateway Daemon has been enabled.",
+				"start": "IQRF Gateway Daemon has been started.",
+				"stop": "IQRF Gateway Daemon has been stopped.",
+				"restart": "IQRF Gateway Daemon has been restarted. It takes tens of seconds before the system is ready."
+			}
+		},
+		"ssh": {
+			"title": "SSH service",
+			"description": "Controls the SSH daemon service.",
+			"messages": {
+				"disabled": "SSH daemon manager is disabled.",
+				"disable": "SSH daemon service has been disabled.",
+				"enable": "SSH daemon service has been enabled.",
+				"start": "SSH daemon service has been started.",
+				"stop": "SSH daemon service has been stopped.",
+				"restart": "SSH daemon service has been restarted."
+			}
+		},
+		"unattended-upgrades": {
+			"title": "Automatic upgrades",
+			"description": "Controls the automatic unattended upgrades service.",
+			"messages": {
+				"disabled": "Automatic upgrades are disabled.",
+				"disable": "Automatic upgrades service has been disabled.",
+				"enable": "Automatic upgrades service has been enabled.",
+				"start": "Automatic upgrades service has been started.",
+				"stop": "Automatic upgrades service has been stopped.",
+				"restart": "Automatic upgrades service has been restarted."
+			}
+		},
+		"errors": {
+			"unsupportedInit": "Not supported init system is used.",
+			"processTimeout": "Service manager process timed out."
+		}
+	}
+}

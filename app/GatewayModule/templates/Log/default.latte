@@ -17,13 +17,3 @@
 
 {block title}{_gateway.log.title}{/block}
 {block content}
-{ifset $log}
-	<div class='panel panel-default'>
-		<div class='panel-body'>
-			<pre class='log'>{$log}</pre>
-			<a class='btn btn-primary' n:href='Log:download' role='button'>
-				{_gateway.log.download}
-			</a>
-		</div>
-	</div>
-{/ifset}

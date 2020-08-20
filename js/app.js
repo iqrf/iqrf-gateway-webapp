@@ -26,16 +26,35 @@ import 'ublaboo-datagrid';
 import autosize from 'autosize';
 import Nette from 'nette-forms';
 import * as Sentry from '@sentry/browser';
+import { Vue as VueIntegration } from '@sentry/integrations';
 import hljs from 'highlight.js/lib/highlight';
 import bash from 'highlight.js/lib/languages/bash';
 import json from 'highlight.js/lib/languages/json';
+import spinner from './spinner';
+import Vue from 'vue';
+//import VueSocketIO from 'vue-socket.io';
+
+
+import i18n from './i18n';
+import store from './store';
+import AuthenticationService from './services/AuthenticationService';
 
 import 'highlight.js/styles/github.css';
 import '../css/app.css';
 
+import router from './router';
+
+import App from './components/App';
+import DaemonStatus from './components/DaemonStatus';
+import GatewayInfo from './components/Gateway/GatewayInfo';
+import LogViewer from './components/Gateway/LogViewer';
+import ServiceControl from './components/ServiceControl';
+
 Sentry.init({
-	dsn: 'https://7cd0252aae6d491b98514b9486cd2771@sentry.iqrf.org/2'
+	dsn: 'https://435ee2b55f994e5f85e21a9ca93ea7a7@sentry.iqrf.org/5',
+	integrations: [new VueIntegration({Vue: Vue, attachProps: true, logErrors: true})],
 });
+
 
 Nette.initOnLoad();
 
@@ -49,29 +68,12 @@ hljs.initHighlightingOnLoad();
 hljs.registerLanguage('bash', bash);
 hljs.registerLanguage('json', json);
 
-function showSpinner() {
-	let spinner = document.createElement('div');
-	spinner.className = 'spinner';
-	let loading = document.createElement('div');
-	loading.className = 'loading';
-	loading.appendChild(spinner);
-	document.querySelector('body')
-		.insertAdjacentElement('afterbegin', loading);
-}
-
-function hideSpinner() {
-	let elements = document.getElementsByClassName('loading');
-	for (let i = 0; i < elements.length; i++) {
-		elements[i].remove();
-	}
-}
-
 $.nette.ext('spinner', {
 	start: function () {
-		showSpinner();
+		spinner.showSpinner();
 	},
 	complete: function () {
-		hideSpinner();
+		spinner.hideSpinner();
 	}
 });
 
@@ -85,7 +87,7 @@ $.nette.ext('confirm', {
 		if (question) {
 			let retVal = confirm(question);
 			if (retVal) {
-				hideSpinner();
+				spinner.hideSpinner();
 			}
 			return retVal;
 		}
@@ -99,3 +101,34 @@ $.nette.ext('highlighter', {
 		});
 	}
 });
+
+Vue.prototype.$appName = 'IQRF Gateway Webapp frontend';
+
+/*Vue.use(new VueSocketIO({
+	debug: true,
+	connection: 'ws://localhost/wsMonitor',
+	vuex: {
+		store,
+	}
+}));*/
+
+new Vue({
+	el: '#app',
+	store: store,
+	data: {
+		message: 'Hello world from Vue'
+	},
+	components: {
+		App,
+		DaemonStatus,
+		GatewayInfo,
+		LogViewer,
+		ServiceControl
+	},
+	router: router,
+	i18n: i18n
+});
+
+if (localStorage.getItem('jwt') === null) {
+	AuthenticationService.login('iqrf', 'iqrf');
+}

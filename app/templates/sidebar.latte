@@ -20,19 +20,23 @@
 <aside class='main-sidebar'>
 	<section class='sidebar'>
 		<ul class='sidebar-menu' data-widget='tree'>
-			<li n:if='$user->loggedIn' n:class='((isModuleCurrent("Gateway") || isModuleCurrent("Service")) ? "active menu-open ") . "treeview"'>
+			<li n:if='$user->isLoggedIn()' n:class='((isModuleCurrent("Gateway") || isModuleCurrent("Service")) ? "active menu-open ") . "treeview"'>
 				<a n:href=':Gateway:Homepage:default' role='button'>
 					<i class='glyphicon glyphicon-hdd'></i>
 					<span>{_gateway.title}</span>
 					<span class='pull-right-container'><i class='caret'></i></span>
 				</a>
 				<ul class='treeview-menu'>
-					<li n:class='isLinkCurrent(":Gateway:Info:*") ? "active"'>
-						<a n:href=':Gateway:Info:default'>{_gateway.info.title}</a>
-					</li>
-					<li n:class='isLinkCurrent(":Gateway:Log:*") ? "active"'>
-						<a n:href=':Gateway:Log:default'>{_gateway.log.title}</a>
-					</li>
+					<router-link to='/gateway/info' v-slot='{ href, route, navigate, isActive }'>
+						<li :class='isActive && "active"'>
+							<a :href='href' @click='navigate'>{{ $t(route.meta.title) }}</a>
+						</li>
+					</router-link>
+					<router-link to='/gateway/log' v-slot='{ href, route, navigate, isActive }'>
+						<li :class='isActive && "active"'>
+							<a :href='href' @click='navigate'>{{ $t(route.meta.title) }}</a>
+						</li>
+					</router-link>
 					<li n:class='isLinkCurrent(":Gateway:ChangeMode:*") ? "active"'>
 						<a n:href=':Gateway:ChangeMode:default'>{_gateway.mode.title}</a>
 					</li>
@@ -59,7 +63,7 @@
 					</li>
 				</ul>
 			</li>
-			<li n:if='$user->loggedIn' n:isModuleActive='Config'>
+			<li n:if='$user->isLoggedIn()' n:isModuleActive='Config'>
 				<a n:href=':Config:Homepage:default' role='button'>
 					<i class='glyphicon glyphicon-wrench'></i>
 					<span>{_config.title}</span>
@@ -134,7 +138,7 @@
 					</li>
 				</ul>
 			</li>
-			<li n:if='$user->loggedIn' n:isModuleActive='IqrfNet'>
+			<li n:if='$user->isLoggedIn()' n:isModuleActive='IqrfNet'>
 				<a n:href=':IqrfNet:Homepage:default' role='button'>
 					<i class='glyphicon glyphicon-signal'></i>
 					<span>{_iqrfnet.title}</span>
@@ -161,7 +165,7 @@
 					</li>
 				</ul>
 			</li>
-			<li n:if='$user->loggedIn' n:ifFeature='networkManager' n:isModuleActive='Network'>
+			<li n:if='$user->isLoggedIn()' n:ifFeature='networkManager' n:isModuleActive='Network'>
 				<a n:href=':Network:Homepage:default' role='button'>
 					<i class='glyphicon glyphicon-globe'></i>
 					<span>{_network.title}</span>
@@ -173,7 +177,7 @@
 					</li>
 				</ul>
 			</li>
-			<li n:if='$user->loggedIn' n:isModuleActive='Cloud'>
+			<li n:if='$user->isLoggedIn()' n:isModuleActive='Cloud'>
 				<a n:href=':Cloud:Homepage:default' role='button'>
 					<i class='glyphicon glyphicon-cloud'></i>
 					<span>{_cloud.title}</span>
@@ -200,19 +204,19 @@
 					</li>
 				</ul>
 			</li>
-			<li n:if='!$user->loggedIn' n:class='isLinkCurrent(":Core:Sign:In") ? "active"'>
+			<li n:if='!$user->isLoggedIn()' n:class='isLinkCurrent(":Core:Sign:In") ? "active"'>
 				<a n:href=':Core:Sign:in'>
 					<i class='glyphicon glyphicon-log-in'></i>
 					<span>{_core.sign.in}</span>
 				</a>
 			</li>
-			<li n:if='$user->loggedIn' n:ifFeature='grafana' n:ifset='$urls["grafana"]'>
+			<li n:if='$user->isLoggedIn()' n:ifFeature='grafana' n:ifset='$urls["grafana"]'>
 				<a href='{$urls["grafana"]}'>
 					<i class='glyphicon glyphicon-dashboard'></i>
 					<span>{_core.grafana.title}</span>
 				</a>
 			</li>
-			<li n:if='$user->loggedIn' n:ifFeature='nodeRed' n:ifset='$urls["nodeRed"]' class='treeview'>
+			<li n:if='$user->isLoggedIn()' n:ifFeature='nodeRed' n:ifset='$urls["nodeRed"]' class='treeview'>
 				<a n:href=':Core:Homepage:default' role='button'>
 					<i class='glyphicon glyphicon-tasks'></i>
 					<span>{_core.node-red.title}</span>
@@ -223,13 +227,13 @@
 					<li><a href='{$urls["nodeRed"]}ui/'>{_core.node-red-dashboard.title}</a></li>
 				</ul>
 			</li>
-			<li n:if='$user->loggedIn' n:ifFeature='supervisord' n:ifset='$urls["supervisord"]'>
+			<li n:if='$user->isLoggedIn()' n:ifFeature='supervisord' n:ifset='$urls["supervisord"]'>
 				<a href='{$urls["supervisord"]}'>
 					<i class='glyphicon glyphicon-off'></i>
 					<span>{_core.supervisor.title}</span>
 				</a>
 			</li>
-			<li n:if='$user->loggedIn' n:class='isLinkCurrent(":Core:User:*") ? "active"'>
+			<li n:if='$user->isLoggedIn()' n:class='isLinkCurrent(":Core:User:*") ? "active"'>
 				<a n:href=':Core:User:default'>
 					<i class='glyphicon glyphicon-user'></i>
 					<span>{_core.user.title}</span>

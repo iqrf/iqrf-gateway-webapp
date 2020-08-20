@@ -1,0 +1,69 @@
+<template>
+	<div class='panel panel-default' v-if="log">
+		<div class='panel-body'>
+			<pre class='log'>{{ log }}</pre>
+			<button class='btn btn-primary' @click='downloadArchive()' role='button'>
+				{{ $t('gateway.log.download') }}
+			</button>
+		</div>
+	</div>
+</template>
+
+<script>
+import GatewayService from '../../services/GatewayService';
+import spinner from '../../spinner';
+
+export default {
+	name: 'log-viewer',
+	data() {
+		return {
+			log: null
+		};
+	},
+	methods: {
+		downloadArchive() {
+			spinner.showSpinner();
+			GatewayService.getLogArchive().then(
+					(response) => {
+						const contentDisposition = response.headers['content-disposition'];
+						let fileName = 'iqrf-gateway-logs.zip';
+						if (contentDisposition) {
+							const fileNameMatch = contentDisposition.match(/filename="(.+)"/);
+							if (fileNameMatch.length === 2) {
+								fileName = fileNameMatch[1];
+							}
+						}
+						const blob = new Blob([response.data], {type: 'application/zip'});
+						const fileUrl = window.URL.createObjectURL(blob);
+						const file = document.createElement('a');
+						file.href = fileUrl;
+						file.setAttribute('download', fileName);
+						document.body.appendChild(file);
+						spinner.hideSpinner();
+						file.click();
+					}
+			).catch(() => (spinner.hideSpinner()));
+		}
+	},
+	created() {
+		spinner.showSpinner();
+		GatewayService.getLatestLog()
+				.then(
+						(response) => {
+							this.log = response.data;
+							spinner.hideSpinner();
+						}
+				)
+				.catch(() => spinner.hideSpinner());
+	},
+	computed: {
+		title() {
+			return this.$i18n.t('')
+		}
+	}
+};
+</script>
+
+<style scoped>
+
+</style>
