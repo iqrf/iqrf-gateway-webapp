@@ -81,7 +81,9 @@ class SchedulerMigrationManager {
 		}
 		$zipManager = new ZipArchiveManager($path);
 		$zipManager->addFolder($this->configDirectory, '');
-		$zipManager->deleteDirectory('schema');
+		if ($zipManager->exist('schema')) {
+			$zipManager->deleteDirectory('schema');
+		}
 		$zipManager->close();
 		return $path;
 	}
