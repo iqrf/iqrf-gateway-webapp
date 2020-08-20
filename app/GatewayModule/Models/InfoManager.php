@@ -85,7 +85,7 @@ class InfoManager {
 	 * @return array<string, array<int|string, array<string, array<int, string>|string>|string>|string|null> Gateway information
 	 */
 	public function get(bool $verbose = false): array {
-		$info = [
+		return [
 			'board' => $this->getBoard(),
 			'gwId' => $this->getId(),
 			'pixla' => $this->getPixlaToken(),
@@ -100,12 +100,6 @@ class InfoManager {
 			'memoryUsage' => $this->getMemoryUsage(),
 			'swapUsage' => $this->getSwapUsage(),
 		];
-		try {
-			$info['coordinator'] = $this->getCoordinatorInfo();
-		} catch (DpaErrorException | EmptyResponseException | JsonException $e) {
-			$info['coordinator'] = null;
-		}
-		return $info;
 	}
 
 	/**

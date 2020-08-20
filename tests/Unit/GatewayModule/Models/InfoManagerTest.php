@@ -13,7 +13,6 @@ namespace Tests\Unit\GatewayModule\Models;
 use App\GatewayModule\Models\InfoManager;
 use App\GatewayModule\Models\NetworkManager;
 use App\GatewayModule\Models\VersionManager;
-use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Models\EnumerationManager;
 use Mockery;
 use Mockery\MockInterface;
@@ -107,7 +106,6 @@ final class InfoManagerTest extends CommandTestCase {
 			'free' => '5.63 GB',
 			'usage' => '27.15%',
 		],
-		'coordinator' => null,
 	];
 
 	/**
@@ -269,8 +267,6 @@ final class InfoManagerTest extends CommandTestCase {
 			->andReturn(self::EXPECTED['memoryUsage']);
 		$manager->shouldReceive('getSwapUsage')
 			->andReturn(self::EXPECTED['swapUsage']);
-		$manager->shouldReceive('getCoordinatorInfo')
-			->andThrow(EmptyResponseException::class);
 		Assert::same(self::EXPECTED, $manager->get($verbose));
 	}
 

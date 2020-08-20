@@ -76,8 +76,8 @@
 			<tr>
 				<th>{_gateway.info.tr.title}</th>
 				<td>
-					{ifset $info['coordinator']['response']->data->rsp}
-						{var $coordinator = $info['coordinator']['response']->data->rsp}
+					{ifset $coordinatorInfo['response']->data->rsp}
+						{var $coordinator = $coordinatorInfo['response']->data->rsp}
 						{var $osInfo = $coordinator->osRead}
 						{var $enumeration = $coordinator->peripheralEnumeration}
 						<strong>{_gateway.info.tr.moduleType}:</strong> {$osInfo->trMcuType->trType}<br>

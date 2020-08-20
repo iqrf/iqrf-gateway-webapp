@@ -21,6 +21,9 @@ declare(strict_types = 1);
 namespace App\InstallModule\Presenters;
 
 use App\GatewayModule\Models\InfoManager;
+use App\IqrfNetModule\Exceptions\DpaErrorException;
+use App\IqrfNetModule\Exceptions\EmptyResponseException;
+use Nette\Utils\JsonException;
 
 /**
  * IQRF Gateway info presenter
@@ -45,9 +48,10 @@ class GatewayInfoPresenter extends InstallationPresenter {
 	 * Renders a default page
 	 */
 	public function renderDefault(): void {
-		$info = $this->infoManager->get(true);
-		$this->template->info = $info;
-		if (!isset($info['coordinator'])) {
+		$this->template->info = $this->infoManager->get(true);
+		try {
+			$this->template->coordinatorInfo = $this->infoManager->getCoordinatorInfo();
+		} catch (DpaErrorException | EmptyResponseException | JsonException $e) {
 			$this->flashError('gateway.info.tr.error');
 		}
 	}
@@ -56,7 +60,13 @@ class GatewayInfoPresenter extends InstallationPresenter {
 	 * Downloads gateway information as JSON
 	 */
 	public function actionDownload(): void {
-		$this->sendJson($this->infoManager->get(true));
+		$json = $this->infoManager->get(true);
+		try {
+			$json['coordinator'] = $this->infoManager->getCoordinatorInfo();
+		} catch (DpaErrorException | EmptyResponseException | JsonException $e) {
+			$json['coordinator'] = null;
+		}
+		$this->sendJson($json);
 	}
 
 }

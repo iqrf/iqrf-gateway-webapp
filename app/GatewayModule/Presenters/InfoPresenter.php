@@ -70,7 +70,9 @@ class InfoPresenter extends ProtectedPresenter {
 	public function renderDefault(): void {
 		$info = $this->infoManager->get();
 		$this->template->info = $info;
-		if (!isset($info['coordinator'])) {
+		try {
+			$this->template->coordinatorInfo = $this->infoManager->getCoordinatorInfo();
+		} catch (DpaErrorException | EmptyResponseException | JsonException $e) {
 			$this->flashError('gateway.info.tr.error');
 		}
 		try {

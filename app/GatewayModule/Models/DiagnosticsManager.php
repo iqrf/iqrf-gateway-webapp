@@ -23,6 +23,8 @@ namespace App\GatewayModule\Models;
 use App\ConfigModule\Models\MainManager;
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\ZipArchiveManager;
+use App\IqrfNetModule\Exceptions\DpaErrorException;
+use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use DateTime;
 use Nette\Application\BadRequestException;
 use Nette\Application\Responses\FileResponse;
@@ -163,6 +165,11 @@ class DiagnosticsManager {
 	 */
 	public function addInfo(): void {
 		$array = $this->infoManager->get();
+		try {
+			$array['coordinator'] = $this->infoManager->getCoordinatorInfo();
+		} catch (DpaErrorException | EmptyResponseException | JsonException $e) {
+			$array['coordinator'] = null;
+		}
 		$array['uname'] = $this->commandManager->run('uname -a', true)->getStdout();
 		$array['uptime'] = $this->commandManager->run('uptime -p', true)->getStdout();
 		try {

@@ -13,8 +13,7 @@
 		"interfaces",
 		"diskUsages",
 		"memoryUsage",
-		"swapUsage",
-		"coordinator"
+		"swapUsage"
 	],
 	"properties": {
 		"board": {
@@ -388,30 +387,6 @@
 					"type": "string",
 					"title": "Usage",
 					"example": "32.54%"
-				}
-			}
-		},
-		"coordinator": {
-			"$id": "#/properties/coordinator",
-			"type": "object",
-			"title": "Coordinator information",
-			"additionalProperties": false,
-			"required": [
-				"request",
-				"response"
-			],
-			"properties": {
-				"request": {
-					"$id": "#/properties/coordinator/properties/request",
-					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqmeshNetwork_EnumerateDevice-request-1-0-0.json",
-					"title": "Request",
-					"additionalProperties": false
-				},
-				"response": {
-					"$id": "#/properties/coordinator/properties/response",
-					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/iqmeshNetwork_EnumerateDevice-response-1-0-0.json",
-					"title": "Response",
-					"additionalProperties": false
 				}
 			}
 		}

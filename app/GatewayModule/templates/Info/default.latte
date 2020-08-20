@@ -112,8 +112,8 @@
 			<tr>
 				<th>{_gateway.info.tr.title}</th>
 				<td>
-					{ifset $info['coordinator']['response']->data->rsp}
-						{var $coordinator = $info['coordinator']['response']->data->rsp}
+					{ifset $coordinatorInfo['response']->data->rsp}
+						{var $coordinator = $coordinatorInfo['response']->data->rsp}
 						{dump $coordinator}
 						{var $osInfo = $coordinator->osRead}
 						{var $enumeration = $coordinator->peripheralEnumeration}
