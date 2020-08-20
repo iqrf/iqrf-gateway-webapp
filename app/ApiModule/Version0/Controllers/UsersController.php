@@ -25,9 +25,8 @@ use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\RequestParameter;
 use Apitte\Core\Annotation\Controller\RequestParameters;
-use Apitte\Core\Annotation\Controller\Response;
-use Apitte\Core\Annotation\Controller\Responses;
 use Apitte\Core\Annotation\Controller\Tag;
+use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\Exceptions\InvalidUserLanguageException;
@@ -98,11 +97,14 @@ class UsersController extends BaseController {
 	 *          application/json:
 	 *              schema:
 	 *                  $ref: '#/components/schemas/UserCreate'
+	 *  responses:
+	 *      '201':
+	 *          description: Created
+	 *      '400':
+	 *          $ref: '#/components/responses/BadRequest'
+	 *      '409':
+	 *          description: Username is already used
 	 * ")
-	 * @Responses({
-	 *      @Response(code="201", description="Created"),
-	 *      @Response(code="400", description="Bad Request")
-	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
@@ -110,31 +112,31 @@ class UsersController extends BaseController {
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$json = $request->getJsonBody();
 		if (!array_key_exists('username', $json)) {
-			return $response->withStatus(400, 'Missing username');
+			throw new ClientErrorException('Missing username', ApiResponse::S400_BAD_REQUEST);
 		}
 		if (!array_key_exists('password', $json)) {
-			return $response->withStatus(400, 'Missing password');
+			throw new ClientErrorException('Missing password', ApiResponse::S400_BAD_REQUEST);
 		}
 		if (!array_key_exists('role', $json)) {
-			return $response->withStatus(400, 'Missing role');
+			throw new ClientErrorException('Missing role', ApiResponse::S400_BAD_REQUEST);
 		}
 		if (!array_key_exists('language', $json)) {
-			return $response->withStatus(400, 'Missing language');
+			throw new ClientErrorException('Missing language', ApiResponse::S400_BAD_REQUEST);
 		}
 		try {
 			$user = $this->repository->findOneByUserName($json['username']);
 			if ($user !== null) {
-				return $response->withStatus(400, 'Username already exists');
+				throw new ClientErrorException('Username is already used', ApiResponse::S409_CONFLICT);
 			}
 			$user = new User($json['username'], $json['password'], $json['role'], $json['language']);
 			$this->entityManager->persist($user);
 			$this->entityManager->flush();
 		} catch (InvalidUserLanguageException $e) {
-			return $response->withStatus(400, 'Invalid user language');
+			throw new ClientErrorException('Invalid language', ApiResponse::S400_BAD_REQUEST);
 		} catch (InvalidUserRoleException $e) {
-			return $response->withStatus(400, 'Invalid user role');
+			throw new ClientErrorException('Invalid role', ApiResponse::S400_BAD_REQUEST);
 		}
-		return $response->withStatus(201);
+		return $response->withStatus(ApiResponse::S201_CREATED);
 	}
 
 	/**
@@ -163,7 +165,7 @@ class UsersController extends BaseController {
 		$id = (int) $request->getParameter('id');
 		$user = $this->repository->find($id);
 		if ($user === null) {
-			return $response->withStatus(404);
+			throw new ClientErrorException('User not found', ApiResponse::S404_NOT_FOUND);
 		}
 		assert($user instanceof User);
 		return $response->writeJsonObject($user);
@@ -173,14 +175,15 @@ class UsersController extends BaseController {
 	 * @Path("/{id}")
 	 * @Method("DELETE")
 	 * @OpenApi("
-	 *   summary: Deletes a user
+	 *  summary: Deletes a user
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '404':
+	 *          description: Not found
 	 * ")
 	 * @RequestParameters({
 	 *      @RequestParameter(name="id", type="integer", description="User ID")
-	 * })
-	 * @Responses({
-	 *      @Response(code="200", description="Success"),
-	 *      @Response(code="404", description="Not found")
 	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -190,11 +193,11 @@ class UsersController extends BaseController {
 		$id = (int) $request->getParameter('id');
 		$user = $this->repository->find($id);
 		if ($user === null) {
-			return $response->withStatus(404, 'User not found');
+			throw new ClientErrorException('User not found', ApiResponse::S404_NOT_FOUND);
 		}
 		$this->entityManager->remove($user);
 		$this->entityManager->flush();
-		return $response->withStatus(200);
+		return $response->withStatus(ApiResponse::S200_OK);
 	}
 
 	/**
@@ -208,14 +211,18 @@ class UsersController extends BaseController {
 	 *          application/json:
 	 *              schema:
 	 *                  $ref: '#/components/schemas/UserEdit'
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '400':
+	 *          $ref: '#/components/responses/BadRequest'
+	 *      '404':
+	 *          description: Not found
+	 *      '409':
+	 *          description: Username is already used
 	 * ")
 	 * @RequestParameters({
 	 *      @RequestParameter(name="id", type="integer", description="User ID")
-	 * })
-	 * @Responses({
-	 *      @Response(code="200", description="Success"),
-	 *      @Response(code="400", description="Bad request"),
-	 *      @Response(code="404", description="Not found")
 	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -226,17 +233,17 @@ class UsersController extends BaseController {
 		try {
 			$json = $request->getJsonBody();
 		} catch (JsonException $e) {
-			return $response->withStatus(400, 'Invalid JSON syntax');
+			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
 		}
 		$user = $this->repository->find($id);
 		if ($user === null) {
-			return $response->withStatus(404, 'User not found.');
+			throw new ClientErrorException('User not found', ApiResponse::S404_NOT_FOUND);
 		}
 		assert($user instanceof User);
 		if (array_key_exists('username', $json)) {
 			$userWithName = $this->repository->findOneByUserName($json['username']);
 			if ($userWithName !== null && $userWithName->getId() !== $id) {
-				return $response->withStatus(400, 'Username already exists.');
+				throw new ClientErrorException('Username is already used', ApiResponse::S409_CONFLICT);
 			}
 			$user->setUserName($json['username']);
 		}
@@ -244,19 +251,19 @@ class UsersController extends BaseController {
 			try {
 				$user->setRole($json['role']);
 			} catch (InvalidUserRoleException $e) {
-				return $response->withStatus(400, 'Invalid user role');
+				throw new ClientErrorException('Invalid role', ApiResponse::S400_BAD_REQUEST);
 			}
 		}
 		if (array_key_exists('language', $json)) {
 			try {
 				$user->setLanguage($json['language']);
 			} catch (InvalidUserLanguageException $e) {
-				return $response->withStatus(400, 'Invalid user language');
+				throw new ClientErrorException('Invalid language', ApiResponse::S400_BAD_REQUEST);
 			}
 		}
 		$this->entityManager->persist($user);
 		$this->entityManager->flush();
-		return $response->withStatus(200);
+		return $response->withStatus(ApiResponse::S200_OK);
 	}
 
 }

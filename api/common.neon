@@ -20,6 +20,18 @@ servers:
 				default: localhost:8080
 components:
 	responses:
+		BadRequest:
+			description: Bad request
+			content:
+				'application/json':
+					schema:
+						$ref: '#/components/schemas/Error'
+		ServerError:
+			description: Server error
+			content:
+				'application/json':
+					schema:
+						$ref: '#/components/schemas/Error'
 		UnauthorizedError:
 			description: API key or user token is missing or invalid
 			headers:
@@ -53,6 +65,8 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/daemonConfiguration.json
 		GatewayInfo:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/gatewayInfo.json
+		Error:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/error.json
 		Feature:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/feature.json
 		FeatureList:

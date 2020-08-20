@@ -25,9 +25,8 @@ use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\RequestParameter;
 use Apitte\Core\Annotation\Controller\RequestParameters;
-use Apitte\Core\Annotation\Controller\Response;
-use Apitte\Core\Annotation\Controller\Responses;
 use Apitte\Core\Annotation\Controller\Tag;
+use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\Models\Database\Entities\ApiKey;
@@ -107,7 +106,7 @@ class ApiKeyController extends BaseController {
 	 *                  schema:
 	 *                      $ref: '#/components/schemas/ApiKeyCreated'
 	 *      '400':
-	 *          description: 'Bad request'
+	 *          $ref: '#/components/responses/BadRequest'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -117,7 +116,7 @@ class ApiKeyController extends BaseController {
 		try {
 			$json = $request->getJsonBody(false);
 		} catch (JsonException $e) {
-			return $response->withStatus(ApiResponse::S400_BAD_REQUEST, 'Invalid JSON syntax');
+			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
 		}
 		if ($json->expiration === null) {
 			$expiration = null;
@@ -125,7 +124,7 @@ class ApiKeyController extends BaseController {
 			try {
 				$expiration = new DateTime($json->expiration);
 			} catch (Throwable $e) {
-				return $response->withStatus(ApiResponse::S400_BAD_REQUEST, 'Invalid expiration date');
+				throw new ClientErrorException('Invalid expiration date', ApiResponse::S400_BAD_REQUEST);
 			}
 		}
 		$apiKey = new ApiKey($json->description, $expiration);
@@ -161,7 +160,7 @@ class ApiKeyController extends BaseController {
 		$id = (int) $request->getParameter('id');
 		$apiKey = $this->repository->find($id);
 		if ($apiKey === null) {
-			return $response->withStatus(ApiResponse::S404_NOT_FOUND, 'API key not found');
+			throw new ClientErrorException('API key not found', ApiResponse::S404_NOT_FOUND);
 		}
 		assert($apiKey instanceof ApiKey);
 		return $response->writeJsonObject($apiKey);
@@ -171,14 +170,15 @@ class ApiKeyController extends BaseController {
 	 * @Path("/{id}")
 	 * @Method("DELETE")
 	 * @OpenApi("
-	 *   summary: Deletes a API key
+	 *  summary: Deletes a API key
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '404':
+	 *          description: Not found
 	 * ")
 	 * @RequestParameters({
 	 *      @RequestParameter(name="id", type="integer", description="API key ID")
-	 * })
-	 * @Responses({
-	 *      @Response(code="200", description="Success"),
-	 *      @Response(code="404", description="Not found")
 	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -188,7 +188,7 @@ class ApiKeyController extends BaseController {
 		$id = (int) $request->getParameter('id');
 		$apiKey = $this->repository->find($id);
 		if ($apiKey === null) {
-			return $response->withStatus(ApiResponse::S404_NOT_FOUND, 'API key not found');
+			throw new ClientErrorException('API key not found', ApiResponse::S404_NOT_FOUND);
 		}
 		$this->entityManager->remove($apiKey);
 		$this->entityManager->flush();
@@ -210,7 +210,7 @@ class ApiKeyController extends BaseController {
 	 *      '200':
 	 *          description: Success
 	 *      '400':
-	 *          description: 'Bad request'
+	 *          $ref: '#/components/responses/BadRequest'
 	 *      '404':
 	 *          description: 'API key not found'
 	 * ")
@@ -225,13 +225,13 @@ class ApiKeyController extends BaseController {
 		$id = (int) $request->getParameter('id');
 		$apiKey = $this->repository->find($id);
 		if ($apiKey === null) {
-			return $response->withStatus(ApiResponse::S404_NOT_FOUND, 'API key not found');
+			throw new ClientErrorException('API key not found', ApiResponse::S404_NOT_FOUND);
 		}
 		assert($apiKey instanceof ApiKey);
 		try {
 			$json = $request->getJsonBody(false);
 		} catch (JsonException $e) {
-			return $response->withStatus(ApiResponse::S400_BAD_REQUEST, 'Invalid JSON syntax');
+			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
 		}
 		$apiKey->setDescription($json->description);
 		if ($json->expiration === null) {
@@ -240,7 +240,7 @@ class ApiKeyController extends BaseController {
 			try {
 				$expiration = new DateTime($json->expiration);
 			} catch (Throwable $e) {
-				return $response->withStatus(ApiResponse::S400_BAD_REQUEST, 'Invalid expiration date');
+				throw new ClientErrorException('Invalid expiration date', ApiResponse::S400_BAD_REQUEST);
 			}
 		}
 		$apiKey->setExpiration($expiration);

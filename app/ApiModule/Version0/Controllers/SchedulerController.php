@@ -27,6 +27,8 @@ use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\RequestParameter;
 use Apitte\Core\Annotation\Controller\RequestParameters;
 use Apitte\Core\Annotation\Controller\Tag;
+use Apitte\Core\Exception\Api\ClientErrorException;
+use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ConfigModule\Exceptions\InvalidTaskMessageException;
@@ -99,7 +101,7 @@ class SchedulerController extends BaseController {
 	 *      '201':
 	 *          description: Created
 	 *      '400':
-	 *          description: 'Bad request'
+	 *          $ref: '#/components/responses/BadRequest'
 	 *      '409':
 	 *          description: 'Task already exists'
 	 * ")
@@ -111,19 +113,19 @@ class SchedulerController extends BaseController {
 		try {
 			$task = $request->getJsonBody(false);
 		} catch (JsonException $e) {
-			return $response->withStatus(ApiResponse::S400_BAD_REQUEST, 'Invalid JSON syntax');
+			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
 		}
 		$taskId = $task->taskId;
 		if ($this->manager->exist($taskId)) {
 			$this->manager->getFileName($taskId);
-			return $response->withStatus(ApiResponse::S409_CONFLICT, 'Task already exists');
+			throw new ClientErrorException('Task already exists', ApiResponse::S409_CONFLICT);
 		}
 		try {
 			$this->manager->save($task, null);
 		} catch (InvalidTaskMessageException $e) {
-			$response->withStatus(ApiResponse::S400_BAD_REQUEST, 'Invalid mType');
+			throw new ClientErrorException('Invalid mType', ApiResponse::S400_BAD_REQUEST);
 		} catch (JsonException $e) {
-			$response->withStatus(ApiResponse::S400_BAD_REQUEST, 'Invalid JSON');
+			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
 		}
 		return $response->withStatus(ApiResponse::S201_CREATED);
 	}
@@ -152,14 +154,14 @@ class SchedulerController extends BaseController {
 	 */
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		if (!is_numeric($request->getParameter('taskId'))) {
-			return $response->withStatus(ApiResponse::S400_BAD_REQUEST, 'Invalid task ID');
+			throw new ClientErrorException('Invalid task ID', ApiResponse::S400_BAD_REQUEST);
 		}
 		$taskId = (int) $request->getParameter('taskId');
 		try {
 			$task = (array) $this->manager->load($taskId);
 			return $response->writeJsonBody($task);
 		} catch (TaskNotFoundException $e) {
-			return $response->withStatus(ApiResponse::S404_NOT_FOUND);
+			throw new ClientErrorException('Task not found', ApiResponse::S404_NOT_FOUND);
 		}
 	}
 
@@ -183,14 +185,14 @@ class SchedulerController extends BaseController {
 	 */
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
 		if (!is_numeric($request->getParameter('taskId'))) {
-			return $response->withStatus(ApiResponse::S400_BAD_REQUEST, 'Invalid task ID');
+			throw new ClientErrorException('Invalid task ID', ApiResponse::S400_BAD_REQUEST);
 		}
 		$taskId = (int) $request->getParameter('taskId');
 		try {
 			$this->manager->delete($taskId);
 			return $response;
 		} catch (TaskNotFoundException $e) {
-			return $response->withStatus(ApiResponse::S404_NOT_FOUND);
+			throw new ClientErrorException('Task not found', ApiResponse::S404_NOT_FOUND);
 		}
 	}
 
@@ -209,7 +211,7 @@ class SchedulerController extends BaseController {
 	 *      '200':
 	 *          description: Success
 	 *      '400':
-	 *          description: 'Bad request'
+	 *          $ref: '#/components/responses/BadRequest'
 	 *      '404':
 	 *          description: 'Task not found'
 	 * ")
@@ -222,27 +224,27 @@ class SchedulerController extends BaseController {
 	 */
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
 		if (!is_numeric($request->getParameter('taskId'))) {
-			return $response->withStatus(ApiResponse::S400_BAD_REQUEST, 'Invalid task ID');
+			throw new ClientErrorException('Invalid task ID', ApiResponse::S400_BAD_REQUEST);
 		}
 		$taskId = (int) $request->getParameter('taskId');
 		try {
 			$task = $request->getJsonBody(false);
 		} catch (JsonException $e) {
-			return $response->withStatus(ApiResponse::S400_BAD_REQUEST, 'Invalid JSON syntax');
+			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
 		}
 		try {
 			$fileName = $this->manager->getFileName($taskId);
 		} catch (TaskNotFoundException $e) {
-			return $response->withStatus(ApiResponse::S404_NOT_FOUND, 'Task not found');
+			throw new ClientErrorException('Task not found', ApiResponse::S404_NOT_FOUND);
 		}
 		try {
 			$this->manager->save($task, $fileName);
 		} catch (InvalidTaskMessageException $e) {
-			$response->withStatus(ApiResponse::S400_BAD_REQUEST, 'Invalid mType');
+			throw new ClientErrorException('Invalid mType', ApiResponse::S400_BAD_REQUEST);
 		} catch (JsonException $e) {
-			$response->withStatus(ApiResponse::S400_BAD_REQUEST, 'Invalid JSON');
+			throw new ServerErrorException('Invalid JSON', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
-		return $response->withStatus(ApiResponse::S200_OK);
+		return $response;
 	}
 
 	/**
@@ -289,7 +291,7 @@ class SchedulerController extends BaseController {
 	 *      '200':
 	 *          description: 'Success'
 	 *      '400':
-	 *          description: 'Bad request'
+	 *          $ref: '#/components/responses/BadRequest'
 	 *      '415':
 	 *          description: 'Unsupported media type'
 	 * ")
@@ -306,9 +308,9 @@ class SchedulerController extends BaseController {
 				try {
 					$this->migrationManager->extractArchive($path);
 				} catch (InvalidTaskMessageException $e) {
-					$response->withStatus(ApiResponse::S400_BAD_REQUEST, 'Invalid mType');
+					throw new ClientErrorException('Invalid mType', ApiResponse::S400_BAD_REQUEST);
 				} catch (JsonException $e) {
-					$response->withStatus(ApiResponse::S400_BAD_REQUEST, 'Invalid JSON');
+					throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
 				}
 				FileSystem::delete($path);
 				break;
@@ -316,13 +318,13 @@ class SchedulerController extends BaseController {
 				try {
 					$this->manager->save($request->getJsonBody(false), null);
 				} catch (InvalidTaskMessageException $e) {
-					$response->withStatus(ApiResponse::S400_BAD_REQUEST, 'Invalid mType');
+					throw new ClientErrorException('Invalid mType', ApiResponse::S400_BAD_REQUEST);
 				} catch (JsonException $e) {
-					$response->withStatus(ApiResponse::S400_BAD_REQUEST, 'Invalid JSON');
+					throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
 				}
 				break;
 			default:
-				return $response->withStatus(ApiResponse::S415_UNSUPPORTED_MEDIA_TYPE);
+				throw new ClientErrorException('Unsupported media type', ApiResponse::S415_UNSUPPORTED_MEDIA_TYPE);
 		}
 		return $response;
 	}

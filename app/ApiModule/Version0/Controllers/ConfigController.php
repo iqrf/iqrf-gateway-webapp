@@ -25,12 +25,11 @@ use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\RequestParameter;
 use Apitte\Core\Annotation\Controller\RequestParameters;
-use Apitte\Core\Annotation\Controller\Response;
-use Apitte\Core\Annotation\Controller\Responses;
 use Apitte\Core\Annotation\Controller\Tag;
+use Apitte\Core\Exception\Api\ClientErrorException;
+use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
-use App\ConfigModule\Exceptions\InvalidTaskMessageException;
 use App\ConfigModule\Models\ComponentManager;
 use App\ConfigModule\Models\GenericManager;
 use App\ConfigModule\Models\MainManager;
@@ -77,12 +76,13 @@ class ConfigController extends BaseController {
 	 * @Path("/")
 	 * @Method("GET")
 	 * @OpenApi("
-	 *   summary: Returns main configuration
+	 *  summary: Returns main configuration
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
 	 * ")
-	 * @Responses({
-	 *      @Response(code="200", description="Success"),
-	 *      @Response(code="500", description="Server error")
-	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
@@ -92,9 +92,9 @@ class ConfigController extends BaseController {
 			$config = $this->mainManager->load();
 			return $response->writeJsonBody($config);
 		} catch (JsonException $e) {
-			return $response->withStatus(500, 'Invalid JSON syntax');
+			throw new ServerErrorException('Invalid JSON syntax', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		} catch (IOException $e) {
-			return $response->withStatus(500, $e->getMessage());
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -102,19 +102,21 @@ class ConfigController extends BaseController {
 	 * @Path("/")
 	 * @Method("PUT")
 	 * @OpenApi("
-	 *   summary: Edits main configuration
-	 *   requestBody:
-	 *     required: true
-	 *     content:
-	 *       application/json:
-	 *         schema:
-	 *           type: string
+	 *  summary: Edits main configuration
+	 *  requestBody:
+	 *      required: true
+	 *      content:
+	 *          application/json:
+	 *              schema:
+	 *                  type: string
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '400':
+	 *          $ref: '#/components/responses/BadRequest'
+	 *      '404':
+	 *          description: Not found
 	 * ")
-	 * @Responses({
-	 *      @Response(code="200", description="Success"),
-	 *      @Response(code="400", description="Bad request"),
-	 *      @Response(code="404", description="Not found")
-	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
@@ -125,9 +127,9 @@ class ConfigController extends BaseController {
 			$this->mainManager->save($json);
 			return $response;
 		} catch (JsonException $e) {
-			return $response->withStatus(400, 'Invalid JSON syntax');
+			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
 		} catch (IOException $e) {
-			return $response->withStatus(500, $e->getMessage());
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -135,18 +137,19 @@ class ConfigController extends BaseController {
 	 * @Path("/")
 	 * @Method("POST")
 	 * @OpenApi("
-	 *   summary: Creates component configuration
-	 *   requestBody:
-	 *     required: true
-	 *     content:
-	 *      application/json:
-	 *          schema:
-	 *              $ref: '#/components/schemas/DaemonComponent'
+	 *  summary: Creates component configuration
+	 *  requestBody:
+	 *      required: true
+	 *      content:
+	 *          application/json:
+	 *              schema:
+	 *                  $ref: '#/components/schemas/DaemonComponent'
+	 *  responses:
+	 *      '201':
+	 *          description: Created
+	 *      '400':
+	 *          $ref: '#/components/responses/BadRequest'
 	 * ")
-	 * @Responses({
-	 *     @Response(code="201", description="Created"),
-	 *     @Response(code="400", description="Bad request")
-	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
@@ -155,11 +158,11 @@ class ConfigController extends BaseController {
 		try {
 			$json = $request->getJsonBody(true);
 			$this->componentManager->add($json);
-			return $response->withStatus(201);
+			return $response->withStatus(ApiResponse::S201_CREATED);
 		} catch (JsonException $e) {
-			return $response->withStatus(400, 'Invalid JSON syntax');
+			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
 		} catch (IOException $e) {
-			return $response->withStatus(500, $e->getMessage());
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -167,15 +170,17 @@ class ConfigController extends BaseController {
 	 * @Path("/{component}")
 	 * @Method("DELETE")
 	 * @OpenApi("
-	 *   summary: Deletes the component
+	 *  summary: Deletes the component
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '404':
+	 *          description: Not found
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
 	 * ")
 	 * @RequestParameters({
 	 *      @RequestParameter(name="component", type="string", description="Component name")
-	 * })
-	 * @Responses({
-	 *      @Response(code="200", description="Success"),
-	 *      @Response(code="404", description="Not found"),
-	 *      @Response(code="500", description="Server error")
 	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -185,15 +190,15 @@ class ConfigController extends BaseController {
 		$component = urldecode($request->getParameter('component'));
 		$id = $this->componentManager->getId($component);
 		if ($id === null) {
-			return $response->withStatus(404, 'Unknown component');
+			throw new ClientErrorException('Component not found', ApiResponse::S404_NOT_FOUND);
 		}
 		try {
 			$this->componentManager->delete($id);
 			return $response;
 		} catch (JsonException $e) {
-			return $response->withStatus(500, 'Invalid JSON syntax');
+			throw new ServerErrorException('Invalid JSON syntax', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		} catch (IOException $e) {
-			return $response->withStatus(500, $e->getMessage());
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -201,20 +206,21 @@ class ConfigController extends BaseController {
 	 * @Path("/{component}")
 	 * @Method("PUT")
 	 * @OpenApi("
-	 *   summary: Edits the component
-	 *   requestBody:
-	 *     required: true
-	 *     content:
-	 *      application/json:
-	 *          schema:
-	 *              $ref: '#/components/schemas/DaemonComponent'
+	 *  summary: Edits the component
+	 *  requestBody:
+	 *      required: true
+	 *      content:
+	 *          application/json:
+	 *              schema:
+	 *                  $ref: '#/components/schemas/DaemonComponent'
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '400':
+	 *          $ref: '#/components/responses/BadRequest'
 	 * ")
 	 * @RequestParameters({
 	 *      @RequestParameter(name="component", type="string", description="Component name")
-	 * })
-	 * @Responses({
-	 *      @Response(code="200", description="Success"),
-	 *      @Response(code="400", description="Bad request")
 	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -224,14 +230,14 @@ class ConfigController extends BaseController {
 		$component = urldecode($request->getParameter('component'));
 		$id = $this->componentManager->getId($component);
 		if ($id === null) {
-			return $response->withStatus(400, 'Unknown component name');
+			throw new ClientErrorException('Component not found', ApiResponse::S404_NOT_FOUND);
 		}
 		try {
 			$this->componentManager->save($request->getJsonBody(), $id);
 		} catch (JsonException $e) {
-			return $response->withStatus(400, 'Invalid JSON syntax');
+			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
 		} catch (IOException $e) {
-			return $response->withStatus(500, $e->getMessage());
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
 		return $response;
 	}
@@ -251,7 +257,7 @@ class ConfigController extends BaseController {
 	 *      '404':
 	 *          description: Not found
 	 *      '500':
-	 *          description: Server error
+	 *          $ref: '#/components/responses/ServerError'
 	 * ")
 	 * @RequestParameters({
 	 *      @RequestParameter(name="component", type="string", description="Component name")
@@ -265,11 +271,11 @@ class ConfigController extends BaseController {
 		try {
 			$this->manager->setComponent($component);
 		} catch (NonexistentJsonSchemaException $e) {
-			return $response->withStatus(404);
+			throw new ServerErrorException('Missing JSON schema', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
 		$id = $this->componentManager->getId($component);
 		if ($id === null) {
-			return $response->withStatus(404, 'Component not found');
+			throw new ClientErrorException('Component not found', ApiResponse::S404_NOT_FOUND);
 		}
 		try {
 			$body = [
@@ -278,9 +284,9 @@ class ConfigController extends BaseController {
 			];
 			return $response->writeJsonBody($body);
 		} catch (JsonException $e) {
-			return $response->withStatus(500, 'Invalid JSON syntax');
+			throw new ServerErrorException('Invalid JSON syntax', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		} catch (IOException $e) {
-			return $response->withStatus(500, $e->getMessage());
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -288,21 +294,25 @@ class ConfigController extends BaseController {
 	 * @Path("/{component}")
 	 * @Method("POST")
 	 * @OpenApi("
-	 *   summary: Creates instance configuration
-	 *   requestBody:
-	 *     required: true
-	 *     content:
-	 *      application/json:
-	 *          schema:
-	 *              $ref: '#/components/schemas/DaemonConfiguration'
+	 *  summary: Creates instance configuration
+	 *  requestBody:
+	 *      required: true
+	 *      content:
+	 *          application/json:
+	 *              schema:
+	 *                  $ref: '#/components/schemas/DaemonConfiguration'
+	 *  responses:
+	 *      '201':
+	 *          description: Created
+	 *      '400':
+	 *          $ref: '#/components/responses/BadRequest'
+	 *      '404':
+	 *          description: Not found
+	 *      '409':
+	 *          description: Instance already exists
 	 * ")
 	 * @RequestParameters({
 	 *      @RequestParameter(name="component", type="string", description="Component name")
-	 * })
-	 * @Responses({
-	 *     @Response(code="201", description="Created"),
-	 *     @Response(code="400", description="Bad request"),
-	 *     @Response(code="404", description="Not found")
 	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -314,26 +324,24 @@ class ConfigController extends BaseController {
 			$component = urldecode($request->getParameter('component'));
 			$this->manager->setComponent($component);
 			if (!isset($json['instance'])) {
-				return $response->withStatus(400, 'Missing instance name');
+				throw new ClientErrorException('Missing instance name', ApiResponse::S400_BAD_REQUEST);
 			}
 			$fileName = $this->manager->getInstanceFileName($json['instance']);
 			if ($fileName !== null) {
-				return $response->withStatus(400, 'Instance already exits');
+				throw new ClientErrorException('Instance already exists', ApiResponse::S409_CONFLICT);
 			} else {
 				$fileName = $this->manager->generateFileName($json);
 			}
 			$this->manager->save($json, $fileName);
-			return $response->withStatus(201);
+			return $response->withStatus(ApiResponse::S201_CREATED);
 		} catch (NonexistentJsonSchemaException $e) {
-			return $response->withStatus(404, 'Component not found');
+			throw new ServerErrorException('Missing JSON schema for the component', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		} catch (JsonException $e) {
-			return $response->withStatus(400, 'Invalid JSON syntax');
+			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
 		} catch (InvalidJsonException $e) {
-			return $response->withStatus(400, $e->getMessage());
-		} catch (InvalidTaskMessageException $e) {
-			return $response->withStatus(400, 'Invalid message');
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
 		} catch (IOException $e) {
-			return $response->withStatus(500, $e->getMessage());
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -341,15 +349,16 @@ class ConfigController extends BaseController {
 	 * @Path("/{component}/{instance}")
 	 * @Method("DELETE")
 	 * @OpenApi("
-	 *   summary: Deletes instance configuration by name
+	 *  summary: Deletes instance configuration by name
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '404':
+	 *          description: Not found
 	 * ")
 	 * @RequestParameters({
 	 *      @RequestParameter(name="component", type="string", description="Component name"),
 	 *      @RequestParameter(name="instance", type="string", description="Instance name")
-	 * })
-	 * @Responses({
-	 *      @Response(code="200", description="Success"),
-	 *      @Response(code="404", description="Not found")
 	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -361,7 +370,7 @@ class ConfigController extends BaseController {
 		$instance = urldecode($request->getParameter('instance'));
 		$fileName = $this->manager->getInstanceFileName($instance);
 		if ($fileName === null) {
-			return $response->withStatus(404, 'Component not found');
+			throw new ClientErrorException('Component not found', ApiResponse::S404_NOT_FOUND);
 		}
 		$this->manager->deleteFile($fileName);
 		return $response;
@@ -371,22 +380,24 @@ class ConfigController extends BaseController {
 	 * @Path("/{component}/{instance}")
 	 * @Method("PUT")
 	 * @OpenApi("
-	 *   summary: Edits instance configuration by name
-	 *   requestBody:
-	 *     required: true
-	 *     content:
-	 *      application/json:
-	 *          schema:
-	 *              $ref: '#/components/schemas/DaemonConfiguration'
+	 *  summary: Edits instance configuration by name
+	 *  requestBody:
+	 *      required: true
+	 *      content:
+	 *          application/json:
+	 *              schema:
+	 *                  $ref: '#/components/schemas/DaemonConfiguration'
+	 *  responses:
+	 *      '200':
+	 *          description: Succcess
+	 *      '400':
+	 *          $ref: '#/components/responses/BadRequest'
+	 *      '404':
+	 *          description: Not found
 	 * ")
 	 * @RequestParameters({
 	 *      @RequestParameter(name="component", type="string", description="Component name"),
 	 *      @RequestParameter(name="instance", type="string", description="Instance name")
-	 * })
-	 * @Responses({
-	 *      @Response(code="200", description="Success"),
-	 *      @Response(code="400", description="Bad request"),
-	 *      @Response(code="404", description="Not found")
 	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -398,21 +409,19 @@ class ConfigController extends BaseController {
 			$component = urldecode($request->getParameter('component'));
 			$this->manager->setComponent($component);
 			if (!isset($json['instance'])) {
-				return $response->withStatus(400, 'Missing instance name');
+				throw new ClientErrorException('Missing instance name', ApiResponse::S400_BAD_REQUEST);
 			}
 			$instance = urldecode($request->getParameter('instance'));
 			$fileName = $this->manager->getInstanceFileName($instance);
 			$this->manager->save($json, $fileName);
 		} catch (NonexistentJsonSchemaException $e) {
-			return $response->withStatus(404, 'Component not found');
+			throw new ClientErrorException('Component not found', ApiResponse::S404_NOT_FOUND);
 		} catch (JsonException $e) {
-			return $response->withStatus(400, 'Invalid JSON syntax');
+			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
 		} catch (InvalidJsonException $e) {
-			return $response->withStatus(400, $e->getMessage());
-		} catch (InvalidTaskMessageException $e) {
-			return $response->withStatus(400, 'Invalid message');
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
 		} catch (IOException $e) {
-			return $response->withStatus(500, $e->getMessage());
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
 		return $response;
 	}
@@ -432,7 +441,7 @@ class ConfigController extends BaseController {
 	 *      '404':
 	 *          description: Not found
 	 *      '500':
-	 *          description: Server error
+	 *          $ref: '#/components/responses/ServerError'
 	 * ")
 	 * @RequestParameters({
 	 *      @RequestParameter(name="component", type="string", description="Component name"),
@@ -449,14 +458,14 @@ class ConfigController extends BaseController {
 			$instance = urldecode($request->getParameter('instance'));
 			$configuration = $this->manager->loadInstance($instance);
 		} catch (NonexistentJsonSchemaException $e) {
-			return $response->withStatus(404, 'Component not found');
+			throw new ServerErrorException('Missing JSON schema for the component', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		} catch (JsonException $e) {
-			return $response->withStatus(500, 'Invalid JSON syntax');
+			throw new ServerErrorException('Invalid JSON syntax', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		} catch (IOException $e) {
-			return $response->withStatus(500, $e->getMessage());
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
 		if ($configuration === []) {
-			return $response->withStatus(404, 'Instance not found');
+			throw new ClientErrorException('Instance not found', ApiResponse::S404_NOT_FOUND);
 		}
 		return $response->writeJsonBody($configuration);
 	}

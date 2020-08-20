@@ -24,6 +24,7 @@ use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\Tag;
+use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use Nette\IOException;
@@ -51,7 +52,7 @@ class VersionController extends BaseController {
 	 *                  schema:
 	 *                      $ref: '#/components/schemas/Version'
 	 *      '500':
-	 *          description: Server error
+	 *          $ref: '#/components/responses/ServerError'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -62,7 +63,7 @@ class VersionController extends BaseController {
 			$json = Json::decode(FileSystem::read(__DIR__ . '/../../../../version.json'), Json::FORCE_ARRAY);
 			return $response->writeJsonBody($json);
 		} catch (IOException | JsonException $e) {
-			return $response->withStatus(500, 'Invalid JSON syntax');
+			throw new ServerErrorException('Invalid JSON syntax', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
 	}
 

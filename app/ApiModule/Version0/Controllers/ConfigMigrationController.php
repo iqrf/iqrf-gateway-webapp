@@ -25,6 +25,8 @@ use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\Tag;
+use Apitte\Core\Exception\Api\ClientErrorException;
+use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ConfigModule\Exceptions\IncompleteConfigurationException;
@@ -94,7 +96,7 @@ class ConfigMigrationController extends BaseController {
 	 *      '200':
 	 *          description: 'Success'
 	 *      '400':
-	 *          description: 'Bad request'
+	 *          $ref: '#/components/responses/BadRequest'
 	 *      '415':
 	 *          description: 'Unsupported media type'
 	 * ")
@@ -105,18 +107,18 @@ class ConfigMigrationController extends BaseController {
 	public function import(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$contentType = $request->getHeader('Content-Type')[0] ?? null;
 		if ($contentType !== 'application/zip') {
-			return $response->withStatus(ApiResponse::S415_UNSUPPORTED_MEDIA_TYPE);
+			throw new ClientErrorException('Unsupported media type', ApiResponse::S415_UNSUPPORTED_MEDIA_TYPE);
 		}
 		$path = '/tmp/iqrf-gateway-configuration-upload.zip';
 		FileSystem::write($path, $request->getBody()->getContents());
 		try {
 			$this->manager->extractArchive($path);
 		} catch (JsonException $e) {
-			$response->withStatus(ApiResponse::S400_BAD_REQUEST, 'Invalid JSON');
+			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
 		} catch (IncompleteConfigurationException $e) {
-			$response->withStatus(ApiResponse::S400_BAD_REQUEST, 'Incomplete configuration');
+			throw new ClientErrorException('Incomplete configuration', ApiResponse::S400_BAD_REQUEST);
 		} catch (UnsupportedInitSystemException $e) {
-			$response->withStatus(ApiResponse::S501_NOT_IMPLEMENTED, 'Unsupported init system');
+			throw new ServerErrorException('Unsupported init system', ApiResponse::S501_NOT_IMPLEMENTED);
 		}
 		FileSystem::delete($path);
 		return $response;

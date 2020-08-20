@@ -25,9 +25,9 @@ use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\RequestParameter;
 use Apitte\Core\Annotation\Controller\RequestParameters;
-use Apitte\Core\Annotation\Controller\Response;
-use Apitte\Core\Annotation\Controller\Responses;
 use Apitte\Core\Annotation\Controller\Tag;
+use Apitte\Core\Exception\Api\ClientErrorException;
+use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\NetworkModule\Exceptions\NetworkManagerException;
@@ -105,14 +105,17 @@ class NetworkController extends BaseController {
 	 * @Path("/connections/{uuid}")
 	 * @Method("DELETE")
 	 * @OpenApi("
-	 *   summary: Deletes network connection by its UUID
+	 *  summary: Deletes network connection by its UUID
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '400':
+	 *          $ref: '#/components/responses/BadRequest'
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
 	 * ")
 	 * @RequestParameters({
 	 *      @RequestParameter(name="uuid", type="string", description="Connection UUID")
-	 * })
-	 * @Responses({
-	 *     @Response(code="200", description="Success"),
-	 *     @Response(code="400", description="Bad request")
 	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -123,11 +126,9 @@ class NetworkController extends BaseController {
 			$uuid = Uuid::fromString($request->getParameter('uuid'));
 			$this->connectionManger->delete($uuid);
 		} catch (InvalidUuidStringException $e) {
-			return $response->withStatus(400)
-				->writeJsonBody(['error' => 'Invalid UUID']);
+			throw new ClientErrorException('Invalid UUID', ApiResponse::S400_BAD_REQUEST);
 		} catch (NetworkManagerException $e) {
-			return $response->withStatus(400)
-				->writeJsonBody(['error' => $e->getMessage()]);
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
 		return $response;
 	}
@@ -144,13 +145,16 @@ class NetworkController extends BaseController {
 	 *          application/json:
 	 *              schema:
 	 *                  $ref: '#/components/schemas/NetworkConnection'
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '400':
+	 *          $ref: '#/components/responses/BadRequest'
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
 	 * ")
 	 * @RequestParameters({
 	 *      @RequestParameter(name="uuid", type="string", description="Connection UUID")
-	 * })
-	 * @Responses({
-	 *     @Response(code="200", description="Success"),
-	 *     @Response(code="400", description="Bad request")
 	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -162,11 +166,9 @@ class NetworkController extends BaseController {
 			$connection = $this->connectionManger->get($uuid);
 			$this->connectionManger->edit($connection, $request->getJsonBody(false));
 		} catch (InvalidUuidStringException $e) {
-			return $response->withStatus(400)
-				->writeJsonBody(['error' => 'Invalid UUID']);
+			throw new ClientErrorException('Invalid UUID', ApiResponse::S400_BAD_REQUEST);
 		} catch (NetworkManagerException $e) {
-			return $response->withStatus(400)
-				->writeJsonBody(['error' => $e->getMessage()]);
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
 		return $response;
 	}
@@ -184,7 +186,9 @@ class NetworkController extends BaseController {
 	 *                  schema:
 	 *                      $ref: '#/components/schemas/NetworkConnection'
 	 *      '400':
-	 *          description: Bad request
+	 *          $ref: '#/components/responses/BadRequest'
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
 	 * ")
 	 * @RequestParameters({
 	 *      @RequestParameter(name="uuid", type="string", description="Connection UUID")
@@ -198,11 +202,9 @@ class NetworkController extends BaseController {
 			$uuid = Uuid::fromString($request->getParameter('uuid'));
 			return $response->writeJsonObject($this->connectionManger->get($uuid));
 		} catch (InvalidUuidStringException $e) {
-			return $response->withStatus(400)
-				->writeJsonBody(['error' => 'Invalid UUID']);
+			throw new ClientErrorException('Invalid UUID', ApiResponse::S400_BAD_REQUEST);
 		} catch (NetworkManagerException $e) {
-			return $response->withStatus(400)
-				->writeJsonBody(['error' => $e->getMessage()]);
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -219,7 +221,7 @@ class NetworkController extends BaseController {
 	 *                  schema:
 	 *                      $ref: '#/components/schemas/NetworkConnectivityState'
 	 *      '500':
-	 *          description: Server error
+	 *          $ref: '#/components/responses/ServerError'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -230,8 +232,7 @@ class NetworkController extends BaseController {
 			$state = $this->connectivityManager->check()->toScalar();
 			return $response->writeJsonBody(['state' => $state]);
 		} catch (NetworkManagerException $e) {
-			return $response->withStatus(500)
-				->writeJsonBody(['error' => $e->getMessage()]);
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -261,14 +262,14 @@ class NetworkController extends BaseController {
 	 * @Path("/interfaces/{name}/connect")
 	 * @Method("POST")
 	 * @OpenApi("
-	 *   summary: Connects network interface
+	 *  summary: Connects network interface
+	 *  responses:
+	 *      '200':
+	 *          description: Success
 	 * ")
 	 * @RequestParameters(
 	 *     @RequestParameter(name="name", type="string", description="Network interface name")
 	 * )
-	 * @Responses({
-	 *      @Response(code="200", description="Success")
-	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
@@ -282,14 +283,14 @@ class NetworkController extends BaseController {
 	 * @Path("/interfaces/{name}/disconnect")
 	 * @Method("POST")
 	 * @OpenApi("
-	 *   summary: Disconnects network interface
+	 *  summary: Disconnects network interface
+	 *  responses:
+	 *      '200':
+	 *          description: Success
 	 * ")
 	 * @RequestParameters(
 	 *     @RequestParameter(name="name", type="string", description="Network interface name")
 	 * )
-	 * @Responses({
-	 *      @Response(code="200", description="Success")
-	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
@@ -312,7 +313,7 @@ class NetworkController extends BaseController {
 	 *                  schema:
 	 *                      $ref: '#/components/schemas/NetworkWifiList'
 	 *      '500':
-	 *          description: Server error
+	 *          $ref: '#/components/responses/ServerError'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -322,8 +323,7 @@ class NetworkController extends BaseController {
 		try {
 			return $response->writeJsonBody($this->wifiManager->list());
 		} catch (NetworkManagerException $e) {
-			return $response->withStatus(500)
-				->writeJsonBody(['error' => $e->getMessage()]);
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
 	}
 

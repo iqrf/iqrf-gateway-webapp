@@ -25,9 +25,9 @@ use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\RequestParameter;
 use Apitte\Core\Annotation\Controller\RequestParameters;
-use Apitte\Core\Annotation\Controller\Response;
-use Apitte\Core\Annotation\Controller\Responses;
 use Apitte\Core\Annotation\Controller\Tag;
+use Apitte\Core\Exception\Api\ClientErrorException;
+use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ServiceModule\Exceptions\NonexistentServiceException;
@@ -95,11 +95,11 @@ class ServicesController extends BaseController {
 	 *                  schema:
 	 *                      $ref: '#/components/schemas/ServiceStatus'
 	 *      '400':
-	 *          description: Bad request
+	 *          $ref: '#/components/responses/BadRequest'
 	 *      '404':
 	 *          description: Not found
 	 *      '500':
-	 *          description: Server error
+	 *          description: Unsupported init system
 	 * ")
 	 * @RequestParameters({
 	 *      @RequestParameter(name="name", type="string", description="Service name")
@@ -110,9 +110,7 @@ class ServicesController extends BaseController {
 	 */
 	public function getService(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$name = $request->getParameter('name');
-		if (!in_array($name, self::WHITELISTED_SERVICES, true)) {
-			return $response->withStatus(400, 'Unsupported service');
-		}
+		$this->isServiceWhitelisted($name);
 		$status = [];
 		try {
 			try {
@@ -124,9 +122,9 @@ class ServicesController extends BaseController {
 			$status['status'] = $this->manager->getStatus($name);
 			return $response->writeJsonBody($status);
 		} catch (UnsupportedInitSystemException $e) {
-			return $response->withStatus(500, 'Unsupported init system');
+			throw new ServerErrorException('Unsupported init system', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		} catch (NonexistentServiceException $e) {
-			return $response->withStatus(404, 'Nonexistent service');
+			throw new ClientErrorException('Service not found', ApiResponse::S404_NOT_FOUND);
 		}
 	}
 
@@ -134,16 +132,19 @@ class ServicesController extends BaseController {
 	 * @Path("/{name}/enable")
 	 * @Method("POST")
 	 * @OpenApi("
-	 *   summary: Enables the service
+	 *  summary: Enables the service
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '400':
+	 *          $ref: '#/components/responses/BadRequest'
+	 *      '404':
+	 *          description: Not found
+	 *      '500':
+	 *          description: Unsupported init system
 	 * ")
 	 * @RequestParameters({
 	 *      @RequestParameter(name="name", type="string", description="Service name")
-	 * })
-	 * @Responses({
-	 *      @Response(code="200", description="Success"),
-	 *      @Response(code="400", description="Bad request"),
-	 *      @Response(code="404", description="Not found"),
-	 *      @Response(code="500", description="Server error")
 	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -151,16 +152,14 @@ class ServicesController extends BaseController {
 	 */
 	public function enableService(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$name = $request->getParameter('name');
-		if (!in_array($name, self::WHITELISTED_SERVICES, true)) {
-			return $response->withStatus(400, 'Unsupported service');
-		}
+		$this->isServiceWhitelisted($name);
 		try {
 			$this->manager->enable($name);
 			return $response;
 		} catch (UnsupportedInitSystemException $e) {
-			return $response->withStatus(500, 'Unsupported init system');
+			throw new ServerErrorException('Unsupported init system', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		} catch (NonexistentServiceException $e) {
-			return $response->withStatus(404, 'Nonexistent service');
+			throw new ClientErrorException('Service not found', ApiResponse::S404_NOT_FOUND);
 		}
 	}
 
@@ -168,16 +167,19 @@ class ServicesController extends BaseController {
 	 * @Path("/{name}/disable")
 	 * @Method("POST")
 	 * @OpenApi("
-	 *   summary: Disables the service
+	 *  summary: Disables the service
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '400':
+	 *          $ref: '#/components/responses/BadRequest'
+	 *      '404':
+	 *          description: Not found
+	 *      '500':
+	 *          description: Unsupported init system
 	 * ")
 	 * @RequestParameters({
 	 *      @RequestParameter(name="name", type="string", description="Service name")
-	 * })
-	 * @Responses({
-	 *      @Response(code="200", description="Success"),
-	 *      @Response(code="400", description="Bad request"),
-	 *      @Response(code="404", description="Not found"),
-	 *      @Response(code="500", description="Server error")
 	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -185,16 +187,14 @@ class ServicesController extends BaseController {
 	 */
 	public function disableService(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$name = $request->getParameter('name');
-		if (!in_array($name, self::WHITELISTED_SERVICES, true)) {
-			return $response->withStatus(400, 'Unsupported service');
-		}
+		$this->isServiceWhitelisted($name);
 		try {
 			$this->manager->disable($name);
 			return $response;
 		} catch (UnsupportedInitSystemException $e) {
-			return $response->withStatus(500, 'Unsupported init system');
+			throw new ServerErrorException('Unsupported init system', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		} catch (NonexistentServiceException $e) {
-			return $response->withStatus(404, 'Nonexistent service');
+			throw new ClientErrorException('Service not found', ApiResponse::S404_NOT_FOUND);
 		}
 	}
 
@@ -202,16 +202,19 @@ class ServicesController extends BaseController {
 	 * @Path("/{name}/start")
 	 * @Method("POST")
 	 * @OpenApi("
-	 *   summary: Starts the service
+	 *  summary: Starts the service
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '400':
+	 *          $ref: '#/components/responses/BadRequest'
+	 *      '404':
+	 *          description: Not found
+	 *      '500':
+	 *          description: Unsupported init system
 	 * ")
 	 * @RequestParameters({
 	 *      @RequestParameter(name="name", type="string", description="Service name")
-	 * })
-	 * @Responses({
-	 *      @Response(code="200", description="Success"),
-	 *      @Response(code="400", description="Bad request"),
-	 *      @Response(code="404", description="Not found"),
-	 *      @Response(code="500", description="Server error")
 	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -219,16 +222,14 @@ class ServicesController extends BaseController {
 	 */
 	public function startService(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$name = $request->getParameter('name');
-		if (!in_array($name, self::WHITELISTED_SERVICES, true)) {
-			return $response->withStatus(400, 'Unsupported service');
-		}
+		$this->isServiceWhitelisted($name);
 		try {
 			$this->manager->start($name);
 			return $response;
 		} catch (UnsupportedInitSystemException $e) {
-			return $response->withStatus(500, 'Unsupported init system');
+			throw new ServerErrorException('Unsupported init system', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		} catch (NonexistentServiceException $e) {
-			return $response->withStatus(404, 'Nonexistent service');
+			throw new ClientErrorException('Service not found', ApiResponse::S404_NOT_FOUND);
 		}
 	}
 
@@ -236,16 +237,19 @@ class ServicesController extends BaseController {
 	 * @Path("/{name}/stop")
 	 * @Method("POST")
 	 * @OpenApi("
-	 *   summary: Stops the service
+	 *  summary: Stops the service
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '400':
+	 *          $ref: '#/components/responses/BadRequest'
+	 *      '404':
+	 *          description: Not found
+	 *      '500':
+	 *          description: Unsupported init system
 	 * ")
 	 * @RequestParameters({
 	 *      @RequestParameter(name="name", type="string", description="Service name")
-	 * })
-	 * @Responses({
-	 *      @Response(code="200", description="Success"),
-	 *      @Response(code="400", description="Bad request"),
-	 *      @Response(code="404", description="Not found"),
-	 *      @Response(code="500", description="Server error")
 	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -253,16 +257,14 @@ class ServicesController extends BaseController {
 	 */
 	public function stopService(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$name = $request->getParameter('name');
-		if (!in_array($name, self::WHITELISTED_SERVICES, true)) {
-			return $response->withStatus(400, 'Unsupported service');
-		}
+		$this->isServiceWhitelisted($name);
 		try {
 			$this->manager->stop($name);
 			return $response;
 		} catch (UnsupportedInitSystemException $e) {
-			return $response->withStatus(500, 'Unsupported init system');
+			throw new ServerErrorException('Unsupported init system', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		} catch (NonexistentServiceException $e) {
-			return $response->withStatus(404, 'Nonexistent service');
+			throw new ClientErrorException('Service not found', ApiResponse::S404_NOT_FOUND);
 		}
 	}
 
@@ -270,16 +272,19 @@ class ServicesController extends BaseController {
 	 * @Path("/{name}/restart")
 	 * @Method("POST")
 	 * @OpenApi("
-	 *   summary: Restarts the service
+	 *  summary: Restarts the service
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '400':
+	 *          $ref: '#/components/responses/BadRequest'
+	 *      '404':
+	 *          description: Service not found
+	 *      '500':
+	 *          description: Unsupported init system
 	 * ")
 	 * @RequestParameters({
 	 *      @RequestParameter(name="name", type="string", description="Service name")
-	 * })
-	 * @Responses({
-	 *      @Response(code="200", description="Success"),
-	 *      @Response(code="400", description="Bad request"),
-	 *      @Response(code="404", description="Not found"),
-	 *      @Response(code="500", description="Server error")
 	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -287,16 +292,24 @@ class ServicesController extends BaseController {
 	 */
 	public function restartService(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$name = $request->getParameter('name');
-		if (!in_array($name, self::WHITELISTED_SERVICES, true)) {
-			return $response->withStatus(400, 'Unsupported service');
-		}
+		$this->isServiceWhitelisted($name);
 		try {
 			$this->manager->restart($name);
 			return $response;
 		} catch (UnsupportedInitSystemException $e) {
-			return $response->withStatus(500, 'Unsupported init system');
+			throw new ServerErrorException('Unsupported init system', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		} catch (NonexistentServiceException $e) {
-			return $response->withStatus(404, 'Nonexistent service');
+			throw new ClientErrorException('Service not found', ApiResponse::S404_NOT_FOUND);
+		}
+	}
+
+	/**
+	 * Checks if the service is whitelisted
+	 * @param string $name Service name
+	 */
+	private function isServiceWhitelisted(string $name): void {
+		if (!in_array($name, self::WHITELISTED_SERVICES, true)) {
+			throw new ClientErrorException('Unsupported service', ApiResponse::S400_BAD_REQUEST);
 		}
 	}
 

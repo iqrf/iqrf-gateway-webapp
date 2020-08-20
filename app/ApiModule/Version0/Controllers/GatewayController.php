@@ -20,12 +20,12 @@ declare(strict_types = 1);
 
 namespace App\ApiModule\Version0\Controllers;
 
+use Apitte\Core\Adjuster\FileResponseAdjuster;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
-use Apitte\Core\Annotation\Controller\Response;
-use Apitte\Core\Annotation\Controller\Responses;
 use Apitte\Core\Annotation\Controller\Tag;
+use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\GatewayModule\Exceptions\LogNotFoundException;
@@ -96,28 +96,29 @@ class GatewayController extends BaseController {
 	 * @Path("/log")
 	 * @Method("GET")
 	 * @OpenApi("
-	 *   summary: 'Returns latest IQRF Gateway Daemon log'
-	 *   responses:
-	 *     '200':
-	 *       description: 'Success'
-	 *       content:
-	 *         text/plain:
-	 *           schema:
-	 *             type: string
+	 *  summary: 'Returns latest IQRF Gateway Daemon log'
+	 *  responses:
+	 *      '200':
+	 *          description: 'Success'
+	 *          content:
+	 *              text/plain:
+	 *                  schema:
+	 *                      type: string
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
 	public function log(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$headers = [
-			'Content-Type' => 'text/plain; charset=utf-8',
-		];
 		try {
-			return $response->withHeaders($headers)
-				->writeBody($this->logManager->load());
+			$response->writeBody($this->logManager->load());
+			$fileName = 'iqrf-gateway-daemon.log';
+			$contentType = 'text/plain; charset=utf-8';
+			return FileResponseAdjuster::adjust($response, $response->getBody(), $fileName, $contentType);
 		} catch (LogNotFoundException $e) {
-			return $response->withStatus(500, 'Log file not found');
+			throw new ServerErrorException('Log file not found', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -147,24 +148,19 @@ class GatewayController extends BaseController {
 		} catch (Throwable $e) {
 			$fileName = 'iqrf-gateway-daemon-logs.zip';
 		}
-		$headers = [
-			'Content-Type' => 'application/zip',
-			'Content-Disposition' => 'attachment; filename="' . $fileName . '"; filename*=utf-8\'\'' . rawurlencode($fileName),
-			'Content-Length' => (string) filesize($path),
-		];
-		return $response->withHeaders($headers)
-			->writeBody(FileSystem::read($path));
+		$response->writeBody(FileSystem::read($path));
+		return FileResponseAdjuster::adjust($response, $response->getBody(), $fileName, 'application/zip');
 	}
 
 	/**
 	 * @Path("/poweroff")
 	 * @Method("POST")
 	 * @OpenApi("
-	 *   summary: Powers off the gateway
+	 *  summary: Powers off the gateway
+	 *  responses:
+	 *      '200':
+	 *          description: Success
 	 * ")
-	 * @Responses({
-	 *      @Response(code="200", description="Success")
-	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
@@ -178,11 +174,11 @@ class GatewayController extends BaseController {
 	 * @Path("/reboot")
 	 * @Method("POST")
 	 * @OpenApi("
-	 *   summary: Reboots the gateway
+	 *  summary: Reboots the gateway
+	 *  responses:
+	 *      '200':
+	 *          description: Success
 	 * ")
-	 * @Responses({
-	 *      @Response(code="200", description="Success")
-	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response

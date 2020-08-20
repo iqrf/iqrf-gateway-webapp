@@ -23,9 +23,9 @@ namespace App\ApiModule\Version0\Controllers;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
-use Apitte\Core\Annotation\Controller\Response;
-use Apitte\Core\Annotation\Controller\Responses;
 use Apitte\Core\Annotation\Controller\Tag;
+use Apitte\Core\Exception\Api\ClientErrorException;
+use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\CloudModule\Models\PixlaManager;
@@ -93,12 +93,14 @@ class PixlaController extends BaseController {
 	 *          application/json:
 	 *              schema:
 	 *                  $ref: '#/components/schemas/PixlaToken'
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '400':
+	 *          $ref: '#/components/responses/BadRequest'
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
 	 * ")
-	 * @Responses({
-	 *      @Response(code="200", description="Success"),
-	 *      @Response(code="400", description="Bad request"),
-	 *      @Response(code="500", description="Server error")
-	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
@@ -108,9 +110,9 @@ class PixlaController extends BaseController {
 			$this->manager->setToken($request->getJsonBody()['token']);
 			return $response;
 		} catch (JsonException $e) {
-			return $response->withStatus(ApiResponse::S400_BAD_REQUEST, 'Invalid JSON syntax.');
+			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
 		} catch (IOException $e) {
-			return $response->withStatus(ApiResponse::S500_INTERNAL_SERVER_ERROR, $e->getMessage());
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -118,11 +120,11 @@ class PixlaController extends BaseController {
 	 * @Path("/enable")
 	 * @Method("POST")
 	 * @OpenApi("
-	 *   summary: Enables PIXLA client service
+	 *  summary: Enables PIXLA client service
+	 *  responses:
+	 *      '200':
+	 *          description: Success
 	 * ")
-	 * @Responses({
-	 *      @Response(code="200", description="Success")
-	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
@@ -136,11 +138,11 @@ class PixlaController extends BaseController {
 	 * @Path("/disable")
 	 * @Method("POST")
 	 * @OpenApi("
-	 *   summary: Disables PIXLA client service
+	 *  summary: Disables PIXLA client service
+	 *  responses:
+	 *      '200':
+	 *          description: Success
 	 * ")
-	 * @Responses({
-	 *      @Response(code="200", description="Success")
-	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response

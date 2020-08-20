@@ -97,7 +97,7 @@ Feature: User manager
 	When I create HTTP "POST" request to "/users" with JSON object body:
 	  | username | password | language | role   |
 	  | user     | iqrf     | en       | normal |
-	Then HTTP status code is 400
+	Then HTTP status code is 409
 
   @api
   Scenario: List all users after adding
@@ -135,7 +135,7 @@ Feature: User manager
 	When I create HTTP "PUT" request to "/users/2" with JSON object body:
 	  | username |
 	  | admin    |
-	Then HTTP status code is 400
+	Then HTTP status code is 409
 
   @api
   Scenario: Change username with invalid language

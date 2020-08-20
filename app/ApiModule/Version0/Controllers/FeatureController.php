@@ -26,6 +26,8 @@ use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\RequestParameter;
 use Apitte\Core\Annotation\Controller\RequestParameters;
 use Apitte\Core\Annotation\Controller\Tag;
+use Apitte\Core\Exception\Api\ClientErrorException;
+use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\JsonSchemaValidator;
@@ -76,7 +78,7 @@ class FeatureController extends BaseController {
 	 *                  schema:
 	 *                      $ref: '#/components/schemas/FeatureList'
 	 *      '500':
-	 *          description: Server error
+	 *          $ref: '#/components/responses/ServerError'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -102,7 +104,7 @@ class FeatureController extends BaseController {
 	 *      '404':
 	 *          description: Feature not found
 	 *      '500':
-	 *          description: Server error
+	 *          $ref: '#/components/responses/ServerError'
 	 * ")
 	 * @RequestParameters({
 	 *      @RequestParameter(name="feature", type="string", description="Feature name")
@@ -116,7 +118,7 @@ class FeatureController extends BaseController {
 		try {
 			return $response->writeJsonBody($this->manager->get($name));
 		} catch (FeatureNotFoundException $e) {
-			return $response->withStatus(404, 'Feature not found');
+			throw new ClientErrorException('Feature not found', ApiResponse::S404_NOT_FOUND);
 		}
 	}
 
@@ -135,11 +137,11 @@ class FeatureController extends BaseController {
 	 *      '200':
 	 *          description: Success
 	 *      '400':
-	 *          description: Bad request
+	 *          $ref: '#/components/responses/BadRequest'
 	 *      '404':
 	 *          description: Feature not found
 	 *      '500':
-	 *          description: Server error
+	 *          $ref: '#/components/responses/ServerError'
 	 * ")
 	 * @RequestParameters({
 	 *      @RequestParameter(name="feature", type="string", description="Feature name")
@@ -155,13 +157,13 @@ class FeatureController extends BaseController {
 			$this->manager->edit($name, $request->getJsonBody());
 			return $response;
 		} catch (FeatureNotFoundException | NonexistentJsonSchemaException $e) {
-			return $response->withStatus(404, 'Feature not found');
+			throw new ClientErrorException('Feature not found', ApiResponse::S404_NOT_FOUND);
 		} catch (JsonException $e) {
-			return $response->withStatus(400, 'Invalid JSON syntax');
+			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
 		} catch (InvalidJsonException $e) {
-			return $response->withStatus(400, 'Invalid JSON structure');
+			throw new ClientErrorException('Invalid JSON structure', ApiResponse::S400_BAD_REQUEST);
 		} catch (IOException $e) {
-			return $response->withStatus(500, $e->getMessage());
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
 	}
 

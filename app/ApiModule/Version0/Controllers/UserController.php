@@ -24,6 +24,8 @@ use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\Tag;
+use Apitte\Core\Exception\Api\ClientErrorException;
+use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\JwtConfigurator;
@@ -90,7 +92,7 @@ class UserController extends BaseController {
 		if ($user instanceof User) {
 			return $response->writeJsonObject($user);
 		}
-		return $response->withStatus(ApiResponse::S403_FORBIDDEN);
+		throw new ClientErrorException('API key is used.', ApiResponse::S403_FORBIDDEN);
 	}
 
 	/**
@@ -114,9 +116,9 @@ class UserController extends BaseController {
 	 *                  schema:
 	 *                      $ref: '#/components/schemas/UserToken'
 	 *      '400':
-	 *          description: Bad request
+	 *          $ref: '#/components/responses/BadRequest'
 	 *      '500':
-	 *          description: Server error
+	 *          $ref: '#/components/responses/ServerError'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -126,19 +128,19 @@ class UserController extends BaseController {
 		try {
 			$credentials = $request->getJsonBody();
 		} catch (JsonException $e) {
-			return $response->withStatus(ApiResponse::S400_BAD_REQUEST, 'Invalid JSON syntax');
+			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
 		}
 		try {
 			$this->user->login($credentials['username'], $credentials['password']);
 		} catch (AuthenticationException $e) {
-			return $response->withStatus(ApiResponse::S400_BAD_REQUEST, 'Invalid credentials');
+			throw new ClientErrorException('Invalid credentials', ApiResponse::S400_BAD_REQUEST);
 		}
 		try {
 			$now = new DateTimeImmutable();
 			$us = $now->format('u');
 			$now = $now->modify('-' . $us . ' usec');
 		} catch (Throwable $e) {
-			return $response->withStatus(ApiResponse::S500_INTERNAL_SERVER_ERROR);
+			throw new ServerErrorException('Date creation error', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
 		$hostname = gethostname();
 		$builder = $this->configuration->createBuilder()

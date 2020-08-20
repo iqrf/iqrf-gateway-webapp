@@ -23,9 +23,9 @@ namespace App\ApiModule\Version0\Controllers;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
-use Apitte\Core\Annotation\Controller\Response;
-use Apitte\Core\Annotation\Controller\Responses;
 use Apitte\Core\Annotation\Controller\Tag;
+use Apitte\Core\Exception\Api\ClientErrorException;
+use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\CloudModule\Exceptions\CannotCreateCertificateDirectoryException;
@@ -38,7 +38,6 @@ use App\CloudModule\Models\IbmCloudManager;
 use App\CloudModule\Models\InteliGlueManager;
 use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Exception\TransferException;
 use Nette\IOException;
 use Nette\Utils\JsonException;
 
@@ -102,12 +101,14 @@ class CloudsController extends BaseController {
 	 *          application/json:
 	 *              schema:
 	 *                  $ref: '#/components/schemas/CloudAws'
+	 *  responses:
+	 *      '201':
+	 *          description: Created
+	 *      '400':
+	 *          $ref: '#/components/responses/BadRequest'
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
 	 * ")
-	 * @Responses({
-	 *      @Response(code="201", description="Created"),
-	 *      @Response(code="400", description="Bad response"),
-	 *      @Response(code="500", description="Server error")
-	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
@@ -115,21 +116,21 @@ class CloudsController extends BaseController {
 	public function createAws(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
 			$this->awsManager->createMqttInterface($request->getJsonBody());
-			return $response->withStatus(201, 'Created');
+			return $response->withStatus(ApiResponse::S201_CREATED);
 		} catch (InvalidConnectionStringException $e) {
-			return $response->withStatus(400, 'Invalid connection string');
+			throw new ClientErrorException('Invalid connection string', ApiResponse::S400_BAD_REQUEST);
 		} catch (NonexistentJsonSchemaException $e) {
-			return $response->withStatus(400, 'Nonexistent JSON schema');
+			throw new ServerErrorException('Missing JSON schema', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		} catch (IOException $e) {
-			return $response->withStatus(500, 'Write failure');
+			throw new ServerErrorException('Write failure', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		} catch (GuzzleException $e) {
-			return $response->withStatus(500, 'Download failure');
+			throw new ServerErrorException('Download failure', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		} catch (CannotCreateCertificateDirectoryException $e) {
-			return $response->withStatus(500, 'Certificate directory creation failure');
+			throw new ServerErrorException('Certificate directory creation failure', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		} catch (JsonException $e) {
-			return $response->withStatus(400, 'Bad JSON syntax');
+			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
 		} catch (InvalidPrivateKeyForCertificateException $e) {
-			return $response->withStatus(400, 'The private key does not correspond to the certificate');
+			throw new ClientErrorException('The private key does not correspond to the certificate', ApiResponse::S400_BAD_REQUEST);
 		}
 	}
 
@@ -145,12 +146,14 @@ class CloudsController extends BaseController {
 	 *          application/json:
 	 *              schema:
 	 *                  $ref: '#/components/schemas/CloudAzure'
+	 *  responses:
+	 *      '201':
+	 *          description: Created
+	 *      '400':
+	 *          $ref: '#/components/responses/BadRequest'
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
 	 * ")
-	 * @Responses({
-	 *      @Response(code="201", description="Created"),
-	 *      @Response(code="400", description="Bad response"),
-	 *      @Response(code="500", description="Server error")
-	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
@@ -158,19 +161,19 @@ class CloudsController extends BaseController {
 	public function createAzure(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
 			$this->azureManager->createMqttInterface($request->getJsonBody());
-			return $response->withStatus(201, 'Created');
+			return $response->withStatus(ApiResponse::S201_CREATED);
 		} catch (InvalidConnectionStringException $e) {
-			return $response->withStatus(400, 'Invalid connection string');
+			throw new ClientErrorException('Invalid connection string', ApiResponse::S400_BAD_REQUEST);
 		} catch (NonexistentJsonSchemaException $e) {
-			return $response->withStatus(400, 'Nonexistent JSON schema');
+			throw new ClientErrorException('Missing JSON schema', ApiResponse::S400_BAD_REQUEST);
 		} catch (IOException $e) {
-			return $response->withStatus(500, 'Write failure');
-		} catch (TransferException $e) {
-			return $response->withStatus(500, 'Download failure');
+			throw new ServerErrorException('Write failure', ApiResponse::S500_INTERNAL_SERVER_ERROR);
+		} catch (GuzzleException $e) {
+			throw new ServerErrorException('Download failure', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		} catch (CannotCreateCertificateDirectoryException $e) {
-			return $response->withStatus(500, 'Certificate directory creation failure');
+			throw new ServerErrorException('Certificate directory creation failure', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		} catch (JsonException $e) {
-			return $response->withStatus(400, 'Bad JSON syntax');
+			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
 		}
 	}
 
@@ -186,12 +189,14 @@ class CloudsController extends BaseController {
 	 *          application/json:
 	 *              schema:
 	 *                  $ref: '#/components/schemas/CloudHexio'
+	 *  responses:
+	 *      '201':
+	 *          description: Created
+	 *      '400':
+	 *          $ref: '#/components/responses/BadRequest'
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
 	 * ")
-	 * @Responses({
-	 *      @Response(code="201", description="Created"),
-	 *      @Response(code="400", description="Bad response"),
-	 *      @Response(code="500", description="Server error")
-	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
@@ -199,17 +204,17 @@ class CloudsController extends BaseController {
 	public function createHexio(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
 			$this->hexioManager->createMqttInterface($request->getJsonBody());
-			return $response->withStatus(201, 'Created');
+			return $response->withStatus(ApiResponse::S201_CREATED);
 		} catch (NonexistentJsonSchemaException $e) {
-			return $response->withStatus(400, 'Nonexistent JSON schema');
+			throw new ServerErrorException('Missing JSON schema', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		} catch (IOException $e) {
-			return $response->withStatus(500, 'Write failure');
+			throw new ServerErrorException('Write failure', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		} catch (GuzzleException $e) {
-			return $response->withStatus(500, 'Download failure');
+			throw new ServerErrorException('Download failure', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		} catch (CannotCreateCertificateDirectoryException $e) {
-			return $response->withStatus(500, 'Certificate directory creation failure');
+			throw new ServerErrorException('Certificate directory creation failure', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		} catch (JsonException $e) {
-			return $response->withStatus(400, 'Bad JSON syntax');
+			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
 		}
 	}
 
@@ -225,12 +230,14 @@ class CloudsController extends BaseController {
 	 *          application/json:
 	 *              schema:
 	 *                  $ref: '#/components/schemas/CloudIbm'
+	 *  responses:
+	 *      '201':
+	 *          description: Created
+	 *      '400':
+	 *          $ref: '#/components/responses/BadRequest'
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
 	 * ")
-	 * @Responses({
-	 *      @Response(code="201", description="Created"),
-	 *      @Response(code="400", description="Bad response"),
-	 *      @Response(code="500", description="Server error")
-	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
@@ -238,17 +245,17 @@ class CloudsController extends BaseController {
 	public function createIbmCloud(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
 			$this->ibmCloudManager->createMqttInterface($request->getJsonBody());
-			return $response->withStatus(201, 'Created');
+			return $response->withStatus(ApiResponse::S201_CREATED);
 		} catch (NonexistentJsonSchemaException $e) {
-			return $response->withStatus(400, 'Nonexistent JSON schema');
+			throw new ServerErrorException('Missing JSON schema', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		} catch (IOException $e) {
-			return $response->withStatus(500, 'Write failure');
+			throw new ServerErrorException('Write failure', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		} catch (GuzzleException $e) {
-			return $response->withStatus(500, 'Download failure');
+			throw new ServerErrorException('Download failure', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		} catch (CannotCreateCertificateDirectoryException $e) {
-			return $response->withStatus(500, 'Certificate directory creation failure');
+			throw new ServerErrorException('Certificate directory creation failure', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		} catch (JsonException $e) {
-			return $response->withStatus(400, 'Bad JSON syntax');
+			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
 		}
 	}
 
@@ -264,12 +271,14 @@ class CloudsController extends BaseController {
 	 *          application/json:
 	 *              schema:
 	 *                  $ref: '#/components/schemas/CloudInteliGlue'
+	 *  responses:
+	 *      '201':
+	 *          description: Created
+	 *      '400':
+	 *          $ref: '#/components/responses/BadRequest'
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
 	 * ")
-	 * @Responses({
-	 *      @Response(code="201", description="Created"),
-	 *      @Response(code="400", description="Bad response"),
-	 *      @Response(code="500", description="Server error")
-	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
@@ -277,17 +286,17 @@ class CloudsController extends BaseController {
 	public function createInteliGlue(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
 			$this->inteliGlueManager->createMqttInterface($request->getJsonBody());
-			return $response->withStatus(201, 'Created');
+			return $response->withStatus(ApiResponse::S201_CREATED);
 		} catch (NonexistentJsonSchemaException $e) {
-			return $response->withStatus(400, 'Nonexistent JSON schema');
+			throw new ServerErrorException('Missing JSON schema', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		} catch (IOException $e) {
-			return $response->withStatus(500, 'Write failure');
+			throw new ServerErrorException('Write failure', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		} catch (GuzzleException $e) {
-			return $response->withStatus(500, 'Download failure');
+			throw new ServerErrorException('Download failure', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		} catch (CannotCreateCertificateDirectoryException $e) {
-			return $response->withStatus(500, 'Certificate directory creation failure');
+			throw new ServerErrorException('Certificate directory creation failure', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		} catch (JsonException $e) {
-			return $response->withStatus(400, 'Bad JSON syntax');
+			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
 		}
 	}
 

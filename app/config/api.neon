@@ -10,7 +10,6 @@ api:
 				panel: %debugMode%
 				negotiation: %debugMode%
 		Apitte\Middlewares\DI\MiddlewaresPlugin:
-		Apitte\Negotiation\DI\NegotiationPlugin:
 		Apitte\OpenApi\DI\OpenApiPlugin:
 			files:
 				- %appDir%/../api/common.neon
