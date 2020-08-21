@@ -133,7 +133,8 @@
 			"inactive": "inactive",
 			"disabled": "Disabled",
 			"enabled": "Enabled",
-			"missing": "Missing"
+			"missing": "Missing",
+			"unsupported": "Unsupported"
 		},
 		"iqrf-gateway-daemon": {
 			"title": "IQRF service",
@@ -170,9 +171,14 @@
 				"restart": "Automatic upgrades service has been restarted."
 			}
 		},
+		"unsupported": {
+			"title": "Unsupported service"
+		},
 		"errors": {
 			"unsupportedInit": "Not supported init system is used.",
-			"processTimeout": "Service manager process timed out."
+			"processTimeout": "Service manager process timed out.",
+			"missingService": "Requested service not found",
+			"unsupportedService": "Unsupported service"
 		}
 	}
 }

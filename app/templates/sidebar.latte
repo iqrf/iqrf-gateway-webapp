@@ -40,21 +40,21 @@
 					<li n:class='isLinkCurrent(":Gateway:ChangeMode:*") ? "active"'>
 						<a n:href=':Gateway:ChangeMode:default'>{_gateway.mode.title}</a>
 					</li>
-					<li n:class='isLinkCurrent(":Service:Control:default", ["name"=> "iqrf-gateway-daemon"]) ? "active"'>
-						<a n:href=':Service:Control:default, name => "iqrf-gateway-daemon"'>
-							{_service.iqrf-gateway-daemon.title}
-						</a>
-					</li>
-					<li n:ifFeature="ssh" n:class='isLinkCurrent(":Service:Control:default", ["name"=> "ssh"]) ? "active"'>
-						<a n:href=':Service:Control:default, name => "ssh"'>
-							{_service.ssh.title}
-						</a>
-					</li>
-					<li n:ifFeature='unattendedUpgrades' n:class='isLinkCurrent(":Service:Control:default", ["name"=> "unattended-upgrades"]) ? "active"'>
-						<a n:href=':Service:Control:default, name => "unattended-upgrades"'>
-							{_service.unattended-upgrades.title}
-						</a>
-					</li>
+					<router-link to='/service/iqrf-gateway-daemon' v-slot='{ href, navigate, isActive }'>
+						<li :class='isActive && "active"'>
+							<a :href='href' @click='navigate'>{{ $t('service.iqrf-gateway-daemon.title') }}</a>
+						</li>
+					</router-link>
+					<router-link n:ifFeature='ssh' to='/service/ssh' v-slot='{ href, navigate, isActive }'>
+						<li :class='isActive && "active"'>
+							<a :href='href' @click='navigate'>{{ $t('service.ssh.title') }}</a>
+						</li>
+					</router-link>
+					<router-link n:ifFeature='unattendedUpgrades' to='/service/unattended-upgrades' v-slot='{ href, navigate, isActive }'>
+						<li :class='isActive && "active"'>
+							<a :href='href' @click='navigate'>{{ $t('service.unattended-upgrades.title') }}</a>
+						</li>
+					</router-link>
 					<li n:ifFeature='updater' n:class='isLinkCurrent(":Gateway:Updater:*") ? "active"'>
 						<a n:href=':Gateway:Updater:default'>{_gateway.updater.title}</a>
 					</li>

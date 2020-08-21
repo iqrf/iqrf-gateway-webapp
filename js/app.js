@@ -32,8 +32,8 @@ import bash from 'highlight.js/lib/languages/bash';
 import json from 'highlight.js/lib/languages/json';
 import spinner from './spinner';
 import Vue from 'vue';
+import VueToast from 'vue-toast-notification';
 //import VueSocketIO from 'vue-socket.io';
-
 
 import i18n from './i18n';
 import store from './store';
@@ -41,6 +41,7 @@ import AuthenticationService from './services/AuthenticationService';
 
 import 'highlight.js/styles/github.css';
 import '../css/app.css';
+import 'vue-toast-notification/dist/theme-default.css';
 
 import router from './router';
 
@@ -103,6 +104,10 @@ $.nette.ext('highlighter', {
 });
 
 Vue.prototype.$appName = 'IQRF Gateway Webapp frontend';
+
+Vue.use(VueToast,{
+	position: 'top-right'
+});
 
 /*Vue.use(new VueSocketIO({
 	debug: true,
