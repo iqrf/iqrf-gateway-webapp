@@ -27,34 +27,14 @@
 					<span class='pull-right-container'><i class='caret'></i></span>
 				</a>
 				<ul class='treeview-menu'>
-					<router-link to='/gateway/info' v-slot='{ href, route, navigate, isActive }'>
-						<li :class='isActive && "active"'>
-							<a :href='href' @click='navigate'>{{ $t(route.meta.title) }}</a>
-						</li>
-					</router-link>
-					<router-link to='/gateway/log' v-slot='{ href, route, navigate, isActive }'>
-						<li :class='isActive && "active"'>
-							<a :href='href' @click='navigate'>{{ $t(route.meta.title) }}</a>
-						</li>
-					</router-link>
+					<nav-bar-link to='/gateway/info'></nav-bar-link>
+					<nav-bar-link to='/gateway/log'></nav-bar-link>
 					<li n:class='isLinkCurrent(":Gateway:ChangeMode:*") ? "active"'>
 						<a n:href=':Gateway:ChangeMode:default'>{_gateway.mode.title}</a>
 					</li>
-					<router-link to='/service/iqrf-gateway-daemon' v-slot='{ href, navigate, isActive }'>
-						<li :class='isActive && "active"'>
-							<a :href='href' @click='navigate'>{{ $t('service.iqrf-gateway-daemon.title') }}</a>
-						</li>
-					</router-link>
-					<router-link n:ifFeature='ssh' to='/service/ssh' v-slot='{ href, navigate, isActive }'>
-						<li :class='isActive && "active"'>
-							<a :href='href' @click='navigate'>{{ $t('service.ssh.title') }}</a>
-						</li>
-					</router-link>
-					<router-link n:ifFeature='unattendedUpgrades' to='/service/unattended-upgrades' v-slot='{ href, navigate, isActive }'>
-						<li :class='isActive && "active"'>
-							<a :href='href' @click='navigate'>{{ $t('service.unattended-upgrades.title') }}</a>
-						</li>
-					</router-link>
+					<nav-bar-link to='/service/iqrf-gateway-daemon' :title='$t("service.iqrf-gateway-daemon.title")'></nav-bar-link>
+					<nav-bar-link n:ifFeature='ssh' to='/service/ssh' :title='$t("service.ssh.title")'></nav-bar-link>
+					<nav-bar-link n:ifFeature='unattendedUpgrades' to='/service/unattended-upgrades' :title='$t("service.unattended-upgrades.title")'></nav-bar-link>
 					<li n:ifFeature='updater' n:class='isLinkCurrent(":Gateway:Updater:*") ? "active"'>
 						<a n:href=':Gateway:Updater:default'>{_gateway.updater.title}</a>
 					</li>

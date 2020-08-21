@@ -1,15 +1,15 @@
 <template>
-	<span>{{this.status}}</span>
+	<span>{{ status }}</span>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState } from 'vuex';
 export default {
-	name: 'daemon-status',
+	name: 'DaemonStatus',
 	computed: mapState({
-		status: state => state.daemonStatus.operationMode
+		status: state => state.daemonStatus.operationMode,
 	}),
-}
+};
 </script>
 
 <style scoped>

@@ -6,7 +6,7 @@
 import { ValidationProvider } from 'vee-validate';
 
 export default {
-	name: 'sign-in',
+	name: 'SignIn',
 	components: {
 		ValidationProvider
 	},

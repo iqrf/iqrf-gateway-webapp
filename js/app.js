@@ -31,6 +31,7 @@ import hljs from 'highlight.js/lib/highlight';
 import bash from 'highlight.js/lib/languages/bash';
 import json from 'highlight.js/lib/languages/json';
 import spinner from './spinner';
+import axios from 'axios';
 import Vue from 'vue';
 import VueToast from 'vue-toast-notification';
 //import VueSocketIO from 'vue-socket.io';
@@ -49,6 +50,7 @@ import App from './components/App';
 import DaemonStatus from './components/DaemonStatus';
 import GatewayInfo from './components/Gateway/GatewayInfo';
 import LogViewer from './components/Gateway/LogViewer';
+import NavBarLink from './components/NavBarLink';
 import ServiceControl from './components/ServiceControl';
 
 Sentry.init({
@@ -103,6 +105,8 @@ $.nette.ext('highlighter', {
 	}
 });
 
+axios.defaults.baseURL = '//' + window.location.host + '/api/v0/';
+
 Vue.prototype.$appName = 'IQRF Gateway Webapp frontend';
 
 Vue.use(VueToast,{
@@ -119,18 +123,19 @@ Vue.use(VueToast,{
 
 new Vue({
 	el: '#app',
-	store: store,
-	data: {
-		message: 'Hello world from Vue'
-	},
 	components: {
 		App,
 		DaemonStatus,
 		GatewayInfo,
 		LogViewer,
+		NavBarLink,
 		ServiceControl
 	},
+	data: {
+		message: 'Hello world from Vue'
+	},
 	router: router,
+	store: store,
 	i18n: i18n
 });
 
