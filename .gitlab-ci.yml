@@ -311,3 +311,4 @@ deploy-package-stable_iqd-gw-01:
 
 include:
   - template: Code-Quality.gitlab-ci.yml
+  - template: Security/SAST.gitlab-ci.yml
