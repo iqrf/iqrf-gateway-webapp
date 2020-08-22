@@ -14,6 +14,12 @@ class GatewayService {
 	getLogArchive() {
 		return axios.get('gateway/logs', {headers: authorizationHeader(), responseType: 'blob'});
 	}
+	performPowerOff() {
+		return axios.post('gateway/poweroff', null, {headers: authorizationHeader()});
+	}
+	performReboot() {
+		return axios.post('gateway/reboot', null, {headers: authorizationHeader()});
+	}
 }
 
 export default new GatewayService();

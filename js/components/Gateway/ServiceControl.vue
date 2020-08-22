@@ -40,8 +40,8 @@
 </template>
 
 <script>
-import ServiceService from '../services/ServiceService';
-import spinner from '../spinner';
+import ServiceService from '../../services/ServiceService';
+import spinner from '../../spinner';
 
 const whitelisted = ['iqrf-gateway-daemon', 'ssh', 'unattended-upgrades'];
 

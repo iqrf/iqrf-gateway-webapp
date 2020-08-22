@@ -20,11 +20,6 @@ export default {
 			log: null
 		};
 	},
-	computed: {
-		title() {
-			return this.$i18n.t('');
-		}
-	},
 	created() {
 		spinner.showSpinner();
 		GatewayService.getLatestLog()

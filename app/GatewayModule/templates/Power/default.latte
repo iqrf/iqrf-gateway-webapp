@@ -17,15 +17,3 @@
 
 {block title}{_gateway.power.title}{/block}
 {block content}
-<div class='panel panel-default'>
-	<div n:snippet='status' class='panel-body'>
-		<a class='ajax btn btn-danger' n:href='off!' role='button'>
-			<span class='glyphicon glyphicon-off'></span>
-			{_gateway.power.powerOff.title}
-		</a>
-		<a class='ajax btn btn-primary' n:href='reboot!' role='button'>
-			<span class='glyphicon glyphicon-repeat'></span>
-			{_gateway.power.reboot.title}
-		</a>
-	</div>
-</div>

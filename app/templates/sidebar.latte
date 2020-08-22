@@ -38,9 +38,7 @@
 					<li n:ifFeature='updater' n:class='isLinkCurrent(":Gateway:Updater:*") ? "active"'>
 						<a n:href=':Gateway:Updater:default'>{_gateway.updater.title}</a>
 					</li>
-					<li n:class='isLinkCurrent(":Gateway:Power:*") ? "active"'>
-						<a n:href=':Gateway:Power:default'>{_gateway.power.title}</a>
-					</li>
+					<nav-bar-link to='/gateway/power'></nav-bar-link>
 				</ul>
 			</li>
 			<li n:if='$user->isLoggedIn()' n:isModuleActive='Config'>

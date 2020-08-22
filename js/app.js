@@ -48,10 +48,8 @@ import router from './router';
 
 import App from './components/App';
 import DaemonStatus from './components/DaemonStatus';
-import GatewayInfo from './components/Gateway/GatewayInfo';
-import LogViewer from './components/Gateway/LogViewer';
+import DisambiguationLink from './components/DisambiguationLink';
 import NavBarLink from './components/NavBarLink';
-import ServiceControl from './components/ServiceControl';
 
 Sentry.init({
 	dsn: 'https://435ee2b55f994e5f85e21a9ca93ea7a7@sentry.iqrf.org/5',
@@ -126,10 +124,8 @@ new Vue({
 	components: {
 		App,
 		DaemonStatus,
-		GatewayInfo,
-		LogViewer,
+		DisambiguationLink,
 		NavBarLink,
-		ServiceControl
 	},
 	data: {
 		message: 'Hello world from Vue'

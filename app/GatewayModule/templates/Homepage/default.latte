@@ -18,36 +18,24 @@
 {block title}{_gateway.title}{/block}
 {block content}
 <div class='list-group'>
-	<a n:href='Info:default' class='list-group-item'>
-		<header class='list-group-item-heading'>{_gateway.info.title}</header>
-		<p class='list-group-item-text'>{_gateway.info.description}</p>
-	</a>
-	<a n:href='Log:default' class='list-group-item'>
-		<header class='list-group-item-heading'>{_gateway.log.title}</header>
-		<p class='list-group-item-text'>{_gateway.log.description}</p>
-	</a>
+	<disambiguation-link to='/gateway/info' />
+	<disambiguation-link to='/gateway/log' />
 	<a n:href='ChangeMode:default' class='list-group-item'>
 		<header class='list-group-item-heading'>{_gateway.mode.title}</header>
 		<p class='list-group-item-text'>{_gateway.mode.description}</p>
 	</a>
-	<a n:href=':Service:Control:default, name => "iqrf-gateway-daemon"' class='list-group-item'>
-		<header class='list-group-item-heading'>{_service.iqrf-gateway-daemon.title}</header>
-		<p class='list-group-item-text'>{_service.iqrf-gateway-daemon.description}</p>
-	</a>
-	<a n:ifFeature='ssh' n:href=':Service:Control:default, name => "ssh"' class='list-group-item'>
-		<header class='list-group-item-heading'>{_service.ssh.title}</header>
-		<p class='list-group-item-text'>{_service.ssh.description}</p>
-	</a>
-	<a n:ifFeature='unattendedUpgrades' n:href=':Service:Control:default, name => "unattended-upgrades"' class='list-group-item'>
-		<header class='list-group-item-heading'>{_service.unattended-upgrades.title}</header>
-		<p class='list-group-item-text'>{_service.unattended-upgrades.description}</p>
-	</a>
+	<disambiguation-link to='/service/iqrf-gateway-daemon'
+		:title='$t("service.iqrf-gateway-daemon.title")'
+		:description='$t("service.iqrf-gateway-daemon.description")' />
+	<disambiguation-link n:ifFeature='ssh' to='/service/ssh'
+		:title='$t("service.ssh.title")'
+		:description='$t("service.ssh.description")' />
+	<disambiguation-link n:ifFeature='unattendedUpgrades' to='/service/ssh'
+		:title='$t("service.unattended-upgrades.title")'
+		:description='$t("service.unattended-upgrades.description")' />
 	<a n:ifFeature='updater' n:href='Updater:default' class='list-group-item'>
 		<header class='list-group-item-heading'>{_gateway.updater.title}</header>
 		<p class='list-group-item-text'>{_gateway.updater.description}</p>
 	</a>
-	<a n:href='Power:default' class='list-group-item'>
-		<header class='list-group-item-heading'>{_gateway.power.title}</header>
-		<p class='list-group-item-text'>{_gateway.power.description}</p>
-	</a>
+	<disambiguation-link to='/gateway/power' />
 </div>
