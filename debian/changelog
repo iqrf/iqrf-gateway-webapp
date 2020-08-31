@@ -1,3 +1,10 @@
+iqrf-gateway-webapp (2.0.1) testing; urgency=medium
+
+  * Composer: update dependencies due to a security flaw in Nette Application
+  * Tests: fix test for log manager
+
+ -- Roman Ondráček <roman@romanondracek.cz>  Mon, 31 Aug 2020 14:06:50 +0200
+
 iqrf-gateway-webapp (2.0.0) testing; urgency=medium
 
   * Prepare for version v2.0.0-rc18
