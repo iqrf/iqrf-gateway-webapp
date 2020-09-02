@@ -17,8 +17,6 @@
 
 {block title}{_config.websocket.messaging.add}{/block}
 {block content}
-<div class='panel panel-default'>
-	<div class='panel-body'>
-		{control configWebSocketMessagingForm}
-	</div>
-</div>
+<c-card body-wrapper>
+	{control configWebSocketMessagingForm}
+</c-card>

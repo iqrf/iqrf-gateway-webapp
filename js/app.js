@@ -17,9 +17,9 @@
 
 'use strict';
 
-import 'admin-lte';
+//import 'admin-lte';
 import 'autosize';
-import 'bootstrap';
+//import 'bootstrap';
 import 'jquery';
 import 'nette.ajax.js';
 import 'ublaboo-datagrid';
@@ -32,30 +32,40 @@ import bash from 'highlight.js/lib/languages/bash';
 import json from 'highlight.js/lib/languages/json';
 import spinner from './spinner';
 import axios from 'axios';
+import CoreuiVue from '@coreui/vue';
 import Vue from 'vue';
 import VueToast from 'vue-toast-notification';
-//import VueSocketIO from 'vue-socket.io';
+import VueNativeSock from 'vue-native-websocket';
 
 import i18n from './i18n';
 import store from './store';
+import router from './router';
 import AuthenticationService from './services/AuthenticationService';
 
 import 'highlight.js/styles/github.css';
-import '../css/app.css';
+import '../css/app.scss';
 import 'vue-toast-notification/dist/theme-default.css';
 
-import router from './router';
 
 import App from './components/App';
 import DaemonStatus from './components/DaemonStatus';
 import DisambiguationLink from './components/DisambiguationLink';
 import NavBarLink from './components/NavBarLink';
+import TheHeader from './components/TheHeader';
+import TheSidebar from './components/TheSidebar';
+import PixlaControl from './components/Cloud/PixlaControl';
 
 Sentry.init({
 	dsn: 'https://435ee2b55f994e5f85e21a9ca93ea7a7@sentry.iqrf.org/5',
 	integrations: [new VueIntegration({Vue: Vue, attachProps: true, logErrors: true})],
 });
 
+const wsApi = 'ws://' + window.location.hostname + ':1338';
+Vue.use(VueNativeSock, wsApi, {
+	store: store,
+	format: 'json',
+	reconnection: true,
+});
 
 Nette.initOnLoad();
 
@@ -107,17 +117,10 @@ axios.defaults.baseURL = '//' + window.location.host + '/api/v0/';
 
 Vue.prototype.$appName = 'IQRF Gateway Webapp frontend';
 
+Vue.use(CoreuiVue);
 Vue.use(VueToast,{
 	position: 'top-right'
 });
-
-/*Vue.use(new VueSocketIO({
-	debug: true,
-	connection: 'ws://localhost/wsMonitor',
-	vuex: {
-		store,
-	}
-}));*/
 
 new Vue({
 	el: '#app',
@@ -126,9 +129,9 @@ new Vue({
 		DaemonStatus,
 		DisambiguationLink,
 		NavBarLink,
-	},
-	data: {
-		message: 'Hello world from Vue'
+		TheHeader,
+		TheSidebar,
+		PixlaControl
 	},
 	router: router,
 	store: store,

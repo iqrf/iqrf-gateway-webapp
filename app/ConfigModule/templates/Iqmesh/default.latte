@@ -17,11 +17,7 @@
 
 {block title}{_config.iqmesh.title}{/block}
 {block content}
-<div class='box box-primary'>
-	<header class='box-header with-border'>
-		<h2 class='box-title'>{_config.iqmesh.otaUpload.title}</h2>
-	</header>
-	<section class='box-body'>
-		{control configOtaUploadForm}
-	</section>
-</div>
+<c-card>
+	<c-card-header>{_config.iqmesh.otaUpload.title}</c-card-header>
+	<c-card-body>{control configOtaUploadForm}</c-card-body>
+</c-card>

@@ -17,8 +17,6 @@
 
 {block title}{_config.scheduler.import}{/block}
 {block content}
-<div class='panel panel-default'>
-	<div class='panel-body'>
-        {control configSchedulerImportForm}
-	</div>
-</div>
+<c-card body-wrapper>
+	{control configSchedulerImportForm}
+</c-card>

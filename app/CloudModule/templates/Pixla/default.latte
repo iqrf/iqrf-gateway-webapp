@@ -17,25 +17,9 @@
 
 {block title}{_cloud.pixla.title}{/block}
 {block content}
+<pixla-control/>
 <div class='panel panel-default'>
 	<div n:snippet='pixla' class='panel-body'>
-		<table class='table table-striped'>
-			<tr>
-				<th>{_cloud.pixla.token}</th>
-				<td>{$token}</td>
-			</tr>
-			<tr>
-				<th>{_cloud.pixla.status}</th>
-				<td>{_cloud.pixla.statuses.$status}</td>
-			</tr>
-			<tr>
-				<td colspan='2'>{control pixlaForm}</td>
-			</tr>
-		</table>
-		{if $status !== ''}
-			<a class='ajax btn btn-success' n:href='enable!' role='button'>{_cloud.pixla.enable}</a>
-			<a class='ajax btn btn-danger' n:href='disable!' role='button'>{_cloud.pixla.disable}</a>
-			<a class='btn btn-primary' href='https://www.pixla.online/' target='_blank'>{_cloud.pixla.dashboard}</a>
-		{/if}
+		{control pixlaForm}
 	</div>
 </div>

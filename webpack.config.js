@@ -45,6 +45,15 @@ module.exports = {
 				},
 			},
 			{
+				test: /\.s[ac]ss$/,
+				use: [
+					'vue-style-loader',
+					MiniCssExtractPlugin.loader,
+					'css-loader',
+					'sass-loader',
+				],
+			},
+			{
 				test: /\.css$/,
 				use: [
 					'vue-style-loader',
@@ -88,7 +97,9 @@ module.exports = {
 	optimization: {
 		minimize: true,
 		minimizer: [
-			new TerserPlugin(),
+			new TerserPlugin({
+				sourceMap: true,
+			}),
 			new OptimizeCSSAssetsPlugin({})
 		],
 	},
@@ -97,26 +108,27 @@ module.exports = {
 			'vue$': 'vue/dist/vue.esm.js'
 		},
 		extensions: ['*', '.js', '.vue', '.json']
-	}
+	},
+	devtool: 'source-map',
 };
 
 if (process.env.NODE_ENV === 'production') {
-	module.exports.devtool = '#source-map'
+	module.exports.devtool = '#source-map';
 	// http://vue-loader.vuejs.org/en/workflow/production.html
 	module.exports.plugins = (module.exports.plugins || []).concat([
 		new webpack.DefinePlugin({
 			'process.env': {
-				NODE_ENV: '"production"'
-			}
+				NODE_ENV: '"production"',
+			},
 		}),
 		new webpack.optimize.UglifyJsPlugin({
 			sourceMap: true,
 			compress: {
-				warnings: false
-			}
+				warnings: false,
+			},
 		}),
 		new webpack.LoaderOptionsPlugin({
-			minimize: true
-		})
-	])
+			minimize: true,
+		}),
+	]);
 }

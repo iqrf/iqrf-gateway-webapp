@@ -17,8 +17,6 @@
 
 {block title}{_core.user.edit.title}{/block}
 {block content}
-<div class='panel panel-default'>
-	<div class='panel-body'>
-		{control userEditForm}
-	</div>
-</div>
+<c-card body-wrapper>
+	{control userEditForm}
+</c-card>

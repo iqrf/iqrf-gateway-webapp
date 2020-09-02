@@ -18,22 +18,16 @@
 {block title}{_config.websocket.title}{/block}
 {block content}
 {if $user->isInRole('power')}
-	<div class='panel panel-default'>
-		<header class='panel-heading'>{_config.websocket.messaging.title}</header>
-		<div class='panel-body'>
-			{control configWebSocketMessagingDataGrid}
-		</div>
-	</div>
-	<div class='panel panel-default'>
-		<header class='panel-heading'>{_config.websocket.service.title}</header>
-		<div class='panel-body'>
-			{control configWebSocketServiceDataGrid}
-		</div>
-	</div>
+	<c-card>
+		<c-card-header>{_config.websocket.messaging.title}</c-card-header>
+		<c-card-body>{control configWebSocketMessagingDataGrid}</c-card-body>
+	</c-card>
+	<c-card>
+		<c-card-header>{_config.websocket.service.title}</c-card-header>
+		<c-card-body>{control configWebSocketServiceDataGrid}</c-card-body>
+	</c-card>
 {else}
-	<div class='panel panel-default'>
-		<div class='panel-body'>
-			{control configWebSocketDataGrid}
-		</div>
-	</div>
+	<c-card body-wrapper>
+		{control configWebSocketDataGrid}
+	</c-card>
 {/if}

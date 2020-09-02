@@ -1,23 +1,28 @@
 <template>
-	<div class='panel panel-default'>
-		<div class='panel-body'>
-			<button class='btn btn-danger' @click='powerOff()'>
-				<span class='glyphicon glyphicon-off'></span>
-				{{ $t('gateway.power.powerOff.title') }}
-			</button>
-			<button class='btn btn-primary' @click='reboot()'>
-				<span class='glyphicon glyphicon-repeat'></span>
-				{{ $t('gateway.power.reboot.title') }}
-			</button>
-		</div>
-	</div>
+	<CCard body-wrapper>
+		<CButton color='danger' @click='powerOff()'>
+			<CIcon :content='$options.icon.cilPowerStandby' />
+			{{ $t('gateway.power.powerOff.title') }}
+		</CButton>
+		<CButton color='primary' @click='reboot()'>
+			<CIcon :content='$options.icon.cilReload' />
+			{{ $t('gateway.power.reboot.title') }}
+		</CButton>
+	</CCard>
 </template>
 
 <script>
+import {CButton, CCard, CIcon} from '@coreui/vue';
+import { cilPowerStandby, cilReload } from '@coreui/icons';
 import GatewayService from '../../services/GatewayService';
 
 export default {
 	name: 'PowerControl',
+	components: {
+		CButton,
+		CCard,
+		CIcon,
+	},
 	methods: {
 		powerOff() {
 			GatewayService.performPowerOff()
@@ -32,6 +37,10 @@ export default {
 				});
 		},
 	},
+	icon: {
+		cilPowerStandby,
+		cilReload,
+	}
 };
 </script>
 

@@ -1,7 +1,8 @@
 export function authorizationHeader() {
-	let jwt = localStorage.getItem('jwt');
-	if (jwt) {
-		return {'Authorization': 'Bearer ' + jwt};
+	let json = localStorage.getItem('user');
+	if (json) {
+		let user = JSON.parse(json);
+		return {'Authorization': 'Bearer ' + user.token};
 	}
 	return {};
 }

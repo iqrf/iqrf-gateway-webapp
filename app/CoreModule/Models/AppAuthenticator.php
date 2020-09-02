@@ -55,10 +55,9 @@ class AppAuthenticator implements IAuthenticator {
 		if ($user === null) {
 			throw new AuthenticationException('User not found.');
 		}
-		if (!password_verify($password, $user->getPassword())) {
+		if (!$user->verifyPassword($password)) {
 			throw new AuthenticationException('Invalid password.');
 		}
-		$this->entityManager->flush();
 		return $user->toIdentity();
 	}
 

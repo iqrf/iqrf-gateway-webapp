@@ -17,8 +17,6 @@
 
 {block title}{_config.monitor.edit}{/block}
 {block content}
-<div class='panel panel-default'>
-	<div class='panel-body'>
-        {control configMonitorForm}
-	</div>
-</div>
+<c-card body-wrapper>
+	{control configMonitorForm}
+</c-card>

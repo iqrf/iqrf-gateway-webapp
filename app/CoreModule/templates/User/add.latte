@@ -17,8 +17,6 @@
 
 {block title}{_core.user.add.title}{/block}
 {block content}
-<div class='panel panel-default'>
-	<div class='panel-body'>
-		{control userAddForm}
-	</div>
-</div>
+<c-card body-wrapper>
+	{control userAddForm}
+</c-card>

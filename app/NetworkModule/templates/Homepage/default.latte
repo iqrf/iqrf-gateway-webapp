@@ -17,9 +17,11 @@
 
 {block title}{_network.title}{/block}
 {block content}
-<div class='list-group'>
-	<a n:href='Ethernet:default' class='list-group-item'>
-		<header class='list-group-item-heading'>{_network.ethernet.title}</header>
-		<p class='list-group-item-text'>{_network.ethernet.description}</p>
-	</a>
-</div>
+<c-card body-wrapper>
+	<c-list-group>
+		<c-list-group-item to='/network/ethernet/'>
+			<header class='list-group-item-heading'>{{ $t('network.ethernet.title') }}</header>
+			<p class='list-group-item-text'>{{ $t('network.ethernet.description') }}</p>
+		</c-list-group-item>
+	</c-list-group>
+</c-card>

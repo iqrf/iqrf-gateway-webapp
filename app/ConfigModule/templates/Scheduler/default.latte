@@ -17,8 +17,6 @@
 
 {block title}{_config.scheduler.title}{/block}
 {block content}
-<div class='box'>
-	<section class='box-body'>
-        {control configSchedulerDataGrid}
-	</section>
-</div>
+<c-card body-wrapper>
+	{control configSchedulerDataGrid}
+</c-card>

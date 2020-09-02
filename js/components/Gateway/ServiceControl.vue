@@ -1,45 +1,44 @@
 <template>
-	<div class='panel panel-default'>
-		<div class='panel-body'>
-			<div v-if='!missing && !unsupported'>
-				<button v-if='!enabled' class='btn btn-success' @click='enable()'>
-					{{ $t('service.actions.enable') }}
-				</button>
-				<button v-if='enabled' class='btn btn-danger' @click='disable()'>
-					{{ $t('service.actions.disable') }}
-				</button>
-				<button v-if='!active' class='btn btn-success' @click='start()'>
-					{{ $t('service.actions.start') }}
-				</button>
-				<button v-if='active' class='btn btn-danger' @click='stop()'>
-					{{ $t('service.actions.stop') }}
-				</button>
-				<button v-if='active' class='btn btn-primary' @click='restart()'>
-					{{ $t('service.actions.restart') }}
-				</button>
-				<button class='btn btn-default' @click='refreshStatus()'>
-					{{ $t('service.actions.status') }}
-				</button>
-			</div>
-			<br>
-			<strong>{{ $t('service.status') }}: </strong>
-			<span v-if='missing'>
-				{{ $t('service.states.missing') }}
-			</span>
-			<span v-if='unsupported'>
-				{{ $t('service.states.unsupported') }}
-			</span>
-			<span v-else>
-				{{ $t('service.states.' + (enabled ? 'enabled' : 'disabled')) }},
-				{{ $t('service.states.' + (active ? 'active' : 'inactive')) }}
-			</span>
-			<br><br>
-			<pre v-if='status' class='log'>{{ status }}</pre>
+	<CCard body-wrapper>
+		<div v-if='!missing && !unsupported'>
+			<CButton v-if='!enabled' color='success' @click='enable()'>
+				{{ $t('service.actions.enable') }}
+			</CButton>
+			<CButton v-if='enabled' color='danger' @click='disable()'>
+				{{ $t('service.actions.disable') }}
+			</CButton>
+			<CButton v-if='!active' color='success' @click='start()'>
+				{{ $t('service.actions.start') }}
+			</CButton>
+			<CButton v-if='active' color='danger' @click='stop()'>
+				{{ $t('service.actions.stop') }}
+			</CButton>
+			<CButton v-if='active' color='primary' @click='restart()'>
+				{{ $t('service.actions.restart') }}
+			</CButton>
+			<CButton color='secondary' @click='refreshStatus()'>
+				{{ $t('service.actions.status') }}
+			</CButton>
 		</div>
-	</div>
+		<br>
+		<strong>{{ $t('service.status') }}: </strong>
+		<span v-if='missing'>
+			{{ $t('service.states.missing') }}
+		</span>
+		<span v-if='unsupported'>
+			{{ $t('service.states.unsupported') }}
+		</span>
+		<span v-else>
+			{{ $t('service.states.' + (enabled ? 'enabled' : 'disabled')) }},
+			{{ $t('service.states.' + (active ? 'active' : 'inactive')) }}
+		</span>
+		<br><br>
+		<pre v-if='status' class='log'>{{ status }}</pre>
+	</CCard>
 </template>
 
 <script>
+import {CButton, CCard} from '@coreui/vue';
 import ServiceService from '../../services/ServiceService';
 import spinner from '../../spinner';
 
@@ -47,6 +46,10 @@ const whitelisted = ['iqrf-gateway-daemon', 'ssh', 'unattended-upgrades'];
 
 export default {
 	name: 'ServiceControl',
+	components: {
+		CButton,
+		CCard,
+	},
 	props: {
 		serviceName: {
 			type: String,
@@ -159,7 +162,7 @@ export default {
 					this.$toast.success(this.$t('service.' + this.serviceName + '.messages.stop'));
 				})
 				.catch(this.handleError);
-		}
+		},
 	},
 };
 </script>

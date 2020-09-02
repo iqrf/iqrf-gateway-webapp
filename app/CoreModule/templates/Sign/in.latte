@@ -37,24 +37,9 @@
 	<meta name='msapplication-config' content='/img/favicon/browserconfig.xml'>
 	<meta name='theme-color' content='#ffffff'>
 </head>
-<body class='hold-transition skin-blue login-page'>
-
-<div class='login-box' id='app'>
-	<header class='login-logo'>
-		<img alt='IQRF Gateway' src='/img/logo-blue.svg' style="min-width: 320px">
-	</header>
-	<section class='login-box-body'>
-		<h3 class='login-box-msg' n:block='title'>{_core.sign.inForm.title}</h3>
-		{snippet flashes}
-			<div n:foreach='$flashes as $flash' class='alert alert-{$flash->type} alert-dismissible' role='alert'>
-				<button type='button' class='close' data-dismiss='alert'>
-					<span>&times;</span>
-				</button>
-				{_$flash->message}
-			</div>
-		{/snippet}
-		{control signInForm}
-	</section>
+<body>
+<div id='app'>
+	<router-view />
 </div>
 {block scripts}
 	<script n:nonce src='/dist/app.bundle.js'></script>

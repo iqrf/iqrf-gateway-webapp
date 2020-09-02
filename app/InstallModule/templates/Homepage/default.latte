@@ -17,12 +17,10 @@
 
 {block title}{_install.title}{/block}
 {block content}
-<div class='panel panel-default'>
-	<div class='panel-body'>
-		{_install.invitation}
-	</div>
-	<div class='panel-footer'>
+<c-card>
+	<c-card-body>{_install.invitation}</c-card-body>
+	<c-card-footer>
 		<a n:href='CreateUser:default' class='btn btn-primary'>{_install.createUser.button}</a>
 		<a n:href='GatewayInfo:default' class='btn btn-primary'>{_install.gwInfo.button}</a>
-	</div>
-</div>
+	</c-card-footer>
+</c-card>

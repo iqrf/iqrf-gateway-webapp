@@ -17,12 +17,16 @@
 
 {block title}{_cloud.ibmCloud.form.title}{/block}
 {block content}
-<div class='panel panel-default'>
-	<div class='panel-heading'>
-		<a class='btn btn-primary btn-xs' href='{$guides['pdf']}' role='button' target='_blank'>{_cloud.guides.pdf}</a>
-		<a class='btn btn-danger btn-xs' href='{$guides['video']}' role='button' target='_blank'>{_cloud.guides.video}</a>
-	</div>
-	<div class='panel-body'>
+<c-card>
+	<c-card-header>
+		<c-button color='primary' size='sm' href='{$guides['pdf']}' target='_blank'>
+			{{ $t('cloud.guides.pdf') }}
+		</c-button>
+		<c-button color='danger' size='sm' href='{$guides['video']}' target='_blank'>
+			{{ $t('cloud.guides.video') }}
+		</c-button>
+	</c-card-header>
+	<c-card-body>
 		{control cloudIbmForm}
-	</div>
-</div>
+	</c-card-body>
+</c-card>

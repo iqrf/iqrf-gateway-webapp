@@ -20,7 +20,7 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Forms;
 
-use Contributte\Forms\Rendering\Bootstrap3VerticalRenderer;
+use Contributte\Forms\Rendering\Bootstrap4VerticalRenderer;
 use Nette\Application\UI\Form;
 use Nette\Localization\ITranslator;
 
@@ -49,7 +49,7 @@ class FormFactory {
 	 */
 	public function create(?string $translationPrefix = null): Form {
 		$form = new Form();
-		$renderer = new Bootstrap3VerticalRenderer();
+		$renderer = new Bootstrap4VerticalRenderer();
 		if ($translationPrefix === null) {
 			$form->setTranslator($this->translator);
 		} else {

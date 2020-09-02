@@ -1,6 +1,217 @@
 {
+	"cloud": {
+		"title": "Clouds",
+		"description": "Add a connection into cloud services.",
+		"messages": {
+			"downloadFailure": "The webapp has not been able to download the root CA certificate. Probably the gateway has not been connected into the Internet.",
+			"cannotCreateDir": "The webapp has not been able to create a directory for the certificates.",
+			"success": "The new connection to the cloud service has been created successfully."
+		},
+		"amazonAws": {
+			"title": "Amazon AWS IoT",
+			"description": "Adds a new MQTT connection into Amazon AWS IoT.",
+			"form": {
+				"title": "Amazon AWS IoT MQTT connection wizard",
+				"endpoint": "Endpoint",
+				"certificate": "Certificate",
+				"key": "Private key",
+				"messages": {
+					"endpoint": "Please enter the endpoint.",
+					"certificate": "Please enter the certificate.",
+					"key": "Please enter the private key."
+				},
+				"save": "Save",
+				"save_restart": "Save and restart"
+			},
+			"messages": {
+				"mismatchedCrtAndKey": "The private key does not correspond to the certificate."
+			}
+		},
+		"hexio": {
+			"title": "Hexio IoT Platform",
+			"description": "Adds a new MQTT connection into Hexio IoT Platform.",
+			"form": {
+				"title": "Hexio IoT Platform MQTT connection wizard",
+				"broker": "MQTT broker address",
+				"ClientId": "Client ID",
+				"TopicRequest": "Topic for requests",
+				"TopicResponse": "Topic for responses",
+				"username": "Username",
+				"password": "Password",
+				"messages": {
+					"broker": "Please enter the MQTT broker address.",
+					"ClientId": "Please enter client ID.",
+					"TopicRequest": "Please enter topic for requests.",
+					"TopicResponse": "Please enter topic for responses.",
+					"username": "Please enter the username.",
+					"password": "Please enter the password."},
+				"save": "Save",
+				"save_restart": "Save and restart"}
+		},
+		"ibmCloud": {
+			"title": "IBM Cloud",
+			"description": "Adds a new MQTT connection into IBM Cloud.",
+			"form": {
+				"title": "IBM Cloud MQTT connection wizard",
+				"organizationId": "Organization ID",
+				"deviceType": "Device type",
+				"deviceId": "Device ID",
+				"token": "Authentication token",
+				"eventId": "Command and event ID",
+				"messages": {
+					"organizationId": "Please enter the organization ID.",
+					"deviceType": "Please enter the device type.",
+					"deviceId": "Please enter the device ID.",
+					"token": "Please enter the authentication token.",
+					"eventId": "Please enter command and event ID."},
+				"save": "Save",
+				"save_restart": "Save and restart"}
+		},
+		"intelimentsInteliGlue": {
+			"title": "Inteliments InteliGlue",
+			"description": "Adds a new MQTT connection into Inteliments InteliGlue.",
+			"form": {
+				"title": "Inteliments InteliGlue MQTT connection wizard",
+				"rootTopic": "Root Topic",
+				"assignedPort": "Assigned Port",
+				"clientId": "Client ID",
+				"password": "Password",
+				"messages": {
+					"rootTopic": "Please enter the root topic.",
+					"assignedPort": "Please enter the assigned port.",
+					"assignedPortRange": "Port has to be an integer in range from 0 to 65535.",
+					"clientId": "Please enter the client ID.",
+					"password": "Please enter the password."},
+				"save": "Save",
+				"save_restart": "Save and restart"}
+		},
+		"msAzure": {
+			"title": "Microsoft Azure IoT hub",
+			"description": "Adds a new MQTT connection into Microsoft Azure IoT Hub.",
+			"form": {
+				"title": "Microsoft Azure IoT Hub MQTT connection wizard",
+				"connectionString": "IoT Hub Connection String for Device",
+				"messages": {
+					"connectionString": "Please enter IoT Hub Connection String for Device."},
+				"save": "Save",
+				"save_restart": "Save and restart"},
+			"messages": {
+				"invalidConnectionString": "Invalid MS Azure IoT Hub connection string for device."}
+		},
+		"pixla": {
+			"title": "PIXLA device management",
+			"description": "Manages PIXLA client service.",
+			"dashboard": "Visit dashboard",
+			"disable": "Disable service",
+			"enable": "Enable service",
+			"status": "Service status",
+			"statuses": {
+				"enabled": "Enabled",
+				"disabled": "Disabled",
+				"missing": "Missing"
+			},
+			"form": {
+				"token": "Set new PIXLA platform token",
+				"save": "Save",
+				"missingParam": "Please enter PIXLA platform token.",
+				"editSuccess": "New PIXLA token has been successfully saved.",
+				"editFailure": "New PIXLA token has not been saved."},
+			"token": "Token",
+			"messages": {
+				"disabled": "PIXLA manager is disabled.",
+				"disable": "PIXLA client service has been disabled.",
+				"enable": "PIXLA client service has been enabled."
+			}
+		},
+		"guides": {
+			"pdf": "PDF guide",
+			"video": "Video guide"
+		}
+	},
+	"config": {
+		"title": "Configuration",
+		"description": "Edit configuration.",
+		"migration": {
+			"title": "Configuration migration",
+			"description": "Migration of IQRF Gateway Daemon's configuration"
+		},
+		"components": {
+			"title": "Components",
+			"description": "Manage components."
+		},
+		"iqmesh": {
+			"title": "IQMESH services",
+			"description": "Manage IQMESH services."
+		},
+		"iqrfCdc": {
+			"title": "IQRF CDC interface",
+			"description": "IQRF CDC interface settings."
+		},
+		"main": {
+			"title": "Main configuration",
+			"description": "Main configuration of IQRF Gateway Daemon."
+		},
+		"monitor": {
+			"title": "Monitoring service",
+			"description": "Monitoring service configuration."
+		},
+		"mq": {
+			"title": "MQ interface",
+			"description": "MQ interface settings."
+		},
+		"mqtt": {
+			"title": "MQTT interface",
+			"description": "MQTT interface settings."
+		},
+		"scheduler": {
+			"title": "Scheduler",
+			"description": "Scheduler settings."
+		},
+		"tracer": {
+			"title": "Tracer file",
+			"description": "Tracer file settings."
+		},
+		"udp": {
+			"title": "UDP interface",
+			"description": "IQRF UDP interface settings."
+		},
+		"websocket": {
+			"title": "WebSocket interface",
+			"description": "IQRF WebSocket interface settings."
+		}
+	},
 	"core": {
-		"title": "IQRF Gateway Webapp"
+		"title": "IQRF Gateway Webapp",
+		"dashboard": "Dashboard",
+		"documentation": {
+			"title": "Documentation",
+			"description": "Opens the documentation in a new tab."
+		},
+		"navigation": {
+			"toggle": "Toggle navigation"
+		},
+		"languages": {
+			"title": "Language",
+			"cs": "Czech",
+			"en": "English"
+		},
+		"sign": {
+			"in": "Sign in",
+			"inForm": {
+				"title": "Sign in",
+				"username": "Username",
+				"password": "Password",
+				"remember": "Keep me signed in",
+				"send": "Sign in",
+				"messages": {
+					"username": "Please enter your username.",
+					"password": "Please enter your password.",
+					"incorrectUsernameOrPassword": "The username or password you entered is incorrect.",
+					"success": "You have been signed in successfully."
+				}
+			},
+			"out": "Sign out"
+		}
 	},
 	"gateway": {
 		"title": "Gateway",
@@ -118,6 +329,35 @@
 			"log-read": "Cannot read log file."
 		}
 	},
+	"iqrfnet": {
+		"title": "IQRF network",
+		"description": "Control IQRF network.",
+		"networkManager": {
+			"title": "Network manager",
+			"description": "Network manager."
+		},
+		"sendJson": {
+			"title": "Send JSON request",
+			"description": "Send JSON request."
+		},
+		"sendPacket": {
+			"title": "Send DPA packet",
+			"description": "Send DPA packet."
+		},
+		"standard": {
+			"title": "IQRF Standard manager",
+			"menu": "Standard manager",
+			"description": "IQRF Standard manager."
+		},
+		"trConfiguration": {
+			"title": "TR configuration",
+			"description": "Edit TR configuration."
+		},
+		"trUpload": {
+			"title": "Coordinator upload",
+			"description": "IQRF Coordinator upload."
+		}
+	},
 	"service": {
 		"actions": {
 			"disable": "Disable",
@@ -145,6 +385,16 @@
 				"start": "IQRF Gateway Daemon has been started.",
 				"stop": "IQRF Gateway Daemon has been stopped.",
 				"restart": "IQRF Gateway Daemon has been restarted. It takes tens of seconds before the system is ready."
+			}
+		},
+		"gwman-client": {
+			"messages": {
+				"disabled": "PIXLA manager is disabled.",
+				"disable": "PIXLA client service has been disabled.",
+				"enable": "PIXLA client service has been enabled.",
+				"start": "PIXLA client service has been started.",
+				"stop": "PIXLA client service has been stopped.",
+				"restart": "PIXLA client service has been restarted."
 			}
 		},
 		"ssh": {

@@ -17,37 +17,33 @@
 
 {block title}{_gateway.updater.title}{/block}
 {block content}
-<div class='panel panel-default'>
-	<div class='panel-body'>
-		<div class='alert alert-warning' role='alert'>{_gateway.updater.warning}</div>
-		<a class='ajax btn btn-primary' n:href='update!' role='button'>{_gateway.updater.update}</a>
-		<a class='ajax btn btn-primary' n:href='list!' role='button'>{_gateway.updater.listUpgradable}</a>
-		<a class='ajax btn btn-primary' n:href='upgrade!' role='button'>{_gateway.updater.upgrade}</a>
-	</div>
-</div>
+<c-card body-wrapper>
+	<c-alert color='warning'>{{ $t('gateway.updater.warning') }}</c-alert>
+	<c-button color='primary' class='ajax' n:href='update!'>
+		{{ $t('gateway.updater.update') }}
+	</c-button>
+	<c-button color='primary' class='ajax' n:href='list!'>
+		{{ $t('gateway.updater.listUpgradable') }}
+	</c-button>
+	<c-button color='primary' class='ajax' n:href='upgrade!'>
+		{{ $t('gateway.updater.upgrade') }}
+	</c-button>
+</c-card>
 
 {snippet upgradablePackages}
 	{ifset $upgradablePackages}
-		<div class='box box-primary'>
-			<header class='box-header with-border'>
-				<h2 class='box-title'>{_gateway.updater.upgradablePackages.title}</h2>
-			</header>
-			<section class='box-body'>
-				{control upgradablePackagesGrid}
-			</section>
-		</div>
+		<c-card>
+			<c-card-header>{_gateway.updater.upgradablePackages.title}</c-card-header>
+			<c-card-body>{control upgradablePackagesGrid}</c-card-body>
+		</c-card>
 	{/ifset}
 {/snippet}
 
 {snippet outputChange}
 	{ifset $outputBuffer}
-		<div class='box box-primary'>
-			<header class='box-header with-border'>
-				<h2 class='box-title'>{_gateway.updater.output}</h2>
-			</header>
-			<section class='box-body'>
-				<pre>{$outputBuffer}</pre>
-			</section>
-		</div>
+		<c-card>
+			<c-card-header>{_gateway.updater.output}</c-card-header>
+			<c-card-body><pre>{$outputBuffer}</pre></c-card-body>
+		</c-card>
 	{/ifset}
 {/snippet}

@@ -1,20 +1,23 @@
 <template>
-	<div v-if='log' class='panel panel-default'>
-		<div class='panel-body'>
-			<pre class='log'>{{ log }}</pre>
-			<button class='btn btn-primary' @click='downloadArchive()'>
-				{{ $t('gateway.log.download') }}
-			</button>
-		</div>
-	</div>
+	<CCard v-if='log' body-wrapper>
+		<pre class='log'>{{ log }}</pre>
+		<CButton color='info' @click='downloadArchive()'>
+			{{ $t('gateway.log.download') }}
+		</CButton>
+	</CCard>
 </template>
 
 <script>
+import {CButton, CCard} from '@coreui/vue';
 import GatewayService from '../../services/GatewayService';
 import spinner from '../../spinner';
 
 export default {
-	name: 'LogViewer',
+	name: 'DaemonLogViewer',
+	components: {
+		CButton,
+		CCard,
+	},
 	data() {
 		return {
 			log: null

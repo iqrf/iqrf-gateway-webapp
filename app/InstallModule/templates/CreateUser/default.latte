@@ -17,11 +17,7 @@
 
 {block title}{_install.title}{/block}
 {block content}
-<div class='box box-primary'>
-	<header class='box-header with-border'>
-		<h2 class='box-title'>{_install.createUser.title}</h2>
-	</header>
-	<section class='box-body'>
-		{control createUserForm}
-	</section>
-</div>
+<c-card>
+	<c-card-header>{_install.createUser.title}</c-card-header>
+	<c-card-body>{control createUserForm}</c-card-body>
+</c-card>

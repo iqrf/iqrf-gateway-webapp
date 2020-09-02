@@ -1,4 +1,5 @@
 import axios from 'axios';
+import store from '../store';
 
 class AuthenticationService {
 	apiLogin(username, password) {
@@ -26,15 +27,15 @@ class AuthenticationService {
 		])
 			.then((responses) => {
 				const apiResponse = responses[0];
-				if (apiResponse.status === 200 && apiResponse.data.token) {
-					localStorage.setItem('jwt', apiResponse.data.token);
-				}
+				store.commit('user/SIGN_IN', apiResponse.data);
+				localStorage.setItem('user', JSON.stringify(apiResponse.data));
 				return responses;
 			});
 	}
 
 	logout() {
-		localStorage.removeItem('jwt');
+		store.commit('user/SIGN_OUT');
+		localStorage.removeItem('user');
 	}
 }
 

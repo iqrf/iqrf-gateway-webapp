@@ -53,6 +53,8 @@ http:
 	csp:
 		connect-src: [
 			self,
+			'ws:',
+			'wss:',
 			https://apidocs.iqrf.org,
 			https://sentry.iqrf.org
 		]

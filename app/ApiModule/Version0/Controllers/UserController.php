@@ -31,10 +31,9 @@ use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\JwtConfigurator;
 use App\ApiModule\Version0\RequestAttributes;
 use App\Models\Database\Entities\User;
+use App\Models\Database\EntityManager;
 use DateTimeImmutable;
 use Lcobucci\JWT\Configuration;
-use Nette\Security\AuthenticationException;
-use Nette\Security\User as NetteUser;
 use Nette\Utils\JsonException;
 use Throwable;
 use function gethostname;
@@ -52,18 +51,18 @@ class UserController extends BaseController {
 	private $configuration;
 
 	/**
-	 * @var NetteUser User
+	 * @var EntityManager Entity manager
 	 */
-	private $user;
+	private $entityManager;
 
 	/**
 	 * Constructor
 	 * @param JwtConfigurator $configurator JWT configurator
-	 * @param NetteUser $user User
+	 * @param EntityManager $entityManager Entity manager
 	 */
-	public function __construct(JwtConfigurator $configurator, NetteUser $user) {
+	public function __construct(JwtConfigurator $configurator, EntityManager $entityManager) {
 		$this->configuration = $configurator->create();
-		$this->user = $user;
+		$this->entityManager = $entityManager;
 	}
 
 	/**
@@ -130,9 +129,11 @@ class UserController extends BaseController {
 		} catch (JsonException $e) {
 			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
 		}
-		try {
-			$this->user->login($credentials['username'], $credentials['password']);
-		} catch (AuthenticationException $e) {
+		$user = $this->entityManager->getUserRepository()->findOneByUserName($credentials['username']);
+		if ($user === null) {
+			throw new ClientErrorException('Invalid credentials', ApiResponse::S400_BAD_REQUEST);
+		}
+		if (!$user->verifyPassword($credentials['password'])) {
 			throw new ClientErrorException('Invalid credentials', ApiResponse::S400_BAD_REQUEST);
 		}
 		try {
@@ -146,15 +147,16 @@ class UserController extends BaseController {
 		$builder = $this->configuration->createBuilder()
 			->issuedAt($now)
 			->expiresAt($now->modify('+1 day'))
-			->withClaim('uid', $this->user->getId());
+			->withClaim('uid', $user->getId());
 		if ($hostname !== false) {
-			$builder->issuedBy($hostname)
-				->identifiedBy($hostname);
+			$builder->issuedBy($hostname)->identifiedBy($hostname);
 		}
 		$signer = $this->configuration->getSigner();
 		$signingKey = $this->configuration->getSigningKey();
 		$token = $builder->getToken($signer, $signingKey);
-		return $response->writeJsonBody(['token' => (string) $token]);
+		$json = $user->jsonSerialize();
+		$json['token'] = (string) $token;
+		return $response->writeJsonBody($json);
 	}
 
 }

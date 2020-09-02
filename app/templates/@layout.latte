@@ -34,9 +34,30 @@
 	<meta name='msapplication-config' content='/img/favicon/browserconfig.xml'>
 	<meta name='theme-color' content='#ffffff'>
 </head>
-<body class='hold-transition skin-blue sidebar-mini'>
-<div class='wrapper' id='app'>
-	<header class='main-header'>
+<body>
+<div id='app' class="c-app">
+	<the-sidebar/>
+	<c-wrapper>
+		<the-header/>
+		<div class="c-body">
+			<main class="c-main">
+				<c-container fluid>
+					<div class="fade-in">
+						<h1 id='title'>{include title}</h1>
+						{snippet flashes}
+							<c-alert n:foreach='$flashes as $flash' color='{$flash->type}' close-button='true'>
+								{_$flash->message|breaklines}
+							</c-alert>
+						{/snippet}
+						<router-view />
+						<div id='content'>{include content}</div>
+					</div>
+				</c-container>
+			</main>
+		</div>
+	</c-wrapper>
+</div>
+{*	<header class='main-header'>
 		<a n:href=':Core:Homepage:default' class='logo'>
 			<span class='logo-mini'><img alt='IQRF Gateway' src='/img/logo-small.svg'></span>
 			<span class='logo-lg'><img alt='IQRF Gateway' src='/img/logo-big.svg'></span>
@@ -89,7 +110,7 @@
 			</div>
 		</section>
 	</div>
-</div>
+</div>*}
 {block scripts}
 	<script n:nonce src='/dist/app.bundle.js'></script>
 	<script n:nonce src='/dist/config.bundle.js'></script>

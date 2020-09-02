@@ -17,8 +17,6 @@
 
 {block title}{_core.user.title}{/block}
 {block content}
-<div class='panel panel-default'>
-	<div class='panel-body'>
-		{control userGrid}
-	</div>
-</div>
+<c-card body-wrapper>
+	{control userGrid}
+</c-card>

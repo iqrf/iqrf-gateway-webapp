@@ -17,24 +17,3 @@
 
 {block title}{_gateway.mode.title}{/block}
 {block content}
-<div class='panel panel-default'>
-	<div n:snippet='mode' class='panel-body'>
-		<table class='table table-striped'>
-			<tr>
-				<th>{_gateway.info.gwMode}</th>
-				<td>{_gateway.info.gwModes.$gwMode}</td>
-			</tr>
-		</table>
-		{if $gwMode !== 'unknown'}
-			<a class='ajax btn btn-primary' n:href='operational!' role='button'>
-				{_gateway.mode.modes.operational.title}
-			</a>
-			<a class='ajax btn btn-primary' n:href='service!' role='button'>
-				{_gateway.mode.modes.service.title}
-			</a>
-			<a class='ajax btn btn-primary' n:href='forwarding!' role='button'>
-				{_gateway.mode.modes.forwarding.title}
-			</a>
-		{/if}
-	</div>
-</div>

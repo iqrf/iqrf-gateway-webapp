@@ -17,25 +17,39 @@
 
 {block title}{_gateway.title}{/block}
 {block content}
-<div class='list-group'>
-	<disambiguation-link to='/gateway/info' />
-	<disambiguation-link to='/gateway/log' />
-	<a n:href='ChangeMode:default' class='list-group-item'>
-		<header class='list-group-item-heading'>{_gateway.mode.title}</header>
-		<p class='list-group-item-text'>{_gateway.mode.description}</p>
-	</a>
-	<disambiguation-link to='/service/iqrf-gateway-daemon'
-		:title='$t("service.iqrf-gateway-daemon.title")'
-		:description='$t("service.iqrf-gateway-daemon.description")' />
-	<disambiguation-link n:ifFeature='ssh' to='/service/ssh'
-		:title='$t("service.ssh.title")'
-		:description='$t("service.ssh.description")' />
-	<disambiguation-link n:ifFeature='unattendedUpgrades' to='/service/ssh'
-		:title='$t("service.unattended-upgrades.title")'
-		:description='$t("service.unattended-upgrades.description")' />
-	<a n:ifFeature='updater' n:href='Updater:default' class='list-group-item'>
-		<header class='list-group-item-heading'>{_gateway.updater.title}</header>
-		<p class='list-group-item-text'>{_gateway.updater.description}</p>
-	</a>
-	<disambiguation-link to='/gateway/power' />
-</div>
+<c-card body-wrapper>
+	<c-list-group>
+		<c-list-group-item to='/gateway/info/'>
+			<header class='list-group-item-heading'>{{ $t('gateway.info.title') }}</header>
+			<p class='list-group-item-text'>{{ $t('gateway.info.description') }}</p>
+		</c-list-group-item>
+		<c-list-group-item to='/gateway/info/'>
+			<header class='list-group-item-heading'>{{ $t('gateway.log.title') }}</header>
+			<p class='list-group-item-text'>{{ $t('gateway.log.description') }}</p>
+		</c-list-group-item>
+		<c-list-group-item to='/gateway/mode/'>
+			<header class='list-group-item-heading'>{{ $t('gateway.mode.title') }}</header>
+			<p class='list-group-item-text'>{{ $t('gateway.mode.description') }}</p>
+		</c-list-group-item>
+		<c-list-group-item to='/service/iqrf-gateway-daemon/'>
+			<header class='list-group-item-heading'>{{ $t('service.iqrf-gateway-daemon.title') }}</header>
+			<p class='list-group-item-text'>{{ $t('service.iqrf-gateway-daemon.description') }}</p>
+		</c-list-group-item>
+		<c-list-group-item n:ifFeature='ssh' to='/service/ssh/'>
+			<header class='list-group-item-heading'>{{ $t('service.ssh.title') }}</header>
+			<p class='list-group-item-text'>{{ $t('service.ssh.description') }}</p>
+		</c-list-group-item>
+		<c-list-group-item n:ifFeature='unattendedUpgrades' to='/service/unattended-upgrades/'>
+			<header class='list-group-item-heading'>{{ $t('service.unattended-upgrades.title') }}</header>
+			<p class='list-group-item-text'>{{ $t('service.unattended-upgrades.description') }}</p>
+		</c-list-group-item>
+		<c-list-group-item n:ifFeature='updater' to='/gateway/updater/'>
+			<header class='list-group-item-heading'>{{ $t('gateway.updater.title') }}</header>
+			<p class='list-group-item-text'>{{ $t('gateway.updater.description') }}</p>
+		</c-list-group-item>
+		<c-list-group-item to='/gateway/power/'>
+			<header class='list-group-item-heading'>{{ $t('gateway.power.title') }}</header>
+			<p class='list-group-item-text'>{{ $t('gateway.power.description') }}</p>
+		</c-list-group-item>
+	</c-list-group>
+</c-card>

@@ -17,9 +17,7 @@
 
 {block title}{_'core.error.404.title'}{/block}
 {block content}
-<div class='box box-primary'>
-	<header class='box-header with-border'>
-		<h1 class='box-title'>{_'core.error.404.header'}</h1>
-	</header>
-	<section class='box-body'>{_'core.error.404.message'}</section>
-</div>
+<c-card>
+	<c-card-header>{_'core.error.404.header'}</c-card-header>
+	<c-card-body>{_'core.error.404.message'}</c-card-body>
+</c-card>

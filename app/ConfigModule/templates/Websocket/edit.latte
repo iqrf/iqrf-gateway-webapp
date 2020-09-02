@@ -17,8 +17,6 @@
 
 {block title}{_config.websocket.interface.edit}{/block}
 {block content}
-<div class='panel panel-default'>
-	<div class='panel-body'>
-		{control configWebSocketForm}
-	</div>
-</div>
+<c-card body-wrapper>
+	{control configWebSocketForm}
+</c-card>
