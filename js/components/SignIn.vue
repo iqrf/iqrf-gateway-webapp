@@ -8,35 +8,53 @@
 					</div>
 					<CCard class='p-4'>
 						<CCardBody>
-							<CForm @submit.prevent='handleSubmit'>
-								<h1 class='text-center'>
-									{{ $t('core.sign.inForm.title') }}
-								</h1>
-								<CInput
-									v-model='username'
-									:label='$t("core.sign.inForm.username")'
-									:placeholder='$t("core.sign.inForm.username")'
-									autocomplete='username'
-								>
-									<template #prepend-content>
-										<CIcon :content='$options.icons.user' />
-									</template>
-								</CInput>
-								<CInput
-									v-model='password'
-									:label='$t("core.sign.inForm.password")'
-									:placeholder='$t("core.sign.inForm.password")'
-									type='password'
-									autocomplete='password'
-								>
-									<template #prepend-content>
-										<CIcon :content='$options.icons.lock' />
-									</template>
-								</CInput>
-								<CButton color='primary' class='px-4' type='submit'>
-									{{ $t('core.sign.inForm.send') }}
-								</CButton>
-							</CForm>
+							<ValidationObserver v-slot='{ invalid }'>
+								<CForm @submit.prevent='handleSubmit'>
+									<h1 class='text-center'>
+										{{ $t('core.sign.inForm.title') }}
+									</h1>
+									<ValidationProvider
+										v-slot='{ valid, touched, errors }'
+										rules='required'
+										:custom-messages='{required: "core.sign.inForm.messages.username"}'
+									>
+										<CInput
+											v-model='username'
+											:label='$t("core.sign.inForm.username")'
+											:placeholder='$t("core.sign.inForm.username")'
+											autocomplete='username'
+											:is-valid='touched ? valid : null'
+											:invalid-feedback='$t(errors[0])'
+										>
+											<template #prepend-content>
+												<CIcon :content='$options.icons.user' />
+											</template>
+										</CInput>
+									</ValidationProvider>
+									<ValidationProvider
+										v-slot='{ valid, touched, errors }'
+										rules='required'
+										:custom-messages='{required: "core.sign.inForm.messages.password"}'
+									>
+										<CInput
+											v-model='password'
+											:label='$t("core.sign.inForm.password")'
+											:placeholder='$t("core.sign.inForm.password")'
+											type='password'
+											autocomplete='password'
+											:is-valid='touched ? valid : null'
+											:invalid-feedback='$t(errors[0])'
+										>
+											<template #prepend-content>
+												<CIcon :content='$options.icons.lock' />
+											</template>
+										</CInput>
+									</ValidationProvider>
+									<CButton color='primary' type='submit' :disabled='invalid'>
+										{{ $t('core.sign.inForm.send') }}
+									</CButton>
+								</CForm>
+							</ValidationObserver>
 						</CCardBody>
 					</CCard>
 				</CCol>
@@ -47,9 +65,10 @@
 
 <script>
 import {CContainer, CCard, CCardBody, CCol, CForm, CIcon, CInput, CRow} from '@coreui/vue';
-import { cilUser, cilLockLocked } from '@coreui/icons';
+import {cilUser, cilLockLocked} from '@coreui/icons';
 import AuthenticationService from '../services/AuthenticationService';
-//import {ValidationObserver, ValidationProvider} from 'vee-validate';
+import {required} from 'vee-validate/dist/rules';
+import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
 export default {
 	name: 'SignIn',
@@ -62,8 +81,8 @@ export default {
 		CIcon,
 		CInput,
 		CRow,
-		//ValidationObserver,
-		//ValidationProvider,
+		ValidationObserver,
+		ValidationProvider,
 	},
 	data() {
 		return {
@@ -72,12 +91,14 @@ export default {
 			submitted: false,
 		};
 	},
+	created() {
+		extend('required', required);
+	},
 	methods: {
 		handleSubmit() {
 			AuthenticationService.login(this.username, this.password)
 				.then(() => {
-					//this.$router.push('/');
-					location.replace('/');
+					this.$router.push('/');
 					this.$toast.success(this.$t('core.sign.inForm.messages.success'));
 				})
 				.catch((reason) => (console.error(reason)));
