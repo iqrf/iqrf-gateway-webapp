@@ -27,7 +27,7 @@
 		"autosize": "^4.0",
 		"axios": "^0.20.0",
 		"cronstrue": "^1.100.0",
-		"highlight.js": "#3abf3a2c436615ecea05e76a0b12ed9a1bb52429",
+		"highlight.js": "^10.1.2",
 		"jquery": "^3.5",
 		"live-form-validation": "^1.9",
 		"nette-forms": "^3.1.0",
