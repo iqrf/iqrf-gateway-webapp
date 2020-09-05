@@ -17,51 +17,37 @@
 
 {block title}{_iqrfnet.standard.title}{/block}
 {block content}
-<div class='col-sm-6'>
-	<div class='box box-primary'>
-		<header class='box-header with-border'>
-			<h2 class='box-title'>{_iqrfnet.standard.binaryOutput.title}</h2>
-		</header>
-		<section class='box-body'>
-			{control binaryOutputForm}
-		</section>
-		{snippetArea binaryOutputWrapper}
-            {include 'binaryOutput.latte', data => $binaryOutputData}
-		{/snippetArea}
-	</div>
-	<div class='box box-primary'>
-		<header class='box-header with-border'>
-			<h2 class='box-title'>{_iqrfnet.standard.sensor.title}</h2>
-		</header>
-		<section class='box-body'>
-			{control sensorForm}
-		</section>
-		{snippetArea sensorWrapper}
-			{include 'sensor.latte', data => $sensorData}
-		{/snippetArea}
-	</div>
-</div>
-<div class='col-sm-6'>
-	<div class='box box-primary'>
-		<header class='box-header with-border'>
-			<h2 class='box-title'>{_iqrfnet.standard.light.title}</h2>
-		</header>
-		<section class='box-body'>
-			{control lightForm}
-		</section>
-		{snippetArea lightWrapper}
-			{include 'light.latte', data => $lightData}
-		{/snippetArea}
-	</div>
-	<div class='box box-primary'>
-		<header class='box-header with-border'>
-			<h2 class='box-title'>{_iqrfnet.standard.dali.title}</h2>
-		</header>
-		<section class='box-body'>
-            {control daliForm}
-		</section>
-		{snippetArea daliWrapper}
-            {include 'dali.latte', data => $daliData}
-		{/snippetArea}
-	</div>
-</div>
+<c-row>
+	<c-col sm='6'>
+		<c-card>
+			<c-card-header>{_iqrfnet.standard.binaryOutput.title}</c-card-header>
+			<c-card-body>{control binaryOutputForm}</c-card-body>
+			{snippetArea binaryOutputWrapper}
+				{include 'binaryOutput.latte', data => $binaryOutputData}
+			{/snippetArea}
+		</c-card>
+		<c-card>
+			<c-card-header>{_iqrfnet.standard.sensor.title}</c-card-header>
+			<c-card-body>{control sensorForm}</c-card-body>
+			{snippetArea sensorWrapper}
+				{include 'sensor.latte', data => $sensorData}
+			{/snippetArea}
+		</c-card>
+	</c-col>
+	<c-col sm='6'>
+		<c-card>
+			<c-card-header>{_iqrfnet.standard.light.title}</c-card-header>
+			<c-card-body>{control lightForm}</c-card-body>
+			{snippetArea lightWrapper}
+				{include 'light.latte', data => $lightData}
+			{/snippetArea}
+		</c-card>
+		<c-card>
+			<c-card-header>{_iqrfnet.standard.dali.title}</c-card-header>
+			<c-card-body>{control daliForm}</c-card-body>
+			{snippetArea daliWrapper}
+				{include 'dali.latte', data => $daliData}
+			{/snippetArea}
+		</c-card>
+	</c-col>
+</c-row>

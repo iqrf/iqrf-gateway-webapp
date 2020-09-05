@@ -21,42 +21,11 @@ declare(strict_types = 1);
 namespace App\IqrfNetModule\Presenters;
 
 use App\CoreModule\Presenters\ProtectedPresenter;
-use App\IqrfNetModule\Forms\SendRawFormFactory;
-use Iqrf\IdeMacros\MacroFileParser;
-use Nette\Application\UI\Form;
 
 /**
  * Send DPA packet presenter
  */
 class SendRawPresenter extends ProtectedPresenter {
-
-	/**
-	 * @var SendRawFormFactory Send DPA packet form
-	 * @inject
-	 */
-	public $formFactory;
-
-	/**
-	 * @var MacroFileParser IQRF IDE Macros parser
-	 */
-	private $macroParser;
-
-	/**
-	 * Constructor
-	 * @param MacroFileParser $macroParser IQRF IDE Macros file parser
-	 */
-	public function __construct(MacroFileParser $macroParser) {
-		$this->macroParser = $macroParser;
-		parent::__construct();
-	}
-
-	/**
-	 * Renders a send DPA packet page
-	 */
-	public function renderDefault(): void {
-		$macros = $this->macroParser->read();
-		$this->template->macros = $this->macroParser->toArray($macros);
-	}
 
 	/**
 	 * AJAX handler for showing DPA request and response
@@ -66,14 +35,6 @@ class SendRawPresenter extends ProtectedPresenter {
 		$this->template->json = $data;
 		$this->redrawControl('responseWrapper');
 		$this->redrawControl('responseChange');
-	}
-
-	/**
-	 * Creates the send DPA packet form
-	 * @return Form Send DPA packet form
-	 */
-	protected function createComponentSendRawForm(): Form {
-		return $this->formFactory->create($this);
 	}
 
 }

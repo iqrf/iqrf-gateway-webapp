@@ -1,7 +1,16 @@
 import axios from 'axios';
 import store from '../store';
 
+/**
+ * Authentication service
+ */
 class AuthenticationService {
+	/**
+	 * Signs in the user (REST API)
+	 * @param username Username
+	 * @param password Password
+	 * @returns {Promise<AxiosResponse<any>>}
+	 */
 	apiLogin(username, password) {
 		let data = {
 			username: username,
@@ -10,6 +19,12 @@ class AuthenticationService {
 		return axios.post('user/signIn', data);
 	}
 
+	/**
+	 * Signs in the user (Nette login)
+	 * @param username Username
+	 * @param password Password
+	 * @returns {Promise<AxiosResponse<any>>}
+	 */
 	netteLogin(username, password) {
 		const data = new URLSearchParams();
 		data.append('username', username);
@@ -20,6 +35,12 @@ class AuthenticationService {
 		return axios.post('//' + window.location.host + '/sign/in', data);
 	}
 
+	/**
+	 * Signs in the user
+	 * @param username Username
+	 * @param password Password
+	 * @returns {Promise.constructor|Promise<T>}
+	 */
 	login(username, password) {
 		return Promise.all([
 			this.apiLogin(username, password),
@@ -33,6 +54,9 @@ class AuthenticationService {
 			});
 	}
 
+	/**
+	 * Signs out the user
+	 */
 	logout() {
 		store.commit('user/SIGN_OUT');
 		localStorage.removeItem('user');

@@ -19,28 +19,14 @@ $theme-colors: (
   'primary': #3c8dbc,
 );
 
-//@import url('~admin-lte/dist/css/AdminLTE.min.css');
-//@import url('~admin-lte/dist/css/skins/skin-blue.min.css');
-//@import url('~bootstrap/dist/css/bootstrap.min.css');
 @import url('~ublaboo-datagrid/assets/datagrid.css');
 @import url('~ublaboo-datagrid/assets/datagrid-spinners.css');
-@import "~@coreui/coreui/scss/coreui";
-
-$theme-colors: (
-  'primary': #3c8dbc,
-);
+@import '~@coreui/coreui/scss/coreui';
+@import "~@coreui/icons/css/all.min.css";
 
 .datagrid {
   padding: 0;
   overflow-x: scroll;
-}
-
-.main-header .sidebar-toggle {
-  font-family: 'Glyphicons Halflings';
-}
-
-.main-header .sidebar-toggle::before {
-  content: "\e236";
 }
 
 .icon {

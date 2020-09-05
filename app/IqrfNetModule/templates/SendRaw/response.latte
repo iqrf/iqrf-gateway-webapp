@@ -16,26 +16,22 @@
 *}
 
 {snippet responseChange}
-    {ifset $json}
-		<div class='col-sm-6'>
-			<div class='box box-primary'>
-				<header class='box-header with-border'>
-					<h2 class='box-title'>{_iqrfnet.send-packet.request}</h2>
-				</header>
-				<section class='box-body'>
+    <c-row n:ifset='$json'>
+		<c-col sm='6'>
+			<c-card>
+				<c-card-header>{_iqrfnet.send-packet.request}</c-card-header>
+				<c-card-body>
 					<pre><code class='json'>{$json['request']}</code></pre>
-				</section>
-			</div>
-		</div>
-		<div class='col-sm-6'>
-			<div class='box box-primary'>
-				<header class='box-header with-border'>
-					<h2 class='box-title'>{_iqrfnet.send-packet.response}</h2>
-				</header>
-				<section class='box-body'>
+				</c-card-body>
+			</c-card>
+		</c-col>
+		<c-col sm='6'>
+			<c-card>
+				<c-card-header>{_iqrfnet.send-packet.response}</c-card-header>
+				<c-card-body>
 					<pre><code class='json'>{$json['response']}</code></pre>
-				</section>
-			</div>
-		</div>
-    {/ifset}
+				</c-card-body>
+			</c-card>
+		</c-col>
+	</c-row>
 {/snippet}

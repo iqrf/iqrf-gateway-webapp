@@ -17,87 +17,91 @@
 
 {block title}{_iqrfnet.enumeration.title}{/block}
 {block content}
-<div class='panel panel-default'>
-	<header class='panel-heading'>{_iqrfnet.enumeration.deviceInfo}</header>
-	<div class='panel-body'>
+<c-card>
+	<c-card-header>{_iqrfnet.enumeration.deviceInfo}</c-card-header>
+	<c-card-body>
 		<table class='table table-striped'>
-			<tr>
-				<th>{_iqrfnet.enumeration.deviceAddr}</th>
-				<td>{$data->deviceAddr}</td>
-			</tr>
-			<tr>
-				<th>{_iqrfnet.enumeration.hwpid}</th>
-				<td>{$peripheralData->hwpId}</td>
-			</tr>
-			<tr>
-				<th>{_iqrfnet.enumeration.manufacturer}</th>
-				<td>{$data->manufacturer}</td>
-			</tr>
-            {ifset $product}
+			<tbody>
 				<tr>
-					<th>{_iqrfnet.enumeration.product}</th>
+					<th>{_iqrfnet.enumeration.deviceAddr}</th>
+					<td>{$data->deviceAddr}</td>
+				</tr>
+				<tr>
+					<th>{_iqrfnet.enumeration.hwpid}</th>
+					<td>{$peripheralData->hwpId}</td>
+				</tr>
+				<tr>
+					<th>{_iqrfnet.enumeration.manufacturer}</th>
+					<td>{$data->manufacturer}</td>
+				</tr>
+				{ifset $product}
+					<tr>
+						<th>{_iqrfnet.enumeration.product}</th>
+						<td>
+							<a href='{$product->getHomepage()}'>{$data->product}</a>
+						</td>
+					</tr>
+					<tr>
+						<th>{_iqrfnet.enumeration.picture}</th>
+						<td>
+							<img alt='{$data->product}' class='productPicture' src='{$product->getPicture()}'/>
+						</td>
+					</tr>
+				{else}
+					<tr>
+						<th>{_iqrfnet.enumeration.product}</th>
+						<td>{$data->product}</td>
+					</tr>
+				{/ifset}
+			</tbody>
+		</table>
+	</c-card-body>
+</c-card>
+<c-card>
+	<c-card-header>{_iqrfnet.enumeration.trInfo}</c-card-header>
+	<c-card-body>
+		<table class='table table-striped'>
+			<tbody>
+				<tr>
+					<th>{_iqrfnet.enumeration.trType}</th>
+					<td>{$osData->trMcuType->trType}</td>
+				</tr>
+				<tr>
+					<th>{_iqrfnet.enumeration.mid}</th>
+					<td>{$osData->mid}</td>
+				</tr>
+				<tr>
+					<th>{_iqrfnet.enumeration.osVersion}</th>
+					<td>{$osData->osVersion} ({$osData->osBuild})</td>
+				</tr>
+				<tr>
+					<th>{_iqrfnet.enumeration.dpaVersion}</th>
+					<td>{$peripheralData->dpaVer}</td>
+				</tr>
+				<tr>
+					<th>{_iqrfnet.enumeration.rfMode}</th>
 					<td>
-						<a href='{$product->getHomepage()}'>{$data->product}</a>
+						{if $peripheralData->flags->rfModeStd}
+							<img alt='STD' class='icon' src='/img/std-black.svg'>
+							<strong>{_iqrfnet.enumeration.rfModes.std}</strong>
+						{elseif $peripheralData->flags->rfModeLp}
+							<img alt='LP' class='icon' src='/img/lp-black.svg'>
+							<strong>{_iqrfnet.enumeration.rfModes.lp}</strong>
+						{/if}
 					</td>
 				</tr>
 				<tr>
-					<th>{_iqrfnet.enumeration.picture}</th>
-					<td>
-						<img alt='{$data->product}' class='productPicture' src='{$product->getPicture()}'/>
-					</td>
+					<th>{_iqrfnet.enumeration.rssi}</th>
+					<td>{$osData->rssi}</td>
 				</tr>
-            {else}
 				<tr>
-					<th>{_iqrfnet.enumeration.product}</th>
-					<td>{$data->product}</td>
+					<th>{_iqrfnet.enumeration.supplyVoltage}</th>
+					<td>{$osData->supplyVoltage}</td>
 				</tr>
-            {/ifset}
+			</tbody>
 		</table>
-	</div>
-</div>
-<div class='panel panel-default'>
-	<header class='panel-heading'>{_iqrfnet.enumeration.trInfo}</header>
-	<div class='panel-body'>
-		<table class='table table-striped'>
-			<tr>
-				<th>{_iqrfnet.enumeration.trType}</th>
-				<td>{$osData->trMcuType->trType}</td>
-			</tr>
-			<tr>
-				<th>{_iqrfnet.enumeration.mid}</th>
-				<td>{$osData->mid}</td>
-			</tr>
-			<tr>
-				<th>{_iqrfnet.enumeration.osVersion}</th>
-				<td>{$osData->osVersion} ({$osData->osBuild})</td>
-			</tr>
-			<tr>
-				<th>{_iqrfnet.enumeration.dpaVersion}</th>
-				<td>{$peripheralData->dpaVer}</td>
-			</tr>
-			<tr>
-				<th>{_iqrfnet.enumeration.rfMode}</th>
-				<td>
-                    {if $peripheralData->flags->rfModeStd}
-						<img alt='STD' class='icon' src='/img/std-black.svg'>
-						<strong>{_iqrfnet.enumeration.rfModes.std}</strong>
-                    {elseif $peripheralData->flags->rfModeLp}
-						<img alt='LP' class='icon' src='/img/lp-black.svg'>
-						<strong>{_iqrfnet.enumeration.rfModes.lp}</strong>
-                    {/if}
-				</td>
-			</tr>
-			<tr>
-				<th>{_iqrfnet.enumeration.rssi}</th>
-				<td>{$osData->rssi}</td>
-			</tr>
-			<tr>
-				<th>{_iqrfnet.enumeration.supplyVoltage}</th>
-				<td>{$osData->supplyVoltage}</td>
-			</tr>
-		</table>
-		<a class='btn btn-primary' n:href='Network:default' role='button'>
+		<c-button color='primary' n:href='Network:default'>
 			{_iqrfnet.enumeration.back}
-		</a>
-	</div>
-</div>
+		</c-button>
+	</c-card-body>
+</c-card>

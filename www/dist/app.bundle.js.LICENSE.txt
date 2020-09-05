@@ -5,6 +5,12 @@
 */
 
 /*!
+  * CoreUI v3.2.2 (https://coreui.io)
+  * Copyright 2020 creativeLabs Łukasz Holeczek
+  * Licensed under MIT (https://coreui.io)
+  */
+
+/*!
   * vue-router v3.4.3
   * (c) 2020 Evan You
   * @license MIT
@@ -73,6 +79,12 @@ MERCHANTABLITY OR NON-INFRINGEMENT.
 See the Apache Version 2.0 License for specific language governing permissions
 and limitations under the License.
 ***************************************************************************** */
+
+/**
+  * vee-validate v3.3.9
+  * (c) 2020 Abdelrahman Awad
+  * @license MIT
+  */
 
 /**
  * AJAX Nette Framework plugin for jQuery

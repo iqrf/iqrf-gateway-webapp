@@ -17,9 +17,7 @@
 
 'use strict';
 
-//import 'admin-lte';
 import 'autosize';
-//import 'bootstrap';
 import 'jquery';
 import 'nette.ajax.js';
 import 'ublaboo-datagrid';
@@ -27,11 +25,12 @@ import autosize from 'autosize';
 import Nette from 'nette-forms';
 import * as Sentry from '@sentry/browser';
 import { Vue as VueIntegration } from '@sentry/integrations';
-import hljs from 'highlight.js/lib/highlight';
+import hljs from 'highlight.js/lib/core';
 import bash from 'highlight.js/lib/languages/bash';
 import json from 'highlight.js/lib/languages/json';
 import spinner from './spinner';
 import axios from 'axios';
+import '@coreui/coreui';
 import CoreuiVue from '@coreui/vue';
 import Vue from 'vue';
 import VueToast from 'vue-toast-notification';
@@ -40,11 +39,10 @@ import VueNativeSock from 'vue-native-websocket';
 import i18n from './i18n';
 import store from './store';
 import router from './router';
-import AuthenticationService from './services/AuthenticationService';
 
 import 'highlight.js/styles/github.css';
 import '../css/app.scss';
-import 'vue-toast-notification/dist/theme-default.css';
+import 'vue-toast-notification/dist/theme-sugar.css';
 
 
 import App from './components/App';
@@ -119,7 +117,8 @@ Vue.prototype.$appName = 'IQRF Gateway Webapp frontend';
 
 Vue.use(CoreuiVue);
 Vue.use(VueToast,{
-	position: 'top-right'
+	position: 'top',
+	duration: 10000
 });
 
 new Vue({
@@ -131,13 +130,9 @@ new Vue({
 		NavBarLink,
 		TheHeader,
 		TheSidebar,
-		PixlaControl
+		PixlaControl,
 	},
 	router: router,
 	store: store,
 	i18n: i18n
 });
-
-if (localStorage.getItem('jwt') === null) {
-	AuthenticationService.login('iqrf', 'iqrf');
-}

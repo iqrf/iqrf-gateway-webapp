@@ -5,6 +5,7 @@ import DaemonLogViewer from './components/Gateway/DaemonLogViewer';
 import DaemonMode from './components/Gateway/DaemonMode';
 import PowerControl from './components/Gateway/PowerControl';
 import SignIn from './components/SignIn';
+import SendDpaPacket from './components/IqrfNet/SendDpaPacket';
 
 import i18n from './i18n';
 import ServiceControl from './components/Gateway/ServiceControl';
@@ -67,6 +68,14 @@ const routes = [
 				meta: {
 					title: 'service.%serviceName%.title',
 					description: 'service.%serviceName%.description',
+				},
+			},
+			{
+				component: SendDpaPacket,
+				path: '/iqrfnet/send-raw/',
+				meta: {
+					title: 'iqrfnet.sendPacket.title',
+					description: 'iqrfnet.sendPacket.description',
 				},
 			},
 			{

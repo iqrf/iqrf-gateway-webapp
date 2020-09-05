@@ -23,24 +23,18 @@
 	</li>
 </ul>
 <br>
-<div class='col-md-6'>
-	<div class='box box-primary'>
-		<header class='box-header with-border'>
-			<h2 class='box-title'>{_iqrfnet.bonding.title}</h2>
-		</header>
-		<section class='box-body'>
-			{control iqrfNetBondingForm}
-		</section>
-	</div>
-	<div class='box box-primary'>
-		<header class='box-header with-border'>
-			<h2 class='box-title'>{_iqrfnet.discovery.title}</h2>
-		</header>
-		<section class='box-body'>
-			{control iqrfNetDiscoveryForm}
-		</section>
-	</div>
-</div>
-<div n:snippetArea='devicesWrapper' class='col-md-6'>
-	{include 'devices.latte'}
-</div>
+<c-row>
+	<c-col md='6'>
+		<c-card>
+			<c-card-header>{_iqrfnet.bonding.title}</c-card-header>
+			<c-card-body>{control iqrfNetBondingForm}</c-card-body>
+		</c-card>
+		<c-card>
+			<c-card-header>{_iqrfnet.discovery.title}</c-card-header>
+			<c-card-body>{control iqrfNetDiscoveryForm}</c-card-body>
+		</c-card>
+	</c-col>
+	<c-col n:snippetArea='devicesWrapper' md='6'>
+		{include 'devices.latte'}
+	</c-col>
+</c-row>

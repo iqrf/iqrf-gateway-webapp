@@ -31,12 +31,12 @@ final class DeviceStatusTest extends TestCase {
 	 * Device status icons
 	 */
 	private const ICONS = [
-		DeviceTypes::NONE => '<span class=\'glyphicon glyphicon-remove text-danger\'></span>',
-		DeviceTypes::COORDINATOR => '<span class=\'glyphicon glyphicon-home text-info\'></span>',
-		DeviceTypes::BONDED => '<span class=\'glyphicon glyphicon-ok text-primary\'></span>',
-		DeviceTypes::DISCOVERED => '<span class=\'glyphicon glyphicon-signal text-primary\'></span>',
-		DeviceTypes::BONDED_ONLINE => '<span class=\'glyphicon glyphicon-ok text-success\'></span>',
-		DeviceTypes::DISCOVERED_ONLINE => '<span class=\'glyphicon glyphicon-signal text-success\'></span>',
+		DeviceTypes::NONE => '<span class=\'cil-x text-danger\'></span>',
+		DeviceTypes::COORDINATOR => '<span class=\'cil-home text-info\'></span>',
+		DeviceTypes::BONDED => '<span class=\'cil-check-alt text-primary\'></span>',
+		DeviceTypes::DISCOVERED => '<span class=\'cil-signal-cellular-4 text-primary\'></span>',
+		DeviceTypes::BONDED_ONLINE => '<span class=\'cil-check-alt text-success\'></span>',
+		DeviceTypes::DISCOVERED_ONLINE => '<span class=\'cil-signal-cellular-4 text-success\'></span>',
 	];
 
 	/**

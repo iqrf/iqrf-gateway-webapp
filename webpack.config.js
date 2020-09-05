@@ -78,6 +78,7 @@ module.exports = {
 			$: 'jquery',
 			jQuery: 'jquery',
 			'window.jQuery': 'jquery',
+			Popper: ['popper.js', 'default'],
 			Nette: 'nette-forms',
 			'window.Nette': 'nette-forms',
 		}),

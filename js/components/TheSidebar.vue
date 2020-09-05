@@ -382,7 +382,7 @@ export default {
 					],
 				},
 			];
-			data.filter((element) => {
+			return data.filter((element) => {
 				element._children = element._children.filter((element) => {
 					if (!element.roles.includes(this.$store.getters['user/getRole'])) {
 						return null;
@@ -408,7 +408,6 @@ export default {
 				});
 				return element;
 			});
-			return data;
 		}
 	},
 	data() {

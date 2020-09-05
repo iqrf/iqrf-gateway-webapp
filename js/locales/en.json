@@ -128,6 +128,10 @@
 			"video": "Video guide"
 		}
 	},
+	"forms": {
+		"add": "Add",
+		"send": "Send"
+	},
 	"config": {
 		"title": "Configuration",
 		"description": "Edit configuration.",
@@ -338,11 +342,48 @@
 		},
 		"sendJson": {
 			"title": "Send JSON request",
-			"description": "Send JSON request."
+			"description": "Send JSON request.",
+			"documentation": "Show API documentation.",
+			"response": "Response",
+			"request": "Request"
 		},
 		"sendPacket": {
 			"title": "Send DPA packet",
-			"description": "Send DPA packet."
+			"description": "Send DPA packet.",
+			"macros": "Macros",
+			"request": "Request",
+			"response": "Response",
+			"form": {
+				"packet": "DPA packet",
+				"address": "Custom NADR",
+				"addressOverwrite": "Set own NADR",
+				"timeout": "Custom DPA timeout (ms)",
+				"timeoutOverwrite": "Set own DPA timeout",
+				"messages": {
+					"invalid": {
+						"address": "Invalid custom NADR has been entered. It has to be a decimal number from 1 to 239.",
+						"packet": "Invalid DPA packet has been entered.",
+						"timeout": "Invalid custom DPA timeout has been entered."
+					},
+					"missing": {
+						"address": "Please enter the custom NADR.",
+						"packet": "Please enter the DPA packet.",
+						"timeout": "Please enter the custom DPA timeout."
+					}
+				}
+			},
+			"messages": {
+				"failure": "An error occurred while DPA packet sending.",
+				"success": "DPA packet has been sent successfully.",
+				"incorrect": {
+					"nadr": "Sent DPA packet contains incorrect NADR.",
+					"pcmd": "Sent DPA packet contains incorrect PCMD.",
+					"pnum": "Sent DPA packet contains incorrect PNUM.",
+					"hwpid": "Sent DPA packet contains incorrect HWPID.",
+					"data": "Sent DPA packet contains incorrect data,",
+					"dataLength": "Sent DPA packet contains incorrect data length."
+				}
+			}
 		},
 		"standard": {
 			"title": "IQRF Standard manager",

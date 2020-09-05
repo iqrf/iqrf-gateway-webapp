@@ -60,17 +60,17 @@ class DeviceStatus {
 	public function getIcon(): string {
 		switch ($this->type) {
 			case DeviceTypes::COORDINATOR:
-				return '<span class=\'glyphicon glyphicon-home text-info\'></span>';
+				return '<span class=\'cil-home text-info\'></span>';
 			case DeviceTypes::BONDED:
-				return '<span class=\'glyphicon glyphicon-ok text-primary\'></span>';
+				return '<span class=\'cil-check-alt text-primary\'></span>';
 			case DeviceTypes::DISCOVERED:
-				return '<span class=\'glyphicon glyphicon-signal text-primary\'></span>';
+				return '<span class=\'cil-signal-cellular-4 text-primary\'></span>';
 			case DeviceTypes::BONDED_ONLINE:
-				return '<span class=\'glyphicon glyphicon-ok text-success\'></span>';
+				return '<span class=\'cil-check-alt text-success\'></span>';
 			case DeviceTypes::DISCOVERED_ONLINE:
-				return '<span class=\'glyphicon glyphicon-signal text-success\'></span>';
+				return '<span class=\'cil-signal-cellular-4 text-success\'></span>';
 			default:
-				return '<span class=\'glyphicon glyphicon-remove text-danger\'></span>';
+				return '<span class=\'cil-x text-danger\'></span>';
 		}
 	}
 

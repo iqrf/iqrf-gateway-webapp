@@ -17,52 +17,6 @@
 
 {block title}{_iqrfnet.send-packet.title}{/block}
 {block content}
-<div class='panel panel-default'>
-	<section class='panel-body'>
-		{form sendRawForm}
-			{label packet}
-			<input n:name=packet class='form-control'>
-			<div class='row'>
-				<div class='col-md-6'>
-					<div class='form-group checkbox'>
-						{input overwriteAddress}
-					</div>
-					<div class='form-group'>
-						{label address}
-						<input n:name=address class='form-control'>
-					</div>
-				</div>
-				<div class='col-md-6'>
-					<div class='form-group checkbox'>
-						{input timeoutEnabled}
-					</div>
-					<div class='form-group'>
-						{label timeout}
-						<input n:name=timeout class='form-control'>
-					</div>
-				</div>
-			</div>
-			<input n:name=send class='ajax btn btn-primary'>
-		{/form}
-	</section>
-</div>
-<div class='box box-primary'>
-	<header class='box-header with-border'>
-		<h2 class='box-title'>{_iqrfnet.macros.title}</h2>
-	</header>
-	<section class='box-body btn-group dropup' role='group'>
-		<div n:foreach='$macros as $macro' class='btn-group' role='group'>
-			<button type='button' class='btn btn-primary dropdown-toggle' data-toggle='dropdown'>
-				{$macro['name']} <span class=caret></span>
-			</button>
-			<ul class='dropdown-menu'>
-				<li n:foreach='$macro["macros"] as $item'>
-					<a n:if='$item["enabled"]' class='btn-packet' data-packet='{$item['request']}'>{$item['name']}</a>
-				</li>
-			</ul>
-		</div>
-	</section>
-</div>
 
 {snippetArea responseWrapper}
 	{include 'response.latte'}

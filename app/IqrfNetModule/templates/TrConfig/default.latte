@@ -17,32 +17,20 @@
 
 {block title}{_iqrfnet.trConfiguration.title}{/block}
 {block content}
-<div class='box box-default'>
-	<div class='box-header'>
-		{_iqrfnet.changeAddress.title}
-	</div>
-	<div class='box-body'>
-		{control iqrfNetAddressForm}
-	</div>
-</div>
+<c-card>
+	<c-card-header>{_iqrfnet.changeAddress.title}</c-card-header>
+	<c-card-body>{control iqrfNetAddressForm}</c-card-body>
+</c-card>
 
 {snippet forms}
 	{if $configuration}
-		<div class='box box-primary'>
-			<header class='box-header with-border'>
-				<h2 class='box-title'>{_iqrfnet.trConfig.title}</h2>
-			</header>
-			<section class='box-body'>
-				{control iqrfNetTrForm}
-			</section>
-		</div>
-		<div class='box box-primary'>
-			<header class='box-header with-border'>
-				<h2 class='box-title'>{_iqrfnet.security.title}</h2>
-			</header>
-			<section class='box-body'>
-				{control iqrfNetSecurityForm}
-			</section>
-		</div>
+		<c-card>
+			<c-card-header>{_iqrfnet.trConfig.title}</c-card-header>
+			<c-card-body>{control iqrfNetTrForm}</c-card-body>
+		</c-card>
+		<c-card>
+			<c-card-header>{_iqrfnet.security.title}</c-card-header>
+			<c-card-body>{control iqrfNetSecurityForm}</c-card-body>
+		</c-card>
 	{/if}
 {/snippet}

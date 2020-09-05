@@ -20,24 +20,22 @@
 <c-card body-wrapper>
 	{control configIqrfSpiForm}
 </c-card>
-<div class='box box-primary'>
-	<header class='box-header with-border'>
-		<h2 class='box-title'>{_config.interfaceMapping.spi}</h2>
-	</header>
-	<section class='box-body'>
-		<div class='col-md-6'>
-			<h4>{_config.interfaceMapping.boards}</h4>
-			{foreach $pins as $board => $pin}
-				<a class='btn btn-default btn-spi-pin'
-				   role='button' {foreach $pin as $pinName => $pinNumber} data-{$pinName}={$pinNumber}{/foreach}>{$board}</a>
-			{/foreach}
-		</div>
-		<div n:if='$interfaces !== []' class='col-md-6'>
-			<h4>{_config.interfaceMapping.interfaces}</h4>
-			{foreach $interfaces as $interface}
-				<a class='btn btn-default btn-spi-port' role='button'
-				   data-port='{$interface}'>{$interface}</a>
-			{/foreach}
-		</div>
-	</section>
-</div>
+<c-card>
+	<c-card-header>{_config.interfaceMapping.spi}</c-card-header>
+	<c-card-body>
+		<c-row>
+			<c-col md='6'>
+				<h4>{_config.interfaceMapping.boards}</h4>
+				{foreach $pins as $board => $pin}
+					<c-button color='primary' class='btn-spi-pin' {foreach $pin as $pinName => $pinNumber} data-{$pinName}={$pinNumber}{/foreach}>{$board}</c-button>
+				{/foreach}
+			</c-col>
+			<c-col n:if='$interfaces !== []' md='6'>
+				<h4>{_config.interfaceMapping.interfaces}</h4>
+				{foreach $interfaces as $interface}
+					<c-button color='primary' class='btn-spi-port' data-port='{$interface}'>{$interface}</c-button>
+				{/foreach}
+			</c-col>
+		</c-row>
+	</c-card-body>
+</c-card>

@@ -16,38 +16,36 @@
 *}
 
 {snippet showDevices}
-	<div class='box box-primary'>
-		<header class='box-header with-border'>
-			<h2 class='box-title'>{_iqrfnet.devices.title}</h2>
-		</header>
-		<section class='box-body table-responsive'>
+	<c-card>
+		<c-card-header>{_iqrfnet.devices.title}</c-card-header>
+		<c-card-body>
 			<table class='table text-center'>
 				<tr>
 					<td>
-						<span class='glyphicon glyphicon-home text-info'></span> {_iqrfnet.devices.coordinator}
+						<span class='cil-home text-info'></span> {_iqrfnet.devices.coordinator}
 					</td>
 					<td>
-						<span class='glyphicon glyphicon-remove text-danger'></span> {_iqrfnet.devices.unbonded}
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<span class='glyphicon glyphicon-ok text-primary'></span> {_iqrfnet.devices.bonded}
-					</td>
-					<td>
-						<span class='glyphicon glyphicon-signal text-primary'></span> {_iqrfnet.devices.discovered}
+						<span class='cil-x text-danger'></span> {_iqrfnet.devices.unbonded}
 					</td>
 				</tr>
 				<tr>
 					<td>
-						<span class='glyphicon glyphicon-ok text-success'></span> {_iqrfnet.devices.bondedOnline}
+						<span class='cil-check-alt text-primary'></span> {_iqrfnet.devices.bonded}
 					</td>
 					<td>
-						<span class='glyphicon glyphicon-signal text-success'></span> {_iqrfnet.devices.discoveredOnline}
+						<span class='cil-signal-cellular-4 text-primary'></span> {_iqrfnet.devices.discovered}
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class='cil-check-alt text-success'></span> {_iqrfnet.devices.bondedOnline}
+					</td>
+					<td>
+						<span class='cil-signal-cellular-4 text-success'></span> {_iqrfnet.devices.discoveredOnline}
 					</td>
 				</tr>
 			</table>
-			<a n:href='showNodes! true' class='ajax btn btn-primary center-block'>{_iqrfnet.devices.pingNodes}</a>
+			<c-button n:href='showNodes! true' color='primary' class='ajax center-block w-100'>{_iqrfnet.devices.pingNodes}</c-button>
 			{ifset $devices}
 				<table class='table table-striped'>
 					<tr>
@@ -65,10 +63,10 @@
 				</table>
 			{else}
 				<br>
-				<div class='alert alert-danger' role='alert'>
+				<c-alert color='danger'>
 					{_iqrfnet.webSocketClient.messages.emptyResponse}
-				</div>
+				</c-alert>
 			{/ifset}
-		</section>
-	</div>
+		</c-card-body>
+	</c-card>
 {/snippet}

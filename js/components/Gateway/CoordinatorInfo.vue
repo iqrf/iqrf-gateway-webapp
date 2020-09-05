@@ -55,7 +55,6 @@ export default {
 		this.$store.dispatch('sendRequest', {
 			'mType': 'iqmeshNetwork_EnumerateDevice',
 			'data': {
-				'msgId': 'iqmeshNetwork_EnumerateDevice',
 				'repeat': 2,
 				'req': {
 					'deviceAddr': 0,

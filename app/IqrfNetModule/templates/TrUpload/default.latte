@@ -17,36 +17,32 @@
 
 {block title}{_iqrfnet.trUpload.title}{/block}
 {block content}
-<div class='box box-primary'>
-	<header class='box-header with-border'>
-		<h2 class='box-title'>
-            {if $user->isInRole("power")}
-				{_iqrfnet.trUpload.title}
-			{else}
-	            {_iqrfnet.trUpload.dpaHandlerUpload}
-			{/if}
-		</h2>
-	</header>
-	<section class='box-body btn-group dropup' role='group'>
+<c-card>
+	<c-card-header>
+		{if $user->isInRole("power")}
+			{_iqrfnet.trUpload.title}
+		{else}
+			{_iqrfnet.trUpload.dpaHandlerUpload}
+		{/if}
+	</c-card-header>
+	<c-card-body>
 		{control trUploadForm}
-	</section>
-</div>
+	</c-card-body>
+</c-card>
 
-<div  class='box box-primary'>
-	<header class='box-header with-border'>
-		<h2 class='box-title'>
-			{if $user->isInRole("power")}
-				{_iqrfnet.osUpload.title}
-			{else}
-				{_iqrfnet.dpaUpload.title}
-			{/if}
-		</h2>
-	</header>
-	<section class='box-body btn-group dropup' role='group'>
+<c-card>
+	<c-card-header>
+		{if $user->isInRole("power")}
+			{_iqrfnet.osUpload.title}
+		{else}
+			{_iqrfnet.dpaUpload.title}
+		{/if}
+	</c-card-header>
+	<c-card-body>
 		{if $user->isInRole("power")}
 			{control osUploadForm}
 		{else}
 			{control dpaUploadForm}
 		{/if}
-	</section>
-</div>
+	</c-card-body>
+</c-card>
