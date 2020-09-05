@@ -12,7 +12,6 @@ namespace Tests\Unit\CloudModule\Models;
 
 use App\CloudModule\Models\PixlaManager;
 use App\CoreModule\Models\FileManager;
-use App\ServiceModule\Models\SystemDManager;
 use Mockery;
 use Mockery\MockInterface;
 use Nette\IOException;
@@ -52,46 +51,11 @@ final class PixlaManagerTest extends CommandTestCase {
 	private $manager;
 
 	/**
-	 * @var SystemDManager|MockInterface SystemD service manager
-	 */
-	private $serviceManager;
-
-	/**
 	 * Sets up the test environment
 	 */
 	protected function setUp(): void {
 		$this->fileManager = Mockery::mock(FileManager::class);
-		$this->serviceManager = Mockery::mock(SystemDManager::class);
-		$this->manager = new PixlaManager($this->fileManager, $this->serviceManager);
-	}
-
-	/**
-	 * Tests the function to disable and stop PIXLA client service
-	 */
-	public function testDisableService(): void {
-		$this->serviceManager->shouldReceive('disable');
-		Assert::noError(function (): void {
-			$this->manager->disableService();
-		});
-	}
-
-	/**
-	 * Tests the function to enable and start PIXLA client service
-	 */
-	public function testEnableService(): void {
-		$this->serviceManager->shouldReceive('enable');
-		Assert::noError(function (): void {
-			$this->manager->enableService();
-		});
-	}
-
-	/**
-	 * Tests the function to get status of PIXLA client service
-	 */
-	public function testGetServiceStatus(): void {
-		$this->serviceManager->shouldReceive('isEnabled')
-			->andReturnTrue();
-		Assert::true($this->manager->getServiceStatus());
+		$this->manager = new PixlaManager($this->fileManager);
 	}
 
 	/**

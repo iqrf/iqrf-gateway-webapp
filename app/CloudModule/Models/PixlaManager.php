@@ -21,7 +21,6 @@ declare(strict_types = 1);
 namespace App\CloudModule\Models;
 
 use App\CoreModule\Models\FileManager;
-use App\ServiceModule\Models\SystemDManager;
 use Nette\IOException;
 use Nette\Utils\Strings;
 
@@ -36,11 +35,6 @@ class PixlaManager {
 	private $fileManager;
 
 	/**
-	 * @var SystemDManager SystemD service manager
-	 */
-	private $serviceManager;
-
-	/**
 	 * File containing PIXLA token
 	 */
 	private const FILE_NAME = 'customer_id';
@@ -48,32 +42,9 @@ class PixlaManager {
 	/**
 	 * Constructor
 	 * @param FileManager $fileManager File manager
-	 * @param SystemDManager $serviceManager SystemD service manager
 	 */
-	public function __construct(FileManager $fileManager, SystemDManager $serviceManager) {
+	public function __construct(FileManager $fileManager) {
 		$this->fileManager = $fileManager;
-		$this->serviceManager = $serviceManager;
-	}
-
-	/**
-	 * Disables and stops PIXLA client service
-	 */
-	public function disableService(): void {
-		$this->serviceManager->disable();
-	}
-
-	/**
-	 * Enables and starts PIXLA client service
-	 */
-	public function enableService(): void {
-		$this->serviceManager->enable();
-	}
-
-	/**
-	 * Returns PIXLA client service status
-	 */
-	public function getServiceStatus(): bool {
-		return $this->serviceManager->isEnabled();
 	}
 
 	/**

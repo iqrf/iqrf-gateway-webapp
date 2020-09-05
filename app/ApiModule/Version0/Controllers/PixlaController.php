@@ -29,7 +29,6 @@ use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\CloudModule\Models\PixlaManager;
-use App\ServiceModule\Exceptions\NonexistentServiceException;
 use Nette\IOException;
 use Nette\Utils\JsonException;
 
@@ -64,26 +63,21 @@ class PixlaController extends BaseController {
 	 *          content:
 	 *              application/json:
 	 *                  schema:
-	 *                      $ref: '#/components/schemas/PixlaStatus'
+	 *                      $ref: '#/components/schemas/PixlaToken'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
-	public function status(ApiRequest $request, ApiResponse $response): ApiResponse {
+	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$status = [
 			'token' => $this->manager->getToken(),
 		];
-		try {
-			$status['status'] = $this->manager->getServiceStatus() ? 'enabled' : 'disabled';
-		} catch (NonexistentServiceException $e) {
-			$status['status'] = 'missing';
-		}
 		return $response->writeJsonBody($status);
 	}
 
 	/**
-	 * @Path("/token")
+	 * @Path("/")
 	 * @Method("PUT")
 	 * @OpenApi("
 	 *  summary: Sets new PIXLA token string
@@ -114,42 +108,6 @@ class PixlaController extends BaseController {
 		} catch (IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
-	}
-
-	/**
-	 * @Path("/enable")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Enables PIXLA client service
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
-	public function enable(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->manager->enableService();
-		return $response;
-	}
-
-	/**
-	 * @Path("/disable")
-	 * @Method("POST")
-	 * @OpenApi("
-	 *  summary: Disables PIXLA client service
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
-	 */
-	public function disable(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->manager->disableService();
-		return $response;
 	}
 
 }

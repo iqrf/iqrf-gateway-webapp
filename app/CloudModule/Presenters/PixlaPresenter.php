@@ -21,9 +21,7 @@ declare(strict_types = 1);
 namespace App\CloudModule\Presenters;
 
 use App\CloudModule\Forms\PixlaFormFactory;
-use App\CloudModule\Models\PixlaManager;
 use App\CoreModule\Presenters\ProtectedPresenter;
-use App\ServiceModule\Exceptions\NonexistentServiceException;
 use Nette\Application\UI\Form;
 
 /**
@@ -36,59 +34,6 @@ class PixlaPresenter extends ProtectedPresenter {
 	 * @inject
 	 */
 	public $formFactory;
-
-	/**
-	 * @var PixlaManager PIXLA management system manager
-	 */
-	private $manager;
-
-	/**
-	 * Constructor
-	 * @param PixlaManager $manager PIXLa management system manager
-	 */
-	public function __construct(PixlaManager $manager) {
-		$this->manager = $manager;
-		parent::__construct();
-	}
-
-	/**
-	 * Disables and stops PIXLA client
-	 */
-	public function handleDisable(): void {
-		$this->manager->disableService();
-		$this->flashSuccess('cloud.pixla.messages.disable');
-		if (!$this->isAjax()) {
-			$this->setView('default');
-			$this->redirect('Pixla:default');
-		}
-	}
-
-	/**
-	 * Enables and starts PIXLA client
-	 */
-	public function handleEnable(): void {
-		$this->manager->enableService();
-		$this->flashSuccess('cloud.pixla.messages.enable');
-		if (!$this->isAjax()) {
-			$this->setView('default');
-			$this->redirect('Pixla:default');
-		}
-	}
-
-	/**
-	 * Renders the default page
-	 */
-	public function renderDefault(): void {
-		try {
-			$this->template->status = $this->manager->getServiceStatus() ? 'enabled' : 'disabled';
-		} catch (NonexistentServiceException $e) {
-			$this->template->status = 'missing';
-		}
-		$this->template->token = $this->manager->getToken();
-		if ($this->isAjax()) {
-			$this->presenter->redrawControl('pixla');
-		}
-	}
 
 	/**
 	 * Checks if the PIXLA manager is enabled
