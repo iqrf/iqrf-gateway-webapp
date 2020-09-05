@@ -8,8 +8,12 @@
 				</tr>
 				<tr>
 					<th>{{ $t('service.status') }}</th>
-					<td v-if='missing'>{{ $t('service.states.missing') }}</td>
-					<td v-if='unsupported'>{{ $t('service.states.unsupported') }}</td>
+					<td v-if='missing'>
+						{{ $t('service.states.missing') }}
+					</td>
+					<td v-if='unsupported'>
+						{{ $t('service.states.unsupported') }}
+					</td>
 					<td v-else>
 						{{ $t('service.states.' + (enabled ? 'enabled' : 'disabled')) }},
 						{{ $t('service.states.' + (active ? 'active' : 'inactive')) }}

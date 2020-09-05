@@ -1,12 +1,17 @@
 <template>
-	<CSidebar fixed :minimize='minimize' :show='show'
-		@update:show='(value) => $store.commit("sidebar/set", ["show", value])'>
+	<CSidebar
+		fixed
+		:minimize='minimize'
+		:show='show'
+		@update:show='(value) => $store.commit("sidebar/set", ["show", value])'
+	>
 		<CSidebarBrand class='d-md-down-none' to='/'>
 			<img class='c-sidebar-brand-full' src='/img/logo-big.svg'>
 			<img class='c-sidebar-brand-minimized' src='/img/logo-small.svg'>
 		</CSidebarBrand>
-		<CRenderFunction flat :content-to-render='getNav'/>
-		<CSidebarMinimizer class='d-md-down-none'
+		<CRenderFunction flat :content-to-render='getNav' />
+		<CSidebarMinimizer
+			class='d-md-down-none'
 			@click.native='$store.commit("sidebar/set", ["minimize", !minimize])'
 		/>
 	</CSidebar>
@@ -14,13 +19,10 @@
 
 <script>
 import {
-	CIcon,
 	CRenderFunction,
 	CSidebar,
 	CSidebarBrand,
 	CSidebarMinimizer,
-	CSidebarNavDropdown,
-	CSidebarNavItem
 } from '@coreui/vue';
 import {cilCloud, cilWifiSignal4, cilStorage, cilSettings} from '@coreui/icons';
 import FeatureService from '../services/FeatureService';
@@ -28,13 +30,15 @@ import FeatureService from '../services/FeatureService';
 export default {
 	name: 'TheSidebar',
 	components: {
-		CIcon,
 		CRenderFunction,
 		CSidebar,
 		CSidebarBrand,
 		CSidebarMinimizer,
-		CSidebarNavDropdown,
-		CSidebarNavItem,
+	},
+	data() {
+		return {
+			features: null,
+		};
 	},
 	computed: {
 		show() {
@@ -409,11 +413,6 @@ export default {
 				return element;
 			});
 		}
-	},
-	data() {
-		return {
-			features: null,
-		};
 	},
 	created() {
 		FeatureService.fetchAll().then((response) => (this.features = response.data));

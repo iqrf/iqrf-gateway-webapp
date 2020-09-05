@@ -12,12 +12,23 @@
 								<h1 class='text-center'>
 									{{ $t('core.sign.inForm.title') }}
 								</h1>
-								<CInput v-model='username' :label='$t("core.sign.inForm.username")' :placeholder='$t("core.sign.inForm.username")' autocomplete='username'>
+								<CInput
+									v-model='username'
+									:label='$t("core.sign.inForm.username")'
+									:placeholder='$t("core.sign.inForm.username")'
+									autocomplete='username'
+								>
 									<template #prepend-content>
 										<CIcon :content='$options.icons.user' />
 									</template>
 								</CInput>
-								<CInput v-model='password' :label='$t("core.sign.inForm.password")' :placeholder='$t("core.sign.inForm.password")' type='password' autocomplete='password'>
+								<CInput
+									v-model='password'
+									:label='$t("core.sign.inForm.password")'
+									:placeholder='$t("core.sign.inForm.password")'
+									type='password'
+									autocomplete='password'
+								>
 									<template #prepend-content>
 										<CIcon :content='$options.icons.lock' />
 									</template>

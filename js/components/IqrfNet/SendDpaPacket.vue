@@ -52,8 +52,9 @@
 									v-model='timeout'
 									:disabled='!timeoutOverwrite'
 									:label='$t("iqrfnet.sendPacket.form.timeout")'
-									type='number' :is-valid='timeoutOverwrite ? valid : null'
+									:is-valid='timeoutOverwrite ? valid : null'
 									:invalid-feedback='$t(errors[0])'
+									type='number'
 								/>
 							</ValidationProvider>
 						</CCol>
