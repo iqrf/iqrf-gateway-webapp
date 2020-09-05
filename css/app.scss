@@ -16,7 +16,7 @@
  */
 
 $theme-colors: (
-  'primary': #3c8dbc,
+  'primary': #337ab7,
 );
 
 @import url('~ublaboo-datagrid/assets/datagrid.css');
@@ -24,14 +24,29 @@ $theme-colors: (
 @import '~@coreui/coreui/scss/coreui';
 @import "~@coreui/icons/css/all.min.css";
 
+.btn-group {
+  & > .dropup {
+	&:not(:last-child) > .btn {
+	  border-top-right-radius: 0;
+	  border-bottom-right-radius: 0;
+	}
+	&:not(:first-child) > .btn {
+	  border-top-left-radius: 0;
+	  border-bottom-left-radius: 0;
+	}
+  }
+}
+.dropdown-item {
+  padding: .25rem 1.25rem;
+}
+
+.form-group > label {
+  font-weight: bolder;
+}
+
 .datagrid {
   padding: 0;
   overflow-x: scroll;
-}
-
-.icon {
-  height: 1em;
-  width: 1em;
 }
 
 .log {

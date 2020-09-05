@@ -39,7 +39,6 @@ const mutations = {
 		console.error(state, event);
 	},
 	SOCKET_ONMESSAGE(state, message) {
-		// eslint-disable-next-line no-console
 		state.responses[message.data.msgId] = message;
 	},
 	SOCKET_ONSEND(state, request) {

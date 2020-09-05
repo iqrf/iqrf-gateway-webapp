@@ -32,7 +32,8 @@
 									v-model='address'
 									:disabled='!addressOverwrite'
 									:label='$t("iqrfnet.sendPacket.form.address")'
-									type='number' :is-valid='addressOverwrite ? valid : null'
+									type='number'
+									:is-valid='addressOverwrite ? valid : null'
 									:invalid-feedback='$t(errors[0])'
 								/>
 							</ValidationProvider>
@@ -184,11 +185,14 @@ export default {
 				'mType': 'iqrfRaw',
 				'data': {
 					'req': {
-						'rData': this.packet
+						'rData': this.packet,
 					},
 					'returnVerbose': true,
-				}
+				},
 			};
+			if (this.addressOverwrite && this.address !== null) {
+				json.data.req.rData = sendPacket.updateNadr(this.packet, this.address);
+			}
 			if (this.timeoutOverwrite && this.timeout !== null) {
 				json.data.timeout = this.timeout;
 			}
@@ -206,8 +210,8 @@ export default {
 		 * Sets DPA timeout
 		 */
 		setTimeout() {
-			let packet = sendPacket.parsePacket(this.packet);
-			let newTimeout = sendPacket.detectTimeout(packet);
+			let packet = sendPacket.Packet.parse(this.packet);
+			let newTimeout = packet.detectTimeout();
 			if (newTimeout === null) {
 				this.timeoutOverwrite = false;
 				this.timeout = 1000;

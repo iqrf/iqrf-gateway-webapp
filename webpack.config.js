@@ -110,7 +110,7 @@ module.exports = {
 		},
 		extensions: ['*', '.js', '.vue', '.json']
 	},
-	devtool: 'source-map',
+	devtool: process.env.NODE_ENV === 'production' ? 'source-map' : 'eval-cheap-source-map',
 };
 
 if (process.env.NODE_ENV === 'production') {

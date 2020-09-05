@@ -4,9 +4,19 @@
 			{{ $t('iqrfnet.sendPacket.macros') }}
 		</CCardHeader>
 		<CCardBody>
-			<CButtonGroup v-for='group of macros' :key='group.id'>
-				<CDropdown :toggler-text='group.name' color='primary' placement='top-start'>
-					<CDropdownItem v-for='packet of group.macros' :key='packet.name' @click='$emit("set-packet", packet.request)'>
+			<CButtonGroup>
+				<CDropdown
+					v-for='group of macros'
+					:key='group.id'
+					:toggler-text='group.name'
+					color='primary'
+					placement='top-start'
+				>
+					<CDropdownItem
+						v-for='packet of group.macros'
+						:key='packet.name'
+						@click='$emit("set-packet", packet.request)'
+					>
 						{{ packet.name }}
 					</CDropdownItem>
 				</CDropdown>

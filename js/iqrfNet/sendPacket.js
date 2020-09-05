@@ -18,21 +18,70 @@
 'use strict';
 
 /**
- * Parse DPA packet
- * @param {string} packet DPA packet to parse
- * @returns {{nadrLo: string, nadrHi: string, pnum: string, pcmd: string, hwpidLo: string, hwpidHi: string, pdata: string[]}} Parsed DPA packet
+ * DPA packet
  */
-function parsePacket(packet) {
-	let packetArray = packet.split('.');
-	return {
-		nadrLo: packetArray.shift(),
-		nadrHi: packetArray.shift(),
-		pnum: packetArray.shift(),
-		pcmd: packetArray.shift(),
-		hwpidLo: packetArray.shift(),
-		hwpidHi: packetArray.shift(),
-		pdata: (packetArray.join('.')).split('.')
-	};
+class Packet {
+	/**
+	 * Constructor
+	 * @param nadr NADR
+	 * @param pnum PNUM
+	 * @param pcmd PCMD
+	 * @param hwpid HWPID
+	 * @param pdata PDATA
+	 */
+	constructor(nadr, pnum, pcmd, hwpid, pdata) {
+		this.nadr = nadr;
+		this.pnum = pnum;
+		this.pcmd = pcmd;
+		this.hwpid = hwpid;
+		this.pdata = pdata;
+	}
+
+	/**
+	 * Detect timeout from parsed DPA packet
+	 * @returns {Number} DPA timeout
+	 */
+	detectTimeout() {
+		let timeout = null;
+		if (this.pnum === 0 && this.pcmd === 4) {
+			timeout = 12000;
+		} else if (this.pnum === 0 && this.pcmd === 7) {
+			timeout = 0;
+		} else if (this.pnum === 13 && this.pcmd === 0) {
+			timeout = 6000;
+		}
+		return timeout;
+	}
+
+	/**
+	 * Parses DPA packet
+	 * @param {string} packet DPA packet to parse
+	 * @returns {Packet} Parsed DPA packet
+	 */
+	static parse(packet) {
+		let packetArray = packet.split('.');
+		let nadrLo = packetArray.shift();
+		let nadrHi = packetArray.shift();
+		let nadr = parseInt(nadrHi + nadrLo, 16);
+		let pnum = parseInt(packetArray.shift(), 16);
+		let pcmd = parseInt(packetArray.shift(), 16);
+		let hwpidLo = packetArray.shift();
+		let hwpidHi = packetArray.shift();
+		let hwpid = parseInt(hwpidHi + hwpidLo, 16);
+		let pdata = packetArray.map(hex => parseInt(hex, 16));
+		return new Packet(nadr, pnum, pcmd, hwpid, pdata);
+	}
+
+	/**
+	 * Returns DPA packet string
+	 * @returns {string} DPA packet as string
+	 */
+	toString() {
+		return [
+			this.nadr & 255, this.nadr >> 8, this.pnum, this.pcmd,
+			this.hwpid & 255, this.hwpid >> 8, ...this.pdata
+		].map(int => int.toString(16).padStart(2, '0')).join('.');
+	}
 }
 
 /**
@@ -46,20 +95,15 @@ function validatePacket(packet) {
 }
 
 /**
- * Detect timeout from parsed DPA packet
- * @param {{nadrLo: string, nadrHi: string, pnum: string, pcmd: string, hwpidLo: string, hwpidHi: string, pdata: string[]}} packet Parsed DPA packet
- * @returns {Number}
+ * Updates NADR in DPA packet
+ * @param {String} request DPA request to modify
+ * @param {Int} address New NADR
+ * @returns {String} Modified DPA request
  */
-function detectTimeout(packet) {
-	let timeout = null;
-	if (packet.pnum === '00' && packet.pcmd === '04') {
-		timeout = 12000;
-	} else if (packet.pnum === '00' && packet.pcmd === '07') {
-		timeout = 0;
-	} else if (packet.pnum === '0D' && packet.pcmd === '00') {
-		timeout = 6000;
-	}
-	return timeout;
+function updateNadr(request, address) {
+	let packet = Packet.parse(request);
+	packet.nadr = address;
+	return packet.toString();
 }
 
-export default {detectTimeout, parsePacket, validatePacket};
+export default {Packet, updateNadr, validatePacket};
