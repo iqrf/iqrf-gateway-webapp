@@ -1,6 +1,4 @@
-<?php
-
-/**
+{**
  * Copyright 2017 MICRORISC s.r.o.
  * Copyright 2017-2019 IQRF Tech s.r.o.
  *
@@ -15,16 +13,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-declare(strict_types = 1);
+*}
 
-namespace App\ConfigModule\Presenters;
-
-use App\CoreModule\Presenters\ProtectedPresenter;
-
-/**
- * IQRF Gateway Translator configuration presenter
- */
-class TranslatorPresenter extends ProtectedPresenter {
-
-}
+{block title}{_config.translator.title}{/block}
+{block content}
