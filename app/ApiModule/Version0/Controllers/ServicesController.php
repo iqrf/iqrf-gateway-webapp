@@ -50,7 +50,14 @@ class ServicesController extends BaseController {
 	/**
 	 * Whitelisted services
 	 */
-	private const WHITELISTED_SERVICES = ['iqrf-gateway-daemon', 'gwman-client', 'unattended-upgrades', 'ssh'];
+	private const WHITELISTED_SERVICES = [
+		'gwman-client',
+		'iqrf-gateway-controller',
+		'iqrf-gateway-daemon',
+		'iqrf-gateway-translator',
+		'ssh',
+		'unattended-upgrades',
+	];
 
 	/**
 	 * Constructor

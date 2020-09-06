@@ -6,6 +6,7 @@ import DaemonMode from './components/Gateway/DaemonMode';
 import PowerControl from './components/Gateway/PowerControl';
 import SignIn from './components/SignIn';
 import SendDpaPacket from './components/IqrfNet/SendDpaPacket';
+import TranslatorConfig from './components/Config/TranslatorConfig';
 
 import i18n from './i18n';
 import ServiceControl from './components/Gateway/ServiceControl';
@@ -77,6 +78,13 @@ const routes = [
 					title: 'iqrfnet.sendPacket.title',
 					description: 'iqrfnet.sendPacket.description',
 				},
+			},
+			{
+				component: TranslatorConfig,
+				path: '/config/translator',
+				meta: {
+					title: 'IQRF Gateway Translator configuration'
+				}
 			},
 			{
 				path: '*',

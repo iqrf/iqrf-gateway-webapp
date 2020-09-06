@@ -125,7 +125,7 @@ class ComponentManager implements IConfigManager {
 	public function listDisabled(): ?array {
 		$disabled = [];
 		try {
-			$components = $this->fileManager->read($this->fileName)['components'];
+			$components = $this->fileManager->read($this->fileName)['components'] ?? [];
 			foreach ($components as $component) {
 				if ($component['enabled'] !== true) {
 					$disabled[$component['name']] = false;

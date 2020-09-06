@@ -1,5 +1,9 @@
 services:
 	- App\ConfigModule\Models\ComponentManager
+	controller.fileManager:
+		factory: App\CoreModule\Models\JsonFileManager('/etc/iqrf-gateway-controller')
+		autowired: false
+	controller.manager: App\ConfigModule\Models\ControllerConfigManager(@controller.fileManager)
 	componentSchemaManager:
 		factory: App\ConfigModule\Models\ComponentSchemaManager(%daemon.schemaDir%)
 		autowired: self
@@ -15,3 +19,7 @@ services:
 		autowired: self
 	- App\ConfigModule\Models\TaskTimeManager
 	- App\ConfigModule\Models\WebSocketManager
+	translator.fileManager:
+		factory: App\CoreModule\Models\JsonFileManager('/etc/iqrf-gateway-translator')
+		autowired: false
+	translator.manager: App\ConfigModule\Models\TranslatorConfigManager(@translator.fileManager)

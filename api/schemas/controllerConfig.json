@@ -1,0 +1,451 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema",
+	"$id": "https://ap$idocs.iqrf.org/iqrf-gateway-webapp-api/schemas/controllerConfig.json",
+	"type": "object",
+	"title": "The root schema",
+	"description": "Schema of the Controller configuration file.",
+	"default": {},
+	"examples": [
+		{
+			"daemonApi": {
+				"autoNetwork": {
+					"actionRetries": 1,
+					"discoveryBeforeStart": true,
+					"discoveryTxPower": 6,
+					"skipDiscoveryEachWave": false,
+					"stopConditions": {
+						"abortOnTooManyNodesFound": false,
+						"emptyWaves": 2,
+						"waves": 2
+					},
+					"returnVerbose": false
+				},
+				"discovery": {
+					"maxAddr": 0,
+					"txPower": 6,
+					"returnVerbose": false
+				}
+			},
+			"factoryReset": {
+				"coordinator": false,
+				"daemon": true,
+				"network": false,
+				"webapp": false
+			},
+			"logger": {
+				"filePath": "/var/log/iqrf-gateway-controller.log",
+				"severity": "info"
+			},
+			"resetButton": {
+				"api": "autoNetwork"
+			},
+			"wsServers": {
+				"api": "ws://localhost:1338",
+				"monitor": "ws://localhost:1438"
+			}
+		}
+	],
+	"required": [
+		"daemonApi",
+		"factoryReset",
+		"logger",
+		"resetButton",
+		"wsServers"
+	],
+	"properties": {
+		"daemonApi": {
+			"$id": "#/properties/daemonApi",
+			"type": "object",
+			"title": "Daemon API configuration",
+			"description": "Configuration of Daemon API calls for controller.",
+			"default": {},
+			"examples": [
+				{
+					"autoNetwork": {
+						"actionRetries": 1,
+						"discoveryBeforeStart": true,
+						"discoveryTxPower": 6,
+						"skipDiscoveryEachWave": false,
+						"stopConditions": {
+							"abortOnTooManyNodesFound": false,
+							"emptyWaves": 2,
+							"waves": 2
+						},
+						"returnVerbose": false
+					},
+					"discovery": {
+						"maxAddr": 0,
+						"txPower": 6,
+						"returnVerbose": false
+					}
+				}
+			],
+			"required": [
+				"autoNetwork",
+				"discovery"
+			],
+			"properties": {
+				"autoNetwork": {
+					"$id": "#/properties/daemonApi/properties/autoNetwork",
+					"type": "object",
+					"title": "autoNetwork API call",
+					"description": "Configuration of the autoNetwork Daemon API call.",
+					"default": {},
+					"examples": [
+						{
+							"actionRetries": 1,
+							"discoveryBeforeStart": true,
+							"discoveryTxPower": 6,
+							"skipDiscoveryEachWave": false,
+							"stopConditions": {
+								"abortOnTooManyNodesFound": false,
+								"emptyWaves": 2,
+								"waves": 2
+							},
+							"returnVerbose": false
+						}
+					],
+					"required": [
+						"actionRetries",
+						"discoveryBeforeStart",
+						"discoveryTxPower",
+						"skipDiscoveryEachWave",
+						"stopConditions",
+						"returnVerbose"
+					],
+					"properties": {
+						"actionRetries": {
+							"$id": "#/properties/daemonApi/properties/autoNetwork/properties/actionRetries",
+							"type": "integer",
+							"title": "actionRetries",
+							"description": "actionRetries parameter.",
+							"default": 0,
+							"examples": [
+								1
+							]
+						},
+						"discoveryBeforeStart": {
+							"$id": "#/properties/daemonApi/properties/autoNetwork/properties/discoveryBeforeStart",
+							"type": "boolean",
+							"title": "discoveryBeforeStart",
+							"description": "discoveryBeforeStart parameter.",
+							"default": false,
+							"examples": [
+								true
+							]
+						},
+						"discoveryTxPower": {
+							"$id": "#/properties/daemonApi/properties/autoNetwork/properties/discoveryTxPower",
+							"type": "integer",
+							"title": "discoveryTxPower",
+							"description": "discoveryTxPower parameter.",
+							"default": 0,
+							"examples": [
+								6
+							]
+						},
+						"skipDiscoveryEachWave": {
+							"$id": "#/properties/daemonApi/properties/autoNetwork/properties/skipDiscoveryEachWave",
+							"type": "boolean",
+							"title": "skipDiscoveryEachWave",
+							"description": "skipDiscoveryEachWave parameter.",
+							"default": false,
+							"examples": [
+								false
+							]
+						},
+						"stopConditions": {
+							"$id": "#/properties/daemonApi/properties/autoNetwork/properties/stopConditions",
+							"type": "object",
+							"title": "stopConditions",
+							"description": "Stop conditions for the AutoNetwork service.",
+							"default": {},
+							"examples": [
+								{
+									"abortOnTooManyNodesFound": false,
+									"emptyWaves": 2,
+									"waves": 2
+								}
+							],
+							"required": [
+								"abortOnTooManyNodesFound",
+								"emptyWaves",
+								"waves"
+							],
+							"properties": {
+								"abortOnTooManyNodesFound": {
+									"$id": "#/properties/daemonApi/properties/autoNetwork/properties/stopConditions/properties/abortOnTooManyNodesFound",
+									"type": "boolean",
+									"title": "abortOnTooManyNodesFound",
+									"description": "abortOnTooManyNodesFound parameter.",
+									"default": false,
+									"examples": [
+										false
+									]
+								},
+								"emptyWaves": {
+									"$id": "#/properties/daemonApi/properties/autoNetwork/properties/stopConditions/properties/emptyWaves",
+									"type": "integer",
+									"title": "emptyWaves",
+									"description": "emptyWaves parameter.",
+									"default": 0,
+									"examples": [
+										2
+									]
+								},
+								"waves": {
+									"$id": "#/properties/daemonApi/properties/autoNetwork/properties/stopConditions/properties/waves",
+									"type": "integer",
+									"title": "waves",
+									"description": "waves parameter.",
+									"default": 0,
+									"examples": [
+										2
+									]
+								}
+							},
+							"additionalProperties": true
+						},
+						"returnVerbose": {
+							"$id": "#/properties/daemonApi/properties/autoNetwork/properties/returnVerbose",
+							"type": "boolean",
+							"title": "returnVerbose",
+							"description": "returnVerbose parameter.",
+							"default": false,
+							"examples": [
+								false
+							]
+						}
+					},
+					"additionalProperties": true
+				},
+				"discovery": {
+					"$id": "#/properties/daemonApi/properties/discovery",
+					"type": "object",
+					"title": "discovery API call",
+					"description": "Configuration of the discovery Daemon API call for controller.",
+					"default": {},
+					"examples": [
+						{
+							"maxAddr": 0,
+							"txPower": 6,
+							"returnVerbose": false
+						}
+					],
+					"required": [
+						"maxAddr",
+						"txPower",
+						"returnVerbose"
+					],
+					"properties": {
+						"maxAddr": {
+							"$id": "#/properties/daemonApi/properties/discovery/properties/maxAddr",
+							"type": "integer",
+							"title": "maxAddr",
+							"description": "maxAddr parameter.",
+							"default": 0,
+							"examples": [
+								0
+							]
+						},
+						"txPower": {
+							"$id": "#/properties/daemonApi/properties/discovery/properties/txPower",
+							"type": "integer",
+							"title": "txPower",
+							"description": "txPower parameter",
+							"default": 0,
+							"examples": [
+								6
+							]
+						},
+						"returnVerbose": {
+							"$id": "#/properties/daemonApi/properties/discovery/properties/returnVerbose",
+							"type": "boolean",
+							"title": "returnVerbose",
+							"description": "returnVerbose parameter.",
+							"default": false,
+							"examples": [
+								false
+							]
+						}
+					},
+					"additionalProperties": true
+				}
+			},
+			"additionalProperties": true
+		},
+		"factoryReset": {
+			"$id": "#/properties/factoryReset",
+			"type": "object",
+			"title": "factoryReset action",
+			"description": "Configuration of the factoryReset action.",
+			"default": {},
+			"examples": [
+				{
+					"coordinator": false,
+					"daemon": true,
+					"network": false,
+					"webapp": false
+				}
+			],
+			"required": [
+				"coordinator",
+				"daemon",
+				"network",
+				"webapp"
+			],
+			"properties": {
+				"coordinator": {
+					"$id": "#/properties/factoryReset/properties/coordinator",
+					"type": "boolean",
+					"title": "coordinator",
+					"description": "Reset coordinator service.",
+					"default": false,
+					"examples": [
+						false
+					]
+				},
+				"daemon": {
+					"$id": "#/properties/factoryReset/properties/daemon",
+					"type": "boolean",
+					"title": "daemon",
+					"description": "Reset daemon service.",
+					"default": false,
+					"examples": [
+						true
+					]
+				},
+				"network": {
+					"$id": "#/properties/factoryReset/properties/network",
+					"type": "boolean",
+					"title": "network",
+					"description": "Reset network service.",
+					"default": false,
+					"examples": [
+						false
+					]
+				},
+				"webapp": {
+					"$id": "#/properties/factoryReset/properties/webapp",
+					"type": "boolean",
+					"title": "webapp",
+					"description": "Reset webapp service.",
+					"default": false,
+					"examples": [
+						false
+					]
+				}
+			},
+			"additionalProperties": true
+		},
+		"logger": {
+			"$id": "#/properties/logger",
+			"type": "object",
+			"title": "Logger configuration",
+			"description": "Configuration of the logging instance.",
+			"default": {},
+			"examples": [
+				{
+					"filePath": "/var/log/iqrf-gateway-controller.log",
+					"severity": "info"
+				}
+			],
+			"required": [
+				"filePath",
+				"severity"
+			],
+			"properties": {
+				"filePath": {
+					"$id": "#/properties/logger/properties/filePath",
+					"type": "string",
+					"title": "filePath",
+					"description": "Path to log file.",
+					"default": "",
+					"examples": [
+						"/var/log/iqrf-gateway-controller.log"
+					]
+				},
+				"severity": {
+					"$id": "#/properties/logger/properties/severity",
+					"type": "string",
+					"title": "severity",
+					"description": "Specifies the level of logged information.",
+					"default": "",
+					"examples": [
+						"info"
+					]
+				}
+			},
+			"additionalProperties": true
+		},
+		"resetButton": {
+			"$id": "#/properties/resetButton",
+			"type": "object",
+			"title": "resetButton configuration",
+			"description": "Configuration of the resetButton.",
+			"default": {},
+			"examples": [
+				{
+					"api": "autoNetwork"
+				}
+			],
+			"required": [
+				"api"
+			],
+			"properties": {
+				"api": {
+					"$id": "#/properties/resetButton/properties/api",
+					"type": "string",
+					"title": "API call",
+					"description": "Daemon API call to be executed by the controller.",
+					"default": "",
+					"examples": [
+						"autoNetwork"
+					]
+				}
+			},
+			"additionalProperties": true
+		},
+		"wsServers": {
+			"$id": "#/properties/wsServers",
+			"type": "object",
+			"title": "wsServers",
+			"description": "Address and port for websocket connection.",
+			"default": {},
+			"examples": [
+				{
+					"api": "ws://localhost:1338",
+					"monitor": "ws://localhost:1438"
+				}
+			],
+			"required": [
+				"api",
+				"monitor"
+			],
+			"properties": {
+				"api": {
+					"$id": "#/properties/wsServers/properties/api",
+					"type": "string",
+					"title": "websocket API",
+					"description": "API websocket connection address and port.",
+					"default": "",
+					"examples": [
+						"ws://localhost:1338"
+					]
+				},
+				"monitor": {
+					"$id": "#/properties/wsServers/properties/monitor",
+					"type": "string",
+					"title": "The monitor schema",
+					"description": "Monitor websocket connection address and port.",
+					"default": "",
+					"examples": [
+						"ws://localhost:1438"
+					]
+				}
+			},
+			"additionalProperties": true
+		}
+	},
+	"additionalProperties": true
+}

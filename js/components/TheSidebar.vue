@@ -266,6 +266,13 @@ export default {
 										'power', 'normal',
 									],
 								},
+								{
+									name: this.$t('translatorConfig.title'),
+									to: '/config/translator/',
+									roles: [
+										'power', 'normal',
+									]
+								},
 							],
 						},
 						{

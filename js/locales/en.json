@@ -471,5 +471,26 @@
 			"missingService": "Requested service not found",
 			"unsupportedService": "Unsupported service"
 		}
+	},
+	"translatorConfig": {
+		"title": "IQRF Gateway Translator",
+		"form": {
+			"rest": {
+				"title": "REST API client configuration",
+				"addr": "Address",
+				"port": "Port",
+				"api_key": "API key"
+			},
+			"mqtt": {
+				"title": "MQTT client configuration",
+				"cid": "Client ID",
+				"addr": "Broker address",
+				"port": "Broker port",
+				"topic": "Request topic",
+				"user": "Username",
+				"pw": "Password"
+			},
+			"saveButton": "Save"
+		}
 	}
 }

@@ -5,6 +5,12 @@ docs:
 grafana:
 	enabled: false
 	url: /grafana/
+# IQRF Gateway Controller configuration
+iqrfGatewayController:
+	enabled: false
+# IQRF Gateway Translator configuration
+iqrfGatewayTranslator:
+	enabled: false
 # Network manager
 networkManager:
 	enabled: false

@@ -28,3 +28,5 @@ coverage.html
 coverage.xml
 # Sphinx
 docs/build/
+# VScode
+.vscode/
