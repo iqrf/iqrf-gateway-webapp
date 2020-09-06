@@ -361,7 +361,7 @@
 				"timeoutOverwrite": "Set own DPA timeout",
 				"messages": {
 					"invalid": {
-						"address": "Invalid custom NADR has been entered. It has to be a decimal number from 1 to 239.",
+						"address": "Invalid custom NADR has been entered. It has to be a decimal number from 0 to 239.",
 						"packet": "Invalid DPA packet has been entered.",
 						"timeout": "Invalid custom DPA timeout has been entered."
 					},

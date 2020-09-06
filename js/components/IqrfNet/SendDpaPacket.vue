@@ -4,14 +4,14 @@
 			<ValidationObserver v-slot='{ invalid }'>
 				<CForm @submit.prevent='handleSubmit'>
 					<ValidationProvider
-						v-slot='{ valid, errors }'
+						v-slot='{ valid, touched, errors }'
 						rules='dpaPacket|required'
 						:custom-messages='{required: "iqrfnet.sendPacket.form.messages.missing.packet"}'
 					>
 						<CInput
 							v-model='packet'
 							:label='$t("iqrfnet.sendPacket.form.packet")'
-							:is-valid='valid'
+							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 							@input='setTimeout'
 						/>
@@ -23,18 +23,23 @@
 								:label='$t("iqrfnet.sendPacket.form.addressOverwrite")'
 							/>
 							<ValidationProvider
-								v-slot='{ valid, errors }'
+								v-slot='{ valid, touched, errors }'
 								:disabled='!addressOverwrite'
-								:rules='addressOverwrite ? "nadr|required" : ""'
-								:custom-messages='{required: "iqrfnet.sendPacket.form.messages.missing.address"}'
+								:rules='addressOverwrite ? "integer|min:0|max:239|required" : ""'
+								:custom-messages='{
+									integer: "iqrfnet.sendPacket.form.messages.invalid.address",
+									required: "iqrfnet.sendPacket.form.messages.missing.address",
+									min: "iqrfnet.sendPacket.form.messages.invalid.address",
+									max: "iqrfnet.sendPacket.form.messages.invalid.address",
+								}'
 							>
 								<CInput
 									v-model='address'
 									:disabled='!addressOverwrite'
 									:label='$t("iqrfnet.sendPacket.form.address")'
-									type='number'
-									:is-valid='addressOverwrite ? valid : null'
+									:is-valid='addressOverwrite && touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
+									type='number'
 								/>
 							</ValidationProvider>
 						</CCol>
@@ -44,15 +49,19 @@
 								:label='$t("iqrfnet.sendPacket.form.timeoutOverwrite")'
 							/>
 							<ValidationProvider
-								v-slot='{ valid, errors }'
-								:rules='timeoutOverwrite ? "integer|required" : ""'
-								:custom-messages='{integer: "iqrfnet.sendPacket.form.messages.invalid.timeout", required: "iqrfnet.sendPacket.form.messages.missing.timeout"}'
+								v-slot='{ valid, touched, errors }'
+								:rules='timeoutOverwrite ? "integer|min:0|required" : ""'
+								:custom-messages='{
+									integer: "iqrfnet.sendPacket.form.messages.invalid.timeout",
+									min: "iqrfnet.sendPacket.form.messages.invalid.timeout",
+									required: "iqrfnet.sendPacket.form.messages.missing.timeout",
+								}'
 							>
 								<CInput
 									v-model='timeout'
 									:disabled='!timeoutOverwrite'
 									:label='$t("iqrfnet.sendPacket.form.timeout")'
-									:is-valid='timeoutOverwrite ? valid : null'
+									:is-valid='timeoutOverwrite && touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
 									type='number'
 								/>
@@ -90,7 +99,7 @@
 <script>
 import {CButton, CCard, CCardBody, CCardHeader, CCol, CForm, CInput, CInputCheckbox, CRow} from '@coreui/vue';
 import DpaMacros from './DpaMacros';
-import {required, integer} from 'vee-validate/dist/rules';
+import {required, integer, min_value, max_value} from 'vee-validate/dist/rules';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import sendPacket from '../../iqrfNet/sendPacket';
 
@@ -98,15 +107,9 @@ extend('dpaPacket', (packet) => {
 	return sendPacket.validatePacket(packet) ? true : 'iqrfnet.sendPacket.form.messages.invalid.packet';
 });
 
-extend('nadr', (value) => {
-	const address = Number.parseInt(value, 10);
-	if (!Number.isInteger(address) || address < 0 || address > 239) {
-		return 'iqrfnet.sendPacket.form.messages.invalid.address';
-	}
-	return true;
-});
-
 extend('integer', integer);
+extend('min', min_value);
+extend('max', max_value);
 extend('required', required);
 
 export default {
@@ -141,6 +144,7 @@ export default {
 			if (mutation.type === 'SOCKET_ONSEND' &&
 					mutation.payload.mType === 'iqrfRaw') {
 				this.request = mutation.payload;
+				this.response = null;
 			}
 			if (mutation.type === 'SOCKET_ONMESSAGE' &&
 					mutation.payload.mType === 'iqrfRaw') {
@@ -182,6 +186,10 @@ export default {
 		 * Handles Send DPA packet form submit event
 		 */
 		handleSubmit() {
+			if (this.packet === null || this.packet === '') {
+				this.$toast.error(this.$t('iqrfnet.sendPacket.form.messages.missing.packet'));
+				return;
+			}
 			let json = {
 				'mType': 'iqrfRaw',
 				'data': {
