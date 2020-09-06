@@ -45,8 +45,15 @@ class NetworkManager {
 	 * @return string Hostname
 	 */
 	public function getHostname(): string {
-		$cmd = 'hostname -f';
-		return $this->commandManager->run($cmd)->getStdout();
+		$command = $this->commandManager->run('hostname -f');
+		if ($command->getExitCode() === 0) {
+			return $command->getStdout();
+		}
+		$hostname = gethostname();
+		if ($hostname !== false) {
+			return $hostname;
+		}
+		return '';
 	}
 
 	/**
