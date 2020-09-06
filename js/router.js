@@ -81,7 +81,7 @@ const routes = [
 			},
 			{
 				component: TranslatorConfig,
-				path: '/config/translator',
+				path: '/config/translator/',
 				meta: {
 					title: 'IQRF Gateway Translator configuration'
 				}

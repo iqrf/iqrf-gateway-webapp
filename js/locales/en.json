@@ -490,7 +490,9 @@
 				"user": "Username",
 				"pw": "Password"
 			},
-			"saveButton": "Save"
+			"saveButton": "Save",
+			"saveSuccess": "Configuration has been successfully saved.",
+			"submitServerError": "Internal server error has occured."
 		}
 	}
 }
