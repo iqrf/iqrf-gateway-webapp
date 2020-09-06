@@ -1,3 +1,9 @@
+iqrf-gateway-webapp (2.0.2) testing; urgency=medium
+
+  * Gateway: add hostname fallback
+
+ -- Roman Ondráček <roman@romanondracek.cz>  Sun, 06 Sep 2020 22:00:00 +0200
+
 iqrf-gateway-webapp (2.0.1) testing; urgency=medium
 
   * Composer: update dependencies due to a security flaw in Nette Application
