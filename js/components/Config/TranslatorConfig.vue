@@ -6,70 +6,132 @@
 					<CRow>
 						<CCol md='6'>
 							<h3>{{ $t("translatorConfig.form.mqtt.title") }}</h3>
-							<ValidationProvider v-slot='{ valid }' rules='required'>
+							<ValidationProvider 
+								v-slot='{ errors, valid }' 
+								rules='required'
+								:custom-messages='{required: "translatorConfig.form.messages.missing.maddr"}'
+							>
 								<CInput
 									v-model='config.mqtt.addr'
 									:label='$t("translatorConfig.form.mqtt.addr")'
 									:is-valid='valid'
+									:invalid-feedback='$t(errors[0])'
 								/>
 							</ValidationProvider>
-							<ValidationProvider v-slot='{ valid }' rules='required|integer'>
+							<ValidationProvider 
+								v-slot='{ errors, valid }' 
+								rules='required|integer|port_range'
+								:custom-messages='{
+									required: "translatorConfig.form.messages.missing.mport",
+									port_range: "translatorConfig.form.messages.invalid.port"
+								}'
+							>
 								<CInput
 									v-model='config.mqtt.port'
 									:label='$t("translatorConfig.form.mqtt.port")'
 									:is-valid='valid'
+									:invalid-feedback='$t(errors[0])'
 								/>
 							</ValidationProvider>
-							<ValidationProvider v-slot='{ valid }' rules='required'>
+							<ValidationProvider 
+								v-slot='{ errors, valid }' 
+								rules='required'
+								:custom-messages='{required: "translatorConfig.form.messages.missing.mcid"}'
+							>
 								<CInput
 									v-model='config.mqtt.cid'
 									:label='$t("translatorConfig.form.mqtt.cid")'
 									:is-valid='valid'
+									:invalid-feedback='$t(errors[0])'								
 								/>
 							</ValidationProvider>
-							<ValidationProvider v-slot='{ valid }' rules='topic|required'>
+							<ValidationProvider 
+								v-slot='{ errors, valid }' 
+								rules='topic|required'
+								:custom-messages='{required: "translatorConfig.form.messages.missing.mtopic"}'
+							>
 								<CInput
 									v-model='config.mqtt.topic'
 									:label='$t("translatorConfig.form.mqtt.topic")'
 									:is-valid='valid'
+									:invalid-feedback='$t(errors[0])'
 								/>
 							</ValidationProvider>
-							<ValidationProvider v-slot='{ valid }' rules='required'>
+							<ValidationProvider 
+								v-slot='{ errors, valid }' 
+								rules='required'
+								:custom-messages='{required: "translatorConfig.form.messages.missing.muser"}'
+							>
 								<CInput
 									v-model='config.mqtt.user'
 									:label='$t("translatorConfig.form.mqtt.user")'
 									:is-valid='valid'
+									:invalid-feedback='$t(errors[0])'
 								/>
 							</ValidationProvider>
-							<ValidationProvider v-slot='{ valid }' rules='required'>
+							<ValidationProvider 
+								v-slot='{ errors, valid }' 
+								rules='required'
+								:custom-messages='{required: "translatorConfig.form.messages.missing.mpw"}'
+							>
 								<CInput
 									v-model='config.mqtt.pw'
 									:label='$t("translatorConfig.form.mqtt.pw")'
 									:is-valid='valid'
-								/>
+									:invalid-feedback='$t(errors[0])'
+									:type='visibility'
+								>
+									<template #append-content>
+										<span @click='changeVisibility'>
+											<CIcon v-if='visibility ==="password"' :content='$options.icons.hidden' />
+											<CIcon v-else :content='$options.icons.shown' />
+										</span>
+									</template>
+								</CInput>
 							</ValidationProvider>
 						</CCol>
 						<CCol md='6'>
 							<h3>{{ $t("translatorConfig.form.rest.title") }}</h3>
-							<ValidationProvider v-slot='{ valid }' rules='required'>
+							<ValidationProvider
+								v-slot='{ errors, valid }'
+								rules='required'
+								:custom-messages='{required: "translatorConfig.form.messages.missing.raddr"}'
+							>
 								<CInput
 									v-model='config.rest.addr' 
 									:label='$t("translatorConfig.form.rest.addr")' 
 									:is-valid='valid'
+									:invalid-feedback='$t(errors[0])'
 								/>
 							</ValidationProvider>
-							<ValidationProvider v-slot='{ valid }' rules='required|integer'>
+							<ValidationProvider 
+								v-slot='{ errors, valid }'
+								rules='required|integer|port_range'
+								:custom-messages='{
+									required: "translatorConfig.form.messages.missing.rport",
+									port_range: "translatorConfig.form.messages.invalid.port"
+								}'
+							>
 								<CInput
 									v-model='config.rest.port' 
 									:label='$t("translatorConfig.form.rest.port")' 
 									:is-valid='valid'
+									:invalid-feedback='$t(errors[0])'
 								/>
 							</ValidationProvider>
-							<ValidationProvider v-slot='{ valid }' rules='api_key_r|required'>
+							<ValidationProvider 
+								v-slot='{ errors, valid }' 
+								rules='api_key_r|required'
+								:custom-messages='{
+									required: "translatorConfig.form.messages.missing.rapi_key",
+									api_key_r: "translatorConfig.form.messages.invalid.api_key"
+								}'
+							>
 								<CInput
 									v-model='config.rest.api_key' 
 									:label='$t("translatorConfig.form.rest.api_key")'
 									:is-valid='valid'
+									:invalid-feedback='$t(errors[0])'
 								/>
 							</ValidationProvider>
 						</CCol>
@@ -85,7 +147,8 @@
 
 <script>
 
-import {CCard, CForm} from '@coreui/vue';
+import {CCard, CForm, CIcon} from '@coreui/vue';
+import { cilLockLocked, cilLockUnlocked } from '@coreui/icons';
 import {integer, required} from 'vee-validate/dist/rules';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import TranslatorConfigService from '../../services/TranslatorConfigService';
@@ -95,6 +158,10 @@ extend('integer', integer);
 extend('api_key_r', (key) => {
 	const regex = RegExp('[./A-Za-z0-9]{22}\\.[A-Za-z0-9+/=]{44}');
 	return regex.test(key);
+});
+
+extend('port_range', (port) => {
+	return ((port >= 1) && (port <= 49151));
 });
 
 extend('topic', (topic) => {
@@ -109,11 +176,13 @@ export default {
 	components: {
 		CCard,
 		CForm,
+		CIcon,
 		ValidationObserver,
 		ValidationProvider
 	},
 	data() {
 		return {
+			visibility: 'password',
 			config: null
 		};
 	},
@@ -153,7 +222,15 @@ export default {
 						console.error(error.message);
 					}
 				});
+		},
+
+		changeVisibility() {
+			this.visibility = this.visibility === 'password' ? 'text' : 'password';
 		}
+	},
+	icons: {
+		hidden: cilLockLocked,
+		shown: cilLockUnlocked
 	}
 };
 

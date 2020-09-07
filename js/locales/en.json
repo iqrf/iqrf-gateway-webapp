@@ -490,6 +490,23 @@
 				"user": "Username",
 				"pw": "Password"
 			},
+			"messages": {
+				"invalid": {
+					"port": "Invalid port number. Please enter port number between 1 and 49151.",
+					"api_key": "Invalid REST API key format."
+				},
+				"missing": {
+					"maddr": "Please enter the MQTT broker address.",
+					"mport": "Please enter the MQTT broker port.",
+					"mcid": "Please enter the MQTT client ID.",
+					"mtopic": "Please enter the MQTT requests topic.",
+					"muser": "Please enter the MQTT client username.",
+					"mpw": "Please enter the MQTT client password.",
+					"raddr": "Please enter the REST API address.",
+					"rport": "Please enter the REST API port.",
+					"rapi_key": "Please enter the REST API client key."
+				}
+			},
 			"saveButton": "Save",
 			"saveSuccess": "Configuration has been successfully saved.",
 			"submitServerError": "Internal server error has occured."
