@@ -141,9 +141,9 @@
 								/>
 							</ValidationProvider>
 						</CCol>
-					</CRow><hr>
+					</CRow>
 					<CButton color='primary' type='submit' :disabled='invalid'>
-						{{ $t('translatorConfig.form.saveButton') }}
+						{{ $t('form.saveButton') }}
 					</CButton>
 				</CForm>
 			</ValidationObserver>
@@ -153,11 +153,11 @@
 
 <script>
 
-import {CCard, CForm, CIcon} from '@coreui/vue';
+import {CButton, CCard, CForm, CIcon, CInput} from '@coreui/vue';
 import { cilLockLocked, cilLockUnlocked } from '@coreui/icons';
 import {integer, required} from 'vee-validate/dist/rules';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import TranslatorConfigService from '../../services/TranslatorConfigService';
+import ConfigService from '../../services/ConfigService';
 
 extend('integer', integer);
 
@@ -185,9 +185,11 @@ extend('required', required);
 export default {
 	name: 'TranslatorConfig',
 	components: {
+		CButton,
 		CCard,
 		CForm,
 		CIcon,
+		CInput,
 		ValidationObserver,
 		ValidationProvider
 	},
@@ -202,39 +204,37 @@ export default {
 	},
 	methods: {
 		getConfig() {
-			TranslatorConfigService.getConfig()
+			ConfigService.getConfig('translatorConfig')
 				.then((response) => {
 					this.config = response.data;
 				})
 				.catch((error) => {
 					if (error.response) {
 						if (error.response.status === 500) {
-							this.$toast.error(this.$t('translatorConfig.form.submitServerError'));
+							this.$toast.error(this.$t('form.messages.submitServerError'));
 						}
 					} else {
 						console.error(error.message);
 					}
 				});
 		},
-
 		processSubmit() {
-			TranslatorConfigService.saveConfig(this.config)
+			ConfigService.saveConfig('translatorConfig', this.config)
 				.then((response) => {
 					if (response.status === 200) {
-						this.$toast.success(this.$t('translatorConfig.form.saveSuccess'));
+						this.$toast.success(this.$t('form.messages.saveSuccess'));
 					}
 				})
 				.catch((error) => {
 					if (error.response) {
 						if (error.response.status === 500) {
-							this.$toast.error(this.$t('translatorConfig.form.submitServerError'));
+							this.$toast.error(this.$t('form.messages.submitServerError'));
 						}
 					} else {
 						console.error(error.message);
 					}
 				});
 		},
-
 		changeVisibility() {
 			this.visibility = this.visibility === 'password' ? 'text' : 'password';
 		}

@@ -273,6 +273,13 @@ export default {
 										'power', 'normal',
 									]
 								},
+								{
+									name: this.$t('controllerConfig.title'),
+									to: '/config/controller/',
+									roles: [
+										'power', 'normal',
+									]
+								}
 							],
 						},
 						{

@@ -7,6 +7,7 @@ import PowerControl from './components/Gateway/PowerControl';
 import SignIn from './components/SignIn';
 import SendDpaPacket from './components/IqrfNet/SendDpaPacket';
 import TranslatorConfig from './components/Config/TranslatorConfig';
+import ControllerConfig from './components/Config/ControllerConfig';
 
 import i18n from './i18n';
 import ServiceControl from './components/Gateway/ServiceControl';
@@ -83,7 +84,14 @@ const routes = [
 				component: TranslatorConfig,
 				path: '/config/translator/',
 				meta: {
-					title: 'IQRF Gateway Translator configuration'
+					title: 'translatorConfig.description'
+				}
+			},
+			{
+				component: ControllerConfig,
+				path: '/config/controller/',
+				meta: {
+					title: 'controllerConfig.description'
 				}
 			},
 			{

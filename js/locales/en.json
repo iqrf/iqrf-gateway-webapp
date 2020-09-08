@@ -474,6 +474,7 @@
 	},
 	"translatorConfig": {
 		"title": "IQRF Gateway Translator",
+		"description": "IQRF Gateway Translator configuration",
 		"form": {
 			"rest": {
 				"title": "REST API client configuration",
@@ -508,8 +509,67 @@
 					"rport": "Please enter the REST API port.",
 					"rapi_key": "Please enter the REST API client key."
 				}
+			}
+		}
+	},
+	"controllerConfig": {
+		"title": "IQRF Gateway Controller",
+		"description": "IQRF Gateway Controller configuration",
+		"form": {
+			"daemonApi": {
+				"autoNetwork": {
+					"title": "AutoNetwork API call configuration",
+					"actionRetries": "Number of retry DPA transactions",
+					"discoveryBeforeStart": "Run discovery before start",
+					"discoveryTxPower": "Discovery TX Power",
+					"skipDiscoveryEachWave": "Skip discovery in each wave",
+					"stopConditions": {
+						"title": "AutoNetwork stop conditions",
+						"abortOnTooManyNodesFound": "Abort if too many nodes are found",
+						"emptyWaves": "Number of consecutive empty waves",
+						"waves": "Maximum number of waves"
+					},
+					"verbose": "Verbose mode"
+				},
+				"discovery": {
+					"title": "Discovery API call configuration",
+					"maxAddr": "Maximum address",
+					"txPower": "TX Power",
+					"verbose": "Verbose mode"
+				}
 			},
-			"saveButton": "Save",
+			"factoryReset": {
+				"title": "Factory reset configuration",
+				"coordinator": "Coordinator",
+				"daemon": "Daemon",
+				"network": "Network",
+				"webapp": "Web application"
+			},
+			"resetButton": {
+				"title": "Button configuration",
+				"api": "Daemon API call",
+				"pin": "Button GPIO pin"
+			},
+			"statusLed": {
+				"title": "Status LED configuration",
+				"green": "Green LED GPIO pin",
+				"red": "Red LED GPIO pin"
+			},
+			"logger": {
+				"title": "Logger configuration",
+				"filePath": "Path to log file",
+				"severity": "Severity level"
+			},
+			"wsServers": {
+				"title": "Websocker configuration",
+				"api": "Daemon API server",
+				"monitor": "Monitor server"
+			}
+		}
+	},
+	"form": {
+		"saveButton": "Save",
+		"messages": {
 			"saveSuccess": "Configuration has been successfully saved.",
 			"submitServerError": "Internal server error has occured."
 		}
