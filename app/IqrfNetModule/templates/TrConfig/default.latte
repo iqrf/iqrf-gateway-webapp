@@ -22,12 +22,10 @@
 	<c-card-body>{control iqrfNetAddressForm}</c-card-body>
 </c-card>
 
+<tr-configuration :address='{$address}' />
+
 {snippet forms}
 	{if $configuration}
-		<c-card>
-			<c-card-header>{_iqrfnet.trConfig.title}</c-card-header>
-			<c-card-body>{control iqrfNetTrForm}</c-card-body>
-		</c-card>
 		<c-card>
 			<c-card-header>{_iqrfnet.security.title}</c-card-header>
 			<c-card-body>{control iqrfNetSecurityForm}</c-card-body>

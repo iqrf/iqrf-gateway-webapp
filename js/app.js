@@ -52,11 +52,14 @@ import NavBarLink from './components/NavBarLink';
 import TheHeader from './components/TheHeader';
 import TheSidebar from './components/TheSidebar';
 import PixlaControl from './components/Cloud/PixlaControl';
+import TrConfiguration from './components/IqrfNet/TrConfiguration';
 
 Sentry.init({
 	dsn: 'https://435ee2b55f994e5f85e21a9ca93ea7a7@sentry.iqrf.org/5',
 	integrations: [new VueIntegration({Vue: Vue, attachProps: true, logErrors: true})],
 });
+
+store.commit('SOCKET_ONCLOSE');
 
 const wsApi = 'ws://' + window.location.hostname + ':1338';
 Vue.use(VueNativeSock, wsApi, {
@@ -131,6 +134,7 @@ new Vue({
 		TheHeader,
 		TheSidebar,
 		PixlaControl,
+		TrConfiguration
 	},
 	router: router,
 	store: store,

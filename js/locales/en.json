@@ -130,7 +130,8 @@
 	},
 	"forms": {
 		"add": "Add",
-		"send": "Send"
+		"send": "Send",
+		"write": "Write"
 	},
 	"config": {
 		"title": "Configuration",
@@ -392,7 +393,83 @@
 		},
 		"trConfiguration": {
 			"title": "TR configuration",
-			"description": "Edit TR configuration."
+			"description": "Edit TR configuration.",
+			"form": {
+				"rf": "RF",
+				"rfBand": "RF Band",
+				"rfBands": {
+					"443": "443 MHz",
+					"868": "868 MHz",
+					"916": "916 MHz"
+				},
+				"rfChannelA": "RF channel A",
+				"rfChannelB": "RF channel B",
+				"rfSubChannelA": "RF channel 2nd network",
+				"rfSubChannelB": "Alternative DSM channel",
+				"rfAltDsmChannel": "Alternative DSM channel",
+				"stdAndLpNetwork": "STD and LP network",
+				"txPower": "TX power",
+				"rxFilter": "RX filter",
+				"lpRxTimeout": "LP RX timeout",
+				"rfPgm": "RFPGM",
+				"rfPgmEnableAfterReset": "Enable after reset",
+				"rfPgmTerminateAfter1Min": "Termination after ~1 minute",
+				"rfPgmTerminateMcuPin": "Termination by MCU pin",
+				"rfPgmDualChannel": "Dual channel",
+				"rfPgmLpMode": "LP mode",
+				"rfPgmIncorrectUpload": "Incorrect upload",
+				"dpa": {
+					"embeddedPeripherals": "DPA - Embedded peripherals",
+					"other": "DPA - Other"
+				},
+				"embPers": {
+					"coordinator": "Coordinator",
+					"node": "Node",
+					"os": "OS",
+					"eeprom": "EEPROM",
+					"eeeprom": "EEEPROM",
+					"ram": "RAM",
+					"ledr": "LEDR",
+					"ledg": "LEDG",
+					"spi": "SPI",
+					"io": "IO",
+					"thermometer": "Thermometer",
+					"pwm": "PWM",
+					"uart": "UART",
+					"frc": "FRC"
+				},
+				"customDpaHandler": "Custom DPA Handler",
+				"ioSetup": "IO Setup",
+				"dpaAutoexec": "Autoexec",
+				"routingOff": "Routing off",
+				"peerToPeer": "User Peer-to-Peer",
+				"dpaPeerToPeer": "DPA Peer-to-Peer",
+				"neverSleep": "Stay awake when not bonded",
+				"uartBaudrate": "UART interface baud rate",
+				"uartBaudrates": {
+					"1200": "1200 Bd",
+					"2400": "2400 Bd",
+					"4800": "4800 Bd",
+					"9600": "9600 Bd",
+					"19200": "19200 Bd",
+					"38400": "38400 Bd",
+					"57600": "57600 Bd",
+					"115200": "115200 Bd",
+					"230400": "230400 Bd"
+				},
+				"nodeDpaInterface": "Node DPA interface",
+				"messages": {
+					"breakInteroperability": "You will break interoperability if you disable STD and LP network.",
+					"lpRxTimeout": "LP RX timeout has to be in range from 1 to 255.",
+					"rfChannel": {
+						"433": "RF Channel has to be in range from 0 to 16.",
+						"868": "RF Channel has to be in range from 0 to 67.",
+						"916": "RF Channel has to be in range from 0 to 255."
+					},
+					"rxFilter": "RX filter have to be integer from 0 to 64.",
+					"txPower": "TX Power have to be integer from 0 to 7."
+				}
+			}
 		},
 		"trUpload": {
 			"title": "Coordinator upload",

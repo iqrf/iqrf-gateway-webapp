@@ -26,7 +26,6 @@ use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\IqrfNetModule\Forms\ChangeAddressFormFactory;
 use App\IqrfNetModule\Forms\SecurityFormFactory;
-use App\IqrfNetModule\Forms\TrConfigFormFactory;
 use App\IqrfNetModule\Models\EnumerationManager;
 use App\IqrfNetModule\Models\TrConfigManager;
 use Nette\Application\UI\Form;
@@ -49,12 +48,6 @@ class TrConfigPresenter extends ProtectedPresenter {
 	 * @inject
 	 */
 	public $changeAddressForm;
-
-	/**
-	 * @var TrConfigFormFactory IQRF RF configuration form
-	 * @inject
-	 */
-	public $trFormFactory;
 
 	/**
 	 * @var SecurityFormFactory IQMESH Security configuration form
@@ -89,14 +82,6 @@ class TrConfigPresenter extends ProtectedPresenter {
 	 */
 	protected function createComponentIqrfNetAddressForm(): Form {
 		return $this->changeAddressForm->create($this);
-	}
-
-	/**
-	 * Createa the IQRF TR configuration form
-	 * @return Form IQRF TR configuration form
-	 */
-	protected function createComponentIqrfNetTrForm(): Form {
-		return $this->trFormFactory->create($this);
 	}
 
 	/**
@@ -154,6 +139,7 @@ class TrConfigPresenter extends ProtectedPresenter {
 	 * @param int $address TR address
 	 */
 	public function renderDefault(int $address = 0): void {
+		$this->template->address = $address;
 		if (!$this->isAjax()) {
 			$this->cache->remove('trConfiguration' . $address);
 		}

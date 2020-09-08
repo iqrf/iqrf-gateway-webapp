@@ -26,6 +26,7 @@
 </template>
 
 <script>
+import IqmeshNetworkService from '../../services/IqmeshNetworkService';
 export default {
 	name: 'CoordinatorInfo',
 	data() {
@@ -52,17 +53,7 @@ export default {
 				this.hasData = false;
 			}
 		});
-		this.$store.dispatch('sendRequest', {
-			'mType': 'iqmeshNetwork_EnumerateDevice',
-			'data': {
-				'repeat': 2,
-				'req': {
-					'deviceAddr': 0,
-					'morePeripheralsInfo': true,
-				},
-				'returnVerbose': true,
-			},
-		});
+		IqmeshNetworkService.enumerateDevice(0);
 	},
 	beforeDestroy() {
 		this.unsubscribe();

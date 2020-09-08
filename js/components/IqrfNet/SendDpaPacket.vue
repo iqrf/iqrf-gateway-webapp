@@ -25,21 +25,22 @@
 							<ValidationProvider
 								v-slot='{ valid, touched, errors }'
 								:disabled='!addressOverwrite'
-								:rules='addressOverwrite ? "integer|min:0|max:239|required" : ""'
+								:rules='addressOverwrite ? "integer|between:0,239|required" : ""'
 								:custom-messages='{
+									between: "iqrfnet.sendPacket.form.messages.invalid.address",
 									integer: "iqrfnet.sendPacket.form.messages.invalid.address",
 									required: "iqrfnet.sendPacket.form.messages.missing.address",
-									min: "iqrfnet.sendPacket.form.messages.invalid.address",
-									max: "iqrfnet.sendPacket.form.messages.invalid.address",
 								}'
 							>
 								<CInput
-									v-model='address'
+									v-model.number='address'
 									:disabled='!addressOverwrite'
 									:label='$t("iqrfnet.sendPacket.form.address")'
 									:is-valid='addressOverwrite && touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
 									type='number'
+									min='0'
+									max='239'
 								/>
 							</ValidationProvider>
 						</CCol>
@@ -58,7 +59,7 @@
 								}'
 							>
 								<CInput
-									v-model='timeout'
+									v-model.number='timeout'
 									:disabled='!timeoutOverwrite'
 									:label='$t("iqrfnet.sendPacket.form.timeout")'
 									:is-valid='timeoutOverwrite && touched ? valid : null'
@@ -99,7 +100,7 @@
 <script>
 import {CButton, CCard, CCardBody, CCardHeader, CCol, CForm, CInput, CInputCheckbox, CRow} from '@coreui/vue';
 import DpaMacros from './DpaMacros';
-import {required, integer, min_value, max_value} from 'vee-validate/dist/rules';
+import {between, integer, min_value, required} from 'vee-validate/dist/rules';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import sendPacket from '../../iqrfNet/sendPacket';
 
@@ -107,9 +108,9 @@ extend('dpaPacket', (packet) => {
 	return sendPacket.validatePacket(packet) ? true : 'iqrfnet.sendPacket.form.messages.invalid.packet';
 });
 
+extend('between', between);
 extend('integer', integer);
 extend('min', min_value);
-extend('max', max_value);
 extend('required', required);
 
 export default {
