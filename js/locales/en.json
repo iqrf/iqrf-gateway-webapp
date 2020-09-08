@@ -493,7 +493,9 @@
 			"messages": {
 				"invalid": {
 					"port": "Invalid port number. Please enter port number between 1 and 49151.",
-					"api_key": "Invalid REST API key format."
+					"api_key": "Invalid REST API key format. The API key format should match [./A-Za-z0-9]{22}\\.[A-Za-z0-9+/=]{44}.",
+					"mtopic": "Invalid MQTT requests topic format. The request topic format should be: gateway/{GWID}/rest/requests/+/# (GWID is 16 hexadecimal digits).",
+					"mcid": "Invalid MQTT client ID. The client ID should be the GWID (16 hexadecimal digits)."
 				},
 				"missing": {
 					"maddr": "Please enter the MQTT broker address.",

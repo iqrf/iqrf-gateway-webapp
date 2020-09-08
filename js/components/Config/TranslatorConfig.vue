@@ -35,8 +35,11 @@
 							</ValidationProvider>
 							<ValidationProvider 
 								v-slot='{ errors, valid }' 
-								rules='required'
-								:custom-messages='{required: "translatorConfig.form.messages.missing.mcid"}'
+								rules='required|client_id'
+								:custom-messages='{
+									required: "translatorConfig.form.messages.missing.mcid",
+									client_id: "translatorConfig.form.messages.invalid.mcid",
+								}'
 							>
 								<CInput
 									v-model='config.mqtt.cid'
@@ -48,7 +51,10 @@
 							<ValidationProvider 
 								v-slot='{ errors, valid }' 
 								rules='topic|required'
-								:custom-messages='{required: "translatorConfig.form.messages.missing.mtopic"}'
+								:custom-messages='{
+									required: "translatorConfig.form.messages.missing.mtopic",
+									topic: "translatorConfig.form.messages.invalid.mtopic",
+								}'
 							>
 								<CInput
 									v-model='config.mqtt.topic'
@@ -162,6 +168,11 @@ extend('api_key_r', (key) => {
 
 extend('port_range', (port) => {
 	return ((port >= 1) && (port <= 49151));
+});
+
+extend('client_id', (id) => {
+	const regex = RegExp('[a-f0-9]{16}');
+	return regex.test(id);
 });
 
 extend('topic', (topic) => {
