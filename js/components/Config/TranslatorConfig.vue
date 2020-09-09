@@ -70,6 +70,7 @@
 							>
 								<CInput
 									v-model='config.mqtt.user'
+									autocomplete='off'
 									:label='$t("translatorConfig.form.mqtt.user")'
 									:is-valid='valid'
 									:invalid-feedback='$t(errors[0])'
@@ -82,6 +83,7 @@
 							>
 								<CInput
 									v-model='config.mqtt.pw'
+									autocomplete='off'
 									:label='$t("translatorConfig.form.mqtt.pw")'
 									:is-valid='valid'
 									:invalid-feedback='$t(errors[0])'

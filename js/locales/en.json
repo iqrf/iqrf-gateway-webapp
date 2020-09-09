@@ -133,6 +133,10 @@
 		"save": "Save",
 		"send": "Send",
 		"write": "Write",
+		"discovery": "Discovery",
+		"bond": "Bond Node",
+		"unbond": "Unbond Node",
+		"clearBonds": "Clear All Bonds",
 		"messages": {
 			"saveSuccess": "Configuration has been successfully saved.",
 			"submitServerError": "Internal server error has occured."
@@ -344,7 +348,38 @@
 		"description": "Control IQRF network.",
 		"networkManager": {
 			"title": "Network manager",
-			"description": "Network manager."
+			"description": "Network manager.",
+			"bonding": {
+				"title": "Bonding",
+				"form": {
+					"address": "Address",
+					"autoAddress": "Auto address",
+					"bondMethod": "Bonding method",
+					"bondMethodLocal": "Local bonding",
+					"bondMethodSmart": "Smart Connect",
+					"bondingRetries": "Bonding test retries",
+					"smartConnect": "IQRF Smart Connect Code",
+					"unbondCoordOnly": "Unbonds the Node only on Coordinator side"
+				}
+			},
+			"discovery": {
+				"title": "Discovery",
+				"form": {
+					"txPower": "TX Power",
+					"maxAddr": "Max. Node address"
+				},
+				"messages": {
+					"success": "Discovery call successful.",
+					"missing": {
+						"txPower": "Please enter TX Power for Discovery.",
+						"maxAddr": "Please enter maximum node address for Discovery."
+					},
+					"invalid": {
+						"txPower": "TX Power has to be an integer between 0 and 7.",
+						"maxAddr": "Maximum node address has to be an integer between 0 and 239."
+					}
+				}
+			}
 		},
 		"sendJson": {
 			"title": "Send JSON request",

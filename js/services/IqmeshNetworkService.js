@@ -5,6 +5,27 @@ import store from '../store';
  */
 class IqmeshNetworkService {
 	/**
+	 * Performs Coordinator discovery
+	 * @param txPower TX Power
+	 * @param maxAddr Maximum node address
+	 */
+	discovery(txPower, maxAddr) {
+		store.dispatch('sendRequest', {
+			'mType': 'iqrfEmbedCoordinator_Discovery',
+			'data': {
+				'req': {
+					'nAdr': 0,
+					'param': {
+						'txPower': txPower,
+						'maxAddr': maxAddr
+					}
+				},
+				'returnVerbose': true,
+			}
+		});
+	}
+
+	/**
 	 * Performs device enumeration
 	 * @param address Device address
 	 */

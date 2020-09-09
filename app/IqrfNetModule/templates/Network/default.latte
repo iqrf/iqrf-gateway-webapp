@@ -29,10 +29,8 @@
 			<c-card-header>{_iqrfnet.bonding.title}</c-card-header>
 			<c-card-body>{control iqrfNetBondingForm}</c-card-body>
 		</c-card>
-		<c-card>
-			<c-card-header>{_iqrfnet.discovery.title}</c-card-header>
-			<c-card-body>{control iqrfNetDiscoveryForm}</c-card-body>
-		</c-card>
+		<bonding-manager />
+		<discovery-manager />
 	</c-col>
 	<c-col n:snippetArea='devicesWrapper' md='6'>
 		{include 'devices.latte'}
