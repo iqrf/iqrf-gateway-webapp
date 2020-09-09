@@ -39,7 +39,6 @@
 import {CButton, CCard} from '@coreui/vue';
 import PixlaService from '../../services/PixlaService';
 import ServiceService from '../../services/ServiceService';
-import spinner from '../../spinner';
 
 export default {
 	name: 'PixlaControl',
@@ -64,7 +63,7 @@ export default {
 	},
 	methods: {
 		enable() {
-			spinner.showSpinner();
+			this.$store.commit('spinner/SHOW');
 			ServiceService.enable(this.serviceName)
 				.then(() => {
 					this.getStatus();
@@ -73,7 +72,7 @@ export default {
 				.catch(this.handleError);
 		},
 		disable() {
-			spinner.showSpinner();
+			this.$store.commit('spinner/SHOW');
 			ServiceService.disable(this.serviceName)
 				.then(() => {
 					this.getStatus();
@@ -88,7 +87,7 @@ export default {
 					this.active = response.data.active;
 					this.enabled = response.data.enabled;
 					this.status = response.data.status;
-					spinner.hideSpinner();
+					this.$store.commit('spinner/HIDE');
 				})
 				.catch(this.handleError);
 		},
@@ -102,7 +101,7 @@ export default {
 				});
 		},
 		handleError(error) {
-			spinner.hideSpinner();
+			this.$store.commit('spinner/HIDE');
 			let response = error.response;
 			if (response.status === 404) {
 				this.missing = true;
@@ -115,7 +114,7 @@ export default {
 			}
 		},
 		restart() {
-			spinner.showSpinner();
+			this.$store.commit('spinner/SHOW');
 			ServiceService.restart(this.serviceName)
 				.then(() => {
 					this.getStatus();
@@ -124,7 +123,7 @@ export default {
 				.catch(this.handleError);
 		},
 		start() {
-			spinner.showSpinner();
+			this.$store.commit('spinner/SHOW');
 			ServiceService.start(this.serviceName)
 				.then(() => {
 					this.getStatus();
@@ -133,7 +132,7 @@ export default {
 				.catch(this.handleError);
 		},
 		stop() {
-			spinner.showSpinner();
+			this.$store.commit('spinner/SHOW');
 			ServiceService.stop(this.serviceName)
 				.then(() => {
 					this.getStatus();
@@ -144,7 +143,3 @@ export default {
 	},
 };
 </script>
-
-<style scoped>
-
-</style>

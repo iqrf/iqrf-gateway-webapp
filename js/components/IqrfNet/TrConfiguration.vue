@@ -227,7 +227,7 @@
 								:label='$t("iqrfnet.trConfiguration.form.neverSleep")'
 							/>
 							<CSelect
-								v-model='config.uartBaudrate'
+								:value.sync='config.uartBaudrate'
 								:label='$t("iqrfnet.trConfiguration.form.uartBaudrate")'
 								:options='[
 									{value: 1200, label: $t("iqrfnet.trConfiguration.form.uartBaudrates.1200")},
@@ -335,11 +335,19 @@ export default {
 		extend('required', required);
 		this.unsubscribe = this.$store.subscribe(mutation => {
 			if (mutation.type === 'SOCKET_ONOPEN') {
+				this.$store.commit('spinner/SHOW');
 				IqmeshNetworkService.enumerateDevice(this.address);
 				return;
 			}
-			if (mutation.type !== 'SOCKET_ONMESSAGE' ||
-					mutation.payload.mType !== 'iqmeshNetwork_EnumerateDevice') {
+			if (mutation.type !== 'SOCKET_ONMESSAGE') {
+				return;
+			}
+			if (mutation.payload.mType === 'iqmeshNetwork_WriteTrConf') {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.success(this.$t(''));
+				return;
+			}
+			if (mutation.payload.mType !== 'iqmeshNetwork_EnumerateDevice') {
 				return;
 			}
 			const response = mutation.payload.data.rsp;
@@ -347,8 +355,10 @@ export default {
 			this.dpaHandlerDetected = response.osRead.flags.dpaHandlerDetected;
 			this.dpaVersion = response.peripheralEnumeration.dpaVer;
 			this.setEmbeddedPeripherals();
+			this.$store.commit('spinner/HIDE');
 		});
 		if (this.$store.getters.isSocketConnected) {
+			this.$store.commit('spinner/SHOW');
 			IqmeshNetworkService.enumerateDevice(this.address);
 		}
 	},
@@ -359,6 +369,7 @@ export default {
 		handleSubmit() {
 			let config = JSON.parse(JSON.stringify(this.config));
 			config.embPers = this.getEmbeddedPeripherals();
+			this.$store.commit('spinner/SHOW');
 			IqmeshNetworkService.writeTrConfiguration(this.address, config);
 		},
 		setEmbeddedPeripherals() {

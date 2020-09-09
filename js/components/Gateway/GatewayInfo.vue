@@ -91,7 +91,6 @@ import CoordinatorInfo from './CoordinatorInfo';
 import DaemonModeService from '../../services/DaemonModeService';
 import GatewayService from '../../services/GatewayService';
 import ResourceUsage from './ResourceUsage';
-import spinner from '../../spinner';
 
 export default {
 	name: 'GatewayInfo',
@@ -132,7 +131,7 @@ export default {
 		}
 	},
 	created() {
-		spinner.showSpinner();
+		this.$store.commit('spinner/SHOW');
 		this.unsubscribe = this.$store.subscribe(mutation => {
 			if (mutation.type === 'SOCKET_ONOPEN') {
 				DaemonModeService.get();
@@ -155,17 +154,17 @@ export default {
 			.then(
 				(response) => {
 					this.info = response.data;
-					spinner.hideSpinner();
+					this.$store.commit('spinner/HIDE');
 				}
 			)
-			.catch(() => spinner.hideSpinner());
+			.catch(() => this.$store.commit('spinner/HIDE'));
 	},
 	beforeDestroy() {
 		this.unsubscribe();
 	},
 	methods: {
 		downloadDiagnostics() {
-			spinner.showSpinner();
+			this.$store.commit('spinner/SHOW');
 			GatewayService.getDiagnosticsArchive().then(
 				(response) => {
 					const contentDisposition = response.headers['content-disposition'];
@@ -182,15 +181,11 @@ export default {
 					file.href = fileUrl;
 					file.setAttribute('download', fileName);
 					document.body.appendChild(file);
-					spinner.hideSpinner();
+					this.$store.commit('spinner/HIDE');
 					file.click();
 				}
-			).catch(() => (spinner.hideSpinner()));
+			).catch(() => (this.$store.commit('spinner/HIDE')));
 		}
 	},
 };
 </script>
-
-<style scoped>
-
-</style>

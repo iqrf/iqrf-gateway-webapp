@@ -28,7 +28,6 @@ import { Vue as VueIntegration } from '@sentry/integrations';
 import hljs from 'highlight.js/lib/core';
 import bash from 'highlight.js/lib/languages/bash';
 import json from 'highlight.js/lib/languages/json';
-import spinner from './spinner';
 import axios from 'axios';
 import '@coreui/coreui';
 import CoreuiVue from '@coreui/vue';
@@ -49,6 +48,7 @@ import App from './components/App';
 import DaemonStatus from './components/DaemonStatus';
 import DisambiguationLink from './components/DisambiguationLink';
 import NavBarLink from './components/NavBarLink';
+import LoadingSpinner from './components/LoadingSpinner';
 import TheHeader from './components/TheHeader';
 import TheSidebar from './components/TheSidebar';
 import PixlaControl from './components/Cloud/PixlaControl';
@@ -60,6 +60,7 @@ Sentry.init({
 });
 
 store.commit('SOCKET_ONCLOSE');
+store.commit('spinner/HIDE');
 
 const wsApi = 'ws://' + window.location.hostname + ':1338';
 Vue.use(VueNativeSock, wsApi, {
@@ -82,10 +83,10 @@ hljs.registerLanguage('json', json);
 
 $.nette.ext('spinner', {
 	start: function () {
-		spinner.showSpinner();
+		store.commit('spinner/SHOW');
 	},
 	complete: function () {
-		spinner.hideSpinner();
+		store.commit('spinner/HIDE');
 	}
 });
 
@@ -99,7 +100,7 @@ $.nette.ext('confirm', {
 		if (question) {
 			let retVal = confirm(question);
 			if (retVal) {
-				spinner.hideSpinner();
+				store.commit('spinner/HIDE');
 			}
 			return retVal;
 		}
@@ -131,6 +132,7 @@ new Vue({
 		DaemonStatus,
 		DisambiguationLink,
 		NavBarLink,
+		LoadingSpinner,
 		TheHeader,
 		TheSidebar,
 		PixlaControl,

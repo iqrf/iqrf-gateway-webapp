@@ -10,7 +10,7 @@
 	],
 	"parser": "vue-eslint-parser",
 	"parserOptions": {
-		"ecmaVersion": 2015,
+		"ecmaVersion": 2019,
 		"sourceType": "module"
 	},
 	"plugins": [
