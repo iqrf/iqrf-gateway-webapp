@@ -143,7 +143,7 @@
 						</CCol>
 					</CRow>
 					<CButton color='primary' type='submit' :disabled='invalid'>
-						{{ $t('form.saveButton') }}
+						{{ $t('forms.save') }}
 					</CButton>
 				</CForm>
 			</ValidationObserver>
@@ -211,7 +211,7 @@ export default {
 				.catch((error) => {
 					if (error.response) {
 						if (error.response.status === 500) {
-							this.$toast.error(this.$t('form.messages.submitServerError'));
+							this.$toast.error(this.$t('forms.messages.submitServerError'));
 						}
 					} else {
 						console.error(error.message);
@@ -222,13 +222,13 @@ export default {
 			ConfigService.saveConfig('translatorConfig', this.config)
 				.then((response) => {
 					if (response.status === 200) {
-						this.$toast.success(this.$t('form.messages.saveSuccess'));
+						this.$toast.success(this.$t('forms.messages.saveSuccess'));
 					}
 				})
 				.catch((error) => {
 					if (error.response) {
 						if (error.response.status === 500) {
-							this.$toast.error(this.$t('form.messages.submitServerError'));
+							this.$toast.error(this.$t('forms.messages.submitServerError'));
 						}
 					} else {
 						console.error(error.message);

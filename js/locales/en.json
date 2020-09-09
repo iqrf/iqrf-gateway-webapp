@@ -130,8 +130,13 @@
 	},
 	"forms": {
 		"add": "Add",
+		"save": "Save",
 		"send": "Send",
-		"write": "Write"
+		"write": "Write",
+		"messages": {
+			"saveSuccess": "Configuration has been successfully saved.",
+			"submitServerError": "Internal server error has occured."
+		}
 	},
 	"config": {
 		"title": "Configuration",
@@ -602,7 +607,7 @@
 					"skipDiscoveryEachWave": "Skip discovery in each wave",
 					"stopConditions": {
 						"title": "AutoNetwork stop conditions",
-						"abortOnTooManyNodesFound": "Abort if too many nodes are found",
+						"abortOnTooManyNodesFound": "Abort AutoNetwork if too many nodes are found",
 						"emptyWaves": "Number of consecutive empty waves",
 						"waves": "Maximum number of waves"
 					},
@@ -625,7 +630,9 @@
 			"resetButton": {
 				"title": "Button configuration",
 				"api": "Daemon API call",
-				"pin": "Button GPIO pin"
+				"custom": "Other API call",
+				"pin": "Button GPIO pin",
+				"setCustom": "Set other API call"
 			},
 			"statusLed": {
 				"title": "Status LED configuration",
@@ -641,14 +648,30 @@
 				"title": "Websocker configuration",
 				"api": "Daemon API server",
 				"monitor": "Monitor server"
+			},
+			"messages": {
+				"invalid": {
+					"integer": "This parameter should be an integer.",
+					"ws_format": "Invalid websocket server address format. Example: ws://example:1883.",
+					"gpio": "GPIO pin should be an integer.",
+					"dd_addr": "The maximum address parameter should be an integer between 0 and 239."
+				},
+				"missing": {
+					"ws_api": "Please enter the Daemon API websocket server address.",
+					"ws_monitir": "Please enter the Monitor websocket server address",
+					"l_file": "Please enter path to log file.",
+					"rb_pin": "Please enter GPIO pin number for the button.",
+					"rb_custom": "Please enter API call identifier.",
+					"sl_green": "Please enter GPIO pin number for green LED.",
+					"sl_red": "Please enter GPIO pin number for red LED.",
+					"da_retries": "Please enter number of AutoNetwork retry DPA transactions.",
+					"da_txpower": "Please enter TX power for Discovery before AutoNetwork.",
+					"da_ewaves": "Please enter number of consecutive empty waves before AutoNetwork is stopped.",
+					"da_waves": "Please enter number of maximum AutoNetwork waves.",
+					"dd_addr": "Please enter the maximum address for Discovery.",
+					"dd_txpower": "Please enter TX power for Discovery."
+				}
 			}
-		}
-	},
-	"form": {
-		"saveButton": "Save",
-		"messages": {
-			"saveSuccess": "Configuration has been successfully saved.",
-			"submitServerError": "Internal server error has occured."
 		}
 	}
 }
