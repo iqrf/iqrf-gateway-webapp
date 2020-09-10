@@ -40,7 +40,6 @@
 <script>
 import {CButton, CCard} from '@coreui/vue';
 import ServiceService from '../../services/ServiceService';
-import spinner from '../../spinner';
 
 const whitelisted = ['iqrf-gateway-daemon', 'ssh', 'unattended-upgrades'];
 
@@ -67,32 +66,26 @@ export default {
 	},
 	watch: {
 		serviceName: function (newVal) {
-			spinner.showSpinner();
+			this.$store.commit('spinner/SHOW');
 			this.serviceName = newVal;
 			this.getStatus();
 		}
 	},
 	created() {
-		spinner.showSpinner();
+		this.$store.commit('spinner/SHOW');
 		this.getStatus();
 	},
 	methods: {
 		enable() {
-			spinner.showSpinner();
+			this.$store.commit('spinner/SHOW');
 			ServiceService.enable(this.serviceName)
-				.then(() => {
-					this.getStatus();
-					this.$toast.success(this.$t('service.' + this.serviceName + '.messages.enable'));
-				})
+				.then(() => (this.handleSuccess('enable')))
 				.catch(this.handleError);
 		},
 		disable() {
-			spinner.showSpinner();
+			this.$store.commit('spinner/SHOW');
 			ServiceService.disable(this.serviceName)
-				.then(() => {
-					this.getStatus();
-					this.$toast.success(this.$t('service.' + this.serviceName + '.messages.disable'));
-				})
+				.then(() => (this.handleSuccess('disable')))
 				.catch(this.handleError);
 		},
 		getStatus() {
@@ -105,7 +98,7 @@ export default {
 					titleEl.innerText = title;
 				}
 				this.status = null;
-				spinner.hideSpinner();
+				this.$store.commit('spinner/HIDE');
 				this.$toast.error(this.$t('service.errors.unsupportedService'));
 				return;
 			}
@@ -115,12 +108,12 @@ export default {
 					this.active = response.data.active;
 					this.enabled = response.data.enabled;
 					this.status = response.data.status;
-					spinner.hideSpinner();
+					this.$store.commit('spinner/HIDE');
 				})
 				.catch(this.handleError);
 		},
 		handleError(error) {
-			spinner.hideSpinner();
+			this.$store.commit('spinner/HIDE');
 			let response = error.response;
 			if (response.status === 404) {
 				this.missing = true;
@@ -132,41 +125,32 @@ export default {
 				this.$toast.error(this.$t('service.errors.unsupportedInit'));
 			}
 		},
+		handleSuccess(action) {
+			this.getStatus();
+			this.$toast.success(this.$t('service.' + this.serviceName + '.messages.' + action));
+		},
 		refreshStatus() {
-			spinner.showSpinner();
+			this.$store.commit('spinner/SHOW');
 			this.getStatus();
 		},
 		restart() {
-			spinner.showSpinner();
+			this.$store.commit('spinner/SHOW');
 			ServiceService.restart(this.serviceName)
-				.then(() => {
-					this.getStatus();
-					this.$toast.success(this.$t('service.' + this.serviceName + '.messages.restart'));
-				})
+				.then(() => (this.handleSuccess('restart')))
 				.catch(this.handleError);
 		},
 		start() {
-			spinner.showSpinner();
+			this.$store.commit('spinner/SHOW');
 			ServiceService.start(this.serviceName)
-				.then(() => {
-					this.getStatus();
-					this.$toast.success(this.$t('service.' + this.serviceName + '.messages.start'));
-				})
+				.then(() => (this.handleSuccess('start')))
 				.catch(this.handleError);
 		},
 		stop() {
-			spinner.showSpinner();
+			this.$store.commit('spinner/SHOW');
 			ServiceService.stop(this.serviceName)
-				.then(() => {
-					this.getStatus();
-					this.$toast.success(this.$t('service.' + this.serviceName + '.messages.stop'));
-				})
+				.then(() => (this.handleSuccess('stop')))
 				.catch(this.handleError);
 		},
 	},
 };
 </script>
-
-<style scoped>
-
-</style>

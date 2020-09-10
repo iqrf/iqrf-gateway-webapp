@@ -10,7 +10,6 @@
 <script>
 import {CButton, CCard} from '@coreui/vue';
 import GatewayService from '../../services/GatewayService';
-import spinner from '../../spinner';
 
 export default {
 	name: 'DaemonLogViewer',
@@ -24,19 +23,19 @@ export default {
 		};
 	},
 	created() {
-		spinner.showSpinner();
+		this.$store.commit('spinner/SHOW');
 		GatewayService.getLatestLog()
 			.then(
 				(response) => {
 					this.log = response.data;
-					spinner.hideSpinner();
+					this.$store.commit('spinner/HIDE');
 				}
 			)
-			.catch(() => spinner.hideSpinner());
+			.catch(() => this.$store.commit('spinner/HIDE'));
 	},
 	methods: {
 		downloadArchive() {
-			spinner.showSpinner();
+			this.$store.commit('spinner/SHOW');
 			GatewayService.getLogArchive().then(
 				(response) => {
 					const contentDisposition = response.headers['content-disposition'];
@@ -53,15 +52,11 @@ export default {
 					file.href = fileUrl;
 					file.setAttribute('download', fileName);
 					document.body.appendChild(file);
-					spinner.hideSpinner();
+					this.$store.commit('spinner/HIDE');
 					file.click();
 				}
-			).catch(() => (spinner.hideSpinner()));
+			).catch(() => (this.$store.commit('spinner/HIDE')));
 		}
 	},
 };
 </script>
-
-<style scoped>
-
-</style>

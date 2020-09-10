@@ -104,15 +104,6 @@ import {between, integer, min_value, required} from 'vee-validate/dist/rules';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import sendPacket from '../../iqrfNet/sendPacket';
 
-extend('dpaPacket', (packet) => {
-	return sendPacket.validatePacket(packet) ? true : 'iqrfnet.sendPacket.form.messages.invalid.packet';
-});
-
-extend('between', between);
-extend('integer', integer);
-extend('min', min_value);
-extend('required', required);
-
 export default {
 	name: 'SendDpaPacket',
 	components: {
@@ -141,6 +132,13 @@ export default {
 		};
 	},
 	created() {
+		extend('between', between);
+		extend('integer', integer);
+		extend('min', min_value);
+		extend('required', required);
+		extend('dpaPacket', (packet) => {
+			return sendPacket.validatePacket(packet) ? true : 'iqrfnet.sendPacket.form.messages.invalid.packet';
+		});
 		this.unsubscribe = this.$store.subscribe(mutation => {
 			if (mutation.type === 'SOCKET_ONSEND' &&
 					mutation.payload.mType === 'iqrfRaw') {
@@ -149,6 +147,7 @@ export default {
 			}
 			if (mutation.type === 'SOCKET_ONMESSAGE' &&
 					mutation.payload.mType === 'iqrfRaw') {
+				this.$store.commit('spinner/HIDE');
 				this.response = mutation.payload;
 				switch (mutation.payload.data.status) {
 					case 0:
@@ -191,6 +190,7 @@ export default {
 				this.$toast.error(this.$t('iqrfnet.sendPacket.form.messages.missing.packet'));
 				return;
 			}
+			this.$store.commit('spinner/SHOW');
 			let json = {
 				'mType': 'iqrfRaw',
 				'data': {
@@ -233,7 +233,3 @@ export default {
 	},
 };
 </script>
-
-<style scoped>
-
-</style>

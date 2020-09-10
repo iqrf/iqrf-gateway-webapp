@@ -4,6 +4,7 @@ import createPersistentState from 'vuex-persistedstate';
 
 import daemonStatus from './modules/daemonStatus.module';
 import sidebar from './modules/sidebar.module';
+import spinner from './modules/spinner.module';
 import user from './modules/user.module';
 import webSocketClient from './modules/webSocketClient.module';
 
@@ -13,6 +14,7 @@ const store = new Vuex.Store({
 	modules: {
 		daemonStatus,
 		sidebar,
+		spinner,
 		user,
 		webSocketClient,
 	},
