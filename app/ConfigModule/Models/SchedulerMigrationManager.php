@@ -83,7 +83,9 @@ class SchedulerMigrationManager {
 		$zipManager = new ZipArchiveManager('/tmp/' . $fileName);
 		$contentType = 'application/zip';
 		$zipManager->addFolder($this->configDirectory, '');
-		$zipManager->deleteDirectory('schema');
+		if ($zipManager->exist('schema/')) {
+			$zipManager->deleteDirectory('schema');
+		}
 		$zipManager->close();
 		return new FileResponse('/tmp/' . $fileName, $fileName, $contentType, true);
 	}
@@ -109,7 +111,9 @@ class SchedulerMigrationManager {
 			$json = Json::decode($zipManager->openFile($fileName));
 			$this->schemaManager->validate($json);
 		}
-		$zipManager->deleteDirectory('schema');
+		if ($zipManager->exist('schema/')) {
+			$zipManager->deleteDirectory('schema');
+		}
 		$zipManager->extract($this->configDirectory);
 		$zipManager->close();
 	}
