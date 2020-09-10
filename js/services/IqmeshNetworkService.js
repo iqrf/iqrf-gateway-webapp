@@ -5,6 +5,65 @@ import store from '../store';
  */
 class IqmeshNetworkService {
 	/**
+	 * Bonds a node locally
+	 * @param addr A requested address for the bonded node. If this parameter equals to 0, then the first free address is assigned to the node.
+	 */
+	bondLocal(addr) {
+		store.dispatch('sendRequest', {
+			'mType': 'iqmeshNetwork_BondNodeLocal',
+			'data': {
+				'repeat': 2,
+				'req': {
+					'deviceAddr': addr,
+				},
+				'returnVerbose': true,
+			},
+		});
+	}
+
+	/**
+	 * Bonds a node via IQRF Smart Connect
+	 * @param addr Address to bond the device to.  If this parameter equals to 0, then the first free address is assigned to the node.
+	 * @param scCode Device Smart Connect code
+	 * @param testRetries Maximum number of FRCs used to test whether the Node was successfully bonded
+	 */
+	bondSmartConnect(addr, scCode, testRetries) {
+		store.dispatch('sendRequest', {
+			'mType': 'iqmeshNetwork_SmartConnect',
+			'data': {
+				'repeat': 2,
+				'req': {
+					'deviceAddr': addr,
+					'smartConnectCode': scCode,
+					'bondingTestRetries': testRetries,
+				},
+				'returnVerbose': true,
+			},
+		});
+	}
+
+	/**
+	 * Clears all bonds
+	 * @param coordinatorOnly Removes bonds only in the coordinator memory
+	 */
+	clearAllBonds(coordinatorOnly) {
+		if (coordinatorOnly) {
+			store.dispatch('sendRequest', {
+				'mType': 'iqrfEmbedCoordinator_ClearAllBonds',
+				'data': {
+					'req': {
+						'nAdr': 0,
+						'param': []
+					},
+					'returnVerbose': true,
+				},
+			});
+		} else {
+			this.removeBond(255, false);
+		}
+	}
+
+	/**
 	 * Performs Coordinator discovery
 	 * @param txPower TX Power
 	 * @param maxAddr Maximum node address
@@ -13,15 +72,16 @@ class IqmeshNetworkService {
 		store.dispatch('sendRequest', {
 			'mType': 'iqrfEmbedCoordinator_Discovery',
 			'data': {
+				'repeat': 2,
 				'req': {
 					'nAdr': 0,
 					'param': {
 						'txPower': txPower,
-						'maxAddr': maxAddr
-					}
+						'maxAddr': maxAddr,
+					},
 				},
 				'returnVerbose': true,
-			}
+			},
 		});
 	}
 
@@ -41,6 +101,39 @@ class IqmeshNetworkService {
 				'returnVerbose': true,
 			},
 		});
+	}
+
+	/**
+	 * Removes a bond
+	 * @param addr Address of a node bond to be removed 
+	 * @param coordinatorOnly Removes a bond only in the coordinator memory
+	 */
+	removeBond(addr, coordinatorOnly) {
+		if (coordinatorOnly) {
+			store.dispatch('sendRequest', {
+				'mType': 'iqrfEmbedCoordinator_RemoveBond',
+				'data': {
+					'req': {
+						'nAdr': 0,
+						'param': {
+							'bondAddr': addr,
+						},
+					},
+					'returnVerbose': true,
+				},
+			});
+		} else {
+			store.dispatch('sendRequest', {
+				'mType': 'iqmeshNetwork_RemoveBond',
+				'data': {
+					'repeat': 2,
+					'req': {
+						'deviceAddr': addr,
+					},
+					'returnVerbose': true,
+				},
+			});
+		}
 	}
 
 	/**

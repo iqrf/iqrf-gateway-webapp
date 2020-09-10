@@ -359,7 +359,7 @@
 					"bondMethodSmart": "Smart Connect",
 					"bondingRetries": "Bonding test retries",
 					"smartConnect": "IQRF Smart Connect Code",
-					"unbondCoordOnly": "Unbonds the Node only on Coordinator side"
+					"unbondCoordinatorOnly": "Unbonds the Node only on Coordinator side"
 				}
 			},
 			"discovery": {
@@ -367,17 +367,50 @@
 				"form": {
 					"txPower": "TX Power",
 					"maxAddr": "Max. Node address"
+				}
+			},
+			"messages": {
+				"submit": {
+					"timeout": "Request timed out.",
+					"bonding": {
+						"success": "Bond call successful.",
+						"error_fail": "Failed to bond new node."
+					},
+					"removeBond": {
+						"confirmUnbond": "Do you really want to remove this node from the network?",
+						"confirmClear": "Do you really want to clear all bonds?",
+						"success": "Remove bond call successful.",
+						"error_fail": "Failed to remove bond.",
+						"remove_error": "An error occurred while removing a device from the network.",
+						"clearSuccess": "All bonds have been cleared successfully."
+					},
+					"discovery": {
+						"success": "The discovery has been finished successfully.",
+						"error_fail": "An error occurred while running discovery."
+					}
 				},
-				"messages": {
-					"success": "Discovery call successful.",
-					"missing": {
+				"invalid": {
+					"bonding": {
+						"bondingRetries": "Bonding test retries should be a positive integer.",
+						"maxAddr": "Please enter a valid address. Its has to be a decimal number from 1 to 239",
+						"scCode": "IQRF Smart Connect code should be a string of 34 alphanumeric characters."
+					},
+					"discovery": {
+						"maxAddr": "Maximum node address has to be a decimal number between 0 and 239.",
+						"txPower": "TX Power has to be an integer between 0 and 7."
+					}
+				},
+				"missing": {
+					"bonding": {
+						"bondingRetries": "Please enter number of bond test retry requests.",
+						"maxAddr": "Please enter address to bond a new node to.",
+						"scCode": "Please enter the IQRF Smart Connect code."
+					},
+					"discovery": {
 						"txPower": "Please enter TX Power for Discovery.",
 						"maxAddr": "Please enter maximum node address for Discovery."
-					},
-					"invalid": {
-						"txPower": "TX Power has to be an integer between 0 and 7.",
-						"maxAddr": "Maximum node address has to be an integer between 0 and 239."
 					}
+					
 				}
 			}
 		},
