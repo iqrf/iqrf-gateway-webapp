@@ -89,6 +89,7 @@ export default {
 		this.unsubscribe = this.$store.subscribe(mutation => {
 			if (mutation.type === 'SOCKET_ONSEND' &&
 				mutation.payload.mType === 'iqrfEmbedCoordinator_Discovery') {
+				this.responseReceived = false;
 				setTimeout(() => {this.timedOut();}, 10000);
 			}
 			if (mutation.type === 'SOCKET_ONMESSAGE') {
@@ -112,7 +113,6 @@ export default {
 	},
 	methods: {
 		processSubmit() {
-			this.responseReceived = false;
 			this.$store.commit('spinner/SHOW');
 			IqmeshNetworkService.discovery(this.txPower, this.maxAddr);
 		},

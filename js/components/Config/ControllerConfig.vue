@@ -7,7 +7,7 @@
 						<CCol md='6'>
 							<h3>{{ $t("controllerConfig.form.wsServers.title") }}</h3>
 							<ValidationProvider
-								v-slot='{ valid, errors }'
+								v-slot='{ errors, touched, valid }'
 								rules='required|ws_addr'
 								:custom-messages='{
 									required: "controllerConfig.form.messages.missing.ws_api",
@@ -17,12 +17,12 @@
 								<CInput
 									v-model='config.wsServers.api'
 									:label='$t("controllerConfig.form.wsServers.api")'
-									:is-valid='valid'
+									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
 								/>
 							</ValidationProvider>
 							<ValidationProvider
-								v-slot='{ valid, errors }'
+								v-slot='{ errors, touched, valid }'
 								rules='required|ws_addr'
 								:custom-messages='{
 									required: "controllerConfig.form.messages.missing.ws_monitor",
@@ -32,7 +32,7 @@
 								<CInput
 									v-model='config.wsServers.monitor'
 									:label='$t("controllerConfig.form.wsServers.monitor")'
-									:is-valid='valid'
+									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
 								/>
 							</ValidationProvider>
@@ -40,14 +40,14 @@
 						<CCol md='6'>
 							<h3>{{ $t("controllerConfig.form.logger.title") }}</h3>
 							<ValidationProvider
-								v-slot='{ valid, errors }'
+								v-slot='{ errors, touched, valid }'
 								rules='required'
 								:custom-messages='{required: "controllerConfig.form.messages.missing.l_file"}'
 							>
 								<CInput
 									v-model='config.logger.filePath'
 									:label='$t("controllerConfig.form.logger.filePath")'
-									:is-valid='valid'
+									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
 								/>
 							</ValidationProvider>
@@ -83,19 +83,19 @@
 							/>
 							<ValidationProvider 
 								v-else
-								v-slot='{ valid, errors }'
+								v-slot='{ errors, touched, valid }'
 								rules='required'
 								:custom-messages='{required: "controllerConfig.form.messages.missing.rb_custom"}'
 							>
 								<CInput 
 									v-model='config.resetButton.api'
 									:label='$t("controllerConfig.form.resetButton.custom")'
-									:is-valid='valid'
+									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
 								/>
 							</ValidationProvider>
 							<ValidationProvider
-								v-slot='{ valid, errors }'
+								v-slot='{ errors, touched, valid }'
 								rules='integer|required'
 								:custom-messages='{
 									integer: "controllerConfig.form.messages.invalid.rb_pin",
@@ -105,7 +105,7 @@
 								<CInput
 									v-model='config.resetButton.button'
 									:label='$t("controllerConfig.form.resetButton.pin")'
-									:is-valid='valid'
+									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
 								/>
 							</ValidationProvider>
@@ -113,7 +113,7 @@
 						<CCol md='6'>
 							<h3>{{ $t("controllerConfig.form.statusLed.title") }}</h3>
 							<ValidationProvider
-								v-slot='{ valid, errors }'
+								v-slot='{ errors, touched, valid }'
 								rules='integer|required'
 								:custom-messages='{
 									integer: "controllerConfig.form.messages.invalid.gpio",
@@ -123,12 +123,12 @@
 								<CInput
 									v-model='config.statusLed.greenLed'
 									:label='$t("controllerConfig.form.statusLed.green")'
-									:is-valid='valid'
+									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
 								/>
 							</ValidationProvider>
 							<ValidationProvider
-								v-slot='{ valid, errors }'
+								v-slot='{ errors, touched, valid }'
 								rules='integer|required'
 								:custom-messages='{
 									integer: "controllerConfig.form.messages.invalid.gpio",
@@ -138,7 +138,7 @@
 								<CInput
 									v-model='config.statusLed.redLed'
 									:label='$t("controllerConfig.form.statusLed.red")'
-									:is-valid='valid'
+									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
 								/>
 							</ValidationProvider>
@@ -148,7 +148,7 @@
 						<CCol md='6'>
 							<h3>{{ $t("controllerConfig.form.daemonApi.autoNetwork.title") }}</h3>
 							<ValidationProvider
-								v-slot='{ valid, errors }'
+								v-slot='{ errors, touched, valid }'
 								rules='integer|required'
 								:custom-messages='{
 									integer: "controllerConfig.form.messages.invalid.integer",
@@ -158,7 +158,7 @@
 								<CInput
 									v-model='config.daemonApi.autoNetwork.actionRetries'
 									:label='$t("controllerConfig.form.daemonApi.autoNetwork.actionRetries")'
-									:is-valid='valid'
+									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
 								/>
 							</ValidationProvider>
@@ -167,7 +167,7 @@
 								:label='$t("controllerConfig.form.daemonApi.autoNetwork.discoveryBeforeStart")'
 							/>
 							<ValidationProvider
-								v-slot='{ valid, errors }'
+								v-slot='{ errors, touched, valid }'
 								rules='integer|required'
 								:custom-messages='{
 									integer: "controllerConfig.form.messages.invalid.integer",
@@ -177,7 +177,7 @@
 								<CInput
 									v-model='config.daemonApi.autoNetwork.discoveryTxPower'
 									:label='$t("controllerConfig.form.daemonApi.autoNetwork.discoveryTxPower")'
-									:is-valid='valid'
+									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
 								/>
 							</ValidationProvider>
@@ -191,7 +191,7 @@
 								:label='$t("controllerConfig.form.daemonApi.autoNetwork.stopConditions.abortOnTooManyNodesFound")'
 							/>
 							<ValidationProvider
-								v-slot='{ valid, errors }'
+								v-slot='{ errors, touched, valid }'
 								rules='integer|required'
 								:custom-messages='{
 									integer: "controllerConfig.form.messages.invalid.integer",
@@ -201,12 +201,12 @@
 								<CInput
 									v-model='config.daemonApi.autoNetwork.stopConditions.emptyWaves'
 									:label='$t("controllerConfig.form.daemonApi.autoNetwork.stopConditions.emptyWaves")'
-									:is-valid='valid'
+									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
 								/>
 							</ValidationProvider>
 							<ValidationProvider
-								v-slot='{ valid, errors }'
+								v-slot='{ errors, touched, valid }'
 								rules='integer|required'
 								:custom-messages='{
 									integer: "controllerConfig.form.messages.invalid.integer",
@@ -216,7 +216,7 @@
 								<CInput
 									v-model='config.daemonApi.autoNetwork.stopConditions.waves'
 									:label='$t("controllerConfig.form.daemonApi.autoNetwork.stopConditions.waves")'
-									:is-valid='valid'
+									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
 								/>
 							</ValidationProvider><hr>
@@ -228,7 +228,7 @@
 						<CCol md='6'>
 							<h3>{{ $t("controllerConfig.form.daemonApi.discovery.title") }}</h3>
 							<ValidationProvider
-								v-slot='{ valid, errors }'
+								v-slot='{ errors, touched, valid }'
 								rules='addr_range|integer|required'
 								:custom-messages='{
 									addr_range: "controllerConfig.form.messages.invalid.dd_addr",
@@ -239,12 +239,12 @@
 								<CInput
 									v-model='config.daemonApi.discovery.maxAddr'
 									:label='$t("controllerConfig.form.daemonApi.discovery.maxAddr")'
-									:is-valid='valid'
+									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
 								/>
 							</ValidationProvider>
 							<ValidationProvider
-								v-slot='{ valid, errors }'
+								v-slot='{ errors, touched, valid }'
 								rules='integer|required'
 								:custom-messages='{
 									integer: "controllerConfig.form.messages.invalid.integer",
@@ -254,7 +254,7 @@
 								<CInput
 									v-model='config.daemonApi.discovery.txPower'
 									:label='$t("controllerConfig.form.daemonApi.discovery.txPower")'
-									:is-valid='valid'
+									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
 								/>
 							</ValidationProvider>
@@ -300,16 +300,6 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {integer, required} from 'vee-validate/dist/rules';
 import ConfigService from '../../services/ConfigService';
 
-extend('integer', integer);
-extend('required', required);
-extend('addr_range', (addr) => {
-	return ((addr >= 0) && (addr <= 239));
-});
-extend('ws_addr', (addr) => {
-	const regex = RegExp('ws:\\/\\/.+:([1-9]|[1-9][0-9]|[1-9][0-9]{2}|[1-9][0-9]{3}|[1-4][0-9][0-1][0-5][0-1])');
-	return regex.test(addr);
-});
-
 export default {
 	name: 'ControllerConfig',
 	components: {
@@ -331,10 +321,20 @@ export default {
 		};
 	},
 	created() {
+		extend('integer', integer);
+		extend('required', required);
+		extend('addr_range', (addr) => {
+			return ((addr >= 0) && (addr <= 239));
+		});
+		extend('ws_addr', (addr) => {
+			const regex = RegExp('^ws:\\/\\/.+:([1-9]|[1-9][0-9]|[1-9][0-9]{2}|[1-9][0-9]{3}|[1-4][0-9][0-1][0-5][0-1])$');
+			return regex.test(addr);
+		});
 		this.getConfig();
 	},
 	methods: {
 		getConfig() {
+			this.$store.commit('spinner/SHOW');
 			ConfigService.getConfig('controllerConfig')
 				.then((response) => {
 					this.config = response.data;
@@ -351,8 +351,10 @@ export default {
 						}
 					}
 				});
+			this.$store.commit('spinner/HIDE');
 		},
 		processSubmit() {
+			this.$store.commit('spinner/SHOW');
 			ConfigService.saveConfig('controllerConfig', this.config)
 				.then((response) => {
 					if (response.status === 200) {
@@ -368,6 +370,7 @@ export default {
 						console.error(error.message);
 					}
 				});
+			this.$store.commit('spinner/HIDE');
 		},
 		updateApiCall() {
 			if (this.apiCallSetCustom) {
