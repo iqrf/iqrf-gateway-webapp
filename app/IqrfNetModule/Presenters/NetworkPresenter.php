@@ -21,27 +21,12 @@ declare(strict_types = 1);
 namespace App\IqrfNetModule\Presenters;
 
 use App\CoreModule\Presenters\ProtectedPresenter;
-use App\IqrfNetModule\Forms\BondingFormFactory;
-use App\IqrfNetModule\Forms\DiscoveryFormFactory;
 use App\IqrfNetModule\Models\DevicesManager;
-use Nette\Application\UI\Form;
 
 /**
  * IQMESH Network manager presenter
  */
 class NetworkPresenter extends ProtectedPresenter {
-
-	/**
-	 * @var BondingFormFactory IQMESH Bonding form
-	 * @inject
-	 */
-	public $bondingForm;
-
-	/**
-	 * @var DiscoveryFormFactory IQMESH Discovery form
-	 * @inject
-	 */
-	public $discoveryForm;
 
 	/**
 	 * @var DevicesManager Bonded and Discovered devices manager
@@ -76,22 +61,6 @@ class NetworkPresenter extends ProtectedPresenter {
 		if (!$this->isAjax()) {
 			$this->handleShowNodes();
 		}
-	}
-
-	/**
-	 * Creates the IQMESH Bonding form
-	 * @return Form IQMESH Bonding form
-	 */
-	protected function createComponentIqrfNetBondingForm(): Form {
-		return $this->bondingForm->create($this);
-	}
-
-	/**
-	 * Creates the IQMESH Discovery form
-	 * @return Form IQMESH Discovery form
-	 */
-	protected function createComponentIqrfNetDiscoveryForm(): Form {
-		return $this->discoveryForm->create($this);
 	}
 
 }

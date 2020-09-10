@@ -17,22 +17,13 @@
 
 {block title}{_iqrfnet.network-manager.title}{/block}
 {block content}
-<ul class='nav nav-tabs'>
-	<li role='presentation' class='active'>
-		<a n:href='Network:default'>{_iqrfnet.network-manager.control}</a>
-	</li>
-</ul>
-<br>
 <c-row>
 	<c-col md='6'>
-		<c-card>
-			<c-card-header>{_iqrfnet.bonding.title}</c-card-header>
-			<c-card-body>{control iqrfNetBondingForm}</c-card-body>
-		</c-card>
 		<bonding-manager />
 		<discovery-manager />
 	</c-col>
 	<c-col n:snippetArea='devicesWrapper' md='6'>
 		{include 'devices.latte'}
+        <devices-info />
 	</c-col>
 </c-row>

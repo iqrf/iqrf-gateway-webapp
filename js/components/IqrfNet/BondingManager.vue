@@ -9,7 +9,7 @@
 						:label='$t("iqrfnet.networkManager.bonding.form.bondMethod")'
 						:options='[
 							{value: "local", label: $t("iqrfnet.networkManager.bonding.form.bondMethodLocal")},
-							{value: "sc", label: $t("iqrfnet.networkManager.bonding.form.bondMethodSmart")}
+							{value: "smartConnect", label: $t("iqrfnet.networkManager.bonding.form.bondMethodSmart")}
 						]'
 					/>
 					<ValidationProvider
@@ -53,6 +53,7 @@
 						/>
 					</ValidationProvider>
 					<ValidationProvider
+						v-if='bondMethod === "smartConnect"'
 						v-slot='{ errors, valid }'
 						rules='required|scCode'
 						:custom-messages='{
@@ -61,7 +62,6 @@
 						}'
 					>
 						<CInput
-							v-if='bondMethod === "sc"'
 							v-model='scCode'
 							:label='$t("iqrfnet.networkManager.bonding.form.smartConnect")'
 							:is-valid='valid'
@@ -83,7 +83,7 @@
 					<CButton 
 						color='secondary' 
 						type='button' 
-						:disabled='invalid'
+						:disabled='invalid || autoAddress'
 						@click='modalUnbond = true'
 					>
 						{{ $t('forms.unbond') }}
@@ -91,6 +91,7 @@
 					<CButton 
 						color='secondary' 
 						type='button'
+						:disabled='autoAddress'
 						@click='modalClear = true'
 					>
 						{{ $t('forms.clearBonds') }}
@@ -103,10 +104,10 @@
 						{{ $t('iqrfnet.networkManager.messages.submit.removeBond.confirmClear') }}
 						<template #footer>
 							<CButton color='secondary' @click='modalClear = false'>
-								Cancel
+								{{ $t('iqrfnet.networkManager.forms.cancel') }}
 							</CButton>
 							<CButton color='primary' @click='processSubmitClearAll'>
-								OK
+								{{ $t('iqrfnet.networkManager.forms.ok') }}
 							</CButton>
 						</template>
 					</CModal>
@@ -118,10 +119,10 @@
 						{{ $t('iqrfnet.networkManager.messages.submit.removeBond.confirmUnbond') }}
 						<template #footer>
 							<CButton color='secondary' @click='modalUnbond = false'>
-								Cancel
+								{{ $t('iqrfnet.networkManager.forms.cancel') }}
 							</CButton>
 							<CButton color='primary' @click='processSubmitUnbond'>
-								OK
+								{{ $t('iqrfnet.networkManager.forms.ok') }}
 							</CButton>
 						</template>
 					</CModal>
@@ -190,6 +191,9 @@ export default {
 					this.responseReceived = true;
 					this.$store.commit('spinner/HIDE');
 					switch(mutation.payload.data.status) {
+						case -1:
+							this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.timeout'));
+							break;
 						case 0:
 							this.$toast.success(this.$t('iqrfnet.networkManager.messages.submit.bonding.success'));
 							break;
@@ -202,6 +206,9 @@ export default {
 					this.responseReceived = true;
 					this.$store.commit('spinner/HIDE');
 					switch(mutation.payload.data.status) {
+						case -1:
+							this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.timeout'));
+							break;
 						case 0:
 							if (mutation.payload.data.rsp.nodesNr === 0) {
 								this.$toast.success(this.$t('iqrfnet.networkManager.messages.submit.removeBond.clearSuccess'));
@@ -232,7 +239,7 @@ export default {
 				} else {
 					IqmeshNetworkService.bondLocal(this.address);
 				}
-			} else if (this.bondMethod === 'sc') {
+			} else if (this.bondMethod === 'smartConnect') {
 				if (this.autoAddress) {
 					IqmeshNetworkService.bondSmartConnect(0, this.scCode, this.bondingRetries);
 				} else {

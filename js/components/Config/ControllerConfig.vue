@@ -337,6 +337,7 @@ export default {
 			this.$store.commit('spinner/SHOW');
 			ConfigService.getConfig('controllerConfig')
 				.then((response) => {
+					this.$store.commit('spinner/HIDE');
 					this.config = response.data;
 					if (this.config.resetButton.api !== ('autoNetwork' && 'discovery')) {
 						this.apiCallCustom = this.config.resetButton.api;
@@ -345,23 +346,25 @@ export default {
 					}
 				})
 				.catch((error) => {
+					this.$store.commit('spinner/HIDE');
 					if (error.response) {
 						if (error.response.status === 500) {
 							this.$toast.error(this.$t('forms.messages.submitServerError'));
 						}
 					}
 				});
-			this.$store.commit('spinner/HIDE');
 		},
 		processSubmit() {
 			this.$store.commit('spinner/SHOW');
 			ConfigService.saveConfig('controllerConfig', this.config)
 				.then((response) => {
+					this.$store.commit('spinner/HIDE');
 					if (response.status === 200) {
 						this.$toast.success(this.$t('forms.messages.saveSuccess'));
 					}
 				})
 				.catch((error) => {
+					this.$store.commit('spinner/HIDE');
 					if (error.response) {
 						if (error.response.status === 500) {
 							this.$toast.error(this.$t('forms.messages.submitServerError'));
@@ -370,7 +373,6 @@ export default {
 						console.error(error.message);
 					}
 				});
-			this.$store.commit('spinner/HIDE');
 		},
 		updateApiCall() {
 			if (this.apiCallSetCustom) {

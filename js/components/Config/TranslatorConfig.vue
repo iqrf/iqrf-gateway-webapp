@@ -156,7 +156,7 @@
 <script>
 
 import {CButton, CCard, CForm, CIcon, CInput} from '@coreui/vue';
-import { cilLockLocked, cilLockUnlocked } from '@coreui/icons';
+import {cilLockLocked, cilLockUnlocked} from '@coreui/icons';
 import {integer, required} from 'vee-validate/dist/rules';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import ConfigService from '../../services/ConfigService';
@@ -203,9 +203,11 @@ export default {
 			this.$store.commit('spinner/SHOW');
 			ConfigService.getConfig('translatorConfig')
 				.then((response) => {
+					this.$store.commit('spinner/HIDE');
 					this.config = response.data;
 				})
 				.catch((error) => {
+					this.$store.commit('spinner/HIDE');
 					if (error.response) {
 						if (error.response.status === 500) {
 							this.$toast.error(this.$t('forms.messages.submitServerError'));
@@ -214,17 +216,18 @@ export default {
 						console.error(error.message);
 					}
 				});
-			this.$store.commit('spinner/HIDE');
 		},
 		processSubmit() {
 			this.$store.commit('spinner/SHOW');
 			ConfigService.saveConfig('translatorConfig', this.config)
 				.then((response) => {
+					this.$store.commit('spinner/HIDE');
 					if (response.status === 200) {
 						this.$toast.success(this.$t('forms.messages.saveSuccess'));
 					}
 				})
 				.catch((error) => {
+					this.$store.commit('spinner/HIDE');
 					if (error.response) {
 						if (error.response.status === 500) {
 							this.$toast.error(this.$t('forms.messages.submitServerError'));
@@ -233,7 +236,6 @@ export default {
 						console.error(error.message);
 					}
 				});
-			this.$store.commit('spinner/HIDE');
 		},
 		changeVisibility() {
 			this.visibility = this.visibility === 'password' ? 'text' : 'password';

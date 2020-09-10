@@ -53,7 +53,7 @@ class IqmeshNetworkService {
 				'data': {
 					'req': {
 						'nAdr': 0,
-						'param': []
+						'param': {},
 					},
 					'returnVerbose': true,
 				},
@@ -104,8 +104,59 @@ class IqmeshNetworkService {
 	}
 
 	/**
+	 * Retrieves list of bonded devices
+	 */
+	getBonded() {
+		store.dispatch('sendRequest', {
+			'mType': 'iqrfEmbedCoordinator_BondedDevices',
+			'data': {
+				'req': {
+					'nAdr': 0,
+					'param': {},
+				},
+				'returnVerbose': true,
+			},
+		});
+	}
+
+	/**
+	 * Retrieves list of discovered devices
+	 */
+	getDiscovered() {
+		store.dispatch('sendRequest', {
+			'mType': 'iqrfEmbedCoordinator_DiscoveredDevices',
+			'data': {
+				'req': {
+					'nAdr': 0,
+					'param': {},
+				},
+				'returnVerbose': true,
+			},
+		});
+	}
+
+	/**
+	 * Perform FRC Ping
+	 */
+	ping() {
+		store.dispatch('sendRequest', {
+			'mType': 'iqrfEmbedFrc_Send',
+			'data': {
+				'req': {
+					'nAdr': 0,
+					'param': {
+						'frcCommand': 0,
+						'userData': [0, 0],
+					},
+					'returnVerbose': true,
+				},
+			},
+		});
+	}
+
+	/**
 	 * Removes a bond
-	 * @param addr Address of a node bond to be removed 
+	 * @param addr Address of a node bond to be removed
 	 * @param coordinatorOnly Removes a bond only in the coordinator memory
 	 */
 	removeBond(addr, coordinatorOnly) {

@@ -129,6 +129,9 @@
 		}
 	},
 	"forms": {
+		"ok": "OK",
+		"cancel": "Cancel",
+		"pingNodes": "Ping nodes",
 		"add": "Add",
 		"save": "Save",
 		"send": "Send",
@@ -362,6 +365,22 @@
 					"unbondCoordinatorOnly": "Unbonds the Node only on Coordinator side"
 				}
 			},
+			"devicesInfo": {
+				"title": "Devices Info",
+				"icons": {
+					"coordinator": "Coordinator",
+					"bonded": "Bonded device",
+					"bondedOnline": "Online bonded device",
+					"discovered": "Discovered device",
+					"discoveredOnline": "Online discovered device",
+					"unbonded": "Unbonded device"
+				},
+				"messages": {
+					"bonded": {
+						"failure": "Failed to retrieve list of bonded devices."
+					}
+				}
+			},
 			"discovery": {
 				"title": "Discovery",
 				"form": {
@@ -373,7 +392,7 @@
 				"submit": {
 					"timeout": "Request timed out.",
 					"bonding": {
-						"success": "Bond call successful.",
+						"success": "A new device has been bonded successfully.",
 						"error_fail": "Failed to bond new node."
 					},
 					"removeBond": {
@@ -410,7 +429,6 @@
 						"txPower": "Please enter TX Power for Discovery.",
 						"maxAddr": "Please enter maximum node address for Discovery."
 					}
-					
 				}
 			}
 		},
