@@ -5,12 +5,12 @@
 			<ValidationObserver v-slot='{ invalid }'>
 				<CForm @submit.prevent='processSubmit'>
 					<ValidationProvider
-						v-slot='{valid, errors}'
+						v-slot='{ errors, touched, valid }'
 						rules='integer|required|txPower'
 						:custom-messages='{
-							integer: "iqrfnet.networkManager.discovery.messages.invalid.txPower",
-							required: "iqrfnet.networkManager.discovery.messages.missing.txPower",
-							txPower: "iqrfnet.networkManager.discovery.messages.invalid.txPower"
+							integer: "iqrfnet.networkManager.messages.invalid.discovery.txPower",
+							required: "iqrfnet.networkManager.messages.missing.discovery.txPower",
+							txPower: "iqrfnet.networkManager.messages.invalid.discovery.txPower"
 						}'
 					>
 						<CInput
@@ -19,17 +19,17 @@
 							min='0'
 							max='7'
 							:label='$t("iqrfnet.networkManager.discovery.form.txPower")'
-							:is-valid='valid'
+							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
 					</ValidationProvider>
 					<ValidationProvider
-						v-slot='{valid, errors}'
+						v-slot='{ errors, touched, valid }'
 						rules='integer|required|maxAddr'
 						:custom-messages='{
-							integer: "iqrfnet.networkManager.discovery.messages.invalid.maxAddr",
-							required: "iqrfnet.networkManager.discovery.messages.missing.maxAddr",
-							maxAddr: "iqrfnet.networkManager.discovery.messages.invalid.maxAddr"
+							integer: "iqrfnet.networkManager.messages.invalid.discovery.maxAddr",
+							required: "iqrfnet.networkManager.messages.missing.discovery.maxAddr",
+							maxAddr: "iqrfnet.networkManager.messages.invalid.discovery.maxAddr"
 						}'
 					>
 						<CInput
@@ -38,7 +38,7 @@
 							min='0'
 							max='239'
 							:label='$t("iqrfnet.networkManager.discovery.form.maxAddr")'
-							:is-valid='valid'
+							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
 					</ValidationProvider>
@@ -73,7 +73,8 @@ export default {
 	data() {
 		return {
 			maxAddr: 239,
-			txPower: 6
+			txPower: 6,
+			responseReceived: false
 		};
 	},
 	created() {
@@ -86,10 +87,21 @@ export default {
 			return ((addr >= 0) && (addr <= 239));
 		});
 		this.unsubscribe = this.$store.subscribe(mutation => {
+			if (mutation.type === 'SOCKET_ONSEND' &&
+				mutation.payload.mType === 'iqrfEmbedCoordinator_Discovery') {
+				setTimeout(() => {this.timedOut();}, 10000);
+			}
 			if (mutation.type === 'SOCKET_ONMESSAGE') {
 				if (mutation.payload.mType === 'iqrfEmbedCoordinator_Discovery') {
-					if (mutation.payload.data.status === 0) {
-						this.$toast.success(this.$t('iqrfnet.networkManager.discovery.messages.success'));
+					this.responseReceived = true;
+					this.$store.commit('spinner/HIDE');
+					switch (mutation.payload.data.status) {
+						case 0:
+							this.$toast.success(this.$t('iqrfnet.networkManager.messages.submit.discovery.success'));
+							break;
+						default:
+							this.$toast.success(this.$t('iqrfnet.networkManager.messages.submit.discovery.error_fail'));
+							break;
 					}
 				}
 			}
@@ -100,7 +112,15 @@ export default {
 	},
 	methods: {
 		processSubmit() {
+			this.responseReceived = false;
+			this.$store.commit('spinner/SHOW');
 			IqmeshNetworkService.discovery(this.txPower, this.maxAddr);
+		},
+		timedOut() {
+			if (!this.responseReceived) {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.timeout'));
+			}
 		}
 	}
 };
