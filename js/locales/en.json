@@ -129,6 +129,7 @@
 		}
 	},
 	"forms": {
+		"autoNetwork": "AutoNetwork",
 		"ok": "OK",
 		"cancel": "Cancel",
 		"pingNodes": "Ping nodes",
@@ -352,6 +353,26 @@
 		"networkManager": {
 			"title": "Network manager",
 			"description": "Network manager.",
+			"autoNetwork": {
+				"title": "AutoNetwork",
+				"form": {
+					"discoveryTxPower": "TX power to use in discovery process",
+					"discoveryBeforeStart": "Run discovery before start",
+					"skipDiscoveryEachWave": "Skip discovery in each wave",
+					"actionRetries": "Number of retries DPA transactions",
+					"overlappingNetworks": "Overlapping networks",
+					"networks": "Number of networks to be built",
+					"network": "Network number that will be built",
+					"hwpidFiltering": "Filter nodes to bond by HWPID",
+					"stopConditions": "Stop conditions",
+					"waves": "Maximum number of waves",
+					"emptyWaves": "Maximum number of consecutive empty waves",
+					"numberOfTotalNodes": "Number of total bonded nodes",
+					"numberOfNewNodes": "Number of new bonded nodes",
+					"abortOnTooManyNodesFound": "Abort the AutoNetwork if too many nodes were found",
+					"verbose": "Verbose mode"
+				}
+			},
 			"bonding": {
 				"title": "Bonding",
 				"form": {

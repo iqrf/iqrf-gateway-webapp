@@ -8,11 +8,84 @@
 						:value.sync='bondMethod'
 						:label='$t("iqrfnet.networkManager.bonding.form.bondMethod")'
 						:options='[
+							{value: "autoNetwork", label: $t("iqrfnet.networkManager.autoNetwork.title")},
 							{value: "local", label: $t("iqrfnet.networkManager.bonding.form.bondMethodLocal")},
 							{value: "smartConnect", label: $t("iqrfnet.networkManager.bonding.form.bondMethodSmart")}
 						]'
 					/>
+					<span v-if='bondMethod === "autoNetwork"'>
+						<CInput
+							v-model='autoNetwork.discoveryTxPower'
+							type='number'
+							min='0'
+							max='7'
+							:label='$t("iqrfnet.networkManager.autoNetwork.form.discoveryTxPower")'
+						/>
+						<CInputCheckbox
+							:checked.sync='autoNetwork.discoveryBeforeStart'
+							:label='$t("iqrfnet.networkManager.autoNetwork.form.discoveryBeforeStart")'
+						/>
+						<CInputCheckbox
+							:checked.sync='autoNetwork.skipDiscoveryEachWave'
+							:label='$t("iqrfnet.networkManager.autoNetwork.form.skipDiscoveryEachWave")'
+						/><hr>
+						<CInput
+							v-model='autoNetwork.actionRetries'
+							type='number'
+							min='0'
+							:label='$t("iqrfnet.networkManager.autoNetwork.form.actionRetries")'
+						/><hr>
+						<h4>{{ $t('iqrfnet.networkManager.autoNetwork.form.overlappingNetworks') }}</h4>
+						<CInput
+							v-model='autoNetwork.overlappingNetworks.networks'
+							type='number'
+							min='1'
+							:label='$t("iqrfnet.networkManager.autoNetwork.form.networks")'
+						/>
+						<CInput
+							v-model='autoNetwork.overlappingNetworks.network'
+							type='number'
+							min='1'
+							:label='$t("iqrfnet.networkManager.autoNetwork.form.network")'
+						/><hr>
+						<CInput
+							v-model='autoNetwork.hwpidFiltering'
+							:label='$t("iqrfnet.networkManager.autoNetwork.form.hwpidFiltering")'
+						/><hr>
+						<h4>{{ $t('iqrfnet.networkManager.autoNetwork.form.stopConditions') }}</h4>
+						<CInput
+							v-model='autoNetwork.stopConditions.waves'
+							type='number'
+							min='1'
+							:label='$t("iqrfnet.networkManager.autoNetwork.form.waves")'
+						/>
+						<CInput
+							v-model='autoNetwork.stopConditions.emptyWaves'
+							type='number'
+							min='1'
+							:label='$t("iqrfnet.networkManager.autoNetwork.form.emptyWaves")'
+						/>
+						<CInput
+							v-model='autoNetwork.stopConditions.numberOfTotalNodes'
+							type='number'
+							:label='$t("iqrfnet.networkManager.autoNetwork.form.numberOfTotalNodes")'
+						/>
+						<CInput
+							v-model='autoNetwork.stopConditions.numberOfNewNodes'
+							type='number'
+							:label='$t("iqrfnet.networkManager.autoNetwork.form.numberOfNewNodes")'
+						/>
+						<CInputCheckbox
+							:checked.sync='autoNetwork.stopConditions.abortOnTooManyNodesFound'
+							:label='$t("iqrfnet.networkManager.autoNetwork.form.abortOnTooManyNodesFound")'
+						/><hr>
+						<CInputCheckbox
+							:checked.sync='autoNetwork.returnVerbose'
+							:label='$t("iqrfnet.networkManager.autoNetwork.form.verbose")'
+						/>
+					</span>
 					<ValidationProvider
+						v-if='bondMethod !== "autoNetwork"'
 						v-slot='{ errors, touched, valid }'
 						rules='integer|required|addr_range'
 						:custom-messages='{
@@ -33,10 +106,12 @@
 						/>
 					</ValidationProvider>
 					<CInputCheckbox
+						v-if='bondMethod !== "autoNetwork"'
 						:checked.sync='autoAddress'
 						:label='$t("iqrfnet.networkManager.bonding.form.autoAddress")'
 					/>
 					<ValidationProvider
+						v-if='bondMethod !== "autoNetwork"'
 						v-slot='{ errors, touched, valid}'
 						rules='integer|required'
 						:custom-mesasges='{
@@ -69,10 +144,12 @@
 						/>
 					</ValidationProvider>
 					<CInputCheckbox
+						v-if='bondMethod !== "autoNetwork"'
 						:checked.sync='unbondCoordinatorOnly'
 						:label='$t("iqrfnet.networkManager.bonding.form.unbondCoordinatorOnly")'
 					/>
-					<CButton 
+					<CButton
+						v-if='bondMethod !== "autoNetwork"'
 						color='primary' 
 						type='button' 
 						:disabled='invalid' 
@@ -80,7 +157,8 @@
 					>
 						{{ $t('forms.bond') }}
 					</CButton>
-					<CButton 
+					<CButton
+						v-if='bondMethod !== "autoNetwork"'
 						color='secondary' 
 						type='button' 
 						:disabled='invalid || autoAddress'
@@ -88,13 +166,23 @@
 					>
 						{{ $t('forms.unbond') }}
 					</CButton>
-					<CButton 
+					<CButton
+						v-if='bondMethod !== "autoNetwork"'
 						color='secondary' 
 						type='button'
 						:disabled='autoAddress'
 						@click='modalClear = true'
 					>
 						{{ $t('forms.clearBonds') }}
+					</CButton>
+					<CButton 
+						v-if='bondMethod === "autoNetwork"'
+						color='primary'
+						type='button'
+						:disabled='invalid'
+						@click='processSubmitAutoNetwork'
+					>
+						{{ $t('forms.autoNetwork') }}
 					</CButton>
 					<CModal
 						title='Clear All Bonds'
@@ -157,6 +245,25 @@ export default {
 		return {
 			address: 1,
 			autoAddress: false,
+			autoNetwork: {
+				discoveryTxPower: 7,
+				discoveryBeforeStart: false,
+				skipDiscoveryEachWave: false,
+				actionRetries: 1,
+				overlappingNetworks: {
+					networks: 1,
+					network: 1
+				},
+				hwpidFiltering: [],
+				stopConditions: {
+					waves: 2,
+					emptyWaves: 2,
+					numberOfTotalNodes: 0,
+					numberOfNewNodes: 0,
+					abortOnTooManyNodesFound: false
+				},
+				returnVerbose: true
+			},
 			bondMethod: 'local',
 			bondingRetries: 1,
 			modalClear: false,
@@ -231,6 +338,9 @@ export default {
 		this.unsubscribe();
 	},
 	methods: {
+		processSubmitAutoNetwork() {
+			//
+		},
 		processSubmitBond() {
 			this.$store.commit('spinner/SHOW');
 			if (this.bondMethod === 'local') {

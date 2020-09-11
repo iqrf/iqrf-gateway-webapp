@@ -56,7 +56,7 @@
 					</tr>
 				</tbody>
 			</table>
-			<CAlert color='danger'>
+			<CAlert v-else color='danger'>
 				{{ $t('iqrfnet.networkManager.devicesInfo.messages.empty') }}
 			</CAlert>
 		</CCardBody>
@@ -65,13 +65,14 @@
 
 <script>
 import {cilHome, cilX, cilCheckAlt, cilSignalCellular4} from '@coreui/icons';
-import {CButton, CCard, CCardBody, CCardHeader, CIcon} from '@coreui/vue';
+import {CAlert, CButton, CCard, CCardBody, CCardHeader, CIcon} from '@coreui/vue';
 import Device from '../../helpers/Device';
 import IqmeshNetworkService from '../../services/IqmeshNetworkService';
 
 export default {
 	name: 'DevicesInfo',
 	components: {
+		CAlert,
 		CButton,
 		CCard,
 		CCardBody,
@@ -109,9 +110,6 @@ export default {
 					switch(mutation.payload.data.status) {
 						case 0:
 							var bonded = mutation.payload.data.rsp.result.bondedDevices;
-							/*for(var i in bonded) {
-								this.devices[bonded[i]].bonded = true;
-							}*/
 							bonded.forEach(item => {
 								this.devices[item].bonded = true;
 							});
@@ -126,9 +124,9 @@ export default {
 					switch(mutation.payload.data.status) {
 						case 0:
 							var discovered = mutation.payload.data.rsp.result.discoveredDevices;
-							for(var j in discovered) {
-								this.devices[discovered[j]].discovered = true;
-							}
+							discovered.forEach(item => {
+								this.devices[item].discovered = true;
+							});
 							break;
 						default:
 							this.$toast.error(this.$t('iqrfnet.networkManager.devicesInfo.messages.discovered.failure'));
