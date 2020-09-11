@@ -119,10 +119,10 @@
 						{{ $t('iqrfnet.networkManager.messages.submit.removeBond.confirmUnbond') }}
 						<template #footer>
 							<CButton color='secondary' @click='modalUnbond = false'>
-								{{ $t('iqrfnet.networkManager.forms.cancel') }}
+								{{ $t('forms.cancel') }}
 							</CButton>
 							<CButton color='primary' @click='processSubmitUnbond'>
-								{{ $t('iqrfnet.networkManager.forms.ok') }}
+								{{ $t('forms.ok') }}
 							</CButton>
 						</template>
 					</CModal>

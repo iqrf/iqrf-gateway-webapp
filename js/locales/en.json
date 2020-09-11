@@ -376,8 +376,15 @@
 					"unbonded": "Unbonded device"
 				},
 				"messages": {
+					"empty": "No response from IQRF Network",
 					"bonded": {
 						"failure": "Failed to retrieve list of bonded devices."
+					},
+					"discovered": {
+						"failure": "Failed to retrieve list of discovered devices."
+					},
+					"ping": {
+						"failure": "FRC ping request failed."
 					}
 				}
 			},

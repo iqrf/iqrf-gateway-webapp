@@ -1,3 +1,4 @@
+import {cilHome, cilX, cilCheckAlt, cilSignalCellular4} from '@coreui/icons';
 /**
  * Class representing a device used in Network Manager.
  * @param addr Device address
@@ -13,5 +14,37 @@ export default class Device {
 		this.bonded = bonded;
 		this.discovered = discovered;
 		this.online = online;
+	}
+
+	getIcon() {
+		if (this.addr === 0) {
+			return cilHome;
+		} else {
+			if (this.bonded) {
+				if (this.discovered) {
+					return cilSignalCellular4;
+				} else {
+					return cilCheckAlt;
+				}
+			} else {
+				return cilX;
+			}
+		}
+	}
+
+	getIconColor() {
+		if (this.addr === 0) {
+			return 'text-info';
+		} else {
+			if (this.bonded) {
+				if (this.online) {
+					return 'text-success';
+				} else {
+					return 'text-info';
+				}
+			} else {
+				return 'text-danger';
+			}
+		}
 	}
 }
