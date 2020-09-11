@@ -137,13 +137,12 @@ export default {
 					this.$store.commit('spinner/HIDE');
 					switch(mutation.payload.data.status) {
 						case 0:
-							var online = mutation.payload.data.rsp.result.frcData;
+							var online = mutation.payload.data.rsp.result.frcData.slice(0, 30);
 							var k = 0;
 							online.forEach(item => {
 								for(var i = 0; i < 8; ++i) {
 									var device = (item & (1 << i)) >> i;
-									this.devices[k].online = (device === 1);
-									k++;
+									this.devices[k++].online = (device === 1);
 								}
 							});
 							break;

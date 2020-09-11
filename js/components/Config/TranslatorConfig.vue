@@ -28,6 +28,9 @@
 							>
 								<CInput
 									v-model='config.mqtt.port'
+									type='number'
+									min='1'
+									max='49151'
 									:label='$t("translatorConfig.form.mqtt.port")'
 									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
@@ -121,7 +124,10 @@
 								}'
 							>
 								<CInput
-									v-model='config.rest.port' 
+									v-model='config.rest.port'
+									type='number'
+									min='1'
+									max='49151'
 									:label='$t("translatorConfig.form.rest.port")' 
 									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'

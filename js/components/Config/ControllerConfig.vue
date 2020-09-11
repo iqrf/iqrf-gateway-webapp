@@ -104,6 +104,8 @@
 							>
 								<CInput
 									v-model='config.resetButton.button'
+									type='number'
+									min='0'
 									:label='$t("controllerConfig.form.resetButton.pin")'
 									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
@@ -122,6 +124,8 @@
 							>
 								<CInput
 									v-model='config.statusLed.greenLed'
+									type='number'
+									min='0'
 									:label='$t("controllerConfig.form.statusLed.green")'
 									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
@@ -137,6 +141,8 @@
 							>
 								<CInput
 									v-model='config.statusLed.redLed'
+									type='number'
+									min='0'
 									:label='$t("controllerConfig.form.statusLed.red")'
 									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
@@ -149,14 +155,18 @@
 							<h3>{{ $t("controllerConfig.form.daemonApi.autoNetwork.title") }}</h3>
 							<ValidationProvider
 								v-slot='{ errors, touched, valid }'
-								rules='integer|required'
+								rules='integer|required|actionRetries'
 								:custom-messages='{
 									integer: "controllerConfig.form.messages.invalid.integer",
-									required: "controllerConfig.form.messages.missing.da_retries"
+									required: "controllerConfig.form.messages.missing.da_retries",
+									actionRetries: "controllerConfig.form.messages.invalid.actionRetries"
 								}'
 							>
 								<CInput
 									v-model='config.daemonApi.autoNetwork.actionRetries'
+									type='number'
+									min='0'
+									max='3'
 									:label='$t("controllerConfig.form.daemonApi.autoNetwork.actionRetries")'
 									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
@@ -168,14 +178,18 @@
 							/>
 							<ValidationProvider
 								v-slot='{ errors, touched, valid }'
-								rules='integer|required'
+								rules='integer|required|txpower'
 								:custom-messages='{
 									integer: "controllerConfig.form.messages.invalid.integer",
-									required: "controllerConfig.form.messages.missing.da_txpower"
+									required: "controllerConfig.form.messages.missing.da_txpower",
+									txpower: "controllerConfig.form.messages.invalid.da_txpower"
 								}'
 							>
 								<CInput
 									v-model='config.daemonApi.autoNetwork.discoveryTxPower'
+									type='number'
+									min='0'
+									max='7'
 									:label='$t("controllerConfig.form.daemonApi.autoNetwork.discoveryTxPower")'
 									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
@@ -192,14 +206,18 @@
 							/>
 							<ValidationProvider
 								v-slot='{ errors, touched, valid }'
-								rules='integer|required'
+								rules='integer|required|waves'
 								:custom-messages='{
 									integer: "controllerConfig.form.messages.invalid.integer",
-									required: "controllerConfig.form.messages.missing.da_ewaves"
+									required: "controllerConfig.form.messages.missing.da_ewaves",
+									waves: "controllerConfig.form.messages.invalid.da_ewaves"
 								}'
 							>
 								<CInput
 									v-model='config.daemonApi.autoNetwork.stopConditions.emptyWaves'
+									type='number'
+									min='1'
+									max='127'
 									:label='$t("controllerConfig.form.daemonApi.autoNetwork.stopConditions.emptyWaves")'
 									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
@@ -207,14 +225,18 @@
 							</ValidationProvider>
 							<ValidationProvider
 								v-slot='{ errors, touched, valid }'
-								rules='integer|required'
+								rules='integer|required|waves'
 								:custom-messages='{
 									integer: "controllerConfig.form.messages.invalid.integer",
-									required: "controllerConfig.form.messages.missing.da_waves"
+									required: "controllerConfig.form.messages.missing.da_waves",
+									waves: "controllerConfig.form.messages.invalid.da_ewaves"
 								}'
 							>
 								<CInput
 									v-model='config.daemonApi.autoNetwork.stopConditions.waves'
+									type='number'
+									min='1'
+									max='127'
 									:label='$t("controllerConfig.form.daemonApi.autoNetwork.stopConditions.waves")'
 									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
@@ -238,6 +260,9 @@
 							>
 								<CInput
 									v-model='config.daemonApi.discovery.maxAddr'
+									type='number'
+									min='0'
+									max='239'
 									:label='$t("controllerConfig.form.daemonApi.discovery.maxAddr")'
 									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
@@ -245,14 +270,18 @@
 							</ValidationProvider>
 							<ValidationProvider
 								v-slot='{ errors, touched, valid }'
-								rules='integer|required'
+								rules='integer|required|txpower'
 								:custom-messages='{
 									integer: "controllerConfig.form.messages.invalid.integer",
-									required: "controllerConfig.form.messages.missing.dd_txpower"
+									required: "controllerConfig.form.messages.missing.dd_txpower",
+									invalid: "controllerConfig.form.messages.missing.da_txpower"
 								}'
 							>
 								<CInput
 									v-model='config.daemonApi.discovery.txPower'
+									type='number'
+									min='0'
+									max='7'
 									:label='$t("controllerConfig.form.daemonApi.discovery.txPower")'
 									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
@@ -325,6 +354,15 @@ export default {
 		extend('required', required);
 		extend('addr_range', (addr) => {
 			return ((addr >= 0) && (addr <= 239));
+		});
+		extend('actionRetries', (val) => {
+			return ((val >= 0) && (val<=3));
+		});
+		extend('txpower', (val) => {
+			return ((val >= 0) && (val<=7));
+		});
+		extend('waves', (val) => {
+			return ((val >= 1) && (val<=127));
 		});
 		extend('ws_addr', (addr) => {
 			const regex = RegExp('^ws:\\/\\/.+:([1-9]|[1-9][0-9]|[1-9][0-9]{2}|[1-9][0-9]{3}|[1-4][0-9][0-1][0-5][0-1])$');

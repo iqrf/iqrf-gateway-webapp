@@ -359,10 +359,10 @@
 					"discoveryTxPower": "TX power to use in discovery process",
 					"discoveryBeforeStart": "Run discovery before start",
 					"skipDiscoveryEachWave": "Skip discovery in each wave",
-					"actionRetries": "Number of retries DPA transactions",
+					"actionRetries": "Number of retry DPA transactions",
 					"overlappingNetworks": "Overlapping networks",
-					"networks": "Number of networks to be built",
-					"network": "Network number that will be built",
+					"networks": "Number of networks",
+					"network": "Network number",
 					"hwpidFiltering": "Filter nodes to bond by HWPID",
 					"stopConditions": "Stop conditions",
 					"waves": "Maximum number of waves",
@@ -437,6 +437,17 @@
 					}
 				},
 				"invalid": {
+					"integer": "This parameter should be a decimal number.",
+					"autoNetwork": {
+						"actionRetries": "Number of retry DPA transactions should be a decimal number between 0 and 3.",
+						"networks": "Number of networks should be a decimal number between 1 and 50.",
+						"network": "Network number should be a decimal number between 1 and 50.",
+						"hwpidFilter": "HWPID filter should be a list of 4-digit hexadecimal numbers separated by a comma.",
+						"waves": "Maximum number of waves should be a decimal number between 1 and 127.",
+						"emptyWaves": "maximum number of consecutive empty waves should be a decimal number between 1 and 127.",
+						"totalNodes": "Total number of nodes should be a decimal number between 1 and 239.",
+						"newNodes": "Number of new nodes should be a decimal number between 1 and 239."
+					},
 					"bonding": {
 						"bondingRetries": "Bonding test retries should be a positive integer.",
 						"maxAddr": "Please enter a valid address. Its has to be a decimal number from 1 to 239",
@@ -444,10 +455,19 @@
 					},
 					"discovery": {
 						"maxAddr": "Maximum node address has to be a decimal number between 0 and 239.",
-						"txPower": "TX Power has to be an integer between 0 and 7."
+						"txPower": "TX Power has to be an decimal number between 0 and 7."
 					}
 				},
 				"missing": {
+					"autoNetwork": {
+						"actionRetries": "Please enter number of retry DPA transactions.",
+						"networks": "Please enter number of networks.",
+						"network": "Please enter network number.",
+						"waves": "Please enter maximum number of waves.",
+						"emptyWaves": "Please enter maximum number of consecutive empty waves.",
+						"totalNodes": "Please enter total number of nodes.",
+						"newNodes": "Please enter number of new nodes."
+					},
 					"bonding": {
 						"bondingRetries": "Please enter number of bond test retry requests.",
 						"maxAddr": "Please enter address to bond a new node to.",
@@ -765,10 +785,13 @@
 			},
 			"messages": {
 				"invalid": {
+					"actionRetries": "This parameter should be an integer between 0 and 3.",
 					"integer": "This parameter should be an integer.",
 					"ws_format": "Invalid websocket server address format. Example: ws://example:1883.",
 					"gpio": "GPIO pin should be an integer.",
-					"dd_addr": "The maximum address parameter should be an integer between 0 and 239."
+					"dd_addr": "The maximum address parameter should be an integer between 0 and 239.",
+					"da_txpower": "TX Power should be a decimal number between 0 and 7.",
+					"da_waves": "Waves and EmptyWaves should be a decimal number between 1 and 127."
 				},
 				"missing": {
 					"ws_api": "Please enter the Daemon API websocket server address.",

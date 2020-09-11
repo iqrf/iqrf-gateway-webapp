@@ -14,13 +14,26 @@
 						]'
 					/>
 					<span v-if='bondMethod === "autoNetwork"'>
-						<CInput
-							v-model='autoNetwork.discoveryTxPower'
-							type='number'
-							min='0'
-							max='7'
-							:label='$t("iqrfnet.networkManager.autoNetwork.form.discoveryTxPower")'
-						/>
+						<ValidationProvider
+							v-slot='{ errors, touched, valid }'
+							rules='integer|required|txpower'
+							:custom-messages='{
+								integer: "iqrfnet.networkManager.messages.invalid.integer",
+								required: "iqrfnet.networkManager.messages.missing.discovery.txPower",
+								txpower: "iqrfnet.networkManager.messages.invalid.discovery.txPower"
+							}'
+						>
+							<CInput
+								v-model='autoNetwork.discoveryTxPower'
+								requred='true'
+								type='number'
+								min='0'
+								max='7'
+								:label='$t("iqrfnet.networkManager.autoNetwork.form.discoveryTxPower")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
 						<CInputCheckbox
 							:checked.sync='autoNetwork.discoveryBeforeStart'
 							:label='$t("iqrfnet.networkManager.autoNetwork.form.discoveryBeforeStart")'
@@ -29,52 +42,155 @@
 							:checked.sync='autoNetwork.skipDiscoveryEachWave'
 							:label='$t("iqrfnet.networkManager.autoNetwork.form.skipDiscoveryEachWave")'
 						/><hr>
-						<CInput
-							v-model='autoNetwork.actionRetries'
-							type='number'
-							min='0'
-							:label='$t("iqrfnet.networkManager.autoNetwork.form.actionRetries")'
-						/><hr>
+						<ValidationProvider
+							v-slot='{ errors, touched, valid }'
+							rules='integer|required|actionRetries'
+							:custom-messages='{
+								integer: "iqrfnet.networkManager.messages.invalid.integer",
+								required: "iqrfnet.networkManager.messages.missing.autoNetwork.actionRetries",
+								actionRetries: "iqrfnet.networkManager.messages.invalid.autoNetwork.actionRetries"
+							}'
+						>
+							<CInput
+								v-model='autoNetwork.actionRetries'
+								type='number'
+								min='0'
+								max='3'
+								:label='$t("iqrfnet.networkManager.autoNetwork.form.actionRetries")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider><hr>
 						<h4>{{ $t('iqrfnet.networkManager.autoNetwork.form.overlappingNetworks') }}</h4>
-						<CInput
-							v-model='autoNetwork.overlappingNetworks.networks'
-							type='number'
-							min='1'
-							:label='$t("iqrfnet.networkManager.autoNetwork.form.networks")'
-						/>
-						<CInput
-							v-model='autoNetwork.overlappingNetworks.network'
-							type='number'
-							min='1'
-							:label='$t("iqrfnet.networkManager.autoNetwork.form.network")'
-						/><hr>
-						<CInput
-							v-model='autoNetwork.hwpidFiltering'
-							:label='$t("iqrfnet.networkManager.autoNetwork.form.hwpidFiltering")'
-						/><hr>
+						<ValidationProvider
+							v-slot='{ errors, touched, valid }'
+							rules='integer|required|networks'
+							:custom-messages='{
+								integer: "iqrfnet.networkManager.messages.invalid.integer",
+								required: "iqrfnet.networkManager.messages.missing.autoNetwork.networks",
+								networks: "iqrfnet.networkManager.messages.invalid.autoNetwork.networks"
+							}'
+						>
+							<CInput
+								v-model='autoNetwork.overlappingNetworks.networks'
+								type='number'
+								min='1'
+								max='50'
+								:label='$t("iqrfnet.networkManager.autoNetwork.form.networks")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{ errors, touched, valid }'
+							rules='integer|required|networks'
+							:custom-messages='{
+								integer: "iqrfnet.networkManager.messages.invalid.integer",
+								required: "iqrfnet.networkManager.messages.missing.autoNetwork.network",
+								networks: "iqrfnet.networkManager.messages.invalid.autoNetwork.network"
+							}'
+						>
+							<CInput
+								v-model='autoNetwork.overlappingNetworks.network'
+								type='number'
+								min='1'
+								max='50'
+								:label='$t("iqrfnet.networkManager.autoNetwork.form.network")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider><hr>
+						<ValidationProvider
+							v-slot='{ errors, touched, valid }'
+							rules='hwpidFilter'
+							:custom-messages='{
+								hwpidFilter: "iqrfnet.networkManager.messages.invalid.autoNetwork.hwpidFilter"
+							}'
+						>
+							<CInput
+								v-model='autoNetwork.hwpidFiltering'
+								:label='$t("iqrfnet.networkManager.autoNetwork.form.hwpidFiltering")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider><hr>
 						<h4>{{ $t('iqrfnet.networkManager.autoNetwork.form.stopConditions') }}</h4>
-						<CInput
-							v-model='autoNetwork.stopConditions.waves'
-							type='number'
-							min='1'
-							:label='$t("iqrfnet.networkManager.autoNetwork.form.waves")'
-						/>
-						<CInput
-							v-model='autoNetwork.stopConditions.emptyWaves'
-							type='number'
-							min='1'
-							:label='$t("iqrfnet.networkManager.autoNetwork.form.emptyWaves")'
-						/>
-						<CInput
-							v-model='autoNetwork.stopConditions.numberOfTotalNodes'
-							type='number'
-							:label='$t("iqrfnet.networkManager.autoNetwork.form.numberOfTotalNodes")'
-						/>
-						<CInput
-							v-model='autoNetwork.stopConditions.numberOfNewNodes'
-							type='number'
-							:label='$t("iqrfnet.networkManager.autoNetwork.form.numberOfNewNodes")'
-						/>
+						<ValidationProvider
+							v-slot='{ errors, touched, valid }'
+							rules='integer|required|waves'
+							:custom-messages='{
+								integer: "iqrfnet.networkManager.messages.invalid.integer",
+								required: "iqrfnet.networkManager.messages.missing.autoNetwork.waves",
+								waves: "iqrfnet.networkManager.messages.invalid.autoNetwork.waves"
+							}'
+						>
+							<CInput
+								v-model='autoNetwork.stopConditions.waves'
+								type='number'
+								min='1'
+								max='127'
+								:label='$t("iqrfnet.networkManager.autoNetwork.form.waves")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{ errors, touched, valid }'
+							rules='integer|required|waves'
+							:custom-messages='{
+								integer: "iqrfnet.networkManager.messages.invalid.integer",
+								required: "iqrfnet.networkManager.messages.missing.autoNetwork.emptyWaves",
+								waves: "iqrfnet.networkManager.messages.invalid.autoNetwork.emptyWaves"
+							}'
+						>
+							<CInput
+								v-model='autoNetwork.stopConditions.emptyWaves'
+								type='number'
+								min='1'
+								max='127'
+								:label='$t("iqrfnet.networkManager.autoNetwork.form.emptyWaves")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{ errors, touched, valid }'
+							rules='integer|required|addr_range'
+							:custom-messages='{
+								integer: "iqrfnet.networkManager.messages.invalid.integer",
+								required: "iqrfnet.networkManager.messages.missing.autoNetwork.totalNodes",
+								addr_range: "iqrfnet.networkManager.messages.invalid.autoNetwork.totalNodes"
+							}'
+						>
+							<CInput
+								v-model='autoNetwork.stopConditions.numberOfTotalNodes'
+								type='number'
+								min='1'
+								max='239'
+								:label='$t("iqrfnet.networkManager.autoNetwork.form.numberOfTotalNodes")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{ errors, touched, valid }'
+							rules='integer|required|addr_range'
+							:custom-messages='{
+								integer: "iqrfnet.networkManager.messages.invalid.integer",
+								required: "iqrfnet.networkManager.messages.missing.autoNetwork.newNodes",
+								addr_range: "iqrfnet.networkManager.messages.invalid.autoNetwork.newNodes"
+							}'
+						>
+							<CInput
+								v-model='autoNetwork.stopConditions.numberOfNewNodes'
+								type='number'
+								min='1'
+								max='239'
+								:label='$t("iqrfnet.networkManager.autoNetwork.form.numberOfNewNodes")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
 						<CInputCheckbox
 							:checked.sync='autoNetwork.stopConditions.abortOnTooManyNodesFound'
 							:label='$t("iqrfnet.networkManager.autoNetwork.form.abortOnTooManyNodesFound")'
@@ -113,7 +229,7 @@
 					<ValidationProvider
 						v-if='bondMethod !== "autoNetwork"'
 						v-slot='{ errors, touched, valid}'
-						rules='integer|required'
+						rules='integer|required|testRetries'
 						:custom-mesasges='{
 							integer: "iqrfnet.networkManager.messages.invalid.bonding.bondingRetries",
 							required: "iqrfnet.networkManager.messages.missing.bonding.bondingRetries"
@@ -122,6 +238,8 @@
 						<CInput
 							v-model='bondingRetries'
 							type='number'
+							min='0'
+							max='255'
 							:label='$t("iqrfnet.networkManager.bonding.form.bondingRetries")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
@@ -258,8 +376,8 @@ export default {
 				stopConditions: {
 					waves: 2,
 					emptyWaves: 2,
-					numberOfTotalNodes: 0,
-					numberOfNewNodes: 0,
+					numberOfTotalNodes: 1,
+					numberOfNewNodes: 1,
 					abortOnTooManyNodesFound: false
 				},
 				returnVerbose: true
@@ -274,6 +392,8 @@ export default {
 		};
 	},
 	created() {
+		// eslint-disable-next-line no-console
+		console.log(this.autoNetwork);
 		extend('integer', integer);
 		extend('required', required);
 		extend('addr_range', (addr) => {
@@ -282,6 +402,25 @@ export default {
 		extend('scCode', (code) => {
 			const regex = RegExp('^[a-zA-Z0-9]{34}$');
 			return regex.test(code);
+		});
+		extend('testRetries', (val) => {
+			return ((val>=0) && (val<=255));
+		});
+		extend('txpower', (val) => {
+			return ((val>=0) && (val<=7));
+		});
+		extend('actionRetries', (val) => {
+			return ((val>=0) && (val<=3));
+		});
+		extend('waves', (val) => {
+			return ((val>=1) && (val<=127));
+		});
+		extend('networks', (val) => {
+			return ((val>=1) && (val<=50));
+		});
+		extend('hwpidFilter', (val) => {
+			const regex = RegExp('^[a-zA-Z0-9]{4}(,[a-zA-Z0-9]{4})*$');
+			return regex.test(val);
 		});
 		this.unsubscribe = this.$store.subscribe(mutation => {
 			if (mutation.type === 'SOCKET_ONSEND' &&
