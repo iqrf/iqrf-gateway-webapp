@@ -44,9 +44,11 @@
 					"TopicRequest": "Please enter topic for requests.",
 					"TopicResponse": "Please enter topic for responses.",
 					"username": "Please enter the username.",
-					"password": "Please enter the password."},
+					"password": "Please enter the password."
+				},
 				"save": "Save",
-				"save_restart": "Save and restart"}
+				"save_restart": "Save and restart"
+			}
 		},
 		"ibmCloud": {
 			"title": "IBM Cloud",
@@ -63,9 +65,11 @@
 					"deviceType": "Please enter the device type.",
 					"deviceId": "Please enter the device ID.",
 					"token": "Please enter the authentication token.",
-					"eventId": "Please enter command and event ID."},
+					"eventId": "Please enter command and event ID."
+				},
 				"save": "Save",
-				"save_restart": "Save and restart"}
+				"save_restart": "Save and restart"
+			}
 		},
 		"intelimentsInteliGlue": {
 			"title": "Inteliments InteliGlue",
@@ -81,9 +85,11 @@
 					"assignedPort": "Please enter the assigned port.",
 					"assignedPortRange": "Port has to be an integer in range from 0 to 65535.",
 					"clientId": "Please enter the client ID.",
-					"password": "Please enter the password."},
+					"password": "Please enter the password."
+				},
 				"save": "Save",
-				"save_restart": "Save and restart"}
+				"save_restart": "Save and restart"
+			}
 		},
 		"msAzure": {
 			"title": "Microsoft Azure IoT hub",
@@ -92,11 +98,14 @@
 				"title": "Microsoft Azure IoT Hub MQTT connection wizard",
 				"connectionString": "IoT Hub Connection String for Device",
 				"messages": {
-					"connectionString": "Please enter IoT Hub Connection String for Device."},
+					"connectionString": "Please enter IoT Hub Connection String for Device."
+				},
 				"save": "Save",
-				"save_restart": "Save and restart"},
+				"save_restart": "Save and restart"
+			},
 			"messages": {
-				"invalidConnectionString": "Invalid MS Azure IoT Hub connection string for device."}
+				"invalidConnectionString": "Invalid MS Azure IoT Hub connection string for device."
+			}
 		},
 		"pixla": {
 			"title": "PIXLA device management",
@@ -115,7 +124,8 @@
 				"save": "Save",
 				"missingParam": "Please enter PIXLA platform token.",
 				"editSuccess": "New PIXLA token has been successfully saved.",
-				"editFailure": "New PIXLA token has not been saved."},
+				"editFailure": "New PIXLA token has not been saved."
+			},
 			"token": "Token",
 			"messages": {
 				"disabled": "PIXLA manager is disabled.",
@@ -314,7 +324,6 @@
 					}
 				}
 			}
-			
 		},
 		"mode": {
 			"title": "Change mode",

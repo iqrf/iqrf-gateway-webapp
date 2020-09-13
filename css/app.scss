@@ -63,7 +63,7 @@ $theme-colors: (
   z-index: 10000;
   width: 150px;
   height: 150px;
-  margin: -75px 0 0 -75px;
+  margin: auto;
   border: 16px solid #f3f3f3;
   border-radius: 50%;
   border-top: 16px solid #3498db;
@@ -77,14 +77,19 @@ $theme-colors: (
   background-color: rgba(0, 0, 0, 0.75);
   z-index: 9999;
   cursor: wait;
+  overflow: auto;
+  text-align: center;
+  &:before {
+	content: '';
+	display: inline flow-root;
+	height: 100%;
+	vertical-align: middle;
+  }
 }
 
 .loading-group {
-  position: fixed;
-  left: 50%;
-  top: 50%;
-  margin: auto;
-  display: block;
+  display: inline flow-root;
+  vertical-align: middle;
 }
 
 .loading-text {
@@ -94,11 +99,6 @@ $theme-colors: (
   z-index: 10000;
   color: white;
   text-align: center;
-}
-
-.loading:after,
-.loading:before {
-  display: block;
 }
 
 @keyframes spin {

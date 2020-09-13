@@ -86,20 +86,20 @@ class MenderConfigController extends BaseController {
 	 * @Path("/")
 	 * @Method("PUT")
 	 * @OpenApi("
-	 * 	summary: Saves new Mender client configuration
-	 * 	requestBody:
-	 * 		required: true
-	 * 		content:
-	 * 			application/json:
-	 * 				schema:
-	 * 					$ref: '#/components/schemas/MenderConfig'
-	 * 	responses:
-	 * 		'200':
-	 * 			description: Success
-	 * 		'400':
-	 * 			$ref: '#/components/responses/BadRequest'
-	 * 		'500':
-	 * 			$ref: '#/components/responses/ServerError'
+	 *  summary: Saves new Mender client configuration
+	 *  requestBody:
+	 *      required: true
+	 *      content:
+	 *          application/json:
+	 *              schema:
+	 *                  $ref: '#/components/schemas/MenderConfig'
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '400':
+	 *          $ref: '#/components/responses/BadRequest'
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
