@@ -1,7 +1,11 @@
 <template>
 	<div v-if='enabled' class='loading'>
-		<div class='spinner' />
-		<div>{{ text }}</div>
+		<div class='loading-group'>
+			<div class='spinner' />
+			<div class='loading-text'>
+				{{ text }}
+			</div>
+		</div>
 	</div>
 </template>
 

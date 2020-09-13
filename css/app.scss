@@ -58,9 +58,8 @@ $theme-colors: (
 }
 
 .spinner {
-  position: absolute;
-  left: 50%;
-  top: 50%;
+  display: block;
+  position: relative;
   z-index: 10000;
   width: 150px;
   height: 150px;
@@ -78,6 +77,23 @@ $theme-colors: (
   background-color: rgba(0, 0, 0, 0.75);
   z-index: 9999;
   cursor: wait;
+}
+
+.loading-group {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  margin: auto;
+  display: block;
+}
+
+.loading-text {
+  margin-top: 20pt;
+  font-size: 20pt;
+  position: relative;
+  z-index: 10000;
+  color: white;
+  text-align: center;
 }
 
 .loading:after,

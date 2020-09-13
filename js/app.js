@@ -51,6 +51,7 @@ import TheHeader from './components/TheHeader';
 import TheSidebar from './components/TheSidebar';
 import PixlaControl from './components/Cloud/PixlaControl';
 import TrConfiguration from './components/IqrfNet/TrConfiguration';
+import SendJsonRequest from './components/IqrfNet/SendJsonRequest';
 
 Sentry.init({
 	dsn: 'https://435ee2b55f994e5f85e21a9ca93ea7a7@sentry.iqrf.org/5',
@@ -133,6 +134,7 @@ new Vue({
 		TheSidebar,
 		PixlaControl,
 		TrConfiguration,
+		SendJsonRequest,
 	},
 	router: router,
 	store: store,

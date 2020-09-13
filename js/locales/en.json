@@ -516,7 +516,8 @@
 			"description": "Send JSON request.",
 			"documentation": "Show API documentation.",
 			"response": "Response",
-			"request": "Request"
+			"request": "Request",
+			"invalid": "Invalid JSON object."
 		},
 		"sendPacket": {
 			"title": "Send DPA packet",
