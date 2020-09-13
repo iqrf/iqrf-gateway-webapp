@@ -10,6 +10,7 @@ import SendDpaPacket from './components/IqrfNet/SendDpaPacket';
 import TranslatorConfig from './components/Config/TranslatorConfig';
 import ControllerConfig from './components/Config/ControllerConfig';
 import MenderConfig from './components/Gateway/MenderConfig';
+import UserList from './components/Core/UserList';
 
 import i18n from './i18n';
 import ServiceControl from './components/Gateway/ServiceControl';
@@ -103,6 +104,13 @@ const routes = [
 				meta: {
 					title: 'controllerConfig.description'
 				}
+			},
+			{
+				component: UserList,
+				path: '/user/',
+				meta: {
+					title: 'core.user.title',
+				},
 			},
 			{
 				path: '*',

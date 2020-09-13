@@ -20,16 +20,12 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Presenters;
 
-use App\CoreModule\Datagrids\UserDataGridFactory;
 use App\CoreModule\Forms\UserAddFormFactory;
 use App\CoreModule\Forms\UserEditFormFactory;
 use App\CoreModule\Traits\TPresenterFlashMessage;
 use App\Models\Database\Entities\User;
 use App\Models\Database\EntityManager;
 use Nette\Application\UI\Form;
-use Ublaboo\DataGrid\DataGrid;
-use Ublaboo\DataGrid\Exception\DataGridColumnStatusException;
-use Ublaboo\DataGrid\Exception\DataGridException;
 
 /**
  * User presenter
@@ -43,12 +39,6 @@ class UserPresenter extends ProtectedPresenter {
 	 * @inject
 	 */
 	public $addFormFactory;
-
-	/**
-	 * @var UserDataGridFactory User data grid factory
-	 * @inject
-	 */
-	public $dataGridFactory;
 
 	/**
 	 * @var UserEditFormFactory Edit an existing user form factory
@@ -85,43 +75,11 @@ class UserPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Deletes an user
-	 * @param int $id User ID
-	 */
-	public function actionDelete(int $id): void {
-		$user = $this->entityManager->getUserRepository()->find($id);
-		if ($user === null) {
-			$this->flashError('core.user.messages.notFound');
-			$this->redirect('User:default');
-		}
-		assert($user instanceof User);
-		$this->entityManager->remove($user);
-		$this->entityManager->flush();
-		if ($this->getUser()->getId() === $id) {
-			$this->getUser()->logout(true);
-		}
-		$message = $this->translator->translate('core.user.messages.successDelete', ['username' => $user->getUserName()]);
-		$this->flashSuccess($message);
-		$this->redirect('User:default');
-	}
-
-	/**
 	 * Creates the add a new user form
 	 * @return Form Add a new user form
 	 */
 	protected function createComponentUserAddForm(): Form {
 		return $this->addFormFactory->create($this);
-	}
-
-	/**
-	 * Creates the data grid
-	 * @param string $name Component name
-	 * @return DataGrid Datagrid with users
-	 * @throws DataGridColumnStatusException
-	 * @throws DataGridException
-	 */
-	protected function createComponentUserGrid(string $name): DataGrid {
-		return $this->dataGridFactory->create($this, $name);
 	}
 
 	/**

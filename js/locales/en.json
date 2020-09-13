@@ -144,8 +144,10 @@
 		"cancel": "Cancel",
 		"pingNodes": "Ping nodes",
 		"add": "Add",
+		"no": "No",
 		"save": "Save",
 		"send": "Send",
+		"yes": "Yes",
 		"write": "Write",
 		"discovery": "Discovery",
 		"bond": "Bond Node",
@@ -222,6 +224,31 @@
 			"title": "Language",
 			"cs": "Czech",
 			"en": "English"
+		},
+		"user": {
+			"title": "User manager",
+			"description": "Manage users of this webapp.",
+			"id": "User ID",
+			"username": "Username",
+			"role": "User role",
+			"roles": {
+				"normal": "Normal user",
+				"power": "Power user"
+			},
+			"language": "Language",
+			"languages": {
+				"en": "English"
+			},
+			"messages": {
+				"delete": {
+					"confirm": "Do you really want to delete user {username}?",
+					"confirmTitle": "Delete user",
+					"success": "User {username} has been deleted successfully."
+				},
+				"edit": {
+					"success": "User {username} has been edited successfully."
+				}
+			}
 		},
 		"sign": {
 			"in": "Sign in",
@@ -850,6 +877,14 @@
 					"dd_txpower": "Please enter TX power for Discovery."
 				}
 			}
+		}
+	},
+	"table": {
+		"actions": {
+			"title": "Actions",
+			"add": "Add",
+			"delete": "Delete",
+			"edit": "Edit"
 		}
 	}
 }

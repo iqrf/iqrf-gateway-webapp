@@ -24,7 +24,7 @@ import {
 	CSidebarBrand,
 	CSidebarMinimizer,
 } from '@coreui/vue';
-import {cilCloud, cilWifiSignal4, cilStorage, cilSettings} from '@coreui/icons';
+import {cilCloud, cilWifiSignal4, cilStorage, cilSettings, cilUser} from '@coreui/icons';
 import FeatureService from '../services/FeatureService';
 
 export default {
@@ -402,6 +402,17 @@ export default {
 										'power', 'normal'
 									],
 								},
+							],
+						},
+						{
+							_name: 'CSidebarNavItem',
+							name: this.$t('core.user.title'),
+							to: '/user/',
+							icon: {
+								content: cilUser,
+							},
+							roles: [
+								'power', 'normal',
 							],
 						},
 					],
