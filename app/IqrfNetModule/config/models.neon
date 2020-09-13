@@ -2,11 +2,7 @@ services:
 	apiSchemaManager:
 		factory: App\IqrfNetModule\Models\ApiSchemaManager(%daemon.apiSchemaDir%)
 		autowired: self
-	- App\IqrfNetModule\Models\BondingManager
-	- App\IqrfNetModule\Models\DevicesManager
-	- App\IqrfNetModule\Models\DiscoveryManager
 	- App\IqrfNetModule\Models\DpaManager
-	- App\IqrfNetModule\Models\DpaRawManager
 	- App\IqrfNetModule\Models\EnumerationManager
 	- App\IqrfNetModule\Models\IqrfOsManager
 	- App\IqrfNetModule\Models\MessageIdManager

@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 <template>
 	<CCard>
 		<CCardHeader>{{ $t('iqrfnet.networkManager.devicesInfo.title') }}</CCardHeader>
@@ -43,7 +42,7 @@
 			<table v-if='!timedOut' class='table table-striped'>
 				<tbody>
 					<tr>
-						<th>&nbsp;</th>
+						<th />
 						<th v-for='num of Array(10).keys()' :key='num'>
 							{{ num }}
 						</th>
@@ -51,7 +50,7 @@
 					<tr v-for='row of Array(24).keys()' :key='row'>
 						<th>{{ row }}0</th>
 						<td v-for='col of Array(10).keys()' :key='col'>
-							<CIcon :class='devices[(row*10)+col].getIconColor()' :content='devices[(row*10)+col].getIcon()' />
+							<DeviceIcon :device='devices[getAddress(row, col)]' />
 						</td>
 					</tr>
 				</tbody>
@@ -67,6 +66,7 @@
 import {cilHome, cilX, cilCheckAlt, cilSignalCellular4} from '@coreui/icons';
 import {CAlert, CButton, CCard, CCardBody, CCardHeader, CIcon} from '@coreui/vue';
 import Device from '../../helpers/Device';
+import DeviceIcon from './DeviceIcon';
 import IqmeshNetworkService from '../../services/IqmeshNetworkService';
 
 export default {
@@ -77,10 +77,16 @@ export default {
 		CCard,
 		CCardBody,
 		CCardHeader,
-		CIcon
+		CIcon,
+		DeviceIcon,
 	},
 	data() {
 		return {
+			allowedMTypes: [
+				'iqrfEmbedCoordinator_BondedDevices',
+				'iqrfEmbedCoordinator_DiscoveredDevices',
+				'iqrfEmbedFrc_Send',
+			],
 			devices: [],
 			manual: false,
 			responseReceived: false,
@@ -94,74 +100,28 @@ export default {
 				this.getBondedDevices();
 				this.getDiscoveredDevices();
 				this.frcPing();
+				return;
 			}
 			if (mutation.type === 'SOCKET_ONSEND') {
-				if (mutation.payload.mType === ('iqrfEmbedCoordinator_BondedDevices' ||
-					'iqrfEmbedCoordinator_DiscoveredDevices' || 'iqrfEmbedFrc_Send')) {
-					this.responseReceived = false;
-					setTimeout(() => {this.timeOut();}, 10000);
+				if (!this.allowedMTypes.includes(mutation.payload.mType)) {
+					return;
 				}
+				this.responseReceived = false;
+				setTimeout(() => {this.timeOut();}, 10000);
+				return;
 			}
 			if (mutation.type === 'SOCKET_ONMESSAGE') {
+				if (!this.allowedMTypes.includes(mutation.payload.mType)) {
+					return;
+				}
+				this.responseReceived = true;
+				this.$store.commit('spinner/HIDE');
 				if (mutation.payload.mType === 'iqrfEmbedCoordinator_BondedDevices') {
-					this.responseReceived = true;
-					this.$store.commit('spinner/HIDE');
-					switch(mutation.payload.data.status) {
-						case 0:
-							this.devices.forEach(item => {
-								item.bonded = false;
-							});
-							var bonded = mutation.payload.data.rsp.result.bondedDevices;
-							bonded.forEach(item => {
-								this.devices[item].bonded = true;
-							});
-							break;
-						default:
-							this.$toast.error(this.$t('iqrfnet.networkManager.devicesInfo.messages.bonded.failure'));
-							this.timedOut = true;
-							break;
-					}
+					this.parseBondedDevices(mutation.payload);
 				} else if (mutation.payload.mType === 'iqrfEmbedCoordinator_DiscoveredDevices') {
-					this.responseReceived = true;
-					this.$store.commit('spinner/HIDE');
-					switch(mutation.payload.data.status) {
-						case 0:
-							this.devices.forEach(item => {
-								item.discovered = false;
-							});
-							var discovered = mutation.payload.data.rsp.result.discoveredDevices;
-							discovered.forEach(item => {
-								this.devices[item].discovered = true;
-							});
-							break;
-						default:
-							this.$toast.error(this.$t('iqrfnet.networkManager.devicesInfo.messages.discovered.failure'));
-							this.timedOut = true;
-							break;
-					}
+					this.parseDiscoveredDevices(mutation.payload);
 				} else if (mutation.payload.mType === 'iqrfEmbedFrc_Send') {
-					this.responseReceived = true;
-					this.$store.commit('spinner/HIDE');
-					switch(mutation.payload.data.status) {
-						case 0:
-							var online = mutation.payload.data.rsp.result.frcData.slice(0, 30);
-							var k = 0;
-							online.forEach(item => {
-								for(var i = 0; i < 8; ++i) {
-									var device = (item & (1 << i)) >> i;
-									this.devices[k++].online = (device === 1);
-								}
-							});
-							if (this.manual) {
-								this.manual = false;
-								this.$forceUpdate();
-							}
-							break;
-						default:
-							this.$toast.error(this.$t('iqrfnet.networkManager.devicesInfo.messages.ping.failure'));
-							this.timedOut = false;
-							break;
-					}
+					this.parseFrcPing(mutation.payload);
 				}
 			}
 		});		
@@ -176,9 +136,12 @@ export default {
 		},
 		generateDevices() {
 			this.devices.push(new Device(0, true));
-			for (var i = 1; i <= 239; i++) {
+			for (let i = 1; i <= 239; i++) {
 				this.devices.push(new Device(i, false));
 			}
+		},
+		getAddress(row, col) {
+			return row * 10 + col;
 		},
 		getBondedDevices() {
 			this.$store.commit('spinner/SHOW');
@@ -187,6 +150,65 @@ export default {
 		getDiscoveredDevices() {
 			this.$store.commit('spinner/SHOW');
 			IqmeshNetworkService.getDiscovered();
+		},
+		parseBondedDevices(response) {
+			switch (response.data.status) {
+				case 0: {
+					this.devices.forEach(item => {
+						item.bonded = false;
+					});
+					const bonded = response.data.rsp.result.bondedDevices;
+					bonded.forEach(item => {
+						this.devices[item].bonded = true;
+					});
+					break;
+				}
+				default:
+					this.$toast.error(this.$t('iqrfnet.networkManager.devicesInfo.messages.bonded.failure'));
+					this.timedOut = true;
+					break;
+			}
+		},
+		parseDiscoveredDevices(response) {
+			switch (response.data.status) {
+				case 0: {
+					this.devices.forEach(item => {
+						item.discovered = false;
+					});
+					const discovered = response.data.rsp.result.discoveredDevices;
+					discovered.forEach(item => {
+						this.devices[item].discovered = true;
+					});
+					break;
+				}
+				default:
+					this.$toast.error(this.$t('iqrfnet.networkManager.devicesInfo.messages.discovered.failure'));
+					this.timedOut = true;
+					break;
+			}
+		},
+		parseFrcPing(response) {
+			switch(response.data.status) {
+				case 0: {
+					const online = response.data.rsp.result.frcData.slice(0, 30);
+					let k = 0;
+					online.forEach(item => {
+						for (let i = 0; i < 8; ++i) {
+							const device = (item & (1 << i)) >> i;
+							this.devices[k++].online = (device === 1);
+						}
+					});
+					if (this.manual) {
+						this.manual = false;
+						this.$forceUpdate();
+					}
+					break;
+				}
+				default:
+					this.$toast.error(this.$t('iqrfnet.networkManager.devicesInfo.messages.ping.failure'));
+					this.timedOut = false;
+					break;
+			}
 		},
 		timeOut() {
 			if (!this.responseReceived) {
@@ -207,21 +229,3 @@ export default {
 	}
 };
 </script>
-
-<style scoped>
-
-table {
-	border-collapse: collapse;
-}
-
-.table {
-	width: 100%;
-	margin-bottom: 1rem;
-	color: #3c4b64;
-}
-
-.text-center {
-    text-align: center !important;
-}
-
-</style>
