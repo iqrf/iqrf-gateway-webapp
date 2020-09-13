@@ -35,8 +35,8 @@ class JsonFileManager extends FileManager {
 	 * @param string $fileName File name
 	 * @throws IOException
 	 */
-	public function delete(string $fileName): void {
-		parent::delete($fileName . '.json');
+	public function delete(string $fileName, string $extension = '.json'): void {
+		parent::delete($fileName . $extension);
 	}
 
 	/**
@@ -44,8 +44,8 @@ class JsonFileManager extends FileManager {
 	 * @param string $fileName File name
 	 * @return bool Is file exists?
 	 */
-	public function exists(string $fileName): bool {
-		return parent::exists($fileName . '.json');
+	public function exists(string $fileName, string $extension = '.json'): bool {
+		return parent::exists($fileName . $extension);
 	}
 
 	/**
@@ -56,8 +56,8 @@ class JsonFileManager extends FileManager {
 	 * @throws IOException
 	 * @throws JsonException
 	 */
-	public function read(string $fileName, bool $forceArray = true) {
-		$file = parent::read($fileName . '.json');
+	public function read(string $fileName, bool $forceArray = true, string $extension = '.json') {
+		$file = parent::read($fileName . $extension);
 		$flags = $forceArray ? Json::FORCE_ARRAY : 0;
 		return Json::decode($file, $flags);
 	}
@@ -69,9 +69,9 @@ class JsonFileManager extends FileManager {
 	 * @throws IOException
 	 * @throws JsonException
 	 */
-	public function write(string $name, $array): void {
+	public function write(string $name, $array, string $extension = '.json'): void {
 		$json = Json::encode($array, Json::PRETTY);
-		parent::write($name . '.json', $json);
+		parent::write($name . $extension, $json);
 	}
 
 }

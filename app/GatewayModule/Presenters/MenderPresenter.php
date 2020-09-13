@@ -18,13 +18,13 @@
  */
 declare(strict_types = 1);
 
-namespace App\IqrfNetModule\Presenters;
+namespace App\GatewayModule\Presenters;
 
 use App\CoreModule\Presenters\ProtectedPresenter;
 
 /**
- * IQMESH Network manager presenter
+ * Mender client presenter
  */
-class NetworkPresenter extends ProtectedPresenter {
+class MenderPresenter extends ProtectedPresenter {
 
 }

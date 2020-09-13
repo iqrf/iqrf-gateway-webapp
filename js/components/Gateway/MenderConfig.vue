@@ -1,0 +1,170 @@
+<template>
+	<CCard body-wrapper>
+		<ValidationObserver v-if='config !== null' v-slot='{ invalid }'>
+			<CForm @submit.prevent='processSubmit'>
+				<ValidationProvider
+					v-slot='{ errors, touched, valid }'
+					rules='addr|required'
+					:custom-messages='{
+						addr: "gateway.mender.form.messages.invalid.server",
+						required: "gateway.mender.form.messages.missing.server"
+					}'
+				>
+					<CInput
+						v-model='config.ServerURL'
+						:label='$t("gateway.mender.form.server")'
+						:is-valid='touched ? valid : null'
+						:invalid-feedback='$t(errors[0])'
+					/>
+				</ValidationProvider>
+				<ValidationProvider
+					v-slot='{ errors, touched, valid }'
+					rules='required'
+					:custom-messages='{
+						required: "gateway.mender.form.messages.missing.tenantToken"
+					}'
+				>
+					<CInput
+						v-model='config.TenantToken'
+						:label='$t("gateway.mender.form.tenantToken")'
+						:is-valid='touched ? valid : null'
+						:invalid-feedback='$t(errors[0])'
+					/>
+				</ValidationProvider>
+				<ValidationProvider
+					v-slot='{ errors, touched, valid }'
+					rules='min:0|required'
+					:custom-messages='{
+						min: "gateway.mender.form.messages.invalid.inventoryPollInterval",
+						required: "gateway.mender.form.messages.missing.inventoryPollInterval"
+					}'
+				>
+					<CInput
+						v-model.number='config.InventoryPollIntervalSeconds'
+						type='number'
+						min='0'
+						:label='$t("gateway.mender.form.inventoryPollInterval")'
+						:is-valid='touched ? valid : null'
+						:invalid-feedback='$t(errors[0])'
+					/>
+				</ValidationProvider>
+				<ValidationProvider
+					v-slot='{ errors, touched, valid }'
+					rules='min:0|required'
+					:custom-messages='{
+						min: "gateway.mender.form.messages.invalid.retryPollInterval",
+						required: "gateway.mender.form.messages.missing.retryPollInterval"
+					}'
+				>
+					<CInput
+						v-model.number='config.RetryPollIntervalSeconds'
+						type='number'
+						min='0'
+						:label='$t("gateway.mender.form.retryPollInterval")'
+						:is-valid='touched ? valid : null'
+						:invalid-feedback='$t(errors[0])'
+					/>
+				</ValidationProvider>
+				<ValidationProvider
+					v-slot='{ errors, touched, valid}'
+					rules='min:0|required'
+					:custom-messages='{
+						min: "gateway.mender.form.messages.invalid.updatePollInterval",
+						required: "gateway.mender.form.messages.missing.updatePollInterval"
+					}'
+				>
+					<CInput
+						v-model.number='config.UpdatePollIntervalSeconds'
+						type='number'
+						min='0'
+						:label='$t("gateway.mender.form.updatePollInterval")'
+						:is-valid='touched ? valid : null'
+						:invalid-feedback='$t(errors[0])'
+					/>
+				</ValidationProvider>
+				<CButton color='primary' type='submit' :disabled='invalid'>
+					{{ $t('forms.save') }}
+				</CButton>
+			</CForm>
+		</ValidationObserver>
+	</CCard>
+</template>
+
+<script>
+
+import {CButton, CCard, CForm, CInput} from '@coreui/vue';
+import {integer, min_value, required} from 'vee-validate/dist/rules';
+import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import ConfigService from '../../services/ConfigService';
+
+export default {
+	name: 'MenderConfig',
+	components: {
+		CButton,
+		CCard,
+		CForm,
+		CInput,
+		ValidationObserver,
+		ValidationProvider
+	},
+	data() {
+		return {
+			config: null
+		};
+	},
+	created() {
+		extend('integer', integer);
+		extend('required', required);
+		extend('min', min_value);
+		extend('addr', (addr) => {
+			const regex = RegExp('(http|https):\\/\\/.*');
+			return regex.test(addr);
+		});
+		this.getConfig();
+	},
+	methods: {
+		getConfig() {
+			this.$store.commit('spinner/SHOW');
+			ConfigService.getConfig('menderConfig')
+				.then((response) => {
+					this.$store.commit('spinner/HIDE');
+					this.config = response.data;
+				})
+				.catch((error) => {
+					this.$store.commit('spinner/HIDE');
+					if (error.response) {
+						if (error.response.status === 500) {
+							this.$toast.error(this.$t('forms.mesages.submitServerError'));
+						} 
+					} else {
+						console.error(error.message);
+					}
+				});
+		},
+		processSubmit() {
+			this.$store.commit('spinner/SHOW');
+			ConfigService.saveConfig('menderConfig', this.config)
+				.then((response) => {
+					this.$store.commit('spinner/HIDE');
+					if (response.status === 200) {
+						this.$toast.success(this.$t('forms.messages.saveSuccess'));
+					}
+				})
+				.catch((error) => {
+					this.$store.commit('spinner/HIDE');
+					if (error.response) {
+						if (error.response.status === 500) {
+							this.$toast.error(this.$t('forms.messages.submitServerError'));
+						}
+					} else {
+						console.error(error.message);
+					}
+				});
+		}
+	}
+};
+</script>
+
+<style>
+
+</style>

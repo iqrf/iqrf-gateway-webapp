@@ -290,6 +290,32 @@
 				"notFound": "IQRF Gateway Daemon log file cannot be found."
 			}
 		},
+		"mender": {
+			"title": "Mender configuration",
+			"form": {
+				"inventoryPollInterval": "Inventory update interval (seconds)",
+				"retryPollInterval": "Communication retry interval (seconds)",
+				"server": "Server address",
+				"tenantToken": "Tenant token",
+				"updatePollInterval": "Update check interval (seconds)",
+				"messages": {
+					"missing": {
+						"inventoryPollInterval": "Please enter the inventory update interval.",
+						"retryPollInterval": "Please enter the communication retry interval.",
+						"server": "Please enter the server address.",
+						"tenantToken": "Please enter the tenant token.",
+						"updatePollInterval": "Please enter the update check interval"
+					},
+					"invalid": {
+						"inventoryPollInterval": "Inventory update interval should be a decimal number.",
+						"retryPollInterval": "Communication retry interval should be a decimal number.",
+						"server": "Server address should contain the HTTP protocol.",
+						"updatePollInterval": "Update check interval should be a decimal number."
+					}
+				}
+			}
+			
+		},
 		"mode": {
 			"title": "Change mode",
 			"description": "Change gateway mode.",

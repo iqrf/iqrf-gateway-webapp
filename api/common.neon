@@ -77,6 +77,8 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/iqrfIdeMacros.json
 		IqrfInterfaces:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/iqrfInterfaces.json
+		MenderConfig:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/menderConfig.json
 		NetworkConnection:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/networkConnection.json
 		NetworkConnections:

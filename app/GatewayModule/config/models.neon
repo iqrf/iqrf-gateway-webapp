@@ -4,6 +4,10 @@ services:
 	- App\GatewayModule\Models\DiagnosticsManager(%daemon.configDir%, %daemon.logDir%)
 	- App\GatewayModule\Models\InfoManager
 	- App\GatewayModule\Models\LogManager(%daemon.logDir%)
+	mender.fileManager:
+		factory: App\CoreModule\Models\JsonFileManager('/etc/mender')
+		autowired: false
+	mender.manager: App\GatewayModule\Models\MenderConfigManager(@mender.fileManager)
 	- App\GatewayModule\Models\NetworkManager
 	- App\GatewayModule\Models\PowerManager
 	- App\GatewayModule\Models\UpdaterManager

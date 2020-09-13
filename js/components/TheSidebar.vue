@@ -79,6 +79,13 @@ export default {
 									],
 								},
 								{
+									name: this.$t('gateway.mender.title'),
+									to: '/gateway/mender/',
+									roles: [
+										'power', 'normal'
+									]
+								},
+								{
 									name: this.$t('gateway.mode.title'),
 									to: '/gateway/change-mode/',
 									roles: [

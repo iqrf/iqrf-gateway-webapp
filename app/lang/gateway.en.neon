@@ -50,6 +50,9 @@ log:
 		readError: Cannot read IQRF Gateway Daemon's log file.
 		notFound: IQRF Gateway Daemon log file cannot be found.
 
+mender:
+	title: Mender configuration
+
 mode:
 	title: Change mode
 	description: Change gateway mode.

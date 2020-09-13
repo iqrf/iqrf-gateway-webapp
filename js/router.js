@@ -9,6 +9,7 @@ import SendDpaPacket from './components/IqrfNet/SendDpaPacket';
 import TranslatorConfig from './components/Config/TranslatorConfig';
 import ControllerConfig from './components/Config/ControllerConfig';
 import NetworkManager from './components/IqrfNet/NetworkManager';
+import MenderConfig from './components/Gateway/MenderConfig';
 
 import i18n from './i18n';
 import ServiceControl from './components/Gateway/ServiceControl';
@@ -46,6 +47,13 @@ const routes = [
 					title: 'gateway.log.title',
 					description: 'gateway.log.description',
 				},
+			},
+			{
+				component: MenderConfig,
+				path: '/gateway/mender/',
+				meta: {
+					title: 'gateway.mender.title'
+				}
 			},
 			{
 				component: DaemonMode,
