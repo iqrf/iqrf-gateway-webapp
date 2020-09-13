@@ -28,39 +28,4 @@ use App\IqrfNetModule\Models\DevicesManager;
  */
 class NetworkPresenter extends ProtectedPresenter {
 
-	/**
-	 * @var DevicesManager Bonded and Discovered devices manager
-	 */
-	private $devicesManager;
-
-	/**
-	 * Constructor
-	 * @param DevicesManager $devicesManager Bonded and discovered devices manager
-	 */
-	public function __construct(DevicesManager $devicesManager) {
-		$this->devicesManager = $devicesManager;
-		parent::__construct();
-	}
-
-	/**
-	 * Shows table with devices
-	 * @param bool $ping Perform ping?
-	 */
-	public function handleShowNodes(bool $ping = false): void {
-		$base = 10;
-		$this->template->base = $base;
-		$this->template->devices = $this->devicesManager->getTable($base, $ping);
-		$this->redrawControl('devicesWrapper');
-		$this->redrawControl('showDevices');
-	}
-
-	/**
-	 * Renders a default page
-	 */
-	public function renderDefault(): void {
-		if (!$this->isAjax()) {
-			$this->handleShowNodes();
-		}
-	}
-
 }

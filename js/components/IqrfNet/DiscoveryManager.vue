@@ -14,7 +14,7 @@
 						}'
 					>
 						<CInput
-							v-model='txPower'
+							v-model.number='txPower'
 							type='number'
 							min='0'
 							max='7'
@@ -33,7 +33,7 @@
 						}'
 					>
 						<CInput
-							v-model='maxAddr'
+							v-model.number='maxAddr'
 							type='number'
 							min='0'
 							max='239'
@@ -74,7 +74,8 @@ export default {
 		return {
 			maxAddr: 239,
 			txPower: 6,
-			responseReceived: false
+			responseReceived: false,
+			timeoutVar: null,
 		};
 	},
 	created() {
@@ -89,16 +90,19 @@ export default {
 		this.unsubscribe = this.$store.subscribe(mutation => {
 			if (mutation.type === 'SOCKET_ONSEND' &&
 				mutation.payload.mType === 'iqrfEmbedCoordinator_Discovery') {
-				this.responseReceived = false;
-				setTimeout(() => {this.timedOut();}, 10000);
+				this.timeoutVar = setTimeout(() => {this.timedOut();}, 10000);
 			}
 			if (mutation.type === 'SOCKET_ONMESSAGE') {
 				if (mutation.payload.mType === 'iqrfEmbedCoordinator_Discovery') {
-					this.responseReceived = true;
+					clearTimeout(this.timeoutVar);
 					this.$store.commit('spinner/HIDE');
 					switch (mutation.payload.data.status) {
+						case -1:
+							this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.timeout'));
+							break;
 						case 0:
 							this.$toast.success(this.$t('iqrfnet.networkManager.messages.submit.discovery.success'));
+							this.$emit('update-devices');
 							break;
 						default:
 							this.$toast.success(this.$t('iqrfnet.networkManager.messages.submit.discovery.error_fail'));
@@ -117,10 +121,8 @@ export default {
 			IqmeshNetworkService.discovery(this.txPower, this.maxAddr);
 		},
 		timedOut() {
-			if (!this.responseReceived) {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.timeout'));
-			}
+			this.$store.commit('spinner/HIDE');
+			this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.timeout'));
 		}
 	}
 };

@@ -15,15 +15,5 @@
  * limitations under the License.
 *}
 
-{block title}{_iqrfnet.network-manager.title}{/block}
+{block title}{_iqrfnet.network.title}{/block}
 {block content}
-<c-row>
-	<c-col md='6'>
-		<bonding-manager />
-		<discovery-manager />
-	</c-col>
-	<c-col n:snippetArea='devicesWrapper' md='6'>
-		{include 'devices.latte'}
-        <devices-info />
-	</c-col>
-</c-row>

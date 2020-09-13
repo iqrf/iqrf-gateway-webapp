@@ -20,63 +20,9 @@ declare(strict_types = 1);
 
 namespace App\IqrfNetModule\Models;
 
-use App\IqrfNetModule\Exceptions\DpaErrorException;
-use App\IqrfNetModule\Exceptions\EmptyResponseException;
-use App\IqrfNetModule\Exceptions\UserErrorException;
-use App\IqrfNetModule\Requests\ApiRequest;
-use Nette\Utils\JsonException;
-
 /**
  * Tool for running discovery process in an IQMESH network
  */
 class DiscoveryManager {
-
-	/**
-	 * @var ApiRequest JSON API request
-	 */
-	private $request;
-
-	/**
-	 * @var WebSocketClient WebSocket client
-	 */
-	private $wsClient;
-
-	/**
-	 * Constructor
-	 * @param ApiRequest $request JSON API request
-	 * @param WebSocketClient $wsClient WebSocket client
-	 */
-	public function __construct(ApiRequest $request, WebSocketClient $wsClient) {
-		$this->request = $request;
-		$this->wsClient = $wsClient;
-	}
-
-	/**
-	 * Runs IQMESH discovery process
-	 * The time when the response is delivered depends highly on the number of network devices, the network topology, and RF mode, thus, it is not predictable. It can take from a few seconds to many minutes.
-	 * @param int $txPower TX Power used for discovery.
-	 * @param int $maxAddress Nonzero value specifies maximum node address to be part of the discovery process. This feature allows splitting all node devices into two parts: [1] devices having an address from 1 to MaxAddr will be part of the discovery process thus they become routers, [2] devices having an address from MaxAddr+1 to 239 will not be routers. See IQRF OS documentation for more information. The value of this parameter is ignored at demo version. A value 5 is always used instead.
-	 * @return array<mixed> API request and response
-	 * @throws DpaErrorException
-	 * @throws EmptyResponseException
-	 * @throws JsonException
-	 * @throws UserErrorException
-	 */
-	public function run(int $txPower = 6, int $maxAddress = 0): array {
-		$array = [
-			'mType' => 'iqrfEmbedCoordinator_Discovery',
-			'data' => [
-				'req' => [
-					'nAdr' => 0,
-					'param' => [
-						'txPower' => $txPower,
-						'maxAddr' => $maxAddress,
-					],
-				],
-			],
-		];
-		$this->request->set($array);
-		return $this->wsClient->sendSync($this->request);
-	}
 
 }

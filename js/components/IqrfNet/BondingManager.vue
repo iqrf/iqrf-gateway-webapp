@@ -24,7 +24,7 @@
 							}'
 						>
 							<CInput
-								v-model='autoNetwork.discoveryTxPower'
+								v-model.number='autoNetwork.discoveryTxPower'
 								requred='true'
 								type='number'
 								min='0'
@@ -52,7 +52,7 @@
 							}'
 						>
 							<CInput
-								v-model='autoNetwork.actionRetries'
+								v-model.number='autoNetwork.actionRetries'
 								type='number'
 								min='0'
 								max='3'
@@ -72,7 +72,7 @@
 							}'
 						>
 							<CInput
-								v-model='autoNetwork.overlappingNetworks.networks'
+								v-model.number='autoNetwork.overlappingNetworks.networks'
 								type='number'
 								min='1'
 								max='50'
@@ -91,7 +91,7 @@
 							}'
 						>
 							<CInput
-								v-model='autoNetwork.overlappingNetworks.network'
+								v-model.number='autoNetwork.overlappingNetworks.network'
 								type='number'
 								min='1'
 								max='50'
@@ -108,7 +108,6 @@
 							}'
 						>
 							<CInput
-								v-model='autoNetwork.hwpidFiltering'
 								:label='$t("iqrfnet.networkManager.autoNetwork.form.hwpidFiltering")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
@@ -125,7 +124,7 @@
 							}'
 						>
 							<CInput
-								v-model='autoNetwork.stopConditions.waves'
+								v-model.number='autoNetwork.stopConditions.waves'
 								type='number'
 								min='1'
 								max='127'
@@ -144,7 +143,7 @@
 							}'
 						>
 							<CInput
-								v-model='autoNetwork.stopConditions.emptyWaves'
+								v-model.number='autoNetwork.stopConditions.emptyWaves'
 								type='number'
 								min='1'
 								max='127'
@@ -163,7 +162,7 @@
 							}'
 						>
 							<CInput
-								v-model='autoNetwork.stopConditions.numberOfTotalNodes'
+								v-model.number='autoNetwork.stopConditions.numberOfTotalNodes'
 								type='number'
 								min='1'
 								max='239'
@@ -182,7 +181,7 @@
 							}'
 						>
 							<CInput
-								v-model='autoNetwork.stopConditions.numberOfNewNodes'
+								v-model.number='autoNetwork.stopConditions.numberOfNewNodes'
 								type='number'
 								min='1'
 								max='239'
@@ -194,10 +193,6 @@
 						<CInputCheckbox
 							:checked.sync='autoNetwork.stopConditions.abortOnTooManyNodesFound'
 							:label='$t("iqrfnet.networkManager.autoNetwork.form.abortOnTooManyNodesFound")'
-						/><hr>
-						<CInputCheckbox
-							:checked.sync='autoNetwork.returnVerbose'
-							:label='$t("iqrfnet.networkManager.autoNetwork.form.verbose")'
 						/>
 					</span>
 					<ValidationProvider
@@ -211,7 +206,7 @@
 						}'
 					>
 						<CInput
-							v-model='address'
+							v-model.number='address'
 							type='number'
 							min='1'
 							max='239'
@@ -236,7 +231,7 @@
 						}'
 					>
 						<CInput
-							v-model='bondingRetries'
+							v-model.number='bondingRetries'
 							type='number'
 							min='0'
 							max='255'
@@ -310,10 +305,10 @@
 						{{ $t('iqrfnet.networkManager.messages.submit.removeBond.confirmClear') }}
 						<template #footer>
 							<CButton color='secondary' @click='modalClear = false'>
-								{{ $t('iqrfnet.networkManager.forms.cancel') }}
+								{{ $t('forms.cancel') }}
 							</CButton>
 							<CButton color='primary' @click='processSubmitClearAll'>
-								{{ $t('iqrfnet.networkManager.forms.ok') }}
+								{{ $t('forms.ok') }}
 							</CButton>
 						</template>
 					</CModal>
@@ -376,24 +371,21 @@ export default {
 				stopConditions: {
 					waves: 2,
 					emptyWaves: 2,
-					numberOfTotalNodes: 1,
-					numberOfNewNodes: 1,
+					numberOfTotalNodes: 239,
+					numberOfNewNodes: 239,
 					abortOnTooManyNodesFound: false
-				},
-				returnVerbose: true
+				}
 			},
 			bondMethod: 'local',
 			bondingRetries: 1,
 			modalClear: false,
 			modalUnbond: false,
 			unbondCoordinatorOnly: false,
-			responseReceived: false,
-			scCode: ''
+			scCode: '',
+			timeoutVar: null
 		};
 	},
 	created() {
-		// eslint-disable-next-line no-console
-		console.log(this.autoNetwork);
 		extend('integer', integer);
 		extend('required', required);
 		extend('addr_range', (addr) => {
@@ -424,17 +416,15 @@ export default {
 		});
 		this.unsubscribe = this.$store.subscribe(mutation => {
 			if (mutation.type === 'SOCKET_ONSEND' &&
-				(mutation.payload.mType === 'iqmeshNetwork_BondNodeLocal' ||
-					mutation.payload.mType === 'iqmeshNetwork_SmartConnect' ||
-					mutation.payload.mType === 'iqrfEmbedCoordinator_ClearAllBonds' ||
-					mutation.payload.mType === 'iqrfEmbedCoordinator_RemoveBond')) {
-				this.responseReceived = false;
-				setTimeout(() => {this.timedOut();}, 10000);
+				mutation.payload.mType === ('iqmeshNetwork_BondNodeLocal' ||
+					'iqmeshNetwork_SmartConnect' ||'iqrfEmbedCoordinator_ClearAllBonds' ||
+					'iqrfEmbedCoordinator_RemoveBond' || 'iqmeshNetwork_autoNetwork')) {
+				this.timeoutVar = setTimeout(() => {this.timedOut();}, 20000);
 			}
 			if (mutation.type === 'SOCKET_ONMESSAGE') {
 				if (mutation.payload.mType === 'iqmeshNetwork_BondNodeLocal' ||
 					mutation.payload.mType === 'iqmeshNetwork_SmartConnect') {
-					this.responseReceived = true;
+					clearTimeout(this.timeoutVar);
 					this.$store.commit('spinner/HIDE');
 					switch(mutation.payload.data.status) {
 						case -1:
@@ -442,6 +432,7 @@ export default {
 							break;
 						case 0:
 							this.$toast.success(this.$t('iqrfnet.networkManager.messages.submit.bonding.success'));
+							this.$emit('update-devices');
 							break;
 						default:
 							this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.bonding.error_fail'));
@@ -449,7 +440,7 @@ export default {
 					}
 				} else if (mutation.payload.mType === 'iqrfEmbedCoordinator_ClearAllBonds' ||
 							mutation.payload.mType === 'iqmeshNetwork_RemoveBond') {
-					this.responseReceived = true;
+					clearTimeout(this.timeoutVar);
 					this.$store.commit('spinner/HIDE');
 					switch(mutation.payload.data.status) {
 						case -1:
@@ -461,6 +452,7 @@ export default {
 							} else {
 								this.$toast.success(this.$t('iqrfnet.networkManager.messages.submit.removeBond.success'));
 							}
+							this.$emit('update-devices');
 							break;
 						case 1002:
 							this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.removeBond.remove_error'));
@@ -469,6 +461,28 @@ export default {
 							this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.removeBond.error_fail'));
 							break;
 					}
+				} else if (mutation.payload.mType === 'iqmeshNetwork_AutoNetwork') {
+					clearTimeout(this.timeoutVar);
+					switch(mutation.payload.data.status) {
+						case -1:
+							this.$store.commit('spinner/HIDE');
+							this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.timeout'));
+							break;
+						case 0:
+							if (mutation.payload.data.rsp.lastWave) {
+								this.$store.commit('spinner/HIDE');
+								this.$toast.success(this.$t('iqrfnet.networkManager.messages.submit.autoNetwork.success'));
+								this.$emit('update-devices');
+							}
+							break;
+						default:
+							this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.autoNetwork.failure'));
+							break;
+					}
+				} else if (mutation.payload.mType === 'messageError') {
+					clearTimeout(this.timeoutVar);
+					this.$store.commit('spinner/HIDE');
+					this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.invalidMessage'));
 				}
 			}
 		});
@@ -478,7 +492,8 @@ export default {
 	},
 	methods: {
 		processSubmitAutoNetwork() {
-			//
+			this.$store.commit('spinner/SHOW');
+			IqmeshNetworkService.autoNetwork(this.autoNetwork);
 		},
 		processSubmitBond() {
 			this.$store.commit('spinner/SHOW');
@@ -507,10 +522,8 @@ export default {
 			IqmeshNetworkService.clearAllBonds(this.unbondCoordinatorOnly);
 		},
 		timedOut() {
-			if (!this.responseReceived) {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.timeout'));
-			}
+			this.$store.commit('spinner/HIDE');
+			this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.timeout'));
 		}
 	}
 };

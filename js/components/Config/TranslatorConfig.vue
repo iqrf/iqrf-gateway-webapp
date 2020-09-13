@@ -27,7 +27,7 @@
 								}'
 							>
 								<CInput
-									v-model='config.mqtt.port'
+									v-model.number='config.mqtt.port'
 									type='number'
 									min='1'
 									max='49151'
@@ -124,7 +124,7 @@
 								}'
 							>
 								<CInput
-									v-model='config.rest.port'
+									v-model.number='config.rest.port'
 									type='number'
 									min='1'
 									max='49151'

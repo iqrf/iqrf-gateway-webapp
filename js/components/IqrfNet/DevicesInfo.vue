@@ -82,6 +82,7 @@ export default {
 	data() {
 		return {
 			devices: [],
+			manual: false,
 			responseReceived: false,
 			timedOut: false
 		};
@@ -90,16 +91,14 @@ export default {
 		this.generateDevices();
 		this.unsubscribe = this.$store.subscribe(mutation => {
 			if (mutation.type === 'SOCKET_ONOPEN') {
-				this.responseReceived = false;
 				this.getBondedDevices();
-				this.responseReceived = false;
 				this.getDiscoveredDevices();
-				this.responseReceived = false;
 				this.frcPing();
 			}
 			if (mutation.type === 'SOCKET_ONSEND') {
 				if (mutation.payload.mType === ('iqrfEmbedCoordinator_BondedDevices' ||
 					'iqrfEmbedCoordinator_DiscoveredDevices' || 'iqrfEmbedFrc_Send')) {
+					this.responseReceived = false;
 					setTimeout(() => {this.timeOut();}, 10000);
 				}
 			}
@@ -109,6 +108,9 @@ export default {
 					this.$store.commit('spinner/HIDE');
 					switch(mutation.payload.data.status) {
 						case 0:
+							this.devices.forEach(item => {
+								item.bonded = false;
+							});
 							var bonded = mutation.payload.data.rsp.result.bondedDevices;
 							bonded.forEach(item => {
 								this.devices[item].bonded = true;
@@ -116,6 +118,7 @@ export default {
 							break;
 						default:
 							this.$toast.error(this.$t('iqrfnet.networkManager.devicesInfo.messages.bonded.failure'));
+							this.timedOut = true;
 							break;
 					}
 				} else if (mutation.payload.mType === 'iqrfEmbedCoordinator_DiscoveredDevices') {
@@ -123,6 +126,9 @@ export default {
 					this.$store.commit('spinner/HIDE');
 					switch(mutation.payload.data.status) {
 						case 0:
+							this.devices.forEach(item => {
+								item.discovered = false;
+							});
 							var discovered = mutation.payload.data.rsp.result.discoveredDevices;
 							discovered.forEach(item => {
 								this.devices[item].discovered = true;
@@ -130,6 +136,7 @@ export default {
 							break;
 						default:
 							this.$toast.error(this.$t('iqrfnet.networkManager.devicesInfo.messages.discovered.failure'));
+							this.timedOut = true;
 							break;
 					}
 				} else if (mutation.payload.mType === 'iqrfEmbedFrc_Send') {
@@ -145,9 +152,14 @@ export default {
 									this.devices[k++].online = (device === 1);
 								}
 							});
+							if (this.manual) {
+								this.manual = false;
+								this.$forceUpdate();
+							}
 							break;
 						default:
 							this.$toast.error(this.$t('iqrfnet.networkManager.devicesInfo.messages.ping.failure'));
+							this.timedOut = false;
 							break;
 					}
 				}
@@ -180,9 +192,12 @@ export default {
 			if (!this.responseReceived) {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.timeout'));
-				this.timedOut = true;
 			}
-		}
+		},
+		submitFrcPing() {
+			this.manual = true;
+			this.frcPing();
+		},
 	},
 	icons: {
 		coordinator: cilHome,

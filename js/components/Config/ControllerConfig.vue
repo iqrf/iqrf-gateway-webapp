@@ -103,7 +103,7 @@
 								}'
 							>
 								<CInput
-									v-model='config.resetButton.button'
+									v-model.number='config.resetButton.button'
 									type='number'
 									min='0'
 									:label='$t("controllerConfig.form.resetButton.pin")'
@@ -123,7 +123,7 @@
 								}'
 							>
 								<CInput
-									v-model='config.statusLed.greenLed'
+									v-model.number='config.statusLed.greenLed'
 									type='number'
 									min='0'
 									:label='$t("controllerConfig.form.statusLed.green")'
@@ -140,7 +140,7 @@
 								}'
 							>
 								<CInput
-									v-model='config.statusLed.redLed'
+									v-model.number='config.statusLed.redLed'
 									type='number'
 									min='0'
 									:label='$t("controllerConfig.form.statusLed.red")'
@@ -163,7 +163,7 @@
 								}'
 							>
 								<CInput
-									v-model='config.daemonApi.autoNetwork.actionRetries'
+									v-model.number='config.daemonApi.autoNetwork.actionRetries'
 									type='number'
 									min='0'
 									max='3'
@@ -186,7 +186,7 @@
 								}'
 							>
 								<CInput
-									v-model='config.daemonApi.autoNetwork.discoveryTxPower'
+									v-model.number='config.daemonApi.autoNetwork.discoveryTxPower'
 									type='number'
 									min='0'
 									max='7'
@@ -214,7 +214,7 @@
 								}'
 							>
 								<CInput
-									v-model='config.daemonApi.autoNetwork.stopConditions.emptyWaves'
+									v-model.number='config.daemonApi.autoNetwork.stopConditions.emptyWaves'
 									type='number'
 									min='1'
 									max='127'
@@ -233,7 +233,7 @@
 								}'
 							>
 								<CInput
-									v-model='config.daemonApi.autoNetwork.stopConditions.waves'
+									v-model.number='config.daemonApi.autoNetwork.stopConditions.waves'
 									type='number'
 									min='1'
 									max='127'
@@ -259,7 +259,7 @@
 								}'
 							>
 								<CInput
-									v-model='config.daemonApi.discovery.maxAddr'
+									v-model.number='config.daemonApi.discovery.maxAddr'
 									type='number'
 									min='0'
 									max='239'
@@ -278,7 +278,7 @@
 								}'
 							>
 								<CInput
-									v-model='config.daemonApi.discovery.txPower'
+									v-model.number='config.daemonApi.discovery.txPower'
 									type='number'
 									min='0'
 									max='7'

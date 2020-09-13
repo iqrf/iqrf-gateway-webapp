@@ -8,6 +8,7 @@ import SignIn from './components/SignIn';
 import SendDpaPacket from './components/IqrfNet/SendDpaPacket';
 import TranslatorConfig from './components/Config/TranslatorConfig';
 import ControllerConfig from './components/Config/ControllerConfig';
+import NetworkManager from './components/IqrfNet/NetworkManager';
 
 import i18n from './i18n';
 import ServiceControl from './components/Gateway/ServiceControl';
@@ -79,6 +80,13 @@ const routes = [
 					title: 'iqrfnet.sendPacket.title',
 					description: 'iqrfnet.sendPacket.description',
 				},
+			},
+			{
+				component: NetworkManager,
+				path: '/iqrfnet/network/',
+				meta: {
+					title: 'iqrfnet.networkManager.title'
+				}
 			},
 			{
 				component: TranslatorConfig,

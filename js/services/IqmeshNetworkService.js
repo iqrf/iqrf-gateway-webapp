@@ -5,6 +5,37 @@ import store from '../store';
  */
 class IqmeshNetworkService {
 	/**
+	 * Performs AutoNetwork
+	 * @param autoNetwork Object containing AutoNetwork parameters
+	 */
+	autoNetwork(autoNetwork) {
+		store.dispatch('sendRequest', {
+			'mType': 'iqmeshNetwork_AutoNetwork',
+			'data': {
+				'req': {
+					'discoveryTxPower': autoNetwork.discoveryTxPower,
+					'discoveryBeforeStart': autoNetwork.discoveryBeforeStart,
+					'skipDiscoveryEachWave': autoNetwork.skipDiscoveryEachWave,
+					'actionRetries': autoNetwork.actionRetries,
+					'overlappingNetworks': {
+						'networks': autoNetwork.overlappingNetworks.networks,
+						'network': autoNetwork.overlappingNetworks.network,
+					},
+					'hwpidFiltering': autoNetwork.hwpidFiltering,
+					'stopConditions': {
+						'waves': autoNetwork.stopConditions.waves,
+						'emptyWaves': autoNetwork.stopConditions.emptyWaves,
+						'numberOfTotalNodes': autoNetwork.stopConditions.numberOfTotalNodes,
+						'numberOfNewNodes': autoNetwork.stopConditions.numberOfNewNodes,
+						'abortOnTooManyNodesFound': autoNetwork.stopConditions.abortOnTooManyNodesFound,
+					},
+				},
+				'returnVerbose': true
+			},
+		});
+	}
+
+	/**
 	 * Bonds a node locally
 	 * @param addr A requested address for the bonded node. If this parameter equals to 0, then the first free address is assigned to the node.
 	 */
