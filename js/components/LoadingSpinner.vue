@@ -1,6 +1,7 @@
 <template>
 	<div v-if='enabled' class='loading'>
 		<div class='spinner' />
+		<div>{{ text }}</div>
 	</div>
 </template>
 
@@ -12,6 +13,7 @@ export default {
 	computed: {
 		...mapGetters({
 			enabled: 'spinner/isEnabled',
+			text: 'spinner/text',
 		}),
 	},
 };

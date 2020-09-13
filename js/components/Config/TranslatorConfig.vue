@@ -119,6 +119,7 @@
 								v-slot='{ errors, touched, valid }'
 								rules='required|integer|port_range'
 								:custom-messages='{
+									integer: "translatorConfig.form.messages.invalid.port",
 									required: "translatorConfig.form.messages.missing.rport",
 									port_range: "translatorConfig.form.messages.invalid.port"
 								}'

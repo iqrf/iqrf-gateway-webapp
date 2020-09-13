@@ -97,9 +97,7 @@ export default {
 		this.generateDevices();
 		this.unsubscribe = this.$store.subscribe(mutation => {
 			if (mutation.type === 'SOCKET_ONOPEN') {
-				this.getBondedDevices();
-				this.getDiscoveredDevices();
-				this.frcPing();
+				this.getDevices();
 				return;
 			}
 			if (mutation.type === 'SOCKET_ONSEND') {
@@ -124,7 +122,10 @@ export default {
 					this.parseFrcPing(mutation.payload);
 				}
 			}
-		});		
+		});
+		if (this.$store.getters.isSocketConnected) {
+			this.getDevices();
+		}	
 	},
 	beforeDestroy() {
 		this.unsubscribe();
@@ -209,6 +210,11 @@ export default {
 					this.timedOut = false;
 					break;
 			}
+		},
+		getDevices() {
+			this.getBondedDevices();
+			this.getDiscoveredDevices();
+			this.frcPing();
 		},
 		timeOut() {
 			if (!this.responseReceived) {

@@ -469,6 +469,7 @@ export default {
 							this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.timeout'));
 							break;
 						case 0:
+							this.$store.commit('spinner/UPDATE_TEXT', this.autoNetworkProgress(mutation.payload.data));
 							if (mutation.payload.data.rsp.lastWave) {
 								this.$store.commit('spinner/HIDE');
 								this.$toast.success(this.$t('iqrfnet.networkManager.messages.submit.autoNetwork.success'));
@@ -491,6 +492,9 @@ export default {
 		this.unsubscribe();
 	},
 	methods: {
+		autoNetworkProgress(response) {
+			return 'Wave ' + response.rsp.wave + '/' + this.autoNetwork.stopConditions.waves + '[' + response.rsp.progress + '%]';
+		},
 		processSubmitAutoNetwork() {
 			this.$store.commit('spinner/SHOW');
 			IqmeshNetworkService.autoNetwork(this.autoNetwork);
@@ -524,11 +528,7 @@ export default {
 		timedOut() {
 			this.$store.commit('spinner/HIDE');
 			this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.timeout'));
-		}
+		},
 	}
 };
 </script>
-
-<style>
-
-</style>
