@@ -11,7 +11,6 @@
 </template>
 
 <script>
-
 import BondingManager from './BondingManager';
 import DevicesInfo from './DevicesInfo';
 import DiscoveryManager from './DiscoveryManager';
@@ -21,23 +20,17 @@ export default {
 	components: {
 		BondingManager,
 		DevicesInfo,
-		DiscoveryManager
+		DiscoveryManager,
 	},
 	data() {
-		return {
-			
-		};
+		return {};
 	},
 	methods: {
 		updateDevices() {
 			this.$refs.devs.getBondedDevices();
 			this.$refs.devs.getDiscoveredDevices();
 			this.$refs.devs.submitFrcPing();
-		}
-	}
+		},
+	},
 };
 </script>
-
-<style>
-
-</style>

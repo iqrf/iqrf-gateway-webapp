@@ -21,7 +21,6 @@ declare(strict_types = 1);
 namespace App\IqrfNetModule\Presenters;
 
 use App\CoreModule\Presenters\ProtectedPresenter;
-use App\IqrfNetModule\Models\DevicesManager;
 
 /**
  * IQMESH Network manager presenter

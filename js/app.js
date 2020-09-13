@@ -46,8 +46,6 @@ import 'vue-toast-notification/dist/theme-sugar.css';
 
 import App from './components/App';
 import DaemonStatus from './components/DaemonStatus';
-import DisambiguationLink from './components/DisambiguationLink';
-import NavBarLink from './components/NavBarLink';
 import LoadingSpinner from './components/LoadingSpinner';
 import TheHeader from './components/TheHeader';
 import TheSidebar from './components/TheSidebar';
@@ -130,8 +128,6 @@ new Vue({
 	components: {
 		App,
 		DaemonStatus,
-		DisambiguationLink,
-		NavBarLink,
 		LoadingSpinner,
 		TheHeader,
 		TheSidebar,

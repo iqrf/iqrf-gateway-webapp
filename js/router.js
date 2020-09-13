@@ -5,10 +5,10 @@ import DaemonLogViewer from './components/Gateway/DaemonLogViewer';
 import DaemonMode from './components/Gateway/DaemonMode';
 import PowerControl from './components/Gateway/PowerControl';
 import SignIn from './components/SignIn';
+import NetworkManager from './components/IqrfNet/NetworkManager';
 import SendDpaPacket from './components/IqrfNet/SendDpaPacket';
 import TranslatorConfig from './components/Config/TranslatorConfig';
 import ControllerConfig from './components/Config/ControllerConfig';
-import NetworkManager from './components/IqrfNet/NetworkManager';
 
 import i18n from './i18n';
 import ServiceControl from './components/Gateway/ServiceControl';
@@ -36,7 +36,6 @@ const routes = [
 				path: '/gateway/info/',
 				meta: {
 					title: 'gateway.info.title',
-					description: 'gateway.info.description',
 				},
 			},
 			{
@@ -44,7 +43,6 @@ const routes = [
 				path: '/gateway/log/',
 				meta: {
 					title: 'gateway.log.title',
-					description: 'gateway.log.description',
 				},
 			},
 			{
@@ -52,7 +50,6 @@ const routes = [
 				path: '/gateway/change-mode/',
 				meta: {
 					title: 'gateway.mode.title',
-					description: 'gateway.mode.description',
 				},
 			},
 			{
@@ -60,7 +57,6 @@ const routes = [
 				path: '/gateway/power/',
 				meta: {
 					title: 'gateway.power.title',
-					description: 'gateway.power.description',
 				},
 			},
 			{
@@ -70,15 +66,6 @@ const routes = [
 				props: true,
 				meta: {
 					title: 'service.%serviceName%.title',
-					description: 'service.%serviceName%.description',
-				},
-			},
-			{
-				component: SendDpaPacket,
-				path: '/iqrfnet/send-raw/',
-				meta: {
-					title: 'iqrfnet.sendPacket.title',
-					description: 'iqrfnet.sendPacket.description',
 				},
 			},
 			{
@@ -87,6 +74,13 @@ const routes = [
 				meta: {
 					title: 'iqrfnet.networkManager.title'
 				}
+			},
+			{
+				component: SendDpaPacket,
+				path: '/iqrfnet/send-raw/',
+				meta: {
+					title: 'iqrfnet.sendPacket.title',
+				},
 			},
 			{
 				component: TranslatorConfig,
