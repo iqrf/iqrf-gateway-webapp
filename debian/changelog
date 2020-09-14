@@ -1,3 +1,9 @@
+iqrf-gateway-webapp (2.0.4) testing; urgency=medium
+
+  * Config: fix typo in the task JSON schema folder name in Scheduler migration manager
+
+ -- Roman Ondráček <roman@romanondracek.cz>  Mon, 14 Sep 2020 22:30:00 +0200
+
 iqrf-gateway-webapp (2.0.3) testing; urgency=medium
 
   * Config: fix the JSON schema directory removal from the ZIP archive in the scheduler configuration migration
