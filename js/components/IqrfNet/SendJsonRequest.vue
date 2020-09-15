@@ -1,21 +1,74 @@
 <template>
-	<CCard>
-		<CCardHeader>
-			<CButton 
-				color='primary'
-				size='sm' 
-				href='https://docs.iqrf.org/iqrf-gateway/api.html'
-			>
-				{{ $t("iqrfnet.sendJson.documentation") }}
-			</CButton>
-		</CCardHeader>
-	</CCard>
+	<div>
+		<CCard>
+			<CCardHeader>
+				<CButton 
+					color='primary'
+					size='sm' 
+					href='https://docs.iqrf.org/iqrf-gateway/api.html'
+				>
+					{{ $t("iqrfnet.sendJson.documentation") }}
+				</CButton>
+			</CCardHeader>
+			<CCardBody>
+				<ValidationObserver v-slot='{ invalid }'>
+					<CForm @submit.prevent='processSubmit'>
+						<ValidationProvider
+							v-slot='{ errors, touched, valid }'
+							rules='required|json|mType'
+							:custom-messages='{
+								required: "iqrfnet.sendJson.form.messages.missing",
+								json: "iqrfnet.sendJson.form.messages.invalid",
+								mType: "iqrfnet.sendJson.form.messages.mType"
+							}'
+						>
+							<CTextarea
+								v-model='json'
+								rows='10'
+								:label='$t("iqrfnet.sendJson.form.json")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<CButton color='primary' type='submit' :disabled='invalid'>
+							{{ $t('forms.send') }}
+						</CButton>
+					</CForm>
+				</ValidationObserver>
+			</CCardBody>
+		</CCard>
+		<CRow>
+			<CCol v-if='request !== null' md='6'>
+				<CCard>
+					<CCardHeader>
+						{{ $t('iqrfnet.sendJson.request') }}
+					</CCardHeader>
+					<CCardBody>
+						<pre><code class='json'>{{ request }}</code></pre>
+					</CCardBody>
+				</CCard>
+			</CCol>
+			<CCol v-if='response !== null' md='6'>
+				<CCard>
+					<CCardHeader>
+						{{ $t('iqrfnet.sendJson.response') }}
+					</CCardHeader>
+					<CCardBody v-highlight>
+						<pre><code class='json'>{{ response }}</code></pre>
+					</CCardBody>
+				</CCard>
+			</CCol>
+		</CRow>
+	</div>
 </template>
 
 <script>
 
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CTextarea} from '@coreui/vue';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import {required} from 'vee-validate/dist/rules';
+import IqrfNetService from '../../services/IqrfNetService';
+
 export default {
 	name: 'SendJsonRequest',
 	components: {
@@ -25,19 +78,90 @@ export default {
 		CCardHeader,
 		CForm,
 		CTextarea,
+		ValidationObserver,
+		ValidationProvider,
+	},
+	data() {
+		return {
+			json: null,
+			request: null,
+			response: null,
+			timeoutVar: null
+		};
 	},
 	created() {
 		extend('json', (json) => {
 			try {
 				JSON.parse(json);
+				return true;
 			} catch (error) {
-				return this.$t('iqrfnet.sendJson.invalid');
+				return false;
 			}
 		});
+		extend('mType', (json) => {
+			let object = JSON.parse(json);
+			return {}.hasOwnProperty.call(object, 'mType');
+		});
+		extend('required', required);
+		this.unsubscribe = this.$store.subscribe(mutation => {
+			if (mutation.type === 'SOCKET_ONSEND') {
+				this.timeoutVar = setTimeout(() => {this.timedOut();}, 10000);
+			}
+			if (mutation.type === 'SOCKET_ONMESSAGE') {
+				if ({}.hasOwnProperty.call(mutation.payload, 'mType')) {
+					clearTimeout(this.timeoutVar);
+					this.$store.commit('spinner/HIDE');
+					switch (mutation.payload.data.status) {
+						case -1:
+							this.$toast.error('Request error:' + this.$t('iqrfnet.sendJson.form.messages.error.timeout'));
+							break;
+						case 0:
+							this.$toast.success(this.$t('iqrfnet.sendJson.form.messages.success'));
+							this.response = mutation.payload;
+							break;
+						case 1:
+							this.$toast.error('Request error:' + this.$t('iqrfnet.sendJson.form.messages.error.fail'));
+							break;
+						case 2:
+							this.$toast.error('Request error:' + this.$t('iqrfnet.sendJson.form.messages.error.pcmd'));
+							break;
+						case 3:
+							this.$toast.error('Request error:' + this.$t('iqrfnet.sendJson.form.messages.error.pnum'));
+							break;
+						case 4:
+							this.$toast.error('Request error:' + this.$t('iqrfnet.sendJson.form.messages.error.addr'));
+							break;
+						case 5:
+							this.$toast.error('Request error:' + this.$t('iqrfnet.sendJson.form.messages.error.dataLen'));
+							break;
+						case 6:
+							this.$toast.error('Request error:' + this.$t('iqrfnet.sendJson.form.messages.error.data'));
+							break;
+						case 7:
+							this.$toast.error('Request error:' + this.$t('iqrfnet.sendJson.form.messages.error.hwpid'));
+							break;
+						case 8:
+							this.$toast.error('Request error:' + this.$t('iqrfnet.sendJson.form.messages.error.nadr'));
+							break;
+						default:
+							break;
+					}
+				}
+			}
+		});
+	},
+	beforeDestroy() {
+		this.unsubscribe();
+	},
+	methods: {
+		processSubmit() {
+			this.request = this.json;
+			IqrfNetService.sendJson(JSON.parse(this.json));
+		},
+		timedOut() {
+			this.$store.commit('spinner/HIDE');
+			this.$toast.error(this.$t('iqrfnet.sendJson.form.messages.timeout'));
+		}
 	}
 };
 </script>
-
-<style>
-
-</style>

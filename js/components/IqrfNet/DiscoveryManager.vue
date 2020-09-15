@@ -56,7 +56,7 @@
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {integer, required} from 'vee-validate/dist/rules';
-import IqmeshNetworkService from '../../services/IqmeshNetworkService';
+import IqrfNetService from '../../services/IqrfNetService';
 
 export default {
 	name: 'DiscoveryManager',
@@ -118,7 +118,7 @@ export default {
 	methods: {
 		processSubmit() {
 			this.$store.commit('spinner/SHOW');
-			IqmeshNetworkService.discovery(this.txPower, this.maxAddr);
+			IqrfNetService.discovery(this.txPower, this.maxAddr);
 		},
 		timedOut() {
 			this.$store.commit('spinner/HIDE');

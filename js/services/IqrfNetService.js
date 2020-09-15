@@ -1,9 +1,9 @@
 import store from '../store';
 
 /**
- * IQRF TR enumeration service
+ * IQRF Network service
  */
-class IqmeshNetworkService {
+class IqrfNetService {
 	/**
 	 * Performs AutoNetwork
 	 * @param autoNetwork Object containing AutoNetwork parameters
@@ -219,6 +219,14 @@ class IqmeshNetworkService {
 	}
 
 	/**
+	 * Sends JSON API request
+	 * @param json JSON API request string
+	 */
+	sendJson(json) {
+		store.dispatch('sendRequest', json);
+	}
+
+	/**
 	 * Writes TR configuration
 	 * @param address Device address to write the configuration to
 	 * @param configuration New TR configuration
@@ -237,4 +245,4 @@ class IqmeshNetworkService {
 	}
 }
 
-export default new IqmeshNetworkService();
+export default new IqrfNetService();

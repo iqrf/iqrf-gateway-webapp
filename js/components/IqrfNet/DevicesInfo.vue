@@ -67,7 +67,7 @@ import {cilHome, cilX, cilCheckAlt, cilSignalCellular4} from '@coreui/icons';
 import {CAlert, CButton, CCard, CCardBody, CCardHeader, CIcon} from '@coreui/vue';
 import Device from '../../helpers/Device';
 import DeviceIcon from './DeviceIcon';
-import IqmeshNetworkService from '../../services/IqmeshNetworkService';
+import IqrfNetService from '../../services/IqrfNetService';
 
 export default {
 	name: 'DevicesInfo',
@@ -133,7 +133,7 @@ export default {
 	methods: {
 		frcPing() {
 			this.$store.commit('spinner/SHOW');
-			IqmeshNetworkService.ping();
+			IqrfNetService.ping();
 		},
 		generateDevices() {
 			this.devices.push(new Device(0, true));
@@ -146,11 +146,11 @@ export default {
 		},
 		getBondedDevices() {
 			this.$store.commit('spinner/SHOW');
-			IqmeshNetworkService.getBonded();
+			IqrfNetService.getBonded();
 		},
 		getDiscoveredDevices() {
 			this.$store.commit('spinner/SHOW');
-			IqmeshNetworkService.getDiscovered();
+			IqrfNetService.getDiscovered();
 		},
 		parseBondedDevices(response) {
 			switch (response.data.status) {

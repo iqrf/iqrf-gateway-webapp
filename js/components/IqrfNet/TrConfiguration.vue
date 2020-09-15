@@ -267,7 +267,7 @@ import {
 	required,
 } from 'vee-validate/dist/rules';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import IqmeshNetworkService from '../../services/IqmeshNetworkService';
+import IqrfNetService from '../../services/IqrfNetService';
 
 export default {
 	name: 'TrConfiguration',
@@ -336,7 +336,7 @@ export default {
 		this.unsubscribe = this.$store.subscribe(mutation => {
 			if (mutation.type === 'SOCKET_ONOPEN') {
 				this.$store.commit('spinner/SHOW');
-				IqmeshNetworkService.enumerateDevice(this.address);
+				IqrfNetService.enumerateDevice(this.address);
 				return;
 			}
 			if (mutation.type !== 'SOCKET_ONMESSAGE') {
@@ -359,7 +359,7 @@ export default {
 		});
 		if (this.$store.getters.isSocketConnected) {
 			this.$store.commit('spinner/SHOW');
-			IqmeshNetworkService.enumerateDevice(this.address);
+			IqrfNetService.enumerateDevice(this.address);
 		}
 	},
 	beforeDestroy() {
@@ -370,7 +370,7 @@ export default {
 			let config = JSON.parse(JSON.stringify(this.config));
 			config.embPers = this.getEmbeddedPeripherals();
 			this.$store.commit('spinner/SHOW');
-			IqmeshNetworkService.writeTrConfiguration(this.address, config);
+			IqrfNetService.writeTrConfiguration(this.address, config);
 		},
 		setEmbeddedPeripherals() {
 			let peripherals = JSON.parse(JSON.stringify(this.config.embPers));

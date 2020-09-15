@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import IqmeshNetworkService from '../../services/IqmeshNetworkService';
+import IqrfNetService from '../../services/IqrfNetService';
 export default {
 	name: 'CoordinatorInfo',
 	data() {
@@ -53,7 +53,7 @@ export default {
 				this.hasData = false;
 			}
 		});
-		IqmeshNetworkService.enumerateDevice(0);
+		IqrfNetService.enumerateDevice(0);
 	},
 	beforeDestroy() {
 		this.unsubscribe();

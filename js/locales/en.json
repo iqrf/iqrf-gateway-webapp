@@ -328,7 +328,8 @@
 			}
 		},
 		"mender": {
-			"title": "Mender configuration",
+			"title": "Mender",
+			"description": "Mender client configuration",
 			"form": {
 				"inventoryPollInterval": "Inventory update interval (seconds)",
 				"retryPollInterval": "Communication retry interval (seconds)",
@@ -553,7 +554,27 @@
 			"documentation": "Show API documentation.",
 			"response": "Response",
 			"request": "Request",
-			"invalid": "Invalid JSON object."
+			"form": {
+				"json": "JSON request",
+				"messages": {
+					"timeout": "Daemon API request timed out.",
+					"invalid": "Invalid JSON object.",
+					"missing": "Please enter JSON request.",
+					"mType": "JSON object does not have mType key.",
+					"success": "JSON request has been sent successfully.",
+					"error": {
+						"timeout": "Timed out.",
+						"fail": "Request failed.",
+						"pcmd": "Incorrect request PCMD.",
+						"pnum": "Incorrect request PNUM or PCMD.",
+						"addr": "Incorrect request address.",
+						"dataLen": "Incorrect request data length.",
+						"data": "Incorrect request data.",
+						"hwpid": "Incorrect request HWPID.",
+						"nadr": "Incorrect request NADR."
+					}
+				}
+			}
 		},
 		"sendPacket": {
 			"title": "Send DPA packet",
@@ -757,8 +778,8 @@
 		}
 	},
 	"translatorConfig": {
-		"title": "IQRF Gateway Translator",
-		"description": "IQRF Gateway Translator configuration",
+		"title": "Translator",
+		"description": "Translator configuration",
 		"form": {
 			"rest": {
 				"title": "REST API client configuration",
@@ -797,8 +818,8 @@
 		}
 	},
 	"controllerConfig": {
-		"title": "IQRF Gateway Controller",
-		"description": "IQRF Gateway Controller configuration",
+		"title": "Controller",
+		"description": "Controller configuration",
 		"form": {
 			"daemonApi": {
 				"autoNetwork": {

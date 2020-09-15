@@ -337,7 +337,7 @@
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CModal, CSelect} from '@coreui/vue';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {integer, required} from 'vee-validate/dist/rules';
-import IqmeshNetworkService from '../../services/IqmeshNetworkService';
+import IqrfNetService from '../../services/IqrfNetService';
 
 export default {
 	name: 'BondingManager',
@@ -497,33 +497,33 @@ export default {
 		},
 		processSubmitAutoNetwork() {
 			this.$store.commit('spinner/SHOW');
-			IqmeshNetworkService.autoNetwork(this.autoNetwork);
+			IqrfNetService.autoNetwork(this.autoNetwork);
 		},
 		processSubmitBond() {
 			this.$store.commit('spinner/SHOW');
 			if (this.bondMethod === 'local') {
 				if (this.autoAddress) {
-					IqmeshNetworkService.bondLocal(0);
+					IqrfNetService.bondLocal(0);
 				} else {
-					IqmeshNetworkService.bondLocal(this.address);
+					IqrfNetService.bondLocal(this.address);
 				}
 			} else if (this.bondMethod === 'smartConnect') {
 				if (this.autoAddress) {
-					IqmeshNetworkService.bondSmartConnect(0, this.scCode, this.bondingRetries);
+					IqrfNetService.bondSmartConnect(0, this.scCode, this.bondingRetries);
 				} else {
-					IqmeshNetworkService.bondSmartConnect(this.address, this.scCode, this.bondingRetries);
+					IqrfNetService.bondSmartConnect(this.address, this.scCode, this.bondingRetries);
 				}
 			}
 		},
 		processSubmitUnbond() {
 			this.modalUnbond = false;
 			this.$store.commit('spinner/SHOW');
-			IqmeshNetworkService.removeBond(this.address, this.unbondCoordinatorOnly);
+			IqrfNetService.removeBond(this.address, this.unbondCoordinatorOnly);
 		},
 		processSubmitClearAll() {
 			this.modalClear = false;
 			this.$store.commit('spinner/SHOW');
-			IqmeshNetworkService.clearAllBonds(this.unbondCoordinatorOnly);
+			IqrfNetService.clearAllBonds(this.unbondCoordinatorOnly);
 		},
 		timedOut() {
 			this.$store.commit('spinner/HIDE');

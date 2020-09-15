@@ -11,6 +11,7 @@ import TranslatorConfig from './components/Config/TranslatorConfig';
 import ControllerConfig from './components/Config/ControllerConfig';
 import MenderConfig from './components/Gateway/MenderConfig';
 import UserList from './components/Core/UserList';
+import SendJsonRequest from './components/IqrfNet/SendJsonRequest';
 
 import i18n from './i18n';
 import ServiceControl from './components/Gateway/ServiceControl';
@@ -51,7 +52,7 @@ const routes = [
 				component: MenderConfig,
 				path: '/gateway/mender/',
 				meta: {
-					title: 'gateway.mender.title'
+					title: 'gateway.mender.description'
 				}
 			},
 			{
@@ -90,6 +91,13 @@ const routes = [
 				meta: {
 					title: 'iqrfnet.sendPacket.title',
 				},
+			},
+			{
+				component: SendJsonRequest,
+				path: '/iqrfnet/send-json/',
+				meta: {
+					title: 'iqrfnet.sendJson.title'
+				}
 			},
 			{
 				component: TranslatorConfig,
