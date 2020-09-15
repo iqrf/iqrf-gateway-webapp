@@ -6,6 +6,7 @@
 					color='primary'
 					size='sm' 
 					href='https://docs.iqrf.org/iqrf-gateway/api.html'
+					target='_blank'
 				>
 					{{ $t("iqrfnet.sendJson.documentation") }}
 				</CButton>
@@ -24,7 +25,7 @@
 						>
 							<CTextarea
 								v-model='json'
-								rows='10'
+								v-autogrow
 								:label='$t("iqrfnet.sendJson.form.json")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
@@ -44,7 +45,7 @@
 						{{ $t('iqrfnet.sendJson.request') }}
 					</CCardHeader>
 					<CCardBody>
-						<pre><code class='json'>{{ request }}</code></pre>
+						<prism-editor v-model='request' :highlight='highlighter' :readonly='true' />
 					</CCardBody>
 				</CCard>
 			</CCol>
@@ -53,8 +54,8 @@
 					<CCardHeader>
 						{{ $t('iqrfnet.sendJson.response') }}
 					</CCardHeader>
-					<CCardBody v-highlight>
-						<pre><code class='json'>{{ response }}</code></pre>
+					<CCardBody>
+						<prism-editor v-model='response' :highlight='highlighter' :readonly='true' />
 					</CCardBody>
 				</CCard>
 			</CCol>
@@ -67,7 +68,14 @@
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CTextarea} from '@coreui/vue';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
+import {TextareaAutogrowDirective} from 'vue-textarea-autogrow-directive/src/VueTextareaAutogrowDirective';
 import IqrfNetService from '../../services/IqrfNetService';
+
+import {PrismEditor} from 'vue-prism-editor';
+import 'vue-prism-editor/dist/prismeditor.min.css';
+import Prism from 'prismjs/components/prism-core';
+import 'prismjs/components/prism-json';
+import 'prismjs/themes/prism.css';
 
 export default {
 	name: 'SendJsonRequest',
@@ -78,8 +86,12 @@ export default {
 		CCardHeader,
 		CForm,
 		CTextarea,
+		PrismEditor,
 		ValidationObserver,
 		ValidationProvider,
+	},
+	directives: {
+		'autogrow': TextareaAutogrowDirective
 	},
 	data() {
 		return {
@@ -111,13 +123,13 @@ export default {
 				if ({}.hasOwnProperty.call(mutation.payload, 'mType')) {
 					clearTimeout(this.timeoutVar);
 					this.$store.commit('spinner/HIDE');
+					this.response = JSON.stringify(mutation.payload, null, 4);
 					switch (mutation.payload.data.status) {
 						case -1:
 							this.$toast.error('Request error:' + this.$t('iqrfnet.sendJson.form.messages.error.timeout'));
 							break;
 						case 0:
 							this.$toast.success(this.$t('iqrfnet.sendJson.form.messages.success'));
-							this.response = mutation.payload;
 							break;
 						case 1:
 							this.$toast.error('Request error:' + this.$t('iqrfnet.sendJson.form.messages.error.fail'));
@@ -154,9 +166,18 @@ export default {
 		this.unsubscribe();
 	},
 	methods: {
+		/**
+		 * JSON highlighter method
+		 */
+		highlighter(code) {
+			return Prism.highlight(code, Prism.languages.json, 'json');
+		},
 		processSubmit() {
-			this.request = this.json;
-			IqrfNetService.sendJson(JSON.parse(this.json));
+			this.$store.commit('spinner/SHOW');
+			let json = JSON.parse(this.json);
+			this.request = JSON.stringify(json, null, 4);
+			this.response = null;
+			IqrfNetService.sendJson(json);
 		},
 		timedOut() {
 			this.$store.commit('spinner/HIDE');

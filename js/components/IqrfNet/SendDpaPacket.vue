@@ -81,7 +81,7 @@
 				<CCard v-if='request !== null'>
 					<CCardHeader>{{ $t('iqrfnet.sendPacket.request') }}</CCardHeader>
 					<CCardBody>
-						<pre><code class='json'>{{ request }}</code></pre>
+						<prism-editor v-model='request' :highlight='highlighter' :readonly='true' />
 					</CCardBody>
 				</CCard>
 			</CCol>
@@ -89,7 +89,7 @@
 				<CCard v-if='response !== null'>
 					<CCardHeader>{{ $t('iqrfnet.sendPacket.response') }}</CCardHeader>
 					<CCardBody>
-						<pre><code class='json'>{{ response }}</code></pre>
+						<prism-editor v-model='response' :highlight='highlighter' :readonly='true' />
 					</CCardBody>
 				</CCard>
 			</CCol>
@@ -104,6 +104,12 @@ import {between, integer, min_value, required} from 'vee-validate/dist/rules';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import sendPacket from '../../iqrfNet/sendPacket';
 
+import {PrismEditor} from 'vue-prism-editor';
+import 'vue-prism-editor/dist/prismeditor.min.css';
+import Prism from 'prismjs/components/prism-core';
+import 'prismjs/components/prism-json';
+import 'prismjs/themes/prism.css';
+
 export default {
 	name: 'SendDpaPacket',
 	components: {
@@ -117,6 +123,7 @@ export default {
 		CInputCheckbox,
 		CRow,
 		DpaMacros,
+		PrismEditor,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -142,13 +149,13 @@ export default {
 		this.unsubscribe = this.$store.subscribe(mutation => {
 			if (mutation.type === 'SOCKET_ONSEND' &&
 					mutation.payload.mType === 'iqrfRaw') {
-				this.request = mutation.payload;
+				this.request = JSON.stringify(mutation.payload, null, 4);
 				this.response = null;
 			}
 			if (mutation.type === 'SOCKET_ONMESSAGE' &&
 					mutation.payload.mType === 'iqrfRaw') {
 				this.$store.commit('spinner/HIDE');
-				this.response = mutation.payload;
+				this.response = JSON.stringify(mutation.payload, null, 4);
 				switch (mutation.payload.data.status) {
 					case 0:
 						this.$toast.success(this.$t('iqrfnet.sendPacket.messages.success'));
@@ -207,6 +214,12 @@ export default {
 				json.data.timeout = this.timeout;
 			}
 			return this.$store.dispatch('sendRequest', json);
+		},
+		/**
+		 * JSON highlighter method
+		 */
+		highlighter(code) {
+			return Prism.highlight(code, Prism.languages.json, 'json');
 		},
 		/**
 		 * Sets new DPA packet

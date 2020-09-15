@@ -21,13 +21,9 @@ import 'autosize';
 import 'jquery';
 import 'nette.ajax.js';
 import 'ublaboo-datagrid';
-import autosize from 'autosize';
 import Nette from 'nette-forms';
 import * as Sentry from '@sentry/browser';
 import { Vue as VueIntegration } from '@sentry/integrations';
-import hljs from 'highlight.js/lib/core';
-import bash from 'highlight.js/lib/languages/bash';
-import json from 'highlight.js/lib/languages/json';
 import axios from 'axios';
 import '@coreui/coreui';
 import CoreuiVue from '@coreui/vue';
@@ -39,10 +35,8 @@ import i18n from './i18n';
 import store from './store';
 import router from './router';
 
-import 'highlight.js/styles/github.css';
 import '../css/app.scss';
 import 'vue-toast-notification/dist/theme-sugar.css';
-
 
 import App from './components/App';
 import DaemonStatus from './components/DaemonStatus';
@@ -61,7 +55,7 @@ Sentry.init({
 store.commit('SOCKET_ONCLOSE');
 store.commit('spinner/HIDE');
 
-const wsApi = 'ws://tunnel.rehivetech.com:45117/ws'; // 'ws://' + window.location.hostname + ':1338';
+const wsApi = 'ws://' + window.location.hostname + ':1338';
 Vue.use(VueNativeSock, wsApi, {
 	store: store,
 	format: 'json',
@@ -73,12 +67,6 @@ Nette.initOnLoad();
 $(function () {
 	$.nette.init();
 });
-
-autosize(document.querySelectorAll('textarea'));
-
-hljs.initHighlightingOnLoad();
-hljs.registerLanguage('bash', bash);
-hljs.registerLanguage('json', json);
 
 $.nette.ext('spinner', {
 	start: function () {
@@ -103,14 +91,6 @@ $.nette.ext('confirm', {
 			}
 			return retVal;
 		}
-	}
-});
-
-$.nette.ext('highlighter', {
-	complete: function () {
-		document.querySelectorAll('pre code').forEach((block) => {
-			hljs.highlightBlock(block);
-		});
 	}
 });
 
