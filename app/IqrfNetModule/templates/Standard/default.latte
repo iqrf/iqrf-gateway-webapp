@@ -19,13 +19,7 @@
 {block content}
 <c-row>
 	<c-col sm='6'>
-		<c-card>
-			<c-card-header>{_iqrfnet.standard.binaryOutput.title}</c-card-header>
-			<c-card-body>{control binaryOutputForm}</c-card-body>
-			{snippetArea binaryOutputWrapper}
-				{include 'binaryOutput.latte', data => $binaryOutputData}
-			{/snippetArea}
-		</c-card>
+		<binary-output />
 		<c-card>
 			<c-card-header>{_iqrfnet.standard.sensor.title}</c-card-header>
 			<c-card-body>{control sensorForm}</c-card-body>

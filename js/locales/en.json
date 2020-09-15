@@ -153,6 +153,9 @@
 		"bond": "Bond Node",
 		"unbond": "Unbond Node",
 		"clearBonds": "Clear All Bonds",
+		"enumerate": "Enumerate",
+		"getStates": "Get states",
+		"setState": "Set state",
 		"messages": {
 			"saveSuccess": "Configuration has been successfully saved.",
 			"submitServerError": "Internal server error has occured."
@@ -563,15 +566,15 @@
 					"mType": "JSON object does not have mType key.",
 					"success": "JSON request has been sent successfully.",
 					"error": {
-						"timeout": "Timed out.",
+						"timeout": "Request timed out.",
 						"fail": "Request failed.",
-						"pcmd": "Incorrect request PCMD.",
-						"pnum": "Incorrect request PNUM or PCMD.",
-						"addr": "Incorrect request address.",
-						"dataLen": "Incorrect request data length.",
-						"data": "Incorrect request data.",
-						"hwpid": "Incorrect request HWPID.",
-						"nadr": "Incorrect request NADR."
+						"pcmd": "Sent JSON request contains incorrect request PCMD.",
+						"pnum": "Sent JSON request contains incorrect request PNUM.",
+						"addr": "Sent JSON request contains incorrect request address.",
+						"dataLen": "Sent JSON request contains incorrect request data length.",
+						"data": "Sent JSON request contains incorrect request data.",
+						"hwpid": "Sent JSON request contains incorrect request HWPID.",
+						"nadr": "Sent JSON request contains incorrect request NADR."
 					}
 				}
 			}
@@ -617,7 +620,31 @@
 		"standard": {
 			"title": "IQRF Standard manager",
 			"menu": "Standard manager",
-			"description": "IQRF Standard manager."
+			"description": "IQRF Standard manager.",
+			"binaryOutput": {
+				"title": "IQRF Binary Output",
+				"outputs": "Outputs",
+				"index": "Index",
+				"state": "State",
+				"prev": "Previous output states",
+				"form": {
+					"address": "Address",
+					"index": "Index of the binary output",
+					"state": "State of the binary output",
+					"enabled": "ON",
+					"disabled": "OFF",
+					"messages": {
+						"address": "Address has to be a decimal number between 1 and 239",
+						"index": "Index has to be a decimal number between 0 and 31"
+					}
+				},
+				"messages": {
+					"timeout": "Request timed out.",
+					"success": "Request has been sent successfully.",
+					"fail": "Request failed.",
+					"pnum": "Device does not support the Binary Output standard."
+				}
+			}
 		},
 		"trConfiguration": {
 			"title": "TR configuration",
