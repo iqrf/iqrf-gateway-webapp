@@ -154,9 +154,8 @@
 		"unbond": "Unbond Node",
 		"clearBonds": "Clear All Bonds",
 		"enumerate": "Enumerate",
-		"getStates": "Get states",
-		"setState": "Set state",
 		"messages": {
+			"integer": "This parameter should be an integer.",
 			"saveSuccess": "Configuration has been successfully saved.",
 			"submitServerError": "Internal server error has occured."
 		}
@@ -360,18 +359,15 @@
 				"tenantToken": "Tenant token",
 				"updatePollInterval": "Update check interval (seconds)",
 				"messages": {
+					"inventoryPollInterval": "Please enter an integer greater or equal to 0 for for inventory update interval.",
+					"retryPollInterval": "Please enter an integer greater or equal to 0 for communication retry interval.",
+					"updatePollInterval": "Please enter an integer greater or equal to 0 for update check interval",
 					"missing": {
-						"inventoryPollInterval": "Please enter the inventory update interval.",
-						"retryPollInterval": "Please enter the communication retry interval.",
 						"server": "Please enter the server address.",
-						"tenantToken": "Please enter the tenant token.",
-						"updatePollInterval": "Please enter the update check interval"
+						"tenantToken": "Please enter the tenant token."
 					},
 					"invalid": {
-						"inventoryPollInterval": "Inventory update interval should be a decimal number.",
-						"retryPollInterval": "Communication retry interval should be a decimal number.",
-						"server": "Server address should contain the HTTP protocol.",
-						"updatePollInterval": "Update check interval should be a decimal number."
+						"server": "Server address should contain the HTTP protocol."
 					}
 				}
 			}
@@ -638,31 +634,99 @@
 			}
 		},
 		"standard": {
-			"title": "IQRF Standard manager",
-			"menu": "Standard manager",
+			"title": "Standard manager",
 			"description": "IQRF Standard manager.",
+			"form": {
+				"address": "Address",
+				"messages": {
+					"address": "Address has to be an integer between 1 and 239"
+				}
+			},
 			"binaryOutput": {
 				"title": "IQRF Binary Output",
 				"outputs": "Outputs",
 				"index": "Index",
 				"state": "State",
 				"prev": "Previous output states",
+				"enum": "Binary Output enumeration",
 				"form": {
-					"address": "Address",
 					"index": "Index of the binary output",
 					"state": "State of the binary output",
 					"enabled": "ON",
 					"disabled": "OFF",
+					"getStates": "Get states",
+					"setState": "Set state",
 					"messages": {
-						"address": "Address has to be a decimal number between 1 and 239",
-						"index": "Index has to be a decimal number between 0 and 31"
+						"index": "Index has to be an integer between 0 and 31"
 					}
 				},
 				"messages": {
-					"timeout": "Request timed out.",
-					"success": "Request has been sent successfully.",
-					"fail": "Request failed.",
+					"timeout": "Binary output request timed out.",
+					"success": "Binary output request has been sent successfully.",
+					"failure": "An error occured during the Binary output request.",
 					"pnum": "Device does not support the Binary Output standard."
+				}
+			},
+			"dali": {
+				"title": "IQRF DALI",
+				"answers": "Answers",
+				"status": "Status",
+				"value": "Value",
+				"form": {
+					"command": "DALI command",
+					"addCommand": "Add command",
+					"removeCommand": "Remove command",
+					"sendCommand": "Send commands",
+					"messages": {
+						"command": "DALI command has to be an integer between 0 and 65535."
+					}
+				},
+				"messages": {
+					"timeout": "DALI request timed out.",
+					"success": "DALI request has been sent successfully.",
+					"failure": "An error occured during the DALI request.",
+					"pnum": "Device does not support the DALI standard."
+				}
+			},
+			"light": {
+				"title": "IQRF Light",
+				"lights": "Lights",
+				"index": "Index",
+				"power": "Previous power",
+				"enum": "Light enumeration",
+				"powerInfo": "Power info",
+				"form": {
+					"index": "Index of the light",
+					"power": "Power of the light",
+					"getPower": "Get power",
+					"setPower": "Set power",
+					"increment": "Increment power",
+					"decrement": "Decrement power",
+					"messages": {
+						"index": "Light index has to be an integer between 0 and 31.",
+						"power": "Light power has to be an integer between 0 and 100."
+					}
+				},
+				"messages": {
+					"timeout": "Light request timed out.",
+					"success": "Light request has been sent successfully.",
+					"failure": "An error occured during the Light request.",
+					"pnum": "Device does not support the Light standard."
+				}
+			},
+			"sensor": {
+				"title": "IQRF Sensor",
+				"sensors": "Sensors",
+				"type": "Type",
+				"unit": "Unit",
+				"value": "Value",
+				"readAll": "Read all",
+				"enum": "Sensor enumeration",
+				"messages": {
+					"timeout": "Sensor request timed out.",
+					"success": "Sensor request has been sent successfully.",
+					"failure": "An error occured during the Sensor request.",
+					"pnum": "Device does not support the Sensor standard."
 				}
 			}
 		},
@@ -844,21 +908,20 @@
 				"pw": "Password"
 			},
 			"messages": {
+				"integer": "This parameter should be an integer.",
+				"port": "Please enter an integer between 1 and 49151 for port number.",
 				"invalid": {
-					"port": "Invalid port number. Please enter port number between 1 and 49151.",
 					"api_key": "Invalid REST API key format. The API key format should match [./A-Za-z0-9]{22}\\.[A-Za-z0-9+/=]{44}.",
 					"mtopic": "Invalid MQTT requests topic format. The request topic format should be: gateway/{GWID}/rest/requests/+/# (GWID is 16 hexadecimal digits).",
 					"mcid": "Invalid MQTT client ID. The client ID should be the GWID (16 hexadecimal digits)."
 				},
 				"missing": {
 					"maddr": "Please enter the MQTT broker address.",
-					"mport": "Please enter the MQTT broker port.",
 					"mcid": "Please enter the MQTT client ID.",
 					"mtopic": "Please enter the MQTT requests topic.",
 					"muser": "Please enter the MQTT client username.",
 					"mpw": "Please enter the MQTT client password.",
 					"raddr": "Please enter the REST API address.",
-					"rport": "Please enter the REST API port.",
 					"rapi_key": "Please enter the REST API client key."
 				}
 			}
@@ -920,14 +983,15 @@
 				"monitor": "Monitor server"
 			},
 			"messages": {
+				"integer": "This parameter should be an integer.",
+				"daRetries": "Please enter an integer between 0 and 3 for AutoNetwork retry DPA transactions.",
+				"daTxpower": "Please enter an integer between 0 and 7 for Discovery TX power.",
+				"daEwaves": "Please enter an integer between 1 and 127 for empty waves stop condition.",
+				"daWaves": "Please enter an integer between 1 and 127 for maximum waves stop condition.",
+				"ddMaxAddr": "Please enter an integer between 0 and 239 for Discovery process.",
 				"invalid": {
-					"actionRetries": "This parameter should be an integer between 0 and 3.",
-					"integer": "This parameter should be an integer.",
 					"ws_format": "Invalid websocket server address format. Example: ws://example:1883.",
-					"gpio": "GPIO pin should be an integer.",
-					"dd_addr": "The maximum address parameter should be an integer between 0 and 239.",
-					"da_txpower": "TX Power should be a decimal number between 0 and 7.",
-					"da_waves": "Waves and EmptyWaves should be a decimal number between 1 and 127."
+					"gpio": "GPIO pin should be an integer."
 				},
 				"missing": {
 					"ws_api": "Please enter the Daemon API websocket server address.",
@@ -936,13 +1000,7 @@
 					"rb_pin": "Please enter GPIO pin number for the button.",
 					"rb_custom": "Please enter API call identifier.",
 					"sl_green": "Please enter GPIO pin number for green LED.",
-					"sl_red": "Please enter GPIO pin number for red LED.",
-					"da_retries": "Please enter number of AutoNetwork retry DPA transactions.",
-					"da_txpower": "Please enter TX power for Discovery before AutoNetwork.",
-					"da_ewaves": "Please enter number of consecutive empty waves before AutoNetwork is stopped.",
-					"da_waves": "Please enter number of maximum AutoNetwork waves.",
-					"dd_addr": "Please enter the maximum address for Discovery.",
-					"dd_txpower": "Please enter TX power for Discovery."
+					"sl_red": "Please enter GPIO pin number for red LED."
 				}
 			}
 		}

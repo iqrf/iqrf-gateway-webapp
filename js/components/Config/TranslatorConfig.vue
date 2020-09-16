@@ -20,10 +20,11 @@
 							</ValidationProvider>
 							<ValidationProvider 
 								v-slot='{ errors, touched, valid }' 
-								rules='required|integer|port_range'
+								rules='required|integer|between:1,49151'
 								:custom-messages='{
-									required: "translatorConfig.form.messages.missing.mport",
-									port_range: "translatorConfig.form.messages.invalid.port"
+									integer: "translatorConfig.form.messages.integer",
+									required: "translatorConfig.form.messages.port",
+									between: "translatorConfig.form.messages.port"
 								}'
 							>
 								<CInput
@@ -117,11 +118,11 @@
 							</ValidationProvider>
 							<ValidationProvider 
 								v-slot='{ errors, touched, valid }'
-								rules='required|integer|port_range'
+								rules='required|integer|between:1,49151'
 								:custom-messages='{
-									integer: "translatorConfig.form.messages.invalid.port",
-									required: "translatorConfig.form.messages.missing.rport",
-									port_range: "translatorConfig.form.messages.invalid.port"
+									integer: "translatorConfig.form.messages.integer",
+									required: "translatorConfig.form.messages.port",
+									between: "translatorConfig.form.messages.port"
 								}'
 							>
 								<CInput
@@ -164,7 +165,7 @@
 
 import {CButton, CCard, CForm, CIcon, CInput} from '@coreui/vue';
 import {cilLockLocked, cilLockUnlocked} from '@coreui/icons';
-import {integer, required} from 'vee-validate/dist/rules';
+import {between, integer, required} from 'vee-validate/dist/rules';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import ConfigService from '../../services/ConfigService';
 
@@ -186,14 +187,12 @@ export default {
 		};
 	},
 	created() {
+		extend('between', between);
 		extend('integer', integer);
 		extend('required', required);
 		extend('api_key_r', (key) => {
 			const regex = RegExp('^[./A-Za-z0-9]{22}\\.[A-Za-z0-9+/=]{44}$');
 			return regex.test(key);
-		});
-		extend('port_range', (port) => {
-			return ((port >= 1) && (port <= 49151));
 		});
 		extend('client_id', (id) => {
 			const regex = RegExp('^[a-f0-9]{16}$');
@@ -227,11 +226,10 @@ export default {
 		processSubmit() {
 			this.$store.commit('spinner/SHOW');
 			ConfigService.saveConfig('translatorConfig', this.config)
-				.then((response) => {
+				.then(() => {
 					this.$store.commit('spinner/HIDE');
-					if (response.status === 200) {
-						this.$toast.success(this.$t('forms.messages.saveSuccess'));
-					}
+					this.$toast.success(this.$t('forms.messages.saveSuccess'));
+					
 				})
 				.catch((error) => {
 					this.$store.commit('spinner/HIDE');
@@ -255,7 +253,3 @@ export default {
 };
 
 </script>
-
-<style>
-
-</style>

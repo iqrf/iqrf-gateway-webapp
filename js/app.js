@@ -45,7 +45,10 @@ import TheHeader from './components/TheHeader';
 import TheSidebar from './components/TheSidebar';
 import PixlaControl from './components/Cloud/PixlaControl';
 import TrConfiguration from './components/IqrfNet/TrConfiguration';
-import BinaryOutput from './components/IqrfNet/BinaryOutput';
+import BinaryOutputManager from './components/IqrfNet/BinaryOutputManager';
+import SensorManager from './components/IqrfNet/SensorManager';
+import LightManager from './components/IqrfNet/LightManager';
+import DaliManager from './components/IqrfNet/DaliManager';
 
 Sentry.init({
 	dsn: 'https://435ee2b55f994e5f85e21a9ca93ea7a7@sentry.iqrf.org/5',
@@ -55,7 +58,7 @@ Sentry.init({
 store.commit('SOCKET_ONCLOSE');
 store.commit('spinner/HIDE');
 
-const wsApi = 'ws://' + window.location.hostname + ':1338';
+const wsApi = 'ws://tunnel.rehivetech.com:45117/ws'; //'ws://' + window.location.hostname + ':1338';
 Vue.use(VueNativeSock, wsApi, {
 	store: store,
 	format: 'json',
@@ -114,7 +117,10 @@ new Vue({
 		TheSidebar,
 		PixlaControl,
 		TrConfiguration,
-		BinaryOutput
+		BinaryOutputManager,
+		SensorManager,
+		LightManager,
+		DaliManager,
 	},
 	router: router,
 	store: store,

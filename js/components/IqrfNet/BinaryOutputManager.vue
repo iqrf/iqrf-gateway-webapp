@@ -6,10 +6,11 @@
 				<CForm>
 					<ValidationProvider
 						v-slot='{ errors, touched, valid }'
-						rules='required|between:1,239'
+						rules='integer|required|between:1,239'
 						:custom-messages='{
-							required: "iqrfnet.standard.binaryOutput.from.messages.address",
-							between: "iqrfnet.standard.binaryOutput.from.messages.address"
+							integer: "forms.messages.integer",
+							required: "iqrfnet.standard.form.messages.address",
+							between: "iqrfnet.standard.form.messages.address"
 						}'
 					>
 						<CInput
@@ -17,48 +18,70 @@
 							type='number'
 							min='1'
 							max='239'
-							:label='$t("iqrfnet.standard.binaryOutput.form.address")'
+							:label='$t("iqrfnet.standard.form.address")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
 					</ValidationProvider>
-					<CInput
-						v-model.number='index'
-						type='number'
-						min='0'
-						max='31'
-						:label='$t("iqrfnet.standard.binaryOutput.form.index")'
-					/>
-					<CSwitch
-						color='primary'
-						size='lg'
-						shape='pill'
-						class='switch'
-						:label-on='$t("iqrfnet.standard.binaryOutput.form.enabled")'
-						:label-off='$t("iqrfnet.standard.binaryOutput.form.disabled")'
-						:checked.sync='state'
-					/><br>
+					<ValidationProvider
+						v-slot='{ errors, touched, valid }'
+						rules='integer|required|between:0,31'
+						:custom-messages='{
+							integer: "forms.messages.integer",
+							required: "iqrfnet.standard.binaryOutput.form.messages.index",
+							between: "iqrfnet.standard.binaryOutput.form.messages.index"
+						}'
+					>
+						<CInput
+							v-model.number='index'
+							type='number'
+							min='0'
+							max='31'
+							:label='$t("iqrfnet.standard.binaryOutput.form.index")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
+						/>
+					</ValidationProvider>
+					<div class='form-group'>
+						<label for='formStateSwitch'>{{ $t('iqrfnet.standard.binaryOutput.form.state') }}</label><br>
+						<CSwitch
+							id='formStateSwitch'
+							:checked.sync='state'
+							color='primary'
+							size='lg'
+							shape='pill'
+							:label-on='$t("iqrfnet.standard.binaryOutput.form.enabled")'
+							:label-off='$t("iqrfnet.standard.binaryOutput.form.disabled")'
+						/>
+					</div>
 					<CButton color='primary' :disabled='invalid' @click.prevent='submitEnumerate'>
 						{{ $t('forms.enumerate') }}
 					</CButton>
 					<CButton color='secondary' :disabled='invalid' @click.prevent='submitGetStates'>
-						{{ $t('forms.getStates') }}
+						{{ $t('iqrfnet.standard.binaryOutput.form.getStates') }}
 					</CButton>
 					<CButton color='secondary' :disabled='invalid' @click.prevent='submitSetState'>
-						{{ $t('forms.setState') }}
+						{{ $t('iqrfnet.standard.binaryOutput.form.setState') }}
 					</CButton>
 				</CForm>
 			</ValidationObserver>
 		</CCardBody>
 		<CCardFooter v-if='responseType !== null'>
 			<table v-if='responseType === "enum"' class='table'>
-				<tr>
-					<th>{{ $t('iqrfnet.standard.binaryOutput.outputs') }}</th>
-					<td>{{ numOutputs }}</td>
-				</tr>
+				<thead>
+					<b>{{ $t('iqrfnet.standard.binaryOutput.enum') }}</b>
+				</thead>
+				<tbody>
+					<tr>
+						<th>{{ $t('iqrfnet.standard.binaryOutput.outputs') }}</th>
+						<td>{{ numOutputs }}</td>
+					</tr>
+				</tbody>
 			</table>
-			<b v-if='responseType === "set"'>{{ $t('iqrfnet.standard.binaryOutput.prev') }}</b>
 			<table v-if='responseType === "set"' class='table scroll-table'>
+				<thead>
+					<b>{{ $t('iqrfnet.standard.binaryOutput.prev') }}</b>
+				</thead>
 				<tbody>
 					<tr>
 						<th>{{ $t('iqrfnet.standard.binaryOutput.index') }}</th>
@@ -83,11 +106,11 @@
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CIcon, CInput, CSwitch} from '@coreui/vue';
 import {cilCheckAlt, cilX} from '@coreui/icons';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {between, required} from 'vee-validate/dist/rules';
+import {between, integer, required} from 'vee-validate/dist/rules';
 import IqrfStandardService from '../../services/IqrfStandardService';
 
 export default {
-	name: 'BinaryOutput',
+	name: 'BinaryOutputManager',
 	components: {
 		CButton,
 		CCard,
@@ -116,6 +139,7 @@ export default {
 		};
 	},
 	created() {
+		extend('integer', integer);
 		extend('required', required);
 		extend('between', between);
 		this.unsubscribe = this.$store.subscribe(mutation => {
@@ -132,41 +156,28 @@ export default {
 				}
 				clearTimeout(this.timeoutVar);
 				this.$store.commit('spinner/HIDE');
-				if (mutation.payload.mType === 'iqrfBinaryoutput_Enumerate') {
-					switch(mutation.payload.data.status) {
-						case -1:
-							this.$toast.error(this.$t('iqrfnet.standard.binaryOutput.messages.timeout'));
-							break;
-						case 0:
-							this.$toast.success(this.$t('iqrfnet.standard.binaryOutput.messages.success'));
+				switch(mutation.payload.data.status) {
+					case -1:
+						this.$toast.error(this.$t('iqrfnet.standard.binaryOutput.messages.timeout'));
+						break;
+					case 0:
+						this.$toast.success(this.$t('iqrfnet.standard.binaryOutput.messages.success'));
+						if (mutation.payload.mType === 'iqrfBinaryoutput_Enumerate') {
 							this.numOutputs = mutation.payload.data.rsp.result.binOuts;
 							this.responseType = 'enum';
-							break;
-						case 1:
-							this.$toast.error(this.$t('iqrfnet.standard.binaryOutput.messages.fail'));
-							break;
-						case 3:
-							this.$toast.error(this.$t('iqrfnet.standard.binaryOutput.messages.pnum'));
-							break;
-					}
-				} else if (mutation.payload.mType === 'iqrfBinaryoutput_SetOutput') {
-					switch(mutation.payload.data.status) {
-						case -1:
-							this.$toast.error(this.$t('iqrfnet.standard.binaryOutput.messages.timeout'));
-							break;
-						case 0:
-							this.$toast.success(this.$t('iqrfnet.standard.binaryOutput.messages.success'));
+						} else if (mutation.payload.mType === 'iqrfBinaryoutput_SetOutput') {
 							this.parseSetOutput(mutation.payload.data.rsp.result.prevVals);
 							this.responseType = 'set';
-							break;
-						case 1:
-							this.$toast.error(this.$t('iqrfnet.standard.binaryOutput.messages.fail'));
-							break;
-						case 3:
-							this.$toast.error(this.$t('iqrfnet.standard.binaryOutput.messages.pnum'));
-							break;
-					}
+						}
+						break;
+					case 1:
+						this.$toast.error(this.$t('iqrfnet.standard.binaryOutput.messages.fail'));
+						break;
+					case 3:
+						this.$toast.error(this.$t('iqrfnet.standard.binaryOutput.messages.pnum'));
+						break;
 				}
+
 			}
 		});
 		this.generateStates();
@@ -179,7 +190,7 @@ export default {
 			this.states = new Array(60).fill(false);
 		},
 		parseSetOutput(states) {
-			for(var i = 0; i < states.length; ++i) {
+			for(let i = 0; i < states.length; ++i) {
 				this.states[i] = states[i];
 			}
 		},
@@ -189,7 +200,7 @@ export default {
 		},
 		submitGetStates() {
 			this.$store.commit('spinner/SHOW');
-			IqrfStandardService.binaryOutputSetOutputs(this.address, null);
+			IqrfStandardService.binaryOutputGetOutputs(this.address);
 		},
 		submitSetState() {
 			this.$store.commit('spinner/SHOW');
@@ -209,10 +220,6 @@ export default {
 </script>
 
 <style scoped>
-
-.switch {
-	margin-bottom: 15pt;
-}
 
 .scroll-table {
     display: block;

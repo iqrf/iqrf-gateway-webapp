@@ -33,10 +33,11 @@
 				</ValidationProvider>
 				<ValidationProvider
 					v-slot='{ errors, touched, valid }'
-					rules='min:0|required'
+					rules='min:0|required|integer'
 					:custom-messages='{
-						min: "gateway.mender.form.messages.invalid.inventoryPollInterval",
-						required: "gateway.mender.form.messages.missing.inventoryPollInterval"
+						integer: "forms.messages.integer",
+						min: "gateway.mender.form.messages.inventoryPollInterval",
+						required: "gateway.mender.form.messages.inventoryPollInterval"
 					}'
 				>
 					<CInput
@@ -50,10 +51,11 @@
 				</ValidationProvider>
 				<ValidationProvider
 					v-slot='{ errors, touched, valid }'
-					rules='min:0|required'
+					rules='min:0|required|integer'
 					:custom-messages='{
-						min: "gateway.mender.form.messages.invalid.retryPollInterval",
-						required: "gateway.mender.form.messages.missing.retryPollInterval"
+						integer: "forms.messages.integer",
+						min: "gateway.mender.form.messages.retryPollInterval",
+						required: "gateway.mender.form.messages.retryPollInterval"
 					}'
 				>
 					<CInput
@@ -67,10 +69,11 @@
 				</ValidationProvider>
 				<ValidationProvider
 					v-slot='{ errors, touched, valid}'
-					rules='min:0|required'
+					rules='min:0|required|integer'
 					:custom-messages='{
-						min: "gateway.mender.form.messages.invalid.updatePollInterval",
-						required: "gateway.mender.form.messages.missing.updatePollInterval"
+						integer: "forms.messages.integer",
+						min: "gateway.mender.form.messages.updatePollInterval",
+						required: "gateway.mender.form.messages.updatePollInterval"
 					}'
 				>
 					<CInput
@@ -144,11 +147,9 @@ export default {
 		processSubmit() {
 			this.$store.commit('spinner/SHOW');
 			ConfigService.saveConfig('menderConfig', this.config)
-				.then((response) => {
+				.then(() => {
 					this.$store.commit('spinner/HIDE');
-					if (response.status === 200) {
-						this.$toast.success(this.$t('forms.messages.saveSuccess'));
-					}
+					this.$toast.success(this.$t('forms.messages.saveSuccess'));
 				})
 				.catch((error) => {
 					this.$store.commit('spinner/HIDE');
@@ -164,7 +165,3 @@ export default {
 	}
 };
 </script>
-
-<style>
-
-</style>

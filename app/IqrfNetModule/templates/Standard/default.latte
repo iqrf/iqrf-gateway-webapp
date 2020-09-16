@@ -19,29 +19,11 @@
 {block content}
 <c-row>
 	<c-col sm='6'>
-		<binary-output />
-		<c-card>
-			<c-card-header>{_iqrfnet.standard.sensor.title}</c-card-header>
-			<c-card-body>{control sensorForm}</c-card-body>
-			{snippetArea sensorWrapper}
-				{include 'sensor.latte', data => $sensorData}
-			{/snippetArea}
-		</c-card>
+		<binary-output-manager />
+		<sensor-manager />
 	</c-col>
 	<c-col sm='6'>
-		<c-card>
-			<c-card-header>{_iqrfnet.standard.light.title}</c-card-header>
-			<c-card-body>{control lightForm}</c-card-body>
-			{snippetArea lightWrapper}
-				{include 'light.latte', data => $lightData}
-			{/snippetArea}
-		</c-card>
-		<c-card>
-			<c-card-header>{_iqrfnet.standard.dali.title}</c-card-header>
-			<c-card-body>{control daliForm}</c-card-body>
-			{snippetArea daliWrapper}
-				{include 'dali.latte', data => $daliData}
-			{/snippetArea}
-		</c-card>
+		<light-manager />
+		<dali-manager />
 	</c-col>
 </c-row>

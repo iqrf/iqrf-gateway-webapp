@@ -155,11 +155,11 @@
 							<h3>{{ $t("controllerConfig.form.daemonApi.autoNetwork.title") }}</h3>
 							<ValidationProvider
 								v-slot='{ errors, touched, valid }'
-								rules='integer|required|actionRetries'
+								rules='required|integer|between:0,3'
 								:custom-messages='{
-									integer: "controllerConfig.form.messages.invalid.integer",
-									required: "controllerConfig.form.messages.missing.da_retries",
-									actionRetries: "controllerConfig.form.messages.invalid.actionRetries"
+									integer: "controllerConfig.form.messages.integer",
+									required: "controllerConfig.form.messages.daRetries",
+									between: "controllerConfig.form.messages.daRetries"
 								}'
 							>
 								<CInput
@@ -178,11 +178,11 @@
 							/>
 							<ValidationProvider
 								v-slot='{ errors, touched, valid }'
-								rules='integer|required|txpower'
+								rules='integer|required|between:0,7'
 								:custom-messages='{
-									integer: "controllerConfig.form.messages.invalid.integer",
-									required: "controllerConfig.form.messages.missing.da_txpower",
-									txpower: "controllerConfig.form.messages.invalid.da_txpower"
+									integer: "controllerConfig.form.messages.integer",
+									required: "controllerConfig.form.messages.daTxpower",
+									between: "controllerConfig.form.messages.daTxpower"
 								}'
 							>
 								<CInput
@@ -206,11 +206,11 @@
 							/>
 							<ValidationProvider
 								v-slot='{ errors, touched, valid }'
-								rules='integer|required|waves'
+								rules='integer|required|between:1,127'
 								:custom-messages='{
-									integer: "controllerConfig.form.messages.invalid.integer",
-									required: "controllerConfig.form.messages.missing.da_ewaves",
-									waves: "controllerConfig.form.messages.invalid.da_ewaves"
+									integer: "controllerConfig.form.messages.integer",
+									required: "controllerConfig.form.messages.daEwaves",
+									between: "controllerConfig.form.messages.daEwaves"
 								}'
 							>
 								<CInput
@@ -225,11 +225,11 @@
 							</ValidationProvider>
 							<ValidationProvider
 								v-slot='{ errors, touched, valid }'
-								rules='integer|required|waves'
+								rules='integer|required|between:1,127'
 								:custom-messages='{
-									integer: "controllerConfig.form.messages.invalid.integer",
-									required: "controllerConfig.form.messages.missing.da_waves",
-									waves: "controllerConfig.form.messages.invalid.da_ewaves"
+									integer: "controllerConfig.form.messages.integer",
+									required: "controllerConfig.form.messages.daWaves",
+									between: "controllerConfig.form.messages.daWaves"
 								}'
 							>
 								<CInput
@@ -251,11 +251,11 @@
 							<h3>{{ $t("controllerConfig.form.daemonApi.discovery.title") }}</h3>
 							<ValidationProvider
 								v-slot='{ errors, touched, valid }'
-								rules='addr_range|integer|required'
+								rules='integer|required|between:0,239'
 								:custom-messages='{
-									addr_range: "controllerConfig.form.messages.invalid.dd_addr",
-									integer: "controllerConfig.form.messages.invalid.integer",
-									required: "controllerConfig.form.messages.missing.dd_addr"
+									between: "controllerConfig.form.messages.ddMaxAddr",
+									integer: "controllerConfig.form.messages.integer",
+									required: "controllerConfig.form.messages.ddMaxAddr"
 								}'
 							>
 								<CInput
@@ -270,11 +270,11 @@
 							</ValidationProvider>
 							<ValidationProvider
 								v-slot='{ errors, touched, valid }'
-								rules='integer|required|txpower'
+								rules='integer|required|between:0,7'
 								:custom-messages='{
-									integer: "controllerConfig.form.messages.invalid.integer",
-									required: "controllerConfig.form.messages.missing.dd_txpower",
-									invalid: "controllerConfig.form.messages.missing.da_txpower"
+									integer: "controllerConfig.form.messages.integer",
+									required: "controllerConfig.form.messages.daTxpower",
+									between: "controllerConfig.form.messages.daTxpower"
 								}'
 							>
 								<CInput
@@ -326,7 +326,7 @@
 <script>
 import {CButton, CCard , CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {integer, required} from 'vee-validate/dist/rules';
+import {between, integer, required} from 'vee-validate/dist/rules';
 import ConfigService from '../../services/ConfigService';
 
 export default {
@@ -350,20 +350,9 @@ export default {
 		};
 	},
 	created() {
+		extend('between', between);
 		extend('integer', integer);
 		extend('required', required);
-		extend('addr_range', (addr) => {
-			return ((addr >= 0) && (addr <= 239));
-		});
-		extend('actionRetries', (val) => {
-			return ((val >= 0) && (val<=3));
-		});
-		extend('txpower', (val) => {
-			return ((val >= 0) && (val<=7));
-		});
-		extend('waves', (val) => {
-			return ((val >= 1) && (val<=127));
-		});
 		extend('ws_addr', (addr) => {
 			const regex = RegExp('^ws:\\/\\/.+:([1-9]|[1-9][0-9]|[1-9][0-9]{2}|[1-9][0-9]{3}|[1-4][0-9][0-1][0-5][0-1])$');
 			return regex.test(addr);
@@ -395,11 +384,9 @@ export default {
 		processSubmit() {
 			this.$store.commit('spinner/SHOW');
 			ConfigService.saveConfig('controllerConfig', this.config)
-				.then((response) => {
+				.then(() => {
 					this.$store.commit('spinner/HIDE');
-					if (response.status === 200) {
-						this.$toast.success(this.$t('forms.messages.saveSuccess'));
-					}
+					this.$toast.success(this.$t('forms.messages.saveSuccess'));
 				})
 				.catch((error) => {
 					this.$store.commit('spinner/HIDE');
@@ -423,7 +410,3 @@ export default {
 	}
 };
 </script>
-
-<style>
-
-</style>
