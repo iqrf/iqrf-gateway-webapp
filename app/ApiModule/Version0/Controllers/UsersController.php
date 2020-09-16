@@ -35,6 +35,7 @@ use App\Models\Database\Entities\User;
 use App\Models\Database\EntityManager;
 use App\Models\Database\Repositories\UserRepository;
 use Nette\Utils\JsonException;
+use function GuzzleHttp\Psr7\stream_for;
 
 /**
  * User manager API controller
@@ -263,7 +264,8 @@ class UsersController extends BaseController {
 		}
 		$this->entityManager->persist($user);
 		$this->entityManager->flush();
-		return $response->withStatus(ApiResponse::S200_OK);
+		return $response->withStatus(ApiResponse::S200_OK)
+			->withBody(stream_for());
 	}
 
 }

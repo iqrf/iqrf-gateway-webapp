@@ -10,6 +10,7 @@ import SendDpaPacket from './components/IqrfNet/SendDpaPacket';
 import TranslatorConfig from './components/Config/TranslatorConfig';
 import ControllerConfig from './components/Config/ControllerConfig';
 import MenderConfig from './components/Gateway/MenderConfig';
+import UserEdit from './components/Core/UserEdit';
 import UserList from './components/Core/UserList';
 import SendJsonRequest from './components/IqrfNet/SendJsonRequest';
 
@@ -118,6 +119,20 @@ const routes = [
 				path: '/user/',
 				meta: {
 					title: 'core.user.title',
+				},
+			},
+			{
+				component: UserEdit,
+				path: '/user/edit/:userId/',
+				props: (route) => {
+					const userId = Number.parseInt(route.params.userId, 10);
+					if (Number.isNaN(userId)) {
+						return 0;
+					}
+					return {userId};
+				},
+				meta: {
+					title: 'core.user.edit.title',
 				},
 			},
 			{

@@ -7,6 +7,20 @@ import {authorizationHeader} from '../helpers/authorizationHeader';
 class UserService {
 
 	/**
+	 * Changes password
+	 * @param oldPassword Old password
+	 * @param newPassword New password
+	 * @returns {Promise<AxiosResponse<any>>}
+	 */
+	changePassword(oldPassword, newPassword) {
+		const body = {
+			old: oldPassword,
+			new: newPassword
+		};
+		return axios.put('user/password', body, {headers: authorizationHeader()});
+	}
+
+	/**
 	 * Deletes the user
 	 * @param {Number} id User ID
 	 * @returns {Promise<AxiosResponse<any>>}
@@ -26,10 +40,19 @@ class UserService {
 	}
 
 	/**
+	 * Returns the user
+	 * @param {Number} id User ID
+	 * @returns {Promise<AxiosResponse<any>>}
+	 */
+	get(id) {
+		return axios.get('users/' + id, {headers: authorizationHeader()});
+	}
+
+	/**
 	 * Returns information about the logged in user
 	 * @returns {Promise<AxiosResponse<any>>}
 	 */
-	getInfo() {
+	getLoggedIn() {
 		return axios.get('user', {headers: authorizationHeader()});
 	}
 

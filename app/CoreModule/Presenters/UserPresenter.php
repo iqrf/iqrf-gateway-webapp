@@ -21,10 +21,7 @@ declare(strict_types = 1);
 namespace App\CoreModule\Presenters;
 
 use App\CoreModule\Forms\UserAddFormFactory;
-use App\CoreModule\Forms\UserEditFormFactory;
 use App\CoreModule\Traits\TPresenterFlashMessage;
-use App\Models\Database\Entities\User;
-use App\Models\Database\EntityManager;
 use Nette\Application\UI\Form;
 
 /**
@@ -41,53 +38,11 @@ class UserPresenter extends ProtectedPresenter {
 	public $addFormFactory;
 
 	/**
-	 * @var UserEditFormFactory Edit an existing user form factory
-	 * @inject
-	 */
-	public $editFormFactory;
-
-	/**
-	 * @var EntityManager Entity manager
-	 */
-	private $entityManager;
-
-	/**
-	 * Constructor
-	 * @param EntityManager $entityManager Entity manager
-	 */
-	public function __construct(EntityManager $entityManager) {
-		$this->entityManager = $entityManager;
-		parent::__construct();
-	}
-
-	/**
-	 * Renders the form for editing users
-	 * @param int $id User ID
-	 */
-	public function actionEdit(int $id): void {
-		$user = $this->entityManager->getUserRepository()->find($id);
-		if ($user === null) {
-			$this->flashError('core.user.messages.notFound');
-			$this->redirect('User:default');
-		}
-		assert($user instanceof User);
-		$this['userEditForm']->setDefaults($user->jsonSerialize());
-	}
-
-	/**
 	 * Creates the add a new user form
 	 * @return Form Add a new user form
 	 */
 	protected function createComponentUserAddForm(): Form {
 		return $this->addFormFactory->create($this);
-	}
-
-	/**
-	 * Creates the edit an existing user form
-	 * @return Form Edit an existing user form
-	 */
-	protected function createComponentUserEditForm(): Form {
-		return $this->editFormFactory->create($this);
 	}
 
 }

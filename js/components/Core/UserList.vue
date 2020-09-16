@@ -21,7 +21,11 @@
 				>
 					<template #role='{item}'>
 						<td>
-							<CDropdown color='success' :toggler-text='$t("core.user.roles." + item.role)' size='sm'>
+							<CDropdown
+								color='success'
+								:toggler-text='$t("core.user.roles." + item.role)'
+								size='sm'
+							>
 								<CDropdownItem @click='changeRole(item, "normal")'>
 									{{ $t('core.user.roles.normal') }}
 								</CDropdownItem>
@@ -33,7 +37,11 @@
 					</template>
 					<template #language='{item}'>
 						<td>
-							<CDropdown color='success' :toggler-text='$t("core.user.languages." + item.language)' size='sm'>
+							<CDropdown
+								color='success'
+								:toggler-text='$t("core.user.languages." + item.language)'
+								size='sm'
+							>
 								<CDropdownItem @click='changeLanguage(item, "en")'>
 									{{ $t('core.user.languages.en') }}
 								</CDropdownItem>
@@ -42,7 +50,12 @@
 					</template>
 					<template #actions='{item}'>
 						<td class='col-actions'>
-							<CButton color='primary' :to='"/user/edit/" + item.id' size='sm'>
+							<CButton
+								v-if='$store.getters["user/getRole"] === "power" || $store.getters["user/getName"] === item.username'
+								color='primary'
+								:to='"/user/edit/" + item.id'
+								size='sm'
+							>
 								<CIcon :content='$options.icons.edit' />
 								{{ $t('table.actions.edit') }}
 							</CButton>
@@ -111,8 +124,22 @@ export default {
 		CModal,
 	},
 	data() {
-		return {
-			fields: [
+		let fields = [];
+		if (this.$store.getters['user/getRole'] === 'normal') {
+			fields = [
+				{
+					key: 'username',
+					label: this.$t('core.user.username'),
+				},
+				{
+					key: 'actions',
+					label: this.$t('table.actions.title'),
+					sorter: false,
+					filter: false,
+				},
+			];
+		} else {
+			fields = [
 				{
 					key: 'id',
 					label: this.$t('core.user.id'),
@@ -135,7 +162,10 @@ export default {
 					sorter: false,
 					filter: false,
 				},
-			],
+			];
+		}
+		return {
+			fields,
 			modals: {
 				delete: {
 					user: null,

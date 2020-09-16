@@ -231,8 +231,14 @@
 		"user": {
 			"title": "User manager",
 			"description": "Manage users of this webapp.",
+			"add": {
+				"title": "Add a new user"
+			},
+			"edit": {
+				"title": "Edit an existing user"
+			},
 			"id": "User ID",
-			"username": "Username",
+			"username": "User name",
 			"role": "User role",
 			"roles": {
 				"normal": "Normal user",
@@ -242,7 +248,20 @@
 			"languages": {
 				"en": "English"
 			},
+			"oldPassword": "Old password (only if you want change password)",
+			"newPassword": "New password (only if you want change password)",
 			"messages": {
+				"conflict": {
+					"username": "Username is already used."
+				},
+				"invalid": {
+					"oldPassword": "The old password is mismatched."
+				},
+				"missing": {
+					"username": "Please enter the username.",
+					"oldPassword": "Please enter the old password.",
+					"newPassword": "Please enter the new password."
+				},
 				"delete": {
 					"confirm": "Do you really want to delete user {username}?",
 					"confirmTitle": "Delete user",
@@ -250,7 +269,8 @@
 				},
 				"edit": {
 					"success": "User {username} has been edited successfully."
-				}
+				},
+				"notFound": "User not found."
 			}
 		},
 		"sign": {

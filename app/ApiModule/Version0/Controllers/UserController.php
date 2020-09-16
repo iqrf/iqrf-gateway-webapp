@@ -37,6 +37,7 @@ use Lcobucci\JWT\Configuration;
 use Nette\Utils\JsonException;
 use Throwable;
 use function gethostname;
+use function GuzzleHttp\Psr7\stream_for;
 
 /**
  * User manager API controller
@@ -77,8 +78,6 @@ class UserController extends BaseController {
 	 *              application/json:
 	 *                  schema:
 	 *                      $ref: '#/components/schemas/UserDetail'
-	 *      '401':
-	 *          description: Unauthorized
 	 *      '403':
 	 *          description: Forbidden - API key is used
 	 * ")
@@ -92,6 +91,46 @@ class UserController extends BaseController {
 			return $response->writeJsonObject($user);
 		}
 		throw new ClientErrorException('API key is used.', ApiResponse::S403_FORBIDDEN);
+	}
+
+	/**
+	 * @Path("/password")
+	 * @Method("PUT")
+	 * @OpenApi("
+	 *  summary: Changes the password
+	 *  requestBody:
+	 *      required: true
+	 *      content:
+	 *          application/json:
+	 *              schema:
+	 *                  $ref: '#/components/schemas/PasswordChange'
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '403':
+	 *          description: Forbidden - API key is used
+	 * ")
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function changePassword(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$user = $request->getAttribute(RequestAttributes::APP_LOGGED_USER);
+		if (!($user instanceof User)) {
+			throw new ClientErrorException('API key is used.', ApiResponse::S403_FORBIDDEN);
+		}
+		try {
+			$body = $request->getJsonBody();
+		} catch (JsonException $e) {
+			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
+		}
+		if (!$user->verifyPassword($body['old'])) {
+			throw new ClientErrorException('Invalid old password', ApiResponse::S400_BAD_REQUEST);
+		}
+		$user->setPassword($body['new']);
+		$this->entityManager->persist($user);
+		$this->entityManager->flush();
+		return $response->withBody(stream_for());
 	}
 
 	/**

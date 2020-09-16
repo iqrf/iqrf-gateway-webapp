@@ -6,6 +6,18 @@ const getters = {
 	isLoggedIn(state) {
 		return state.user !== null;
 	},
+	getId(state) {
+		if (state.user === null) {
+			return null;
+		}
+		return state.user.id;
+	},
+	getName(state) {
+		if (state.user === null) {
+			return null;
+		}
+		return state.user.username;
+	},
 	getRole(state) {
 		if (state.user === null) {
 			return null;
