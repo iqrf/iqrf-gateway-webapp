@@ -58,7 +58,8 @@ Sentry.init({
 store.commit('SOCKET_ONCLOSE');
 store.commit('spinner/HIDE');
 
-const wsApi = 'ws://tunnel.rehivetech.com:45117/ws'; //'ws://' + window.location.hostname + ':1338';
+const wsApi = 'ws://' + window.location.hostname + ':1338';
+//const wsApi ='ws://tunnel.rehivetech.com:45117/ws';
 Vue.use(VueNativeSock, wsApi, {
 	store: store,
 	format: 'json',
