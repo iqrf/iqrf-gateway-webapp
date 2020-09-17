@@ -7,7 +7,7 @@ import {authorizationHeader} from '../helpers/authorizationHeader';
 class ConfigService {
 	/**
 	 * Retrieves service configuration
-	 * @returns {Promise<AxiosResponse<<any>>}
+	 * @returns {Promise<AxiosResponse<any>>}
 	 */
 	getConfig(serviceName) {
 		return axios.get(serviceName, {headers: authorizationHeader()});
@@ -15,7 +15,7 @@ class ConfigService {
 
 	/**
 	 * Saves new service configuration
-	 * @returns {Promise<AxiosResponse<<any>>}
+	 * @returns {Promise<AxiosResponse<any>>}
 	 */
 	saveConfig(serviceName, config) {
 		return axios.put(serviceName, config, {headers: authorizationHeader()});

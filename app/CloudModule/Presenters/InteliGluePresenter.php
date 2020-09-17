@@ -20,27 +20,11 @@ declare(strict_types = 1);
 
 namespace App\CloudModule\Presenters;
 
-use App\CloudModule\Forms\InteliGlueFormFactory;
 use App\CoreModule\Presenters\ProtectedPresenter;
-use Nette\Application\UI\Form;
 
 /**
  * Inteliments InteliGlue presenter
  */
 class InteliGluePresenter extends ProtectedPresenter {
-
-	/**
-	 * @var InteliGlueFormFactory Inteliments InteliGlue form factory
-	 * @inject
-	 */
-	public $formFactory;
-
-	/**
-	 * Creates the Inteliments InteliGlue form
-	 * @return Form Inteliments InteliGlue form
-	 */
-	protected function createComponentCloudInteliGlueForm(): Form {
-		return $this->formFactory->create($this);
-	}
 
 }
