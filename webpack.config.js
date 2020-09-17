@@ -1,6 +1,7 @@
 const webpack = require('webpack');
 const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const CompressionPlugin = require('compression-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
@@ -11,7 +12,6 @@ module.exports = {
 		app: './js/app.js',
 		config: './js/config.js',
 		error500: './js/error500.js',
-		iqrfNet: './js/iqrfNet.js',
 	},
 	output: {
 		filename: '[name].bundle.js',
@@ -94,6 +94,7 @@ module.exports = {
 			]
 		}),
 		new VueLoaderPlugin(),
+		new CompressionPlugin(),
 	],
 	optimization: {
 		minimize: true,
