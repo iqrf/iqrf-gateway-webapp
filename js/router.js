@@ -13,6 +13,7 @@ import MenderConfig from './components/Gateway/MenderConfig';
 import UserEdit from './components/Core/UserEdit';
 import UserList from './components/Core/UserList';
 import SendJsonRequest from './components/IqrfNet/SendJsonRequest';
+import StandardManager from './components/IqrfNet/StandardManager';
 
 import i18n from './i18n';
 import ServiceControl from './components/Gateway/ServiceControl';
@@ -84,6 +85,13 @@ const routes = [
 				path: '/iqrfnet/network/',
 				meta: {
 					title: 'iqrfnet.networkManager.title'
+				}
+			},
+			{
+				component: StandardManager,
+				path: '/iqrfnet/standard/',
+				meta: {
+					title: 'iqrfnet.standard.title'
 				}
 			},
 			{

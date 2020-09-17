@@ -4,8 +4,4 @@ services:
 	- App\IqrfNetModule\Forms\OsDpaUploadFormFactory
 	- App\IqrfNetModule\Forms\SecurityFormFactory
 	- App\IqrfNetModule\Forms\SendJsonFormFactory
-	- App\IqrfNetModule\Forms\StandardBinaryOutputFormFactory
-	- App\IqrfNetModule\Forms\StandardDaliFormFactory
-	- App\IqrfNetModule\Forms\StandardLightFormFactory
-	- App\IqrfNetModule\Forms\StandardSensorFormFactory
 	- App\IqrfNetModule\Forms\TrUploadFormFactory

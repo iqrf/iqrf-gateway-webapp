@@ -130,7 +130,6 @@ export default {
 						case 0:
 							this.$toast.success(this.$t('iqrfnet.standard.dali.messages.success'));
 							this.answers = mutation.payload.data.rsp.result.answers;
-							console.log(this.answers.length);
 							this.responseReceived = true;
 							break;
 						case 3:

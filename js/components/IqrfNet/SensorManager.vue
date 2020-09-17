@@ -40,20 +40,20 @@
 				<tbody>
 					<tr>
 						<th>{{ $t('iqrfnet.standard.sensor.type') }}</th>
-						<td v-for='i in sensors' :key='i.key'>
-							{{ i.type }}
+						<td v-for='i of sensors.length' :key='i'>
+							{{ sensors[i-1].type }}
 						</td>
 					</tr>
 					<tr v-if='responseType === "enum"'>
 						<th>{{ $t('iqrfnet.standard.sensor.unit') }}</th>
-						<td v-for='j in sensors' :key='j.key'>
-							{{ j.unit }}
+						<td v-for='j of sensors.length' :key='j'>
+							{{ sensors[j-1].unit }}
 						</td>
 					</tr>
 					<tr v-else-if='responseType === "read"'>
 						<th>{{ $t('iqrfnet.standard.sensor.value') }}</th>
-						<td v-for='k in sensors' :key='k.key'>
-							{{ k.value + ' ' + k.unit }}
+						<td v-for='k of sensors.length' :key='k'>
+							{{ sensors[k-1].value + ' ' + sensors[k-1].unit }}
 						</td>
 					</tr>
 				</tbody>
@@ -143,8 +143,8 @@ export default {
 		parseEnumerate(sensors) {
 			this.sensors = [];
 			sensors.forEach(item => {
-				if (item.unit === '?') {
-					item.unit = '-';
+				if (item.id === 'BINARYDATA7') {
+					item = item.breakdown[0];
 				}
 				this.sensors.push({'type': item.name, 'unit': item.unit});
 			});
@@ -152,8 +152,8 @@ export default {
 		parseReadAll(sensors) {
 			this.sensors = [];
 			sensors.forEach(item => {
-				if (item.unit === '?') {
-					item.unit = '';
+				if (item.id === 'BINARYDATA7') {
+					item = item.breakdown[0];
 				}
 				this.sensors.push({'type': item.name, 'value': item.value, 'unit': item.unit});
 			});
