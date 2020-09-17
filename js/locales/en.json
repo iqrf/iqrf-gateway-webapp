@@ -19,9 +19,7 @@
 					"endpoint": "Please enter the endpoint.",
 					"certificate": "Please enter the certificate.",
 					"key": "Please enter the private key."
-				},
-				"save": "Save",
-				"save_restart": "Save and restart"
+				}
 			},
 			"messages": {
 				"mismatchedCrtAndKey": "The private key does not correspond to the certificate."
@@ -33,21 +31,19 @@
 			"form": {
 				"title": "Hexio IoT Platform MQTT connection wizard",
 				"broker": "MQTT broker address",
-				"ClientId": "Client ID",
-				"TopicRequest": "Topic for requests",
-				"TopicResponse": "Topic for responses",
+				"clientId": "Client ID",
+				"topicRequest": "Topic for requests",
+				"topicResponse": "Topic for responses",
 				"username": "Username",
 				"password": "Password",
 				"messages": {
 					"broker": "Please enter the MQTT broker address.",
-					"ClientId": "Please enter client ID.",
-					"TopicRequest": "Please enter topic for requests.",
-					"TopicResponse": "Please enter topic for responses.",
+					"clientId": "Please enter client ID.",
+					"topicRequest": "Please enter topic for requests.",
+					"topicResponse": "Please enter topic for responses.",
 					"username": "Please enter the username.",
 					"password": "Please enter the password."
-				},
-				"save": "Save",
-				"save_restart": "Save and restart"
+				}
 			}
 		},
 		"ibmCloud": {
@@ -66,9 +62,7 @@
 					"deviceId": "Please enter the device ID.",
 					"token": "Please enter the authentication token.",
 					"eventId": "Please enter command and event ID."
-				},
-				"save": "Save",
-				"save_restart": "Save and restart"
+				}
 			}
 		},
 		"intelimentsInteliGlue": {
@@ -86,9 +80,7 @@
 					"assignedPortRange": "Port has to be an integer in range from 0 to 65535.",
 					"clientId": "Please enter the client ID.",
 					"password": "Please enter the password."
-				},
-				"save": "Save",
-				"saveRestart": "Save and restart"
+				}
 			}
 		},
 		"msAzure": {
@@ -99,9 +91,7 @@
 				"connectionString": "IoT Hub Connection String for Device",
 				"messages": {
 					"connectionString": "Please enter IoT Hub Connection String for Device."
-				},
-				"save": "Save",
-				"save_restart": "Save and restart"
+				}
 			},
 			"messages": {
 				"invalidConnectionString": "Invalid MS Azure IoT Hub connection string for device."
@@ -146,6 +136,7 @@
 		"add": "Add",
 		"no": "No",
 		"save": "Save",
+		"saveRestart": "Save and restart",
 		"send": "Send",
 		"yes": "Yes",
 		"write": "Write",

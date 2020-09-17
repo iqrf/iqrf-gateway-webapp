@@ -20,27 +20,11 @@ declare(strict_types = 1);
 
 namespace App\CloudModule\Presenters;
 
-use App\CloudModule\Forms\HexioFormFactory;
 use App\CoreModule\Presenters\ProtectedPresenter;
-use Nette\Application\UI\Form;
 
 /**
  * Hexio IoT platform presenter
  */
 class HexioPresenter extends ProtectedPresenter {
-
-	/**
-	 * @var HexioFormFactory Hexio IoT platform form factory
-	 * @inject
-	 */
-	public $formFactory;
-
-	/**
-	 * Creates the Hexio IoT platform form
-	 * @return Form Hexio IoT platform form
-	 */
-	protected function createComponentCloudHexioForm(): Form {
-		return $this->formFactory->create($this);
-	}
 
 }

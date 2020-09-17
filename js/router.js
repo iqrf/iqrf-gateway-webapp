@@ -15,6 +15,7 @@ import UserList from './components/Core/UserList';
 import SendJsonRequest from './components/IqrfNet/SendJsonRequest';
 import StandardManager from './components/IqrfNet/StandardManager';
 import InteliGlueCreator from './components/Cloud/InteliGlueCreator';
+import HexioCreator from './components/Cloud/HexioCreator';
 
 import i18n from './i18n';
 import ServiceControl from './components/Gateway/ServiceControl';
@@ -38,10 +39,17 @@ const routes = [
 		},
 		children: [
 			{
+				component: HexioCreator,
+				path: '/cloud/hexio/',
+				meta: {
+					title: 'cloud.hexio.form.title',
+				}
+			},
+			{
 				component: InteliGlueCreator,
 				path: '/cloud/inteli-glue/',
 				meta: {
-					title: 'cloud.intelimentsInteliGlue.title',
+					title: 'cloud.intelimentsInteliGlue.form.title',
 				},
 			},
 			{

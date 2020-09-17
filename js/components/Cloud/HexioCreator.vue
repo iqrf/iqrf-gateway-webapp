@@ -7,31 +7,12 @@
 						v-slot='{ errors, touched, valid }'
 						rules='required'
 						:custom-messages='{
-							required: "cloud.intelimentsInteliGlue.form.messages.rootTopic"
+							required: "cloud.hexio.form.messages.broker"
 						}'
 					>
 						<CInput
-							v-model='topic'
-							:label='$t("cloud.intelimentsInteliGlue.form.rootTopic")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{ errors, touched, valid }'
-						rules='required|integer|between:0,65535'
-						:custom-messages='{
-							between: "cloud.intelimentsInteliGlue.form.messages.assignedPortRange",
-							integer: "cloud.intelimentsInteliGlue.form.messages.assignedPortRange",
-							required: "cloud.intelimentsInteliGlue.form.messages.assignedPort"
-						}'
-					>
-						<CInput
-							v-model.number='port'
-							type='number'
-							min='0'
-							max='65535'
-							:label='$t("cloud.intelimentsInteliGlue.form.assignedPort")'
+							v-model='address'
+							:label='$t("cloud.hexio.form.broker")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
@@ -40,12 +21,12 @@
 						v-slot='{ errors, touched, valid }'
 						rules='required'
 						:custom-messages='{
-							required: "cloud.intelimentsInteliGlue.form.messages.clientId"
+							required: "cloud.hexio.form.messages.clientId"
 						}'
 					>
 						<CInput
 							v-model='clientId'
-							:label='$t("cloud.intelimentsInteliGlue.form.clientId")'
+							:label='$t("cloud.hexio.form.clientId")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
@@ -54,12 +35,54 @@
 						v-slot='{ errors, touched, valid }'
 						rules='required'
 						:custom-messages='{
-							required: "cloud.intelimentsInteliGlue.form.messages.password"
+							required: "cloud.hexio.form.messages.topicRequest"
+						}'
+					>
+						<CInput
+							v-model='requestTopic'
+							:label='$t("cloud.hexio.form.topicRequest")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
+						/>
+					</ValidationProvider>
+					<ValidationProvider
+						v-slot='{ errors, touched, valid }'
+						rules='required'
+						:custom-messages='{
+							required: "cloud.hexio.form.messages.topicResponse"
+						}'
+					>
+						<CInput
+							v-model='responseTopic'
+							:label='$t("cloud.hexio.form.topicResponse")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
+						/>
+					</ValidationProvider>
+					<ValidationProvider
+						v-slot='{ errors, touched, valid }'
+						rules='required'
+						:custom-messages='{
+							required: "cloud.hexio.form.messages.username"
+						}'
+					>
+						<CInput
+							v-model='username'
+							:label='$t("cloud.hexio.form.username")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
+						/>
+					</ValidationProvider>
+					<ValidationProvider
+						v-slot='{ errors, touched, valid }'
+						rules='required'
+						:custom-messages='{
+							required: "cloud.hexio.form.messages.password"
 						}'
 					>
 						<CInput
 							v-model='password'
-							:label='$t("cloud.intelimentsInteliGlue.form.password")'
+							:label='$t("cloud.hexio.form.password")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
@@ -79,12 +102,12 @@
 <script>
 import {CButton, CCard, CCardBody, CForm, CInput} from '@coreui/vue';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {between, integer, required} from 'vee-validate/dist/rules';
+import {required} from 'vee-validate/dist/rules';
 import CloudService from '../../services/CloudService';
 import ServiceService from '../../services/ServiceService';
 
 export default {
-	name: 'InteliGlueCreator',
+	name: 'HexioCreator',
 	components: {
 		CButton,
 		CCard,
@@ -92,28 +115,30 @@ export default {
 		CForm,
 		CInput,
 		ValidationObserver,
-		ValidationProvider,
+		ValidationProvider
 	},
 	data() {
 		return {
-			serviceName: 'inteliGlue',
-			topic: null,
-			port: null,
+			serviceName: 'hexio',
+			address: null,
 			clientId: null,
+			requestTopic: 'Iqrf/DpaRequest',
+			responseTopic: 'Iqrf/DpaResponse',
+			username: null,
 			password: null,
 		};
 	},
 	created() {
-		extend('between', between);
-		extend('integer', integer);
 		extend('required', required);
 	},
 	methods: {
 		buildConfig() {
 			return {
-				'rootTopic': this.topic,
-				'assignedPort': this.port,
+				'broker': this.address,
 				'clientId': this.clientId,
+				'topicRequest': this.requestTopic,
+				'topicResponse': this.responseTopic,
+				'username': this.username,
 				'password': this.password,
 			};
 		},
