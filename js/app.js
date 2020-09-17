@@ -17,7 +17,6 @@
 
 'use strict';
 
-import 'autosize';
 import 'jquery';
 import 'nette.ajax.js';
 import 'ublaboo-datagrid';
@@ -37,6 +36,8 @@ import router from './router';
 
 import '../css/app.scss';
 import 'vue-toast-notification/dist/theme-sugar.css';
+
+import './iqrfNet/sendPacket';
 
 import App from './components/App';
 import DaemonStatus from './components/DaemonStatus';
