@@ -136,6 +136,7 @@
 		"pingNodes": "Ping nodes",
 		"add": "Add",
 		"no": "No",
+		"read": "Read",
 		"save": "Save",
 		"saveRestart": "Save and restart",
 		"send": "Send",
@@ -424,6 +425,13 @@
 	"iqrfnet": {
 		"title": "IQRF network",
 		"description": "Control IQRF network.",
+		"addressChange": {
+			"title": "Change network address",
+			"address": "Address",
+			"messages": {
+				"address": "Address has to be an integer from 0 to 239."
+			}
+		},
 		"networkManager": {
 			"title": "Network manager",
 			"description": "Network manager.",
@@ -799,6 +807,16 @@
 					},
 					"rxFilter": "RX filter have to be integer from 0 to 64.",
 					"txPower": "TX Power have to be integer from 0 to 7."
+				}
+			},
+			"messages": {
+				"read": {
+					"failure": "An error occurred while TR configuration reading.",
+					"success": "The TR configuration has been read successfully."
+				},
+				"write": {
+					"failure": "An error occurred while TR configuration saving.",
+					"success": "The TR configuration has been saved successfully."
 				}
 			}
 		},

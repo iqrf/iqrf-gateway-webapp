@@ -6,11 +6,11 @@
 				<CForm @submit.prevent='processSubmit'>
 					<ValidationProvider
 						v-slot='{ errors, touched, valid }'
-						rules='integer|required|txPower'
+						rules='integer|required|between:0,7'
 						:custom-messages='{
 							integer: "iqrfnet.networkManager.messages.invalid.discovery.txPower",
 							required: "iqrfnet.networkManager.messages.missing.discovery.txPower",
-							txPower: "iqrfnet.networkManager.messages.invalid.discovery.txPower"
+							between: "iqrfnet.networkManager.messages.invalid.discovery.txPower"
 						}'
 					>
 						<CInput
@@ -25,11 +25,11 @@
 					</ValidationProvider>
 					<ValidationProvider
 						v-slot='{ errors, touched, valid }'
-						rules='integer|required|maxAddr'
+						rules='integer|required|between:0,239'
 						:custom-messages='{
 							integer: "iqrfnet.networkManager.messages.invalid.discovery.maxAddr",
 							required: "iqrfnet.networkManager.messages.missing.discovery.maxAddr",
-							maxAddr: "iqrfnet.networkManager.messages.invalid.discovery.maxAddr"
+							between: "iqrfnet.networkManager.messages.invalid.discovery.maxAddr"
 						}'
 					>
 						<CInput
@@ -52,11 +52,10 @@
 </template>
 
 <script>
-
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {timeout} from '../../helpers/timeout';
-import {integer, required} from 'vee-validate/dist/rules';
+import {between, integer, required} from 'vee-validate/dist/rules';
 import IqrfNetService from '../../services/IqrfNetService';
 
 export default {
@@ -80,14 +79,9 @@ export default {
 		};
 	},
 	created() {
-		extend('required', required);
+		extend('between', between);
 		extend('integer', integer);
-		extend('txPower', (txPower) => {
-			return ((txPower >= 0) && (txPower <= 7));
-		});
-		extend('maxAddr', (addr) => {
-			return ((addr >= 0) && (addr <= 239));
-		});
+		extend('required', required);
 		this.unsubscribe = this.$store.subscribe(mutation => {
 			if (mutation.type === 'SOCKET_ONSEND' &&
 				mutation.payload.mType === 'iqrfEmbedCoordinator_Discovery') {

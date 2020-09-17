@@ -9,6 +9,5 @@ services:
 	- App\IqrfNetModule\Models\NativeUploadManager
 	- App\IqrfNetModule\Models\OsManager
 	- App\IqrfNetModule\Models\SecurityManager
-	- App\IqrfNetModule\Models\TrConfigManager
 	- App\IqrfNetModule\Models\UploadManager
 	- App\IqrfNetModule\Models\WebSocketClient(%daemon.wsServer%)

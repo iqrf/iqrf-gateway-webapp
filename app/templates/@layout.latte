@@ -37,16 +37,16 @@
 <body>
 <div id='app' class="c-app">
 	<loading-spinner />
-	<the-sidebar/>
+	<the-sidebar />
 	<c-wrapper>
-		<the-header/>
+		<the-header />
 		<div class="c-body">
 			<main class="c-main">
 				<c-container fluid>
 					<div class="fade-in">
 						<h1 id='title'>{include title}</h1>
 						{snippet flashes}
-							<c-alert n:foreach='$flashes as $flash' color='{$flash->type}' close-button='true'>
+							<c-alert n:foreach='$flashes as $flash' color='{$flash->type}' :close-button='true'>
 								{_$flash->message|breaklines}
 							</c-alert>
 						{/snippet}
@@ -115,7 +115,6 @@
 {block scripts}
 	<script n:nonce src='/dist/app.bundle.js'></script>
 	<script n:nonce src='/dist/config.bundle.js'></script>
-	<script n:nonce src='/dist/iqrfNet.bundle.js'></script>
 	<script n:nonce src='/dist/live-form-validation.js'></script>
 {/block}
 </body>
