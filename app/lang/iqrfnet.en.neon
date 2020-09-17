@@ -1,62 +1,12 @@
 title: IQRF network
 description: Control IQRF network.
 
-bonding:
-	title: Bonding
-	method: Bonding method
-	methods:
-		local: Local bonding
-		smartConnect: Smart Connect
-	address: 'Address'
-	autoAddress: Auto address
-	smartConnectCode: IQRF Smart Connect Code
-	testRetries: Bonding test retries
-	coordinatorOnly: Unbonds the Node only on Coordinator side
-	messages:
-		address: Please enter a valid address. Its has to be a decimal number from 1 to 239.
-		smartConnectCode: Please enter IQRF Smart Connect Code.
-		add:
-			failure: An error occurred while bonding a new device.
-			success: A new device has been bonded successfully.
-		clearAll:
-			confirm: Do you really want to clear all bonds?
-			failure: An error occurred while clearing all bonds.
-			success: All bonds have been cleared successfully.
-		remove:
-			confirm: Do you really want to remove this node from the network?
-			failure: An error occurred while removing a device from the network.
-			success: A device has been removed successfully from the network.
-	addBond: Bond Node
-	removeBond: Unbond Node
-	clearAllBonds: Clear All Bonds
-
 changeAddress:
 	title: Change network address
 	address: Address
 	messages:
 		address: Address has to be an integer from 0 to 239.
 	read: Read
-
-devices:
-	title: Devices Info
-	bonded: Bonded device
-	bondedOnline: Online bonded device
-	coordinator: Coordinator
-	discovered: Discovered device
-	discoveredOnline: Online discovered device
-	unbonded: Unbonded device
-	pingNodes: Ping nodes
-
-discovery:
-	title: Discovery
-	txPower: TX Power
-	maxNodeAddress: Max. Node Address
-	messages:
-		txPower: TX Power have to be integer from 0 to 7.
-		maxNodeAddress: Max. Node Address has to be an integer from 0 to 239.
-		failure: An error occurred while running discovery.
-		success: The discovery has been finished successfully.
-	send: Discovery
 
 dpaUpload:
 	title: DPA plug-in
@@ -89,13 +39,8 @@ enumeration:
 		failure: An error occurred while the device enumeration.
 		repositoryUnavailable: IQRF Repository is unavailable.
 
-macros:
-	title: Macros
-
 network-manager:
 	title: Network manager
-	description: Network manager.
-	control: Control
 
 osUpload:
 	title: IQRF OS upload
@@ -103,80 +48,6 @@ osUpload:
 	messages:
 		version: Please select IQRF OS version to upload.
 	upload: Upload
-
-trConfig:
-	title: TR configuration
-	rf: RF
-	networkType: Network Type
-	networkTypes:
-		std: STD
-		stdLp: STD+LP
-		lp: LP
-	rfBand: RF Band
-	rfBands:
-		433: 433 MHz
-		868: 868 MHz
-		916: 916 MHz
-	rfChannelA: RF channel A
-	rfChannelB: RF channel B
-	rfSubChannelA: RF channel 2nd network
-	rfSubChannelB: Alternative DSM channel
-	rfAltDsmChannel: Alternative DSM channel
-	stdAndLpNetwork: STD and LP network
-	txPower: TX power
-	rxFilter: RX filter
-	lpRxTimeout: LP RX timeout
-	rfPgm: RFPGM
-	rfPgmEnableAfterReset: Enable after reset
-	rfPgmTerminateAfter1Min: Termination after ~1 minute
-	rfPgmTerminateMcuPin: Termination by MCU pin
-	rfPgmDualChannel: Dual channel
-	rfPgmLpMode: LP mode
-	rfPgmIncorrectUpload: Incorrect upload
-	dpaEmbeddedPeripherals: DPA - Embedded peripherals
-	embPers:
-		coordinator: Coordinator
-		node: Node
-		os: OS
-		eeprom: EEPROM
-		eeeprom: EEEPROM
-		ram: RAM
-		ledr: LEDR
-		ledg: LEDG
-		spi: SPI
-		io: IO
-		thermometer: Thermometer
-		uart: UART
-		frc: FRC
-	dpaOther: DPA - Other
-	customDpaHandler: Custom DPA Handler
-	ioSetup: IO Setup
-	dpaAutoexec: Autoexec
-	routingOff: Routing off
-	peerToPeer: User Peer-to-Peer
-	dpaPeerToPeer: DPA Peer-to-Peer
-	neverSleep: Stay awake when not bonded
-	uartBaudrate: UART interface baud rate
-	uartBaudrates:
-		1200: 1200 Bd
-		2400: 2400 Bd
-		4800: 4800 Bd
-		9600: 9600 Bd
-		19200: 19200 Bd
-		38400: 38400 Bd
-		57600: 57600 Bd
-		115200: 115200 Bd
-		230400: 230400 Bd
-	nodeDpaInterface: Node DPA interface
-	messages:
-		breakInteroperability: You will break interoperability if you disable STD and LP network.
-		lpRxTimeout: LP RX timeout has to be in range from 1 to 255.
-		rfChannel443: RF Channel has to be in range from 0 to 16.
-		rfChannel868: RF Channel has to be in range from 0 to 67.
-		rfChannel916: RF Channel has to be in range from 0 to 255.
-		rxFilter: RX filter have to be integer from 0 to 63.
-		txPower: TX Power have to be integer from 0 to 7.
-	save: Write
 
 security:
 	title: Security
@@ -200,122 +71,12 @@ security:
 
 send-json:
 	title: Send JSON request
-	description: Send JSON request.
-	documentation: Show API documentation.
-	json: JSON request
-	messages:
-		invalidJson: Invalid JSON API request.
-		json: Please enter JSON request.
-		missingSchema: Corresponding JSON schema for this request not found.
-		failure: An error occurred while proccesing JSON request.
-		success: JSON request has been sent successfully.
-		incorrectNadr: Sent JSON request contains incorrect NADR.
-		incorrectPcmd: Sent JSON request contains incorrect PCMD.
-		incorrectPnum: Sent JSON request contains incorrect PNUM.
-		incorrectHwpid: Sent JSON request contains incorrect HWPID.
-		incorrectData: Sent JSON request contains incorrect data.
-		incorrectDataLength: Sent JSON request contains incorrect data length.
-	send: Send
-	response: Response
-	request: Request
 
 send-packet:
 	title: Send DPA packet
-	description: Send DPA packet.
-	packet: DPA packet
-	overwriteAddress: Set own NADR
-	customAddress: Custom NADR
-	overwriteTimeout: Set own DPA timeout
-	customTimeout: 'DPA timeout (ms)'
-	messages:
-		address: Please enter a valid address. Its has to be a decimal number from 1 to 239.
-		invalidPacket: Invalid DPA packet.
-		packet: Please enter DPA packet.
-		success: DPA packet has been sent successfully.
-		incorrectNadr: Sent DPA packet contains incorrect NADR.
-		incorrectPcmd: Sent DPA packet contains incorrect PCMD.
-		incorrectPnum: Sent DPA packet contains incorrect PNUM.
-		incorrectHwpid: Sent DPA packet contains incorrect HWPID.
-		incorrectData: Sent DPA packet contains incorrect data.
-		incorrectDataLength: Sent DPA packet contains incorrect data length.
-	send: Send
-	parsed-response: Parsed response
-	response: Response
-	request: Request
 
 standard:
 	title: IQRF Standard manager
-	menu: Standard manager
-	description: IQRF Standard manager.
-	binaryOutput:
-		title: IQRF Binary output
-		address: Address
-		index: Index of the binary output
-		state: State of the binary output
-		messages:
-			address: Address has to be an integer from 1 to 239.
-			index: Index has to be an integer from 0 to 31.
-			enumerateError: An error occurred while IQRF Binary output enumeration.
-			getError: An error occurred while IQRF Binary output's state getting.
-			setError: An error occurred while IQRF Binary output's state setting.
-		enumerate: Enumerate
-		get: Get states
-		set: Set state
-		table:
-			outputs: Outputs
-			index: Index
-			state: State
-	dali:
-		title: IQRF DALI
-		address: Address
-		answer:
-			status: Status
-			value: Value
-		command: DALI command
-		commands:
-			add: Add command
-			remove: Remove command
-		messages:
-			address: Address has to be an integer from 1 to 239.
-			command: Command has to be an integer from 0 to 65535.
-			sendError: An error occured while IQRF DALI command sending.
-		send: Send commands
-	light:
-		title: IQRF Light
-		address: Address
-		index: Index of the light
-		power: Power of the light
-		messages:
-			address: Address has to be an integer from 1 to 239.
-			index: Index has to be an integer from 0 to 31.
-			power: Power has to be an integer from 0 to 100.
-			enumerateError: An error occurred while IQRF Light enumeration.
-			getError: An error occurred while IQRF Light's power getting.
-			setError: An error occurred while IQRF Light's power setting.
-			incrementError: An error occurred while IQRF Light's power incrementing.
-			decrementError: An error occurred while IQRF Light's power decrementing.
-		enumerate: Enumerate
-		get: Get power
-		set: Set power
-		increment: Increment power
-		decrement: Decrement power
-		table:
-			lights: Lights
-			index: Index
-			prevPower: Previous power
-	sensor:
-		title: IQRF Sensor
-		address: Address
-		messages:
-			address: Address has to be an integer from 0 to 239.
-			index: Index of the binary output gas to be an integer from 0 to 31.
-			enumerateError: An error occurred while IQRF Sensor enumeration.
-			readError: An error occurred while IQRF Sensor reading values.
-		enumerate: Enumerate
-		readAll: Read all
-		type: Type
-		unit: Unit
-		value: Value
 
 trConfiguration:
 	title: TR configuration
