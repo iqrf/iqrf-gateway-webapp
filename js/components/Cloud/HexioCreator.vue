@@ -103,6 +103,7 @@
 import {CButton, CCard, CCardBody, CForm, CInput} from '@coreui/vue';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
+import {timeout} from '../../helpers/timeout';
 import CloudService from '../../services/CloudService';
 import ServiceService from '../../services/ServiceService';
 
@@ -126,6 +127,7 @@ export default {
 			responseTopic: 'Iqrf/DpaResponse',
 			username: null,
 			password: null,
+			timeout: null,
 		};
 	},
 	created() {
@@ -144,12 +146,15 @@ export default {
 		},
 		save() {
 			this.$store.commit('spinner/SHOW');
+			this.timeout = timeout('cloud.messages.timeout', 10000);
 			CloudService.create(this.serviceName, this.buildConfig())
 				.then(() => {
+					clearTimeout(this.timeout);
 					this.$store.commit('spinner/HIDE');
 					this.$toast.success('Success create');
 				})
 				.catch(() => {
+					clearTimeout(this.timeout);
 					this.$store.commit('spinner/HIDE');
 					this.$toast.error('Fail create');
 				});

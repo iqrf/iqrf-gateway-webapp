@@ -336,6 +336,7 @@
 <script>
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CModal, CSelect} from '@coreui/vue';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import {timeout} from '../../helpers/timeout';
 import {integer, required} from 'vee-validate/dist/rules';
 import IqrfNetService from '../../services/IqrfNetService';
 
@@ -382,7 +383,7 @@ export default {
 			modalUnbond: false,
 			unbondCoordinatorOnly: false,
 			scCode: '',
-			timeoutVar: null
+			timeout: null
 		};
 	},
 	created() {
@@ -419,12 +420,12 @@ export default {
 				mutation.payload.mType === ('iqmeshNetwork_BondNodeLocal' ||
 					'iqmeshNetwork_SmartConnect' ||'iqrfEmbedCoordinator_ClearAllBonds' ||
 					'iqrfEmbedCoordinator_RemoveBond' || 'iqmeshNetwork_autoNetwork')) {
-				this.timeoutVar = setTimeout(() => {this.timedOut();}, 20000);
+				this.timeout = timeout('iqrfnet.networkManager.messages.submit.timeout', 20000);
 			}
 			if (mutation.type === 'SOCKET_ONMESSAGE') {
 				if (mutation.payload.mType === 'iqmeshNetwork_BondNodeLocal' ||
 					mutation.payload.mType === 'iqmeshNetwork_SmartConnect') {
-					clearTimeout(this.timeoutVar);
+					clearTimeout(this.timeout);
 					this.$store.commit('spinner/HIDE');
 					switch(mutation.payload.data.status) {
 						case -1:
@@ -440,7 +441,7 @@ export default {
 					}
 				} else if (mutation.payload.mType === 'iqrfEmbedCoordinator_ClearAllBonds' ||
 							mutation.payload.mType === 'iqmeshNetwork_RemoveBond') {
-					clearTimeout(this.timeoutVar);
+					clearTimeout(this.timeout);
 					this.$store.commit('spinner/HIDE');
 					switch(mutation.payload.data.status) {
 						case -1:
@@ -462,7 +463,7 @@ export default {
 							break;
 					}
 				} else if (mutation.payload.mType === 'iqmeshNetwork_AutoNetwork') {
-					clearTimeout(this.timeoutVar);
+					clearTimeout(this.timeout);
 					switch(mutation.payload.data.status) {
 						case -1:
 							this.$store.commit('spinner/HIDE');
@@ -481,7 +482,7 @@ export default {
 							break;
 					}
 				} else if (mutation.payload.mType === 'messageError') {
-					clearTimeout(this.timeoutVar);
+					clearTimeout(this.timeout);
 					this.$store.commit('spinner/HIDE');
 					this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.invalidMessage'));
 				}
@@ -524,11 +525,7 @@ export default {
 			this.modalClear = false;
 			this.$store.commit('spinner/SHOW');
 			IqrfNetService.clearAllBonds(this.unbondCoordinatorOnly);
-		},
-		timedOut() {
-			this.$store.commit('spinner/HIDE');
-			this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.timeout'));
-		},
+		}
 	}
 };
 </script>

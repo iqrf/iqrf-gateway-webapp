@@ -101,6 +101,7 @@ export default {
 			port: null,
 			clientId: null,
 			password: null,
+			timeout: null,
 		};
 	},
 	created() {

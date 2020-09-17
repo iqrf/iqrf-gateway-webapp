@@ -106,6 +106,7 @@
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CIcon, CInput, CSwitch} from '@coreui/vue';
 import {cilCheckAlt, cilX} from '@coreui/icons';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import {timeout} from '../../helpers/timeout';
 import {between, integer, required} from 'vee-validate/dist/rules';
 import IqrfStandardService from '../../services/IqrfStandardService';
 
@@ -135,7 +136,7 @@ export default {
 			responseType: null,
 			state: false,
 			states: null,
-			timeoutVar: null,
+			timeout: null,
 		};
 	},
 	created() {
@@ -148,13 +149,13 @@ export default {
 					return;
 				}
 				this.responseType = null;
-				this.timeoutVar = setTimeout(() => {this.timedOut();}, 10000);
+				this.timeout = timeout('iqrfnet.networkManager.messages.submit.timeout', 10000);
 			}
 			if (mutation.type === 'SOCKET_ONMESSAGE') {
 				if (!this.allowedMTypes.includes(mutation.payload.mType)) {
 					return;
 				}
-				clearTimeout(this.timeoutVar);
+				clearTimeout(this.timeout);
 				this.$store.commit('spinner/HIDE');
 				switch(mutation.payload.data.status) {
 					case -1:
@@ -206,10 +207,6 @@ export default {
 			this.$store.commit('spinner/SHOW');
 			let state = {'index': this.index, 'state': this.state};
 			IqrfStandardService.binaryOutputSetOutputs(this.address, state);
-		},
-		timedOut() {
-			this.$store.commit('spinner/HIDE');
-			this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.timeout'));
 		},
 	},
 	icons: {

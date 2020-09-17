@@ -68,6 +68,7 @@
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CTextarea} from '@coreui/vue';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
+import {timeout} from '../../helpers/timeout';
 import {TextareaAutogrowDirective} from 'vue-textarea-autogrow-directive/src/VueTextareaAutogrowDirective';
 import IqrfNetService from '../../services/IqrfNetService';
 
@@ -98,7 +99,7 @@ export default {
 			json: null,
 			request: null,
 			response: null,
-			timeoutVar: null
+			timeout: null
 		};
 	},
 	created() {
@@ -117,11 +118,11 @@ export default {
 		extend('required', required);
 		this.unsubscribe = this.$store.subscribe(mutation => {
 			if (mutation.type === 'SOCKET_ONSEND') {
-				this.timeoutVar = setTimeout(() => {this.timedOut();}, 10000);
+				this.timeout = timeout('iqrfnet.sendJson.form.messages.timeout', 10000);
 			}
 			if (mutation.type === 'SOCKET_ONMESSAGE') {
 				if ({}.hasOwnProperty.call(mutation.payload, 'mType')) {
-					clearTimeout(this.timeoutVar);
+					clearTimeout(this.timeout);
 					this.$store.commit('spinner/HIDE');
 					this.response = JSON.stringify(mutation.payload, null, 4);
 					switch (mutation.payload.data.status) {
@@ -179,10 +180,6 @@ export default {
 			this.response = null;
 			IqrfNetService.sendJson(json);
 		},
-		timedOut() {
-			this.$store.commit('spinner/HIDE');
-			this.$toast.error(this.$t('iqrfnet.sendJson.form.messages.timeout'));
-		}
 	}
 };
 </script>

@@ -55,6 +55,7 @@
 
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import {timeout} from '../../helpers/timeout';
 import {integer, required} from 'vee-validate/dist/rules';
 import IqrfNetService from '../../services/IqrfNetService';
 
@@ -75,7 +76,7 @@ export default {
 			maxAddr: 239,
 			txPower: 6,
 			responseReceived: false,
-			timeoutVar: null,
+			timeout: null,
 		};
 	},
 	created() {
@@ -90,11 +91,11 @@ export default {
 		this.unsubscribe = this.$store.subscribe(mutation => {
 			if (mutation.type === 'SOCKET_ONSEND' &&
 				mutation.payload.mType === 'iqrfEmbedCoordinator_Discovery') {
-				this.timeoutVar = setTimeout(() => {this.timedOut();}, 10000);
+				this.timeout = timeout('iqrfnet.networkManager.messages.submit.timeout', 10000);
 			}
 			if (mutation.type === 'SOCKET_ONMESSAGE') {
 				if (mutation.payload.mType === 'iqrfEmbedCoordinator_Discovery') {
-					clearTimeout(this.timeoutVar);
+					clearTimeout(this.timeout);
 					this.$store.commit('spinner/HIDE');
 					switch (mutation.payload.data.status) {
 						case -1:
@@ -120,10 +121,6 @@ export default {
 			this.$store.commit('spinner/SHOW');
 			IqrfNetService.discovery(this.txPower, this.maxAddr);
 		},
-		timedOut() {
-			this.$store.commit('spinner/HIDE');
-			this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.timeout'));
-		}
 	}
 };
 </script>

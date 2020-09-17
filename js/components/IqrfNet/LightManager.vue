@@ -110,6 +110,7 @@
 import {CButton, CCard, CCardBody, CCardFooter, CCardHeader, CForm, CInput} from '@coreui/vue';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';
+import {timeout} from '../../helpers/timeout';
 import IqrfStandardService from '../../services/IqrfStandardService';
 
 export default {
@@ -140,7 +141,7 @@ export default {
 			power: 0,
 			prevPower: 0,
 			responseType: null,
-			timeoutVar: null,
+			timeout: null,
 		};
 	},
 	created() {
@@ -153,13 +154,13 @@ export default {
 					return;
 				}
 				this.responseType = null;
-				this.timeoutVar = setTimeout(() => {this.timedOut();}, 10000);
+				this.timeout = timeout('iqrfnet.networkManager.messages.submit.timeout', 10000);
 			}
 			if (mutation.type === 'SOCKET_ONMESSAGE') {
 				if (!this.allowedMTypes.includes(mutation.payload.mType)) {
 					return;
 				}
-				clearTimeout(this.timeoutVar);
+				clearTimeout(this.timeout);
 				this.$store.commit('spinner/HIDE');
 				switch(mutation.payload.data.status) {
 					case -1:
@@ -208,10 +209,6 @@ export default {
 		submitDecrementPower() {
 			this.$store.commit('spinner/SHOW');
 			IqrfStandardService.lightDecrementPower(this.address, [{'index': this.index, 'power': this.power}]);
-		},
-		timedOut() {
-			this.$store.commit('spinner/HIDE');
-			this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.timeout'));
 		},
 	}
 };
