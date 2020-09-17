@@ -88,7 +88,7 @@
 					"password": "Please enter the password."
 				},
 				"save": "Save",
-				"save_restart": "Save and restart"
+				"saveRestart": "Save and restart"
 			}
 		},
 		"msAzure": {

@@ -14,6 +14,7 @@ import UserEdit from './components/Core/UserEdit';
 import UserList from './components/Core/UserList';
 import SendJsonRequest from './components/IqrfNet/SendJsonRequest';
 import StandardManager from './components/IqrfNet/StandardManager';
+import InteliGlueCreator from './components/Cloud/InteliGlueCreator';
 
 import i18n from './i18n';
 import ServiceControl from './components/Gateway/ServiceControl';
@@ -36,6 +37,13 @@ const routes = [
 			}
 		},
 		children: [
+			{
+				component: InteliGlueCreator,
+				path: '/cloud/inteli-glue/',
+				meta: {
+					title: 'cloud.intelimentsInteliGlue.title',
+				},
+			},
 			{
 				component: GatewayInfo,
 				path: '/gateway/info/',
