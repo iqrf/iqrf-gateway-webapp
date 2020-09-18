@@ -8,9 +8,9 @@
 						:value.sync='bondMethod'
 						:label='$t("iqrfnet.networkManager.bonding.form.bondMethod")'
 						:options='[
-							{value: "autoNetwork", label: $t("iqrfnet.networkManager.autoNetwork.title")},
 							{value: "local", label: $t("iqrfnet.networkManager.bonding.form.bondMethodLocal")},
-							{value: "smartConnect", label: $t("iqrfnet.networkManager.bonding.form.bondMethodSmart")}
+							{value: "smartConnect", label: $t("iqrfnet.networkManager.bonding.form.bondMethodSmart")},
+							{value: "autoNetwork", label: $t("iqrfnet.networkManager.autoNetwork.title")}
 						]'
 					/>
 					<span v-if='bondMethod === "autoNetwork"'>
