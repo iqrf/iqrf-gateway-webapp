@@ -1,5 +1,13 @@
 <template>
 	<CCard>
+		<CCardHeader>
+			<CButton color='primary' size='sm' href='https://github.com/iqrfsdk/iot-starter-kit/blob/master/install/pdf/iqrf-part3c.pdf'>
+				{{ $t('cloud.guides.pdf') }}
+			</CButton>
+			<CButton color='danger' size='sm' href='https://youtu.be/xoAReOyrkZ4'>
+				{{ $t('cloud.guides.video') }}
+			</CButton>
+		</CCardHeader>
 		<CCardBody>
 			<ValidationObserver v-slot='{ invalid }'>
 				<CForm>
@@ -7,12 +15,12 @@
 						v-slot='{ errors, touched, valid }'
 						rules='required'
 						:custom-messages='{
-							required: "cloud.hexio.form.messages.broker"
+							required: "cloud.ibmCloud.form.messages.organizationId"
 						}'
 					>
 						<CInput
-							v-model='address'
-							:label='$t("cloud.hexio.form.broker")'
+							v-model='organizationId'
+							:label='$t("cloud.ibmCloud.form.organizationId")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
@@ -21,12 +29,12 @@
 						v-slot='{ errors, touched, valid }'
 						rules='required'
 						:custom-messages='{
-							required: "cloud.hexio.form.messages.clientId"
+							required: "cloud.ibmCloud.form.messages.deviceType"
 						}'
 					>
 						<CInput
-							v-model='clientId'
-							:label='$t("cloud.hexio.form.clientId")'
+							v-model='deviceType'
+							:label='$t("cloud.ibmCloud.form.deviceType")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
@@ -35,12 +43,12 @@
 						v-slot='{ errors, touched, valid }'
 						rules='required'
 						:custom-messages='{
-							required: "cloud.hexio.form.messages.topicRequest"
+							required: "cloud.ibmCloud.form.messages.deviceId"
 						}'
 					>
 						<CInput
-							v-model='requestTopic'
-							:label='$t("cloud.hexio.form.topicRequest")'
+							v-model='deviceId'
+							:label='$t("cloud.ibmCloud.form.deviceId")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
@@ -49,12 +57,12 @@
 						v-slot='{ errors, touched, valid }'
 						rules='required'
 						:custom-messages='{
-							required: "cloud.hexio.form.messages.topicResponse"
+							required: "cloud.ibmCloud.form.messages.token"
 						}'
 					>
 						<CInput
-							v-model='responseTopic'
-							:label='$t("cloud.hexio.form.topicResponse")'
+							v-model='token'
+							:label='$t("cloud.ibmCloud.form.token")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
@@ -63,26 +71,12 @@
 						v-slot='{ errors, touched, valid }'
 						rules='required'
 						:custom-messages='{
-							required: "cloud.hexio.form.messages.username"
+							required: "cloud.ibmCloud.form.messages.eventId"
 						}'
 					>
 						<CInput
-							v-model='username'
-							:label='$t("cloud.hexio.form.username")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{ errors, touched, valid }'
-						rules='required'
-						:custom-messages='{
-							required: "cloud.hexio.form.messages.password"
-						}'
-					>
-						<CInput
-							v-model='password'
-							:label='$t("cloud.hexio.form.password")'
+							v-model='eventId'
+							:label='$t("cloud.ibmCloud.form.eventId")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
@@ -100,7 +94,7 @@
 </template>
 
 <script>
-import {CButton, CCard, CCardBody, CForm, CInput} from '@coreui/vue';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
@@ -109,11 +103,12 @@ import CloudService from '../../services/CloudService';
 import ServiceService from '../../services/ServiceService';
 
 export default {
-	name: 'HexioCreator',
+	name: 'IbmCreator',
 	components: {
 		CButton,
 		CCard,
 		CCardBody,
+		CCardHeader,
 		CForm,
 		CInput,
 		ValidationObserver,
@@ -121,15 +116,14 @@ export default {
 	},
 	data() {
 		return {
-			serviceName: 'hexio',
-			address: 'connect.hexio.cloud',
-			clientId: null,
-			requestTopic: 'Iqrf/DpaRequest',
-			responseTopic: 'Iqrf/DpaResponse',
-			username: null,
-			password: null,
-			timeout: null,
+			serviceName: 'ibmCloud',
+			organizationId: null,
+			deviceType: null,
+			deviceId: null,
+			token: null,
+			eventId: 'iqrf',
 			restart: false,
+			timeout: null,
 		};
 	},
 	created() {
@@ -138,12 +132,11 @@ export default {
 	methods: {
 		buildConfig() {
 			return {
-				'broker': this.address,
-				'clientId': this.clientId,
-				'topicRequest': this.requestTopic,
-				'topicResponse': this.responseTopic,
-				'username': this.username,
-				'password': this.password,
+				'organizationId': this.organizationId,
+				'deviceType': this.deviceType,
+				'deviceId': this.deviceId,
+				'token': this.token,
+				'eventId': this.eventId
 			};
 		},
 		save() {

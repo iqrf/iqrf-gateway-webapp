@@ -17,16 +17,3 @@
 
 {block title}{_cloud.msAzure.form.title}{/block}
 {block content}
-<c-card>
-	<c-card-header>
-		<c-button color='primary' size='sm' href='{$guides['pdf']}' target='_blank'>
-			{{ $t('cloud.guides.pdf') }}
-		</c-button>
-		<c-button color='danger' size='sm' href='{$guides['video']}' target='_blank'>
-			{{ $t('cloud.guides.video') }}
-		</c-button>
-	</c-card-header>
-	<c-card-body>
-		{control cloudAzureForm}
-	</c-card-body>
-</c-card>

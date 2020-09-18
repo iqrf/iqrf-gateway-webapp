@@ -17,6 +17,8 @@ import SendJsonRequest from './components/IqrfNet/SendJsonRequest';
 import StandardManager from './components/IqrfNet/StandardManager';
 import InteliGlueCreator from './components/Cloud/InteliGlueCreator';
 import HexioCreator from './components/Cloud/HexioCreator';
+import AzureCreator from './components/Cloud/AzureCreator';
+import IbmCreator from './components/Cloud/IbmCreator';
 
 import i18n from './i18n';
 import store from './store';
@@ -41,10 +43,24 @@ const routes = [
 		},
 		children: [
 			{
+				component: AzureCreator,
+				path: '/cloud/azure/',
+				meta: {
+					title: 'cloud.msAzure.form.title'
+				}
+			},
+			{
 				component: HexioCreator,
 				path: '/cloud/hexio/',
 				meta: {
 					title: 'cloud.hexio.form.title',
+				}
+			},
+			{
+				component: IbmCreator,
+				path: '/cloud/ibm-cloud/',
+				meta: {
+					title: 'cloud.ibmCloud.form.title'
 				}
 			},
 			{

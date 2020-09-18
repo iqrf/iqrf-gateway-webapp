@@ -14,6 +14,17 @@ class CloudService {
 	create(serviceName, json) {
 		return axios.post('clouds/' + serviceName, json, {headers: authorizationHeader()});
 	}
+
+	/**
+	 * Saves and creates new mqtt cloud connection.
+	 * @param serviceName Cloud service name
+	 * @param json Cloud connection configuration
+	 * @param timeout Request timeout
+	 * @returns {Promise<AxiosResponse<any>>}
+	 */
+	createWithTimeout(serviceName, json, timeout) {
+		return axios.post('clouds/' + serviceName, json, {headers: authorizationHeader(), timeout: timeout});
+	}
 }
 
 export default new CloudService();
