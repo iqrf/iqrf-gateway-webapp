@@ -2,18 +2,17 @@
 	"$schema": "http://json-schema.org/draft-04/schema",
 	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/translatorConfig.json",
 	"type": "object",
-	"title": "The root schema",
+	"title": "IQRF Gateway Translator configuration",
 	"description": "Schema of the Translator configuration file.",
-	"default": {},
 	"examples": [
 		{
 			"rest": {
 				"api_key": "fQYkjWUO7mga2h6EjfWgGe.TtsNG9ZkUbUXK+qRRnnkGDIfOChfK6r2ebeVU/nsFrw=",
 				"addr": "localhost",
-				"port": 8080
+				"port": 80
 			},
 			"mqtt": {
-				"cid": "IQRF-MQTT-REST-Translator",
+				"cid": "MQTT-REST-Translator",
 				"addr": "localhost",
 				"port": 1883,
 				"topic": "gateway/+/rest/requests/+/#",
@@ -32,7 +31,6 @@
 			"type": "object",
 			"title": "REST client configuration",
 			"description": "Configuration of the translator REST client.",
-			"default": "",
 			"required": [
 				"api_key",
 				"addr",
@@ -44,30 +42,23 @@
 					"type": "string",
 					"title": "Rest API key",
 					"description": "API key for authentication.",
-					"default": "",
-					"examples": [
-						"fQYkjWUO7mga2h6EjfWgGe.TtsNG9ZkUbUXK+qRRnnkGDIfOChfK6r2ebeVU/nsFrw="
-					]
+					"example": "fQYkjWUO7mga2h6EjfWgGe.TtsNG9ZkUbUXK+qRRnnkGDIfOChfK6r2ebeVU/nsFrw="
 				},
 				"addr": {
 					"$id": "#/properties/rest/addr",
 					"type": "string",
 					"title": "REST API address",
 					"description": "Address of the target REST API.",
-					"default": "",
-					"examples": [
-						"localhost"
-					]
+					"example": "localhost"
 				},
 				"port": {
 					"$id": "#/properties/rest/port",
 					"type": "integer",
 					"title": "REST API port",
 					"description": "Port number of the target REST API.",
-					"default": 8080,
-					"examples": [
-						8080
-					]
+					"minimum": 1,
+					"maximum": 65535,
+					"example": 80
 				}
 			}
 		},
@@ -76,7 +67,6 @@
 			"type": "object",
 			"title": "MQTT client configuration",
 			"description": "Configuration of the translator MQTT client.",
-			"default": "",
 			"required": [
 				"cid",
 				"addr",
@@ -91,60 +81,45 @@
 					"type": "string",
 					"title": "MQTT client ID",
 					"description": "MQTT client identification string.",
-					"default": "",
-					"examples": [
-						"MQTT-REST-Translator"
-					]
+					"example": "MQTT-REST-Translator"
+
 				},
 				"addr": {
 					"$id": "#/properties/mqtt/addr",
 					"type": "string",
 					"title": "MQTT broker address",
 					"description": "Address of the target MQTT broker.",
-					"default": "",
-					"examples": [
-						"localhost"
-					]
+					"example": "localhost"
 				},
 				"port": {
 					"$id": "#/properties/mqtt/port",
 					"type": "integer",
 					"title": "MQTT broker port",
 					"description": "Port number of the target MQTT broker.",
-					"default": 1883,
-					"examples": [
-						1883
-					]
+					"minimum": 1,
+					"maximum": 65535,
+					"example": 1883
 				},
 				"topic": {
 					"$id": "#/properties/mqtt/topic",
 					"type": "string",
 					"title": "MQTT topic",
 					"description": "Topic for the MQTT client to subscribe to.",
-					"default": "",
-					"examples": [
-						"topic"
-					]
+					"example": "topic"
 				},
 				"user": {
 					"$id": "#/properties/mqtt/user",
 					"type": "string",
 					"title": "MQTT broker username",
 					"description": "Username for the MQTT client to connect to broker with.",
-					"default": "",
-					"examples": [
-						"user"
-					]
+					"example": "user"
 				},
 				"pw": {
 					"$id": "#/properties/mqtt/pw",
 					"type": "string",
 					"title": "MQTT broker user password",
 					"description": "User password for the MQTT client to connect to broker with.",
-					"default": "",
-					"examples": [
-						"pw"
-					]
+					"example": "pw"
 				}
 			}
 		}

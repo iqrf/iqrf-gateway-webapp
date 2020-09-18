@@ -23,47 +23,37 @@
 		"InventoryPollIntervalSeconds": {
 			"$id": "#/properties/InventoryPollIntervalSeconds",
 			"type": "integer",
-			"title": "The InventoryPollIntervalSeconds schema",
-			"description": "An explanation about the purpose of this instance.",
-			"examples": [
-				28800
-			]
+			"title": "Inventory update interval",
+			"description": "Number of seconds to wait between each inventory update.",
+			"example": 28800
 		},
 		"RetryPollIntervalSeconds": {
 			"$id": "#/properties/RetryPollIntervalSeconds",
 			"type": "integer",
-			"title": "The RetryPollIntervalSeconds schema",
-			"description": "An explanation about the purpose of this instance.",
-			"examples": [
-				300
-			]
+			"title": "Connection retry interval",
+			"description": "Number of seconds to wait between each attempt to communicate with the server.",
+			"example": 300
 		},
 		"ServerURL": {
 			"$id": "#/properties/ServerURL",
 			"type": "string",
-			"title": "The ServerURL schema",
-			"description": "An explanation about the purpose of this instance.",
-			"examples": [
-				"localhost"
-			]
+			"title": "Server URL",
+			"description": "The server URL which is used as the basis for API requests.",
+			"example": "localhost"
 		},
 		"TenantToken": {
 			"$id": "#/properties/TenantToken",
 			"type": "string",
-			"title": "The TenantToken schema",
-			"description": "An explanation about the purpose of this instance.",
-			"examples": [
-				"dummy"
-			]
+			"title": "Tenant token",
+			"description": "A token which identifies which tenant a device belongs to.",
+			"example": "dummy"
 		},
 		"UpdatePollIntervalSeconds": {
 			"$id": "#/properties/UpdatePollIntervalSeconds",
 			"type": "integer",
-			"title": "The UpdatePollIntervalSeconds schema",
-			"description": "An explanation about the purpose of this instance.",
-			"examples": [
-				1800
-			]
+			"title": "Update check interval",
+			"description": "Number of seconds to wait between each check for a new update.",
+			"example": 1800
 		}
 	},
 	"additionalProperties": true
