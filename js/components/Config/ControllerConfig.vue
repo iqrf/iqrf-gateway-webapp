@@ -327,6 +327,7 @@
 import {CButton, CCard , CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';
+import {timeout} from '../../helpers/timeout';
 import ConfigService from '../../services/ConfigService';
 
 export default {
@@ -346,7 +347,8 @@ export default {
 			apiCallCustom: null,
 			apiCallSetCustom: false,
 			config: null,
-			previousApiCall: null
+			previousApiCall: null,
+			timeout: null
 		};
 	},
 	created() {
@@ -361,9 +363,11 @@ export default {
 	},
 	methods: {
 		getConfig() {
+			this.timeout = timeout('forms.messages.getConfTimeout', 10000);
 			this.$store.commit('spinner/SHOW');
 			ConfigService.getConfig('controllerConfig')
 				.then((response) => {
+					clearTimeout(this.timeout);
 					this.$store.commit('spinner/HIDE');
 					this.config = response.data;
 					if (this.config.resetButton.api !== ('autoNetwork' && 'discovery')) {
@@ -373,31 +377,34 @@ export default {
 					}
 				})
 				.catch((error) => {
+					clearTimeout(this.timeout);
 					this.$store.commit('spinner/HIDE');
-					if (error.response) {
-						if (error.response.status === 500) {
-							this.$toast.error(this.$t('forms.messages.submitServerError'));
-						}
-					}
+					this.handleError(error);
 				});
 		},
 		processSubmit() {
+			this.timeout = timeout('forms.messages.saveConfTimeout', 10000);
 			this.$store.commit('spinner/SHOW');
 			ConfigService.saveConfig('controllerConfig', this.config)
 				.then(() => {
+					clearTimeout(this.timeout);
 					this.$store.commit('spinner/HIDE');
 					this.$toast.success(this.$t('forms.messages.saveSuccess'));
 				})
 				.catch((error) => {
+					clearTimeout(this.timeout);
 					this.$store.commit('spinner/HIDE');
-					if (error.response) {
-						if (error.response.status === 500) {
-							this.$toast.error(this.$t('forms.messages.submitServerError'));
-						}
-					} else {
-						console.error(error.message);
-					}
+					this.handleError(error);
 				});
+		},
+		handleError(error) {
+			if (error.response) {
+				if (error.response.status === 500) {
+					this.$toast.error(this.$t('forms.messages.submitServerError'));
+				}
+			} else {
+				console.error(error.message);
+			}
 		},
 		updateApiCall() {
 			if (this.apiCallSetCustom) {

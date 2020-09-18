@@ -98,6 +98,7 @@
 import {CButton, CCard, CForm, CInput} from '@coreui/vue';
 import {integer, min_value, required} from 'vee-validate/dist/rules';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import {timeout} from '../../helpers/timeout';
 import ConfigService from '../../services/ConfigService';
 
 export default {
@@ -112,7 +113,8 @@ export default {
 	},
 	data() {
 		return {
-			config: null
+			config: null,
+			timeout: null,
 		};
 	},
 	created() {
@@ -127,40 +129,43 @@ export default {
 	},
 	methods: {
 		getConfig() {
+			this.timeout = timeout('forms.messages.getConfTimeout', 10000);
 			this.$store.commit('spinner/SHOW');
 			ConfigService.getConfig('menderConfig')
 				.then((response) => {
+					clearTimeout(this.timeout);
 					this.$store.commit('spinner/HIDE');
 					this.config = response.data;
 				})
 				.catch((error) => {
+					clearTimeout(this.timeout);
 					this.$store.commit('spinner/HIDE');
-					if (error.response) {
-						if (error.response.status === 500) {
-							this.$toast.error(this.$t('forms.mesages.submitServerError'));
-						} 
-					} else {
-						console.error(error.message);
-					}
+					this.handleError(error);
 				});
 		},
 		processSubmit() {
+			this.timeout = timeout('forms.messages.saveConfTimeout', 10000);
 			this.$store.commit('spinner/SHOW');
 			ConfigService.saveConfig('menderConfig', this.config)
 				.then(() => {
+					clearTimeout(this.timeout);
 					this.$store.commit('spinner/HIDE');
 					this.$toast.success(this.$t('forms.messages.saveSuccess'));
 				})
 				.catch((error) => {
+					clearTimeout(this.timeout);
 					this.$store.commit('spinner/HIDE');
-					if (error.response) {
-						if (error.response.status === 500) {
-							this.$toast.error(this.$t('forms.messages.submitServerError'));
-						}
-					} else {
-						console.error(error.message);
-					}
+					this.handleError(error);
 				});
+		},
+		handleError(error) {
+			if (error.response) {
+				if (error.response.status === 500) {
+					this.$toast.error(this.$t('forms.messages.submitServerError'));
+				}
+			} else {
+				console.error(error.message);
+			}
 		}
 	}
 };

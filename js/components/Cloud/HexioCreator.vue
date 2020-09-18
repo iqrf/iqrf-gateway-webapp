@@ -103,6 +103,7 @@
 import {CButton, CCard, CCardBody, CForm, CInput} from '@coreui/vue';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
+import FormErrorHandler from '../../helpers/FormErrorHandler';
 import {timeout} from '../../helpers/timeout';
 import CloudService from '../../services/CloudService';
 import ServiceService from '../../services/ServiceService';
@@ -128,6 +129,7 @@ export default {
 			username: null,
 			password: null,
 			timeout: null,
+			restart: false,
 		};
 	},
 	created() {
@@ -151,26 +153,31 @@ export default {
 				.then(() => {
 					clearTimeout(this.timeout);
 					this.$store.commit('spinner/HIDE');
-					this.$toast.success('Success create');
+					this.$toast.success(this.$t('cloud.messages.success'));
+					if (this.restart) {
+						this.restart = false;
+						this.$store.commit('spinner/SHOW');
+						this.timeout = timeout('service.errors.processTimeout', 10000);
+						ServiceService.restart('iqrf-gateway-daemon')
+							.then(() => {
+								clearTimeout(this.timeout);
+								this.$store.commit('spinner/HIDE');
+								this.$toast.success(this.$t('service.iqrf-gateway-daemon.messages.restart'));
+							})
+							.catch((error) => {
+								clearTimeout(this.timeout);
+								FormErrorHandler.serviceError(error);
+							});
+					}
 				})
-				.catch(() => {
+				.catch((error) => {
 					clearTimeout(this.timeout);
-					this.$store.commit('spinner/HIDE');
-					this.$toast.error('Fail create');
+					FormErrorHandler.cloudError(error);
 				});
 		},
 		saveAndRestart() {
+			this.restart = true;
 			this.save();
-			this.$store.commit('spinner/SHOW');
-			ServiceService.restart('iqrf-gateway-daemon')
-				.then(() => {
-					this.$store.commit('spinner/HIDE');
-					this.$toast.success('Success restart');
-				})
-				.catch(() => {
-					this.$store.commit('spinner/HIDE');
-					this.$toast.error('Fail restart');
-				});
 		}
 	}
 };
