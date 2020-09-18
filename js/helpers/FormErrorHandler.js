@@ -25,7 +25,7 @@ class FormErrorHandler {
 
 	/**
 	 * Handles Service errors
-	 * @param error 
+	 * @param error
 	 */
 	serviceError(error) {
 		store.commit('spinner/HIDE');
