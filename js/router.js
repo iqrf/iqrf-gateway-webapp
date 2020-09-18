@@ -4,6 +4,7 @@ import GatewayInfo from './components/Gateway/GatewayInfo';
 import DaemonLogViewer from './components/Gateway/DaemonLogViewer';
 import DaemonMode from './components/Gateway/DaemonMode';
 import PowerControl from './components/Gateway/PowerControl';
+import ServiceControl from './components/Gateway/ServiceControl';
 import SignIn from './components/SignIn';
 import NetworkManager from './components/IqrfNet/NetworkManager';
 import SendDpaPacket from './components/IqrfNet/SendDpaPacket';
@@ -18,13 +19,14 @@ import InteliGlueCreator from './components/Cloud/InteliGlueCreator';
 import HexioCreator from './components/Cloud/HexioCreator';
 
 import i18n from './i18n';
-import ServiceControl from './components/Gateway/ServiceControl';
+import store from './store';
 
 Vue.use(VueRouter);
 
 const routes = [
 	{
 		component: SignIn,
+		name: 'signIn',
 		path: '/sign/in/',
 		meta: {
 			title: 'core.sign.inForm.title',
@@ -186,6 +188,13 @@ function metaTranslate(route, type) {
 }
 
 router.beforeEach((to, from, next) => {
+	if (to.name !== 'signIn' && !store.getters['user/isLoggedIn']) {
+		store.dispatch('user/signOut').then(() => {
+			// next('/sign/in');
+			location.replace('/sign/in');
+		});
+		return;
+	}
 	if (to.name === 'legacyComponent' && from.name !== null) {
 		location.replace(to.fullPath);
 	}

@@ -66,7 +66,6 @@
 <script>
 import {CContainer, CCard, CCardBody, CCol, CForm, CIcon, CInput, CRow} from '@coreui/vue';
 import {cilUser, cilLockLocked} from '@coreui/icons';
-import AuthenticationService from '../services/AuthenticationService';
 import {required} from 'vee-validate/dist/rules';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 
@@ -96,12 +95,11 @@ export default {
 	},
 	methods: {
 		handleSubmit() {
-			AuthenticationService.login(this.username, this.password)
+			this.$store.dispatch('user/signIn', {username: this.username, password: this.password})
 				.then(() => {
 					this.$router.push('/');
 					this.$toast.success(this.$t('core.sign.inForm.messages.success'));
-				})
-				.catch((reason) => (console.error(reason)));
+				});
 			this.submitted = true;
 		}
 	},

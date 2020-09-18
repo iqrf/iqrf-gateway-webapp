@@ -1,5 +1,4 @@
 import axios from 'axios';
-import store from '../store';
 
 /**
  * Authentication service
@@ -45,21 +44,15 @@ class AuthenticationService {
 		return Promise.all([
 			this.apiLogin(username, password),
 			this.netteLogin(username, password)
-		])
-			.then((responses) => {
-				const apiResponse = responses[0];
-				store.commit('user/SIGN_IN', apiResponse.data);
-				localStorage.setItem('user', JSON.stringify(apiResponse.data));
-				return responses;
-			});
+		]);
 	}
 
 	/**
-	 * Signs out the user
+	 * Signs out the user (Nette)
+	 * @returns {Promise<AxiosResponse<any>>}
 	 */
 	logout() {
-		store.commit('user/SIGN_OUT');
-		localStorage.removeItem('user');
+		return axios.get('//' + window.location.host + '/sign/out');
 	}
 }
 

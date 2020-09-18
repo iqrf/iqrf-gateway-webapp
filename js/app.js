@@ -97,6 +97,25 @@ $.nette.ext('confirm', {
 
 axios.defaults.baseURL = '//' + window.location.host + '/api/v0/';
 
+axios.interceptors.response.use(
+	(response) => {
+		return response;
+	},
+	(error) => {
+		if (error.response === undefined) {
+			// TODO: Add Network error toaster notification
+			return Promise.reject(error);
+		}
+		if (error.response.status === 401) {
+			store.dispatch('user/signOut')
+				.then(() => {
+					location.replace('/sign/in');
+				});
+		}
+		return Promise.reject(error);
+	}
+);
+
 Vue.prototype.$appName = 'IQRF Gateway Webapp frontend';
 
 Vue.use(CoreuiVue);

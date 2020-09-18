@@ -1,5 +1,28 @@
+import AuthenticationService from '../../services/AuthenticationService';
+
 const state = {
 	user: null,
+};
+
+const actions = {
+	signIn({commit}, credentials) {
+		return AuthenticationService.login(credentials.username, credentials.password)
+			.then((responses) => {
+				const apiResponse = responses[0];
+				commit('SIGN_IN', apiResponse.data);
+				return responses;
+			})
+			.catch((error) => {
+				console.error(error);
+				return Promise.reject(error);
+			});
+	},
+	signOut({commit}) {
+		return AuthenticationService.logout()
+			.then(() => {
+				commit('SIGN_OUT');
+			});
+	},
 };
 
 const getters = {
@@ -23,7 +46,13 @@ const getters = {
 			return null;
 		}
 		return state.user.role;
-	}
+	},
+	getToken(state) {
+		if (state.user === null) {
+			return null;
+		}
+		return state.user.token;
+	},
 };
 
 const mutations = {
@@ -38,6 +67,7 @@ const mutations = {
 export default {
 	namespaced: true,
 	state,
+	actions,
 	getters,
 	mutations,
 };

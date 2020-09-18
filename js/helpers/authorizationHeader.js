@@ -1,8 +1,9 @@
+import store from '../store';
+
 export function authorizationHeader() {
-	let json = localStorage.getItem('user');
-	if (json) {
-		let user = JSON.parse(json);
-		return {'Authorization': 'Bearer ' + user.token};
+	let token = store.getters['user/getToken'];
+	if (token === null) {
+		return {};
 	}
-	return {};
+	return {'Authorization': 'Bearer ' + token};
 }
