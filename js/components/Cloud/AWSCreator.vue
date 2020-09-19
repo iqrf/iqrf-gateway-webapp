@@ -1,10 +1,10 @@
 <template>
 	<CCard>
 		<CCardHeader>
-			<CButton color='primary' size='sm' href='https://github.com/iqrfsdk/iot-starter-kit/blob/master/install/pdf/iqrf-part3c.pdf'>
+			<CButton color='primary' size='sm' href='https://github.com/iqrfsdk/iot-starter-kit/blob/master/install/pdf/iqrf-part3a.pdf'>
 				{{ $t('cloud.guides.pdf') }}
 			</CButton>
-			<CButton color='danger' size='sm' href='https://youtu.be/xoAReOyrkZ4'>
+			<CButton color='danger' size='sm' href='https://youtu.be/Z9R2vdaw3KA'>
 				{{ $t('cloud.guides.video') }}
 			</CButton>
 		</CCardHeader>
@@ -15,70 +15,42 @@
 						v-slot='{ errors, touched, valid }'
 						rules='required'
 						:custom-messages='{
-							required: "cloud.ibmCloud.form.messages.organizationId"
+							required: "cloud.amazonAws.form.messages.endpoint"
 						}'
 					>
 						<CInput
-							v-model='organizationId'
-							:label='$t("cloud.ibmCloud.form.organizationId")'
+							v-model='endpoint'
+							:label='$t("cloud.amazonAws.form.endpoint")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
 					</ValidationProvider>
 					<ValidationProvider
-						v-slot='{ errors, touched, valid }'
+						v-slot='{ errors, validate }'
 						rules='required'
 						:custom-messages='{
-							required: "cloud.ibmCloud.form.messages.deviceType"
+							required: "cloud.amazonAws.form.messages.certificate"
 						}'
 					>
-						<CInput
-							v-model='deviceType'
-							:label='$t("cloud.ibmCloud.form.deviceType")'
-							:is-valid='touched ? valid : null'
+						<CInputFile
+							ref='awsFormCert'
+							:label='$t("cloud.amazonAws.form.certificate")'
 							:invalid-feedback='$t(errors[0])'
+							@change='validate'
 						/>
 					</ValidationProvider>
 					<ValidationProvider
-						v-slot='{ errors, touched, valid }'
+						v-slot='{ errors, validate }'
 						rules='required'
 						:custom-messages='{
-							required: "cloud.ibmCloud.form.messages.deviceId"
+							required: "cloud.amazonAws.form.messages.key"
 						}'
 					>
-						<CInput
-							v-model='deviceId'
-							:label='$t("cloud.ibmCloud.form.deviceId")'
-							:is-valid='touched ? valid : null'
+						<CInputFile
+							ref='awsFormKey'
+							:label='$t("cloud.amazonAws.form.key")'
 							:invalid-feedback='$t(errors[0])'
-						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{ errors, touched, valid }'
-						rules='required'
-						:custom-messages='{
-							required: "cloud.ibmCloud.form.messages.token"
-						}'
-					>
-						<CInput
-							v-model='token'
-							:label='$t("cloud.ibmCloud.form.token")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{ errors, touched, valid }'
-						rules='required'
-						:custom-messages='{
-							required: "cloud.ibmCloud.form.messages.eventId"
-						}'
-					>
-						<CInput
-							v-model='eventId'
-							:label='$t("cloud.ibmCloud.form.eventId")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
+							@change='validate'
 						/>
 					</ValidationProvider>
 					<CButton color='primary' :disabled='invalid' @click.prevent='save'>
@@ -95,7 +67,7 @@
 
 <script>
 import axios from 'axios';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputFile} from '@coreui/vue';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 import {authorizationHeader} from '../../helpers/authorizationHeader';
@@ -103,7 +75,7 @@ import FormErrorHandler from '../../helpers/FormErrorHandler';
 import CloudService from '../../services/CloudService';
 
 export default {
-	name: 'IbmCreator',
+	name: 'AWSCreator',
 	components: {
 		CButton,
 		CCard,
@@ -111,38 +83,34 @@ export default {
 		CCardHeader,
 		CForm,
 		CInput,
+		CInputFile,
 		ValidationObserver,
 		ValidationProvider
 	},
 	data() {
 		return {
-			serviceName: 'ibmCloud',
-			organizationId: null,
-			deviceType: null,
-			deviceId: null,
-			token: null,
-			eventId: 'iqrf',
+			endpoint: null,
+			serviceName: 'aws'
 		};
 	},
 	created() {
 		extend('required', required);
 	},
 	methods: {
-		buildConfig() {
-			return {
-				'organizationId': this.organizationId,
-				'deviceType': this.deviceType,
-				'deviceId': this.deviceId,
-				'token': this.token,
-				'eventId': this.eventId
-			};
+		buildRequest() {
+			let	formData = new FormData();
+			formData.append('endpoint', this.endpoint);
+			formData.append('certificate', this.$refs.awsFormCert.files[0]);
+			formData.append('privateKey', this.$refs.awsFormKey.files[0]);
+			return formData;
 		},
 		save() {
 			this.$store.commit('spinner/SHOW');
-			CloudService.create(this.serviceName, this.buildConfig(), 10000)
+			CloudService.createWithFile(this.serviceName, this.buildRequest(), 10000)
 				.then(() => {
 					this.$store.commit('spinner/HIDE');
 					this.$toast.success(this.$t('cloud.messages.success'));
+				
 				})
 				.catch((error) => {
 					FormErrorHandler.cloudError(error);
@@ -169,10 +137,7 @@ export default {
 				}
 			);
 			this.save();
-		},
-	},
-	metaInfo: {
-		title: 'cloud.ibmCloud.form.title',
-	},
+		}
+	}
 };
 </script>

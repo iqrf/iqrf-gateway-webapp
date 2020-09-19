@@ -100,13 +100,13 @@
 </template>
 
 <script>
+import axios from 'axios';
 import {CButton, CCard, CCardBody, CForm, CInput} from '@coreui/vue';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
+import {authorizationHeader} from '../../helpers/authorizationHeader';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
-import {timeout} from '../../helpers/timeout';
 import CloudService from '../../services/CloudService';
-import ServiceService from '../../services/ServiceService';
 
 export default {
 	name: 'HexioCreator',
@@ -128,8 +128,6 @@ export default {
 			responseTopic: 'Iqrf/DpaResponse',
 			username: null,
 			password: null,
-			timeout: null,
-			restart: false,
 		};
 	},
 	created() {
@@ -148,35 +146,35 @@ export default {
 		},
 		save() {
 			this.$store.commit('spinner/SHOW');
-			this.timeout = timeout('cloud.messages.timeout', 10000);
-			CloudService.create(this.serviceName, this.buildConfig())
+			CloudService.create(this.serviceName, this.buildConfig(), 10000)
 				.then(() => {
-					clearTimeout(this.timeout);
 					this.$store.commit('spinner/HIDE');
 					this.$toast.success(this.$t('cloud.messages.success'));
-					if (this.restart) {
-						this.restart = false;
-						this.$store.commit('spinner/SHOW');
-						this.timeout = timeout('service.errors.processTimeout', 10000);
-						ServiceService.restart('iqrf-gateway-daemon')
-							.then(() => {
-								clearTimeout(this.timeout);
-								this.$store.commit('spinner/HIDE');
-								this.$toast.success(this.$t('service.iqrf-gateway-daemon.messages.restart'));
-							})
-							.catch((error) => {
-								clearTimeout(this.timeout);
-								FormErrorHandler.serviceError(error);
-							});
-					}
 				})
 				.catch((error) => {
-					clearTimeout(this.timeout);
 					FormErrorHandler.cloudError(error);
 				});
 		},
 		saveAndRestart() {
-			this.restart = true;
+			axios.interceptors.response.use(
+				(response) => {
+					if (response.config.url === 'clouds/' + this.serviceName) {
+						this.$store.commit('spinner/SHOW');
+						axios.post('services/iqrf-gateway-daemon/restart', null, {headers: authorizationHeader(), timeout: 20000})
+							.then(() => {
+								this.$store.commit('spinner/HIDE');
+								this.$toast.success(this.$t('service.iqrf-gateway-daemon.messages.restart'));
+							})
+							.catch((error) => {
+								FormErrorHandler.serviceError(error);
+							});
+					}
+					return response;
+				},
+				(error) => {
+					return Promise.reject(error);
+				}
+			);
 			this.save();
 		},
 	},

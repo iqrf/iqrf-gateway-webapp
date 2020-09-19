@@ -70,7 +70,7 @@ export default {
 	methods: {
 		save() {
 			this.$store.commit('spinner/SHOW');
-			CloudService.createWithTimeout(this.serviceName, {'connectionString': this.connectionString}, 10000)
+			CloudService.create(this.serviceName, {'connectionString': this.connectionString}, 10000)
 				.then(() => {
 					this.$store.commit('spinner/HIDE');
 					this.$toast.success(this.$t('cloud.messages.success'));
@@ -83,7 +83,7 @@ export default {
 		saveAndRestart() {
 			axios.interceptors.response.use(
 				(response) => {
-					if (response.config.url === 'clouds/azure') {
+					if (response.config.url === 'clouds/' + this.serviceName) {
 						this.$store.commit('spinner/SHOW');
 						axios.post('services/iqrf-gateway-daemon/restart', null, {headers: authorizationHeader(), timeout: 20000})
 							.then(() => {
