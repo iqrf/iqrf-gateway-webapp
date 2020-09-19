@@ -941,22 +941,14 @@
 			"daemonApi": {
 				"autoNetwork": {
 					"title": "AutoNetwork API call configuration",
-					"actionRetries": "Number of retry DPA transactions",
-					"discoveryBeforeStart": "Run discovery before start",
-					"discoveryTxPower": "Discovery TX Power",
-					"skipDiscoveryEachWave": "Skip discovery in each wave",
 					"stopConditions": {
-						"title": "AutoNetwork stop conditions",
-						"abortOnTooManyNodesFound": "Abort AutoNetwork if too many nodes are found",
-						"emptyWaves": "Number of consecutive empty waves",
-						"waves": "Maximum number of waves"
+						"title": "AutoNetwork stop conditions"
+
 					},
 					"verbose": "Verbose mode"
 				},
 				"discovery": {
 					"title": "Discovery API call configuration",
-					"maxAddr": "Maximum address",
-					"txPower": "TX Power",
 					"verbose": "Verbose mode"
 				}
 			},
@@ -991,8 +983,6 @@
 			},
 			"messages": {
 				"integer": "This parameter should be an integer.",
-				"daRetries": "Please enter an integer between 0 and 3 for AutoNetwork retry DPA transactions.",
-				"daTxpower": "Please enter an integer between 0 and 7 for Discovery TX power.",
 				"daEwaves": "Please enter an integer between 1 and 127 for empty waves stop condition.",
 				"daWaves": "Please enter an integer between 1 and 127 for maximum waves stop condition.",
 				"ddMaxAddr": "Please enter an integer between 0 and 239 for Discovery process.",

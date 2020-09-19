@@ -16,11 +16,11 @@
 					<span v-if='bondMethod === "autoNetwork"'>
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
-							rules='integer|required|txpower'
+							rules='integer|required|between:0,7'
 							:custom-messages='{
 								integer: "iqrfnet.networkManager.messages.invalid.integer",
 								required: "iqrfnet.networkManager.messages.missing.discovery.txPower",
-								txpower: "iqrfnet.networkManager.messages.invalid.discovery.txPower"
+								between: "iqrfnet.networkManager.messages.invalid.discovery.txPower"
 							}'
 						>
 							<CInput
@@ -44,11 +44,11 @@
 						/><hr>
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
-							rules='integer|required|actionRetries'
+							rules='integer|required|between:0,3'
 							:custom-messages='{
 								integer: "iqrfnet.networkManager.messages.invalid.integer",
 								required: "iqrfnet.networkManager.messages.missing.autoNetwork.actionRetries",
-								actionRetries: "iqrfnet.networkManager.messages.invalid.autoNetwork.actionRetries"
+								between: "iqrfnet.networkManager.messages.invalid.autoNetwork.actionRetries"
 							}'
 						>
 							<CInput
@@ -64,11 +64,11 @@
 						<h4>{{ $t('iqrfnet.networkManager.autoNetwork.form.overlappingNetworks') }}</h4>
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
-							rules='integer|required|networks'
+							rules='integer|required|between:1,50'
 							:custom-messages='{
 								integer: "iqrfnet.networkManager.messages.invalid.integer",
 								required: "iqrfnet.networkManager.messages.missing.autoNetwork.networks",
-								networks: "iqrfnet.networkManager.messages.invalid.autoNetwork.networks"
+								between: "iqrfnet.networkManager.messages.invalid.autoNetwork.networks"
 							}'
 						>
 							<CInput
@@ -83,11 +83,11 @@
 						</ValidationProvider>
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
-							rules='integer|required|networks'
+							rules='integer|required|between:1,50'
 							:custom-messages='{
 								integer: "iqrfnet.networkManager.messages.invalid.integer",
 								required: "iqrfnet.networkManager.messages.missing.autoNetwork.network",
-								networks: "iqrfnet.networkManager.messages.invalid.autoNetwork.network"
+								between: "iqrfnet.networkManager.messages.invalid.autoNetwork.network"
 							}'
 						>
 							<CInput
@@ -116,11 +116,11 @@
 						<h4>{{ $t('iqrfnet.networkManager.autoNetwork.form.stopConditions') }}</h4>
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
-							rules='integer|required|waves'
+							rules='integer|required|between:1,127'
 							:custom-messages='{
 								integer: "iqrfnet.networkManager.messages.invalid.integer",
 								required: "iqrfnet.networkManager.messages.missing.autoNetwork.waves",
-								waves: "iqrfnet.networkManager.messages.invalid.autoNetwork.waves"
+								between: "iqrfnet.networkManager.messages.invalid.autoNetwork.waves"
 							}'
 						>
 							<CInput
@@ -135,11 +135,11 @@
 						</ValidationProvider>
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
-							rules='integer|required|waves'
+							rules='integer|required|between:1,127'
 							:custom-messages='{
 								integer: "iqrfnet.networkManager.messages.invalid.integer",
 								required: "iqrfnet.networkManager.messages.missing.autoNetwork.emptyWaves",
-								waves: "iqrfnet.networkManager.messages.invalid.autoNetwork.emptyWaves"
+								between: "iqrfnet.networkManager.messages.invalid.autoNetwork.emptyWaves"
 							}'
 						>
 							<CInput
@@ -154,11 +154,11 @@
 						</ValidationProvider>
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
-							rules='integer|required|addr_range'
+							rules='integer|required|between:1,239'
 							:custom-messages='{
 								integer: "iqrfnet.networkManager.messages.invalid.integer",
 								required: "iqrfnet.networkManager.messages.missing.autoNetwork.totalNodes",
-								addr_range: "iqrfnet.networkManager.messages.invalid.autoNetwork.totalNodes"
+								between: "iqrfnet.networkManager.messages.invalid.autoNetwork.totalNodes"
 							}'
 						>
 							<CInput
@@ -173,11 +173,11 @@
 						</ValidationProvider>
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
-							rules='integer|required|addr_range'
+							rules='integer|required|between:1,239'
 							:custom-messages='{
 								integer: "iqrfnet.networkManager.messages.invalid.integer",
 								required: "iqrfnet.networkManager.messages.missing.autoNetwork.newNodes",
-								addr_range: "iqrfnet.networkManager.messages.invalid.autoNetwork.newNodes"
+								between: "iqrfnet.networkManager.messages.invalid.autoNetwork.newNodes"
 							}'
 						>
 							<CInput
@@ -198,11 +198,11 @@
 					<ValidationProvider
 						v-if='bondMethod !== "autoNetwork"'
 						v-slot='{ errors, touched, valid }'
-						rules='integer|required|addr_range'
+						rules='integer|required|between:1,239'
 						:custom-messages='{
 							required: "iqrfnet.networkManager.messages.missing.bonding.maxAddr",
 							integer: "iqrfnet.networkManager.messages.invalid.bonding.maxAddr",
-							addr_range: "iqrfnet.networkManager.messages.invalid.bonding.maxAddr"
+							between: "iqrfnet.networkManager.messages.invalid.bonding.maxAddr"
 						}'
 					>
 						<CInput
@@ -224,7 +224,7 @@
 					<ValidationProvider
 						v-if='bondMethod !== "autoNetwork"'
 						v-slot='{ errors, touched, valid}'
-						rules='integer|required|testRetries'
+						rules='integer|required|between:0,255'
 						:custom-mesasges='{
 							integer: "iqrfnet.networkManager.messages.invalid.bonding.bondingRetries",
 							required: "iqrfnet.networkManager.messages.missing.bonding.bondingRetries"
@@ -337,7 +337,7 @@
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CModal, CSelect} from '@coreui/vue';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {timeout} from '../../helpers/timeout';
-import {integer, required} from 'vee-validate/dist/rules';
+import {between, integer, required} from 'vee-validate/dist/rules';
 import IqrfNetService from '../../services/IqrfNetService';
 
 export default {
@@ -387,29 +387,12 @@ export default {
 		};
 	},
 	created() {
+		extend('between', between);
 		extend('integer', integer);
 		extend('required', required);
-		extend('addr_range', (addr) => {
-			return ((addr >= 1) && (addr <= 239));
-		});
 		extend('scCode', (code) => {
 			const regex = RegExp('^[a-zA-Z0-9]{34}$');
 			return regex.test(code);
-		});
-		extend('testRetries', (val) => {
-			return ((val>=0) && (val<=255));
-		});
-		extend('txpower', (val) => {
-			return ((val>=0) && (val<=7));
-		});
-		extend('actionRetries', (val) => {
-			return ((val>=0) && (val<=3));
-		});
-		extend('waves', (val) => {
-			return ((val>=1) && (val<=127));
-		});
-		extend('networks', (val) => {
-			return ((val>=1) && (val<=50));
 		});
 		extend('hwpidFilter', (val) => {
 			const regex = RegExp('^[a-zA-Z0-9]{4}(,[a-zA-Z0-9]{4})*$');
@@ -494,7 +477,7 @@ export default {
 	},
 	methods: {
 		autoNetworkProgress(response) {
-			return 'Wave ' + response.rsp.wave + '/' + this.autoNetwork.stopConditions.waves + '[' + response.rsp.progress + '%]';
+			return 'Wave ' + response.rsp.wave + '/' + this.autoNetwork.stopConditions.waves + ' [' + response.rsp.progress + '%]';
 		},
 		processSubmitAutoNetwork() {
 			this.$store.commit('spinner/SHOW');

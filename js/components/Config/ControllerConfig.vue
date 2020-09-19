@@ -157,9 +157,9 @@
 								v-slot='{ errors, touched, valid }'
 								rules='required|integer|between:0,3'
 								:custom-messages='{
-									integer: "controllerConfig.form.messages.integer",
-									required: "controllerConfig.form.messages.daRetries",
-									between: "controllerConfig.form.messages.daRetries"
+									integer: "iqrfnet.networkManager.messages.invalid.integer",
+									required: "iqrfnet.networkManager.messages.missing.autoNetwork.actionRetries",
+									between: "iqrfnet.networkManager.messages.invalid.autoNetwork.actionRetries"
 								}'
 							>
 								<CInput
@@ -167,22 +167,22 @@
 									type='number'
 									min='0'
 									max='3'
-									:label='$t("controllerConfig.form.daemonApi.autoNetwork.actionRetries")'
+									:label='$t("iqrfnet.networkManager.autoNetwork.form.actionRetries")'
 									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
 								/>
 							</ValidationProvider>
 							<CInputCheckbox
 								:checked.sync='config.daemonApi.autoNetwork.discoveryBeforeStart'
-								:label='$t("controllerConfig.form.daemonApi.autoNetwork.discoveryBeforeStart")'
+								:label='$t("iqrfnet.networkManager.autoNetwork.form.discoveryBeforeStart")'
 							/>
 							<ValidationProvider
 								v-slot='{ errors, touched, valid }'
 								rules='integer|required|between:0,7'
 								:custom-messages='{
-									integer: "controllerConfig.form.messages.integer",
-									required: "controllerConfig.form.messages.daTxpower",
-									between: "controllerConfig.form.messages.daTxpower"
+									integer: "iqrfnet.networkManager.messages.invalid.integer",
+									required: "iqrfnet.networkManager.messages.missing.discovery.txPower",
+									between: "iqrfnet.networkManager.messages.invalid.discovery.txPower"
 								}'
 							>
 								<CInput
@@ -190,27 +190,27 @@
 									type='number'
 									min='0'
 									max='7'
-									:label='$t("controllerConfig.form.daemonApi.autoNetwork.discoveryTxPower")'
+									:label='$t("iqrfnet.networkManager.autoNetwork.form.discoveryTxPower")'
 									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
 								/>
 							</ValidationProvider>
 							<CInputCheckbox
 								:checked.sync='config.daemonApi.autoNetwork.skipDiscoveryEachWave'
-								:label='$t("controllerConfig.form.daemonApi.autoNetwork.skipDiscoveryEachWave")'
+								:label='$t("iqrfnet.networkManager.autoNetwork.form.skipDiscoveryEachWave")'
 							/><hr>
-							<h4>{{ $t("controllerConfig.form.daemonApi.autoNetwork.stopConditions.title") }}</h4>
+							<h4>{{ $t("iqrfnet.networkManager.autoNetwork.form.stopConditions") }}</h4>
 							<CInputCheckbox
 								:checked.sync='config.daemonApi.autoNetwork.stopConditions.abortOnTooManyNodesFound'
-								:label='$t("controllerConfig.form.daemonApi.autoNetwork.stopConditions.abortOnTooManyNodesFound")'
+								:label='$t("iqrfnet.networkManager.autoNetwork.form.abortOnTooManyNodesFound")'
 							/>
 							<ValidationProvider
 								v-slot='{ errors, touched, valid }'
 								rules='integer|required|between:1,127'
 								:custom-messages='{
-									integer: "controllerConfig.form.messages.integer",
-									required: "controllerConfig.form.messages.daEwaves",
-									between: "controllerConfig.form.messages.daEwaves"
+									integer: "iqrfnet.networkManager.messages.invalid.integer",
+									required: "iqrfnet.networkManager.messages.missing.autoNetwork.emptyWaves",
+									between: "iqrfnet.networkManager.messages.invalid.autoNetwork.emptyWaves"
 								}'
 							>
 								<CInput
@@ -218,7 +218,7 @@
 									type='number'
 									min='1'
 									max='127'
-									:label='$t("controllerConfig.form.daemonApi.autoNetwork.stopConditions.emptyWaves")'
+									:label='$t("iqrfnet.networkManager.autoNetwork.form.emptyWaves")'
 									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
 								/>
@@ -227,9 +227,9 @@
 								v-slot='{ errors, touched, valid }'
 								rules='integer|required|between:1,127'
 								:custom-messages='{
-									integer: "controllerConfig.form.messages.integer",
-									required: "controllerConfig.form.messages.daWaves",
-									between: "controllerConfig.form.messages.daWaves"
+									integer: "iqrfnet.networkManager.messages.invalid.integer",
+									required: "iqrfnet.networkManager.messages.missing.autoNetwork.waves",
+									between: "iqrfnet.networkManager.messages.invalid.autoNetwork.waves"
 								}'
 							>
 								<CInput
@@ -237,7 +237,7 @@
 									type='number'
 									min='1'
 									max='127'
-									:label='$t("controllerConfig.form.daemonApi.autoNetwork.stopConditions.waves")'
+									:label='$t("iqrfnet.networkManager.autoNetwork.form.waves")'
 									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
 								/>
@@ -253,9 +253,9 @@
 								v-slot='{ errors, touched, valid }'
 								rules='integer|required|between:0,239'
 								:custom-messages='{
-									between: "controllerConfig.form.messages.ddMaxAddr",
-									integer: "controllerConfig.form.messages.integer",
-									required: "controllerConfig.form.messages.ddMaxAddr"
+									between: "iqrfnet.networkManager.messages.invalid.discovery.maxAddr",
+									integer: "iqrfnet.networkManager.messages.invalid.integer",
+									required: "iqrfnet.networkManager.messages.invalid.discovery.maxAddr"
 								}'
 							>
 								<CInput
@@ -263,7 +263,7 @@
 									type='number'
 									min='0'
 									max='239'
-									:label='$t("controllerConfig.form.daemonApi.discovery.maxAddr")'
+									:label='$t("iqrfnet.networkManager.discovery.form.maxAddr")'
 									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
 								/>
@@ -272,9 +272,9 @@
 								v-slot='{ errors, touched, valid }'
 								rules='integer|required|between:0,7'
 								:custom-messages='{
-									integer: "controllerConfig.form.messages.integer",
-									required: "controllerConfig.form.messages.daTxpower",
-									between: "controllerConfig.form.messages.daTxpower"
+									integer: "iqrfnet.networkManager.messages.invalid.integer",
+									required: "iqrfnet.networkManager.messages.missing.discovery.txPower",
+									between: "iqrfnet.networkManager.messages.invalid.discovery.txPower"
 								}'
 							>
 								<CInput
@@ -282,7 +282,7 @@
 									type='number'
 									min='0'
 									max='7'
-									:label='$t("controllerConfig.form.daemonApi.discovery.txPower")'
+									:label='$t("iqrfnet.networkManager.discovery.form.txPower")'
 									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
 								/>
@@ -327,7 +327,7 @@
 import {CButton, CCard , CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';
-import {timeout} from '../../helpers/timeout';
+import FormErrorHandler from '../../helpers/FormErrorHandler';
 import ConfigService from '../../services/ConfigService';
 
 export default {
@@ -344,11 +344,11 @@ export default {
 	},
 	data() {
 		return {
+			name: 'controllerConfig',
 			apiCallCustom: null,
 			apiCallSetCustom: false,
 			config: null,
 			previousApiCall: null,
-			timeout: null
 		};
 	},
 	created() {
@@ -363,48 +363,31 @@ export default {
 	},
 	methods: {
 		getConfig() {
-			this.timeout = timeout('forms.messages.getConfTimeout', 10000);
 			this.$store.commit('spinner/SHOW');
-			ConfigService.getConfig('controllerConfig')
+			ConfigService.getConfig(this.name, 10000)
 				.then((response) => {
-					clearTimeout(this.timeout);
 					this.$store.commit('spinner/HIDE');
 					this.config = response.data;
-					if (this.config.resetButton.api !== ('autoNetwork' && 'discovery')) {
+					if (this.config.resetButton.api !== ('autoNetwork' || 'discovery')) {
 						this.apiCallCustom = this.config.resetButton.api;
 						this.apiCallSetCustom = true;
 						this.previousApiCall = 'autoNetwork';
 					}
 				})
 				.catch((error) => {
-					clearTimeout(this.timeout);
-					this.$store.commit('spinner/HIDE');
-					this.handleError(error);
+					FormErrorHandler.configError(error);
 				});
 		},
 		processSubmit() {
-			this.timeout = timeout('forms.messages.saveConfTimeout', 10000);
 			this.$store.commit('spinner/SHOW');
-			ConfigService.saveConfig('controllerConfig', this.config)
+			ConfigService.saveConfig(this.name, this.config, 10000)
 				.then(() => {
-					clearTimeout(this.timeout);
 					this.$store.commit('spinner/HIDE');
 					this.$toast.success(this.$t('forms.messages.saveSuccess'));
 				})
 				.catch((error) => {
-					clearTimeout(this.timeout);
-					this.$store.commit('spinner/HIDE');
-					this.handleError(error);
+					FormErrorHandler.configError(error);
 				});
-		},
-		handleError(error) {
-			if (error.response) {
-				if (error.response.status === 500) {
-					this.$toast.error(this.$t('forms.messages.submitServerError'));
-				}
-			} else {
-				console.error(error.message);
-			}
 		},
 		updateApiCall() {
 			if (this.apiCallSetCustom) {

@@ -9,16 +9,16 @@ class ConfigService {
 	 * Retrieves service configuration
 	 * @returns {Promise<AxiosResponse<any>>}
 	 */
-	getConfig(serviceName) {
-		return axios.get(serviceName, {headers: authorizationHeader()});
+	getConfig(serviceName, timeout) {
+		return axios.get(serviceName, {headers: authorizationHeader(), timeout: timeout});
 	}
 
 	/**
 	 * Saves new service configuration
 	 * @returns {Promise<AxiosResponse<any>>}
 	 */
-	saveConfig(serviceName, config) {
-		return axios.put(serviceName, config, {headers: authorizationHeader()});
+	saveConfig(serviceName, config, timeout) {
+		return axios.put(serviceName, config, {headers: authorizationHeader(), timeout: timeout});
 	}
 }
 

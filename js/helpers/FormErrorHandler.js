@@ -24,6 +24,21 @@ class FormErrorHandler {
 	}
 
 	/**
+	 * Handles Config errors
+	 * @param error caught axios error
+	 */
+	configError(error) {
+		store.commit('spinner/HIDE');
+		if (error.response) {
+			if (error.response.status === 500) {
+				this.$toast.error(this.$t('forms.messages.submitServerError'));
+			}
+		} else {
+			console.error(error.message);
+		}
+	}
+
+	/**
 	 * Handles Service errors
 	 * @param error caught axios error
 	 */
