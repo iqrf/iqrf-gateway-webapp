@@ -31,7 +31,7 @@ class FormErrorHandler {
 		store.commit('spinner/HIDE');
 		if (error.response) {
 			if (error.response.status === 500) {
-				this.$toast.error(this.$t('forms.messages.submitServerError'));
+				Vue.$toast.error(i18n.t('forms.messages.submitServerError'));
 			}
 		} else {
 			console.error(error.message);
