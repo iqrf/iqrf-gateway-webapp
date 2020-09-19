@@ -34,10 +34,10 @@ use Nette\Utils\JsonException;
 
 /**
  * Mender client configuration controller
- * @Path("/config/mender")
+ * @Path("/mender")
  * @Tag("Config manager")
  */
-class MenderConfigController extends BaseController {
+class MenderConfigController extends BaseConfigController {
 
 	/**
 	 * @var MenderConfigManager $manager Mender client configuration manager

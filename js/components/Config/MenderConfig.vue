@@ -6,13 +6,13 @@
 					v-slot='{ errors, touched, valid }'
 					rules='addr|required'
 					:custom-messages='{
-						addr: "gateway.mender.form.messages.invalid.server",
-						required: "gateway.mender.form.messages.missing.server"
+						addr: "config.mender.form.messages.invalid.server",
+						required: "config.mender.form.messages.missing.server"
 					}'
 				>
 					<CInput
 						v-model='config.ServerURL'
-						:label='$t("gateway.mender.form.server")'
+						:label='$t("config.mender.form.server")'
 						:is-valid='touched ? valid : null'
 						:invalid-feedback='$t(errors[0])'
 					/>
@@ -21,12 +21,12 @@
 					v-slot='{ errors, touched, valid }'
 					rules='required'
 					:custom-messages='{
-						required: "gateway.mender.form.messages.missing.tenantToken"
+						required: "config.mender.form.messages.missing.tenantToken"
 					}'
 				>
 					<CInput
 						v-model='config.TenantToken'
-						:label='$t("gateway.mender.form.tenantToken")'
+						:label='$t("config.mender.form.tenantToken")'
 						:is-valid='touched ? valid : null'
 						:invalid-feedback='$t(errors[0])'
 					/>
@@ -36,15 +36,15 @@
 					rules='min:0|required|integer'
 					:custom-messages='{
 						integer: "forms.messages.integer",
-						min: "gateway.mender.form.messages.inventoryPollInterval",
-						required: "gateway.mender.form.messages.inventoryPollInterval"
+						min: "config.mender.form.messages.inventoryPollInterval",
+						required: "config.mender.form.messages.inventoryPollInterval"
 					}'
 				>
 					<CInput
 						v-model.number='config.InventoryPollIntervalSeconds'
 						type='number'
 						min='0'
-						:label='$t("gateway.mender.form.inventoryPollInterval")'
+						:label='$t("config.mender.form.inventoryPollInterval")'
 						:is-valid='touched ? valid : null'
 						:invalid-feedback='$t(errors[0])'
 					/>
@@ -54,15 +54,15 @@
 					rules='min:0|required|integer'
 					:custom-messages='{
 						integer: "forms.messages.integer",
-						min: "gateway.mender.form.messages.retryPollInterval",
-						required: "gateway.mender.form.messages.retryPollInterval"
+						min: "config.mender.form.messages.retryPollInterval",
+						required: "config.mender.form.messages.retryPollInterval"
 					}'
 				>
 					<CInput
 						v-model.number='config.RetryPollIntervalSeconds'
 						type='number'
 						min='0'
-						:label='$t("gateway.mender.form.retryPollInterval")'
+						:label='$t("config.mender.form.retryPollInterval")'
 						:is-valid='touched ? valid : null'
 						:invalid-feedback='$t(errors[0])'
 					/>
@@ -72,15 +72,15 @@
 					rules='min:0|required|integer'
 					:custom-messages='{
 						integer: "forms.messages.integer",
-						min: "gateway.mender.form.messages.updatePollInterval",
-						required: "gateway.mender.form.messages.updatePollInterval"
+						min: "config.mender.form.messages.updatePollInterval",
+						required: "config.mender.form.messages.updatePollInterval"
 					}'
 				>
 					<CInput
 						v-model.number='config.UpdatePollIntervalSeconds'
 						type='number'
 						min='0'
-						:label='$t("gateway.mender.form.updatePollInterval")'
+						:label='$t("config.mender.form.updatePollInterval")'
 						:is-valid='touched ? valid : null'
 						:invalid-feedback='$t(errors[0])'
 					/>
@@ -152,7 +152,7 @@ export default {
 		},
 	},
 	metaInfo: {
-		title: 'gateway.mender.title',
+		title: 'config.mender.title',
 	},
 };
 </script>

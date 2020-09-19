@@ -40,6 +40,7 @@ use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use GuzzleHttp\Exception\GuzzleException;
 use Nette\IOException;
 use Nette\Utils\JsonException;
+use function GuzzleHttp\Psr7\stream_for;
 
 /**
  * Cloud manager controller
@@ -116,7 +117,8 @@ class CloudsController extends BaseController {
 	public function createAws(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
 			$this->awsManager->createMqttInterface($request->getJsonBody());
-			return $response->withStatus(ApiResponse::S201_CREATED);
+			return $response->withStatus(ApiResponse::S201_CREATED)
+				->withBody(stream_for());
 		} catch (InvalidConnectionStringException $e) {
 			throw new ClientErrorException('Invalid connection string', ApiResponse::S400_BAD_REQUEST);
 		} catch (NonexistentJsonSchemaException $e) {
@@ -161,7 +163,8 @@ class CloudsController extends BaseController {
 	public function createAzure(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
 			$this->azureManager->createMqttInterface($request->getJsonBody());
-			return $response->withStatus(ApiResponse::S201_CREATED);
+			return $response->withStatus(ApiResponse::S201_CREATED)
+				->withBody(stream_for());
 		} catch (InvalidConnectionStringException $e) {
 			throw new ClientErrorException('Invalid connection string', ApiResponse::S400_BAD_REQUEST);
 		} catch (NonexistentJsonSchemaException $e) {
@@ -204,7 +207,8 @@ class CloudsController extends BaseController {
 	public function createHexio(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
 			$this->hexioManager->createMqttInterface($request->getJsonBody());
-			return $response->withStatus(ApiResponse::S201_CREATED);
+			return $response->withStatus(ApiResponse::S201_CREATED)
+				->withBody(stream_for());
 		} catch (NonexistentJsonSchemaException $e) {
 			throw new ServerErrorException('Missing JSON schema', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		} catch (IOException $e) {
@@ -245,7 +249,8 @@ class CloudsController extends BaseController {
 	public function createIbmCloud(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
 			$this->ibmCloudManager->createMqttInterface($request->getJsonBody());
-			return $response->withStatus(ApiResponse::S201_CREATED);
+			return $response->withStatus(ApiResponse::S201_CREATED)
+				->withBody(stream_for());
 		} catch (NonexistentJsonSchemaException $e) {
 			throw new ServerErrorException('Missing JSON schema', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		} catch (IOException $e) {
@@ -286,7 +291,8 @@ class CloudsController extends BaseController {
 	public function createInteliGlue(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
 			$this->inteliGlueManager->createMqttInterface($request->getJsonBody());
-			return $response->withStatus(ApiResponse::S201_CREATED);
+			return $response->withStatus(ApiResponse::S201_CREATED)
+				->withBody(stream_for());
 		} catch (NonexistentJsonSchemaException $e) {
 			throw new ServerErrorException('Missing JSON schema', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		} catch (IOException $e) {

@@ -40,10 +40,10 @@ use Nette\Utils\JsonException;
 
 /**
  * Configuration controller
- * @Path("/config")
+ * @Path("/daemon")
  * @Tag("Config manager")
  */
-class ConfigController extends BaseController {
+class ConfigController extends BaseConfigController {
 
 	/**
 	 * @var ComponentManager Component configuration manager

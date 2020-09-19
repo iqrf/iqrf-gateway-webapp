@@ -10,7 +10,7 @@ import NetworkManager from './components/IqrfNet/NetworkManager';
 import SendDpaPacket from './components/IqrfNet/SendDpaPacket';
 import TranslatorConfig from './components/Config/TranslatorConfig';
 import ControllerConfig from './components/Config/ControllerConfig';
-import MenderConfig from './components/Gateway/MenderConfig';
+import MenderConfig from './components/Config/MenderConfig';
 import UserEdit from './components/Core/UserEdit';
 import UserList from './components/Core/UserList';
 import SendJsonRequest from './components/IqrfNet/SendJsonRequest';
@@ -71,8 +71,8 @@ const routes = [
 			},
 			{
 				component: MenderConfig,
-				path: '/gateway/mender/',
-				meta: {title: 'gateway.mender.description'}
+				path: '/config/mender/',
+				meta: {title: 'config.mender.description'}
 			},
 			{
 				component: DaemonMode,

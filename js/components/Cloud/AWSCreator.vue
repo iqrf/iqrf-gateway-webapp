@@ -25,38 +25,32 @@
 							:invalid-feedback='$t(errors[0])'
 						/>
 					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{ errors, validate }'
-						rules='required'
-						:custom-messages='{
-							required: "cloud.amazonAws.form.messages.certificate"
-						}'
-					>
+					<div class='form-group'>
 						<CInputFile
 							ref='awsFormCert'
 							:label='$t("cloud.amazonAws.form.certificate")'
-							:invalid-feedback='$t(errors[0])'
-							@change='validate'
+							@input='isEmpty("cert")'
+							@click='isEmpty("cert")'
 						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{ errors, validate }'
-						rules='required'
-						:custom-messages='{
-							required: "cloud.amazonAws.form.messages.key"
-						}'
-					>
+						<p v-if='certEmpty' style='color:red'>
+							{{ $t('cloud.amazonAws.form.messages.certificate') }}
+						</p>
+					</div>
+					<div class='form-group'>
 						<CInputFile
 							ref='awsFormKey'
 							:label='$t("cloud.amazonAws.form.key")'
-							:invalid-feedback='$t(errors[0])'
-							@change='validate'
+							@input='isEmpty("key")'
+							@click='isEmpty("key")'
 						/>
-					</ValidationProvider>
-					<CButton color='primary' :disabled='invalid' @click.prevent='save'>
+						<p v-if='keyEmpty' style='color:red'>
+							{{ $t('cloud.amazonAws.form.messages.key') }}
+						</p>
+					</div>
+					<CButton color='primary' :disabled='invalid || certEmpty || keyEmpty' @click.prevent='save'>
 						{{ $t('forms.save') }}
 					</CButton>
-					<CButton color='secondary' :disabled='invalid' @click.prevent='saveAndRestart'>
+					<CButton color='secondary' :disabled='invalid || certEmpty || keyEmpty' @click.prevent='saveAndRestart'>
 						{{ $t('forms.saveRestart') }}
 					</CButton>
 				</CForm>
@@ -66,13 +60,12 @@
 </template>
 
 <script>
-import axios from 'axios';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputFile} from '@coreui/vue';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
-import {authorizationHeader} from '../../helpers/authorizationHeader';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import CloudService from '../../services/CloudService';
+import ServiceService from '../../services/ServiceService';
 
 export default {
 	name: 'AWSCreator',
@@ -90,7 +83,9 @@ export default {
 	data() {
 		return {
 			endpoint: null,
-			serviceName: 'aws'
+			serviceName: 'aws',
+			certEmpty: true,
+			keyEmpty: true,
 		};
 	},
 	created() {
@@ -100,8 +95,8 @@ export default {
 		buildRequest() {
 			let	formData = new FormData();
 			formData.append('endpoint', this.endpoint);
-			formData.append('certificate', this.$refs.awsFormCert.files[0]);
-			formData.append('privateKey', this.$refs.awsFormKey.files[0]);
+			formData.append('certificate', this.$refs.awsFormCert.$el.children[1].files[0]);
+			formData.append('privateKey', this.$refs.awsFormKey.$el.children[1].files[0]);
 			return formData;
 		},
 		save() {
@@ -110,33 +105,33 @@ export default {
 				.then(() => {
 					this.$store.commit('spinner/HIDE');
 					this.$toast.success(this.$t('cloud.messages.success'));
-				
 				})
 				.catch((error) => {
 					FormErrorHandler.cloudError(error);
+					return Promise.reject(error);
 				});
 		},
 		saveAndRestart() {
-			axios.interceptors.response.use(
-				(response) => {
-					if (response.config.url === 'clouds/' + this.serviceName) {
-						this.$store.commit('spinner/SHOW');
-						axios.post('services/iqrf-gateway-daemon/restart', null, {headers: authorizationHeader(), timeout: 20000})
-							.then(() => {
-								this.$store.commit('spinner/HIDE');
-								this.$toast.success(this.$t('service.iqrf-gateway-daemon.messages.restart'));
-							})
-							.catch((error) => {
-								FormErrorHandler.serviceError(error);
-							});
-					}
-					return response;
-				},
-				(error) => {
-					return Promise.reject(error);
-				}
-			);
-			this.save();
+			this.save()
+				.then(() => {
+					this.$store.commit('spinner/SHOW');
+					ServiceService.restart('iqrf-gateway-daemon')
+						.then(() => {
+							this.$store.commit('spinner/HIDE');
+							this.$toast.success(this.$t('service.iqrf-gateway-daemon.messages.restart'));
+						})
+						.catch((error) => {
+							FormErrorHandler.serviceError(error);
+						});
+				})
+				.catch(() => {});
+		},
+		isEmpty(button) {
+			if (button === 'cert') {
+				this.certEmpty = this.$refs.awsFormCert.$el.children[1].files.length === 0;
+			} else {
+				this.keyEmpty = this.$refs.awsFormKey.$el.children[1].files.length === 0;
+			}
 		}
 	}
 };

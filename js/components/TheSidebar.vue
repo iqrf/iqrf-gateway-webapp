@@ -71,11 +71,6 @@ export default {
 									roles: ['power', 'normal'],
 								},
 								{
-									name: this.$t('gateway.mender.title'),
-									to: '/gateway/mender/',
-									roles: ['power', 'normal']
-								},
-								{
 									name: this.$t('gateway.mode.title'),
 									to: '/gateway/change-mode/',
 									roles: ['power', 'normal'],
@@ -220,7 +215,12 @@ export default {
 									name: this.$t('controllerConfig.title'),
 									to: '/config/controller/',
 									roles: ['power', 'normal'],
-								}
+								},
+								{
+									name: this.$t('config.mender.title'),
+									to: '/config/mender/',
+									roles: ['power', 'normal']
+								},
 							],
 						},
 						{

@@ -37,10 +37,10 @@ use Nette\Utils\JsonException;
 
 /**
  * Configuration migration controller
- * @Path("/configMigration")
+ * @Path("/daemon/migration")
  * @Tag("Config manager")
  */
-class ConfigMigrationController extends BaseController {
+class ConfigMigrationController extends BaseConfigController {
 
 	/**
 	 * @var MigrationManager Configuration migration manager

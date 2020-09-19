@@ -77,13 +77,12 @@
 </template>
 
 <script>
-import axios from 'axios';
 import {CButton, CCard, CCardBody, CForm, CInput} from '@coreui/vue';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';
-import {authorizationHeader} from '../../helpers/authorizationHeader';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import CloudService from '../../services/CloudService';
+import ServiceService from '../../services/ServiceService';
 
 export default {
 	name: 'InteliGlueCreator',
@@ -128,29 +127,23 @@ export default {
 				})
 				.catch((error) => {
 					FormErrorHandler.cloudError(error);
+					return Promise.reject(error);
 				});
 		},
 		saveAndRestart() {
-			axios.interceptors.response.use(
-				(response) => {
-					if (response.config.url === 'clouds/' + this.serviceName) {
-						this.$store.commit('spinner/SHOW');
-						axios.post('services/iqrf-gateway-daemon/restart', null, {headers: authorizationHeader(), timeout: 20000})
-							.then(() => {
-								this.$store.commit('spinner/HIDE');
-								this.$toast.success(this.$t('service.iqrf-gateway-daemon.messages.restart'));
-							})
-							.catch((error) => {
-								FormErrorHandler.serviceError(error);
-							});
-					}
-					return response;
-				},
-				(error) => {
-					return Promise.reject(error);
-				}
-			);
-			this.save();
+			this.save()
+				.then(() => {
+					this.$store.commit('spinner/SHOW');
+					ServiceService.restart('iqrf-gateway-daemon')
+						.then(() => {
+							this.$store.commit('spinner/HIDE');
+							this.$toast.success(this.$t('service.iqrf-gateway-daemon.messages.restart'));
+						})
+						.catch((error) => {
+							FormErrorHandler.serviceError(error);
+						});
+				})
+				.catch(() => {});
 		},
 	},
 	metaInfo: {

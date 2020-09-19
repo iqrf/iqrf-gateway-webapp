@@ -206,6 +206,29 @@
 		"websocket": {
 			"title": "WebSocket interface",
 			"description": "IQRF WebSocket interface settings."
+		},
+		"mender": {
+			"title": "Mender",
+			"description": "Mender client configuration",
+			"form": {
+				"inventoryPollInterval": "Inventory update interval (seconds)",
+				"retryPollInterval": "Communication retry interval (seconds)",
+				"server": "Server address",
+				"tenantToken": "Tenant token",
+				"updatePollInterval": "Update check interval (seconds)",
+				"messages": {
+					"inventoryPollInterval": "Please enter an integer greater or equal to 0 for for inventory update interval.",
+					"retryPollInterval": "Please enter an integer greater or equal to 0 for communication retry interval.",
+					"updatePollInterval": "Please enter an integer greater or equal to 0 for update check interval",
+					"missing": {
+						"server": "Please enter the server address.",
+						"tenantToken": "Please enter the tenant token."
+					},
+					"invalid": {
+						"server": "Server address should contain the HTTP protocol."
+					}
+				}
+			}
 		}
 	},
 	"core": {
@@ -336,29 +359,6 @@
 				"nonExistingDir": "IQRF Gateway Daemon's log directory does not exist.",
 				"readError": "Cannot read IQRF Gateway Daemon's log file.",
 				"notFound": "IQRF Gateway Daemon log file cannot be found."
-			}
-		},
-		"mender": {
-			"title": "Mender",
-			"description": "Mender client configuration",
-			"form": {
-				"inventoryPollInterval": "Inventory update interval (seconds)",
-				"retryPollInterval": "Communication retry interval (seconds)",
-				"server": "Server address",
-				"tenantToken": "Tenant token",
-				"updatePollInterval": "Update check interval (seconds)",
-				"messages": {
-					"inventoryPollInterval": "Please enter an integer greater or equal to 0 for for inventory update interval.",
-					"retryPollInterval": "Please enter an integer greater or equal to 0 for communication retry interval.",
-					"updatePollInterval": "Please enter an integer greater or equal to 0 for update check interval",
-					"missing": {
-						"server": "Please enter the server address.",
-						"tenantToken": "Please enter the tenant token."
-					},
-					"invalid": {
-						"server": "Server address should contain the HTTP protocol."
-					}
-				}
 			}
 		},
 		"mode": {

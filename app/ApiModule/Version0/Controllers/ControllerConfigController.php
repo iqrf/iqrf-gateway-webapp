@@ -34,10 +34,10 @@ use Nette\Utils\JsonException;
 
 /**
  * IQRF Gateway Controller configuration controller
- * @Path("/config/controller")
+ * @Path("/controller")
  * @Tag("Config manager")
  */
-class ControllerConfigController extends BaseController {
+class ControllerConfigController extends BaseConfigController {
 
 	/**
 	 * @var ControllerConfigManager $manager IQRF Gateway Controller configuration manager
