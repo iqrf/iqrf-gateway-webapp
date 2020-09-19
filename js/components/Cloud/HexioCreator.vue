@@ -178,7 +178,10 @@ export default {
 		saveAndRestart() {
 			this.restart = true;
 			this.save();
-		}
-	}
+		},
+	},
+	metaInfo: {
+		title: 'cloud.hexio.form.title',
+	},
 };
 </script>

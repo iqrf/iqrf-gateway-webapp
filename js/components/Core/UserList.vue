@@ -235,5 +235,8 @@ export default {
 		delete: cilTrash,
 		edit: cilPencil,
 	},
+	metaInfo: {
+		title: 'core.user.title',
+	},
 };
 </script>

@@ -180,6 +180,9 @@ export default {
 			this.response = null;
 			IqrfNetService.sendJson(json);
 		},
-	}
+	},
+	metaInfo: {
+		title: 'iqrfnet.sendJson.title',
+	},
 };
 </script>

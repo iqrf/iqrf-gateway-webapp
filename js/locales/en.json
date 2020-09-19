@@ -296,9 +296,9 @@
 			"gwId": "IQRF Gateway ID",
 			"gwmonId": "PIXLA token",
 			"version": {
-				"iqrf-gw-controller": "IQRF Gateway Controller",
-				"iqrf-gw-daemon": "IQRF Gateway Daemon",
-				"iqrf-gw-webapp": "IQRF Gateway Webapp"
+				"iqrfGatewayController": "IQRF Gateway Controller",
+				"iqrfGatewayDaemon": "IQRF Gateway Daemon",
+				"iqrfGatewayWebapp": "IQRF Gateway Webapp"
 			},
 			"hostname": "Hostname",
 			"addresses": {
@@ -323,14 +323,7 @@
 				"swap": "Swap usage",
 				"used": "Used"
 			},
-			"gwMode": "Gateway mode",
-			"gwModes": {
-				"operational": "Operational mode",
-				"service": "Service mode",
-				"forwarding": "Forwarding mode",
-				"unknown": "An error occured while getting the current gateway mode",
-				"": "gateway.info.gwModes."
-			}
+			"gwMode": "Gateway mode"
 		},
 		"diagnostics": {
 			"download": "Download diagnostics"
@@ -372,18 +365,19 @@
 			"title": "Change mode",
 			"description": "Change gateway mode.",
 			"modes": {
-				"operational": {
-					"title": "Operational mode",
-					"message": "IQRF Gateway Daemon's mode has been changed to operational mode."
+				"forwarding": "Forwarding mode",
+				"operational": "Operational mode",
+				"service": "Service mode",
+				"unknown": "An error occurred while getting the current gateway mode"
+			},
+			"messages": {
+				"failures": {
+					"get": "An error occurred while getting the current gateway mode",
+					"set": "An error occurred while setting a new gateway mode"
 				},
-				"service": {
-					"title": "Service mode",
-					"message": "IQRF Gateway Daemon's mode has been changed to service mode."
-				},
-				"forwarding": {
-					"title": "Forwarding mode",
-					"message": "IQRF Gateway Daemon's mode has been changed to forwarding mode."
-				}
+				"forwarding": "IQRF Gateway Daemon's mode has been changed to forwarding mode.",
+				"operational": "IQRF Gateway Daemon's mode has been changed to operational mode.",
+				"service": "IQRF Gateway Daemon's mode has been changed to service mode."
 			}
 		},
 		"power": {

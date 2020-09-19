@@ -244,5 +244,8 @@ export default {
 			}
 		},
 	},
+	metaInfo: {
+		title: 'iqrfnet.sendPacket.title',
+	},
 };
 </script>

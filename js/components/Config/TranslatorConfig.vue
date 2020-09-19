@@ -249,12 +249,15 @@ export default {
 		},
 		changeVisibility() {
 			this.visibility = this.visibility === 'password' ? 'text' : 'password';
-		}
+		},
 	},
 	icons: {
 		hidden: cilLockLocked,
 		shown: cilLockUnlocked
-	}
+	},
+	metaInfo: {
+		title: 'translatorConfig.description',
+	},
 };
 
 </script>

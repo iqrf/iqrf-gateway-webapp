@@ -40,6 +40,9 @@ export default {
 	icon: {
 		cilPowerStandby,
 		cilReload,
-	}
+	},
+	metaInfo: {
+		title: 'gateway.power.title',
+	},
 };
 </script>

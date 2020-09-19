@@ -1,10 +1,10 @@
 <template>
 	<CRow>
-		<CCol sm='6'>
+		<CCol md='6'>
 			<BinaryOutputManager />
 			<SensorManager />
 		</CCol>
-		<CCol sm='6'>
+		<CCol md='6'>
 			<LightManager />
 			<DaliManager />
 		</CCol>
@@ -25,8 +25,8 @@ export default {
 		LightManager,
 		SensorManager,
 	},
-	data() {
-		return {};
-	}
+	metaInfo: {
+		title: 'iqrfnet.standard.title',
+	},
 };
 </script>

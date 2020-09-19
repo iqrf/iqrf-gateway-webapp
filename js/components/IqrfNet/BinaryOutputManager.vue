@@ -211,8 +211,8 @@ export default {
 	},
 	icons: {
 		on: cilCheckAlt,
-		off: cilX
-	}
+		off: cilX,
+	},
 };
 </script>
 

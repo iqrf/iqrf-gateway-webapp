@@ -3,20 +3,18 @@
 		<table class='table table-striped'>
 			<tr>
 				<th>{{ $t('gateway.info.gwMode') }}</th>
-				<td>
-					{{ $t('gateway.info.gwModes.' + mode) }}
-				</td>
+				<td>{{ $t('gateway.mode.modes.' + mode) }}</td>
 			</tr>
 		</table>
 		<div v-if='mode !== "unknown"'>
 			<CButton color='primary' @click='setMode("operational")'>
-				{{ $t('gateway.mode.modes.operational.title') }}
+				{{ $t('gateway.mode.modes.operational') }}
 			</CButton>
 			<CButton color='primary' @click='setMode("service")'>
-				{{ $t('gateway.mode.modes.service.title') }}
+				{{ $t('gateway.mode.modes.service') }}
 			</CButton>
 			<CButton color='primary' @click='setMode("forwarding")'>
-				{{ $t('gateway.mode.modes.forwarding.title') }}
+				{{ $t('gateway.mode.modes.forwarding') }}
 			</CButton>
 		</div>
 	</CCard>
@@ -34,14 +32,14 @@ export default {
 	},
 	data() {
 		return {
-			hasData: false,
+			loaded: false,
 			mode: 'unknown',
 		};
 	},
 	created() {
 		this.unsubscribe = this.$store.subscribe(mutation => {
 			if (mutation.type === 'SOCKET_ONOPEN') {
-				DaemonModeService.get();
+				this.getMode();
 				return;
 			}
 			if (mutation.type !== 'SOCKET_ONMESSAGE' ||
@@ -50,21 +48,33 @@ export default {
 			}
 			try {
 				this.mode = mutation.payload.data.rsp.operMode;
+				if (this.loaded) {
+					this.$toast.success(this.$t('gateway.mode.messages.' + this.mode));
+				} else {
+					this.loaded = true;
+				}
 			} catch (e) {
 				this.mode = 'unknown';
+				this.$toast.error(this.$t('gateway.mode.messages.' + this.loaded ? 'set' : 'get'));
 			}
 		});
 		if (this.$store.state.webSocketClient.socket.isConnected) {
-			DaemonModeService.get();
+			this.getMode();
 		}
 	},
 	beforeDestroy() {
 		this.unsubscribe();
 	},
 	methods: {
+		getMode() {
+			DaemonModeService.get();
+		},
 		setMode(newMode) {
 			DaemonModeService.set(newMode);
 		},
+	},
+	metaInfo: {
+		title: 'gateway.mode.title',
 	},
 };
 </script>

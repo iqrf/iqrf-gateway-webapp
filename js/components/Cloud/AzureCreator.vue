@@ -101,7 +101,10 @@ export default {
 				}
 			);
 			this.save();
-		}
-	}
+		},
+	},
+	metaInfo: {
+		title: 'cloud.msAzure.form.title',
+	},
 };
 </script>

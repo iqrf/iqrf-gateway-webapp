@@ -19,15 +19,15 @@
 					<td>{{ info.pixla }}</td>
 				</tr>
 				<tr v-if='info.versions.controller'>
-					<th>{{ $t('gateway.info.version.iqrf-gw-controller') }}</th>
+					<th>{{ $t('gateway.info.version.iqrfGatewayController') }}</th>
 					<td>{{ info.versions.controller }}</td>
 				</tr>
 				<tr>
-					<th>{{ $t('gateway.info.version.iqrf-gw-daemon') }}</th>
+					<th>{{ $t('gateway.info.version.iqrfGatewayDaemon') }}</th>
 					<td>{{ info.versions.daemon }}</td>
 				</tr>
 				<tr>
-					<th>{{ $t('gateway.info.version.iqrf-gw-webapp') }}</th>
+					<th>{{ $t('gateway.info.version.iqrfGatewayWebapp') }}</th>
 					<td>{{ info.versions.webapp }}</td>
 				</tr>
 				<tr>
@@ -75,7 +75,7 @@
 				</tr>
 				<tr>
 					<th>{{ $t('gateway.info.gwMode') }}</th>
-					<td>{{ $t('gateway.info.gwModes.' + mode) }}</td>
+					<td>{{ $t('gateway.mode.modes.' + mode) }}</td>
 				</tr>
 			</tbody>
 		</table>
@@ -91,6 +91,7 @@ import CoordinatorInfo from './CoordinatorInfo';
 import DaemonModeService from '../../services/DaemonModeService';
 import GatewayService from '../../services/GatewayService';
 import ResourceUsage from './ResourceUsage';
+import {fileDownloader} from '../../helpers/fileDownloader';
 
 export default {
 	name: 'GatewayInfo',
@@ -167,25 +168,15 @@ export default {
 			this.$store.commit('spinner/SHOW');
 			GatewayService.getDiagnosticsArchive().then(
 				(response) => {
-					const contentDisposition = response.headers['content-disposition'];
-					let fileName = 'iqrf-gateway-diagnostics.zip';
-					if (contentDisposition) {
-						const fileNameMatch = contentDisposition.match(/filename="(.+)"/);
-						if (fileNameMatch.length === 2) {
-							fileName = fileNameMatch[1];
-						}
-					}
-					const blob = new Blob([response.data], {type: 'application/zip'});
-					const fileUrl = window.URL.createObjectURL(blob);
-					const file = document.createElement('a');
-					file.href = fileUrl;
-					file.setAttribute('download', fileName);
-					document.body.appendChild(file);
+					const file = fileDownloader(response, 'application/zip', 'iqrf-gateway-diagnostics.zip');
 					this.$store.commit('spinner/HIDE');
 					file.click();
 				}
 			).catch(() => (this.$store.commit('spinner/HIDE')));
 		}
+	},
+	metaInfo: {
+		title: 'gateway.info.title',
 	},
 };
 </script>

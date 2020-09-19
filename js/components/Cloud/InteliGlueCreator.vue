@@ -153,7 +153,10 @@ export default {
 		saveAndRestart() {
 			this.restart = true;
 			this.save();
-		}
-	}
+		},
+	},
+	metaInfo: {
+		title: 'cloud.intelimentsInteliGlue.form.title',
+	},
 };
 </script>

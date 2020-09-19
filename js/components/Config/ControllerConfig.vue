@@ -413,7 +413,10 @@ export default {
 			} else {
 				this.config.resetButton.api = this.previousApiCall;
 			}
-		}
-	}
+		},
+	},
+	metaInfo: {
+		title: 'controllerConfig.description',
+	},
 };
 </script>

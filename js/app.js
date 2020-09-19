@@ -27,6 +27,7 @@ import axios from 'axios';
 import '@coreui/coreui';
 import CoreuiVue from '@coreui/vue';
 import Vue from 'vue';
+import VueMeta from 'vue-meta';
 import VueToast from 'vue-toast-notification';
 import VueNativeSock from 'vue-native-websocket';
 
@@ -119,6 +120,7 @@ axios.interceptors.response.use(
 Vue.prototype.$appName = 'IQRF Gateway Webapp frontend';
 
 Vue.use(CoreuiVue);
+Vue.use(VueMeta);
 Vue.use(VueToast,{
 	position: 'top',
 	duration: 10000
@@ -137,5 +139,10 @@ new Vue({
 	},
 	router: router,
 	store: store,
-	i18n: i18n
+	i18n: i18n,
+	metaInfo: {
+		titleTemplate: (titleChunk) => {
+			return (titleChunk ? `${i18n.t(titleChunk)} | ` : '') + i18n.t('core.title');
+		}
+	},
 });

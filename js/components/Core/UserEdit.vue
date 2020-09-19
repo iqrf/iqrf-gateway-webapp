@@ -163,7 +163,10 @@ export default {
 						this.$toast.error(this.$t('core.user.messages.conflict.username'));
 					}
 				});
-		}
+		},
+	},
+	metaInfo: {
+		title: 'core.user.edit.title',
 	},
 };
 </script>
