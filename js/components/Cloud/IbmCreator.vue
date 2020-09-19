@@ -171,7 +171,10 @@ export default {
 		saveAndRestart() {
 			this.restart = true;
 			this.save();
-		}
-	}
+		},
+	},
+	metaInfo: {
+		title: 'cloud.ibmCloud.form.title',
+	},
 };
 </script>

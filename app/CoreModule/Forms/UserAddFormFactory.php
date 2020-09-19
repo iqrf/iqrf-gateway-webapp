@@ -125,7 +125,9 @@ class UserAddFormFactory {
 			$this->presenter->flashMessage(self::PREFIX . '.messages.usernameAlreadyExists', 'danger');
 			return;
 		}
-		$user = new User($username, $values['password'], $values['userType'], $values['language']);
+		$role = $values['userType'] ?? User::ROLE_DEFAULT;
+		$language = $values['language'] ?? User::LANGUAGE_DEFAULT;
+		$user = new User($username, $values['password'], $role, $language);
 		$this->entityManager->persist($user);
 		$this->entityManager->flush();
 		$message = $form->getTranslator()->translate('messages.successAdd', ['username' => $username]);

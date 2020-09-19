@@ -107,6 +107,9 @@ export default {
 		user: cilUser,
 		lock: cilLockLocked,
 	},
+	metaInfo: {
+		title: 'core.sign.inForm.title',
+	},
 };
 </script>
 

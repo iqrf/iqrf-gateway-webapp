@@ -4,7 +4,7 @@
 			{{ $t('iqrfnet.sendPacket.macros') }}
 		</CCardHeader>
 		<CCardBody>
-			<CButtonGroup>
+			<CButtonGroup class='flex-wrap'>
 				<CDropdown
 					v-for='group of macros'
 					:key='group.id'

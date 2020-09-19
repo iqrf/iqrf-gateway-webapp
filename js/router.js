@@ -30,9 +30,6 @@ const routes = [
 		component: SignIn,
 		name: 'signIn',
 		path: '/sign/in/',
-		meta: {
-			title: 'core.sign.inForm.title',
-		},
 	},
 	{
 		path: '*',
@@ -45,123 +42,89 @@ const routes = [
 			{
 				component: AzureCreator,
 				path: '/cloud/azure/',
-				meta: {
-					title: 'cloud.msAzure.form.title'
-				}
+				meta: {title: 'cloud.msAzure.form.title'}
 			},
 			{
 				component: HexioCreator,
 				path: '/cloud/hexio/',
-				meta: {
-					title: 'cloud.hexio.form.title',
-				}
+				meta: {title: 'cloud.hexio.form.title',}
 			},
 			{
 				component: IbmCreator,
 				path: '/cloud/ibm-cloud/',
-				meta: {
-					title: 'cloud.ibmCloud.form.title'
-				}
+				meta: {title: 'cloud.ibmCloud.form.title'}
 			},
 			{
 				component: InteliGlueCreator,
 				path: '/cloud/inteli-glue/',
-				meta: {
-					title: 'cloud.intelimentsInteliGlue.form.title',
-				},
+				meta: {title: 'cloud.intelimentsInteliGlue.form.title'},
 			},
 			{
 				component: GatewayInfo,
 				path: '/gateway/info/',
-				meta: {
-					title: 'gateway.info.title',
-				},
+				meta: {title: 'gateway.info.title'},
 			},
 			{
 				component: DaemonLogViewer,
 				path: '/gateway/log/',
-				meta: {
-					title: 'gateway.log.title',
-				},
+				meta: {title: 'gateway.log.title'},
 			},
 			{
 				component: MenderConfig,
 				path: '/gateway/mender/',
-				meta: {
-					title: 'gateway.mender.description'
-				}
+				meta: {title: 'gateway.mender.description'}
 			},
 			{
 				component: DaemonMode,
 				path: '/gateway/change-mode/',
-				meta: {
-					title: 'gateway.mode.title',
-				},
+				meta: {title: 'gateway.mode.title'},
 			},
 			{
 				component: PowerControl,
 				path: '/gateway/power/',
-				meta: {
-					title: 'gateway.power.title',
-				},
+				meta: {title: 'gateway.power.title'},
 			},
 			{
 				component: ServiceControl,
 				name: 'serviceControl',
 				path: '/service/:serviceName/',
 				props: true,
-				meta: {
-					title: 'service.%serviceName%.title',
-				},
+				meta: {title: 'service.%serviceName%.title'},
 			},
 			{
 				component: NetworkManager,
 				path: '/iqrfnet/network/',
-				meta: {
-					title: 'iqrfnet.networkManager.title'
-				}
+				meta: {title: 'iqrfnet.networkManager.title'}
 			},
 			{
 				component: StandardManager,
 				path: '/iqrfnet/standard/',
-				meta: {
-					title: 'iqrfnet.standard.title'
-				}
+				meta: {title: 'iqrfnet.standard.title'}
 			},
 			{
 				component: SendDpaPacket,
 				path: '/iqrfnet/send-raw/',
-				meta: {
-					title: 'iqrfnet.sendPacket.title',
-				},
+				meta: {title: 'iqrfnet.sendPacket.title'},
 			},
 			{
 				component: SendJsonRequest,
 				path: '/iqrfnet/send-json/',
-				meta: {
-					title: 'iqrfnet.sendJson.title'
-				}
+				meta: {title: 'iqrfnet.sendJson.title'}
 			},
 			{
 				component: TranslatorConfig,
 				path: '/config/translator/',
-				meta: {
-					title: 'translatorConfig.description'
-				}
+				meta: {title: 'translatorConfig.description'}
 			},
 			{
 				component: ControllerConfig,
 				path: '/config/controller/',
-				meta: {
-					title: 'controllerConfig.description'
-				}
+				meta: {title: 'controllerConfig.description'}
 			},
 			{
 				component: UserList,
 				path: '/user/',
-				meta: {
-					title: 'core.user.title',
-				},
+				meta: {title: 'core.user.title'},
 			},
 			{
 				component: UserEdit,
@@ -173,15 +136,16 @@ const routes = [
 					}
 					return {userId};
 				},
-				meta: {
-					title: 'core.user.edit.title',
-				},
+				meta: {title: 'core.user.edit.title'},
 			},
 			{
 				path: '*',
 				name: 'legacyComponent',
-			}
-		]
+				component: {
+					metaInfo: {titleTemplate: null},
+				},
+			},
+		],
 	},
 ];
 
@@ -204,7 +168,8 @@ function metaTranslate(route, type) {
 }
 
 router.beforeEach((to, from, next) => {
-	if (to.name !== 'signIn' && !store.getters['user/isLoggedIn']) {
+	if (!to.path.startsWith('/install/') && to.name !== 'signIn' &&
+		!store.getters['user/isLoggedIn']) {
 		store.dispatch('user/signOut').then(() => {
 			// next('/sign/in');
 			location.replace('/sign/in');
@@ -221,7 +186,6 @@ router.beforeEach((to, from, next) => {
 	if (to.meta.title) {
 		to.meta.title = metaTranslate(to, 'title');
 	}
-	document.title = to.meta.title + (to.meta.title ? ' | ' : '') + i18n.t('core.title');
 	let titleEl = document.getElementById('title');
 	if (titleEl !== null) {
 		titleEl.innerText = to.meta.title;
@@ -229,6 +193,10 @@ router.beforeEach((to, from, next) => {
 	let content = document.getElementById('content');
 	if (content !== null) {
 		content.remove();
+	}
+	let flashes = document.getElementById('snippet--flashes');
+	if (flashes !== null) {
+		flashes.remove();
 	}
 	next();
 });

@@ -10,6 +10,7 @@
 <script>
 import {CButton, CCard} from '@coreui/vue';
 import GatewayService from '../../services/GatewayService';
+import {fileDownloader} from '../../helpers/fileDownloader';
 
 export default {
 	name: 'DaemonLogViewer',
@@ -38,25 +39,15 @@ export default {
 			this.$store.commit('spinner/SHOW');
 			GatewayService.getLogArchive().then(
 				(response) => {
-					const contentDisposition = response.headers['content-disposition'];
-					let fileName = 'iqrf-gateway-logs.zip';
-					if (contentDisposition) {
-						const fileNameMatch = contentDisposition.match(/filename="(.+)"/);
-						if (fileNameMatch.length === 2) {
-							fileName = fileNameMatch[1];
-						}
-					}
-					const blob = new Blob([response.data], {type: 'application/zip'});
-					const fileUrl = window.URL.createObjectURL(blob);
-					const file = document.createElement('a');
-					file.href = fileUrl;
-					file.setAttribute('download', fileName);
-					document.body.appendChild(file);
+					const file = fileDownloader(response, 'application/zip', 'iqrf-gateway-logs.zip');
 					this.$store.commit('spinner/HIDE');
 					file.click();
 				}
 			).catch(() => (this.$store.commit('spinner/HIDE')));
 		}
+	},
+	metaInfo: {
+		title: 'gateway.log.title',
 	},
 };
 </script>

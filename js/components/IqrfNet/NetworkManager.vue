@@ -32,5 +32,8 @@ export default {
 			this.$refs.devs.submitFrcPing();
 		},
 	},
+	metaInfo: {
+		title: 'iqrfnet.networkManager.title',
+	},
 };
 </script>

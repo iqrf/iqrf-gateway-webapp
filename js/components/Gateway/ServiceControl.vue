@@ -152,5 +152,10 @@ export default {
 				.catch(this.handleError);
 		},
 	},
+	metaInfo() {
+		return {
+			title: 'service.' + this.serviceName +'.title',
+		};
+	},
 };
 </script>

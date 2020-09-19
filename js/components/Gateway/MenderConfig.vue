@@ -167,6 +167,9 @@ export default {
 				console.error(error.message);
 			}
 		}
-	}
+	},
+	metaInfo: {
+		title: 'gateway.mender.title',
+	},
 };
 </script>
