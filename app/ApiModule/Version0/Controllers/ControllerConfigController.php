@@ -33,9 +33,9 @@ use Nette\IOException;
 use Nette\Utils\JsonException;
 
 /**
- * IQRF Gateway Controller Controller
- * @Path("/controllerConfig")
- * @Tag("IQRF Gateway Controller configuration")
+ * IQRF Gateway Controller configuration controller
+ * @Path("/config/controller")
+ * @Tag("Config manager")
  */
 class ControllerConfigController extends BaseController {
 

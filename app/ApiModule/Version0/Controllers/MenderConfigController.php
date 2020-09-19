@@ -33,9 +33,9 @@ use Nette\IOException;
 use Nette\Utils\JsonException;
 
 /**
- * Mender client controller
- * @Path("/menderConfig")
- * @Tag("Mender client configuration")
+ * Mender client configuration controller
+ * @Path("/config/mender")
+ * @Tag("Config manager")
  */
 class MenderConfigController extends BaseController {
 

@@ -344,7 +344,7 @@ export default {
 	},
 	data() {
 		return {
-			name: 'controllerConfig',
+			name: 'controller',
 			apiCallCustom: null,
 			apiCallSetCustom: false,
 			config: null,

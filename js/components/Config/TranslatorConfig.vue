@@ -183,7 +183,7 @@ export default {
 	},
 	data() {
 		return {
-			name: 'translatorConfig',
+			name: 'translator',
 			visibility: 'password',
 			config: null,
 		};

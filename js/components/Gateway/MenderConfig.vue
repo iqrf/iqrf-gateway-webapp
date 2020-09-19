@@ -113,7 +113,7 @@ export default {
 	},
 	data() {
 		return {
-			name: 'menderConfig',
+			name: 'mender',
 			config: null,
 		};
 	},
