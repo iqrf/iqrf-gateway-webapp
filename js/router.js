@@ -20,7 +20,7 @@ import HexioCreator from './components/Cloud/HexioCreator';
 import AzureCreator from './components/Cloud/AzureCreator';
 import IbmCreator from './components/Cloud/IbmCreator';
 
-import i18n from './i18n';
+import i18n from './i18n.ts';
 import store from './store';
 
 Vue.use(VueRouter);

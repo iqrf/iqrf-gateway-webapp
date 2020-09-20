@@ -1,4 +1,4 @@
-import i18n from '../i18n';
+import i18n from '../i18n.ts';
 import store from '../store';
 import Vue from 'vue';
 
@@ -14,9 +14,9 @@ class FormErrorHandler {
 		store.commit('spinner/HIDE');
 		if (error.response) {
 			if (error.response.status === 400) {
-				Vue.$toast.error(i18n.t('forms.messages.submitBadRequest'));
+				Vue.$toast.error(i18n.t('forms.messages.submitBadRequest').toString());
 			} else if (error.response.status) {
-				Vue.$toast.error(i18n.t('forms.messages.submitServerError'));
+				Vue.$toast.error(i18n.t('forms.messages.submitServerError').toString());
 			}
 		} else {
 			console.error(error.message);

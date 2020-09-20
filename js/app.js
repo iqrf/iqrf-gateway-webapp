@@ -31,7 +31,7 @@ import VueMeta from 'vue-meta';
 import VueToast from 'vue-toast-notification';
 import VueNativeSock from 'vue-native-websocket';
 
-import i18n from './i18n';
+import i18n from './i18n.ts';
 import store from './store';
 import router from './router';
 

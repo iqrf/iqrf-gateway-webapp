@@ -24,6 +24,11 @@ module.exports = {
 				loader: 'vue-loader'
 			},
 			{
+				test: /\.tsx?$/,
+				use: 'ts-loader',
+				exclude: /node_modules/,
+			},
+			{
 				enforce: 'pre',
 				test: /\.js$/,
 				exclude: /node_modules/,
@@ -109,7 +114,7 @@ module.exports = {
 		alias: {
 			'vue$': 'vue/dist/vue.esm.js'
 		},
-		extensions: ['*', '.js', '.vue', '.json']
+		extensions: ['*', '.js', '.vue', '.json', '.ts', '.tsx']
 	},
 	devtool: 'source-map',
 };
