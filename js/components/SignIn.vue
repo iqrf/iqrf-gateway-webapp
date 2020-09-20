@@ -95,10 +95,16 @@ export default {
 	},
 	methods: {
 		handleSubmit() {
-			this.$store.dispatch('user/signIn', {username: this.username, password: this.password})
+			Promise.all([
+				this.$store.dispatch('user/signIn', {username: this.username, password: this.password}),
+				this.$store.dispatch('features/fetch'),
+			])
 				.then(() => {
 					this.$router.push('/');
 					this.$toast.success(this.$t('core.sign.inForm.messages.success'));
+				})
+				.catch(() => {
+					this.$toast.error(this.$t('core.sign.inForm.messages.incorrectUsernameOrPassword'));
 				});
 			this.submitted = true;
 		}

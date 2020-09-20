@@ -39,7 +39,7 @@
 			<header class='list-group-item-heading'>{{ $t('cloud.intelimentsInteliGlue.title') }}</header>
 			<p class='list-group-item-text'>{{ $t('cloud.intelimentsInteliGlue.description') }}</p>
 		</c-list-group-item>
-		<c-list-group-item n:ifFeature='pixla' to='/cloud/pixla/'>
+		<c-list-group-item v-if='$store.getters["features/isEnabled"]("pixla")' to='/cloud/pixla/'>
 			<header class='list-group-item-heading'>{{ $t('cloud.pixla.title') }}</header>
 			<p class='list-group-item-text'>{{ $t('cloud.pixla.description') }}</p>
 		</c-list-group-item>

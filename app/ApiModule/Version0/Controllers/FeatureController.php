@@ -70,6 +70,8 @@ class FeatureController extends BaseController {
 	 * @Method("GET")
 	 * @OpenApi("
 	 *  summary: Returns optional features configuration
+	 *  security:
+	 *      - []
 	 *  responses:
 	 *      '200':
 	 *          description: Success

@@ -41,6 +41,7 @@ class AuthenticationMiddleware implements IMiddleware {
 	 * Whitelisted paths
 	 */
 	private const WHITELISTED_PATHS = [
+		'/api/v0/features',
 		'/api/v0/openapi',
 		'/api/v0/user/signIn',
 	];

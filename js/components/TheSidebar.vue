@@ -24,8 +24,18 @@ import {
 	CSidebarBrand,
 	CSidebarMinimizer,
 } from '@coreui/vue';
-import {cilCloud, cilWifiSignal4, cilStorage, cilSettings, cilUser} from '@coreui/icons';
-import FeatureService from '../services/FeatureService';
+import {
+	cibGrafana,
+	cibNodeRed,
+	cilBook,
+	cilCloud,
+	cilLan,
+	cilStorage,
+	cilSettings,
+	cilToggleOff,
+	cilUser,
+	cilWifiSignal4,
+} from '@coreui/icons';
 
 export default {
 	name: 'TheSidebar',
@@ -34,11 +44,6 @@ export default {
 		CSidebar,
 		CSidebarBrand,
 		CSidebarMinimizer,
-	},
-	data() {
-		return {
-			features: null,
-		};
 	},
 	computed: {
 		show() {
@@ -267,6 +272,22 @@ export default {
 						},
 						{
 							_name: 'CSidebarNavDropdown',
+							name: this.$t('network.title'),
+							to: '/network/',
+							route: '/network/',
+							feature: 'networkManager',
+							icon: {content: cilLan},
+							roles: ['power', 'normal'],
+							items: [
+								{
+									name: this.$t('network.ethernet.title'),
+									to: '/network/ethernet/',
+									roles: ['power', 'normal'],
+								},
+							],
+						},
+						{
+							_name: 'CSidebarNavDropdown',
 							name: this.$t('cloud.title'),
 							to: '/cloud/',
 							route: '/cloud/',
@@ -308,46 +329,86 @@ export default {
 						},
 						{
 							_name: 'CSidebarNavItem',
+							name: this.$t('core.grafana.title'),
+							href: this.$store.getters['features/configuration']('grafana').url,
+							target: '_blank',
+							feature: 'grafana',
+							icon: {content: cibGrafana},
+						},
+						{
+							_name: 'CSidebarNavDropdown',
+							name: this.$t('core.nodeRed.title'),
+							feature: 'nodeRed',
+							icon: {content: cibNodeRed},
+							roles: ['power', 'normal'],
+							items: [
+								{
+									name: this.$t('core.nodeRed.workflow.title'),
+									href: this.$store.getters['features/configuration']('nodeRed').url,
+									target: '_blank',
+									roles: ['power', 'normal'],
+								},
+								{
+									name: this.$t('core.nodeRed.dashboard.title'),
+									href: this.$store.getters['features/configuration']('nodeRed').url + 'ui/',
+									target: '_blank',
+									roles: ['power', 'normal'],
+								},
+							],
+						},
+						{
+							_name: 'CSidebarNavItem',
+							name: this.$t('core.supervisor.title'),
+							href: this.$store.getters['features/configuration']('supervisord').url,
+							target: '_blank',
+							feature: 'supervisord',
+							icon: {content: cilToggleOff},
+						},
+						{
+							_name: 'CSidebarNavItem',
 							name: this.$t('core.user.title'),
 							to: '/user/',
 							icon: {content: cilUser},
 							roles: ['power', 'normal'],
+						},
+						{
+							_name: 'CSidebarNavItem',
+							name: this.$t('core.documentation.title'),
+							href: this.$store.getters['features/configuration']('docs').url,
+							target: '_blank',
+							feature: 'docs',
+							icon: {content: cilBook},
 						},
 					],
 				},
 			];
 			return data.filter((element) => {
 				element._children = element._children.filter((element) => {
-					if (!element.roles.includes(this.$store.getters['user/getRole'])) {
+					if (element.roles !== undefined &&
+							!element.roles.includes(this.$store.getters['user/getRole'])) {
 						return null;
 					}
-					if (element.feature === undefined ||
-							this.features === null ||
-							this.features[element.feature].enabled) {
-						return element;
+					if (element.feature !== undefined &&
+							!this.$store.getters['features/isEnabled'](element.feature)) {
+						return null;
 					}
 					if (element.items) {
 						element.items = element.items.filter((element) => {
-							if (!element.roles.includes(this.$store.getters['user/getRole'])) {
+							if (element.roles !== undefined &&
+									!element.roles.includes(this.$store.getters['user/getRole'])) {
 								return null;
 							}
-							if (element.feature === undefined ||
-									this.features === null ||
-									this.features[element.feature].enabled) {
-								return element;
+							if (element.feature !== undefined &&
+									!this.$store.getters['features/isEnabled'](element.feature)) {
+								return null;
 							}
+							return element;
 						});
 					}
 					return element;
 				});
 				return element;
 			});
-		}
-	},
-	created() {
-		if (this.$store.getters['user/isLoggedIn']) {
-			FeatureService.fetchAll()
-				.then((response) => (this.features = response.data));
 		}
 	},
 };

@@ -238,8 +238,23 @@
 			"title": "Documentation",
 			"description": "Opens the documentation in a new tab."
 		},
+		"grafana": {
+			"title": "Grafana",
+			"description": "Open Grafana dashboard."
+		},
 		"navigation": {
 			"toggle": "Toggle navigation"
+		},
+		"nodeRed": {
+			"title": "Node-RED",
+			"dashboard": {
+				"title": "Node-RED dashboard",
+				"description": "Open Node-RED dashboard."
+			},
+			"workflow": {
+				"title": "Node-RED workflow",
+				"description": "Open Node-RED workflow."
+			}
 		},
 		"languages": {
 			"title": "Language",
@@ -307,6 +322,10 @@
 				}
 			},
 			"out": "Sign out"
+		},
+		"supervisor": {
+			"title": "Supervisor Dashboard",
+			"description": "Open Supervisor Dashboard."
 		}
 	},
 	"gateway": {
@@ -821,6 +840,10 @@
 			"title": "Coordinator upload",
 			"description": "IQRF Coordinator upload."
 		}
+	},
+	"network": {
+		"title": "Network manager",
+		"description": "Controls the network."
 	},
 	"service": {
 		"actions": {
