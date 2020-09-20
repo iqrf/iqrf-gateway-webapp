@@ -2,7 +2,7 @@
 import store from '../store';
 
 export function authorizationHeader() {
-	let token = store.getters['user/getToken'];
+	const token = store.getters['user/getToken'];
 	if (token === null) {
 		return {};
 	}

@@ -37,7 +37,7 @@ class StandardBinaryOutputService {
 	 * @param outputs New output setting
 	 */
 	setOutputs(address: number, outputs: any[]|null = null): Promise<any> {
-		let json = {
+		return store.dispatch('sendRequest', {
 			'mType': 'iqrfBinaryoutput_SetOutput',
 			'data': {
 				'req': {
@@ -48,8 +48,7 @@ class StandardBinaryOutputService {
 				},
 				'returnVerbose': true,
 			},
-		};
-		return store.dispatch('sendRequest', json);
+		});
 	}
 }
 

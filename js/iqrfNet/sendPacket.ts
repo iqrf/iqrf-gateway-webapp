@@ -83,16 +83,16 @@ class Packet {
 	 * @returns {Packet} Parsed DPA packet
 	 */
 	static parse(packet: string) {
-		let packetArray = packet.split('.');
-		let nadrLo = packetArray.shift()!;
-		let nadrHi = packetArray.shift()!;
-		let nadr = parseInt(nadrHi + nadrLo, 16);
-		let pnum = parseInt(packetArray.shift()!, 16);
-		let pcmd = parseInt(packetArray.shift()!, 16);
-		let hwpidLo = packetArray.shift()!;
-		let hwpidHi = packetArray.shift()!;
-		let hwpid = parseInt(hwpidHi + hwpidLo, 16);
-		let pdata = packetArray.map(hex => parseInt(hex, 16));
+		const packetArray = packet.split('.');
+		const nadrLo = packetArray.shift()!;
+		const nadrHi = packetArray.shift()!;
+		const nadr = parseInt(nadrHi + nadrLo, 16);
+		const pnum = parseInt(packetArray.shift()!, 16);
+		const pcmd = parseInt(packetArray.shift()!, 16);
+		const hwpidLo = packetArray.shift()!;
+		const hwpidHi = packetArray.shift()!;
+		const hwpid = parseInt(hwpidHi + hwpidLo, 16);
+		const pdata = packetArray.map(hex => parseInt(hex, 16));
 		return new Packet(nadr, pnum, pcmd, hwpid, pdata);
 	}
 
@@ -114,7 +114,7 @@ class Packet {
  * @returns Is valid DPA packet?
  */
 function validatePacket(packet: string): boolean {
-	let re = new RegExp('^([0-9a-fA-F]{1,2}\\.){4,62}[0-9a-fA-F]{1,2}(\\.|)$', 'i');
+	const re = new RegExp('^([0-9a-fA-F]{1,2}\\.){4,62}[0-9a-fA-F]{1,2}(\\.|)$', 'i');
 	return packet.match(re) !== null;
 }
 
@@ -125,7 +125,7 @@ function validatePacket(packet: string): boolean {
  * @returns Modified DPA request
  */
 function updateNadr(request: string, address: number) {
-	let packet = Packet.parse(request);
+	const packet = Packet.parse(request);
 	packet.nadr = address;
 	return packet.toString();
 }

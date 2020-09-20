@@ -77,7 +77,7 @@ class StandardLightService {
 	 * @param lights Object containing light settings
 	 */
 	setPower(address: number, lights: any[]): Promise<any> {
-		let json = {
+		return store.dispatch('sendRequest', {
 			'mType': 'iqrfLight_SetPower',
 			'data': {
 				'req': {
@@ -88,8 +88,7 @@ class StandardLightService {
 				},
 				'returnVerbose': true,
 			},
-		};
-		return store.dispatch('sendRequest', json);
+		});
 	}
 
 }
