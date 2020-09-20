@@ -103,5 +103,17 @@
 			<header class='list-group-item-heading'>{{ $t('config.migration.title') }}</header>
 			<p class='list-group-item-text'>{{ $t('config.migration.description') }}</p>
 		</c-list-group-item>
+		<c-list-group-item v-if='$store.getters["features/isEnabled"]("networkManager")' to='/network/'>
+			<header class='list-group-item-heading'>{{ $t('translatorConfig.title') }}</header>
+			<p class='list-group-item-text'>{{ $t('translatorConfig.description') }}</p>
+		</c-list-group-item>
+		<c-list-group-item v-if='$store.getters["features/isEnabled"]("iqrfGatewayController")' to='/config/controller/'>
+			<header class='list-group-item-heading'>{{ $t('controllerConfig.title') }}</header>
+			<p class='list-group-item-text'>{{ $t('controllerConfig.description') }}</p>
+		</c-list-group-item>
+		<c-list-group-item v-if='$store.getters["features/isEnabled"]("mender")' to='/config/mender/'>
+			<header class='list-group-item-heading'>{{ $t('config.mender.title') }}</header>
+			<p class='list-group-item-text'>{{ $t('config.mender.description') }}</p>
+		</c-list-group-item>
 	</c-list-group>
 </c-card>

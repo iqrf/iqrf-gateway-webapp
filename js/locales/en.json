@@ -175,6 +175,38 @@
 			"title": "IQRF CDC interface",
 			"description": "IQRF CDC interface settings."
 		},
+		"iqrfDpa":{
+			"title": "IQRF DPA interface",
+			"description": "IQRF DPA interface settings."
+		},
+		"iqrfInfo": {
+			"title": "IQRF Info",
+			"description": "IQRF Info database settings."
+		},
+		"iqrfRepository": {
+			"title": "IQRF Repository",
+			"description": "Manage IQRF Repository's settings."
+		},
+		"iqrfSpi": {
+			"title": "IQRF SPI interface",
+			"description": "IQRF SPI interface settings."
+		},
+		"iqrfUart": {
+			"title": "IQRF UART interface",
+			"description": "IQRF UART interface settings."
+		},
+		"jsonMngMetaDataApi": {
+			"title": "JSON Metadata API",
+			"description": "JSON Metadata API settings."
+		},
+		"jsonRawApi": {
+			"title": "JSON Raw API",
+			"description": "JSON Raw API settings."
+		},
+		"jsonSplitter": {
+			"title": "JSON Splitter",
+			"description": "JSON Splitter settings."
+		},
 		"main": {
 			"title": "Main configuration",
 			"description": "Main configuration of IQRF Gateway Daemon."
@@ -190,6 +222,10 @@
 		"mqtt": {
 			"title": "MQTT interface",
 			"description": "MQTT interface settings."
+		},
+		"selectedComponents": {
+			"title": "Selected components",
+			"description": "Manage selected components."
 		},
 		"scheduler": {
 			"title": "Scheduler",
