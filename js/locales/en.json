@@ -161,7 +161,15 @@
 		"description": "Edit configuration.",
 		"migration": {
 			"title": "Configuration migration",
-			"description": "Migration of IQRF Gateway Daemon's configuration"
+			"description": "Migration of IQRF Gateway Daemon's configuration",
+			"form": {
+				"importButton": "Configuration to import",
+				"import": "Import configuraiton",
+				"export": "Export configuration"
+			},
+			"messages": {
+				"importButton": "Please select a ZIP archive with a configuration to import."
+			}
 		},
 		"components": {
 			"title": "Components",

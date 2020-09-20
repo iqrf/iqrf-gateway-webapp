@@ -70,6 +70,7 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 import {timeout} from '../../helpers/timeout';
 import {TextareaAutogrowDirective} from 'vue-textarea-autogrow-directive/src/VueTextareaAutogrowDirective';
+import {StatusMessages} from '../../iqrfNet/sendJson';
 import IqrfNetService from '../../services/IqrfNetService';
 
 import {PrismEditor} from 'vue-prism-editor';
@@ -125,39 +126,14 @@ export default {
 					clearTimeout(this.timeout);
 					this.$store.commit('spinner/HIDE');
 					this.response = JSON.stringify(mutation.payload, null, 4);
-					switch (mutation.payload.data.status) {
-						case -1:
-							this.$toast.error('Request error:' + this.$t('iqrfnet.sendJson.form.messages.error.timeout'));
-							break;
-						case 0:
-							this.$toast.success(this.$t('iqrfnet.sendJson.form.messages.success'));
-							break;
-						case 1:
-							this.$toast.error('Request error:' + this.$t('iqrfnet.sendJson.form.messages.error.fail'));
-							break;
-						case 2:
-							this.$toast.error('Request error:' + this.$t('iqrfnet.sendJson.form.messages.error.pcmd'));
-							break;
-						case 3:
-							this.$toast.error('Request error:' + this.$t('iqrfnet.sendJson.form.messages.error.pnum'));
-							break;
-						case 4:
-							this.$toast.error('Request error:' + this.$t('iqrfnet.sendJson.form.messages.error.addr'));
-							break;
-						case 5:
-							this.$toast.error('Request error:' + this.$t('iqrfnet.sendJson.form.messages.error.dataLen'));
-							break;
-						case 6:
-							this.$toast.error('Request error:' + this.$t('iqrfnet.sendJson.form.messages.error.data'));
-							break;
-						case 7:
-							this.$toast.error('Request error:' + this.$t('iqrfnet.sendJson.form.messages.error.hwpid'));
-							break;
-						case 8:
-							this.$toast.error('Request error:' + this.$t('iqrfnet.sendJson.form.messages.error.nadr'));
-							break;
-						default:
-							break;
+					if (mutation.payload.data.status === 0) {
+						this.$toast.success(this.$t('iqrfnet.sendJson.form.messages.success'));
+					} else {
+						if (mutation.payload.data.status in StatusMessages) {
+							this.$toast.error(this.$t(StatusMessages[mutation.payload.data.status]));
+						} else {
+							this.$toast.error(this.$t('iqrfnet.sendJson.form.messages.error.fail'));
+						}
 					}
 				}
 			}

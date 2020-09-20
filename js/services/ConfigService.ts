@@ -18,6 +18,13 @@ class ConfigService {
 	saveConfig(serviceName: string, config: any, timeout: number): Promise<AxiosResponse> {
 		return axios.put('config/' + serviceName, config, {headers: authorizationHeader(), timeout: timeout});
 	}
+
+	/**
+	 * Exports daemon configuration
+	 */
+	exportConfig(timeout: number): Promise<AxiosResponse> {
+		return axios.get('config/daemon/migration/export', {headers: authorizationHeader(), timeout: timeout, responseType: 'arraybuffer'});
+	}
 }
 
 export default new ConfigService();
