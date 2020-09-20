@@ -1,8 +1,13 @@
 {
-	"id": "eth0",
+	"name": "eth0",
 	"uuid": "25ab1b06-2a86-40a9-950f-1c576ddcd35a",
 	"type": "802-3-ethernet",
-	"interface-name": "eth0",
+	"interface": "eth0",
+	"autoConnect": {
+		"enabled": true,
+		"priority": 0,
+		"retries": -1
+	},
 	"ipv4": {
 		"method": "manual",
 		"addresses": [

@@ -22,10 +22,12 @@ namespace App\NetworkModule\Enums;
 
 use Grifart\Enum\AutoInstances;
 use Grifart\Enum\Enum;
+use Grifart\Enum\MissingValueDeclarationException;
 
 /**
  * WiFi modes
  * @method static WifiMode ADHOC()
+ * @method static WifiMode AP()
  * @method static WifiMode INFRA()
  * @method static WifiMode MESH()
  */
@@ -36,16 +38,39 @@ final class WifiMode extends Enum {
 	/**
 	 * Ad-Hoc 802.11 network
 	 */
-	private const ADHOC = 'Ad-Hoc';
+	private const ADHOC = 'adhoc';
+
+	/**
+	 * Device in access point mode
+	 */
+	private const AP = 'ap';
 
 	/**
 	 * Device in infrastructure mode
 	 */
-	private const INFRA = 'Infra';
+	private const INFRA = 'infrastructure';
 
 	/**
 	 * 802.11s mesh point
 	 */
-	private const MESH = 'Mesh';
+	private const MESH = 'mesh';
+
+	/**
+	 * Builds enumeration from its scalar value.
+	 * @param string $mode WiFi network mode scalar
+	 * @return WifiMode WiFI network mode
+	 */
+	public static function fromNetworkList(string $mode): WifiMode {
+		switch ($mode) {
+			case 'Ad-Hoc':
+				return self::ADHOC();
+			case 'Infra':
+				return self::INFRA();
+			case 'Mesh':
+				return self::MESH();
+			default:
+				throw new MissingValueDeclarationException('There is no value for enum \'' . self::class . '\' and scalar value \'' . $mode . '\'.');
+		}
+	}
 
 }

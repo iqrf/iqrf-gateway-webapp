@@ -3,13 +3,14 @@
 /**
  * TEST: App\NetworkModule\Entities\ConnectionDetail
  * @covers App\NetworkModule\Entities\ConnectionDetail
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
 
 namespace Tests\Unit\NetworkModule\Entities;
 
+use App\NetworkModule\Entities\AutoConnect;
 use App\NetworkModule\Entities\ConnectionDetail;
 use App\NetworkModule\Entities\IPv4Address;
 use App\NetworkModule\Entities\IPv4Connection;
@@ -32,12 +33,27 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for network connection entity
  */
-class ConnectionDetailTest extends TestCase {
+final class ConnectionDetailEthernetTest extends TestCase {
 
 	/**
-	 * @var string Network connection ID
+	 * NetworkManager data directory
 	 */
-	private $id = 'eth0';
+	private const NM_DATA = __DIR__ . '/../../../data/networkManager/';
+
+	/**
+	 * Network interface name
+	 */
+	private const INTERFACE = 'eth0';
+
+	/**
+	 * Network connection name
+	 */
+	private const NAME = 'eth0';
+
+	/**
+	 * Connection UUID
+	 */
+	private const UUID = '25ab1b06-2a86-40a9-950f-1c576ddcd35a';
 
 	/**
 	 * @var UuidInterface Network connection UUID
@@ -48,11 +64,6 @@ class ConnectionDetailTest extends TestCase {
 	 * @var ConnectionTypes Network connection type
 	 */
 	private $type;
-
-	/**
-	 * @var string Network interface name
-	 */
-	private $interfaceName = 'eth0';
 
 	/**
 	 * @var IPv4Connection IPv4 network connection entity
@@ -73,7 +84,7 @@ class ConnectionDetailTest extends TestCase {
 	 * Sets up the test environment
 	 */
 	public function __construct() {
-		$this->uuid = Uuid::fromString('25ab1b06-2a86-40a9-950f-1c576ddcd35a');
+		$this->uuid = Uuid::fromString(self::UUID);
 		$this->type = ConnectionTypes::ETHERNET();
 	}
 
@@ -81,9 +92,10 @@ class ConnectionDetailTest extends TestCase {
 	 * Sets up the test environment
 	 */
 	protected function setUp(): void {
+		$autoConnect = new AutoConnect(true, 0, -1);
 		$this->createIpv4Connection();
 		$this->createIpv6Connection();
-		$this->entity = new ConnectionDetail($this->id, $this->uuid, $this->type, $this->interfaceName, $this->ipv4, $this->ipv6);
+		$this->entity = new ConnectionDetail(self::NAME, $this->uuid, $this->type, self::INTERFACE, $autoConnect, $this->ipv4, $this->ipv6);
 	}
 
 	/**
@@ -91,13 +103,9 @@ class ConnectionDetailTest extends TestCase {
 	 */
 	private function createIpv4Connection(): void {
 		$method = IPv4Methods::MANUAL();
-		$addresses = [
-			new IPv4Address(IPv4::factory('192.168.1.2'), 24),
-		];
+		$addresses = [new IPv4Address(IPv4::factory('192.168.1.2'), 24)];
 		$gateway = IPv4::factory('192.168.1.1');
-		$dns = [
-			IPv4::factory('192.168.1.1'),
-		];
+		$dns = [IPv4::factory('192.168.1.1')];
 		$this->ipv4 = new IPv4Connection($method, $addresses, $gateway, $dns);
 	}
 
@@ -109,19 +117,20 @@ class ConnectionDetailTest extends TestCase {
 		$addresses = [
 			new IPv6Address(IPv6::factory('2001:470:5bb2::2'), 64, IPv6::factory('fe80::1')),
 		];
-		$dns = [
-			IPv6::factory('2001:470:5bb2::1'),
-		];
+		$dns = [IPv6::factory('2001:470:5bb2::1')];
 		$this->ipv6 = new IPv6Connection($method, $addresses, $dns);
 	}
 
 	/**
-	 * Tests the function to set the network connection configuration from the form
+	 * Tests the function to deserialize connection configuration from JSON
 	 */
-	public function testFromForm(): void {
-		$json = FileSystem::read(__DIR__ . '/../../../data/networkManager/eth0FromForm.json');
-		$arrayHash = Json::decode($json);
-		$this->entity->fromForm($arrayHash);
+	public function testJsonDeserialize(): void {
+		$json = Json::decode(FileSystem::read(self::NM_DATA . 'fromForm/' . self::UUID . '.json'));
+		$json->uuid = self::UUID;
+		$json->type = $this->type->toScalar();
+		$json->interface = self::INTERFACE;
+		$actual = ConnectionDetail::jsonDeserialize($json);
+		$autoConnect = new AutoConnect(true, 1, 10);
 		$ipv4Addresses = [IPv4Address::fromPrefix('10.0.0.2/16')];
 		$ipv4Gateway = IPv4::factory('10.0.0.1');
 		$ipv4Dns = [IPv4::factory('10.0.0.1'), IPv4::factory('1.1.1.1')];
@@ -129,23 +138,16 @@ class ConnectionDetailTest extends TestCase {
 		$ipv6Addresses = [IPv6Address::fromPrefix('2001:470:5bb2:2::2/64', 'fe80::1')];
 		$ipv6Dns = [IPv6::factory('2001:470:5bb2:2::1')];
 		$ipv6 = new IPv6Connection(IPv6Methods::MANUAL(), $ipv6Addresses, $ipv6Dns);
-		$expected = new ConnectionDetail($this->id, $this->uuid, $this->type, $this->interfaceName, $ipv4, $ipv6);
-		Assert::equal($expected, $this->entity);
+		$expected = new ConnectionDetail(self::NAME, $this->uuid, $this->type, self::INTERFACE, $autoConnect, $ipv4, $ipv6);
+		Assert::equal($expected, $actual);
 	}
 
 	/**
-	 * Tests the function to create a detailed network connection entity from nmcli connection configuration
+	 * Tests the function to deserialize network connection entity from nmcli connection configuration
 	 */
-	public function testFromNmCli(): void {
-		$nmCli = FileSystem::read(__DIR__ . '/../../../data/eth0.conf');
-		Assert::equal($this->entity, ConnectionDetail::fromNmCli($nmCli));
-	}
-
-	/**
-	 * Tests the function to get the network connection ID
-	 */
-	public function testGetId(): void {
-		Assert::same($this->id, $this->entity->getId());
+	public function testNmCliDeserialize(): void {
+		$nmCli = FileSystem::read(self::NM_DATA . self::UUID . '.conf');
+		Assert::equal($this->entity, ConnectionDetail::nmCliDeserialize($nmCli));
 	}
 
 	/**
@@ -166,42 +168,19 @@ class ConnectionDetailTest extends TestCase {
 	 * Tests the function to get the network interface name
 	 */
 	public function testGetInterfaceName(): void {
-		Assert::same($this->interfaceName, $this->entity->getInterfaceName());
+		Assert::same(self::INTERFACE, $this->entity->getInterfaceName());
 	}
 
 	/**
-	 * Tests the function to get the IPv4 network connection entity
-	 */
-	public function testGetIpv4(): void {
-		Assert::same($this->ipv4, $this->entity->getIpv4());
-	}
-
-	/**
-	 * Tests the function to get the IPv6 network connection entity
-	 */
-	public function testGetIpv6(): void {
-		Assert::same($this->ipv6, $this->entity->getIpv6());
-	}
-
-	/**
-	 * Tests the function to convert the network connection entity to an array for the form
-	 */
-	public function testToForm(): void {
-		$json = FileSystem::read(__DIR__ . '/../../../data/networkManager/eth0ToForm.json');
-		$expected = Json::decode($json, Json::FORCE_ARRAY);
-		Assert::same($expected, $this->entity->toForm());
-	}
-
-	/**
-	 * Tests the function to return JSON serialized data
+	 * Tests the function to serialize network connection entity into JSON
 	 */
 	public function testJsonSerialize(): void {
-		$json = FileSystem::read(__DIR__ . '/../../../data/networkManager/eth0ToForm.json');
+		$json = FileSystem::read(self::NM_DATA . 'toForm/' . self::UUID . '.json');
 		$expected = Json::decode($json, Json::FORCE_ARRAY);
 		Assert::same($expected, $this->entity->jsonSerialize());
 	}
 
 }
 
-$test = new ConnectionDetailTest();
+$test = new ConnectionDetailEthernetTest();
 $test->run();

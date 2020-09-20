@@ -25,23 +25,38 @@ use Grifart\Enum\Enum;
 
 /**
  * Network connection type enum
+ * @method static ConnectionTypes BLUETOOTH()
  * @method static ConnectionTypes BRIDGE()
+ * @method static ConnectionTypes DUMMY()
  * @method static ConnectionTypes ETHERNET()
  * @method static ConnectionTypes GSM()
+ * @method static ConnectionTypes INFINIBAND()
  * @method static ConnectionTypes TUN()
  * @method static ConnectionTypes VLAN()
  * @method static ConnectionTypes VPN()
  * @method static ConnectionTypes WIFI()
+ * @method static ConnectionTypes WIMAX()
  * @method static ConnectionTypes WIREGUARD()
+ * @method static ConnectionTypes WPAN()
  */
 final class ConnectionTypes extends Enum {
 
 	use AutoInstances;
 
 	/**
+	 * Bluetooth connection
+	 */
+	private const BLUETOOTH = 'bluetooth';
+
+	/**
 	 * Bridge connection
 	 */
 	private const BRIDGE = 'bridge';
+
+	/**
+	 * Dummy connection
+	 */
+	private const DUMMY = 'dummy';
 
 	/**
 	 * Ethernet connection
@@ -52,6 +67,11 @@ final class ConnectionTypes extends Enum {
 	 * GSM connection
 	 */
 	private const GSM = 'gsm';
+
+	/**
+	 * IP-over-InfiniBand connection
+	 */
+	private const INFINIBAND = 'infiniband';
 
 	/**
 	 * TUN connection
@@ -74,8 +94,26 @@ final class ConnectionTypes extends Enum {
 	private const WIFI = '802-11-wireless';
 
 	/**
+	 * WiMAX connection
+	 */
+	private const WIMAX = 'wimax';
+
+	/**
 	 * WireGuard connection
 	 */
 	private const WIREGUARD = 'wireguard';
+
+	/**
+	 * WPAN (IEEE 802.15.4) connection
+	 */
+	private const WPAN = 'wpan';
+
+	/**
+	 * Serializes network connection type enum into JSON string
+	 * @return string JSON serialized string
+	 */
+	public function jsonSerialize(): string {
+		return (string) $this->toScalar();
+	}
 
 }

@@ -9,7 +9,7 @@
 			"inUse": true,
 			"bssid": "04:F0:21:24:1E:53",
 			"ssid": "WIFI MAGDA",
-			"mode": "Infra",
+			"mode": "infrastructure",
 			"channel": 36,
 			"rate": "405 Mbit/s",
 			"signal": 60,
@@ -26,7 +26,7 @@
 			"inUse": true,
 			"bssid": "04:F0:21:24:1E:53",
 			"ssid": "WIFI MAGDA",
-			"mode": "Infra",
+			"mode": "infrastructure",
 			"channel": 36,
 			"rate": "405 Mbit/s",
 			"signal": 60,
@@ -69,11 +69,11 @@
 				"type": "string",
 				"title": "Network mode",
 				"enum": [
-					"Ad-Hoc",
-					"Infra",
-					"Mesh"
+					"adhoc",
+					"infrastructure",
+					"mesh"
 				],
-				"example": "Infra"
+				"example": "infrastructure"
 			},
 			"channel": {
 				"$id": "#/items/properties/channel",

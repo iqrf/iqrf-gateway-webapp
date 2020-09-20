@@ -21,22 +21,22 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for network connection entity
  */
-class WifiNetworkTest extends TestCase {
+final class WifiNetworkTest extends TestCase {
 
 	/**
-	 * @var bool Is in use?
+	 * Is in use?
 	 */
-	private $inUse = true;
+	private const IN_USE = true;
 
 	/**
-	 * @var string BSSID (MAC address)
+	 * BSSID (MAC address)
 	 */
-	private $bssid = '1A:E8:29:E5:CB:9A';
+	private const BSSID = '1A:E8:29:E5:CB:9A';
 
 	/**
-	 * @var string SSID
+	 * SSID
 	 */
-	private $ssid = 'WIFI MAGDA';
+	private const SSID = 'WIFI MAGDA';
 
 	/**
 	 * @var WifiMode Mode
@@ -44,19 +44,19 @@ class WifiNetworkTest extends TestCase {
 	private $mode;
 
 	/**
-	 * @var int Channel
+	 * Channel
 	 */
-	private $channel = 56;
+	private const CHANNEL = 56;
 
 	/**
-	 * @var string Speed rate
+	 * Speed rate
 	 */
-	private $rate = '405 Mbit/s';
+	private const RATE = '405 Mbit/s';
 
 	/**
-	 * @var int Signal strength
+	 * Signal strength
 	 */
-	private $signal = 70;
+	private const SIGNAL = 70;
 
 	/**
 	 * @var WifiSecurity Security
@@ -79,15 +79,15 @@ class WifiNetworkTest extends TestCase {
 	/**
 	 * Sets up the test environment
 	 */
-	protected function setUp(): void  {
-		$this->entity = new WifiNetwork($this->inUse, $this->bssid, $this->ssid, $this->mode, $this->channel, $this->rate, $this->signal, $this->security);
+	protected function setUp(): void {
+		$this->entity = new WifiNetwork(self::IN_USE, self::BSSID, self::SSID, $this->mode, self::CHANNEL, self::RATE, self::SIGNAL, $this->security);
 	}
 
 	/**
 	 * Tests the function to create a new WiFi network entity from nmcli
 	 */
 	public function testFromNmCli(): void {
-		$actual = WifiNetwork::fromNmCli('*:1A\:E8\:29\:E5\:CB\:9A:WIFI MAGDA:Infra:56:405 Mbit/s:70:▂▄▆_:WPA2');
+		$actual = WifiNetwork::nmCliDeserialize('*:1A\:E8\:29\:E5\:CB\:9A:WIFI MAGDA:Infra:56:405 Mbit/s:70:▂▄▆_:WPA2');
 		Assert::equal($this->entity, $actual);
 	}
 
@@ -102,14 +102,14 @@ class WifiNetworkTest extends TestCase {
 	 * Tests the function to get the network's BSSID
 	 */
 	public function testGetBssid(): void {
-		Assert::same($this->bssid, $this->entity->getBssid());
+		Assert::same(self::BSSID, $this->entity->getBssid());
 	}
 
 	/**
 	 * Tests the function to get the network's SSID
 	 */
 	public function testGetSsid(): void {
-		Assert::same($this->ssid, $this->entity->getSsid());
+		Assert::same(self::SSID, $this->entity->getSsid());
 	}
 
 	/**
@@ -123,28 +123,39 @@ class WifiNetworkTest extends TestCase {
 	 * Tests the function to get the network's channel
 	 */
 	public function testGetChannel(): void {
-		Assert::same($this->channel, $this->entity->getChannel());
+		Assert::same(self::CHANNEL, $this->entity->getChannel());
 	}
 
 	/**
 	 * Tests the function to get the network's speed rate
 	 */
 	public function testGetRate(): void {
-		Assert::same($this->rate, $this->entity->getRate());
+		Assert::same(self::RATE, $this->entity->getRate());
 	}
 
 	/**
 	 * Tests the function to get the network's signal strength
 	 */
 	public function testGetSignal(): void {
-		Assert::same($this->signal, $this->entity->getSignal());
+		Assert::same(self::SIGNAL, $this->entity->getSignal());
 	}
 
 	/**
-	 * Tests the function to get the network's security
+	 * Tests the function to get JSON serialized data
 	 */
-	public function testGetSecurity(): void {
-		Assert::equal($this->security, $this->entity->getSecurity());
+	public function testJsonSerialize(): void {
+		$expected = [
+			'inUse' => true,
+			'bssid' => '1A:E8:29:E5:CB:9A',
+			'ssid' => 'WIFI MAGDA',
+			'mode' => 'infrastructure',
+			'channel' => 56,
+			'rate' => '405 Mbit/s',
+			'signal' => 70,
+			'security' => 'WPA2-Personal',
+
+		];
+		Assert::same($expected, $this->entity->jsonSerialize());
 	}
 
 }

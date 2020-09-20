@@ -58,7 +58,10 @@
 			},
 			"connectionName": {
 				"$id": "#/items/properties/connectionName",
-				"type": "string",
+				"oneOf": [
+					{"type": "null"},
+					{"type": "string"}
+				],
 				"title": "Connection name",
 				"example": "Wired connection 1"
 			}

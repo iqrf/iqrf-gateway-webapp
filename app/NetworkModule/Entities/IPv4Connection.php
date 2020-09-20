@@ -21,15 +21,20 @@ declare(strict_types = 1);
 namespace App\NetworkModule\Entities;
 
 use App\NetworkModule\Enums\IPv4Methods;
+use App\NetworkModule\Utils\NmCliConnection;
 use Darsyn\IP\Version\IPv4;
 use Nette\Utils\ArrayHash;
-use Nette\Utils\Strings;
 use stdClass;
 
 /**
  * IPv4 connection entity
  */
-final class IPv4Connection {
+final class IPv4Connection implements INetworkManagerEntity {
+
+	/**
+	 * nmcli configuration prefix
+	 */
+	private const NMCLI_PREFIX = 'ipv4';
 
 	/**
 	 * @var IPv4Methods Connection method
@@ -66,41 +71,52 @@ final class IPv4Connection {
 	}
 
 	/**
-	 * Sets the values from the network comnnection configuration form
-	 * @param stdClass|ArrayHash $form Values from the network connection configuration form
+	 * Deserializes IPv4 connection entity from JSON
+	 * @param stdClass|ArrayHash $json JSON serialized entity
+	 * @return IPv4Connection IPv4 connection entity
 	 */
-	public function fromForm(stdClass $form): void {
-		$this->method = IPv4Methods::fromScalar($form->method);
-		$this->addresses = [];
-		foreach ($form->addresses as $address) {
+	public static function jsonDeserialize(stdClass $json): INetworkManagerEntity {
+		$method = IPv4Methods::fromScalar($json->method);
+		$addresses = [];
+		foreach ($json->addresses as $address) {
 			if (($address->address !== '') && ($address->mask !== null)) {
-				$this->addresses[] = IPv4Address::fromMask($address->address, $address->mask);
+				$addresses[] = IPv4Address::fromMask($address->address, $address->mask);
 			}
 		}
-		$this->gateway = $form->gateway !== '' ? IPv4::factory($form->gateway) : null;
-		$this->dns = [];
-		foreach ($form->dns as $dns) {
-			if ($dns->address !== '') {
-				$this->dns[] = IPv4::factory($dns->address);
+		$gateway = $json->gateway !== '' ? IPv4::factory($json->gateway) : null;
+		$dns = [];
+		foreach ($json->dns as $dnsServer) {
+			if ($dnsServer->address !== '') {
+				$dns[] = IPv4::factory($dnsServer->address);
 			}
 		}
+		return new static($method, $addresses, $gateway, $dns);
 	}
 
 	/**
-	 * Creates a new IPv4 connection entity from nmcli connection configuration
+	 * Serializes IPv4 connection entity into JSON
+	 * @return array<string, array<array<string, int|string>>|string|null> JSON serialized entity
+	 */
+	public function jsonSerialize(): array {
+		return [
+			'method' => $this->method->toScalar(),
+			'addresses' => array_map(function (IPv4Address $a): array {
+				return $a->toArray();
+			}, $this->addresses),
+			'gateway' => $this->gateway !== null ? $this->gateway->getDotAddress() : null,
+			'dns' => array_map(function (IPv4 $a): array {
+				return ['address' => $a->getDotAddress()];
+			}, $this->dns),
+		];
+	}
+
+	/**
+	 * Deserializes IPv4 connection entity from nmcli connection configuration
 	 * @param string $nmCli nmcli connection configuration
 	 * @return IPv4Connection IPv4 connection entity
 	 */
-	public static function fromNmCli(string $nmCli): self {
-		$array = explode(PHP_EOL, Strings::trim($nmCli));
-		foreach ($array as $i => $row) {
-			$temp = explode(':', $row, 2);
-			if (Strings::startsWith($temp[0], 'ipv4.')) {
-				$key = Strings::replace($temp[0], '~ipv4\.~', '');
-				$array[$key] = $temp[1];
-			}
-			unset($array[$i]);
-		}
+	public static function nmCliDeserialize(string $nmCli): INetworkManagerEntity {
+		$array = NmCliConnection::decode($nmCli, self::NMCLI_PREFIX);
 		$method = IPv4Methods::fromScalar($array['method']);
 		$addresses = [];
 		if ($array['addresses'] !== '') {
@@ -119,74 +135,21 @@ final class IPv4Connection {
 	}
 
 	/**
-	 * Returns the IPv4 connection method
-	 * @return IPv4Methods IPv4 connection method
-	 */
-	public function getMethod(): IPv4Methods {
-		return $this->method;
-	}
-
-	/**
-	 * Returns the IPv4 addresses
-	 * @return array<IPv4Address> IPv4 addresses
-	 */
-	public function getAddresses(): array {
-		return $this->addresses;
-	}
-
-	/**
-	 * Returns the IPv4 gateway address
-	 * @return IPv4|null IPv4 gateway address
-	 */
-	public function getGateway(): ?IPv4 {
-		return $this->gateway;
-	}
-
-	/**
-	 * Returns the IPv4 addresses of DNS servers
-	 * @return array<IPv4> IPv4 addresses of DNS servers
-	 */
-	public function getDns(): array {
-		return $this->dns;
-	}
-
-	/**
-	 * Converts IPv4 connection entity to an array for the form
-	 * @return array<string, array<array<string, int|string>>|string|null> Array for the array
-	 */
-	public function toForm(): array {
-		return [
-			'method' => $this->method->toScalar(),
-			'addresses' => array_map(function (IPv4Address $a): array {
-				return $a->toArray();
-			}, $this->addresses),
-			'gateway' => $this->gateway !== null ? $this->gateway->getDotAddress() : null,
-			'dns' => array_map(function (IPv4 $a): array {
-				return ['address' => $a->getDotAddress()];
-			}, $this->dns),
-		];
-	}
-
-	/**
-	 * Converts IPv4 connection entity to nmcli configuration string
+	 * Serializes IPv4 connection entity into nmcli configuration string
 	 * @return string nmcli configuration
 	 */
-	public function toNmCli(): string {
+	public function nmCliSerialize(): string {
 		$array = [
-			'ipv4.method' => $this->method->toScalar(),
-			'ipv4.addresses' => implode(' ', array_map(function (IPv4Address $address): string {
+			'method' => $this->method->toScalar(),
+			'addresses' => implode(' ', array_map(function (IPv4Address $address): string {
 				return $address->toString();
 			}, $this->addresses)),
-			'ipv4.gateway' => ($this->gateway !== null) ? $this->gateway->getDotAddress() : '',
-			'ipv4.dns' => implode(' ', array_map(function (IPv4 $ipv4): string {
+			'gateway' => ($this->gateway !== null) ? $this->gateway->getDotAddress() : '',
+			'dns' => implode(' ', array_map(function (IPv4 $ipv4): string {
 				return $ipv4->getDotAddress();
 			}, $this->dns)),
 		];
-		$string = '';
-		foreach ($array as $key => $value) {
-			$string .= sprintf('%s "%s" ', $key, $value);
-		}
-		return $string;
+		return NmCliConnection::encode($array, self::NMCLI_PREFIX);
 	}
 
 }

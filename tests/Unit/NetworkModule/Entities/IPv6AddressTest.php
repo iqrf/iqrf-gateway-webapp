@@ -3,7 +3,7 @@
 /**
  * TEST: App\NetworkModule\Entities\IPv6Address
  * @covers App\NetworkModule\Entities\IPv6Address
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
@@ -20,17 +20,27 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for network connection entity
  */
-class IPv6AddressTest extends TestCase {
+final class IPv6AddressTest extends TestCase {
+
+	/**
+	 * IPv6 address
+	 */
+	private const ADDRESS = '2a00:19a0:3:75::d9c6:75a0:1';
+
+	/**
+	 * IPv6 gateway address
+	 */
+	private const GATEWAY = 'fe80::1';
+
+	/**
+	 * IPv6 network prefix
+	 */
+	private const PREFIX = 112;
 
 	/**
 	 * @var IPv6 IPv6 address
 	 */
 	private $address;
-
-	/**
-	 * @var int IPv6 prefix
-	 */
-	private $prefix = 112;
 
 	/**
 	 * @var IPv6 IPv6 gateway address
@@ -46,16 +56,16 @@ class IPv6AddressTest extends TestCase {
 	 * Sets up the test environment
 	 */
 	public function __construct() {
-		$this->address = IPv6::factory('2a00:19a0:3:75:0:d9c6:75a0:1');
-		$this->gateway = IPv6::factory('fe80::1');
-		$this->entity = new IPv6Address($this->address, $this->prefix, $this->gateway);
+		$this->address = IPv6::factory(self::ADDRESS);
+		$this->gateway = IPv6::factory(self::GATEWAY);
+		$this->entity = new IPv6Address($this->address, self::PREFIX, $this->gateway);
 	}
 
 	/**
 	 * Tests the function to create the entity from IPv6 address with prefix
 	 */
 	public function testFromPrefix(): void {
-		Assert::equal($this->entity, IPv6Address::fromPrefix('2a00:19a0:3:75:0:d9c6:75a0:1/112', 'fe80::1'));
+		Assert::equal($this->entity, IPv6Address::fromPrefix('2a00:19a0:3:75:0:d9c6:75a0:1/112', self::GATEWAY));
 	}
 
 	/**
@@ -69,7 +79,7 @@ class IPv6AddressTest extends TestCase {
 	 * Tests the function to get IPv6 prefix
 	 */
 	public function testGetPrefix(): void {
-		Assert::same($this->prefix, $this->entity->getPrefix());
+		Assert::same(self::PREFIX, $this->entity->getPrefix());
 	}
 
 	/**
@@ -84,9 +94,9 @@ class IPv6AddressTest extends TestCase {
 	 */
 	public function testToArray(): void {
 		$expected = [
-			'address' => '2a00:19a0:3:75::d9c6:75a0:1',
-			'prefix' => 112,
-			'gateway' => 'fe80::1',
+			'address' => self::ADDRESS,
+			'prefix' => self::PREFIX,
+			'gateway' => self::GATEWAY,
 		];
 		Assert::same($expected, $this->entity->toArray());
 	}

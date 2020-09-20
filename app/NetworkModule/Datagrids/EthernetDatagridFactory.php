@@ -21,18 +21,23 @@ declare(strict_types = 1);
 namespace App\NetworkModule\Datagrids;
 
 use App\CoreModule\Datagrids\DataGridFactory;
+use App\NetworkModule\Enums\ConnectionTypes;
 use App\NetworkModule\Enums\InterfaceTypes;
 use App\NetworkModule\Models\ConnectionManager;
 use App\NetworkModule\Models\InterfaceManager;
 use App\NetworkModule\Presenters\EthernetPresenter;
-use Ramsey\Uuid\Uuid;
 use Ublaboo\DataGrid\DataGrid;
 use Ublaboo\DataGrid\Exception\DataGridException;
 
 /**
  * Ethernet network connection datagrid
  */
-class EthernetDatagridFactory {
+final class EthernetDatagridFactory {
+
+	/**
+	 * Translator prefix for the datagrid
+	 */
+	private const PREFIX = 'network.ethernet.datagrid.';
 
 	/**
 	 * @var ConnectionManager Network connection manager
@@ -69,13 +74,12 @@ class EthernetDatagridFactory {
 	 * @throws DataGridException
 	 */
 	public function create(EthernetPresenter $presenter, string $name): DataGrid {
-		$prefix = 'network.ethernet.datagrid.';
 		$grid = $this->factory->create($presenter, $name);
 		$grid->setPrimaryKey('uuid');
 		$grid->setDataSource($this->list());
-		$grid->addColumnText('name', $prefix . 'name');
-		$grid->addColumnText('state', $prefix . 'state');
-		$grid->addAction('edit', $prefix . 'edit')
+		$grid->addColumnText('name', self::PREFIX . 'name');
+		$grid->addColumnText('state', self::PREFIX . 'state');
+		$grid->addAction('edit', self::PREFIX . 'edit')
 			->setIcon('pencil')
 			->setClass('btn btn-xs btn-info')
 			->setRenderCondition(function (array $item): bool {
@@ -90,19 +94,13 @@ class EthernetDatagridFactory {
 	 */
 	private function list(): array {
 		$array = [];
-		$interfaces = $this->interfaceManager->list();
-		$connections = $this->connectionManager->list();
-		foreach ($interfaces as $i => $interface) {
-			if ($interface->getType() === InterfaceTypes::ETHERNET()) {
-				$array[$interface->getName()] = [
-					'name' => $interface->getName(),
-					'state' => $interface->getState()->toScalar(),
-					'uuid' => Uuid::uuid4(),
-				];
-				foreach ($connections as $connection) {
-					if ($connection->getInterfaceName() === $interface->getName()) {
-						$array[$interface->getName()]['uuid'] = $connection->getUuid()->toString();
-					}
+		$interfaces = $this->interfaceManager->list(InterfaceTypes::ETHERNET());
+		$connections = $this->connectionManager->list(ConnectionTypes::ETHERNET());
+		foreach ($interfaces as $interface) {
+			foreach ($connections as $connection) {
+				if ($connection->getInterfaceName() === $interface->getName()) {
+					$array[$interface->getName()] = $interface->jsonSerialize();
+					$array[$interface->getName()]['uuid'] = $connection->getUuid()->toString();
 				}
 			}
 		}
