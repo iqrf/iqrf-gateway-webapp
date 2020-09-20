@@ -3,7 +3,7 @@
 /**
  * TEST: App\NetworkModule\Entities\IPv4Address
  * @covers App\NetworkModule\Entities\IPv4Address
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 declare(strict_types = 1);
@@ -20,7 +20,7 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for network connection entity
  */
-class IPv4AddressTest extends TestCase {
+final class IPv4AddressTest extends TestCase {
 
 	/**
 	 * @var IPv4 IPv4 address
@@ -28,9 +28,19 @@ class IPv4AddressTest extends TestCase {
 	private $address;
 
 	/**
-	 * @var int IPv4 prefix
+	 * IPv4 address
 	 */
-	private $prefix = 24;
+	private const ADDRESS = '192.168.1.2';
+
+	/**
+	 * IPv4 network prefix
+	 */
+	private const PREFIX = 24;
+
+	/**
+	 * IPv4 network mask
+	 */
+	private const MASK = '255.255.255.0';
 
 	/**
 	 * @var IPv4 IPv4 mask
@@ -46,16 +56,16 @@ class IPv4AddressTest extends TestCase {
 	 * Sets up the test environment
 	 */
 	public function __construct() {
-		$this->address = IPv4::factory('192.168.1.2');
-		$this->mask = IPv4::factory('255.255.255.0');
-		$this->entity = new IPv4Address($this->address, $this->prefix);
+		$this->address = IPv4::factory(self::ADDRESS);
+		$this->mask = IPv4::factory(self::MASK);
+		$this->entity = new IPv4Address($this->address, self::PREFIX);
 	}
 
 	/**
 	 * Tests the function to create a new entity from IPv4 address and subnet mask
 	 */
 	public function testFromMask(): void {
-		Assert::equal($this->entity, IPv4Address::fromMask('192.168.1.2', '255.255.255.0'));
+		Assert::equal($this->entity, IPv4Address::fromMask(self::ADDRESS, self::MASK));
 	}
 
 	/**
@@ -76,7 +86,7 @@ class IPv4AddressTest extends TestCase {
 	 * Tests the function to get IPv4 prefix
 	 */
 	public function testGetPrefix(): void {
-		Assert::same($this->prefix, $this->entity->getPrefix());
+		Assert::same(self::PREFIX, $this->entity->getPrefix());
 	}
 
 	/**
@@ -93,9 +103,9 @@ class IPv4AddressTest extends TestCase {
 	 */
 	public function testToArray(): void {
 		$expected = [
-			'address' => '192.168.1.2',
-			'prefix' => 24,
-			'mask' => '255.255.255.0',
+			'address' => self::ADDRESS,
+			'prefix' => self::PREFIX,
+			'mask' => self::MASK,
 		];
 		Assert::same($expected, $this->entity->toArray());
 	}

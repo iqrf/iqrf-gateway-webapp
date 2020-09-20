@@ -71,7 +71,8 @@ class CommandManager {
 	 */
 	private function createProcess(string $cmd, bool $needSudo): Process {
 		$command = ($this->sudo && $needSudo ? 'sudo ' : '') . $cmd;
-		return Process::fromShellCommandline($command);
+		$env = ['LANG' => 'C.UTF-8'];
+		return Process::fromShellCommandline($command, null, $env);
 	}
 
 	/**

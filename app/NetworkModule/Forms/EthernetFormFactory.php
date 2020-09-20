@@ -238,9 +238,8 @@ class EthernetFormFactory {
 		}
 		try {
 			$uuid = Uuid::fromString($this->presenter->getParameter('uuid'));
-			$connection = $this->manager->get($uuid);
-			$this->manager->edit($connection, $form->getValues());
-			$this->manager->up($connection->getUuid());
+			$this->manager->edit($uuid, $form->getValues());
+			$this->manager->up($uuid);
 			$this->presenter->flashSuccess('network.ethernet.form.messages.success');
 			$this->presenter->redirect('Ethernet:default');
 		} catch (NetworkManagerException $e) {

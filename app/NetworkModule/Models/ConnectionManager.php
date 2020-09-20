@@ -23,6 +23,7 @@ namespace App\NetworkModule\Models;
 use App\CoreModule\Models\CommandManager;
 use App\NetworkModule\Entities\Connection;
 use App\NetworkModule\Entities\ConnectionDetail;
+use App\NetworkModule\Enums\ConnectionTypes;
 use App\NetworkModule\Exceptions\NetworkManagerException;
 use Ramsey\Uuid\UuidInterface;
 use stdClass;
@@ -64,40 +65,49 @@ class ConnectionManager {
 	 * @throws NetworkManagerException
 	 */
 	public function get(UuidInterface $uuid): ConnectionDetail {
-		$output = $this->commandManager->run('nmcli -t connection show ' . $uuid->toString(), true);
+		$output = $this->commandManager->run('nmcli -t -s connection show ' . $uuid->toString(), true);
 		if ($output->getExitCode() !== 0) {
 			throw new NetworkManagerException($output->getStderr());
 		}
-		return ConnectionDetail::fromNmCli($output->getStdout());
+		return ConnectionDetail::nmCliDeserialize($output->getStdout());
 	}
 
 	/**
 	 * Lists the network connections
+	 * @param ConnectionTypes|null $type Network connection type
 	 * @return array<Connection> Network connections
 	 */
-	public function list(): array {
+	public function list(?ConnectionTypes $type = null): array {
 		$output = $this->commandManager->run('nmcli -t connection show', true)->getStdout();
 		if ($output === '') {
 			return [];
 		}
 		$array = explode(PHP_EOL, trim($output));
-		foreach ($array as &$row) {
-			$row = Connection::fromString($row);
+		$connections = [];
+		foreach ($array as $row) {
+			$connection = Connection::nmCliDeserialize($row);
+			if ($type === null || $type->equals($connection->getType())) {
+				$connections[] = $connection;
+			}
 		}
-		return $array;
+		return $connections;
 	}
 
 	/**
 	 * Edits the network connection's configuration
-	 * @param ConnectionDetail $connection Detailed network connection entity
+	 * @param UuidInterface $uuid Network connection UUID
 	 * @param stdClass $values Network connection configuration form values
 	 * @throws NetworkManagerException
 	 */
-	public function edit(ConnectionDetail $connection, stdClass $values): void {
-		$connection->fromForm($values);
-		$uuid = $connection->getUuid()->toString();
-		$configuration = $connection->toNmCli();
-		$command = sprintf('nmcli -t connection modify %s %s', $uuid, $configuration);
+	public function edit(UuidInterface $uuid, stdClass $values): void {
+		$currentConnection = $this->get($uuid);
+		$values->id = $currentConnection->getName();
+		$values->uuid = $currentConnection->getUuid()->toString();
+		$values->type = $currentConnection->getType()->toScalar();
+		$values->interface = $currentConnection->getInterfaceName();
+		$newConnection = ConnectionDetail::jsonDeserialize($values);
+		$configuration = $newConnection->nmCliSerialize();
+		$command = sprintf('nmcli -t connection modify %s %s', $uuid->toString(), $configuration);
 		$output = $this->commandManager->run($command, true);
 		if ($output->getExitCode() !== 0) {
 			throw new NetworkManagerException($output->getStderr());

@@ -1,4 +1,10 @@
 {
+	"name": "eth0",
+	"autoConnect": {
+		"enabled": true,
+		"priority": 1,
+		"retries": 10
+	},
 	"ipv4": {
 		"method": "manual",
 		"addresses": [

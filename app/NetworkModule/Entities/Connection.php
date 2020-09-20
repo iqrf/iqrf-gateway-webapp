@@ -46,7 +46,7 @@ final class Connection implements JsonSerializable {
 	private $type;
 
 	/**
-	 * @var string Network interface name
+	 * @var string|null Network interface name
 	 */
 	private $interfaceName;
 
@@ -55,25 +55,13 @@ final class Connection implements JsonSerializable {
 	 * @param string $name Network connection name
 	 * @param UuidInterface $uuid Network connection UUID
 	 * @param ConnectionTypes $type Network connection type
-	 * @param string $interfaceName Network interface name
+	 * @param string|null $interfaceName Network interface name
 	 */
-	public function __construct(string $name, UuidInterface $uuid, ConnectionTypes $type, string $interfaceName) {
+	public function __construct(string $name, UuidInterface $uuid, ConnectionTypes $type, ?string $interfaceName) {
 		$this->name = $name;
 		$this->uuid = $uuid;
 		$this->type = $type;
-		$this->interfaceName = $interfaceName;
-	}
-
-	/**
-	 * Creates a new network connection entity from the nmcli row
-	 * @param string $string nmcli row
-	 * @return Connection Network connection entity
-	 */
-	public static function fromString(string $string): self {
-		$array = explode(':', $string);
-		$uuid = Uuid::fromString($array[1]);
-		$type = ConnectionTypes::fromScalar($array[2]);
-		return new static($array[0], $uuid, $type, $array[3]);
+		$this->interfaceName = $interfaceName === '' ? null : $interfaceName;
 	}
 
 	/**
@@ -102,22 +90,35 @@ final class Connection implements JsonSerializable {
 
 	/**
 	 * Returns the network interface name
-	 * @return string Network interface name
+	 * @return string|null Network interface name
 	 */
-	public function getInterfaceName(): string {
+	public function getInterfaceName(): ?string {
 		return $this->interfaceName;
 	}
 
 	/**
-	 * Returns JSON serialized data
+	 * Serializes nwteork connection entity into JSON
 	 * @return array<string, string> JSON serialized data
 	 */
 	public function jsonSerialize(): array {
 		return [
 			'name' => $this->name,
 			'uuid' => $this->uuid->toString(),
-			'type' => (string) $this->type->toScalar(),
+			'type' => $this->type->jsonSerialize(),
+			'interfaceName' => $this->interfaceName,
 		];
+	}
+
+	/**
+	 * Deserializes network connection entity from the nmcli row
+	 * @param string $string nmcli row
+	 * @return Connection Network connection entity
+	 */
+	public static function nmCliDeserialize(string $string): self {
+		$array = explode(':', $string);
+		$uuid = Uuid::fromString($array[1]);
+		$type = ConnectionTypes::fromScalar($array[2]);
+		return new static($array[0], $uuid, $type, $array[3]);
 	}
 
 }

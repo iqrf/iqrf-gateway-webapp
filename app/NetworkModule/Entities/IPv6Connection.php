@@ -21,15 +21,20 @@ declare(strict_types = 1);
 namespace App\NetworkModule\Entities;
 
 use App\NetworkModule\Enums\IPv6Methods;
+use App\NetworkModule\Utils\NmCliConnection;
 use Darsyn\IP\Version\IPv6;
 use Nette\Utils\ArrayHash;
-use Nette\Utils\Strings;
 use stdClass;
 
 /**
  * IPv6 connection entity
  */
-final class IPv6Connection {
+final class IPv6Connection implements INetworkManagerEntity {
+
+	/**
+	 * nmcli configuration prefix
+	 */
+	private const NMCLI_PREFIX = 'ipv6';
 
 	/**
 	 * @var IPv6Methods Connection method
@@ -59,42 +64,52 @@ final class IPv6Connection {
 	}
 
 	/**
-	 * Sets the value from the network connection configuration form
-	 * @param stdClass|ArrayHash $form Values from the network connection configuration form
+	 * Deserializes IPv6 connection entity from JSON
+	 * @param stdClass|ArrayHash $json JSON serialized entity
+	 * @return IPv6Connection IPv6 connection entity
 	 */
-	public function fromForm(stdClass $form): void {
-		$this->method = IPv6Methods::fromScalar($form->method);
-		$this->addresses = [];
-		foreach ($form->addresses as $value) {
+	public static function jsonDeserialize(stdClass $json): INetworkManagerEntity {
+		$method = IPv6Methods::fromScalar($json->method);
+		$addresses = [];
+		foreach ($json->addresses as $value) {
 			if (($value->address !== '') && ($value->prefix !== null)) {
 				$address = IPv6::factory($value->address);
 				$gateway = ($value->gateway !== '') ? IPv6::factory($value->gateway) : null;
-				$this->addresses[] = new IPv6Address($address, $value->prefix, $gateway);
+				$addresses[] = new IPv6Address($address, $value->prefix, $gateway);
 			}
 		}
-		$this->dns = [];
-		foreach ($form->dns as $dns) {
-			if ($dns->address !== '') {
-				$this->dns[] = IPv6::factory($dns->address);
+		$dns = [];
+		foreach ($json->dns as $dnsServer) {
+			if ($dnsServer->address !== '') {
+				$dns[] = IPv6::factory($dnsServer->address);
 			}
 		}
+		return new static($method, $addresses, $dns);
 	}
 
 	/**
-	 * Creates a new IPv6 connection entity from nmcli connection configuration
+	 * Serializes IPv6 connection entity into JSON
+	 * @return array<string, array<array<string, int|string>>|array<string, string>|string> JSON serialized entity
+	 */
+	public function jsonSerialize(): array {
+		return [
+			'method' => $this->method->toScalar(),
+			'addresses' => array_map(function (IPv6Address $a): array {
+				return $a->toArray();
+			}, $this->addresses),
+			'dns' => array_map(function (IPv6 $a): array {
+				return ['address' => $a->getCompactedAddress()];
+			}, $this->dns),
+		];
+	}
+
+	/**
+	 * Deserializes IPv6 connection entity from nmcli connection configuration
 	 * @param string $nmCli nmcli connection configuration
 	 * @return IPv6Connection IPv6 connection entity
 	 */
-	public static function fromNmCli(string $nmCli): self {
-		$array = explode(PHP_EOL, Strings::trim($nmCli));
-		foreach ($array as $i => $row) {
-			$temp = explode(':', $row, 2);
-			if (Strings::startsWith($temp[0], 'ipv6.')) {
-				$key = Strings::replace($temp[0], '~ipv6\.~', '');
-				$array[$key] = $temp[1];
-			}
-			unset($array[$i]);
-		}
+	public static function nmCliDeserialize(string $nmCli): INetworkManagerEntity {
+		$array = NmCliConnection::decode($nmCli, self::NMCLI_PREFIX);
 		$method = IPv6Methods::fromScalar($array['method']);
 		$addresses = [];
 		$gateways = [];
@@ -117,66 +132,23 @@ final class IPv6Connection {
 	}
 
 	/**
-	 * Returns the IPv6 connection method
-	 * @return IPv6Methods IPv6 connection method
-	 */
-	public function getMethod(): IPv6Methods {
-		return $this->method;
-	}
-
-	/**
-	 * Returns the IPv6 addresses
-	 * @return array<IPv6Address> IPv6 addresses
-	 */
-	public function getAddresses(): array {
-		return $this->addresses;
-	}
-	/**
-	 * Returns the IPv6 addresses of DNS servers
-	 * @return array<IPv6> IPv6 addresses of DNS servers
-	 */
-	public function getDns(): array {
-		return $this->dns;
-	}
-
-	/**
-	 * Converts IPv6 connection entity to an array for the form
-	 * @return array<string, array<array<string, int|string>>|array<string, string>|string> Array for the form
-	 */
-	public function toForm(): array {
-		return [
-			'method' => $this->method->toScalar(),
-			'addresses' => array_map(function (IPv6Address $a): array {
-				return $a->toArray();
-			}, $this->addresses),
-			'dns' => array_map(function (IPv6 $a): array {
-				return ['address' => $a->getCompactedAddress()];
-			}, $this->dns),
-		];
-	}
-
-	/**
-	 * Converts IPv6 connection entity to nmcli configuration string
+	 * Serializes IPv6 connection entity into nmcli configuration string
 	 * @return string nmcli configuration
 	 */
-	public function toNmCli(): string {
+	public function nmCliSerialize(): string {
 		$array = [
-			'ipv6.method' => $this->method->toScalar(),
-			'ipv6.addresses' => implode(' ', array_map(function (IPv6Address $address): string {
+			'method' => $this->method->toScalar(),
+			'addresses' => implode(' ', array_map(function (IPv6Address $address): string {
 				return $address->toString();
 			}, $this->addresses)),
-			'ipv6.gateway' => implode(' ', array_map(function (IPv6Address $address): string {
+			'gateway' => implode(' ', array_map(function (IPv6Address $address): string {
 				return $address->getGateway()->getCompactedAddress();
 			}, $this->addresses)),
-			'ipv6.dns' => implode(' ', array_map(function (IPv6 $ipv6): string {
+			'dns' => implode(' ', array_map(function (IPv6 $ipv6): string {
 				return $ipv6->getCompactedAddress();
 			}, $this->dns)),
 		];
-		$string = '';
-		foreach ($array as $key => $value) {
-			$string .= sprintf('%s "%s" ', $key, $value);
-		}
-		return $string;
+		return NmCliConnection::encode($array, self::NMCLI_PREFIX);
 	}
 
 }

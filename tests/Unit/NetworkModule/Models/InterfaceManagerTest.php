@@ -2,7 +2,7 @@
 /**
  * TEST: App\NetworkModule\Models\InterfaceManager
  * @covers App\NetworkModule\Models\InterfaceManager
- * @phpVersion >= 7.1
+ * @phpVersion >= 7.2
  * @testCase
  */
 
@@ -22,7 +22,7 @@ require __DIR__ . '/../../../bootstrap.php';
 /**
  * Tests for network interface manager
  */
-class InterfaceManagerTest extends CommandTestCase {
+final class InterfaceManagerTest extends CommandTestCase {
 
 	/**
 	 * @var InterfaceManager Network interface manager

@@ -54,25 +54,13 @@ final class InterfaceStatus implements JsonSerializable {
 	 * @param string $name Network interface name
 	 * @param InterfaceTypes $type Network interface type
 	 * @param InterfaceStates $state Network interface state
-	 * @param string $connectionName Network connection name
+	 * @param string|null $connectionName Network connection name
 	 */
-	public function __construct(string $name, InterfaceTypes $type, InterfaceStates $state, string $connectionName) {
+	public function __construct(string $name, InterfaceTypes $type, InterfaceStates $state, ?string $connectionName) {
 		$this->name = $name;
 		$this->type = $type;
 		$this->state = $state;
-		$this->connectionName = $connectionName;
-	}
-
-	/**
-	 * Creates a new network interface entity from the nmcli row
-	 * @param string $string nmcli row
-	 * @return InterfaceStatus Network interface
-	 */
-	public static function fromString(string $string): self {
-		$array = explode(':', $string);
-		$type = InterfaceTypes::fromScalar($array[1]);
-		$state = InterfaceStates::fromScalar($array[2]);
-		return new static($array[0], $type, $state, $array[3]);
+		$this->connectionName = $connectionName === '' ? null : $connectionName;
 	}
 
 	/**
@@ -101,14 +89,14 @@ final class InterfaceStatus implements JsonSerializable {
 
 	/**
 	 * Returns the network connection name
-	 * @return string Network connection name
+	 * @return string|null Network connection name
 	 */
-	public function getConnectionName(): string {
+	public function getConnectionName(): ?string {
 		return $this->connectionName;
 	}
 
 	/**
-	 * Returns JSON serialized data
+	 * Serializes network interface status entity into JSON
 	 * @return array<string, string> JSON serialized data
 	 */
 	public function jsonSerialize(): array {
@@ -118,6 +106,18 @@ final class InterfaceStatus implements JsonSerializable {
 			'state' => $this->state->toScalar(),
 			'connectionName' => $this->connectionName,
 		];
+	}
+
+	/**
+	 * Deserializes network interface entity from the nmcli row
+	 * @param string $string nmcli row
+	 * @return InterfaceStatus Network interface
+	 */
+	public static function nmCliDeserialize(string $string): self {
+		$array = explode(':', $string);
+		$type = InterfaceTypes::fromScalar($array[1]);
+		$state = InterfaceStates::fromNmCli($array[2]);
+		return new static($array[0], $type, $state, $array[3]);
 	}
 
 }

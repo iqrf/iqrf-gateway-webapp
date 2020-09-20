@@ -56,7 +56,7 @@ class WifiManager {
 			if ($network === '') {
 				continue;
 			}
-			$networks[] = WifiNetwork::fromNmCli($network);
+			$networks[] = WifiNetwork::nmCliDeserialize($network);
 		}
 		return $networks;
 	}
