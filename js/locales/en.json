@@ -132,9 +132,10 @@
 	"forms": {
 		"autoNetwork": "AutoNetwork",
 		"ok": "OK",
-		"cancel": "Cancel",
-		"pingNodes": "Ping nodes",
 		"add": "Add",
+		"cancel": "Cancel",
+		"edit": "Edit",
+		"pingNodes": "Ping nodes",
 		"no": "No",
 		"read": "Read",
 		"save": "Save",
@@ -876,7 +877,11 @@
 	},
 	"network": {
 		"title": "Network manager",
-		"description": "Controls the network."
+		"description": "Controls the network.",
+		"ethernet": {
+			"title": "Ethernet connections",
+			"description": "Controls the Ethernet connections."
+		}
 	},
 	"service": {
 		"actions": {

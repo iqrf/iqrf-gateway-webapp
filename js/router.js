@@ -1,24 +1,33 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+
+import CloudDisambiguation from './components/Cloud/CloudDisambiguation';
+import AzureCreator from './components/Cloud/AzureCreator';
+import HexioCreator from './components/Cloud/HexioCreator';
+import IbmCreator from './components/Cloud/IbmCreator';
+import InteliGlueCreator from './components/Cloud/InteliGlueCreator';
+
+import GatewayDisambiguation from './components/Gateway/GatewayDisambiguation';
 import GatewayInfo from './components/Gateway/GatewayInfo';
 import DaemonLogViewer from './components/Gateway/DaemonLogViewer';
 import DaemonMode from './components/Gateway/DaemonMode';
 import PowerControl from './components/Gateway/PowerControl';
 import ServiceControl from './components/Gateway/ServiceControl';
+
 import SignIn from './components/SignIn';
 import NetworkManager from './components/IqrfNet/NetworkManager';
 import SendDpaPacket from './components/IqrfNet/SendDpaPacket';
 import TranslatorConfig from './components/Config/TranslatorConfig';
 import ControllerConfig from './components/Config/ControllerConfig';
 import MenderConfig from './components/Config/MenderConfig';
+
 import UserEdit from './components/Core/UserEdit';
 import UserList from './components/Core/UserList';
+
 import SendJsonRequest from './components/IqrfNet/SendJsonRequest';
 import StandardManager from './components/IqrfNet/StandardManager';
-import InteliGlueCreator from './components/Cloud/InteliGlueCreator';
-import HexioCreator from './components/Cloud/HexioCreator';
-import AzureCreator from './components/Cloud/AzureCreator';
-import IbmCreator from './components/Cloud/IbmCreator';
+
+import NetworkDisambiguation from './components/Network/NetworkDisambiguation';
 
 import i18n from './i18n.ts';
 import store from './store';
@@ -29,10 +38,10 @@ const routes = [
 	{
 		component: SignIn,
 		name: 'signIn',
-		path: '/sign/in/',
+		path: '/sign/in',
 	},
 	{
-		path: '*',
+		path: '/',
 		component: {
 			render(c) {
 				return c('router-view');
@@ -40,103 +49,160 @@ const routes = [
 		},
 		children: [
 			{
-				component: AzureCreator,
-				path: '/cloud/azure/',
-				meta: {title: 'cloud.msAzure.form.title'}
+				path: '/cloud',
+				component: {
+					render(c) {
+						return c('router-view');
+					}
+				},
+				children: [
+					{
+						component: CloudDisambiguation,
+						path: '',
+						meta: {title: 'cloud.title'}
+					},
+
+					{
+						component: AzureCreator,
+						path: 'azure',
+						meta: {title: 'cloud.msAzure.form.title'}
+					},
+					{
+						component: HexioCreator,
+						path: 'hexio',
+						meta: {title: 'cloud.hexio.form.title'}
+					},
+					{
+						component: IbmCreator,
+						path: 'ibm-cloud',
+						meta: {title: 'cloud.ibmCloud.form.title'}
+					},
+					{
+						component: InteliGlueCreator,
+						path: 'inteli-glue',
+						meta: {title: 'cloud.intelimentsInteliGlue.form.title'},
+					},
+				]
 			},
 			{
-				component: HexioCreator,
-				path: '/cloud/hexio/',
-				meta: {title: 'cloud.hexio.form.title',}
-			},
-			{
-				component: IbmCreator,
-				path: '/cloud/ibm-cloud/',
-				meta: {title: 'cloud.ibmCloud.form.title'}
-			},
-			{
-				component: InteliGlueCreator,
-				path: '/cloud/inteli-glue/',
-				meta: {title: 'cloud.intelimentsInteliGlue.form.title'},
-			},
-			{
-				component: GatewayInfo,
-				path: '/gateway/info/',
-				meta: {title: 'gateway.info.title'},
-			},
-			{
-				component: DaemonLogViewer,
-				path: '/gateway/log/',
-				meta: {title: 'gateway.log.title'},
-			},
-			{
-				component: MenderConfig,
-				path: '/config/mender/',
-				meta: {title: 'config.mender.description'}
-			},
-			{
-				component: DaemonMode,
-				path: '/gateway/change-mode/',
-				meta: {title: 'gateway.mode.title'},
-			},
-			{
-				component: PowerControl,
-				path: '/gateway/power/',
-				meta: {title: 'gateway.power.title'},
+				path: '/gateway',
+				component: {
+					render(c) {
+						return c('router-view');
+					}
+				},
+				children: [
+					{
+						component: GatewayDisambiguation,
+						path: '',
+						meta: {title: 'gateway.title'}
+					},
+					{
+						component: GatewayInfo,
+						path: 'info',
+						meta: {title: 'gateway.info.title'},
+					},
+					{
+						component: DaemonLogViewer,
+						path: 'log',
+						meta: {title: 'gateway.log.title'},
+					},
+					{
+						component: DaemonMode,
+						path: 'change-mode',
+						meta: {title: 'gateway.mode.title'},
+					},
+					{
+						component: PowerControl,
+						path: 'power',
+						meta: {title: 'gateway.power.title'},
+					},
+				]
 			},
 			{
 				component: ServiceControl,
 				name: 'serviceControl',
-				path: '/service/:serviceName/',
+				path: '/service/:serviceName',
 				props: true,
 				meta: {title: 'service.%serviceName%.title'},
 			},
 			{
 				component: NetworkManager,
-				path: '/iqrfnet/network/',
+				path: '/iqrfnet/network',
 				meta: {title: 'iqrfnet.networkManager.title'}
 			},
 			{
 				component: StandardManager,
-				path: '/iqrfnet/standard/',
+				path: '/iqrfnet/standard',
 				meta: {title: 'iqrfnet.standard.title'}
 			},
 			{
 				component: SendDpaPacket,
-				path: '/iqrfnet/send-raw/',
+				path: '/iqrfnet/send-raw',
 				meta: {title: 'iqrfnet.sendPacket.title'},
 			},
 			{
 				component: SendJsonRequest,
-				path: '/iqrfnet/send-json/',
+				path: '/iqrfnet/send-json',
 				meta: {title: 'iqrfnet.sendJson.title'}
 			},
 			{
+				component: MenderConfig,
+				path: '/config/mender',
+				meta: {title: 'config.mender.description'}
+			},
+			{
 				component: TranslatorConfig,
-				path: '/config/translator/',
+				path: '/config/translator',
 				meta: {title: 'translatorConfig.description'}
 			},
 			{
 				component: ControllerConfig,
-				path: '/config/controller/',
+				path: '/config/controller',
 				meta: {title: 'controllerConfig.description'}
 			},
 			{
-				component: UserList,
-				path: '/user/',
-				meta: {title: 'core.user.title'},
+				path: '/network',
+				component: {
+					render(c) {
+						return c('router-view');
+					}
+				},
+				children: [
+					{
+						component: NetworkDisambiguation,
+						path: '',
+						meta: {title: 'network.title'}
+					}
+				]
 			},
 			{
-				component: UserEdit,
-				path: '/user/edit/:userId/',
-				props: (route) => {
-					const userId = Number.parseInt(route.params.userId, 10);
-					if (Number.isNaN(userId)) {
-						return 0;
+				path: '/user',
+				component: {
+					render(c) {
+						return c('router-view');
 					}
-					return {userId};
 				},
-				meta: {title: 'core.user.edit.title'},
+				meta: {title: 'core.user.title'},
+				children: [
+					{
+						component: UserList,
+						path: '',
+						meta: {title: 'core.user.title'},
+					},
+					{
+						component: UserEdit,
+						path: 'edit/:userId',
+						props: (route) => {
+							const userId = Number.parseInt(route.params.userId, 10);
+							if (Number.isNaN(userId)) {
+								return 0;
+							}
+							return {userId};
+						},
+						meta: {title: 'core.user.edit.title'},
+					},
+				]
 			},
 			{
 				path: '*',

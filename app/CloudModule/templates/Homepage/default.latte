@@ -17,31 +17,3 @@
 
 {block title}{_cloud.title}{/block}
 {block content}
-<c-card body-wrapper>
-	<c-list-group>
-		<c-list-group-item to='/cloud/ibm-cloud/'>
-			<header class='list-group-item-heading'>{{ $t('cloud.ibmCloud.title') }}</header>
-			<p class='list-group-item-text'>{{ $t('cloud.ibmCloud.description') }}</p>
-		</c-list-group-item>
-		<c-list-group-item to='/cloud/azure/'>
-			<header class='list-group-item-heading'>{{ $t('cloud.msAzure.title') }}</header>
-			<p class='list-group-item-text'>{{ $t('cloud.msAzure.description') }}</p>
-		</c-list-group-item>
-		<c-list-group-item to='/cloud/aws/'>
-			<header class='list-group-item-heading'>{{ $t('cloud.amazonAws.title') }}</header>
-			<p class='list-group-item-text'>{{ $t('cloud.amazonAws.description') }}</p>
-		</c-list-group-item>
-		<c-list-group-item to='/cloud/hexio/'>
-			<header class='list-group-item-heading'>{{ $t('cloud.hexio.title') }}</header>
-			<p class='list-group-item-text'>{{ $t('cloud.hexio.description') }}</p>
-		</c-list-group-item>
-		<c-list-group-item to='/cloud/inteli-glue/'>
-			<header class='list-group-item-heading'>{{ $t('cloud.intelimentsInteliGlue.title') }}</header>
-			<p class='list-group-item-text'>{{ $t('cloud.intelimentsInteliGlue.description') }}</p>
-		</c-list-group-item>
-		<c-list-group-item v-if='$store.getters["features/isEnabled"]("pixla")' to='/cloud/pixla/'>
-			<header class='list-group-item-heading'>{{ $t('cloud.pixla.title') }}</header>
-			<p class='list-group-item-text'>{{ $t('cloud.pixla.description') }}</p>
-		</c-list-group-item>
-	</c-list-group>
-</c-card>
