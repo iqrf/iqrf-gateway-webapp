@@ -67,7 +67,7 @@ import {CButton, CCard, CCardBody, CCardFooter, CCardHeader, CForm, CInput} from
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';
 import {timeout} from '../../helpers/timeout';
-import IqrfStandardService from '../../services/IqrfStandardService';
+import StandardSensorService from '../../services/DaemonApi/StandardSensorService';
 
 export default {
 	name: 'SensorManager',
@@ -161,18 +161,17 @@ export default {
 		},
 		submitReadAll() {
 			this.$store.commit('spinner/SHOW');
-			IqrfStandardService.sensorReadAll(this.address);
+			StandardSensorService.readAll(this.address);
 		},
 		submitEnumerate() {
 			this.$store.commit('spinner/SHOW');
-			IqrfStandardService.sensorEnumerate(this.address);
+			StandardSensorService.enumerate(this.address);
 		},
 	}
 };
 </script>
 
 <style scoped>
-
 .scroll-table {
     display: block;
     overflow-x: auto;
@@ -182,5 +181,4 @@ export default {
 td {
 	text-align: center;
 }
-
 </style>

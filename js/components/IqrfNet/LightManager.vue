@@ -111,7 +111,7 @@ import {CButton, CCard, CCardBody, CCardFooter, CCardHeader, CForm, CInput} from
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';
 import {timeout} from '../../helpers/timeout';
-import IqrfStandardService from '../../services/IqrfStandardService';
+import StandardLightService from '../../services/DaemonApi/StandardLightService';
 
 export default {
 	name: 'LightManager',
@@ -192,23 +192,23 @@ export default {
 	methods: {
 		submitEnumerate() {
 			this.$store.commit('spinner/SHOW');
-			IqrfStandardService.lightEnumerate(this.address);
+			StandardLightService.enumerate(this.address);
 		},
 		submitGetPower() {
 			this.$store.commit('spinner/SHOW');
-			IqrfStandardService.lightGetPower(this.address, this.index);
+			StandardLightService.getPower(this.address, this.index);
 		},
 		submitSetPower() {
 			this.$store.commit('spinner/SHOW');
-			IqrfStandardService.lightSetPower(this.address, [{'index': this.index, 'power': this.power}]);
+			StandardLightService.setPower(this.address, [{'index': this.index, 'power': this.power}]);
 		},
 		submitIncrementPower() {
 			this.$store.commit('spinner/SHOW');
-			IqrfStandardService.lightIncrementPower(this.address, [{'index': this.index, 'power': this.power}]);
+			StandardLightService.incrementPower(this.address, [{'index': this.index, 'power': this.power}]);
 		},
 		submitDecrementPower() {
 			this.$store.commit('spinner/SHOW');
-			IqrfStandardService.lightDecrementPower(this.address, [{'index': this.index, 'power': this.power}]);
+			StandardLightService.decrementPower(this.address, [{'index': this.index, 'power': this.power}]);
 		},
 	}
 };
