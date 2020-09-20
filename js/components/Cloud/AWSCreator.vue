@@ -32,7 +32,7 @@
 							@input='isEmpty("cert")'
 							@click='isEmpty("cert")'
 						/>
-						<p v-if='certEmpty' style='color:red'>
+						<p v-if='certEmpty && !firstCert' style='color:red'>
 							{{ $t('cloud.amazonAws.form.messages.certificate') }}
 						</p>
 					</div>
@@ -43,7 +43,7 @@
 							@input='isEmpty("key")'
 							@click='isEmpty("key")'
 						/>
-						<p v-if='keyEmpty' style='color:red'>
+						<p v-if='keyEmpty && !firstKey' style='color:red'>
 							{{ $t('cloud.amazonAws.form.messages.key') }}
 						</p>
 					</div>
@@ -86,6 +86,8 @@ export default {
 			serviceName: 'aws',
 			certEmpty: true,
 			keyEmpty: true,
+			firstCert: true,
+			firstKey: true,
 		};
 	},
 	created() {
@@ -128,8 +130,14 @@ export default {
 		},
 		isEmpty(button) {
 			if (button === 'cert') {
+				if (this.firstCert) {
+					this.firstCert = false;
+				}
 				this.certEmpty = this.$refs.awsFormCert.$el.children[1].files.length === 0;
 			} else {
+				if (this.firstKey) {
+					this.firstKey = false;
+				}
 				this.keyEmpty = this.$refs.awsFormKey.$el.children[1].files.length === 0;
 			}
 		}

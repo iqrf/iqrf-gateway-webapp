@@ -19,8 +19,8 @@
 							rules='integer|required|between:0,7'
 							:custom-messages='{
 								integer: "iqrfnet.networkManager.messages.invalid.integer",
-								required: "iqrfnet.networkManager.messages.missing.discovery.txPower",
-								between: "iqrfnet.networkManager.messages.invalid.discovery.txPower"
+								required: "iqrfnet.networkManager.messages.discovery.txPower",
+								between: "iqrfnet.networkManager.messages.discovery.txPower"
 							}'
 						>
 							<CInput
@@ -47,8 +47,8 @@
 							rules='integer|required|between:0,3'
 							:custom-messages='{
 								integer: "iqrfnet.networkManager.messages.invalid.integer",
-								required: "iqrfnet.networkManager.messages.missing.autoNetwork.actionRetries",
-								between: "iqrfnet.networkManager.messages.invalid.autoNetwork.actionRetries"
+								required: "iqrfnet.networkManager.messages.autoNetwork.actionRetries",
+								between: "iqrfnet.networkManager.messages.autoNetwork.actionRetries"
 							}'
 						>
 							<CInput
@@ -67,8 +67,8 @@
 							rules='integer|required|between:1,50'
 							:custom-messages='{
 								integer: "iqrfnet.networkManager.messages.invalid.integer",
-								required: "iqrfnet.networkManager.messages.missing.autoNetwork.networks",
-								between: "iqrfnet.networkManager.messages.invalid.autoNetwork.networks"
+								required: "iqrfnet.networkManager.messages.autoNetwork.networks",
+								between: "iqrfnet.networkManager.messages.autoNetwork.networks"
 							}'
 						>
 							<CInput
@@ -86,8 +86,8 @@
 							rules='integer|required|between:1,50'
 							:custom-messages='{
 								integer: "iqrfnet.networkManager.messages.invalid.integer",
-								required: "iqrfnet.networkManager.messages.missing.autoNetwork.network",
-								between: "iqrfnet.networkManager.messages.invalid.autoNetwork.network"
+								required: "iqrfnet.networkManager.messages.autoNetwork.network",
+								between: "iqrfnet.networkManager.messages.autoNetwork.network"
 							}'
 						>
 							<CInput
@@ -108,6 +108,7 @@
 							}'
 						>
 							<CInput
+								v-model='autoNetwork.hwpidFiltering'
 								:label='$t("iqrfnet.networkManager.autoNetwork.form.hwpidFiltering")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
@@ -119,8 +120,8 @@
 							rules='integer|required|between:1,127'
 							:custom-messages='{
 								integer: "iqrfnet.networkManager.messages.invalid.integer",
-								required: "iqrfnet.networkManager.messages.missing.autoNetwork.waves",
-								between: "iqrfnet.networkManager.messages.invalid.autoNetwork.waves"
+								required: "iqrfnet.networkManager.messages.autoNetwork.waves",
+								between: "iqrfnet.networkManager.messages.autoNetwork.waves"
 							}'
 						>
 							<CInput
@@ -138,8 +139,8 @@
 							rules='integer|required|between:1,127'
 							:custom-messages='{
 								integer: "iqrfnet.networkManager.messages.invalid.integer",
-								required: "iqrfnet.networkManager.messages.missing.autoNetwork.emptyWaves",
-								between: "iqrfnet.networkManager.messages.invalid.autoNetwork.emptyWaves"
+								required: "iqrfnet.networkManager.messages.autoNetwork.emptyWaves",
+								between: "iqrfnet.networkManager.messages.autoNetwork.emptyWaves"
 							}'
 						>
 							<CInput
@@ -157,8 +158,8 @@
 							rules='integer|required|between:1,239'
 							:custom-messages='{
 								integer: "iqrfnet.networkManager.messages.invalid.integer",
-								required: "iqrfnet.networkManager.messages.missing.autoNetwork.totalNodes",
-								between: "iqrfnet.networkManager.messages.invalid.autoNetwork.totalNodes"
+								required: "iqrfnet.networkManager.messages.autoNetwork.totalNodes",
+								between: "iqrfnet.networkManager.messages.autoNetwork.totalNodes"
 							}'
 						>
 							<CInput
@@ -176,8 +177,8 @@
 							rules='integer|required|between:1,239'
 							:custom-messages='{
 								integer: "iqrfnet.networkManager.messages.invalid.integer",
-								required: "iqrfnet.networkManager.messages.missing.autoNetwork.newNodes",
-								between: "iqrfnet.networkManager.messages.invalid.autoNetwork.newNodes"
+								required: "iqrfnet.networkManager.messages.autoNetwork.newNodes",
+								between: "iqrfnet.networkManager.messages.autoNetwork.newNodes"
 							}'
 						>
 							<CInput
@@ -200,9 +201,9 @@
 						v-slot='{ errors, touched, valid }'
 						rules='integer|required|between:1,239'
 						:custom-messages='{
-							required: "iqrfnet.networkManager.messages.missing.bonding.maxAddr",
-							integer: "iqrfnet.networkManager.messages.invalid.bonding.maxAddr",
-							between: "iqrfnet.networkManager.messages.invalid.bonding.maxAddr"
+							required: "iqrfnet.networkManager.messages.bonding.address",
+							integer: "iqrfnet.networkManager.messages.invalid.integer",
+							between: "iqrfnet.networkManager.messages.bonding.address"
 						}'
 					>
 						<CInput
@@ -225,9 +226,10 @@
 						v-if='bondMethod !== "autoNetwork"'
 						v-slot='{ errors, touched, valid}'
 						rules='integer|required|between:0,255'
-						:custom-mesasges='{
-							integer: "iqrfnet.networkManager.messages.invalid.bonding.bondingRetries",
-							required: "iqrfnet.networkManager.messages.missing.bonding.bondingRetries"
+						:custom-messages='{
+							integer: "iqrfnet.networkManager.messages.invalid.integer",
+							required: "iqrfnet.networkManager.messages.bonding.bondingRetries",
+							between: "iqrfnet.networkManager.messages.bonding.bondingRetries"
 						}'
 					>
 						<CInput
@@ -368,7 +370,7 @@ export default {
 					networks: 1,
 					network: 1
 				},
-				hwpidFiltering: [],
+				hwpidFiltering: '',
 				stopConditions: {
 					waves: 2,
 					emptyWaves: 2,
@@ -395,7 +397,7 @@ export default {
 			return regex.test(code);
 		});
 		extend('hwpidFilter', (val) => {
-			const regex = RegExp('^[a-zA-Z0-9]{4}(,[a-zA-Z0-9]{4})*$');
+			const regex = RegExp('^[0-9]|[1-9][0-9]|[1-9][0-9]{2}|[1-9][0-9]{3}|[1-6][0-5]{2}[0-3][0-5](,[0-9]|[1-9][0-9]|[1-9][0-9]{2}|[1-9][0-9]{3}|[1-6][0-5]{2}[0-3][0-5]){0,}$');
 			return regex.test(val);
 		});
 		this.unsubscribe = this.$store.subscribe(mutation => {

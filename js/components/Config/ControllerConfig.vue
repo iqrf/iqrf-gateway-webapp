@@ -158,8 +158,8 @@
 								rules='required|integer|between:0,3'
 								:custom-messages='{
 									integer: "iqrfnet.networkManager.messages.invalid.integer",
-									required: "iqrfnet.networkManager.messages.missing.autoNetwork.actionRetries",
-									between: "iqrfnet.networkManager.messages.invalid.autoNetwork.actionRetries"
+									required: "iqrfnet.networkManager.messages.autoNetwork.actionRetries",
+									between: "iqrfnet.networkManager.messages.autoNetwork.actionRetries"
 								}'
 							>
 								<CInput
@@ -181,8 +181,8 @@
 								rules='integer|required|between:0,7'
 								:custom-messages='{
 									integer: "iqrfnet.networkManager.messages.invalid.integer",
-									required: "iqrfnet.networkManager.messages.missing.discovery.txPower",
-									between: "iqrfnet.networkManager.messages.invalid.discovery.txPower"
+									required: "iqrfnet.networkManager.messages.discovery.txPower",
+									between: "iqrfnet.networkManager.messages.discovery.txPower"
 								}'
 							>
 								<CInput
@@ -209,8 +209,8 @@
 								rules='integer|required|between:1,127'
 								:custom-messages='{
 									integer: "iqrfnet.networkManager.messages.invalid.integer",
-									required: "iqrfnet.networkManager.messages.missing.autoNetwork.emptyWaves",
-									between: "iqrfnet.networkManager.messages.invalid.autoNetwork.emptyWaves"
+									required: "iqrfnet.networkManager.messages.autoNetwork.emptyWaves",
+									between: "iqrfnet.networkManager.messages.autoNetwork.emptyWaves"
 								}'
 							>
 								<CInput
@@ -228,8 +228,8 @@
 								rules='integer|required|between:1,127'
 								:custom-messages='{
 									integer: "iqrfnet.networkManager.messages.invalid.integer",
-									required: "iqrfnet.networkManager.messages.missing.autoNetwork.waves",
-									between: "iqrfnet.networkManager.messages.invalid.autoNetwork.waves"
+									required: "iqrfnet.networkManager.messages.autoNetwork.waves",
+									between: "iqrfnet.networkManager.messages.autoNetwork.waves"
 								}'
 							>
 								<CInput
@@ -253,9 +253,9 @@
 								v-slot='{ errors, touched, valid }'
 								rules='integer|required|between:0,239'
 								:custom-messages='{
-									between: "iqrfnet.networkManager.messages.invalid.discovery.maxAddr",
+									between: "iqrfnet.networkManager.messages.discovery.maxAddr",
 									integer: "iqrfnet.networkManager.messages.invalid.integer",
-									required: "iqrfnet.networkManager.messages.invalid.discovery.maxAddr"
+									required: "iqrfnet.networkManager.messages.discovery.maxAddr"
 								}'
 							>
 								<CInput
@@ -273,8 +273,8 @@
 								rules='integer|required|between:0,7'
 								:custom-messages='{
 									integer: "iqrfnet.networkManager.messages.invalid.integer",
-									required: "iqrfnet.networkManager.messages.missing.discovery.txPower",
-									between: "iqrfnet.networkManager.messages.invalid.discovery.txPower"
+									required: "iqrfnet.networkManager.messages.discovery.txPower",
+									between: "iqrfnet.networkManager.messages.discovery.txPower"
 								}'
 							>
 								<CInput

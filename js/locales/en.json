@@ -540,45 +540,34 @@
 					}
 				},
 				"invalid": {
-					"integer": "This parameter should be a decimal number.",
+					"integer": "This parameter should be an integer.",
 					"autoNetwork": {
-						"actionRetries": "Number of retry DPA transactions should be a decimal number between 0 and 3.",
-						"networks": "Number of networks should be a decimal number between 1 and 50.",
-						"network": "Network number should be a decimal number between 1 and 50.",
-						"hwpidFilter": "HWPID filter should be a list of 4-digit hexadecimal numbers separated by a comma.",
-						"waves": "Maximum number of waves should be a decimal number between 1 and 127.",
-						"emptyWaves": "maximum number of consecutive empty waves should be a decimal number between 1 and 127.",
-						"totalNodes": "Total number of nodes should be a decimal number between 1 and 239.",
-						"newNodes": "Number of new nodes should be a decimal number between 1 and 239."
+						"hwpidFilter": "HWPID filter should be a list of 4-digit hexadecimal numbers separated by a comma."
 					},
 					"bonding": {
-						"bondingRetries": "Bonding test retries should be a positive integer.",
-						"maxAddr": "Please enter a valid address. Its has to be a decimal number from 1 to 239",
 						"scCode": "IQRF Smart Connect code should be a string of 34 alphanumeric characters."
-					},
-					"discovery": {
-						"maxAddr": "Maximum node address has to be a decimal number between 0 and 239.",
-						"txPower": "TX Power has to be an decimal number between 0 and 7."
 					}
 				},
+				"autoNetwork": {
+					"actionRetries": "Please enter an integer between 0 and 3 for number retry DPA transactions.",
+					"networks": "Please enter an integer between 1 and 50 for number of networks.",
+					"network": "Please enter an integer between 1 and 50 for network number.",
+					"waves": "Please enter an integer between 1 and 127 for maximum number of waves.",
+					"emptyWaves": "Please enter an integer between 1 and 127 for maximum number of consecutive empty waves.",
+					"totalNodes": "Please enter an integer between 1 and 239 for total number of nodes.",
+					"newNodes": "Please enter an integer between 1 and 239 for number of new nodes."
+				},
+				"bonding": {
+					"address": "Please enter an integer between 1 and 239 for new node address",
+					"bondingRetries": "Please enter an integer between 0 and 255 for number of bonding test retry requests."
+				},
+				"discovery": {
+					"txPower": "Please enter an integer between 0 and 7 for Discovery TX power.",
+					"maxAddr": "Please enter an integer between 0 and 239 for Discovery maximum node address."
+				},
 				"missing": {
-					"autoNetwork": {
-						"actionRetries": "Please enter number of retry DPA transactions.",
-						"networks": "Please enter number of networks.",
-						"network": "Please enter network number.",
-						"waves": "Please enter maximum number of waves.",
-						"emptyWaves": "Please enter maximum number of consecutive empty waves.",
-						"totalNodes": "Please enter total number of nodes.",
-						"newNodes": "Please enter number of new nodes."
-					},
 					"bonding": {
-						"bondingRetries": "Please enter number of bond test retry requests.",
-						"maxAddr": "Please enter address to bond a new node to.",
 						"scCode": "Please enter the IQRF Smart Connect code."
-					},
-					"discovery": {
-						"txPower": "Please enter TX Power for Discovery.",
-						"maxAddr": "Please enter maximum node address for Discovery."
 					}
 				}
 			}
@@ -593,20 +582,20 @@
 				"json": "JSON request",
 				"messages": {
 					"timeout": "Daemon API request timed out.",
-					"invalid": "Invalid JSON object.",
+					"invalid": "Invalid JSON API request.",
 					"missing": "Please enter JSON request.",
 					"mType": "JSON object does not have mType key.",
 					"success": "JSON request has been sent successfully.",
 					"error": {
 						"timeout": "Request timed out.",
-						"fail": "Request failed.",
-						"pcmd": "Sent JSON request contains incorrect request PCMD.",
-						"pnum": "Sent JSON request contains incorrect request PNUM.",
-						"addr": "Sent JSON request contains incorrect request address.",
-						"dataLen": "Sent JSON request contains incorrect request data length.",
-						"data": "Sent JSON request contains incorrect request data.",
-						"hwpid": "Sent JSON request contains incorrect request HWPID.",
-						"nadr": "Sent JSON request contains incorrect request NADR."
+						"fail": "An error occurred while proccesing JSON request.",
+						"pcmd": "Sent JSON request contains incorrect PCMD.",
+						"pnum": "Sent JSON request contains incorrect PNUM.",
+						"addr": "Sent JSON request contains incorrect address parameter.",
+						"dataLen": "Sent JSON request contains incorrect data length.",
+						"data": "Sent JSON request contains incorrect data.",
+						"hwpid": "Sent JSON request contains incorrect HWPID.",
+						"nadr": "Sent JSON request contains incorrect NADR."
 					}
 				}
 			}

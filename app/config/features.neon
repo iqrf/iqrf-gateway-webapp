@@ -11,6 +11,9 @@ iqrfGatewayController:
 # IQRF Gateway Translator configuration
 iqrfGatewayTranslator:
 	enabled: false
+# Mender client configuration
+mender:
+	enabled: false
 # Network manager
 networkManager:
 	enabled: false

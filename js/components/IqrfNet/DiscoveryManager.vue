@@ -8,9 +8,9 @@
 						v-slot='{ errors, touched, valid }'
 						rules='integer|required|between:0,7'
 						:custom-messages='{
-							integer: "iqrfnet.networkManager.messages.invalid.discovery.txPower",
-							required: "iqrfnet.networkManager.messages.missing.discovery.txPower",
-							between: "iqrfnet.networkManager.messages.invalid.discovery.txPower"
+							integer: "iqrfnet.networkManager.messages.invalid.integer",
+							required: "iqrfnet.networkManager.messages.discovery.txPower",
+							between: "iqrfnet.networkManager.messages.discovery.txPower"
 						}'
 					>
 						<CInput
@@ -27,9 +27,9 @@
 						v-slot='{ errors, touched, valid }'
 						rules='integer|required|between:0,239'
 						:custom-messages='{
-							integer: "iqrfnet.networkManager.messages.invalid.discovery.maxAddr",
-							required: "iqrfnet.networkManager.messages.missing.discovery.maxAddr",
-							between: "iqrfnet.networkManager.messages.invalid.discovery.maxAddr"
+							integer: "iqrfnet.networkManager.messages.invalid.integer",
+							required: "iqrfnet.networkManager.messages.discovery.maxAddr",
+							between: "iqrfnet.networkManager.messages.discovery.maxAddr"
 						}'
 					>
 						<CInput
