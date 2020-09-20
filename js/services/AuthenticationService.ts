@@ -10,7 +10,7 @@ class AuthenticationService {
 	 * @param password Password
 	 */
 	apiLogin(username: string, password: string): Promise<AxiosResponse> {
-		let data = {
+		const data = {
 			username: username,
 			password: password
 		};

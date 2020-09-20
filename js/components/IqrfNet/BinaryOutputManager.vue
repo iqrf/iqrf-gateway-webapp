@@ -108,7 +108,7 @@ import {cilCheckAlt, cilX} from '@coreui/icons';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {timeout} from '../../helpers/timeout';
 import {between, integer, required} from 'vee-validate/dist/rules';
-import IqrfStandardService from '../../services/IqrfStandardService';
+import StandardBinaryOutputService from '../../services/DaemonApi/StandardBinaryOutputService';
 
 export default {
 	name: 'BinaryOutputManager',
@@ -197,16 +197,16 @@ export default {
 		},
 		submitEnumerate() {
 			this.$store.commit('spinner/SHOW');
-			IqrfStandardService.binaryOutputEnumerate(this.address);
+			StandardBinaryOutputService.enumerate(this.address);
 		},
 		submitGetStates() {
 			this.$store.commit('spinner/SHOW');
-			IqrfStandardService.binaryOutputGetOutputs(this.address);
+			StandardBinaryOutputService.getOutputs(this.address);
 		},
 		submitSetState() {
 			this.$store.commit('spinner/SHOW');
 			let state = {'index': this.index, 'state': this.state};
-			IqrfStandardService.binaryOutputSetOutputs(this.address, state);
+			StandardBinaryOutputService.setOutputs(this.address, [state]);
 		},
 	},
 	icons: {

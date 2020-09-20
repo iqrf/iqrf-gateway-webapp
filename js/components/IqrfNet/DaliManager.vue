@@ -86,7 +86,7 @@ import {CButton, CCard, CCardBody, CCardFooter, CCardHeader, CForm, CInput} from
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {timeout} from '../../helpers/timeout';
 import {between, integer, required} from 'vee-validate/dist/rules';
-import IqrfStandardService from '../../services/IqrfStandardService';
+import StandardDaliService from '../../services/DaemonApi/StandardDaliService';
 
 export default {
 	name: 'DaliManager',
@@ -156,7 +156,7 @@ export default {
 		},
 		sendDali() {
 			this.$store.commit('spinner/SHOW');
-			IqrfStandardService.daliSend(this.address, this.commands);
+			StandardDaliService.send(this.address, this.commands);
 		},
 	}
 };

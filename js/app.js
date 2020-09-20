@@ -38,7 +38,7 @@ import router from './router';
 import '../css/app.scss';
 import 'vue-toast-notification/dist/theme-sugar.css';
 
-import './iqrfNet/sendPacket';
+import './iqrfNet/sendPacket.ts';
 
 import App from './components/App';
 import DaemonStatus from './components/DaemonStatus';
