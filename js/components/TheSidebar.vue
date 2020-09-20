@@ -129,6 +129,11 @@ export default {
 									roles: ['power'],
 								},
 								{
+									name: this.$t('config.selectedComponents.title'),
+									to: '/config/component/',
+									roles: ['normal'],
+								},
+								{
 									name: this.$t('config.iqrfSpi.title'),
 									to: '/config/iqrf-spi/',
 									component: 'iqrf::IqrfSpi',
@@ -214,16 +219,19 @@ export default {
 								{
 									name: this.$t('translatorConfig.title'),
 									to: '/config/translator/',
+									feature: 'iqrfGatewayTranslator',
 									roles: ['power', 'normal'],
 								},
 								{
 									name: this.$t('controllerConfig.title'),
 									to: '/config/controller/',
+									feature: 'iqrfGatewayController',
 									roles: ['power', 'normal'],
 								},
 								{
 									name: this.$t('config.mender.title'),
 									to: '/config/mender/',
+									feature: 'mender',
 									roles: ['power', 'normal']
 								},
 							],
@@ -265,7 +273,6 @@ export default {
 								{
 									name: this.$t('iqrfnet.standard.title'),
 									to: '/iqrfnet/standard/',
-									feature: 'pixla',
 									roles: ['power', 'normal'],
 								},
 							],
