@@ -243,24 +243,21 @@ router.beforeEach((to, from, next) => {
 	if (!to.path.startsWith('/install/') && to.name !== 'signIn' &&
 		!store.getters['user/isLoggedIn']) {
 		store.dispatch('user/signOut').then(() => {
-			// next('/sign/in');
-			location.replace('/sign/in');
+			next('/sign/in');
 		});
 		return;
 	}
-	if (to.name === 'legacyComponent' && from.name !== null) {
-		location.replace(to.fullPath);
-	}
-	if (to.meta.title === undefined) {
-		next();
+	if (to.name === 'legacyComponent') {
+		if (from.name !== null) {
+			location.replace(to.fullPath);
+		} else {
+			next();
+		}
 		return;
 	}
-	if (to.meta.title) {
-		to.meta.title = metaTranslate(to, 'title');
-	}
 	let titleEl = document.getElementById('title');
-	if (titleEl !== null) {
-		titleEl.innerText = to.meta.title;
+	if (titleEl !== null && to.meta.title !== undefined) {
+		titleEl.innerText = metaTranslate(to, 'title');
 	}
 	let content = document.getElementById('content');
 	if (content !== null) {

@@ -32,7 +32,7 @@
 		"nette-forms": "^3.1.0",
 		"nette.ajax.js": "^2.3",
 		"prismjs": "^1.21.0",
-		"ublaboo-datagrid": "^6.2",
+		"ublaboo-datagrid": "^6.2.24",
 		"uuid": "^8.3.0",
 		"vee-validate": "^3.3.11",
 		"vue": "^2.6.12",
@@ -73,6 +73,6 @@
 		"vue-loader": "^15.9.3",
 		"vue-template-compiler": "^2.6.12",
 		"webpack": "^4.44.2",
-		"webpack-cli": "^3.3"
+		"webpack-cli": "^3.3.12"
 	}
 }
