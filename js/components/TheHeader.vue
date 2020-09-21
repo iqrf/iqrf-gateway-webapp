@@ -1,5 +1,5 @@
 <template>
-	<CHeader fixed with-subheader dark>
+	<CHeader :fixed='false' color-scheme='dark'>
 		<CToggler
 			in-header
 			class='ml-3 d-lg-none'
@@ -10,21 +10,68 @@
 			class='ml-3 d-md-down-none'
 			@click='$store.commit("sidebar/toggleSidebarDesktop")'
 		/>
+		<CHeaderBrand class='mx-auto d-lg-none' to='/'>
+			<img
+				src='/img/logo-big.svg'
+				:alt='$t("core.title")'
+			>
+		</CHeaderBrand>
+		<CHeaderNav class='ml-auto mr-3'>
+			<CDropdown
+				:in-nav='true'
+				class='c-header-nav-items'
+				placement='bottom-end'
+				add-menu-classes='pt-0'
+			>
+				<template #toggler>
+					<CHeaderNavLink class='dropdown-toggle'>
+						{{ $store.getters['user/getName'] }}
+					</CHeaderNavLink>
+				</template>
+				<CDropdownItem @click='signOut'>
+					<CIcon :content='$options.icons.cilLockLocked' />
+					{{ $t('core.sign.out.title') }}
+				</CDropdownItem>
+			</CDropdown>
+		</CHeaderNav>
 	</CHeader>
 </template>
 
 <script>
-import {CHeader, CToggler} from '@coreui/vue';
+import {
+	CDropdown,
+	CHeader,
+	CHeaderBrand,
+	CHeaderNav,
+	CHeaderNavLink,
+	CIcon,
+	CToggler
+} from '@coreui/vue';
+
+import {cilLockLocked} from '@coreui/icons';
 
 export default {
 	name: 'TheHeader',
 	components: {
+		CDropdown,
 		CHeader,
+		CHeaderBrand,
+		CHeaderNav,
+		CHeaderNavLink,
+		CIcon,
 		CToggler,
 	},
+	icons: {
+		cilLockLocked,
+	},
+	methods: {
+		signOut() {
+			this.$store.dispatch('user/signOut')
+				.then(() => {
+					location.replace('/sign/in');
+					this.$toast.success(this.$t('core.sign.out.message').toString());
+				});
+		}
+	}
 };
 </script>
-
-<style scoped>
-
-</style>

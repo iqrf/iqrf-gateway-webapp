@@ -135,7 +135,7 @@ export default {
 				UserService.changePassword(this.oldPassword, this.newPassword)
 					.then(() => {
 						this.performEdit();
-						this.$store.commit('user/SIGN_OUT');
+						this.signOut();
 					})
 					.catch(() => {
 						this.$toast.error(this.$t('core.user.messages.invalid.oldPassword'));
@@ -143,7 +143,7 @@ export default {
 			} else {
 				this.performEdit();
 				if (this.$store.getters['user/getId'] === this.userId) {
-					this.$store.commit('user/SIGN_OUT');
+					this.signOut();
 				}
 			}
 
@@ -164,6 +164,12 @@ export default {
 					}
 				});
 		},
+		signOut() {
+			this.$store.dispatch('user/signOut')
+				.then(() => {
+					location.replace('/sign/in');
+				});
+		}
 	},
 	metaInfo: {
 		title: 'core.user.edit.title',

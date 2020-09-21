@@ -355,8 +355,7 @@
 			}
 		},
 		"sign": {
-			"in": "Sign in",
-			"inForm": {
+			"in": {
 				"title": "Sign in",
 				"username": "Username",
 				"password": "Password",
@@ -369,7 +368,10 @@
 					"success": "You have been signed in successfully."
 				}
 			},
-			"out": "Sign out"
+			"out": {
+				"title": "Sign out",
+				"message": "You have been signed out."
+			}
 		},
 		"supervisor": {
 			"title": "Supervisor Dashboard",

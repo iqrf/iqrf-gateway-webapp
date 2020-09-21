@@ -11,17 +11,17 @@
 							<ValidationObserver v-slot='{ invalid }'>
 								<CForm @submit.prevent='handleSubmit'>
 									<h1 class='text-center'>
-										{{ $t('core.sign.inForm.title') }}
+										{{ $t('core.sign.in.title') }}
 									</h1>
 									<ValidationProvider
 										v-slot='{ valid, touched, errors }'
 										rules='required'
-										:custom-messages='{required: "core.sign.inForm.messages.username"}'
+										:custom-messages='{required: "core.sign.in.messages.username"}'
 									>
 										<CInput
 											v-model='username'
-											:label='$t("core.sign.inForm.username")'
-											:placeholder='$t("core.sign.inForm.username")'
+											:label='$t("core.sign.in.username")'
+											:placeholder='$t("core.sign.in.username")'
 											autocomplete='username'
 											:is-valid='touched ? valid : null'
 											:invalid-feedback='$t(errors[0])'
@@ -34,12 +34,12 @@
 									<ValidationProvider
 										v-slot='{ valid, touched, errors }'
 										rules='required'
-										:custom-messages='{required: "core.sign.inForm.messages.password"}'
+										:custom-messages='{required: "core.sign.in.messages.password"}'
 									>
 										<CInput
 											v-model='password'
-											:label='$t("core.sign.inForm.password")'
-											:placeholder='$t("core.sign.inForm.password")'
+											:label='$t("core.sign.in.password")'
+											:placeholder='$t("core.sign.in.password")'
 											type='password'
 											autocomplete='password'
 											:is-valid='touched ? valid : null'
@@ -51,7 +51,7 @@
 										</CInput>
 									</ValidationProvider>
 									<CButton color='primary' type='submit' :disabled='invalid'>
-										{{ $t('core.sign.inForm.send') }}
+										{{ $t('core.sign.in.send') }}
 									</CButton>
 								</CForm>
 							</ValidationObserver>
@@ -101,10 +101,10 @@ export default {
 			])
 				.then(() => {
 					this.$router.push('/');
-					this.$toast.success(this.$t('core.sign.inForm.messages.success'));
+					this.$toast.success(this.$t('core.sign.in.messages.success').toString());
 				})
 				.catch(() => {
-					this.$toast.error(this.$t('core.sign.inForm.messages.incorrectUsernameOrPassword'));
+					this.$toast.error(this.$t('core.sign.in.messages.incorrectUsernameOrPassword').toString());
 				});
 			this.submitted = true;
 		}
@@ -114,7 +114,7 @@ export default {
 		lock: cilLockLocked,
 	},
 	metaInfo: {
-		title: 'core.sign.inForm.title',
+		title: 'core.sign.in.title',
 	},
 };
 </script>

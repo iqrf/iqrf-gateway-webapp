@@ -6,8 +6,8 @@
 		@update:show='(value) => $store.commit("sidebar/set", ["show", value])'
 	>
 		<CSidebarBrand class='d-md-down-none' to='/'>
-			<img class='c-sidebar-brand-full' src='/img/logo-big.svg'>
-			<img class='c-sidebar-brand-minimized' src='/img/logo-small.svg'>
+			<img class='c-sidebar-brand-full' src='/img/logo-big.svg' :alt='$t("core.title")'>
+			<img class='c-sidebar-brand-minimized' src='/img/logo-small.svg' :alt='$t("core.title")'>
 		</CSidebarBrand>
 		<CRenderFunction flat :content-to-render='getNav' />
 		<CSidebarMinimizer
