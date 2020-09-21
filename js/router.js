@@ -17,6 +17,7 @@ import ServiceControl from './components/Gateway/ServiceControl';
 import SignIn from './components/SignIn';
 import NetworkManager from './components/IqrfNet/NetworkManager';
 import SendDpaPacket from './components/IqrfNet/SendDpaPacket';
+import ConfigMigration from './components/Config/ConfigMigration';
 import TranslatorConfig from './components/Config/TranslatorConfig';
 import ControllerConfig from './components/Config/ControllerConfig';
 import MenderConfig from './components/Config/MenderConfig';
@@ -145,6 +146,11 @@ const routes = [
 				component: SendJsonRequest,
 				path: '/iqrfnet/send-json',
 				meta: {title: 'iqrfnet.sendJson.title'}
+			},
+			{
+				component: ConfigMigration,
+				path: '/config/migration',
+				meta: {title: 'config.migration.title'}
 			},
 			{
 				component: MenderConfig,

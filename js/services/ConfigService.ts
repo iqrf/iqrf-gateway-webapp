@@ -25,6 +25,13 @@ class ConfigService {
 	exportConfig(timeout: number): Promise<AxiosResponse> {
 		return axios.get('config/daemon/migration/export', {headers: authorizationHeader(), timeout: timeout, responseType: 'arraybuffer'});
 	}
+
+	/**
+	 * Imports daemon configuration
+	 */
+	importConfig(config: any, timeout: number): Promise<AxiosResponse> {
+		return axios.post('config/daemon/migration/import', config, {headers: authorizationHeader(), timeout: timeout});
+	}
 }
 
 export default new ConfigService();

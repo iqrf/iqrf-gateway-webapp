@@ -169,7 +169,10 @@
 				"export": "Export configuration"
 			},
 			"messages": {
-				"importButton": "Please select a ZIP archive with a configuration to import."
+				"importButton": "Please select a ZIP archive with a configuration to import.",
+				"imported": "The configuration has been imported.",
+				"invalidConfig": "The ZIP archive contains invalid configuration.",
+				"invalidFormat": "Uploaded invalid file format."
 			}
 		},
 		"components": {

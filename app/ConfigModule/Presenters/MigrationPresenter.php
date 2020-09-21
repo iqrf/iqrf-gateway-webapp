@@ -20,58 +20,11 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Presenters;
 
-use App\ConfigModule\Forms\MigrationFormFactory;
-use App\ConfigModule\Models\MigrationManager;
 use App\CoreModule\Presenters\ProtectedPresenter;
-use App\CoreModule\Traits\TPresenterFlashMessage;
-use Nette\Application\BadRequestException;
-use Nette\Application\UI\Form;
 
 /**
  * Configuration migration presenter
  */
 class MigrationPresenter extends ProtectedPresenter {
-
-	use TPresenterFlashMessage;
-
-	/**
-	 * @var MigrationFormFactory Configuration import form factory
-	 * @inject
-	 */
-	public $formFactory;
-
-	/**
-	 * @var MigrationManager Configuration migration manager
-	 */
-	private $manager;
-
-	/**
-	 * Constructor
-	 * @param MigrationManager $manager Configuration migration manager
-	 */
-	public function __construct(MigrationManager $manager) {
-		$this->manager = $manager;
-		parent::__construct();
-	}
-
-	/**
-	 * Exports a configuration action
-	 */
-	public function actionExport(): void {
-		try {
-			$this->sendResponse($this->manager->download());
-		} catch (BadRequestException $e) {
-			$this->flashError('config.migration.errors.readConfig');
-			$this->redirect('Migration:default');
-		}
-	}
-
-	/**
-	 * Creates the configuration import form
-	 * @return Form Configuration import form
-	 */
-	protected function createComponentConfigImportForm(): Form {
-		return $this->formFactory->create($this);
-	}
 
 }

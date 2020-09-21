@@ -46,15 +46,33 @@ export default {
 	},
 	methods: {
 		exportConfig() {
-			ConfigService.exportConfig(10000)
+			this.$store.commit('spinner/SHOW');
+			ConfigService.exportConfig(20000)
 				.then((response) => {
-					let blob = new Blob([response.data], {type: 'application/zip'});
-					let fileDownload = window.URL.createObjectURL(blob);
-					window.open(fileDownload);
+					const file = fileDownloader(response, 'application/zip', 'iqrf-gateway-configuration_' + new Date().toISOString().replace(":", " "));
+					this.$store.commit('spinner/HIDE');
+					file.click();
 				});
 		},
 		importConfig() {
-			//
+			this.$store.commit('spinner/SHOW');
+			ConfigService.importConfig(this.$refs.configZip.$el.children[1].files[0], 20000)
+				.then(() => {
+					this.$store.commit('spinner/HIDE');
+					this.$toast.success(this.$t('config.migration.messages.imported'));
+				})
+				.catch((error) => {
+					this.$store.commit('spinner/HIDE')
+					if (error.response) {
+						if (error.response.status === 400) {
+							this.$toast.error(this.$t('config.migration.messages.invalidConfig'));
+						} else if (error.response.status === 415) {
+							this.$toast.error(this.$t('config.migration.messages.invalidFormat'));
+						}
+					} else {
+						console.error(error);
+					}
+				});
 		},
 		isEmpty() {
 			if (this.firstConfig) {
@@ -62,6 +80,9 @@ export default {
 			}
 			this.configEmpty = this.$refs.configZip.$el.children[1].files.length === 0;
 		}
-	}
+	},
+	metaInfo: {
+		title: 'config.migration.title',
+	},
 };
 </script>
