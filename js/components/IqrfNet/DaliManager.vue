@@ -64,7 +64,7 @@
 		<CCardFooter v-if='responseReceived'>
 			<table class='table table-striped'>
 				<thead>
-					<b>{{ $t('iqrfnet.standard.dali.answers') }}</b>
+					{{ $t('iqrfnet.standard.dali.answers') }}
 				</thead>
 				<tbody class='text-center'>
 					<tr>

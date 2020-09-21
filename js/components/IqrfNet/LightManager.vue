@@ -82,8 +82,8 @@
 		<CCardFooter v-if='responseType !== null'>
 			<table class='table'>
 				<thead>
-					<b v-if='responseType === "enum"'>{{ $t('iqrfnet.standard.light.enum') }}</b>
-					<b v-else>{{ $t('iqrfnet.standard.light.powerInfo') }}</b>
+					<span v-if='responseType === "enum"'>{{ $t('iqrfnet.standard.light.enum') }}</span>
+					<span v-else>{{ $t('iqrfnet.standard.light.powerInfo') }}</span>
 				</thead>
 				<tbody v-if='responseType === "enum"'>
 					<tr>

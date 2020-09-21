@@ -69,7 +69,7 @@
 		<CCardFooter v-if='responseType !== null'>
 			<table v-if='responseType === "enum"' class='table'>
 				<thead>
-					<b>{{ $t('iqrfnet.standard.binaryOutput.enum') }}</b>
+					{{ $t('iqrfnet.standard.binaryOutput.enum') }}
 				</thead>
 				<tbody>
 					<tr>
@@ -80,7 +80,7 @@
 			</table>
 			<table v-if='responseType === "set"' class='table scroll-table'>
 				<thead>
-					<b>{{ $t('iqrfnet.standard.binaryOutput.prev') }}</b>
+					{{ $t('iqrfnet.standard.binaryOutput.prev') }}
 				</thead>
 				<tbody>
 					<tr>

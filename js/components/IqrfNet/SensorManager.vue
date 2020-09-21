@@ -122,7 +122,6 @@ export default {
 							this.parseEnumerate(mutation.payload.data.rsp.result.sensors);
 							this.responseType = 'enum';
 						} else if (mutation.payload.mType === 'iqrfSensor_ReadSensorsWithTypes') {
-							this.$toast.success(this.$t('iqrfnet.standard.sensor.messages.success'));
 							this.parseReadAll(mutation.payload.data.rsp.result.sensors);
 							this.responseType = 'read';
 						}
