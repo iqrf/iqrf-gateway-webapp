@@ -61,7 +61,11 @@
 								:invalid-feedback='$t(errors[0])'
 							/>
 						</ValidationProvider><hr>
-						<h4>{{ $t('iqrfnet.networkManager.autoNetwork.form.overlappingNetworks') }}</h4>
+						<h4>{{ $t('iqrfnet.networkManager.autoNetwork.form.bondingControl') }}</h4>
+						<CInputCheckbox
+							:checked.sync='useOverlappingNetworks'
+							:label='$t("iqrfnet.networkManager.autoNetwork.form.overlappingNetworks")'
+						/>
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
 							rules='integer|required|between:1,50'
@@ -72,13 +76,14 @@
 							}'
 						>
 							<CInput
-								v-model.number='autoNetwork.overlappingNetworks.networks'
+								v-model.number='overlappingNetworks.networks'
 								type='number'
 								min='1'
 								max='50'
 								:label='$t("iqrfnet.networkManager.autoNetwork.form.networks")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
+								:disabled='!useOverlappingNetworks'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
@@ -91,15 +96,21 @@
 							}'
 						>
 							<CInput
-								v-model.number='autoNetwork.overlappingNetworks.network'
+								v-model.number='overlappingNetworks.network'
 								type='number'
 								min='1'
 								max='50'
 								:label='$t("iqrfnet.networkManager.autoNetwork.form.network")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
+								:disabled='!useOverlappingNetworks'
 							/>
 						</ValidationProvider><hr>
+						<h4>{{ $t('iqrfnet.networkManager.autoNetwork.form.hwpidFiltering') }}</h4>
+						<CInputCheckbox
+							:checked.sync='useHwpidFiltering'
+							:label='$t("iqrfnet.networkManager.autoNetwork.form.hwpidEnable")'
+						/>
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
 							rules='hwpidFilter'
@@ -108,10 +119,11 @@
 							}'
 						>
 							<CInput
-								v-model='autoNetwork.hwpidFiltering'
-								:label='$t("iqrfnet.networkManager.autoNetwork.form.hwpidFiltering")'
+								v-model='hwpidFiltering'
+								:label='$t("iqrfnet.networkManager.autoNetwork.form.hwpids")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
+								:disabled='!useHwpidFiltering'
 							/>
 						</ValidationProvider><hr>
 						<h4>{{ $t('iqrfnet.networkManager.autoNetwork.form.stopConditions') }}</h4>
@@ -366,11 +378,6 @@ export default {
 				discoveryBeforeStart: false,
 				skipDiscoveryEachWave: false,
 				actionRetries: 1,
-				overlappingNetworks: {
-					networks: 1,
-					network: 1
-				},
-				hwpidFiltering: '',
 				stopConditions: {
 					waves: 2,
 					emptyWaves: 2,
@@ -379,13 +386,20 @@ export default {
 					abortOnTooManyNodesFound: false
 				}
 			},
+			overlappingNetworks: {
+				networks: 1,
+				network: 1
+			},
+			hwpidFiltering: '',
 			bondMethod: 'local',
 			bondingRetries: 1,
 			modalClear: false,
 			modalUnbond: false,
 			unbondCoordinatorOnly: false,
 			scCode: '',
-			timeout: null
+			timeout: null,
+			useHwpidFiltering: false,
+			useOverlappingNetworks: false,
 		};
 	},
 	created() {
@@ -397,7 +411,7 @@ export default {
 			return regex.test(code);
 		});
 		extend('hwpidFilter', (val) => {
-			const regex = RegExp('^[0-9]|[1-9][0-9]|[1-9][0-9]{2}|[1-9][0-9]{3}|[1-6][0-5]{2}[0-3][0-5](,[0-9]|[1-9][0-9]|[1-9][0-9]{2}|[1-9][0-9]{3}|[1-6][0-5]{2}[0-3][0-5]){0,}$');
+			const regex = RegExp('^([1-9]|[1-9][0-9]|[1-9][0-9]{2}|[1-9][0-9]{3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$');
 			return regex.test(val);
 		});
 		this.unsubscribe = this.$store.subscribe(mutation => {
@@ -482,8 +496,15 @@ export default {
 			return 'Wave ' + response.rsp.wave + '/' + this.autoNetwork.stopConditions.waves + ' [' + response.rsp.progress + '%]';
 		},
 		processSubmitAutoNetwork() {
+			let submitData = this.autoNetwork;
+			if (this.useOverlappingNetworks) {
+				submitData['overlappingNetworks'] = this.overlappingNetworks;
+			}
+			if (this.useHwpidFiltering && this.hwpidFiltering.length > 0) {
+				submitData['hwpidFiltering'] = this.hwpidFiltering.split(', ').map((i) => parseInt(i));
+			}
 			this.$store.commit('spinner/SHOW');
-			IqrfNetService.autoNetwork(this.autoNetwork);
+			IqrfNetService.autoNetwork(submitData);
 		},
 		processSubmitBond() {
 			this.$store.commit('spinner/SHOW');

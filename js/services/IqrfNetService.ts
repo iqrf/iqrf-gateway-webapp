@@ -9,7 +9,7 @@ class IqrfNetService {
 	 * @param autoNetwork Object containing AutoNetwork parameters
 	 */
 	autoNetwork(autoNetwork: any) {
-		return store.dispatch('sendRequest', {
+		const json = {
 			'mType': 'iqmeshNetwork_AutoNetwork',
 			'data': {
 				'req': {
@@ -17,11 +17,6 @@ class IqrfNetService {
 					'discoveryBeforeStart': autoNetwork.discoveryBeforeStart,
 					'skipDiscoveryEachWave': autoNetwork.skipDiscoveryEachWave,
 					'actionRetries': autoNetwork.actionRetries,
-					'overlappingNetworks': {
-						'networks': autoNetwork.overlappingNetworks.networks,
-						'network': autoNetwork.overlappingNetworks.network,
-					},
-					'hwpidFiltering': autoNetwork.hwpidFiltering,
 					'stopConditions': {
 						'waves': autoNetwork.stopConditions.waves,
 						'emptyWaves': autoNetwork.stopConditions.emptyWaves,
@@ -30,9 +25,16 @@ class IqrfNetService {
 						'abortOnTooManyNodesFound': autoNetwork.stopConditions.abortOnTooManyNodesFound,
 					},
 				},
-				'returnVerbose': true
+				'returnVerbose': true,
 			},
-		});
+		};
+		if (autoNetwork.overlappingNetworks) {
+			Object.assign(json.data.req, {'overlappingNetworks': autoNetwork.overlappingNetworks});
+		}
+		if (autoNetwork.hwpidFiltering) {
+			Object.assign(json.data.req, {'hwpidFiltering': autoNetwork.hwpidFiltering});
+		}
+		return store.dispatch('sendRequest', json);
 	}
 
 	/**

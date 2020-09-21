@@ -506,10 +506,13 @@
 					"discoveryBeforeStart": "Run discovery before start",
 					"skipDiscoveryEachWave": "Skip discovery in each wave",
 					"actionRetries": "Number of retry DPA transactions",
+					"bondingControl": "Bonding control",
 					"overlappingNetworks": "Overlapping networks",
 					"networks": "Number of networks",
 					"network": "Network number",
-					"hwpidFiltering": "Filter nodes to bond by HWPID",
+					"hwpidFiltering": "HWPID filtering conditions",
+					"hwpidEnable": "Enable HWPID filtering",
+					"hwpids": "HWPIDs",
 					"stopConditions": "Stop conditions",
 					"waves": "Maximum number of waves",
 					"emptyWaves": "Maximum number of consecutive empty waves",
@@ -590,7 +593,7 @@
 				"invalid": {
 					"integer": "This parameter should be an integer.",
 					"autoNetwork": {
-						"hwpidFilter": "HWPID filter should be a list of 4-digit hexadecimal numbers separated by a comma."
+						"hwpidFilter": "HWPID filter should be a list of integers from between 0 and 65535 separated by a space."
 					},
 					"bonding": {
 						"scCode": "IQRF Smart Connect code should be a string of 34 alphanumeric characters."
