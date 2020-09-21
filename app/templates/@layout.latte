@@ -46,9 +46,12 @@
 					<div class="fade-in">
 						<h1 id='title'>{include title}</h1>
 						{snippet flashes}
-							<c-alert n:foreach='$flashes as $flash' color='{$flash->type}' :close-button='true'>
+							<div n:foreach='$flashes as $flash' class='alert alert-dismissible alert-{$flash->type}' :close-button='true' role='alert'>
+								<button type='button' class='close' data-dismiss='alert'>
+									<span>&times;</span>
+								</button>
 								{_$flash->message|breaklines}
-							</c-alert>
+							</div>
 						{/snippet}
 						<router-view />
 						<div id='content'>{include content}</div>
