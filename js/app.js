@@ -21,50 +21,10 @@ import 'jquery';
 import 'nette.ajax.js';
 import 'ublaboo-datagrid';
 import Nette from 'nette-forms';
-import * as Sentry from '@sentry/browser';
-import { Vue as VueIntegration } from '@sentry/integrations';
-import axios from 'axios';
-import '@coreui/coreui';
-import CoreuiVue from '@coreui/vue';
-import Vue from 'vue';
-import VueMeta from 'vue-meta';
-import VueToast from 'vue-toast-notification';
-import VueNativeSock from 'vue-native-websocket';
 
-import i18n from './i18n.ts';
 import store from './store';
-import router from './router';
 
-import '../css/app.scss';
-import 'vue-toast-notification/dist/theme-sugar.css';
-
-import './iqrfNet/sendPacket.ts';
-
-import App from './components/App';
-import DaemonStatus from './components/DaemonStatus';
-import LoadingSpinner from './components/LoadingSpinner';
-import TheHeader from './components/TheHeader';
-import TheSidebar from './components/TheSidebar';
-import PixlaControl from './components/Cloud/PixlaControl';
-import TrConfiguration from './components/IqrfNet/TrConfiguration';
-import AWSCreator from './components/Cloud/AWSCreator';
-import MainDisambiguation from './components/MainDisambiguation';
-
-Sentry.init({
-	dsn: 'https://435ee2b55f994e5f85e21a9ca93ea7a7@sentry.iqrf.org/5',
-	integrations: [new VueIntegration({Vue: Vue, attachProps: true, logErrors: true})],
-});
-
-store.commit('SOCKET_ONCLOSE');
-store.commit('spinner/HIDE');
-
-const wsApi = 'ws://' + window.location.hostname + ':1338';
-//const wsApi ='ws://tunnel.rehivetech.com:45117/ws';
-Vue.use(VueNativeSock, wsApi, {
-	store: store,
-	format: 'json',
-	reconnection: true,
-});
+import './main';
 
 Nette.initOnLoad();
 
@@ -86,7 +46,6 @@ $.nette.ext('confirm', {
 		if (!settings.nette) {
 			return;
 		}
-
 		let question = settings.nette.el.data('confirm');
 		if (question) {
 			let retVal = confirm(question);
@@ -96,57 +55,4 @@ $.nette.ext('confirm', {
 			return retVal;
 		}
 	}
-});
-
-axios.defaults.baseURL = '//' + window.location.host + '/api/v0/';
-
-axios.interceptors.response.use(
-	(response) => {
-		return response;
-	},
-	(error) => {
-		if (error.response === undefined) {
-			// TODO: Add Network error toaster notification
-			return Promise.reject(error);
-		}
-		if (error.response.status === 401) {
-			store.dispatch('user/signOut')
-				.then(() => {
-					location.replace('/sign/in');
-				});
-		}
-		return Promise.reject(error);
-	}
-);
-
-Vue.prototype.$appName = 'IQRF Gateway Webapp frontend';
-
-Vue.use(CoreuiVue);
-Vue.use(VueMeta);
-Vue.use(VueToast,{
-	position: 'top',
-	duration: 10000
-});
-
-new Vue({
-	el: '#app',
-	components: {
-		App,
-		DaemonStatus,
-		LoadingSpinner,
-		TheHeader,
-		TheSidebar,
-		PixlaControl,
-		TrConfiguration,
-		AWSCreator,
-		MainDisambiguation,
-	},
-	router: router,
-	store: store,
-	i18n: i18n,
-	metaInfo: {
-		titleTemplate: (titleChunk) => {
-			return (titleChunk ? `${i18n.t(titleChunk)} | ` : '') + i18n.t('core.title');
-		}
-	},
 });
