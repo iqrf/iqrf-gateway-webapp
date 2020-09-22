@@ -4,7 +4,14 @@
 			<tbody>
 				<tr>
 					<th>{{ $t('cloud.pixla.token') }}</th>
-					<td>{{ token }}</td>
+					<td class='d-flex'>
+						<div class='mr-auto'>
+							{{ token }}
+						</div>
+						<CButton color='primary' size='sm' @click='showEditor = true'>
+							{{ $t('forms.edit') }}
+						</CButton>
+					</td>
 				</tr>
 				<tr>
 					<th>{{ $t('service.status') }}</th>
@@ -14,29 +21,43 @@
 					<td v-if='unsupported'>
 						{{ $t('service.states.unsupported') }}
 					</td>
-					<td v-else>
-						{{ $t('service.states.' + (enabled ? 'enabled' : 'disabled')) }},
-						{{ $t('service.states.' + (active ? 'active' : 'inactive')) }}
+					<td v-else class='d-flex'>
+						<div class='mr-auto'>
+							{{ $t('service.states.' + (enabled ? 'enabled' : 'disabled')) }},
+							{{ $t('service.states.' + (active ? 'active' : 'inactive')) }}
+						</div>
+						<CButton
+							v-if='!enabled'
+							color='success'
+							size='sm'
+							@click='enable()'
+						>
+							{{ $t('service.actions.enable') }}
+						</CButton>
+						<CButton
+							v-if='enabled'
+							color='danger'
+							size='sm'
+							@click='disable()'
+						>
+							{{ $t('service.actions.disable') }}
+						</CButton>
 					</td>
 				</tr>
 			</tbody>
 		</table>
 		<div v-if='!missing && !unsupported'>
-			<CButton v-if='!enabled' color='success' @click='enable()'>
-				{{ $t('service.actions.enable') }}
-			</CButton>
-			<CButton v-if='enabled' color='danger' @click='disable()'>
-				{{ $t('service.actions.disable') }}
-			</CButton>
 			<CButton color='primary' href='https://www.pixla.online/' target='_blank'>
 				{{ $t('cloud.pixla.dashboard') }}
 			</CButton>
 		</div>
+		<PixlaTokenEditor :show.sync='showEditor' @tokenUpdated='getToken' />
 	</CCard>
 </template>
 
 <script>
-import {CButton, CCard} from '@coreui/vue';
+import {CButton, CCard} from '@coreui/vue/src';
+import PixlaTokenEditor from './PixlaTokenEditor';
 import PixlaService from '../../services/PixlaService';
 import ServiceService from '../../services/ServiceService';
 
@@ -45,9 +66,11 @@ export default {
 	components: {
 		CButton,
 		CCard,
+		PixlaTokenEditor,
 	},
 	data() {
 		return {
+			showEditor: false,
 			serviceName: 'gwman-client',
 			token: null,
 			active: false,
@@ -58,6 +81,7 @@ export default {
 		};
 	},
 	created() {
+		this.$store.commit('spinner/SHOW');
 		this.getToken();
 		this.getStatus();
 	},
@@ -93,11 +117,13 @@ export default {
 		},
 		getToken() {
 			PixlaService.getToken()
-				.then((response) => {
-					this.token = response.data.token;
+				.then((token) => {
+					this.token = token;
+					this.$store.commit('spinner/HIDE');
 				})
 				.catch(() => {
 					this.token = null;
+					this.$store.commit('spinner/HIDE');
 				});
 		},
 		handleError(error) {

@@ -25,7 +25,6 @@ import Nette from 'nette-forms';
 import store from './store';
 
 import './config';
-import './main';
 
 Nette.initOnLoad();
 

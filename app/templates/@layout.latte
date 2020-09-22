@@ -23,8 +23,8 @@
 	<meta name='description' content='Web configurator for iqrf-daemon'>
 	<meta name='author' content='IQRF Tech.r.o.'>
 	<title>{ifset title}{include title|stripHtml|trim} | {/ifset}{_core.title}</title>
-	<link n:nonce rel='stylesheet' href='/dist/app.bundle.css'>
-	<link n:nonce rel='stylesheet' href='/dist/vendors~app.bundle.css'>
+	<link n:nonce rel='stylesheet' href='/dist/main.bundle.css'>
+	<link n:nonce rel='stylesheet' href='/dist/vendors~main.bundle.css'>
 	<link rel='apple-touch-icon' sizes='180x180' href='/img/favicon/apple-touch-icon.png'>
 	<link rel='icon' type='image/png' sizes='32x32' href='/img/favicon/favicon-32x32.png'>
 	<link rel='icon' type='image/png' sizes='16x16' href='/img/favicon/favicon-16x16.png'>
@@ -64,7 +64,10 @@
 </div>
 {block scripts}
 	<script n:nonce src='/dist/app.bundle.js'></script>
+	<script n:nonce src='/dist/main.bundle.js'></script>
 	<script n:nonce src='/dist/vendors~app.bundle.js'></script>
+	<script n:nonce src='/dist/vendors~app~main.bundle.js'></script>
+	<script n:nonce src='/dist/vendors~main.bundle.js'></script>
 	<script n:nonce src='/dist/live-form-validation.js'></script>
 {/block}
 </body>

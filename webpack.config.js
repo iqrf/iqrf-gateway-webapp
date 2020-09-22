@@ -6,10 +6,12 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
+//const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
 	entry: {
 		app: './js/app.js',
+		main: './js/main.ts',
 		error500: './js/error500.js',
 	},
 	output: {
@@ -102,6 +104,7 @@ module.exports = {
 		}),
 		new VueLoaderPlugin(),
 		new CompressionPlugin(),
+		//new BundleAnalyzerPlugin(),
 	],
 	optimization: {
 		minimize: true,

@@ -20,20 +20,12 @@ declare(strict_types = 1);
 
 namespace App\CloudModule\Presenters;
 
-use App\CloudModule\Forms\PixlaFormFactory;
 use App\CoreModule\Presenters\ProtectedPresenter;
-use Nette\Application\UI\Form;
 
 /**
  * PIXLA management system presenter
  */
 class PixlaPresenter extends ProtectedPresenter {
-
-	/**
-	 * @var PixlaFormFactory Generic form factory
-	 * @inject
-	 */
-	public $formFactory;
 
 	/**
 	 * Checks if the PIXLA manager is enabled
@@ -44,14 +36,6 @@ class PixlaPresenter extends ProtectedPresenter {
 			$this->flashError('cloud.pixla.messages.disabled');
 			$this->redirect('Homepage:default');
 		}
-	}
-
-	/**
-	 * Creates the PIXLA form
-	 * @return Form PIXLA form
-	 */
-	protected function createComponentPixlaForm(): Form {
-		return $this->formFactory->create($this);
 	}
 
 }

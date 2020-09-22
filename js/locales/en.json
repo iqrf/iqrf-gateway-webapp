@@ -110,12 +110,14 @@
 				"disabled": "Disabled",
 				"missing": "Missing"
 			},
-			"form": {
-				"token": "Set new PIXLA platform token",
-				"save": "Save",
-				"missingParam": "Please enter PIXLA platform token.",
-				"editSuccess": "New PIXLA token has been successfully saved.",
-				"editFailure": "New PIXLA token has not been saved."
+			"editModal": {
+				"title": "Set new PIXLA platform token",
+				"token": "New PIXLA token",
+				"messages": {
+					"token": "Please enter PIXLA platform token.",
+					"failure": "An error occurred while saving the new PIXLA token.",
+					"success": "New PIXLA token has been successfully saved."
+				}
 			},
 			"token": "Token",
 			"messages": {
@@ -154,7 +156,7 @@
 			"integer": "This parameter should be an integer.",
 			"saveSuccess": "Configuration has been successfully saved.",
 			"submitBadRequest": "Invalid JSON syntax.",
-			"submitServerError": "Internal server error has occured."
+			"submitServerError": "Internal server error has occurred."
 		}
 	},
 	"config": {
@@ -571,7 +573,7 @@
 				"submit": {
 					"autoNetwork": {
 						"success": "The AutoNetwork process has been successful.",
-						"failure": "An error occured during the AutoNetwork process."
+						"failure": "An error occurred during the AutoNetwork process."
 					},
 					"invalidMessage": "Invalid request.",
 					"timeout": "Request timed out.",
@@ -721,7 +723,7 @@
 				"messages": {
 					"timeout": "Binary output request timed out.",
 					"success": "Binary output request has been sent successfully.",
-					"failure": "An error occured during the Binary output request.",
+					"failure": "An error occurred during the Binary output request.",
 					"pnum": "Device does not support the Binary Output standard."
 				}
 			},
@@ -742,7 +744,7 @@
 				"messages": {
 					"timeout": "DALI request timed out.",
 					"success": "DALI request has been sent successfully.",
-					"failure": "An error occured during the DALI request.",
+					"failure": "An error occurred during the DALI request.",
 					"pnum": "Device does not support the DALI standard."
 				}
 			},
@@ -768,7 +770,7 @@
 				"messages": {
 					"timeout": "Light request timed out.",
 					"success": "Light request has been sent successfully.",
-					"failure": "An error occured during the Light request.",
+					"failure": "An error occurred during the Light request.",
 					"pnum": "Device does not support the Light standard."
 				}
 			},
@@ -783,7 +785,7 @@
 				"messages": {
 					"timeout": "Sensor request timed out.",
 					"success": "Sensor request has been sent successfully.",
-					"failure": "An error occured during the Sensor request.",
+					"failure": "An error occurred during the Sensor request.",
 					"pnum": "Device does not support the Sensor standard."
 				}
 			}

@@ -6,6 +6,7 @@ import AzureCreator from '../components/Cloud/AzureCreator.vue';
 import HexioCreator from '../components/Cloud/HexioCreator.vue';
 import IbmCreator from '../components/Cloud/IbmCreator.vue';
 import InteliGlueCreator from '../components/Cloud/InteliGlueCreator.vue';
+import PixlaControl from '../components/Cloud/PixlaControl.vue';
 
 import GatewayDisambiguation from '../components/Gateway/GatewayDisambiguation.vue';
 import GatewayInfo from '../components/Gateway/GatewayInfo.vue';
@@ -82,6 +83,11 @@ const routes: Array<RouteConfig> = [
 						component: InteliGlueCreator,
 						path: 'inteli-glue',
 						meta: {title: 'cloud.intelimentsInteliGlue.form.title'},
+					},
+					{
+						component: PixlaControl,
+						path: 'pixla',
+						meta: {title: 'cloud.pixla.title'},
 					},
 				]
 			},
