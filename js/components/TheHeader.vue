@@ -18,6 +18,7 @@
 		</CHeaderBrand>
 		<CHeaderNav class='ml-auto mr-3'>
 			<CDropdown
+				v-if='$store.getters["user/isLoggedIn"]'
 				:in-nav='true'
 				class='c-header-nav-items'
 				placement='bottom-end'

@@ -192,6 +192,16 @@ export default {
 									roles: ['power', 'normal'],
 								},
 								{
+									name: this.$t('config.jsonRawApi.title'),
+									to: '/config/json-raw-api/',
+									roles: ['power'],
+								},
+								{
+									name: this.$t('config.jsonMngMetaDataApi.title'),
+									to: '/config/json-mng-meta-data-api/',
+									roles: ['power', 'normal'],
+								},
+								{
 									name: this.$t('config.jsonSplitter.title'),
 									to: '/config/json-splitter/',
 									roles: ['power'],

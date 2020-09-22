@@ -61,60 +61,6 @@
 		</div>
 	</c-wrapper>
 </div>
-{*	<header class='main-header'>
-		<a n:href=':Core:Homepage:default' class='logo'>
-			<span class='logo-mini'><img alt='IQRF Gateway' src='/img/logo-small.svg'></span>
-			<span class='logo-lg'><img alt='IQRF Gateway' src='/img/logo-big.svg'></span>
-		</a>
-		<nav class='navbar navbar-static-top' role='navigation'>
-			<a href='#' class='sidebar-toggle' data-toggle='push-menu' role='button'>
-				<span class='sr-only'>Toggle navigation</span>
-			</a>
-			<div class='navbar-custom-menu'>
-				<ul class='nav navbar-nav'>
-					<li n:if='$offlineMode ?? false'>
-						<a n:nonce style='background-color: #f39c12;'>{_core.update.offline-tag}</a>
-					</li>
-					<li n:ifset='$newVersion'>
-						<a n:nonce style='background-color: #dd4b39;'>{_$newVersion}</a>
-					</li>
-					<li class='dropdown user user-menu'>
-					<li n:if='!$user->isLoggedIn()'>
-						<a n:href=':Core:Sign:in'>{_core.sign.in}</a>
-					</li>
-					<li n:if='$user->isLoggedIn()' class='dropdown'>
-						<a href='#' class='dropdown-toggle' data-toggle='dropdown' role='button'>
-							{$user->getIdentity()->getData()['username']}<span class='caret'></span>
-						</a>
-						<ul class='dropdown-menu'>
-							<li><a n:href=':Core:Sign:out'>{_core.sign.out}</a></li>
-						</ul>
-					</li>
-				</ul>
-			</div>
-		</nav>
-	</header>
-	{include 'sidebar.latte'}
-	<div class='content-wrapper'>
-		<section class='content-header'>
-			<h1 id='title'>{include title}</h1>
-		</section>
-		<section class='content container-fluid'>
-			{snippet flashes}
-				<div n:foreach='$flashes as $flash' class='alert alert-{$flash->type} alert-dismissible' role='alert'>
-					<button type='button' class='close' data-dismiss='alert'>
-						<span>&times;</span>
-					</button>
-					{_$flash->message|breaklines}
-				</div>
-			{/snippet}
-			<router-view/>
-			<div id='content'>
-				{include content}
-			</div>
-		</section>
-	</div>
-</div>*}
 {block scripts}
 	<script n:nonce src='/dist/app.bundle.js'></script>
 	<script n:nonce src='/dist/config.bundle.js'></script>
