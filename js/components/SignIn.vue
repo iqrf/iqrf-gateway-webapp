@@ -64,7 +64,7 @@
 </template>
 
 <script>
-import {CContainer, CCard, CCardBody, CCol, CForm, CIcon, CInput, CRow} from '@coreui/vue';
+import {CContainer, CCard, CCardBody, CCol, CForm, CIcon, CInput, CRow} from '@coreui/vue/src';
 import {cilUser, cilLockLocked} from '@coreui/icons';
 import {required} from 'vee-validate/dist/rules';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';

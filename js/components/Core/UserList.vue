@@ -105,7 +105,7 @@ import {
 	CDropdownItem,
 	CIcon,
 	CModal
-} from '@coreui/vue';
+} from '@coreui/vue/src';
 import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import UserService from '../../services/UserService';
 

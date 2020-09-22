@@ -7,7 +7,7 @@
 
 <script>
 import Device from '../../helpers/Device';
-import {CIcon} from '@coreui/vue';
+import {CIcon} from '@coreui/vue/src';
 
 export default {
 	name: 'DeviceIcon',

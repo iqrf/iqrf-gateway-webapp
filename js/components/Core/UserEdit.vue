@@ -76,7 +76,7 @@
 </template>
 
 <script>
-import {CButton, CCard, CForm, CInput, CSelect} from '@coreui/vue';
+import {CButton, CCard, CForm, CInput, CSelect} from '@coreui/vue/src';
 import {required,} from 'vee-validate/dist/rules';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import UserService from '../../services/UserService';

@@ -65,7 +65,7 @@
 
 <script>
 
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CTextarea} from '@coreui/vue';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CTextarea} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 import {timeout} from '../../helpers/timeout';

@@ -324,7 +324,7 @@
 </template>
 
 <script>
-import {CButton, CCard , CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue';
+import {CButton, CCard , CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';
 import FormErrorHandler from '../../helpers/FormErrorHandler';

@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import {CCard, CListGroup, CListGroupItem} from '@coreui/vue';
+import {CCard, CListGroup, CListGroupItem} from '@coreui/vue/src';
 
 export default {
 	name: 'NetworkDisambiguation',

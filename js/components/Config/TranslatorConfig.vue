@@ -163,7 +163,7 @@
 
 <script>
 
-import {CButton, CCard, CForm, CIcon, CInput} from '@coreui/vue';
+import {CButton, CCard, CForm, CIcon, CInput} from '@coreui/vue/src';
 import {cilLockLocked, cilLockUnlocked} from '@coreui/icons';
 import {between, integer, required} from 'vee-validate/dist/rules';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';

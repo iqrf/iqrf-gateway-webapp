@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import {CButton, CCard, CIcon} from '@coreui/vue';
+import {CButton, CCard, CIcon} from '@coreui/vue/src';
 import { cilPowerStandby, cilReload } from '@coreui/icons';
 import GatewayService from '../../services/GatewayService';
 

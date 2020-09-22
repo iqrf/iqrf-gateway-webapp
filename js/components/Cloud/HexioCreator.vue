@@ -100,7 +100,7 @@
 </template>
 
 <script>
-import {CButton, CCard, CCardBody, CForm, CInput} from '@coreui/vue';
+import {CButton, CCard, CCardBody, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 import FormErrorHandler from '../../helpers/FormErrorHandler';

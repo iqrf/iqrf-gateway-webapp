@@ -261,7 +261,7 @@
 </template>
 
 <script>
-import {CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue';
+import {CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {
 	between,
 	integer,

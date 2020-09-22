@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import {CButton, CCard} from '@coreui/vue';
+import {CButton, CCard} from '@coreui/vue/src';
 import DaemonModeService from '../../services/DaemonModeService';
 
 export default {

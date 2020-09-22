@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import {CButton, CCard, CCardBody, CForm, CInputFile} from '@coreui/vue';
+import {CButton, CCard, CCardBody, CForm, CInputFile} from '@coreui/vue/src';
 import ConfigService from '../../services/ConfigService';
 import { fileDownloader } from '../../helpers/fileDownloader';
 

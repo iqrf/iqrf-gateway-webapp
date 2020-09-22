@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import {CButtonGroup, CCard, CCardBody, CCardHeader, CDropdown, CDropdownItem} from '@coreui/vue';
+import {CButtonGroup, CCard, CCardBody, CCardHeader, CDropdown, CDropdownItem} from '@coreui/vue/src';
 import IqrfService from '../../services/IqrfService';
 
 export default {

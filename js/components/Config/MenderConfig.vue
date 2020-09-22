@@ -95,7 +95,7 @@
 
 <script>
 
-import {CButton, CCard, CForm, CInput} from '@coreui/vue';
+import {CButton, CCard, CForm, CInput} from '@coreui/vue/src';
 import {integer, min_value, required} from 'vee-validate/dist/rules';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import FormErrorHandler from '../../helpers/FormErrorHandler';

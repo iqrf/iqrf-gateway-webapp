@@ -16,7 +16,7 @@
  */
 
 import axios, {AxiosError, AxiosResponse} from 'axios';
-import CoreuiVue from '@coreui/vue';
+import CoreuiVue from '@coreui/vue/src';
 import '@coreui/coreui';
 import * as Sentry from '@sentry/browser';
 import {Vue as VueIntegration} from '@sentry/integrations/dist/vue';

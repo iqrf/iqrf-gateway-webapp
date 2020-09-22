@@ -86,7 +86,7 @@
 </template>
 
 <script>
-import {CButton, CCard} from '@coreui/vue';
+import {CButton, CCard} from '@coreui/vue/src';
 import CoordinatorInfo from './CoordinatorInfo';
 import DaemonModeService from '../../services/DaemonModeService';
 import GatewayService from '../../services/GatewayService';

@@ -47,7 +47,7 @@ import {
 	CHeaderNavLink,
 	CIcon,
 	CToggler
-} from '@coreui/vue';
+} from '@coreui/vue/src';
 
 import {cilLockLocked} from '@coreui/icons';
 

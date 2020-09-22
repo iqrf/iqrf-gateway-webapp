@@ -64,7 +64,7 @@
 
 <script>
 import {cilHome, cilX, cilCheckAlt, cilSignalCellular4} from '@coreui/icons';
-import {CAlert, CButton, CCard, CCardBody, CCardHeader, CIcon} from '@coreui/vue';
+import {CAlert, CButton, CCard, CCardBody, CCardHeader, CIcon} from '@coreui/vue/src';
 import Device from '../../helpers/Device';
 import DeviceIcon from './DeviceIcon';
 import IqrfNetService from '../../services/IqrfNetService';

@@ -103,7 +103,7 @@
 </template>
 
 <script>
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CIcon, CInput, CSwitch} from '@coreui/vue';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CIcon, CInput, CSwitch} from '@coreui/vue/src';
 import {cilCheckAlt, cilX} from '@coreui/icons';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {timeout} from '../../helpers/timeout';

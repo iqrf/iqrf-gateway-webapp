@@ -10,7 +10,6 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin');
 module.exports = {
 	entry: {
 		app: './js/app.js',
-		config: './js/config.js',
 		error500: './js/error500.js',
 	},
 	output: {
@@ -112,6 +111,9 @@ module.exports = {
 			}),
 			new OptimizeCSSAssetsPlugin({})
 		],
+		splitChunks: {
+			chunks: 'all',
+		}
 	},
 	resolve: {
 		alias: {

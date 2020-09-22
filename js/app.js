@@ -24,6 +24,7 @@ import Nette from 'nette-forms';
 
 import store from './store';
 
+import './config';
 import './main';
 
 Nette.initOnLoad();
@@ -38,21 +39,5 @@ $.nette.ext('spinner', {
 	},
 	complete: function () {
 		store.commit('spinner/HIDE');
-	}
-});
-
-$.nette.ext('confirm', {
-	before: function (xhr, settings) {
-		if (!settings.nette) {
-			return;
-		}
-		let question = settings.nette.el.data('confirm');
-		if (question) {
-			let retVal = confirm(question);
-			if (retVal) {
-				store.commit('spinner/HIDE');
-			}
-			return retVal;
-		}
 	}
 });

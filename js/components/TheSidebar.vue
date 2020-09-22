@@ -23,7 +23,7 @@ import {
 	CSidebar,
 	CSidebarBrand,
 	CSidebarMinimizer,
-} from '@coreui/vue';
+} from '@coreui/vue/src';
 import {
 	cibGrafana,
 	cibNodeRed,

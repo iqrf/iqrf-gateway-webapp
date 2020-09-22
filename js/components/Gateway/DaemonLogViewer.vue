@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import {CButton, CCard} from '@coreui/vue';
+import {CButton, CCard} from '@coreui/vue/src';
 import GatewayService from '../../services/GatewayService';
 import {fileDownloader} from '../../helpers/fileDownloader';
 
