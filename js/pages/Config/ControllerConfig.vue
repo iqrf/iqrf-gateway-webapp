@@ -383,7 +383,7 @@ export default {
 			ConfigService.saveConfig(this.name, this.config, 10000)
 				.then(() => {
 					this.$store.commit('spinner/HIDE');
-					this.$toast.success(this.$t('forms.messages.saveSuccess'));
+					this.$toast.success(this.$t('forms.messages.saveSuccess').toString());
 				})
 				.catch((error) => {
 					FormErrorHandler.configError(error);

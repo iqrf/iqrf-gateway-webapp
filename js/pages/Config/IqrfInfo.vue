@@ -113,7 +113,7 @@ export default {
 				ConfigService.saveConfig(this.serviceName + '/' + this.info.instance, this.info, 10000)
 					.then(() => {
 						this.$store.commit('spinner/HIDE');
-						this.$toast.success(this.$t('config.success'));
+						this.$toast.success(this.$t('config.success').toString());
 					})
 					.catch((error) => {
 						FormErrorHandler.configError(error);
@@ -122,7 +122,7 @@ export default {
 				ConfigService.createConfig(this.serviceName, this.info, 10000)
 					.then(() => {
 						this.$store.commit('spinner/HIDE');
-						this.$toast.success(this.$t('config.success'));
+						this.$toast.success(this.$t('config.success').toString());
 					})
 					.catch((error) => {
 						FormErrorHandler.configError(error);

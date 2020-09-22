@@ -22,3 +22,58 @@ export default {
 	},
 };
 </script>
+
+<style scoped lang='scss'>
+.loading {
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.75);
+	z-index: 9999;
+	cursor: wait;
+	overflow: auto;
+	text-align: center;
+	&:before {
+		content: '';
+		display: inline flow-root;
+		height: 100%;
+		vertical-align: middle;
+	}
+}
+
+.loading-group {
+	display: inline flow-root;
+	vertical-align: middle;
+}
+
+.loading-text {
+	margin-top: 20pt;
+	font-size: 20pt;
+	position: relative;
+	z-index: 10000;
+	color: white;
+	text-align: center;
+}
+
+.spinner {
+	display: block;
+	position: relative;
+	z-index: 10000;
+	width: 150px;
+	height: 150px;
+	margin: auto;
+	border: 16px solid #f3f3f3;
+	border-radius: 50%;
+	border-top: 16px solid #3498db;
+	animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
+</style>

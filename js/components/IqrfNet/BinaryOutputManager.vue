@@ -43,7 +43,9 @@
 						/>
 					</ValidationProvider>
 					<div class='form-group'>
-						<label for='formStateSwitch'>{{ $t('iqrfnet.standard.binaryOutput.form.state') }}</label><br>
+						<label for='formStateSwitch'>
+							{{ $t('iqrfnet.standard.binaryOutput.form.state') }}
+						</label><br>
 						<CSwitch
 							id='formStateSwitch'
 							:checked.sync='state'
@@ -92,8 +94,16 @@
 					<tr>
 						<th>{{ $t('iqrfnet.standard.binaryOutput.state') }}</th>
 						<td v-for='ind of Array(32).keys()' :key='ind'>
-							<CIcon v-if='states[ind] === true' class='text-success' :content='$options.icons.on' />
-							<CIcon v-if='states[ind] === false' class='text-danger' :content='$options.icons.off' />
+							<CIcon
+								v-if='states[ind] === true'
+								class='text-success'
+								:content='$options.icons.on'
+							/>
+							<CIcon
+								v-if='states[ind] === false'
+								class='text-danger'
+								:content='$options.icons.off'
+							/>
 						</td>
 					</tr>
 				</tbody>
@@ -159,10 +169,10 @@ export default {
 				this.$store.commit('spinner/HIDE');
 				switch(mutation.payload.data.status) {
 					case -1:
-						this.$toast.error(this.$t('iqrfnet.standard.binaryOutput.messages.timeout'));
+						this.$toast.error(this.$t('iqrfnet.standard.binaryOutput.messages.timeout').toString());
 						break;
 					case 0:
-						this.$toast.success(this.$t('iqrfnet.standard.binaryOutput.messages.success'));
+						this.$toast.success(this.$t('iqrfnet.standard.binaryOutput.messages.success').toString());
 						if (mutation.payload.mType === 'iqrfBinaryoutput_Enumerate') {
 							this.numOutputs = mutation.payload.data.rsp.result.binOuts;
 							this.responseType = 'enum';
@@ -172,10 +182,10 @@ export default {
 						}
 						break;
 					case 1:
-						this.$toast.error(this.$t('iqrfnet.standard.binaryOutput.messages.fail'));
+						this.$toast.error(this.$t('iqrfnet.standard.binaryOutput.messages.fail').toString());
 						break;
 					case 3:
-						this.$toast.error(this.$t('iqrfnet.standard.binaryOutput.messages.pnum'));
+						this.$toast.error(this.$t('iqrfnet.standard.binaryOutput.messages.pnum').toString());
 						break;
 				}
 
@@ -217,11 +227,9 @@ export default {
 </script>
 
 <style scoped>
-
 .scroll-table {
     display: block;
     overflow-x: auto;
     white-space: nowrap;
 }
-
 </style>

@@ -9,11 +9,15 @@
 						@click='isEmpty'
 						@input='isEmpty'
 					/>
-					<p v-if='configEmpty && !firstConfig' style='color:red'>
+					<p v-if='configEmpty && !firstConfig' class='text-danger'>
 						{{ $t("config.migration.messages.importButton") }}
 					</p>
 				</div>
-				<CButton color='primary' :disabled='configEmpty' @click.prevent='importConfig'>
+				<CButton
+					color='primary'
+					:disabled='configEmpty'
+					@click.prevent='importConfig'
+				>
 					{{ $t('config.migration.form.import') }}
 				</CButton>
 				<CButton color='secondary' @click.prevent='exportConfig'>
@@ -49,7 +53,8 @@ export default {
 			this.$store.commit('spinner/SHOW');
 			ConfigService.exportConfig(20000)
 				.then((response) => {
-					const file = fileDownloader(response, 'application/zip', 'iqrf-gateway-configuration_' + new Date().toISOString().replace(":", " "));
+					const fileName = 'iqrf-gateway-configuration_' + new Date().toISOString().replace(':', ' ');
+					const file = fileDownloader(response, 'application/zip', fileName);
 					this.$store.commit('spinner/HIDE');
 					file.click();
 				});
@@ -59,15 +64,15 @@ export default {
 			ConfigService.importConfig(this.$refs.configZip.$el.children[1].files[0], 20000)
 				.then(() => {
 					this.$store.commit('spinner/HIDE');
-					this.$toast.success(this.$t('config.migration.messages.imported'));
+					this.$toast.success(this.$t('config.migration.messages.imported').toString());
 				})
 				.catch((error) => {
-					this.$store.commit('spinner/HIDE')
+					this.$store.commit('spinner/HIDE');
 					if (error.response) {
 						if (error.response.status === 400) {
-							this.$toast.error(this.$t('config.migration.messages.invalidConfig'));
+							this.$toast.error(this.$t('config.migration.messages.invalidConfig').toString());
 						} else if (error.response.status === 415) {
-							this.$toast.error(this.$t('config.migration.messages.invalidFormat'));
+							this.$toast.error(this.$t('config.migration.messages.invalidFormat').toString());
 						}
 					} else {
 						console.error(error);

@@ -124,7 +124,7 @@ export default {
 				this.$store.commit('spinner/HIDE');
 				if (error.response.status === 404) {
 					this.$router.push('/user/');
-					this.$toast.error(this.$t('core.user.messages.notFound'));
+					this.$toast.error(this.$t('core.user.messages.notFound').toString());
 				}
 			});
 	},
@@ -138,7 +138,7 @@ export default {
 						this.signOut();
 					})
 					.catch(() => {
-						this.$toast.error(this.$t('core.user.messages.invalid.oldPassword'));
+						this.$toast.error(this.$t('core.user.messages.invalid.oldPassword').toString());
 					});
 			} else {
 				this.performEdit();
@@ -156,11 +156,11 @@ export default {
 			})
 				.then(() => {
 					this.$router.push('/user/');
-					this.$toast.success(this.$t('core.user.messages.edit.success', {username: this.username}));
+					this.$toast.success(this.$t('core.user.messages.edit.success', {username: this.username}).toString());
 				})
 				.catch((error) => {
 					if (error.response.status === 409) {
-						this.$toast.error(this.$t('core.user.messages.conflict.username'));
+						this.$toast.error(this.$t('core.user.messages.conflict.username').toString());
 					}
 				});
 		},

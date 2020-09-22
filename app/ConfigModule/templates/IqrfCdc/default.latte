@@ -20,12 +20,9 @@
 <c-card body-wrapper>
 	{control configIqrfCdcForm}
 </c-card>
-<c-card n:if='$interfaces ?? [] !== []'>
-	<c-card-header>{_config.interfaceMapping.cdc}</c-card-header>
+<c-card>
+	<c-card-header>{{ $t('config.interfaceMapping.cdc') }}</c-card-header>
 	<c-card-body>
-		<h4>{_config.interfaceMapping.interfaces}</h4>
-		{foreach $interfaces as $interface}
-			<c-button color='primary' class='btn-cdc-port' data-port='{$interface}'>{$interface}</c-button>
-		{/foreach}
+		<interface-ports interface-type='cdc' />
 	</c-card-body>
 </c-card>

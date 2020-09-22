@@ -87,10 +87,10 @@
 
 <script>
 import {CButton, CCard} from '@coreui/vue/src';
-import CoordinatorInfo from './CoordinatorInfo';
+import CoordinatorInfo from '../../components/Gateway/CoordinatorInfo';
 import DaemonModeService from '../../services/DaemonModeService';
 import GatewayService from '../../services/GatewayService';
-import ResourceUsage from './ResourceUsage';
+import ResourceUsage from '../../components/Gateway/ResourceUsage';
 import {fileDownloader} from '../../helpers/fileDownloader';
 
 export default {

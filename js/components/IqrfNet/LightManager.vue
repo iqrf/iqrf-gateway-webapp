@@ -82,8 +82,12 @@
 		<CCardFooter v-if='responseType !== null'>
 			<table class='table'>
 				<thead>
-					<span v-if='responseType === "enum"'>{{ $t('iqrfnet.standard.light.enum') }}</span>
-					<span v-else>{{ $t('iqrfnet.standard.light.powerInfo') }}</span>
+					<span v-if='responseType === "enum"'>
+						{{ $t('iqrfnet.standard.light.enum') }}
+					</span>
+					<span v-else>
+						{{ $t('iqrfnet.standard.light.powerInfo') }}
+					</span>
 				</thead>
 				<tbody v-if='responseType === "enum"'>
 					<tr>
@@ -164,10 +168,10 @@ export default {
 				this.$store.commit('spinner/HIDE');
 				switch(mutation.payload.data.status) {
 					case -1:
-						this.$toast.error(this.$t('iqrfnet.standard.light.messages.timeout'));
+						this.$toast.error(this.$t('iqrfnet.standard.light.messages.timeout').toString());
 						break;
 					case 0:
-						this.$toast.success(this.$t('iqrfnet.standard.light.messages.success'));
+						this.$toast.success(this.$t('iqrfnet.standard.light.messages.success').toString());
 						if (mutation.payload.mType === 'iqrfLight_Enumerate') {
 							this.numLights = mutation.payload.data.rsp.result.lights;
 							this.responseType = 'enum';
@@ -177,10 +181,10 @@ export default {
 						}
 						break;
 					case 3:
-						this.$toast.error(this.$t('iqrfnet.standard.light.messages.pnum'));
+						this.$toast.error(this.$t('iqrfnet.standard.light.messages.pnum').toString());
 						break;
 					default:
-						this.$toast.error(this.$t('iqrfnet.standard.light.messages.failure'));
+						this.$toast.error(this.$t('iqrfnet.standard.light.messages.failure').toString());
 						break;
 				}
 			}

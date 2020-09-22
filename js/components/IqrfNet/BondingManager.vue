@@ -61,7 +61,9 @@
 								:invalid-feedback='$t(errors[0])'
 							/>
 						</ValidationProvider><hr>
-						<h4>{{ $t('iqrfnet.networkManager.autoNetwork.form.bondingControl') }}</h4>
+						<h4>
+							{{ $t('iqrfnet.networkManager.autoNetwork.form.bondingControl') }}
+						</h4>
 						<CInputCheckbox
 							:checked.sync='useOverlappingNetworks'
 							:label='$t("iqrfnet.networkManager.autoNetwork.form.overlappingNetworks")'
@@ -106,7 +108,9 @@
 								:disabled='!useOverlappingNetworks'
 							/>
 						</ValidationProvider><hr>
-						<h4>{{ $t('iqrfnet.networkManager.autoNetwork.form.hwpidFiltering') }}</h4>
+						<h4>
+							{{ $t('iqrfnet.networkManager.autoNetwork.form.hwpidFiltering') }}
+						</h4>
 						<CInputCheckbox
 							:checked.sync='useHwpidFiltering'
 							:label='$t("iqrfnet.networkManager.autoNetwork.form.hwpidEnable")'
@@ -126,7 +130,9 @@
 								:disabled='!useHwpidFiltering'
 							/>
 						</ValidationProvider><hr>
-						<h4>{{ $t('iqrfnet.networkManager.autoNetwork.form.stopConditions') }}</h4>
+						<h4>
+							{{ $t('iqrfnet.networkManager.autoNetwork.form.stopConditions') }}
+						</h4>
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
 							rules='integer|required|between:1,127'
@@ -428,14 +434,14 @@ export default {
 					this.$store.commit('spinner/HIDE');
 					switch(mutation.payload.data.status) {
 						case -1:
-							this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.timeout'));
+							this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.timeout').toString());
 							break;
 						case 0:
-							this.$toast.success(this.$t('iqrfnet.networkManager.messages.submit.bonding.success'));
+							this.$toast.success(this.$t('iqrfnet.networkManager.messages.submit.bonding.success').toString());
 							this.$emit('update-devices');
 							break;
 						default:
-							this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.bonding.error_fail'));
+							this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.bonding.error_fail').toString());
 							break;
 					}
 				} else if (mutation.payload.mType === 'iqrfEmbedCoordinator_ClearAllBonds' ||
@@ -444,21 +450,21 @@ export default {
 					this.$store.commit('spinner/HIDE');
 					switch(mutation.payload.data.status) {
 						case -1:
-							this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.timeout'));
+							this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.timeout').toString());
 							break;
 						case 0:
 							if (mutation.payload.data.rsp.nodesNr === 0) {
-								this.$toast.success(this.$t('iqrfnet.networkManager.messages.submit.removeBond.clearSuccess'));
+								this.$toast.success(this.$t('iqrfnet.networkManager.messages.submit.removeBond.clearSuccess').toString());
 							} else {
-								this.$toast.success(this.$t('iqrfnet.networkManager.messages.submit.removeBond.success'));
+								this.$toast.success(this.$t('iqrfnet.networkManager.messages.submit.removeBond.success').toString());
 							}
 							this.$emit('update-devices');
 							break;
 						case 1002:
-							this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.removeBond.remove_error'));
+							this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.removeBond.remove_error').toString());
 							break;
 						default:
-							this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.removeBond.error_fail'));
+							this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.removeBond.error_fail').toString());
 							break;
 					}
 				} else if (mutation.payload.mType === 'iqmeshNetwork_AutoNetwork') {
@@ -466,24 +472,24 @@ export default {
 					switch(mutation.payload.data.status) {
 						case -1:
 							this.$store.commit('spinner/HIDE');
-							this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.timeout'));
+							this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.timeout').toString());
 							break;
 						case 0:
 							this.$store.commit('spinner/UPDATE_TEXT', this.autoNetworkProgress(mutation.payload.data));
 							if (mutation.payload.data.rsp.lastWave) {
 								this.$store.commit('spinner/HIDE');
-								this.$toast.success(this.$t('iqrfnet.networkManager.messages.submit.autoNetwork.success'));
+								this.$toast.success(this.$t('iqrfnet.networkManager.messages.submit.autoNetwork.success').toString());
 								this.$emit('update-devices');
 							}
 							break;
 						default:
-							this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.autoNetwork.failure'));
+							this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.autoNetwork.failure').toString());
 							break;
 					}
 				} else if (mutation.payload.mType === 'messageError') {
 					clearTimeout(this.timeout);
 					this.$store.commit('spinner/HIDE');
-					this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.invalidMessage'));
+					this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.invalidMessage').toString());
 				}
 			}
 		});

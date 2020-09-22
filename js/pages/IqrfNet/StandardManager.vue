@@ -12,9 +12,9 @@
 </template>
 
 <script>
-import BinaryOutputManager from './BinaryOutputManager';
-import DaliManager from './DaliManager';
-import LightManager from './LightManager';
+import BinaryOutputManager from '../../components/IqrfNet/BinaryOutputManager';
+import DaliManager from '../../components/IqrfNet/DaliManager';
+import LightManager from '../../components/IqrfNet/LightManager';
 import SensorManager from './SensorManager';
 
 export default {

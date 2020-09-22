@@ -70,9 +70,7 @@ export default {
 	},
 	methods: {
 		changeAddress() {
-			console.error('/iqrfnet/tr-config/' + this.address);
 			this.$router.push('/iqrfnet/tr-config/' + this.address);
-			//location.replace('/iqrfnet/tr-config/' + this.address);
 		},
 	},
 };

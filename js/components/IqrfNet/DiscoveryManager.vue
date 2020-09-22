@@ -1,6 +1,8 @@
 <template>
 	<CCard>
-		<CCardHeader>{{ $t('iqrfnet.networkManager.discovery.title') }}</CCardHeader>
+		<CCardHeader>
+			{{ $t('iqrfnet.networkManager.discovery.title') }}
+		</CCardHeader>
 		<CCardBody>
 			<ValidationObserver v-slot='{ invalid }'>
 				<CForm @submit.prevent='processSubmit'>
@@ -93,14 +95,14 @@ export default {
 					this.$store.commit('spinner/HIDE');
 					switch (mutation.payload.data.status) {
 						case -1:
-							this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.timeout'));
+							this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.timeout').toString());
 							break;
 						case 0:
-							this.$toast.success(this.$t('iqrfnet.networkManager.messages.submit.discovery.success'));
+							this.$toast.success(this.$t('iqrfnet.networkManager.messages.submit.discovery.success').toString());
 							this.$emit('update-devices');
 							break;
 						default:
-							this.$toast.success(this.$t('iqrfnet.networkManager.messages.submit.discovery.error_fail'));
+							this.$toast.success(this.$t('iqrfnet.networkManager.messages.submit.discovery.error_fail').toString());
 							break;
 					}
 				}

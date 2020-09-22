@@ -126,18 +126,18 @@ export default {
 					this.$store.commit('spinner/HIDE');
 					switch(mutation.payload.data.status) {
 						case -1:
-							this.$toast.error(this.$t('iqrfnet.standard.dali.messages.timeout'));
+							this.$toast.error(this.$t('iqrfnet.standard.dali.messages.timeout').toString());
 							break;
 						case 0:
-							this.$toast.success(this.$t('iqrfnet.standard.dali.messages.success'));
+							this.$toast.success(this.$t('iqrfnet.standard.dali.messages.success').toString());
 							this.answers = mutation.payload.data.rsp.result.answers;
 							this.responseReceived = true;
 							break;
 						case 3:
-							this.$toast.error(this.$t('iqrfnet.standard.dali.messages.pnum'));
+							this.$toast.error(this.$t('iqrfnet.standard.dali.messages.pnum').toString());
 							break;
 						default:
-							this.$toast.error(this.$t('iqrfnet.standard.dali.messages.failure'));
+							this.$toast.error(this.$t('iqrfnet.standard.dali.messages.failure').toString());
 							break;
 					}
 				}

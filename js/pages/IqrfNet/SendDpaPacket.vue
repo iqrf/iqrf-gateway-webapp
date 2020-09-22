@@ -99,7 +99,7 @@
 
 <script>
 import {CButton, CCard, CCardBody, CCardHeader, CCol, CForm, CInput, CInputCheckbox, CRow} from '@coreui/vue/src';
-import DpaMacros from './DpaMacros';
+import DpaMacros from '../../components/IqrfNet/DpaMacros';
 import {between, integer, min_value, required} from 'vee-validate/dist/rules';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import sendPacket from '../../iqrfNet/sendPacket';
@@ -158,28 +158,28 @@ export default {
 				this.response = JSON.stringify(mutation.payload, null, 4);
 				switch (mutation.payload.data.status) {
 					case 0:
-						this.$toast.success(this.$t('iqrfnet.sendPacket.messages.success'));
+						this.$toast.success(this.$t('iqrfnet.sendPacket.messages.success').toString());
 						break;
 					case 2:
-						this.$toast.error(this.$t('iqrfnet.sendPacket.messages.incorrect.pcmd'));
+						this.$toast.error(this.$t('iqrfnet.sendPacket.messages.incorrect.pcmd').toString());
 						break;
 					case 3:
-						this.$toast.error(this.$t('iqrfnet.sendPacket.messages.incorrect.pnum'));
+						this.$toast.error(this.$t('iqrfnet.sendPacket.messages.incorrect.pnum').toString());
 						break;
 					case 5:
-						this.$toast.error(this.$t('iqrfnet.sendPacket.messages.incorrect.dataLength'));
+						this.$toast.error(this.$t('iqrfnet.sendPacket.messages.incorrect.dataLength').toString());
 						break;
 					case 6:
-						this.$toast.error(this.$t('iqrfnet.sendPacket.messages.incorrect.data'));
+						this.$toast.error(this.$t('iqrfnet.sendPacket.messages.incorrect.data').toString());
 						break;
 					case 7:
-						this.$toast.error(this.$t('iqrfnet.sendPacket.messages.incorrect.hwpid'));
+						this.$toast.error(this.$t('iqrfnet.sendPacket.messages.incorrect.hwpid').toString());
 						break;
 					case 8:
-						this.$toast.error(this.$t('iqrfnet.sendPacket.messages.incorrect.nadr'));
+						this.$toast.error(this.$t('iqrfnet.sendPacket.messages.incorrect.nadr').toString());
 						break;
 					default:
-						this.$toast.error(this.$t('iqrfnet.sendPacket.messages.failure'));
+						this.$toast.error(this.$t('iqrfnet.sendPacket.messages.failure').toString());
 						break;
 				}
 			}
@@ -194,7 +194,7 @@ export default {
 		 */
 		handleSubmit() {
 			if (this.packet === null || this.packet === '') {
-				this.$toast.error(this.$t('iqrfnet.sendPacket.form.messages.missing.packet'));
+				this.$toast.error(this.$t('iqrfnet.sendPacket.form.messages.missing.packet').toString());
 				return;
 			}
 			this.$store.commit('spinner/SHOW');

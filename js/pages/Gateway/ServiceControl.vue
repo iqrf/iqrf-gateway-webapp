@@ -91,15 +91,9 @@ export default {
 		getStatus() {
 			if (!whitelisted.includes(this.serviceName)) {
 				this.unsupported = true;
-				const title = this.$t('service.unsupported.title');
-				document.title = title + ' | '  + this.$t('core.title');
-				let titleEl = document.getElementById('title');
-				if (titleEl !== null) {
-					titleEl.innerText = title;
-				}
 				this.status = null;
 				this.$store.commit('spinner/HIDE');
-				this.$toast.error(this.$t('service.errors.unsupportedService'));
+				this.$toast.error(this.$t('service.errors.unsupportedService').toString());
 				return;
 			}
 			ServiceService.getStatus(this.serviceName)
@@ -117,17 +111,17 @@ export default {
 			let response = error.response;
 			if (response.status === 404) {
 				this.missing = true;
-				this.$toast.error(this.$t('service.errors.missingService'));
+				this.$toast.error(this.$t('service.errors.missingService').toString());
 			}
 			if (response.status === 500 &&
 					response.data.message === 'Unsupported init system') {
 				this.unsupported = false;
-				this.$toast.error(this.$t('service.errors.unsupportedInit'));
+				this.$toast.error(this.$t('service.errors.unsupportedInit').toString());
 			}
 		},
 		handleSuccess(action) {
 			this.getStatus();
-			this.$toast.success(this.$t('service.' + this.serviceName + '.messages.' + action));
+			this.$toast.success(this.$t('service.' + this.serviceName + '.messages.' + action).toString());
 		},
 		refreshStatus() {
 			this.$store.commit('spinner/SHOW');
@@ -154,7 +148,9 @@ export default {
 	},
 	metaInfo() {
 		return {
-			title: 'service.' + this.serviceName +'.title',
+			title: whitelisted.includes(this.serviceName) ?
+				'service.' + this.serviceName + '.title' :
+				'service.unsupported.title',
 		};
 	},
 };

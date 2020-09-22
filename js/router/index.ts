@@ -1,36 +1,38 @@
 import Vue from 'vue';
 import VueRouter, {Route, RouteConfig} from 'vue-router' ;
 
-import CloudDisambiguation from '../components/Cloud/CloudDisambiguation.vue';
-import AzureCreator from '../components/Cloud/AzureCreator.vue';
-import HexioCreator from '../components/Cloud/HexioCreator.vue';
-import IbmCreator from '../components/Cloud/IbmCreator.vue';
-import InteliGlueCreator from '../components/Cloud/InteliGlueCreator.vue';
-import PixlaControl from '../components/Cloud/PixlaControl.vue';
+import CloudDisambiguation from '../pages/Cloud/CloudDisambiguation.vue';
+import AzureCreator from '../pages/Cloud/AzureCreator.vue';
+import HexioCreator from '../pages/Cloud/HexioCreator.vue';
+import IbmCreator from '../pages/Cloud/IbmCreator.vue';
+import InteliGlueCreator from '../pages/Cloud/InteliGlueCreator.vue';
+import PixlaControl from '../pages/Cloud/PixlaControl.vue';
 
-import GatewayDisambiguation from '../components/Gateway/GatewayDisambiguation.vue';
-import GatewayInfo from '../components/Gateway/GatewayInfo.vue';
-import DaemonLogViewer from '../components/Gateway/DaemonLogViewer.vue';
-import DaemonMode from '../components/Gateway/DaemonMode.vue';
-import PowerControl from '../components/Gateway/PowerControl.vue';
-import ServiceControl from '../components/Gateway/ServiceControl.vue';
+import GatewayDisambiguation from '../pages/Gateway/GatewayDisambiguation.vue';
+import GatewayInfo from '../pages/Gateway/GatewayInfo.vue';
+import DaemonLogViewer from '../pages/Gateway/DaemonLogViewer.vue';
+import DaemonMode from '../pages/Gateway/DaemonMode.vue';
+import PowerControl from '../pages/Gateway/PowerControl.vue';
+import ServiceControl from '../pages/Gateway/ServiceControl.vue';
 
 import SignIn from '../components/SignIn.vue';
-import NetworkManager from '../components/IqrfNet/NetworkManager.vue';
-import SendDpaPacket from '../components/IqrfNet/SendDpaPacket.vue';
-import ConfigMigration from '../components/Config/ConfigMigration.vue';
-import TranslatorConfig from '../components/Config/TranslatorConfig.vue';
-import ControllerConfig from '../components/Config/ControllerConfig.vue';
-import MenderConfig from '../components/Config/MenderConfig.vue';
-import IqrfInfo from '../components/Config/IqrfInfo.vue';
 
-import UserEdit from '../components/Core/UserEdit.vue';
-import UserList from '../components/Core/UserList.vue';
+import IqrfNetDisambiguation from '../pages/IqrfNet/IqrfNetDisambiguation.vue';
+import NetworkManager from '../pages/IqrfNet/NetworkManager.vue';
+import SendJsonRequest from '../pages/IqrfNet/SendJsonRequest.vue';
+import SendDpaPacket from '../pages/IqrfNet/SendDpaPacket.vue';
+import StandardManager from '../pages/IqrfNet/StandardManager.vue';
 
-import SendJsonRequest from '../components/IqrfNet/SendJsonRequest.vue';
-import StandardManager from '../components/IqrfNet/StandardManager.vue';
+import ConfigMigration from '../pages/Config/ConfigMigration.vue';
+import TranslatorConfig from '../pages/Config/TranslatorConfig.vue';
+import ControllerConfig from '../pages/Config/ControllerConfig.vue';
+import MenderConfig from '../pages/Config/MenderConfig.vue';
+import IqrfInfo from '../pages/Config/IqrfInfo.vue';
 
-import NetworkDisambiguation from '../components/Network/NetworkDisambiguation.vue';
+import UserEdit from '../pages/Core/UserEdit.vue';
+import UserList from '../pages/Core/UserList.vue';
+
+import NetworkDisambiguation from '../pages/Network/NetworkDisambiguation.vue';
 
 import i18n from '../i18n';
 import store from '../store';
@@ -135,24 +137,39 @@ const routes: Array<RouteConfig> = [
 				meta: {title: 'service.%serviceName%.title'},
 			},
 			{
-				component: NetworkManager,
-				path: '/iqrfnet/network',
-				meta: {title: 'iqrfnet.networkManager.title'}
-			},
-			{
-				component: StandardManager,
-				path: '/iqrfnet/standard',
-				meta: {title: 'iqrfnet.standard.title'}
-			},
-			{
-				component: SendDpaPacket,
-				path: '/iqrfnet/send-raw',
-				meta: {title: 'iqrfnet.sendPacket.title'},
-			},
-			{
-				component: SendJsonRequest,
-				path: '/iqrfnet/send-json',
-				meta: {title: 'iqrfnet.sendJson.title'}
+				path: '/iqrfnet',
+				component: {
+					render(c) {
+						return c('router-view');
+					}
+				},
+				children: [
+					{
+						component: IqrfNetDisambiguation,
+						path: '',
+						meta: {title: 'iqrfnet.title'}
+					},
+					{
+						component: NetworkManager,
+						path: 'network',
+						meta: {title: 'iqrfnet.networkManager.title'}
+					},
+					{
+						component: StandardManager,
+						path: 'standard',
+						meta: {title: 'iqrfnet.standard.title'}
+					},
+					{
+						component: SendDpaPacket,
+						path: 'send-raw',
+						meta: {title: 'iqrfnet.sendPacket.title'},
+					},
+					{
+						component: SendJsonRequest,
+						path: 'send-json',
+						meta: {title: 'iqrfnet.sendJson.title'}
+					},
+				]
 			},
 			{
 				component: IqrfInfo,
@@ -277,7 +294,7 @@ router.beforeEach((to, from, next) => {
 		content.remove();
 	}
 	const flashes = document.getElementById('snippet--flashes');
-	if (flashes !== null) {
+	if (flashes !== null && from.name !== null) {
 		flashes.remove();
 	}
 	next();

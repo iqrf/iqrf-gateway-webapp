@@ -183,6 +183,13 @@
 			"title": "Components",
 			"description": "Manage components."
 		},
+		"interfaceMapping": {
+			"cdc": "Available CDC mappings",
+			"spi": "Available SPI mappings",
+			"uart": "Available UART mappings",
+			"boards": "Boards",
+			"interfaces": "Interfaces"
+		},
 		"iqmesh": {
 			"title": "IQMESH services",
 			"description": "Manage IQMESH services."

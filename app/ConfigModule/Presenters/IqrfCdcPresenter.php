@@ -21,8 +21,6 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\IqrfCdcFormFactory;
-use App\ConfigModule\Models\GenericManager;
-use App\ConfigModule\Models\IqrfManager;
 use Nette\Application\UI\Form;
 
 /**
@@ -42,25 +40,9 @@ class IqrfCdcPresenter extends GenericPresenter {
 	public $formFactory;
 
 	/**
-	 * @var IqrfManager IQRF interface manager
-	 */
-	private $iqrfManager;
-
-	/**
-	 * Constructor
-	 * @param IqrfManager $iqrfManager IQRF interface manager
-	 * @param GenericManager $genericManager Generic configuration manager
-	 */
-	public function __construct(IqrfManager $iqrfManager, GenericManager $genericManager) {
-		$this->iqrfManager = $iqrfManager;
-		parent::__construct($genericManager);
-	}
-
-	/**
 	 * Renders the IQRF CDC interface configurator
 	 */
 	public function actionDefault(): void {
-		$this->template->interfaces = $this->iqrfManager->getCdcInterfaces();
 		$this->loadFormConfiguration($this['configIqrfCdcForm'], self::COMPONENT, null);
 	}
 

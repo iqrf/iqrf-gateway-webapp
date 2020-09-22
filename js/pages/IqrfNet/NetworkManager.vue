@@ -11,9 +11,9 @@
 </template>
 
 <script>
-import BondingManager from './BondingManager';
-import DevicesInfo from './DevicesInfo';
-import DiscoveryManager from './DiscoveryManager';
+import BondingManager from '../../components/IqrfNet/BondingManager';
+import DevicesInfo from '../../components/IqrfNet/DevicesInfo';
+import DiscoveryManager from '../../components/IqrfNet/DiscoveryManager';
 
 export default {
 	name: 'NetworkManager',

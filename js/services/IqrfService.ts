@@ -5,6 +5,17 @@ import {authorizationHeader} from '../helpers/authorizationHeader';
  * IQRF networks service
  */
 class IqrfService {
+
+	/**
+	 * Retrieves IQRF interface ports
+	 */
+	getInterfacePorts(interfaceType: string): Promise<Array<string>> {
+		return axios.get('iqrf/interfaces/', {headers: authorizationHeader()})
+			.then((response: AxiosResponse) => {
+				return response.data[interfaceType] as Array<string>;
+			});
+	}
+
 	/**
 	 * Retrieves IQRF IDE Macros
 	 */

@@ -205,7 +205,7 @@ export default {
 			return UserService.edit(user.id, settings)
 				.then(() => {
 					this.getUsers().then(() => {
-						this.$toast.success(this.$t('core.user.messages.edit.success', {username: user.username}));
+						this.$toast.success(this.$t('core.user.messages.edit.success', {username: user.username}).toString());
 					});
 				})
 				.catch(() => {
@@ -222,7 +222,7 @@ export default {
 			UserService.delete(user.id)
 				.then(() => {
 					this.getUsers().then(() => {
-						this.$toast.success(this.$t('core.user.messages.delete.success', {username: user.username}));
+						this.$toast.success(this.$t('core.user.messages.delete.success', {username: user.username}).toString());
 					});
 				})
 				.catch(() => {

@@ -57,7 +57,7 @@
 
 <script>
 import {CButton, CCard} from '@coreui/vue/src';
-import PixlaTokenEditor from './PixlaTokenEditor';
+import PixlaTokenEditor from '../../components/Cloud/PixlaTokenEditor';
 import PixlaService from '../../services/PixlaService';
 import ServiceService from '../../services/ServiceService';
 

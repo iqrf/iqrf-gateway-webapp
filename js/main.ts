@@ -33,14 +33,14 @@ import '../css/app.scss';
 import 'vue-toast-notification/dist/theme-sugar.css';
 
 import App from './components/App.vue';
-import DaemonStatus from './components/DaemonStatus.vue';
 import LoadingSpinner from './components/LoadingSpinner.vue';
 import TheHeader from './components/TheHeader.vue';
 import TheSidebar from './components/TheSidebar.vue';
-import PixlaControl from './components/Cloud/PixlaControl.vue';
 import TrConfiguration from './components/IqrfNet/TrConfiguration.vue';
-import AWSCreator from './components/Cloud/AWSCreator.vue';
+import AWSCreator from './pages/Cloud/AWSCreator.vue';
 import MainDisambiguation from './components/MainDisambiguation.vue';
+import InterfacePorts from './components/Config/InterfacePorts.vue';
+import InterfaceMappings from './components/Config/InterfaceMappings.vue';
 
 Sentry.init({
 	dsn: 'https://435ee2b55f994e5f85e21a9ca93ea7a7@sentry.iqrf.org/5',
@@ -91,14 +91,14 @@ new Vue({
 	el: '#app',
 	components: {
 		App,
-		DaemonStatus,
 		LoadingSpinner,
 		TheHeader,
 		TheSidebar,
-		PixlaControl,
 		TrConfiguration,
 		AWSCreator,
 		MainDisambiguation,
+		InterfacePorts,
+		InterfaceMappings,
 	},
 	router: router,
 	store: store,

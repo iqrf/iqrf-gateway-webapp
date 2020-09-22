@@ -24,7 +24,7 @@ import Nette from 'nette-forms';
 
 import store from './store';
 
-import './config';
+import './config/scheduler';
 
 Nette.initOnLoad();
 

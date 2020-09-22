@@ -231,17 +231,7 @@
 								<CSelect
 									:value.sync='config.uartBaudrate'
 									:label='$t("iqrfnet.trConfiguration.form.uartBaudrate")'
-									:options='[
-										{value: 1200, label: $t("iqrfnet.trConfiguration.form.uartBaudrates.1200")},
-										{value: 2400, label: $t("iqrfnet.trConfiguration.form.uartBaudrates.2400")},
-										{value: 4800, label: $t("iqrfnet.trConfiguration.form.uartBaudrates.4800")},
-										{value: 9600, label: $t("iqrfnet.trConfiguration.form.uartBaudrates.9600")},
-										{value: 19200, label: $t("iqrfnet.trConfiguration.form.uartBaudrates.19200")},
-										{value: 38400, label: $t("iqrfnet.trConfiguration.form.uartBaudrates.38400")},
-										{value: 57600, label: $t("iqrfnet.trConfiguration.form.uartBaudrates.57600")},
-										{value: 115200, label: $t("iqrfnet.trConfiguration.form.uartBaudrates.115200")},
-										{value: 230400, label: $t("iqrfnet.trConfiguration.form.uartBaudrates.230400")},
-									]'
+									:options='uartBaudRates'
 								/>
 								<CInputCheckbox
 									v-if='config.nodeDpaInterface !== undefined'
@@ -330,7 +320,16 @@ export default {
 				integer: message,
 				required: message
 			};
-		}
+		},
+		uartBaudRates() {
+			const uartBaudRates = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400];
+			return uartBaudRates.map((uartBaudRate) => {
+				return {
+					value: uartBaudRate,
+					label: this.$t('iqrfnet.trConfiguration.form.uartBaudrates.' + uartBaudRate).toString(),
+				};
+			});
+		},
 	},
 	watch: {
 		address: function (newVal) {
@@ -378,7 +377,7 @@ export default {
 		handleEnumerationResponse(response) {
 			if (response.data.status !== 0) {
 				this.$store.commit('spinner/HIDE');
-				this.$toast.error(this.$t('iqrfnet.trConfiguration.messages.read.failure'));
+				this.$toast.error(this.$t('iqrfnet.trConfiguration.messages.read.failure').toString());
 				return;
 			}
 			let rsp = response.data.rsp;
@@ -388,7 +387,7 @@ export default {
 			this.setEmbeddedPeripherals();
 			this.$store.commit('spinner/HIDE');
 			if (this.$store.getters['user/getRole'] === 'normal') {
-				this.$toast.success(this.$t('iqrfnet.trConfiguration.messages.read.success'));
+				this.$toast.success(this.$t('iqrfnet.trConfiguration.messages.read.success').toString());
 			}
 		},
 		handleSubmit() {
@@ -400,9 +399,9 @@ export default {
 		handleWriteResponse(response) {
 			this.$store.commit('spinner/HIDE');
 			if (response.data.status === 0) {
-				this.$toast.success(this.$t('iqrfnet.trConfiguration.messages.write.success'));
+				this.$toast.success(this.$t('iqrfnet.trConfiguration.messages.write.success').toString());
 			} else {
-				this.$toast.error(this.$t('iqrfnet.trConfiguration.messages.write.failure'));
+				this.$toast.error(this.$t('iqrfnet.trConfiguration.messages.write.failure').toString());
 			}
 		},
 		setEmbeddedPeripherals() {

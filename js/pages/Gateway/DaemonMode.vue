@@ -49,13 +49,13 @@ export default {
 			try {
 				this.mode = mutation.payload.data.rsp.operMode;
 				if (this.loaded) {
-					this.$toast.success(this.$t('gateway.mode.messages.' + this.mode));
+					this.$toast.success(this.$t('gateway.mode.messages.' + this.mode).toString());
 				} else {
 					this.loaded = true;
 				}
 			} catch (e) {
 				this.mode = 'unknown';
-				this.$toast.error(this.$t('gateway.mode.messages.' + this.loaded ? 'set' : 'get'));
+				this.$toast.error(this.$t('gateway.mode.messages.' + this.loaded ? 'set' : 'get').toString());
 			}
 		});
 		if (this.$store.state.webSocketClient.socket.isConnected) {

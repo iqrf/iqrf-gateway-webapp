@@ -27,13 +27,13 @@ export default {
 		powerOff() {
 			GatewayService.performPowerOff()
 				.then(() => {
-					this.$toast.success(this.$t('gateway.power.powerOff.success'));
+					this.$toast.success(this.$t('gateway.power.powerOff.success').toString());
 				});
 		},
 		reboot() {
 			GatewayService.performReboot()
 				.then(() => {
-					this.$toast.success(this.$t('gateway.power.reboot.success'));
+					this.$toast.success(this.$t('gateway.power.reboot.success').toString());
 				});
 		},
 	},

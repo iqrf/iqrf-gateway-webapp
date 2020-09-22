@@ -21,10 +21,6 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Presenters;
 
 use App\ConfigModule\Forms\IqrfUartFormFactory;
-use App\ConfigModule\Models\GenericManager;
-use App\ConfigModule\Models\IqrfManager;
-use App\CoreModule\Models\CommandManager;
-use App\CoreModule\Models\JsonFileManager;
 use Nette\Application\UI\Form;
 
 /**
@@ -44,33 +40,9 @@ class IqrfUartPresenter extends GenericPresenter {
 	public $formFactory;
 
 	/**
-	 * @var JsonFileManager JSON file manager
-	 */
-	private $fileManager;
-
-	/**
-	 * @var IqrfManager IQRF interface manager
-	 */
-	private $iqrfManager;
-
-	/**
-	 * Constructor
-	 * @param IqrfManager $iqrfManager IQRF interface manager
-	 * @param GenericManager $genericManager Generic configuration manager
-	 * @param CommandManager $commandManager Command manager
-	 */
-	public function __construct(IqrfManager $iqrfManager, GenericManager $genericManager, CommandManager $commandManager) {
-		$this->iqrfManager = $iqrfManager;
-		$this->fileManager = new JsonFileManager(__DIR__ . '/../json/', $commandManager);
-		parent::__construct($genericManager);
-	}
-
-	/**
 	 * Renders the IQRF UART interface configurator
 	 */
 	public function actionDefault(): void {
-		$this->template->interfaces = $this->iqrfManager->getUartInterfaces();
-		$this->template->pins = $this->fileManager->read('UartPins');
 		$this->loadFormConfiguration($this['configIqrfUartForm'], self::COMPONENT, null);
 	}
 

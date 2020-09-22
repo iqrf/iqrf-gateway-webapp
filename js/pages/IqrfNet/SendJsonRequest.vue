@@ -127,12 +127,12 @@ export default {
 					this.$store.commit('spinner/HIDE');
 					this.response = JSON.stringify(mutation.payload, null, 4);
 					if (mutation.payload.data.status === 0) {
-						this.$toast.success(this.$t('iqrfnet.sendJson.form.messages.success'));
+						this.$toast.success(this.$t('iqrfnet.sendJson.form.messages.success').toString());
 					} else {
 						if (mutation.payload.data.status in StatusMessages) {
-							this.$toast.error(this.$t(StatusMessages[mutation.payload.data.status]));
+							this.$toast.error(this.$t(StatusMessages[mutation.payload.data.status]).toString());
 						} else {
-							this.$toast.error(this.$t('iqrfnet.sendJson.form.messages.error.fail'));
+							this.$toast.error(this.$t('iqrfnet.sendJson.form.messages.error.fail').toString());
 						}
 					}
 				}

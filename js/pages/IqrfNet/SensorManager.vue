@@ -114,10 +114,10 @@ export default {
 				this.$store.commit('spinner/HIDE');
 				switch(mutation.payload.data.status) {
 					case -1:
-						this.$toast.error(this.$t('iqrfnet.standard.sensor.messages.timeout'));
+						this.$toast.error(this.$t('iqrfnet.standard.sensor.messages.timeout').toString());
 						break;
 					case 0:
-						this.$toast.success(this.$t('iqrfnet.standard.sensor.messages.success'));
+						this.$toast.success(this.$t('iqrfnet.standard.sensor.messages.success').toString());
 						if (mutation.payload.mType === 'iqrfSensor_Enumerate') {
 							this.parseEnumerate(mutation.payload.data.rsp.result.sensors);
 							this.responseType = 'enum';
@@ -127,10 +127,10 @@ export default {
 						}
 						break;
 					case 3:
-						this.$toast.error(this.$t('iqrfnet.standard.sensor.messages.pnum'));
+						this.$toast.error(this.$t('iqrfnet.standard.sensor.messages.pnum').toString());
 						break;
 					default:
-						this.$toast.error(this.$t('iqrfnet.standard.sensor.messages.failure'));
+						this.$toast.error(this.$t('iqrfnet.standard.sensor.messages.failure').toString());
 						break;
 				}
 			}

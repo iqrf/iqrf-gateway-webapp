@@ -17,31 +17,3 @@
 
 {block title}{_iqrfnet.title}{/block}
 {block content}
-<c-card body-wrapper>
-	<c-list-group>
-		<c-list-group-item to='/iqrfnet/send-raw/'>
-			<header class='list-group-item-heading'>{{ $t('iqrfnet.sendPacket.title') }}</header>
-			<p class='list-group-item-text'>{{ $t('iqrfnet.sendPacket.description') }}</p>
-		</c-list-group-item>
-		<c-list-group-item to='/iqrfnet/send-json/'>
-			<header class='list-group-item-heading'>{{ $t('iqrfnet.sendJson.title') }}</header>
-			<p class='list-group-item-text'>{{ $t('iqrfnet.sendJson.description') }}</p>
-		</c-list-group-item>
-		<c-list-group-item n:ifFeature='trUpload' to='/iqrfnet/tr-upload/'>
-			<header class='list-group-item-heading'>{{ $t('iqrfnet.trUpload.title') }}</header>
-			<p class='list-group-item-text'>{{ $t('iqrfnet.trUpload.description') }}</p>
-		</c-list-group-item>
-		<c-list-group-item to='/iqrfnet/tr-config/'>
-			<header class='list-group-item-heading'>{{ $t('iqrfnet.trConfiguration.title') }}</header>
-			<p class='list-group-item-text'>{{ $t('iqrfnet.trConfiguration.description') }}</p>
-		</c-list-group-item>
-		<c-list-group-item to='/iqrfnet/network/'>
-			<header class='list-group-item-heading'>{{ $t('iqrfnet.networkManager.title') }}</header>
-			<p class='list-group-item-text'>{{ $t('iqrfnet.networkManager.description') }}</p>
-		</c-list-group-item>
-		<c-list-group-item to='/iqrfnet/standard/'>
-			<header class='list-group-item-heading'>{{ $t('iqrfnet.standard.title') }}</header>
-			<p class='list-group-item-text'>{{ $t('iqrfnet.standard.description') }}</p>
-		</c-list-group-item>
-	</c-list-group>
-</c-card>

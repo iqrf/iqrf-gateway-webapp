@@ -21,20 +21,14 @@
 	{control configIqrfSpiForm}
 </c-card>
 <c-card>
-	<c-card-header>{_config.interfaceMapping.spi}</c-card-header>
+	<c-card-header>{{ $t('config.interfaceMapping.spi') }}</c-card-header>
 	<c-card-body>
 		<c-row>
 			<c-col md='6'>
-				<h4>{_config.interfaceMapping.boards}</h4>
-				{foreach $pins as $board => $pin}
-					<c-button color='primary' class='btn-spi-pin' {foreach $pin as $pinName => $pinNumber} data-{$pinName}={$pinNumber}{/foreach}>{$board}</c-button>
-				{/foreach}
+				<interface-mappings interface-type='spi' />
 			</c-col>
-			<c-col n:if='$interfaces !== []' md='6'>
-				<h4>{_config.interfaceMapping.interfaces}</h4>
-				{foreach $interfaces as $interface}
-					<c-button color='primary' class='btn-spi-port' data-port='{$interface}'>{$interface}</c-button>
-				{/foreach}
+			<c-col md='6'>
+				<interface-ports interface-type='spi' />
 			</c-col>
 		</c-row>
 	</c-card-body>
