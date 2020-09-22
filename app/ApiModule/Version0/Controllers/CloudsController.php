@@ -40,6 +40,7 @@ use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use GuzzleHttp\Exception\GuzzleException;
 use Nette\IOException;
 use Nette\Utils\JsonException;
+use RuntimeException;
 use function GuzzleHttp\Psr7\stream_for;
 
 /**
@@ -99,9 +100,19 @@ class CloudsController extends BaseController {
 	 *      description: Amazon AWS IoT connection configuration
 	 *      required: true
 	 *      content:
-	 *          application/json:
+	 *          multipart/form-data:
 	 *              schema:
-	 *                  $ref: '#/components/schemas/CloudAws'
+	 *                  type: object
+	 *                  properties:
+	 *                      endpoint:
+	 *                          type: string
+	 *                      certificate:
+	 *                          type: string
+	 *                          format: binary
+	 *                      privateKey:
+	 *                          type: string
+	 *                          format: binary
+	 *
 	 *  responses:
 	 *      '201':
 	 *          description: Created
@@ -116,7 +127,11 @@ class CloudsController extends BaseController {
 	 */
 	public function createAws(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
-			$this->awsManager->createMqttInterface($request->getJsonBody());
+			$data = $request->getParsedBody();
+			$files = $request->getUploadedFiles();
+			$data['certificate'] = $files[0]->getStream()->read($files[0]->getStream()->getSize());
+			$data['privateKey'] = $files[1]->getStream()->read($files[1]->getStream()->getSize());
+			$this->awsManager->createMqttInterface($data);
 			return $response->withStatus(ApiResponse::S201_CREATED)
 				->withBody(stream_for());
 		} catch (InvalidConnectionStringException $e) {
@@ -129,8 +144,8 @@ class CloudsController extends BaseController {
 			throw new ServerErrorException('Download failure', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		} catch (CannotCreateCertificateDirectoryException $e) {
 			throw new ServerErrorException('Certificate directory creation failure', ApiResponse::S500_INTERNAL_SERVER_ERROR);
-		} catch (JsonException $e) {
-			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
+		} catch (RuntimeException $e) {
+			throw new ClientErrorException('Invalid files', ApiResponse::S400_BAD_REQUEST);
 		} catch (InvalidPrivateKeyForCertificateException $e) {
 			throw new ClientErrorException('The private key does not correspond to the certificate', ApiResponse::S400_BAD_REQUEST);
 		}

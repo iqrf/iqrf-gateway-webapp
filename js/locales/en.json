@@ -156,12 +156,14 @@
 			"integer": "This parameter should be an integer.",
 			"saveSuccess": "Configuration has been successfully saved.",
 			"submitBadRequest": "Invalid JSON syntax.",
-			"submitServerError": "Internal server error has occurred."
+			"submitServerError": "Internal server error has occurred.",
+			"componentNotFound": "Component or instance not found."
 		}
 	},
 	"config": {
 		"title": "Configuration",
 		"description": "Edit configuration.",
+		"success": "The configuration has been saved successfully.",
 		"migration": {
 			"title": "Configuration migration",
 			"description": "Migration of IQRF Gateway Daemon's configuration",
@@ -195,7 +197,17 @@
 		},
 		"iqrfInfo": {
 			"title": "IQRF Info",
-			"description": "IQRF Info database settings."
+			"description": "IQRF Info database settings.",
+			"form": {
+				"instance": "Name of instance",
+				"enumAtStartUp": "Initialize network full enumeration just after startup",
+				"enumPeriod": "Period in minutes of regular check enumeration",
+				"enumUniformDpaVer": "Obtain only HWPID and HWPID version from nodes"
+			},
+			"messages": {
+				"instance": "Please enter name of IQRF Info instance",
+				"enumPeriod": "Period must be bigger than 0"
+			}
 		},
 		"iqrfRepository": {
 			"title": "IQRF Repository",

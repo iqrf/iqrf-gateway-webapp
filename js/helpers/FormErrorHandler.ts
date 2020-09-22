@@ -31,7 +31,9 @@ class FormErrorHandler {
 	configError(error: AxiosError) {
 		store.commit('spinner/HIDE');
 		if (error.response) {
-			if (error.response.status === 500) {
+			if (error.response.status === 404) {
+				Vue.$toast.error(i18n.t('forms.messages.componentNotFound').toString());
+			} else if (error.response.status === 500) {
 				Vue.$toast.error(i18n.t('forms.messages.submitServerError').toString());
 			}
 		} else {

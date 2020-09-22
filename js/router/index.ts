@@ -22,6 +22,7 @@ import ConfigMigration from '../components/Config/ConfigMigration.vue';
 import TranslatorConfig from '../components/Config/TranslatorConfig.vue';
 import ControllerConfig from '../components/Config/ControllerConfig.vue';
 import MenderConfig from '../components/Config/MenderConfig.vue';
+import IqrfInfo from '../components/Config/IqrfInfo.vue';
 
 import UserEdit from '../components/Core/UserEdit.vue';
 import UserList from '../components/Core/UserList.vue';
@@ -152,6 +153,11 @@ const routes: Array<RouteConfig> = [
 				component: SendJsonRequest,
 				path: '/iqrfnet/send-json',
 				meta: {title: 'iqrfnet.sendJson.title'}
+			},
+			{
+				component: IqrfInfo,
+				path: '/config/iqrf-info',
+				meta: {title: 'config.iqrfInfo.title'}
 			},
 			{
 				component: ConfigMigration,

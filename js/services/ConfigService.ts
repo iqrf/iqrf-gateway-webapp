@@ -5,6 +5,11 @@ import {authorizationHeader} from '../helpers/authorizationHeader';
  * Service configuration service
  */
 class ConfigService {
+	/** */
+	createConfig(serviceName: string, config: any, timeout: number): Promise<AxiosResponse> {
+		return axios.post('config/' + serviceName, config, {headers: authorizationHeader(), timeout: timeout});
+	}
+	
 	/**
 	 * Retrieves service configuration
 	 */
