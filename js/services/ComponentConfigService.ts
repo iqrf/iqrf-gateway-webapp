@@ -41,6 +41,7 @@ class ComponentConfigService {
 
 	/**
 	 * Imports daemon configuration
+	 * @param config daemon configuration
 	 */
 	importConfig(config: any): Promise<AxiosResponse> {
 		return axios.post('config/daemon/migration/import', config, {headers: authorizationHeader()});

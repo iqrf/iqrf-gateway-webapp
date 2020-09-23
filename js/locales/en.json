@@ -262,7 +262,48 @@
 		},
 		"scheduler": {
 			"title": "Scheduler",
-			"description": "Scheduler settings."
+			"description": "Scheduler settings.",
+			"form": {
+				"addOrEdit": {
+					"addTitle": "Add task",
+					"editTitle": "Edit task",
+					"taskId": "Task ID",
+					"time": "Time",
+					"service": "Service",
+					"timeSpec": {
+						"cronTime": "Time in cron format",
+						"exactTime": "Exact time",
+						"periodic": "Periodic",
+						"period": "Period in seconds",
+						"startTime": "Start time"
+					},
+					"message": {
+						"title": "Messages",
+						"label": "Message (JSON request)",
+						"add": "Add another message",
+						"remove": "Remove message"
+					},
+					"verbose": "Enable verbose response"
+				},
+				"import": {
+					"title": "Import task(s)",
+					"file": "JSON task file or ZIP archive with tasks",
+					"fileEmpty": "Please select file to import."
+				}
+			},
+			"buttons": {
+				"add": "Add",
+				"edit": "Edit",
+				"remove": "Remove",
+				"import": "Import",
+				"export": "Export"
+			},
+			"emptyTasks": "No records have been found.",
+			"messages": {
+				"importSuccess": "The tasks has been imported successfully.",
+				"importInvalidFormat": "The uploaded file is not JSON file or ZIP archive.",
+				"importInvalidFile": "The uploaded file is invalid."
+			}
 		},
 		"tracer": {
 			"title": "Tracer file",
