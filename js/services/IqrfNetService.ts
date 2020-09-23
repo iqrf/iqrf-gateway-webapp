@@ -17,17 +17,13 @@ class IqrfNetService {
 					'discoveryBeforeStart': autoNetwork.discoveryBeforeStart,
 					'skipDiscoveryEachWave': autoNetwork.skipDiscoveryEachWave,
 					'actionRetries': autoNetwork.actionRetries,
-					'stopConditions': {
-						'waves': autoNetwork.stopConditions.waves,
-						'emptyWaves': autoNetwork.stopConditions.emptyWaves,
-						'numberOfTotalNodes': autoNetwork.stopConditions.numberOfTotalNodes,
-						'numberOfNewNodes': autoNetwork.stopConditions.numberOfNewNodes,
-						'abortOnTooManyNodesFound': autoNetwork.stopConditions.abortOnTooManyNodesFound,
-					},
 				},
 				'returnVerbose': true,
 			},
 		};
+		if (autoNetwork.stopConditions) {
+			Object.assign(json.data.req, {'stopConditions': autoNetwork.stopConditions});
+		}
 		if (autoNetwork.overlappingNetworks) {
 			Object.assign(json.data.req, {'overlappingNetworks': autoNetwork.overlappingNetworks});
 		}

@@ -190,18 +190,37 @@ export default {
 				startTime: null,
 				messaging: null,
 				message: null,
-			}
+			},
 		};
 	},
 	created() {
-		this.getTasks();
+		this.unsbscribe = this.$store.subscribe(mutation => {
+			if (mutation.type === 'SOCKET_ONOPEN') {
+				this.getTasks();
+				return;
+			}
+			if (mutation.type === 'SOCKET_ONSEND') {
+				if (mutation.payload.mType === 'mngScheduler_List') {
+					//
+				}
+			}
+			if (mutation.type === 'SOCKET_ONMESSAGE') {
+				if (mutation.payload.mType === 'mngScheduler_List') {
+					this.$store.commit('spinner/HIDE');
+				}
+			}
+		});
+		if (this.$store.getters.isSocketConnected) {
+			this.getTasks();
+		}	
+	},
+	beforeDestroy() {
+		this.unsubscribe();
 	},
 	methods: {
 		getTasks() {
-			SchedulerService.getTasks()
-				.then((response) => {
-					this.tasks = response.data;
-				});
+			this.$store.commit('spinner/SHOW');
+			SchedulerService.getTasks('SchedulerMessaging');
 		},
 		exportScheduler() {
 			this.$store.commit('spinner/SHOW');

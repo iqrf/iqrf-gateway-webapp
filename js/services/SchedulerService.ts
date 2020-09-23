@@ -1,3 +1,4 @@
+import store from '../store';
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '../helpers/authorizationHeader';
 
@@ -5,8 +6,16 @@ class SchedulerService {
 	/**
 	 * Retrieve scheduler tasks
 	 */
-	getTasks(): Promise<AxiosResponse> {
-		return axios.get('scheduler', {headers: authorizationHeader()});
+	getTasks(clientId: string) {
+		return store.dispatch('sendRequest', {
+			'mType': 'mngScheduler_List',
+			'data': {
+				'req': {
+					'clientId': clientId,
+				},
+				'returnVerbose': true,
+			},
+		});
 	}
 	
 	/**
