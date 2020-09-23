@@ -56,7 +56,7 @@
 import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate/';
 import {integer, min_value, required} from 'vee-validate/dist/rules';
-import ConfigService from '../../services/ConfigService';
+import ComponentConfigService from '../../services/ComponentConfigService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 
 export default {
@@ -73,7 +73,7 @@ export default {
 	},
 	data() {
 		return {
-			serviceName: 'daemon/iqrf::IqrfInfo',
+			componentName: 'iqrf::IqrfInfo',
 			info: {
 				instance: '',
 				enumAtStartUp: false,
@@ -92,7 +92,7 @@ export default {
 	methods: {
 		getConfig() {
 			this.$store.commit('spinner/SHOW');
-			ConfigService.getConfig(this.serviceName, 10000)
+			ComponentConfigService.getConfig(this.componentName)
 				.then((response) => {
 					this.$store.commit('spinner/HIDE');
 					if (response.data.instances) {
@@ -110,7 +110,7 @@ export default {
 		saveConfig() {
 			this.$store.commit('spinner/SHOW');
 			if (this.hasInstance) {
-				ConfigService.saveConfig(this.serviceName + '/' + this.info.instance, this.info, 10000)
+				ComponentConfigService.saveConfig(this.componentName, this.info.instance, this.info)
 					.then(() => {
 						this.$store.commit('spinner/HIDE');
 						this.$toast.success(this.$t('config.success').toString());
@@ -119,7 +119,7 @@ export default {
 						FormErrorHandler.configError(error);
 					});
 			} else {
-				ConfigService.createConfig(this.serviceName, this.info, 10000)
+				ComponentConfigService.createConfig(this.componentName, this.info)
 					.then(() => {
 						this.$store.commit('spinner/HIDE');
 						this.$toast.success(this.$t('config.success').toString());

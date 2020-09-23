@@ -425,7 +425,7 @@ export default {
 				mutation.payload.mType === ('iqmeshNetwork_BondNodeLocal' ||
 					'iqmeshNetwork_SmartConnect' ||'iqrfEmbedCoordinator_ClearAllBonds' ||
 					'iqrfEmbedCoordinator_RemoveBond' || 'iqmeshNetwork_autoNetwork')) {
-				this.timeout = timeout('iqrfnet.networkManager.messages.submit.timeout', 20000);
+				this.timeout = timeout('iqrfnet.networkManager.messages.submit.timeout', 30000);
 			}
 			if (mutation.type === 'SOCKET_ONMESSAGE') {
 				if (mutation.payload.mType === 'iqmeshNetwork_BondNodeLocal' ||

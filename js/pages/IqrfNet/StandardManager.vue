@@ -15,7 +15,7 @@
 import BinaryOutputManager from '../../components/IqrfNet/BinaryOutputManager';
 import DaliManager from '../../components/IqrfNet/DaliManager';
 import LightManager from '../../components/IqrfNet/LightManager';
-import SensorManager from './SensorManager';
+import SensorManager from '../../components/IqrfNet/SensorManager';
 
 export default {
 	name: 'StandardManager',

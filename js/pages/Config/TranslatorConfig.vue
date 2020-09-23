@@ -168,7 +168,7 @@ import {cilLockLocked, cilLockUnlocked} from '@coreui/icons';
 import {between, integer, required} from 'vee-validate/dist/rules';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
-import ConfigService from '../../services/ConfigService';
+import FeatureConfigService from '../../services/FeatureConfigService';
 
 export default {
 	name: 'TranslatorConfig',
@@ -209,7 +209,7 @@ export default {
 	methods: {
 		getConfig() {
 			this.$store.commit('spinner/SHOW');
-			ConfigService.getConfig(this.name, 10000)
+			FeatureConfigService.getConfig(this.name)
 				.then((response) => {
 					this.$store.commit('spinner/HIDE');
 					this.config = response.data;
@@ -220,7 +220,7 @@ export default {
 		},
 		processSubmit() {
 			this.$store.commit('spinner/SHOW');
-			ConfigService.saveConfig(this.name, this.config, 10000)
+			FeatureConfigService.saveConfig(this.name, this.config)
 				.then(() => {
 					this.$store.commit('spinner/HIDE');
 					this.$toast.success(this.$t('forms.messages.saveSuccess').toString());

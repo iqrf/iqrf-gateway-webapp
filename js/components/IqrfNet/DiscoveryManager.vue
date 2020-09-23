@@ -87,7 +87,7 @@ export default {
 		this.unsubscribe = this.$store.subscribe(mutation => {
 			if (mutation.type === 'SOCKET_ONSEND' &&
 				mutation.payload.mType === 'iqrfEmbedCoordinator_Discovery') {
-				this.timeout = timeout('iqrfnet.networkManager.messages.submit.timeout', 10000);
+				this.timeout = timeout('iqrfnet.networkManager.messages.submit.timeout', 30000);
 			}
 			if (mutation.type === 'SOCKET_ONMESSAGE') {
 				if (mutation.payload.mType === 'iqrfEmbedCoordinator_Discovery') {

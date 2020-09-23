@@ -119,7 +119,7 @@ export default {
 		extend('required', required);
 		this.unsubscribe = this.$store.subscribe(mutation => {
 			if (mutation.type === 'SOCKET_ONSEND') {
-				this.timeout = timeout('iqrfnet.sendJson.form.messages.timeout', 10000);
+				this.timeout = timeout('iqrfnet.sendJson.form.messages.timeout', 30000);
 			}
 			if (mutation.type === 'SOCKET_ONMESSAGE') {
 				if ({}.hasOwnProperty.call(mutation.payload, 'mType')) {

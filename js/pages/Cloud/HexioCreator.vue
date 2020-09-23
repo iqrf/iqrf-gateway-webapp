@@ -145,7 +145,7 @@ export default {
 		},
 		save() {
 			this.$store.commit('spinner/SHOW');
-			CloudService.create(this.serviceName, this.buildConfig(), 10000)
+			CloudService.create(this.serviceName, this.buildConfig())
 				.then(() => {
 					this.$store.commit('spinner/HIDE');
 					this.$toast.success(this.$t('cloud.messages.success'));

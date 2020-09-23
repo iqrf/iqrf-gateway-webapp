@@ -30,7 +30,7 @@
 
 <script>
 import {CButton, CCard, CCardBody, CForm, CInputFile} from '@coreui/vue/src';
-import ConfigService from '../../services/ConfigService';
+import ComponentConfigService from '../../services/ComponentConfigService';
 import { fileDownloader } from '../../helpers/fileDownloader';
 
 export default {
@@ -51,7 +51,7 @@ export default {
 	methods: {
 		exportConfig() {
 			this.$store.commit('spinner/SHOW');
-			ConfigService.exportConfig(20000)
+			ComponentConfigService.exportConfig(20000)
 				.then((response) => {
 					const fileName = 'iqrf-gateway-configuration_' + new Date().toISOString().replace(':', ' ');
 					const file = fileDownloader(response, 'application/zip', fileName);
@@ -61,7 +61,7 @@ export default {
 		},
 		importConfig() {
 			this.$store.commit('spinner/SHOW');
-			ConfigService.importConfig(this.$refs.configZip.$el.children[1].files[0], 20000)
+			ComponentConfigService.importConfig(this.$refs.configZip.$el.children[1].files[0], 20000)
 				.then(() => {
 					this.$store.commit('spinner/HIDE');
 					this.$toast.success(this.$t('config.migration.messages.imported').toString());

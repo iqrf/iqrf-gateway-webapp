@@ -67,6 +67,7 @@ Vue.use(VueToast,{
 });
 
 axios.defaults.baseURL = '//' + window.location.host + '/api/v0/';
+axios.defaults.timeout = 30000; 
 
 axios.interceptors.response.use(
 	(response: AxiosResponse) => {

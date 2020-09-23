@@ -107,7 +107,7 @@ export default {
 					return;
 				}
 				this.responseReceived = false;
-				setTimeout(() => {this.timeOut();}, 10000);
+				setTimeout(() => {this.timeOut();}, 30000);
 				return;
 			}
 			if (mutation.type === 'SOCKET_ONMESSAGE') {

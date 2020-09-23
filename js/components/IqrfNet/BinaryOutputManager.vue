@@ -159,7 +159,7 @@ export default {
 					return;
 				}
 				this.responseType = null;
-				this.timeout = timeout('iqrfnet.networkManager.messages.submit.timeout', 10000);
+				this.timeout = timeout('iqrfnet.networkManager.messages.submit.timeout', 30000);
 			}
 			if (mutation.type === 'SOCKET_ONMESSAGE') {
 				if (!this.allowedMTypes.includes(mutation.payload.mType)) {

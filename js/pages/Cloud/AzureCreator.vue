@@ -69,7 +69,7 @@ export default {
 	methods: {
 		save() {
 			this.$store.commit('spinner/SHOW');
-			return CloudService.create(this.serviceName, {'connectionString': this.connectionString}, 10000)
+			return CloudService.create(this.serviceName, {'connectionString': this.connectionString})
 				.then(() => {
 					this.$store.commit('spinner/HIDE');
 					this.$toast.success(this.$t('cloud.messages.success'));
