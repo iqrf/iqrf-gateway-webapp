@@ -1,10 +1,10 @@
 <template>
 	<CRow>
-		<CCol md='6'>
+		<CCol lg='6'>
 			<BondingManager @update-devices='updateDevices' />
 			<DiscoveryManager @update-devices='updateDevices' />
 		</CCol>
-		<CCol md='6'>
+		<CCol lg='6'>
 			<DevicesInfo ref='devs' />
 		</CCol>
 	</CRow>

@@ -39,22 +39,24 @@
 			<CButton color='primary' class='w-100' @click='frcPing'>
 				{{ $t('forms.pingNodes') }}
 			</CButton>
-			<table v-if='!timedOut' class='table table-striped'>
-				<tbody>
-					<tr>
-						<th />
-						<th v-for='num of Array(10).keys()' :key='num'>
-							{{ num }}
-						</th>
-					</tr>
-					<tr v-for='row of Array(24).keys()' :key='row'>
-						<th>{{ row }}0</th>
-						<td v-for='col of Array(10).keys()' :key='col'>
-							<DeviceIcon :device='devices[getAddress(row, col)]' />
-						</td>
-					</tr>
-				</tbody>
-			</table>
+			<div v-if='!timedOut' class='table-responsive'>
+				<table class='table table-striped device-info'>
+					<tbody>
+						<tr>
+							<th />
+							<th v-for='num of Array(10).keys()' :key='num'>
+								{{ num }}
+							</th>
+						</tr>
+						<tr v-for='row of Array(24).keys()' :key='row'>
+							<th>{{ row }}0</th>
+							<td v-for='col of Array(10).keys()' :key='col'>
+								<DeviceIcon :device='devices[getAddress(row, col)]' />
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 			<CAlert v-else color='danger'>
 				{{ $t('iqrfnet.networkManager.devicesInfo.messages.empty') }}
 			</CAlert>
@@ -235,3 +237,21 @@ export default {
 	}
 };
 </script>
+
+<style scoped lang='scss'>
+@media (min-width: 440px) and (max-width: 1400px) {
+	.device-info {
+		td, th {
+			padding: 0.5rem;
+		}
+	}
+}
+
+@media (max-width: 440px) {
+	.device-info {
+		td, th {
+			padding: 0.25rem;
+		}
+	}
+}
+</style>

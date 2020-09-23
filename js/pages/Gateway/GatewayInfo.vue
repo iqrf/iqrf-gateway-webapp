@@ -1,84 +1,86 @@
 <template>
 	<CCard body-wrapper>
-		<table v-if='info !== null' class='table table-striped'>
-			<tbody>
-				<tr>
-					<th>{{ $t('gateway.info.board') }}</th>
-					<td>{{ info.board }}</td>
-				</tr>
-				<tr v-if='info.gwId'>
-					<th>{{ $t('gateway.info.gwId') }}</th>
-					<td>{{ info.gwId }}</td>
-				</tr>
-				<tr v-if='info.pixla'>
-					<th>
-						<a href='https://www.pixla.online/'>
-							{{ $t('gateway.info.gwmonId') }}
-						</a>
-					</th>
-					<td>{{ info.pixla }}</td>
-				</tr>
-				<tr v-if='info.versions.controller'>
-					<th>{{ $t('gateway.info.version.iqrfGatewayController') }}</th>
-					<td>{{ info.versions.controller }}</td>
-				</tr>
-				<tr>
-					<th>{{ $t('gateway.info.version.iqrfGatewayDaemon') }}</th>
-					<td>{{ info.versions.daemon }}</td>
-				</tr>
-				<tr>
-					<th>{{ $t('gateway.info.version.iqrfGatewayWebapp') }}</th>
-					<td>{{ info.versions.webapp }}</td>
-				</tr>
-				<tr>
-					<th>{{ $t('gateway.info.hostname') }}</th>
-					<td>{{ info.hostname }}</td>
-				</tr>
-				<tr>
-					<th>{{ $t('gateway.info.addresses.ip') }}</th>
-					<td>
-						<span v-for='{iface, addresses} of getIpAddresses' :key='iface'>
-							<strong>{{ iface }}: </strong> {{ addresses }}<br>
-						</span>
-					</td>
-				</tr>
-				<tr>
-					<th>{{ $t('gateway.info.addresses.mac') }}</th>
-					<td>
-						<span v-for='{iface, address} of getMacAddresses' :key='iface'>
-							<strong>{{ iface }}: </strong> {{ address }}<br>
-						</span>
-					</td>
-				</tr>
-				<tr>
-					<th>{{ $t('gateway.info.usages.disks') }}</th>
-					<td>
-						<div v-for='usage of info.diskUsages' :key='usage.fsName'>
-							<strong>{{ usage.fsName }} ({{ usage.fsType }}):</strong>
-							<resource-usage :usage='usage' /><br>
-						</div>
-					</td>
-				</tr>
-				<tr>
-					<th>{{ $t('gateway.info.usages.memory') }}</th>
-					<td><resource-usage :usage='info.memoryUsage' /></td>
-				</tr>
-				<tr v-if='info.swapUsage'>
-					<th>{{ $t('gateway.info.usages.swap') }}</th>
-					<td><resource-usage :usage='info.swapUsage' /></td>
-				</tr>
-				<tr>
-					<th>{{ $t('gateway.info.tr.title') }}</th>
-					<td>
-						<coordinator-info />
-					</td>
-				</tr>
-				<tr>
-					<th>{{ $t('gateway.info.gwMode') }}</th>
-					<td>{{ $t('gateway.mode.modes.' + mode) }}</td>
-				</tr>
-			</tbody>
-		</table>
+		<div class='table-responsive'>
+			<table v-if='info !== null' class='table table-striped'>
+				<tbody>
+					<tr>
+						<th>{{ $t('gateway.info.board') }}</th>
+						<td>{{ info.board }}</td>
+					</tr>
+					<tr v-if='info.gwId'>
+						<th>{{ $t('gateway.info.gwId') }}</th>
+						<td>{{ info.gwId }}</td>
+					</tr>
+					<tr v-if='info.pixla'>
+						<th>
+							<a href='https://www.pixla.online/'>
+								{{ $t('gateway.info.gwmonId') }}
+							</a>
+						</th>
+						<td>{{ info.pixla }}</td>
+					</tr>
+					<tr v-if='info.versions.controller'>
+						<th>{{ $t('gateway.info.version.iqrfGatewayController') }}</th>
+						<td>{{ info.versions.controller }}</td>
+					</tr>
+					<tr>
+						<th>{{ $t('gateway.info.version.iqrfGatewayDaemon') }}</th>
+						<td>{{ info.versions.daemon }}</td>
+					</tr>
+					<tr>
+						<th>{{ $t('gateway.info.version.iqrfGatewayWebapp') }}</th>
+						<td>{{ info.versions.webapp }}</td>
+					</tr>
+					<tr>
+						<th>{{ $t('gateway.info.hostname') }}</th>
+						<td>{{ info.hostname }}</td>
+					</tr>
+					<tr>
+						<th>{{ $t('gateway.info.addresses.ip') }}</th>
+						<td>
+							<span v-for='{iface, addresses} of getIpAddresses' :key='iface'>
+								<strong>{{ iface }}: </strong> {{ addresses }}<br>
+							</span>
+						</td>
+					</tr>
+					<tr>
+						<th>{{ $t('gateway.info.addresses.mac') }}</th>
+						<td>
+							<span v-for='{iface, address} of getMacAddresses' :key='iface'>
+								<strong>{{ iface }}: </strong> {{ address }}<br>
+							</span>
+						</td>
+					</tr>
+					<tr>
+						<th>{{ $t('gateway.info.usages.disks') }}</th>
+						<td>
+							<div v-for='usage of info.diskUsages' :key='usage.fsName'>
+								<strong>{{ usage.fsName }} ({{ usage.fsType }}):</strong>
+								<resource-usage :usage='usage' /><br>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th>{{ $t('gateway.info.usages.memory') }}</th>
+						<td><resource-usage :usage='info.memoryUsage' /></td>
+					</tr>
+					<tr v-if='info.swapUsage'>
+						<th>{{ $t('gateway.info.usages.swap') }}</th>
+						<td><resource-usage :usage='info.swapUsage' /></td>
+					</tr>
+					<tr>
+						<th>{{ $t('gateway.info.tr.title') }}</th>
+						<td>
+							<coordinator-info />
+						</td>
+					</tr>
+					<tr>
+						<th>{{ $t('gateway.info.gwMode') }}</th>
+						<td>{{ $t('gateway.mode.modes.' + mode) }}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 		<CButton color='primary' @click='downloadDiagnostics()'>
 			{{ $t('gateway.diagnostics.download') }}
 		</CButton>

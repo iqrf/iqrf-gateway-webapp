@@ -318,32 +318,32 @@
 						{{ $t('forms.autoNetwork') }}
 					</CButton>
 					<CModal
-						title='Clear All Bonds'
-						color='secondary'
+						:title='$t("forms.clearBonds")'
+						color='danger'
 						:show.sync='modalClear'
 					>
 						{{ $t('iqrfnet.networkManager.messages.submit.removeBond.confirmClear') }}
 						<template #footer>
-							<CButton color='secondary' @click='modalClear = false'>
-								{{ $t('forms.cancel') }}
+							<CButton color='danger' @click='modalClear = false'>
+								{{ $t('forms.no') }}
 							</CButton>
-							<CButton color='primary' @click='processSubmitClearAll'>
-								{{ $t('forms.ok') }}
+							<CButton color='success' @click='processSubmitClearAll'>
+								{{ $t('forms.yes') }}
 							</CButton>
 						</template>
 					</CModal>
 					<CModal
-						title='Unbond Node'
-						color='secondary'
+						:title='$t("forms.unbond")'
+						color='danger'
 						:show.sync='modalUnbond'
 					>
 						{{ $t('iqrfnet.networkManager.messages.submit.removeBond.confirmUnbond') }}
 						<template #footer>
-							<CButton color='secondary' @click='modalUnbond = false'>
-								{{ $t('forms.cancel') }}
+							<CButton color='danger' @click='modalUnbond = false'>
+								{{ $t('forms.no') }}
 							</CButton>
-							<CButton color='primary' @click='processSubmitUnbond'>
-								{{ $t('forms.ok') }}
+							<CButton color='success' @click='processSubmitUnbond'>
+								{{ $t('forms.yes') }}
 							</CButton>
 						</template>
 					</CModal>
