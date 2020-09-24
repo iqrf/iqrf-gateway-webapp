@@ -177,7 +177,16 @@
 							:checked.sync='useNodes'
 							:label='$t("iqrfnet.networkManager.autoNetwork.form.nodes")'
 						/>
+						<CSelect
+							:value.sync='nodeCondition'
+							:options='[
+								{value: "total", label: "Total"},
+								{value: "new", label: "New"}
+							]'
+							:disabled='!useNodes'
+						/>
 						<ValidationProvider
+							v-if='nodeCondition === "total"'
 							v-slot='{ errors, touched, valid }'
 							rules='integer|required|between:1,239'
 							:custom-messages='{
@@ -198,6 +207,7 @@
 							/>
 						</ValidationProvider>
 						<ValidationProvider
+							v-if='nodeCondition === "new"'
 							v-slot='{ errors, touched, valid }'
 							rules='integer|required|between:1,239'
 							:custom-messages='{
@@ -221,6 +231,7 @@
 					<CInputCheckbox
 						:checked.sync='stopConditions.abortOnTooManyNodesFound'
 						:label='$t("iqrfnet.networkManager.autoNetwork.form.abortOnTooManyNodesFound")'
+						:disabled='!useNodes'
 					/>
 					<CButton 
 						color='primary'
@@ -269,7 +280,7 @@ export default {
 				emptyWaves: 2,
 				numberOfTotalNodes: 1,
 				numberOfNewNodes: 1,
-				abortOnTooManyNodesFound: false
+				abortOnTooManyNodesFound: false,
 			},
 			overlappingNetworks: {
 				networks: 1,
@@ -282,6 +293,7 @@ export default {
 			useEmptyWaves: true,
 			useWaves: false,
 			useNodes: true,
+			nodeCondition: 'total',
 		};
 	},
 	created() {
@@ -339,7 +351,6 @@ export default {
 		processSubmitAutoNetwork() {
 			let submitData = this.autoNetwork;
 			let stopConditions = {};
-			stopConditions['abortOnTooManyNodesFound'] = this.stopConditions.abortOnTooManyNodesFound;
 			if (this.useEmptyWaves) {
 				stopConditions['emptyWaves'] = this.stopConditions.emptyWaves;
 			}
@@ -347,10 +358,16 @@ export default {
 				stopConditions['waves'] = this.stopConditions.waves;
 			}
 			if (this.useNodes) {
-				stopConditions['numberOfTotalNodes'] = this.stopConditions.numberOfTotalNodes;
-				stopConditions['numberOfNewNodes'] = this.stopConditions.numberOfNewNodes;
+				stopConditions['abortOnTooManyNodesFound'] = this.stopConditions.abortOnTooManyNodesFound;
+				if (this.nodeCondition === 'total') {
+					stopConditions['numberOfTotalNodes'] = this.stopConditions.numberOfTotalNodes;
+				} else {
+					stopConditions['numberOfNewNodes'] = this.stopConditions.numberOfNewNodes;
+				}
 			}
-			submitData['stopConditions'] = stopConditions;
+			if (Object.keys(stopConditions).length > 0) {
+				submitData['stopConditions'] = stopConditions;
+			}
 			if (this.useOverlappingNetworks) {
 				submitData['overlappingNetworks'] = this.overlappingNetworks;
 			}

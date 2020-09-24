@@ -580,7 +580,7 @@
 					"stopConditions": "Stop conditions",
 					"waves": "Maximum number of waves",
 					"emptyWaves": "Number of empty waves",
-					"nodes": "Number of total or new nodes",
+					"nodes": "Node count conditions",
 					"numberOfTotalNodes": "Number of total nodes",
 					"numberOfNewNodes": "Number of new nodes",
 					"abortOnTooManyNodesFound": "Abort the AutoNetwork if too many nodes were found",
