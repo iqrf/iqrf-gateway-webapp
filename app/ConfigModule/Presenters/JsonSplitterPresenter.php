@@ -20,38 +20,9 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Presenters;
 
-use App\ConfigModule\Forms\JsonSplitterFormFactory;
-use Nette\Application\UI\Form;
-
 /**
  * JSON Splitter configuration presenter
  */
 class JsonSplitterPresenter extends GenericPresenter {
-
-	/**
-	 * IQRF Gateway Daemon component name
-	 */
-	private const COMPONENT = 'iqrf::JsonSplitter';
-
-	/**
-	 * @var JsonSplitterFormFactory JSON Splitter form factory
-	 * @inject
-	 */
-	public $formFactory;
-
-	/**
-	 * Renders the JSON Splitter configurator
-	 */
-	public function actionDefault(): void {
-		$this->loadFormConfiguration($this['configJsonSplitterForm'], self::COMPONENT, null);
-	}
-
-	/**
-	 * Creates the JSON Splitter configuration form
-	 * @return Form JSON Splitter configuration form
-	 */
-	protected function createComponentConfigJsonSplitterForm(): Form {
-		return $this->formFactory->create($this);
-	}
 
 }

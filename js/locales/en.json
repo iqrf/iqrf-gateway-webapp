@@ -301,7 +301,14 @@
 		},
 		"jsonSplitter": {
 			"title": "JSON Splitter",
-			"description": "JSON Splitter settings."
+			"description": "JSON Splitter settings.",
+			"form": {
+				"instance": "Name of instance",
+				"validateJsonResponse": "Validate JSON response",
+				"messages": {
+					"instance": "Please enter name of JSON Splitter instance."
+				}
+			}
 		},
 		"main": {
 			"title": "Main configuration",

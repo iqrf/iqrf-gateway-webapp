@@ -35,6 +35,7 @@ import IqrfDpa from '../pages/Config/IqrfDpa.vue';
 import IqrfSpi from '../pages/Config/IqrfSpi.vue';
 import IqrfUart from '../pages/Config/IqrfUart.vue';
 import JsonMngMetaDataApi from '../pages/Config/JsonMngMetaDataApi.vue';
+import JsonSplitter from '../pages/Config/JsonSplitter.vue';
 
 import UserAdd from '../pages/Core/UserAdd.vue';
 import UserEdit from '../pages/Core/UserEdit.vue';
@@ -148,6 +149,11 @@ const routes: Array<RouteConfig> = [
 						component: JsonMngMetaDataApi,
 						path: 'json-mng-meta-data-api',
 						meta: {title: 'config.jsonMngMetaDataApi.title'}
+					},
+					{
+						component: JsonSplitter,
+						path: 'json-splitter',
+						meta: {title: 'config.jsonSplitter.title'}
 					},
 					{
 						component: ConfigMigration,
