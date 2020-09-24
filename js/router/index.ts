@@ -32,6 +32,7 @@ import IqrfInfo from '../pages/Config/IqrfInfo.vue';
 import IqrfRepository from '../pages/Config/IqrfRepository.vue';
 import IqrfCdc from '../pages/Config/IqrfCdc.vue';
 import IqrfDpa from '../pages/Config/IqrfDpa.vue';
+import IqrfSpi from '../pages/Config/IqrfSpi.vue';
 import JsonMngMetaDataApi from '../pages/Config/JsonMngMetaDataApi.vue';
 
 import UserAdd from '../pages/Core/UserAdd.vue';
@@ -126,6 +127,11 @@ const routes: Array<RouteConfig> = [
 						component: IqrfRepository,
 						path: 'iqrf-repository',
 						meta: {title: 'config.iqrfRepository.title'}
+					},
+					{
+						component: IqrfSpi,
+						path: 'iqrf-spi',
+						meta: {title: 'config.iqrfSpi.title'}
 					},
 					{
 						component: IqrfInfo,

@@ -20,38 +20,9 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Presenters;
 
-use App\ConfigModule\Forms\IqrfSpiFormFactory;
-use Nette\Application\UI\Form;
-
 /**
  * IQRF SPI interface configuration presenter
  */
 class IqrfSpiPresenter extends GenericPresenter {
-
-	/**
-	 * IQRF Gateway Daemon component name
-	 */
-	private const COMPONENT = 'iqrf::IqrfSpi';
-
-	/**
-	 * @var IqrfSpiFormFactory IQRF SPI interface configuration form factory
-	 * @inject
-	 */
-	public $formFactory;
-
-	/**
-	 * Renders the IQRF SPI interface configurator
-	 */
-	public function actionDefault(): void {
-		$this->loadFormConfiguration($this['configIqrfSpiForm'], self::COMPONENT, null);
-	}
-
-	/**
-	 * Creates the IQRF SPI interface configuration form
-	 * @return Form IQRF SPI interface configuration form
-	 */
-	protected function createComponentConfigIqrfSpiForm(): Form {
-		return $this->formFactory->create($this);
-	}
 
 }

@@ -44,9 +44,6 @@ export default {
 		setPort(port) {
 			this.$emit('updatePort', port);
 			switch (this.interfaceType) {
-				case 'spi':
-					document.getElementById('frm-configIqrfSpiForm-IqrfInterface').value = port;
-					break;
 				case 'uart':
 					document.getElementById('frm-configIqrfUartForm-IqrfInterface').value = port;
 					break;

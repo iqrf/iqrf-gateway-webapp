@@ -17,19 +17,3 @@
 
 {block title}{_config.iqrfSpi.title}{/block}
 {block content}
-<c-card body-wrapper>
-	{control configIqrfSpiForm}
-</c-card>
-<c-card>
-	<c-card-header>{{ $t('config.interfaceMapping.spi') }}</c-card-header>
-	<c-card-body>
-		<c-row>
-			<c-col md='6'>
-				<interface-mappings interface-type='spi' />
-			</c-col>
-			<c-col md='6'>
-				<interface-ports interface-type='spi' />
-			</c-col>
-		</c-row>
-	</c-card-body>
-</c-card>

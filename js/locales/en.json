@@ -184,8 +184,6 @@
 			"description": "Manage components."
 		},
 		"interfaceMapping": {
-			"cdc": "Available CDC mappings",
-			"spi": "Available SPI mappings",
 			"uart": "Available UART mappings",
 			"boards": "Boards",
 			"interfaces": "Interfaces"
@@ -250,7 +248,23 @@
 		},
 		"iqrfSpi": {
 			"title": "IQRF SPI interface",
-			"description": "IQRF SPI interface settings."
+			"description": "IQRF SPI interface settings.",
+			"form": {
+				"instance": "Name of instance",
+				"IqrfInterface": "IQRF SPI interface",
+				"powerEnableGpioPin": "Power enable GPIO pin",
+				"busEnableGpioPin": "SPI bus enable GPIO pin",
+				"pgmSwitchGpioPin": "Programming mode switch GPIO pin",
+				"spiReset": "Enable SPI reset",
+				"messages": {
+					"instance": "Please enter name of IQRF SPI instance.",
+					"IqrfInterface": "Please enter IQRF SPI interface.",
+					"powerEnableGpioPin": "Please enter power enable GPIO pin.",
+					"busEnableGpioPin": "Please enter SPI bus enable GPIO pin.",
+					"pgmSwitchGpioPin": "Please enter programming mode switch GPIO pin."
+				}
+			},
+			"mappings": "Available SPI mappings"
 		},
 		"iqrfUart": {
 			"title": "IQRF UART interface",
