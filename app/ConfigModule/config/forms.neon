@@ -8,7 +8,6 @@ services:
 	- App\ConfigModule\Forms\SchedulerFormFactory
 	- App\ConfigModule\Forms\SchedulerImportFormFactory
 	- App\ConfigModule\Forms\TraceFileFormFactory
-	- App\ConfigModule\Forms\UdpFormFactory
 	- App\ConfigModule\Forms\WebSocketFormFactory
 	- App\ConfigModule\Forms\WebSocketMessagingFormFactory
 	- App\ConfigModule\Forms\WebSocketServiceFormFactory

@@ -20,68 +20,9 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Presenters;
 
-use App\ConfigModule\Datagrids\UdpMessagingDataGridFactory;
-use App\ConfigModule\Forms\UdpFormFactory;
-use Nette\Application\UI\Form;
-use Nette\Utils\JsonException;
-use Ublaboo\DataGrid\DataGrid;
-use Ublaboo\DataGrid\Exception\DataGridException;
-
 /**
  * UDP interface configuration presenter
  */
 class UdpPresenter extends GenericPresenter {
-
-	/**
-	 * IQRF Gateway Daemon component name
-	 */
-	private const COMPONENT = 'iqrf::UdpMessaging';
-
-	/**
-	 * @var UdpFormFactory UDP interface configuration form factory
-	 * @inject
-	 */
-	public $formFactory;
-
-	/**
-	 * @var UdpMessagingDataGridFactory UDP messaging configuration data grid factory
-	 * @inject
-	 */
-	public $dataGridFactory;
-
-	/**
-	 * Edits the UDP interface
-	 * @param int $id ID of UDP interface
-	 */
-	public function actionEdit(int $id): void {
-		$this->loadFormConfiguration($this['configUdpForm'], self::COMPONENT, $id, 'Udp:default');
-	}
-
-	/**
-	 * Deletes the UDP interface
-	 * @param int $id ID of UDP interface
-	 */
-	public function actionDelete(int $id): void {
-		$this->deleteInstance(self::COMPONENT, $id, 'Udp:default');
-	}
-
-	/**
-	 * Creates the UDP messaging data grid
-	 * @param string $name Data grid's component name
-	 * @return DataGrid UDP messaging data grid
-	 * @throws DataGridException
-	 * @throws JsonException
-	 */
-	protected function createComponentConfigUdpDataGrid(string $name): DataGrid {
-		return $this->dataGridFactory->create($this, $name);
-	}
-
-	/**
-	 * Creates the UDP interface configuration form
-	 * @return Form UDP interface configuration form
-	 */
-	protected function createComponentConfigUdpForm(): Form {
-		return $this->formFactory->create($this);
-	}
 
 }

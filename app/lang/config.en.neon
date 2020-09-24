@@ -322,19 +322,6 @@ tracer:
 
 udp:
 	title: UDP interface
-	description: IQRF UDP interface settings.
-	add: Add UDP interface
-	edit: Edit UDP interface
-	form:
-		instance: Name of instance
-		RemotePort: Remote port
-		LocalPort: Local port
-		messages:
-			confirmDelete: Do you really want to delete UDP messaging %s?
-			instance: Please enter name of UDP interface.
-			RemotePort: Please enter remote port.
-			LocalPort: Please enter local port.
-		Save: Save
 
 websocket:
 	title: WebSocket interface

@@ -38,6 +38,8 @@ import JsonMngMetaDataApi from '../pages/Config/JsonMngMetaDataApi.vue';
 import JsonSplitter from '../pages/Config/JsonSplitter.vue';
 import MqMessagingForm from '../pages/Config/MqMessagingForm.vue';
 import MqMessagingTable from '../pages/Config/MqMessagingTable.vue';
+import UdpMessagingForm from '../pages/Config/UdpMessagingForm.vue';
+import UdpMessagingTable from '../pages/Config/UdpMessagingTable.vue';
 
 import UserAdd from '../pages/Core/UserAdd.vue';
 import UserEdit from '../pages/Core/UserEdit.vue';
@@ -180,6 +182,32 @@ const routes: Array<RouteConfig> = [
 								path: 'edit/:instance',
 								props: true,
 								meta: {title: 'config.mq.edit'}
+							},
+						],
+					},
+					{
+						path: 'udp',
+						component: {
+							render(c) {
+								return c('router-view');
+							}
+						},
+						children: [
+							{
+								path: '',
+								component: UdpMessagingTable,
+								meta: {title: 'config.udp.title'}
+							},
+							{
+								component: UdpMessagingForm,
+								path: 'add',
+								meta: {title: 'config.udp.add'}
+							},
+							{
+								component: UdpMessagingForm,
+								path: 'edit/:instance',
+								props: true,
+								meta: {title: 'config.udp.edit'}
 							},
 						],
 					},

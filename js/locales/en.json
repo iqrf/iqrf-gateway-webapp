@@ -407,7 +407,32 @@
 		},
 		"udp": {
 			"title": "UDP interface",
-			"description": "IQRF UDP interface settings."
+			"description": "IQRF UDP interface settings.",
+			"add": "Add UDP interface",
+			"edit": "Edit UDP interface",
+			"form": {
+				"instance": "Name of instance",
+				"RemotePort": "Remote port",
+				"LocalPort": "Local port",
+				"messages": {
+					"instance": "Please enter name of UDP interface.",
+					"RemotePort": "Please enter remote port - integer between 1 and 49151.",
+					"LocalPort": "Please enter local port - integer between 1 and 49151."
+				}
+			},
+			"messages": {
+				"add": {
+					"success": "UDP interface instance {instance} has been added."
+				},
+				"delete": {
+					"confirm": "Do you really want to delete UDP interface instance {instance}?",
+					"confirmTitle": "Delete UDP interface instance",
+					"success": "UDP interface instance {instance} has been deleted."
+				},
+				"edit": {
+					"success": "UDP interface instance {instance} has been edited."
+				}
+			}
 		},
 		"websocket": {
 			"title": "WebSocket interface",
