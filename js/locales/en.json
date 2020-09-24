@@ -258,7 +258,14 @@
 		},
 		"jsonMngMetaDataApi": {
 			"title": "JSON Metadata API",
-			"description": "JSON Metadata API settings."
+			"description": "JSON Metadata API settings.",
+			"form": {
+				"instance": "Name of instance",
+				"metaDataToMessages": "Add metadata into the messages",
+				"messages": {
+					"instance": "Please enter name of JSON Metadata API instance."
+				}
+			}
 		},
 		"jsonRawApi": {
 			"title": "JSON Raw API",
