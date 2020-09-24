@@ -17,12 +17,3 @@
 
 {block title}{_config.iqrfCdc.title}{/block}
 {block content}
-<c-card body-wrapper>
-	{control configIqrfCdcForm}
-</c-card>
-<c-card>
-	<c-card-header>{{ $t('config.interfaceMapping.cdc') }}</c-card-header>
-	<c-card-body>
-		<interface-ports interface-type='cdc' />
-	</c-card-body>
-</c-card>

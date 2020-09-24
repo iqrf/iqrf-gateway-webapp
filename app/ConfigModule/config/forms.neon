@@ -1,6 +1,5 @@
 services:
 	- App\ConfigModule\Forms\ComponentsFormFactory
-	- App\ConfigModule\Forms\IqrfCdcFormFactory
 	- App\ConfigModule\Forms\IqrfDpaFormFactory
 	- App\ConfigModule\Forms\IqrfSpiFormFactory
 	- App\ConfigModule\Forms\IqrfUartFormFactory

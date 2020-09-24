@@ -98,24 +98,18 @@ export default {
 						this.instance = this.configuration.instance;
 					}	
 				})
-				.catch((error) => {
-					FormErrorHandler.configError(error);
-				});
+				.catch((error) => FormErrorHandler.configError(error));
 		},
 		saveConfig() {
 			this.$store.commit('spinner/SHOW');
 			if (this.instance !== null) {
 				ComponentConfigService.saveConfig(this.componentName, this.configuration.instance, this.configuration)
-					.then(() => this.saveConfig())
-					.catch((error) => {
-						FormErrorHandler.configError(error);
-					});
+					.then(() => this.successfulSave())
+					.catch((error) => FormErrorHandler.configError(error));
 			} else {
 				ComponentConfigService.createConfig(this.componentName, this.configuration)
 					.then(() => this.successfulSave())
-					.catch((error) => {
-						FormErrorHandler.configError(error);
-					});
+					.catch((error) => FormErrorHandler.configError(error));
 			}
 		},
 		successfulSave() {

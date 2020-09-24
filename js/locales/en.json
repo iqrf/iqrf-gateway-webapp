@@ -196,7 +196,16 @@
 		},
 		"iqrfCdc": {
 			"title": "IQRF CDC interface",
-			"description": "IQRF CDC interface settings."
+			"description": "IQRF CDC interface settings.",
+			"form": {
+				"instance": "Name of instance",
+				"interface": "IQRF CDC interface",
+				"messages": {
+					"instance": "Please enter name of IQRF CDC instance.",
+					"interface": "Please enter IQRF CDC interface."
+				}
+			},
+			"mappings": "Available CDC mappings"
 		},
 		"iqrfDpa":{
 			"title": "IQRF DPA interface",

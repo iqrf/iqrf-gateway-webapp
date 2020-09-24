@@ -44,9 +44,6 @@ export default {
 		setPort(port) {
 			this.$emit('updatePort', port);
 			switch (this.interfaceType) {
-				case 'cdc':
-					document.getElementById('frm-configIqrfCdcForm-IqrfInterface').value = port;
-					break;
 				case 'spi':
 					document.getElementById('frm-configIqrfSpiForm-IqrfInterface').value = port;
 					break;

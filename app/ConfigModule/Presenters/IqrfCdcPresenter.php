@@ -20,38 +20,9 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Presenters;
 
-use App\ConfigModule\Forms\IqrfCdcFormFactory;
-use Nette\Application\UI\Form;
-
 /**
  * IQRF CDC configuration presenter
  */
 class IqrfCdcPresenter extends GenericPresenter {
-
-	/**
-	 * IQRF Gateway Daemon component name
-	 */
-	private const COMPONENT = 'iqrf::IqrfCdc';
-
-	/**
-	 * @var IqrfCdcFormFactory IQRF CDC interface configuration form factory
-	 * @inject
-	 */
-	public $formFactory;
-
-	/**
-	 * Renders the IQRF CDC interface configurator
-	 */
-	public function actionDefault(): void {
-		$this->loadFormConfiguration($this['configIqrfCdcForm'], self::COMPONENT, null);
-	}
-
-	/**
-	 * Creates the IQRF CDC interface configuration form
-	 * @return Form IQRF CDC interface configuration form
-	 */
-	protected function createComponentConfigIqrfCdcForm(): Form {
-		return $this->formFactory->create($this);
-	}
 
 }
