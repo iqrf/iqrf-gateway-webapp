@@ -76,7 +76,7 @@ export default {
 		};
 	},
 	created() {
-		extend('require', required);
+		extend('required', required);
 		this.getConfig();
 	},
 	methods: {

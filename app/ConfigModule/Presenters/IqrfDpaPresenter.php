@@ -20,38 +20,9 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Presenters;
 
-use App\ConfigModule\Forms\IqrfDpaFormFactory;
-use Nette\Application\UI\Form;
-
 /**
  * IQRF DPA interface configuration presenter
  */
 class IqrfDpaPresenter extends GenericPresenter {
-
-	/**
-	 * IQRF Gateway Daemon component name
-	 */
-	private const COMPONENT = 'iqrf::IqrfDpa';
-
-	/**
-	 * @var IqrfDpaFormFactory IQRF DPA interface configuration form factory
-	 * @inject
-	 */
-	public $dpaFormFactory;
-
-	/**
-	 * Renders the IQRF DPA interface configurator
-	 */
-	public function actionDefault(): void {
-		$this->loadFormConfiguration($this['configIqrfDpaForm'], self::COMPONENT, null);
-	}
-
-	/**
-	 * Creates the IQRF DPA configuration interface form
-	 * @return Form IQRF DPA configuration interface form
-	 */
-	protected function createComponentConfigIqrfDpaForm(): Form {
-		return $this->dpaFormFactory->create($this);
-	}
 
 }

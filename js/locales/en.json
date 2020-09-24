@@ -209,7 +209,15 @@
 		},
 		"iqrfDpa":{
 			"title": "IQRF DPA interface",
-			"description": "IQRF DPA interface settings."
+			"description": "IQRF DPA interface settings.",
+			"form": {
+				"instance": "Name of instance",
+				"DpaHandlerTimeout": "DPA Confirmation/Response timeout in milliseconds",
+				"messages": {
+					"instance": "Please enter name of IQRF DPA instance.",
+					"DpaHandlerTimeout": "Please enter default DPA Confirmation/Response timeout greater than 0."
+				}
+			}
 		},
 		"iqrfInfo": {
 			"title": "IQRF Info",

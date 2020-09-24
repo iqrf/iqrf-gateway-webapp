@@ -31,6 +31,7 @@ import MenderConfig from '../pages/Config/MenderConfig.vue';
 import IqrfInfo from '../pages/Config/IqrfInfo.vue';
 import IqrfRepository from '../pages/Config/IqrfRepository.vue';
 import IqrfCdc from '../pages/Config/IqrfCdc.vue';
+import IqrfDpa from '../pages/Config/IqrfDpa.vue';
 
 import UserAdd from '../pages/Core/UserAdd.vue';
 import UserEdit from '../pages/Core/UserEdit.vue';
@@ -114,6 +115,11 @@ const routes: Array<RouteConfig> = [
 						component: IqrfCdc,
 						path: 'iqrf-cdc',
 						meta: {title: 'config.iqrfCdc.title'}
+					},
+					{
+						component: IqrfDpa,
+						path: 'iqrf-dpa',
+						meta: {title: 'config.iqrfDpa.title'}
 					},
 					{
 						component: IqrfRepository,
