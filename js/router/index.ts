@@ -29,6 +29,7 @@ import ControllerConfig from '../pages/Config/ControllerConfig.vue';
 import MenderConfig from '../pages/Config/MenderConfig.vue';
 import IqrfInfo from '../pages/Config/IqrfInfo.vue';
 
+import UserAdd from '../pages/Core/UserAdd.vue';
 import UserEdit from '../pages/Core/UserEdit.vue';
 import UserList from '../pages/Core/UserList.vue';
 
@@ -224,6 +225,11 @@ const routes: Array<RouteConfig> = [
 						component: UserList,
 						path: '',
 						meta: {title: 'core.user.title'},
+					},
+					{
+						component: UserAdd,
+						path: 'add',
+						meta: {title: 'core.user.add.title'},
 					},
 					{
 						component: UserEdit,

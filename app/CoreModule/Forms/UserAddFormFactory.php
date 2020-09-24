@@ -20,8 +20,6 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Forms;
 
-use App\CoreModule\Presenters\BasePresenter;
-use App\CoreModule\Presenters\UserPresenter;
 use App\InstallModule\Presenters\CreateUserPresenter;
 use App\Models\Database\Entities\User;
 use App\Models\Database\EntityManager;
@@ -48,7 +46,7 @@ class UserAddFormFactory {
 	private $factory;
 
 	/**
-	 * @var BasePresenter Base presenter
+	 * @var CreateUserPresenter Base presenter
 	 */
 	private $presenter;
 
@@ -64,54 +62,19 @@ class UserAddFormFactory {
 
 	/**
 	 * Creates register a new user form
-	 * @param BasePresenter|CreateUserPresenter|UserPresenter $presenter Base presenter
+	 * @param CreateUserPresenter $presenter Base presenter
 	 * @return Form Register a new user form
 	 */
-	public function create(BasePresenter $presenter): Form {
+	public function create(CreateUserPresenter $presenter): Form {
 		$this->presenter = $presenter;
 		$form = $this->factory->create(self::PREFIX);
 		$form->addText('username', 'username')
 			->setRequired('messages.username');
 		$form->addPassword('password', 'password')
 			->setRequired('messages.password');
-		if (!$this->presenter instanceof CreateUserPresenter &&
-			$this->presenter->getUser()->isInRole('power')) {
-			$form->addSelect('userType', 'userType', $this->getUserTypes());
-			$form->addSelect('language', 'language', $this->getLanguages());
-		}
 		$form->addSubmit('add', 'add.submit');
 		$form->onSuccess[] = [$this, 'add'];
 		return $form;
-	}
-
-	/**
-	 * Gets user types
-	 * @return array<string> User types
-	 */
-	private function getUserTypes(): array {
-		$userTypes = User::ROLES;
-		foreach ($userTypes as $key => $type) {
-			$userTypes[$type] = 'userTypes.' . $type;
-			unset($userTypes[$key]);
-		}
-		if ($this->presenter instanceof CreateUserPresenter ||
-			!$this->presenter->getUser()->isInRole('power')) {
-			unset($userTypes['power']);
-		}
-		return $userTypes;
-	}
-
-	/**
-	 * Gets languages
-	 * @return array<string> Available languages
-	 */
-	private function getLanguages(): array {
-		$languages = User::LANGUAGES;
-		foreach ($languages as $key => $language) {
-			$languages[$language] = 'languages.' . $language;
-			unset($languages[$key]);
-		}
-		return $languages;
 	}
 
 	/**
@@ -125,16 +88,11 @@ class UserAddFormFactory {
 			$this->presenter->flashMessage(self::PREFIX . '.messages.usernameAlreadyExists', 'danger');
 			return;
 		}
-		$role = $values['userType'] ?? User::ROLE_DEFAULT;
-		$language = $values['language'] ?? User::LANGUAGE_DEFAULT;
-		$user = new User($username, $values['password'], $role, $language);
+		$user = new User($username, $values['password'], User::ROLE_DEFAULT, User::LANGUAGE_DEFAULT);
 		$this->entityManager->persist($user);
 		$this->entityManager->flush();
 		$message = $form->getTranslator()->translate('messages.successAdd', ['username' => $username]);
 		$this->presenter->flashMessage($message, 'success');
-		if ($this->presenter instanceof UserPresenter) {
-			$this->presenter->redirect('User:default');
-		}
 		$user = $this->presenter->getUser();
 		$user->login($username, $values['password']);
 		$this->presenter->redirect(':Core:Homepage:default');

@@ -382,6 +382,7 @@
 			},
 			"id": "User ID",
 			"username": "User name",
+			"password": "Password",
 			"role": "User role",
 			"roles": {
 				"normal": "Normal user",
@@ -402,8 +403,12 @@
 				},
 				"missing": {
 					"username": "Please enter the username.",
+					"password": "Please enter the password.",
 					"oldPassword": "Please enter the old password.",
 					"newPassword": "Please enter the new password."
+				},
+				"add": {
+					"success": "User {username} has been added successfully."
 				},
 				"delete": {
 					"confirm": "Do you really want to delete user {username}?",
