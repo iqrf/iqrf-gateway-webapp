@@ -17,19 +17,3 @@
 
 {block title}{_config.iqrfUart.title}{/block}
 {block content}
-<c-card body-wrapper>
-	{control configIqrfUartForm}
-</c-card>
-<c-card>
-	<c-card-header>{{ $t('config.interfaceMapping.uart') }}</c-card-header>
-	<c-card-body>
-		<c-row>
-			<c-col md='6'>
-				<interface-mappings interface-type='uart' />
-			</c-col>
-			<c-col md='6'>
-				<interface-ports interface-type='uart' />
-			</c-col>
-		</c-row>
-	</c-card-body>
-</c-card>

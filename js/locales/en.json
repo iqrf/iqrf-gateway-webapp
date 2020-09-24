@@ -184,7 +184,6 @@
 			"description": "Manage components."
 		},
 		"interfaceMapping": {
-			"uart": "Available UART mappings",
 			"boards": "Boards",
 			"interfaces": "Interfaces"
 		},
@@ -268,7 +267,22 @@
 		},
 		"iqrfUart": {
 			"title": "IQRF UART interface",
-			"description": "IQRF UART interface settings."
+			"description": "IQRF UART interface settings.",
+			"form": {
+				"instance": "Name of instance",
+				"IqrfInterface": "IQRF UART interface",
+				"baudRate": "UART baud rate",
+				"powerEnableGpioPin": "Power enable GPIO pin",
+				"busEnableGpioPin": "UART bus enable GPIO pin",
+				"messages": {
+					"instance": "Please enter name of IQRF UART instance.",
+					"IqrfInterface": "Please enter IQRF UART interface.",
+					"baudRate": "Please select UART baud rate.",
+					"powerEnableGpioPin": "Please enter power enable GPIO pin.",
+					"busEnableGpioPin": "Please enter SPI bus enable GPIO pin."
+				}
+			},
+			"mappings": "Available UART mappings"
 		},
 		"jsonMngMetaDataApi": {
 			"title": "JSON Metadata API",

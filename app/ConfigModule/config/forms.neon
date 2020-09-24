@@ -1,6 +1,5 @@
 services:
 	- App\ConfigModule\Forms\ComponentsFormFactory
-	- App\ConfigModule\Forms\IqrfUartFormFactory
 	- App\ConfigModule\Forms\JsonDpaApiRawFormFactory
 	- App\ConfigModule\Forms\JsonSplitterFormFactory
 	- App\ConfigModule\Forms\MainFormFactory

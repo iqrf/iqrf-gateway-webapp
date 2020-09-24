@@ -20,38 +20,9 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Presenters;
 
-use App\ConfigModule\Forms\IqrfUartFormFactory;
-use Nette\Application\UI\Form;
-
 /**
  * IQRF UART configuration presenter
  */
 class IqrfUartPresenter extends GenericPresenter {
-
-	/**
-	 * IQRF Gateway Daemon component name
-	 */
-	private const COMPONENT = 'iqrf::IqrfUart';
-
-	/**
-	 * @var IqrfUartFormFactory IQRF UART interface configuration form factory
-	 * @inject
-	 */
-	public $formFactory;
-
-	/**
-	 * Renders the IQRF UART interface configurator
-	 */
-	public function actionDefault(): void {
-		$this->loadFormConfiguration($this['configIqrfUartForm'], self::COMPONENT, null);
-	}
-
-	/**
-	 * Creates the IQRF UART interface configuration form
-	 * @return Form IQRF UART interface configuration form
-	 */
-	protected function createComponentConfigIqrfUartForm(): Form {
-		return $this->formFactory->create($this);
-	}
 
 }

@@ -73,66 +73,17 @@ iqmesh:
 
 iqrfCdc:
 	title: IQRF CDC interface
-	description: IQRF CDC interface settings.
-	form:
-		instance: Name of instance
-		IqrfInterface: IQRF CDC interface
-		messages:
-			instance: Please enter name of IQRF CDC instance.
-			IqrfInterface: Please enter IQRF CDC interface.
-		Save: Save
 
 iqrfDpa:
 	title: IQRF DPA interface
-	description: IQRF DPA interface settings.
-	form:
-		instance: Name of instance
-		DpaHandlerTimeout: DPA Confirmation/Response timeout in milliseconds
-		messages:
-			instance: Please enter name of IQRF DPA instance.
-			DpaHandlerTimeout: Please enter default DPA Confirmation/Response timeout.
-			DpaHandlerTimeout-rule: DPA Handler timeout must be bigger than 0.
-		Save: Save
-
 iqrfInfo:
 	title: IQRF Info
-	description: IQRF Info database settings.
-	form:
-		instance: Name of instance
-		enumAtStartUp: Initialize network full enumeration just after startup
-		enumPeriod: Period in minutes of regular check enumeration
-		enumUniformDpaVer: Obtain only HWPID and HWPID version from nodes
-		messages:
-			instance: Please enter name of IQRF Info instance.
-			enumPeriod: Period must be bigger than 0.
-		save: Save
 
 iqrfRepository:
 	title: IQRF Repository
-	description: "Manage IQRF Repository's settings."
-	form:
-		instance: Name of instance
-		urlRepo: IQRF Repository URL
-		checkPeriodInMinutes: Check period in minutes
-		messages:
-			instance: Please enter name of IQRF SPI instance.
-			urlRepo: Please enter IQRF Repository URL.
-		Save: Save
 
 iqrfSpi:
 	title: IQRF SPI interface
-	description: IQRF SPI interface settings.
-	form:
-		instance: Name of instance
-		IqrfInterface: IQRF SPI interface
-		powerEnableGpioPin: Power enable GPIO pin
-		busEnableGpioPin: SPI bus enable GPIO pin
-		pgmSwitchGpioPin: Programming mode switch GPIO pin
-		spiReset: Enable SPI reset
-		messages:
-			instance: Please enter name of IQRF SPI instance.
-			IqrfInterface: Please enter IQRF SPI interface.
-		Save: Save
 
 iqrfUart:
 	title: IQRF UART interface
