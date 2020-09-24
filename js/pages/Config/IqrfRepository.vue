@@ -114,24 +114,22 @@ export default {
 			this.$store.commit('spinner/SHOW');
 			if (this.hasInstance) {
 				ComponentConfigService.saveConfig(this.componentName, this.repository.instance, this.repository)
-					.then(() => {
-						this.$store.commit('spinner/HIDE');
-						this.$toast.success(this.$t('config.success').toString());
-					})
+					.then(() => this.successfulSave())
 					.catch((error) => {
 						FormErrorHandler.configError(error);
 					});
 			} else {
 				ComponentConfigService.createConfig(this.componentName, this.repository)
-					.then(() => {
-						this.$store.commit('spinner/HIDE');
-						this.$toast.success(this.$t('config.success').toString());
-					})
+					.then(() => this.successfulSave())
 					.catch((error) => {
 						FormErrorHandler.configError(error);
 					});
 			}
-		}
+		},
+		successfulSave() {
+			this.$store.commit('spinner/HIDE');
+			this.$toast.success(this.$t('config.success').toString());
+		},
 	},
 	metaInfo: {
 		title: 'config.iqrfRepository.title',

@@ -95,10 +95,7 @@ export default {
 					this.$store.commit('spinner/HIDE');
 					if (response.data.instances.length > 0) {
 						this.hasInstance = true;
-						this.info.instance = response.data.instances[0].instance;
-						this.info.enumAtStartUp = response.data.instances[0].enumAtStartUp;
-						this.info.enumPeriod = response.data.instances[0].enumPeriod;
-						this.info.enumUniformDpaVer = response.data.instances[0].enumUniformDpaVer;	
+						this.info = response.data.instances[0];
 					}	
 				})
 				.catch((error) => {
@@ -109,24 +106,22 @@ export default {
 			this.$store.commit('spinner/SHOW');
 			if (this.hasInstance) {
 				ComponentConfigService.saveConfig(this.componentName, this.info.instance, this.info)
-					.then(() => {
-						this.$store.commit('spinner/HIDE');
-						this.$toast.success(this.$t('config.success').toString());
-					})
+					.then(() => this.saveConfig())
 					.catch((error) => {
 						FormErrorHandler.configError(error);
 					});
 			} else {
 				ComponentConfigService.createConfig(this.componentName, this.info)
-					.then(() => {
-						this.$store.commit('spinner/HIDE');
-						this.$toast.success(this.$t('config.success').toString());
-					})
+					.then(() => this.successfulSave())
 					.catch((error) => {
 						FormErrorHandler.configError(error);
 					});
 			}
-		}
+		},
+		successfulSave() {
+			this.$store.commit('spinner/HIDE');
+			this.$toast.success(this.$t('config.success').toString());
+		},
 	},
 	metaInfo: {
 		title: 'config.iqrfInfo.title',
