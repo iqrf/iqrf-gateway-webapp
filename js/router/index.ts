@@ -23,6 +23,7 @@ import SendJsonRequest from '../pages/IqrfNet/SendJsonRequest.vue';
 import SendDpaPacket from '../pages/IqrfNet/SendDpaPacket.vue';
 import StandardManager from '../pages/IqrfNet/StandardManager.vue';
 
+import ConfigDisambiguation from '../pages/Config/ConfigDisambiguation.vue';
 import ConfigMigration from '../pages/Config/ConfigMigration.vue';
 import TranslatorConfig from '../pages/Config/TranslatorConfig.vue';
 import ControllerConfig from '../pages/Config/ControllerConfig.vue';
@@ -67,7 +68,6 @@ const routes: Array<RouteConfig> = [
 						path: '',
 						meta: {title: 'cloud.title'}
 					},
-
 					{
 						component: AzureCreator,
 						path: 'azure',
@@ -92,6 +92,46 @@ const routes: Array<RouteConfig> = [
 						component: PixlaControl,
 						path: 'pixla',
 						meta: {title: 'cloud.pixla.title'},
+					},
+				]
+			},
+			{
+				path: '/config',
+				component: {
+					render(c) {
+						return c('router-view');
+					}
+				},
+				children: [
+					{
+						component: ConfigDisambiguation,
+						path: '',
+						meta: {title: 'config.title'}
+					},
+					{
+						component: IqrfInfo,
+						path: 'iqrf-info',
+						meta: {title: 'config.iqrfInfo.title'}
+					},
+					{
+						component: ConfigMigration,
+						path: 'migration',
+						meta: {title: 'config.migration.title'}
+					},
+					{
+						component: MenderConfig,
+						path: 'mender',
+						meta: {title: 'config.mender.description'}
+					},
+					{
+						component: TranslatorConfig,
+						path: 'translator',
+						meta: {title: 'translatorConfig.description'}
+					},
+					{
+						component: ControllerConfig,
+						path: 'controller',
+						meta: {title: 'controllerConfig.description'}
 					},
 				]
 			},
@@ -171,31 +211,6 @@ const routes: Array<RouteConfig> = [
 						meta: {title: 'iqrfnet.sendJson.title'}
 					},
 				]
-			},
-			{
-				component: IqrfInfo,
-				path: '/config/iqrf-info',
-				meta: {title: 'config.iqrfInfo.title'}
-			},
-			{
-				component: ConfigMigration,
-				path: '/config/migration',
-				meta: {title: 'config.migration.title'}
-			},
-			{
-				component: MenderConfig,
-				path: '/config/mender',
-				meta: {title: 'config.mender.description'}
-			},
-			{
-				component: TranslatorConfig,
-				path: '/config/translator',
-				meta: {title: 'translatorConfig.description'}
-			},
-			{
-				component: ControllerConfig,
-				path: '/config/controller',
-				meta: {title: 'controllerConfig.description'}
 			},
 			{
 				path: '/network',

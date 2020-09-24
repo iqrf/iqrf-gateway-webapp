@@ -1,7 +1,7 @@
 <template>
 	<CRow>
 		<CCol lg='6'>
-			<CTabs variant='tabs'>
+			<CTabs variant='tabs' :active-tab='activeTab'>
 				<CTab title='IQMESH'>
 					<BondingManager @update-devices='updateDevices' />
 				</CTab>
@@ -35,7 +35,9 @@ export default {
 		DiscoveryManager,
 	},
 	data() {
-		return {};
+		return {
+			activeTab: 0,
+		};
 	},
 	methods: {
 		updateDevices() {
@@ -53,7 +55,7 @@ export default {
 <style scoped>
 
 .tabs {
-	border-bottom: 0px;
+	border-bottom: 0;
 }
 
 </style>
