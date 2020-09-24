@@ -20,11 +20,8 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Presenters;
 
-use App\CoreModule\Models\VersionManager;
 use App\CoreModule\Traits\TPresenterFlashMessage;
-use GuzzleHttp\Exception\TransferException;
 use Nette\Security\IUserStorage;
-use Nette\Utils\JsonException;
 
 /**
  * Protected presenter for protected application presenters
@@ -32,31 +29,6 @@ use Nette\Utils\JsonException;
 abstract class ProtectedPresenter extends BasePresenter {
 
 	use TPresenterFlashMessage;
-
-	/**
-	 * @var VersionManager Version manager
-	 * @inject
-	 */
-	public $versionManager;
-
-	/**
-	 * After template render
-	 * @throws JsonException
-	 */
-	public function afterRender(): void {
-		parent::afterRender();
-		if ($this->featureManager->isEnabled('versionChecker')) {
-			try {
-				if ($this->versionManager->availableWebappUpdate()) {
-					$version = ['version' => $this->versionManager->getCurrentWebapp()];
-					$phrase = $this->getTranslator()->translate('core.update.new-version-tag', null, $version);
-					$this->template->newVersion = $phrase;
-				}
-			} catch (TransferException $e) {
-				$this->template->offlineMode = true;
-			}
-		}
-	}
 
 	/**
 	 * Checks requirements
