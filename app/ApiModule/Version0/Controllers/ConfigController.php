@@ -37,6 +37,7 @@ use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use Nette\IOException;
 use Nette\Utils\JsonException;
+use function GuzzleHttp\Psr7\stream_for;
 
 /**
  * Configuration controller
@@ -125,7 +126,7 @@ class ConfigController extends BaseConfigController {
 		try {
 			$json = $request->getJsonBody(true);
 			$this->mainManager->save($json);
-			return $response;
+			return $response->withBody(stream_for());
 		} catch (JsonException $e) {
 			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
 		} catch (IOException $e) {
@@ -423,7 +424,7 @@ class ConfigController extends BaseConfigController {
 		} catch (IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
-		return $response;
+		return $response->withBody(stream_for());
 	}
 
 	/**

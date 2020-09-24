@@ -37,6 +37,7 @@ use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use App\CoreModule\Models\FeatureManager;
 use Nette\IOException;
 use Nette\Utils\JsonException;
+use function GuzzleHttp\Psr7\stream_for;
 
 /**
  * Optional feature manager controller
@@ -157,7 +158,7 @@ class FeatureController extends BaseController {
 		try {
 			$this->validator->validate('features/' . $name, $request);
 			$this->manager->edit($name, $request->getJsonBody());
-			return $response;
+			return $response->withBody(stream_for());
 		} catch (FeatureNotFoundException | NonexistentJsonSchemaException $e) {
 			throw new ClientErrorException('Feature not found', ApiResponse::S404_NOT_FOUND);
 		} catch (JsonException $e) {

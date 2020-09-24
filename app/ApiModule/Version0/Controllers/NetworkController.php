@@ -39,6 +39,7 @@ use App\NetworkModule\Models\WifiManager;
 use Grifart\Enum\MissingValueDeclarationException;
 use Ramsey\Uuid\Exception\InvalidUuidStringException;
 use Ramsey\Uuid\Uuid;
+use function GuzzleHttp\Psr7\stream_for;
 
 /**
  * Network manager
@@ -199,7 +200,7 @@ class NetworkController extends BaseController {
 		} catch (NetworkManagerException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
-		return $response;
+		return $response->withBody(stream_for());
 	}
 
 	/**
@@ -305,7 +306,7 @@ class NetworkController extends BaseController {
 	 */
 	public function connectInterface(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->interfaceManager->connect($request->getParameter('name'));
-		return $response;
+		return $response->withBody(stream_for());
 	}
 
 	/**
@@ -326,7 +327,7 @@ class NetworkController extends BaseController {
 	 */
 	public function disconnectInterface(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->interfaceManager->disconnect($request->getParameter('name'));
-		return $response;
+		return $response->withBody(stream_for());
 	}
 
 	/**

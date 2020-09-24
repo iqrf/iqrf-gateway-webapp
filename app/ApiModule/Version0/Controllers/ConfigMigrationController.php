@@ -34,6 +34,7 @@ use App\ConfigModule\Models\MigrationManager;
 use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
 use Nette\Utils\FileSystem;
 use Nette\Utils\JsonException;
+use function GuzzleHttp\Psr7\stream_for;
 
 /**
  * Configuration migration controller
@@ -121,7 +122,7 @@ class ConfigMigrationController extends BaseConfigController {
 			throw new ServerErrorException('Unsupported init system', ApiResponse::S501_NOT_IMPLEMENTED);
 		}
 		FileSystem::delete($path);
-		return $response;
+		return $response->withBody(stream_for());
 	}
 
 }

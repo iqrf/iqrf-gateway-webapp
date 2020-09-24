@@ -31,6 +31,7 @@ use Apitte\Core\Http\ApiResponse;
 use App\ConfigModule\Models\ControllerConfigManager;
 use Nette\IOException;
 use Nette\Utils\JsonException;
+use function GuzzleHttp\Psr7\stream_for;
 
 /**
  * IQRF Gateway Controller configuration controller
@@ -108,7 +109,7 @@ class ControllerConfigController extends BaseConfigController {
 	public function setConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
 			$this->manager->saveConfig($request->getJsonBody());
-			return $response;
+			return $response->withBody(stream_for());
 		} catch (JsonException $e) {
 			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
 		} catch (IOException $e) {

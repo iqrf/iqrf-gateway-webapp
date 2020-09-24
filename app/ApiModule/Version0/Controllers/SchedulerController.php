@@ -37,6 +37,7 @@ use App\ConfigModule\Models\SchedulerManager;
 use App\ConfigModule\Models\SchedulerMigrationManager;
 use Nette\Utils\FileSystem;
 use Nette\Utils\JsonException;
+use function GuzzleHttp\Psr7\stream_for;
 
 /**
  * Scheduler configuration controller
@@ -244,7 +245,7 @@ class SchedulerController extends BaseController {
 		} catch (JsonException $e) {
 			throw new ServerErrorException('Invalid JSON', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
-		return $response;
+		return $response->withBody(stream_for());
 	}
 
 	/**
@@ -326,7 +327,7 @@ class SchedulerController extends BaseController {
 			default:
 				throw new ClientErrorException('Unsupported media type', ApiResponse::S415_UNSUPPORTED_MEDIA_TYPE);
 		}
-		return $response;
+		return $response->withBody(stream_for());
 	}
 
 }

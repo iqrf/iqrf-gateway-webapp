@@ -36,6 +36,7 @@ use DateTime;
 use Nette\Utils\JsonException;
 use Throwable;
 use function assert;
+use function GuzzleHttp\Psr7\stream_for;
 
 /**
  * API keys controller
@@ -246,7 +247,7 @@ class ApiKeyController extends BaseController {
 		$apiKey->setExpiration($expiration);
 		$this->entityManager->persist($apiKey);
 		$this->entityManager->flush();
-		return $response;
+		return $response->withBody(stream_for());
 	}
 
 }

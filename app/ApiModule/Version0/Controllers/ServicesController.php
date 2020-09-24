@@ -34,6 +34,7 @@ use App\ServiceModule\Exceptions\NonexistentServiceException;
 use App\ServiceModule\Exceptions\NotImplementedException;
 use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
 use App\ServiceModule\Models\ServiceManager;
+use function GuzzleHttp\Psr7\stream_for;
 
 /**
  * Service manager controller
@@ -162,7 +163,7 @@ class ServicesController extends BaseController {
 		$this->isServiceWhitelisted($name);
 		try {
 			$this->manager->enable($name);
-			return $response;
+			return $response->withBody(stream_for());
 		} catch (UnsupportedInitSystemException $e) {
 			throw new ServerErrorException('Unsupported init system', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		} catch (NonexistentServiceException $e) {
@@ -197,7 +198,7 @@ class ServicesController extends BaseController {
 		$this->isServiceWhitelisted($name);
 		try {
 			$this->manager->disable($name);
-			return $response;
+			return $response->withBody(stream_for());
 		} catch (UnsupportedInitSystemException $e) {
 			throw new ServerErrorException('Unsupported init system', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		} catch (NonexistentServiceException $e) {
@@ -232,7 +233,7 @@ class ServicesController extends BaseController {
 		$this->isServiceWhitelisted($name);
 		try {
 			$this->manager->start($name);
-			return $response;
+			return $response->withBody(stream_for());
 		} catch (UnsupportedInitSystemException $e) {
 			throw new ServerErrorException('Unsupported init system', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		} catch (NonexistentServiceException $e) {
@@ -267,7 +268,7 @@ class ServicesController extends BaseController {
 		$this->isServiceWhitelisted($name);
 		try {
 			$this->manager->stop($name);
-			return $response;
+			return $response->withBody(stream_for());
 		} catch (UnsupportedInitSystemException $e) {
 			throw new ServerErrorException('Unsupported init system', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		} catch (NonexistentServiceException $e) {
@@ -302,7 +303,7 @@ class ServicesController extends BaseController {
 		$this->isServiceWhitelisted($name);
 		try {
 			$this->manager->restart($name);
-			return $response;
+			return $response->withBody(stream_for());
 		} catch (UnsupportedInitSystemException $e) {
 			throw new ServerErrorException('Unsupported init system', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		} catch (NonexistentServiceException $e) {
