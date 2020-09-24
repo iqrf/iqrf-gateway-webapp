@@ -174,21 +174,6 @@ monitor:
 
 mq:
 	title: MQ interface
-	description: MQ interface settings.
-	add: Add MQ interface
-	edit: Edit MQ interface
-	asyncMessages: Asynchronous messages
-	form:
-		instance: Name of instance
-		LocalMqName: Local MQ name
-		RemoteMqName: Remote MQ name
-		acceptAsyncMsg: Accept Async messages
-		messages:
-			confirmDelete: Do you really want to delete MQ messaging %s?
-			instance: Please enter name of MQ instance.
-			LocalMqName: Please enter local MQ name.
-			RemoteMqName: Please enter remote MQ name.
-		Save: Save
 
 mqtt:
 	title: MQTT interface

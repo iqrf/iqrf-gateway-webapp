@@ -320,7 +320,33 @@
 		},
 		"mq": {
 			"title": "MQ interface",
-			"description": "MQ interface settings."
+			"description": "MQ interface settings.",
+			"add": "Add MQ interface",
+			"edit": "Edit MQ interface",
+			"form": {
+				"instance": "Name of instance",
+				"LocalMqName": "Local MQ name",
+				"RemoteMqName": "Remote MQ name",
+				"acceptAsyncMsg": "Accept Async messages",
+				"messages": {
+					"instance": "Please enter name of MQ instance.",
+					"LocalMqName": "Please enter local MQ name.",
+					"RemoteMqName": "Please enter remote MQ name."
+				}
+			},
+			"messages": {
+				"add": {
+					"success": "MQ interface instance {instance} has been added."
+				},
+				"delete": {
+					"confirm": "Do you really want to delete MQ interface instance {instance}?",
+					"confirmTitle": "Delete MQ interface instance",
+					"success": "MQ interface instance {instance} has been deleted."
+				},
+				"edit": {
+					"success": "MQ interface instance {instance} has been edited."
+				}
+			}
 		},
 		"mqtt": {
 			"title": "MQTT interface",
@@ -1215,6 +1241,10 @@
 			"add": "Add",
 			"delete": "Delete",
 			"edit": "Edit"
+		},
+		"enabled": {
+			"true": "Enabled",
+			"false": "Disabled"
 		}
 	}
 }

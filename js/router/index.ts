@@ -36,6 +36,8 @@ import IqrfSpi from '../pages/Config/IqrfSpi.vue';
 import IqrfUart from '../pages/Config/IqrfUart.vue';
 import JsonMngMetaDataApi from '../pages/Config/JsonMngMetaDataApi.vue';
 import JsonSplitter from '../pages/Config/JsonSplitter.vue';
+import MqMessagingForm from '../pages/Config/MqMessagingForm.vue';
+import MqMessagingTable from '../pages/Config/MqMessagingTable.vue';
 
 import UserAdd from '../pages/Core/UserAdd.vue';
 import UserEdit from '../pages/Core/UserEdit.vue';
@@ -154,6 +156,32 @@ const routes: Array<RouteConfig> = [
 						component: JsonSplitter,
 						path: 'json-splitter',
 						meta: {title: 'config.jsonSplitter.title'}
+					},
+					{
+						path: 'mq',
+						component: {
+							render(c) {
+								return c('router-view');
+							}
+						},
+						children: [
+							{
+								path: '',
+								component: MqMessagingTable,
+								meta: {title: 'config.mq.title'}
+							},
+							{
+								component: MqMessagingForm,
+								path: 'add',
+								meta: {title: 'config.mq.add'}
+							},
+							{
+								component: MqMessagingForm,
+								path: 'edit/:instance',
+								props: true,
+								meta: {title: 'config.mq.edit'}
+							},
+						],
 					},
 					{
 						component: ConfigMigration,

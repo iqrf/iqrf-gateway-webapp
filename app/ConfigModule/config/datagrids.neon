@@ -1,7 +1,6 @@
 services:
 	- App\ConfigModule\Datagrids\ComponentsDataGridFactory
 	- App\ConfigModule\Datagrids\MonitorDataGridFactory
-	- App\ConfigModule\Datagrids\MqMessagingDataGridFactory
 	- App\ConfigModule\Datagrids\MqttMessagingDataGridFactory
 	- App\ConfigModule\Datagrids\SchedulerDataGridFactory
 	- App\ConfigModule\Datagrids\TraceFileDataGridFactory
