@@ -9,19 +9,19 @@
 						:custom-messages='{required: "config.iqrfInfo.messages.instance"}'
 					>
 						<CInput
-							v-model='info.instance'
+							v-model='configuration.instance'
 							:label='$t("config.iqrfInfo.form.instance")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
 					</ValidationProvider>
 					<CInputCheckbox
-						:checked.sync='info.enumAtStartUp'
+						:checked.sync='configuration.enumAtStartUp'
 						:label='$t("config.iqrfInfo.form.enumAtStartUp")'
 					/>
 					<ValidationProvider
 						v-slot='{ errors, touched, valid }'
-						:rules='info.enumAtStartUp ? "integer|min:0|required": ""'
+						:rules='configuration.enumAtStartUp ? "integer|min:0|required": ""'
 						:custom-messages='{
 							required: "config.iqrfInfo.messages.enumPeriod",
 							min: "config.iqrfInfo.messages.enumPeriod",
@@ -29,7 +29,7 @@
 						}'
 					>
 						<CInput
-							v-model.number='info.enumPeriod'
+							v-model.number='configuration.enumPeriod'
 							type='number'
 							min='0'
 							:label='$t("config.iqrfInfo.form.enumPeriod")'
@@ -38,7 +38,7 @@
 						/>
 					</ValidationProvider>
 					<CInputCheckbox
-						:checked.sync='info.enumUniformDpaVer'
+						:checked.sync='configuration.enumUniformDpaVer'
 						:label='$t("config.iqrfInfo.form.enumUniformDpaVer")'
 					/>
 					<CButton type='submit' color='primary' :disabled='invalid'>
@@ -72,13 +72,13 @@ export default {
 	data() {
 		return {
 			componentName: 'iqrf::IqrfInfo',
-			info: {
+			instance: null,
+			configuration: {
 				instance: '',
 				enumAtStartUp: false,
 				enumPeriod: 0,
 				enumUniformDpaVer: false,
 			},
-			hasInstance: false,
 		};
 	},
 	created() {
@@ -94,8 +94,8 @@ export default {
 				.then((response) => {
 					this.$store.commit('spinner/HIDE');
 					if (response.data.instances.length > 0) {
-						this.hasInstance = true;
-						this.info = response.data.instances[0];
+						this.configuration = response.data.instances[0];
+						this.instance = this.configuration.instance;
 					}	
 				})
 				.catch((error) => {
@@ -104,14 +104,14 @@ export default {
 		},
 		saveConfig() {
 			this.$store.commit('spinner/SHOW');
-			if (this.hasInstance) {
-				ComponentConfigService.saveConfig(this.componentName, this.info.instance, this.info)
+			if (this.instance !== null) {
+				ComponentConfigService.saveConfig(this.componentName, this.configuration.instance, this.configuration)
 					.then(() => this.saveConfig())
 					.catch((error) => {
 						FormErrorHandler.configError(error);
 					});
 			} else {
-				ComponentConfigService.createConfig(this.componentName, this.info)
+				ComponentConfigService.createConfig(this.componentName, this.configuration)
 					.then(() => this.successfulSave())
 					.catch((error) => {
 						FormErrorHandler.configError(error);

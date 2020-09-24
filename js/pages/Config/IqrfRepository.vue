@@ -9,7 +9,7 @@
 						:custom-messages='{required: "config.iqrfRepository.form.messages.instance"}'
 					>
 						<CInput
-							v-model='repository.instance'
+							v-model='configuration.instance'
 							:label='$t("config.iqrfRepository.form.instance")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
@@ -21,7 +21,7 @@
 						:custom-messages='{required: "config.iqrfRepository.form.messages.urlRepo"}'
 					>
 						<CInput
-							v-model='repository.urlRepo'
+							v-model='configuration.urlRepo'
 							:label='$t("config.iqrfRepository.form.urlRepo")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
@@ -37,7 +37,7 @@
 						}'
 					>
 						<CInput
-							v-model.number='repository.checkPeriod'
+							v-model.number='configuration.checkPeriod'
 							type='number'
 							min='0'
 							:label='$t("config.iqrfRepository.form.checkPeriod")'
@@ -46,7 +46,7 @@
 						/>
 					</ValidationProvider>
 					<CInputCheckbox
-						:checked.sync='repository.downloadIfRepoCacheEmpty'
+						:checked.sync='configuration.downloadIfRepoCacheEmpty'
 						:label='$t("config.iqrfRepository.form.downloadIfEmpty")'
 					/>
 					<CButton type='submit' color='primary' :disabled='invalid'>
@@ -80,13 +80,13 @@ export default {
 	data() {
 		return {
 			componentName: 'iqrf::JsCache',
-			repository: {
+			instance: null,
+			configuration: {
 				instance: null,
 				urlRepo: null,
 				checkPeriod: 0,
 				downloadIfRepoCacheEmpty: true,
 			},
-			hasInstance: false,
 		};
 	},
 	created() {
@@ -102,8 +102,8 @@ export default {
 				.then((response) => {
 					this.$store.commit('spinner/HIDE');
 					if (response.data.instances.length > 0) {
-						this.hasInstance = true;
-						this.repository = response.data.instances[0];
+						this.configuration = response.data.instances[0];
+						this.instance = this.configuration.instance;
 					}
 				})
 				.catch((error) => {
@@ -112,14 +112,14 @@ export default {
 		},
 		saveConfig() {
 			this.$store.commit('spinner/SHOW');
-			if (this.hasInstance) {
-				ComponentConfigService.saveConfig(this.componentName, this.repository.instance, this.repository)
+			if (this.instance !== null) {
+				ComponentConfigService.saveConfig(this.componentName, this.instance, this.configuration)
 					.then(() => this.successfulSave())
 					.catch((error) => {
 						FormErrorHandler.configError(error);
 					});
 			} else {
-				ComponentConfigService.createConfig(this.componentName, this.repository)
+				ComponentConfigService.createConfig(this.componentName, this.configuration)
 					.then(() => this.successfulSave())
 					.catch((error) => {
 						FormErrorHandler.configError(error);
