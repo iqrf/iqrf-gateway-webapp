@@ -103,7 +103,7 @@ export default {
 		saveConfig() {
 			this.$store.commit('spinner/SHOW');
 			if (this.instance !== null) {
-				ComponentConfigService.saveConfig(this.componentName, this.configuration.instance, this.configuration)
+				DaemonConfigurationService.updateInstance(this.componentName, this.configuration.instance, this.configuration)
 					.then(() => this.successfulSave())
 					.catch((error) => FormErrorHandler.configError(error));
 			} else {

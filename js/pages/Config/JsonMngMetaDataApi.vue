@@ -33,7 +33,7 @@ import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox} from '@coreui/
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
-import ComponentConfigService from '../../services/ComponentConfigService';
+import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 
 export default {
 	name: 'JsonMngMetaDataApi',
@@ -64,7 +64,7 @@ export default {
 	methods: {
 		getConfig() {
 			this.$store.commit('spinner/SHOW');
-			ComponentConfigService.getConfig(this.componentName)
+			DaemonConfigurationService.getComponent(this.componentName)
 				.then((response) => {
 					this.$store.commit('spinner/HIDE');
 					if (response.data.instances.length > 0) {
@@ -77,11 +77,11 @@ export default {
 		saveConfig() {
 			this.$store.commit('spinner/SHOW');
 			if (this.instance !== null) {
-				ComponentConfigService.saveConfig(this.componentName, this.instance, this.configuration)
+				DaemonConfigurationService.updateInstance(this.componentName, this.instance, this.configuration)
 					.then(() => this.successfulSave())
 					.catch((error) => FormErrorHandler.configError(error));
 			} else {
-				ComponentConfigService.createConfig(this.componentName, this.configuration)
+				DaemonConfigurationService.createInstance(this.componentName, this.configuration)
 					.then(() => this.successfulSave())
 					.catch((error) => FormErrorHandler.configError(error));
 			}
