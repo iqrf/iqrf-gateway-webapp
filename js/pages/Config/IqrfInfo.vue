@@ -52,9 +52,9 @@
 
 <script>
 import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
-import {extend, ValidationObserver, ValidationProvider} from 'vee-validate/';
+import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {integer, min_value, required} from 'vee-validate/dist/rules';
-import ComponentConfigService from '../../services/ComponentConfigService';
+import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 
 export default {
@@ -90,7 +90,7 @@ export default {
 	methods: {
 		getConfig() {
 			this.$store.commit('spinner/SHOW');
-			ComponentConfigService.getConfig(this.componentName)
+			DaemonConfigurationService.getComponent(this.componentName)
 				.then((response) => {
 					this.$store.commit('spinner/HIDE');
 					if (response.data.instances.length > 0) {
@@ -98,24 +98,18 @@ export default {
 						this.instance = this.configuration.instance;
 					}	
 				})
-				.catch((error) => {
-					FormErrorHandler.configError(error);
-				});
+				.catch((error) => FormErrorHandler.configError(error));
 		},
 		saveConfig() {
 			this.$store.commit('spinner/SHOW');
 			if (this.instance !== null) {
-				ComponentConfigService.saveConfig(this.componentName, this.configuration.instance, this.configuration)
+				DaemonConfigurationService.updateInstance(this.componentName, this.configuration.instance, this.configuration)
 					.then(() => this.saveConfig())
-					.catch((error) => {
-						FormErrorHandler.configError(error);
-					});
+					.catch((error) => FormErrorHandler.configError(error));
 			} else {
-				ComponentConfigService.createConfig(this.componentName, this.configuration)
+				DaemonConfigurationService.createInstance(this.componentName, this.configuration)
 					.then(() => this.successfulSave())
-					.catch((error) => {
-						FormErrorHandler.configError(error);
-					});
+					.catch((error) => FormErrorHandler.configError(error));
 			}
 		},
 		successfulSave() {
