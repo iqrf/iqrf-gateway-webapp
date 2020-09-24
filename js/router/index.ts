@@ -29,6 +29,7 @@ import TranslatorConfig from '../pages/Config/TranslatorConfig.vue';
 import ControllerConfig from '../pages/Config/ControllerConfig.vue';
 import MenderConfig from '../pages/Config/MenderConfig.vue';
 import IqrfInfo from '../pages/Config/IqrfInfo.vue';
+import IqrfRepository from '../pages/Config/IqrfRepository.vue';
 
 import UserAdd from '../pages/Core/UserAdd.vue';
 import UserEdit from '../pages/Core/UserEdit.vue';
@@ -107,6 +108,11 @@ const routes: Array<RouteConfig> = [
 						component: ConfigDisambiguation,
 						path: '',
 						meta: {title: 'config.title'}
+					},
+					{
+						component: IqrfRepository,
+						path: 'iqrf-repository',
+						meta: {title: 'config.iqrfRepository.title'}
 					},
 					{
 						component: IqrfInfo,

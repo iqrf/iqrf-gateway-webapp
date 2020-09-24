@@ -54,6 +54,10 @@ export default {
 
 <style scoped>
 
+.tab {
+	border-bottom: 0;
+}
+
 .tabs {
 	border-bottom: 0;
 }

@@ -6,40 +6,48 @@
 					<ValidationProvider
 						v-slot='{ errors, touched, valid }'
 						rules='required'
-						:custom-messages='{required: "config.iqrfInfo.messages.instance"}'
+						:custom-messages='{required: "config.iqrfRepository.form.messages.instance"}'
 					>
 						<CInput
-							v-model='info.instance'
-							:label='$t("config.iqrfInfo.form.instance")'
+							v-model='repository.instance'
+							:label='$t("config.iqrfRepository.form.instance")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
 					</ValidationProvider>
-					<CInputCheckbox
-						:checked.sync='info.enumAtStartUp'
-						:label='$t("config.iqrfInfo.form.enumAtStartUp")'
-					/>
 					<ValidationProvider
 						v-slot='{ errors, touched, valid }'
-						:rules='info.enumAtStartUp ? "integer|min:0|required": ""'
+						rules='required'
+						:custom-messages='{required: "config.iqrfRepository.form.messages.urlRepo"}'
+					>
+						<CInput
+							v-model='repository.urlRepo'
+							:label='$t("config.iqrfRepository.form.urlRepo")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
+						/>
+					</ValidationProvider>
+					<ValidationProvider
+						v-slot='{ errors, touched, valid }'
+						rules='integer|required|min:0'
 						:custom-messages='{
-							required: "config.iqrfInfo.messages.enumPeriod",
-							min: "config.iqrfInfo.messages.enumPeriod",
-							integer: "forms.messages.integer"
+							integer: "forms.messages.integer",
+							required: "config.iqrfRepository.form.messages.checkPeriod",
+							min: "config.iqrfRepository.form.messages.checkPeriod"
 						}'
 					>
 						<CInput
-							v-model.number='info.enumPeriod'
+							v-model.number='repository.checkPeriod'
 							type='number'
 							min='0'
-							:label='$t("config.iqrfInfo.form.enumPeriod")'
+							:label='$t("config.iqrfRepository.form.checkPeriod")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
 					</ValidationProvider>
 					<CInputCheckbox
-						:checked.sync='info.enumUniformDpaVer'
-						:label='$t("config.iqrfInfo.form.enumUniformDpaVer")'
+						:checked.sync='repository.downloadIfRepoCacheEmpty'
+						:label='$t("config.iqrfRepository.form.downloadIfEmpty")'
 					/>
 					<CButton type='submit' color='primary' :disabled='invalid'>
 						{{ $t('forms.save') }}
@@ -52,13 +60,13 @@
 
 <script>
 import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
-import {extend, ValidationObserver, ValidationProvider} from 'vee-validate/';
+import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {integer, min_value, required} from 'vee-validate/dist/rules';
-import ComponentConfigService from '../../services/ComponentConfigService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
+import ComponentConfigService from '../../services/ComponentConfigService';
 
 export default {
-	name: 'IqrfInfo',
+	name: 'IqrfRepository',
 	components: {
 		CButton,
 		CCard,
@@ -71,12 +79,12 @@ export default {
 	},
 	data() {
 		return {
-			componentName: 'iqrf::IqrfInfo',
-			info: {
-				instance: '',
-				enumAtStartUp: false,
-				enumPeriod: 0,
-				enumUniformDpaVer: false,
+			componentName: 'iqrf::JsCache',
+			repository: {
+				instance: null,
+				urlRepo: null,
+				checkPeriod: 0,
+				downloadIfRepoCacheEmpty: true,
 			},
 			hasInstance: false,
 		};
@@ -95,11 +103,8 @@ export default {
 					this.$store.commit('spinner/HIDE');
 					if (response.data.instances.length > 0) {
 						this.hasInstance = true;
-						this.info.instance = response.data.instances[0].instance;
-						this.info.enumAtStartUp = response.data.instances[0].enumAtStartUp;
-						this.info.enumPeriod = response.data.instances[0].enumPeriod;
-						this.info.enumUniformDpaVer = response.data.instances[0].enumUniformDpaVer;	
-					}	
+						this.repository = response.data.instances[0];
+					}
 				})
 				.catch((error) => {
 					FormErrorHandler.configError(error);
@@ -108,7 +113,7 @@ export default {
 		saveConfig() {
 			this.$store.commit('spinner/SHOW');
 			if (this.hasInstance) {
-				ComponentConfigService.saveConfig(this.componentName, this.info.instance, this.info)
+				ComponentConfigService.saveConfig(this.componentName, this.repository.instance, this.repository)
 					.then(() => {
 						this.$store.commit('spinner/HIDE');
 						this.$toast.success(this.$t('config.success').toString());
@@ -117,7 +122,7 @@ export default {
 						FormErrorHandler.configError(error);
 					});
 			} else {
-				ComponentConfigService.createConfig(this.componentName, this.info)
+				ComponentConfigService.createConfig(this.componentName, this.repository)
 					.then(() => {
 						this.$store.commit('spinner/HIDE');
 						this.$toast.success(this.$t('config.success').toString());
@@ -129,7 +134,7 @@ export default {
 		}
 	},
 	metaInfo: {
-		title: 'config.iqrfInfo.title',
+		title: 'config.iqrfRepository.title',
 	},
 };
 </script>

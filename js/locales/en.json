@@ -153,7 +153,7 @@
 		"messages": {
 			"getConfTimeout": "The request to retrieve current configuration timed out.",
 			"saveConfTimeout": "The request to save new configuration timed out.",
-			"integer": "This parameter should be an integer.",
+			"integer": "This parameter has to be an integer.",
 			"saveSuccess": "Configuration has been successfully saved.",
 			"submitBadRequest": "Invalid JSON syntax.",
 			"submitServerError": "Internal server error has occurred.",
@@ -212,13 +212,24 @@
 				"enumUniformDpaVer": "Obtain only HWPID and HWPID version from nodes"
 			},
 			"messages": {
-				"instance": "Please enter name of IQRF Info instance",
-				"enumPeriod": "Period must be bigger than 0"
+				"instance": "Please enter name of IQRF Info instance.",
+				"enumPeriod": "Period must be greater than 0."
 			}
 		},
 		"iqrfRepository": {
 			"title": "IQRF Repository",
-			"description": "Manage IQRF Repository's settings."
+			"description": "Manage IQRF Repository's settings.",
+			"form": {
+				"instance": "Name of instance",
+				"urlRepo": "IQRF Repository URL",
+				"checkPeriod": "Check period in minutes",
+				"downloadIfEmpty": "Download if repository cache is empty",
+				"messages": {
+					"instance": "Please enter name of IQRF Repository instance.",
+					"urlRepo": "Please enter IQRF Repository URL.",
+					"checkPeriod": "Please enter an integer greater than 0."
+				}
+			}
 		},
 		"iqrfSpi": {
 			"title": "IQRF SPI interface",

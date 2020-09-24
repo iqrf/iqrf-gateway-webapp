@@ -33,7 +33,9 @@
 				</tbody>
 				<tbody v-else>
 					<tr v-for='task of tasks' :key='task.id'>
-						<td class='text-right'>{{ task.id }}</td>
+						<td class='text-right'>
+							{{ task.id }}
+						</td>
 						<td>{{ task.time }}</td>
 						<td>{{ task.service }}</td>
 						<td>{{ task.mTypes }}</td>
@@ -71,24 +73,29 @@
 				<CInput
 					v-model='taskToAdd.cronTime'
 					:label='$t("config.scheduler.form.addOrEdit.timeSpec.cronTime")'
+					:disabled='taskToAdd.exactTime || taskToAdd.periodic'
 				/>
 				<CInputCheckbox
 					:checked.sync='taskToAdd.exactTime'
 					:label='$t("config.scheduler.form.addOrEdit.timeSpec.exactTime")'
+					:disabled='taskToAdd.periodic'
 				/>
 				<CInputCheckbox
 					:checked.sync='taskToAdd.periodic'
 					:label='$t("config.scheduler.form.addOrEdit.timeSpec.periodic")'
+					:disabled='taskToAdd.exactTime'
 				/>
 				<CInput
 					v-model.number='taskToAdd.period'
 					type='number'
 					min='0'
 					:label='$t("config.scheduler.form.addOrEdit.timeSpec.period")'
+					:disabled='!taskToAdd.periodic'
 				/>
 				<CInput
 					v-model='taskToAdd.startTime'
 					:label='$t("config.scheduler.form.addOrEdit.timeSpec.startTime")'
+					:disabled='!taskToAdd.exactTime'
 				/>
 				<h3>{{ $t('config.scheduler.form.addOrEdit.message.title') }}</h3><hr>
 				<CSelect
@@ -207,6 +214,7 @@ export default {
 			if (mutation.type === 'SOCKET_ONMESSAGE') {
 				if (mutation.payload.mType === 'mngScheduler_List') {
 					this.$store.commit('spinner/HIDE');
+					this.tasks = mutation.payload.data.rsp.tasks;
 				}
 			}
 		});
