@@ -159,7 +159,8 @@ class ConfigController extends BaseConfigController {
 		try {
 			$json = $request->getJsonBody(true);
 			$this->componentManager->add($json);
-			return $response->withStatus(ApiResponse::S201_CREATED);
+			return $response->withStatus(ApiResponse::S201_CREATED)
+				->withBody(stream_for());
 		} catch (JsonException $e) {
 			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
 		} catch (IOException $e) {
@@ -240,7 +241,7 @@ class ConfigController extends BaseConfigController {
 		} catch (IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
-		return $response;
+		return $response->withBody(stream_for());
 	}
 
 	/**
@@ -334,7 +335,8 @@ class ConfigController extends BaseConfigController {
 				$fileName = $this->manager->generateFileName($json);
 			}
 			$this->manager->save($json, $fileName);
-			return $response->withStatus(ApiResponse::S201_CREATED);
+			return $response->withStatus(ApiResponse::S201_CREATED)
+				->withBody(stream_for());
 		} catch (NonexistentJsonSchemaException $e) {
 			throw new ServerErrorException('Missing JSON schema for the component', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		} catch (JsonException $e) {
