@@ -20,6 +20,23 @@ class UserService {
 	}
 
 	/**
+	 * Adds the new user
+	 * @param username Username
+	 * @param password Password
+	 * @param language Language
+	 * @param role Role
+	 */
+	add(username: string, password: string, language: string, role: string) {
+		const body = {
+			username: username,
+			password: password,
+			language: language,
+			role: role,
+		};
+		return axios.post('users/', body, {headers: authorizationHeader()});
+	}
+
+	/**
 	 * Deletes the user
 	 * @param id User ID
 	 */

@@ -20,29 +20,9 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Presenters;
 
-use App\CoreModule\Forms\UserAddFormFactory;
-use App\CoreModule\Traits\TPresenterFlashMessage;
-use Nette\Application\UI\Form;
-
 /**
  * User presenter
  */
 class UserPresenter extends ProtectedPresenter {
-
-	use TPresenterFlashMessage;
-
-	/**
-	 * @var UserAddFormFactory Add a new user form factory
-	 * @inject
-	 */
-	public $addFormFactory;
-
-	/**
-	 * Creates the add a new user form
-	 * @return Form Add a new user form
-	 */
-	protected function createComponentUserAddForm(): Form {
-		return $this->addFormFactory->create($this);
-	}
 
 }
