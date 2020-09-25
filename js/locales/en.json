@@ -182,7 +182,24 @@
 		},
 		"components": {
 			"title": "Components",
-			"description": "Manage components."
+			"description": "Manage components.",
+			"add": "Add component",
+			"edit": "Edit component",
+			"form": {
+				"name": "Name",
+				"libraryPath": "Library path",
+				"libraryName": "Library name",
+				"enabled": "Enabled",
+				"disabled": "Disabled",
+				"startLevel": "Start level",
+				"messages": {
+					"name": "Please enter name of component.",
+					"libraryPath": "Please enter path to component's library directory.",
+					"libraryName": "Please enter name of component's library file.",
+					"startLevel": "Please enter component's start level.",
+					"deletePrompt": "Do you really want to delete component {component}?"
+				}
+			}
 		},
 		"interfaceMapping": {
 			"boards": "Boards",
@@ -892,7 +909,8 @@
 						"dataLen": "Sent JSON request contains incorrect data length.",
 						"data": "Sent JSON request contains incorrect data.",
 						"hwpid": "Sent JSON request contains incorrect HWPID.",
-						"nadr": "Sent JSON request contains incorrect NADR."
+						"nadr": "Sent JSON request contains incorrect NADR.",
+						"messageError": "Sent JSON request is not valid."
 					}
 				}
 			}

@@ -133,7 +133,7 @@ export default {
 		remove: cilTrash
 	},
 	metaInfo: {
-		title: 'config.tracer.title'
-	}
+		title: 'config.tracer.title',
+	},
 };
 </script>
