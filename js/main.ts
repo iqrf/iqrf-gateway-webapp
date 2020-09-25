@@ -37,7 +37,6 @@ import LoadingSpinner from './components/LoadingSpinner.vue';
 import TheHeader from './components/TheHeader.vue';
 import TheSidebar from './components/TheSidebar.vue';
 import TrConfiguration from './components/IqrfNet/TrConfiguration.vue';
-import AWSCreator from './pages/Cloud/AWSCreator.vue';
 import MainDisambiguation from './components/MainDisambiguation.vue';
 import InterfacePorts from './components/Config/InterfacePorts.vue';
 import InterfaceMappings from './components/Config/InterfaceMappings.vue';
@@ -97,7 +96,6 @@ new Vue({
 		TheHeader,
 		TheSidebar,
 		TrConfiguration,
-		AWSCreator,
 		MainDisambiguation,
 		InterfacePorts,
 		InterfaceMappings,

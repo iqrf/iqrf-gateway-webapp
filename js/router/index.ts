@@ -3,6 +3,7 @@ import VueRouter, {Route, RouteConfig} from 'vue-router' ;
 
 import CloudDisambiguation from '../pages/Cloud/CloudDisambiguation.vue';
 import AzureCreator from '../pages/Cloud/AzureCreator.vue';
+import AWSCreator from '../pages/Cloud/AWSCreator.vue';
 import HexioCreator from '../pages/Cloud/HexioCreator.vue';
 import IbmCreator from '../pages/Cloud/IbmCreator.vue';
 import InteliGlueCreator from '../pages/Cloud/InteliGlueCreator.vue';
@@ -43,6 +44,7 @@ import UdpMessagingForm from '../pages/Config/UdpMessagingForm.vue';
 import UdpMessagingTable from '../pages/Config/UdpMessagingTable.vue';
 import TracerList from '../pages/Config/TracerList.vue';
 import TracerForm from '../pages/Config/TracerForm.vue';
+import MainConfiguration from '../pages/Config/MainConfiguration.vue';
 
 import UserAdd from '../pages/Core/UserAdd.vue';
 import UserEdit from '../pages/Core/UserEdit.vue';
@@ -88,6 +90,11 @@ const routes: Array<RouteConfig> = [
 						meta: {title: 'cloud.msAzure.form.title'}
 					},
 					{
+						component: AWSCreator,
+						path: 'aws',
+						meta: {title: 'cloud.amazonAws.form.title'}
+					},
+					{
 						component: HexioCreator,
 						path: 'hexio',
 						meta: {title: 'cloud.hexio.form.title'}
@@ -121,6 +128,11 @@ const routes: Array<RouteConfig> = [
 						component: ConfigDisambiguation,
 						path: '',
 						meta: {title: 'config.title'}
+					},
+					{
+						component: MainConfiguration,
+						path: 'main',
+						meta: {title: 'config.main.title'}
 					},
 					{
 						component: IqrfCdc,

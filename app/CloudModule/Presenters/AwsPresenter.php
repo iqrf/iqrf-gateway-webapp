@@ -20,52 +20,11 @@ declare(strict_types = 1);
 
 namespace App\CloudModule\Presenters;
 
-use App\CloudModule\Forms\AwsFormFactory;
-use App\CoreModule\Models\CommandManager;
-use App\CoreModule\Models\JsonFileManager;
 use App\CoreModule\Presenters\ProtectedPresenter;
-use Nette\Application\UI\Form;
-use Nette\Utils\JsonException;
 
 /**
  * Amazon AWS IoT presenter
  */
 class AwsPresenter extends ProtectedPresenter {
-
-	/**
-	 * @var AwsFormFactory Amazon AWS IoT form factory
-	 * @inject
-	 */
-	public $formFactory;
-
-	/**
-	 * @var JsonFileManager JSON file manager
-	 */
-	private $fileManager;
-
-	/**
-	 * Constructor
-	 * @param CommandManager $commandManager Command manager
-	 */
-	public function __construct(CommandManager $commandManager) {
-		$this->fileManager = new JsonFileManager(__DIR__ . '/../json/', $commandManager);
-		parent::__construct();
-	}
-
-	/**
-	 * Renders guides for Amazon AWS IoT form
-	 * @throws JsonException
-	 */
-	public function renderDefault(): void {
-		$this->template->guides = $this->fileManager->read('guides')['aws'];
-	}
-
-	/**
-	 * Creates MQTT connection into Amazon AWS IoT form
-	 * @return Form MQTT connection into Amazon AWS IoT form
-	 */
-	protected function createComponentCloudAwsForm(): Form {
-		return $this->formFactory->create($this);
-	}
 
 }

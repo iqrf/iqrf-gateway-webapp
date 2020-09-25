@@ -99,16 +99,6 @@ jsonSplitter:
 
 main:
 	title: Main configuration
-	description: Main configuration of IQRF Daemon.
-	form:
-		applicationName: Application Name
-		resourceDir: Resource directory
-		dataDir: Data directory
-		cacheDir: Cache directory
-		userDir: User directory
-		configurationDir: Configuration directory
-		deploymentDir: Deployment directory
-		Save: Save
 
 migration:
 	title: Configuration migration
@@ -247,35 +237,6 @@ selected-components:
 
 tracer:
 	title: Tracer file
-	description: Tracer file settings.
-	add: Add tracer file configuration
-	edit: Edit tracer file configuration
-	form:
-		instance: Instance name
-		path: Path to directory with logs
-		filename: File name
-		maxSizeMB: Maximal size in MB
-		timestampFiles: Enable timestamp files
-		verbosityLevels:
-			title: Verbosity levels
-			add: Add verbosity level
-			remove: Remove verbosity level
-		channel: Verbosity channel
-		level: Verbosity level
-		levels:
-			Error: Error
-			Warning: Warning
-			Info: Info
-			Debug: Debug
-		messages:
-			instance: Please enter name of Tracer file interface.
-			filename: Please enter tracer file name.
-			verbosityLevels:
-				channel: Please enter the verbosity channel.
-				level: Please select the verbosity level.
-		Save: Save
-	messages:
-		confirmDelete: Do you really want to delete Tracer file %s?
 
 udp:
 	title: UDP interface

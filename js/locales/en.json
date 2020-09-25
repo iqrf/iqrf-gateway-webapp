@@ -320,7 +320,16 @@
 		},
 		"main": {
 			"title": "Main configuration",
-			"description": "Main configuration of IQRF Gateway Daemon."
+			"description": "Main configuration of IQRF Gateway Daemon.",
+			"form": {
+				"applicationName": "Application name",
+				"resourceDir": "Resource directory",
+				"dataDir": "Data directory",
+				"cacheDir": "Cache directory",
+				"userDir": "User directory",
+				"configurationDir": "Configuration directory",
+				"deploymentDir": "Deployment directory"
+			}
 		},
 		"monitor": {
 			"title": "Monitoring service",

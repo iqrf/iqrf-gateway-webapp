@@ -20,63 +20,11 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Presenters;
 
-use App\ConfigModule\Forms\MainFormFactory;
-use App\ConfigModule\Models\MainManager;
 use App\CoreModule\Presenters\ProtectedPresenter;
-use App\CoreModule\Traits\TPresenterFlashMessage;
-use Nette\Application\UI\Form;
-use Nette\IOException;
-use Nette\Utils\JsonException;
 
 /**
  * Main daemon configuration presenter
  */
 class MainPresenter extends ProtectedPresenter {
-
-	use TPresenterFlashMessage;
-
-	/**
-	 * @var MainFormFactory Main daemon's configuration form factory
-	 * @inject
-	 */
-	public $formFactory;
-
-	/**
-	 * @var MainManager Main configuration manager
-	 */
-	private $configManager;
-
-	/**
-	 * Constructor
-	 * @param MainManager $configManager Main configuration manager
-	 */
-	public function __construct(MainManager $configManager) {
-		$this->configManager = $configManager;
-		parent::__construct();
-	}
-
-	/**
-	 * Renders main configuration
-	 */
-	public function actionDefault(): void {
-		try {
-			$defaults = $this->configManager->load();
-			$this['configMainForm']->setDefaults($defaults);
-		} catch (IOException $e) {
-			$this->flashError('config.messages.readFailures.ioError');
-			$this->redirect('Homepage:default');
-		} catch (JsonException $e) {
-			$this->flashError('config.messages.readFailures.invalidJson');
-			$this->redirect('Homepage:default');
-		}
-	}
-
-	/**
-	 * Creates the Main daemon's configuration form
-	 * @return Form Main daemon's configuration form
-	 */
-	protected function createComponentConfigMainForm(): Form {
-		return $this->formFactory->create($this);
-	}
 
 }
