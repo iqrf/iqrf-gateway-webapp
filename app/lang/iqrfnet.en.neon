@@ -1,46 +1,12 @@
 title: IQRF network
 description: Control IQRF network.
 
-changeAddress:
-	title: Change network address
-	address: Address
-	messages:
-		address: Address has to be an integer from 0 to 239.
-	read: Read
-
 dpaUpload:
 	title: DPA plug-in
 	version: DPA version
 	messages:
 		version: Please select DPA version to upload.
 	upload: Upload
-
-enumeration:
-	title: Device enumeration
-	deviceInfo: Device info
-	deviceAddr: Device address
-	hwpid: HWPID
-	manufacturer: Manufacturer
-	product: Product name
-	picture: Product picture
-	trInfo: TR info
-	trType: TR type
-	mid: Module ID
-	osVersion: IQRF OS version
-	dpaVersion: DPA version
-	rfMode: RF mode
-	rfModes:
-		lp: LP
-		std: STD
-	rssi: RSSI
-	supplyVoltage: Supply voltage
-	back: Back to Network manager
-	messages:
-		failure: An error occurred while the device enumeration.
-		repositoryUnavailable: IQRF Repository is unavailable.
-
-network-manager:
-	title: Network manager
 
 osUpload:
 	title: IQRF OS upload
@@ -68,15 +34,6 @@ security:
 	userKey:
 		failure: An error occurred while the user key setting.
 		success: The user key has been set successfully.
-
-send-json:
-	title: Send JSON request
-
-send-packet:
-	title: Send DPA packet
-
-standard:
-	title: IQRF Standard manager
 
 trConfiguration:
 	title: TR configuration

@@ -19,6 +19,7 @@ import ServiceControl from '../pages/Gateway/ServiceControl.vue';
 import SignIn from '../components/SignIn.vue';
 
 import IqrfNetDisambiguation from '../pages/IqrfNet/IqrfNetDisambiguation.vue';
+import DeviceEnumeration from '../pages/IqrfNet/DeviceEnumeration.vue';
 import NetworkManager from '../pages/IqrfNet/NetworkManager.vue';
 import SendJsonRequest from '../pages/IqrfNet/SendJsonRequest.vue';
 import SendDpaPacket from '../pages/IqrfNet/SendDpaPacket.vue';
@@ -361,6 +362,18 @@ const routes: Array<RouteConfig> = [
 						component: IqrfNetDisambiguation,
 						path: '',
 						meta: {title: 'iqrfnet.title'}
+					},
+					{
+						component: DeviceEnumeration,
+						path: 'enumeration/:address',
+						props: (route) => {
+							const address = Number.parseInt(route.params.address, 10);
+							if (Number.isNaN(address)) {
+								return 0;
+							}
+							return {address};
+						},
+						meta: {title: 'iqrfnet.enumeration.title'},
 					},
 					{
 						component: NetworkManager,

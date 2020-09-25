@@ -791,6 +791,32 @@
 				"address": "Address has to be an integer from 0 to 239."
 			}
 		},
+		"enumeration": {
+			"title": "Device enumeration",
+			"deviceInfo": "Device info",
+			"deviceAddr": "Device address",
+			"hwpid": "HWPID",
+			"manufacturer": "Manufacturer",
+			"product": "Product name",
+			"picture": "Product picture",
+			"trInfo": "TR info",
+			"trType": "TR type",
+			"mid": "Module ID",
+			"osVersion": "IQRF OS version",
+			"dpaVersion": "DPA version",
+			"rfMode": "RF mode",
+			"rfModes": {
+				"lp": "LP",
+				"std": "STD"
+			},
+			"rssi": "RSSI",
+			"supplyVoltage": "Supply voltage",
+			"back": "Back to Network manager",
+			"messages": {
+				"failure": "An error occurred while the device enumeration.",
+				"repositoryUnavailable": "IQRF Repository is unavailable."
+			}
+		},
 		"networkManager": {
 			"title": "Network manager",
 			"description": "Network manager.",
