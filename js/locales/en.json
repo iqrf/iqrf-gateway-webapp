@@ -213,7 +213,7 @@
 				"DpaHandlerTimeout": "DPA Confirmation/Response timeout in milliseconds",
 				"messages": {
 					"instance": "Please enter name of IQRF DPA instance.",
-					"DpaHandlerTimeout": "Please enter default DPA Confirmation/Response timeout greater than 0."
+					"DpaHandlerTimeout": "Please enter default DPA Confirmation/Response timeout greater or equal to 0."
 				}
 			}
 		},
@@ -228,7 +228,7 @@
 			},
 			"messages": {
 				"instance": "Please enter name of IQRF Info instance.",
-				"enumPeriod": "Period must be greater than 0."
+				"enumPeriod": "Period must be greater or equal to 0."
 			}
 		},
 		"iqrfRepository": {
@@ -242,7 +242,7 @@
 				"messages": {
 					"instance": "Please enter name of IQRF Repository instance.",
 					"urlRepo": "Please enter IQRF Repository URL.",
-					"checkPeriod": "Please enter an integer greater than 0."
+					"checkPeriod": "Please enter an integer greater or equal to 0."
 				}
 			}
 		},
@@ -411,7 +411,45 @@
 		},
 		"tracer": {
 			"title": "Tracer file",
-			"description": "Tracer file settings."
+			"description": "Tracer file settings.",
+			"add": "Add tracer file configuration",
+			"edit": "Edit tracer file configuration",
+			"form": {
+				"instance": "Instance name",
+				"path": "Path to directory with logs",
+				"filename": "File name",
+				"maxSizeMb": "Maximum size in MB",
+				"timestampFiles": "Enable timestamp files",
+				"verbosityLevels": {
+					"title": "Verbosity levels",
+					"add": "Add verbosity level",
+					"remove": "Remove verbosity level"
+				},
+				"channel": "Verbosity channel",
+				"level": "Verbosity level",
+				"levels": {
+					"error": "Error",
+					"warning": "Warning",
+					"info": "Info",
+					"debug": "Debug"
+				},
+				"messages": {
+					"instance": "Please enter name of Tracer file interface.",
+					"filename": "Please enter Tracer file name.",
+					"maxSizeMb": "Please enter maximum size in MB greater or equal to 1.",
+					"verbosityLevels": {
+						"channel": "Please enter the verbosity channel.",
+						"level": "Please select the verbosity level."
+					}
+				}
+			},
+			"messages": {
+				"removeItem": "Do you really want to delete Tracer file instance {instance}?",
+				"removeTitle": "Delete Tracer file instance",
+				"removeSuccess": "Tracer file instance {instance} has been removed.",
+				"addSuccess": "Tracer file instance {instance} has been added.",
+				"editSuccess": "Tracer file instance {instance} has been edited."
+			}
 		},
 		"udp": {
 			"title": "UDP interface",

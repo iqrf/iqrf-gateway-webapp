@@ -100,7 +100,8 @@ export default {
 			json: null,
 			request: null,
 			response: null,
-			timeout: null
+			timeout: null,
+			mType: null,
 		};
 	},
 	created() {
@@ -119,10 +120,11 @@ export default {
 		extend('required', required);
 		this.unsubscribe = this.$store.subscribe(mutation => {
 			if (mutation.type === 'SOCKET_ONSEND') {
+				this.mType = mutation.payload.mType;
 				this.timeout = timeout('iqrfnet.sendJson.form.messages.timeout', 30000);
 			}
 			if (mutation.type === 'SOCKET_ONMESSAGE') {
-				if ({}.hasOwnProperty.call(mutation.payload, 'mType')) {
+				if ({}.hasOwnProperty.call(mutation.payload, 'mType') && mutation.payload.mType === this.mType) {
 					clearTimeout(this.timeout);
 					this.$store.commit('spinner/HIDE');
 					this.response = JSON.stringify(mutation.payload, null, 4);

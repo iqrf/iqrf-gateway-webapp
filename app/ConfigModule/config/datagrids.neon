@@ -3,7 +3,6 @@ services:
 	- App\ConfigModule\Datagrids\MonitorDataGridFactory
 	- App\ConfigModule\Datagrids\MqttMessagingDataGridFactory
 	- App\ConfigModule\Datagrids\SchedulerDataGridFactory
-	- App\ConfigModule\Datagrids\TraceFileDataGridFactory
 	- App\ConfigModule\Datagrids\WebSocketDataGridFactory
 	- App\ConfigModule\Datagrids\WebSocketMessagingDataGridFactory
 	- App\ConfigModule\Datagrids\WebSocketServiceDataGridFactory

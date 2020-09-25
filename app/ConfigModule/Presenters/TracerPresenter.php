@@ -20,93 +20,9 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Presenters;
 
-use App\ConfigModule\Datagrids\TraceFileDataGridFactory;
-use App\ConfigModule\Forms\TraceFileFormFactory;
-use Nette\Application\UI\Form;
-use Nette\Utils\JsonException;
-use Nette\Utils\Strings;
-use Ublaboo\DataGrid\DataGrid;
-use Ublaboo\DataGrid\Exception\DataGridException;
-
 /**
  * Tracer configuration presenter
  */
 class TracerPresenter extends GenericPresenter {
-
-	/**
-	 * IQRF Gateway Daemon component name
-	 */
-	private const COMPONENT = 'shape::TraceFileService';
-
-	/**
-	 * Verbosity levels
-	 */
-	private const VERBOSITY_LEVELS = ['ERR', 'WAR', 'INF', 'DBG'];
-
-	/**
-	 * @var TraceFileFormFactory Daemon's tracer configuration form factory
-	 * @inject
-	 */
-	public $formFactory;
-
-	/**
-	 * @var TraceFileDataGridFactory Tracer configuration data grid factory
-	 * @inject
-	 */
-	public $dataGridFactory;
-
-	/**
-	 * Edits the tracer configuration
-	 * @param int $id ID of UDP interface
-	 */
-	public function actionEdit(int $id): void {
-		$this->loadFormConfiguration($this['configTracerForm'], self::COMPONENT, $id, 'Tracer:default', [$this, 'configurationLoad']);
-	}
-
-	/**
-	 * Loads the instance configuration
-	 * @param int $id Instance ID
-	 * @return array<string, array<array<string, int|string>|bool|int|string>> Instance configuration
-	 * @throws JsonException
-	 */
-	public function configurationLoad(int $id): array {
-		$defaults = $this->manager->load($id);
-		foreach ($defaults['VerbosityLevels'] as &$verbosityLevel) {
-			$level = Strings::upper($verbosityLevel['level']);
-			if (in_array($level, self::VERBOSITY_LEVELS, true)) {
-				$verbosityLevel['level'] = $level;
-			} else {
-				unset($verbosityLevel['level']);
-			}
-		}
-		return $defaults;
-	}
-
-	/**
-	 * Deletes the tracer service
-	 * @param int $id ID of tracer service
-	 */
-	public function actionDelete(int $id): void {
-		$this->deleteInstance(self::COMPONENT, $id, 'Tracer:default');
-	}
-
-	/**
-	 * Creates the Tracer form
-	 * @return Form Tracer form
-	 */
-	protected function createComponentConfigTracerForm(): Form {
-		return $this->formFactory->create($this);
-	}
-
-	/**
-	 * Creates tracer data grid
-	 * @param string $name Data grid's component name
-	 * @return DataGrid Tracer data grid
-	 * @throws DataGridException
-	 * @throws JsonException
-	 */
-	protected function createComponentConfigTracerDataGrid(string $name): DataGrid {
-		return $this->dataGridFactory->create($this, $name);
-	}
 
 }

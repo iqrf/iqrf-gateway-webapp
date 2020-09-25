@@ -41,6 +41,8 @@ import MqMessagingForm from '../pages/Config/MqMessagingForm.vue';
 import MqMessagingTable from '../pages/Config/MqMessagingTable.vue';
 import UdpMessagingForm from '../pages/Config/UdpMessagingForm.vue';
 import UdpMessagingTable from '../pages/Config/UdpMessagingTable.vue';
+import TracerList from '../pages/Config/TracerList.vue';
+import TracerForm from '../pages/Config/TracerForm.vue';
 
 import UserAdd from '../pages/Core/UserAdd.vue';
 import UserEdit from '../pages/Core/UserEdit.vue';
@@ -214,6 +216,32 @@ const routes: Array<RouteConfig> = [
 								path: 'edit/:instance',
 								props: true,
 								meta: {title: 'config.udp.edit'}
+							},
+						],
+					},
+					{
+						path: 'tracer',
+						component: {
+							render(c) {
+								return c('router-view');
+							},
+						},
+						children: [
+							{
+								path: '',
+								component: TracerList,
+								meta: {title: 'config.tracer.title'}
+							},
+							{
+								component: TracerForm,
+								path: 'add',
+								meta: {title: 'config.tracer.add'}
+							},
+							{
+								component: TracerForm,
+								path: 'edit/:instance',
+								props: true,
+								meta: {title: 'config.tracer.edit'}
 							},
 						],
 					},

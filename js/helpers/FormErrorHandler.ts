@@ -35,6 +35,8 @@ class FormErrorHandler {
 				Vue.$toast.error(i18n.t('forms.messages.componentNotFound').toString());
 			} else if (error.response.status === 500) {
 				Vue.$toast.error(i18n.t('forms.messages.submitServerError').toString());
+			} else {
+				console.error(error.message);
 			}
 		} else {
 			console.error(error.message);
