@@ -29,10 +29,6 @@ final class RouterFactoryTest extends TestCase {
 	 */
 	private const EXPECTED = [
 		[
-			'Cloud:' => [
-				'[<lang [a-z]{2}>/]cloud/<presenter>/<action>[/<id>]',
-			],
-		], [
 			'Config:' => [
 				'[<lang [a-z]{2}>/]config/scheduler/add/<type>',
 				'[<lang [a-z]{2}>/]config/<presenter>/<action>[/<id>]',
@@ -60,7 +56,9 @@ final class RouterFactoryTest extends TestCase {
 			],
 		], [
 			'Gateway:' => [
-				'[<lang [a-z]{2}>/]gateway/<presenter>/<action>',
+				'[<lang [a-z]{2}>/]gateway/updater/<action>',
+				'[<lang [a-z]{2}>/]gateway/service/<name>',
+				'[<lang [a-z]{2}>/]gateway/<action>',
 			],
 		], [
 			'Core:' => [

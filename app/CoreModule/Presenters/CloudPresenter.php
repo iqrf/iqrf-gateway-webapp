@@ -1,4 +1,6 @@
-{**
+<?php
+
+/**
  * Copyright 2017 MICRORISC s.r.o.
  * Copyright 2017-2019 IQRF Tech s.r.o.
  *
@@ -13,7 +15,37 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*}
+ */
+declare(strict_types = 1);
 
-{block title}{_gateway.mode.title}{/block}
-{block content}
+namespace App\CoreModule\Presenters;
+
+/**
+ * Cloud Homepage presenters
+ */
+class CloudPresenter extends ProtectedPresenter {
+
+	public function renderAws(): void {
+		$this->setView('default');
+	}
+
+	public function renderAzure(): void {
+		$this->setView('default');
+	}
+	public function renderHexio(): void {
+		$this->setView('default');
+	}
+
+	public function renderIbmCloud(): void {
+		$this->setView('default');
+	}
+
+	public function renderInteliGlue(): void {
+		$this->setView('default');
+	}
+
+	public function renderPixla(): void {
+		$this->setView('default');
+	}
+
+}

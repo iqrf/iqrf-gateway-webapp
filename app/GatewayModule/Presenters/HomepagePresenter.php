@@ -23,8 +23,28 @@ namespace App\GatewayModule\Presenters;
 use App\CoreModule\Presenters\ProtectedPresenter;
 
 /**
- * Gateway disambiguation presenter
+ * Gateway Vue presenter
  */
 class HomepagePresenter extends ProtectedPresenter {
+
+	public function renderChangeMode(): void {
+		$this->setView('default');
+	}
+
+	public function renderInfo(): void {
+		$this->setView('default');
+	}
+
+	public function renderLog(): void {
+		$this->setView('default');
+	}
+
+	public function renderPower(): void {
+		$this->setView('default');
+	}
+
+	public function renderService(string $name): void {
+		$this->setView('default');
+	}
 
 }
