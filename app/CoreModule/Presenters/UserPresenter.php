@@ -25,4 +25,12 @@ namespace App\CoreModule\Presenters;
  */
 class UserPresenter extends ProtectedPresenter {
 
+	public function renderAdd(): void {
+		$this->setView('default');
+	}
+
+	public function renderEdit(): void {
+		$this->setView('default');
+	}
+
 }
