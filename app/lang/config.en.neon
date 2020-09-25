@@ -51,13 +51,6 @@ components:
 		save: Save
 		add: Add
 
-interfaceMapping:
-	cdc: Available CDC mappings
-	spi: Available SPI mappings
-	uart: Available UART mappings
-	boards: Boards
-	interfaces: Interfaces
-
 iqmesh:
 	title: IQMESH services
 	description: Manage IQMESH services.
@@ -70,38 +63,6 @@ iqmesh:
 				instance: Please enter name of OTA upload service instance.
 				uploadPath: Please enter path to a directory with files to upload.
 			Save: Save
-
-iqrfCdc:
-	title: IQRF CDC interface
-
-iqrfDpa:
-	title: IQRF DPA interface
-iqrfInfo:
-	title: IQRF Info
-
-iqrfRepository:
-	title: IQRF Repository
-
-iqrfSpi:
-	title: IQRF SPI interface
-
-iqrfUart:
-	title: IQRF UART interface
-
-jsonMngMetaDataApi:
-	title: JSON Metadata API
-
-jsonRawApi:
-	title: JSON Raw API
-
-jsonSplitter:
-	title: JSON Splitter
-
-main:
-	title: Main configuration
-
-migration:
-	title: Configuration migration
 
 monitor:
 	title: Monitoring service
@@ -118,50 +79,6 @@ monitor:
 		save: Save
 	messages:
 		confirmDelete: Do you really want to delete Monitoring service %s?
-
-mq:
-	title: MQ interface
-
-mqtt:
-	title: MQTT interface
-	description: MQTT interface settings.
-	add: Add MQTT interface
-	edit: Edit MQTT interface
-	asyncMessages: Asynchronous messages
-	form:
-		instance: Name of instance
-		BrokerAddr: Broker address
-		ClientId: Client ID
-		Persistence: Persistence
-		QoS: QoS
-		QoSes:
-			QoS0: QoS 0 - At most once
-			QoS1: QoS 1 - At least once
-			QoS2: QoS 2 - Exactly once
-		TopicRequest: Topic for requests
-		TopicResponse: Topic for responses
-		User: User
-		Password: Password
-		EnabledSSL: Enabled TLS
-		KeepAliveInterval: Keep alive interval
-		ConnectTimeout: Connection timeout
-		MinReconnect: Minimal count of reconnects
-		MaxReconnect: Maximal count of reconnects
-		TrustStore: CA certificate
-		KeyStore: Certificate
-		PrivateKey: Private key
-		PrivateKeyPassword: Private key password
-		EnabledCipherSuites: Enabled cipher suites
-		EnableServerCertAuth: Enable server certificate authentication
-		acceptAsyncMsg: Accept asynchronous messages
-		messages:
-			confirmDelete: Do you really want to delete MQTT messaging %s?
-			instance: Please enter name of MQTT instance.
-			BrokerAddr: Please enter address of MQTT broker.
-			ClientId: Please enter client ID.
-			TopicRequest: Please enter topic for requests.
-			TopicResponse: Please enter topic for responses.
-		Save: Save
 
 scheduler:
 	title: Scheduler
@@ -234,12 +151,6 @@ schedulerMigration:
 selected-components:
 	title: Selected components
 	description: Manage selected components.
-
-tracer:
-	title: Tracer file
-
-udp:
-	title: UDP interface
 
 websocket:
 	title: WebSocket interface

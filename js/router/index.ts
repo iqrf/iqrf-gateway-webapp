@@ -40,6 +40,8 @@ import JsonRawApi from '../pages/Config/JsonRawApi.vue';
 import JsonSplitter from '../pages/Config/JsonSplitter.vue';
 import MqMessagingForm from '../pages/Config/MqMessagingForm.vue';
 import MqMessagingTable from '../pages/Config/MqMessagingTable.vue';
+import MqttMessagingForm from '../pages/Config/MqttMessagingForm.vue';
+import MqttMessagingTable from '../pages/Config/MqttMessagingTable.vue';
 import UdpMessagingForm from '../pages/Config/UdpMessagingForm.vue';
 import UdpMessagingTable from '../pages/Config/UdpMessagingTable.vue';
 import TracerList from '../pages/Config/TracerList.vue';
@@ -202,6 +204,32 @@ const routes: Array<RouteConfig> = [
 								path: 'edit/:instance',
 								props: true,
 								meta: {title: 'config.mq.edit'}
+							},
+						],
+					},
+					{
+						path: 'mqtt',
+						component: {
+							render(c) {
+								return c('router-view');
+							}
+						},
+						children: [
+							{
+								path: '',
+								component: MqttMessagingTable,
+								meta: {title: 'config.mqtt.title'}
+							},
+							{
+								component: MqttMessagingForm,
+								path: 'add',
+								meta: {title: 'config.mqtt.add'}
+							},
+							{
+								component: MqttMessagingForm,
+								path: 'edit/:instance',
+								props: true,
+								meta: {title: 'config.mqtt.edit'}
 							},
 						],
 					},
