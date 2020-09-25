@@ -87,48 +87,16 @@ iqrfSpi:
 
 iqrfUart:
 	title: IQRF UART interface
-	description: IQRF UART interface settings.
-	form:
-		instance: Name of instance
-		IqrfInterface: IQRF UART interface
-		baudRate: UART baud rate
-		powerEnableGpioPin: Power enable GPIO pin
-		busEnableGpioPin: UART bus enable GPIO pin
-		messages:
-			instance: Please enter name of IQRF UART instance.
-			IqrfInterface: Please enter IQRF UART interface.
-			baudRate: Please select UART baud rate.
-		Save: Save
 
 jsonMngMetaDataApi:
 	title: JSON Metadata API
-	description: JSON Metadata API settings.
-	form:
-		instance: Name of instance
-		metaDataToMessages: Add metadata into the messages
-		messages:
-			instance: Please enter name of JSON Metadata API instance.
-		Save: Save
 
 jsonRawApi:
 	title: JSON Raw API
-	description: JSON Raw API settings.
-	form:
-		instance: Name of instance
-		asyncDpaMessage: Async DPA message
-		messages:
-			instance: Please enter name of JSON Splitter instance.
-		Save: Save
 
 jsonSplitter:
 	title: JSON Splitter
-	description: JSON Splitter settings.
-	form:
-		instance: Name of instance
-		validateJsonResponse: Validate JSON response
-		messages:
-			instance: Please enter name of JSON Splitter instance.
-		Save: Save
+
 main:
 	title: Main configuration
 	description: Main configuration of IQRF Daemon.
@@ -144,17 +112,6 @@ main:
 
 migration:
 	title: Configuration migration
-	description: "Migration of IQRF Gateway Daemon's configuration"
-	export: Export configuration
-	import: Import configuration
-	configuration: Configuration to import
-	messages:
-		configuration: Please select a ZIP archive with a configuration to import.
-		importedConfig: The configuration has been imported.
-	errors:
-		invalidConfig: The ZIP archive contains invalid configuration.
-		invalidFormat: Uploaded invalid file format.
-		readConfig: Cannot read zip archive with a configuration.
 
 monitor:
 	title: Monitoring service

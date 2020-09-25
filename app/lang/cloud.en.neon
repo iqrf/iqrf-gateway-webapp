@@ -1,98 +1,20 @@
 title: Clouds
 description: Add a connection into cloud services.
 
-messages:
-	downloadFailure: The webapp has not been able to download the root CA certificate. Probably the gateway has not been connected into the Internet.
-	cannotCreateDir: The webapp has not been able to create a directory for the certificates.
-	success: The new connection to the cloud service has been created successfully.
-
 amazonAws:
 	title: Amazon AWS IoT
-	description: Adds a new MQTT connection into Amazon AWS IoT.
-	form:
-		title: Amazon AWS IoT MQTT connection wizard
-		endpoint: Endpoint
-		certificate: Certificate
-		key: Private key
-		messages:
-			endpoint: Please enter the endpoint.
-			certificate: Please enter the certificate.
-			key: Please enter the private key.
-		save: Save
-		save_restart: Save and restart
-	messages:
-		mismatchedCrtAndKey: The private key does not correspond to the certificate.
 
 hexio:
 	title: Hexio IoT Platform
-	description: Adds a new MQTT connection into Hexio IoT Platform.
-	form:
-		title: Hexio IoT Platform MQTT connection wizard
-		broker: MQTT broker address
-		ClientId: Client ID
-		TopicRequest: Topic for requests
-		TopicResponse: Topic for responses
-		username: Username
-		password: Password
-		messages:
-			broker: Please enter the MQTT broker address.
-			ClientId: Please enter client ID.
-			TopicRequest: Please enter topic for requests.
-			TopicResponse: Please enter topic for responses.
-			username: Please enter the username.
-			password: Please enter the password.
-		save: Save
-		save_restart: Save and restart
 
 ibmCloud:
 	title: IBM Cloud
-	description: Adds a new MQTT connection into IBM Cloud.
-	form:
-		title: IBM Cloud MQTT connection wizard
-		organizationId: Organization ID
-		deviceType: Device type
-		deviceId: Device ID
-		token: Authentication token
-		eventId: Command and event ID
-		messages:
-			organizationId: Please enter the organization ID.
-			deviceType: Please enter the device type.
-			deviceId: Please enter the device ID.
-			token: Please enter the authentication token.
-			eventId: Please enter command and event ID.
-		save: Save
-		save_restart: Save and restart
 
 intelimentsInteliGlue:
 	title: Inteliments InteliGlue
-	description: Adds a new MQTT connection into Inteliments InteliGlue.
-	form:
-		title: Inteliments InteliGlue MQTT connection wizard
-		rootTopic: Root Topic
-		assignedPort: Assigned Port
-		clientId: Client ID
-		password: Password
-		messages:
-			rootTopic: Please enter the root topic.
-			assignedPort: Please enter the assigned port.
-			assignedPortRange: Port has to be an integer in range from 0 to 65535.
-			clientId: Please enter the client ID.
-			password: Please enter the password.
-		save: Save
-		save_restart: Save and restart
 
 msAzure:
 	title: Microsoft Azure IoT hub
-	description: Adds a new MQTT connection into Microsoft Azure IoT Hub.
-	form:
-		title: Microsoft Azure IoT Hub MQTT connection wizard
-		connectionString: IoT Hub Connection String for Device
-		messages:
-			connectionString: Please enter IoT Hub Connection String for Device.
-		save: Save
-		save_restart: Save and restart
-	messages:
-		invalidConnectionString: Invalid MS Azure IoT Hub connection string for device.
 
 pixla:
 	title: PIXLA device management

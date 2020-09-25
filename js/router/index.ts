@@ -35,6 +35,7 @@ import IqrfDpa from '../pages/Config/IqrfDpa.vue';
 import IqrfSpi from '../pages/Config/IqrfSpi.vue';
 import IqrfUart from '../pages/Config/IqrfUart.vue';
 import JsonMngMetaDataApi from '../pages/Config/JsonMngMetaDataApi.vue';
+import JsonRawApi from '../pages/Config/JsonRawApi.vue';
 import JsonSplitter from '../pages/Config/JsonSplitter.vue';
 import MqMessagingForm from '../pages/Config/MqMessagingForm.vue';
 import MqMessagingTable from '../pages/Config/MqMessagingTable.vue';
@@ -148,6 +149,11 @@ const routes: Array<RouteConfig> = [
 						component: IqrfUart,
 						path: 'iqrf-uart',
 						meta: {title: 'config.iqrfUart.title'}
+					},
+					{
+						component: JsonRawApi,
+						path: 'json-raw-api',
+						meta: {title: 'config.jsonRawApi.title'}
 					},
 					{
 						component: JsonMngMetaDataApi,

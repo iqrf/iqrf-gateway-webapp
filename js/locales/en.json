@@ -176,7 +176,8 @@
 				"importButton": "Please select a ZIP archive with a configuration to import.",
 				"imported": "The configuration has been imported.",
 				"invalidConfig": "The ZIP archive contains invalid configuration.",
-				"invalidFormat": "Uploaded invalid file format."
+				"invalidFormat": "Uploaded invalid file format.",
+				"readConfig": "Cannot read zip archive with a configuration."
 			}
 		},
 		"components": {
@@ -297,7 +298,14 @@
 		},
 		"jsonRawApi": {
 			"title": "JSON Raw API",
-			"description": "JSON Raw API settings."
+			"description": "JSON Raw API settings.",
+			"form": {
+				"instance": "Name of instance",
+				"asyncDpaMessage": "Async DPA message",
+				"messages": {
+					"instance": "Please enter name of JSON Raw API instance."
+				}
+			}
 		},
 		"jsonSplitter": {
 			"title": "JSON Splitter",
