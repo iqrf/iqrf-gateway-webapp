@@ -124,18 +124,23 @@ export default {
 				this.timeout = timeout('iqrfnet.sendJson.form.messages.timeout', 30000);
 			}
 			if (mutation.type === 'SOCKET_ONMESSAGE') {
-				if ({}.hasOwnProperty.call(mutation.payload, 'mType') && mutation.payload.mType === this.mType) {
+				if ({}.hasOwnProperty.call(mutation.payload, 'mType')) {
 					clearTimeout(this.timeout);
 					this.$store.commit('spinner/HIDE');
-					this.response = JSON.stringify(mutation.payload, null, 4);
-					if (mutation.payload.data.status === 0) {
-						this.$toast.success(this.$t('iqrfnet.sendJson.form.messages.success').toString());
-					} else {
-						if (mutation.payload.data.status in StatusMessages) {
-							this.$toast.error(this.$t(StatusMessages[mutation.payload.data.status]).toString());
+					if (mutation.payload.mType === this.mType) {
+						this.response = JSON.stringify(mutation.payload, null, 4);
+						if (mutation.payload.data.status === 0) {
+							this.$toast.success(this.$t('iqrfnet.sendJson.form.messages.success').toString());
 						} else {
-							this.$toast.error(this.$t('iqrfnet.sendJson.form.messages.error.fail').toString());
+							if (mutation.payload.data.status in StatusMessages) {
+								this.$toast.error(this.$t(StatusMessages[mutation.payload.data.status]).toString());
+							} else {
+								this.$toast.error(this.$t('iqrfnet.sendJson.form.messages.error.fail').toString());
+							}
 						}
+					} else if (mutation.payload.mType === 'messageError') {
+						this.response = JSON.stringify(mutation.payload, null, 4);
+						this.$toast.error(this.$t('iqrfnet.sendJson.form.messages.error.messageError').toString());
 					}
 				}
 			}
