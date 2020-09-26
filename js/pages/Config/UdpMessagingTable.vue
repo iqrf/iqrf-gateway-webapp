@@ -16,8 +16,11 @@
 				<CDataTable
 					:items='instances'
 					:fields='fields'
+					:column-filter='true'
 					:items-per-page='20'
-					paginator
+					:pagination='true'
+					:striped='true'
+					:sorter='{ external: false, resetable: true }'
 				>
 					<template #actions='{item}'>
 						<td class='col-actions'>

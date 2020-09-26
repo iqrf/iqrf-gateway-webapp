@@ -16,6 +16,11 @@
 				<CDataTable
 					:fields='fields'
 					:items='instances'
+					:column-filter='true'
+					:items-per-page='20'
+					:pagination='true'
+					:striped='true'
+					:sorter='{ external: false, resetable: true }'
 				>
 					<template #actions='{item}'>
 						<td class='col-actions'>
@@ -86,7 +91,12 @@ export default {
 				{key: 'instance', label: this.$t('config.tracer.form.instance')},
 				{key: 'path', label: this.$t('config.tracer.form.path')},
 				{key: 'filename', label: this.$t('config.tracer.form.filename')},
-				{key: 'actions', label: this.$t('table.actions.title')},
+				{
+					key: 'actions',
+					label: this.$t('table.actions.title'),
+					filter: false,
+					sorter: false,
+				},
 			],
 			instances: [],
 			modals: {

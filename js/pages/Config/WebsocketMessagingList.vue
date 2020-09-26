@@ -16,6 +16,11 @@
 				<CDataTable
 					:fields='fields'
 					:items='instances'
+					:column-filter='true'
+					:items-per-page='20'
+					:pagination='true'
+					:striped='true'
+					:sorter='{ external: false, resetable: true }'
 				>
 					<template #acceptAsyncMsg='{item}'>
 						<td>
@@ -109,7 +114,7 @@ export default {
 				{key: 'instance', label: this.$t('config.websocket.form.instance')},
 				{key: 'acceptAsyncMsg', label: this.$t('config.websocket.form.acceptAsyncMsg')},
 				{key: 'RequiredInterfaces', label: this.$t('config.websocket.form.requiredInterface.instance')},
-				{key: 'actions', label: this.$t('table.actions.title')}
+				{key: 'actions', label: this.$t('table.actions.title'), filter: false, sorter: false}
 			],
 			instances: null,
 			modals: {

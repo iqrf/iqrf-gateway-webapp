@@ -16,8 +16,11 @@
 				<CDataTable
 					:items='instances'
 					:fields='fields'
+					:column-filter='true'
 					:items-per-page='20'
-					paginator
+					:pagination='true'
+					:striped='true'
+					:sorter='{ external: false, resetable: true }'
 				>
 					<template #acceptAsyncMsg='{item}'>
 						<td>
@@ -130,6 +133,7 @@ export default {
 				{
 					key: 'acceptAsyncMsg',
 					label: this.$t('config.mq.form.acceptAsyncMsg'),
+					filter: false,
 				},
 				{
 					key: 'actions',

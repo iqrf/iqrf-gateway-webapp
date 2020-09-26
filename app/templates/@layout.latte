@@ -36,39 +36,26 @@
 	<meta name='theme-color' content='#ffffff'>
 </head>
 <body>
-<div id='app' class="c-app">
-	<loading-spinner />
-	<the-sidebar />
-	<c-wrapper>
-		<the-header />
-		<div class="c-body">
-			<main class="c-main">
-				<c-container fluid>
-					<div class="fade-in">
-						<h1 id='title'>{include title}</h1>
-						{snippet flashes}
-							<div n:foreach='$flashes as $flash' class='alert alert-dismissible alert-{$flash->type}' :close-button='true' role='alert'>
-								<button type='button' class='close' data-dismiss='alert'>
-									<span>&times;</span>
-								</button>
-								{_$flash->message|breaklines}
-							</div>
-						{/snippet}
-						<router-view />
-						<div id='content'>{include content}</div>
-					</div>
-				</c-container>
-			</main>
-		</div>
-	</c-wrapper>
-</div>
-{block scripts}
+	<div id='app'>
+		<the-dashboard>
+			<h1 id='title'>{include title}</h1>
+			{snippet flashes}
+			<div n:foreach='$flashes as $flash' class='alert alert-dismissible alert-{$flash->type}' :close-button='true' role='alert'>
+				<button type='button' class='close' data-dismiss='alert'>
+					<span>&times;</span>
+				</button>
+				{_$flash->message|breaklines}
+				</div>
+			{/snippet}
+			<router-view />
+			<div id='content'>{include content}</div>
+		</the-dashboard>
+	</div>
 	<script n:nonce src='/dist/app.bundle.js'></script>
 	<script n:nonce src='/dist/main.bundle.js'></script>
 	<script n:nonce src='/dist/vendors~app.bundle.js'></script>
 	<script n:nonce src='/dist/vendors~app~main.bundle.js'></script>
 	<script n:nonce src='/dist/vendors~main.bundle.js'></script>
 	<script n:nonce src='/dist/live-form-validation.js'></script>
-{/block}
 </body>
 </html>

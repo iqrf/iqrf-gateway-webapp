@@ -17,6 +17,11 @@
 				<CDataTable
 					:fields='fields'
 					:items='instances'
+					:column-filter='true'
+					:items-per-page='20'
+					:pagination='true'
+					:striped='true'
+					:sorter='{ external: false, resetable: true }'
 				>
 					<template #acceptOnlyLocalhost='{item}'>
 						<td>
@@ -105,7 +110,7 @@ export default {
 				{key: 'instance', label: this.$t('config.websocket.form.instance')},
 				{key: 'WebsocketPort', label: this.$t('config.websocket.form.WebsocketPort')},
 				{key: 'acceptOnlyLocalhost', label: this.$t('config.websocket.form.acceptOnlyLocalhost')},
-				{key: 'actions', label: this.$t('table.actions.title')},
+				{key: 'actions', label: this.$t('table.actions.title'), filter: false, sorter: false},
 			],
 			instances: null,
 			modals: {

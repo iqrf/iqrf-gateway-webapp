@@ -39,13 +39,11 @@
 	<meta name='theme-color' content='#ffffff'>
 </head>
 <body>
-<div id='app'>
-	<router-view />
-</div>
-{block scripts}
+	<div id='app'>
+		<router-view />
+	</div>
 	<script n:nonce src='/dist/main.bundle.js'></script>
 	<script n:nonce src='/dist/vendors~app~main.bundle.js'></script>
 	<script n:nonce src='/dist/vendors~main.bundle.js'></script>
-{/block}
 </body>
 </html>

@@ -16,6 +16,10 @@
 				<CDataTable
 					:fields='fields'
 					:items='components'
+					:column-filter='true'
+					:items-per-page='20'
+					:pagination='true'
+					:striped='true'
 					:sorter='{ external: false, resetable: true }'
 				>
 					<template #enabled='{item}'>
@@ -106,8 +110,17 @@ export default {
 				{key: 'startlevel', label: this.$t('config.components.form.startLevel')},
 				{key: 'libraryPath', label: this.$t('config.components.form.libraryPath')},
 				{key: 'libraryName', label: this.$t('config.components.form.libraryName')},
-				{key: 'enabled', label: this.$t('config.components.form.enabled')},
-				{key: 'actions', label: this.$t('table.actions.title'), sorter: false},
+				{
+					key: 'enabled',
+					label: this.$t('config.components.form.enabled'),
+					filter: false,
+				},
+				{
+					key: 'actions',
+					label: this.$t('table.actions.title'),
+					filter: false,
+					sorter: false,
+				},
 			],
 			modals: {
 				component: null,

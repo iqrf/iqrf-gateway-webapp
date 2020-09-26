@@ -16,8 +16,11 @@
 				<CDataTable
 					:items='instances'
 					:fields='fields'
+					:column-filter='true'
 					:items-per-page='20'
-					paginator
+					:pagination='true'
+					:striped='true'
+					:sorter='{ external: false, resetable: true }'
 				>
 					<template #EnabledSSL='{item}'>
 						<td>
@@ -155,10 +158,12 @@ export default {
 				{
 					key: 'EnabledSSL',
 					label: this.$t('config.mqtt.form.EnabledSSL'),
+					filter: false,
 				},
 				{
 					key: 'acceptAsyncMsg',
 					label: this.$t('config.mqtt.form.acceptAsyncMsg'),
+					filter: false,
 				},
 				{
 					key: 'actions',

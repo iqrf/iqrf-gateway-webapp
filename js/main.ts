@@ -33,13 +33,9 @@ import '../css/app.scss';
 import 'vue-toast-notification/dist/theme-sugar.css';
 
 import App from './components/App.vue';
-import LoadingSpinner from './components/LoadingSpinner.vue';
-import TheHeader from './components/TheHeader.vue';
-import TheSidebar from './components/TheSidebar.vue';
+import TheDashboard from './components/TheDashboard.vue';
 import TrConfiguration from './components/IqrfNet/TrConfiguration.vue';
 import MainDisambiguation from './components/MainDisambiguation.vue';
-import InterfacePorts from './components/Config/InterfacePorts.vue';
-import InterfaceMappings from './components/Config/InterfaceMappings.vue';
 import Scheduler from './pages/Config/Scheduler.vue';
 //import MonitorList from './pages/Config/MonitorList.vue';
 import WebsocketMessagingList from './pages/Config/WebsocketMessagingList.vue';
@@ -95,13 +91,9 @@ new Vue({
 	el: '#app',
 	components: {
 		App,
-		LoadingSpinner,
-		TheHeader,
-		TheSidebar,
+		TheDashboard,
 		TrConfiguration,
 		MainDisambiguation,
-		InterfacePorts,
-		InterfaceMappings,
 		Scheduler,
 		//MonitorList,
 		WebsocketMessagingList,
