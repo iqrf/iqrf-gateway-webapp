@@ -2,11 +2,12 @@
 	<div>
 		<CCard>
 			<CCardHeader>
+				{{ $t('config.websocket.service.title') }}
 				<CButton
 					color='success'
 					size='sm'
 					class='float-right'
-					to='/config/component/add'
+					to='/config/websocket/add-service'
 				>
 					<CIcon :content='$options.icons.add' />
 					{{ $t('table.actions.add') }}
@@ -15,20 +16,20 @@
 			<CCardBody>
 				<CDataTable
 					:fields='fields'
-					:items='components'
+					:items='instances'
 				>
-					<template #enabled='{item}'>
+					<template #acceptOnlyLocalhost='{item}'>
 						<td>
 							<CDropdown
-								:color='item.enabled ? "success" : "danger"'
-								:toggler-text='item.enabled ? $t("config.components.form.enabled") : $t("config.components.form.disabled")'
+								:color='item.acceptOnlyLocalhost ? "success": "danger"'
+								:toggler-text='item.acceptOnlyLocalhost ? $t("config.websocket.enabled") : $t("config.websocket.disabled")'
 								size='sm'
 							>
-								<CDropdownItem @click='changeEnabled(item, true)'>
-									{{ $t('config.components.form.enabled') }}
+								<CDropdownItem @click='changeAccept(item, true)'>
+									{{ $t('config.websocket.enabled') }}
 								</CDropdownItem>
-								<CDropdownItem @click='changeEnabled(item, false)'>
-									{{ $t('config.components.form.disabled') }}
+								<CDropdownItem @click='changeAccept(item, false)'>
+									{{ $t('config.websocket.disabled') }}
 								</CDropdownItem>
 							</CDropdown>
 						</td>
@@ -38,7 +39,7 @@
 							<CButton
 								color='info'
 								size='sm'
-								:to='"/config/component/edit/" + item.name'
+								:to='"/config/websocket/edit-service/" + item.instance'
 							>
 								<CIcon :content='$options.icons.edit' />
 								{{ $t('table.actions.edit') }}
@@ -46,7 +47,7 @@
 							<CButton
 								color='danger'
 								size='sm'
-								@click='modals.component = item.name'
+								@click='modals.service = item.instance'
 							>
 								<CIcon :content='$options.icons.remove' />
 								{{ $t('table.actions.delete') }}
@@ -58,19 +59,19 @@
 		</CCard>
 		<CModal
 			color='danger'
-			:show.sync='modals.component !== null'
+			:show.sync='modals.service !== null'
 		>
 			<template #header>
 				<h5 class='modal-title'>
-					{{ $t('config.components.form.messages.deleteTitle') }}
+					{{ $t('config.websocket.service.messages.deleteTitle') }}
 				</h5>
 			</template>
-			{{ $t('config.components.form.messages.deletePrompt', {component: modals.component}) }}
+			{{ $t('config.websocket.service.messages.deletePrompt', {service: modals.service}) }}
 			<template #footer>
-				<CButton color='danger' @click='modals.component = null'>
+				<CButton color='danger' @click='modals.service = null'>
 					{{ $t('forms.no') }}
 				</CButton>
-				<CButton color='success' @click='removeComponent'>
+				<CButton color='success' @click='removeService'>
 					{{ $t('forms.yes') }}
 				</CButton>
 			</template>
@@ -85,7 +86,7 @@ import DaemonConfigurationService from '../../services/DaemonConfigurationServic
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 
 export default {
-	name: 'ComponentList',
+	name: 'WebsocketServiceList',
 	components: {
 		CButton,
 		CCard,
@@ -99,17 +100,16 @@ export default {
 	},
 	data() {
 		return {
-			components: null,
+			componentName: 'shape::WebsocketCppService',
 			fields: [
-				{key: 'name', label: this.$t('config.components.form.name')},
-				{key: 'startlevel', label: this.$t('config.components.form.startLevel')},
-				{key: 'libraryPath', label: this.$t('config.components.form.libraryPath')},
-				{key: 'libraryName', label: this.$t('config.components.form.libraryName')},
-				{key: 'enabled', label: this.$t('config.components.form.enabled')},
+				{key: 'instance', label: this.$t('config.websocket.form.instance')},
+				{key: 'WebsocketPort', label: this.$t('config.websocket.form.WebsocketPort')},
+				{key: 'acceptOnlyLocalhost', label: this.$t('config.websocket.form.acceptOnlyLocalhost')},
 				{key: 'actions', label: this.$t('table.actions.title')},
 			],
+			instances: null,
 			modals: {
-				component: null,
+				service: null,
 			},
 		};
 	},
@@ -119,45 +119,45 @@ export default {
 	methods: {
 		getConfig() {
 			this.$store.commit('spinner/SHOW');
-			return DaemonConfigurationService.getComponent('')
+			return DaemonConfigurationService.getComponent(this.componentName)
 				.then((response) => {
 					this.$store.commit('spinner/HIDE');
-					this.components = response.data.components;
+					this.instances = response.data.instances;
 				})
 				.catch((error) => FormErrorHandler.configError(error));
 		},
-		changeEnabled(component, enabled) {
-			if (component.enabled !== enabled) {
-				component.enabled = enabled;
-				DaemonConfigurationService.updateComponent(component.name, component)
+		changeAccept(service, setting) {
+			if (service.acceptOnlyLocalhost !== setting) {
+				service.acceptOnlyLocalhost = setting;
+				DaemonConfigurationService.updateInstance(this.componentName, service.instance, service)
 					.then(() => {
 						this.getConfig().then(() => {
-							this.$toast.success(this.$t('config.components.form.messages.editSuccess', {component: component.name}).toString());
+							this.$toast.success(this.$t('config.websocket.service.messages.editSuccess', {service: service.instance}).toString());
 						});
 					})
-					.catch((error) => FormErrorHandler.configError(error));
+					.catch((error) => FormErrorHandler.getConfig(error));
 			}
 		},
-		removeComponent() {
+		removeService() {
 			this.$store.commit('spinner/SHOW');
-			const component = this.modals.component;
-			this.modals.component = null;
-			DaemonConfigurationService.deleteComponent(component)
+			const service = this.modals.service;
+			this.modals.service = null;
+			DaemonConfigurationService.deleteInstance(this.componentName, service)
 				.then(() => {
 					this.getConfig().then(() => {
-						this.$toast.success(this.$t('config.components.form.messages.deleteSuccess', {component: component}).toString());
+						this.$toast.success(this.$t('config.websocket.service.messages.deleteSuccess', {service: service}).toString());
 					});
 				})
 				.catch((error) => FormErrorHandler.configError(error));
-		},
+		}
 	},
 	icons: {
 		add: cilPlus,
 		edit: cilPencil,
-		remove: cilTrash
+		remove: cilTrash,
 	},
 	metaInfo: {
-		title: 'config.components.title',
+		title: 'config.websocket.title',
 	},
 };
 </script>

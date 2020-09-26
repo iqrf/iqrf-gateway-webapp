@@ -22,10 +22,8 @@
 		<c-card-header>{_config.websocket.messaging.title}</c-card-header>
 		<c-card-body>{control configWebSocketMessagingDataGrid}</c-card-body>
 	</c-card>
-	<c-card>
-		<c-card-header>{_config.websocket.service.title}</c-card-header>
-		<c-card-body>{control configWebSocketServiceDataGrid}</c-card-body>
-	</c-card>
+	<websocket-messaging-list />
+	<websocket-service-list />
 {else}
 	<c-card body-wrapper>
 		{control configWebSocketDataGrid}

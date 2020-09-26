@@ -365,7 +365,23 @@
 		},
 		"monitor": {
 			"title": "Monitoring service",
-			"description": "Monitoring service configuration."
+			"description": "Monitoring service configuration.",
+			"add": "Add a new monitoring service",
+			"edit": "Edit the monitoring service",
+			"form": {
+				"reportPeriod": "Reporting period in seconds",
+				"websocketPort": "WebSocket server port",
+				"acceptOnlyLocalhost": "Accept only connection from localhost",
+				"messages": {
+					"reportPeriod": "Please enter the reporting period in seconds.",
+					"websocketPort": "Please enter the port of monitoring WebSocket server.",
+					"deletePrompt": "Do you really want to delete Monitoring service?",
+					"deleteTitle": "Delete Monitoring service",
+					"deleteSuccess": "Configuration of Monitoring service has been successfully deleted.",
+					"addSuccess": "Configuration of Monitoring service has been successfully added.",
+					"editSuccess": "Configuration of Monitoring service has been successfully updated."
+				}
+			}
 		},
 		"mq": {
 			"title": "MQ interface",
@@ -573,7 +589,48 @@
 		},
 		"websocket": {
 			"title": "WebSocket interface",
-			"description": "IQRF WebSocket interface settings."
+			"description": "IQRF WebSocket interface settings.",
+			"enabled": "Enabled",
+			"disabled": "Disabled",
+			"form": {
+				"instance": "Name of instance",
+				"acceptAsyncMsg": "Accept asynchronous messages",
+				"WebsocketPort": "WebSocket port",
+				"acceptOnlyLocalhost": "Accept only connection from localhost",
+				"requiredInterfaces": "Required interfaces",
+				"requiredInterface": {
+					"name": "Required interface name",
+					"instance": "Required WebSocket service"
+				},
+				"messages": {
+					"serviceInstance": "Please enter name of WebSocket service.",
+					"WebsocketPort": "Please enter WebSocket port number."
+				}
+			},
+			"messaging": {
+				"title": "WebSocket messagings",
+				"add": "Add WebSocket messaging",
+				"edit": "Edit WebSocket messaging",
+				"messages": {
+					"deleteTitle": "Delete WebSocket messaging",
+					"deletePrompt": "Do you really want to delete WebSocket messaging {messaging}?",
+					"deleteSuccess": "Configuration of WebSocket messaging {messaging} has been successfully deleted.",
+					"addSuccess": "Configuration of WebSocket messaging {messaging} has been successfully added.",
+					"editSuccess": "Configuration of WebSocket messaging {messaging} has been successfully edited."
+				}
+			},
+			"service": {
+				"title": "WebSocket services",
+				"add": "Add WebSocket service",
+				"edit": "Edit WebSocket service",
+				"messages": {
+					"deleteTitle": "Delete WebSocket service",
+					"deletePrompt": "Do you really want to delete WebSocket service {service}?",
+					"deleteSuccess": "Configuration of WebSocket service {service} has been successfully deleted.",
+					"addSuccess": "Configuration of WebSocket service {service} has been successfully added.",
+					"editSuccess": "Configuration of WebSocket service {service} has been successfully edited."
+				}
+			}
 		},
 		"mender": {
 			"title": "Mender",

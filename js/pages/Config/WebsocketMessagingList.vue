@@ -2,11 +2,11 @@
 	<div>
 		<CCard>
 			<CCardHeader>
+				{{ $t('config.websocket.messaging.title') }}
 				<CButton
 					color='success'
 					size='sm'
 					class='float-right'
-					to='/config/component/add'
 				>
 					<CIcon :content='$options.icons.add' />
 					{{ $t('table.actions.add') }}
@@ -15,22 +15,27 @@
 			<CCardBody>
 				<CDataTable
 					:fields='fields'
-					:items='components'
+					:items='instances'
 				>
-					<template #enabled='{item}'>
+					<template #acceptAsyncMsg='{item}'>
 						<td>
 							<CDropdown
-								:color='item.enabled ? "success" : "danger"'
-								:toggler-text='item.enabled ? $t("config.components.form.enabled") : $t("config.components.form.disabled")'
+								:color='item.acceptAsyncMsg ? "success": "danger"'
+								:toggler-text='item.acceptAsyncMsg ? $t("config.websocket.enabled") : $t("config.websocket.disabled")'
 								size='sm'
 							>
-								<CDropdownItem @click='changeEnabled(item, true)'>
-									{{ $t('config.components.form.enabled') }}
+								<CDropdownItem @click='changeAccept(item, true)'>
+									{{ $t('config.websocket.enabled') }}
 								</CDropdownItem>
-								<CDropdownItem @click='changeEnabled(item, false)'>
-									{{ $t('config.components.form.disabled') }}
+								<CDropdownItem @click='changeAccept(item, false)'>
+									{{ $t('config.websocket.disabled') }}
 								</CDropdownItem>
 							</CDropdown>
+						</td>
+					</template>
+					<template #RequiredInterfaces='{item}'>
+						<td>
+							{{ item.RequiredInterfaces[0].target.instance }}
 						</td>
 					</template>
 					<template #actions='{item}'>
@@ -38,7 +43,6 @@
 							<CButton
 								color='info'
 								size='sm'
-								:to='"/config/component/edit/" + item.name'
 							>
 								<CIcon :content='$options.icons.edit' />
 								{{ $t('table.actions.edit') }}
@@ -46,7 +50,7 @@
 							<CButton
 								color='danger'
 								size='sm'
-								@click='modals.component = item.name'
+								@click='modals.instance = item.instance'
 							>
 								<CIcon :content='$options.icons.remove' />
 								{{ $t('table.actions.delete') }}
@@ -58,19 +62,19 @@
 		</CCard>
 		<CModal
 			color='danger'
-			:show.sync='modals.component !== null'
+			:show.sync='modals.instance !== null'
 		>
 			<template #header>
 				<h5 class='modal-title'>
-					{{ $t('config.components.form.messages.deleteTitle') }}
+					{{ $t('config.websocket.messaging.messages.deleteTitle') }}
 				</h5>
 			</template>
-			{{ $t('config.components.form.messages.deletePrompt', {component: modals.component}) }}
+			{{ $t('config.websocket.messaging.messages.deletePrompt', {messaging: modals.instance}) }}
 			<template #footer>
-				<CButton color='danger' @click='modals.component = null'>
+				<CButton color='danger' @click='modals.instance = null'>
 					{{ $t('forms.no') }}
 				</CButton>
-				<CButton color='success' @click='removeComponent'>
+				<CButton color='success' @click='removeInstance'>
 					{{ $t('forms.yes') }}
 				</CButton>
 			</template>
@@ -84,8 +88,9 @@ import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 
+
 export default {
-	name: 'ComponentList',
+	name: 'WebsocketMessagingList',
 	components: {
 		CButton,
 		CCard,
@@ -99,17 +104,16 @@ export default {
 	},
 	data() {
 		return {
-			components: null,
+			componentName: 'iqrf::WebsocketMessaging',
 			fields: [
-				{key: 'name', label: this.$t('config.components.form.name')},
-				{key: 'startlevel', label: this.$t('config.components.form.startLevel')},
-				{key: 'libraryPath', label: this.$t('config.components.form.libraryPath')},
-				{key: 'libraryName', label: this.$t('config.components.form.libraryName')},
-				{key: 'enabled', label: this.$t('config.components.form.enabled')},
-				{key: 'actions', label: this.$t('table.actions.title')},
+				{key: 'instance', label: this.$t('config.websocket.form.instance')},
+				{key: 'acceptAsyncMsg', label: this.$t('config.websocket.form.acceptAsyncMsg')},
+				{key: 'RequiredInterfaces', label: this.$t('config.websocket.form.requiredInterface.instance')},
+				{key: 'actions', label: this.$t('table.actions.title')}
 			],
+			instances: null,
 			modals: {
-				component: null,
+				instance: null,
 			},
 		};
 	},
@@ -119,45 +123,42 @@ export default {
 	methods: {
 		getConfig() {
 			this.$store.commit('spinner/SHOW');
-			return DaemonConfigurationService.getComponent('')
+			return DaemonConfigurationService.getComponent(this.componentName)
 				.then((response) => {
 					this.$store.commit('spinner/HIDE');
-					this.components = response.data.components;
+					this.instances = response.data.instances;
 				})
 				.catch((error) => FormErrorHandler.configError(error));
 		},
-		changeEnabled(component, enabled) {
-			if (component.enabled !== enabled) {
-				component.enabled = enabled;
-				DaemonConfigurationService.updateComponent(component.name, component)
+		changeAccept(instance, setting) {
+			if (instance.acceptAsyncMsg !== setting) {
+				instance.acceptAsyncMsg = setting;
+				DaemonConfigurationService.updateInstance(this.componentName, instance.instance, instance)
 					.then(() => {
 						this.getConfig().then(() => {
-							this.$toast.success(this.$t('config.components.form.messages.editSuccess', {component: component.name}).toString());
+							this.$toast.success(this.$t('config.websocket.messaging.messages.editSuccess', {messaging: instance.instance}));
 						});
 					})
-					.catch((error) => FormErrorHandler.configError(error));
+					.catch((error) => FormErrorHandler.getConfig(error));
 			}
 		},
-		removeComponent() {
+		removeInstance() {
 			this.$store.commit('spinner/SHOW');
-			const component = this.modals.component;
-			this.modals.component = null;
-			DaemonConfigurationService.deleteComponent(component)
+			const instance = this.modals.instance;
+			this.modals.instance = null;
+			DaemonConfigurationService.deleteInstance(this.componentName, instance)
 				.then(() => {
 					this.getConfig().then(() => {
-						this.$toast.success(this.$t('config.components.form.messages.deleteSuccess', {component: component}).toString());
-					});
+						this.$toast.success(this.$t('config.websocket.messaging.messages.deleteSuccess', {messaging: instance}));
+					});	
 				})
 				.catch((error) => FormErrorHandler.configError(error));
-		},
+		}
 	},
 	icons: {
 		add: cilPlus,
 		edit: cilPencil,
-		remove: cilTrash
-	},
-	metaInfo: {
-		title: 'config.components.title',
+		remove: cilTrash,
 	},
 };
 </script>

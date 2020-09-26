@@ -41,6 +41,9 @@ import MainDisambiguation from './components/MainDisambiguation.vue';
 import InterfacePorts from './components/Config/InterfacePorts.vue';
 import InterfaceMappings from './components/Config/InterfaceMappings.vue';
 import Scheduler from './pages/Config/Scheduler.vue';
+//import MonitorList from './pages/Config/MonitorList.vue';
+import WebsocketMessagingList from './pages/Config/WebsocketMessagingList.vue';
+import WebsocketServiceList from './pages/Config/WebsocketServiceList.vue';
 
 Sentry.init({
 	dsn: 'https://435ee2b55f994e5f85e21a9ca93ea7a7@sentry.iqrf.org/5',
@@ -100,6 +103,9 @@ new Vue({
 		InterfacePorts,
 		InterfaceMappings,
 		Scheduler,
+		//MonitorList,
+		WebsocketMessagingList,
+		WebsocketServiceList,
 	},
 	router: router,
 	store: store,

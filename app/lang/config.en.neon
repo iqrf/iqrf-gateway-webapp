@@ -29,27 +29,9 @@ messages:
 		save: The configuration has been saved successfully.
 
 components:
-	title: Components
-	description: Manage components.
-	add:
-		title: Add component
-	edit:
-		title: Edit component
 	form:
-		name: Name
-		libraryPath: Library path
-		libraryName: Library name
 		enabled: Enabled
 		disabled: Disabled
-		startlevel: Start level
-		messages:
-			name: Please enter name of component.
-			libraryPath: "Please enter path to component's library directory."
-			libraryName: "Please enter name of component's library file."
-			startLevel: "Please enter component's start level."
-			confirmDelete: Do you really want to delete component %s?
-		save: Save
-		add: Add
 
 iqmesh:
 	title: IQMESH services
