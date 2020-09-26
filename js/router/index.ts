@@ -50,6 +50,7 @@ import TracerForm from '../pages/Config/TracerForm.vue';
 import MainConfiguration from '../pages/Config/MainConfiguration.vue';
 import ComponentList from '../pages/Config/ComponentList.vue';
 import ComponentForm from '../pages/Config/ComponentForm.vue';
+import IqmeshServices from '../pages/Config/IqmeshServices.vue';
 
 import UserAdd from '../pages/Core/UserAdd.vue';
 import UserEdit from '../pages/Core/UserEdit.vue';
@@ -179,6 +180,11 @@ const routes: Array<RouteConfig> = [
 						component: IqrfInfo,
 						path: 'iqrf-info',
 						meta: {title: 'config.iqrfInfo.title'}
+					},
+					{
+						component: IqmeshServices,
+						path: 'iqmesh',
+						meta: {title: 'config.iqmesh.title'}
 					},
 					{
 						component: IqrfRepository,

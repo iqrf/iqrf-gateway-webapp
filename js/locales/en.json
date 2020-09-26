@@ -211,7 +211,18 @@
 		},
 		"iqmesh": {
 			"title": "IQMESH services",
-			"description": "Manage IQMESH services."
+			"description": "Manage IQMESH services.",
+			"otaUpload": {
+				"title": "IQRF OTA upload service",
+				"form": {
+					"instance": "Name of instance",
+					"uploadPath": "Path to a directory with files to upload",
+					"messages": {
+						"instance": "Please enter name of OTA upload service instance.",
+						"uploadPath": "Please enter path to a directory with files to upload."
+					}
+				}
+			}
 		},
 		"iqrfCdc": {
 			"title": "IQRF CDC interface",

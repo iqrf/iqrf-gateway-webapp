@@ -20,38 +20,9 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Presenters;
 
-use App\ConfigModule\Forms\OtaUploadFormFactory;
-use Nette\Application\UI\Form;
-
 /**
  * IQMESH services configuration presenter
  */
 class IqmeshPresenter extends GenericPresenter {
-
-	/**
-	 * IQRF Gateway Daemon component name
-	 */
-	private const COMPONENT = 'iqrf::OtaUploadService';
-
-	/**
-	 * @var OtaUploadFormFactory IQRF OTA upload service configuration form factory
-	 * @inject
-	 */
-	public $otaFormFactory;
-
-	/**
-	 * Renders the IQMESH service configurator
-	 */
-	public function actionDefault(): void {
-		$this->loadFormConfiguration($this['configOtaUploadForm'], self::COMPONENT, null);
-	}
-
-	/**
-	 * Creates the IQRF OTA upload service form
-	 * @return Form IQRF OTA upload service form
-	 */
-	protected function createComponentConfigOtaUploadForm(): Form {
-		return $this->otaFormFactory->create($this);
-	}
 
 }
