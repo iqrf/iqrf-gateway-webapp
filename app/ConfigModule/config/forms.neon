@@ -1,5 +1,4 @@
 services:
-	- App\ConfigModule\Forms\ComponentsFormFactory
 	- App\ConfigModule\Forms\MonitorFormFactory
 	- App\ConfigModule\Forms\OtaUploadFormFactory
 	- App\ConfigModule\Forms\SchedulerFormFactory

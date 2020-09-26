@@ -20,121 +20,17 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Presenters;
 
-use App\ConfigModule\Datagrids\ComponentsDataGridFactory;
-use App\ConfigModule\Forms\ComponentsFormFactory;
-use App\ConfigModule\Models\ComponentManager;
-use App\CoreModule\Presenters\ProtectedPresenter;
-use App\CoreModule\Traits\TPresenterFlashMessage;
-use Nette\Application\UI\Form;
-use Nette\IOException;
-use Nette\Utils\JsonException;
-use Ublaboo\DataGrid\DataGrid;
-use Ublaboo\DataGrid\Exception\DataGridColumnStatusException;
-use Ublaboo\DataGrid\Exception\DataGridException;
-
 /**
  * Component configuration presenter
  */
-class ComponentPresenter extends ProtectedPresenter {
+class ComponentPresenter extends GenericPresenter {
 
-	use TPresenterFlashMessage;
-
-	/**
-	 * @var ComponentsDataGridFactory Daemon's components data grid
-	 * @inject
-	 */
-	public $dataGridFactory;
-
-	/**
-	 * @var ComponentsFormFactory Daemon's components configuration form factory
-	 * @inject
-	 */
-	public $formFactory;
-
-	/**
-	 * @var ComponentManager Component manager
-	 */
-	private $manager;
-
-	/**
-	 * Constructor
-	 * @param ComponentManager $componentManager Component manager
-	 */
-	public function __construct(ComponentManager $componentManager) {
-		$this->manager = $componentManager;
-		parent::__construct();
+	public function renderAdd(): void {
+		$this->setView('default');
 	}
 
-	/**
-	 * Renders the datagrid
-	 */
-	public function actionDefault(): void {
-		try {
-			$this['configComponentsDataGrid']->setDataSource($this->dataGridFactory->load());
-		} catch (IOException $e) {
-			$this->flashError('config.messages.readFailures.ioError');
-		} catch (JsonException $e) {
-			$this->flashError('config.messages.readFailures.invalidJson');
-		}
-	}
-
-	/**
-	 * Edits the component
-	 * @param int $id Component ID
-	 */
-	public function actionEdit(int $id): void {
-		try {
-			$configuration = $this->manager->load($id);
-			if ($configuration === []) {
-				$this->flashError('config.messages.readFailures.notFound');
-				$this->redirect('Component:default');
-			}
-			$this['configComponentsForm']->setDefaults($configuration);
-		} catch (IOException $e) {
-			$this->flashError('config.messages.readFailures.ioError');
-			$this->redirect('Component:default');
-		} catch (JsonException $e) {
-			$this->flashError('config.messages.readFailures.invalidJson');
-			$this->redirect('Component:default');
-		}
-	}
-
-	/**
-	 * Deletes the component
-	 * @param int $id Component ID
-	 */
-	public function actionDelete(int $id): void {
-		if ($this->getUser()->isInRole('power')) {
-			try {
-				$this->manager->delete($id);
-				$this->flashSuccess('config.messages.successes.delete');
-			} catch (IOException $e) {
-				$this->flashError('config.messages.deleteFailures.ioError');
-			} catch (JsonException $e) {
-				$this->flashError('config.messages.deleteFailures.invalidJson');
-			}
-		}
-		$this->redirect('Component:default');
-	}
-
-	/**
-	 * Creates the components data grid
-	 * @param string $name Data grid's component name
-	 * @return DataGrid Components data grid
-	 * @throws DataGridColumnStatusException
-	 * @throws DataGridException
-	 * @throws JsonException
-	 */
-	protected function createComponentConfigComponentsDataGrid(string $name): DataGrid {
-		return $this->dataGridFactory->create($this, $name);
-	}
-
-	/**
-	 * Creates the components configuration form
-	 * @return Form Components configuration form
-	 */
-	protected function createComponentConfigComponentsForm(): Form {
-		return $this->formFactory->create($this);
+	public function renderEdit(): void {
+		$this->setView('default');
 	}
 
 }

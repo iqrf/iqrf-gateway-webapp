@@ -48,6 +48,8 @@ import UdpMessagingTable from '../pages/Config/UdpMessagingTable.vue';
 import TracerList from '../pages/Config/TracerList.vue';
 import TracerForm from '../pages/Config/TracerForm.vue';
 import MainConfiguration from '../pages/Config/MainConfiguration.vue';
+import ComponentList from '../pages/Config/ComponentList.vue';
+import ComponentForm from '../pages/Config/ComponentForm.vue';
 
 import UserAdd from '../pages/Core/UserAdd.vue';
 import UserEdit from '../pages/Core/UserEdit.vue';
@@ -136,6 +138,32 @@ const routes: Array<RouteConfig> = [
 						component: MainConfiguration,
 						path: 'main',
 						meta: {title: 'config.main.title'}
+					},
+					{
+						path: 'component',
+						component: {
+							render(c) {
+								return c('router-view');
+							}
+						},
+						children: [
+							{
+								path: '',
+								component: ComponentList,
+								meta: {title: 'config.components.title'}
+							},
+							{
+								component: ComponentForm,
+								path: 'add',
+								meta: {title: 'config.components.add'}
+							},
+							{
+								component: ComponentForm,
+								path: 'edit/:component',
+								props: true,
+								meta: {title: 'config.components.edit'}
+							},
+						],
 					},
 					{
 						component: IqrfCdc,

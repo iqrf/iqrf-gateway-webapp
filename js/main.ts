@@ -41,7 +41,6 @@ import MainDisambiguation from './components/MainDisambiguation.vue';
 import InterfacePorts from './components/Config/InterfacePorts.vue';
 import InterfaceMappings from './components/Config/InterfaceMappings.vue';
 import Scheduler from './pages/Config/Scheduler.vue';
-import ComponentList from './pages/Config/ComponentList.vue';
 
 Sentry.init({
 	dsn: 'https://435ee2b55f994e5f85e21a9ca93ea7a7@sentry.iqrf.org/5',
@@ -101,7 +100,6 @@ new Vue({
 		InterfacePorts,
 		InterfaceMappings,
 		Scheduler,
-		ComponentList,
 	},
 	router: router,
 	store: store,

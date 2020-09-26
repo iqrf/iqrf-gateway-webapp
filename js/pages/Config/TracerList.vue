@@ -23,7 +23,6 @@
 								color='info'
 								size='sm'
 								:to='"/config/tracer/edit/" + item.instance'
-								@click='editModal = true'
 							>
 								<CIcon :content='$options.icons.edit' />
 								{{ $t('table.actions.edit') }}

@@ -197,7 +197,11 @@
 					"libraryPath": "Please enter path to component's library directory.",
 					"libraryName": "Please enter name of component's library file.",
 					"startLevel": "Please enter component's start level.",
-					"deletePrompt": "Do you really want to delete component {component}?"
+					"deletePrompt": "Do you really want to delete component {component}?",
+					"deleteTitle": "Delete component",
+					"deleteSuccess": "Configuration of component {component} has been successfully deleted.",
+					"addSuccess": "Configuration of component {component} has been successfully added.",
+					"editSuccess": "Configuration of component {component} has been successfully updated."
 				}
 			}
 		},

@@ -1,5 +1,4 @@
 services:
-	- App\ConfigModule\Datagrids\ComponentsDataGridFactory
 	- App\ConfigModule\Datagrids\MonitorDataGridFactory
 	- App\ConfigModule\Datagrids\SchedulerDataGridFactory
 	- App\ConfigModule\Datagrids\WebSocketDataGridFactory

@@ -176,7 +176,6 @@ export default {
 				.then((response) => {
 					this.$store.commit('spinner/HIDE');
 					this.configuration = response.data;
-					this.instance = this.configuration.instance;
 				})
 				.catch((error) => {
 					this.$router.push('/config/tracer/');
@@ -201,7 +200,7 @@ export default {
 			if (this.$route.path === '/config/tracer/add') {
 				this.$toast.success(this.$t('config.tracer.messages.addSuccess', {instance: this.configuration.instance}).toString());
 			} else {
-				this.$toast.success(this.$t('config.tracer.messages.editSuccess', {instance: this.configuration.instance}).toString());
+				this.$toast.success(this.$t('config.tracer.messages.editSuccess', {instance: this.instance}).toString());
 			}
 		},
 	},
