@@ -107,9 +107,7 @@ export default {
 					this.$store.commit('spinner/HIDE');
 					this.instances = response.data.instances;
 				})
-				.catch((error) => {
-					FormErrorHandler.configError(error);
-				});
+				.catch((error) => FormErrorHandler.configError(error));
 		},
 		removeInstance() {
 			this.$store.commit('spinner/SHOW');
@@ -129,7 +127,7 @@ export default {
 	icons: {
 		add: cilPlus,
 		edit: cilPencil,
-		remove: cilTrash
+		remove: cilTrash,
 	},
 	metaInfo: {
 		title: 'config.tracer.title',

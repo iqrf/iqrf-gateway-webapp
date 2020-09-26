@@ -180,8 +180,8 @@
 						<CSelect
 							:value.sync='nodeCondition'
 							:options='[
-								{value: "total", label: "Total"},
-								{value: "new", label: "New"}
+								{value: "new", label: "New"},
+								{value: "total", label: "Total"}
 							]'
 							:disabled='!useNodes'
 						/>
@@ -293,7 +293,7 @@ export default {
 			useEmptyWaves: true,
 			useWaves: false,
 			useNodes: true,
-			nodeCondition: 'total',
+			nodeCondition: 'new',
 		};
 	},
 	created() {
