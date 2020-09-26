@@ -19,6 +19,7 @@ import ServiceControl from '../pages/Gateway/ServiceControl.vue';
 import SignIn from '../components/SignIn.vue';
 
 import IqrfNetDisambiguation from '../pages/IqrfNet/IqrfNetDisambiguation.vue';
+import DeviceEnumeration from '../pages/IqrfNet/DeviceEnumeration.vue';
 import NetworkManager from '../pages/IqrfNet/NetworkManager.vue';
 import SendJsonRequest from '../pages/IqrfNet/SendJsonRequest.vue';
 import SendDpaPacket from '../pages/IqrfNet/SendDpaPacket.vue';
@@ -40,6 +41,8 @@ import JsonRawApi from '../pages/Config/JsonRawApi.vue';
 import JsonSplitter from '../pages/Config/JsonSplitter.vue';
 import MqMessagingForm from '../pages/Config/MqMessagingForm.vue';
 import MqMessagingTable from '../pages/Config/MqMessagingTable.vue';
+import MqttMessagingForm from '../pages/Config/MqttMessagingForm.vue';
+import MqttMessagingTable from '../pages/Config/MqttMessagingTable.vue';
 import UdpMessagingForm from '../pages/Config/UdpMessagingForm.vue';
 import UdpMessagingTable from '../pages/Config/UdpMessagingTable.vue';
 import TracerList from '../pages/Config/TracerList.vue';
@@ -206,6 +209,32 @@ const routes: Array<RouteConfig> = [
 						],
 					},
 					{
+						path: 'mqtt',
+						component: {
+							render(c) {
+								return c('router-view');
+							}
+						},
+						children: [
+							{
+								path: '',
+								component: MqttMessagingTable,
+								meta: {title: 'config.mqtt.title'}
+							},
+							{
+								component: MqttMessagingForm,
+								path: 'add',
+								meta: {title: 'config.mqtt.add'}
+							},
+							{
+								component: MqttMessagingForm,
+								path: 'edit/:instance',
+								props: true,
+								meta: {title: 'config.mqtt.edit'}
+							},
+						],
+					},
+					{
 						path: 'udp',
 						component: {
 							render(c) {
@@ -333,6 +362,18 @@ const routes: Array<RouteConfig> = [
 						component: IqrfNetDisambiguation,
 						path: '',
 						meta: {title: 'iqrfnet.title'}
+					},
+					{
+						component: DeviceEnumeration,
+						path: 'enumeration/:address',
+						props: (route) => {
+							const address = Number.parseInt(route.params.address, 10);
+							if (Number.isNaN(address)) {
+								return 0;
+							}
+							return {address};
+						},
+						meta: {title: 'iqrfnet.enumeration.title'},
 					},
 					{
 						component: NetworkManager,

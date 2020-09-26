@@ -1,7 +1,6 @@
 services:
 	- App\ConfigModule\Forms\ComponentsFormFactory
 	- App\ConfigModule\Forms\MonitorFormFactory
-	- App\ConfigModule\Forms\MqttFormFactory
 	- App\ConfigModule\Forms\OtaUploadFormFactory
 	- App\ConfigModule\Forms\SchedulerFormFactory
 	- App\ConfigModule\Forms\SchedulerImportFormFactory

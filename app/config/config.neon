@@ -56,6 +56,7 @@ http:
 			'ws:',
 			'wss:',
 			https://apidocs.iqrf.org,
+			https://repository.iqrfalliance.org/,
 			https://sentry.iqrf.org
 		]
 		default-src: self

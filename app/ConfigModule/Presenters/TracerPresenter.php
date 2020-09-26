@@ -25,4 +25,12 @@ namespace App\ConfigModule\Presenters;
  */
 class TracerPresenter extends GenericPresenter {
 
+	public function renderAdd(): void {
+		$this->setView('default');
+	}
+
+	public function renderEdit(): void {
+		$this->setView('default');
+	}
+
 }

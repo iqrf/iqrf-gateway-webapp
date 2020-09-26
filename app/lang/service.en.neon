@@ -15,38 +15,6 @@ states:
 	enabled: Enabled
 	missing: Missing
 
-iqrf-gateway-daemon:
-	title: IQRF service
-	description: Control IQRF Gateway Daemon's service.
-	messages:
-		disable: IQRF Gateway Daemon has been disabled.
-		enable: IQRF Gateway Daemon has been enabled.
-		start: IQRF Gateway Daemon has been started.
-		stop: IQRF Gateway Daemon has been stopped.
-		restart: IQRF Gateway Daemon has been restarted. It takes tens of seconds before the system is ready.
-
-ssh:
-	title: SSH service
-	description: Controls the SSH daemon service.
-	messages:
-		disabled: SSH daemon manager is disabled.
-		disable: SSH daemon service has been disabled.
-		enable: SSH daemon service has been enabled.
-		start: SSH daemon service has been started.
-		stop: SSH daemon service has been stopped.
-		restart: SSH daemon service has been restarted.
-
-unattended-upgrades:
-	title: Automatic upgrades
-	description: Controls the automatic unattended upgrades service.
-	messages:
-		disabled: Automatic upgrades are disabled.
-		disable: Automatic upgrades service has been disabled.
-		enable: Automatic upgrades service has been enabled.
-		start: Automatic upgrades service has been started.
-		stop: Automatic upgrades service has been stopped.
-		restart: Automatic upgrades service has been restarted.
-
 errors:
 	unsupportedInit: Not supported init system is used.
 	processTimeout: Service manager process timed out.

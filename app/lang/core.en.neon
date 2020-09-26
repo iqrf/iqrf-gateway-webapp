@@ -55,56 +55,6 @@ signOut:
 	inactivity: You have been logged out for inactivity
 	message: You have been signed out
 
-grafana:
-	title: Grafana
-	description: Open Grafana dashboard.
-
-node-red:
-	title: Node RED
-	description: Open Node RED workflow.
-
-node-red-dashboard:
-	title: Node RED Dashboard
-	description: Open Node RED Dashboard.
-
-supervisor:
-	title: Supervisor
-	description: Open Supervisor Dashboard.
-
-user:
-	title: User manager
-	description: Manage users of this webapp.
-	add:
-		title: Add a new user
-		submit: Add
-	edit:
-		title: Edit an existing user
-	id: User ID
-	username: User name
-	password: Password
-	userType: User type
-	userTypes:
-		normal: Normal user
-		power: Power user
-	language: Language
-	languages:
-		en: English
-	oldPassword: 'Old password (only if you want change password)'
-	newPassword: 'New password (only if you want change password)'
-	save: Save
-	messages:
-		username: Please enter the username.
-		password: Please enter the password.
-		successAdd: User %username% has been added successfully.
-		successEdit: User %username% has been edited successfully.
-		oldPassword: Please enter the old password.
-		newPassword: Please enter the new password.
-		invalidOldPassword: The old password is mismatched.
-		usernameAlreadyExists: Username is already used.
-		confirmDelete: Do you really want to delete user %s?
-		successDelete: User %username% has been deleted successfully.
-		notFound: User not found.
-
 update:
 	available-webapp: 'There is an available update of the webapp to the version %version%.'
 	offline-tag: Offline mode

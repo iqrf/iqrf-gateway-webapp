@@ -384,7 +384,57 @@
 		},
 		"mqtt": {
 			"title": "MQTT interface",
-			"description": "MQTT interface settings."
+			"description": "MQTT interface settings.",
+			"add": "Add MQTT interface",
+			"edit": "Edit MQTT interface",
+			"form": {
+				"instance": "Name of instance",
+				"BrokerAddr": "Broker address",
+				"ClientId": "Client ID",
+				"Persistence": "Persistence",
+				"QoS": "QoS",
+				"QoSes": {
+					"0": "QoS 0 - At most once",
+					"1": "QoS 1 - At least once",
+					"2": "QoS 2 - Exactly once"
+				},
+				"TopicRequest": "Topic for requests",
+				"TopicResponse": "Topic for responses",
+				"User": "User",
+				"Password": "Password",
+				"EnabledSSL": "Enabled TLS",
+				"KeepAliveInterval": "Keep alive interval",
+				"ConnectTimeout": "Connection timeout",
+				"MinReconnect": "Minimal count of reconnects",
+				"MaxReconnect": "Maximal count of reconnects",
+				"TrustStore": "CA certificate",
+				"KeyStore": "Certificate",
+				"PrivateKey": "Private key",
+				"PrivateKeyPassword": "Private key password",
+				"EnabledCipherSuites": "Enabled cipher suites",
+				"EnableServerCertAuth": "Enable server certificate authentication",
+				"acceptAsyncMsg": "Accept asynchronous messages",
+				"messages": {
+					"instance": "Please enter name of MQTT instance.",
+					"BrokerAddr": "Please enter address of MQTT broker.",
+					"ClientId": "Please enter client ID.",
+					"TopicRequest": "Please enter topic for requests.",
+					"TopicResponse": "Please enter topic for responses."
+				}
+			},
+			"messages": {
+				"add": {
+					"success": "MQTT interface instance {instance} has been added."
+				},
+				"delete": {
+					"confirm": "Do you really want to delete MQTT interface instance {instance}?",
+					"confirmTitle": "Delete MQTT interface instance",
+					"success": "MQTT interface instance {instance} has been deleted."
+				},
+				"edit": {
+					"success": "MQTT interface instance {instance} has been edited."
+				}
+			}
 		},
 		"selectedComponents": {
 			"title": "Selected components",
@@ -756,6 +806,32 @@
 			"address": "Address",
 			"messages": {
 				"address": "Address has to be an integer from 0 to 239."
+			}
+		},
+		"enumeration": {
+			"title": "Device enumeration",
+			"deviceInfo": "Device info",
+			"deviceAddr": "Device address",
+			"hwpid": "HWPID",
+			"manufacturer": "Manufacturer",
+			"product": "Product name",
+			"picture": "Product picture",
+			"trInfo": "TR info",
+			"trType": "TR type",
+			"mid": "Module ID",
+			"osVersion": "IQRF OS version",
+			"dpaVersion": "DPA version",
+			"rfMode": "RF mode",
+			"rfModes": {
+				"lp": "LP",
+				"std": "STD"
+			},
+			"rssi": "RSSI",
+			"supplyVoltage": "Supply voltage",
+			"back": "Back to Network manager",
+			"messages": {
+				"failure": "An error occurred while the device enumeration.",
+				"repositoryUnavailable": "IQRF Repository is unavailable."
 			}
 		},
 		"networkManager": {

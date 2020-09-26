@@ -63,16 +63,7 @@ $theme-colors: (
   text-align: right;
 }
 
-@media (max-width: 768px) {
-  .productPicture {
-	max-height: 100%;
-	max-width: 100%;
-  }
-}
-
-@media (min-width: 768px) {
-  .productPicture {
-	max-height: 33%;
-	max-width: 33%;
-  }
+.rfModeIcon {
+  height: 1em;
+  width: 1em;
 }
