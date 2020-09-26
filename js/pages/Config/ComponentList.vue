@@ -16,6 +16,7 @@
 				<CDataTable
 					:fields='fields'
 					:items='components'
+					:sorter='{ external: false, resetable: true }'
 				>
 					<template #enabled='{item}'>
 						<td>
@@ -106,7 +107,7 @@ export default {
 				{key: 'libraryPath', label: this.$t('config.components.form.libraryPath')},
 				{key: 'libraryName', label: this.$t('config.components.form.libraryName')},
 				{key: 'enabled', label: this.$t('config.components.form.enabled')},
-				{key: 'actions', label: this.$t('table.actions.title')},
+				{key: 'actions', label: this.$t('table.actions.title'), sorter: false},
 			],
 			modals: {
 				component: null,
@@ -116,13 +117,28 @@ export default {
 	created() {
 		this.getConfig();
 	},
+	mounted() {
+		const titleEl = document.getElementById('title');
+		if (titleEl !== null) {
+			titleEl.innerText = this.$t(this.$metaInfo.title).toString();
+		}
+	},
 	methods: {
 		getConfig() {
 			this.$store.commit('spinner/SHOW');
 			return DaemonConfigurationService.getComponent('')
 				.then((response) => {
 					this.$store.commit('spinner/HIDE');
-					this.components = response.data.components;
+					if (this.$store.getters['user/getRole'] === 'power') {
+						this.components = response.data.components;
+					} else {
+						const whitelistedComponents = ['iqrf::IqrfCdc', 'iqrf::IqrfSpi', 'iqrf::IqrfUart'];
+						this.components = response.data.components.filter((component) => {
+							if (whitelistedComponents.includes(component.name)) {
+								return component;
+							}
+						});
+					}
 				})
 				.catch((error) => FormErrorHandler.configError(error));
 		},
@@ -156,8 +172,12 @@ export default {
 		edit: cilPencil,
 		remove: cilTrash
 	},
-	metaInfo: {
-		title: 'config.components.title',
+	metaInfo() {
+		return {
+			title: this.$store.getters['user/getRole'] === 'power' ?
+				'config.components.title' :
+				'config.selectedComponents.title',
+		};
 	},
 };
 </script>
