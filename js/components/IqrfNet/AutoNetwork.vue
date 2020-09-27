@@ -350,7 +350,7 @@ export default {
 			if (this.autoNetwork.stopConditions.waves) {
 				message += '/ ' + this.autoNetwork.stopConditions.waves;
 			}
-			message += ' [' + response.rsp.progress + '%] ';
+			message += '\n[' + response.rsp.progress + '%] ';
 			if (response.rsp.waveState) {
 				message += response.rsp.waveState;
 			}

@@ -78,9 +78,7 @@
 							<CSelect
 								:value.sync='task.messaging'
 								:placeholder='$t("config.scheduler.form.message.messagePlaceholder")'
-								:options='[
-									{value: "MqMessaging", label: "MqMessaging"},
-								]'
+								:options='messagings'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
@@ -119,6 +117,7 @@
 import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox, CSelect, CTextarea} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {integer, required} from 'vee-validate/dist/rules';
+import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import SchedulerService from '../../services/SchedulerService';
 import {TextareaAutogrowDirective} from 'vue-textarea-autogrow-directive/src/VueTextareaAutogrowDirective';
 
@@ -162,6 +161,12 @@ export default {
 				exactTime: false,
 				startTime: '',
 			},
+			components: {
+				mq: 'iqrf::MqMessaging',
+				mqtt: 'iqrf::MqttMessaging',
+				websocket: 'iqrf::WebsocketMessaging',
+			},
+			messagings: [],
 		};
 	},
 	created() {
@@ -185,6 +190,7 @@ export default {
 					this.getTask(this.id);
 					return;
 				}
+				
 			}
 			if (mutation.type === 'SOCKET_ONMESSAGE') {
 				if (mutation.payload.mType === 'mngScheduler_GetTask') {
@@ -210,6 +216,7 @@ export default {
 				}
 			}
 		});
+		this.getMessagings();
 	},
 	beforeDestroy() {
 		this.unsubscribe();
@@ -219,6 +226,20 @@ export default {
 			this.$store.commit('spinner/SHOW');
 			SchedulerService.getTask(taskId);
 		},
+		getMessagings() {
+			this.$store.commit('spinner/SHOW');
+			Promise.all([
+				DaemonConfigurationService.getComponent(this.components.mq),
+				DaemonConfigurationService.getComponent(this.components.mqtt),
+				DaemonConfigurationService.getComponent(this.components.websocket),
+			])
+				.then((responses) => {
+					this.$store.commit('spinner/HIDE');
+					responses.forEach(item => {
+						console.log(item);
+					});
+				});
+		}
 	},
 	metaInfo() {
 		return {
