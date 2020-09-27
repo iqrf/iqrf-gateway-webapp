@@ -324,7 +324,7 @@ export default {
 						case 0:
 							this.$store.commit('spinner/UPDATE_TEXT', this.autoNetworkProgress(mutation.payload.data));
 							if (mutation.payload.data.rsp.lastWave) {
-								this.$store.commit('spinner/HIDE');
+								//this.$store.commit('spinner/HIDE');
 								this.$toast.success(this.$t('iqrfnet.networkManager.messages.submit.autoNetwork.success').toString());
 								this.$emit('update-devices');
 							}
@@ -346,11 +346,11 @@ export default {
 	},
 	methods: {
 		autoNetworkProgress(response) {
-			let message = 'Wave ' + response.rsp.wave;
+			let message = '\nWave ' + response.rsp.wave;
 			if (this.autoNetwork.stopConditions.waves) {
 				message += '/ ' + this.autoNetwork.stopConditions.waves;
 			}
-			message += ' [' + response.rsp.progress + '%]\n';
+			message += ' [' + response.rsp.progress + '%] ';
 			if (response.rsp.waveState) {
 				message += response.rsp.waveState;
 			}

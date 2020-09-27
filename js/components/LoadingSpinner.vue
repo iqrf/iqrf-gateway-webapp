@@ -47,12 +47,12 @@ export default {
 }
 
 .loading-text {
-	margin-top: 20pt;
 	font-size: 20pt;
 	position: relative;
 	z-index: 10000;
 	color: white;
 	text-align: center;
+	white-space: pre-wrap;
 }
 
 .spinner {
