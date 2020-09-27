@@ -294,6 +294,10 @@ export default {
 			useWaves: false,
 			useNodes: true,
 			nodeCondition: 'new',
+			messages: {
+				nodesTotal: '',
+				nodesNew: '',
+			}
 		};
 	},
 	created() {
@@ -342,13 +346,25 @@ export default {
 	},
 	methods: {
 		autoNetworkProgress(response) {
+			let message = 'Wave ' + response.rsp.wave;
 			if (this.autoNetwork.stopConditions.waves) {
-				return 'Wave ' + response.rsp.wave + '/' + this.autoNetwork.stopConditions.waves + ' [' + response.rsp.progress + '%]';
-			} else {
-				return 'Wave ' + response.rsp.wave + ' [' + response.rsp.progress + '%]';
+				message += '/ ' + this.autoNetwork.stopConditions.waves;
 			}
+			message += ' [' + response.rsp.progress + '%]\n';
+			if (response.rsp.waveState) {
+				message += response.rsp.waveState;
+			}
+			if (response.rsp.nodesNr) {
+				this.messages.nodesTotal = '\nTotal number of nodes in network: ' + response.rsp.nodesNr;
+			}
+			if (response.rsp.newNodesNr) {
+				this.messages.nodesNew = '\nNumber of nodes added in last wave: ' + response.rsp.newNodesNr;
+			}
+			message += this.messages.nodesTotal + this.messages.nodesNew;
+			return message;
 		},
 		processSubmitAutoNetwork() {
+			this.messages.nodesTotal = this.messages.nodesNew = '';
 			let submitData = this.autoNetwork;
 			let stopConditions = {};
 			if (this.useEmptyWaves) {

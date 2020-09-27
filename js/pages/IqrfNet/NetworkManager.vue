@@ -4,12 +4,12 @@
 			<CTabs variant='tabs' :active-tab='activeTab'>
 				<CTab title='IQMESH'>
 					<BondingManager @update-devices='updateDevices' />
+					<DiscoveryManager @update-devices='updateDevices' />
 				</CTab>
 				<CTab title='AutoNetwork'>
 					<AutoNetwork @update-devices='updateDevices' />
 				</CTab>
 			</CTabs>
-			<DiscoveryManager @update-devices='updateDevices' />
 		</CCol>
 		<CCol lg='6'>
 			<DevicesInfo ref='devs' />
