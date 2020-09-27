@@ -92,7 +92,7 @@
 						<CButton v-if='configuration.VerbosityLevels.length > 1' color='danger' @click='removeLevel(i-1)'>
 							{{ $t('config.tracer.form.verbosityLevels.remove') }}
 						</CButton>
-						<CButton 
+						<CButton
 							v-if='i === configuration.VerbosityLevels.length'
 							color='success'
 							:disabled='!configuration.VerbosityLevels[i-1].channel || !configuration.VerbosityLevels[i-1].level'

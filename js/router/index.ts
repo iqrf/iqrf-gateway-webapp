@@ -52,6 +52,7 @@ import ComponentList from '../pages/Config/ComponentList.vue';
 import ComponentForm from '../pages/Config/ComponentForm.vue';
 import IqmeshServices from '../pages/Config/IqmeshServices.vue';
 import WebsocketServiceForm from '../pages/Config/WebsocketServiceForm.vue';
+import WebsocketMessagingForm from '../pages/Config/WebsocketMessagingForm.vue';
 import WebsocketList from '../pages/Config/WebsocketList.vue';
 
 import UserAdd from '../pages/Core/UserAdd.vue';
@@ -308,6 +309,17 @@ const routes: Array<RouteConfig> = [
 								path: '',
 								component: WebsocketList,
 								meta: {title: 'config.websocket.title'}
+							},
+							{
+								component: WebsocketMessagingForm,
+								path: 'add-messaging',
+								meta: {title: 'config.websocket.messaging.add'}
+							},
+							{
+								component: WebsocketMessagingForm,
+								path: 'edit-messaging/:instance',
+								props: true,
+								meta: {title: 'config.websocket.service.edit'}
 							},
 							{
 								component: WebsocketServiceForm,

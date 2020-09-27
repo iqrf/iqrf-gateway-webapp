@@ -2,6 +2,3 @@ services:
 	- App\ConfigModule\Forms\MonitorFormFactory
 	- App\ConfigModule\Forms\SchedulerFormFactory
 	- App\ConfigModule\Forms\SchedulerImportFormFactory
-	- App\ConfigModule\Forms\WebSocketFormFactory
-	- App\ConfigModule\Forms\WebSocketMessagingFormFactory
-	- App\ConfigModule\Forms\WebSocketServiceFormFactory

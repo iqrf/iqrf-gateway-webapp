@@ -33,19 +33,6 @@ components:
 		enabled: Enabled
 		disabled: Disabled
 
-iqmesh:
-	title: IQMESH services
-	description: Manage IQMESH services.
-	otaUpload:
-		title: IQRF OTA upload service
-		form:
-			instance: Name of instance
-			uploadPath: Path to a directory with files to upload
-			messages:
-				instance: Please enter name of OTA upload service instance.
-				uploadPath: Please enter path to a directory with files to upload.
-			Save: Save
-
 monitor:
 	title: Monitoring service
 	description: Monitoring service configuration.
@@ -133,43 +120,3 @@ schedulerMigration:
 selected-components:
 	title: Selected components
 	description: Manage selected components.
-
-websocket:
-	title: WebSocket interface
-	description: IQRF WebSocket interface settings.
-	form:
-		instance: Name of instance
-		acceptAsyncMsg: Accept asynchronous messages
-		WebsocketPort: WebSocket port
-		acceptOnlyLocalhost: Accept only connection from localhost
-		requiredInterfaces: Required interfaces
-		requiredInterface:
-			name: Required interface name
-			instance: Required WebSocket service
-		messages:
-			messagingInstance: Please enter name of WebSocket messaging.
-			serviceInstance: Please enter name of WebSocket service.
-			WebsocketPort: Please enter port of WebSocket service.
-			requiredInterface:
-				add: Add another interface
-				remove: Remove this interface
-				name: Please select the name of required interface.
-				instance: Please select the required WebSocket service instance.
-		Save: Save
-	interface:
-		add: Add WebSocket interface
-		edit: Edit WebSocket interface
-		messages:
-			confirmDelete: Do you really want to delete WebSocket interface %s?
-	messaging:
-		title: WebSocket messagings
-		add: Add WebSocket messaging
-		edit: Edit WebSocket messaging
-		messages:
-			confirmDelete: Do you really want to delete WebSocket messaging %s?
-	service:
-		title: WebSocket services
-		add: Add WebSocket service
-		edit: Edit WebSocket service
-		messages:
-			confirmDelete: Do you really want to delete WebSocket service %s?

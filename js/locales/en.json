@@ -599,12 +599,17 @@
 				"acceptOnlyLocalhost": "Accept only connection from localhost",
 				"requiredInterfaces": "Required interfaces",
 				"requiredInterface": {
+					"add": "Add another interface",
+					"remove": "Remove this interface",
 					"name": "Required interface name",
 					"instance": "Required WebSocket service"
 				},
 				"messages": {
+					"messagingInstance": "Please enter name of WebSocket messaging.",
 					"serviceInstance": "Please enter name of WebSocket service.",
-					"WebsocketPort": "Please enter WebSocket port number."
+					"WebsocketPort": "Please enter WebSocket port number.",
+					"interfaceName": "Please select the name of required interface.",
+					"interfaceInstance": "Please select the required WebSocket service instance."
 				}
 			},
 			"messaging": {
