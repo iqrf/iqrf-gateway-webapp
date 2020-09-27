@@ -7,6 +7,7 @@
 					color='success'
 					size='sm'
 					class='float-right'
+					to='/config/websocket/add-messaging'
 				>
 					<CIcon :content='$options.icons.add' />
 					{{ $t('table.actions.add') }}
@@ -48,6 +49,7 @@
 							<CButton
 								color='info'
 								size='sm'
+								:to='"/config/websocket/edit-messaging/" + item.instance'
 							>
 								<CIcon :content='$options.icons.edit' />
 								{{ $t('table.actions.edit') }}
@@ -93,7 +95,6 @@ import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 
-
 export default {
 	name: 'WebsocketMessagingList',
 	components: {
@@ -111,12 +112,26 @@ export default {
 		return {
 			componentName: 'iqrf::WebsocketMessaging',
 			fields: [
-				{key: 'instance', label: this.$t('config.websocket.form.instance')},
-				{key: 'acceptAsyncMsg', label: this.$t('config.websocket.form.acceptAsyncMsg')},
-				{key: 'RequiredInterfaces', label: this.$t('config.websocket.form.requiredInterface.instance')},
-				{key: 'actions', label: this.$t('table.actions.title'), filter: false, sorter: false}
+				{
+					key: 'instance',
+					label: this.$t('config.websocket.form.instance'),
+				},
+				{
+					key: 'acceptAsyncMsg',
+					label: this.$t('config.websocket.form.acceptAsyncMsg'),
+				},
+				{
+					key: 'RequiredInterfaces',
+					label: this.$t('config.websocket.form.requiredInterface.instance'),
+				},
+				{
+					key: 'actions',
+					label: this.$t('table.actions.title'),
+					filter: false,
+					sorter: false,
+				}
 			],
-			instances: null,
+			instances: [],
 			modals: {
 				instance: null,
 			},
@@ -141,7 +156,7 @@ export default {
 				DaemonConfigurationService.updateInstance(this.componentName, instance.instance, instance)
 					.then(() => {
 						this.getConfig().then(() => {
-							this.$toast.success(this.$t('config.websocket.messaging.messages.editSuccess', {messaging: instance.instance}));
+							this.$toast.success(this.$t('config.websocket.messaging.messages.editSuccess', {messaging: instance.instance}).toString());
 						});
 					})
 					.catch((error) => FormErrorHandler.getConfig(error));
@@ -154,7 +169,7 @@ export default {
 			DaemonConfigurationService.deleteInstance(this.componentName, instance)
 				.then(() => {
 					this.getConfig().then(() => {
-						this.$toast.success(this.$t('config.websocket.messaging.messages.deleteSuccess', {messaging: instance}));
+						this.$toast.success(this.$t('config.websocket.messaging.messages.deleteSuccess', {messaging: instance}).toString());
 					});	
 				})
 				.catch((error) => FormErrorHandler.configError(error));

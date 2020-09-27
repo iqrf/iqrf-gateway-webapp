@@ -107,10 +107,24 @@ export default {
 		return {
 			componentName: 'shape::WebsocketCppService',
 			fields: [
-				{key: 'instance', label: this.$t('config.websocket.form.instance')},
-				{key: 'WebsocketPort', label: this.$t('config.websocket.form.WebsocketPort')},
-				{key: 'acceptOnlyLocalhost', label: this.$t('config.websocket.form.acceptOnlyLocalhost')},
-				{key: 'actions', label: this.$t('table.actions.title'), filter: false, sorter: false},
+				{
+					key: 'instance',
+					label: this.$t('config.websocket.form.instance'),
+				},
+				{
+					key: 'WebsocketPort',
+					label: this.$t('config.websocket.form.WebsocketPort'),
+				},
+				{
+					key: 'acceptOnlyLocalhost',
+					label: this.$t('config.websocket.form.acceptOnlyLocalhost'),
+				},
+				{
+					key: 'actions',
+					label: this.$t('table.actions.title'),
+					filter: false,
+					sorter: false,
+				},
 			],
 			instances: null,
 			modals: {
@@ -160,9 +174,6 @@ export default {
 		add: cilPlus,
 		edit: cilPencil,
 		remove: cilTrash,
-	},
-	metaInfo: {
-		title: 'config.websocket.title',
 	},
 };
 </script>

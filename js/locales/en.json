@@ -630,6 +630,19 @@
 					"addSuccess": "Configuration of WebSocket service {service} has been successfully added.",
 					"editSuccess": "Configuration of WebSocket service {service} has been successfully edited."
 				}
+			},
+			"messages": {
+				"add": {
+					"success": "WebSocket interface instance {instance} has been added."
+				},
+				"delete": {
+					"confirm": "Do you really want to delete WebSocket interface instance {instance}?",
+					"confirmTitle": "Delete WebSocket interface instance",
+					"success": "WebSocket interface instance {instance} has been deleted."
+				},
+				"edit": {
+					"success": "WebSocket interface instance {instance} has been edited."
+				}
 			}
 		},
 		"mender": {

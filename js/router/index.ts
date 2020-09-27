@@ -51,8 +51,8 @@ import MainConfiguration from '../pages/Config/MainConfiguration.vue';
 import ComponentList from '../pages/Config/ComponentList.vue';
 import ComponentForm from '../pages/Config/ComponentForm.vue';
 import IqmeshServices from '../pages/Config/IqmeshServices.vue';
-import WebsocketServiceList from '../pages/Config/WebsocketServiceList.vue';
 import WebsocketServiceForm from '../pages/Config/WebsocketServiceForm.vue';
+import WebsocketList from '../pages/Config/WebsocketList.vue';
 
 import UserAdd from '../pages/Core/UserAdd.vue';
 import UserEdit from '../pages/Core/UserEdit.vue';
@@ -167,17 +167,6 @@ const routes: Array<RouteConfig> = [
 								meta: {title: 'config.components.edit'}
 							},
 						],
-					},
-					{
-						component: WebsocketServiceForm,
-						path: 'websocket/add-service',
-						meta: {title: 'config.websocket.service.add'}
-					},
-					{
-						component: WebsocketServiceForm,
-						path: 'websocket/edit-service/:instance',
-						props: true,
-						meta: {title: 'config.websocket.service.edit'}
 					},
 					{
 						component: IqrfCdc,
@@ -304,6 +293,32 @@ const routes: Array<RouteConfig> = [
 								path: 'edit/:instance',
 								props: true,
 								meta: {title: 'config.udp.edit'}
+							},
+						],
+					},
+					{
+						path: 'websocket',
+						component: {
+							render(c) {
+								return c('router-view');
+							}
+						},
+						children: [
+							{
+								path: '',
+								component: WebsocketList,
+								meta: {title: 'config.websocket.title'}
+							},
+							{
+								component: WebsocketServiceForm,
+								path: 'add-service',
+								meta: {title: 'config.websocket.service.add'}
+							},
+							{
+								component: WebsocketServiceForm,
+								path: 'edit-service/:instance',
+								props: true,
+								meta: {title: 'config.websocket.service.edit'}
 							},
 						],
 					},

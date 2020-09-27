@@ -1,6 +1,3 @@
 services:
 	- App\ConfigModule\Datagrids\MonitorDataGridFactory
 	- App\ConfigModule\Datagrids\SchedulerDataGridFactory
-	- App\ConfigModule\Datagrids\WebSocketDataGridFactory
-	- App\ConfigModule\Datagrids\WebSocketMessagingDataGridFactory
-	- App\ConfigModule\Datagrids\WebSocketServiceDataGridFactory

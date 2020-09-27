@@ -38,8 +38,6 @@ import TrConfiguration from './components/IqrfNet/TrConfiguration.vue';
 import MainDisambiguation from './components/MainDisambiguation.vue';
 import Scheduler from './pages/Config/Scheduler.vue';
 //import MonitorList from './pages/Config/MonitorList.vue';
-import WebsocketMessagingList from './pages/Config/WebsocketMessagingList.vue';
-import WebsocketServiceList from './pages/Config/WebsocketServiceList.vue';
 
 Sentry.init({
 	dsn: 'https://435ee2b55f994e5f85e21a9ca93ea7a7@sentry.iqrf.org/5',
@@ -96,8 +94,6 @@ new Vue({
 		MainDisambiguation,
 		Scheduler,
 		//MonitorList,
-		WebsocketMessagingList,
-		WebsocketServiceList,
 	},
 	router: router,
 	store: store,
