@@ -1,5 +1,5 @@
 <template>
-	<CCard>
+	<CCard class='border-0'>
 		<CCardHeader>
 			{{ $t('iqrfnet.networkManager.discovery.title') }}
 		</CCardHeader>

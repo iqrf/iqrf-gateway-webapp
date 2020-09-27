@@ -1,5 +1,5 @@
 <template>
-	<CCard>
+	<CCard class='border-0'>
 		<CCardBody>
 			<ValidationObserver v-slot='{ invalid }'>
 				<CForm>
