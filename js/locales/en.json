@@ -474,28 +474,13 @@
 		"scheduler": {
 			"title": "Scheduler",
 			"description": "Scheduler settings.",
+			"table": {
+				"id": "ID",
+				"time": "Time",
+				"service": "Service",
+				"mType": "MessageTypes"
+			},
 			"form": {
-				"addOrEdit": {
-					"addTitle": "Add task",
-					"editTitle": "Edit task",
-					"taskId": "Task ID",
-					"time": "Time",
-					"service": "Service",
-					"timeSpec": {
-						"cronTime": "Time in cron format",
-						"exactTime": "Exact time",
-						"periodic": "Periodic",
-						"period": "Period in seconds",
-						"startTime": "Start time"
-					},
-					"message": {
-						"title": "Messages",
-						"label": "Message (JSON request)",
-						"add": "Add another message",
-						"remove": "Remove message"
-					},
-					"verbose": "Enable verbose response"
-				},
 				"import": {
 					"title": "Import task(s)",
 					"file": "JSON task file or ZIP archive with tasks",
@@ -503,9 +488,6 @@
 				}
 			},
 			"buttons": {
-				"add": "Add",
-				"edit": "Edit",
-				"remove": "Remove",
 				"import": "Import",
 				"export": "Export"
 			},
@@ -513,7 +495,11 @@
 			"messages": {
 				"importSuccess": "The tasks has been imported successfully.",
 				"importInvalidFormat": "The uploaded file is not JSON file or ZIP archive.",
-				"importInvalidFile": "The uploaded file is invalid."
+				"importInvalidFile": "The uploaded file is invalid.",
+				"deleteTitle": "Delete scheduler task",
+				"deletePrompt": "Do you really want to delete scheduler task {task}?",
+				"deleteSuccess": "Scheduler task has been successfully deleted.",
+				"deleteFail": "An error occured while removing task."
 			}
 		},
 		"tracer": {

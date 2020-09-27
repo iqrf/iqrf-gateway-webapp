@@ -6,12 +6,42 @@ class SchedulerService {
 	/**
 	 * Retrieve scheduler tasks
 	 */
-	getTasks(clientId: string) {
+	listTasks() {
 		return store.dispatch('sendRequest', {
 			'mType': 'mngScheduler_List',
 			'data': {
 				'req': {
-					'clientId': clientId,
+					'clientId': 'SchedulerMessaging',
+				},
+				'returnVerbose': true,
+			},
+		});
+	}
+
+	/**
+	 * Retrieves task specified by ID
+	 * @param taskId task ID
+	 */
+	getTask(taskId: number) {
+		return store.dispatch('sendRequest', {
+			'mType': 'mngScheduler_GetTask',
+			'data': {
+				'req': {
+					'clientId': 'SchedulerMessaging',
+					'taskId': taskId,
+				},
+				'returnVerbose': true,
+			},
+		});
+	}
+
+	removeTask(taskId: number) {
+		return store.dispatch('sendRequest', {
+			'mType': 'mngScheduler_RemoveTask',
+			'data': {
+				'req': {
+					'clientId': 'SchedulerMessaging',
+					'taskId': taskId,
 				},
 				'returnVerbose': true,
 			},
