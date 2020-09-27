@@ -36,7 +36,8 @@ import App from './components/App.vue';
 import TheDashboard from './components/TheDashboard.vue';
 import TrConfiguration from './components/IqrfNet/TrConfiguration.vue';
 import MainDisambiguation from './components/MainDisambiguation.vue';
-import Scheduler from './pages/Config/Scheduler.vue';
+import SchedulerList from './pages/Config/SchedulerList.vue';
+import SchedulerForm from './pages/Config/SchedulerForm.vue';
 //import MonitorList from './pages/Config/MonitorList.vue';
 
 Sentry.init({
@@ -92,7 +93,8 @@ new Vue({
 		TheDashboard,
 		TrConfiguration,
 		MainDisambiguation,
-		Scheduler,
+		SchedulerList,
+		SchedulerForm,
 		//MonitorList,
 	},
 	router: router,
