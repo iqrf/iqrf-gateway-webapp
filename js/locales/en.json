@@ -522,7 +522,8 @@
 				"deletePrompt": "Do you really want to delete scheduler task {task}?",
 				"deleteSuccess": "Scheduler task has been successfully deleted.",
 				"deleteFail": "An error occured while removing task.",
-				"getFail": "Could not retrieve task {task}."
+				"getFail": "Could not retrieve task {task}.",
+				"addSuccess": "Scheduler task has been successfully added."
 			}
 		},
 		"tracer": {

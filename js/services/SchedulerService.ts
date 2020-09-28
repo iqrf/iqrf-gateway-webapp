@@ -3,6 +3,22 @@ import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '../helpers/authorizationHeader';
 
 class SchedulerService {
+	addTask(taskId: number, clientId: number, task: any, timeSpec: object) {
+		return store.dispatch('sendRequest', {
+			'mType': 'mngScheduler_AddTask',
+			'data': {
+				'req': {
+					'clientId': clientId,
+					'taskId': taskId,
+					'task': task,
+					'timeSpec': timeSpec,
+					'persist': true,
+				},
+				'returnVerbose': true,
+			},
+		});
+	}
+
 	/**
 	 * Retrieve scheduler tasks
 	 */

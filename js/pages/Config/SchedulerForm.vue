@@ -2,7 +2,7 @@
 	<CCard>
 		<CCardBody>
 			<ValidationObserver v-slot='{ invalid }'>
-				<CForm>
+				<CForm @submit.prevent='saveTask'>
 					<ValidationProvider
 						v-slot='{ errors, touched, valid }'
 						rules='integer|required'
@@ -35,10 +35,18 @@
 							:invalid-feedback='$t(errors[0])'
 						/>
 					</ValidationProvider>
-					<CInput
-						v-model='timeSpec.cronTime'
-						:label='$t("config.scheduler.form.task.cronTime")'
-					/>
+					<div class='form-group'>
+						<label for='cronTime'>{{ $t("config.scheduler.form.task.cronTime") }}</label>
+						<CBadge v-if='cronMessage !== null' color='info'>
+							{{ cronMessage }}
+						</CBadge>
+						<CInput
+							id='cronTime'
+							v-model='timeSpec.cronTime'
+							@input='calculateCron'
+							@change='calculateCron'
+						/>
+					</div>
 					<CInputCheckbox
 						:checked.sync='timeSpec.exactTime'
 						:label='$t("config.scheduler.form.task.exactTime")'
@@ -69,14 +77,14 @@
 						:label='$t("config.scheduler.form.task.startTime")'
 					/>
 					<h3>{{ $t('config.scheduler.form.message.title') }}</h3><hr>
-					<div class='form-group'>
+					<div v-for='i of task.length' :key='i' class='form-group'>
 						<ValidationProvider
 							v-slot='{ errors, touched, valid}'
 							rules='required'
 							:custom-messages='{required: "config.scheduler.form.messages.service"}'
 						>
 							<CSelect
-								:value.sync='task.messaging'
+								:value.sync='task[i-1].messaging'
 								:placeholder='$t("config.scheduler.form.message.messagePlaceholder")'
 								:options='messagings'
 								:is-valid='touched ? valid : null'
@@ -93,19 +101,22 @@
 							}'
 						>
 							<CTextarea
-								v-model='task.message'
+								v-model='task[i-1].message'
 								v-autogrow
 								:label='$t("config.scheduler.form.message.label")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
 						</ValidationProvider>
+						<CButton v-if='task.length > 1' color='danger' @click='removeMessage(i-1)'>
+							{{ $t('config.scheduler.buttons.remove') }}
+						</CButton>
+						<CButton v-if='i === task.length' color='success' @click='addMessage'>
+							{{ $t('config.scheduler.buttons.add') }}
+						</CButton>
 					</div>
-					<CButton color='primary' :disabled='invalid'>
+					<CButton type='submit' color='primary' :disabled='invalid'>
 						{{ $t('forms.save') }}
-					</CButton>
-					<CButton color='primary' :disabled='invalid'>
-						{{ $t('forms.saveRestart') }}
 					</CButton>
 				</CForm>
 			</ValidationObserver>
@@ -114,17 +125,18 @@
 </template>
 
 <script>
-import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox, CSelect, CTextarea} from '@coreui/vue/src';
+import {CBadge, CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox, CSelect, CTextarea} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {integer, required} from 'vee-validate/dist/rules';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import SchedulerService from '../../services/SchedulerService';
 import {TextareaAutogrowDirective} from 'vue-textarea-autogrow-directive/src/VueTextareaAutogrowDirective';
-
+import cronstrue from 'cronstrue';
 
 export default {
 	name: 'SchedulerForm',
 	components: {
+		CBadge,
 		CButton,
 		CCard,
 		CCardBody,
@@ -148,12 +160,9 @@ export default {
 	},
 	data() {
 		return {
-			taskId: null,
+			taskId: Date.now(),
 			clientId: null,
-			task: {
-				messaging: null,
-				message: null,
-			},
+			task: [{}],
 			timeSpec: {
 				cronTime: '',
 				periodic: false,
@@ -167,7 +176,13 @@ export default {
 				websocket: 'iqrf::WebsocketMessaging',
 			},
 			messagings: [],
+			cronMessage: null,
 		};
+	},
+	computed: {
+		cronTime() {
+			return 2;
+		},
 	},
 	created() {
 		extend('integer', integer);
@@ -184,13 +199,15 @@ export default {
 			let object = JSON.parse(json);
 			return {}.hasOwnProperty.call(object, 'mType');
 		});
+		extend('cron', (cronTime) => {
+			//
+		});
 		this.unsubscribe = this.$store.subscribe(mutation => {
 			if (mutation.type === 'SOCKET_ONOPEN') {
 				if (this.id) {
 					this.getTask(this.id);
 					return;
 				}
-				
 			}
 			if (mutation.type === 'SOCKET_ONMESSAGE') {
 				if (mutation.payload.mType === 'mngScheduler_GetTask') {
@@ -205,11 +222,24 @@ export default {
 							timeString += item + ' ';
 						});
 						this.timeSpec.cronTime = timeString.trim();
-						this.task.messaging = rsp.task.messaging;
-						this.task.message = JSON.stringify(rsp.task.message, null, 2);
+						if (Array.isArray(rsp.task)) {
+							let tasks = [];
+							rsp.task.forEach(item => {
+								tasks.push({messaging: item.messaging, message: JSON.stringify(item.message, null, 2)});
+							});
+							this.task = tasks;
+						} else {
+							this.task = [{messaging: rsp.task.messaging, message: JSON.stringify(rsp.task.message, null, 2)}];
+						}
 					} else {
 						this.$router.push('/config/scheduler/');
 						this.$toast.error(this.$t('config.scheduler.messages.getFail', {task: this.task}));
+					}
+				} else if (mutation.payload.mType === 'mngScheduler_AddTask') {
+					this.$store.commit('spinner/HIDE');
+					if (mutation.payload.data.status === 0) {
+						this.$router.push('/config/scheduler/');
+						this.$toast.success(this.$t('config.scheduler.messages.addSuccess').toString());
 					}
 				} else if (mutation.payload.mType === 'messageError') {
 					this.$store.commit('spinner/HIDE');
@@ -222,6 +252,15 @@ export default {
 		this.unsubscribe();
 	},
 	methods: {
+		calculateCron() {
+			this.cronMessage = cronstrue.toString(this.timeSpec.cronTime);
+		},
+		addMessage() {
+			this.task.push({});
+		},
+		removeMessage(index) {
+			this.task.splice(index, 1);
+		},
 		getTask(taskId) {
 			this.$store.commit('spinner/SHOW');
 			SchedulerService.getTask(taskId);
@@ -236,9 +275,30 @@ export default {
 				.then((responses) => {
 					this.$store.commit('spinner/HIDE');
 					responses.forEach(item => {
-						console.log(item);
+						if (item.data.instances) {
+							item.data.instances.forEach(messaging => {
+								this.messagings.push({value: messaging.instance, label: messaging.instance});
+							});
+						}
 					});
 				});
+		},
+		saveTask() {
+			this.$store.commit('spinner/SHOW');
+			let task = null;
+			if (this.task.length === 1) {
+				task = this.task[0];
+			} else {
+				task = this.task;
+			}
+			let timeSpec = JSON.parse(JSON.stringify(this.timeSpec));
+			timeSpec.cronTime = timeSpec.cronTime.split(' ');
+			if (this.$route.path === '/config/scheduler/add') {
+				SchedulerService.addTask(this.taskId, this.clientId, task, timeSpec);
+			} else {
+				SchedulerService.removeTask(this.id);
+				SchedulerService.addTask(this.taskId, this.clientId, task, timeSpec);
+			}
 		}
 	},
 	metaInfo() {
