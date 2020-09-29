@@ -17,7 +17,6 @@ services:
 		factory: App\ConfigModule\Models\SchedulerSchemaManager
 		autowired: self
 	- App\ConfigModule\Models\TaskTimeManager
-	- App\ConfigModule\Models\WebSocketManager
 	translator.fileManager:
 		factory: App\CoreModule\Models\JsonFileManager('/etc/iqrf-gateway-translator')
 		autowired: false
