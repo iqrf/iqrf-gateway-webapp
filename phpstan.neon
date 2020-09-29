@@ -12,7 +12,6 @@ parameters:
 		- bin
 		- tests
 	ignoreErrors:
-		- '#Call to an undefined method Nette\\Application\\UI\\+Form::addMultiplier\(\).#'
 		- '#Call to an undefined method Nette\\ComponentModel\\IComponent::addError\(\).#'
 		- '#Call to an undefined method Nette\\Forms\\Container::addMultiplier\(\).#'
 		- '#Call to an undefined method Nette\\Localization\\ITranslator::createPrefixedTranslator\(\).#'

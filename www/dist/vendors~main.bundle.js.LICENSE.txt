@@ -11,6 +11,12 @@
  */
 
 /*!
+ * vue-datetime v1.0.0-beta.14
+ * (c) 2020 Mario Juárez
+ * Released under the MIT License.
+ */
+
+/*!
  * vue-i18n v8.21.1 
  * (c) 2020 kazuya kawaguchi
  * Released under the MIT License.

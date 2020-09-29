@@ -4,13 +4,17 @@ import {authorizationHeader} from '../helpers/authorizationHeader';
 
 class SchedulerService {
 	addTask(taskId: number, clientId: number, task: any, timeSpec: object) {
+		const tasks = JSON.parse(JSON.stringify(task));
+		tasks.forEach((item: any) => {
+			item.message = JSON.parse(item.message);
+		});
 		return store.dispatch('sendRequest', {
 			'mType': 'mngScheduler_AddTask',
 			'data': {
 				'req': {
 					'clientId': clientId,
 					'taskId': taskId,
-					'task': task,
+					'task': tasks,
 					'timeSpec': timeSpec,
 					'persist': true,
 				},

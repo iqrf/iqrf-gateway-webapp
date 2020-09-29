@@ -38,7 +38,7 @@
 					</template>
 					<template #task='{item}'>
 						<td>
-							{{ item.task.message.mType }}
+							{{ displayMTypes(item.task) }}
 						</td>
 					</template>
 					<template #actions='{item}'>
@@ -46,7 +46,7 @@
 							<CButton
 								color='info'
 								size='sm'
-								:to='"/config/scheduler/edit/" + item.instance'
+								:to='"/config/scheduler/edit/" + item.taskId'
 							>
 								<CIcon :content='$options.icons.edit' />
 								{{ $t('table.actions.edit') }}
@@ -123,6 +123,9 @@ import {cilPencil, cilPlus, cilTrash, cilArrowTop, cilArrowBottom} from '@coreui
 import {fileDownloader} from '../../helpers/fileDownloader';
 import {TextareaAutogrowDirective} from 'vue-textarea-autogrow-directive/src/VueTextareaAutogrowDirective';
 import SchedulerService from '../../services/SchedulerService';
+import ServiceService from '../../services/ServiceService';
+import FormErrorHandler from '../../helpers/FormErrorHandler';
+import {DateTime} from 'luxon';
 
 export default {
 	name: 'SchedulerList',
@@ -168,10 +171,19 @@ export default {
 			},
 			taskIds: null,
 			tasks: [],
+			dateFormat: {
+				year: 'numeric',
+				month: 'short',
+				day: 'numeric',
+				hour12: false,
+				hour: 'numeric',
+				minute: 'numeric',
+				second: 'numeric',
+			}
 		};
 	},
 	created() {
-		this.unsbscribe = this.$store.subscribe(mutation => {
+		this.unsubscribe = this.$store.subscribe(mutation => {
 			if (mutation.type === 'SOCKET_ONOPEN') {
 				this.getTasks();
 				return;
@@ -220,6 +232,21 @@ export default {
 			this.importConfig.modal = false;
 			this.importConfig.first = true;
 		},
+		displayMTypes(item) {
+			try {
+				if (Array.isArray(item)) {
+					let mTypes = '';
+					item.forEach(task => {
+						mTypes += task.message.mType + ', ';
+					});
+					return mTypes.slice(0, -2);
+				} else {
+					return item.message.mType;
+				}
+			} catch(err) {
+				return '';
+			}
+		},
 		getTasks() {
 			this.$store.commit('spinner/SHOW');
 			SchedulerService.listTasks();
@@ -244,12 +271,17 @@ export default {
 				});
 		},
 		importScheduler () {
-			this.import.Modal = false;
+			this.importConfig.modal = false;
 			this.$store.commit('spinner/SHOW');
 			SchedulerService.importConfig(this.$refs.schedulerImport.$el.children[1].files[0])
 				.then(() => {
-					this.$store.commit('spinner/HIDE');
-					this.$toast.success(this.$t('config.scheduler.messages.importSuccess'));
+					ServiceService.restart('iqrf-gateway-daemon')
+						.then(() => {
+							this.$store.commit('spinner/HIDE');
+							this.$toast.success(this.$t('config.scheduler.messages.importSuccess'));
+							this.$toast.info(this.$t('service.iqrf-gateway-daemon.messages.restart'));
+						})
+						.catch((error) => FormErrorHandler.serviceError(error));
 				})
 				.catch((error) => {
 					this.$store.commit('spinner/HIDE');
@@ -267,12 +299,33 @@ export default {
 			this.importConfig.empty = this.$refs.schedulerImport.$el.children[1].files.length === 0;
 		},
 		timeString(item) {
-			if (item.cronTime.length > 0) {
-				let timeString = '';
-				item.cronTime.forEach(item => {
-					timeString += item + ' ';
-				});
-				return timeString.trim();
+			try {
+				if (item.exactTime) {
+					return 'oneshot (' + DateTime.fromISO(item.startTime).toLocaleString(this.dateFormat) + ')';
+				}
+				if (item.periodic) {
+					let message = 'every ';
+					let date = new Date(0);
+					date.setSeconds(item.period);
+					if (item.period >= 0 && item.period < 60) {
+						message += date.getSeconds() + ' s';
+					} else if (item.period < 3600) {
+						message += date.getMinutes() + ':' + date.getSeconds() + ' min';
+					} else {
+						message += date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds() + ' h';
+					}
+					return message;
+				}
+				if (item.cronTime.length > 0) {
+					let timeString = '';
+					item.cronTime.forEach(item => {
+						timeString += item + ' ';
+					});
+					return timeString.trim();
+				}
+			} catch (err) {
+				console.error(err);
+				return '';
 			}
 		},
 	},
@@ -282,10 +335,9 @@ export default {
 		remove: cilTrash,
 		import: cilArrowTop,
 		export: cilArrowBottom,
+	},
+	metaInfo: {
+		title: 'config.scheduler.title'
 	}
 };
 </script>
-
-<style scoped>
-
-</style>

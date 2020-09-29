@@ -24,8 +24,6 @@ import Nette from 'nette-forms';
 
 import store from './store';
 
-import './config/scheduler';
-
 Nette.initOnLoad();
 
 $(function () {

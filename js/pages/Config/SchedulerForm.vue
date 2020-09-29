@@ -43,17 +43,19 @@
 						<CInput
 							id='cronTime'
 							v-model='timeSpec.cronTime'
+							:disabled='timeSpec.exactTime || timeSpec.periodic'
 							@input='calculateCron'
-							@change='calculateCron'
 						/>
 					</div>
 					<CInputCheckbox
 						:checked.sync='timeSpec.exactTime'
 						:label='$t("config.scheduler.form.task.exactTime")'
+						:disabled='timeSpec.periodic'
 					/>
 					<CInputCheckbox
 						:checked.sync='timeSpec.periodic'
 						:label='$t("config.scheduler.form.task.periodic")'
+						:disabled='timeSpec.exactTime'
 					/>
 					<ValidationProvider
 						v-slot='{ errors, touched, valid }'
@@ -70,12 +72,21 @@
 							:label='$t("config.scheduler.form.task.period")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
+							:disabled='!timeSpec.periodic || timeSpec.exactTime'
 						/>
 					</ValidationProvider>
-					<CInput
-						v-model='timeSpec.startTime'
-						:label='$t("config.scheduler.form.task.startTime")'
-					/>
+					<div class='form-group'>
+						<label for='exactTime'>{{ $t("config.scheduler.form.task.startTime") }}</label>
+						<Datetime
+							id='exactTime'
+							v-model='timeSpec.startTime' 
+							type='datetime'
+							:format='$options.pickerSettings.dateFormat'
+							:min-datetime='new Date().toISOString()'
+							input-class='form-control'
+							:disabled='!timeSpec.exactTime || timeSpec.periodic'
+						/>
+					</div>
 					<h3>{{ $t('config.scheduler.form.message.title') }}</h3><hr>
 					<div v-for='i of task.length' :key='i' class='form-group'>
 						<ValidationProvider
@@ -132,6 +143,7 @@ import DaemonConfigurationService from '../../services/DaemonConfigurationServic
 import SchedulerService from '../../services/SchedulerService';
 import {TextareaAutogrowDirective} from 'vue-textarea-autogrow-directive/src/VueTextareaAutogrowDirective';
 import cronstrue from 'cronstrue';
+import {Datetime} from 'vue-datetime';
 
 export default {
 	name: 'SchedulerForm',
@@ -145,6 +157,7 @@ export default {
 		CInputCheckbox,
 		CSelect,
 		CTextarea,
+		Datetime,
 		ValidationObserver,
 		ValidationProvider
 	},
@@ -179,11 +192,6 @@ export default {
 			cronMessage: null,
 		};
 	},
-	computed: {
-		cronTime() {
-			return 2;
-		},
-	},
 	created() {
 		extend('integer', integer);
 		extend('required', required);
@@ -198,9 +206,6 @@ export default {
 		extend('mType', (json) => {
 			let object = JSON.parse(json);
 			return {}.hasOwnProperty.call(object, 'mType');
-		});
-		extend('cron', (cronTime) => {
-			//
 		});
 		this.unsubscribe = this.$store.subscribe(mutation => {
 			if (mutation.type === 'SOCKET_ONOPEN') {
@@ -217,11 +222,7 @@ export default {
 						this.taskId = rsp.taskId;
 						this.clientId = rsp.clientId;
 						this.timeSpec = rsp.timeSpec;
-						let timeString = '';
-						this.timeSpec.cronTime.forEach(item => {
-							timeString += item + ' ';
-						});
-						this.timeSpec.cronTime = timeString.trim();
+						this.timeSpec.cronTime = this.timeSpec.cronTime.join(' ');
 						if (Array.isArray(rsp.task)) {
 							let tasks = [];
 							rsp.task.forEach(item => {
@@ -245,7 +246,14 @@ export default {
 					this.$store.commit('spinner/HIDE');
 				}
 			}
+			
 		});
+		if (this.$store.getters.isSocketConnected) {
+			if (this.id) {
+				this.getTask(this.id);
+				return;
+			}
+		}	
 		this.getMessagings();
 	},
 	beforeDestroy() {
@@ -253,7 +261,20 @@ export default {
 	},
 	methods: {
 		calculateCron() {
-			this.cronMessage = cronstrue.toString(this.timeSpec.cronTime);
+			const cronTime = this.timeSpec.cronTime.split(' ');
+			const len = cronTime.length;
+			if (len === 1) {
+				const alias = this.getCronAlias(this.timeSpec.cronTime);
+				if (alias !== undefined) {
+					this.cronMessage = cronstrue.toString(alias);
+				} else {
+					this.cronMessage = null;
+				}
+			} else if (len > 4 && len < 8) {
+				this.cronMessage = cronstrue.toString(this.timeSpec.cronTime);
+			} else {
+				this.cronMessage = null;
+			}
 		},
 		addMessage() {
 			this.task.push({});
@@ -285,21 +306,62 @@ export default {
 		},
 		saveTask() {
 			this.$store.commit('spinner/SHOW');
-			let task = null;
-			if (this.task.length === 1) {
-				task = this.task[0];
-			} else {
-				task = this.task;
-			}
 			let timeSpec = JSON.parse(JSON.stringify(this.timeSpec));
+			timeSpec.cronTime = timeSpec.cronTime.replace('?', '*');
 			timeSpec.cronTime = timeSpec.cronTime.split(' ');
+			if (timeSpec.cronTime.length === 1) {
+				const alias = this.getCronAlias(timeSpec.cronTime[0]);
+				if (alias !== undefined) {
+					timeSpec.cronTime = [alias, '', '', '', '', '', ''];
+				}
+			}
+			switch(timeSpec.cronTime.length) {
+				case 5:
+					timeSpec.cronTime.unshift('0');
+					timeSpec.cronTime.push('*');
+					break;
+				case 6:
+					if (timeSpec.cronTime[5].length === 4) {
+						timeSpec.cronTime.unshift('0');
+					} else {
+						timeSpec.cronTime.push('*');
+					}
+					break;
+				case 7:
+					break;
+				default:
+					timeSpec.cronTime = new Array(7).fill('');
+			}			
 			if (this.$route.path === '/config/scheduler/add') {
-				SchedulerService.addTask(this.taskId, this.clientId, task, timeSpec);
+				SchedulerService.addTask(this.taskId, this.clientId, this.task, timeSpec);
 			} else {
 				SchedulerService.removeTask(this.id);
-				SchedulerService.addTask(this.taskId, this.clientId, task, timeSpec);
+				SchedulerService.addTask(this.taskId, this.clientId, this.task, timeSpec);
 			}
+		},
+		getCronAlias(input) {
+			let aliases = new Map();
+			aliases.set('@reboot', '');
+			aliases.set('@yearly', '0 0 0 1 1 * *');
+			aliases.set('@annually', '0 0 0 1 1 * *');
+			aliases.set('@monthly', '0 0 0 1 * * *');
+			aliases.set('@weekly', '0 0 0 * * 0 *');
+			aliases.set('@daily', '0 0 0 * * * *');
+			aliases.set('@hourly', '0 0 * * * * *');
+			aliases.set('@minutely', '0 * * * * * *');
+			return aliases.get(input);
 		}
+	},
+	pickerSettings: {
+		dateFormat: {
+			year: 'numeric',
+			month: 'short',
+			day: 'numeric',
+			hour12: false,
+			hour: 'numeric',
+			minute: 'numeric',
+			second: 'numeric',
+		}, 
 	},
 	metaInfo() {
 		return {

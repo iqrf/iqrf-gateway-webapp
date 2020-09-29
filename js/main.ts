@@ -32,14 +32,12 @@ import i18n from './i18n';
 
 import '../css/app.scss';
 import 'vue-toast-notification/dist/theme-sugar.css';
+import 'vue-datetime/dist/vue-datetime.css';
 
 import App from './components/App.vue';
 import TheDashboard from './components/TheDashboard.vue';
 import TrConfiguration from './components/IqrfNet/TrConfiguration.vue';
 import MainDisambiguation from './components/MainDisambiguation.vue';
-import SchedulerList from './pages/Config/SchedulerList.vue';
-import SchedulerForm from './pages/Config/SchedulerForm.vue';
-//import MonitorList from './pages/Config/MonitorList.vue';
 
 Sentry.init({
 	dsn: 'https://435ee2b55f994e5f85e21a9ca93ea7a7@sentry.iqrf.org/5',
@@ -95,9 +93,6 @@ new Vue({
 		TheDashboard,
 		TrConfiguration,
 		MainDisambiguation,
-		SchedulerList,
-		SchedulerForm,
-		//MonitorList,
 	},
 	router: router,
 	store: store,

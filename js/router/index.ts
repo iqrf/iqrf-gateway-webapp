@@ -57,6 +57,8 @@ import WebsocketInterfaceForm from '../pages/Config/WebsocketInterfaceForm.vue';
 import WebsocketMessagingForm from '../pages/Config/WebsocketMessagingForm.vue';
 import WebsocketServiceForm from '../pages/Config/WebsocketServiceForm.vue';
 import WebsocketList from '../pages/Config/WebsocketList.vue';
+import SchedulerList from '../pages/Config/SchedulerList.vue';
+import SchedulerForm from '../pages/Config/SchedulerForm.vue';
 
 import UserAdd from '../pages/Core/UserAdd.vue';
 import UserEdit from '../pages/Core/UserEdit.vue';
@@ -247,6 +249,38 @@ const routes: Array<RouteConfig> = [
 								meta: {title: 'config.monitor.edit'}
 							},
 						],
+					},
+					{
+						path: 'scheduler',
+						component: {
+							render(c) {
+								return c('router-view');
+							}
+						},
+						children: [
+							{
+								path: '',
+								component: SchedulerList,
+								meta: {title: 'config.scheduler.title'}
+							},
+							{
+								path: 'add',
+								component: SchedulerForm,
+								meta: {title: 'config.scheduler.add'}
+							},
+							{
+								path: 'edit/:id',
+								component: SchedulerForm,
+								props: (route) => {
+									const id = Number.parseInt(route.params.id, 10);
+									if (Number.isNaN(id)) {
+										return 0;
+									}
+									return {id};
+								},
+								meta: {title: 'config.scheduler.edit'}
+							}
+						]
 					},
 					{
 						path: 'mq',

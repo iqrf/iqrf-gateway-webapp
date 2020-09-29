@@ -1,3 +1,0 @@
-services:
-	- App\ConfigModule\Forms\SchedulerFormFactory
-	- App\ConfigModule\Forms\SchedulerImportFormFactory

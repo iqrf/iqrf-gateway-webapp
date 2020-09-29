@@ -95,7 +95,7 @@
 						<CButton
 							v-if='i === configuration.VerbosityLevels.length'
 							color='success'
-							:disabled='!configuration.VerbosityLevels[i-1].channel || !configuration.VerbosityLevels[i-1].level'
+							:disabled='configuration.VerbosityLevels[i-1].channel === null || configuration.VerbosityLevels[i-1].level === null'
 							@click='addLevel'
 						>
 							{{ $t('config.tracer.form.verbosityLevels.add') }}
