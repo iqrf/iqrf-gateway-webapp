@@ -26,14 +26,14 @@
 						<td>
 							<CDropdown
 								:color='item.acceptAsyncMsg ? "success": "danger"'
-								:toggler-text='item.acceptAsyncMsg ? $t("config.websocket.enabled") : $t("config.websocket.disabled")'
+								:toggler-text='$t("table.enabled." + item.acceptAsyncMsg)'
 								size='sm'
 							>
 								<CDropdownItem @click='changeAcceptAsyncMsg(item.messaging, true)'>
-									{{ $t('config.websocket.enabled') }}
+									{{ $t('table.enabled.true') }}
 								</CDropdownItem>
 								<CDropdownItem @click='changeAcceptAsyncMsg(item.messaging, false)'>
-									{{ $t('config.websocket.disabled') }}
+									{{ $t('table.enabled.false') }}
 								</CDropdownItem>
 							</CDropdown>
 						</td>
@@ -42,14 +42,14 @@
 						<td>
 							<CDropdown
 								:color='item.acceptOnlyLocalhost ? "success": "danger"'
-								:toggler-text='item.acceptOnlyLocalhost ? $t("config.websocket.enabled") : $t("config.websocket.disabled")'
+								:toggler-text='$t("table.enabled." + item.acceptOnlyLocalhost)'
 								size='sm'
 							>
 								<CDropdownItem @click='changeAcceptOnlyLocalhost(item.service, true)'>
-									{{ $t('config.websocket.enabled') }}
+									{{ $t('table.enabled.true') }}
 								</CDropdownItem>
 								<CDropdownItem @click='changeAcceptOnlyLocalhost(item.service, false)'>
-									{{ $t('config.websocket.disabled') }}
+									{{ $t('table.enabled.false') }}
 								</CDropdownItem>
 							</CDropdown>
 						</td>
@@ -175,11 +175,12 @@ export default {
 					const services = responses[1].data.instances;
 					for (const messaging of messagings) {
 						if (messaging.RequiredInterfaces === undefined ||
+								messaging.RequiredInterfaces === [] ||
 								messaging.RequiredInterfaces[0].name !== 'shape::IWebsocketService' ||
 								messaging.RequiredInterfaces[0].target.instance === undefined) {
 							continue;
 						}
-						let serviceInstance = messaging.RequiredInterfaces[0].target.instance;
+						const serviceInstance = messaging.RequiredInterfaces[0].target.instance;
 						for (const service of services) {
 							if (service.instance !== serviceInstance) {
 								continue;

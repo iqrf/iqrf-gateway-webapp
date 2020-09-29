@@ -167,5 +167,8 @@ export default {
 				.catch(this.handleError);
 		},
 	},
+	metaInfo: {
+		title: 'cloud.pixla.title',
+	},
 };
 </script>

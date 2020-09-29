@@ -27,14 +27,14 @@
 						<td>
 							<CDropdown
 								:color='item.acceptAsyncMsg ? "success": "danger"'
-								:toggler-text='item.acceptAsyncMsg ? $t("config.websocket.enabled") : $t("config.websocket.disabled")'
+								:toggler-text='$t("table.enabled." + item.acceptAsyncMsg)'
 								size='sm'
 							>
 								<CDropdownItem @click='changeAccept(item, true)'>
-									{{ $t('config.websocket.enabled') }}
+									{{ $t('table.enabled.true') }}
 								</CDropdownItem>
 								<CDropdownItem @click='changeAccept(item, false)'>
-									{{ $t('config.websocket.disabled') }}
+									{{ $t('table.enabled.false') }}
 								</CDropdownItem>
 							</CDropdown>
 						</td>

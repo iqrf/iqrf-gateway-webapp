@@ -10,7 +10,6 @@ declare(strict_types = 1);
 
 namespace Tests\ConfigModule\Models;
 
-use App\ConfigModule\Exceptions\InvalidConfigurationFormatException;
 use App\ConfigModule\Models\ComponentSchemaManager;
 use App\ConfigModule\Models\MigrationManager;
 use App\CoreModule\Entities\CommandStack;
@@ -18,10 +17,7 @@ use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FileManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use App\ServiceModule\Models\ServiceManager;
-use DateTime;
 use Mockery;
-use Nette\Application\Responses\FileResponse;
-use Nette\Http\FileUpload;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
 use Tester\Assert;
@@ -57,11 +53,6 @@ final class MigrationManagerTest extends TestCase {
 	private const SCHEMA_CORRUPTED_PATH = __DIR__ . '/../../temp/cfgSchemas/';
 
 	/**
-	 * ZIP archive content type
-	 */
-	private const ZIP_CONTENT_TYPE = 'application/zip';
-
-	/**
 	 * Path to ZIP archive with IQRF Gateway Daemon's configuration
 	 */
 	private const ZIP_PATH  = __DIR__ . '/../../data/iqrf-gateway-configuration.zip';
@@ -87,18 +78,12 @@ final class MigrationManagerTest extends TestCase {
 	private $managerCorrupted;
 
 	/**
-	 * Test function to download IQRF Gateway Daemon's configuration in a ZIP archive
+	 * Test function to extract the archive with scheduler configuration
 	 */
-	public function testDownload(): void {
-		$timestamp = (new DateTime())->format('c');
-		$actual = $this->manager->download();
-		$fileName = 'iqrf-gateway-configuration_' . $timestamp . '.zip';
-		$path = '/tmp/' . $fileName;
-		$expected = new FileResponse($path, $fileName, self::ZIP_CONTENT_TYPE, true);
-		Assert::equal($expected, $actual);
-		Assert::equal(self::ZIP_CONTENT_TYPE, $actual->getContentType());
+	public function testCreateArchive(): void {
+		$actual = $this->manager->createArchive();
 		$files = $this->createList(self::CONFIG_PATH);
-		$zipManager = new ZipArchiveManager($path, ZipArchive::CREATE);
+		$zipManager = new ZipArchiveManager($actual, ZipArchive::CREATE);
 		foreach ($files as $file) {
 			$expected = $this->fileManager->read($file);
 			Assert::same($expected, $zipManager->openFile($file));
@@ -122,46 +107,13 @@ final class MigrationManagerTest extends TestCase {
 	}
 
 	/**
-	 * Test function to upload IQRF Gateway Daemon's configuration (incorrect MIME type)
+	 * Test function to extract the archive with scheduler configuration
 	 */
-	public function testUploadBadMime(): void {
-		$filePath = self::CONFIG_TEMP_PATH . '/config.json';
-		$file = [
-			'name' => 'config.json',
-			'type' => 'application/json',
-			'tmp_name' => $filePath,
-			'error' => UPLOAD_ERR_OK,
-			'size' => filesize($filePath),
-		];
-		$fileUpload = new FileUpload($file);
-		Assert::exception(function () use ($fileUpload): void {
-			$this->manager->upload($fileUpload);
-		}, InvalidConfigurationFormatException::class);
-	}
-
-	/**
-	 * Test function to upload IQRF Gateway Daemon's configuration (success)
-	 */
-	public function testUploadSuccess(): void {
-		$this->manager->upload($this->mockUploadedArchive());
+	public function testExtractArchive(): void {
+		$this->manager->extractArchive(self::ZIP_TEMP_PATH);
 		$expected = $this->createList(self::CONFIG_PATH);
 		$actual = $this->createList(self::CONFIG_TEMP_PATH);
 		Assert::same($expected, $actual);
-	}
-
-	/**
-	 * Mock an uploaded configuration
-	 * @return FileUpload Mocked file upload
-	 */
-	private function mockUploadedArchive(): FileUpload {
-		$file = [
-			'name' => 'iqrf-gateway-configuration.zip',
-			'type' => self::ZIP_CONTENT_TYPE,
-			'tmp_name' => self::ZIP_TEMP_PATH,
-			'error' => UPLOAD_ERR_OK,
-			'size' => filesize(self::ZIP_TEMP_PATH),
-		];
-		return new FileUpload($file);
 	}
 
 	/**
@@ -173,6 +125,7 @@ final class MigrationManagerTest extends TestCase {
 		Assert::true($this->managerCorrupted->validate($zipManager));
 		$zipManager->close();
 	}
+
 
 	/**
 	 * Test function to validate IQRF Gateway Daemon's configuration (success)

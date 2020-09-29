@@ -83,7 +83,7 @@ final class GenericManagerTest extends JsonConfigTestCase {
 	public function testGenerateFileName(): void {
 		$this->manager->setComponent(self::COMPONENT);
 		$array = $this->readFile(self::FILE_NAME);
-		Assert::equal(self::FILE_NAME, $this->manager->generateFileName($array));
+		Assert::equal('iqrf__MqttMessaging__MqttMessaging', $this->manager->generateFileName($array));
 	}
 
 	/**
