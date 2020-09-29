@@ -41,8 +41,16 @@
 		<CRow>
 			<CCol v-if='request !== null' md='6'>
 				<CCard>
-					<CCardHeader>
-						{{ $t('iqrfnet.sendJson.request') }}
+					<CCardHeader class='d-flex'>
+						<span class='mr-auto'>{{ $t('iqrfnet.sendJson.request') }}</span>
+						<CButton
+							v-clipboard='request'
+							v-clipboard:success='() => $toast.success($t("iqrfnet.sendJson.copy.messages.request").toString())'
+							color='primary'
+							size='sm'
+						>
+							{{ $t('iqrfnet.sendJson.copy.request') }}
+						</CButton>
 					</CCardHeader>
 					<CCardBody>
 						<prism-editor v-model='request' :highlight='highlighter' :readonly='true' />
@@ -51,8 +59,16 @@
 			</CCol>
 			<CCol v-if='response !== null' md='6'>
 				<CCard>
-					<CCardHeader>
-						{{ $t('iqrfnet.sendJson.response') }}
+					<CCardHeader class='d-flex'>
+						<span class='mr-auto'>{{ $t('iqrfnet.sendJson.response') }}</span>
+						<CButton
+							v-clipboard='response'
+							v-clipboard:success='() => $toast.success($t("iqrfnet.sendJson.copy.messages.response").toString())'
+							color='primary'
+							size='sm'
+						>
+							{{ $t('iqrfnet.sendJson.copy.response') }}
+						</CButton>
 					</CCardHeader>
 					<CCardBody>
 						<prism-editor v-model='response' :highlight='highlighter' :readonly='true' />

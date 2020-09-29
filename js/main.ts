@@ -24,6 +24,7 @@ import VueMeta from 'vue-meta';
 // @ts-ignore
 import VueNativeSock from 'vue-native-websocket';
 import VueToast from 'vue-toast-notification';
+import Clipboard from 'v-clipboard';
 
 import store from './store';
 import router from './router';
@@ -63,6 +64,7 @@ Vue.use(VueToast,{
 	position: 'top',
 	duration: 10000
 });
+Vue.use(Clipboard);
 
 axios.defaults.baseURL = '//' + window.location.host + '/api/v0/';
 axios.defaults.timeout = 30000; 

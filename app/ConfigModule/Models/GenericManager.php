@@ -174,6 +174,10 @@ class GenericManager {
 				$value = reset($requiredInterface['target']);
 				$property = strval(array_key_first($requiredInterface['target']));
 				$instanceFileName = $this->getInstanceByProperty($property, $value);
+				if ($instanceFileName === null) {
+					unset($configuration['RequiredInterfaces'][$id]);
+					continue;
+				}
 				$instanceName = $this->fileManager->read($instanceFileName)['instance'];
 				unset($configuration['RequiredInterfaces'][$id]['target']);
 				$configuration['RequiredInterfaces'][$id]['target']['instance'] = $instanceName;
@@ -249,7 +253,7 @@ class GenericManager {
 	 * @return string Generated file name
 	 */
 	public function generateFileName(array $array): string {
-		$prefix = explode('::', $this->component)[0];
+		$prefix = Strings::replace($this->component, '~::~', '__');
 		return $prefix . '__' . $array['instance'];
 	}
 

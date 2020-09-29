@@ -1,4 +1,3 @@
 services:
-	- App\ConfigModule\Forms\MonitorFormFactory
 	- App\ConfigModule\Forms\SchedulerFormFactory
 	- App\ConfigModule\Forms\SchedulerImportFormFactory

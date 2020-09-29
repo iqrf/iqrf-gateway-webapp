@@ -39,6 +39,8 @@ import IqrfUart from '../pages/Config/IqrfUart.vue';
 import JsonMngMetaDataApi from '../pages/Config/JsonMngMetaDataApi.vue';
 import JsonRawApi from '../pages/Config/JsonRawApi.vue';
 import JsonSplitter from '../pages/Config/JsonSplitter.vue';
+import MonitorForm from '../pages/Config/MonitorForm.vue';
+import MonitorList from '../pages/Config/MonitorList.vue';
 import MqMessagingForm from '../pages/Config/MqMessagingForm.vue';
 import MqMessagingTable from '../pages/Config/MqMessagingTable.vue';
 import MqttMessagingForm from '../pages/Config/MqttMessagingForm.vue';
@@ -51,8 +53,9 @@ import MainConfiguration from '../pages/Config/MainConfiguration.vue';
 import ComponentList from '../pages/Config/ComponentList.vue';
 import ComponentForm from '../pages/Config/ComponentForm.vue';
 import IqmeshServices from '../pages/Config/IqmeshServices.vue';
-import WebsocketServiceForm from '../pages/Config/WebsocketServiceForm.vue';
+import WebsocketInterfaceForm from '../pages/Config/WebsocketInterfaceForm.vue';
 import WebsocketMessagingForm from '../pages/Config/WebsocketMessagingForm.vue';
+import WebsocketServiceForm from '../pages/Config/WebsocketServiceForm.vue';
 import WebsocketList from '../pages/Config/WebsocketList.vue';
 
 import UserAdd from '../pages/Core/UserAdd.vue';
@@ -220,6 +223,32 @@ const routes: Array<RouteConfig> = [
 						meta: {title: 'config.jsonSplitter.title'}
 					},
 					{
+						path: 'monitor',
+						component: {
+							render(c) {
+								return c('router-view');
+							}
+						},
+						children: [
+							{
+								path: '',
+								component: MonitorList,
+								meta: {title: 'config.monitor.title'}
+							},
+							{
+								component: MonitorForm,
+								path: 'add',
+								meta: {title: 'config.monitor.add'}
+							},
+							{
+								component: MonitorForm,
+								path: 'edit/:instance',
+								props: true,
+								meta: {title: 'config.monitor.edit'}
+							},
+						],
+					},
+					{
 						path: 'mq',
 						component: {
 							render(c) {
@@ -311,20 +340,31 @@ const routes: Array<RouteConfig> = [
 								meta: {title: 'config.websocket.title'}
 							},
 							{
+								component: WebsocketInterfaceForm,
+								path: 'add',
+								meta: {title: 'config.websocket.interface.add'}
+							},
+							{
 								component: WebsocketMessagingForm,
 								path: 'add-messaging',
 								meta: {title: 'config.websocket.messaging.add'}
+							},
+							{
+								component: WebsocketServiceForm,
+								path: 'add-service',
+								meta: {title: 'config.websocket.service.add'}
+							},
+							{
+								component: WebsocketInterfaceForm,
+								path: 'edit/:instance',
+								props: true,
+								meta: {title: 'config.websocket.interface.edit'}
 							},
 							{
 								component: WebsocketMessagingForm,
 								path: 'edit-messaging/:instance',
 								props: true,
 								meta: {title: 'config.websocket.service.edit'}
-							},
-							{
-								component: WebsocketServiceForm,
-								path: 'add-service',
-								meta: {title: 'config.websocket.service.add'}
 							},
 							{
 								component: WebsocketServiceForm,

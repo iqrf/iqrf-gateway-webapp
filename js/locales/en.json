@@ -369,17 +369,26 @@
 			"add": "Add a new monitoring service",
 			"edit": "Edit the monitoring service",
 			"form": {
+				"instance": "Name of instance",
 				"reportPeriod": "Reporting period in seconds",
-				"websocketPort": "WebSocket server port",
+				"WebsocketPort": "WebSocket server port",
 				"acceptOnlyLocalhost": "Accept only connection from localhost",
 				"messages": {
 					"reportPeriod": "Please enter the reporting period in seconds.",
-					"websocketPort": "Please enter the port of monitoring WebSocket server.",
-					"deletePrompt": "Do you really want to delete Monitoring service?",
-					"deleteTitle": "Delete Monitoring service",
-					"deleteSuccess": "Configuration of Monitoring service has been successfully deleted.",
-					"addSuccess": "Configuration of Monitoring service has been successfully added.",
-					"editSuccess": "Configuration of Monitoring service has been successfully updated."
+					"WebsocketPort": "Please enter the port of monitoring WebSocket server."
+				}
+			},
+			"messages": {
+				"add": {
+					"success": "Monitoring service instance {instance} has been added."
+				},
+				"delete": {
+					"confirm": "Do you really want to delete Monitoring service instance {instance}?",
+					"confirmTitle": "Delete Monitoring service instance",
+					"success": "Monitoring service instance {instance} has been deleted."
+				},
+				"edit": {
+					"success": "Monitoring service instance {instance} has been edited."
 				}
 			}
 		},
@@ -599,8 +608,6 @@
 		"websocket": {
 			"title": "WebSocket interface",
 			"description": "IQRF WebSocket interface settings.",
-			"enabled": "Enabled",
-			"disabled": "Disabled",
 			"form": {
 				"instance": "Name of instance",
 				"acceptAsyncMsg": "Accept asynchronous messages",
@@ -620,6 +627,10 @@
 					"interfaceName": "Please select the name of required interface.",
 					"interfaceInstance": "Please select the required WebSocket service instance."
 				}
+			},
+			"interface": {
+				"add": "Add WebSocket interface",
+				"edit": "Edit WebSocket interface"
 			},
 			"messaging": {
 				"title": "WebSocket messagings",
@@ -1067,6 +1078,14 @@
 			"documentation": "Show API documentation.",
 			"response": "Response",
 			"request": "Request",
+			"copy": {
+				"request": "Copy request to the clipboard",
+				"response": "Copy response to the clipboard",
+				"messages": {
+					"request": "JSON request has been copied to the clipboard.",
+					"response": "JSON response has been copied to the clipboard."
+				}
+			},
 			"form": {
 				"json": "JSON request",
 				"messages": {
@@ -1096,6 +1115,14 @@
 			"macros": "Macros",
 			"request": "Request",
 			"response": "Response",
+			"copy": {
+				"request": "Copy request to the clipboard",
+				"response": "Copy response to the clipboard",
+				"messages": {
+					"request": "JSON request has been copied to the clipboard.",
+					"response": "JSON response has been copied to the clipboard."
+				}
+			},
 			"form": {
 				"packet": "DPA packet",
 				"address": "Custom NADR",

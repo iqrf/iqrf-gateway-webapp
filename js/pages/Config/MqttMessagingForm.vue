@@ -286,6 +286,7 @@ export default {
 					this.instance = this.configuration.instance;
 				})
 				.catch((error) => {
+					this.$store.commit('spinner/HIDE');
 					this.$router.push('/config/mqtt/');
 					FormErrorHandler.configError(error);
 				});

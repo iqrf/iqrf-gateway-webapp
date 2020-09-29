@@ -11,7 +11,6 @@ services:
 	- App\ConfigModule\Models\IqrfManager
 	- App\ConfigModule\Models\MainManager
 	- App\ConfigModule\Models\MigrationManager(%daemon.configDir%)
-	- App\ConfigModule\Models\MonitorManager
 	- App\ConfigModule\Models\SchedulerManager
 	- App\ConfigModule\Models\SchedulerMigrationManager
 	schemaSchedulerManager:

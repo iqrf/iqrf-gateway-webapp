@@ -79,7 +79,17 @@
 		<CRow>
 			<CCol md='6'>
 				<CCard v-if='request !== null'>
-					<CCardHeader>{{ $t('iqrfnet.sendPacket.request') }}</CCardHeader>
+					<CCardHeader class='d-flex'>
+						<span class='mr-auto'>{{ $t('iqrfnet.sendPacket.request') }}</span>
+						<CButton
+							v-clipboard='request'
+							v-clipboard:success='() => $toast.success($t("iqrfnet.sendPacket.copy.messages.request").toString())'
+							color='primary'
+							size='sm'
+						>
+							{{ $t('iqrfnet.sendPacket.copy.request') }}
+						</CButton>
+					</CCardHeader>
 					<CCardBody>
 						<prism-editor v-model='request' :highlight='highlighter' :readonly='true' />
 					</CCardBody>
@@ -87,7 +97,17 @@
 			</CCol>
 			<CCol md='6'>
 				<CCard v-if='response !== null'>
-					<CCardHeader>{{ $t('iqrfnet.sendPacket.response') }}</CCardHeader>
+					<CCardHeader class='d-flex'>
+						<span class='mr-auto'>{{ $t('iqrfnet.sendPacket.response') }}</span>
+						<CButton
+							v-clipboard='response'
+							v-clipboard:success='() => $toast.success($t("iqrfnet.sendPacket.copy.messages.response").toString())'
+							color='primary'
+							size='sm'
+						>
+							{{ $t('iqrfnet.sendPacket.copy.response') }}
+						</CButton>
+					</CCardHeader>
 					<CCardBody>
 						<prism-editor v-model='response' :highlight='highlighter' :readonly='true' />
 					</CCardBody>
