@@ -21,7 +21,6 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Models;
 
 use App\ConfigModule\Exceptions\IncompleteConfigurationException;
-use App\ConfigModule\Exceptions\InvalidConfigurationFormatException;
 use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use App\CoreModule\Models\CommandManager;
@@ -29,15 +28,11 @@ use App\CoreModule\Models\ZipArchiveManager;
 use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
 use App\ServiceModule\Models\ServiceManager;
 use DateTime;
-use Nette\Application\BadRequestException;
-use Nette\Application\Responses\FileResponse;
-use Nette\Http\FileUpload;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
 use Throwable;
 use ZipArchive;
-use function basename;
 
 /**
  * Tool for migrating configuration
@@ -96,18 +91,6 @@ class MigrationManager {
 	}
 
 	/**
-	 * Downloads a configuration
-	 * @return FileResponse HTTP response with a configuration
-	 * @throws BadRequestException
-	 */
-	public function download(): FileResponse {
-		$contentType = 'application/zip';
-		$path = $this->createArchive();
-		$fileName = basename($path);
-		return new FileResponse($path, $fileName, $contentType, true);
-	}
-
-	/**
 	 * Extracts an archive with scheduler configuration
 	 * @param string $path Path to archive with scheduler configuration
 	 * @throws IncompleteConfigurationException
@@ -126,24 +109,6 @@ class MigrationManager {
 		$zipManager->extract($this->configDirectory);
 		$zipManager->close();
 		$this->serviceManager->restart();
-	}
-
-	/**
-	 * Uploads a configuration
-	 * @param FileUpload $zip IP archive with the configuration
-	 * @throws IncompleteConfigurationException
-	 * @throws InvalidConfigurationFormatException
-	 * @throws JsonException
-	 * @throws UnsupportedInitSystemException
-	 */
-	public function upload(FileUpload $zip): void {
-		if (!$zip->isOk()) {
-			throw new InvalidConfigurationFormatException();
-		}
-		if ($zip->getContentType() !== 'application/zip') {
-			throw new InvalidConfigurationFormatException();
-		}
-		$this->extractArchive($zip->getTemporaryFile());
 	}
 
 	/**
