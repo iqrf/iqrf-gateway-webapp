@@ -33,11 +33,11 @@ use App\ApiModule\Version0\RequestAttributes;
 use App\Models\Database\Entities\User;
 use App\Models\Database\EntityManager;
 use DateTimeImmutable;
+use GuzzleHttp\Psr7\Utils;
 use Lcobucci\JWT\Configuration;
 use Nette\Utils\JsonException;
 use Throwable;
 use function gethostname;
-use function GuzzleHttp\Psr7\stream_for;
 
 /**
  * User manager API controller
@@ -130,7 +130,7 @@ class UserController extends BaseController {
 		$user->setPassword($body['new']);
 		$this->entityManager->persist($user);
 		$this->entityManager->flush();
-		return $response->withBody(stream_for());
+		return $response->withBody(Utils::streamFor());
 	}
 
 	/**

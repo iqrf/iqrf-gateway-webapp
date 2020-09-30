@@ -38,6 +38,7 @@ use App\NetworkModule\Models\ConnectivityManager;
 use App\NetworkModule\Models\InterfaceManager;
 use App\NetworkModule\Models\WifiManager;
 use Grifart\Enum\MissingValueDeclarationException;
+use GuzzleHttp\Psr7\Utils;
 use Ramsey\Uuid\Exception\InvalidUuidStringException;
 use Ramsey\Uuid\Uuid;
 use function GuzzleHttp\Psr7\stream_for;
@@ -161,7 +162,7 @@ class NetworkController extends BaseController {
 		} catch (NetworkManagerException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
-		return $response;
+		return $response->withBody(Utils::streamFor());
 	}
 
 	/**
@@ -201,7 +202,7 @@ class NetworkController extends BaseController {
 		} catch (NetworkManagerException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
-		return $response->withBody(stream_for());
+		return $response->withBody(Utils::streamFor());
 	}
 
 	/**
@@ -267,7 +268,7 @@ class NetworkController extends BaseController {
 		try {
 			$uuid = Uuid::fromString($request->getParameter('uuid'));
 			$this->connectionManger->up($uuid, $interface);
-			return $response->withBody(stream_for());
+			return $response->withBody(Utils::streamFor());
 		} catch (InvalidUuidStringException $e) {
 			throw new ClientErrorException('Invalid UUID', ApiResponse::S400_BAD_REQUEST);
 		} catch (NetworkManagerException $e) {
@@ -295,7 +296,7 @@ class NetworkController extends BaseController {
 		try {
 			$uuid = Uuid::fromString($request->getParameter('uuid'));
 			$this->connectionManger->down($uuid);
-			return $response->withBody(stream_for());
+			return $response->withBody(Utils::streamFor());
 		} catch (InvalidUuidStringException $e) {
 			throw new ClientErrorException('Invalid UUID', ApiResponse::S400_BAD_REQUEST);
 		} catch (NetworkManagerException $e) {
@@ -394,7 +395,7 @@ class NetworkController extends BaseController {
 	 */
 	public function connectInterface(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->interfaceManager->connect($request->getParameter('name'));
-		return $response->withBody(stream_for());
+		return $response->withBody(Utils::streamFor());
 	}
 
 	/**
@@ -415,7 +416,7 @@ class NetworkController extends BaseController {
 	 */
 	public function disconnectInterface(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->interfaceManager->disconnect($request->getParameter('name'));
-		return $response->withBody(stream_for());
+		return $response->withBody(Utils::streamFor());
 	}
 
 	/**
