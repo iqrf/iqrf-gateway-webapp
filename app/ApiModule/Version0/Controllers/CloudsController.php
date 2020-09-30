@@ -28,6 +28,7 @@ use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
+use App\ApiModule\Version0\Utils\ContentTypeUtil;
 use App\CloudModule\Exceptions\CannotCreateCertificateDirectoryException;
 use App\CloudModule\Exceptions\InvalidConnectionStringException;
 use App\CloudModule\Exceptions\InvalidPrivateKeyForCertificateException;
@@ -100,6 +101,9 @@ class CloudsController extends BaseController {
 	 *      description: Amazon AWS IoT connection configuration
 	 *      required: true
 	 *      content:
+	 *          application/json:
+	 *              schema:
+	 *                  $ref: '#/components/schemas/CloudAws'
 	 *          multipart/form-data:
 	 *              schema:
 	 *                  type: object
@@ -127,10 +131,15 @@ class CloudsController extends BaseController {
 	 */
 	public function createAws(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
-			$data = $request->getParsedBody();
-			$files = $request->getUploadedFiles();
-			$data['certificate'] = $files[0]->getStream()->read($files[0]->getStream()->getSize());
-			$data['privateKey'] = $files[1]->getStream()->read($files[1]->getStream()->getSize());
+			$contentType = ContentTypeUtil::validContentType($request, ['application/json', 'multipart/form-data']);
+			if ($contentType === 'application/json') {
+				$data = $request->getJsonBody();
+			} else {
+				$data = $request->getParsedBody();
+				$files = $request->getUploadedFiles();
+				$data['certificate'] = $files[0]->getStream()->getContents();
+				$data['privateKey'] = $files[1]->getStream()->getContents();
+			}
 			$this->awsManager->createMqttInterface($data);
 			return $response->withStatus(ApiResponse::S201_CREATED)
 				->withBody(stream_for());

@@ -167,24 +167,10 @@ final class AwsManagerTest extends CloudIntegrationTestCase {
 	 */
 	private function mockUploadedFiles(string $path): array {
 		$certFile = $path . '/cert0.pem';
-		$certValue = [
-			'name' => 'cert0.pem',
-			'type' => 'text/plain',
-			'tmp_name' => $certFile,
-			'error' => UPLOAD_ERR_OK,
-			'size' => filesize($certFile),
-		];
 		$pKeyFile = $path . '/pkey0.key';
-		$pKeyValue = [
-			'name' => 'pkey0.key',
-			'type' => 'text/plain',
-			'tmp_name' => $pKeyFile,
-			'error' => UPLOAD_ERR_OK,
-			'size' => filesize($pKeyFile),
-		];
 		return [
-			'certificate' => new FileUpload($certValue),
-			'privateKey' => new FileUpload($pKeyValue),
+			'certificate' => FileSystem::read($certFile),
+			'privateKey' => FileSystem::read($pKeyFile),
 		];
 	}
 

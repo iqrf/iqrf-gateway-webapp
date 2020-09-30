@@ -32,7 +32,14 @@ export default {
 					this.$store.commit('spinner/HIDE');
 				}
 			)
-			.catch(() => this.$store.commit('spinner/HIDE'));
+			.catch((error) => {
+				this.$store.commit('spinner/HIDE');
+				if (error.response) {
+					if (error.response.data.code === 500) {
+						this.$toast.error(this.$t('gateway.log.messages.notFound').toString());
+					}
+				}
+			});
 	},
 	methods: {
 		downloadArchive() {

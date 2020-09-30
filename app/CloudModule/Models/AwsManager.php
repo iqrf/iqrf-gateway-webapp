@@ -27,7 +27,6 @@ use App\CoreModule\Models\CertificateManager;
 use DateTime;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
-use Nette\Http\FileUpload;
 use Nette\IOException;
 use Nette\Utils\FileSystem;
 use Nette\Utils\JsonException;
@@ -78,7 +77,7 @@ class AwsManager implements IManager {
 
 	/**
 	 * Creates a new MQTT interface
-	 * @param array<string, FileUpload|int|string> $values Values from form
+	 * @param array<string, int|string> $values Values from form
 	 * @throws GuzzleException
 	 * @throws InvalidPrivateKeyForCertificateException
 	 * @throws JsonException
@@ -87,8 +86,8 @@ class AwsManager implements IManager {
 		$this->createDirectory();
 		$paths = $this->createPaths();
 		$this->downloadCaCertificate();
-		$cert = $values['certificate'] instanceof FileUpload ? $values['certificate']->getContents() : $values['certificate'];
-		$pKey = $values['privateKey'] instanceof FileUpload ? $values['privateKey']->getContents() : $values['privateKey'];
+		$cert = $values['certificate'];
+		$pKey = $values['privateKey'];
 		$this->checkCertificate($cert, $pKey);
 		$this->uploadCertsAndKey($paths, $cert, $pKey);
 		$this->configManager->setComponent('iqrf::MqttMessaging');
