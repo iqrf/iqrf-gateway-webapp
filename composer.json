@@ -37,7 +37,6 @@
 		"contributte/console": "^0.8",
 		"contributte/console-extra": "^0.5",
 		"contributte/forms": "^0.4.0",
-		"contributte/forms-multiplier": "^3.0",
 		"contributte/guzzlette": "^3.0",
 		"contributte/monolog": "^0.4",
 		"contributte/translation": "^0.7",

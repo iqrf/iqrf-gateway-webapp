@@ -1,7 +1,7 @@
 <template>
 	<CCard body-wrapper>
 		<CListGroup>
-			<CListGroupItem to='/network/ethernet/'>
+			<CListGroupItem to='/network/ethernet'>
 				<header class='list-group-item-heading'>
 					{{ $t('network.ethernet.title') }}
 				</header>

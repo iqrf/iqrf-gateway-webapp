@@ -25,4 +25,26 @@ namespace App\ConfigModule\Presenters;
  */
 class WebsocketPresenter extends GenericPresenter {
 
+	public function renderAdd(): void {
+		$this->setView('default');
+	}
+	public function renderAddMessaging(): void {
+		$this->setView('default');
+	}
+	public function renderAddService(): void {
+		$this->setView('default');
+	}
+
+	public function renderEdit(): void {
+		$this->setView('default');
+	}
+
+	public function renderEditMessaging(): void {
+		$this->setView('default');
+	}
+
+	public function renderEditService(): void {
+		$this->setView('default');
+	}
+
 }

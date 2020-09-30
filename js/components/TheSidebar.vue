@@ -298,7 +298,7 @@ export default {
 							items: [
 								{
 									name: this.$t('network.ethernet.title'),
-									to: '/network/ethernet/',
+									to: '/network/ethernet',
 									roles: ['power', 'normal'],
 								},
 							],

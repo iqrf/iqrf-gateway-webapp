@@ -17,16 +17,13 @@ use App\CoreModule\Entities\CommandStack;
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FileManager;
 use App\CoreModule\Models\ZipArchiveManager;
-use DateTime;
 use Mockery;
-use Nette\Application\Responses\FileResponse;
 use Nette\Http\FileUpload;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
 use Tester\Assert;
 use Tester\Environment;
 use Tester\TestCase;
-use Throwable;
 use ZipArchive;
 
 require __DIR__ . '/../../bootstrap.php';
@@ -74,18 +71,10 @@ final class SchedulerMigrationManagerTest extends TestCase {
 	/**
 	 * Test function to download IQRF Gateway Daemon's configuration in a ZIP archive
 	 */
-	public function testDownload(): void {
-		try {
-			$timestamp = '_' . (new DateTime())->format('c');
-		} catch (Throwable $e) {
-			$timestamp = '';
-		}
-		$actual = $this->manager->download();
-		$fileName = 'iqrf-gateway-scheduler' . $timestamp . '.zip';
-		$expected = new FileResponse('/tmp/' . $fileName, $fileName, self::CONTENT_TYPE, true);
-		Assert::equal($expected, $actual);
+	public function testCreateArchive(): void {
+		$actual = $this->manager->createArchive();
 		$files = $this->createList(self::CONFIG_PATH);
-		$zipManager = new ZipArchiveManager('/tmp/' . $fileName, ZipArchive::CREATE);
+		$zipManager = new ZipArchiveManager($actual, ZipArchive::CREATE);
 		foreach ($files as $file) {
 			$expected = $this->fileManager->read($file);
 			Assert::same($expected, $zipManager->openFile($file));

@@ -13,7 +13,6 @@ parameters:
 		- tests
 	ignoreErrors:
 		- '#Call to an undefined method Nette\\ComponentModel\\IComponent::addError\(\).#'
-		- '#Call to an undefined method Nette\\Forms\\Container::addMultiplier\(\).#'
 		- '#Call to an undefined method Nette\\Localization\\ITranslator::createPrefixedTranslator\(\).#'
 		-
 			message: '#Parameter \#(1|2) \$(message|type) \(string\) of method App\\(Core|Install)Module\\Presenters\\(Protected|Installation|Sign)Presenter::flashMessage\(\) should be contravariant with parameter \$(message|type) \(mixed\) of method Nette\\Application\\UI\\Control::flashMessage\(\)#'
