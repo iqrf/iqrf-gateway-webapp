@@ -144,6 +144,7 @@ import SchedulerService from '../../services/SchedulerService';
 import {TextareaAutogrowDirective} from 'vue-textarea-autogrow-directive/src/VueTextareaAutogrowDirective';
 import cronstrue from 'cronstrue';
 import {Datetime} from 'vue-datetime';
+import FormErrorHandler from '../../helpers/FormErrorHandler';
 
 export default {
 	name: 'SchedulerForm',
@@ -173,7 +174,7 @@ export default {
 	},
 	data() {
 		return {
-			taskId: Date.now(),
+			taskId: Math.floor(Date.now() / 1000),
 			clientId: null,
 			task: [{}],
 			timeSpec: {
@@ -190,9 +191,21 @@ export default {
 			},
 			messagings: [],
 			cronMessage: null,
+			useRest: true,
+			untouched: true,
 		};
 	},
 	created() {
+		if (this.$store.getters.isSocketConnected) {
+			this.useRest = false;
+			if (this.id) {
+				this.getTask(this.id);
+			}
+		} else {
+			if (this.id) {
+				this.getTask(this.id);
+			}
+		}
 		extend('integer', integer);
 		extend('required', required);
 		extend('json', (json) => {
@@ -209,12 +222,14 @@ export default {
 		});
 		this.unsubscribe = this.$store.subscribe(mutation => {
 			if (mutation.type === 'SOCKET_ONOPEN') {
-				if (this.id) {
+				this.useRest = false;
+				if (this.id && this.untouched) {
 					this.getTask(this.id);
-					return;
 				}
-			}
-			if (mutation.type === 'SOCKET_ONMESSAGE') {
+			} else if (mutation.type === 'SOCKET_ONCLOSE' ||
+				mutation.type === 'SOCKET_ONERROR') {
+				this.useRest = true;
+			} else if (mutation.type === 'SOCKET_ONMESSAGE') {
 				if (mutation.payload.mType === 'mngScheduler_GetTask') {
 					this.$store.commit('spinner/HIDE');
 					if (mutation.payload.data.status === 0) {
@@ -234,13 +249,12 @@ export default {
 						}
 					} else {
 						this.$router.push('/config/scheduler/');
-						this.$toast.error(this.$t('config.scheduler.messages.getFail', {task: this.task}));
+						this.$toast.error(this.$t('config.scheduler.messages.getFail', {task: this.id}));
 					}
 				} else if (mutation.payload.mType === 'mngScheduler_AddTask') {
 					this.$store.commit('spinner/HIDE');
 					if (mutation.payload.data.status === 0) {
-						this.$router.push('/config/scheduler/');
-						this.$toast.success(this.$t('config.scheduler.messages.addSuccess').toString());
+						this.successfulSave();
 					}
 				} else if (mutation.payload.mType === 'messageError') {
 					this.$store.commit('spinner/HIDE');
@@ -248,12 +262,6 @@ export default {
 			}
 			
 		});
-		if (this.$store.getters.isSocketConnected) {
-			if (this.id) {
-				this.getTask(this.id);
-				return;
-			}
-		}	
 		this.getMessagings();
 	},
 	beforeDestroy() {
@@ -283,8 +291,28 @@ export default {
 			this.task.splice(index, 1);
 		},
 		getTask(taskId) {
+			this.untouched = false;
 			this.$store.commit('spinner/SHOW');
-			SchedulerService.getTask(taskId);
+			if (this.useRest) {
+				SchedulerService.getTaskREST(taskId)
+					.then((response) => {
+						this.$store.commit('spinner/HIDE');
+						this.taskId = response.data.taskId;
+						this.clientId = response.data.clientId;
+						this.timeSpec = response.data.timeSpec;
+						let tasks = [];
+						response.data.task.forEach(item => {
+							tasks.push({messaging: item.messaging, message: JSON.stringify(item.message, null, 2)});
+						});
+						this.task = tasks;
+					})
+					.catch(() => {
+						this.$router.push('/config/scheduler/');
+						this.$toast.error(this.$t('config.scheduler.messages.getFail', {task: this.id}));
+					});
+			} else {
+				SchedulerService.getTask(taskId);
+			}
 		},
 		getMessagings() {
 			this.$store.commit('spinner/SHOW');
@@ -331,12 +359,30 @@ export default {
 					break;
 				default:
 					timeSpec.cronTime = new Array(7).fill('');
-			}			
+			}
+			if (timeSpec.exactTime) {
+				//daemon datetime processing workeround
+				let date = new Date(timeSpec.startTime);
+				date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+				timeSpec.startTime = date.toISOString().split('.')[0];
+			}
 			if (this.$route.path === '/config/scheduler/add') {
-				SchedulerService.addTask(this.taskId, this.clientId, this.task, timeSpec);
+				if (this.useRest) {
+					SchedulerService.addTaskREST(this.taskId, this.clientId, this.task, timeSpec)
+						.then(() => this.successfulSave())
+						.catch((error) => FormErrorHandler.schedulerError(error));
+				} else {
+					SchedulerService.addTask(this.taskId, this.clientId, this.task, timeSpec);
+				}
 			} else {
-				SchedulerService.removeTask(this.id);
-				SchedulerService.addTask(this.taskId, this.clientId, this.task, timeSpec);
+				if (this.useRest) {
+					SchedulerService.editTaskREST(this.id, this.taskId, this.clientId, this.task, timeSpec)
+						.then(() => this.successfulSave())
+						.catch((error) => FormErrorHandler.schedulerError(error));
+				} else {
+					SchedulerService.removeTask(this.id);
+					SchedulerService.addTask(this.taskId, this.clientId, this.task, timeSpec);
+				}
 			}
 		},
 		getCronAlias(input) {
@@ -350,6 +396,10 @@ export default {
 			aliases.set('@hourly', '0 0 * * * * *');
 			aliases.set('@minutely', '0 * * * * * *');
 			return aliases.get(input);
+		},
+		successfulSave() {
+			this.$router.push('/config/scheduler/');
+			this.$toast.success(this.$t('config.scheduler.messages.addSuccess').toString());
 		}
 	},
 	pickerSettings: {

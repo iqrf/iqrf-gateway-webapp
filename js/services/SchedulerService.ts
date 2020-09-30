@@ -1,9 +1,17 @@
 import store from '../store';
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '../helpers/authorizationHeader';
+import ToastPlugin from 'vue-toast-notification';
 
 class SchedulerService {
-	addTask(taskId: number, clientId: number, task: any, timeSpec: object) {
+	/**
+	 * Adds a new task via the Daemon API
+	 * @param taskId scheduler task ID
+	 * @param clientId client ID
+	 * @param task scheduler task
+	 * @param timeSpec scheduler task time settings
+	 */
+	addTask(taskId: number, clientId: string, task: any, timeSpec: object) {
 		const tasks = JSON.parse(JSON.stringify(task));
 		tasks.forEach((item: any) => {
 			item.message = JSON.parse(item.message);
@@ -24,7 +32,50 @@ class SchedulerService {
 	}
 
 	/**
-	 * Retrieve scheduler tasks
+	 * Adds a new task via the REST API
+	 * @param taskId scheduler task ID
+	 * @param clientId client ID
+	 * @param task scheduler task
+	 * @param timeSpec scheduler task time settings
+	 */
+	addTaskREST(taskId: number, clientId: string, task: any, timeSpec: object): Promise<AxiosResponse> {
+		const tasks = JSON.parse(JSON.stringify(task));
+		tasks.forEach((item: any) => {
+			item.message = JSON.parse(item.message);
+		});
+		const newTask = {
+			'taskId': taskId,
+			'clientId': clientId,
+			'task': tasks,
+			'timeSpec': timeSpec
+		};
+		return axios.post('scheduler', newTask, {headers: authorizationHeader()});
+	}
+
+	/**
+	 * Edits an existing task via the REST API
+	 * @param oldTaskId existing task ID
+	 * @param taskId new task ID
+	 * @param clientId client ID
+	 * @param task scheduler task
+	 * @param timeSpec scheduler task time settings
+	 */
+	editTaskREST(oldTaskId: number, taskId: number, clientId: string, task: any, timeSpec: object): Promise<AxiosResponse> {
+		const tasks = JSON.parse(JSON.stringify(task));
+		tasks.forEach((item: any) => {
+			item.message = JSON.parse(item.message);
+		});
+		const editTask = {
+			'taskId': taskId,
+			'clientId': clientId,
+			'task': tasks,
+			'timeSpec': timeSpec
+		};
+		return axios.put('scheduler/' + oldTaskId, editTask, {headers: authorizationHeader()});
+	}
+
+	/**
+	 * Retrieves scheduler tasks via the Daemon API
 	 */
 	listTasks() {
 		return store.dispatch('sendRequest', {
@@ -39,8 +90,15 @@ class SchedulerService {
 	}
 
 	/**
-	 * Retrieves task specified by ID
-	 * @param taskId task ID
+	 * Retrieves scheduler tasks via the REST API 
+	 */
+	listTasksREST(): Promise<AxiosResponse> {
+		return axios.get('scheduler', {headers: authorizationHeader()});
+	}
+
+	/**
+	 * Retrieves task specified by ID via the Daemon API
+	 * @param taskId scheduler task ID
 	 */
 	getTask(taskId: number) {
 		return store.dispatch('sendRequest', {
@@ -55,6 +113,18 @@ class SchedulerService {
 		});
 	}
 
+	/**
+	 * Retrieves task specified by ID via the REST API
+	 * @param taskId scheduler task ID
+	 */
+	getTaskREST(taskId: number): Promise<AxiosResponse> {
+		return axios.get('scheduler/' + taskId, {headers: authorizationHeader()});
+	}	
+
+	/**
+	 * Removes a task specified by ID via the Daemon API
+	 * @param taskId scheduler task ID
+	 */
 	removeTask(taskId: number) {
 		return store.dispatch('sendRequest', {
 			'mType': 'mngScheduler_RemoveTask',
@@ -66,6 +136,14 @@ class SchedulerService {
 				'returnVerbose': true,
 			},
 		});
+	}
+
+	/**
+	 * Removes a task specified by ID via the REST API
+	 * @param taskId scheduler ID
+	 */
+	removeTaskREST(taskId: number): Promise<AxiosResponse> {
+		return axios.delete('/scheduler/' + taskId, {headers: authorizationHeader()});
 	}
 	
 	/**

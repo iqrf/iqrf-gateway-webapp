@@ -31,19 +31,36 @@
 					:striped='true'
 					:sorter='{external: false, resetable: true}'
 				>
-					<template #timeSpec='{item}'>
+					<template v-if='retrieved === "rest"' #taskId='{item}'>
 						<td>
+							{{ item.id }}
+						</td>
+					</template>
+					<template v-if='retrieved === "rest"' #clientId='{item}'>
+						<td>
+							{{ item.service }}
+						</td>
+					</template>
+					<template #timeSpec='{item}'>
+						<td v-if='retrieved === "daemon"'>
 							{{ timeString(item.timeSpec) }}
+						</td>
+						<td v-else>
+							{{ item.time }}
 						</td>
 					</template>
 					<template #task='{item}'>
-						<td>
+						<td v-if='retrieved === "daemon"'>
 							{{ displayMTypes(item.task) }}
+						</td>
+						<td v-else>
+							{{ displayMTypes(item.mTypes) }}
 						</td>
 					</template>
 					<template #actions='{item}'>
 						<td class='col-actions'>
 							<CButton
+								v-if='retrieved === "daemon"'
 								color='info'
 								size='sm'
 								:to='"/config/scheduler/edit/" + item.taskId'
@@ -52,9 +69,28 @@
 								{{ $t('table.actions.edit') }}
 							</CButton>
 							<CButton
+								v-else
+								color='info'
+								size='sm'
+								:to='"/config/scheduler/edit/" + item.id'
+							>
+								<CIcon :content='$options.icons.edit' />
+								{{ $t('table.actions.edit') }}
+							</CButton>
+							<CButton
+								v-if='retrieved === "daemon"'
 								color='danger'
 								size='sm'
 								@click='modal.task = item.taskId'
+							>
+								<CIcon :content='$options.icons.remove' />
+								{{ $t('table.actions.delete') }}
+							</CButton>
+							<CButton
+								v-else
+								color='danger'
+								size='sm'
+								@click='modal.task = item.id'
 							>
 								<CIcon :content='$options.icons.remove' />
 								{{ $t('table.actions.delete') }}
@@ -179,24 +215,36 @@ export default {
 				hour: 'numeric',
 				minute: 'numeric',
 				second: 'numeric',
-			}
+			},
+			useRest: true,
+			retrieved: null,
+			untouched: true,
 		};
 	},
 	created() {
+		if (this.$store.getters.isSocketConnected) {
+			this.useRest = false;
+			this.getTasks();
+		} else {
+			this.getTasks();
+		}
 		this.unsubscribe = this.$store.subscribe(mutation => {
 			if (mutation.type === 'SOCKET_ONOPEN') {
-				this.getTasks();
-				return;
-			}
-			if (mutation.type === 'SOCKET_ONSEND') {
+				this.useRest = false;
+				if (this.untouched) {
+					this.getTasks();
+				}
+			} else if (mutation.type === 'SOCKET_ONCLOSE' || 
+				mutation.type === 'SOCKET_ONERROR') {
+				this.useRest = true;
+			} else if (mutation.type === 'SOCKET_ONSEND') {
 				if (mutation.payload.mType === 'mngScheduler_List') {
 					if (this.taskIds !== null) {
 						this.taskIds = null;
 						this.tasks = [];
 					}
 				}
-			}
-			if (mutation.type === 'SOCKET_ONMESSAGE') {
+			} else if (mutation.type === 'SOCKET_ONMESSAGE') {
 				if (mutation.payload.mType === 'mngScheduler_List') {
 					this.$store.commit('spinner/HIDE');
 					if (mutation.payload.data.status === 0) {
@@ -204,6 +252,7 @@ export default {
 						this.taskIds.forEach(item => {
 							this.getTask(item);
 						});
+						this.retrieved = 'daemon';
 					}
 				} else if (mutation.payload.mType === 'mngScheduler_GetTask') {
 					if (mutation.payload.data.status === 0) {
@@ -220,9 +269,6 @@ export default {
 				}
 			}
 		});
-		if (this.$store.getters.isSocketConnected) {
-			this.getTasks();
-		}	
 	},
 	beforeDestroy() {
 		this.unsubscribe();
@@ -234,6 +280,13 @@ export default {
 		},
 		displayMTypes(item) {
 			try {
+				if (this.retrieved === 'rest') {
+					if (Array.isArray(item)) {
+						return item.join(',');
+					} else {
+						return item;
+					}
+				}
 				if (Array.isArray(item)) {
 					let mTypes = '';
 					item.forEach(task => {
@@ -248,8 +301,19 @@ export default {
 			}
 		},
 		getTasks() {
+			this.untouched = false;
 			this.$store.commit('spinner/SHOW');
-			SchedulerService.listTasks();
+			if (this.useRest) {
+				SchedulerService.listTasksREST()
+					.then((response) => {
+						this.$store.commit('spinner/HIDE');
+						this.tasks = response.data;
+						this.retrieved = 'rest';
+					})
+					.catch((error) => FormErrorHandler.schedulerError(error));
+			} else {
+				SchedulerService.listTasks();
+			}
 		},
 		getTask(taskId) {
 			SchedulerService.getTask(taskId);
@@ -258,7 +322,17 @@ export default {
 			this.$store.commit('spinner/SHOW');
 			const task = this.modal.task;
 			this.modal.task = null;
-			SchedulerService.removeTask(task);
+			if (this.useRest) {
+				SchedulerService.removeTaskREST(task)
+					.then(() => {
+						this.$store.commit('spinner/HIDE');
+						this.$toast.success(this.$t('config.scheduler.messages.deleteSuccess').toString());
+						this.getTasks();
+					})
+					.catch((error) => FormErrorHandler.schedulerError(error));
+			} else {
+				SchedulerService.removeTask(task);
+			}
 		},
 		exportScheduler() {
 			this.$store.commit('spinner/SHOW');
