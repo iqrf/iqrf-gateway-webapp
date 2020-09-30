@@ -1103,7 +1103,7 @@
 					"success": "JSON request has been sent successfully.",
 					"error": {
 						"timeout": "Request timed out.",
-						"fail": "An error occurred while proccesing JSON request.",
+						"fail": "An error occurred while processing JSON request.",
 						"pcmd": "Sent JSON request contains incorrect PCMD.",
 						"pnum": "Sent JSON request contains incorrect PNUM.",
 						"addr": "Sent JSON request contains incorrect address parameter.",
@@ -1359,7 +1359,98 @@
 		"description": "Controls the network.",
 		"ethernet": {
 			"title": "Ethernet connections",
-			"description": "Controls the Ethernet connections."
+			"description": "Controls the Ethernet connections.",
+			"edit": "Edit Ethernet connection"
+		},
+		"connection": {
+			"name": "Connection name",
+			"ipv4": {
+				"title": "IPv4 configuration",
+				"method": "Connection method",
+				"methods": {
+					"null": "Please select IPv4 connection method",
+					"auto": "DHCP",
+					"disabled": "Disabled",
+					"manual": "Manual",
+					"link-local": "Link-local",
+					"shared": "Shared with other computers"
+				},
+				"address": "IPv4 address",
+				"addresses": {
+					"add": "Add IPv4 address",
+					"remove": "Remove IPv4 address"
+				},
+				"mask": "IPv4 subnet mask",
+				"gateway": "IPv4 gateway address",
+				"dns": {
+					"title": "IPv4 DNS servers",
+					"address": "DNS server IPv4 address",
+					"add": "Add DNS server",
+					"remove": "Remove DNS server"
+				},
+				"messages": {
+					"method": "Please select the IPv4 connection method.",
+					"address": "Please enter a valid IPv4 address.",
+					"addresses": "Please enter at least one valid IPv4 address.",
+					"dns": "Please enter at least one IPv4 DNS server address.",
+					"gateway": "Please enter a valid IPv4 gateway address.",
+					"mask": "Please enter a valid IPv4 subnet mask."
+				}
+			},
+			"ipv6": {
+				"title": "IPv6 configuration",
+				"method": "Connection method",
+				"methods": {
+					"null": "Please select IPv6 connection method",
+					"auto": "SLAAC",
+					"disabled": "Disabled",
+					"dhcp": "DHCPv6",
+					"ignore": "Ignore",
+					"link-local": "Link-local",
+					"manual": "Manual",
+					"shared": "Shared with other computers"
+				},
+				"address": "IPv6 address",
+				"addresses": {
+					"add": "Add IPv6 address",
+					"remove": "Remove IPv6 address"
+				},
+				"prefix": "IPv6 prefix",
+				"gateway": "IPv6 gateway address",
+				"dns": {
+					"title": "IPv6 DNS servers",
+					"address": "DNS server IPv6 address",
+					"add": "Add DNS server",
+					"remove": "Remove DNS server"
+				},
+				"messages": {
+					"method": "Please select the IPv6 connection method",
+					"address": "Please enter a valid IPv6 address.",
+					"addresses": "Please enter at least one valid IPv6 address.",
+					"dns": "Please enter at least one IPv6 DNS server address.",
+					"prefix": "Please enter a valid IPv6 prefix.",
+					"edit": {
+						"failure": "An error occurred while the network connection configuration saving.",
+						"success": "The network connection configuration has been saved successfully."
+					}
+				}
+			},
+			"state": "Connection state",
+			"states": {
+				"connected": "Connected"
+			},
+			"messages": {
+				"connect": {
+					"success": "Network connection {connection} has been connected at network interface {interface}."
+				},
+				"disconnect": {
+					"success": "Network connection {connection} has been disconnected at network interface {interface}."
+				}
+			}
+		},
+		"table": {
+			"connect": "Connect",
+			"disconnect": "Disconnect"
 		}
 	},
 	"service": {

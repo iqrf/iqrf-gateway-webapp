@@ -34,8 +34,8 @@ use App\Exceptions\InvalidUserRoleException;
 use App\Models\Database\Entities\User;
 use App\Models\Database\EntityManager;
 use App\Models\Database\Repositories\UserRepository;
+use GuzzleHttp\Psr7\Utils;
 use Nette\Utils\JsonException;
-use function GuzzleHttp\Psr7\stream_for;
 
 /**
  * User manager API controller
@@ -137,7 +137,8 @@ class UsersController extends BaseController {
 		} catch (InvalidUserRoleException $e) {
 			throw new ClientErrorException('Invalid role', ApiResponse::S400_BAD_REQUEST);
 		}
-		return $response->withStatus(ApiResponse::S201_CREATED);
+		return $response->withStatus(ApiResponse::S201_CREATED)
+			->withBody(Utils::streamFor());
 	}
 
 	/**
@@ -198,7 +199,8 @@ class UsersController extends BaseController {
 		}
 		$this->entityManager->remove($user);
 		$this->entityManager->flush();
-		return $response->withStatus(ApiResponse::S200_OK);
+		return $response->withStatus(ApiResponse::S200_OK)
+			->withBody(Utils::streamFor());
 	}
 
 	/**
@@ -265,7 +267,7 @@ class UsersController extends BaseController {
 		$this->entityManager->persist($user);
 		$this->entityManager->flush();
 		return $response->withStatus(ApiResponse::S200_OK)
-			->withBody(stream_for());
+			->withBody(Utils::streamFor());
 	}
 
 }

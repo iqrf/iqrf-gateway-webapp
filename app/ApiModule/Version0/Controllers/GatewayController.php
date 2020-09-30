@@ -33,9 +33,9 @@ use App\GatewayModule\Models\InfoManager;
 use App\GatewayModule\Models\LogManager;
 use App\GatewayModule\Models\PowerManager;
 use DateTime;
+use GuzzleHttp\Psr7\Utils;
 use Nette\Utils\FileSystem;
 use Throwable;
-use function GuzzleHttp\Psr7\stream_for;
 
 /**
  * Gateway manager controller
@@ -168,7 +168,7 @@ class GatewayController extends BaseController {
 	 */
 	public function powerOff(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->powerManager->powerOff();
-		return $response->withBody(stream_for());
+		return $response->withBody(Utils::streamFor());
 	}
 
 	/**
@@ -186,7 +186,7 @@ class GatewayController extends BaseController {
 	 */
 	public function reboot(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->powerManager->reboot();
-		return $response->withBody(stream_for());
+		return $response->withBody(Utils::streamFor());
 	}
 
 }

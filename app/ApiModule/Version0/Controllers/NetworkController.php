@@ -31,12 +31,14 @@ use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\NetworkModule\Enums\ConnectionTypes;
+use App\NetworkModule\Enums\InterfaceTypes;
 use App\NetworkModule\Exceptions\NetworkManagerException;
 use App\NetworkModule\Models\ConnectionManager;
 use App\NetworkModule\Models\ConnectivityManager;
 use App\NetworkModule\Models\InterfaceManager;
 use App\NetworkModule\Models\WifiManager;
 use Grifart\Enum\MissingValueDeclarationException;
+use GuzzleHttp\Psr7\Utils;
 use Ramsey\Uuid\Exception\InvalidUuidStringException;
 use Ramsey\Uuid\Uuid;
 use function GuzzleHttp\Psr7\stream_for;
@@ -160,7 +162,7 @@ class NetworkController extends BaseController {
 		} catch (NetworkManagerException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
-		return $response;
+		return $response->withBody(Utils::streamFor());
 	}
 
 	/**
@@ -200,7 +202,7 @@ class NetworkController extends BaseController {
 		} catch (NetworkManagerException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
-		return $response->withBody(stream_for());
+		return $response->withBody(Utils::streamFor());
 	}
 
 	/**
@@ -231,6 +233,70 @@ class NetworkController extends BaseController {
 		try {
 			$uuid = Uuid::fromString($request->getParameter('uuid'));
 			return $response->writeJsonObject($this->connectionManger->get($uuid));
+		} catch (InvalidUuidStringException $e) {
+			throw new ClientErrorException('Invalid UUID', ApiResponse::S400_BAD_REQUEST);
+		} catch (NetworkManagerException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	/**
+	 * @Path("/connections/{uuid}/connect")
+	 * @Method("POST")
+	 * @OpenApi("
+	 *  summary: Connects network connection
+	 *  parameters:
+	 *      - in: query
+	 *        name: interface
+	 *        schema:
+	 *          type: string
+	 *        required: false
+	 *        description: Network interface name
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 * ")
+	 * @RequestParameters(
+	 *     @RequestParameter(name="uuid", type="string", description="Connection UUID")
+	 * )
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function connectConnection(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$interface = $request->getQueryParam('interface', null);
+		try {
+			$uuid = Uuid::fromString($request->getParameter('uuid'));
+			$this->connectionManger->up($uuid, $interface);
+			return $response->withBody(Utils::streamFor());
+		} catch (InvalidUuidStringException $e) {
+			throw new ClientErrorException('Invalid UUID', ApiResponse::S400_BAD_REQUEST);
+		} catch (NetworkManagerException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	/**
+	 * @Path("/connections/{uuid}/disconnect")
+	 * @Method("POST")
+	 * @OpenApi("
+	 *  summary: Disconnects network connection
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 * ")
+	 * @RequestParameters(
+	 *     @RequestParameter(name="uuid", type="string", description="Connection UUID")
+	 * )
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function disconnectConnection(ApiRequest $request, ApiResponse $response): ApiResponse {
+		try {
+			$uuid = Uuid::fromString($request->getParameter('uuid'));
+			$this->connectionManger->down($uuid);
+			return $response->withBody(Utils::streamFor());
 		} catch (InvalidUuidStringException $e) {
 			throw new ClientErrorException('Invalid UUID', ApiResponse::S400_BAD_REQUEST);
 		} catch (NetworkManagerException $e) {
@@ -271,6 +337,23 @@ class NetworkController extends BaseController {
 	 * @Method("GET")
 	 * @OpenApi("
 	 *  summary: Returns network interfaces
+	 *  parameters:
+	 *      - in: query
+	 *        name: type
+	 *        schema:
+	 *          type: string
+	 *          enum:
+	 *              - 'bond'
+	 *              - 'bridge'
+	 *              - 'dummy'
+	 *              - 'ethernet'
+	 *              - 'loopback'
+	 *              - 'tun'
+	 *              - 'vlan'
+	 *              - 'wifi'
+	 *              - 'wifi-p2p'
+	 *        required: false
+	 *        description: Connection type
 	 *  responses:
 	 *      '200':
 	 *          description: Success
@@ -284,7 +367,13 @@ class NetworkController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function listInterfaces(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$list = $this->interfaceManager->list();
+		$typeParam = $request->getQueryParam('type', null);
+		try {
+			$type = $typeParam === null ? null : InterfaceTypes::fromScalar($typeParam);
+		} catch (MissingValueDeclarationException $e) {
+			$type = null;
+		}
+		$list = $this->interfaceManager->list($type);
 		return $response->writeJsonBody($list);
 	}
 
@@ -306,7 +395,7 @@ class NetworkController extends BaseController {
 	 */
 	public function connectInterface(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->interfaceManager->connect($request->getParameter('name'));
-		return $response->withBody(stream_for());
+		return $response->withBody(Utils::streamFor());
 	}
 
 	/**
@@ -327,7 +416,7 @@ class NetworkController extends BaseController {
 	 */
 	public function disconnectInterface(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->interfaceManager->disconnect($request->getParameter('name'));
-		return $response->withBody(stream_for());
+		return $response->withBody(Utils::streamFor());
 	}
 
 	/**

@@ -35,9 +35,9 @@ use App\ConfigModule\Models\GenericManager;
 use App\ConfigModule\Models\MainManager;
 use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
+use GuzzleHttp\Psr7\Utils;
 use Nette\IOException;
 use Nette\Utils\JsonException;
-use function GuzzleHttp\Psr7\stream_for;
 
 /**
  * Configuration controller
@@ -126,7 +126,7 @@ class ConfigController extends BaseConfigController {
 		try {
 			$json = $request->getJsonBody(true);
 			$this->mainManager->save($json);
-			return $response->withBody(stream_for());
+			return $response->withBody(Utils::streamFor());
 		} catch (JsonException $e) {
 			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
 		} catch (IOException $e) {
@@ -160,7 +160,7 @@ class ConfigController extends BaseConfigController {
 			$json = $request->getJsonBody(true);
 			$this->componentManager->add($json);
 			return $response->withStatus(ApiResponse::S201_CREATED)
-				->withBody(stream_for());
+				->withBody(Utils::streamFor());
 		} catch (JsonException $e) {
 			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
 		} catch (IOException $e) {
@@ -196,7 +196,7 @@ class ConfigController extends BaseConfigController {
 		}
 		try {
 			$this->componentManager->delete($id);
-			return $response;
+			return $response->withBody(Utils::streamFor());
 		} catch (JsonException $e) {
 			throw new ServerErrorException('Invalid JSON syntax', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		} catch (IOException $e) {
@@ -241,7 +241,7 @@ class ConfigController extends BaseConfigController {
 		} catch (IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
-		return $response->withBody(stream_for());
+		return $response->withBody(Utils::streamFor());
 	}
 
 	/**
@@ -336,7 +336,7 @@ class ConfigController extends BaseConfigController {
 			}
 			$this->manager->save($json, $fileName);
 			return $response->withStatus(ApiResponse::S201_CREATED)
-				->withBody(stream_for());
+				->withBody(Utils::streamFor());
 		} catch (NonexistentJsonSchemaException $e) {
 			throw new ServerErrorException('Missing JSON schema for the component', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		} catch (JsonException $e) {
@@ -376,7 +376,7 @@ class ConfigController extends BaseConfigController {
 			throw new ClientErrorException('Component not found', ApiResponse::S404_NOT_FOUND);
 		}
 		$this->manager->deleteFile($fileName);
-		return $response;
+		return $response->withBody(Utils::streamFor());
 	}
 
 	/**
@@ -426,7 +426,7 @@ class ConfigController extends BaseConfigController {
 		} catch (IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
-		return $response->withBody(stream_for());
+		return $response->withBody(Utils::streamFor());
 	}
 
 	/**

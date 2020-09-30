@@ -83,7 +83,7 @@ final class IPv4Connection implements INetworkManagerEntity {
 				$addresses[] = IPv4Address::fromMask($address->address, $address->mask);
 			}
 		}
-		$gateway = $json->gateway !== '' ? IPv4::factory($json->gateway) : null;
+		$gateway = $json->gateway !== '' && isset($json->gateway) ? IPv4::factory($json->gateway) : null;
 		$dns = [];
 		foreach ($json->dns as $dnsServer) {
 			if ($dnsServer->address !== '') {

@@ -21,7 +21,7 @@
 		"@coreui/coreui": "^3.3.0",
 		"@coreui/icons": "^1.0.1",
 		"@coreui/vue": "^3.1.2",
-		"@popperjs/core": "^2.5.2",
+		"@popperjs/core": "^2.5.3",
 		"@sentry/browser": "^5.24.2",
 		"@sentry/integrations": "^5.24.2",
 		"@types/luxon": "^1.25.0",

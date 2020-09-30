@@ -59,6 +59,19 @@ class ConnectionManager {
 	}
 
 	/**
+	 * Deactivates the connection on the interface
+	 * @param UuidInterface $uuid Network connection UUID
+	 * @throws NetworkManagerException
+	 */
+	public function down(UuidInterface $uuid): void {
+		$command = sprintf('nmcli -t connection down %s', $uuid->toString());
+		$output = $this->commandManager->run($command, true);
+		if ($output->getExitCode() !== 0) {
+			throw new NetworkManagerException($output->getStderr());
+		}
+	}
+
+	/**
 	 * Returns the detailed network connection entity
 	 * @param UuidInterface $uuid Network connection UUID
 	 * @return ConnectionDetail Detailed network connection entity
@@ -115,12 +128,16 @@ class ConnectionManager {
 	}
 
 	/**
-	 * Activate a connection on the interface
+	 * Activates the connection on the interface
 	 * @param UuidInterface $uuid Network connection UUID
+	 * @param string|null $interface Network interface
 	 * @throws NetworkManagerException
 	 */
-	public function up(UuidInterface $uuid): void {
+	public function up(UuidInterface $uuid, ?string $interface = null): void {
 		$command = sprintf('nmcli -t connection up %s', $uuid->toString());
+		if ($interface !== null) {
+			$command .= ' ifname ' . $interface;
+		}
 		$output = $this->commandManager->run($command, true);
 		if ($output->getExitCode() !== 0) {
 			throw new NetworkManagerException($output->getStderr());

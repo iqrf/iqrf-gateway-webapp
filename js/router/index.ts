@@ -65,6 +65,8 @@ import UserEdit from '../pages/Core/UserEdit.vue';
 import UserList from '../pages/Core/UserList.vue';
 
 import NetworkDisambiguation from '../pages/Network/NetworkDisambiguation.vue';
+import ConnectionForm from '../pages/Network/ConnectionForm.vue';
+import EthernetInterfaces from "../pages/Network/EthernetInterfaces.vue";
 
 import i18n from '../i18n';
 import store from '../store';
@@ -557,7 +559,18 @@ const routes: Array<RouteConfig> = [
 						component: NetworkDisambiguation,
 						path: '',
 						meta: {title: 'network.title'}
-					}
+					},
+					{
+						component: EthernetInterfaces,
+						path: 'ethernet',
+						meta: {title: 'network.ethernet.title'}
+					},
+					{
+						component: ConnectionForm,
+						path: 'edit/:uuid',
+						props: true,
+						meta: {title: 'network.ethernet.edit'}
+					},
 				]
 			},
 			{

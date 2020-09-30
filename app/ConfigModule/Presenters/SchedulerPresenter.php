@@ -27,4 +27,12 @@ use App\CoreModule\Presenters\ProtectedPresenter;
  */
 class SchedulerPresenter extends ProtectedPresenter {
 
+	public function renderAdd(): void {
+		$this->setView('default');
+	}
+
+	public function renderEdit(): void {
+		$this->setView('default');
+	}
+
 }

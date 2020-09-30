@@ -29,7 +29,6 @@ extensions:
 	formRenderer: Contributte\Forms\DI\ApplicationFormFactoryExtension
 	iqrfRepository: Iqrf\Repository\DI\IqrfRepositoryExtension
 	iqrfMacros: Iqrf\IdeMacros\DI\IqrfMacrosExtension
-	- Contributte\FormMultiplier\DI\MultiplierExtension
 	middleware: Contributte\Middlewares\DI\NetteMiddlewaresExtension
 
 iqrfMacros:
