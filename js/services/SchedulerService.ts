@@ -1,7 +1,6 @@
 import store from '../store';
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '../helpers/authorizationHeader';
-import ToastPlugin from 'vue-toast-notification';
 
 class SchedulerService {
 	/**

@@ -106,10 +106,22 @@ export default {
 		return {
 			components: null,
 			fields: [
-				{key: 'name', label: this.$t('config.components.form.name')},
-				{key: 'startlevel', label: this.$t('config.components.form.startLevel')},
-				{key: 'libraryPath', label: this.$t('config.components.form.libraryPath')},
-				{key: 'libraryName', label: this.$t('config.components.form.libraryName')},
+				{
+					key: 'name',
+					label: this.$t('config.components.form.name'),
+				},
+				{
+					key: 'startlevel',
+					label: this.$t('config.components.form.startLevel'),
+				},
+				{
+					key: 'libraryPath',
+					label: this.$t('config.components.form.libraryPath'),
+				},
+				{
+					key: 'libraryName',
+					label: this.$t('config.components.form.libraryName'),
+				},
 				{
 					key: 'enabled',
 					label: this.$t('config.components.form.enabled'),

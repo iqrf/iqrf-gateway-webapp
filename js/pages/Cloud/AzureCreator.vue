@@ -1,10 +1,18 @@
 <template>
 	<CCard>
 		<CCardHeader>
-			<CButton color='primary' size='sm' href='https://github.com/iqrfsdk/iot-starter-kit/blob/master/install/pdf/iqrf-part3b.pdf'>
+			<CButton
+				color='primary'
+				size='sm'
+				href='https://github.com/iqrfsdk/iot-starter-kit/blob/master/install/pdf/iqrf-part3b.pdf'
+			>
 				{{ $t('cloud.guides.pdf') }}
 			</CButton>
-			<CButton color='danger' size='sm' href='https://youtu.be/SIBoTrYwR2g'>
+			<CButton
+				color='danger'
+				size='sm'
+				href='https://youtu.be/SIBoTrYwR2g'
+			>
 				{{ $t('cloud.guides.video') }}
 			</CButton>
 		</CCardHeader>
@@ -25,10 +33,18 @@
 							:invalid-feedback='$t(errors[0])'
 						/>
 					</ValidationProvider>
-					<CButton color='primary' :disabled='invalid' @click.prevent='save'>
+					<CButton
+						color='primary'
+						:disabled='invalid'
+						@click.prevent='save'
+					>
 						{{ $t('forms.save') }}
 					</CButton>
-					<CButton color='secondary' :disabled='invalid' @click.prevent='saveAndRestart'>
+					<CButton
+						color='secondary'
+						:disabled='invalid'
+						@click.prevent='saveAndRestart'
+					>
 						{{ $t('forms.saveRestart') }}
 					</CButton>
 				</CForm>
@@ -72,7 +88,7 @@ export default {
 			return CloudService.create(this.serviceName, {'connectionString': this.connectionString})
 				.then(() => {
 					this.$store.commit('spinner/HIDE');
-					this.$toast.success(this.$t('cloud.messages.success'));
+					this.$toast.success(this.$t('cloud.messages.success').toString());
 				})
 				.catch((error) => {
 					FormErrorHandler.cloudError(error);
@@ -86,7 +102,10 @@ export default {
 					ServiceService.restart('iqrf-gateway-daemon')
 						.then(() => {
 							this.$store.commit('spinner/HIDE');
-							this.$toast.success(this.$t('service.iqrf-gateway-daemon.messages.restart'));
+							this.$toast.success(
+								this.$t('service.iqrf-gateway-daemon.messages.restart')
+									.toString()
+							);
 						})
 						.catch((error) => {
 							FormErrorHandler.serviceError(error);

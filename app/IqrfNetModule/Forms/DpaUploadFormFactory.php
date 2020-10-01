@@ -26,7 +26,6 @@ use App\IqrfNetModule\Entities\IqrfOs;
 use App\IqrfNetModule\Enums\UploadFormats;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
-use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\IqrfNetModule\Models\DpaManager;
 use App\IqrfNetModule\Models\OsManager;
 use App\IqrfNetModule\Models\UploadManager;
@@ -125,7 +124,7 @@ class DpaUploadFormFactory {
 			}
 			krsort($versions);
 			return $versions;
-		} catch (UserErrorException | DpaErrorException | EmptyResponseException | JsonException $e) {
+		} catch (DpaErrorException | EmptyResponseException | JsonException $e) {
 			return [];
 		}
 	}
@@ -148,7 +147,7 @@ class DpaUploadFormFactory {
 			$this->presenter->flashInfo('service.iqrf-gateway-daemon.messages.restart');
 		} catch (CorruptedFileException $e) {
 			$this->presenter->flashError('iqrfnet.trUpload.messages.corruptedFile');
-		} catch (DpaErrorException | EmptyResponseException | JsonException | UserErrorException $e) {
+		} catch (DpaErrorException | EmptyResponseException | JsonException $e) {
 			$this->presenter->flashError('iqrfnet.trUpload.messages.failure');
 		} catch (IOException $e) {
 			$this->presenter->flashError('iqrfnet.trUpload.messages.moveFailure');

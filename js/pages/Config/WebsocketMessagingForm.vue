@@ -20,14 +20,18 @@
 						:label='$t("config.websocket.form.acceptAsyncMsg")'
 					/>
 					<h4>{{ $t('config.websocket.form.requiredInterfaces') }}</h4>
-					<div v-for='i of configuration.RequiredInterfaces.length' :key='i' class='form-group'>
+					<div
+						v-for='(iface, i) of configuration.RequiredInterfaces'
+						:key='i'
+						class='form-group'
+					>
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
 							rules='required'
 							:custom-messages='{required: "config.websocket.form.messages.interfaceName"}'
 						>
 							<CSelect
-								:value.sync='configuration.RequiredInterfaces[i-1].name'
+								:value.sync='iface.name'
 								:label='$t("config.websocket.form.requiredInterface.name")'
 								:placeholder='$t("config.websocket.form.messages.interfaceName")'
 								:options='[
@@ -43,7 +47,7 @@
 							:custom-messages='{required: "config.websocket.form.messages.interfaceName"}'
 						>
 							<CSelect
-								:value.sync='configuration.RequiredInterfaces[i-1].instance'
+								:value.sync='iface.instance'
 								:label='$t("config.websocket.form.requiredInterface.instance")'
 								:placeholder='$t("config.websocket.form.messages.interfaceInstance")'
 								:options='instances.service'
@@ -51,13 +55,17 @@
 								:invalid-feedback='$t(errors[0])'
 							/>
 						</ValidationProvider>
-						<CButton v-if='configuration.RequiredInterfaces.length > 1' color='danger' @click='removeInterface(i-1)'>
+						<CButton
+							v-if='configuration.RequiredInterfaces.length > 1'
+							color='danger'
+							@click='removeInterface(i-1)'
+						>
 							{{ $t('config.websocket.form.requiredInterface.remove') }}
 						</CButton>
 						<CButton 
-							v-if='i === configuration.RequiredInterfaces.length' 
+							v-if='i === (configuration.RequiredInterfaces.length - 1)'
 							color='success' 
-							:disabled='!configuration.RequiredInterfaces[i-1].name || !configuration.RequiredInterfaces[i-1].instance'
+							:disabled='!iface.name || !iface.instance'
 							@click='addInterface'
 						>
 							{{ $t('config.websocket.form.requiredInterface.add') }}
@@ -117,7 +125,8 @@ export default {
 	},
 	computed: {
 		submitButton() {
-			return this.$route.path === '/config/websocket/add-messaging' ? this.$t('forms.add') : this.$t('forms.edit');
+			return this.$route.path === '/config/websocket/add-messaging' ?
+				this.$t('forms.add') : this.$t('forms.edit');
 		},
 	},
 	created() {
@@ -187,15 +196,23 @@ export default {
 			this.$router.push('/config/websocket/');
 			this.$store.commit('spinner/HIDE');
 			if (this.$route.path === '/config/websocket/add-messaging') {
-				this.$toast.success(this.$t('config.websocket.messaging.messages.addSuccess', {messaging: this.configuration.instance}).toString());
+				this.$toast.success(
+					this.$t('config.websocket.messaging.messages.addSuccess', {messaging: this.configuration.instance})
+						.toString()
+				);
 			} else {
-				this.$toast.success(this.$t('config.websocket.messaging.messages.editSuccess', {messaging: this.instance}).toString());
+				this.$toast.success(
+					this.$t('config.websocket.messaging.messages.editSuccess', {messaging: this.instance})
+						.toString()
+				);
 			}
 		},
 	},
 	metaInfo() {
 		return {
-			title: this.$route.path === '/config/websocket/add-messaging' ? this.$t('config.websocket.messaging.add') : this.$t('config.websocket.messaging.edit')
+			title: this.$route.path === '/config/websocket/add-messaging' ?
+				this.$t('config.websocket.messaging.add') :
+				this.$t('config.websocket.messaging.edit')
 		};
 	}
 };

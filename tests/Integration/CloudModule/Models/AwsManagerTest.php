@@ -17,7 +17,6 @@ use DateTime;
 use GuzzleHttp\Client;
 use Mockery;
 use Mockery\Mock;
-use Nette\Http\FileUpload;
 use Nette\Utils\FileSystem;
 use Tester\Assert;
 use Tests\Toolkit\TestCases\CloudIntegrationTestCase;
@@ -163,14 +162,12 @@ final class AwsManagerTest extends CloudIntegrationTestCase {
 	/**
 	 * Mocks uploaded certificate and private key
 	 * @param string $path Path to certificate and private key
-	 * @return array<FileUpload> Mocked uploaded certificate and private key
+	 * @return array<string ,string> Mocked uploaded certificate and private key
 	 */
 	private function mockUploadedFiles(string $path): array {
-		$certFile = $path . '/cert0.pem';
-		$pKeyFile = $path . '/pkey0.key';
 		return [
-			'certificate' => FileSystem::read($certFile),
-			'privateKey' => FileSystem::read($pKeyFile),
+			'certificate' => FileSystem::read($path . '/cert0.pem'),
+			'privateKey' => FileSystem::read($path . '/pkey0.key'),
 		];
 	}
 

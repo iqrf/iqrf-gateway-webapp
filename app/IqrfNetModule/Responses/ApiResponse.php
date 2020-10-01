@@ -20,26 +20,7 @@ declare(strict_types = 1);
 
 namespace App\IqrfNetModule\Responses;
 
-use App\IqrfNetModule\Exceptions\AbortedException;
-use App\IqrfNetModule\Exceptions\BadRequestException;
-use App\IqrfNetModule\Exceptions\BadResponseException;
-use App\IqrfNetModule\Exceptions\CustomHandlerConsumedInterfaceDataException;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
-use App\IqrfNetModule\Exceptions\ExclusiveAccessException;
-use App\IqrfNetModule\Exceptions\GeneralFailureException;
-use App\IqrfNetModule\Exceptions\IncorrectAddressException;
-use App\IqrfNetModule\Exceptions\IncorrectDataException;
-use App\IqrfNetModule\Exceptions\IncorrectDataLengthException;
-use App\IqrfNetModule\Exceptions\IncorrectHwpidUsedException;
-use App\IqrfNetModule\Exceptions\IncorrectNadrException;
-use App\IqrfNetModule\Exceptions\IncorrectPcmdException;
-use App\IqrfNetModule\Exceptions\IncorrectPnumException;
-use App\IqrfNetModule\Exceptions\InterfaceBusyException;
-use App\IqrfNetModule\Exceptions\InterfaceErrorException;
-use App\IqrfNetModule\Exceptions\InterfaceQueueFullException;
-use App\IqrfNetModule\Exceptions\MissingCustomDpaHandlerException;
-use App\IqrfNetModule\Exceptions\TimeoutException;
-use App\IqrfNetModule\Exceptions\UserErrorException;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 use stdClass;
@@ -55,43 +36,15 @@ class ApiResponse {
 	protected $response;
 
 	/**
-	 * @var array<string> IQRF JSON API exceptions
-	 */
-	private $exceptions = [
-		-8 => ExclusiveAccessException::class,
-		-7 => BadResponseException::class,
-		-6 => BadRequestException::class,
-		-5 => InterfaceBusyException::class,
-		-4 => InterfaceErrorException::class,
-		-3 => AbortedException::class,
-		-2 => InterfaceQueueFullException::class,
-		-1 => TimeoutException::class,
-		1 => GeneralFailureException::class,
-		2 => IncorrectPcmdException::class,
-		3 => IncorrectPnumException::class,
-		4 => IncorrectAddressException::class,
-		5 => IncorrectDataLengthException::class,
-		6 => IncorrectDataException::class,
-		7 => IncorrectHwpidUsedException::class,
-		8 => IncorrectNadrException::class,
-		9 => CustomHandlerConsumedInterfaceDataException::class,
-		10 => MissingCustomDpaHandlerException::class,
-	];
-
-	/**
 	 * Checks a status from the IQRF JSON API response
 	 * @throws DpaErrorException
-	 * @throws UserErrorException
 	 */
 	public function checkStatus(): void {
 		$status = $this->response->data->status;
 		if ($status === 0) {
 			return;
 		}
-		if (array_key_exists($status, $this->exceptions)) {
-			throw new $this->exceptions[$status]();
-		}
-		throw new UserErrorException();
+		throw new DpaErrorException($this->response->data->statusStr ?? '', $status);
 	}
 
 	/**

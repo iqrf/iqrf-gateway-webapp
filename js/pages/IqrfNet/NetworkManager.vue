@@ -56,7 +56,6 @@ export default {
 </script>
 
 <style scoped>
-
 .tab {
 	border-bottom: 0;
 }
@@ -64,5 +63,4 @@ export default {
 .tabs {
 	border-bottom: 0;
 }
-
 </style>

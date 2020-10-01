@@ -53,6 +53,20 @@ final class FeatureManagerTest extends TestCase {
 	}
 
 	/**
+	 * Tests the function to edit feature configuration
+	 */
+	public function testEdit(): void {
+		$expected = [
+			'enabled' => true,
+			'url' => '/grafana/',
+		];
+		Assert::noError(function () use ($expected): void {
+			$this->manager->edit('grafana', $expected);
+		});
+		Assert::same($expected, $this->manager->get('grafana'));
+	}
+
+	/**
 	 * Tests the function to edit feature configuration (nonexistent feature)
 	 */
 	public function testEditNotFound(): void {

@@ -41,7 +41,20 @@
 import {CButton, CCard} from '@coreui/vue/src';
 import ServiceService from '../../services/ServiceService';
 
-const whitelisted = ['iqrf-gateway-daemon', 'ssh', 'unattended-upgrades'];
+const whitelisted = [
+	'iqrf-gateway-controller',
+	'iqrf-gateway-daemon',
+	'iqrf-gateway-translator',
+	'ssh',
+	'unattended-upgrades',
+];
+
+const features = {
+	'iqrf-gateway-controller': 'iqrfGatewayController',
+	'iqrf-gateway-translator': 'iqrfGatewayTranslator',
+	'ssh': 'ssh',
+	'unattended-upgrades': 'unattendedUpgrades',
+};
 
 export default {
 	name: 'ServiceControl',
@@ -93,7 +106,9 @@ export default {
 				this.unsupported = true;
 				this.status = null;
 				this.$store.commit('spinner/HIDE');
-				this.$toast.error(this.$t('service.errors.unsupportedService').toString());
+				this.$toast.error(
+					this.$t('service.errors.unsupportedService').toString()
+				);
 				return;
 			}
 			ServiceService.getStatus(this.serviceName)
@@ -121,7 +136,10 @@ export default {
 		},
 		handleSuccess(action) {
 			this.getStatus();
-			this.$toast.success(this.$t('service.' + this.serviceName + '.messages.' + action).toString());
+			this.$toast.success(
+				this.$t('service.' + this.serviceName + '.messages.' + action)
+					.toString()
+			);
 		},
 		refreshStatus() {
 			this.$store.commit('spinner/SHOW');
@@ -145,6 +163,18 @@ export default {
 				.then(() => (this.handleSuccess('stop')))
 				.catch(this.handleError);
 		},
+	},
+	beforeRouteEnter(to, from, next) {
+		next(vm => {
+			const feature = features[vm.serviceName];
+			if (feature !== undefined &&
+					!vm.$store.getters['features/isEnabled'](feature)) {
+				vm.$toast.error(
+					vm.$t('service.' +vm.serviceName + '.messages.disabled').toString()
+				);
+				vm.$router.push(from.path);
+			}
+		});
 	},
 	metaInfo() {
 		return {

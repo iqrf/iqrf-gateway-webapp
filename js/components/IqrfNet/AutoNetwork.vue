@@ -319,24 +319,36 @@ export default {
 					switch(mutation.payload.data.status) {
 						case -1:
 							this.$store.commit('spinner/HIDE');
-							this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.timeout').toString());
+							this.$toast.error(
+								this.$t('iqrfnet.networkManager.messages.submit.timeout')
+									.toString()
+							);
 							break;
 						case 0:
 							this.$store.commit('spinner/UPDATE_TEXT', this.autoNetworkProgress(mutation.payload.data));
 							if (mutation.payload.data.rsp.lastWave) {
 								//this.$store.commit('spinner/HIDE');
-								this.$toast.success(this.$t('iqrfnet.networkManager.messages.submit.autoNetwork.success').toString());
+								this.$toast.success(
+									this.$t('iqrfnet.networkManager.messages.submit.autoNetwork.success')
+										.toString()
+								);
 								this.$emit('update-devices');
 							}
 							break;
 						default:
-							this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.autoNetwork.failure').toString());
+							this.$toast.error(
+								this.$t('iqrfnet.networkManager.messages.submit.autoNetwork.failure')
+									.toString()
+							);
 							break;
 					}
 				} else if (mutation.payload.mType === 'messageError') {
 					clearTimeout(this.timeout);
 					this.$store.commit('spinner/HIDE');
-					this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.invalidMessage').toString());
+					this.$toast.error(
+						this.$t('iqrfnet.networkManager.messages.submit.invalidMessage')
+							.toString()
+					);
 				}
 			}
 		});

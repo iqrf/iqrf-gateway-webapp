@@ -1,5 +1,29 @@
 import store from '../../store';
 
+export class StandardLight {
+
+	/**
+	 * Index of the light
+	 */
+	public index: number;
+
+	/**
+	 * Power level of the light from range <0;100>
+	 */
+	public power: number;
+
+	/**
+	 * Constructor
+	 * @param index Index of the light
+	 * @param power Power level of the light from range <0;100>
+	 */
+	public constructor(index: number, power: number) {
+		this.index = index;
+		this.power = power;
+	}
+
+}
+
 /**
  * IQRF Standard light service
  */
@@ -27,7 +51,7 @@ class StandardLightService {
 	 * @param address Node address
 	 * @param lights Object containing light settings
 	 */
-	decrementPower(address: number, lights: any[]): Promise<any> {
+	decrementPower(address: number, lights: StandardLight[]): Promise<any> {
 		return store.dispatch('sendRequest', {
 			'mType': 'iqrfLight_DecrementPower',
 			'data': {
@@ -47,7 +71,7 @@ class StandardLightService {
 	 * @param address Node address
 	 * @param lights Object containing light settings
 	 */
-	incrementPower(address: number, lights: any[]): Promise<any> {
+	incrementPower(address: number, lights: StandardLight[]): Promise<any> {
 		return store.dispatch('sendRequest', {
 			'mType': 'iqrfLight_IncrementPower',
 			'data': {
@@ -67,8 +91,8 @@ class StandardLightService {
 	 * @param address Node address
 	 * @param light Light index
 	 */
-	getPower(address: number, light: any): Promise<any> {
-		return this.setPower(address, [{'index': light, 'power': 127}]);
+	getPower(address: number, light: number): Promise<any> {
+		return this.setPower(address, [new StandardLight(light, 127)]);
 	}
 
 	/**
@@ -76,7 +100,7 @@ class StandardLightService {
 	 * @param address Node address
 	 * @param lights Object containing light settings
 	 */
-	setPower(address: number, lights: any[]): Promise<any> {
+	setPower(address: number, lights: StandardLight[]): Promise<any> {
 		return store.dispatch('sendRequest', {
 			'mType': 'iqrfLight_SetPower',
 			'data': {

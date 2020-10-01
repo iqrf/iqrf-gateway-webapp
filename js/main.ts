@@ -50,7 +50,7 @@ store.commit('spinner/HIDE');
 Vue.prototype.$appName = 'IQRF Gateway Webapp frontend';
 
 const wsApi: string = 'ws://' + window.location.hostname + ':1338';
-//const wsApi: string ='ws://tunnel.rehivetech.com:45117/ws';
+
 Vue.use(VueNativeSock, wsApi, {
 	store: store,
 	format: 'json',

@@ -189,7 +189,10 @@ export default {
 			DaemonConfigurationService.updateInstance(this.componentNames.webSocket, service.instance, service)
 				.then(() => {
 					this.getConfig().then(() => {
-						this.$toast.success(this.$t('config.monitor.service.messages.editSuccess', {service: service.instance}).toString());
+						this.$toast.success(
+							this.$t('config.monitor.service.messages.editSuccess', {service: service.instance})
+								.toString()
+						);
 					});
 				})
 				.catch((error) => FormErrorHandler.configError(error));
@@ -203,7 +206,10 @@ export default {
 				.then(() => {
 					this.modals.instances = null;
 					this.getConfig()
-						.then(() => this.$toast.success(this.$t('config.monitor.messages.delete.success', {instance: this.modals.instances.monitor}).toString()));
+						.then(() => this.$toast.success(
+							this.$t('config.monitor.messages.delete.success', {instance: this.modals.instances.monitor})
+								.toString())
+						);
 				});
 			// TODO: add error message
 		},

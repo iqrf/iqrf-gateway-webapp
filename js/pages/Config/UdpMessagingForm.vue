@@ -94,7 +94,8 @@ export default {
 	},
 	computed: {
 		submitButton() {
-			return this.$route.path === '/config/udp/add' ? this.$t('forms.add') : this.$t('forms.save');
+			return this.$route.path === '/config/udp/add' ?
+				this.$t('forms.add') : this.$t('forms.save');
 		},
 	},
 	created() {
@@ -134,15 +135,21 @@ export default {
 			this.$router.push('/config/udp/');
 			this.$store.commit('spinner/HIDE');
 			if (this.$route.path === '/config/udp/add') {
-				this.$toast.success(this.$t('config.udp.messages.add.success', {instance: this.configuration.instance}).toString());
+				this.$toast.success(
+					this.$t('config.udp.messages.add.success', {instance: this.configuration.instance})
+						.toString());
 			} else {
-				this.$toast.success(this.$t('config.udp.messages.edit.success', {instance: this.configuration.instance}).toString());
+				this.$toast.success(
+					this.$t('config.udp.messages.edit.success', {instance: this.configuration.instance})
+						.toString()
+				);
 			}
 		},
 	},
 	metaInfo() {
 		return {
-			title: this.$route.path === '/config/udp/add' ? 'config.udp.add' : 'config.udp.edit',
+			title: this.$route.path === '/config/udp/add' ?
+				'config.udp.add' : 'config.udp.edit',
 		};
 	},
 };

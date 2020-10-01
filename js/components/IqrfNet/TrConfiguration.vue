@@ -228,11 +228,22 @@
 									:checked.sync='config.neverSleep'
 									:label='$t("iqrfnet.trConfiguration.form.neverSleep")'
 								/>
-								<CSelect
-									:value.sync='config.uartBaudrate'
-									:label='$t("iqrfnet.trConfiguration.form.uartBaudrate")'
-									:options='uartBaudRates'
-								/>
+								<ValidationProvider
+									v-slot='{ valid, touched, errors }'
+									rules='required'
+									:custom-messages='{
+										required: "iqrfnet.trConfiguration.form.messages.uartBaudrate",
+									}'
+								>
+									<CSelect
+										:value.sync='config.uartBaudrate'
+										:label='$t("iqrfnet.trConfiguration.form.uartBaudrate")'
+										:is-valid='touched ? valid : null'
+										:invalid-feedback='$t(errors[0])'
+										:placeholder='$t("iqrfnet.trConfiguration.form.messages.uartBaudrate")'
+										:options='uartBaudRates'
+									/>
+								</ValidationProvider>
 								<CInputCheckbox
 									v-if='config.nodeDpaInterface !== undefined'
 									:checked.sync='config.nodeDpaInterface'
@@ -377,7 +388,9 @@ export default {
 		handleEnumerationResponse(response) {
 			if (response.data.status !== 0) {
 				this.$store.commit('spinner/HIDE');
-				this.$toast.error(this.$t('iqrfnet.trConfiguration.messages.read.failure').toString());
+				this.$toast.error(
+					this.$t('iqrfnet.trConfiguration.messages.read.failure').toString()
+				);
 				return;
 			}
 			let rsp = response.data.rsp;
@@ -387,7 +400,9 @@ export default {
 			this.setEmbeddedPeripherals();
 			this.$store.commit('spinner/HIDE');
 			if (this.$store.getters['user/getRole'] === 'normal') {
-				this.$toast.success(this.$t('iqrfnet.trConfiguration.messages.read.success').toString());
+				this.$toast.success(
+					this.$t('iqrfnet.trConfiguration.messages.read.success').toString()
+				);
 			}
 		},
 		handleSubmit() {
@@ -399,9 +414,13 @@ export default {
 		handleWriteResponse(response) {
 			this.$store.commit('spinner/HIDE');
 			if (response.data.status === 0) {
-				this.$toast.success(this.$t('iqrfnet.trConfiguration.messages.write.success').toString());
+				this.$toast.success(
+					this.$t('iqrfnet.trConfiguration.messages.write.success').toString()
+				);
 			} else {
-				this.$toast.error(this.$t('iqrfnet.trConfiguration.messages.write.failure').toString());
+				this.$toast.error(
+					this.$t('iqrfnet.trConfiguration.messages.write.failure').toString()
+				);
 			}
 		},
 		setEmbeddedPeripherals() {

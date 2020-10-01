@@ -155,9 +155,15 @@ export default {
 			this.$router.push('/config/websocket/');
 			this.$store.commit('spinner/HIDE');
 			if (this.$route.path === '/config/websocket/add') {
-				this.$toast.success(this.$t('config.websocket.messages.add.success', {instance: this.messaging.instance}).toString());
+				this.$toast.success(
+					this.$t('config.websocket.messages.add.success', {instance: this.messaging.instance})
+						.toString()
+				);
 			} else {
-				this.$toast.success(this.$t('config.websocket.messages.edit.success', {instance: this.messaging.instance}).toString());
+				this.$toast.success(
+					this.$t('config.websocket.messages.edit.success', {instance: this.messaging.instance})
+						.toString()
+				);
 			}
 		},
 	},

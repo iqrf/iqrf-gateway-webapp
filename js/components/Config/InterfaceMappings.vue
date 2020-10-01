@@ -41,14 +41,6 @@ export default {
 		setMapping(board) {
 			const mapping = this.mappings[this.interfaceType][board];
 			this.$emit('updateMapping', mapping);
-			switch (this.interfaceType) {
-				case 'uart':
-					document.getElementById('frm-configIqrfUartForm-IqrfInterface').value = mapping.IqrfInterface;
-					document.getElementById('frm-configIqrfUartForm-baudRate').value = mapping.baudRate;
-					document.getElementById('frm-configIqrfUartForm-powerEnableGpioPin').value = mapping.powerEnableGpioPin;
-					document.getElementById('frm-configIqrfUartForm-busEnableGpioPin').value = mapping.busEnableGpioPin;
-					break;
-			}
 		},
 	},
 };

@@ -28,11 +28,22 @@
 								:invalid-feedback='$t(errors[0])'
 							/>
 						</ValidationProvider>
-						<CSelect
-							:value.sync='configuration.baudRate'
-							:label='$t("config.iqrfUart.form.baudRate")'
-							:options='baudRates'
-						/>
+						<ValidationProvider
+							v-slot='{ valid, touched, errors }'
+							rules='required'
+							:custom-messages='{
+								required: "config.iqrfUart.form.messages.baudRate",
+							}'
+						>
+							<CSelect
+								:value.sync='configuration.baudRate'
+								:label='$t("config.iqrfUart.form.baudRate")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+								:placeholder='$t("config.iqrfUart.form.messages.baudRate")'
+								:options='baudRates'
+							/>
+						</ValidationProvider>
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
 							rules='required|integer'

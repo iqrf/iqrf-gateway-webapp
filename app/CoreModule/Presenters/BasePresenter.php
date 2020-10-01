@@ -20,7 +20,6 @@ declare(strict_types = 1);
 
 namespace App\CoreModule\Presenters;
 
-use App\CoreModule\Models\FeatureManager;
 use Nette\Application\UI\ITemplate;
 use Nette\Application\UI\Presenter;
 use Nette\Bridges\ApplicationLatte\Template;
@@ -32,11 +31,6 @@ use Nette\Localization\ITranslator;
 abstract class BasePresenter extends Presenter {
 
 	/**
-	 * @var FeatureManager Optional feature manager
-	 */
-	protected $featureManager;
-
-	/**
 	 * @var string Language
 	 * @persistent
 	 */
@@ -46,27 +40,6 @@ abstract class BasePresenter extends Presenter {
 	 * @var ITranslator Translator
 	 */
 	protected $translator;
-
-	/**
-	 * After template render
-	 */
-	public function afterRender(): void {
-		parent::afterRender();
-		if ($this->featureManager->isEnabled('versionChecker')) {
-			$this->template->newVersion = null;
-			$this->template->offlineMode = false;
-		}
-		$this->template->featureManager = $this->featureManager;
-		$this->template->urls = $this->featureManager->listUrl();
-	}
-
-	/**
-	 * Injects the optional feature manager
-	 * @param FeatureManager $manager Optional feature manager
-	 */
-	public function injectFeatureManager(FeatureManager $manager): void {
-		$this->featureManager = $manager;
-	}
 
 	/**
 	 * Injects the translator service

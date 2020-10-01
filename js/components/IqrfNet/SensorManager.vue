@@ -23,10 +23,18 @@
 							:invalid-feedback='$t(errors[0])'
 						/>
 					</ValidationProvider>
-					<CButton color='primary' :disabled='invalid' @click.prevent='submitEnumerate'>
+					<CButton
+						color='primary'
+						:disabled='invalid'
+						@click.prevent='submitEnumerate'
+					>
 						{{ $t('forms.enumerate') }}
 					</CButton>
-					<CButton color='secondary' :disabeld='invalid' @click.prevent='submitReadAll'>
+					<CButton
+						color='secondary'
+						:disabeld='invalid'
+						@click.prevent='submitReadAll'
+					>
 						{{ $t('iqrfnet.standard.sensor.readAll') }}
 					</CButton>
 				</CForm>
@@ -114,10 +122,14 @@ export default {
 				this.$store.commit('spinner/HIDE');
 				switch(mutation.payload.data.status) {
 					case -1:
-						this.$toast.error(this.$t('iqrfnet.standard.sensor.messages.timeout').toString());
+						this.$toast.error(
+							this.$t('iqrfnet.standard.sensor.messages.timeout').toString()
+						);
 						break;
 					case 0:
-						this.$toast.success(this.$t('iqrfnet.standard.sensor.messages.success').toString());
+						this.$toast.success(
+							this.$t('iqrfnet.standard.sensor.messages.success').toString()
+						);
 						if (mutation.payload.mType === 'iqrfSensor_Enumerate') {
 							this.parseEnumerate(mutation.payload.data.rsp.result.sensors);
 							this.responseType = 'enum';
@@ -127,10 +139,14 @@ export default {
 						}
 						break;
 					case 3:
-						this.$toast.error(this.$t('iqrfnet.standard.sensor.messages.pnum').toString());
+						this.$toast.error(
+							this.$t('iqrfnet.standard.sensor.messages.pnum').toString()
+						);
 						break;
 					default:
-						this.$toast.error(this.$t('iqrfnet.standard.sensor.messages.failure').toString());
+						this.$toast.error(
+							this.$t('iqrfnet.standard.sensor.messages.failure').toString()
+						);
 						break;
 				}
 			}

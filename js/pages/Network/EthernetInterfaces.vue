@@ -22,7 +22,7 @@
 import {CBadge, CCard, CCardBody, CCardHeader} from '@coreui/vue/src';
 import NetworkConnectionService, {ConnectionType} from '../../services/NetworkConnectionService';
 import NetworkInterfaceService, {InterfaceState, InterfaceType} from '../../services/NetworkInterfaceService';
-import EthernetConnections from '../../components/EthernetConnections';
+import EthernetConnections from '../../components/Network/EthernetConnections';
 
 export default {
 	name: 'EthernetInterfaces',
@@ -63,6 +63,9 @@ export default {
 					return 'warning';
 			}
 		},
+	},
+	metaInfo: {
+		title: 'network.ethernet.title',
 	},
 };
 </script>

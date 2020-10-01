@@ -144,7 +144,9 @@ export default {
 			const response = mutation.payload;
 			if (response.data.status !== 0) {
 				this.$router.push('/iqrfnet/network/');
-				this.$toast.error(this.$t('iqrfnet.enumeration.messages.failure').toString());
+				this.$toast.error(
+					this.$t('iqrfnet.enumeration.messages.failure').toString()
+				);
 				return;
 			}
 			const data = response.data.rsp;
@@ -160,7 +162,10 @@ export default {
 						if (error.response !== undefined && error.response.status === 404) {
 							return;
 						}
-						this.$toast.error(this.$t('iqrfnet.enumeration.messages.repositoryUnavailable').toString());
+						this.$toast.error(
+							this.$t('iqrfnet.enumeration.messages.repositoryUnavailable')
+								.toString()
+						);
 					});
 			}
 		});

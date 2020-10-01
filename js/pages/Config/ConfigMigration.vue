@@ -53,7 +53,7 @@ export default {
 			this.$store.commit('spinner/SHOW');
 			DaemonConfigurationService.export()
 				.then((response) => {
-					const fileName = 'iqrf-gateway-configuration_' + new Date().toISOString().replace(':', ' ');
+					const fileName = 'iqrf-gateway-configuration_' + new Date().toISOString();
 					const file = fileDownloader(response, 'application/zip', fileName);
 					this.$store.commit('spinner/HIDE');
 					file.click();
@@ -64,18 +64,24 @@ export default {
 			DaemonConfigurationService.import(this.$refs.configZip.$el.children[1].files[0])
 				.then(() => {
 					this.$store.commit('spinner/HIDE');
-					this.$toast.success(this.$t('config.migration.messages.imported').toString());
+					this.$toast.success(
+						this.$t('config.migration.messages.imported').toString()
+					);
 				})
 				.catch((error) => {
 					this.$store.commit('spinner/HIDE');
-					if (error.response) {
-						if (error.response.status === 400) {
-							this.$toast.error(this.$t('config.migration.messages.invalidConfig').toString());
-						} else if (error.response.status === 415) {
-							this.$toast.error(this.$t('config.migration.messages.invalidFormat').toString());
-						}
-					} else {
+					if (error.response === undefined) {
 						console.error(error);
+						return;
+					}
+					if (error.response.status === 400) {
+						this.$toast.error(
+							this.$t('config.migration.messages.invalidConfig').toString()
+						);
+					} else if (error.response.status === 415) {
+						this.$toast.error(
+							this.$t('config.migration.messages.invalidFormat').toString()
+						);
 					}
 				});
 		},

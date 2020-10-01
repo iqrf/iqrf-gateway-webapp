@@ -91,7 +91,10 @@ export default {
 			ServiceService.enable(this.serviceName)
 				.then(() => {
 					this.getStatus();
-					this.$toast.success(this.$t('service.' + this.serviceName + '.messages.enable'));
+					this.$toast.success(
+						this.$t('service.' + this.serviceName + '.messages.enable')
+							.toString()
+					);
 				})
 				.catch(this.handleError);
 		},
@@ -100,7 +103,10 @@ export default {
 			ServiceService.disable(this.serviceName)
 				.then(() => {
 					this.getStatus();
-					this.$toast.success(this.$t('service.' + this.serviceName + '.messages.disable'));
+					this.$toast.success(
+						this.$t('service.' + this.serviceName + '.messages.disable')
+							.toString()
+					);
 				})
 				.catch(this.handleError);
 		},
@@ -131,12 +137,12 @@ export default {
 			let response = error.response;
 			if (response.status === 404) {
 				this.missing = true;
-				this.$toast.error(this.$t('service.errors.missingService'));
+				this.$toast.error(this.$t('service.errors.missingService').toString());
 			}
 			if (response.status === 500 &&
 					response.data.message === 'Unsupported init system') {
 				this.unsupported = false;
-				this.$toast.error(this.$t('service.errors.unsupportedInit'));
+				this.$toast.error(this.$t('service.errors.unsupportedInit').toString());
 			}
 		},
 		restart() {
@@ -144,7 +150,10 @@ export default {
 			ServiceService.restart(this.serviceName)
 				.then(() => {
 					this.getStatus();
-					this.$toast.success(this.$t('service.' + this.serviceName + '.messages.restart'));
+					this.$toast.success(
+						this.$t('service.' + this.serviceName + '.messages.restart')
+							.toString()
+					);
 				})
 				.catch(this.handleError);
 		},
@@ -153,7 +162,10 @@ export default {
 			ServiceService.start(this.serviceName)
 				.then(() => {
 					this.getStatus();
-					this.$toast.success(this.$t('service.' + this.serviceName + '.messages.start'));
+					this.$toast.success(
+						this.$t('service.' + this.serviceName + '.messages.start')
+							.toString()
+					);
 				})
 				.catch(this.handleError);
 		},
@@ -162,10 +174,23 @@ export default {
 			ServiceService.stop(this.serviceName)
 				.then(() => {
 					this.getStatus();
-					this.$toast.success(this.$t('service.' + this.serviceName + '.messages.stop'));
+					this.$toast.success(
+						this.$t('service.' + this.serviceName + '.messages.stop')
+							.toString()
+					);
 				})
 				.catch(this.handleError);
 		},
+	},
+	beforeRouteEnter(to, from, next) {
+		next(vm => {
+			if (!vm.$store.getters['features/isEnabled']('pixla')) {
+				vm.$toast.error(
+					vm.$t('cloud.pixla.messages.disabled').toString()
+				);
+				vm.$router.push(from.path);
+			}
+		});
 	},
 	metaInfo: {
 		title: 'cloud.pixla.title',

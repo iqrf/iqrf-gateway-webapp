@@ -126,7 +126,11 @@
 				<CButton color='secondary' @click='closeImport'>
 					{{ $t('forms.cancel') }}
 				</CButton>
-				<CButton color='primary' :disabled='importConfig.empty' @click='importScheduler'>
+				<CButton
+					color='primary'
+					:disabled='importConfig.empty'
+					@click='importScheduler'
+				>
 					{{ $t('config.scheduler.buttons.import') }}
 				</CButton>
 			</template>
@@ -181,15 +185,24 @@ export default {
 	data() {
 		return {
 			fields: [
-				{key: 'taskId', label: this.$t('config.scheduler.table.id')},
+				{
+					key: 'taskId',
+					label: this.$t('config.scheduler.table.id'),
+				},
 				{
 					key: 'timeSpec',
 					label: this.$t('config.scheduler.table.time'),
 					filter: false,
 					sorter: false,
 				},
-				{key: 'clientId', label: this.$t('config.scheduler.table.service')},
-				{key: 'task', label: this.$t('config.scheduler.table.mType')},
+				{
+					key: 'clientId',
+					label: this.$t('config.scheduler.table.service'),
+				},
+				{
+					key: 'task',
+					label: this.$t('config.scheduler.table.mType'),
+				},
 				{
 					key: 'actions',
 					label: this.$t('table.actions.title'),
@@ -261,10 +274,14 @@ export default {
 				} else if (mutation.payload.mType === 'mngScheduler_RemoveTask') {
 					this.$store.commit('spinner/HIDE');
 					if (mutation.payload.data.status === 0) {
-						this.$toast.success(this.$t('config.scheduler.messages.deleteSuccess').toString());
+						this.$toast.success(
+							this.$t('config.scheduler.messages.deleteSuccess').toString()
+						);
 						this.getTasks();
 					} else {
-						this.$toast.error(this.$t('config.scheduler.messagess.deleteFail').toString());
+						this.$toast.error(
+							this.$t('config.scheduler.messages.deleteFail').toString()
+						);
 					}
 				}
 			}
@@ -326,7 +343,9 @@ export default {
 				SchedulerService.removeTaskREST(task)
 					.then(() => {
 						this.$store.commit('spinner/HIDE');
-						this.$toast.success(this.$t('config.scheduler.messages.deleteSuccess').toString());
+						this.$toast.success(
+							this.$t('config.scheduler.messages.deleteSuccess').toString()
+						);
 						this.getTasks();
 					})
 					.catch((error) => FormErrorHandler.schedulerError(error));
@@ -339,7 +358,7 @@ export default {
 			SchedulerService.exportConfig()
 				.then((response) => {
 					this.$store.commit('spinner/HIDE');
-					const fileName = 'iqrf-gateway-scheduler_' + + new Date().toISOString().replace(':', ' ');
+					const fileName = 'iqrf-gateway-scheduler_' + + new Date().toISOString();
 					const file = fileDownloader(response, 'application/zip', fileName);
 					file.click();
 				});
@@ -352,17 +371,27 @@ export default {
 					ServiceService.restart('iqrf-gateway-daemon')
 						.then(() => {
 							this.$store.commit('spinner/HIDE');
-							this.$toast.success(this.$t('config.scheduler.messages.importSuccess'));
-							this.$toast.info(this.$t('service.iqrf-gateway-daemon.messages.restart'));
+							this.$toast.success(
+								this.$t('config.scheduler.messages.importSuccess').toString()
+							);
+							this.$toast.info(
+								this.$t('service.iqrf-gateway-daemon.messages.restart')
+									.toString()
+							);
 						})
 						.catch((error) => FormErrorHandler.serviceError(error));
 				})
 				.catch((error) => {
 					this.$store.commit('spinner/HIDE');
 					if (error.response.status === 400) {
-						this.$toast.error(this.$t('config.scheduler.messages.importInvalidFile'));
+						this.$toast.error(
+							this.$t('config.scheduler.messages.importInvalidFile').toString()
+						);
 					} else if (error.response.status === 415) {
-						this.$toast.error(this.$t('config.scheduler.messages.invalidImportFormat'));
+						this.$toast.error(
+							this.$t('config.scheduler.messages.invalidImportFormat')
+								.toString()
+						);
 					}
 				});
 		},
@@ -411,7 +440,7 @@ export default {
 		export: cilArrowBottom,
 	},
 	metaInfo: {
-		title: 'config.scheduler.title'
-	}
+		title: 'config.scheduler.title',
+	},
 };
 </script>

@@ -51,17 +51,28 @@
 									:invalid-feedback='$t(errors[0])'
 								/>
 							</ValidationProvider>
-							<CSelect 
-								:value.sync='config.logger.severity'
-								:options='[
-									{value: "trace", label: "Trace"},
-									{value: "debug", label: "Debug"},
-									{value: "info", label: "Info"},
-									{value: "warning", label: "Warning"},
-									{value: "error", label: "Error"}
-								]'
-								:label='$t("controllerConfig.form.logger.severity")'
-							/>
+							<ValidationProvider
+								v-slot='{ valid, touched, errors }'
+								rules='required'
+								:custom-messages='{
+									required: "controllerConfig.form.messages.missing.l_severity",
+								}'
+							>
+								<CSelect
+									:value.sync='config.logger.severity'
+									:options='[
+										{value: "trace", label: "Trace"},
+										{value: "debug", label: "Debug"},
+										{value: "info", label: "Info"},
+										{value: "warning", label: "Warning"},
+										{value: "error", label: "Error"}
+									]'
+									:label='$t("controllerConfig.form.logger.severity")'
+									:is-valid='touched ? valid : null'
+									:invalid-feedback='$t(errors[0])'
+									:placeholder='$t("controllerConfig.form.messages.missing.l_severity")'
+								/>
+							</ValidationProvider>
 						</CCol>
 					</CRow><hr>
 					<CRow>
@@ -152,7 +163,9 @@
 					</CRow><hr>
 					<CRow>
 						<CCol md='6'>
-							<h3>{{ $t("controllerConfig.form.daemonApi.autoNetwork.title") }}</h3>
+							<h3>
+								{{ $t("controllerConfig.form.daemonApi.autoNetwork.title") }}
+							</h3>
 							<ValidationProvider
 								v-slot='{ errors, touched, valid }'
 								rules='required|integer|between:0,3'
@@ -199,7 +212,9 @@
 								:checked.sync='config.daemonApi.autoNetwork.skipDiscoveryEachWave'
 								:label='$t("iqrfnet.networkManager.autoNetwork.form.skipDiscoveryEachWave")'
 							/><hr>
-							<h4>{{ $t("iqrfnet.networkManager.autoNetwork.form.stopConditions") }}</h4>
+							<h4>
+								{{ $t("iqrfnet.networkManager.autoNetwork.form.stopConditions") }}
+							</h4>
 							<CInputCheckbox
 								:checked.sync='config.daemonApi.autoNetwork.stopConditions.abortOnTooManyNodesFound'
 								:label='$t("iqrfnet.networkManager.autoNetwork.form.abortOnTooManyNodesFound")'
@@ -248,7 +263,9 @@
 							/>
 						</CCol>
 						<CCol md='6'>
-							<h3>{{ $t("controllerConfig.form.daemonApi.discovery.title") }}</h3>
+							<h3>
+								{{ $t("controllerConfig.form.daemonApi.discovery.title") }}
+							</h3>
 							<ValidationProvider
 								v-slot='{ errors, touched, valid }'
 								rules='integer|required|between:0,239'
@@ -397,6 +414,16 @@ export default {
 				this.config.resetButton.api = this.previousApiCall;
 			}
 		},
+	},
+	beforeRouteEnter(to, from, next) {
+		next(vm => {
+			if (!vm.$store.getters['features/isEnabled']('iqrfGatewayController')) {
+				vm.$toast.error(
+					vm.$t('controllerConfig.messages.disabled').toString()
+				);
+				vm.$router.push(from.path);
+			}
+		});
 	},
 	metaInfo: {
 		title: 'controllerConfig.description',

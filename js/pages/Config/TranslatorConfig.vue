@@ -95,7 +95,10 @@
 								>
 									<template #append-content>
 										<span @click='changeVisibility'>
-											<CIcon v-if='visibility ==="password"' :content='$options.icons.hidden' />
+											<CIcon
+												v-if='visibility ==="password"'
+												:content='$options.icons.hidden'
+											/>
 											<CIcon v-else :content='$options.icons.shown' />
 										</span>
 									</template>
@@ -232,6 +235,16 @@ export default {
 		changeVisibility() {
 			this.visibility = this.visibility === 'password' ? 'text' : 'password';
 		},
+	},
+	beforeRouteEnter(to, from, next) {
+		next(vm => {
+			if (!vm.$store.getters['features/isEnabled']('iqrfGatewayTranslator')) {
+				vm.$toast.error(
+					vm.$t('translatorConfig.messages.disabled').toString()
+				);
+				vm.$router.push(from.path);
+			}
+		});
 	},
 	icons: {
 		hidden: cilLockLocked,

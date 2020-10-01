@@ -64,10 +64,18 @@
 							:invalid-feedback='$t(errors[0])'
 						/>
 					</ValidationProvider>
-					<CButton color='primary' :disabled='invalid' @click.prevent='save'>
+					<CButton
+						color='primary'
+						:disabled='invalid'
+						@click.prevent='save'
+					>
 						{{ $t('forms.save') }}
 					</CButton>
-					<CButton color='secondary' :disabled='invalid' @click.prevent='saveAndRestart'>
+					<CButton
+						color='secondary'
+						:disabled='invalid'
+						@click.prevent='saveAndRestart'
+					>
 						{{ $t('forms.saveRestart') }}
 					</CButton>
 				</CForm>
@@ -123,7 +131,7 @@ export default {
 			CloudService.create(this.serviceName, this.buildConfig())
 				.then(() => {
 					this.$store.commit('spinner/HIDE');
-					this.$toast.success(this.$t('cloud.messages.success'));
+					this.$toast.success(this.$t('cloud.messages.success').toString());
 				})
 				.catch((error) => {
 					FormErrorHandler.cloudError(error);
@@ -137,7 +145,10 @@ export default {
 					ServiceService.restart('iqrf-gateway-daemon')
 						.then(() => {
 							this.$store.commit('spinner/HIDE');
-							this.$toast.success(this.$t('service.iqrf-gateway-daemon.messages.restart'));
+							this.$toast.success(
+								this.$t('service.iqrf-gateway-daemon.messages.restart')
+									.toString()
+							);
 						})
 						.catch((error) => {
 							FormErrorHandler.serviceError(error);

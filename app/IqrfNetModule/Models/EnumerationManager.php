@@ -22,7 +22,6 @@ namespace App\IqrfNetModule\Models;
 
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
-use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\IqrfNetModule\Requests\ApiRequest;
 use Nette\Utils\JsonException;
 
@@ -58,7 +57,6 @@ class EnumerationManager {
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws JsonException
-	 * @throws UserErrorException
 	 */
 	public function device(int $address): array {
 		$array = [

@@ -167,7 +167,10 @@ export default {
 					break;
 				}
 				default:
-					this.$toast.error(this.$t('iqrfnet.networkManager.devicesInfo.messages.bonded.failure').toString());
+					this.$toast.error(
+						this.$t('iqrfnet.networkManager.devicesInfo.messages.bonded.failure')
+							.toString()
+					);
 					this.timedOut = true;
 					break;
 			}
@@ -185,7 +188,10 @@ export default {
 					break;
 				}
 				default:
-					this.$toast.error(this.$t('iqrfnet.networkManager.devicesInfo.messages.discovered.failure').toString());
+					this.$toast.error(
+						this.$t('iqrfnet.networkManager.devicesInfo.messages.discovered.failure')
+							.toString()
+					);
 					this.timedOut = true;
 					break;
 			}
@@ -208,7 +214,10 @@ export default {
 					break;
 				}
 				default:
-					this.$toast.error(this.$t('iqrfnet.networkManager.devicesInfo.messages.ping.failure').toString());
+					this.$toast.error(
+						this.$t('iqrfnet.networkManager.devicesInfo.messages.ping.failure')
+							.toString()
+					);
 					this.timedOut = false;
 					break;
 			}
@@ -221,7 +230,9 @@ export default {
 		timeOut() {
 			if (!this.responseReceived) {
 				this.$store.commit('spinner/HIDE');
-				this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.timeout').toString());
+				this.$toast.error(
+					this.$t('iqrfnet.networkManager.messages.submit.timeout').toString()
+				);
 			}
 		},
 		submitFrcPing() {

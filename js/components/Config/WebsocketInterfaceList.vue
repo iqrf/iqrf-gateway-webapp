@@ -206,7 +206,10 @@ export default {
 			DaemonConfigurationService.updateInstance(this.componentNames.service, service.instance, service)
 				.then(() => {
 					this.getConfig().then(() => {
-						this.$toast.success(this.$t('config.websocket.service.messages.editSuccess', {service: service.instance}).toString());
+						this.$toast.success(
+							this.$t('config.websocket.service.messages.editSuccess', {service: service.instance})
+								.toString()
+						);
 					});
 				})
 				.catch((error) => FormErrorHandler.configError(error));
@@ -217,7 +220,10 @@ export default {
 			DaemonConfigurationService.updateInstance(this.componentNames.messaging, instance.instance, instance)
 				.then(() => {
 					this.getConfig().then(() => {
-						this.$toast.success(this.$t('config.websocket.messaging.messages.editSuccess', {messaging: instance.instance}).toString());
+						this.$toast.success(
+							this.$t('config.websocket.messaging.messages.editSuccess', {messaging: instance.instance})
+								.toString()
+						);
 					});
 				})
 				.catch((error) => FormErrorHandler.configError(error));
@@ -229,7 +235,10 @@ export default {
 				DaemonConfigurationService.deleteInstance(this.componentNames.service, this.modals.instances.service),
 			])
 				.then(() => {
-					this.$toast.success(this.$t('config.websocket.messages.delete.success', {instance: this.modals.instances.messaging}).toString());
+					this.$toast.success(
+						this.$t('config.websocket.messages.delete.success', {instance: this.modals.instances.messaging})
+							.toString()
+					);
 					this.instances = null;
 				});
 			// TODO: add error message

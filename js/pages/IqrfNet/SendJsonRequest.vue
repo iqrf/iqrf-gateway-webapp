@@ -42,7 +42,9 @@
 			<CCol v-if='request !== null' md='6'>
 				<CCard>
 					<CCardHeader class='d-flex'>
-						<span class='mr-auto'>{{ $t('iqrfnet.sendJson.request') }}</span>
+						<span class='mr-auto'>
+							{{ $t('iqrfnet.sendJson.request') }}
+						</span>
 						<CButton
 							v-clipboard='request'
 							v-clipboard:success='() => $toast.success($t("iqrfnet.sendJson.copy.messages.request").toString())'
@@ -53,14 +55,20 @@
 						</CButton>
 					</CCardHeader>
 					<CCardBody>
-						<prism-editor v-model='request' :highlight='highlighter' :readonly='true' />
+						<prism-editor
+							v-model='request'
+							:highlight='highlighter'
+							:readonly='true'
+						/>
 					</CCardBody>
 				</CCard>
 			</CCol>
 			<CCol v-if='response !== null' md='6'>
 				<CCard>
 					<CCardHeader class='d-flex'>
-						<span class='mr-auto'>{{ $t('iqrfnet.sendJson.response') }}</span>
+						<span class='mr-auto'>
+							{{ $t('iqrfnet.sendJson.response') }}
+						</span>
 						<CButton
 							v-clipboard='response'
 							v-clipboard:success='() => $toast.success($t("iqrfnet.sendJson.copy.messages.response").toString())'
@@ -71,7 +79,11 @@
 						</CButton>
 					</CCardHeader>
 					<CCardBody>
-						<prism-editor v-model='response' :highlight='highlighter' :readonly='true' />
+						<prism-editor
+							v-model='response'
+							:highlight='highlighter'
+							:readonly='true'
+						/>
 					</CCardBody>
 				</CCard>
 			</CCol>
@@ -146,17 +158,29 @@ export default {
 					if (mutation.payload.mType === this.mType) {
 						this.response = JSON.stringify(mutation.payload, null, 4);
 						if (mutation.payload.data.status === 0) {
-							this.$toast.success(this.$t('iqrfnet.sendJson.form.messages.success').toString());
+							this.$toast.success(
+								this.$t('iqrfnet.sendJson.form.messages.success')
+									.toString()
+							);
 						} else {
 							if (mutation.payload.data.status in StatusMessages) {
-								this.$toast.error(this.$t(StatusMessages[mutation.payload.data.status]).toString());
+								this.$toast.error(
+									this.$t(StatusMessages[mutation.payload.data.status])
+										.toString()
+								);
 							} else {
-								this.$toast.error(this.$t('iqrfnet.sendJson.form.messages.error.fail').toString());
+								this.$toast.error(
+									this.$t('iqrfnet.sendJson.form.messages.error.fail')
+										.toString()
+								);
 							}
 						}
 					} else if (mutation.payload.mType === 'messageError') {
 						this.response = JSON.stringify(mutation.payload, null, 4);
-						this.$toast.error(this.$t('iqrfnet.sendJson.form.messages.error.messageError').toString());
+						this.$toast.error(
+							this.$t('iqrfnet.sendJson.form.messages.error.messageError')
+								.toString()
+						);
 					}
 				}
 			}

@@ -20,42 +20,11 @@ declare(strict_types = 1);
 
 namespace App\NetworkModule\Presenters;
 
-use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Presenters\ProtectedPresenter;
 
 /**
  * Base presenter for network module
  */
-class BasePresenter extends ProtectedPresenter {
-
-	/**
-	 * @var CommandManager Command manager
-	 */
-	private $commandManager;
-
-	/**
-	 * Constructor
-	 * @param CommandManager $commandManager Command manager
-	 */
-	public function __construct(CommandManager $commandManager) {
-		$this->commandManager = $commandManager;
-		parent::__construct();
-	}
-
-	/**
-	 * Checks requirements
-	 * @param mixed $element Element
-	 */
-	public function checkRequirements($element): void {
-		parent::checkRequirements($element);
-		if (!$this->featureManager->isEnabled('networkManager')) {
-			$this->flashError('network.messages.disabled');
-			$this->redirect(':Core:Homepage:default');
-		}
-		if (!$this->commandManager->commandExist('nmcli')) {
-			$this->flashError('network.messages.missingNetworkManager');
-			$this->redirect(':Core:Homepage:default');
-		}
-	}
+abstract class BasePresenter extends ProtectedPresenter {
 
 }

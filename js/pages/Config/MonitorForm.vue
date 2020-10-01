@@ -171,9 +171,15 @@ export default {
 			this.$router.push('/config/monitor/');
 			this.$store.commit('spinner/HIDE');
 			if (this.$route.path === '/config/monitor/add') {
-				this.$toast.success(this.$t('config.monitor.messages.add.success', {instance: this.monitor.instance}).toString());
+				this.$toast.success(
+					this.$t('config.monitor.messages.add.success', {instance: this.monitor.instance})
+						.toString()
+				);
 			} else {
-				this.$toast.success(this.$t('config.monitor.messages.edit.success', {instance: this.monitor.instance}).toString());
+				this.$toast.success(
+					this.$t('config.monitor.messages.edit.success', {instance: this.monitor.instance})
+						.toString()
+				);
 			}
 		},
 	},

@@ -3,7 +3,7 @@ import VueRouter, {Route, RouteConfig} from 'vue-router' ;
 
 import CloudDisambiguation from '../pages/Cloud/CloudDisambiguation.vue';
 import AzureCreator from '../pages/Cloud/AzureCreator.vue';
-import AWSCreator from '../pages/Cloud/AWSCreator.vue';
+import AwsCreator from '../pages/Cloud/AwsCreator.vue';
 import HexioCreator from '../pages/Cloud/HexioCreator.vue';
 import IbmCreator from '../pages/Cloud/IbmCreator.vue';
 import InteliGlueCreator from '../pages/Cloud/InteliGlueCreator.vue';
@@ -66,7 +66,7 @@ import UserList from '../pages/Core/UserList.vue';
 
 import NetworkDisambiguation from '../pages/Network/NetworkDisambiguation.vue';
 import ConnectionForm from '../pages/Network/ConnectionForm.vue';
-import EthernetInterfaces from "../pages/Network/EthernetInterfaces.vue";
+import EthernetInterfaces from '../pages/Network/EthernetInterfaces.vue';
 
 import i18n from '../i18n';
 import store from '../store';
@@ -106,7 +106,7 @@ const routes: Array<RouteConfig> = [
 						meta: {title: 'cloud.msAzure.form.title'}
 					},
 					{
-						component: AWSCreator,
+						component: AwsCreator,
 						path: 'aws',
 						meta: {title: 'cloud.amazonAws.form.title'}
 					},

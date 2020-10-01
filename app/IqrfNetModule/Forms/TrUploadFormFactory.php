@@ -25,7 +25,6 @@ use App\GatewayModule\Exceptions\CorruptedFileException;
 use App\IqrfNetModule\Enums\UploadFormats;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
-use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\IqrfNetModule\Models\UploadManager;
 use App\IqrfNetModule\Presenters\TrUploadPresenter;
 use Nette\Application\UI\Form;
@@ -127,7 +126,7 @@ class TrUploadFormFactory {
 			$this->presenter->flashSuccess('iqrfnet.trUpload.messages.success');
 		} catch (CorruptedFileException $e) {
 			$this->presenter->flashError('iqrfnet.trUpload.messages.corruptedFile');
-		} catch (DpaErrorException | EmptyResponseException | JsonException | UserErrorException $e) {
+		} catch (DpaErrorException | EmptyResponseException | JsonException $e) {
 			$this->presenter->flashError('iqrfnet.trUpload.messages.failure');
 		} catch (IOException $e) {
 			$this->presenter->flashError('iqrfnet.trUpload.messages.moveFailure');

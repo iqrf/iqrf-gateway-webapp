@@ -41,7 +41,6 @@ use Grifart\Enum\MissingValueDeclarationException;
 use GuzzleHttp\Psr7\Utils;
 use Ramsey\Uuid\Exception\InvalidUuidStringException;
 use Ramsey\Uuid\Uuid;
-use function GuzzleHttp\Psr7\stream_for;
 
 /**
  * Network manager

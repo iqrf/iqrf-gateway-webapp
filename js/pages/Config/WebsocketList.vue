@@ -14,7 +14,7 @@ import WebsocketMessagingList from '../../components/Config/WebsocketMessagingLi
 import WebsocketServiceList from '../../components/Config/WebsocketServiceList';
 
 export default {
-	name: 'WqebsocketList',
+	name: 'WebsocketList',
 	components: {
 		WebsocketInterfaceList,
 		WebsocketMessagingList,

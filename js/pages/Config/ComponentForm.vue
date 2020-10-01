@@ -99,7 +99,8 @@ export default {
 	},
 	computed: {
 		submitButton() {
-			return this.$route.path === '/config/component/add' ? this.$t('forms.add') : this.$t('forms.edit');
+			return this.$route.path === '/config/component/add' ?
+				this.$t('forms.add') : this.$t('forms.edit');
 		},
 	},
 	created() {
@@ -138,15 +139,23 @@ export default {
 			this.$router.push('/config/component');
 			this.$store.commit('spinner/HIDE');
 			if (this.$route.path === '/config/component/add') {
-				this.$toast.success(this.$t('config.components.form.messages.addSuccess', {component: this.configuration.name}).toString());
+				this.$toast.success(
+					this.$t('config.components.form.messages.addSuccess', {component: this.configuration.name})
+						.toString()
+				);
 			} else {
-				this.$toast.success(this.$t('config.components.form.messages.editSuccess', {component: this.component}).toString());
+				this.$toast.success(
+					this.$t('config.components.form.messages.editSuccess', {component: this.component})
+						.toString()
+				);
 			}
 		},
 	},
 	metaInfo() {
 		return {
-			title: this.$route.path === '/config/component/add' ? this.$t('config.components.add') : this.$t('config.components.edit')
+			title: this.$route.path === '/config/component/add' ?
+				this.$t('config.components.add') :
+				this.$t('config.components.edit')
 		};
 	},
 };

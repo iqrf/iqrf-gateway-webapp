@@ -20,14 +20,10 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Models;
 
-use App\ConfigModule\Exceptions\InvalidConfigurationFormatException;
 use App\ConfigModule\Exceptions\InvalidTaskMessageException;
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use DateTime;
-use Nette\Application\BadRequestException;
-use Nette\Application\Responses\FileResponse;
-use Nette\Http\FileUpload;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
@@ -89,18 +85,6 @@ class SchedulerMigrationManager {
 	}
 
 	/**
-	 * Downloads a scheduler's configuration
-	 * @return FileResponse HTTP response with a scheduler's configuration
-	 * @throws BadRequestException
-	 */
-	public function download(): FileResponse {
-		$contentType = 'application/zip';
-		$path = $this->createArchive();
-		$fileName = basename($path);
-		return new FileResponse($path, $fileName, $contentType, true);
-	}
-
-	/**
 	 * Extracts an archive with scheduler configuration
 	 * @param string $path Path to archive with scheduler configuration
 	 * @throws JsonException
@@ -120,23 +104,6 @@ class SchedulerMigrationManager {
 		}
 		$zipManager->extract($this->configDirectory);
 		$zipManager->close();
-	}
-
-	/**
-	 * Uploads a configuration
-	 * @param FileUpload $zip ZIP archive with scheduler configuration
-	 * @throws InvalidConfigurationFormatException
-	 * @throws InvalidTaskMessageException
-	 * @throws JsonException
-	 */
-	public function upload(FileUpload $zip): void {
-		if (!$zip->isOk()) {
-			throw new InvalidConfigurationFormatException();
-		}
-		if ($zip->getContentType() !== 'application/zip') {
-			throw new InvalidConfigurationFormatException();
-		}
-		$this->extractArchive($zip->getTemporaryFile());
 	}
 
 }

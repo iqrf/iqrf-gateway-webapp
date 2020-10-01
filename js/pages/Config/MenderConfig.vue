@@ -150,6 +150,16 @@ export default {
 				});
 		},
 	},
+	beforeRouteEnter(to, from, next) {
+		next(vm => {
+			if (!vm.$store.getters['features/isEnabled']('pixla')) {
+				vm.$toast.error(
+					vm.$t('config.mender.messages.disabled').toString()
+				);
+				vm.$router.push(from.path);
+			}
+		});
+	},
 	metaInfo: {
 		title: 'config.mender.title',
 	},

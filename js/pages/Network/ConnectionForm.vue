@@ -30,7 +30,10 @@
 							:invalid-feedback='$t(errors[0])'
 						/>
 					</ValidationProvider>
-					<div v-for='(address, index) in configuration.ipv4.addresses' :key='index'>
+					<div
+						v-for='(address, index) in configuration.ipv4.addresses'
+						:key='index'
+					>
 						<ValidationProvider
 							v-slot='{ errors, touched, valid}'
 							rules='required'
@@ -59,13 +62,21 @@
 							<CButton color='danger' @click='deleteIpv4Address(index)'>
 								{{ $t('network.connection.ipv4.addresses.remove') }}
 							</CButton>
-							<CButton v-if='index === (configuration.ipv4.addresses.length - 1)' color='success' @click='addIpv4Address'>
+							<CButton
+								v-if='index === (configuration.ipv4.addresses.length - 1)'
+								color='success'
+								@click='addIpv4Address'
+							>
 								{{ $t('network.connection.ipv4.addresses.add') }}
 							</CButton>
 						</div>
 					</div>
 					<div class='form-group'>
-						<CButton v-if='configuration.ipv4.addresses.length === 0' color='success' @click='addIpv4Address'>
+						<CButton
+							v-if='configuration.ipv4.addresses.length === 0'
+							color='success'
+							@click='addIpv4Address'
+						>
 							{{ $t('network.connection.ipv4.addresses.add') }}
 						</CButton>
 					</div>
@@ -98,7 +109,11 @@
 							<CButton color='danger' @click='deleteIpv4Dns(index)'>
 								{{ $t('network.connection.ipv4.dns.remove') }}
 							</CButton>
-							<CButton v-if='index === (configuration.ipv4.dns.length - 1)' color='success' @click='addIpv4Dns'>
+							<CButton
+								v-if='index === (configuration.ipv4.dns.length - 1)'
+								color='success'
+								@click='addIpv4Dns'
+							>
 								{{ $t('network.connection.ipv4.dns.add') }}
 							</CButton>
 						</div>
@@ -125,7 +140,10 @@
 							:invalid-feedback='$t(errors[0])'
 						/>
 					</ValidationProvider>
-					<div v-for='(address, index) in configuration.ipv6.addresses' :key='index'>
+					<div
+						v-for='(address, index) in configuration.ipv6.addresses'
+						:key='index'
+					>
 						<ValidationProvider
 							v-slot='{ errors, touched, valid}'
 							rules='required'
@@ -164,17 +182,28 @@
 							<CButton color='danger' @click='deleteIpv6Address(index)'>
 								{{ $t('network.connection.ipv6.addresses.remove') }}
 							</CButton>
-							<CButton v-if='index === (configuration.ipv6.addresses.length - 1)' color='success' @click='addIpv6Address'>
+							<CButton
+								v-if='index === (configuration.ipv6.addresses.length - 1)'
+								color='success'
+								@click='addIpv6Address'
+							>
 								{{ $t('network.connection.ipv6.addresses.add') }}
 							</CButton>
 						</div>
 					</div>
 					<div class='form-group'>
-						<CButton v-if='configuration.ipv6.addresses.length === 0' color='success' @click='addIpv6Address'>
+						<CButton
+							v-if='configuration.ipv6.addresses.length === 0'
+							color='success'
+							@click='addIpv6Address'
+						>
 							{{ $t('network.connection.ipv6.addresses.add') }}
 						</CButton>
 					</div>
-					<div v-for='(address, index) in configuration.ipv6.dns' :key='index'>
+					<div
+						v-for='(address, index) in configuration.ipv6.dns'
+						:key='index'
+					>
 						<ValidationProvider
 							v-slot='{ errors, touched, valid}'
 							rules='required'
@@ -191,7 +220,11 @@
 							<CButton color='danger' @click='deleteIpv6Dns(index)'>
 								{{ $t('network.connection.ipv6.dns.remove') }}
 							</CButton>
-							<CButton v-if='index === (configuration.ipv6.dns.length - 1)' color='success' @click='addIpv6Dns'>
+							<CButton
+								v-if='index === (configuration.ipv6.dns.length - 1)'
+								color='success'
+								@click='addIpv6Dns'
+							>
 								{{ $t('network.connection.ipv6.dns.add') }}
 							</CButton>
 						</div>
@@ -253,15 +286,23 @@ export default {
 	},
 	computed: {
 		ipv4Methods() {
-			const methods = [null, 'auto', 'disabled', 'link-local', 'manual', 'shared'];
+			const methods = ['auto', 'disabled', 'link-local', 'manual', 'shared'];
 			return methods.map(
-				(method) => ({value: method, label: this.$t('network.connection.ipv4.methods.' + method)})
+				(method) => ({
+					value: method,
+					label: this.$t('network.connection.ipv4.methods.' + method),
+				})
 			);
 		},
 		ipv6Methods() {
-			const methods = [null, 'auto', 'disabled', 'dhcp', 'ignore', 'link-local', 'manual', 'shared'];
+			const methods = [
+				'auto', 'disabled', 'dhcp', 'ignore', 'link-local', 'manual', 'shared',
+			];
 			return methods.map((method) =>
-				({value: method, label: this.$t('network.connection.ipv6.methods.' + method)})
+				({
+					value: method,
+					label: this.$t('network.connection.ipv6.methods.' + method),
+				})
 			);
 		},
 		submitButton() {
@@ -308,11 +349,15 @@ export default {
 			NetworkConnectionService.edit(this.uuid, this.configuration)
 				.then(() => {
 					NetworkConnectionService.connect(this.uuid).then(() => {
-						this.$toast.success(this.$t('network.connection.messages.edit.success').toString());
+						this.$toast.success(
+							this.$t('network.connection.messages.edit.success').toString()
+						);
 						this.$store.commit('spinner/HIDE');
 					});
 				}).catch(() => {
-					this.$toast.error(this.$t('network.connection.messages.edit.failure').toString());
+					this.$toast.error(
+						this.$t('network.connection.messages.edit.failure').toString()
+					);
 					this.$store.commit('spinner/HIDE');
 				});
 		}

@@ -54,11 +54,22 @@
 						type='number'
 					/>
 				</ValidationProvider>
-				<CSelect
-					:value.sync='configuration.Qos'
-					:label='$t("config.mqtt.form.QoS")'
-					:options='qosOptions'
-				/>
+				<ValidationProvider
+					v-slot='{ valid, touched, errors }'
+					rules='required'
+					:custom-messages='{
+						required: "config.mqtt.form.messages.QoS",
+					}'
+				>
+					<CSelect
+						:value.sync='configuration.Qos'
+						:label='$t("config.mqtt.form.QoS")'
+						:is-valid='touched ? valid : null'
+						:invalid-feedback='$t(errors[0])'
+						:placeholder='$t("config.mqtt.form.messages.QoS")'
+						:options='qosOptions'
+					/>
+				</ValidationProvider>
 				<ValidationProvider
 					v-slot='{ errors, touched, valid }'
 					rules='required'
@@ -264,7 +275,8 @@ export default {
 			});
 		},
 		submitButton() {
-			return this.$route.path === '/config/mqtt/add' ? this.$t('forms.add') : this.$t('forms.save');
+			return this.$route.path === '/config/mqtt/add' ?
+				this.$t('forms.add') : this.$t('forms.save');
 		},
 	},
 	created() {
@@ -307,15 +319,22 @@ export default {
 			this.$router.push('/config/mqtt/');
 			this.$store.commit('spinner/HIDE');
 			if (this.$route.path === '/config/mqtt/add') {
-				this.$toast.success(this.$t('config.mqtt.messages.add.success', {instance: this.configuration.instance}).toString());
+				this.$toast.success(
+					this.$t('config.mqtt.messages.add.success', {instance: this.configuration.instance})
+						.toString()
+				);
 			} else {
-				this.$toast.success(this.$t('config.mqtt.messages.edit.success', {instance: this.configuration.instance}).toString());
+				this.$toast.success(
+					this.$t('config.mqtt.messages.edit.success', {instance: this.configuration.instance})
+						.toString()
+				);
 			}
 		},
 	},
 	metaInfo() {
 		return {
-			title: this.$route.path === '/config/mqtt/add' ? 'config.mqtt.add' : 'config.mqtt.edit',
+			title: this.$route.path === '/config/mqtt/add' ?
+				'config.mqtt.add' : 'config.mqtt.edit',
 		};
 	},
 };

@@ -126,7 +126,10 @@ export default {
 			DaemonConfigurationService.deleteInstance(this.componentName, instance)
 				.then(() => {
 					this.getConfig().then(() => {
-						this.$toast.success(this.$t('config.tracer.messages.removeSuccess', {instance: instance}).toString());
+						this.$toast.success(
+							this.$t('config.tracer.messages.removeSuccess', {instance: instance})
+								.toString()
+						);
 					});
 				})
 				.catch((error) => {

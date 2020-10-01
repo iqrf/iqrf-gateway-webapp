@@ -26,7 +26,6 @@ use App\GatewayModule\Models\BoardManagers\DmiBoardManager;
 use App\GatewayModule\Models\BoardManagers\IqrfBoardManager;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
-use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\IqrfNetModule\Models\EnumerationManager;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
@@ -140,7 +139,6 @@ class InfoManager {
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws JsonException
-	 * @throws UserErrorException
 	 */
 	public function getCoordinatorInfo(): array {
 		$dpa = $this->enumerationManager->device(0);

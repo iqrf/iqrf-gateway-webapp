@@ -164,7 +164,10 @@ export default {
 			return DaemonConfigurationService.updateInstance(this.componentName, instance.instance, instance)
 				.then(() => {
 					this.getInstances().then(() => {
-						this.$toast.success(this.$t('config.mq.messages.edit.success', {instance: instance.instance}).toString());
+						this.$toast.success(
+							this.$t('config.mq.messages.edit.success', {instance: instance.instance})
+								.toString()
+						);
 					});
 				});
 		},
@@ -183,7 +186,10 @@ export default {
 			DaemonConfigurationService.deleteInstance(this.componentName, instance)
 				.then(() => {
 					this.getInstances().then(() => {
-						this.$toast.success(this.$t('config.mq.messages.delete.success', {instance: instance}).toString());
+						this.$toast.success(
+							this.$t('config.mq.messages.delete.success', {instance: instance})
+								.toString()
+						);
 					});
 				})
 				.catch(() => this.$store.commit('spinner/HIDE'));

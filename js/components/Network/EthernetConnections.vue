@@ -44,7 +44,7 @@
 <script>
 import {CButton, CDataTable, CIcon} from '@coreui/vue/src';
 import {cilLink, cilLinkBroken, cilPencil, cilPlus, cilTrash} from '@coreui/icons';
-import NetworkConnectionService from '../services/NetworkConnectionService';
+import NetworkConnectionService from '../../services/NetworkConnectionService';
 
 export default {
 	name: 'EthernetConnections',

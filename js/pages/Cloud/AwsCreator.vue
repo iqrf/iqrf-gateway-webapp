@@ -1,10 +1,18 @@
 <template>
 	<CCard>
 		<CCardHeader>
-			<CButton color='primary' size='sm' href='https://github.com/iqrfsdk/iot-starter-kit/blob/master/install/pdf/iqrf-part3a.pdf'>
+			<CButton
+				color='primary'
+				size='sm'
+				href='https://github.com/iqrfsdk/iot-starter-kit/blob/master/install/pdf/iqrf-part3a.pdf'
+			>
 				{{ $t('cloud.guides.pdf') }}
 			</CButton>
-			<CButton color='danger' size='sm' href='https://youtu.be/Z9R2vdaw3KA'>
+			<CButton
+				color='danger'
+				size='sm'
+				href='https://youtu.be/Z9R2vdaw3KA'
+			>
 				{{ $t('cloud.guides.video') }}
 			</CButton>
 		</CCardHeader>
@@ -47,10 +55,18 @@
 							{{ $t('cloud.amazonAws.form.messages.key') }}
 						</p>
 					</div>
-					<CButton color='primary' :disabled='invalid || certEmpty || keyEmpty' @click.prevent='save'>
+					<CButton
+						color='primary'
+						:disabled='invalid || certEmpty || keyEmpty'
+						@click.prevent='save'
+					>
 						{{ $t('forms.save') }}
 					</CButton>
-					<CButton color='secondary' :disabled='invalid || certEmpty || keyEmpty' @click.prevent='saveAndRestart'>
+					<CButton
+						color='secondary'
+						:disabled='invalid || certEmpty || keyEmpty'
+						@click.prevent='saveAndRestart'
+					>
 						{{ $t('forms.saveRestart') }}
 					</CButton>
 				</CForm>
@@ -106,7 +122,7 @@ export default {
 			CloudService.create(this.serviceName, this.buildRequest())
 				.then(() => {
 					this.$store.commit('spinner/HIDE');
-					this.$toast.success(this.$t('cloud.messages.success'));
+					this.$toast.success(this.$t('cloud.messages.success').toString());
 				})
 				.catch((error) => {
 					FormErrorHandler.cloudError(error);
@@ -120,7 +136,10 @@ export default {
 					ServiceService.restart('iqrf-gateway-daemon')
 						.then(() => {
 							this.$store.commit('spinner/HIDE');
-							this.$toast.success(this.$t('service.iqrf-gateway-daemon.messages.restart'));
+							this.$toast.success(
+								this.$t('service.iqrf-gateway-daemon.messages.restart')
+									.toString()
+							);
 						})
 						.catch((error) => {
 							FormErrorHandler.serviceError(error);

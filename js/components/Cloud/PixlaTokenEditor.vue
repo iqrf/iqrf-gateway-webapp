@@ -79,10 +79,14 @@ export default {
 					this.$store.commit('spinner/SHOW');
 					this.$emit('update:show', false);
 					this.$emit('tokenUpdated');
-					this.$toast.success(this.$t('cloud.pixla.editModal.messages.success').toString());
+					this.$toast.success(
+						this.$t('cloud.pixla.editModal.messages.success').toString()
+					);
 				})
 				.catch(() => {
-					this.$toast.error(this.$t('cloud.pixla.editModal.messages.failure').toString());
+					this.$toast.error(
+						this.$t('cloud.pixla.editModal.messages.failure').toString()
+					);
 				});
 		}
 	},

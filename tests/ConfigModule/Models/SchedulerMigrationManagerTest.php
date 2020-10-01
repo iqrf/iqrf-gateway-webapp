@@ -18,7 +18,6 @@ use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FileManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use Mockery;
-use Nette\Http\FileUpload;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
 use Tester\Assert;
@@ -98,28 +97,13 @@ final class SchedulerMigrationManagerTest extends TestCase {
 	}
 
 	/**
-	 * Test function to upload IQRF Gateway Daemon's configuration (success)
+	 * Test function to extracts an archive with scheduler configuration (success)
 	 */
-	public function testUploadSuccess(): void {
-		$this->manager->upload($this->mockUploadedArchive());
+	public function testExtractArchiveSuccess(): void {
+		$this->manager->extractArchive(self::ZIP_TEMP_PATH);
 		$expected = $this->createList(self::CONFIG_PATH);
 		$actual = $this->createList(self::CONFIG_TEMP_PATH);
 		Assert::same($expected, $actual);
-	}
-
-	/**
-	 * Mock an uploaded configuration
-	 * @return FileUpload Mocked file upload
-	 */
-	private function mockUploadedArchive(): FileUpload {
-		$file = [
-			'name' => 'iqrf-gateway-scheduler.zip',
-			'type' => self::CONTENT_TYPE,
-			'tmp_name' => self::ZIP_TEMP_PATH,
-			'error' => UPLOAD_ERR_OK,
-			'size' => filesize(self::ZIP_TEMP_PATH),
-		];
-		return new FileUpload($file);
 	}
 
 	/**

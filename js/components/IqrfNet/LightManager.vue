@@ -61,19 +61,39 @@
 							:invalid-feedback='$t(errors[0])'
 						/>
 					</ValidationProvider>
-					<CButton color='primary' :disabled='invalid' @click.prevent='submitEnumerate'>
+					<CButton
+						color='primary'
+						:disabled='invalid'
+						@click.prevent='submitEnumerate'
+					>
 						{{ $t('forms.enumerate') }}
 					</CButton>
-					<CButton color='secondary' :disabled='invalid' @click.prevent='submitGetPower'>
+					<CButton
+						color='secondary'
+						:disabled='invalid'
+						@click.prevent='submitGetPower'
+					>
 						{{ $t('iqrfnet.standard.light.form.getPower') }}
 					</CButton>
-					<CButton color='secondary' :disabled='invalid' @click.prevent='submitSetPower'>
+					<CButton
+						color='secondary'
+						:disabled='invalid'
+						@click.prevent='submitSetPower'
+					>
 						{{ $t('iqrfnet.standard.light.form.setPower') }}
 					</CButton>
-					<CButton color='secondary' :disabled='invalid' @click.prevent='submitIncrementPower'>
+					<CButton
+						color='secondary'
+						:disabled='invalid'
+						@click.prevent='submitIncrementPower'
+					>
 						{{ $t('iqrfnet.standard.light.form.increment') }}
 					</CButton>
-					<CButton color='secondary' :disabled='invalid' @click.prevent='submitDecrementPower'>
+					<CButton
+						color='secondary'
+						:disabled='invalid'
+						@click.prevent='submitDecrementPower'
+					>
 						{{ $t('iqrfnet.standard.light.form.decrement') }}
 					</CButton>
 				</CForm>
@@ -82,12 +102,12 @@
 		<CCardFooter v-if='responseType !== null'>
 			<table class='table'>
 				<thead>
-					<span v-if='responseType === "enum"'>
+					<th v-if='responseType === "enum"' colspan='2'>
 						{{ $t('iqrfnet.standard.light.enum') }}
-					</span>
-					<span v-else>
+					</th>
+					<th v-else colspan='2'>
 						{{ $t('iqrfnet.standard.light.powerInfo') }}
-					</span>
+					</th>
 				</thead>
 				<tbody v-if='responseType === "enum"'>
 					<tr>
@@ -115,7 +135,7 @@ import {CButton, CCard, CCardBody, CCardFooter, CCardHeader, CForm, CInput} from
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';
 import {timeout} from '../../helpers/timeout';
-import StandardLightService from '../../services/DaemonApi/StandardLightService';
+import StandardLightService, {StandardLight} from '../../services/DaemonApi/StandardLightService';
 
 export default {
 	name: 'LightManager',
@@ -168,10 +188,14 @@ export default {
 				this.$store.commit('spinner/HIDE');
 				switch(mutation.payload.data.status) {
 					case -1:
-						this.$toast.error(this.$t('iqrfnet.standard.light.messages.timeout').toString());
+						this.$toast.error(
+							this.$t('iqrfnet.standard.light.messages.timeout').toString()
+						);
 						break;
 					case 0:
-						this.$toast.success(this.$t('iqrfnet.standard.light.messages.success').toString());
+						this.$toast.success(
+							this.$t('iqrfnet.standard.light.messages.success').toString()
+						);
 						if (mutation.payload.mType === 'iqrfLight_Enumerate') {
 							this.numLights = mutation.payload.data.rsp.result.lights;
 							this.responseType = 'enum';
@@ -181,10 +205,14 @@ export default {
 						}
 						break;
 					case 3:
-						this.$toast.error(this.$t('iqrfnet.standard.light.messages.pnum').toString());
+						this.$toast.error(
+							this.$t('iqrfnet.standard.light.messages.pnum').toString()
+						);
 						break;
 					default:
-						this.$toast.error(this.$t('iqrfnet.standard.light.messages.failure').toString());
+						this.$toast.error(
+							this.$t('iqrfnet.standard.light.messages.failure').toString()
+						);
 						break;
 				}
 			}
@@ -204,15 +232,15 @@ export default {
 		},
 		submitSetPower() {
 			this.$store.commit('spinner/SHOW');
-			StandardLightService.setPower(this.address, [{'index': this.index, 'power': this.power}]);
+			StandardLightService.setPower(this.address, [new StandardLight(this.index, this.power)]);
 		},
 		submitIncrementPower() {
 			this.$store.commit('spinner/SHOW');
-			StandardLightService.incrementPower(this.address, [{'index': this.index, 'power': this.power}]);
+			StandardLightService.incrementPower(this.address, [new StandardLight(this.index, this.power)]);
 		},
 		submitDecrementPower() {
 			this.$store.commit('spinner/SHOW');
-			StandardLightService.decrementPower(this.address, [{'index': this.index, 'power': this.power}]);
+			StandardLightService.decrementPower(this.address, [new StandardLight(this.index, this.power)]);
 		},
 	}
 };

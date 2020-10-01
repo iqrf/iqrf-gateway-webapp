@@ -26,7 +26,6 @@ use App\IqrfNetModule\Entities\IqrfOs;
 use App\IqrfNetModule\Enums\UploadFormats;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
-use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\IqrfNetModule\Models\IqrfOsManager;
 use App\IqrfNetModule\Models\OsManager;
 use App\IqrfNetModule\Models\UploadManager;
@@ -120,7 +119,7 @@ class OsDpaUploadFormFactory {
 			$osRead = $this->osManager->read(0);
 			$this->osEntity = IqrfOs::fromOsRead($osRead);
 			return $this->iqrfOsManager->list($this->osEntity);
-		} catch (UserErrorException | DpaErrorException | EmptyResponseException | JsonException $e) {
+		} catch (DpaErrorException | EmptyResponseException | JsonException $e) {
 			return [];
 		}
 	}
@@ -144,7 +143,7 @@ class OsDpaUploadFormFactory {
 			$this->presenter->flashInfo('service.iqrf-gateway-daemon.messages.restart');
 		} catch (CorruptedFileException $e) {
 			$this->presenter->flashError('iqrfnet.trUpload.messages.corruptedFile');
-		} catch (DpaErrorException | EmptyResponseException | JsonException | UserErrorException $e) {
+		} catch (DpaErrorException | EmptyResponseException | JsonException $e) {
 			$this->presenter->flashError('iqrfnet.trUpload.messages.failure');
 		} catch (IOException $e) {
 			$this->presenter->flashError('iqrfnet.trUpload.messages.moveFailure');

@@ -26,8 +26,6 @@ use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\JsonFileManager;
-use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
-use App\ServiceModule\Models\ServiceManager;
 use Nette\IOException;
 use Nette\Utils\Finder;
 use Nette\Utils\JsonException;
@@ -40,11 +38,6 @@ use stdClass;
 class SchedulerManager {
 
 	/**
-	 * @var GenericManager Generic config manager
-	 */
-	private $genericConfigManager;
-
-	/**
 	 * @var JsonFileManager JSON file manager
 	 */
 	private $fileManager;
@@ -55,11 +48,6 @@ class SchedulerManager {
 	private $schemaManager;
 
 	/**
-	 * @var ServiceManager IQRF Gateway Daemon's service manager
-	 */
-	private $serviceManager;
-
-	/**
 	 * @var TaskTimeManager Scheduler's task time specification manager
 	 */
 	private $timeManager;
@@ -67,15 +55,11 @@ class SchedulerManager {
 	/**
 	 * Constructor
 	 * @param MainManager $mainManager Main configuration manager
-	 * @param GenericManager $genericManager Generic configuration manager
 	 * @param TaskTimeManager $timeManager Scheduler's task time specification manager
-	 * @param ServiceManager $serviceManager IQRF Gateway Daemon's service manager
 	 * @param CommandManager $commandManager Command manager
 	 * @param SchedulerSchemaManager $schemaManager Scheduler JSON schema manager
 	 */
-	public function __construct(MainManager $mainManager, GenericManager $genericManager, TaskTimeManager $timeManager, ServiceManager $serviceManager, CommandManager $commandManager, SchedulerSchemaManager $schemaManager) {
-		$this->genericConfigManager = $genericManager;
-		$this->serviceManager = $serviceManager;
+	public function __construct(MainManager $mainManager, TaskTimeManager $timeManager, CommandManager $commandManager, SchedulerSchemaManager $schemaManager) {
 		$this->timeManager = $timeManager;
 		$cacheDir = $mainManager->getCacheDir();
 		if (!is_readable($cacheDir) || !is_writable($cacheDir)) {
@@ -93,11 +77,6 @@ class SchedulerManager {
 	 */
 	public function delete(int $id): void {
 		$this->fileManager->delete($this->getFileName($id));
-		try {
-			$this->serviceManager->restart();
-		} catch (UnsupportedInitSystemException $e) {
-			// Do nothing
-		}
 	}
 
 	/**
@@ -135,27 +114,6 @@ class SchedulerManager {
 		} catch (TaskNotFoundException $e) {
 			return false;
 		}
-	}
-
-	/**
-	 * Gets available messagings
-	 * @return array<array<string>> Available messagings
-	 */
-	public function getMessagings(): array {
-		$messagings = $this->genericConfigManager->getMessagings();
-		unset($messagings['config.udp.title']);
-		return $messagings;
-	}
-
-	/**
-	 * Gets scheduler's services
-	 * @return array<string> Scheduler's services
-	 */
-	public function getServices(): array {
-		$this->genericConfigManager->setComponent('iqrf::SchedulerMessaging');
-		return array_map(function (array $instance): string {
-			return $instance['instance'];
-		}, $this->genericConfigManager->list());
 	}
 
 	/**

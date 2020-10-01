@@ -22,7 +22,6 @@ namespace App\IqrfNetModule\Models;
 
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
-use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\IqrfNetModule\Requests\ApiRequest;
 use App\IqrfNetModule\Responses\ApiResponse;
 use InvalidArgumentException;
@@ -70,7 +69,6 @@ class WebSocketClient {
 	 * @return array<mixed> IQRF JSON API response
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
-	 * @throws UserErrorException
 	 */
 	public function sendSync(ApiRequest $request, bool $checkStatus = true, int $timeout = 13): array {
 		$connection = $this->createConnection($timeout);
@@ -174,7 +172,6 @@ class WebSocketClient {
 	 * @return array<mixed> IQRF JSON API response in an array
 	 * @throws EmptyResponseException
 	 * @throws DpaErrorException
-	 * @throws UserErrorException
 	 */
 	private function parseResponse(ApiRequest $request, ?MessageInterface $response, bool $checkStatus): array {
 		$data = ['request' => $request->get()];

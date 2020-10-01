@@ -43,7 +43,11 @@
 								:invalid-feedback='$t(errors[0])'
 							/>
 						</ValidationProvider>
-						<CButton v-if='commands.length > 1' color='danger' @click.prevent='removeDaliCommand(i-1)'>
+						<CButton
+							v-if='commands.length > 1'
+							color='danger'
+							@click.prevent='removeDaliCommand(i-1)'
+						>
 							{{ $t('iqrfnet.standard.dali.form.removeCommand') }}
 						</CButton>
 						<CButton
@@ -71,9 +75,9 @@
 						<th>{{ $t('iqrfnet.standard.dali.status') }}</th>
 						<th>{{ $t('iqrfnet.standard.dali.value') }}</th>
 					</tr>
-					<tr v-for='i of answers.length' :key='i'>
-						<td>{{ answers[i-1].status }}</td>
-						<td>{{ answers[i-1].value }}</td>
+					<tr v-for='(answer, i) of answers' :key='i'>
+						<td>{{ answer.status }}</td>
+						<td>{{ answer.value }}</td>
 					</tr>
 				</tbody>
 			</table>
@@ -126,18 +130,26 @@ export default {
 					this.$store.commit('spinner/HIDE');
 					switch(mutation.payload.data.status) {
 						case -1:
-							this.$toast.error(this.$t('iqrfnet.standard.dali.messages.timeout').toString());
+							this.$toast.error(
+								this.$t('iqrfnet.standard.dali.messages.timeout').toString()
+							);
 							break;
 						case 0:
-							this.$toast.success(this.$t('iqrfnet.standard.dali.messages.success').toString());
+							this.$toast.success(
+								this.$t('iqrfnet.standard.dali.messages.success').toString()
+							);
 							this.answers = mutation.payload.data.rsp.result.answers;
 							this.responseReceived = true;
 							break;
 						case 3:
-							this.$toast.error(this.$t('iqrfnet.standard.dali.messages.pnum').toString());
+							this.$toast.error(
+								this.$t('iqrfnet.standard.dali.messages.pnum').toString()
+							);
 							break;
 						default:
-							this.$toast.error(this.$t('iqrfnet.standard.dali.messages.failure').toString());
+							this.$toast.error(
+								this.$t('iqrfnet.standard.dali.messages.failure').toString()
+							);
 							break;
 					}
 				}

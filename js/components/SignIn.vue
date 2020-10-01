@@ -101,10 +101,15 @@ export default {
 			])
 				.then(() => {
 					this.$router.push('/');
-					this.$toast.success(this.$t('core.sign.in.messages.success').toString());
+					this.$toast.success(
+						this.$t('core.sign.in.messages.success').toString()
+					);
 				})
 				.catch(() => {
-					this.$toast.error(this.$t('core.sign.in.messages.incorrectUsernameOrPassword').toString());
+					this.$toast.error(
+						this.$t('core.sign.in.messages.incorrectUsernameOrPassword')
+							.toString()
+					);
 				});
 			this.submitted = true;
 		}

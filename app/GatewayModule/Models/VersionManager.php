@@ -23,7 +23,6 @@ namespace App\GatewayModule\Models;
 use App\CoreModule\Models\CommandManager;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
-use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\IqrfNetModule\Models\WebSocketClient;
 use App\IqrfNetModule\Requests\ApiRequest;
 use Nette\IOException;
@@ -89,7 +88,7 @@ class VersionManager {
 		if ($version === 'none' || $version === 'unknown') {
 			try {
 				$version = $this->getDaemonWs();
-			} catch (UserErrorException | DpaErrorException | EmptyResponseException | JsonException $e) {
+			} catch (DpaErrorException | EmptyResponseException | JsonException $e) {
 				// Use version from CLI
 			}
 		}
@@ -120,7 +119,6 @@ class VersionManager {
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws JsonException
-	 * @throws UserErrorException
 	 */
 	private function getDaemonWs(): string {
 		$request = [

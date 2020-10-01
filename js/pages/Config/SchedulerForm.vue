@@ -36,7 +36,9 @@
 						/>
 					</ValidationProvider>
 					<div class='form-group'>
-						<label for='cronTime'>{{ $t("config.scheduler.form.task.cronTime") }}</label>
+						<label for='cronTime'>
+							{{ $t("config.scheduler.form.task.cronTime") }}
+						</label>
 						<CBadge v-if='cronMessage !== null' color='info'>
 							{{ cronMessage }}
 						</CBadge>
@@ -76,7 +78,9 @@
 						/>
 					</ValidationProvider>
 					<div class='form-group'>
-						<label for='exactTime'>{{ $t("config.scheduler.form.task.startTime") }}</label>
+						<label for='exactTime'>
+							{{ $t("config.scheduler.form.task.startTime") }}
+						</label>
 						<Datetime
 							id='exactTime'
 							v-model='timeSpec.startTime' 
@@ -119,10 +123,18 @@
 								:invalid-feedback='$t(errors[0])'
 							/>
 						</ValidationProvider>
-						<CButton v-if='task.length > 1' color='danger' @click='removeMessage(i-1)'>
+						<CButton
+							v-if='task.length > 1'
+							color='danger'
+							@click='removeMessage(i-1)'
+						>
 							{{ $t('config.scheduler.buttons.remove') }}
 						</CButton>
-						<CButton v-if='i === task.length' color='success' @click='addMessage'>
+						<CButton
+							v-if='i === task.length'
+							color='success'
+							@click='addMessage'
+						>
 							{{ $t('config.scheduler.buttons.add') }}
 						</CButton>
 					</div>
@@ -241,15 +253,26 @@ export default {
 						if (Array.isArray(rsp.task)) {
 							let tasks = [];
 							rsp.task.forEach(item => {
-								tasks.push({messaging: item.messaging, message: JSON.stringify(item.message, null, 2)});
+								tasks.push({
+									messaging: item.messaging,
+									message: JSON.stringify(item.message, null, 2),
+								});
 							});
 							this.task = tasks;
 						} else {
-							this.task = [{messaging: rsp.task.messaging, message: JSON.stringify(rsp.task.message, null, 2)}];
+							this.task = [
+								{
+									messaging: rsp.task.messaging,
+									message: JSON.stringify(rsp.task.message, null, 2),
+								}
+							];
 						}
 					} else {
 						this.$router.push('/config/scheduler/');
-						this.$toast.error(this.$t('config.scheduler.messages.getFail', {task: this.id}));
+						this.$toast.error(
+							this.$t('config.scheduler.messages.getFail', {task: this.id})
+								.toString()
+						);
 					}
 				} else if (mutation.payload.mType === 'mngScheduler_AddTask') {
 					this.$store.commit('spinner/HIDE');
@@ -308,7 +331,10 @@ export default {
 					})
 					.catch(() => {
 						this.$router.push('/config/scheduler/');
-						this.$toast.error(this.$t('config.scheduler.messages.getFail', {task: this.id}));
+						this.$toast.error(
+							this.$t('config.scheduler.messages.getFail', {task: this.id})
+								.toString()
+						);
 					});
 			} else {
 				SchedulerService.getTask(taskId);
@@ -326,7 +352,9 @@ export default {
 					responses.forEach(item => {
 						if (item.data.instances) {
 							item.data.instances.forEach(messaging => {
-								this.messagings.push({value: messaging.instance, label: messaging.instance});
+								this.messagings.push({
+									value: messaging.instance, label: messaging.instance,
+								});
 							});
 						}
 					});
@@ -399,7 +427,9 @@ export default {
 		},
 		successfulSave() {
 			this.$router.push('/config/scheduler/');
-			this.$toast.success(this.$t('config.scheduler.messages.addSuccess').toString());
+			this.$toast.success(
+				this.$t('config.scheduler.messages.addSuccess').toString()
+			);
 		}
 	},
 	pickerSettings: {
@@ -415,9 +445,9 @@ export default {
 	},
 	metaInfo() {
 		return {
-			title: this.$route.path === '/config/scheduler/add' ? this.$t('config.scheduler.add') : this.$t('config.scheduler.edit')
+			title: this.$route.path === '/config/scheduler/add' ?
+				this.$t('config.scheduler.add') : this.$t('config.scheduler.edit')
 		};
-	}
-
+	},
 };
 </script>

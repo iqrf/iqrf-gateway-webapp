@@ -53,7 +53,11 @@
 						:label='$t("config.tracer.form.timestampFiles")'
 					/>
 					<h4>{{ $t("config.tracer.form.verbosityLevels.title") }}</h4>
-					<div v-for='i of configuration.VerbosityLevels.length' :key='i' class='form-group'>
+					<div
+						v-for='(level, i) of configuration.VerbosityLevels'
+						:key='i'
+						class='form-group'
+					>
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
 							rules='integer|required'
@@ -63,7 +67,7 @@
 							}'
 						>
 							<CInput
-								v-model.number='configuration.VerbosityLevels[i-1].channel'
+								v-model.number='level.channel'
 								type='number'
 								:label='$t("config.tracer.form.channel")'
 								:is-valid='touched ? valid : null'
@@ -76,7 +80,7 @@
 							:custom-messages='{required: "config.tracer.form.messages.verbosityLevels.level"}'
 						>
 							<CSelect
-								:value.sync='configuration.VerbosityLevels[i-1].level'
+								:value.sync='level.level'
 								:label='$t("config.tracer.form.level")'
 								:placeholder='$t("config.tracer.form.messages.verbosityLevels.level")'
 								:options='[
@@ -89,13 +93,17 @@
 								:invalid-feedback='$t(errors[0])'
 							/>
 						</ValidationProvider>
-						<CButton v-if='configuration.VerbosityLevels.length > 1' color='danger' @click='removeLevel(i-1)'>
+						<CButton
+							v-if='configuration.VerbosityLevels.length > 1'
+							color='danger'
+							@click='removeLevel(i)'
+						>
 							{{ $t('config.tracer.form.verbosityLevels.remove') }}
 						</CButton>
 						<CButton
-							v-if='i === configuration.VerbosityLevels.length'
+							v-if='i === (configuration.VerbosityLevels.length - 1)'
 							color='success'
-							:disabled='configuration.VerbosityLevels[i-1].channel === null || configuration.VerbosityLevels[i-1].level === null'
+							:disabled='level.channel === undefined || level.level === undefined'
 							@click='addLevel'
 						>
 							{{ $t('config.tracer.form.verbosityLevels.add') }}
@@ -152,7 +160,8 @@ export default {
 	},
 	computed: {
 		submitButton() {
-			return this.$route.path === '/config/tracer/add' ? this.$t('forms.add') : this.$t('forms.edit');
+			return this.$route.path === '/config/tracer/add' ?
+				this.$t('forms.add') : this.$t('forms.edit');
 		},
 	},
 	created() {
@@ -198,15 +207,22 @@ export default {
 			this.$router.push('/config/tracer/');
 			this.$store.commit('spinner/HIDE');
 			if (this.$route.path === '/config/tracer/add') {
-				this.$toast.success(this.$t('config.tracer.messages.addSuccess', {instance: this.configuration.instance}).toString());
+				this.$toast.success(
+					this.$t('config.tracer.messages.addSuccess', {instance: this.configuration.instance})
+						.toString()
+				);
 			} else {
-				this.$toast.success(this.$t('config.tracer.messages.editSuccess', {instance: this.instance}).toString());
+				this.$toast.success(
+					this.$t('config.tracer.messages.editSuccess', {instance: this.instance})
+						.toString()
+				);
 			}
 		},
 	},
 	metaInfo() {
 		return {
-			title: this.$route.path === '/config/tracer/add' ? this.$t('config.tracer.add') : this.$t('config.tracer.edit')
+			title: this.$route.path === '/config/tracer/add' ?
+				this.$t('config.tracer.add') : this.$t('config.tracer.edit')
 		};
 	},
 };

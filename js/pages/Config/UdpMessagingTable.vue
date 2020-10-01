@@ -49,7 +49,10 @@
 				<h5 class='modal-title'>
 					{{ $t('config.udp.messages.delete.confirmTitle') }}
 				</h5>
-				<CButtonClose class='text-white' @click='modals.delete.instance = null' />
+				<CButtonClose
+					class='text-white'
+					@click='modals.delete.instance = null'
+				/>
 			</template>
 			<span v-if='modals.delete.instance !== null'>
 				{{ $t('config.udp.messages.delete.confirm', {instance: modals.delete.instance}) }}
@@ -138,7 +141,10 @@ export default {
 			return DaemonConfigurationService.updateInstance(this.componentName, instance.instance, instance)
 				.then(() => {
 					this.getInstances().then(() => {
-						this.$toast.success(this.$t('config.udp.messages.edit.success', {instance: instance.instance}).toString());
+						this.$toast.success(
+							this.$t('config.udp.messages.edit.success', {instance: instance.instance})
+								.toString()
+						);
 					});
 				});
 		},
@@ -157,7 +163,10 @@ export default {
 			DaemonConfigurationService.deleteInstance(this.componentName, instance)
 				.then(() => {
 					this.getInstances().then(() => {
-						this.$toast.success(this.$t('config.udp.messages.delete.success', {instance: instance}).toString());
+						this.$toast.success(
+							this.$t('config.udp.messages.delete.success', {instance: instance})
+								.toString()
+						);
 					});
 				})
 				.catch(() => this.$store.commit('spinner/HIDE'));

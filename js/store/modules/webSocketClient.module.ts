@@ -13,7 +13,7 @@ const state = {
 
 const actions: ActionTree<any, any> = {
 	sendRequest: function (context: ActionContext<any, any>, request: any) {
-		if (request.data.msgId === undefined) {
+		if (request.data !== undefined && request.data.msgId === undefined) {
 			request.data.msgId = uuidv4();
 		}
 		Vue.prototype.$socket.sendObj(request);
@@ -32,8 +32,7 @@ const mutations: MutationTree<any> = {
 		Vue.prototype.$socket = event.currentTarget;
 		state.socket.isConnected = true;
 	},
-	// eslint-disable-next-line no-unused-vars
-	SOCKET_ONCLOSE(state: any) {
+	SOCKET_ONCLOSE() {
 		state.socket.isConnected = false;
 	},
 	SOCKET_ONERROR(state: any, event: Event) {

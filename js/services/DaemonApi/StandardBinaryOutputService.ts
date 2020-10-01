@@ -1,5 +1,28 @@
 import store from '../../store';
 
+export class StandardBinaryOutput {
+
+	/**
+	 * Index of the binary output
+	 */
+	public index: number;
+
+	/**
+	 * State of the binary output
+	 */
+	public state: boolean;
+
+	/**
+	 * Constructor
+	 * @param index Index of the binary output
+	 * @param state State of the binary output
+	 */
+	public constructor(index: number, state: boolean) {
+		this.index = index;
+		this.state = state;
+	}
+}
+
 /**
  * IQRF Standard binary output service
  */
@@ -36,14 +59,14 @@ class StandardBinaryOutputService {
 	 * @param address Node address
 	 * @param outputs New output setting
 	 */
-	setOutputs(address: number, outputs: any[]|null = null): Promise<any> {
+	setOutputs(address: number, outputs: StandardBinaryOutput[] = []): Promise<any> {
 		return store.dispatch('sendRequest', {
 			'mType': 'iqrfBinaryoutput_SetOutput',
 			'data': {
 				'req': {
 					'nAdr': address,
 					'param': {
-						'binOuts': outputs ?? [],
+						'binOuts': outputs,
 					},
 				},
 				'returnVerbose': true,

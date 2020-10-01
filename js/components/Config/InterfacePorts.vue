@@ -43,11 +43,6 @@ export default {
 	methods: {
 		setPort(port) {
 			this.$emit('updatePort', port);
-			switch (this.interfaceType) {
-				case 'uart':
-					document.getElementById('frm-configIqrfUartForm-IqrfInterface').value = port;
-					break;
-			}
 		},
 	},
 };

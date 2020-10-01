@@ -82,7 +82,8 @@ export default {
 	},
 	computed: {
 		submitButton() {
-			return this.$route.path === '/config/websocket/add-service' ? this.$t('forms.add') : this.$t('forms.edit');
+			return this.$route.path === '/config/websocket/add-service' ?
+				this.$t('forms.add') : this.$t('forms.edit');
 		},
 	},
 	created() {
@@ -121,15 +122,23 @@ export default {
 			this.$router.push('/config/websocket/');
 			this.$store.commit('spinner/HIDE');
 			if (this.$route.path === '/config/websocket/add-service') {
-				this.$toast.success(this.$t('config.websocket.service.messages.addSuccess', {service: this.configuration.instance}).toString());
+				this.$toast.success(
+					this.$t('config.websocket.service.messages.addSuccess', {service: this.configuration.instance})
+						.toString()
+				);
 			} else {
-				this.$toast.success(this.$t('config.websocket.service.messages.editSuccess', {service: this.instance}).toString());
+				this.$toast.success(
+					this.$t('config.websocket.service.messages.editSuccess', {service: this.instance})
+						.toString()
+				);
 			}
 		},
 	},
 	metaInfo() {
 		return {
-			title: this.$route.path === '/config/websocket/add-service' ? this.$t('config.websocket.service.add') : this.$t('config.websocket.service.edit')
+			title: this.$route.path === '/config/websocket/add-service' ?
+				this.$t('config.websocket.service.add') :
+				this.$t('config.websocket.service.edit')
 		};
 	},
 };

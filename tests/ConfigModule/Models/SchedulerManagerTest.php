@@ -11,8 +11,6 @@ declare(strict_types = 1);
 namespace Tests\ConfigModule\Models;
 
 use App\ConfigModule\Exceptions\TaskNotFoundException;
-use App\ConfigModule\Models\ComponentSchemaManager;
-use App\ConfigModule\Models\GenericManager;
 use App\ConfigModule\Models\MainManager;
 use App\ConfigModule\Models\SchedulerManager;
 use App\ConfigModule\Models\SchedulerSchemaManager;
@@ -20,9 +18,7 @@ use App\ConfigModule\Models\TaskTimeManager;
 use App\CoreModule\Entities\CommandStack;
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\JsonFileManager;
-use App\ServiceModule\Models\ServiceManager;
 use Mockery;
-use Mockery\MockInterface;
 use stdClass;
 use Tester\Assert;
 use Tester\Environment;
@@ -51,16 +47,6 @@ final class SchedulerManagerTest extends TestCase {
 	private $managerTemp;
 
 	/**
-	 * @var ServiceManager|MockInterface IQRF Gateway Daemon's service manager
-	 */
-	private $serviceManager;
-
-	/**
-	 * @var TaskTimeManager Scheduler's task time specification manager
-	 */
-	private $timeManager;
-
-	/**
 	 * @var stdClass Scheduler's task settings
 	 */
 	private $array;
@@ -71,7 +57,6 @@ final class SchedulerManagerTest extends TestCase {
 	public function testDelete(): void {
 		Environment::lock('config_scheduler', __DIR__ . '/../../temp/');
 		$fileName = '1';
-		$this->serviceManager->shouldReceive('restart');
 		$this->fileManagerTemp->write($fileName, $this->array);
 		Assert::true($this->fileManagerTemp->exists($fileName));
 		$this->managerTemp->delete(1);
@@ -109,26 +94,6 @@ final class SchedulerManagerTest extends TestCase {
 	public function testExist(): void {
 		Assert::true($this->manager->exist(1));
 		Assert::false($this->manager->exist(-1));
-	}
-
-	/**
-	 * Test function to get available messagings
-	 */
-	public function testGetMessagings(): void {
-		$expected = [
-			'config.mq.title' => ['MqMessaging'],
-			'config.mqtt.title' => ['MqttMessaging'],
-			'config.websocket.title' => ['WebsocketMessaging'],
-		];
-		Assert::same($expected, $this->manager->getMessagings());
-	}
-
-	/**
-	 * Test function to get scheduler's services
-	 */
-	public function testGetServices(): void {
-		$expected = ['SchedulerMessaging'];
-		Assert::same($expected, $this->manager->getServices());
 	}
 
 	/**
@@ -221,24 +186,19 @@ final class SchedulerManagerTest extends TestCase {
 	protected function setUp(): void {
 		$configPath = __DIR__ . '/../../data/';
 		$configTempPath = __DIR__ . '/../../temp/configuration/';
-		$schemaPath = __DIR__ . '/../../data/cfgSchemas/';
 		$commandStack = new CommandStack();
 		$commandManager = new CommandManager(false, $commandStack);
 		$this->fileManagerTemp = new JsonFileManager($configTempPath . 'scheduler/', $commandManager);
-		$fileManager = new JsonFileManager($configPath, $commandManager);
-		$schemaManager = new ComponentSchemaManager($schemaPath, $commandManager);
-		$genericConfigManager = new GenericManager($fileManager, $schemaManager);
 		$mainConfigManager = Mockery::mock(MainManager::class);
 		$mainConfigManager->shouldReceive('getCacheDir')->andReturn($configPath);
 		$mainConfigManagerTemp = Mockery::mock(MainManager::class);
 		$mainConfigManagerTemp->shouldReceive('getCacheDir')->andReturn($configTempPath);
-		$this->timeManager = new TaskTimeManager();
-		$this->serviceManager = Mockery::mock(ServiceManager::class);
+		$timeManager = new TaskTimeManager();
 		$schedulerSchemaManager = Mockery::mock(SchedulerSchemaManager::class);
 		$schedulerSchemaManager->shouldReceive('validate')
 			->andReturnTrue();
-		$this->manager = new SchedulerManager($mainConfigManager, $genericConfigManager, $this->timeManager, $this->serviceManager, $commandManager, $schedulerSchemaManager);
-		$this->managerTemp = new SchedulerManager($mainConfigManagerTemp, $genericConfigManager, $this->timeManager, $this->serviceManager, $commandManager, $schedulerSchemaManager);
+		$this->manager = new SchedulerManager($mainConfigManager, $timeManager, $commandManager, $schedulerSchemaManager);
+		$this->managerTemp = new SchedulerManager($mainConfigManagerTemp, $timeManager, $commandManager, $schedulerSchemaManager);
 	}
 
 	/**

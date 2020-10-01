@@ -27,7 +27,6 @@ use App\GatewayModule\Exceptions\UnknownFileFormatExceptions;
 use App\IqrfNetModule\Enums\UploadFormats;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
-use App\IqrfNetModule\Exceptions\UserErrorException;
 use Nette\Http\FileUpload;
 use Nette\IOException;
 use Nette\Utils\FileSystem;
@@ -75,7 +74,6 @@ class UploadManager {
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws JsonException
-	 * @throws UserErrorException
 	 */
 	public function upload(FileUpload $file, ?UploadFormats $format = null): void {
 		if (!$file->isOk()) {
@@ -91,7 +89,6 @@ class UploadManager {
 	 * @throws DpaErrorException
 	 * @throws EmptyResponseException
 	 * @throws JsonException
-	 * @throws UserErrorException
 	 */
 	public function uploadFile(string $file, ?UploadFormats $format = null): void {
 		FileSystem::createDir($this->path);

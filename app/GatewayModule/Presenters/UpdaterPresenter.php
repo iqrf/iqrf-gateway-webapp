@@ -112,17 +112,6 @@ class UpdaterPresenter extends ProtectedPresenter {
 	}
 
 	/**
-	 * Checks if the updater is enabled
-	 */
-	protected function startup(): void {
-		parent::startup();
-		if (!$this->featureManager->isEnabled('updater')) {
-			$this->flashError('gateway.updater.messages.disabled');
-			$this->redirect('Homepage:default');
-		}
-	}
-
-	/**
 	 * Creates the data grid with upgradable packages
 	 * @param string $name Component name
 	 * @return DataGrid Datagrid with upgradable packages

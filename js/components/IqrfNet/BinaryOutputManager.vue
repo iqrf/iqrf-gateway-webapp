@@ -56,13 +56,25 @@
 							:label-off='$t("iqrfnet.standard.binaryOutput.form.disabled")'
 						/>
 					</div>
-					<CButton color='primary' :disabled='invalid' @click.prevent='submitEnumerate'>
+					<CButton
+						color='primary'
+						:disabled='invalid'
+						@click.prevent='submitEnumerate'
+					>
 						{{ $t('forms.enumerate') }}
 					</CButton>
-					<CButton color='secondary' :disabled='invalid' @click.prevent='submitGetStates'>
+					<CButton
+						color='secondary'
+						:disabled='invalid'
+						@click.prevent='submitGetStates'
+					>
 						{{ $t('iqrfnet.standard.binaryOutput.form.getStates') }}
 					</CButton>
-					<CButton color='secondary' :disabled='invalid' @click.prevent='submitSetState'>
+					<CButton
+						color='secondary'
+						:disabled='invalid'
+						@click.prevent='submitSetState'
+					>
 						{{ $t('iqrfnet.standard.binaryOutput.form.setState') }}
 					</CButton>
 				</CForm>
@@ -118,7 +130,7 @@ import {cilCheckAlt, cilX} from '@coreui/icons';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {timeout} from '../../helpers/timeout';
 import {between, integer, required} from 'vee-validate/dist/rules';
-import StandardBinaryOutputService from '../../services/DaemonApi/StandardBinaryOutputService';
+import StandardBinaryOutputService, {StandardBinaryOutput} from '../../services/DaemonApi/StandardBinaryOutputService';
 
 export default {
 	name: 'BinaryOutputManager',
@@ -169,10 +181,16 @@ export default {
 				this.$store.commit('spinner/HIDE');
 				switch(mutation.payload.data.status) {
 					case -1:
-						this.$toast.error(this.$t('iqrfnet.standard.binaryOutput.messages.timeout').toString());
+						this.$toast.error(
+							this.$t('iqrfnet.standard.binaryOutput.messages.timeout')
+								.toString()
+						);
 						break;
 					case 0:
-						this.$toast.success(this.$t('iqrfnet.standard.binaryOutput.messages.success').toString());
+						this.$toast.success(
+							this.$t('iqrfnet.standard.binaryOutput.messages.success')
+								.toString()
+						);
 						if (mutation.payload.mType === 'iqrfBinaryoutput_Enumerate') {
 							this.numOutputs = mutation.payload.data.rsp.result.binOuts;
 							this.responseType = 'enum';
@@ -182,10 +200,16 @@ export default {
 						}
 						break;
 					case 1:
-						this.$toast.error(this.$t('iqrfnet.standard.binaryOutput.messages.fail').toString());
+						this.$toast.error(
+							this.$t('iqrfnet.standard.binaryOutput.messages.fail')
+								.toString()
+						);
 						break;
 					case 3:
-						this.$toast.error(this.$t('iqrfnet.standard.binaryOutput.messages.pnum').toString());
+						this.$toast.error(
+							this.$t('iqrfnet.standard.binaryOutput.messages.pnum')
+								.toString()
+						);
 						break;
 				}
 
@@ -215,8 +239,8 @@ export default {
 		},
 		submitSetState() {
 			this.$store.commit('spinner/SHOW');
-			let state = {'index': this.index, 'state': this.state};
-			StandardBinaryOutputService.setOutputs(this.address, [state]);
+			const output = new StandardBinaryOutput(this.index, this.state);
+			StandardBinaryOutputService.setOutputs(this.address, [output]);
 		},
 	},
 	icons: {

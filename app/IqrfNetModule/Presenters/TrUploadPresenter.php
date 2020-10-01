@@ -53,17 +53,6 @@ class TrUploadPresenter extends ProtectedPresenter {
 	public $uploadFormFactory;
 
 	/**
-	 * Checks if the uploader is enabled
-	 */
-	protected function startup(): void {
-		parent::startup();
-		if (!$this->featureManager->isEnabled('trUpload')) {
-			$this->flashError('iqrfnet.trUpload.messages.disabled');
-			$this->redirect('Homepage:default');
-		}
-	}
-
-	/**
 	 * Renders the page
 	 */
 	public function renderDefault(): void {

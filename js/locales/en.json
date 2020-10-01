@@ -102,8 +102,6 @@
 			"title": "PIXLA device management",
 			"description": "Manages PIXLA client service.",
 			"dashboard": "Visit dashboard",
-			"disable": "Disable service",
-			"enable": "Enable service",
 			"status": "Service status",
 			"statuses": {
 				"enabled": "Enabled",
@@ -169,7 +167,7 @@
 			"description": "Migration of IQRF Gateway Daemon's configuration",
 			"form": {
 				"importButton": "Configuration to import",
-				"import": "Import configuraiton",
+				"import": "Import configuration",
 				"export": "Export configuration"
 			},
 			"messages": {
@@ -458,6 +456,7 @@
 					"instance": "Please enter name of MQTT instance.",
 					"BrokerAddr": "Please enter address of MQTT broker.",
 					"ClientId": "Please enter client ID.",
+					"QoS": "Please select QoS.",
 					"TopicRequest": "Please enter topic for requests.",
 					"TopicResponse": "Please enter topic for responses."
 				}
@@ -530,7 +529,7 @@
 				"deleteTitle": "Delete scheduler task",
 				"deletePrompt": "Do you really want to delete scheduler task {task}?",
 				"deleteSuccess": "Scheduler task has been successfully deleted.",
-				"deleteFail": "An error occured while removing task.",
+				"deleteFail": "An error occurred while removing task.",
 				"getFail": "Could not retrieve task {task}.",
 				"addSuccess": "Scheduler task has been successfully added.",
 				"rest": {
@@ -765,7 +764,9 @@
 					"username": "Please enter the username.",
 					"password": "Please enter the password.",
 					"oldPassword": "Please enter the old password.",
-					"newPassword": "Please enter the new password."
+					"newPassword": "Please enter the new password.",
+					"language": "Please select the language.",
+					"role": "Please select the user role."
 				},
 				"add": {
 					"success": "User {username} has been added successfully."
@@ -1335,7 +1336,8 @@
 						"916": "RF Channel has to be in range from 0 to 255."
 					},
 					"rxFilter": "RX filter have to be integer from 0 to 64.",
-					"txPower": "TX Power have to be integer from 0 to 7."
+					"txPower": "TX Power have to be integer from 0 to 7.",
+					"uartBaudrate": "Please select UART interface baud rate."
 				}
 			},
 			"messages": {
@@ -1608,7 +1610,7 @@
 				"severity": "Severity level"
 			},
 			"wsServers": {
-				"title": "Websocker configuration",
+				"title": "Websocket configuration",
 				"api": "Daemon API server",
 				"monitor": "Monitor server"
 			},
@@ -1623,8 +1625,9 @@
 				},
 				"missing": {
 					"ws_api": "Please enter the Daemon API websocket server address.",
-					"ws_monitir": "Please enter the Monitor websocket server address",
+					"ws_monitor": "Please enter the Monitor websocket server address",
 					"l_file": "Please enter path to log file.",
+					"l_severity": "Please select log severity level.",
 					"rb_pin": "Please enter GPIO pin number for the button.",
 					"rb_custom": "Please enter API call identifier.",
 					"sl_green": "Please enter GPIO pin number for green LED.",

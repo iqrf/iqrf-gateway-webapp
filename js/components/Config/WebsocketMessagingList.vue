@@ -156,7 +156,10 @@ export default {
 				DaemonConfigurationService.updateInstance(this.componentName, instance.instance, instance)
 					.then(() => {
 						this.getConfig().then(() => {
-							this.$toast.success(this.$t('config.websocket.messaging.messages.editSuccess', {messaging: instance.instance}).toString());
+							this.$toast.success(
+								this.$t('config.websocket.messaging.messages.editSuccess', {messaging: instance.instance})
+									.toString()
+							);
 						});
 					})
 					.catch((error) => FormErrorHandler.getConfig(error));
@@ -169,7 +172,10 @@ export default {
 			DaemonConfigurationService.deleteInstance(this.componentName, instance)
 				.then(() => {
 					this.getConfig().then(() => {
-						this.$toast.success(this.$t('config.websocket.messaging.messages.deleteSuccess', {messaging: instance}).toString());
+						this.$toast.success(
+							this.$t('config.websocket.messaging.messages.deleteSuccess', {messaging: instance})
+								.toString()
+						);
 					});	
 				})
 				.catch((error) => FormErrorHandler.configError(error));

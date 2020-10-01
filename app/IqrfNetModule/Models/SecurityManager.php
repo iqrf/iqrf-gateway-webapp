@@ -24,7 +24,6 @@ use App\IqrfNetModule\Enums\DataFormat;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use App\IqrfNetModule\Exceptions\UnsupportedInputFormatException;
-use App\IqrfNetModule\Exceptions\UserErrorException;
 use App\IqrfNetModule\Requests\ApiRequest;
 use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
@@ -64,7 +63,6 @@ class SecurityManager {
 	 * @throws EmptyResponseException
 	 * @throws JsonException
 	 * @throws UnsupportedInputFormatException
-	 * @throws UserErrorException
 	 */
 	public function setAccessPassword(int $address, string $password = '', string $inputFormat = DataFormat::ASCII): array {
 		return $this->setSecurity($address, $password, $inputFormat, 0);
@@ -81,7 +79,6 @@ class SecurityManager {
 	 * @throws EmptyResponseException
 	 * @throws JsonException
 	 * @throws UnsupportedInputFormatException
-	 * @throws UserErrorException
 	 */
 	private function setSecurity(int $address, string $password, string $inputFormat, int $type): array {
 		$array = [
@@ -134,7 +131,6 @@ class SecurityManager {
 	 * @throws EmptyResponseException
 	 * @throws JsonException
 	 * @throws UnsupportedInputFormatException
-	 * @throws UserErrorException
 	 */
 	public function setUserKey(int $address, string $password = '', string $inputFormat = DataFormat::ASCII): array {
 		return $this->setSecurity($address, $password, $inputFormat, 1);

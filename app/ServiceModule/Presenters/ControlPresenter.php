@@ -21,14 +21,11 @@ declare(strict_types = 1);
 namespace App\ServiceModule\Presenters;
 
 use App\CoreModule\Presenters\ProtectedPresenter;
-use App\CoreModule\Traits\TPresenterFlashMessage;
 
 /**
  * Service control presenter.
  */
 class ControlPresenter extends ProtectedPresenter {
-
-	use TPresenterFlashMessage;
 
 	/**
 	 * Renders service status
@@ -36,18 +33,6 @@ class ControlPresenter extends ProtectedPresenter {
 	 */
 	public function renderDefault(string $name): void {
 		$this->template->service = $name;
-	}
-
-	/**
-	 * Checks if the service is whitelisted
-	 * @param string $name Service name
-	 */
-	public function actionDefault(string $name): void {
-		if ($name === 'unattended-upgrades' && !$this->featureManager->isEnabled('unattendedUpgrades') ||
-			$name === 'ssh' && !$this->featureManager->isEnabled('ssh')) {
-			$this->flashError('service.' . $name . '.messages.disabled');
-			$this->redirect(':Gateway:Homepage:default');
-		}
 	}
 
 }

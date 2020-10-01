@@ -10,7 +10,7 @@ declare(strict_types = 1);
 
 namespace Tests\Unit\IqrfNetModule\Responses;
 
-use App\IqrfNetModule\Exceptions as IqrfException;
+use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Responses\ApiResponse;
 use Nette\Utils\Json;
 use stdClass;
@@ -65,29 +65,17 @@ final class ApiResponseTest extends TestCase {
 	}
 
 	/**
-	 * Tests the function to set the request (user error)
-	 */
-	public function testCheckStatusUserError(): void {
-		Assert::exception(function (): void {
-			$array = $this->object;
-			$array->data->status = 20;
-			$json = Json::encode($array);
-			$this->response->set($json);
-			$this->response->checkStatus();
-		}, IqrfException\UserErrorException::class);
-	}
-
-	/**
 	 * Tests the function to set the request (timeout)
 	 */
 	public function testCheckStatusTimeout(): void {
 		Assert::exception(function (): void {
 			$array = $this->object;
 			$array->data->status = -1;
+			$array->data->statusStr = 'Timeout';
 			$json = Json::encode($array);
 			$this->response->set($json);
 			$this->response->checkStatus();
-		}, IqrfException\TimeoutException::class);
+		}, DpaErrorException::class, 'Timeout', -1);
 	}
 
 	/**

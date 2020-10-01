@@ -190,14 +190,23 @@ export default {
 					this.$store.commit('spinner/HIDE');
 					switch(mutation.payload.data.status) {
 						case -1:
-							this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.timeout').toString());
+							this.$toast.error(
+								this.$t('iqrfnet.networkManager.messages.submit.timeout')
+									.toString()
+							);
 							break;
 						case 0:
-							this.$toast.success(this.$t('iqrfnet.networkManager.messages.submit.bonding.success').toString());
+							this.$toast.success(
+								this.$t('iqrfnet.networkManager.messages.submit.bonding.success')
+									.toString()
+							);
 							this.$emit('update-devices');
 							break;
 						default:
-							this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.bonding.error_fail').toString());
+							this.$toast.error(
+								this.$t('iqrfnet.networkManager.messages.submit.bonding.error_fail')
+									.toString()
+							);
 							break;
 					}
 				} else if (mutation.payload.mType === 'iqrfEmbedCoordinator_ClearAllBonds' ||
@@ -206,27 +215,45 @@ export default {
 					this.$store.commit('spinner/HIDE');
 					switch(mutation.payload.data.status) {
 						case -1:
-							this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.timeout').toString());
+							this.$toast.error(
+								this.$t('iqrfnet.networkManager.messages.submit.timeout')
+									.toString()
+							);
 							break;
 						case 0:
 							if (mutation.payload.data.rsp.nodesNr === 0) {
-								this.$toast.success(this.$t('iqrfnet.networkManager.messages.submit.removeBond.clearSuccess').toString());
+								this.$toast.success(
+									this.$t('iqrfnet.networkManager.messages.submit.removeBond.clearSuccess')
+										.toString()
+								);
 							} else {
-								this.$toast.success(this.$t('iqrfnet.networkManager.messages.submit.removeBond.success').toString());
+								this.$toast.success(
+									this.$t('iqrfnet.networkManager.messages.submit.removeBond.success')
+										.toString()
+								);
 							}
 							this.$emit('update-devices');
 							break;
 						case 1002:
-							this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.removeBond.remove_error').toString());
+							this.$toast.error(
+								this.$t('iqrfnet.networkManager.messages.submit.removeBond.remove_error')
+									.toString()
+							);
 							break;
 						default:
-							this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.removeBond.error_fail').toString());
+							this.$toast.error(
+								this.$t('iqrfnet.networkManager.messages.submit.removeBond.error_fail')
+									.toString()
+							);
 							break;
 					}
 				} else if (mutation.payload.mType === 'messageError') {
 					clearTimeout(this.timeout);
 					this.$store.commit('spinner/HIDE');
-					this.$toast.error(this.$t('iqrfnet.networkManager.messages.submit.invalidMessage').toString());
+					this.$toast.error(
+						this.$t('iqrfnet.networkManager.messages.submit.invalidMessage')
+							.toString()
+					);
 				}
 			}
 		});
