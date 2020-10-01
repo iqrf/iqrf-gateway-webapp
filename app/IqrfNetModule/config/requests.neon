@@ -1,5 +1,2 @@
 services:
 	apiRequest: App\IqrfNetModule\Requests\ApiRequest
-	dpaRequest:
-		factory: App\IqrfNetModule\Requests\DpaRequest
-		autowired: self
