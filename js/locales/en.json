@@ -1335,6 +1335,7 @@
 				"dpaAutoexec": "Autoexec",
 				"routingOff": "Routing off",
 				"peerToPeer": "User Peer-to-Peer",
+				"localFrcReception": "Local FRC",
 				"dpaPeerToPeer": "DPA Peer-to-Peer",
 				"neverSleep": "Stay awake when not bonded",
 				"uartBaudrate": "UART interface baud rate",

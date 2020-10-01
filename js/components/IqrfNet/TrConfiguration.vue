@@ -203,6 +203,20 @@
 									:disabled='!dpaHandlerDetected'
 								/>
 								<CInputCheckbox
+									v-if='config.dpaPeerToPeer !== undefined'
+									:checked.sync='config.dpaPeerToPeer'
+									:label='$t("iqrfnet.trConfiguration.form.dpaPeerToPeer")'
+								/>
+								<CInputCheckbox
+									:checked.sync='config.peerToPeer'
+									:label='$t("iqrfnet.trConfiguration.form.peerToPeer")'
+								/>
+								<CInputCheckbox
+									v-if='config.localFrcReception !== undefined && address !== 0'
+									:checked.sync='config.localFrcReception'
+									:label='$t("iqrfnet.trConfiguration.form.localFrcReception")'
+								/>
+								<CInputCheckbox
 									:checked.sync='config.ioSetup'
 									:label='$t("iqrfnet.trConfiguration.form.ioSetup")'
 								/>
@@ -213,15 +227,6 @@
 								<CInputCheckbox
 									:checked.sync='config.routingOff'
 									:label='$t("iqrfnet.trConfiguration.form.routingOff")'
-								/>
-								<CInputCheckbox
-									:checked.sync='config.peerToPeer'
-									:label='$t("iqrfnet.trConfiguration.form.peerToPeer")'
-								/>
-								<CInputCheckbox
-									v-if='config.dpaPeerToPeer !== undefined'
-									:checked.sync='config.dpaPeerToPeer'
-									:label='$t("iqrfnet.trConfiguration.form.dpaPeerToPeer")'
 								/>
 								<CInputCheckbox
 									v-if='config.neverSleep !== undefined'
