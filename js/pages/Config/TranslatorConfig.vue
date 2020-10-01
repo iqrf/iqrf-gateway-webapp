@@ -68,9 +68,7 @@
 								/>
 							</ValidationProvider>
 							<ValidationProvider 
-								v-slot='{ errors, touched, valid }' 
-								rules='required'
-								:custom-messages='{required: "translatorConfig.form.messages.missing.muser"}'
+								v-slot='{ errors, touched, valid }'
 							>
 								<CInput
 									v-model='config.mqtt.user'
@@ -81,9 +79,7 @@
 								/>
 							</ValidationProvider>
 							<ValidationProvider 
-								v-slot='{ errors, touched, valid }' 
-								rules='required'
-								:custom-messages='{required: "translatorConfig.form.messages.missing.mpw"}'
+								v-slot='{ errors, touched, valid }'
 							>
 								<CInput
 									v-model='config.mqtt.pw'
@@ -200,11 +196,11 @@ export default {
 			return regex.test(key);
 		});
 		extend('client_id', (id) => {
-			const regex = RegExp('^[a-f0-9]{16}$');
+			const regex = RegExp('^[A-F0-9]{16}$');
 			return regex.test(id);
 		});
 		extend('topic', (topic) => {
-			const regex = RegExp('^gateway\\/[a-f0-9]{16}\\/rest\\/requests\\/\\+\\/#$');
+			const regex = RegExp('^gateway\\/[A-F0-9]{16}\\/rest\\/requests\\/\\+\\/#$');
 			return regex.test(topic);
 		});
 		this.getConfig();

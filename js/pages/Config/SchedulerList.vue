@@ -389,7 +389,7 @@ export default {
 						);
 					} else if (error.response.status === 415) {
 						this.$toast.error(
-							this.$t('config.scheduler.messages.invalidImportFormat')
+							this.$t('config.scheduler.messages.importInvalidFormat')
 								.toString()
 						);
 					}

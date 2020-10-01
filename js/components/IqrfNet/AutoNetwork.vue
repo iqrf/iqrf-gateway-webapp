@@ -147,31 +147,25 @@
 							/>
 						</ValidationProvider>
 					</div>
-					<div class='form-group'>
-						<CInputCheckbox
-							:checked.sync='useEmptyWaves'
+					<ValidationProvider
+						v-slot='{ errors, touched, valid }'
+						rules='integer|required|between:1,127'
+						:custom-messages='{
+							integer: "iqrfnet.networkManager.messages.invalid.integer",
+							required: "iqrfnet.networkManager.messages.autoNetwork.emptyWaves",
+							between: "iqrfnet.networkManager.messages.autoNetwork.emptyWaves"
+						}'
+					>
+						<CInput
+							v-model.number='stopConditions.emptyWaves'
+							type='number'
+							min='1'
+							max='127'
 							:label='$t("iqrfnet.networkManager.autoNetwork.form.emptyWaves")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
 						/>
-						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
-							rules='integer|required|between:1,127'
-							:custom-messages='{
-								integer: "iqrfnet.networkManager.messages.invalid.integer",
-								required: "iqrfnet.networkManager.messages.autoNetwork.emptyWaves",
-								between: "iqrfnet.networkManager.messages.autoNetwork.emptyWaves"
-							}'
-						>
-							<CInput
-								v-model.number='stopConditions.emptyWaves'
-								type='number'
-								min='1'
-								max='127'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
-								:disabled='!useEmptyWaves'
-							/>
-						</ValidationProvider>
-					</div>
+					</ValidationProvider>
 					<div class='form-group'>
 						<CInputCheckbox
 							:checked.sync='useNodes'
@@ -290,7 +284,6 @@ export default {
 			timeout: null,
 			useHwpidFiltering: false,
 			useOverlappingNetworks: false,
-			useEmptyWaves: true,
 			useWaves: false,
 			useNodes: true,
 			nodeCondition: 'new',
@@ -327,7 +320,7 @@ export default {
 						case 0:
 							this.$store.commit('spinner/UPDATE_TEXT', this.autoNetworkProgress(mutation.payload.data));
 							if (mutation.payload.data.rsp.lastWave) {
-								//this.$store.commit('spinner/HIDE');
+								this.$store.commit('spinner/HIDE');
 								this.$toast.success(
 									this.$t('iqrfnet.networkManager.messages.submit.autoNetwork.success')
 										.toString()
@@ -379,9 +372,7 @@ export default {
 			this.messages.nodesTotal = this.messages.nodesNew = '';
 			let submitData = this.autoNetwork;
 			let stopConditions = {};
-			if (this.useEmptyWaves) {
-				stopConditions['emptyWaves'] = this.stopConditions.emptyWaves;
-			}
+			stopConditions['emptyWaves'] = this.stopConditions.emptyWaves;
 			if (this.useWaves) {
 				stopConditions['waves'] = this.stopConditions.waves;
 			}

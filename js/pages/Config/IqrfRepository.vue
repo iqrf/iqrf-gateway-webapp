@@ -37,7 +37,7 @@
 						}'
 					>
 						<CInput
-							v-model.number='configuration.checkPeriod'
+							v-model.number='configuration.checkPeriodInMinutes'
 							type='number'
 							min='0'
 							:label='$t("config.iqrfRepository.form.checkPeriod")'
@@ -84,7 +84,7 @@ export default {
 			configuration: {
 				instance: null,
 				urlRepo: null,
-				checkPeriod: 0,
+				checkPeriodInMinutes: 0,
 				downloadIfRepoCacheEmpty: true,
 			},
 		};

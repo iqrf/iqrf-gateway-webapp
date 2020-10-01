@@ -30,6 +30,7 @@ import {
 	cilBook,
 	cilCloud,
 	cilLan,
+	cilLockLocked,
 	cilStorage,
 	cilSettings,
 	cilToggleOff,
@@ -387,6 +388,13 @@ export default {
 							to: '/user/',
 							icon: {content: cilUser},
 							roles: ['power', 'normal'],
+						},
+						{
+							_name: 'CSidebarNavItem',
+							name: this.$t('core.apiKey.title'),
+							to: '/api-key/',
+							icon: {content: cilLockLocked},
+							roles: ['power', 'normal']
 						},
 						{
 							_name: 'CSidebarNavItem',

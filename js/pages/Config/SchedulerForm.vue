@@ -441,7 +441,7 @@ export default {
 			hour: 'numeric',
 			minute: 'numeric',
 			second: 'numeric',
-		}, 
+		},
 	},
 	metaInfo() {
 		return {

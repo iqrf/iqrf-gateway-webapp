@@ -18,21 +18,19 @@
  */
 declare(strict_types = 1);
 
-use App\Kernel;
-use Contributte\Middlewares\Application\IApplication as ApiApplication;
-use Nette\Application\Application as UiApplication;
+namespace App\CoreModule\Presenters;
 
-require_once __DIR__ . '/../vendor/autoload.php';
+/**
+ * API key configuration presenter
+ */
+class ApiKeyPresenter extends ProtectedPresenter {
 
-$isApi = substr($_SERVER['REQUEST_URI'], 0, 5) === '/api/';
+	public function renderAdd(): void {
+		$this->setView('default');
+	}
 
-// Creates DI container
-$container = Kernel::boot()->createContainer();
-// Gets application from DI container
-if ($isApi) {
-	$application = $container->getByType(ApiApplication::class);
-} else {
-	$application = $container->getByType(UiApplication::class);
+	public function renderEdit(): void {
+		$this->setView('default');
+	}
+
 }
-// Runs application
-$application->run();

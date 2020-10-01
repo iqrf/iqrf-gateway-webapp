@@ -64,6 +64,9 @@ import UserAdd from '../pages/Core/UserAdd.vue';
 import UserEdit from '../pages/Core/UserEdit.vue';
 import UserList from '../pages/Core/UserList.vue';
 
+import ApiKeyList from '../pages/Core/ApiKeyList.vue';
+import ApiKeyForm from '../pages/Core/ApiKeyForm.vue';
+
 import NetworkDisambiguation from '../pages/Network/NetworkDisambiguation.vue';
 import ConnectionForm from '../pages/Network/ConnectionForm.vue';
 import EthernetInterfaces from '../pages/Network/EthernetInterfaces.vue';
@@ -604,6 +607,38 @@ const routes: Array<RouteConfig> = [
 						},
 						meta: {title: 'core.user.edit.title'},
 					},
+				]
+			},
+			{
+				path: '/api-key',
+				component: {
+					render(c) {
+						return c('router-view');
+					}
+				},
+				children: [
+					{
+						path: '',
+						component: ApiKeyList,
+						meta: {title: 'core.apiKey.title'}
+					},
+					{
+						component: ApiKeyForm,
+						path: 'add',
+						meta: {title: 'core.apiKey.add'}
+					},
+					{
+						component: ApiKeyForm,
+						path: 'edit/:keyId',
+						props: (route) => {
+							const keyId = Number.parseInt(route.params.keyId, 10);
+							if (Number.isNaN(keyId)) {
+								return 0;
+							}
+							return {keyId};
+						},
+						meta: {title: 'core.apiKey.edit'}
+					}
 				]
 			},
 			{

@@ -106,7 +106,7 @@ export default {
 	created() {
 		extend('integer', integer);
 		extend('required', required);
-		if (this.component) {
+		if (this.component !== null) {
 			this.getComponent();
 		}
 	},

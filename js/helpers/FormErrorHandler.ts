@@ -13,14 +13,14 @@ class FormErrorHandler {
 	 */
 	cloudError(error: AxiosError) {
 		store.commit('spinner/HIDE');
-		if (error.response) {
-			if (error.response.status === 400) {
-				Vue.$toast.error(i18n.t('forms.messages.submitBadRequest').toString());
-			} else if (error.response.status) {
-				Vue.$toast.error(i18n.t('forms.messages.submitServerError').toString());
-			}
-		} else {
-			console.error(error.message);
+		if (error.response === undefined) {
+			console.error(error);
+			return;
+		}
+		if (error.response.status === 400) {
+			Vue.$toast.error(i18n.t('forms.messages.submitBadRequest').toString());
+		} else if (error.response.status) {
+			Vue.$toast.error(i18n.t('forms.messages.submitServerError').toString());
 		}
 	}
 
@@ -30,17 +30,18 @@ class FormErrorHandler {
 	 */
 	configError(error: AxiosError) {
 		store.commit('spinner/HIDE');
-		if (error.response) {
-			if (error.response.status === 404) {
-				Vue.$toast.error(i18n.t('forms.messages.componentNotFound').toString());
-			} else if (error.response.status === 500) {
-				Vue.$toast.error(i18n.t('forms.messages.submitServerError').toString());
-			} else {
-				console.error(error.message);
-			}
+		if (error.response === undefined) {
+			console.error(error);
+			return;
+		}
+		if (error.response.status === 404) {
+			Vue.$toast.error(i18n.t('forms.messages.componentNotFound').toString());
+		} else if (error.response.status === 500) {
+			Vue.$toast.error(i18n.t('forms.messages.submitServerError').toString());
 		} else {
 			console.error(error.message);
 		}
+
 	}
 
 	/**
@@ -49,16 +50,16 @@ class FormErrorHandler {
 	 */
 	serviceError(error: AxiosError) {
 		store.commit('spinner/HIDE');
-		if (error.response) {
-			if (error.response.status === 400) {
-				Vue.$toast.error(i18n.t('forms.messages.submitBadRequest').toString());
-			} else if (error.response.status === 404) {
-				Vue.$toast.error(i18n.t('service.errors.unsupportedService').toString());
-			} else if (error.response.status === 500) {
-				Vue.$toast.error(i18n.t('service.errors.unsupportedInit').toString());
-			}
-		} else {
-			console.error(error.message);
+		if (error.response === undefined) {
+			console.error(error);
+			return;
+		}
+		if (error.response.status === 400) {
+			Vue.$toast.error(i18n.t('forms.messages.submitBadRequest').toString());
+		} else if (error.response.status === 404) {
+			Vue.$toast.error(i18n.t('service.errors.unsupportedService').toString());
+		} else if (error.response.status === 500) {
+			Vue.$toast.error(i18n.t('service.errors.unsupportedInit').toString());
 		}
 	}
 
@@ -68,16 +69,33 @@ class FormErrorHandler {
 	 */
 	schedulerError(error: AxiosError) {
 		store.commit('spinner/HIDE');
-		if (error.response) {
-			if (error.response.status === 400) {
-				Vue.$toast.error(i18n.t('config.scheduler.messages.rest.invalidTask').toString());
-			} else if (error.response.status === 404) {
-				Vue.$toast.error(i18n.t('config.scheduler.messages.rest.notFound').toString());
-			} else if (error.response.status === 409) {
-				Vue.$toast.error(i18n.t('config.scheduler.messages.rest.exists').toString());
-			}
-		} else {
-			console.error(error.message);
+		if (error.response === undefined) {
+			console.error(error);
+			return;
+		}
+		if (error.response.status === 400) {
+			Vue.$toast.error(i18n.t('config.scheduler.messages.rest.invalidTask').toString());
+		} else if (error.response.status === 404) {
+			Vue.$toast.error(i18n.t('config.scheduler.messages.rest.notFound').toString());
+		} else if (error.response.status === 409) {
+			Vue.$toast.error(i18n.t('config.scheduler.messages.rest.exists').toString());
+		}
+	}
+
+	/**
+	 * Handles API key management errors
+	 * @param error caught axios error
+	 */
+	apiKeyError(error: AxiosError) {
+		store.commit('spinner/HIDE');
+		if (error.response === undefined) {
+			console.error(error);
+			return;
+		}
+		if (error.response.status === 400) {
+			Vue.$toast.error(i18n.t('config.apiKey.messages.invalid').toString());
+		} else if (error.response.status === 404) {
+			Vue.$toast.error(i18n.t('config.apiKey.messages.notFound').toString());
 		}
 	}
 }

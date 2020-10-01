@@ -730,6 +730,29 @@
 			"cs": "Czech",
 			"en": "English"
 		},
+		"apiKey": {
+			"title": "API key manager",
+			"description": "Manage API keys.",
+			"add": "Add API key",
+			"edit": "Edit API key",
+			"form": {
+				"id": "ID",
+				"description": "Description",
+				"expiration": "Expiration",
+				"messages": {
+					"description": "Please enter API key description."
+				}
+			},
+			"messages": {
+				"invalid": "Invalid API key metadata.",
+				"notFound": "API key with this ID does not exist.",
+				"deleteTitle": "Delete API key",
+				"deletePrompt": "Do you really want to delete API key ID {key}?",
+				"deleteSuccess": "API key ID {key} has been successfully deleted.",
+				"editSuccess": "API key ID {key} metadata have been successfully changed.",
+				"addSuccess": "New API key has been successfully added."
+			}
+		},
 		"user": {
 			"title": "User manager",
 			"description": "Manage users of this webapp.",

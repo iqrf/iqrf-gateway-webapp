@@ -1,6 +1,4 @@
-<?php
-
-/**
+{**
  * Copyright 2017 MICRORISC s.r.o.
  * Copyright 2017-2019 IQRF Tech s.r.o.
  *
@@ -15,24 +13,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-declare(strict_types = 1);
+*}
 
-use App\Kernel;
-use Contributte\Middlewares\Application\IApplication as ApiApplication;
-use Nette\Application\Application as UiApplication;
-
-require_once __DIR__ . '/../vendor/autoload.php';
-
-$isApi = substr($_SERVER['REQUEST_URI'], 0, 5) === '/api/';
-
-// Creates DI container
-$container = Kernel::boot()->createContainer();
-// Gets application from DI container
-if ($isApi) {
-	$application = $container->getByType(ApiApplication::class);
-} else {
-	$application = $container->getByType(UiApplication::class);
-}
-// Runs application
-$application->run();
+{block title}{_core.apiKey.title}{/block}
+{block content}
