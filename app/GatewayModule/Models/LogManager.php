@@ -22,9 +22,6 @@ namespace App\GatewayModule\Models;
 
 use App\CoreModule\Models\ZipArchiveManager;
 use App\GatewayModule\Exceptions\LogNotFoundException;
-use DateTime;
-use Nette\Application\BadRequestException;
-use Nette\Application\Responses\FileResponse;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
 use SplFileInfo;
@@ -93,18 +90,6 @@ class LogManager {
 		$zipManager->addFolder($this->logDir, '');
 		$zipManager->close();
 		return $this->path;
-	}
-
-	/**
-	 * Downloads logs of IQRF Gateway Daemon
-	 * @return FileResponse HTTP response with the logs
-	 * @throws BadRequestException
-	 */
-	public function download(): FileResponse {
-		$now = new DateTime();
-		$fileName = 'iqrf-gateway-daemon-logs' . $now->format('c') . '.zip';
-		$contentType = 'application/zip';
-		return new FileResponse($this->createArchive(), $fileName, $contentType, true);
 	}
 
 }

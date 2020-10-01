@@ -48,6 +48,15 @@ class FeatureManager {
 			'enabled' => false,
 			'url' => '/grafana/',
 		],
+		'iqrfGatewayController' => [
+			'enabled' => false,
+		],
+		'iqrfGatewayTranslator' => [
+			'enabled' => false,
+		],
+		'mender' => [
+			'enabled' => false,
+		],
 		'networkManager' => [
 			'enabled' => false,
 		],

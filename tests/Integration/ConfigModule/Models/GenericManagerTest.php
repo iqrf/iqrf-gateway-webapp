@@ -123,36 +123,6 @@ final class GenericManagerTest extends JsonConfigTestCase {
 	}
 
 	/**
-	 * Tests the function to get available messagings
-	 */
-	public function testGetMessagings(): void {
-		$expected = [
-			'config.mq.title' => ['MqMessaging'],
-			'config.mqtt.title' => ['MqttMessaging'],
-			'config.udp.title' => ['UdpMessaging'],
-			'config.websocket.title' => ['WebsocketMessaging'],
-		];
-		Assert::same($expected, $this->manager->getMessagings());
-	}
-
-	/**
-	 * Tests the function to load the existing configuration
-	 */
-	public function testLoadExisting(): void {
-		$this->manager->setComponent(self::COMPONENT);
-		$expected = $this->readFile(self::FILE_NAME);
-		Assert::equal($expected, $this->manager->load(0));
-	}
-
-	/**
-	 * Tests the function to load a nonexistent configuration
-	 */
-	public function testLoadNonexisting(): void {
-		$this->manager->setComponent(self::COMPONENT);
-		Assert::same([], $this->manager->load(-1));
-	}
-
-	/**
 	 * Tests the function to load the existing configuration
 	 */
 	public function testLoadInstanceExisting(): void {

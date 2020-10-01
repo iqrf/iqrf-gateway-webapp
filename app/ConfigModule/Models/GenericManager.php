@@ -133,19 +133,6 @@ class GenericManager {
 
 	/**
 	 * Loads the configuration
-	 * @param int $id Configuration ID
-	 * @return array<mixed> Configuration in an array
-	 * @throws IOException
-	 * @throws JsonException
-	 * @todo Handle nonexistent IDs
-	 */
-	public function load(int $id): array {
-		$this->fileName = $this->getFileNameById($id);
-		return $this->read();
-	}
-
-	/**
-	 * Loads the configuration
 	 * @param string $instance Instance name
 	 * @return array<mixed> Configuration in an array
 	 * @throws JsonException
@@ -255,61 +242,6 @@ class GenericManager {
 	public function generateFileName(array $array): string {
 		$prefix = Strings::replace($this->component, '~::~', '__');
 		return $prefix . '__' . $array['instance'];
-	}
-
-	/**
-	 * Gets the file name
-	 * @return string|null File name (without .json)
-	 */
-	public function getFileName(): ?string {
-		return $this->fileName;
-	}
-
-	/**
-	 * Returns instance file name from instance ID
-	 * @param int $id Instance ID
-	 * @return string|null File name
-	 */
-	public function getFileNameById(int $id): ?string {
-		$instanceFiles = $this->getInstanceFiles();
-		return $instanceFiles[$id] ?? null;
-	}
-
-	/**
-	 * Gets available messagings
-	 * @return array<string, array<string>> Available messagings
-	 */
-	public function getMessagings(): array {
-		$components = [
-			'mq' => 'iqrf::MqMessaging',
-			'mqtt' => 'iqrf::MqttMessaging',
-			'udp' => 'iqrf::UdpMessaging',
-			'websocket' => 'iqrf::WebsocketMessaging',
-		];
-		$messagings = [];
-		foreach ($components as $name => $component) {
-			$messagings['config.' . $name . '.title'] = $this->getComponentInstances($component);
-		}
-		return $messagings;
-	}
-
-	/**
-	 * Gets available instances of component
-	 * @param string $component Component
-	 * @return array<string> Available instances of component
-	 */
-	public function getComponentInstances(string $component): array {
-		$instances = [];
-		$this->setComponent($component);
-		foreach ($this->getInstanceFiles() as $file) {
-			try {
-				$instances[] = $this->read($file)['instance'];
-			} catch (IOException | JsonException $e) {
-				continue;
-			}
-		}
-		sort($instances);
-		return $instances;
 	}
 
 	/**

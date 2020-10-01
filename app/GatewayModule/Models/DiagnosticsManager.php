@@ -26,8 +26,6 @@ use App\CoreModule\Models\ZipArchiveManager;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use DateTime;
-use Nette\Application\BadRequestException;
-use Nette\Application\Responses\FileResponse;
 use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
 use Throwable;
@@ -109,19 +107,6 @@ class DiagnosticsManager {
 		$this->addInstalledPackages();
 		$this->zipManager->close();
 		return $path;
-	}
-
-	/**
-	 * Downloads a diagnostic data
-	 * @return FileResponse HTTP response with the diagnostic data
-	 * @throws BadRequestException
-	 * @throws JsonException
-	 */
-	public function download(): FileResponse {
-		$path = $this->createArchive();
-		$fileName = basename($path);
-		$contentType = 'application/zip';
-		return new FileResponse($path, $fileName, $contentType, true);
 	}
 
 	/**

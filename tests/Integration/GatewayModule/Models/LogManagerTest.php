@@ -15,8 +15,6 @@ use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FileManager;
 use App\CoreModule\Models\ZipArchiveManager;
 use App\GatewayModule\Models\LogManager;
-use DateTime;
-use Nette\Application\Responses\FileResponse;
 use Tester\Assert;
 use Tester\TestCase;
 use ZipArchive;
@@ -48,16 +46,13 @@ final class LogManagerTest extends TestCase {
 	}
 
 	/**
-	 * Tests the function to download a ZIP archive with IQRF Gateway Daemon's logs
+	 * Tests the function to create a ZIP archive with IQRF Gateway Daemon's logs
 	 */
-	public function testDownload(): void {
-		$actual = $this->manager->download();
-		$path = '/tmp/iqrf-daemon-gateway-logs.zip';
-		$fileName = 'iqrf-gateway-daemon-logs' . (new DateTime())->format('c') . '.zip';
-		$contentType = 'application/zip';
-		$expected = new FileResponse($path, $fileName, $contentType, true);
+	public function testCreateArchive(): void {
+		$actual = $this->manager->createArchive();
+		$expected = '/tmp/iqrf-daemon-gateway-logs.zip';
 		Assert::equal($expected, $actual);
-		$zipManager = new ZipArchiveManager($path, ZipArchive::CREATE);
+		$zipManager = new ZipArchiveManager($expected, ZipArchive::CREATE);
 		$logs = [
 			'2018-08-13-13-37-834-iqrf-gateway-daemon.log',
 			'2018-08-13-13-37-496-iqrf-gateway-daemon.log',
