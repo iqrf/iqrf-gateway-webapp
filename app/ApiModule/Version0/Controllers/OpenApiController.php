@@ -68,6 +68,7 @@ class OpenApiController extends BaseController {
 	 */
 	public function index(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$openApi = $this->schemaBuilder->build()->toArray();
+		$openApi['paths']['/api/v0/features']['get']['security'] = [new stdClass()];
 		$openApi['paths']['/api/v0/openapi']['get']['security'] = [new stdClass()];
 		$openApi['paths']['/api/v0/user/signIn']['post']['security'] = [new stdClass()];
 		foreach ($openApi['servers'] as &$server) {

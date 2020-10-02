@@ -11,7 +11,6 @@ declare(strict_types = 1);
 namespace Tests\Integration\ConfigModule\Models;
 
 use App\ConfigModule\Models\GenericManager;
-use Nette\Utils\Arrays;
 use Tester\Assert;
 use Tester\Environment;
 use Tests\Toolkit\TestCases\JsonConfigTestCase;
@@ -145,7 +144,7 @@ final class GenericManagerTest extends JsonConfigTestCase {
 	 */
 	public function testList(): void {
 		$this->manager->setComponent(self::COMPONENT);
-		$expected = [Arrays::mergeTree(['id' => 0], $this->readFile(self::FILE_NAME))];
+		$expected = [$this->readFile(self::FILE_NAME)];
 		Assert::equal($expected, $this->manager->list());
 	}
 

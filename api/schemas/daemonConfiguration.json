@@ -149,5 +149,14 @@
 			"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/config/schema__shape__WebsocketCppService.json",
 			"title": "shape::WebsocketCppService"
 		}
-	]
+	],
+	"example": {
+		"component": "iqrf::IqrfSpi",
+		"instance": "iqrf::IqrfSpi",
+		"IqrfInterface": "/dev/spidev0.0",
+		"powerEnableGpioPin": 23,
+		"busEnableGpioPin": 7,
+		"pgmSwitchGpioPin": 22,
+		"spiReset": true
+	}
 }

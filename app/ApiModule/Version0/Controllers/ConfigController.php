@@ -282,7 +282,7 @@ class ConfigController extends BaseConfigController {
 		try {
 			$body = [
 				'configuration' => $this->componentManager->load($id),
-				'instances' => $this->manager->list(false),
+				'instances' => $this->manager->list(),
 			];
 			return $response->writeJsonBody($body);
 		} catch (JsonException $e) {
