@@ -220,14 +220,6 @@
 					{{ $t('config.mender.description') }}
 				</p>
 			</CListGroupItem>
-			<CListGroupItem to='/config/api-key/'>
-				<header class='list-group-item-heading'>
-					{{ $t('config.apiKey.title') }}
-				</header>
-				<p class='list-group-item-text'>
-					{{ $t('config.apiKey.description') }}
-				</p>
-			</CListGroupItem>
 		</CListGroup>
 	</CCard>
 </template>

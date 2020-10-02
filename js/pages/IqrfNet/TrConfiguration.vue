@@ -263,6 +263,7 @@
 				</ValidationObserver>
 			</CCardBody>
 		</CCard>
+		<SecurityForm :address='address' />
 	</div>
 </template>
 
@@ -276,7 +277,8 @@ import {
 	required,
 } from 'vee-validate/dist/rules';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import AddressChanger from './AddressChanger';
+import AddressChanger from '../../components/IqrfNet/AddressChanger';
+import SecurityForm from '../../components/IqrfNet/SecurityForm';
 import IqrfNetService from '../../services/IqrfNetService';
 
 export default {
@@ -288,13 +290,14 @@ export default {
 		CCardHeader,
 		CForm,
 		CInput,
+		SecurityForm,
 		ValidationObserver,
 		ValidationProvider,
 	},
 	props: {
 		address: {
 			type: Number,
-			required: true
+			required: true,
 		},
 	},
 	data() {

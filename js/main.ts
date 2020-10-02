@@ -36,7 +36,6 @@ import 'vue-datetime/dist/vue-datetime.css';
 
 import App from './components/App.vue';
 import TheDashboard from './components/TheDashboard.vue';
-import TrConfiguration from './components/IqrfNet/TrConfiguration.vue';
 import MainDisambiguation from './components/MainDisambiguation.vue';
 
 Sentry.init({
@@ -91,7 +90,6 @@ new Vue({
 	components: {
 		App,
 		TheDashboard,
-		TrConfiguration,
 		MainDisambiguation,
 	},
 	router: router,

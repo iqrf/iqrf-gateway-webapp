@@ -1286,6 +1286,21 @@
 		"trConfiguration": {
 			"title": "TR configuration",
 			"description": "Edit TR configuration.",
+			"security": {
+				"title": "Security",
+				"form": {
+					"ascii": "ASCII",
+					"hex": "HEX",
+					"format": "Input format",
+					"password": "Password",
+					"setPassword": "Set Access Password",
+					"setKey": "Set User Key"
+				},
+				"messages": {
+					"success": "IQMESH security has been successfully set.",
+					"failure": "IQMESH security setting has failed."
+				}
+			},
 			"form": {
 				"rf": "RF",
 				"rfBand": "RF Band",

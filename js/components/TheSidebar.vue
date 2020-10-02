@@ -273,7 +273,7 @@ export default {
 								},
 								{
 									name: this.$t('iqrfnet.trConfiguration.title'),
-									to: '/iqrfnet/tr-config/',
+									to: '/iqrfnet/tr-config/0',
 									roles: ['power', 'normal'],
 								},
 								{

@@ -21,34 +21,10 @@ declare(strict_types = 1);
 namespace App\IqrfNetModule\Presenters;
 
 use App\CoreModule\Presenters\ProtectedPresenter;
-use App\IqrfNetModule\Forms\SecurityFormFactory;
-use Nette\Application\UI\Form;
 
 /**
  * TR configuration presenter
  */
 class TrConfigPresenter extends ProtectedPresenter {
-
-	/**
-	 * @var SecurityFormFactory IQMESH Security configuration form
-	 * @inject
-	 */
-	public $securityFormFactory;
-
-	/**
-	 * Creates the IQMESH Security configuration form
-	 * @return Form IQMESH Security configuration form
-	 */
-	protected function createComponentIqrfNetSecurityForm(): Form {
-		return $this->securityFormFactory->create($this);
-	}
-
-	/**
-	 * Renders TR configuration page
-	 * @param int $address TR address
-	 */
-	public function renderDefault(int $address = 0): void {
-		$this->template->address = $address;
-	}
 
 }

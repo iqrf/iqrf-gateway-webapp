@@ -1,5 +1,4 @@
 services:
 	- App\IqrfNetModule\Forms\DpaUploadFormFactory
 	- App\IqrfNetModule\Forms\OsDpaUploadFormFactory
-	- App\IqrfNetModule\Forms\SecurityFormFactory
 	- App\IqrfNetModule\Forms\TrUploadFormFactory

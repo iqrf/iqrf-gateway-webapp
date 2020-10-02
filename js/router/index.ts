@@ -24,6 +24,7 @@ import NetworkManager from '../pages/IqrfNet/NetworkManager.vue';
 import SendJsonRequest from '../pages/IqrfNet/SendJsonRequest.vue';
 import SendDpaPacket from '../pages/IqrfNet/SendDpaPacket.vue';
 import StandardManager from '../pages/IqrfNet/StandardManager.vue';
+import TrConfiguration from '../pages/IqrfNet/TrConfiguration.vue';
 
 import ConfigDisambiguation from '../pages/Config/ConfigDisambiguation.vue';
 import ConfigMigration from '../pages/Config/ConfigMigration.vue';
@@ -547,6 +548,18 @@ const routes: Array<RouteConfig> = [
 						component: SendJsonRequest,
 						path: 'send-json',
 						meta: {title: 'iqrfnet.sendJson.title'}
+					},
+					{
+						component: TrConfiguration,
+						path: 'tr-config/:address',
+						props: (route) => {
+							const address = Number.parseInt(route.params.address, 10);
+							if (Number.isNaN(address)) {
+								return 0;
+							}
+							return {address};
+						},
+						meta: {title: 'iqrfnet.trConfiguration.title'}
 					},
 				]
 			},

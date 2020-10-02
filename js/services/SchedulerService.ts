@@ -2,6 +2,9 @@ import store from '../store';
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '../helpers/authorizationHeader';
 
+/**
+ * Scheduler service
+ */
 class SchedulerService {
 	/**
 	 * Adds a new task via the Daemon API
