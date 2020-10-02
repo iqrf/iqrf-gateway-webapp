@@ -115,15 +115,13 @@ class GenericManager {
 
 	/**
 	 * Get a list of configurations
-	 * @param bool $withId Add instance ID
 	 * @return array<mixed> Configurations
 	 */
-	public function list(bool $withId = true): array {
+	public function list(): array {
 		$instances = [];
-		foreach ($this->getInstanceFiles() as $id => $fileName) {
+		foreach ($this->getInstanceFiles() as $fileName) {
 			try {
-				$instance = $this->read($fileName);
-				$instances[] = $withId ? Arrays::mergeTree(['id' => $id], $instance) : $instance;
+				$instances[] = $this->read($fileName);
 			} catch (IOException | JsonException $e) {
 				continue;
 			}

@@ -66,7 +66,7 @@ class MenderConfigController extends BaseConfigController {
 	 *                  schema:
 	 *                      $ref: '#/components/schemas/MenderConfig'
 	 *      '500':
-	 *          $ref: '#/comments/responses/ServerError'
+	 *          $ref: '#/components/responses/ServerError'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
