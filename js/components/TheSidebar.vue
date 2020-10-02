@@ -98,12 +98,12 @@ export default {
 									feature: 'unattendedUpgrades',
 									roles: ['power', 'normal'],
 								},
-								{
+								/*{
 									name: this.$t('gateway.updater.title'),
 									to: '/gateway/updater/',
 									feature: 'updater',
 									roles: ['power', 'normal'],
-								},
+								},*/
 								{
 									name: this.$t('gateway.power.title'),
 									to: '/gateway/power/',

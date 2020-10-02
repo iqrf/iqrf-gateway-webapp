@@ -66,7 +66,7 @@ final class RouterFactory {
 		], $router::ONE_WAY);
 		$service->addRoute('[<lang [a-z]{2}>/]service/<name>', 'Control:default');
 		$gateway = $router->withModule('Gateway');
-		$gateway->addRoute('[<lang [a-z]{2}>/]gateway/updater/<action>', 'Updater:default');
+		$gateway->addRoute('[<lang [a-z]{2}>/]gateway/updater/<action>', 'Homepage:default');
 		$gateway->addRoute('[<lang [a-z]{2}>/]gateway/service/<name>', 'Homepage:service');
 		$gateway->addRoute('[<lang [a-z]{2}>/]gateway/<action>', 'Homepage:default');
 		$core = $router->withModule('Core');

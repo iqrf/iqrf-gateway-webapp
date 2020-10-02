@@ -1,6 +1,5 @@
 const webpack = require('webpack');
 const path = require('path');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
@@ -10,7 +9,6 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 module.exports = {
 	entry: {
-		app: './js/app.js',
 		main: './js/main.ts',
 		error500: './js/error500.js',
 	},
@@ -85,23 +83,10 @@ module.exports = {
 	},
 	plugins: [
 		new webpack.ProvidePlugin({
-			$: 'jquery',
-			jQuery: 'jquery',
-			'window.jQuery': 'jquery',
 			Popper: ['popper.js', 'default'],
-			Nette: 'nette-forms',
-			'window.Nette': 'nette-forms',
 		}),
 		new MiniCssExtractPlugin({
 			filename: '[name].bundle.css',
-		}),
-		new CopyWebpackPlugin({
-			patterns: [
-				{
-					from: './node_modules/live-form-validation/live-form-validation.js',
-					to: './',
-				},
-			]
 		}),
 		new VueLoaderPlugin(),
 		new CompressionPlugin(),

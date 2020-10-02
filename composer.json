@@ -71,8 +71,7 @@
 		"ratchet/pawl": "^0.3",
 		"sentry/sdk": "^2.0",
 		"symfony/process": "^5.0",
-		"tracy/tracy": "^2.7",
-		"ublaboo/datagrid": "^6.2"
+		"tracy/tracy": "^2.7"
 	},
 	"require-dev": {
 		"behat/behat": "^3.7",
