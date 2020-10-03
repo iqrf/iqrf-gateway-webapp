@@ -24,7 +24,7 @@
 				>
 					<template #expiration='{item}'>
 						<td v-if='item.expiration !== null'>
-							{{ item.expiration }}
+							{{ timeString(item) }}
 						</td>
 						<td v-else>
 							never
@@ -80,6 +80,7 @@ import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CIcon} from '@coreui
 import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import ApiKeyService from '../../services/ApiKeyService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
+import {DateTime} from 'luxon';
 
 export default {
 	name: 'ApiKeyList',
@@ -117,6 +118,15 @@ export default {
 			modals: {
 				key: null,
 			},
+			dateFormat: {
+				year: 'numeric',
+				month: 'short',
+				day: 'numeric',
+				hour12: false,
+				hour: 'numeric',
+				minute: 'numeric',
+				second: 'numeric',
+			}
 		};
 	},
 	created() {
@@ -143,6 +153,9 @@ export default {
 					});
 				})
 				.catch((error) => FormErrorHandler.apiKeyError(error));
+		},
+		timeString(item) {
+			return DateTime.fromISO(item.expiration).toLocaleString(this.dateFormat);
 		}
 	},
 	icons: {

@@ -48,6 +48,7 @@ export default {
 			}
 			try {
 				this.mode = mutation.payload.data.rsp.operMode;
+				this.$store.commit('spinner/HIDE');
 				if (this.loaded) {
 					this.$toast.success(
 						this.$t('gateway.mode.messages.' + this.mode).toString()
@@ -56,6 +57,7 @@ export default {
 					this.loaded = true;
 				}
 			} catch (e) {
+				this.$store.commit('spinner/HIDE');
 				this.mode = 'unknown';
 				this.$toast.error(
 					this.$t('gateway.mode.messages.' + this.loaded ? 'set' : 'get')
@@ -72,9 +74,11 @@ export default {
 	},
 	methods: {
 		getMode() {
+			this.$store.dispatch('spinner/show', {timeout: 10000});
 			DaemonModeService.get();
 		},
 		setMode(newMode) {
+			this.$store.dispatch('spinner/hide');
 			DaemonModeService.set(newMode);
 		},
 	},

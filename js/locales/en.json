@@ -1572,7 +1572,7 @@
 	},
 	"translatorConfig": {
 		"title": "Translator",
-		"description": "Translator configuration",
+		"description": "Configuration",
 		"form": {
 			"rest": {
 				"title": "REST API client configuration",
@@ -1611,7 +1611,7 @@
 	},
 	"controllerConfig": {
 		"title": "Controller",
-		"description": "Controller configuration",
+		"description": "Configuration",
 		"form": {
 			"daemonApi": {
 				"autoNetwork": {
@@ -1636,15 +1636,7 @@
 			},
 			"resetButton": {
 				"title": "Button configuration",
-				"api": "Daemon API call",
-				"custom": "Other API call",
-				"pin": "Button GPIO pin",
-				"setCustom": "Set other API call"
-			},
-			"statusLed": {
-				"title": "Status LED configuration",
-				"green": "Green LED GPIO pin",
-				"red": "Red LED GPIO pin"
+				"api": "Daemon API call"
 			},
 			"logger": {
 				"title": "Logger configuration",
@@ -1662,18 +1654,14 @@
 				"daWaves": "Please enter an integer between 1 and 127 for maximum waves stop condition.",
 				"ddMaxAddr": "Please enter an integer between 0 and 239 for Discovery process.",
 				"invalid": {
-					"ws_format": "Invalid websocket server address format. Example: ws://example:1883.",
-					"gpio": "GPIO pin should be an integer."
+					"ws_format": "Invalid websocket server address format. Example: ws://example:1883."
 				},
 				"missing": {
 					"ws_api": "Please enter the Daemon API websocket server address.",
 					"ws_monitor": "Please enter the Monitor websocket server address",
 					"l_file": "Please enter path to log file.",
 					"l_severity": "Please select log severity level.",
-					"rb_pin": "Please enter GPIO pin number for the button.",
-					"rb_custom": "Please enter API call identifier.",
-					"sl_green": "Please enter GPIO pin number for green LED.",
-					"sl_red": "Please enter GPIO pin number for red LED."
+					"rb_custom": "Please enter API call identifier."
 				}
 			}
 		}

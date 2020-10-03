@@ -235,12 +235,14 @@ export default {
 		};
 	},
 	created() {
-		if (this.$store.getters.isSocketConnected) {
-			this.useRest = false;
-			this.getTasks();
-		} else {
-			this.getTasks();
-		}
+		setTimeout(() => {
+			if (this.$store.getters.isSocketConnected) {
+				this.useRest = false;
+			}
+			if (this.untouched) {
+				this.getTasks();
+			}
+		}, 1000);
 		this.unsubscribe = this.$store.subscribe(mutation => {
 			if (mutation.type === 'SOCKET_ONOPEN') {
 				this.useRest = false;

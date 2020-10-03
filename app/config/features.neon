@@ -7,7 +7,7 @@ grafana:
 	url: /grafana/
 # IQRF Gateway Controller configuration
 iqrfGatewayController:
-	enabled: false
+	enabled: true
 # IQRF Gateway Translator configuration
 iqrfGatewayTranslator:
 	enabled: true

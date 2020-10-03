@@ -5,6 +5,7 @@ import {ActionContext, ActionTree, GetterTree, MutationTree} from 'vuex';
 const state = {
 	socket: {
 		isConnected: false,
+		hasReconnected: false,
 		reconnectError: false,
 	},
 	requests: {},
@@ -30,9 +31,16 @@ const getters: GetterTree<any, any> = {
 const mutations: MutationTree<any> = {
 	SOCKET_ONOPEN(state: any, event: Event) {
 		Vue.prototype.$socket = event.currentTarget;
-		state.socket.isConnected = true;
+		if (state.hasReconnected) {
+			setTimeout(() => {
+				state.socket.isConnected = true;
+			}, 1000);
+		} else {
+			state.socket.isConnected = true;
+		}
+		
 	},
-	SOCKET_ONCLOSE() {
+	SOCKET_ONCLOSE(state: any) {
 		state.socket.isConnected = false;
 	},
 	SOCKET_ONERROR(state: any, event: Event) {
@@ -47,6 +55,7 @@ const mutations: MutationTree<any> = {
 	SOCKET_RECONNECT(state: any, count: number) {
 		// eslint-disable-next-line no-console
 		console.info(state, count);
+		state.hasReconnected = true;
 	},
 	SOCKET_RECONNECT_ERROR(state: any) {
 		state.socket.reconnectError = true;

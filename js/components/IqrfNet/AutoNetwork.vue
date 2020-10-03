@@ -239,14 +239,18 @@
 			</ValidationObserver>
 		</CCardBody>
 		<CCardBody v-else>
-			{{ invalidVersionBody }}<br>
-			Current version: {{ daemonVersion }}
+			<CAlert color='danger'>
+				{{ invalidVersionBody }}<br>
+				<span v-if='daemonVersion !== null'>
+					Current version: {{ daemonVersion }}
+				</span>
+			</CAlert>
 		</CCardBody>
 	</CCard>
 </template>
 
 <script>
-import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
+import {CAlert, CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import compareVersions from 'compare-versions';
 import {timeout} from '../../helpers/timeout';
@@ -255,8 +259,9 @@ import IqrfNetService from '../../services/IqrfNetService';
 import VersionService from '../../services/VersionService';
 
 export default {
-	name: 'BondingManager',
+	name: 'AutoNetwork',
 	components: {
+		CAlert,
 		CButton,
 		CCard,
 		CCardBody,
