@@ -7,10 +7,10 @@ grafana:
 	url: /grafana/
 # IQRF Gateway Controller configuration
 iqrfGatewayController:
-	enabled: true
+	enabled: false
 # IQRF Gateway Translator configuration
 iqrfGatewayTranslator:
-	enabled: true
+	enabled: false
 # Mender client configuration
 mender:
 	enabled: false
