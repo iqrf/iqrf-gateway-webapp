@@ -1086,7 +1086,10 @@
 					"waves": "Please enter an integer between 1 and 127 for maximum number of waves.",
 					"emptyWaves": "Please enter an integer between 1 and 127 for maximum number of consecutive empty waves.",
 					"totalNodes": "Please enter an integer between 1 and 239 for total number of nodes.",
-					"newNodes": "Please enter an integer between 1 and 239 for number of new nodes."
+					"newNodes": "Please enter an integer between 1 and 239 for number of new nodes.",
+					"versionFailure": "Failed to retrieve version of IQRF Gateway Daemon.",
+					"versionInvalid": "Please upgrade to IQRF Gateway Daemon version 2.3.0 or higher to use the AutoNetwork service.",
+					"versionMissing": "Could not retrieve version of IQRF Gateway Daemon."
 				},
 				"bonding": {
 					"address": "Please enter an integer between 1 and 239 for new node address",

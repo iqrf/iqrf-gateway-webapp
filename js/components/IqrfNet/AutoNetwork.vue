@@ -1,6 +1,6 @@
 <template>
 	<CCard class='border-0'>
-		<CCardBody>
+		<CCardBody v-if='daemonVersion !== null && versionValid'>
 			<ValidationObserver v-slot='{ invalid }'>
 				<CForm>
 					<ValidationProvider
@@ -238,15 +238,21 @@
 				</CForm>
 			</ValidationObserver>
 		</CCardBody>
+		<CCardBody v-else>
+			{{ invalidVersionBody }}<br>
+			Current version: {{ daemonVersion }}
+		</CCardBody>
 	</CCard>
 </template>
 
 <script>
 import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
+import compareVersions from 'compare-versions';
 import {timeout} from '../../helpers/timeout';
 import {between, integer, required} from 'vee-validate/dist/rules';
 import IqrfNetService from '../../services/IqrfNetService';
+import VersionService from '../../services/VersionService';
 
 export default {
 	name: 'BondingManager',
@@ -290,8 +296,28 @@ export default {
 			messages: {
 				nodesTotal: '',
 				nodesNew: '',
-			}
+			},
+			daemonVersion: 'v2.2.2',
 		};
+	},
+	computed: {
+		invalidVersionBody() {
+			if (this.daemonVersion === null) {
+				return this.$t('iqrfnet.networkManager.messages.autoNetwork.versionMissing').toString();
+			} else {
+				return this.$t('iqrfnet.networkManager.messages.autoNetwork.versionInvalid').toString();
+			}
+		},
+		versionValid() {
+			if (this.daemonVersion === null) {
+				return false;
+			} else {
+				if (compareVersions.compare(this.daemonVersion, '2.3.0', '>=')) {
+					return true;
+				}
+				return false;
+			}
+		}
 	},
 	created() {
 		extend('between', between);
@@ -302,9 +328,13 @@ export default {
 			return regex.test(val);
 		});
 		this.unsubscribe = this.$store.subscribe(mutation => {
+			if (mutation.type === 'SOCKET_ONOPEN') {
+				this.getVersion();
+			}
 			if (mutation.type === 'SOCKET_ONSEND' &&
 				mutation.payload.mType === 'iqmeshNetwork_autoNetwork') {
 				this.timeout = timeout('iqrfnet.networkManager.messages.submit.timeout', 30000);
+				return;
 			}
 			if (mutation.type === 'SOCKET_ONMESSAGE') {
 				if (mutation.payload.mType === 'iqmeshNetwork_AutoNetwork') {
@@ -342,14 +372,28 @@ export default {
 						this.$t('iqrfnet.networkManager.messages.submit.invalidMessage')
 							.toString()
 					);
+				} else if (mutation.payload.mType === 'mngDaemon_Version') {
+					this.$store.commit('spinner/HIDE');
+					if (mutation.payload.data.status === 0 ) {
+						this.daemonVersion = mutation.payload.data.rsp.version.substring(0, 6);
+					} else {
+						this.$toast.error(this.$t('iqrfnet.networkManager.messages.autoNetwork.versionFailure').toString());
+					}
 				}
 			}
 		});
+		if (this.$store.getters.isSocketConnected) {
+			this.getVersion();
+		}
 	},
 	beforeDestroy() {
 		this.unsubscribe();
 	},
 	methods: {
+		getVersion() {
+			this.$store.commit('spinner/SHOW');
+			VersionService.getVersion();
+		},
 		autoNetworkProgress(response) {
 			let message = '\nWave ' + response.rsp.wave;
 			if (this.autoNetwork.stopConditions.waves) {
