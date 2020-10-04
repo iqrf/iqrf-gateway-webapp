@@ -148,6 +148,7 @@
 		"unbond": "Unbond Node",
 		"clearBonds": "Clear All Bonds",
 		"enumerate": "Enumerate",
+		"upload": "Upload",
 		"messages": {
 			"getConfTimeout": "The request to retrieve current configuration timed out.",
 			"saveConfTimeout": "The request to save new configuration timed out.",
@@ -947,6 +948,13 @@
 			"address": "Address",
 			"messages": {
 				"address": "Address has to be an integer from 0 to 239."
+			}
+		},
+		"dpaUpload": {
+			"title": "DPA plug-in",
+			"version": "DPA version",
+			"missing": {
+				"version": "Please select DPA version to upload."
 			}
 		},
 		"enumeration": {

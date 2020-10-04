@@ -34,12 +34,13 @@
 	</CCard>
 </template>
 
-<script>
+<script lang='ts'>
+import Vue from 'vue';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';
 
-export default {
+export default Vue.extend({
 	name: 'AddressChanger',
 	components: {
 		CButton,
@@ -57,7 +58,7 @@ export default {
 			required: true
 		},
 	},
-	data() {
+	data(): any {
 		return {
 			address: null,
 		};
@@ -73,5 +74,5 @@ export default {
 			this.$router.push('/iqrfnet/tr-config/' + this.address);
 		},
 	},
-};
+});
 </script>

@@ -23,11 +23,11 @@
 					</td>
 					<td v-else class='d-flex'>
 						<div class='mr-auto'>
-							{{ $t('service.states.' + (enabled ? 'enabled' : 'disabled')) }},
-							{{ $t('service.states.' + (active ? 'active' : 'inactive')) }}
+							{{ $t('service.states.' + (service.enabled ? 'enabled' : 'disabled')) }},
+							{{ $t('service.states.' + (service.active ? 'active' : 'inactive')) }}
 						</div>
 						<CButton
-							v-if='!enabled'
+							v-if='!service.enabled'
 							color='success'
 							size='sm'
 							@click='enable()'
@@ -35,7 +35,7 @@
 							{{ $t('service.actions.enable') }}
 						</CButton>
 						<CButton
-							v-if='enabled'
+							v-if='service.enabled'
 							color='danger'
 							size='sm'
 							@click='disable()'
@@ -73,11 +73,9 @@ export default {
 			showEditor: false,
 			serviceName: 'gwman-client',
 			token: null,
-			active: false,
-			enabled: false,
 			missing: false,
-			status: null,
 			unsupported: false,
+			service: undefined,
 		};
 	},
 	created() {
@@ -112,11 +110,9 @@ export default {
 		},
 		getStatus() {
 			ServiceService.getStatus(this.serviceName)
-				.then((response) => {
+				.then((status) => {
+					this.service = status;
 					this.unsupported = false;
-					this.active = response.data.active;
-					this.enabled = response.data.enabled;
-					this.status = response.data.status;
 					this.$store.commit('spinner/HIDE');
 				})
 				.catch(this.handleError);

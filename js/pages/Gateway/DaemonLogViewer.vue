@@ -1,24 +1,26 @@
 <template>
 	<CCard v-if='log' body-wrapper>
 		<pre class='log'>{{ log }}</pre>
-		<CButton color='info' @click='downloadArchive()'>
+		<CButton color='primary' @click='downloadArchive()'>
 			{{ $t('gateway.log.download') }}
 		</CButton>
 	</CCard>
 </template>
 
-<script>
+<script lang='ts'>
+import Vue from 'vue';
+import {AxiosError, AxiosResponse} from 'axios';
 import {CButton, CCard} from '@coreui/vue/src';
 import GatewayService from '../../services/GatewayService';
 import {fileDownloader} from '../../helpers/fileDownloader';
 
-export default {
+export default Vue.extend({
 	name: 'DaemonLogViewer',
 	components: {
 		CButton,
 		CCard,
 	},
-	data() {
+	data(): any {
 		return {
 			log: null
 		};
@@ -27,16 +29,18 @@ export default {
 		this.$store.commit('spinner/SHOW');
 		GatewayService.getLatestLog()
 			.then(
-				(response) => {
+				(response: AxiosResponse) => {
 					this.log = response.data;
 					this.$store.commit('spinner/HIDE');
 				}
 			)
-			.catch((error) => {
+			.catch((error: AxiosError) => {
 				this.$store.commit('spinner/HIDE');
 				if (error.response) {
 					if (error.response.data.code === 500) {
-						this.$toast.error(this.$t('gateway.log.messages.notFound').toString());
+						this.$toast.error(
+							this.$t('gateway.log.messages.notFound').toString()
+						);
 					}
 				}
 			});
@@ -45,7 +49,7 @@ export default {
 		downloadArchive() {
 			this.$store.commit('spinner/SHOW');
 			GatewayService.getLogArchive().then(
-				(response) => {
+				(response: AxiosResponse) => {
 					const file = fileDownloader(response, 'application/zip', 'iqrf-gateway-logs.zip');
 					this.$store.commit('spinner/HIDE');
 					file.click();
@@ -56,5 +60,5 @@ export default {
 	metaInfo: {
 		title: 'gateway.log.title',
 	},
-};
+});
 </script>

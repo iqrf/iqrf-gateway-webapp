@@ -14,10 +14,11 @@
 	</div>
 </template>
 
-<script>
+<script lang='ts'>
+import Vue from 'vue';
 import {CButton, CButtonGroup} from '@coreui/vue';
 
-export default {
+export default Vue.extend({
 	name: 'InterfaceMappings',
 	components: {
 		CButton,
@@ -29,7 +30,7 @@ export default {
 			required: true,
 		},
 	},
-	data() {
+	data(): any {
 		return {
 			mappings: {
 				'spi': require('../../../app/ConfigModule/json/SpiPins.json'),
@@ -38,10 +39,10 @@ export default {
 		};
 	},
 	methods: {
-		setMapping(board) {
+		setMapping(board: string) {
 			const mapping = this.mappings[this.interfaceType][board];
 			this.$emit('updateMapping', mapping);
 		},
 	},
-};
+});
 </script>

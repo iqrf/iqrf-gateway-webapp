@@ -38,13 +38,14 @@
 	</ValidationObserver>
 </template>
 
-<script>
+<script lang='ts'>
+import Vue from 'vue';
 import {CButton, CForm, CInput, CModal} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 import PixlaService from '../../services/PixlaService';
 
-export default {
+export default Vue.extend({
 	name: 'PixlaTokenEditor',
 	components: {
 		CButton,
@@ -75,7 +76,7 @@ export default {
 		processSubmit() {
 			PixlaService.setToken(this.token)
 				.then(() => {
-					this.token = null;
+					this.token = '';
 					this.$store.commit('spinner/SHOW');
 					this.$emit('update:show', false);
 					this.$emit('tokenUpdated');
@@ -90,5 +91,5 @@ export default {
 				});
 		}
 	},
-};
+});
 </script>

@@ -90,7 +90,7 @@
 <script>
 import {CButton, CCard} from '@coreui/vue/src';
 import CoordinatorInfo from '../../components/Gateway/CoordinatorInfo';
-import DaemonModeService from '../../services/DaemonModeService';
+import DaemonModeService, {DaemonMode} from '../../services/DaemonModeService';
 import GatewayService from '../../services/GatewayService';
 import ResourceUsage from '../../components/Gateway/ResourceUsage';
 import {fileDownloader} from '../../helpers/fileDownloader';
@@ -135,8 +135,12 @@ export default {
 	},
 	created() {
 		this.$store.commit('spinner/SHOW');
+		if (this.$store.state.webSocketClient.socket.isConnected) {
+			DaemonModeService.get();
+		}
 		this.unsubscribe = this.$store.subscribe(mutation => {
-			if (mutation.type === 'SOCKET_ONOPEN') {
+			if (mutation.type === 'SOCKET_ONOPEN' &&
+					this.mode === DaemonMode.unknown) {
 				DaemonModeService.get();
 				return;
 			}
@@ -144,15 +148,8 @@ export default {
 					mutation.payload.mType !== 'mngDaemon_Mode') {
 				return;
 			}
-			try {
-				this.mode = mutation.payload.data.rsp.operMode;
-			} catch (e) {
-				this.mode = 'unknown';
-			}
+			this.mode = DaemonModeService.parse(mutation.payload);
 		});
-		if (this.$store.state.webSocketClient.socket.isConnected) {
-			DaemonModeService.get();
-		}
 		GatewayService.getInfo()
 			.then(
 				(response) => {

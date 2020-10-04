@@ -20,11 +20,12 @@
 	</CCard>
 </template>
 
-<script>
+<script lang='ts'>
+import Vue from 'vue';
 import {CButton, CCard} from '@coreui/vue/src';
-import DaemonModeService from '../../services/DaemonModeService';
+import DaemonModeService, {DaemonMode} from '../../services/DaemonModeService';
 
-export default {
+export default Vue.extend({
 	name: 'DaemonMode',
 	components: {
 		CButton,
@@ -33,12 +34,17 @@ export default {
 	data() {
 		return {
 			loaded: false,
-			mode: 'unknown',
+			mode: DaemonMode.unknown,
+			unsubscribe: () => {},
 		};
 	},
 	created() {
-		this.unsubscribe = this.$store.subscribe(mutation => {
-			if (mutation.type === 'SOCKET_ONOPEN') {
+		if (this.$store.state.webSocketClient.socket.isConnected) {
+			this.getMode();
+		}
+		this.unsubscribe = this.$store.subscribe((mutation: any) => {
+			if (mutation.type === 'SOCKET_ONOPEN' &&
+					this.mode === DaemonMode.unknown) {
 				this.getMode();
 				return;
 			}
@@ -46,44 +52,40 @@ export default {
 					mutation.payload.mType !== 'mngDaemon_Mode') {
 				return;
 			}
-			try {
-				this.mode = mutation.payload.data.rsp.operMode;
-				this.$store.commit('spinner/HIDE');
-				if (this.loaded) {
-					this.$toast.success(
-						this.$t('gateway.mode.messages.' + this.mode).toString()
-					);
-				} else {
-					this.loaded = true;
-				}
-			} catch (e) {
-				this.$store.commit('spinner/HIDE');
-				this.mode = 'unknown';
-				this.$toast.error(
-					this.$t('gateway.mode.messages.' + this.loaded ? 'set' : 'get')
-						.toString()
-				);
-			}
+			this.handleResponse(mutation.payload);
 		});
-		if (this.$store.state.webSocketClient.socket.isConnected) {
-			this.getMode();
-		}
 	},
 	beforeDestroy() {
 		this.unsubscribe();
 	},
 	methods: {
+		handleResponse(response: any) {
+			this.mode = DaemonModeService.parse(response);
+			this.$store.commit('spinner/HIDE');
+			if (this.mode === DaemonMode.unknown) {
+				this.$toast.error(
+					this.$t('gateway.mode.messages.' + this.loaded ? 'set' : 'get')
+						.toString()
+				);
+			} else if (this.loaded) {
+				this.$toast.success(
+					this.$t('gateway.mode.messages.' + this.mode).toString()
+				);
+			} else {
+				this.loaded = true;
+			}
+		},
 		getMode() {
 			this.$store.dispatch('spinner/show', {timeout: 10000});
 			DaemonModeService.get();
 		},
-		setMode(newMode) {
+		setMode(newMode: DaemonMode|string) {
 			this.$store.dispatch('spinner/hide');
-			DaemonModeService.set(newMode);
+			DaemonModeService.set(newMode as DaemonMode);
 		},
 	},
 	metaInfo: {
 		title: 'gateway.mode.title',
 	},
-};
+});
 </script>

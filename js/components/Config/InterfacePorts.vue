@@ -14,11 +14,12 @@
 	</div>
 </template>
 
-<script>
+<script lang='ts'>
+import Vue from 'vue';
 import {CButton, CButtonGroup} from '@coreui/vue/src';
 import IqrfService from '../../services/IqrfService';
 
-export default {
+export default Vue.extend({
 	name: 'InterfacePorts',
 	components: {
 		CButton,
@@ -30,7 +31,7 @@ export default {
 			required: true,
 		},
 	},
-	data() {
+	data(): any {
 		return {
 			ports: [],
 		};
@@ -41,9 +42,9 @@ export default {
 			.catch(() => (this.ports = []));
 	},
 	methods: {
-		setPort(port) {
+		setPort(port: string) {
 			this.$emit('updatePort', port);
 		},
 	},
-};
+});
 </script>

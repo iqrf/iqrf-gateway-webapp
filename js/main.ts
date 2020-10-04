@@ -37,6 +37,7 @@ import 'vue-datetime/dist/vue-datetime.css';
 import App from './components/App.vue';
 import TheDashboard from './components/TheDashboard.vue';
 import MainDisambiguation from './components/MainDisambiguation.vue';
+import DpaUpdater from './components/IqrfNet/DpaUpdater.vue';
 
 Sentry.init({
 	dsn: 'https://435ee2b55f994e5f85e21a9ca93ea7a7@sentry.iqrf.org/5',
@@ -46,7 +47,7 @@ Sentry.init({
 store.commit('SOCKET_ONCLOSE');
 store.commit('spinner/HIDE');
 
-Vue.prototype.$appName = 'IQRF Gateway Webapp frontend';
+Vue.prototype.$appName = 'IQRF Gateway Webapp';
 
 const wsApi: string = 'ws://' + window.location.hostname + ':1338';
 
@@ -91,6 +92,7 @@ new Vue({
 		App,
 		TheDashboard,
 		MainDisambiguation,
+		DpaUpdater,
 	},
 	router: router,
 	store: store,
@@ -102,4 +104,3 @@ new Vue({
 		}
 	},
 });
-

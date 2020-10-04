@@ -2,6 +2,28 @@ import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '../helpers/authorizationHeader';
 
 /**
+ * Service status value object
+ */
+export interface ServiceStatus {
+
+	/**
+	 * Is the service enabled?
+	 */
+	enabled: boolean;
+
+	/**
+	 * Is the service active?
+	 */
+	active: boolean;
+
+	/**
+	 * Service status
+	 */
+	status: string;
+
+}
+
+/**
  * System service service
  */
 class ServiceService {
@@ -25,8 +47,11 @@ class ServiceService {
 	 * Retrieves the service status
 	 * @param name Service name
 	 */
-	getStatus(name: string): Promise<AxiosResponse> {
-		return axios.get('services/' + name, {headers: authorizationHeader()});
+	getStatus(name: string): Promise<ServiceStatus> {
+		return axios.get('services/' + name, {headers: authorizationHeader()})
+			.then((response: AxiosResponse) => {
+				return response.data as ServiceStatus;
+			});
 	}
 
 	/**

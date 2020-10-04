@@ -1,19 +1,19 @@
 <template>
 	<CCard body-wrapper>
 		<div v-if='!missing && !unsupported'>
-			<CButton v-if='!enabled' color='success' @click='enable()'>
+			<CButton v-if='!service.enabled' color='success' @click='enable()'>
 				{{ $t('service.actions.enable') }}
 			</CButton>
-			<CButton v-if='enabled' color='danger' @click='disable()'>
+			<CButton v-if='service.enabled' color='danger' @click='disable()'>
 				{{ $t('service.actions.disable') }}
 			</CButton>
-			<CButton v-if='!active' color='success' @click='start()'>
+			<CButton v-if='!service.active' color='success' @click='start()'>
 				{{ $t('service.actions.start') }}
 			</CButton>
-			<CButton v-if='active' color='danger' @click='stop()'>
+			<CButton v-if='service.active' color='danger' @click='stop()'>
 				{{ $t('service.actions.stop') }}
 			</CButton>
-			<CButton v-if='active' color='primary' @click='restart()'>
+			<CButton v-if='service.active' color='primary' @click='restart()'>
 				{{ $t('service.actions.restart') }}
 			</CButton>
 			<CButton color='secondary' @click='refreshStatus()'>
@@ -29,11 +29,11 @@
 			{{ $t('service.states.unsupported') }}
 		</span>
 		<span v-else>
-			{{ $t('service.states.' + (enabled ? 'enabled' : 'disabled')) }},
-			{{ $t('service.states.' + (active ? 'active' : 'inactive')) }}
+			{{ $t('service.states.' + (service.enabled ? 'enabled' : 'disabled')) }},
+			{{ $t('service.states.' + (service.active ? 'active' : 'inactive')) }}
 		</span>
 		<br><br>
-		<pre v-if='status' class='log'>{{ status }}</pre>
+		<pre v-if='service !== null' class='log'>{{ service.status }}</pre>
 	</CCard>
 </template>
 
@@ -70,11 +70,9 @@ export default {
 	},
 	data() {
 		return {
-			active: false,
-			enabled: false,
 			missing: false,
-			status: null,
 			unsupported: false,
+			service: null,
 		};
 	},
 	watch: {
@@ -104,7 +102,6 @@ export default {
 		getStatus() {
 			if (!whitelisted.includes(this.serviceName)) {
 				this.unsupported = true;
-				this.status = null;
 				this.$store.commit('spinner/HIDE');
 				this.$toast.error(
 					this.$t('service.errors.unsupportedService').toString()
@@ -112,11 +109,9 @@ export default {
 				return;
 			}
 			ServiceService.getStatus(this.serviceName)
-				.then((response) => {
+				.then((status) => {
+					this.service = status;
 					this.unsupported = false;
-					this.active = response.data.active;
-					this.enabled = response.data.enabled;
-					this.status = response.data.status;
 					this.$store.commit('spinner/HIDE');
 				})
 				.catch(this.handleError);
