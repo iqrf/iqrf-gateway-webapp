@@ -50,7 +50,10 @@ store.commit('spinner/HIDE');
 
 Vue.prototype.$appName = 'IQRF Gateway Webapp';
 
-const wsApi: string = 'ws://' + window.location.hostname + ':1338';
+const isHttps: boolean = location.protocol === 'https:';
+const hostname: string = window.location.hostname;
+const isLocalhost: boolean = hostname === ('localhost' || '127.0.0.1' || '[::1]');
+const wsApi: string = (isHttps ? 'wss://' : 'ws://') + window.location.hostname + (isLocalhost ? ':1338': '');
 
 Vue.use(VueNativeSock, wsApi, {
 	store: store,
