@@ -22,13 +22,8 @@ namespace App\IqrfNetModule\Models;
 
 use App\ConfigModule\Models\GenericManager;
 use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
-use App\GatewayModule\Exceptions\CorruptedFileException;
 use App\GatewayModule\Exceptions\UnknownFileFormatExceptions;
 use App\IqrfNetModule\Enums\UploadFormats;
-use App\IqrfNetModule\Exceptions\DpaErrorException;
-use App\IqrfNetModule\Exceptions\EmptyResponseException;
-use Nette\Http\FileUpload;
-use Nette\IOException;
 use Nette\Utils\FileSystem;
 use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
@@ -44,16 +39,10 @@ class UploadManager {
 	private $path = '/var/cache/iqrf-gateway-daemon/upload';
 
 	/**
-	 * @var NativeUploadManager IQRF TR native upload manager
-	 */
-	private $uploadManager;
-
-	/**
 	 * Constructor
 	 * @param GenericManager $configManager Generic configuration manager
-	 * @param NativeUploadManager $uploadManager IQRF TR native upload manager
 	 */
-	public function __construct(GenericManager $configManager, NativeUploadManager $uploadManager) {
+	public function __construct(GenericManager $configManager) {
 		try {
 			$configManager->setComponent('iqrf::NativeUploadService');
 			$instances = $configManager->list();
@@ -63,12 +52,12 @@ class UploadManager {
 		} catch (JsonException | NonexistentJsonSchemaException $e) {
 			$this->path = '/var/cache/iqrf-gateway-daemon/upload';
 		}
-		$this->uploadManager = $uploadManager;
 	}
 
 	/**
 	 * Uploads the file into IQRF TR module
-	 * @param string $file File path
+	 * @param string $fileName $fileName
+	 * @param string $fileContent file content
 	 * @param UploadFormats|null $format File format
 	 * @return array<string> file name and file format
 	 */

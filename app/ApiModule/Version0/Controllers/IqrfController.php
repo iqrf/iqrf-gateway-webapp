@@ -148,7 +148,7 @@ class IqrfController extends BaseController {
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
-	 * @param ApiResponse API response
+	 * @return ApiResponse API response
 	 */
 	public function upload(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
