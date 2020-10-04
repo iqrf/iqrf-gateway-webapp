@@ -75,7 +75,9 @@
 	</CCard>
 </template>
 
-<script>
+<script lang='ts'>
+import Vue from 'vue';
+import {AxiosError} from 'axios';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputFile} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
@@ -83,8 +85,8 @@ import FormErrorHandler from '../../helpers/FormErrorHandler';
 import CloudService from '../../services/CloudService';
 import ServiceService from '../../services/ServiceService';
 
-export default {
-	name: 'AWSCreator',
+export default Vue.extend({
+	name: 'AwsCreator',
 	components: {
 		CButton,
 		CCard,
@@ -96,7 +98,7 @@ export default {
 		ValidationObserver,
 		ValidationProvider
 	},
-	data() {
+	data(): any {
 		return {
 			endpoint: null,
 			serviceName: 'aws',
@@ -111,7 +113,7 @@ export default {
 	},
 	methods: {
 		buildRequest() {
-			let	formData = new FormData();
+			const	formData = new FormData();
 			formData.append('endpoint', this.endpoint);
 			formData.append('certificate', this.$refs.awsFormCert.$el.children[1].files[0]);
 			formData.append('privateKey', this.$refs.awsFormKey.$el.children[1].files[0]);
@@ -119,12 +121,12 @@ export default {
 		},
 		save() {
 			this.$store.commit('spinner/SHOW');
-			CloudService.create(this.serviceName, this.buildRequest())
+			return CloudService.create(this.serviceName, this.buildRequest())
 				.then(() => {
 					this.$store.commit('spinner/HIDE');
 					this.$toast.success(this.$t('cloud.messages.success').toString());
 				})
-				.catch((error) => {
+				.catch((error: AxiosError) => {
 					FormErrorHandler.cloudError(error);
 					return Promise.reject(error);
 				});
@@ -141,13 +143,13 @@ export default {
 									.toString()
 							);
 						})
-						.catch((error) => {
+						.catch((error: AxiosError) => {
 							FormErrorHandler.serviceError(error);
 						});
 				})
 				.catch(() => {});
 		},
-		isEmpty(button) {
+		isEmpty(button: string) {
 			if (button === 'cert') {
 				if (this.firstCert) {
 					this.firstCert = false;
@@ -161,5 +163,5 @@ export default {
 			}
 		}
 	}
-};
+});
 </script>

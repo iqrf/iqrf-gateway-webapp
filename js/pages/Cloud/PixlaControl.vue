@@ -55,20 +55,23 @@
 	</CCard>
 </template>
 
-<script>
+<script lang='ts'>
+import Vue from 'vue';
+import {AxiosError, AxiosResponse} from 'axios';
 import {CButton, CCard} from '@coreui/vue/src';
+import {NavigationGuardNext, Route} from 'vue-router';
 import PixlaTokenEditor from '../../components/Cloud/PixlaTokenEditor';
 import PixlaService from '../../services/PixlaService';
-import ServiceService from '../../services/ServiceService';
+import ServiceService, {ServiceStatus} from '../../services/ServiceService';
 
-export default {
+export default Vue.extend({
 	name: 'PixlaControl',
 	components: {
 		CButton,
 		CCard,
 		PixlaTokenEditor,
 	},
-	data() {
+	data(): any {
 		return {
 			showEditor: false,
 			serviceName: 'gwman-client',
@@ -110,7 +113,7 @@ export default {
 		},
 		getStatus() {
 			ServiceService.getStatus(this.serviceName)
-				.then((status) => {
+				.then((status: ServiceStatus) => {
 					this.service = status;
 					this.unsupported = false;
 					this.$store.commit('spinner/HIDE');
@@ -119,7 +122,7 @@ export default {
 		},
 		getToken() {
 			PixlaService.getToken()
-				.then((token) => {
+				.then((token: string) => {
 					this.token = token;
 					this.$store.commit('spinner/HIDE');
 				})
@@ -128,9 +131,12 @@ export default {
 					this.$store.commit('spinner/HIDE');
 				});
 		},
-		handleError(error) {
+		handleError(error: AxiosError) {
 			this.$store.commit('spinner/HIDE');
-			let response = error.response;
+			if (error.response === undefined) {
+				return;
+			}
+			const response: AxiosResponse = error.response;
 			if (response.status === 404) {
 				this.missing = true;
 				this.$toast.error(this.$t('service.errors.missingService').toString());
@@ -178,7 +184,7 @@ export default {
 				.catch(this.handleError);
 		},
 	},
-	beforeRouteEnter(to, from, next) {
+	beforeRouteEnter(to: Route, from: Route, next: NavigationGuardNext) {
 		next(vm => {
 			if (!vm.$store.getters['features/isEnabled']('pixla')) {
 				vm.$toast.error(
@@ -191,5 +197,5 @@ export default {
 	metaInfo: {
 		title: 'cloud.pixla.title',
 	},
-};
+});
 </script>

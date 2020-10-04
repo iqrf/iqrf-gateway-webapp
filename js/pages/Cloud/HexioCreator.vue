@@ -11,7 +11,7 @@
 						}'
 					>
 						<CInput
-							v-model='address'
+							v-model='config.broker'
 							:label='$t("cloud.hexio.form.broker")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
@@ -25,7 +25,7 @@
 						}'
 					>
 						<CInput
-							v-model='clientId'
+							v-model='config.clientId'
 							:label='$t("cloud.hexio.form.clientId")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
@@ -39,7 +39,7 @@
 						}'
 					>
 						<CInput
-							v-model='requestTopic'
+							v-model='config.topicRequest'
 							:label='$t("cloud.hexio.form.topicRequest")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
@@ -53,7 +53,7 @@
 						}'
 					>
 						<CInput
-							v-model='responseTopic'
+							v-model='config.topicResponse'
 							:label='$t("cloud.hexio.form.topicResponse")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
@@ -67,7 +67,7 @@
 						}'
 					>
 						<CInput
-							v-model='username'
+							v-model='config.username'
 							:label='$t("cloud.hexio.form.username")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
@@ -81,7 +81,7 @@
 						}'
 					>
 						<CInput
-							v-model='password'
+							v-model='config.password'
 							:label='$t("cloud.hexio.form.password")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
@@ -107,7 +107,9 @@
 	</CCard>
 </template>
 
-<script>
+<script lang='ts'>
+import Vue from 'vue';
+import {AxiosError} from 'axios';
 import {CButton, CCard, CCardBody, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
@@ -115,7 +117,7 @@ import FormErrorHandler from '../../helpers/FormErrorHandler';
 import CloudService from '../../services/CloudService';
 import ServiceService from '../../services/ServiceService';
 
-export default {
+export default Vue.extend({
 	name: 'HexioCreator',
 	components: {
 		CButton,
@@ -129,36 +131,28 @@ export default {
 	data() {
 		return {
 			serviceName: 'hexio',
-			address: 'connect.hexio.cloud',
-			clientId: null,
-			requestTopic: 'Iqrf/DpaRequest',
-			responseTopic: 'Iqrf/DpaResponse',
-			username: null,
-			password: null,
+			config: {
+				broker: 'connect.hexio.cloud',
+				clientId: null,
+				topicRequest: 'Iqrf/DpaRequest',
+				topicResponse: 'Iqrf/DpaResponse',
+				username: null,
+				password: null,
+			}
 		};
 	},
 	created() {
 		extend('required', required);
 	},
 	methods: {
-		buildConfig() {
-			return {
-				'broker': this.address,
-				'clientId': this.clientId,
-				'topicRequest': this.requestTopic,
-				'topicResponse': this.responseTopic,
-				'username': this.username,
-				'password': this.password,
-			};
-		},
 		save() {
 			this.$store.commit('spinner/SHOW');
-			CloudService.create(this.serviceName, this.buildConfig())
+			return CloudService.create(this.serviceName, this.config)
 				.then(() => {
 					this.$store.commit('spinner/HIDE');
 					this.$toast.success(this.$t('cloud.messages.success').toString());
 				})
-				.catch((error) => {
+				.catch((error: AxiosError) => {
 					FormErrorHandler.cloudError(error);
 					return Promise.reject(error);
 				});
@@ -175,7 +169,7 @@ export default {
 									.toString()
 							);
 						})
-						.catch((error) => {
+						.catch((error: AxiosError) => {
 							FormErrorHandler.serviceError(error);
 						});
 				})
@@ -185,5 +179,5 @@ export default {
 	metaInfo: {
 		title: 'cloud.hexio.form.title',
 	},
-};
+});
 </script>

@@ -53,7 +53,9 @@
 	</CCard>
 </template>
 
-<script>
+<script lang='ts'>
+import Vue from 'vue';
+import {AxiosError} from 'axios';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
@@ -61,7 +63,7 @@ import FormErrorHandler from '../../helpers/FormErrorHandler';
 import CloudService from '../../services/CloudService';
 import ServiceService from '../../services/ServiceService';
 
-export default {
+export default Vue.extend({
 	name: 'AzureCreator',
 	components: {
 		CButton,
@@ -73,7 +75,7 @@ export default {
 		ValidationObserver,
 		ValidationProvider
 	},
-	data() {
+	data(): any {
 		return {
 			connectionString: null,
 			serviceName: 'azure',
@@ -90,7 +92,7 @@ export default {
 					this.$store.commit('spinner/HIDE');
 					this.$toast.success(this.$t('cloud.messages.success').toString());
 				})
-				.catch((error) => {
+				.catch((error: AxiosError) => {
 					FormErrorHandler.cloudError(error);
 					return Promise.reject(error);
 				});
@@ -107,7 +109,7 @@ export default {
 									.toString()
 							);
 						})
-						.catch((error) => {
+						.catch((error: AxiosError) => {
 							FormErrorHandler.serviceError(error);
 						});
 				})
@@ -117,5 +119,5 @@ export default {
 	metaInfo: {
 		title: 'cloud.msAzure.form.title',
 	},
-};
+});
 </script>
