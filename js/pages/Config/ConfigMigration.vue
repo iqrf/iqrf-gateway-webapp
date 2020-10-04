@@ -5,6 +5,7 @@
 				<div class='form-group'>
 					<CInputFile
 						ref='configZip'
+						accept='.zip'
 						:label='$t("config.migration.form.importButton")'
 						@click='isEmpty'
 						@input='isEmpty'

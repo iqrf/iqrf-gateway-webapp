@@ -38,6 +38,7 @@ import App from './components/App.vue';
 import TheDashboard from './components/TheDashboard.vue';
 import MainDisambiguation from './components/MainDisambiguation.vue';
 import DpaUpdater from './components/IqrfNet/DpaUpdater.vue';
+import FileUpload from './components/IqrfNet/FileUpload.vue';
 
 Sentry.init({
 	dsn: 'https://435ee2b55f994e5f85e21a9ca93ea7a7@sentry.iqrf.org/5',
@@ -93,6 +94,7 @@ new Vue({
 		TheDashboard,
 		MainDisambiguation,
 		DpaUpdater,
+		FileUpload,
 	},
 	router: router,
 	store: store,

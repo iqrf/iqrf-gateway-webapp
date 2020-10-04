@@ -39,7 +39,7 @@
 			<CButton color='primary' class='w-100' @click='frcPing'>
 				{{ $t('forms.pingNodes') }}
 			</CButton>
-			<div v-if='!timedOut' class='table-responsive'>
+			<div v-if='!failed' class='table-responsive'>
 				<table class='table table-striped device-info'>
 					<tbody>
 						<tr>
@@ -91,31 +91,59 @@ export default {
 			],
 			devices: [],
 			manual: false,
-			responseReceived: false,
-			timedOut: false
+			timeout: null,
+			failed: false,
 		};
 	},
 	created() {
+		this.$store.commit('spinner/SHOW');
+		setTimeout(() => {
+			if (this.$store.getters.isSocketConnected) {
+				this.getBondedDevices();
+			}
+		}, 1000);
 		this.generateDevices();
 		this.unsubscribe = this.$store.subscribe(mutation => {
 			if (mutation.type === 'SOCKET_ONOPEN') {
-				this.getDevices();
+				this.getBondedDevices();
 				return;
 			}
 			if (mutation.type === 'SOCKET_ONSEND') {
 				if (!this.allowedMTypes.includes(mutation.payload.mType)) {
 					return;
 				}
-				this.responseReceived = false;
-				setTimeout(() => {this.timeOut();}, 30000);
-				return;
+				if (mutation.payload.mType === 'iqrfEmbedCoordinator_BondedDevices') {
+					this.timeout = setTimeout(() => {
+						this.$toast.error(
+							this.$t('iqrfnet.networkManager.devicesInfo.messages.bonded.failure').toString()
+						);
+						this.failed = true;
+					}, 60000);
+				} else if (mutation.payload.mType === 'iqrfEmbedCoordinator_DiscoveredDevices') {
+					this.timeout = setTimeout(() => {
+						this.$toast.error(
+							this.$t('iqrfnet.networkManager.devicesInfo.messages.discovered.failure').toString()
+						);
+						this.failed = true;
+					}, 60000);
+				} else if (mutation.payload.mType === 'iqrfEmbedFrc_Send') {
+					this.timeout = setTimeout(() => {
+						this.$toast.error(
+							this.$t('iqrfnet.networkManager.devicesInfo.messages.ping.failure').toString()
+						);
+						this.failed = true;
+					}, 60000);
+				}
 			}
 			if (mutation.type === 'SOCKET_ONMESSAGE') {
 				if (!this.allowedMTypes.includes(mutation.payload.mType)) {
 					return;
 				}
-				this.responseReceived = true;
-				this.$store.commit('spinner/HIDE');
+				if (this.failed) {
+					return;
+				}
+				this.$store.dispatch('spinner/hide');
+				clearTimeout(this.timeout);
 				if (mutation.payload.mType === 'iqrfEmbedCoordinator_BondedDevices') {
 					this.parseBondedDevices(mutation.payload);
 				} else if (mutation.payload.mType === 'iqrfEmbedCoordinator_DiscoveredDevices') {
@@ -125,16 +153,14 @@ export default {
 				}
 			}
 		});
-		if (this.$store.getters.isSocketConnected) {
-			this.getDevices();
-		}	
 	},
 	beforeDestroy() {
+		clearTimeout(this.timeout);
 		this.unsubscribe();
 	},
 	methods: {
 		frcPing() {
-			this.$store.commit('spinner/SHOW');
+			this.$store.dispatch('spinner/show', {timeout: 30000});
 			IqrfNetService.ping();
 		},
 		generateDevices() {
@@ -147,11 +173,11 @@ export default {
 			return row * 10 + col;
 		},
 		getBondedDevices() {
-			this.$store.commit('spinner/SHOW');
+			this.$store.dispatch('spinner/show', {timeout: 30000});
 			IqrfNetService.getBonded();
 		},
 		getDiscoveredDevices() {
-			this.$store.commit('spinner/SHOW');
+			this.$store.dispatch('spinner/show', {timeout: 30000});
 			IqrfNetService.getDiscovered();
 		},
 		parseBondedDevices(response) {
@@ -164,6 +190,8 @@ export default {
 					bonded.forEach(item => {
 						this.devices[item].bonded = true;
 					});
+					this.failed = false;
+					this.getDiscoveredDevices();
 					break;
 				}
 				default:
@@ -171,7 +199,7 @@ export default {
 						this.$t('iqrfnet.networkManager.devicesInfo.messages.bonded.failure')
 							.toString()
 					);
-					this.timedOut = true;
+					this.failed = true;
 					break;
 			}
 		},
@@ -185,6 +213,8 @@ export default {
 					discovered.forEach(item => {
 						this.devices[item].discovered = true;
 					});
+					this.failed = false;
+					this.frcPing();
 					break;
 				}
 				default:
@@ -192,7 +222,7 @@ export default {
 						this.$t('iqrfnet.networkManager.devicesInfo.messages.discovered.failure')
 							.toString()
 					);
-					this.timedOut = true;
+					this.failed = true;
 					break;
 			}
 		},
@@ -211,6 +241,7 @@ export default {
 						this.manual = false;
 						this.$forceUpdate();
 					}
+					this.failed = false;
 					break;
 				}
 				default:
@@ -218,21 +249,8 @@ export default {
 						this.$t('iqrfnet.networkManager.devicesInfo.messages.ping.failure')
 							.toString()
 					);
-					this.timedOut = false;
+					this.failed = true;
 					break;
-			}
-		},
-		getDevices() {
-			this.getBondedDevices();
-			this.getDiscoveredDevices();
-			this.frcPing();
-		},
-		timeOut() {
-			if (!this.responseReceived) {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.error(
-					this.$t('iqrfnet.networkManager.messages.submit.timeout').toString()
-				);
 			}
 		},
 		submitFrcPing() {

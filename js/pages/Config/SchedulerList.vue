@@ -113,6 +113,7 @@
 				<div class='form-group'>
 					<CInputFile
 						ref='schedulerImport'
+						accept='application/json,.zip'
 						:label='$t("config.scheduler.form.import.file")'
 						@input='isEmpty'
 						@click='isEmpty'

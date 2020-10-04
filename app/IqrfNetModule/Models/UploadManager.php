@@ -68,41 +68,17 @@ class UploadManager {
 
 	/**
 	 * Uploads the file into IQRF TR module
-	 * @param FileUpload $file File to upload
-	 * @param UploadFormats|null $format File format
-	 * @throws CorruptedFileException
-	 * @throws DpaErrorException
-	 * @throws EmptyResponseException
-	 * @throws JsonException
-	 */
-	public function upload(FileUpload $file, ?UploadFormats $format = null): void {
-		if (!$file->isOk()) {
-			throw new CorruptedFileException();
-		}
-		$this->uploadFile($file->getTemporaryFile(), $format);
-	}
-
-	/**
-	 * Uploads the file into IQRF TR module
 	 * @param string $file File path
 	 * @param UploadFormats|null $format File format
-	 * @throws DpaErrorException
-	 * @throws EmptyResponseException
-	 * @throws JsonException
+	 * @return array<string> file name and file format
 	 */
-	public function uploadFile(string $file, ?UploadFormats $format = null): void {
-		FileSystem::createDir($this->path);
-		$fileName = basename($file);
-		FileSystem::copy($file, $this->path . '/' . $fileName);
+	public function uploadFile(string $fileName, string $fileContent, ?UploadFormats $format = null): array {
 		if ($format === null) {
-			$format = $this->recognizeFormat($file);
+			$format = $this->recognizeFormat($fileName);
 		}
-		$this->uploadManager->upload($fileName, $format);
-		try {
-			FileSystem::delete($this->path . '/' . $fileName);
-		} catch (IOException $e) {
-			// Do nothing
-		}
+		FileSystem::createDir($this->path);
+		FileSystem::write($this->path . '/' . $fileName, $fileContent);
+		return ['fileName' => $fileName, 'format' => $format->toScalar()];
 	}
 
 	/**
