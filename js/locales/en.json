@@ -533,11 +533,13 @@
 				"deleteFail": "An error occurred while removing task.",
 				"getFail": "Could not retrieve task {task}.",
 				"addSuccess": "Scheduler task has been successfully added.",
+				"processError": "An error has occured while processing Daemon API request.",
 				"rest": {
 					"invalidTask": "Task configuration is not valid.",
 					"invalidFile": "Imported scheduler configuration is not valid.",
 					"notFound": "Task does not exist.",
-					"exists": "Task with this ID already exists."
+					"exists": "Task with this ID already exists.",
+					"messagingFail": "Failed to retrieve messaging services."
 				}
 			}
 		},
@@ -1120,6 +1122,7 @@
 			"documentation": "Show API documentation.",
 			"response": "Response",
 			"request": "Request",
+			"notAvailable": "The IQRF Gateway Daemon service is currently not available, attempting reconnect ({attempt}).",
 			"copy": {
 				"request": "Copy request to the clipboard",
 				"response": "Copy response to the clipboard",

@@ -208,16 +208,15 @@ export default {
 		};
 	},
 	created() {
-		if (this.$store.getters.isSocketConnected) {
-			this.useRest = false;
-			if (this.id) {
+		this.$store.commit('spinner/SHOW');
+		setTimeout(() => {
+			if (this.$store.state.webSocketClient.socket.isConnected) {
+				this.useRest = false;
+			}
+			if (this.id && this.untouched) {
 				this.getTask(this.id);
 			}
-		} else {
-			if (this.id) {
-				this.getTask(this.id);
-			}
-		}
+		}, 1000);
 		extend('integer', integer);
 		extend('required', required);
 		extend('json', (json) => {
@@ -278,9 +277,16 @@ export default {
 					this.$store.commit('spinner/HIDE');
 					if (mutation.payload.data.status === 0) {
 						this.successfulSave();
+					} else {
+						this.$toast.error(
+							this.$t('config.scheduler.messagess.processError').toString()
+						);
 					}
 				} else if (mutation.payload.mType === 'messageError') {
 					this.$store.commit('spinner/HIDE');
+					this.$toast.error(
+						this.$t('config.scheduler.messagess.processError').toString()
+					);
 				}
 			}
 			
@@ -358,6 +364,13 @@ export default {
 							});
 						}
 					});
+				})
+				.catch(() => {
+					this.$store.commit('spinner/HIDE');
+					this.$router.push('/config/scheduler/');
+					this.$toast.error(
+						this.$t('config.scheduler.messages.rest.messagingFail').toString()
+					);
 				});
 		},
 		saveTask() {
@@ -389,7 +402,6 @@ export default {
 					timeSpec.cronTime = new Array(7).fill('');
 			}
 			if (timeSpec.exactTime) {
-				//daemon datetime processing workeround
 				let date = new Date(timeSpec.startTime);
 				date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
 				timeSpec.startTime = date.toISOString().split('.')[0];
@@ -430,7 +442,7 @@ export default {
 			this.$toast.success(
 				this.$t('config.scheduler.messages.addSuccess').toString()
 			);
-		}
+		},
 	},
 	pickerSettings: {
 		dateFormat: {

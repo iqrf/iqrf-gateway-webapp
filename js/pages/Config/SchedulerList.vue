@@ -235,8 +235,9 @@ export default {
 		};
 	},
 	created() {
+		this.$store.commit('spinner/SHOW');
 		setTimeout(() => {
-			if (this.$store.getters.isSocketConnected) {
+			if (this.$store.state.webSocketClient.socket.isConnected) {
 				this.useRest = false;
 			}
 			if (this.untouched) {

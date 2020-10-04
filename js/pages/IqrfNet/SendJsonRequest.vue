@@ -11,7 +11,7 @@
 					{{ $t("iqrfnet.sendJson.documentation") }}
 				</CButton>
 			</CCardHeader>
-			<CCardBody>
+			<CCardBody v-if='daemonAvailable'>
 				<ValidationObserver v-slot='{ invalid }'>
 					<CForm @submit.prevent='processSubmit'>
 						<ValidationProvider
@@ -36,6 +36,11 @@
 						</CButton>
 					</CForm>
 				</ValidationObserver>
+			</CCardBody>
+			<CCardBody v-else>
+				<CAlert color='danger'>
+					{{ $t('iqrfnet.sendJson.notAvailable', {attempt: reconnectAttempt}) }}
+				</CAlert>
 			</CCardBody>
 		</CCard>
 		<CRow>
@@ -93,7 +98,7 @@
 
 <script>
 
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CTextarea} from '@coreui/vue/src';
+import {CAlert, CButton, CCard, CCardBody, CCardHeader, CForm, CTextarea} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 import {timeout} from '../../helpers/timeout';
@@ -110,6 +115,7 @@ import 'prismjs/themes/prism.css';
 export default {
 	name: 'SendJsonRequest',
 	components: {
+		CAlert,
 		CButton,
 		CCard,
 		CCardBody,
@@ -130,6 +136,8 @@ export default {
 			response: null,
 			timeout: null,
 			mType: null,
+			daemonAvailable: true,
+			reconnectAttempt: 0,
 		};
 	},
 	created() {
@@ -147,11 +155,17 @@ export default {
 		});
 		extend('required', required);
 		this.unsubscribe = this.$store.subscribe(mutation => {
-			if (mutation.type === 'SOCKET_ONSEND') {
+			if (mutation.type === 'SOCKET_ONOPEN') {
+				this.daemonAvailable = true;
+			} else if (mutation.type === 'SOCKET_ONCLOSE' || 
+				mutation.type === 'SOCKET_ONERROR') {
+				this.daemonAvailable = false;
+			} else if (mutation.type === 'SOCKET_RECONNECT') {
+				this.reconnectAttempt = mutation.payload;
+			} else if (mutation.type === 'SOCKET_ONSEND') {
 				this.mType = mutation.payload.mType;
 				this.timeout = timeout('iqrfnet.sendJson.form.messages.timeout', 30000);
-			}
-			if (mutation.type === 'SOCKET_ONMESSAGE') {
+			} else if (mutation.type === 'SOCKET_ONMESSAGE') {
 				if ({}.hasOwnProperty.call(mutation.payload, 'mType')) {
 					clearTimeout(this.timeout);
 					this.$store.commit('spinner/HIDE');
