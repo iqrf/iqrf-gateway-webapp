@@ -45,8 +45,6 @@ export default {
 	methods: {
 		updateDevices() {
 			this.$refs.devs.getBondedDevices();
-			this.$refs.devs.getDiscoveredDevices();
-			this.$refs.devs.submitFrcPing();
 		},
 	},
 	metaInfo: {

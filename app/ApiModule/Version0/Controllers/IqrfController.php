@@ -24,10 +24,17 @@ use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\Tag;
+use Apitte\Core\Exception\Api\ClientErrorException;
+use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
+use App\ApiModule\Version0\Utils\ContentTypeUtil;
 use App\ConfigModule\Models\IqrfManager;
+use App\GatewayModule\Exceptions\UnknownFileFormatExceptions;
+use App\IqrfNetModule\Enums\UploadFormats;
+use App\IqrfNetModule\Models\UploadManager;
 use Iqrf\IdeMacros\MacroFileParser;
+use Nette\IOException;
 
 /**
  * IQRF network manager
@@ -47,13 +54,20 @@ class IqrfController extends BaseController {
 	private $macroParser;
 
 	/**
+	 * @var UploadManager Upload manager
+	 */
+	private $uploadManager;
+
+	/**
 	 * Constructor
 	 * @param IqrfManager $interfacesManager IQRF interfaces manager
 	 * @param MacroFileParser $macroParser IQRF IDE Macros parser
+	 * @param UploadManager $uploadManager Upload manager
 	 */
-	public function __construct(IqrfManager $interfacesManager, MacroFileParser $macroParser) {
+	public function __construct(IqrfManager $interfacesManager, MacroFileParser $macroParser, UploadManager $uploadManager) {
 		$this->interfacesManager = $interfacesManager;
 		$this->macroParser = $macroParser;
+		$this->uploadManager = $uploadManager;
 	}
 
 	/**
@@ -101,6 +115,55 @@ class IqrfController extends BaseController {
 	 */
 	public function macros(ApiRequest $request, ApiResponse $response): ApiResponse {
 		return $response->writeJsonBody($this->macroParser->read());
+	}
+
+	/**
+	 * @Path("/upload")
+	 * @Method("POST")
+	 * @OpenApi("
+	 *  summary: Uploads file
+	 *  requestBody:
+	 *      description: Uploads file
+	 *      required: true
+	 *      content:
+	 *          multipart/form-data:
+	 *              schema:
+	 *                  type: object
+	 *                  properties:
+	 *                      format:
+	 *                          enum: [hex, iqrf, trcnfg, '']
+	 *                          type: string
+	 *                      file:
+	 *                          type: string
+	 *
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '400':
+	 *          $ref: '#/components/responses/BadRequest'
+	 *      '415':
+	 *          description: Unsupported media file
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
+	 * ")
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @param ApiResponse API response
+	 */
+	public function upload(ApiRequest $request, ApiResponse $response): ApiResponse {
+		try {
+			ContentTypeUtil::validContentType($request, ['multipart/form-data']);
+			$format = $request->getParsedBody()['format'] ?? null;
+			if ($format !== null) {
+				$format = UploadFormats::fromScalar($format);
+			}
+			$file = $request->getUploadedFiles()[0];
+			return $response->writeJsonBody($this->uploadManager->uploadFile($file->getClientFilename(), $file->getStream()->getContents(), $format));
+		} catch (UnknownFileFormatExceptions $e) {
+			throw new ClientErrorException('Invalid file format', ApiResponse::S400_BAD_REQUEST);
+		} catch (IOException $e) {
+			throw new ServerErrorException('Write failure', ApiResponse::S500_INTERNAL_SERVER_ERROR);
+		}
 	}
 
 }

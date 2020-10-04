@@ -1406,7 +1406,22 @@
 		},
 		"trUpload": {
 			"title": "Coordinator upload",
-			"description": "IQRF Coordinator upload."
+			"description": "IQRF Coordinator upload.",
+			"file": "File to upload",
+			"fileFormat": "Target of upload",
+			"fileFormats": {
+				"hex": "HEX",
+				"iqrf": "IQRF",
+				"trcnfg": "TRCNFG"
+			},
+			"messages": {
+				"info": "These actions can take tens of seconds.",
+				"failure": "An error occured during the file upload.",
+				"timeout": "Daemon API file upload request timed out.",
+				"file": "Please select the file to upload.",
+				"fileFormat": "Please select target of upload.",
+				"success": "The file has been successfully uploaded into the coordinator."
+			}
 		}
 	},
 	"network": {

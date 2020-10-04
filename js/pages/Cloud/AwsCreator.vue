@@ -36,6 +36,7 @@
 					<div class='form-group'>
 						<CInputFile
 							ref='awsFormCert'
+							accept='.pem'
 							:label='$t("cloud.amazonAws.form.certificate")'
 							@input='isEmpty("cert")'
 							@click='isEmpty("cert")'
@@ -47,6 +48,7 @@
 					<div class='form-group'>
 						<CInputFile
 							ref='awsFormKey'
+							accept='.pem,.key'
 							:label='$t("cloud.amazonAws.form.key")'
 							@input='isEmpty("key")'
 							@click='isEmpty("key")'
@@ -113,7 +115,7 @@ export default Vue.extend({
 	},
 	methods: {
 		buildRequest() {
-			const	formData = new FormData();
+			const formData = new FormData();
 			formData.append('endpoint', this.endpoint);
 			formData.append('certificate', this.$refs.awsFormCert.$el.children[1].files[0]);
 			formData.append('privateKey', this.$refs.awsFormKey.$el.children[1].files[0]);
