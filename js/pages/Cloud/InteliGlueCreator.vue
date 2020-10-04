@@ -11,7 +11,7 @@
 						}'
 					>
 						<CInput
-							v-model='topic'
+							v-model='config.rootTopic'
 							:label='$t("cloud.intelimentsInteliGlue.form.rootTopic")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
@@ -27,7 +27,7 @@
 						}'
 					>
 						<CInput
-							v-model.number='port'
+							v-model.number='config.assignedPort'
 							type='number'
 							min='0'
 							max='65535'
@@ -44,7 +44,7 @@
 						}'
 					>
 						<CInput
-							v-model='clientId'
+							v-model='config.clientId'
 							:label='$t("cloud.intelimentsInteliGlue.form.clientId")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
@@ -58,7 +58,7 @@
 						}'
 					>
 						<CInput
-							v-model='password'
+							v-model='config.password'
 							:label='$t("cloud.intelimentsInteliGlue.form.password")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
@@ -84,7 +84,9 @@
 	</CCard>
 </template>
 
-<script>
+<script lang='ts'>
+import Vue from 'vue';
+import {AxiosError} from 'axios';
 import {CButton, CCard, CCardBody, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';
@@ -92,7 +94,7 @@ import FormErrorHandler from '../../helpers/FormErrorHandler';
 import CloudService from '../../services/CloudService';
 import ServiceService from '../../services/ServiceService';
 
-export default {
+export default Vue.extend({
 	name: 'InteliGlueCreator',
 	components: {
 		CButton,
@@ -106,10 +108,12 @@ export default {
 	data() {
 		return {
 			serviceName: 'inteliGlue',
-			topic: null,
-			port: null,
-			clientId: null,
-			password: null,
+			config: {
+				rootTopic: null,
+				assignedPort: null,
+				clientId: null,
+				password: null,
+			}
 		};
 	},
 	created() {
@@ -118,22 +122,14 @@ export default {
 		extend('required', required);
 	},
 	methods: {
-		buildConfig() {
-			return {
-				'rootTopic': this.topic,
-				'assignedPort': this.port,
-				'clientId': this.clientId,
-				'password': this.password,
-			};
-		},
 		save() {
 			this.$store.commit('spinner/SHOW');
-			CloudService.create(this.serviceName, this.buildConfig())
+			return CloudService.create(this.serviceName, this.config)
 				.then(() => {
 					this.$store.commit('spinner/HIDE');
 					this.$toast.success(this.$t('cloud.messages.success').toString());
 				})
-				.catch((error) => {
+				.catch((error: AxiosError) => {
 					FormErrorHandler.cloudError(error);
 					return Promise.reject(error);
 				});
@@ -150,7 +146,7 @@ export default {
 									.toString()
 							);
 						})
-						.catch((error) => {
+						.catch((error: AxiosError) => {
 							FormErrorHandler.serviceError(error);
 						});
 				})
@@ -160,5 +156,5 @@ export default {
 	metaInfo: {
 		title: 'cloud.intelimentsInteliGlue.form.title',
 	},
-};
+});
 </script>

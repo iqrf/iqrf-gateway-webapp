@@ -27,7 +27,7 @@
 						}'
 					>
 						<CInput
-							v-model='organizationId'
+							v-model='config.organizationId'
 							:label='$t("cloud.ibmCloud.form.organizationId")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
@@ -41,7 +41,7 @@
 						}'
 					>
 						<CInput
-							v-model='deviceType'
+							v-model='config.deviceType'
 							:label='$t("cloud.ibmCloud.form.deviceType")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
@@ -55,7 +55,7 @@
 						}'
 					>
 						<CInput
-							v-model='deviceId'
+							v-model='config.deviceId'
 							:label='$t("cloud.ibmCloud.form.deviceId")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
@@ -69,7 +69,7 @@
 						}'
 					>
 						<CInput
-							v-model='token'
+							v-model='config.token'
 							:label='$t("cloud.ibmCloud.form.token")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
@@ -83,7 +83,7 @@
 						}'
 					>
 						<CInput
-							v-model='eventId'
+							v-model='config.eventId'
 							:label='$t("cloud.ibmCloud.form.eventId")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
@@ -109,7 +109,9 @@
 	</CCard>
 </template>
 
-<script>
+<script lang='ts'>
+import Vue from 'vue';
+import {AxiosError} from 'axios';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
@@ -117,7 +119,7 @@ import FormErrorHandler from '../../helpers/FormErrorHandler';
 import CloudService from '../../services/CloudService';
 import ServiceService from '../../services/ServiceService';
 
-export default {
+export default Vue.extend({
 	name: 'IbmCreator',
 	components: {
 		CButton,
@@ -129,37 +131,30 @@ export default {
 		ValidationObserver,
 		ValidationProvider
 	},
-	data() {
+	data(): any {
 		return {
 			serviceName: 'ibmCloud',
-			organizationId: null,
-			deviceType: null,
-			deviceId: null,
-			token: null,
-			eventId: 'iqrf',
+			config: {
+				organizationId: null,
+				deviceType: null,
+				deviceId: null,
+				token: null,
+				eventId: 'iqrf',
+			},
 		};
 	},
 	created() {
 		extend('required', required);
 	},
 	methods: {
-		buildConfig() {
-			return {
-				'organizationId': this.organizationId,
-				'deviceType': this.deviceType,
-				'deviceId': this.deviceId,
-				'token': this.token,
-				'eventId': this.eventId
-			};
-		},
 		save() {
 			this.$store.commit('spinner/SHOW');
-			CloudService.create(this.serviceName, this.buildConfig())
+			return CloudService.create(this.serviceName, this.config)
 				.then(() => {
 					this.$store.commit('spinner/HIDE');
 					this.$toast.success(this.$t('cloud.messages.success').toString());
 				})
-				.catch((error) => {
+				.catch((error: AxiosError) => {
 					FormErrorHandler.cloudError(error);
 					return Promise.reject(error);
 				});
@@ -176,7 +171,7 @@ export default {
 									.toString()
 							);
 						})
-						.catch((error) => {
+						.catch((error: AxiosError) => {
 							FormErrorHandler.serviceError(error);
 						});
 				})
@@ -186,5 +181,5 @@ export default {
 	metaInfo: {
 		title: 'cloud.ibmCloud.form.title',
 	},
-};
+});
 </script>
