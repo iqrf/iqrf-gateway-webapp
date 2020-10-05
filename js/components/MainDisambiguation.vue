@@ -113,10 +113,11 @@
 	</CCard>
 </template>
 
-<script>
+<script lang='ts'>
+import Vue from 'vue';
 import {CCard, CListGroup, CListGroupItem} from '@coreui/vue/src';
 
-export default {
+export default Vue.extend({
 	name: 'MainDisambiguation',
 	components: {
 		CCard,
@@ -126,5 +127,5 @@ export default {
 	//metaInfo: {
 	//	title: 'core.dashboard',
 	//},
-};
+});
 </script>

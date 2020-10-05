@@ -134,14 +134,16 @@
 	</CCard>
 </template>
 
-<script>
+<script lang='ts'>
+import Vue from 'vue';
+import {MutationPayload} from 'vuex';
 import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox, CModal, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {timeout} from '../../helpers/timeout';
 import {between, integer, required} from 'vee-validate/dist/rules';
 import IqrfNetService from '../../services/IqrfNetService';
 
-export default {
+export default Vue.extend({
 	name: 'BondingManager',
 	components: {
 		CButton,
@@ -155,7 +157,7 @@ export default {
 		ValidationObserver,
 		ValidationProvider
 	},
-	data() {
+	data(): any {
 		return {
 			address: 1,
 			autoAddress: false,
@@ -176,7 +178,7 @@ export default {
 			const regex = RegExp('^[a-zA-Z0-9]{34}$');
 			return regex.test(code);
 		});
-		this.unsubscribe = this.$store.subscribe(mutation => {
+		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type === 'SOCKET_ONSEND' &&
 				mutation.payload.mType === ('iqmeshNetwork_BondNodeLocal' ||
 					'iqmeshNetwork_SmartConnect' ||'iqrfEmbedCoordinator_ClearAllBonds' ||
@@ -289,5 +291,5 @@ export default {
 			IqrfNetService.clearAllBonds(this.unbondCoordinatorOnly);
 		}
 	}
-};
+});
 </script>

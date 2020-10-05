@@ -97,7 +97,9 @@
 	</div>
 </template>
 
-<script>
+<script lang='ts'>
+import Vue from 'vue';
+import {AxiosError, AxiosResponse} from 'axios';
 import {
 	CButton,
 	CCard,
@@ -116,7 +118,7 @@ import InterfacePorts from '../../components/Config/InterfacePorts';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 
-export default {
+export default Vue.extend({
 	name: 'IqrfUart',
 	components: {
 		CButton,
@@ -133,7 +135,7 @@ export default {
 		ValidationObserver,
 		ValidationProvider,
 	},
-	data() {
+	data(): any {
 		return {
 			componentName: 'iqrf::IqrfUart',
 			configuration: {
@@ -148,8 +150,8 @@ export default {
 	},
 	computed: {
 		baudRates() {
-			const baudRates = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400];
-			return baudRates.map((baudRate) => ({value: baudRate, label: baudRate + ' Bd'}));
+			const baudRates: Array<number> = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400];
+			return baudRates.map((baudRate: number) => ({value: baudRate, label: baudRate + ' Bd'}));
 		}
 	},
 	created() {
@@ -161,40 +163,40 @@ export default {
 		getConfig() {
 			this.$store.commit('spinner/SHOW');
 			DaemonConfigurationService.getComponent(this.componentName)
-				.then((response) => {
+				.then((response: AxiosResponse) => {
 					this.$store.commit('spinner/HIDE');
 					if (response.data.instances.length > 0) {
 						this.configuration = response.data.instances[0];
 						this.instance = this.configuration.instance;
 					}
 				})
-				.catch((error) => FormErrorHandler.configError(error));
+				.catch((error: AxiosError) => FormErrorHandler.configError(error));
 		},
 		saveConfig() {
 			this.$store.commit('spinner/SHOW');
 			if (this.instance !== null) {
 				DaemonConfigurationService.updateInstance(this.componentName, this.instance, this.configuration)
 					.then(() => this.successfulSave())
-					.catch((error) => FormErrorHandler.configError(error));
+					.catch((error: AxiosError) => FormErrorHandler.configError(error));
 			} else {
 				DaemonConfigurationService.createInstance(this.componentName, this.configuration)
 					.then(() => this.successfulSave())
-					.catch((error) => FormErrorHandler.configError(error));
+					.catch((error: AxiosError) => FormErrorHandler.configError(error));
 			}
 		},
 		successfulSave() {
 			this.$store.commit('spinner/HIDE');
 			this.$toast.success(this.$t('config.success').toString());
 		},
-		updateMapping(mapping) {
+		updateMapping(mapping: any) {
 			Object.assign(this.configuration, mapping);
 		},
-		updatePort(port) {
+		updatePort(port: string) {
 			this.configuration.IqrfInterface = port;
 		},
 	},
 	metaInfo: {
 		title: 'config.iqrfUart.title',
 	},
-};
+});
 </script>

@@ -130,14 +130,16 @@
 	</CCard>
 </template>
 
-<script>
+<script lang='ts'>
+import Vue from 'vue';
+import {MutationPayload} from 'vuex';
 import {CButton, CCard, CCardBody, CCardFooter, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';
 import {timeout} from '../../helpers/timeout';
 import StandardLightService, {StandardLight} from '../../services/DaemonApi/StandardLightService';
 
-export default {
+export default Vue.extend({
 	name: 'LightManager',
 	components: {
 		CButton,
@@ -150,7 +152,7 @@ export default {
 		ValidationObserver,
 		ValidationProvider
 	},
-	data() {
+	data(): any {
 		return {
 			address: 1,
 			allowedMTypes: [
@@ -172,7 +174,7 @@ export default {
 		extend('between', between);
 		extend('integer', integer);
 		extend('required', required);
-		this.unsubscribe = this.$store.subscribe(mutation => {
+		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type === 'SOCKET_ONSEND') {
 				if (!this.allowedMTypes.includes(mutation.payload.mType)) {
 					return;
@@ -243,5 +245,5 @@ export default {
 			StandardLightService.decrementPower(this.address, [new StandardLight(this.index, this.power)]);
 		},
 	}
-};
+});
 </script>

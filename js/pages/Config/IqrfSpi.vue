@@ -101,6 +101,8 @@
 </template>
 
 <script>
+import Vue from 'vue';
+import {AxiosError, AxiosResponse} from 'axios';
 import {
 	CButton,
 	CCard,

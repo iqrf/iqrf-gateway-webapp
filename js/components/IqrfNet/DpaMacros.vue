@@ -25,11 +25,13 @@
 	</CCard>
 </template>
 
-<script>
+<script lang='ts'>
+import Vue from 'vue';
+import {AxiosResponse} from 'axios';
 import {CButtonGroup, CCard, CCardBody, CCardHeader, CDropdown, CDropdownItem} from '@coreui/vue/src';
 import IqrfService from '../../services/IqrfService';
 
-export default {
+export default Vue.extend({
 	name: 'DpaMacros',
 	components: {
 		CButtonGroup,
@@ -39,19 +41,19 @@ export default {
 		CDropdown,
 		CDropdownItem,
 	},
-	data() {
+	data(): any {
 		return {
 			macros: null,
 		};
 	},
 	created() {
 		IqrfService.getMacros()
-			.then((response) => {
-				this.macros = response.data.filter((group) => {
+			.then((response: AxiosResponse) => {
+				this.macros = response.data.filter((group: any) => {
 					if (!group.enabled) {
 						return null;
 					}
-					group.macros = group.macros.filter((packet) => {
+					group.macros = group.macros.filter((packet: any) => {
 						if (packet.enabled) {
 							return packet;
 						}
@@ -60,5 +62,5 @@ export default {
 				});
 			});
 	},
-};
+});
 </script>

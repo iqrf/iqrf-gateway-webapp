@@ -243,7 +243,8 @@
 	</CCard>
 </template>
 
-<script>import {CButton, CCard, CForm, CInput, CSelect} from '@coreui/vue';
+<script>
+import {CButton, CCard, CForm, CInput, CSelect} from '@coreui/vue';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 import NetworkConnectionService from '../../services/NetworkConnectionService';

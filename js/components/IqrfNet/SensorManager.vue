@@ -70,14 +70,16 @@
 	</CCard>
 </template>
 
-<script>
+<script lang='ts'>
+import Vue from 'vue';
+import {MutationPayload} from 'vuex';
 import {CButton, CCard, CCardBody, CCardFooter, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';
 import {timeout} from '../../helpers/timeout';
 import StandardSensorService from '../../services/DaemonApi/StandardSensorService';
 
-export default {
+export default Vue.extend({
 	name: 'SensorManager',
 	components: {
 		CButton,
@@ -90,7 +92,7 @@ export default {
 		ValidationObserver,
 		ValidationProvider
 	},
-	data() {
+	data(): any {
 		return {
 			address: 1,
 			allowedMTypes: [
@@ -106,7 +108,7 @@ export default {
 		extend('between', between);
 		extend('integer', integer);
 		extend('required', required);
-		this.unsubscribe = this.$store.subscribe(mutation => {
+		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type === 'SOCKET_ONSEND') {
 				if (!this.allowedMTypes.includes(mutation.payload.mType)) {
 					return;
@@ -156,18 +158,18 @@ export default {
 		this.unsubscribe();
 	},
 	methods: {
-		parseEnumerate(sensors) {
+		parseEnumerate(sensors: any) {
 			this.sensors = [];
-			sensors.forEach(item => {
+			sensors.forEach((item: any) => {
 				if (item.id === 'BINARYDATA7') {
 					item = item.breakdown[0];
 				}
 				this.sensors.push({'type': item.name, 'unit': item.unit});
 			});
 		},
-		parseReadAll(sensors) {
+		parseReadAll(sensors: any) {
 			this.sensors = [];
-			sensors.forEach(item => {
+			sensors.forEach((item: any) => {
 				if (item.id === 'BINARYDATA7') {
 					item = item.breakdown[0];
 				}
@@ -183,16 +185,10 @@ export default {
 			StandardSensorService.enumerate(this.address);
 		},
 	}
-};
+});
 </script>
 
 <style scoped>
-.scroll-table {
-    display: block;
-    overflow-x: auto;
-    white-space: nowrap;
-}
-
 td {
 	text-align: center;
 }

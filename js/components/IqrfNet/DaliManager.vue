@@ -85,14 +85,16 @@
 	</CCard>
 </template>
 
-<script>
+<script lang='ts'>
+import Vue from 'vue';
+import {MutationPayload} from 'vuex';
 import {CButton, CCard, CCardBody, CCardFooter, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {timeout} from '../../helpers/timeout';
 import {between, integer, required} from 'vee-validate/dist/rules';
 import StandardDaliService from '../../services/DaemonApi/StandardDaliService';
 
-export default {
+export default Vue.extend({
 	name: 'DaliManager',
 	components: {
 		CButton,
@@ -105,7 +107,7 @@ export default {
 		ValidationObserver,
 		ValidationProvider
 	},
-	data() {
+	data(): any {
 		return {
 			address: 1,
 			answers: null,
@@ -118,7 +120,7 @@ export default {
 		extend('between', between);
 		extend('integer', integer);
 		extend('required', required);
-		this.unsubscribe = this.$store.subscribe(mutation => {
+		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type === 'SOCKET_ONSEND') {
 				if (mutation.payload.mType === 'iqrfDali_SendCommands') {
 					this.timeout = timeout('iqrfnet.networkManager.messages.submit.timeout', 30000);
@@ -163,7 +165,7 @@ export default {
 		addDaliCommand() {
 			this.commands.push(null);
 		},
-		removeDaliCommand(index) {
+		removeDaliCommand(index: number) {
 			this.commands.splice(index, 1);
 		},
 		sendDali() {
@@ -171,5 +173,5 @@ export default {
 			StandardDaliService.send(this.address, this.commands);
 		},
 	}
-};
+});
 </script>

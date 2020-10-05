@@ -53,14 +53,16 @@
 	</CCard>
 </template>
 
-<script>
+<script lang='ts'>
+import Vue from 'vue';
+import {MutationPayload} from 'vuex';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {timeout} from '../../helpers/timeout';
 import {between, integer, required} from 'vee-validate/dist/rules';
 import IqrfNetService from '../../services/IqrfNetService';
 
-export default {
+export default Vue.extend({
 	name: 'DiscoveryManager',
 	components: {
 		CButton,
@@ -72,7 +74,7 @@ export default {
 		ValidationObserver,
 		ValidationProvider
 	},
-	data() {
+	data(): any {
 		return {
 			maxAddr: 239,
 			txPower: 6,
@@ -84,7 +86,7 @@ export default {
 		extend('between', between);
 		extend('integer', integer);
 		extend('required', required);
-		this.unsubscribe = this.$store.subscribe(mutation => {
+		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type === 'SOCKET_ONSEND' &&
 				mutation.payload.mType === 'iqrfEmbedCoordinator_Discovery') {
 				this.timeout = timeout('iqrfnet.networkManager.messages.submit.timeout', 30000);
@@ -127,5 +129,5 @@ export default {
 			IqrfNetService.discovery(this.txPower, this.maxAddr);
 		},
 	}
-};
+});
 </script>

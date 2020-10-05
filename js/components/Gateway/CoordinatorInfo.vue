@@ -25,11 +25,14 @@
 	</span>
 </template>
 
-<script>
+<script lang='ts'>
+import Vue from 'vue';
+import {MutationPayload} from 'vuex';
 import IqrfNetService from '../../services/IqrfNetService';
-export default {
+
+export default Vue.extend({
 	name: 'CoordinatorInfo',
-	data() {
+	data(): any {
 		return {
 			enumeration: null,
 			hasData: false,
@@ -38,7 +41,7 @@ export default {
 		};
 	},
 	created() {
-		this.unsubscribe = this.$store.subscribe(mutation => {
+		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type !== 'SOCKET_ONMESSAGE' ||
 					mutation.payload.mType !== 'iqmeshNetwork_EnumerateDevice') {
 				return;
@@ -53,10 +56,12 @@ export default {
 				this.hasData = false;
 			}
 		});
-		IqrfNetService.enumerateDevice(0);
+		if (this.$store.getters.isSocketConnected) {
+			IqrfNetService.enumerateDevice(0);
+		}
 	},
 	beforeDestroy() {
 		this.unsubscribe();
 	},
-};
+});
 </script>

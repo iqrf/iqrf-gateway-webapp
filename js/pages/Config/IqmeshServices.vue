@@ -4,12 +4,14 @@
 	</div>
 </template>
 
-<script>
+<script lang='ts'>
+import Vue from 'vue';
 import OtaUpload from '../../components/Config/OtaUpload';
-export default {
+
+export default Vue.extend({
 	name: 'IqmeshServices',
 	components: {
 		OtaUpload,
 	}
-};
+});
 </script>

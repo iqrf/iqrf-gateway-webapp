@@ -9,10 +9,11 @@
 	</div>
 </template>
 
-<script>
+<script lang='ts'>
+import Vue from 'vue';
 import { mapGetters } from 'vuex';
 
-export default {
+export default Vue.extend({
 	name: 'LoadingSpinner',
 	computed: {
 		...mapGetters({
@@ -20,7 +21,7 @@ export default {
 			text: 'spinner/text',
 		}),
 	},
-};
+});
 </script>
 
 <style scoped lang='scss'>

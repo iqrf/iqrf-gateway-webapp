@@ -224,10 +224,11 @@
 	</CCard>
 </template>
 
-<script>
+<script lang='ts'>
+import Vue from 'vue';
 import {CCard, CListGroup, CListGroupItem} from '@coreui/vue/src';
 
-export default {
+export default Vue.extend({
 	name: 'ConfigDisambiguation',
 	components: {
 		CCard,
@@ -237,5 +238,5 @@ export default {
 	metaInfo: {
 		title: 'config.title',
 	},
-};
+});
 </script>

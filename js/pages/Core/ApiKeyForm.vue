@@ -153,8 +153,8 @@ export default {
 	metaInfo() {
 		return {
 			title: this.$route.path === '/api-key/add' ?
-				this.$t('core.apiKey.add') :
-				this.$t('core.apiKey.edit')
+				this.$t('core.apiKey.add').toString() :
+				this.$t('core.apiKey.edit').toString()
 		};
 	}
 };

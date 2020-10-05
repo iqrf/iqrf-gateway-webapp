@@ -90,13 +90,15 @@
 	<div v-else />
 </template>
 
-<script>
+<script lang='ts'>
+import Vue from 'vue';
+import {MutationPayload} from 'vuex';
 import {CButton, CCard, CCardBody, CCardHeader, CIcon} from '@coreui/vue/src';
 import IqrfNetService from '../../services/IqrfNetService';
 import ProductService from '../../services/IqrfRepository/ProductService';
 import {timeout} from '../../helpers/timeout';
 
-export default {
+export default Vue.extend({
 	name: 'DeviceEnumeration',
 	components: {
 		CButton,
@@ -112,7 +114,7 @@ export default {
 			default: 0,
 		},
 	},
-	data() {
+	data(): any {
 		return {
 			response: undefined,
 			osData: undefined,
@@ -125,7 +127,7 @@ export default {
 			this.$store.commit('spinner/SHOW');
 			IqrfNetService.enumerateDevice(this.address);
 		}
-		this.unsubscribe = this.$store.subscribe(mutation => {
+		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type === 'SOCKET_ONOPEN') {
 				this.$store.commit('spinner/SHOW');
 				IqrfNetService.enumerateDevice(this.address);
@@ -176,7 +178,7 @@ export default {
 	metaInfo: {
 		title: 'iqrfnet.enumeration.title',
 	},
-};
+});
 </script>
 
 <style scoped>

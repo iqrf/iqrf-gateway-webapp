@@ -29,12 +29,14 @@
 	</CCard>
 </template>
 
-<script>
+<script lang='ts'>
+import Vue from 'vue';
+import {AxiosError, AxiosResponse} from 'axios';
 import {CButton, CCard, CCardBody, CForm, CInputFile} from '@coreui/vue/src';
 import DaemonConfigurationService	from '../../services/DaemonConfigurationService';
 import {fileDownloader} from '../../helpers/fileDownloader';
 
-export default {
+export default Vue.extend({
 	name: 'ConfigMigration',
 	components: {
 		CButton,
@@ -50,10 +52,14 @@ export default {
 		};
 	},
 	methods: {
+		getFiles(): FileList|null {
+			const input = (this.$refs.configZip as CInputFile).$el.children[1] as HTMLInputElement;
+			return input.files;
+		},
 		exportConfig() {
 			this.$store.commit('spinner/SHOW');
 			DaemonConfigurationService.export()
-				.then((response) => {
+				.then((response: AxiosResponse) => {
 					const fileName = 'iqrf-gateway-configuration_' + new Date().toISOString();
 					const file = fileDownloader(response, 'application/zip', fileName);
 					this.$store.commit('spinner/HIDE');
@@ -62,14 +68,21 @@ export default {
 		},
 		importConfig() {
 			this.$store.commit('spinner/SHOW');
-			DaemonConfigurationService.import(this.$refs.configZip.$el.children[1].files[0])
+			const files = this.getFiles();
+			if (files === null || files.length === 0) {
+				this.$toast.error(
+					this.$t('config.migration.messages.importButton').toString()
+				);
+				return;
+			}
+			DaemonConfigurationService.import(files[0])
 				.then(() => {
 					this.$store.commit('spinner/HIDE');
 					this.$toast.success(
 						this.$t('config.migration.messages.imported').toString()
 					);
 				})
-				.catch((error) => {
+				.catch((error: AxiosError) => {
 					this.$store.commit('spinner/HIDE');
 					if (error.response === undefined) {
 						console.error(error);
@@ -90,11 +103,12 @@ export default {
 			if (this.firstConfig) {
 				this.firstConfig = false;
 			}
-			this.configEmpty = this.$refs.configZip.$el.children[1].files.length === 0;
+			const files = this.getFiles();
+			this.configEmpty = files === null || files.length === 0;
 		}
 	},
 	metaInfo: {
 		title: 'config.migration.title',
 	},
-};
+});
 </script>

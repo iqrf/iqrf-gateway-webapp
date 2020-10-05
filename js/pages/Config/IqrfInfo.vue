@@ -50,14 +50,16 @@
 	</CCard>
 </template>
 
-<script>
+<script lang='ts'>
+import Vue from 'vue';
+import {AxiosError, AxiosResponse} from 'axios';
 import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {integer, min_value, required} from 'vee-validate/dist/rules';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 
-export default {
+export default Vue.extend({
 	name: 'IqrfInfo',
 	components: {
 		CButton,
@@ -69,7 +71,7 @@ export default {
 		ValidationObserver,
 		ValidationProvider,
 	},
-	data() {
+	data(): any {
 		return {
 			componentName: 'iqrf::IqrfInfo',
 			instance: null,
@@ -91,14 +93,14 @@ export default {
 		getConfig() {
 			this.$store.commit('spinner/SHOW');
 			DaemonConfigurationService.getComponent(this.componentName)
-				.then((response) => {
+				.then((response: AxiosResponse) => {
 					this.$store.commit('spinner/HIDE');
 					if (response.data.instances.length > 0) {
 						this.configuration = response.data.instances[0];
 						this.instance = this.configuration.instance;
 					}	
 				})
-				.catch((error) => FormErrorHandler.configError(error));
+				.catch((error: AxiosError) => FormErrorHandler.configError(error));
 		},
 		saveConfig() {
 			this.$store.commit('spinner/SHOW');
@@ -109,7 +111,7 @@ export default {
 			} else {
 				DaemonConfigurationService.createInstance(this.componentName, this.configuration)
 					.then(() => this.successfulSave())
-					.catch((error) => FormErrorHandler.configError(error));
+					.catch((error: AxiosError) => FormErrorHandler.configError(error));
 			}
 		},
 		successfulSave() {
@@ -120,5 +122,5 @@ export default {
 	metaInfo: {
 		title: 'config.iqrfInfo.title',
 	},
-};
+});
 </script>

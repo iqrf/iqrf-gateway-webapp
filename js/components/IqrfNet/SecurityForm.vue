@@ -29,12 +29,14 @@
 	</CCard>
 </template>
 
-<script>
+<script lang='ts'>
+import Vue from 'vue';
+import {MutationPayload} from 'vuex';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CSelect} from '@coreui/vue/src';
 import SecurityService from '../../services/SecurityService';
 import {SecurityFormat} from '../../iqrfNet/securityFormat';
 
-export default {
+export default Vue.extend({
 	name: 'SecurityForm',
 	components: {
 		CButton,
@@ -51,18 +53,24 @@ export default {
 			required: true,
 		},
 	},
-	data() {
+	data(): any {
 		return {
 			selectOptions: [
-				{value: SecurityFormat.ASCII.valueOf(), label: this.$t('iqrfnet.trConfiguration.security.form.ascii')},
-				{value: SecurityFormat.HEX.valueOf(), label: this.$t('iqrfnet.trConfiguration.security.form.hex')}
+				{
+					value: SecurityFormat.ASCII.valueOf(),
+					label: this.$t('iqrfnet.trConfiguration.security.form.ascii').toString(),
+				},
+				{
+					value: SecurityFormat.HEX.valueOf(),
+					label: this.$t('iqrfnet.trConfiguration.security.form.hex').toString(),
+				}
 			],
 			format: SecurityFormat.ASCII.valueOf(),
 			password: '',
 		};
 	},
 	created() {
-		this.unsubscribe = this.$store.subscribe(mutation => {
+		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type !== 'SOCKET_ONMESSAGE') {
 				return;
 			}
@@ -80,7 +88,7 @@ export default {
 		this.unsubscribe();
 	},
 	methods: {
-		save(password) {
+		save(password: boolean) {
 			let regex = null;
 			if (this.format === SecurityFormat.ASCII) {
 				regex = RegExp('^[ -~]{0,16}$');
@@ -99,5 +107,5 @@ export default {
 			}
 		}
 	},
-};
+});
 </script>

@@ -44,7 +44,9 @@
 	</div>
 </template>
 
-<script>
+<script lang='ts'>
+import Vue from 'vue';
+import {AxiosError, AxiosResponse} from 'axios';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
@@ -52,7 +54,7 @@ import InterfacePorts from '../../components/Config/InterfacePorts';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 
-export default {
+export default Vue.extend({
 	name: 'IqrfCdc',
 	components: {
 		CButton,
@@ -65,7 +67,7 @@ export default {
 		ValidationObserver,
 		ValidationProvider,
 	},
-	data() {
+	data(): any {
 		return {
 			componentName: 'iqrf::IqrfCdc',
 			configuration: {
@@ -83,14 +85,14 @@ export default {
 		getConfig() {
 			this.$store.commit('spinner/SHOW');
 			DaemonConfigurationService.getComponent(this.componentName)
-				.then((response) => {
+				.then((response: AxiosResponse) => {
 					this.$store.commit('spinner/HIDE');
 					if (response.data.instances.length > 0) {
 						this.configuration = response.data.instances[0];
 						this.instance = this.configuration.instance;
 					}
 				})
-				.catch((error) => FormErrorHandler.configError(error));
+				.catch((error: AxiosError) => FormErrorHandler.configError(error));
 		},
 		saveConfig() {
 			this.$store.commit('spinner/SHOW');
@@ -108,12 +110,12 @@ export default {
 			this.$store.commit('spinner/HIDE');
 			this.$toast.success(this.$t('config.success').toString());
 		},
-		updatePort(port) {
+		updatePort(port: string) {
 			this.configuration.IqrfInterface = port;
 		},
 	},
 	metaInfo: {
 		title: 'config.iqrfCdc.title',
 	},
-};
+});
 </script>

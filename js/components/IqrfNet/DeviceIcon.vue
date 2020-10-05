@@ -8,11 +8,12 @@
 	<CIcon v-else :class='device.getIconColor()' :content='device.getIcon()' />
 </template>
 
-<script>
+<script lang='ts'>
+import Vue from 'vue';
 import Device from '../../helpers/Device';
 import {CIcon} from '@coreui/vue/src';
 
-export default {
+export default Vue.extend({
 	name: 'DeviceIcon',
 	components: {
 		CIcon
@@ -23,5 +24,5 @@ export default {
 			required: true,
 		},
 	},
-};
+});
 </script>

@@ -38,12 +38,14 @@
 	</CCard>
 </template>
 
-<script>
+<script lang='ts'>
+import Vue from 'vue';
+import {AxiosError, AxiosResponse} from 'axios';
 import {CButton, CCard, CCardBody, CForm, CInput} from '@coreui/vue/src';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 
-export default {
+export default Vue.extend({
 	name: 'MainConfiguration',
 	components: {
 		CButton,
@@ -52,7 +54,7 @@ export default {
 		CForm,
 		CInput,
 	},
-	data() {
+	data(): any {
 		return {
 			configuration: {
 				applicationName: null,
@@ -72,25 +74,25 @@ export default {
 		getConfig() {
 			this.$store.commit('spinner/SHOW');
 			DaemonConfigurationService.getComponent('')
-				.then((response) =>  {
+				.then((response: AxiosResponse) =>  {
 					this.$store.commit('spinner/HIDE');
 					this.configuration = response.data;
 				})
-				.catch((error) => FormErrorHandler.configError(error));
+				.catch((error: AxiosError) => FormErrorHandler.configError(error));
 		},
 		saveConfig() {
 			this.$store.commit('spinner/SHOW');
 			DaemonConfigurationService.updateComponent('', this.configuration)
 				.then(() => this.successfulSave())
-				.catch((error) => FormErrorHandler.configError(error));
+				.catch((error: AxiosError) => FormErrorHandler.configError(error));
 		},
 		successfulSave() {
 			this.$store.commit('spinner/HIDE');
-			this.$toast.success(this.$t('config.success'));
+			this.$toast.success(this.$t('config.success').toString());
 		},
 	},
 	metaInfo: {
 		title: 'config.main.title',
 	},
-};
+});
 </script>

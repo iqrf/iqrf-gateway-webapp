@@ -129,7 +129,9 @@
 	</div>
 </template>
 
-<script>
+<script lang='ts'>
+import Vue from 'vue';
+import {MutationPayload} from 'vuex';
 import {CButton, CCard, CCardBody, CCardHeader, CCol, CForm, CInput, CInputCheckbox, CRow} from '@coreui/vue/src';
 import DpaMacros from '../../components/IqrfNet/DpaMacros';
 import {between, integer, min_value, required} from 'vee-validate/dist/rules';
@@ -138,11 +140,12 @@ import sendPacket from '../../iqrfNet/sendPacket';
 
 import {PrismEditor} from 'vue-prism-editor';
 import 'vue-prism-editor/dist/prismeditor.min.css';
+// @ts-ignore
 import Prism from 'prismjs/components/prism-core';
 import 'prismjs/components/prism-json';
 import 'prismjs/themes/prism.css';
 
-export default {
+export default Vue.extend({
 	name: 'SendDpaPacket',
 	components: {
 		CButton,
@@ -159,7 +162,7 @@ export default {
 		ValidationObserver,
 		ValidationProvider,
 	},
-	data() {
+	data(): any {
 		return {
 			packet: null,
 			address: 0,
@@ -178,7 +181,7 @@ export default {
 		extend('dpaPacket', (packet) => {
 			return sendPacket.validatePacket(packet) ? true : 'iqrfnet.sendPacket.form.messages.invalid.packet';
 		});
-		this.unsubscribe = this.$store.subscribe(mutation => {
+		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type === 'SOCKET_ONSEND' &&
 					mutation.payload.mType === 'iqrfRaw') {
 				this.request = JSON.stringify(mutation.payload, null, 4);
@@ -230,7 +233,7 @@ export default {
 				return;
 			}
 			this.$store.commit('spinner/SHOW');
-			let json = {
+			const json: any = {
 				'mType': 'iqrfRaw',
 				'data': {
 					'req': {
@@ -250,14 +253,14 @@ export default {
 		/**
 		 * JSON highlighter method
 		 */
-		highlighter(code) {
+		highlighter(code: any) {
 			return Prism.highlight(code, Prism.languages.json, 'json');
 		},
 		/**
 		 * Sets new DPA packet
 		 * @param {string} newPacket New DPA packet
 		 */
-		setPacket(newPacket) {
+		setPacket(newPacket: string) {
 			this.packet = newPacket;
 			this.setTimeout();
 		},
@@ -279,5 +282,5 @@ export default {
 	metaInfo: {
 		title: 'iqrfnet.sendPacket.title',
 	},
-};
+});
 </script>

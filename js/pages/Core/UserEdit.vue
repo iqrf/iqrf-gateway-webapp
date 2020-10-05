@@ -97,13 +97,15 @@
 	</CCard>
 </template>
 
-<script>
+<script lang='ts'>
+import Vue from 'vue';
+import {AxiosError, AxiosResponse} from 'axios';
 import {CButton, CCard, CForm, CInput, CSelect} from '@coreui/vue/src';
 import {required,} from 'vee-validate/dist/rules';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import UserService from '../../services/UserService';
 
-export default {
+export default Vue.extend({
 	name: 'UserEdit',
 	components: {
 		CButton,
@@ -120,7 +122,7 @@ export default {
 			required: true,
 		}
 	},
-	data() {
+	data(): any {
 		return {
 			loaded: false,
 			username: null,
@@ -134,16 +136,19 @@ export default {
 		extend('required', required);
 		this.$store.commit('spinner/SHOW');
 		UserService.get(this.userId)
-			.then((response) => {
+			.then((response: AxiosResponse) => {
 				this.loaded = true;
 				this.username = response.data.username;
 				this.language = response.data.language;
 				this.role = response.data.role;
 				this.$store.commit('spinner/HIDE');
 			})
-			.catch((error) => {
+			.catch((error: AxiosError) => {
 				this.loaded = false;
 				this.$store.commit('spinner/HIDE');
+				if (error.response === undefined) {
+					return;
+				}
 				if (error.response.status === 404) {
 					this.$router.push('/user/');
 					this.$toast.error(this.$t('core.user.messages.notFound').toString());
@@ -185,7 +190,10 @@ export default {
 							.toString()
 					);
 				})
-				.catch((error) => {
+				.catch((error: AxiosError) => {
+					if (error.response === undefined) {
+						return;
+					}
 					if (error.response.status === 409) {
 						this.$toast.error(
 							this.$t('core.user.messages.conflict.username').toString()
@@ -203,5 +211,5 @@ export default {
 	metaInfo: {
 		title: 'core.user.edit.title',
 	},
-};
+});
 </script>
