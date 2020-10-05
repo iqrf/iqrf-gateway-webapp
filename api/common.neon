@@ -65,6 +65,8 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/daemonComponentDetail.json
 		DaemonConfiguration:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/daemonConfiguration.json
+		DpaFile:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/dpaFile.json
 		GatewayInfo:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/gatewayInfo.json
 		Error:

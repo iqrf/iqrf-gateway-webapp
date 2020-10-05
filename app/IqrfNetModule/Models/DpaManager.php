@@ -25,7 +25,6 @@ use App\IqrfNetModule\Enums\TrSeries;
 use Iqrf\Repository\Entities\OsDpa;
 use Iqrf\Repository\Models\FilesManager;
 use Iqrf\Repository\Models\OsAndDpaManager;
-use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
 
 /**
@@ -44,13 +43,20 @@ class DpaManager {
 	private $osDpaManager;
 
 	/**
+	 * @var UploadManager Upload manager
+	 */
+	private $uploadManager;
+
+	/**
 	 * Constructor
 	 * @param OsAndDpaManager $osDpaManager IQRF Repository OS&DPA manager
 	 * @param FilesManager $filesManager Files manager
+	 * @param UploadManager $uploadManager Upload manager
 	 */
-	public function __construct(OsAndDpaManager $osDpaManager, FilesManager $filesManager) {
+	public function __construct(OsAndDpaManager $osDpaManager, FilesManager $filesManager, UploadManager $uploadManager) {
 		$this->osDpaManager = $osDpaManager;
 		$this->filesManager = $filesManager;
+		$this->uploadManager = $uploadManager;
 	}
 
 	/**
@@ -83,8 +89,8 @@ class DpaManager {
 			foreach ($filePrefixes as $filePrefix) {
 				if (Strings::startsWith($file->getName(), $filePrefix)) {
 					$fileContent = $this->filesManager->download($file->getName());
-					$filePath = '/tmp/iqrf-gateway-daemon/' . $file->getName();
-					FileSystem::write($filePath, $fileContent);
+					$filePath = $file->getName();
+					$this->uploadManager->uploadFile($filePath, $fileContent);
 					return $filePath;
 				}
 			}

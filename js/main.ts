@@ -37,8 +37,6 @@ import 'vue-datetime/dist/vue-datetime.css';
 import App from './components/App.vue';
 import TheDashboard from './components/TheDashboard.vue';
 import MainDisambiguation from './components/MainDisambiguation.vue';
-import DpaUpdater from './components/IqrfNet/DpaUpdater.vue';
-import FileUpload from './components/IqrfNet/FileUpload.vue';
 
 Sentry.init({
 	dsn: 'https://435ee2b55f994e5f85e21a9ca93ea7a7@sentry.iqrf.org/5',
@@ -52,8 +50,8 @@ Vue.prototype.$appName = 'IQRF Gateway Webapp';
 
 const isHttps: boolean = location.protocol === 'https:';
 const hostname: string = window.location.hostname;
-const isLocalhost: boolean = hostname === ('localhost' || '127.0.0.1' || '[::1]');
-const wsApi: string = (isHttps ? 'wss://' : 'ws://') + window.location.hostname + (isLocalhost ? ':1338': '');
+const isLocalhost: boolean = ['localhost', '127.0.0.1', '[::1]'].includes(hostname);
+const wsApi: string = (isHttps ? 'wss://' : 'ws://') + window.location.hostname + (isLocalhost ? ':1338': '/ws');
 
 Vue.use(VueNativeSock, wsApi, {
 	store: store,
@@ -96,8 +94,6 @@ new Vue({
 		App,
 		TheDashboard,
 		MainDisambiguation,
-		DpaUpdater,
-		FileUpload,
 	},
 	router: router,
 	store: store,

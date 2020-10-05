@@ -21,68 +21,10 @@ declare(strict_types = 1);
 namespace App\IqrfNetModule\Presenters;
 
 use App\CoreModule\Presenters\ProtectedPresenter;
-use App\CoreModule\Traits\TPresenterFlashMessage;
-use App\IqrfNetModule\Forms\DpaUploadFormFactory;
-use App\IqrfNetModule\Forms\OsDpaUploadFormFactory;
-use App\IqrfNetModule\Forms\TrUploadFormFactory;
-use Nette\Application\UI\Form;
 
 /**
  * IQRF TR native upload presenter
  */
 class TrUploadPresenter extends ProtectedPresenter {
-
-	use TPresenterFlashMessage;
-
-	/**
-	 * @var DpaUploadFormFactory DPA upload form factory
-	 * @inject
-	 */
-	public $dpaFormFactory;
-
-	/**
-	 * @var OsDpaUploadFormFactory IQRF OS upload form factory
-	 * @inject
-	 */
-	public $osFormFactory;
-
-	/**
-	 * @var TrUploadFormFactory IQRF TR native upload form factory
-	 * @inject
-	 */
-	public $uploadFormFactory;
-
-	/**
-	 * Renders the page
-	 */
-	public function renderDefault(): void {
-		if (!$this->isAjax()) {
-			$this->flashInfo('iqrfnet.trUpload.messages.info');
-		}
-	}
-
-	/**
-	 * Creates DPA upload form
-	 * @return Form DPA upload form
-	 */
-	protected function createComponentDpaUploadForm(): Form {
-		return $this->dpaFormFactory->create($this);
-	}
-
-	/**
-	 * Creates IQRF OS upload form
-	 * @return Form IQRF OS upload form
-	 */
-	protected function createComponentOsUploadForm(): Form {
-		return $this->osFormFactory->create($this);
-	}
-
-	/**
-	 * Creates IQRF TR native upload form
-	 * @return Form IQRF TR native upload form
-	 */
-	protected function createComponentTrUploadForm(): Form {
-		return $this->uploadFormFactory->create($this);
-	}
 
 }

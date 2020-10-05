@@ -25,6 +25,7 @@ import SendJsonRequest from '../pages/IqrfNet/SendJsonRequest.vue';
 import SendDpaPacket from '../pages/IqrfNet/SendDpaPacket.vue';
 import StandardManager from '../pages/IqrfNet/StandardManager.vue';
 import TrConfiguration from '../pages/IqrfNet/TrConfiguration.vue';
+import TrUpload from '../pages/IqrfNet/TrUpload.vue';
 
 import ConfigDisambiguation from '../pages/Config/ConfigDisambiguation.vue';
 import ConfigMigration from '../pages/Config/ConfigMigration.vue';
@@ -560,6 +561,11 @@ const routes: Array<RouteConfig> = [
 							return {address};
 						},
 						meta: {title: 'iqrfnet.trConfiguration.title'}
+					},
+					{
+						component: TrUpload,
+						path: 'tr-upload',
+						meta: {title: 'iqrfnet.trUpload.title'}
 					},
 				]
 			},

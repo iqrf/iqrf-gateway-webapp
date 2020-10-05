@@ -31,8 +31,11 @@ use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Utils\ContentTypeUtil;
 use App\ConfigModule\Models\IqrfManager;
 use App\GatewayModule\Exceptions\UnknownFileFormatExceptions;
+use App\IqrfNetModule\Enums\TrSeries;
 use App\IqrfNetModule\Enums\UploadFormats;
+use App\IqrfNetModule\Models\DpaManager;
 use App\IqrfNetModule\Models\UploadManager;
+use GuzzleHttp\Exception\ClientException;
 use Iqrf\IdeMacros\MacroFileParser;
 use Nette\IOException;
 
@@ -59,12 +62,19 @@ class IqrfController extends BaseController {
 	private $uploadManager;
 
 	/**
+	 * @var DpaManager DPA manager
+	 */
+	private $dpaManager;
+
+	/**
 	 * Constructor
+	 * @param DpaManager $dpaManager IQRF DPA Manager
 	 * @param IqrfManager $interfacesManager IQRF interfaces manager
 	 * @param MacroFileParser $macroParser IQRF IDE Macros parser
 	 * @param UploadManager $uploadManager Upload manager
 	 */
-	public function __construct(IqrfManager $interfacesManager, MacroFileParser $macroParser, UploadManager $uploadManager) {
+	public function __construct(DpaManager $dpaManager, IqrfManager $interfacesManager, MacroFileParser $macroParser, UploadManager $uploadManager) {
+		$this->dpaManager = $dpaManager;
 		$this->interfacesManager = $interfacesManager;
 		$this->macroParser = $macroParser;
 		$this->uploadManager = $uploadManager;
@@ -163,6 +173,51 @@ class IqrfController extends BaseController {
 			throw new ClientErrorException('Invalid file format', ApiResponse::S400_BAD_REQUEST);
 		} catch (IOException $e) {
 			throw new ServerErrorException('Write failure', ApiResponse::S500_INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	/**
+	 * @Path("/dpaFile")
+	 * @Method("POST")
+	 * @OpenApi("
+	 *  summary: Retrieves DPA file
+	 *  requestBody:
+	 *      required: true
+	 *      content:
+	 *          application/json:
+	 *              schema:
+	 *                  $ref: '#/components/schemas/DpaFile'
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *      '400':
+	 *          $ref: '#/components/responses/BadRequest'
+	 *      '404':
+	 *          description: Not found
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
+	 * ")
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function getFile(ApiRequest $request, ApiResponse $response): ApiResponse {
+		try {
+			$data = $request->getJsonBody();
+			$dpa = $data['dpa'];
+			$rfMode = $data['rfMode'] ?? null;
+			if (hexdec(($dpa)) < 0x400 && $rfMode === null) {
+				throw new ClientErrorException('Missing RF mode for DPA Version <4.0', ApiResponse::S400_BAD_REQUEST);
+			}
+			$fileName = $this->dpaManager->getFile($data['osBuild'], $data['dpa'], TrSeries::fromTrMcuType($data['trSeries']), $rfMode);
+			if ($fileName === null) {
+				throw new ClientErrorException('DPA file not found', ApiResponse::S404_NOT_FOUND);
+			}
+			return $response->writeJsonBody(['fileName' => $fileName]);
+		} catch (IOException $e) {
+			throw new ServerErrorException('Filesystem failure', ApiResponse::S500_INTERNAL_SERVER_ERROR);
+		} catch (ClientException $e) {
+			throw new ServerErrorException('Download failure', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
 	}
 

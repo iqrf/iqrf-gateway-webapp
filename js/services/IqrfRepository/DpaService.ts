@@ -1,4 +1,5 @@
 import axios, {AxiosResponse} from 'axios';
+import {authorizationHeader} from '../../helpers/authorizationHeader';
 
 /**
  * DPA version entity
@@ -85,6 +86,14 @@ export class DpaVersion {
 }
 
 /**
+ * TR RF mode enum
+ */
+export enum RFMode {
+	STD = 'STD',
+	LP = 'LP'
+}
+
+/**
  * IQRF Repository DPA service
  */
 class DpaService {
@@ -103,6 +112,14 @@ class DpaService {
 				}
 				return versions;
 			});
+	}
+
+	/**
+	 * Retrieves name of DPA file to upload
+	 * @param metadata DPA file metadata
+	 */
+	public getDpaFile(metadata: any): Promise<AxiosResponse> {
+		return axios.post('iqrf/dpaFile', metadata, {headers: authorizationHeader()});
 	}
 
 }

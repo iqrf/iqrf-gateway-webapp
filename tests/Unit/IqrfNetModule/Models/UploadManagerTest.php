@@ -17,7 +17,6 @@ use App\IqrfNetModule\Models\NativeUploadManager;
 use App\IqrfNetModule\Models\UploadManager;
 use Mockery;
 use Mockery\MockInterface;
-use Nette\Http\FileUpload;
 use Tester\Assert;
 use Tests\Toolkit\TestCases\WebSocketTestCase;
 
@@ -57,60 +56,6 @@ final class UploadManagerTest extends WebSocketTestCase {
 	private $uploadManager;
 
 	/**
-	 * Mocks HEX file upload
-	 * @return FileUpload Mocked HEX file upload
-	 */
-	private function mockHexFile(): FileUpload {
-		$path = self::DATA_PATH . self::FILENAMES['hex'];
-		$value = [
-			'name' => self::FILENAMES['hex'],
-			'type' => 'text/plain',
-			'tmp_name' => $path,
-			'error' => UPLOAD_ERR_OK,
-			'size' => filesize($path),
-		];
-		return new FileUpload($value);
-	}
-
-	/**
-	 * Mocks HEX file upload
-	 * @return FileUpload Mocked HEX file upload
-	 */
-	private function mockIqrfFile(): FileUpload {
-		$path = self::DATA_PATH . self::FILENAMES['iqrf'];
-		$value = [
-			'name' => self::FILENAMES['iqrf'],
-			'type' => 'text/plain',
-			'tmp_name' => $path,
-			'error' => UPLOAD_ERR_OK,
-			'size' => filesize($path),
-		];
-		return new FileUpload($value);
-	}
-
-	/**
-	 * Tests the function to upload the file into IQRF TR module (HEX file format)
-	 */
-	public function testUploadHex(): void {
-		$this->uploadManager->shouldReceive('upload')
-			->with(self::FILENAMES['hex'], UploadFormats::HEX());
-		Assert::noError(function (): void {
-			$this->manager->upload($this->mockHexFile());
-		});
-	}
-
-	/**
-	 * Tests the function to upload the file into IQRF TR module (IQRF file format)
-	 */
-	public function testUploadIqrf(): void {
-		$this->uploadManager->shouldReceive('upload')
-			->with(self::FILENAMES['iqrf'], UploadFormats::IQRF());
-		Assert::noError(function (): void {
-			$this->manager->upload($this->mockIqrfFile());
-		});
-	}
-
-	/**
 	 * Tests the function to upload the file into IQRF TR module (HEX file format)
 	 */
 	public function testUploadFileHex(): void {
@@ -141,8 +86,7 @@ final class UploadManagerTest extends WebSocketTestCase {
 			->with('iqrf::NativeUploadService');
 		$configManager->shouldReceive('list')
 			->andReturn([[self::UPLOAD_PATH]]);
-		$this->uploadManager = Mockery::mock(NativeUploadManager::class);
-		$this->manager = new UploadManager($configManager, $this->uploadManager);
+		$this->manager = new UploadManager($configManager);
 	}
 
 }

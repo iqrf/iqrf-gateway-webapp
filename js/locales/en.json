@@ -1420,7 +1420,14 @@
 				"timeout": "Daemon API file upload request timed out.",
 				"file": "Please select the file to upload.",
 				"fileFormat": "Please select target of upload.",
-				"success": "The file has been successfully uploaded into the coordinator."
+				"success": "The file has been successfully uploaded into the coordinator.",
+				"downloadFailure": "The webapp has not been able to download the DPA file.",
+				"moveFailure": "The file has not been uploaded due wrong permissions.",
+				"notFound": "DPA file not found.",
+				"badRequest": "Invalid combination of DPA version and RF mode.",
+				"genericError": "An error has occured while processing request.",
+				"osBuildFail": "Failed to retrieve OS builds information.",
+				"osInfoFail": "Embed OS read request failed."
 			}
 		}
 	},

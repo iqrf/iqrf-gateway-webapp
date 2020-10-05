@@ -62,12 +62,16 @@ export default {
 			],
 			failed: false,
 			format: null,
+			requestSent: false,
 			timeout: null,
 		};
 	},
 	created() {
 		this.unsubscribe = this.$store.subscribe(mutation => {
 			if (mutation.type === 'SOCKET_ONSEND') {
+				if (!this.requestSent) {
+					return;
+				}
 				if (mutation.payload.mType !== 'mngDaemon_Upload') {
 					return;
 				}
@@ -83,6 +87,10 @@ export default {
 					return;
 				}
 				if (mutation.payload.mType === 'mngDaemon_Upload') {
+					if (!this.requestSent) {
+						return;
+					}
+					this.requestSent = false;
 					this.$store.dispatch('spinner/hide');
 					clearTimeout(this.timeout);
 					if (mutation.payload.data.status === 0) {
@@ -110,6 +118,7 @@ export default {
 				formData.append('format', this.format);
 			}
 			formData.append('file', this.$refs.fileUpload.$el.children[1].files[0]);
+			this.requestSent = true;
 			NativeUploadService.uploadREST(formData)
 				.then((response) => {
 					this.$store.dispatch('spinner/show', {timeout: 30000});

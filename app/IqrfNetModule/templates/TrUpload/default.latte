@@ -17,35 +17,3 @@
 
 {block title}{_iqrfnet.trUpload.title}{/block}
 {block content}
-<c-card>
-	<c-card-header>
-		{if $user->isInRole("power")}
-			{_iqrfnet.trUpload.title}
-		{else}
-			{_iqrfnet.trUpload.dpaHandlerUpload}
-		{/if}
-	</c-card-header>
-	<c-card-body>
-		{control trUploadForm}
-	</c-card-body>
-</c-card>
-<file-upload />
-
-<c-card>
-	<c-card-header>
-		{if $user->isInRole("power")}
-			{_iqrfnet.osUpload.title}
-		{else}
-			{_iqrfnet.dpaUpload.title}
-		{/if}
-	</c-card-header>
-	<c-card-body>
-		{if $user->isInRole("power")}
-			{control osUploadForm}
-		{else}
-			{control dpaUploadForm}
-		{/if}
-	</c-card-body>
-</c-card>
-
-<dpa-updater />
