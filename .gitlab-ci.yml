@@ -18,6 +18,7 @@ cache:
 
 .test_template: &test_template
   stage: test
+  needs: []
   retry: 2
   tags:
     - linux, amd64
@@ -124,6 +125,7 @@ behat:
   stage: test
   allow_failure: true
   image: docker:latest
+  needs: []
   services:
     - docker:dind
   before_script:
@@ -148,11 +150,13 @@ coverage:
 
 coding-style:
   stage: coding-style
+  needs: []
   script:
     - make cc
 
 phpstan:
   stage: coding-style
+  needs: []
   before_script:
     - update-alternatives --set php /usr/bin/php7.3
     - composer install --no-progress
@@ -161,6 +165,7 @@ phpstan:
 
 qa:
   stage: coding-style
+  needs: []
   before_script:
     - update-alternatives --set php /usr/bin/php7.3
     - composer install --no-progress
@@ -238,20 +243,6 @@ build-package_iqd-gw-01_release:
       - './*.deb'
       - './*.changes'
     expire_in: 2 weeks
-
-deploy-api-docs:
-  stage: deploy-docs
-  environment:
-    name: api-docs
-    url: https://apidocs.iqrf.org/iqrf-gateway-webapp/
-  only:
-    - master
-  script:
-    - curl -L https://github.com/phpDocumentor/phpDocumentor/releases/download/v3.0.0-rc/phpDocumentor.phar -o phpDocumentor.phar
-    - curl -L https://github.com/phpDocumentor/phpDocumentor/releases/download/v3.0.0-rc/phpDocumentor.phar.asc -o phpDocumentor.phar.asc
-    - php phpDocumentor.phar
-    - rsync -hrvz --delete -e ssh docs/api/ www-deploy@iqrfsdk.org:/data/nginx/apidocs/iqrf-gateway-webapp/
-  <<: *ssh_template
 
 deploy-package-devel:
   stage: deploy-package
