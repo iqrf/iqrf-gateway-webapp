@@ -49,8 +49,11 @@ Vue.prototype.$appName = 'IQRF Gateway Webapp';
 
 const isHttps: boolean = window.location.protocol === 'https:';
 const hostname: string = window.location.hostname;
-const port: string = window.location.port;
+let port: string = window.location.port;
 const isDev: boolean = port === '8081';
+if (port !== '') {
+	port = ':' + port;
+}
 const wsApi: string = (isHttps ? 'wss://' : 'ws://') + hostname + (isDev ? ':1338': port + '/ws');
 
 Vue.use(VueNativeSock, wsApi, {
