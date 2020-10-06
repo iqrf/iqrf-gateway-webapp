@@ -47,10 +47,11 @@ store.commit('spinner/HIDE');
 
 Vue.prototype.$appName = 'IQRF Gateway Webapp';
 
-const isHttps: boolean = location.protocol === 'https:';
+const isHttps: boolean = window.location.protocol === 'https:';
 const hostname: string = window.location.hostname;
-const isLocalhost: boolean = ['localhost', '127.0.0.1', '[::1]'].includes(hostname);
-const wsApi: string = (isHttps ? 'wss://' : 'ws://') + window.location.hostname + (isLocalhost ? ':1338': '/ws');
+const port: string = window.location.port;
+const isDev: boolean = port === '8081';
+const wsApi: string = (isHttps ? 'wss://' : 'ws://') + hostname + (isDev ? ':1338': port + '/ws');
 
 Vue.use(VueNativeSock, wsApi, {
 	store: store,
@@ -65,8 +66,7 @@ Vue.use(VueToast,{
 });
 Vue.use(Clipboard);
 
-const port: string = window.location.port;
-axios.defaults.baseURL = '//' + window.location.hostname + (port === '8081' ? ':8080' : '') + '/api/v0/';
+axios.defaults.baseURL = '//' + hostname + (isDev ? ':8080' : port) + '/api/v0/';
 axios.defaults.timeout = 30000; 
 
 axios.interceptors.response.use(
