@@ -20,13 +20,7 @@ parameters:
 	sentry:
 		dsn: 'https://7cd0252aae6d491b98514b9486cd2771@sentry.iqrf.org/2'
 
-application:
-	errorPresenter: Core:Error
-	mapping:
-		*: App\*Module\Presenters\*Presenter
-
 extensions:
-	formRenderer: Contributte\Forms\DI\ApplicationFormFactoryExtension
 	iqrfRepository: Iqrf\Repository\DI\IqrfRepositoryExtension
 	iqrfMacros: Iqrf\IdeMacros\DI\IqrfMacrosExtension
 	middleware: Contributte\Middlewares\DI\NetteMiddlewaresExtension
@@ -39,13 +33,8 @@ middleware:
 	debug: %debugMode%
 
 session:
-	autoStart: true
-	expiration: 14 days
 	cookieSecure: false
 	savePath: %tempDir%/sessions
-
-services:
-	router: App\CoreModule\Router\RouterFactory::createRouter
 
 http:
 	cookieSecure: auto

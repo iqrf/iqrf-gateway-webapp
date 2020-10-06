@@ -24,6 +24,7 @@ use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\RequestAttributes;
 use App\Models\Database\Entities\ApiKey;
 use App\Models\Database\Entities\User;
+use App\Models\Database\EntityManager;
 use Contributte\Middlewares\IMiddleware;
 use Contributte\Middlewares\Security\IAuthenticator;
 use InvalidArgumentException;
@@ -31,6 +32,7 @@ use Lcobucci\Jose\Parsing\Exception as JwtParsingException;
 use Nette\Utils\Json;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use function array_search;
 
 /**
  * Authentication middleware
@@ -38,9 +40,18 @@ use Psr\Http\Message\ServerRequestInterface;
 class AuthenticationMiddleware implements IMiddleware {
 
 	/**
+	 * Whitelisted installer paths
+	 */
+	private const INSTALLER_PATHS = [
+		'/api/v0/gateway/info',
+		'/api/v0/users',
+	];
+
+	/**
 	 * Whitelisted paths
 	 */
 	private const WHITELISTED_PATHS = [
+		'/api/v0/installation',
 		'/api/v0/features',
 		'/api/v0/openapi',
 		'/api/v0/user/signIn',
@@ -52,11 +63,18 @@ class AuthenticationMiddleware implements IMiddleware {
 	private $authenticator;
 
 	/**
+	 * @var EntityManager Database entity manager
+	 */
+	private $entityManager;
+
+	/**
 	 * Constructor
 	 * @param IAuthenticator $authenticator Authenticator
+	 * @param EntityManager $entityManager Database entity manager
 	 */
-	public function __construct(IAuthenticator $authenticator) {
+	public function __construct(IAuthenticator $authenticator, EntityManager $entityManager) {
 		$this->authenticator = $authenticator;
+		$this->entityManager = $entityManager;
 	}
 
 	public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next): ResponseInterface {
@@ -104,13 +122,13 @@ class AuthenticationMiddleware implements IMiddleware {
 	 * @return bool Is the path whitelisted?
 	 */
 	protected function isWhitelisted(ServerRequestInterface $request): bool {
-		foreach (self::WHITELISTED_PATHS as $path) {
-			$requestUrl = rtrim($request->getUri()->getPath(), '/');
-			if ($requestUrl === $path) {
+		$requestUrl = rtrim($request->getUri()->getPath(), '/');
+		if ($this->entityManager->getUserRepository()->count([]) === 0) {
+			if (array_search($requestUrl, self::INSTALLER_PATHS, true) !== false) {
 				return true;
 			}
 		}
-		return false;
+		return array_search($requestUrl, self::WHITELISTED_PATHS, true) !== false;
 	}
 
 }

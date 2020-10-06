@@ -1,56 +1,43 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/dpaFile.json",
-    "type": "object",
-    "title": "Dpa file schema",
-    "description": "Meta information used to retrieve corresponding DPA file.",
-    "examples": [
-        {
-            "osBuild": "08C8",
-            "dpa": "0414",
-            "trSeries": 36,
-            "rfMode": "STD"
-        }
-    ],
-    "required": [
-        "osBuild",
-        "dpa",
-        "trSeries"
-    ],
-    "properties": {
-        "osBuild": {
-            "$id": "#/properties/osBuild",
-            "type": "string",
-            "title": "OS build",
-            "description": "IQRF OS build version.",
-            "examples": [
-                "08C8"
-            ]
-        },
-        "dpa": {
-            "$id": "#/properties/dpa",
-            "type": "string",
-            "title": "DPA version",
-            "examples": [
-                "0414"
-            ]
-        },
-        "trSeries": {
-            "$id": "#/properties/trSeries",
-            "type": "integer",
-            "title": "TR series",
-            "examples": [
-                36
-            ]
-        },
-        "rfMode": {
-            "$id": "#/properties/rfMode",
-            "type": "string",
-            "title": "RF mode",
-            "enum": ["STD", "LP"],
-            "examples": [
-                "STD"
-            ]
-        }
-    },
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/dpaFile.json",
+	"type": "object",
+	"title": "DPA plug-in file schema",
+	"description": "Meta information used to retrieve corresponding DPA file.",
+	"required": [
+		"osBuild",
+		"dpa",
+		"trSeries"
+	],
+	"properties": {
+		"osBuild": {
+			"$id": "#/properties/osBuild",
+			"type": "string",
+			"title": "OS build",
+			"description": "IQRF OS build version.",
+			"example": "08C8"
+		},
+		"dpa": {
+			"$id": "#/properties/dpa",
+			"type": "string",
+			"title": "DPA version",
+			"example": "0414"
+		},
+		"trSeries": {
+			"$id": "#/properties/trSeries",
+			"type": "integer",
+			"title": "TR series",
+			"example": 36
+		},
+		"rfMode": {
+			"$id": "#/properties/rfMode",
+			"type": "string",
+			"title": "RF mode",
+			"enum": [
+				"STD",
+				"LP"
+			],
+			"example": "STD"
+		}
+	}
 }

@@ -1,4 +1,0 @@
-services:
-	- App\CoreModule\Forms\FormFactory
-	- App\CoreModule\Forms\SignInFormFactory
-	- App\CoreModule\Forms\UserAddFormFactory

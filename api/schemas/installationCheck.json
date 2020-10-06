@@ -1,0 +1,28 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/installationCheck.json",
+	"type": "object",
+	"title": "Installation check",
+	"required": [
+		"allMigrationsExecuted",
+		"hasUsers"
+	],
+	"properties": {
+		"allMigrationsExecuted": {
+			"$id": "#/properties/allMigrationsExecuted",
+			"type": "boolean",
+			"title": "Has been all database migrations executed?",
+			"example":
+				true
+		},
+		"hasUsers": {
+			"$id": "#/properties/hasUsers",
+			"type": "boolean",
+			"title": "Has the webapp created users?",
+			"example":
+				true
+
+		}
+	},
+	"additionalProperties": false
+}

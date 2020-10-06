@@ -16,9 +16,6 @@
 		"ecmaVersion": 2019,
 		"sourceType": "module"
 	},
-	"plugins": [
-		"jquery"
-	],
 	"rules": {
 		"indent": [
 			"error",

@@ -20,6 +20,11 @@ server {
 	server_name _;
 
 	location / {
+		root /usr/share/iqrf-gateway-webapp/www/dist;
+		try_files $uri $uri/ /index.html;
+	}
+
+	location ~ ^/api/(.*)$ {
 		try_files $uri $uri/ /index.php?$args;
 	}
 

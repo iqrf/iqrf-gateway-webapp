@@ -8,6 +8,7 @@ services:
 	- App\ApiModule\Version0\Controllers\DiagnosticsController
 	- App\ApiModule\Version0\Controllers\FeatureController
 	- App\ApiModule\Version0\Controllers\GatewayController
+	- App\ApiModule\Version0\Controllers\InstallationController
 	- App\ApiModule\Version0\Controllers\IqrfController
 	- App\ApiModule\Version0\Controllers\MenderConfigController
 	- App\ApiModule\Version0\Controllers\NetworkController

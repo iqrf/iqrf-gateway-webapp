@@ -19,20 +19,13 @@
 declare(strict_types = 1);
 
 use App\Kernel;
-use Contributte\Middlewares\Application\IApplication as ApiApplication;
-use Nette\Application\Application as UiApplication;
+use Contributte\Middlewares\Application\IApplication;
 
 require_once __DIR__ . '/../vendor/autoload.php';
-
-$isApi = substr($_SERVER['REQUEST_URI'], 0, 5) === '/api/';
 
 // Creates DI container
 $container = Kernel::boot()->createContainer();
 // Gets application from DI container
-if ($isApi) {
-	$application = $container->getByType(ApiApplication::class);
-} else {
-	$application = $container->getByType(UiApplication::class);
-}
+$application = $container->getByType(IApplication::class);
 // Runs application
 $application->run();
