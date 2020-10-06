@@ -31,7 +31,7 @@ final class VersionManagerTest extends CommandTestCase {
 	/**
 	 * Current version of the webapp
 	 */
-	private const CURRENT_VERSION = '2.1.0-alpha';
+	private const CURRENT_VERSION = '2.1.0-rc1';
 
 	/**
 	 * Current stable version of the webapp

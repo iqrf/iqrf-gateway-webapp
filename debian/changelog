@@ -1,8 +1,6 @@
-iqrf-gateway-webapp (2.1.0~alpha~3167.gbpdb8557) UNRELEASED; urgency=medium
+iqrf-gateway-webapp (2.1.0~rc1) testing; urgency=medium
 
-  ** SNAPSHOT build @db8557f5ae8b16c7a14082b1e9b611b32f49fea0 **
-
-  * UNRELEASED
+  [ Roman Ondráček ]
   * Prepare for version 2.1.0-alpha
   * Docker: fix stable Dockerfiles
   * API: enable after release
@@ -17,8 +15,371 @@ iqrf-gateway-webapp (2.1.0~alpha~3167.gbpdb8557) UNRELEASED; urgency=medium
   * API: add endpoint for optional feature configuration editing
   * API: fix coding style in optional feature manager
   * API: add tests for optional feature manager
+  * Network: add basic support for WiFi networks
+  * Tests: add test for WiFi network connection
+  * Network: add basic WPA-PSK support
+  * Network: add functions to convert WiFi connection settings to nmcli
+  * Network: refactor nmcli encoding and decoding
+  * Tests: move data for Network module tests
+  * Debian packaging: fix version in changelog
+  * API: add database entity and repository for API keys
+  * Console: add command for adding and listing API keys
+  * API: add endpoints for listing and deleting API keys
+  * Gateway: add support for boards empty DMI board version
+  * API: store hash of API keys instead of plain-text API key
+  * Database: refactor User entity
+  * Core: refactor user management
+  * Network: unify Network manager entity interface
+  * Network: fix Network manager entities
+  * IQRF net: refactor IQRF OS patch manager
+  * NPM: update JS dependencies
+  * Config: refactor scheduler manager
+  * GitLab CI: move test diff print to after_script
+  * Config: fix typo in scheduler datagrid
+  * API: add endpoints for retrieving and deleting tasks
+  * API: add endpoints for scheduler configuration migration
+  * API: add endpoints for adding and editing tasks in scheduler
+  * API: handle invalid task IDs
+  * API: add endpoints for IQRF Gateway Daemon's configuration migration (fix #241)
+  * API: merge CORS middlewares
+  * API: add endpoints for adding and editing API keys, handle invalid JWTs
+  * API: refactor authenticator
+  * GitLab CI: add code quality checker
+  * API: fix whitelested path matching in authenticator
+  * API: add JSON schema for IQRF Gateway Webapp version entity
+  * API: add JSON schema for IQRF Gateway Daemon components
+  * Config: sort task IDs in task list
+  * Network: add some missinbg tests
+  * Service: fix systemd manager, add missing tests
+  * API: remove milliseconds and microseconds from JWT
+  * Console: add commands for deleting and editiong API keys
+  * API: add missing tests fro API key entity
+  * Core: use C.UTF-8 language in command manager
+  * Network: add support for open, WEP and Cisco LEAP WiFi network connections
+  * Network: add automatic connecting entity, type filters for network connections and interfaces, refactor tests
+  * Improved coding style
+  * NPM: update JS dependencies
+  * API: fix unauthorized response content type
+  * API: add support for API keys in Authentication middleware
+  * API: fix OpenAPI annotation
 
- -- Roman Ondráček <roman@romanondracek.cz>  Mon, 06 Jul 2020 18:45:00 +0200
+  [ Karel Hanák ]
+  * Pixla manager: add function to set new PIXLA token
+  * PIXLA: API endpoint set token
+
+  [ Roman Ondráček ]
+  * Core: fix user datagrid
+  * Cloud: fix coding style and use AJAX in PIXLA manager
+  * Features: fix default PIXLA management system settings
+  * Cloud: fix imports in PIXLA management form
+  * Tests: fix test for log manager
+  * OpenAPI: add Unauthorized error responses
+  * Config: handle missing scheduler JSON schema dir in configuration export
+  * API: add error messages
+  * Gateway: remove Coordinator info from GW info endpoint
+  * Vue.js: add project skeleton
+  * Vue.js: add Service control
+  * Vue.js: update ESLint configuration, fix coding style
+  * Vue.js: add gateway power manager, disambiguation link
+  * GitLab CI: add Static Application Security Testing
+  * Vue.js: use CoreUI
+  * Vue.js: add Send DPA packet form skeleton
+  * NPM: fix highlight.js version
+  * Vue.js: add NADR overwrite at Send DPA packet page
+  * Cloud: remove service control from PIXLA endpoints
+  * Vue.js: fix webpack configuration, fix coding style
+  * Vue.js: add Sign in form validation
+
+  [ Karel Hanák ]
+  * Config: added translator and controller configuration api endpoints and managers
+  * TranslatorConfig: validation, presenter, locales
+
+  [ Roman Ondráček ]
+  * Vue.js: fix form validation at Send DPA packet
+  * Gateway: add hostname fallback
+  * Config: fix presenter for IQRF Gateway Translator configuration
+
+  [ Karel Hanák ]
+  * TranslatorConfig: validation, message locales, show and hide pw
+  * TranslatorConfig: additional validation and error messages
+  * ControllerConfig: vue component and form, presenter
+
+  [ Roman Ondráček ]
+  * IQRF net: TR configuration form skeleton in Vue.js
+
+  [ Karel Hanák ]
+  * ControllerConfig: field validation, locales, store other API calls
+  * IqmeshServices: bonding manager form, discovery manager form, validation, locales and calls
+
+  [ Roman Ondráček ]
+  * Vue.js: rework loading spinner
+
+  [ Karel Hanák ]
+  * Network Manager: discovery call timeout
+  * DiscoveryManager request timeout; TranslatorConfig and ControllerConfig spinner, timeout, rules extended on component creation
+  * BondingManager: field validation, timeout, locales, daemon messaging and service methods
+  * DevicesInfo: added component, device class, request methods, locales; removed useless presenters; update config components
+
+  [ Roman Ondráček ]
+  * Config: fix the JSON schema directory removal from the ZIP archive in the scheduler configuration migration
+
+  [ Karel Hanák ]
+  * DevicesInfo: device table, device status icon rendering, icon and color get methods, locales
+  * BondingManager: AutoNetwork form, locales, conditional rendering
+  * AutoNetwork, translatorconfig, controllerconfig field validation
+  * BondingManager: fixed timeouts across all components, added autonetwork api call execution, update DevicesInfo on any bonding action, locales
+
+  [ Roman Ondráček ]
+  * IQRF net: refactor Devices info, remove old code
+  * IQRF net: remove old code
+
+  [ Karel Hanák ]
+  * Gateway: Mender client configuration API, vue component
+  * spinner text, autonetwork generates progress message
+  * SendJsonRequest: vue component skeleton
+
+  [ Roman Ondráček ]
+  * Vue.js: fix loading spinner, fix coding style
+  * Core: add User manager table
+  * Config: fix typo in the task JSON schema folder name in Scheduler migration manager
+
+  [ Karel Hanák ]
+  * SendJsonRequest: vue component, request processing, field validation, locales
+  * BinaryOutput: vue component, form, validation, implementation of requests, binaryoutput service, locales
+  * codestyle fix
+
+  [ Roman Ondráček ]
+  * IQRF net: fix JSON syntax highlighting
+  * Core: update user manager (table, edit form)
+
+  [ Karel Hanák ]
+  * StandardManager: Sensor, Light and Dali components
+  * app.js api addr fix
+  * StandardManager vue component, removed php standard managers and tests
+  * Clouds: InteliGlue vue component
+
+  [ Roman Ondráček ]
+  * Remove old code
+  * IQRF net: remove old Send JSON request form
+  * i18n: remove old translations
+  * Webpack: update configuration
+
+  [ Karel Hanák ]
+  * Cloud: Hexio vue component
+  * Universal timeout and use in existing components
+  * disable pixla by default
+
+  [ Roman Ondráček ]
+  * IQRF net: rework address changer form at TR configuration page
+  * ESLint: add ignore file
+  * Core: handle the missing user entity in Vuex and Unauthorized HTTP status
+
+  [ Karel Hanák ]
+  * update jsonschema for controller, mender and translator configuration
+  * cloud error handling, timeouts in configuration components
+
+  [ Roman Ondráček ]
+  * Webpack: update bundles
+
+  [ Karel Hanák ]
+  * BondingManager: changed bonding method order and codestyle fix
+  * Cloud: Azure and Ibm vue components
+
+  [ Roman Ondráček ]
+  * Core: fix vue-router, use vue-meta for title manipulation
+
+  [ Karel Hanák ]
+  * AzureCreator: chain requests with timeouts
+  * Aws cloud component, axios request chaining in other cloud components
+  * config components axios timeout, controllerconfig uses iqrfnet autonetwork localizations
+  * add controller, mender and translator config endpoints to the config manager group
+  * fix
+  * config api endpoints fixed, aws cloud file input validation, mender to config
+
+  [ Roman Ondráček ]
+  * Core: add optional feature handling
+  * Webpack: add TypeScript support
+  * Rewrite helpers and services into TypeScript
+  * ESLint: add TypeScript support
+
+  [ Karel Hanák ]
+  * fix field validation localization
+
+  [ Roman Ondráček ]
+  * Sidebar: fix features and locales
+
+  [ Karel Hanák ]
+  * sendJson error enum, config migration
+
+  [ Roman Ondráček ]
+  * Disambiguation: rework to Vue.js
+
+  [ Karel Hanák ]
+  * ConfigManager: vue component, localization, removed unused code
+
+  [ Roman Ondráček ]
+  * Router: fix title change at service control page
+
+  [ Karel Hanák ]
+  * BondingManager: rework autonetwork bonding method
+  * BondingManager: hwpid filtering regex for list of hwpids
+
+  [ Roman Ondráček ]
+  * IQRF net: fix device enumeration link
+
+  [ Karel Hanák ]
+  * StandardManager: removed extra toast success call, removing bold formatting
+
+  [ Roman Ondráček ]
+  * COre: add account dropdown in the header
+  * Layout: fix alert rendering in AJAX
+  * Sidebar: add missing links
+  * Core: use TypeScript for Vue.js main script
+  * Webapck: add chunks generation
+  * Cloud: add PIXLA token editor
+  * TypeScript: fix module augmentation
+
+  [ Karel Hanák ]
+  * AWS cloud multipart/form-data handling, IqrfInfo vue component
+
+  [ Roman Ondráček ]
+  * Vue.js: split components to components and pages, add missing IQRF net disambiguation, add interface mappings
+  * IQRF net: fix Device info table overflow
+
+  [ Karel Hanák ]
+  * IqrfInfo: url encode, removed unused code; global axios request timeout, separate config service
+  * Scheduler: vue component, forms, import and export, add/edit WIP
+  * separate iqmesh and autonetwork
+
+  [ Roman Ondráček ]
+  * Core: rework user add form to Vue.js
+  * Config: rework disambiguation
+  * Core: remove unused Latte macros, remove legacy version chacker
+  * Config: remove extra new line in the disambiguation
+
+  [ Karel Hanák ]
+  * AutoNetwork: rework stop conditions
+  * IqrfRepository vue component
+
+  [ Roman Ondráček ]
+  * API: workaround for empty response body
+  * Config: refactor IQRF Info and IQRF Repository configuration forms
+  * Config: fix IQRF Info and IQRF Repository configuration editing
+  * Config: refactor daemon configuration service
+
+  [ Karel Hanák ]
+  * IqrfCdc vue component
+  * IqrfDpa vue component
+  * JsonMngMetaDataApi vue component
+  * use updated daemon configuration service in config components
+
+  [ Roman Ondráček ]
+  * Config: rework IQRF SPI interface configuration form
+  * Config: rework IQRF UART interface configuration form
+
+  [ Karel Hanák ]
+  * JsonSplitter vue component
+
+  [ Roman Ondráček ]
+  * Config: rework MQ interface configuration
+  * Config: rework UDP interface configuration
+
+  [ Karel Hanák ]
+  * Config: JsonApiRaw vue component
+  * Config: TraceFile vue component, localization update
+  * Config: Main configuration vue component
+  * SendJsonRequest: messageError handling
+  * Config: Components vue component, component list
+
+  [ Roman Ondráček ]
+  * Config: rework MQTT interface configuration
+  * Cloud, Gateway: remove unnecessary presenters and Latte templates
+  * IQRF net: rework Device enumeration
+  * Config, Core: remove unnecessary Latte templates
+
+  [ Karel Hanák ]
+  * Config: Components complete vue component, removed unused code
+  * Config: IqmeshServices vue component
+  * AutoNetwork: change order of entries
+  * Config: WebsocketService vue component
+
+  [ Roman Ondráček ]
+  * Config: fix selected components
+  * Core: rework layout
+  * Config: rework WebSocket tables
+
+  [ Karel Hanák ]
+  * Config: WebsocketMessaging instance editing
+  * Autonetwork: process description
+  * NetworkManager: card hierarchy and style
+  * Autonetwork: fix spinner message display
+  * Config: scheduler list vue component
+  * Config: Scheduler form
+  * Config: scheduler fomr processing WIP
+  * SchedulerForm add and edit tasks
+
+  [ Roman Ondráček ]
+  * Config: add Monitor configuration form and table, add WebSocket interface form
+  * Config: delete old WebSocket manager
+  * Config: remove unused code from migration manager
+
+  [ Karel Hanák ]
+  * Config: Scheduler form validation, field formatting, data formatting, removed unused code
+  * Config: scheduler REST API fallback
+
+  [ Roman Ondráček ]
+  * Network: add Ethernet configuration, remove old code
+  * API: fix deprecated function call
+
+  [ Karel Hanák ]
+  * Log viewer error message, aws cloud multiple accepted content types
+
+  [ Roman Ondráček ]
+  * Remove old code, fix coding style
+  * Remove unused code
+  * DI: remove removed service
+  * IQRF net: add new TR configuration option - Local FRC
+
+  [ Karel Hanák ]
+  * ApiKey manager and minor fixes
+
+  [ Roman Ondráček ]
+  * API: fix JSON schemas
+
+  [ Karel Hanák ]
+  * IqrfNet: TrConfig Security form
+
+  [ Roman Ondráček ]
+  * Gateway: remove old system updater
+
+  [ Karel Hanák ]
+  * NetworkManager: AutoNetwork available for specific Daemon versions
+  * Iqrfnet: fix password string validation in SecurityForm
+  * Global websocket timeout, scheduler REST API fallback delay, controller config setting
+  * disable features
+
+  [ Roman Ondráček ]
+  * IQRF net: add DPA updater skeleton, small fixes
+  * Cloud: fix bugs, use TypeScript
+
+  [ Karel Hanák ]
+  * Iqrfnet: sendjson daemon unavailable
+  * TrUpload: coordinator upload form, api endpoint; websocket timeout, daemon api request chaining
+
+  [ Roman Ondráček ]
+  * Core: use WSS on HTTPS
+
+  [ Karel Hanák ]
+  * codestyle fix
+  * TrConfig: DpaUpload form, api endpoint, services, localization and minor fixes
+
+  [ Roman Ondráček ]
+  * Vue.js: use TypeScript instead of JavaScript in the components
+  * Vue.js: add basic installation wizard, use Vue CLI instead of bare Webpack
+  * PHPStan: remove old ignored errors
+  * Vue.js: fix development environment detection
+
+ -- Roman Ondráček <roman@romanondracek.cz>  Tue, 06 Oct 2020 06:10:00 +0200
 
 iqrf-gateway-webapp (2.0.0) testing; urgency=medium
 
