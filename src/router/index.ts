@@ -36,6 +36,7 @@ import InstallationBase from '../pages/Install/InstallationBase.vue';
 import InstallCreateUser from '../pages/Install/InstallCreateUser.vue';
 import InstallationDisambiguation from '../pages/Install/InstallationDisambiguation.vue';
 import InstallGatewayInfo from '../pages/Install/InstallGatewayInfo.vue';
+import MissingMigration from '../pages/Install/MissingMigration.vue';
 
 import ConfigDisambiguation from '../pages/Config/ConfigDisambiguation.vue';
 import ConfigMigration from '../pages/Config/ConfigMigration.vue';
@@ -108,6 +109,10 @@ const routes: Array<RouteConfig> = [
 			{
 				component: InstallGatewayInfo,
 				path: 'gateway-info',
+			},
+			{
+				component: MissingMigration,
+				path: 'error/missing-migration'
 			},
 		]
 	},

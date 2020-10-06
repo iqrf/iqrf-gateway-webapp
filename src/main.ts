@@ -93,11 +93,17 @@ axios.interceptors.response.use(
 
 InstallationService.check()
 	.then((check: InstallationCheck) => {
+		const installUrl: boolean = router.currentRoute.path.startsWith('/install/');
 		if (!check.allMigrationsExecuted) {
 			router.push('/install/error/missing-migration');
+			return;
 		}
-		if (!check.hasUsers) {
-			router.push('/install');
+		if (!check.hasUsers && !installUrl) {
+			router.push('/install/');
+			return;
+		}
+		if (check.hasUsers && installUrl) {
+			router.push('/sign/in/');
 		}
 	});
 

@@ -1,7 +1,7 @@
 <template>
-	<div>
-		<h1>{{ $t('install.gwInfo.title') }}</h1>
-		<CCard body-wrapper>
+	<CCard>
+		<CCardHeader>{{ $t('install.gwInfo.title') }}</CCardHeader>
+		<CCardBody>
 			<div class='table-responsive'>
 				<table v-if='info !== null' class='table table-striped'>
 					<tbody>
@@ -69,12 +69,12 @@
 			<CButton color='primary' @click='downloadDiagnostics()'>
 				{{ $t('install.gwInfo.download') }}
 			</CButton>
-		</CCard>
-	</div>
+		</CCardBody>
+	</CCard>
 </template>
 
 <script>
-import {CButton, CCard} from '@coreui/vue/src';
+import {CButton, CCardBody, CCardHeader} from '@coreui/vue/src';
 import CoordinatorInfo from '../../components/Gateway/CoordinatorInfo';
 import DaemonModeService, {DaemonMode} from '../../services/DaemonModeService';
 import GatewayService from '../../services/GatewayService';
@@ -82,7 +82,7 @@ import {fileDownloader} from '../../helpers/fileDownloader';
 
 export default {
 	name: 'InstallGatewayInfo',
-	components: {CButton, CCard, CoordinatorInfo},
+	components: {CButton, CCardBody, CCardHeader, CoordinatorInfo},
 	data() {
 		return {
 			coordinator: null,

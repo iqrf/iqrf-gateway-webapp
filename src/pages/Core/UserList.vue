@@ -228,6 +228,20 @@ export default {
 			this.modals.delete.user = null;
 			UserService.delete(user.id)
 				.then(() => {
+					if (user.id === this.$store.getters['user/getId']) {
+						this.$store.dispatch('user/signOut');
+						this.$toast.success(
+							this.$t('core.user.messages.delete.success', {username: user.username})
+								.toString()
+						);
+						this.$store.commit('spinner/HIDE');
+						if (this.users.length === 1) {
+							this.$router.push('/install/');
+							return;
+						}
+						this.$router.push('/sign/in');
+						return;
+					}
 					this.getUsers().then(() => {
 						this.$toast.success(
 							this.$t('core.user.messages.delete.success', {username: user.username})

@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<CCard>
 		<CCardBody>
 			{{ $t('install.invitation') }}
 		</CCardBody>
@@ -11,16 +11,17 @@
 				{{ $t('install.gwInfo.button') }}
 			</CButton>
 		</CCardFooter>
-	</div>
+	</CCard>
 </template>
 
 <script>
-import {CButton, CCardBody, CCardFooter} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardFooter} from '@coreui/vue/src';
 
 export default {
 	name: 'InstallationDisambiguation',
 	components: {
 		CButton,
+		CCard,
 		CCardBody,
 		CCardFooter
 	},

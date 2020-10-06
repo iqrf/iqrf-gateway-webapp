@@ -1448,7 +1448,9 @@
 		"error": {
 			"missingMigration": {
 				"title": "Some database table is missing",
-				"description": "IQRF Gateway Webapp cannot find some table in the SQLite3 database."
+				"description": "IQRF Gateway Webapp cannot find some table in the SQLite3 database.",
+				"howToFix": "How to fix it",
+				"fixDescription": "Run these commands in terminal:"
 			}
 		},
 		"gwInfo": {
