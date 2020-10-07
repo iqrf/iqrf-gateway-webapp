@@ -125,36 +125,27 @@ export default Vue.extend({
 			peripheralData: undefined,
 			product: undefined,
 			msgId: null,
-			timeout: null,
 		};
 	},
 	created() {
 		if (this.$store.getters.isSocketConnected) {
+			this.$store.commit('spinner/SHOW');
 			IqrfNetService.enumerateDevice(this.address, 30000, 'iqrfnet.enumeration.messages.failure', () => this.msgId = null)
 				.then((msgId) => this.msgId = msgId);
 		}
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type === 'SOCKET_ONOPEN') {
+				this.$store.commit('spinner/SHOW');
 				IqrfNetService.enumerateDevice(this.address, 30000, 'iqrfnet.enumeration.messages.failure', () => this.msgId = null)
 					.then((msgId) => this.msgId = msgId);
 				return;
 			}
-			if (mutation.type === 'SOCKET_ONSEND' &&
-					mutation.payload.mType !== 'iqmeshNetwork_EnumerateDevice') {
-				this.timeout = setTimeout(() => {
-					this.$store.dispatch('spinner/hide');
-					this.$router.push('/iqrf/network/');
-					this.$toast.error(
-						this.$t('iqrfnet.enumeration.messages.failure').toString()
-					);
-				}, 31000);
-			}
 			if (mutation.type !== 'SOCKET_ONMESSAGE' ||
-					mutation.payload.mType !== 'iqmeshNetwork_EnumerateDevice') {
+				mutation.payload.data.msgId !== this.msgId) {
 				return;
 			}
-			clearTimeout(this.timeout);
-			this.$store.dispatch('spinner/hide');
+			this.$store.commit('spinner/HIDE');
+			this.$store.dispatch('removeMessage', this.msgId);
 			const response = mutation.payload;
 			if (response.data.status !== 0) {
 				this.$router.push('/iqrfnet/network/');
@@ -185,7 +176,7 @@ export default Vue.extend({
 		});
 	},
 	beforeDestroy() {
-		clearTimeout(this.timeout);
+		this.$store.dispatch('removeMessage', this.msgId);
 		this.unsubscribe();
 	},
 	metaInfo: {
