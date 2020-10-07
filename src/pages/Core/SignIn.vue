@@ -69,6 +69,7 @@ import {cilUser, cilLockLocked} from '@coreui/icons';
 import {required} from 'vee-validate/dist/rules';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import LogoBlue from '../../assets/logo-blue.svg';
+import {UserCredentials} from '@/services/AuthenticationService';
 
 export default {
 	name: 'SignIn',
@@ -97,8 +98,9 @@ export default {
 	},
 	methods: {
 		handleSubmit() {
+			const credentials = new UserCredentials(this.username, this.password);
 			Promise.all([
-				this.$store.dispatch('user/signIn', {username: this.username, password: this.password}),
+				this.$store.dispatch('user/signIn', credentials),
 				this.$store.dispatch('features/fetch'),
 			])
 				.then(() => {

@@ -21,7 +21,6 @@ import * as Sentry from '@sentry/browser';
 import {Vue as VueIntegration} from '@sentry/integrations/dist/vue';
 import Vue from 'vue';
 import VueMeta from 'vue-meta';
-// @ts-ignore
 import VueNativeSock from 'vue-native-websocket';
 import VueToast from 'vue-toast-notification';
 import Clipboard from 'v-clipboard';
@@ -37,13 +36,18 @@ import '../css/app.scss';
 import 'vue-toast-notification/dist/theme-sugar.css';
 import 'vue-datetime/dist/vue-datetime.css';
 
-Sentry.init({
-	dsn: 'https://435ee2b55f994e5f85e21a9ca93ea7a7@sentry.iqrf.org/5',
-	integrations: [new VueIntegration({Vue: Vue, attachProps: true, logErrors: true})],
-});
+process.env.SETTINGS = process.env.SETTINGS || 'development';
 
-store.commit('SOCKET_ONCLOSE');
-store.commit('spinner/HIDE');
+if (process.env.NODE_ENV === 'production') {
+	Sentry.init({
+		dsn: 'https://435ee2b55f994e5f85e21a9ca93ea7a7@sentry.iqrf.org/5',
+		integrations: [new VueIntegration({
+			Vue: Vue,
+			attachProps: true,
+			logErrors: true,
+		})],
+	});
+}
 
 Vue.prototype.$appName = 'IQRF Gateway Webapp';
 

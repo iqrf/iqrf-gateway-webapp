@@ -66,7 +66,7 @@ class Packet {
 	 * @returns DPA timeout
 	 */
 	detectTimeout(): number | null {
-		let timeout = null;
+		let timeout: number|null = null;
 		if (this.pnum === 0 && this.pcmd === 4) {
 			timeout = 12000;
 		} else if (this.pnum === 0 && this.pcmd === 7) {
@@ -82,7 +82,7 @@ class Packet {
 	 * @param {string} packet DPA packet to parse
 	 * @returns {Packet} Parsed DPA packet
 	 */
-	static parse(packet: string) {
+	static parse(packet: string): Packet {
 		const packetArray = packet.split('.');
 		const nadrLo = packetArray.shift()!;
 		const nadrHi = packetArray.shift()!;
@@ -100,7 +100,7 @@ class Packet {
 	 * Returns DPA packet string
 	 * @returns {string} DPA packet as string
 	 */
-	toString() {
+	toString(): string {
 		return [
 			this.nadr & 255, this.nadr >> 8, this.pnum, this.pcmd,
 			this.hwpid & 255, this.hwpid >> 8, ...this.pdata
@@ -124,7 +124,7 @@ function validatePacket(packet: string): boolean {
  * @param address New NADR
  * @returns Modified DPA request
  */
-function updateNadr(request: string, address: number) {
+function updateNadr(request: string, address: number): string {
 	const packet = Packet.parse(request);
 	packet.nadr = address;
 	return packet.toString();

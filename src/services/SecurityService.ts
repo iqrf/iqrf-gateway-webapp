@@ -13,7 +13,7 @@ class SecurityService {
 	 * @param inputFormat 
 	 * @param type 
 	 */
-	setSecurity(nadr: number, password: string, inputFormat: SecurityFormat, type: number) {
+	setSecurity(nadr: number, password: string, inputFormat: SecurityFormat, type: number): Promise<any> {
 		return store.dispatch('sendRequest', {
 			'mType': 'iqrfEmbedOs_SetSecurity',
 			'data': {
@@ -35,17 +35,15 @@ class SecurityService {
 	 * @param format input data format (ASCII or HEX)
 	 */
 	convert(password: string, format: SecurityFormat): Array<number> {
-		let data = null;
+		let data = password;
 		if (format === SecurityFormat.ASCII) {
 			data = '';
 			for (let i = 0; i < password.length; ++i) {
 				data += password.charCodeAt(i).toString(16);
 			}
-		} else {
-			data = password;
 		}
 		data = data.padEnd(32, '0');
-		const array = [];
+		const array: Array<number> = [];
 		for (let i = 0; i < 16; ++i) {
 			array.push(parseInt(data.substr(i*2, 2), 16));
 		}

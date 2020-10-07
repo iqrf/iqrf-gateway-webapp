@@ -1,10 +1,8 @@
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
 
-const en = require('./locales/en.json');
-
 const messages = {
-	'en': en
+	'en': require('./locales/en.json')
 };
 
 Vue.use(VueI18n);

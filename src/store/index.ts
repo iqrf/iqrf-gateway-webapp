@@ -18,7 +18,12 @@ const store: Store<any> = new Vuex.Store({
 		user,
 		webSocketClient,
 	},
-	plugins: [createPersistentState()]
+	plugins: [createPersistentState({
+		paths: [
+			'features',
+			'user',
+		]
+	})]
 });
 
 export default store;

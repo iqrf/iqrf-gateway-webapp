@@ -141,7 +141,6 @@ import sendPacket from '../../iqrfNet/sendPacket';
 
 import {PrismEditor} from 'vue-prism-editor';
 import 'vue-prism-editor/dist/prismeditor.min.css';
-// @ts-ignore
 import Prism from 'prismjs/components/prism-core';
 import 'prismjs/components/prism-json';
 import 'prismjs/themes/prism.css';

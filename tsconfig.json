@@ -4,6 +4,7 @@
 		"strict": true,
 		"module": "es2020",
 		"moduleResolution": "node",
+		"noImplicitAny": false,
 		"allowSyntheticDefaultImports": true
 	}
 }

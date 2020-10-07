@@ -49,6 +49,7 @@ import {CButton, CCard, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 import UserService from '../../services/UserService';
+import {UserCredentials} from '../../services/AuthenticationService';
 
 export default Vue.extend({
 	name: 'InstallCreateUser',
@@ -75,7 +76,8 @@ export default Vue.extend({
 		handleSubmit() {
 			UserService.add(this.username, this.password, this.language, this.role)
 				.then(() => {
-					this.$store.dispatch('user/signIn', {username: this.username, password: this.password})
+					const credentials: UserCredentials = new UserCredentials(this.username, this.password);
+					this.$store.dispatch('user/signIn', credentials)
 						.then(() => {
 							this.$router.push('/');
 							this.$toast.success(

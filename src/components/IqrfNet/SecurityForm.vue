@@ -69,7 +69,7 @@ export default Vue.extend({
 			password: '',
 		};
 	},
-	created() {
+	created(): void {
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type !== 'SOCKET_ONMESSAGE') {
 				return;
@@ -84,17 +84,18 @@ export default Vue.extend({
 			}
 		});
 	},
-	beforeDestroy() {
+	beforeDestroy(): void {
 		this.unsubscribe();
 	},
 	methods: {
-		save(password: boolean) {
-			let regex = null;
+		save(password: boolean): void {
+			let pattern = '';
 			if (this.format === SecurityFormat.ASCII) {
-				regex = RegExp('^[ -~]{0,16}$');
+				pattern = '^[ -~]{0,16}$';
 			} else {
-				regex = RegExp('^[a-fA-F0-9]{0,32}$');
+				pattern = '^[a-fA-F0-9]{0,32}$';
 			}
+			const regex = RegExp(pattern);
 			if (!regex.test(this.password)) {
 				this.$toast.error('Password string is not valid for the selected format.');
 				return;

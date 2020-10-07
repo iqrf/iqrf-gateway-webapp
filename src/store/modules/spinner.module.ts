@@ -1,4 +1,4 @@
-import {GetterTree, MutationTree} from 'vuex';
+import {ActionTree, GetterTree, MutationTree} from 'vuex';
 
 export class SpinnerOptions {
 	public text: string | null = null;
@@ -11,8 +11,7 @@ const state = {
 	timeout: null,
 };
 
-const actions = {
-	// @ts-ignore
+const actions: ActionTree<any, any> = {
 	show({commit, state}, options: SpinnerOptions) {
 		commit('SHOW', options.text);
 		if (options.timeout === null) {
@@ -22,7 +21,6 @@ const actions = {
 			commit('HIDE');
 		}, options.timeout);
 	},
-	// @ts-ignore
 	hide({commit, state}) {
 		commit('HIDE');
 		clearTimeout(state.timeout);

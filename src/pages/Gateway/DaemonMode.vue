@@ -34,11 +34,10 @@ export default Vue.extend({
 		CButton,
 		CCard,
 	},
-	data() {
+	data(): any {
 		return {
 			loaded: false,
 			mode: DaemonMode.unknown,
-			unsubscribe: () => {},
 		};
 	},
 	created() {

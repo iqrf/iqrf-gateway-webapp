@@ -1,16 +1,23 @@
-import AuthenticationService from '../../services/AuthenticationService';
+import AuthenticationService, {User} from '../../services/AuthenticationService';
 import {ActionTree, GetterTree, MutationTree} from 'vuex';
-import {AxiosError, AxiosResponse} from 'axios';
+import {AxiosError} from 'axios';
 
-const state = {
+/**
+ * User state
+ */
+interface UserState {
+	user: User|null,
+}
+
+const state: UserState = {
 	user: null,
 };
 
-const actions: ActionTree<any, any> = {
+const actions: ActionTree<UserState, any> = {
 	signIn({commit}, credentials) {
-		return AuthenticationService.login(credentials.username, credentials.password)
-			.then((response: AxiosResponse) => {
-				commit('SIGN_IN', response.data);
+		return AuthenticationService.login(credentials)
+			.then((user: User) => {
+				commit('SIGN_IN', user);
 			})
 			.catch((error: AxiosError) => {
 				console.error(error);
@@ -22,29 +29,29 @@ const actions: ActionTree<any, any> = {
 	},
 };
 
-const getters: GetterTree<any, any> = {
-	isLoggedIn(state: any) {
+const getters: GetterTree<UserState, any> = {
+	isLoggedIn(state: UserState) {
 		return state.user !== null;
 	},
-	getId(state: any) {
+	getId(state: UserState) {
 		if (state.user === null) {
 			return null;
 		}
 		return state.user.id;
 	},
-	getName(state: any) {
+	getName(state: UserState) {
 		if (state.user === null) {
 			return null;
 		}
 		return state.user.username;
 	},
-	getRole(state: any) {
+	getRole(state: UserState) {
 		if (state.user === null) {
 			return null;
 		}
 		return state.user.role;
 	},
-	getToken(state: any) {
+	getToken(state: UserState) {
 		if (state.user === null) {
 			return null;
 		}
@@ -52,11 +59,11 @@ const getters: GetterTree<any, any> = {
 	},
 };
 
-const mutations: MutationTree<any> = {
-	SIGN_IN(state: any, data: any) {
+const mutations: MutationTree<UserState> = {
+	SIGN_IN(state: UserState, data: User) {
 		state.user = data;
 	},
-	SIGN_OUT(state: any) {
+	SIGN_OUT(state: UserState) {
 		state.user = null;
 	},
 };

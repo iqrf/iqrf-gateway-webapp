@@ -106,27 +106,34 @@ export default Vue.extend({
 	data(): any {
 		return {
 			endpoint: null,
-			serviceName: 'aws',
 			certEmpty: true,
 			keyEmpty: true,
 			firstCert: true,
 			firstKey: true,
 		};
 	},
-	created() {
+	created(): void {
 		extend('required', required);
 	},
 	methods: {
-		buildRequest() {
+		buildRequest(): FormData {
 			const formData = new FormData();
 			formData.append('endpoint', this.endpoint);
-			formData.append('certificate', this.$refs.awsFormCert.$el.children[1].files[0]);
-			formData.append('privateKey', this.$refs.awsFormKey.$el.children[1].files[0]);
+			formData.append('certificate', this.getCertFiles()[0]);
+			formData.append('privateKey', this.getKeyFiles()[0]);
 			return formData;
 		},
-		save() {
+		getCertFiles(): FileList|null {
+			const input = ((this.$refs.awsFormCert as CInputFile).$el.children[1] as HTMLInputElement);
+			return input.files;
+		},
+		getKeyFiles(): FileList|null {
+			const input = ((this.$refs.awsFormKey as CInputFile).$el.children[1] as HTMLInputElement);
+			return input.files;
+		},
+		save(): Promise<void> {
 			this.$store.commit('spinner/SHOW');
-			return CloudService.create(this.serviceName, this.buildRequest())
+			return CloudService.createAws(this.buildRequest())
 				.then(() => {
 					this.$store.commit('spinner/HIDE');
 					this.$toast.success(this.$t('cloud.messages.success').toString());
@@ -136,7 +143,7 @@ export default Vue.extend({
 					return Promise.reject(error);
 				});
 		},
-		saveAndRestart() {
+		saveAndRestart(): void {
 			this.save()
 				.then(() => {
 					this.$store.commit('spinner/SHOW');
@@ -152,19 +159,21 @@ export default Vue.extend({
 							FormErrorHandler.serviceError(error);
 						});
 				})
-				.catch(() => {});
+				.catch(() => {return;});
 		},
-		isEmpty(button: string) {
+		isEmpty(button: string): void {
 			if (button === 'cert') {
 				if (this.firstCert) {
 					this.firstCert = false;
 				}
-				this.certEmpty = this.$refs.awsFormCert.$el.children[1].files.length === 0;
+				const certFiles = this.getCertFiles();
+				this.certEmpty = certFiles === null || certFiles.length === 0;
 			} else {
 				if (this.firstKey) {
 					this.firstKey = false;
 				}
-				this.keyEmpty = this.$refs.awsFormKey.$el.children[1].files.length === 0;
+				const keyFiles = this.getKeyFiles();
+				this.keyEmpty = keyFiles === null || keyFiles.length === 0;
 			}
 		}
 	}

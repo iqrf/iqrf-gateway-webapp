@@ -1,29 +1,40 @@
-import FeatureService from '../../services/FeatureService';
-import {AxiosResponse} from 'axios';
+import FeatureService, {Features} from '../../services/FeatureService';
+import {ActionTree, GetterTree, MutationTree} from 'vuex';
 
-const state = {
+/**
+ * Feature state
+ */
+interface FeatureState {
+
+	/**
+	 * Features
+	 */
+	features: Features,
+
+}
+
+const state: FeatureState = {
 	features: {},
 };
 
-const actions = {
-	// @ts-ignore
+const actions: ActionTree<FeatureState, any> = {
 	fetch({commit}) {
 		return FeatureService.fetchAll()
-			.then((response: AxiosResponse) => {
-				commit('SET', response.data);
+			.then((features: Features) => {
+				commit('SET', features);
 			});
 	},
 };
 
-const getters = {
-	isEnabled: (state: any) => (name: string) => {
+const getters: GetterTree<FeatureState, any> = {
+	isEnabled: (state: FeatureState) => (name: string) => {
 		try {
 			return state.features[name].enabled;
 		} catch (e) {
 			return undefined;
 		}
 	},
-	configuration: (state: any) => (name: string) => {
+	configuration: (state: FeatureState) => (name: string) => {
 		try {
 			return state.features[name];
 		} catch (e) {
@@ -32,8 +43,8 @@ const getters = {
 	},
 };
 
-const mutations = {
-	SET(state: any, features: any) {
+const mutations: MutationTree<FeatureState> = {
+	SET(state: FeatureState, features: Features) {
 		state.features = features;
 	}
 };

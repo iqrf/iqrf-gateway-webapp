@@ -38,7 +38,7 @@ class Device {
 	 * @param discovered Specifies if the device is discovered
 	 * @param online Specifies if the device is online
 	 */
-	constructor(address: number, coordinator: boolean, bonded: boolean = false, discovered :boolean = false, online :boolean = false) {
+	constructor(address: number, coordinator: boolean, bonded = false, discovered = false, online = false) {
 		this.address = address;
 		this.coordinator = coordinator;
 		this.bonded = bonded;

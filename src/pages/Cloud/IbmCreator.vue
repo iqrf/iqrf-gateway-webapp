@@ -178,7 +178,7 @@ export default Vue.extend({
 							FormErrorHandler.serviceError(error);
 						});
 				})
-				.catch(() => {});
+				.catch(() => {return;});
 		},
 	},
 	metaInfo: {

@@ -16,7 +16,7 @@ class ApiKeyService {
 	 * Adds a new API key
 	 * @param keyData new API key metadata
 	 */
-	addApiKey(keyData: object): Promise<AxiosResponse> {
+	addApiKey(keyData: Record<string, unknown>): Promise<AxiosResponse> {
 		return axios.post('apiKeys', keyData, {headers: authorizationHeader()});
 	}
 
@@ -33,7 +33,7 @@ class ApiKeyService {
 	 * @param keyId API key ID
 	 * @param keyData API key metadata
 	 */
-	editApiKey(keyId: number, keyData: object): Promise<AxiosResponse> {
+	editApiKey(keyId: number, keyData: Record<string, unknown>): Promise<AxiosResponse> {
 		return axios.put('apiKeys/' + keyId, keyData, {headers: authorizationHeader()});
 	}
 

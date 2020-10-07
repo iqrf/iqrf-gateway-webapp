@@ -13,7 +13,7 @@ class SchedulerService {
 	 * @param task scheduler task
 	 * @param timeSpec scheduler task time settings
 	 */
-	addTask(taskId: number, clientId: string, task: any, timeSpec: object) {
+	addTask(taskId: number, clientId: string, task: any, timeSpec: Record<string, unknown>) {
 		const tasks = JSON.parse(JSON.stringify(task));
 		tasks.forEach((item: any) => {
 			item.message = JSON.parse(item.message);
@@ -40,7 +40,7 @@ class SchedulerService {
 	 * @param task scheduler task
 	 * @param timeSpec scheduler task time settings
 	 */
-	addTaskREST(taskId: number, clientId: string, task: any, timeSpec: object): Promise<AxiosResponse> {
+	addTaskREST(taskId: number, clientId: string, task: any, timeSpec: Record<string, unknown>): Promise<AxiosResponse> {
 		const tasks = JSON.parse(JSON.stringify(task));
 		tasks.forEach((item: any) => {
 			item.message = JSON.parse(item.message);
@@ -62,7 +62,7 @@ class SchedulerService {
 	 * @param task scheduler task
 	 * @param timeSpec scheduler task time settings
 	 */
-	editTaskREST(oldTaskId: number, taskId: number, clientId: string, task: any, timeSpec: object): Promise<AxiosResponse> {
+	editTaskREST(oldTaskId: number, taskId: number, clientId: string, task: any, timeSpec: Record<string, unknown>): Promise<AxiosResponse> {
 		const tasks = JSON.parse(JSON.stringify(task));
 		tasks.forEach((item: any) => {
 			item.message = JSON.parse(item.message);

@@ -13,8 +13,7 @@ override_dh_auto_build:
 	sed -i "s/\t\"commit\"\: .*/\t\"commit\"\: \"`git rev-parse --verify HEAD`\",/" version.json
 	# Set GitLab CI pipeline ID
 	sed -i "s/\t\"pipeline\"\: .*/\t\"pipeline\"\: \"${CI_PIPELINE_ID}\"/" version.json
-	# Install PHP dependencies
-	composer install --no-dev
+	dh_auto_build
 
 override_dh_fixperms:
 	dh_fixperms

@@ -1,8 +1,7 @@
 import Vue from 'vue';
 import VueRouter, {RouteConfig} from 'vue-router' ;
 
-// @ts-ignore
-import TheDashboard from '../components/TheDashboard';
+import TheDashboard from '../components/TheDashboard.vue';
 
 import CloudDisambiguation from '../pages/Cloud/CloudDisambiguation.vue';
 import AzureCreator from '../pages/Cloud/AzureCreator.vue';
