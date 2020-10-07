@@ -902,8 +902,8 @@
 			},
 			"messages": {
 				"failures": {
-					"get": "An error occurred while getting the current gateway mode",
-					"set": "An error occurred while setting a new gateway mode"
+					"get": "An error occurred while getting the current gateway mode.",
+					"set": "An error occurred while setting a new gateway mode."
 				},
 				"forwarding": "IQRF Gateway Daemon's mode has been changed to forwarding mode.",
 				"operational": "IQRF Gateway Daemon's mode has been changed to operational mode.",
@@ -988,7 +988,7 @@
 			"supplyVoltage": "Supply voltage",
 			"back": "Back to Network manager",
 			"messages": {
-				"failure": "An error occurred while the device enumeration.",
+				"failure": "An error occurred during the device enumeration.",
 				"repositoryUnavailable": "IQRF Repository is unavailable."
 			}
 		},

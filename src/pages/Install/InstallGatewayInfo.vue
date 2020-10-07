@@ -53,7 +53,7 @@
 								</span>
 							</td>
 						</tr>
-						<tr>
+						<tr v-if='showCoordinator'>
 							<th>{{ $t('gateway.info.tr.title') }}</th>
 							<td>
 								<coordinator-info />
@@ -61,7 +61,9 @@
 						</tr>
 						<tr>
 							<th>{{ $t('gateway.info.gwMode') }}</th>
-							<td>{{ $t('gateway.mode.modes.' + mode) }}</td>
+							<td>
+								<DaemonModeInfo @notify-cinfo='showCoordinator = true' />
+							</td>
 						</tr>
 					</tbody>
 				</table>
@@ -76,18 +78,18 @@
 <script>
 import {CButton, CCardBody, CCardHeader} from '@coreui/vue/src';
 import CoordinatorInfo from '../../components/Gateway/CoordinatorInfo';
-import DaemonModeService, {DaemonMode} from '../../services/DaemonModeService';
+import DaemonModeInfo from '../../components/Gateway/DaemonModeInfo';
 import GatewayService from '../../services/GatewayService';
 import {fileDownloader} from '../../helpers/fileDownloader';
 
 export default {
 	name: 'InstallGatewayInfo',
-	components: {CButton, CCardBody, CCardHeader, CoordinatorInfo},
+	components: {CButton, CCardBody, CCardHeader, CoordinatorInfo, DaemonModeInfo},
 	data() {
 		return {
 			coordinator: null,
 			info: null,
-			mode: 'unknown'
+			showCoordinator: false,
 		};
 	},
 	computed: {
@@ -120,21 +122,6 @@ export default {
 	},
 	created() {
 		this.$store.commit('spinner/SHOW');
-		if (this.$store.state.webSocketClient.socket.isConnected) {
-			DaemonModeService.get();
-		}
-		this.unsubscribe = this.$store.subscribe(mutation => {
-			if (mutation.type === 'SOCKET_ONOPEN' &&
-					this.mode === DaemonMode.unknown) {
-				DaemonModeService.get();
-				return;
-			}
-			if (mutation.type !== 'SOCKET_ONMESSAGE' ||
-					mutation.payload.mType !== 'mngDaemon_Mode') {
-				return;
-			}
-			this.mode = DaemonModeService.parse(mutation.payload);
-		});
 		GatewayService.getInfo()
 			.then(
 				(response) => {
@@ -143,9 +130,6 @@ export default {
 				}
 			)
 			.catch(() => this.$store.commit('spinner/HIDE'));
-	},
-	beforeDestroy() {
-		this.unsubscribe();
 	},
 	methods: {
 		downloadDiagnostics() {
@@ -164,3 +148,9 @@ export default {
 	},
 };
 </script>
+
+<style scoped>
+.btn {
+  margin: 0 3px 0 0;
+}
+</style>

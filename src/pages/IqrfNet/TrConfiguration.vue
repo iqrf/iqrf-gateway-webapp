@@ -308,6 +308,7 @@ export default {
 			dpaHandlerDetected: null,
 			dpaVersion: null,
 			unchangeablePeripherals: ['coordinator', 'node', 'os'],
+			msgId: null,
 		};
 	},
 	computed: {
@@ -357,7 +358,8 @@ export default {
 			this.peripherals = [];
 			if (this.$store.getters.isSocketConnected) {
 				this.$store.commit('spinner/SHOW');
-				IqrfNetService.enumerateDevice(this.address);
+				IqrfNetService.enumerateDevice(this.address, 30000, 'iqrfnet.trConfiguration.messages.read.failure', () => this.msgId = null)
+					.then((msgId) => this.msgId = msgId);
 			}
 		},
 	},
@@ -369,27 +371,32 @@ export default {
 		extend('required', required);
 		this.unsubscribe = this.$store.subscribe(mutation => {
 			if (mutation.type === 'SOCKET_ONOPEN') {
-				this.$store.commit('spinner/SHOW');
-				IqrfNetService.enumerateDevice(this.address);
+				IqrfNetService.enumerateDevice(this.address, 30000, 'iqrfnet.trConfiguration.messages.read.failure', () => this.msgId = null)
+					.then((msgId) => this.msgId = msgId);
 				return;
 			}
 			if (mutation.type !== 'SOCKET_ONMESSAGE') {
 				return;
 			}
-			if (mutation.payload.mType === 'iqmeshNetwork_WriteTrConf') {
+			if (mutation.payload.mType === 'iqmeshNetwork_WriteTrConf' &&
+				mutation.payload.data.msgId === this.msgId) {
+				this.$store.dispatch('removeMessage', this.msgId);
 				this.handleWriteResponse(mutation.payload);
 				return;
 			}
-			if (mutation.payload.mType === 'iqmeshNetwork_EnumerateDevice') {
+			if (mutation.payload.mType === 'iqmeshNetwork_EnumerateDevice' &&
+				mutation.payload.data.msgId === this.msgId) {
+				this.$store.dispatch('removeMessage', this.msgId);
 				this.handleEnumerationResponse(mutation.payload);
 			}
 		});
 		if (this.$store.getters.isSocketConnected) {
-			this.$store.commit('spinner/SHOW');
-			IqrfNetService.enumerateDevice(this.address);
+			IqrfNetService.enumerateDevice(this.address, 30000, 'iqrfnet.trConfiguration.messages.read.failure', () => this.msgId = null)
+				.then((msgId) => this.msgId = msgId);
 		}
 	},
 	beforeDestroy() {
+		this.$store.dispatch('removeMessage', this.msgId);
 		this.unsubscribe();
 	},
 	methods: {
@@ -417,7 +424,8 @@ export default {
 			let config = JSON.parse(JSON.stringify(this.config));
 			config.embPers = this.getEmbeddedPeripherals();
 			this.$store.commit('spinner/SHOW');
-			IqrfNetService.writeTrConfiguration(this.address, config);
+			IqrfNetService.writeTrConfiguration(this.address, config, 60000, 'iqrfnet.trConfiguration.messages.write.failure', () => this.msgId = null)
+				.then((msgId) => this.msgId = msgId);
 		},
 		handleWriteResponse(response) {
 			this.$store.commit('spinner/HIDE');

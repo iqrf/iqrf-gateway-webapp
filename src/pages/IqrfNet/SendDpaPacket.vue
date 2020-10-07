@@ -144,6 +144,7 @@ import 'vue-prism-editor/dist/prismeditor.min.css';
 import Prism from 'prismjs/components/prism-core';
 import 'prismjs/components/prism-json';
 import 'prismjs/themes/prism.css';
+import { WebSocketOptions } from '../../store/modules/webSocketClient.module';
 
 export default Vue.extend({
 	name: 'SendDpaPacket',
@@ -171,6 +172,7 @@ export default Vue.extend({
 			timeoutOverwrite: false,
 			request: null,
 			response: null,
+			msgId: null,
 		};
 	},
 	created() {
@@ -188,8 +190,10 @@ export default Vue.extend({
 				this.response = null;
 			}
 			if (mutation.type === 'SOCKET_ONMESSAGE' &&
-					mutation.payload.mType === 'iqrfRaw') {
+				mutation.payload.mType === 'iqrfRaw' &&
+				mutation.payload.data.msgId === this.msgId) {
 				this.$store.commit('spinner/HIDE');
+				this.$store.dispatch('removeMessage', this.msgId);
 				this.response = JSON.stringify(mutation.payload, null, 4);
 				switch (mutation.payload.data.status) {
 					case 0:
@@ -221,6 +225,7 @@ export default Vue.extend({
 		});
 	},
 	beforeDestroy() {
+		this.$store.dispatch('removeMessage', this.msgId);
 		this.unsubscribe();
 	},
 	methods: {
@@ -248,7 +253,9 @@ export default Vue.extend({
 			if (this.timeoutOverwrite && this.timeout !== null) {
 				json.data.timeout = this.timeout;
 			}
-			return this.$store.dispatch('sendRequest', json);
+			const options = new WebSocketOptions(json, 60000, 'iqrfnet.sendPacket.messages.failure', () => this.msgId = null);
+			return this.$store.dispatch('sendRequest', options)
+				.then((msgId: string) => this.msgId = msgId);
 		},
 		/**
 		 * JSON highlighter method

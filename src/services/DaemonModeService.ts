@@ -1,4 +1,5 @@
 import store from '../store';
+import {WebSocketOptions} from '../store/modules/webSocketClient.module';
 
 export enum DaemonMode {
 	getMode = '',
@@ -16,16 +17,16 @@ class DaemonModeService {
 	/**
 	 * Retrieve the current operational mode
 	 */
-	get(): Promise<any> {
-		return this.set(DaemonMode.getMode);
+	get(timeout: number, message: string|null = null, callback: CallableFunction = () => {return;}): Promise<any> {
+		return this.set(DaemonMode.getMode, timeout, message, callback);
 	}
 
 	/**
 	 * Sets a new mode operational mode
 	 * @param newMode New operational mode
 	 */
-	set(newMode: DaemonMode): Promise<any> {
-		return store.dispatch('sendRequest', {
+	set(newMode: DaemonMode, timeout: number, message: string|null = null, callback: CallableFunction = () => {return;}): Promise<any> {
+		const request = {
 			'mType': 'mngDaemon_Mode',
 			'data': {
 				'req': {
@@ -33,7 +34,9 @@ class DaemonModeService {
 				},
 				'returnVerbose': true,
 			},
-		});
+		};
+		const options = new WebSocketOptions(request, timeout, message, callback);
+		return store.dispatch('sendRequest', options);
 	}
 
 	/**

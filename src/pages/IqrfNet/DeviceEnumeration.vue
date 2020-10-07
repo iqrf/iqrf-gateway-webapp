@@ -98,7 +98,6 @@ import {MutationPayload} from 'vuex';
 import {CButton, CCard, CCardBody, CCardHeader} from '@coreui/vue/src';
 import IqrfNetService from '../../services/IqrfNetService';
 import ProductService from '../../services/IqrfRepository/ProductService';
-import {timeout} from '../../helpers/timeout';
 import RfModeLp from '../../assets/lp-black.svg';
 import RfModeStd from '../../assets/std-black.svg';
 
@@ -125,29 +124,37 @@ export default Vue.extend({
 			osData: undefined,
 			peripheralData: undefined,
 			product: undefined,
+			msgId: null,
+			timeout: null,
 		};
 	},
 	created() {
 		if (this.$store.getters.isSocketConnected) {
-			this.$store.commit('spinner/SHOW');
-			IqrfNetService.enumerateDevice(this.address);
+			IqrfNetService.enumerateDevice(this.address, 30000, 'iqrfnet.enumeration.messages.failure', () => this.msgId = null)
+				.then((msgId) => this.msgId = msgId);
 		}
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type === 'SOCKET_ONOPEN') {
-				this.$store.commit('spinner/SHOW');
-				IqrfNetService.enumerateDevice(this.address);
+				IqrfNetService.enumerateDevice(this.address, 30000, 'iqrfnet.enumeration.messages.failure', () => this.msgId = null)
+					.then((msgId) => this.msgId = msgId);
 				return;
 			}
 			if (mutation.type === 'SOCKET_ONSEND' &&
 					mutation.payload.mType !== 'iqmeshNetwork_EnumerateDevice') {
-				this.timeout = timeout('iqrfnet.enumeration.messages.failure', 30000);
+				this.timeout = setTimeout(() => {
+					this.$store.dispatch('spinner/hide');
+					this.$router.push('/iqrf/network/');
+					this.$toast.error(
+						this.$t('iqrfnet.enumeration.messages.failure').toString()
+					);
+				}, 31000);
 			}
 			if (mutation.type !== 'SOCKET_ONMESSAGE' ||
 					mutation.payload.mType !== 'iqmeshNetwork_EnumerateDevice') {
 				return;
 			}
 			clearTimeout(this.timeout);
-			this.$store.commit('spinner/HIDE');
+			this.$store.dispatch('spinner/hide');
 			const response = mutation.payload;
 			if (response.data.status !== 0) {
 				this.$router.push('/iqrfnet/network/');
@@ -178,6 +185,7 @@ export default Vue.extend({
 		});
 	},
 	beforeDestroy() {
+		clearTimeout(this.timeout);
 		this.unsubscribe();
 	},
 	metaInfo: {

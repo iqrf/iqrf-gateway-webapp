@@ -212,7 +212,8 @@ export default Vue.extend({
 							break;
 					}
 				} else if (mutation.payload.mType === 'iqrfEmbedCoordinator_ClearAllBonds' ||
-							mutation.payload.mType === 'iqmeshNetwork_RemoveBond') {
+							mutation.payload.mType === 'iqmeshNetwork_RemoveBond' ||
+							mutation.payload.mType === 'iqrfEmbedCoordinator_RemoveBond') {
 					clearTimeout(this.timeout);
 					this.$store.commit('spinner/HIDE');
 					switch(mutation.payload.data.status) {

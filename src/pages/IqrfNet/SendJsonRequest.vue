@@ -6,7 +6,7 @@
 				<CButton 
 					color='primary'
 					size='sm' 
-					href='https://docs.iqrf.org/iqrf-gateway/api.html'
+					href='https://docs.iqrf.org/iqrf-gateway/daemon-api.html'
 					target='_blank'
 				>
 					{{ $t("iqrfnet.sendJson.documentation") }}
@@ -97,22 +97,25 @@
 	</div>
 </template>
 
-<script>
+<script lang='ts'>
+import Vue from 'vue';
+import {MutationPayload} from 'vuex';
 import {CAlert, CButton, CCard, CCardBody, CCardHeader, CForm, CTextarea} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
-import {timeout} from '../../helpers/timeout';
+//@ts-ignore
 import {TextareaAutogrowDirective} from 'vue-textarea-autogrow-directive/src/VueTextareaAutogrowDirective';
 import {StatusMessages} from '../../iqrfNet/sendJson';
 import IqrfNetService from '../../services/IqrfNetService';
 
 import {PrismEditor} from 'vue-prism-editor';
 import 'vue-prism-editor/dist/prismeditor.min.css';
-import Prism from 'prismjs/components/prism-core';
+//@ts-ignore
+import Prism from 'prismjs/components/prism-core/';
 import 'prismjs/components/prism-json';
 import 'prismjs/themes/prism.css';
 
-export default {
+export default Vue.extend({
 	name: 'SendJsonRequest',
 	components: {
 		CAlert,
@@ -129,7 +132,7 @@ export default {
 	directives: {
 		'autogrow': TextareaAutogrowDirective
 	},
-	data() {
+	data(): any {
 		return {
 			json: null,
 			request: null,
@@ -138,6 +141,7 @@ export default {
 			mType: null,
 			daemonAvailable: true,
 			reconnectAttempt: 0,
+			msgId: null,
 		};
 	},
 	created() {
@@ -154,7 +158,7 @@ export default {
 			return {}.hasOwnProperty.call(object, 'mType');
 		});
 		extend('required', required);
-		this.unsubscribe = this.$store.subscribe(mutation => {
+		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type === 'SOCKET_ONOPEN') {
 				this.daemonAvailable = true;
 			} else if (mutation.type === 'SOCKET_ONCLOSE' || 
@@ -164,12 +168,11 @@ export default {
 				this.reconnectAttempt = mutation.payload;
 			} else if (mutation.type === 'SOCKET_ONSEND') {
 				this.mType = mutation.payload.mType;
-				this.timeout = timeout('iqrfnet.sendJson.form.messages.timeout', 30000);
 			} else if (mutation.type === 'SOCKET_ONMESSAGE') {
 				if ({}.hasOwnProperty.call(mutation.payload, 'mType')) {
-					clearTimeout(this.timeout);
-					this.$store.commit('spinner/HIDE');
-					if (mutation.payload.mType === this.mType) {
+					if (mutation.payload.data.msgId === this.msgId) {
+						this.$store.commit('spinner/HIDE');
+						this.$store.dispatch('removeMessage', this.msgId);
 						this.response = JSON.stringify(mutation.payload, null, 4);
 						if (mutation.payload.data.status === 0) {
 							this.$toast.success(
@@ -201,25 +204,27 @@ export default {
 		});
 	},
 	beforeDestroy() {
+		this.$store.dispatch('removeMessage', this.msgId);
 		this.unsubscribe();
 	},
 	methods: {
 		/**
 		 * JSON highlighter method
 		 */
-		highlighter(code) {
+		highlighter(code: string) {
 			return Prism.highlight(code, Prism.languages.json, 'json');
 		},
 		processSubmit() {
-			this.$store.commit('spinner/SHOW');
 			let json = JSON.parse(this.json);
 			this.request = JSON.stringify(json, null, 4);
 			this.response = null;
-			IqrfNetService.sendJson(json);
+			this.$store.commit('spinner/SHOW');
+			IqrfNetService.sendJson(json, 60000, 'iqrfnet.sendJson.form.messages.error.fail', () => this.msgId = null)
+				.then((msgId: string) => this.msgId = msgId);
 		},
 	},
 	metaInfo: {
 		title: 'iqrfnet.sendJson.title',
 	},
-};
+});
 </script>

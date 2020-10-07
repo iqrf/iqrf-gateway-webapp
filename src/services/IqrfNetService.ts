@@ -1,4 +1,5 @@
 import store from '../store';
+import {WebSocketOptions} from '../store/modules/webSocketClient.module';
 
 /**
  * IQRF Network service
@@ -118,8 +119,8 @@ class IqrfNetService {
 	 * Performs device enumeration
 	 * @param address Device address
 	 */
-	enumerateDevice(address: number): Promise<any> {
-		return store.dispatch('sendRequest', {
+	enumerateDevice(address: number, timeout: number, message: string|null = null, callback: CallableFunction = () => {return;}): Promise<any> {
+		const request = {
 			'mType': 'iqmeshNetwork_EnumerateDevice',
 			'data': {
 				'repeat': 2,
@@ -129,7 +130,9 @@ class IqrfNetService {
 				},
 				'returnVerbose': true,
 			},
-		});
+		};
+		const options = new WebSocketOptions(request, timeout, message, callback);
+		return store.dispatch('sendRequest', options);
 	}
 
 	/**
@@ -220,8 +223,9 @@ class IqrfNetService {
 	 * Sends JSON API request
 	 * @param json JSON API request string
 	 */
-	sendJson(json: any): Promise<any> {
-		return store.dispatch('sendRequest', json);
+	sendJson(json: any, timeout: number, message: string|null = null, callback: CallableFunction = () => {return;}): Promise<any> {
+		const options = new WebSocketOptions(json, timeout, message, callback);
+		return store.dispatch('sendRequest', options);
 	}
 
 	/**
@@ -229,17 +233,19 @@ class IqrfNetService {
 	 * @param address Device address to write the configuration to
 	 * @param configuration New TR configuration
 	 */
-	writeTrConfiguration(address: number, configuration: any): Promise<any> {
+	writeTrConfiguration(address: number, configuration: any, timeout: number, message: string|null = null, callback: CallableFunction = () => {return;}): Promise<any> {
 		delete configuration.rfBand;
 		configuration.deviceAddr = address;
-		return store.dispatch('sendRequest', {
+		const request = {
 			'mType': 'iqmeshNetwork_WriteTrConf',
 			'data': {
 				'repeat': 2,
 				'req': configuration,
 				'returnVerbose': true,
 			},
-		});
+		};
+		const options = new WebSocketOptions(request, timeout, message, callback);
+		return store.dispatch('sendRequest', options);
 	}
 }
 

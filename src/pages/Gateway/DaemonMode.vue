@@ -25,6 +25,7 @@
 
 <script lang='ts'>
 import Vue from 'vue';
+import {MutationPayload} from 'vuex';
 import {CButton, CCard} from '@coreui/vue/src';
 import DaemonModeService, {DaemonMode} from '../../services/DaemonModeService';
 
@@ -38,23 +39,31 @@ export default Vue.extend({
 		return {
 			loaded: false,
 			mode: DaemonMode.unknown,
+			allowedMTypes: [
+				'mngDaemon_Mode',
+				'messageError'
+			],
+			msgId: null,
 		};
 	},
 	created() {
 		if (this.$store.state.webSocketClient.socket.isConnected) {
 			this.getMode();
 		}
-		this.unsubscribe = this.$store.subscribe((mutation: any) => {
+		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type === 'SOCKET_ONOPEN' &&
 					this.mode === DaemonMode.unknown) {
 				this.getMode();
 				return;
+			} else if (mutation.type === 'SOCKET_ONMESSAGE') {
+				if (!this.allowedMTypes.includes(mutation.payload.mType)) {
+					return;
+				}
+				if (mutation.payload.data.msgId === this.msgId) {
+					this.$store.dispatch('removeMessage', this.msgId);
+					this.handleResponse(mutation.payload);
+				}
 			}
-			if (mutation.type !== 'SOCKET_ONMESSAGE' ||
-					mutation.payload.mType !== 'mngDaemon_Mode') {
-				return;
-			}
-			this.handleResponse(mutation.payload);
 		});
 	},
 	beforeDestroy() {
@@ -78,12 +87,13 @@ export default Vue.extend({
 			}
 		},
 		getMode() {
-			this.$store.dispatch('spinner/show', {timeout: 10000});
-			DaemonModeService.get();
+			DaemonModeService.get(5000, 'gateway.mode.messages.failures.get', () => this.msgId = null)
+				.then((msgId: string) => this.msgId = msgId);
 		},
 		setMode(newMode: DaemonMode|string) {
 			this.$store.dispatch('spinner/hide');
-			DaemonModeService.set(newMode as DaemonMode);
+			DaemonModeService.set(newMode as DaemonMode, 5000, 'gateway.mode.messages.failures.set', () => this.msgId = null)
+				.then((msgId: string) => this.msgId = msgId);
 		},
 	},
 	metaInfo: {
@@ -91,3 +101,9 @@ export default Vue.extend({
 	},
 });
 </script>
+
+<style scoped>
+.btn {
+  margin: 0 3px 0 0;
+}
+</style>
