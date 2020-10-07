@@ -26,6 +26,7 @@ SBIN_DIR=${DESTDIR}/usr/sbin
 
 build:
 	$(COMPOSER) install --no-dev
+	npm install
 	npm run build
 
 all: qa phpstan cc test
