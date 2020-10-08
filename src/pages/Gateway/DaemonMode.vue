@@ -25,7 +25,7 @@
 
 <script lang='ts'>
 import Vue from 'vue';
-import {MutationPayload} from 'vuex';
+import {Getter, MutationPayload} from 'vuex';
 import {CButton, CCard} from '@coreui/vue/src';
 import DaemonModeService, {DaemonMode} from '../../services/DaemonModeService';
 
@@ -47,15 +47,8 @@ export default Vue.extend({
 		};
 	},
 	created() {
-		if (this.$store.state.webSocketClient.socket.isConnected) {
-			this.getMode();
-		}
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type === 'SOCKET_ONOPEN' &&
-					this.mode === DaemonMode.unknown) {
-				this.getMode();
-				return;
-			} else if (mutation.type === 'SOCKET_ONMESSAGE') {
+			if (mutation.type === 'SOCKET_ONMESSAGE') {
 				if (!this.allowedMTypes.includes(mutation.payload.mType)) {
 					return;
 				}
@@ -65,8 +58,25 @@ export default Vue.extend({
 				}
 			}
 		});
+		if (this.$store.getters.isSocketConnected) {
+			this.getMode();
+		} else {
+			this.unwatch = this.$store.watch(
+				(state: any, getter: any) => getter.isSocketConnected,
+				(newVal: boolean, oldVal: boolean) => {
+					if (!oldVal && newVal) {
+						this.getMode();
+						this.unwatch();
+					}
+				}
+			);
+		}
 	},
 	beforeDestroy() {
+		this.$store.dispatch('removeMessage', this.msgId);
+		if (this.unwatch !== undefined) {
+			this.unwatch();
+		}
 		this.unsubscribe();
 	},
 	methods: {

@@ -333,12 +333,15 @@ export default {
 			return regex.test(val);
 		});
 		this.unsubscribe = this.$store.subscribe(mutation => {
-			if (mutation.type === 'SOCKET_ONOPEN') {
-				this.getVersion();
+			if (mutation.type === 'SOCKET_ONERROR' ||
+				mutation.type === 'SOCKET_ONCLOSE') {
+				if (this.$store.getters['spinner/isEnabled']) {
+					this.$store.commit('spinner/HIDE');
+				}
+				return;
 			}
 			if (mutation.type === 'SOCKET_ONMESSAGE') {
 				if (mutation.payload.mType === 'iqmeshNetwork_AutoNetwork') {
-					this.$store.commit('spinner/HIDE');
 					switch(mutation.payload.data.status) {
 						case -1:
 							this.$toast.error(
@@ -349,7 +352,8 @@ export default {
 						case 0:
 							this.$store.commit('spinner/UPDATE_TEXT', this.autoNetworkProgress(mutation.payload.data));
 							if (mutation.payload.data.rsp.lastWave) {
-								
+								this.$store.commit('spinner/HIDE');
+								this.$store.dispatch('removeMessage', this.msgId);
 								this.$toast.success(
 									this.$t('iqrfnet.networkManager.messages.submit.autoNetwork.success')
 										.toString()
@@ -384,10 +388,23 @@ export default {
 		});
 		if (this.$store.getters.isSocketConnected) {
 			this.getVersion();
+		} else {
+			this.unwatch = this.$store.watch(
+				(state, getter) => getter.isSocketConnected,
+				(newVal, oldVal) => {
+					if (!oldVal && newVal) {
+						this.getVersion();
+						this.unwatch();
+					}
+				}
+			);
 		}
 	},
 	beforeDestroy() {
 		this.$store.dispatch('removeMessage', this.msgId);
+		if (this.unwatch !== undefined) {
+			this.unwatch();
+		}
 		this.unsubscribe();
 	},
 	methods: {
@@ -440,7 +457,8 @@ export default {
 				submitData['hwpidFiltering'] = this.hwpidFiltering.split(', ').map((i) => parseInt(i));
 			}
 			this.$store.commit('spinner/SHOW');
-			IqrfNetService.autoNetwork(submitData, new WebSocketOptions(null));
+			IqrfNetService.autoNetwork(submitData, new WebSocketOptions(null))
+				.then((msgId) => this.msgId = msgId);
 		}
 	}
 };

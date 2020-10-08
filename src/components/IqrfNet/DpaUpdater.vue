@@ -38,7 +38,7 @@ import {FileFormat} from '../../iqrfNet/fileFormat';
 import DpaService, { RFMode } from '../../services/IqrfRepository/DpaService';
 import OsService from '../../services/DaemonApi/OsService';
 import NativeUploadService from '../../services/NativeUploadService';
-import {MutationPayload} from 'vuex';
+import {Getter, MutationPayload} from 'vuex';
 
 export default Vue.extend({
 	name: 'DpaUpdater',
@@ -68,15 +68,7 @@ export default Vue.extend({
 	},
 	created() {
 		extend('required', required);
-		if (this.$store.state.webSocketClient.socket.isConnected) {
-			this.getOsInfo();
-		}
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type === 'SOCKET_ONOPEN' &&
-					this.osBuild === undefined) {
-				this.getOsInfo();
-				return;
-			}
 			if (mutation.type !== 'SOCKET_ONMESSAGE') {
 				return;
 			}
@@ -105,9 +97,25 @@ export default Vue.extend({
 				}
 			}
 		});
+		if (this.$store.getters.isSocketConnected) {
+			this.getOsInfo();
+		} else {
+			this.unwatch = this.$store.watch(
+				(state: any, getter: any) => getter.isSocketConnected,
+				(newVal: boolean, oldVal: boolean) => {
+					if (!oldVal && newVal) {
+						this.getOsInfo();
+						this.unwatch();
+					}
+				}
+			);
+		}
 	},
 	beforeDestroy() {
 		this.$store.dispatch('removeMessage', this.msgId);
+		if (this.unwatch !== undefined) {
+			this.unwatch();
+		}
 		this.unsubscribe();
 	},
 	methods: {

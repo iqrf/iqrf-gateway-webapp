@@ -29,6 +29,7 @@
 								@change='clear'
 							/>
 							<Datetime
+								v-if='useExpiration'
 								v-model='metadata.expiration'
 								type='datetime'
 								:format='dateFormat'

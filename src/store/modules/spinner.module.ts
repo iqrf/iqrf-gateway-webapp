@@ -23,7 +23,9 @@ const actions: ActionTree<any, any> = {
 	},
 	hide({commit, state}) {
 		commit('HIDE');
-		clearTimeout(state.timeout);
+		if (state.timeout !== null) {
+			clearTimeout(state.timeout);
+		}
 	}
 };
 

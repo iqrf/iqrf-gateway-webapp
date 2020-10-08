@@ -298,7 +298,7 @@ export default {
 					}
 				} else if (mutation.payload.mType === 'mngScheduler_RemoveTask' &&
 							this.msgIds.includes(mutation.payload.data.msgId)) {
-					this.$store.dispatch('removeMessage', mutation.payload.date.msgId);
+					this.$store.dispatch('removeMessage', mutation.payload.data.msgId);
 				} else if (mutation.payload.mType === 'messageError') {
 					this.$store.commit('spinner/HIDE');
 					this.$toast.error(

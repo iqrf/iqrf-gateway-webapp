@@ -94,7 +94,7 @@
 
 <script lang='ts'>
 import Vue from 'vue';
-import {MutationPayload} from 'vuex';
+import {Getter, MutationPayload} from 'vuex';
 import {CButton, CCard, CCardBody, CCardHeader} from '@coreui/vue/src';
 import IqrfNetService from '../../services/IqrfNetService';
 import ProductService from '../../services/IqrfRepository/ProductService';
@@ -128,23 +128,12 @@ export default Vue.extend({
 		};
 	},
 	created() {
-		if (this.$store.getters.isSocketConnected) {
-			this.$store.commit('spinner/SHOW');
-			IqrfNetService.enumerateDevice(this.address, 30000, 'iqrfnet.enumeration.messages.failure', () => this.msgId = null)
-				.then((msgId) => this.msgId = msgId);
-		}
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type === 'SOCKET_ONOPEN') {
-				this.$store.commit('spinner/SHOW');
-				IqrfNetService.enumerateDevice(this.address, 30000, 'iqrfnet.enumeration.messages.failure', () => this.msgId = null)
-					.then((msgId) => this.msgId = msgId);
-				return;
-			}
 			if (mutation.type !== 'SOCKET_ONMESSAGE' ||
 				mutation.payload.data.msgId !== this.msgId) {
 				return;
 			}
-			this.$store.commit('spinner/HIDE');
+			this.$store.dispatch('spinner/hide');
 			this.$store.dispatch('removeMessage', this.msgId);
 			const response = mutation.payload;
 			if (response.data.status !== 0) {
@@ -174,10 +163,33 @@ export default Vue.extend({
 					});
 			}
 		});
+		if (this.$store.getters.isSocketConnected) {
+			this.enumerate();
+		} else {
+			this.unwatch = this.$store.watch(
+				(state: any, getter: any) => getter.isSocketConnected,
+				(newVal: boolean, oldVal: boolean) => {
+					if (!oldVal && newVal) {
+						this.enumerate();
+						this.unwatch();
+					}
+				}
+			);
+		}
 	},
 	beforeDestroy() {
 		this.$store.dispatch('removeMessage', this.msgId);
+		if (this.unwatch !== undefined) {
+			this.unwatch();
+		}
 		this.unsubscribe();
+	},
+	methods: {
+		enumerate(): void {
+			this.$store.dispatch('spinner/show', {timeout: 30000});
+			IqrfNetService.enumerateDevice(this.address, 30000, 'iqrfnet.enumeration.messages.failure', () => this.msgId = null)
+				.then((msgId) => this.msgId = msgId);
+		}
 	},
 	metaInfo: {
 		title: 'iqrfnet.enumeration.title',

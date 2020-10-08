@@ -96,19 +96,8 @@ export default {
 		};
 	},
 	created() {
-		this.$store.dispatch('spinner/show', {timeout: 1000});
-		setTimeout(() => {
-			this.$store.dispatch('spinner/hide');
-			if (this.$store.getters.isSocketConnected) {
-				this.getBondedDevices();
-			}
-		}, 1000);
 		this.generateDevices();
 		this.unsubscribe = this.$store.subscribe(mutation => {
-			if (mutation.type === 'SOCKET_ONOPEN') {
-				this.getBondedDevices();
-				return;
-			}
 			if (mutation.type === 'SOCKET_ONMESSAGE') {
 				if (!this.allowedMTypes.includes(mutation.payload.mType)) {
 					return;
@@ -127,9 +116,27 @@ export default {
 				}
 			}
 		});
+		if (this.$store.getters.isSocketConnected) {
+			this.$store.dispatch('spinner/show', {timeout: 20000});
+			this.getBondedDevices();
+		} else {
+			this.unwatch = this.$store.watch(
+				(state, getter) => getter.isSocketConnected,
+				(newVal, oldVal) => {
+					if (!oldVal && newVal) {
+						this.$store.dispatch('spinner/show', {timeout: 20000});
+						this.getBondedDevices();
+						this.unwatch();
+					}
+				}
+			);
+		}
 	},
 	beforeDestroy() {
 		this.$store.dispatch('removeMessage', this.msgId);
+		if (this.unwatch !== undefined) {
+			this.unwatch();
+		} 
 		this.unsubscribe();
 	},
 	methods: {
@@ -151,13 +158,13 @@ export default {
 			return row * 10 + col;
 		},
 		getBondedDevices() {
-			this.$store.dispatch('spinner/show', {timeout: 60000});
-			IqrfNetService.getBonded(this.buildOptions(60000, 'iqrfnet.networkManager.devicesInfo.messages.bonded.failure'))
+			this.$store.dispatch('spinner/show', {timeout: 20000});
+			IqrfNetService.getBonded(this.buildOptions(20000, 'iqrfnet.networkManager.devicesInfo.messages.bonded.failure'))
 				.then((msgId) => this.msgId = msgId);
 		},
 		getDiscoveredDevices() {
-			this.$store.dispatch('spinner/show', {timeout: 60000});
-			IqrfNetService.getDiscovered(this.buildOptions(60000, 'iqrfnet.networkManager.devicesInfo.messages.discovered.failure'))
+			this.$store.dispatch('spinner/show', {timeout: 20000});
+			IqrfNetService.getDiscovered(this.buildOptions(20000, 'iqrfnet.networkManager.devicesInfo.messages.discovered.failure'))
 				.then((msgId) => this.msgId = msgId);
 		},
 		parseBondedDevices(response) {

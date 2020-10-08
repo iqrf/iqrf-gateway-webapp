@@ -167,7 +167,7 @@ import {TextareaAutogrowDirective} from 'vue-textarea-autogrow-directive/src/Vue
 import SchedulerService from '../../services/SchedulerService';
 import ServiceService from '../../services/ServiceService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
-import {DateTime} from 'luxon';
+import {DateTime, Duration} from 'luxon';
 import { WebSocketOptions } from '../../store/modules/webSocketClient.module';
 
 export default {
@@ -392,7 +392,7 @@ export default {
 					file.click();
 				});
 		},
-		importScheduler () {
+		importScheduler() {
 			this.importConfig.modal = false;
 			this.$store.commit('spinner/SHOW');
 			SchedulerService.importConfig(this.$refs.schedulerImport.$el.children[1].files[0])
@@ -437,14 +437,13 @@ export default {
 				}
 				if (item.periodic) {
 					let message = 'every ';
-					let date = new Date(0);
-					date.setSeconds(item.period);
+					const duration = Duration.fromMillis(item.period * 1000);
 					if (item.period >= 0 && item.period < 60) {
-						message += date.getSeconds() + ' s';
+						message += duration.toFormat('s') + ' s';
 					} else if (item.period < 3600) {
-						message += date.getMinutes() + ':' + date.getSeconds() + ' min';
+						message += duration.toFormat('m:ss') + ' min';
 					} else {
-						message += date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds() + ' h';
+						message += duration.toFormat('h:mm:ss') + ' h';
 					}
 					return message;
 				}

@@ -370,12 +370,6 @@ export default {
 		extend('max', max_value);
 		extend('required', required);
 		this.unsubscribe = this.$store.subscribe(mutation => {
-			if (mutation.type === 'SOCKET_ONOPEN') {
-				this.$store.dispatch('spinner/show', {timeout: 30000});
-				IqrfNetService.enumerateDevice(this.address, 30000, 'iqrfnet.trConfiguration.messages.read.failure', () => this.msgId = null)
-					.then((msgId) => this.msgId = msgId);
-				return;
-			}
 			if (mutation.type !== 'SOCKET_ONMESSAGE') {
 				return;
 			}
@@ -394,16 +388,32 @@ export default {
 			}
 		});
 		if (this.$store.getters.isSocketConnected) {
-			this.$store.dispatch('spinner/show', {timeout: 30000});
-			IqrfNetService.enumerateDevice(this.address, 30000, 'iqrfnet.trConfiguration.messages.read.failure', () => this.msgId = null)
-				.then((msgId) => this.msgId = msgId);
+			this.enumerate();
+		} else {
+			this.unwatch = this.$store.watch(
+				(state, getter) => getter.isSocketConnected,
+				(newVal, oldVal) => {
+					if (!oldVal && newVal) {
+						this.enumerate();
+						this.unwatch();
+					}
+				}
+			);
 		}
 	},
 	beforeDestroy() {
 		this.$store.dispatch('removeMessage', this.msgId);
+		if (this.unwatch !== undefined) {
+			this.unwatch();
+		}
 		this.unsubscribe();
 	},
 	methods: {
+		enumerate() {
+			this.$store.dispatch('spinner/show', {timeout: 30000});
+			IqrfNetService.enumerateDevice(this.address, 30000, 'iqrfnet.trConfiguration.messages.read.failure', () => this.msgId = null)
+				.then((msgId) => this.msgId = msgId);
+		},
 		handleEnumerationResponse(response) {
 			if (response.data.status !== 0) {
 				this.$store.commit('spinner/HIDE');
