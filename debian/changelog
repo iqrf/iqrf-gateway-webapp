@@ -1,3 +1,29 @@
+iqrf-gateway-webapp (2.1.0~rc2) testing; urgency=medium
+
+  [ Roman Ondráček ]
+  * Prepare for version 2.1.0-rc2
+  * Core: fix detection of non-standard ports
+  * GitLab CI: remove broken PHP API documentation generation
+  * Install: fix redirects
+  * ESLint: add plugin for TypeScript
+  * Build frontend during make build, refactor features and user Vuex models, disable Sentry in development builds
+  * Makefile: fix frontend build
+
+  [ Karel Hanák ]
+  * Websocket timeout and message management
+  * DeviceEnumeration websocket timeout
+  * TrUpload and SecurityForm websocket timeout
+  * StandardManager: websocket timeout in child components, minor fixes
+  * Websocket timeout in NetworkManager components and Scheduler
+
+  [ Roman Ondráček ]
+  * Vuex: fix TypeScript error in WebSocket client module
+
+  [ Karel Hanák ]
+  * WebSocket socket connected and reconnect fix
+
+ -- Roman Ondráček <roman@romanondracek.cz>  Fri, 09 Oct 2020 00:10:00 +0200
+
 iqrf-gateway-webapp (2.1.0~rc1) testing; urgency=medium
 
   [ Roman Ondráček ]
