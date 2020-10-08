@@ -1,5 +1,6 @@
 import store from '../store';
 import {SecurityFormat} from '../iqrfNet/securityFormat';
+import { WebSocketOptions } from '../store/modules/webSocketClient.module';
 
 /**
  * TR configuration security service
@@ -13,8 +14,9 @@ class SecurityService {
 	 * @param inputFormat 
 	 * @param type 
 	 */
-	setSecurity(nadr: number, password: string, inputFormat: SecurityFormat, type: number): Promise<any> {
-		return store.dispatch('sendRequest', {
+	setSecurity(nadr: number, password: string, inputFormat: SecurityFormat, type: number, 
+		timeout: number, message: string|null = null, callback: CallableFunction = () => {return;}): Promise<any> {
+		const request = {
 			'mType': 'iqrfEmbedOs_SetSecurity',
 			'data': {
 				'req': {
@@ -26,7 +28,9 @@ class SecurityService {
 				},
 				'returnVerbose': true,
 			},
-		});
+		};
+		const options = new WebSocketOptions(request, timeout, message, callback);
+		return store.dispatch('sendRequest', options);
 	}
 
 	/**

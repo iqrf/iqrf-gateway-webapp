@@ -64,37 +64,18 @@ export default Vue.extend({
 			],
 			failed: false,
 			format: null,
-			requestSent: false,
-			timeout: null,
+			msgId: null,
 		};
 	},
 	created() {
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type === 'SOCKET_ONSEND') {
-				if (!this.requestSent) {
-					return;
-				}
-				if (mutation.payload.mType !== 'mngDaemon_Upload') {
-					return;
-				}
-				this.timeout = setTimeout(() => {
-					this.$toast.error(
-						this.$t('iqrfnet.trUpload.messages.timeout').toString()
-					);
-					this.failed = true;
-				}, 30000);
-			}
 			if (mutation.type === 'SOCKET_ONMESSAGE') {
 				if (this.failed) {
 					return;
 				}
-				if (mutation.payload.mType === 'mngDaemon_Upload') {
-					if (!this.requestSent) {
-						return;
-					}
-					this.requestSent = false;
+				if (mutation.payload.data.msgId === this.msgId) {
 					this.$store.dispatch('spinner/hide');
-					clearTimeout(this.timeout);
+					this.$store.dispatch('removeMessage', this.msgId);
 					if (mutation.payload.data.status === 0) {
 						this.$toast.success(
 							this.$t('iqrfnet.trUpload.messages.success').toString()
@@ -109,7 +90,7 @@ export default Vue.extend({
 		});
 	},
 	beforeDestroy() {
-		clearTimeout(this.timeout);
+		this.$store.dispatch('removeMessage', this.msgId);
 		this.unsubscribe();
 	},
 	methods: {
@@ -133,7 +114,8 @@ export default Vue.extend({
 			NativeUploadService.uploadREST(formData)
 				.then((response) => {
 					this.$store.dispatch('spinner/show', {timeout: 30000});
-					NativeUploadService.upload(response.data.fileName, response.data.format);
+					NativeUploadService.upload(response.data.fileName, response.data.format, 30000, 'iqrfnet.trUpload.messages.timeout', () => this.msgId = null)
+						.then((msgId: string) => this.msgId = msgId);
 				})
 				.catch(() => {
 					this.$store.commit('spinner/HIDE');

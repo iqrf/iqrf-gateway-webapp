@@ -357,7 +357,7 @@ export default {
 			this.config = null;
 			this.peripherals = [];
 			if (this.$store.getters.isSocketConnected) {
-				this.$store.commit('spinner/SHOW');
+				this.$store.dispatch('spinner/show', {timeout: 30000});
 				IqrfNetService.enumerateDevice(this.address, 30000, 'iqrfnet.trConfiguration.messages.read.failure', () => this.msgId = null)
 					.then((msgId) => this.msgId = msgId);
 			}
@@ -371,6 +371,7 @@ export default {
 		extend('required', required);
 		this.unsubscribe = this.$store.subscribe(mutation => {
 			if (mutation.type === 'SOCKET_ONOPEN') {
+				this.$store.dispatch('spinner/show', {timeout: 30000});
 				IqrfNetService.enumerateDevice(this.address, 30000, 'iqrfnet.trConfiguration.messages.read.failure', () => this.msgId = null)
 					.then((msgId) => this.msgId = msgId);
 				return;
@@ -380,17 +381,20 @@ export default {
 			}
 			if (mutation.payload.mType === 'iqmeshNetwork_WriteTrConf' &&
 				mutation.payload.data.msgId === this.msgId) {
+				this.$store.dispatch('spinner/hide');
 				this.$store.dispatch('removeMessage', this.msgId);
 				this.handleWriteResponse(mutation.payload);
 				return;
 			}
 			if (mutation.payload.mType === 'iqmeshNetwork_EnumerateDevice' &&
 				mutation.payload.data.msgId === this.msgId) {
+				this.$store.dispatch('spinner/hide');
 				this.$store.dispatch('removeMessage', this.msgId);
 				this.handleEnumerationResponse(mutation.payload);
 			}
 		});
 		if (this.$store.getters.isSocketConnected) {
+			this.$store.dispatch('spinner/show', {timeout: 30000});
 			IqrfNetService.enumerateDevice(this.address, 30000, 'iqrfnet.trConfiguration.messages.read.failure', () => this.msgId = null)
 				.then((msgId) => this.msgId = msgId);
 		}
@@ -423,7 +427,7 @@ export default {
 		handleSubmit() {
 			let config = JSON.parse(JSON.stringify(this.config));
 			config.embPers = this.getEmbeddedPeripherals();
-			this.$store.commit('spinner/SHOW');
+			this.$store.dispatch('spinner/show', {timeout: 60000});
 			IqrfNetService.writeTrConfiguration(this.address, config, 60000, 'iqrfnet.trConfiguration.messages.write.failure', () => this.msgId = null)
 				.then((msgId) => this.msgId = msgId);
 		},

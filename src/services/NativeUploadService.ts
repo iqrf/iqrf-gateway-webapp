@@ -3,6 +3,7 @@ import {FileFormat} from '../iqrfNet/fileFormat';
 import axios from 'axios';
 import { AxiosResponse } from 'axios';
 import { authorizationHeader } from '../helpers/authorizationHeader';
+import { WebSocketOptions } from '../store/modules/webSocketClient.module';
 
 /**
  * Native upload service
@@ -13,8 +14,8 @@ class NativeUploadService {
 	 * @param filePath path to file
 	 * @param format file format
 	 */
-	upload(filePath: string, format: FileFormat) {
-		return store.dispatch('sendRequest', {
+	upload(filePath: string, format: FileFormat, timeout: number, message: string|null = null, callback: CallableFunction = () => {return;}) {
+		const request = {
 			'mType': 'mngDaemon_Upload',
 			'data': {
 				'req': {
@@ -23,7 +24,9 @@ class NativeUploadService {
 				},
 				'returnVerbose': true,
 			},
-		});
+		};
+		const options = new WebSocketOptions(request, timeout, message, callback);
+		return store.dispatch('sendRequest', options);
 	}
 
 	/**

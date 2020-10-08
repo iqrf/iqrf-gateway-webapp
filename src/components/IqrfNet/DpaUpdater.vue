@@ -38,6 +38,7 @@ import {FileFormat} from '../../iqrfNet/fileFormat';
 import DpaService, { RFMode } from '../../services/IqrfRepository/DpaService';
 import OsService from '../../services/DaemonApi/OsService';
 import NativeUploadService from '../../services/NativeUploadService';
+import {MutationPayload} from 'vuex';
 
 export default Vue.extend({
 	name: 'DpaUpdater',
@@ -58,7 +59,11 @@ export default Vue.extend({
 			trType: null,
 			version: undefined,
 			versions: [],
-			requestSent: false,
+			msgId: null,
+			allowedMTypes: [
+				'iqrfEmbedOs_Read',
+				'mngDaemon_Upload'
+			]
 		};
 	},
 	created() {
@@ -66,7 +71,7 @@ export default Vue.extend({
 		if (this.$store.state.webSocketClient.socket.isConnected) {
 			this.getOsInfo();
 		}
-		this.unsubscribe = this.$store.subscribe((mutation: any) => {
+		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type === 'SOCKET_ONOPEN' &&
 					this.osBuild === undefined) {
 				this.getOsInfo();
@@ -75,8 +80,12 @@ export default Vue.extend({
 			if (mutation.type !== 'SOCKET_ONMESSAGE') {
 				return;
 			}
+			if (mutation.payload.data.msgId !== this.msgId) {
+				return;
+			}
+			this.$store.dispatch('spinner/hide');
+			this.$store.dispatch('removeMessage', this.msgId);
 			if (mutation.payload.mType === 'iqrfEmbedOs_Read') {
-				this.$store.dispatch('spinner/hide');
 				if (mutation.payload.data.status === 0) {
 					this.handleResponse(mutation.payload);
 				} else {
@@ -85,12 +94,6 @@ export default Vue.extend({
 					);
 				}
 			} else if (mutation.payload.mType === 'mngDaemon_Upload') {
-				if (!this.requestSent) {
-					return;
-				}
-				this.requestSent = false;
-				this.$store.dispatch('spinner/hide');
-				clearTimeout(this.timeout);
 				if (mutation.payload.data.status === 0) {
 					this.$toast.success(
 						this.$t('iqrfnet.trUpload.messages.success').toString()
@@ -104,6 +107,7 @@ export default Vue.extend({
 		});
 	},
 	beforeDestroy() {
+		this.$store.dispatch('removeMessage', this.msgId);
 		this.unsubscribe();
 	},
 	methods: {
@@ -111,9 +115,9 @@ export default Vue.extend({
 			return Number.parseInt(version).toString(16).padStart(4, '0').toUpperCase();
 		},
 		getOsInfo() {
-			this.$store.dispatch('spinner/show', {timeout: 10000});
-			this.requestSent = true;
-			OsService.sendRead(this.address);
+			this.$store.dispatch('spinner/show', {timeout: 30000});
+			OsService.sendRead(this.address, 30000, 'iqrfnet.trUpload.messages.osInfoFail', () => this.msgId = null)
+				.then((msgId: string) => this.msgId = msgId);
 		},
 		handleResponse(response: any) {
 			const result = response.data.rsp.result;
@@ -165,8 +169,8 @@ export default Vue.extend({
 			DpaService.getDpaFile(request)
 				.then((response) => {
 					this.$store.dispatch('spinner/show', {timeout: 30000});
-					this.requestSent = true;
-					NativeUploadService.upload(response.data.fileName, FileFormat.IQRF);
+					NativeUploadService.upload(response.data.fileName, FileFormat.IQRF, 30000, 'iqrfnet.trUpload.messagess.genericError', () => this.msgId = null)
+						.then((msgId) => this.msgId = msgId);
 				})
 				.catch((error) => {
 					this.$store.commit('spinner/HIDE');

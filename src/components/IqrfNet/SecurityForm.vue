@@ -67,6 +67,7 @@ export default Vue.extend({
 			],
 			format: SecurityFormat.ASCII.valueOf(),
 			password: '',
+			msgId: null,
 		};
 	},
 	created(): void {
@@ -74,9 +75,10 @@ export default Vue.extend({
 			if (mutation.type !== 'SOCKET_ONMESSAGE') {
 				return;
 			}
-			if (mutation.payload.mType === 'iqrfEmbedOs_SetSecurity') {
+			if (mutation.payload.data.msgId === this.msgId) {
+				this.$store.dispatch('spinner/hide');
+				this.$store.dispatch('removeMessage', this.msgId);
 				if (mutation.payload.data.status === 0) {
-					this.$store.commit('spinner/HIDE');
 					this.$toast.success(this.$t('iqrfnet.trConfiguration.security.messages.success').toString());
 				} else {
 					this.$toast.error(this.$t('iqrfnet.trConfiguration.security.messages.failure').toString());
@@ -85,6 +87,7 @@ export default Vue.extend({
 		});
 	},
 	beforeDestroy(): void {
+		this.$store.dispatch('removeMessage', this.msgId);
 		this.unsubscribe();
 	},
 	methods: {
@@ -100,12 +103,10 @@ export default Vue.extend({
 				this.$toast.error('Password string is not valid for the selected format.');
 				return;
 			}
-			this.$store.commit('spinner/SHOW');
-			if (password) {
-				SecurityService.setSecurity(this.address, this.password, this.format, 0);
-			} else {
-				SecurityService.setSecurity(this.address, this.password, this.format, 1);
-			}
+			this.$store.dispatch('spinner/show', {timeout: 15000});
+			const type = password ? 0 : 1;
+			SecurityService.setSecurity(this.address, this.password, this.format, type, 15000, 'iqrfnet.trConfiguration.security.messages.failure', () => this.msgId = null)
+				.then((msgId: string) => this.msgId = msgId);
 		}
 	},
 });
