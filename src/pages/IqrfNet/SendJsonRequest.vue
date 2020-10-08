@@ -192,6 +192,8 @@ export default Vue.extend({
 								);
 							}
 						}
+					} else if (mutation.payload.mType === 'iqmeshNetwork_AutoNetwork') {
+						this.response = JSON.stringify(mutation.payload, null, 4);
 					} else if (mutation.payload.mType === 'messageError') {
 						this.response = JSON.stringify(mutation.payload, null, 4);
 						this.$toast.error(

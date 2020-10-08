@@ -253,10 +253,10 @@
 import {CAlert, CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import compareVersions from 'compare-versions';
-import {timeout} from '../../helpers/timeout';
 import {between, integer, required} from 'vee-validate/dist/rules';
 import IqrfNetService from '../../services/IqrfNetService';
 import VersionService from '../../services/VersionService';
+import { WebSocketOptions } from '../../store/modules/webSocketClient.module';
 
 export default {
 	name: 'AutoNetwork',
@@ -292,7 +292,6 @@ export default {
 				network: 1
 			},
 			hwpidFiltering: '',
-			timeout: null,
 			useHwpidFiltering: false,
 			useOverlappingNetworks: false,
 			useWaves: false,
@@ -303,6 +302,7 @@ export default {
 				nodesNew: '',
 			},
 			daemonVersion: 'v2.2.2',
+			msgId: null,
 		};
 	},
 	computed: {
@@ -336,17 +336,11 @@ export default {
 			if (mutation.type === 'SOCKET_ONOPEN') {
 				this.getVersion();
 			}
-			if (mutation.type === 'SOCKET_ONSEND' &&
-				mutation.payload.mType === 'iqmeshNetwork_autoNetwork') {
-				this.timeout = timeout('iqrfnet.networkManager.messages.submit.timeout', 30000);
-				return;
-			}
 			if (mutation.type === 'SOCKET_ONMESSAGE') {
 				if (mutation.payload.mType === 'iqmeshNetwork_AutoNetwork') {
-					clearTimeout(this.timeout);
+					this.$store.commit('spinner/HIDE');
 					switch(mutation.payload.data.status) {
 						case -1:
-							this.$store.commit('spinner/HIDE');
 							this.$toast.error(
 								this.$t('iqrfnet.networkManager.messages.submit.timeout')
 									.toString()
@@ -355,7 +349,7 @@ export default {
 						case 0:
 							this.$store.commit('spinner/UPDATE_TEXT', this.autoNetworkProgress(mutation.payload.data));
 							if (mutation.payload.data.rsp.lastWave) {
-								this.$store.commit('spinner/HIDE');
+								
 								this.$toast.success(
 									this.$t('iqrfnet.networkManager.messages.submit.autoNetwork.success')
 										.toString()
@@ -371,14 +365,15 @@ export default {
 							break;
 					}
 				} else if (mutation.payload.mType === 'messageError') {
-					clearTimeout(this.timeout);
 					this.$store.commit('spinner/HIDE');
 					this.$toast.error(
 						this.$t('iqrfnet.networkManager.messages.submit.invalidMessage')
 							.toString()
 					);
-				} else if (mutation.payload.mType === 'mngDaemon_Version') {
-					this.$store.commit('spinner/HIDE');
+				} else if (mutation.payload.mType === 'mngDaemon_Version' &&
+							mutation.payload.data.msgId === this.msgId) {
+					this.$store.dispatch('spinner/hide');
+					this.$store.dispatch('removeMessage', this.msgId);
 					if (mutation.payload.data.status === 0 ) {
 						this.daemonVersion = mutation.payload.data.rsp.version.substring(0, 6);
 					} else {
@@ -392,12 +387,14 @@ export default {
 		}
 	},
 	beforeDestroy() {
+		this.$store.dispatch('removeMessage', this.msgId);
 		this.unsubscribe();
 	},
 	methods: {
 		getVersion() {
-			this.$store.commit('spinner/SHOW');
-			VersionService.getVersion();
+			this.$store.dispatch('spinner/show', {timeout: 10000});
+			VersionService.getVersion(new WebSocketOptions(null, 10000, 'iqrfnet.networkManager.messages.autoNetwork.versionFailure', () => this.msgId = null))
+				.then((msgId) => this.msgId = msgId);
 		},
 		autoNetworkProgress(response) {
 			let message = '\nWave ' + response.rsp.wave;
@@ -443,7 +440,7 @@ export default {
 				submitData['hwpidFiltering'] = this.hwpidFiltering.split(', ').map((i) => parseInt(i));
 			}
 			this.$store.commit('spinner/SHOW');
-			IqrfNetService.autoNetwork(submitData);
+			IqrfNetService.autoNetwork(submitData, new WebSocketOptions(null));
 		}
 	}
 };

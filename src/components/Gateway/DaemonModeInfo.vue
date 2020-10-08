@@ -1,5 +1,5 @@
 <template>
-	<span v-if='requestRunning && mode === DaemonMode.unknown'>
+	<span v-if='requestRunning && mode === "unknown"'>
 		<CSpinner color='info' class='cinfo-spinner' />
 	</span>
 	<span v-else>{{ $t('gateway.mode.modes.' + mode) }}</span>

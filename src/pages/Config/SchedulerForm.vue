@@ -165,6 +165,7 @@ import {TextareaAutogrowDirective} from 'vue-textarea-autogrow-directive/src/Vue
 import cronstrue from 'cronstrue';
 import {Datetime} from 'vue-datetime';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
+import { WebSocketOptions } from '../../store/modules/webSocketClient.module';
 
 export default {
 	name: 'SchedulerForm',
@@ -213,6 +214,7 @@ export default {
 			cronMessage: null,
 			useRest: true,
 			untouched: true,
+			msgIds: []
 		};
 	},
 	created() {
@@ -249,8 +251,10 @@ export default {
 				mutation.type === 'SOCKET_ONERROR') {
 				this.useRest = true;
 			} else if (mutation.type === 'SOCKET_ONMESSAGE') {
-				if (mutation.payload.mType === 'mngScheduler_GetTask') {
+				if (mutation.payload.mType === 'mngScheduler_GetTask' &&
+					this.msgIds.includes(mutation.payload.data.msgId)) {
 					this.$store.commit('spinner/HIDE');
+					this.$store.dispatch('removeMessage', mutation.payload.data.msgId);
 					if (mutation.payload.data.status === 0) {
 						let rsp = mutation.payload.data.rsp;
 						this.taskId = rsp.taskId;
@@ -281,8 +285,10 @@ export default {
 								.toString()
 						);
 					}
-				} else if (mutation.payload.mType === 'mngScheduler_AddTask') {
+				} else if (mutation.payload.mType === 'mngScheduler_AddTask' &&
+							this.msgIds.includes(mutation.payload.data.msgId)) {
 					this.$store.commit('spinner/HIDE');
+					this.$store.dispatch('removeMessage', mutation.payload.data.msgId);
 					if (mutation.payload.data.status === 0) {
 						this.successfulSave();
 					} else {
@@ -290,6 +296,9 @@ export default {
 							this.$t('config.scheduler.messagess.processError').toString()
 						);
 					}
+				} else if (mutation.payload.mType === 'mngScheduler_RemoveTask' &&
+							this.msgIds.includes(mutation.payload.data.msgId)) {
+					this.$store.dispatch('removeMessage', mutation.payload.date.msgId);
 				} else if (mutation.payload.mType === 'messageError') {
 					this.$store.commit('spinner/HIDE');
 					this.$toast.error(
@@ -297,11 +306,11 @@ export default {
 					);
 				}
 			}
-			
 		});
 		this.getMessagings();
 	},
 	beforeDestroy() {
+		this.msgIds.forEach((item) => this.$store.dispatch('removeMessage', item));
 		this.unsubscribe();
 	},
 	methods: {
@@ -351,8 +360,17 @@ export default {
 						);
 					});
 			} else {
-				SchedulerService.getTask(taskId);
+				SchedulerService.getTask(taskId, new WebSocketOptions(null, 30000, () => this.$router.push('/config/scheduler/')))
+					.then((msgId) => this.storeId(msgId));
 			}
+		},
+		storeId(msgId) {
+			this.msgIds.push(msgId);
+			setTimeout(() => {
+				if (this.msgIds.includes(msgId)) {
+					this.msgIds.splice(this.msgIds.indexOf(msgId), 1);
+				}
+			}, 30000);
 		},
 		getMessagings() {
 			this.$store.commit('spinner/SHOW');
@@ -420,7 +438,9 @@ export default {
 						.then(() => this.successfulSave())
 						.catch((error) => FormErrorHandler.schedulerError(error));
 				} else {
-					SchedulerService.addTask(this.taskId, this.clientId, this.task, timeSpec);
+					SchedulerService.addTask(this.taskId, this.clientId, this.task, timeSpec, new WebSocketOptions(
+						null, 30000, 'config.scheduler.messagess.processError'))
+						.then((msgId) => this.storeId(msgId));
 				}
 			} else {
 				if (this.useRest) {
@@ -428,8 +448,11 @@ export default {
 						.then(() => this.successfulSave())
 						.catch((error) => FormErrorHandler.schedulerError(error));
 				} else {
-					SchedulerService.removeTask(this.id);
-					SchedulerService.addTask(this.taskId, this.clientId, this.task, timeSpec);
+					SchedulerService.removeTask(this.taskId, new WebSocketOptions(null, 30000, 'config.scheduler.messages.deleteFail'))
+						.then((msgId) => this.storeId(msgId));
+					SchedulerService.addTask(this.taskId, this.clientId, this.task, timeSpec, new WebSocketOptions(
+						null, 30000, 'config.scheduler.messagess.processError'))
+						.then((msgId) => this.storeId(msgId));
 				}
 			}
 		},

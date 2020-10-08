@@ -8,8 +8,9 @@ class IqrfNetService {
 	/**
 	 * Performs AutoNetwork
 	 * @param autoNetwork Object containing AutoNetwork parameters
+	 * @param options WebSocket request options
 	 */
-	autoNetwork(autoNetwork: any) {
+	autoNetwork(autoNetwork: any, options: WebSocketOptions) {
 		const json = {
 			'mType': 'iqmeshNetwork_AutoNetwork',
 			'data': {
@@ -31,15 +32,17 @@ class IqrfNetService {
 		if (autoNetwork.hwpidFiltering) {
 			Object.assign(json.data.req, {'hwpidFiltering': autoNetwork.hwpidFiltering});
 		}
-		return store.dispatch('sendRequest', json);
+		options.request = json;
+		return store.dispatch('sendRequest', options);
 	}
 
 	/**
 	 * Bonds a node locally
 	 * @param address A requested address for the bonded node. If this parameter equals to 0, then the first free address is assigned to the node.
+	 * @param options WebSocket request options
 	 */
-	bondLocal(address: number) {
-		return store.dispatch('sendRequest', {
+	bondLocal(address: number, options: WebSocketOptions) {
+		options.request = {
 			'mType': 'iqmeshNetwork_BondNodeLocal',
 			'data': {
 				'repeat': 2,
@@ -48,7 +51,8 @@ class IqrfNetService {
 				},
 				'returnVerbose': true,
 			},
-		});
+		};
+		return store.dispatch('sendRequest', options);
 	}
 
 	/**
@@ -56,9 +60,10 @@ class IqrfNetService {
 	 * @param address Address to bond the device to.  If this parameter equals to 0, then the first free address is assigned to the node.
 	 * @param scCode Device Smart Connect code
 	 * @param testRetries Maximum number of FRCs used to test whether the Node was successfully bonded
+	 * @param options WebSocket request options
 	 */
-	bondSmartConnect(address: number, scCode: string, testRetries: number): Promise<any> {
-		return store.dispatch('sendRequest', {
+	bondSmartConnect(address: number, scCode: string, testRetries: number, options: WebSocketOptions): Promise<any> {
+		options.request = {
 			'mType': 'iqmeshNetwork_SmartConnect',
 			'data': {
 				'repeat': 2,
@@ -69,16 +74,18 @@ class IqrfNetService {
 				},
 				'returnVerbose': true,
 			},
-		});
+		};
+		return store.dispatch('sendRequest', options);
 	}
 
 	/**
 	 * Clears all bonds
 	 * @param coordinatorOnly Removes bonds only in the coordinator memory
+	 * @param options WebSocket request options
 	 */
-	clearAllBonds(coordinatorOnly: boolean): Promise<any> {
+	clearAllBonds(coordinatorOnly: boolean, options: WebSocketOptions): Promise<any> {
 		if (coordinatorOnly) {
-			return store.dispatch('sendRequest', {
+			options.request = {
 				'mType': 'iqrfEmbedCoordinator_ClearAllBonds',
 				'data': {
 					'req': {
@@ -87,9 +94,10 @@ class IqrfNetService {
 					},
 					'returnVerbose': true,
 				},
-			});
+			};
+			return store.dispatch('sendRequest', options);
 		} else {
-			return this.removeBond(255, false);
+			return this.removeBond(255, false, options);
 		}
 	}
 
@@ -98,8 +106,8 @@ class IqrfNetService {
 	 * @param txPower TX Power
 	 * @param maxAddr Maximum node address
 	 */
-	discovery(txPower: number, maxAddr: number): Promise<any> {
-		return store.dispatch('sendRequest', {
+	discovery(txPower: number, maxAddr: number, options: WebSocketOptions): Promise<any> {
+		options.request = {
 			'mType': 'iqrfEmbedCoordinator_Discovery',
 			'data': {
 				'repeat': 2,
@@ -112,7 +120,8 @@ class IqrfNetService {
 				},
 				'returnVerbose': true,
 			},
-		});
+		};
+		return store.dispatch('sendRequest', options);
 	}
 
 	/**
@@ -137,9 +146,10 @@ class IqrfNetService {
 
 	/**
 	 * Retrieves list of bonded devices
+	 * @param options WebSocket request options
 	 */
-	getBonded(): Promise<any> {
-		return store.dispatch('sendRequest', {
+	getBonded(options: WebSocketOptions): Promise<any> {
+		options.request = {
 			'mType': 'iqrfEmbedCoordinator_BondedDevices',
 			'data': {
 				'req': {
@@ -148,14 +158,16 @@ class IqrfNetService {
 				},
 				'returnVerbose': true,
 			},
-		});
+		};
+		return store.dispatch('sendRequest', options);
 	}
 
 	/**
 	 * Retrieves list of discovered devices
+	 * @param options WebSocket request options
 	 */
-	getDiscovered(): Promise<any> {
-		return store.dispatch('sendRequest', {
+	getDiscovered(options: WebSocketOptions): Promise<any> {
+		options.request = {
 			'mType': 'iqrfEmbedCoordinator_DiscoveredDevices',
 			'data': {
 				'req': {
@@ -164,14 +176,16 @@ class IqrfNetService {
 				},
 				'returnVerbose': true,
 			},
-		});
+		};
+		return store.dispatch('sendRequest', options);
 	}
 
 	/**
 	 * Perform FRC Ping
+	 * @param options WebSocket request options
 	 */
-	ping(): Promise<any> {
-		return store.dispatch('sendRequest', {
+	ping(options: WebSocketOptions): Promise<any> {
+		options.request = {
 			'mType': 'iqrfEmbedFrc_Send',
 			'data': {
 				'req': {
@@ -183,17 +197,19 @@ class IqrfNetService {
 					'returnVerbose': true,
 				},
 			},
-		});
+		};
+		return store.dispatch('sendRequest', options);
 	}
 
 	/**
 	 * Removes a bond
 	 * @param addr Address of a node bond to be removed
 	 * @param coordinatorOnly Removes a bond only in the coordinator memory
+	 * @param options WebSocket request options
 	 */
-	removeBond(addr: number, coordinatorOnly: boolean): Promise<any> {
+	removeBond(addr: number, coordinatorOnly: boolean, options: WebSocketOptions): Promise<any> {
 		if (coordinatorOnly) {
-			return store.dispatch('sendRequest', {
+			options.request = {
 				'mType': 'iqrfEmbedCoordinator_RemoveBond',
 				'data': {
 					'req': {
@@ -204,9 +220,9 @@ class IqrfNetService {
 					},
 					'returnVerbose': true,
 				},
-			});
+			};
 		} else {
-			return store.dispatch('sendRequest', {
+			options.request = {
 				'mType': 'iqmeshNetwork_RemoveBond',
 				'data': {
 					'repeat': 2,
@@ -215,8 +231,9 @@ class IqrfNetService {
 					},
 					'returnVerbose': true,
 				},
-			});
+			};
 		}
+		return store.dispatch('sendRequest', options);
 	}
 
 	/**

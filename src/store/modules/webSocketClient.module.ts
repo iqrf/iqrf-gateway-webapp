@@ -44,6 +44,11 @@ const actions: ActionTree<any, any> = {
 		if (request.data !== undefined && request.data.msgId === undefined) {
 			request.data.msgId = uuidv4();
 		}
+		if (request.mType === 'iqmeshNetwork_AutoNetwork') {
+			Vue.prototype.$socket.sendObj(request);
+			commit('SOCKET_ONSEND', request);
+			return Promise.resolve(request.data.msgId);
+		}
 		let timeout = null;
 		if (options.timeout) {
 			timeout = window.setTimeout(() => {

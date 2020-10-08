@@ -1,6 +1,7 @@
 import store from '../store';
 import axios, {AxiosResponse} from 'axios';
 import {authorizationHeader} from '../helpers/authorizationHeader';
+import { WebSocketOptions } from '../store/modules/webSocketClient.module';
 
 /**
  * Scheduler service
@@ -12,13 +13,14 @@ class SchedulerService {
 	 * @param clientId client ID
 	 * @param task scheduler task
 	 * @param timeSpec scheduler task time settings
+	 * @param options WebSocket request options
 	 */
-	addTask(taskId: number, clientId: string, task: any, timeSpec: Record<string, unknown>) {
+	addTask(taskId: number, clientId: string, task: any, timeSpec: Record<string, unknown>, options: WebSocketOptions) {
 		const tasks = JSON.parse(JSON.stringify(task));
 		tasks.forEach((item: any) => {
 			item.message = JSON.parse(item.message);
 		});
-		return store.dispatch('sendRequest', {
+		options.request = {
 			'mType': 'mngScheduler_AddTask',
 			'data': {
 				'req': {
@@ -30,7 +32,8 @@ class SchedulerService {
 				},
 				'returnVerbose': true,
 			},
-		});
+		};
+		return store.dispatch('sendRequest', options);
 	}
 
 	/**
@@ -78,9 +81,10 @@ class SchedulerService {
 
 	/**
 	 * Retrieves scheduler tasks via the Daemon API
+	 * @param options WebSocket request options
 	 */
-	listTasks() {
-		return store.dispatch('sendRequest', {
+	listTasks(options: WebSocketOptions) {
+		options.request = {
 			'mType': 'mngScheduler_List',
 			'data': {
 				'req': {
@@ -88,7 +92,8 @@ class SchedulerService {
 				},
 				'returnVerbose': true,
 			},
-		});
+		};
+		return store.dispatch('sendRequest', options);
 	}
 
 	/**
@@ -102,8 +107,8 @@ class SchedulerService {
 	 * Retrieves task specified by ID via the Daemon API
 	 * @param taskId scheduler task ID
 	 */
-	getTask(taskId: number) {
-		return store.dispatch('sendRequest', {
+	getTask(taskId: number, options: WebSocketOptions) {
+		options.request = {
 			'mType': 'mngScheduler_GetTask',
 			'data': {
 				'req': {
@@ -112,7 +117,8 @@ class SchedulerService {
 				},
 				'returnVerbose': true,
 			},
-		});
+		};
+		return store.dispatch('sendRequest', options);
 	}
 
 	/**
@@ -127,8 +133,8 @@ class SchedulerService {
 	 * Removes a task specified by ID via the Daemon API
 	 * @param taskId scheduler task ID
 	 */
-	removeTask(taskId: number) {
-		return store.dispatch('sendRequest', {
+	removeTask(taskId: number, options: WebSocketOptions) {
+		options.request = {
 			'mType': 'mngScheduler_RemoveTask',
 			'data': {
 				'req': {
@@ -137,7 +143,8 @@ class SchedulerService {
 				},
 				'returnVerbose': true,
 			},
-		});
+		};
+		return store.dispatch('sendRequest', options);
 	}
 
 	/**

@@ -59,6 +59,7 @@ if (port !== '') {
 	port = ':' + port;
 }
 const wsApi: string = (isHttps ? 'wss://' : 'ws://') + hostname + (isDev ? ':1338': port + '/ws');
+//const wsApi: string = 'ws://tunnel.rehivetech.com:45117/ws';
 
 Vue.use(VueNativeSock, wsApi, {
 	store: store,

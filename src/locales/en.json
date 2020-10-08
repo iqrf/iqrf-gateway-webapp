@@ -532,6 +532,7 @@
 				"deleteSuccess": "Scheduler task has been successfully deleted.",
 				"deleteFail": "An error occurred while removing task.",
 				"getFail": "Could not retrieve task {task}.",
+				"listFailed": "Failed to retrieve list of scheduler tasks",
 				"addSuccess": "Scheduler task has been successfully added.",
 				"processError": "An error has occurred while processing Daemon API request.",
 				"rest": {

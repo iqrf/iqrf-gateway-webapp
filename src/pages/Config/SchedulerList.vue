@@ -168,6 +168,7 @@ import SchedulerService from '../../services/SchedulerService';
 import ServiceService from '../../services/ServiceService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import {DateTime} from 'luxon';
+import { WebSocketOptions } from '../../store/modules/webSocketClient.module';
 
 export default {
 	name: 'SchedulerList',
@@ -234,6 +235,7 @@ export default {
 			useRest: true,
 			retrieved: null,
 			untouched: true,
+			msgIds: [],
 		};
 	},
 	created() {
@@ -263,21 +265,31 @@ export default {
 					}
 				}
 			} else if (mutation.type === 'SOCKET_ONMESSAGE') {
-				if (mutation.payload.mType === 'mngScheduler_List') {
+				if (mutation.payload.mType === 'mngScheduler_List' &&
+					this.msgIds.includes(mutation.payload.data.msgId)) {
 					this.$store.commit('spinner/HIDE');
+					this.$store.dispatch('removeMessage', mutation.payload.data.msgId);
 					if (mutation.payload.data.status === 0) {
 						this.taskIds = mutation.payload.data.rsp.tasks;
 						this.taskIds.forEach(item => {
 							this.getTask(item);
 						});
 						this.retrieved = 'daemon';
+					} else {
+						this.$toast.error(
+							this.$t('config.scheduler.messages.listFailed').toString()
+						);
 					}
-				} else if (mutation.payload.mType === 'mngScheduler_GetTask') {
+				} else if (mutation.payload.mType === 'mngScheduler_GetTask' &&
+							this.msgIds.includes(mutation.payload.data.msgId)) {
+					this.$store.dispatch('removeMessage', mutation.payload.data.msgId);
 					if (mutation.payload.data.status === 0) {
 						this.tasks.push(mutation.payload.data.rsp);
 					}
-				} else if (mutation.payload.mType === 'mngScheduler_RemoveTask') {
+				} else if (mutation.payload.mType === 'mngScheduler_RemoveTask' &&
+							this.msgIds.includes(mutation.payload.data.msgId)) {
 					this.$store.commit('spinner/HIDE');
+					this.$store.dispatch('removeMessage', mutation.payload.data.msgId);
 					if (mutation.payload.data.status === 0) {
 						this.$toast.success(
 							this.$t('config.scheduler.messages.deleteSuccess').toString()
@@ -293,6 +305,7 @@ export default {
 		});
 	},
 	beforeDestroy() {
+		this.msgIds.forEach((item) => this.$store.dispatch('removeMessage', item));
 		this.unsubscribe();
 	},
 	methods: {
@@ -334,11 +347,13 @@ export default {
 					})
 					.catch((error) => FormErrorHandler.schedulerError(error));
 			} else {
-				SchedulerService.listTasks();
+				SchedulerService.listTasks(new WebSocketOptions(null, 30000, 'config.scheduler.messages.listFailed'))
+					.then((msgId) => this.storeId(msgId));
 			}
 		},
 		getTask(taskId) {
-			SchedulerService.getTask(taskId);
+			SchedulerService.getTask(taskId, new WebSocketOptions(null, 30000))
+				.then((msgId) => this.storeId(msgId));
 		},
 		removeTask() {
 			this.$store.commit('spinner/SHOW');
@@ -355,8 +370,17 @@ export default {
 					})
 					.catch((error) => FormErrorHandler.schedulerError(error));
 			} else {
-				SchedulerService.removeTask(task);
+				SchedulerService.removeTask(task, new WebSocketOptions(null, 30000, 'config.scheduler.messages.deleteFail'))
+					.then((msgId) => this.storeId(msgId));
 			}
+		},
+		storeId(msgId) {
+			this.msgIds.push(msgId);
+			setTimeout(() => {
+				if (this.msgIds.includes(msgId)) {
+					this.msgIds.splice(this.msgIds.indexOf(msgId), 1);
+				}
+			}, 30000);
 		},
 		exportScheduler() {
 			this.$store.commit('spinner/SHOW');
@@ -449,3 +473,9 @@ export default {
 	},
 };
 </script>
+
+<style scoped>
+.btn {
+  margin: 0 3px 0 0;
+}
+</style>

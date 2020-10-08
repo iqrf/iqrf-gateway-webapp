@@ -139,9 +139,9 @@ import Vue from 'vue';
 import {MutationPayload} from 'vuex';
 import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox, CModal, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {timeout} from '../../helpers/timeout';
 import {between, integer, required} from 'vee-validate/dist/rules';
 import IqrfNetService from '../../services/IqrfNetService';
+import { WebSocketOptions } from '../../store/modules/webSocketClient.module';
 
 export default Vue.extend({
 	name: 'BondingManager',
@@ -167,7 +167,7 @@ export default Vue.extend({
 			modalUnbond: false,
 			unbondCoordinatorOnly: false,
 			scCode: '',
-			timeout: null,
+			msgId: null,
 		};
 	},
 	created() {
@@ -179,17 +179,14 @@ export default Vue.extend({
 			return regex.test(code);
 		});
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type === 'SOCKET_ONSEND' &&
-				mutation.payload.mType === ('iqmeshNetwork_BondNodeLocal' ||
-					'iqmeshNetwork_SmartConnect' ||'iqrfEmbedCoordinator_ClearAllBonds' ||
-					'iqrfEmbedCoordinator_RemoveBond')) {
-				this.timeout = timeout('iqrfnet.networkManager.messages.submit.timeout', 30000);
-			}
 			if (mutation.type === 'SOCKET_ONMESSAGE') {
 				if (mutation.payload.mType === 'iqmeshNetwork_BondNodeLocal' ||
 					mutation.payload.mType === 'iqmeshNetwork_SmartConnect') {
-					clearTimeout(this.timeout);
-					this.$store.commit('spinner/HIDE');
+					if (mutation.payload.data.msgId !== this.msgId) {
+						return;
+					}
+					this.$store.dispatch('spinner/hide');
+					this.$store.dispatch('removeMessage', this.msgId);
 					switch(mutation.payload.data.status) {
 						case -1:
 							this.$toast.error(
@@ -214,8 +211,11 @@ export default Vue.extend({
 				} else if (mutation.payload.mType === 'iqrfEmbedCoordinator_ClearAllBonds' ||
 							mutation.payload.mType === 'iqmeshNetwork_RemoveBond' ||
 							mutation.payload.mType === 'iqrfEmbedCoordinator_RemoveBond') {
-					clearTimeout(this.timeout);
-					this.$store.commit('spinner/HIDE');
+					if (mutation.payload.data.msgId !== this.msgId) {
+						return;
+					}
+					this.$store.dispatch('spinner/hide');
+					this.$store.dispatch('removeMessage', this.msgId);
 					switch(mutation.payload.data.status) {
 						case -1:
 							this.$toast.error(
@@ -251,8 +251,7 @@ export default Vue.extend({
 							break;
 					}
 				} else if (mutation.payload.mType === 'messageError') {
-					clearTimeout(this.timeout);
-					this.$store.commit('spinner/HIDE');
+					this.$store.dispatch('spinner/hide');
 					this.$toast.error(
 						this.$t('iqrfnet.networkManager.messages.submit.invalidMessage')
 							.toString()
@@ -262,35 +261,43 @@ export default Vue.extend({
 		});
 	},
 	beforeDestroy() {
+		this.$store.dispatch('removeMessage', this.msgId);
 		this.unsubscribe();
 	},
 	methods: {
+		buildOptions(timeout: number, message: string): WebSocketOptions {
+			return new WebSocketOptions(null, timeout, message, () => this.msgId = null);
+		},
 		processSubmitBond() {
-			this.$store.commit('spinner/SHOW');
+			this.$store.dispatch('spinner/show', {timeout: 30000});
+			const address = this.autoAddress ? 0 : this.address;
 			if (this.bondMethod === 'local') {
-				if (this.autoAddress) {
-					IqrfNetService.bondLocal(0);
-				} else {
-					IqrfNetService.bondLocal(this.address);
-				}
+				IqrfNetService.bondLocal(address, this.buildOptions(30000, 'iqrfnet.networkManager.messages.submit.timeout'))
+					.then((msgId: string) => this.msgId = msgId);
+
 			} else if (this.bondMethod === 'smartConnect') {
-				if (this.autoAddress) {
-					IqrfNetService.bondSmartConnect(0, this.scCode, this.bondingRetries);
-				} else {
-					IqrfNetService.bondSmartConnect(this.address, this.scCode, this.bondingRetries);
-				}
+				IqrfNetService.bondSmartConnect(address, this.scCode, this.bondingRetries, this.buildOptions(30000, 'iqrfnet.networkManager.messages.submit.timeout'))
+					.then((msgId: string) => this.msgId = msgId);
 			}
 		},
 		processSubmitUnbond() {
 			this.modalUnbond = false;
-			this.$store.commit('spinner/SHOW');
-			IqrfNetService.removeBond(this.address, this.unbondCoordinatorOnly);
+			this.$store.dispatch('spinner/show', {timeout: 30000});
+			IqrfNetService.removeBond(this.address, this.unbondCoordinatorOnly, this.buildOptions(30000, 'iqrfnet.networkManager.messages.submit.timeout'))
+				.then((msgId: string) => this.msgId = msgId);
 		},
 		processSubmitClearAll() {
 			this.modalClear = false;
-			this.$store.commit('spinner/SHOW');
-			IqrfNetService.clearAllBonds(this.unbondCoordinatorOnly);
+			this.$store.dispatch('spinner/show', {timeout: 30000});
+			IqrfNetService.clearAllBonds(this.unbondCoordinatorOnly, this.buildOptions(30000, 'iqrfnet.networkManager.messages.submit.timeout'))
+				.then((msgId: string) => this.msgId = msgId);
 		}
 	}
 });
 </script>
+
+<style scoped>
+.btn {
+  margin: 0 3px 0 0;
+}
+</style>

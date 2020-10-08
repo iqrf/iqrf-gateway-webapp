@@ -1,17 +1,23 @@
 import store from '../store';
+import { WebSocketOptions } from '../store/modules/webSocketClient.module';
 
 /**
  * Version service
  */
 class VersionService {
 
-	getVersion() {
-		return store.dispatch('sendRequest', {
+	/**
+	 * Retrieves IQRF Gateway Daemon version
+	 * @param options WebSocket request options
+	 */
+	getVersion(options: WebSocketOptions) {
+		options.request = {
 			'mType': 'mngDaemon_Version',
 			'data': {
 				'returnVerbose': true,
 			},
-		});
+		};
+		return store.dispatch('sendRequest', options);
 	}
 }
 

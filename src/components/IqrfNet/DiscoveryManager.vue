@@ -58,9 +58,9 @@ import Vue from 'vue';
 import {MutationPayload} from 'vuex';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {timeout} from '../../helpers/timeout';
 import {between, integer, required} from 'vee-validate/dist/rules';
 import IqrfNetService from '../../services/IqrfNetService';
+import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 
 export default Vue.extend({
 	name: 'DiscoveryManager',
@@ -78,8 +78,7 @@ export default Vue.extend({
 		return {
 			maxAddr: 239,
 			txPower: 6,
-			responseReceived: false,
-			timeout: null,
+			msgId: null,
 		};
 	},
 	created() {
@@ -87,46 +86,46 @@ export default Vue.extend({
 		extend('integer', integer);
 		extend('required', required);
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type === 'SOCKET_ONSEND' &&
-				mutation.payload.mType === 'iqrfEmbedCoordinator_Discovery') {
-				this.timeout = timeout('iqrfnet.networkManager.messages.submit.timeout', 30000);
-			}
 			if (mutation.type === 'SOCKET_ONMESSAGE') {
-				if (mutation.payload.mType === 'iqrfEmbedCoordinator_Discovery') {
-					clearTimeout(this.timeout);
-					this.$store.commit('spinner/HIDE');
-					switch (mutation.payload.data.status) {
-						case -1:
-							this.$toast.error(
-								this.$t('iqrfnet.networkManager.messages.submit.timeout')
-									.toString()
-							);
-							break;
-						case 0:
-							this.$toast.success(
-								this.$t('iqrfnet.networkManager.messages.submit.discovery.success')
-									.toString()
-							);
-							this.$emit('update-devices');
-							break;
-						default:
-							this.$toast.success(
-								this.$t('iqrfnet.networkManager.messages.submit.discovery.error_fail')
-									.toString()
-							);
-							break;
-					}
+				if (mutation.payload.data.msgId !== this.msgId) {
+					return;
 				}
+				this.$store.dispatch('spinner/hide');
+				this.$store.dispatch('removeMessage', this.msgId);
+				switch (mutation.payload.data.status) {
+					case -1:
+						this.$toast.error(
+							this.$t('iqrfnet.networkManager.messages.submit.timeout')
+								.toString()
+						);
+						break;
+					case 0:
+						this.$toast.success(
+							this.$t('iqrfnet.networkManager.messages.submit.discovery.success')
+								.toString()
+						);
+						this.$emit('update-devices');
+						break;
+					default:
+						this.$toast.success(
+							this.$t('iqrfnet.networkManager.messages.submit.discovery.error_fail')
+								.toString()
+						);
+						break;
+				}
+			
 			}
 		});
 	},
 	beforeDestroy() {
+		this.$store.dispatch('removeMessage', this.msgId);
 		this.unsubscribe();
 	},
 	methods: {
 		processSubmit() {
-			this.$store.commit('spinner/SHOW');
-			IqrfNetService.discovery(this.txPower, this.maxAddr);
+			this.$store.dispatch('spinner/show', {timeout: 30000});
+			IqrfNetService.discovery(this.txPower, this.maxAddr, new WebSocketOptions(null, 30000, 'iqrfnet.networkManager.messages.submit.timeout', () => this.msgId = null))
+				.then((msgId: string) => this.msgId = msgId);
 		},
 	}
 });

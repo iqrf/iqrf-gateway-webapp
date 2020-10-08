@@ -5,11 +5,11 @@
 			<table class='table text-center'>
 				<tbody>
 					<tr>
-						<td>
+						<td class='table-toprow'>
 							<CIcon class='text-info' :content='$options.icons.coordinator' />
 							{{ $t('iqrfnet.networkManager.devicesInfo.icons.coordinator') }}
 						</td>
-						<td>
+						<td class='table-toprow'>
 							<CIcon class='text-danger' :content='$options.icons.unbonded' />
 							{{ $t('iqrfnet.networkManager.devicesInfo.icons.unbonded') }}
 						</td>
@@ -39,7 +39,7 @@
 			<CButton color='primary' class='w-100' @click='frcPing'>
 				{{ $t('forms.pingNodes') }}
 			</CButton>
-			<div v-if='!failed' class='table-responsive'>
+			<div v-if='devices != []' class='table-responsive'>
 				<table class='table table-striped device-info'>
 					<tbody>
 						<tr>
@@ -70,6 +70,7 @@ import {CAlert, CButton, CCard, CCardBody, CCardHeader, CIcon} from '@coreui/vue
 import Device from '../../helpers/Device';
 import DeviceIcon from './DeviceIcon';
 import IqrfNetService from '../../services/IqrfNetService';
+import { WebSocketOptions } from '../../store/modules/webSocketClient.module';
 
 export default {
 	name: 'DevicesInfo',
@@ -91,13 +92,13 @@ export default {
 			],
 			devices: [],
 			manual: false,
-			timeout: null,
-			failed: false,
+			msgId: null,
 		};
 	},
 	created() {
-		this.$store.commit('spinner/SHOW');
+		this.$store.dispatch('spinner/show', {timeout: 1000});
 		setTimeout(() => {
+			this.$store.dispatch('spinner/hide');
 			if (this.$store.getters.isSocketConnected) {
 				this.getBondedDevices();
 			}
@@ -108,42 +109,15 @@ export default {
 				this.getBondedDevices();
 				return;
 			}
-			if (mutation.type === 'SOCKET_ONSEND') {
-				if (!this.allowedMTypes.includes(mutation.payload.mType)) {
-					return;
-				}
-				if (mutation.payload.mType === 'iqrfEmbedCoordinator_BondedDevices') {
-					this.timeout = setTimeout(() => {
-						this.$toast.error(
-							this.$t('iqrfnet.networkManager.devicesInfo.messages.bonded.failure').toString()
-						);
-						this.failed = true;
-					}, 60000);
-				} else if (mutation.payload.mType === 'iqrfEmbedCoordinator_DiscoveredDevices') {
-					this.timeout = setTimeout(() => {
-						this.$toast.error(
-							this.$t('iqrfnet.networkManager.devicesInfo.messages.discovered.failure').toString()
-						);
-						this.failed = true;
-					}, 60000);
-				} else if (mutation.payload.mType === 'iqrfEmbedFrc_Send') {
-					this.timeout = setTimeout(() => {
-						this.$toast.error(
-							this.$t('iqrfnet.networkManager.devicesInfo.messages.ping.failure').toString()
-						);
-						this.failed = true;
-					}, 60000);
-				}
-			}
 			if (mutation.type === 'SOCKET_ONMESSAGE') {
 				if (!this.allowedMTypes.includes(mutation.payload.mType)) {
 					return;
 				}
-				if (this.failed) {
+				if (mutation.payload.data.msgId !== this.msgId) {
 					return;
 				}
 				this.$store.dispatch('spinner/hide');
-				clearTimeout(this.timeout);
+				this.$store.dispatch('removeMessage', this.msgId);
 				if (mutation.payload.mType === 'iqrfEmbedCoordinator_BondedDevices') {
 					this.parseBondedDevices(mutation.payload);
 				} else if (mutation.payload.mType === 'iqrfEmbedCoordinator_DiscoveredDevices') {
@@ -155,13 +129,17 @@ export default {
 		});
 	},
 	beforeDestroy() {
-		clearTimeout(this.timeout);
+		this.$store.dispatch('removeMessage', this.msgId);
 		this.unsubscribe();
 	},
 	methods: {
+		buildOptions(timeout, message) {
+			return new WebSocketOptions(null, timeout, message, () => this.msgId = null);
+		},
 		frcPing() {
 			this.$store.dispatch('spinner/show', {timeout: 30000});
-			IqrfNetService.ping();
+			IqrfNetService.ping(this.buildOptions(30000, 'iqrfnet.networkManager.devicesInfo.messages.bonded.failure'))
+				.then((msgId) => this.msgId = msgId);
 		},
 		generateDevices() {
 			this.devices.push(new Device(0, true));
@@ -173,12 +151,14 @@ export default {
 			return row * 10 + col;
 		},
 		getBondedDevices() {
-			this.$store.dispatch('spinner/show', {timeout: 30000});
-			IqrfNetService.getBonded();
+			this.$store.dispatch('spinner/show', {timeout: 60000});
+			IqrfNetService.getBonded(this.buildOptions(60000, 'iqrfnet.networkManager.devicesInfo.messages.bonded.failure'))
+				.then((msgId) => this.msgId = msgId);
 		},
 		getDiscoveredDevices() {
-			this.$store.dispatch('spinner/show', {timeout: 30000});
-			IqrfNetService.getDiscovered();
+			this.$store.dispatch('spinner/show', {timeout: 60000});
+			IqrfNetService.getDiscovered(this.buildOptions(60000, 'iqrfnet.networkManager.devicesInfo.messages.discovered.failure'))
+				.then((msgId) => this.msgId = msgId);
 		},
 		parseBondedDevices(response) {
 			switch (response.data.status) {
@@ -190,7 +170,6 @@ export default {
 					bonded.forEach(item => {
 						this.devices[item].bonded = true;
 					});
-					this.failed = false;
 					this.getDiscoveredDevices();
 					break;
 				}
@@ -199,7 +178,6 @@ export default {
 						this.$t('iqrfnet.networkManager.devicesInfo.messages.bonded.failure')
 							.toString()
 					);
-					this.failed = true;
 					break;
 			}
 		},
@@ -213,7 +191,6 @@ export default {
 					discovered.forEach(item => {
 						this.devices[item].discovered = true;
 					});
-					this.failed = false;
 					this.frcPing();
 					break;
 				}
@@ -222,7 +199,6 @@ export default {
 						this.$t('iqrfnet.networkManager.devicesInfo.messages.discovered.failure')
 							.toString()
 					);
-					this.failed = true;
 					break;
 			}
 		},
@@ -241,7 +217,6 @@ export default {
 						this.manual = false;
 						this.$forceUpdate();
 					}
-					this.failed = false;
 					break;
 				}
 				default:
@@ -249,7 +224,6 @@ export default {
 						this.$t('iqrfnet.networkManager.devicesInfo.messages.ping.failure')
 							.toString()
 					);
-					this.failed = true;
 					break;
 			}
 		},
@@ -283,4 +257,9 @@ export default {
 		}
 	}
 }
+
+.table-toprow {
+	border: none;
+}
+
 </style>
