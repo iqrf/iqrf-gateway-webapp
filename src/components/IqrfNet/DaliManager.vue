@@ -65,8 +65,8 @@
 				</CForm>
 			</ValidationObserver>
 		</CCardBody>
-		<CCardFooter v-if='responseReceived'>
-			<table class='table table-striped'>
+		<CCardFooter v-if='answers !== null'>
+			<table class='table'>
 				<thead>
 					{{ $t('iqrfnet.standard.dali.answers') }}
 				</thead>
@@ -90,9 +90,9 @@ import Vue from 'vue';
 import {MutationPayload} from 'vuex';
 import {CButton, CCard, CCardBody, CCardFooter, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {timeout} from '../../helpers/timeout';
 import {between, integer, required} from 'vee-validate/dist/rules';
 import StandardDaliService from '../../services/DaemonApi/StandardDaliService';
+import { WebSocketOptions } from '../../store/modules/webSocketClient.module';
 
 export default Vue.extend({
 	name: 'DaliManager',
@@ -112,8 +112,7 @@ export default Vue.extend({
 			address: 1,
 			answers: null,
 			commands: [null],
-			responseReceived: false,
-			timeout: null
+			msgId: null,
 		};
 	},
 	created() {
@@ -121,15 +120,10 @@ export default Vue.extend({
 		extend('integer', integer);
 		extend('required', required);
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type === 'SOCKET_ONSEND') {
-				if (mutation.payload.mType === 'iqrfDali_SendCommands') {
-					this.timeout = timeout('iqrfnet.networkManager.messages.submit.timeout', 30000);
-				}
-			}
 			if (mutation.type === 'SOCKET_ONMESSAGE') {
-				if (mutation.payload.mType === 'iqrfDali_SendCommands') {
-					clearTimeout(this.timeout);
-					this.$store.commit('spinner/HIDE');
+				if (mutation.payload.data.msgId === this.msgId) {
+					this.$store.dispatch('spinner/hide');
+					this.$store.dispatch('removeMessage', this.msgId);
 					switch(mutation.payload.data.status) {
 						case -1:
 							this.$toast.error(
@@ -159,6 +153,7 @@ export default Vue.extend({
 		});
 	},
 	beforeDestroy() {
+		this.$store.dispatch('removeMessage', this.msgId);
 		this.unsubscribe();
 	},
 	methods: {
@@ -169,9 +164,16 @@ export default Vue.extend({
 			this.commands.splice(index, 1);
 		},
 		sendDali() {
-			this.$store.commit('spinner/SHOW');
-			StandardDaliService.send(this.address, this.commands);
+			this.$store.dispatch('spinner/show', {timeout: 30000});
+			StandardDaliService.send(this.address, this.commands, new WebSocketOptions(null, 30000, 'iqrfnet.standard.dali.messages.timeout', () => this.msgId = null))
+				.then((msgId: string) => this.msgId = msgId);
 		},
 	}
 });
 </script>
+
+<style scoped>
+.btn {
+  margin: 0 3px 0 0;
+}
+</style>

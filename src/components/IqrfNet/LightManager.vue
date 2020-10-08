@@ -101,13 +101,11 @@
 		</CCardBody>
 		<CCardFooter v-if='responseType !== null'>
 			<table class='table'>
-				<thead>
-					<th v-if='responseType === "enum"' colspan='2'>
-						{{ $t('iqrfnet.standard.light.enum') }}
-					</th>
-					<th v-else colspan='2'>
-						{{ $t('iqrfnet.standard.light.powerInfo') }}
-					</th>
+				<thead v-if='responseType === "enum"'>
+					{{ $t('iqrfnet.standard.light.enum') }}
+				</thead>
+				<thead v-else>
+					{{ $t('iqrfnet.standard.light.powerInfo') }}
 				</thead>
 				<tbody v-if='responseType === "enum"'>
 					<tr>
@@ -118,7 +116,7 @@
 				<tbody v-else>
 					<tr>
 						<th>{{ $t('iqrfnet.standard.light.index') }}</th>
-						<td>{{ index }}</td>
+						<td>{{ lightIndex }}</td>
 					</tr>
 					<tr>
 						<th>{{ $t('iqrfnet.standard.light.power') }}</th>
@@ -136,8 +134,8 @@ import {MutationPayload} from 'vuex';
 import {CButton, CCard, CCardBody, CCardFooter, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';
-import {timeout} from '../../helpers/timeout';
 import StandardLightService, {StandardLight} from '../../services/DaemonApi/StandardLightService';
+import { WebSocketOptions } from '../../store/modules/webSocketClient.module';
 
 export default Vue.extend({
 	name: 'LightManager',
@@ -166,8 +164,9 @@ export default Vue.extend({
 			numLights: 0,
 			power: 0,
 			prevPower: 0,
+			lightIndex: 0,
 			responseType: null,
-			timeout: null,
+			msgId: null,
 		};
 	},
 	created() {
@@ -176,18 +175,18 @@ export default Vue.extend({
 		extend('required', required);
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type === 'SOCKET_ONSEND') {
-				if (!this.allowedMTypes.includes(mutation.payload.mType)) {
-					return;
-				}
-				this.responseType = null;
-				this.timeout = timeout('iqrfnet.networkManager.messages.submit.timeout', 30000);
+				this.lightIndex = this.index;
+				return;
 			}
 			if (mutation.type === 'SOCKET_ONMESSAGE') {
 				if (!this.allowedMTypes.includes(mutation.payload.mType)) {
 					return;
 				}
-				clearTimeout(this.timeout);
-				this.$store.commit('spinner/HIDE');
+				if (mutation.payload.data.msgId !== this.msgId) {
+					return;
+				}
+				this.$store.dispatch('spinner/hide');
+				this.$store.dispatch('removeMessage', this.msgId);
 				switch(mutation.payload.data.status) {
 					case -1:
 						this.$toast.error(
@@ -221,29 +220,46 @@ export default Vue.extend({
 		});
 	},
 	beforeDestroy() {
+		this.$store.dispatch('removeMessage', this.msgId);
 		this.unsubscribe();
 	},
 	methods: {
+		buildOptions() {
+			return new WebSocketOptions(null, 30000, 'iqrfnet.standard.light.messages.timeout', () => this.msgId = null);
+		},
 		submitEnumerate() {
-			this.$store.commit('spinner/SHOW');
-			StandardLightService.enumerate(this.address);
+			this.$store.dispatch('spinner/show', {timeout: 30000});
+			StandardLightService.enumerate(this.address, this.buildOptions())
+				.then((msgId: string) => this.msgId = msgId);
 		},
 		submitGetPower() {
-			this.$store.commit('spinner/SHOW');
-			StandardLightService.getPower(this.address, this.index);
+			this.$store.dispatch('spinner/show', {timeout: 30000});
+			StandardLightService.getPower(this.address, this.index, this.buildOptions())
+				.then((msgId: string) => this.msgId = msgId);
 		},
 		submitSetPower() {
-			this.$store.commit('spinner/SHOW');
-			StandardLightService.setPower(this.address, [new StandardLight(this.index, this.power)]);
+			this.$store.dispatch('spinner/show', {timeout: 30000});
+			StandardLightService.setPower(this.address, [new StandardLight(this.index, this.power)], this.buildOptions())
+				.then((msgId: string) => this.msgId = msgId);
 		},
 		submitIncrementPower() {
-			this.$store.commit('spinner/SHOW');
-			StandardLightService.incrementPower(this.address, [new StandardLight(this.index, this.power)]);
+			this.$store.dispatch('spinner/show', {timeout: 30000});
+			StandardLightService.incrementPower(this.address, [new StandardLight(this.index, this.power)], this.buildOptions())
+				.then((msgId: string) => this.msgId = msgId);
 		},
 		submitDecrementPower() {
-			this.$store.commit('spinner/SHOW');
-			StandardLightService.decrementPower(this.address, [new StandardLight(this.index, this.power)]);
+			this.$store.dispatch('spinner/show', {timeout: 30000});
+			StandardLightService.decrementPower(this.address, [new StandardLight(this.index, this.power)], this.buildOptions())
+				.then((msgId: string) => this.msgId = msgId);
 		},
 	}
 });
 </script>
+
+<style scoped>
+
+.btn {
+  margin: 0 3px 0 0;
+}
+
+</style>

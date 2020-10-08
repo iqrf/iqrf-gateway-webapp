@@ -1,4 +1,5 @@
 import store from '../../store';
+import { WebSocketOptions } from '../../store/modules/webSocketClient.module';
 
 export class StandardBinaryOutput {
 
@@ -31,9 +32,10 @@ class StandardBinaryOutputService {
 	/**
 	 * Performs Binary Output enumeration on device specified by address.
 	 * @param address Node address
+	 * @param options WebSocket request options
 	 */
-	enumerate(address: number): Promise<any> {
-		return store.dispatch('sendRequest', {
+	enumerate(address: number, options: WebSocketOptions): Promise<any> {
+		options.request = {
 			'mType': 'iqrfBinaryoutput_Enumerate',
 			'data': {
 				'req': {
@@ -42,15 +44,17 @@ class StandardBinaryOutputService {
 				},
 				'returnVerbose': true,
 			},
-		});
+		};
+		return store.dispatch('sendRequest', options);
 	}
 
 	/**
 	 * Retrieves states of binary outputs.
 	 * @param address Node address
+	 * @param options WebSocket request options
 	 */
-	getOutputs(address: number): Promise<any> {
-		return this.setOutputs(address, []);
+	getOutputs(address: number, options: WebSocketOptions): Promise<any> {
+		return this.setOutputs(address, [], options);
 	}
 
 	/**
@@ -58,9 +62,10 @@ class StandardBinaryOutputService {
 	 * If no output settings are specified, only previous states of binary outputs are retrieved.
 	 * @param address Node address
 	 * @param outputs New output setting
+	 * @param options WebSocket request options
 	 */
-	setOutputs(address: number, outputs: StandardBinaryOutput[] = []): Promise<any> {
-		return store.dispatch('sendRequest', {
+	setOutputs(address: number, outputs: StandardBinaryOutput[] = [], options: WebSocketOptions): Promise<any> {
+		options.request = {
 			'mType': 'iqrfBinaryoutput_SetOutput',
 			'data': {
 				'req': {
@@ -71,7 +76,8 @@ class StandardBinaryOutputService {
 				},
 				'returnVerbose': true,
 			},
-		});
+		};
+		return store.dispatch('sendRequest', options);
 	}
 }
 

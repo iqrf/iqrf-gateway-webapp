@@ -1,4 +1,5 @@
 import store from '../../store';
+import { WebSocketOptions } from '../../store/modules/webSocketClient.module';
 
 /**
  * IQRF Standard DALI service
@@ -9,9 +10,10 @@ class StandardDaliService {
 	 * Sends DALI commands to device specified by address.
 	 * @param address Node address
 	 * @param commands Array of DALI commands
+	 * @param options WebSocket request option
 	 */
-	send(address: number, commands: number[]): Promise<any> {
-		return store.dispatch('sendRequest', {
+	send(address: number, commands: number[], options: WebSocketOptions): Promise<any> {
+		options.request = {
 			'mType': 'iqrfDali_SendCommands',
 			'data': {
 				'req': {
@@ -22,7 +24,8 @@ class StandardDaliService {
 				},
 				'returnVerbose': true,
 			},
-		});
+		};
+		return store.dispatch('sendRequest', options);
 	}
 
 }

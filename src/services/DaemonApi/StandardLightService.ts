@@ -1,4 +1,5 @@
 import store from '../../store';
+import { WebSocketOptions } from '../../store/modules/webSocketClient.module';
 
 export class StandardLight {
 
@@ -32,9 +33,10 @@ class StandardLightService {
 	/**
 	 * Performs Light enumeration on device specified by address.
 	 * @param address Node address
+	 * @param options WebSocket request option
 	 */
-	enumerate(address: number): Promise<any> {
-		return store.dispatch('sendRequest', {
+	enumerate(address: number, options: WebSocketOptions): Promise<any> {
+		options.request = {
 			'mType': 'iqrfLight_Enumerate',
 			'data': {
 				'req': {
@@ -43,16 +45,18 @@ class StandardLightService {
 				},
 				'returnVerbose': true,
 			},
-		});
+		};
+		return store.dispatch('sendRequest', options);
 	}
 
 	/**
 	 * Decrements power of light at a device specified by address.
 	 * @param address Node address
 	 * @param lights Object containing light settings
+	 * @param options WebSocket request option
 	 */
-	decrementPower(address: number, lights: StandardLight[]): Promise<any> {
-		return store.dispatch('sendRequest', {
+	decrementPower(address: number, lights: StandardLight[], options: WebSocketOptions): Promise<any> {
+		options.request = {
 			'mType': 'iqrfLight_DecrementPower',
 			'data': {
 				'req': {
@@ -63,16 +67,18 @@ class StandardLightService {
 				},
 				'returnVerbose': true,
 			},
-		});
+		};
+		return store.dispatch('sendRequest', options);
 	}
 
 	/**
 	 * Increments power of light at a device specified by address.
 	 * @param address Node address
 	 * @param lights Object containing light settings
+	 * @param options WebSocket request option
 	 */
-	incrementPower(address: number, lights: StandardLight[]): Promise<any> {
-		return store.dispatch('sendRequest', {
+	incrementPower(address: number, lights: StandardLight[], options: WebSocketOptions): Promise<any> {
+		options.request = {
 			'mType': 'iqrfLight_IncrementPower',
 			'data': {
 				'req': {
@@ -83,25 +89,28 @@ class StandardLightService {
 				},
 				'returnVerbose': true,
 			},
-		});
+		};
+		return store.dispatch('sendRequest', options);
 	}
 
 	/**
 	 * Retrieves current power of a light specified by index.
 	 * @param address Node address
 	 * @param light Light index
+	 * @param options WebSocket request option
 	 */
-	getPower(address: number, light: number): Promise<any> {
-		return this.setPower(address, [new StandardLight(light, 127)]);
+	getPower(address: number, light: number, options: WebSocketOptions): Promise<any> {
+		return this.setPower(address, [new StandardLight(light, 127)], options);
 	}
 
 	/**
 	 * Sets power of lights at a device specified by address.
 	 * @param address Node address
 	 * @param lights Object containing light settings
+	 * @param options WebSocket request option
 	 */
-	setPower(address: number, lights: StandardLight[]): Promise<any> {
-		return store.dispatch('sendRequest', {
+	setPower(address: number, lights: StandardLight[], options: WebSocketOptions): Promise<any> {
+		options.request = {
 			'mType': 'iqrfLight_SetPower',
 			'data': {
 				'req': {
@@ -112,7 +121,8 @@ class StandardLightService {
 				},
 				'returnVerbose': true,
 			},
-		});
+		};
+		return store.dispatch('sendRequest', options);
 	}
 
 }

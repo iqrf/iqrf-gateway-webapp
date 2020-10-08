@@ -59,21 +59,21 @@
 					<CButton
 						color='primary'
 						:disabled='invalid'
-						@click.prevent='submitEnumerate'
+						@click='submitEnumerate'
 					>
 						{{ $t('forms.enumerate') }}
 					</CButton>
 					<CButton
 						color='secondary'
 						:disabled='invalid'
-						@click.prevent='submitGetStates'
+						@click='submitGetStates'
 					>
 						{{ $t('iqrfnet.standard.binaryOutput.form.getStates') }}
 					</CButton>
 					<CButton
 						color='secondary'
 						:disabled='invalid'
-						@click.prevent='submitSetState'
+						@click='submitSetState'
 					>
 						{{ $t('iqrfnet.standard.binaryOutput.form.setState') }}
 					</CButton>
@@ -128,9 +128,9 @@
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CIcon, CInput, CSwitch} from '@coreui/vue/src';
 import {cilCheckAlt, cilX} from '@coreui/icons';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {timeout} from '../../helpers/timeout';
 import {between, integer, required} from 'vee-validate/dist/rules';
 import StandardBinaryOutputService, {StandardBinaryOutput} from '../../services/DaemonApi/StandardBinaryOutputService';
+import { WebSocketOptions } from '../../store/modules/webSocketClient.module';
 
 export default {
 	name: 'BinaryOutputManager',
@@ -158,7 +158,7 @@ export default {
 			responseType: null,
 			state: false,
 			states: null,
-			timeout: null,
+			msgId: null,
 		};
 	},
 	created() {
@@ -171,14 +171,16 @@ export default {
 					return;
 				}
 				this.responseType = null;
-				this.timeout = timeout('iqrfnet.networkManager.messages.submit.timeout', 30000);
 			}
 			if (mutation.type === 'SOCKET_ONMESSAGE') {
 				if (!this.allowedMTypes.includes(mutation.payload.mType)) {
 					return;
 				}
-				clearTimeout(this.timeout);
-				this.$store.commit('spinner/HIDE');
+				if (mutation.payload.data.msgId !== this.msgId) {
+					return;
+				}
+				this.$store.dispatch('spinner/hide');
+				this.$store.dispatch('removeMessage', this.msgId);
 				switch(mutation.payload.data.status) {
 					case -1:
 						this.$toast.error(
@@ -218,6 +220,7 @@ export default {
 		this.generateStates();
 	},
 	beforeDestroy() {
+		this.$store.dispatch('removeMessage', this.msgId);
 		this.unsubscribe();
 	},
 	methods: {
@@ -229,18 +232,24 @@ export default {
 				this.states[i] = states[i];
 			}
 		},
+		buildOptions() {
+			return new WebSocketOptions(null, 30000, 'iqrfnet.standard.binaryOutput.messages.timeout', () => this.msgId = null);
+		},
 		submitEnumerate() {
-			this.$store.commit('spinner/SHOW');
-			StandardBinaryOutputService.enumerate(this.address);
+			this.$store.dispatch('spinner/show', {timeout: 30000});
+			StandardBinaryOutputService.enumerate(this.address, this.buildOptions())
+				.then((msgId) => this.msgId = msgId);
 		},
 		submitGetStates() {
-			this.$store.commit('spinner/SHOW');
-			StandardBinaryOutputService.getOutputs(this.address);
+			this.$store.dispatch('spinner/show', {timeout: 30000});
+			StandardBinaryOutputService.getOutputs(this.address, this.buildOptions())
+				.then((msgId) => this.msgId = msgId);
 		},
 		submitSetState() {
-			this.$store.commit('spinner/SHOW');
+			this.$store.dispatch('spinner/show', {timeout: 30000});
 			const output = new StandardBinaryOutput(this.index, this.state);
-			StandardBinaryOutputService.setOutputs(this.address, [output]);
+			StandardBinaryOutputService.setOutputs(this.address, [output], this.buildOptions())
+				.then((msgId) => this.msgId = msgId);
 		},
 	},
 	icons: {
@@ -256,4 +265,9 @@ export default {
     overflow-x: auto;
     white-space: nowrap;
 }
+
+.btn {
+  margin: 0 3px 0 0;
+}
+
 </style>

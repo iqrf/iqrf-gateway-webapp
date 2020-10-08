@@ -76,8 +76,8 @@ import {MutationPayload} from 'vuex';
 import {CButton, CCard, CCardBody, CCardFooter, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';
-import {timeout} from '../../helpers/timeout';
 import StandardSensorService from '../../services/DaemonApi/StandardSensorService';
+import { WebSocketOptions } from '../../store/modules/webSocketClient.module';
 
 export default Vue.extend({
 	name: 'SensorManager',
@@ -101,7 +101,7 @@ export default Vue.extend({
 			],
 			responseType: null,
 			sensors: null,
-			timeout: null
+			msgId: null,
 		};
 	},
 	created() {
@@ -109,19 +109,15 @@ export default Vue.extend({
 		extend('integer', integer);
 		extend('required', required);
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type === 'SOCKET_ONSEND') {
-				if (!this.allowedMTypes.includes(mutation.payload.mType)) {
-					return;
-				}
-				this.responseType = null;
-				this.timeout = timeout('iqrfnet.networkManager.messages.submit.timeout', 30000);
-			}
 			if (mutation.type === 'SOCKET_ONMESSAGE') {
 				if (!this.allowedMTypes.includes(mutation.payload.mType)) {
 					return;
 				}
-				clearTimeout(this.timeout);
-				this.$store.commit('spinner/HIDE');
+				if (mutation.payload.data.msgId !== this.msgId) {
+					return;
+				}
+				this.$store.dispatch('spinner/hide');
+				this.$store.dispatch('removeMessage', this.msgId);
 				switch(mutation.payload.data.status) {
 					case -1:
 						this.$toast.error(
@@ -155,13 +151,14 @@ export default Vue.extend({
 		});
 	},
 	beforeDestroy() {
+		this.$store.dispatch('removeMessage', this.msgId);
 		this.unsubscribe();
 	},
 	methods: {
 		parseEnumerate(sensors: any) {
 			this.sensors = [];
 			sensors.forEach((item: any) => {
-				if (item.id === 'BINARYDATA7') {
+				if (item.id === 'BINARYDATA7' || item.id === 'BINARYDATA30') {
 					item = item.breakdown[0];
 				}
 				this.sensors.push({'type': item.name, 'unit': item.unit});
@@ -170,19 +167,24 @@ export default Vue.extend({
 		parseReadAll(sensors: any) {
 			this.sensors = [];
 			sensors.forEach((item: any) => {
-				if (item.id === 'BINARYDATA7') {
+				if (item.id === 'BINARYDATA7' || item.id === 'BINARYDATA30') {
 					item = item.breakdown[0];
 				}
 				this.sensors.push({'type': item.name, 'value': item.value, 'unit': item.unit});
 			});
 		},
+		buildOptions() {
+			return new WebSocketOptions(null, 30000, 'iqrfnet.standard.sensor.messages.timeout', () => this.msgId = null);
+		},
 		submitReadAll() {
-			this.$store.commit('spinner/SHOW');
-			StandardSensorService.readAll(this.address);
+			this.$store.dispatch('spinner/show', {timeout: 30000});
+			StandardSensorService.readAll(this.address, this.buildOptions())
+				.then((msgId: string) => this.msgId = msgId);
 		},
 		submitEnumerate() {
-			this.$store.commit('spinner/SHOW');
-			StandardSensorService.enumerate(this.address);
+			this.$store.dispatch('spinner/show', {timeout: 30000});
+			StandardSensorService.enumerate(this.address, this.buildOptions())
+				.then((msgId: string) => this.msgId = msgId);
 		},
 	}
 });
@@ -192,4 +194,9 @@ export default Vue.extend({
 td {
 	text-align: center;
 }
+
+.btn {
+  margin: 0 3px 0 0;
+}
+
 </style>
