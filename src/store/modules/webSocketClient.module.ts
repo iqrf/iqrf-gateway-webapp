@@ -4,7 +4,7 @@ import {v4 as uuidv4} from 'uuid';
 import {ActionTree, GetterTree, MutationTree} from 'vuex';
 
 export class WebSocketOptions {
-	public request: any = null;
+	public request: any|null = null;
 	public timeout: number|null = null;
 	public message: string|null = null;
 	public callback: CallableFunction = () => {return;};
@@ -49,7 +49,7 @@ const actions: ActionTree<any, any> = {
 			commit('SOCKET_ONSEND', request);
 			return Promise.resolve(request.data.msgId);
 		}
-		let timeout = null;
+		let timeout: number|null = null;
 		if (options.timeout) {
 			timeout = window.setTimeout(() => {
 				commit('spinner/HIDE');
