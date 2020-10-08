@@ -30,3 +30,5 @@ coverage.xml
 docs/build/
 # VScode
 .vscode/
+# Vue.js build
+www/dist/
