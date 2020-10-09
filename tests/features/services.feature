@@ -6,4 +6,4 @@ Feature: Service manager
 	And I am an authenticated user
 	When I create HTTP "GET" request to "/services" without body
 	Then HTTP status code is 200
-	And HTTP response contains '{"services":["iqrf-gateway-daemon","unattended-upgrades","ssh"]}'
+	And HTTP response contains '{"services":["gwman-client","iqrf-gateway-controller","iqrf-gateway-daemon","iqrf-gateway-translator","ssh","unattended-upgrades"]}'

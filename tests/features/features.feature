@@ -6,7 +6,7 @@ Feature: Optional feature manager
 		And I am an authenticated user
 		When I create HTTP "GET" request to "/features" without body
 		Then HTTP status code is 200
-		And HTTP response contains '{"docs":{"enabled":true,"url":"https://docs.iqrf.org/iqrf-gateway/"},"grafana":{"enabled":false,"url":"/grafana/"},"networkManager":{"enabled":false},"nodeRed":{"enabled":false,"url":"/node-red/"},"pixla":{"enabled":false},"ssh":{"enabled":false},"supervisord":{"enabled":false,"url":"/supervisord/"},"trUpload":{"enabled":false},"updater":{"enabled":false},"unattendedUpgrades":{"enabled":false},"versionChecker":{"enabled":false}}'
+		And HTTP response contains '{"docs":{"enabled":true,"url":"https://docs.iqrf.org/iqrf-gateway/"},"grafana":{"enabled":false,"url":"/grafana/"},"iqrfGatewayController":{"enabled":false},"iqrfGatewayTranslator":{"enabled":false},"mender":{"enabled":false},"networkManager":{"enabled":false},"nodeRed":{"enabled":false,"url":"/node-red/"},"pixla":{"enabled":false},"ssh":{"enabled":false},"supervisord":{"enabled":false,"url":"/supervisord/"},"trUpload":{"enabled":false},"updater":{"enabled":false},"unattendedUpgrades":{"enabled":false},"versionChecker":{"enabled":false}}'
 
 	@api
 	Scenario: Get optional feature configuration
