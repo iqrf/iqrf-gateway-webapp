@@ -15,7 +15,7 @@ class SchedulerService {
 	 * @param timeSpec scheduler task time settings
 	 * @param options WebSocket request options
 	 */
-	addTask(taskId: number, clientId: string, task: any, timeSpec: Record<string, unknown>, options: WebSocketOptions) {
+	addTask(taskId: number, clientId: string, task: any, timeSpec: Record<string, unknown>, options: WebSocketOptions): Promise<string> {
 		const tasks = JSON.parse(JSON.stringify(task));
 		tasks.forEach((item: any) => {
 			item.message = JSON.parse(item.message);
@@ -83,7 +83,7 @@ class SchedulerService {
 	 * Retrieves scheduler tasks via the Daemon API
 	 * @param options WebSocket request options
 	 */
-	listTasks(options: WebSocketOptions) {
+	listTasks(options: WebSocketOptions): Promise<string> {
 		options.request = {
 			'mType': 'mngScheduler_List',
 			'data': {
@@ -107,7 +107,7 @@ class SchedulerService {
 	 * Retrieves task specified by ID via the Daemon API
 	 * @param taskId scheduler task ID
 	 */
-	getTask(taskId: number, options: WebSocketOptions) {
+	getTask(taskId: number, options: WebSocketOptions): Promise<string> {
 		options.request = {
 			'mType': 'mngScheduler_GetTask',
 			'data': {
@@ -133,7 +133,7 @@ class SchedulerService {
 	 * Removes a task specified by ID via the Daemon API
 	 * @param taskId scheduler task ID
 	 */
-	removeTask(taskId: number, options: WebSocketOptions) {
+	removeTask(taskId: number, options: WebSocketOptions): Promise<string> {
 		options.request = {
 			'mType': 'mngScheduler_RemoveTask',
 			'data': {
@@ -166,7 +166,7 @@ class SchedulerService {
 	 * Import scheduler configuration
 	 * @param config scheduler configuration
 	 */
-	importConfig(config: any): Promise<AxiosResponse> {
+	importConfig(config: File): Promise<AxiosResponse> {
 		return axios.post('scheduler/import', config, {headers: authorizationHeader()});
 	}
 }

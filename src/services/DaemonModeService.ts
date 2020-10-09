@@ -16,16 +16,21 @@ class DaemonModeService {
 
 	/**
 	 * Retrieve the current operational mode
+	 * @return Message ID
 	 */
-	get(timeout: number, message: string|null = null, callback: CallableFunction = () => {return;}): Promise<any> {
+	get(timeout: number, message: string|null = null, callback: CallableFunction = () => {return;}): Promise<string> {
 		return this.set(DaemonMode.getMode, timeout, message, callback);
 	}
 
 	/**
 	 * Sets a new mode operational mode
 	 * @param newMode New operational mode
+	 * @param timeout Timeout in milliseconds
+	 * @param message Timeout message
+	 * @param callback Timeout callback
+	 * @return Message ID
 	 */
-	set(newMode: DaemonMode, timeout: number, message: string|null = null, callback: CallableFunction = () => {return;}): Promise<any> {
+	set(newMode: DaemonMode, timeout: number, message: string|null = null, callback: CallableFunction = () => {return;}): Promise<string> {
 		const request = {
 			'mType': 'mngDaemon_Mode',
 			'data': {
@@ -42,6 +47,7 @@ class DaemonModeService {
 	/**
 	 * Parses Daemon mode response
 	 * @param response Response from IQRF Gateway Daemon
+	 * @return Daemon mode
 	 */
 	parse(response: any): DaemonMode {
 		try {

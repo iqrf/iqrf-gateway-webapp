@@ -6,7 +6,7 @@ import {AxiosError} from 'axios';
  * User state
  */
 interface UserState {
-	user: User|null,
+	user: User|null;
 }
 
 const state: UserState = {

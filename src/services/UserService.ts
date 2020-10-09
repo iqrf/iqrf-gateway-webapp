@@ -26,7 +26,7 @@ class UserService {
 	 * @param language Language
 	 * @param role Role
 	 */
-	add(username: string, password: string, language: string, role: string) {
+	add(username: string, password: string, language: string, role: string): Promise<AxiosResponse> {
 		const body = {
 			username: username,
 			password: password,

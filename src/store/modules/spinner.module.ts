@@ -5,49 +5,71 @@ export class SpinnerOptions {
 	public timeout: number | null = null;
 }
 
-const state = {
-	enabled: null,
+/**
+ * Spinner state
+ */
+export interface SpinnerState {
+
+	/**
+	 * Spinner enablement
+	 */
+	enabled: boolean;
+
+	/**
+	 * Spinner text
+	 */
+	text: string|null;
+
+	/**
+	 * Spinner timeout
+	 */
+	timeout: number|null;
+
+}
+
+const state: SpinnerState = {
+	enabled: false,
 	text: null,
 	timeout: null,
 };
 
-const actions: ActionTree<any, any> = {
+const actions: ActionTree<SpinnerState, any> = {
 	show({commit, state}, options: SpinnerOptions) {
 		commit('SHOW', options.text);
 		if (options.timeout === null) {
 			return;
 		}
-		state.timeout = setTimeout(() => {
+		state.timeout = window.setTimeout(() => {
 			commit('HIDE');
 		}, options.timeout);
 	},
 	hide({commit, state}) {
 		commit('HIDE');
 		if (state.timeout !== null) {
-			clearTimeout(state.timeout);
+			window.clearTimeout(state.timeout);
 		}
 	}
 };
 
-const getters: GetterTree<any, any> = {
-	isEnabled(state): boolean {
+const getters: GetterTree<SpinnerState, any> = {
+	isEnabled(state: SpinnerState): boolean {
 		return state.enabled;
 	},
-	text(state): string|null {
+	text(state: SpinnerState): string|null {
 		return state.text;
 	},
 };
 
-const mutations: MutationTree<any> = {
-	HIDE(state) {
+const mutations: MutationTree<SpinnerState> = {
+	HIDE(state: SpinnerState) {
 		state.enabled = false;
 		state.text = null;
 	},
-	SHOW(state, text: string|null = null) {
+	SHOW(state: SpinnerState, text: string|null = null) {
 		state.enabled = true;
 		state.text = text;
 	},
-	UPDATE_TEXT(state, text: string|null) {
+	UPDATE_TEXT(state: SpinnerState, text: string|null) {
 		state.text = text;
 	},
 };

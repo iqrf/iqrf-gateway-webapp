@@ -4,12 +4,12 @@ import {v4 as uuidv4} from 'uuid';
 import {ActionTree, GetterTree, MutationTree} from 'vuex';
 
 export class WebSocketOptions {
-	public request: any|null = null;
-	public timeout: number|null = null;
-	public message: string|null = null;
-	public callback: CallableFunction = () => {return;};
+	public request: Record<string, any>|null;
+	public timeout: number|null;
+	public message: string|null;
+	public callback: CallableFunction;
 
-	constructor(request: any, timeout: number|null = null, message: string|null = null, callback: CallableFunction = () => {return;}) {
+	constructor(request: Record<string, any>|null, timeout: number|null = null, message: string|null = null, callback: CallableFunction = () => {return;}) {
 		this.request = request;
 		this.timeout = timeout;
 		this.message = message;
@@ -19,15 +19,64 @@ export class WebSocketOptions {
 
 export class WebSocketMessage {
 	public msgId: string;
-	public timeout: number|null;
+	public timeout: number|undefined;
 
 	constructor(msgId: string, timeout: number|null = null) {
 		this.msgId = msgId;
-		this.timeout = timeout;
+		this.timeout = timeout ?? undefined;
 	}
 }
 
-const state = {
+/**
+ * WebSocket state
+ */
+interface WebSocketState {
+
+	/**
+	 * Is WebSocket client connected to the server?
+	 */
+	isConnected: boolean;
+
+	/**
+	 * Has been WebSocket client reconnected to the server?
+	 */
+	hasReconnected: boolean;
+
+	/**
+	 * Has reconnect error occurred?
+	 */
+	reconnectError: boolean;
+
+}
+
+/**
+ * WebSocket client state
+ */
+interface WebSocketClientState {
+
+	/**
+	 * WebSocket state
+	 */
+	socket: WebSocketState;
+
+	/**
+	 * Sent requests
+	 */
+	requests: Record<string, any>;
+
+	/**
+	 * Received responses
+	 */
+	responses: Record<string, any>;
+
+	/**
+	 * Sent messages
+	 */
+	messages: Array<WebSocketMessage>;
+
+}
+
+const state: WebSocketClientState = {
 	socket: {
 		isConnected: false,
 		hasReconnected: false,
@@ -38,9 +87,13 @@ const state = {
 	messages: [],
 };
 
-const actions: ActionTree<any, any> = {
-	sendRequest({state, commit, dispatch}, options: WebSocketOptions): Promise<string> {
+const actions: ActionTree<WebSocketClientState, any> = {
+	sendRequest({state, commit, dispatch}, options: WebSocketOptions): Promise<string>|undefined {
 		const request = options.request;
+		if (request === null) {
+			console.error('Request is null');
+			return undefined;
+		}
 		if (request.data !== undefined && request.data.msgId === undefined) {
 			request.data.msgId = uuidv4();
 		}
@@ -78,16 +131,16 @@ const actions: ActionTree<any, any> = {
 	}
 };
 
-const getters: GetterTree<any, any> = {
-	isSocketConnected(state: any) {
+const getters: GetterTree<WebSocketClientState, any> = {
+	isSocketConnected(state: WebSocketClientState) {
 		return state.socket.isConnected;
 	},
 };
 
-const mutations: MutationTree<any> = {
-	SOCKET_ONOPEN(state: any, event: Event) {
+const mutations: MutationTree<WebSocketClientState> = {
+	SOCKET_ONOPEN(state: WebSocketClientState, event: Event) {
 		Vue.prototype.$socket = event.currentTarget;
-		if (state.hasReconnected) {
+		if (state.socket.hasReconnected) {
 			setTimeout(() => {
 				state.socket.isConnected = true;
 			}, 1000);
@@ -96,30 +149,30 @@ const mutations: MutationTree<any> = {
 		}
 		
 	},
-	SOCKET_ONCLOSE(state: any) {
+	SOCKET_ONCLOSE(state: WebSocketClientState) {
 		state.socket.isConnected = false;
 	},
-	SOCKET_ONERROR(state: any, event: Event) {
+	SOCKET_ONERROR(state: WebSocketClientState, event: Event) {
 		console.error(state, event);
 	},
-	SOCKET_ONMESSAGE(state: any, message: any) {
+	SOCKET_ONMESSAGE(state: WebSocketClientState, message: Record<string, any>) {
 		state.responses[message.data.msgId] = message;
 	},
-	SOCKET_ONSEND(state: any, request: any) {
+	SOCKET_ONSEND(state: WebSocketClientState, request: Record<string, any>) {
 		state.requests[request.data.msgId] = request;
 	},
-	SOCKET_RECONNECT(state: any, count: number) {
+	SOCKET_RECONNECT(state: WebSocketClientState, count: number) {
 		// eslint-disable-next-line no-console
 		console.info(state, count);
-		state.hasReconnected = true;
+		state.socket.hasReconnected = true;
 	},
-	SOCKET_RECONNECT_ERROR(state: any) {
+	SOCKET_RECONNECT_ERROR(state: WebSocketClientState) {
 		state.socket.reconnectError = true;
 	},
-	CLEAR_MESSAGES(state: any) {
+	CLEAR_MESSAGES(state: WebSocketClientState) {
 		state.messages = [];
 	},
-	REMOVE_MESSAGE(state: any, message: number) {
+	REMOVE_MESSAGE(state: WebSocketClientState, message: number) {
 		state.messages.splice(message, 1);
 	}
 };

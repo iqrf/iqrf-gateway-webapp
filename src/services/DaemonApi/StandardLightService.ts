@@ -34,8 +34,9 @@ class StandardLightService {
 	 * Performs Light enumeration on device specified by address.
 	 * @param address Node address
 	 * @param options WebSocket request option
+	 * @return Message ID
 	 */
-	enumerate(address: number, options: WebSocketOptions): Promise<any> {
+	enumerate(address: number, options: WebSocketOptions): Promise<string> {
 		options.request = {
 			'mType': 'iqrfLight_Enumerate',
 			'data': {
@@ -54,8 +55,9 @@ class StandardLightService {
 	 * @param address Node address
 	 * @param lights Object containing light settings
 	 * @param options WebSocket request option
+	 * @return Message ID
 	 */
-	decrementPower(address: number, lights: StandardLight[], options: WebSocketOptions): Promise<any> {
+	decrementPower(address: number, lights: StandardLight[], options: WebSocketOptions): Promise<string> {
 		options.request = {
 			'mType': 'iqrfLight_DecrementPower',
 			'data': {
@@ -76,8 +78,9 @@ class StandardLightService {
 	 * @param address Node address
 	 * @param lights Object containing light settings
 	 * @param options WebSocket request option
+	 * @return Message ID
 	 */
-	incrementPower(address: number, lights: StandardLight[], options: WebSocketOptions): Promise<any> {
+	incrementPower(address: number, lights: StandardLight[], options: WebSocketOptions): Promise<string> {
 		options.request = {
 			'mType': 'iqrfLight_IncrementPower',
 			'data': {
@@ -98,8 +101,9 @@ class StandardLightService {
 	 * @param address Node address
 	 * @param light Light index
 	 * @param options WebSocket request option
+	 * @return Message ID
 	 */
-	getPower(address: number, light: number, options: WebSocketOptions): Promise<any> {
+	getPower(address: number, light: number, options: WebSocketOptions): Promise<string> {
 		return this.setPower(address, [new StandardLight(light, 127)], options);
 	}
 
@@ -108,8 +112,9 @@ class StandardLightService {
 	 * @param address Node address
 	 * @param lights Object containing light settings
 	 * @param options WebSocket request option
+	 * @return Message ID
 	 */
-	setPower(address: number, lights: StandardLight[], options: WebSocketOptions): Promise<any> {
+	setPower(address: number, lights: StandardLight[], options: WebSocketOptions): Promise<string> {
 		options.request = {
 			'mType': 'iqrfLight_SetPower',
 			'data': {

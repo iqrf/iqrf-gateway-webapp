@@ -10,8 +10,9 @@ class StandardSensorService {
 	 * Performs Sensor enumeration on device specified by address.
 	 * @param address Node address
 	 * @param options WebSocket request options
+	 * @return Message ID
 	 */
-	enumerate(address: number, options: WebSocketOptions): Promise<any> {
+	enumerate(address: number, options: WebSocketOptions): Promise<string> {
 		options.request = {
 			'mType': 'iqrfSensor_Enumerate',
 			'data': {
@@ -29,8 +30,9 @@ class StandardSensorService {
 	 * Reads information from all sensors implemented by a device.
 	 * @param address Node address
 	 * @param options WebSocket request option
+	 * @return Message ID
 	 */
-	readAll(address: number, options: WebSocketOptions): Promise<any> {
+	readAll(address: number, options: WebSocketOptions): Promise<string> {
 		options.request = {
 			'mType': 'iqrfSensor_ReadSensorsWithTypes',
 			'data': {

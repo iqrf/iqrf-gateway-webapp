@@ -15,7 +15,7 @@ class SecurityService {
 	 * @param type 
 	 */
 	setSecurity(nadr: number, password: string, inputFormat: SecurityFormat, type: number, 
-		timeout: number, message: string|null = null, callback: CallableFunction = () => {return;}): Promise<any> {
+		timeout: number, message: string|null = null, callback: CallableFunction = () => {return;}): Promise<string> {
 		const request = {
 			'mType': 'iqrfEmbedOs_SetSecurity',
 			'data': {

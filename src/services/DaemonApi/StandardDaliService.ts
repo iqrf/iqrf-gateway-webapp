@@ -11,8 +11,9 @@ class StandardDaliService {
 	 * @param address Node address
 	 * @param commands Array of DALI commands
 	 * @param options WebSocket request option
+	 * @return Message ID
 	 */
-	send(address: number, commands: number[], options: WebSocketOptions): Promise<any> {
+	send(address: number, commands: number[], options: WebSocketOptions): Promise<string> {
 		options.request = {
 			'mType': 'iqrfDali_SendCommands',
 			'data': {

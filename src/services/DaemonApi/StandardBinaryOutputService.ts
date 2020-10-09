@@ -33,8 +33,9 @@ class StandardBinaryOutputService {
 	 * Performs Binary Output enumeration on device specified by address.
 	 * @param address Node address
 	 * @param options WebSocket request options
+	 * @return Message ID
 	 */
-	enumerate(address: number, options: WebSocketOptions): Promise<any> {
+	enumerate(address: number, options: WebSocketOptions): Promise<string> {
 		options.request = {
 			'mType': 'iqrfBinaryoutput_Enumerate',
 			'data': {
@@ -52,8 +53,9 @@ class StandardBinaryOutputService {
 	 * Retrieves states of binary outputs.
 	 * @param address Node address
 	 * @param options WebSocket request options
+	 * @return Message ID
 	 */
-	getOutputs(address: number, options: WebSocketOptions): Promise<any> {
+	getOutputs(address: number, options: WebSocketOptions): Promise<string> {
 		return this.setOutputs(address, [], options);
 	}
 
@@ -63,8 +65,9 @@ class StandardBinaryOutputService {
 	 * @param address Node address
 	 * @param outputs New output setting
 	 * @param options WebSocket request options
+	 * @return Message ID
 	 */
-	setOutputs(address: number, outputs: StandardBinaryOutput[] = [], options: WebSocketOptions): Promise<any> {
+	setOutputs(address: number, outputs: StandardBinaryOutput[] = [], options: WebSocketOptions): Promise<string> {
 		options.request = {
 			'mType': 'iqrfBinaryoutput_SetOutput',
 			'data': {

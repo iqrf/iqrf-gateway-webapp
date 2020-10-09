@@ -13,8 +13,12 @@ class NativeUploadService {
 	 * Sends Daemon API request to upload file
 	 * @param filePath path to file
 	 * @param format file format
+	 * @param timeout Timeout in milliseconds
+	 * @param message Timeout message
+	 * @param callback Timeout callback
+	 * @return Message ID
 	 */
-	upload(filePath: string, format: FileFormat, timeout: number, message: string|null = null, callback: CallableFunction = () => {return;}) {
+	upload(filePath: string, format: FileFormat, timeout: number, message: string|null = null, callback: CallableFunction = () => {return;}): Promise<string> {
 		const request = {
 			'mType': 'mngDaemon_Upload',
 			'data': {
@@ -33,7 +37,7 @@ class NativeUploadService {
 	 * Uploads file via rest API
 	 * @param data file data and metadata
 	 */
-	uploadREST(data: any): Promise<AxiosResponse> {
+	uploadREST(data: FormData): Promise<AxiosResponse> {
 		return axios.post('iqrf/upload', data, {headers: authorizationHeader()});
 	}
 }

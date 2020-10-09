@@ -1,4 +1,4 @@
-import FeatureService, {Features} from '../../services/FeatureService';
+import FeatureService, {Feature, Features} from '../../services/FeatureService';
 import {ActionTree, GetterTree, MutationTree} from 'vuex';
 
 /**
@@ -27,14 +27,14 @@ const actions: ActionTree<FeatureState, any> = {
 };
 
 const getters: GetterTree<FeatureState, any> = {
-	isEnabled: (state: FeatureState) => (name: string) => {
+	isEnabled: (state: FeatureState) => (name: string): boolean|undefined => {
 		try {
 			return state.features[name].enabled;
 		} catch (e) {
 			return undefined;
 		}
 	},
-	configuration: (state: FeatureState) => (name: string) => {
+	configuration: (state: FeatureState) => (name: string): Feature|undefined => {
 		try {
 			return state.features[name];
 		} catch (e) {

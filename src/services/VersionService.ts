@@ -10,7 +10,7 @@ class VersionService {
 	 * Retrieves IQRF Gateway Daemon version
 	 * @param options WebSocket request options
 	 */
-	getVersion(options: WebSocketOptions) {
+	getVersion(options: WebSocketOptions): Promise<string> {
 		options.request = {
 			'mType': 'mngDaemon_Version',
 			'data': {

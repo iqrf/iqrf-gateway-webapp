@@ -9,8 +9,9 @@ class IqrfNetService {
 	 * Performs AutoNetwork
 	 * @param autoNetwork Object containing AutoNetwork parameters
 	 * @param options WebSocket request options
+	 * @return Message ID
 	 */
-	autoNetwork(autoNetwork: any, options: WebSocketOptions) {
+	autoNetwork(autoNetwork: any, options: WebSocketOptions): Promise<string> {
 		const json = {
 			'mType': 'iqmeshNetwork_AutoNetwork',
 			'data': {
@@ -40,8 +41,9 @@ class IqrfNetService {
 	 * Bonds a node locally
 	 * @param address A requested address for the bonded node. If this parameter equals to 0, then the first free address is assigned to the node.
 	 * @param options WebSocket request options
+	 * @return Message ID
 	 */
-	bondLocal(address: number, options: WebSocketOptions) {
+	bondLocal(address: number, options: WebSocketOptions): Promise<string> {
 		options.request = {
 			'mType': 'iqmeshNetwork_BondNodeLocal',
 			'data': {
@@ -61,8 +63,9 @@ class IqrfNetService {
 	 * @param scCode Device Smart Connect code
 	 * @param testRetries Maximum number of FRCs used to test whether the Node was successfully bonded
 	 * @param options WebSocket request options
+	 * @return Message ID
 	 */
-	bondSmartConnect(address: number, scCode: string, testRetries: number, options: WebSocketOptions): Promise<any> {
+	bondSmartConnect(address: number, scCode: string, testRetries: number, options: WebSocketOptions): Promise<string> {
 		options.request = {
 			'mType': 'iqmeshNetwork_SmartConnect',
 			'data': {
@@ -82,8 +85,9 @@ class IqrfNetService {
 	 * Clears all bonds
 	 * @param coordinatorOnly Removes bonds only in the coordinator memory
 	 * @param options WebSocket request options
+	 * @return Message ID
 	 */
-	clearAllBonds(coordinatorOnly: boolean, options: WebSocketOptions): Promise<any> {
+	clearAllBonds(coordinatorOnly: boolean, options: WebSocketOptions): Promise<string> {
 		if (coordinatorOnly) {
 			options.request = {
 				'mType': 'iqrfEmbedCoordinator_ClearAllBonds',
@@ -105,8 +109,10 @@ class IqrfNetService {
 	 * Performs Coordinator discovery
 	 * @param txPower TX Power
 	 * @param maxAddr Maximum node address
+	 * @param options WebSocket request options
+	 * @return Message ID
 	 */
-	discovery(txPower: number, maxAddr: number, options: WebSocketOptions): Promise<any> {
+	discovery(txPower: number, maxAddr: number, options: WebSocketOptions): Promise<string> {
 		options.request = {
 			'mType': 'iqrfEmbedCoordinator_Discovery',
 			'data': {
@@ -127,8 +133,12 @@ class IqrfNetService {
 	/**
 	 * Performs device enumeration
 	 * @param address Device address
+	 * @param timeout Timeout in milliseconds
+	 * @param message Timeout message
+	 * @param callback Timeout callback
+	 * @return Message ID
 	 */
-	enumerateDevice(address: number, timeout: number, message: string|null = null, callback: CallableFunction = () => {return;}): Promise<any> {
+	enumerateDevice(address: number, timeout: number, message: string|null = null, callback: CallableFunction = () => {return;}): Promise<string> {
 		const request = {
 			'mType': 'iqmeshNetwork_EnumerateDevice',
 			'data': {
@@ -147,8 +157,9 @@ class IqrfNetService {
 	/**
 	 * Retrieves list of bonded devices
 	 * @param options WebSocket request options
+	 * @return Message ID
 	 */
-	getBonded(options: WebSocketOptions): Promise<any> {
+	getBonded(options: WebSocketOptions): Promise<string> {
 		options.request = {
 			'mType': 'iqrfEmbedCoordinator_BondedDevices',
 			'data': {
@@ -165,8 +176,9 @@ class IqrfNetService {
 	/**
 	 * Retrieves list of discovered devices
 	 * @param options WebSocket request options
+	 * @return Message ID
 	 */
-	getDiscovered(options: WebSocketOptions): Promise<any> {
+	getDiscovered(options: WebSocketOptions): Promise<string> {
 		options.request = {
 			'mType': 'iqrfEmbedCoordinator_DiscoveredDevices',
 			'data': {
@@ -183,8 +195,9 @@ class IqrfNetService {
 	/**
 	 * Perform FRC Ping
 	 * @param options WebSocket request options
+	 * @return Message ID
 	 */
-	ping(options: WebSocketOptions): Promise<any> {
+	ping(options: WebSocketOptions): Promise<string> {
 		options.request = {
 			'mType': 'iqrfEmbedFrc_Send',
 			'data': {
@@ -206,8 +219,9 @@ class IqrfNetService {
 	 * @param addr Address of a node bond to be removed
 	 * @param coordinatorOnly Removes a bond only in the coordinator memory
 	 * @param options WebSocket request options
+	 * @return Message ID
 	 */
-	removeBond(addr: number, coordinatorOnly: boolean, options: WebSocketOptions): Promise<any> {
+	removeBond(addr: number, coordinatorOnly: boolean, options: WebSocketOptions): Promise<string> {
 		if (coordinatorOnly) {
 			options.request = {
 				'mType': 'iqrfEmbedCoordinator_RemoveBond',
@@ -239,8 +253,12 @@ class IqrfNetService {
 	/**
 	 * Sends JSON API request
 	 * @param json JSON API request string
+	 * @param timeout Timeout in milliseconds
+	 * @param message Timeout message
+	 * @param callback Timeout callback
+	 * @return Message ID
 	 */
-	sendJson(json: any, timeout: number, message: string|null = null, callback: CallableFunction = () => {return;}): Promise<any> {
+	sendJson(json: any, timeout: number, message: string|null = null, callback: CallableFunction = () => {return;}): Promise<string> {
 		const options = new WebSocketOptions(json, timeout, message, callback);
 		return store.dispatch('sendRequest', options);
 	}
@@ -249,8 +267,12 @@ class IqrfNetService {
 	 * Writes TR configuration
 	 * @param address Device address to write the configuration to
 	 * @param configuration New TR configuration
+	 * @param timeout Timeout in milliseconds
+	 * @param message Timeout message
+	 * @param callback Timeout callback
+	 * @return Message ID
 	 */
-	writeTrConfiguration(address: number, configuration: any, timeout: number, message: string|null = null, callback: CallableFunction = () => {return;}): Promise<any> {
+	writeTrConfiguration(address: number, configuration: any, timeout: number, message: string|null = null, callback: CallableFunction = () => {return;}): Promise<string> {
 		delete configuration.rfBand;
 		configuration.deviceAddr = address;
 		const request = {

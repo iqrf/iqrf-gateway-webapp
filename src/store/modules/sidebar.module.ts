@@ -1,20 +1,37 @@
 import {MutationTree} from 'vuex';
 
-const state = {
+/**
+ * Sidebar state
+ */
+interface SidebarState {
+
+	/**
+	 * Sidebar show state
+	 */
+	show: boolean|string;
+
+	/**
+	 * Is the sidebar minimized?
+	 */
+	minimize: boolean;
+
+}
+
+const state: SidebarState = {
 	show: 'responsive',
 	minimize: false,
 };
 
-const mutations: MutationTree<any> = {
-	toggleSidebarDesktop (state) {
+const mutations: MutationTree<SidebarState> = {
+	toggleSidebarDesktop (state: SidebarState) {
 		const sidebarOpened = [true, 'responsive'].includes(state.show);
 		state.show = sidebarOpened ? false : 'responsive';
 	},
-	toggleSidebarMobile (state) {
+	toggleSidebarMobile (state: SidebarState) {
 		const sidebarClosed = [false, 'responsive'].includes(state.show);
 		state.show = sidebarClosed ? true : 'responsive';
 	},
-	set (state, [variable, value]) {
+	set (state: SidebarState, [variable, value]) {
 		state[variable] = value;
 	}
 };
