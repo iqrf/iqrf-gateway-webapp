@@ -8,7 +8,7 @@
 					class='float-right'
 					to='/config/websocket/add'
 				>
-					<CIcon :content='$options.icons.add' />
+					<CIcon :content='getIcon("add")' />
 					{{ $t('table.actions.add') }}
 				</CButton>
 			</CCardHeader>
@@ -61,15 +61,15 @@
 								size='sm'
 								:to='"/config/websocket/edit/" + item.instanceMessaging'
 							>
-								<CIcon :content='$options.icons.edit' />
+								<CIcon :content='getIcon("edit")' />
 								{{ $t('table.actions.edit') }}
 							</CButton>
 							<CButton
 								color='danger'
 								size='sm'
-								@click='modals.instances = {messaging: item.messaging.instance, service: item.service.instance}'
+								@click='modals.instance = {messaging: item.messaging.instance, service: item.service.instance}'
 							>
-								<CIcon :content='$options.icons.remove' />
+								<CIcon :content='getIcon("remove")' />
 								{{ $t('table.actions.delete') }}
 							</CButton>
 						</td>
@@ -79,18 +79,18 @@
 		</CCard>
 		<CModal
 			color='danger'
-			:show='modals.instances !== null'
+			:show='modals.instance !== null'
 		>
 			<template #header>
 				<h5 class='modal-title'>
 					{{ $t('config.websocket.messages.delete.confirmTitle') }}
 				</h5>
 			</template>
-			<div v-if='modals.instances !== null'>
-				{{ $t('config.websocket.messages.delete.confirm', {service: modals.instances.messaging}) }}
+			<div v-if='modals.instance !== null'>
+				{{ $t('config.websocket.messages.delete.confirm', {service: modals.instance.messaging}) }}
 			</div>
 			<template #footer>
-				<CButton color='danger' @click='modals.instances = null'>
+				<CButton color='danger' @click='modals.instance = null'>
 					{{ $t('forms.no') }}
 				</CButton>
 				<CButton color='success' @click='removeInterface()'>
@@ -101,13 +101,36 @@
 	</div>
 </template>
 
-<script>
+<script lang='ts'>
+import Vue from 'vue';
 import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CDropdown, CDropdownItem, CIcon, CModal} from '@coreui/vue/src';
-import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
+import { AxiosError, AxiosResponse } from 'axios';
+import {IField} from '../../interfaces/IField';
+import {getCoreIcon} from '../../helpers/icons';
 
-export default {
+interface IWsInstance {
+	messaging: string,
+	service: string,
+}
+
+interface IWsIfaceInstance extends IWsInstance {
+	instanceMessaging: string,
+	instanceService: string,
+	acceptAsyncMsg: boolean,
+	port: number,
+	acceptOnlyLocalhost: boolean,
+}
+
+interface IWsIfaceList {
+	componentNames: Record<string, string>
+	fields: Array<IField>
+	instances: Array<IWsIfaceInstance>
+	modals: Record<string, IWsInstance|null>
+}
+
+export default Vue.extend({
 	name: 'WebsocketInterfaceList',
 	components: {
 		CButton,
@@ -120,7 +143,7 @@ export default {
 		CIcon,
 		CModal,
 	},
-	data() {
+	data(): IWsIfaceList {
 		return {
 			componentNames: {
 				messaging: 'iqrf::WebsocketMessaging',
@@ -135,7 +158,6 @@ export default {
 					key: 'port',
 					label: this.$t('config.websocket.form.WebsocketPort'),
 				},
-
 				{
 					key: 'acceptAsyncMsg',
 					label: this.$t('config.websocket.form.acceptAsyncMsg'),
@@ -155,7 +177,7 @@ export default {
 			],
 			instances: [],
 			modals: {
-				instances: null,
+				instance: null,
 			},
 		};
 	},
@@ -164,13 +186,16 @@ export default {
 		this.getConfig();
 	},
 	methods: {
-		getConfig() {
+		getIcon(icon: string): void|string[] {
+			return getCoreIcon(icon);
+		},
+		getConfig(): Promise<void|AxiosResponse> {
 			this.instances = [];
 			return Promise.all([
 				DaemonConfigurationService.getComponent(this.componentNames.messaging),
 				DaemonConfigurationService.getComponent(this.componentNames.service),
 			])
-				.then((responses) => {
+				.then((responses: Array<AxiosResponse>) => {
 					const messagings = responses[0].data.instances;
 					const services = responses[1].data.instances;
 					for (const messaging of messagings) {
@@ -200,7 +225,7 @@ export default {
 				});
 			// TODO: add error message
 		},
-		changeAcceptOnlyLocalhost(service, setting) {
+		changeAcceptOnlyLocalhost(service, setting): void {
 			this.$store.commit('spinner/SHOW');
 			service.acceptOnlyLocalhost = setting;
 			DaemonConfigurationService.updateInstance(this.componentNames.service, service.instance, service)
@@ -214,7 +239,7 @@ export default {
 				})
 				.catch((error) => FormErrorHandler.configError(error));
 		},
-		changeAcceptAsyncMsg(instance, setting) {
+		changeAcceptAsyncMsg(instance, setting): void {
 			this.$store.commit('spinner/SHOW');
 			instance.acceptAsyncMsg = setting;
 			DaemonConfigurationService.updateInstance(this.componentNames.messaging, instance.instance, instance)
@@ -226,28 +251,33 @@ export default {
 						);
 					});
 				})
-				.catch((error) => FormErrorHandler.configError(error));
+				.catch((error: AxiosError) => FormErrorHandler.configError(error));
 		},
-		removeInterface() {
+		removeInterface(): void {
+			if (this.modals.instance === null) {
+				return;
+			}
 			this.$store.commit('spinner/SHOW');
 			Promise.all([
-				DaemonConfigurationService.deleteInstance(this.componentNames.messaging, this.modals.instances.messaging),
-				DaemonConfigurationService.deleteInstance(this.componentNames.service, this.modals.instances.service),
+				DaemonConfigurationService.deleteInstance(this.componentNames.messaging, this.modals.instance.messaging),
+				DaemonConfigurationService.deleteInstance(this.componentNames.service, this.modals.instance.service),
 			])
 				.then(() => {
 					this.$toast.success(
-						this.$t('config.websocket.messages.delete.success', {instance: this.modals.instances.messaging})
+						this.$t('config.websocket.messages.delete.success', {instance: this.modals.instance?.messaging})
 							.toString()
 					);
-					this.instances = null;
+					this.modals.instance = null;
 				});
 			// TODO: add error message
 		},
 	},
-	icons: {
-		add: cilPlus,
-		edit: cilPencil,
-		remove: cilTrash,
-	},
-};
+});
 </script>
+
+<style scoped>
+.btn {
+  margin: 0 3px 0 0;
+}
+</style>
+

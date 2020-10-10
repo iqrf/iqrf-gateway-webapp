@@ -9,7 +9,7 @@
 					class='float-right'
 					to='/config/websocket/add-messaging'
 				>
-					<CIcon :content='$options.icons.add' />
+					<CIcon :content='getIcon("add")' />
 					{{ $t('table.actions.add') }}
 				</CButton>
 			</CCardHeader>
@@ -51,7 +51,7 @@
 								size='sm'
 								:to='"/config/websocket/edit-messaging/" + item.instance'
 							>
-								<CIcon :content='$options.icons.edit' />
+								<CIcon :content='getIcon("edit")' />
 								{{ $t('table.actions.edit') }}
 							</CButton>
 							<CButton
@@ -59,7 +59,7 @@
 								size='sm'
 								@click='modals.instance = item.instance'
 							>
-								<CIcon :content='$options.icons.remove' />
+								<CIcon :content='getIcon("remove")' />
 								{{ $t('table.actions.delete') }}
 							</CButton>
 						</td>
@@ -89,13 +89,35 @@
 	</div>
 </template>
 
-<script>
+<script lang='ts'>
+import Vue from 'vue';
 import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CDropdown, CDropdownItem, CIcon, CModal} from '@coreui/vue/src';
-import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
+import {IField} from '../../interfaces/IField';
+import {getCoreIcon} from '../../helpers/icons';
+import { AxiosError, AxiosResponse } from 'axios';
 
-export default {
+interface IRequiredInterface {
+	name: string
+	target: Record<string, string>
+}
+
+interface IWsMessagingInstance {
+	RequiredInterfaces: Array<IRequiredInterface>
+	acceptAsyncMsg: boolean
+	component: string
+	instance: string
+}
+
+interface IWsMessagingList {
+	componentName: string
+	fields: Array<IField>
+	instances: Array<IWsMessagingInstance>
+	modals: Record<string, string|null>
+}
+
+export default Vue.extend({
 	name: 'WebsocketMessagingList',
 	components: {
 		CButton,
@@ -108,7 +130,7 @@ export default {
 		CIcon,
 		CModal,
 	},
-	data() {
+	data(): IWsMessagingList {
 		return {
 			componentName: 'iqrf::WebsocketMessaging',
 			fields: [
@@ -141,16 +163,19 @@ export default {
 		this.getConfig();
 	},
 	methods: {
-		getConfig() {
+		getIcon(icon: string): void|string[] {
+			return getCoreIcon(icon);
+		},
+		getConfig(): Promise<void|AxiosResponse> {
 			this.$store.commit('spinner/SHOW');
 			return DaemonConfigurationService.getComponent(this.componentName)
-				.then((response) => {
+				.then((response: AxiosResponse) => {
 					this.$store.commit('spinner/HIDE');
 					this.instances = response.data.instances;
 				})
-				.catch((error) => FormErrorHandler.configError(error));
+				.catch((error: AxiosError) => FormErrorHandler.configError(error));
 		},
-		changeAccept(instance, setting) {
+		changeAccept(instance, setting): void {
 			if (instance.acceptAsyncMsg !== setting) {
 				instance.acceptAsyncMsg = setting;
 				DaemonConfigurationService.updateInstance(this.componentName, instance.instance, instance)
@@ -162,10 +187,13 @@ export default {
 							);
 						});
 					})
-					.catch((error) => FormErrorHandler.getConfig(error));
+					.catch((error: AxiosError) => FormErrorHandler.configError(error));
 			}
 		},
-		removeInstance() {
+		removeInstance(): void {
+			if (this.modals.instance === null) {
+				return;
+			}
 			this.$store.commit('spinner/SHOW');
 			const instance = this.modals.instance;
 			this.modals.instance = null;
@@ -178,13 +206,14 @@ export default {
 						);
 					});	
 				})
-				.catch((error) => FormErrorHandler.configError(error));
+				.catch((error: AxiosError) => FormErrorHandler.configError(error));
 		}
 	},
-	icons: {
-		add: cilPlus,
-		edit: cilPencil,
-		remove: cilTrash,
-	},
-};
+});
 </script>
+
+<style scoped>
+.btn {
+  margin: 0 3px 0 0;
+}
+</style>

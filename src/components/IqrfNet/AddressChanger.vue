@@ -40,6 +40,10 @@ import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';
 
+interface IAddressChanger {
+	address: number|null
+}
+
 export default Vue.extend({
 	name: 'AddressChanger',
 	components: {
@@ -58,7 +62,7 @@ export default Vue.extend({
 			required: true
 		},
 	},
-	data(): any {
+	data(): IAddressChanger {
 		return {
 			address: null,
 		};
@@ -70,7 +74,7 @@ export default Vue.extend({
 		this.address = this.currentAddress;
 	},
 	methods: {
-		changeAddress() {
+		changeAddress(): void {
 			this.$router.push('/iqrfnet/tr-config/' + this.address);
 		},
 	},

@@ -46,6 +46,18 @@ import {required} from 'vee-validate/dist/rules';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 
+interface IOtaUploadConfig {
+	instance: string|null
+	uploadPath: string|null
+	uploadPathSuffix: string|null
+}
+
+interface IOtaUpload {
+	componentName: string
+	configuration: IOtaUploadConfig
+	instance: string|null
+}
+
 export default Vue.extend({
 	name: 'OtaUpload',
 	components: {
@@ -58,7 +70,7 @@ export default Vue.extend({
 		ValidationObserver,
 		ValidationProvider,
 	},
-	data(): any {
+	data(): IOtaUpload {
 		return {
 			componentName: 'iqrf::OtaUploadService',
 			configuration: {
@@ -74,7 +86,7 @@ export default Vue.extend({
 		this.getInstance();
 	},
 	methods: {
-		getInstance() {
+		getInstance(): void {
 			this.$store.commit('spinner/SHOW');
 			DaemonConfigurationService.getComponent(this.componentName)
 				.then((response: AxiosResponse) => {
@@ -86,7 +98,7 @@ export default Vue.extend({
 				})
 				.catch((error: AxiosError) => FormErrorHandler.configError(error));
 		},
-		saveInstance() {
+		saveInstance(): void {
 			this.$store.commit('spinner/SHOW');
 			if (this.instance !== null) {
 				DaemonConfigurationService.updateInstance(this.componentName, this.instance, this.configuration)
@@ -98,7 +110,7 @@ export default Vue.extend({
 					.catch((error: AxiosError) => FormErrorHandler.configError(error));
 			}
 		},
-		successfulSave() {
+		successfulSave(): void {
 			this.$store.commit('spinner/HIDE');
 			this.$toast.success(this.$t('config.success').toString());
 		},

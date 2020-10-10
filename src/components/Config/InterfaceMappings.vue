@@ -17,6 +17,7 @@
 <script lang='ts'>
 import Vue from 'vue';
 import {CButton, CButtonGroup} from '@coreui/vue/src';
+import {IInterfaceMappings} from '../../interfaces/mappings';
 
 export default Vue.extend({
 	name: 'InterfaceMappings',
@@ -30,7 +31,7 @@ export default Vue.extend({
 			required: true,
 		},
 	},
-	data(): any {
+	data(): IInterfaceMappings {
 		return {
 			mappings: {
 				'spi': require('../../../app/ConfigModule/json/SpiPins.json'),
@@ -39,7 +40,7 @@ export default Vue.extend({
 		};
 	},
 	methods: {
-		setMapping(board: string) {
+		setMapping(board: string): void {
 			const mapping = this.mappings[this.interfaceType][board];
 			this.$emit('update-mapping', mapping);
 		},

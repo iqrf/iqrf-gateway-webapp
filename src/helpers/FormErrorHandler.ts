@@ -11,7 +11,7 @@ class FormErrorHandler {
 	 * Handles Cloud errors
 	 * @param error caught axios error
 	 */
-	cloudError(error: AxiosError) {
+	cloudError(error: AxiosError): void {
 		store.commit('spinner/HIDE');
 		if (error.response === undefined) {
 			console.error(error);
@@ -28,7 +28,7 @@ class FormErrorHandler {
 	 * Handles Config errors
 	 * @param error caught axios error
 	 */
-	configError(error: AxiosError) {
+	configError(error: AxiosError): void {
 		store.commit('spinner/HIDE');
 		if (error.response === undefined) {
 			console.error(error);
@@ -48,7 +48,7 @@ class FormErrorHandler {
 	 * Handles Service errors
 	 * @param error caught axios error
 	 */
-	serviceError(error: AxiosError) {
+	serviceError(error: AxiosError): void {
 		store.commit('spinner/HIDE');
 		if (error.response === undefined) {
 			console.error(error);
@@ -67,7 +67,7 @@ class FormErrorHandler {
 	 * Handles Scheduler errors
 	 * @param error caugh axios error
 	 */
-	schedulerError(error: AxiosError) {
+	schedulerError(error: AxiosError): void {
 		store.commit('spinner/HIDE');
 		if (error.response === undefined) {
 			console.error(error);
@@ -86,7 +86,7 @@ class FormErrorHandler {
 	 * Handles API key management errors
 	 * @param error caught axios error
 	 */
-	apiKeyError(error: AxiosError) {
+	apiKeyError(error: AxiosError): void {
 		store.commit('spinner/HIDE');
 		if (error.response === undefined) {
 			console.error(error);

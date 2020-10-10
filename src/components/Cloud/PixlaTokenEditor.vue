@@ -45,6 +45,10 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 import PixlaService from '../../services/PixlaService';
 
+interface IPixlaTokenEditor {
+	token: string
+}
+
 export default Vue.extend({
 	name: 'PixlaTokenEditor',
 	components: {
@@ -61,7 +65,7 @@ export default Vue.extend({
 			required: true,
 		}
 	},
-	data() {
+	data(): IPixlaTokenEditor {
 		return {
 			token: '',
 		};
@@ -70,10 +74,10 @@ export default Vue.extend({
 		extend('required', required);
 	},
 	methods: {
-		close() {
+		close(): void {
 			this.$emit('update:show', false);
 		},
-		processSubmit() {
+		processSubmit(): void {
 			PixlaService.setToken(this.token)
 				.then(() => {
 					this.token = '';

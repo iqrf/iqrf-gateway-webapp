@@ -19,6 +19,10 @@ import Vue from 'vue';
 import {CButton, CButtonGroup} from '@coreui/vue/src';
 import IqrfService from '../../services/IqrfService';
 
+interface IInterfacePorts {
+	ports: Array<string>
+}
+
 export default Vue.extend({
 	name: 'InterfacePorts',
 	components: {
@@ -31,18 +35,18 @@ export default Vue.extend({
 			required: true,
 		},
 	},
-	data(): any {
+	data(): IInterfacePorts {
 		return {
 			ports: [],
 		};
 	},
 	created() {
 		IqrfService.getInterfacePorts(this.interfaceType)
-			.then((ports) => (this.ports = ports))
+			.then((ports: Array<string>) => (this.ports = ports))
 			.catch(() => (this.ports = []));
 	},
 	methods: {
-		setPort(port: string) {
+		setPort(port: string): void {
 			this.$emit('update-port', port);
 		},
 	},
