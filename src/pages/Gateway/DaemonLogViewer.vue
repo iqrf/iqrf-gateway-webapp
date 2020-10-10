@@ -11,24 +11,28 @@
 </template>
 
 <script lang='ts'>
-import Vue from 'vue';
+import {Component, Vue} from 'vue-property-decorator';
 import {AxiosError, AxiosResponse} from 'axios';
 import {CButton, CCard} from '@coreui/vue/src';
 import GatewayService from '../../services/GatewayService';
 import {fileDownloader} from '../../helpers/fileDownloader';
+import { MetaInfo } from 'vue-meta';
 
-export default Vue.extend({
-	name: 'DaemonLogViewer',
+@Component({
 	components: {
 		CButton,
 		CCard,
 	},
-	data(): any {
+	metaInfo(): MetaInfo {
 		return {
-			log: null
+			title: 'gateway.log.title',
 		};
-	},
-	created() {
+	}
+})
+
+export default class DaemonLogViewer extends Vue {
+	private log: string|null = null
+	created(): void {
 		this.$store.commit('spinner/SHOW');
 		GatewayService.getLatestLog()
 			.then(
@@ -47,21 +51,16 @@ export default Vue.extend({
 					}
 				}
 			});
-	},
-	methods: {
-		downloadArchive() {
-			this.$store.commit('spinner/SHOW');
-			GatewayService.getLogArchive().then(
-				(response: AxiosResponse) => {
-					const file = fileDownloader(response, 'application/zip', 'iqrf-gateway-logs.zip');
-					this.$store.commit('spinner/HIDE');
-					file.click();
-				}
-			).catch(() => (this.$store.commit('spinner/HIDE')));
-		}
-	},
-	metaInfo: {
-		title: 'gateway.log.title',
-	},
-});
+	}
+	public downloadArchive(): void {
+		this.$store.commit('spinner/SHOW');
+		GatewayService.getLogArchive().then(
+			(response: AxiosResponse) => {
+				const file = fileDownloader(response, 'application/zip', 'iqrf-gateway-logs.zip');
+				this.$store.commit('spinner/HIDE');
+				file.click();
+			}
+		).catch(() => (this.$store.commit('spinner/HIDE')));
+	}
+}
 </script>

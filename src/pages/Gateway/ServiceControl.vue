@@ -40,7 +40,8 @@
 	</div>
 </template>
 
-<script>
+<script lang='ts'>
+import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
 import {CButton, CCard} from '@coreui/vue/src';
 import ServiceService from '../../services/ServiceService';
 
@@ -59,13 +60,35 @@ const features = {
 	'unattended-upgrades': 'unattendedUpgrades',
 };
 
-export default {
-	name: 'ServiceControl',
+interface IService {
+	active: boolean
+	enabled: boolean
+	status: string|null
+}
+
+@Component({
 	components: {
 		CButton,
 		CCard,
 	},
-	beforeRouteEnter(to, from, next) {
+	metaInfo() {
+		return {
+			title: (this as unknown as ServiceControl).pageTitle
+		};
+	}
+})
+
+export default class ServiceControl extends Vue {
+	private missing = false;
+	private unsupported = false;
+	private service: IService = {
+		active: false,
+		enabled: false,
+		status: null
+	}
+	private title = '';
+	@Prop({required: true}) serviceName!: string;
+	beforeRouteEnter(to, from, next): void {
 		next(vm => {
 			const feature = features[vm.serviceName];
 			if (feature !== undefined &&
@@ -76,118 +99,94 @@ export default {
 				vm.$router.push(from.path);
 			}
 		});
-	},
-	props: {
-		serviceName: {
-			type: String,
-			required: true,
-		}
-	},
-	data() {
-		return {
-			missing: false,
-			unsupported: false,
-			service: {
-				active: false,
-				enabled: false,
-				status: null,
-			},
-			title: '',
-		};
-	},
-	watch: {
-		serviceName: function () {
-			this.$store.commit('spinner/SHOW');
-			this.getStatus();
-		}
-	},
-	created() {
+	}
+	@Watch('serviceName')
+	getServiceStatus(): void {
 		this.$store.commit('spinner/SHOW');
 		this.getStatus();
-	},
-	methods: {
-		enable() {
-			this.$store.commit('spinner/SHOW');
-			ServiceService.enable(this.serviceName)
-				.then(() => (this.handleSuccess('enable')))
-				.catch(this.handleError);
-		},
-		disable() {
-			this.$store.commit('spinner/SHOW');
-			ServiceService.disable(this.serviceName)
-				.then(() => (this.handleSuccess('disable')))
-				.catch(this.handleError);
-		},
-		getStatus() {
-			if (!whitelisted.includes(this.serviceName)) {
-				this.unsupported = true;
-				this.$store.commit('spinner/HIDE');
-				this.$toast.error(
-					this.$t('service.errors.unsupportedService').toString()
-				);
-				return;
-			}
-			ServiceService.getStatus(this.serviceName)
-				.then((status) => {
-					this.service = status;
-					this.unsupported = false;
-					this.$store.commit('spinner/HIDE');
-				})
-				.catch(this.handleError);
-		},
-		handleError(error) {
+	}
+	created(): void {
+		this.$store.commit('spinner/SHOW');
+		this.getStatus();
+	}
+	public enable(): void {
+		this.$store.commit('spinner/SHOW');
+		ServiceService.enable(this.serviceName)
+			.then(() => (this.handleSuccess('enable')))
+			.catch(this.handleError);
+	}
+	public disable(): void {
+		this.$store.commit('spinner/SHOW');
+		ServiceService.disable(this.serviceName)
+			.then(() => (this.handleSuccess('disable')))
+			.catch(this.handleError);
+	}
+	public getStatus(): void {
+		if (!whitelisted.includes(this.serviceName)) {
+			this.unsupported = true;
 			this.$store.commit('spinner/HIDE');
-			let response = error.response;
-			if (response.status === 404) {
-				this.missing = true;
-				this.$toast.error(this.$t('service.errors.missingService').toString());
-			}
-			if (response.status === 500 &&
-					response.data.message === 'Unsupported init system') {
-				this.unsupported = false;
-				this.$toast.error(this.$t('service.errors.unsupportedInit').toString());
-			}
-		},
-		handleSuccess(action) {
-			this.getStatus();
-			this.$toast.success(
-				this.$t('service.' + this.serviceName + '.messages.' + action)
-					.toString()
+			this.$toast.error(
+				this.$t('service.errors.unsupportedService').toString()
 			);
-		},
-		refreshStatus() {
-			this.$store.commit('spinner/SHOW');
-			this.getStatus();
-		},
-		restart() {
-			this.$store.commit('spinner/SHOW');
-			ServiceService.restart(this.serviceName)
-				.then(() => (this.handleSuccess('restart')))
-				.catch(this.handleError);
-		},
-		start() {
-			this.$store.commit('spinner/SHOW');
-			ServiceService.start(this.serviceName)
-				.then(() => (this.handleSuccess('start')))
-				.catch(this.handleError);
-		},
-		stop() {
-			this.$store.commit('spinner/SHOW');
-			ServiceService.stop(this.serviceName)
-				.then(() => (this.handleSuccess('stop')))
-				.catch(this.handleError);
-		},
-	},
-	metaInfo() {
+			return;
+		}
+		ServiceService.getStatus(this.serviceName)
+			.then((status) => {
+				this.service = status;
+				this.unsupported = false;
+				this.$store.commit('spinner/HIDE');
+			})
+			.catch(this.handleError);
+	}
+	public handleError(error): void {
+		this.$store.commit('spinner/HIDE');
+		let response = error.response;
+		if (response.status === 404) {
+			this.missing = true;
+			this.$toast.error(this.$t('service.errors.missingService').toString());
+		}
+		if (response.status === 500 &&
+				response.data.message === 'Unsupported init system') {
+			this.unsupported = false;
+			this.$toast.error(this.$t('service.errors.unsupportedInit').toString());
+		}
+	}
+	public handleSuccess(action: string): void {
+		this.getStatus();
+		this.$toast.success(
+			this.$t('service.' + this.serviceName + '.messages.' + action)
+				.toString()
+		);
+	}
+	public refreshStatus(): void {
+		this.$store.commit('spinner/SHOW');
+		this.getStatus();
+	}
+	public restart(): void {
+		this.$store.commit('spinner/SHOW');
+		ServiceService.restart(this.serviceName)
+			.then(() => (this.handleSuccess('restart')))
+			.catch(this.handleError);
+	}
+	public start(): void {
+		this.$store.commit('spinner/SHOW');
+		ServiceService.start(this.serviceName)
+			.then(() => (this.handleSuccess('start')))
+			.catch(this.handleError);
+	}
+	public stop(): void {
+		this.$store.commit('spinner/SHOW');
+		ServiceService.stop(this.serviceName)
+			.then(() => (this.handleSuccess('stop')))
+			.catch(this.handleError);
+	}
+	get pageTitle(): string {
 		const title = whitelisted.includes(this.serviceName) ?
 			'service.' + this.serviceName + '.title' :
 			'service.unsupported.title';
-		this.title = this.$t(title).toString();
-		return {
-			title: title,
-		};
-	},
-};
+		return this.title = this.$t(title).toString();
+	}
+}
 </script>
 
 <style scoped>

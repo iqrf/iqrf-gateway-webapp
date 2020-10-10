@@ -5,6 +5,7 @@
 		"module": "es2020",
 		"moduleResolution": "node",
 		"noImplicitAny": false,
-		"allowSyntheticDefaultImports": true
+		"allowSyntheticDefaultImports": true,
+		"experimentalDecorators": true
 	}
 }
