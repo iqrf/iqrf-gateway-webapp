@@ -9,7 +9,7 @@
 					class='float-right'
 					to='/config/websocket/add-service'
 				>
-					<CIcon :content='$options.icons.add' />
+					<CIcon :content='getIcon("add")' />
 					{{ $t('table.actions.add') }}
 				</CButton>
 			</CCardHeader>
@@ -46,7 +46,7 @@
 								size='sm'
 								:to='"/config/websocket/edit-service/" + item.instance'
 							>
-								<CIcon :content='$options.icons.edit' />
+								<CIcon :content='getIcon("edit")' />
 								{{ $t('table.actions.edit') }}
 							</CButton>
 							<CButton
@@ -54,7 +54,7 @@
 								size='sm'
 								@click='modals.service = item.instance'
 							>
-								<CIcon :content='$options.icons.remove' />
+								<CIcon :content='getIcon("remove")' />
 								{{ $t('table.actions.delete') }}
 							</CButton>
 						</td>
@@ -84,13 +84,30 @@
 	</div>
 </template>
 
-<script>
+<script lang='ts'>
+import Vue from 'vue';
 import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CDropdown, CDropdownItem, CIcon, CModal} from '@coreui/vue/src';
-import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
+import {getCoreIcon} from '../../helpers/icons';
+import {IField} from '../../interfaces/IField';
+import { AxiosError, AxiosResponse } from 'axios';
 
-export default {
+interface IServiceInstance {
+	component: string
+	instance: string
+	acceptOnlyLocalhost: boolean
+	WebsocketPort: number
+}
+
+interface IWsServiceList {
+	componentName: string
+	fields: Array<IField>
+	instances: Array<IServiceInstance>
+	modals: Record<string, string|null>
+}
+
+export default Vue.extend({
 	name: 'WebsocketServiceList',
 	components: {
 		CButton,
@@ -103,7 +120,7 @@ export default {
 		CIcon,
 		CModal,
 	},
-	data() {
+	data(): IWsServiceList {
 		return {
 			componentName: 'shape::WebsocketCppService',
 			fields: [
@@ -126,7 +143,7 @@ export default {
 					sorter: false,
 				},
 			],
-			instances: null,
+			instances: [],
 			modals: {
 				service: null,
 			},
@@ -136,16 +153,19 @@ export default {
 		this.getConfig();
 	},
 	methods: {
-		getConfig() {
+		getIcon(icon: string): string[]|void {
+			return getCoreIcon(icon);
+		},
+		getConfig(): Promise<void> {
 			this.$store.commit('spinner/SHOW');
 			return DaemonConfigurationService.getComponent(this.componentName)
-				.then((response) => {
+				.then((response: AxiosResponse) => {
 					this.$store.commit('spinner/HIDE');
 					this.instances = response.data.instances;
 				})
-				.catch((error) => FormErrorHandler.configError(error));
+				.catch((error: AxiosError) => FormErrorHandler.configError(error));
 		},
-		changeAccept(service, setting) {
+		changeAccept(service, setting): void {
 			if (service.acceptOnlyLocalhost !== setting) {
 				service.acceptOnlyLocalhost = setting;
 				DaemonConfigurationService.updateInstance(this.componentName, service.instance, service)
@@ -157,10 +177,13 @@ export default {
 							);
 						});
 					})
-					.catch((error) => FormErrorHandler.getConfig(error));
+					.catch((error: AxiosError) => FormErrorHandler.configError(error));
 			}
 		},
-		removeService() {
+		removeService(): void {
+			if (this.modals.service === null) {
+				return;
+			}
 			this.$store.commit('spinner/SHOW');
 			const service = this.modals.service;
 			this.modals.service = null;
@@ -173,13 +196,14 @@ export default {
 						);
 					});
 				})
-				.catch((error) => FormErrorHandler.configError(error));
+				.catch((error: AxiosError) => FormErrorHandler.configError(error));
 		}
 	},
-	icons: {
-		add: cilPlus,
-		edit: cilPencil,
-		remove: cilTrash,
-	},
-};
+});
 </script>
+
+<style scoped>
+.btn {
+  margin: 0 3px 0 0;
+}
+</style>

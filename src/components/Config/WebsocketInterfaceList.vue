@@ -189,7 +189,7 @@ export default Vue.extend({
 		getIcon(icon: string): void|string[] {
 			return getCoreIcon(icon);
 		},
-		getConfig(): Promise<void|AxiosResponse> {
+		getConfig(): Promise<void> {
 			this.instances = [];
 			return Promise.all([
 				DaemonConfigurationService.getComponent(this.componentNames.messaging),

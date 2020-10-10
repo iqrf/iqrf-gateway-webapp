@@ -166,7 +166,7 @@ export default Vue.extend({
 		getIcon(icon: string): void|string[] {
 			return getCoreIcon(icon);
 		},
-		getConfig(): Promise<void|AxiosResponse> {
+		getConfig(): Promise<void> {
 			this.$store.commit('spinner/SHOW');
 			return DaemonConfigurationService.getComponent(this.componentName)
 				.then((response: AxiosResponse) => {
