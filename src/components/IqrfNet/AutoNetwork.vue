@@ -431,6 +431,7 @@ export default class AutoNetwork extends Vue {
 				if (mutation.payload.mType === 'iqmeshNetwork_AutoNetwork') {
 					switch(mutation.payload.data.status) {
 						case -1:
+							this.$store.commit('spinner/HIDE');
 							this.$toast.error(
 								this.$t('iqrfnet.networkManager.messages.submit.timeout')
 									.toString()
@@ -449,6 +450,7 @@ export default class AutoNetwork extends Vue {
 							}
 							break;
 						default:
+							this.$store.commit('spinner/HIDE');
 							this.$toast.error(
 								this.$t('iqrfnet.networkManager.messages.submit.autoNetwork.failure')
 									.toString()

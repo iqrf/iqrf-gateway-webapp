@@ -147,6 +147,9 @@
 		"clearBonds": "Clear All Bonds",
 		"enumerate": "Enumerate",
 		"upload": "Upload",
+		"backup": "Backup",
+		"restore": "Restore",
+		"downloadBackup": "Download backup",
 		"messages": {
 			"getConfTimeout": "The request to retrieve current configuration timed out.",
 			"saveConfTimeout": "The request to save new configuration timed out.",
@@ -1128,6 +1131,23 @@
 					"numberOfNewNodes": "Number of new nodes",
 					"abortOnTooManyNodesFound": "Abort the AutoNetwork if too many nodes were found",
 					"verbose": "Verbose mode"
+				}
+			},
+			"backup": {
+				"title": "IQMESH Backup",
+				"form": {
+					"coordinator": "Coordinator",
+					"node": "Node",
+					"address": "Node address",
+					"network": "Whole network",
+					"messages": {
+						"select": "Please select backup target.",
+						"address": "Please enter a node address integer between 1 and 239."
+					}
+				},
+				"messages": {
+					"timeout": "The backup process request timed out.",
+					"success": "The backup process has been successfully completed."
 				}
 			},
 			"bonding": {

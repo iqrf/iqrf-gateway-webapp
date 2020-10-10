@@ -37,6 +37,20 @@ class IqrfNetService {
 		return store.dispatch('sendRequest', options);
 	}
 
+	backup(address: number, network = false, options: WebSocketOptions): Promise<string> {
+		options.request = {
+			'mType': 'iqmeshNetwork_Backup',
+			'data': {
+				'req': {
+					'deviceAddr': address,
+					'wholeNetwork': network,
+				},
+				'returnVerbose': true,
+			},
+		};
+		return store.dispatch('sendRequest', options);
+	}
+
 	/**
 	 * Bonds a node locally
 	 * @param address A requested address for the bonded node. If this parameter equals to 0, then the first free address is assigned to the node.

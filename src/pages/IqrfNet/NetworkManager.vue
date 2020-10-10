@@ -36,6 +36,7 @@ import AutoNetwork from '../../components/IqrfNet/AutoNetwork.vue';
 		CTab,
 		CTabs,
 		AutoNetwork,
+		Backup,
 		BondingManager,
 		DevicesInfo,
 		DiscoveryManager,
