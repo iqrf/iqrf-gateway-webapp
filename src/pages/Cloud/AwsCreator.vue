@@ -43,7 +43,7 @@
 								@input='isEmpty("cert")'
 								@click='isEmpty("cert")'
 							/>
-							<p v-if='certEmpty && !firstCert' style='color:red'>
+							<p v-if='certEmpty && !certUntouched' style='color:red'>
 								{{ $t('cloud.amazonAws.form.messages.certificate') }}
 							</p>
 						</div>
@@ -55,7 +55,7 @@
 								@input='isEmpty("key")'
 								@click='isEmpty("key")'
 							/>
-							<p v-if='keyEmpty && !firstKey' style='color:red'>
+							<p v-if='keyEmpty && !keyUntouched' style='color:red'>
 								{{ $t('cloud.amazonAws.form.messages.key') }}
 							</p>
 						</div>
@@ -81,7 +81,7 @@
 </template>
 
 <script lang='ts'>
-import Vue from 'vue';
+import {Component, Vue} from 'vue-property-decorator';
 import {AxiosError} from 'axios';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputFile} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
@@ -90,8 +90,7 @@ import FormErrorHandler from '../../helpers/FormErrorHandler';
 import CloudService from '../../services/CloudService';
 import ServiceService from '../../services/ServiceService';
 
-export default Vue.extend({
-	name: 'AwsCreator',
+@Component({
 	components: {
 		CButton,
 		CCard,
@@ -103,79 +102,92 @@ export default Vue.extend({
 		ValidationObserver,
 		ValidationProvider
 	},
-	data(): any {
-		return {
-			endpoint: null,
-			certEmpty: true,
-			keyEmpty: true,
-			firstCert: true,
-			firstKey: true,
-		};
+	metaInfo: {
+		title: 'cloud.amazonAws.form.title',
 	},
+})
+
+export default class AwsCreator extends Vue {
+	private endpoint: string|null = null
+	private certEmpty = true
+	private certUntouched = true
+	private keyEmpty = true
+	private keyUntouched = true
+
 	created(): void {
 		extend('required', required);
-	},
-	methods: {
-		buildRequest(): FormData {
-			const formData = new FormData();
-			formData.append('endpoint', this.endpoint);
-			formData.append('certificate', this.getCertFiles()[0]);
-			formData.append('privateKey', this.getKeyFiles()[0]);
-			return formData;
-		},
-		getCertFiles(): FileList|null {
-			const input = ((this.$refs.awsFormCert as CInputFile).$el.children[1] as HTMLInputElement);
-			return input.files;
-		},
-		getKeyFiles(): FileList|null {
-			const input = ((this.$refs.awsFormKey as CInputFile).$el.children[1] as HTMLInputElement);
-			return input.files;
-		},
-		save(): Promise<void> {
-			this.$store.commit('spinner/SHOW');
-			return CloudService.createAws(this.buildRequest())
-				.then(() => {
-					this.$store.commit('spinner/HIDE');
-					this.$toast.success(this.$t('cloud.messages.success').toString());
-				})
-				.catch((error: AxiosError) => {
-					FormErrorHandler.cloudError(error);
-					return Promise.reject(error);
-				});
-		},
-		saveAndRestart(): void {
-			this.save()
-				.then(() => {
-					this.$store.commit('spinner/SHOW');
-					ServiceService.restart('iqrf-gateway-daemon')
-						.then(() => {
-							this.$store.commit('spinner/HIDE');
-							this.$toast.success(
-								this.$t('service.iqrf-gateway-daemon.messages.restart')
-									.toString()
-							);
-						})
-						.catch((error: AxiosError) => {
-							FormErrorHandler.serviceError(error);
-						});
-				})
-				.catch(() => {return;});
-		},
-		isEmpty(button: string): void {
-			if (button === 'cert') {
-				if (this.firstCert) {
-					this.firstCert = false;
-				}
-				const certFiles = this.getCertFiles();
-				this.certEmpty = certFiles === null || certFiles.length === 0;
-			} else {
-				if (this.firstKey) {
-					this.firstKey = false;
-				}
-				const keyFiles = this.getKeyFiles();
-				this.keyEmpty = keyFiles === null || keyFiles.length === 0;
+	}
+
+	private buildRequest(): FormData {
+		const formData = new FormData();
+		formData.append('endpoint', this.endpoint ?? '');
+		formData.append('certificate', this.getCertFiles()[0]);
+		formData.append('privateKey', this.getKeyFiles()[0]);
+		return formData;
+	}
+
+	private getCertFiles(): FileList {
+		const input = ((this.$refs.awsFormCert as CInputFile).$el.children[1] as HTMLInputElement);
+		return (input.files as FileList);
+	}
+
+	private getKeyFiles(): FileList {
+		const input = ((this.$refs.awsFormKey as CInputFile).$el.children[1] as HTMLInputElement);
+		return (input.files as FileList);
+	}
+
+	private save(): Promise<void> {
+		this.$store.commit('spinner/SHOW');
+		return CloudService.createAws(this.buildRequest())
+			.then(() => {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.success(this.$t('cloud.messages.success').toString());
+			})
+			.catch((error: AxiosError) => {
+				FormErrorHandler.cloudError(error);
+				return Promise.reject(error);
+			});
+	}
+
+	private saveAndRestart(): void {
+		this.save()
+			.then(() => {
+				this.$store.commit('spinner/SHOW');
+				ServiceService.restart('iqrf-gateway-daemon')
+					.then(() => {
+						this.$store.commit('spinner/HIDE');
+						this.$toast.success(
+							this.$t('service.iqrf-gateway-daemon.messages.restart')
+								.toString()
+						);
+					})
+					.catch((error: AxiosError) => {
+						FormErrorHandler.serviceError(error);
+					});
+			})
+			.catch(() => {return;});
+	}
+
+	private isEmpty(button: string): void {
+		if (button === 'cert') {
+			if (this.certUntouched) {
+				this.certUntouched = false;
 			}
+			const certFiles = this.getCertFiles();
+			this.certEmpty = certFiles === null || certFiles.length === 0;
+		} else {
+			if (this.keyUntouched) {
+				this.keyUntouched = false;
+			}
+			const keyFiles = this.getKeyFiles();
+			this.keyEmpty = keyFiles === null || keyFiles.length === 0;
 		}
 	}
-});
+}
 </script>
+
+<style scoped>
+.btn {
+	margin: 0 3px 0 0;
+}
+</style>

@@ -113,8 +113,8 @@
 </template>
 
 <script lang='ts'>
-import Vue from 'vue';
-import {AxiosError} from 'axios';
+import {Component, Vue} from 'vue-property-decorator';
+import {AxiosError, AxiosResponse} from 'axios';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
@@ -122,8 +122,15 @@ import FormErrorHandler from '../../helpers/FormErrorHandler';
 import CloudService from '../../services/CloudService';
 import ServiceService from '../../services/ServiceService';
 
-export default Vue.extend({
-	name: 'IbmCreator',
+interface IbmConfig {
+	organizationId: string|null
+	deviceType: string|null
+	deviceId: string|null
+	token: string|null
+	eventId: string
+}
+
+@Component({
 	components: {
 		CButton,
 		CCard,
@@ -134,55 +141,62 @@ export default Vue.extend({
 		ValidationObserver,
 		ValidationProvider
 	},
-	data(): any {
-		return {
-			serviceName: 'ibmCloud',
-			config: {
-				organizationId: null,
-				deviceType: null,
-				deviceId: null,
-				token: null,
-				eventId: 'iqrf',
-			},
-		};
-	},
-	created() {
-		extend('required', required);
-	},
-	methods: {
-		save() {
-			this.$store.commit('spinner/SHOW');
-			return CloudService.create(this.serviceName, this.config)
-				.then(() => {
-					this.$store.commit('spinner/HIDE');
-					this.$toast.success(this.$t('cloud.messages.success').toString());
-				})
-				.catch((error: AxiosError) => {
-					FormErrorHandler.cloudError(error);
-					return Promise.reject(error);
-				});
-		},
-		saveAndRestart() {
-			this.save()
-				.then(() => {
-					this.$store.commit('spinner/SHOW');
-					ServiceService.restart('iqrf-gateway-daemon')
-						.then(() => {
-							this.$store.commit('spinner/HIDE');
-							this.$toast.success(
-								this.$t('service.iqrf-gateway-daemon.messages.restart')
-									.toString()
-							);
-						})
-						.catch((error: AxiosError) => {
-							FormErrorHandler.serviceError(error);
-						});
-				})
-				.catch(() => {return;});
-		},
-	},
 	metaInfo: {
 		title: 'cloud.ibmCloud.form.title',
 	},
-});
+})
+
+export default class IbmCreator extends Vue {
+	private serviceName = 'ibmCloud'
+	private config: IbmConfig = {
+		organizationId: null,
+		deviceType: null,
+		deviceId: null,
+		token: null,
+		eventId: 'iqrf'
+	}
+
+	created(): void {
+		extend('required', required);
+	}
+
+	private save(): Promise<AxiosResponse|void> {
+		this.$store.commit('spinner/SHOW');
+		return CloudService.create(this.serviceName, this.config)
+			.then(() => {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.success(this.$t('cloud.messages.success').toString());
+			})
+			.catch((error: AxiosError) => {
+				FormErrorHandler.cloudError(error);
+				return Promise.reject(error);
+			});
+	}
+
+	private saveAndRestart(): void {
+		this.save()
+			.then(() => {
+				this.$store.commit('spinner/SHOW');
+				ServiceService.restart('iqrf-gateway-daemon')
+					.then(() => {
+						this.$store.commit('spinner/HIDE');
+						this.$toast.success(
+							this.$t('service.iqrf-gateway-daemon.messages.restart')
+								.toString()
+						);
+					})
+					.catch((error: AxiosError) => {
+						FormErrorHandler.serviceError(error);
+					});
+			})
+			.catch(() => {return;});
+	}
+	
+}
 </script>
+
+<style scoped>
+.btn {
+	margin: 0 3px 0 0;
+}
+</style>

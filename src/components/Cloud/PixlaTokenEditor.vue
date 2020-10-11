@@ -39,18 +39,13 @@
 </template>
 
 <script lang='ts'>
-import Vue from 'vue';
+import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CForm, CInput, CModal} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 import PixlaService from '../../services/PixlaService';
 
-interface IPixlaTokenEditor {
-	token: string
-}
-
-export default Vue.extend({
-	name: 'PixlaTokenEditor',
+@Component({
 	components: {
 		CButton,
 		CForm,
@@ -59,41 +54,38 @@ export default Vue.extend({
 		ValidationObserver,
 		ValidationProvider,
 	},
-	props: {
-		show: {
-			type: Boolean,
-			required: true,
-		}
-	},
-	data(): IPixlaTokenEditor {
-		return {
-			token: '',
-		};
-	},
-	created() {
+})
+
+export default class PixlaTokenEditor extends Vue {
+	private token = ''
+	
+	@Prop({ required: true })
+	show!: boolean;
+	
+	created(): void {
 		extend('required', required);
-	},
-	methods: {
-		close(): void {
-			this.$emit('update:show', false);
-		},
-		processSubmit(): void {
-			PixlaService.setToken(this.token)
-				.then(() => {
-					this.token = '';
-					this.$store.commit('spinner/SHOW');
-					this.$emit('update:show', false);
-					this.$emit('token-updated');
-					this.$toast.success(
-						this.$t('cloud.pixla.editModal.messages.success').toString()
-					);
-				})
-				.catch(() => {
-					this.$toast.error(
-						this.$t('cloud.pixla.editModal.messages.failure').toString()
-					);
-				});
-		}
-	},
-});
+	}
+	
+	private close(): void {
+		this.$emit('update:show', false);
+	}
+
+	private processSubmit(): void {
+		PixlaService.setToken(this.token)
+			.then(() => {
+				this.token = '';
+				this.$store.commit('spinner/SHOW');
+				this.$emit('update:show', false);
+				this.$emit('token-updated');
+				this.$toast.success(
+					this.$t('cloud.pixla.editModal.messages.success').toString()
+				);
+			})
+			.catch(() => {
+				this.$toast.error(
+					this.$t('cloud.pixla.editModal.messages.failure').toString()
+				);
+			});
+	}
+}
 </script>

@@ -85,8 +85,8 @@
 </template>
 
 <script lang='ts'>
-import Vue from 'vue';
-import {AxiosError} from 'axios';
+import {Component, Vue} from 'vue-property-decorator';
+import {AxiosError, AxiosResponse} from 'axios';
 import {CButton, CCard, CCardBody, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';
@@ -94,8 +94,14 @@ import FormErrorHandler from '../../helpers/FormErrorHandler';
 import CloudService from '../../services/CloudService';
 import ServiceService from '../../services/ServiceService';
 
-export default Vue.extend({
-	name: 'InteliGlueCreator',
+interface InteliGlueConfig {
+	rootTopic: string|null
+	assignedPort: number|null
+	clientId: string|null
+	password: string|null
+}
+
+@Component({
 	components: {
 		CButton,
 		CCard,
@@ -105,56 +111,63 @@ export default Vue.extend({
 		ValidationObserver,
 		ValidationProvider,
 	},
-	data() {
-		return {
-			serviceName: 'inteliGlue',
-			config: {
-				rootTopic: null,
-				assignedPort: null,
-				clientId: null,
-				password: null,
-			}
-		};
-	},
-	created() {
+	metaInfo: {
+		title: 'cloud.intelimentsInteliGlue.form.title',
+	}
+})
+
+export default class InteliGlueCreator extends Vue {
+	private serviceName = 'inteliGlue'
+	private config: InteliGlueConfig = {
+		rootTopic: null,
+		assignedPort: null,
+		clientId: null,
+		password: null
+	}
+
+	created(): void {
 		extend('between', between);
 		extend('integer', integer);
 		extend('required', required);
-	},
-	methods: {
-		save() {
-			this.$store.commit('spinner/SHOW');
-			return CloudService.create(this.serviceName, this.config)
-				.then(() => {
-					this.$store.commit('spinner/HIDE');
-					this.$toast.success(this.$t('cloud.messages.success').toString());
-				})
-				.catch((error: AxiosError) => {
-					FormErrorHandler.cloudError(error);
-					return Promise.reject(error);
-				});
-		},
-		saveAndRestart() {
-			this.save()
-				.then(() => {
-					this.$store.commit('spinner/SHOW');
-					ServiceService.restart('iqrf-gateway-daemon')
-						.then(() => {
-							this.$store.commit('spinner/HIDE');
-							this.$toast.success(
-								this.$t('service.iqrf-gateway-daemon.messages.restart')
-									.toString()
-							);
-						})
-						.catch((error: AxiosError) => {
-							FormErrorHandler.serviceError(error);
-						});
-				})
-				.catch(() => {return;});
-		},
-	},
-	metaInfo: {
-		title: 'cloud.intelimentsInteliGlue.form.title',
-	},
-});
+	}
+
+	private save(): Promise<AxiosResponse|void> {
+		this.$store.commit('spinner/SHOW');
+		return CloudService.create(this.serviceName, this.config)
+			.then(() => {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.success(this.$t('cloud.messages.success').toString());
+			})
+			.catch((error: AxiosError) => {
+				FormErrorHandler.cloudError(error);
+				return Promise.reject(error);
+			});
+	}
+
+	private saveAndRestart(): void {
+		this.save()
+			.then(() => {
+				this.$store.commit('spinner/SHOW');
+				ServiceService.restart('iqrf-gateway-daemon')
+					.then(() => {
+						this.$store.commit('spinner/HIDE');
+						this.$toast.success(
+							this.$t('service.iqrf-gateway-daemon.messages.restart')
+								.toString()
+						);
+					})
+					.catch((error: AxiosError) => {
+						FormErrorHandler.serviceError(error);
+					});
+			})
+			.catch(() => {return;});
+	}
+
+}
 </script>
+
+<style scoped>
+.btn {
+	margin: 0 3px 0 0;
+}
+</style>

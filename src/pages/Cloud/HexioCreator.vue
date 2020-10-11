@@ -111,8 +111,8 @@
 </template>
 
 <script lang='ts'>
-import Vue from 'vue';
-import {AxiosError} from 'axios';
+import {Component, Vue} from 'vue-property-decorator';
+import {AxiosError, AxiosResponse} from 'axios';
 import {CButton, CCard, CCardBody, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
@@ -120,8 +120,16 @@ import FormErrorHandler from '../../helpers/FormErrorHandler';
 import CloudService from '../../services/CloudService';
 import ServiceService from '../../services/ServiceService';
 
-export default Vue.extend({
-	name: 'HexioCreator',
+interface HexioConfig {
+	broker: string
+	clientId: string|null
+	topicRequest: string
+	topicResponse: string
+	username: string|null
+	password: string|null
+}
+
+@Component({
 	components: {
 		CButton,
 		CCard,
@@ -131,56 +139,62 @@ export default Vue.extend({
 		ValidationObserver,
 		ValidationProvider
 	},
-	data() {
-		return {
-			serviceName: 'hexio',
-			config: {
-				broker: 'connect.hexio.cloud',
-				clientId: null,
-				topicRequest: 'Iqrf/DpaRequest',
-				topicResponse: 'Iqrf/DpaResponse',
-				username: null,
-				password: null,
-			}
-		};
-	},
-	created() {
-		extend('required', required);
-	},
-	methods: {
-		save() {
-			this.$store.commit('spinner/SHOW');
-			return CloudService.create(this.serviceName, this.config)
-				.then(() => {
-					this.$store.commit('spinner/HIDE');
-					this.$toast.success(this.$t('cloud.messages.success').toString());
-				})
-				.catch((error: AxiosError) => {
-					FormErrorHandler.cloudError(error);
-					return Promise.reject(error);
-				});
-		},
-		saveAndRestart() {
-			this.save()
-				.then(() => {
-					this.$store.commit('spinner/SHOW');
-					ServiceService.restart('iqrf-gateway-daemon')
-						.then(() => {
-							this.$store.commit('spinner/HIDE');
-							this.$toast.success(
-								this.$t('service.iqrf-gateway-daemon.messages.restart')
-									.toString()
-							);
-						})
-						.catch((error: AxiosError) => {
-							FormErrorHandler.serviceError(error);
-						});
-				})
-				.catch(() => {return;});
-		},
-	},
 	metaInfo: {
 		title: 'cloud.hexio.form.title',
 	},
-});
+})
+
+export default class HexioCreator extends Vue {
+	private serviceName = 'hexio'
+	private config: HexioConfig = {
+		broker: 'hexio',
+		clientId: null,
+		topicRequest: 'Iqrf/DpaRequest',
+		topicResponse: 'Iqrf/DpaResponse',
+		username: null,
+		password: null
+	}
+	
+	created(): void {
+		extend('required', required);
+	}
+
+	private save(): Promise<AxiosResponse|void> {
+		this.$store.commit('spinner/SHOW');
+		return CloudService.create(this.serviceName, this.config)
+			.then(() => {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.success(this.$t('cloud.messages.success').toString());
+			})
+			.catch((error: AxiosError) => {
+				FormErrorHandler.cloudError(error);
+				return Promise.reject(error);
+			});
+	}
+
+	private saveAndRestart(): void {
+		this.save()
+			.then(() => {
+				this.$store.commit('spinner/SHOW');
+				ServiceService.restart('iqrf-gateway-daemon')
+					.then(() => {
+						this.$store.commit('spinner/HIDE');
+						this.$toast.success(
+							this.$t('service.iqrf-gateway-daemon.messages.restart')
+								.toString()
+						);
+					})
+					.catch((error: AxiosError) => {
+						FormErrorHandler.serviceError(error);
+					});
+			})
+			.catch(() => {return;});
+	}
+}
 </script>
+
+<style scoped>
+.btn {
+	margin: 0 3px 0 0;
+}
+</style>

@@ -59,7 +59,7 @@
 </template>
 
 <script lang='ts'>
-import Vue from 'vue';
+import {Component, Vue} from 'vue-property-decorator';
 import {AxiosError, AxiosResponse} from 'axios';
 import {CButton, CCard} from '@coreui/vue/src';
 import {NavigationGuardNext, Route} from 'vue-router';
@@ -67,127 +67,26 @@ import PixlaTokenEditor from '../../components/Cloud/PixlaTokenEditor.vue';
 import PixlaService from '../../services/PixlaService';
 import ServiceService, {ServiceStatus} from '../../services/ServiceService';
 
-export default Vue.extend({
-	name: 'PixlaControl',
+@Component({
 	components: {
 		CButton,
 		CCard,
 		PixlaTokenEditor,
 	},
-	data(): any {
-		return {
-			showEditor: false,
-			serviceName: 'gwman-client',
-			token: null,
-			missing: false,
-			unsupported: false,
-			service: undefined,
-		};
+	metaInfo: {
+		title: 'cloud.pixla.title',
 	},
-	created() {
-		this.$store.commit('spinner/SHOW');
-		this.getToken();
-		this.getStatus();
-	},
-	methods: {
-		enable() {
-			this.$store.commit('spinner/SHOW');
-			ServiceService.enable(this.serviceName)
-				.then(() => {
-					this.getStatus();
-					this.$toast.success(
-						this.$t('service.' + this.serviceName + '.messages.enable')
-							.toString()
-					);
-				})
-				.catch(this.handleError);
-		},
-		disable() {
-			this.$store.commit('spinner/SHOW');
-			ServiceService.disable(this.serviceName)
-				.then(() => {
-					this.getStatus();
-					this.$toast.success(
-						this.$t('service.' + this.serviceName + '.messages.disable')
-							.toString()
-					);
-				})
-				.catch(this.handleError);
-		},
-		getStatus() {
-			ServiceService.getStatus(this.serviceName)
-				.then((status: ServiceStatus) => {
-					this.service = status;
-					this.unsupported = false;
-					this.$store.commit('spinner/HIDE');
-				})
-				.catch(this.handleError);
-		},
-		getToken() {
-			PixlaService.getToken()
-				.then((token: string) => {
-					this.token = token;
-					this.$store.commit('spinner/HIDE');
-				})
-				.catch(() => {
-					this.token = null;
-					this.$store.commit('spinner/HIDE');
-				});
-		},
-		handleError(error: AxiosError) {
-			this.$store.commit('spinner/HIDE');
-			if (error.response === undefined) {
-				return;
-			}
-			const response: AxiosResponse = error.response;
-			if (response.status === 404) {
-				this.missing = true;
-				this.$toast.error(this.$t('service.errors.missingService').toString());
-			}
-			if (response.status === 500 &&
-					response.data.message === 'Unsupported init system') {
-				this.unsupported = false;
-				this.$toast.error(this.$t('service.errors.unsupportedInit').toString());
-			}
-		},
-		restart() {
-			this.$store.commit('spinner/SHOW');
-			ServiceService.restart(this.serviceName)
-				.then(() => {
-					this.getStatus();
-					this.$toast.success(
-						this.$t('service.' + this.serviceName + '.messages.restart')
-							.toString()
-					);
-				})
-				.catch(this.handleError);
-		},
-		start() {
-			this.$store.commit('spinner/SHOW');
-			ServiceService.start(this.serviceName)
-				.then(() => {
-					this.getStatus();
-					this.$toast.success(
-						this.$t('service.' + this.serviceName + '.messages.start')
-							.toString()
-					);
-				})
-				.catch(this.handleError);
-		},
-		stop() {
-			this.$store.commit('spinner/SHOW');
-			ServiceService.stop(this.serviceName)
-				.then(() => {
-					this.getStatus();
-					this.$toast.success(
-						this.$t('service.' + this.serviceName + '.messages.stop')
-							.toString()
-					);
-				})
-				.catch(this.handleError);
-		},
-	},
-	beforeRouteEnter(to: Route, from: Route, next: NavigationGuardNext) {
+})
+
+export default class PixlaControl extends Vue {
+	private showEditor = false
+	private serviceName = 'gwman-client'
+	private token: string|null = null
+	private missing = false
+	private unsupported = false
+	private service: ServiceStatus|null = null
+
+	beforeRouteEnter(to: Route, from: Route, next: NavigationGuardNext): void {
 		next(vm => {
 			if (!vm.$store.getters['features/isEnabled']('pixla')) {
 				vm.$toast.error(
@@ -196,9 +95,123 @@ export default Vue.extend({
 				vm.$router.push(from.path);
 			}
 		});
-	},
-	metaInfo: {
-		title: 'cloud.pixla.title',
-	},
-});
+	}
+
+	created(): void {
+		this.$store.commit('spinner/SHOW');
+		this.getToken();
+		this.getStatus();
+	}
+
+	private enable(): void {
+		this.$store.commit('spinner/SHOW');
+		ServiceService.enable(this.serviceName)
+			.then(() => {
+				this.getStatus();
+				this.$toast.success(
+					this.$t('service.' + this.serviceName + '.messages.enable')
+						.toString()
+				);
+			})
+			.catch(this.handleError);
+	}
+
+	private disable(): void {
+		this.$store.commit('spinner/SHOW');
+		ServiceService.disable(this.serviceName)
+			.then(() => {
+				this.getStatus();
+				this.$toast.success(
+					this.$t('service.' + this.serviceName + '.messages.disable')
+						.toString()
+				);
+			})
+			.catch(this.handleError);
+	}
+
+	private getStatus(): void {
+		ServiceService.getStatus(this.serviceName)
+			.then((status: ServiceStatus) => {
+				this.service = status;
+				this.unsupported = false;
+				this.$store.commit('spinner/HIDE');
+			})
+			.catch(this.handleError);
+	}
+
+	private getToken(): void {
+		PixlaService.getToken()
+			.then((token: string) => {
+				this.token = token;
+				this.$store.commit('spinner/HIDE');
+			})
+			.catch(() => {
+				this.token = null;
+				this.$store.commit('spinner/HIDE');
+			});
+	}
+
+	private handleError(error: AxiosError): void {
+		this.$store.commit('spinner/HIDE');
+		if (error.response === undefined) {
+			return;
+		}
+		const response: AxiosResponse = error.response;
+		if (response.status === 404) {
+			this.missing = true;
+			this.$toast.error(this.$t('service.errors.missingService').toString());
+		}
+		if (response.status === 500 &&
+				response.data.message === 'Unsupported init system') {
+			this.unsupported = false;
+			this.$toast.error(this.$t('service.errors.unsupportedInit').toString());
+		}
+	}
+
+	private restart(): void {
+		this.$store.commit('spinner/SHOW');
+		ServiceService.restart(this.serviceName)
+			.then(() => {
+				this.getStatus();
+				this.$toast.success(
+					this.$t('service.' + this.serviceName + '.messages.restart')
+						.toString()
+				);
+			})
+			.catch(this.handleError);
+	}
+
+	private start(): void {
+		this.$store.commit('spinner/SHOW');
+		ServiceService.start(this.serviceName)
+			.then(() => {
+				this.getStatus();
+				this.$toast.success(
+					this.$t('service.' + this.serviceName + '.messages.start')
+						.toString()
+				);
+			})
+			.catch(this.handleError);
+	}
+
+	private stop(): void {
+		this.$store.commit('spinner/SHOW');
+		ServiceService.stop(this.serviceName)
+			.then(() => {
+				this.getStatus();
+				this.$toast.success(
+					this.$t('service.' + this.serviceName + '.messages.stop')
+						.toString()
+				);
+			})
+			.catch(this.handleError);
+	}
+	
+}
 </script>
+
+<style scoped>
+.btn {
+	margin: 0 3px 0 0;
+}
+</style>
