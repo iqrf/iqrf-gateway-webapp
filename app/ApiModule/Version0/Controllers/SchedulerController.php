@@ -35,7 +35,7 @@ use App\ConfigModule\Exceptions\InvalidTaskMessageException;
 use App\ConfigModule\Exceptions\TaskNotFoundException;
 use App\ConfigModule\Models\SchedulerManager;
 use App\ConfigModule\Models\SchedulerMigrationManager;
-use GuzzleHttp\Psr7\Utils;
+use App\CoreModule\Exceptions\InvalidJsonException;
 use Nette\Utils\FileSystem;
 use Nette\Utils\JsonException;
 
@@ -129,7 +129,7 @@ class SchedulerController extends BaseController {
 			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
 		}
 		return $response->withStatus(ApiResponse::S201_CREATED)
-			->withBody(Utils::streamFor());
+			->writeBody('Workaround');
 	}
 
 	/**
@@ -192,7 +192,7 @@ class SchedulerController extends BaseController {
 		$taskId = (int) $request->getParameter('taskId');
 		try {
 			$this->manager->delete($taskId);
-			return $response->withBody(Utils::streamFor());
+			return $response->writeBody('Workaround');
 		} catch (TaskNotFoundException $e) {
 			throw new ClientErrorException('Task not found', ApiResponse::S404_NOT_FOUND);
 		}
@@ -246,7 +246,7 @@ class SchedulerController extends BaseController {
 		} catch (JsonException $e) {
 			throw new ServerErrorException('Invalid JSON', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
-		return $response->withBody(Utils::streamFor());
+		return $response->writeBody('Workaround');
 	}
 
 	/**
@@ -313,6 +313,8 @@ class SchedulerController extends BaseController {
 					throw new ClientErrorException('Invalid mType', ApiResponse::S400_BAD_REQUEST);
 				} catch (JsonException $e) {
 					throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
+				} catch (InvalidJsonException $e) {
+					throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
 				}
 				FileSystem::delete($path);
 				break;
@@ -323,12 +325,14 @@ class SchedulerController extends BaseController {
 					throw new ClientErrorException('Invalid mType', ApiResponse::S400_BAD_REQUEST);
 				} catch (JsonException $e) {
 					throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
+				} catch (InvalidJsonException $e) {
+					throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
 				}
 				break;
 			default:
 				throw new ClientErrorException('Unsupported media type', ApiResponse::S415_UNSUPPORTED_MEDIA_TYPE);
 		}
-		return $response->withBody(Utils::streamFor());
+		return $response->writeBody('Workaround');
 	}
 
 }

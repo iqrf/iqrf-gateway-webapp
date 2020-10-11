@@ -32,7 +32,6 @@ use Apitte\Core\Http\ApiResponse;
 use App\ConfigModule\Exceptions\IncompleteConfigurationException;
 use App\ConfigModule\Models\MigrationManager;
 use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
-use GuzzleHttp\Psr7\Utils;
 use Nette\Utils\FileSystem;
 use Nette\Utils\JsonException;
 
@@ -122,7 +121,7 @@ class ConfigMigrationController extends BaseConfigController {
 			throw new ServerErrorException('Unsupported init system', ApiResponse::S501_NOT_IMPLEMENTED);
 		}
 		FileSystem::delete($path);
-		return $response->withBody(Utils::streamFor());
+		return $response->writeBody('Workaround');
 	}
 
 }

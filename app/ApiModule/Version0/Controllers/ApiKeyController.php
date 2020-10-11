@@ -33,7 +33,6 @@ use App\Models\Database\Entities\ApiKey;
 use App\Models\Database\EntityManager;
 use App\Models\Database\Repositories\ApiKeyRepository;
 use DateTime;
-use GuzzleHttp\Psr7\Utils;
 use Nette\Utils\JsonException;
 use Throwable;
 use function assert;
@@ -193,7 +192,7 @@ class ApiKeyController extends BaseController {
 		}
 		$this->entityManager->remove($apiKey);
 		$this->entityManager->flush();
-		return $response->withBody(Utils::streamFor());
+		return $response->writeBody('Workaround');
 	}
 
 	/**
@@ -247,7 +246,7 @@ class ApiKeyController extends BaseController {
 		$apiKey->setExpiration($expiration);
 		$this->entityManager->persist($apiKey);
 		$this->entityManager->flush();
-		return $response->withBody(Utils::streamFor());
+		return $response->writeBody('Workaround');
 	}
 
 }

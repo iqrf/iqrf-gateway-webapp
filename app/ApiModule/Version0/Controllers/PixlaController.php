@@ -29,7 +29,6 @@ use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\CloudModule\Models\PixlaManager;
-use GuzzleHttp\Psr7\Utils;
 use Nette\IOException;
 use Nette\Utils\JsonException;
 
@@ -103,7 +102,7 @@ class PixlaController extends BaseController {
 	public function setToken(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
 			$this->manager->setToken($request->getJsonBody()['token']);
-			return $response->withBody(Utils::streamFor());
+			return $response->writeBody('Workaround');
 		} catch (JsonException $e) {
 			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
 		} catch (IOException $e) {

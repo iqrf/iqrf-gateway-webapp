@@ -29,7 +29,6 @@ use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ConfigModule\Models\ControllerConfigManager;
-use GuzzleHttp\Psr7\Utils;
 use Nette\IOException;
 use Nette\Utils\JsonException;
 
@@ -109,7 +108,7 @@ class ControllerConfigController extends BaseConfigController {
 	public function setConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
 			$this->manager->saveConfig($request->getJsonBody());
-			return $response->withBody(Utils::streamFor());
+			return $response->writeBody('Workaround');
 		} catch (JsonException $e) {
 			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
 		} catch (IOException $e) {
