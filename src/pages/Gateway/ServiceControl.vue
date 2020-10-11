@@ -30,6 +30,9 @@
 			<span v-if='unsupported'>
 				{{ $t('service.states.unsupported') }}
 			</span>
+			<span v-if='unknown'>
+				{{ $t('service.states.unknown') }}
+			</span>
 			<span v-else>
 				{{ $t('service.states.' + (service.enabled ? 'enabled' : 'disabled')) }},
 				{{ $t('service.states.' + (service.active ? 'active' : 'inactive')) }}
@@ -44,6 +47,7 @@
 import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
 import {CButton, CCard} from '@coreui/vue/src';
 import ServiceService from '../../services/ServiceService';
+import {AxiosError} from 'axios';
 
 const whitelisted = [
 	'iqrf-gateway-controller',
@@ -80,6 +84,7 @@ interface IService {
 
 export default class ServiceControl extends Vue {
 	private missing = false;
+	private unknown =  false;
 	private unsupported = false;
 	private service: IService = {
 		active: false,
@@ -87,7 +92,9 @@ export default class ServiceControl extends Vue {
 		status: null
 	}
 	private title = '';
+
 	@Prop({required: true}) serviceName!: string;
+
 	beforeRouteEnter(to, from, next): void {
 		next(vm => {
 			const feature = features[vm.serviceName];
@@ -100,27 +107,32 @@ export default class ServiceControl extends Vue {
 			}
 		});
 	}
+
 	@Watch('serviceName')
 	getServiceStatus(): void {
 		this.$store.commit('spinner/SHOW');
 		this.getStatus();
 	}
+
 	created(): void {
 		this.$store.commit('spinner/SHOW');
 		this.getStatus();
 	}
+
 	public enable(): void {
 		this.$store.commit('spinner/SHOW');
 		ServiceService.enable(this.serviceName)
 			.then(() => (this.handleSuccess('enable')))
 			.catch(this.handleError);
 	}
+
 	public disable(): void {
 		this.$store.commit('spinner/SHOW');
 		ServiceService.disable(this.serviceName)
 			.then(() => (this.handleSuccess('disable')))
 			.catch(this.handleError);
 	}
+
 	public getStatus(): void {
 		if (!whitelisted.includes(this.serviceName)) {
 			this.unsupported = true;
@@ -138,9 +150,15 @@ export default class ServiceControl extends Vue {
 			})
 			.catch(this.handleError);
 	}
-	public handleError(error): void {
+
+	public handleError(error: AxiosError): void {
 		this.$store.commit('spinner/HIDE');
 		let response = error.response;
+		if (response === undefined) {
+			this.unknown = true;
+			this.$toast.error(this.$t('service.errors.processTimeout').toString());
+			return;
+		}
 		if (response.status === 404) {
 			this.missing = true;
 			this.$toast.error(this.$t('service.errors.missingService').toString());
@@ -151,6 +169,7 @@ export default class ServiceControl extends Vue {
 			this.$toast.error(this.$t('service.errors.unsupportedInit').toString());
 		}
 	}
+
 	public handleSuccess(action: string): void {
 		this.getStatus();
 		this.$toast.success(
@@ -158,28 +177,33 @@ export default class ServiceControl extends Vue {
 				.toString()
 		);
 	}
+
 	public refreshStatus(): void {
 		this.$store.commit('spinner/SHOW');
 		this.getStatus();
 	}
+
 	public restart(): void {
 		this.$store.commit('spinner/SHOW');
 		ServiceService.restart(this.serviceName)
 			.then(() => (this.handleSuccess('restart')))
 			.catch(this.handleError);
 	}
+
 	public start(): void {
 		this.$store.commit('spinner/SHOW');
 		ServiceService.start(this.serviceName)
 			.then(() => (this.handleSuccess('start')))
 			.catch(this.handleError);
 	}
+
 	public stop(): void {
 		this.$store.commit('spinner/SHOW');
 		ServiceService.stop(this.serviceName)
 			.then(() => (this.handleSuccess('stop')))
 			.catch(this.handleError);
 	}
+
 	get pageTitle(): string {
 		const title = whitelisted.includes(this.serviceName) ?
 			'service.' + this.serviceName + '.title' :

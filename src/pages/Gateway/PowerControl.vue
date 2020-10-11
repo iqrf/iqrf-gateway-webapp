@@ -19,7 +19,6 @@ import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CIcon} from '@coreui/vue/src';
 import GatewayService from '../../services/GatewayService';
 import {getCoreIcon} from '../../helpers/icons';
-import { Dictionary } from 'vue-router/types/router';
 import { MetaInfo } from 'vue-meta';
 
 @Component({
@@ -39,6 +38,7 @@ export default class PowerControl extends Vue {
 	public getIcon(icon: string): string[]|void {
 		return getCoreIcon(icon);
 	}
+
 	public powerOff(): void {
 		GatewayService.performPowerOff()
 			.then(() => {
@@ -47,6 +47,7 @@ export default class PowerControl extends Vue {
 				);
 			});
 	}
+
 	public reboot(): void {
 		GatewayService.performReboot()
 			.then(() => {
