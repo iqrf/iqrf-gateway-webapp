@@ -1,8 +1,11 @@
 <template>
 	<CCard class='border-top-0 border-left-0 border-right-0'>
+		<CCardHeader>
+			{{ $t('iqrfnet.networkManager.backup.title') }}
+		</CCardHeader>
 		<CCardBody>
 			<ValidationObserver v-slot='{invalid}'>
-				<CForm>
+				<CForm @submit.prevent='backupDevice'>
 					<CSelect
 						:value.sync='target'
 						:options='selectOptions'
@@ -29,18 +32,11 @@
 						/>
 					</ValidationProvider>
 					<CButton
+						type='submit'
 						color='primary'
 						:disabled='invalid'
-						@click='backupDevice'
 					>
 						{{ $t('forms.backup') }}
-					</CButton>
-					<CButton 
-						v-if='deviceData.length > 0'
-						color='secondary'
-						@click='downloadFiles'
-					>
-						{{ $t('forms.downloadBackup') }}
 					</CButton>
 				</CForm>
 			</ValidationObserver>
@@ -56,7 +52,6 @@ import {between, integer, required} from 'vee-validate/dist/rules';
 import { WebSocketOptions } from '../../store/modules/webSocketClient.module';
 import IqrfNetService from '../../services/IqrfNetService';
 import { MutationPayload } from 'vuex';
-import JSZip from 'jszip';
 import {saveAs} from 'file-saver';
 
 export default Vue.extend({
@@ -117,12 +112,12 @@ export default Vue.extend({
 					default:
 						this.$store.commit('spinner/UPDATE_TEXT', this.backupProgress(mutation.payload.data));
 						if (mutation.payload.data.status === 0) {
-							const device = mutation.payload.data.rsp.devices[0];
-							this.deviceData.push({deviceAddr: device.deviceAddr, data: device.data});
+							this.deviceData.push(mutation.payload.data.rsp.devices[0]);
 						}
 						if (mutation.payload.data.rsp.progress === 100) {
 							this.$store.commit('spinner/HIDE');
 							this.$store.dispatch('removeMessage', this.msgId);
+							this.generateBackupFile();
 							this.$toast.success(
 								this.$t('iqrfnet.networkManager.backup.messages.success').toString()
 							);
@@ -156,15 +151,48 @@ export default Vue.extend({
 			}
 			return message;
 		},
-		downloadFiles(): void {
-			const zip = new JSZip();
-			this.deviceData.forEach(element => {
-				zip.file('backup_device' + element.deviceAddr, element.data);
-			});
-			zip.generateAsync({type: 'blob'})
-				.then((blob) => {
-					saveAs(blob, 'iqmeshBackup_' + new Date().toISOString().replace(' ', '_').replace('.', '_'));
-				});
+		generateBackupFile(): void {
+			let fileContent = '[Backup]\nCreated=' + new Date().toLocaleString().replace(/\//g, ' ') + '\n\n';
+			let fileName = '';
+			if (this.target === 'coordinator') {
+				fileName = 'Coordinator_';
+				fileContent += this.coordinatorBackup() + '\n';
+			} else if (this.target === 'node') {
+				fileName = 'Node_';
+				fileContent += this.nodeBackup(0) + '\n';
+			} else {
+				fileName = 'Network_';
+				fileContent += this.networkBackup();
+			}
+			fileName += this.deviceData[0].mid.toString(16) + '_' + new Date().toISOString().slice(2, 10).replace(/-/g, '') + '.iqrfbkp';
+			const blob = new Blob([fileContent], {type: 'text/plain;charset=utf-8'});
+			saveAs(blob, fileName);
+		},
+		coordinatorBackup(): string {
+			const device = this.deviceData[0];
+			let message = '[' + device.mid.toString(16) + ']\n';
+			message += 'Device=Coordinator\nVersion=' + this.getDpaVersion(device.dpaVer) + '\n';
+			message += 'DataC=' + device.data + '\nAddress=' + device.deviceAddr + '\n';
+			return message;
+		},
+		nodeBackup(index: number): string {
+			const device = this.deviceData[index];
+			let message = '[' + device.mid.toString(16) + ']\n';
+			message += 'Device=Node\nVersion=' + this.getDpaVersion(device.dpaVer) + '\n';
+			message += 'DataN=' + device.data + '\nAddress=' + device.deviceAddr + '\n';
+			return message;
+		},
+		networkBackup(): string {
+			let message = this.coordinatorBackup() + '\n';
+			for (let i = 1; i < this.deviceData.length; ++i) {
+				message += this.nodeBackup(i) + '\n';
+			}
+			return message;
+		},
+		getDpaVersion(version: number): string {
+			const major = version >> 8;
+			const minor = version & 0xff;
+			return major.toString() + '.' + minor.toString(16).padStart(2, '0');
 		}
 	}
 });

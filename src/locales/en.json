@@ -1134,7 +1134,7 @@
 				}
 			},
 			"backup": {
-				"title": "IQMESH Backup",
+				"title": "IQRF Backup",
 				"form": {
 					"coordinator": "Coordinator",
 					"node": "Node",
@@ -1151,7 +1151,7 @@
 				}
 			},
 			"restore": {
-				"title": "IQMESH Restore",
+				"title": "IQRF Restore",
 				"form": {
 					"address": "Node address",
 					"backupFile": "Backup file",
