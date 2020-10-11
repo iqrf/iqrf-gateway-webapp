@@ -23,7 +23,7 @@
 						<td v-if='unsupported'>
 							{{ $t('service.states.unsupported') }}
 						</td>
-						<td v-else class='d-flex'>
+						<td v-if='service !== null' class='d-flex'>
 							<div class='mr-auto'>
 								{{ $t('service.states.' + (service.enabled ? 'enabled' : 'disabled')) }},
 								{{ $t('service.states.' + (service.active ? 'active' : 'inactive')) }}
@@ -53,7 +53,7 @@
 					{{ $t('cloud.pixla.dashboard') }}
 				</CButton>
 			</div>
-			<PixlaTokenEditor :show.sync='showEditor' @tokenUpdated='getToken' />
+			<PixlaTokenEditor :show.sync='showEditor' @token-updated='getToken' />
 		</CCard>
 	</div>
 </template>

@@ -90,10 +90,10 @@
 			<CCardBody>
 				<CRow>
 					<CCol md='6'>
-						<InterfaceMappings interface-type='spi' @updateMapping='updateMapping' />
+						<InterfaceMappings interface-type='spi' @update-mapping='updateMapping' />
 					</CCol>
 					<CCol md='6'>
-						<InterfacePorts interface-type='spi' @updatePort='updatePort' />
+						<InterfacePorts interface-type='spi' @update-port='updatePort' />
 					</CCol>
 				</CRow>
 			</CCardBody>

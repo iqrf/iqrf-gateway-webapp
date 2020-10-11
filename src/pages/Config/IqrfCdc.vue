@@ -39,7 +39,7 @@
 		<CCard>
 			<CCardHeader>{{ $t('config.iqrfCdc.mappings' ) }}</CCardHeader>
 			<CCardBody>
-				<InterfacePorts interface-type='cdc' @updatePort='updatePort' />
+				<InterfacePorts interface-type='cdc' @update-port='updatePort' />
 			</CCardBody>
 		</CCard>
 	</div>

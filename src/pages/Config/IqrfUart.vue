@@ -87,10 +87,10 @@
 			<CCardBody>
 				<CRow>
 					<CCol md='6'>
-						<InterfaceMappings interface-type='uart' @updateMapping='updateMapping' />
+						<InterfaceMappings interface-type='uart' @update-mapping='updateMapping' />
 					</CCol>
 					<CCol md='6'>
-						<InterfacePorts interface-type='uart' @updatePort='updatePort' />
+						<InterfacePorts interface-type='uart' @update-port='updatePort' />
 					</CCol>
 				</CRow>
 			</CCardBody>
