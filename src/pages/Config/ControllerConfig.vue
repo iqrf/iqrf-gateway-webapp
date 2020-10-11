@@ -265,16 +265,16 @@
 </template>
 
 <script lang='ts'>
-import Vue from 'vue';
+import {Component, Vue} from 'vue-property-decorator';
 import {AxiosError, AxiosResponse} from 'axios';
 import {CButton, CCard , CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import FeatureConfigService from '../../services/FeatureConfigService';
+import { Dictionary, NavigationGuardNext, Route } from 'vue-router/types/router';
 
-export default Vue.extend({
-	name: 'ControllerConfig',
+@Component({
 	components: {
 		CButton,
 		CCard,
@@ -285,13 +285,16 @@ export default Vue.extend({
 		ValidationObserver,
 		ValidationProvider
 	},
-	data(): any {
-		return {
-			name: 'controller',
-			config: null,
-		};
+	metaInfo: {
+		title: 'controllerConfig.description',
 	},
-	created() {
+})
+
+export default class ControllerConfig extends Vue {
+	private name = 'controller'
+	private config: Dictionary<unknown>|null = null
+
+	created(): void {
 		extend('between', between);
 		extend('integer', integer);
 		extend('required', required);
@@ -300,32 +303,33 @@ export default Vue.extend({
 			return regex.test(addr);
 		});
 		this.getConfig();
-	},
-	methods: {
-		getConfig() {
-			this.$store.commit('spinner/SHOW');
-			FeatureConfigService.getConfig(this.name)
-				.then((response: AxiosResponse) => {
-					this.$store.commit('spinner/HIDE');
-					this.config = response.data;
-				})
-				.catch((error: AxiosError) => {
-					FormErrorHandler.configError(error);
-				});
-		},
-		processSubmit() {
-			this.$store.commit('spinner/SHOW');
-			FeatureConfigService.saveConfig(this.name, this.config)
-				.then(() => {
-					this.$store.commit('spinner/HIDE');
-					this.$toast.success(this.$t('forms.messages.saveSuccess').toString());
-				})
-				.catch((error: AxiosError) => {
-					FormErrorHandler.configError(error);
-				});
-		},
-	},
-	beforeRouteEnter(to, from, next) {
+	}
+
+	getConfig(): void {
+		this.$store.commit('spinner/SHOW');
+		FeatureConfigService.getConfig(this.name)
+			.then((response: AxiosResponse) => {
+				this.$store.commit('spinner/HIDE');
+				this.config = response.data;
+			})
+			.catch((error: AxiosError) => {
+				FormErrorHandler.configError(error);
+			});
+	}
+
+	processSubmit(): void {
+		this.$store.commit('spinner/SHOW');
+		FeatureConfigService.saveConfig(this.name, this.config)
+			.then(() => {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.success(this.$t('forms.messages.saveSuccess').toString());
+			})
+			.catch((error: AxiosError) => {
+				FormErrorHandler.configError(error);
+			});
+	}
+
+	beforeRouteEnter(to: Route, from: Route, next: NavigationGuardNext): void {
 		next(vm => {
 			if (!vm.$store.getters['features/isEnabled']('iqrfGatewayController')) {
 				vm.$toast.error(
@@ -334,9 +338,6 @@ export default Vue.extend({
 				vm.$router.push(from.path);
 			}
 		});
-	},
-	metaInfo: {
-		title: 'controllerConfig.description',
-	},
-});
+	}
+}
 </script>
