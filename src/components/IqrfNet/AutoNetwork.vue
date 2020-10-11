@@ -386,19 +386,6 @@ export default {
 				}
 			}
 		});
-		if (this.$store.getters.isSocketConnected) {
-			this.getVersion();
-		} else {
-			this.unwatch = this.$store.watch(
-				(state, getter) => getter.isSocketConnected,
-				(newVal, oldVal) => {
-					if (!oldVal && newVal) {
-						this.getVersion();
-						this.unwatch();
-					}
-				}
-			);
-		}
 	},
 	beforeDestroy() {
 		this.$store.dispatch('removeMessage', this.msgId);

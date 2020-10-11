@@ -117,14 +117,12 @@ export default {
 			}
 		});
 		if (this.$store.getters.isSocketConnected) {
-			this.$store.dispatch('spinner/show', {timeout: 20000});
 			this.getBondedDevices();
 		} else {
 			this.unwatch = this.$store.watch(
 				(state, getter) => getter.isSocketConnected,
 				(newVal, oldVal) => {
 					if (!oldVal && newVal) {
-						this.$store.dispatch('spinner/show', {timeout: 20000});
 						this.getBondedDevices();
 						this.unwatch();
 					}
@@ -232,6 +230,10 @@ export default {
 							.toString()
 					);
 					break;
+			}
+			if (!this.notified) {
+				this.notify;
+				this.$emit('notify-autonetwork');
 			}
 		},
 		submitFrcPing() {

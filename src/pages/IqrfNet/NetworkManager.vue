@@ -10,13 +10,13 @@
 							<DiscoveryManager @update-devices='updateDevices' />
 						</CTab>
 						<CTab title='AutoNetwork'>
-							<AutoNetwork @update-devices='updateDevices' />
+							<AutoNetwork ref='autonetwork' @update-devices='updateDevices' />
 						</CTab>
 					</CTabs>
 				</CCard>
 			</CCol>
 			<CCol lg='6'>
-				<DevicesInfo ref='devs' />
+				<DevicesInfo ref='devs' @notify-autonetwork='getVersion' />
 			</CCol>
 		</CRow>
 	</div>
@@ -46,6 +46,9 @@ export default {
 		};
 	},
 	methods: {
+		getVersion() {
+			this.$refs.autonetwork.getVersion();
+		},
 		updateDevices() {
 			this.$refs.devs.getBondedDevices();
 		},
