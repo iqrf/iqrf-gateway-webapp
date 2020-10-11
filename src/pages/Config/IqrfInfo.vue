@@ -54,7 +54,7 @@
 </template>
 
 <script lang='ts'>
-import Vue from 'vue';
+import {Component, Vue} from 'vue-property-decorator';
 import {AxiosError, AxiosResponse} from 'axios';
 import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
@@ -62,8 +62,14 @@ import {integer, min_value, required} from 'vee-validate/dist/rules';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 
-export default Vue.extend({
-	name: 'IqrfInfo',
+interface IqrfInfoConfig {
+	instance: string
+	enumAtStartUp: boolean
+	enumPeriod: number
+	enumUniformDpaVer: boolean
+}
+
+@Component({
 	components: {
 		CButton,
 		CCard,
@@ -74,56 +80,57 @@ export default Vue.extend({
 		ValidationObserver,
 		ValidationProvider,
 	},
-	data(): any {
-		return {
-			componentName: 'iqrf::IqrfInfo',
-			instance: null,
-			configuration: {
-				instance: '',
-				enumAtStartUp: false,
-				enumPeriod: 0,
-				enumUniformDpaVer: false,
-			},
-		};
+	metaInfo: {
+		title: 'config.iqrfInfo.title',
 	},
-	created() {
+})
+
+export default class IqrfInfo extends Vue {
+	private componentName = 'iqrf::IqrfInfo'
+	private instance: string|null = null
+	private configuration: IqrfInfoConfig = {
+		instance: '',
+		enumAtStartUp: false,
+		enumPeriod: 0,
+		enumUniformDpaVer: false,
+	}
+
+	created(): void {
 		extend('integer', integer);
 		extend('min', min_value);
 		extend('required', required);
 		this.getConfig();
-	},
-	methods: {
-		getConfig() {
-			this.$store.commit('spinner/SHOW');
-			DaemonConfigurationService.getComponent(this.componentName)
-				.then((response: AxiosResponse) => {
-					this.$store.commit('spinner/HIDE');
-					if (response.data.instances.length > 0) {
-						this.configuration = response.data.instances[0];
-						this.instance = this.configuration.instance;
-					}	
-				})
+	}
+
+	private getConfig(): void {
+		this.$store.commit('spinner/SHOW');
+		DaemonConfigurationService.getComponent(this.componentName)
+			.then((response: AxiosResponse) => {
+				this.$store.commit('spinner/HIDE');
+				if (response.data.instances.length > 0) {
+					this.configuration = response.data.instances[0];
+					this.instance = this.configuration.instance;
+				}	
+			})
+			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+	}
+
+	private saveConfig(): void {
+		this.$store.commit('spinner/SHOW');
+		if (this.instance !== null) {
+			DaemonConfigurationService.updateInstance(this.componentName, this.instance, this.configuration)
+				.then(() => this.successfulSave())
+				.catch((error) => FormErrorHandler.configError(error));
+		} else {
+			DaemonConfigurationService.createInstance(this.componentName, this.configuration)
+				.then(() => this.successfulSave())
 				.catch((error: AxiosError) => FormErrorHandler.configError(error));
-		},
-		saveConfig() {
-			this.$store.commit('spinner/SHOW');
-			if (this.instance !== null) {
-				DaemonConfigurationService.updateInstance(this.componentName, this.instance, this.configuration)
-					.then(() => this.successfulSave())
-					.catch((error) => FormErrorHandler.configError(error));
-			} else {
-				DaemonConfigurationService.createInstance(this.componentName, this.configuration)
-					.then(() => this.successfulSave())
-					.catch((error: AxiosError) => FormErrorHandler.configError(error));
-			}
-		},
-		successfulSave() {
-			this.$store.commit('spinner/HIDE');
-			this.$toast.success(this.$t('config.success').toString());
-		},
-	},
-	metaInfo: {
-		title: 'config.iqrfInfo.title',
-	},
-});
+		}
+	}
+
+	private successfulSave(): void {
+		this.$store.commit('spinner/HIDE');
+		this.$toast.success(this.$t('config.success').toString());
+	}
+}
 </script>

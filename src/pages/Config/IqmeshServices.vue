@@ -6,13 +6,14 @@
 </template>
 
 <script lang='ts'>
-import Vue from 'vue';
+import {Component, Vue} from 'vue-property-decorator';
 import OtaUpload from '../../components/Config/OtaUpload.vue';
 
-export default Vue.extend({
-	name: 'IqmeshServices',
+@Component({
 	components: {
 		OtaUpload,
 	}
-});
+})
+
+export default class IqmeshServices extends Vue {}
 </script>

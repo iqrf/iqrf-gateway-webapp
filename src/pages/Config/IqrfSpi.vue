@@ -102,7 +102,7 @@
 </template>
 
 <script lang='ts'>
-import Vue from 'vue';
+import {Component, Vue} from 'vue-property-decorator';
 import {AxiosError, AxiosResponse} from 'axios';
 import {
 	CButton,
@@ -122,8 +122,16 @@ import InterfacePorts from '../../components/Config/InterfacePorts.vue';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 
-export default Vue.extend({
-	name: 'IqrfSpi',
+interface IqrfSpiConfig {
+	instance: string|null
+	IqrfInterface: string|null
+	powerEnableGpioPin: number|null
+	busEnableGpioPin: number|null
+	pgmSwitchGpioPin: number|null
+	spiReset: boolean
+}
+
+@Component({
 	components: {
 		CButton,
 		CCard,
@@ -139,63 +147,66 @@ export default Vue.extend({
 		ValidationObserver,
 		ValidationProvider,
 	},
-	data(): any {
-		return {
-			componentName: 'iqrf::IqrfSpi',
-			configuration: {
-				instance: null,
-				IqrfInterface: null,
-				powerEnableGpioPin: null,
-				busEnableGpioPin: null,
-				pgmSwitchGpioPin: null,
-				spiReset: null,
-			},
-			instance: null,
-		};
-	},
-	created() {
-		extend('integer', integer);
-		extend('required', required);
-		this.getConfig();
-	},
-	methods: {
-		getConfig() {
-			this.$store.commit('spinner/SHOW');
-			DaemonConfigurationService.getComponent(this.componentName)
-				.then((response: AxiosResponse) => {
-					this.$store.commit('spinner/HIDE');
-					if (response.data.instances.length > 0) {
-						this.configuration = response.data.instances[0];
-						this.instance = this.configuration.instance;
-					}
-				})
-				.catch((error: AxiosError) => FormErrorHandler.configError(error));
-		},
-		saveConfig() {
-			this.$store.commit('spinner/SHOW');
-			if (this.instance !== null) {
-				DaemonConfigurationService.updateInstance(this.componentName, this.instance, this.configuration)
-					.then(() => this.successfulSave())
-					.catch((error) => FormErrorHandler.configError(error));
-			} else {
-				DaemonConfigurationService.createInstance(this.componentName, this.configuration)
-					.then(() => this.successfulSave())
-					.catch((error) => FormErrorHandler.configError(error));
-			}
-		},
-		successfulSave() {
-			this.$store.commit('spinner/HIDE');
-			this.$toast.success(this.$t('config.success').toString());
-		},
-		updateMapping(mapping: any) {
-			Object.assign(this.configuration, mapping);
-		},
-		updatePort(port: string) {
-			this.configuration.IqrfInterface = port;
-		},
-	},
 	metaInfo: {
 		title: 'config.iqrfSpi.title',
 	},
-});
+})
+
+export default class IqrfSpi extends Vue {
+	private componentName = 'iqrf::IqrfSpi'
+	private configuration: IqrfSpiConfig = {
+		instance: null,
+		IqrfInterface: null,
+		powerEnableGpioPin: null,
+		busEnableGpioPin: null,
+		pgmSwitchGpioPin: null,
+		spiReset: false,
+	}
+	private instance: string|null = null
+
+	created(): void {
+		extend('integer', integer);
+		extend('required', required);
+		this.getConfig();
+	}
+
+	private getConfig(): void {
+		this.$store.commit('spinner/SHOW');
+		DaemonConfigurationService.getComponent(this.componentName)
+			.then((response: AxiosResponse) => {
+				this.$store.commit('spinner/HIDE');
+				if (response.data.instances.length > 0) {
+					this.configuration = response.data.instances[0];
+					this.instance = this.configuration.instance;
+				}
+			})
+			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+	}
+
+	private saveConfig(): void {
+		this.$store.commit('spinner/SHOW');
+		if (this.instance !== null) {
+			DaemonConfigurationService.updateInstance(this.componentName, this.instance, this.configuration)
+				.then(() => this.successfulSave())
+				.catch((error) => FormErrorHandler.configError(error));
+		} else {
+			DaemonConfigurationService.createInstance(this.componentName, this.configuration)
+				.then(() => this.successfulSave())
+				.catch((error) => FormErrorHandler.configError(error));
+		}
+	}
+
+	private successfulSave(): void {
+		this.$store.commit('spinner/HIDE');
+		this.$toast.success(this.$t('config.success').toString());
+	}
+
+	private updateMapping(mapping: IqrfSpiConfig): void {
+		Object.assign(this.configuration, mapping);
+	}
+	
+	private updatePort(port: string): void {
+		this.configuration.IqrfInterface = port;
+	}
+}
 </script>
