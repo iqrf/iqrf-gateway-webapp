@@ -22,10 +22,3 @@ export interface IMappings {
 	spi: Record<string, Record<string, ISPIMapping>>
 	uart: Record<string, Record<string, IUartMapping>>
 }
-
-/**
- * Interface mapping interface
- */
-export interface IInterfaceMappings {
-	mappings: IMappings
-}

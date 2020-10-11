@@ -15,40 +15,31 @@
 </template>
 
 <script lang='ts'>
-import Vue from 'vue';
+import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CButtonGroup} from '@coreui/vue/src';
 import IqrfService from '../../services/IqrfService';
 
-interface IInterfacePorts {
-	ports: Array<string>
-}
-
-export default Vue.extend({
-	name: 'InterfacePorts',
+@Component({
 	components: {
 		CButton,
 		CButtonGroup,
 	},
-	props: {
-		interfaceType: {
-			type: String,
-			required: true,
-		},
-	},
-	data(): IInterfacePorts {
-		return {
-			ports: [],
-		};
-	},
-	created() {
+})
+
+export default class InterfacePorts extends Vue {
+	private ports: Array<string> = []
+	
+	@Prop({ required: true })
+	interfaceType!: string;
+
+	created(): void {
 		IqrfService.getInterfacePorts(this.interfaceType)
 			.then((ports: Array<string>) => (this.ports = ports))
 			.catch(() => (this.ports = []));
-	},
-	methods: {
-		setPort(port: string): void {
-			this.$emit('update-port', port);
-		},
-	},
-});
+	}
+
+	private setPort(port: string): void {
+		this.$emit('update-port', port);
+	}
+}
 </script>

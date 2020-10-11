@@ -15,35 +15,30 @@
 </template>
 
 <script lang='ts'>
-import Vue from 'vue';
+import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CButtonGroup} from '@coreui/vue/src';
-import {IInterfaceMappings} from '../../interfaces/mappings';
+import {IMappings} from '../../interfaces/mappings';
 
-export default Vue.extend({
-	name: 'InterfaceMappings',
+@Component({
 	components: {
 		CButton,
 		CButtonGroup,
 	},
-	props: {
-		interfaceType: {
-			type: String,
-			required: true,
-		},
-	},
-	data(): IInterfaceMappings {
-		return {
-			mappings: {
-				'spi': require('../../../app/ConfigModule/json/SpiPins.json'),
-				'uart': require('../../../app/ConfigModule/json/UartPins.json'),
-			},
-		};
-	},
-	methods: {
-		setMapping(board: string): void {
-			const mapping = this.mappings[this.interfaceType][board];
-			this.$emit('update-mapping', mapping);
-		},
-	},
-});
+})
+
+export default class InterfaceMappings extends Vue {
+	private mappings: IMappings = {
+		'spi': require('../../../app/ConfigModule/json/SpiPins.json'),
+		'uart': require('../../../app/ConfigModule/json/UartPins.json'),
+	}
+
+	@Prop({ required: true })
+	interfaceType!: string;
+	
+	private setMapping(board: string): void {
+		const mapping = this.mappings[this.interfaceType][board];
+		this.$emit('update-mapping', mapping);
+	}
+
+}
 </script>
