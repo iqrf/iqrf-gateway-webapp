@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<h1>{{ $t('config.websocket.title') }}</h1>
-		<div v-if='$store.getters["user/getRole"] === "power"'>
+		<div v-if='powerUser'>
 			<WebsocketMessagingList />
 			<WebsocketServiceList />
 		</div>
@@ -23,6 +23,16 @@ export default Vue.extend({
 		WebsocketInterfaceList,
 		WebsocketMessagingList,
 		WebsocketServiceList,
+	},
+	data() {
+		return {
+			powerUser: false,
+		};
+	},
+	created() {
+		if (this.$store.getters['user/getRole'] === 'power') {
+			this.powerUser = true;
+		}
 	},
 	metaInfo: {
 		title: 'config.websocket.title'
