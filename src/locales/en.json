@@ -1150,6 +1150,17 @@
 					"success": "The backup process has been successfully completed."
 				}
 			},
+			"restore": {
+				"title": "IQMESH Restore",
+				"form": {
+					"address": "Node address",
+					"backupFile": "Backup file",
+					"messages": {
+						"backupFile": "Please insert a TR backup file.",
+						"address": "Please enter integer between 0 and 239 to restore a device."
+					}
+				}
+			},
 			"bonding": {
 				"title": "Bonding",
 				"form": {
