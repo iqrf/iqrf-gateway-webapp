@@ -8,7 +8,11 @@ export function fileDownloader(response: AxiosResponse, contentType: string, fil
 			fileName = fileNameMatch[1];
 		}
 	}
-	const blob = new Blob([response.data], {type: contentType});
+	let data = response.data;
+	if (contentType === 'application/json') {
+		data = JSON.stringify(data);
+	}
+	const blob = new Blob([data], {type: contentType});
 	const fileUrl = window.URL.createObjectURL(blob);
 	const file = document.createElement('a');
 	file.href = fileUrl;
