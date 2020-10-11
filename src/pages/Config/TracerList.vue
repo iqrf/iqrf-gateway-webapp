@@ -9,7 +9,7 @@
 					to='/config/tracer/add'
 					class='float-right'
 				>
-					<CIcon :content='$options.icons.add' />
+					<CIcon :content='getIcon("add")' />
 					{{ $t('table.actions.add') }}
 				</CButton>
 			</CCardHeader>
@@ -30,7 +30,7 @@
 								size='sm'
 								:to='"/config/tracer/edit/" + item.instance'
 							>
-								<CIcon :content='$options.icons.edit' />
+								<CIcon :content='getIcon("edit")' />
 								{{ $t('table.actions.edit') }}
 							</CButton>
 							<CButton
@@ -38,7 +38,7 @@
 								size='sm'
 								@click='modals.currentInstance = item.instance'
 							>
-								<CIcon :content='$options.icons.remove' />
+								<CIcon :content='getIcon("remove")' />
 								{{ $t('table.actions.delete') }}
 							</CButton>
 						</td>
@@ -48,7 +48,7 @@
 		</CCard>
 		<CModal
 			color='danger'
-			:show='modals.currentInstance !== null'
+			:show='modals.currentInstance !== ""'
 		>
 			<template #header>
 				<h5 class='modal-title'>
@@ -57,7 +57,7 @@
 			</template>
 			{{ $t('config.tracer.messages.removeItem', {instance: modals.currentInstance}) }}
 			<template #footer>
-				<CButton color='danger' @click='modals.currentInstance = null'>
+				<CButton color='danger' @click='modals.currentInstance = ""'>
 					{{ $t('forms.no') }}
 				</CButton>
 				<CButton color='success' @click='removeInstance'>
@@ -68,14 +68,17 @@
 	</div>
 </template>
 
-<script>
+<script lang='ts'>
+import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CIcon, CModal} from '@coreui/vue/src';
-import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
+import {IField} from '../../interfaces/IField';
+import {getCoreIcon} from '../../helpers/icons';
+import { AxiosResponse } from 'axios';
+import { Dictionary } from 'vue-router/types/router';
 
-export default {
-	name: 'TracerList',
+@Component({
 	components: {
 		CButton,
 		CCard,
@@ -85,66 +88,71 @@ export default {
 		CIcon,
 		CModal,
 	},
-	data() {
-		return {
-			componentName: 'shape::TraceFileService',
-			fields: [
-				{key: 'instance', label: this.$t('config.tracer.form.instance')},
-				{key: 'path', label: this.$t('config.tracer.form.path')},
-				{key: 'filename', label: this.$t('config.tracer.form.filename')},
-				{
-					key: 'actions',
-					label: this.$t('table.actions.title'),
-					filter: false,
-					sorter: false,
-				},
-			],
-			instances: [],
-			modals: {
-				currentInstance: null,
-			},
-			addModal: false,
-			editModal: false,
-		};
-	},
-	created() {
-		this.getConfig();
-	},
-	methods: {
-		getConfig() {
-			this.$store.commit('spinner/SHOW');
-			return DaemonConfigurationService.getComponent(this.componentName)
-				.then((response) => {
-					this.$store.commit('spinner/HIDE');
-					this.instances = response.data.instances;
-				})
-				.catch((error) => FormErrorHandler.configError(error));
-		},
-		removeInstance() {
-			this.$store.commit('spinner/SHOW');
-			const instance = this.modals.currentInstance;
-			this.modals.currentInstance = null;
-			DaemonConfigurationService.deleteInstance(this.componentName, instance)
-				.then(() => {
-					this.getConfig().then(() => {
-						this.$toast.success(
-							this.$t('config.tracer.messages.removeSuccess', {instance: instance})
-								.toString()
-						);
-					});
-				})
-				.catch((error) => {
-					FormErrorHandler.configError(error);
-				});
-		},
-	},
-	icons: {
-		add: cilPlus,
-		edit: cilPencil,
-		remove: cilTrash,
-	},
 	metaInfo: {
 		title: 'config.tracer.title',
 	},
-};
+})
+
+export default class TracerList extends Vue {
+	private componentName = 'shape::TraceFileService'
+	private fields: Array<IField> = [
+		{key: 'instance', label: this.$t('config.tracer.form.instance')},
+		{key: 'path', label: this.$t('config.tracer.form.path')},
+		{key: 'filename', label: this.$t('config.tracer.form.filename')},
+		{
+			key: 'actions',
+			label: this.$t('table.actions.title'),
+			filter: false,
+			sorter: false,
+		},
+	]
+	private instances: Array<unknown> = []
+	private modals: Dictionary<string> = {
+		currentInstance: ''
+	}
+	private addModal = false
+	private editModal = false
+
+	private created(): void {
+		this.getConfig();
+	}
+
+	private getIcon(icon: string): string[]|void {
+		return getCoreIcon(icon);
+	}
+
+	private getConfig(): Promise<AxiosResponse|void> {
+		this.$store.commit('spinner/SHOW');
+		return DaemonConfigurationService.getComponent(this.componentName)
+			.then((response) => {
+				this.$store.commit('spinner/HIDE');
+				this.instances = response.data.instances;
+			})
+			.catch((error) => FormErrorHandler.configError(error));
+	}
+	
+	private removeInstance(): void {
+		this.$store.commit('spinner/SHOW');
+		const instance = this.modals.currentInstance;
+		this.modals.currentInstance = '';
+		DaemonConfigurationService.deleteInstance(this.componentName, instance)
+			.then(() => {
+				this.getConfig().then(() => {
+					this.$toast.success(
+						this.$t('config.tracer.messages.removeSuccess', {instance: instance})
+							.toString()
+					);
+				});
+			})
+			.catch((error) => {
+				FormErrorHandler.configError(error);
+			});
+	}
+}
 </script>
+
+<style scoped>
+.btn {
+	margin: 0 3px 0 0;
+}
+</style>
