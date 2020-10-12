@@ -1,6 +1,5 @@
 FROM composer:latest
 
-MAINTAINER Roman Ondráček <roman.ondracek@iqrf.com>
 LABEL maintainer="roman.ondracek@iqrf.com"
 
 COPY ./ /app

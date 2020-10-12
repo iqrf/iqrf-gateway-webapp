@@ -1,6 +1,5 @@
 FROM arm32v6/composer:latest
 
-MAINTAINER Roman Ondráček <roman.ondracek@iqrf.com>
 LABEL maintainer="roman.ondracek@iqrf.com"
 
 WORKDIR /var/www/iqrf-gateway-webapp
