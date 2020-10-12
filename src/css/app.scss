@@ -16,52 +16,52 @@
  */
 
 $theme-colors: (
-  'primary': #337ab7,
+	'primary': #337ab7,
 );
 
 @import '~@coreui/coreui/scss/coreui';
 
 .btn-group {
-  & > .dropup {
-	&:not(:last-child) > .btn {
-	  border-top-right-radius: 0;
-	  border-bottom-right-radius: 0;
+	& > .dropup {
+		&:not(:last-child) > .btn {
+			border-top-right-radius: 0;
+			border-bottom-right-radius: 0;
+		}
+		&:not(:first-child) > .btn {
+			border-top-left-radius: 0;
+			border-bottom-left-radius: 0;
+		}
 	}
-	&:not(:first-child) > .btn {
-	  border-top-left-radius: 0;
-	  border-bottom-left-radius: 0;
-	}
-  }
 }
 
 .dropdown-item {
-  padding: .25rem 1.25rem;
+	padding: 0.25rem 1.25rem;
 }
 
 .form-group > label {
-  font-weight: bolder;
+	font-weight: bolder;
 }
 
 .form-check {
-  margin-bottom: 1rem;
+	margin-bottom: 1rem;
 }
 
 .datagrid {
-  padding: 0;
-  overflow-x: scroll;
+	padding: 0;
+	overflow-x: scroll;
 }
 
 .log {
-  max-height: 75vh;
+	max-height: 75vh;
 }
 
 .col-actions {
-  white-space: nowrap;
-  width: 1%;
-  text-align: right;
+	white-space: nowrap;
+	width: 1%;
+	text-align: right;
 }
 
 .rfModeIcon {
-  height: 1em;
-  width: 1em;
+	height: 1em;
+	width: 1em;
 }

@@ -32,7 +32,7 @@ import i18n from './i18n';
 
 import App from './App.vue';
 
-import '../css/app.scss';
+import './css/app.scss';
 import 'vue-toast-notification/dist/theme-sugar.css';
 import 'vue-datetime/dist/vue-datetime.css';
 
