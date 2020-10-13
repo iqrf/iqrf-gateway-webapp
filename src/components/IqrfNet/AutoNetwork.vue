@@ -1,6 +1,11 @@
 <template>
 	<CCard class='border-0'>
-		<CCardBody v-if='daemonVersion !== null && versionValid'>
+		<CCardBody v-if='daemonVersion == null'>
+			<CAlert color='danger'>
+				Couldn't retrieve version of IQRF Gateway Daemon.
+			</CAlert>
+		</CCardBody>
+		<CCardBody v-else-if='daemonVersion !== null && versionValid'>
 			<ValidationObserver v-slot='{ invalid }'>
 				<CForm>
 					<ValidationProvider
@@ -301,7 +306,7 @@ export default {
 				nodesTotal: '',
 				nodesNew: '',
 			},
-			daemonVersion: 'v2.2.2',
+			daemonVersion: null,
 			msgId: null,
 		};
 	},

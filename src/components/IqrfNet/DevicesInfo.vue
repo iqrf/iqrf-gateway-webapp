@@ -93,6 +93,7 @@ export default {
 			devices: [],
 			manual: false,
 			msgId: null,
+			notified: false,
 		};
 	},
 	created() {

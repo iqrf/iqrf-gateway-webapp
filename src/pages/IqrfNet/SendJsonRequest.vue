@@ -103,15 +103,14 @@ import {MutationPayload} from 'vuex';
 import {CAlert, CButton, CCard, CCardBody, CCardHeader, CForm, CTextarea} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
-//@ts-ignore
+
 import {TextareaAutogrowDirective} from 'vue-textarea-autogrow-directive/src/VueTextareaAutogrowDirective';
 import {StatusMessages} from '../../iqrfNet/sendJson';
 import IqrfNetService from '../../services/IqrfNetService';
 
 import {PrismEditor} from 'vue-prism-editor';
 import 'vue-prism-editor/dist/prismeditor.min.css';
-//@ts-ignore
-import Prism from 'prismjs/components/prism-core/';
+import Prism from 'prismjs/components/prism-core';
 import 'prismjs/components/prism-json';
 import 'prismjs/themes/prism.css';
 

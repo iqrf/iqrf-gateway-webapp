@@ -237,7 +237,6 @@ export default Vue.extend({
 				this.$toast.error(this.$t('iqrfnet.sendPacket.form.messages.missing.packet').toString());
 				return;
 			}
-			this.$store.commit('spinner/SHOW');
 			const json: any = {
 				'mType': 'iqrfRaw',
 				'data': {
@@ -253,7 +252,16 @@ export default Vue.extend({
 			if (this.timeoutOverwrite && this.timeout !== null) {
 				json.data.timeout = this.timeout;
 			}
-			const options = new WebSocketOptions(json, 60000, 'iqrfnet.sendPacket.messages.failure', () => this.msgId = null);
+			let options = new WebSocketOptions(json);
+			if (json.data.req.rData.startsWith('ff') || json.data.req.rData.startsWith('FF')) {
+				options.timeout = 1000;
+				options.callback = () => this.msgId = null;
+			} else {
+				options.timeout = 60000;
+				options.message = 'iqrfnet.sendPacket.messages.failure';
+				options.callback = () => this.msgId = null;
+				this.$store.commit('spinner/SHOW');
+			}
 			return this.$store.dispatch('sendRequest', options)
 				.then((msgId: string) => this.msgId = msgId);
 		},
