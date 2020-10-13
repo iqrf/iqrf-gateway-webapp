@@ -114,7 +114,7 @@ class Packet {
  * @returns Is valid DPA packet?
  */
 function validatePacket(packet: string): boolean {
-	const re = new RegExp('^([0-9a-fA-F]{1,2}\\.){4,62}[0-9a-fA-F]{1,2}(\\.|)$', 'i');
+	const re = new RegExp('^[0-9a-f]{2}\\.00\\.[0-9a-f]{2}\\.[0-7][0-9a-f]\\.([0-9a-f]{2}\\.){1,58}[0-9a-f]{2}(\\.|)$', 'i');
 	return packet.match(re) !== null;
 }
 
