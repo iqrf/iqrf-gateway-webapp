@@ -1,3 +1,47 @@
+iqrf-gateway-webapp (2.1.0~rc3) testing; urgency=medium
+
+  [ Roman Ondráček ]
+  * Prepare for version 2.1.0-rc3
+  * git: add Vue.js build to ignored files
+  * Tests: fix Behat test scenarios
+  * Services, Vuex: add TypeScript interfaces
+
+  [ Karel Hanák ]
+  * NetworkManager: fix daemon api request sequence
+  * WebsocketList: role specific data fetch fix
+  * Cloud and Config: fix catching of emitted events
+  * helpers: fixed fileDownloader
+  * fileDownloader: json file option
+
+  [ Roman Ondráček ]
+  * API: fix workaround for corrupted empty responses
+  * Vue.js: move CSS files into src directory
+  * nginx: override "Host" header for IQRF Gateway Daemon's WebSocket servers
+  * Docker: remove deprecated MAINTAINER instruction
+
+  [ Karel Hanák ]
+  * typescript use in some components
+  * websocket lists typscript
+  * DaemonLog, PowerControl and ServiceControl typescript component rework
+  * Service control handleError fix
+  * Cloud: typescript in cloud components, pixla event fix
+  * Config: Spi and Uart interfaces typescript component, fix reaction to event
+  * Config: typescript used in simple config components
+  * ControllerConfig ts component
+  * Config: TracerList typescript component
+  * DataTable: custom empty table template
+  * IqrfNet: SendDpaPacket more strict dpa packet validation
+  * IqrfNet: SendDpaPacket do not wait for broadcast response
+  * Config: Websocket list typescript components, websocket interfaces and route guard fixes
+  * SendDpaPacket, SendJsonRequest: ignore timeout for broadcast, batch and selective batch
+  * Config: fix localization messages, remove console error log
+  * Config: IqrfInfo revert validation rule change
+
+  [ Roman Ondráček ]
+  * NPM: update dependencies
+
+ -- Roman Ondráček <roman@romanondracek.cz>  Wed, 14 Oct 2020 01:55:00 +0200
+
 iqrf-gateway-webapp (2.1.0~rc2) testing; urgency=medium
 
   [ Roman Ondráček ]
