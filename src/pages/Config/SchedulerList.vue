@@ -32,6 +32,9 @@
 					:striped='true'
 					:sorter='{external: false, resetable: true}'
 				>
+					<template #no-items-view='{}'>
+						No records have been found.
+					</template>
 					<template v-if='retrieved === "rest"' #taskId='{item}'>
 						<td>
 							{{ item.id }}

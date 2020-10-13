@@ -23,6 +23,9 @@
 					:column-filter='true'
 					:sorter='{external: false, resetable: true}'
 				>
+					<template #no-items-view='{}'>
+						No records have been found.
+					</template>
 					<template #expiration='{item}'>
 						<td v-if='item.expiration !== null'>
 							{{ timeString(item) }}

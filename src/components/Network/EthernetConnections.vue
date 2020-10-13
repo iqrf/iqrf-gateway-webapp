@@ -8,6 +8,9 @@
 		:striped='true'
 		:sorter='{ external: false, resetable: true }'
 	>
+		<template #no-items-view='{}'>
+			No records have been found.
+		</template>
 		<template #actions='{item}'>
 			<td class='col-actions'>
 				<CButton
