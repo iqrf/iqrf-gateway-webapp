@@ -231,7 +231,7 @@
 				"interface": "IQRF CDC interface",
 				"messages": {
 					"instance": "Please enter name of IQRF CDC instance.",
-					"interface": "Please enter IQRF CDC interface."
+					"IqrfInterface": "Please enter IQRF CDC interface."
 				}
 			},
 			"mappings": "Available CDC mappings"
@@ -456,6 +456,7 @@
 				"messages": {
 					"instance": "Please enter name of MQTT instance.",
 					"BrokerAddr": "Please enter address of MQTT broker.",
+					"Persistence": "Please enter persistence.",
 					"ClientId": "Please enter client ID.",
 					"QoS": "Please select QoS.",
 					"TopicRequest": "Please enter topic for requests.",

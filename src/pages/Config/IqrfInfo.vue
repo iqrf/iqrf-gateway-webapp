@@ -58,7 +58,7 @@ import {Component, Vue} from 'vue-property-decorator';
 import {AxiosError, AxiosResponse} from 'axios';
 import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {integer, min_value, required} from 'vee-validate/dist/rules';
+import {integer, min, required} from 'vee-validate/dist/rules';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 
@@ -97,7 +97,7 @@ export default class IqrfInfo extends Vue {
 
 	created(): void {
 		extend('integer', integer);
-		extend('min', min_value);
+		extend('min', min);
 		extend('required', required);
 		this.getConfig();
 	}

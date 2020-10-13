@@ -20,7 +20,7 @@
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
 							rules='required'
-							:custom-messages='{required: "config.iqrfUart.form.messages.interface"}'
+							:custom-messages='{required: "config.iqrfUart.form.messages.IqrfInterface"}'
 						>
 							<CInput
 								v-model='configuration.IqrfInterface'
@@ -207,7 +207,6 @@ export default class IqrfUart extends Vue {
 	}
 
 	private updateMapping(mapping: IqrfUartConfig): void {
-		console.error(mapping);
 		Object.assign(this.configuration, mapping);
 	}
 

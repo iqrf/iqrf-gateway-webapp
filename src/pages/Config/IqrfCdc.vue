@@ -20,7 +20,7 @@
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
 							rules='required'
-							:custom-messages='{required: "config.iqrfCdc.form.messages.interface"}'
+							:custom-messages='{required: "config.iqrfCdc.form.messages.IqrfInterface"}'
 						>
 							<CInput
 								v-model='configuration.IqrfInterface'
