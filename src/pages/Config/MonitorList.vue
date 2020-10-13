@@ -159,7 +159,6 @@ export default {
 				.then((responses) => {
 					const monitors = responses[0].data.instances;
 					const webSockets = responses[1].data.instances;
-					console.error(monitors);
 					for (const monitor of monitors) {
 						if (monitor.RequiredInterfaces === undefined ||
 								monitor.RequiredInterfaces === [] ||

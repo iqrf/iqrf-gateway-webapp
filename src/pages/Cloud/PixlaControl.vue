@@ -73,6 +73,16 @@ import ServiceService, {ServiceStatus} from '../../services/ServiceService';
 		CCard,
 		PixlaTokenEditor,
 	},
+	beforeRouteEnter(to: Route, from: Route, next: NavigationGuardNext): void {
+		next((vm: Vue) => {
+			if (!vm.$store.getters['features/isEnabled']('pixla')) {
+				vm.$toast.error(
+					vm.$t('service.gwman-client.messages.disabled').toString()
+				);
+				vm.$router.push(from.path);
+			}
+		});
+	},
 	metaInfo: {
 		title: 'cloud.pixla.title',
 	},
@@ -85,17 +95,6 @@ export default class PixlaControl extends Vue {
 	private missing = false
 	private unsupported = false
 	private service: ServiceStatus|null = null
-
-	beforeRouteEnter(to: Route, from: Route, next: NavigationGuardNext): void {
-		next(vm => {
-			if (!vm.$store.getters['features/isEnabled']('pixla')) {
-				vm.$toast.error(
-					vm.$t('cloud.pixla.messages.disabled').toString()
-				);
-				vm.$router.push(from.path);
-			}
-		});
-	}
 
 	created(): void {
 		this.$store.commit('spinner/SHOW');

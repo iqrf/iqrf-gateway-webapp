@@ -105,36 +105,21 @@
 </template>
 
 <script lang='ts'>
-import Vue from 'vue';
+import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CDropdown, CDropdownItem, CIcon, CModal} from '@coreui/vue/src';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import { AxiosError, AxiosResponse } from 'axios';
 import {IField} from '../../interfaces/IField';
 import {getCoreIcon} from '../../helpers/icons';
+import {WsInterface} from '../../interfaces/websocket';
 
-interface IWsInstance {
-	messaging: string,
-	service: string,
+interface ModalInstance {
+	messaging: string
+	service: string
 }
 
-interface IWsIfaceInstance extends IWsInstance {
-	instanceMessaging: string,
-	instanceService: string,
-	acceptAsyncMsg: boolean,
-	port: number,
-	acceptOnlyLocalhost: boolean,
-}
-
-interface IWsIfaceList {
-	componentNames: Record<string, string>
-	fields: Array<IField>
-	instances: Array<IWsIfaceInstance>
-	modals: Record<string, IWsInstance|null>
-}
-
-export default Vue.extend({
-	name: 'WebsocketInterfaceList',
+@Component({
 	components: {
 		CButton,
 		CCard,
@@ -145,137 +130,140 @@ export default Vue.extend({
 		CDropdownItem,
 		CIcon,
 		CModal,
-	},
-	data(): IWsIfaceList {
-		return {
-			componentNames: {
-				messaging: 'iqrf::WebsocketMessaging',
-				service: 'shape::WebsocketCppService',
-			},
-			fields: [
-				{
-					key: 'instanceMessaging',
-					label: this.$t('config.websocket.form.instance'),
-				},
-				{
-					key: 'port',
-					label: this.$t('config.websocket.form.WebsocketPort'),
-				},
-				{
-					key: 'acceptAsyncMsg',
-					label: this.$t('config.websocket.form.acceptAsyncMsg'),
-					filter: false,
-				},
-				{
-					key: 'acceptOnlyLocalhost',
-					label: this.$t('config.websocket.form.acceptOnlyLocalhost'),
-					filter: false,
-				},
-				{
-					key: 'actions',
-					label: this.$t('table.actions.title'),
-					filter: false,
-					sorter: false,
-				},
-			],
-			instances: [],
-			modals: {
-				instance: null,
-			},
-		};
-	},
-	created() {
+	}
+})
+
+export default class WebsocketInterfaceList extends Vue {
+	private componentNames: ModalInstance = {
+		messaging: 'iqrf::WebsocketMessaging',
+		service: 'shape::WebsocketCppService',
+	}
+	private fields: Array<IField> = [
+		{
+			key: 'instanceMessaging',
+			label: this.$t('config.websocket.form.instance'),
+		},
+		{
+			key: 'port',
+			label: this.$t('config.websocket.form.WebsocketPort'),
+		},
+		{
+			key: 'acceptAsyncMsg',
+			label: this.$t('config.websocket.form.acceptAsyncMsg'),
+			filter: false,
+		},
+		{
+			key: 'acceptOnlyLocalhost',
+			label: this.$t('config.websocket.form.acceptOnlyLocalhost'),
+			filter: false,
+		},
+		{
+			key: 'actions',
+			label: this.$t('table.actions.title'),
+			filter: false,
+			sorter: false,
+		},
+	]
+	private instances: Array<WsInterface> = [];
+	private modals: Record<string, ModalInstance|null> = {
+		instance: null
+	}
+
+	created(): void {
 		this.$store.commit('spinner/SHOW');
 		this.getConfig();
-	},
-	methods: {
-		getIcon(icon: string): void|string[] {
-			return getCoreIcon(icon);
-		},
-		getConfig(): Promise<void> {
-			this.instances = [];
-			return Promise.all([
-				DaemonConfigurationService.getComponent(this.componentNames.messaging),
-				DaemonConfigurationService.getComponent(this.componentNames.service),
-			])
-				.then((responses: Array<AxiosResponse>) => {
-					const messagings = responses[0].data.instances;
-					const services = responses[1].data.instances;
-					for (const messaging of messagings) {
-						if (messaging.RequiredInterfaces === undefined ||
-								messaging.RequiredInterfaces === [] ||
-								messaging.RequiredInterfaces[0].name !== 'shape::IWebsocketService' ||
-								messaging.RequiredInterfaces[0].target.instance === undefined) {
+	}
+
+	private getIcon(icon: string): void|string[] {
+		return getCoreIcon(icon);
+	}
+
+	private getConfig(): Promise<void> {
+		this.instances = [];
+		return Promise.all([
+			DaemonConfigurationService.getComponent(this.componentNames.messaging),
+			DaemonConfigurationService.getComponent(this.componentNames.service),
+		])
+			.then((responses: Array<AxiosResponse>) => {
+				const messagings = responses[0].data.instances;
+				const services = responses[1].data.instances;
+				for (const messaging of messagings) {
+					if (messaging.RequiredInterfaces === undefined ||
+							messaging.RequiredInterfaces === [] ||
+							messaging.RequiredInterfaces[0].name !== 'shape::IWebsocketService' ||
+							messaging.RequiredInterfaces[0].target.instance === undefined) {
+						continue;
+					}
+					const serviceInstance = messaging.RequiredInterfaces[0].target.instance;
+					for (const service of services) {
+						if (service.instance !== serviceInstance) {
 							continue;
 						}
-						const serviceInstance = messaging.RequiredInterfaces[0].target.instance;
-						for (const service of services) {
-							if (service.instance !== serviceInstance) {
-								continue;
-							}
-							this.instances.push({
-								messaging: messaging,
-								service: service,
-								instanceMessaging: messaging.instance,
-								instanceService: service.instance,
-								acceptAsyncMsg: messaging.acceptAsyncMsg,
-								port: service.WebsocketPort,
-								acceptOnlyLocalhost: service.acceptOnlyLocalhost,
-							});
-						}
+						this.instances.push({
+							messaging: messaging,
+							service: service,
+							instanceMessaging: messaging.instance,
+							instanceService: service.instance,
+							acceptAsyncMsg: messaging.acceptAsyncMsg,
+							port: service.WebsocketPort,
+							acceptOnlyLocalhost: service.acceptOnlyLocalhost,
+						});
 					}
-					this.$store.commit('spinner/HIDE');
-				});
-			// TODO: add error message
-		},
-		changeAcceptOnlyLocalhost(service, setting): void {
-			this.$store.commit('spinner/SHOW');
-			service.acceptOnlyLocalhost = setting;
-			DaemonConfigurationService.updateInstance(this.componentNames.service, service.instance, service)
-				.then(() => {
-					this.getConfig().then(() => {
-						this.$toast.success(
-							this.$t('config.websocket.service.messages.editSuccess', {service: service.instance})
-								.toString()
-						);
-					});
-				})
-				.catch((error) => FormErrorHandler.configError(error));
-		},
-		changeAcceptAsyncMsg(instance, setting): void {
-			this.$store.commit('spinner/SHOW');
-			instance.acceptAsyncMsg = setting;
-			DaemonConfigurationService.updateInstance(this.componentNames.messaging, instance.instance, instance)
-				.then(() => {
-					this.getConfig().then(() => {
-						this.$toast.success(
-							this.$t('config.websocket.messaging.messages.editSuccess', {messaging: instance.instance})
-								.toString()
-						);
-					});
-				})
-				.catch((error: AxiosError) => FormErrorHandler.configError(error));
-		},
-		removeInterface(): void {
-			if (this.modals.instance === null) {
-				return;
-			}
-			this.$store.commit('spinner/SHOW');
-			Promise.all([
-				DaemonConfigurationService.deleteInstance(this.componentNames.messaging, this.modals.instance.messaging),
-				DaemonConfigurationService.deleteInstance(this.componentNames.service, this.modals.instance.service),
-			])
-				.then(() => {
+				}
+				this.$store.commit('spinner/HIDE');
+			});
+		// TODO: add error message
+	}
+
+	private changeAcceptOnlyLocalhost(service, setting: boolean): void {
+		this.$store.commit('spinner/SHOW');
+		service.acceptOnlyLocalhost = setting;
+		DaemonConfigurationService.updateInstance(this.componentNames.service, service.instance, service)
+			.then(() => {
+				this.getConfig().then(() => {
 					this.$toast.success(
-						this.$t('config.websocket.messages.delete.success', {instance: this.modals.instance?.messaging})
+						this.$t('config.websocket.service.messages.editSuccess', {service: service.instance})
 							.toString()
 					);
-					this.modals.instance = null;
 				});
-			// TODO: add error message
-		},
-	},
-});
+			})
+			.catch((error) => FormErrorHandler.configError(error));
+	}
+
+	private changeAcceptAsyncMsg(instance, setting): void {
+		this.$store.commit('spinner/SHOW');
+		instance.acceptAsyncMsg = setting;
+		DaemonConfigurationService.updateInstance(this.componentNames.messaging, instance.instance, instance)
+			.then(() => {
+				this.getConfig().then(() => {
+					this.$toast.success(
+						this.$t('config.websocket.messaging.messages.editSuccess', {messaging: instance.instance})
+							.toString()
+					);
+				});
+			})
+			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+	}
+
+	private removeInterface(): void {
+		if (this.modals.instance === null) {
+			return;
+		}
+		this.$store.commit('spinner/SHOW');
+		Promise.all([
+			DaemonConfigurationService.deleteInstance(this.componentNames.messaging, this.modals.instance.messaging),
+			DaemonConfigurationService.deleteInstance(this.componentNames.service, this.modals.instance.service),
+		])
+			.then(() => {
+				this.$toast.success(
+					this.$t('config.websocket.messages.delete.success', {instance: this.modals.instance?.messaging})
+						.toString()
+				);
+				this.modals.instance = null;
+			});
+		// TODO: add error message
+	}
+}
 </script>
 
 <style scoped>

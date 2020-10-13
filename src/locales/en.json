@@ -1591,7 +1591,7 @@
 		},
 		"gwman-client": {
 			"messages": {
-				"disabled": "PIXLA manager is disabled.",
+				"disabled": "PIXLA service is disabled.",
 				"disable": "PIXLA client service has been disabled.",
 				"enable": "PIXLA client service has been enabled.",
 				"start": "PIXLA client service has been started.",
@@ -1603,7 +1603,7 @@
 			"title": "SSH service",
 			"description": "Controls the SSH daemon service.",
 			"messages": {
-				"disabled": "SSH daemon manager is disabled.",
+				"disabled": "SSH daemon service is disabled.",
 				"disable": "SSH daemon service has been disabled.",
 				"enable": "SSH daemon service has been enabled.",
 				"start": "SSH daemon service has been started.",
@@ -1712,6 +1712,7 @@
 				"monitor": "Monitor server"
 			},
 			"messages": {
+				"disabled": "IQRF Gateway Controller service is disabled.",
 				"integer": "This parameter should be an integer.",
 				"daEwaves": "Please enter an integer between 1 and 127 for empty waves stop condition.",
 				"daWaves": "Please enter an integer between 1 and 127 for maximum waves stop condition.",

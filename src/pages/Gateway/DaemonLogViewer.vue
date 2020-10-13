@@ -54,7 +54,7 @@ export default class DaemonLogViewer extends Vue {
 			});
 	}
 	
-	public downloadArchive(): void {
+	private downloadArchive(): void {
 		this.$store.commit('spinner/SHOW');
 		GatewayService.getLogArchive().then(
 			(response: AxiosResponse) => {

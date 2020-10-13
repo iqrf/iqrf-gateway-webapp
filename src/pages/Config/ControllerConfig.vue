@@ -285,6 +285,16 @@ import { Dictionary, NavigationGuardNext, Route } from 'vue-router/types/router'
 		ValidationObserver,
 		ValidationProvider
 	},
+	beforeRouteEnter(to: Route, from: Route, next: NavigationGuardNext): void {
+		next((vm: Vue) => {
+			if (!vm.$store.getters['features/isEnabled']('iqrfGatewayController')) {
+				vm.$toast.error(
+					vm.$t('controllerConfig.form.messages.disabled').toString()
+				);
+				vm.$router.push(from.path);
+			}
+		});
+	},
 	metaInfo: {
 		title: 'controllerConfig.description',
 	},
@@ -305,7 +315,7 @@ export default class ControllerConfig extends Vue {
 		this.getConfig();
 	}
 
-	getConfig(): void {
+	private getConfig(): void {
 		this.$store.commit('spinner/SHOW');
 		FeatureConfigService.getConfig(this.name)
 			.then((response: AxiosResponse) => {
@@ -317,7 +327,7 @@ export default class ControllerConfig extends Vue {
 			});
 	}
 
-	processSubmit(): void {
+	private processSubmit(): void {
 		this.$store.commit('spinner/SHOW');
 		FeatureConfigService.saveConfig(this.name, this.config)
 			.then(() => {
@@ -327,17 +337,6 @@ export default class ControllerConfig extends Vue {
 			.catch((error: AxiosError) => {
 				FormErrorHandler.configError(error);
 			});
-	}
-
-	beforeRouteEnter(to: Route, from: Route, next: NavigationGuardNext): void {
-		next(vm => {
-			if (!vm.$store.getters['features/isEnabled']('iqrfGatewayController')) {
-				vm.$toast.error(
-					vm.$t('controllerConfig.messages.disabled').toString()
-				);
-				vm.$router.push(from.path);
-			}
-		});
 	}
 }
 </script>

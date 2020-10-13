@@ -60,7 +60,7 @@
 							<CButton
 								color='danger'
 								size='sm'
-								@click='modals.instance = item.instance'
+								@click='instance = item.instance'
 							>
 								<CIcon :content='getIcon("remove")' />
 								{{ $t('table.actions.delete') }}
@@ -72,16 +72,16 @@
 		</CCard>
 		<CModal
 			color='danger'
-			:show='modals.instance !== null'
+			:show='instance !== null'
 		>
 			<template #header>
 				<h5 class='modal-title'>
 					{{ $t('config.websocket.messaging.messages.deleteTitle') }}
 				</h5>
 			</template>
-			{{ $t('config.websocket.messaging.messages.deletePrompt', {messaging: modals.instance}) }}
+			{{ $t('config.websocket.messaging.messages.deletePrompt', {messaging: instance}) }}
 			<template #footer>
-				<CButton color='danger' @click='modals.instance = null'>
+				<CButton color='danger' @click='instance = null'>
 					{{ $t('forms.no') }}
 				</CButton>
 				<CButton color='success' @click='removeInstance'>
@@ -93,35 +93,16 @@
 </template>
 
 <script lang='ts'>
-import Vue from 'vue';
+import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CDropdown, CDropdownItem, CIcon, CModal} from '@coreui/vue/src';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import {IField} from '../../interfaces/IField';
+import {WsMessaging} from '../../interfaces/websocket';
 import {getCoreIcon} from '../../helpers/icons';
 import { AxiosError, AxiosResponse } from 'axios';
 
-interface IRequiredInterface {
-	name: string
-	target: Record<string, string>
-}
-
-interface IWsMessagingInstance {
-	RequiredInterfaces: Array<IRequiredInterface>
-	acceptAsyncMsg: boolean
-	component: string
-	instance: string
-}
-
-interface IWsMessagingList {
-	componentName: string
-	fields: Array<IField>
-	instances: Array<IWsMessagingInstance>
-	modals: Record<string, string|null>
-}
-
-export default Vue.extend({
-	name: 'WebsocketMessagingList',
+@Component({
 	components: {
 		CButton,
 		CCard,
@@ -133,86 +114,86 @@ export default Vue.extend({
 		CIcon,
 		CModal,
 	},
-	data(): IWsMessagingList {
-		return {
-			componentName: 'iqrf::WebsocketMessaging',
-			fields: [
-				{
-					key: 'instance',
-					label: this.$t('config.websocket.form.instance'),
-				},
-				{
-					key: 'acceptAsyncMsg',
-					label: this.$t('config.websocket.form.acceptAsyncMsg'),
-				},
-				{
-					key: 'RequiredInterfaces',
-					label: this.$t('config.websocket.form.requiredInterface.instance'),
-				},
-				{
-					key: 'actions',
-					label: this.$t('table.actions.title'),
-					filter: false,
-					sorter: false,
-				}
-			],
-			instances: [],
-			modals: {
-				instance: null,
-			},
-		};
-	},
-	created() {
+})
+
+export default class WebsocketMessagingList extends Vue {
+	private componentName = 'iqrf::WebsocketMessaging'
+	private fields: Array<IField> = [
+		{
+			key: 'instance',
+			label: this.$t('config.websocket.form.instance'),
+		},
+		{
+			key: 'acceptAsyncMsg',
+			label: this.$t('config.websocket.form.acceptAsyncMsg'),
+		},
+		{
+			key: 'RequiredInterfaces',
+			label: this.$t('config.websocket.form.requiredInterface.instance'),
+		},
+		{
+			key: 'actions',
+			label: this.$t('table.actions.title'),
+			filter: false,
+			sorter: false,
+		}
+	]
+	private instances: Array<WsMessaging> = []
+	private instance: string|null = null
+
+	created(): void {
 		this.getConfig();
-	},
-	methods: {
-		getIcon(icon: string): void|string[] {
-			return getCoreIcon(icon);
-		},
-		getConfig(): Promise<void> {
-			this.$store.commit('spinner/SHOW');
-			return DaemonConfigurationService.getComponent(this.componentName)
-				.then((response: AxiosResponse) => {
-					this.$store.commit('spinner/HIDE');
-					this.instances = response.data.instances;
-				})
-				.catch((error: AxiosError) => FormErrorHandler.configError(error));
-		},
-		changeAccept(instance, setting): void {
-			if (instance.acceptAsyncMsg !== setting) {
-				instance.acceptAsyncMsg = setting;
-				DaemonConfigurationService.updateInstance(this.componentName, instance.instance, instance)
-					.then(() => {
-						this.getConfig().then(() => {
-							this.$toast.success(
-								this.$t('config.websocket.messaging.messages.editSuccess', {messaging: instance.instance})
-									.toString()
-							);
-						});
-					})
-					.catch((error: AxiosError) => FormErrorHandler.configError(error));
-			}
-		},
-		removeInstance(): void {
-			if (this.modals.instance === null) {
-				return;
-			}
-			this.$store.commit('spinner/SHOW');
-			const instance = this.modals.instance;
-			this.modals.instance = null;
-			DaemonConfigurationService.deleteInstance(this.componentName, instance)
+	}
+
+	private getIcon(icon: string): void|string[] {
+		return getCoreIcon(icon);
+	}
+
+	private getConfig(): Promise<void> {
+		this.$store.commit('spinner/SHOW');
+		return DaemonConfigurationService.getComponent(this.componentName)
+			.then((response: AxiosResponse) => {
+				this.$store.commit('spinner/HIDE');
+				this.instances = response.data.instances;
+			})
+			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+	}
+
+	private changeAccept(instance, setting): void {
+		if (instance.acceptAsyncMsg !== setting) {
+			instance.acceptAsyncMsg = setting;
+			DaemonConfigurationService.updateInstance(this.componentName, instance.instance, instance)
 				.then(() => {
 					this.getConfig().then(() => {
 						this.$toast.success(
-							this.$t('config.websocket.messaging.messages.deleteSuccess', {messaging: instance})
+							this.$t('config.websocket.messaging.messages.editSuccess', {messaging: instance.instance})
 								.toString()
 						);
-					});	
+					});
 				})
 				.catch((error: AxiosError) => FormErrorHandler.configError(error));
 		}
-	},
-});
+	}
+
+	private removeInstance(): void {
+		if (this.instance === null) {
+			return;
+		}
+		this.$store.commit('spinner/SHOW');
+		const instance = this.instance;
+		this.instance = null;
+		DaemonConfigurationService.deleteInstance(this.componentName, instance)
+			.then(() => {
+				this.getConfig().then(() => {
+					this.$toast.success(
+						this.$t('config.websocket.messaging.messages.deleteSuccess', {messaging: instance})
+							.toString()
+					);
+				});	
+			})
+			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+	}
+}
 </script>
 
 <style scoped>

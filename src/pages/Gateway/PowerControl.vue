@@ -35,11 +35,11 @@ import { MetaInfo } from 'vue-meta';
 })
 
 export default class PowerControl extends Vue {
-	public getIcon(icon: string): string[]|void {
+	private getIcon(icon: string): string[]|void {
 		return getCoreIcon(icon);
 	}
 
-	public powerOff(): void {
+	private powerOff(): void {
 		GatewayService.performPowerOff()
 			.then(() => {
 				this.$toast.success(
@@ -48,7 +48,7 @@ export default class PowerControl extends Vue {
 			});
 	}
 
-	public reboot(): void {
+	private reboot(): void {
 		GatewayService.performReboot()
 			.then(() => {
 				this.$toast.success(

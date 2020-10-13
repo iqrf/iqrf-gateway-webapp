@@ -56,7 +56,7 @@
 							<CButton
 								color='danger'
 								size='sm'
-								@click='modals.service = item.instance'
+								@click='service = item.instance'
 							>
 								<CIcon :content='getIcon("remove")' />
 								{{ $t('table.actions.delete') }}
@@ -68,16 +68,16 @@
 		</CCard>
 		<CModal
 			color='danger'
-			:show='modals.service !== null'
+			:show='service !== null'
 		>
 			<template #header>
 				<h5 class='modal-title'>
 					{{ $t('config.websocket.service.messages.deleteTitle') }}
 				</h5>
 			</template>
-			{{ $t('config.websocket.service.messages.deletePrompt', {service: modals.service}) }}
+			{{ $t('config.websocket.service.messages.deletePrompt', {service: service}) }}
 			<template #footer>
-				<CButton color='danger' @click='modals.service = null'>
+				<CButton color='danger' @click='service = null'>
 					{{ $t('forms.no') }}
 				</CButton>
 				<CButton color='success' @click='removeService'>
@@ -89,30 +89,16 @@
 </template>
 
 <script lang='ts'>
-import Vue from 'vue';
+import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CDropdown, CDropdownItem, CIcon, CModal} from '@coreui/vue/src';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import {getCoreIcon} from '../../helpers/icons';
 import {IField} from '../../interfaces/IField';
 import { AxiosError, AxiosResponse } from 'axios';
+import { WsService } from '../../interfaces/websocket';
 
-interface IServiceInstance {
-	component: string
-	instance: string
-	acceptOnlyLocalhost: boolean
-	WebsocketPort: number
-}
-
-interface IWsServiceList {
-	componentName: string
-	fields: Array<IField>
-	instances: Array<IServiceInstance>
-	modals: Record<string, string|null>
-}
-
-export default Vue.extend({
-	name: 'WebsocketServiceList',
+@Component({
 	components: {
 		CButton,
 		CCard,
@@ -123,87 +109,87 @@ export default Vue.extend({
 		CDropdownItem,
 		CIcon,
 		CModal,
-	},
-	data(): IWsServiceList {
-		return {
-			componentName: 'shape::WebsocketCppService',
-			fields: [
-				{
-					key: 'instance',
-					label: this.$t('config.websocket.form.instance'),
-				},
-				{
-					key: 'WebsocketPort',
-					label: this.$t('config.websocket.form.WebsocketPort'),
-				},
-				{
-					key: 'acceptOnlyLocalhost',
-					label: this.$t('config.websocket.form.acceptOnlyLocalhost'),
-				},
-				{
-					key: 'actions',
-					label: this.$t('table.actions.title'),
-					filter: false,
-					sorter: false,
-				},
-			],
-			instances: [],
-			modals: {
-				service: null,
-			},
-		};
-	},
-	created() {
+	}
+})
+
+export default class WebsocketServiceList extends Vue {
+	private componentName = 'shape::WebsocketCppService'
+	private fields: Array<IField> = [
+		{
+			key: 'instance',
+			label: this.$t('config.websocket.form.instance'),
+		},
+		{
+			key: 'WebsocketPort',
+			label: this.$t('config.websocket.form.WebsocketPort'),
+		},
+		{
+			key: 'acceptOnlyLocalhost',
+			label: this.$t('config.websocket.form.acceptOnlyLocalhost'),
+		},
+		{
+			key: 'actions',
+			label: this.$t('table.actions.title'),
+			filter: false,
+			sorter: false,
+		},
+	]
+	private instances: Array<WsService> = []
+	private service: string|null = null
+
+	created(): void {
 		this.getConfig();
-	},
-	methods: {
-		getIcon(icon: string): string[]|void {
-			return getCoreIcon(icon);
-		},
-		getConfig(): Promise<void> {
-			this.$store.commit('spinner/SHOW');
-			return DaemonConfigurationService.getComponent(this.componentName)
-				.then((response: AxiosResponse) => {
-					this.$store.commit('spinner/HIDE');
-					this.instances = response.data.instances;
-				})
-				.catch((error: AxiosError) => FormErrorHandler.configError(error));
-		},
-		changeAccept(service, setting): void {
-			if (service.acceptOnlyLocalhost !== setting) {
-				service.acceptOnlyLocalhost = setting;
-				DaemonConfigurationService.updateInstance(this.componentName, service.instance, service)
-					.then(() => {
-						this.getConfig().then(() => {
-							this.$toast.success(
-								this.$t('config.websocket.service.messages.editSuccess', {service: service.instance})
-									.toString()
-							);
-						});
-					})
-					.catch((error: AxiosError) => FormErrorHandler.configError(error));
-			}
-		},
-		removeService(): void {
-			if (this.modals.service === null) {
-				return;
-			}
-			this.$store.commit('spinner/SHOW');
-			const service = this.modals.service;
-			this.modals.service = null;
-			DaemonConfigurationService.deleteInstance(this.componentName, service)
+	}
+
+	private getIcon(icon: string): string[]|void {
+		return getCoreIcon(icon);
+	}
+
+	private getConfig(): Promise<void> {
+		this.$store.commit('spinner/SHOW');
+		return DaemonConfigurationService.getComponent(this.componentName)
+			.then((response: AxiosResponse) => {
+				this.$store.commit('spinner/HIDE');
+				this.instances = response.data.instances;
+			})
+			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+	}
+
+	private changeAccept(service, setting): void {
+		if (service.acceptOnlyLocalhost !== setting) {
+			service.acceptOnlyLocalhost = setting;
+			DaemonConfigurationService.updateInstance(this.componentName, service.instance, service)
 				.then(() => {
 					this.getConfig().then(() => {
 						this.$toast.success(
-							this.$t('config.websocket.service.messages.deleteSuccess', {service: service})
+							this.$t('config.websocket.service.messages.editSuccess', {service: service.instance})
 								.toString()
 						);
 					});
 				})
 				.catch((error: AxiosError) => FormErrorHandler.configError(error));
 		}
-	},
-});
+	}
+
+	private removeService(): void {
+		if (this.service === null) {
+			return;
+		}
+		this.$store.commit('spinner/SHOW');
+		const service = this.service;
+		this.service = null;
+		DaemonConfigurationService.deleteInstance(this.componentName, service)
+			.then(() => {
+				this.getConfig().then(() => {
+					this.$toast.success(
+						this.$t('config.websocket.service.messages.deleteSuccess', {service: service})
+							.toString()
+					);
+				});
+			})
+			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+	}
+}
 </script>
 
 <style scoped>
