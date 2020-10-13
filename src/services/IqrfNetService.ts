@@ -252,14 +252,10 @@ class IqrfNetService {
 
 	/**
 	 * Sends JSON API request
-	 * @param json JSON API request string
-	 * @param timeout Timeout in milliseconds
-	 * @param message Timeout message
-	 * @param callback Timeout callback
+	 * @param options Websocket request options
 	 * @return Message ID
 	 */
-	sendJson(json: any, timeout: number, message: string|null = null, callback: CallableFunction = () => {return;}): Promise<string> {
-		const options = new WebSocketOptions(json, timeout, message, callback);
+	sendJson(options: WebSocketOptions): Promise<string> {
 		return store.dispatch('sendRequest', options);
 	}
 

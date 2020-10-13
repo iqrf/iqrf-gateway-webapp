@@ -253,15 +253,17 @@ export default Vue.extend({
 				json.data.timeout = this.timeout;
 			}
 			let options = new WebSocketOptions(json);
-			if (json.data.req.rData.startsWith('ff') || json.data.req.rData.startsWith('FF')) {
+			const packet = sendPacket.Packet.parse(this.packet);
+			if (packet.nadr === 255) {
 				options.timeout = 1000;
-				options.callback = () => this.msgId = null;
+			} else if (packet.pnum === 2 && (packet.pcmd === 5 || packet.pcmd === 11)) {
+				options.timeout = 1000;
 			} else {
 				options.timeout = 60000;
 				options.message = 'iqrfnet.sendPacket.messages.failure';
-				options.callback = () => this.msgId = null;
 				this.$store.commit('spinner/SHOW');
 			}
+			options.callback = () => this.msgId = null;
 			return this.$store.dispatch('sendRequest', options)
 				.then((msgId: string) => this.msgId = msgId);
 		},

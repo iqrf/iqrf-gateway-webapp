@@ -107,12 +107,14 @@ import {required} from 'vee-validate/dist/rules';
 import {TextareaAutogrowDirective} from 'vue-textarea-autogrow-directive/src/VueTextareaAutogrowDirective';
 import {StatusMessages} from '../../iqrfNet/sendJson';
 import IqrfNetService from '../../services/IqrfNetService';
+import { WebSocketOptions } from '../../store/modules/webSocketClient.module';
 
 import {PrismEditor} from 'vue-prism-editor';
 import 'vue-prism-editor/dist/prismeditor.min.css';
 import Prism from 'prismjs/components/prism-core';
 import 'prismjs/components/prism-json';
 import 'prismjs/themes/prism.css';
+
 
 export default Vue.extend({
 	name: 'SendJsonRequest',
@@ -216,11 +218,21 @@ export default Vue.extend({
 			return Prism.highlight(code, Prism.languages.json, 'json');
 		},
 		processSubmit() {
-			let json = JSON.parse(this.json);
+			const json = JSON.parse(this.json);
+			let options = new WebSocketOptions(json);
+			if ({}.hasOwnProperty.call(json.data.req, 'nAdr') && json.data.req.nAdr === 255) {
+				options.timeout = 1000;
+			} else if (json.mType === 'iqrfEmbedOs_Batch' || json.mType === 'iqrfEmbedOs_SelectiveBatch') {
+				options.timeout = 1000;
+			} else {
+				options.timeout = 60000;
+				options.message = 'iqrfnet.sendJson.form.messages.error.fail';
+				this.$store.commit('spinner/SHOW');
+			}
+			options.callback = () => this.msgId = null;
 			this.request = JSON.stringify(json, null, 4);
 			this.response = null;
-			this.$store.commit('spinner/SHOW');
-			IqrfNetService.sendJson(json, 60000, 'iqrfnet.sendJson.form.messages.error.fail', () => this.msgId = null)
+			IqrfNetService.sendJson(options)
 				.then((msgId: string) => this.msgId = msgId);
 		},
 	},
