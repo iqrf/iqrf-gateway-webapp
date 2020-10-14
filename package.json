@@ -31,7 +31,6 @@
 		"@popperjs/core": "^2.5.3",
 		"@sentry/browser": "^5.26.0",
 		"@sentry/integrations": "^5.26.0",
-		"@types/luxon": "^1.25.0",
 		"axios": "^0.20.0",
 		"compare-versions": "^3.6.0",
 		"luxon": "^1.25.0",
@@ -56,9 +55,10 @@
 		"weekstart": "^1.0.1"
 	},
 	"devDependencies": {
-		"@babel/core": "^7.11.6",
-		"@babel/preset-env": "^7.11.5",
+		"@babel/core": "^7.12.0",
+		"@babel/preset-env": "^7.12.0",
 		"@types/jest": "^26.0.14",
+		"@types/luxon": "^1.25.0",
 		"@types/prismjs": "^1.16.1",
 		"@types/uuid": "^8.3.0",
 		"@types/vue-datetime": "^1.0.0",
@@ -97,6 +97,12 @@
 		"vue-svg-loader": "^0.16.0",
 		"vue-template-compiler": "^2.6.12"
 	},
+	"browserslist": [
+		"> 0.5%",
+		"not dead",
+		"not ie <= 11",
+		"not op_mini all"
+	],
 	"stylelint": {
 		"extends": "stylelint-config-recommended",
 		"rules": {
