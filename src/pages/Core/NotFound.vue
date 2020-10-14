@@ -9,11 +9,10 @@
 </template>
 
 <script lang='ts'>
-import Vue from 'vue';
+import {Component, Vue} from 'vue-property-decorator';
 import {CCard, CCardBody, CCardHeader} from '@coreui/vue/src';
 
-export default Vue.extend({
-	name: 'NotFound',
+@Component({
 	components: {
 		CCard,
 		CCardBody,
@@ -22,5 +21,8 @@ export default Vue.extend({
 	metaInfo: {
 		title: 'core.error.404.title',
 	},
-});
+})
+
+export default class NotFound extends Vue {
+}
 </script>

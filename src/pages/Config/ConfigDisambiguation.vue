@@ -228,11 +228,10 @@
 </template>
 
 <script lang='ts'>
-import Vue from 'vue';
+import {Component, Vue} from 'vue-property-decorator';
 import {CCard, CListGroup, CListGroupItem} from '@coreui/vue/src';
 
-export default Vue.extend({
-	name: 'ConfigDisambiguation',
+@Component({
 	components: {
 		CCard,
 		CListGroup,
@@ -241,5 +240,8 @@ export default Vue.extend({
 	metaInfo: {
 		title: 'config.title',
 	},
-});
+})
+
+export default class ConfigDisambiguation extends Vue {
+}
 </script>

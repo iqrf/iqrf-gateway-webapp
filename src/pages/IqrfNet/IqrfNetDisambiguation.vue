@@ -60,11 +60,10 @@
 </template>
 
 <script lang='ts'>
-import Vue from 'vue';
+import {Component, Vue} from 'vue-property-decorator';
 import {CCard, CListGroup, CListGroupItem} from '@coreui/vue/src';
 
-export default Vue.extend({
-	name: 'IqrfNetDisambiguation',
+@Component({
 	components: {
 		CCard,
 		CListGroup,
@@ -73,5 +72,8 @@ export default Vue.extend({
 	metaInfo: {
 		title: 'iqrfnet.title',
 	},
-});
+})
+
+export default class IqrfNetDisambiguation extends Vue {
+}
 </script>

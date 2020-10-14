@@ -117,11 +117,10 @@
 </template>
 
 <script lang='ts'>
-import Vue from 'vue';
+import {Component, Vue} from 'vue-property-decorator';
 import {CCard, CListGroup, CListGroupItem} from '@coreui/vue/src';
 
-export default Vue.extend({
-	name: 'MainDisambiguation',
+@Component({
 	components: {
 		CCard,
 		CListGroup,
@@ -130,5 +129,8 @@ export default Vue.extend({
 	metaInfo: {
 		title: 'core.dashboard',
 	},
-});
+})
+
+export default class MainDisambiguation extends Vue {
+}
 </script>

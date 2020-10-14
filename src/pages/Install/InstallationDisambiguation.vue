@@ -14,11 +14,11 @@
 	</CCard>
 </template>
 
-<script>
+<script lang='ts'>
+import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardFooter} from '@coreui/vue/src';
 
-export default {
-	name: 'InstallationDisambiguation',
+@Component({
 	components: {
 		CButton,
 		CCard,
@@ -27,6 +27,9 @@ export default {
 	},
 	metaInfo: {
 		title: 'install.title'
-	}
-};
+	},
+})
+
+export default class InstallationDisambiguation extends Vue {
+}
 </script>
