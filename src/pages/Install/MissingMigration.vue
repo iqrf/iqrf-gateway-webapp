@@ -20,41 +20,47 @@
 </template>
 
 <script lang='ts'>
-import Vue from 'vue';
+import {Component, Vue} from 'vue-property-decorator';
 import {CCard, CCardBody, CCardHeader} from '@coreui/vue/src';
 
 import {PrismEditor} from 'vue-prism-editor';
 import 'vue-prism-editor/dist/prismeditor.min.css';
-// @ts-ignore
 import Prism from 'prismjs/components/prism-core';
 import 'prismjs/components/prism-bash';
 import 'prismjs/themes/prism.css';
 
-export default Vue.extend({
-	name: 'MissingMigration',
+@Component({
 	components: {
 		CCard,
 		CCardBody,
 		CCardHeader,
 		PrismEditor,
 	},
-	data(): any {
-		return {
-			fixCommands: 'sudo iqrf-gateway-webapp-manager migrations:migrate --no-interaction',
-		};
-	},
-	methods: {
-		/**
-		 * JSON highlighter method
-		 */
-		highlighter(code: string) {
-			return Prism.highlight(code, Prism.languages.bash, 'bash');
-		},
-	},
 	metaInfo: {
 		title: 'install.error.missingMigration.title'
 	},
-});
+})
+
+/**
+ * Missing migration notification
+ */
+export default class MissingMigration extends Vue {
+
+	/**
+	 * Commands to fix this issue
+	 */
+	private fixCommands = 'sudo iqrf-gateway-webapp-manager migrations:migrate --no-interaction';
+
+	/**
+	 * JSON highlighter method
+	 * @param code Code to highlight
+	 * @return Highlighted code
+	 */
+	private highlighter(code: string): string {
+		return Prism.highlight(code, Prism.languages.bash, 'bash');
+	}
+
+}
 </script>
 
 <style scoped>

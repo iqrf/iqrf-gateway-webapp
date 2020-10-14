@@ -43,7 +43,7 @@
 </template>
 
 <script lang='ts'>
-import Vue from 'vue';
+import {Component, Vue} from 'vue-property-decorator';
 import {AxiosError} from 'axios';
 import {CButton, CCard, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
@@ -51,8 +51,7 @@ import {required} from 'vee-validate/dist/rules';
 import UserService from '../../services/UserService';
 import {UserCredentials} from '../../services/AuthenticationService';
 
-export default Vue.extend({
-	name: 'InstallCreateUser',
+@Component({
 	components: {
 		CButton,
 		CCard,
@@ -61,38 +60,62 @@ export default Vue.extend({
 		ValidationObserver,
 		ValidationProvider,
 	},
-	data(): any {
-		return {
-			username: null,
-			password: null,
-			language: 'en',
-			role: 'normal',
-		};
-	},
-	created() {
-		extend('required', required);
-	},
-	methods: {
-		handleSubmit() {
-			UserService.add(this.username, this.password, this.language, this.role)
-				.then(() => {
-					const credentials: UserCredentials = new UserCredentials(this.username, this.password);
-					this.$store.dispatch('user/signIn', credentials)
-						.then(() => {
-							this.$router.push('/');
-							this.$toast.success(
-								this.$t('core.user.messages.add.success', {username: this.username})
-									.toString());
-						});
-				}).catch((error: AxiosError) => {
-					if (error.response === undefined) {
-						return;
-					}
-				});
-		},
-	},
 	metaInfo: {
 		title: 'install.createUser.title',
 	},
-});
+})
+
+/**
+ * Create user
+ */
+export default class InstallCreateUser extends Vue {
+
+	/**
+	 * User name
+	 */
+	private username = '';
+
+	/**
+	 * User password
+	 */
+	private password = '';
+
+	/**
+	 * User language
+	 */
+	private language = 'en';
+
+	/**
+	 * User role
+	 */
+	private role = 'normal';
+
+	/**
+	 * On component creation event handler
+	 */
+	public created(): void {
+		extend('required', required);
+	}
+
+	/**
+	 * Handle form submit
+	 */
+	private handleSubmit(): void {
+		UserService.add(this.username, this.password, this.language, this.role)
+			.then(() => {
+				const credentials: UserCredentials = new UserCredentials(this.username, this.password);
+				this.$store.dispatch('user/signIn', credentials)
+					.then(() => {
+						this.$router.push('/');
+						this.$toast.success(
+							this.$t('core.user.messages.add.success', {username: this.username})
+								.toString());
+					});
+			}).catch((error: AxiosError) => {
+				if (error.response === undefined) {
+					return;
+				}
+			});
+	}
+}
 </script>

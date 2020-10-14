@@ -13,17 +13,20 @@
 	</div>
 </template>
 
-<script>
+<script lang='ts'>
+import {Component, Vue} from 'vue-property-decorator';
 import {CContainer, CCol, CRow} from '@coreui/vue/src';
 import LogoBlue from '../../assets/logo-blue.svg';
 
-export default {
-	name: 'InstallationBase',
+@Component({
 	components: {
 		CContainer,
 		CCol,
 		CRow,
 		LogoBlue,
 	},
-};
+})
+
+export default class InstallationBase extends Vue {
+}
 </script>
