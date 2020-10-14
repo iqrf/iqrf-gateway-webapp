@@ -22,7 +22,7 @@ LOG_DIR=${DESTDIR}/var/log/iqrf-gateway-webapp
 VENDOR_DIR=${DATA_DIR}/vendor
 SBIN_DIR=${DESTDIR}/usr/sbin
 
-.PHONY: build coverage cc fix-cc cs deb-package deps qa install lint phpstan rector test webpack
+.PHONY: build coverage cc fix-cc cs deb-package deps qa install lint phpstan rector test
 
 build:
 	$(COMPOSER) install --no-dev
@@ -146,6 +146,3 @@ temp/code-checker:
 
 test: deps
 	vendor/bin/tester -p phpdbg -c ./tests/php.ini ./tests
-
-webpack:
-	webpack --mode production
