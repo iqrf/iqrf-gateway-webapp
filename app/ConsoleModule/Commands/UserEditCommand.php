@@ -41,7 +41,6 @@ class UserEditCommand extends UserCommand {
 	 * Configures the user edit command
 	 */
 	protected function configure(): void {
-		$this->setName(self::$defaultName);
 		$this->setDescription('Edits webapp\'s user');
 		$definitions = [
 			new InputOption('username', ['u', 'user'], InputOption::VALUE_OPTIONAL, 'Username of the edited user'),

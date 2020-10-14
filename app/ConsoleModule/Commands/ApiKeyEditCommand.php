@@ -41,8 +41,7 @@ class ApiKeyEditCommand extends ApiKeyCommand {
 	 * Configures the user add command
 	 */
 	protected function configure(): void {
-		$this->setName(self::$defaultName);
-		$this->setDescription('Editss an API key');
+		$this->setDescription('Edits an API key');
 		$definitions = [
 			new InputOption('id', ['i'], InputOption::VALUE_OPTIONAL, 'API key ID to edit'),
 			new InputOption('description', ['d'], InputOption::VALUE_OPTIONAL, 'New API key description'),

@@ -62,7 +62,6 @@ class IqrfOsPatchImportCommand extends Command {
 	 * Configures the user list command
 	 */
 	protected function configure(): void {
-		$this->setName(self::$defaultName);
 		$this->setDescription('Imports IQRF OS patches');
 	}
 

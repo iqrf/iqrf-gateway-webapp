@@ -42,7 +42,6 @@ class ApiKeyDeleteCommand extends ApiKeyCommand {
 	 * Configures the user add command
 	 */
 	protected function configure(): void {
-		$this->setName(self::$defaultName);
 		$this->setDescription('Deletes an API key');
 		$definitions = [
 			new InputOption('id', ['i'], InputOption::VALUE_OPTIONAL, 'API key ID to delete'),

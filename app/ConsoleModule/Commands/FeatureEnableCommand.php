@@ -42,7 +42,6 @@ class FeatureEnableCommand extends FeatureCommand {
 	 * Configures the feature enable command
 	 */
 	protected function configure(): void {
-		$this->setName(self::$defaultName);
 		$this->setDescription('Enables webapp\'s features');
 		$this->addArgument('names', InputArgument::OPTIONAL | InputArgument::IS_ARRAY, 'Names of enabled features');
 	}

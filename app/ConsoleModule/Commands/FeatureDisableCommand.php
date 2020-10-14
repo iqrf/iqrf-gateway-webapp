@@ -42,7 +42,6 @@ class FeatureDisableCommand extends FeatureCommand {
 	 * Configures the feature disable command
 	 */
 	protected function configure(): void {
-		$this->setName(self::$defaultName);
 		$this->setDescription('Disables webapp\'s features');
 		$this->addArgument('names', InputArgument::OPTIONAL | InputArgument::IS_ARRAY, 'Names of disabled features');
 	}

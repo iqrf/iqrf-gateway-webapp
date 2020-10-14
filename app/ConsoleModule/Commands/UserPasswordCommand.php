@@ -40,7 +40,6 @@ class UserPasswordCommand extends UserCommand {
 	 * Configures the change user's password command
 	 */
 	protected function configure(): void {
-		$this->setName(self::$defaultName);
 		$this->setDescription('Change webapp\'s user\'s password');
 		$definitions = [
 			new InputOption('username', ['u', 'user'], InputOption::VALUE_OPTIONAL, 'Username of the edited user'),

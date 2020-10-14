@@ -40,7 +40,6 @@ class UserRemoveCommand extends UserCommand {
 	 * Configures the user remove command
 	 */
 	protected function configure(): void {
-		$this->setName(self::$defaultName);
 		$this->setDescription('Removes webapp\'s user');
 		$definitions = [
 			new InputOption('username', ['u', 'user'], InputOption::VALUE_OPTIONAL, 'Username of the removed user'),

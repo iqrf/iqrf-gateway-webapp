@@ -40,7 +40,6 @@ class ApiKeyListCommand extends ApiKeyCommand {
 	 * Configures the user add command
 	 */
 	protected function configure(): void {
-		$this->setName(self::$defaultName);
 		$this->setDescription('Lists API keys');
 	}
 

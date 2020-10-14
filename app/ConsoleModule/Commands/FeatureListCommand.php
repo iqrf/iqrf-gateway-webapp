@@ -39,7 +39,6 @@ class FeatureListCommand extends FeatureCommand {
 	 * Configures the user list command
 	 */
 	protected function configure(): void {
-		$this->setName(self::$defaultName);
 		$this->setDescription('Lists webapp\'s features');
 	}
 
