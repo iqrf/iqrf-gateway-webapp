@@ -20,10 +20,8 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Models;
 
-use Nette\Utils\DateTime;
 use Nette\Utils\Strings;
 use stdClass;
-use Throwable;
 
 /**
  * Scheduler's task time specification manager
@@ -76,46 +74,6 @@ class TaskTimeManager {
 	public function cronToString(stdClass &$config): void {
 		$cron = &$config->timeSpec->cronTime;
 		$cron = Strings::trim(implode(' ', $cron));
-	}
-
-	/**
-	 * Returns task's time
-	 * @param stdClass $task Task
-	 * @return string Task's time
-	 */
-	public function getTime(stdClass $task): string {
-		$timeSpec = $task->timeSpec;
-		if ($timeSpec->exactTime) {
-			return 'one shot (' . $timeSpec->startTime . ')';
-		}
-		if ($timeSpec->periodic) {
-			$period = $timeSpec->period;
-			if ($period < DateTime::MINUTE) {
-				$format = 'every %s seconds';
-			} elseif ($period < DateTime::HOUR) {
-				$format = 'every %i:%S minutes';
-			} else {
-				$format = 'every %h:%I:%S hours';
-			}
-			return $this->formatPeriod($period, $format) ?? '';
-		}
-		return $timeSpec->cronTime;
-	}
-
-	/**
-	 * Formats a period in seconds
-	 * @param int $seconds Period in seconds
-	 * @param string $format Period's format
-	 * @return string|null Formatted period
-	 */
-	private function formatPeriod(int $seconds, string $format): ?string {
-		try {
-			$date0 = new DateTime('@0');
-			$date1 = new DateTime('@0' . $seconds);
-			return $date1->diff($date0)->format($format);
-		} catch (Throwable $e) {
-			return null;
-		}
 	}
 
 }

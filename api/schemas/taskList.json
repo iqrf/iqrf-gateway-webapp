@@ -10,7 +10,7 @@
 		"title": "Task",
 		"required": [
 			"id",
-			"time",
+			"timeSpec",
 			"service",
 			"messagings",
 			"mTypes"
@@ -23,11 +23,65 @@
 				"title": "Task ID",
 				"example": 2
 			},
-			"time": {
-				"$id": "#/items/properties/time",
-				"type": "string",
-				"title": "Time",
-				"example": "0 */2 * * * * *"
+			"timeSpec": {
+				"$id": "#/properties/timeSpec",
+				"type": "object",
+				"title": "Time specification",
+				"additionalProperties": false,
+				"required": [
+					"cronTime",
+					"exactTime",
+					"periodic",
+					"period",
+					"startTime"
+				],
+				"properties": {
+					"cronTime": {
+						"$id": "#/properties/timeSpec/cronTime",
+						"type": "array",
+						"title": "CRON time expression with seconds and year",
+						"minItems": 7,
+						"maxItems": 7,
+						"additionalItems": false,
+						"items": {
+							"$id": "#/properties/timeSpec/cronTime/items",
+							"type": "string"
+						},
+						"example": [
+							"0",
+							"*/2",
+							"*",
+							"*",
+							"*",
+							"*",
+							"*"
+						]
+					},
+					"exactTime": {
+						"$id": "#/properties/timeSpec/exactTime",
+						"type": "boolean",
+						"title": "Exact time task",
+						"example": false
+					},
+					"periodic": {
+						"$id": "#/properties/timeSpec/periodic",
+						"type": "boolean",
+						"title": "Periodic task",
+						"example": false
+					},
+					"period": {
+						"$id": "#/properties/timeSpec/periodic",
+						"type": "number",
+						"title": "Task period",
+						"example": 0
+					},
+					"startTime": {
+						"$id": "#/properties/timeSpec/startTime",
+						"type": "string",
+						"title": "Exact start time",
+						"example": "2020-12-31T23:59:59.999999"
+					}
+				}
 			},
 			"service": {
 				"$id": "#/items/properties/service",

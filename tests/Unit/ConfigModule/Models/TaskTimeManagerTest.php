@@ -11,7 +11,6 @@ declare(strict_types = 1);
 namespace Tests\Unit\ConfigModule\Models;
 
 use App\ConfigModule\Models\TaskTimeManager;
-use Nette\Utils\DateTime;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -176,81 +175,6 @@ final class TaskTimeManagerTest extends TestCase {
 		];
 		$this->manager->cronToString($config);
 		Assert::equal($expected, $config);
-	}
-
-	/**
-	 * Tests the function to get the task's time specification (CRON)
-	 */
-	public function testGetTimeCron(): void {
-		$expected = '0 0 0 * * * *';
-		$config = (object) [
-			'timeSpec' => (object) [
-				'cronTime' => $expected,
-				'exactTime' => false,
-				'periodic' => false,
-			],
-		];
-		Assert::same($expected, $this->manager->getTime($config));
-	}
-
-	/**
-	 * Tests the function to get the task's time specification (one shot)
-	 */
-	public function testGetTimeOneShot(): void {
-		$expected = 'one shot (2019-01-01T00:00:00)';
-		$config = (object) [
-			'timeSpec' => (object) [
-				'exactTime' => true,
-				'startTime' => '2019-01-01T00:00:00',
-				'periodic' => false,
-			],
-		];
-		Assert::same($expected, $this->manager->getTime($config));
-	}
-
-	/**
-	 * Tests the function to get the task's time specification (period in seconds)
-	 */
-	public function testGetTimePeriodicSeconds(): void {
-		$expected = 'every 30 seconds';
-		$config = (object) [
-			'timeSpec' => (object) [
-				'exactTime' => false,
-				'periodic' => true,
-				'period' => 30,
-			],
-		];
-		Assert::same($expected, $this->manager->getTime($config));
-	}
-
-	/**
-	 * Tests the function to get the task's time specification (period in minutes)
-	 */
-	public function testGetTimePeriodicMinutes(): void {
-		$expected = 'every 30:00 minutes';
-		$config = (object) [
-			'timeSpec' => (object) [
-				'exactTime' => false,
-				'periodic' => true,
-				'period' => 1800,
-			],
-		];
-		Assert::same($expected, $this->manager->getTime($config));
-	}
-
-	/**
-	 * Tests the function to get the task's time specification (period in hours)
-	 */
-	public function testGetTimePeriodicHours(): void {
-		$expected = 'every 12:00:00 hours';
-		$config = (object) [
-			'timeSpec' => (object) [
-				'exactTime' => false,
-				'periodic' => true,
-				'period' => 12 * DateTime::HOUR,
-			],
-		];
-		Assert::same($expected, $this->manager->getTime($config));
 	}
 
 }

@@ -103,19 +103,31 @@ final class SchedulerManagerTest extends TestCase {
 		$expected = [
 			[
 				'id' => 1,
-				'time' => '*/5 * 1 * * * *',
+				'timeSpec' => (object) [
+					'cronTime' => '*/5 * 1 * * * *',
+					'exactTime' => false,
+					'periodic' => false,
+					'period' => 0,
+					'startTime' => '',
+				],
 				'service' => 'SchedulerMessaging',
 				'messagings' => 'WebsocketMessaging',
 				'mTypes' => 'iqrfRaw',
 			], [
 				'id' => 2,
-				'time' => '*/5 * 1 * * * *',
+				'timeSpec' => (object) [
+					'cronTime' => '*/5 * 1 * * * *',
+					'exactTime' => false,
+					'periodic' => false,
+					'period' => 0,
+					'startTime' => '',
+				],
 				'service' => 'SchedulerMessaging',
 				'messagings' => 'WebsocketMessaging',
 				'mTypes' => 'iqrfRawHdp',
 			],
 		];
-		Assert::same($expected, $this->manager->list());
+		Assert::equal($expected, $this->manager->list());
 	}
 
 	/**

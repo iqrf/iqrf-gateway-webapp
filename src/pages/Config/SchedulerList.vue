@@ -46,11 +46,8 @@
 						</td>
 					</template>
 					<template #timeSpec='{item}'>
-						<td v-if='retrieved === "daemon"'>
+						<td>
 							{{ timeString(item.timeSpec) }}
-						</td>
-						<td v-else>
-							{{ item.time }}
 						</td>
 					</template>
 					<template #task='{item}'>
@@ -165,13 +162,13 @@
 <script>
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CIcon, CInputFile, CModal} from '@coreui/vue/src';
 import {cilPencil, cilPlus, cilTrash, cilArrowTop, cilArrowBottom} from '@coreui/icons';
-import {fileDownloader} from '../../helpers/fileDownloader';
+import {fileDownloader} from '@/helpers/fileDownloader';
 import {TextareaAutogrowDirective} from 'vue-textarea-autogrow-directive/src/VueTextareaAutogrowDirective';
-import SchedulerService from '../../services/SchedulerService';
-import ServiceService from '../../services/ServiceService';
-import FormErrorHandler from '../../helpers/FormErrorHandler';
+import SchedulerService from '@/services/SchedulerService';
+import ServiceService from '@/services/ServiceService';
+import FormErrorHandler from '@/helpers/FormErrorHandler';
 import {DateTime, Duration} from 'luxon';
-import { WebSocketOptions } from '../../store/modules/webSocketClient.module';
+import { WebSocketOptions } from '@/store/modules/webSocketClient.module';
 
 export default {
 	name: 'SchedulerList',
@@ -257,7 +254,7 @@ export default {
 				if (this.untouched) {
 					this.getTasks();
 				}
-			} else if (mutation.type === 'SOCKET_ONCLOSE' || 
+			} else if (mutation.type === 'SOCKET_ONCLOSE' ||
 				mutation.type === 'SOCKET_ONERROR') {
 				this.useRest = true;
 			} else if (mutation.type === 'SOCKET_ONSEND') {
@@ -319,21 +316,9 @@ export default {
 		displayMTypes(item) {
 			try {
 				if (this.retrieved === 'rest') {
-					if (Array.isArray(item)) {
-						return item.join(',');
-					} else {
-						return item;
-					}
+					return Array.isArray(item) ? item.join(', ') : item;
 				}
-				if (Array.isArray(item)) {
-					let mTypes = '';
-					item.forEach(task => {
-						mTypes += task.message.mType + ', ';
-					});
-					return mTypes.slice(0, -2);
-				} else {
-					return item.message.mType;
-				}
+				return Array.isArray(item) ? item.message.mType.join(', ') : item.message.mType;
 			} catch(err) {
 				return '';
 			}
@@ -451,11 +436,10 @@ export default {
 					return message;
 				}
 				if (item.cronTime.length > 0) {
-					let timeString = '';
-					item.cronTime.forEach(item => {
-						timeString += item + ' ';
-					});
-					return timeString.trim();
+					if (typeof item.cronTime === 'string') {
+						return item.cronTime;
+					}
+					return item.cronTime.join(' ');
 				}
 			} catch (err) {
 				console.error(err);

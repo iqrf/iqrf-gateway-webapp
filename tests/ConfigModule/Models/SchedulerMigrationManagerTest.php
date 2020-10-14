@@ -43,11 +43,6 @@ final class SchedulerMigrationManagerTest extends TestCase {
 	private const CONFIG_TEMP_PATH = __DIR__ . '/../../temp/migrations/scheduler/';
 
 	/**
-	 * IP archive content type
-	 */
-	private const CONTENT_TYPE = 'application/zip';
-
-	/**
 	 * Path to the ZIP archive with IQRF Gateway Daemon's configuration
 	 */
 	private const ZIP_PATH = __DIR__ . '/../../data/iqrf-gateway-scheduler.zip';

@@ -130,7 +130,7 @@ class SchedulerManager {
 				$data = $this->readFile($fileName);
 				$task = [
 					'id' => $data->taskId,
-					'time' => $this->timeManager->getTime($data),
+					'timeSpec' => $data->timeSpec,
 					'service' => $data->clientId,
 					'messagings' => $this->getTaskMessagings($data->task),
 					'mTypes' => $this->getTaskMessageTypes($data->task),
