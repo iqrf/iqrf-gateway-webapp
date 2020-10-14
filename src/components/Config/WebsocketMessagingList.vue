@@ -9,7 +9,7 @@
 					class='float-right'
 					to='/config/websocket/add-messaging'
 				>
-					<CIcon :content='getIcon("add")' />
+					<CIcon :content='getIcon("add")' size='sm' />
 					{{ $t('table.actions.add') }}
 				</CButton>
 			</CCardHeader>
@@ -54,7 +54,7 @@
 								size='sm'
 								:to='"/config/websocket/edit-messaging/" + item.instance'
 							>
-								<CIcon :content='getIcon("edit")' />
+								<CIcon :content='getIcon("edit")' size='sm' />
 								{{ $t('table.actions.edit') }}
 							</CButton>
 							<CButton
@@ -62,7 +62,7 @@
 								size='sm'
 								@click='instance = item.instance'
 							>
-								<CIcon :content='getIcon("remove")' />
+								<CIcon :content='getIcon("remove")' size='sm' />
 								{{ $t('table.actions.delete') }}
 							</CButton>
 						</td>

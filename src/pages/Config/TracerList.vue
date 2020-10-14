@@ -9,7 +9,7 @@
 					to='/config/tracer/add'
 					class='float-right'
 				>
-					<CIcon :content='getIcon("add")' />
+					<CIcon :content='getIcon("add")' size='sm' />
 					{{ $t('table.actions.add') }}
 				</CButton>
 			</CCardHeader>
@@ -33,7 +33,7 @@
 								size='sm'
 								:to='"/config/tracer/edit/" + item.instance'
 							>
-								<CIcon :content='getIcon("edit")' />
+								<CIcon :content='getIcon("edit")' size='sm' />
 								{{ $t('table.actions.edit') }}
 							</CButton>
 							<CButton
@@ -41,7 +41,7 @@
 								size='sm'
 								@click='modals.currentInstance = item.instance'
 							>
-								<CIcon :content='getIcon("remove")' />
+								<CIcon :content='getIcon("remove")' size='sm' />
 								{{ $t('table.actions.delete') }}
 							</CButton>
 						</td>

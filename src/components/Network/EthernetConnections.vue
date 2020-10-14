@@ -19,7 +19,7 @@
 					size='sm'
 					@click='connect(item)'
 				>
-					<CIcon :content='$options.icons.connect' />
+					<CIcon :content='$options.icons.connect' size='sm' />
 					{{ $t('network.table.connect') }}
 				</CButton>
 				<CButton
@@ -28,7 +28,7 @@
 					size='sm'
 					@click='disconnect(item)'
 				>
-					<CIcon :content='$options.icons.disconnect' />
+					<CIcon :content='$options.icons.disconnect' size='sm' />
 					{{ $t('network.table.disconnect') }}
 				</CButton>
 				<CButton
@@ -36,7 +36,7 @@
 					:to='"/network/edit/" + item.uuid'
 					size='sm'
 				>
-					<CIcon :content='$options.icons.edit' />
+					<CIcon :content='$options.icons.edit' size='sm' />
 					{{ $t('table.actions.edit') }}
 				</CButton>
 			</td>

@@ -9,15 +9,15 @@
 						size='sm'
 						to='/config/scheduler/add'
 					>
-						<CIcon :content='$options.icons.add' />
+						<CIcon :content='$options.icons.add' size='sm' />
 						{{ $t('table.actions.add') }}
 					</CButton>
 					<CButton color='primary' size='sm' @click='importConfig.modal = true'>
-						<CIcon :content='$options.icons.import' />
+						<CIcon :content='$options.icons.import' size='sm' />
 						{{ $t('config.scheduler.buttons.import') }}
 					</CButton>
 					<CButton color='secondary' size='sm' @click='exportScheduler'>
-						<CIcon :content='$options.icons.export' />
+						<CIcon :content='$options.icons.export' size='sm' />
 						{{ $t('config.scheduler.buttons.export') }}
 					</CButton>
 				</div>
@@ -61,39 +61,19 @@
 					<template #actions='{item}'>
 						<td class='col-actions'>
 							<CButton
-								v-if='retrieved === "daemon"'
 								color='info'
 								size='sm'
-								:to='"/config/scheduler/edit/" + item.taskId'
+								:to='"/config/scheduler/edit/" + (retrieved === "daemon" ? item.taskId : item.id)'
 							>
-								<CIcon :content='$options.icons.edit' />
+								<CIcon :content='$options.icons.edit' size='sm' />
 								{{ $t('table.actions.edit') }}
 							</CButton>
 							<CButton
-								v-else
-								color='info'
-								size='sm'
-								:to='"/config/scheduler/edit/" + item.id'
-							>
-								<CIcon :content='$options.icons.edit' />
-								{{ $t('table.actions.edit') }}
-							</CButton>
-							<CButton
-								v-if='retrieved === "daemon"'
 								color='danger'
 								size='sm'
-								@click='modal.task = item.taskId'
+								@click='modal.task = retrieved === "daemon" ? item.taskId : item.id'
 							>
-								<CIcon :content='$options.icons.remove' />
-								{{ $t('table.actions.delete') }}
-							</CButton>
-							<CButton
-								v-else
-								color='danger'
-								size='sm'
-								@click='modal.task = item.id'
-							>
-								<CIcon :content='$options.icons.remove' />
+								<CIcon :content='$options.icons.remove' size='sm' />
 								{{ $t('table.actions.delete') }}
 							</CButton>
 						</td>
@@ -439,7 +419,7 @@ export default {
 					if (typeof item.cronTime === 'string') {
 						return item.cronTime;
 					}
-					return item.cronTime.join(' ');
+					return item.cronTime.join(' ').trim();
 				}
 			} catch (err) {
 				console.error(err);

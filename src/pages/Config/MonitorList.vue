@@ -9,7 +9,7 @@
 					class='float-right'
 					to='/config/monitor/add'
 				>
-					<CIcon :content='$options.icons.add' />
+					<CIcon :content='$options.icons.add' size='sm' />
 					{{ $t('table.actions.add') }}
 				</CButton>
 			</CCardHeader>
@@ -49,7 +49,7 @@
 								size='sm'
 								:to='"/config/monitor/edit/" + item.monitor.instance'
 							>
-								<CIcon :content='$options.icons.edit' />
+								<CIcon :content='$options.icons.edit' size='sm' />
 								{{ $t('table.actions.edit') }}
 							</CButton>
 							<CButton
@@ -57,7 +57,7 @@
 								size='sm'
 								@click='modals.instances = {monitor: item.monitor.instance, webSocket: item.webSocket.instance}'
 							>
-								<CIcon :content='$options.icons.remove' />
+								<CIcon :content='$options.icons.remove' size='sm' />
 								{{ $t('table.actions.delete') }}
 							</CButton>
 						</td>

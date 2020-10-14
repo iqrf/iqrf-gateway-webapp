@@ -9,7 +9,7 @@
 					size='sm'
 					class='float-right'
 				>
-					<CIcon :content='$options.icons.add' />
+					<CIcon :content='$options.icons.add' size='sm' />
 					{{ $t('table.actions.add') }}
 				</CButton>
 			</CCardHeader>
@@ -63,11 +63,11 @@
 								:to='"/user/edit/" + item.id'
 								size='sm'
 							>
-								<CIcon :content='$options.icons.edit' />
+								<CIcon :content='$options.icons.edit' size='sm' />
 								{{ $t('table.actions.edit') }}
 							</CButton>
 							<CButton color='danger' size='sm' @click='confirmDelete(item)'>
-								<CIcon :content='$options.icons.delete' />
+								<CIcon :content='$options.icons.delete' size='sm' />
 								{{ $t('table.actions.delete') }}
 							</CButton>
 						</td>
