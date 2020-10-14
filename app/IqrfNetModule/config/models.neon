@@ -6,8 +6,6 @@ services:
 	- App\IqrfNetModule\Models\EnumerationManager
 	- App\IqrfNetModule\Models\IqrfOsManager
 	- App\IqrfNetModule\Models\MessageIdManager
-	- App\IqrfNetModule\Models\NativeUploadManager
 	- App\IqrfNetModule\Models\OsManager
-	- App\IqrfNetModule\Models\SecurityManager
 	- App\IqrfNetModule\Models\UploadManager
 	- App\IqrfNetModule\Models\WebSocketClient(%daemon.wsServer%)
