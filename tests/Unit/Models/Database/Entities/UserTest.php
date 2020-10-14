@@ -14,7 +14,6 @@ namespace Tests\Unit\Models\Database\Entities;
 use App\Exceptions\InvalidUserLanguageException;
 use App\Exceptions\InvalidUserRoleException;
 use App\Models\Database\Entities\User;
-use Nette\Security\Identity;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -169,21 +168,6 @@ final class UserTest extends TestCase {
 			'language' => self::LANGUAGE,
 		];
 		Assert::same($expected, $this->entity->jsonSerialize());
-	}
-
-	/**
-	 * Tests the function to convert the entity into Nette Identity
-	 */
-	public function testToIdentity(): void {
-		$data = [
-			'username' => self::USERNAME,
-			'language' => self::LANGUAGE,
-		];
-		$expected = new Identity(null, [self::ROLE], $data);
-		$actual = $this->entity->toIdentity();
-		Assert::equal($expected, $actual);
-		Assert::same([self::ROLE], $actual->getRoles());
-		Assert::null($actual->getId());
 	}
 
 }

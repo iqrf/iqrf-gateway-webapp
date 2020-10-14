@@ -30,9 +30,14 @@ class ApiKeyTest extends TestCase {
 	private $entity;
 
 	/**
-	 * @var string API key description
+	 * API key description
 	 */
-	private $description = 'Example API key';
+	private const DESCRIPTION = 'Example API key';
+
+	/**
+	 * API key expiration date
+	 */
+	private const EXPIRATION = '2020-01-01T00:00:00+02:00';
 
 	/**
 	 * @var string API key
@@ -49,8 +54,8 @@ class ApiKeyTest extends TestCase {
 	 */
 	protected function setUp(): void {
 		parent::setUp();
-		$this->expiration = new DateTime('2020-01-01T00:00');
-		$this->entity = new ApiKey($this->description, $this->expiration);
+		$this->expiration = new DateTime(self::EXPIRATION);
+		$this->entity = new ApiKey(self::DESCRIPTION, $this->expiration);
 		$this->key = $this->entity->getKey();
 	}
 
@@ -58,7 +63,7 @@ class ApiKeyTest extends TestCase {
 	 * Tests the function to return API key description
 	 */
 	public function testGetDescription(): void {
-		Assert::same($this->description, $this->entity->getDescription());
+		Assert::same(self::DESCRIPTION, $this->entity->getDescription());
 	}
 
 	/**
@@ -98,9 +103,9 @@ class ApiKeyTest extends TestCase {
 	 */
 	public function testIsExpired(): void {
 		Assert::true($this->entity->isExpired());
-		$entity = new ApiKey($this->description, null);
+		$entity = new ApiKey(self::DESCRIPTION, null);
 		Assert::false($entity->isExpired());
-		$entity = new ApiKey($this->description, new DateTime('2050-01-01T00:00'));
+		$entity = new ApiKey(self::DESCRIPTION, new DateTime('2050-01-01T00:00'));
 		Assert::false($entity->isExpired());
 	}
 
@@ -117,8 +122,8 @@ class ApiKeyTest extends TestCase {
 	public function testJsonSerialize(): void {
 		$expected = [
 			'id' => null,
-			'description' => 'Example API key',
-			'expiration' => '2020-01-01T00:00:00+02:00',
+			'description' => self::DESCRIPTION,
+			'expiration' => self::EXPIRATION,
 		];
 		$actual = $this->entity->jsonSerialize();
 		Assert::match('~^[./A-Za-z0-9]{22}\.[A-Za-z0-9+/=]{44}$~', $actual['key']);

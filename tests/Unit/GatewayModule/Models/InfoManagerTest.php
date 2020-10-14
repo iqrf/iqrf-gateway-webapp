@@ -161,6 +161,33 @@ final class InfoManagerTest extends CommandTestCase {
 	}
 
 	/**
+	 * Tests the function to get the gateway ID (invalid JSON)
+	 */
+	public function testGetIdInvalidJson(): void {
+		$output = '{"gwId":"0242fc1e6f85b296",}';
+		$this->receiveCommand(self::COMMANDS['gw'], true, $output);
+		Assert::null($this->manager->getId());
+	}
+
+	/**
+	 * Tests the function to get the gateway ID (missing file)
+	 */
+	public function testGetIdMissingFile(): void {
+		$stderr = 'cat: /etc/iqrf-gateway.json: No such file or directory';
+		$this->receiveCommand(self::COMMANDS['gw'], true, '', $stderr, 1);
+		Assert::null($this->manager->getId());
+	}
+
+	/**
+	 * Tests the function to get the gateway ID (missing property)
+	 */
+	public function testGetIdMissingProperty(): void {
+		$output = '{"id":"0242fc1e6f85b296"}';
+		$this->receiveCommand(self::COMMANDS['gw'], true, $output);
+		Assert::null($this->manager->getId());
+	}
+
+	/**
 	 * Tests the function to get information about the Coordinator
 	 */
 	public function testGetCoordinatorInfo(): void {

@@ -88,6 +88,42 @@ final class ServiceManagerTest extends CommandTestCase {
 	}
 
 	/**
+	 * Tests the function to check if the service is active via systemD
+	 */
+	public function testIsActiveSystemD(): void {
+		$command = 'systemctl is-active ' . self::SERVICE_NAME . '.service';
+		$this->receiveCommand($command, true, 'active');
+		Assert::true($this->managerSystemD->isActive());
+	}
+
+	/**
+	 * Tests the function to check if the service is active via unknown init daemon
+	 */
+	public function testIsActiveUnknown(): void {
+		Assert::exception(function (): void {
+			$this->managerUnknown->isActive();
+		}, UnsupportedInitSystemException::class);
+	}
+
+	/**
+	 * Tests the function to check if the service is enabled via systemD
+	 */
+	public function testIsEnabledSystemD(): void {
+		$command = 'systemctl is-enabled ' . self::SERVICE_NAME . '.service';
+		$this->receiveCommand($command, true, 'enabled');
+		Assert::true($this->managerSystemD->isEnabled());
+	}
+
+	/**
+	 * Tests the function to check if the service is enabled via unknown init daemon
+	 */
+	public function testIsEnabledUnknown(): void {
+		Assert::exception(function (): void {
+			$this->managerUnknown->isEnabled();
+		}, UnsupportedInitSystemException::class);
+	}
+
+	/**
 	 * Tests the function to start the service via systemD
 	 */
 	public function testStartSystemD(): void {

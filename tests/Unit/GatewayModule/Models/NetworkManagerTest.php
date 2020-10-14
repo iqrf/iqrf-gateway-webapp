@@ -55,6 +55,14 @@ final class NetworkManagerTest extends CommandTestCase {
 	}
 
 	/**
+	 * Tests the function to get hostname of the gateway (POSIX hostname)
+	 */
+	public function testGetHostnamePosix(): void {
+		$this->receiveCommand(self::COMMANDS['hostname'], null, '', 'ERROR', 1);
+		Assert::same(gethostname(), $this->manager->getHostname());
+	}
+
+	/**
 	 * Tests the function to get information about network interfaces
 	 */
 	public function testGetInterfaces(): void {

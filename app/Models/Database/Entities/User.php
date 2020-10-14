@@ -25,8 +25,6 @@ use App\Exceptions\InvalidUserRoleException;
 use App\Models\Database\Attributes\TId;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
-use Nette\Security\Identity;
-use Nette\Security\IIdentity;
 use function in_array;
 use function password_hash;
 use function password_verify;
@@ -192,17 +190,6 @@ class User implements JsonSerializable {
 	 */
 	public function verifyPassword(string $password): bool {
 		return password_verify($password, $this->password);
-	}
-
-	/**
-	 * Returns user's identity
-	 * @return IIdentity User's identity
-	 */
-	public function toIdentity(): IIdentity {
-		return new Identity($this->id, [$this->role], [
-			'username' => $this->username,
-			'language' => $this->language,
-		]);
 	}
 
 	/**

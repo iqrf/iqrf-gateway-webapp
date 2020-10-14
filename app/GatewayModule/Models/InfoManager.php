@@ -125,7 +125,7 @@ class InfoManager {
 		if ($output !== '') {
 			try {
 				$json = Json::decode($output, Json::FORCE_ARRAY);
-				return $json['gwId'];
+				return $json['gwId'] ?? null;
 			} catch (JsonException $e) {
 				// Skip IQRF GW info file parsing
 			}
@@ -141,33 +141,7 @@ class InfoManager {
 	 * @throws JsonException
 	 */
 	public function getCoordinatorInfo(): array {
-		$dpa = $this->enumerationManager->device(0);
-		$this->parseRfMode($dpa);
-		return $dpa;
-	}
-
-	/**
-	 * Parses RF mode from information about the Coordinator
-	 * @param array<mixed> $dpa Information about the Coordinator
-	 */
-	private function parseRfMode(array &$dpa): void {
-		if (!isset($dpa['response']->data->rsp->peripheralEnumeration)) {
-			return;
-		}
-		$enumeration = &$dpa['response']->data->rsp->peripheralEnumeration;
-		$flags = &$enumeration->flags;
-		if (version_compare($enumeration->dpaVer, '4.00', '<')) {
-			$array = &$flags->rfMode;
-		} else {
-			$array = &$flags->networkType;
-		}
-		if (isset($flags->stdAndLpNetwork) && $flags->stdAndLpNetwork) {
-			$array = 'STD+LP';
-		} elseif (isset($flags->rfModeStd) && $flags->rfModeStd) {
-			$array = 'STD';
-		} elseif (isset($flags->rfModeLp) && $flags->rfModeLp) {
-			$array = 'LP';
-		}
+		return $this->enumerationManager->device(0);
 	}
 
 	/**
@@ -203,14 +177,13 @@ class InfoManager {
 	 */
 	public function convertSizes(float $bytes, int $precision = 2): string {
 		$units = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB'];
-		$unit = 'B';
 		foreach ($units as $unit) {
 			if (abs($bytes) < 1024 || $unit === end($units)) {
 				break;
 			}
 			$bytes /= 1024;
 		}
-		return round($bytes, $precision) . ' ' . $unit;
+		return round($bytes, $precision) . ' ' . ($unit ?? 'B');
 	}
 
 	/**

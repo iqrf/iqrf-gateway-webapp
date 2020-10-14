@@ -1,5 +1,4 @@
 services:
-	authenticator: App\CoreModule\Models\AppAuthenticator
 	- App\CoreModule\Models\CertificateManager
 	commandManager: App\CoreModule\Models\CommandManager(%sudo%)
 	featureManager: App\CoreModule\Models\FeatureManager(%confDir%/features.neon)
