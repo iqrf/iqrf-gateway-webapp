@@ -46,11 +46,6 @@ $theme-colors: (
 	margin-bottom: 1rem;
 }
 
-.datagrid {
-	padding: 0;
-	overflow-x: scroll;
-}
-
 .log {
 	max-height: 75vh;
 }
@@ -64,4 +59,10 @@ $theme-colors: (
 .rfModeIcon {
 	height: 1em;
 	width: 1em;
+}
+
+.table {
+  th, td {
+	vertical-align: middle;
+  }
 }

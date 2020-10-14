@@ -1,6 +1,19 @@
 <template>
 	<div>
-		<h1>{{ $t('cloud.pixla.title') }}</h1>
+		<header class='d-flex'>
+			<h1 class='mr-auto'>
+				{{ $t('cloud.pixla.title') }}
+			</h1>
+			<div v-if='!missing && !unsupported'>
+				<CButton
+					color='primary'
+					href='https://www.pixla.online/'
+					target='_blank'
+				>
+					{{ $t('cloud.pixla.dashboard') }}
+				</CButton>
+			</div>
+		</header>
 		<CCard body-wrapper>
 			<table class='table table-striped'>
 				<tbody>
@@ -48,11 +61,6 @@
 					</tr>
 				</tbody>
 			</table>
-			<div v-if='!missing && !unsupported'>
-				<CButton color='primary' href='https://www.pixla.online/' target='_blank'>
-					{{ $t('cloud.pixla.dashboard') }}
-				</CButton>
-			</div>
 			<PixlaTokenEditor :show.sync='showEditor' @token-updated='getToken' />
 		</CCard>
 	</div>
@@ -166,51 +174,6 @@ export default class PixlaControl extends Vue {
 			this.$toast.error(this.$t('service.errors.unsupportedInit').toString());
 		}
 	}
-
-	private restart(): void {
-		this.$store.commit('spinner/SHOW');
-		ServiceService.restart(this.serviceName)
-			.then(() => {
-				this.getStatus();
-				this.$toast.success(
-					this.$t('service.' + this.serviceName + '.messages.restart')
-						.toString()
-				);
-			})
-			.catch(this.handleError);
-	}
-
-	private start(): void {
-		this.$store.commit('spinner/SHOW');
-		ServiceService.start(this.serviceName)
-			.then(() => {
-				this.getStatus();
-				this.$toast.success(
-					this.$t('service.' + this.serviceName + '.messages.start')
-						.toString()
-				);
-			})
-			.catch(this.handleError);
-	}
-
-	private stop(): void {
-		this.$store.commit('spinner/SHOW');
-		ServiceService.stop(this.serviceName)
-			.then(() => {
-				this.getStatus();
-				this.$toast.success(
-					this.$t('service.' + this.serviceName + '.messages.stop')
-						.toString()
-				);
-			})
-			.catch(this.handleError);
-	}
 	
 }
 </script>
-
-<style scoped>
-.btn {
-	margin: 0 3px 0 0;
-}
-</style>
