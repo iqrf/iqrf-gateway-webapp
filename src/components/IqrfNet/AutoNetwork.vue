@@ -407,8 +407,8 @@ export default {
 		},
 		autoNetworkProgress(response) {
 			let message = '\nWave ' + response.rsp.wave;
-			if (this.autoNetwork.stopConditions.waves) {
-				message += '/ ' + this.autoNetwork.stopConditions.waves;
+			if (this.useWaves) {
+				message += '/' + this.stopConditions.waves;
 			}
 			message += '\n[' + response.rsp.progress + '%] ';
 			if (response.rsp.waveState) {
