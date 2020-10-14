@@ -1,87 +1,90 @@
 <template>
-	<CCard>
-		<CCardBody>
-			<ValidationObserver v-slot='{ invalid }'>
-				<CForm>
-					<ValidationProvider
-						v-slot='{ errors, touched, valid }'
-						rules='required'
-						:custom-messages='{
-							required: "cloud.intelimentsInteliGlue.form.messages.rootTopic"
-						}'
-					>
-						<CInput
-							v-model='config.rootTopic'
-							:label='$t("cloud.intelimentsInteliGlue.form.rootTopic")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{ errors, touched, valid }'
-						rules='required|integer|between:0,65535'
-						:custom-messages='{
-							between: "cloud.intelimentsInteliGlue.form.messages.assignedPortRange",
-							integer: "cloud.intelimentsInteliGlue.form.messages.assignedPortRange",
-							required: "cloud.intelimentsInteliGlue.form.messages.assignedPort"
-						}'
-					>
-						<CInput
-							v-model.number='config.assignedPort'
-							type='number'
-							min='0'
-							max='65535'
-							:label='$t("cloud.intelimentsInteliGlue.form.assignedPort")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{ errors, touched, valid }'
-						rules='required'
-						:custom-messages='{
-							required: "cloud.intelimentsInteliGlue.form.messages.clientId"
-						}'
-					>
-						<CInput
-							v-model='config.clientId'
-							:label='$t("cloud.intelimentsInteliGlue.form.clientId")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{ errors, touched, valid }'
-						rules='required'
-						:custom-messages='{
-							required: "cloud.intelimentsInteliGlue.form.messages.password"
-						}'
-					>
-						<CInput
-							v-model='config.password'
-							:label='$t("cloud.intelimentsInteliGlue.form.password")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-						/>
-					</ValidationProvider>
-					<CButton
-						color='primary'
-						:disabled='invalid'
-						@click.prevent='save'
-					>
-						{{ $t('forms.save') }}
-					</CButton>
-					<CButton
-						color='secondary'
-						:disabled='invalid'
-						@click.prevent='saveAndRestart'
-					>
-						{{ $t('forms.saveRestart') }}
-					</CButton>
-				</CForm>
-			</ValidationObserver>
-		</CCardBody>
-	</CCard>
+	<div>
+		<h1>{{ $t('cloud.intelimentsInteliGlue.form.title') }}</h1>
+		<CCard>
+			<CCardBody>
+				<ValidationObserver v-slot='{ invalid }'>
+					<CForm>
+						<ValidationProvider
+							v-slot='{ errors, touched, valid }'
+							rules='required'
+							:custom-messages='{
+								required: "cloud.intelimentsInteliGlue.form.messages.rootTopic"
+							}'
+						>
+							<CInput
+								v-model='config.rootTopic'
+								:label='$t("cloud.intelimentsInteliGlue.form.rootTopic")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{ errors, touched, valid }'
+							rules='required|integer|between:0,65535'
+							:custom-messages='{
+								between: "cloud.intelimentsInteliGlue.form.messages.assignedPortRange",
+								integer: "cloud.intelimentsInteliGlue.form.messages.assignedPortRange",
+								required: "cloud.intelimentsInteliGlue.form.messages.assignedPort"
+							}'
+						>
+							<CInput
+								v-model.number='config.assignedPort'
+								type='number'
+								min='0'
+								max='65535'
+								:label='$t("cloud.intelimentsInteliGlue.form.assignedPort")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{ errors, touched, valid }'
+							rules='required'
+							:custom-messages='{
+								required: "cloud.intelimentsInteliGlue.form.messages.clientId"
+							}'
+						>
+							<CInput
+								v-model='config.clientId'
+								:label='$t("cloud.intelimentsInteliGlue.form.clientId")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{ errors, touched, valid }'
+							rules='required'
+							:custom-messages='{
+								required: "cloud.intelimentsInteliGlue.form.messages.password"
+							}'
+						>
+							<CInput
+								v-model='config.password'
+								:label='$t("cloud.intelimentsInteliGlue.form.password")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<CButton
+							color='primary'
+							:disabled='invalid'
+							@click.prevent='save'
+						>
+							{{ $t('forms.save') }}
+						</CButton>
+						<CButton
+							color='secondary'
+							:disabled='invalid'
+							@click.prevent='saveAndRestart'
+						>
+							{{ $t('forms.saveRestart') }}
+						</CButton>
+					</CForm>
+				</ValidationObserver>
+			</CCardBody>
+		</CCard>
+	</div>
 </template>
 
 <script lang='ts'>
