@@ -29,6 +29,7 @@ use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
+use App\ApiModule\Version0\Utils\ContentTypeUtil;
 use App\ConfigModule\Exceptions\IncompleteConfigurationException;
 use App\ConfigModule\Models\MigrationManager;
 use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
@@ -105,10 +106,8 @@ class ConfigMigrationController extends BaseConfigController {
 	 * @return ApiResponse API response
 	 */
 	public function import(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$contentType = $request->getHeader('Content-Type')[0] ?? null;
-		if ($contentType !== 'application/zip') {
-			throw new ClientErrorException('Unsupported media type', ApiResponse::S415_UNSUPPORTED_MEDIA_TYPE);
-		}
+		$contentTypes = ['application/zip', 'application/x-zip-compressed'];
+		ContentTypeUtil::validContentType($request, $contentTypes);
 		$path = '/tmp/iqrf-gateway-configuration-upload.zip';
 		FileSystem::write($path, $request->getBody()->getContents());
 		try {

@@ -31,6 +31,7 @@ use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
+use App\ApiModule\Version0\Utils\ContentTypeUtil;
 use App\ConfigModule\Exceptions\InvalidTaskMessageException;
 use App\ConfigModule\Exceptions\TaskNotFoundException;
 use App\ConfigModule\Models\SchedulerManager;
@@ -302,9 +303,9 @@ class SchedulerController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function import(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$contentType = $request->getHeader('Content-Type')[0] ?? null;
-		switch ($contentType) {
+		switch (ContentTypeUtil::getContentType($request)) {
 			case 'application/zip':
+			case 'application/x-zip-compressed':
 				$path = '/tmp/iqrf-gateway-scheduler-upload.zip';
 				FileSystem::write($path, $request->getBody()->getContents());
 				try {

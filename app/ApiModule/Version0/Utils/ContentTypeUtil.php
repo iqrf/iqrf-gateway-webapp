@@ -30,34 +30,34 @@ use Apitte\Core\Http\ApiResponse;
 class ContentTypeUtil {
 
 	/**
-	 * Returns content type header if it exists
+	 * Returns Content-Type header if it exists
 	 * @param ApiRequest $request API request
-	 * @return array<string> content-type header
+	 * @return string content-type header
+	 * @throws ClientErrorException Missing Content-Type header
 	 */
-	public static function getContentType(ApiRequest $request): ?array {
-		$headers = $request->getHeaders();
-		if (array_key_exists('content-type', $headers)) {
-			return $headers['content-type'];
+	public static function getContentType(ApiRequest $request): string {
+		$contentType = $request->getHeader('Content-Type')[0] ?? null;
+		if ($contentType === null) {
+			throw new ClientErrorException('Missing content-type header', ApiResponse::S422_UNPROCESSABLE_ENTITY);
 		}
-		return null;
+		return $contentType;
 	}
 
 	/**
-	 * Returns content type string if it is valid
+	 * Checks Content-Type string if it is valid
 	 * @param ApiRequest $request API request
 	 * @param array<string> $contentTypes array of allowed content types
+	 * @throws ClientErrorException Invalid Content-Type
+	 * @throws ClientErrorException Missing Content-Type header
 	 */
 	public static function validContentType(ApiRequest $request, array $contentTypes): ?string {
 		$contentType = self::getContentType($request);
-		if ($contentType !== null) {
-			foreach ($contentTypes as $item) {
-				if (strpos($contentType[0], $item) !== false) {
-					return $item;
-				}
+		foreach ($contentTypes as $item) {
+			if (strpos($contentType, $item) !== false) {
+				return $item;
 			}
-			throw new ClientErrorException('Invalid content type', ApiResponse::S415_UNSUPPORTED_MEDIA_TYPE);
 		}
-		throw new ClientErrorException('Missing content-type header', ApiResponse::S422_UNPROCESSABLE_ENTITY);
+		throw new ClientErrorException('Invalid content type', ApiResponse::S415_UNSUPPORTED_MEDIA_TYPE);
 	}
 
 }
