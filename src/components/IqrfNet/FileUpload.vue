@@ -39,8 +39,8 @@ import {Component, Vue} from 'vue-property-decorator';
 import {MutationPayload} from 'vuex';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInputFile, CSelect} from '@coreui/vue/src';
 import {FileFormat} from '../../iqrfNet/fileFormat';
-import {IOption} from '../../interfaces/IOption';
 import NativeUploadService from '../../services/NativeUploadService';
+import {IOption} from '../../interfaces/coreui';
 
 @Component({
 	components: {

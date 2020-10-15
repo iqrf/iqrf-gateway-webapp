@@ -263,7 +263,9 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import FeatureConfigService from '../../services/FeatureConfigService';
-import { Dictionary, NavigationGuardNext, Route } from 'vue-router/types/router';
+import {NavigationGuardNext, Route} from 'vue-router/types/router';
+import {ControllerBase} from '../../interfaces/controller';
+import { IOption } from '../../interfaces/coreui';
 
 @Component({
 	components: {
@@ -292,7 +294,7 @@ import { Dictionary, NavigationGuardNext, Route } from 'vue-router/types/router'
 })
 
 export default class ControllerConfig extends Vue {
-	private apiCallOptions: Array<Dictionary<string>> = [
+	private apiCallOptions: Array<IOption> = [
 		{
 			value: '',
 			label: this.$t('controllerConfig.form.resetButton.calls.noCall').toString()
@@ -307,8 +309,7 @@ export default class ControllerConfig extends Vue {
 		}
 	]
 	private name = 'controller'
-	private config: Dictionary<unknown>|null = null
-	private severityOptions: Array<Dictionary<string>> = [
+	private severityOptions: Array<IOption> = [
 		{
 			value: 'trace',
 			label: this.$t('controllerConfig.form.logger.levels.trace').toString()
@@ -330,6 +331,7 @@ export default class ControllerConfig extends Vue {
 			label: this.$t('controllerConfig.form.logger.levels.error').toString()
 		}
 	]
+	private config: ControllerBase|null = null
 
 	created(): void {
 		extend('between', between);

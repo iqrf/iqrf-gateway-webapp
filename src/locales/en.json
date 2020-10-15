@@ -1648,7 +1648,7 @@
 	},
 	"translatorConfig": {
 		"title": "Translator",
-		"description": "Configuration",
+		"description": "Translator configuration",
 		"form": {
 			"rest": {
 				"title": "REST API client configuration",
@@ -1687,7 +1687,7 @@
 	},
 	"controllerConfig": {
 		"title": "Controller",
-		"description": "Configuration",
+		"description": "Controller configuration",
 		"form": {
 			"daemonApi": {
 				"autoNetwork": {
