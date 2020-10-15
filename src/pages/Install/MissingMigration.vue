@@ -1,6 +1,6 @@
 <template>
 	<CCard>
-		<CCardHeader color='danger' class='title'>
+		<CCardHeader color='danger' class='text-white'>
 			{{ $t('install.error.missingMigration.title') }}
 		</CCardHeader>
 		<CCardBody>
@@ -62,9 +62,3 @@ export default class MissingMigration extends Vue {
 
 }
 </script>
-
-<style scoped>
-.title {
-	color: white;
-}
-</style>

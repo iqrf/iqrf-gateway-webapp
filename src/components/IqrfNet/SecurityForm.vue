@@ -17,8 +17,7 @@
 					@click='save(true)'
 				>
 					{{ $t("iqrfnet.trConfiguration.security.form.setPassword") }}
-				</CButton>
-				<CButton
+				</CButton> <CButton
 					color='primary'
 					@click='save(false)'
 				>
@@ -111,9 +110,3 @@ export default Vue.extend({
 	},
 });
 </script>
-
-<style scoped>
-.btn {
-  margin: 0 3px 0 0;
-}
-</style>

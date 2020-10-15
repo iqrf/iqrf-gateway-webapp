@@ -22,8 +22,10 @@
 						@click.prevent='importConfig'
 					>
 						{{ $t('config.migration.form.import') }}
-					</CButton>
-					<CButton color='secondary' @click.prevent='exportConfig'>
+					</CButton> <CButton
+						color='secondary'
+						@click.prevent='exportConfig'
+					>
 						{{ $t('config.migration.form.export') }}
 					</CButton>
 				</CForm>
@@ -116,9 +118,3 @@ export default class ConfigMigration extends Vue {
 
 }
 </script>
-
-<style scoped>
-.btn {
-	margin: 0 3px 0 0;
-}
-</style>

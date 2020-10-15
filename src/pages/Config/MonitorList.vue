@@ -51,8 +51,7 @@
 							>
 								<CIcon :content='$options.icons.edit' size='sm' />
 								{{ $t('table.actions.edit') }}
-							</CButton>
-							<CButton
+							</CButton> <CButton
 								color='danger'
 								size='sm'
 								@click='modals.instances = {monitor: item.monitor.instance, webSocket: item.webSocket.instance}'
@@ -78,10 +77,15 @@
 				{{ $t('config.monitor.messages.delete.confirm', {instance: modals.instances.monitor}) }}
 			</div>
 			<template #footer>
-				<CButton color='danger' @click='modals.instances = null'>
+				<CButton
+					color='danger'
+					@click='modals.instances = null'
+				>
 					{{ $t('forms.no') }}
-				</CButton>
-				<CButton color='success' @click='removeInterface()'>
+				</CButton> <CButton
+					color='success'
+					@click='removeInterface()'
+				>
 					{{ $t('forms.yes') }}
 				</CButton>
 			</template>

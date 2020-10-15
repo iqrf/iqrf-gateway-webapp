@@ -56,8 +56,7 @@
 							>
 								<CIcon :content='getIcon("edit")' size='sm' />
 								{{ $t('table.actions.edit') }}
-							</CButton>
-							<CButton
+							</CButton> <CButton
 								color='danger'
 								size='sm'
 								@click='instance = item.instance'
@@ -81,10 +80,15 @@
 			</template>
 			{{ $t('config.websocket.messaging.messages.deletePrompt', {messaging: instance}) }}
 			<template #footer>
-				<CButton color='danger' @click='instance = null'>
+				<CButton
+					color='danger'
+					@click='instance = null'
+				>
 					{{ $t('forms.no') }}
-				</CButton>
-				<CButton color='success' @click='removeInstance'>
+				</CButton> <CButton
+					color='success'
+					@click='removeInstance'
+				>
 					{{ $t('forms.yes') }}
 				</CButton>
 			</template>
@@ -195,9 +199,3 @@ export default class WebsocketMessagingList extends Vue {
 	}
 }
 </script>
-
-<style scoped>
-.btn {
-  margin: 0 3px 0 0;
-}
-</style>

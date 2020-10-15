@@ -52,8 +52,7 @@
 							>
 								<CIcon :content='getIcon("edit")' size='sm' />
 								{{ $t('table.actions.edit') }}
-							</CButton>
-							<CButton
+							</CButton> <CButton
 								color='danger'
 								size='sm'
 								@click='service = item.instance'
@@ -77,10 +76,15 @@
 			</template>
 			{{ $t('config.websocket.service.messages.deletePrompt', {service: service}) }}
 			<template #footer>
-				<CButton color='danger' @click='service = null'>
+				<CButton
+					color='danger'
+					@click='service = null'
+				>
 					{{ $t('forms.no') }}
-				</CButton>
-				<CButton color='success' @click='removeService'>
+				</CButton> <CButton
+					color='success'
+					@click='removeService'
+				>
 					{{ $t('forms.yes') }}
 				</CButton>
 			</template>
@@ -191,9 +195,3 @@ export default class WebsocketServiceList extends Vue {
 	}
 }
 </script>
-
-<style scoped>
-.btn {
-  margin: 0 3px 0 0;
-}
-</style>

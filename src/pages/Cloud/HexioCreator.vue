@@ -95,8 +95,7 @@
 							@click.prevent='save'
 						>
 							{{ $t('forms.save') }}
-						</CButton>
-						<CButton
+						</CButton> <CButton
 							color='secondary'
 							:disabled='invalid'
 							@click.prevent='saveAndRestart'
@@ -192,9 +191,3 @@ export default class HexioCreator extends Vue {
 	}
 }
 </script>
-
-<style scoped>
-.btn {
-	margin: 0 3px 0 0;
-}
-</style>

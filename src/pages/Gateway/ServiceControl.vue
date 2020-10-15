@@ -3,22 +3,40 @@
 		<h1>{{ title }}</h1>
 		<CCard body-wrapper>
 			<div v-if='!missing && !unsupported'>
-				<CButton v-if='!service.enabled' color='success' @click='enable()'>
+				<CButton
+					v-if='!service.enabled'
+					color='success'
+					@click='enable()'
+				>
 					{{ $t('service.actions.enable') }}
-				</CButton>
-				<CButton v-if='service.enabled' color='danger' @click='disable()'>
+				</CButton> <CButton
+					v-if='service.enabled'
+					color='danger'
+					@click='disable()'
+				>
 					{{ $t('service.actions.disable') }}
-				</CButton>
-				<CButton v-if='!service.active' color='success' @click='start()'>
+				</CButton> <CButton
+					v-if='!service.active'
+					color='success'
+					@click='start()'
+				>
 					{{ $t('service.actions.start') }}
-				</CButton>
-				<CButton v-if='service.active' color='danger' @click='stop()'>
+				</CButton> <CButton
+					v-if='service.active'
+					color='danger'
+					@click='stop()'
+				>
 					{{ $t('service.actions.stop') }}
-				</CButton>
-				<CButton v-if='service.active' color='primary' @click='restart()'>
+				</CButton> <CButton
+					v-if='service.active'
+					color='primary'
+					@click='restart()'
+				>
 					{{ $t('service.actions.restart') }}
-				</CButton>
-				<CButton color='secondary' @click='refreshStatus()'>
+				</CButton> <CButton
+					color='secondary'
+					@click='refreshStatus()'
+				>
 					{{ $t('service.actions.status') }}
 				</CButton>
 			</div>
@@ -212,9 +230,3 @@ export default class ServiceControl extends Vue {
 	}
 }
 </script>
-
-<style scoped>
-.btn {
-  margin: 0 3px 0 0;
-}
-</style>

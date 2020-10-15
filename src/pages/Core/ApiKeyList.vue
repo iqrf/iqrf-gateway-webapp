@@ -43,8 +43,7 @@
 							>
 								<CIcon :content='$options.icons.edit' size='sm' />
 								{{ $t('table.actions.edit') }}
-							</CButton>
-							<CButton
+							</CButton> <CButton
 								color='danger'
 								size='sm'
 								@click='modals.key = item.id'
@@ -68,10 +67,15 @@
 			</template>
 			{{ $t('core.apiKey.messages.deletePrompt', {key: modals.key}) }}
 			<template #footer>
-				<CButton color='danger' @click='modals.key = null'>
+				<CButton
+					color='danger'
+					@click='modals.key = null'
+				>
 					{{ $t('forms.no') }}
-				</CButton>
-				<CButton color='success' @click='removeKey'>
+				</CButton> <CButton
+					color='success'
+					@click='removeKey'
+				>
 					{{ $t('forms.yes') }}
 				</CButton>
 			</template>
@@ -172,9 +176,3 @@ export default {
 	}
 };
 </script>
-
-<style scoped>
-.btn {
-  margin: 0 3px 0 0;
-}
-</style>

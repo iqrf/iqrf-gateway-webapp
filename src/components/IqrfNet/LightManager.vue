@@ -67,29 +67,25 @@
 						@click.prevent='submitEnumerate'
 					>
 						{{ $t('forms.enumerate') }}
-					</CButton>
-					<CButton
+					</CButton> <CButton
 						color='secondary'
 						:disabled='invalid'
 						@click.prevent='submitGetPower'
 					>
 						{{ $t('iqrfnet.standard.light.form.getPower') }}
-					</CButton>
-					<CButton
+					</CButton> <CButton
 						color='secondary'
 						:disabled='invalid'
 						@click.prevent='submitSetPower'
 					>
 						{{ $t('iqrfnet.standard.light.form.setPower') }}
-					</CButton>
-					<CButton
+					</CButton> <CButton
 						color='secondary'
 						:disabled='invalid'
 						@click.prevent='submitIncrementPower'
 					>
 						{{ $t('iqrfnet.standard.light.form.increment') }}
-					</CButton>
-					<CButton
+					</CButton> <CButton
 						color='secondary'
 						:disabled='invalid'
 						@click.prevent='submitDecrementPower'
@@ -255,11 +251,3 @@ export default Vue.extend({
 	}
 });
 </script>
-
-<style scoped>
-
-.btn {
-  margin: 0 3px 0 0;
-}
-
-</style>

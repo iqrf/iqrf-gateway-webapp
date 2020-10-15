@@ -82,16 +82,14 @@
 						@click.prevent='processSubmitBond'
 					>
 						{{ $t('forms.bond') }}
-					</CButton>
-					<CButton
+					</CButton> <CButton
 						color='secondary' 
 						type='button' 
 						:disabled='invalid || autoAddress'
 						@click='modalUnbond = true'
 					>
 						{{ $t('forms.unbond') }}
-					</CButton>
-					<CButton
+					</CButton> <CButton
 						color='secondary' 
 						type='button'
 						@click='modalClear = true'
@@ -105,10 +103,15 @@
 					>
 						{{ $t('iqrfnet.networkManager.messages.submit.removeBond.confirmClear') }}
 						<template #footer>
-							<CButton color='danger' @click='modalClear = false'>
+							<CButton
+								color='danger'
+								@click='modalClear = false'
+							>
 								{{ $t('forms.no') }}
-							</CButton>
-							<CButton color='success' @click='processSubmitClearAll'>
+							</CButton> <CButton
+								color='success'
+								@click='processSubmitClearAll'
+							>
 								{{ $t('forms.yes') }}
 							</CButton>
 						</template>
@@ -120,10 +123,15 @@
 					>
 						{{ $t('iqrfnet.networkManager.messages.submit.removeBond.confirmUnbond') }}
 						<template #footer>
-							<CButton color='danger' @click='modalUnbond = false'>
+							<CButton
+								color='danger'
+								@click='modalUnbond = false'
+							>
 								{{ $t('forms.no') }}
-							</CButton>
-							<CButton color='success' @click='processSubmitUnbond'>
+							</CButton> <CButton
+								color='success'
+								@click='processSubmitUnbond'
+							>
 								{{ $t('forms.yes') }}
 							</CButton>
 						</template>
@@ -295,9 +303,3 @@ export default Vue.extend({
 	}
 });
 </script>
-
-<style scoped>
-.btn {
-  margin: 0 3px 0 0;
-}
-</style>

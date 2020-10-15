@@ -1,5 +1,5 @@
 <template>
-	<div class='usage'>
+	<div class='d-inline'>
 		{{ $t('gateway.info.usages.used') }}
 		{{ usage.used }} / {{ usage.size }}
 		<div class='progress'>
@@ -27,9 +27,3 @@ export default Vue.extend({
 	},
 });
 </script>
-
-<style scoped>
-.usage {
-	display: inline;
-}
-</style>

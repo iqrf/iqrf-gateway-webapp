@@ -9,13 +9,20 @@
 				</tr>
 			</table>
 			<div v-if='mode !== "unknown"'>
-				<CButton color='primary' @click='setMode("operational")'>
+				<CButton
+					color='primary'
+					@click='setMode("operational")'
+				>
 					{{ $t('gateway.mode.modes.operational') }}
-				</CButton>
-				<CButton color='primary' @click='setMode("service")'>
+				</CButton> <CButton
+					color='primary'
+					@click='setMode("service")'
+				>
 					{{ $t('gateway.mode.modes.service') }}
-				</CButton>
-				<CButton color='primary' @click='setMode("forwarding")'>
+				</CButton> <CButton
+					color='primary'
+					@click='setMode("forwarding")'
+				>
 					{{ $t('gateway.mode.modes.forwarding') }}
 				</CButton>
 			</div>
@@ -25,7 +32,7 @@
 
 <script lang='ts'>
 import Vue from 'vue';
-import {Getter, MutationPayload} from 'vuex';
+import {MutationPayload} from 'vuex';
 import {CButton, CCard} from '@coreui/vue/src';
 import DaemonModeService, {DaemonMode} from '../../services/DaemonModeService';
 
@@ -111,9 +118,3 @@ export default Vue.extend({
 	},
 });
 </script>
-
-<style scoped>
-.btn {
-  margin: 0 3px 0 0;
-}
-</style>

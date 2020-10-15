@@ -2,11 +2,16 @@
 	<div>
 		<h1>{{ $t('gateway.power.title') }}</h1>
 		<CCard body-wrapper>
-			<CButton color='danger' @click='powerOff()'>
+			<CButton
+				color='danger'
+				@click='powerOff()'
+			>
 				<CIcon :content='getIcon("powerStandby")' />
 				{{ $t('gateway.power.powerOff.title') }}
-			</CButton>
-			<CButton color='primary' @click='reboot()'>
+			</CButton> <CButton
+				color='primary'
+				@click='reboot()'
+			>
 				<CIcon :content='getIcon("reload")' />
 				{{ $t('gateway.power.reboot.title') }}
 			</CButton>
@@ -58,9 +63,3 @@ export default class PowerControl extends Vue {
 	}
 }
 </script>
-
-<style scoped>
-.btn {
-  margin: 0 3px 0 0;
-}
-</style>

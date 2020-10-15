@@ -9,8 +9,7 @@
 					href='https://github.com/iqrfsdk/iot-starter-kit/blob/master/install/pdf/iqrf-part3a.pdf'
 				>
 					{{ $t('cloud.guides.pdf') }}
-				</CButton>
-				<CButton
+				</CButton> <CButton
 					color='danger'
 					size='sm'
 					href='https://youtu.be/Z9R2vdaw3KA'
@@ -65,8 +64,7 @@
 							@click.prevent='save'
 						>
 							{{ $t('forms.save') }}
-						</CButton>
-						<CButton
+						</CButton> <CButton
 							color='secondary'
 							:disabled='invalid || certEmpty || keyEmpty'
 							@click.prevent='saveAndRestart'
@@ -185,9 +183,3 @@ export default class AwsCreator extends Vue {
 	}
 }
 </script>
-
-<style scoped>
-.btn {
-	margin: 0 3px 0 0;
-}
-</style>

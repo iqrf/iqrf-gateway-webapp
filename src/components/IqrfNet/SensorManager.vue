@@ -29,8 +29,7 @@
 						@click.prevent='submitEnumerate'
 					>
 						{{ $t('forms.enumerate') }}
-					</CButton>
-					<CButton
+					</CButton> <CButton
 						color='secondary'
 						:disabeld='invalid'
 						@click.prevent='submitReadAll'
@@ -194,9 +193,4 @@ export default Vue.extend({
 td {
 	text-align: center;
 }
-
-.btn {
-  margin: 0 3px 0 0;
-}
-
 </style>

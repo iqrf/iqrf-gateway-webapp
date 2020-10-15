@@ -62,15 +62,13 @@
 						@click='submitEnumerate'
 					>
 						{{ $t('forms.enumerate') }}
-					</CButton>
-					<CButton
+					</CButton> <CButton
 						color='secondary'
 						:disabled='invalid'
 						@click='submitGetStates'
 					>
 						{{ $t('iqrfnet.standard.binaryOutput.form.getStates') }}
-					</CButton>
-					<CButton
+					</CButton> <CButton
 						color='secondary'
 						:disabled='invalid'
 						@click='submitSetState'
@@ -265,9 +263,4 @@ export default {
     overflow-x: auto;
     white-space: nowrap;
 }
-
-.btn {
-  margin: 0 3px 0 0;
-}
-
 </style>

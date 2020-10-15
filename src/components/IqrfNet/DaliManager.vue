@@ -49,8 +49,7 @@
 							@click.prevent='removeDaliCommand(i-1)'
 						>
 							{{ $t('iqrfnet.standard.dali.form.removeCommand') }}
-						</CButton>
-						<CButton
+						</CButton> <CButton
 							v-if='i === commands.length' 
 							color='success' 
 							:disabled='invalid' 
@@ -59,7 +58,11 @@
 							{{ $t('iqrfnet.standard.dali.form.addCommand') }}
 						</CButton>
 					</div>
-					<CButton color='primary' :disabled='invalid' @click.prevent='sendDali'>
+					<CButton
+						color='primary'
+						:disabled='invalid'
+						@click.prevent='sendDali'
+					>
 						{{ $t('iqrfnet.standard.dali.form.sendCommand') }}
 					</CButton>
 				</CForm>
@@ -171,9 +174,3 @@ export default Vue.extend({
 	}
 });
 </script>
-
-<style scoped>
-.btn {
-  margin: 0 3px 0 0;
-}
-</style>

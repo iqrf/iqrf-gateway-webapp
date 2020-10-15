@@ -11,12 +11,18 @@
 					>
 						<CIcon :content='$options.icons.add' size='sm' />
 						{{ $t('table.actions.add') }}
-					</CButton>
-					<CButton color='primary' size='sm' @click='importConfig.modal = true'>
+					</CButton> <CButton
+						color='primary'
+						size='sm'
+						@click='importConfig.modal = true'
+					>
 						<CIcon :content='$options.icons.import' size='sm' />
 						{{ $t('config.scheduler.buttons.import') }}
-					</CButton>
-					<CButton color='secondary' size='sm' @click='exportScheduler'>
+					</CButton> <CButton
+						color='secondary'
+						size='sm'
+						@click='exportScheduler'
+					>
 						<CIcon :content='$options.icons.export' size='sm' />
 						{{ $t('config.scheduler.buttons.export') }}
 					</CButton>
@@ -67,8 +73,7 @@
 							>
 								<CIcon :content='$options.icons.edit' size='sm' />
 								{{ $t('table.actions.edit') }}
-							</CButton>
-							<CButton
+							</CButton> <CButton
 								color='danger'
 								size='sm'
 								@click='modal.task = retrieved === "daemon" ? item.taskId : item.id'
@@ -128,10 +133,15 @@
 			</template>
 			{{ $t('config.scheduler.messages.deletePrompt', {task: modal.task}) }}
 			<template #footer>
-				<CButton color='danger' @click='modal.task = null'>
+				<CButton
+					color='danger'
+					@click='modal.task = null'
+				>
 					{{ $t('forms.no') }}
-				</CButton>
-				<CButton color='success' @click='removeTask'>
+				</CButton> <CButton
+					color='success'
+					@click='removeTask'
+				>
 					{{ $t('forms.yes') }}
 				</CButton>
 			</template>
@@ -439,9 +449,3 @@ export default {
 	},
 };
 </script>
-
-<style scoped>
-.btn {
-  margin: 0 3px 0 0;
-}
-</style>

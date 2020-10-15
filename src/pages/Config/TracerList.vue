@@ -35,8 +35,7 @@
 							>
 								<CIcon :content='getIcon("edit")' size='sm' />
 								{{ $t('table.actions.edit') }}
-							</CButton>
-							<CButton
+							</CButton> <CButton
 								color='danger'
 								size='sm'
 								@click='modals.currentInstance = item.instance'
@@ -60,10 +59,15 @@
 			</template>
 			{{ $t('config.tracer.messages.removeItem', {instance: modals.currentInstance}) }}
 			<template #footer>
-				<CButton color='danger' @click='modals.currentInstance = ""'>
+				<CButton
+					color='danger'
+					@click='modals.currentInstance = ""'
+				>
 					{{ $t('forms.no') }}
-				</CButton>
-				<CButton color='success' @click='removeInstance'>
+				</CButton> <CButton
+					color='success'
+					@click='removeInstance'
+				>
 					{{ $t('forms.yes') }}
 				</CButton>
 			</template>
@@ -153,9 +157,3 @@ export default class TracerList extends Vue {
 	}
 }
 </script>
-
-<style scoped>
-.btn {
-	margin: 0 3px 0 0;
-}
-</style>

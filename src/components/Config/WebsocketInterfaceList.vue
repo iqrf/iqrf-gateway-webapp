@@ -66,8 +66,7 @@
 							>
 								<CIcon :content='getIcon("edit")' size='sm' />
 								{{ $t('table.actions.edit') }}
-							</CButton>
-							<CButton
+							</CButton> <CButton
 								color='danger'
 								size='sm'
 								@click='modals.instance = {messaging: item.messaging.instance, service: item.service.instance}'
@@ -93,10 +92,15 @@
 				{{ $t('config.websocket.messages.delete.confirm', {service: modals.instance.messaging}) }}
 			</div>
 			<template #footer>
-				<CButton color='danger' @click='modals.instance = null'>
+				<CButton
+					color='danger'
+					@click='modals.instance = null'
+				>
 					{{ $t('forms.no') }}
-				</CButton>
-				<CButton color='success' @click='removeInterface()'>
+				</CButton> <CButton
+					color='success'
+					@click='removeInterface()'
+				>
 					{{ $t('forms.yes') }}
 				</CButton>
 			</template>
@@ -265,10 +269,4 @@ export default class WebsocketInterfaceList extends Vue {
 	}
 }
 </script>
-
-<style scoped>
-.btn {
-  margin: 0 3px 0 0;
-}
-</style>
 

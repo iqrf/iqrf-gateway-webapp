@@ -65,8 +65,11 @@
 							>
 								<CIcon :content='$options.icons.edit' size='sm' />
 								{{ $t('table.actions.edit') }}
-							</CButton>
-							<CButton color='danger' size='sm' @click='confirmDelete(item)'>
+							</CButton> <CButton
+								color='danger'
+								size='sm'
+								@click='confirmDelete(item)'
+							>
 								<CIcon :content='$options.icons.delete' size='sm' />
 								{{ $t('table.actions.delete') }}
 							</CButton>
@@ -89,10 +92,15 @@
 				{{ $t('core.user.messages.delete.confirm', {username: modals.delete.user.username}) }}
 			</span>
 			<template #footer>
-				<CButton color='danger' @click='modals.delete.user = null'>
+				<CButton
+					color='danger'
+					@click='modals.delete.user = null'
+				>
 					{{ $t('forms.no') }}
-				</CButton>
-				<CButton color='success' @click='performDelete'>
+				</CButton> <CButton
+					color='success'
+					@click='performDelete'
+				>
 					{{ $t('forms.yes') }}
 				</CButton>
 			</template>
