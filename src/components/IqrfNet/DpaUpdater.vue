@@ -55,6 +55,7 @@ export default Vue.extend({
 	data(): any {
 		return {
 			address: 0,
+			currentDpa: undefined,
 			osBuild: undefined,
 			trType: null,
 			version: undefined,
@@ -131,7 +132,7 @@ export default Vue.extend({
 			const result = response.data.rsp.result;
 			this.osBuild = this.convertVersion(result.osBuild);
 			this.trType = result.trMcuType;
-			this.version = this.convertVersion(result.dpaVer);
+			this.currentDpa = this.convertVersion(result.dpaVer);
 			DpaService.getVersions(this.osBuild)
 				.then((versions) => {
 					for (const version of versions) {
@@ -152,6 +153,12 @@ export default Vue.extend({
 							});
 						}
 					}
+					this.versions.forEach(item => {
+						if (this.currentDpa === item.value) {
+							Object.assign(item, {disabled: true});
+							Object.assign(item, {label: item.label + ' (Current version)'});
+						}
+					});
 					this.versions.sort().reverse();
 				})
 				.catch(() => {
