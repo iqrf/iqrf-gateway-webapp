@@ -99,7 +99,7 @@ export default class MonitorForm extends Vue {
 		WebsocketPort: 1338,
 		acceptOnlyLocalhost: false,
 	}
-	@Prop({required: false, default: null}) instance!: string
+	@Prop({required: false, default: ''}) instance!: string
 
 	get pageTitle(): string {
 		return this.$route.path === '/config/websocket/add' ?
@@ -114,7 +114,7 @@ export default class MonitorForm extends Vue {
 	created(): void {
 		extend('integer', integer);
 		extend('required', required);
-		if (this.instance !== null) {
+		if (this.instance !== '') {
 			this.getConfig();
 		}
 	}
@@ -151,7 +151,7 @@ export default class MonitorForm extends Vue {
 		} else {
 			this.messaging.RequiredInterfaces[0].target.instance = this.messaging.instance;
 		}
-		if (this.instance === null) {
+		if (this.instance === '') {
 			Promise.all([
 				DaemonConfigurationService.createInstance(this.componentNames.service, this.service),
 				DaemonConfigurationService.createInstance(this.componentNames.messaging, this.messaging),

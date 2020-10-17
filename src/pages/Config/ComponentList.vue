@@ -99,7 +99,7 @@ import DaemonConfigurationService from '../../services/DaemonConfigurationServic
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import { MetaInfo } from 'vue-meta';
 import { IField } from '../../interfaces/coreui';
-import { AxiosError, AxiosResponse } from 'axios';
+import { AxiosError } from 'axios';
 import { Dictionary } from 'vue-router/types/router';
 
 interface ComponentItem {
@@ -183,7 +183,7 @@ export default class ComponentList extends Vue {
 		}
 	}
 
-	private getConfig(): Promise<AxiosResponse|void> {
+	private getConfig(): Promise<void> {
 		this.$store.commit('spinner/SHOW');
 		return DaemonConfigurationService.getComponent('')
 			.then((response) => {

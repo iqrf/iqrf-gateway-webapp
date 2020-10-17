@@ -218,13 +218,13 @@ export default class MqttMessagingTable extends Vue {
 		this.edit(instance, {EnabledSSL: enabledSsl});
 	}
 
-	private edit(instance: MqttInstance, newSettings: Dictionary<boolean>): Promise<AxiosResponse|void> {
+	private edit(instance: MqttInstance, newSettings: Dictionary<boolean>): void {
 		this.$store.commit('spinner/SHOW');
 		let settings = {
 			...instance,
 			...newSettings,
 		};
-		return DaemonConfigurationService.updateInstance(this.componentName, settings.instance, settings)
+		DaemonConfigurationService.updateInstance(this.componentName, settings.instance, settings)
 			.then(() => {
 				this.getInstances().then(() => {
 					this.$toast.success(
@@ -235,7 +235,7 @@ export default class MqttMessagingTable extends Vue {
 			});
 	}
 
-	private getInstances(): Promise<AxiosResponse|void> {
+	private getInstances(): Promise<void> {
 		return DaemonConfigurationService.getComponent(this.componentName)
 			.then((response: AxiosResponse) => {
 				this.$store.commit('spinner/HIDE');

@@ -19,7 +19,7 @@
 					size='sm'
 					@click='connect(item)'
 				>
-					<CIcon :content='$options.icons.connect' size='sm' />
+					<CIcon :content='icons.connect' size='sm' />
 					{{ $t('network.table.connect') }}
 				</CButton>
 				<CButton
@@ -28,15 +28,14 @@
 					size='sm'
 					@click='disconnect(item)'
 				>
-					<CIcon :content='$options.icons.disconnect' size='sm' />
+					<CIcon :content='icons.disconnect' size='sm' />
 					{{ $t('network.table.disconnect') }}
-				</CButton>
-				<CButton
+				</CButton> <CButton
 					color='primary'
 					:to='"/network/edit/" + item.uuid'
 					size='sm'
 				>
-					<CIcon :content='$options.icons.edit' size='sm' />
+					<CIcon :content='icons.edit' size='sm' />
 					{{ $t('table.actions.edit') }}
 				</CButton>
 			</td>
@@ -51,6 +50,7 @@ import {cilLink, cilLinkBroken, cilPencil, cilPlus, cilTrash} from '@coreui/icon
 import NetworkConnectionService from '../../services/NetworkConnectionService';
 import { Dictionary } from 'vue-router/types/router';
 import { IField } from '../../interfaces/coreui';
+import {NetworkConnection} from '../../interfaces/network';
 
 @Component({
 	components: {
@@ -73,7 +73,7 @@ export default class EthernetConnections extends Vue {
 			filter: false,
 		}
 	]
-	private icons: Dictionary<string[]> = {
+	private icons: Dictionary<Array<string>> = {
 		add: cilPlus,
 		connect: cilLink,
 		delete: cilTrash,
@@ -81,10 +81,10 @@ export default class EthernetConnections extends Vue {
 		edit: cilPencil,
 	}
 
-	@Prop({required: true}) connections: Array<unknown>|null = null
-	@Prop({required: false, default: null}) interfaceName: string|null = null
+	@Prop({required: true}) connections!: Array<NetworkConnection>
+	@Prop({required: false, default: null}) interfaceName!: string
 
-	private connect(connection): void {
+	private connect(connection: NetworkConnection): void {
 		this.$store.commit('spinner/SHOW');
 		NetworkConnectionService.connect(connection.uuid, this.interfaceName)
 			.then(() => {
@@ -99,7 +99,7 @@ export default class EthernetConnections extends Vue {
 			.catch(() => this.$store.commit('spinner/HIDE'));
 	}
 
-	private disconnect(connection): void {
+	private disconnect(connection: NetworkConnection): void {
 		this.$store.commit('spinner/SHOW');
 		NetworkConnectionService.disconnect(connection.uuid)
 			.then(() => {

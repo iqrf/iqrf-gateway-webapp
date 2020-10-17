@@ -163,7 +163,7 @@ export default class MonitorList extends Vue {
 		this.getConfig();
 	}
 
-	private getConfig(): Promise<AxiosResponse|void> {
+	private getConfig(): Promise<void> {
 		this.instances = [];
 		return Promise.all([
 			DaemonConfigurationService.getComponent(this.componentNames.monitor),

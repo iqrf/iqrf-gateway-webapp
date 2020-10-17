@@ -39,7 +39,7 @@
 			<CButton color='primary' class='w-100' @click='frcPing'>
 				{{ $t('forms.pingNodes') }}
 			</CButton>
-			<div v-if='devices != []' class='table-responsive'>
+			<div v-if='devices.length !== 0' class='table-responsive'>
 				<table class='table table-striped device-info'>
 					<tbody>
 						<tr>
@@ -144,9 +144,7 @@ export default class DevicesInfo extends Vue {
 
 	beforeDestroy(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
-		if (this.unwatch !== undefined) {
-			this.unwatch();
-		} 
+		this.unwatch();
 		this.unsubscribe();
 	}
 

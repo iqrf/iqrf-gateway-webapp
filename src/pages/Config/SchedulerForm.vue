@@ -493,7 +493,7 @@ export default class SchedulerForm extends Vue {
 		}
 	}
 
-	private getCronAlias(input: string): string {
+	private getCronAlias(input: string): string|undefined {
 		let aliases = new Map();
 		aliases.set('@reboot', '');
 		aliases.set('@yearly', '0 0 0 1 1 * *');

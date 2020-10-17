@@ -102,7 +102,7 @@ export default class UdpMessagingForm extends Vue {
 		LocalPort: 55300
 	}
 
-	@Prop({required: false, default: null}) instance!: string
+	@Prop({required: false, default: ''}) instance!: string
 
 	get pageTitle(): string {
 		return this.$route.path === '/config/udp/add' ?
@@ -117,7 +117,7 @@ export default class UdpMessagingForm extends Vue {
 	created(): void {
 		extend('between', between);
 		extend('required', required);
-		if (this.instance !== null) {
+		if (this.instance !== '') {
 			this.getConfig();
 		}
 	}
@@ -137,7 +137,7 @@ export default class UdpMessagingForm extends Vue {
 
 	private saveConfig(): void {
 		this.$store.commit('spinner/SHOW');
-		if (this.instance !== null) {
+		if (this.instance !== '') {
 			DaemonConfigurationService.updateInstance(this.componentName, this.instance, this.configuration)
 				.then(() => this.successfulSave())
 				.catch((error: AxiosError) => FormErrorHandler.configError(error));

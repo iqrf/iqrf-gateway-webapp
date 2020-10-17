@@ -196,9 +196,7 @@ export default class DeviceEnumeration extends Vue {
 
 	beforeDestroy(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
-		if (this.unwatch !== undefined) {
-			this.unwatch();
-		}
+		this.unwatch();
 		this.unsubscribe();
 	}
 

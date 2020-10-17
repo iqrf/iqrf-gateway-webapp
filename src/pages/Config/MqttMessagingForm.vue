@@ -274,7 +274,7 @@ export default class MqttMessagingForm extends Vue {
 		EnableServerCertAuth: false,
 		acceptAsyncMsg: false,
 	}
-	@Prop({required: false, default: null}) instance!: string
+	@Prop({required: false, default: ''}) instance!: string
 
 	get pageTitle(): string {
 		return this.$route.path === '/config/mqtt/add' ?
@@ -301,7 +301,7 @@ export default class MqttMessagingForm extends Vue {
 		extend('integer', integer);
 		extend('min', min_value);
 		extend('required', required);
-		if (this.instance !== null) {
+		if (this.instance !== '') {
 			this.getConfig();
 		}
 	}
@@ -322,7 +322,7 @@ export default class MqttMessagingForm extends Vue {
 
 	private saveConfig(): void {
 		this.$store.commit('spinner/SHOW');
-		if (this.instance !== null) {
+		if (this.instance !== '') {
 			DaemonConfigurationService.updateInstance(this.componentName, this.instance, this.configuration)
 				.then(() => this.successfulSave())
 				.catch((error: AxiosError) => FormErrorHandler.configError(error));

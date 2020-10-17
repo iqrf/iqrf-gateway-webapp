@@ -99,7 +99,7 @@ export default class ApiKeyForm extends Vue {
 	}
 	private useExpiration = false
 	
-	@Prop({required: false, default: null}) keyId!: number
+	@Prop({required: false, default: null}) keyId!: number|null
 
 	get pageTitle(): string {
 		return this.$route.path === '/api-key/add' ?
@@ -125,12 +125,15 @@ export default class ApiKeyForm extends Vue {
 	}
 	
 	private getKey(): void {
+		if (this.keyId === null) {
+			return;
+		}
 		this.$store.commit('spinner/SHOW');
 		ApiKeyService.getApiKey(this.keyId)
 			.then((response: AxiosResponse) => {
 				this.$store.commit('spinner/HIDE');
 				this.metadata = response.data;
-				if (this.metadata.expiration !== null) {
+				if (this.metadata.expiration !== '') {
 					this.useExpiration = true;
 				}
 			})

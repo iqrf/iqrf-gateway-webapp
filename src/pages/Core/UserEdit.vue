@@ -159,7 +159,7 @@ export default class UserEdit extends Vue {
 
 	private handleSubmit(): void {
 		if (this.$store.getters['user/getId'] === this.userId &&
-				this.oldPassword !== null && this.newPassword !== null) {
+				this.oldPassword !== '' && this.newPassword !== '') {
 			UserService.changePassword(this.oldPassword, this.newPassword)
 				.then(() => {
 					this.performEdit();

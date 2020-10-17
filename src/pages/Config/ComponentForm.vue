@@ -113,8 +113,7 @@ export default class ComponentForm extends Vue {
 		startlevel: null
 	}
 	
-	@Prop({ required: false,default: null })
-	component!: string;
+	@Prop({ required: false, default: '' }) component!: string;
 	
 	get pageTitle(): string {
 		return this.$route.path === '/config/component/add' ?
@@ -129,7 +128,7 @@ export default class ComponentForm extends Vue {
 	created(): void {
 		extend('integer', integer);
 		extend('required', required);
-		if (this.component !== null) {
+		if (this.component !== '') {
 			this.getComponent();
 		}
 	}
@@ -149,7 +148,7 @@ export default class ComponentForm extends Vue {
 
 	private saveComponent(): void {
 		this.$store.commit('spinner/SHOW');
-		if (this.component !== null) {
+		if (this.component !== '') {
 			DaemonConfigurationService.updateComponent(this.component, this.configuration)
 				.then(() => this.successfulSave())
 				.catch((error: AxiosError) => FormErrorHandler.configError(error));

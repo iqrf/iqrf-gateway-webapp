@@ -89,7 +89,7 @@ export default class WebsocketServiceForm extends Vue {
 		WebsocketPort: 1338,
 		acceptOnlyLocalhost: false,
 	}
-	@Prop({required: false, default: null}) instance!: string
+	@Prop({required: false, default: ''}) instance!: string
 
 	get pageTitle(): string {
 		return this.$route.path === '/config/websocket/add-service' ?
@@ -124,7 +124,7 @@ export default class WebsocketServiceForm extends Vue {
 
 	private saveInstance(): void {
 		this.$store.commit('spinner/SHOW');
-		if (this.instance !== null) {
+		if (this.instance !== '') {
 			DaemonConfigurationService.updateInstance(this.componentName, this.instance, this.configuration)
 				.then(() => this.successfulSave())
 				.catch((error: AxiosError) => FormErrorHandler.configError(error));

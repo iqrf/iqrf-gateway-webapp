@@ -132,7 +132,8 @@ export default class MonitorForm extends Vue {
 		WebsocketPort: 1438,
 		acceptOnlyLocalhost: false,
 	}
-	@Prop({required: false, default: null}) instance!: string
+	
+	@Prop({required: false, default: ''}) instance!: string
 
 
 	get pageTitle(): string {
@@ -150,13 +151,13 @@ export default class MonitorForm extends Vue {
 	created(): void {
 		extend('integer', integer);
 		extend('required', required);
-		if (this.instance !== null) {
+		if (this.instance !== '') {
 			this.getConfig();
 		}
 	}
 
 	private getConfig(): void {
-		if (this.componentNames.monitor === null || this.componentNames.webSocket === null) {
+		if (this.componentNames.monitor === '' || this.componentNames.webSocket === '') {
 			return;
 		}
 		this.$store.commit('spinner/SHOW');
@@ -190,7 +191,7 @@ export default class MonitorForm extends Vue {
 		} else {
 			this.monitor.RequiredInterfaces[0].target.instance = this.monitor.instance;
 		}
-		if (this.instance === null) {
+		if (this.instance === '') {
 			Promise.all([
 				DaemonConfigurationService.createInstance(this.componentNames.webSocket, this.webSocket),
 				DaemonConfigurationService.createInstance(this.componentNames.monitor, this.monitor),

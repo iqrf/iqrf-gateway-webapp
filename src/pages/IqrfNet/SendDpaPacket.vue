@@ -193,7 +193,7 @@ export default class SendDpaPacket extends Vue {
 	 * Handles Send DPA packet form submit event
 	 */
 	private handleSubmit(): Promise<string>|void {
-		if (this.packet === null || this.packet === '') {
+		if (this.packet === '') {
 			this.$toast.error(this.$t('iqrfnet.sendPacket.form.messages.missing.packet').toString());
 			return;
 		}
@@ -206,10 +206,10 @@ export default class SendDpaPacket extends Vue {
 				'returnVerbose': true,
 			},
 		};
-		if (this.addressOverwrite && this.address !== null) {
+		if (this.addressOverwrite) {
 			json.data.req.rData = sendPacket.updateNadr(this.packet, this.address);
 		}
-		if (this.timeoutOverwrite && this.timeout !== null) {
+		if (this.timeoutOverwrite) {
 			json.data.timeout = this.timeout;
 		}
 		let options = new WebSocketOptions(json);

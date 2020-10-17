@@ -246,14 +246,42 @@
 	</div>
 </template>
 
-<script>
+<script lang='ts'>
+import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CForm, CInput, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 import NetworkConnectionService from '../../services/NetworkConnectionService';
+import { IOption } from '../../interfaces/coreui';
+import { AxiosResponse } from 'axios';
 
-export default {
-	name: 'ConnectionForm',
+interface IpConfigAddress {
+	address: string
+	mask: string
+	prefix?: number
+}
+
+interface IpConfigDns {
+	address: string
+}
+
+interface IpConfig {
+	addresses: Array<IpConfigAddress>
+	dns: Array<IpConfigDns>
+	gateway?: string
+	method: string
+}
+
+interface ConnectionConfig {
+	name?: string
+	type?: string
+	uuid?: string
+	interface?: string
+	ipv4: IpConfig
+	ipv6: IpConfig
+}
+
+@Component({
 	components: {
 		CButton,
 		CCard,
@@ -263,111 +291,114 @@ export default {
 		ValidationObserver,
 		ValidationProvider,
 	},
-	props: {
-		uuid: {
-			type: String,
-			required: false,
-			default: null,
+	metaInfo: {
+		title: 'network.ethernet.edit',
+	}
+})
+
+export default class ConnectionForm extends Vue {
+	private configuration: ConnectionConfig = {
+		ipv4: {
+			addresses: [],
+			dns: [],
+			gateway: '',
+			method: '',
 		},
-	},
-	data() {
-		return {
-			configuration: {
-				id: undefined,
-				ipv4: {
-					addresses: [],
-					dns: [],
-					gateway: undefined,
-					method: undefined,
-				},
-				ipv6: {
-					addresses: [],
-					dns: [],
-					method: undefined,
-				}
-			},
-		};
-	},
-	computed: {
-		ipv4Methods() {
-			const methods = ['auto', 'disabled', 'link-local', 'manual', 'shared'];
-			return methods.map(
-				(method) => ({
-					value: method,
-					label: this.$t('network.connection.ipv4.methods.' + method),
-				})
-			);
-		},
-		ipv6Methods() {
-			const methods = [
-				'auto', 'disabled', 'dhcp', 'ignore', 'link-local', 'manual', 'shared',
-			];
-			return methods.map((method) =>
-				({
-					value: method,
-					label: this.$t('network.connection.ipv6.methods.' + method),
-				})
-			);
-		},
-		submitButton() {
-			return this.$route.path === '/network/add' ?
-				this.$t('forms.add') : this.$t('forms.save');
-		},
-	},
-	created() {
+		ipv6: {
+			addresses: [],
+			dns: [],
+			method: '',
+		}
+	}
+
+	@Prop({required: false, default: null}) uuid!: string
+
+	get ipv4Methods(): Array<IOption> {
+		const methods = ['auto', 'disabled', 'link-local', 'manual', 'shared'];
+		return methods.map(
+			(method) => ({
+				value: method,
+				label: this.$t('network.connection.ipv4.methods.' + method).toString(),
+			})
+		);
+	}
+
+	get ipv6Methods(): Array<IOption> {
+		const methods = [
+			'auto', 'disabled', 'dhcp', 'ignore', 'link-local', 'manual', 'shared',
+		];
+		return methods.map((method: string) =>
+			({
+				value: method,
+				label: this.$t('network.connection.ipv6.methods.' + method).toString(),
+			})
+		);
+	}
+
+	get submitButton(): string {
+		return this.$route.path === '/network/add' ?
+			this.$t('forms.add').toString() : this.$t('forms.save').toString();
+	}
+
+	created(): void {
 		this.$store.commit('spinner/SHOW');
 		extend('required', required);
 		NetworkConnectionService.get(this.uuid)
-			.then((response) => {
+			.then((response: AxiosResponse) => {
 				this.configuration = response.data;
 				this.$store.commit('spinner/HIDE');
 			});
-	},
-	methods: {
-		addIpv4Address() {
-			this.configuration.ipv4.addresses.push({address: null, mask: null});
-		},
-		addIpv4Dns() {
-			this.configuration.ipv4.dns.push({address: null});
-		},
-		deleteIpv4Address(index) {
-			this.configuration.ipv4.addresses.splice(index, 1);
-		},
-		deleteIpv4Dns(index) {
-			this.configuration.ipv4.dns.splice(index, 1);
-		},
-		addIpv6Address() {
-			this.configuration.ipv6.addresses.push({address: null, mask: null});
-		},
-		addIpv6Dns() {
-			this.configuration.ipv6.dns.push({address: null});
-		},
-		deleteIpv6Address(index) {
-			this.configuration.ipv6.addresses.splice(index, 1);
-		},
-		deleteIpv6Dns(index) {
-			this.configuration.ipv6.dns.splice(index, 1);
-		},
-		handleSubmit() {
-			this.$store.commit('spinner/SHOW');
-			NetworkConnectionService.edit(this.uuid, this.configuration)
-				.then(() => {
-					NetworkConnectionService.connect(this.uuid).then(() => {
-						this.$toast.success(
-							this.$t('network.connection.messages.edit.success').toString()
-						);
-						this.$store.commit('spinner/HIDE');
-					});
-				}).catch(() => {
-					this.$toast.error(
-						this.$t('network.connection.messages.edit.failure').toString()
+	}
+
+	private addIpv4Address(): void {
+		this.configuration.ipv4.addresses.push({address: '', mask: ''});
+	}
+
+	private addIpv4Dns(): void {
+		this.configuration.ipv4.dns.push({address: ''});
+	}
+
+	private deleteIpv4Address(index: number): void {
+		this.configuration.ipv4.addresses.splice(index, 1);
+	}
+
+	private deleteIpv4Dns(index: number): void {
+		this.configuration.ipv4.dns.splice(index, 1);
+	}
+
+	private addIpv6Address(): void {
+		this.configuration.ipv6.addresses.push({address: '', mask: ''});
+	}
+
+	private addIpv6Dns(): void {
+		this.configuration.ipv6.dns.push({address: ''});
+	}
+
+	private deleteIpv6Address(index: number): void {
+		this.configuration.ipv6.addresses.splice(index, 1);
+	}
+
+	private deleteIpv6Dns(index: number): void {
+		this.configuration.ipv6.dns.splice(index, 1);
+	}
+
+	private handleSubmit(): void {
+		this.$store.commit('spinner/SHOW');
+		NetworkConnectionService.edit(this.uuid, this.configuration)
+			.then(() => {
+				NetworkConnectionService.connect(this.uuid).then(() => {
+					this.$toast.success(
+						this.$t('network.connection.messages.edit.success').toString()
 					);
 					this.$store.commit('spinner/HIDE');
 				});
-		}
-	},
-	metaInfo: {
-		title: 'network.ethernet.edit',
-	},
-};
+			}).catch(() => {
+				this.$toast.error(
+					this.$t('network.connection.messages.edit.failure').toString()
+				);
+				this.$store.commit('spinner/HIDE');
+			});
+	}
+
+}
 </script>

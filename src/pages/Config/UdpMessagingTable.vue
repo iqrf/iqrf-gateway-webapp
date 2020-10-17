@@ -62,7 +62,7 @@
 				/>
 			</template>
 			<span v-if='deleteInstance !== ""'>
-				{{ $t('config.udp.messages.delete.confirm', {instance: modals.delete.instance}) }}
+				{{ $t('config.udp.messages.delete.confirm', {instance: deleteInstance}) }}
 			</span>
 			<template #footer>
 				<CButton 

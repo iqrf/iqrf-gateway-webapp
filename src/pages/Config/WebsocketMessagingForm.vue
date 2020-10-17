@@ -155,7 +155,7 @@ export default class WebsocketMessagingForm extends Vue {
 		service: []
 	}
 
-	@Prop({required: false, default: null}) instance!: string
+	@Prop({required: false, default: ''}) instance!: string
 
 	get pageTitle(): string {
 		return this.$route.path === '/config/websocket/add-messaging' ?
@@ -229,7 +229,7 @@ export default class WebsocketMessagingForm extends Vue {
 		});
 		Object.assign(instance.RequiredInterfaces, RequiredInterfaces);
 		this.$store.commit('spinner/SHOW');
-		if (this.instance !== null) {
+		if (this.instance !== '') {
 			DaemonConfigurationService.updateInstance(this.componentNames.messaging, this.instance, instance)
 				.then(() => this.successfulSave())
 				.catch((error: AxiosError) => FormErrorHandler.configError(error));

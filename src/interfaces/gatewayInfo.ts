@@ -63,9 +63,9 @@ export interface VersionsInfo {
 /**
  * GatewayInfo network interfaces interface
  */
-export interface NetworkInterfaces {
-	ipAddresses: Array<string>
-	macAddress: string
+export interface NetworkInterface {
+	ipAddresses: Array<string>|null
+	macAddress: string|null
 	name: string
 }
 
@@ -77,7 +77,7 @@ export interface IGatewayInfo {
 	diskUsages: Array<DiskInfo>
 	gwId: string
 	hostname: string
-	interfaces: Array<NetworkInterfaces>
+	interfaces: Array<NetworkInterface>
 	memoryUsage: MemoryInfo
 	pixla: string
 	swapUsage: SwapInfo
