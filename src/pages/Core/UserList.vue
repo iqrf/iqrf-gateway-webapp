@@ -59,7 +59,7 @@
 						<td class='col-actions'>
 							<CButton
 								v-if='$store.getters["user/getRole"] === "power" || $store.getters["user/getName"] === item.username'
-								color='primary'
+								color='info'
 								:to='"/user/edit/" + item.id'
 								size='sm'
 							>

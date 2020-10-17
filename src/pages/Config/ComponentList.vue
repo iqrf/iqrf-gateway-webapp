@@ -56,8 +56,7 @@
 							>
 								<CIcon :content='icons.edit' size='sm' />
 								{{ $t('table.actions.edit') }}
-							</CButton>
-							<CButton
+							</CButton> <CButton
 								color='danger'
 								size='sm'
 								@click='component = item.name'
