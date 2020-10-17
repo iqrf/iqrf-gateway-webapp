@@ -1158,7 +1158,8 @@
 						"data": "Sent JSON request contains incorrect data.",
 						"hwpid": "Sent JSON request contains incorrect HWPID.",
 						"nadr": "Sent JSON request contains incorrect NADR.",
-						"messageError": "Sent JSON request is not valid."
+						"invalidMessage": "Sent JSON request is not valid.",
+						"messageQueueFull": "The IQRF Gateway Daemon message queue is full."
 					}
 				}
 			}

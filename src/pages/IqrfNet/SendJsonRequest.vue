@@ -197,10 +197,18 @@ export default Vue.extend({
 						this.response = JSON.stringify(mutation.payload, null, 4);
 					} else if (mutation.payload.mType === 'messageError') {
 						this.response = JSON.stringify(mutation.payload, null, 4);
-						this.$toast.error(
-							this.$t('iqrfnet.sendJson.form.messages.error.messageError')
-								.toString()
-						);
+						if (mutation.payload.data.rsp.errorStr.includes('daemon overload')) {
+							this.$toast.error(
+								this.$t('iqrfnet.sendJson.form.messages.error.messageQueueFull')
+									.toString()
+							);
+						} else {
+							this.$toast.error(
+								this.$t('iqrfnet.sendJson.form.messages.error.invalidMessage')
+									.toString()
+							);
+						}
+						
 					}
 				}
 			}
