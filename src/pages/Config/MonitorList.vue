@@ -201,13 +201,16 @@ export default class MonitorList extends Vue {
 	}
 
 	private changeAcceptOnlyLocalhost(service, setting: boolean): void {
+		if (service.acceptOnlyLocalhost === setting) {
+			return;
+		}
 		this.$store.commit('spinner/SHOW');
 		service.acceptOnlyLocalhost = setting;
 		DaemonConfigurationService.updateInstance(this.componentNames.webSocket, service.instance, service)
 			.then(() => {
 				this.getConfig().then(() => {
 					this.$toast.success(
-						this.$t('config.monitor.service.messages.editSuccess', {service: service.instance})
+						this.$t('config.monitor.messages.edit.success', {instance: service.instance})
 							.toString()
 					);
 				});

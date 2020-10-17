@@ -181,6 +181,9 @@ export default class MqMessagingTable extends Vue {
 	}
 
 	private changeAcceptAsyncMsg(instance: MqInstance, acceptAsyncMsg: boolean): Promise<AxiosResponse|void> {
+		if (instance.acceptAsyncMsg === acceptAsyncMsg) {
+			return;
+		}
 		this.$store.commit('spinner/SHOW');
 		instance.acceptAsyncMsg = acceptAsyncMsg;
 		return DaemonConfigurationService.updateInstance(this.componentName, instance.instance, instance)

@@ -205,10 +205,16 @@ export default class MqttMessagingTable extends Vue {
 	}
 
 	private changeAcceptAsyncMsg(instance: MqttInstance, acceptAsyncMsg: boolean): void {
+		if (instance.acceptAsyncMsg === acceptAsyncMsg) {
+			return;
+		}
 		this.edit(instance, {acceptAsyncMsg: acceptAsyncMsg});
 	}
 
 	private changeEnabledSSL(instance: MqttInstance, enabledSsl: boolean) : void{
+		if (instance.EnabledSSL === enabledSsl) {
+			return;
+		}
 		this.edit(instance, {EnabledSSL: enabledSsl});
 	}
 
