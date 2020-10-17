@@ -10,8 +10,8 @@
 						<CInputFile
 							ref='backupFile'
 							:label='$t("iqrfnet.networkManager.restore.form.backupFile")'
-							@input='isEmpty'
-							@click='isEmpty'
+							@input='fileInputTouched'
+							@click='fileInputTouched'
 						/>
 						<p v-if='fileEmpty && !fileUntouched' style='color:red'>
 							{{ $t('iqrfnet.networkManager.restore.form.messages.backupFile') }}
@@ -36,6 +36,13 @@ import {CButton, CCard, CCardHeader, CCardBody, CForm, CInput, CInputFile} from 
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';
 
+interface BackupData {
+	data: string
+	deviceAddr: number
+	dpaVer: number
+	mid: number
+}
+
 @Component({
 	components: {
 		CButton,
@@ -50,7 +57,11 @@ import {between, integer, required} from 'vee-validate/dist/rules';
 	}
 })
 
+/**
+ * IQMESH Restore component card
+ */
 export default class Restore extends Vue {
+	private backupData: Array<BackupData> = []
 	private fileUntouched = true;
 	private fileEmpty = true;
 
@@ -64,17 +75,48 @@ export default class Restore extends Vue {
 		//
 	}
 
-	private getFiles() {
+	/**
+	 * Extracts files from file input element
+	 */
+	private getFiles(): FileList {
 		const input = ((this.$refs.backupFile as CInputFile).$el.children[1] as HTMLInputElement);
-		return input.files;
+		return (input.files as FileList);
 	}
 
+	/**
+	 * Checks if file input element is empty
+	 */
 	private isEmpty(): void {
 		if (this.fileUntouched) {
 			this.fileUntouched = false;
 		}
 		const files = this.getFiles();
 		this.fileEmpty = files === null || files.length === 0;
+	}
+
+	private fileInputTouched(): void {
+		this.isEmpty();
+		if (this.fileEmpty) {
+			return;
+		}
+		this.readContents();
+	}
+
+	private readContents(): void {
+		this.getFiles()[0].text()
+			.then((fileContent: string) => {
+				this.parseContent(fileContent);
+			})
+			.catch(() => {
+				this.$toast.error(
+					this.$t('iqrfnet.networkManager.restore.messages.corruptedFile').toString()
+				);
+			});
+		
+	}
+
+	private parseContent(content: string): void {
+		console.error(content);
 	}
 }
 </script>

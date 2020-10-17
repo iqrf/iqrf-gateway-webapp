@@ -1147,7 +1147,11 @@
 				},
 				"messages": {
 					"timeout": "The backup process request timed out.",
-					"success": "The backup process has been successfully completed."
+					"success": "The backup process has been successfully completed.",
+					"statusInit": "Backup running [0 %]",
+					"statusRunning": "Backup running [{progress} %]",
+					"statusSuccess": "Backup of device {deviceAddr} completed.",
+					"statusFailed": "Backup of device {deviceAddr} failed. Device is offline."
 				}
 			},
 			"restore": {
@@ -1159,6 +1163,9 @@
 						"backupFile": "Please insert a TR backup file.",
 						"address": "Please enter integer between 0 and 239 to restore a device."
 					}
+				},
+				"messages": {
+					"corruptedFile": "The contents of uploaded file are corrupted."
 				}
 			},
 			"bonding": {
