@@ -39,7 +39,7 @@
 					:sorter='{external: false, resetable: true}'
 				>
 					<template #no-items-view='{}'>
-						No records have been found.
+						{{ $t('table.messages.noRecords') }}
 					</template>
 					<template v-if='retrieved === "rest"' #taskId='{item}'>
 						<td>

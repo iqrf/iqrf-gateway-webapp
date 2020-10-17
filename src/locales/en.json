@@ -1108,7 +1108,11 @@
 					"newNodes": "Please enter an integer between 1 and 239 for number of new nodes.",
 					"versionFailure": "Failed to retrieve version of IQRF Gateway Daemon.",
 					"versionInvalid": "Please upgrade to IQRF Gateway Daemon version 2.3.0 or higher to use the AutoNetwork service.",
-					"versionMissing": "Could not retrieve version of IQRF Gateway Daemon."
+					"versionMissing": "Could not retrieve version of IQRF Gateway Daemon.",
+					"statusTotalNodes": "Total number of nodes in network: ",
+					"statusAddedNodes": "Number of nodes added in last wave: ",
+					"statusWave": "Wave ",
+					"versionCurrent": "Current version: "
 				},
 				"bonding": {
 					"address": "Please enter an integer between 1 and 239 for new node address",
@@ -1742,6 +1746,9 @@
 		"enabled": {
 			"true": "Enabled",
 			"false": "Disabled"
+		},
+		"messages": {
+			"noRecords": "No records have been found."
 		}
 	}
 }

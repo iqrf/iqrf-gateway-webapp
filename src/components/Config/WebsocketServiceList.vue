@@ -22,10 +22,9 @@
 					:pagination='true'
 					:striped='true'
 					:sorter='{ external: false, resetable: true }'
-					:no-items-view='{noResults: "No records match the filter string.", noItems: "No records have been found."}'
 				>
 					<template #no-items-view='{}'>
-						No records have been found.
+						{{ $t('table.messages.noRecords') }}
 					</template>
 					<template #acceptOnlyLocalhost='{item}'>
 						<td>
