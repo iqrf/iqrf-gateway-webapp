@@ -143,7 +143,7 @@ export default class Backup extends Vue {
 				switch(mutation.payload.data.status) {
 					case -1:
 						this.$toast.error(
-							this.$t('iqrfnet.networkManager.backup.messages.timeoout').toString()
+							this.$t('iqrfnet.networkManager.backup.messages.timeout').toString()
 						);
 						break;
 					default:

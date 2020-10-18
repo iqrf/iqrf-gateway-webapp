@@ -1159,13 +1159,21 @@
 				"form": {
 					"address": "Node address",
 					"backupFile": "Backup file",
+					"restartOnRestore": "Restart Coordinator on restore",
 					"messages": {
 						"backupFile": "Please insert a TR backup file.",
-						"address": "Please enter integer between 0 and 239 to restore a device."
+						"address": "Please enter integer between 1 and 239 to restore a node device."
 					}
 				},
 				"messages": {
-					"corruptedFile": "The contents of uploaded file are corrupted."
+					"failed": "An error has occured during the restore process.",
+					"success": "The restore process has been successfully completed.",
+					"corruptedFile": "The contents of uploaded file are corrupted.",
+					"invalidContent": "The uploaded file does not contain valid IQMESH backup data.",
+					"missingProp": "Entry {item} does not contain property {property}.",
+					"missingCoordinator": "Uploaded file does not contain coordinator device backup data entry.",
+					"missingNode": "Uploaded file does not contain backup data of node device at address {address}.",
+					"statusCoordinator": "Restoring coordinator device."
 				}
 			},
 			"bonding": {

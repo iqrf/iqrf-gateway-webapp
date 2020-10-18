@@ -37,6 +37,13 @@ class IqrfNetService {
 		return store.dispatch('sendRequest', options);
 	}
 
+	/**
+	 * Performs IQMESH Backup
+	 * @param address Device address
+	 * @param network Backup entire network
+	 * @param options WebSocket request options
+	 * @return Message ID
+	 */
 	backup(address: number, network = false, options: WebSocketOptions): Promise<string> {
 		options.request = {
 			'mType': 'iqmeshNetwork_Backup',
@@ -259,6 +266,28 @@ class IqrfNetService {
 				},
 			};
 		}
+		return store.dispatch('sendRequest', options);
+	}
+
+	/**
+	 * Performs IQMESH Restore
+	 * @param address Device address
+	 * @param restart Restart coordinator on restore
+	 * @param data Backup data
+	 * @param options WebSocket request options
+	 */
+	restore(address: number, restart: boolean, data: string, options: WebSocketOptions): Promise<string> {
+		options.request = {
+			'mType': 'iqmeshNetwork_Restore',
+			'data': {
+				'req': {
+					'deviceAddr': address,
+					'data': data,
+					'restartCoordinator': restart
+				},
+				'returnVerbose': true,
+			},
+		};
 		return store.dispatch('sendRequest', options);
 	}
 

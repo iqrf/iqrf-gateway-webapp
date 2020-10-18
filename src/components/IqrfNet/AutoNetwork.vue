@@ -457,10 +457,8 @@ export default class AutoNetwork extends Vue {
 							);
 							break;
 					}
-				} else if (mutation.payload.mType === 'messageError') {
-					if (mutation.payload.data.msgId !== this.msgId) {
-						return;
-					}
+				} else if (mutation.payload.mType === 'messageError' &&
+							mutation.payload.data.msgId === this.msgId) {
 					this.$store.commit('spinner/HIDE');
 					this.$store.dispatch('removeMessage', this.msgId);
 					this.$toast.error(
