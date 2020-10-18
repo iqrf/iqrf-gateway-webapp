@@ -166,18 +166,63 @@ import { WebSocketOptions } from '../../store/modules/webSocketClient.module';
 	}
 })
 
+/**
+ * Bonding manager card for Network Manager
+ */
 export default class BondingManager extends Vue {
+	/**
+	 * @var {number} address Address to assign a newly bonded node
+	 */
 	private address = 1
+
+	/**
+	 * @var {boolean} autoAddress Use first available address
+	 */
 	private autoAddress = false
+
+	/**
+	 * @var {string} bondMethod Bonding method
+	 */
 	private bondMethod = 'local'
+
+	/**
+	 * @var {number} bondingRetries Number of bonding attempts
+	 */
 	private bondingRetries = 1
+
+	/**
+	 * @var {boolean} modalClear Show modal for clearing all bonds
+	 */
 	private modalClear = false
+
+	/**
+	 * @var {boolean} modalUnbond Show modal for node unbonding
+	 */
 	private modalUnbond = false
+
+	/**
+	 * @var {string|null} msgId Daemon api message id
+	 */
 	private msgId: string|null = null
+
+	/**
+	 * @var {string} scCode SmartConnect code
+	 */
 	private scCode = ''
+	
+	/**
+	 * @var {boolean} unbondCoordinatorOnly Unbond node only in coordinator memory
+	 */
 	private unbondCoordinatorOnly = false
+
+	/**
+	 * Component unsubscribe function
+	 */
 	private unsubscribe: CallableFunction = () => {return;}
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		extend('between', between);
 		extend('integer', integer);
@@ -225,6 +270,9 @@ export default class BondingManager extends Vue {
 					this.$store.dispatch('removeMessage', this.msgId);
 					this.handleRemoveResponse(mutation.payload.data);
 				} else if (mutation.payload.mType === 'messageError') {
+					if (mutation.payload.data.msgId !== this.msgId) {
+						return;
+					}
 					this.$store.dispatch('spinner/hide');
 					this.$toast.error(
 						this.$t('iqrfnet.networkManager.messages.submit.invalidMessage')
@@ -235,15 +283,27 @@ export default class BondingManager extends Vue {
 		});
 	}
 
+	/**
+	 * Vue lifecycle hook beforeDestroy
+	 */
 	beforeDestroy(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
 		this.unsubscribe();
 	}
 
+	/**
+	 * Creates WebSocket request options object
+	 * @param {number} timeout Request timeout in milliseconds
+	 * @param {string} message Request timeout message
+	 * @returns {WebSocketOptions} WebSocket request options
+	 */
 	private buildOptions(timeout: number, message: string): WebSocketOptions {
 		return new WebSocketOptions(null, timeout, message, () => this.msgId = null);
 	}
 
+	/**
+	 * Performs local bonding or SmartConnect bonding
+	 */
 	private processSubmitBond(): void {
 		this.$store.dispatch('spinner/show', {timeout: 30000});
 		const address = this.autoAddress ? 0 : this.address;
@@ -313,6 +373,9 @@ export default class BondingManager extends Vue {
 		);
 	}
 
+	/**
+	 * Unbonds a bonded node
+	 */
 	private processSubmitUnbond(): void {
 		this.modalUnbond = false;
 		this.$store.dispatch('spinner/show', {timeout: 30000});
@@ -320,6 +383,9 @@ export default class BondingManager extends Vue {
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
+	/**
+	 * Clears all bonds
+	 */
 	private processSubmitClearAll(): void {
 		this.modalClear = false;
 		this.$store.dispatch('spinner/show', {timeout: 30000});

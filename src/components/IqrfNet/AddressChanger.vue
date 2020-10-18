@@ -53,11 +53,23 @@ import {between, integer, required} from 'vee-validate/dist/rules';
 	}
 })
 
+/**
+ * Address Changer card for TrConfiguration component
+ */
 export default class AddressChanger extends Vue {
+	/**
+	 * @var {number|null} device Device address
+	 */
 	private address: number|null = null
 
+	/**
+	 * @property {number} currentAddress Currently selected device address
+	 */
 	@Prop({required: true}) currentAddress!: number
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		extend('between', between);
 		extend('integer', integer);
@@ -65,6 +77,9 @@ export default class AddressChanger extends Vue {
 		this.address = this.currentAddress;
 	}
 
+	/**
+	 * Changes device address used to retrieve transciever configuration
+	 */
 	private changeAddress(): void {
 		this.$router.push('/iqrfnet/tr-config/' + this.address);
 	}

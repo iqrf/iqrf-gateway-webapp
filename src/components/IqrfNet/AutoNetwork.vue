@@ -286,26 +286,64 @@ interface NodeMessages {
 	}
 })
 
+/**
+ * AutoNetwork card for IqrfNet network manager
+ */
 export default class AutoNetwork extends Vue {
+	/**
+	 * @var {boolean} autoAddress Use first available address for bonding
+	 */
 	private autoAddress = false
+	
+	/**
+	 * @var {AutoNetworkBase} autoNetwork Basic AutoNetwork process configuration
+	 */
 	private autoNetwork: AutoNetworkBase = {
 		actionRetries: 1,
 		discoveryBeforeStart: false,
 		discoveryTxPower: 7,
 		skipDiscoveryEachWave: false
 	}
+
+	/**
+	 * @var {string|null} daemonVersion IQRF Gateway Daemon version
+	 */
 	private daemonVersion: string|null = null
+
+	/**
+	 * @var {string} hwpidFiltering String of HWPIDs to filter nodes by
+	 */
 	private hwpidFiltering = ''
+
+	/**
+	 * @var {NodeMessages} messages Messages used in displaying AutoNetwork progress when spinner is active, bonded nodes
+	 */
 	private messages: NodeMessages = {
 		nodesNew: '',
 		nodesTotal: ''
 	}
+	
+	/**
+	 * @var {string|null} msgId Daemon api message id
+	 */
 	private msgId: string|null = null
+
+	/**
+	 * @var {string} nodeCondition AutoNetwork stop condition type for new or total nodes found in network
+	 */
 	private nodeCondition = 'new'
+
+	/**
+	 * @var {AutoNetworkOverlappingNetworks} overlappingNetworks AutoNetwork overlapping networks settings
+	 */
 	private overlappingNetworks: AutoNetworkOverlappingNetworks = {
 		network: 1,
 		networks: 1
 	}
+
+	/**
+	 * @var {AutoNetworkStopConditions} stopConditions AutoNetwork process stop conditions configuration
+	 */
 	private stopConditions: AutoNetworkStopConditions = {
 		abortOnTooManyNodesFound: false,
 		emptyWaves: 2,
@@ -313,14 +351,42 @@ export default class AutoNetwork extends Vue {
 		numberOfTotalNodes: 1,
 		waves: 10
 	}
+
+	/**
+	 * @var {boolean} useHwpidFiltering Filter nodes by HWPIDs
+	 */
 	private useHwpidFiltering = false
+
+	/**
+	 * @var {boolean} useNodes Use nodes found stop condition
+	 */
 	private useNodes = true
+
+	/**
+	 * @var {boolean} useOverlappingNetworks Use overlapping networks settings
+	 */
 	private useOverlappingNetworks = false
+
+	/**
+	 * @var {boolean} useWaves Use maximum number of waves stop condition
+	 */
 	private useWaves = false
+
+	/**
+	 * Component unsubscribe function
+	 */
 	private unsubscribe: CallableFunction = () => {return;}
+
+	/**
+	 * Component unwatch function
+	 */
 	private unwatch: CallableFunction = () => {return;}
 
-	get invalidVersionBody(): VueI18n.TranslateResult {
+	/**
+	 * Computes error message if Daemon version cannot be retrieved or is not valid
+	 * @returns {string} string containing translated message
+	 */
+	get invalidVersionBody(): string {
 		if (this.daemonVersion === null) {
 			return this.$t('iqrfnet.networkManager.messages.autoNetwork.versionMissing').toString();
 		} else {
@@ -328,6 +394,10 @@ export default class AutoNetwork extends Vue {
 		}
 	}
 
+	/**
+	 * Computes validity of Daemon version
+	 * @returns {boolean} true if Daemon version is valid, false otherwise
+	 */
 	get versionValid(): boolean {
 		if (this.daemonVersion === null) {
 			return false;
@@ -339,6 +409,9 @@ export default class AutoNetwork extends Vue {
 		}
 	}
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		extend('between', between);
 		extend('integer', integer);
@@ -384,7 +457,11 @@ export default class AutoNetwork extends Vue {
 							break;
 					}
 				} else if (mutation.payload.mType === 'messageError') {
+					if (mutation.payload.data.msgId !== this.msgId) {
+						return;
+					}
 					this.$store.commit('spinner/HIDE');
+					this.$store.dispatch('removeMessage', this.msgId);
 					this.$toast.error(
 						this.$t('iqrfnet.networkManager.messages.submit.invalidMessage')
 							.toString()
@@ -403,19 +480,30 @@ export default class AutoNetwork extends Vue {
 		});
 	}
 
+	/**
+	 * Vue lifecycle hook beforeDestroy
+	 */
 	beforeDestroy(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
 		this.unwatch();
 		this.unsubscribe();
 	}
 
+	/**
+	 * Attempts to retrieve IQRF Gateway Daemon version
+	 */
 	public getVersion(): void {
 		this.$store.dispatch('spinner/show', {timeout: 10000});
 		VersionService.getVersion(new WebSocketOptions(null, 10000, 'iqrfnet.networkManager.messages.autoNetwork.versionFailure', () => this.msgId = null))
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
-	private autoNetworkProgress(response): string {
+	/**
+	 * Creates progress message for running AutoNetwork process, used in spinner
+	 * @param {any} response Daemon api response
+	 * @returns {string} AutoNetwork progress message
+	 */
+	private autoNetworkProgress(response: any): string {
 		let message = '\n' + this.$t('iqrfnet.networkManager.messages.autoNetwork.statusWave').toString() + response.rsp.wave;
 		if (this.useWaves) {
 			message += '/ ' + this.stopConditions.waves;
@@ -434,6 +522,9 @@ export default class AutoNetwork extends Vue {
 		return message;
 	}
 
+	/**
+	 * Builds AutoNetwork configuration object and performs the AutoNetwork process
+	 */
 	private processSubmitAutoNetwork(): void {
 		this.messages.nodesTotal = this.messages.nodesNew = '';
 		let submitData = this.autoNetwork;

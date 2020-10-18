@@ -19,7 +19,13 @@ import {CIcon} from '@coreui/vue/src';
 	}
 })
 
+/**
+ * DeviceIcon component used in table of devices
+ */
 export default class DeviceIcon extends Vue {
+	/**
+	 * @property {Device} device Network device
+	 */
 	@Prop({required: true}) device!: Device
 }
 </script>

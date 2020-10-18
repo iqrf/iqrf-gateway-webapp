@@ -87,25 +87,62 @@ import { MutationPayload } from 'vuex';
 	}
 })
 
+/**
+ * Card of devices in network for Network Manager
+ */
 export default class DevicesInfo extends Vue {
+	/**
+	 * @constant {Array<string>} allowedMTypes Array of allowed Daemon api messages
+	 */
 	private allowedMTypes: Array<string> = [
 		'iqrfEmbedCoordinator_BondedDevices',
 		'iqrfEmbedCoordinator_DiscoveredDevices',
 		'iqrfEmbedFrc_Send',
 	]
+
+	/**
+	 * @var {Array<Device>} devices Array of devices in network
+	 */
 	private devices: Array<Device> = []
-	private icons: Dictionary<string[]> = {
+
+	/**
+	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI icons
+	 */
+	private icons: Dictionary<Array<string>> = {
 		coordinator: cilHome,
 		bonded: cilCheckAlt,
 		discovered: cilSignalCellular4,
 		unbonded: cilX
 	}
+
+	/**
+	 * @var {boolean} manual Manual FRC ping request
+	 */
 	private manual = false
+	
+	/**
+	 * @var {string|null} msgId Daemon api message id
+	 */
 	private msgId: string|null = null
+
+	/**
+	 * @var {boolean} notified Component notified by parent
+	 */
 	private notified = false
+
+	/**
+	 * Component unsubscribe function
+	 */
 	private unsubscribe: CallableFunction = () => {return;}
+
+	/**
+	 * Component unwatch function
+	 */
 	private unwatch: CallableFunction = () => {return;}
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		this.generateDevices();
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
@@ -142,22 +179,37 @@ export default class DevicesInfo extends Vue {
 		}
 	}
 
+	/**
+	 * Vue lifecycle hook beforeDestroy
+	 */
 	beforeDestroy(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
 		this.unwatch();
 		this.unsubscribe();
 	}
 
+	/**
+	 * Creates WebSocket request options object
+	 * @param {number} timeout Request timeout in milliseconds
+	 * @param {string} message Request timeout message
+	 * @returns {WebSocketOptions} WebSocket request options
+	 */
 	private buildOptions(timeout: number, message: string): WebSocketOptions {
 		return new WebSocketOptions(null, timeout, message, () => this.msgId = null);
 	}
 
+	/**
+	 * Performs FRC ping
+	 */
 	private frcPing(): void {
 		this.$store.dispatch('spinner/show', {timeout: 30000});
 		IqrfNetService.ping(this.buildOptions(30000, 'iqrfnet.networkManager.devicesInfo.messages.bonded.failure'))
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
+	/**
+	 * Creates array of devices filled with default values
+	 */
 	private generateDevices(): void {
 		this.devices.push(new Device(0, true));
 		for (let i = 1; i <= 239; i++) {
@@ -165,23 +217,39 @@ export default class DevicesInfo extends Vue {
 		}
 	}
 
+	/**
+	 * Computes index of device based on row and column number
+	 * @param {number} row Row number
+	 * @param {number} col Column number
+	 * @returns {number} Device array index
+	 */
 	private getAddress(row: number, col: number): number {
 		return row * 10 + col;
 	}
 
+	/**
+	 * Performs BondedDevices api call
+	 */
 	public getBondedDevices(): void {
 		this.$store.dispatch('spinner/show', {timeout: 20000});
 		IqrfNetService.getBonded(this.buildOptions(20000, 'iqrfnet.networkManager.devicesInfo.messages.bonded.failure'))
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
+	/**
+	 * Performs DiscoveredDevices api call
+	 */
 	private getDiscoveredDevices(): void {
 		this.$store.dispatch('spinner/show', {timeout: 20000});
 		IqrfNetService.getDiscovered(this.buildOptions(20000, 'iqrfnet.networkManager.devicesInfo.messages.discovered.failure'))
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
-	private parseBondedDevices(response): void {
+	/**
+	 * Handles BondedDevices api call response
+	 * @param {any} response Daemon api response
+	 */
+	private parseBondedDevices(response: any): void {
 		switch (response.data.status) {
 			case 0: {
 				this.devices.forEach((item: Device) => {
@@ -203,7 +271,11 @@ export default class DevicesInfo extends Vue {
 		}
 	}
 
-	private parseDiscoveredDevices(response): void {
+	/**
+	 * Handles DiscoveredDevices api call response
+	 * @param {any} response Daemon api response
+	 */
+	private parseDiscoveredDevices(response: any): void {
 		switch (response.data.status) {
 			case 0: {
 				this.devices.forEach((item: Device) => {
@@ -225,7 +297,11 @@ export default class DevicesInfo extends Vue {
 		}
 	}
 
-	private parseFrcPing(response): void {
+	/**
+	 * Handles FRC ping api call response
+	 * @param {any} response Daemon api response
+	 */
+	private parseFrcPing(response: any): void {
 		switch(response.data.status) {
 			case 0: {
 				const online = response.data.rsp.result.frcData.slice(0, 30);
@@ -255,6 +331,9 @@ export default class DevicesInfo extends Vue {
 		}
 	}
 
+	/**
+	 * Performs FRC ping requested by user
+	 */
 	private submitFrcPing(): void {
 		this.manual = true;
 		this.frcPing();

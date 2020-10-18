@@ -97,7 +97,7 @@ import {between, integer, required} from 'vee-validate/dist/rules';
 import StandardDaliService from '../../services/DaemonApi/StandardDaliService';
 import { WebSocketOptions } from '../../store/modules/webSocketClient.module';
 
-interface DaliAnswers {
+interface DaliAnswer {
 	status: number
 	value: number
 }
@@ -116,13 +116,38 @@ interface DaliAnswers {
 	}
 })
 
+/**
+ * Dali manager card for Standard Manager
+ */
 export default class DaliManager extends Vue {
+	/**
+	 * @var {number} address Address of device implementing DALI standard
+	 */
 	private address = 1
-	private answers: Array<DaliAnswers> = []
+
+	/**
+	 * @var {Array<DaliAnswer>} answers Array of DALI standard answers
+	 */
+	private answers: Array<DaliAnswer> = []
+	
+	/**
+	 * @var {Array<number>} commands Array of DALI commands to be sent
+	 */
 	private commands: Array<number> = [0]
+
+	/**
+	 * @var {string|null} msgId Daemon api msg id
+	 */
 	private msgId: string|null = null
+
+	/**
+	 * Component unsubscribe functin
+	 */
 	private unsubscribe: CallableFunction = () => {return;}
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		extend('between', between);
 		extend('integer', integer);
@@ -160,19 +185,31 @@ export default class DaliManager extends Vue {
 		});
 	}
 
+	/**
+	 * Vue lifecycle hook beforeDestroy
+	 */
 	beforeDestroy(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
 		this.unsubscribe();
 	}
 
+	/**
+	 * Creates a new DALI command field
+	 */
 	private addDaliCommand(): void {
 		this.commands.push(0);
 	}
 
+	/**
+	 * Removes a DALI command
+	 */
 	private removeDaliCommand(index: number): void {
 		this.commands.splice(index, 1);
 	}
 
+	/**
+	 * Sends DALI commands to device
+	 */
 	private sendDali(): void {
 		this.$store.dispatch('spinner/show', {timeout: 30000});
 		StandardDaliService.send(this.address, this.commands, new WebSocketOptions(null, 30000, 'iqrfnet.standard.dali.messages.timeout', () => this.msgId = null))
