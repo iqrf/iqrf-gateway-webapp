@@ -12,7 +12,7 @@
 						<CTab title='AutoNetwork'>
 							<AutoNetwork ref='autonetwork' @update-devices='updateDevices' />
 						</CTab>
-						<CTab title='Backup'>
+						<CTab title='Backup/Restore'>
 							<Backup />
 							<Restore />
 						</CTab>

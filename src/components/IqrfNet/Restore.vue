@@ -6,30 +6,6 @@
 		<CCardBody>
 			<ValidationObserver>
 				<CForm @submit.prevent='restoreDevice'>
-					<CSelect
-						:value.sync='deviceType'
-						:options='selectOptions'
-					/>
-					<!--<ValidationProvider
-						v-slot='{ errors, touched, valid }'
-						rules='required|integer|between:1,239'
-						:custom-messages='{
-							integer: "iqrfnet.networkManager.restore.form.messages.address",
-							between: "iqrfnet.networkManager.restore.form.messages.address",
-							required: "iqrfnet.networkManager.restore.form.messages.address"
-						}'
-					>
-						<CInput
-							v-if='deviceType === "node"'
-							v-model.number='address'
-							type='number'
-							min='1'
-							max='239'
-							:label='$t("iqrfnet.networkManager.restore.form.address")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-						/>
-					</ValidationProvider>-->
 					<div class='form-group'>
 						<CInputFile
 							ref='backupFile'
@@ -92,19 +68,9 @@ interface BackupData {
  */
 export default class Restore extends Vue {
 	/**
-	 * @var {number} address Address of device to restore
-	 */
-	private address = 1
-
-	/**
 	 * @var {Array<BackupData>} backupData Array of device backup data entries
 	 */
 	private backupData: Array<BackupData> = []
-
-	/**
-	 * @var {string} deviceType Device type
-	 */
-	private deviceType = 'coordinator'
 
 	/**
 	 * @var {boolean} fileUntouched Has file input been interacted with?
@@ -125,21 +91,6 @@ export default class Restore extends Vue {
 	 * @var {boolean} restartOnRestore Restart coordinator on restore
 	 */
 	private restartOnRestore = false;
-
-	/**
-	 * @constant selectOptions CoreUI form select options
-	 */
-	private selectOptions = [
-		{
-			value: 'coordinator',
-			label: this.$t('iqrfnet.networkManager.backup.form.coordinator').toString()
-		},
-		{
-			value: 'node',
-			label: this.$t('iqrfnet.networkManager.backup.form.node').toString() + ' (Currently unsupported)',
-			disabled: true
-		}
-	]
 
 	/**
 	 * Component unsubscribe function
@@ -200,10 +151,7 @@ export default class Restore extends Vue {
 	 * @returns {string} spinner message
 	 */
 	private restoreProgress(): string {
-		let message = '\n';
-		if (this.deviceType === 'coordinator') {
-			message += this.$t('iqrfnet.networkManager.restore.messages.statusCoordinator').toString();
-		}
+		const message = this.$t('iqrfnet.networkManager.restore.messages.statusCoordinator').toString();
 		return message;
 	}
 
@@ -223,28 +171,15 @@ export default class Restore extends Vue {
 	 * Checks for valid combination of data and target device
 	 */
 	private restoreDevice(): void {
-		if (this.deviceType === 'coordinator') {
-			for (let entry of this.backupData) {
-				if (entry.DataC) {
-					this.sendRestore(0, entry.DataC);
-					return;
-				}
-			}	
-			this.$toast.error(
-				this.$t('iqrfnet.networkManager.restore.messages.missingCoordinator').toString()
-			);
-		} else {
-			/*for (let entry of this.backupData) {
-				console.error(entry);
-				if (Number.parseInt(entry.Address) === this.address && entry.DataN) {
-					this.sendRestore(this.address, entry.DataN);
-					return;
-				}
+		for (let entry of this.backupData) {
+			if (entry.DataC) {
+				this.sendRestore(0, entry.DataC);
+				return;
 			}
-			this.$toast.error(
-				this.$t('iqrfnet.networkManager.restore.messages.missingNode', {address: this.address}).toString()
-			);*/
-		}
+		}	
+		this.$toast.error(
+			this.$t('iqrfnet.networkManager.restore.messages.missingCoordinator').toString()
+		);
 	}
 
 	/**
@@ -339,13 +274,13 @@ export default class Restore extends Vue {
 				this.fileEmpty = true;
 				return;
 			}
-			if (backupData[key]['Address'] === 0 && !('DataC' in backupData[key])) {
+			if (Number.parseInt(backupData[key]['Address']) === 0 && !('DataC' in backupData[key])) {
 				this.$toast.error(
 					this.$t('iqrfnet.networkManager.restore.messages.missingProp', {item: key, property: 'DataC'}).toString()
 				);
 				this.fileEmpty = true;
 				return;
-			} else if (backupData[key]['Address'] > 0 && !('DataN' in backupData[key])) {
+			} else if (Number.parseInt(backupData[key]['Address']) > 0 && !('DataN' in backupData[key])) {
 				this.$toast.error(
 					this.$t('iqrfnet.networkManager.restore.messages.missingProp', {item: key, property: 'DataN'}).toString()
 				);
