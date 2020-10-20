@@ -48,14 +48,19 @@
 								@click='enable()'
 							>
 								{{ $t('service.actions.enable') }}
-							</CButton>
-							<CButton
+							</CButton> <CButton
 								v-if='service.enabled'
 								color='danger'
 								size='sm'
 								@click='disable()'
 							>
 								{{ $t('service.actions.disable') }}
+							</CButton> <CButton
+								color='primary'
+								size='sm'
+								@click='restart()'
+							>
+								{{ $t('service.actions.restart') }}
 							</CButton>
 						</td>
 					</tr>
@@ -130,6 +135,19 @@ export default class PixlaControl extends Vue {
 				this.getStatus();
 				this.$toast.success(
 					this.$t('service.' + this.serviceName + '.messages.disable')
+						.toString()
+				);
+			})
+			.catch(this.handleError);
+	}
+
+	private restart(): void {
+		this.$store.commit('spinner/SHOW');
+		ServiceService.restart(this.serviceName)
+			.then(() => {
+				this.getStatus();
+				this.$toast.success(
+					this.$t('service.' + this.serviceName + '.messages.restart')
 						.toString()
 				);
 			})
