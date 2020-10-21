@@ -171,7 +171,8 @@ export default Vue.extend({
 				this.mType = mutation.payload.mType;
 			} else if (mutation.type === 'SOCKET_ONMESSAGE') {
 				if ({}.hasOwnProperty.call(mutation.payload, 'mType')) {
-					if (mutation.payload.data.msgId === this.msgId) {
+					if (mutation.payload.data.msgId === this.msgId &&
+						mutation.payload.mType !== 'iqmeshNetwork_AutoNetwork') {
 						this.$store.commit('spinner/HIDE');
 						this.$store.dispatch('removeMessage', this.msgId);
 						this.response = JSON.stringify(mutation.payload, null, 4);
@@ -194,8 +195,17 @@ export default Vue.extend({
 							}
 						}
 					} else if (mutation.payload.mType === 'iqmeshNetwork_AutoNetwork') {
+						if (this.$store.getters['spinner/isEnabled']) {
+							this.$store.commit('spinner/HIDE');
+						}
+						if (mutation.payload.data.rsp.lastWave && mutation.payload.data.rsp.progress === 100) {
+							this.$toast.info(
+								this.$t('iqrfnet.sendJson.form.messages.autoNetworkFinish').toString()
+							);
+						}
 						this.response = JSON.stringify(mutation.payload, null, 4);
 					} else if (mutation.payload.mType === 'messageError') {
+						this.$store.commit('spinner/HIDE');
 						this.response = JSON.stringify(mutation.payload, null, 4);
 						if (mutation.payload.data.rsp.errorStr.includes('daemon overload')) {
 							this.$toast.error(
@@ -232,6 +242,10 @@ export default Vue.extend({
 				options.timeout = 1000;
 			} else if (json.mType === 'iqrfEmbedOs_Batch' || json.mType === 'iqrfEmbedOs_SelectiveBatch') {
 				options.timeout = 1000;
+			} else if (json.mType === 'iqmeshNetwork_AutoNetwork') {
+				this.$toast.info(
+					this.$t('iqrfnet.sendJson.form.messages.autoNetworkStart').toString()
+				);				
 			} else {
 				options.timeout = 60000;
 				options.message = 'iqrfnet.sendJson.form.messages.error.fail';
