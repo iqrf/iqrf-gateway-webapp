@@ -53,7 +53,7 @@ final class HexioManagerTest extends CloudIntegrationTestCase {
 			'ClientId' => 'IqrfDpaMessaging1',
 			'Persistence' => 1,
 			'Qos' => 1,
-			'TopicRequest' => '{no-process}/Iqrf/DpaRequest',
+			'TopicRequest' => 'Iqrf/DpaRequest',
 			'TopicResponse' => 'Iqrf/DpaResponse',
 			'User' => 'user',
 			'Password' => 'pass',

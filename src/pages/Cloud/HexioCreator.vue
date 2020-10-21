@@ -9,20 +9,6 @@
 							v-slot='{ errors, touched, valid }'
 							rules='required'
 							:custom-messages='{
-								required: "cloud.hexio.form.messages.broker"
-							}'
-						>
-							<CInput
-								v-model='config.broker'
-								:label='$t("cloud.hexio.form.broker")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
-							/>
-						</ValidationProvider>
-						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
-							rules='required'
-							:custom-messages='{
 								required: "cloud.hexio.form.messages.clientId"
 							}'
 						>
@@ -146,7 +132,7 @@ interface HexioConfig {
 export default class HexioCreator extends Vue {
 	private serviceName = 'hexio'
 	private config: HexioConfig = {
-		broker: 'hexio',
+		broker: 'connect.hexio.cloud',
 		clientId: null,
 		topicRequest: 'Iqrf/DpaRequest',
 		topicResponse: 'Iqrf/DpaResponse',

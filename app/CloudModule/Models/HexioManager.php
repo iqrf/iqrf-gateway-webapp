@@ -81,7 +81,7 @@ class HexioManager implements IManager {
 			'ClientId' => $values['clientId'],
 			'Persistence' => 1,
 			'Qos' => 1,
-			'TopicRequest' => '{no-process}/' . preg_replace('/^\{no\-process\}\//', '', $values['topicRequest']),
+			'TopicRequest' => $values['topicRequest'],
 			'TopicResponse' => $values['topicResponse'],
 			'User' => $values['username'],
 			'Password' => $values['password'],

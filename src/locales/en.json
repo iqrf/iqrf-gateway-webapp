@@ -31,14 +31,12 @@
 			"description": "Adds a new MQTT connection into Hexio IoT Platform.",
 			"form": {
 				"title": "Hexio IoT Platform MQTT connection wizard",
-				"broker": "MQTT broker address",
 				"clientId": "Client ID",
 				"topicRequest": "Topic for requests",
 				"topicResponse": "Topic for responses",
 				"username": "Username",
 				"password": "Password",
 				"messages": {
-					"broker": "Please enter the MQTT broker address.",
 					"clientId": "Please enter client ID.",
 					"topicRequest": "Please enter topic for requests.",
 					"topicResponse": "Please enter topic for responses.",
