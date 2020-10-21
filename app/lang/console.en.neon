@@ -3,6 +3,7 @@ features:
 	grafana: Grafana in the menu
 	iqrfGatewayController: IQRF Gateway Controller configuration
 	iqrfGatewayTranslator: IQRF Gateway Translator configuration
+	mender: Mender
 	networkManager: Network manager
 	nodeRed: Node-RED in the menu
 	pixla: PIXLA device management
