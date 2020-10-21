@@ -61,13 +61,7 @@
 							>
 								<CSelect
 									:value.sync='config.logger.severity'
-									:options='[
-										{value: "trace", label: "Trace"},
-										{value: "debug", label: "Debug"},
-										{value: "info", label: "Info"},
-										{value: "warning", label: "Warning"},
-										{value: "error", label: "Error"}
-									]'
+									:options='severityOptions'
 									:label='$t("controllerConfig.form.logger.severity")'
 									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
@@ -81,10 +75,7 @@
 							<h3>{{ $t("controllerConfig.form.resetButton.title") }}</h3>
 							<CSelect
 								:value.sync='config.resetButton.api'
-								:options='[
-									{value: "autoNetwork", label: "AutoNetwork"},
-									{value: "discovery", label: "Discovery"},
-								]'
+								:options='apiCallOptions'
 								:label='$t("controllerConfig.form.resetButton.api")'
 							/><hr>
 							<div v-if='config.resetButton.api === "autoNetwork"'>
@@ -301,8 +292,44 @@ import { Dictionary, NavigationGuardNext, Route } from 'vue-router/types/router'
 })
 
 export default class ControllerConfig extends Vue {
+	private apiCallOptions: Array<Dictionary<string>> = [
+		{
+			value: '',
+			label: this.$t('controllerConfig.form.resetButton.calls.noCall').toString()
+		},
+		{
+			value: 'autoNetwork',
+			label: this.$t('controllerConfig.form.resetButton.calls.autonetwork').toString()
+		},
+		{
+			value: 'discovery',
+			label: this.$t('controllerConfig.form.resetButton.calls.discovery').toString()
+		}
+	]
 	private name = 'controller'
 	private config: Dictionary<unknown>|null = null
+	private severityOptions: Array<Dictionary<string>> = [
+		{
+			value: 'trace',
+			label: this.$t('controllerConfig.form.logger.levels.trace').toString()
+		},
+		{
+			value: 'debug',
+			label: this.$t('controllerConfig.form.logger.levels.debug').toString()
+		},
+		{
+			value: 'info',
+			label: this.$t('controllerConfig.form.logger.levels.info').toString()
+		},
+		{
+			value: 'warning',
+			label: this.$t('controllerConfig.form.logger.levels.warning').toString()
+		},
+		{
+			value: 'error',
+			label: this.$t('controllerConfig.form.logger.levels.error').toString()
+		}
+	]
 
 	created(): void {
 		extend('between', between);

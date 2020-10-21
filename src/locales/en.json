@@ -1705,12 +1705,24 @@
 			},
 			"resetButton": {
 				"title": "Button configuration",
-				"api": "Daemon API call"
+				"api": "Daemon API call",
+				"calls": {
+					"autonetwork": "AutoNetwork",
+					"discovery": "Discovery",
+					"noCall": "No API call"
+				}
 			},
 			"logger": {
 				"title": "Logger configuration",
 				"filePath": "Path to log file",
-				"severity": "Severity level"
+				"severity": "Severity level",
+				"levels": {
+					"trace": "Trace",
+					"debug": "Debug",
+					"info": "Info",
+					"warning": "Warning",
+					"error": "Error"
+				}
 			},
 			"wsServers": {
 				"title": "Websocket configuration",
