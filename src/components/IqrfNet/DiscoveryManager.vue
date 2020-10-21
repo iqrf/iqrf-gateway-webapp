@@ -75,12 +75,33 @@ import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 	}
 })
 
+/**
+ * Discovery manager card for Network Manager
+ */
 export default class DiscoveryManager extends Vue {
+	/**
+	 * @var {number} maxAddr Maximum node address
+	 */
 	private maxAddr = 239
+	
+	/**
+	 * @var {string|null} msgId Daemon api message id
+	 */
 	private msgId: string|null = null
+
+	/**
+	 * @var {number} txPower Discovery call TX power
+	 */
 	private txPower = 6
+
+	/**
+	 * Component unsubscribe function
+	 */
 	private unsubscribe: CallableFunction = () => {return;}
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		extend('between', between);
 		extend('integer', integer);
@@ -118,11 +139,17 @@ export default class DiscoveryManager extends Vue {
 		});
 	}
 
+	/**
+	 * Vue lifecycle hook beforeDestroy
+	 */
 	beforeDestroy(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
 		this.unsubscribe();
 	}
 
+	/**
+	 * Performs Discovery Daemon API call
+	 */
 	private processSubmit(): void {
 		this.$store.dispatch('spinner/show', {timeout: 30000});
 		IqrfNetService.discovery(this.txPower, this.maxAddr, new WebSocketOptions(null, 30000, 'iqrfnet.networkManager.messages.submit.timeout', () => this.msgId = null))

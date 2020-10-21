@@ -110,17 +110,46 @@ interface StandardSensor {
 	}
 })
 
+/**
+ * Sensor manager card for Standard Manager
+ */
 export default class SensorManager extends Vue {
+	/**
+	 * @var {number} address Address of device implementing the Sensor standard
+	 */
 	private address = 1
+
+	/**
+	 * @constant {Array<string>} allowedMTypes Array of allowed daemon api messages
+	 */
 	private allowedMTypes: Array<string> = [
 		'iqrfSensor_Enumerate',
 		'iqrfSensor_ReadSensorsWithTypes'
 	]
+
+	/**
+	 * @var {string|null} msgId Daemon api message id
+	 */
 	private msgId: string|null = null
+
+	/**
+	 * @var {string|null} responseType Type of Sensor standard message
+	 */
 	private responseType: string|null = null
+
+	/**
+	 * @var {Array<Sensor>} sensors Array of Sensor standard objects
+	 */
 	private sensors: Array<Sensor> = []
+
+	/**
+	 * Component unsubscribe function
+	 */
 	private unsubscribe: CallableFunction = () => {return;}
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		extend('between', between);
 		extend('integer', integer);
@@ -168,11 +197,18 @@ export default class SensorManager extends Vue {
 		});
 	}
 
+	/**
+	 * Vue lifecycle hook beforeDestroy
+	 */
 	beforeDestroy(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
 		this.unsubscribe();
 	}
 
+	/**
+	 * Parses Sensor enumerate request response
+	 * @var {Array<StandardSensor>} sensors Array of Sensor standard objects from response
+	 */
 	private parseEnumerate(sensors: Array<StandardSensor>): void {
 		this.sensors = [];
 		sensors.forEach((item: StandardSensor) => {
@@ -182,7 +218,11 @@ export default class SensorManager extends Vue {
 			this.sensors.push({'type': item.name, 'unit': item.unit});
 		});
 	}
-
+	
+	/**
+	 * Parses Sensor read request response
+	 * @param {Array<StandardSensor>} sensors Array of Sensor standard objects from response
+	 */
 	private parseReadAll(sensors: Array<StandardSensor>): void {
 		this.sensors = [];
 		sensors.forEach((item: StandardSensor) => {
@@ -193,16 +233,26 @@ export default class SensorManager extends Vue {
 		});
 	}
 
+	/**
+	 * Creates WebSocket request options object
+	 * @returns {WebSocketOptions} WebSocket request options
+	 */
 	private buildOptions(): WebSocketOptions {
 		return new WebSocketOptions(null, 30000, 'iqrfnet.standard.sensor.messages.timeout', () => this.msgId = null);
 	}
 
+	/**
+	 * Reads information from all sensors implemented by a device
+	 */
 	private submitReadAll(): void {
 		this.$store.dispatch('spinner/show', {timeout: 30000});
 		StandardSensorService.readAll(this.address, this.buildOptions())
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
+	/**
+	 * Enumerates all sensors implemented by a device
+	 */
 	private submitEnumerate(): void {
 		this.$store.dispatch('spinner/show', {timeout: 30000});
 		StandardSensorService.enumerate(this.address, this.buildOptions())

@@ -60,7 +60,13 @@ import {NetworkConnection} from '../../interfaces/network';
 	}
 })
 
+/**
+ * Ethernet connections card for Network Manager component
+ */
 export default class EthernetConnections extends Vue {
+	/**
+	 * @constant {Array<IField>} fields CoreUI data table columns
+	 */
 	private fields: Array<IField> = [
 		{
 			key: 'name',
@@ -73,6 +79,10 @@ export default class EthernetConnections extends Vue {
 			filter: false,
 		}
 	]
+
+	/**
+	 * @constant {Dictionary<Array<string>>} icons Array fo CoreUI icons
+	 */
 	private icons: Dictionary<Array<string>> = {
 		add: cilPlus,
 		connect: cilLink,
@@ -81,9 +91,20 @@ export default class EthernetConnections extends Vue {
 		edit: cilPencil,
 	}
 
+	/**
+	 * @property {Array<NetworkConnection>} connections Array of existing network connection configurations
+	 */
 	@Prop({required: true}) connections!: Array<NetworkConnection>
+
+	/**
+	 * @property {string} interfaceName Name of network interface
+	 */
 	@Prop({required: false, default: null}) interfaceName!: string
 
+	/**
+	 * Establishes a connection using the specified configuration
+	 * @param {NetworkConnection} connection Network connection configuration
+	 */
 	private connect(connection: NetworkConnection): void {
 		this.$store.commit('spinner/SHOW');
 		NetworkConnectionService.connect(connection.uuid, this.interfaceName)
@@ -99,6 +120,10 @@ export default class EthernetConnections extends Vue {
 			.catch(() => this.$store.commit('spinner/HIDE'));
 	}
 
+	/**
+	 * Terminates a connection
+	 * @param {NetworkConnection} connection Network connection configuration
+	 */
 	private disconnect(connection: NetworkConnection): void {
 		this.$store.commit('spinner/SHOW');
 		NetworkConnectionService.disconnect(connection.uuid)

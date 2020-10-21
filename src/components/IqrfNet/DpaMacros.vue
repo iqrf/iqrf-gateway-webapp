@@ -57,9 +57,19 @@ interface IDpaMacros {
 	}
 })
 
+/**
+ * Raw DPA message macros for SendDpaPacket component
+ */
 export default class DpaMacros extends Vue {
+	/**
+	 * @var {Array<IDpaMacros>} macros Array of raw DPA message macros
+	 */
 	private macros: Array<IDpaMacros> = []
 
+	/**
+	 * Vue lifecycle hook created
+	 * Retrieves raw DPA message macros
+	 */
 	created(): void {
 		IqrfService.getMacros()
 			.then((response: AxiosResponse) => {

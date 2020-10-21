@@ -48,10 +48,28 @@ import { IOption } from '../../interfaces/coreui';
 	}
 })
 
+/**
+ * Security card for TrConfiguration component
+ */
 export default class SecurityForm extends Vue {
+	/**
+	 * @var {SecurityFormat} format Format of password or user key
+	 */
 	private format: SecurityFormat = SecurityFormat.ASCII.valueOf()
+
+	/**
+	 * @var {string|null} msgId Daemon api message id
+	 */
 	private msgId: string|null = null
+
+	/**
+	 * @var {string} password Password to set
+	 */
 	private password = ''
+
+	/**
+	 * @constant {Array<IOption>} selectOptions CoreUI form select option
+	 */
 	private selectOptions: Array<IOption> = [
 		{
 			value: SecurityFormat.ASCII.valueOf(),
@@ -62,10 +80,20 @@ export default class SecurityForm extends Vue {
 			label: this.$t('iqrfnet.trConfiguration.security.form.hex').toString(),
 		}
 	]
+
+	/**
+	 * Component unsubscribe function
+	 */
 	private unsubscribe: CallableFunction = () => {return;}
 
+	/**
+	 * @property {number} address Address of device
+	 */
 	@Prop({required: true}) address!: number
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type !== 'SOCKET_ONMESSAGE') {
@@ -83,11 +111,18 @@ export default class SecurityForm extends Vue {
 		});
 	}
 
+	/**
+	 * Vue lifecycle hook beforeDestroy
+	 */
 	beforeDestroy(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
 		this.unsubscribe();
 	}
 
+	/**
+	 * Saves new security setting
+	 * @param {boolean} password Is the new security setting a password?
+	 */
 	private save(password: boolean): void {
 		let pattern = '';
 		if (this.format === SecurityFormat.ASCII) {

@@ -61,22 +61,71 @@ interface DpaVersions {
 	}
 })
 
+/**
+ * Dpa updater card for TrUpload component
+ */
 export default class DpaUpdater extends Vue {
+	/**
+	 * @constant {number} address Network address of device
+	 */
 	private address = 0
+
+	/**
+	 * @constant {Array<string>} allowedMTypes Array of allowed daemon api messages
+	 */
 	private allowedMTypes: Array<string> = [
 		'iqrfEmbedOs_Read',
 		'mngDaemon_Upload'
 	]
+
+	/**
+	 * @var {string|null} currentDpa Current version of DPA
+	 */
 	private currentDpa: string|null = null
+
+	/**
+	 * @var {string|null} interfaceType Active IQRF communication interface
+	 */
 	private interfaceType: string|null = null
+
+	/**
+	 * @var {string|null} msgId Daemon api message id
+	 */
 	private msgId: string|null = null
+
+	/**
+	 * @var {string|null} osBuild IQRF OS build
+	 */
 	private osBuild: string|null = null
+
+	/**
+	 * @var {number|null} trType Transciever type identifier
+	 */
 	private trType: number|null = null
+
+	/**
+	 * @var {string|null} version Currently selected version of DPA
+	 */
 	private version: string|null = null
+
+	/**
+	 * @var {Array<DpaVersions>} versions Array of available DPA versions to update to
+	 */
 	private versions: Array<DpaVersions> = []
+
+	/**
+	 * Component unsubscribe function
+	 */
 	private unsubscribe: CallableFunction = () => {return;}
+
+	/**
+	 * Component unwatch function
+	 */
 	private unwatch: CallableFunction = () => {return;}
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		extend('required', required);
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
@@ -131,28 +180,45 @@ export default class DpaUpdater extends Vue {
 		}
 	}
 
+	/**
+	 * Vue lifecycle hook beforeDestroy
+	 */
 	beforeDestroy(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
 		this.unwatch();
 		this.unsubscribe();
 	}
 
+	/**
+	 * Converts DPA version from integer representation to string
+	 * @param {number} version DPA version
+	 * @returns {string} String representation of DPA version
+	 */
 	convertVersion(version: number): string {
 		return version.toString(16).padStart(4, '0').toUpperCase();
 	}
 
+	/**
+	 * Retrieves OS information (EmbedOs DPA request)
+	 */
 	private getOsInfo(): void {
 		this.$store.dispatch('spinner/show', {timeout: 30000});
 		OsService.sendRead(this.address, 30000, 'iqrfnet.trUpload.messages.osInfoFail', () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
+	/**
+	 * Performs device enumeration
+	 */
 	private getDeviceEnumeration(): void {
 		this.$store.dispatch('spinner/show', {timeout: 30000});
 		IqrfNetService.enumerateDevice(this.address, 30000, 'iqrfnet.enumeration.messages.failure', () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
+	/**
+	 * EmbedOs info response handler
+	 */
 	private handleOsInfoResponse(response: any): void {
 		const result = response.data.rsp.result;
 		this.osBuild = this.convertVersion(result.osBuild);
@@ -194,6 +260,10 @@ export default class DpaUpdater extends Vue {
 			});
 	}
 
+	/**
+	 * Attempts to fetch a DPA plugin file and store it.
+	 * If the fetch is successful, the name of the file is returned in response and a NativeUpload daemon api call is executed.
+	 */
 	private upload(): void {
 		if (this.version === null) {
 			return;

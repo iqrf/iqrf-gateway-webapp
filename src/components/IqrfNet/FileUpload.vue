@@ -55,20 +55,53 @@ import { AxiosResponse } from 'axios';
 	}
 })
 
+/**
+ * FileUpload card for TrUpload component
+ */
 export default class FileUpload extends Vue {
+	/**
+	 * @var {boolean} failed Indicates that upload request has failed
+	 */
 	private failed = false
+
+	/**
+	 * @var {boolean} fileEmpty Indicates that the form file input is empty
+	 */
 	private fileEmpty = true
+
+	/**
+	 * @var {boolean} fileUntouched Indicates whether the form file input has been interacted with
+	 */
 	private fileUntouched = true
+
+	/**
+	 * @var {FileFormat|null} format Currently selected format of uploaded file
+	 */
 	private format: FileFormat|null = null
+
+	/**
+	 * @var {string|null} msgId Daemon api message id
+	 */
 	private msgId: string|null = null
+
+	/**
+	 * @constant {Array<IOption>} selectOptions Array of file format select options
+	 */
 	private selectOptions: Array<IOption> = [
 		{value: null, label: this.$t('iqrfnet.trUpload.messages.fileFormat')},
 		{value: FileFormat.HEX, label: this.$t('iqrfnet.trUpload.fileFormats.hex')},
 		/*{value: FileFormat.IQRF, label: this.$t('iqrfnet.trUpload.fileFormats.iqrf')},
 		{value: FileFormat.TRCNFG, label: this.$t('iqrfnet.trUpload.fileFormats.trcnfg')}*/
 	]
+
+	/**
+	 * Component unsubscribe function
+	 */
 	private unsubscribe: CallableFunction = () => {return;}
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type === 'SOCKET_ONMESSAGE') {
@@ -92,16 +125,26 @@ export default class FileUpload extends Vue {
 		});
 	}
 
+	/**
+	 * Vue lifecycle hook beforeDestroy
+	 */
 	beforeDestroy(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
 		this.unsubscribe();
 	}
 
+	/**
+	 * Extracts uploaded files from form file input
+	 * @returns {Filelist} list of uploaded files
+	 */
 	private getFiles(): FileList {
 		const input = (this.$refs.fileUpload as CInputFile).$el.children[1] as HTMLInputElement;
 		return (input.files as FileList);
 	}
 
+	/**
+	 * Attempts to upload provided file to the gateway file storage
+	 */
 	private submitUpload(): void {
 		const formData = new FormData();
 		if (this.$store.getters['user/getRole'] === 'power' && this.format !== null) {
@@ -134,6 +177,9 @@ export default class FileUpload extends Vue {
 			});
 	}
 
+	/**
+	 * Checks if form file input is empty
+	 */
 	private isEmpty(): void {
 		if (this.fileUntouched) {
 			this.fileUntouched = false;
