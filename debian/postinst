@@ -85,10 +85,6 @@ webapp_repair_premissions() {
 	chown -R www-data:www-data /var/log/iqrf-gateway-webapp
 }
 
-webapp_warmup_templates() {
-	su - www-data -s /bin/bash -c '/usr/sbin/iqrf-gateway-webapp-manager nette:latte:warmup > /dev/null'
-}
-
 if [ "$1" = "configure" ]; then
 	openssl_create_ca
 	if [ -d /etc/nginx/ ] ; then
@@ -99,7 +95,6 @@ if [ "$1" = "configure" ]; then
 	webapp_repair_premissions
 	webapp_database_migration
 	webapp_iqrf_os_patches_import
-	webapp_warmup_templates
 fi
 
 if true; then
