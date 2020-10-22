@@ -153,8 +153,18 @@ interface BaudRateOptions {
 	},
 })
 
+/**
+ * IQRF UART communication interface configuration component
+ */
 export default class IqrfUart extends Vue {
+	/**
+	 * @constant {string} componentName IQRF UART interface component name
+	 */
 	private componentName = 'iqrf::IqrfUart'
+
+	/**
+	 * @var {IqrfUartConfig} configuration IQRF UART interface instance configuration
+	 */
 	private configuration: IqrfUartConfig = {
 		instance: null,
 		IqrfInterface: null,
@@ -162,19 +172,33 @@ export default class IqrfUart extends Vue {
 		powerEnableGpioPin: null,
 		busEnableGpioPin: null,
 	}
+
+	/**
+	 * @var {string|null} instance Name of IQRF UART component instance
+	 */
 	private instance: string|null = null
 
+	/**
+	 * Computes array of CoreUI select options for baudrate
+	 * @returns {Array<BaudRateOptions} Baudrate select options
+	 */
 	get baudRates(): Array<BaudRateOptions> {
 		const baudRates: Array<number> = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400];
 		return baudRates.map((baudRate: number) => ({value: baudRate, label: baudRate + ' Bd'}));
 	}
 	
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		extend('integer', integer);
 		extend('required', required);
 		this.getConfig();
 	}
 
+	/**
+	 * Retrieves configuration of IQRF UART interface component
+	 */
 	private getConfig(): void {
 		this.$store.commit('spinner/SHOW');
 		DaemonConfigurationService.getComponent(this.componentName)
@@ -188,6 +212,9 @@ export default class IqrfUart extends Vue {
 			.catch((error: AxiosError) => FormErrorHandler.configError(error));
 	}
 	
+	/**
+	 * Saves new or updates existing configuration of IQRF UART interface component instance
+	 */
 	private saveConfig(): void {
 		this.$store.commit('spinner/SHOW');
 		if (this.instance !== null) {
@@ -201,15 +228,26 @@ export default class IqrfUart extends Vue {
 		}
 	}
 	
+	/**
+	 * Handles successful REST API response
+	 */
 	private successfulSave(): void {
 		this.$store.commit('spinner/HIDE');
 		this.$toast.success(this.$t('config.success').toString());
 	}
 
+	/**
+	 * Updates pin configuration from mapping
+	 * @param {IqrfUartConfig} mapping Board mapping
+	 */
 	private updateMapping(mapping: IqrfUartConfig): void {
 		Object.assign(this.configuration, mapping);
 	}
 
+	/**
+	 * Updates port in configuration from mapping
+	 * @param {string} port Port
+	 */
 	private updatePort(port: string): void {
 		this.configuration.IqrfInterface = port;
 	}

@@ -57,7 +57,7 @@
 									:value.sync='iface.instance'
 									:label='$t("config.websocket.form.requiredInterface.instance")'
 									:placeholder='$t("config.websocket.form.messages.interfaceInstance")'
-									:options='instances.service'
+									:options='services'
 									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
 								/>
@@ -105,10 +105,6 @@ interface ServiceInstance {
 	value: string
 }
 
-interface ServiceInstances {
-	service: Array<ServiceInstance>
-}
-
 interface LocalRequiredInterface {
 	instance: string
 	name: string
@@ -140,33 +136,59 @@ interface LocalWsMessaging {
 	}
 })
 
+/**
+ * Daemon WebSocket messaging component configuration form
+ */
 export default class WebsocketMessagingForm extends Vue {
+	/**
+	 * @constant {ModalInstance} componentNames Names of WebSocket messaging and service components
+	 */
 	private componentNames: ModalInstance = {
 		messaging: 'iqrf::WebsocketMessaging',
 		service: 'shape::WebsocketCppService',
 	}
+
+	/**
+	 * @var {LocalWsMessaging} configuration WebSocket messaging component configuration
+	 */
 	private configuration: LocalWsMessaging = {
 		component: '',
 		instance: '',
 		acceptAsyncMsg: false,
 		RequiredInterfaces: [{instance: '', name: ''}],
 	}
-	private instances: ServiceInstances = {
-		service: []
-	}
 
+	/**
+	 * @var {Array<ServiceInstance>} services Array of WebSocket service component instances
+	 */
+	private services: Array<ServiceInstance> = []
+
+	/**
+	 * @property {string} instance Name of WebSocket messaging component instance
+	 */
 	@Prop({required: false, default: ''}) instance!: string
 
+	/**
+	 * Computes page title depending on the action (add, edit)
+	 * @returns {string} Page title
+	 */
 	get pageTitle(): string {
 		return this.$route.path === '/config/websocket/add-messaging' ?
 			this.$t('config.websocket.messaging.add').toString() : this.$t('config.websocket.messaging.edit').toString();
 	}
 
+	/**
+	 * Computes the text of form submit button depending on the action (add, edit)
+	 * @returns {string} Button text
+	 */
 	get submitButton(): string {
 		return this.$route.path === '/config/websocket/add-messaging' ?
 			this.$t('forms.add').toString() : this.$t('forms.edit').toString();
 	}
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		extend('required', required);
 		if (this.instance) {
@@ -176,14 +198,24 @@ export default class WebsocketMessagingForm extends Vue {
 		}
 	}
 
+	/**
+	 * Adds a new RequiredInterface object to array of required interfaces
+	 */
 	private addInterface(): void  {
 		this.configuration.RequiredInterfaces.push({instance: '', name: ''});
 	}
 
+	/**
+	 * Removes a RequiredInterface instance specified by index
+	 * @param {number} index Index of RequiredInterface instance
+	 */
 	private removeInterface(index: number) {
 		this.configuration.RequiredInterfaces.splice(index, 1);
 	}
 
+	/**
+	 * Retrieves configuration of WebSocket messaging component instance and service component
+	 */
 	private getConfig() {
 		this.$store.commit('spinner/SHOW');
 		return Promise.all([
@@ -200,22 +232,28 @@ export default class WebsocketMessagingForm extends Vue {
 				configuration.RequiredInterfaces = interfaces;
 				this.configuration = configuration;
 				responses[1].data.instances.forEach((item: WsService) => {
-					this.instances.service.push({value: item.instance, label: item.instance});
+					this.services.push({value: item.instance, label: item.instance});
 				});
 			});
 	}
 
+	/**
+	 * Retrieves instances of WebSocket service component
+	 */
 	private getServices(): void {
 		this.$store.commit('spinner/SHOW');
 		DaemonConfigurationService.getComponent(this.componentNames.service)
 			.then((response: AxiosResponse) => {
 				this.$store.commit('spinner/HIDE');
 				response.data.instances.forEach((item: WsService) => {
-					this.instances.service.push({value: item.instance, label: item.instance});
+					this.services.push({value: item.instance, label: item.instance});
 				});
 			});
 	}
 
+	/**
+	 * Saves new or updates existing configuration of WebSocket messaging component instance
+	 */
 	private saveInstance(): void {
 		let instance = {
 			component: this.configuration.component,
@@ -240,6 +278,9 @@ export default class WebsocketMessagingForm extends Vue {
 		}
 	}
 
+	/**
+	 * Handles successful REST API response
+	 */
 	private successfulSave(): void {
 		this.$store.commit('spinner/HIDE');
 		if (this.$route.path === '/config/websocket/add-messaging') {

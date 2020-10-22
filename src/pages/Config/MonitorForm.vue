@@ -112,42 +112,73 @@ interface MonitorWebSocket {
 	}
 })
 
+/**
+ * Daemon monitoring component configuration card
+ */
 export default class MonitorForm extends Vue {
+	/**
+	 * @constant {MonitorComponents} componentNames Names of components required for the monitoring service
+	 */
 	private componentNames: MonitorComponents = {
 		monitor: 'iqrf::MonitorService',
 		webSocket: 'shape::WebsocketCppService',
 	}
+
+	/**
+	 * @var {MonitorComponents} instances Names of component instances required for the monitoring service
+	 */
 	private instances: MonitorComponents = {
 		monitor: '',
 		webSocket: '',
 	}
+
+	/**
+	 * @var {MonitorInstance} monitor Daemon monitoring instance configuration
+	 */
 	private monitor: MonitorInstance = {
 		component: '',
 		instance: '',
 		reportPeriod: 10,
 		RequiredInterfaces: []
 	}
+
+	/**
+	 * @var {MonitorWebSocket} webSocket Daemon websocket instance configuration
+	 */
 	private webSocket: MonitorWebSocket = {
 		instance: '',
 		WebsocketPort: 1438,
 		acceptOnlyLocalhost: false,
 	}
 	
+	/**
+	 * @property {string} instance Monitoring service instance name
+	 */
 	@Prop({required: false, default: ''}) instance!: string
 
-
+	/**
+	 * Computes page title depending on the action (add, edit)
+	 * @returns {string} Page title
+	 */
 	get pageTitle(): string {
 		return this.$route.path === '/config/monitor/add' ?
 			this.$t('config.monitor.add').toString() :
 			this.$t('config.monitor.edit').toString();
 	}
 	
+	/**
+	 * Computes form submit button text depending on the action (add, edit)
+	 * @returns {string} Button text
+	 */
 	get submitButton(): string {
 		return this.$route.path === '/config/mq/add' ?
 			this.$t('forms.add').toString() :
 			this.$t('forms.save').toString();
 	}
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		extend('integer', integer);
 		extend('required', required);
@@ -156,6 +187,9 @@ export default class MonitorForm extends Vue {
 		}
 	}
 
+	/**
+	 * Retrieves configuration of the monitoring component and websocket instance
+	 */
 	private getConfig(): void {
 		if (this.componentNames.monitor === '' || this.componentNames.webSocket === '') {
 			return;
@@ -178,6 +212,9 @@ export default class MonitorForm extends Vue {
 			});
 	}
 
+	/**
+	 * Saves new or updates existing configurations of monitoring and websocket component instances
+	 */
 	private saveConfig(): void {
 		this.$store.commit('spinner/SHOW');
 		this.webSocket.instance = this.monitor.instance;
@@ -208,6 +245,9 @@ export default class MonitorForm extends Vue {
 		}
 	}
 
+	/**
+	 * Handles successful REST APi response
+	 */
 	private successfulSave() {
 		this.$router.push('/config/monitor/');
 		this.$store.commit('spinner/HIDE');

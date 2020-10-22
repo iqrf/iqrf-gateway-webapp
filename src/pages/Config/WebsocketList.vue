@@ -28,9 +28,18 @@ import WebsocketServiceList from '../../components/Config/WebsocketServiceList.v
 	}
 })
 
+/**
+ * Daemon WebSocket messaging page component
+ */
 export default class WebsocketList extends Vue {
+	/**
+	 * @var {boolean} powerUser Indicates whether the user is a power user
+	 */
 	private powerUser = false
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		if (this.$store.getters['user/getRole'] === 'power') {
 			this.powerUser = true;

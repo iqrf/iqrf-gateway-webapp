@@ -242,6 +242,9 @@ import {CCard, CListGroup, CListGroupItem} from '@coreui/vue/src';
 	},
 })
 
+/**
+ * Config disambiguation menu component
+ */
 export default class ConfigDisambiguation extends Vue {
 }
 </script>

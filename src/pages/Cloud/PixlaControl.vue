@@ -101,20 +101,52 @@ import ServiceService, {ServiceStatus} from '../../services/ServiceService';
 	},
 })
 
+/**
+ * Pixla cloud service manager card
+ */
 export default class PixlaControl extends Vue {
+	/**
+	 * @var {boolean} showEditor Should pixla token editor be rendered
+	 */
 	private showEditor = false
+
+	/**
+	 * @constant {string} serviceName Pixla service name
+	 */
 	private serviceName = 'gwman-client'
+
+	/**
+	 * @var {string|null} token Pixla token
+	 */
 	private token: string|null = null
+
+	/**
+	 * @var {boolean} missing Indicates whether the pixla service is not installed
+	 */
 	private missing = false
+
+	/**
+	 * @var {boolean} unsupported Indicates whether the pixla service is supported
+	 */
 	private unsupported = false
+
+	/**
+	 * @var {ServiceStatus|null} service Pixla service status object
+	 */
 	private service: ServiceStatus|null = null
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		this.$store.commit('spinner/SHOW');
 		this.getToken();
 		this.getStatus();
 	}
 
+	/**
+	 * Enables the Pixla service
+	 */
 	private enable(): void {
 		this.$store.commit('spinner/SHOW');
 		ServiceService.enable(this.serviceName)
@@ -128,6 +160,9 @@ export default class PixlaControl extends Vue {
 			.catch(this.handleError);
 	}
 
+	/**
+	 * Disables the Pixla service
+	 */
 	private disable(): void {
 		this.$store.commit('spinner/SHOW');
 		ServiceService.disable(this.serviceName)
@@ -141,6 +176,9 @@ export default class PixlaControl extends Vue {
 			.catch(this.handleError);
 	}
 
+	/**
+	 * Restarts the Pixla service
+	 */
 	private restart(): void {
 		this.$store.commit('spinner/SHOW');
 		ServiceService.restart(this.serviceName)
@@ -154,6 +192,9 @@ export default class PixlaControl extends Vue {
 			.catch(this.handleError);
 	}
 
+	/**
+	 * Retrieves status of the Pixla service
+	 */
 	private getStatus(): void {
 		ServiceService.getStatus(this.serviceName)
 			.then((status: ServiceStatus) => {
@@ -164,6 +205,9 @@ export default class PixlaControl extends Vue {
 			.catch(this.handleError);
 	}
 
+	/**
+	 * Retrieves the Pixla service token
+	 */
 	private getToken(): void {
 		PixlaService.getToken()
 			.then((token: string) => {
@@ -176,6 +220,10 @@ export default class PixlaControl extends Vue {
 			});
 	}
 
+	/**
+	 * Axios response error handler
+	 * @param {AxiosError} error Axios response error
+	 */
 	private handleError(error: AxiosError): void {
 		this.$store.commit('spinner/HIDE');
 		if (error.response === undefined) {

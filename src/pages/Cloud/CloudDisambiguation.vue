@@ -74,5 +74,8 @@ import {CCard, CListGroup, CListGroupItem} from '@coreui/vue/src';
 	},
 })
 
+/**
+ * Cloud disambiguation menu component
+ */
 export default class CloudDisambiguation extends Vue {}
 </script>

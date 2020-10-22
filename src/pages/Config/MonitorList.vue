@@ -120,12 +120,26 @@ import { AxiosError, AxiosResponse } from 'axios';
 	}
 })
 
+/**
+ * List of monitoring component instances
+ */
 export default class MonitorList extends Vue {
+	/**
+	 * @constant {Dictionary<string>} componentNames Names of monitor and websocket components
+	 */
 	private componentNames: Dictionary<string> = {
 		monitor: 'iqrf::MonitorService',
 		webSocket: 'shape::WebsocketCppService'
 	}
+
+	/**
+	 * @var {Dictionary<string>|null} deleteInstance Monitor component instance object used in remove modal
+	 */
 	private deleteInstance: Dictionary<string>|null = null
+
+	/**
+	 * @constant {Array<IField>} fields Array of CoreUI data table columns
+	 */
 	private fields: Array<IField> =  [
 		{
 			key: 'instance',
@@ -151,18 +165,33 @@ export default class MonitorList extends Vue {
 			sorter: false,
 		},
 	]
+
+	/**
+	 * @constant {Dictionary<Array<string>>} icons Array of CoreUI icons
+	 */
 	private icons: Dictionary<Array<string>> = {
 		add: cilPlus,
 		edit: cilPencil,
 		remove: cilTrash,
 	}
+
+	/**
+	 * @var {Array<unknown>} instances Array of monitoring component instances
+	 */
 	private instances: Array<unknown> = []
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		this.$store.commit('spinner/SHOW');
 		this.getConfig();
 	}
 
+	/**
+	 * Retrieves configuration of the monitoring component and websocket instance
+	 * @returns {Promise<void>} Empty promise for request chaining
+	 */
 	private getConfig(): Promise<void> {
 		this.instances = [];
 		return Promise.all([
@@ -200,6 +229,11 @@ export default class MonitorList extends Vue {
 			.catch((error: AxiosError) => FormErrorHandler.configError(error));
 	}
 
+	/**
+	 * Updates configuration of the websocket service
+	 * @param service WebSocket service instance
+	 * @param {boolean} setting Message accepting setting
+	 */
 	private changeAcceptOnlyLocalhost(service, setting: boolean): void {
 		if (service.acceptOnlyLocalhost === setting) {
 			return;
@@ -218,6 +252,9 @@ export default class MonitorList extends Vue {
 			.catch((error: AxiosError) => FormErrorHandler.configError(error));
 	}
 
+	/**
+	 * Removes instance of the monitoring component
+	 */
 	private removeInterface(): void {
 		if (this.deleteInstance === null) {
 			return;

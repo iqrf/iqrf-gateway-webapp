@@ -35,5 +35,8 @@ import TheSidebar from './TheSidebar.vue';
 	}
 })
 
+/**
+ * Dashboard component
+ */
 export default class TheDashboard extends Vue {}
 </script>

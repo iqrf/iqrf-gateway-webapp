@@ -205,14 +205,32 @@ interface LocalTask {
 	}
 })
 
+/**
+ * Scheduler task form component
+ */
 export default class SchedulerForm extends Vue {
+	/**
+	 * @var {string} clientId Scheduler task client id
+	 */
 	private clientId = ''
+
+	/**
+	 * @constant {Dictionary<string>} components Names of messaging components
+	 */
 	private components: Dictionary<string> = {
 		mq: 'iqrf::MqMessaging',
 		mqtt: 'iqrf::MqttMessaging',
 		websocket: 'iqrf::WebsocketMessaging'
 	}
+
+	/**
+	 * @var {string|null} cronMessage Converted message from time setting in cron format
+	 */
 	private cronMessage: string|null = null
+	
+	/**
+	 * @constant {Dictionary<string|boolean>} dateFormat Date formatting options
+	 */
 	private dateFormat: Dictionary<string|boolean> = {
 		year: 'numeric',
 		month: 'short',
@@ -222,10 +240,30 @@ export default class SchedulerForm extends Vue {
 		minute: 'numeric',
 		second: 'numeric',
 	}
+
+	/**
+	 * @var {Array<IOption>} messagings Array of available messaging component instances
+	 */
 	private messagings: Array<IOption> = []
+
+	/**
+	 * @var {Array<string>} msgIds Array of daemon api message ids
+	 */
 	private msgIds: Array<string> = []
+
+	/**
+	 * @constant {number} taskId Scheduler task id in epoch seconds
+	 */
 	private taskId = Math.floor(Date.now() / 1000)
+
+	/**
+	 * @var {Array<LocalTask>} task Array of scheduler task messages
+	 */
 	private task: Array<LocalTask> = [{message: '', messaging: ''}]
+
+	/**
+	 * @var {TaskTimeSpec} timeSpec Scheduler task time specification
+	 */
 	private timeSpec: TaskTimeSpec = {
 		cronTime: '',
 		periodic: false,
@@ -233,12 +271,31 @@ export default class SchedulerForm extends Vue {
 		exactTime: false,
 		startTime: ''
 	}
+
+	/**
+	 * Component unsubscribe function
+	 */
 	private unsubscribe: CallableFunction = () => {return;}
+	
+	/**
+	 * @var {boolean} untouched Indicates whether props for creation of scheduler tasks have been retrieved
+	 */
 	private untouched = true
+
+	/**
+	 * @var {boolean} useRest Indicates whether the webapp should use REST API to retrieve scheduler task props
+	 */
 	private useRest = true
 
+
+	/**
+	 * @property {number} id Id of existing scheduler task
+	 */
 	@Prop({required: false, default: null}) id!: number
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		this.$store.commit('spinner/SHOW');
 		setTimeout(() => {
@@ -334,16 +391,26 @@ export default class SchedulerForm extends Vue {
 		this.getMessagings();
 	}
 
+	/**
+	 * Vue lifecycle hook beforeDestroy
+	 */
 	beforeDestroy(): void {
 		this.msgIds.forEach((item: string) => this.$store.dispatch('removeMessage', item));
 		this.unsubscribe();
 	}
 
+	/**
+	 * Computes page title depending on the action (add, edit)
+	 * @returns {string} Page title
+	 */
 	get pageTitle(): string {
 		return this.$route.path === '/config/scheduler/add' ?
 			this.$t('config.scheduler.add').toString() : this.$t('config.scheduler.edit').toString();
 	}
 
+	/**
+	 * Converts cron time string into a human readable message
+	 */
 	private calculateCron(): void {
 		const cronTime = (this.timeSpec.cronTime as string).split(' ');
 		const len = cronTime.length;
@@ -361,14 +428,25 @@ export default class SchedulerForm extends Vue {
 		}
 	}
 
+	/**
+	 * Adds another scheduler task message object
+	 */
 	private addMessage(): void {
 		this.task.push({message: '', messaging: ''});
 	}
 
+	/**
+	 * Removes a scheduler task message object specified by index
+	 * @param {number} index Index of scheduler task message
+	 */
 	private removeMessage(index): void {
 		this.task.splice(index, 1);
 	}
 
+	/**
+	 * Retrieves task specified by passed id
+	 * @param {number} taskId Scheduler task id
+	 */
 	private getTask(taskId: number): void {
 		this.untouched = false;
 		this.$store.commit('spinner/SHOW');
@@ -398,6 +476,10 @@ export default class SchedulerForm extends Vue {
 		}
 	}
 
+	/**
+	 * Stores message id for later response handling
+	 * @param {string} msgId Daemon api message id
+	 */
 	private storeId(msgId: string): void {
 		this.msgIds.push(msgId);
 		setTimeout(() => {
@@ -407,6 +489,9 @@ export default class SchedulerForm extends Vue {
 		}, 30000);
 	}
 
+	/**
+	 * Retrieves instances of Daemon messaging components
+	 */
 	private getMessagings(): void {
 		this.$store.commit('spinner/SHOW');
 		Promise.all([
@@ -435,6 +520,9 @@ export default class SchedulerForm extends Vue {
 			});
 	}
 
+	/**
+	 * Processes time specification for daemon api and then saves scheduler task
+	 */
 	private saveTask(): void {
 		this.$store.commit('spinner/SHOW');
 		let timeSpec = JSON.parse(JSON.stringify(this.timeSpec));
@@ -493,6 +581,11 @@ export default class SchedulerForm extends Vue {
 		}
 	}
 
+	/**
+	 * Retrieves cron alias from predefined strings
+	 * @param {string} input Cron time string
+	 * @returns {string|undefined} Cron time alias if one exists for received time string
+	 */
 	private getCronAlias(input: string): string|undefined {
 		let aliases = new Map();
 		aliases.set('@reboot', '');
@@ -506,6 +599,9 @@ export default class SchedulerForm extends Vue {
 		return aliases.get(input);
 	}
 
+	/**
+	 * Handles successful REST API response
+	 */
 	private successfulSave(): void {
 		this.$router.push('/config/scheduler/');
 		this.$toast.success(

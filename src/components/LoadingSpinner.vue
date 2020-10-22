@@ -22,6 +22,9 @@ import { mapGetters } from 'vuex';
 	}
 })
 
+/**
+ * Loading spinner component
+ */
 export default class LoadingSpinner extends Vue {}
 </script>
 

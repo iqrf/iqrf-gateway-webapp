@@ -117,9 +117,23 @@ import { UdpInstance } from '../../interfaces/messagingInterfaces';
 	}
 })
 
+/**
+ * List of Daemon UDP messaging component instances
+ */
 export default class UdpMessagingTable extends Vue {
+	/**
+	 * @constant {string} componentName UDP messaging component name
+	 */
 	private componentName = 'iqrf::UdpMessaging'
+
+	/**
+	 * @var {string} deleteInstance UDP messaging instance name used in remove modal
+	 */
 	private deleteInstance = ''
+	
+	/**
+	 * @constant {Array<IField>} fields Array of CoreUI data table columns
+	 */
 	private fields: Array<IField> = [
 		{
 			key: 'instance',
@@ -140,22 +154,41 @@ export default class UdpMessagingTable extends Vue {
 			filter: false,
 		},
 	]
+
+	/**
+	 * @constant {Dictionary<Array<string>>} icons Array of CoreUI icons
+	 */
 	private icons: Dictionary<Array<string>> = {
 		add: cilPlus,
 		delete: cilTrash,
 		edit: cilPencil,
 	}
+
+	/**
+	 * @var {Array<UdpInstance>} instances Array of UDP messaging component instances
+	 */
 	private instances: Array<UdpInstance> = []
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		this.$store.commit('spinner/SHOW');
 		this.getInstances();
 	}
 
+	/**
+	 * Assigns name of UDP messaging instances selected to remove to the remove modal
+	 * @param {UdpInstance} instance UDP messaging instance
+	 */
 	private confirmDelete(instance: UdpInstance): void {
 		this.deleteInstance = instance.instance;
 	}
 
+	/**
+	 * Retrieves instances of UDP messaging component
+	 * @returns {Promise<void>} Empty promise for response chaining
+	 */
 	private getInstances(): Promise<void> {
 		return DaemonConfigurationService.getComponent(this.componentName)
 			.then((response: AxiosResponse) => {
@@ -165,6 +198,9 @@ export default class UdpMessagingTable extends Vue {
 			.catch(() => this.$store.commit('spinner/HIDE'));
 	}
 
+	/**
+	 * Removes instance of UDP messaging component
+	 */
 	private performDelete(): void {
 		this.$store.commit('spinner/SHOW');
 		const instance = this.deleteInstance;

@@ -248,8 +248,18 @@ import { AxiosError, AxiosResponse } from 'axios';
 	}
 })
 
+/**
+ * Daemon MQTT messaging component configuration form
+ */
 export default class MqttMessagingForm extends Vue {
+	/**
+	 * @constant {string} componentName MQTT messaging component name
+	 */
 	private componentName = 'iqrf::MqttMessaging'
+
+	/**
+	 * @var {MqttInstance} configuration MQTT messaging component instance configuration
+	 */
 	private configuration: MqttInstance = {
 		component: '',
 		instance: '',
@@ -274,13 +284,25 @@ export default class MqttMessagingForm extends Vue {
 		EnableServerCertAuth: false,
 		acceptAsyncMsg: false,
 	}
+
+	/**
+	 * @property {string} instance MQTT messaging component instance name
+	 */
 	@Prop({required: false, default: ''}) instance!: string
 
+	/**
+	 * Computes page title depending on the action (add, edit)
+	 * @returns {string} Page title
+	 */
 	get pageTitle(): string {
 		return this.$route.path === '/config/mqtt/add' ?
 			this.$t('config.mqtt.add').toString() : this.$t('config.mqtt.edit').toString();
 	}
 
+	/**
+	 * Computes array of CoreUI qos select options
+	 * @returns {Array<IOption>} QoS select options
+	 */	
 	get qosOptions(): Array<IOption> {
 		const options = [0, 1, 2];
 		return options.map((option) => {
@@ -291,11 +313,18 @@ export default class MqttMessagingForm extends Vue {
 		});
 	}
 	
+	/**
+	 * Computes the text of form submit button depending on the action (add, edit)
+	 * @returns {string} Button text
+	 */
 	get submitButton(): string {
 		return this.$route.path === '/config/mqtt/add' ?
 			this.$t('forms.add').toString() : this.$t('forms.save').toString();
 	}
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		extend('between', between);
 		extend('integer', integer);
@@ -306,6 +335,9 @@ export default class MqttMessagingForm extends Vue {
 		}
 	}
 
+	/**
+	 * Retrieves configuration of the MQTT messaging component instance
+	 */
 	private getConfig(): void {
 		this.$store.commit('spinner/SHOW');
 		DaemonConfigurationService.getInstance(this.componentName, this.instance)
@@ -320,6 +352,9 @@ export default class MqttMessagingForm extends Vue {
 			});
 	}
 
+	/**
+	 * Saves new or updates existing configuration of MQTT messaging component instance
+	 */
 	private saveConfig(): void {
 		this.$store.commit('spinner/SHOW');
 		if (this.instance !== '') {
@@ -333,6 +368,9 @@ export default class MqttMessagingForm extends Vue {
 		}
 	}
 
+	/**
+	 * Handles successful REST API response
+	 */
 	private successfulSave(): void {
 		this.$store.commit('spinner/HIDE');
 		if (this.$route.path === '/config/mqtt/add') {

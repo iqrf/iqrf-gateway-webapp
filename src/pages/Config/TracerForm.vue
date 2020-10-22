@@ -166,7 +166,13 @@ interface TracerConfiguration {
 	}
 })
 
+/**
+ * Daemon Logging service component configuration card
+ */
 export default class TracerForm extends Vue {
+	/**
+	 * @var {TracerConfiguration} configuration Logging service component instance configuration
+	 */
 	private configuration: TracerConfiguration = {
 		component: '',
 		instance: '',
@@ -176,7 +182,15 @@ export default class TracerForm extends Vue {
 		timestampFiles: false,
 		VerbosityLevels: [{channel: 0, level: 'INF'}],
 	}
+
+	/**
+	 * @constant {string} componentName Logging service component name
+	 */
 	private componentName = 'shape::TraceFileService'
+
+	/**
+	 * @constant {Array<IOption>} selectOptions Array of CoreUI logging severity select options
+	 */
 	private selectOptions: Array<IOption> = [
 		{value: 'ERR', label: this.$t('config.tracer.form.levels.error')},
 		{value: 'WAR', label: this.$t('config.tracer.form.levels.warning')},
@@ -184,18 +198,32 @@ export default class TracerForm extends Vue {
 		{value: 'DBG', label: this.$t('config.tracer.form.levels.debug')}
 	]
 
+	/**
+	 * @property {string} instance Logging service component instance name
+	 */
 	@Prop({required: false, default: ''}) instance!: string
 
+	/**
+	 * Computes page title depending on the action (add, edit)
+	 * @returns {string} Page title
+	 */
 	get pageTitle(): string {
 		return this.$route.path === '/config/tracer/add' ?
 			this.$t('config.tracer.add').toString() : this.$t('config.tracer.edit').toString();
 	}
 
+	/**
+	 * Computes the text of form submit button depending on the action (add, edit)
+	 * @returns {string} Button text
+	 */
 	get submitButton(): string {
 		return this.$route.path === '/config/tracer/add' ?
 			this.$t('forms.add').toString() : this.$t('forms.edit').toString();
 	}
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		extend('integer', integer);
 		extend('min', min_value);
@@ -205,14 +233,24 @@ export default class TracerForm extends Vue {
 		}
 	}
 
+	/**
+	 * Adds a logging severity level object
+	 */
 	private addLevel(): void {
 		this.configuration.VerbosityLevels.push({channel: 0, level: 'INF'});
 	}
 
+	/**
+	 * Removes a logging severity level object specified by index
+	 * @param {number} index Index of logging severity object
+	 */
 	private removeLevel(index: number): void {
 		this.configuration.VerbosityLevels.splice(index, 1);
 	}
 
+	/**
+	 * Retrieves configuration of Logging service component instance
+	 */
 	private getInstance(): void {
 		this.$store.commit('spinner/SHOW');
 		DaemonConfigurationService.getInstance(this.componentName, this.instance)
@@ -226,6 +264,9 @@ export default class TracerForm extends Vue {
 			});
 	}
 
+	/**
+	 * Saves new or updates existing configuration of Logging service component instance
+	 */
 	private saveInstance(): void {
 		this.$store.commit('spinner/SHOW');
 		if (this.instance !== '') {
@@ -239,6 +280,9 @@ export default class TracerForm extends Vue {
 		}
 	}
 
+	/**
+	 * Handles successful REST API response
+	 */
 	private successfulSave(): void {
 		this.$store.commit('spinner/HIDE');
 		if (this.$route.path === '/config/tracer/add') {

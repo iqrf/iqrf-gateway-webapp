@@ -218,15 +218,36 @@ interface Translator {
 	},
 })
 
+/**
+ * IQRF Gateway Translator configuration component
+ */
 export default class TranslatorConfig extends Vue {
+	/**
+	 * @constant {string} name Name of translator service
+	 */
 	private name = 'translator'
+
+	/**
+	 * @var {string} visibility Specifies form input type
+	 */
 	private visibility = 'password'
+
+	/**
+	 * @var {Translator|null} config IQRF Gateway Translator service configuration
+	 */
 	private config: Translator|null = null
+
+	/**
+	 * @constant {Dictionary<Array<string>>} icons Array of CoreUI icons
+	 */
 	private icons: Dictionary<Array<string>> = {
 		hidden: cilLockLocked,
 		shown: cilLockUnlocked
 	}
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		extend('between', between);
 		extend('integer', integer);
@@ -246,6 +267,9 @@ export default class TranslatorConfig extends Vue {
 		this.getConfig();
 	}
 
+	/**
+	 * Retrieves configuration of IQRF Gateway Translator
+	 */
 	private getConfig(): void {
 		this.$store.commit('spinner/SHOW');
 		FeatureConfigService.getConfig(this.name)
@@ -258,6 +282,9 @@ export default class TranslatorConfig extends Vue {
 			});
 	}
 
+	/**
+	 * Updates configuration of IQRF Gateway Translator
+	 */
 	private processSubmit(): void {
 		this.$store.commit('spinner/SHOW');
 		FeatureConfigService.saveConfig(this.name, this.config)
@@ -270,6 +297,9 @@ export default class TranslatorConfig extends Vue {
 			});
 	}
 
+	/**
+	 * Changes input visibility type in response to user action
+	 */
 	private changeVisibility(): void {
 		this.visibility = this.visibility === 'password' ? 'text' : 'password';
 	}

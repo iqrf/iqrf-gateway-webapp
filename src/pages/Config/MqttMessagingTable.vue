@@ -147,9 +147,23 @@ import { AxiosResponse } from 'axios';
 	}
 })
 
+/**
+ * List of Daemon MQTT messaging component instances
+ */
 export default class MqttMessagingTable extends Vue {
+	/**
+	 * @constant {string} componentName MQTT messaging component name
+	 */
 	private componentName = 'iqrf::MqttMessaging'
+
+	/**
+	 * @var {string} deleteInstance MQTT messaging instance name used in remove modal
+	 */
 	private deleteInstance = ''
+
+	/**
+	 * @constant {Array<IField>} fields Array of CoreUI data table columns
+	 */
 	private fields: Array<IField> = [
 		{
 			key: 'instance',
@@ -188,22 +202,42 @@ export default class MqttMessagingTable extends Vue {
 			filter: false,
 		},
 	]
+
+	/**
+	 * @constant {Dictionary<Array<string>>} icons Array of CoreUI icons
+	 */
 	private icons: Dictionary<Array<string>> = {
 		add: cilPlus,
 		delete: cilTrash,
 		edit: cilPencil,
 	}
+
+	/**
+	 * @var {Array<MqttInstance>} instances Array of MQTT messaging component instances
+	 */
 	private instances: Array<MqttInstance> = []
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		this.$store.commit('spinner/SHOW');
 		this.getInstances();
 	}
 
+	/**
+	 * Assigns name of MQTT messaging instance selected to remove to the remove modal
+	 * @param {MqttInstance} instance MQTT messaging instance
+	 */
 	private confirmDelete(instance: MqttInstance): void {
 		this.deleteInstance = instance.instance;
 	}
 
+	/**
+	 * Updates message accepting configuration of MQTT messaging component instance
+	 * @param {MqttInstance} instance MQTT messaging instance
+	 * @param {boolean} acceptAsyncMsg Message accepting policy setting
+	 */
 	private changeAcceptAsyncMsg(instance: MqttInstance, acceptAsyncMsg: boolean): void {
 		if (instance.acceptAsyncMsg === acceptAsyncMsg) {
 			return;
@@ -211,6 +245,11 @@ export default class MqttMessagingTable extends Vue {
 		this.edit(instance, {acceptAsyncMsg: acceptAsyncMsg});
 	}
 
+	/**
+	 * Updates SSL configuratin of MQTT messaging component instance
+	 * @param {MqttInstance} instance MQTT messaging instance
+	 * @param {boolean} enabledSsl SSL setting
+	 */
 	private changeEnabledSSL(instance: MqttInstance, enabledSsl: boolean) : void{
 		if (instance.EnabledSSL === enabledSsl) {
 			return;
@@ -218,6 +257,11 @@ export default class MqttMessagingTable extends Vue {
 		this.edit(instance, {EnabledSSL: enabledSsl});
 	}
 
+	/**
+	 * Saves changes in MQTT messaging instance configuration
+	 * @param {MqttInstance} instance MQTT messaging instance
+	 * @param {Dictionary<boolean>} newSettings Settings to update instance with
+	 */
 	private edit(instance: MqttInstance, newSettings: Dictionary<boolean>): void {
 		this.$store.commit('spinner/SHOW');
 		let settings = {
@@ -235,6 +279,10 @@ export default class MqttMessagingTable extends Vue {
 			});
 	}
 
+	/**
+	 * Retrieves instances of MQTT messaging component
+	 * @returns {Promise<void>} Empty promise for request chaining
+	 */
 	private getInstances(): Promise<void> {
 		return DaemonConfigurationService.getComponent(this.componentName)
 			.then((response: AxiosResponse) => {
@@ -244,6 +292,9 @@ export default class MqttMessagingTable extends Vue {
 			.catch(() => this.$store.commit('spinner/HIDE'));
 	}
 
+	/**
+	 * Removes instance of MQTT messaging component
+	 */
 	private performDelete(): void {
 		this.$store.commit('spinner/SHOW');
 		const instance = this.deleteInstance;

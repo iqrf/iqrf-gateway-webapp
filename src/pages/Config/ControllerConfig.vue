@@ -293,7 +293,13 @@ import { IOption } from '../../interfaces/coreui';
 	},
 })
 
+/**
+ * IQRF Gateway Controller configuration component
+ */
 export default class ControllerConfig extends Vue {
+	/**
+	 * @constant {Array<IOption>} apiCallOptions Array of CoreUI api call select options
+	 */
 	private apiCallOptions: Array<IOption> = [
 		{
 			value: '',
@@ -308,7 +314,15 @@ export default class ControllerConfig extends Vue {
 			label: this.$t('controllerConfig.form.resetButton.calls.discovery').toString()
 		}
 	]
+
+	/**
+	 * @constant {string} name Name of Controller service
+	 */
 	private name = 'controller'
+
+	/**
+	 * @constant {Array<IOption>} severityOptions Array of CoreUI logger severity select options
+	 */
 	private severityOptions: Array<IOption> = [
 		{
 			value: 'trace',
@@ -331,8 +345,15 @@ export default class ControllerConfig extends Vue {
 			label: this.$t('controllerConfig.form.logger.levels.error').toString()
 		}
 	]
+
+	/**
+	 * @var {ControllerBase|null} config IQRF Gateway Controller configuration
+	 */
 	private config: ControllerBase|null = null
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		extend('between', between);
 		extend('integer', integer);
@@ -344,6 +365,9 @@ export default class ControllerConfig extends Vue {
 		this.getConfig();
 	}
 
+	/**
+	 * Retrieves configuration of IQRF Gateway Controller
+	 */
 	private getConfig(): void {
 		this.$store.commit('spinner/SHOW');
 		FeatureConfigService.getConfig(this.name)
@@ -356,6 +380,9 @@ export default class ControllerConfig extends Vue {
 			});
 	}
 
+	/**
+	 * Updates the configuration of IQRF Gateway Controller
+	 */
 	private processSubmit(): void {
 		this.$store.commit('spinner/SHOW');
 		FeatureConfigService.saveConfig(this.name, this.config)

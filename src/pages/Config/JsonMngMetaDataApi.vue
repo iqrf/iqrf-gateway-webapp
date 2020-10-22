@@ -61,19 +61,39 @@ interface JsonMngMetaDataApiConfig {
 	},
 })
 
+/**
+ * JSON MetaData component configuration
+ */
 export default class JsonMngMetaDataApi extends Vue {
+	/**
+	 * @constant {string} componentName JSON MetaData component name
+	 */
 	private componentName = 'iqrf::JsonMngMetaDataApi'
+
+	/**
+	 * @var {string|null} instance JSON MetaData component instance name
+	 */
 	private instance: string|null = null
+
+	/**
+	 * @var {JsonMngMetaDataApiConfig} configuration JSON MetaData component instance configuration
+	 */
 	private configuration: JsonMngMetaDataApiConfig = {
 		instance: null,
 		metaDataToMessages: false,
 	}
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		extend('required', required);
 		this.getConfig();
 	}
 
+	/**
+	 * Retrieves configuration of JSON MetaData component
+	 */
 	private getConfig(): void {
 		this.$store.commit('spinner/SHOW');
 		DaemonConfigurationService.getComponent(this.componentName)
@@ -87,6 +107,9 @@ export default class JsonMngMetaDataApi extends Vue {
 			.catch((error: AxiosError) => FormErrorHandler.configError(error));
 	}
 	
+	/**
+	 * Saves new or updates existing configuration of JSON MetaData configuration instance
+	 */
 	private saveConfig(): void {
 		this.$store.commit('spinner/SHOW');
 		if (this.instance !== null) {
@@ -100,6 +123,9 @@ export default class JsonMngMetaDataApi extends Vue {
 		}
 	}
 
+	/**
+	 * Handles successful REST API response
+	 */
 	private successfulSave(): void {
 		this.$store.commit('spinner/HIDE');
 		this.$toast.success(this.$t('config.success').toString());

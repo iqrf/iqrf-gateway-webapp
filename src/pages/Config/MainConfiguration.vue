@@ -71,7 +71,13 @@ interface IMainConfig {
 	}
 })
 
+/**
+ * IQRF Gateway Daemon main configuration component
+ */
 export default class MainConfiguration extends Vue {
+	/**
+	 * @var {IMainConfig} configuration Daemon main configuration
+	 */
 	private configuration: IMainConfig = {
 		applicationName: null,
 		resourceDir: null,
@@ -82,10 +88,16 @@ export default class MainConfiguration extends Vue {
 		userDir: null
 	}
 	
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		this.getConfig();
 	}
 
+	/**
+	 * Retrieves main configuration of IQRF Gateway Daemon
+	 */
 	private getConfig(): void {
 		this.$store.commit('spinner/SHOW');
 		DaemonConfigurationService.getComponent('')
@@ -96,6 +108,9 @@ export default class MainConfiguration extends Vue {
 			.catch((error: AxiosError) => FormErrorHandler.configError(error));
 	}
 
+	/**
+	 * Updates main configuration of IQRF Gateway Daemon
+	 */
 	private saveConfig(): void {
 		this.$store.commit('spinner/SHOW');
 		DaemonConfigurationService.updateComponent('', this.configuration)
@@ -103,6 +118,9 @@ export default class MainConfiguration extends Vue {
 			.catch((error: AxiosError) => FormErrorHandler.configError(error));
 	}
 
+	/**
+	 * Handles successful REST API response
+	 */
 	private successfulSave(): void {
 		this.$store.commit('spinner/HIDE');
 		this.$toast.success(this.$t('config.success').toString());

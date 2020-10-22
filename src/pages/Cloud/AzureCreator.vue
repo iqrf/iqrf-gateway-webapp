@@ -56,7 +56,7 @@
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {AxiosError, AxiosResponse} from 'axios';
+import {AxiosError} from 'axios';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
@@ -80,15 +80,32 @@ import ServiceService from '../../services/ServiceService';
 	},
 })
 
+/**
+ * Azure cloud mqtt connection configuration creator card
+ */
 export default class AzureCreator extends Vue {
+	/**
+	 * @var {string|null} connectionString Azure cloud connection string
+	 */
 	private connectionString: string|null = null
+
+	/**
+	 * @constant {string} serviceName Azure cloud service name
+	 */
 	private serviceName = 'azure'
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		extend('required', required);
 	}
 	
-	private save(): Promise<AxiosResponse|void> {
+	/**
+	 * Stores new Azure cloud connection configuration in the gateway filesystem
+	 * @returns {Promise<void>} Empty promise for request chaining
+	 */
+	private save(): Promise<void> {
 		this.$store.commit('spinner/SHOW');
 		return CloudService.create(this.serviceName, {'connectionString': this.connectionString})
 			.then(() => {
@@ -101,6 +118,9 @@ export default class AzureCreator extends Vue {
 			});
 	}
 	
+	/**
+	 * Stores new Azure cloud connection configuration in the gateway filesystem and restarts Daemon
+	 */
 	private saveAndRestart(): void {
 		this.save()
 			.then(() => {

@@ -129,9 +129,23 @@ interface ComponentItem {
 	},
 })
 
+/**
+ * Component list card for Daemon component configuration
+ */
 export default class ComponentList extends Vue {
+	/**
+	 * @var {string} component Name of daemon component used for remove modal
+	 */
 	private component = ''
+
+	/**
+	 * @var {Array<ComponentItem>|null} components Array of Daemon component objects
+	 */
 	private components: Array<ComponentItem>|null = null
+
+	/**
+	 * @constant {Array<IField>} fields Array of CoreUI data table columns
+	 */
 	private fields: Array<IField> = [
 		{
 			key: 'name',
@@ -161,21 +175,35 @@ export default class ComponentList extends Vue {
 			sorter: false,
 		}
 	]
+
+	/**
+	 * @constant {Dictionary<Array<string>>} icons Array of CoreUI icons
+	 */
 	private icons: Dictionary<Array<string>> = {
 		add: cilPlus,
 		edit: cilPencil,
 		remove: cilTrash
 	}
 	
+	/**
+	 * Computes page title depending on the user role
+	 * @returns {string} Page title string
+	 */
 	get pageTitle(): string {
 		return this.$store.getters['user/getRole'] === 'power' ? 
 			this.$t('config.components.title').toString() : this.$t('config.selectedComponents.title').toString();
 	}
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		this.getConfig();
 	}
 
+	/**
+	 * Vue lifecycle hook mounted
+	 */
 	mounted(): void {
 		const titleEl = document.getElementById('title');
 		if (titleEl !== null) {
@@ -183,6 +211,10 @@ export default class ComponentList extends Vue {
 		}
 	}
 
+	/**
+	 * Retrieves list of Daemon components
+	 * @returns {Promise<void>} Empty promise for request chaining
+	 */
 	private getConfig(): Promise<void> {
 		this.$store.commit('spinner/SHOW');
 		return DaemonConfigurationService.getComponent('')
@@ -202,6 +234,9 @@ export default class ComponentList extends Vue {
 			.catch((error) => FormErrorHandler.configError(error));
 	}
 
+	/**
+	 * Enables or disables Daemon component
+	 */
 	private changeEnabled(component: ComponentItem, enabled: boolean): void {
 		if (component.enabled !== enabled) {
 			component.enabled = enabled;
@@ -215,6 +250,9 @@ export default class ComponentList extends Vue {
 		}
 	}
 	
+	/**
+	 * Removes a Daemon component configuration
+	 */
 	private removeComponent(): void {
 		this.$store.commit('spinner/SHOW');
 		const component = this.component;

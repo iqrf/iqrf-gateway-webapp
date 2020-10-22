@@ -61,19 +61,39 @@ interface JsonSplitterConfig {
 	},
 })
 
+/**
+ * JSON Splitter component configuration
+ */
 export default class JsonSplitter extends Vue {
+	/**
+	 * @constant {string} componentName JSON Splitter component name
+	 */
 	private componentName = 'iqrf::JsonSplitter'
+
+	/**
+	 * @var {string|null} instance JSON Splitter component instance name
+	 */
 	private instance: string|null = null
+
+	/**
+	 * @var {JsonSplitterConfig} configuration JSON Splitter component instance configuration
+	 */
 	private configuration: JsonSplitterConfig = {
 		instance: null,
 		validateJsonResponse: false,
 	}
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		extend('required', required);
 		this.getConfig();
 	}
 	
+	/**
+	 * Retrieves configuration of JSON splitter component
+	 */
 	private getConfig(): void {
 		this.$store.commit('spinner/SHOW');
 		DaemonConfigurationService.getComponent(this.componentName)
@@ -87,6 +107,9 @@ export default class JsonSplitter extends Vue {
 			.catch((error: AxiosError) => FormErrorHandler.configError(error));
 	}
 
+	/**
+	 * Saves new or updates existing configuration of JSON Splitter component instance
+	 */
 	private saveConfig(): void {
 		this.$store.commit('spinner/SHOW');
 		if (this.instance !== null) {
@@ -100,6 +123,9 @@ export default class JsonSplitter extends Vue {
 		}
 	}
 
+	/**
+	 * Handles successful REST API response
+	 */
 	private successfulSave(): void {
 		this.$store.commit('spinner/HIDE');
 		this.$toast.success(this.$t('config.success').toString());

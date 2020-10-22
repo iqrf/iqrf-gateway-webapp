@@ -93,9 +93,23 @@ interface IqrfRepositoryConfig {
 	},
 })
 
+/**
+ * IQRF Repository component configuration
+ */
 export default class IqrfRepository extends Vue {
+	/**
+	 * @constant {string} componentName IQRF Repository component name
+	 */
 	private componentName = 'iqrf::JsCache'
+
+	/**
+	 * @var {string|null} instance IQRF Repository component instance name
+	 */
 	private instance: string|null = null
+
+	/**
+	 * @var {IqrfRepositoryConfig} configuration IQRF Repository component instance configuration
+	 */
 	private configuration: IqrfRepositoryConfig = {
 		instance: null,
 		urlRepo: null,
@@ -103,6 +117,9 @@ export default class IqrfRepository extends Vue {
 		downloadIfRepoCacheEmpty: true,
 	}
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		extend('integer', integer);
 		extend('min', min_value);
@@ -110,6 +127,9 @@ export default class IqrfRepository extends Vue {
 		this.getConfig();
 	}
 
+	/**
+	 * Retrieves configuration of IQRF Repository component
+	 */
 	private getConfig(): void {
 		this.$store.commit('spinner/SHOW');
 		DaemonConfigurationService.getComponent(this.componentName)
@@ -123,6 +143,9 @@ export default class IqrfRepository extends Vue {
 			.catch((error: AxiosError) => FormErrorHandler.configError(error));
 	}
 
+	/**
+	 * Saves new or updates existing configuration of IQRF Repository component instance
+	 */
 	private saveConfig(): void {
 		this.$store.commit('spinner/SHOW');
 		if (this.instance !== null) {
@@ -136,6 +159,9 @@ export default class IqrfRepository extends Vue {
 		}
 	}
 
+	/**
+	 * Handles successful REST API response
+	 */
 	private successfulSave(): void {
 		this.$store.commit('spinner/HIDE');
 		this.$toast.success(this.$t('config.success').toString());

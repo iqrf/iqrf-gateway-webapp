@@ -63,11 +63,20 @@ import { Dictionary } from 'vue-router/types/router';
 	}
 })
 
+/**
+ * Header component
+ */
 export default class TheHeader extends Vue {
-	private icons: Dictionary<string[]> = {
+	/**
+	 * @constant {Dictionary<Array<string>>} icons Array of CoreUI icons
+	 */
+	private icons: Dictionary<Array<string>> = {
 		logout: cilLockLocked
 	}
 	
+	/**
+	 * User signout method, redirects to the signin page
+	 */
 	private signOut(): void {
 		this.$store.dispatch('user/signOut')
 			.then(() => {

@@ -138,7 +138,13 @@ interface IMenderConfig {
 	},
 })
 
+/**
+ * Mender feature configuration component
+ */
 export default class MenderConfig extends Vue {
+	/**
+	 * @var {IMenderConfig} configuration Mender feature configuration
+	 */
 	private configuration: IMenderConfig = {
 		InventoryPollIntervalSeconds: null,
 		RetryPollIntervalSeconds: null,
@@ -146,8 +152,15 @@ export default class MenderConfig extends Vue {
 		TenantToken: null,
 		UpdatePollIntervalSeconds: null,
 	}
+
+	/**
+	 * @constant {string} name Mender feature name
+	 */
 	private name = 'mender'
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		extend('integer', integer);
 		extend('required', required);
@@ -159,6 +172,9 @@ export default class MenderConfig extends Vue {
 		this.getConfig();
 	}
 
+	/**
+	 * Retrieves configuration of the Mender feature
+	 */
 	getConfig(): void {
 		this.$store.commit('spinner/SHOW');
 		FeatureConfigService.getConfig(this.name)
@@ -171,6 +187,9 @@ export default class MenderConfig extends Vue {
 			});
 	}
 	
+	/**
+	 * Updates configuration of the Mender feature
+	 */
 	processSubmit(): void {
 		this.$store.commit('spinner/SHOW');
 		FeatureConfigService.saveConfig(this.name, this.configuration)

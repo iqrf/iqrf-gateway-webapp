@@ -112,7 +112,7 @@
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {AxiosError, AxiosResponse} from 'axios';
+import {AxiosError} from 'axios';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
@@ -144,8 +144,18 @@ interface IbmConfig {
 	},
 })
 
+/**
+ * Ibm cloud mqtt connection configuration creator card
+ */
 export default class IbmCreator extends Vue {
+	/**
+	 * @constant {string} serviceName Ibm cloud service name
+	 */
 	private serviceName = 'ibmCloud'
+
+	/**
+	 * @var {IbmConfig} config Ibm cloud connection configuration
+	 */
 	private config: IbmConfig = {
 		organizationId: null,
 		deviceType: null,
@@ -154,11 +164,18 @@ export default class IbmCreator extends Vue {
 		eventId: 'iqrf'
 	}
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		extend('required', required);
 	}
 
-	private save(): Promise<AxiosResponse|void> {
+	/**
+	 * Stores new ibm cloud connection configuration in the gateway filesystem
+	 * @returns {Promise<void>} Empty promise for request chaining
+	 */
+	private save(): Promise<void> {
 		this.$store.commit('spinner/SHOW');
 		return CloudService.create(this.serviceName, this.config)
 			.then(() => {
@@ -171,6 +188,9 @@ export default class IbmCreator extends Vue {
 			});
 	}
 
+	/**
+	 * Stores new ibm cloud connection configuration in the gateway filesystem and restarts Daemon
+	 */
 	private saveAndRestart(): void {
 		this.save()
 			.then(() => {

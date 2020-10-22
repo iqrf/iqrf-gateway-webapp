@@ -163,7 +163,7 @@ import { WebSocketOptions } from '../../store/modules/webSocketClient.module';
 import { Dictionary } from 'vue-router/types/router';
 import { IField } from '../../interfaces/coreui';
 import { AxiosError, AxiosResponse } from 'axios';
-import {Task, TaskTimeSpec} from '../../interfaces/scheduler';
+import {Task, TaskMessage, TaskTimeSpec} from '../../interfaces/scheduler';
 import { MutationPayload } from 'vuex';
 
 @Component({
@@ -185,7 +185,13 @@ import { MutationPayload } from 'vuex';
 	}
 })
 
+/**
+ * List of Daemon scheduler tasks
+ */
 export default class SchedulerList extends Vue {
+	/**
+	 * @constant {Diction<string|boolean>} dateFormat Date formatting options
+	 */
 	private dateFormat: Dictionary<string|boolean> = {
 		year: 'numeric',
 		month: 'short',
@@ -195,7 +201,15 @@ export default class SchedulerList extends Vue {
 		minute: 'numeric',
 		second: 'numeric',
 	}
+
+	/**
+	 * @var {number|null} deleteTask Id of scheduler task used in remove modal
+	 */
 	private deleteTask: number|null = null
+
+	/**
+	 * @constant {Array<IField>} fields Array of CoreUI data table columns
+	 */
 	private fields: Array<IField> = [
 		{
 			key: 'taskId',
@@ -222,6 +236,10 @@ export default class SchedulerList extends Vue {
 			sorter: false,
 		},
 	]
+
+	/**
+	 * @constant {Dictionary<Array<string>>} icons Array of CoreUI icons
+	 */
 	private icons: Dictionary<Array<string>> = {
 		add: cilPlus,
 		edit: cilPencil,
@@ -229,19 +247,54 @@ export default class SchedulerList extends Vue {
 		import: cilArrowTop,
 		export: cilArrowBottom,
 	}
+
+	/**
+	 * @var {Dictionary<boolean>} importConfig Import modal auxiliary variables
+	 */
 	private importConfig: Dictionary<boolean> = {
 		modal: false,
 		first: true,
 		empty: false,
 	}
+
+	/**
+	 * @var {Array<string>} msgIds Array of message ids used for response handling
+	 */
 	private msgIds: Array<string> = []
+
+	/**
+	 * @var {string|null} retrieved Specifies where the message was retrieved from
+	 */
 	private retrieved: string|null = null
+
+	/**
+	 * @var {Array<number>} taskIds Array of scheduler task ids
+	 */
 	private taskIds: Array<number> = []
+
+	/**
+	 * @var {Array<Task>} tasks Array of scheduler tasks
+	 */
 	private tasks: Array<Task>|null = null
+
+	/**
+	 * @var {boolean} untouched Indicates whether or not scheduler tasks have been retrieved
+	 */
 	private untouched = true
+
+	/**
+	 * Component unsubscribe function
+	 */
 	private unsubscribe: CallableFunction = () => {return;}
+
+	/**
+	 * @var {boolean} useRest Indicates whether the webapp should use REST API to retrieve scheduler tasks
+	 */
 	private useRest = true
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		this.$store.commit('spinner/SHOW');
 		setTimeout(() => {
@@ -323,16 +376,27 @@ export default class SchedulerList extends Vue {
 		});
 	}
 
+	/**
+	 * Vue lifecycle hook beforeDestroy
+	 */
 	beforeDestroy(): void {
 		this.msgIds.forEach((item) => this.$store.dispatch('removeMessage', item));
 		this.unsubscribe();
 	}
 
+	/**
+	 * Closes scheduler task import modal
+	 */
 	private closeImport(): void {
 		this.importConfig.modal = false;
 		this.importConfig.first = true;
 	}
 
+	/**
+	 * Creates a string of daemon api message types displayed in scheduler task table
+	 * @param item Task message or task message object
+	 * @returns {string} Task daemon api message types
+	 */
 	private displayMTypes(item): string {
 		try {
 			if (this.retrieved === 'rest') {
@@ -352,6 +416,9 @@ export default class SchedulerList extends Vue {
 		}
 	}
 
+	/**
+	 * Retrieves list of scheduler tasks
+	 */
 	private getTasks(): void {
 		this.untouched = false;
 		this.$store.commit('spinner/SHOW');
@@ -369,11 +436,18 @@ export default class SchedulerList extends Vue {
 		}
 	}
 
+	/**
+	 * Retrieves a scheduler task specified by task id
+	 * @param {number} taskId Scheduler task id
+	 */
 	private getTask(taskId: number): void {
 		SchedulerService.getTask(taskId, new WebSocketOptions(null, 30000))
 			.then((msgId: string) => this.storeId(msgId));
 	}
 
+	/**
+	 * Removes a scheduler task
+	 */
 	private removeTask(): void {
 		if (this.deleteTask === null) {
 			return;
@@ -397,6 +471,9 @@ export default class SchedulerList extends Vue {
 		}
 	}
 
+	/**
+	 * Stores a daemon api message id for response handling
+	 */
 	private storeId(msgId: string): void {
 		this.msgIds.push(msgId);
 		setTimeout(() => {
@@ -406,6 +483,9 @@ export default class SchedulerList extends Vue {
 		}, 30000);
 	}
 
+	/**
+	 * Exports scheduler tasks
+	 */
 	private exportScheduler(): void {
 		this.$store.commit('spinner/SHOW');
 		SchedulerService.exportConfig()
@@ -417,6 +497,9 @@ export default class SchedulerList extends Vue {
 			});
 	}
 
+	/**
+	 * Imports scheduler tasks from zip file
+	 */
 	private importScheduler(): void {
 		this.importConfig.modal = false;
 		this.$store.commit('spinner/SHOW');
@@ -454,11 +537,18 @@ export default class SchedulerList extends Vue {
 			});
 	}
 
+	/**
+	 * Extracts files from import modal file input
+	 * @returns {FileList} List of uploaded files
+	 */
 	private getFile(): FileList {
 		const input = ((this.$refs.schedulerImport as CInputFile).$el.children[1] as HTMLInputElement);
 		return (input.files as FileList);
 	}
 
+	/**
+	 * Checks if import modal file input is empty
+	 */
 	private isEmpty(): void {
 		if (this.importConfig.first) {
 			this.importConfig.first = false;
@@ -467,6 +557,11 @@ export default class SchedulerList extends Vue {
 		this.importConfig.empty = file.length === 0;
 	}
 
+	/**
+	 * Creates time string used in scheduler task data table from task time specification
+	 * @param {TaskTimeSpec} item Scheduler task time specification
+	 * @returns {string} Human readable time message
+	 */
 	private timeString(item: TaskTimeSpec): string|undefined {
 		try {
 			if (item.exactTime) {

@@ -88,7 +88,7 @@
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {AxiosError, AxiosResponse} from 'axios';
+import {AxiosError} from 'axios';
 import {CButton, CCard, CCardBody, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';
@@ -118,8 +118,18 @@ interface InteliGlueConfig {
 	}
 })
 
+/**
+ * InteliGlue inteliments cloud mqtt connection configuration creator card
+ */
 export default class InteliGlueCreator extends Vue {
+	/**
+	 * @constant {string} serviceName InteliGlue cloud service name
+	 */
 	private serviceName = 'inteliGlue'
+
+	/**
+	 * @var {InteliGlueConfig} config InteliGlue cloud connection configuration
+	 */
 	private config: InteliGlueConfig = {
 		rootTopic: null,
 		assignedPort: null,
@@ -127,13 +137,20 @@ export default class InteliGlueCreator extends Vue {
 		password: null
 	}
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		extend('between', between);
 		extend('integer', integer);
 		extend('required', required);
 	}
 
-	private save(): Promise<AxiosResponse|void> {
+	/**
+	 * Stores new inteliglue cloud connection configuration in the gateway filesystem
+	 * @returns {Promise<void>} Empty promise for request chaining
+	 */
+	private save(): Promise<void> {
 		this.$store.commit('spinner/SHOW');
 		return CloudService.create(this.serviceName, this.config)
 			.then(() => {
@@ -146,6 +163,9 @@ export default class InteliGlueCreator extends Vue {
 			});
 	}
 
+	/**
+	 * Stores new inteliglue cloud connection configuration in the gateway filesystem and restarts Daemon
+	 */
 	private saveAndRestart(): void {
 		this.save()
 			.then(() => {

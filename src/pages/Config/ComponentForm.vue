@@ -104,7 +104,13 @@ interface ComponentFormConfig {
 	}
 })
 
+/**
+ * Component form card for Daemon component configuration
+ */
 export default class ComponentForm extends Vue {
+	/**
+	 * @var {ComponentFormConfig} configuration Daemon component configuration
+	 */
 	private configuration: ComponentFormConfig = {
 		name: null,
 		libraryPath: null,
@@ -113,18 +119,32 @@ export default class ComponentForm extends Vue {
 		startlevel: null
 	}
 	
+	/**
+	 * @property {string} component Daemon component name for editing
+	 */
 	@Prop({ required: false, default: '' }) component!: string;
 	
+	/**
+	 * Computes page title depending on the action (add, edit)
+	 * @returns {string} Page title
+	 */
 	get pageTitle(): string {
 		return this.$route.path === '/config/component/add' ?
 			this.$t('config.components.add').toString() : this.$t('config.components.edit').toString();
 	}
 
+	/**
+	 * Computes the text of form submit button depending on the action (add, edit)
+	 * @returns {string} Button text
+	 */
 	get submitButton(): string {
 		return this.$route.path === '/config/component/add' ?
 			this.$t('forms.add').toString() : this.$t('forms.edit').toString();
 	}
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		extend('integer', integer);
 		extend('required', required);
@@ -133,6 +153,9 @@ export default class ComponentForm extends Vue {
 		}
 	}
 
+	/**
+	 * Retrieves Daemon component configuration
+	 */
 	private getComponent(): void {
 		this.$store.commit('spinner/SHOW');
 		DaemonConfigurationService.getComponent(this.component)
@@ -146,6 +169,9 @@ export default class ComponentForm extends Vue {
 			});
 	}
 
+	/**
+	 * Saves new or updates existing Daemon component configuration
+	 */
 	private saveComponent(): void {
 		this.$store.commit('spinner/SHOW');
 		if (this.component !== '') {
@@ -159,6 +185,9 @@ export default class ComponentForm extends Vue {
 		}
 	}
 
+	/**
+	 * Handles successful REST API response
+	 */
 	private successfulSave(): void {
 		this.$store.commit('spinner/HIDE');
 		if (this.$route.path === '/config/component/add') {

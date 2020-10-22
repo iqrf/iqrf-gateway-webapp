@@ -81,26 +81,51 @@ import { MetaInfo } from 'vue-meta';
 	}
 })
 
+/**
+ * Daemon WebSocket service component configuration form
+ */
 export default class WebsocketServiceForm extends Vue {
+	/**
+	 * @constant {string} componentName Name of WebSocket service component
+	 */
 	private componentName = 'shape::WebsocketCppService'
+
+	/**
+	 * @var {WsService} configuration WebSocket service component instance configuration
+	 */
 	private configuration: WsService = {
 		component: '',
 		instance: '',
 		WebsocketPort: 1338,
 		acceptOnlyLocalhost: false,
 	}
+
+	/**
+	 * @property {string} instance WebSocket service component instance name
+	 */
 	@Prop({required: false, default: ''}) instance!: string
 
+	/**
+	 * Computes page title depending on the action (add, edit)
+	 * @returns {string} Page title
+	 */
 	get pageTitle(): string {
 		return this.$route.path === '/config/websocket/add-service' ?
 			this.$t('config.websocket.service.add').toString() : this.$t('config.websocket.service.edit').toString();
 	}
 
+	/**
+	 * Computes the text of form submit button depending on the action (add, edit)
+	 * @returns {string} Button text
+	 */
 	get submitButton(): string {
 		return this.$route.path === '/config/websocket/add-service' ?
 			this.$t('forms.add').toString() : this.$t('forms.edit').toString();
 	}
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		extend('integer', integer);
 		extend('required', required);
@@ -109,6 +134,9 @@ export default class WebsocketServiceForm extends Vue {
 		}
 	}
 
+	/**
+	 * Retrieves instance of WebSocket service component
+	 */
 	private getInstance(): void {
 		this.$store.commit('spinner/SHOW');
 		DaemonConfigurationService.getInstance(this.componentName, this.instance)
@@ -122,6 +150,9 @@ export default class WebsocketServiceForm extends Vue {
 			});
 	}
 
+	/**
+	 * Saves new or updates existing configuration of WebSocket service component instance
+	 */
 	private saveInstance(): void {
 		this.$store.commit('spinner/SHOW');
 		if (this.instance !== '') {
@@ -135,6 +166,9 @@ export default class WebsocketServiceForm extends Vue {
 		}
 	}
 
+	/**
+	 * Handles successful REST API response
+	 */
 	private successfulSave(): void {
 		this.$store.commit('spinner/HIDE');
 		if (this.$route.path === '/config/websocket/add-service') {

@@ -93,8 +93,18 @@ import { AxiosError, AxiosResponse } from 'axios';
 	}
 })
 
+/**
+ * Daemon UDP messaging component configuration form
+ */
 export default class UdpMessagingForm extends Vue {
+	/**
+	 * @constant {string} componentName UDP messaging component name
+	 */
 	private componentName = 'iqrf::UdpMessaging'
+
+	/**
+	 * @var {UdpInstance} configuration UDP messaging component instance configuration
+	 */
 	private configuration: UdpInstance = {
 		component: '',
 		instance: '',
@@ -102,18 +112,32 @@ export default class UdpMessagingForm extends Vue {
 		LocalPort: 55300
 	}
 
+	/**
+	 * @property {string} instance UDP messaging component instance name
+	 */
 	@Prop({required: false, default: ''}) instance!: string
 
+	/**
+	 * Computes page title depending on the action (add, edit)
+	 * @returns {string} Page title
+	 */
 	get pageTitle(): string {
 		return this.$route.path === '/config/udp/add' ?
 			this.$t('config.udp.add').toString() : this.$t('config.udp.edit').toString();
 	}
 
+	/**
+	 * Computes the text of form submit button depending on the action (add, edit)
+	 * @returns {string} Button text
+	 */
 	get submitButton(): string {
 		return this.$route.path === '/config/udp/add' ?
 			this.$t('forms.add').toString() : this.$t('forms.save').toString();
 	}
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		extend('between', between);
 		extend('required', required);
@@ -122,6 +146,9 @@ export default class UdpMessagingForm extends Vue {
 		}
 	}
 
+	/**
+	 * Retrieves configuration of the UDP messaging component instance
+	 */
 	private getConfig(): void {
 		this.$store.commit('spinner/SHOW');
 		DaemonConfigurationService.getInstance(this.componentName, this.instance)
@@ -135,6 +162,9 @@ export default class UdpMessagingForm extends Vue {
 			});
 	}
 
+	/**
+	 * Saves new or updates existing configuration of UDP messaging component instance
+	 */
 	private saveConfig(): void {
 		this.$store.commit('spinner/SHOW');
 		if (this.instance !== '') {
@@ -148,6 +178,9 @@ export default class UdpMessagingForm extends Vue {
 		}
 	}
 
+	/**
+	 * Handles successful REST API response
+	 */
 	private successfulSave(): void {
 		this.$store.commit('spinner/HIDE');
 		if (this.$route.path === '/config/udp/add') {

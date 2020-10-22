@@ -54,15 +54,32 @@ import {fileDownloader} from '../../helpers/fileDownloader';
 	},
 })
 
+/**
+ * Daemon configuration migration card
+ */
 export default class ConfigMigration extends Vue {
+	/**
+	 * @var {boolean} configEmpty Indicates whether form configuration file input is empty
+	 */
 	private configEmpty = true
+
+	/**
+	 * @var {boolean} configUntouched Indicates whether form configuration file input has been interacted with
+	 */
 	private configUntouched = true
 
-	private getFiles(): FileList|null {
-		const input = (this.$refs.configZip as CInputFile).$el.children[1] as HTMLInputElement;
-		return input.files;
+	/**
+	 * Extracts uploaded files from form configuration file input
+	 * @returns {FileList} List of uploaded files
+	 */
+	private getFiles(): FileList {
+		const input = ((this.$refs.configZip as CInputFile).$el.children[1] as HTMLInputElement);
+		return (input.files as FileList);
 	}
 
+	/**
+	 * Exports Daemon configuration
+	 */
 	private exportConfig(): void {
 		this.$store.commit('spinner/SHOW');
 		DaemonConfigurationService.export()
@@ -74,6 +91,9 @@ export default class ConfigMigration extends Vue {
 			});
 	}
 
+	/**
+	 * Imports uploaded Daemon configuration
+	 */
 	private importConfig(): void {
 		this.$store.commit('spinner/SHOW');
 		const files = this.getFiles();
@@ -108,6 +128,9 @@ export default class ConfigMigration extends Vue {
 			});
 	}
 
+	/**
+	 * Checks if form configuration file input is empty
+	 */
 	private isEmpty(): void {
 		if (this.configUntouched) {
 			this.configUntouched = false;

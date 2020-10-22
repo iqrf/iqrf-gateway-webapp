@@ -73,44 +73,77 @@ import { AxiosError, AxiosResponse } from 'axios';
 	},
 	metaInfo(): MetaInfo {
 		return {
-			title: (this as unknown as MonitorForm).pageTitle
+			title: (this as unknown as WebsocketInterfaceForm).pageTitle
 		};
 	}
 })
 
-export default class MonitorForm extends Vue {
+/**
+ * Daemon WebSocket messaging and service configuration form (normal user)
+ */
+export default class WebsocketInterfaceForm extends Vue {
+	/**
+	 * @constant {ModalInstance} componentNames Names of websocket messaging and service components
+	 */
 	private componentNames: ModalInstance = {
 		messaging: 'iqrf::WebsocketMessaging',
 		service: 'shape::WebsocketCppService',
 	}
+
+	/**
+	 * @var {ModalInstance} instances Names of websocket messaging and service instances
+	 */
 	private instances: ModalInstance = {
 		messaging: '',
 		service: '',
 	}
+
+	/**
+	 * @var {WsMessging} messaging WebSocket messaging component instance
+	 */
 	private messaging: WsMessaging = {
 		component: '',
 		instance: '',
 		acceptAsyncMsg: false,
 		RequiredInterfaces: [],
 	}
+
+	/**
+	 * @var {WsService} service WebSocket service component instance
+	 */
 	private service: WsService = {
 		component: '',
 		instance: '',
 		WebsocketPort: 1338,
 		acceptOnlyLocalhost: false,
 	}
+
+	/**
+	 * @property {string} instance WebSocket interface instance name
+	 */
 	@Prop({required: false, default: ''}) instance!: string
 
+	/**
+	 * Computes page title depending on the action (add, edit)
+	 * @returns {string} Page title
+	 */
 	get pageTitle(): string {
 		return this.$route.path === '/config/websocket/add' ?
 			this.$t('config.websocket.interface.add').toString() : this.$t('config.websocket.interface.edit').toString();
 	}
 	
+	/**
+	 * Computes the text of form submit button depending on the action (add, edit)
+	 * @returns {string} Button text
+	 */
 	get submitButton(): string {
-		return this.$route.path === '/config/mq/add' ?
+		return this.$route.path === '/config/websocket/add' ?
 			this.$t('forms.add').toString() : this.$t('forms.save').toString();
 	}
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		extend('integer', integer);
 		extend('required', required);
@@ -119,6 +152,9 @@ export default class MonitorForm extends Vue {
 		}
 	}
 
+	/**
+	 * Retrieves configuration of the WebSocket messaging and service instances
+	 */
 	private getConfig(): void {
 		this.$store.commit('spinner/SHOW');
 		DaemonConfigurationService.getInstance(this.componentNames.messaging, this.instance)
@@ -138,6 +174,9 @@ export default class MonitorForm extends Vue {
 			});
 	}
 	
+	/**
+	 * Saves new or updates existing configuration of WebSocket messaging and service component instances
+	 */
 	private saveConfig(): void {
 		this.$store.commit('spinner/SHOW');
 		this.service.instance = this.messaging.instance;
@@ -167,6 +206,10 @@ export default class MonitorForm extends Vue {
 				.catch((error: AxiosError) => FormErrorHandler.configError(error));
 		}
 	}
+
+	/**
+	 * Handles successful REST API response
+	 */
 	private successfulSave(): void {
 		this.$store.commit('spinner/HIDE');
 		if (this.$route.path === '/config/websocket/add') {

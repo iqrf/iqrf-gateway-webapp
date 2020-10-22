@@ -136,9 +136,23 @@ import { AxiosResponse } from 'axios';
 	}
 })
 
+/**
+ * List of Daemon MQ messaging component instances
+ */
 export default class MqMessagingTable extends Vue {
+	/**
+	 * @constant {string} componentName MQ messaging component name
+	 */
 	private componentName = 'iqrf::MqMessaging'
+
+	/**
+	 * @var {string} deleteInstance MQ messaging instance name used in remove modal
+	 */
 	private deleteInstance = ''
+
+	/**
+	 * @constant {Array<IField>} fields Array of CoreUI data table columns
+	 */
 	private fields: Array<IField> = [
 		{
 			key: 'instance',
@@ -164,22 +178,42 @@ export default class MqMessagingTable extends Vue {
 			filter: false,
 		},
 	]
+
+	/**
+	 * @constant {Dictionary<Array<string>>} icons Array of CoreUI icons
+	 */
 	private icons: Dictionary<Array<string>> = {
 		add: cilPlus,
 		delete: cilTrash,
 		edit: cilPencil,
 	}
+
+	/**
+	 * @var {Array<MqInstance>} instances Array of MQ messaging component instances
+	 */
 	private instances: Array<MqInstance> = []
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		this.$store.commit('spinner/SHOW');
 		this.getInstances();
 	}
 	
-	private confirmDelete(instance): void {
+	/**
+	 * Assigns name of MQ messaging instance selected to remove to the remove modal
+	 * @param {MqInstance} instance MQ messaging instance
+	 */
+	private confirmDelete(instance: MqInstance): void {
 		this.deleteInstance = instance.instance;
 	}
 
+	/**
+	 * Updates configuration of MQ messaging component instance
+	 * @param {MqInstance} instance MQ messaging instance
+	 * @param {boolean} acceptAsyncMsg Message accepting policy setting
+	 */
 	private changeAcceptAsyncMsg(instance: MqInstance, acceptAsyncMsg: boolean): void {
 		if (instance.acceptAsyncMsg === acceptAsyncMsg) {
 			return;
@@ -197,6 +231,10 @@ export default class MqMessagingTable extends Vue {
 			});
 	}
 
+	/**
+	 * Retrieves instances of MQ messaging component
+	 * @returns {Promise<void>} Empty promise for request chaining
+	 */
 	private getInstances(): Promise<void> {
 		return DaemonConfigurationService.getComponent(this.componentName)
 			.then((response: AxiosResponse) => {
@@ -206,6 +244,9 @@ export default class MqMessagingTable extends Vue {
 			.catch(() => this.$store.commit('spinner/HIDE'));
 	}
 
+	/**
+	 * Removes instance of MQ messaging component
+	 */
 	private performDelete(): void {
 		this.$store.commit('spinner/SHOW');
 		const instance = this.deleteInstance;

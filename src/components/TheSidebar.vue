@@ -84,15 +84,30 @@ interface NavData {
 	}
 })
 
+/**
+ * Sidebar component
+ */
 export default class TheSidebar extends Vue {
+	/**
+	 * Computes sidebar show state
+	 * @returns {boolean} Sidebar show state
+	 */
 	get show(): boolean {
 		return this.$store.state.sidebar.show;
 	}
 
+	/**
+	 * Computes sidebar minimize state
+	 * @returns {boolean} Sidebar minimize state
+	 */
 	get minimize(): boolean {
 		return this.$store.state.sidebar.minimize;
 	}
 
+	/**
+	 * Computes sidebar items by filtering predefined items
+	 * @returns {Array<NavData>} Filtered sidebar items
+	 */
 	get getNav(): Array<NavData> {
 		const data = [
 			{
