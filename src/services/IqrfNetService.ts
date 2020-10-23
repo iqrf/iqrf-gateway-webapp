@@ -90,11 +90,11 @@ class IqrfNetService {
 	clearAllBonds(coordinatorOnly: boolean, options: WebSocketOptions): Promise<string> {
 		if (coordinatorOnly) {
 			options.request = {
-				'mType': 'iqrfEmbedCoordinator_ClearAllBonds',
+				'mType': 'iqmeshNetwork_RemoveBondOnlyInC',
 				'data': {
 					'req': {
-						'nAdr': 0,
-						'param': {},
+						'deviceAddr': [],
+						'clearAllBonds': true,
 					},
 					'returnVerbose': true,
 				},
@@ -224,13 +224,11 @@ class IqrfNetService {
 	removeBond(addr: number, coordinatorOnly: boolean, options: WebSocketOptions): Promise<string> {
 		if (coordinatorOnly) {
 			options.request = {
-				'mType': 'iqrfEmbedCoordinator_RemoveBond',
+				'mType': 'iqmeshNetwork_RemoveBondOnlyInC',
 				'data': {
+					'repeat': 2,
 					'req': {
-						'nAdr': 0,
-						'param': {
-							'bondAddr': addr,
-						},
+						'deviceAddr': [addr],
 					},
 					'returnVerbose': true,
 				},

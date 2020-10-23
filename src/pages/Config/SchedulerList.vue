@@ -308,10 +308,19 @@ export default {
 				if (this.retrieved === 'rest') {
 					return Array.isArray(item) ? item.join(', ') : item;
 				}
-				return Array.isArray(item) ? item.message.mType.join(', ') : item.message.mType;
+				if (Array.isArray(item)) {
+					let message = '';
+					item.forEach(item => {
+						message += item.message.mType + ', ';
+					});
+					return message.slice(0, -2);
+				} else {
+					return item.message.mType;
+				} 
 			} catch(err) {
 				return '';
 			}
+
 		},
 		getTasks() {
 			this.untouched = false;

@@ -216,48 +216,14 @@ export default Vue.extend({
 							);
 							break;
 					}
-				} else if (mutation.payload.mType === 'iqrfEmbedCoordinator_ClearAllBonds' ||
-							mutation.payload.mType === 'iqmeshNetwork_RemoveBond' ||
-							mutation.payload.mType === 'iqrfEmbedCoordinator_RemoveBond') {
+				} else if (mutation.payload.mType === 'iqmeshNetwork_RemoveBondOnlyInC' ||
+							mutation.payload.mType === 'iqmeshNetwork_RemoveBond') {
 					if (mutation.payload.data.msgId !== this.msgId) {
 						return;
 					}
 					this.$store.dispatch('spinner/hide');
 					this.$store.dispatch('removeMessage', this.msgId);
-					switch(mutation.payload.data.status) {
-						case -1:
-							this.$toast.error(
-								this.$t('iqrfnet.networkManager.messages.submit.timeout')
-									.toString()
-							);
-							break;
-						case 0:
-							if (mutation.payload.data.rsp.nodesNr === 0) {
-								this.$toast.success(
-									this.$t('iqrfnet.networkManager.messages.submit.removeBond.clearSuccess')
-										.toString()
-								);
-							} else {
-								this.$toast.success(
-									this.$t('iqrfnet.networkManager.messages.submit.removeBond.success')
-										.toString()
-								);
-							}
-							this.$emit('update-devices');
-							break;
-						case 1002:
-							this.$toast.error(
-								this.$t('iqrfnet.networkManager.messages.submit.removeBond.remove_error')
-									.toString()
-							);
-							break;
-						default:
-							this.$toast.error(
-								this.$t('iqrfnet.networkManager.messages.submit.removeBond.error_fail')
-									.toString()
-							);
-							break;
-					}
+					this.handleRemoveResponse(mutation.payload.data);
 				} else if (mutation.payload.mType === 'messageError') {
 					this.$store.dispatch('spinner/hide');
 					this.$toast.error(
@@ -299,6 +265,62 @@ export default Vue.extend({
 			this.$store.dispatch('spinner/show', {timeout: 30000});
 			IqrfNetService.clearAllBonds(this.unbondCoordinatorOnly, this.buildOptions(30000, 'iqrfnet.networkManager.messages.submit.timeout'))
 				.then((msgId: string) => this.msgId = msgId);
+		},
+		handleRemoveResponse(response) {
+			if (response.status === 0) {
+				if (response.rsp.nodesNr === 0) { // all bonds cleared
+					if (this.unbondCoordinatorOnly) {
+						this.$toast.success(
+							this.$t('iqrfnet.networkManager.messages.submit.removeBond.clearAllInCSuccess').toString()
+						);
+					} else { 
+						this.$toast.success(
+							this.$t('iqrfnet.networkManager.messages.submit.removeBond.clearAllSuccess').toString()
+						);
+					}
+				} else { // select nodes
+					if (this.unbondCoordinatorOnly) {
+						this.$toast.success(
+							this.$t('iqrfnet.networkManager.messages.submit.removeBond.successInC', {address: this.address}).toString()
+						);
+					} else {
+						if (response.rsp.removeBondFailedNodes) { //clear all, but some were offline
+							this.$toast.info(
+								this.$t('iqrfnet.networkManager.messages.submit.removeBond.clearAllPartialSuccess', {nodes: response.rsp.removeBondFailedNodes.join(', ')}).toString()
+							);
+						} else {
+							this.$toast.success(
+								this.$t('iqrfnet.networkManager.messages.submit.removeBond.success', {address: this.address}).toString()
+							);
+						}
+					}
+				}
+				this.$emit('update-devices');
+				return;
+			}
+			if (this.unbondCoordinatorOnly) {
+				if (response.statusStr === 'DPA error: ERROR_FAIL') {
+					this.$toast.error(
+						this.$t('iqrfnet.networkManager.messages.submit.removeBond.noBond', {address: this.address}).toString()
+					);
+					return;
+				}
+			}
+			if (response.statusStr === 'DPA error: ERROR_NADR') {
+				this.$toast.error(
+					this.$t('iqrfnet.networkManager.messages.submit.removeBond.noBond', {address: this.address}).toString()
+				);
+				return;
+			}
+			if (response.statusStr === 'Bad FRC status: (int)status="255" ') {
+				this.$toast.error(
+					this.$t('iqrfnet.networkManager.messages.submit.removeBond.noBonds').toString()
+				);
+				return;
+			}
+			this.$toast.error(
+				this.$t('iqrfnet.networkManager.messages.submit.removeBond.remove_error').toString()
+			);
 		}
 	}
 });
