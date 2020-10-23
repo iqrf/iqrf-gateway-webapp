@@ -1077,10 +1077,15 @@
 					"removeBond": {
 						"confirmUnbond": "Do you really want to remove this node from the network?",
 						"confirmClear": "Do you really want to clear all bonds?",
-						"success": "Remove bond call successful.",
+						"success": "Node at address {address} has been successfully removed.",
+						"successInC": "Node at address {address} has been successfully removed from Coordinator memory.",
+						"noBond": "No node is bonded at address {address}.",
+						"noBonds": "There are no bonded nodes in the network.",
 						"error_fail": "Failed to remove bond.",
 						"remove_error": "An error occurred while removing a device from the network.",
-						"clearSuccess": "All bonds have been cleared successfully."
+						"clearAllSuccess": "All bonds have been cleared successfully.",
+						"clearAllInCSuccess": "All bonds have been successfully cleared from Coordinator memory.",
+						"clearAllPartialSuccess": "All online nodes have been removed. Offline nodes: {nodes}."
 					},
 					"discovery": {
 						"success": "The discovery has been finished successfully.",
