@@ -318,6 +318,9 @@ export default Vue.extend({
 				);
 				return;
 			}
+			this.$toast.error(
+				this.$t('iqrfnet.networkManager.messages.submit.removeBond.remove_error').toString()
+			);
 		}
 	}
 });
