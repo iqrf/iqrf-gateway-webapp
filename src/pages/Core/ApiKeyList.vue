@@ -114,7 +114,13 @@ interface ApiKey {
 	}
 })
 
+/**
+ * List of existing API keys
+ */
 export default class ApiKeyList extends Vue {
+	/**
+	 * @constant {Dictionary<string|boolean>} dateFormat Date formatting options
+	 */
 	private dateFormat: Dictionary<string|boolean> = {
 		year: 'numeric',
 		month: 'short',
@@ -124,7 +130,15 @@ export default class ApiKeyList extends Vue {
 		minute: 'numeric',
 		second: 'numeric',
 	}
+
+	/**
+	 * @var {number|null} deletekey API key id used in remove modal
+	 */
 	private deleteKey: number|null = null
+
+	/**
+	 * @constant {Array<IField>} fields Array of CoreUI data table columns
+	 */
 	private fields: Array<IField> = [
 		{
 			key: 'id',
@@ -145,17 +159,31 @@ export default class ApiKeyList extends Vue {
 			sorter: false,
 		},
 	]
+
+	/**
+	 * @constant {Dictionary<Array<string>>} icons Array of CoreUI icons
+	 */
 	private icons: Dictionary<Array<string>> = {
 		add: cilPlus,
 		edit: cilPencil,
 		remove: cilTrash
 	}
+
+	/**
+	 * @var {Array<ApiKey>} keys List of API key objects
+	 */
 	private keys: Array<ApiKey> = []
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		this.getKeys();
 	}
 
+	/**
+	 * Retrieves list of existing API keys
+	 */
 	private getKeys(): Promise<void> {
 		this.$store.commit('spinner/SHOW');
 		return ApiKeyService.getApiKeys()
@@ -166,6 +194,9 @@ export default class ApiKeyList extends Vue {
 			.catch((error: AxiosError) => FormErrorHandler.apiKeyError(error));
 	}
 
+	/**
+	 * Removes an existing API key
+	 */
 	private removeKey(): void  {
 		if (this.deleteKey === null) {
 			return;
@@ -182,6 +213,10 @@ export default class ApiKeyList extends Vue {
 			.catch((error: AxiosError) => FormErrorHandler.apiKeyError(error));
 	}
 
+	/**
+	 * Converts expiration date and time from UTC to locale string
+	 * @returns {string} Expiration date and time in locale format
+	 */
 	private timeString(item: ApiKey): string {
 		return DateTime.fromISO(item.expiration).toLocaleString(this.dateFormat);
 	}

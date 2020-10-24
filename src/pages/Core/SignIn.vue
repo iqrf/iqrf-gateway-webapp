@@ -92,19 +92,43 @@ import { Dictionary } from 'vue-router/types/router';
 	},
 })
 
+/**
+ * Sign in page component
+ */
 export default class SignIn extends Vue {
+	/**
+	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI icons
+	 */
 	private icons: Dictionary<Array<string>> = {
 		user: cilUser,
 		lock: cilLockLocked,
 	}
+
+	/**
+	 * @var {string} password User password
+	 */
 	private password = ''
+
+	/**
+	 * @var {boolean} submitted Indicates whether the login information have been submitted
+	 */
 	private submitted = false
+
+	/**
+	 * @var {string} username User name
+	 */
 	private username = ''
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		extend('required', required);
 	}
 
+	/**
+	 * Attempts to log in and retrieve features available for the user's role
+	 */
 	private handleSubmit(): void {
 		const credentials = new UserCredentials(this.username, this.password);
 		Promise.all([

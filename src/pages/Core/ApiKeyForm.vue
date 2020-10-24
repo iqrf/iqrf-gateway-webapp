@@ -83,7 +83,13 @@ import { AxiosError, AxiosResponse } from 'axios';
 	}
 })
 
+/**
+ * API key manager form to add or edit API key
+ */
 export default class ApiKeyForm extends Vue {
+	/**
+	 * @constant {Dictionary<string|boolean} dateFormat Date formatting options
+	 */
 	private dateFormat: Dictionary<string|boolean> = {
 		year: 'numeric',
 		month: 'short',
@@ -93,24 +99,46 @@ export default class ApiKeyForm extends Vue {
 		minute: 'numeric',
 		second: 'numeric',
 	}
-	private metadata: Dictionary<string> = {
+
+	/**
+	 * @var {Dictionary<string>} metadata API key metadata
+	 */
+	private metadata: Dictionary<string|null> = {
 		description: '',
-		expiration: ''
+		expiration: null
 	}
+
+	/**
+	 * @var {boolean} useExpiration Controls whether form expiration input is hidden or shown
+	 */
 	private useExpiration = false
 	
-	@Prop({required: false, default: null}) keyId!: number|null
+	/**
+	 * @property {number} keyId API key id
+	 */
+	@Prop({required: false, default: null}) keyId!: number
 
+	/**
+	 * Computes page title depending on the action (add, edit)
+	 * @returns {string} Page title
+	 */
 	get pageTitle(): string {
 		return this.$route.path === '/api-key/add' ?
 			this.$t('core.apiKey.add').toString() : this.$t('core.apiKey.edit').toString();
 	}
 
+	/**
+	 * Computes submit button text depending on the action (add, edit)
+	 * @return {string} Button text
+	 */
 	get submitButton(): string {
 		return this.$route.path === '/api-key/add' ?
 			this.$t('forms.add').toString() : this.$t('forms.edit').toString();
 	}
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		extend('required', required);
 		if (this.keyId) {
@@ -118,12 +146,18 @@ export default class ApiKeyForm extends Vue {
 		}
 	}
 
+	/**
+	 * Clears the expiration field value if it is hidden
+	 */
 	private clear(): void {
 		if (!this.useExpiration) {
-			this.metadata.expiration = '';
+			this.metadata.expiration = null;
 		}
 	}
 	
+	/**
+	 * Retrieves API key specified by id
+	 */
 	private getKey(): void {
 		if (this.keyId === null) {
 			return;
@@ -133,7 +167,7 @@ export default class ApiKeyForm extends Vue {
 			.then((response: AxiosResponse) => {
 				this.$store.commit('spinner/HIDE');
 				this.metadata = response.data;
-				if (this.metadata.expiration !== '') {
+				if (this.metadata.expiration !== null) {
 					this.useExpiration = true;
 				}
 			})
@@ -143,6 +177,9 @@ export default class ApiKeyForm extends Vue {
 			});
 	}
 
+	/**
+	 * Creates a new API key or updates metadata of existing API key
+	 */
 	private saveKey(): void {
 		this.$store.commit('spinner/SHOW');
 		if (this.keyId !== null) {
@@ -156,6 +193,9 @@ export default class ApiKeyForm extends Vue {
 		}
 	}
 
+	/**
+	 * Handles successful REST API response
+	 */
 	private successfulSave(): void {
 		this.$store.commit('spinner/HIDE');
 		if (this.$route.path === '/api-key/add') {

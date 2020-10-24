@@ -104,16 +104,40 @@ import UserService from '../../services/UserService';
 	}
 })
 
+/**
+ * User manager form to add a new user
+ */
 export default class UserAdd extends Vue {
+	/**
+	 * @var {string} language User's preferred language
+	 */
 	private language = ''
+
+	/**
+	 * @var {string} password User password
+	 */
 	private password = ''
+
+	/**
+	 * @var {string} role User role
+	 */
 	private role = ''
+
+	/**
+	 * @var {string} username User name
+	 */
 	private username = ''
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		extend('required', required);
 	}
 
+	/**
+	 * Creates a new user entry with default language and role if unspecified
+	 */
 	private handleSubmit(): void {
 		const language = this.language ?? 'en';
 		const role = this.role ?? 'normal';

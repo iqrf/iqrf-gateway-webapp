@@ -123,16 +123,49 @@ import UserService from '../../services/UserService';
 	}
 })
 
+/**
+ * User manager form to edit an existing user
+ */
 export default class UserEdit extends Vue {
+	/**
+	 * @var {string} language User's preferred language
+	 */
 	private language = ''
+
+	/**
+	 * @var {boolean} loaded Indicates whether user information has been successfully retrieved
+	 */
 	private loaded = false
+
+	/**
+	 * @var {string} newPassword New user password
+	 */
 	private newPassword = ''
+
+	/**
+	 * @var {string} oldPassword Current user password
+	 */
 	private oldPassword = ''
+
+	/**
+	 * @var {string} role User role
+	 */
 	private role = ''
+
+	/**
+	 * @var {string} username User name
+	 */
 	private username = ''
 
+
+	/**
+	 * @property {number} userId User id
+	 */
 	@Prop({required: true}) userId!: number
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		extend('required', required);
 		this.$store.commit('spinner/SHOW');
@@ -157,6 +190,9 @@ export default class UserEdit extends Vue {
 			});
 	}
 
+	/**
+	 * Updates user's password, if the old password is valid, the rest of the settings are then updated and signout is performed
+	 */
 	private handleSubmit(): void {
 		if (this.$store.getters['user/getId'] === this.userId &&
 				this.oldPassword !== '' && this.newPassword !== '') {
@@ -179,6 +215,9 @@ export default class UserEdit extends Vue {
 
 	}
 
+	/**
+	 * Updates user information
+	 */
 	private performEdit(): Promise<void> {
 		return UserService.edit(this.userId, {
 			username: this.username,
@@ -204,6 +243,9 @@ export default class UserEdit extends Vue {
 			});
 	}
 
+	/**
+	 * Performs signout
+	 */
 	private signOut(): void {
 		this.$store.dispatch('user/signOut')
 			.then(() => {

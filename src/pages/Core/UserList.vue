@@ -153,16 +153,37 @@ interface User {
 	},
 })
 
+/**
+ * List of existing users
+ */
 export default class UserList extends Vue {
+	/**
+	 * @var {User|null} deleteUser User object used in remove modal
+	 */
 	private deleteUser: User|null = null
+
+	/**
+	 * @var {Dictionary<Array<string>>} icons Dictionary of CoreUI icons
+	 */
 	private icons: Dictionary<Array<string>> = {
 		add: cilPlus,
 		delete: cilTrash,
 		edit: cilPencil,
 	}
+
+	/**
+	 * @var {Array<IField>} fields Array of CoreUI data table columns
+	 */
 	private fields: Array<IField> = []
+
+	/**
+	 * @var {Array<User>} users Array of user objects
+	 */
 	private users: Array<User> = []
 	
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		if (this.$store.getters['user/getRole'] === 'normal') {
 			this.fields = [
@@ -207,6 +228,9 @@ export default class UserList extends Vue {
 		this.getUsers();
 	}
 
+	/**
+	 * Retrieves list of existing users
+	 */
 	private getUsers() {
 		return UserService.list()
 			.then((response: AxiosResponse) => {
@@ -218,6 +242,9 @@ export default class UserList extends Vue {
 			});
 	}
 
+	/**
+	 * Changes user's role from table
+	 */
 	private changeRole(user: User, newRole: string): void {
 		if (user.role === newRole) {
 			return;
@@ -225,6 +252,9 @@ export default class UserList extends Vue {
 		this.edit(user, {role: newRole});
 	}
 
+	/**
+	 * Changes user's language from table
+	 */
 	private changeLanguage(user: User, newLanguage: string): void {
 		if (user.language === newLanguage) {
 			return;
@@ -232,6 +262,9 @@ export default class UserList extends Vue {
 		this.edit(user, {language: newLanguage});
 	}
 
+	/**
+	 * Updates settings of a user object and then stores new values
+	 */
 	private edit(user: User, newSettings: Dictionary<string>) {
 		if (user.id === undefined) {
 			return;
@@ -256,10 +289,16 @@ export default class UserList extends Vue {
 			});
 	}
 
+	/**
+	 * Assigns user object to remove modal variable
+	 */
 	private confirmDelete(user: User): void {
 		this.deleteUser = user;
 	}
 
+	/**
+	 * Removes an existing user
+	 */
 	private performDelete(): void {
 		if (this.deleteUser === null) {
 			return;

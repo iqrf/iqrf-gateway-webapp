@@ -23,6 +23,9 @@ import {CCard, CCardBody, CCardHeader} from '@coreui/vue/src';
 	},
 })
 
+/**
+ * Error 404 page component
+ */
 export default class NotFound extends Vue {
 }
 </script>
