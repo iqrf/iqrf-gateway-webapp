@@ -1,7 +1,7 @@
 <template>
 	<div v-if='ports !== []'>
 		<h4>{{ $t('config.interfaceMapping.interfaces') }}</h4>
-		<CButtonGroup>
+		<CButtonGroup class='flex-wrap'>
 			<CButton
 				v-for='port of ports'
 				:key='port'

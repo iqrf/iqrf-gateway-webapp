@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<h4>{{ $t('config.interfaceMapping.boards') }}</h4>
-		<CButtonGroup>
+		<CButtonGroup class='flex-wrap'>
 			<CButton
 				v-for='board in Object.keys(mappings[interfaceType])'
 				:key='board'

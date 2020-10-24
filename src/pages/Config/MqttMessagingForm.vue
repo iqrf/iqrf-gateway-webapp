@@ -323,7 +323,6 @@ export default {
 			}
 		},
 		successfulSave() {
-			this.$router.push('/config/mqtt/');
 			this.$store.commit('spinner/HIDE');
 			if (this.$route.path === '/config/mqtt/add') {
 				this.$toast.success(
@@ -336,6 +335,7 @@ export default {
 						.toString()
 				);
 			}
+			this.$router.push('/config/mqtt/');
 		},
 	},
 	metaInfo() {

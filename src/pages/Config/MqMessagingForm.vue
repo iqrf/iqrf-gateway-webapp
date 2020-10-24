@@ -132,7 +132,6 @@ export default {
 			}
 		},
 		successfulSave() {
-			this.$router.push('/config/mq/');
 			this.$store.commit('spinner/HIDE');
 			if (this.$route.path === '/config/mq/add') {
 				this.$toast.success(
@@ -145,6 +144,7 @@ export default {
 						.toString()
 				);
 			}
+			this.$router.push('/config/mq/');
 		},
 	},
 	metaInfo() {

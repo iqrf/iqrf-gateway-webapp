@@ -144,7 +144,6 @@ export default {
 			}
 		},
 		successfulSave() {
-			this.$router.push('/api-key');
 			this.$store.commit('spinner/HIDE');
 			if (this.$route.path === '/api-key/add') {
 				this.$toast.success(
@@ -157,6 +156,7 @@ export default {
 						.toString()
 				);
 			}
+			this.$router.push('/api-key');
 		}
 	},
 	metaInfo() {

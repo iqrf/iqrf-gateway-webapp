@@ -139,7 +139,6 @@ export default {
 			}
 		},
 		successfulSave() {
-			this.$router.push('/config/udp/');
 			this.$store.commit('spinner/HIDE');
 			if (this.$route.path === '/config/udp/add') {
 				this.$toast.success(
@@ -151,6 +150,7 @@ export default {
 						.toString()
 				);
 			}
+			this.$router.push('/config/udp/');
 		},
 	},
 	metaInfo() {

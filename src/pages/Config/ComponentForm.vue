@@ -144,7 +144,6 @@ export default {
 			}
 		},
 		successfulSave() {
-			this.$router.push('/config/component');
 			this.$store.commit('spinner/HIDE');
 			if (this.$route.path === '/config/component/add') {
 				this.$toast.success(
@@ -157,6 +156,7 @@ export default {
 						.toString()
 				);
 			}
+			this.$router.push('/config/component');
 		},
 	},
 	metaInfo() {

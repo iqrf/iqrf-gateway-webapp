@@ -201,7 +201,6 @@ export default {
 			}
 		},
 		successfulSave() {
-			this.$router.push('/config/websocket/');
 			this.$store.commit('spinner/HIDE');
 			if (this.$route.path === '/config/websocket/add-messaging') {
 				this.$toast.success(
@@ -214,6 +213,7 @@ export default {
 						.toString()
 				);
 			}
+			this.$router.push('/config/websocket/');
 		},
 	},
 	metaInfo() {

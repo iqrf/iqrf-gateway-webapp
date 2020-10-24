@@ -212,7 +212,6 @@ export default {
 			}
 		},
 		successfulSave() {
-			this.$router.push('/config/tracer/');
 			this.$store.commit('spinner/HIDE');
 			if (this.$route.path === '/config/tracer/add') {
 				this.$toast.success(
@@ -225,6 +224,7 @@ export default {
 						.toString()
 				);
 			}
+			this.$router.push('/config/tracer/');
 		},
 	},
 	metaInfo() {
