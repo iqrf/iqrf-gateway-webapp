@@ -102,6 +102,7 @@ import GatewayService from '../../services/GatewayService';
 import {fileDownloader} from '../../helpers/fileDownloader';
 import {IGatewayInfo, IpAddress, MacAddress} from '../../interfaces/gatewayInfo';
 import { AxiosResponse } from 'axios';
+import { DaemonModeEnum } from '../../services/DaemonModeService';
 
 @Component({
 	components: {
@@ -116,11 +117,29 @@ import { AxiosResponse } from 'axios';
 	},
 })
 
+/**
+ * Gateway information component
+ */
 export default class GatewayInfo extends Vue {
+	/**
+	 * @var {IGatewayInfo|null} info Gateway information object
+	 */
 	private info: IGatewayInfo|null = null
-	private mode = 'unknown'
+
+	/**
+	 * @var {DaemonModeEnum} mode Current Daemon mode
+	 */
+	private mode: DaemonModeEnum = DaemonModeEnum.unknown
+
+	/**
+	 * @var {boolean} showCoordinator Controls whether coordinator information component can be shown
+	 */
 	private showCoordinator = false
 	
+	/**
+	 * Computes array of ip address objects from network interfaces
+	 * @returns {Array<IpAddress} Array of ip address objects
+	 */
 	get getIpAddresses(): Array<IpAddress> {
 		if (this.info === null) {
 			return [];
@@ -138,6 +157,10 @@ export default class GatewayInfo extends Vue {
 		return addresses;
 	}
 
+	/**
+	 * Computes array of mac address objects from network interfaces
+	 * @returns {Array<MacAddress>} Array of mac address objects
+	 */
 	get getMacAddresses(): Array<MacAddress> {
 		if (this.info === null) {
 			return [];
@@ -155,7 +178,10 @@ export default class GatewayInfo extends Vue {
 		return addresses;
 	}
 
-	private created(): void {
+	/**
+	 * Vue lifecycle hook created
+	 */
+	created(): void {
 		this.$store.commit('spinner/SHOW');
 		GatewayService.getInfo()
 			.then(
@@ -167,6 +193,9 @@ export default class GatewayInfo extends Vue {
 			.catch(() => this.$store.commit('spinner/HIDE'));
 	}
 
+	/**
+	 * Creates a daemon diagnostics blob and prompts file download
+	 */
 	private downloadDiagnostics(): void {
 		this.$store.commit('spinner/SHOW');
 		GatewayService.getDiagnosticsArchive().then(

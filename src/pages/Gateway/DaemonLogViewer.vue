@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<h1>{{ $t('gateway.log.title') }}</h1>
-		<CCard v-if='log' body-wrapper>
+		<CCard v-if='log !== ""' body-wrapper>
 			<pre class='log'>{{ log }}</pre>
 			<CButton color='primary' @click='downloadArchive()'>
 				{{ $t('gateway.log.download') }}
@@ -30,9 +30,18 @@ import { MetaInfo } from 'vue-meta';
 	}
 })
 
+/**
+ * IQRF Gateway Daemon log viewer component
+ */
 export default class DaemonLogViewer extends Vue {
-	private log: string|null = null
+	/**
+	 * @var {string} log Daemon log file conent
+	 */
+	private log = ''
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		this.$store.commit('spinner/SHOW');
 		GatewayService.getLatestLog()
@@ -54,6 +63,9 @@ export default class DaemonLogViewer extends Vue {
 			});
 	}
 	
+	/**
+	 * Creates a daemon log blob and prompts file download
+	 */
 	private downloadArchive(): void {
 		this.$store.commit('spinner/SHOW');
 		GatewayService.getLogArchive().then(

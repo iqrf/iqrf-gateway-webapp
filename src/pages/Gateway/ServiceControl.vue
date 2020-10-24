@@ -114,30 +114,75 @@ interface IService {
 	}
 })
 
+/**
+ * Gateway service control component
+ */
 export default class ServiceControl extends Vue {
+	/**
+	 * @var {boolean} missing Indicates that a service is missing
+	 */
 	private missing = false;
+
+	/**
+	 * @var {boolean} unknown Indicates that status of a service could not be retrieved
+	 */
 	private unknown =  false;
+
+	/**
+	 * @var {boolean} unsupported Indicates that a service is not supported by the gateway
+	 */
 	private unsupported = false;
+
+	/**
+	 * @var {IService} service Service auxiliary data
+	 */
 	private service: IService = {
 		active: false,
 		enabled: false,
 		status: null
 	}
+
+	/**
+	 * @var {string} title Page and component card title, changes with service
+	 */
 	private title = '';
 
+	/**
+	 * @property {string} serviceName Name of service
+	 */
 	@Prop({required: true}) serviceName!: string;
 
+	/**
+	 * Computes page title depending on the service
+	 * @returns {string} Page title
+	 */
+	get pageTitle(): string {
+		const title = whitelisted.includes(this.serviceName) ?
+			'service.' + this.serviceName + '.title' :
+			'service.unsupported.title';
+		return this.title = this.$t(title).toString();
+	}
+
+	/**
+	 * Service name watcher for status retrieval
+	 */
 	@Watch('serviceName')
 	getServiceStatus(): void {
 		this.$store.commit('spinner/SHOW');
 		this.getStatus();
 	}
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		this.$store.commit('spinner/SHOW');
 		this.getStatus();
 	}
 
+	/**
+	 * Attempts to enable the service
+	 */
 	private enable(): void {
 		this.$store.commit('spinner/SHOW');
 		ServiceService.enable(this.serviceName)
@@ -145,6 +190,9 @@ export default class ServiceControl extends Vue {
 			.catch(this.handleError);
 	}
 
+	/**
+	 * Attempts to disable the service
+	 */
 	private disable(): void {
 		this.$store.commit('spinner/SHOW');
 		ServiceService.disable(this.serviceName)
@@ -152,6 +200,9 @@ export default class ServiceControl extends Vue {
 			.catch(this.handleError);
 	}
 
+	/**
+	 * Attempts to retrieve status of the service
+	 */
 	private getStatus(): void {
 		if (!whitelisted.includes(this.serviceName)) {
 			this.unsupported = true;
@@ -170,6 +221,9 @@ export default class ServiceControl extends Vue {
 			.catch(this.handleError);
 	}
 
+	/**
+	 * Handles REST API error responses
+	 */
 	private handleError(error: AxiosError): void {
 		this.$store.commit('spinner/HIDE');
 		const response = error.response;
@@ -189,6 +243,9 @@ export default class ServiceControl extends Vue {
 		}
 	}
 
+	/**
+	 * Handles successful REST API responses
+	 */
 	private handleSuccess(action: string): void {
 		this.getStatus();
 		this.$toast.success(
@@ -197,11 +254,17 @@ export default class ServiceControl extends Vue {
 		);
 	}
 
+	/**
+	 * Attempts to refresh status of the service
+	 */
 	private refreshStatus(): void {
 		this.$store.commit('spinner/SHOW');
 		this.getStatus();
 	}
 
+	/**
+	 * Attempts to restart the service
+	 */
 	private restart(): void {
 		this.$store.commit('spinner/SHOW');
 		ServiceService.restart(this.serviceName)
@@ -209,6 +272,9 @@ export default class ServiceControl extends Vue {
 			.catch(this.handleError);
 	}
 
+	/**
+	 * Attempts to start the service
+	 */
 	private start(): void {
 		this.$store.commit('spinner/SHOW');
 		ServiceService.start(this.serviceName)
@@ -216,18 +282,14 @@ export default class ServiceControl extends Vue {
 			.catch(this.handleError);
 	}
 
+	/**
+	 * Attempts to stop the service
+	 */
 	private stop(): void {
 		this.$store.commit('spinner/SHOW');
 		ServiceService.stop(this.serviceName)
 			.then(() => (this.handleSuccess('stop')))
 			.catch(this.handleError);
-	}
-
-	get pageTitle(): string {
-		const title = whitelisted.includes(this.serviceName) ?
-			'service.' + this.serviceName + '.title' :
-			'service.unsupported.title';
-		return this.title = this.$t(title).toString();
 	}
 }
 </script>
