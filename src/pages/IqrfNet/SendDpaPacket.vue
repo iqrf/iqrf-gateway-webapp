@@ -123,17 +123,58 @@ import {RawMessage} from '../../interfaces/dpa';
 	}
 })
 
+/**
+ * Send Raw DPA packet page component
+ */
 export default class SendDpaPacket extends Vue {
+	/**
+	 * @var {number} address Default device address
+	 */
 	private address = 0
+
+	/**
+	 * @var {boolean} addressOverwrite Controls whether packet address bytes should be overwritten
+	 */
 	private addressOverwrite = false
+
+	/**
+	 * @var {string|null} msgId Daemon api message id
+	 */
 	private msgId: string|null = null
+
+	/**
+	 * @var {string} packet Raw packet string
+	 */
 	private packet = ''
+
+	/**
+	 * @var {string|null} request Daemon api request message, used in message card
+	 */
 	private request: string|null = null
+
+	/**
+	 * @var {string|null} response Daemon api response message, used in message card
+	 */
 	private response: string|null = null
+
+	/**
+	 * @var {number} timeout Default daemon api message timeout
+	 */
 	private timeout = 1000
+
+	/**
+	 * @var {boolean} timeoutOverwrite Controls whether default daemon api message timeout should be overwritten
+	 */
 	private timeoutOverwrite = false
+
+	/**
+	 * Component unsubscribe function
+	 */
 	private unsubscribe: CallableFunction = () => {return;}
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		extend('between', between);
 		extend('integer', integer);
@@ -184,6 +225,9 @@ export default class SendDpaPacket extends Vue {
 		});
 	}
 
+	/**
+	 * Vue lifecycle hook beforeDestroy
+	 */
 	beforeDestroy(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
 		this.unsubscribe();

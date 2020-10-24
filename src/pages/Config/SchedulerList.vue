@@ -306,15 +306,15 @@ export default class SchedulerList extends Vue {
 			}
 		}, 1000);
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type === 'SOCKET_ONOPEN') {
-				this.useRest = false;
-				if (this.untouched) {
+			if (mutation.type === 'SOCKET_ONOPEN') { // websocket connection with daemon established
+				this.useRest = false; 
+				if (this.untouched) { // retrieve task only when the page is loaded
 					this.getTasks();
 				}
 			} else if (mutation.type === 'SOCKET_ONCLOSE' ||
-				mutation.type === 'SOCKET_ONERROR') {
+				mutation.type === 'SOCKET_ONERROR') { // websocket connection with daemon terminated, REST fallback
 				this.useRest = true;
-			} else if (mutation.type === 'SOCKET_ONSEND') {
+			} else if (mutation.type === 'SOCKET_ONSEND') { // cleanup before tasks are retrieved
 				if (mutation.payload.mType === 'mngScheduler_List') {
 					if (this.taskIds !== []) {
 						this.taskIds = [];
@@ -323,12 +323,12 @@ export default class SchedulerList extends Vue {
 				}
 			} else if (mutation.type === 'SOCKET_ONMESSAGE') {
 				if (mutation.payload.mType === 'mngScheduler_List' &&
-					this.msgIds.includes(mutation.payload.data.msgId)) {
+					this.msgIds.includes(mutation.payload.data.msgId)) { // caught scheduler list was sent from this component
 					this.$store.commit('spinner/HIDE');
 					this.$store.dispatch('removeMessage', mutation.payload.data.msgId);
 					if (mutation.payload.data.status === 0) {
 						this.taskIds = mutation.payload.data.rsp.tasks;
-						this.taskIds.forEach(item => {
+						this.taskIds.forEach(item => { // fetch each task from list of task ids
 							this.getTask(item);
 						});
 						this.retrieved = 'daemon';
@@ -338,7 +338,7 @@ export default class SchedulerList extends Vue {
 						);
 					}
 				} else if (mutation.payload.mType === 'mngScheduler_GetTask' &&
-							this.msgIds.includes(mutation.payload.data.msgId)) {
+							this.msgIds.includes(mutation.payload.data.msgId)) { // caught get task message was sent from this component
 					this.$store.dispatch('removeMessage', mutation.payload.data.msgId);
 					if (mutation.payload.data.status === 0) {
 						if (this.tasks === null) {
@@ -399,16 +399,16 @@ export default class SchedulerList extends Vue {
 	 */
 	private displayMTypes(item): string {
 		try {
-			if (this.retrieved === 'rest') {
+			if (this.retrieved === 'rest') { // task retrieved from REST API, message types is array of strings or a string
 				return Array.isArray(item) ? item.join(', ') : item;
 			}
-			if (Array.isArray(item)) {
+			if (Array.isArray(item)) { // task retrieved from daemon API and has multiple messages
 				let message = '';
 				item.forEach(item => {
 					message += item.message.mType + ', ';
 				});
 				return message.slice(0, -2);
-			} else {
+			} else { // task retrieved from daemon API and has only one message
 				return item.message.mType;
 			} 
 		} catch(err) {
@@ -567,7 +567,7 @@ export default class SchedulerList extends Vue {
 			if (item.exactTime) {
 				return 'oneshot (' + DateTime.fromISO(item.startTime).toLocaleString(this.dateFormat) + ')';
 			}
-			if (item.periodic) {
+			if (item.periodic) { // human readable periodic time specification conversion
 				let message = 'every ';
 				const duration = Duration.fromMillis(item.period * 1000);
 				if (item.period >= 0 && item.period < 60) {
@@ -579,7 +579,7 @@ export default class SchedulerList extends Vue {
 				}
 				return message;
 			}
-			if (item.cronTime.length > 0) {
+			if (item.cronTime.length > 0) { // time specification in cron, conversion from array to string
 				if (typeof item.cronTime === 'string') {
 					return item.cronTime;
 				}

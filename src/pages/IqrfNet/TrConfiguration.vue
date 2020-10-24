@@ -302,22 +302,62 @@ import { IEmbedPers, IEmbedPersEnabled, ITrConfiguration } from '../../interface
 	}
 })
 
+/**
+ * Transciever configuration page component
+ */
 export default class TrConfiguration extends Vue {
+	/**
+	 * @var {ITrConfiguration|null} config Device transciever configuration object
+	 */
 	private config: ITrConfiguration|null = null
+
+	/**
+	 * @var {boolean} dpaHandlerDetected Indicates whether transciever has a custom dpa handler implemented
+	 */
 	private dpaHandlerDetected = false
+
+	/**
+	 * @var {string|null} dpaVersion Version of DPA used by transciever
+	 */
 	private dpaVersion: string|null = null
+
+	/**
+	 * @var {string|null} msgId Daemon api message id
+	 */
 	private msgId: string|null = null
+
+	/**
+	 * @var {Array<IEmbedPersEnabled} peripherals Array of embedded peripherals and their states
+	 */
 	private peripherals: Array<IEmbedPersEnabled> = []
+
+	/**
+	 * @constant {Array<string>} unchangeablePeripherals Array of peripherals whose states cannot be changed
+	 */
 	private unchangeablePeripherals: Array<string> = [
 		'coordinator',
 		'node',
 		'os'
 	]
+
+	/**
+	 * Component unsubscribe function
+	 */
 	private unsubscribe: CallableFunction = () => {return;}
+
+	/**
+	 * Component unwatch function
+	 */
 	private unwatch: CallableFunction = () => {return;}
 
+	/**
+	 * @property {number} address Device address
+	 */
 	@Prop({required: true}) address!: number
 
+	/**
+	 * Device address watcher for transciever configuration retrieval
+	 */
 	@Watch('address')
 	getAddress(): void {
 		this.config = null;
@@ -329,6 +369,10 @@ export default class TrConfiguration extends Vue {
 		}
 	}
 	
+	/**
+	 * Computes rules for validation of RF channel input field
+	 * @returns {Dictionary<string|number>|undefined} Dictionary of rules if rfBand in configuration is valid
+	 */
 	get rfChannelRules(): Dictionary<string|number>|undefined {
 		if (this.config === null) {
 			return undefined;
@@ -344,6 +388,10 @@ export default class TrConfiguration extends Vue {
 		return undefined;
 	}
 
+	/**
+	 * Computes feedback messages in case rfBand field value is invalid
+	 * @returns {Dictionary<string>} Dictionary of messages for applied rules
+	 */
 	get rfChannelValidatorMessages(): Dictionary<string> {
 		let message = '';
 		if (this.config !== null) {
@@ -366,6 +414,10 @@ export default class TrConfiguration extends Vue {
 		};
 	}
 
+	/**
+	 * Computes CoreUI select options for UART baudrate
+	 * @returns {Array<IOption>} CoreUI select options
+	 */
 	get uartBaudRates(): Array<IOption> {
 		const uartBaudRates = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400];
 		return uartBaudRates.map((uartBaudRate) => {
@@ -376,6 +428,9 @@ export default class TrConfiguration extends Vue {
 		});
 	}
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		extend('between', between);
 		extend('integer', integer);
@@ -415,18 +470,27 @@ export default class TrConfiguration extends Vue {
 		}
 	}
 
+	/**
+	 * Vue lifecycle hook beforeDestroy
+	 */
 	beforeDestroy(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
 		this.unwatch();
 		this.unsubscribe();
 	}
 
+	/**
+	 * Performs device enumeration
+	 */
 	private enumerate(): void {
 		this.$store.dispatch('spinner/show', {timeout: 30000});
 		IqrfNetService.enumerateDevice(this.address, 30000, 'iqrfnet.trConfiguration.messages.read.failure', () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
+	/**
+	 * Handles Enumeration request response
+	 */
 	private handleEnumerationResponse(response): void {
 		if (response.data.status !== 0) {
 			this.$store.commit('spinner/HIDE');
@@ -448,6 +512,9 @@ export default class TrConfiguration extends Vue {
 		}
 	}
 
+	/**
+	 * Updates transciever configuration object with embed peripherals configuration and then sends WriteTrConfiguration request
+	 */
 	private handleSubmit(): void {
 		let config = JSON.parse(JSON.stringify(this.config));
 		config.embPers = this.getEmbeddedPeripherals();
@@ -456,6 +523,9 @@ export default class TrConfiguration extends Vue {
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
+	/**
+	 * Handles WriteTrConfiguration request response
+	 */
 	private handleWriteResponse(response): void {
 		this.$store.commit('spinner/HIDE');
 		if (response.data.status === 0) {
@@ -469,6 +539,9 @@ export default class TrConfiguration extends Vue {
 		}
 	}
 
+	/**
+	 * Populates array of embedded peripherals with information from ReadTrConfiguration request
+	 */
 	private setEmbeddedPeripherals(): void {
 		if (this.config === null) {
 			return;
@@ -476,10 +549,10 @@ export default class TrConfiguration extends Vue {
 		let peripherals = JSON.parse(JSON.stringify(this.config.embPers));
 		this.peripherals = [];
 		for (let peripheral in peripherals) {
-			if (!Object.prototype.hasOwnProperty.call(peripherals, peripheral)) {
+			if (!Object.prototype.hasOwnProperty.call(peripherals, peripheral)) { // peripheral information exists
 				continue;
 			}
-			if (typeof this.config.embPers[peripheral] !== 'boolean') {
+			if (typeof this.config.embPers[peripheral] !== 'boolean') { // invalid value in configuration
 				continue;
 			}
 			if (this.unchangeablePeripherals.includes(peripheral) &&
@@ -493,6 +566,10 @@ export default class TrConfiguration extends Vue {
 		}
 	}
 
+	/**
+	 * Converts new configuration of embedded peripherals from array to object accepted by daemon
+	 * @returns {IEmbedPers} Dictionary of embedded peripherals
+	 */
 	private getEmbeddedPeripherals(): IEmbedPers {
 		let peripherals = {};
 		for (let peripheral of this.peripherals) {

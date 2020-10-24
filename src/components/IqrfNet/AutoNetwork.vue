@@ -422,7 +422,7 @@ export default class AutoNetwork extends Vue {
 		});
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type === 'SOCKET_ONERROR' ||
-				mutation.type === 'SOCKET_ONCLOSE') {
+				mutation.type === 'SOCKET_ONCLOSE') { // websocket connection with daemon terminated, recover from state after sending message
 				if (this.$store.getters['spinner/isEnabled']) {
 					this.$store.commit('spinner/HIDE');
 				}
@@ -438,7 +438,7 @@ export default class AutoNetwork extends Vue {
 							);
 							break;
 						case 0:
-							this.$store.commit('spinner/UPDATE_TEXT', this.autoNetworkProgress(mutation.payload.data));
+							this.$store.commit('spinner/UPDATE_TEXT', this.autoNetworkProgress(mutation.payload.data)); // update spinner text with progress message
 							if (mutation.payload.data.rsp.lastWave) {
 								this.$store.commit('spinner/HIDE');
 								this.$store.dispatch('removeMessage', this.msgId);
@@ -467,7 +467,7 @@ export default class AutoNetwork extends Vue {
 							.toString()
 					);
 				} else if (mutation.payload.mType === 'mngDaemon_Version' &&
-							mutation.payload.data.msgId === this.msgId) {
+							mutation.payload.data.msgId === this.msgId) { // daemon version response handler
 					this.$store.dispatch('spinner/hide');
 					this.$store.dispatch('removeMessage', this.msgId);
 					if (mutation.payload.data.status === 0 ) {
@@ -505,17 +505,17 @@ export default class AutoNetwork extends Vue {
 	 */
 	private autoNetworkProgress(response: any): string {
 		let message = '\n' + this.$t('iqrfnet.networkManager.messages.autoNetwork.statusWave').toString() + response.rsp.wave;
-		if (this.useWaves) {
+		if (this.useWaves) { // maximum number of waves used in request
 			message += '/ ' + this.stopConditions.waves;
 		}
 		message += '\n[' + response.rsp.progress + '%] ';
-		if (response.rsp.waveState) {
+		if (response.rsp.waveState) { // wave information exists
 			message += response.rsp.waveState;
 		}
-		if (response.rsp.nodesNr) {
+		if (response.rsp.nodesNr) { // collects number of nodes in network
 			this.messages.nodesTotal = '\n' + this.$t('iqrfnet.networkManager.messages.autoNetwork.statusTotalNodes').toString() + response.rsp.nodesNr;
 		}
-		if (response.rsp.newNodesNr) {
+		if (response.rsp.newNodesNr) { // collects number of nodes added to network in last wave
 			this.messages.nodesNew = '\n' + this.$t('iqrfnet.networkManager.messages.autoNetwork.statusAddedNodes').toString() + response.rsp.newNodesNr;
 		}
 		message += this.messages.nodesTotal + this.messages.nodesNew;
@@ -530,10 +530,10 @@ export default class AutoNetwork extends Vue {
 		let submitData = this.autoNetwork;
 		let stopConditions = {};
 		stopConditions['emptyWaves'] = this.stopConditions.emptyWaves;
-		if (this.useWaves) {
+		if (this.useWaves) { // maximum number of waves is enabled
 			stopConditions['waves'] = this.stopConditions.waves;
 		}
-		if (this.useNodes) {
+		if (this.useNodes) { // node count stop conditions are used
 			stopConditions['abortOnTooManyNodesFound'] = this.stopConditions.abortOnTooManyNodesFound;
 			if (this.nodeCondition === 'total') {
 				stopConditions['numberOfTotalNodes'] = this.stopConditions.numberOfTotalNodes;
@@ -541,13 +541,13 @@ export default class AutoNetwork extends Vue {
 				stopConditions['numberOfNewNodes'] = this.stopConditions.numberOfNewNodes;
 			}
 		}
-		if (Object.keys(stopConditions).length > 0) {
+		if (Object.keys(stopConditions).length > 0) { // local stop conditions are added to the request if they exist
 			submitData['stopConditions'] = stopConditions;
 		}
-		if (this.useOverlappingNetworks) {
+		if (this.useOverlappingNetworks) { // overlapping networks is enabled
 			submitData['overlappingNetworks'] = this.overlappingNetworks;
 		}
-		if (this.useHwpidFiltering && this.hwpidFiltering.length > 0) {
+		if (this.useHwpidFiltering && this.hwpidFiltering.length > 0) { // hwpid filtering is enabled, convert from string to array of integers
 			submitData['hwpidFiltering'] = this.hwpidFiltering.split(', ').map((i) => parseInt(i));
 		}
 		this.$store.commit('spinner/SHOW');

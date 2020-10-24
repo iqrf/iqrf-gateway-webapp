@@ -32,6 +32,9 @@ import FileUpload from '../../components/IqrfNet/FileUpload.vue';
 	}
 })
 
+/**
+ * Coordinator upload page component
+ */
 export default class TrUpload extends Vue {
 }
 </script>

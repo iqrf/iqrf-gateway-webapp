@@ -45,13 +45,25 @@ import AutoNetwork from '../../components/IqrfNet/AutoNetwork.vue';
 	},
 })
 
+/**
+ * Network manager page component
+ */
 export default class NetworkManager extends Vue {
+	/**
+	 * @const {number} activeTab Default active tab
+	 */
 	private activeTab = 0
 	
+	/**
+	 * Retrieves Daemon version on notify-autonetwork event emitted by successful FRC ping
+	 */
 	private getVersion(): void {
 		(this.$refs.autonetwork as AutoNetwork).getVersion();
 	}
 
+	/**
+	 * Refreshes table of devices on update-devices event emitted by a bonding or discovery action
+	 */
 	private updateDevices(): void {
 		(this.$refs.devs as DevicesInfo).getBondedDevices();
 	}

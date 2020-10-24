@@ -33,6 +33,9 @@ import SensorManager from '../../components/IqrfNet/SensorManager.vue';
 	}
 })
 
+/**
+ * Standard manager page component
+ */
 export default class StandardManager extends Vue {
 }
 </script>
