@@ -1,3 +1,75 @@
+iqrf-gateway-webapp (2.1.0) stable; urgency=medium
+
+  [ Roman Ondráček ]
+  * Prepare for version 2.1.0-rc4
+  * Console: delete redundant code
+  * Disambiguations: use TypeScript decorators
+
+  [ Karel Hanák ]
+  * AutoNetwork: fix spinner message
+
+  [ Roman Ondráček ]
+  * Install: use TypeScript decorators
+  * Config: use raw task time specification in the scheduler
+  * Makefile: remove old webpack target
+  * IQRF net: remove unused code
+  * IQRF net: fix Nette DI service configuration
+  * Tests: add missing tests, delete unused code
+  * Install: fetch optional features while user creation
+  * Cloud: add missing title at Inteliments InteliGlue MQTT connection wizard page
+  * Cloud: redesign Pixla device management page
+  * Use small CIcons in the small CButtons
+  * Router: use lazy loading
+  * Fix button spacings
+  * API: add support for MS specific ZIP MIME type
+
+  [ Karel Hanák ]
+  * IqrfNet: DpaUpload disable current dpa version option for upload
+  * IqrfNet: SendJson unique message in case of full Daemon message queue
+  * Config components and autonetwork: added missing translations
+  * UserList and ApiKeyList: missing translations
+  * Cloud: Pixla restart button
+  * Config: Controller added no api call option to form select
+  * ConsoleModule: add missing mender translation
+  * Cloud: Hexio hide broker address, remove unused localization
+  * Iqrfnet: SendJson spinner recovery on messageError
+  * Clouds: revert hexio request topic change
+
+  [ Roman Ondráček ]
+  * Debian packaging: remove Latte template warmup
+  * IQRF net: add míssing IQRF OS patches
+
+  [ Karel Hanák ]
+  * Config: Scheduler fix message types display function
+  * Iqrfnet: BondingManager response code workaround
+  * Iqrfnet: BondingManager add default error message
+  * Config: fix component form submit message, mapping wrap
+
+  [ Roman Ondráček ]
+  * API: fix installation checker
+  * API: fix coding style
+  * Install: fix apache2 configuration
+  * Composer: update dependencies
+  * NPM: update dependencies
+
+  [ Karel Hanák ]
+  * Config: add missing error handlers
+  * Services: add content-type header to post requests with files
+
+  [ Roman Ondráček ]
+  * Install: allow encoded slashes in Apache2 configuration
+  * Header: fix logo position on small resolutions
+  * Config: use 1 column interface mapping view also on medium viewport
+
+  [ Karel Hanák ]
+  * TrUpload: allow hex file upload only
+
+  [ Roman Ondráček ]
+  * Install: add HTTP security headers (fix #261)
+  * Install: fix CSP rules
+
+ -- Roman Ondráček <roman@romanondracek.cz>  Sun, 25 Oct 2020 23:20:00 +0100
+
 iqrf-gateway-webapp (2.1.0~rc3) testing; urgency=medium
 
   [ Roman Ondráček ]
