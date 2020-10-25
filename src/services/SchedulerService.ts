@@ -167,7 +167,11 @@ class SchedulerService {
 	 * @param config scheduler configuration
 	 */
 	importConfig(config: File): Promise<AxiosResponse> {
-		return axios.post('scheduler/import', config, {headers: authorizationHeader()});
+		const headers = {
+			...authorizationHeader(),
+			'Content-Type': config.type
+		};
+		return axios.post('scheduler/import', config, {headers: headers});
 	}
 }
 

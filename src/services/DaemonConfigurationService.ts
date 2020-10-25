@@ -75,9 +75,13 @@ class DaemonConfigurationService {
 	 * Imports daemon configuration
 	 * @param config daemon configuration
 	 */
-	import(config: any): Promise<AxiosResponse> {
+	import(config: File): Promise<AxiosResponse> {
 		const url = 'config/daemon/migration/import';
-		return axios.post(url, config, {headers: authorizationHeader()});
+		const headers = {
+			...authorizationHeader(),
+			'Content-Type': config.type
+		};
+		return axios.post(url, config, {headers: headers});
 	}
 
 	/**

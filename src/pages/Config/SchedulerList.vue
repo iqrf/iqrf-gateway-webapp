@@ -290,6 +290,17 @@ export default {
 							this.$t('config.scheduler.messages.deleteFail').toString()
 						);
 					}
+				} else if (mutation.payload.mType === 'messageError') {
+					this.$store.commit('spinner/HIDE');
+					if (mutation.payload.data.rsp.errorStr.includes('daemon overload')) {
+						this.$toast.error(
+							this.$t('iqrfnet.sendJson.form.messages.error.messageQueueFull').toString()
+						);
+					} else {
+						this.$toast.error(
+							this.$t('config.scheduler.messagess.processError').toString()
+						);
+					}
 				}
 			}
 		});
