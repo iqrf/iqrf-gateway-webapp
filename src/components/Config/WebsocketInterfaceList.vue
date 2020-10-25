@@ -215,8 +215,8 @@ export default class WebsocketInterfaceList extends Vue {
 					}
 				}
 				this.$store.commit('spinner/HIDE');
-			});
-		// TODO: add error message
+			})
+			.catch((error: AxiosError) => FormErrorHandler.configError(error));
 	}
 
 	private changeAcceptOnlyLocalhost(service, setting: boolean): void {
@@ -264,8 +264,8 @@ export default class WebsocketInterfaceList extends Vue {
 						.toString()
 				);
 				this.modals.instance = null;
-			});
-		// TODO: add error message
+			})
+			.catch((error: AxiosError) => FormErrorHandler.configError(error));
 	}
 }
 </script>

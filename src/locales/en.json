@@ -154,7 +154,8 @@
 			"saveSuccess": "Configuration has been successfully saved.",
 			"submitBadRequest": "Invalid JSON syntax.",
 			"submitServerError": "Internal server error has occurred.",
-			"componentNotFound": "Component or instance not found."
+			"componentNotFound": "Component or instance not found.",
+			"fetchFail": "Failed to retrieve component or instance configuration."
 		}
 	},
 	"config": {

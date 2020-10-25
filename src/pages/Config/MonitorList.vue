@@ -187,8 +187,8 @@ export default {
 						}
 					}
 					this.$store.commit('spinner/HIDE');
-				});
-			// TODO: add error message
+				})
+				.catch((error) => FormErrorHandler.configError(error));
 		},
 		changeAcceptOnlyLocalhost(service, setting) {
 			this.$store.commit('spinner/SHOW');
@@ -217,8 +217,8 @@ export default {
 							this.$t('config.monitor.messages.delete.success', {instance: this.modals.instances.monitor})
 								.toString())
 						);
-				});
-			// TODO: add error message
+				})
+				.catch((error) => FormErrorHandler.configError(error));
 		},
 	},
 	icons: {
