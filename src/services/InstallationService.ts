@@ -5,7 +5,7 @@ import axios, {AxiosResponse} from 'axios';
  */
 export interface InstallationCheck {
 	allMigrationsExecuted: boolean,
-	hasUsers: boolean,
+	hasUsers?: boolean,
 }
 
 /**
