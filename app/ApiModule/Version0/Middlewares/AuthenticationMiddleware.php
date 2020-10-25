@@ -123,12 +123,14 @@ class AuthenticationMiddleware implements IMiddleware {
 	 */
 	protected function isWhitelisted(ServerRequestInterface $request): bool {
 		$requestUrl = rtrim($request->getUri()->getPath(), '/');
-		if ($this->entityManager->getUserRepository()->count([]) === 0) {
-			if (array_search($requestUrl, self::INSTALLER_PATHS, true) !== false) {
-				return true;
-			}
+		if (array_search($requestUrl, self::WHITELISTED_PATHS, true) !== false) {
+			return true;
 		}
-		return array_search($requestUrl, self::WHITELISTED_PATHS, true) !== false;
+		if (($this->entityManager->getUserRepository()->count([]) === 0) &&
+			(array_search($requestUrl, self::INSTALLER_PATHS, true) !== false)) {
+			return true;
+		}
+		return false;
 	}
 
 }

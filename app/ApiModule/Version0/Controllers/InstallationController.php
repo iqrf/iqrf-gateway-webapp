@@ -74,13 +74,17 @@ class InstallationController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function check(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$availableMigrations = $this->doctrineConfiguration->getNumberOfAvailableMigrations();
-		$executedMigrations = $this->doctrineConfiguration->getNumberOfExecutedMigrations();
+		$status = [];
+		$doctrine = $this->doctrineConfiguration;
+		$availableMigrations = $doctrine->getNumberOfAvailableMigrations();
+		$executedMigrations = $doctrine->getNumberOfExecutedMigrations();
+		$status['allMigrationsExecuted'] = $availableMigrations === $executedMigrations;
+		if (!$status['allMigrationsExecuted']) {
+			return $response->writeJsonBody($status);
+		}
 		$users = $this->entityManager->getUserRepository()->count([]);
-		return $response->writeJsonBody([
-			'allMigrationsExecuted' => $availableMigrations === $executedMigrations,
-			'hasUsers' => $users !== 0,
-		]);
+		$status['hasUsers'] = $users !== 0;
+		return $response->writeJsonBody($status);
 	}
 
 }
