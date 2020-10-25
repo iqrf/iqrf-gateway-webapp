@@ -36,7 +36,7 @@
 		"bgalati/monolog-sentry-handler": "^1.2",
 		"contributte/console": "^0.8",
 		"contributte/console-extra": "^0.5",
-		"contributte/guzzlette": "^3.0",
+		"contributte/guzzlette": "^3.1",
 		"contributte/monolog": "^0.4",
 		"contributte/translation": "^0.7",
 		"darsyn/ip": "^4.0",
@@ -83,7 +83,7 @@
 		"phpstan/phpstan-mockery": "^0.12",
 		"phpstan/phpstan-nette": "^0.12",
 		"phpstan/phpstan-strict-rules": "^0.12",
-		"rector/rector": "^0.7"
+		"rector/rector": "^0.8"
 	},
 	"autoload": {
 		"psr-4": {

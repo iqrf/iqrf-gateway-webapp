@@ -43,8 +43,8 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 	$parameters->set('sets', [
 		'code-quality',
 		'doctrine-code-quality',
-		'doctrine-dbal-210',
-		'nette-30',
+		'doctrine-dbal210',
+		'nette30',
 		'nette-utils-code-quality',
 		'php72',
 		'php73',
