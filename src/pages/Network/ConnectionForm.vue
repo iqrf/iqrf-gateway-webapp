@@ -296,7 +296,13 @@ interface ConnectionConfig {
 	}
 })
 
+/**
+ * Connection form component for Network page
+ */
 export default class ConnectionForm extends Vue {
+	/**
+	 * @var {ConnectionConfig} configuration Configuration of IPv4 and IPv6 connectivity
+	 */
 	private configuration: ConnectionConfig = {
 		ipv4: {
 			addresses: [],
@@ -311,8 +317,15 @@ export default class ConnectionForm extends Vue {
 		}
 	}
 
+	/**
+	 * @property {string} uuid Network connection configuration id
+	 */
 	@Prop({required: false, default: null}) uuid!: string
 
+	/**
+	 * Computes array of CoreUI select options for IPv4 configuration method
+	 * @returns {Array<IOption>} Configuration method options
+	 */
 	get ipv4Methods(): Array<IOption> {
 		const methods = ['auto', 'disabled', 'link-local', 'manual', 'shared'];
 		return methods.map(
@@ -323,6 +336,10 @@ export default class ConnectionForm extends Vue {
 		);
 	}
 
+	/**
+	 * Computes array of CoreUI select options for IPv6 configuration method
+	 * @returns {Array<IOption>} Configuration method options
+	 */
 	get ipv6Methods(): Array<IOption> {
 		const methods = [
 			'auto', 'disabled', 'dhcp', 'ignore', 'link-local', 'manual', 'shared',
@@ -335,11 +352,18 @@ export default class ConnectionForm extends Vue {
 		);
 	}
 
+	/**
+	 * Computes form submit button text depending on the action (add, edit)
+	 * @return {string} Button text
+	 */
 	get submitButton(): string {
 		return this.$route.path === '/network/add' ?
 			this.$t('forms.add').toString() : this.$t('forms.save').toString();
 	}
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		this.$store.commit('spinner/SHOW');
 		extend('required', required);
@@ -350,38 +374,69 @@ export default class ConnectionForm extends Vue {
 			});
 	}
 
+	/**
+	 * Adds a new IPv4 address object to configuration
+	 */
 	private addIpv4Address(): void {
 		this.configuration.ipv4.addresses.push({address: '', mask: ''});
 	}
 
+	/**
+	 * Adds a new IPv4 dns object to configuraiton
+	 */
 	private addIpv4Dns(): void {
 		this.configuration.ipv4.dns.push({address: ''});
 	}
 
+	/**
+	 * Removes an IPv4 address object specified by index
+	 * @param {number} index Index of address object
+	 */
 	private deleteIpv4Address(index: number): void {
 		this.configuration.ipv4.addresses.splice(index, 1);
 	}
 
+	/**
+	 * Removes an IPv4 dns object specified by index
+	 * @param {number} index Index of dns object
+	 */
 	private deleteIpv4Dns(index: number): void {
 		this.configuration.ipv4.dns.splice(index, 1);
 	}
 
+	/**
+	 * Adds a new IPv6 address object to configuration
+	 */
 	private addIpv6Address(): void {
 		this.configuration.ipv6.addresses.push({address: '', mask: ''});
 	}
 
+	/**
+	 * Adds a new IPv6 dns object to configuraiton
+	 */
 	private addIpv6Dns(): void {
 		this.configuration.ipv6.dns.push({address: ''});
 	}
 
+	/**
+	 * Removes an IPv6 address object specified by index
+	 * @param {number} index Index of address object
+	 */
 	private deleteIpv6Address(index: number): void {
 		this.configuration.ipv6.addresses.splice(index, 1);
 	}
 
+	/**
+	 * Removes an IPv6 dns object specified by index
+	 * @param {number} index Index of dns object
+	 */
 	private deleteIpv6Dns(index: number): void {
 		this.configuration.ipv6.dns.splice(index, 1);
 	}
 
+	/**
+	 * Updates existing network connection settings and establishes connection
+	 */
 	private handleSubmit(): void {
 		this.$store.commit('spinner/SHOW');
 		NetworkConnectionService.edit(this.uuid, this.configuration)

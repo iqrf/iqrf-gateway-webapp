@@ -30,6 +30,9 @@ import {CButton, CCard, CCardBody, CCardFooter} from '@coreui/vue/src';
 	},
 })
 
+/**
+ * Installation disambiguation menu component
+ */
 export default class InstallationDisambiguation extends Vue {
 }
 </script>

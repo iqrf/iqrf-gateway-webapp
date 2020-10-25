@@ -98,11 +98,24 @@ import { AxiosResponse } from 'axios';
 	}
 })
 
+/**
+ * Gateway information component for installation wizard
+ */
 export default class InstallGatewayInfo extends Vue {
-	private coordinator: unknown = null
+	/**
+	 * @var {IGatewayInfo|null} info Gateway information object
+	 */
 	private info: IGatewayInfo|null = null
+
+	/**
+	 * @var {boolean} showCoordinator Controls whether coordinator information component can be shown
+	 */
 	private showCoordinator = false
 
+	/**
+	 * Computes array of IP address objects from network interfaces
+	 * @returns {Array<IpAddress>} Array of IP address objects
+	 */
 	get getIpAddresses(): Array<IpAddress> {
 		if (this.info === null) {
 			return [];
@@ -120,6 +133,10 @@ export default class InstallGatewayInfo extends Vue {
 		return addresses;
 	}
 
+	/**
+	 * Computes array of MAC address objects from network interfaces
+	 * @returns {Array<MacAddress>} Array of MAC address objects
+	 */
 	get getMacAddresses(): Array<MacAddress> {
 		if (this.info === null) {
 			return [];
@@ -137,6 +154,9 @@ export default class InstallGatewayInfo extends Vue {
 		return addresses;
 	}
 	
+	/**
+	 * Vue lifecycle hook created
+	 */
 	private created(): void {
 		this.$store.commit('spinner/SHOW');
 		GatewayService.getInfo()
@@ -149,6 +169,9 @@ export default class InstallGatewayInfo extends Vue {
 			.catch(() => this.$store.commit('spinner/HIDE'));
 	}
 
+	/**
+	 * Creates daemon diagnostics file blob and prompts file download
+	 */
 	private downloadDiagnostics(): void {
 		this.$store.commit('spinner/SHOW');
 		GatewayService.getInfo().then(

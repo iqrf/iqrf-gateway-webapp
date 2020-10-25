@@ -41,10 +41,23 @@ import { NetworkConnection, NetworkInterface } from '../../interfaces/network';
 	},
 })
 
+/**
+ * Ethernet interfaces page component
+ */
 export default class EthernetInterfaces extends Vue {
+	/**
+	 * @var {Array<NetworkConnection>} connections Array of existing network connections
+	 */
 	private connections: Array<NetworkConnection> = []
+
+	/**
+	 * @var {Array<NetworkInterfaces} interfaces Array of existing network interfaces
+	 */
 	private interfaces: Array<NetworkInterface> = []
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		NetworkInterfaceService.list(InterfaceType.ETHERNET)
 			.then((response: AxiosResponse) => {
@@ -53,6 +66,9 @@ export default class EthernetInterfaces extends Vue {
 		this.getConnections();
 	}
 
+	/**
+	 * Retrieves existing network connections
+	 */
 	private getConnections(): Promise<void> {
 		return NetworkConnectionService.list(ConnectionType.ETHERNET)
 			.then((response: AxiosResponse) => {
@@ -60,6 +76,11 @@ export default class EthernetInterfaces extends Vue {
 			});
 	}
 
+	/**
+	 * Returns a color to use in interface state badge
+	 * @param {InterfaceState} status Interface status
+	 * @returns {string} Badge color string
+	 */
 	private getStatusBadgeColor(status: InterfaceState): string {
 		switch (status) {
 			case InterfaceState.CONNECTED:

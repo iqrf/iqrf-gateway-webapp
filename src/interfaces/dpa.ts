@@ -91,6 +91,9 @@ export interface PeripheralEnumeration {
 	userPers: Array<unknown>
 }
 
+/**
+ * Peripheral information interface
+ */
 export interface PeripheralInfo {
 	par1: number
 	part: number
@@ -98,6 +101,9 @@ export interface PeripheralInfo {
 	perTe: number
 }
 
+/**
+ * Discovery data interface
+ */
 export interface Discovery {
 	discovered: boolean
 	parent: number
@@ -105,6 +111,9 @@ export interface Discovery {
 	zone: number
 }
 
+/**
+ * Embedded peripherals implemented interface
+ */
 export interface IEmbedPers {
 	coordinator: boolean
 	eeeprom: boolean
@@ -121,11 +130,17 @@ export interface IEmbedPers {
 	uart: boolean
 }
 
+/**
+ * Embedded peripheral state interface
+ */
 export interface IEmbedPersEnabled {
 	enabled: boolean
 	name: string
 }
 
+/**
+ * Transciever configuration interface
+ */
 export interface ITrConfiguration {
 	customDpaHandler: boolean
 	dpaAutoexec: boolean

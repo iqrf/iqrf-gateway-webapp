@@ -1,7 +1,10 @@
-// @ts-ignore
+import { Dictionary } from 'vue-router/types/router';
 import store from '../store';
 
-export function authorizationHeader() {
+/**
+ * Creates authorization header object for REST API requests
+ */
+export function authorizationHeader(): Dictionary<string> {
 	const token = store.getters['user/getToken'];
 	if (token === null) {
 		return {};

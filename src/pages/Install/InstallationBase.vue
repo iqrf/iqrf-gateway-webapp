@@ -27,6 +27,9 @@ import LogoBlue from '../../assets/logo-blue.svg';
 	},
 })
 
+/**
+ * Installation base page component
+ */
 export default class InstallationBase extends Vue {
 }
 </script>
