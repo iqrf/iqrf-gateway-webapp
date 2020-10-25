@@ -89,10 +89,10 @@
 			<CCardHeader>{{ $t('config.iqrfSpi.mappings' ) }}</CCardHeader>
 			<CCardBody>
 				<CRow>
-					<CCol md='6'>
+					<CCol lg='6'>
 						<InterfaceMappings interface-type='spi' @update-mapping='updateMapping' />
 					</CCol>
-					<CCol md='6'>
+					<CCol lg='6'>
 						<InterfacePorts interface-type='spi' @update-port='updatePort' />
 					</CCol>
 				</CRow>
