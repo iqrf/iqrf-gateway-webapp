@@ -6,7 +6,7 @@
 				<div class='form-group'>
 					<CInputFile
 						ref='fileUpload'
-						accept='.hex,.iqrf,.trcnfg'
+						accept='.hex'
 						:label='$t("iqrfnet.trUpload.file")'
 						@input='isEmpty'
 						@click='isEmpty'
@@ -59,8 +59,8 @@ export default Vue.extend({
 			selectOptions: [
 				{value: null, label: this.$t('iqrfnet.trUpload.messages.fileFormat')},
 				{value: FileFormat.HEX, label: this.$t('iqrfnet.trUpload.fileFormats.hex')},
-				{value: FileFormat.IQRF, label: this.$t('iqrfnet.trUpload.fileFormats.iqrf')},
-				{value: FileFormat.TRCNFG, label: this.$t('iqrfnet.trUpload.fileFormats.trcnfg')}
+				/*{value: FileFormat.IQRF, label: this.$t('iqrfnet.trUpload.fileFormats.iqrf')},
+				{value: FileFormat.TRCNFG, label: this.$t('iqrfnet.trUpload.fileFormats.trcnfg')}*/
 			],
 			failed: false,
 			format: null,
@@ -99,7 +99,6 @@ export default Vue.extend({
 			return input.files;
 		},
 		submitUpload() {
-			this.$store.commit('spinner/SHOW');
 			const formData = new FormData();
 			if (this.$store.getters['user/getRole'] === 'power' && this.format !== null) {
 				formData.append('format', this.format);
@@ -109,8 +108,15 @@ export default Vue.extend({
 				this.$toast.error(this.$t('iqrfnet.trUpload.messages.file').toString());
 				return;
 			}
+			if (!files[0].name.endsWith('.hex')) {
+				this.$toast.error(
+					this.$t('iqrfnet.trUpload.messages.invalidFormat').toString()
+				);
+				return;
+			}
 			formData.append('file', this.getFiles()[0]);
 			this.requestSent = true;
+			this.$store.commit('spinner/SHOW');
 			NativeUploadService.uploadREST(formData)
 				.then((response) => {
 					this.$store.dispatch('spinner/show', {timeout: 30000});

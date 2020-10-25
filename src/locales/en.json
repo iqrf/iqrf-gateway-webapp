@@ -1448,7 +1448,8 @@
 				"badRequest": "Invalid combination of DPA version and RF mode.",
 				"genericError": "An error has occured while processing request.",
 				"osBuildFail": "Failed to retrieve OS builds information.",
-				"osInfoFail": "Embed OS read request failed."
+				"osInfoFail": "Embed OS read request failed.",
+				"invalidFormat": "The uploaded file is not a .hex file."
 			}
 		}
 	},
