@@ -10,7 +10,7 @@
 			class='ml-3 d-md-down-none'
 			@click='$store.commit("sidebar/toggleSidebarDesktop")'
 		/>
-		<CHeaderBrand class='mx-auto d-lg-none' to='/'>
+		<CHeaderBrand class='ml-auto d-lg-none' to='/'>
 			<LogoBig :alt='$t("core.title")' />
 		</CHeaderBrand>
 		<CHeaderNav class='ml-auto mr-3'>
