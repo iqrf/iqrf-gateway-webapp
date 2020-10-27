@@ -2,6 +2,10 @@ parameters:
 	# init deamon used in out system (e.g. systemd)
 	initDaemon: 'systemd'
 	sudo: true
+	# Controller configuration
+	controller:
+		# Path to directory containing IQRF Gateway Controller configuration
+		configDir: '/etc/iqrf-gateway-controller/'
 	# Daemon configuration
 	daemon:
 		# Path to directory with IQRF Gateway Daemon's JSON API schemas
@@ -19,6 +23,10 @@ parameters:
 	# Sentry configuration
 	sentry:
 		dsn: 'https://7cd0252aae6d491b98514b9486cd2771@sentry.iqrf.org/2'
+	# Translator configuration
+	translator:
+		# Path to directory containing IQRF Gateway Translator configuration
+		configDir: '/etc/iqrf-gateway-translator/'
 
 extensions:
 	iqrfRepository: Iqrf\Repository\DI\IqrfRepositoryExtension

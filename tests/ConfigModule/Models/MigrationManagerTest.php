@@ -43,6 +43,16 @@ final class MigrationManagerTest extends TestCase {
 	private const CONFIG_TEMP_PATH = __DIR__ . '/../../temp/migrated-configuration/';
 
 	/**
+	 * Path to nonexistant directory with IQRF Gateway Controller's configuration
+	 */
+	private const CONFIG_TEMP_PATH_CONTROLLER = __DIR__ . '/../../temp/migrated-configuration/controller';
+
+	/**
+	 * Path to nonexistant directory with IQRF Gateway Translator's configuration
+	 */
+	private const CONFIG_TEMP_PATH_TRANSLATOR = __DIR__ . '/../../temp/migrated-configuration/translator';
+
+	/**
 	 * Path to a directory with correct JSON schemas
 	 */
 	private const SCHEMA_PATH = __DIR__ . '/../../data/cfgSchemas/';
@@ -86,7 +96,7 @@ final class MigrationManagerTest extends TestCase {
 		$zipManager = new ZipArchiveManager($actual, ZipArchive::CREATE);
 		foreach ($files as $file) {
 			$expected = $this->fileManager->read($file);
-			Assert::same($expected, $zipManager->openFile($file));
+			Assert::same($expected, $zipManager->openFile('daemon/' . $file));
 		}
 		$zipManager->close();
 	}
@@ -151,8 +161,8 @@ final class MigrationManagerTest extends TestCase {
 		$commandManagerMock = Mockery::mock(CommandManager::class, [false, $commandStack])->makePartial();
 		$serviceManager = Mockery::mock(ServiceManager::class);
 		$serviceManager->shouldReceive('restart');
-		$this->manager = new MigrationManager(self::CONFIG_TEMP_PATH, $commandManagerMock, $schemaManager, $serviceManager);
-		$this->managerCorrupted = new MigrationManager(self::CONFIG_TEMP_PATH, $commandManagerMock, $schemaManagerCorrupted, $serviceManager);
+		$this->manager = new MigrationManager(self::CONFIG_TEMP_PATH, self::CONFIG_TEMP_PATH_CONTROLLER, self::CONFIG_TEMP_PATH_TRANSLATOR, $commandManagerMock, $schemaManager, $serviceManager);
+		$this->managerCorrupted = new MigrationManager(self::CONFIG_TEMP_PATH, self::CONFIG_TEMP_PATH_CONTROLLER, self::CONFIG_TEMP_PATH_TRANSLATOR, $commandManagerMock, $schemaManagerCorrupted, $serviceManager);
 	}
 
 	/**

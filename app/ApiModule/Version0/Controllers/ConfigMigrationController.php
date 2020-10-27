@@ -31,6 +31,7 @@ use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Utils\ContentTypeUtil;
 use App\ConfigModule\Exceptions\IncompleteConfigurationException;
+use App\ConfigModule\Exceptions\NotDaemonConfigurationException;
 use App\ConfigModule\Models\MigrationManager;
 use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
 use Nette\Utils\FileSystem;
@@ -116,6 +117,8 @@ class ConfigMigrationController extends BaseConfigController {
 			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
 		} catch (IncompleteConfigurationException $e) {
 			throw new ClientErrorException('Incomplete configuration', ApiResponse::S400_BAD_REQUEST);
+		} catch (NotDaemonConfigurationException $e) {
+			throw new ClientErrorException('Invalid daemon configuration file', ApiResponse::S400_BAD_REQUEST);
 		} catch (UnsupportedInitSystemException $e) {
 			throw new ServerErrorException('Unsupported init system', ApiResponse::S501_NOT_IMPLEMENTED);
 		}

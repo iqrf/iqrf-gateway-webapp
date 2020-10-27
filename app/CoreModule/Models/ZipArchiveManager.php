@@ -159,9 +159,14 @@ class ZipArchiveManager {
 	/**
 	 * Extracts the archive contents
 	 * @param string $destinationPath Path to location where to extract the files
+	 * @param string $file Name of file to extract
 	 */
-	public function extract(string $destinationPath): void {
-		$this->zip->extractTo($destinationPath);
+	public function extract(string $destinationPath, string $file = ''): void {
+		if ($file === '') {
+			$this->zip->extractTo($destinationPath);
+		} else {
+			$this->zip->extractTo($destinationPath, $file);
+		}
 	}
 
 	/**

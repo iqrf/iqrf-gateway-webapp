@@ -50,8 +50,8 @@ final class ZipArchiveManagerTest extends TestCase {
 	 */
 	public function testAddFile(): void {
 		$path = self::CONFIG_DIR . self::FILE_NAME;
-		$this->managerNew->addFile($path, self::FILE_NAME);
-		Assert::same([self::FILE_NAME], $this->managerNew->listFiles());
+		$this->managerNew->addFile($path, 'daemon/' . self::FILE_NAME);
+		Assert::same(['daemon/' . self::FILE_NAME], $this->managerNew->listFiles());
 	}
 
 	/**
@@ -111,14 +111,14 @@ final class ZipArchiveManagerTest extends TestCase {
 	 * Tests the function to check if the file(s) exist(s) in the archive (a single file)
 	 */
 	public function testExistFile(): void {
-		Assert::true($this->manager->exist(self::FILE_NAME));
+		Assert::true($this->manager->exist('daemon/' . self::FILE_NAME));
 	}
 
 	/**
 	 * Tests the function to check if the file(s) exist(s) in the archive (a single file in a subdirectory)
 	 */
 	public function testExistFileInSubDir(): void {
-		Assert::true($this->manager->exist('scheduler/Tasks.json'));
+		Assert::true($this->manager->exist('daemon/scheduler/Tasks.json'));
 	}
 
 	/**
@@ -126,6 +126,9 @@ final class ZipArchiveManagerTest extends TestCase {
 	 */
 	public function testExistFiles(): void {
 		$files = $this->createList(self::CONFIG_DIR);
+		for ($i = 0; $i < count($files); ++$i) {
+			$files[$i] = 'daemon/' . $files[$i];
+		}
 		Assert::true($this->manager->exist(ArrayHash::from($files)));
 	}
 
@@ -137,10 +140,13 @@ final class ZipArchiveManagerTest extends TestCase {
 		$destinationPath = realpath(__DIR__ . '/../../../temp/zip');
 		$this->manager->extract($destinationPath);
 		$expected = $this->createList($originalPath);
+		for ($i = 0; $i < count($expected); ++$i) {
+			$expected[$i] = 'daemon/' . $expected[$i];
+		}
 		$actual = $this->createList($destinationPath);
 		Assert::same($expected, $actual);
 		$expectedFile = FileSystem::read($originalPath . '/' . self::FILE_NAME);
-		$actualFile = FileSystem::read($destinationPath . '/' . self::FILE_NAME);
+		$actualFile = FileSystem::read($destinationPath . '/daemon/' . self::FILE_NAME);
 		Assert::same($expectedFile, $actualFile);
 	}
 
@@ -149,6 +155,9 @@ final class ZipArchiveManagerTest extends TestCase {
 	 */
 	public function testListFiles(): void {
 		$expected = $this->createList(self::CONFIG_DIR);
+		for ($i = 0; $i < count($expected); ++$i) {
+			$expected[$i] = 'daemon/' . $expected[$i];
+		}
 		Assert::same($expected, $this->manager->listFiles());
 	}
 
@@ -157,7 +166,7 @@ final class ZipArchiveManagerTest extends TestCase {
 	 */
 	public function testOpenFile(): void {
 		$expected = FileSystem::read(self::CONFIG_DIR . self::FILE_NAME);
-		Assert::same($expected, $this->manager->openFile(self::FILE_NAME));
+		Assert::same($expected, $this->manager->openFile('daemon/' . self::FILE_NAME));
 	}
 
 	/**
