@@ -73,6 +73,8 @@ class MigrationManager {
 	/**
 	 * Constructor
 	 * @param string $configDirectory Path to a directory with a configuration of IQRF Gateway Daemon
+	 * @param string $controllerConfigDirectory Path to a directory with a configuration of IQRF Gateway Controller
+	 * @param string $translatorConfigDirectory Path to a directory with a configuration of IQRF Gateway Translator
 	 * @param CommandManager $commandManager Command manager
 	 * @param ComponentSchemaManager $schemaManager JSON schema manager
 	 * @param ServiceManager $serviceManager Service manager
@@ -110,7 +112,7 @@ class MigrationManager {
 	}
 
 	/**
-	 * Extracts an archive with scheduler configuration
+	 * Extracts an archive with configurations
 	 * @param string $path Path to archive with scheduler configuration
 	 * @throws IncompleteConfigurationException
 	 * @throws JsonException
@@ -137,26 +139,45 @@ class MigrationManager {
 			$this->commandManager->run('mkdir ' . $this->translatorConfigDirectory, true);
 		}
 		$this->changeOwner();
-		$fileList = $zipManager->listFiles();
-		foreach ($fileList as $listItem) {
-			if (strpos($listItem, 'daemon/') === 0) {
-				$zipManager->extract($this->configDirectory, $listItem);
+		$this->extractDaemon($zipManager);
+		$this->extractController($zipManager);
+		$this->extractTranslator($zipManager);
+		$zipManager->close();
+		$this->serviceManager->restart();
+	}
+
+	/**
+	 * Extracts IQRF Gateway Controller's configuration
+	 * @param ZipArchiveManager $archiveManager ZIP archive manager
+	 */
+	private function extractController(ZipArchiveManager $archiveManager): void {
+		if ($archiveManager->exist('controller/config.json')) {
+			$archiveManager->extract($this->controllerConfigDirectory, 'controller/config.json');
+			$this->commandManager->run('cp -p ' . $this->controllerConfigDirectory . 'controller/config.json ' . $this->controllerConfigDirectory . 'config.json', true);
+			$this->commandManager->run('rm -rf ' . $this->controllerConfigDirectory . 'controller', true);
+		}
+	}
+
+	private function extractDaemon(ZipArchiveManager $archiveManager): void {
+		foreach ($archiveManager->listFiles() as $file) {
+			if (strpos($file, 'daemon/') === 0) {
+				$archiveManager->extract($this->configDirectory, $file);
 			}
 		}
 		$this->commandManager->run('cp -rfp ' . $this->configDirectory . 'daemon/* ' . $this->configDirectory, true);
 		$this->commandManager->run('rm -rf ' . $this->configDirectory . 'daemon', true);
-		if ($zipManager->exist('controller/config.json')) {
-			$zipManager->extract($this->controllerConfigDirectory, 'controller/config.json');
-			$this->commandManager->run('cp -p ' . $this->controllerConfigDirectory . 'controller/config.json ' . $this->controllerConfigDirectory . 'config.json', true);
-			$this->commandManager->run('rm -rf ' . $this->controllerConfigDirectory . 'controller', true);
-		}
-		if ($zipManager->exist('translator/config.json')) {
-			$zipManager->extract($this->translatorConfigDirectory, 'controller/config.json');
+	}
+
+	/**
+	 * Extracts IQRF Gateway Translator's configuration
+	 * @param ZipArchiveManager $archiveManager ZIP archive manager
+	 */
+	private function extractTranslator(ZipArchiveManager $archiveManager): void {
+		if ($archiveManager->exist('translator/config.json')) {
+			$archiveManager->extract($this->translatorConfigDirectory, 'translator/config.json');
 			$this->commandManager->run('cp -p ' . $this->translatorConfigDirectory . 'translator/config.json ' . $this->translatorConfigDirectory . 'config/json', true);
 			$this->commandManager->run('rm -rf ' . $this->translatorConfigDirectory . 'translator', true);
 		}
-		$zipManager->close();
-		$this->serviceManager->restart();
 	}
 
 	/**
@@ -164,6 +185,7 @@ class MigrationManager {
 	 * @param ZipArchiveManager $zipManager ZIP archive manager
 	 * @return bool Are JSON files valid?
 	 * @throws JsonException
+	 * @throws NotDaemonConfigurationException
 	 */
 	public function validate(ZipArchiveManager $zipManager): bool {
 		$whitelistDirs = ['daemon/', 'controller/', 'translator/', 'daemon/certs/', 'daemon/cfgSchemas/', 'daemon/scheduler/'];
@@ -201,17 +223,18 @@ class MigrationManager {
 	 * Changes ownership of directory for JSON configuration files of IQRF Gateway Daemon
 	 */
 	private function changeOwner(): void {
-		$posixUser = posix_getpwuid(posix_geteuid());
-		$owner = $posixUser['name'] . ':' . posix_getgrgid($posixUser['gid'])['name'];
-		$this->commandManager->run('chown ' . $owner . ' ' . $this->configDirectory, true);
-		$this->commandManager->run('chown -R ' . $owner . ' ' . $this->configDirectory, true);
+		$dirs = [$this->configDirectory];
 		if (file_exists($this->controllerConfigDirectory)) {
-			$this->commandManager->run('chown ' . $owner . ' ' . $this->controllerConfigDirectory, true);
-			$this->commandManager->run('chown -R ' . $owner . ' ' . $this->controllerConfigDirectory, true);
+			$dirs[] = $this->controllerConfigDirectory;
 		}
 		if (file_exists($this->translatorConfigDirectory)) {
-			$this->commandManager->run('chown ' . $owner . ' ' . $this->translatorConfigDirectory, true);
-			$this->commandManager->run('chown -R ' . $owner . ' ' . $this->translatorConfigDirectory, true);
+			$dirs[] = $this->translatorConfigDirectory;
+		}
+		$posixUser = posix_getpwuid(posix_geteuid());
+		$owner = $posixUser['name'] . ':' . posix_getgrgid($posixUser['gid'])['name'];
+		foreach ($dirs as $dir) {
+			$this->commandManager->run('chown ' . $owner . ' ' . $dir, true);
+			$this->commandManager->run('chown -R ' . $owner . ' ' . $dir, true);
 		}
 	}
 
