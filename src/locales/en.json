@@ -553,7 +553,9 @@
 				"instance": "Instance name",
 				"path": "Path to directory with logs",
 				"filename": "File name",
-				"maxSizeMb": "Maximum size in MB",
+				"maxSize": "Maximum size in bytes",
+				"maxAgeMinutes": "Maximum lifespan of timestamped files in minutes",
+				"maxNumber": "Maximum number of timestamped files",
 				"timestampFiles": "Enable timestamp files",
 				"verbosityLevels": {
 					"title": "Verbosity levels",
@@ -572,10 +574,13 @@
 					"instance": "Please enter name of Tracer file interface.",
 					"filename": "Please enter Tracer file name.",
 					"maxSizeMb": "Please enter maximum size in MB greater or equal to 1.",
+					"maxAgeMinutes": "Please enter maximum lifespan of timestamped files in minutes, greater or requal to 0.",
+					"maxNumber": "Please enter maximum number of timestamped files, greated or equal than 0.",
 					"verbosityLevels": {
 						"channel": "Please enter the verbosity channel.",
 						"level": "Please select the verbosity level."
-					}
+					},
+					"zeroValues": "Disabled if value is set to 0."
 				}
 			},
 			"messages": {
@@ -583,7 +588,8 @@
 				"removeTitle": "Delete Tracer file instance",
 				"removeSuccess": "Tracer file instance {instance} has been removed.",
 				"addSuccess": "Tracer file instance {instance} has been added.",
-				"editSuccess": "Tracer file instance {instance} has been edited."
+				"editSuccess": "Tracer file instance {instance} has been edited.",
+				"versionFail": "Failed to retrieve version of IQRF Gateway Daemon."
 			}
 		},
 		"udp": {
