@@ -55,7 +55,7 @@ class IbmCloudController extends CloudsController {
 	}
 
 	/**
-	 * @Path("/ibmCloud")
+	 * @Path("/")
 	 * @Method("POST")
 	 * @OpenApi("
 	 *  summary: Creates a new MQTT connection into IBM Cloud
