@@ -31,6 +31,9 @@ import {CCard, CListGroup, CListGroupItem} from '@coreui/vue/src';
 	},
 })
 
+/**
+ * Network disambiguation menu component
+ */
 export default class NetworkDisambiguation extends Vue {
 }
 </script>

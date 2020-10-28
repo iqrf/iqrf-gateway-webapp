@@ -254,17 +254,25 @@
 	</CCard>
 </template>
 
-<script>
+<script lang='ts'>
+import {Component, Vue} from 'vue-property-decorator';
 import {CAlert, CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import compareVersions from 'compare-versions';
 import {between, integer, required} from 'vee-validate/dist/rules';
 import IqrfNetService from '../../services/IqrfNetService';
 import VersionService from '../../services/VersionService';
-import { WebSocketOptions } from '../../store/modules/webSocketClient.module';
+import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
+import VueI18n from 'vue-i18n';
+import {AutoNetworkBase, AutoNetworkOverlappingNetworks, AutoNetworkStopConditions} from '../../interfaces/autonetwork';
+import { MutationPayload } from 'vuex';
 
-export default {
-	name: 'AutoNetwork',
+interface NodeMessages {
+	nodesNew: string
+	nodesTotal: string
+}
+
+@Component({
 	components: {
 		CAlert,
 		CButton,
@@ -275,61 +283,136 @@ export default {
 		CInputCheckbox,
 		ValidationObserver,
 		ValidationProvider
-	},
-	data() {
-		return {
-			autoAddress: false,
-			autoNetwork: {
-				discoveryTxPower: 7,
-				discoveryBeforeStart: false,
-				skipDiscoveryEachWave: false,
-				actionRetries: 1,
-			},
-			stopConditions: {
-				waves: 10,
-				emptyWaves: 2,
-				numberOfTotalNodes: 1,
-				numberOfNewNodes: 1,
-				abortOnTooManyNodesFound: false,
-			},
-			overlappingNetworks: {
-				networks: 1,
-				network: 1
-			},
-			hwpidFiltering: '',
-			useHwpidFiltering: false,
-			useOverlappingNetworks: false,
-			useWaves: false,
-			useNodes: true,
-			nodeCondition: 'new',
-			messages: {
-				nodesTotal: '',
-				nodesNew: '',
-			},
-			daemonVersion: null,
-			msgId: null,
-		};
-	},
-	computed: {
-		invalidVersionBody() {
-			if (this.daemonVersion === null) {
-				return this.$t('iqrfnet.networkManager.messages.autoNetwork.versionMissing').toString();
-			} else {
-				return this.$t('iqrfnet.networkManager.messages.autoNetwork.versionInvalid').toString();
-			}
-		},
-		versionValid() {
-			if (this.daemonVersion === null) {
-				return false;
-			} else {
-				if (compareVersions.compare(this.daemonVersion, '2.3.0', '>=')) {
-					return true;
-				}
-				return false;
-			}
+	}
+})
+
+/**
+ * AutoNetwork card for IqrfNet network manager
+ */
+export default class AutoNetwork extends Vue {
+	/**
+	 * @var {boolean} autoAddress Use first available address for bonding
+	 */
+	private autoAddress = false
+	
+	/**
+	 * @var {AutoNetworkBase} autoNetwork Basic AutoNetwork process configuration
+	 */
+	private autoNetwork: AutoNetworkBase = {
+		actionRetries: 1,
+		discoveryBeforeStart: false,
+		discoveryTxPower: 7,
+		skipDiscoveryEachWave: false
+	}
+
+	/**
+	 * @var {string|null} daemonVersion IQRF Gateway Daemon version
+	 */
+	private daemonVersion: string|null = null
+
+	/**
+	 * @var {string} hwpidFiltering String of HWPIDs to filter nodes by
+	 */
+	private hwpidFiltering = ''
+
+	/**
+	 * @var {NodeMessages} messages Messages used in displaying AutoNetwork progress when spinner is active, bonded nodes
+	 */
+	private messages: NodeMessages = {
+		nodesNew: '',
+		nodesTotal: ''
+	}
+	
+	/**
+	 * @var {string|null} msgId Daemon api message id
+	 */
+	private msgId: string|null = null
+
+	/**
+	 * @var {string} nodeCondition AutoNetwork stop condition type for new or total nodes found in network
+	 */
+	private nodeCondition = 'new'
+
+	/**
+	 * @var {AutoNetworkOverlappingNetworks} overlappingNetworks AutoNetwork overlapping networks settings
+	 */
+	private overlappingNetworks: AutoNetworkOverlappingNetworks = {
+		network: 1,
+		networks: 1
+	}
+
+	/**
+	 * @var {AutoNetworkStopConditions} stopConditions AutoNetwork process stop conditions configuration
+	 */
+	private stopConditions: AutoNetworkStopConditions = {
+		abortOnTooManyNodesFound: false,
+		emptyWaves: 2,
+		numberOfNewNodes: 1,
+		numberOfTotalNodes: 1,
+		waves: 10
+	}
+
+	/**
+	 * @var {boolean} useHwpidFiltering Filter nodes by HWPIDs
+	 */
+	private useHwpidFiltering = false
+
+	/**
+	 * @var {boolean} useNodes Use nodes found stop condition
+	 */
+	private useNodes = true
+
+	/**
+	 * @var {boolean} useOverlappingNetworks Use overlapping networks settings
+	 */
+	private useOverlappingNetworks = false
+
+	/**
+	 * @var {boolean} useWaves Use maximum number of waves stop condition
+	 */
+	private useWaves = false
+
+	/**
+	 * Component unsubscribe function
+	 */
+	private unsubscribe: CallableFunction = () => {return;}
+
+	/**
+	 * Component unwatch function
+	 */
+	private unwatch: CallableFunction = () => {return;}
+
+	/**
+	 * Computes error message if Daemon version cannot be retrieved or is not valid
+	 * @returns {string} string containing translated message
+	 */
+	get invalidVersionBody(): string {
+		if (this.daemonVersion === null) {
+			return this.$t('iqrfnet.networkManager.messages.autoNetwork.versionMissing').toString();
+		} else {
+			return this.$t('iqrfnet.networkManager.messages.autoNetwork.versionInvalid').toString();
 		}
-	},
-	created() {
+	}
+
+	/**
+	 * Computes validity of Daemon version
+	 * @returns {boolean} true if Daemon version is valid, false otherwise
+	 */
+	get versionValid(): boolean {
+		if (this.daemonVersion === null) {
+			return false;
+		} else {
+			if (compareVersions.compare(this.daemonVersion, '2.3.0', '>=')) {
+				return true;
+			}
+			return false;
+		}
+	}
+
+	/**
+	 * Vue lifecycle hook created
+	 */
+	created(): void {
 		extend('between', between);
 		extend('integer', integer);
 		extend('required', required);
@@ -337,9 +420,9 @@ export default {
 			const regex = RegExp('^(6553[0-5]|655[0-2][0-9]|65[0-4][0-9]{2}|6[0-4][0-9]{3}|[1-5][0-9]{4}|[1-9][0-9]{1,3}|[1-9])( (6553[0-5]|655[0-2][0-9]|65[0-4][0-9]{2}|6[0-4][0-9]{3}|[1-5][0-9]{4}|[1-9][0-9]{1,3}|[1-9]))*$');
 			return regex.test(val);
 		});
-		this.unsubscribe = this.$store.subscribe(mutation => {
+		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type === 'SOCKET_ONERROR' ||
-				mutation.type === 'SOCKET_ONCLOSE') {
+				mutation.type === 'SOCKET_ONCLOSE') { // websocket connection with daemon terminated, recover from state after sending message
 				if (this.$store.getters['spinner/isEnabled']) {
 					this.$store.commit('spinner/HIDE');
 				}
@@ -355,7 +438,7 @@ export default {
 							);
 							break;
 						case 0:
-							this.$store.commit('spinner/UPDATE_TEXT', this.autoNetworkProgress(mutation.payload.data));
+							this.$store.commit('spinner/UPDATE_TEXT', this.autoNetworkProgress(mutation.payload.data)); // update spinner text with progress message
 							if (mutation.payload.data.rsp.lastWave) {
 								this.$store.commit('spinner/HIDE');
 								this.$store.dispatch('removeMessage', this.msgId);
@@ -374,13 +457,17 @@ export default {
 							break;
 					}
 				} else if (mutation.payload.mType === 'messageError') {
+					if (mutation.payload.data.msgId !== this.msgId) {
+						return;
+					}
 					this.$store.commit('spinner/HIDE');
+					this.$store.dispatch('removeMessage', this.msgId);
 					this.$toast.error(
 						this.$t('iqrfnet.networkManager.messages.submit.invalidMessage')
 							.toString()
 					);
 				} else if (mutation.payload.mType === 'mngDaemon_Version' &&
-							mutation.payload.data.msgId === this.msgId) {
+							mutation.payload.data.msgId === this.msgId) { // daemon version response handler
 					this.$store.dispatch('spinner/hide');
 					this.$store.dispatch('removeMessage', this.msgId);
 					if (mutation.payload.data.status === 0 ) {
@@ -391,67 +478,81 @@ export default {
 				}
 			}
 		});
-	},
-	beforeDestroy() {
-		this.$store.dispatch('removeMessage', this.msgId);
-		if (this.unwatch !== undefined) {
-			this.unwatch();
-		}
-		this.unsubscribe();
-	},
-	methods: {
-		getVersion() {
-			this.$store.dispatch('spinner/show', {timeout: 10000});
-			VersionService.getVersion(new WebSocketOptions(null, 10000, 'iqrfnet.networkManager.messages.autoNetwork.versionFailure', () => this.msgId = null))
-				.then((msgId) => this.msgId = msgId);
-		},
-		autoNetworkProgress(response) {
-			let message = '\n' + this.$t('iqrfnet.networkManager.messages.autoNetwork.statusWave') + response.rsp.wave;
-			if (this.useWaves) {
-				message += '/' + this.stopConditions.waves;
-			}
-			message += '\n[' + response.rsp.progress + '%] ';
-			if (response.rsp.waveState) {
-				message += response.rsp.waveState;
-			}
-			if (response.rsp.nodesNr) {
-				this.messages.nodesTotal = '\n' + this.$t('iqrfnet.networkManager.messages.autoNetwork.statusTotalNodes').toString() + response.rsp.nodesNr;
-			}
-			if (response.rsp.newNodesNr) {
-				this.messages.nodesNew = '\n' + this.$t('iqrfnet.networkManager.messages.autoNetwork.statusAddedNodes').toString() + response.rsp.newNodesNr;
-			}
-			message += this.messages.nodesTotal + this.messages.nodesNew;
-			return message;
-		},
-		processSubmitAutoNetwork() {
-			this.messages.nodesTotal = this.messages.nodesNew = '';
-			let submitData = this.autoNetwork;
-			let stopConditions = {};
-			stopConditions['emptyWaves'] = this.stopConditions.emptyWaves;
-			if (this.useWaves) {
-				stopConditions['waves'] = this.stopConditions.waves;
-			}
-			if (this.useNodes) {
-				stopConditions['abortOnTooManyNodesFound'] = this.stopConditions.abortOnTooManyNodesFound;
-				if (this.nodeCondition === 'total') {
-					stopConditions['numberOfTotalNodes'] = this.stopConditions.numberOfTotalNodes;
-				} else {
-					stopConditions['numberOfNewNodes'] = this.stopConditions.numberOfNewNodes;
-				}
-			}
-			if (Object.keys(stopConditions).length > 0) {
-				submitData['stopConditions'] = stopConditions;
-			}
-			if (this.useOverlappingNetworks) {
-				submitData['overlappingNetworks'] = this.overlappingNetworks;
-			}
-			if (this.useHwpidFiltering && this.hwpidFiltering.length > 0) {
-				submitData['hwpidFiltering'] = this.hwpidFiltering.split(', ').map((i) => parseInt(i));
-			}
-			this.$store.commit('spinner/SHOW');
-			IqrfNetService.autoNetwork(submitData, new WebSocketOptions(null))
-				.then((msgId) => this.msgId = msgId);
-		}
 	}
-};
+
+	/**
+	 * Vue lifecycle hook beforeDestroy
+	 */
+	beforeDestroy(): void {
+		this.$store.dispatch('removeMessage', this.msgId);
+		this.unwatch();
+		this.unsubscribe();
+	}
+
+	/**
+	 * Attempts to retrieve IQRF Gateway Daemon version
+	 */
+	public getVersion(): void {
+		this.$store.dispatch('spinner/show', {timeout: 10000});
+		VersionService.getVersion(new WebSocketOptions(null, 10000, 'iqrfnet.networkManager.messages.autoNetwork.versionFailure', () => this.msgId = null))
+			.then((msgId: string) => this.msgId = msgId);
+	}
+
+	/**
+	 * Creates progress message for running AutoNetwork process, used in spinner
+	 * @param {any} response Daemon api response
+	 * @returns {string} AutoNetwork progress message
+	 */
+	private autoNetworkProgress(response: any): string {
+		let message = '\n' + this.$t('iqrfnet.networkManager.messages.autoNetwork.statusWave').toString() + response.rsp.wave;
+		if (this.useWaves) { // maximum number of waves used in request
+			message += '/ ' + this.stopConditions.waves;
+		}
+		message += '\n[' + response.rsp.progress + '%] ';
+		if (response.rsp.waveState) { // wave information exists
+			message += response.rsp.waveState;
+		}
+		if (response.rsp.nodesNr) { // collects number of nodes in network
+			this.messages.nodesTotal = '\n' + this.$t('iqrfnet.networkManager.messages.autoNetwork.statusTotalNodes').toString() + response.rsp.nodesNr;
+		}
+		if (response.rsp.newNodesNr) { // collects number of nodes added to network in last wave
+			this.messages.nodesNew = '\n' + this.$t('iqrfnet.networkManager.messages.autoNetwork.statusAddedNodes').toString() + response.rsp.newNodesNr;
+		}
+		message += this.messages.nodesTotal + this.messages.nodesNew;
+		return message;
+	}
+
+	/**
+	 * Builds AutoNetwork configuration object and performs the AutoNetwork process
+	 */
+	private processSubmitAutoNetwork(): void {
+		this.messages.nodesTotal = this.messages.nodesNew = '';
+		let submitData = this.autoNetwork;
+		let stopConditions = {};
+		stopConditions['emptyWaves'] = this.stopConditions.emptyWaves;
+		if (this.useWaves) { // maximum number of waves is enabled
+			stopConditions['waves'] = this.stopConditions.waves;
+		}
+		if (this.useNodes) { // node count stop conditions are used
+			stopConditions['abortOnTooManyNodesFound'] = this.stopConditions.abortOnTooManyNodesFound;
+			if (this.nodeCondition === 'total') {
+				stopConditions['numberOfTotalNodes'] = this.stopConditions.numberOfTotalNodes;
+			} else {
+				stopConditions['numberOfNewNodes'] = this.stopConditions.numberOfNewNodes;
+			}
+		}
+		if (Object.keys(stopConditions).length > 0) { // local stop conditions are added to the request if they exist
+			submitData['stopConditions'] = stopConditions;
+		}
+		if (this.useOverlappingNetworks) { // overlapping networks is enabled
+			submitData['overlappingNetworks'] = this.overlappingNetworks;
+		}
+		if (this.useHwpidFiltering && this.hwpidFiltering.length > 0) { // hwpid filtering is enabled, convert from string to array of integers
+			submitData['hwpidFiltering'] = this.hwpidFiltering.split(', ').map((i) => parseInt(i));
+		}
+		this.$store.commit('spinner/SHOW');
+		IqrfNetService.autoNetwork(submitData, new WebSocketOptions(null))
+			.then((msgId: string) => this.msgId = msgId);
+	}
+}
 </script>

@@ -6,13 +6,13 @@
 				color='danger'
 				@click='powerOff()'
 			>
-				<CIcon :content='getIcon("powerStandby")' />
+				<CIcon :content='icons.off' />
 				{{ $t('gateway.power.powerOff.title') }}
 			</CButton> <CButton
 				color='primary'
 				@click='reboot()'
 			>
-				<CIcon :content='getIcon("reload")' />
+				<CIcon :content='icons.reboot' />
 				{{ $t('gateway.power.reboot.title') }}
 			</CButton>
 		</CCard>
@@ -22,9 +22,10 @@
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CIcon} from '@coreui/vue/src';
+import {cilPowerStandby, cilReload} from '@coreui/icons';
 import GatewayService from '../../services/GatewayService';
-import {getCoreIcon} from '../../helpers/icons';
 import { MetaInfo } from 'vue-meta';
+import {Dictionary} from 'vue-router/types/router';
 
 @Component({
 	components: {
@@ -39,11 +40,21 @@ import { MetaInfo } from 'vue-meta';
 	}
 })
 
+/**
+ * Power control component
+ */
 export default class PowerControl extends Vue {
-	private getIcon(icon: string): string[]|void {
-		return getCoreIcon(icon);
+	/**
+	 * @constant {Dictionary<Array<string>>} icons Array of CoreUI icons
+	 */
+	private icons: Dictionary<Array<string>> = {
+		off: cilPowerStandby,
+		reboot: cilReload
 	}
 
+	/**
+	 * Performs power off
+	 */
 	private powerOff(): void {
 		GatewayService.performPowerOff()
 			.then(() => {
@@ -53,6 +64,9 @@ export default class PowerControl extends Vue {
 			});
 	}
 
+	/**
+	 * Performs reboot
+	 */
 	private reboot(): void {
 		GatewayService.performReboot()
 			.then(() => {

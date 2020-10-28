@@ -74,14 +74,31 @@ interface IqrfDpaConfig {
 	},
 })
 
+/**
+ * IQRF DPA component configuration
+ */
 export default class IqrfDpa extends Vue {
+	/**
+	 * @constant {string} componentName IQRF DPA component name
+	 */
 	private componentName = 'iqrf::IqrfDpa'
+
+	/**
+	 * @var {IqrfDpaConfig} configuration IQRF DPA component instance configuration
+	 */
 	private configuration: IqrfDpaConfig = {
 		instance: null,
 		DpaHandlerTimeout: 500,
 	}
+
+	/**
+	 * @var {string|null} instance IQRF DPA component instance name
+	 */
 	private instance: string|null = null
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		extend('integer', integer);
 		extend('min', min_value);
@@ -89,6 +106,9 @@ export default class IqrfDpa extends Vue {
 		this.getConfig();
 	}
 
+	/**
+	 * Retrieves configuration of IQRF DPA component
+	 */
 	private getConfig() {
 		this.$store.commit('spinner/SHOW');
 		DaemonConfigurationService.getComponent(this.componentName)
@@ -102,6 +122,9 @@ export default class IqrfDpa extends Vue {
 			.catch((error: AxiosError) => FormErrorHandler.configError(error));
 	}
 	
+	/**
+	 * Saves new or updates existing configuration of IQRF DPA component instance
+	 */
 	private saveConfig(): void {
 		this.$store.commit('spinner/SHOW');
 		if (this.instance !== null) {
@@ -115,6 +138,9 @@ export default class IqrfDpa extends Vue {
 		}
 	}
 
+	/**
+	 * Handles successful REST API response
+	 */
 	private successfulSave(): void {
 		this.$store.commit('spinner/HIDE');
 		this.$toast.success(this.$t('config.success').toString());

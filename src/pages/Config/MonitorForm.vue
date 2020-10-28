@@ -66,15 +66,36 @@
 	</div>
 </template>
 
-<script>
+<script lang='ts'>
+import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import {integer, required} from 'vee-validate/dist/rules';
+import { MetaInfo } from 'vue-meta';
+import { RequiredInterface } from '../../interfaces/requiredInterfaces';
+import { AxiosError, AxiosResponse } from 'axios';
 
-export default {
-	name: 'MonitorForm',
+interface MonitorComponents {
+	monitor: string
+	webSocket: string
+}
+
+interface MonitorInstance {
+	component: string
+	instance: string
+	reportPeriod: number
+	RequiredInterfaces: Array<RequiredInterface>
+}
+
+interface MonitorWebSocket {
+	instance: string
+	WebsocketPort: number
+	acceptOnlyLocalhost: boolean
+}
+
+@Component({
 	components: {
 		CButton,
 		CCard,
@@ -84,119 +105,163 @@ export default {
 		ValidationObserver,
 		ValidationProvider,
 	},
-	props: {
-		instance: {
-			type: String,
-			required: false,
-			default: null,
-		},
-	},
-	data() {
+	metaInfo(): MetaInfo {
 		return {
-			componentNames: {
-				monitor: 'iqrf::MonitorService',
-				webSocket: 'shape::WebsocketCppService',
-			},
-			instances: {
-				monitor: null,
-				webSocket: null,
-			},
-			monitor: {
-				instance: null,
-				reportPeriod: null,
-				RequiredInterfaces: []
-			},
-			webSocket: {
-				instance: null,
-				WebsocketPort: null,
-				acceptOnlyLocalhost: false,
-			},
+			title: (this as unknown as MonitorForm).pageTitle
 		};
-	},
-	computed: {
-		submitButton() {
-			return this.$route.path === '/config/mq/add' ?
-				this.$t('forms.add') :
-				this.$t('forms.save');
-		},
-	},
-	created() {
+	}
+})
+
+/**
+ * Daemon monitoring component configuration card
+ */
+export default class MonitorForm extends Vue {
+	/**
+	 * @constant {MonitorComponents} componentNames Names of components required for the monitoring service
+	 */
+	private componentNames: MonitorComponents = {
+		monitor: 'iqrf::MonitorService',
+		webSocket: 'shape::WebsocketCppService',
+	}
+
+	/**
+	 * @var {MonitorComponents} instances Names of component instances required for the monitoring service
+	 */
+	private instances: MonitorComponents = {
+		monitor: '',
+		webSocket: '',
+	}
+
+	/**
+	 * @var {MonitorInstance} monitor Daemon monitoring instance configuration
+	 */
+	private monitor: MonitorInstance = {
+		component: '',
+		instance: '',
+		reportPeriod: 10,
+		RequiredInterfaces: []
+	}
+
+	/**
+	 * @var {MonitorWebSocket} webSocket Daemon websocket instance configuration
+	 */
+	private webSocket: MonitorWebSocket = {
+		instance: '',
+		WebsocketPort: 1438,
+		acceptOnlyLocalhost: false,
+	}
+	
+	/**
+	 * @property {string} instance Monitoring service instance name
+	 */
+	@Prop({required: false, default: ''}) instance!: string
+
+	/**
+	 * Computes page title depending on the action (add, edit)
+	 * @returns {string} Page title
+	 */
+	get pageTitle(): string {
+		return this.$route.path === '/config/monitor/add' ?
+			this.$t('config.monitor.add').toString() :
+			this.$t('config.monitor.edit').toString();
+	}
+	
+	/**
+	 * Computes form submit button text depending on the action (add, edit)
+	 * @returns {string} Button text
+	 */
+	get submitButton(): string {
+		return this.$route.path === '/config/mq/add' ?
+			this.$t('forms.add').toString() :
+			this.$t('forms.save').toString();
+	}
+
+	/**
+	 * Vue lifecycle hook created
+	 */
+	created(): void {
 		extend('integer', integer);
 		extend('required', required);
-		if (this.instance !== null) {
+		if (this.instance !== '') {
 			this.getConfig();
 		}
-	},
-	methods: {
-		getConfig() {
-			this.$store.commit('spinner/SHOW');
-			DaemonConfigurationService.getInstance(this.componentNames.monitor, this.instance)
-				.then((response) => {
-					this.monitor = response.data;
-					this.instances.monitor = this.instance;
-					this.instances.webSocket = this.monitor.RequiredInterfaces[0].target.instance;
-					DaemonConfigurationService.getInstance(this.componentNames.webSocket, this.instances.webSocket)
-						.then((response) => {
-							this.webSocket = response.data;
-							this.$store.commit('spinner/HIDE');
-						});
-				})
-				.catch((error) => {
-					this.$router.push('/config/monitor/');
-					FormErrorHandler.configError(error);
-				});
-		},
-		saveConfig() {
-			this.$store.commit('spinner/SHOW');
-			this.webSocket.instance = this.monitor.instance;
-			if (this.monitor.RequiredInterfaces.length === 0) {
-				this.monitor.RequiredInterfaces[0] = {
-					name: 'shape::IWebsocketService',
-					target: {
-						instance: this.webSocket.instance,
-					},
-				};
-			} else {
-				this.monitor.RequiredInterfaces[0].target.instance = this.monitor.instance;
-			}
-			if (this.instance === null) {
-				Promise.all([
-					DaemonConfigurationService.createInstance(this.componentNames.webSocket, this.webSocket),
-					DaemonConfigurationService.createInstance(this.componentNames.monitor, this.monitor),
-				])
-					.then(() => this.successfulSave())
-					.catch((error) => FormErrorHandler.configError(error));
-			} else {
-				Promise.all([
-					DaemonConfigurationService.updateInstance(this.componentNames.webSocket, this.instances.webSocket, this.webSocket),
-					DaemonConfigurationService.updateInstance(this.componentNames.monitor, this.instances.monitor, this.monitor),
-				])
-					.then(() => this.successfulSave())
-					.catch((error) => FormErrorHandler.configError(error));
-			}
-		},
-		successfulSave() {
-			this.$router.push('/config/monitor/');
-			this.$store.commit('spinner/HIDE');
-			if (this.$route.path === '/config/monitor/add') {
-				this.$toast.success(
-					this.$t('config.monitor.messages.add.success', {instance: this.monitor.instance})
-						.toString()
-				);
-			} else {
-				this.$toast.success(
-					this.$t('config.monitor.messages.edit.success', {instance: this.monitor.instance})
-						.toString()
-				);
-			}
-		},
-	},
-	metaInfo() {
-		return {
-			title: this.$route.path === '/config/monitor/add' ?
-				'config.monitor.add' :
-				'config.monitor.edit',
-		};
-	},
-};
+	}
+
+	/**
+	 * Retrieves configuration of the monitoring component and websocket instance
+	 */
+	private getConfig(): void {
+		if (this.componentNames.monitor === '' || this.componentNames.webSocket === '') {
+			return;
+		}
+		this.$store.commit('spinner/SHOW');
+		DaemonConfigurationService.getInstance(this.componentNames.monitor, this.instance)
+			.then((response: AxiosResponse) => {
+				this.monitor = response.data;
+				this.instances.monitor = this.instance;
+				this.instances.webSocket = this.monitor.RequiredInterfaces[0].target.instance;
+				DaemonConfigurationService.getInstance(this.componentNames.webSocket, this.instances.webSocket)
+					.then((response: AxiosResponse) => {
+						this.webSocket = response.data;
+						this.$store.commit('spinner/HIDE');
+					});
+			})
+			.catch((error: AxiosError) => {
+				this.$router.push('/config/monitor/');
+				FormErrorHandler.configError(error);
+			});
+	}
+
+	/**
+	 * Saves new or updates existing configurations of monitoring and websocket component instances
+	 */
+	private saveConfig(): void {
+		this.$store.commit('spinner/SHOW');
+		this.webSocket.instance = this.monitor.instance;
+		if (this.monitor.RequiredInterfaces.length === 0) {
+			this.monitor.RequiredInterfaces[0] = {
+				name: 'shape::IWebsocketService',
+				target: {
+					instance: this.webSocket.instance,
+				},
+			};
+		} else {
+			this.monitor.RequiredInterfaces[0].target.instance = this.monitor.instance;
+		}
+		if (this.instance === '') {
+			Promise.all([
+				DaemonConfigurationService.createInstance(this.componentNames.webSocket, this.webSocket),
+				DaemonConfigurationService.createInstance(this.componentNames.monitor, this.monitor),
+			])
+				.then(() => this.successfulSave())
+				.catch((error: AxiosError) => FormErrorHandler.configError(error));
+		} else {
+			Promise.all([
+				DaemonConfigurationService.updateInstance(this.componentNames.webSocket, this.instances.webSocket, this.webSocket),
+				DaemonConfigurationService.updateInstance(this.componentNames.monitor, this.instances.monitor, this.monitor),
+			])
+				.then(() => this.successfulSave())
+				.catch((error: AxiosError) => FormErrorHandler.configError(error));
+		}
+	}
+
+	/**
+	 * Handles successful REST APi response
+	 */
+	private successfulSave() {
+		this.$router.push('/config/monitor/');
+		this.$store.commit('spinner/HIDE');
+		if (this.$route.path === '/config/monitor/add') {
+			this.$toast.success(
+				this.$t('config.monitor.messages.add.success', {instance: this.monitor.instance})
+					.toString()
+			);
+		} else {
+			this.$toast.success(
+				this.$t('config.monitor.messages.edit.success', {instance: this.monitor.instance})
+					.toString()
+			);
+		}
+	}
+}
 </script>

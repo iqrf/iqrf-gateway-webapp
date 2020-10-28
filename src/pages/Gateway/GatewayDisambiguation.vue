@@ -96,6 +96,9 @@ import {CCard, CListGroup, CListGroupItem} from '@coreui/vue/src';
 	},
 })
 
+/**
+ * Gateway disambiguation menu component
+ */
 export default class GatewayDisambiguation extends Vue {
 }
 </script>

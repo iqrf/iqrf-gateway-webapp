@@ -70,7 +70,7 @@
 </template>
 
 <script lang='ts'>
-import Vue from 'vue';
+import {Component, Vue} from 'vue-property-decorator';
 import {MutationPayload} from 'vuex';
 import {CButton, CCard, CCardBody, CCardFooter, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
@@ -78,8 +78,25 @@ import {between, integer, required} from 'vee-validate/dist/rules';
 import StandardSensorService from '../../services/DaemonApi/StandardSensorService';
 import { WebSocketOptions } from '../../store/modules/webSocketClient.module';
 
-export default Vue.extend({
-	name: 'SensorManager',
+interface Sensor {
+	type: string
+	value?: number
+	unit: string
+}
+
+interface StandardSensor {
+	breakdown?: StandardSensor
+	decimalPlaces: number
+	frcs: Array<number>
+	id: string
+	name: string
+	shortName: string
+	type: number
+	unit: string
+	value: number
+}
+
+@Component({
 	components: {
 		CButton,
 		CCard,
@@ -90,20 +107,50 @@ export default Vue.extend({
 		CInput,
 		ValidationObserver,
 		ValidationProvider
-	},
-	data(): any {
-		return {
-			address: 1,
-			allowedMTypes: [
-				'iqrfSensor_Enumerate',
-				'iqrfSensor_ReadSensorsWithTypes'
-			],
-			responseType: null,
-			sensors: null,
-			msgId: null,
-		};
-	},
-	created() {
+	}
+})
+
+/**
+ * Sensor manager card for Standard Manager
+ */
+export default class SensorManager extends Vue {
+	/**
+	 * @var {number} address Address of device implementing the Sensor standard
+	 */
+	private address = 1
+
+	/**
+	 * @constant {Array<string>} allowedMTypes Array of allowed daemon api messages
+	 */
+	private allowedMTypes: Array<string> = [
+		'iqrfSensor_Enumerate',
+		'iqrfSensor_ReadSensorsWithTypes'
+	]
+
+	/**
+	 * @var {string|null} msgId Daemon api message id
+	 */
+	private msgId: string|null = null
+
+	/**
+	 * @var {string|null} responseType Type of Sensor standard message
+	 */
+	private responseType: string|null = null
+
+	/**
+	 * @var {Array<Sensor>} sensors Array of Sensor standard objects
+	 */
+	private sensors: Array<Sensor> = []
+
+	/**
+	 * Component unsubscribe function
+	 */
+	private unsubscribe: CallableFunction = () => {return;}
+
+	/**
+	 * Vue lifecycle hook created
+	 */
+	created(): void {
 		extend('between', between);
 		extend('integer', integer);
 		extend('required', required);
@@ -148,45 +195,70 @@ export default Vue.extend({
 				}
 			}
 		});
-	},
-	beforeDestroy() {
+	}
+
+	/**
+	 * Vue lifecycle hook beforeDestroy
+	 */
+	beforeDestroy(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
 		this.unsubscribe();
-	},
-	methods: {
-		parseEnumerate(sensors: any) {
-			this.sensors = [];
-			sensors.forEach((item: any) => {
-				if (item.id === 'BINARYDATA7' || item.id === 'BINARYDATA30') {
-					item = item.breakdown[0];
-				}
-				this.sensors.push({'type': item.name, 'unit': item.unit});
-			});
-		},
-		parseReadAll(sensors: any) {
-			this.sensors = [];
-			sensors.forEach((item: any) => {
-				if (item.id === 'BINARYDATA7' || item.id === 'BINARYDATA30') {
-					item = item.breakdown[0];
-				}
-				this.sensors.push({'type': item.name, 'value': item.value, 'unit': item.unit});
-			});
-		},
-		buildOptions() {
-			return new WebSocketOptions(null, 30000, 'iqrfnet.standard.sensor.messages.timeout', () => this.msgId = null);
-		},
-		submitReadAll() {
-			this.$store.dispatch('spinner/show', {timeout: 30000});
-			StandardSensorService.readAll(this.address, this.buildOptions())
-				.then((msgId: string) => this.msgId = msgId);
-		},
-		submitEnumerate() {
-			this.$store.dispatch('spinner/show', {timeout: 30000});
-			StandardSensorService.enumerate(this.address, this.buildOptions())
-				.then((msgId: string) => this.msgId = msgId);
-		},
 	}
-});
+
+	/**
+	 * Parses Sensor enumerate request response
+	 * @var {Array<StandardSensor>} sensors Array of Sensor standard objects from response
+	 */
+	private parseEnumerate(sensors: Array<StandardSensor>): void {
+		this.sensors = [];
+		sensors.forEach((item: StandardSensor) => {
+			if (item.breakdown !== undefined && (item.id === 'BINARYDATA7' || item.id === 'BINARYDATA30')) {
+				item = item.breakdown[0];
+			}
+			this.sensors.push({'type': item.name, 'unit': item.unit});
+		});
+	}
+	
+	/**
+	 * Parses Sensor read request response
+	 * @param {Array<StandardSensor>} sensors Array of Sensor standard objects from response
+	 */
+	private parseReadAll(sensors: Array<StandardSensor>): void {
+		this.sensors = [];
+		sensors.forEach((item: StandardSensor) => {
+			if (item.breakdown !== undefined && (item.id === 'BINARYDATA7' || item.id === 'BINARYDATA30')) {
+				item = item.breakdown[0];
+			}
+			this.sensors.push({'type': item.name, 'value': item.value, 'unit': item.unit});
+		});
+	}
+
+	/**
+	 * Creates WebSocket request options object
+	 * @returns {WebSocketOptions} WebSocket request options
+	 */
+	private buildOptions(): WebSocketOptions {
+		return new WebSocketOptions(null, 30000, 'iqrfnet.standard.sensor.messages.timeout', () => this.msgId = null);
+	}
+
+	/**
+	 * Reads information from all sensors implemented by a device
+	 */
+	private submitReadAll(): void {
+		this.$store.dispatch('spinner/show', {timeout: 30000});
+		StandardSensorService.readAll(this.address, this.buildOptions())
+			.then((msgId: string) => this.msgId = msgId);
+	}
+
+	/**
+	 * Enumerates all sensors implemented by a device
+	 */
+	private submitEnumerate(): void {
+		this.$store.dispatch('spinner/show', {timeout: 30000});
+		StandardSensorService.enumerate(this.address, this.buildOptions())
+			.then((msgId: string) => this.msgId = msgId);
+	}
+}
 </script>
 
 <style scoped>

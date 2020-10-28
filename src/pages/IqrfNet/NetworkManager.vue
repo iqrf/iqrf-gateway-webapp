@@ -22,15 +22,15 @@
 	</div>
 </template>
 
-<script>
+<script lang='ts'>
+import {Component, Vue} from 'vue-property-decorator';
 import {CCard, CTab, CTabs} from '@coreui/vue/src';
-import BondingManager from '../../components/IqrfNet/BondingManager';
-import DevicesInfo from '../../components/IqrfNet/DevicesInfo';
-import DiscoveryManager from '../../components/IqrfNet/DiscoveryManager';
-import AutoNetwork from '../../components/IqrfNet/AutoNetwork';
+import BondingManager from '../../components/IqrfNet/BondingManager.vue';
+import DevicesInfo from '../../components/IqrfNet/DevicesInfo.vue';
+import DiscoveryManager from '../../components/IqrfNet/DiscoveryManager.vue';
+import AutoNetwork from '../../components/IqrfNet/AutoNetwork.vue';
 
-export default {
-	name: 'NetworkManager',
+@Component({
 	components: {
 		CCard,
 		CTab,
@@ -40,21 +40,33 @@ export default {
 		DevicesInfo,
 		DiscoveryManager,
 	},
-	data() {
-		return {
-			activeTab: 0,
-		};
-	},
-	methods: {
-		getVersion() {
-			this.$refs.autonetwork.getVersion();
-		},
-		updateDevices() {
-			this.$refs.devs.getBondedDevices();
-		},
-	},
 	metaInfo: {
 		title: 'iqrfnet.networkManager.title',
 	},
-};
+})
+
+/**
+ * Network manager page component
+ */
+export default class NetworkManager extends Vue {
+	/**
+	 * @const {number} activeTab Default active tab
+	 */
+	private activeTab = 0
+	
+	/**
+	 * Retrieves Daemon version on notify-autonetwork event emitted by successful FRC ping
+	 */
+	private getVersion(): void {
+		(this.$refs.autonetwork as AutoNetwork).getVersion();
+	}
+
+	/**
+	 * Refreshes table of devices on update-devices event emitted by a bonding or discovery action
+	 */
+	private updateDevices(): void {
+		(this.$refs.devs as DevicesInfo).getBondedDevices();
+	}
+
+}
 </script>

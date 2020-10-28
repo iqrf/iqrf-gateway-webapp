@@ -94,9 +94,9 @@
 										<span @click='changeVisibility'>
 											<CIcon
 												v-if='visibility ==="password"'
-												:content='$options.icons.hidden'
+												:content='icons.hidden'
 											/>
-											<CIcon v-else :content='$options.icons.shown' />
+											<CIcon v-else :content='icons.shown' />
 										</span>
 									</template>
 								</CInput>
@@ -161,16 +161,39 @@
 	</div>
 </template>
 
-<script>
+<script lang='ts'>
+import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CForm, CIcon, CInput} from '@coreui/vue/src';
 import {cilLockLocked, cilLockUnlocked} from '@coreui/icons';
 import {between, integer, required} from 'vee-validate/dist/rules';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import FeatureConfigService from '../../services/FeatureConfigService';
+import { NavigationGuardNext, Route } from 'vue-router';
+import { Dictionary } from 'vue-router/types/router';
+import { AxiosError, AxiosResponse } from 'axios';
 
-export default {
-	name: 'TranslatorConfig',
+interface TranslatorMqtt {
+	addr: string
+	cid: string
+	port: number
+	pw: string
+	topic: string
+	user: string
+}
+
+interface TranslatorRest {
+	addr: string
+	api_key: string
+	port: number
+}
+
+interface Translator {
+	mqtt: TranslatorMqtt
+	rest: TranslatorRest
+}
+
+@Component({
 	components: {
 		CButton,
 		CCard,
@@ -180,8 +203,8 @@ export default {
 		ValidationObserver,
 		ValidationProvider
 	},
-	beforeRouteEnter(to, from, next) {
-		next(vm => {
+	beforeRouteEnter(to: Route, from: Route, next: NavigationGuardNext): void {
+		next((vm: Vue) => {
 			if (!vm.$store.getters['features/isEnabled']('iqrfGatewayTranslator')) {
 				vm.$toast.error(
 					vm.$t('translatorConfig.messages.disabled').toString()
@@ -190,14 +213,42 @@ export default {
 			}
 		});
 	},
-	data() {
-		return {
-			name: 'translator',
-			visibility: 'password',
-			config: null,
-		};
+	metaInfo: {
+		title: 'translatorConfig.description',
 	},
-	created() {
+})
+
+/**
+ * IQRF Gateway Translator configuration component
+ */
+export default class TranslatorConfig extends Vue {
+	/**
+	 * @constant {string} name Name of translator service
+	 */
+	private name = 'translator'
+
+	/**
+	 * @var {string} visibility Specifies form input type
+	 */
+	private visibility = 'password'
+
+	/**
+	 * @var {Translator|null} config IQRF Gateway Translator service configuration
+	 */
+	private config: Translator|null = null
+
+	/**
+	 * @constant {Dictionary<Array<string>>} icons Array of CoreUI icons
+	 */
+	private icons: Dictionary<Array<string>> = {
+		hidden: cilLockLocked,
+		shown: cilLockUnlocked
+	}
+
+	/**
+	 * Vue lifecycle hook created
+	 */
+	created(): void {
 		extend('between', between);
 		extend('integer', integer);
 		extend('required', required);
@@ -214,41 +265,43 @@ export default {
 			return regex.test(topic);
 		});
 		this.getConfig();
-	},
-	methods: {
-		getConfig() {
-			this.$store.commit('spinner/SHOW');
-			FeatureConfigService.getConfig(this.name)
-				.then((response) => {
-					this.$store.commit('spinner/HIDE');
-					this.config = response.data;
-				})
-				.catch((error) => {
-					FormErrorHandler.configError(error);
-				});
-		},
-		processSubmit() {
-			this.$store.commit('spinner/SHOW');
-			FeatureConfigService.saveConfig(this.name, this.config)
-				.then(() => {
-					this.$store.commit('spinner/HIDE');
-					this.$toast.success(this.$t('forms.messages.saveSuccess').toString());
-				})
-				.catch((error) => {
-					FormErrorHandler.configError(error);
-				});
-		},
-		changeVisibility() {
-			this.visibility = this.visibility === 'password' ? 'text' : 'password';
-		},
-	},
-	icons: {
-		hidden: cilLockLocked,
-		shown: cilLockUnlocked
-	},
-	metaInfo: {
-		title: 'translatorConfig.description',
-	},
-};
+	}
 
+	/**
+	 * Retrieves configuration of IQRF Gateway Translator
+	 */
+	private getConfig(): void {
+		this.$store.commit('spinner/SHOW');
+		FeatureConfigService.getConfig(this.name)
+			.then((response: AxiosResponse) => {
+				this.$store.commit('spinner/HIDE');
+				this.config = response.data;
+			})
+			.catch((error: AxiosError) => {
+				FormErrorHandler.configError(error);
+			});
+	}
+
+	/**
+	 * Updates configuration of IQRF Gateway Translator
+	 */
+	private processSubmit(): void {
+		this.$store.commit('spinner/SHOW');
+		FeatureConfigService.saveConfig(this.name, this.config)
+			.then(() => {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.success(this.$t('forms.messages.saveSuccess').toString());
+			})
+			.catch((error: AxiosError) => {
+				FormErrorHandler.configError(error);
+			});
+	}
+
+	/**
+	 * Changes input visibility type in response to user action
+	 */
+	private changeVisibility(): void {
+		this.visibility = this.visibility === 'password' ? 'text' : 'password';
+	}
+}
 </script>

@@ -268,7 +268,8 @@
 	</div>
 </template>
 
-<script>
+<script lang='ts'>
+import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
 import {CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {
 	between,
@@ -278,12 +279,16 @@ import {
 	required,
 } from 'vee-validate/dist/rules';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import AddressChanger from '../../components/IqrfNet/AddressChanger';
-import SecurityForm from '../../components/IqrfNet/SecurityForm';
+import AddressChanger from '../../components/IqrfNet/AddressChanger.vue';
+import SecurityForm from '../../components/IqrfNet/SecurityForm.vue';
 import IqrfNetService from '../../services/IqrfNetService';
+import { IOption } from '../../interfaces/coreui';
+import { WebSocketClientState } from '../../store/modules/webSocketClient.module';
+import { MutationPayload } from 'vuex';
+import { Dictionary } from 'vue-router/types/router';
+import { IEmbedPers, IEmbedPersEnabled, ITrConfiguration } from '../../interfaces/dpa';
 
-export default {
-	name: 'TrConfiguration',
+@Component({
 	components: {
 		AddressChanger,
 		CCard,
@@ -294,37 +299,102 @@ export default {
 		SecurityForm,
 		ValidationObserver,
 		ValidationProvider,
-	},
-	props: {
-		address: {
-			type: Number,
-			required: true,
-		},
-	},
-	data() {
-		return {
-			config: null,
-			peripherals: [],
-			dpaHandlerDetected: null,
-			dpaVersion: null,
-			unchangeablePeripherals: ['coordinator', 'node', 'os'],
-			msgId: null,
-		};
-	},
-	computed: {
-		rfChannelRules() {
-			switch (this.config.rfBand) {
-				case '433':
-					return {rule:'integer|between:0,16|required', min: 0, max: 16};
-				case '868':
-					return {rule: 'integer|between:0,67|required', min: 0, max: 67};
-				case '916':
-					return {rule: 'integer|between:0,255|required', min: 0, max: 255};
-			}
+	}
+})
+
+/**
+ * Transciever configuration page component
+ */
+export default class TrConfiguration extends Vue {
+	/**
+	 * @var {ITrConfiguration|null} config Device transciever configuration object
+	 */
+	private config: ITrConfiguration|null = null
+
+	/**
+	 * @var {boolean} dpaHandlerDetected Indicates whether transciever has a custom dpa handler implemented
+	 */
+	private dpaHandlerDetected = false
+
+	/**
+	 * @var {string|null} dpaVersion Version of DPA used by transciever
+	 */
+	private dpaVersion: string|null = null
+
+	/**
+	 * @var {string|null} msgId Daemon api message id
+	 */
+	private msgId: string|null = null
+
+	/**
+	 * @var {Array<IEmbedPersEnabled} peripherals Array of embedded peripherals and their states
+	 */
+	private peripherals: Array<IEmbedPersEnabled> = []
+
+	/**
+	 * @constant {Array<string>} unchangeablePeripherals Array of peripherals whose states cannot be changed
+	 */
+	private unchangeablePeripherals: Array<string> = [
+		'coordinator',
+		'node',
+		'os'
+	]
+
+	/**
+	 * Component unsubscribe function
+	 */
+	private unsubscribe: CallableFunction = () => {return;}
+
+	/**
+	 * Component unwatch function
+	 */
+	private unwatch: CallableFunction = () => {return;}
+
+	/**
+	 * @property {number} address Device address
+	 */
+	@Prop({required: true}) address!: number
+
+	/**
+	 * Device address watcher for transciever configuration retrieval
+	 */
+	@Watch('address')
+	getAddress(): void {
+		this.config = null;
+		this.peripherals = [];
+		if (this.$store.getters.isSocketConnected) {
+			this.$store.dispatch('spinner/show', {timeout: 30000});
+			IqrfNetService.enumerateDevice(this.address, 30000, 'iqrfnet.trConfiguration.messages.read.failure', () => this.msgId = null)
+				.then((msgId: string) => this.msgId = msgId);
+		}
+	}
+	
+	/**
+	 * Computes rules for validation of RF channel input field
+	 * @returns {Dictionary<string|number>|undefined} Dictionary of rules if rfBand in configuration is valid
+	 */
+	get rfChannelRules(): Dictionary<string|number>|undefined {
+		if (this.config === null) {
 			return undefined;
-		},
-		rfChannelValidatorMessages() {
-			let message = '';
+		}
+		switch (this.config.rfBand) {
+			case '433':
+				return {rule:'integer|between:0,16|required', min: 0, max: 16};
+			case '868':
+				return {rule: 'integer|between:0,67|required', min: 0, max: 67};
+			case '916':
+				return {rule: 'integer|between:0,255|required', min: 0, max: 255};
+		}
+		return undefined;
+	}
+
+	/**
+	 * Computes feedback messages in case rfBand field value is invalid
+	 * @returns {Dictionary<string>} Dictionary of messages for applied rules
+	 */
+	get rfChannelValidatorMessages(): Dictionary<string> {
+		let message = '';
+		if (this.config !== null) {
 			switch (this.config.rfBand) {
 				case '433':
 					message = 'iqrfnet.trConfiguration.form.messages.rfChannel.433';
@@ -336,40 +406,38 @@ export default {
 					message = 'iqrfnet.trConfiguration.form.messages.rfChannel.916';
 					break;
 			}
+		}
+		return {
+			between: message,
+			integer: message,
+			required: message
+		};
+	}
+
+	/**
+	 * Computes CoreUI select options for UART baudrate
+	 * @returns {Array<IOption>} CoreUI select options
+	 */
+	get uartBaudRates(): Array<IOption> {
+		const uartBaudRates = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400];
+		return uartBaudRates.map((uartBaudRate) => {
 			return {
-				between: message,
-				integer: message,
-				required: message
+				value: uartBaudRate,
+				label: this.$t('iqrfnet.trConfiguration.form.uartBaudrates.' + uartBaudRate).toString(),
 			};
-		},
-		uartBaudRates() {
-			const uartBaudRates = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400];
-			return uartBaudRates.map((uartBaudRate) => {
-				return {
-					value: uartBaudRate,
-					label: this.$t('iqrfnet.trConfiguration.form.uartBaudrates.' + uartBaudRate).toString(),
-				};
-			});
-		},
-	},
-	watch: {
-		address: function () {
-			this.config = null;
-			this.peripherals = [];
-			if (this.$store.getters.isSocketConnected) {
-				this.$store.dispatch('spinner/show', {timeout: 30000});
-				IqrfNetService.enumerateDevice(this.address, 30000, 'iqrfnet.trConfiguration.messages.read.failure', () => this.msgId = null)
-					.then((msgId) => this.msgId = msgId);
-			}
-		},
-	},
-	created() {
+		});
+	}
+
+	/**
+	 * Vue lifecycle hook created
+	 */
+	created(): void {
 		extend('between', between);
 		extend('integer', integer);
 		extend('min', min_value);
 		extend('max', max_value);
 		extend('required', required);
-		this.unsubscribe = this.$store.subscribe(mutation => {
+		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type !== 'SOCKET_ONMESSAGE') {
 				return;
 			}
@@ -391,8 +459,8 @@ export default {
 			this.enumerate();
 		} else {
 			this.unwatch = this.$store.watch(
-				(state, getter) => getter.isSocketConnected,
-				(newVal, oldVal) => {
+				(state: WebSocketClientState, getter: any) => getter.isSocketConnected,
+				(newVal: boolean, oldVal: boolean) => {
 					if (!oldVal && newVal) {
 						this.enumerate();
 						this.unwatch();
@@ -400,86 +468,114 @@ export default {
 				}
 			);
 		}
-	},
-	beforeDestroy() {
+	}
+
+	/**
+	 * Vue lifecycle hook beforeDestroy
+	 */
+	beforeDestroy(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
-		if (this.unwatch !== undefined) {
-			this.unwatch();
-		}
+		this.unwatch();
 		this.unsubscribe();
-	},
-	methods: {
-		enumerate() {
-			this.$store.dispatch('spinner/show', {timeout: 30000});
-			IqrfNetService.enumerateDevice(this.address, 30000, 'iqrfnet.trConfiguration.messages.read.failure', () => this.msgId = null)
-				.then((msgId) => this.msgId = msgId);
-		},
-		handleEnumerationResponse(response) {
-			if (response.data.status !== 0) {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.error(
-					this.$t('iqrfnet.trConfiguration.messages.read.failure').toString()
-				);
-				return;
-			}
-			let rsp = response.data.rsp;
-			this.config = rsp.trConfiguration;
-			this.dpaHandlerDetected = rsp.osRead.flags.dpaHandlerDetected;
-			this.dpaVersion = rsp.peripheralEnumeration.dpaVer;
-			this.setEmbeddedPeripherals();
+	}
+
+	/**
+	 * Performs device enumeration
+	 */
+	private enumerate(): void {
+		this.$store.dispatch('spinner/show', {timeout: 30000});
+		IqrfNetService.enumerateDevice(this.address, 30000, 'iqrfnet.trConfiguration.messages.read.failure', () => this.msgId = null)
+			.then((msgId: string) => this.msgId = msgId);
+	}
+
+	/**
+	 * Handles Enumeration request response
+	 */
+	private handleEnumerationResponse(response): void {
+		if (response.data.status !== 0) {
 			this.$store.commit('spinner/HIDE');
-			if (this.$store.getters['user/getRole'] === 'normal') {
-				this.$toast.success(
-					this.$t('iqrfnet.trConfiguration.messages.read.success').toString()
-				);
-			}
-		},
-		handleSubmit() {
-			let config = JSON.parse(JSON.stringify(this.config));
-			config.embPers = this.getEmbeddedPeripherals();
-			this.$store.dispatch('spinner/show', {timeout: 60000});
-			IqrfNetService.writeTrConfiguration(this.address, config, 60000, 'iqrfnet.trConfiguration.messages.write.failure', () => this.msgId = null)
-				.then((msgId) => this.msgId = msgId);
-		},
-		handleWriteResponse(response) {
-			this.$store.commit('spinner/HIDE');
-			if (response.data.status === 0) {
-				this.$toast.success(
-					this.$t('iqrfnet.trConfiguration.messages.write.success').toString()
-				);
-			} else {
-				this.$toast.error(
-					this.$t('iqrfnet.trConfiguration.messages.write.failure').toString()
-				);
-			}
-		},
-		setEmbeddedPeripherals() {
-			let peripherals = JSON.parse(JSON.stringify(this.config.embPers));
-			this.peripherals = [];
-			for (let peripheral in peripherals) {
-				if (!Object.prototype.hasOwnProperty.call(peripherals, peripheral)) {
-					continue;
-				}
-				if (typeof this.config.embPers[peripheral] !== 'boolean') {
-					continue;
-				}
-				if (this.unchangeablePeripherals.includes(peripheral) &&
-						this.$store.getters['user/getRole'] === 'normal') {
-					continue;
-				}
-				this.peripherals.push({
-					name: peripheral,
-					enabled: this.config.embPers[peripheral],
-				});
-			}
-		},
-		getEmbeddedPeripherals() {
-			let peripherals = {};
-			for (let peripheral of this.peripherals) {
-				peripherals[peripheral.name] = peripheral.enabled;
-			}
-			return peripherals;
+			this.$toast.error(
+				this.$t('iqrfnet.trConfiguration.messages.read.failure').toString()
+			);
+			return;
 		}
-	},
-};
+		let rsp = response.data.rsp;
+		this.config = rsp.trConfiguration;
+		this.dpaHandlerDetected = rsp.osRead.flags.dpaHandlerDetected;
+		this.dpaVersion = rsp.peripheralEnumeration.dpaVer;
+		this.setEmbeddedPeripherals();
+		this.$store.commit('spinner/HIDE');
+		if (this.$store.getters['user/getRole'] === 'normal') {
+			this.$toast.success(
+				this.$t('iqrfnet.trConfiguration.messages.read.success').toString()
+			);
+		}
+	}
+
+	/**
+	 * Updates transciever configuration object with embed peripherals configuration and then sends WriteTrConfiguration request
+	 */
+	private handleSubmit(): void {
+		let config = JSON.parse(JSON.stringify(this.config));
+		config.embPers = this.getEmbeddedPeripherals();
+		this.$store.dispatch('spinner/show', {timeout: 60000});
+		IqrfNetService.writeTrConfiguration(this.address, config, 60000, 'iqrfnet.trConfiguration.messages.write.failure', () => this.msgId = null)
+			.then((msgId: string) => this.msgId = msgId);
+	}
+
+	/**
+	 * Handles WriteTrConfiguration request response
+	 */
+	private handleWriteResponse(response): void {
+		this.$store.commit('spinner/HIDE');
+		if (response.data.status === 0) {
+			this.$toast.success(
+				this.$t('iqrfnet.trConfiguration.messages.write.success').toString()
+			);
+		} else {
+			this.$toast.error(
+				this.$t('iqrfnet.trConfiguration.messages.write.failure').toString()
+			);
+		}
+	}
+
+	/**
+	 * Populates array of embedded peripherals with information from ReadTrConfiguration request
+	 */
+	private setEmbeddedPeripherals(): void {
+		if (this.config === null) {
+			return;
+		}
+		let peripherals = JSON.parse(JSON.stringify(this.config.embPers));
+		this.peripherals = [];
+		for (let peripheral in peripherals) {
+			if (!Object.prototype.hasOwnProperty.call(peripherals, peripheral)) { // peripheral information exists
+				continue;
+			}
+			if (typeof this.config.embPers[peripheral] !== 'boolean') { // invalid value in configuration
+				continue;
+			}
+			if (this.unchangeablePeripherals.includes(peripheral) &&
+					this.$store.getters['user/getRole'] === 'normal') {
+				continue;
+			}
+			this.peripherals.push({
+				name: peripheral,
+				enabled: this.config.embPers[peripheral],
+			});
+		}
+	}
+
+	/**
+	 * Converts new configuration of embedded peripherals from array to object accepted by daemon
+	 * @returns {IEmbedPers} Dictionary of embedded peripherals
+	 */
+	private getEmbeddedPeripherals(): IEmbedPers {
+		let peripherals = {};
+		for (let peripheral of this.peripherals) {
+			peripherals[peripheral.name] = peripheral.enabled;
+		}
+		return (peripherals as IEmbedPers);
+	}
+}
 </script>

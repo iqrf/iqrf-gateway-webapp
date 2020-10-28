@@ -93,16 +93,29 @@
 </template>
 
 <script lang='ts'>
-import Vue from 'vue';
-import {Getter, MutationPayload} from 'vuex';
+import {Component, Prop, Vue} from 'vue-property-decorator';
+import {MutationPayload} from 'vuex';
 import {CButton, CCard, CCardBody, CCardHeader} from '@coreui/vue/src';
 import IqrfNetService from '../../services/IqrfNetService';
 import ProductService from '../../services/IqrfRepository/ProductService';
 import RfModeLp from '../../assets/lp-black.svg';
 import RfModeStd from '../../assets/std-black.svg';
+import { WebSocketClientState } from '../../store/modules/webSocketClient.module';
+import { AxiosError, AxiosResponse } from 'axios';
+import { IDeviceEnumeration, OsInfo, PeripheralEnumeration } from '../../interfaces/dpa';
 
-export default Vue.extend({
-	name: 'DeviceEnumeration',
+interface Product {
+	companyName: string
+	homePage: string
+	hwpid: number
+	manufacturerID: number
+	name: string
+	picture: string
+	pictureOriginal: string
+	rfMode: number
+}
+
+@Component({
 	components: {
 		CButton,
 		CCard,
@@ -111,23 +124,59 @@ export default Vue.extend({
 		RfModeLp,
 		RfModeStd,
 	},
-	props: {
-		address: {
-			type: Number,
-			required: false,
-			default: 0,
-		},
-	},
-	data(): any {
-		return {
-			response: undefined,
-			osData: undefined,
-			peripheralData: undefined,
-			product: undefined,
-			msgId: null,
-		};
-	},
-	created() {
+	metaInfo: {
+		title: 'iqrfnet.enumeration.title',
+	}
+})
+
+/**
+ * Device enumeration page component
+ */
+export default class DeviceEnumeration extends Vue {
+	/**
+	 * @var {string|null} msgId Daemon api message id
+	 */
+	private msgId: string|null = null
+
+	/**
+	 * @var {OsData|null} osData Device OS information
+	 */
+	private osData: OsInfo|null = null
+
+	/**
+	 * @var {PeripheralEnumeration|null} peripheralData Device peripheral information
+	 */
+	private peripheralData: PeripheralEnumeration|null = null
+
+	/**
+	 * @var {Product|null} product Device product information
+	 */
+	private product: Product|null = null
+
+	/**
+	 * @var {IDeviceEnumeration} response Device enumeration data
+	 */
+	private response: IDeviceEnumeration|null = null
+
+	/**
+	 * Component unsubscribe function
+	 */
+	private unsubscribe: CallableFunction = () => {return;}
+
+	/**
+	 * Component unwatch function
+	 */
+	private unwatch: CallableFunction = () => {return;}
+	
+	/**
+	 * @property {number} address Address of device to enumerate
+	 */
+	@Prop({required: false, default: 0}) address!: number
+
+	/**
+	 * Vue lifecycle hook created
+	 */
+	created(): void {
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type !== 'SOCKET_ONMESSAGE' ||
 				mutation.payload.data.msgId !== this.msgId) {
@@ -148,11 +197,14 @@ export default Vue.extend({
 				this.response = data;
 				this.peripheralData = data.peripheralEnumeration;
 				this.osData = data.osRead;
+				if (this.peripheralData === null) {
+					return;
+				}
 				ProductService.get(this.peripheralData.hwpId)
-					.then((response) => {
+					.then((response: AxiosResponse) => {
 						this.product = response.data;
 					})
-					.catch((error) => {
+					.catch((error: AxiosError) => {
 						if (error.response !== undefined && error.response.status === 404) {
 							return;
 						}
@@ -167,7 +219,7 @@ export default Vue.extend({
 			this.enumerate();
 		} else {
 			this.unwatch = this.$store.watch(
-				(state: any, getter: any) => getter.isSocketConnected,
+				(state: WebSocketClientState, getter: any) => getter.isSocketConnected,
 				(newVal: boolean, oldVal: boolean) => {
 					if (!oldVal && newVal) {
 						this.enumerate();
@@ -176,25 +228,26 @@ export default Vue.extend({
 				}
 			);
 		}
-	},
-	beforeDestroy() {
+	}
+
+	/**
+	 * Vue lifecycle hook beforeDestroy
+	 */
+	beforeDestroy(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
-		if (this.unwatch !== undefined) {
-			this.unwatch();
-		}
+		this.unwatch();
 		this.unsubscribe();
-	},
-	methods: {
-		enumerate(): void {
-			this.$store.dispatch('spinner/show', {timeout: 30000});
-			IqrfNetService.enumerateDevice(this.address, 30000, 'iqrfnet.enumeration.messages.failure', () => this.msgId = null)
-				.then((msgId) => this.msgId = msgId);
-		}
-	},
-	metaInfo: {
-		title: 'iqrfnet.enumeration.title',
-	},
-});
+	}
+
+	/**
+	 * Performs enumeration on device specified by address
+	 */
+	private enumerate(): void {
+		this.$store.dispatch('spinner/show', {timeout: 30000});
+		IqrfNetService.enumerateDevice(this.address, 30000, 'iqrfnet.enumeration.messages.failure', () => this.msgId = null)
+			.then((msgId: string) => this.msgId = msgId);
+	}
+}
 </script>
 
 <style scoped>

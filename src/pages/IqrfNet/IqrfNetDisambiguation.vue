@@ -74,6 +74,9 @@ import {CCard, CListGroup, CListGroupItem} from '@coreui/vue/src';
 	},
 })
 
+/**
+ * IqrfNet disambiguation menu component
+ */
 export default class IqrfNetDisambiguation extends Vue {
 }
 </script>

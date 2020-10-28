@@ -61,19 +61,39 @@ interface JsonRawApiConfig {
 	}
 })
 
+/**
+ * JSON RawApi component configuration
+ */
 export default class JsonRawApi extends Vue {
+	/**
+	 * @constant {string} componentName JSON RawApi component name
+	 */
 	private componentName = 'iqrf::JsonDpaApiRaw'
+
+	/**
+	 * @var {string|null} instances JSON RawApi component instance name
+	 */
 	private instance: string|null = null
+
+	/**
+	 * @var {JsonRawApiConfig} configuration JSON RawApi component instance configuration
+	 */
 	private configuration: JsonRawApiConfig = {
 		instance: null,
 		asyncDpaMessage: false,
 	}
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		extend('required', required);
 		this.getConfig();
 	}
 
+	/**
+	 * Retrieves configuration of JSON RawApi component
+	 */
 	private getConfig(): void {
 		this.$store.commit('spinner/SHOW');
 		DaemonConfigurationService.getComponent(this.componentName)
@@ -87,6 +107,9 @@ export default class JsonRawApi extends Vue {
 			.catch((error: AxiosError) => FormErrorHandler.configError(error));
 	}
 
+	/**
+	 * Saves new or updates existing configuration of JSON RawApi component instance
+	 */
 	private saveConfig(): void {
 		this.$store.commit('spinner/SHOW');
 		if (this.instance !== null) {
@@ -100,6 +123,9 @@ export default class JsonRawApi extends Vue {
 		}
 	}
 
+	/**
+	 * Handles successful REST API response
+	 */
 	private successfulSave(): void {
 		this.$store.commit('spinner/HIDE');
 		this.$toast.success(this.$t('config.success').toString());

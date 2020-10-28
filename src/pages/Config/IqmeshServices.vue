@@ -15,5 +15,8 @@ import OtaUpload from '../../components/Config/OtaUpload.vue';
 	}
 })
 
+/**
+ * IQMESH services card for Daemon component configuration
+ */
 export default class IqmeshServices extends Vue {}
 </script>

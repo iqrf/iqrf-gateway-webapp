@@ -9,7 +9,7 @@
 					size='sm'
 					class='float-right'
 				>
-					<CIcon :content='$options.icons.add' size='sm' />
+					<CIcon :content='icons.add' size='sm' />
 					{{ $t('table.actions.add') }}
 				</CButton>
 			</CCardHeader>
@@ -46,18 +46,18 @@
 					<template #actions='{item}'>
 						<td class='col-actions'>
 							<CButton
-								color='primary'
+								color='info'
 								:to='"/config/mq/edit/" + item.instance'
 								size='sm'
 							>
-								<CIcon :content='$options.icons.edit' size='sm' />
+								<CIcon :content='icons.edit' size='sm' />
 								{{ $t('table.actions.edit') }}
 							</CButton> <CButton
 								color='danger'
 								size='sm'
 								@click='confirmDelete(item)'
 							>
-								<CIcon :content='$options.icons.delete' size='sm' />
+								<CIcon :content='icons.delete' size='sm' />
 								{{ $t('table.actions.delete') }}
 							</CButton>
 						</td>
@@ -67,21 +67,21 @@
 		</CCard>
 		<CModal
 			color='danger'
-			:show='modals.delete.instance !== null'
+			:show='deleteInstance !== ""'
 		>
 			<template #header>
 				<h5 class='modal-title'>
 					{{ $t('config.mq.messages.delete.confirmTitle') }}
 				</h5>
-				<CButtonClose class='text-white' @click='modals.delete.instance = null' />
+				<CButtonClose class='text-white' @click='deleteInstance = ""' />
 			</template>
-			<span v-if='modals.delete.instance !== null'>
-				{{ $t('config.mq.messages.delete.confirm', {instance: modals.delete.instance}) }}
+			<span v-if='deleteInstance !== ""'>
+				{{ $t('config.mq.messages.delete.confirm', {instance: deleteInstance}) }}
 			</span>
 			<template #footer>
-				<CButton
+				<CButton 
 					color='danger'
-					@click='modals.delete.instance = null'
+					@click='deleteInstance = ""'
 				>
 					{{ $t('forms.no') }}
 				</CButton> <CButton
@@ -95,7 +95,8 @@
 	</div>
 </template>
 
-<script>
+<script lang='ts'>
+import {Component, Vue} from 'vue-property-decorator';
 import {
 	CButton,
 	CButtonClose,
@@ -111,9 +112,13 @@ import {
 import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import DaemonConfigurationService
 	from '../../services/DaemonConfigurationService';
+import { Dictionary } from 'vue-router/types/router';
+import { IField } from '../../interfaces/coreui';
+import { MqInstance } from '../../interfaces/messagingInterfaces';
+import { AxiosResponse } from 'axios';
 
-export default {
-	name: 'MqMessagingTable',
+
+@Component({
 	components: {
 		CButton,
 		CButtonClose,
@@ -126,94 +131,136 @@ export default {
 		CIcon,
 		CModal,
 	},
-	data() {
-		return {
-			componentName: 'iqrf::MqMessaging',
-			fields: [
-				{
-					key: 'instance',
-					label: this.$t('config.mq.form.instance'),
-				},
-				{
-					key: 'LocalMqName',
-					label: this.$t('config.mq.form.LocalMqName'),
-				},
-				{
-					key: 'RemoteMqName',
-					label: this.$t('config.mq.form.RemoteMqName'),
-				},
-				{
-					key: 'acceptAsyncMsg',
-					label: this.$t('config.mq.form.acceptAsyncMsg'),
-					filter: false,
-				},
-				{
-					key: 'actions',
-					label: this.$t('table.actions.title'),
-					sorter: false,
-					filter: false,
-				},
-			],
-			instances: [],
-			modals: {
-				delete: {
-					instance: null,
-				}
-			},
-		};
-	},
-	created() {
-		this.$store.commit('spinner/SHOW');
-		this.getInstances();
-	},
-	methods: {
-		confirmDelete(instance) {
-			this.modals.delete.instance = instance.instance;
+	metaInfo: {
+		title: 'config.mq.title',
+	}
+})
+
+/**
+ * List of Daemon MQ messaging component instances
+ */
+export default class MqMessagingTable extends Vue {
+	/**
+	 * @constant {string} componentName MQ messaging component name
+	 */
+	private componentName = 'iqrf::MqMessaging'
+
+	/**
+	 * @var {string} deleteInstance MQ messaging instance name used in remove modal
+	 */
+	private deleteInstance = ''
+
+	/**
+	 * @constant {Array<IField>} fields Array of CoreUI data table columns
+	 */
+	private fields: Array<IField> = [
+		{
+			key: 'instance',
+			label: this.$t('config.mq.form.instance'),
 		},
-		changeAcceptAsyncMsg(instance, acceptAsyncMsg) {
-			this.$store.commit('spinner/SHOW');
-			instance.acceptAsyncMsg = acceptAsyncMsg;
-			return DaemonConfigurationService.updateInstance(this.componentName, instance.instance, instance)
-				.then(() => {
-					this.getInstances().then(() => {
-						this.$toast.success(
-							this.$t('config.mq.messages.edit.success', {instance: instance.instance})
-								.toString()
-						);
-					});
-				});
+		{
+			key: 'LocalMqName',
+			label: this.$t('config.mq.form.LocalMqName'),
 		},
-		getInstances() {
-			return DaemonConfigurationService.getComponent(this.componentName)
-				.then((response) => {
-					this.$store.commit('spinner/HIDE');
-					this.instances = response.data.instances;
-				})
-				.catch(() => this.$store.commit('spinner/HIDE'));
+		{
+			key: 'RemoteMqName',
+			label: this.$t('config.mq.form.RemoteMqName'),
 		},
-		performDelete() {
-			this.$store.commit('spinner/SHOW');
-			const instance = this.modals.delete.instance;
-			this.modals.delete.instance = null;
-			DaemonConfigurationService.deleteInstance(this.componentName, instance)
-				.then(() => {
-					this.getInstances().then(() => {
-						this.$toast.success(
-							this.$t('config.mq.messages.delete.success', {instance: instance})
-								.toString()
-						);
-					});
-				})
-				.catch(() => this.$store.commit('spinner/HIDE'));
+		{
+			key: 'acceptAsyncMsg',
+			label: this.$t('config.mq.form.acceptAsyncMsg'),
+			filter: false,
 		},
-	},
-	icons: {
+		{
+			key: 'actions',
+			label: this.$t('table.actions.title'),
+			sorter: false,
+			filter: false,
+		},
+	]
+
+	/**
+	 * @constant {Dictionary<Array<string>>} icons Array of CoreUI icons
+	 */
+	private icons: Dictionary<Array<string>> = {
 		add: cilPlus,
 		delete: cilTrash,
 		edit: cilPencil,
-	},
-	metaInfo: {
-		title: 'config.mq.title',
-	},
-};
+	}
+
+	/**
+	 * @var {Array<MqInstance>} instances Array of MQ messaging component instances
+	 */
+	private instances: Array<MqInstance> = []
+
+	/**
+	 * Vue lifecycle hook created
+	 */
+	created(): void {
+		this.$store.commit('spinner/SHOW');
+		this.getInstances();
+	}
+	
+	/**
+	 * Assigns name of MQ messaging instance selected to remove to the remove modal
+	 * @param {MqInstance} instance MQ messaging instance
+	 */
+	private confirmDelete(instance: MqInstance): void {
+		this.deleteInstance = instance.instance;
+	}
+
+	/**
+	 * Updates configuration of MQ messaging component instance
+	 * @param {MqInstance} instance MQ messaging instance
+	 * @param {boolean} acceptAsyncMsg Message accepting policy setting
+	 */
+	private changeAcceptAsyncMsg(instance: MqInstance, acceptAsyncMsg: boolean): void {
+		if (instance.acceptAsyncMsg === acceptAsyncMsg) {
+			return;
+		}
+		this.$store.commit('spinner/SHOW');
+		instance.acceptAsyncMsg = acceptAsyncMsg;
+		DaemonConfigurationService.updateInstance(this.componentName, instance.instance, instance)
+			.then(() => {
+				this.getInstances().then(() => {
+					this.$toast.success(
+						this.$t('config.mq.messages.edit.success', {instance: instance.instance})
+							.toString()
+					);
+				});
+			});
+	}
+
+	/**
+	 * Retrieves instances of MQ messaging component
+	 * @returns {Promise<void>} Empty promise for request chaining
+	 */
+	private getInstances(): Promise<void> {
+		return DaemonConfigurationService.getComponent(this.componentName)
+			.then((response: AxiosResponse) => {
+				this.$store.commit('spinner/HIDE');
+				this.instances = response.data.instances;
+			})
+			.catch(() => this.$store.commit('spinner/HIDE'));
+	}
+
+	/**
+	 * Removes instance of MQ messaging component
+	 */
+	private performDelete(): void {
+		this.$store.commit('spinner/SHOW');
+		const instance = this.deleteInstance;
+		this.deleteInstance = '';
+		DaemonConfigurationService.deleteInstance(this.componentName, instance)
+			.then(() => {
+				this.getInstances().then(() => {
+					this.$toast.success(
+						this.$t('config.mq.messages.delete.success', {instance: instance})
+							.toString()
+					);
+				});
+			})
+			.catch(() => this.$store.commit('spinner/HIDE'));
+	}	
+}
 </script>

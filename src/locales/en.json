@@ -1137,17 +1137,7 @@
 			"title": "Send JSON request",
 			"description": "Send JSON request.",
 			"documentation": "Show API documentation.",
-			"response": "Response",
-			"request": "Request",
 			"notAvailable": "The IQRF Gateway Daemon service is currently not available, attempting reconnect ({attempt}).",
-			"copy": {
-				"request": "Copy request to the clipboard",
-				"response": "Copy response to the clipboard",
-				"messages": {
-					"request": "JSON request has been copied to the clipboard.",
-					"response": "JSON response has been copied to the clipboard."
-				}
-			},
 			"form": {
 				"json": "JSON request",
 				"messages": {
@@ -1178,16 +1168,6 @@
 			"title": "Send DPA packet",
 			"description": "Send DPA packet.",
 			"macros": "Macros",
-			"request": "Request",
-			"response": "Response",
-			"copy": {
-				"request": "Copy request to the clipboard",
-				"response": "Copy response to the clipboard",
-				"messages": {
-					"request": "JSON request has been copied to the clipboard.",
-					"response": "JSON response has been copied to the clipboard."
-				}
-			},
 			"form": {
 				"packet": "DPA packet",
 				"address": "Custom NADR",
@@ -1217,6 +1197,24 @@
 					"hwpid": "Sent DPA packet contains incorrect HWPID.",
 					"data": "Sent DPA packet contains incorrect data,",
 					"dataLength": "Sent DPA packet contains incorrect data length."
+				}
+			}
+		},
+		"jsonMessage": {
+			"request": "Request",
+			"response": "Response",
+			"copy": {
+				"request": "Copy request to the clipboard",
+				"response": "Copy response to the clipboard"
+			},
+			"copySuccess": {
+				"dpa":{
+					"request": "DPA request has been copied to the clipboard.",
+					"response": "DPA response has been copied to the clipboard."
+				},
+				"json": {
+					"request": "JSON request has been copied to the clipboard.",
+					"response": "JSON response has been copied to the clipboard."
 				}
 			}
 		},
@@ -1648,7 +1646,7 @@
 	},
 	"translatorConfig": {
 		"title": "Translator",
-		"description": "Configuration",
+		"description": "Translator configuration",
 		"form": {
 			"rest": {
 				"title": "REST API client configuration",
@@ -1687,7 +1685,7 @@
 	},
 	"controllerConfig": {
 		"title": "Controller",
-		"description": "Configuration",
+		"description": "Controller configuration",
 		"form": {
 			"daemonApi": {
 				"autoNetwork": {

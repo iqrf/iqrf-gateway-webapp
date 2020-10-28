@@ -68,15 +68,25 @@
 	</div>
 </template>
 
-<script>
+<script lang='ts'>
+import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {integer, required} from 'vee-validate/dist/rules';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
+import { MetaInfo } from 'vue-meta/types/vue-meta';
+import { AxiosError, AxiosResponse } from 'axios';
 
-export default {
-	name: 'ComponentForm',
+interface ComponentFormConfig {
+	name: string|null
+	libraryPath: string|null
+	libraryName: string|null
+	enabled: boolean
+	startlevel: number|null
+}
+
+@Component({
 	components: {
 		CButton,
 		CCard,
@@ -87,84 +97,111 @@ export default {
 		ValidationObserver,
 		ValidationProvider,
 	},
-	props: {
-		component: {
-			type: String,
-			required: false,
-			default: null,
-		},
-	},
-	data() {
+	metaInfo(): MetaInfo {
 		return {
-			configuration: {
-				name: null,
-				libraryPath: null,
-				libraryName: null,
-				enabled: false,
-				startlevel: null,
-			},
+			title: (this as unknown as ComponentForm).pageTitle
 		};
-	},
-	computed: {
-		submitButton() {
-			return this.$route.path === '/config/component/add' ?
-				this.$t('forms.add') : this.$t('forms.edit');
-		},
-	},
-	created() {
+	}
+})
+
+/**
+ * Component form card for Daemon component configuration
+ */
+export default class ComponentForm extends Vue {
+	/**
+	 * @var {ComponentFormConfig} configuration Daemon component configuration
+	 */
+	private configuration: ComponentFormConfig = {
+		name: null,
+		libraryPath: null,
+		libraryName: null,
+		enabled: false,
+		startlevel: null
+	}
+	
+	/**
+	 * @property {string} component Daemon component name for editing
+	 */
+	@Prop({ required: false, default: '' }) component!: string;
+	
+	/**
+	 * Computes page title depending on the action (add, edit)
+	 * @returns {string} Page title
+	 */
+	get pageTitle(): string {
+		return this.$route.path === '/config/component/add' ?
+			this.$t('config.components.add').toString() : this.$t('config.components.edit').toString();
+	}
+
+	/**
+	 * Computes the text of form submit button depending on the action (add, edit)
+	 * @returns {string} Button text
+	 */
+	get submitButton(): string {
+		return this.$route.path === '/config/component/add' ?
+			this.$t('forms.add').toString() : this.$t('forms.edit').toString();
+	}
+
+	/**
+	 * Vue lifecycle hook created
+	 */
+	created(): void {
 		extend('integer', integer);
 		extend('required', required);
-		if (this.component !== null) {
+		if (this.component !== '') {
 			this.getComponent();
 		}
-	},
-	methods: {
-		getComponent() {
-			this.$store.commit('spinner/SHOW');
-			DaemonConfigurationService.getComponent(this.component)
-				.then((response) => {
-					this.$store.commit('spinner/HIDE');
-					this.configuration = response.data.configuration;
-				})
-				.catch((error) => {
-					this.$router.push('/config/component/');
-					FormErrorHandler.configError(error);
-				});
-		},
-		saveComponent() {
-			this.$store.commit('spinner/SHOW');
-			if (this.component !== null) {
-				DaemonConfigurationService.updateComponent(this.component, this.configuration)
-					.then(() => this.successfulSave())
-					.catch((error) => FormErrorHandler.configError(error));
-			} else {
-				DaemonConfigurationService.createComponent(this.configuration)
-					.then(() => this.successfulSave())
-					.catch((error) => FormErrorHandler.configError(error));
-			}
-		},
-		successfulSave() {
-			this.$store.commit('spinner/HIDE');
-			if (this.$route.path === '/config/component/add') {
-				this.$toast.success(
-					this.$t('config.components.form.messages.addSuccess', {component: this.configuration.name})
-						.toString()
-				);
-			} else {
-				this.$toast.success(
-					this.$t('config.components.form.messages.editSuccess', {component: this.component})
-						.toString()
-				);
-			}
-			this.$router.push('/config/component');
-		},
-	},
-	metaInfo() {
-		return {
-			title: this.$route.path === '/config/component/add' ?
-				this.$t('config.components.add') :
-				this.$t('config.components.edit')
-		};
-	},
-};
+	}
+
+	/**
+	 * Retrieves Daemon component configuration
+	 */
+	private getComponent(): void {
+		this.$store.commit('spinner/SHOW');
+		DaemonConfigurationService.getComponent(this.component)
+			.then((response: AxiosResponse) => {
+				this.$store.commit('spinner/HIDE');
+				this.configuration = response.data.configuration;
+			})
+			.catch((error: AxiosError) => {
+				this.$router.push('/config/component/');
+				FormErrorHandler.configError(error);
+			});
+	}
+
+	/**
+	 * Saves new or updates existing Daemon component configuration
+	 */
+	private saveComponent(): void {
+		this.$store.commit('spinner/SHOW');
+		if (this.component !== '') {
+			DaemonConfigurationService.updateComponent(this.component, this.configuration)
+				.then(() => this.successfulSave())
+				.catch((error: AxiosError) => FormErrorHandler.configError(error));
+		} else {
+			DaemonConfigurationService.createComponent(this.configuration)
+				.then(() => this.successfulSave())
+				.catch((error: AxiosError) => FormErrorHandler.configError(error));
+		}
+	}
+
+	/**
+	 * Handles successful REST API response
+	 */
+	private successfulSave(): void {
+		this.$store.commit('spinner/HIDE');
+		if (this.$route.path === '/config/component/add') {
+			this.$toast.success(
+				this.$t('config.components.form.messages.addSuccess', {component: this.configuration.name})
+					.toString()
+			);
+		} else {
+			this.$toast.success(
+				this.$t('config.components.form.messages.editSuccess', {component: this.component})
+					.toString()
+			);
+		}
+		this.$router.push('/config/component/');
+	}
+}
 </script>

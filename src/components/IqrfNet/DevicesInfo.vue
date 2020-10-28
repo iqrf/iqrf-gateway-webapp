@@ -6,31 +6,31 @@
 				<tbody>
 					<tr>
 						<td class='table-toprow'>
-							<CIcon class='text-info' :content='$options.icons.coordinator' />
+							<CIcon class='text-info' :content='icons.coordinator' />
 							{{ $t('iqrfnet.networkManager.devicesInfo.icons.coordinator') }}
 						</td>
 						<td class='table-toprow'>
-							<CIcon class='text-danger' :content='$options.icons.unbonded' />
+							<CIcon class='text-danger' :content='icons.unbonded' />
 							{{ $t('iqrfnet.networkManager.devicesInfo.icons.unbonded') }}
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<CIcon class='text-info' :content='$options.icons.bonded' />
+							<CIcon class='text-info' :content='icons.bonded' />
 							{{ $t('iqrfnet.networkManager.devicesInfo.icons.bonded') }}
 						</td>
 						<td>
-							<CIcon class='text-info' :content='$options.icons.discovered' />
+							<CIcon class='text-info' :content='icons.discovered' />
 							{{ $t('iqrfnet.networkManager.devicesInfo.icons.discovered') }}
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<CIcon class='text-success' :content='$options.icons.bonded' />
+							<CIcon class='text-success' :content='icons.bonded' />
 							{{ $t('iqrfnet.networkManager.devicesInfo.icons.bondedOnline') }}
 						</td>
 						<td>
-							<CIcon class='text-success' :content='$options.icons.discovered' />
+							<CIcon class='text-success' :content='icons.discovered' />
 							{{ $t('iqrfnet.networkManager.devicesInfo.icons.discoveredOnline') }}
 						</td>
 					</tr>
@@ -39,7 +39,7 @@
 			<CButton color='primary' class='w-100' @click='frcPing'>
 				{{ $t('forms.pingNodes') }}
 			</CButton>
-			<div v-if='devices != []' class='table-responsive'>
+			<div v-if='devices.length !== 0' class='table-responsive'>
 				<table class='table table-striped device-info'>
 					<tbody>
 						<tr>
@@ -64,16 +64,18 @@
 	</CCard>
 </template>
 
-<script>
+<script lang='ts'>
+import {Component, Vue} from 'vue-property-decorator';
 import {cilHome, cilX, cilCheckAlt, cilSignalCellular4} from '@coreui/icons';
 import {CAlert, CButton, CCard, CCardBody, CCardHeader, CIcon} from '@coreui/vue/src';
 import Device from '../../helpers/Device';
-import DeviceIcon from './DeviceIcon';
+import DeviceIcon from './DeviceIcon.vue';
 import IqrfNetService from '../../services/IqrfNetService';
 import { WebSocketOptions } from '../../store/modules/webSocketClient.module';
+import { Dictionary } from 'vue-router/types/router';
+import { MutationPayload } from 'vuex';
 
-export default {
-	name: 'DevicesInfo',
+@Component({
 	components: {
 		CAlert,
 		CButton,
@@ -82,23 +84,68 @@ export default {
 		CCardHeader,
 		CIcon,
 		DeviceIcon,
-	},
-	data() {
-		return {
-			allowedMTypes: [
-				'iqrfEmbedCoordinator_BondedDevices',
-				'iqrfEmbedCoordinator_DiscoveredDevices',
-				'iqrfEmbedFrc_Send',
-			],
-			devices: [],
-			manual: false,
-			msgId: null,
-			notified: false,
-		};
-	},
-	created() {
+	}
+})
+
+/**
+ * Card of devices in network for Network Manager
+ */
+export default class DevicesInfo extends Vue {
+	/**
+	 * @constant {Array<string>} allowedMTypes Array of allowed Daemon api messages
+	 */
+	private allowedMTypes: Array<string> = [
+		'iqrfEmbedCoordinator_BondedDevices',
+		'iqrfEmbedCoordinator_DiscoveredDevices',
+		'iqrfEmbedFrc_Send',
+	]
+
+	/**
+	 * @var {Array<Device>} devices Array of devices in network
+	 */
+	private devices: Array<Device> = []
+
+	/**
+	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI icons
+	 */
+	private icons: Dictionary<Array<string>> = {
+		coordinator: cilHome,
+		bonded: cilCheckAlt,
+		discovered: cilSignalCellular4,
+		unbonded: cilX
+	}
+
+	/**
+	 * @var {boolean} manual Manual FRC ping request
+	 */
+	private manual = false
+	
+	/**
+	 * @var {string|null} msgId Daemon api message id
+	 */
+	private msgId: string|null = null
+
+	/**
+	 * @var {boolean} notified Component notified by parent
+	 */
+	private notified = false
+
+	/**
+	 * Component unsubscribe function
+	 */
+	private unsubscribe: CallableFunction = () => {return;}
+
+	/**
+	 * Component unwatch function
+	 */
+	private unwatch: CallableFunction = () => {return;}
+
+	/**
+	 * Vue lifecycle hook created
+	 */
+	created(): void {
 		this.generateDevices();
-		this.unsubscribe = this.$store.subscribe(mutation => {
+		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type === 'SOCKET_ONMESSAGE') {
 				if (!this.allowedMTypes.includes(mutation.payload.mType)) {
 					return;
@@ -130,125 +177,168 @@ export default {
 				}
 			);
 		}
-	},
-	beforeDestroy() {
-		this.$store.dispatch('removeMessage', this.msgId);
-		if (this.unwatch !== undefined) {
-			this.unwatch();
-		} 
-		this.unsubscribe();
-	},
-	methods: {
-		buildOptions(timeout, message) {
-			return new WebSocketOptions(null, timeout, message, () => this.msgId = null);
-		},
-		frcPing() {
-			this.$store.dispatch('spinner/show', {timeout: 30000});
-			IqrfNetService.ping(this.buildOptions(30000, 'iqrfnet.networkManager.devicesInfo.messages.bonded.failure'))
-				.then((msgId) => this.msgId = msgId);
-		},
-		generateDevices() {
-			this.devices.push(new Device(0, true));
-			for (let i = 1; i <= 239; i++) {
-				this.devices.push(new Device(i, false));
-			}
-		},
-		getAddress(row, col) {
-			return row * 10 + col;
-		},
-		getBondedDevices() {
-			this.$store.dispatch('spinner/show', {timeout: 20000});
-			IqrfNetService.getBonded(this.buildOptions(20000, 'iqrfnet.networkManager.devicesInfo.messages.bonded.failure'))
-				.then((msgId) => this.msgId = msgId);
-		},
-		getDiscoveredDevices() {
-			this.$store.dispatch('spinner/show', {timeout: 20000});
-			IqrfNetService.getDiscovered(this.buildOptions(20000, 'iqrfnet.networkManager.devicesInfo.messages.discovered.failure'))
-				.then((msgId) => this.msgId = msgId);
-		},
-		parseBondedDevices(response) {
-			switch (response.data.status) {
-				case 0: {
-					this.devices.forEach(item => {
-						item.bonded = false;
-					});
-					const bonded = response.data.rsp.result.bondedDevices;
-					bonded.forEach(item => {
-						this.devices[item].bonded = true;
-					});
-					this.getDiscoveredDevices();
-					break;
-				}
-				default:
-					this.$toast.error(
-						this.$t('iqrfnet.networkManager.devicesInfo.messages.bonded.failure')
-							.toString()
-					);
-					break;
-			}
-		},
-		parseDiscoveredDevices(response) {
-			switch (response.data.status) {
-				case 0: {
-					this.devices.forEach(item => {
-						item.discovered = false;
-					});
-					const discovered = response.data.rsp.result.discoveredDevices;
-					discovered.forEach(item => {
-						this.devices[item].discovered = true;
-					});
-					this.frcPing();
-					break;
-				}
-				default:
-					this.$toast.error(
-						this.$t('iqrfnet.networkManager.devicesInfo.messages.discovered.failure')
-							.toString()
-					);
-					break;
-			}
-		},
-		parseFrcPing(response) {
-			switch(response.data.status) {
-				case 0: {
-					const online = response.data.rsp.result.frcData.slice(0, 30);
-					let k = 0;
-					online.forEach(item => {
-						for (let i = 0; i < 8; ++i) {
-							const device = (item & (1 << i)) >> i;
-							this.devices[k++].online = (device === 1);
-						}
-					});
-					if (this.manual) {
-						this.manual = false;
-						this.$forceUpdate();
-					}
-					break;
-				}
-				default:
-					this.$toast.error(
-						this.$t('iqrfnet.networkManager.devicesInfo.messages.ping.failure')
-							.toString()
-					);
-					break;
-			}
-			if (!this.notified) {
-				this.notify;
-				this.$emit('notify-autonetwork');
-			}
-		},
-		submitFrcPing() {
-			this.manual = true;
-			this.frcPing();
-		},
-	},
-	icons: {
-		coordinator: cilHome,
-		bonded: cilCheckAlt,
-		discovered: cilSignalCellular4,
-		unbonded: cilX
 	}
-};
+
+	/**
+	 * Vue lifecycle hook beforeDestroy
+	 */
+	beforeDestroy(): void {
+		this.$store.dispatch('removeMessage', this.msgId);
+		this.unwatch();
+		this.unsubscribe();
+	}
+
+	/**
+	 * Creates WebSocket request options object
+	 * @param {number} timeout Request timeout in milliseconds
+	 * @param {string} message Request timeout message
+	 * @returns {WebSocketOptions} WebSocket request options
+	 */
+	private buildOptions(timeout: number, message: string): WebSocketOptions {
+		return new WebSocketOptions(null, timeout, message, () => this.msgId = null);
+	}
+
+	/**
+	 * Performs FRC ping
+	 */
+	private frcPing(): void {
+		this.$store.dispatch('spinner/show', {timeout: 30000});
+		IqrfNetService.ping(this.buildOptions(30000, 'iqrfnet.networkManager.devicesInfo.messages.bonded.failure'))
+			.then((msgId: string) => this.msgId = msgId);
+	}
+
+	/**
+	 * Creates array of devices filled with default values
+	 */
+	private generateDevices(): void {
+		this.devices.push(new Device(0, true));
+		for (let i = 1; i <= 239; i++) {
+			this.devices.push(new Device(i, false));
+		}
+	}
+
+	/**
+	 * Computes index of device based on row and column number
+	 * @param {number} row Row number
+	 * @param {number} col Column number
+	 * @returns {number} Device array index
+	 */
+	private getAddress(row: number, col: number): number {
+		return row * 10 + col;
+	}
+
+	/**
+	 * Performs BondedDevices api call
+	 */
+	public getBondedDevices(): void {
+		this.$store.dispatch('spinner/show', {timeout: 20000});
+		IqrfNetService.getBonded(this.buildOptions(20000, 'iqrfnet.networkManager.devicesInfo.messages.bonded.failure'))
+			.then((msgId: string) => this.msgId = msgId);
+	}
+
+	/**
+	 * Performs DiscoveredDevices api call
+	 */
+	private getDiscoveredDevices(): void {
+		this.$store.dispatch('spinner/show', {timeout: 20000});
+		IqrfNetService.getDiscovered(this.buildOptions(20000, 'iqrfnet.networkManager.devicesInfo.messages.discovered.failure'))
+			.then((msgId: string) => this.msgId = msgId);
+	}
+
+	/**
+	 * Handles BondedDevices api call response
+	 * @param {any} response Daemon api response
+	 */
+	private parseBondedDevices(response: any): void {
+		switch (response.data.status) {
+			case 0: {
+				this.devices.forEach((item: Device) => {
+					item.bonded = false;
+				});
+				const bonded = response.data.rsp.result.bondedDevices;
+				bonded.forEach((item: number) => {
+					this.devices[item].bonded = true;
+				});
+				this.getDiscoveredDevices();
+				break;
+			}
+			default:
+				this.$toast.error(
+					this.$t('iqrfnet.networkManager.devicesInfo.messages.bonded.failure')
+						.toString()
+				);
+				break;
+		}
+	}
+
+	/**
+	 * Handles DiscoveredDevices api call response
+	 * @param {any} response Daemon api response
+	 */
+	private parseDiscoveredDevices(response: any): void {
+		switch (response.data.status) {
+			case 0: {
+				this.devices.forEach((item: Device) => {
+					item.discovered = false;
+				});
+				const discovered = response.data.rsp.result.discoveredDevices;
+				discovered.forEach((item: number) => {
+					this.devices[item].discovered = true;
+				});
+				this.frcPing();
+				break;
+			}
+			default:
+				this.$toast.error(
+					this.$t('iqrfnet.networkManager.devicesInfo.messages.discovered.failure')
+						.toString()
+				);
+				break;
+		}
+	}
+
+	/**
+	 * Handles FRC ping api call response
+	 * @param {any} response Daemon api response
+	 */
+	private parseFrcPing(response: any): void {
+		switch(response.data.status) {
+			case 0: {
+				const online = response.data.rsp.result.frcData.slice(0, 30);
+				let k = 0;
+				online.forEach((item: number) => {
+					for (let i = 0; i < 8; ++i) {
+						const device = (item & (1 << i)) >> i;
+						this.devices[k++].online = (device === 1);
+					}
+				});
+				if (this.manual) {
+					this.manual = false;
+					this.$forceUpdate();
+				}
+				break;
+			}
+			default:
+				this.$toast.error(
+					this.$t('iqrfnet.networkManager.devicesInfo.messages.ping.failure')
+						.toString()
+				);
+				break;
+		}
+		if (!this.notified) {
+			this.notified = true;
+			this.$emit('notify-autonetwork');
+		}
+	}
+
+	/**
+	 * Performs FRC ping requested by user
+	 */
+	private submitFrcPing(): void {
+		this.manual = true;
+		this.frcPing();
+	}
+}
 </script>
 
 <style scoped lang='scss'>

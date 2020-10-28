@@ -105,17 +105,46 @@ import ServiceService from '../../services/ServiceService';
 	},
 })
 
+/**
+ * Aws cloud mqtt connection configuration creator card
+ */
 export default class AwsCreator extends Vue {
+	/**
+	 * @var {string|null} endpoint Aws cloud endpoint
+	 */
 	private endpoint: string|null = null
+
+	/**
+	 * @var {boolean} certEmpty Indicates whether the form certificate file input is empty
+	 */
 	private certEmpty = true
+
+	/**
+	 * @var {boolean} certUntouched Indicates whether the form certificate file input has been interacted with
+	 */
 	private certUntouched = true
+
+	/**
+	 * @var {boolean} keyEmpty Indicates whether the form key file input is empty
+	 */
 	private keyEmpty = true
+
+	/**
+	 * @var {boolean} keyUntouched Indicates whether the form key file input has been interacted with
+	 */
 	private keyUntouched = true
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		extend('required', required);
 	}
 
+	/**
+	 * Creates a formData object as data for Axios request
+	 * @returns {FormData} FormData object
+	 */
 	private buildRequest(): FormData {
 		const formData = new FormData();
 		formData.append('endpoint', this.endpoint ?? '');
@@ -124,16 +153,28 @@ export default class AwsCreator extends Vue {
 		return formData;
 	}
 
+	/**
+	 * Extracts uploaded files from the form certificate file input
+	 * @returns {FileList} List of uploaded files
+	 */
 	private getCertFiles(): FileList {
 		const input = ((this.$refs.awsFormCert as CInputFile).$el.children[1] as HTMLInputElement);
 		return (input.files as FileList);
 	}
 
+	/**
+	 * Extracts uploaded files from the form key file input
+	 * @returns {FileList} List of uploaded files
+	 */
 	private getKeyFiles(): FileList {
 		const input = ((this.$refs.awsFormKey as CInputFile).$el.children[1] as HTMLInputElement);
 		return (input.files as FileList);
 	}
 
+	/**
+	 * Stores new Aws cloud connection configuration in the gateway filesystem
+	 * @returns {Promise<void>} Empty promise for request chaining
+	 */
 	private save(): Promise<void> {
 		this.$store.commit('spinner/SHOW');
 		return CloudService.createAws(this.buildRequest())
@@ -147,6 +188,9 @@ export default class AwsCreator extends Vue {
 			});
 	}
 
+	/**
+	 * Stores new Aws cloud configuration in the gateway filesystem and restarts Daemon
+	 */
 	private saveAndRestart(): void {
 		this.save()
 			.then(() => {
@@ -166,6 +210,9 @@ export default class AwsCreator extends Vue {
 			.catch(() => {return;});
 	}
 
+	/**
+	 * Checks if the form file inputs are empty
+	 */
 	private isEmpty(button: string): void {
 		if (button === 'cert') {
 			if (this.certUntouched) {

@@ -75,76 +75,112 @@
 	</CCard>
 </template>
 
-<script>
+<script lang='ts'>
+import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCardBody, CCardHeader} from '@coreui/vue/src';
-import CoordinatorInfo from '../../components/Gateway/CoordinatorInfo';
-import DaemonModeInfo from '../../components/Gateway/DaemonModeInfo';
+import CoordinatorInfo from '../../components/Gateway/CoordinatorInfo.vue';
+import DaemonModeInfo from '../../components/Gateway/DaemonModeInfo.vue';
 import GatewayService from '../../services/GatewayService';
 import {fileDownloader} from '../../helpers/fileDownloader';
+import { IGatewayInfo, IpAddress, MacAddress } from '../../interfaces/gatewayInfo';
+import { AxiosResponse } from 'axios';
 
-export default {
-	name: 'InstallGatewayInfo',
-	components: {CButton, CCardBody, CCardHeader, CoordinatorInfo, DaemonModeInfo},
-	data() {
-		return {
-			coordinator: null,
-			info: null,
-			showCoordinator: false,
-		};
+@Component({
+	components: {
+		CButton,
+		CCardBody,
+		CCardHeader,
+		CoordinatorInfo,
+		DaemonModeInfo
 	},
-	computed: {
-		getIpAddresses() {
-			let addresses = [];
-			for (const nInterface of this.info.interfaces) {
-				if (nInterface.ipAddresses === null) {
-					continue;
-				}
-				addresses.push({
-					iface: nInterface.name,
-					addresses: nInterface.ipAddresses.join(', ')
-				});
-			}
-			return addresses;
-		},
-		getMacAddresses() {
-			let addresses = [];
-			for (const nInterface of this.info.interfaces) {
-				if (nInterface.macAddress === null) {
-					continue;
-				}
-				addresses.push({
-					iface: nInterface.name,
-					address: nInterface.macAddress
-				});
-			}
-			return addresses;
+	metaInfo: {
+		title: 'install.gwInfo.title',
+	}
+})
+
+/**
+ * Gateway information component for installation wizard
+ */
+export default class InstallGatewayInfo extends Vue {
+	/**
+	 * @var {IGatewayInfo|null} info Gateway information object
+	 */
+	private info: IGatewayInfo|null = null
+
+	/**
+	 * @var {boolean} showCoordinator Controls whether coordinator information component can be shown
+	 */
+	private showCoordinator = false
+
+	/**
+	 * Computes array of IP address objects from network interfaces
+	 * @returns {Array<IpAddress>} Array of IP address objects
+	 */
+	get getIpAddresses(): Array<IpAddress> {
+		if (this.info === null) {
+			return [];
 		}
-	},
-	created() {
+		let addresses: Array<IpAddress> = [];
+		for (const nInterface of this.info.interfaces) {
+			if (nInterface.ipAddresses === null) {
+				continue;
+			}
+			addresses.push({
+				iface: nInterface.name,
+				addresses: nInterface.ipAddresses.join(', ')
+			});
+		}
+		return addresses;
+	}
+
+	/**
+	 * Computes array of MAC address objects from network interfaces
+	 * @returns {Array<MacAddress>} Array of MAC address objects
+	 */
+	get getMacAddresses(): Array<MacAddress> {
+		if (this.info === null) {
+			return [];
+		}
+		let addresses: Array<MacAddress> = [];
+		for (const nInterface of this.info.interfaces) {
+			if (nInterface.macAddress === null) {
+				continue;
+			}
+			addresses.push({
+				iface: nInterface.name,
+				address: nInterface.macAddress
+			});
+		}
+		return addresses;
+	}
+	
+	/**
+	 * Vue lifecycle hook created
+	 */
+	private created(): void {
 		this.$store.commit('spinner/SHOW');
 		GatewayService.getInfo()
 			.then(
-				(response) => {
+				(response: AxiosResponse) => {
 					this.info = response.data;
 					this.$store.commit('spinner/HIDE');
 				}
 			)
 			.catch(() => this.$store.commit('spinner/HIDE'));
-	},
-	methods: {
-		downloadDiagnostics() {
-			this.$store.commit('spinner/SHOW');
-			GatewayService.getInfo().then(
-				(response) => {
-					const file = fileDownloader(response, 'application/json', 'iqrf-gateway-info.json');
-					this.$store.commit('spinner/HIDE');
-					file.click();
-				}
-			).catch(() => (this.$store.commit('spinner/HIDE')));
-		}
-	},
-	metaInfo: {
-		title: 'install.gwInfo.title',
-	},
-};
+	}
+
+	/**
+	 * Creates daemon diagnostics file blob and prompts file download
+	 */
+	private downloadDiagnostics(): void {
+		this.$store.commit('spinner/SHOW');
+		GatewayService.getInfo().then(
+			(response: AxiosResponse) => {
+				const file = fileDownloader(response, 'application/json', 'iqrf-gateway-info.json');
+				this.$store.commit('spinner/HIDE');
+				file.click();
+			}
+		).catch(() => (this.$store.commit('spinner/HIDE')));
+	}
+}
 </script>

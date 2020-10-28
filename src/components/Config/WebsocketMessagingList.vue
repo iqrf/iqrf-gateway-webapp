@@ -9,7 +9,7 @@
 					class='float-right'
 					to='/config/websocket/add-messaging'
 				>
-					<CIcon :content='getIcon("add")' size='sm' />
+					<CIcon :content='icons.add' size='sm' />
 					{{ $t('table.actions.add') }}
 				</CButton>
 			</CCardHeader>
@@ -54,14 +54,14 @@
 								size='sm'
 								:to='"/config/websocket/edit-messaging/" + item.instance'
 							>
-								<CIcon :content='getIcon("edit")' size='sm' />
+								<CIcon :content='icons.edit' size='sm' />
 								{{ $t('table.actions.edit') }}
 							</CButton> <CButton
 								color='danger'
 								size='sm'
-								@click='instance = item.instance'
+								@click='deleteInstance = item.instance'
 							>
-								<CIcon :content='getIcon("remove")' size='sm' />
+								<CIcon :content='icons.remove' size='sm' />
 								{{ $t('table.actions.delete') }}
 							</CButton>
 						</td>
@@ -71,18 +71,18 @@
 		</CCard>
 		<CModal
 			color='danger'
-			:show='instance !== null'
+			:show='deleteInstance !== null'
 		>
 			<template #header>
 				<h5 class='modal-title'>
 					{{ $t('config.websocket.messaging.messages.deleteTitle') }}
 				</h5>
 			</template>
-			{{ $t('config.websocket.messaging.messages.deletePrompt', {messaging: instance}) }}
+			{{ $t('config.websocket.messaging.messages.deletePrompt', {messaging: deleteInstance}) }}
 			<template #footer>
 				<CButton
 					color='danger'
-					@click='instance = null'
+					@click='deleteInstance = null'
 				>
 					{{ $t('forms.no') }}
 				</CButton> <CButton
@@ -99,12 +99,13 @@
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CDropdown, CDropdownItem, CIcon, CModal} from '@coreui/vue/src';
+import {cilPlus, cilPencil, cilTrash} from '@coreui/icons';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
-import {IField} from '../../interfaces/IField';
-import {WsMessaging} from '../../interfaces/websocket';
-import {getCoreIcon} from '../../helpers/icons';
+import {IField} from '../../interfaces/coreui';
+import {WsMessaging} from '../../interfaces/messagingInterfaces';
 import { AxiosError, AxiosResponse } from 'axios';
+import { Dictionary } from 'vue-router/types/router';
 
 @Component({
 	components: {
@@ -120,8 +121,23 @@ import { AxiosError, AxiosResponse } from 'axios';
 	},
 })
 
+/**
+ * Websocket messaging list card for normal user
+ */
 export default class WebsocketMessagingList extends Vue {
+	/**
+	 * @constant {string} componentName Websocket messaging component name
+	 */
 	private componentName = 'iqrf::WebsocketMessaging'
+
+	/**
+	 * @var {string|null} deleteInstance Websocket messaging instance used in remove modal
+	 */
+	private deleteInstance: string|null = null
+
+	/**
+	 * @constant {Array<IField>} fields CoreUI datatable columns
+	 */
 	private fields: Array<IField> = [
 		{
 			key: 'instance',
@@ -142,17 +158,31 @@ export default class WebsocketMessagingList extends Vue {
 			sorter: false,
 		}
 	]
-	private instances: Array<WsMessaging> = []
-	private instance: string|null = null
 
+	/**
+	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI icons
+	 */
+	private icons: Dictionary<Array<string>> = {
+		add: cilPlus,
+		edit: cilPencil,
+		remove: cilTrash
+	}
+
+	/**
+	 * @var {Array<WsMessaging>} instances Array of Websocket messaging instances
+	 */
+	private instances: Array<WsMessaging> = []
+
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		this.getConfig();
 	}
 
-	private getIcon(icon: string): void|string[] {
-		return getCoreIcon(icon);
-	}
-
+	/**
+	 * Retrieves instances of Websocket messaging component
+	 */
 	private getConfig(): Promise<void> {
 		this.$store.commit('spinner/SHOW');
 		return DaemonConfigurationService.getComponent(this.componentName)
@@ -163,7 +193,12 @@ export default class WebsocketMessagingList extends Vue {
 			.catch((error: AxiosError) => FormErrorHandler.configError(error));
 	}
 
-	private changeAccept(instance, setting): void {
+	/**
+	 * Updates accepting asynchronous messages setting of Websocket messaging component instance
+	 * @param {WsMessaging} instance Websocket messaging instance
+	 * @param {boolean} setting new setting
+	 */
+	private changeAccept(instance: WsMessaging, setting: boolean): void {
 		if (instance.acceptAsyncMsg !== setting) {
 			instance.acceptAsyncMsg = setting;
 			DaemonConfigurationService.updateInstance(this.componentName, instance.instance, instance)
@@ -179,13 +214,16 @@ export default class WebsocketMessagingList extends Vue {
 		}
 	}
 
+	/**
+	 * Removes an existing instance of Websocket messaging component
+	 */
 	private removeInstance(): void {
-		if (this.instance === null) {
+		if (this.deleteInstance === null) {
 			return;
 		}
 		this.$store.commit('spinner/SHOW');
-		const instance = this.instance;
-		this.instance = null;
+		const instance = this.deleteInstance;
+		this.deleteInstance = null;
 		DaemonConfigurationService.deleteInstance(this.componentName, instance)
 			.then(() => {
 				this.getConfig().then(() => {

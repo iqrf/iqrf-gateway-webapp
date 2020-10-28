@@ -52,16 +52,19 @@
 	</div>
 </template>
 
-<script>
+<script lang='ts'>
+import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 import ApiKeyService from '../../services/ApiKeyService';
 import {Datetime} from 'vue-datetime';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
+import { Dictionary } from 'vue-router/types/router';
+import { MetaInfo } from 'vue-meta';
+import { AxiosError, AxiosResponse } from 'axios';
 
-export default {
-	name: 'ApiKeyForm',
+@Component({
 	components: {
 		CButton,
 		CCard,
@@ -73,98 +76,140 @@ export default {
 		ValidationObserver,
 		ValidationProvider,
 	},
-	props: {
-		keyId: {
-			type: Number,
-			required: false,
-			default: null,
-		}
-	},
-	data() {
+	metaInfo(): MetaInfo {
 		return {
-			metadata: {
-				description: null,
-				expiration: null,
-			},
-			useExpiration: false,
-			dateFormat: {
-				year: 'numeric',
-				month: 'short',
-				day: 'numeric',
-				hour12: false,
-				hour: 'numeric',
-				minute: 'numeric',
-				second: 'numeric',
-			},
+			title: (this as unknown as ApiKeyForm).pageTitle
 		};
-	},
-	computed: {
-		submitButton() {
-			return this.$route.path === '/api-key/add' ?
-				this.$t('forms.add') : this.$t('forms.edit');
-		},
-	},
-	created() {
+	}
+})
+
+/**
+ * API key manager form to add or edit API key
+ */
+export default class ApiKeyForm extends Vue {
+	/**
+	 * @constant {Dictionary<string|boolean} dateFormat Date formatting options
+	 */
+	private dateFormat: Dictionary<string|boolean> = {
+		year: 'numeric',
+		month: 'short',
+		day: 'numeric',
+		hour12: false,
+		hour: 'numeric',
+		minute: 'numeric',
+		second: 'numeric',
+	}
+
+	/**
+	 * @var {Dictionary<string>} metadata API key metadata
+	 */
+	private metadata: Dictionary<string|null> = {
+		description: '',
+		expiration: null
+	}
+
+	/**
+	 * @var {boolean} useExpiration Controls whether form expiration input is hidden or shown
+	 */
+	private useExpiration = false
+	
+	/**
+	 * @property {number} keyId API key id
+	 */
+	@Prop({required: false, default: null}) keyId!: number
+
+	/**
+	 * Computes page title depending on the action (add, edit)
+	 * @returns {string} Page title
+	 */
+	get pageTitle(): string {
+		return this.$route.path === '/api-key/add' ?
+			this.$t('core.apiKey.add').toString() : this.$t('core.apiKey.edit').toString();
+	}
+
+	/**
+	 * Computes submit button text depending on the action (add, edit)
+	 * @return {string} Button text
+	 */
+	get submitButton(): string {
+		return this.$route.path === '/api-key/add' ?
+			this.$t('forms.add').toString() : this.$t('forms.edit').toString();
+	}
+
+	/**
+	 * Vue lifecycle hook created
+	 */
+	created(): void {
 		extend('required', required);
 		if (this.keyId) {
 			this.getKey();
 		}
-	},
-	methods: {
-		clear() {
-			if (!this.useExpiration) {
-				this.metadata.expiration = null;
-			}
-		},
-		getKey() {
-			this.$store.commit('spinner/SHOW');
-			ApiKeyService.getApiKey(this.keyId)
-				.then((response) => {
-					this.$store.commit('spinner/HIDE');
-					this.metadata = response.data;
-					if (this.metadata.expiration !== null) {
-						this.useExpiration = true;
-					}
-				})
-				.catch((error) => {
-					this.$router.push('/api-key/');
-					FormErrorHandler.apiKeyError(error);
-				});
-		},
-		saveKey() {
-			this.$store.commit('spinner/SHOW');
-			if (this.keyId !== null) {
-				ApiKeyService.editApiKey(this.keyId, this.metadata)
-					.then(() => this.successfulSave())
-					.catch((error) => FormErrorHandler.apiKeyError(error));
-			} else {
-				ApiKeyService.addApiKey(this.metadata)
-					.then(() => this.successfulSave())
-					.catch((error) => FormErrorHandler.apiKeyError(error));
-			}
-		},
-		successfulSave() {
-			this.$store.commit('spinner/HIDE');
-			if (this.$route.path === '/api-key/add') {
-				this.$toast.success(
-					this.$t('core.apiKey.messages.addSuccess')
-						.toString()
-				);
-			} else {
-				this.$toast.success(
-					this.$t('core.apiKey.messages.editSuccess', {key: this.keyId})
-						.toString()
-				);
-			}
-			this.$router.push('/api-key');
-		}
-	},
-	metaInfo() {
-		return {
-			title: this.$route.path === '/api-key/add' ?
-				this.$t('core.apiKey.add').toString() :
-				this.$t('core.apiKey.edit').toString()
-		};
 	}
-};
+
+	/**
+	 * Clears the expiration field value if it is hidden
+	 */
+	private clear(): void {
+		if (!this.useExpiration) {
+			this.metadata.expiration = null;
+		}
+	}
+	
+	/**
+	 * Retrieves API key specified by id
+	 */
+	private getKey(): void {
+		if (this.keyId === null) {
+			return;
+		}
+		this.$store.commit('spinner/SHOW');
+		ApiKeyService.getApiKey(this.keyId)
+			.then((response: AxiosResponse) => {
+				this.$store.commit('spinner/HIDE');
+				this.metadata = response.data;
+				if (this.metadata.expiration !== null) {
+					this.useExpiration = true;
+				}
+			})
+			.catch((error: AxiosError) => {
+				this.$router.push('/api-key/');
+				FormErrorHandler.apiKeyError(error);
+			});
+	}
+
+	/**
+	 * Creates a new API key or updates metadata of existing API key
+	 */
+	private saveKey(): void {
+		this.$store.commit('spinner/SHOW');
+		if (this.keyId !== null) {
+			ApiKeyService.editApiKey(this.keyId, this.metadata)
+				.then(() => this.successfulSave())
+				.catch((error: AxiosError) => FormErrorHandler.apiKeyError(error));
+		} else {
+			ApiKeyService.addApiKey(this.metadata)
+				.then(() => this.successfulSave())
+				.catch((error: AxiosError) => FormErrorHandler.apiKeyError(error));
+		}
+	}
+
+	/**
+	 * Handles successful REST API response
+	 */
+	private successfulSave(): void {
+		this.$store.commit('spinner/HIDE');
+		if (this.$route.path === '/api-key/add') {
+			this.$toast.success(
+				this.$t('core.apiKey.messages.addSuccess')
+					.toString()
+			);
+		} else {
+			this.$toast.success(
+				this.$t('core.apiKey.messages.editSuccess', {key: this.keyId})
+					.toString()
+			);
+		}
+		this.$router.push('/api-key/');
+	}
+}
 </script>

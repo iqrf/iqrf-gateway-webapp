@@ -27,7 +27,7 @@
 											:invalid-feedback='$t(errors[0])'
 										>
 											<template #prepend-content>
-												<CIcon :content='$options.icons.user' />
+												<CIcon :content='icons.user' />
 											</template>
 										</CInput>
 									</ValidationProvider>
@@ -46,7 +46,7 @@
 											:invalid-feedback='$t(errors[0])'
 										>
 											<template #prepend-content>
-												<CIcon :content='$options.icons.lock' />
+												<CIcon :content='icons.lock' />
 											</template>
 										</CInput>
 									</ValidationProvider>
@@ -63,16 +63,17 @@
 	</div>
 </template>
 
-<script>
+<script lang='ts'>
+import {Component, Vue} from 'vue-property-decorator';
 import {CContainer, CCard, CCardBody, CCol, CForm, CIcon, CInput, CRow} from '@coreui/vue/src';
 import {cilUser, cilLockLocked} from '@coreui/icons';
 import {required} from 'vee-validate/dist/rules';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import LogoBlue from '../../assets/logo-blue.svg';
-import {UserCredentials} from '@/services/AuthenticationService';
+import {UserCredentials} from '../../services/AuthenticationService';
+import { Dictionary } from 'vue-router/types/router';
 
-export default {
-	name: 'SignIn',
+@Component({
 	components: {
 		CContainer,
 		CCard,
@@ -86,44 +87,67 @@ export default {
 		ValidationObserver,
 		ValidationProvider,
 	},
-	data() {
-		return {
-			username: '',
-			password: '',
-			submitted: false,
-		};
-	},
-	created() {
-		extend('required', required);
-	},
-	methods: {
-		handleSubmit() {
-			const credentials = new UserCredentials(this.username, this.password);
-			Promise.all([
-				this.$store.dispatch('user/signIn', credentials),
-				this.$store.dispatch('features/fetch'),
-			])
-				.then(() => {
-					this.$router.push('/');
-					this.$toast.success(
-						this.$t('core.sign.in.messages.success').toString()
-					);
-				})
-				.catch(() => {
-					this.$toast.error(
-						this.$t('core.sign.in.messages.incorrectUsernameOrPassword')
-							.toString()
-					);
-				});
-			this.submitted = true;
-		}
-	},
-	icons: {
-		user: cilUser,
-		lock: cilLockLocked,
-	},
 	metaInfo: {
 		title: 'core.sign.in.title',
 	},
-};
+})
+
+/**
+ * Sign in page component
+ */
+export default class SignIn extends Vue {
+	/**
+	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI icons
+	 */
+	private icons: Dictionary<Array<string>> = {
+		user: cilUser,
+		lock: cilLockLocked,
+	}
+
+	/**
+	 * @var {string} password User password
+	 */
+	private password = ''
+
+	/**
+	 * @var {boolean} submitted Indicates whether the login information have been submitted
+	 */
+	private submitted = false
+
+	/**
+	 * @var {string} username User name
+	 */
+	private username = ''
+
+	/**
+	 * Vue lifecycle hook created
+	 */
+	created(): void {
+		extend('required', required);
+	}
+
+	/**
+	 * Attempts to log in and retrieve features available for the user's role
+	 */
+	private handleSubmit(): void {
+		const credentials = new UserCredentials(this.username, this.password);
+		Promise.all([
+			this.$store.dispatch('user/signIn', credentials),
+			this.$store.dispatch('features/fetch'),
+		])
+			.then(() => {
+				this.$router.push('/');
+				this.$toast.success(
+					this.$t('core.sign.in.messages.success').toString()
+				);
+			})
+			.catch(() => {
+				this.$toast.error(
+					this.$t('core.sign.in.messages.incorrectUsernameOrPassword')
+						.toString()
+				);
+			});
+		this.submitted = true;
+	}
+}
 </script>

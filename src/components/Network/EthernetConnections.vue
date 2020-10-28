@@ -19,7 +19,7 @@
 					size='sm'
 					@click='connect(item)'
 				>
-					<CIcon :content='$options.icons.connect' size='sm' />
+					<CIcon :content='icons.connect' size='sm' />
 					{{ $t('network.table.connect') }}
 				</CButton>
 				<CButton
@@ -28,15 +28,14 @@
 					size='sm'
 					@click='disconnect(item)'
 				>
-					<CIcon :content='$options.icons.disconnect' size='sm' />
+					<CIcon :content='icons.disconnect' size='sm' />
 					{{ $t('network.table.disconnect') }}
-				</CButton>
-				<CButton
+				</CButton> <CButton
 					color='primary'
 					:to='"/network/edit/" + item.uuid'
 					size='sm'
 				>
-					<CIcon :content='$options.icons.edit' size='sm' />
+					<CIcon :content='icons.edit' size='sm' />
 					{{ $t('table.actions.edit') }}
 				</CButton>
 			</td>
@@ -44,81 +43,101 @@
 	</CDataTable>
 </template>
 
-<script>
+<script lang='ts'>
+import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CDataTable, CIcon} from '@coreui/vue/src';
 import {cilLink, cilLinkBroken, cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import NetworkConnectionService from '../../services/NetworkConnectionService';
+import { Dictionary } from 'vue-router/types/router';
+import { IField } from '../../interfaces/coreui';
+import {NetworkConnection} from '../../interfaces/network';
 
-export default {
-	name: 'EthernetConnections',
+@Component({
 	components: {
 		CButton,
 		CDataTable,
 		CIcon,
-	},
-	props: {
-		interfaceName: {
-			type: [String, null],
-			required: false,
-			default: null,
+	}
+})
+
+/**
+ * Ethernet connections card for Network Manager component
+ */
+export default class EthernetConnections extends Vue {
+	/**
+	 * @constant {Array<IField>} fields CoreUI data table columns
+	 */
+	private fields: Array<IField> = [
+		{
+			key: 'name',
+			label: this.$t('network.connection.name'),
 		},
-		connections: {
-			type: [Array, null,],
-			required: true,
+		{
+			key: 'actions',
+			label: this.$t('table.actions.title'),
+			sorter: false,
+			filter: false,
 		}
-	},
-	data() {
-		return {
-			fields: [
-				{
-					key: 'name',
-					label: this.$t('network.connection.name'),
-				},
-				{
-					key: 'actions',
-					label: this.$t('table.actions.title'),
-					sorter: false,
-					filter: false,
-				},
-			],
-		};
-	},
-	methods: {
-		connect(connection) {
-			this.$store.commit('spinner/SHOW');
-			NetworkConnectionService.connect(connection.uuid, this.interfaceName)
-				.then(() => {
-					this.$store.commit('spinner/HIDE');
-					this.$toast.success(
-						this.$t(
-							'network.connection.messages.connect.success',
-							{interface: this.interfaceName, connection: connection.name}
-						).toString());
-					this.$emit('update-connection');
-				})
-				.catch(() => this.$store.commit('spinner/HIDE'));
-		},
-		disconnect(connection) {
-			this.$store.commit('spinner/SHOW');
-			NetworkConnectionService.disconnect(connection.uuid)
-				.then(() => {
-					this.$store.commit('spinner/HIDE');
-					this.$toast.success(
-						this.$t(
-							'network.connection.messages.disconnect.success',
-							{interface: this.interfaceName, connection: connection.name}
-						).toString());
-					this.$emit('update-connection');
-				})
-				.catch(() => this.$store.commit('spinner/HIDE'));
-		}
-	},
-	icons: {
+	]
+
+	/**
+	 * @constant {Dictionary<Array<string>>} icons Array fo CoreUI icons
+	 */
+	private icons: Dictionary<Array<string>> = {
 		add: cilPlus,
 		connect: cilLink,
 		delete: cilTrash,
 		disconnect: cilLinkBroken,
 		edit: cilPencil,
-	},
-};
+	}
+
+	/**
+	 * @property {Array<NetworkConnection>} connections Array of existing network connection configurations
+	 */
+	@Prop({required: true}) connections!: Array<NetworkConnection>
+
+	/**
+	 * @property {string} interfaceName Name of network interface
+	 */
+	@Prop({required: false, default: null}) interfaceName!: string
+
+	/**
+	 * Establishes a connection using the specified configuration
+	 * @param {NetworkConnection} connection Network connection configuration
+	 */
+	private connect(connection: NetworkConnection): void {
+		this.$store.commit('spinner/SHOW');
+		NetworkConnectionService.connect(connection.uuid, this.interfaceName)
+			.then(() => {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.success(
+					this.$t(
+						'network.connection.messages.connect.success',
+						{interface: this.interfaceName, connection: connection.name}
+					).toString());
+				this.$emit('update-connection');
+			})
+			.catch(() => this.$store.commit('spinner/HIDE'));
+	}
+
+	/**
+	 * Terminates a connection
+	 * @param {NetworkConnection} connection Network connection configuration
+	 */
+	private disconnect(connection: NetworkConnection): void {
+		this.$store.commit('spinner/SHOW');
+		NetworkConnectionService.disconnect(connection.uuid)
+			.then(() => {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.success(
+					this.$t(
+						'network.connection.messages.disconnect.success',
+						{interface: this.interfaceName, connection: connection.name}
+					).toString());
+				this.$emit('update-connection');
+			})
+			.catch(() => this.$store.commit('spinner/HIDE'));
+	}
+
+}
 </script>

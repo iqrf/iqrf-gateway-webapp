@@ -54,7 +54,7 @@
 </template>
 
 <script lang='ts'>
-import Vue from 'vue';
+import {Component, Vue} from 'vue-property-decorator';
 import {MutationPayload} from 'vuex';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
@@ -62,8 +62,7 @@ import {between, integer, required} from 'vee-validate/dist/rules';
 import IqrfNetService from '../../services/IqrfNetService';
 import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 
-export default Vue.extend({
-	name: 'DiscoveryManager',
+@Component({
 	components: {
 		CButton,
 		CCard,
@@ -73,15 +72,37 @@ export default Vue.extend({
 		CInput,
 		ValidationObserver,
 		ValidationProvider
-	},
-	data(): any {
-		return {
-			maxAddr: 239,
-			txPower: 6,
-			msgId: null,
-		};
-	},
-	created() {
+	}
+})
+
+/**
+ * Discovery manager card for Network Manager
+ */
+export default class DiscoveryManager extends Vue {
+	/**
+	 * @var {number} maxAddr Maximum node address
+	 */
+	private maxAddr = 239
+	
+	/**
+	 * @var {string|null} msgId Daemon api message id
+	 */
+	private msgId: string|null = null
+
+	/**
+	 * @var {number} txPower Discovery call TX power
+	 */
+	private txPower = 6
+
+	/**
+	 * Component unsubscribe function
+	 */
+	private unsubscribe: CallableFunction = () => {return;}
+
+	/**
+	 * Vue lifecycle hook created
+	 */
+	created(): void {
 		extend('between', between);
 		extend('integer', integer);
 		extend('required', required);
@@ -116,17 +137,23 @@ export default Vue.extend({
 			
 			}
 		});
-	},
-	beforeDestroy() {
+	}
+
+	/**
+	 * Vue lifecycle hook beforeDestroy
+	 */
+	beforeDestroy(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
 		this.unsubscribe();
-	},
-	methods: {
-		processSubmit() {
-			this.$store.dispatch('spinner/show', {timeout: 30000});
-			IqrfNetService.discovery(this.txPower, this.maxAddr, new WebSocketOptions(null, 30000, 'iqrfnet.networkManager.messages.submit.timeout', () => this.msgId = null))
-				.then((msgId: string) => this.msgId = msgId);
-		},
 	}
-});
+
+	/**
+	 * Performs Discovery Daemon API call
+	 */
+	private processSubmit(): void {
+		this.$store.dispatch('spinner/show', {timeout: 30000});
+		IqrfNetService.discovery(this.txPower, this.maxAddr, new WebSocketOptions(null, 30000, 'iqrfnet.networkManager.messages.submit.timeout', () => this.msgId = null))
+			.then((msgId: string) => this.msgId = msgId);
+	}
+}
 </script>

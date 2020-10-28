@@ -112,7 +112,7 @@
 				<tbody v-else>
 					<tr>
 						<th>{{ $t('iqrfnet.standard.light.index') }}</th>
-						<td>{{ lightIndex }}</td>
+						<td>{{ responseIndex }}</td>
 					</tr>
 					<tr>
 						<th>{{ $t('iqrfnet.standard.light.power') }}</th>
@@ -125,7 +125,7 @@
 </template>
 
 <script lang='ts'>
-import Vue from 'vue';
+import {Component, Vue} from 'vue-property-decorator';
 import {MutationPayload} from 'vuex';
 import {CButton, CCard, CCardBody, CCardFooter, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
@@ -133,8 +133,7 @@ import {between, integer, required} from 'vee-validate/dist/rules';
 import StandardLightService, {StandardLight} from '../../services/DaemonApi/StandardLightService';
 import { WebSocketOptions } from '../../store/modules/webSocketClient.module';
 
-export default Vue.extend({
-	name: 'LightManager',
+@Component({
 	components: {
 		CButton,
 		CCard,
@@ -145,33 +144,78 @@ export default Vue.extend({
 		CInput,
 		ValidationObserver,
 		ValidationProvider
-	},
-	data(): any {
-		return {
-			address: 1,
-			allowedMTypes: [
-				'iqrfLight_Enumerate',
-				'iqrfLight_SetPower',
-				'iqrfLight_IncrementPower',
-				'iqrfLight_DecrementPower'
-			],
-			index: 0,
-			lights: null,
-			numLights: 0,
-			power: 0,
-			prevPower: 0,
-			lightIndex: 0,
-			responseType: null,
-			msgId: null,
-		};
-	},
-	created() {
+	}
+})
+
+/**
+ * Light manager card for Standard Manager
+ */
+export default class LightManager extends Vue {
+	/**
+	 * @var {number} address Address of device implementing the light standard
+	 */
+	private address = 1
+	
+	/**
+	 * @constant {Array<string>} allowedMTypes Array of allowed daemon api messages
+	 */
+	private allowedMTypes: Array<string> = [
+		'iqrfLight_Enumerate',
+		'iqrfLight_SetPower',
+		'iqrfLight_IncrementPower',
+		'iqrfLight_DecrementPower'
+	]
+	
+	/**
+	 * @var {number} index Index of light to manage
+	 */
+	private index = 0
+
+	/**
+	 * @var {number} responseIndex Index of light in responses
+	 */
+	private responseIndex = 0
+
+	/**
+	 * @var {string|null} msgId Daemon api message id
+	 */
+	private msgId: string|null = null
+
+	/**
+	 * @var {number} numLights Number of lights implemented by the device
+	 */
+	private numLights = 0
+
+	/**
+	 * @var {number} power Power to set the light to
+	 */
+	private power = 0
+
+	/**
+	 * @var {number} prevPower Previous power setting of the light
+	 */
+	private prevPower = 0
+
+	/**
+	 * @var {string|null} responseType Type of Light standard message
+	 */
+	private responseType: string|null = null
+
+	/**
+	 * Component unsubscribe function
+	 */
+	private unsubscribe: CallableFunction = () => {return;}
+
+	/**
+	 * vue lifecycle hook created
+	 */
+	created(): void {
 		extend('between', between);
 		extend('integer', integer);
 		extend('required', required);
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type === 'SOCKET_ONSEND') {
-				this.lightIndex = this.index;
+				this.responseIndex = this.index;
 				return;
 			}
 			if (mutation.type === 'SOCKET_ONMESSAGE') {
@@ -214,40 +258,67 @@ export default Vue.extend({
 				}
 			}
 		});
-	},
-	beforeDestroy() {
+	}
+
+	/**
+	 * Vue lifecycle hook beforeDestroy
+	 */
+	beforeDestroy(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
 		this.unsubscribe();
-	},
-	methods: {
-		buildOptions() {
-			return new WebSocketOptions(null, 30000, 'iqrfnet.standard.light.messages.timeout', () => this.msgId = null);
-		},
-		submitEnumerate() {
-			this.$store.dispatch('spinner/show', {timeout: 30000});
-			StandardLightService.enumerate(this.address, this.buildOptions())
-				.then((msgId: string) => this.msgId = msgId);
-		},
-		submitGetPower() {
-			this.$store.dispatch('spinner/show', {timeout: 30000});
-			StandardLightService.getPower(this.address, this.index, this.buildOptions())
-				.then((msgId: string) => this.msgId = msgId);
-		},
-		submitSetPower() {
-			this.$store.dispatch('spinner/show', {timeout: 30000});
-			StandardLightService.setPower(this.address, [new StandardLight(this.index, this.power)], this.buildOptions())
-				.then((msgId: string) => this.msgId = msgId);
-		},
-		submitIncrementPower() {
-			this.$store.dispatch('spinner/show', {timeout: 30000});
-			StandardLightService.incrementPower(this.address, [new StandardLight(this.index, this.power)], this.buildOptions())
-				.then((msgId: string) => this.msgId = msgId);
-		},
-		submitDecrementPower() {
-			this.$store.dispatch('spinner/show', {timeout: 30000});
-			StandardLightService.decrementPower(this.address, [new StandardLight(this.index, this.power)], this.buildOptions())
-				.then((msgId: string) => this.msgId = msgId);
-		},
 	}
-});
+
+	/**
+	 * Creates WebSocket request options object
+	 * @returns {WebSocketOptions} WebSocket request options
+	 */
+	private buildOptions(): WebSocketOptions {
+		return new WebSocketOptions(null, 30000, 'iqrfnet.standard.light.messages.timeout', () => this.msgId = null);
+	}
+
+	/**
+	 * Performs Light standard enumeration on a device
+	 */
+	private submitEnumerate(): void {
+		this.$store.dispatch('spinner/show', {timeout: 30000});
+		StandardLightService.enumerate(this.address, this.buildOptions())
+			.then((msgId: string) => this.msgId = msgId);
+	}
+
+	/**
+	 * Retrieves power setting of a light
+	 */
+	private submitGetPower(): void {
+		this.$store.dispatch('spinner/show', {timeout: 30000});
+		StandardLightService.getPower(this.address, this.index, this.buildOptions())
+			.then((msgId: string) => this.msgId = msgId);
+	}
+
+	/**
+	 * Changes power setting of a light to a specific value
+	 */
+	private submitSetPower(): void {
+		this.$store.dispatch('spinner/show', {timeout: 30000});
+		StandardLightService.setPower(this.address, [new StandardLight(this.index, this.power)], this.buildOptions())
+			.then((msgId: string) => this.msgId = msgId);
+	}
+
+	/**
+	 * Increments light power according to the Light standard
+	 */
+	private submitIncrementPower(): void {
+		this.$store.dispatch('spinner/show', {timeout: 30000});
+		StandardLightService.incrementPower(this.address, [new StandardLight(this.index, this.power)], this.buildOptions())
+			.then((msgId: string) => this.msgId = msgId);
+	}
+
+	/**
+	 * Decrements light power according to the Light standard
+	 */
+	private submitDecrementPower(): void {
+		this.$store.dispatch('spinner/show', {timeout: 30000});
+		StandardLightService.decrementPower(this.address, [new StandardLight(this.index, this.power)], this.buildOptions())
+			.then((msgId: string) => this.msgId = msgId);
+	}
+}
 </script>

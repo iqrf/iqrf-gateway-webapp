@@ -85,9 +85,23 @@ interface IqrfInfoConfig {
 	},
 })
 
+/**
+ * IQRF Info component configuration
+ */
 export default class IqrfInfo extends Vue {
+	/**
+	 * @constant {string} componentName IQRF Info component name
+	 */
 	private componentName = 'iqrf::IqrfInfo'
+
+	/**
+	 * @var {string|null} instance IQRF Info component instance name
+	 */
 	private instance: string|null = null
+
+	/**
+	 * @var {IqfInfoConfig} configuration IQRF Info component instance configuration
+	 */
 	private configuration: IqrfInfoConfig = {
 		instance: '',
 		enumAtStartUp: false,
@@ -95,6 +109,9 @@ export default class IqrfInfo extends Vue {
 		enumUniformDpaVer: false,
 	}
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		extend('integer', integer);
 		extend('min', min_value);
@@ -102,6 +119,9 @@ export default class IqrfInfo extends Vue {
 		this.getConfig();
 	}
 
+	/**
+	 * Retrieves configuration of IQRF Info component
+	 */
 	private getConfig(): void {
 		this.$store.commit('spinner/SHOW');
 		DaemonConfigurationService.getComponent(this.componentName)
@@ -115,12 +135,15 @@ export default class IqrfInfo extends Vue {
 			.catch((error: AxiosError) => FormErrorHandler.configError(error));
 	}
 
+	/**
+	 * Saves new or updates existing configuration of IQRF Info component instance
+	 */
 	private saveConfig(): void {
 		this.$store.commit('spinner/SHOW');
 		if (this.instance !== null) {
 			DaemonConfigurationService.updateInstance(this.componentName, this.instance, this.configuration)
 				.then(() => this.successfulSave())
-				.catch((error) => FormErrorHandler.configError(error));
+				.catch((error: AxiosError) => FormErrorHandler.configError(error));
 		} else {
 			DaemonConfigurationService.createInstance(this.componentName, this.configuration)
 				.then(() => this.successfulSave())
@@ -128,6 +151,9 @@ export default class IqrfInfo extends Vue {
 		}
 	}
 
+	/**
+	 * Handles successful REST API response
+	 */
 	private successfulSave(): void {
 		this.$store.commit('spinner/HIDE');
 		this.$toast.success(this.$t('config.success').toString());

@@ -131,6 +131,9 @@ import {CCard, CListGroup, CListGroupItem} from '@coreui/vue/src';
 	},
 })
 
+/**
+ * Main disambiguation menu component
+ */
 export default class MainDisambiguation extends Vue {
 }
 </script>

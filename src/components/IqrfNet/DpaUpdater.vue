@@ -30,18 +30,25 @@
 </template>
 
 <script lang='ts'>
-import Vue from 'vue';
+import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 import {FileFormat} from '../../iqrfNet/fileFormat';
 import DpaService, { RFMode } from '../../services/IqrfRepository/DpaService';
 import OsService from '../../services/DaemonApi/OsService';
+import IqrfNetService from '../../services/IqrfNetService';
 import NativeUploadService from '../../services/NativeUploadService';
-import {Getter, MutationPayload} from 'vuex';
+import {MutationPayload} from 'vuex';
+import { WebSocketClientState } from '../../store/modules/webSocketClient.module';
+import { AxiosError, AxiosResponse } from 'axios';
 
-export default Vue.extend({
-	name: 'DpaUpdater',
+interface DpaVersions {
+	label: string
+	value: string
+}
+
+@Component({
 	components: {
 		CButton,
 		CCard,
@@ -51,23 +58,75 @@ export default Vue.extend({
 		CSelect,
 		ValidationObserver,
 		ValidationProvider,
-	},
-	data(): any {
-		return {
-			address: 0,
-			currentDpa: undefined,
-			osBuild: undefined,
-			trType: null,
-			version: undefined,
-			versions: [],
-			msgId: null,
-			allowedMTypes: [
-				'iqrfEmbedOs_Read',
-				'mngDaemon_Upload'
-			]
-		};
-	},
-	created() {
+	}
+})
+
+/**
+ * Dpa updater card for TrUpload component
+ */
+export default class DpaUpdater extends Vue {
+	/**
+	 * @constant {number} address Network address of device
+	 */
+	private address = 0
+
+	/**
+	 * @constant {Array<string>} allowedMTypes Array of allowed daemon api messages
+	 */
+	private allowedMTypes: Array<string> = [
+		'iqrfEmbedOs_Read',
+		'mngDaemon_Upload'
+	]
+
+	/**
+	 * @var {string|null} currentDpa Current version of DPA
+	 */
+	private currentDpa: string|null = null
+
+	/**
+	 * @var {string|null} interfaceType Active IQRF communication interface
+	 */
+	private interfaceType: string|null = null
+
+	/**
+	 * @var {string|null} msgId Daemon api message id
+	 */
+	private msgId: string|null = null
+
+	/**
+	 * @var {string|null} osBuild IQRF OS build
+	 */
+	private osBuild: string|null = null
+
+	/**
+	 * @var {number|null} trType Transciever type identifier
+	 */
+	private trType: number|null = null
+
+	/**
+	 * @var {string|null} version Currently selected version of DPA
+	 */
+	private version: string|null = null
+
+	/**
+	 * @var {Array<DpaVersions>} versions Array of available DPA versions to update to
+	 */
+	private versions: Array<DpaVersions> = []
+
+	/**
+	 * Component unsubscribe function
+	 */
+	private unsubscribe: CallableFunction = () => {return;}
+
+	/**
+	 * Component unwatch function
+	 */
+	private unwatch: CallableFunction = () => {return;}
+
+	/**
+	 * Vue lifecycle hook created
+	 */
+	created(): void {
 		extend('required', required);
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type !== 'SOCKET_ONMESSAGE') {
@@ -80,7 +139,7 @@ export default Vue.extend({
 			this.$store.dispatch('removeMessage', this.msgId);
 			if (mutation.payload.mType === 'iqrfEmbedOs_Read') {
 				if (mutation.payload.data.status === 0) {
-					this.handleResponse(mutation.payload);
+					this.handleOsInfoResponse(mutation.payload);
 				} else {
 					this.$toast.error(
 						this.$t('iqrfnet.trUpload.messages.osInfoFail').toString()
@@ -96,13 +155,21 @@ export default Vue.extend({
 						this.$t('iqrfnet.trUpload.messages.failure').toString()
 					);
 				}
+			} else if (mutation.payload.mType === 'iqmeshNetwork_EnumerateDevice') {
+				if (mutation.payload.data.status === 0) {
+					this.interfaceType = mutation.payload.data.rsp.osRead.flags.interfaceType;
+				} else {
+					this.$toast.error(
+						this.$t('iqrfnet.enumeration.messages.failure').toString()
+					);
+				}
 			}
 		});
 		if (this.$store.getters.isSocketConnected) {
 			this.getOsInfo();
 		} else {
 			this.unwatch = this.$store.watch(
-				(state: any, getter: any) => getter.isSocketConnected,
+				(state: WebSocketClientState, getter: any) => getter.isSocketConnected,
 				(newVal: boolean, oldVal: boolean) => {
 					if (!oldVal && newVal) {
 						this.getOsInfo();
@@ -111,122 +178,156 @@ export default Vue.extend({
 				}
 			);
 		}
-	},
-	beforeDestroy() {
+	}
+
+	/**
+	 * Vue lifecycle hook beforeDestroy
+	 */
+	beforeDestroy(): void {
 		this.$store.dispatch('removeMessage', this.msgId);
-		if (this.unwatch !== undefined) {
-			this.unwatch();
-		}
+		this.unwatch();
 		this.unsubscribe();
-	},
-	methods: {
-		convertVersion(version: any): string {
-			return Number.parseInt(version).toString(16).padStart(4, '0').toUpperCase();
-		},
-		getOsInfo() {
-			this.$store.dispatch('spinner/show', {timeout: 30000});
-			OsService.sendRead(this.address, 30000, 'iqrfnet.trUpload.messages.osInfoFail', () => this.msgId = null)
-				.then((msgId: string) => this.msgId = msgId);
-		},
-		handleResponse(response: any) {
-			const result = response.data.rsp.result;
-			this.osBuild = this.convertVersion(result.osBuild);
-			this.trType = result.trMcuType;
-			this.currentDpa = this.convertVersion(result.dpaVer);
-			DpaService.getVersions(this.osBuild)
-				.then((versions) => {
-					for (const version of versions) {
-						const dpaVer = Number.parseInt(version.getVersion(false));
-						if (dpaVer < 400) {
-							this.versions.push({
-								value: version.getVersion(false) + '-' + RFMode.LP,
-								label: version.getVersion(true) + ', ' + RFMode.LP + ' RF mode'
-							});
-							this.versions.push({
-								value: version.getVersion(false) + '-' + RFMode.STD,
-								label: version.getVersion(true) + ', ' + RFMode.STD + ' RF mode'
-							});
-						} else {
-							this.versions.push({
-								value: version.getVersion(false),
-								label: version.getVersion(true),
-							});
-						}
-					}
-					this.versions.forEach(item => {
-						if (this.currentDpa === item.value) {
-							Object.assign(item, {disabled: true});
-							Object.assign(item, {label: item.label + ' (Current version)'});
-						}
-					});
-					this.versions.sort().reverse();
-				})
-				.catch(() => {
-					this.$toast.error(
-						this.$t('iqrfnet.trUpload.messages.osBuildFail').toString()
-					);
-				});
-		},
-		upload() {
-			const request = {
-				'osBuild': this.osBuild,
-				'trSeries': this.trType,
-			};
-			if (this.version.endsWith('-STD')) {
-				Object.assign(request, {'dpa': this.version.split('-')[0]});
-				Object.assign(request, {'rfMode': RFMode.STD});
-			} else if (this.version.endsWith('-LP')) {
-				Object.assign(request, {'dpa': this.version.split('-')[0]});
-				Object.assign(request, {'rfMode': RFMode.LP});
-			} else {
-				Object.assign(request, {'dpa': this.version});
-			}
-			DpaService.getDpaFile(request)
-				.then((response) => {
-					this.$store.dispatch('spinner/show', {timeout: 30000});
-					NativeUploadService.upload(response.data.fileName, FileFormat.IQRF, 30000, 'iqrfnet.trUpload.messagess.genericError', () => this.msgId = null)
-						.then((msgId) => this.msgId = msgId);
-				})
-				.catch((error) => {
-					this.$store.commit('spinner/HIDE');
-					if (error.response !== null) {
-						switch (error.response.status) {
-							case 400:
-								this.$toast.error(
-									this.$t('iqrfnet.trUpload.messagess.badRequest').toString()
-								);
-								break;
-							case 404:
-								this.$toast.error(
-									this.$t('iqrfnet.trUpload.messages.notFound').toString()
-								);
-								break;
-							case 500: {
-								const msg = error.response.data.message;
-								if (msg === 'Filesystem failure') {
-									this.$toast.error(
-										this.$t('iqrfnet.trUpload.messagess.moveFailure').toString()
-									);
-								} else if (msg === 'Download failure') {
-									this.$toast.error(
-										this.$t('iqrfnet.trUpload.messagess.downloadFailure').toString()
-									);
-								} else {
-									this.$toast.error(
-										this.$t('iqrfnet.trUpload.messagess.genericError').toString()
-									);
-								}
-								break;
-							}	
-						}
+	}
+
+	/**
+	 * Converts DPA version from integer representation to string
+	 * @param {number} version DPA version
+	 * @returns {string} String representation of DPA version
+	 */
+	convertVersion(version: number): string {
+		return version.toString(16).padStart(4, '0').toUpperCase();
+	}
+
+	/**
+	 * Retrieves OS information (EmbedOs DPA request)
+	 */
+	private getOsInfo(): void {
+		this.$store.dispatch('spinner/show', {timeout: 30000});
+		OsService.sendRead(this.address, 30000, 'iqrfnet.trUpload.messages.osInfoFail', () => this.msgId = null)
+			.then((msgId: string) => this.msgId = msgId);
+	}
+
+	/**
+	 * Performs device enumeration
+	 */
+	private getDeviceEnumeration(): void {
+		this.$store.dispatch('spinner/show', {timeout: 30000});
+		IqrfNetService.enumerateDevice(this.address, 30000, 'iqrfnet.enumeration.messages.failure', () => this.msgId = null)
+			.then((msgId: string) => this.msgId = msgId);
+	}
+
+	/**
+	 * EmbedOs info response handler
+	 */
+	private handleOsInfoResponse(response: any): void {
+		const result = response.data.rsp.result;
+		this.osBuild = this.convertVersion(result.osBuild);
+		this.trType = result.trMcuType;
+		this.currentDpa = this.convertVersion(result.dpaVer);
+		DpaService.getVersions(this.osBuild)
+			.then((versions) => {
+				for (const version of versions) {
+					const dpaVer = Number.parseInt(version.getVersion(false));
+					if (dpaVer < 400) {
+						this.versions.push({
+							value: version.getVersion(false) + '-' + RFMode.LP,
+							label: version.getVersion(true) + ', ' + RFMode.LP + ' RF mode'
+						});
+						this.versions.push({
+							value: version.getVersion(false) + '-' + RFMode.STD,
+							label: version.getVersion(true) + ', ' + RFMode.STD + ' RF mode'
+						});
 					} else {
-						this.$toast.error(
-							this.$t('iqrfnet.trUpload.messagess.genericError').toString()
-						);
+						this.versions.push({
+							value: version.getVersion(false),
+							label: version.getVersion(true),
+						});
+					}
+				}
+				this.versions.forEach(item => {
+					if (this.currentDpa === item.value) {
+						Object.assign(item, {disabled: true});
+						Object.assign(item, {label: item.label + ' (Current version)'});
 					}
 				});
-		},
-	},
-});
+				this.versions.sort().reverse();
+				this.getDeviceEnumeration();
+			})
+			.catch(() => {
+				this.$toast.error(
+					this.$t('iqrfnet.trUpload.messages.osBuildFail').toString()
+				);
+			});
+	}
+
+	/**
+	 * Attempts to fetch a DPA plugin file and store it.
+	 * If the fetch is successful, the name of the file is returned in response and a NativeUpload daemon api call is executed.
+	 */
+	private upload(): void {
+		if (this.version === null) {
+			return;
+		}
+		const request = {
+			'interfaceType': this.interfaceType,
+			'osBuild': this.osBuild,
+			'trSeries': this.trType,
+		};
+		if (this.version.endsWith('-STD')) {
+			Object.assign(request, {'dpa': this.version.split('-')[0]});
+			Object.assign(request, {'rfMode': RFMode.STD});
+		} else if (this.version.endsWith('-LP')) {
+			Object.assign(request, {'dpa': this.version.split('-')[0]});
+			Object.assign(request, {'rfMode': RFMode.LP});
+		} else {
+			Object.assign(request, {'dpa': this.version});
+		}
+		DpaService.getDpaFile(request)
+			.then((response: AxiosResponse) => {
+				this.$store.dispatch('spinner/show', {timeout: 30000});
+				NativeUploadService.upload(response.data.fileName, FileFormat.IQRF, 30000, 'iqrfnet.trUpload.messagess.genericError', () => this.msgId = null)
+					.then((msgId: string) => this.msgId = msgId);
+			})
+			.catch((error: AxiosError) => {
+				this.$store.commit('spinner/HIDE');
+				if (error.response) {
+					switch (error.response.status) {
+						case 400:
+							this.$toast.error(
+								this.$t('iqrfnet.trUpload.messagess.badRequest').toString()
+							);
+							break;
+						case 404:
+							this.$toast.error(
+								this.$t('iqrfnet.trUpload.messages.notFound').toString()
+							);
+							break;
+						case 500: {
+							const msg = error.response.data.message;
+							if (msg === 'Filesystem failure') {
+								this.$toast.error(
+									this.$t('iqrfnet.trUpload.messagess.moveFailure').toString()
+								);
+							} else if (msg === 'Download failure') {
+								this.$toast.error(
+									this.$t('iqrfnet.trUpload.messagess.downloadFailure').toString()
+								);
+							} else {
+								this.$toast.error(
+									this.$t('iqrfnet.trUpload.messagess.genericError').toString()
+								);
+							}
+							break;
+						}	
+					}
+				} else {
+					this.$toast.error(
+						this.$t('iqrfnet.trUpload.messagess.genericError').toString()
+					);
+				}
+			});
+	}
+
+}
 </script>
 

@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\ConfigModule\Models;
 
 use App\ConfigModule\Exceptions\IncompleteConfigurationException;
+use App\ConfigModule\Exceptions\NotDaemonConfigurationException;
 use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use App\CoreModule\Models\CommandManager;
@@ -60,14 +61,26 @@ class MigrationManager {
 	private $serviceManager;
 
 	/**
+	 * @var string Path to a directory with a configuration of IQRF Gateway Controller
+	 */
+	private $controllerConfigDirectory;
+
+	/**
+	 * @var string Path to a directory with a configuration of IQRF Gateway Translator
+	 */
+	private $translatorConfigDirectory;
+
+	/**
 	 * Constructor
 	 * @param string $configDirectory Path to a directory with a configuration of IQRF Gateway Daemon
 	 * @param CommandManager $commandManager Command manager
 	 * @param ComponentSchemaManager $schemaManager JSON schema manager
 	 * @param ServiceManager $serviceManager Service manager
 	 */
-	public function __construct(string $configDirectory, CommandManager $commandManager, ComponentSchemaManager $schemaManager, ServiceManager $serviceManager) {
+	public function __construct(string $configDirectory, string $controllerConfigDirectory, string $translatorConfigDirectory, CommandManager $commandManager, ComponentSchemaManager $schemaManager, ServiceManager $serviceManager) {
 		$this->configDirectory = $configDirectory;
+		$this->controllerConfigDirectory = $controllerConfigDirectory;
+		$this->translatorConfigDirectory = $translatorConfigDirectory;
 		$this->commandManager = $commandManager;
 		$this->schemaManager = $schemaManager;
 		$this->serviceManager = $serviceManager;
@@ -85,7 +98,13 @@ class MigrationManager {
 			$path = '/tmp/iqrf-gateway-configuration.zip';
 		}
 		$zipManager = new ZipArchiveManager($path);
-		$zipManager->addFolder($this->configDirectory, '');
+		$zipManager->addFolder($this->configDirectory, 'daemon');
+		if (file_exists($this->controllerConfigDirectory . 'config.json')) {
+			$zipManager->addFolder($this->controllerConfigDirectory, 'controller');
+		}
+		if (file_exists($this->translatorConfigDirectory . 'config.json')) {
+			$zipManager->addFolder($this->translatorConfigDirectory, 'translator');
+		}
 		$zipManager->close();
 		return $path;
 	}
@@ -105,8 +124,37 @@ class MigrationManager {
 		}
 		$this->commandManager->run('rm -rf ' . $this->configDirectory, true);
 		$this->commandManager->run('mkdir ' . $this->configDirectory, true);
+		if ($zipManager->exist('controller/config.json')) {
+			if (file_exists($this->controllerConfigDirectory)) {
+				$this->commandManager->run('rm -rf ' . $this->controllerConfigDirectory, true);
+			}
+			$this->commandManager->run('mkdir ' . $this->controllerConfigDirectory, true);
+		}
+		if ($zipManager->exist('translator/config.json')) {
+			if (file_exists($this->translatorConfigDirectory)) {
+				$this->commandManager->run('rm -rf ' . $this->translatorConfigDirectory, true);
+			}
+			$this->commandManager->run('mkdir ' . $this->translatorConfigDirectory, true);
+		}
 		$this->changeOwner();
-		$zipManager->extract($this->configDirectory);
+		$fileList = $zipManager->listFiles();
+		foreach ($fileList as $listItem) {
+			if (strpos($listItem, 'daemon/') === 0) {
+				$zipManager->extract($this->configDirectory, $listItem);
+			}
+		}
+		$this->commandManager->run('cp -rfp ' . $this->configDirectory . 'daemon/* ' . $this->configDirectory, true);
+		$this->commandManager->run('rm -rf ' . $this->configDirectory . 'daemon', true);
+		if ($zipManager->exist('controller/config.json')) {
+			$zipManager->extract($this->controllerConfigDirectory, 'controller/config.json');
+			$this->commandManager->run('cp -p ' . $this->controllerConfigDirectory . 'controller/config.json ' . $this->controllerConfigDirectory . 'config.json', true);
+			$this->commandManager->run('rm -rf ' . $this->controllerConfigDirectory . 'controller', true);
+		}
+		if ($zipManager->exist('translator/config.json')) {
+			$zipManager->extract($this->translatorConfigDirectory, 'controller/config.json');
+			$this->commandManager->run('cp -p ' . $this->translatorConfigDirectory . 'translator/config.json ' . $this->translatorConfigDirectory . 'config/json', true);
+			$this->commandManager->run('rm -rf ' . $this->translatorConfigDirectory . 'translator', true);
+		}
 		$zipManager->close();
 		$this->serviceManager->restart();
 	}
@@ -118,7 +166,20 @@ class MigrationManager {
 	 * @throws JsonException
 	 */
 	public function validate(ZipArchiveManager $zipManager): bool {
-		foreach ($zipManager->listFiles() as $file) {
+		$whitelistDirs = ['daemon/', 'controller/', 'translator/', 'daemon/certs/', 'daemon/cfgSchemas/', 'daemon/scheduler/'];
+		$fileList = $zipManager->listFiles();
+		$myFile = fopen('/home/test.txt', 'w');
+		foreach ($fileList as $file) {
+			fwrite($myFile, $file);
+			$valid = false;
+			foreach ($whitelistDirs as $dir) {
+				if (strpos($file, $dir) === 0) {
+					$valid = true;
+				}
+			}
+			if (!$valid) {
+				throw new NotDaemonConfigurationException();
+			}
 			$matches = Strings::match($file, '~^\w+\_\_\w+\.json$~');
 			if (!is_array($matches)) {
 				continue;
@@ -135,6 +196,7 @@ class MigrationManager {
 				return false;
 			}
 		}
+		fclose($myFile);
 		return true;
 	}
 
@@ -146,6 +208,14 @@ class MigrationManager {
 		$owner = $posixUser['name'] . ':' . posix_getgrgid($posixUser['gid'])['name'];
 		$this->commandManager->run('chown ' . $owner . ' ' . $this->configDirectory, true);
 		$this->commandManager->run('chown -R ' . $owner . ' ' . $this->configDirectory, true);
+		if (file_exists($this->controllerConfigDirectory)) {
+			$this->commandManager->run('chown ' . $owner . ' ' . $this->controllerConfigDirectory, true);
+			$this->commandManager->run('chown -R ' . $owner . ' ' . $this->controllerConfigDirectory, true);
+		}
+		if (file_exists($this->translatorConfigDirectory)) {
+			$this->commandManager->run('chown ' . $owner . ' ' . $this->translatorConfigDirectory, true);
+			$this->commandManager->run('chown -R ' . $owner . ' ' . $this->translatorConfigDirectory, true);
+		}
 	}
 
 }

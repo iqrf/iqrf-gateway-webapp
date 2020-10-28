@@ -77,19 +77,39 @@ interface IqrfCdcConfig {
 	},
 })
 
+/**
+ * IQRF CDC communication interface configuration component
+ */
 export default class IqrfCdc extends Vue {
-	private componentName ='iqrf::IqrfCdc'
+	/**
+	 * @constant {string} componentName IQRF CDC interface component name
+	 */
+	private componentName = 'iqrf::IqrfCdc'
+
+	/**
+	 * @var {IqrfCdcConfig} configuration IQRF CDC interface instance configuration
+	 */
 	private configuration: IqrfCdcConfig = {
 		instance: null,
 		IqrfInterface: null,
 	}
+
+	/**
+	 * @var {string|null} instance Name of IQRF CDC component instance
+	 */
 	private instance: string|null = null
 
+	/**
+	 * Vue lifecycle hook created
+	 */
 	created(): void {
 		extend('required', required);
 		this.getConfig();
 	}
 
+	/**
+	 * Retrieves configuration of IQRF CDC interface component
+	 */
 	private getConfig(): void {
 		this.$store.commit('spinner/SHOW');
 		DaemonConfigurationService.getComponent(this.componentName)
@@ -103,24 +123,34 @@ export default class IqrfCdc extends Vue {
 			.catch((error: AxiosError) => FormErrorHandler.configError(error));
 	}
 
+	/**
+	 * Saves new or updates existing configuration of IQRF CDC interface component instance
+	 */
 	private saveConfig(): void {
 		this.$store.commit('spinner/SHOW');
 		if (this.instance !== null) {
 			DaemonConfigurationService.updateInstance(this.componentName, this.instance, this.configuration)
 				.then(() => this.successfulSave())
-				.catch((error) => FormErrorHandler.configError(error));
+				.catch((error: AxiosError) => FormErrorHandler.configError(error));
 		} else {
 			DaemonConfigurationService.createInstance(this.componentName, this.configuration)
 				.then(() => this.successfulSave())
-				.catch((error) => FormErrorHandler.configError(error));
+				.catch((error: AxiosError) => FormErrorHandler.configError(error));
 		}
 	}
 	
+	/**
+	 * Handles successful REST API response
+	 */
 	private successfulSave(): void {
 		this.$store.commit('spinner/HIDE');
 		this.$toast.success(this.$t('config.success').toString());
 	}
 	
+	/**
+	 * Updates port in configuration from mapping
+	 * @param {string} port Port
+	 */
 	private updatePort(port: string): void {
 		this.configuration.IqrfInterface = port;
 	}

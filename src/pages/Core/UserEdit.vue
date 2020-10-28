@@ -101,15 +101,14 @@
 </template>
 
 <script lang='ts'>
-import Vue from 'vue';
+import {Component, Prop, Vue} from 'vue-property-decorator';
 import {AxiosError, AxiosResponse} from 'axios';
 import {CButton, CCard, CForm, CInput, CSelect} from '@coreui/vue/src';
 import {required,} from 'vee-validate/dist/rules';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import UserService from '../../services/UserService';
 
-export default Vue.extend({
-	name: 'UserEdit',
+@Component({
 	components: {
 		CButton,
 		CCard,
@@ -119,23 +118,55 @@ export default Vue.extend({
 		ValidationObserver,
 		ValidationProvider,
 	},
-	props: {
-		userId: {
-			type: Number,
-			required: true,
-		}
-	},
-	data(): any {
-		return {
-			loaded: false,
-			username: null,
-			language: null,
-			role: null,
-			oldPassword: null,
-			newPassword: null,
-		};
-	},
-	created() {
+	metaInfo: {
+		title: 'core.user.edit.title',
+	}
+})
+
+/**
+ * User manager form to edit an existing user
+ */
+export default class UserEdit extends Vue {
+	/**
+	 * @var {string} language User's preferred language
+	 */
+	private language = ''
+
+	/**
+	 * @var {boolean} loaded Indicates whether user information has been successfully retrieved
+	 */
+	private loaded = false
+
+	/**
+	 * @var {string} newPassword New user password
+	 */
+	private newPassword = ''
+
+	/**
+	 * @var {string} oldPassword Current user password
+	 */
+	private oldPassword = ''
+
+	/**
+	 * @var {string} role User role
+	 */
+	private role = ''
+
+	/**
+	 * @var {string} username User name
+	 */
+	private username = ''
+
+
+	/**
+	 * @property {number} userId User id
+	 */
+	@Prop({required: true}) userId!: number
+
+	/**
+	 * Vue lifecycle hook created
+	 */
+	created(): void {
 		extend('required', required);
 		this.$store.commit('spinner/SHOW');
 		UserService.get(this.userId)
@@ -157,62 +188,69 @@ export default Vue.extend({
 					this.$toast.error(this.$t('core.user.messages.notFound').toString());
 				}
 			});
-	},
-	methods: {
-		handleSubmit() {
-			if (this.$store.getters['user/getId'] === this.userId &&
-					this.oldPassword !== null && this.newPassword !== null) {
-				UserService.changePassword(this.oldPassword, this.newPassword)
-					.then(() => {
-						this.performEdit();
-						this.signOut();
-					})
-					.catch(() => {
-						this.$toast.error(
-							this.$t('core.user.messages.invalid.oldPassword').toString()
-						);
-					});
-			} else {
-				this.performEdit();
-				if (this.$store.getters['user/getId'] === this.userId) {
-					this.signOut();
-				}
-			}
+	}
 
-		},
-		performEdit() {
-			return UserService.edit(this.userId, {
-				username: this.username,
-				language: this.language,
-				role: this.role,
-			})
+	/**
+	 * Updates user's password, if the old password is valid, the rest of the settings are then updated and signout is performed
+	 */
+	private handleSubmit(): void {
+		if (this.$store.getters['user/getId'] === this.userId &&
+				this.oldPassword !== '' && this.newPassword !== '') {
+			UserService.changePassword(this.oldPassword, this.newPassword)
 				.then(() => {
-					this.$router.push('/user/');
-					this.$toast.success(
-						this.$t('core.user.messages.edit.success', {username: this.username})
-							.toString()
-					);
+					this.performEdit();
+					this.signOut();
 				})
-				.catch((error: AxiosError) => {
-					if (error.response === undefined) {
-						return;
-					}
-					if (error.response.status === 409) {
-						this.$toast.error(
-							this.$t('core.user.messages.conflict.username').toString()
-						);
-					}
+				.catch(() => {
+					this.$toast.error(
+						this.$t('core.user.messages.invalid.oldPassword').toString()
+					);
 				});
-		},
-		signOut() {
-			this.$store.dispatch('user/signOut')
-				.then(() => {
-					this.$router.push('/sign/in');
-				});
+		} else {
+			this.performEdit();
+			if (this.$store.getters['user/getId'] === this.userId) {
+				this.signOut();
+			}
 		}
-	},
-	metaInfo: {
-		title: 'core.user.edit.title',
-	},
-});
+
+	}
+
+	/**
+	 * Updates user information
+	 */
+	private performEdit(): Promise<void> {
+		return UserService.edit(this.userId, {
+			username: this.username,
+			language: this.language,
+			role: this.role,
+		})
+			.then(() => {
+				this.$router.push('/user/');
+				this.$toast.success(
+					this.$t('core.user.messages.edit.success', {username: this.username})
+						.toString()
+				);
+			})
+			.catch((error: AxiosError) => {
+				if (error.response === undefined) {
+					return;
+				}
+				if (error.response.status === 409) {
+					this.$toast.error(
+						this.$t('core.user.messages.conflict.username').toString()
+					);
+				}
+			});
+	}
+
+	/**
+	 * Performs signout
+	 */
+	private signOut(): void {
+		this.$store.dispatch('user/signOut')
+			.then(() => {
+				this.$router.push('/sign/in');
+			});
+	}
+}
 </script>

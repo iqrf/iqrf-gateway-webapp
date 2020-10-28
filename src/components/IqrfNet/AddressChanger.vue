@@ -35,17 +35,12 @@
 </template>
 
 <script lang='ts'>
-import Vue from 'vue';
+import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';
 
-interface IAddressChanger {
-	address: number|null
-}
-
-export default Vue.extend({
-	name: 'AddressChanger',
+@Component({
 	components: {
 		CButton,
 		CCard,
@@ -55,28 +50,38 @@ export default Vue.extend({
 		CInput,
 		ValidationObserver,
 		ValidationProvider,
-	},
-	props: {
-		currentAddress: {
-			type: Number,
-			required: true
-		},
-	},
-	data(): IAddressChanger {
-		return {
-			address: null,
-		};
-	},
-	created() {
+	}
+})
+
+/**
+ * Address Changer card for TrConfiguration component
+ */
+export default class AddressChanger extends Vue {
+	/**
+	 * @var {number|null} device Device address
+	 */
+	private address: number|null = null
+
+	/**
+	 * @property {number} currentAddress Currently selected device address
+	 */
+	@Prop({required: true}) currentAddress!: number
+
+	/**
+	 * Vue lifecycle hook created
+	 */
+	created(): void {
 		extend('between', between);
 		extend('integer', integer);
 		extend('required', required);
 		this.address = this.currentAddress;
-	},
-	methods: {
-		changeAddress(): void {
-			this.$router.push('/iqrfnet/tr-config/' + this.address);
-		},
-	},
-});
+	}
+
+	/**
+	 * Changes device address used to retrieve transciever configuration
+	 */
+	private changeAddress(): void {
+		this.$router.push('/iqrfnet/tr-config/' + this.address);
+	}
+}
 </script>
