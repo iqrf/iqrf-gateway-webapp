@@ -168,9 +168,7 @@ class MigrationManager {
 	public function validate(ZipArchiveManager $zipManager): bool {
 		$whitelistDirs = ['daemon/', 'controller/', 'translator/', 'daemon/certs/', 'daemon/cfgSchemas/', 'daemon/scheduler/'];
 		$fileList = $zipManager->listFiles();
-		$myFile = fopen('/home/test.txt', 'w');
 		foreach ($fileList as $file) {
-			fwrite($myFile, $file);
 			$valid = false;
 			foreach ($whitelistDirs as $dir) {
 				if (strpos($file, $dir) === 0) {
@@ -196,7 +194,6 @@ class MigrationManager {
 				return false;
 			}
 		}
-		fclose($myFile);
 		return true;
 	}
 
