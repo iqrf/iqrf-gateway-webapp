@@ -206,7 +206,7 @@ export default class Backup extends Vue {
 	 * Generates backup file and prompts file save
 	 */
 	private generateBackupFile(): void {
-		let fileContent = '[Backup]\nCreated=' + new Date().toLocaleString().replace(/\//g, ' ') + '\n\n';
+		let fileContent = '[Backup]\nCreated=' + new Date().toLocaleString('en-GB').replace(/\//g, '.').replace(/,/g, '') + '\n\n';
 		let fileName = '';
 		if (this.target === 'coordinator') {
 			fileName = 'Coordinator_';
