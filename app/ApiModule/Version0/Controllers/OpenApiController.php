@@ -26,9 +26,7 @@ use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
-use Apitte\OpenApi\ISchemaBuilder;
-use Nette\Utils\Strings;
-use stdClass;
+use App\ApiModule\Version0\Models\OpenApiSchemaBuilder;
 
 /**
  * OpenAPI controller
@@ -38,15 +36,15 @@ use stdClass;
 class OpenApiController extends BaseController {
 
 	/**
-	 * @var ISchemaBuilder OpenAPI schema builder
+	 * @var OpenApiSchemaBuilder OpenAPI schema builder
 	 */
 	private $schemaBuilder;
 
 	/**
 	 * Constructor
-	 * @param ISchemaBuilder $schemaBuilder OpenAPI schema builder
+	 * @param OpenApiSchemaBuilder $schemaBuilder OpenAPI schema builder
 	 */
-	public function __construct(ISchemaBuilder $schemaBuilder) {
+	public function __construct(OpenApiSchemaBuilder $schemaBuilder) {
 		$this->schemaBuilder = $schemaBuilder;
 	}
 
@@ -67,25 +65,7 @@ class OpenApiController extends BaseController {
 	 * ")
 	 */
 	public function index(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$openApi = $this->schemaBuilder->build()->toArray();
-		$openApi['paths']['/api/v0/features']['get']['security'] = [new stdClass()];
-		$openApi['paths']['/api/v0/openapi']['get']['security'] = [new stdClass()];
-		$openApi['paths']['/api/v0/user/signIn']['post']['security'] = [new stdClass()];
-		foreach ($openApi['servers'] as &$server) {
-			$server['url'] .= 'api/v0/';
-		}
-		foreach ($openApi['paths'] as $uri => $path) {
-			$openApi['paths'][Strings::replace($uri, '~/api/v0~', '')] = $path;
-			unset($openApi['paths'][$uri]);
-		}
-		foreach ($openApi['paths'] as &$path) {
-			foreach ($path as &$method) {
-				if (!array_key_exists('security', $method)) {
-					$method['responses']['401'] = ['$ref' => '#/components/responses/UnauthorizedError'];
-				}
-			}
-		}
-		return $response->writeJsonBody($openApi);
+		return $response->writeJsonBody($this->schemaBuilder->getArray());
 	}
 
 }
