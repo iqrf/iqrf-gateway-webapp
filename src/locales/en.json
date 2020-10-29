@@ -1193,6 +1193,11 @@
 			"description": "Send DPA packet.",
 			"macros": "Macros",
 			"form": {
+				"nadr": "NADR",
+				"pnum": "PNUM",
+				"pcmd": "PCMD",
+				"hwpid": "HWPID",
+				"pdata": "PDATA",
 				"packet": "DPA packet",
 				"address": "Custom NADR",
 				"addressOverwrite": "Set own NADR",
@@ -1202,7 +1207,12 @@
 					"invalid": {
 						"address": "Invalid custom NADR has been entered. It has to be a decimal number from 0 to 239.",
 						"packet": "Invalid DPA packet has been entered.",
-						"timeout": "Invalid custom DPA timeout has been entered."
+						"timeout": "Invalid custom DPA timeout has been entered.",
+						"nadr": "NADR bytes should be 4 hexadecimal characters long, lower byte has to be 0.",
+						"pnum": "PNUM byte should be 2 hexadecimal characters long.",
+						"pcmd": "PCMD byte should be 2 hexadecimal characters long, higher nibble can be a character between 0 and 7.",
+						"hwpid": "HWPID bytes should be 4 hexadecimal characters long.",
+						"pdata": "PDATA should be 0 to 57 bytes long, bytes separated by a dot."
 					},
 					"missing": {
 						"address": "Please enter the custom NADR.",
