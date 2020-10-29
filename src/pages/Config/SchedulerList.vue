@@ -516,6 +516,7 @@ export default class SchedulerList extends Vue {
 							this.$t('service.iqrf-gateway-daemon.messages.restart')
 								.toString()
 						);
+						this.getTasks();
 					})
 					.catch((error: AxiosError) => FormErrorHandler.serviceError(error));
 			})
