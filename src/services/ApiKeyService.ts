@@ -34,6 +34,7 @@ class ApiKeyService {
 	 * @param keyData API key metadata
 	 */
 	editApiKey(keyId: number, keyData: Record<string, unknown>): Promise<AxiosResponse> {
+		delete keyData.id;
 		return axios.put('apiKeys/' + keyId, keyData, {headers: authorizationHeader()});
 	}
 

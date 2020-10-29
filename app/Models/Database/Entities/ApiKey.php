@@ -23,6 +23,7 @@ namespace App\Models\Database\Entities;
 use App\Models\Database\Attributes\TId;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Exception;
 use JsonSerializable;
 use Nette\Utils\Strings;
 use function base64_encode;
@@ -129,6 +130,19 @@ class ApiKey implements JsonSerializable {
 	 */
 	public function setExpiration(?DateTime $expiration): void {
 		$this->expiration = $expiration;
+	}
+
+	/**
+	 * Sets API key expiration from string
+	 * @param string|null $expiration API key expiration
+	 * @throws Exception
+	 */
+	public function setExpirationFromString(?string $expiration): void {
+		if ($expiration === null) {
+			$this->expiration = null;
+			return;
+		}
+		$this->expiration = new DateTime($expiration);
 	}
 
 	/**

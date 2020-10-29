@@ -29,6 +29,8 @@ use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
+use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\CoreModule\Exceptions\InvalidJsonException;
 use App\Exceptions\InvalidUserLanguageException;
 use App\Exceptions\InvalidUserRoleException;
 use App\Models\Database\Entities\User;
@@ -54,12 +56,19 @@ class UsersController extends BaseController {
 	private $repository;
 
 	/**
+	 * @var RestApiSchemaValidator REST API JSON schema validator
+	 */
+	private $validator;
+
+	/**
 	 * Constructor
 	 * @param EntityManager $entityManager Entity manager
+	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(EntityManager $entityManager) {
+	public function __construct(EntityManager $entityManager, RestApiSchemaValidator $validator) {
 		$this->entityManager = $entityManager;
 		$this->repository = $entityManager->getUserRepository();
+		$this->validator = $validator;
 	}
 
 	/**
@@ -110,18 +119,13 @@ class UsersController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$json = $request->getJsonBody();
-		if (!array_key_exists('username', $json)) {
-			throw new ClientErrorException('Missing username', ApiResponse::S400_BAD_REQUEST);
-		}
-		if (!array_key_exists('password', $json)) {
-			throw new ClientErrorException('Missing password', ApiResponse::S400_BAD_REQUEST);
-		}
-		if (!array_key_exists('role', $json)) {
-			throw new ClientErrorException('Missing role', ApiResponse::S400_BAD_REQUEST);
-		}
-		if (!array_key_exists('language', $json)) {
-			throw new ClientErrorException('Missing language', ApiResponse::S400_BAD_REQUEST);
+		try {
+			$json = $request->getJsonBody();
+			$this->validator->validateRequest('userCreate', $request);
+		} catch (JsonException $e) {
+			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
+		} catch (InvalidJsonException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
 		}
 		try {
 			$user = $this->repository->findOneByUserName($json['username']);
@@ -234,8 +238,11 @@ class UsersController extends BaseController {
 		$id = (int) $request->getParameter('id');
 		try {
 			$json = $request->getJsonBody();
+			$this->validator->validateRequest('userEdit', $request);
 		} catch (JsonException $e) {
 			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
+		} catch (InvalidJsonException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
 		}
 		$user = $this->repository->find($id);
 		if ($user === null) {

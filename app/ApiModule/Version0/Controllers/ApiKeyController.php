@@ -29,10 +29,11 @@ use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
+use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\CoreModule\Exceptions\InvalidJsonException;
 use App\Models\Database\Entities\ApiKey;
 use App\Models\Database\EntityManager;
 use App\Models\Database\Repositories\ApiKeyRepository;
-use DateTime;
 use Nette\Utils\JsonException;
 use Throwable;
 use function assert;
@@ -55,12 +56,19 @@ class ApiKeyController extends BaseController {
 	private $repository;
 
 	/**
+	 * @var RestApiSchemaValidator REST API JSON schema validator
+	 */
+	private $validator;
+
+	/**
 	 * Constructor
 	 * @param EntityManager $entityManager Entity manager
+	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(EntityManager $entityManager) {
+	public function __construct(EntityManager $entityManager, RestApiSchemaValidator $validator) {
 		$this->entityManager = $entityManager;
 		$this->repository = $entityManager->getApiKeyRepository();
+		$this->validator = $validator;
 	}
 
 	/**
@@ -115,19 +123,18 @@ class ApiKeyController extends BaseController {
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
 			$json = $request->getJsonBody(false);
+			$this->validator->validateRequest('apiKeyModify', $request);
 		} catch (JsonException $e) {
 			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
+		} catch (InvalidJsonException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
 		}
-		if ($json->expiration === null) {
-			$expiration = null;
-		} else {
-			try {
-				$expiration = new DateTime($json->expiration);
-			} catch (Throwable $e) {
-				throw new ClientErrorException('Invalid expiration date', ApiResponse::S400_BAD_REQUEST);
-			}
+		$apiKey = new ApiKey($json->description, null);
+		try {
+			$apiKey->setExpirationFromString($json->expiration);
+		} catch (Throwable $e) {
+			throw new ClientErrorException('Invalid expiration date', ApiResponse::S400_BAD_REQUEST);
 		}
-		$apiKey = new ApiKey($json->description, $expiration);
 		$this->entityManager->persist($apiKey);
 		$this->entityManager->flush();
 		return $response->writeJsonObject($apiKey)
@@ -229,21 +236,19 @@ class ApiKeyController extends BaseController {
 		}
 		assert($apiKey instanceof ApiKey);
 		try {
+			$this->validator->validateRequest('apiKeyModify', $request);
 			$json = $request->getJsonBody(false);
 		} catch (JsonException $e) {
 			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
+		} catch (InvalidJsonException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
 		}
 		$apiKey->setDescription($json->description);
-		if ($json->expiration === null) {
-			$expiration = null;
-		} else {
-			try {
-				$expiration = new DateTime($json->expiration);
-			} catch (Throwable $e) {
-				throw new ClientErrorException('Invalid expiration date', ApiResponse::S400_BAD_REQUEST);
-			}
+		try {
+			$apiKey->setExpirationFromString($json->expiration);
+		} catch (Throwable $e) {
+			throw new ClientErrorException('Invalid expiration date', ApiResponse::S400_BAD_REQUEST);
 		}
-		$apiKey->setExpiration($expiration);
 		$this->entityManager->persist($apiKey);
 		$this->entityManager->flush();
 		return $response->writeBody('Workaround');

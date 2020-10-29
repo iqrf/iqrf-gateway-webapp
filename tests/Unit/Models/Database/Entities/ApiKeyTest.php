@@ -91,6 +91,18 @@ class ApiKeyTest extends TestCase {
 	}
 
 	/**
+	 * Tests the function to set API key expiration from string
+	 */
+	public function testSetExpirationFromString(): void {
+		$expiration = '2021-01-01T00:00:00+02:00';
+		$expected = new DateTime($expiration);
+		$this->entity->setExpirationFromString($expiration);
+		Assert::equal($expected, $this->entity->getExpiration());
+		$this->entity->setExpirationFromString(null);
+		Assert::null($this->entity->getExpiration());
+	}
+
+	/**
 	 * Tests the function to return API key hash
 	 */
 	public function testGetHash(): void {
