@@ -41,6 +41,20 @@
 						:checked.sync='service.acceptOnlyLocalhost'
 						:label='$t("config.websocket.form.acceptOnlyLocalhost")'
 					/>
+					<div v-if='versionNew'>
+						<CInputCheckbox
+							:checked.sync='service.tlsEnabled'
+							:label='$t("config.websocket.form.tlsEnabled")'
+						/>
+						<CSelect
+							:value.sync='service.tlsMode'
+							:label='$t("config.websocket.form.tlsMode")'
+							:options='tlsModeOptions'
+							:placeholder='$t("config.websocket.form.messages.tlsMode")'
+							:disabled='!service.tlsEnabled'
+						/>
+						<span v-if='service.tlsMode !== ""'>{{ $t('config.websocket.form.tlsModes.descriptions.' + service.tlsMode) }}</span>
+					</div><br v-if='versionNew'>
 					<CButton type='submit' color='primary' :disabled='invalid'>
 						{{ submitButton }}
 					</CButton>
@@ -52,14 +66,16 @@
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
+import {CButton, CCard, CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import {integer, required} from 'vee-validate/dist/rules';
-import { WsMessaging, ModalInstance, WsService } from '../../interfaces/messagingInterfaces';
-import { MetaInfo } from 'vue-meta';
-import { AxiosError, AxiosResponse } from 'axios';
+import {WsMessaging, ModalInstance, IWsService} from '../../interfaces/messagingInterfaces';
+import {MetaInfo} from 'vue-meta';
+import {AxiosError, AxiosResponse} from 'axios';
+import {IOption} from '../../interfaces/coreui';
+import compareVersions from 'compare-versions';
 
 @Component({
 	components: {
@@ -68,6 +84,7 @@ import { AxiosError, AxiosResponse } from 'axios';
 		CForm,
 		CInput,
 		CInputCheckbox,
+		CSelect,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -111,17 +128,54 @@ export default class WebsocketInterfaceForm extends Vue {
 	/**
 	 * @var {WsService} service WebSocket service component instance
 	 */
-	private service: WsService = {
+	private service: IWsService = {
 		component: '',
 		instance: '',
 		WebsocketPort: 1338,
 		acceptOnlyLocalhost: false,
+		tlsEnabled: false,
+		tlsMode: '',
+		certificate: '',
+		privateKey: ''
 	}
+
+	/**
+	 * @constant {Array<IOption>} tlsModeOptions Array of CoreUI select options
+	 */
+	private tlsModeOptions: Array<IOption> = [
+		{
+			value: 'intermediate',
+			label: this.$t('config.websocket.form.tlsModes.intermediate').toString()
+		},
+		{
+			value: 'modern',
+			label: this.$t('config.websocket.form.tlsModes.modern').toString()
+		},
+		{
+			value: 'old',
+			label: this.$t('config.websocket.form.tlsModes.old').toString()
+		}
+	]
 
 	/**
 	 * @property {string} instance WebSocket interface instance name
 	 */
 	@Prop({required: false, default: ''}) instance!: string
+
+	/**
+	 * Computes whether version of IQRF Gateway Daemon is high enough to support new tracer properties
+	 * @returns {boolean} true if version >= 2.3.0, false otherwise
+	 */
+	get versionNew(): boolean {
+		const daemonVersion = this.$store.getters.daemonVersion;
+		if (daemonVersion === '') {
+			return false;
+		}
+		if (compareVersions.compare(daemonVersion, '2.3.0', '>=')) {
+			return true;
+		}
+		return false;
+	}
 
 	/**
 	 * Computes page title depending on the action (add, edit)
@@ -178,6 +232,12 @@ export default class WebsocketInterfaceForm extends Vue {
 	 * Saves new or updates existing configuration of WebSocket messaging and service component instances
 	 */
 	private saveConfig(): void {
+		if (!this.versionNew) {
+			delete this.service.tlsEnabled;
+			delete this.service.tlsMode;
+			delete this.service.certificate;
+			delete this.service.privateKey;
+		}
 		this.$store.commit('spinner/SHOW');
 		this.service.instance = this.messaging.instance;
 		if (this.messaging.RequiredInterfaces.length === 0) {

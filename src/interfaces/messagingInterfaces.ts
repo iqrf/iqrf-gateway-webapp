@@ -48,7 +48,7 @@ export interface WsInterface {
 	acceptAsyncMsg: boolean
 	port: number
 	acceptOnlyLocalhost: boolean
-	service: WsService
+	service: IWsService
 	messaging: WsMessaging
 }
 
@@ -73,11 +73,46 @@ export interface ModalInstance {
 /**
  * WebsocketService interface
  */
-export interface WsService {
-	WebsocketPort: number
-	acceptOnlyLocalhost: boolean
+export interface IWsService {
+	/**
+	 * Component name
+	 */
 	component: string
+
+	/**
+	 * Component instance name
+	 */
 	instance: string
+
+	/**
+	 * Websocket port
+	 */
+	WebsocketPort: number
+
+	/**
+	 * Accept connections only from localhost?
+	 */
+	acceptOnlyLocalhost: boolean
+
+	/**
+	 * Use TLS?
+	 */
+	tlsEnabled?: boolean
+
+	/**
+	 * TLS operating mode
+	 */
+	tlsMode?: string
+
+	/**
+	 * Path to certificate for TLS
+	 */
+	certificate?: string
+
+	/**
+	 * Path to private key for TLS
+	 */
+	privateKey?: string
 }
 
 /**

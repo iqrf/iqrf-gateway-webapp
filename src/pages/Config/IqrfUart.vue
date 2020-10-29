@@ -143,30 +143,9 @@ import InterfacePorts from '../../components/Config/InterfacePorts.vue';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import compareVersions from 'compare-versions';
+import {IOption} from '../../interfaces/coreui';
+import {IIqrfUart, IUartMapping} from '../../interfaces/iqrfUart';
 
-interface IqrfUartConfig {
-	component: string
-	instance: string
-	IqrfInterface: string
-	baudRate: number
-	powerEnableGpioPin: number
-	pgmSwitchGpioPin?: number
-	busEnableGpioPin: number
-	uartReset?: boolean
-}
-
-interface IqrfUartMapping {
-	IqrfInterface: string
-	baudRate: number
-	powerEnableGpioPin: number
-	busEnableGpioPin: number
-	pgmSwitchGpioPin: number
-}
-
-interface BaudRateOptions {
-	value: number
-	label: string
-}
 
 @Component({
 	components: {
@@ -248,7 +227,7 @@ export default class IqrfUart extends Vue {
 	 * Computes array of CoreUI select options for baudrate
 	 * @returns {Array<BaudRateOptions} Baudrate select options
 	 */
-	get baudRates(): Array<BaudRateOptions> {
+	get baudRates(): Array<IOption> {
 		const baudRates: Array<number> = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400];
 		return baudRates.map((baudRate: number) => ({value: baudRate, label: baudRate + ' Bd'}));
 	}
@@ -294,9 +273,9 @@ export default class IqrfUart extends Vue {
 
 	/**
 	 * Parses IQRF UART interface configuration from REST API response
-	 * @param {IqrfUartConfig} response Configuration object from REST API response
+	 * @param {IIqrfUart} response Configuration object from REST API response
 	 */
-	private parseConfiguration(response: IqrfUartConfig): void {
+	private parseConfiguration(response: IIqrfUart): void {
 		this.component = response.component;
 		this.instance = this.componentInstance = response.instance;
 		this.IqrfInterface = response.IqrfInterface;
@@ -315,10 +294,10 @@ export default class IqrfUart extends Vue {
 
 	/**
 	 * Creates IQRF UART component instance configuration object
-	 * @returns {IqrfUartConfig} UART configuration
+	 * @returns {IIqrfUart} UART configuration
 	 */
-	private buildConfiguration(): IqrfUartConfig {
-		let configuration: IqrfUartConfig = {
+	private buildConfiguration(): IIqrfUart {
+		let configuration: IIqrfUart = {
 			component: this.component,
 			instance: this.componentInstance,
 			IqrfInterface: this.IqrfInterface,
@@ -358,9 +337,9 @@ export default class IqrfUart extends Vue {
 
 	/**
 	 * Updates pin configuration from mapping
-	 * @param {IqrfUartConfig} mapping Board mapping
+	 * @param {IUartMapping} mapping Board mapping
 	 */
-	private updateMapping(mapping: IqrfUartMapping): void {
+	private updateMapping(mapping: IUartMapping): void {
 		this.IqrfInterface = mapping.IqrfInterface;
 		this.baudRate = mapping.baudRate;
 		this.busEnableGpioPin = mapping.busEnableGpioPin;

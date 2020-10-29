@@ -165,33 +165,13 @@ import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
-import VersionService from '../../services/VersionService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import {integer, min_value, required} from 'vee-validate/dist/rules';
-import { MetaInfo } from 'vue-meta';
-import { IOption } from '../../interfaces/coreui';
-import { AxiosError, AxiosResponse } from 'axios';
-import { WebSocketOptions } from '../../store/modules/webSocketClient.module';
-import { MutationPayload } from 'vuex';
+import {MetaInfo} from 'vue-meta';
+import {IOption} from '../../interfaces/coreui';
+import {AxiosError, AxiosResponse} from 'axios';
+import {ITracerFile, IVerbosityLevel} from '../../interfaces/tracerFile';
 import compareVersions from 'compare-versions';
-
-interface VerbosityLevel {
-	channel: number
-	level: string
-}
-
-interface TracerConfiguration {
-	component: string
-	filename: string
-	instance: string
-	maxSize?: number
-	maxSizeMB?: number
-	maxAgeMinutes?: number
-	maxNumber?: number
-	path: string
-	timestampFiles: boolean
-	VerbosityLevels: Array<VerbosityLevel>
-}
 
 @Component({
 	components: {
@@ -225,6 +205,11 @@ export default class TracerForm extends Vue {
 	 * @var {string} componentInstance Logging service component instance name
 	 */
 	private componentInstance = ''
+
+	/**
+	 * @constant {string} componentName Logging service component name, used for REST API communication
+	 */
+	private componentName = 'shape::TraceFileService'
 
 	/**
 	 * @var {string} daemonVersion IQRF Gateway Daemon version
@@ -267,20 +252,9 @@ export default class TracerForm extends Vue {
 	private timestampFiles = false
 
 	/**
-	 * @var {Array<VerbosityLevel>} VerbosityLevels Logging service verbosity level settings
+	 * @var {Array<IVerbosityLevel>} VerbosityLevels Logging service verbosity level settings
 	 */
-	private VerbosityLevels: Array<VerbosityLevel> = [{channel: 0, level: 'INF'}]
-
-	/**
-	 * Component unsubscribe function
-	 */
-	private unsubscribe: CallableFunction = () => {return;}
-	
-
-	/**
-	 * @constant {string} componentName Logging service component name
-	 */
-	private componentName = 'shape::TraceFileService'
+	private VerbosityLevels: Array<IVerbosityLevel> = [{channel: 0, level: 'INF'}]
 
 	/**
 	 * @constant {Array<IOption>} selectOptions Array of CoreUI logging severity select options
@@ -293,7 +267,7 @@ export default class TracerForm extends Vue {
 	]
 
 	/**
-	 * @property {string} instance Logging service component instance name
+	 * @property {string} instance Logging service component instance name, used for REST API communication
 	 */
 	@Prop({required: false, default: ''}) instance!: string
 
@@ -336,55 +310,6 @@ export default class TracerForm extends Vue {
 		extend('integer', integer);
 		extend('min', min_value);
 		extend('required', required);
-		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
-			if (mutation.type !== 'SOCKET_ONMESSAGE') {
-				return;
-			}
-			if (mutation.payload.data.msgId !== this.msgId) {
-				return;
-			}
-			if (mutation.payload.mType === 'mngDaemon_Version') {
-				this.$store.dispatch('spinner/hide');
-				this.$store.dispatch('removeMessage', this.msgId);
-				this.handleVersionResponse(mutation.payload.data);
-			} else if (mutation.payload.mType === 'messageError') {
-				this.$store.dispatch('spinner/hide');
-				this.$store.dispatch('removeMessage', this.msgId);
-			}
-		});
-		this.getVersion();
-	}
-
-	/**
-	 * Vue lifecycle hook beforeDestroy
-	 */
-	beforeDestroy(): void {
-		this.$store.dispatch('removeMessage', this.msgId);
-		this.unsubscribe();
-	}
-
-	/**
-	 * Retrieves version of IQRF Gateway Daemon
-	 */
-	private getVersion(): void {
-		this.$store.dispatch('spinner/show', {timeout: 10000});
-		VersionService.getVersion(new WebSocketOptions(null, 10000, 'config.tracer.messages.versionFail', () => this.msgId = ''))
-			.then((msgId: string) => this.msgId = msgId);
-	}
-
-	/**
-	 * Handles the Daemon version api message response
-	 */
-	private handleVersionResponse(response: any): void {
-		if (response.status === 0 && response.rsp.version !== '') {
-			this.daemonVersion = response.rsp.version.substring(0, 6);
-			if (this.instance !== '') {
-				this.getInstance();
-			}
-		} else {
-			this.$toast.error(this.$t('iqrfnet.networkManager.messages.autoNetwork.versionFailure').toString());
-			this.$router.push('/config/tracer/');
-		}
 	}
 
 	/**
@@ -444,10 +369,10 @@ export default class TracerForm extends Vue {
 
 	/**
 	 * Creates a new Logging service configuration object
-	 * @returns {TracerConfiguration} Logging service configuration
+	 * @returns {ITracerFile} Logging service configuration
 	 */
-	private buildConfiguration(): TracerConfiguration {
-		let configuration: TracerConfiguration = {
+	private buildConfiguration(): ITracerFile {
+		let configuration: ITracerFile = {
 			component: this.component,
 			instance: this.componentInstance,
 			filename: this.filename,

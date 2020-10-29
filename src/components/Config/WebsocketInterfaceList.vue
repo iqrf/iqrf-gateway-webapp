@@ -57,6 +57,22 @@
 							</CDropdown>
 						</td>
 					</template>
+					<template #tlsEnabled='{item}'>
+						<td>
+							<CDropdown
+								:color='item.service.tlsEnabled ? "success": "danger"'
+								:toggler-text='$t("table.enabled." + item.service.tlsEnabled)'
+								size='sm'
+							>
+								<CDropdownItem @click='changeTLS(item.service, true)'>
+									{{ $t('table.enabled.true') }}
+								</CDropdownItem>
+								<CDropdownItem @click='changeTLS(item.service, false)'>
+									{{ $t('table.enabled.false') }}
+								</CDropdownItem>
+							</CDropdown>
+						</td>
+					</template>
 					<template #actions='{item}'>
 						<td class='col-actions'>
 							<CButton
@@ -116,8 +132,9 @@ import DaemonConfigurationService from '../../services/DaemonConfigurationServic
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import { AxiosError, AxiosResponse } from 'axios';
 import {IField} from '../../interfaces/coreui';
-import {WsInterface, ModalInstance, WsService, WsMessaging} from '../../interfaces/messagingInterfaces';
+import {WsInterface, ModalInstance, IWsService, WsMessaging} from '../../interfaces/messagingInterfaces';
 import {Dictionary} from 'vue-router/types/router';
+import compareVersions from 'compare-versions';
 
 @Component({
 	components: {
@@ -195,9 +212,31 @@ export default class WebsocketInterfaceList extends Vue {
 	private instances: Array<WsInterface> = [];
 
 	/**
+	 * Computes whether version of IQRF Gateway Daemon is high enough to support new tracer properties
+	 * @returns {boolean} true if version >= 2.3.0, false otherwise
+	 */
+	get versionNew(): boolean {
+		const daemonVersion = this.$store.getters.daemonVersion;
+		if (daemonVersion === '') {
+			return false;
+		}
+		if (compareVersions.compare(daemonVersion, '2.3.0', '>=')) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
 	 * Vue lifecycle hook created
 	 */
 	created(): void {
+		if (this.versionNew) {
+			this.fields.splice(4, 0, {
+				key: 'tlsEnabled',
+				label: this.$t('config.websocket.form.tlsEnabled'),
+				filter: false
+			});
+		}
 		this.$store.commit('spinner/SHOW');
 		this.getConfig();
 	}
@@ -244,17 +283,44 @@ export default class WebsocketInterfaceList extends Vue {
 
 	/**
 	 * Updates accepted message source of Websocket service component instance
-	 * @param {WsService} service Websocket service instance
-	 * @param {boolean} setting new setting
+	 * @param {IWsService} service Websocket service instance
+	 * @param {boolean} acceptOnlyLocalhost New setting
 	 */
-	private changeAcceptOnlyLocalhost(service: WsService, setting: boolean): void {
+	private changeAcceptOnlyLocalhost(service: IWsService, acceptOnlyLocalhost: boolean): void {
+		if (service.acceptOnlyLocalhost === acceptOnlyLocalhost) {
+			return;
+		}
+		this.editService(service, {acceptOnlyLocalhost: acceptOnlyLocalhost});
+	}
+
+	/**
+	 * Updates TLS enabled setting of Websocket service component instance
+	 * @param {IWsService} service Websocket service instance
+	 * @param {boolean} tlsEnabled New setting
+	 */
+	private changeTLS(service: IWsService, tlsEnabled: boolean): void {
+		if (service.tlsEnabled === tlsEnabled) {
+			return;
+		}
+		this.editService(service, {tlsEnabled: tlsEnabled});
+	}
+
+	/**
+	 * Saves changes in Websocket service instance configuration
+	 * @param {IWsInstance} service Websocket service instance
+	 * @param {Dictionary<boolean>} newSettings Settings to update instance with
+	 */
+	private editService(service: IWsService, newSettings: Dictionary<boolean>): void {
 		this.$store.commit('spinner/SHOW');
-		service.acceptOnlyLocalhost = setting;
-		DaemonConfigurationService.updateInstance(this.componentNames.service, service.instance, service)
+		let settings = {
+			...service,
+			...newSettings,
+		};
+		DaemonConfigurationService.updateInstance(this.componentNames.service, settings.instance, settings)
 			.then(() => {
 				this.getConfig().then(() => {
 					this.$toast.success(
-						this.$t('config.websocket.service.messages.editSuccess', {service: service.instance})
+						this.$t('config.websocket.service.messages.editSuccess', {service: settings.instance})
 							.toString()
 					);
 				});
@@ -268,6 +334,9 @@ export default class WebsocketInterfaceList extends Vue {
 	 * @param {boolean} setting new setting
 	 */
 	private changeAcceptAsyncMsg(instance: WsMessaging, setting: boolean): void {
+		if (instance.acceptAsyncMsg === setting) {
+			return;
+		}
 		this.$store.commit('spinner/SHOW');
 		instance.acceptAsyncMsg = setting;
 		DaemonConfigurationService.updateInstance(this.componentNames.messaging, instance.instance, instance)

@@ -16,7 +16,7 @@
 							:custom-messages='{required: "config.websocket.form.messages.serviceInstance"}'
 						>
 							<CInput
-								v-model='configuration.instance'
+								v-model='instance'
 								:label='$t("config.websocket.form.instance")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
@@ -31,7 +31,7 @@
 							}'
 						>
 							<CInput
-								v-model.number='configuration.WebsocketPort'
+								v-model.number='WebsocketPort'
 								type='number'
 								:label='$t("config.websocket.form.WebsocketPort")'
 								:is-valid='touched ? valid : null'
@@ -39,9 +39,34 @@
 							/>
 						</ValidationProvider>
 						<CInputCheckbox
-							:checked.sync='configuration.acceptOnlyLocalhost'
+							:checked.sync='acceptOnlyLocalhost'
 							:label='$t("config.websocket.form.acceptOnlyLocalhost")'
 						/>
+						<div v-if='versionNew'>
+							<CInputCheckbox
+								:checked.sync='tlsEnabled'
+								:label='$t("config.websocket.form.tlsEnabled")'
+							/>
+							<div>
+								<CSelect
+									:value.sync='tlsMode'
+									:options='tlsModeOptions'
+									:placeholder='$t("config.websocket.form.messages.tlsMode")'
+									:disabled='!tlsEnabled'
+								/>
+								<span v-if='tlsMode !== ""'>{{ $t('config.websocket.form.tlsModes.descriptions.' + tlsMode) }}</span>
+							</div><br>
+							<CInput
+								v-model='certificate'
+								:label='$t("config.websocket.form.certificate")'
+								:disabled='!tlsEnabled'
+							/>
+							<CInput
+								v-model='privateKey'
+								:label='$t("config.websocket.form.privateKey")'
+								:disabled='!tlsEnabled'
+							/>
+						</div>
 						<CButton type='submit' color='primary' :disabled='invalid'>
 							{{ submitButton }}
 						</CButton>
@@ -54,14 +79,16 @@
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {integer, required} from 'vee-validate/dist/rules';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
-import { WsService } from '../../interfaces/messagingInterfaces';
-import { AxiosError, AxiosResponse } from 'axios';
-import { MetaInfo } from 'vue-meta';
+import compareVersions from 'compare-versions';
+import {IWsService} from '../../interfaces/messagingInterfaces';
+import {AxiosError, AxiosResponse } from 'axios';
+import {MetaInfo} from 'vue-meta';
+import {IOption} from '../../interfaces/coreui';
 
 @Component({
 	components: {
@@ -71,6 +98,7 @@ import { MetaInfo } from 'vue-meta';
 		CForm,
 		CInput,
 		CInputCheckbox,
+		CSelect,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -82,28 +110,91 @@ import { MetaInfo } from 'vue-meta';
 })
 
 /**
- * Daemon WebSocket service component configuration form
+ * Daemon WebsocketService component configuration form
  */
 export default class WebsocketServiceForm extends Vue {
+	/**
+	 * @var {boolean} acceptOnlyLocalhost Accept connections only from localhost?
+	 */
+	private acceptOnlyLocalhost = false
+
+	/**
+	 * @var {string} certificate Path to certificate for TLS
+	 */
+	private certificate = ''
+
+	/**
+	 * @var {string} component WebsocketService component name
+	 */
+	private component = ''
+
+	/**
+	 * @var {string} componentInstance WebsocketService component instance name
+	 */
+	private componentInstance = ''
+
 	/**
 	 * @constant {string} componentName Name of WebSocket service component
 	 */
 	private componentName = 'shape::WebsocketCppService'
 
 	/**
-	 * @var {WsService} configuration WebSocket service component instance configuration
+	 * @var {string} privateKey Path to private key for TLS
 	 */
-	private configuration: WsService = {
-		component: '',
-		instance: '',
-		WebsocketPort: 1338,
-		acceptOnlyLocalhost: false,
-	}
+	private privateKey = ''
+
+	/**
+	 * @var {boolean} tlsEnabled Use TLS?
+	 */
+	private tlsEnabled = false
+
+	/**
+	 * @var {string} tlsMode TLS operating mode
+	 */
+	private tlsMode = ''
+
+	/**
+	 * @constant {Array<IOption>} tlsModeOptions Array of CoreUI select options
+	 */
+	private tlsModeOptions: Array<IOption> = [
+		{
+			value: 'intermediate',
+			label: this.$t('config.websocket.form.tlsModes.intermediate').toString()
+		},
+		{
+			value: 'modern',
+			label: this.$t('config.websocket.form.tlsModes.modern').toString()
+		},
+		{
+			value: 'old',
+			label: this.$t('config.websocket.form.tlsModes.old').toString()
+		}
+	]
+
+	/**
+	 * @var {number} WebsocketPort Websocket port
+	 */
+	private WebsocketPort = 1338
 
 	/**
 	 * @property {string} instance WebSocket service component instance name
 	 */
 	@Prop({required: false, default: ''}) instance!: string
+
+	/**
+	 * Computes whether version of IQRF Gateway Daemon is high enough to support new tracer properties
+	 * @returns {boolean} true if version >= 2.3.0, false otherwise
+	 */
+	get versionNew(): boolean {
+		const daemonVersion = this.$store.getters.daemonVersion;
+		if (daemonVersion === '') {
+			return false;
+		}
+		if (compareVersions.compare(daemonVersion, '2.3.0', '>=')) {
+			return true;
+		}
+		return false;
+	}
 
 	/**
 	 * Computes page title depending on the action (add, edit)
@@ -142,7 +233,7 @@ export default class WebsocketServiceForm extends Vue {
 		DaemonConfigurationService.getInstance(this.componentName, this.instance)
 			.then((response: AxiosResponse) => {
 				this.$store.commit('spinner/HIDE');
-				this.configuration = response.data;
+				this.parseConfiguration(response.data);
 			})
 			.catch((error: AxiosError) => {
 				this.$router.push('/config/websocket/');
@@ -151,16 +242,58 @@ export default class WebsocketServiceForm extends Vue {
 	}
 
 	/**
+	 * Parses WebsocketService component instance configration from REST API response
+	 * @param {IWsService} response Configuration object from REST API response
+	 */
+	private parseConfiguration(response: IWsService): void {
+		this.component = response.component;
+		this.instance = this.componentInstance = response.instance;
+		this.WebsocketPort = response.WebsocketPort;
+		this.acceptOnlyLocalhost = response.acceptOnlyLocalhost;
+		if (this.versionNew) {
+			if (response.tlsEnabled !== undefined) {
+				this.tlsEnabled = response.tlsEnabled;
+			}
+			if (response.tlsMode !== undefined) {
+				this.tlsMode = response.tlsMode;
+			}
+			if (response.certificate !== undefined) {
+				this.certificate = response.certificate;
+			}
+			if (response.privateKey !== undefined) {
+				this.privateKey = response.privateKey;
+			}
+		}
+	}
+
+	/**
+	 * Creates WebsocketService component instance configuration object
+	 * @returns {IwsService} WebsocketService configuration
+	 */
+	private buildConfiguration(): IWsService {
+		let configuration: IWsService = {
+			component: this.component,
+			instance: this.componentInstance,
+			WebsocketPort: this.WebsocketPort,
+			acceptOnlyLocalhost: this.acceptOnlyLocalhost
+		};
+		if (this.versionNew) {
+			Object.assign(configuration, {tlsEnabled: this.tlsEnabled, tlsMode: this.tlsMode, certificate: this.certificate, privateKey: this.privateKey});
+		}
+		return configuration;
+	}
+
+	/**
 	 * Saves new or updates existing configuration of WebSocket service component instance
 	 */
 	private saveInstance(): void {
 		this.$store.commit('spinner/SHOW');
 		if (this.instance !== '') {
-			DaemonConfigurationService.updateInstance(this.componentName, this.instance, this.configuration)
+			DaemonConfigurationService.updateInstance(this.componentName, this.instance, this.buildConfiguration())
 				.then(() => this.successfulSave())
 				.catch((error: AxiosError) => FormErrorHandler.configError(error));
 		} else {
-			DaemonConfigurationService.createInstance(this.componentName, this.configuration)
+			DaemonConfigurationService.createInstance(this.componentName, this.buildConfiguration())
 				.then(() => this.successfulSave())
 				.catch((error: AxiosError) => FormErrorHandler.configError(error));
 		}
@@ -173,7 +306,7 @@ export default class WebsocketServiceForm extends Vue {
 		this.$store.commit('spinner/HIDE');
 		if (this.$route.path === '/config/websocket/add-service') {
 			this.$toast.success(
-				this.$t('config.websocket.service.messages.addSuccess', {service: this.configuration.instance})
+				this.$t('config.websocket.service.messages.addSuccess', {service: this.componentInstance})
 					.toString()
 			);
 		} else {

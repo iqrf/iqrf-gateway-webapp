@@ -95,7 +95,7 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import {required} from 'vee-validate/dist/rules';
-import { ModalInstance, WsService } from '../../interfaces/messagingInterfaces';
+import { ModalInstance, IWsService } from '../../interfaces/messagingInterfaces';
 import { AxiosError, AxiosResponse } from 'axios';
 import { MetaInfo } from 'vue-meta';
 import { RequiredInterface } from '../../interfaces/requiredInterfaces';
@@ -231,7 +231,7 @@ export default class WebsocketMessagingForm extends Vue {
 				});
 				configuration.RequiredInterfaces = interfaces;
 				this.configuration = configuration;
-				responses[1].data.instances.forEach((item: WsService) => {
+				responses[1].data.instances.forEach((item: IWsService) => {
 					this.services.push({value: item.instance, label: item.instance});
 				});
 			});
@@ -245,7 +245,7 @@ export default class WebsocketMessagingForm extends Vue {
 		DaemonConfigurationService.getComponent(this.componentNames.service)
 			.then((response: AxiosResponse) => {
 				this.$store.commit('spinner/HIDE');
-				response.data.instances.forEach((item: WsService) => {
+				response.data.instances.forEach((item: IWsService) => {
 					this.services.push({value: item.instance, label: item.instance});
 				});
 			});

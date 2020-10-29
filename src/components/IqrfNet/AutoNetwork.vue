@@ -263,7 +263,6 @@ import {between, integer, required} from 'vee-validate/dist/rules';
 import IqrfNetService from '../../services/IqrfNetService';
 import VersionService from '../../services/VersionService';
 import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
-import VueI18n from 'vue-i18n';
 import {AutoNetworkBase, AutoNetworkOverlappingNetworks, AutoNetworkStopConditions} from '../../interfaces/autonetwork';
 import { MutationPayload } from 'vuex';
 
