@@ -74,6 +74,24 @@ export interface WebSocketClientState {
 	 */
 	messages: Array<WebSocketMessage>;
 
+	/**
+	 * IQRF Gateway Daemon version object
+	 */
+	version: DaemonVersion;
+
+}
+
+export interface DaemonVersion {
+
+	/**
+	 * IQRF Gateway Daemon version
+	 */
+	daemonVersion: string;
+
+	/**
+	 * Daemon api message id
+	 */
+	msgId: string;
 }
 
 const state: WebSocketClientState = {
@@ -85,6 +103,10 @@ const state: WebSocketClientState = {
 	requests: {},
 	responses: {},
 	messages: [],
+	version: {
+		daemonVersion: '',
+		msgId: '',
+	}
 };
 
 const actions: ActionTree<WebSocketClientState, any> = {
@@ -128,12 +150,28 @@ const actions: ActionTree<WebSocketClientState, any> = {
 		}
 		window.clearTimeout(state.messages[message].timeout);
 		commit('REMOVE_MESSAGE', message);
+	},
+	getVersion({state, commit}): void {
+		const options = new WebSocketOptions(null, 10000);
+		state.version.msgId = uuidv4();
+		options.request = {
+			'mType': 'mngDaemon_Version',
+			'data': {
+				'msgId': state.version.msgId,
+				'returnVerbose': true,
+			},
+		};
+		Vue.prototype.$socket.sendObj(options.request);
+		commit('SOCKET_ONSEND', options.request);
 	}
 };
 
 const getters: GetterTree<WebSocketClientState, any> = {
 	isSocketConnected(state: WebSocketClientState) {
 		return state.socket.isConnected;
+	},
+	daemonVersion(state: WebSocketClientState) {
+		return state.version.daemonVersion;
 	},
 };
 
@@ -156,6 +194,9 @@ const mutations: MutationTree<WebSocketClientState> = {
 		console.error(state, event);
 	},
 	SOCKET_ONMESSAGE(state: WebSocketClientState, message: Record<string, any>) {
+		if (message.mType === 'mngDaemon_Version' && message.data.msgId === state.version.msgId) {
+			state.version.daemonVersion = message.data.rsp.version.substr(0, 6);
+		}
 		state.responses[message.data.msgId] = message;
 	},
 	SOCKET_ONSEND(state: WebSocketClientState, request: Record<string, any>) {

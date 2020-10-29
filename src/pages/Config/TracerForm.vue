@@ -16,7 +16,7 @@
 							:custom-messages='{required: "config.tracer.form.messages.instance"}'
 						>
 							<CInput
-								v-model='instance'
+								v-model='componentInstance'
 								:label='$t("config.tracer.form.instance")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'

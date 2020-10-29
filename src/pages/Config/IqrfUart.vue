@@ -11,7 +11,7 @@
 							:custom-messages='{required: "config.iqrfUart.form.messages.instance"}'
 						>
 							<CInput
-								v-model='configuration.instance'
+								v-model='componentInstance'
 								:label='$t("config.iqrfUart.form.instance")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
@@ -23,7 +23,7 @@
 							:custom-messages='{required: "config.iqrfUart.form.messages.IqrfInterface"}'
 						>
 							<CInput
-								v-model='configuration.IqrfInterface'
+								v-model='IqrfInterface'
 								:label='$t("config.iqrfUart.form.IqrfInterface")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
@@ -37,7 +37,7 @@
 							}'
 						>
 							<CSelect
-								:value.sync='configuration.baudRate'
+								:value.sync='baudRate'
 								:label='$t("config.iqrfUart.form.baudRate")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
@@ -54,8 +54,26 @@
 							}'
 						>
 							<CInput
-								v-model='configuration.powerEnableGpioPin'
+								v-model.number='powerEnableGpioPin'
+								type='number'
 								:label='$t("config.iqrfUart.form.powerEnableGpioPin")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-if='versionNew'
+							v-slot='{ errors, touched, valid }'
+							rules='required|integer'
+							:custom-messages='{
+								integer: "config.iqrfUart.form.messages.pgmSwitchGpioPin",
+								required: "config.iqrfUart.form.messages.pgmSwitchGpioPin",
+							}'
+						>
+							<CInput
+								v-model.number='pgmSwitchGpioPin'
+								type='number'
+								:label='$t("config.iqrfUart.form.pgmSwitchGpioPin")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
@@ -69,12 +87,17 @@
 							}'
 						>
 							<CInput
-								v-model='configuration.busEnableGpioPin'
+								v-model.number='busEnableGpioPin'
+								type='number'
 								:label='$t("config.iqrfUart.form.busEnableGpioPin")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
 						</ValidationProvider>
+						<CInputCheckbox
+							:checked.sync='uartReset'
+							:label='$t("config.iqrfUart.form.uartReset")'
+						/>
 						<CButton type='submit' color='primary' :disabled='invalid'>
 							{{ $t('forms.save') }}
 						</CButton>
@@ -109,6 +132,7 @@ import {
 	CCol,
 	CForm,
 	CInput,
+	CInputCheckbox,
 	CRow,
 	CSelect,
 } from '@coreui/vue/src';
@@ -118,13 +142,25 @@ import InterfaceMappings from '../../components/Config/InterfaceMappings.vue';
 import InterfacePorts from '../../components/Config/InterfacePorts.vue';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
+import compareVersions from 'compare-versions';
 
 interface IqrfUartConfig {
-	instance: string|null
-	IqrfInterface: string|null
-	baudRate: null
-	powerEnableGpioPin: number|null
-	busEnableGpioPin: number|null
+	component: string
+	instance: string
+	IqrfInterface: string
+	baudRate: number
+	powerEnableGpioPin: number
+	pgmSwitchGpioPin?: number
+	busEnableGpioPin: number
+	uartReset?: boolean
+}
+
+interface IqrfUartMapping {
+	IqrfInterface: string
+	baudRate: number
+	powerEnableGpioPin: number
+	busEnableGpioPin: number
+	pgmSwitchGpioPin: number
 }
 
 interface BaudRateOptions {
@@ -141,6 +177,7 @@ interface BaudRateOptions {
 		CCol,
 		CForm,
 		CInput,
+		CInputCheckbox,
 		CRow,
 		CSelect,
 		InterfaceMappings,
@@ -158,26 +195,55 @@ interface BaudRateOptions {
  */
 export default class IqrfUart extends Vue {
 	/**
-	 * @constant {string} componentName IQRF UART interface component name
+	 * @var {number} baudRate UART baudrate
+	 */
+	private baudRate = 57600
+
+	/**
+	 * @var {number} busEnableGpioPin UART bus enable ping
+	 */
+	private busEnableGpioPin = -1
+	
+	/**
+	 * @constant {string} component UART component name
+	 */
+	private component = ''
+
+	/**
+	 * @constant {string} componentName UART component name, used for REST API communication
 	 */
 	private componentName = 'iqrf::IqrfUart'
 
 	/**
-	 * @var {IqrfUartConfig} configuration IQRF UART interface instance configuration
+	 * @var {string} componentInstance UART component instance name
 	 */
-	private configuration: IqrfUartConfig = {
-		instance: null,
-		IqrfInterface: null,
-		baudRate: null,
-		powerEnableGpioPin: null,
-		busEnableGpioPin: null,
-	}
+	private componentInstance = 'iqrf::IqrfUart-/dev/ttyS0'
 
 	/**
-	 * @var {string|null} instance Name of IQRF UART component instance
+	 * @var {string} instance UART component instance name, used for REST API communication
 	 */
-	private instance: string|null = null
+	private instance = ''
 
+	/**
+	 * @var {string} IqrfInterface UART interface device name
+	 */
+	private IqrfInterface = '/dev/ttyS0'
+
+	/**
+	 * @var {number} pgmSwitchGpioPin UART programming mode switch pin
+	 */
+	private pgmSwitchGpioPin = -1
+
+	/**
+	 * @var {number} powerEnableGpioPin UART power enable pin
+	 */
+	private powerEnableGpioPin = 18
+
+	/**
+	 * @var {boolean} uartReset Should UART component instance reset?
+	 */
+	private uartReset = true
+	
 	/**
 	 * Computes array of CoreUI select options for baudrate
 	 * @returns {Array<BaudRateOptions} Baudrate select options
@@ -185,6 +251,21 @@ export default class IqrfUart extends Vue {
 	get baudRates(): Array<BaudRateOptions> {
 		const baudRates: Array<number> = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400];
 		return baudRates.map((baudRate: number) => ({value: baudRate, label: baudRate + ' Bd'}));
+	}
+
+	/**
+	 * Computes whether version of IQRF Gateway Daemon is high enough to support new tracer properties
+	 * @returns {boolean} true if version >= 2.3.0, false otherwise
+	 */
+	get versionNew(): boolean {
+		const daemonVersion = this.$store.getters.daemonVersion;
+		if (daemonVersion === '') {
+			return false;
+		}
+		if (compareVersions.compare(daemonVersion, '2.3.0', '>=')) {
+			return true;
+		}
+		return false;
 	}
 	
 	/**
@@ -205,11 +286,50 @@ export default class IqrfUart extends Vue {
 			.then((response: AxiosResponse) => {
 				this.$store.commit('spinner/HIDE');
 				if (response.data.instances.length > 0) {
-					this.configuration = response.data.instances[0];
-					this.instance = this.configuration.instance;
+					this.parseConfiguration(response.data.instances[0]);
 				}
 			})
 			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+	}
+
+	/**
+	 * Parses IQRF UART interface configuration from REST API response
+	 * @param {IqrfUartConfig} response Configuration object from REST API response
+	 */
+	private parseConfiguration(response: IqrfUartConfig): void {
+		this.component = response.component;
+		this.instance = this.componentInstance = response.instance;
+		this.IqrfInterface = response.IqrfInterface;
+		this.baudRate = response.baudRate;
+		this.powerEnableGpioPin = response.powerEnableGpioPin;
+		this.busEnableGpioPin = response.busEnableGpioPin;
+		if (this.versionNew) {
+			if (response.pgmSwitchGpioPin !== undefined) {
+				this.pgmSwitchGpioPin = response.pgmSwitchGpioPin;
+			}
+			if (response.uartReset !== undefined) {
+				this.uartReset = response.uartReset;
+			}
+		}
+	}
+
+	/**
+	 * Creates IQRF UART component instance configuration object
+	 * @returns {IqrfUartConfig} UART configuration
+	 */
+	private buildConfiguration(): IqrfUartConfig {
+		let configuration: IqrfUartConfig = {
+			component: this.component,
+			instance: this.componentInstance,
+			IqrfInterface: this.IqrfInterface,
+			baudRate: this.baudRate,
+			powerEnableGpioPin: this.powerEnableGpioPin,
+			busEnableGpioPin: this.busEnableGpioPin
+		};
+		if (this.versionNew) {
+			Object.assign(configuration, {pgmSwitchGpioPin: this.pgmSwitchGpioPin, uartReset: this.uartReset});
+		}
+		return configuration;
 	}
 	
 	/**
@@ -218,11 +338,11 @@ export default class IqrfUart extends Vue {
 	private saveConfig(): void {
 		this.$store.commit('spinner/SHOW');
 		if (this.instance !== null) {
-			DaemonConfigurationService.updateInstance(this.componentName, this.instance, this.configuration)
+			DaemonConfigurationService.updateInstance(this.componentName, this.instance, this.buildConfiguration())
 				.then(() => this.successfulSave())
 				.catch((error: AxiosError) => FormErrorHandler.configError(error));
 		} else {
-			DaemonConfigurationService.createInstance(this.componentName, this.configuration)
+			DaemonConfigurationService.createInstance(this.componentName, this.buildConfiguration())
 				.then(() => this.successfulSave())
 				.catch((error: AxiosError) => FormErrorHandler.configError(error));
 		}
@@ -240,8 +360,14 @@ export default class IqrfUart extends Vue {
 	 * Updates pin configuration from mapping
 	 * @param {IqrfUartConfig} mapping Board mapping
 	 */
-	private updateMapping(mapping: IqrfUartConfig): void {
-		Object.assign(this.configuration, mapping);
+	private updateMapping(mapping: IqrfUartMapping): void {
+		this.IqrfInterface = mapping.IqrfInterface;
+		this.baudRate = mapping.baudRate;
+		this.busEnableGpioPin = mapping.busEnableGpioPin;
+		this.powerEnableGpioPin = mapping.powerEnableGpioPin;
+		if (this.versionNew) {
+			this.pgmSwitchGpioPin = mapping.pgmSwitchGpioPin;
+		}
 	}
 
 	/**
@@ -249,7 +375,7 @@ export default class IqrfUart extends Vue {
 	 * @param {string} port Port
 	 */
 	private updatePort(port: string): void {
-		this.configuration.IqrfInterface = port;
+		this.IqrfInterface = port;
 	}
 	
 }

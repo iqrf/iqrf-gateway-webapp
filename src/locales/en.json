@@ -304,13 +304,16 @@
 				"IqrfInterface": "IQRF UART interface",
 				"baudRate": "UART baud rate",
 				"powerEnableGpioPin": "Power enable GPIO pin",
-				"busEnableGpioPin": "UART bus enable GPIO pin",
+				"pgmSwitchGpioPin": "Programming mode switch GPIO pin",
+				"busEnableGpioPin": "Bus enable GPIO pin",
+				"uartReset": "UART reset",
 				"messages": {
 					"instance": "Please enter name of IQRF UART instance.",
 					"IqrfInterface": "Please enter IQRF UART interface.",
 					"baudRate": "Please select UART baud rate.",
-					"powerEnableGpioPin": "Please enter power enable GPIO pin.",
-					"busEnableGpioPin": "Please enter SPI bus enable GPIO pin."
+					"powerEnableGpioPin": "Please enter power enable GPIO pin number.",
+					"pgmSwitchGpioPin": "Please enter programming mode switch GPIO pin number.",
+					"busEnableGpioPin": "Please enter SPI bus enable GPIO pin number."
 				}
 			},
 			"mappings": "Available UART mappings"
