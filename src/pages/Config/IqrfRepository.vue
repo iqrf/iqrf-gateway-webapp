@@ -129,7 +129,7 @@ export default class IqrfRepository extends Vue {
 	private urlRepo = ''
 
 	/**
-	 * Computes whether version of IQRF Gateway Daemon is high enough to support new tracer properties
+	 * Computes whether version of IQRF Gateway Daemon is high enough to support new properties
 	 * @returns {boolean} true if version >= 2.3.0, false otherwise
 	 */
 	get versionNew(): boolean {
