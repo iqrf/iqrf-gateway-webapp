@@ -20,45 +20,52 @@ declare(strict_types = 1);
 
 namespace App\ConsoleModule\Commands;
 
-use App\Models\Database\Entities\ApiKey;
+use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use function assert;
 
 /**
- * CLI command for listing API keys
+ * CLI command to remove exiting mapping
  */
-class ApiKeyListCommand extends ApiKeyCommand {
+class MappingRemoveCommand extends MappingCommand {
 
 	/**
 	 * @var string Command name
 	 */
-	protected static $defaultName = 'api-key:list';
+	protected static $defaultName = 'mapping:remove';
 
 	/**
-	 * Configures the API key list command
+	 * Configures the mapping remove command
 	 */
 	protected function configure(): void {
-		$this->setDescription('Lists API keys');
+		$this->setDescription('Remove mapping');
+		$definitions = [
+			new InputOption('name', ['name'], InputOption::VALUE_REQUIRED, 'Name of the mapping'),
+		];
+		$this->setDefinition(new InputDefinition($definitions));
 	}
 
 	/**
-	 * Executes the API key list command
+	 * Executes the mapping remove command
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
 	 * @return int Exit code
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
-		$apiKeys = [];
-		foreach ($this->repository->findAll() as $apiKey) {
-			assert($apiKey instanceof ApiKey);
-			$expiration = $apiKey->getExpiration() === null ? 'none' : $apiKey->getExpiration()->format('c');
-			$apiKeys[] = [$apiKey->getId(), $apiKey->getDescription(), $expiration];
-		}
 		$style = new SymfonyStyle($input, $output);
-		$style->title('List API keys');
-		$style->table(['Key ID', 'Description', 'Expiration date'], $apiKeys);
+		$style->title('Remove a mapping');
+		$mapping = $this->askExistingName($input, $output);
+		$helper = $this->getHelper('question');
+		$question = new ConfirmationQuestion('Do you really want to remove mapping "' . $mapping->getName() . '"? (y/n) ', false);
+		if (!$helper->ask($input, $output, $question)) {
+			return 0;
+		}
+		$this->entityManager->remove($mapping);
+		$this->entityManager->flush();
+		$style->success('Mapping "' . $mapping->getName() . '" has been removed.');
 		return 0;
 	}
 

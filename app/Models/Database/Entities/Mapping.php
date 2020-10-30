@@ -23,6 +23,7 @@ namespace App\Models\Database\Entities;
 use App\Models\Database\Attributes\TId;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
+use function in_array;
 
 /**
  * Mapping entity
@@ -33,6 +34,37 @@ use JsonSerializable;
 class Mapping implements JsonSerializable {
 
 	use TId;
+
+	/**
+	 * Mapping type: SPI
+	 */
+	public const TYPE_SPI = 'spi';
+
+	/**
+	 * Mapping type: UART
+	 */
+	public const TYPE_UART = 'uart';
+
+	/**
+	 * Supported mapping types
+	 */
+	public const TYPES = [self::TYPE_SPI, self::TYPE_UART];
+
+	/**
+	 * Default mapping UART baud rate
+	 */
+	public const BAUD_RATE_DEFAULT = '57600';
+
+	/**
+	 * Supported mapping UART baud rates
+	 */
+	public const BAUD_RATES = ['1200', '2400', '4800', '9600', '19200', '38400', '57600', '115200', '230400'];
+
+	/**
+	 * @var string Mapping type
+	 * @ORM\Column(type="string", length=255, nullable=false)
+	 */
+	private $type;
 
 	/**
 	 * @var string Mapping name
@@ -65,19 +97,51 @@ class Mapping implements JsonSerializable {
 	private $powerEnableGpioPin;
 
 	/**
+	 * @var int|null UART baud rate
+	 * @ORM\Column(type="integer", nullable=true)
+	 */
+	private $baudRate;
+
+	/**
 	 * Constructor
+	 * @param string $type Mapping type
 	 * @param string $name Mapping name
 	 * @param string $iqrfInterface Mapping device name
 	 * @param int $busEnableGpioPin Mapping bus enable pin
 	 * @param int $pgmSwitchGpioPin Mapping programming mode switch pin
 	 * @param int $powerEnableGpioPin Mapping power enable pin
+	 * @param int|null $baudRate Mapping UART baud rate
 	 */
-	public function __construct(string $name, string $iqrfInterface, int $busEnableGpioPin, int $pgmSwitchGpioPin, int $powerEnableGpioPin) {
+	public function __construct(string $type, string $name, string $iqrfInterface, int $busEnableGpioPin, int $pgmSwitchGpioPin, int $powerEnableGpioPin, ?int $baudRate = null) {
+		$this->type = $type;
 		$this->name = $name;
 		$this->iqrfInterface = $iqrfInterface;
 		$this->busEnableGpioPin = $busEnableGpioPin;
 		$this->pgmSwitchGpioPin = $pgmSwitchGpioPin;
 		$this->powerEnableGpioPin = $powerEnableGpioPin;
+		$this->baudRate = $baudRate;
+	}
+
+	/**
+	 * Returns mapping type
+	 * @return string Mapping type
+	 */
+	public function getType(): string {
+		return $this->type;
+	}
+
+	/**
+	 * Sets new mapping type
+	 * @param string $type Mapping type
+	 */
+	public function setType(string $type): void {
+		if (!in_array($type, self::TYPES, true)) {
+			return;
+		}
+		if ($this->type === self::TYPE_UART && $type === self::TYPE_SPI) {
+			$this->setBaudRate();
+		}
+		$this->type = $type;
 	}
 
 	/**
@@ -89,6 +153,14 @@ class Mapping implements JsonSerializable {
 	}
 
 	/**
+	 * Sets new mapping name
+	 * @param string $name Mapping name
+	 */
+	public function setName(string $name): void {
+		$this->name = $name;
+	}
+
+	/**
 	 * Returns mapping device name
 	 * @return string Mapping device name
 	 */
@@ -97,27 +169,75 @@ class Mapping implements JsonSerializable {
 	}
 
 	/**
-	 * Returns mapping bus enable pin
-	 * @return int Mapping bus enable pin
+	 * Sets new mapping device name
+	 * @param string $interface Mapping device name
+	 */
+	public function setInterface(string $interface): void {
+		$this->iqrfInterface = $interface;
+	}
+
+	/**
+	 * Returns mapping bus enable pin number
+	 * @return int Mapping bus enable pin number
 	 */
 	public function getBusPin(): int {
 		return $this->busEnableGpioPin;
 	}
 
 	/**
-	 * Returns mapping programming mode switch pin
-	 * @return int Mapping programming mode switch pin
+	 * Sets new bus enable pin number number
+	 * @param int $busPin Mapping bus enable pin number
+	 */
+	public function setBusPin(int $busPin): void {
+		$this->busEnableGpioPin = $busPin;
+	}
+
+	/**
+	 * Returns mapping programming mode switch pin number
+	 * @return int Mapping programming mode switch pin number
 	 */
 	public function getPgmPin(): int {
 		return $this->pgmSwitchGpioPin;
 	}
 
 	/**
-	 * Returns mapping power enable pin
-	 * @return int Mapping power enable pin
+	 * Sets new mapping programming mode switch pin number
+	 * @param int $pgmPin Mapping programming mode switch pin number
+	 */
+	public function setPgmPin(int $pgmPin): void {
+		$this->pgmSwitchGpioPin = $pgmPin;
+	}
+
+	/**
+	 * Returns mapping power enable pin number
+	 * @return int Mapping power enable pin number
 	 */
 	public function getPowerPin(): int {
 		return $this->powerEnableGpioPin;
+	}
+
+	/**
+	 * Sets new power enable pin number
+	 * @param int $powerPin Mapping power enable pin number
+	 */
+	public function setPowerPin(int $powerPin): void {
+		$this->powerEnableGpioPin = $powerPin;
+	}
+
+	/**
+	 * Returns mapping UART baud rate
+	 * @return int|null Mapping UART baud rate
+	 */
+	public function getBaudRate(): ?int {
+		return $this->baudRate;
+	}
+
+	/**
+	 * Sets new UART baud rate
+	 * @param int|null $baudRate Mapping UART baud rate
+	 */
+	public function setBaudRate(?int $baudRate = null): void {
+		$this->baudRate = $baudRate;
 	}
 
 	/**
@@ -133,6 +253,9 @@ class Mapping implements JsonSerializable {
 				'powerEnableGpioPin' => $this->getPowerPin(),
 			],
 		];
+		if ($this->getType() === self::TYPE_SPI) {
+			$array[$this->getName()]['baudRate'] = $this->getBaudRate();
+		}
 		return $array;
 	}
 

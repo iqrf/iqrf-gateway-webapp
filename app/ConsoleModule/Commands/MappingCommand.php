@@ -20,10 +20,12 @@ declare(strict_types = 1);
 
 namespace App\ConsoleModule\Commands;
 
+use App\Models\Database\Entities\Mapping;
 use App\Models\Database\EntityManager;
 use App\Models\Database\Repositories\MappingRepository;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
 
 abstract class MappingCommand extends EntityManagerCommand {
@@ -44,6 +46,22 @@ abstract class MappingCommand extends EntityManagerCommand {
 	}
 
 	/**
+	 * Asks for the mapping type
+	 * @param InputInterface $input Command input
+	 * @param OutputInterface $output Command output
+	 * @return string Mapping type
+	 */
+	protected function askType(InputInterface $input, OutputInterface $output): string {
+		$type = $input->getOption('type');
+		while ($type === null || !in_array($type, Mapping::TYPES, true)) {
+			$helper = $this->getHelper('question');
+			$question = new ChoiceQuestion('Please select mapping type: ', Mapping::TYPES, Mapping::TYPE_SPI);
+			$type = $helper->ask($input, $output, $question);
+		}
+		return $type;
+	}
+
+	/**
 	 * Asks for the mapping name
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
@@ -57,6 +75,28 @@ abstract class MappingCommand extends EntityManagerCommand {
 			$name = $helper->ask($input, $output, $question);
 		}
 		return $name;
+	}
+
+	/**
+	 * Asks for existing mapping name
+	 * @param InputInterface $input Command input
+	 * @param OutputInterface $output Command output
+	 * @return Mapping Mapping entity
+	 */
+	protected function askExistingName(InputInterface $input, OutputInterface $output): Mapping {
+		$name = $input->getOption('name');
+		$mapping = null;
+		if ($name !== null) {
+			$mapping = $this->repository->findMappingByName($name);
+		}
+		while ($mapping === null) {
+			$helper = $this->getHelper('question');
+			$mappings = $this->repository->listMappingNames();
+			$question = new ChoiceQuestion('Please select mapping: ', $mappings);
+			$name = $helper->ask($input, $output, $question);
+			$mapping = $this->repository->findMappingByName($name);
+		}
+		return $mapping;
 	}
 
 	/**
@@ -83,9 +123,9 @@ abstract class MappingCommand extends EntityManagerCommand {
 	 */
 	protected function askBusPin(InputInterface $input, OutputInterface $output): int {
 		$busPin = $input->getOption('bus pin');
-		while ($busPin === null || !ctype_digit($busPin)) {
+		while ($busPin === null || !$this->isValidPinNumber($busPin)) {
 			$helper = $this->getHelper('question');
-			$question = new Question('Please enter the mapping bus enable pin number :');
+			$question = new Question('Please enter the mapping bus enable pin number: ');
 			$busPin = $helper->ask($input, $output, $question);
 
 		}
@@ -100,9 +140,9 @@ abstract class MappingCommand extends EntityManagerCommand {
 	 */
 	protected function askPgmPin(InputInterface $input, OutputInterface $output): int {
 		$pgmPin = $input->getOption('pgm pin');
-		while ($pgmPin === null || !ctype_digit($pgmPin)) {
+		while ($pgmPin === null || !$this->isValidPinNumber($pgmPin)) {
 			$helper = $this->getHelper('question');
-			$question = new Question('Please enter the mapping programming mode switch pin number :');
+			$question = new Question('Please enter the mapping programming mode switch pin number: ');
 			$pgmPin = $helper->ask($input, $output, $question);
 
 		}
@@ -117,13 +157,41 @@ abstract class MappingCommand extends EntityManagerCommand {
 	 */
 	protected function askPowerPin(InputInterface $input, OutputInterface $output): int {
 		$powerPin = $input->getOption('power pin');
-		while ($powerPin === null || !ctype_digit($powerPin)) {
+		while ($powerPin === null || !$this->isValidPinNumber($powerPin)) {
 			$helper = $this->getHelper('question');
-			$question = new Question('Please enter the mapping power enable pin number :');
+			$question = new Question('Please enter the mapping power enable pin number: ');
 			$powerPin = $helper->ask($input, $output, $question);
 
 		}
 		return intval($powerPin);
+	}
+
+	/**
+	 * Asks for the mapping UART baud rate
+	 * @param InputInterface $input Command input
+	 * @param OutputInterface $output Command output
+	 * @return int Mapping UART baud rate
+	 */
+	protected function askBaudRate(InputInterface $input, OutputInterface $output): int {
+		$baudRate = $input->getOption('baud rate');
+		while ($baudRate === null || !ctype_digit($baudRate)) {
+			$helper = $this->getHelper('question');
+			$question = new ChoiceQuestion('Please select the mapping UART baud rate: ', Mapping::BAUD_RATES, Mapping::BAUD_RATE_DEFAULT);
+			$baudRate = $helper->ask($input, $output, $question);
+		}
+		return intval($baudRate);
+	}
+
+	/**
+	 * Checks if number is a valid pin number
+	 * @param string $number Pin number candidate
+	 * @return bool true if candidate is valid number, false otherwise
+	 */
+	private function isValidPinNumber(string $number): bool {
+		if ($number[0] === '-') {
+			return ctype_digit(substr($number, 1));
+		}
+		return ctype_digit($number);
 	}
 
 }

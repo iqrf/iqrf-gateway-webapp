@@ -30,12 +30,24 @@ use function assert;
 class MappingRepository extends EntityRepository {
 
 	/**
-	 * Retrieve all mappings
-	 * @return array<Mapping> Mappings
+	 * Finds mapping by specified name
+	 * @param string $name Mapping name
+	 * @return Mapping|null Mapping entity
 	 */
-	public function findMappings(): array {
+	public function findMappingByName(string $name): ?Mapping {
+		$mapping = $this->findOneBy(['name' => $name]);
+		assert($mapping instanceof Mapping || $mapping === null);
+		return $mapping;
+	}
+
+	/**
+	 * Finds mappings of specified type
+	 * @param string $type Mapping type
+	 * @return array<Mapping> Array of mapping entities
+	 */
+	public function findMappingsByType(string $type): array {
 		$array = [];
-		foreach ($this->findAll() as $mapping) {
+		foreach ($this->findBy(['type' => $type]) as $mapping) {
 			assert($mapping instanceof Mapping);
 			array_push($array, $mapping);
 		}
@@ -43,10 +55,10 @@ class MappingRepository extends EntityRepository {
 	}
 
 	/**
-	 * Lists all mappings as array of names
-	 * @return array<string> Mapping names
+	 * Lists names of existing mappings
+	 * @return array<string> Array of mapping names
 	 */
-	public function listMappings(): array {
+	public function listMappingNames(): array {
 		$array = [];
 		foreach ($this->findAll() as $mapping) {
 			assert($mapping instanceof Mapping);
