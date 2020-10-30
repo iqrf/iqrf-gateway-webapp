@@ -65,7 +65,7 @@ class Dpa {
 
 	/**
 	 * Returns DPA file prefixes
-	 * @return array|string[] DPA file prefixes
+	 * @return array<string> DPA file prefixes
 	 */
 	public function getFilePrefixes(): array {
 		$interface = $this->interface->toScalar();
