@@ -21,7 +21,7 @@ declare(strict_types = 1);
 
 namespace App\IqrfNetModule\Models;
 
-use App\IqrfNetModule\Enums\TrSeries;
+use App\IqrfNetModule\Entities\Dpa;
 use Iqrf\Repository\Entities\OsDpa;
 use Iqrf\Repository\Models\FilesManager;
 use Iqrf\Repository\Models\OsAndDpaManager;
@@ -71,23 +71,14 @@ class DpaManager {
 	/**
 	 * Returns DPA file name
 	 * @param string $osBuild IQRF OS build number
-	 * @param string $dpaVersion DPA version
-	 * @param string $interface Communication interface
-	 * @param TrSeries $trSeries TR series
-	 * @param string|null $rfMode RF mode
+	 * @param Dpa $dpa DPA entity
 	 * @return string|null DPA file name
 	 */
-	public function getFile(string $osBuild, string $dpaVersion, string $interface, TrSeries $trSeries, ?string $rfMode = null): ?string {
-		$path = $this->osDpaManager->get($osBuild, $dpaVersion)[0]->getDownloadPath();
+	public function getFile(string $osBuild, Dpa $dpa): ?string {
+		$path = $this->osDpaManager->get($osBuild, $dpa->getVersion())[0]->getDownloadPath();
 		$this->filesManager->setPath($path);
-		$files = $this->filesManager->list()->getFiles();
-		$filePrefixes = [
-			'GeneralHWP-Coordinator-' . $rfMode . '-' . $interface . '-' . $trSeries->toScalar() . '-',
-			'HWP-Coordinator-' . $rfMode . '-' . $interface . '-' . $trSeries->toScalar() . '-',
-			'DPA-Coordinator-' . $interface . '-' . $trSeries->toScalar() . '-',
-		];
-		foreach ($files as $file) {
-			foreach ($filePrefixes as $filePrefix) {
+		foreach ($this->filesManager->list()->getFiles() as $file) {
+			foreach ($dpa->getFilePrefixes() as $filePrefix) {
 				if (Strings::startsWith($file->getName(), $filePrefix)) {
 					$fileContent = $this->filesManager->download($file->getName());
 					$filePath = $file->getName();

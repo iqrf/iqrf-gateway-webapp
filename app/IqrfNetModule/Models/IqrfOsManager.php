@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\IqrfNetModule\Models;
 
+use App\IqrfNetModule\Entities\Dpa;
 use App\IqrfNetModule\Entities\IqrfOs;
 use App\IqrfNetModule\Enums\TrSeries;
 use App\Models\Database\Entities\IqrfOsPatch;
@@ -96,15 +97,14 @@ class IqrfOsManager {
 
 	/**
 	 * Returns files to upload
-	 * @param IqrfOs $currentOs Current IQRF OS entity
+	 * @param string $fromBuild Current IQRF OS build
 	 * @param string $toBuild Target IQRF OS build
-	 * @param string $dpa DPA version
-	 * @param string|null $rfMode RF mode
+	 * @param Dpa $dpa DPA entity
 	 * @return array<string> Files to upload
 	 */
-	public function getFiles(IqrfOs $currentOs, string $toBuild, string $dpa, string $interface, ?string $rfMode = null): array {
-		$files = $this->getOsFiles($currentOs->getBuild(), $toBuild);
-		$files[] = $this->dpaManager->getFile($toBuild, $dpa, $interface, $currentOs->getTrSeries(), $rfMode);
+	public function getFiles(string $fromBuild, string $toBuild, Dpa $dpa): array {
+		$files = $this->getOsFiles($fromBuild, $toBuild);
+		$files[] = $this->dpaManager->getFile($toBuild, $dpa);
 		return $files;
 	}
 
