@@ -48,9 +48,9 @@ import 'prismjs/themes/prism.css';
 export default class JsonMessage extends Vue {
 
 	/**
-	 * @property {string|null} message Message
+	 * @property {string} message Message
 	 */
-	@Prop({required: true, default: null}) message!: string|null
+	@Prop({required: true, default: null}) message!: string
 
 	/**
 	 * @property {string} type Message type

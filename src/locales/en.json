@@ -1203,6 +1203,9 @@
 				"addressOverwrite": "Set own NADR",
 				"timeout": "Custom DPA timeout (ms)",
 				"timeoutOverwrite": "Set own DPA timeout",
+				"autoRepeat": "Auto Repeat",
+				"autoRepeatInterval": "Repeat interval",
+				"autoRepeatTime": "x 100 ms",
 				"messages": {
 					"invalid": {
 						"address": "Invalid custom NADR has been entered. It has to be a decimal number from 0 to 239.",
@@ -1212,7 +1215,8 @@
 						"pnum": "PNUM byte should be 2 hexadecimal characters long.",
 						"pcmd": "PCMD byte should be 2 hexadecimal characters long, higher nibble can be a character between 0 and 7.",
 						"hwpid": "HWPID bytes should be 4 hexadecimal characters long.",
-						"pdata": "PDATA should be 0 to 57 bytes long, bytes separated by a dot."
+						"pdata": "PDATA should be 0 to 57 bytes long, bytes separated by a dot.",
+						"autoRepeatInterval": "Auto repeat interval should be an integer between 1 and 36000."
 					},
 					"missing": {
 						"address": "Please enter the custom NADR.",

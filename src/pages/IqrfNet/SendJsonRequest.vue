@@ -46,10 +46,10 @@
 		</CCard>
 		<div>
 			<CRow>
-				<CCol v-if='request !== null' md='6'>
+				<CCol v-if='request !== ""' md='6'>
 					<JsonMessage :message='request' type='request' source='sendJson' />
 				</CCol>
-				<CCol v-if='response !== null' md='6'>
+				<CCol v-if='response !== ""' md='6'>
 					<JsonMessage :message='response' type='response' source='sendJson' />
 				</CCol>
 			</CRow>
@@ -116,14 +116,14 @@ export default class SendJsonRequest extends Vue {
 	private reconnectAttempt = 0
 
 	/**
-	 * @var {string|null} request Daemon api request message, used in message card
+	 * @var {string} request Daemon api request message, used in message card
 	 */
-	private request: string|null = null
+	private request = ''
 
 	/**
-	 * @var {string|null} response Daemon api response message, used in message card
+	 * @var {string} response Daemon api response message, used in message card
 	 */
-	private response: string|null = null
+	private response = ''
 
 	/**
 	 * Component unsubscribe function
@@ -244,7 +244,7 @@ export default class SendJsonRequest extends Vue {
 		}
 		options.callback = () => this.msgId = null;
 		this.request = JSON.stringify(json, null, 4);
-		this.response = null;
+		this.response = '';
 		IqrfNetService.sendJson(options)
 			.then((msgId: string) => this.msgId = msgId);
 	}
