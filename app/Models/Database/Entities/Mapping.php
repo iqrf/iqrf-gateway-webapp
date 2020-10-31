@@ -58,7 +58,7 @@ class Mapping implements JsonSerializable {
 	/**
 	 * Supported mapping UART baud rates
 	 */
-	public const BAUD_RATES = ['1200', '2400', '4800', '9600', '19200', '38400', '57600', '115200', '230400'];
+	public const BAUD_RATES = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400];
 
 	/**
 	 * @var string Mapping type
@@ -237,6 +237,9 @@ class Mapping implements JsonSerializable {
 	 * @param int|null $baudRate Mapping UART baud rate
 	 */
 	public function setBaudRate(?int $baudRate = null): void {
+		if ($baudRate !== null && !in_array($baudRate, self::BAUD_RATES, true)) {
+			return;
+		}
 		$this->baudRate = $baudRate;
 	}
 
@@ -253,7 +256,7 @@ class Mapping implements JsonSerializable {
 				'powerEnableGpioPin' => $this->getPowerPin(),
 			],
 		];
-		if ($this->getType() === self::TYPE_SPI) {
+		if ($this->getType() === self::TYPE_UART) {
 			$array[$this->getName()]['baudRate'] = $this->getBaudRate();
 		}
 		return $array;
