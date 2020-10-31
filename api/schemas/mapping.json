@@ -1,0 +1,63 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/mapping.json",
+	"type": "object",
+	"title": "Mapping schema",
+	"additionalProperties": false,
+	"examples": [
+		{
+			"name": "Raspberry Pi",
+			"IqrfInterface": "/dev/ttyS0",
+			"busEnableGpioPin": 7,
+			"pgmSwitchGpioPin": 22,
+			"powerEnableGpioPin": 23,
+			"baudRate": 57600
+		}
+	],
+	"required": [
+		"name",
+		"IqrfInterface",
+		"busEnableGpioPin",
+		"pgmSwitchGpioPin",
+		"powerEnableGpioPin"
+	],
+	"properties": {
+		"name": {
+			"$id": "#/properties/name",
+			"type": "string",
+			"title": "Mapping name",
+			"example": "Raspberry Pi"
+		},
+		"IqrfInterface": {
+			"$id": "#/properties/IqrfInterface",
+			"type": "string",
+			"title": "Device name",
+			"example": "/dev/ttyS0"
+		},
+		"busEnableGpioPin": {
+			"$id": "#/properties/busEnableGpioPin",
+			"type": "integer",
+			"title": "Bus enable pin",
+			"example": 7
+		},
+		"pgmSwitchGpioPin": {
+			"$id": "#/properties/pgmSwitchGpioPin",
+			"type": "integer",
+			"title": "Programming mode switch pin",
+			"example": 22
+		},
+		"powerEnableGpioPin": {
+			"$id": "#/properties/powerEnableGpioPin",
+			"type": "integer",
+			"title": "Power enable pin",
+			"example": 23
+		},
+		"baudRate": {
+			"$id": "#/properties/baudRate",
+			"type": "integer",
+			"title": "UART baud rate",
+			"enum": [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400],
+			"example": 57600
+		}
+	}
+}

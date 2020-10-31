@@ -212,13 +212,13 @@ class MappingTest extends TestCase {
 	 */
 	public function testJsonSerializeUart(): void {
 		$expected = [
-			self::NAME => [
-				'IqrfInterface' => self::INTERFACE,
-				'busEnableGpioPin' => self::BUS_PIN,
-				'pgmSwitchGpioPin' => self::PGM_PIN,
-				'powerEnableGpioPin' => self::POWER_PIN,
-				'baudRate' => self::UART_BAUD_RATE,
-			],
+			'id' => null,
+			'name' => self::NAME,
+			'IqrfInterface' => self::INTERFACE,
+			'busEnableGpioPin' => self::BUS_PIN,
+			'pgmSwitchGpioPin' => self::PGM_PIN,
+			'powerEnableGpioPin' => self::POWER_PIN,
+			'baudRate' => self::UART_BAUD_RATE,
 		];
 		Assert::same($expected, $this->mapping->jsonSerialize());
 	}
@@ -228,12 +228,12 @@ class MappingTest extends TestCase {
 	 */
 	public function testJsonSerializeSpi(): void {
 		$expected = [
-			self::NAME => [
-				'IqrfInterface' => self::INTERFACE,
-				'busEnableGpioPin' => self::BUS_PIN,
-				'pgmSwitchGpioPin' => self::PGM_PIN,
-				'powerEnableGpioPin' => self::POWER_PIN,
-			],
+			'id' => null,
+			'name' => self::NAME,
+			'IqrfInterface' => self::INTERFACE,
+			'busEnableGpioPin' => self::BUS_PIN,
+			'pgmSwitchGpioPin' => self::PGM_PIN,
+			'powerEnableGpioPin' => self::POWER_PIN,
 		];
 		$this->mapping->setType('spi');
 		Assert::same($expected, $this->mapping->jsonSerialize());

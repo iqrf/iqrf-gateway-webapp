@@ -245,19 +245,19 @@ class Mapping implements JsonSerializable {
 
 	/**
 	 * Returns JSON serialized mapping data
-	 * @return array<string, array<string, int|string>> JSON serialized mapping data
+	 * @return array<string, string|int> JSON serialized mapping data
 	 */
 	public function jsonSerialize(): array {
 		$array = [
-			$this->getName() => [
-				'IqrfInterface' => $this->getInterface(),
-				'busEnableGpioPin' => $this->getBusPin(),
-				'pgmSwitchGpioPin' => $this->getPgmPin(),
-				'powerEnableGpioPin' => $this->getPowerPin(),
-			],
+			'id' => $this->getId(),
+			'name' => $this->getName(),
+			'IqrfInterface' => $this->getInterface(),
+			'busEnableGpioPin' => $this->getBusPin(),
+			'pgmSwitchGpioPin' => $this->getPgmPin(),
+			'powerEnableGpioPin' => $this->getPowerPin(),
 		];
 		if ($this->getType() === self::TYPE_UART) {
-			$array[$this->getName()]['baudRate'] = $this->getBaudRate();
+			$array['baudRate'] = $this->getBaudRate();
 		}
 		return $array;
 	}

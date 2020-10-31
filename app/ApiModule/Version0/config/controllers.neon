@@ -14,6 +14,7 @@ services:
 	- App\ApiModule\Version0\Controllers\GatewayController
 	- App\ApiModule\Version0\Controllers\InstallationController
 	- App\ApiModule\Version0\Controllers\IqrfController
+	- App\ApiModule\Version0\Controllers\MappingController
 	- App\ApiModule\Version0\Controllers\MenderConfigController
 	- App\ApiModule\Version0\Controllers\NetworkController
 	- App\ApiModule\Version0\Controllers\OpenApiController

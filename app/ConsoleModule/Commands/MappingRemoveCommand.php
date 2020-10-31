@@ -57,7 +57,7 @@ class MappingRemoveCommand extends MappingCommand {
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$style = new SymfonyStyle($input, $output);
 		$style->title('Remove a mapping');
-		$mapping = $this->askExistingName($input, $output);
+		$mapping = $this->askId($input, $output);
 		$helper = $this->getHelper('question');
 		$question = new ConfirmationQuestion('Do you really want to remove mapping "' . $mapping->getName() . '"? (y/n) ', false);
 		if (!$helper->ask($input, $output, $question)) {

@@ -183,6 +183,26 @@ abstract class MappingCommand extends EntityManagerCommand {
 	}
 
 	/**
+	 * Asks for the mapping id
+	 * @param InputInterface $input Command input
+	 * @param OutputInterface $output Command output
+	 * @return Mapping Mapping
+	 */
+	protected function askId(InputInterface $input, OutputInterface $output): Mapping {
+		$mappingId = $input->getOption('mapping id');
+		$mapping = ($mappingId !== null) ? $this->repository->find($mappingId) : null;
+		$helper = $this->getHelper('question');
+		while ($mapping === null) {
+			$mappings = $this->repository->listMappingNames();
+			$question = new ChoiceQuestion('Please select mapping ID: ', $mappings);
+			$mappingId = array_search($helper->ask($input, $output, $question), $mappings, true);
+			$mapping = $this->repository->find($mappingId);
+		}
+		assert($mapping instanceof Mapping);
+		return $mapping;
+	}
+
+	/**
 	 * Checks if number is a valid pin number
 	 * @param string $number Pin number candidate
 	 * @return bool true if candidate is valid number, false otherwise

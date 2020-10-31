@@ -44,6 +44,7 @@ class MappingEditCommand extends MappingCommand {
 	protected function configure(): void {
 		$this->setDescription('Adds a new mapping');
 		$definitions = [
+			new InputOption('mapping id', ['mapping-id'], InputOption::VALUE_REQUIRED, 'Mapping ID'),
 			new InputOption('type', ['type'], InputOption::VALUE_REQUIRED, 'Mapping type'),
 			new InputOption('name', ['name'], InputOption::VALUE_REQUIRED, 'Mapping name'),
 			new InputOption('interface', ['interface'], InputOption::VALUE_REQUIRED, 'Mapping device name'),
@@ -64,7 +65,7 @@ class MappingEditCommand extends MappingCommand {
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$style = new SymfonyStyle($input, $output);
 		$style->title('Edit mapping');
-		$mapping = $this->askExistingName($input, $output);
+		$mapping = $this->askId($input, $output);
 		$oldName = $mapping->getName();
 		$name = $this->askName($input, $output);
 		$type = $this->askExistingType($mapping, $input, $output);

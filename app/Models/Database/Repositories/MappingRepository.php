@@ -41,20 +41,6 @@ class MappingRepository extends EntityRepository {
 	}
 
 	/**
-	 * Finds mappings of specified type
-	 * @param string $type Mapping type
-	 * @return array<Mapping> Array of mapping entities
-	 */
-	public function findMappingsByType(string $type): array {
-		$array = [];
-		foreach ($this->findBy(['type' => $type]) as $mapping) {
-			assert($mapping instanceof Mapping);
-			array_push($array, $mapping);
-		}
-		return $array;
-	}
-
-	/**
 	 * Lists names of existing mappings
 	 * @return array<string> Array of mapping names
 	 */
