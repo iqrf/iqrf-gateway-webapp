@@ -79,7 +79,7 @@ class MappingController extends BaseController {
 	 *      '200':
 	 *          description: Success
 	 *          content:
-	 *              application/json
+	 *              application/json:
 	 *                  schema:
 	 *                      type: array
 	 *                      items:
