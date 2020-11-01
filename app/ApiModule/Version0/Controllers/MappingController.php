@@ -83,7 +83,7 @@ class MappingController extends BaseController {
 	 *                  schema:
 	 *                      type: array
 	 *                      items:
-	 *                          $ref: '#/components/schemas/Mapping'
+	 *                          $ref: '#/components/schemas/MappingDetail'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -104,7 +104,7 @@ class MappingController extends BaseController {
 	 *      content:
 	 *          application/json:
 	 *              schema:
-	 *                  $ref: '#/components/schemas/MappingCreate'
+	 *                  $ref: '#/components/schemas/Mapping'
 	 *  responses:
 	 *      '201':
 	 *          description: Created
@@ -122,7 +122,7 @@ class MappingController extends BaseController {
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
 			$json = $request->getJsonBody(false);
-			$this->validator->validateRequest('mappingCreate', $request);
+			$this->validator->validateRequest('mapping', $request);
 		} catch (JsonException $e) {
 			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
 		} catch (InvalidJsonException $e) {
@@ -150,7 +150,7 @@ class MappingController extends BaseController {
 	 *          content:
 	 *              application/json:
 	 *                  schema:
-	 *                      $ref: '#/components/schemas/Mapping'
+	 *                      $ref: '#/components/schemas/MappingDetail'
 	 *      '404':
 	 *          description: Mapping not found
 	 * ")
@@ -210,7 +210,7 @@ class MappingController extends BaseController {
 	 *      content:
 	 *          application/json:
 	 *              schema:
-	 *                  $ref: '#/components/schemas/MappingCreate'
+	 *                  $ref: '#/components/schemas/Mapping'
 	 *  responses:
 	 *      '200':
 	 *          description: Success
@@ -234,7 +234,7 @@ class MappingController extends BaseController {
 		}
 		assert($mapping instanceof Mapping);
 		try {
-			$this->validator->validateRequest('mappingCreate', $request);
+			$this->validator->validateRequest('mapping', $request);
 			$json = $request->getJsonBody(false);
 		} catch (JsonException $e) {
 			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);

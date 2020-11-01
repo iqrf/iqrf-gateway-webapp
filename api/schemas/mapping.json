@@ -1,11 +1,12 @@
 {
 	"$schema": "http://json-schema.org/draft-07/schema",
-	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/mapping.json",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/mappingCreate.json",
 	"type": "object",
-	"title": "Mapping schema",
+	"title": "Create mapping schema",
 	"additionalProperties": false,
 	"examples": [
 		{
+			"type": "uart",
 			"name": "Raspberry Pi",
 			"IqrfInterface": "/dev/ttyS0",
 			"busEnableGpioPin": 7,
@@ -15,6 +16,7 @@
 		}
 	],
 	"required": [
+		"type",
 		"name",
 		"IqrfInterface",
 		"busEnableGpioPin",
@@ -22,6 +24,13 @@
 		"powerEnableGpioPin"
 	],
 	"properties": {
+		"type": {
+			"$id": "#/properties/type",
+			"type": "string",
+			"title": "Mapping type",
+			"enum": ["spi", "uart"],
+			"example": "uart"
+		},
 		"name": {
 			"$id": "#/properties/name",
 			"type": "string",

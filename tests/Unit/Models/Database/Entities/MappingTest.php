@@ -213,6 +213,7 @@ class MappingTest extends TestCase {
 	public function testJsonSerializeUart(): void {
 		$expected = [
 			'id' => null,
+			'type' => self::TYPE,
 			'name' => self::NAME,
 			'IqrfInterface' => self::INTERFACE,
 			'busEnableGpioPin' => self::BUS_PIN,
@@ -229,6 +230,7 @@ class MappingTest extends TestCase {
 	public function testJsonSerializeSpi(): void {
 		$expected = [
 			'id' => null,
+			'type' => 'spi',
 			'name' => self::NAME,
 			'IqrfInterface' => self::INTERFACE,
 			'busEnableGpioPin' => self::BUS_PIN,

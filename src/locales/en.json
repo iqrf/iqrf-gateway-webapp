@@ -236,7 +236,43 @@
 		},
 		"interfaceMapping": {
 			"boards": "Boards",
-			"interfaces": "Interfaces"
+			"interfaces": "Interfaces",
+			"addMapping": "Add mapping",
+			"setMapping": "Set mapping",
+			"editMapping": "Edit mapping",
+			"removeMapping": "Remove mapping",
+			"removeTitle": "Remove mapping",
+			"form": {
+				"addTitle": "Add mapping",
+				"editTitle": "Edit mapping",
+				"type": "Mapping type",
+				"types": {
+					"spi": "SPI",
+					"uart": "UART"
+				},
+				"name": "Mapping name",
+				"interface": "Mapping device name",
+				"powerPin": "Power enable GPIO pin",
+				"busPin": "Bus enable GPIO pin",
+				"pgmPin": "Programming mode switch GPIO pin",
+				"baudRate": "UART baud rate",
+				"messages": {
+					"typeSelect": "Please select mapping type.",
+					"name": "Please enter mapping name.",
+					"interface": "Please enter device name.",
+					"busPin": "Please enter bus enable pin number.",
+					"pgmPin": "Please enter programming mode switch pin number.",
+					"powerPin": "Please enter power enable pin number."
+				}
+			},
+			"messages": {
+				"invalid": "Invalid mapping content.",
+				"notFound": "Mapping not found.",
+				"removePrompt": "Do you really want to remove mapping {mapping}?",
+				"removeSuccess": "Mapping {mapping} has been successfully removed.",
+				"addSuccess": "Mapping {mapping} has been succesfully created.",
+				"editSuccess": "Mapping {mapping} has been successfully edited."
+			}
 		},
 		"iqmesh": {
 			"title": "IQMESH services",

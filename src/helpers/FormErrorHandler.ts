@@ -100,6 +100,23 @@ class FormErrorHandler {
 			Vue.$toast.error(i18n.t('config.apiKey.messages.notFound').toString());
 		}
 	}
+
+	/**
+	 * Handles mapping manager errors
+	 * @param error Caught axios error
+	 */
+	mappingError(error: AxiosError): void {
+		store.commit('spinner/HIDE');
+		if (error.response === undefined) {
+			console.error(error);
+			return;
+		}
+		if (error.response.status === 400) {
+			Vue.$toast.error(i18n.t('config.interfaceMappings.messages.invalid').toString());
+		} else if (error.response.status === 404) {
+			Vue.$toast.error(i18n.t('config.interfaceMappings.messages.notFound').toString());
+		}
+	}
 }
 
 export default new FormErrorHandler();

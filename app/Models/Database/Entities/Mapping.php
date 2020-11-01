@@ -250,6 +250,7 @@ class Mapping implements JsonSerializable {
 	public function jsonSerialize(): array {
 		$array = [
 			'id' => $this->getId(),
+			'type' => $this->getType(),
 			'name' => $this->getName(),
 			'IqrfInterface' => $this->getInterface(),
 			'busEnableGpioPin' => $this->getBusPin(),
