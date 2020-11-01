@@ -47,7 +47,7 @@
 			</template>
 			{{ $t('config.interfaceMapping.messages.removePrompt', {mapping: modalMapping}) }}
 			<template #footer>
-				<CButton color='danger' @click='showModal = false; deleteMapping = null'>
+				<CButton color='danger' @click='hideRemoveModal'>
 					{{ $t('forms.no') }}
 				</CButton>
 				<CButton color='success' @click='removeMapping'>
@@ -167,6 +167,15 @@ export default class InterfaceMappings extends Vue {
 	}
 
 	/**
+	 * Hides the remove modal
+	 */
+	private hideRemoveModal(): void {
+		this.showModal = false;
+		this.deleteMapping = null;
+		this.modalMapping = '';
+	}
+
+	/**
 	 * Removes a mapping from mappings database
 	 */
 	private removeMapping(): void {
@@ -184,6 +193,7 @@ export default class InterfaceMappings extends Vue {
 			})
 			.catch((error: AxiosError) => FormErrorHandler.mappingError(error));
 		this.deleteMapping = null;
+		this.modalMapping = '';
 	}
 
 	/**
