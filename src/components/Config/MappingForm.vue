@@ -2,7 +2,7 @@
 	<ValidationObserver v-slot='{invalid}'>
 		<CModal
 			:show.sync='modalShown'
-			:color='mappingId === null ? "success": "info"'
+			:color='mappingId === null ? "success": "primary"'
 			size='lg'
 		>
 			<template #header>
