@@ -8,7 +8,7 @@
 						<CCol md='6'>
 							<ValidationProvider
 								v-slot='{valid, touched, errors}'
-								rules='nadr|minLen:4|maxLen:4|required'
+								rules='nadr|minLen:2|maxLen:2|required'
 								:custom-messages='{
 									nadr: "iqrfnet.sendPacket.form.messages.invalid.nadr",
 									minLen: "iqrfnet.sendPacket.form.messages.invalid.nadr",
@@ -86,7 +86,7 @@
 								v-slot='{valid, touched, errors}'
 								rules='pdata'
 								:custom-messages='{
-									pdata: "iqrfnet.sendPacket.form.messages.invalid.hwpid"
+									pdata: "iqrfnet.sendPacket.form.messages.invalid.pdata"
 								}'
 							>
 								<CInput
@@ -192,12 +192,24 @@
 		</CCard>
 		<DpaMacros @set-packet='setPacket($event)' />
 		<div>
-			<CRow>
-				<CCol v-if='request !== ""' md='6'>
-					<JsonMessage :message='request' type='request' source='sendDpa' />
+			<CRow
+				v-for='i of requests.length'
+				:key='i'
+			>
+				<CCol md='6'>
+					<JsonMessage
+						:message='requests[i - 1]'
+						type='request'
+						source='sendDpa'
+					/>
 				</CCol>
-				<CCol v-if='response !== ""' md='6'>
-					<JsonMessage :message='response' type='response' source='sendDpa' />
+				<CCol md='6'>
+					<JsonMessage
+						v-if='responses.length >= i'
+						:message='responses[i-1]'
+						type='response'
+						source='sendDpa'
+					/>
 				</CCol>
 			</CRow>
 		</div>
@@ -205,7 +217,7 @@
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Component, Vue, Watch} from 'vue-property-decorator';
 import {MutationPayload} from 'vuex';
 import {CButton, CCard, CCardBody, CCardHeader, CCol, CForm, CInput, CInputCheckbox, CRow} from '@coreui/vue/src';
 import DpaMacros from '../../components/IqrfNet/DpaMacros.vue';
@@ -274,7 +286,7 @@ export default class SendDpaPacket extends Vue {
 	/**
 	 * @var {string} packetNadr Packet NADR bytes
 	 */
-	private packetNadr = '0000'
+	private packetNadr = '00'
 
 	/**
 	 * @var {string} packetPnum Packet PNUM byte
@@ -297,14 +309,14 @@ export default class SendDpaPacket extends Vue {
 	private packetPdata = ''
 
 	/**
-	 * @var {string} request Daemon api request message, used in message card
+	 * @var {Array<string>} request Daemon api request message, used in message card
 	 */
-	private request = ''
+	private requests: Array<string> = []
 
 	/**
-	 * @var {string} response Daemon api response message, used in message card
+	 * @var {Array<string>} response Daemon api response message, used in message card
 	 */
-	private response = ''
+	private responses: Array<string> = []
 
 	/**
 	 * @var {number} timeout Default daemon api message timeout
@@ -326,10 +338,21 @@ export default class SendDpaPacket extends Vue {
 	 * @returns {string} Packet string
 	 */
 	get packet(): string {
-		let packet = this.packetNadr.substr(0, 2) + '.' + this.packetNadr.substr(2, 2) + '.';
+		let packet = this.packetNadr + '.00.';
 		packet += this.packetPnum + '.' + this.packetPcmd + '.';
 		packet += this.packetHwpid.substr(0, 2) + '.' + this.packetHwpid.substr(2, 2) + '.' + this.packetPdata;
 		return packet;
+	}
+
+	@Watch('packetPdata')
+	fixUpPacketNadr(): void {
+		if (this.packetPdata === '') {
+			return;
+		}
+		let pdata = this.packetPdata.replace(/[. ]/g, '').match(/.{1,2}/g);
+		if (pdata !== null) {
+			this.packetPdata = pdata.join('.');
+		}
 	}
 
 	/**
@@ -343,7 +366,7 @@ export default class SendDpaPacket extends Vue {
 		extend('maxLen', max);
 		extend('required', required);
 		extend('nadr', (nadr: string) => {
-			const re = new RegExp('^[0-9a-f]{2}00$', 'i');
+			const re = new RegExp('^[0-9a-f]{2}$', 'i');
 			return re.test(nadr);
 		});
 		extend('pnum', (pnum: string) => {
@@ -366,10 +389,10 @@ export default class SendDpaPacket extends Vue {
 			if (mutation.type === 'SOCKET_ONSEND' &&
 				mutation.payload.mType === 'iqrfRaw') {
 				if (this.autoRepeat) {
-					this.request = JSON.stringify(mutation.payload, null, 4) + '\n\n' + this.request;
+					this.requests.unshift(JSON.stringify(mutation.payload, null, 4));
 				} else {
-					this.request = JSON.stringify(mutation.payload, null, 4);
-					this.response = '';
+					this.requests = [JSON.stringify(mutation.payload, null, 4)];
+					this.responses = [];
 				}
 			}
 			if (mutation.type === 'SOCKET_ONMESSAGE' &&
@@ -397,7 +420,8 @@ export default class SendDpaPacket extends Vue {
 	 */
 	private handleInterval(): void {
 		if (this.autoRepeat) {
-			this.request = this.response = '';
+			this.requests = [];
+			this.responses = [];
 			this.intervalId = window.setInterval(this.handleSubmit, this.autoRepeatInterval*100);
 			return;
 		}
@@ -449,9 +473,9 @@ export default class SendDpaPacket extends Vue {
 	 */
 	private handleResponse(response: any): void {
 		if (this.autoRepeat) {
-			this.response = JSON.stringify(response, null, 4) + '\n\n' + this.response;
+			this.responses.unshift(JSON.stringify(response, null, 4));
 		} else {
-			this.response = JSON.stringify(response, null, 4);
+			this.responses = [JSON.stringify(response, null, 4)];
 		}
 		switch (response.data.status) {
 			case 0:

@@ -1211,11 +1211,11 @@
 						"address": "Invalid custom NADR has been entered. It has to be a decimal number from 0 to 239.",
 						"packet": "Invalid DPA packet has been entered.",
 						"timeout": "Invalid custom DPA timeout has been entered.",
-						"nadr": "NADR bytes should be 4 hexadecimal characters long, lower byte has to be 0.",
+						"nadr": "NADR bytes should be 2 hexadecimal characters long.",
 						"pnum": "PNUM byte should be 2 hexadecimal characters long.",
 						"pcmd": "PCMD byte should be 2 hexadecimal characters long, higher nibble can be a character between 0 and 7.",
 						"hwpid": "HWPID bytes should be 4 hexadecimal characters long.",
-						"pdata": "PDATA should be 0 to 57 bytes long, bytes separated by a dot.",
+						"pdata": "PDATA should be 0 to 57 hexadecimal bytes long, separated by a dot.",
 						"autoRepeatInterval": "Auto repeat interval should be an integer between 1 and 36000."
 					},
 					"missing": {
