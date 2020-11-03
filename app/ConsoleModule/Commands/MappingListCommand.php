@@ -52,11 +52,11 @@ class MappingListCommand extends MappingCommand {
 		$mappings = [];
 		foreach ($this->repository->findAll() as $mapping) {
 			assert($mapping instanceof Mapping);
-			array_push($mappings, [$mapping->getType(), $mapping->getName(), $mapping->getInterface(), $mapping->getBusPin(), $mapping->getPgmPin(), $mapping->getPowerPin(), $mapping->getBaudRate()]);
+			array_push($mappings, [$mapping->getId(), $mapping->getType(), $mapping->getName(), $mapping->getInterface(), $mapping->getBusPin(), $mapping->getPgmPin(), $mapping->getPowerPin(), $mapping->getBaudRate()]);
 		}
 		$style = new SymfonyStyle($input, $output);
 		$style->title('List mappings');
-		$style->table(['Type', 'Name', 'Interface', 'Bus pin', 'Pgm pin', 'Power pin', 'Baud rate'], $mappings);
+		$style->table(['ID', 'Type', 'Name', 'Interface', 'Bus pin', 'Pgm pin', 'Power pin', 'Baud rate'], $mappings);
 		return 0;
 	}
 

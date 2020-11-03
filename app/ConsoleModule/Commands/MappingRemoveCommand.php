@@ -43,7 +43,7 @@ class MappingRemoveCommand extends MappingCommand {
 	protected function configure(): void {
 		$this->setDescription('Remove mapping');
 		$definitions = [
-			new InputOption('name', ['name'], InputOption::VALUE_REQUIRED, 'Name of the mapping'),
+			new InputOption('mapping id', ['mapping-id'], InputOption::VALUE_REQUIRED, 'Mapping ID'),
 		];
 		$this->setDefinition(new InputDefinition($definitions));
 	}
@@ -59,7 +59,7 @@ class MappingRemoveCommand extends MappingCommand {
 		$style->title('Remove a mapping');
 		$mapping = $this->askId($input, $output);
 		$helper = $this->getHelper('question');
-		$question = new ConfirmationQuestion('Do you really want to remove mapping "' . $mapping->getName() . '"? (y/n) ', false);
+		$question = new ConfirmationQuestion('Do you really want to remove mapping "' . $mapping->getName() . ' (' . $mapping->getType() . ')' . '"? (y/n) ', false);
 		if (!$helper->ask($input, $output, $question)) {
 			return 0;
 		}

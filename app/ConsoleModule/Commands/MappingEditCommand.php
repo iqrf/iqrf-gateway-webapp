@@ -66,6 +66,7 @@ class MappingEditCommand extends MappingCommand {
 		$style = new SymfonyStyle($input, $output);
 		$style->title('Edit mapping');
 		$mapping = $this->askId($input, $output);
+		$style->warning('Mapping selected to edit: ' . $mapping->getName() . ' (' . $mapping->getType() . ')');
 		$oldName = $mapping->getName();
 		$name = $this->askName($input, $output);
 		$type = $this->askExistingType($mapping, $input, $output);

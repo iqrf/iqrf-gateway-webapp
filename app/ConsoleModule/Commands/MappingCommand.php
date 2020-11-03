@@ -78,28 +78,6 @@ abstract class MappingCommand extends EntityManagerCommand {
 	}
 
 	/**
-	 * Asks for existing mapping name
-	 * @param InputInterface $input Command input
-	 * @param OutputInterface $output Command output
-	 * @return Mapping Mapping entity
-	 */
-	protected function askExistingName(InputInterface $input, OutputInterface $output): Mapping {
-		$name = $input->getOption('name');
-		$mapping = null;
-		if ($name !== null) {
-			$mapping = $this->repository->findMappingByName($name);
-		}
-		while ($mapping === null) {
-			$helper = $this->getHelper('question');
-			$mappings = $this->repository->listMappingNames();
-			$question = new ChoiceQuestion('Please select mapping: ', $mappings);
-			$name = $helper->ask($input, $output, $question);
-			$mapping = $this->repository->findMappingByName($name);
-		}
-		return $mapping;
-	}
-
-	/**
 	 * Asks for the mapping device name
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
@@ -193,7 +171,7 @@ abstract class MappingCommand extends EntityManagerCommand {
 		$mapping = ($mappingId !== null) ? $this->repository->find($mappingId) : null;
 		$helper = $this->getHelper('question');
 		while ($mapping === null) {
-			$mappings = $this->repository->listMappingNames();
+			$mappings = $this->repository->listMappingNamesWithTypes();
 			$question = new ChoiceQuestion('Please select mapping ID: ', $mappings);
 			$mappingId = array_search($helper->ask($input, $output, $question), $mappings, true);
 			$mapping = $this->repository->find($mappingId);
