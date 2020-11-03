@@ -2,11 +2,14 @@
 	<div>
 		<CCard>
 			<CCardHeader>
+				<h3 class='float-left'>
+					{{ $t('config.websocket.interface.title') }}
+				</h3>
 				<CButton
 					color='success'
 					size='sm'
 					class='float-right'
-					to='/config/websocket/add'
+					to='/config/daemon/websocket/add'
 				>
 					<CIcon :content='icons.add' size='sm' />
 					{{ $t('table.actions.add') }}
@@ -78,7 +81,7 @@
 							<CButton
 								color='info'
 								size='sm'
-								:to='"/config/websocket/edit/" + item.instanceMessaging'
+								:to='"/config/daemon/websocket/edit/" + item.instanceMessaging'
 							>
 								<CIcon :content='icons.edit' size='sm' />
 								{{ $t('table.actions.edit') }}
@@ -227,9 +230,9 @@ export default class WebsocketInterfaceList extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook created
+	 * Vue lifecycle hook mounted
 	 */
-	created(): void {
+	mounted(): void {
 		if (this.versionNew) {
 			this.fields.splice(4, 0, {
 				key: 'tlsEnabled',
@@ -253,6 +256,7 @@ export default class WebsocketInterfaceList extends Vue {
 			.then((responses: Array<AxiosResponse>) => {
 				const messagings = responses[0].data.instances;
 				const services = responses[1].data.instances;
+				let instances: Array<WsInterface> = [];
 				for (const messaging of messagings) {
 					if (messaging.RequiredInterfaces === undefined ||
 							messaging.RequiredInterfaces === [] ||
@@ -265,7 +269,7 @@ export default class WebsocketInterfaceList extends Vue {
 						if (service.instance !== serviceInstance) {
 							continue;
 						}
-						this.instances.push({
+						instances.push({
 							messaging: messaging,
 							service: service,
 							instanceMessaging: messaging.instance,
@@ -276,6 +280,7 @@ export default class WebsocketInterfaceList extends Vue {
 						});
 					}
 				}
+				this.instances = instances;
 				this.$store.commit('spinner/HIDE');
 			})
 			.catch((error: AxiosError) => FormErrorHandler.configError(error));

@@ -2,12 +2,14 @@
 	<div>
 		<CCard>
 			<CCardHeader>
-				{{ $t('config.websocket.service.title') }}
+				<h3 class='float-left'>
+					{{ $t('config.websocket.service.title') }}
+				</h3>
 				<CButton
 					color='success'
 					size='sm'
 					class='float-right'
-					to='/config/websocket/add-service'
+					to='/config/daemon/websocket/add-service'
 				>
 					<CIcon :content='icons.add' size='sm' />
 					{{ $t('table.actions.add') }}
@@ -63,7 +65,7 @@
 							<CButton
 								color='info'
 								size='sm'
-								:to='"/config/websocket/edit-service/" + item.instance'
+								:to='"/config/daemon/websocket/edit-service/" + item.instance'
 							>
 								<CIcon :content='icons.edit' size='sm' />
 								{{ $t('table.actions.edit') }}
@@ -203,7 +205,7 @@ export default class WebsocketServiceList extends Vue {
 	/**
 	 * Vue lifecycle hook created
 	 */
-	created(): void {
+	mounted(): void {
 		if (this.versionNew) {
 			this.fields.splice(3, 0, {
 				key: 'tlsEnabled',

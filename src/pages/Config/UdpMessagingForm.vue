@@ -1,12 +1,14 @@
 <template>
-	<div>
-		<h1 v-if='$route.path === "/config/udp/add"'>
-			{{ $t('config.udp.add') }}
-		</h1>
-		<h1 v-else>
-			{{ $t('config.udp.edit') }}
-		</h1>
-		<CCard body-wrapper>
+	<CCard>
+		<CCardHeader>
+			<h3 v-if='$route.path === "/config/daemon/udp/add"'>
+				{{ $t('config.udp.add') }}
+			</h3>
+			<h3 v-else>
+				{{ $t('config.udp.edit') }}
+			</h3>
+		</CCardHeader>
+		<CCardBody>
 			<ValidationObserver v-slot='{ invalid }'>
 				<CForm @submit.prevent='saveConfig'>
 					<ValidationProvider
@@ -62,13 +64,13 @@
 					</CButton>
 				</CForm>
 			</ValidationObserver>
-		</CCard>
-	</div>
+		</CCardBody>
+	</CCard>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CForm, CInput} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
@@ -81,6 +83,8 @@ import { AxiosError, AxiosResponse } from 'axios';
 	components: {
 		CButton,
 		CCard,
+		CCardBody,
+		CCardHeader,
 		CForm,
 		CInput,
 		ValidationObserver,
@@ -122,7 +126,7 @@ export default class UdpMessagingForm extends Vue {
 	 * @returns {string} Page title
 	 */
 	get pageTitle(): string {
-		return this.$route.path === '/config/udp/add' ?
+		return this.$route.path === '/config/daemon/udp/add' ?
 			this.$t('config.udp.add').toString() : this.$t('config.udp.edit').toString();
 	}
 
@@ -131,7 +135,7 @@ export default class UdpMessagingForm extends Vue {
 	 * @returns {string} Button text
 	 */
 	get submitButton(): string {
-		return this.$route.path === '/config/udp/add' ?
+		return this.$route.path === '/config/daemon/udp/add' ?
 			this.$t('forms.add').toString() : this.$t('forms.save').toString();
 	}
 
@@ -157,7 +161,7 @@ export default class UdpMessagingForm extends Vue {
 				this.configuration = response.data;
 			})
 			.catch((error: AxiosError) => {
-				this.$router.push('/config/udp/');
+				this.$router.push('/config/daemon/messagings/');
 				FormErrorHandler.configError(error);
 			});
 	}
@@ -183,7 +187,7 @@ export default class UdpMessagingForm extends Vue {
 	 */
 	private successfulSave(): void {
 		this.$store.commit('spinner/HIDE');
-		if (this.$route.path === '/config/udp/add') {
+		if (this.$route.path === '/config/daemon/udp/add') {
 			this.$toast.success(
 				this.$t('config.udp.messages.add.success', {instance: this.configuration.instance})
 					.toString());
@@ -193,7 +197,7 @@ export default class UdpMessagingForm extends Vue {
 					.toString()
 			);
 		}
-		this.$router.push('/config/udp/');
+		this.$router.push('/config/daemon/messagings/');
 	}
 }
 </script>

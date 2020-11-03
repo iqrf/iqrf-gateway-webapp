@@ -1,7 +1,9 @@
 <template>
-	<div>
-		<h1>{{ $t('translatorConfig.title') }}</h1>
-		<CCard body-wrapper>
+	<CCard>
+		<CCardHeader>
+			<h3>{{ $t('translatorConfig.title') }}</h3>
+		</CCardHeader>
+		<CCardBody>
 			<ValidationObserver v-if='config !== null' v-slot='{ invalid }'>
 				<CForm @submit.prevent='processSubmit'>
 					<CRow>
@@ -157,13 +159,13 @@
 					</CButton>
 				</CForm>
 			</ValidationObserver>
-		</CCard>
-	</div>
+		</CCardBody>
+	</CCard>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CForm, CIcon, CInput} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CIcon, CInput} from '@coreui/vue/src';
 import {cilLockLocked, cilLockUnlocked} from '@coreui/icons';
 import {between, integer, required} from 'vee-validate/dist/rules';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
@@ -197,6 +199,8 @@ interface Translator {
 	components: {
 		CButton,
 		CCard,
+		CCardBody,
+		CCardHeader,
 		CForm,
 		CIcon,
 		CInput,
@@ -264,6 +268,12 @@ export default class TranslatorConfig extends Vue {
 			const regex = RegExp('^gateway\\/[A-F0-9]{16}\\/rest\\/requests\\/\\+\\/#$');
 			return regex.test(topic);
 		});
+	}
+
+	/**
+	 * Vue lifecycle hook mounted
+	 */
+	mounted(): void {
 		this.getConfig();
 	}
 

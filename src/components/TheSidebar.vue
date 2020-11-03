@@ -50,6 +50,7 @@ interface NavMemberItem {
 	roles: Array<string>
 	target?: string
 	to?: string
+	items?: Array<NavMemberItem>
 }
 
 interface NavMemberIcon {
@@ -58,9 +59,10 @@ interface NavMemberIcon {
 
 interface NavMember {
 	_name: string
+	_children?: Array<NavMember>
 	feature?: string
 	href?: string
-	icon: NavMemberIcon
+	icon?: NavMemberIcon
 	items?: Array<NavMemberItem>
 	name: VueI18n.TranslateResult
 	roles?: Array<string>
@@ -173,131 +175,76 @@ export default class TheSidebar extends Vue {
 						route: '/config/',
 						icon: {content: cilSettings},
 						roles: ['power', 'normal'],
-						items: [
+						_children: [
 							{
-								name: this.$t('config.main.title'),
-								to: '/config/main/',
-								roles: ['power'],
-							},
-							{
-								name: this.$t('config.components.title'),
-								to: '/config/component/',
-								roles: ['power'],
-							},
-							{
-								name: this.$t('config.selectedComponents.title'),
-								to: '/config/component/',
-								roles: ['normal'],
-							},
-							{
-								name: this.$t('config.iqrfSpi.title'),
-								to: '/config/iqrf-spi/',
-								component: 'iqrf::IqrfSpi',
+								_name: 'CSidebarNavDropdown',
+								name: this.$t('config.daemon.title'),
+								to: '/config/daemon/',
+								route: '/config/daemon/',
 								roles: ['power', 'normal'],
+								items: [
+									{
+										name: this.$t('config.main.title'),
+										to: '/config/daemon/main/',
+										roles: ['power'],
+									},
+									{
+										name: this.$t('config.components.title'),
+										to: '/config/daemon/component/',
+										roles: ['power'],
+									},
+									{
+										name: this.$t('config.selectedComponents.title'),
+										to: '/config/daemon/component/',
+										roles: ['normal'],
+									},
+									{
+										name: this.$t('config.daemon.interfaces.title'),
+										to: '/config/daemon/interfaces/',
+										roles: ['power', 'normal'],
+									},
+									{
+										name: this.$t('config.daemon.messagings.title'),
+										to: '/config/daemon/messagings/',
+										roles: ['power', 'normal'],
+									},
+									{
+										name: this.$t('config.scheduler.title'),
+										to: '/config/daemon/scheduler/',
+										roles: ['power', 'normal'],
+									},
+									{
+										name: this.$t('config.daemon.misc.title'),
+										to: '/config/daemon/misc/',
+										roles: ['power', 'normal'],
+									}
+								]
 							},
-							{
-								name: this.$t('config.iqrfCdc.title'),
-								to: '/config/iqrf-cdc/',
-								component: 'iqrf::IqrfCdc',
-								roles: ['power', 'normal'],
-							},
-							{
-								name: this.$t('config.iqrfUart.title'),
-								to: '/config/iqrf-uart/',
-								component: 'iqrf::IqrfUart',
-								roles: ['power', 'normal'],
-							},
-							{
-								name: this.$t('config.iqrfDpa.title'),
-								to: '/config/iqrf-dpa/',
-								roles: ['power', 'normal'],
-							},
-							{
-								name: this.$t('config.iqrfRepository.title'),
-								to: '/config/iqrf-repository/',
-								roles: ['power', 'normal'],
-							},
-							{
-								name: this.$t('config.iqrfInfo.title'),
-								to: '/config/iqrf-info/',
-								roles: ['power', 'normal'],
-							},
-							{
-								name: this.$t('config.iqmesh.title'),
-								to: '/config/iqmesh/',
-								roles: ['power'],
-							},
-							{
-								name: this.$t('config.mqtt.title'),
-								to: '/config/mqtt/',
-								roles: ['power', 'normal'],
-							},
-							{
-								name: this.$t('config.websocket.title'),
-								to: '/config/websocket/',
-								roles: ['power', 'normal'],
-							},
-							{
-								name: this.$t('config.mq.title'),
-								to: '/config/mq/',
-								roles: ['power', 'normal'],
-							},
-							{
-								name: this.$t('config.udp.title'),
-								to: '/config/udp/',
-								roles: ['power', 'normal'],
-							},
-							{
-								name: this.$t('config.jsonRawApi.title'),
-								to: '/config/json-raw-api/',
-								roles: ['power'],
-							},
-							{
-								name: this.$t('config.jsonMngMetaDataApi.title'),
-								to: '/config/json-mng-meta-data-api/',
-								roles: ['power', 'normal'],
-							},
-							{
-								name: this.$t('config.jsonSplitter.title'),
-								to: '/config/json-splitter/',
-								roles: ['power'],
-							},
-							{
-								name: this.$t('config.scheduler.title'),
-								to: '/config/scheduler/',
-								roles: ['power', 'normal'],
-							},
-							{
-								name: this.$t('config.tracer.title'),
-								to: '/config/tracer/',
-								roles: ['power', 'normal'],
-							},
-							{
-								name: this.$t('config.monitor.title'),
-								to: '/config/monitor/',
-								roles: ['power', 'normal'],
-							},
-							{
-								name: this.$t('config.migration.title'),
-								to: '/config/migration/',
-								roles: ['power', 'normal'],
-							},
-							{
+							{	
+								_name: 'CSidebarNavItem',
 								name: this.$t('translatorConfig.title'),
 								to: '/config/translator/',
 								feature: 'iqrfGatewayTranslator',
 								roles: ['power', 'normal'],
 							},
-							{
+							{	
+								_name: 'CSidebarNavItem',
 								name: this.$t('controllerConfig.title'),
 								to: '/config/controller/',
 								feature: 'iqrfGatewayController',
 								roles: ['power', 'normal'],
 							},
 							{
+								_name: 'CSidebarNavItem',
 								name: this.$t('config.mender.title'),
 								to: '/config/mender/',
 								feature: 'mender',
+								roles: ['power', 'normal']
+							},
+							{
+								_name: 'CSidebarNavItem',
+								name: this.$t('config.migration.title'),
+								to: '/config/migration/',
 								roles: ['power', 'normal']
 							},
 						],
@@ -473,19 +420,25 @@ export default class TheSidebar extends Vue {
 					return null;
 				}
 				if (element.items !== undefined) {
-					let items: Array<NavMemberItem> = [];
-					element.items.forEach((item: NavMemberItem) => {
+					element.items = this.filterItems(element.items);
+				}
+				if (element._children !== undefined) {
+					let children: Array<NavMember> = [];
+					element._children.forEach((item: NavMember) => {
 						if (item.roles !== undefined &&
-								!item.roles.includes(this.$store.getters['user/getRole'])) {
-							return;
+							!item.roles.includes(this.$store.getters['user/getRole'])) {
+							return null;
 						}
 						if (item.feature !== undefined &&
 							!this.$store.getters['features/isEnabled'](item.feature)) {
 							return;
 						}
-						items.push(item);
+						if (item.items !== undefined) {
+							item.items = this.filterItems(item.items);
+						}
+						children.push(item);
 					});
-					element.items = items;
+					element._children = children;
 				}
 				return element;
 			});
@@ -493,5 +446,22 @@ export default class TheSidebar extends Vue {
 		});
 	}
 
+	private filterItems(items: Array<NavMemberItem>): Array<NavMemberItem> {
+		let filteredItems: Array<NavMemberItem> = [];
+		items.forEach((item: NavMemberItem) => {
+			if (item.roles !== undefined &&
+				!item.roles.includes(this.$store.getters['user/getRole'])) {
+				return;
+			}
+			if (item.feature !== undefined &&
+				!this.$store.getters['features/isEnabled'](item.feature)) {
+				return;
+			}
+			filteredItems.push(item);
+		});
+		return filteredItems;
+	}
+
 }
+
 </script>

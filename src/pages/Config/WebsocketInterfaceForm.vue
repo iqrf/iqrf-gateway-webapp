@@ -1,12 +1,14 @@
 <template>
-	<div>
-		<h1 v-if='$route.path === "/config/websocket/add"'>
-			{{ $t('config.websocket.interface.add') }}
-		</h1>
-		<h1 v-else>
-			{{ $t('config.websocket.interface.edit') }}
-		</h1>
-		<CCard body-wrapper>
+	<CCard>
+		<CCardHeader>
+			<h3 v-if='$route.path === "/config/websocket/add"'>
+				{{ $t('config.websocket.interface.add') }}
+			</h3>
+			<h3 v-else>
+				{{ $t('config.websocket.interface.edit') }}
+			</h3>
+		</CCardHeader>
+		<CCardBody>
 			<ValidationObserver v-slot='{ invalid }'>
 				<CForm @submit.prevent='saveConfig'>
 					<ValidationProvider
@@ -60,13 +62,13 @@
 					</CButton>
 				</CForm>
 			</ValidationObserver>
-		</CCard>
-	</div>
+		</CCardBody>
+	</CCard>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
@@ -81,6 +83,8 @@ import compareVersions from 'compare-versions';
 	components: {
 		CButton,
 		CCard,
+		CCardBody,
+		CCardHeader,
 		CForm,
 		CInput,
 		CInputCheckbox,
@@ -182,7 +186,7 @@ export default class WebsocketInterfaceForm extends Vue {
 	 * @returns {string} Page title
 	 */
 	get pageTitle(): string {
-		return this.$route.path === '/config/websocket/add' ?
+		return this.$route.path === '/config/daemon/websocket/add' ?
 			this.$t('config.websocket.interface.add').toString() : this.$t('config.websocket.interface.edit').toString();
 	}
 	
@@ -191,7 +195,7 @@ export default class WebsocketInterfaceForm extends Vue {
 	 * @returns {string} Button text
 	 */
 	get submitButton(): string {
-		return this.$route.path === '/config/websocket/add' ?
+		return this.$route.path === '/config/daemon/websocket/add' ?
 			this.$t('forms.add').toString() : this.$t('forms.save').toString();
 	}
 
@@ -201,6 +205,12 @@ export default class WebsocketInterfaceForm extends Vue {
 	created(): void {
 		extend('integer', integer);
 		extend('required', required);
+	}
+
+	/**
+	 * Vue lifecycle hook mounted
+	 */
+	mounted(): void {
 		if (this.instance !== '') {
 			this.getConfig();
 		}
@@ -223,7 +233,7 @@ export default class WebsocketInterfaceForm extends Vue {
 					});
 			})
 			.catch((error: AxiosError) => {
-				this.$router.push('/config/websocket/');
+				this.$router.push('/config/daemon/messagings/');
 				FormErrorHandler.configError(error);
 			});
 	}
@@ -272,7 +282,7 @@ export default class WebsocketInterfaceForm extends Vue {
 	 */
 	private successfulSave(): void {
 		this.$store.commit('spinner/HIDE');
-		if (this.$route.path === '/config/websocket/add') {
+		if (this.$route.path === '/config/daemon/websocket/add') {
 			this.$toast.success(
 				this.$t('config.websocket.messages.add.success', {instance: this.messaging.instance})
 					.toString()
@@ -283,7 +293,7 @@ export default class WebsocketInterfaceForm extends Vue {
 					.toString()
 			);
 		}
-		this.$router.push('/config/websocket/');
+		this.$router.push('/config/daemon/messagings/');
 	}
 }
 </script>

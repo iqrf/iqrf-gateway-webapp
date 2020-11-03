@@ -1,168 +1,168 @@
 <template>
-	<div>
-		<h1 v-if='$route.path === "/config/tracer/add"'>
-			{{ $t('config.tracer.add') }}
-		</h1>
-		<h1 v-else>
-			{{ $t('config.tracer.edit') }}
-		</h1>
-		<CCard>
-			<CCardBody>
-				<ValidationObserver v-slot='{ invalid }'>
-					<CForm @submit.prevent='saveInstance'>
-						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
-							rules='required'
-							:custom-messages='{required: "config.tracer.form.messages.instance"}'
-						>
-							<CInput
-								v-model='componentInstance'
-								:label='$t("config.tracer.form.instance")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
-							/>
-						</ValidationProvider>
+	<CCard>
+		<CCardHeader>
+			<h3 v-if='$route.path === "/config/tracer/add"'>
+				{{ $t('config.tracer.add') }}
+			</h3>
+			<h3 v-else>
+				{{ $t('config.tracer.edit') }}
+			</h3>
+		</CCardHeader>
+		<CCardBody>
+			<ValidationObserver v-slot='{ invalid }'>
+				<CForm @submit.prevent='saveInstance'>
+					<ValidationProvider
+						v-slot='{ errors, touched, valid }'
+						rules='required'
+						:custom-messages='{required: "config.tracer.form.messages.instance"}'
+					>
 						<CInput
-							v-model='path'
-							:label='$t("config.tracer.form.path")'
+							v-model='componentInstance'
+							:label='$t("config.tracer.form.instance")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
 						/>
+					</ValidationProvider>
+					<CInput
+						v-model='path'
+						:label='$t("config.tracer.form.path")'
+					/>
+					<ValidationProvider
+						v-slot='{ errors, touched, valid }'
+						rules='required'
+						:custom-messages='{required: "config.tracer.form.messages.filename"}'
+					>
+						<CInput
+							v-model='filename'
+							:label='$t("config.tracer.form.filename")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
+						/>
+					</ValidationProvider>
+					<ValidationProvider
+						v-slot='{ errors, touched, valid }'
+						rules='integer|required|min:1'
+						:custom-messages='{
+							required: "config.tracer.form.messages.maxSizeMb",
+							min: "config.tracer.form.messages.maxSizeMb",
+							integer: "forms.messages.integer"
+						}'
+					>
+						<CInput
+							v-model.number='maxSize'
+							type='number'
+							:label='$t("config.tracer.form.maxSize")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
+						/>
+					</ValidationProvider>
+					<div v-if='versionNew'>
 						<ValidationProvider
+							v-if='versionNew'
 							v-slot='{ errors, touched, valid }'
-							rules='required'
-							:custom-messages='{required: "config.tracer.form.messages.filename"}'
-						>
-							<CInput
-								v-model='filename'
-								:label='$t("config.tracer.form.filename")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
-							/>
-						</ValidationProvider>
-						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
-							rules='integer|required|min:1'
+							rules='integer|min:0'
 							:custom-messages='{
-								required: "config.tracer.form.messages.maxSizeMb",
-								min: "config.tracer.form.messages.maxSizeMb",
-								integer: "forms.messages.integer"
+								integer: "forms.messages.integer",
+								min: "config.tracer.form.messages.maxAgeMinutes"
 							}'
 						>
 							<CInput
-								v-model.number='maxSize'
+								v-model.number='maxAgeMinutes'
 								type='number'
-								:label='$t("config.tracer.form.maxSize")'
+								min='0'
+								:label='$t("config.tracer.form.maxAgeMinutes") + " *"'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
 						</ValidationProvider>
-						<div v-if='versionNew'>
-							<ValidationProvider
-								v-if='versionNew'
-								v-slot='{ errors, touched, valid }'
-								rules='integer|min:0'
-								:custom-messages='{
-									integer: "forms.messages.integer",
-									min: "config.tracer.form.messages.maxAgeMinutes"
-								}'
-							>
-								<CInput
-									v-model.number='maxAgeMinutes'
-									type='number'
-									min='0'
-									:label='$t("config.tracer.form.maxAgeMinutes") + " *"'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
-								/>
-							</ValidationProvider>
-							<ValidationProvider
-								
-								v-slot='{ errors, touched, valid }'
-								rules='integer|min:0'
-								:custom-messages='{
-									integer: "forms.messages.integer",
-									min: "config.tracer.form.messages.maxNumber"
-								}'
-							>
-								<CInput
-									v-model.number='maxNumber'
-									type='number'
-									min='0'
-									:label='$t("config.tracer.form.maxNumber") + " *"'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
-								/>
-							</ValidationProvider>
-							<i>* {{ $t('config.tracer.form.messages.zeroValues') }}</i>
-						</div><br v-if='versionNew'>
-						<CInputCheckbox
-							:checked.sync='timestampFiles'
-							:label='$t("config.tracer.form.timestampFiles")'
-						/>
-						<h4>{{ $t("config.tracer.form.verbosityLevels.title") }}</h4>
-						<div
-							v-for='(level, i) of VerbosityLevels'
-							:key='i'
-							class='form-group'
+						<ValidationProvider
+							
+							v-slot='{ errors, touched, valid }'
+							rules='integer|min:0'
+							:custom-messages='{
+								integer: "forms.messages.integer",
+								min: "config.tracer.form.messages.maxNumber"
+							}'
 						>
-							<ValidationProvider
-								v-slot='{ errors, touched, valid }'
-								rules='integer|required'
-								:custom-messages='{
-									integer: "forms.messages.integer",
-									required: "config.tracer.form.messages.verbosityLevels.channel"
-								}'
-							>
-								<CInput
-									v-model.number='level.channel'
-									type='number'
-									:label='$t("config.tracer.form.channel")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
-								/>
-							</ValidationProvider>
-							<ValidationProvider
-								v-slot='{ errors, touched, valid }'
-								rules='required'
-								:custom-messages='{required: "config.tracer.form.messages.verbosityLevels.level"}'
-							>
-								<CSelect
-									:value.sync='level.level'
-									:label='$t("config.tracer.form.level")'
-									:placeholder='$t("config.tracer.form.messages.verbosityLevels.level")'
-									:options='selectOptions'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
-								/>
-							</ValidationProvider>
-							<CButton
-								v-if='VerbosityLevels.length > 1'
-								color='danger'
-								@click='removeLevel(i)'
-							>
-								{{ $t('config.tracer.form.verbosityLevels.remove') }}
-							</CButton>
-							<CButton
-								v-if='i === (VerbosityLevels.length - 1)'
-								color='success'
-								:disabled='level.channel === undefined || level.level === undefined'
-								@click='addLevel'
-							>
-								{{ $t('config.tracer.form.verbosityLevels.add') }}
-							</CButton>
-						</div>
-						<CButton type='submit' color='primary' :disabled='invalid'>
-							{{ $t('forms.save') }}
+							<CInput
+								v-model.number='maxNumber'
+								type='number'
+								min='0'
+								:label='$t("config.tracer.form.maxNumber") + " *"'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<i>* {{ $t('config.tracer.form.messages.zeroValues') }}</i>
+					</div><br v-if='versionNew'>
+					<CInputCheckbox
+						:checked.sync='timestampFiles'
+						:label='$t("config.tracer.form.timestampFiles")'
+					/>
+					<h4>{{ $t("config.tracer.form.verbosityLevels.title") }}</h4>
+					<div
+						v-for='(level, i) of VerbosityLevels'
+						:key='i'
+						class='form-group'
+					>
+						<ValidationProvider
+							v-slot='{ errors, touched, valid }'
+							rules='integer|required'
+							:custom-messages='{
+								integer: "forms.messages.integer",
+								required: "config.tracer.form.messages.verbosityLevels.channel"
+							}'
+						>
+							<CInput
+								v-model.number='level.channel'
+								type='number'
+								:label='$t("config.tracer.form.channel")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{ errors, touched, valid }'
+							rules='required'
+							:custom-messages='{required: "config.tracer.form.messages.verbosityLevels.level"}'
+						>
+							<CSelect
+								:value.sync='level.level'
+								:label='$t("config.tracer.form.level")'
+								:placeholder='$t("config.tracer.form.messages.verbosityLevels.level")'
+								:options='selectOptions'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<CButton
+							v-if='VerbosityLevels.length > 1'
+							color='danger'
+							@click='removeLevel(i)'
+						>
+							{{ $t('config.tracer.form.verbosityLevels.remove') }}
 						</CButton>
-					</CForm>
-				</ValidationObserver>
-			</CCardBody>
-		</CCard>
-	</div>
+						<CButton
+							v-if='i === (VerbosityLevels.length - 1)'
+							color='success'
+							:disabled='level.channel === undefined || level.level === undefined'
+							@click='addLevel'
+						>
+							{{ $t('config.tracer.form.verbosityLevels.add') }}
+						</CButton>
+					</div>
+					<CButton type='submit' color='primary' :disabled='invalid'>
+						{{ $t('forms.save') }}
+					</CButton>
+				</CForm>
+			</ValidationObserver>
+		</CCardBody>
+	</CCard>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
@@ -178,6 +178,7 @@ import compareVersions from 'compare-versions';
 		CButton,
 		CCard,
 		CCardBody,
+		CCardHeader,
 		CForm,
 		CInput,
 		CInputCheckbox,
@@ -290,7 +291,7 @@ export default class TracerForm extends Vue {
 	 * @returns {string} Page title
 	 */
 	get pageTitle(): string {
-		return this.$route.path === '/config/tracer/add' ?
+		return this.$route.path === '/config/daemon/tracer/add' ?
 			this.$t('config.tracer.add').toString() : this.$t('config.tracer.edit').toString();
 	}
 
@@ -299,7 +300,7 @@ export default class TracerForm extends Vue {
 	 * @returns {string} Button text
 	 */
 	get submitButton(): string {
-		return this.$route.path === '/config/tracer/add' ?
+		return this.$route.path === '/config/daemon/tracer/add' ?
 			this.$t('forms.add').toString() : this.$t('forms.edit').toString();
 	}
 
@@ -310,6 +311,13 @@ export default class TracerForm extends Vue {
 		extend('integer', integer);
 		extend('min', min_value);
 		extend('required', required);
+	}
+
+	/**
+	 * Vue lifecycle hook mounted
+	 */
+	mounted(): void {
+		this.getInstance();
 	}
 
 	/**
@@ -338,7 +346,7 @@ export default class TracerForm extends Vue {
 				this.parseConfiguration(response);
 			})
 			.catch((error: AxiosError) => {
-				this.$router.push('/config/tracer/');
+				this.$router.push('/config/daemon/misc/');
 				FormErrorHandler.configError(error);
 			});
 	}
@@ -415,7 +423,7 @@ export default class TracerForm extends Vue {
 	 */
 	private successfulSave(): void {
 		this.$store.commit('spinner/HIDE');
-		if (this.$route.path === '/config/tracer/add') {
+		if (this.$route.path === '/config/daemon/tracer/add') {
 			this.$toast.success(
 				this.$t('config.tracer.messages.addSuccess', {instance: this.componentInstance})
 					.toString()
@@ -426,7 +434,7 @@ export default class TracerForm extends Vue {
 					.toString()
 			);
 		}
-		this.$router.push('/config/tracer/');
+		this.$router.push('/config/daemon/misc/');
 	}
 
 }

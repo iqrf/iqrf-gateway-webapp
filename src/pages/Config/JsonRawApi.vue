@@ -1,63 +1,57 @@
 <template>
-	<div>
-		<h1>{{ $t('config.jsonRawApi.title') }}</h1>
-		<CCard>
-			<CCardBody>
-				<ValidationObserver v-slot='{ invalid }'>
-					<CForm @submit.prevent='saveConfig'>
-						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
-							rules='required'
-							:custom-messages='{required: "config.jsonRawApi.form.messages.instance"}'
-						>
-							<CInput
-								v-model='configuration.instance'
-								:label='$t("config.jsonRawApi.form.instance")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
-							/>
-						</ValidationProvider>
-						<CInputCheckbox
-							:checked.sync='configuration.asyncDpaMessage'
-							:label='$t("config.jsonRawApi.form.asyncDpaMessage")'
+	<CCard class='border-0'>
+		<CCardHeader>
+			<h3>{{ $t('config.jsonRawApi.title') }}</h3>
+		</CCardHeader>
+		<CCardBody>
+			<ValidationObserver v-slot='{ invalid }'>
+				<CForm @submit.prevent='saveConfig'>
+					<ValidationProvider
+						v-slot='{ errors, touched, valid }'
+						rules='required'
+						:custom-messages='{required: "config.jsonRawApi.form.messages.instance"}'
+					>
+						<CInput
+							v-model='configuration.instance'
+							:label='$t("config.jsonRawApi.form.instance")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
 						/>
-						<CButton type='submit' color='primary' :disabled='invalid'>
-							{{ $t('forms.save') }}
-						</CButton>
-					</CForm>
-				</ValidationObserver>
-			</CCardBody>
-		</CCard>
-	</div>
+					</ValidationProvider>
+					<CInputCheckbox
+						:checked.sync='configuration.asyncDpaMessage'
+						:label='$t("config.jsonRawApi.form.asyncDpaMessage")'
+					/>
+					<CButton type='submit' color='primary' :disabled='invalid'>
+						{{ $t('forms.save') }}
+					</CButton>
+				</CForm>
+			</ValidationObserver>
+		</CCardBody>
+	</CCard>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {AxiosError, AxiosResponse} from 'axios';
-import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
-
-interface JsonRawApiConfig {
-	instance: string|null
-	asyncDpaMessage: boolean
-}
+import {IJsonRaw} from '../../interfaces/jsonApi';
 
 @Component({
 	components: {
 		CButton,
 		CCard,
 		CCardBody,
+		CCardHeader,
 		CForm,
 		CInput,
 		CInputCheckbox,
 		ValidationObserver,
 		ValidationProvider
-	},
-	metaInfo: {
-		title: 'config.jsonRawApi.title'
 	}
 })
 
@@ -71,15 +65,15 @@ export default class JsonRawApi extends Vue {
 	private componentName = 'iqrf::JsonDpaApiRaw'
 
 	/**
-	 * @var {string|null} instances JSON RawApi component instance name
+	 * @var {string} instances JSON RawApi component instance name
 	 */
-	private instance: string|null = null
+	private instance = ''
 
 	/**
-	 * @var {JsonRawApiConfig} configuration JSON RawApi component instance configuration
+	 * @var {IJsonRaw} configuration JSON RawApi component instance configuration
 	 */
-	private configuration: JsonRawApiConfig = {
-		instance: null,
+	private configuration: IJsonRaw = {
+		instance: '',
 		asyncDpaMessage: false,
 	}
 
@@ -88,6 +82,12 @@ export default class JsonRawApi extends Vue {
 	 */
 	created(): void {
 		extend('required', required);
+	}
+
+	/**
+	 * Vue lifecycle hook mounted
+	 */
+	mounted(): void {
 		this.getConfig();
 	}
 

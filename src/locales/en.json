@@ -163,8 +163,8 @@
 		"description": "Edit configuration.",
 		"success": "The configuration has been saved successfully.",
 		"migration": {
-			"title": "Configuration migration",
-			"description": "Migration of IQRF Gateway Daemon's configuration",
+			"title": "Migration",
+			"description": "Migration of gateway service configurations.",
 			"form": {
 				"importButton": "Configuration to import",
 				"import": "Import configuration",
@@ -199,8 +199,30 @@
 					"deleteTitle": "Delete component",
 					"deleteSuccess": "Configuration of component {component} has been successfully deleted.",
 					"addSuccess": "Configuration of component {component} has been successfully added.",
-					"editSuccess": "Configuration of component {component} has been successfully updated."
+					"editSuccess": "Configuration of component {component} has been successfully updated.",
+					"multipleInterfaces": "Only one IQRF interface can be enabled at a time."
 				}
+			}
+		},
+		"daemon": {
+			"title": "IQRF Daemon",
+			"description": "IQRF Daemon configuration",
+			"interfaces": {
+				"title": "Interfaces",
+				"description": "Configuration of IQRF communication interfaces.",
+				"noInterface": "All IQRF communication interfaces are disabled."
+			},
+			"messagings": {
+				"title": "Messagings",
+				"description": "Configuration of messagings."
+			},
+			"misc": {
+				"title": "Misc",
+				"description": "Configuration of miscellaneous Daemon components"
+			},
+			"form": {
+				"interface": "Select interface",
+				"messaging": "Select Messaging"
 			}
 		},
 		"interfaceMapping": {
@@ -248,12 +270,12 @@
 			}
 		},
 		"iqrfInfo": {
-			"title": "IQRF Info",
+			"title": "LiteDB",
 			"description": "IQRF Info database settings.",
 			"form": {
 				"instance": "Name of instance",
 				"enumAtStartUp": "Initialize network full enumeration just after startup",
-				"enumPeriod": "Period in minutes of regular check enumeration",
+				"enumPeriod": "Enumeration check period in minutes",
 				"enumUniformDpaVer": "Obtain only HWPID and HWPID version from nodes"
 			},
 			"messages": {
@@ -317,6 +339,13 @@
 				}
 			},
 			"mappings": "Available UART mappings"
+		},
+		"jsonApi": {
+			"title": "JSON API",
+			"messages": {
+				"success": "JSON API configuration has been successfully updated.",
+				"noChanges": "No configuration changes detected."
+			}
 		},
 		"jsonMngMetaDataApi": {
 			"title": "JSON Metadata API",
@@ -548,10 +577,10 @@
 			}
 		},
 		"tracer": {
-			"title": "Tracer file",
-			"description": "Tracer file settings.",
-			"add": "Add tracer file configuration",
-			"edit": "Edit tracer file configuration",
+			"title": "Logging service",
+			"description": "Logging service settings.",
+			"add": "Add logging service configuration",
+			"edit": "Edit logging service configuration",
 			"form": {
 				"instance": "Instance name",
 				"path": "Path to directory with logs",
@@ -574,8 +603,8 @@
 					"debug": "Debug"
 				},
 				"messages": {
-					"instance": "Please enter name of Tracer file interface.",
-					"filename": "Please enter Tracer file name.",
+					"instance": "Please enter name of logging service interface.",
+					"filename": "Please enter logging service file name.",
 					"maxSizeMb": "Please enter maximum size in MB greater or equal to 1.",
 					"maxAgeMinutes": "Please enter maximum lifespan of timestamped files in minutes, greater or requal to 0.",
 					"maxNumber": "Please enter maximum number of timestamped files, greated or equal than 0.",
@@ -663,6 +692,7 @@
 				}
 			},
 			"interface": {
+				"title": "Websocket interfaces",
 				"add": "Add WebSocket interface",
 				"edit": "Edit WebSocket interface"
 			},
@@ -1683,7 +1713,7 @@
 		}
 	},
 	"translatorConfig": {
-		"title": "Translator",
+		"title": "IQRF Translator",
 		"description": "Translator configuration",
 		"form": {
 			"rest": {
@@ -1722,7 +1752,7 @@
 		}
 	},
 	"controllerConfig": {
-		"title": "Controller",
+		"title": "IQRF Controller",
 		"description": "Controller configuration",
 		"form": {
 			"daemonApi": {

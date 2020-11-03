@@ -1,13 +1,12 @@
 <template>
 	<div>
-		<h1>{{ $t('config.monitor.title') }}</h1>
-		<CCard>
+		<CCard class='border-0'>
 			<CCardHeader>
 				<CButton
 					color='success'
 					size='sm'
 					class='float-right'
-					to='/config/monitor/add'
+					to='/config/daemon/monitor/add'
 				>
 					<CIcon :content='icons.add' size='sm' />
 					{{ $t('table.actions.add') }}
@@ -47,7 +46,7 @@
 							<CButton
 								color='info'
 								size='sm'
-								:to='"/config/monitor/edit/" + item.monitor.instance'
+								:to='"/config/daemon/monitor/edit/" + item.monitor.instance'
 							>
 								<CIcon :content='icons.edit' size='sm' />
 								{{ $t('table.actions.edit') }}
@@ -114,9 +113,6 @@ import { AxiosError, AxiosResponse } from 'axios';
 		CDropdownItem,
 		CIcon,
 		CModal,
-	},
-	metaInfo: {
-		title: 'config.monitor.title'
 	}
 })
 

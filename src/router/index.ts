@@ -43,19 +43,14 @@ const InstallGatewayInfo = () => import(/* webpackChunkName: "install" */ '@/pag
 const MissingMigration = () => import(/* webpackChunkName: "install" */ '@/pages/Install/MissingMigration.vue');
 
 const ConfigDisambiguation = () => import(/* webpackChunkName: "config" */ '@/pages/Config/ConfigDisambiguation.vue');
+const DaemonDisambiguation = () => import(/* WebpackChunkName: "config" */ '@/pages/Config/DaemonDisambiguation.vue');
+const Interfaces = () => import(/* WebpackChunkName: "config" */ '@/pages/Config/Interfaces.vue');
+const Messagings = () => import (/* WebpackChunkName: "config" */ '@/pages/Config/Messagings.vue');
+const MiscConfiguration = () => import (/* WebpackChunkName: "config" */ '@/pages/Config/MiscConfiguration.vue');
 const ConfigMigration = () => import(/* webpackChunkName: "config" */ '@/pages/Config/ConfigMigration.vue');
 const TranslatorConfig = () => import(/* webpackChunkName: "config" */ '@/pages/Config/TranslatorConfig.vue');
 const ControllerConfig = () => import(/* webpackChunkName: "config" */ '@/pages/Config/ControllerConfig.vue');
 const MenderConfig = () => import(/* webpackChunkName: "config" */ '@/pages/Config/MenderConfig.vue');
-const IqrfInfo = () => import(/* webpackChunkName: "config" */ '@/pages/Config/IqrfInfo.vue');
-const IqrfRepository = () => import(/* webpackChunkName: "config" */ '@/pages/Config/IqrfRepository.vue');
-const IqrfCdc = () => import(/* webpackChunkName: "config" */ '@/pages/Config/IqrfCdc.vue');
-const IqrfDpa = () => import(/* webpackChunkName: "config" */ '@/pages/Config/IqrfDpa.vue');
-const IqrfSpi = () => import(/* webpackChunkName: "config" */ '@/pages/Config/IqrfSpi.vue');
-const IqrfUart = () => import(/* webpackChunkName: "config" */ '@/pages/Config/IqrfUart.vue');
-const JsonMngMetaDataApi = () => import(/* webpackChunkName: "config" */ '@/pages/Config/JsonMngMetaDataApi.vue');
-const JsonRawApi = () => import(/* webpackChunkName: "config" */ '@/pages/Config/JsonRawApi.vue');
-const JsonSplitter = () => import(/* webpackChunkName: "config" */ '@/pages/Config/JsonSplitter.vue');
 const MonitorForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/MonitorForm.vue');
 const MonitorList = () => import(/* webpackChunkName: "config" */ '@/pages/Config/MonitorList.vue');
 const MqMessagingForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/MqMessagingForm.vue');
@@ -69,7 +64,6 @@ const TracerForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config
 const MainConfiguration = () => import(/* webpackChunkName: "config" */ '@/pages/Config/MainConfiguration.vue');
 const ComponentList = () => import(/* webpackChunkName: "config" */ '@/pages/Config/ComponentList.vue');
 const ComponentForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/ComponentForm.vue');
-const IqmeshServices = () => import(/* webpackChunkName: "config" */ '@/pages/Config/IqmeshServices.vue');
 const WebsocketInterfaceForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/WebsocketInterfaceForm.vue');
 const WebsocketMessagingForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/WebsocketMessagingForm.vue');
 const WebsocketServiceForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/WebsocketServiceForm.vue');
@@ -168,11 +162,7 @@ const routes: Array<RouteConfig> = [
 						path: '',
 					},
 					{
-						component: MainConfiguration,
-						path: 'main',
-					},
-					{
-						path: 'component',
+						path: 'daemon',
 						component: {
 							render(c) {
 								return c('router-view');
@@ -181,243 +171,233 @@ const routes: Array<RouteConfig> = [
 						children: [
 							{
 								path: '',
-								component: ComponentList,
+								component: DaemonDisambiguation,
 							},
 							{
-								component: ComponentForm,
-								path: 'add',
+								component: MainConfiguration,
+								path: 'main',
 							},
 							{
-								component: ComponentForm,
-								path: 'edit/:component',
-								props: true,
-							},
-						],
-					},
-					{
-						component: IqrfCdc,
-						path: 'iqrf-cdc',
-					},
-					{
-						component: IqrfDpa,
-						path: 'iqrf-dpa',
-					},
-					{
-						component: IqrfInfo,
-						path: 'iqrf-info',
-					},
-					{
-						component: IqmeshServices,
-						path: 'iqmesh',
-					},
-					{
-						component: IqrfRepository,
-						path: 'iqrf-repository',
-					},
-					{
-						component: IqrfSpi,
-						path: 'iqrf-spi',
-					},
-					{
-						component: IqrfUart,
-						path: 'iqrf-uart',
-					},
-					{
-						component: JsonRawApi,
-						path: 'json-raw-api',
-					},
-					{
-						component: JsonMngMetaDataApi,
-						path: 'json-mng-meta-data-api',
-					},
-					{
-						component: JsonSplitter,
-						path: 'json-splitter',
-					},
-					{
-						path: 'monitor',
-						component: {
-							render(c) {
-								return c('router-view');
-							}
-						},
-						children: [
-							{
-								path: '',
-								component: MonitorList,
-							},
-							{
-								component: MonitorForm,
-								path: 'add',
-							},
-							{
-								component: MonitorForm,
-								path: 'edit/:instance',
-								props: true,
-							},
-						],
-					},
-					{
-						path: 'scheduler',
-						component: {
-							render(c) {
-								return c('router-view');
-							}
-						},
-						children: [
-							{
-								path: '',
-								component: SchedulerList,
-							},
-							{
-								path: 'add',
-								component: SchedulerForm,
-							},
-							{
-								path: 'edit/:id',
-								component: SchedulerForm,
-								props: (route) => {
-									const id = Number.parseInt(route.params.id, 10);
-									if (Number.isNaN(id)) {
-										return 0;
+								path: 'component',
+								component: {
+									render(c) {
+										return c('router-view');
 									}
-									return {id};
 								},
-							}
+								children: [
+									{
+										path: '',
+										component: ComponentList
+									},
+									{
+										component: ComponentForm,
+										path: 'add',
+									},
+									{
+										component: ComponentForm,
+										path: 'edit/:component',
+										props: true,
+									},
+								],
+							},
+							{
+								path: 'interfaces',
+								component: Interfaces,
+							},
+							{
+								path: 'messagings',
+								component: Messagings,
+							},
+							{
+								path: 'scheduler',
+								component: {
+									render(c) {
+										return c('router-view');
+									}
+								},
+								children: [
+									{
+										path: '',
+										component: SchedulerList,
+									},
+									{
+										path: 'add',
+										component: SchedulerForm,
+									},
+									{
+										path: 'edit/:id',
+										component: SchedulerForm,
+										props: (route) => {
+											const id = Number.parseInt(route.params.id, 10);
+											if (Number.isNaN(id)) {
+												return 0;
+											}
+											return {id};
+										},
+									}
+								]
+							},
+							{
+								path: 'misc',
+								component: MiscConfiguration,
+							},
+							{
+								path: 'monitor',
+								component: {
+									render(c) {
+										return c('router-view');
+									}
+								},
+								children: [
+									{
+										path: '',
+										component: MonitorList,
+									},
+									{
+										component: MonitorForm,
+										path: 'add',
+									},
+									{
+										component: MonitorForm,
+										path: 'edit/:instance',
+										props: true,
+									},
+								],
+							},
+							{
+								path: 'mq',
+								component: {
+									render(c) {
+										return c('router-view');
+									}
+								},
+								children: [
+									{
+										path: '',
+										component: MqMessagingTable,
+									},
+									{
+										component: MqMessagingForm,
+										path: 'add',
+									},
+									{
+										component: MqMessagingForm,
+										path: 'edit/:instance',
+										props: true,
+									},
+								],
+							},
+							{
+								path: 'mqtt',
+								component: {
+									render(c) {
+										return c('router-view');
+									}
+								},
+								children: [
+									{
+										path: '',
+										component: MqttMessagingTable,
+									},
+									{
+										component: MqttMessagingForm,
+										path: 'add',
+									},
+									{
+										component: MqttMessagingForm,
+										path: 'edit/:instance',
+										props: true,
+									},
+								],
+							},
+							{
+								path: 'udp',
+								component: {
+									render(c) {
+										return c('router-view');
+									}
+								},
+								children: [
+									{
+										path: '',
+										component: UdpMessagingTable,
+									},
+									{
+										component: UdpMessagingForm,
+										path: 'add',
+									},
+									{
+										component: UdpMessagingForm,
+										path: 'edit/:instance',
+										props: true,
+									},
+								],
+							},
+							{
+								path: 'websocket',
+								component: {
+									render(c) {
+										return c('router-view');
+									}
+								},
+								children: [
+									{
+										path: '',
+										component: WebsocketList,
+									},
+									{
+										component: WebsocketInterfaceForm,
+										path: 'add',
+									},
+									{
+										component: WebsocketMessagingForm,
+										path: 'add-messaging',
+									},
+									{
+										component: WebsocketServiceForm,
+										path: 'add-service',
+									},
+									{
+										component: WebsocketInterfaceForm,
+										path: 'edit/:instance',
+										props: true,
+									},
+									{
+										component: WebsocketMessagingForm,
+										path: 'edit-messaging/:instance',
+										props: true,
+									},
+									{
+										component: WebsocketServiceForm,
+										path: 'edit-service/:instance',
+										props: true,
+									},
+								],
+							},
+							{
+								path: 'tracer',
+								component: {
+									render(c) {
+										return c('router-view');
+									},
+								},
+								children: [
+									{
+										path: '',
+										component: TracerList,
+									},
+									{
+										component: TracerForm,
+										path: 'add',
+									},
+									{
+										component: TracerForm,
+										path: 'edit/:instance',
+										props: true,
+									},
+								],
+							},
 						]
-					},
-					{
-						path: 'mq',
-						component: {
-							render(c) {
-								return c('router-view');
-							}
-						},
-						children: [
-							{
-								path: '',
-								component: MqMessagingTable,
-							},
-							{
-								component: MqMessagingForm,
-								path: 'add',
-							},
-							{
-								component: MqMessagingForm,
-								path: 'edit/:instance',
-								props: true,
-							},
-						],
-					},
-					{
-						path: 'mqtt',
-						component: {
-							render(c) {
-								return c('router-view');
-							}
-						},
-						children: [
-							{
-								path: '',
-								component: MqttMessagingTable,
-							},
-							{
-								component: MqttMessagingForm,
-								path: 'add',
-							},
-							{
-								component: MqttMessagingForm,
-								path: 'edit/:instance',
-								props: true,
-							},
-						],
-					},
-					{
-						path: 'udp',
-						component: {
-							render(c) {
-								return c('router-view');
-							}
-						},
-						children: [
-							{
-								path: '',
-								component: UdpMessagingTable,
-							},
-							{
-								component: UdpMessagingForm,
-								path: 'add',
-							},
-							{
-								component: UdpMessagingForm,
-								path: 'edit/:instance',
-								props: true,
-							},
-						],
-					},
-					{
-						path: 'websocket',
-						component: {
-							render(c) {
-								return c('router-view');
-							}
-						},
-						children: [
-							{
-								path: '',
-								component: WebsocketList,
-							},
-							{
-								component: WebsocketInterfaceForm,
-								path: 'add',
-							},
-							{
-								component: WebsocketMessagingForm,
-								path: 'add-messaging',
-							},
-							{
-								component: WebsocketServiceForm,
-								path: 'add-service',
-							},
-							{
-								component: WebsocketInterfaceForm,
-								path: 'edit/:instance',
-								props: true,
-							},
-							{
-								component: WebsocketMessagingForm,
-								path: 'edit-messaging/:instance',
-								props: true,
-							},
-							{
-								component: WebsocketServiceForm,
-								path: 'edit-service/:instance',
-								props: true,
-							},
-						],
-					},
-					{
-						path: 'tracer',
-						component: {
-							render(c) {
-								return c('router-view');
-							},
-						},
-						children: [
-							{
-								path: '',
-								component: TracerList,
-							},
-							{
-								component: TracerForm,
-								path: 'add',
-							},
-							{
-								component: TracerForm,
-								path: 'edit/:instance',
-								props: true,
-							},
-						],
 					},
 					{
 						component: ConfigMigration,

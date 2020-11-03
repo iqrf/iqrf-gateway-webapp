@@ -1,12 +1,11 @@
 <template>
 	<div>
-		<h1>{{ $t('config.tracer.title') }}</h1>
-		<CCard>
+		<CCard class='border-0'>
 			<CCardHeader>
 				<CButton
 					color='success'
 					size='sm'
-					to='/config/tracer/add'
+					to='/config/daemon/tracer/add'
 					class='float-right'
 				>
 					<CIcon :content='icons.add' size='sm' />
@@ -31,7 +30,7 @@
 							<CButton
 								color='info'
 								size='sm'
-								:to='"/config/tracer/edit/" + item.instance'
+								:to='"/config/daemon/tracer/edit/" + item.instance'
 							>
 								<CIcon :content='icons.edit' size='sm' />
 								{{ $t('table.actions.edit') }}
@@ -94,10 +93,7 @@ import { Dictionary } from 'vue-router/types/router';
 		CDataTable,
 		CIcon,
 		CModal,
-	},
-	metaInfo: {
-		title: 'config.tracer.title',
-	},
+	}
 })
 
 /**
@@ -155,7 +151,7 @@ export default class TracerList extends Vue {
 	/**
 	 * Vue lifecycle hook created
 	 */
-	created(): void {
+	mounted(): void {
 		this.getConfig();
 	}
 
@@ -188,9 +184,7 @@ export default class TracerList extends Vue {
 					);
 				});
 			})
-			.catch((error: AxiosError) => {
-				FormErrorHandler.configError(error);
-			});
+			.catch((error: AxiosError) => FormErrorHandler.configError(error));
 	}
 }
 </script>

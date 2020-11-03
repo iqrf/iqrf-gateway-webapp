@@ -1,64 +1,58 @@
 <template>
-	<div>
-		<h1>{{ $t('config.jsonSplitter.title') }}</h1>
-		<CCard>
-			<CCardBody>
-				<ValidationObserver v-slot='{ invalid }'>
-					<CForm @submit.prevent='saveConfig'>
-						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
-							rules='required'
-							:custom-messages='{required: "config.jsonSplitter.form.messages.instance"}'
-						>
-							<CInput
-								v-model='configuration.instance'
-								:label='$t("config.jsonSplitter.form.instance")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
-							/>
-						</ValidationProvider>
-						<CInputCheckbox
-							:checked.sync='configuration.validateJsonResponse'
-							:label='$t("config.jsonSplitter.form.validateJsonResponse")'
+	<CCard class='border-0'>
+		<CCardHeader>
+			<h3>{{ $t('config.jsonSplitter.title') }}</h3>
+		</CCardHeader>
+		<CCardBody>
+			<ValidationObserver v-slot='{ invalid }'>
+				<CForm @submit.prevent='saveConfig'>
+					<ValidationProvider
+						v-slot='{ errors, touched, valid }'
+						rules='required'
+						:custom-messages='{required: "config.jsonSplitter.form.messages.instance"}'
+					>
+						<CInput
+							v-model='configuration.instance'
+							:label='$t("config.jsonSplitter.form.instance")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
 						/>
-						<CButton type='submit' color='primary' :disabled='invalid'>
-							{{ $t('forms.save') }}
-						</CButton>
-					</CForm>
-				</ValidationObserver>
-			</CCardBody>
-		</CCard>
-	</div>
+					</ValidationProvider>
+					<CInputCheckbox
+						:checked.sync='configuration.validateJsonResponse'
+						:label='$t("config.jsonSplitter.form.validateJsonResponse")'
+					/>
+					<CButton type='submit' color='primary' :disabled='invalid'>
+						{{ $t('forms.save') }}
+					</CButton>
+				</CForm>
+			</ValidationObserver>
+		</CCardBody>
+	</CCard>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {AxiosError, AxiosResponse} from 'axios';
-import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
-
-interface JsonSplitterConfig {
-	instance: string|null
-	validateJsonResponse: boolean
-}
+import {IJsonSplitter} from '../../interfaces/jsonApi';
 
 @Component({
 	components: {
 		CButton,
 		CCard,
 		CCardBody,
+		CCardHeader,
 		CForm,
 		CInput,
 		CInputCheckbox,
 		ValidationObserver,
 		ValidationProvider,
-	},
-	metaInfo: {
-		title: 'config.jsonSplitter.title',
-	},
+	}
 })
 
 /**
@@ -71,15 +65,15 @@ export default class JsonSplitter extends Vue {
 	private componentName = 'iqrf::JsonSplitter'
 
 	/**
-	 * @var {string|null} instance JSON Splitter component instance name
+	 * @var {string} instance JSON Splitter component instance name
 	 */
-	private instance: string|null = null
+	private instance = ''
 
 	/**
-	 * @var {JsonSplitterConfig} configuration JSON Splitter component instance configuration
+	 * @var {IJsonSplitter} configuration JSON Splitter component instance configuration
 	 */
-	private configuration: JsonSplitterConfig = {
-		instance: null,
+	private configuration: IJsonSplitter = {
+		instance: '',
 		validateJsonResponse: false,
 	}
 
@@ -88,6 +82,12 @@ export default class JsonSplitter extends Vue {
 	 */
 	created(): void {
 		extend('required', required);
+	}
+
+	/**
+	 * Vue lifecycle hook mounted
+	 */
+	mounted(): void {
 		this.getConfig();
 	}
 	

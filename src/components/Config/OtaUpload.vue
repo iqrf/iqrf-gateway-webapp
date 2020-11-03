@@ -1,6 +1,8 @@
 <template>
-	<CCard>
-		<CCardHeader>{{ $t("config.iqmesh.otaUpload.title") }}</CCardHeader>
+	<CCard class='border-0'>
+		<CCardHeader>
+			<h3>{{ $t("config.iqmesh.otaUpload.title") }}</h3>
+		</CCardHeader>
 		<CCardBody>
 			<ValidationObserver v-slot='{ invalid }'>
 				<CForm @submit.prevent='saveInstance'>
@@ -54,9 +56,6 @@ interface OtaUploadConfig {
 		CInput,
 		ValidationObserver,
 		ValidationProvider,
-	},
-	metaInfo: {
-		title: 'config.iqmesh.otaUpload.title'
 	}
 })
 
@@ -88,6 +87,12 @@ export default class OtaUpload extends Vue {
 	 */
 	created(): void {
 		extend('required', required);
+	}
+
+	/**
+	 * Vue lifecycle hook mounted
+	 */
+	mounted(): void {
 		this.getInstance();
 	}
 

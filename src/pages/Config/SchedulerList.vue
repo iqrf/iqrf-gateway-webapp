@@ -1,13 +1,15 @@
 <template>
 	<div>
-		<h1>{{ $t('config.scheduler.title') }}</h1>
 		<CCard>
 			<CCardHeader>
+				<h3 class='float-left'>
+					{{ $t('config.scheduler.title') }}
+				</h3>
 				<div class='float-right'>
 					<CButton
 						color='success'
 						size='sm'
-						to='/config/scheduler/add'
+						to='/config/daemon/scheduler/add'
 					>
 						<CIcon :content='icons.add' size='sm' />
 						{{ $t('table.actions.add') }}
@@ -69,7 +71,7 @@
 							<CButton
 								color='info'
 								size='sm'
-								:to='"/config/scheduler/edit/" + (retrieved === "daemon" ? item.taskId : item.id)'
+								:to='"/config/daemon/scheduler/edit/" + (retrieved === "daemon" ? item.taskId : item.id)'
 							>
 								<CIcon :content='icons.edit' size='sm' />
 								{{ $t('table.actions.edit') }}
@@ -163,7 +165,7 @@ import { WebSocketOptions } from '../../store/modules/webSocketClient.module';
 import { Dictionary } from 'vue-router/types/router';
 import { IField } from '../../interfaces/coreui';
 import { AxiosError, AxiosResponse } from 'axios';
-import {Task, TaskMessage, TaskTimeSpec} from '../../interfaces/scheduler';
+import {Task, TaskTimeSpec} from '../../interfaces/scheduler';
 import { MutationPayload } from 'vuex';
 
 @Component({

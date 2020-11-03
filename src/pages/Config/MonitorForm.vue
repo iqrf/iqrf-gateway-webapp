@@ -1,12 +1,14 @@
 <template>
-	<div>
-		<h1 v-if='$route.path === "/config/monitor/add"'>
-			{{ $t('config.monitor.add') }}
-		</h1>
-		<h1 v-else>
-			{{ $t('config.monitor.edit') }}
-		</h1>
-		<CCard body-wrapper>
+	<CCard>
+		<CCardHeader>
+			<h3 v-if='$route.path === "/config/daemon/monitor/add"'>
+				{{ $t('config.monitor.add') }}
+			</h3>
+			<h3 v-else>
+				{{ $t('config.monitor.edit') }}
+			</h3>
+		</CCardHeader>
+		<CCardBody>
 			<ValidationObserver v-slot='{ invalid }'>
 				<CForm @submit.prevent='saveConfig'>
 					<ValidationProvider
@@ -62,13 +64,13 @@
 					</CButton>
 				</CForm>
 			</ValidationObserver>
-		</CCard>
-	</div>
+		</CCardBody>
+	</CCard>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
@@ -99,6 +101,8 @@ interface MonitorWebSocket {
 	components: {
 		CButton,
 		CCard,
+		CCardBody,
+		CCardHeader,
 		CForm,
 		CInput,
 		CInputCheckbox,
@@ -161,7 +165,7 @@ export default class MonitorForm extends Vue {
 	 * @returns {string} Page title
 	 */
 	get pageTitle(): string {
-		return this.$route.path === '/config/monitor/add' ?
+		return this.$route.path === '/config/daemon/monitor/add' ?
 			this.$t('config.monitor.add').toString() :
 			this.$t('config.monitor.edit').toString();
 	}
@@ -171,7 +175,7 @@ export default class MonitorForm extends Vue {
 	 * @returns {string} Button text
 	 */
 	get submitButton(): string {
-		return this.$route.path === '/config/mq/add' ?
+		return this.$route.path === '/config/daemon/monitor/add' ?
 			this.$t('forms.add').toString() :
 			this.$t('forms.save').toString();
 	}
@@ -182,6 +186,12 @@ export default class MonitorForm extends Vue {
 	created(): void {
 		extend('integer', integer);
 		extend('required', required);
+	}
+
+	/**
+	 * Vue lifecycle hook mounted
+	 */
+	mounted(): void {
 		if (this.instance !== '') {
 			this.getConfig();
 		}
@@ -207,7 +217,7 @@ export default class MonitorForm extends Vue {
 					});
 			})
 			.catch((error: AxiosError) => {
-				this.$router.push('/config/monitor/');
+				this.$router.push('/config/daemon/monitor/');
 				FormErrorHandler.configError(error);
 			});
 	}
@@ -249,9 +259,8 @@ export default class MonitorForm extends Vue {
 	 * Handles successful REST APi response
 	 */
 	private successfulSave() {
-		this.$router.push('/config/monitor/');
 		this.$store.commit('spinner/HIDE');
-		if (this.$route.path === '/config/monitor/add') {
+		if (this.$route.path === '/config/daemon/monitor/add') {
 			this.$toast.success(
 				this.$t('config.monitor.messages.add.success', {instance: this.monitor.instance})
 					.toString()
@@ -262,6 +271,7 @@ export default class MonitorForm extends Vue {
 					.toString()
 			);
 		}
+		this.$router.push('/config/daemon/monitor/');
 	}
 }
 </script>

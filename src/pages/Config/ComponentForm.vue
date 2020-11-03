@@ -1,76 +1,76 @@
 <template>
-	<div>
-		<h1 v-if='$route.path === "/config/component/add"'>
-			{{ $t('config.components.add') }}
-		</h1>
-		<h1 v-else>
-			{{ $t('config.components.edit') }}
-		</h1>
-		<CCard>
-			<CCardBody>
-				<ValidationObserver v-slot='{ invalid }'>
-					<CForm @submit.prevent='saveComponent'>
-						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
-							rules='required'
-							:custom-messages='{required: "config.components.form.messages.name"}'
-						>
-							<CInput
-								v-model='configuration.name'
-								:label='$t("config.components.form.name")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
-							/>
-						</ValidationProvider>
+	<CCard>
+		<CCardHeader>
+			<h3 v-if='$route.path === "/config/daemon/component/add"'>
+				{{ $t('config.components.add') }}
+			</h3>
+			<h3 v-else>
+				{{ $t('config.components.edit') }}
+			</h3>
+		</CCardHeader>
+		<CCardBody>
+			<ValidationObserver v-slot='{ invalid }'>
+				<CForm @submit.prevent='saveComponent'>
+					<ValidationProvider
+						v-slot='{ errors, touched, valid }'
+						rules='required'
+						:custom-messages='{required: "config.components.form.messages.name"}'
+					>
 						<CInput
-							v-model='configuration.libraryPath'
-							:label='$t("config.components.form.libraryPath")'
+							v-model='configuration.name'
+							:label='$t("config.components.form.name")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
 						/>
-						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
-							rules='required'
-							:custom-messages='{required: "config.components.form.messages.libraryName"}'
-						>
-							<CInput
-								v-model='configuration.libraryName'
-								:label='$t("config.components.form.libraryName")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
-							/>
-						</ValidationProvider>
-						<CInputCheckbox
-							:checked.sync='configuration.enabled'
-							:label='$t("config.components.form.enabled")'
+					</ValidationProvider>
+					<CInput
+						v-model='configuration.libraryPath'
+						:label='$t("config.components.form.libraryPath")'
+					/>
+					<ValidationProvider
+						v-slot='{ errors, touched, valid }'
+						rules='required'
+						:custom-messages='{required: "config.components.form.messages.libraryName"}'
+					>
+						<CInput
+							v-model='configuration.libraryName'
+							:label='$t("config.components.form.libraryName")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
 						/>
-						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
-							rules='integer|required'
-							:custom-messages='{
-								integer: "forms.messages.integer",
-								required: "config.components.form.messages.startLevel"
-							}'
-						>
-							<CInput
-								v-model.number='configuration.startlevel'
-								type='number'
-								:label='$t("config.components.form.startLevel")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
-							/>
-						</ValidationProvider>
-						<CButton type='submit' color='primary' :disabled='invalid'>
-							{{ submitButton }}
-						</CButton>
-					</CForm>
-				</ValidationObserver>
-			</CCardBody>
-		</CCard>
-	</div>
+					</ValidationProvider>
+					<CInputCheckbox
+						:checked.sync='configuration.enabled'
+						:label='$t("config.components.form.enabled")'
+					/>
+					<ValidationProvider
+						v-slot='{ errors, touched, valid }'
+						rules='integer|required'
+						:custom-messages='{
+							integer: "forms.messages.integer",
+							required: "config.components.form.messages.startLevel"
+						}'
+					>
+						<CInput
+							v-model.number='configuration.startlevel'
+							type='number'
+							:label='$t("config.components.form.startLevel")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
+						/>
+					</ValidationProvider>
+					<CButton type='submit' color='primary' :disabled='invalid'>
+						{{ submitButton }}
+					</CButton>
+				</CForm>
+			</ValidationObserver>
+		</CCardBody>
+	</CCard>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {integer, required} from 'vee-validate/dist/rules';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
@@ -79,11 +79,11 @@ import { MetaInfo } from 'vue-meta/types/vue-meta';
 import { AxiosError, AxiosResponse } from 'axios';
 
 interface ComponentFormConfig {
-	name: string|null
-	libraryPath: string|null
-	libraryName: string|null
+	name: string
+	libraryPath: string
+	libraryName: string
 	enabled: boolean
-	startlevel: number|null
+	startlevel: number
 }
 
 @Component({
@@ -91,6 +91,7 @@ interface ComponentFormConfig {
 		CButton,
 		CCard,
 		CCardBody,
+		CCardHeader,
 		CForm,
 		CInput,
 		CInputCheckbox,
@@ -112,11 +113,11 @@ export default class ComponentForm extends Vue {
 	 * @var {ComponentFormConfig} configuration Daemon component configuration
 	 */
 	private configuration: ComponentFormConfig = {
-		name: null,
-		libraryPath: null,
-		libraryName: null,
+		name: '',
+		libraryPath: '',
+		libraryName: '',
 		enabled: false,
-		startlevel: null
+		startlevel: 0
 	}
 	
 	/**
@@ -129,7 +130,7 @@ export default class ComponentForm extends Vue {
 	 * @returns {string} Page title
 	 */
 	get pageTitle(): string {
-		return this.$route.path === '/config/component/add' ?
+		return this.$route.path === '/config/daemon/component/add' ?
 			this.$t('config.components.add').toString() : this.$t('config.components.edit').toString();
 	}
 
@@ -138,7 +139,7 @@ export default class ComponentForm extends Vue {
 	 * @returns {string} Button text
 	 */
 	get submitButton(): string {
-		return this.$route.path === '/config/component/add' ?
+		return this.$route.path === '/config/daemon/component/add' ?
 			this.$t('forms.add').toString() : this.$t('forms.edit').toString();
 	}
 
@@ -148,6 +149,12 @@ export default class ComponentForm extends Vue {
 	created(): void {
 		extend('integer', integer);
 		extend('required', required);
+	}
+
+	/**
+	 * Vue lifecycle hook mounted
+	 */
+	mounted(): void {
 		if (this.component !== '') {
 			this.getComponent();
 		}
@@ -164,7 +171,7 @@ export default class ComponentForm extends Vue {
 				this.configuration = response.data.configuration;
 			})
 			.catch((error: AxiosError) => {
-				this.$router.push('/config/component/');
+				this.$router.push('/config/daemon/component/');
 				FormErrorHandler.configError(error);
 			});
 	}
@@ -190,7 +197,7 @@ export default class ComponentForm extends Vue {
 	 */
 	private successfulSave(): void {
 		this.$store.commit('spinner/HIDE');
-		if (this.$route.path === '/config/component/add') {
+		if (this.$route.path === '/config/daemon/component/add') {
 			this.$toast.success(
 				this.$t('config.components.form.messages.addSuccess', {component: this.configuration.name})
 					.toString()
@@ -201,7 +208,7 @@ export default class ComponentForm extends Vue {
 					.toString()
 			);
 		}
-		this.$router.push('/config/component/');
+		this.$router.push('/config/daemon/component/');
 	}
 }
 </script>

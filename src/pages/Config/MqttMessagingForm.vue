@@ -1,12 +1,14 @@
 <template>
-	<div>
-		<h1 v-if='$route.path === "/config/mqtt/add"'>
-			{{ $t('config.mqtt.add') }}
-		</h1>
-		<h1 v-else>
-			{{ $t('config.mqtt.edit') }}
-		</h1>
-		<CCard body-wrapper>
+	<CCard>
+		<CCardHeader>
+			<h3 v-if='$route.path === "/config/daemon/mqtt/add"'>
+				{{ $t('config.mqtt.add') }}
+			</h3>
+			<h3 v-else>
+				{{ $t('config.mqtt.edit') }}
+			</h3>
+		</CCardHeader>
+		<CCardBody>
 			<ValidationObserver v-slot='{ invalid }'>
 				<CForm @submit.prevent='saveConfig'>
 					<ValidationProvider
@@ -215,13 +217,13 @@
 					</CButton>
 				</CForm>
 			</ValidationObserver>
-		</CCard>
-	</div>
+		</CCardBody>
+	</CCard>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
@@ -235,6 +237,8 @@ import { AxiosError, AxiosResponse } from 'axios';
 	components: {
 		CButton,
 		CCard,
+		CCardBody,
+		CCardHeader,
 		CForm,
 		CInput,
 		CInputCheckbox,
@@ -295,7 +299,7 @@ export default class MqttMessagingForm extends Vue {
 	 * @returns {string} Page title
 	 */
 	get pageTitle(): string {
-		return this.$route.path === '/config/mqtt/add' ?
+		return this.$route.path === '/config/daemon/mqtt/add' ?
 			this.$t('config.mqtt.add').toString() : this.$t('config.mqtt.edit').toString();
 	}
 
@@ -318,7 +322,7 @@ export default class MqttMessagingForm extends Vue {
 	 * @returns {string} Button text
 	 */
 	get submitButton(): string {
-		return this.$route.path === '/config/mqtt/add' ?
+		return this.$route.path === '/config/daemon/mqtt/add' ?
 			this.$t('forms.add').toString() : this.$t('forms.save').toString();
 	}
 
@@ -330,6 +334,12 @@ export default class MqttMessagingForm extends Vue {
 		extend('integer', integer);
 		extend('min', min_value);
 		extend('required', required);
+	}
+
+	/**
+	 * Vue lifecycle hook mounted
+	 */
+	mounted(): void {
 		if (this.instance !== '') {
 			this.getConfig();
 		}
@@ -347,7 +357,7 @@ export default class MqttMessagingForm extends Vue {
 			})
 			.catch((error: AxiosError) => {
 				this.$store.commit('spinner/HIDE');
-				this.$router.push('/config/mqtt/');
+				this.$router.push('/config/daemon/messagings/');
 				FormErrorHandler.configError(error);
 			});
 	}
@@ -373,7 +383,7 @@ export default class MqttMessagingForm extends Vue {
 	 */
 	private successfulSave(): void {
 		this.$store.commit('spinner/HIDE');
-		if (this.$route.path === '/config/mqtt/add') {
+		if (this.$route.path === '/config/daemon/mqtt/add') {
 			this.$toast.success(
 				this.$t('config.mqtt.messages.add.success', {instance: this.configuration.instance})
 					.toString()
@@ -384,7 +394,7 @@ export default class MqttMessagingForm extends Vue {
 					.toString()
 			);
 		}
-		this.$router.push('/config/mqtt/');
+		this.$router.push('/config/daemon/messagings/');
 	}
 }
 </script>

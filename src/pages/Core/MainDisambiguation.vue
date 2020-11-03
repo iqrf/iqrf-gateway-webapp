@@ -1,7 +1,9 @@
-<template>
-	<div>
-		<h1>{{ $t('core.dashboard') }}</h1>
-		<CCard body-wrapper>
+<template>		
+	<CCard>
+		<CCardHeader>
+			<h3>{{ $t('core.dashboard') }}</h3>
+		</CCardHeader>
+		<CCardBody>
 			<CListGroup>
 				<CListGroupItem to='/gateway/'>
 					<header class='list-group-item-heading'>
@@ -112,8 +114,8 @@
 					</p>
 				</CListGroupItem>
 			</CListGroup>
-		</CCard>
-	</div>
+		</CCardBody>
+	</CCard>
 </template>
 
 <script lang='ts'>

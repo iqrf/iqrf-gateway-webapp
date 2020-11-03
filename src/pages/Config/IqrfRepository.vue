@@ -1,71 +1,68 @@
 <template>
-	<div>
-		<h1>{{ $t('config.iqrfRepository.title') }}</h1>
-		<CCard>
-			<CCardBody>
-				<ValidationObserver v-slot='{ invalid }'>
-					<CForm @submit.prevent='saveConfig'>
-						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
-							rules='required'
-							:custom-messages='{required: "config.iqrfRepository.form.messages.instance"}'
-						>
-							<CInput
-								v-model='instance'
-								:label='$t("config.iqrfRepository.form.instance")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
-							/>
-						</ValidationProvider>
-						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
-							rules='required'
-							:custom-messages='{required: "config.iqrfRepository.form.messages.urlRepo"}'
-						>
-							<CInput
-								v-model='urlRepo'
-								:label='$t("config.iqrfRepository.form.urlRepo")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
-							/>
-						</ValidationProvider>
-						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
-							rules='integer|required|min:0'
-							:custom-messages='{
-								integer: "forms.messages.integer",
-								required: "config.iqrfRepository.form.messages.checkPeriod",
-								min: "config.iqrfRepository.form.messages.checkPeriod"
-							}'
-						>
-							<CInput
-								v-model.number='checkPeriodInMinutes'
-								type='number'
-								min='0'
-								:label='$t("config.iqrfRepository.form.checkPeriod")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
-							/>
-						</ValidationProvider>
-						<CInputCheckbox
-							v-if='versionNew'
-							:checked.sync='downloadIfRepoCacheEmpty'
-							:label='$t("config.iqrfRepository.form.downloadIfEmpty")'
+	<CCard class='border-0'>
+		<CCardBody>
+			<ValidationObserver v-slot='{ invalid }'>
+				<CForm @submit.prevent='saveConfig'>
+					<ValidationProvider
+						v-slot='{ errors, touched, valid }'
+						rules='required'
+						:custom-messages='{required: "config.iqrfRepository.form.messages.instance"}'
+					>
+						<CInput
+							v-model='instance'
+							:label='$t("config.iqrfRepository.form.instance")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
 						/>
-						<CButton type='submit' color='primary' :disabled='invalid'>
-							{{ $t('forms.save') }}
-						</CButton>
-					</CForm>
-				</ValidationObserver>
-			</CCardBody>
-		</CCard>
-	</div>
+					</ValidationProvider>
+					<ValidationProvider
+						v-slot='{ errors, touched, valid }'
+						rules='required'
+						:custom-messages='{required: "config.iqrfRepository.form.messages.urlRepo"}'
+					>
+						<CInput
+							v-model='urlRepo'
+							:label='$t("config.iqrfRepository.form.urlRepo")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
+						/>
+					</ValidationProvider>
+					<ValidationProvider
+						v-slot='{ errors, touched, valid }'
+						rules='integer|required|min:0'
+						:custom-messages='{
+							integer: "forms.messages.integer",
+							required: "config.iqrfRepository.form.messages.checkPeriod",
+							min: "config.iqrfRepository.form.messages.checkPeriod"
+						}'
+					>
+						<CInput
+							v-model.number='checkPeriodInMinutes'
+							type='number'
+							min='0'
+							:label='$t("config.iqrfRepository.form.checkPeriod")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
+						/>
+					</ValidationProvider>
+					<CInputCheckbox
+						v-if='versionNew'
+						:checked.sync='downloadIfRepoCacheEmpty'
+						:label='$t("config.iqrfRepository.form.downloadIfEmpty")'
+					/>
+					<CButton type='submit' color='primary' :disabled='invalid'>
+						{{ $t('forms.save') }}
+					</CButton>
+				</CForm>
+			</ValidationObserver>
+		</CCardBody>
+	</CCard>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {AxiosError, AxiosResponse} from 'axios';
-import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {integer, min_value, required} from 'vee-validate/dist/rules';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
@@ -78,15 +75,13 @@ import {IIqrfRepository} from '../../interfaces/iqrfRepository';
 		CButton,
 		CCard,
 		CCardBody,
+		CCardHeader,
 		CForm,
 		CInput,
 		CInputCheckbox,
 		ValidationObserver,
 		ValidationProvider,
-	},
-	metaInfo: {
-		title: 'config.iqrfRepository.title',
-	},
+	}
 })
 
 /**
@@ -150,6 +145,12 @@ export default class IqrfRepository extends Vue {
 		extend('integer', integer);
 		extend('min', min_value);
 		extend('required', required);
+	}
+
+	/**
+	 * Vue lifecycle hook mounted
+	 */
+	mounted(): void {
 		this.getConfig();
 	}
 

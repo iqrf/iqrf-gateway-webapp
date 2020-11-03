@@ -1,7 +1,9 @@
 <template>
-	<div>
-		<h1>{{ $t('controllerConfig.title') }}</h1>
-		<CCard body-wrapper>
+	<CCard>
+		<CCardHeader>
+			<h3>{{ $t('controllerConfig.title') }}</h3>
+		</CCardHeader>
+		<CCardBody>
 			<ValidationObserver v-if='config !== null' v-slot='{ invalid }'>
 				<CForm @submit.prevent='processSubmit'>
 					<CRow>
@@ -251,26 +253,28 @@
 					</CButton>
 				</CForm>
 			</ValidationObserver>
-		</CCard>
-	</div>
+		</CCardBody>
+	</CCard>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {AxiosError, AxiosResponse} from 'axios';
-import {CButton, CCard , CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import FeatureConfigService from '../../services/FeatureConfigService';
 import {NavigationGuardNext, Route} from 'vue-router/types/router';
 import {ControllerBase} from '../../interfaces/controller';
-import { IOption } from '../../interfaces/coreui';
+import {IOption} from '../../interfaces/coreui';
 
 @Component({
 	components: {
 		CButton,
 		CCard,
+		CCardBody,
+		CCardHeader,
 		CForm,
 		CInput,
 		CInputCheckbox,
@@ -362,6 +366,12 @@ export default class ControllerConfig extends Vue {
 			const regex = RegExp('^ws:\\/\\/.+:([1-9]|[1-9][0-9]|[1-9][0-9]{2}|[1-9][0-9]{3}|[1-4][0-9][0-1][0-5][0-1])$');
 			return regex.test(addr);
 		});
+	}
+
+	/**
+	 * Vue lifecycle hook mounted
+	 */
+	mounted(): void {
 		this.getConfig();
 	}
 

@@ -1,47 +1,47 @@
 <template>
-	<div>
-		<h1>{{ $t('config.jsonMngMetaDataApi.title') }}</h1>
-		<CCard>
-			<CCardBody>
-				<ValidationObserver v-slot='{ invalid }'>
-					<CForm @submit.prevent='saveConfig'>
-						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
-							rules='required'
-							:custom-messages='{required: "config.jsonMngMetaDataApi.form.messages.instance"}'
-						>
-							<CInput
-								v-model='configuration.instance'
-								:label='$t("config.jsonMngMetaDataApi.form.instance")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
-							/>
-						</ValidationProvider>
-						<CInputCheckbox
-							:checked.sync='configuration.metaDataToMessages'
-							:label='$t("config.jsonMngMetaDataApi.form.metaDataToMessages")'
+	<CCard class='border-0'>
+		<CCardHeader>
+			<h3>{{ $t('config.jsonMngMetaDataApi.title') }}</h3>
+		</CCardHeader>
+		<CCardBody>
+			<ValidationObserver v-slot='{ invalid }'>
+				<CForm @submit.prevent='saveConfig'>
+					<ValidationProvider
+						v-slot='{ errors, touched, valid }'
+						rules='required'
+						:custom-messages='{required: "config.jsonMngMetaDataApi.form.messages.instance"}'
+					>
+						<CInput
+							v-model='configuration.instance'
+							:label='$t("config.jsonMngMetaDataApi.form.instance")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
 						/>
-						<CButton type='submit' color='primary' :disabled='invalid'>
-							{{ $t('forms.save') }}
-						</CButton>
-					</CForm>
-				</ValidationObserver>
-			</CCardBody>
-		</CCard>
-	</div>
+					</ValidationProvider>
+					<CInputCheckbox
+						:checked.sync='configuration.metaDataToMessages'
+						:label='$t("config.jsonMngMetaDataApi.form.metaDataToMessages")'
+					/>
+					<CButton type='submit' color='primary' :disabled='invalid'>
+						{{ $t('forms.save') }}
+					</CButton>
+				</CForm>
+			</ValidationObserver>
+		</CCardBody>
+	</CCard>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {AxiosError, AxiosResponse} from 'axios';
-import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 
 interface JsonMngMetaDataApiConfig {
-	instance: string|null
+	instance: string
 	metaDataToMessages: boolean
 }
 
@@ -50,15 +50,13 @@ interface JsonMngMetaDataApiConfig {
 		CButton,
 		CCard,
 		CCardBody,
+		CCardHeader,
 		CForm,
 		CInput,
 		CInputCheckbox,
 		ValidationObserver,
 		ValidationProvider
-	},
-	metaInfo: {
-		title: 'config.jsonMngMetaDataApi.title',
-	},
+	}
 })
 
 /**
@@ -71,15 +69,15 @@ export default class JsonMngMetaDataApi extends Vue {
 	private componentName = 'iqrf::JsonMngMetaDataApi'
 
 	/**
-	 * @var {string|null} instance JSON MetaData component instance name
+	 * @var {string} instance JSON MetaData component instance name
 	 */
-	private instance: string|null = null
+	private instance = ''
 
 	/**
 	 * @var {JsonMngMetaDataApiConfig} configuration JSON MetaData component instance configuration
 	 */
 	private configuration: JsonMngMetaDataApiConfig = {
-		instance: null,
+		instance: '',
 		metaDataToMessages: false,
 	}
 
@@ -88,6 +86,12 @@ export default class JsonMngMetaDataApi extends Vue {
 	 */
 	created(): void {
 		extend('required', required);
+	}
+
+	/**
+	 * Vue lifecycle hook mounted
+	 */
+	mounted(): void {
 		this.getConfig();
 	}
 

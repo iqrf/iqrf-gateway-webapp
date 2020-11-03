@@ -1,124 +1,122 @@
 <template>
-	<div>
-		<h1>{{ $t('config.iqrfUart.title') }}</h1>
-		<CCard>
-			<CCardBody>
-				<ValidationObserver v-slot='{ invalid }'>
-					<CForm @submit.prevent='saveConfig'>
-						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
-							rules='required'
-							:custom-messages='{required: "config.iqrfUart.form.messages.instance"}'
-						>
-							<CInput
-								v-model='componentInstance'
-								:label='$t("config.iqrfUart.form.instance")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
-							/>
-						</ValidationProvider>
-						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
-							rules='required'
-							:custom-messages='{required: "config.iqrfUart.form.messages.IqrfInterface"}'
-						>
-							<CInput
-								v-model='IqrfInterface'
-								:label='$t("config.iqrfUart.form.IqrfInterface")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
-							/>
-						</ValidationProvider>
-						<ValidationProvider
-							v-slot='{ valid, touched, errors }'
-							rules='required'
-							:custom-messages='{
-								required: "config.iqrfUart.form.messages.baudRate",
-							}'
-						>
-							<CSelect
-								:value.sync='baudRate'
-								:label='$t("config.iqrfUart.form.baudRate")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
-								:placeholder='$t("config.iqrfUart.form.messages.baudRate")'
-								:options='baudRates'
-							/>
-						</ValidationProvider>
-						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
-							rules='required|integer'
-							:custom-messages='{
-								integer: "config.iqrfUart.form.messages.powerEnableGpioPin",
-								required: "config.iqrfUart.form.messages.powerEnableGpioPin",
-							}'
-						>
-							<CInput
-								v-model.number='powerEnableGpioPin'
-								type='number'
-								:label='$t("config.iqrfUart.form.powerEnableGpioPin")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
-							/>
-						</ValidationProvider>
-						<ValidationProvider
-							v-if='versionNew'
-							v-slot='{ errors, touched, valid }'
-							rules='required|integer'
-							:custom-messages='{
-								integer: "config.iqrfUart.form.messages.pgmSwitchGpioPin",
-								required: "config.iqrfUart.form.messages.pgmSwitchGpioPin",
-							}'
-						>
-							<CInput
-								v-model.number='pgmSwitchGpioPin'
-								type='number'
-								:label='$t("config.iqrfUart.form.pgmSwitchGpioPin")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
-							/>
-						</ValidationProvider>
-						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
-							rules='required|integer'
-							:custom-messages='{
-								integer: "config.iqrfUart.form.messages.busEnableGpioPin",
-								required: "config.iqrfUart.form.messages.busEnableGpioPin",
-							}'
-						>
-							<CInput
-								v-model.number='busEnableGpioPin'
-								type='number'
-								:label='$t("config.iqrfUart.form.busEnableGpioPin")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
-							/>
-						</ValidationProvider>
-						<CInputCheckbox
-							:checked.sync='uartReset'
-							:label='$t("config.iqrfUart.form.uartReset")'
+	<CCard>
+		<CCardHeader>
+			<h3>{{ $t('config.iqrfUart.title') }}</h3>
+		</CCardHeader>
+		<CCardBody>
+			<ValidationObserver v-slot='{ invalid }'>
+				<CForm @submit.prevent='saveConfig'>
+					<ValidationProvider
+						v-slot='{ errors, touched, valid }'
+						rules='required'
+						:custom-messages='{required: "config.iqrfUart.form.messages.instance"}'
+					>
+						<CInput
+							v-model='componentInstance'
+							:label='$t("config.iqrfUart.form.instance")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
 						/>
-						<CButton type='submit' color='primary' :disabled='invalid'>
-							{{ $t('forms.save') }}
-						</CButton>
-					</CForm>
-				</ValidationObserver>
-			</CCardBody>
-		</CCard>
-		<CCard>
-			<CCardHeader>{{ $t('config.iqrfUart.mappings' ) }}</CCardHeader>
-			<CCardBody>
-				<CRow>
-					<CCol lg='6'>
-						<InterfaceMappings interface-type='uart' @update-mapping='updateMapping' />
-					</CCol>
-					<CCol lg='6'>
-						<InterfacePorts interface-type='uart' @update-port='updatePort' />
-					</CCol>
-				</CRow>
-			</CCardBody>
-		</CCard>
-	</div>
+					</ValidationProvider>
+					<ValidationProvider
+						v-slot='{ errors, touched, valid }'
+						rules='required'
+						:custom-messages='{required: "config.iqrfUart.form.messages.IqrfInterface"}'
+					>
+						<CInput
+							v-model='IqrfInterface'
+							:label='$t("config.iqrfUart.form.IqrfInterface")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
+						/>
+					</ValidationProvider>
+					<ValidationProvider
+						v-slot='{ valid, touched, errors }'
+						rules='required'
+						:custom-messages='{
+							required: "config.iqrfUart.form.messages.baudRate",
+						}'
+					>
+						<CSelect
+							:value.sync='baudRate'
+							:label='$t("config.iqrfUart.form.baudRate")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
+							:placeholder='$t("config.iqrfUart.form.messages.baudRate")'
+							:options='baudRates'
+						/>
+					</ValidationProvider>
+					<ValidationProvider
+						v-slot='{ errors, touched, valid }'
+						rules='required|integer'
+						:custom-messages='{
+							integer: "config.iqrfUart.form.messages.powerEnableGpioPin",
+							required: "config.iqrfUart.form.messages.powerEnableGpioPin",
+						}'
+					>
+						<CInput
+							v-model.number='powerEnableGpioPin'
+							type='number'
+							:label='$t("config.iqrfUart.form.powerEnableGpioPin")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
+						/>
+					</ValidationProvider>
+					<ValidationProvider
+						v-if='versionNew'
+						v-slot='{ errors, touched, valid }'
+						rules='required|integer'
+						:custom-messages='{
+							integer: "config.iqrfUart.form.messages.pgmSwitchGpioPin",
+							required: "config.iqrfUart.form.messages.pgmSwitchGpioPin",
+						}'
+					>
+						<CInput
+							v-model.number='pgmSwitchGpioPin'
+							type='number'
+							:label='$t("config.iqrfUart.form.pgmSwitchGpioPin")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
+						/>
+					</ValidationProvider>
+					<ValidationProvider
+						v-slot='{ errors, touched, valid }'
+						rules='required|integer'
+						:custom-messages='{
+							integer: "config.iqrfUart.form.messages.busEnableGpioPin",
+							required: "config.iqrfUart.form.messages.busEnableGpioPin",
+						}'
+					>
+						<CInput
+							v-model.number='busEnableGpioPin'
+							type='number'
+							:label='$t("config.iqrfUart.form.busEnableGpioPin")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
+						/>
+					</ValidationProvider>
+					<CInputCheckbox
+						:checked.sync='uartReset'
+						:label='$t("config.iqrfUart.form.uartReset")'
+					/>
+					<CButton type='submit' color='primary' :disabled='invalid'>
+						{{ $t('forms.save') }}
+					</CButton>
+				</CForm>
+			</ValidationObserver>
+		</CCardBody>
+		<CCardFooter>
+			<h4>{{ $t('config.iqrfUart.mappings' ) }}</h4><hr>
+			<CRow>
+				<CCol lg='6'>
+					<InterfaceMappings interface-type='uart' @update-mapping='updateMapping' />
+				</CCol>
+				<CCol lg='6'>
+					<InterfacePorts interface-type='uart' @update-port='updatePort' />
+				</CCol>
+			</CRow>
+		</CCardFooter>
+	</CCard>
 </template>
 
 <script lang='ts'>
@@ -128,6 +126,7 @@ import {
 	CButton,
 	CCard,
 	CCardBody,
+	CCardFooter,
 	CCardHeader,
 	CCol,
 	CForm,
@@ -152,6 +151,7 @@ import {IIqrfUart, IUartMapping} from '../../interfaces/iqrfUart';
 		CButton,
 		CCard,
 		CCardBody,
+		CCardFooter,
 		CCardHeader,
 		CCol,
 		CForm,
@@ -163,10 +163,7 @@ import {IIqrfUart, IUartMapping} from '../../interfaces/iqrfUart';
 		InterfacePorts,
 		ValidationObserver,
 		ValidationProvider,
-	},
-	metaInfo: {
-		title: 'config.iqrfUart.title',
-	},
+	}
 })
 
 /**
