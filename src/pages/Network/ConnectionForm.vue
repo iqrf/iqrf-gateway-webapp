@@ -181,10 +181,12 @@
 								/>
 							</ValidationProvider>
 							<div class='form-group'>
-								<CButton color='danger' @click='deleteIpv6Address(index)'>
-									{{ $t('network.connection.ipv6.addresses.remove') }}
-								</CButton>
 								<CButton
+									color='danger'
+									@click='deleteIpv6Address(index)'
+								>
+									{{ $t('network.connection.ipv6.addresses.remove') }}
+								</CButton> <CButton
 									v-if='index === (configuration.ipv6.addresses.length - 1)'
 									color='success'
 									@click='addIpv6Address'
@@ -219,10 +221,12 @@
 								/>
 							</ValidationProvider>
 							<div class='form-group'>
-								<CButton color='danger' @click='deleteIpv6Dns(index)'>
-									{{ $t('network.connection.ipv6.dns.remove') }}
-								</CButton>
 								<CButton
+									color='danger'
+									@click='deleteIpv6Dns(index)'
+								>
+									{{ $t('network.connection.ipv6.dns.remove') }}
+								</CButton> <CButton
 									v-if='index === (configuration.ipv6.dns.length - 1)'
 									color='success'
 									@click='addIpv6Dns'
@@ -251,9 +255,9 @@ import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CForm, CInput, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
-import NetworkConnectionService from '../../services/NetworkConnectionService';
+import NetworkConnectionService, {ConnectionType} from '../../services/NetworkConnectionService';
 import { IOption } from '../../interfaces/coreui';
-import { AxiosResponse } from 'axios';
+import {AxiosError, AxiosResponse} from 'axios';
 
 interface IpConfigAddress {
 	address: string
@@ -441,18 +445,28 @@ export default class ConnectionForm extends Vue {
 		this.$store.commit('spinner/SHOW');
 		NetworkConnectionService.edit(this.uuid, this.configuration)
 			.then(() => {
-				NetworkConnectionService.connect(this.uuid).then(() => {
-					this.$toast.success(
-						this.$t('network.connection.messages.edit.success').toString()
-					);
-					this.$store.commit('spinner/HIDE');
-				});
-			}).catch(() => {
-				this.$toast.error(
-					this.$t('network.connection.messages.edit.failure').toString()
-				);
-				this.$store.commit('spinner/HIDE');
-			});
+				NetworkConnectionService.connect(this.uuid)
+					.then(() => {
+						if (this.configuration.type === ConnectionType.ETHERNET) {
+							this.$router.push('/network/ethernet');
+						}
+						this.$toast.success(
+							this.$t('network.connection.messages.edit.success', {connection: this.configuration.name}).toString()
+						);
+						this.$store.commit('spinner/HIDE');
+					})
+					.catch(this.handleError);
+			}).catch(this.handleError);
+	}
+
+	/**
+	 * Handle submit errors
+	 */
+	private handleError(): void {
+		this.$toast.error(
+			this.$t('network.connection.messages.edit.failure').toString()
+		);
+		this.$store.commit('spinner/HIDE');
 	}
 
 }

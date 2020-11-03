@@ -37,6 +37,7 @@ use App\NetworkModule\Models\ConnectionManager;
 use Grifart\Enum\MissingValueDeclarationException;
 use Ramsey\Uuid\Exception\InvalidUuidStringException;
 use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 
 /**
  * Network connections controller
@@ -130,10 +131,8 @@ class ConnectionsController extends NetworkController {
 	 */
 	public function delete(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
-			$uuid = Uuid::fromString($request->getParameter('uuid'));
+			$uuid = $this->getUuid($request);
 			$this->manager->delete($uuid);
-		} catch (InvalidUuidStringException $e) {
-			throw new ClientErrorException('Invalid UUID', ApiResponse::S400_BAD_REQUEST);
 		} catch (NetworkManagerException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
@@ -169,12 +168,10 @@ class ConnectionsController extends NetworkController {
 	 */
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
-			$uuid = Uuid::fromString($request->getParameter('uuid'));
+			$uuid = $this->getUuid($request);
 			$this->validator->validateRequest('networkConnection', $request);
 			$json = $request->getJsonBody(false);
 			$this->manager->edit($uuid, $json);
-		} catch (InvalidUuidStringException $e) {
-			throw new ClientErrorException('Invalid UUID', ApiResponse::S400_BAD_REQUEST);
 		} catch (NetworkManagerException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
@@ -207,10 +204,8 @@ class ConnectionsController extends NetworkController {
 	 */
 	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
-			$uuid = Uuid::fromString($request->getParameter('uuid'));
+			$uuid = $this->getUuid($request);
 			return $response->writeJsonObject($this->manager->get($uuid));
-		} catch (InvalidUuidStringException $e) {
-			throw new ClientErrorException('Invalid UUID', ApiResponse::S400_BAD_REQUEST);
 		} catch (NetworkManagerException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
@@ -242,11 +237,9 @@ class ConnectionsController extends NetworkController {
 	public function connect(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$interface = $request->getQueryParam('interface', null);
 		try {
-			$uuid = Uuid::fromString($request->getParameter('uuid'));
+			$uuid = $this->getUuid($request);
 			$this->manager->up($uuid, $interface);
 			return $response->writeBody('Workaround');
-		} catch (InvalidUuidStringException $e) {
-			throw new ClientErrorException('Invalid UUID', ApiResponse::S400_BAD_REQUEST);
 		} catch (NetworkManagerException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
@@ -270,13 +263,25 @@ class ConnectionsController extends NetworkController {
 	 */
 	public function disconnect(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
-			$uuid = Uuid::fromString($request->getParameter('uuid'));
+			$uuid = $this->getUuid($request);
 			$this->manager->down($uuid);
 			return $response->writeBody('Workaround');
-		} catch (InvalidUuidStringException $e) {
-			throw new ClientErrorException('Invalid UUID', ApiResponse::S400_BAD_REQUEST);
 		} catch (NetworkManagerException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	/**
+	 * Returns the network connection UUID
+	 * @param ApiRequest $request API request
+	 * @return UuidInterface Network connection UUID
+	 * @throws ClientErrorException Invalid UUID
+	 */
+	private function getUuid(ApiRequest $request): UuidInterface {
+		try {
+			return Uuid::fromString($request->getParameter('uuid'));
+		} catch (InvalidUuidStringException $e) {
+			throw new ClientErrorException('Invalid UUID', ApiResponse::S400_BAD_REQUEST);
 		}
 	}
 
