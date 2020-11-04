@@ -79,7 +79,7 @@
 								:value.sync='config.resetButton.api'
 								:options='apiCallOptions'
 								:label='$t("controllerConfig.form.resetButton.api")'
-							/><hr>
+							/>
 							<div v-if='config.resetButton.api === "autoNetwork"'>
 								<h3>
 									{{ $t("controllerConfig.form.daemonApi.autoNetwork.title") }}

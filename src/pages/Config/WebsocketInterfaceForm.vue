@@ -237,7 +237,7 @@ export default class WebsocketInterfaceForm extends Vue {
 					});
 			})
 			.catch((error: AxiosError) => {
-				this.$router.push('/config/daemon/messagings/');
+				this.$router.push('/config/daemon/messagings/ws');
 				FormErrorHandler.configError(error);
 			});
 	}
@@ -297,7 +297,7 @@ export default class WebsocketInterfaceForm extends Vue {
 					.toString()
 			);
 		}
-		this.$router.push('/config/daemon/messagings/');
+		this.$router.push('/config/daemon/messagings/ws');
 	}
 }
 </script>

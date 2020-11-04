@@ -5,20 +5,20 @@
 		</CCardHeader>
 		<CCardBody>
 			<CSelect
-				:value.sync='messaging'
+				:value.sync='activeMessaging'
 				:options='messagingOptions'
 				:label='$t("config.daemon.form.messaging")'
 			/>
-			<MqttMessagingTable v-if='messaging === "mqtt"' />
-			<WebsocketList v-if='messaging === "ws"' />
-			<MqMessagingTable v-if='messaging === "mq"' />
-			<UdpMessagingTable v-if='messaging === "udp"' />
+			<MqttMessagingTable v-if='activeMessaging === "mqtt"' />
+			<WebsocketList v-if='activeMessaging === "ws"' />
+			<MqMessagingTable v-if='activeMessaging === "mq"' />
+			<UdpMessagingTable v-if='activeMessaging === "udp"' />
 		</CCardBody>
 	</CCard>
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CCard, CCardBody, CCardHeader, CSelect} from '@coreui/vue/src';
 import MqttMessagingTable from '../../pages/Config/MqttMessagingTable.vue';
 import WebsocketList from '../../pages/Config/WebsocketList.vue';
@@ -46,10 +46,11 @@ import {IOption} from '../../interfaces/coreui';
  * Messagings configuration page component
  */
 export default class Messagings extends Vue {
+	
 	/**
-	 * @var {string} messaging Currently selected messaging
+	 * @var {string} activeMessaging Currently selected messaging to display table of messagings
 	 */
-	private messaging = 'mqtt'
+	private activeMessaging = '';
 	
 	/**
 	 * @constant {Array<IOption>} messagingOptions Array of CoreUI select options for messagings
@@ -72,5 +73,17 @@ export default class Messagings extends Vue {
 			label: this.$t('config.udp.title').toString()
 		}
 	]
+
+	/**
+	 * @property {string} messaging Messaging type passed to component via router
+	 */
+	@Prop({required: false, default: 'mqtt'}) messaging!: string
+
+	/**
+	 * Vue lifecycle component mounted
+	 */
+	mounted(): void {
+		this.activeMessaging = this.messaging;
+	}
 }
 </script>

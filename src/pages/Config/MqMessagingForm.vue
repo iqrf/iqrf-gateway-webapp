@@ -160,7 +160,7 @@ export default class MqMessagingForm extends Vue {
 				this.configuration = response.data;
 			})
 			.catch((error: AxiosError) => {
-				this.$router.push('/config/daemon/messagings/');
+				this.$router.push('/config/daemon/messagings/mq');
 				FormErrorHandler.configError(error);
 			});
 	}
@@ -197,7 +197,7 @@ export default class MqMessagingForm extends Vue {
 					.toString()
 			);
 		}
-		this.$router.push('/config/daemon/messagings/');
+		this.$router.push('/config/daemon/messagings/mq');
 	}
 }
 </script>

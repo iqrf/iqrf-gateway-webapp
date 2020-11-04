@@ -210,7 +210,16 @@
 			"interfaces": {
 				"title": "Interfaces",
 				"description": "Configuration of IQRF communication interfaces.",
-				"noInterface": "All IQRF communication interfaces are disabled."
+				"noInterface": "All IQRF communication interfaces are disabled.",
+				"selectInterface": "Select active interface",
+				"placeholder": "Please select communication interface.",
+				"types": {
+					"cdc": "CDC",
+					"spi": "SPI",
+					"uart": "UART"
+				},
+				"updateFailed": "An error occured while updating interface settings.",
+				"updateSuccess": "Interface {interface} has been successfully enabled."
 			},
 			"messagings": {
 				"title": "Messagings",

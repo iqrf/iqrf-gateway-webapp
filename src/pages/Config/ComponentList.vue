@@ -2,17 +2,8 @@
 	<div>
 		<CCard>
 			<CCardHeader>
-				<h3 
-					v-if='$store.getters["user/getRole"] === "power"'
-					class='float-left'
-				>
+				<h3 class='float-left'>
 					{{ $t('config.components.title') }}
-				</h3>
-				<h3 
-					v-else
-					class='float-left'
-				>
-					{{ $t('config.selectedComponents.title') }}
 				</h3>
 				<CButton
 					color='success'

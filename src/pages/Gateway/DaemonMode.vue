@@ -2,12 +2,14 @@
 	<div>
 		<h1>{{ $t('gateway.mode.title') }}</h1>
 		<CCard body-wrapper>
-			<table class='table table-striped'>
-				<tr>
-					<th>{{ $t('gateway.info.gwMode') }}</th>
-					<td>{{ $t('gateway.mode.modes.' + mode) }}</td>
-				</tr>
-			</table>
+			<CRow style='margin-bottom: 1.25rem'>
+				<CCol>
+					{{ $t('gateway.info.gwMode') }}
+				</CCol>
+				<CCol>
+					{{ $t('gateway.mode.modes.' + mode) }}
+				</CCol>
+			</CRow>
 			<div v-if='mode !== "unknown"'>
 				<CButton
 					color='primary'

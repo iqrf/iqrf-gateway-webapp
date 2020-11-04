@@ -194,11 +194,6 @@ export default class TheSidebar extends Vue {
 										roles: ['power'],
 									},
 									{
-										name: this.$t('config.selectedComponents.title'),
-										to: '/config/daemon/component/',
-										roles: ['normal'],
-									},
-									{
 										name: this.$t('config.daemon.interfaces.title'),
 										to: '/config/daemon/interfaces/',
 										roles: ['power', 'normal'],

@@ -205,8 +205,13 @@ const routes: Array<RouteConfig> = [
 								component: Interfaces,
 							},
 							{
-								path: 'messagings',
 								component: Messagings,
+								path: 'messagings',
+							},
+							{
+								component: Messagings,
+								path: 'messagings/:messaging',
+								props: true,
 							},
 							{
 								path: 'scheduler',

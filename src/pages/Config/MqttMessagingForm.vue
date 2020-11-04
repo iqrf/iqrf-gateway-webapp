@@ -357,7 +357,7 @@ export default class MqttMessagingForm extends Vue {
 			})
 			.catch((error: AxiosError) => {
 				this.$store.commit('spinner/HIDE');
-				this.$router.push('/config/daemon/messagings/');
+				this.$router.push('/config/daemon/messagings/mqtt');
 				FormErrorHandler.configError(error);
 			});
 	}
@@ -394,7 +394,7 @@ export default class MqttMessagingForm extends Vue {
 					.toString()
 			);
 		}
-		this.$router.push('/config/daemon/messagings/');
+		this.$router.push('/config/daemon/messagings/mqtt');
 	}
 }
 </script>

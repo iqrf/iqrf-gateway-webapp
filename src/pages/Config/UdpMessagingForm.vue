@@ -161,7 +161,7 @@ export default class UdpMessagingForm extends Vue {
 				this.configuration = response.data;
 			})
 			.catch((error: AxiosError) => {
-				this.$router.push('/config/daemon/messagings/');
+				this.$router.push('/config/daemon/messagings/udp');
 				FormErrorHandler.configError(error);
 			});
 	}
@@ -197,7 +197,7 @@ export default class UdpMessagingForm extends Vue {
 					.toString()
 			);
 		}
-		this.$router.push('/config/daemon/messagings/');
+		this.$router.push('/config/daemon/messagings/udp');
 	}
 }
 </script>

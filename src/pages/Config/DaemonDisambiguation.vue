@@ -27,17 +27,6 @@
 						{{ $t('config.components.description') }}
 					</p>
 				</CListGroupItem>
-				<CListGroupItem
-					v-if='$store.getters["user/getRole"] === "normal"'
-					to='/config/daemon/component/'
-				>
-					<header class='list-group-item-heading'>
-						{{ $t('config.selectedComponents.title') }}
-					</header>
-					<p class='list-group-item-text'>
-						{{ $t('config.selectedComponents.description') }}
-					</p>
-				</CListGroupItem>
 				<CListGroupItem to='/config/daemon/interfaces/'>
 					<header class='list-group-item-heading'>
 						{{ $t('config.daemon.interfaces.title') }}
