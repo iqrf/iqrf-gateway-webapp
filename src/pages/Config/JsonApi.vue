@@ -1,5 +1,5 @@
 <template>
-	<CCard>
+	<CCard class='border-0'>
 		<CCardHeader>
 			<h3>{{ $t('config.jsonApi.title') }}</h3>
 		</CCardHeader>

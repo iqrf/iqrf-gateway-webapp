@@ -64,13 +64,13 @@
 						<td>
 							<CDropdown
 								:color='item.service.tlsEnabled ? "success": "danger"'
-								:toggler-text='$t("table.enabled." + item.service.tlsEnabled)'
+								:toggler-text='$t("table.enabled." + (item.service.tlsEnabled !== undefined ? item.service.tlsEnabled : false))'
 								size='sm'
 							>
-								<CDropdownItem @click='changeTLS(item.service, true)'>
+								<CDropdownItem @click='changeTls(item.service, true)'>
 									{{ $t('table.enabled.true') }}
 								</CDropdownItem>
-								<CDropdownItem @click='changeTLS(item.service, false)'>
+								<CDropdownItem @click='changeTls(item.service, false)'>
 									{{ $t('table.enabled.false') }}
 								</CDropdownItem>
 							</CDropdown>
@@ -303,7 +303,7 @@ export default class WebsocketInterfaceList extends Vue {
 	 * @param {IWsService} service Websocket service instance
 	 * @param {boolean} tlsEnabled New setting
 	 */
-	private changeTLS(service: IWsService, tlsEnabled: boolean): void {
+	private changeTls(service: IWsService, tlsEnabled: boolean): void {
 		if (service.tlsEnabled === tlsEnabled) {
 			return;
 		}

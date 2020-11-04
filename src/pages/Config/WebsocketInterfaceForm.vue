@@ -40,6 +40,10 @@
 						/>
 					</ValidationProvider>
 					<CInputCheckbox
+						:checked.sync='messaging.acceptAsyncMsg'
+						:label='$t("config.websocket.form.acceptAsyncMsg")'
+					/>
+					<CInputCheckbox
 						:checked.sync='service.acceptOnlyLocalhost'
 						:label='$t("config.websocket.form.acceptOnlyLocalhost")'
 					/>
@@ -55,7 +59,7 @@
 							:placeholder='$t("config.websocket.form.messages.tlsMode")'
 							:disabled='!service.tlsEnabled'
 						/>
-						<span v-if='service.tlsMode !== ""'>{{ $t('config.websocket.form.tlsModes.descriptions.' + service.tlsMode) }}</span>
+						<span v-if='service.tlsMode !== "" && service.tlsMode !== undefined'>{{ $t('config.websocket.form.tlsModes.descriptions.' + service.tlsMode) }}</span>
 					</div><br v-if='versionNew'>
 					<CButton type='submit' color='primary' :disabled='invalid'>
 						{{ submitButton }}

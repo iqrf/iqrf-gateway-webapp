@@ -1,6 +1,12 @@
 <template>
 	<CCard>
 		<CTabs variant='tabs' :active-tab='activeTab'>
+			<CTab :title='$t("config.jsonApi.title")'>
+				<JsonApi v-if='!powerUser' />
+				<JsonMngMetaDataApi v-if='powerUser' />
+				<JsonRawApi v-if='powerUser' />
+				<JsonSplitter v-if='powerUser' />
+			</CTab>
 			<CTab :title='$t("config.iqrfRepository.title")'>
 				<IqrfRepository />
 			</CTab>
@@ -10,17 +16,11 @@
 			<CTab v-if='powerUser' :title='$t("config.iqmesh.title")'>
 				<IqmeshServices />
 			</CTab>
-			<CTab :title='$t("config.jsonApi.title")'>
-				<JsonApi v-if='!powerUser' />
-				<JsonMngMetaDataApi v-if='powerUser' />
-				<JsonRawApi v-if='powerUser' />
-				<JsonSplitter v-if='powerUser' />
+			<CTab :title='$t("config.monitor.title")'>
+				<MonitorList />
 			</CTab>
 			<CTab :title='$t("config.tracer.title")'>
 				<TracerList />
-			</CTab>
-			<CTab :title='$t("config.monitor.title")'>
-				<MonitorList />
 			</CTab>
 		</CTabs>
 	</CCard>
