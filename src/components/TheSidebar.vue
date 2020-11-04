@@ -465,3 +465,9 @@ export default class TheSidebar extends Vue {
 }
 
 </script>
+
+<style>
+.c-sidebar .c-sidebar-nav-link.c-active {
+	font-weight: bold;
+}
+</style>
