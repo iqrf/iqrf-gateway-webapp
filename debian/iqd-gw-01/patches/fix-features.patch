@@ -1,6 +1,6 @@
 --- a/app/config/features.neon
 +++ b/app/config/features.neon
-@@ -1,7 +1,7 @@
+@@ -1,13 +1,13 @@
  # Show documentation
  docs:
  	enabled: true
@@ -9,7 +9,14 @@
  grafana:
  	enabled: false
  	url: /grafana/
-@@ -14,10 +14,10 @@
+ # IQRF Gateway Controller configuration
+ iqrfGatewayController:
+-	enabled: false
++	enabled: true
+ # IQRF Gateway Translator configuration
+ iqrfGatewayTranslator:
+ 	enabled: false
+@@ -23,10 +23,10 @@ nodeRed:
  	url: /node-red/
  # PIXLA mamagement system
  pixla:
@@ -22,7 +29,7 @@
  # Supervisord dashboard
  supervisord:
  	enabled: false
-@@ -27,10 +27,10 @@
+@@ -36,10 +36,10 @@ updater:
  	enabled: false
  # IQRF TR native upload
  trUpload:
