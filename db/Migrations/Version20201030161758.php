@@ -28,12 +28,16 @@ final class Version20201030161758 extends AbstractMigration {
 		$this->addSql('INSERT INTO mappings VALUES (2, "spi", "UniPi Axon", "/dev/spidev0.3", 18, 19, 2, null)');
 		$this->addSql('INSERT INTO mappings VALUES (3, "spi", "UP", "/dev/spidev2.0", 7, 22, 23, null)');
 		$this->addSql('INSERT INTO mappings VALUES (4, "spi", "UP Squared", "/dev/spidev1.0", 7, 22, 23, null)');
-		$this->addSql('INSERT INTO mappings VALUES (5, "uart", "Raspberry Pi 1", "/dev/ttyAMA0", 7, 22, 23, 57600)');
-		$this->addSql('INSERT INTO mappings VALUES (6, "uart", "Raspberry Pi", "/dev/ttyS0", 7, 22, 23, 57600)');
-		$this->addSql('INSERT INTO mappings VALUES (7, "uart", "Orange Pi", "/dev/ttyS0", 10, 3, 19, 57600)');
-		$this->addSql('INSERT INTO mappings VALUES (8, "uart", "UniPi", "/dev/ttyS0", -1, -1, 18, 57600)');
-		$this->addSql('INSERT INTO mappings VALUES (9, "uart", "UP", "/dev/ttyS1", 7, 22, 23, 57600)');
-		$this->addSql('INSERT INTO mappings VALUES (10, "uart", "UP Squared", "/dev/ttyS1", 7, 22, 23, 57600)');
+		$this->addSql('INSERT INTO mappings VALUES (5, "spi", "IQD-GW-01A", "/dev/spidev1.0", 10, 3, 19, null)');
+		$this->addSql('INSERT INTO mappings VALUES (6, "spi", "IQD-GW-02A", "/dev/spidev1.0", -1, 3, 19, null)');
+		$this->addSql('INSERT INTO mappings VALUES (7, "uart", "Raspberry Pi 1", "/dev/ttyAMA0", 7, 22, 23, 57600)');
+		$this->addSql('INSERT INTO mappings VALUES (8, "uart", "Raspberry Pi", "/dev/ttyS0", 7, 22, 23, 57600)');
+		$this->addSql('INSERT INTO mappings VALUES (9, "uart", "Orange Pi", "/dev/ttyS0", 10, 3, 19, 57600)');
+		$this->addSql('INSERT INTO mappings VALUES (10, "uart", "UniPi", "/dev/ttyS0", -1, -1, 18, 57600)');
+		$this->addSql('INSERT INTO mappings VALUES (11, "uart", "UP", "/dev/ttyS1", 7, 22, 23, 57600)');
+		$this->addSql('INSERT INTO mappings VALUES (12, "uart", "UP Squared", "/dev/ttyS1", 7, 22, 23, 57600)');
+		$this->addSql('INSERT INTO mappings VALUES (13, "uart", "IQD-GW-01A", "/dev/ttyS1", 10, -1, 19, 57600)');
+		$this->addSql('INSERT INTO mappings VALUES (14, "uart", "IQD-GW-02A", "/dev/ttyS1", -1, 3, 19, 57600)');
 	}
 
 	public function down(Schema $schema) : void {

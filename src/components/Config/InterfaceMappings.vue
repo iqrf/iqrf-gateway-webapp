@@ -23,6 +23,7 @@
 					{{ $t('config.interfaceMapping.setMapping') }}
 				</CDropdownItem>
 				<CDropdownItem
+					v-if='powerUser'
 					@click='invokeMappingForm(mapping.id)'
 				>
 					<CIcon :content='icons.edit' />
@@ -114,6 +115,11 @@ export default class InterfaceMappings extends Vue {
 	private modalMapping = ''
 
 	/**
+	 * @var {boolean} powerUser Indicates whether user role is power user
+	 */
+	private powerUser = false
+
+	/**
 	 * @var {boolean} showModal
 	 */
 	private showModal = false
@@ -127,6 +133,9 @@ export default class InterfaceMappings extends Vue {
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
+		if (this.$store.getters['user/role'] === 'power') {
+			this.powerUser = true;
+		}
 		this.getMappings();
 	}
 
