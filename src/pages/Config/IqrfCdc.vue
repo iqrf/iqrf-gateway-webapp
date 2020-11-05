@@ -8,6 +8,7 @@
 				<ValidationObserver v-slot='{ invalid }'>
 					<CForm @submit.prevent='saveConfig'>
 						<ValidationProvider
+							v-if='powerUser'
 							v-slot='{ errors, touched, valid }'
 							rules='required'
 							:custom-messages='{required: "config.iqrfCdc.form.messages.instance"}'
@@ -97,6 +98,11 @@ export default class IqrfCdc extends Vue {
 	private instance = ''
 
 	/**
+	 * @var {boolean} powerUser Indicates whether user role is power user
+	 */
+	private powerUser = false
+
+	/**
 	 * Vue lifecycle hook created
 	 */
 	created(): void {
@@ -107,6 +113,9 @@ export default class IqrfCdc extends Vue {
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
+		if (this.$store.getters['user/role'] === 'power') {
+			this.powerUser = true;
+		}
 		this.getConfig();
 	}
 

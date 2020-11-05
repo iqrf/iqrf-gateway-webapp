@@ -1,30 +1,25 @@
 <template>
-	<CCard class='border-0'>
-		<CCardHeader>
-			<h3>{{ $t('config.jsonApi.title') }}</h3>
-		</CCardHeader>
-		<CCardBody>
-			<CForm @submit.prevent='saveConfig'>
-				<CInputCheckbox
-					:checked.sync='metaDataToMessages'
-					:label='$t("config.jsonMngMetaDataApi.form.metaDataToMessages").toString()'
-				/>
-				<CInputCheckbox
-					:checked.sync='asyncDpaMessage'
-					:label='$t("config.jsonRawApi.form.asyncDpaMessage").toString()'
-				/>
-				<CInputCheckbox
-					:checked.sync='validateJsonResponse'
-					:label='$t("config.jsonSplitter.form.validateJsonResponse").toString()'
-				/>
-				<CButton
-					type='submit'
-					color='primary'
-				>
-					{{ $t('forms.save') }}
-				</CButton>
-			</CForm>
-		</CCardBody>
+	<CCard body-wrapper class='border-0'>
+		<CForm @submit.prevent='saveConfig'>
+			<CInputCheckbox
+				:checked.sync='metaDataToMessages'
+				:label='$t("config.jsonMngMetaDataApi.form.metaDataToMessages").toString()'
+			/>
+			<CInputCheckbox
+				:checked.sync='asyncDpaMessage'
+				:label='$t("config.jsonRawApi.form.asyncDpaMessage").toString()'
+			/>
+			<CInputCheckbox
+				:checked.sync='validateJsonResponse'
+				:label='$t("config.jsonSplitter.form.validateJsonResponse").toString()'
+			/>
+			<CButton
+				type='submit'
+				color='primary'
+			>
+				{{ $t('forms.save') }}
+			</CButton>
+		</CForm>
 	</CCard>
 </template>
 

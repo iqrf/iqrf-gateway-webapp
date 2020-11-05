@@ -7,6 +7,7 @@
 			<ValidationObserver v-slot='{ invalid }'>
 				<CForm @submit.prevent='saveConfig'>
 					<ValidationProvider
+						v-if='powerUser'
 						v-slot='{ errors, touched, valid }'
 						rules='required'
 						:custom-messages='{required: "config.iqrfDpa.form.messages.instance"}'
@@ -95,6 +96,11 @@ export default class IqrfDpa extends Vue {
 	private instance: string|null = null
 
 	/**
+	 * @var {boolean} powerUser Indicates whether user role is power user
+	 */
+	private powerUser = false
+
+	/**
 	 * Vue lifecycle hook created
 	 */
 	created(): void {
@@ -107,6 +113,9 @@ export default class IqrfDpa extends Vue {
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
+		if (this.$store.getters['user/role'] === 'power') {
+			this.powerUser = true;
+		}
 		this.getConfig();
 	}
 

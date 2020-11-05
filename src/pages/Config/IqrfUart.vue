@@ -7,6 +7,7 @@
 			<ValidationObserver v-slot='{ invalid }'>
 				<CForm @submit.prevent='saveConfig'>
 					<ValidationProvider
+						v-if='powerUser'
 						v-slot='{ errors, touched, valid }'
 						rules='required'
 						:custom-messages='{required: "config.iqrfUart.form.messages.instance"}'
@@ -220,6 +221,11 @@ export default class IqrfUart extends Vue {
 	private powerEnableGpioPin = 18
 
 	/**
+	 * @var {boolean} powerUser Indicates whether user role is power user
+	 */
+	private powerUser = false
+
+	/**
 	 * @var {boolean} uartReset Should UART component instance reset?
 	 */
 	private uartReset = true
@@ -247,6 +253,10 @@ export default class IqrfUart extends Vue {
 	mounted(): void {
 		if (versionHigherThan('2.3.0')) {
 			this.daemonHigher230 = true;
+		}
+
+		if (this.$store.getters['user/role'] === 'power') {
+			this.powerUser = true;
 		}
 
 		this.getConfig();

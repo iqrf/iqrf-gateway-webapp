@@ -4,12 +4,13 @@
 			<ValidationObserver v-slot='{ invalid }'>
 				<CForm @submit.prevent='saveConfig'>
 					<ValidationProvider
+						v-if='powerUser'
 						v-slot='{ errors, touched, valid }'
 						rules='required'
 						:custom-messages='{required: "config.iqrfRepository.form.messages.instance"}'
 					>
 						<CInput
-							v-model='instance'
+							v-model='componentInstance'
 							:label='$t("config.iqrfRepository.form.instance")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
@@ -119,9 +120,14 @@ export default class IqrfRepository extends Vue {
 	private downloadIfRepoCacheEmpty = true
 
 	/**
-	 * @var {string|null} instance IQRF Repository component instance name, used for REST API communication
+	 * @var {string} instance IQRF Repository component instance name, used for REST API communication
 	 */
-	private instance: string|null = null
+	private instance = ''
+
+	/**
+	 * @var {boolean} powerUser Indicates whether user role is power user
+	 */
+	private powerUser = false
 
 	/**
 	 * @var {string} urlRepo Repository URL
@@ -144,6 +150,11 @@ export default class IqrfRepository extends Vue {
 		if (versionHigherThan('2.3.0')) {
 			this.daemonHigher230 = true;
 		}
+
+		if (this.$store.getters['user/role'] === 'power') {
+			this.powerUser = true;
+		}
+
 		this.getConfig();
 	}
 
@@ -199,7 +210,7 @@ export default class IqrfRepository extends Vue {
 	 */
 	private saveConfig(): void {
 		this.$store.commit('spinner/SHOW');
-		if (this.instance !== null) {
+		if (this.instance !== '') {
 			DaemonConfigurationService.updateInstance(this.componentName, this.instance, this.buildConfiguration())
 				.then(() => this.successfulSave())
 				.catch((error: AxiosError) => FormErrorHandler.configError(error));

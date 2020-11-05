@@ -4,6 +4,7 @@
 			<ValidationObserver v-slot='{ invalid }'>
 				<CForm @submit.prevent='saveConfig'>
 					<ValidationProvider
+						v-if='powerUser'
 						v-slot='{ errors, touched, valid }'
 						rules='required'
 						:custom-messages='{required: "config.iqrfInfo.messages.instance"}'
@@ -15,10 +16,6 @@
 							:invalid-feedback='$t(errors[0])'
 						/>
 					</ValidationProvider>
-					<CInputCheckbox
-						:checked.sync='configuration.enumAtStartUp'
-						:label='$t("config.iqrfInfo.form.enumAtStartUp")'
-					/>
 					<ValidationProvider
 						v-slot='{ errors, touched, valid }'
 						:rules='configuration.enumAtStartUp ? "integer|min:0|required": ""'
@@ -37,6 +34,10 @@
 							:invalid-feedback='$t(errors[0])'
 						/>
 					</ValidationProvider>
+					<CInputCheckbox
+						:checked.sync='configuration.enumAtStartUp'
+						:label='$t("config.iqrfInfo.form.enumAtStartUp")'
+					/>
 					<CInputCheckbox
 						:checked.sync='configuration.enumUniformDpaVer'
 						:label='$t("config.iqrfInfo.form.enumUniformDpaVer")'
@@ -105,6 +106,11 @@ export default class IqrfInfo extends Vue {
 	}
 
 	/**
+	 * @var {boolean} powerUser Indicates whether user role is power user
+	 */
+	private powerUser = false
+
+	/**
 	 * Vue lifecycle hook created
 	 */
 	created(): void {
@@ -117,6 +123,9 @@ export default class IqrfInfo extends Vue {
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
+		if (this.$store.getters['user/role'] === 'power') {
+			this.powerUser = true;
+		}
 		this.getConfig();
 	}
 
