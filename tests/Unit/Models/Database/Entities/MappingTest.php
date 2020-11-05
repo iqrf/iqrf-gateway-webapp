@@ -28,6 +28,11 @@ class MappingTest extends TestCase {
 	private $mapping;
 
 	/**
+	 * @var Mapping Mapping entity for Gateway
+	 */
+	private $mappingGw;
+
+	/**
 	 * Mapping type
 	 */
 	private const TYPE = 'uart';
@@ -63,11 +68,27 @@ class MappingTest extends TestCase {
 	private const UART_BAUD_RATE = 57600;
 
 	/**
+	 * Mapping I2C interface enable pin number
+	 */
+	private const I2C_PIN = 7;
+
+	/**
+	 * Mapping SPI interface enable pin number
+	 */
+	private const SPI_PIN = 10;
+
+	/**
+	 * Mapping UART interface enable pin number
+	 */
+	private const UART_PIN = 6;
+
+	/**
 	 * Sets up testing environment
 	 */
 	protected function setUp(): void {
 		parent::setUp();
 		$this->mapping = new Mapping(self::TYPE, self::NAME, self::INTERFACE, self::BUS_PIN, self::PGM_PIN, self::POWER_PIN, self::UART_BAUD_RATE);
+		$this->mappingGw = new Mapping(self::TYPE, self::NAME, self::INTERFACE, self::BUS_PIN, self::PGM_PIN, self::POWER_PIN, self::UART_BAUD_RATE, self::I2C_PIN, self::SPI_PIN, self::UART_PIN);
 	}
 
 	/**
@@ -183,6 +204,75 @@ class MappingTest extends TestCase {
 	}
 
 	/**
+	 * Tests the function to return mapping I2C interface enable pin number
+	 */
+	public function testGetI2cPin(): void {
+		Assert::same(self::I2C_PIN, $this->mappingGw->getI2cPin());
+	}
+
+	/**
+	 * Tests the function to return mapping I2C interface enable pin number for non Gateway mapping
+	 */
+	public function testGetI2cPinNull(): void {
+		Assert::null($this->mapping->getI2cPin());
+	}
+
+	/**
+	 * Tests the function to set mapping I2C interface enable pin number
+	 */
+	public function testSetI2cPin(): void {
+		$expected = 1;
+		$this->mappingGw->setI2cPin($expected);
+		Assert::same($expected, $this->mappingGw->getI2cPin());
+	}
+
+	/**
+	 * Tests the function to return mapping SPI interface enable pin number
+	 */
+	public function testGetSpiPin(): void {
+		Assert::same(self::SPI_PIN, $this->mappingGw->getSpiPin());
+	}
+
+	/**
+	 * Tests the function to return mapping SPI interface enable pin number for non Gateway mapping
+	 */
+	public function testGetSpiPinNull(): void {
+		Assert::null($this->mapping->getSpiPin());
+	}
+
+	/**
+	 * Tests the function to set mapping SPI interface enable pin number
+	 */
+	public function testSetSpiPin(): void {
+		$expected = -1;
+		$this->mappingGw->setSpiPin($expected);
+		Assert::same($expected, $this->mappingGw->getSpiPin());
+	}
+
+	/**
+	 * Tests the function to return mapping UART interface enable pin number
+	 */
+	public function testGetUartPin(): void {
+		Assert::same(self::UART_PIN, $this->mappingGw->getUartPin());
+	}
+
+	/**
+	 * Tests the function to return mapping UART interface enable pin number for non Gateway mapping
+	 */
+	public function testGetUartPinNull(): void {
+		Assert::null($this->mapping->getUartPin());
+	}
+
+	/**
+	 * Tests the function to set mapping UART interface enable pin number
+	 */
+	public function testSetUartPin(): void {
+		$expected = 5;
+		$this->mappingGw->setUartPin($expected);
+		Assert::same($expected, $this->mappingGw->getUartPin());
+	}
+
+	/**
 	 * Tests the function to return mapping type
 	 */
 	public function testGetType(): void {
@@ -239,6 +329,26 @@ class MappingTest extends TestCase {
 		];
 		$this->mapping->setType('spi');
 		Assert::same($expected, $this->mapping->jsonSerialize());
+	}
+
+	/**
+	 * Tests the function to return JSON serialized mapping data with Gateway only pins
+	 */
+	public function testJsonSerializeGw(): void {
+		$expected = [
+			'id' => null,
+			'type' => self::TYPE,
+			'name' => self::NAME,
+			'IqrfInterface' => self::INTERFACE,
+			'busEnableGpioPin' => self::BUS_PIN,
+			'pgmSwitchGpioPin' => self::PGM_PIN,
+			'powerEnableGpioPin' => self::POWER_PIN,
+			'baudRate' => self::UART_BAUD_RATE,
+			'i2cEnableGpioPin' => self::I2C_PIN,
+			'spiEnableGpioPin' => self::SPI_PIN,
+			'uartEnableGpioPin' => self::UART_PIN,
+		];
+		Assert::same($expected, $this->mappingGw->jsonSerialize());
 	}
 
 }

@@ -310,7 +310,7 @@ export default class TracerForm extends Vue {
 			this.daemonHigher230 = true;
 		}
 		
-		if (this.$store.getters['user/role'] === 'power') {
+		if (this.$store.getters['user/getRole'] === 'power') {
 			this.powerUser = true;
 		}
 

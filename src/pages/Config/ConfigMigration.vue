@@ -1,37 +1,37 @@
 <template>
-	<CCard>
-		<CCardHeader>
-			<h3>{{ $t('config.migration.title') }}</h3>
-		</CCardHeader>
-		<CCardBody>
-			<CForm>
-				<div class='form-group'>
-					<CInputFile
-						ref='configZip'
-						accept='.zip'
-						:label='$t("config.migration.form.importButton")'
-						@click='isEmpty'
-						@input='isEmpty'
-					/>
-					<p v-if='configEmpty && !configUntouched' class='text-danger'>
-						{{ $t("config.migration.messages.importButton") }}
-					</p>
-				</div>
-				<CButton
-					color='primary'
-					:disabled='configEmpty'
-					@click.prevent='importConfig'
-				>
-					{{ $t('config.migration.form.import') }}
-				</CButton> <CButton
-					color='secondary'
-					@click.prevent='exportConfig'
-				>
-					{{ $t('config.migration.form.export') }}
-				</CButton>
-			</CForm>
-		</CCardBody>
-	</CCard>
+	<div>
+		<h1>{{ $t('config.migration.title') }}</h1>
+		<CCard>
+			<CCardBody>
+				<CForm>
+					<div class='form-group'>
+						<CInputFile
+							ref='configZip'
+							accept='.zip'
+							:label='$t("config.migration.form.importButton")'
+							@click='isEmpty'
+							@input='isEmpty'
+						/>
+						<p v-if='configEmpty && !configUntouched' class='text-danger'>
+							{{ $t("config.migration.messages.importButton") }}
+						</p>
+					</div>
+					<CButton
+						color='primary'
+						:disabled='configEmpty'
+						@click.prevent='importConfig'
+					>
+						{{ $t('config.migration.form.import') }}
+					</CButton> <CButton
+						color='secondary'
+						@click.prevent='exportConfig'
+					>
+						{{ $t('config.migration.form.export') }}
+					</CButton>
+				</CForm>
+			</CCardBody>
+		</CCard>
+	</div>
 </template>
 
 <script lang='ts'>

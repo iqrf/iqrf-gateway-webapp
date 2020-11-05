@@ -1,71 +1,71 @@
 <template>
-	<CCard>
-		<CCardHeader>
-			<h3 v-if='$route.path === "/config/daemon/udp/add"'>
-				{{ $t('config.udp.add') }}
-			</h3>
-			<h3 v-else>
-				{{ $t('config.udp.edit') }}
-			</h3>
-		</CCardHeader>
-		<CCardBody>
-			<ValidationObserver v-slot='{ invalid }'>
-				<CForm @submit.prevent='saveConfig'>
-					<ValidationProvider
-						v-slot='{ errors, touched, valid }'
-						rules='required'
-						:custom-messages='{required: "config.udp.form.messages.instance"}'
-					>
-						<CInput
-							v-model='configuration.instance'
-							:label='$t("config.udp.form.instance")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{ errors, touched, valid }'
-						rules='required|between:1,65535'
-						:custom-messages='{
-							between: "config.udp.form.messages.RemotePort",
-							required: "config.udp.form.messages.RemotePort",
-						}'
-					>
-						<CInput
-							v-model.number='configuration.RemotePort'
-							:label='$t("config.udp.form.RemotePort")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-							type='number'
-							min='1'
-							max='65535'
-						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{ errors, touched, valid }'
-						rules='required|between:1,65535'
-						:custom-messages='{
-							between: "config.udp.form.messages.LocalPort",
-							required: "config.udp.form.messages.LocalPort",
-						}'
-					>
-						<CInput
-							v-model.number='configuration.LocalPort'
-							:label='$t("config.udp.form.LocalPort")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-							type='number'
-							min='1'
-							max='65535'
-						/>
-					</ValidationProvider>
-					<CButton type='submit' color='primary' :disabled='invalid'>
-						{{ submitButton }}
-					</CButton>
-				</CForm>
-			</ValidationObserver>
-		</CCardBody>
-	</CCard>
+	<div>
+		<h1 v-if='$route.path === "/config/daemon/udp/add"'>
+			{{ $t('config.udp.add') }}
+		</h1>
+		<h1 v-else>
+			{{ $t('config.udp.edit') }}
+		</h1>
+		<CCard>
+			<CCardBody>
+				<ValidationObserver v-slot='{ invalid }'>
+					<CForm @submit.prevent='saveConfig'>
+						<ValidationProvider
+							v-slot='{ errors, touched, valid }'
+							rules='required'
+							:custom-messages='{required: "config.udp.form.messages.instance"}'
+						>
+							<CInput
+								v-model='configuration.instance'
+								:label='$t("config.udp.form.instance")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{ errors, touched, valid }'
+							rules='required|between:1,65535'
+							:custom-messages='{
+								between: "config.udp.form.messages.RemotePort",
+								required: "config.udp.form.messages.RemotePort",
+							}'
+						>
+							<CInput
+								v-model.number='configuration.RemotePort'
+								:label='$t("config.udp.form.RemotePort")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+								type='number'
+								min='1'
+								max='65535'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{ errors, touched, valid }'
+							rules='required|between:1,65535'
+							:custom-messages='{
+								between: "config.udp.form.messages.LocalPort",
+								required: "config.udp.form.messages.LocalPort",
+							}'
+						>
+							<CInput
+								v-model.number='configuration.LocalPort'
+								:label='$t("config.udp.form.LocalPort")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+								type='number'
+								min='1'
+								max='65535'
+							/>
+						</ValidationProvider>
+						<CButton type='submit' color='primary' :disabled='invalid'>
+							{{ submitButton }}
+						</CButton>
+					</CForm>
+				</ValidationObserver>
+			</CCardBody>
+		</CCard>
+	</div>
 </template>
 
 <script lang='ts'>

@@ -1,10 +1,10 @@
 <template>
 	<div>
+		<h1>
+			{{ $t('config.components.title') }}
+		</h1>
 		<CCard>
 			<CCardHeader>
-				<h3 class='float-left'>
-					{{ $t('config.components.title') }}
-				</h3>
 				<CButton
 					color='success'
 					size='sm'

@@ -123,7 +123,7 @@ export default class IqrfInfo extends Vue {
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
-		if (this.$store.getters['user/role'] === 'power') {
+		if (this.$store.getters['user/getRole'] === 'power') {
 			this.powerUser = true;
 		}
 		this.getConfig();

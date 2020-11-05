@@ -2,9 +2,9 @@
 	<div>
 		<CCard>
 			<CCardHeader>
-				<h3 class='float-left'>
+				<div class='float-left'>
 					{{ $t('config.udp.title') }}
-				</h3>
+				</div>
 				<CButton
 					v-if='instances.length < 1'
 					color='success'

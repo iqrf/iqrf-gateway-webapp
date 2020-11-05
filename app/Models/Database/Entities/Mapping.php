@@ -103,6 +103,24 @@ class Mapping implements JsonSerializable {
 	private $baudRate;
 
 	/**
+	 * @var int I2C interface enable pin
+	 * @ORM\Column(type="integer", nullable=true)
+	 */
+	private $i2cEnableGpioPin;
+
+	/**
+	 * @var int SPI interface enable pin
+	 * @ORM\Column(type="integer", nullable=true)
+	 */
+	private $spiEnableGpioPin;
+
+	/**
+	 * @var int UART interface enable pin
+	 * @ORM\Column(type="integer", nullable=true)
+	 */
+	private $uartEnableGpioPin;
+
+	/**
 	 * Constructor
 	 * @param string $type Mapping type
 	 * @param string $name Mapping name
@@ -111,8 +129,11 @@ class Mapping implements JsonSerializable {
 	 * @param int $pgmSwitchGpioPin Mapping programming mode switch pin
 	 * @param int $powerEnableGpioPin Mapping power enable pin
 	 * @param int|null $baudRate Mapping UART baud rate
+	 * @param int|null $i2cEnableGpioPin Mapping I2C interface enable pin
+	 * @param int|null $spiEnableGpioPin Mapping SPI interface enable pin
+	 * @param int|null $uartEnableGpioPin Mapping UART interface enable pin
 	 */
-	public function __construct(string $type, string $name, string $iqrfInterface, int $busEnableGpioPin, int $pgmSwitchGpioPin, int $powerEnableGpioPin, ?int $baudRate = null) {
+	public function __construct(string $type, string $name, string $iqrfInterface, int $busEnableGpioPin, int $pgmSwitchGpioPin, int $powerEnableGpioPin, ?int $baudRate = null, ?int $i2cEnableGpioPin = null, ?int $spiEnableGpioPin = null, ?int $uartEnableGpioPin = null) {
 		$this->type = $type;
 		$this->name = $name;
 		$this->iqrfInterface = $iqrfInterface;
@@ -120,6 +141,9 @@ class Mapping implements JsonSerializable {
 		$this->pgmSwitchGpioPin = $pgmSwitchGpioPin;
 		$this->powerEnableGpioPin = $powerEnableGpioPin;
 		$this->baudRate = $baudRate;
+		$this->i2cEnableGpioPin = $i2cEnableGpioPin;
+		$this->spiEnableGpioPin = $spiEnableGpioPin;
+		$this->uartEnableGpioPin = $uartEnableGpioPin;
 	}
 
 	/**
@@ -244,6 +268,51 @@ class Mapping implements JsonSerializable {
 	}
 
 	/**
+	 * Returns mapping I2C interface enable pin number
+	 */
+	public function getI2cPin(): ?int {
+		return $this->i2cEnableGpioPin;
+	}
+
+	/**
+	 * Sets new I2C interface enable pin number
+	 * @param int|null $i2cPin Mapping I2C interface enable pin number
+	 */
+	public function setI2cPin(?int $i2cPin = null): void {
+		$this->i2cEnableGpioPin = $i2cPin;
+	}
+
+	/**
+	 * Returns mapping SPI interface enable pin number
+	 */
+	public function getSpiPin(): ?int {
+		return $this->spiEnableGpioPin;
+	}
+
+	/**
+	 * Sets new SPI interface enable pin number
+	 * @param int|null $spiPin Mapping SPI interface enable pin number
+	 */
+	public function setSpiPin(?int $spiPin = null): void {
+		$this->spiEnableGpioPin = $spiPin;
+	}
+
+	/**
+	 * Returns mapping UART interface enable pin number
+	 */
+	public function getUartPin(): ?int {
+		return $this->uartEnableGpioPin;
+	}
+
+	/**
+	 * Sets new UART interface enable pin number
+	 * @param int|null $uartPin Mapping UART interface enable pin number
+	 */
+	public function setUartPin(?int $uartPin = null): void {
+		$this->uartEnableGpioPin = $uartPin;
+	}
+
+	/**
 	 * Returns JSON serialized mapping data
 	 * @return array<string, string|int> JSON serialized mapping data
 	 */
@@ -259,6 +328,15 @@ class Mapping implements JsonSerializable {
 		];
 		if ($this->getType() === self::TYPE_UART) {
 			$array['baudRate'] = $this->getBaudRate();
+		}
+		if ($this->getI2cPin() !== null) {
+			$array['i2cEnableGpioPin'] = $this->getI2cPin();
+		}
+		if ($this->getSpiPin() !== null) {
+			$array['spiEnableGpioPin'] = $this->getSpiPin();
+		}
+		if ($this->getUartPin() !== null) {
+			$array['uartEnableGpioPin'] = $this->getUartPin();
 		}
 		return $array;
 	}

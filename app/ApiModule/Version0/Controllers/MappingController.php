@@ -133,6 +133,15 @@ class MappingController extends BaseController {
 		} else {
 			$mapping = new Mapping($json->type, $json->name, $json->IqrfInterface, $json->busEnableGpioPin, $json->pgmSwitchGpioPin, $json->powerEnableGpioPin);
 		}
+		if (property_exists($json, 'i2cEnableGpioPin')) {
+			$mapping->setI2cPin($json->i2cEnableGpioPin);
+		}
+		if (property_exists($json, 'spiEnableGpioPin')) {
+			$mapping->setSpiPin($json->spiEnableGpioPin);
+		}
+		if (property_exists($json, 'uartEnableGpioPin')) {
+			$mapping->setUartPin($json->uartEnableGpioPin);
+		}
 		$this->entityManager->persist($mapping);
 		$this->entityManager->flush();
 		return $response->writeJsonObject($mapping)
@@ -249,6 +258,15 @@ class MappingController extends BaseController {
 		$mapping->setType($json->type);
 		if ($json->type === Mapping::TYPE_UART) {
 			$mapping->setBaudRate($json->baudRate);
+		}
+		if (property_exists($json, 'i2cEnableGpioPin')) {
+			$mapping->setI2cPin($json->i2cEnableGpioPin);
+		}
+		if (property_exists($json, 'spiEnableGpioPin')) {
+			$mapping->setSpiPin($json->spiEnableGpioPin);
+		}
+		if (property_exists($json, 'uartEnableGpioPin')) {
+			$mapping->setUartPin($json->uartEnableGpioPin);
 		}
 		$this->entityManager->persist($mapping);
 		$this->entityManager->flush();

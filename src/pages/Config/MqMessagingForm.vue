@@ -1,63 +1,63 @@
 <template>
-	<CCard>
-		<CCardHeader>
-			<h3 v-if='$route.path === "/config/daemon/mq/add"'>
-				{{ $t('config.mq.add') }}
-			</h3>
-			<h3 v-else>
-				{{ $t('config.mq.edit') }}
-			</h3>
-		</CCardHeader>
-		<CCardBody>
-			<ValidationObserver v-slot='{ invalid }'>
-				<CForm @submit.prevent='saveConfig'>
-					<ValidationProvider
-						v-slot='{ errors, touched, valid }'
-						rules='required'
-						:custom-messages='{required: "config.mq.form.messages.instance"}'
-					>
-						<CInput
-							v-model='configuration.instance'
-							:label='$t("config.mq.form.instance")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
+	<div>
+		<h1 v-if='$route.path === "/config/daemon/mq/add"'>
+			{{ $t('config.mq.add') }}
+		</h1>
+		<h1 v-else>
+			{{ $t('config.mq.edit') }}
+		</h1>
+		<CCard>
+			<CCardBody>
+				<ValidationObserver v-slot='{ invalid }'>
+					<CForm @submit.prevent='saveConfig'>
+						<ValidationProvider
+							v-slot='{ errors, touched, valid }'
+							rules='required'
+							:custom-messages='{required: "config.mq.form.messages.instance"}'
+						>
+							<CInput
+								v-model='configuration.instance'
+								:label='$t("config.mq.form.instance")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{ errors, touched, valid }'
+							rules='required'
+							:custom-messages='{required: "config.mq.form.messages.LocalMqName"}'
+						>
+							<CInput
+								v-model='configuration.LocalMqName'
+								:label='$t("config.mq.form.LocalMqName")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{ errors, touched, valid }'
+							rules='required'
+							:custom-messages='{required: "config.mq.form.messages.RemoteMqName"}'
+						>
+							<CInput
+								v-model='configuration.RemoteMqName'
+								:label='$t("config.mq.form.RemoteMqName")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<CInputCheckbox
+							:checked.sync='configuration.acceptAsyncMsg'
+							:label='$t("config.mq.form.acceptAsyncMsg")'
 						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{ errors, touched, valid }'
-						rules='required'
-						:custom-messages='{required: "config.mq.form.messages.LocalMqName"}'
-					>
-						<CInput
-							v-model='configuration.LocalMqName'
-							:label='$t("config.mq.form.LocalMqName")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{ errors, touched, valid }'
-						rules='required'
-						:custom-messages='{required: "config.mq.form.messages.RemoteMqName"}'
-					>
-						<CInput
-							v-model='configuration.RemoteMqName'
-							:label='$t("config.mq.form.RemoteMqName")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-						/>
-					</ValidationProvider>
-					<CInputCheckbox
-						:checked.sync='configuration.acceptAsyncMsg'
-						:label='$t("config.mq.form.acceptAsyncMsg")'
-					/>
-					<CButton type='submit' color='primary' :disabled='invalid'>
-						{{ submitButton }}
-					</CButton>
-				</CForm>
-			</ValidationObserver>
-		</CCardBody>
-	</CCard>
+						<CButton type='submit' color='primary' :disabled='invalid'>
+							{{ submitButton }}
+						</CButton>
+					</CForm>
+				</ValidationObserver>
+			</CCardBody>
+		</CCard>
+	</div>
 </template>
 
 <script lang='ts'>

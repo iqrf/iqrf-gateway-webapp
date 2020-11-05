@@ -99,6 +99,61 @@
 					:options='baudRateOptions'
 					:label='$t("config.interfaceMapping.form.baudRate")'
 				/>
+				<CInputCheckbox
+					:checked.sync='gatewayMapping'
+					:label='$t("config.interfaceMapping.form.gateway")'
+				/>
+				<ValidationProvider
+					v-if='gatewayMapping'
+					v-slot='{errors, touched, valid}'
+					rules='integer|required'
+					:custom-messages='{
+						integer: "forms.messages.integer",
+						required: "config.interfaceMapping.form.messages.i2cPin"
+					}'
+				>
+					<CInput
+						v-model.number='i2cPin'
+						type='number'
+						:label='$t("config.interfaceMapping.form.i2cPin")'
+						:is-valid='touched ? valid : null'
+						:invalid-feedback='$t(errors[0])'
+					/>
+				</ValidationProvider>
+				<ValidationProvider
+					v-if='gatewayMapping'
+					v-slot='{errors, touched, valid}'
+					rules='integer|required'
+					:custom-messages='{
+						integer: "forms.messages.integer",
+						required: "config.interfaceMapping.form.messages.spiPin"
+					}'
+				>
+					<CInput
+						v-model.number='spiPin'
+						type='number'
+						:label='$t("config.interfaceMapping.form.spiPin")'
+						:is-valid='touched ? valid : null'
+						:invalid-feedback='$t(errors[0])'
+					/>
+				</ValidationProvider>
+				<ValidationProvider
+					v-if='gatewayMapping'
+					v-slot='{errors, touched, valid}'
+					rules='integer|required'
+					:custom-messages='{
+						integer: "forms.messages.integer",
+						required: "config.interfaceMapping.form.messages.uartPin"
+					}'
+				>
+					<CInput
+						v-model.number='uartPin'
+						type='number'
+						:label='$t("config.interfaceMapping.form.uartPin")'
+						:is-valid='touched ? valid : null'
+						:invalid-feedback='$t(errors[0])'
+					/>
+				</ValidationProvider>
 			</CForm>
 			<template #footer>
 				<CButton 
@@ -161,6 +216,16 @@ export default class MappingForm extends Vue {
 	private deviceName = ''
 
 	/**
+	 * @var {boolean} gatewayMapping Indicates that mapping is for IQRF Gateway
+	 */
+	private gatewayMapping = false
+
+	/**
+	 * @var {number} i2cPin Mapping I2C interface enable pin number
+	 */
+	private i2cPin = 0
+
+	/**
 	 * @var {number|null} mappingId Mapping ID
 	 */
 	private mappingId: number|null = null;
@@ -186,9 +251,19 @@ export default class MappingForm extends Vue {
 	private powerPin = 0
 
 	/**
+	 * @var {number} spiPin Mapping SPI interface enable pin number
+	 */
+	private spiPin = 0
+
+	/**
 	 * @var {string} type Mapping type
 	 */
-	private type = ''
+	private type = 'spi'
+
+	/**
+	 * @var {number} uartPin Mapping UART interface enable pin number
+	 */
+	private uartPin = 0;
 
 	/**
 	 * @constant {Array<IOption>} typeOptions Array of CoreUI select options for mapping type
@@ -262,6 +337,10 @@ export default class MappingForm extends Vue {
 		this.powerPin = 0;
 		this.baudRate = 57600;
 		this.mappingId = null;
+		this.gatewayMapping = false;
+		this.i2cPin = 0;
+		this.spiPin = 0;
+		this.uartPin = 0;
 	}
 
 	/**
@@ -282,6 +361,19 @@ export default class MappingForm extends Vue {
 				this.powerPin = mapping.powerEnableGpioPin;
 				if (mapping.type === 'uart' && mapping.baudRate !== undefined) {
 					this.baudRate = mapping.baudRate;
+				}
+				if (mapping.i2cEnableGpioPin === undefined && mapping.spiEnableGpioPin === undefined && mapping.uartEnableGpioPin === undefined) {
+					return;
+				}
+				this.gatewayMapping = true;
+				if (mapping.i2cEnableGpioPin !== undefined) {
+					this.i2cPin = mapping.i2cEnableGpioPin;
+				}
+				if (mapping.spiEnableGpioPin !== undefined) {
+					this.spiPin = mapping.spiEnableGpioPin;
+				}
+				if (mapping.uartEnableGpioPin !== undefined) {
+					this.uartPin = mapping.uartEnableGpioPin;
 				}
 			})
 			.catch((error: AxiosError) => {
@@ -305,6 +397,9 @@ export default class MappingForm extends Vue {
 		};
 		if (this.type === 'uart') {
 			Object.assign(mapping, {baudRate: this.baudRate});
+		}
+		if (this.gatewayMapping) {
+			Object.assign(mapping, {i2cEnableGpioPin: this.i2cPin, spiEnableGpioPin: this.spiPin, uartEnableGpioPin: this.uartPin});
 		}
 		return mapping;
 	}
@@ -351,9 +446,3 @@ export default class MappingForm extends Vue {
 
 }
 </script>
-
-<style scoped>
-.modal-footer {
-    border-top: 0 none;
-}
-</style>

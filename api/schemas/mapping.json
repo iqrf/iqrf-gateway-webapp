@@ -13,6 +13,17 @@
 			"pgmSwitchGpioPin": 22,
 			"powerEnableGpioPin": 23,
 			"baudRate": 57600
+		},
+		{
+			"type": "spi",
+			"name": "IQD-GW-02A",
+			"IqrfInterface": "/dev/spidev1.0",
+			"busEnableGpioPin": -1,
+			"pgmSwitchGpioPin": 3,
+			"powerEnableGpioPin": 19,
+			"i2cEnableGpioPin": 7,
+			"spiEnableGpioPin": 10,
+			"uartEnableGpioPin": 6
 		}
 	],
 	"required": [
@@ -67,6 +78,24 @@
 			"title": "UART baud rate",
 			"enum": [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400],
 			"example": 57600
+		},
+		"i2cEnableGpioPin": {
+			"$id": "#/properties/i2cEnableGpioPin",
+			"type": "integer",
+			"title": "I2C interface enable pin",
+			"example": 7
+		},
+		"spiEnableGpioPin": {
+			"$id": "#/properties/spiEnableGpioPin",
+			"type": "integer",
+			"title": "SPI interface enable pin",
+			"example": 10
+		},
+		"uartEnableGpioPin": {
+			"$id": "#/properties/uartEnableGpioPin",
+			"type": "integer",
+			"title": "UART interface enable pin",
+			"example": 6
 		}
 	}
 }

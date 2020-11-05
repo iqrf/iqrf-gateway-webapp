@@ -1,7 +1,7 @@
 <template>
 	<CCard class='border-0'>
 		<CCardHeader>
-			<h3>{{ $t("config.iqmesh.otaUpload.title") }}</h3>
+			{{ $t("config.iqmesh.otaUpload.title") }}
 		</CCardHeader>
 		<CCardBody>
 			<ValidationObserver v-slot='{ invalid }'>

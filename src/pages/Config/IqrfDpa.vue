@@ -1,7 +1,7 @@
 <template>
 	<CCard>
 		<CCardHeader>
-			<h3>{{ $t('config.iqrfDpa.title') }}</h3>
+			{{ $t('config.iqrfDpa.title') }}
 		</CCardHeader>
 		<CCardBody>
 			<ValidationObserver v-slot='{ invalid }'>
@@ -113,7 +113,7 @@ export default class IqrfDpa extends Vue {
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
-		if (this.$store.getters['user/role'] === 'power') {
+		if (this.$store.getters['user/getRole'] === 'power') {
 			this.powerUser = true;
 		}
 		this.getConfig();

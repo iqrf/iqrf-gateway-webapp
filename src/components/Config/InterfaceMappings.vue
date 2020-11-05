@@ -133,7 +133,7 @@ export default class InterfaceMappings extends Vue {
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
-		if (this.$store.getters['user/role'] === 'power') {
+		if (this.$store.getters['user/getRole'] === 'power') {
 			this.powerUser = true;
 		}
 		this.getMappings();

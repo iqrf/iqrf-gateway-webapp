@@ -1,10 +1,10 @@
 <template>
 	<div>
+		<h1>
+			{{ $t('config.scheduler.title') }}
+		</h1>
 		<CCard>
 			<CCardHeader>
-				<h3 class='float-left'>
-					{{ $t('config.scheduler.title') }}
-				</h3>
 				<div class='float-right'>
 					<CButton
 						color='success'

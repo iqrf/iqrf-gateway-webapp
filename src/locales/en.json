@@ -256,13 +256,20 @@
 				"busPin": "Bus enable GPIO pin",
 				"pgmPin": "Programming mode switch GPIO pin",
 				"baudRate": "UART baud rate",
+				"gateway": "IQRF Gateway mapping",
+				"i2cPin": "I2C interface enable GPIO pin",
+				"spiPin": "SPI interface enable GPIO pin",
+				"uartPin": "UART interface enable GPIO pin",
 				"messages": {
 					"typeSelect": "Please select mapping type.",
 					"name": "Please enter mapping name.",
 					"interface": "Please enter device name.",
 					"busPin": "Please enter bus enable pin number.",
 					"pgmPin": "Please enter programming mode switch pin number.",
-					"powerPin": "Please enter power enable pin number."
+					"powerPin": "Please enter power enable pin number.",
+					"i2cPin": "Please enter I2C interface enable pin number.",
+					"spiPin": "Please enter SPI interface enable pin number.",
+					"uartPin": "Please enter UART interface enable pin number."
 				}
 			},
 			"messages": {
@@ -373,6 +380,10 @@
 				"powerEnableGpioPin": "Power enable GPIO pin",
 				"pgmSwitchGpioPin": "Programming mode switch GPIO pin",
 				"busEnableGpioPin": "Bus enable GPIO pin",
+				"i2cEnableGpioPin": "I2C interface enable GPIO pin *",
+				"spiEnableGpioPin": "SPI interface enable GPIO pin *",
+				"uartEnableGpioPin": "UART interface enable GPIO pin *",
+				"gwOnly": "* IQRF Gateway only",
 				"uartReset": "UART reset",
 				"messages": {
 					"instance": "Please enter name of IQRF UART instance.",
