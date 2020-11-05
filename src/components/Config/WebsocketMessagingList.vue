@@ -2,12 +2,14 @@
 	<div>
 		<CCard>
 			<CCardHeader>
-				{{ $t('config.websocket.messaging.title') }}
+				<h3 class='float-left'>
+					{{ $t('config.websocket.messaging.title') }}
+				</h3>
 				<CButton
 					color='success'
 					size='sm'
 					class='float-right'
-					to='/config/websocket/add-messaging'
+					to='/config/daemon/websocket/add-messaging'
 				>
 					<CIcon :content='icons.add' size='sm' />
 					{{ $t('table.actions.add') }}
@@ -52,7 +54,7 @@
 							<CButton
 								color='info'
 								size='sm'
-								:to='"/config/websocket/edit-messaging/" + item.instance'
+								:to='"/config/daemon/websocket/edit-messaging/" + item.instance'
 							>
 								<CIcon :content='icons.edit' size='sm' />
 								{{ $t('table.actions.edit') }}
@@ -176,7 +178,7 @@ export default class WebsocketMessagingList extends Vue {
 	/**
 	 * Vue lifecycle hook created
 	 */
-	created(): void {
+	mounted(): void {
 		this.getConfig();
 	}
 

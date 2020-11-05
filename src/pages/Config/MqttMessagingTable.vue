@@ -1,11 +1,13 @@
 <template>
 	<div>
-		<h1>{{ $t('config.mqtt.title') }}</h1>
 		<CCard>
 			<CCardHeader>
+				<h3 class='float-left'>
+					{{ $t('config.mqtt.title') }}
+				</h3>
 				<CButton
 					color='success'
-					to='/config/mqtt/add'
+					to='/config/daemon/mqtt/add'
 					size='sm'
 					class='float-right'
 				>
@@ -64,7 +66,7 @@
 						<td class='col-actions'>
 							<CButton
 								color='info'
-								:to='"/config/mqtt/edit/" + item.instance'
+								:to='"/config/daemon/mqtt/edit/" + item.instance'
 								size='sm'
 							>
 								<CIcon :content='icons.edit' size='sm' />
@@ -127,7 +129,8 @@ import DaemonConfigurationService
 import { Dictionary } from 'vue-router/types/router';
 import { IField } from '../../interfaces/coreui';
 import { MqttInstance } from '../../interfaces/messagingInterfaces';
-import { AxiosResponse } from 'axios';
+import { AxiosError, AxiosResponse } from 'axios';
+import FormErrorHandler from '../../helpers/FormErrorHandler';
 
 @Component({
 	components: {
@@ -141,9 +144,6 @@ import { AxiosResponse } from 'axios';
 		CDropdownItem,
 		CIcon,
 		CModal,
-	},
-	metaInfo: {
-		title: 'config.mqtt.title',
 	}
 })
 
@@ -218,9 +218,9 @@ export default class MqttMessagingTable extends Vue {
 	private instances: Array<MqttInstance> = []
 
 	/**
-	 * Vue lifecycle hook created
+	 * Vue lifecycle hook mounted
 	 */
-	created(): void {
+	mounted(): void {
 		this.$store.commit('spinner/SHOW');
 		this.getInstances();
 	}
@@ -276,7 +276,8 @@ export default class MqttMessagingTable extends Vue {
 							.toString()
 					);
 				});
-			});
+			})
+			.catch((error: AxiosError) => FormErrorHandler.configError(error));
 	}
 
 	/**
@@ -289,7 +290,7 @@ export default class MqttMessagingTable extends Vue {
 				this.$store.commit('spinner/HIDE');
 				this.instances = response.data.instances;
 			})
-			.catch(() => this.$store.commit('spinner/HIDE'));
+			.catch((error: AxiosError) => FormErrorHandler.configError(error));
 	}
 
 	/**
@@ -308,7 +309,7 @@ export default class MqttMessagingTable extends Vue {
 					);
 				});
 			})
-			.catch(() => this.$store.commit('spinner/HIDE'));
+			.catch((error: AxiosError) => FormErrorHandler.configError(error));
 	}
 }
 </script>

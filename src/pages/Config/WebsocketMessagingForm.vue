@@ -1,96 +1,96 @@
 <template>
-	<div>
-		<h1 v-if='$route.path === "/config/websocket/add-messaging"'>
-			{{ $t('config.websocket.messaging.add') }}
-		</h1>
-		<h1 v-else>
-			{{ $t('config.websocket.messaging.edit') }}
-		</h1>
-		<CCard>
-			<CCardBody>
-				<ValidationObserver v-slot='{ invalid }'>
-					<CForm @submit.prevent='saveInstance'>
+	<CCard>
+		<CCardHeader>
+			<h3 v-if='$route.path === "/config/daemon/websocket/add-messaging"'>
+				{{ $t('config.websocket.messaging.add') }}
+			</h3>
+			<h3 v-else>
+				{{ $t('config.websocket.messaging.edit') }}
+			</h3>
+		</CCardHeader>
+		<CCardBody>
+			<ValidationObserver v-slot='{ invalid }'>
+				<CForm @submit.prevent='saveInstance'>
+					<ValidationProvider
+						v-slot='{ errors, touched, valid }'
+						rules='required'
+						:custom-messages='{required: "config.websocket.form.messages.messagingInstance"}'
+					>
+						<CInput
+							v-model='configuration.instance'
+							:label='$t("config.websocket.form.instance")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
+						/>
+					</ValidationProvider>
+					<CInputCheckbox
+						:checked.sync='configuration.acceptAsyncMsg'
+						:label='$t("config.websocket.form.acceptAsyncMsg")'
+					/>
+					<h4>{{ $t('config.websocket.form.requiredInterfaces') }}</h4>
+					<div
+						v-for='(iface, i) of configuration.RequiredInterfaces'
+						:key='i'
+						class='form-group'
+					>
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
 							rules='required'
-							:custom-messages='{required: "config.websocket.form.messages.messagingInstance"}'
+							:custom-messages='{required: "config.websocket.form.messages.interfaceName"}'
 						>
-							<CInput
-								v-model='configuration.instance'
-								:label='$t("config.websocket.form.instance")'
+							<CSelect
+								:value.sync='iface.name'
+								:label='$t("config.websocket.form.requiredInterface.name")'
+								:placeholder='$t("config.websocket.form.messages.interfaceName")'
+								:options='[
+									{value: "shape::IWebsocketService", label: "shape::IWebsocketService"}
+								]'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
 						</ValidationProvider>
-						<CInputCheckbox
-							:checked.sync='configuration.acceptAsyncMsg'
-							:label='$t("config.websocket.form.acceptAsyncMsg")'
-						/>
-						<h4>{{ $t('config.websocket.form.requiredInterfaces') }}</h4>
-						<div
-							v-for='(iface, i) of configuration.RequiredInterfaces'
-							:key='i'
-							class='form-group'
+						<ValidationProvider
+							v-slot='{ errors, touched, valid }'
+							rules='required'
+							:custom-messages='{required: "config.websocket.form.messages.interfaceName"}'
 						>
-							<ValidationProvider
-								v-slot='{ errors, touched, valid }'
-								rules='required'
-								:custom-messages='{required: "config.websocket.form.messages.interfaceName"}'
-							>
-								<CSelect
-									:value.sync='iface.name'
-									:label='$t("config.websocket.form.requiredInterface.name")'
-									:placeholder='$t("config.websocket.form.messages.interfaceName")'
-									:options='[
-										{value: "shape::IWebsocketService", label: "shape::IWebsocketService"}
-									]'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
-								/>
-							</ValidationProvider>
-							<ValidationProvider
-								v-slot='{ errors, touched, valid }'
-								rules='required'
-								:custom-messages='{required: "config.websocket.form.messages.interfaceName"}'
-							>
-								<CSelect
-									:value.sync='iface.instance'
-									:label='$t("config.websocket.form.requiredInterface.instance")'
-									:placeholder='$t("config.websocket.form.messages.interfaceInstance")'
-									:options='services'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
-								/>
-							</ValidationProvider>
-							<CButton
-								v-if='configuration.RequiredInterfaces.length > 1'
-								color='danger'
-								@click='removeInterface(i-1)'
-							>
-								{{ $t('config.websocket.form.requiredInterface.remove') }}
-							</CButton>
-							<CButton
-								v-if='i === (configuration.RequiredInterfaces.length - 1)'
-								color='success'
-								:disabled='!iface.name || !iface.instance'
-								@click='addInterface'
-							>
-								{{ $t('config.websocket.form.requiredInterface.add') }}
-							</CButton>
-						</div>
-						<CButton type='submit' color='primary' :disabled='invalid'>
-							{{ submitButton }}
+							<CSelect
+								:value.sync='iface.instance'
+								:label='$t("config.websocket.form.requiredInterface.instance")'
+								:placeholder='$t("config.websocket.form.messages.interfaceInstance")'
+								:options='services'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<CButton
+							v-if='configuration.RequiredInterfaces.length > 1'
+							color='danger'
+							@click='removeInterface(i-1)'
+						>
+							{{ $t('config.websocket.form.requiredInterface.remove') }}
 						</CButton>
-					</CForm>
-				</ValidationObserver>
-			</CCardBody>
-		</CCard>
-	</div>
+						<CButton
+							v-if='i === (configuration.RequiredInterfaces.length - 1)'
+							color='success'
+							:disabled='!iface.name || !iface.instance'
+							@click='addInterface'
+						>
+							{{ $t('config.websocket.form.requiredInterface.add') }}
+						</CButton>
+					</div>
+					<CButton type='submit' color='primary' :disabled='invalid'>
+						{{ submitButton }}
+					</CButton>
+				</CForm>
+			</ValidationObserver>
+		</CCardBody>
+	</CCard>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
@@ -122,6 +122,7 @@ interface LocalWsMessaging {
 		CButton,
 		CCard,
 		CCardBody,
+		CCardHeader,
 		CForm,
 		CInput,
 		CInputCheckbox,
@@ -173,7 +174,7 @@ export default class WebsocketMessagingForm extends Vue {
 	 * @returns {string} Page title
 	 */
 	get pageTitle(): string {
-		return this.$route.path === '/config/websocket/add-messaging' ?
+		return this.$route.path === '/config/daemon/websocket/add-messaging' ?
 			this.$t('config.websocket.messaging.add').toString() : this.$t('config.websocket.messaging.edit').toString();
 	}
 
@@ -182,7 +183,7 @@ export default class WebsocketMessagingForm extends Vue {
 	 * @returns {string} Button text
 	 */
 	get submitButton(): string {
-		return this.$route.path === '/config/websocket/add-messaging' ?
+		return this.$route.path === '/config/daemon/websocket/add-messaging' ?
 			this.$t('forms.add').toString() : this.$t('forms.edit').toString();
 	}
 
@@ -191,6 +192,12 @@ export default class WebsocketMessagingForm extends Vue {
 	 */
 	created(): void {
 		extend('required', required);
+	}
+
+	/**
+	 * Vue lifecycle hook mounted
+	 */
+	mounted(): void {
 		if (this.instance) {
 			this.getConfig();
 		} else {
@@ -283,7 +290,7 @@ export default class WebsocketMessagingForm extends Vue {
 	 */
 	private successfulSave(): void {
 		this.$store.commit('spinner/HIDE');
-		if (this.$route.path === '/config/websocket/add-messaging') {
+		if (this.$route.path === '/config/daemon/websocket/add-messaging') {
 			this.$toast.success(
 				this.$t('config.websocket.messaging.messages.addSuccess', {messaging: this.configuration.instance})
 					.toString()
@@ -294,7 +301,7 @@ export default class WebsocketMessagingForm extends Vue {
 					.toString()
 			);
 		}
-		this.$router.push('/config/websocket/');
+		this.$router.push('/config/daemon/messagings/ws');
 	}
 }
 </script>

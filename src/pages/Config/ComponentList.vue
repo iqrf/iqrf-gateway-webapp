@@ -1,18 +1,15 @@
 <template>
 	<div>
-		<h1 v-if='$store.getters["user/getRole"] === "power"'>
-			{{ $t('config.components.title') }}
-		</h1>
-		<h1 v-else>
-			{{ $t('config.selectedComponents.title') }}
-		</h1>
 		<CCard>
 			<CCardHeader>
+				<h3 class='float-left'>
+					{{ $t('config.components.title') }}
+				</h3>
 				<CButton
 					color='success'
 					size='sm'
 					class='float-right'
-					to='/config/component/add'
+					to='/config/daemon/component/add'
 				>
 					<CIcon :content='icons.add' size='sm' />
 					{{ $t('table.actions.add') }}
@@ -52,7 +49,7 @@
 							<CButton
 								color='info'
 								size='sm'
-								:to='"/config/component/edit/" + item.name'
+								:to='"/config/daemon/component/edit/" + item.name'
 							>
 								<CIcon :content='icons.edit' size='sm' />
 								{{ $t('table.actions.edit') }}
@@ -101,14 +98,7 @@ import { MetaInfo } from 'vue-meta';
 import { IField } from '../../interfaces/coreui';
 import { AxiosError } from 'axios';
 import { Dictionary } from 'vue-router/types/router';
-
-interface ComponentItem {
-	enabled: boolean
-	libraryName: string
-	libraryPath: string
-	name: string
-	startLevel: number
-}
+import {IComponent} from '../../interfaces/daemonComponent';
 
 @Component({
 	components: {
@@ -139,9 +129,9 @@ export default class ComponentList extends Vue {
 	private component = ''
 
 	/**
-	 * @var {Array<ComponentItem>|null} components Array of Daemon component objects
+	 * @var {Array<IComponent>} components Array of Daemon component objects
 	 */
-	private components: Array<ComponentItem>|null = null
+	private components: Array<IComponent> = []
 
 	/**
 	 * @constant {Array<IField>} fields Array of CoreUI data table columns
@@ -195,13 +185,6 @@ export default class ComponentList extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook created
-	 */
-	created(): void {
-		this.getConfig();
-	}
-
-	/**
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
@@ -209,6 +192,7 @@ export default class ComponentList extends Vue {
 		if (titleEl !== null) {
 			titleEl.innerText = this.pageTitle;
 		}
+		this.getConfig();
 	}
 
 	/**
@@ -224,7 +208,7 @@ export default class ComponentList extends Vue {
 					this.components = response.data.components;
 				} else {
 					const whitelistedComponents = ['iqrf::IqrfCdc', 'iqrf::IqrfSpi', 'iqrf::IqrfUart'];
-					this.components = response.data.components.filter((component: ComponentItem) => {
+					this.components = response.data.components.filter((component: IComponent) => {
 						if (whitelistedComponents.includes(component.name)) {
 							return component;
 						}
@@ -236,9 +220,17 @@ export default class ComponentList extends Vue {
 
 	/**
 	 * Enables or disables Daemon component
+	 * @param {IComponent} component Component to be updated
+	 * @param {boolean} enabled New state of component
 	 */
-	private changeEnabled(component: ComponentItem, enabled: boolean): void {
+	private changeEnabled(component: IComponent, enabled: boolean): void {
 		if (component.enabled !== enabled) {
+			if (!this.canEnable(component.name)) {
+				this.$toast.info(
+					this.$t('config.components.form.messages.multipleInterfaces').toString()
+				);
+				return;
+			}
 			component.enabled = enabled;
 			DaemonConfigurationService.updateComponent(component.name, component)
 				.then(() => {
@@ -249,6 +241,29 @@ export default class ComponentList extends Vue {
 				.catch((error: AxiosError) => FormErrorHandler.configError(error));
 		}
 	}
+
+	/**
+	 * Checks if an IQRF interface can be enabled, depending on the state of ther interfaces
+	 * @param {string} enabledComponent Component to be enabled
+	 * @returns {boolean} True if component can be enabled
+	 */
+	private canEnable(enabledComponent: string): boolean|void {
+		if (this.components === null) {
+			return;
+		}
+		const whitelist = ['iqrf::IqrfCdc', 'iqrf::IqrfSpi', 'iqrf::IqrfUart'];
+		let enabled = 0;
+		this.components.forEach((component: IComponent) => {
+			if (whitelist.includes(component.name) && component.enabled && component.name !== enabledComponent) {
+				enabled++;
+			}
+		});
+		if (enabled > 0) {
+			return false;
+		}
+		return true;
+	}
+
 	
 	/**
 	 * Removes a Daemon component configuration

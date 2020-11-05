@@ -1,13 +1,12 @@
 <template>
 	<div>
-		<h1>{{ $t('config.monitor.title') }}</h1>
-		<CCard>
+		<CCard class='border-0'>
 			<CCardHeader>
 				<CButton
 					color='success'
 					size='sm'
 					class='float-right'
-					to='/config/monitor/add'
+					to='/config/daemon/monitor/add'
 				>
 					<CIcon :content='icons.add' size='sm' />
 					{{ $t('table.actions.add') }}
@@ -42,12 +41,28 @@
 							</CDropdown>
 						</td>
 					</template>
+					<template #tlsEnabled='{item}'>
+						<td>
+							<CDropdown
+								:color='item.tlsEnabled ? "success": "danger"'
+								:toggler-text='$t("table.enabled." + (item.tlsEnabled !== undefined ? item.tlsEnabled : false))'
+								size='sm'
+							>
+								<CDropdownItem @click='changeTls(item.webSocket, true)'>
+									{{ $t('table.enabled.true') }}
+								</CDropdownItem>
+								<CDropdownItem @click='changeTls(item.webSocket, false)'>
+									{{ $t('table.enabled.false') }}
+								</CDropdownItem>
+							</CDropdown>
+						</td>
+					</template>
 					<template #actions='{item}'>
 						<td class='col-actions'>
 							<CButton
 								color='info'
 								size='sm'
-								:to='"/config/monitor/edit/" + item.monitor.instance'
+								:to='"/config/daemon/monitor/edit/" + item.monitor.instance'
 							>
 								<CIcon :content='icons.edit' size='sm' />
 								{{ $t('table.actions.edit') }}
@@ -99,9 +114,10 @@ import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CDropdown, CDropdown
 import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
-import { Dictionary } from 'vue-router/types/router';
-import { IField } from '../../interfaces/coreui';
-import { AxiosError, AxiosResponse } from 'axios';
+import {Dictionary} from 'vue-router/types/router';
+import {IField} from '../../interfaces/coreui';
+import {AxiosError, AxiosResponse} from 'axios';
+import {versionHigherThan} from '../../helpers/versionChecker';
 
 @Component({
 	components: {
@@ -114,9 +130,6 @@ import { AxiosError, AxiosResponse } from 'axios';
 		CDropdownItem,
 		CIcon,
 		CModal,
-	},
-	metaInfo: {
-		title: 'config.monitor.title'
 	}
 })
 
@@ -183,7 +196,14 @@ export default class MonitorList extends Vue {
 	/**
 	 * Vue lifecycle hook created
 	 */
-	created(): void {
+	mounted(): void {
+		if (versionHigherThan('2.3.0')) {
+			this.fields.splice(4, 0, {
+				key: 'tlsEnabled',
+				label: this.$t('config.websocket.form.tlsEnabled'),
+				filter: false,
+			});
+		}
 		this.$store.commit('spinner/SHOW');
 		this.getConfig();
 	}
@@ -201,6 +221,7 @@ export default class MonitorList extends Vue {
 			.then((responses: Array<AxiosResponse>) => {
 				const monitors = responses[0].data.instances;
 				const webSockets = responses[1].data.instances;
+				let instances: Array<unknown> = [];
 				for (const monitor of monitors) {
 					if (monitor.RequiredInterfaces === undefined ||
 							monitor.RequiredInterfaces === [] ||
@@ -213,7 +234,7 @@ export default class MonitorList extends Vue {
 						if (webSocket.instance !== webSocketInstance) {
 							continue;
 						}
-						this.instances.push({
+						instances.push({
 							monitor: monitor,
 							webSocket: webSocket,
 							instance: monitor.instance,
@@ -221,9 +242,11 @@ export default class MonitorList extends Vue {
 							acceptAsyncMsg: monitor.acceptAsyncMsg,
 							port: webSocket.WebsocketPort,
 							acceptOnlyLocalhost: webSocket.acceptOnlyLocalhost,
+							tlsEnabled: webSocket.tlsEnabled
 						});
 					}
 				}
+				this.instances = instances;
 				this.$store.commit('spinner/HIDE');
 			})
 			.catch((error: AxiosError) => FormErrorHandler.configError(error));

@@ -1,11 +1,13 @@
 <template>
 	<div>
-		<h1>{{ $t('config.mq.title') }}</h1>
 		<CCard>
 			<CCardHeader>
+				<h3 class='float-left'>
+					{{ $t('config.mq.title') }}
+				</h3>
 				<CButton
 					color='success'
-					to='/config/mq/add'
+					to='/config/daemon/mq/add'
 					size='sm'
 					class='float-right'
 				>
@@ -47,7 +49,7 @@
 						<td class='col-actions'>
 							<CButton
 								color='info'
-								:to='"/config/mq/edit/" + item.instance'
+								:to='"/config/daemon/mq/edit/" + item.instance'
 								size='sm'
 							>
 								<CIcon :content='icons.edit' size='sm' />
@@ -110,8 +112,7 @@ import {
 	CModal
 } from '@coreui/vue/src';
 import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
-import DaemonConfigurationService
-	from '../../services/DaemonConfigurationService';
+import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import { Dictionary } from 'vue-router/types/router';
 import { IField } from '../../interfaces/coreui';
 import { MqInstance } from '../../interfaces/messagingInterfaces';
@@ -130,9 +131,6 @@ import { AxiosResponse } from 'axios';
 		CDropdownItem,
 		CIcon,
 		CModal,
-	},
-	metaInfo: {
-		title: 'config.mq.title',
 	}
 })
 
@@ -194,9 +192,9 @@ export default class MqMessagingTable extends Vue {
 	private instances: Array<MqInstance> = []
 
 	/**
-	 * Vue lifecycle hook created
+	 * Vue lifecycle hook mounted
 	 */
-	created(): void {
+	mounted(): void {
 		this.$store.commit('spinner/SHOW');
 		this.getInstances();
 	}

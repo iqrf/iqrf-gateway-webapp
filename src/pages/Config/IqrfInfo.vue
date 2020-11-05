@@ -1,62 +1,60 @@
 <template>
-	<div>
-		<h1>{{ $t('config.iqrfInfo.title') }}</h1>
-		<CCard>
-			<CCardBody>
-				<ValidationObserver v-slot='{ invalid }'>
-					<CForm @submit.prevent='saveConfig'>
-						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
-							rules='required'
-							:custom-messages='{required: "config.iqrfInfo.messages.instance"}'
-						>
-							<CInput
-								v-model='configuration.instance'
-								:label='$t("config.iqrfInfo.form.instance")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
-							/>
-						</ValidationProvider>
-						<CInputCheckbox
-							:checked.sync='configuration.enumAtStartUp'
-							:label='$t("config.iqrfInfo.form.enumAtStartUp")'
+	<CCard class='border-0'>
+		<CCardBody>
+			<ValidationObserver v-slot='{ invalid }'>
+				<CForm @submit.prevent='saveConfig'>
+					<ValidationProvider
+						v-if='powerUser'
+						v-slot='{ errors, touched, valid }'
+						rules='required'
+						:custom-messages='{required: "config.iqrfInfo.messages.instance"}'
+					>
+						<CInput
+							v-model='configuration.instance'
+							:label='$t("config.iqrfInfo.form.instance")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
 						/>
-						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
-							:rules='configuration.enumAtStartUp ? "integer|min:0|required": ""'
-							:custom-messages='{
-								required: "config.iqrfInfo.messages.enumPeriod",
-								min: "config.iqrfInfo.messages.enumPeriod",
-								integer: "forms.messages.integer"
-							}'
-						>
-							<CInput
-								v-model.number='configuration.enumPeriod'
-								type='number'
-								min='0'
-								:label='$t("config.iqrfInfo.form.enumPeriod")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
-							/>
-						</ValidationProvider>
-						<CInputCheckbox
-							:checked.sync='configuration.enumUniformDpaVer'
-							:label='$t("config.iqrfInfo.form.enumUniformDpaVer")'
+					</ValidationProvider>
+					<ValidationProvider
+						v-slot='{ errors, touched, valid }'
+						:rules='configuration.enumAtStartUp ? "integer|min:0|required": ""'
+						:custom-messages='{
+							required: "config.iqrfInfo.messages.enumPeriod",
+							min: "config.iqrfInfo.messages.enumPeriod",
+							integer: "forms.messages.integer"
+						}'
+					>
+						<CInput
+							v-model.number='configuration.enumPeriod'
+							type='number'
+							min='0'
+							:label='$t("config.iqrfInfo.form.enumPeriod")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
 						/>
-						<CButton type='submit' color='primary' :disabled='invalid'>
-							{{ $t('forms.save') }}
-						</CButton>
-					</CForm>
-				</ValidationObserver>
-			</CCardBody>
-		</CCard>
-	</div>
+					</ValidationProvider>
+					<CInputCheckbox
+						:checked.sync='configuration.enumAtStartUp'
+						:label='$t("config.iqrfInfo.form.enumAtStartUp")'
+					/>
+					<CInputCheckbox
+						:checked.sync='configuration.enumUniformDpaVer'
+						:label='$t("config.iqrfInfo.form.enumUniformDpaVer")'
+					/>
+					<CButton type='submit' color='primary' :disabled='invalid'>
+						{{ $t('forms.save') }}
+					</CButton>
+				</CForm>
+			</ValidationObserver>
+		</CCardBody>
+	</CCard>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {AxiosError, AxiosResponse} from 'axios';
-import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {integer, min_value, required} from 'vee-validate/dist/rules';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
@@ -74,15 +72,13 @@ interface IqrfInfoConfig {
 		CButton,
 		CCard,
 		CCardBody,
+		CCardHeader,
 		CForm,
 		CInput,
 		CInputCheckbox,
 		ValidationObserver,
 		ValidationProvider,
-	},
-	metaInfo: {
-		title: 'config.iqrfInfo.title',
-	},
+	}
 })
 
 /**
@@ -110,12 +106,26 @@ export default class IqrfInfo extends Vue {
 	}
 
 	/**
+	 * @var {boolean} powerUser Indicates whether user role is power user
+	 */
+	private powerUser = false
+
+	/**
 	 * Vue lifecycle hook created
 	 */
 	created(): void {
 		extend('integer', integer);
 		extend('min', min_value);
 		extend('required', required);
+	}
+
+	/**
+	 * Vue lifecycle hook mounted
+	 */
+	mounted(): void {
+		if (this.$store.getters['user/role'] === 'power') {
+			this.powerUser = true;
+		}
 		this.getConfig();
 	}
 

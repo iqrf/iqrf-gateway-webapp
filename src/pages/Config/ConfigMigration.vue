@@ -1,43 +1,43 @@
 <template>
-	<div>
-		<h1>{{ $t('config.migration.title') }}</h1>
-		<CCard>
-			<CCardBody>
-				<CForm>
-					<div class='form-group'>
-						<CInputFile
-							ref='configZip'
-							accept='.zip'
-							:label='$t("config.migration.form.importButton")'
-							@click='isEmpty'
-							@input='isEmpty'
-						/>
-						<p v-if='configEmpty && !configUntouched' class='text-danger'>
-							{{ $t("config.migration.messages.importButton") }}
-						</p>
-					</div>
-					<CButton
-						color='primary'
-						:disabled='configEmpty'
-						@click.prevent='importConfig'
-					>
-						{{ $t('config.migration.form.import') }}
-					</CButton> <CButton
-						color='secondary'
-						@click.prevent='exportConfig'
-					>
-						{{ $t('config.migration.form.export') }}
-					</CButton>
-				</CForm>
-			</CCardBody>
-		</CCard>
-	</div>
+	<CCard>
+		<CCardHeader>
+			<h3>{{ $t('config.migration.title') }}</h3>
+		</CCardHeader>
+		<CCardBody>
+			<CForm>
+				<div class='form-group'>
+					<CInputFile
+						ref='configZip'
+						accept='.zip'
+						:label='$t("config.migration.form.importButton")'
+						@click='isEmpty'
+						@input='isEmpty'
+					/>
+					<p v-if='configEmpty && !configUntouched' class='text-danger'>
+						{{ $t("config.migration.messages.importButton") }}
+					</p>
+				</div>
+				<CButton
+					color='primary'
+					:disabled='configEmpty'
+					@click.prevent='importConfig'
+				>
+					{{ $t('config.migration.form.import') }}
+				</CButton> <CButton
+					color='secondary'
+					@click.prevent='exportConfig'
+				>
+					{{ $t('config.migration.form.export') }}
+				</CButton>
+			</CForm>
+		</CCardBody>
+	</CCard>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {AxiosError, AxiosResponse} from 'axios';
-import {CButton, CCard, CCardBody, CForm, CInputFile} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CInputFile} from '@coreui/vue/src';
 import DaemonConfigurationService	from '../../services/DaemonConfigurationService';
 import {fileDownloader} from '../../helpers/fileDownloader';
 
@@ -46,6 +46,7 @@ import {fileDownloader} from '../../helpers/fileDownloader';
 		CButton,
 		CCard,
 		CCardBody,
+		CCardHeader,
 		CForm,
 		CInputFile
 	},

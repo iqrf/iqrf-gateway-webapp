@@ -1,104 +1,103 @@
 <template>
-	<div>
-		<h1>{{ $t('config.iqrfSpi.title') }}</h1>
-		<CCard>
-			<CCardBody>
-				<ValidationObserver v-slot='{ invalid }'>
-					<CForm @submit.prevent='saveConfig'>
-						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
-							rules='required'
-							:custom-messages='{required: "config.iqrfSpi.form.messages.instance"}'
-						>
-							<CInput
-								v-model='configuration.instance'
-								:label='$t("config.iqrfSpi.form.instance")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
-							/>
-						</ValidationProvider>
-						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
-							rules='required'
-							:custom-messages='{required: "config.iqrfSpi.form.messages.IqrfInterface"}'
-						>
-							<CInput
-								v-model='configuration.IqrfInterface'
-								:label='$t("config.iqrfSpi.form.IqrfInterface")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
-							/>
-						</ValidationProvider>
-						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
-							rules='required|integer'
-							:custom-messages='{
-								integer: "config.iqrfSpi.form.messages.powerEnableGpioPin",
-								required: "config.iqrfSpi.form.messages.powerEnableGpioPin",
-							}'
-						>
-							<CInput
-								v-model='configuration.powerEnableGpioPin'
-								:label='$t("config.iqrfSpi.form.powerEnableGpioPin")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
-							/>
-						</ValidationProvider>
-						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
-							rules='required|integer'
-							:custom-messages='{
-								integer: "config.iqrfSpi.form.messages.busEnableGpioPin",
-								required: "config.iqrfSpi.form.messages.busEnableGpioPin",
-							}'
-						>
-							<CInput
-								v-model='configuration.busEnableGpioPin'
-								:label='$t("config.iqrfSpi.form.busEnableGpioPin")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
-							/>
-						</ValidationProvider>
-						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
-							rules='required|integer'
-							:custom-messages='{
-								integer: "config.iqrfSpi.form.messages.pgmSwitchGpioPin",
-								required: "config.iqrfSpi.form.messages.pgmSwitchGpioPin",
-							}'
-						>
-							<CInput
-								v-model='configuration.pgmSwitchGpioPin'
-								:label='$t("config.iqrfSpi.form.pgmSwitchGpioPin")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
-							/>
-						</ValidationProvider>
-						<CInputCheckbox
-							:checked.sync='configuration.spiReset'
-							:label='$t("config.iqrfSpi.form.spiReset")'
+	<CCard>
+		<CCardHeader>
+			<h3>{{ $t('config.iqrfSpi.title') }}</h3>
+		</CCardHeader>
+		<CCardBody>
+			<ValidationObserver v-slot='{ invalid }'>
+				<CForm @submit.prevent='saveConfig'>
+					<ValidationProvider
+						v-if='powerUser'
+						v-slot='{ errors, touched, valid }'
+						rules='required'
+						:custom-messages='{required: "config.iqrfSpi.form.messages.instance"}'
+					>
+						<CInput
+							v-model='configuration.instance'
+							:label='$t("config.iqrfSpi.form.instance")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
 						/>
-						<CButton type='submit' color='primary' :disabled='invalid'>
-							{{ $t('forms.save') }}
-						</CButton>
-					</CForm>
-				</ValidationObserver>
-			</CCardBody>
-		</CCard>
-		<CCard>
-			<CCardHeader>{{ $t('config.iqrfSpi.mappings' ) }}</CCardHeader>
-			<CCardBody>
-				<CRow>
-					<CCol lg='6'>
-						<InterfaceMappings interface-type='spi' @update-mapping='updateMapping' />
-					</CCol>
-					<CCol lg='6'>
-						<InterfacePorts interface-type='spi' @update-port='updatePort' />
-					</CCol>
-				</CRow>
-			</CCardBody>
-		</CCard>
-	</div>
+					</ValidationProvider>
+					<ValidationProvider
+						v-slot='{ errors, touched, valid }'
+						rules='required'
+						:custom-messages='{required: "config.iqrfSpi.form.messages.IqrfInterface"}'
+					>
+						<CInput
+							v-model='configuration.IqrfInterface'
+							:label='$t("config.iqrfSpi.form.IqrfInterface")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
+						/>
+					</ValidationProvider>
+					<ValidationProvider
+						v-slot='{ errors, touched, valid }'
+						rules='required|integer'
+						:custom-messages='{
+							integer: "config.iqrfSpi.form.messages.powerEnableGpioPin",
+							required: "config.iqrfSpi.form.messages.powerEnableGpioPin",
+						}'
+					>
+						<CInput
+							v-model='configuration.powerEnableGpioPin'
+							:label='$t("config.iqrfSpi.form.powerEnableGpioPin")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
+						/>
+					</ValidationProvider>
+					<ValidationProvider
+						v-slot='{ errors, touched, valid }'
+						rules='required|integer'
+						:custom-messages='{
+							integer: "config.iqrfSpi.form.messages.busEnableGpioPin",
+							required: "config.iqrfSpi.form.messages.busEnableGpioPin",
+						}'
+					>
+						<CInput
+							v-model='configuration.busEnableGpioPin'
+							:label='$t("config.iqrfSpi.form.busEnableGpioPin")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
+						/>
+					</ValidationProvider>
+					<ValidationProvider
+						v-slot='{ errors, touched, valid }'
+						rules='required|integer'
+						:custom-messages='{
+							integer: "config.iqrfSpi.form.messages.pgmSwitchGpioPin",
+							required: "config.iqrfSpi.form.messages.pgmSwitchGpioPin",
+						}'
+					>
+						<CInput
+							v-model='configuration.pgmSwitchGpioPin'
+							:label='$t("config.iqrfSpi.form.pgmSwitchGpioPin")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
+						/>
+					</ValidationProvider>
+					<CInputCheckbox
+						:checked.sync='configuration.spiReset'
+						:label='$t("config.iqrfSpi.form.spiReset")'
+					/>
+					<CButton type='submit' color='primary' :disabled='invalid'>
+						{{ $t('forms.save') }}
+					</CButton>
+				</CForm>
+			</ValidationObserver>
+		</CCardBody>
+		<CCardFooter>
+			<h4>{{ $t('config.iqrfSpi.mappings' ) }}</h4><hr>
+			<CRow>
+				<CCol lg='6'>
+					<InterfaceMappings interface-type='spi' @update-mapping='updateMapping' />
+				</CCol>
+				<CCol lg='6'>
+					<InterfacePorts interface-type='spi' @update-port='updatePort' />
+				</CCol>
+			</CRow>
+		</CCardFooter>
+	</CCard>
 </template>
 
 <script lang='ts'>
@@ -108,6 +107,7 @@ import {
 	CButton,
 	CCard,
 	CCardBody,
+	CCardFooter,
 	CCardHeader,
 	CCol,
 	CForm,
@@ -136,6 +136,7 @@ interface IqrfSpiConfig {
 		CButton,
 		CCard,
 		CCardBody,
+		CCardFooter,
 		CCardHeader,
 		CCol,
 		CForm,
@@ -146,10 +147,7 @@ interface IqrfSpiConfig {
 		InterfacePorts,
 		ValidationObserver,
 		ValidationProvider,
-	},
-	metaInfo: {
-		title: 'config.iqrfSpi.title',
-	},
+	}
 })
 
 /**
@@ -179,11 +177,22 @@ export default class IqrfSpi extends Vue {
 	private instance: string|null = null
 
 	/**
+	 * @var {boolean} powerUser Indicates whether user role is power user
+	 */
+	private powerUser = false
+
+	/**
 	 * Vue lifecycle hook created
 	 */
 	created(): void {
 		extend('integer', integer);
 		extend('required', required);
+	}
+
+	mounted(): void {
+		if (this.$store.getters['user/role'] === 'power') {
+			this.powerUser = true;
+		}
 		this.getConfig();
 	}
 

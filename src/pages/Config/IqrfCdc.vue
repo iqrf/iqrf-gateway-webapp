@@ -1,11 +1,14 @@
 <template>
 	<div>
-		<h1>{{ $t('config.iqrfCdc.title') }}</h1>
 		<CCard>
+			<CCardHeader>
+				<h3>{{ $t('config.iqrfCdc.title') }}</h3>
+			</CCardHeader>
 			<CCardBody>
 				<ValidationObserver v-slot='{ invalid }'>
 					<CForm @submit.prevent='saveConfig'>
 						<ValidationProvider
+							v-if='powerUser'
 							v-slot='{ errors, touched, valid }'
 							rules='required'
 							:custom-messages='{required: "config.iqrfCdc.form.messages.instance"}'
@@ -35,12 +38,10 @@
 					</CForm>
 				</ValidationObserver>
 			</CCardBody>
-		</CCard>
-		<CCard>
-			<CCardHeader>{{ $t('config.iqrfCdc.mappings' ) }}</CCardHeader>
-			<CCardBody>
+			<CCardFooter>
+				<h4>{{ $t('config.iqrfCdc.mappings' ) }}</h4><hr>
 				<InterfacePorts interface-type='cdc' @update-port='updatePort' />
-			</CCardBody>
+			</CCardFooter>
 		</CCard>
 	</div>
 </template>
@@ -56,8 +57,8 @@ import FormErrorHandler from '../../helpers/FormErrorHandler';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 
 interface IqrfCdcConfig {
-	instance: string|null
-	IqrfInterface: string|null
+	instance: string
+	IqrfInterface: string
 }
 
 @Component({
@@ -71,10 +72,7 @@ interface IqrfCdcConfig {
 		InterfacePorts,
 		ValidationObserver,
 		ValidationProvider,
-	},
-	metaInfo: {
-		title: 'config.iqrfCdc.title',
-	},
+	}
 })
 
 /**
@@ -90,20 +88,34 @@ export default class IqrfCdc extends Vue {
 	 * @var {IqrfCdcConfig} configuration IQRF CDC interface instance configuration
 	 */
 	private configuration: IqrfCdcConfig = {
-		instance: null,
-		IqrfInterface: null,
+		instance: '',
+		IqrfInterface: '',
 	}
 
 	/**
-	 * @var {string|null} instance Name of IQRF CDC component instance
+	 * @var {string} instance Name of IQRF CDC component instance
 	 */
-	private instance: string|null = null
+	private instance = ''
+
+	/**
+	 * @var {boolean} powerUser Indicates whether user role is power user
+	 */
+	private powerUser = false
 
 	/**
 	 * Vue lifecycle hook created
 	 */
 	created(): void {
 		extend('required', required);
+	}
+
+	/**
+	 * Vue lifecycle hook mounted
+	 */
+	mounted(): void {
+		if (this.$store.getters['user/role'] === 'power') {
+			this.powerUser = true;
+		}
 		this.getConfig();
 	}
 

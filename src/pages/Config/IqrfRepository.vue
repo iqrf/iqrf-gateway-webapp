@@ -1,92 +1,88 @@
 <template>
-	<div>
-		<h1>{{ $t('config.iqrfRepository.title') }}</h1>
-		<CCard>
-			<CCardBody>
-				<ValidationObserver v-slot='{ invalid }'>
-					<CForm @submit.prevent='saveConfig'>
-						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
-							rules='required'
-							:custom-messages='{required: "config.iqrfRepository.form.messages.instance"}'
-						>
-							<CInput
-								v-model='instance'
-								:label='$t("config.iqrfRepository.form.instance")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
-							/>
-						</ValidationProvider>
-						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
-							rules='required'
-							:custom-messages='{required: "config.iqrfRepository.form.messages.urlRepo"}'
-						>
-							<CInput
-								v-model='urlRepo'
-								:label='$t("config.iqrfRepository.form.urlRepo")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
-							/>
-						</ValidationProvider>
-						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
-							rules='integer|required|min:0'
-							:custom-messages='{
-								integer: "forms.messages.integer",
-								required: "config.iqrfRepository.form.messages.checkPeriod",
-								min: "config.iqrfRepository.form.messages.checkPeriod"
-							}'
-						>
-							<CInput
-								v-model.number='checkPeriodInMinutes'
-								type='number'
-								min='0'
-								:label='$t("config.iqrfRepository.form.checkPeriod")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
-							/>
-						</ValidationProvider>
-						<CInputCheckbox
-							v-if='versionNew'
-							:checked.sync='downloadIfRepoCacheEmpty'
-							:label='$t("config.iqrfRepository.form.downloadIfEmpty")'
+	<CCard class='border-0'>
+		<CCardBody>
+			<ValidationObserver v-slot='{ invalid }'>
+				<CForm @submit.prevent='saveConfig'>
+					<ValidationProvider
+						v-if='powerUser'
+						v-slot='{ errors, touched, valid }'
+						rules='required'
+						:custom-messages='{required: "config.iqrfRepository.form.messages.instance"}'
+					>
+						<CInput
+							v-model='componentInstance'
+							:label='$t("config.iqrfRepository.form.instance")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
 						/>
-						<CButton type='submit' color='primary' :disabled='invalid'>
-							{{ $t('forms.save') }}
-						</CButton>
-					</CForm>
-				</ValidationObserver>
-			</CCardBody>
-		</CCard>
-	</div>
+					</ValidationProvider>
+					<ValidationProvider
+						v-slot='{ errors, touched, valid }'
+						rules='required'
+						:custom-messages='{required: "config.iqrfRepository.form.messages.urlRepo"}'
+					>
+						<CInput
+							v-model='urlRepo'
+							:label='$t("config.iqrfRepository.form.urlRepo")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
+						/>
+					</ValidationProvider>
+					<ValidationProvider
+						v-slot='{ errors, touched, valid }'
+						rules='integer|required|min:0'
+						:custom-messages='{
+							integer: "forms.messages.integer",
+							required: "config.iqrfRepository.form.messages.checkPeriod",
+							min: "config.iqrfRepository.form.messages.checkPeriod"
+						}'
+					>
+						<CInput
+							v-model.number='checkPeriodInMinutes'
+							type='number'
+							min='0'
+							:label='$t("config.iqrfRepository.form.checkPeriod")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
+						/>
+					</ValidationProvider>
+					<CInputCheckbox
+						v-if='daemonHigher230'
+						:checked.sync='downloadIfRepoCacheEmpty'
+						:label='$t("config.iqrfRepository.form.downloadIfEmpty")'
+					/>
+					<CButton type='submit' color='primary' :disabled='invalid'>
+						{{ $t('forms.save') }}
+					</CButton>
+				</CForm>
+			</ValidationObserver>
+		</CCardBody>
+	</CCard>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {AxiosError, AxiosResponse} from 'axios';
-import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {integer, min_value, required} from 'vee-validate/dist/rules';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import DaemonConfigurationService	from '../../services/DaemonConfigurationService';
-import compareVersions from 'compare-versions';
 import {IIqrfRepository} from '../../interfaces/iqrfRepository';
+import {versionHigherThan} from '../../helpers/versionChecker';
 
 @Component({
 	components: {
 		CButton,
 		CCard,
 		CCardBody,
+		CCardHeader,
 		CForm,
 		CInput,
 		CInputCheckbox,
 		ValidationObserver,
 		ValidationProvider,
-	},
-	metaInfo: {
-		title: 'config.iqrfRepository.title',
-	},
+	}
 })
 
 /**
@@ -114,34 +110,29 @@ export default class IqrfRepository extends Vue {
 	private componentName = 'iqrf::JsCache'
 
 	/**
+	 * @var {boolean} daemonHigher230 Indicates whether Daemon version is 2.3.0 or higher
+	 */
+	private daemonHigher230 = false
+
+	/**
 	 * @var {boolean} downloadIfRepoCacheEmpty Download if repository cache is empty?
 	 */
 	private downloadIfRepoCacheEmpty = true
 
 	/**
-	 * @var {string|null} instance IQRF Repository component instance name, used for REST API communication
+	 * @var {string} instance IQRF Repository component instance name, used for REST API communication
 	 */
-	private instance: string|null = null
+	private instance = ''
+
+	/**
+	 * @var {boolean} powerUser Indicates whether user role is power user
+	 */
+	private powerUser = false
 
 	/**
 	 * @var {string} urlRepo Repository URL
 	 */
 	private urlRepo = ''
-
-	/**
-	 * Computes whether version of IQRF Gateway Daemon is high enough to support new properties
-	 * @returns {boolean} true if version >= 2.3.0, false otherwise
-	 */
-	get versionNew(): boolean {
-		const daemonVersion = this.$store.getters.daemonVersion;
-		if (daemonVersion === '') {
-			return false;
-		}
-		if (compareVersions.compare(daemonVersion, '2.3.0', '>=')) {
-			return true;
-		}
-		return false;
-	}
 
 	/**
 	 * Vue lifecycle hook created
@@ -150,6 +141,20 @@ export default class IqrfRepository extends Vue {
 		extend('integer', integer);
 		extend('min', min_value);
 		extend('required', required);
+	}
+
+	/**
+	 * Vue lifecycle hook mounted
+	 */
+	mounted(): void {
+		if (versionHigherThan('2.3.0')) {
+			this.daemonHigher230 = true;
+		}
+
+		if (this.$store.getters['user/role'] === 'power') {
+			this.powerUser = true;
+		}
+
 		this.getConfig();
 	}
 
@@ -177,7 +182,7 @@ export default class IqrfRepository extends Vue {
 		this.instance = this.componentInstance = response.instance;
 		this.urlRepo = response.urlRepo;
 		this.checkPeriodInMinutes = response.checkPeriodInMinutes;
-		if (this.versionNew) {
+		if (this.daemonHigher230) {
 			if (response.downloadIfRepoCacheEmpty !== undefined) {
 				this.downloadIfRepoCacheEmpty = response.downloadIfRepoCacheEmpty;
 			}
@@ -194,7 +199,7 @@ export default class IqrfRepository extends Vue {
 			urlRepo: this.urlRepo,
 			checkPeriodInMinutes: this.checkPeriodInMinutes,
 		};
-		if (this.versionNew) {
+		if (this.daemonHigher230) {
 			Object.assign(configuration, {downloadIfRepoCacheEmpty: this.downloadIfRepoCacheEmpty});
 		}
 		return configuration;
@@ -205,7 +210,7 @@ export default class IqrfRepository extends Vue {
 	 */
 	private saveConfig(): void {
 		this.$store.commit('spinner/SHOW');
-		if (this.instance !== null) {
+		if (this.instance !== '') {
 			DaemonConfigurationService.updateInstance(this.componentName, this.instance, this.buildConfiguration())
 				.then(() => this.successfulSave())
 				.catch((error: AxiosError) => FormErrorHandler.configError(error));

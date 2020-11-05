@@ -1,124 +1,123 @@
 <template>
-	<div>
-		<h1>{{ $t('config.iqrfUart.title') }}</h1>
-		<CCard>
-			<CCardBody>
-				<ValidationObserver v-slot='{ invalid }'>
-					<CForm @submit.prevent='saveConfig'>
-						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
-							rules='required'
-							:custom-messages='{required: "config.iqrfUart.form.messages.instance"}'
-						>
-							<CInput
-								v-model='componentInstance'
-								:label='$t("config.iqrfUart.form.instance")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
-							/>
-						</ValidationProvider>
-						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
-							rules='required'
-							:custom-messages='{required: "config.iqrfUart.form.messages.IqrfInterface"}'
-						>
-							<CInput
-								v-model='IqrfInterface'
-								:label='$t("config.iqrfUart.form.IqrfInterface")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
-							/>
-						</ValidationProvider>
-						<ValidationProvider
-							v-slot='{ valid, touched, errors }'
-							rules='required'
-							:custom-messages='{
-								required: "config.iqrfUart.form.messages.baudRate",
-							}'
-						>
-							<CSelect
-								:value.sync='baudRate'
-								:label='$t("config.iqrfUart.form.baudRate")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
-								:placeholder='$t("config.iqrfUart.form.messages.baudRate")'
-								:options='baudRates'
-							/>
-						</ValidationProvider>
-						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
-							rules='required|integer'
-							:custom-messages='{
-								integer: "config.iqrfUart.form.messages.powerEnableGpioPin",
-								required: "config.iqrfUart.form.messages.powerEnableGpioPin",
-							}'
-						>
-							<CInput
-								v-model.number='powerEnableGpioPin'
-								type='number'
-								:label='$t("config.iqrfUart.form.powerEnableGpioPin")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
-							/>
-						</ValidationProvider>
-						<ValidationProvider
-							v-if='versionNew'
-							v-slot='{ errors, touched, valid }'
-							rules='required|integer'
-							:custom-messages='{
-								integer: "config.iqrfUart.form.messages.pgmSwitchGpioPin",
-								required: "config.iqrfUart.form.messages.pgmSwitchGpioPin",
-							}'
-						>
-							<CInput
-								v-model.number='pgmSwitchGpioPin'
-								type='number'
-								:label='$t("config.iqrfUart.form.pgmSwitchGpioPin")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
-							/>
-						</ValidationProvider>
-						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
-							rules='required|integer'
-							:custom-messages='{
-								integer: "config.iqrfUart.form.messages.busEnableGpioPin",
-								required: "config.iqrfUart.form.messages.busEnableGpioPin",
-							}'
-						>
-							<CInput
-								v-model.number='busEnableGpioPin'
-								type='number'
-								:label='$t("config.iqrfUart.form.busEnableGpioPin")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
-							/>
-						</ValidationProvider>
-						<CInputCheckbox
-							:checked.sync='uartReset'
-							:label='$t("config.iqrfUart.form.uartReset")'
+	<CCard>
+		<CCardHeader>
+			<h3>{{ $t('config.iqrfUart.title') }}</h3>
+		</CCardHeader>
+		<CCardBody>
+			<ValidationObserver v-slot='{ invalid }'>
+				<CForm @submit.prevent='saveConfig'>
+					<ValidationProvider
+						v-if='powerUser'
+						v-slot='{ errors, touched, valid }'
+						rules='required'
+						:custom-messages='{required: "config.iqrfUart.form.messages.instance"}'
+					>
+						<CInput
+							v-model='componentInstance'
+							:label='$t("config.iqrfUart.form.instance")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
 						/>
-						<CButton type='submit' color='primary' :disabled='invalid'>
-							{{ $t('forms.save') }}
-						</CButton>
-					</CForm>
-				</ValidationObserver>
-			</CCardBody>
-		</CCard>
-		<CCard>
-			<CCardHeader>{{ $t('config.iqrfUart.mappings' ) }}</CCardHeader>
-			<CCardBody>
-				<CRow>
-					<CCol lg='6'>
-						<InterfaceMappings interface-type='uart' @update-mapping='updateMapping' />
-					</CCol>
-					<CCol lg='6'>
-						<InterfacePorts interface-type='uart' @update-port='updatePort' />
-					</CCol>
-				</CRow>
-			</CCardBody>
-		</CCard>
-	</div>
+					</ValidationProvider>
+					<ValidationProvider
+						v-slot='{ errors, touched, valid }'
+						rules='required'
+						:custom-messages='{required: "config.iqrfUart.form.messages.IqrfInterface"}'
+					>
+						<CInput
+							v-model='IqrfInterface'
+							:label='$t("config.iqrfUart.form.IqrfInterface")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
+						/>
+					</ValidationProvider>
+					<ValidationProvider
+						v-slot='{ valid, touched, errors }'
+						rules='required'
+						:custom-messages='{
+							required: "config.iqrfUart.form.messages.baudRate",
+						}'
+					>
+						<CSelect
+							:value.sync='baudRate'
+							:label='$t("config.iqrfUart.form.baudRate")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
+							:placeholder='$t("config.iqrfUart.form.messages.baudRate")'
+							:options='baudRates'
+						/>
+					</ValidationProvider>
+					<ValidationProvider
+						v-slot='{ errors, touched, valid }'
+						rules='required|integer'
+						:custom-messages='{
+							integer: "config.iqrfUart.form.messages.powerEnableGpioPin",
+							required: "config.iqrfUart.form.messages.powerEnableGpioPin",
+						}'
+					>
+						<CInput
+							v-model.number='powerEnableGpioPin'
+							type='number'
+							:label='$t("config.iqrfUart.form.powerEnableGpioPin")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
+						/>
+					</ValidationProvider>
+					<ValidationProvider
+						v-if='daemonHigher230'
+						v-slot='{ errors, touched, valid }'
+						rules='required|integer'
+						:custom-messages='{
+							integer: "config.iqrfUart.form.messages.pgmSwitchGpioPin",
+							required: "config.iqrfUart.form.messages.pgmSwitchGpioPin",
+						}'
+					>
+						<CInput
+							v-model.number='pgmSwitchGpioPin'
+							type='number'
+							:label='$t("config.iqrfUart.form.pgmSwitchGpioPin")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
+						/>
+					</ValidationProvider>
+					<ValidationProvider
+						v-slot='{ errors, touched, valid }'
+						rules='required|integer'
+						:custom-messages='{
+							integer: "config.iqrfUart.form.messages.busEnableGpioPin",
+							required: "config.iqrfUart.form.messages.busEnableGpioPin",
+						}'
+					>
+						<CInput
+							v-model.number='busEnableGpioPin'
+							type='number'
+							:label='$t("config.iqrfUart.form.busEnableGpioPin")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
+						/>
+					</ValidationProvider>
+					<CInputCheckbox
+						:checked.sync='uartReset'
+						:label='$t("config.iqrfUart.form.uartReset")'
+					/>
+					<CButton type='submit' color='primary' :disabled='invalid'>
+						{{ $t('forms.save') }}
+					</CButton>
+				</CForm>
+			</ValidationObserver>
+		</CCardBody>
+		<CCardFooter>
+			<h4>{{ $t('config.iqrfUart.mappings' ) }}</h4><hr>
+			<CRow>
+				<CCol lg='6'>
+					<InterfaceMappings interface-type='uart' @update-mapping='updateMapping' />
+				</CCol>
+				<CCol lg='6'>
+					<InterfacePorts interface-type='uart' @update-port='updatePort' />
+				</CCol>
+			</CRow>
+		</CCardFooter>
+	</CCard>
 </template>
 
 <script lang='ts'>
@@ -128,6 +127,7 @@ import {
 	CButton,
 	CCard,
 	CCardBody,
+	CCardFooter,
 	CCardHeader,
 	CCol,
 	CForm,
@@ -142,16 +142,16 @@ import InterfaceMappings from '../../components/Config/InterfaceMappings.vue';
 import InterfacePorts from '../../components/Config/InterfacePorts.vue';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
-import compareVersions from 'compare-versions';
 import {IOption} from '../../interfaces/coreui';
 import {IIqrfUart, IUartMapping} from '../../interfaces/iqrfUart';
-
+import {versionHigherThan} from '../../helpers/versionChecker';
 
 @Component({
 	components: {
 		CButton,
 		CCard,
 		CCardBody,
+		CCardFooter,
 		CCardHeader,
 		CCol,
 		CForm,
@@ -163,10 +163,7 @@ import {IIqrfUart, IUartMapping} from '../../interfaces/iqrfUart';
 		InterfacePorts,
 		ValidationObserver,
 		ValidationProvider,
-	},
-	metaInfo: {
-		title: 'config.iqrfUart.title',
-	},
+	}
 })
 
 /**
@@ -199,6 +196,11 @@ export default class IqrfUart extends Vue {
 	private componentInstance = 'iqrf::IqrfUart-/dev/ttyS0'
 
 	/**
+	 * 
+	 */
+	private daemonHigher230 = false
+
+	/**
 	 * @var {string} instance UART component instance name, used for REST API communication
 	 */
 	private instance = ''
@@ -219,6 +221,11 @@ export default class IqrfUart extends Vue {
 	private powerEnableGpioPin = 18
 
 	/**
+	 * @var {boolean} powerUser Indicates whether user role is power user
+	 */
+	private powerUser = false
+
+	/**
 	 * @var {boolean} uartReset Should UART component instance reset?
 	 */
 	private uartReset = true
@@ -231,21 +238,6 @@ export default class IqrfUart extends Vue {
 		const baudRates: Array<number> = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400];
 		return baudRates.map((baudRate: number) => ({value: baudRate, label: baudRate + ' Bd'}));
 	}
-
-	/**
-	 * Computes whether version of IQRF Gateway Daemon is high enough to support new properties
-	 * @returns {boolean} true if version >= 2.3.0, false otherwise
-	 */
-	get versionNew(): boolean {
-		const daemonVersion = this.$store.getters.daemonVersion;
-		if (daemonVersion === '') {
-			return false;
-		}
-		if (compareVersions.compare(daemonVersion, '2.3.0', '>=')) {
-			return true;
-		}
-		return false;
-	}
 	
 	/**
 	 * Vue lifecycle hook created
@@ -253,6 +245,20 @@ export default class IqrfUart extends Vue {
 	created(): void {
 		extend('integer', integer);
 		extend('required', required);
+	}
+
+	/**
+	 * Vue lifecycle hook mounted
+	 */
+	mounted(): void {
+		if (versionHigherThan('2.3.0')) {
+			this.daemonHigher230 = true;
+		}
+
+		if (this.$store.getters['user/role'] === 'power') {
+			this.powerUser = true;
+		}
+
 		this.getConfig();
 	}
 
@@ -282,7 +288,7 @@ export default class IqrfUart extends Vue {
 		this.baudRate = response.baudRate;
 		this.powerEnableGpioPin = response.powerEnableGpioPin;
 		this.busEnableGpioPin = response.busEnableGpioPin;
-		if (this.versionNew) {
+		if (this.daemonHigher230) {
 			if (response.pgmSwitchGpioPin !== undefined) {
 				this.pgmSwitchGpioPin = response.pgmSwitchGpioPin;
 			}
@@ -305,7 +311,7 @@ export default class IqrfUart extends Vue {
 			powerEnableGpioPin: this.powerEnableGpioPin,
 			busEnableGpioPin: this.busEnableGpioPin
 		};
-		if (this.versionNew) {
+		if (this.daemonHigher230) {
 			Object.assign(configuration, {pgmSwitchGpioPin: this.pgmSwitchGpioPin, uartReset: this.uartReset});
 		}
 		return configuration;
@@ -344,7 +350,7 @@ export default class IqrfUart extends Vue {
 		this.baudRate = mapping.baudRate;
 		this.busEnableGpioPin = mapping.busEnableGpioPin;
 		this.powerEnableGpioPin = mapping.powerEnableGpioPin;
-		if (this.versionNew) {
+		if (this.daemonHigher230) {
 			this.pgmSwitchGpioPin = mapping.pgmSwitchGpioPin;
 		}
 	}

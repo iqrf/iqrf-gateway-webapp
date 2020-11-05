@@ -1,12 +1,14 @@
 <template>
-	<div>
-		<h1 v-if='$route.path === "/config/mq/add"'>
-			{{ $t('config.mq.add') }}
-		</h1>
-		<h1 v-else>
-			{{ $t('config.mq.edit') }}
-		</h1>
-		<CCard body-wrapper>
+	<CCard>
+		<CCardHeader>
+			<h3 v-if='$route.path === "/config/daemon/mq/add"'>
+				{{ $t('config.mq.add') }}
+			</h3>
+			<h3 v-else>
+				{{ $t('config.mq.edit') }}
+			</h3>
+		</CCardHeader>
+		<CCardBody>
 			<ValidationObserver v-slot='{ invalid }'>
 				<CForm @submit.prevent='saveConfig'>
 					<ValidationProvider
@@ -54,13 +56,13 @@
 					</CButton>
 				</CForm>
 			</ValidationObserver>
-		</CCard>
-	</div>
+		</CCardBody>
+	</CCard>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
@@ -73,6 +75,8 @@ import {AxiosError, AxiosResponse} from 'axios';
 	components: {
 		CButton,
 		CCard,
+		CCardBody,
+		CCardHeader,
 		CForm,
 		CInput,
 		CInputCheckbox,
@@ -116,7 +120,7 @@ export default class MqMessagingForm extends Vue {
 	 * @returns {string} Page title
 	 */
 	get pageTitle(): string {
-		return this.$route.path === '/config/mq/add' ?
+		return this.$route.path === '/config/daemon/mq/add' ?
 			this.$t('config.mq.add').toString() : this.$t('config.mq.edit').toString();
 	}
 	
@@ -125,7 +129,7 @@ export default class MqMessagingForm extends Vue {
 	 * @returns {string} Button text
 	 */
 	get submitButton(): string {
-		return this.$route.path === '/config/mq/add' ?
+		return this.$route.path === '/config/daemon/mq/add' ?
 			this.$t('forms.add').toString() : this.$t('forms.save').toString();
 	}
 
@@ -134,6 +138,12 @@ export default class MqMessagingForm extends Vue {
 	 */
 	created(): void {
 		extend('required', required);
+	}
+
+	/**
+	 * Vue lifecycle hook mounted
+	 */
+	mounted(): void {
 		if (this.instance !== '') {
 			this.getConfig();
 		}
@@ -150,7 +160,7 @@ export default class MqMessagingForm extends Vue {
 				this.configuration = response.data;
 			})
 			.catch((error: AxiosError) => {
-				this.$router.push('/config/mq/');
+				this.$router.push('/config/daemon/messagings/mq');
 				FormErrorHandler.configError(error);
 			});
 	}
@@ -176,7 +186,7 @@ export default class MqMessagingForm extends Vue {
 	 */
 	private successfulSave(): void  {
 		this.$store.commit('spinner/HIDE');
-		if (this.$route.path === '/config/mq/add') {
+		if (this.$route.path === '/config/daemon/mq/add') {
 			this.$toast.success(
 				this.$t('config.mq.messages.add.success', {instance: this.configuration.instance})
 					.toString()
@@ -187,7 +197,7 @@ export default class MqMessagingForm extends Vue {
 					.toString()
 			);
 		}
-		this.$router.push('/config/mq/');
+		this.$router.push('/config/daemon/messagings/mq');
 	}
 }
 </script>

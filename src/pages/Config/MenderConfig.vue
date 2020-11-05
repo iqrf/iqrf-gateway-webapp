@@ -1,7 +1,9 @@
 <template>
-	<div>
-		<h1>{{ $t('config.mender.title') }}</h1>
-		<CCard body-wrapper>
+	<CCard>
+		<CCardHeader>
+			<h3>{{ $t('config.mender.title') }}</h3>
+		</CCardHeader>
+		<CCardBody>
 			<ValidationObserver v-if='configuration !== null' v-slot='{ invalid }'>
 				<CForm @submit.prevent='processSubmit'>
 					<ValidationProvider
@@ -92,14 +94,14 @@
 					</CButton>
 				</CForm>
 			</ValidationObserver>
-		</CCard>
-	</div>
+		</CCardBody>
+	</CCard>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {AxiosError, AxiosResponse} from 'axios';
-import {CButton, CCard, CForm, CInput} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {integer, min_value, required} from 'vee-validate/dist/rules';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
@@ -107,17 +109,19 @@ import FeatureConfigService from '../../services/FeatureConfigService';
 import { NavigationGuardNext, Route } from 'vue-router';
 
 interface IMenderConfig {
-	InventoryPollIntervalSeconds: number|null
-	RetryPollIntervalSeconds: number|null
-	ServerURL: string|null
-	TenantToken: string|null
-	UpdatePollIntervalSeconds: number|null
+	InventoryPollIntervalSeconds: number
+	RetryPollIntervalSeconds: number
+	ServerURL: string
+	TenantToken: string
+	UpdatePollIntervalSeconds: number
 }
 
 @Component({
 	components: {
 		CButton,
 		CCard,
+		CCardBody,
+		CCardHeader,
 		CForm,
 		CInput,
 		ValidationObserver,
@@ -146,11 +150,11 @@ export default class MenderConfig extends Vue {
 	 * @var {IMenderConfig} configuration Mender feature configuration
 	 */
 	private configuration: IMenderConfig = {
-		InventoryPollIntervalSeconds: null,
-		RetryPollIntervalSeconds: null,
-		ServerURL: null,
-		TenantToken: null,
-		UpdatePollIntervalSeconds: null,
+		InventoryPollIntervalSeconds: 0,
+		RetryPollIntervalSeconds: 0,
+		ServerURL: '',
+		TenantToken: '',
+		UpdatePollIntervalSeconds: 0,
 	}
 
 	/**
@@ -169,6 +173,12 @@ export default class MenderConfig extends Vue {
 			const regex = RegExp('(http|https):\\/\\/.*');
 			return regex.test(addr);
 		});
+	}
+
+	/**
+	 * Vue lifecycle hook mounted
+	 */
+	mounted(): void {
 		this.getConfig();
 	}
 

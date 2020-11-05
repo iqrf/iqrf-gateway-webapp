@@ -1,6 +1,5 @@
 <template>
 	<div>
-		<h1>{{ $t('config.iqmesh.title') }}</h1>
 		<OtaUpload />
 	</div>
 </template>

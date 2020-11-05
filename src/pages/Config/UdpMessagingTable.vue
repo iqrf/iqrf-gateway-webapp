@@ -1,11 +1,14 @@
 <template>
 	<div>
-		<h1>{{ $t('config.udp.title') }}</h1>
 		<CCard>
-			<CCardHeader v-if='instances.length < 1'>
+			<CCardHeader>
+				<h3 class='float-left'>
+					{{ $t('config.udp.title') }}
+				</h3>
 				<CButton
+					v-if='instances.length < 1'
 					color='success'
-					to='/config/udp/add'
+					to='/config/daemon/udp/add'
 					size='sm'
 					class='float-right'
 				>
@@ -30,7 +33,7 @@
 						<td class='col-actions'>
 							<CButton
 								color='info'
-								:to='"/config/udp/edit/" + item.instance'
+								:to='"/config/daemon/udp/edit/" + item.instance'
 								size='sm'
 							>
 								<CIcon :content='icons.edit' size='sm' />
@@ -98,8 +101,9 @@ import DaemonConfigurationService
 	from '../../services/DaemonConfigurationService';
 import { IField } from '../../interfaces/coreui';
 import { Dictionary } from 'vue-router/types/router';
-import { AxiosResponse } from 'axios';
+import { AxiosError, AxiosResponse } from 'axios';
 import { UdpInstance } from '../../interfaces/messagingInterfaces';
+import FormErrorHandler from '../../helpers/FormErrorHandler';
 
 @Component({
 	components: {
@@ -111,9 +115,6 @@ import { UdpInstance } from '../../interfaces/messagingInterfaces';
 		CDataTable,
 		CIcon,
 		CModal,
-	},
-	metaInfo: {
-		title: 'config.udp.title',
 	}
 })
 
@@ -174,6 +175,12 @@ export default class UdpMessagingTable extends Vue {
 	 */
 	created(): void {
 		this.$store.commit('spinner/SHOW');
+	}
+
+	/**
+	 * Vue lifecycle hook mounted
+	 */
+	mounted(): void {
 		this.getInstances();
 	}
 
@@ -195,7 +202,7 @@ export default class UdpMessagingTable extends Vue {
 				this.$store.commit('spinner/HIDE');
 				this.instances = response.data.instances;
 			})
-			.catch(() => this.$store.commit('spinner/HIDE'));
+			.catch((error: AxiosError) => FormErrorHandler.configError(error));
 	}
 
 	/**
@@ -214,7 +221,7 @@ export default class UdpMessagingTable extends Vue {
 					);
 				});
 			})
-			.catch(() => this.$store.commit('spinner/HIDE'));
+			.catch((error: AxiosError) => FormErrorHandler.configError(error));
 	}
 }
 </script>

@@ -1,12 +1,14 @@
 <template>
-	<div>
-		<h1 v-if='$route.path === "/config/websocket/add"'>
-			{{ $t('config.websocket.interface.add') }}
-		</h1>
-		<h1 v-else>
-			{{ $t('config.websocket.interface.edit') }}
-		</h1>
-		<CCard body-wrapper>
+	<CCard>
+		<CCardHeader>
+			<h3 v-if='$route.path === "/config/websocket/add"'>
+				{{ $t('config.websocket.interface.add') }}
+			</h3>
+			<h3 v-else>
+				{{ $t('config.websocket.interface.edit') }}
+			</h3>
+		</CCardHeader>
+		<CCardBody>
 			<ValidationObserver v-slot='{ invalid }'>
 				<CForm @submit.prevent='saveConfig'>
 					<ValidationProvider
@@ -38,10 +40,14 @@
 						/>
 					</ValidationProvider>
 					<CInputCheckbox
+						:checked.sync='messaging.acceptAsyncMsg'
+						:label='$t("config.websocket.form.acceptAsyncMsg")'
+					/>
+					<CInputCheckbox
 						:checked.sync='service.acceptOnlyLocalhost'
 						:label='$t("config.websocket.form.acceptOnlyLocalhost")'
 					/>
-					<div v-if='versionNew'>
+					<div v-if='daemonHigher230'>
 						<CInputCheckbox
 							:checked.sync='service.tlsEnabled'
 							:label='$t("config.websocket.form.tlsEnabled")'
@@ -53,20 +59,20 @@
 							:placeholder='$t("config.websocket.form.messages.tlsMode")'
 							:disabled='!service.tlsEnabled'
 						/>
-						<span v-if='service.tlsMode !== ""'>{{ $t('config.websocket.form.tlsModes.descriptions.' + service.tlsMode) }}</span>
-					</div><br v-if='versionNew'>
+						<span v-if='service.tlsMode !== "" && service.tlsMode !== undefined'>{{ $t('config.websocket.form.tlsModes.descriptions.' + service.tlsMode) }}</span>
+					</div><br v-if='daemonHigher230'>
 					<CButton type='submit' color='primary' :disabled='invalid'>
 						{{ submitButton }}
 					</CButton>
 				</CForm>
 			</ValidationObserver>
-		</CCard>
-	</div>
+		</CCardBody>
+	</CCard>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
@@ -75,12 +81,14 @@ import {WsMessaging, ModalInstance, IWsService} from '../../interfaces/messaging
 import {MetaInfo} from 'vue-meta';
 import {AxiosError, AxiosResponse} from 'axios';
 import {IOption} from '../../interfaces/coreui';
-import compareVersions from 'compare-versions';
+import {versionHigherThan} from '../../helpers/versionChecker';
 
 @Component({
 	components: {
 		CButton,
 		CCard,
+		CCardBody,
+		CCardHeader,
 		CForm,
 		CInput,
 		CInputCheckbox,
@@ -106,6 +114,11 @@ export default class WebsocketInterfaceForm extends Vue {
 		messaging: 'iqrf::WebsocketMessaging',
 		service: 'shape::WebsocketCppService',
 	}
+
+	/**
+	 * @var {boolean} daemonHigher230 Indicates whether Daemon version is 2.3.0 or higher
+	 */
+	private daemonHigher230 = false
 
 	/**
 	 * @var {ModalInstance} instances Names of websocket messaging and service instances
@@ -142,20 +155,7 @@ export default class WebsocketInterfaceForm extends Vue {
 	/**
 	 * @constant {Array<IOption>} tlsModeOptions Array of CoreUI select options
 	 */
-	private tlsModeOptions: Array<IOption> = [
-		{
-			value: 'intermediate',
-			label: this.$t('config.websocket.form.tlsModes.intermediate').toString()
-		},
-		{
-			value: 'modern',
-			label: this.$t('config.websocket.form.tlsModes.modern').toString()
-		},
-		{
-			value: 'old',
-			label: this.$t('config.websocket.form.tlsModes.old').toString()
-		}
-	]
+	private tlsModeOptions: Array<IOption> = []
 
 	/**
 	 * @property {string} instance WebSocket interface instance name
@@ -163,26 +163,11 @@ export default class WebsocketInterfaceForm extends Vue {
 	@Prop({required: false, default: ''}) instance!: string
 
 	/**
-	 * Computes whether version of IQRF Gateway Daemon is high enough to support new properties
-	 * @returns {boolean} true if version >= 2.3.0, false otherwise
-	 */
-	get versionNew(): boolean {
-		const daemonVersion = this.$store.getters.daemonVersion;
-		if (daemonVersion === '') {
-			return false;
-		}
-		if (compareVersions.compare(daemonVersion, '2.3.0', '>=')) {
-			return true;
-		}
-		return false;
-	}
-
-	/**
 	 * Computes page title depending on the action (add, edit)
 	 * @returns {string} Page title
 	 */
 	get pageTitle(): string {
-		return this.$route.path === '/config/websocket/add' ?
+		return this.$route.path === '/config/daemon/websocket/add' ?
 			this.$t('config.websocket.interface.add').toString() : this.$t('config.websocket.interface.edit').toString();
 	}
 	
@@ -191,7 +176,7 @@ export default class WebsocketInterfaceForm extends Vue {
 	 * @returns {string} Button text
 	 */
 	get submitButton(): string {
-		return this.$route.path === '/config/websocket/add' ?
+		return this.$route.path === '/config/daemon/websocket/add' ?
 			this.$t('forms.add').toString() : this.$t('forms.save').toString();
 	}
 
@@ -201,6 +186,30 @@ export default class WebsocketInterfaceForm extends Vue {
 	created(): void {
 		extend('integer', integer);
 		extend('required', required);
+	}
+
+	/**
+	 * Vue lifecycle hook mounted
+	 */
+	mounted(): void {
+		if (versionHigherThan('2.3.0')) {
+			this.daemonHigher230 = true;
+			this.tlsModeOptions = [
+				{
+					value: 'intermediate',
+					label: this.$t('config.websocket.form.tlsModes.intermediate').toString()
+				},
+				{
+					value: 'modern',
+					label: this.$t('config.websocket.form.tlsModes.modern').toString()
+				},
+				{
+					value: 'old',
+					label: this.$t('config.websocket.form.tlsModes.old').toString()
+				}
+			];
+		}
+
 		if (this.instance !== '') {
 			this.getConfig();
 		}
@@ -223,7 +232,7 @@ export default class WebsocketInterfaceForm extends Vue {
 					});
 			})
 			.catch((error: AxiosError) => {
-				this.$router.push('/config/websocket/');
+				this.$router.push('/config/daemon/messagings/ws');
 				FormErrorHandler.configError(error);
 			});
 	}
@@ -232,7 +241,7 @@ export default class WebsocketInterfaceForm extends Vue {
 	 * Saves new or updates existing configuration of WebSocket messaging and service component instances
 	 */
 	private saveConfig(): void {
-		if (!this.versionNew) {
+		if (!this.daemonHigher230) {
 			delete this.service.tlsEnabled;
 			delete this.service.tlsMode;
 			delete this.service.certificate;
@@ -272,7 +281,7 @@ export default class WebsocketInterfaceForm extends Vue {
 	 */
 	private successfulSave(): void {
 		this.$store.commit('spinner/HIDE');
-		if (this.$route.path === '/config/websocket/add') {
+		if (this.$route.path === '/config/daemon/websocket/add') {
 			this.$toast.success(
 				this.$t('config.websocket.messages.add.success', {instance: this.messaging.instance})
 					.toString()
@@ -283,7 +292,7 @@ export default class WebsocketInterfaceForm extends Vue {
 					.toString()
 			);
 		}
-		this.$router.push('/config/websocket/');
+		this.$router.push('/config/daemon/messagings/ws');
 	}
 }
 </script>

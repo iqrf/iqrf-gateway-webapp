@@ -1,6 +1,5 @@
 <template>
 	<div>
-		<h1>{{ $t('config.websocket.title') }}</h1>
 		<div v-if='powerUser'>
 			<WebsocketMessagingList />
 			<WebsocketServiceList />

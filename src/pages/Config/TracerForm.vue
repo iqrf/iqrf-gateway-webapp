@@ -1,168 +1,166 @@
 <template>
-	<div>
-		<h1 v-if='$route.path === "/config/tracer/add"'>
-			{{ $t('config.tracer.add') }}
-		</h1>
-		<h1 v-else>
-			{{ $t('config.tracer.edit') }}
-		</h1>
-		<CCard>
-			<CCardBody>
-				<ValidationObserver v-slot='{ invalid }'>
-					<CForm @submit.prevent='saveInstance'>
-						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
-							rules='required'
-							:custom-messages='{required: "config.tracer.form.messages.instance"}'
-						>
-							<CInput
-								v-model='componentInstance'
-								:label='$t("config.tracer.form.instance")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
-							/>
-						</ValidationProvider>
+	<CCard>
+		<CCardHeader>
+			<h3 v-if='$route.path === "/config/tracer/add"'>
+				{{ $t('config.tracer.add') }}
+			</h3>
+			<h3 v-else>
+				{{ $t('config.tracer.edit') }}
+			</h3>
+		</CCardHeader>
+		<CCardBody>
+			<ValidationObserver v-slot='{ invalid }'>
+				<CForm @submit.prevent='saveInstance'>
+					<ValidationProvider
+						v-slot='{ errors, touched, valid }'
+						rules='required'
+						:custom-messages='{required: "config.tracer.form.messages.instance"}'
+					>
 						<CInput
-							v-model='path'
-							:label='$t("config.tracer.form.path")'
+							v-model='componentInstance'
+							:label='$t("config.tracer.form.instance")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
 						/>
+					</ValidationProvider>
+					<CInput
+						v-model='path'
+						:label='$t("config.tracer.form.path")'
+					/>
+					<ValidationProvider
+						v-slot='{ errors, touched, valid }'
+						rules='required'
+						:custom-messages='{required: "config.tracer.form.messages.filename"}'
+					>
+						<CInput
+							v-model='filename'
+							:label='$t("config.tracer.form.filename")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
+						/>
+					</ValidationProvider>
+					<ValidationProvider
+						v-slot='{ errors, touched, valid }'
+						rules='integer|required|min:1'
+						:custom-messages='{
+							required: "config.tracer.form.messages.maxSizeMb",
+							min: "config.tracer.form.messages.maxSizeMb",
+							integer: "forms.messages.integer"
+						}'
+					>
+						<CInput
+							v-model.number='maxSize'
+							type='number'
+							:label='$t("config.tracer.form.maxSize")'
+							:is-valid='touched ? valid : null'
+							:invalid-feedback='$t(errors[0])'
+						/>
+					</ValidationProvider>
+					<div v-if='daemonHigher230'>
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
-							rules='required'
-							:custom-messages='{required: "config.tracer.form.messages.filename"}'
-						>
-							<CInput
-								v-model='filename'
-								:label='$t("config.tracer.form.filename")'
-								:is-valid='touched ? valid : null'
-								:invalid-feedback='$t(errors[0])'
-							/>
-						</ValidationProvider>
-						<ValidationProvider
-							v-slot='{ errors, touched, valid }'
-							rules='integer|required|min:1'
+							rules='integer|min:0'
 							:custom-messages='{
-								required: "config.tracer.form.messages.maxSizeMb",
-								min: "config.tracer.form.messages.maxSizeMb",
-								integer: "forms.messages.integer"
+								integer: "forms.messages.integer",
+								min: "config.tracer.form.messages.maxAgeMinutes"
 							}'
 						>
 							<CInput
-								v-model.number='maxSize'
+								v-model.number='maxAgeMinutes'
 								type='number'
-								:label='$t("config.tracer.form.maxSize")'
+								min='0'
+								:label='$t("config.tracer.form.maxAgeMinutes") + " *"'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
 						</ValidationProvider>
-						<div v-if='versionNew'>
-							<ValidationProvider
-								v-if='versionNew'
-								v-slot='{ errors, touched, valid }'
-								rules='integer|min:0'
-								:custom-messages='{
-									integer: "forms.messages.integer",
-									min: "config.tracer.form.messages.maxAgeMinutes"
-								}'
-							>
-								<CInput
-									v-model.number='maxAgeMinutes'
-									type='number'
-									min='0'
-									:label='$t("config.tracer.form.maxAgeMinutes") + " *"'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
-								/>
-							</ValidationProvider>
-							<ValidationProvider
-								
-								v-slot='{ errors, touched, valid }'
-								rules='integer|min:0'
-								:custom-messages='{
-									integer: "forms.messages.integer",
-									min: "config.tracer.form.messages.maxNumber"
-								}'
-							>
-								<CInput
-									v-model.number='maxNumber'
-									type='number'
-									min='0'
-									:label='$t("config.tracer.form.maxNumber") + " *"'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
-								/>
-							</ValidationProvider>
-							<i>* {{ $t('config.tracer.form.messages.zeroValues') }}</i>
-						</div><br v-if='versionNew'>
-						<CInputCheckbox
-							:checked.sync='timestampFiles'
-							:label='$t("config.tracer.form.timestampFiles")'
-						/>
-						<h4>{{ $t("config.tracer.form.verbosityLevels.title") }}</h4>
-						<div
-							v-for='(level, i) of VerbosityLevels'
-							:key='i'
-							class='form-group'
+						<ValidationProvider
+							v-slot='{ errors, touched, valid }'
+							rules='integer|min:0'
+							:custom-messages='{
+								integer: "forms.messages.integer",
+								min: "config.tracer.form.messages.maxNumber"
+							}'
 						>
-							<ValidationProvider
-								v-slot='{ errors, touched, valid }'
-								rules='integer|required'
-								:custom-messages='{
-									integer: "forms.messages.integer",
-									required: "config.tracer.form.messages.verbosityLevels.channel"
-								}'
-							>
-								<CInput
-									v-model.number='level.channel'
-									type='number'
-									:label='$t("config.tracer.form.channel")'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
-								/>
-							</ValidationProvider>
-							<ValidationProvider
-								v-slot='{ errors, touched, valid }'
-								rules='required'
-								:custom-messages='{required: "config.tracer.form.messages.verbosityLevels.level"}'
-							>
-								<CSelect
-									:value.sync='level.level'
-									:label='$t("config.tracer.form.level")'
-									:placeholder='$t("config.tracer.form.messages.verbosityLevels.level")'
-									:options='selectOptions'
-									:is-valid='touched ? valid : null'
-									:invalid-feedback='$t(errors[0])'
-								/>
-							</ValidationProvider>
-							<CButton
-								v-if='VerbosityLevels.length > 1'
-								color='danger'
-								@click='removeLevel(i)'
-							>
-								{{ $t('config.tracer.form.verbosityLevels.remove') }}
-							</CButton>
-							<CButton
-								v-if='i === (VerbosityLevels.length - 1)'
-								color='success'
-								:disabled='level.channel === undefined || level.level === undefined'
-								@click='addLevel'
-							>
-								{{ $t('config.tracer.form.verbosityLevels.add') }}
-							</CButton>
-						</div>
-						<CButton type='submit' color='primary' :disabled='invalid'>
-							{{ $t('forms.save') }}
+							<CInput
+								v-model.number='maxNumber'
+								type='number'
+								min='0'
+								:label='$t("config.tracer.form.maxNumber") + " *"'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<i>* {{ $t('config.tracer.form.messages.zeroValues') }}</i>
+					</div><br v-if='daemonHigher230'>
+					<CInputCheckbox
+						:checked.sync='timestampFiles'
+						:label='$t("config.tracer.form.timestampFiles")'
+					/>
+					<h4>{{ $t("config.tracer.form.verbosityLevels.title") }}</h4>
+					<div
+						v-for='(level, i) of VerbosityLevels'
+						:key='i'
+						class='form-group'
+					>
+						<ValidationProvider
+							v-slot='{ errors, touched, valid }'
+							rules='integer|required'
+							:custom-messages='{
+								integer: "forms.messages.integer",
+								required: "config.tracer.form.messages.verbosityLevels.channel"
+							}'
+						>
+							<CInput
+								v-model.number='level.channel'
+								type='number'
+								:label='$t("config.tracer.form.channel")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{ errors, touched, valid }'
+							rules='required'
+							:custom-messages='{required: "config.tracer.form.messages.verbosityLevels.level"}'
+						>
+							<CSelect
+								:value.sync='level.level'
+								:label='$t("config.tracer.form.level")'
+								:placeholder='$t("config.tracer.form.messages.verbosityLevels.level")'
+								:options='selectOptions'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<CButton
+							v-if='VerbosityLevels.length > 1'
+							color='danger'
+							@click='removeLevel(i)'
+						>
+							{{ $t('config.tracer.form.verbosityLevels.remove') }}
 						</CButton>
-					</CForm>
-				</ValidationObserver>
-			</CCardBody>
-		</CCard>
-	</div>
+						<CButton
+							v-if='i === (VerbosityLevels.length - 1)'
+							color='success'
+							:disabled='level.channel === undefined || level.level === undefined'
+							@click='addLevel'
+						>
+							{{ $t('config.tracer.form.verbosityLevels.add') }}
+						</CButton>
+					</div>
+					<CButton type='submit' color='primary' :disabled='invalid'>
+						{{ $t('forms.save') }}
+					</CButton>
+				</CForm>
+			</ValidationObserver>
+		</CCardBody>
+	</CCard>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
@@ -171,13 +169,14 @@ import {MetaInfo} from 'vue-meta';
 import {IOption} from '../../interfaces/coreui';
 import {AxiosError, AxiosResponse} from 'axios';
 import {ITracerFile, IVerbosityLevel} from '../../interfaces/tracerFile';
-import compareVersions from 'compare-versions';
+import {versionHigherThan} from '../../helpers/versionChecker';
 
 @Component({
 	components: {
 		CButton,
 		CCard,
 		CCardBody,
+		CCardHeader,
 		CForm,
 		CInput,
 		CInputCheckbox,
@@ -212,9 +211,9 @@ export default class TracerForm extends Vue {
 	private componentName = 'shape::TraceFileService'
 
 	/**
-	 * @var {string} daemonVersion IQRF Gateway Daemon version
+	 * @var {boolean} daemonHigher230 Indicates whether Daemon version is 2.3.0 or higher
 	 */
-	private daemonVersion = ''
+	private daemonHigher230 = false
 
 	/**
 	 * @var {string} filename Name of file used by this Logging service component instance
@@ -239,12 +238,17 @@ export default class TracerForm extends Vue {
 	/**
 	 * @var {string} msgId Daemon api message id
 	 */
-	private msgId = '';
+	private msgId = ''
 
 	/**
 	 * @var {string} path Path to directory containing Logging service files
 	 */
 	private path = ''
+
+	/**
+	 * @var {boolean} powerUser Indicates whether user role is power user
+	 */
+	private powerUser = false
 
 	/**
 	 * @var {string} timestampFiles Should Logging service files be timestamped?
@@ -272,25 +276,11 @@ export default class TracerForm extends Vue {
 	@Prop({required: false, default: ''}) instance!: string
 
 	/**
-	 * Computes whether version of IQRF Gateway Daemon is high enough to support new properties
-	 * @returns {boolean} true if version >= 2.3.0, false otherwise
-	 */
-	get versionNew(): boolean {
-		if (this.daemonVersion === '') {
-			return false;
-		}
-		if (compareVersions.compare(this.daemonVersion, '2.3.0', '>=')) {
-			return true;
-		}
-		return false;
-	}
-
-	/**
 	 * Computes page title depending on the action (add, edit)
 	 * @returns {string} Page title
 	 */
 	get pageTitle(): string {
-		return this.$route.path === '/config/tracer/add' ?
+		return this.$route.path === '/config/daemon/tracer/add' ?
 			this.$t('config.tracer.add').toString() : this.$t('config.tracer.edit').toString();
 	}
 
@@ -299,7 +289,7 @@ export default class TracerForm extends Vue {
 	 * @returns {string} Button text
 	 */
 	get submitButton(): string {
-		return this.$route.path === '/config/tracer/add' ?
+		return this.$route.path === '/config/daemon/tracer/add' ?
 			this.$t('forms.add').toString() : this.$t('forms.edit').toString();
 	}
 
@@ -310,6 +300,21 @@ export default class TracerForm extends Vue {
 		extend('integer', integer);
 		extend('min', min_value);
 		extend('required', required);
+	}
+
+	/**
+	 * Vue lifecycle hook mounted
+	 */
+	mounted(): void {
+		if (versionHigherThan('2.3.0')) {
+			this.daemonHigher230 = true;
+		}
+		
+		if (this.$store.getters['user/role'] === 'power') {
+			this.powerUser = true;
+		}
+
+		this.getInstance();
 	}
 
 	/**
@@ -338,7 +343,7 @@ export default class TracerForm extends Vue {
 				this.parseConfiguration(response);
 			})
 			.catch((error: AxiosError) => {
-				this.$router.push('/config/tracer/');
+				this.$router.push('/config/daemon/misc/');
 				FormErrorHandler.configError(error);
 			});
 	}
@@ -354,7 +359,7 @@ export default class TracerForm extends Vue {
 		this.filename = configuration.filename;
 		this.timestampFiles = configuration.timestampFiles;
 		this.VerbosityLevels = configuration.VerbosityLevels;
-		if (this.versionNew) { // Daemon v2.3.0 supports new properties
+		if (this.daemonHigher230) { // Daemon v2.3.0 supports new properties
 			this.maxSize = configuration.maxSize ? configuration.maxSize : configuration.maxSizeMB;
 			if (configuration.maxAgeMinutes) { // optional property
 				this.maxAgeMinutes = configuration.maxAgeMinutes;
@@ -380,7 +385,7 @@ export default class TracerForm extends Vue {
 			timestampFiles: this.timestampFiles,
 			VerbosityLevels: this.VerbosityLevels
 		};
-		if (this.versionNew) { // Daemon version 2.3.0 or higher
+		if (this.daemonHigher230) { // Daemon version 2.3.0 or higher
 			Object.assign(configuration, {maxSizeMB: this.maxSize}); // TODO: to be changed for version 2.4.0 as maxSize is currently not supported by Shape
 			if (this.maxAgeMinutes > 0) { // > 0, not disabled (optional)
 				Object.assign(configuration, {maxAgeMinutes: this.maxAgeMinutes});
@@ -415,7 +420,7 @@ export default class TracerForm extends Vue {
 	 */
 	private successfulSave(): void {
 		this.$store.commit('spinner/HIDE');
-		if (this.$route.path === '/config/tracer/add') {
+		if (this.$route.path === '/config/daemon/tracer/add') {
 			this.$toast.success(
 				this.$t('config.tracer.messages.addSuccess', {instance: this.componentInstance})
 					.toString()
@@ -426,7 +431,7 @@ export default class TracerForm extends Vue {
 					.toString()
 			);
 		}
-		this.$router.push('/config/tracer/');
+		this.$router.push('/config/daemon/misc/' + (this.powerUser ? 5 : 4));
 	}
 
 }

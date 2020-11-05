@@ -2,11 +2,14 @@
 	<div>
 		<CCard>
 			<CCardHeader>
+				<h3 class='float-left'>
+					{{ $t('config.websocket.interface.title') }}
+				</h3>
 				<CButton
 					color='success'
 					size='sm'
 					class='float-right'
-					to='/config/websocket/add'
+					to='/config/daemon/websocket/add'
 				>
 					<CIcon :content='icons.add' size='sm' />
 					{{ $t('table.actions.add') }}
@@ -61,13 +64,13 @@
 						<td>
 							<CDropdown
 								:color='item.service.tlsEnabled ? "success": "danger"'
-								:toggler-text='$t("table.enabled." + item.service.tlsEnabled)'
+								:toggler-text='$t("table.enabled." + (item.service.tlsEnabled !== undefined ? item.service.tlsEnabled : false))'
 								size='sm'
 							>
-								<CDropdownItem @click='changeTLS(item.service, true)'>
+								<CDropdownItem @click='changeTls(item.service, true)'>
 									{{ $t('table.enabled.true') }}
 								</CDropdownItem>
-								<CDropdownItem @click='changeTLS(item.service, false)'>
+								<CDropdownItem @click='changeTls(item.service, false)'>
 									{{ $t('table.enabled.false') }}
 								</CDropdownItem>
 							</CDropdown>
@@ -78,7 +81,7 @@
 							<CButton
 								color='info'
 								size='sm'
-								:to='"/config/websocket/edit/" + item.instanceMessaging'
+								:to='"/config/daemon/websocket/edit/" + item.instanceMessaging'
 							>
 								<CIcon :content='icons.edit' size='sm' />
 								{{ $t('table.actions.edit') }}
@@ -134,7 +137,7 @@ import { AxiosError, AxiosResponse } from 'axios';
 import {IField} from '../../interfaces/coreui';
 import {WsInterface, ModalInstance, IWsService, WsMessaging} from '../../interfaces/messagingInterfaces';
 import {Dictionary} from 'vue-router/types/router';
-import compareVersions from 'compare-versions';
+import {versionHigherThan} from '../../helpers/versionChecker';
 
 @Component({
 	components: {
@@ -161,6 +164,11 @@ export default class WebsocketInterfaceList extends Vue {
 		messaging: 'iqrf::WebsocketMessaging',
 		service: 'shape::WebsocketCppService',
 	}
+
+	/**
+	 * @var {boolean} daemonHigher230 Indicates whether Daemon version is 2.3.0 or higher
+	 */
+	private daemonHigher230 = false
 
 	/**
 	 * @var {ModalInstance|null} deleteInstance Websocket interface instance used in remove modal
@@ -212,31 +220,17 @@ export default class WebsocketInterfaceList extends Vue {
 	private instances: Array<WsInterface> = [];
 
 	/**
-	 * Computes whether version of IQRF Gateway Daemon is high enough to support new properties
-	 * @returns {boolean} true if version >= 2.3.0, false otherwise
+	 * Vue lifecycle hook mounted
 	 */
-	get versionNew(): boolean {
-		const daemonVersion = this.$store.getters.daemonVersion;
-		if (daemonVersion === '') {
-			return false;
-		}
-		if (compareVersions.compare(daemonVersion, '2.3.0', '>=')) {
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * Vue lifecycle hook created
-	 */
-	created(): void {
-		if (this.versionNew) {
+	mounted(): void {
+		if (versionHigherThan('2.3.0')) {
 			this.fields.splice(4, 0, {
 				key: 'tlsEnabled',
 				label: this.$t('config.websocket.form.tlsEnabled'),
 				filter: false
 			});
 		}
+		
 		this.$store.commit('spinner/SHOW');
 		this.getConfig();
 	}
@@ -253,6 +247,7 @@ export default class WebsocketInterfaceList extends Vue {
 			.then((responses: Array<AxiosResponse>) => {
 				const messagings = responses[0].data.instances;
 				const services = responses[1].data.instances;
+				let instances: Array<WsInterface> = [];
 				for (const messaging of messagings) {
 					if (messaging.RequiredInterfaces === undefined ||
 							messaging.RequiredInterfaces === [] ||
@@ -265,7 +260,7 @@ export default class WebsocketInterfaceList extends Vue {
 						if (service.instance !== serviceInstance) {
 							continue;
 						}
-						this.instances.push({
+						instances.push({
 							messaging: messaging,
 							service: service,
 							instanceMessaging: messaging.instance,
@@ -276,6 +271,7 @@ export default class WebsocketInterfaceList extends Vue {
 						});
 					}
 				}
+				this.instances = instances;
 				this.$store.commit('spinner/HIDE');
 			})
 			.catch((error: AxiosError) => FormErrorHandler.configError(error));
@@ -298,7 +294,7 @@ export default class WebsocketInterfaceList extends Vue {
 	 * @param {IWsService} service Websocket service instance
 	 * @param {boolean} tlsEnabled New setting
 	 */
-	private changeTLS(service: IWsService, tlsEnabled: boolean): void {
+	private changeTls(service: IWsService, tlsEnabled: boolean): void {
 		if (service.tlsEnabled === tlsEnabled) {
 			return;
 		}
