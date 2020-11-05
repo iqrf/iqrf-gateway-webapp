@@ -98,11 +98,11 @@
 										:min='rfChannelRules.min'
 									/>
 								</ValidationProvider>
-								<CAlert v-if='config.stdAndLpNetwork === false' color='warning'>
+								<CAlert v-if='address === 0 && config.stdAndLpNetwork === false' color='warning'>
 									{{ $t('iqrfnet.trConfiguration.form.messages.breakInteroperability') }}
 								</CAlert>
 								<CInputCheckbox
-									v-if='config.stdAndLpNetwork !== undefined'
+									v-if='address === 0 && config.stdAndLpNetwork !== undefined'
 									:checked.sync='config.stdAndLpNetwork'
 									:label='$t("iqrfnet.trConfiguration.form.stdAndLpNetwork")'
 								/>
