@@ -1,25 +1,22 @@
 <template>
-	<CCard>
-		<CCardHeader>
-			<h3>{{ $t('config.daemon.messagings.title') }}</h3>
-		</CCardHeader>
-		<CCardBody>
+	<div>
+		<CCard body-wrapper>
 			<CSelect
 				:value.sync='activeMessaging'
 				:options='messagingOptions'
 				:label='$t("config.daemon.form.messaging")'
 			/>
-			<MqttMessagingTable v-if='activeMessaging === "mqtt"' />
-			<WebsocketList v-if='activeMessaging === "ws"' />
-			<MqMessagingTable v-if='activeMessaging === "mq"' />
-			<UdpMessagingTable v-if='activeMessaging === "udp"' />
-		</CCardBody>
-	</CCard>
+		</CCard>
+		<MqttMessagingTable v-if='activeMessaging === "mqtt"' />
+		<WebsocketList v-if='activeMessaging === "ws"' />
+		<MqMessagingTable v-if='activeMessaging === "mq"' />
+		<UdpMessagingTable v-if='activeMessaging === "udp"' />
+	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {CCard, CCardBody, CCardHeader, CSelect} from '@coreui/vue/src';
+import {CCard, CSelect} from '@coreui/vue/src';
 import MqttMessagingTable from '../../pages/Config/MqttMessagingTable.vue';
 import WebsocketList from '../../pages/Config/WebsocketList.vue';
 import MqMessagingTable from '../../pages/Config/MqMessagingTable.vue';
@@ -29,8 +26,6 @@ import {IOption} from '../../interfaces/coreui';
 @Component({
 	components: {
 		CCard,
-		CCardBody,
-		CCardHeader,
 		CSelect,
 		MqttMessagingTable,
 		WebsocketList,

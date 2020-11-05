@@ -52,14 +52,9 @@ const TranslatorConfig = () => import(/* webpackChunkName: "config" */ '@/pages/
 const ControllerConfig = () => import(/* webpackChunkName: "config" */ '@/pages/Config/ControllerConfig.vue');
 const MenderConfig = () => import(/* webpackChunkName: "config" */ '@/pages/Config/MenderConfig.vue');
 const MonitorForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/MonitorForm.vue');
-const MonitorList = () => import(/* webpackChunkName: "config" */ '@/pages/Config/MonitorList.vue');
 const MqMessagingForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/MqMessagingForm.vue');
-const MqMessagingTable = () => import(/* webpackChunkName: "config" */ '@/pages/Config/MqMessagingTable.vue');
 const MqttMessagingForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/MqttMessagingForm.vue');
-const MqttMessagingTable = () => import(/* webpackChunkName: "config" */ '@/pages/Config/MqttMessagingTable.vue');
 const UdpMessagingForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/UdpMessagingForm.vue');
-const UdpMessagingTable = () => import(/* webpackChunkName: "config" */ '@/pages/Config/UdpMessagingTable.vue');
-const TracerList = () => import(/* webpackChunkName: "config" */ '@/pages/Config/TracerList.vue');
 const TracerForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/TracerForm.vue');
 const MainConfiguration = () => import(/* webpackChunkName: "config" */ '@/pages/Config/MainConfiguration.vue');
 const ComponentList = () => import(/* webpackChunkName: "config" */ '@/pages/Config/ComponentList.vue');
@@ -67,7 +62,6 @@ const ComponentForm = () => import(/* webpackChunkName: "config" */ '@/pages/Con
 const WebsocketInterfaceForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/WebsocketInterfaceForm.vue');
 const WebsocketMessagingForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/WebsocketMessagingForm.vue');
 const WebsocketServiceForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/WebsocketServiceForm.vue');
-const WebsocketList = () => import(/* webpackChunkName: "config" */ '@/pages/Config/WebsocketList.vue');
 const SchedulerList = () => import(/* webpackChunkName: "config" */ '@/pages/Config/SchedulerList.vue');
 const SchedulerForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/SchedulerForm.vue');
 
@@ -247,6 +241,17 @@ const routes: Array<RouteConfig> = [
 								component: MiscConfiguration,
 							},
 							{
+								component: MiscConfiguration,
+								path: 'misc/:tabIndex',
+								props: (route) => {
+									const tabIndex = Number.parseInt(route.params.tabIndex, 10);
+									if (Number.isNaN(tabIndex)) {
+										return 0;
+									}
+									return {tabIndex};
+								}
+							},
+							{
 								path: 'monitor',
 								component: {
 									render(c) {
@@ -254,10 +259,6 @@ const routes: Array<RouteConfig> = [
 									}
 								},
 								children: [
-									{
-										path: '',
-										component: MonitorList,
-									},
 									{
 										component: MonitorForm,
 										path: 'add',
@@ -278,10 +279,6 @@ const routes: Array<RouteConfig> = [
 								},
 								children: [
 									{
-										path: '',
-										component: MqMessagingTable,
-									},
-									{
 										component: MqMessagingForm,
 										path: 'add',
 									},
@@ -300,10 +297,6 @@ const routes: Array<RouteConfig> = [
 									}
 								},
 								children: [
-									{
-										path: '',
-										component: MqttMessagingTable,
-									},
 									{
 										component: MqttMessagingForm,
 										path: 'add',
@@ -324,10 +317,6 @@ const routes: Array<RouteConfig> = [
 								},
 								children: [
 									{
-										path: '',
-										component: UdpMessagingTable,
-									},
-									{
 										component: UdpMessagingForm,
 										path: 'add',
 									},
@@ -346,10 +335,6 @@ const routes: Array<RouteConfig> = [
 									}
 								},
 								children: [
-									{
-										path: '',
-										component: WebsocketList,
-									},
 									{
 										component: WebsocketInterfaceForm,
 										path: 'add',
@@ -387,10 +372,6 @@ const routes: Array<RouteConfig> = [
 									},
 								},
 								children: [
-									{
-										path: '',
-										component: TracerList,
-									},
 									{
 										component: TracerForm,
 										path: 'add',

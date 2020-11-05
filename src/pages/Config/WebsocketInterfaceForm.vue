@@ -47,7 +47,7 @@
 						:checked.sync='service.acceptOnlyLocalhost'
 						:label='$t("config.websocket.form.acceptOnlyLocalhost")'
 					/>
-					<div v-if='versionNew'>
+					<div v-if='daemonHigher230'>
 						<CInputCheckbox
 							:checked.sync='service.tlsEnabled'
 							:label='$t("config.websocket.form.tlsEnabled")'
@@ -60,7 +60,7 @@
 							:disabled='!service.tlsEnabled'
 						/>
 						<span v-if='service.tlsMode !== "" && service.tlsMode !== undefined'>{{ $t('config.websocket.form.tlsModes.descriptions.' + service.tlsMode) }}</span>
-					</div><br v-if='versionNew'>
+					</div><br v-if='daemonHigher230'>
 					<CButton type='submit' color='primary' :disabled='invalid'>
 						{{ submitButton }}
 					</CButton>
@@ -81,7 +81,7 @@ import {WsMessaging, ModalInstance, IWsService} from '../../interfaces/messaging
 import {MetaInfo} from 'vue-meta';
 import {AxiosError, AxiosResponse} from 'axios';
 import {IOption} from '../../interfaces/coreui';
-import compareVersions from 'compare-versions';
+import {versionHigherThan} from '../../helpers/versionChecker';
 
 @Component({
 	components: {
@@ -114,6 +114,11 @@ export default class WebsocketInterfaceForm extends Vue {
 		messaging: 'iqrf::WebsocketMessaging',
 		service: 'shape::WebsocketCppService',
 	}
+
+	/**
+	 * @var {boolean} daemonHigher230 Indicates whether Daemon version is 2.3.0 or higher
+	 */
+	private daemonHigher230 = false
 
 	/**
 	 * @var {ModalInstance} instances Names of websocket messaging and service instances
@@ -150,40 +155,12 @@ export default class WebsocketInterfaceForm extends Vue {
 	/**
 	 * @constant {Array<IOption>} tlsModeOptions Array of CoreUI select options
 	 */
-	private tlsModeOptions: Array<IOption> = [
-		{
-			value: 'intermediate',
-			label: this.$t('config.websocket.form.tlsModes.intermediate').toString()
-		},
-		{
-			value: 'modern',
-			label: this.$t('config.websocket.form.tlsModes.modern').toString()
-		},
-		{
-			value: 'old',
-			label: this.$t('config.websocket.form.tlsModes.old').toString()
-		}
-	]
+	private tlsModeOptions: Array<IOption> = []
 
 	/**
 	 * @property {string} instance WebSocket interface instance name
 	 */
 	@Prop({required: false, default: ''}) instance!: string
-
-	/**
-	 * Computes whether version of IQRF Gateway Daemon is high enough to support new properties
-	 * @returns {boolean} true if version >= 2.3.0, false otherwise
-	 */
-	get versionNew(): boolean {
-		const daemonVersion = this.$store.getters.daemonVersion;
-		if (daemonVersion === '') {
-			return false;
-		}
-		if (compareVersions.compare(daemonVersion, '2.3.0', '>=')) {
-			return true;
-		}
-		return false;
-	}
 
 	/**
 	 * Computes page title depending on the action (add, edit)
@@ -215,6 +192,24 @@ export default class WebsocketInterfaceForm extends Vue {
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
+		if (versionHigherThan('2.3.0')) {
+			this.daemonHigher230 = true;
+			this.tlsModeOptions = [
+				{
+					value: 'intermediate',
+					label: this.$t('config.websocket.form.tlsModes.intermediate').toString()
+				},
+				{
+					value: 'modern',
+					label: this.$t('config.websocket.form.tlsModes.modern').toString()
+				},
+				{
+					value: 'old',
+					label: this.$t('config.websocket.form.tlsModes.old').toString()
+				}
+			];
+		}
+
 		if (this.instance !== '') {
 			this.getConfig();
 		}
@@ -246,7 +241,7 @@ export default class WebsocketInterfaceForm extends Vue {
 	 * Saves new or updates existing configuration of WebSocket messaging and service component instances
 	 */
 	private saveConfig(): void {
-		if (!this.versionNew) {
+		if (!this.daemonHigher230) {
 			delete this.service.tlsEnabled;
 			delete this.service.tlsMode;
 			delete this.service.certificate;

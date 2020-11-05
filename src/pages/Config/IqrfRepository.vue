@@ -46,7 +46,7 @@
 						/>
 					</ValidationProvider>
 					<CInputCheckbox
-						v-if='versionNew'
+						v-if='daemonHigher230'
 						:checked.sync='downloadIfRepoCacheEmpty'
 						:label='$t("config.iqrfRepository.form.downloadIfEmpty")'
 					/>
@@ -67,8 +67,8 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {integer, min_value, required} from 'vee-validate/dist/rules';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import DaemonConfigurationService	from '../../services/DaemonConfigurationService';
-import compareVersions from 'compare-versions';
 import {IIqrfRepository} from '../../interfaces/iqrfRepository';
+import {versionHigherThan} from '../../helpers/versionChecker';
 
 @Component({
 	components: {
@@ -109,6 +109,11 @@ export default class IqrfRepository extends Vue {
 	private componentName = 'iqrf::JsCache'
 
 	/**
+	 * @var {boolean} daemonHigher230 Indicates whether Daemon version is 2.3.0 or higher
+	 */
+	private daemonHigher230 = false
+
+	/**
 	 * @var {boolean} downloadIfRepoCacheEmpty Download if repository cache is empty?
 	 */
 	private downloadIfRepoCacheEmpty = true
@@ -124,21 +129,6 @@ export default class IqrfRepository extends Vue {
 	private urlRepo = ''
 
 	/**
-	 * Computes whether version of IQRF Gateway Daemon is high enough to support new properties
-	 * @returns {boolean} true if version >= 2.3.0, false otherwise
-	 */
-	get versionNew(): boolean {
-		const daemonVersion = this.$store.getters.daemonVersion;
-		if (daemonVersion === '') {
-			return false;
-		}
-		if (compareVersions.compare(daemonVersion, '2.3.0', '>=')) {
-			return true;
-		}
-		return false;
-	}
-
-	/**
 	 * Vue lifecycle hook created
 	 */
 	created(): void {
@@ -151,6 +141,9 @@ export default class IqrfRepository extends Vue {
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
+		if (versionHigherThan('2.3.0')) {
+			this.daemonHigher230 = true;
+		}
 		this.getConfig();
 	}
 
@@ -178,7 +171,7 @@ export default class IqrfRepository extends Vue {
 		this.instance = this.componentInstance = response.instance;
 		this.urlRepo = response.urlRepo;
 		this.checkPeriodInMinutes = response.checkPeriodInMinutes;
-		if (this.versionNew) {
+		if (this.daemonHigher230) {
 			if (response.downloadIfRepoCacheEmpty !== undefined) {
 				this.downloadIfRepoCacheEmpty = response.downloadIfRepoCacheEmpty;
 			}
@@ -195,7 +188,7 @@ export default class IqrfRepository extends Vue {
 			urlRepo: this.urlRepo,
 			checkPeriodInMinutes: this.checkPeriodInMinutes,
 		};
-		if (this.versionNew) {
+		if (this.daemonHigher230) {
 			Object.assign(configuration, {downloadIfRepoCacheEmpty: this.downloadIfRepoCacheEmpty});
 		}
 		return configuration;

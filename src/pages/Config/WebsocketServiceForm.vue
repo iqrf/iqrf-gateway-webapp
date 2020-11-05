@@ -43,7 +43,7 @@
 						:checked.sync='acceptOnlyLocalhost'
 						:label='$t("config.websocket.form.acceptOnlyLocalhost")'
 					/>
-					<div v-if='versionNew'>
+					<div v-if='daemonHigher230'>
 						<CInputCheckbox
 							:checked.sync='tlsEnabled'
 							:label='$t("config.websocket.form.tlsEnabled")'
@@ -84,11 +84,11 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {integer, required} from 'vee-validate/dist/rules';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
-import compareVersions from 'compare-versions';
 import {IWsService} from '../../interfaces/messagingInterfaces';
 import {AxiosError, AxiosResponse } from 'axios';
 import {MetaInfo} from 'vue-meta';
 import {IOption} from '../../interfaces/coreui';
+import {versionHigherThan} from '../../helpers/versionChecker';
 
 @Component({
 	components: {
@@ -140,6 +140,11 @@ export default class WebsocketServiceForm extends Vue {
 	private componentName = 'shape::WebsocketCppService'
 
 	/**
+	 * @var {boolean} daemonHigher230 Indicates whether Daemon version is 2.3.0 or higher
+	 */
+	private daemonHigher230 = false
+
+	/**
 	 * @var {string} privateKey Path to private key for TLS
 	 */
 	private privateKey = ''
@@ -157,20 +162,7 @@ export default class WebsocketServiceForm extends Vue {
 	/**
 	 * @constant {Array<IOption>} tlsModeOptions Array of CoreUI select options
 	 */
-	private tlsModeOptions: Array<IOption> = [
-		{
-			value: 'intermediate',
-			label: this.$t('config.websocket.form.tlsModes.intermediate').toString()
-		},
-		{
-			value: 'modern',
-			label: this.$t('config.websocket.form.tlsModes.modern').toString()
-		},
-		{
-			value: 'old',
-			label: this.$t('config.websocket.form.tlsModes.old').toString()
-		}
-	]
+	private tlsModeOptions: Array<IOption> = []
 
 	/**
 	 * @var {number} WebsocketPort Websocket port
@@ -181,21 +173,6 @@ export default class WebsocketServiceForm extends Vue {
 	 * @property {string} instance WebSocket service component instance name
 	 */
 	@Prop({required: false, default: ''}) instance!: string
-
-	/**
-	 * Computes whether version of IQRF Gateway Daemon is high enough to support new properties
-	 * @returns {boolean} true if version >= 2.3.0, false otherwise
-	 */
-	get versionNew(): boolean {
-		const daemonVersion = this.$store.getters.daemonVersion;
-		if (daemonVersion === '') {
-			return false;
-		}
-		if (compareVersions.compare(daemonVersion, '2.3.0', '>=')) {
-			return true;
-		}
-		return false;
-	}
 
 	/**
 	 * Computes page title depending on the action (add, edit)
@@ -227,6 +204,23 @@ export default class WebsocketServiceForm extends Vue {
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
+		if (versionHigherThan('2.3.0')) {
+			this.daemonHigher230 = true;
+			this.tlsModeOptions = [
+				{
+					value: 'intermediate',
+					label: this.$t('config.websocket.form.tlsModes.intermediate').toString()
+				},
+				{
+					value: 'modern',
+					label: this.$t('config.websocket.form.tlsModes.modern').toString()
+				},
+				{
+					value: 'old',
+					label: this.$t('config.websocket.form.tlsModes.old').toString()
+				}
+			];
+		}
 		if (this.instance) {
 			this.getInstance();
 		}
@@ -257,7 +251,7 @@ export default class WebsocketServiceForm extends Vue {
 		this.instance = this.componentInstance = response.instance;
 		this.WebsocketPort = response.WebsocketPort;
 		this.acceptOnlyLocalhost = response.acceptOnlyLocalhost;
-		if (this.versionNew) {
+		if (this.daemonHigher230) {
 			if (response.tlsEnabled !== undefined) {
 				this.tlsEnabled = response.tlsEnabled;
 			}
@@ -284,7 +278,7 @@ export default class WebsocketServiceForm extends Vue {
 			WebsocketPort: this.WebsocketPort,
 			acceptOnlyLocalhost: this.acceptOnlyLocalhost
 		};
-		if (this.versionNew) {
+		if (this.daemonHigher230) {
 			Object.assign(configuration, {tlsEnabled: this.tlsEnabled, tlsMode: this.tlsMode, certificate: this.certificate, privateKey: this.privateKey});
 		}
 		return configuration;

@@ -27,7 +27,7 @@
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CCard, CCardBody, CCardHeader, CTab, CTabs} from '@coreui/vue/src';
 import JsonRawApi from '../../pages/Config/JsonRawApi.vue';
 import JsonMngMetaDataApi from '../../pages/Config/JsonMngMetaDataApi.vue';
@@ -77,6 +77,8 @@ export default class MiscConfiguration extends Vue {
 	 */
 	private powerUser = false;
 
+	@Prop({required: false, default: 0}) tabIndex!: number
+
 	/**
 	 * Vue lifecycle hook created
 	 */
@@ -84,6 +86,13 @@ export default class MiscConfiguration extends Vue {
 		if (this.$store.getters['user/getRole'] === 'power') {
 			this.powerUser = true;
 		}
+	}
+
+	/**
+	 * Vue lifecycle hook mounted
+	 */
+	mounted(): void {
+		this.activeTab = this.tabIndex;
 	}
 }
 </script>

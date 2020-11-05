@@ -137,7 +137,7 @@ import { AxiosError, AxiosResponse } from 'axios';
 import {IField} from '../../interfaces/coreui';
 import {WsInterface, ModalInstance, IWsService, WsMessaging} from '../../interfaces/messagingInterfaces';
 import {Dictionary} from 'vue-router/types/router';
-import compareVersions from 'compare-versions';
+import {versionHigherThan} from '../../helpers/versionChecker';
 
 @Component({
 	components: {
@@ -164,6 +164,11 @@ export default class WebsocketInterfaceList extends Vue {
 		messaging: 'iqrf::WebsocketMessaging',
 		service: 'shape::WebsocketCppService',
 	}
+
+	/**
+	 * @var {boolean} daemonHigher230 Indicates whether Daemon version is 2.3.0 or higher
+	 */
+	private daemonHigher230 = false
 
 	/**
 	 * @var {ModalInstance|null} deleteInstance Websocket interface instance used in remove modal
@@ -215,31 +220,17 @@ export default class WebsocketInterfaceList extends Vue {
 	private instances: Array<WsInterface> = [];
 
 	/**
-	 * Computes whether version of IQRF Gateway Daemon is high enough to support new properties
-	 * @returns {boolean} true if version >= 2.3.0, false otherwise
-	 */
-	get versionNew(): boolean {
-		const daemonVersion = this.$store.getters.daemonVersion;
-		if (daemonVersion === '') {
-			return false;
-		}
-		if (compareVersions.compare(daemonVersion, '2.3.0', '>=')) {
-			return true;
-		}
-		return false;
-	}
-
-	/**
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
-		if (this.versionNew) {
+		if (versionHigherThan('2.3.0')) {
 			this.fields.splice(4, 0, {
 				key: 'tlsEnabled',
 				label: this.$t('config.websocket.form.tlsEnabled'),
 				filter: false
 			});
 		}
+		
 		this.$store.commit('spinner/SHOW');
 		this.getConfig();
 	}

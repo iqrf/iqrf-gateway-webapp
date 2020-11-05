@@ -231,7 +231,7 @@
 			},
 			"form": {
 				"interface": "Select interface",
-				"messaging": "Select Messaging"
+				"messaging": "Select messaging"
 			}
 		},
 		"interfaceMapping": {

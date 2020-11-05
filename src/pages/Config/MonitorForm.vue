@@ -59,6 +59,20 @@
 						:checked.sync='webSocket.acceptOnlyLocalhost'
 						:label='$t("config.monitor.form.acceptOnlyLocalhost")'
 					/>
+					<div v-if='daemonHigher230'>
+						<CInputCheckbox
+							:checked.sync='webSocket.tlsEnabled'
+							:label='$t("config.websocket.form.tlsEnabled")'
+						/>
+						<CSelect
+							:value.sync='webSocket.tlsMode'
+							:label='$t("config.websocket.form.tlsMode")'
+							:options='tlsModeOptions'
+							:placeholder='$t("config.websocket.form.messages.tlsMode")'
+							:disabled='!webSocket.tlsEnabled'
+						/>
+						<span v-if='webSocket.tlsMode !== ""'>{{ $t('config.websocket.form.tlsModes.descriptions.' + webSocket.tlsMode) }}</span>
+					</div><br v-if='daemonHigher230'>
 					<CButton type='submit' color='primary' :disabled='invalid'>
 						{{ submitButton }}
 					</CButton>
@@ -78,6 +92,8 @@ import {integer, required} from 'vee-validate/dist/rules';
 import { MetaInfo } from 'vue-meta';
 import { RequiredInterface } from '../../interfaces/requiredInterfaces';
 import { AxiosError, AxiosResponse } from 'axios';
+import {versionHigherThan} from '../../helpers/versionChecker';
+import { IOption } from '../../interfaces/coreui';
 
 interface MonitorComponents {
 	monitor: string
@@ -95,6 +111,10 @@ interface MonitorWebSocket {
 	instance: string
 	WebsocketPort: number
 	acceptOnlyLocalhost: boolean
+	tlsEnabled?: boolean
+	tlsMode?: string
+	certificate?: string
+	privateKey?: string
 }
 
 @Component({
@@ -129,6 +149,11 @@ export default class MonitorForm extends Vue {
 	}
 
 	/**
+	 * @var {boolean} daemonHigher230 Indicates that Daemon is version 2.3.0 or higher
+	 */
+	private daemonHigher230 = false;
+
+	/**
 	 * @var {MonitorComponents} instances Names of component instances required for the monitoring service
 	 */
 	private instances: MonitorComponents = {
@@ -147,12 +172,26 @@ export default class MonitorForm extends Vue {
 	}
 
 	/**
+	 * @var {boolean} powerUser Indicates that the user role is power user
+	 */
+	private powerUser = false;
+
+	/**
+	 * @var {Array<IOption>} tlsModeOptions Array of CoreUI select options for TLS mode
+	 */
+	private tlsModeOptions: Array<IOption> = []
+
+	/**
 	 * @var {MonitorWebSocket} webSocket Daemon websocket instance configuration
 	 */
 	private webSocket: MonitorWebSocket = {
 		instance: '',
 		WebsocketPort: 1438,
 		acceptOnlyLocalhost: false,
+		tlsEnabled: false,
+		tlsMode: '',
+		certificate: '',
+		privateKey: ''
 	}
 	
 	/**
@@ -192,6 +231,28 @@ export default class MonitorForm extends Vue {
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
+		if (versionHigherThan('2.3.0')) {
+			this.daemonHigher230 = true;
+			this.tlsModeOptions = [
+				{
+					value: 'intermediate',
+					label: this.$t('config.websocket.form.tlsModes.intermediate').toString()
+				},
+				{
+					value: 'modern',
+					label: this.$t('config.websocket.form.tlsModes.modern').toString()
+				},
+				{
+					value: 'old',
+					label: this.$t('config.websocket.form.tlsModes.old').toString()
+				},
+			];
+		}
+
+		if (this.$store.getters['user/getRole'] === 'power') {
+			this.powerUser = true;
+		}
+
 		if (this.instance !== '') {
 			this.getConfig();
 		}
@@ -217,7 +278,7 @@ export default class MonitorForm extends Vue {
 					});
 			})
 			.catch((error: AxiosError) => {
-				this.$router.push('/config/daemon/monitor/');
+				this.$router.push('/config/daemon/misc/');
 				FormErrorHandler.configError(error);
 			});
 	}
@@ -227,6 +288,12 @@ export default class MonitorForm extends Vue {
 	 */
 	private saveConfig(): void {
 		this.$store.commit('spinner/SHOW');
+		if (!this.daemonHigher230) {
+			delete this.webSocket.tlsEnabled;
+			delete this.webSocket.tlsMode;
+			delete this.webSocket.certificate;
+			delete this.webSocket.privateKey;
+		}
 		this.webSocket.instance = this.monitor.instance;
 		if (this.monitor.RequiredInterfaces.length === 0) {
 			this.monitor.RequiredInterfaces[0] = {
@@ -271,7 +338,7 @@ export default class MonitorForm extends Vue {
 					.toString()
 			);
 		}
-		this.$router.push('/config/daemon/monitor/');
+		this.$router.push('/config/daemon/misc/' + (this.powerUser ? 4 : 3));
 	}
 }
 </script>

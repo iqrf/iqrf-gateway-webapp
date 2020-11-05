@@ -63,7 +63,7 @@
 						/>
 					</ValidationProvider>
 					<ValidationProvider
-						v-if='versionNew'
+						v-if='daemonHigher230'
 						v-slot='{ errors, touched, valid }'
 						rules='required|integer'
 						:custom-messages='{
@@ -141,10 +141,9 @@ import InterfaceMappings from '../../components/Config/InterfaceMappings.vue';
 import InterfacePorts from '../../components/Config/InterfacePorts.vue';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
-import compareVersions from 'compare-versions';
 import {IOption} from '../../interfaces/coreui';
 import {IIqrfUart, IUartMapping} from '../../interfaces/iqrfUart';
-
+import {versionHigherThan} from '../../helpers/versionChecker';
 
 @Component({
 	components: {
@@ -196,6 +195,11 @@ export default class IqrfUart extends Vue {
 	private componentInstance = 'iqrf::IqrfUart-/dev/ttyS0'
 
 	/**
+	 * 
+	 */
+	private daemonHigher230 = false
+
+	/**
 	 * @var {string} instance UART component instance name, used for REST API communication
 	 */
 	private instance = ''
@@ -228,21 +232,6 @@ export default class IqrfUart extends Vue {
 		const baudRates: Array<number> = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400];
 		return baudRates.map((baudRate: number) => ({value: baudRate, label: baudRate + ' Bd'}));
 	}
-
-	/**
-	 * Computes whether version of IQRF Gateway Daemon is high enough to support new properties
-	 * @returns {boolean} true if version >= 2.3.0, false otherwise
-	 */
-	get versionNew(): boolean {
-		const daemonVersion = this.$store.getters.daemonVersion;
-		if (daemonVersion === '') {
-			return false;
-		}
-		if (compareVersions.compare(daemonVersion, '2.3.0', '>=')) {
-			return true;
-		}
-		return false;
-	}
 	
 	/**
 	 * Vue lifecycle hook created
@@ -250,6 +239,16 @@ export default class IqrfUart extends Vue {
 	created(): void {
 		extend('integer', integer);
 		extend('required', required);
+	}
+
+	/**
+	 * Vue lifecycle hook mounted
+	 */
+	mounted(): void {
+		if (versionHigherThan('2.3.0')) {
+			this.daemonHigher230 = true;
+		}
+
 		this.getConfig();
 	}
 
@@ -279,7 +278,7 @@ export default class IqrfUart extends Vue {
 		this.baudRate = response.baudRate;
 		this.powerEnableGpioPin = response.powerEnableGpioPin;
 		this.busEnableGpioPin = response.busEnableGpioPin;
-		if (this.versionNew) {
+		if (this.daemonHigher230) {
 			if (response.pgmSwitchGpioPin !== undefined) {
 				this.pgmSwitchGpioPin = response.pgmSwitchGpioPin;
 			}
@@ -302,7 +301,7 @@ export default class IqrfUart extends Vue {
 			powerEnableGpioPin: this.powerEnableGpioPin,
 			busEnableGpioPin: this.busEnableGpioPin
 		};
-		if (this.versionNew) {
+		if (this.daemonHigher230) {
 			Object.assign(configuration, {pgmSwitchGpioPin: this.pgmSwitchGpioPin, uartReset: this.uartReset});
 		}
 		return configuration;
@@ -341,7 +340,7 @@ export default class IqrfUart extends Vue {
 		this.baudRate = mapping.baudRate;
 		this.busEnableGpioPin = mapping.busEnableGpioPin;
 		this.powerEnableGpioPin = mapping.powerEnableGpioPin;
-		if (this.versionNew) {
+		if (this.daemonHigher230) {
 			this.pgmSwitchGpioPin = mapping.pgmSwitchGpioPin;
 		}
 	}

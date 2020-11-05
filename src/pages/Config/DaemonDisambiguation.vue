@@ -53,10 +53,10 @@
 				</CListGroupItem>
 				<CListGroupItem to='/config/daemon/other/'>
 					<header class='list-group-item-heading'>
-						{{ $t('config.daemon.other.title') }}
+						{{ $t('config.daemon.misc.title') }}
 					</header>
 					<p class='list-group-item-text'>
-						{{ $t('config.daemon.other.description') }}
+						{{ $t('config.daemon.misc.description') }}
 					</p>
 				</CListGroupItem>
 			</CListGroup>

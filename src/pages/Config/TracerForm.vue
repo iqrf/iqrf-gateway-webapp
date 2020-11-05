@@ -56,9 +56,8 @@
 							:invalid-feedback='$t(errors[0])'
 						/>
 					</ValidationProvider>
-					<div v-if='versionNew'>
+					<div v-if='daemonHigher230'>
 						<ValidationProvider
-							v-if='versionNew'
 							v-slot='{ errors, touched, valid }'
 							rules='integer|min:0'
 							:custom-messages='{
@@ -76,7 +75,6 @@
 							/>
 						</ValidationProvider>
 						<ValidationProvider
-							
 							v-slot='{ errors, touched, valid }'
 							rules='integer|min:0'
 							:custom-messages='{
@@ -94,7 +92,7 @@
 							/>
 						</ValidationProvider>
 						<i>* {{ $t('config.tracer.form.messages.zeroValues') }}</i>
-					</div><br v-if='versionNew'>
+					</div><br v-if='daemonHigher230'>
 					<CInputCheckbox
 						:checked.sync='timestampFiles'
 						:label='$t("config.tracer.form.timestampFiles")'
@@ -171,7 +169,7 @@ import {MetaInfo} from 'vue-meta';
 import {IOption} from '../../interfaces/coreui';
 import {AxiosError, AxiosResponse} from 'axios';
 import {ITracerFile, IVerbosityLevel} from '../../interfaces/tracerFile';
-import compareVersions from 'compare-versions';
+import {versionHigherThan} from '../../helpers/versionChecker';
 
 @Component({
 	components: {
@@ -213,9 +211,9 @@ export default class TracerForm extends Vue {
 	private componentName = 'shape::TraceFileService'
 
 	/**
-	 * @var {string} daemonVersion IQRF Gateway Daemon version
+	 * @var {boolean} daemonHigher230 Indicates whether Daemon version is 2.3.0 or higher
 	 */
-	private daemonVersion = ''
+	private daemonHigher230 = false
 
 	/**
 	 * @var {string} filename Name of file used by this Logging service component instance
@@ -240,12 +238,17 @@ export default class TracerForm extends Vue {
 	/**
 	 * @var {string} msgId Daemon api message id
 	 */
-	private msgId = '';
+	private msgId = ''
 
 	/**
 	 * @var {string} path Path to directory containing Logging service files
 	 */
 	private path = ''
+
+	/**
+	 * @var {boolean} powerUser Indicates whether user role is power user
+	 */
+	private powerUser = false
 
 	/**
 	 * @var {string} timestampFiles Should Logging service files be timestamped?
@@ -271,20 +274,6 @@ export default class TracerForm extends Vue {
 	 * @property {string} instance Logging service component instance name, used for REST API communication
 	 */
 	@Prop({required: false, default: ''}) instance!: string
-
-	/**
-	 * Computes whether version of IQRF Gateway Daemon is high enough to support new properties
-	 * @returns {boolean} true if version >= 2.3.0, false otherwise
-	 */
-	get versionNew(): boolean {
-		if (this.daemonVersion === '') {
-			return false;
-		}
-		if (compareVersions.compare(this.daemonVersion, '2.3.0', '>=')) {
-			return true;
-		}
-		return false;
-	}
 
 	/**
 	 * Computes page title depending on the action (add, edit)
@@ -317,6 +306,14 @@ export default class TracerForm extends Vue {
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
+		if (versionHigherThan('2.3.0')) {
+			this.daemonHigher230 = true;
+		}
+		
+		if (this.$store.getters['user/role'] === 'power') {
+			this.powerUser = true;
+		}
+
 		this.getInstance();
 	}
 
@@ -362,7 +359,7 @@ export default class TracerForm extends Vue {
 		this.filename = configuration.filename;
 		this.timestampFiles = configuration.timestampFiles;
 		this.VerbosityLevels = configuration.VerbosityLevels;
-		if (this.versionNew) { // Daemon v2.3.0 supports new properties
+		if (this.daemonHigher230) { // Daemon v2.3.0 supports new properties
 			this.maxSize = configuration.maxSize ? configuration.maxSize : configuration.maxSizeMB;
 			if (configuration.maxAgeMinutes) { // optional property
 				this.maxAgeMinutes = configuration.maxAgeMinutes;
@@ -388,7 +385,7 @@ export default class TracerForm extends Vue {
 			timestampFiles: this.timestampFiles,
 			VerbosityLevels: this.VerbosityLevels
 		};
-		if (this.versionNew) { // Daemon version 2.3.0 or higher
+		if (this.daemonHigher230) { // Daemon version 2.3.0 or higher
 			Object.assign(configuration, {maxSizeMB: this.maxSize}); // TODO: to be changed for version 2.4.0 as maxSize is currently not supported by Shape
 			if (this.maxAgeMinutes > 0) { // > 0, not disabled (optional)
 				Object.assign(configuration, {maxAgeMinutes: this.maxAgeMinutes});
@@ -434,7 +431,7 @@ export default class TracerForm extends Vue {
 					.toString()
 			);
 		}
-		this.$router.push('/config/daemon/misc/');
+		this.$router.push('/config/daemon/misc/' + (this.powerUser ? 5 : 4));
 	}
 
 }
