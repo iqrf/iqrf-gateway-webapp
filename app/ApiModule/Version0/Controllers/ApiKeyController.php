@@ -113,6 +113,11 @@ class ApiKeyController extends BaseController {
 	 *              application/json:
 	 *                  schema:
 	 *                      $ref: '#/components/schemas/ApiKeyCreated'
+	 *          headers:
+	 *              Location:
+	 *                  description: Location of information about the created API key
+	 *                  schema:
+	 *                      type: string
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
 	 * ")
@@ -138,6 +143,7 @@ class ApiKeyController extends BaseController {
 		$this->entityManager->persist($apiKey);
 		$this->entityManager->flush();
 		return $response->writeJsonObject($apiKey)
+			->withHeader('Location', '/api/v0/apiKeys/' . $apiKey->getId())
 			->withStatus(ApiResponse::S201_CREATED);
 	}
 

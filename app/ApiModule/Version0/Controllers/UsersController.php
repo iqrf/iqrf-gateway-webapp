@@ -109,6 +109,11 @@ class UsersController extends BaseController {
 	 *  responses:
 	 *      '201':
 	 *          description: Created
+	 *          headers:
+	 *              Location:
+	 *                  description: Location of information about the created user
+	 *                  schema:
+	 *                      type: string
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
 	 *      '409':
@@ -141,6 +146,7 @@ class UsersController extends BaseController {
 			throw new ClientErrorException('Invalid role', ApiResponse::S400_BAD_REQUEST);
 		}
 		return $response->withStatus(ApiResponse::S201_CREATED)
+			->withHeader('Location', '/api/v0/users/' . $user->getId())
 			->writeBody('Workaround');
 	}
 
