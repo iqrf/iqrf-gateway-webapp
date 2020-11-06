@@ -29,12 +29,12 @@
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CCard, CTab, CTabs} from '@coreui/vue/src';
-import Backup from '../../components/IqrfNet/Backup';
-import Restore from '../../components/IqrfNet/Restore';
-import BondingManager from '../../components/IqrfNet/BondingManager';
-import DevicesInfo from '../../components/IqrfNet/DevicesInfo';
-import DiscoveryManager from '../../components/IqrfNet/DiscoveryManager';
-import AutoNetwork from '../../components/IqrfNet/AutoNetwork';
+import Backup from '../../components/IqrfNet/Backup.vue';
+import Restore from '../../components/IqrfNet/Restore.vue';
+import BondingManager from '../../components/IqrfNet/BondingManager.vue';
+import DevicesInfo from '../../components/IqrfNet/DevicesInfo.vue';
+import DiscoveryManager from '../../components/IqrfNet/DiscoveryManager.vue';
+import AutoNetwork from '../../components/IqrfNet/AutoNetwork.vue';
 
 @Component({
 	components: {
