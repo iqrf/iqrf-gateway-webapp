@@ -29,12 +29,12 @@ use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\JwtConfigurator;
+use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\ApiModule\Version0\RequestAttributes;
 use App\Models\Database\Entities\User;
 use App\Models\Database\EntityManager;
 use DateTimeImmutable;
 use Lcobucci\JWT\Configuration;
-use Nette\Utils\JsonException;
 use Throwable;
 use function gethostname;
 
@@ -59,10 +59,12 @@ class UserController extends BaseController {
 	 * Constructor
 	 * @param JwtConfigurator $configurator JWT configurator
 	 * @param EntityManager $entityManager Entity manager
+	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(JwtConfigurator $configurator, EntityManager $entityManager) {
+	public function __construct(JwtConfigurator $configurator, EntityManager $entityManager, RestApiSchemaValidator $validator) {
 		$this->configuration = $configurator->create();
 		$this->entityManager = $entityManager;
+		parent::__construct($validator);
 	}
 
 	/**
@@ -118,11 +120,8 @@ class UserController extends BaseController {
 		if (!($user instanceof User)) {
 			throw new ClientErrorException('API key is used.', ApiResponse::S403_FORBIDDEN);
 		}
-		try {
-			$body = $request->getJsonBody();
-		} catch (JsonException $e) {
-			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
-		}
+		$this->validator->validateRequest('passwordChange', $request);
+		$body = $request->getJsonBody();
 		if (!$user->verifyPassword($body['old'])) {
 			throw new ClientErrorException('Invalid old password', ApiResponse::S400_BAD_REQUEST);
 		}
@@ -162,11 +161,8 @@ class UserController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function signIn(ApiRequest $request, ApiResponse $response): ApiResponse {
-		try {
-			$credentials = $request->getJsonBody();
-		} catch (JsonException $e) {
-			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
-		}
+		$this->validator->validateRequest('userSignIn', $request);
+		$credentials = $request->getJsonBody();
 		$user = $this->entityManager->getUserRepository()->findOneByUserName($credentials['username']);
 		if ($user === null) {
 			throw new ClientErrorException('Invalid credentials', ApiResponse::S400_BAD_REQUEST);

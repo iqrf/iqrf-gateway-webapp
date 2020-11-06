@@ -30,13 +30,10 @@ use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
-use App\ApiModule\Version0\Models\JsonSchemaValidator;
+use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\CoreModule\Exceptions\FeatureNotFoundException;
-use App\CoreModule\Exceptions\InvalidJsonException;
-use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use App\CoreModule\Models\FeatureManager;
 use Nette\IOException;
-use Nette\Utils\JsonException;
 
 /**
  * Optional feature manager controller
@@ -51,18 +48,13 @@ class FeatureController extends BaseController {
 	private $manager;
 
 	/**
-	 * @var JsonSchemaValidator API JSON schema validator
-	 */
-	private $validator;
-
-	/**
 	 * Constructor
 	 * @param FeatureManager $manager Optional feature manager
-	 * @param JsonSchemaValidator $validator API JSON schema validator
+	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(FeatureManager $manager, JsonSchemaValidator $validator) {
+	public function __construct(FeatureManager $manager, RestApiSchemaValidator $validator) {
 		$this->manager = $manager;
-		$this->validator = $validator;
+		parent::__construct($validator);
 	}
 
 	/**
@@ -155,15 +147,11 @@ class FeatureController extends BaseController {
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$name = urldecode($request->getParameter('feature'));
 		try {
-			$this->validator->validate('features/' . $name, $request);
+			$this->validator->validateRequest('features/' . $name, $request);
 			$this->manager->edit($name, $request->getJsonBody());
 			return $response->writeBody('Workaround');
-		} catch (FeatureNotFoundException | NonexistentJsonSchemaException $e) {
+		} catch (FeatureNotFoundException $e) {
 			throw new ClientErrorException('Feature not found', ApiResponse::S404_NOT_FOUND);
-		} catch (JsonException $e) {
-			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
-		} catch (InvalidJsonException $e) {
-			throw new ClientErrorException('Invalid JSON structure', ApiResponse::S400_BAD_REQUEST);
 		} catch (IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}

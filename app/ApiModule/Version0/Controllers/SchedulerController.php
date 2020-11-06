@@ -31,6 +31,7 @@ use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
+use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\ApiModule\Version0\Utils\ContentTypeUtil;
 use App\ConfigModule\Exceptions\InvalidTaskMessageException;
 use App\ConfigModule\Exceptions\TaskNotFoundException;
@@ -61,10 +62,12 @@ class SchedulerController extends BaseController {
 	 * Constructor
 	 * @param SchedulerManager $manager IQRF Gateway Daemon's scheduler manager
 	 * @param SchedulerMigrationManager $migrationManager IQRF Gateway Daemon's scheduler migration manager
+	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(SchedulerManager $manager, SchedulerMigrationManager $migrationManager) {
+	public function __construct(SchedulerManager $manager, SchedulerMigrationManager $migrationManager, RestApiSchemaValidator $validator) {
 		$this->manager = $manager;
 		$this->migrationManager = $migrationManager;
+		parent::__construct($validator);
 	}
 
 	/**
@@ -112,11 +115,8 @@ class SchedulerController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
-		try {
-			$task = $request->getJsonBody(false);
-		} catch (JsonException $e) {
-			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
-		}
+		$this->validator->validateRequest('task', $request);
+		$task = $request->getJsonBody(false);
 		$taskId = $task->taskId;
 		if ($this->manager->exist($taskId)) {
 			$this->manager->getFileName($taskId);
@@ -231,15 +231,12 @@ class SchedulerController extends BaseController {
 		}
 		$taskId = (int) $request->getParameter('taskId');
 		try {
-			$task = $request->getJsonBody(false);
-		} catch (JsonException $e) {
-			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
-		}
-		try {
 			$fileName = $this->manager->getFileName($taskId);
 		} catch (TaskNotFoundException $e) {
 			throw new ClientErrorException('Task not found', ApiResponse::S404_NOT_FOUND);
 		}
+		$this->validator->validateRequest('task', $request);
+		$task = $request->getJsonBody(false);
 		try {
 			$this->manager->save($task, $fileName);
 		} catch (InvalidTaskMessageException $e) {
@@ -303,37 +300,53 @@ class SchedulerController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function import(ApiRequest $request, ApiResponse $response): ApiResponse {
-		switch (ContentTypeUtil::getContentType($request)) {
-			case 'application/zip':
-			case 'application/x-zip-compressed':
-				$path = '/tmp/iqrf-gateway-scheduler-upload.zip';
-				FileSystem::write($path, $request->getBody()->getContents());
-				try {
-					$this->migrationManager->extractArchive($path);
-				} catch (InvalidTaskMessageException $e) {
-					throw new ClientErrorException('Invalid mType', ApiResponse::S400_BAD_REQUEST);
-				} catch (JsonException $e) {
-					throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
-				} catch (InvalidJsonException $e) {
-					throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
-				}
-				FileSystem::delete($path);
-				break;
-			case 'application/json':
-				try {
-					$this->manager->save($request->getJsonBody(false), null);
-				} catch (InvalidTaskMessageException $e) {
-					throw new ClientErrorException('Invalid mType', ApiResponse::S400_BAD_REQUEST);
-				} catch (JsonException $e) {
-					throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
-				} catch (InvalidJsonException $e) {
-					throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
-				}
-				break;
-			default:
-				throw new ClientErrorException('Unsupported media type', ApiResponse::S415_UNSUPPORTED_MEDIA_TYPE);
+		try {
+			switch (ContentTypeUtil::getContentType($request)) {
+				case 'application/zip':
+				case 'application/x-zip-compressed':
+					$this->importZip($request);
+					break;
+				case 'application/json':
+					$this->importJson($request);
+					break;
+				default:
+					throw new ClientErrorException('Unsupported media type', ApiResponse::S415_UNSUPPORTED_MEDIA_TYPE);
+			}
+		} catch (InvalidTaskMessageException $e) {
+			throw new ClientErrorException('Invalid mType', ApiResponse::S400_BAD_REQUEST);
+		} catch (JsonException $e) {
+			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
+		} catch (InvalidJsonException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
 		}
 		return $response->writeBody('Workaround');
+	}
+
+	/**
+	 * Imports scheduler configuration from JSON file
+	 * @param ApiRequest $request REST API request
+	 * @throws InvalidJsonException
+	 * @throws InvalidTaskMessageException
+	 * @throws JsonException
+	 */
+	private function importJson(ApiRequest $request): void {
+		$this->validator->validateRequest('task', $request);
+		$task = $request->getJsonBody(false);
+		$this->manager->save($task, null);
+	}
+
+	/**
+	 * Imports scheduler configuration from ZIP archive
+	 * @param ApiRequest $request REST API request
+	 * @throws InvalidJsonException
+	 * @throws InvalidTaskMessageException
+	 * @throws JsonException
+	 */
+	private function importZip(ApiRequest $request): void {
+		$path = '/tmp/iqrf-gateway-scheduler-upload.zip';
+		FileSystem::write($path, $request->getBody()->getContents());
+		$this->migrationManager->extractArchive($path);
+		FileSystem::delete($path);
 	}
 
 }

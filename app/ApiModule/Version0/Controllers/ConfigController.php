@@ -30,6 +30,7 @@ use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
+use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\ConfigModule\Models\ComponentManager;
 use App\ConfigModule\Models\GenericManager;
 use App\ConfigModule\Models\MainManager;
@@ -65,11 +66,13 @@ class ConfigController extends BaseConfigController {
 	 * @param ComponentManager $componentManager Component configuration manager
 	 * @param MainManager $mainManager Main configuration manager
 	 * @param GenericManager $manager Configuration manager
+	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(ComponentManager $componentManager, MainManager $mainManager, GenericManager $manager) {
+	public function __construct(ComponentManager $componentManager, MainManager $mainManager, GenericManager $manager, RestApiSchemaValidator $validator) {
 		$this->componentManager = $componentManager;
 		$this->mainManager = $mainManager;
 		$this->manager = $manager;
+		parent::__construct($validator);
 	}
 
 	/**

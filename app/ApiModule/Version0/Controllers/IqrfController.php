@@ -28,6 +28,7 @@ use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
+use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\ApiModule\Version0\Utils\ContentTypeUtil;
 use App\ConfigModule\Models\IqrfManager;
 use App\GatewayModule\Exceptions\UnknownFileFormatExceptions;
@@ -72,12 +73,14 @@ class IqrfController extends BaseController {
 	 * @param IqrfManager $interfacesManager IQRF interfaces manager
 	 * @param MacroFileParser $macroParser IQRF IDE Macros parser
 	 * @param UploadManager $uploadManager Upload manager
+	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(DpaManager $dpaManager, IqrfManager $interfacesManager, MacroFileParser $macroParser, UploadManager $uploadManager) {
+	public function __construct(DpaManager $dpaManager, IqrfManager $interfacesManager, MacroFileParser $macroParser, UploadManager $uploadManager, RestApiSchemaValidator $validator) {
 		$this->dpaManager = $dpaManager;
 		$this->interfacesManager = $interfacesManager;
 		$this->macroParser = $macroParser;
 		$this->uploadManager = $uploadManager;
+		parent::__construct($validator);
 	}
 
 	/**
@@ -161,8 +164,8 @@ class IqrfController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function upload(ApiRequest $request, ApiResponse $response): ApiResponse {
+		ContentTypeUtil::validContentType($request, ['multipart/form-data']);
 		try {
-			ContentTypeUtil::validContentType($request, ['multipart/form-data']);
 			$format = $request->getParsedBody()['format'] ?? null;
 			if ($format !== null) {
 				$format = UploadFormats::fromScalar($format);
@@ -202,6 +205,7 @@ class IqrfController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function getFile(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validator->validateRequest('dpaFile', $request);
 		try {
 			$data = $request->getJsonBody();
 			$dpa = $data['dpa'];

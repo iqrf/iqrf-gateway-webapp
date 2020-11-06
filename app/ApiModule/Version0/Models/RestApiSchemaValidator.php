@@ -20,8 +20,12 @@ declare(strict_types = 1);
 
 namespace App\ApiModule\Version0\Models;
 
+use Apitte\Core\Exception\Api\ClientErrorException;
+use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
+use Apitte\Core\Http\ApiResponse;
 use App\CoreModule\Exceptions\InvalidJsonException;
+use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use App\CoreModule\Models\JsonSchemaManager;
 use Nette\Utils\JsonException;
 
@@ -34,12 +38,19 @@ class RestApiSchemaValidator extends JsonSchemaManager {
 	 * Validates REST API request
 	 * @param string $schema REST API JSON schema name
 	 * @param ApiRequest $request REST API request
-	 * @throws JsonException
-	 * @throws InvalidJsonException
+	 * @throws ClientErrorException
 	 */
 	public function validateRequest(string $schema, ApiRequest $request): void {
-		$this->setSchema($schema);
-		$this->validate($request->getJsonBody(false));
+		try {
+			$this->setSchema($schema);
+			$this->validate($request->getJsonBody(false));
+		} catch (JsonException $e) {
+			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
+		} catch (InvalidJsonException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
+		} catch (NonexistentJsonSchemaException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
+		}
 	}
 
 }

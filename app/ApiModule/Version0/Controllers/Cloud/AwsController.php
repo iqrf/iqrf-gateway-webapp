@@ -28,6 +28,7 @@ use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Controllers\CloudsController;
+use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\ApiModule\Version0\Utils\ContentTypeUtil;
 use App\CloudModule\Exceptions\CannotCreateCertificateDirectoryException;
 use App\CloudModule\Exceptions\InvalidPrivateKeyForCertificateException;
@@ -51,9 +52,11 @@ class AwsController extends CloudsController {
 	/**
 	 * Constructor
 	 * @param AwsManager $manager Amazon AWS IoT connection manager
+	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(AwsManager $manager) {
+	public function __construct(AwsManager $manager, RestApiSchemaValidator $validator) {
 		$this->manager = $manager;
+		parent::__construct($validator);
 	}
 
 	/**
@@ -122,6 +125,7 @@ class AwsController extends CloudsController {
 	private function getConfiguration(ApiRequest $request): array {
 		$contentType = ContentTypeUtil::validContentType($request, ['application/json', 'multipart/form-data']);
 		if ($contentType === 'application/json') {
+			$this->validator->validateRequest('cloudAws', $request);
 			return $request->getJsonBody();
 		}
 		$data = $request->getParsedBody();

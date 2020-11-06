@@ -24,13 +24,12 @@ use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\Tag;
-use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
+use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\CloudModule\Models\PixlaManager;
 use Nette\IOException;
-use Nette\Utils\JsonException;
 
 /**
  * PIXLA controller
@@ -47,9 +46,11 @@ class PixlaController extends BaseController {
 	/**
 	 * Constructor
 	 * @param PixlaManager $manager PIXLA client service manager
+	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(PixlaManager $manager) {
+	public function __construct(PixlaManager $manager, RestApiSchemaValidator $validator) {
 		$this->manager = $manager;
+		parent::__construct($validator);
 	}
 
 	/**
@@ -100,11 +101,10 @@ class PixlaController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function setToken(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validator->validateRequest('pixlaToken', $request);
 		try {
 			$this->manager->setToken($request->getJsonBody()['token']);
 			return $response->writeBody('Workaround');
-		} catch (JsonException $e) {
-			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
 		} catch (IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}

@@ -18,16 +18,17 @@
  */
 declare(strict_types = 1);
 
-namespace App\ApiModule\Version0\Controllers;
+namespace App\ApiModule\Version0\Controllers\Config;
 
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\Tag;
-use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
+use App\ApiModule\Version0\Controllers\BaseConfigController;
+use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\GatewayModule\Models\MenderConfigManager;
 use Nette\IOException;
 use Nette\Utils\JsonException;
@@ -37,7 +38,7 @@ use Nette\Utils\JsonException;
  * @Path("/mender")
  * @Tag("Config manager")
  */
-class MenderConfigController extends BaseConfigController {
+class MenderController extends BaseConfigController {
 
 	/**
 	 * @var MenderConfigManager $manager Mender client configuration manager
@@ -47,9 +48,11 @@ class MenderConfigController extends BaseConfigController {
 	/**
 	 * Constructor
 	 * @param MenderConfigManager $manager Mender client configuration manager
+	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(MenderConfigManager $manager) {
+	public function __construct(MenderConfigManager $manager, RestApiSchemaValidator $validator) {
 		$this->manager = $manager;
+		parent::__construct($validator);
 	}
 
 	/**
@@ -106,11 +109,10 @@ class MenderConfigController extends BaseConfigController {
 	 * @return ApiResponse API response
 	 */
 	public function setConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validator->validateRequest('menderConfig', $request);
 		try {
 			$this->manager->saveConfig($request->getJsonBody());
 			return $response->writeBody('Workaround');
-		} catch (JsonException $e) {
-			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
 		} catch (IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}

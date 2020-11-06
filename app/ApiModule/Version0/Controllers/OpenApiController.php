@@ -27,6 +27,7 @@ use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\OpenApiSchemaBuilder;
+use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 
 /**
  * OpenAPI controller
@@ -43,9 +44,11 @@ class OpenApiController extends BaseController {
 	/**
 	 * Constructor
 	 * @param OpenApiSchemaBuilder $schemaBuilder OpenAPI schema builder
+	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(OpenApiSchemaBuilder $schemaBuilder) {
+	public function __construct(OpenApiSchemaBuilder $schemaBuilder, RestApiSchemaValidator $validator) {
 		$this->schemaBuilder = $schemaBuilder;
+		parent::__construct($validator);
 	}
 
 	/**

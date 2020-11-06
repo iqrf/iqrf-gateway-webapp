@@ -18,64 +18,65 @@
  */
 declare(strict_types = 1);
 
-namespace App\ApiModule\Version0\Controllers;
+namespace App\ApiModule\Version0\Controllers\Network;
 
-use Apitte\Core\Adjuster\FileResponseAdjuster;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
-use Apitte\Core\Annotation\Controller\Tag;
+use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
+use App\ApiModule\Version0\Controllers\NetworkController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
-use App\GatewayModule\Models\DiagnosticsManager;
-use Nette\Utils\FileSystem;
+use App\NetworkModule\Exceptions\NetworkManagerException;
+use App\NetworkModule\Models\WifiManager;
 
 /**
- * Diagnostics controller
- * @Path("/diagnostics")
- * @Tag("Gateway manager")
+ * WiFi controller
+ * @Path("/wifi")
  */
-class DiagnosticsController extends BaseController {
+class WifiController extends NetworkController {
 
 	/**
-	 * @var DiagnosticsManager Diagnostics manager
+	 * @var WifiManager WiFi network manager
 	 */
-	private $manager;
+	private $wifiManager;
 
 	/**
 	 * Constructor
-	 * @param DiagnosticsManager $manager Diagnostics manager
+	 * @param WifiManager $wifiManager WiFi network manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(DiagnosticsManager $manager, RestApiSchemaValidator $validator) {
-		$this->manager = $manager;
+	public function __construct(WifiManager $wifiManager, RestApiSchemaValidator $validator) {
+		$this->wifiManager = $wifiManager;
 		parent::__construct($validator);
 	}
 
 	/**
-	 * @Path("/")
+	 * @Path("/list")
 	 * @Method("GET")
 	 * @OpenApi("
-	 *   summary: Returns archive with diagnostics
-	 *   responses:
-	 *     '200':
-	 *       description: 'Success'
-	 *       content:
-	 *         application/zip:
-	 *           schema:
-	 *             type: string
-	 *             format: binary
+	 *  summary: Lists available WiFi access points
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *          content:
+	 *              application/json:
+	 *                  schema:
+	 *                      $ref: '#/components/schemas/NetworkWifiList'
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
-	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$path = $this->manager->createArchive();
-		$fileName = basename($path);
-		$response->writeBody(FileSystem::read($path));
-		return FileResponseAdjuster::adjust($response, $response->getBody(), $fileName, 'application/zip');
+	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
+		try {
+			return $response->writeJsonBody($this->wifiManager->list());
+		} catch (NetworkManagerException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
+		}
 	}
 
 }

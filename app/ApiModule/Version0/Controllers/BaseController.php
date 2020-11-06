@@ -22,11 +22,25 @@ namespace App\ApiModule\Version0\Controllers;
 
 use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\UI\Controller\IController;
+use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 
 /**
  * Base API controller
  * @Path("/api/v0")
  */
 abstract class BaseController implements IController {
+
+	/**
+	 * @var RestApiSchemaValidator REST API JSON schema validator
+	 */
+	protected $validator;
+
+	/**
+	 * Constructor
+	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
+	 */
+	public function __construct(RestApiSchemaValidator $validator) {
+		$this->validator = $validator;
+	}
 
 }

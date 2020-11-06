@@ -55,11 +55,6 @@ class MappingController extends BaseController {
 	private $repository;
 
 	/**
-	 * @var RestApiSchemaValidator REST API JSON schem validator
-	 */
-	private $validator;
-
-	/**
 	 * Constructor
 	 * @param EntityManager $entityManager Entity manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
@@ -67,7 +62,7 @@ class MappingController extends BaseController {
 	public function __construct(EntityManager $entityManager, RestApiSchemaValidator $validator) {
 		$this->entityManager = $entityManager;
 		$this->repository = $this->entityManager->getMappingRepository();
-		$this->validator = $validator;
+		parent::__construct($validator);
 	}
 
 	/**
@@ -121,8 +116,8 @@ class MappingController extends BaseController {
 	 */
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
-			$json = $request->getJsonBody(false);
 			$this->validator->validateRequest('mapping', $request);
+			$json = $request->getJsonBody(false);
 		} catch (JsonException $e) {
 			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
 		} catch (InvalidJsonException $e) {

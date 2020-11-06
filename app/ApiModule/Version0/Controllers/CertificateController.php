@@ -28,6 +28,7 @@ use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
+use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\GatewayModule\Exceptions\CertificateNotFoundException;
 use App\GatewayModule\Models\CertificateManager;
 
@@ -46,9 +47,11 @@ class CertificateController extends BaseController {
 	/**
 	 * Constructor
 	 * @param CertificateManager $manager TLS certificate manager
+	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(CertificateManager $manager) {
+	public function __construct(CertificateManager $manager, RestApiSchemaValidator $validator) {
 		$this->manager = $manager;
+		parent::__construct($validator);
 	}
 
 	/**

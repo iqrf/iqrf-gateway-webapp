@@ -18,37 +18,36 @@
  */
 declare(strict_types = 1);
 
-namespace App\ApiModule\Version0\Controllers;
+namespace App\ApiModule\Version0\Controllers\Network;
 
-use Apitte\Core\Adjuster\FileResponseAdjuster;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
-use Apitte\Core\Annotation\Controller\Tag;
+use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
+use App\ApiModule\Version0\Controllers\NetworkController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
-use App\GatewayModule\Models\DiagnosticsManager;
-use Nette\Utils\FileSystem;
+use App\NetworkModule\Exceptions\NetworkManagerException;
+use App\NetworkModule\Models\ConnectivityManager;
 
 /**
- * Diagnostics controller
- * @Path("/diagnostics")
- * @Tag("Gateway manager")
+ * Network connectivity controller
+ * @Path("/connectivity")
  */
-class DiagnosticsController extends BaseController {
+class ConnectivityController extends NetworkController {
 
 	/**
-	 * @var DiagnosticsManager Diagnostics manager
+	 * @var ConnectivityManager Network connectivity manager
 	 */
 	private $manager;
 
 	/**
 	 * Constructor
-	 * @param DiagnosticsManager $manager Diagnostics manager
+	 * @param ConnectivityManager $manager Network connectivity manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(DiagnosticsManager $manager, RestApiSchemaValidator $validator) {
+	public function __construct(ConnectivityManager $manager, RestApiSchemaValidator $validator) {
 		$this->manager = $manager;
 		parent::__construct($validator);
 	}
@@ -57,25 +56,28 @@ class DiagnosticsController extends BaseController {
 	 * @Path("/")
 	 * @Method("GET")
 	 * @OpenApi("
-	 *   summary: Returns archive with diagnostics
-	 *   responses:
-	 *     '200':
-	 *       description: 'Success'
-	 *       content:
-	 *         application/zip:
-	 *           schema:
-	 *             type: string
-	 *             format: binary
+	 *  summary: Checks network connectivity
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *          content:
+	 *              application/json:
+	 *                  schema:
+	 *                      $ref: '#/components/schemas/NetworkConnectivityState'
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
-	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$path = $this->manager->createArchive();
-		$fileName = basename($path);
-		$response->writeBody(FileSystem::read($path));
-		return FileResponseAdjuster::adjust($response, $response->getBody(), $fileName, 'application/zip');
+	public function check(ApiRequest $request, ApiResponse $response): ApiResponse {
+		try {
+			$state = $this->manager->check()->toScalar();
+			return $response->writeJsonBody(['state' => $state]);
+		} catch (NetworkManagerException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
+		}
 	}
 
 }

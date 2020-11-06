@@ -26,6 +26,7 @@ use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
+use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\Models\Database\EntityManager;
 use Nettrine\Migrations\ContainerAwareConfiguration as DoctrineConfiguration;
 
@@ -50,10 +51,12 @@ class InstallationController extends BaseController {
 	 * Constructor
 	 * @param DoctrineConfiguration $doctrineConfiguration Doctrine configuration
 	 * @param EntityManager $entityManager Database entity manager
+	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(DoctrineConfiguration $doctrineConfiguration, EntityManager $entityManager) {
+	public function __construct(DoctrineConfiguration $doctrineConfiguration, EntityManager $entityManager, RestApiSchemaValidator $validator) {
 		$this->doctrineConfiguration = $doctrineConfiguration;
 		$this->entityManager = $entityManager;
+		parent::__construct($validator);
 	}
 
 	/**
