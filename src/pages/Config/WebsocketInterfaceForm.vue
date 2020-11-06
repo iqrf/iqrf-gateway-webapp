@@ -1,73 +1,73 @@
 <template>
-	<CCard>
-		<CCardHeader>
-			<h3 v-if='$route.path === "/config/websocket/add"'>
-				{{ $t('config.websocket.interface.add') }}
-			</h3>
-			<h3 v-else>
-				{{ $t('config.websocket.interface.edit') }}
-			</h3>
-		</CCardHeader>
-		<CCardBody>
-			<ValidationObserver v-slot='{ invalid }'>
-				<CForm @submit.prevent='saveConfig'>
-					<ValidationProvider
-						v-slot='{ errors, touched, valid }'
-						rules='required'
-						:custom-messages='{required: "config.mq.form.messages.instance"}'
-					>
-						<CInput
-							v-model='messaging.instance'
-							:label='$t("config.websocket.form.instance")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{ errors, touched, valid }'
-						rules='integer|required'
-						:custom-messages='{
-							required: "config.websocket.form.messages.WebsocketPort",
-							integer: "forms.messages.integer"
-						}'
-					>
-						<CInput
-							v-model.number='service.WebsocketPort'
-							type='number'
-							:label='$t("config.websocket.form.WebsocketPort")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-						/>
-					</ValidationProvider>
-					<CInputCheckbox
-						:checked.sync='messaging.acceptAsyncMsg'
-						:label='$t("config.websocket.form.acceptAsyncMsg")'
-					/>
-					<CInputCheckbox
-						:checked.sync='service.acceptOnlyLocalhost'
-						:label='$t("config.websocket.form.acceptOnlyLocalhost")'
-					/>
-					<div v-if='daemonHigher230'>
+	<div>
+		<h1 v-if='$route.path === "/config/websocket/add"'>
+			{{ $t('config.websocket.interface.add') }}
+		</h1>
+		<h1 v-else>
+			{{ $t('config.websocket.interface.edit') }}
+		</h1>
+		<CCard>
+			<CCardBody>
+				<ValidationObserver v-slot='{ invalid }'>
+					<CForm @submit.prevent='saveConfig'>
+						<ValidationProvider
+							v-slot='{ errors, touched, valid }'
+							rules='required'
+							:custom-messages='{required: "config.mq.form.messages.instance"}'
+						>
+							<CInput
+								v-model='messaging.instance'
+								:label='$t("config.websocket.form.instance")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{ errors, touched, valid }'
+							rules='integer|required'
+							:custom-messages='{
+								required: "config.websocket.form.messages.WebsocketPort",
+								integer: "forms.messages.integer"
+							}'
+						>
+							<CInput
+								v-model.number='service.WebsocketPort'
+								type='number'
+								:label='$t("config.websocket.form.WebsocketPort")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
 						<CInputCheckbox
-							:checked.sync='service.tlsEnabled'
-							:label='$t("config.websocket.form.tlsEnabled")'
+							:checked.sync='messaging.acceptAsyncMsg'
+							:label='$t("config.websocket.form.acceptAsyncMsg")'
 						/>
-						<CSelect
-							:value.sync='service.tlsMode'
-							:label='$t("config.websocket.form.tlsMode")'
-							:options='tlsModeOptions'
-							:placeholder='$t("config.websocket.form.messages.tlsMode")'
-							:disabled='!service.tlsEnabled'
+						<CInputCheckbox
+							:checked.sync='service.acceptOnlyLocalhost'
+							:label='$t("config.websocket.form.acceptOnlyLocalhost")'
 						/>
-						<span v-if='service.tlsMode !== "" && service.tlsMode !== undefined'>{{ $t('config.websocket.form.tlsModes.descriptions.' + service.tlsMode) }}</span>
-					</div><br v-if='daemonHigher230'>
-					<CButton type='submit' color='primary' :disabled='invalid'>
-						{{ submitButton }}
-					</CButton>
-				</CForm>
-			</ValidationObserver>
-		</CCardBody>
-	</CCard>
+						<div v-if='daemonHigher230'>
+							<CInputCheckbox
+								:checked.sync='service.tlsEnabled'
+								:label='$t("config.websocket.form.tlsEnabled")'
+							/>
+							<CSelect
+								:value.sync='service.tlsMode'
+								:label='$t("config.websocket.form.tlsMode")'
+								:options='tlsModeOptions'
+								:placeholder='$t("config.websocket.form.messages.tlsMode")'
+								:disabled='!service.tlsEnabled'
+							/>
+							<span v-if='service.tlsMode !== "" && service.tlsMode !== undefined'>{{ $t('config.websocket.form.tlsModes.descriptions.' + service.tlsMode) }}</span>
+						</div><br v-if='daemonHigher230'>
+						<CButton type='submit' color='primary' :disabled='invalid'>
+							{{ submitButton }}
+						</CButton>
+					</CForm>
+				</ValidationObserver>
+			</CCardBody>
+		</CCard>
+	</div>
 </template>
 
 <script lang='ts'>

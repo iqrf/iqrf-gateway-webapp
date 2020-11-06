@@ -1,29 +1,32 @@
 <template>
-	<CCard>
-		<CTabs variant='tabs' :active-tab='activeTab'>
-			<CTab :title='$t("config.jsonApi.title")'>
-				<JsonApi v-if='!powerUser' />
-				<JsonMngMetaDataApi v-if='powerUser' />
-				<JsonRawApi v-if='powerUser' />
-				<JsonSplitter v-if='powerUser' />
-			</CTab>
-			<CTab :title='$t("config.iqrfRepository.title")'>
-				<IqrfRepository />
-			</CTab>
-			<CTab :title='$t("config.iqrfInfo.title")'>
-				<IqrfInfo />
-			</CTab>
-			<CTab v-if='powerUser' :title='$t("config.iqmesh.title")'>
-				<IqmeshServices />
-			</CTab>
-			<CTab :title='$t("config.monitor.title")'>
-				<MonitorList />
-			</CTab>
-			<CTab :title='$t("config.tracer.title")'>
-				<TracerList />
-			</CTab>
-		</CTabs>
-	</CCard>
+	<div>
+		<h1>{{ $t('config.daemon.misc.title') }}</h1>
+		<CCard>
+			<CTabs variant='tabs' :active-tab='activeTab'>
+				<CTab :title='$t("config.jsonApi.title")'>
+					<JsonApi v-if='!powerUser' />
+					<JsonMngMetaDataApi v-if='powerUser' />
+					<JsonRawApi v-if='powerUser' />
+					<JsonSplitter v-if='powerUser' />
+				</CTab>
+				<CTab :title='$t("config.iqrfRepository.title")'>
+					<IqrfRepository />
+				</CTab>
+				<CTab :title='$t("config.iqrfInfo.title")'>
+					<IqrfInfo />
+				</CTab>
+				<CTab v-if='powerUser' :title='$t("config.iqmesh.title")'>
+					<IqmeshServices />
+				</CTab>
+				<CTab :title='$t("config.monitor.title")'>
+					<MonitorList />
+				</CTab>
+				<CTab :title='$t("config.tracer.title")'>
+					<TracerList />
+				</CTab>
+			</CTabs>
+		</CCard>
+	</div>
 </template>
 
 <script lang='ts'>

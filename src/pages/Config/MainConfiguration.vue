@@ -1,9 +1,7 @@
 <template>
-	<CCard>
-		<CCardHeader>
-			<h3>{{ $t('config.main.title') }}</h3>
-		</CCardHeader>
-		<CCardBody>
+	<div>
+		<h1>{{ $t('config.main.title') }}</h1>
+		<CCard body-wrapper>
 			<CForm @submit.prevent='saveConfig'>
 				<CInput
 					v-model='configuration.applicationName'
@@ -37,14 +35,14 @@
 					{{ $t('forms.save') }}
 				</CButton>
 			</CForm>
-		</CCardBody>
-	</CCard>
+		</CCard>
+	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {AxiosError, AxiosResponse} from 'axios';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
+import {CButton, CCard, CForm, CInput} from '@coreui/vue/src';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 
@@ -62,8 +60,6 @@ interface IMainConfig {
 	components: {
 		CButton,
 		CCard,
-		CCardBody,
-		CCardHeader,
 		CForm,
 		CInput,
 	},

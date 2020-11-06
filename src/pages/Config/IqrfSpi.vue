@@ -1,7 +1,7 @@
 <template>
 	<CCard>
 		<CCardHeader>
-			<h3>{{ $t('config.iqrfSpi.title') }}</h3>
+			{{ $t('config.iqrfSpi.title') }}
 		</CCardHeader>
 		<CCardBody>
 			<ValidationObserver v-slot='{ invalid }'>
@@ -13,7 +13,7 @@
 						:custom-messages='{required: "config.iqrfSpi.form.messages.instance"}'
 					>
 						<CInput
-							v-model='configuration.instance'
+							v-model='componentInstance'
 							:label='$t("config.iqrfSpi.form.instance")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
@@ -25,7 +25,7 @@
 						:custom-messages='{required: "config.iqrfSpi.form.messages.IqrfInterface"}'
 					>
 						<CInput
-							v-model='configuration.IqrfInterface'
+							v-model='IqrfInterface'
 							:label='$t("config.iqrfSpi.form.IqrfInterface")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
@@ -40,7 +40,7 @@
 						}'
 					>
 						<CInput
-							v-model='configuration.powerEnableGpioPin'
+							v-model='powerEnableGpioPin'
 							:label='$t("config.iqrfSpi.form.powerEnableGpioPin")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
@@ -55,7 +55,7 @@
 						}'
 					>
 						<CInput
-							v-model='configuration.busEnableGpioPin'
+							v-model='busEnableGpioPin'
 							:label='$t("config.iqrfSpi.form.busEnableGpioPin")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
@@ -70,16 +70,40 @@
 						}'
 					>
 						<CInput
-							v-model='configuration.pgmSwitchGpioPin'
+							v-model='pgmSwitchGpioPin'
 							:label='$t("config.iqrfSpi.form.pgmSwitchGpioPin")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
 					</ValidationProvider>
 					<CInputCheckbox
-						:checked.sync='configuration.spiReset'
+						:checked.sync='spiReset'
 						:label='$t("config.iqrfSpi.form.spiReset")'
 					/>
+					<CInput
+						v-if='i2cEnableGpioPin !== null'
+						v-model.number='i2cEnableGpioPin'
+						type='number'
+						:label='$t("config.iqrfUart.form.i2cEnableGpioPin")'
+						:disabled='true'
+					/>
+					<CInput
+						v-if='spiEnableGpioPin !== null'
+						v-model.number='spiEnableGpioPin'
+						type='number'
+						:label='$t("config.iqrfUart.form.spiEnableGpioPin")'
+						:disabled='true'
+					/>
+					<CInput
+						v-if='uartEnableGpioPin !== null'
+						v-model.number='uartEnableGpioPin'
+						type='number'
+						:label='$t("config.iqrfUart.form.uartEnableGpioPin")'
+						:disabled='true'
+					/>
+					<div v-if='i2cEnableGpioPin !== null || spiEnableGpioPin !== null || uartEnableGpioPin !== null'>
+						<i>{{ $t('config.iqrfUart.form.gwOnly') }}</i>
+					</div><br v-if='i2cEnableGpioPin !== null || spiEnableGpioPin !== null || uartEnableGpioPin !== null'>
 					<CButton type='submit' color='primary' :disabled='invalid'>
 						{{ $t('forms.save') }}
 					</CButton>
@@ -121,15 +145,8 @@ import InterfaceMappings from '../../components/Config/InterfaceMappings.vue';
 import InterfacePorts from '../../components/Config/InterfacePorts.vue';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
-
-interface IqrfSpiConfig {
-	instance: string|null
-	IqrfInterface: string|null
-	powerEnableGpioPin: number|null
-	busEnableGpioPin: number|null
-	pgmSwitchGpioPin: number|null
-	spiReset: boolean
-}
+import {IIqrfSpi} from '../../interfaces/iqrfInterfaces';
+import {IMapping} from '../../interfaces/mappings';
 
 @Component({
 	components: {
@@ -155,31 +172,69 @@ interface IqrfSpiConfig {
  */
 export default class IqrfSpi extends Vue {
 	/**
-	 * @constant {string} componentName IQRF SPI interface component name
+	 * @var {number} busEnableGpioPin SPI bus enable ping
+	 */
+	private busEnableGpioPin = 7
+
+	/**
+	 * @var {string} component SPI component name
+	 */
+	private component = ''
+
+	/**
+	 * @var {string} componentInstance SPI component instance name
+	 */
+	private componentInstance = ''
+
+	/**
+	 * @constant {string} componentName SPI component name, used for REST API communication
 	 */
 	private componentName = 'iqrf::IqrfSpi'
 
 	/**
-	 * @var {IqrfSpiConfig} configuration IQRF SPI interface instance configuration
+	 * @var {number|null} i2cEnableGpioPin I2C interface enable pin
 	 */
-	private configuration: IqrfSpiConfig = {
-		instance: null,
-		IqrfInterface: null,
-		powerEnableGpioPin: null,
-		busEnableGpioPin: null,
-		pgmSwitchGpioPin: null,
-		spiReset: false,
-	}
+	private i2cEnableGpioPin: number|null = null
 
 	/**
-	 * @var {string|null} instance Name of IQRF SPI component instance
+	 * @var {string} instance SPI component instance name, used for REST API communication
 	 */
-	private instance: string|null = null
+	private instance = ''
+
+	/**
+	 * @var {string} IqrfInterface SPI interface device name
+	 */
+	private IqrfInterface = '/dev/spidev0.0'
+
+	/**
+	 * @var {number} pgmSwitchGpioPin SPI programming mode switch pin
+	 */
+	private pgmSwitchGpioPin = 22
+
+	/**
+	 * @var {number} powerEnableGpioPin SPI power enable pin
+	 */
+	private powerEnableGpioPin = 23
 
 	/**
 	 * @var {boolean} powerUser Indicates whether user role is power user
 	 */
 	private powerUser = false
+
+	/**
+	 * @var {number|null} spiEnableGpioPin SPI interface enable pin
+	 */
+	private spiEnableGpioPin: number|null = null
+
+	/**
+	 * @var {boolean} spiReset Should SPI component instance reset?
+	 */
+	private spiReset = true
+
+	/**
+	 * @var {number|null} uartEnableGpioPin UART interface enable pin
+	 */
+	private uartEnableGpioPin: number|null = null
 
 	/**
 	 * Vue lifecycle hook created
@@ -190,7 +245,7 @@ export default class IqrfSpi extends Vue {
 	}
 
 	mounted(): void {
-		if (this.$store.getters['user/role'] === 'power') {
+		if (this.$store.getters['user/getRole'] === 'power') {
 			this.powerUser = true;
 		}
 		this.getConfig();
@@ -205,11 +260,55 @@ export default class IqrfSpi extends Vue {
 			.then((response: AxiosResponse) => {
 				this.$store.commit('spinner/HIDE');
 				if (response.data.instances.length > 0) {
-					this.configuration = response.data.instances[0];
-					this.instance = this.configuration.instance;
+					this.parseConfiguration(response.data.instances[0]);
 				}
 			})
 			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+	}
+
+	/**
+	 * Parses IQRF SPI interface configuration from REST API response
+	 * @param {IIqrfSpi} response Configuration object from REST API response
+	 */
+	private parseConfiguration(response: IIqrfSpi): void {
+		this.component = response.component;
+		this.instance = this.componentInstance = response.instance;
+		this.IqrfInterface = response.IqrfInterface;
+		this.busEnableGpioPin = response.busEnableGpioPin;
+		this.pgmSwitchGpioPin = response.pgmSwitchGpioPin;
+		this.powerEnableGpioPin = response.powerEnableGpioPin;
+		this.spiReset = response.spiReset;
+		if (response.i2cEnableGpioPin !== undefined) {
+			this.i2cEnableGpioPin = response.i2cEnableGpioPin;
+		}
+		if (response.spiEnableGpioPin !== undefined) {
+			this.spiEnableGpioPin = response.spiEnableGpioPin;
+		}
+		if (response.uartEnableGpioPin !== undefined) {
+			this.uartEnableGpioPin = response.uartEnableGpioPin;
+		}
+	}
+
+	private buildConfiguration(): IIqrfSpi {
+		let configuration: IIqrfSpi = {
+			component: this.component,
+			instance: this.componentInstance,
+			IqrfInterface: this.IqrfInterface,
+			busEnableGpioPin: this.busEnableGpioPin,
+			pgmSwitchGpioPin: this.pgmSwitchGpioPin,
+			powerEnableGpioPin: this.powerEnableGpioPin,
+			spiReset: this.spiReset
+		};
+		if (this.i2cEnableGpioPin !== undefined) {
+			Object.assign(configuration, {i2cEnableGpioPin: this.i2cEnableGpioPin});
+		}
+		if (this.spiEnableGpioPin !== undefined) {
+			Object.assign(configuration, {spiEnableGpioPin: this.spiEnableGpioPin});
+		}
+		if (this.uartEnableGpioPin !== undefined) {
+			Object.assign(configuration, {uartEnableGpioPin: this.uartEnableGpioPin});
+		}
+		return configuration;
 	}
 
 	/**
@@ -217,12 +316,12 @@ export default class IqrfSpi extends Vue {
 	 */
 	private saveConfig(): void {
 		this.$store.commit('spinner/SHOW');
-		if (this.instance !== null) {
-			DaemonConfigurationService.updateInstance(this.componentName, this.instance, this.configuration)
+		if (this.instance !== '') {
+			DaemonConfigurationService.updateInstance(this.componentName, this.instance, this.buildConfiguration())
 				.then(() => this.successfulSave())
 				.catch((error: AxiosError) => FormErrorHandler.configError(error));
 		} else {
-			DaemonConfigurationService.createInstance(this.componentName, this.configuration)
+			DaemonConfigurationService.createInstance(this.componentName, this.buildConfiguration())
 				.then(() => this.successfulSave())
 				.catch((error: AxiosError) => FormErrorHandler.configError(error));
 		}
@@ -238,10 +337,28 @@ export default class IqrfSpi extends Vue {
 
 	/**
 	 * Updates pin configuration from mapping
-	 * @param {IqrfSpiConfig} mapping Board mapping
+	 * @param {IMapping} mapping Board mapping
 	 */
-	private updateMapping(mapping: IqrfSpiConfig): void {
-		Object.assign(this.configuration, mapping);
+	private updateMapping(mapping: IMapping): void {
+		this.IqrfInterface = mapping.IqrfInterface;
+		this.busEnableGpioPin = mapping.busEnableGpioPin;
+		this.pgmSwitchGpioPin = mapping.pgmSwitchGpioPin;
+		this.powerEnableGpioPin = mapping.powerEnableGpioPin;
+		if (mapping.i2cEnableGpioPin !== undefined) {
+			this.i2cEnableGpioPin = mapping.i2cEnableGpioPin;
+		} else {
+			this.i2cEnableGpioPin = null;
+		}
+		if (mapping.spiEnableGpioPin !== undefined) {
+			this.spiEnableGpioPin = mapping.spiEnableGpioPin;
+		} else {
+			this.spiEnableGpioPin = null;
+		}
+		if (mapping.uartEnableGpioPin !== undefined) {
+			this.uartEnableGpioPin = mapping.uartEnableGpioPin;
+		} else {
+			this.uartEnableGpioPin = null;
+		}
 	}
 	
 	/**
@@ -249,7 +366,7 @@ export default class IqrfSpi extends Vue {
 	 * @param {string} port Port
 	 */
 	private updatePort(port: string): void {
-		this.configuration.IqrfInterface = port;
+		this.IqrfInterface = port;
 	}
 }
 </script>

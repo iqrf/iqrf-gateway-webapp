@@ -1,5 +1,6 @@
 <template>
 	<div>
+		<h1>{{ $t('config.daemon.interfaces.title') }}</h1>
 		<CCard body-wrapper>
 			<CSelect
 				:value.sync='iqrfInterface'

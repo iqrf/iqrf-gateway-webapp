@@ -1,80 +1,80 @@
 <template>
-	<CCard>
-		<CCardHeader>
-			<h3 v-if='$route.path === "/config/daemon/websocket/add-service"'>
-				{{ $t('config.websocket.service.add') }}
-			</h3>
-			<h3 v-else>
-				{{ $t('config.websocket.service.edit') }}
-			</h3>
-		</CCardHeader>
-		<CCardBody>
-			<ValidationObserver v-slot='{ invalid }'>
-				<CForm @submit.prevent='saveInstance'>
-					<ValidationProvider
-						v-slot='{ errors, touched, valid }'
-						rules='required'
-						:custom-messages='{required: "config.websocket.form.messages.serviceInstance"}'
-					>
-						<CInput
-							v-model='instance'
-							:label='$t("config.websocket.form.instance")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{ errors, touched, valid }'
-						rules='integer|required'
-						:custom-messages='{
-							required: "config.websocket.form.messages.WebsocketPort",
-							integer: "forms.messages.integer"
-						}'
-					>
-						<CInput
-							v-model.number='WebsocketPort'
-							type='number'
-							:label='$t("config.websocket.form.WebsocketPort")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-						/>
-					</ValidationProvider>
-					<CInputCheckbox
-						:checked.sync='acceptOnlyLocalhost'
-						:label='$t("config.websocket.form.acceptOnlyLocalhost")'
-					/>
-					<div v-if='daemonHigher230'>
+	<div>
+		<h1 v-if='$route.path === "/config/daemon/websocket/add-service"'>
+			{{ $t('config.websocket.service.add') }}
+		</h1>
+		<h1 v-else>
+			{{ $t('config.websocket.service.edit') }}
+		</h1>
+		<CCard>
+			<CCardBody>
+				<ValidationObserver v-slot='{ invalid }'>
+					<CForm @submit.prevent='saveInstance'>
+						<ValidationProvider
+							v-slot='{ errors, touched, valid }'
+							rules='required'
+							:custom-messages='{required: "config.websocket.form.messages.serviceInstance"}'
+						>
+							<CInput
+								v-model='instance'
+								:label='$t("config.websocket.form.instance")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{ errors, touched, valid }'
+							rules='integer|required'
+							:custom-messages='{
+								required: "config.websocket.form.messages.WebsocketPort",
+								integer: "forms.messages.integer"
+							}'
+						>
+							<CInput
+								v-model.number='WebsocketPort'
+								type='number'
+								:label='$t("config.websocket.form.WebsocketPort")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
 						<CInputCheckbox
-							:checked.sync='tlsEnabled'
-							:label='$t("config.websocket.form.tlsEnabled")'
+							:checked.sync='acceptOnlyLocalhost'
+							:label='$t("config.websocket.form.acceptOnlyLocalhost")'
 						/>
-						<div>
-							<CSelect
-								:value.sync='tlsMode'
-								:options='tlsModeOptions'
-								:placeholder='$t("config.websocket.form.messages.tlsMode")'
+						<div v-if='daemonHigher230'>
+							<CInputCheckbox
+								:checked.sync='tlsEnabled'
+								:label='$t("config.websocket.form.tlsEnabled")'
+							/>
+							<div>
+								<CSelect
+									:value.sync='tlsMode'
+									:options='tlsModeOptions'
+									:placeholder='$t("config.websocket.form.messages.tlsMode")'
+									:disabled='!tlsEnabled'
+								/>
+								<span v-if='tlsMode !== ""'>{{ $t('config.websocket.form.tlsModes.descriptions.' + tlsMode) }}</span>
+							</div><br>
+							<CInput
+								v-model='certificate'
+								:label='$t("config.websocket.form.certificate")'
 								:disabled='!tlsEnabled'
 							/>
-							<span v-if='tlsMode !== ""'>{{ $t('config.websocket.form.tlsModes.descriptions.' + tlsMode) }}</span>
-						</div><br>
-						<CInput
-							v-model='certificate'
-							:label='$t("config.websocket.form.certificate")'
-							:disabled='!tlsEnabled'
-						/>
-						<CInput
-							v-model='privateKey'
-							:label='$t("config.websocket.form.privateKey")'
-							:disabled='!tlsEnabled'
-						/>
-					</div>
-					<CButton type='submit' color='primary' :disabled='invalid'>
-						{{ submitButton }}
-					</CButton>
-				</CForm>
-			</ValidationObserver>
-		</CCardBody>
-	</CCard>
+							<CInput
+								v-model='privateKey'
+								:label='$t("config.websocket.form.privateKey")'
+								:disabled='!tlsEnabled'
+							/>
+						</div>
+						<CButton type='submit' color='primary' :disabled='invalid'>
+							{{ submitButton }}
+						</CButton>
+					</CForm>
+				</ValidationObserver>
+			</CCardBody>
+		</CCard>
+	</div>
 </template>
 
 <script lang='ts'>

@@ -1,224 +1,224 @@
 <template>
-	<CCard>
-		<CCardHeader>
-			<h3 v-if='$route.path === "/config/daemon/mqtt/add"'>
-				{{ $t('config.mqtt.add') }}
-			</h3>
-			<h3 v-else>
-				{{ $t('config.mqtt.edit') }}
-			</h3>
-		</CCardHeader>
-		<CCardBody>
-			<ValidationObserver v-slot='{ invalid }'>
-				<CForm @submit.prevent='saveConfig'>
-					<ValidationProvider
-						v-slot='{ errors, touched, valid }'
-						rules='required'
-						:custom-messages='{required: "config.mqtt.form.messages.instance"}'
-					>
+	<div>
+		<h1 v-if='$route.path === "/config/daemon/mqtt/add"'>
+			{{ $t('config.mqtt.add') }}
+		</h1>
+		<h1 v-else>
+			{{ $t('config.mqtt.edit') }}
+		</h1>
+		<CCard>
+			<CCardBody>
+				<ValidationObserver v-slot='{ invalid }'>
+					<CForm @submit.prevent='saveConfig'>
+						<ValidationProvider
+							v-slot='{ errors, touched, valid }'
+							rules='required'
+							:custom-messages='{required: "config.mqtt.form.messages.instance"}'
+						>
+							<CInput
+								v-model='configuration.instance'
+								:label='$t("config.mqtt.form.instance")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{ errors, touched, valid }'
+							rules='required'
+							:custom-messages='{required: "config.mqtt.form.messages.BrokerAddr"}'
+						>
+							<CInput
+								v-model='configuration.BrokerAddr'
+								:label='$t("config.mqtt.form.BrokerAddr")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{ errors, touched, valid }'
+							rules='required'
+							:custom-messages='{required: "config.mqtt.form.messages.ClientId"}'
+						>
+							<CInput
+								v-model='configuration.ClientId'
+								:label='$t("config.mqtt.form.ClientId")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{ errors, touched, valid }'
+							rules='integer|required'
+							:custom-messages='{
+								integer: "config.mqtt.form.messages.Persistence",
+								required: "config.mqtt.form.messages.Persistence",
+							}'
+						>
+							<CInput
+								v-model.number='configuration.Persistence'
+								:label='$t("config.mqtt.form.Persistence")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+								type='number'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{ valid, touched, errors }'
+							rules='required'
+							:custom-messages='{
+								required: "config.mqtt.form.messages.QoS",
+							}'
+						>
+							<CSelect
+								:value.sync='configuration.Qos'
+								:label='$t("config.mqtt.form.QoS")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+								:placeholder='$t("config.mqtt.form.messages.QoS")'
+								:options='qosOptions'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{ errors, touched, valid }'
+							rules='required'
+							:custom-messages='{required: "config.mqtt.form.messages.TopicRequest"}'
+						>
+							<CInput
+								v-model='configuration.TopicRequest'
+								:label='$t("config.mqtt.form.TopicRequest")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{ errors, touched, valid }'
+							rules='required'
+							:custom-messages='{required: "config.mqtt.form.messages.TopicResponse"}'
+						>
+							<CInput
+								v-model='configuration.TopicResponse'
+								:label='$t("config.mqtt.form.TopicResponse")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
 						<CInput
-							v-model='configuration.instance'
-							:label='$t("config.mqtt.form.instance")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
+							v-model='configuration.User'
+							:label='$t("config.mqtt.form.User")'
 						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{ errors, touched, valid }'
-						rules='required'
-						:custom-messages='{required: "config.mqtt.form.messages.BrokerAddr"}'
-					>
 						<CInput
-							v-model='configuration.BrokerAddr'
-							:label='$t("config.mqtt.form.BrokerAddr")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
+							v-model='configuration.Password'
+							:label='$t("config.mqtt.form.Password")'
 						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{ errors, touched, valid }'
-						rules='required'
-						:custom-messages='{required: "config.mqtt.form.messages.ClientId"}'
-					>
+						<CInputCheckbox
+							:checked.sync='configuration.EnabledSSL'
+							:label='$t("config.mqtt.form.EnabledSSL")'
+						/>
+						<ValidationProvider
+							v-slot='{ errors, touched, valid }'
+							rules='integer|min:0'
+							:custom-messages='{
+								integer: "config.mqtt.form.messages.KeepAliveInterval",
+								min: "config.mqtt.form.messages.KeepAliveInterval",
+							}'
+						>
+							<CInput
+								v-model.number='configuration.KeepAliveInterval'
+								:label='$t("config.mqtt.form.KeepAliveInterval")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+								type='number'
+								min='0'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{ errors, touched, valid }'
+							rules='integer|min:0'
+							:custom-messages='{
+								integer: "config.mqtt.form.messages.ConnectTimeout",
+								min: "config.mqtt.form.messages.ConnectTimeout",
+							}'
+						>
+							<CInput
+								v-model.number='configuration.ConnectTimeout'
+								:label='$t("config.mqtt.form.ConnectTimeout")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+								type='number'
+								min='0'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{ errors, touched, valid }'
+							:rules='"integer|between:0," + configuration.MaxReconnect'
+							:custom-messages='{
+								between: "config.mqtt.form.messages.MinReconnect",
+								integer: "config.mqtt.form.messages.MinReconnect",
+							}'
+						>
+							<CInput
+								v-model.number='configuration.MinReconnect'
+								:label='$t("config.mqtt.form.MinReconnect")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+								type='number'
+								:max='configuration.MaxReconnect'
+								min='0'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{ errors, touched, valid }'
+							:rules='"integer|min:" + configuration.MinReconnect'
+							:custom-messages='{
+								integer: "config.mqtt.form.messages.MaxReconnect",
+								min: "config.mqtt.form.messages.MaxReconnect",
+							}'
+						>
+							<CInput
+								v-model.number='configuration.MaxReconnect'
+								:label='$t("config.mqtt.form.MaxReconnect")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+								type='number'
+								:min='configuration.MinReconnect'
+							/>
+						</ValidationProvider>
 						<CInput
-							v-model='configuration.ClientId'
-							:label='$t("config.mqtt.form.ClientId")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
+							v-model='configuration.TrustStore'
+							:label='$t("config.mqtt.form.TrustStore")'
 						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{ errors, touched, valid }'
-						rules='integer|required'
-						:custom-messages='{
-							integer: "config.mqtt.form.messages.Persistence",
-							required: "config.mqtt.form.messages.Persistence",
-						}'
-					>
 						<CInput
-							v-model.number='configuration.Persistence'
-							:label='$t("config.mqtt.form.Persistence")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-							type='number'
+							v-model='configuration.KeyStore'
+							:label='$t("config.mqtt.form.KeyStore")'
 						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{ valid, touched, errors }'
-						rules='required'
-						:custom-messages='{
-							required: "config.mqtt.form.messages.QoS",
-						}'
-					>
-						<CSelect
-							:value.sync='configuration.Qos'
-							:label='$t("config.mqtt.form.QoS")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-							:placeholder='$t("config.mqtt.form.messages.QoS")'
-							:options='qosOptions'
-						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{ errors, touched, valid }'
-						rules='required'
-						:custom-messages='{required: "config.mqtt.form.messages.TopicRequest"}'
-					>
 						<CInput
-							v-model='configuration.TopicRequest'
-							:label='$t("config.mqtt.form.TopicRequest")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
+							v-model='configuration.PrivateKey'
+							:label='$t("config.mqtt.form.PrivateKey")'
 						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{ errors, touched, valid }'
-						rules='required'
-						:custom-messages='{required: "config.mqtt.form.messages.TopicResponse"}'
-					>
 						<CInput
-							v-model='configuration.TopicResponse'
-							:label='$t("config.mqtt.form.TopicResponse")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
+							v-model='configuration.PrivateKeyPassword'
+							:label='$t("config.mqtt.form.PrivateKeyPassword")'
 						/>
-					</ValidationProvider>
-					<CInput
-						v-model='configuration.User'
-						:label='$t("config.mqtt.form.User")'
-					/>
-					<CInput
-						v-model='configuration.Password'
-						:label='$t("config.mqtt.form.Password")'
-					/>
-					<CInputCheckbox
-						:checked.sync='configuration.EnabledSSL'
-						:label='$t("config.mqtt.form.EnabledSSL")'
-					/>
-					<ValidationProvider
-						v-slot='{ errors, touched, valid }'
-						rules='integer|min:0'
-						:custom-messages='{
-							integer: "config.mqtt.form.messages.KeepAliveInterval",
-							min: "config.mqtt.form.messages.KeepAliveInterval",
-						}'
-					>
 						<CInput
-							v-model.number='configuration.KeepAliveInterval'
-							:label='$t("config.mqtt.form.KeepAliveInterval")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-							type='number'
-							min='0'
+							v-model='configuration.EnabledCipherSuites'
+							:label='$t("config.mqtt.form.EnabledCipherSuites")'
 						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{ errors, touched, valid }'
-						rules='integer|min:0'
-						:custom-messages='{
-							integer: "config.mqtt.form.messages.ConnectTimeout",
-							min: "config.mqtt.form.messages.ConnectTimeout",
-						}'
-					>
-						<CInput
-							v-model.number='configuration.ConnectTimeout'
-							:label='$t("config.mqtt.form.ConnectTimeout")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-							type='number'
-							min='0'
+						<CInputCheckbox
+							:checked.sync='configuration.EnableServerCertAuth'
+							:label='$t("config.mqtt.form.EnableServerCertAuth")'
 						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{ errors, touched, valid }'
-						:rules='"integer|between:0," + configuration.MaxReconnect'
-						:custom-messages='{
-							between: "config.mqtt.form.messages.MinReconnect",
-							integer: "config.mqtt.form.messages.MinReconnect",
-						}'
-					>
-						<CInput
-							v-model.number='configuration.MinReconnect'
-							:label='$t("config.mqtt.form.MinReconnect")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-							type='number'
-							:max='configuration.MaxReconnect'
-							min='0'
+						<CInputCheckbox
+							:checked.sync='configuration.acceptAsyncMsg'
+							:label='$t("config.mqtt.form.acceptAsyncMsg")'
 						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{ errors, touched, valid }'
-						:rules='"integer|min:" + configuration.MinReconnect'
-						:custom-messages='{
-							integer: "config.mqtt.form.messages.MaxReconnect",
-							min: "config.mqtt.form.messages.MaxReconnect",
-						}'
-					>
-						<CInput
-							v-model.number='configuration.MaxReconnect'
-							:label='$t("config.mqtt.form.MaxReconnect")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-							type='number'
-							:min='configuration.MinReconnect'
-						/>
-					</ValidationProvider>
-					<CInput
-						v-model='configuration.TrustStore'
-						:label='$t("config.mqtt.form.TrustStore")'
-					/>
-					<CInput
-						v-model='configuration.KeyStore'
-						:label='$t("config.mqtt.form.KeyStore")'
-					/>
-					<CInput
-						v-model='configuration.PrivateKey'
-						:label='$t("config.mqtt.form.PrivateKey")'
-					/>
-					<CInput
-						v-model='configuration.PrivateKeyPassword'
-						:label='$t("config.mqtt.form.PrivateKeyPassword")'
-					/>
-					<CInput
-						v-model='configuration.EnabledCipherSuites'
-						:label='$t("config.mqtt.form.EnabledCipherSuites")'
-					/>
-					<CInputCheckbox
-						:checked.sync='configuration.EnableServerCertAuth'
-						:label='$t("config.mqtt.form.EnableServerCertAuth")'
-					/>
-					<CInputCheckbox
-						:checked.sync='configuration.acceptAsyncMsg'
-						:label='$t("config.mqtt.form.acceptAsyncMsg")'
-					/>
-					<CButton type='submit' color='primary' :disabled='invalid'>
-						{{ submitButton }}
-					</CButton>
-				</CForm>
-			</ValidationObserver>
-		</CCardBody>
-	</CCard>
+						<CButton type='submit' color='primary' :disabled='invalid'>
+							{{ submitButton }}
+						</CButton>
+					</CForm>
+				</ValidationObserver>
+			</CCardBody>
+		</CCard>
+	</div>
 </template>
 
 <script lang='ts'>

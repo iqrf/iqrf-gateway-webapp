@@ -20,45 +20,43 @@ declare(strict_types = 1);
 
 namespace App\ConsoleModule\Commands;
 
-use App\Models\Database\Entities\ApiKey;
+use App\Models\Database\Entities\Mapping;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use function assert;
 
 /**
- * CLI command for listing API keys
+ * CLI command to list existing mappings
  */
-class ApiKeyListCommand extends ApiKeyCommand {
+class MappingListCommand extends MappingCommand {
 
 	/**
 	 * @var string Command name
 	 */
-	protected static $defaultName = 'api-key:list';
+	protected static $defaultName = 'mapping:list';
 
 	/**
-	 * Configures the API key list command
+	 * Configures the mapping list command
 	 */
 	protected function configure(): void {
-		$this->setDescription('Lists API keys');
+		$this->setDescription('Lists mappings');
 	}
 
 	/**
-	 * Executes the API key list command
+	 * Executes the mapping list command
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
 	 * @return int Exit code
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
-		$apiKeys = [];
-		foreach ($this->repository->findAll() as $apiKey) {
-			assert($apiKey instanceof ApiKey);
-			$expiration = $apiKey->getExpiration() === null ? 'none' : $apiKey->getExpiration()->format('c');
-			$apiKeys[] = [$apiKey->getId(), $apiKey->getDescription(), $expiration];
+		$mappings = [];
+		foreach ($this->repository->findAll() as $mapping) {
+			assert($mapping instanceof Mapping);
+			array_push($mappings, [$mapping->getId(), $mapping->getType(), $mapping->getName(), $mapping->getInterface(), $mapping->getBusPin(), $mapping->getPgmPin(), $mapping->getPowerPin(), $mapping->getBaudRate(), $mapping->getI2cPin(), $mapping->getSpiPin(), $mapping->getUartPin()]);
 		}
 		$style = new SymfonyStyle($input, $output);
-		$style->title('List API keys');
-		$style->table(['Key ID', 'Description', 'Expiration date'], $apiKeys);
+		$style->title('List mappings (* IQRF Gateway only)');
+		$style->table(['ID', 'Type', 'Name', 'Interface', 'Bus pin', 'Pgm pin', 'Power pin', 'Baud rate', 'I2C pin*', 'SPI pin*', 'UART pin*'], $mappings);
 		return 0;
 	}
 

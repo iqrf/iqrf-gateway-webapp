@@ -151,7 +151,7 @@ export default class IqrfRepository extends Vue {
 			this.daemonHigher230 = true;
 		}
 
-		if (this.$store.getters['user/role'] === 'power') {
+		if (this.$store.getters['user/getRole'] === 'power') {
 			this.powerUser = true;
 		}
 

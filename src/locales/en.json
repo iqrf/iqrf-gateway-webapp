@@ -236,7 +236,50 @@
 		},
 		"interfaceMapping": {
 			"boards": "Boards",
-			"interfaces": "Interfaces"
+			"interfaces": "Interfaces",
+			"addMapping": "Add mapping",
+			"setMapping": "Set mapping",
+			"editMapping": "Edit mapping",
+			"removeMapping": "Remove mapping",
+			"removeTitle": "Remove mapping",
+			"form": {
+				"addTitle": "Add mapping",
+				"editTitle": "Edit mapping",
+				"type": "Mapping type",
+				"types": {
+					"spi": "SPI",
+					"uart": "UART"
+				},
+				"name": "Mapping name",
+				"interface": "Mapping device name",
+				"powerPin": "Power enable GPIO pin",
+				"busPin": "Bus enable GPIO pin",
+				"pgmPin": "Programming mode switch GPIO pin",
+				"baudRate": "UART baud rate",
+				"gateway": "IQRF Gateway mapping",
+				"i2cPin": "I2C interface enable GPIO pin",
+				"spiPin": "SPI interface enable GPIO pin",
+				"uartPin": "UART interface enable GPIO pin",
+				"messages": {
+					"typeSelect": "Please select mapping type.",
+					"name": "Please enter mapping name.",
+					"interface": "Please enter device name.",
+					"busPin": "Please enter bus enable pin number.",
+					"pgmPin": "Please enter programming mode switch pin number.",
+					"powerPin": "Please enter power enable pin number.",
+					"i2cPin": "Please enter I2C interface enable pin number.",
+					"spiPin": "Please enter SPI interface enable pin number.",
+					"uartPin": "Please enter UART interface enable pin number."
+				}
+			},
+			"messages": {
+				"invalid": "Invalid mapping content.",
+				"notFound": "Mapping not found.",
+				"removePrompt": "Do you really want to remove mapping {mapping}?",
+				"removeSuccess": "Mapping {mapping} has been successfully removed.",
+				"addSuccess": "Mapping {mapping} has been succesfully created.",
+				"editSuccess": "Mapping {mapping} has been successfully edited."
+			}
 		},
 		"iqmesh": {
 			"title": "IQMESH services",
@@ -337,6 +380,10 @@
 				"powerEnableGpioPin": "Power enable GPIO pin",
 				"pgmSwitchGpioPin": "Programming mode switch GPIO pin",
 				"busEnableGpioPin": "Bus enable GPIO pin",
+				"i2cEnableGpioPin": "I2C interface enable GPIO pin *",
+				"spiEnableGpioPin": "SPI interface enable GPIO pin *",
+				"uartEnableGpioPin": "UART interface enable GPIO pin *",
+				"gwOnly": "* IQRF Gateway only",
 				"uartReset": "UART reset",
 				"messages": {
 					"instance": "Please enter name of IQRF UART instance.",

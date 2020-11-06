@@ -1,7 +1,7 @@
 <template>
 	<CCard class='border-0'>
 		<CCardHeader>
-			<h3>{{ $t('config.jsonSplitter.title') }}</h3>
+			{{ $t('config.jsonSplitter.title') }}
 		</CCardHeader>
 		<CCardBody>
 			<ValidationObserver v-slot='{ invalid }'>

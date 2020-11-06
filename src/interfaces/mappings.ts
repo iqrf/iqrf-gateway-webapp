@@ -1,24 +1,59 @@
 /**
- * SPI mapping interface
+ * Mapping interface
  */
-export interface ISPIMapping {
-	IqrfInterface: string
-	busEnableGpioPin: number
-	pgmSwitchGpioPin: number
-	powerEnableGpioPin: number
-}
+export interface IMapping {
+	/**
+	 * Mapping ID
+	 */
+	id?: number
 
-/**
- * UART mapping interface
- */
-export interface IUartMapping extends ISPIMapping {
-    baudRate: number
-}
+	/**
+	 * Mapping type
+	 */
+	type: string
 
-/**
- * Mappings interface
- */
-export interface IMappings {
-	spi: Record<string, Record<string, ISPIMapping>>
-	uart: Record<string, Record<string, IUartMapping>>
+	/**
+	 * Mapping name
+	 */
+	name: string
+
+	/**
+     * Device name
+     */
+    IqrfInterface: string
+    
+    /**
+     * Serial port baud rate
+     */
+    baudRate?: number
+    
+    /**
+     * Power enable GPIO pin
+     */
+    powerEnableGpioPin: number
+    
+    /**
+     * Bus enable GPIO pin
+     */
+    busEnableGpioPin: number
+    
+    /**
+     * Programming mode switch GPIO pin
+     */
+    pgmSwitchGpioPin: number
+
+	/**
+     * I2C interface enable GPIO pin
+     */
+    i2cEnableGpioPin?: number
+
+    /**
+     * SPI interface enable GPIO pin
+     */
+    spiEnableGpioPin?: number
+
+    /**
+     * UART interface enable GPIO pin
+     */
+    uartEnableGpioPin?: number
 }

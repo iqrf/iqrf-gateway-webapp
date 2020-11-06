@@ -1,0 +1,110 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/mappingCreate.json",
+	"type": "object",
+	"title": "Create mapping schema",
+	"additionalProperties": false,
+	"examples": [
+		{
+			"id": 2,
+			"type": "uart",
+			"name": "Raspberry Pi",
+			"IqrfInterface": "/dev/ttyS0",
+			"busEnableGpioPin": 7,
+			"pgmSwitchGpioPin": 22,
+			"powerEnableGpioPin": 23,
+			"baudRate": 57600
+		},
+		{
+			"id": 6,
+			"type": "spi",
+			"name": "IQD-GW-02A",
+			"IqrfInterface": "/dev/spidev1.0",
+			"busEnableGpioPin": -1,
+			"pgmSwitchGpioPin": 3,
+			"powerEnableGpioPin": 19,
+			"i2cEnableGpioPin": 7,
+			"spiEnableGpioPin": 10,
+			"uartEnableGpioPin": 6
+		}
+	],
+	"required": [
+		"id",
+		"type",
+		"name",
+		"IqrfInterface",
+		"busEnableGpioPin",
+		"pgmSwitchGpioPin",
+		"powerEnableGpioPin"
+	],
+	"properties": {
+		"id": {
+			"$id": "#/properties/id",
+			"type": "integer",
+			"title": "Mapping ID",
+			"example": 2
+		},
+		"type": {
+			"$id": "#/properties/type",
+			"type": "string",
+			"title": "Mapping type",
+			"enum": ["spi", "uart"],
+			"example": "uart"
+		},
+		"name": {
+			"$id": "#/properties/name",
+			"type": "string",
+			"title": "Mapping name",
+			"example": "Raspberry Pi"
+		},
+		"IqrfInterface": {
+			"$id": "#/properties/IqrfInterface",
+			"type": "string",
+			"title": "Device name",
+			"example": "/dev/ttyS0"
+		},
+		"busEnableGpioPin": {
+			"$id": "#/properties/busEnableGpioPin",
+			"type": "integer",
+			"title": "Bus enable pin",
+			"example": 7
+		},
+		"pgmSwitchGpioPin": {
+			"$id": "#/properties/pgmSwitchGpioPin",
+			"type": "integer",
+			"title": "Programming mode switch pin",
+			"example": 22
+		},
+		"powerEnableGpioPin": {
+			"$id": "#/properties/powerEnableGpioPin",
+			"type": "integer",
+			"title": "Power enable pin",
+			"example": 23
+		},
+		"baudRate": {
+			"$id": "#/properties/baudRate",
+			"type": "integer",
+			"title": "UART baud rate",
+			"enum": [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400],
+			"example": 57600
+		},
+		"i2cEnableGpioPin": {
+			"$id": "#/properties/i2cEnableGpioPin",
+			"type": "integer",
+			"title": "I2C interface enable pin",
+			"example": 7
+		},
+		"spiEnableGpioPin": {
+			"$id": "#/properties/spiEnableGpioPin",
+			"type": "integer",
+			"title": "SPI interface enable pin",
+			"example": 10
+		},
+		"uartEnableGpioPin": {
+			"$id": "#/properties/uartEnableGpioPin",
+			"type": "integer",
+			"title": "UART interface enable pin",
+			"example": 6
+		}
+	}
+}

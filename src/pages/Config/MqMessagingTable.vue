@@ -2,9 +2,9 @@
 	<div>
 		<CCard>
 			<CCardHeader>
-				<h3 class='float-left'>
+				<div class='float-left'>
 					{{ $t('config.mq.title') }}
-				</h3>
+				</div>
 				<CButton
 					color='success'
 					to='/config/daemon/mq/add'

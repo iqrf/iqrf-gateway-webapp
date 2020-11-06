@@ -1,7 +1,7 @@
 <template>
 	<CCard class='border-0'>
 		<CCardHeader>
-			<h3>{{ $t('config.jsonMngMetaDataApi.title') }}</h3>
+			{{ $t('config.jsonMngMetaDataApi.title') }}
 		</CCardHeader>
 		<CCardBody>
 			<ValidationObserver v-slot='{ invalid }'>

@@ -1,101 +1,101 @@
 <template>
-	<CCard>
-		<CCardHeader>
-			<h3>{{ $t('config.mender.title') }}</h3>
-		</CCardHeader>
-		<CCardBody>
-			<ValidationObserver v-if='configuration !== null' v-slot='{ invalid }'>
-				<CForm @submit.prevent='processSubmit'>
-					<ValidationProvider
-						v-slot='{ errors, touched, valid }'
-						rules='addr|required'
-						:custom-messages='{
-							addr: "config.mender.form.messages.invalid.server",
-							required: "config.mender.form.messages.missing.server"
-						}'
-					>
-						<CInput
-							v-model='configuration.ServerURL'
-							:label='$t("config.mender.form.server")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{ errors, touched, valid }'
-						rules='required'
-						:custom-messages='{
-							required: "config.mender.form.messages.missing.tenantToken"
-						}'
-					>
-						<CInput
-							v-model='configuration.TenantToken'
-							:label='$t("config.mender.form.tenantToken")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{ errors, touched, valid }'
-						rules='min:0|required|integer'
-						:custom-messages='{
-							integer: "forms.messages.integer",
-							min: "config.mender.form.messages.inventoryPollInterval",
-							required: "config.mender.form.messages.inventoryPollInterval"
-						}'
-					>
-						<CInput
-							v-model.number='configuration.InventoryPollIntervalSeconds'
-							type='number'
-							min='0'
-							:label='$t("config.mender.form.inventoryPollInterval")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{ errors, touched, valid }'
-						rules='min:0|required|integer'
-						:custom-messages='{
-							integer: "forms.messages.integer",
-							min: "config.mender.form.messages.retryPollInterval",
-							required: "config.mender.form.messages.retryPollInterval"
-						}'
-					>
-						<CInput
-							v-model.number='configuration.RetryPollIntervalSeconds'
-							type='number'
-							min='0'
-							:label='$t("config.mender.form.retryPollInterval")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-						/>
-					</ValidationProvider>
-					<ValidationProvider
-						v-slot='{ errors, touched, valid}'
-						rules='min:0|required|integer'
-						:custom-messages='{
-							integer: "forms.messages.integer",
-							min: "config.mender.form.messages.updatePollInterval",
-							required: "config.mender.form.messages.updatePollInterval"
-						}'
-					>
-						<CInput
-							v-model.number='configuration.UpdatePollIntervalSeconds'
-							type='number'
-							min='0'
-							:label='$t("config.mender.form.updatePollInterval")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-						/>
-					</ValidationProvider>
-					<CButton color='primary' type='submit' :disabled='invalid'>
-						{{ $t('forms.save') }}
-					</CButton>
-				</CForm>
-			</ValidationObserver>
-		</CCardBody>
-	</CCard>
+	<div>
+		<h1>{{ $t('config.mender.title') }}</h1>
+		<CCard>
+			<CCardBody>
+				<ValidationObserver v-if='configuration !== null' v-slot='{ invalid }'>
+					<CForm @submit.prevent='processSubmit'>
+						<ValidationProvider
+							v-slot='{ errors, touched, valid }'
+							rules='addr|required'
+							:custom-messages='{
+								addr: "config.mender.form.messages.invalid.server",
+								required: "config.mender.form.messages.missing.server"
+							}'
+						>
+							<CInput
+								v-model='configuration.ServerURL'
+								:label='$t("config.mender.form.server")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{ errors, touched, valid }'
+							rules='required'
+							:custom-messages='{
+								required: "config.mender.form.messages.missing.tenantToken"
+							}'
+						>
+							<CInput
+								v-model='configuration.TenantToken'
+								:label='$t("config.mender.form.tenantToken")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{ errors, touched, valid }'
+							rules='min:0|required|integer'
+							:custom-messages='{
+								integer: "forms.messages.integer",
+								min: "config.mender.form.messages.inventoryPollInterval",
+								required: "config.mender.form.messages.inventoryPollInterval"
+							}'
+						>
+							<CInput
+								v-model.number='configuration.InventoryPollIntervalSeconds'
+								type='number'
+								min='0'
+								:label='$t("config.mender.form.inventoryPollInterval")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{ errors, touched, valid }'
+							rules='min:0|required|integer'
+							:custom-messages='{
+								integer: "forms.messages.integer",
+								min: "config.mender.form.messages.retryPollInterval",
+								required: "config.mender.form.messages.retryPollInterval"
+							}'
+						>
+							<CInput
+								v-model.number='configuration.RetryPollIntervalSeconds'
+								type='number'
+								min='0'
+								:label='$t("config.mender.form.retryPollInterval")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<ValidationProvider
+							v-slot='{ errors, touched, valid}'
+							rules='min:0|required|integer'
+							:custom-messages='{
+								integer: "forms.messages.integer",
+								min: "config.mender.form.messages.updatePollInterval",
+								required: "config.mender.form.messages.updatePollInterval"
+							}'
+						>
+							<CInput
+								v-model.number='configuration.UpdatePollIntervalSeconds'
+								type='number'
+								min='0'
+								:label='$t("config.mender.form.updatePollInterval")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+							/>
+						</ValidationProvider>
+						<CButton color='primary' type='submit' :disabled='invalid'>
+							{{ $t('forms.save') }}
+						</CButton>
+					</CForm>
+				</ValidationObserver>
+			</CCardBody>
+		</CCard>
+	</div>
 </template>
 
 <script lang='ts'>

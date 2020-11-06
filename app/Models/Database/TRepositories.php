@@ -22,9 +22,11 @@ namespace App\Models\Database;
 
 use App\Models\Database\Entities\ApiKey;
 use App\Models\Database\Entities\IqrfOsPatch;
+use App\Models\Database\Entities\Mapping;
 use App\Models\Database\Entities\User;
 use App\Models\Database\Repositories\ApiKeyRepository;
 use App\Models\Database\Repositories\IqrfOsPatchRepository;
+use App\Models\Database\Repositories\MappingRepository;
 use App\Models\Database\Repositories\UserRepository;
 
 /**
@@ -49,6 +51,16 @@ trait TRepositories {
 	public function getIqrfOsPatchRepository(): IqrfOsPatchRepository {
 		$repository = $this->getRepository(IqrfOsPatch::class);
 		assert($repository instanceof IqrfOsPatchRepository);
+		return $repository;
+	}
+
+	/**
+	 * Returns the mapping repository
+	 * @return MappingRepository Mapping repository
+	 */
+	public function getMappingRepository(): MappingRepository {
+		$repository = $this->getRepository(Mapping::class);
+		assert($repository instanceof MappingRepository);
 		return $repository;
 	}
 

@@ -1,7 +1,7 @@
 <template>
 	<CCard>
 		<CCardHeader>
-			<h3>{{ $t('config.iqrfUart.title') }}</h3>
+			{{ $t('config.iqrfUart.title') }}
 		</CCardHeader>
 		<CCardBody>
 			<ValidationObserver v-slot='{ invalid }'>
@@ -100,6 +100,30 @@
 						:checked.sync='uartReset'
 						:label='$t("config.iqrfUart.form.uartReset")'
 					/>
+					<CInput
+						v-if='i2cEnableGpioPin !== null'
+						v-model.number='i2cEnableGpioPin'
+						type='number'
+						:label='$t("config.iqrfUart.form.i2cEnableGpioPin")'
+						:disabled='true'
+					/>
+					<CInput
+						v-if='spiEnableGpioPin !== null'
+						v-model.number='spiEnableGpioPin'
+						type='number'
+						:label='$t("config.iqrfUart.form.spiEnableGpioPin")'
+						:disabled='true'
+					/>
+					<CInput
+						v-if='uartEnableGpioPin !== null'
+						v-model.number='uartEnableGpioPin'
+						type='number'
+						:label='$t("config.iqrfUart.form.uartEnableGpioPin")'
+						:disabled='true'
+					/>
+					<div v-if='i2cEnableGpioPin !== null || spiEnableGpioPin !== null || uartEnableGpioPin !== null'>
+						<i>{{ $t('config.iqrfUart.form.gwOnly') }}</i>
+					</div><br v-if='i2cEnableGpioPin !== null || spiEnableGpioPin !== null || uartEnableGpioPin !== null'>
 					<CButton type='submit' color='primary' :disabled='invalid'>
 						{{ $t('forms.save') }}
 					</CButton>
@@ -143,7 +167,8 @@ import InterfacePorts from '../../components/Config/InterfacePorts.vue';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import {IOption} from '../../interfaces/coreui';
-import {IIqrfUart, IUartMapping} from '../../interfaces/iqrfUart';
+import {IIqrfUart} from '../../interfaces/iqrfInterfaces';
+import {IMapping} from '../../interfaces/mappings';
 import {versionHigherThan} from '../../helpers/versionChecker';
 
 @Component({
@@ -196,9 +221,14 @@ export default class IqrfUart extends Vue {
 	private componentInstance = 'iqrf::IqrfUart-/dev/ttyS0'
 
 	/**
-	 * 
+	 * @var {boolean} daemonHigher230 Indicates whether Daemon version is 2.3.0 or higher
 	 */
 	private daemonHigher230 = false
+
+	/**
+	 * @var {number|null} i2cEnableGpioPin I2C interface enable pin
+	 */
+	private i2cEnableGpioPin: number|null = null
 
 	/**
 	 * @var {string} instance UART component instance name, used for REST API communication
@@ -226,9 +256,19 @@ export default class IqrfUart extends Vue {
 	private powerUser = false
 
 	/**
+	 * @var {number|null} spiEnableGpioPin SPI interface enable pin
+	 */
+	private spiEnableGpioPin: number|null = null
+
+	/**
 	 * @var {boolean} uartReset Should UART component instance reset?
 	 */
 	private uartReset = true
+
+	/**
+	 * @var {number|null} uartEnableGpioPin UART interface enable pin
+	 */
+	private uartEnableGpioPin: number|null = null
 	
 	/**
 	 * Computes array of CoreUI select options for baudrate
@@ -255,7 +295,7 @@ export default class IqrfUart extends Vue {
 			this.daemonHigher230 = true;
 		}
 
-		if (this.$store.getters['user/role'] === 'power') {
+		if (this.$store.getters['user/getRole'] === 'power') {
 			this.powerUser = true;
 		}
 
@@ -296,6 +336,15 @@ export default class IqrfUart extends Vue {
 				this.uartReset = response.uartReset;
 			}
 		}
+		if (response.i2cEnableGpioPin !== undefined) {
+			this.i2cEnableGpioPin = response.i2cEnableGpioPin;
+		}
+		if (response.spiEnableGpioPin !== undefined) {
+			this.spiEnableGpioPin = response.spiEnableGpioPin;
+		}
+		if (response.uartEnableGpioPin !== undefined) {
+			this.uartEnableGpioPin = response.uartEnableGpioPin;
+		}
 	}
 
 	/**
@@ -314,6 +363,15 @@ export default class IqrfUart extends Vue {
 		if (this.daemonHigher230) {
 			Object.assign(configuration, {pgmSwitchGpioPin: this.pgmSwitchGpioPin, uartReset: this.uartReset});
 		}
+		if (this.i2cEnableGpioPin !== null) {
+			Object.assign(configuration, {i2cEnableGpioPin: this.i2cEnableGpioPin});
+		}
+		if (this.spiEnableGpioPin !== null) {
+			Object.assign(configuration, {spiEnableGpioPin: this.spiEnableGpioPin});
+		}
+		if (this.uartEnableGpioPin !== null) {
+			Object.assign(configuration, {uartEnableGpioPin: this.uartEnableGpioPin});
+		}
 		return configuration;
 	}
 	
@@ -322,7 +380,7 @@ export default class IqrfUart extends Vue {
 	 */
 	private saveConfig(): void {
 		this.$store.commit('spinner/SHOW');
-		if (this.instance !== null) {
+		if (this.instance !==  '') {
 			DaemonConfigurationService.updateInstance(this.componentName, this.instance, this.buildConfiguration())
 				.then(() => this.successfulSave())
 				.catch((error: AxiosError) => FormErrorHandler.configError(error));
@@ -345,13 +403,30 @@ export default class IqrfUart extends Vue {
 	 * Updates pin configuration from mapping
 	 * @param {IUartMapping} mapping Board mapping
 	 */
-	private updateMapping(mapping: IUartMapping): void {
+	private updateMapping(mapping: IMapping): void {
 		this.IqrfInterface = mapping.IqrfInterface;
-		this.baudRate = mapping.baudRate;
+		if (mapping.baudRate !== undefined) {
+			this.baudRate = mapping.baudRate;
+		}
 		this.busEnableGpioPin = mapping.busEnableGpioPin;
 		this.powerEnableGpioPin = mapping.powerEnableGpioPin;
 		if (this.daemonHigher230) {
 			this.pgmSwitchGpioPin = mapping.pgmSwitchGpioPin;
+		}
+		if (mapping.i2cEnableGpioPin !== undefined) {
+			this.i2cEnableGpioPin = mapping.i2cEnableGpioPin;
+		} else {
+			this.i2cEnableGpioPin = null;
+		}
+		if (mapping.spiEnableGpioPin !== undefined) {
+			this.spiEnableGpioPin = mapping.spiEnableGpioPin;
+		} else {
+			this.spiEnableGpioPin = null;
+		}
+		if (mapping.uartEnableGpioPin !== undefined) {
+			this.uartEnableGpioPin = mapping.uartEnableGpioPin;
+		} else {
+			this.uartEnableGpioPin = null;
 		}
 	}
 
