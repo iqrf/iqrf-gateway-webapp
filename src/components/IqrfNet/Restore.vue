@@ -37,8 +37,8 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';
 import ini from '../../../node_modules/ini';
 import IqrfNetService from '../../services/IqrfNetService';
-import { WebSocketOptions } from '../../store/modules/webSocketClient.module';
-import { MutationPayload } from 'vuex';
+import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
+import {MutationPayload} from 'vuex';
 
 interface BackupData {
 	Address: string

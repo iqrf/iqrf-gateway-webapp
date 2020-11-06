@@ -49,9 +49,9 @@ import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CForm, CInput} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';
-import { WebSocketOptions } from '../../store/modules/webSocketClient.module';
+import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 import IqrfNetService from '../../services/IqrfNetService';
-import { MutationPayload } from 'vuex';
+import {MutationPayload} from 'vuex';
 import {saveAs} from 'file-saver';
 
 interface DeviceData {
@@ -94,6 +94,11 @@ export default class Backup extends Vue {
 	private msgId: string|null = null
 
 	/**
+	 * @var {Array<number>} offlineDevices Array of devices offline during the backup process
+	 */
+	private offlineDevices: Array<number> = []
+
+	/**
 	 * @var {Array<unknown>} selectOptions CoreUI form select options
 	 */
 	private selectOptions: Array<unknown> = [
@@ -112,7 +117,7 @@ export default class Backup extends Vue {
 	]
 
 	/**
-	 * @var {string} target backup target type
+	 * @var {string} target Backup target type
 	 */
 	private target = ''
 
@@ -140,26 +145,8 @@ export default class Backup extends Vue {
 				return;
 			}
 			if (mutation.payload.data.msgId === this.msgId) {
-				switch(mutation.payload.data.status) {
-					case -1:
-						this.$toast.error(
-							this.$t('iqrfnet.networkManager.backup.messages.timeout').toString()
-						);
-						break;
-					default:
-						this.$store.commit('spinner/UPDATE_TEXT', this.backupProgress(mutation.payload.data));
-						if (mutation.payload.data.status === 0) {
-							this.deviceData.push(mutation.payload.data.rsp.devices[0]);
-						}
-						if (mutation.payload.data.rsp.progress === 100) {
-							this.$store.commit('spinner/HIDE');
-							this.$store.dispatch('removeMessage', this.msgId);
-							this.generateBackupFile();
-							this.$toast.success(
-								this.$t('iqrfnet.networkManager.backup.messages.success').toString()
-							);
-						}
-						break;
+				if (mutation.payload.mType === 'iqmeshNetwork_Backup') {
+					this.handleBackupResponse(mutation.payload.data);
 				}
 			}
 		});
@@ -173,11 +160,98 @@ export default class Backup extends Vue {
 		this.unsubscribe();
 	}
 
+	private concludeBackup() {
+		this.$store.commit('spinner/HIDE');
+		this.$store.dispatch('removeMessage', this.msgId);
+		this.generateBackupFile();
+		this.backupSuccessToast();
+	}
+
+	private backupSuccessToast(): void {
+		if (this.offlineDevices.length === 0) {
+			this.$toast.success(
+				this.$t('iqrfnet.networkManager.backup.messages.success').toString()
+			);
+		} else {
+			this.$toast.info(
+				this.$t('iqrfnet.networkManager.backup.messages.partialSuccess', {devices: this.offlineDevices.join(', ')}).toString()
+			);
+		}
+	}
+
+	private handleBackupResponse(data: any): void {
+		if (data.status === 0) { // no error detected
+			this.$store.commit('spinner/UPDATE_TEXT', this.backupProgress(data));
+			this.deviceData.push(data.rsp.devices[0]);
+			if (data.rsp.progress !== 100) { // backup process not finished
+				return;
+			}
+			this.concludeBackup();
+			return;
+		}
+
+		if (data.status === -1) { // request timed out
+			this.$store.commit('spinner/HIDE');
+			this.$store.dispatch('removeMessage', this.msgId);
+			this.$toast.error(
+				this.$t('iqrfnet.networkManager.backup.messages.timeout').toString()
+			);
+			return;
+		}
+
+		if (data.status !== 1000) { // is not a backup response code
+			return;
+		}
+
+		if (this.target === 'coordinator' && data.rsp.progress === 100) {
+			this.$store.commit('spinner/HIDE');
+			this.$store.dispatch('removeMessage', this.msgId);
+			this.$toast.error(
+				this.$t('iqrfnet.networkManager.backup.messages.nodeOffline', {address: 0}).toString()
+			);
+			return;
+		}
+
+		if (data.statusStr.includes('ERROR_NADR')) { // device not bonded
+			if (this.target === 'node' && data.rsp.progress === 100) {
+				this.$store.commit('spinner/HIDE');
+				this.$store.dispatch('removeMessage', this.msgId);
+				this.$toast.error(
+					this.$t('iqrfnet.networkManager.backup.messages.invalidNadr', {address: this.address}).toString()
+				);
+				return;
+			}
+			if (this.target === 'network' && data.rsp.progress === 100) { // device in coordinator address but not found
+				this.concludeBackup();
+				return;
+			}
+		}
+
+		if (data.statusStr.includes('ERROR_TIMEOUT')) { // device is offline
+			if (this.target === 'node' && data.rsp.progress === 100) {
+				this.$store.commit('spinner/HIDE');
+				this.$store.dispatch('removeMessage', this.msgId);
+				this.$toast.error(
+					this.$t('iqrfnet.networkManager.backup.messages.nodeOffline', {address: this.address}).toString()
+				);
+				return;
+			}
+			if (this.target === 'network' && data.rsp.progress === 100) { // backup finished, but last node device was offline
+				this.offlineDevices.push(data.rsp.devices[0].deviceAddr);
+				this.concludeBackup();
+				return;
+			}
+			this.offlineDevices.push(data.rsp.devices[0].deviceAddr);
+			this.$store.commit('spinner/UPDATE_TEXT', this.backupProgress(data));
+		}
+	}
+
 	/**
 	 * Performs device backup via daemon API
 	 */
 	private backupDevice(): void {
 		this.deviceData = [];
+		this.offlineDevices = [];
 		const address = this.target === 'node' ? this.address : 0;
 		const wholeNetwork = this.target === 'network';
 		const options = new WebSocketOptions(null);
@@ -195,9 +269,9 @@ export default class Backup extends Vue {
 	private backupProgress(response: any): string {
 		let message = '\n' + this.$t('iqrfnet.networkManager.backup.messages.statusRunning', {progress: response.rsp.progress}).toString();
 		if (response.status === 0) {
-			message += '\n' + this.$t('iqrfnet.networkManager.backup.messages.statusSuccess', {deviceAdddr: response.rsp.devices[0].deviceAddr}).toString();
+			message += '\n' + this.$t('iqrfnet.networkManager.backup.messages.statusSuccess', {deviceAddr: response.rsp.devices[0].deviceAddr}).toString();
 		} else if (response.status === 1000) {
-			message += '\n' + this.$t('iqrfnet.networkManager.backup.messages.statusFailed', {deviceAdddr: response.rsp.devices[0].deviceAddr}).toString();
+			message += '\n' + this.$t('iqrfnet.networkManager.backup.messages.statusFailed', {deviceAddr: response.rsp.devices[0].deviceAddr}).toString();
 		}
 		return message;
 	}

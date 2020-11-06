@@ -1148,10 +1148,13 @@
 				"messages": {
 					"timeout": "The backup process request timed out.",
 					"success": "The backup process has been successfully completed.",
+					"partialSuccess": "All online devices have been successfully backed up. Offine devices: {devices}.",
 					"statusInit": "Backup running [0 %]",
 					"statusRunning": "Backup running [{progress} %]",
 					"statusSuccess": "Backup of device {deviceAddr} completed.",
-					"statusFailed": "Backup of device {deviceAddr} failed. Device is offline."
+					"statusFailed": "Backup of device {deviceAddr} failed. Device is offline.",
+					"invalidNadr": "No device is bonded at address {address}.",
+					"nodeOffline": "Device at address {address} is offline."
 				}
 			},
 			"restore": {
