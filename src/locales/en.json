@@ -147,6 +147,9 @@
 		"clearBonds": "Clear All Bonds",
 		"enumerate": "Enumerate",
 		"upload": "Upload",
+		"backup": "Backup",
+		"restore": "Restore",
+		"downloadBackup": "Download backup",
 		"messages": {
 			"getConfTimeout": "The request to retrieve current configuration timed out.",
 			"saveConfTimeout": "The request to save new configuration timed out.",
@@ -1128,6 +1131,55 @@
 					"numberOfNewNodes": "Number of new nodes",
 					"abortOnTooManyNodesFound": "Abort the AutoNetwork if too many nodes were found",
 					"verbose": "Verbose mode"
+				}
+			},
+			"backup": {
+				"title": "Network backup",
+				"form": {
+					"coordinator": "Coordinator",
+					"node": "Node",
+					"address": "Node address",
+					"network": "Whole network",
+					"messages": {
+						"select": "Please select backup target.",
+						"address": "Please enter a node address integer between 1 and 239."
+					}
+				},
+				"messages": {
+					"timeout": "The backup process request timed out.",
+					"success": "The backup process has been successfully completed.",
+					"partialSuccess": "All online devices have been successfully backed up. Offine devices: {devices}.",
+					"statusInit": "Backup running [0 %]",
+					"statusRunning": "Backup running [{progress} %]",
+					"statusSuccess": "Backup of device {deviceAddr} completed.",
+					"statusFailed": "Backup of device {deviceAddr} failed. Device is offline.",
+					"invalidNadr": "No device is bonded at address {address}.",
+					"nodeOffline": "Device at address {address} is offline."
+				}
+			},
+			"restore": {
+				"title": "Coordinator restore",
+				"form": {
+					"address": "Node address",
+					"backupFile": "Backup file",
+					"restartOnRestore": "Restart Coordinator on restore",
+					"messages": {
+						"backupFile": "Please insert a TR backup file.",
+						"address": "Please enter integer between 1 and 239 to restore a node device."
+					}
+				},
+				"messages": {
+					"timeout": "The restore process request timed out.",
+					"success": "The restore process has been successfully completed.",
+					"corruptedFile": "The contents of uploaded file are corrupted.",
+					"invalidContent": "The uploaded file does not contain valid IQMESH backup data.",
+					"missingProp": "Entry {item} does not contain property {property}.",
+					"missingCoordinator": "Uploaded file does not contain coordinator device backup data entry.",
+					"missingNode": "Uploaded file does not contain backup data of node device at address {address}.",
+					"statusCoordinator": "Restoring coordinator device.",
+					"coordinatorOffline": "Coordinator device is offline.",
+					"invalidSize": "Invalid coordinator backup data size.",
+					"checksumMismatch": "Incorrect coordinator backup data checksum."
 				}
 			},
 			"bonding": {

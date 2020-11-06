@@ -12,6 +12,10 @@
 						<CTab title='AutoNetwork'>
 							<AutoNetwork ref='autonetwork' @update-devices='updateDevices' />
 						</CTab>
+						<CTab title='Backup/Restore'>
+							<Backup />
+							<Restore />
+						</CTab>
 					</CTabs>
 				</CCard>
 			</CCol>
@@ -25,6 +29,8 @@
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CCard, CTab, CTabs} from '@coreui/vue/src';
+import Backup from '../../components/IqrfNet/Backup.vue';
+import Restore from '../../components/IqrfNet/Restore.vue';
 import BondingManager from '../../components/IqrfNet/BondingManager.vue';
 import DevicesInfo from '../../components/IqrfNet/DevicesInfo.vue';
 import DiscoveryManager from '../../components/IqrfNet/DiscoveryManager.vue';
@@ -36,9 +42,11 @@ import AutoNetwork from '../../components/IqrfNet/AutoNetwork.vue';
 		CTab,
 		CTabs,
 		AutoNetwork,
+		Backup,
 		BondingManager,
 		DevicesInfo,
 		DiscoveryManager,
+		Restore,
 	},
 	metaInfo: {
 		title: 'iqrfnet.networkManager.title',
