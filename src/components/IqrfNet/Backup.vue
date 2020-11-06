@@ -160,6 +160,9 @@ export default class Backup extends Vue {
 		this.unsubscribe();
 	}
 
+	/**
+	 * Backup concluding method, hides spinner, removes message id, generates backup file and toast message
+	 */
 	private concludeBackup() {
 		this.$store.commit('spinner/HIDE');
 		this.$store.dispatch('removeMessage', this.msgId);
@@ -167,6 +170,9 @@ export default class Backup extends Vue {
 		this.backupSuccessToast();
 	}
 
+	/**
+	 * Generates backup finished toast message depending on the state of devices in network
+	 */
 	private backupSuccessToast(): void {
 		if (this.offlineDevices.length === 0) {
 			this.$toast.success(
@@ -179,6 +185,10 @@ export default class Backup extends Vue {
 		}
 	}
 
+	/**
+	 * Backup response message handler
+	 * @param {any} data Daemon API response
+	 */
 	private handleBackupResponse(data: any): void {
 		if (data.status === 0) { // no error detected
 			this.$store.commit('spinner/UPDATE_TEXT', this.backupProgress(data));
@@ -203,7 +213,7 @@ export default class Backup extends Vue {
 			return;
 		}
 
-		if (this.target === 'coordinator' && data.rsp.progress === 100) {
+		if (this.target === 'coordinator' && data.rsp.progress === 100) { // coordinator is offline
 			this.$store.commit('spinner/HIDE');
 			this.$store.dispatch('removeMessage', this.msgId);
 			this.$toast.error(
