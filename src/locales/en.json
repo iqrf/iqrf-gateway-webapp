@@ -222,7 +222,7 @@
 					"uart": "UART"
 				},
 				"updateFailed": "An error occured while updating interface settings.",
-				"updateSuccess": "Interface {interface} has been successfully enabled."
+				"updateSuccess": "Interface {interface} has been successfully enabled. Restart IQRF Gateway Daemon for changes to take effect."
 			},
 			"messagings": {
 				"title": "Messagings",

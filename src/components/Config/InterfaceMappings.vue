@@ -23,7 +23,6 @@
 					{{ $t('config.interfaceMapping.setMapping') }}
 				</CDropdownItem>
 				<CDropdownItem
-					v-if='powerUser'
 					@click='invokeMappingForm(mapping.id)'
 				>
 					<CIcon :content='icons.edit' />
