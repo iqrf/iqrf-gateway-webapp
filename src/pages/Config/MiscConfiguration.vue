@@ -2,7 +2,7 @@
 	<div>
 		<h1>{{ $t('config.daemon.misc.title') }}</h1>
 		<CCard>
-			<CTabs variant='tabs' :active-tab='activeTab'>
+			<CTabs variant='tabs' :active-tab='activeTab' @update:activeTab='updateRouter'>
 				<CTab :title='$t("config.jsonApi.title")'>
 					<JsonApi v-if='!powerUser' />
 					<JsonMngMetaDataApi v-if='powerUser' />
@@ -80,6 +80,13 @@ export default class MiscConfiguration extends Vue {
 	 */
 	private powerUser = false;
 
+	private updateRouter(index: number): void {
+		this.$router.replace('/config/daemon/misc/' + index);
+	}
+
+	/**
+	 * @property {number} tabIndex Index of tab to load when accessing page
+	 */
 	@Prop({required: false, default: 0}) tabIndex!: number
 
 	/**

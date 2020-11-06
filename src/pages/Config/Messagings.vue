@@ -16,7 +16,7 @@
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
+import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
 import {CCard, CSelect} from '@coreui/vue/src';
 import MqttMessagingTable from '../../pages/Config/MqttMessagingTable.vue';
 import WebsocketList from '../../pages/Config/WebsocketList.vue';
@@ -69,6 +69,14 @@ export default class Messagings extends Vue {
 			label: this.$t('config.udp.title').toString()
 		}
 	]
+
+	/**
+	 * Watcher for active messaging select to update URL
+	 */
+	@Watch('activeMessaging')
+	private updateRouter(): void {
+		this.$router.replace('/config/daemon/messagings/' + this.activeMessaging);
+	}
 
 	/**
 	 * @property {string} messaging Messaging type passed to component via router
