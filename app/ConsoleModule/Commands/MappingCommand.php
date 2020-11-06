@@ -100,7 +100,7 @@ abstract class MappingCommand extends EntityManagerCommand {
 	 * @return int Mapping bus enable pin
 	 */
 	protected function askBusPin(InputInterface $input, OutputInterface $output): int {
-		$busPin = $input->getOption('bus pin');
+		$busPin = $input->getOption('bus-pin');
 		while ($busPin === null || !$this->isValidPinNumber($busPin)) {
 			$helper = $this->getHelper('question');
 			$question = new Question('Please enter the mapping bus enable pin number: ');
@@ -117,7 +117,7 @@ abstract class MappingCommand extends EntityManagerCommand {
 	 * @return int Mapping programming mode switch pin
 	 */
 	protected function askPgmPin(InputInterface $input, OutputInterface $output): int {
-		$pgmPin = $input->getOption('pgm pin');
+		$pgmPin = $input->getOption('pgm-pin');
 		while ($pgmPin === null || !$this->isValidPinNumber($pgmPin)) {
 			$helper = $this->getHelper('question');
 			$question = new Question('Please enter the mapping programming mode switch pin number: ');
@@ -134,7 +134,7 @@ abstract class MappingCommand extends EntityManagerCommand {
 	 * @return int Mapping power enable pin
 	 */
 	protected function askPowerPin(InputInterface $input, OutputInterface $output): int {
-		$powerPin = $input->getOption('power pin');
+		$powerPin = $input->getOption('power-pin');
 		while ($powerPin === null || !$this->isValidPinNumber($powerPin)) {
 			$helper = $this->getHelper('question');
 			$question = new Question('Please enter the mapping power enable pin number: ');
@@ -151,7 +151,7 @@ abstract class MappingCommand extends EntityManagerCommand {
 	 * @return int Mapping UART baud rate
 	 */
 	protected function askBaudRate(InputInterface $input, OutputInterface $output): int {
-		$baudRate = $input->getOption('baud rate');
+		$baudRate = $input->getOption('baud-rate');
 		while ($baudRate === null || !ctype_digit($baudRate)) {
 			$helper = $this->getHelper('question');
 			$question = new ChoiceQuestion('Please select the mapping UART baud rate: ', Mapping::BAUD_RATES, Mapping::BAUD_RATE_DEFAULT);
@@ -167,7 +167,7 @@ abstract class MappingCommand extends EntityManagerCommand {
 	 * @return Mapping Mapping
 	 */
 	protected function askId(InputInterface $input, OutputInterface $output): Mapping {
-		$mappingId = $input->getOption('mapping id');
+		$mappingId = $input->getOption('mapping-id');
 		$mapping = ($mappingId !== null) ? $this->repository->find($mappingId) : null;
 		$helper = $this->getHelper('question');
 		while ($mapping === null) {

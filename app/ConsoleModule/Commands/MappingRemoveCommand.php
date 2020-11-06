@@ -43,7 +43,7 @@ class MappingRemoveCommand extends MappingCommand {
 	protected function configure(): void {
 		$this->setDescription('Remove mapping');
 		$definitions = [
-			new InputOption('mapping id', ['mapping-id'], InputOption::VALUE_REQUIRED, 'Mapping ID'),
+			new InputOption('mapping-id', ['i'], InputOption::VALUE_REQUIRED, 'Mapping ID'),
 		];
 		$this->setDefinition(new InputDefinition($definitions));
 	}

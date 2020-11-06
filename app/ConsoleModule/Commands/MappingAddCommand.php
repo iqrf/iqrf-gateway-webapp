@@ -43,13 +43,13 @@ class MappingAddCommand extends MappingCommand {
 	protected function configure(): void {
 		$this->setDescription('Adds a new mapping');
 		$definitions = [
-			new InputOption('type', ['type'], InputOption::VALUE_REQUIRED, 'Mapping type'),
-			new InputOption('name', ['name'], InputOption::VALUE_REQUIRED, 'Mapping name'),
-			new InputOption('interface', ['interface'], InputOption::VALUE_REQUIRED, 'Mapping device name'),
-			new InputOption('bus pin', ['bus-pin'], InputOption::VALUE_REQUIRED, 'Mapping bus enable pin number'),
-			new InputOption('pgm pin', ['pgm-pin'], InputOption::VALUE_REQUIRED, 'Mapping programming mode switch pin number'),
-			new InputOption('power pin', ['power-pin'], InputOption::VALUE_REQUIRED, 'Mapping power enable pin number'),
-			new InputOption('baud rate', ['baud-rate'], InputOption::VALUE_OPTIONAL, 'Mapping UART baud rate'),
+			new InputOption('type', ['t'], InputOption::VALUE_REQUIRED, 'Mapping type'),
+			new InputOption('name', ['N'], InputOption::VALUE_REQUIRED, 'Mapping name'),
+			new InputOption('interface', ['I'], InputOption::VALUE_REQUIRED, 'Mapping device name'),
+			new InputOption('bus-pin', ['b'], InputOption::VALUE_REQUIRED, 'Mapping bus enable pin number'),
+			new InputOption('pgm-pin', ['p'], InputOption::VALUE_REQUIRED, 'Mapping programming mode switch pin number'),
+			new InputOption('power-pin', ['P'], InputOption::VALUE_REQUIRED, 'Mapping power enable pin number'),
+			new InputOption('baud-rate', ['r'], InputOption::VALUE_OPTIONAL, 'Mapping UART baud rate'),
 		];
 		$this->setDefinition(new InputDefinition($definitions));
 	}
