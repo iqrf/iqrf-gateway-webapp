@@ -120,22 +120,75 @@ export default class Restore extends Vue {
 			if (mutation.type !== 'SOCKET_ONMESSAGE') {
 				return;
 			}
-			if (mutation.payload.data.msgId === this.msgId) {
-				if (mutation.payload.data.status === 0) {
-					if (mutation.payload.data.rsp.progress === 100) {
-						this.$store.commit('spinner/HIDE');
-						this.$store.dispatch('removeMessage', this.msgId);
-						this.$toast.success(
-							this.$t('iqrfnet.networkManager.restore.messages.success').toString()
-						);
-					}
-				} else {
-					this.$toast.error(
-						this.$t('iqrfnet.networkManager.restore.messages.failed').toString()
-					);
-				}
+			if (mutation.payload.mType === 'iqmeshNetwork_Restore' &&
+				mutation.payload.data.msgId === this.msgId) {
+				this.handleRestoreResponse(mutation.payload.data);
+			} else if (mutation.payload.mType === 'messageError') {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.error(
+					this.$t('iqrfnet.networkManager.messages.submit.invalidMessage')
+						.toString()
+				);
 			}
 		});
+	}
+
+	/**
+	 * Recovers from request sent state, hides spinner and removes message id
+	 */
+	private requestRecovery(): void {
+		this.$store.commit('spinner/HIDE');
+		this.$store.dispatch('removeMessage', this.msgId);
+	}
+
+	/**
+	 * Restore response message handler
+	 * @param {any} data Daemon API response
+	 */
+	private handleRestoreResponse(data: any): void {
+		if (data.status === 0) {
+			this.requestRecovery();
+			this.$toast.success(
+				this.$t('iqrfnet.networkManager.restore.messages.success').toString()
+			);
+			return;
+		}
+
+		if (data.status === -1) { // request timed out
+			this.requestRecovery();
+			this.$toast.error(
+				this.$t('iqrfnet.networkManager.restore.messages.timeout').toString()
+			);
+			return;
+		}
+
+		if (data.status !== 1000) {
+			return;
+		}
+
+		if (data.statusStr.includes('ERROR_TIMEOUT')) { // coordinator device is offline
+			this.requestRecovery();
+			this.$toast.error(
+				this.$t('iqrfnet.networkManager.restore.messages.coordinatorOffline').toString()
+			);
+			return;
+		}
+
+		if (data.statusStr.includes('Incorrect backupData size')) { // backup data is too long or too short
+			this.requestRecovery();
+			this.$toast.error(
+				this.$t('iqrfnet.networkManager.restore.messages.invalidSize').toString()
+			);
+			return;
+		}
+
+		if (data.statusStr.includes('BackupData CRC8 mismatch')) { // backup data checksum is incorrect
+			this.requestRecovery();
+			this.$toast.error(
+				this.$t('iqrfnet.networkManager.restore.messages.checksumMismatch').toString()
+			);
+			return;
+		}
 	}
 
 	/**

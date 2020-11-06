@@ -148,6 +148,12 @@ export default class Backup extends Vue {
 				if (mutation.payload.mType === 'iqmeshNetwork_Backup') {
 					this.handleBackupResponse(mutation.payload.data);
 				}
+			} else if (mutation.payload.mType === 'messageError') {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.error(
+					this.$t('iqrfnet.networkManager.messages.submit.invalidMessage')
+						.toString()
+				);
 			}
 		});
 	}
