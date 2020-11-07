@@ -27,60 +27,73 @@ use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
-use App\CoreModule\Entities\CommandStack;
-use App\CoreModule\Models\CommandManager;
-use Nette\IOException;
-use Nette\Utils\FileSystem;
-use Nette\Utils\Json;
-use Nette\Utils\JsonException;
+use App\ConfigModule\Exceptions\AptNotFoundException;
+use App\ConfigModule\Models\AptitudeManager;
 
 /**
- * Version API controller
- * @Path("/version")
- * @Tag("Version")
+ * Aptitude controller
+ * @Path("/apt")
+ * @Tag("Aptitude manager")
  */
-class VersionController extends BaseController {
+class AptitudeController extends BaseConfigController {
 
 	/**
-	 * @Path("/daemon")
-	 * @Method("GET")
-	 * @OpenApi("
-	 *  summary: Returns IQRF Gateway Daemon version
-	 *  responses:
-	 *      '200':
-	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/VersionDaemon'
-	 *      '500':
-	 *          $ref: '#/components/responses/ServerError'
-	 * ")
-	 * @param ApiRequest $request API request
-	 * @param ApiResponse $response API response
-	 * @return ApiResponse API response
+	 * @var AptitudeManager Aptitude manager
 	 */
-	public function daemonVersion(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$commandManager = new CommandManager(false, new CommandStack());
-		if ($commandManager->commandExist('iqrfgd2')) {
-			$commandResult = $commandManager->run('iqrfgd2 version', false)->getStdout();
-			return $response->writeJsonBody(['version' => $commandResult]);
-		}
-		throw new ServerErrorException('IQRF Gateway Daemon not installed', ApiResponse::S500_INTERNAL_SERVER_ERROR);
+	private $aptManager;
+
+	/**
+	 * Constructor
+	 * @param AptitudeManager $aptManager Aptitude manager
+	 */
+	public function __construct(AptitudeManager $aptManager) {
+		$this->aptManager = $aptManager;
 	}
 
 	/**
-	 * @Path("/webapp")
+	 * @Path("/")
 	 * @Method("GET")
 	 * @OpenApi("
-	 *  summary: Returns IQRF Gateway Webapp version
+	 *  summary: Retrieves aptitude status of unattended upgrades
 	 *  responses:
 	 *      '200':
 	 *          description: Success
 	 *          content:
 	 *              application/json:
 	 *                  schema:
-	 *                      $ref: '#/components/schemas/VersionWebapp'
+	 *                      $ref: '#/components/schemas/UnattendedUpgrades'
+	 * ")
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function getUnattendedUpgrades(ApiRequest $request, ApiResponse $response): ApiResponse {
+		try {
+			$result = $this->aptManager->getEnable();
+			return $response->writeJsonBody(['enabled' => $result]);
+		} catch (AptNotFoundException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	/**
+	 * @Path("/")
+	 * @Method("POST")
+	 * @OpenApi("
+	 *  summary: Changes enabled status of unattended upgrades
+	 *  requestBody:
+	 *      required: true
+	 *      content:
+	 *          application/json:
+	 *              schema:
+	 *                  $ref: '#/components/schemas/UnattendedUpgrades'
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *          content:
+	 *              application/json:
+	 *                  schema:
+	 *                      $ref: '#/components/schemas/UnattendedUpgrades'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -88,13 +101,10 @@ class VersionController extends BaseController {
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
-	public function webappVersion(ApiRequest $request, ApiResponse $response): ApiResponse {
-		try {
-			$json = Json::decode(FileSystem::read(__DIR__ . '/../../../../version.json'), Json::FORCE_ARRAY);
-			return $response->writeJsonBody($json);
-		} catch (IOException | JsonException $e) {
-			throw new ServerErrorException('Invalid JSON syntax', ApiResponse::S500_INTERNAL_SERVER_ERROR);
-		}
+	public function changeEnableUnattendedUpgrades(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$setting = $request->getJsonBody();
+		$result = $this->aptManager->setEnable($setting['enabled']);
+		return $response->writeJsonBody(['enabled' => $result]);
 	}
 
 }

@@ -113,6 +113,8 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/taskList.json
 		TranslatorConfig:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/translatorConfig.json
+		UnattendedUpgrades:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/unattendedUpgrades.json
 		UserCreate:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/userCreate.json
 		UserDetail:
@@ -123,8 +125,10 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/userSignIn.json
 		UserToken:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/jwt.json
-		Version:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/version.json
+		VersionDaemon:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/versionDaemon.json
+		VersionWebapp:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/versionWebapp.json
 	securitySchemes:
 		bearerAuth:
 			type: http

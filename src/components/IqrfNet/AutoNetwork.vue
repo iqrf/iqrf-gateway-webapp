@@ -493,7 +493,7 @@ export default class AutoNetwork extends Vue {
 	 */
 	public getVersion(): void {
 		this.$store.dispatch('spinner/show', {timeout: 10000});
-		VersionService.getVersion(new WebSocketOptions(null, 10000, 'iqrfnet.networkManager.messages.autoNetwork.versionFailure', () => this.msgId = null))
+		VersionService.getDaemonVersion(new WebSocketOptions(null, 10000, 'iqrfnet.networkManager.messages.autoNetwork.versionFailure', () => this.msgId = null))
 			.then((msgId: string) => this.msgId = msgId);
 	}
 

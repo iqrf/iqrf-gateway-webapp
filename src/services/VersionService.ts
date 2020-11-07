@@ -1,5 +1,8 @@
 import store from '../store';
-import { WebSocketOptions } from '../store/modules/webSocketClient.module';
+import {authorizationHeader} from '../helpers/authorizationHeader';
+import {WebSocketOptions} from '../store/modules/webSocketClient.module';
+import axios from 'axios';
+import {AxiosResponse} from 'axios';
 
 /**
  * Version service
@@ -10,7 +13,7 @@ class VersionService {
 	 * Retrieves IQRF Gateway Daemon version
 	 * @param options WebSocket request options
 	 */
-	getVersion(options: WebSocketOptions): Promise<string> {
+	getDaemonVersion(options: WebSocketOptions): Promise<string> {
 		options.request = {
 			'mType': 'mngDaemon_Version',
 			'data': {
@@ -18,6 +21,13 @@ class VersionService {
 			},
 		};
 		return store.dispatch('sendRequest', options);
+	}
+
+	/**
+	 * Retrieves IQRF Gateway Daemon version via the REST API
+	 */
+	getDaemonVersionRest(): Promise<AxiosResponse> {
+		return axios.get('/version/daemon', {headers: authorizationHeader()});
 	}
 }
 
