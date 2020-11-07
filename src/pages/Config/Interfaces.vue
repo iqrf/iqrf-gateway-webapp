@@ -161,7 +161,7 @@ export default class Interfaces extends Vue {
 		}
 		Promise.all(requests)
 			.then(() => this.getConfig().then(() => this.$toast.success(
-				this.$t('config.daemon.interfaces.updateSuccess', {interface: this.iqrfInterface}).toString()	
+				this.$t('config.daemon.interfaces.updateSuccess', {interface: this.interfaceCode(this.iqrfInterface)}).toString()	
 			)))
 			.catch((error: AxiosError) => {
 				console.error(error);
@@ -169,6 +169,21 @@ export default class Interfaces extends Vue {
 					this.$t('config.daemon.interfaces.updateFailed').toString()
 				);
 			});
+	}
+
+	/**
+	 * Returns interface abbreviation from component name
+	 * @param {string} iqrfInterface Iqrf interface component name
+	 * @returns {string} Interface abbreviation
+	 */
+	private interfaceCode(iqrfInterface: string): string {
+		if (iqrfInterface === 'iqrf::IqrfCdc') {
+			return 'CDC';
+		} else if (iqrfInterface === 'iqrf::IqrfSpi') {
+			return 'SPI';
+		} else {
+			return 'UART';
+		}
 	}
 }
 </script>

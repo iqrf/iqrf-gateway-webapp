@@ -301,7 +301,7 @@ export default class WebsocketMessagingForm extends Vue {
 					.toString()
 			);
 		}
-		this.$router.push('/config/daemon/messagings/ws');
+		this.$router.push('/config/daemon/messagings/websocket');
 	}
 }
 </script>

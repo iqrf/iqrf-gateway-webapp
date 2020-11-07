@@ -519,7 +519,7 @@ export default class SendDpaPacket extends Vue {
 	 * @param {string} newPacket New DPA packet
 	 */
 	private setPacket(newPacket: string): void {
-		this.packetNadr = this.joinBytes(newPacket.substr(0, 6));
+		this.packetNadr = this.joinBytes(newPacket.substr(0, 3));
 		this.packetPnum = this.joinBytes(newPacket.substr(6, 3));
 		this.packetPcmd = this.joinBytes(newPacket.substr(9, 3));
 		this.packetHwpid = this.joinBytes(newPacket.substr(12, 5));

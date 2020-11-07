@@ -67,7 +67,7 @@ import IqmeshServices from '../../pages/Config/IqmeshServices.vue';
 })
 
 /**
- * 
+ * Miscellaneous configuration page component
  */
 export default class MiscConfiguration extends Vue {
 	/**
@@ -76,18 +76,32 @@ export default class MiscConfiguration extends Vue {
 	private activeTab = 0;
 
 	/**
+	 * @var {Array<string>} endpoints Array of misc tab endpoints
+	 */
+	private endpoints: Array<string> = [
+		'json-api',
+		'repository',
+		'db',
+		'monitor',
+		'tracer'
+	]
+
+	/**
 	 * @var {boolean} powerUser Indicates whether user profile is power user
 	 */
 	private powerUser = false;
 
+	/**
+	 * Updates URL to match the config tab
+	 */
 	private updateRouter(index: number): void {
-		this.$router.replace('/config/daemon/misc/' + index);
+		this.$router.replace('/config/daemon/misc/' + this.endpoints[index]);
 	}
 
 	/**
 	 * @property {number} tabIndex Index of tab to load when accessing page
 	 */
-	@Prop({required: false, default: 0}) tabIndex!: number
+	@Prop({required: false, default: 'json-api'}) tabName!: string
 
 	/**
 	 * Vue lifecycle hook created
@@ -102,7 +116,10 @@ export default class MiscConfiguration extends Vue {
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
-		this.activeTab = this.tabIndex;
+		if (this.powerUser) {
+			this.endpoints.splice(3, 0, 'iqmesh');
+		}
+		this.activeTab = this.endpoints.indexOf(this.tabName);
 	}
 }
 </script>

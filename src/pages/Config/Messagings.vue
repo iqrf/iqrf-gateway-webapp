@@ -9,7 +9,7 @@
 			/>
 		</CCard>
 		<MqttMessagingTable v-if='activeMessaging === "mqtt"' />
-		<WebsocketList v-if='activeMessaging === "ws"' />
+		<WebsocketList v-if='activeMessaging === "websocket"' />
 		<MqMessagingTable v-if='activeMessaging === "mq"' />
 		<UdpMessagingTable v-if='activeMessaging === "udp"' />
 	</div>
@@ -57,7 +57,7 @@ export default class Messagings extends Vue {
 			label: this.$t('config.mqtt.title').toString()
 		},
 		{
-			value: 'ws',
+			value: 'websocket',
 			label: this.$t('config.websocket.title').toString()
 		},
 		{

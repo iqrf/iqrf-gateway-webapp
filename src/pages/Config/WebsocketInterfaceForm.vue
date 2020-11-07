@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<h1 v-if='$route.path === "/config/websocket/add"'>
+		<h1 v-if='$route.path === "/config/daemon/websocket/add"'>
 			{{ $t('config.websocket.interface.add') }}
 		</h1>
 		<h1 v-else>
@@ -232,7 +232,7 @@ export default class WebsocketInterfaceForm extends Vue {
 					});
 			})
 			.catch((error: AxiosError) => {
-				this.$router.push('/config/daemon/messagings/ws');
+				this.$router.push('/config/daemon/messagings/websocket');
 				FormErrorHandler.configError(error);
 			});
 	}
@@ -292,7 +292,7 @@ export default class WebsocketInterfaceForm extends Vue {
 					.toString()
 			);
 		}
-		this.$router.push('/config/daemon/messagings/ws');
+		this.$router.push('/config/daemon/messagings/websocket');
 	}
 }
 </script>

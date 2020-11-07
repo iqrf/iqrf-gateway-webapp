@@ -278,7 +278,7 @@ export default class MonitorForm extends Vue {
 					});
 			})
 			.catch((error: AxiosError) => {
-				this.$router.push('/config/daemon/misc/');
+				this.$router.push('/config/daemon/misc/monitor');
 				FormErrorHandler.configError(error);
 			});
 	}
@@ -338,7 +338,7 @@ export default class MonitorForm extends Vue {
 					.toString()
 			);
 		}
-		this.$router.push('/config/daemon/misc/' + (this.powerUser ? 4 : 3));
+		this.$router.push('/config/daemon/misc/monitor');
 	}
 }
 </script>

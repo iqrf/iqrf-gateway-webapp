@@ -156,6 +156,158 @@ const routes: Array<RouteConfig> = [
 						path: '',
 					},
 					{
+						path: 'main',
+						redirect: 'daemon/main',
+					},
+					{
+						path: 'component',
+						redirect: (store.getters['user/getRole'] === 'power' ? 'daemon/component' : 'daemon'),
+					},
+					{
+						path: 'component/add',
+						redirect: 'daemon/component/add',
+					},
+					{
+						path: 'component/edit/:component',
+						redirect: 'daemon/component/edit/:component',
+					},
+					{
+						path: 'iqrf-cdc',
+						redirect: 'daemon/interfaces',
+					},
+					{
+						path: 'iqrf-dpa',
+						redirect: 'daemon/interfaces',
+					},
+					{
+						path: 'iqrf-spi',
+						redirect: 'daemon/interfaces',
+					},
+					{
+						path: 'iqrf-uart',
+						redirect: 'daemon/interfaces',
+					},
+					{
+						path: 'iqrf-info',
+						redirect: 'daemon/misc/db',
+					},
+					{
+						path: 'iqrf-repository',
+						redirect: 'daemon/misc/repository',
+					},
+					{
+						path: 'json-raw-api',
+						redirect: 'daemon/misc/json-api',
+					},
+					{
+						path: 'json-mng-meta-data-api',
+						redirect: 'daemon/misc/json-api',
+					},
+					{
+						path: 'json-splitter',
+						redirect: 'daemon/misc/json-api',
+					},
+					{
+						path: 'monitor',
+						redirect: 'daemon/misc/monitor',
+					},
+					{
+						path: 'monitor/add',
+						redirect: 'daemon/monitor/add',
+					},
+					{
+						path: 'monitor/edit/:instance',
+						redirect: 'daemon/monitor/edit/:instance',
+					},
+					{
+						path: 'mq',
+						redirect: 'daemon/messagings/mq',
+					},
+					{
+						path: 'mq/add',
+						redirect: 'daemon/mq/add',
+					},
+					{
+						path: 'mq/edit/:instance',
+						redirect: 'daemon/mq/edit/:instance',
+					},
+					{
+						path: 'mqtt',
+						redirect: 'daemon/messagings/mqtt'
+					},
+					{
+						path: 'mqtt/add',
+						redirect: 'daemon/mqtt/add',
+					},
+					{
+						path: 'mqtt/edit/:instance',
+						redirect: 'daemon/mqtt/edit/:instance',
+					},
+					{
+						path: 'udp',
+						redirect: 'daemon/messagings/udp',
+					},
+					{
+						path: 'udp/add',
+						redirect: 'daemon/udp/add',
+					},
+					{
+						path: 'udp/edit/:instance',
+						redirect: 'daemon/udp/edit/:instance',
+					},
+					{
+						path: 'websocket',
+						redirect: 'daemon/messagings/websocket',
+					},
+					{
+						path: 'websocket/add',
+						redirect: 'daemon/websocket/add',
+					},
+					{
+						path: 'websocket/edit/:instnace',
+						redirect: 'daemon/weboscket/edit/:instance',
+					},
+					{
+						path: 'websocket/add-messaging',
+						redirect: 'daemon/websocket/add-messaging',
+					},
+					{
+						path: 'websocket/edit-messaging/:instance',
+						redirect: 'daemon/websocket/edit-messaging/:instance',
+					},
+					{
+						path: 'websocket/add-service',
+						redirect: 'daemon/websocket/add-service',
+					},
+					{
+						path: 'websocket/edit-service/:instance',
+						redirect: 'daemon/websocket/edit-service/:instance',
+					},
+					{
+						path: 'scheduler',
+						redirect: 'daemon/scheduler',
+					},
+					{
+						path: 'scheduler/add',
+						redirect: 'daemon/scheduler/add',
+					},
+					{
+						path: 'scheduler/edit/:id',
+						redirect: 'daemon/scheduler/edit/:id',
+					},
+					{
+						path: 'tracer',
+						redirect: 'daemon/misc/tracer',
+					},
+					{
+						path: 'tracer/add',
+						redirect: 'daemon/tracer/add',
+					},
+					{
+						path: 'tracer/edit/:instance',
+						redirect: 'daemon/tracer/edit/:instance',
+					},
+					{
 						path: 'daemon',
 						component: {
 							render(c) {
@@ -199,8 +351,8 @@ const routes: Array<RouteConfig> = [
 								component: Interfaces,
 							},
 							{
-								component: Messagings,
 								path: 'messagings',
+								redirect: 'messagings/mqtt'
 							},
 							{
 								component: Messagings,
@@ -238,18 +390,12 @@ const routes: Array<RouteConfig> = [
 							},
 							{
 								path: 'misc',
-								component: MiscConfiguration,
+								redirect: 'misc/json-api'
 							},
 							{
 								component: MiscConfiguration,
-								path: 'misc/:tabIndex',
-								props: (route) => {
-									const tabIndex = Number.parseInt(route.params.tabIndex, 10);
-									if (Number.isNaN(tabIndex)) {
-										return 0;
-									}
-									return {tabIndex};
-								}
+								path: 'misc/:tabName',
+								props: true,
 							},
 							{
 								path: 'monitor',
@@ -585,7 +731,7 @@ const routes: Array<RouteConfig> = [
 				component: NotFound,
 			},
 		],
-	},
+	}
 ];
 
 const router = new VueRouter({
