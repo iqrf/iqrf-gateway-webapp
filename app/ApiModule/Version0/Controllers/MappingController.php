@@ -104,7 +104,7 @@ class MappingController extends BaseController {
 	 *          content:
 	 *              application/json:
 	 *                  schema:
-	 *                      $ref: '#/components/schemas/Mapping'
+	 *                      $ref: '#/components/schemas/MappingDetail'
 	 *          headers:
 	 *              Location:
 	 *                  description: Location of information about the created mapping

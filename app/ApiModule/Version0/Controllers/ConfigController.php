@@ -83,6 +83,10 @@ class ConfigController extends BaseConfigController {
 	 *  responses:
 	 *      '200':
 	 *          description: Success
+	 *          content:
+	 *              application/json:
+	 *                  schema:
+	 *                      $ref: '#/components/schemas/MainConfiguration'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -111,7 +115,7 @@ class ConfigController extends BaseConfigController {
 	 *      content:
 	 *          application/json:
 	 *              schema:
-	 *                  type: string
+	 *                  $ref: '#/components/schemas/MainConfiguration'
 	 *  responses:
 	 *      '200':
 	 *          description: Success
@@ -125,12 +129,10 @@ class ConfigController extends BaseConfigController {
 	 * @return ApiResponse API response
 	 */
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validator->validateRequest('mainConfiguration', $request);
 		try {
-			$json = $request->getJsonBody(true);
-			$this->mainManager->save($json);
+			$this->mainManager->save($request->getJsonBody(true));
 			return $response->writeBody('Workaround');
-		} catch (JsonException $e) {
-			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
 		} catch (IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
@@ -158,13 +160,11 @@ class ConfigController extends BaseConfigController {
 	 * @return ApiResponse API response
 	 */
 	public function createComponent(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validator->validateRequest('daemonComponent', $request);
 		try {
-			$json = $request->getJsonBody(true);
-			$this->componentManager->add($json);
+			$this->componentManager->add($request->getJsonBody(true));
 			return $response->withStatus(ApiResponse::S201_CREATED)
 				->writeBody('Workaround');
-		} catch (JsonException $e) {
-			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
 		} catch (IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
@@ -236,10 +236,9 @@ class ConfigController extends BaseConfigController {
 		if ($id === null) {
 			throw new ClientErrorException('Component not found', ApiResponse::S404_NOT_FOUND);
 		}
+		$this->validator->validateRequest('daemonComponent', $request);
 		try {
 			$this->componentManager->save($request->getJsonBody(), $id);
-		} catch (JsonException $e) {
-			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
 		} catch (IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
@@ -323,13 +322,11 @@ class ConfigController extends BaseConfigController {
 	 * @return ApiResponse API response
 	 */
 	public function createInstance(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validator->validateRequest('daemonConfiguration', $request);
 		try {
 			$json = $request->getJsonBody(true);
 			$component = urldecode($request->getParameter('component'));
 			$this->manager->setComponent($component);
-			if (!isset($json['instance'])) {
-				throw new ClientErrorException('Missing instance name', ApiResponse::S400_BAD_REQUEST);
-			}
 			$fileName = $this->manager->getInstanceFileName($json['instance']);
 			if ($fileName !== null) {
 				throw new ClientErrorException('Instance already exists', ApiResponse::S409_CONFLICT);
@@ -339,12 +336,6 @@ class ConfigController extends BaseConfigController {
 			$this->manager->save($json, $fileName);
 			return $response->withStatus(ApiResponse::S201_CREATED)
 				->writeBody('Workaround');
-		} catch (NonexistentJsonSchemaException $e) {
-			throw new ServerErrorException('Missing JSON schema for the component', ApiResponse::S500_INTERNAL_SERVER_ERROR);
-		} catch (JsonException $e) {
-			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
-		} catch (InvalidJsonException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
 		} catch (IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
@@ -409,22 +400,14 @@ class ConfigController extends BaseConfigController {
 	 * @return ApiResponse API response
 	 */
 	public function editInstance(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validator->validateRequest('daemonConfiguration', $request);
 		try {
 			$json = $request->getJsonBody(true);
 			$component = urldecode($request->getParameter('component'));
 			$this->manager->setComponent($component);
-			if (!isset($json['instance'])) {
-				throw new ClientErrorException('Missing instance name', ApiResponse::S400_BAD_REQUEST);
-			}
 			$instance = urldecode($request->getParameter('instance'));
 			$fileName = $this->manager->getInstanceFileName($instance);
 			$this->manager->save($json, $fileName);
-		} catch (NonexistentJsonSchemaException $e) {
-			throw new ClientErrorException('Component not found', ApiResponse::S404_NOT_FOUND);
-		} catch (JsonException $e) {
-			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
-		} catch (InvalidJsonException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
 		} catch (IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
