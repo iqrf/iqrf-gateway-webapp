@@ -23,12 +23,14 @@
 					{{ $t('config.interfaceMapping.setMapping') }}
 				</CDropdownItem>
 				<CDropdownItem
+					v-if='!mapping.name.startsWith("IQD-GW-")'
 					@click='invokeMappingForm(mapping.id)'
 				>
 					<CIcon :content='icons.edit' />
 					{{ $t('config.interfaceMapping.editMapping') }}
 				</CDropdownItem>
 				<CDropdownItem
+					v-if='!mapping.name.startsWith("IQD-GW-")'
 					@click='showRemoveModal(i)'
 				>
 					<CIcon :content='icons.remove' />

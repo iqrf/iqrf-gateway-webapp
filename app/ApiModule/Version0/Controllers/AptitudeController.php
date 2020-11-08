@@ -27,6 +27,7 @@ use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
+use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\ConfigModule\Exceptions\AptNotFoundException;
 use App\ConfigModule\Models\AptitudeManager;
 
@@ -45,9 +46,11 @@ class AptitudeController extends BaseConfigController {
 	/**
 	 * Constructor
 	 * @param AptitudeManager $aptManager Aptitude manager
+	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(AptitudeManager $aptManager) {
+	public function __construct(AptitudeManager $aptManager, RestApiSchemaValidator $validator) {
 		$this->aptManager = $aptManager;
+		parent::__construct($validator);
 	}
 
 	/**
@@ -62,6 +65,8 @@ class AptitudeController extends BaseConfigController {
 	 *              application/json:
 	 *                  schema:
 	 *                      $ref: '#/components/schemas/UnattendedUpgrades'
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -94,6 +99,8 @@ class AptitudeController extends BaseConfigController {
 	 *              application/json:
 	 *                  schema:
 	 *                      $ref: '#/components/schemas/UnattendedUpgrades'
+	 *      '400':
+	 *          $ref: '#/components/responses/BadRequest'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -102,6 +109,7 @@ class AptitudeController extends BaseConfigController {
 	 * @return ApiResponse API response
 	 */
 	public function changeEnableUnattendedUpgrades(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validator->validateRequest('unattendedUpgrades', $request);
 		$setting = $request->getJsonBody();
 		$result = $this->aptManager->setEnable($setting['enabled']);
 		return $response->writeJsonBody(['enabled' => $result]);
