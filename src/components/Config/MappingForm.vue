@@ -99,61 +99,6 @@
 					:options='baudRateOptions'
 					:label='$t("config.interfaceMapping.form.baudRate")'
 				/>
-				<CInputCheckbox
-					:checked.sync='gatewayMapping'
-					:label='$t("config.interfaceMapping.form.gateway")'
-				/>
-				<ValidationProvider
-					v-if='gatewayMapping'
-					v-slot='{errors, touched, valid}'
-					rules='integer|required'
-					:custom-messages='{
-						integer: "forms.messages.integer",
-						required: "config.interfaceMapping.form.messages.i2cPin"
-					}'
-				>
-					<CInput
-						v-model.number='i2cPin'
-						type='number'
-						:label='$t("config.interfaceMapping.form.i2cPin")'
-						:is-valid='touched ? valid : null'
-						:invalid-feedback='$t(errors[0])'
-					/>
-				</ValidationProvider>
-				<ValidationProvider
-					v-if='gatewayMapping'
-					v-slot='{errors, touched, valid}'
-					rules='integer|required'
-					:custom-messages='{
-						integer: "forms.messages.integer",
-						required: "config.interfaceMapping.form.messages.spiPin"
-					}'
-				>
-					<CInput
-						v-model.number='spiPin'
-						type='number'
-						:label='$t("config.interfaceMapping.form.spiPin")'
-						:is-valid='touched ? valid : null'
-						:invalid-feedback='$t(errors[0])'
-					/>
-				</ValidationProvider>
-				<ValidationProvider
-					v-if='gatewayMapping'
-					v-slot='{errors, touched, valid}'
-					rules='integer|required'
-					:custom-messages='{
-						integer: "forms.messages.integer",
-						required: "config.interfaceMapping.form.messages.uartPin"
-					}'
-				>
-					<CInput
-						v-model.number='uartPin'
-						type='number'
-						:label='$t("config.interfaceMapping.form.uartPin")'
-						:is-valid='touched ? valid : null'
-						:invalid-feedback='$t(errors[0])'
-					/>
-				</ValidationProvider>
 			</CForm>
 			<template #footer>
 				<CButton 

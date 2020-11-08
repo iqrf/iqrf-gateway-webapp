@@ -1,9 +1,7 @@
 <template>
 	<CCard class='border-0'>
-		<CCardHeader>
-			{{ $t('iqrfnet.networkManager.restore.title') }}
-		</CCardHeader>
 		<CCardBody>
+			<h4>{{ $t('iqrfnet.networkManager.restore.title') }}</h4><br>
 			<ValidationObserver>
 				<CForm @submit.prevent='restoreDevice'>
 					<div class='form-group'>

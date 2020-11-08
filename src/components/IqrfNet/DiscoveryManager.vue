@@ -1,9 +1,7 @@
 <template>
 	<CCard class='border-0'>
-		<CCardHeader>
-			{{ $t('iqrfnet.networkManager.discovery.title') }}
-		</CCardHeader>
 		<CCardBody>
+			<h4>{{ $t('iqrfnet.networkManager.discovery.title') }}</h4><br>
 			<ValidationObserver v-slot='{ invalid }'>
 				<CForm @submit.prevent='processSubmit'>
 					<ValidationProvider

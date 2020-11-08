@@ -1,9 +1,7 @@
 <template>
 	<CCard class='border-top-0 border-left-0 border-right-0'>
-		<CCardHeader>
-			{{ $t('iqrfnet.networkManager.backup.title') }}
-		</CCardHeader>
 		<CCardBody>
+			<h4>{{ $t('iqrfnet.networkManager.backup.title') }}</h4><br>
 			<ValidationObserver v-slot='{invalid}'>
 				<CForm @submit.prevent='backupDevice'>
 					<CSelect
@@ -53,8 +51,7 @@ import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 import IqrfNetService from '../../services/IqrfNetService';
 import {MutationPayload} from 'vuex';
 import {saveAs} from 'file-saver';
-import GatewayService from '../../services/GatewayService';
-import { AxiosError, AxiosResponse } from 'axios';
+import {AxiosResponse } from 'axios';
 import VersionService from '../../services/VersionService';
 
 interface DeviceData {
@@ -285,7 +282,7 @@ export default class Backup extends Vue {
 		const wholeNetwork = this.target === 'network';
 		const options = new WebSocketOptions(null);
 		this.$store.commit('spinner/SHOW');
-		this.$store.commit('spinner/UPDATE_TEXT', '\n' + this.$t('iqrfnet.networkManager.backup.messages.statusInit').toString());
+		this.$store.commit('spinner/UPDATE_TEXT', '\n' + this.$t('iqrfnet.networkManager.backup.messages.' + (this.target === 'network' ? 'statusInitPercentage' : 'statusRunning')).toString());
 		IqrfNetService.backup(address, wholeNetwork, options)
 			.then((msgId: string) => this.msgId = msgId);
 	}
@@ -296,7 +293,7 @@ export default class Backup extends Vue {
 	 * @returns {string} Backup progress message
 	 */
 	private backupProgress(response: any): string {
-		let message = '\n' + this.$t('iqrfnet.networkManager.backup.messages.statusRunning', {progress: response.rsp.progress}).toString();
+		let message = '\n' + this.$t('iqrfnet.networkManager.backup.messages.' + (this.target === 'network' ? 'statusRunningPercentage' : 'statusRunning'), {progress: response.rsp.progress}).toString();
 		if (response.status === 0) {
 			message += '\n' + this.$t('iqrfnet.networkManager.backup.messages.statusSuccess', {deviceAddr: response.rsp.devices[0].deviceAddr}).toString();
 		} else if (response.status === 1000) {

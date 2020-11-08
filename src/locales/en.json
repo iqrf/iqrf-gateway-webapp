@@ -208,7 +208,7 @@
 			}
 		},
 		"daemon": {
-			"title": "IQRF Daemon",
+			"title": "IQRF GW daemon",
 			"description": "IQRF Daemon configuration",
 			"interfaces": {
 				"title": "Interfaces",
@@ -1149,8 +1149,9 @@
 					"timeout": "The backup process request timed out.",
 					"success": "The backup process has been successfully completed.",
 					"partialSuccess": "All online devices have been successfully backed up. Offine devices: {devices}.",
-					"statusInit": "Backup running [0 %]",
-					"statusRunning": "Backup running [{progress} %]",
+					"statusRunning": "Backup in progress",
+					"statusInitPercentage": "Backup in progress [0 %]",
+					"statusRunningPercentage": "Backup in progress [{progress} %]",
 					"statusSuccess": "Backup of device {deviceAddr} completed.",
 					"statusFailed": "Backup of device {deviceAddr} failed. Device is offline.",
 					"invalidNadr": "No device is bonded at address {address}.",
@@ -1821,7 +1822,7 @@
 		}
 	},
 	"translatorConfig": {
-		"title": "IQRF Translator",
+		"title": "IQRF GW translator",
 		"description": "Translator configuration",
 		"form": {
 			"rest": {
@@ -1860,7 +1861,7 @@
 		}
 	},
 	"controllerConfig": {
-		"title": "IQRF Controller",
+		"title": "IQRF GW controller",
 		"description": "Controller configuration",
 		"form": {
 			"daemonApi": {
