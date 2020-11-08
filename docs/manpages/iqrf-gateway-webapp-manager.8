@@ -1,4 +1,4 @@
-.TH IQRF-GATEWAY-WEBAPP-MANAGER 8 2020-10-25 "IQRF Gateway Webapp v2.1.0" "IQRF GW Manual"
+.TH IQRF-GATEWAY-WEBAPP-MANAGER 8 2020-10-25 "IQRF Gateway Webapp v2.2.0" "IQRF GW Manual"
 .SH NAME
 iqrf-gateway-webapp-manager \- manage IQRF Gateway Webapp from CLI
 .SH DESCRIPTION
@@ -10,27 +10,90 @@ iqrf-gateway-webapp-manager [command] [options]
 .SH COMMANDS
 .nf
 .TP
-.BR iqrf-gateway-webapp-manager " \fIlist\fP"
+.BR list\fP
 Lists all available commands
 .TP
-.BR iqrf-gateway-webapp-manager " \fIuser:add\fP [\-u USERNAME] [\-p PASSWORD] [\-r ROLE] [\-l LANGUAGE]"
+.BR api\-key:add\fP " [\-d DESCRIPTION] [\-e EXPIRATION]"
+Creates a new API key
+.TP
+.BR api\-key:delete\fP " [\-i ID]"
+Removes an existing API key
+.TP
+.BR api\-key:edit\fP " [\-i ID] [\-d DESCRIPTION] [\-e EXPIRATION]"
+Edits an existing API key
+.TP
+.BR api\-key:list\fP
+Lists all existing API keys
+.TP
+.BR mapping:add\fP " [\-t TYPE] [\-N NAME] [\-I INTERFACE] [\-b BUS_PIN] [\-p PGM_PIN] [\-P POWER_PIN] [\-r BAUD_RATE]"
+Adds a new board mapping
+.TP
+.BR mapping:edit\fP " [\-i ID] [\-t TYPE] [\-N NAME] [\-I INTERFACE] [\-b BUS_PIN] [\-p PGM_PIN] [\-P POWER_PIN] [\-r BAUD_RATE]"
+Edits an existing board mapping
+.TP
+.BR mapping:list\fP
+Lists all existing board mappings
+.TP
+.BR mapping:remove\fP " [\-i ID]
+Removes an existing board mapping
+.TP
+.BR user:add\fP " [\-u USERNAME] [\-p PASSWORD] [\-r ROLE] [\-l LANGUAGE]"
 Adds a new user
 .TP
-.BR iqrf-gateway-webapp-manager " \fIuser:edit\fP [\-u USERNAME] [\-r ROLE] [\-l LANGUAGE]"
+.BR user:edit\fP " [\-u USERNAME] [\-r ROLE] [\-l LANGUAGE]"
 Edits an existing user
 .TP
-.BR iqrf-gateway-webapp-manager " \fIuser:list\fP"
+.BR user:list\fP
 Lists all users
 .TP
-.BR iqrf-gateway-webapp-manager " \fIuser:password\fP [\-u USERNAME] [\-p PASSWORD]"
+.BR user:password\fP " [\-u USERNAME] [\-p PASSWORD]"
 Changes a user's password
 .TP
-.BR iqrf-gateway-webapp-manager " \fIuser:remove\fP [\-u USERNAME]"
+.BR user:remove\fP " [\-u USERNAME]"
 Removes an existing user
 .fi
 .SH OPTIONS
 .nf
 .TP
+.BR "API key commands:"
+.TQ
+.BR \-i ", " \-\-id " \fIID\fP"
+API key ID
+.TP
+.BR \-d ", " \-\-description " \fIDESCRIPTION\fP"
+API key description
+.TP
+.BR \-e ", " \-\-expiration " \fIEXPIRATION\fP"
+API key expiration
+.TP
+.BR "Mapping commands"
+.TQ
+.BR \-i ", " \-\-id " \fIID\fP"
+Mapping ID
+.TP
+.BR \-t ", " \-\-type " \fITYPE\fP"
+Mapping type
+.TP
+.BR \-N ", " \-\-name " \fINAME\fP"
+Mapping name
+.TP
+.BR \-I ", " \-\-interface " \fIINTERFACE\fP"
+Mapping device name
+.TP
+.BR \-b ", " \-\-bus-pin " \fIBUS_PIN\fP"
+Mapping bus enable GPIO pin
+.TP
+.BR \-p ", " \-\-pgm-pin " \fIPGM_PIN\fP"
+Mapping programming mode switch GPIO pin
+.TP
+.BR \-P ", " \-\-power-pin " \fIPOWER_PIN\fP"
+Mapping power enable GPIO pin
+.TP
+.BR \-r ", " \-\-baud-rate " \fIBAUD_RATE\fP"
+Mapping UART baud rate, optional argument unless the specified mapping type is "uart"
+.TP
+.BR "User commands:"
+.TQ
 .BR \-u ", " \-user ", " \-\-username " \fIUSERNAME\fP"
 User's username
 .TP
