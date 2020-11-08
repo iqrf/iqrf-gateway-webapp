@@ -33,7 +33,7 @@ use App\ConfigModule\Models\AptitudeManager;
 /**
  * Aptitude controller
  * @Path("/apt")
- * @Tag("Aptitude manager")
+ * @Tag("Config manager")
  */
 class AptitudeController extends BaseConfigController {
 
@@ -54,7 +54,7 @@ class AptitudeController extends BaseConfigController {
 	 * @Path("/")
 	 * @Method("GET")
 	 * @OpenApi("
-	 *  summary: Retrieves aptitude status of unattended upgrades
+	 *  summary: Retrieves enabled status of unattended upgrades
 	 *  responses:
 	 *      '200':
 	 *          description: Success
