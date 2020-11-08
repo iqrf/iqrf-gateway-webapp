@@ -29,6 +29,13 @@ class VersionService {
 	getDaemonVersionRest(): Promise<AxiosResponse> {
 		return axios.get('/version/daemon', {headers: authorizationHeader()});
 	}
+
+	/**
+	 * Retrieves IQRF Gateway Webapp version via the REST API
+	 */
+	getWebappVersionRest(): Promise <AxiosResponse> {
+		return axios.get('version/webapp', {headers: authorizationHeader()});
+	}
 }
 
 export default new VersionService();

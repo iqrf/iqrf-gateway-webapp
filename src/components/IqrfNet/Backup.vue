@@ -53,6 +53,9 @@ import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 import IqrfNetService from '../../services/IqrfNetService';
 import {MutationPayload} from 'vuex';
 import {saveAs} from 'file-saver';
+import GatewayService from '../../services/GatewayService';
+import { AxiosError, AxiosResponse } from 'axios';
+import VersionService from '../../services/VersionService';
 
 interface DeviceData {
 	data: string
@@ -119,7 +122,12 @@ export default class Backup extends Vue {
 	/**
 	 * @var {string} target Backup target type
 	 */
-	private target = ''
+	private target = 'coordinator'
+
+	/**
+	 * @var {string} webappVersion IQRF GW Webapp version
+	 */
+	private webappVersion = 'unspec'
 
 	/**
 	 * Component unsubscribe function
@@ -156,6 +164,11 @@ export default class Backup extends Vue {
 				);
 			}
 		});
+	}
+
+	mounted(): void {
+		VersionService.getWebappVersionRest()
+			.then((response: AxiosResponse) => this.webappVersion = response.data.version);
 	}
 
 	/**
@@ -296,7 +309,7 @@ export default class Backup extends Vue {
 	 * Generates backup file and prompts file save
 	 */
 	private generateBackupFile(): void {
-		let fileContent = '[Backup]\nCreated=' + new Date().toLocaleString('en-GB').replace(/\//g, '.').replace(/,/g, '') + '\n\n';
+		let fileContent = '[Backup]\nCreated=' + new Date().toLocaleString('en-GB').replace(/\//g, '.').replace(/,/g, '') + ' IQRF GW Webapp: ' + this.webappVersion + '\n\n';
 		let fileName = '';
 		if (this.target === 'coordinator') {
 			fileName = 'Coordinator_';
