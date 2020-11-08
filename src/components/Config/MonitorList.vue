@@ -109,7 +109,7 @@
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Component, Vue, Watch} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CDropdown, CDropdownItem, CIcon, CModal} from '@coreui/vue/src';
 import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
@@ -118,6 +118,7 @@ import {Dictionary} from 'vue-router/types/router';
 import {IField} from '../../interfaces/coreui';
 import {AxiosError, AxiosResponse} from 'axios';
 import {versionHigherThan} from '../../helpers/versionChecker';
+import {mapGetters} from 'vuex';
 
 @Component({
 	components: {
@@ -130,6 +131,11 @@ import {versionHigherThan} from '../../helpers/versionChecker';
 		CDropdownItem,
 		CIcon,
 		CModal,
+	},
+	computed: {
+		...mapGetters({
+			daemonVersion: 'daemonVersion',
+		}),
 	}
 })
 
@@ -194,9 +200,10 @@ export default class MonitorList extends Vue {
 	private instances: Array<unknown> = []
 
 	/**
-	 * Vue lifecycle hook created
+	 * Daemon version computed property watcher to re-render elements dependent on version
 	 */
-	mounted(): void {
+	@Watch('daemonVersion')
+	private updateTable(): void {
 		if (versionHigherThan('2.3.0')) {
 			this.fields.splice(4, 0, {
 				key: 'tlsEnabled',
@@ -204,6 +211,13 @@ export default class MonitorList extends Vue {
 				filter: false,
 			});
 		}
+	}
+
+	/**
+	 * Vue lifecycle hook created
+	 */
+	mounted(): void {
+		this.updateTable();
 		this.$store.commit('spinner/SHOW');
 		this.getConfig();
 	}

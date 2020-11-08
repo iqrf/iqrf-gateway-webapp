@@ -128,7 +128,7 @@
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Component, Vue, Watch} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CDropdown, CDropdownItem, CIcon, CModal} from '@coreui/vue/src';
 import {cilPlus, cilPencil, cilTrash} from '@coreui/icons';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
@@ -138,6 +138,7 @@ import {IField} from '../../interfaces/coreui';
 import {WsInterface, ModalInstance, IWsService, WsMessaging} from '../../interfaces/messagingInterfaces';
 import {Dictionary} from 'vue-router/types/router';
 import {versionHigherThan} from '../../helpers/versionChecker';
+import {mapGetters} from 'vuex';
 
 @Component({
 	components: {
@@ -150,6 +151,11 @@ import {versionHigherThan} from '../../helpers/versionChecker';
 		CDropdownItem,
 		CIcon,
 		CModal,
+	},
+	computed: {
+		...mapGetters({
+			daemonVersion: 'daemonVersion',
+		}),
 	}
 })
 
@@ -220,9 +226,10 @@ export default class WebsocketInterfaceList extends Vue {
 	private instances: Array<WsInterface> = [];
 
 	/**
-	 * Vue lifecycle hook mounted
+	 * Daemon version computed property watcher to re-render elements dependent on version
 	 */
-	mounted(): void {
+	@Watch('daemonVersion')
+	private updateTable(): void {
 		if (versionHigherThan('2.3.0')) {
 			this.fields.splice(4, 0, {
 				key: 'tlsEnabled',
@@ -230,7 +237,13 @@ export default class WebsocketInterfaceList extends Vue {
 				filter: false
 			});
 		}
-		
+	}
+
+	/**
+	 * Vue lifecycle hook mounted
+	 */
+	mounted(): void {
+		this.updateTable();		
 		this.$store.commit('spinner/SHOW');
 		this.getConfig();
 	}

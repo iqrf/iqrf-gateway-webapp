@@ -145,7 +145,7 @@
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Component, Vue, Watch} from 'vue-property-decorator';
 import {AxiosError, AxiosResponse} from 'axios';
 import {
 	CButton,
@@ -170,6 +170,7 @@ import {IOption} from '../../interfaces/coreui';
 import {IIqrfUart} from '../../interfaces/iqrfInterfaces';
 import {IMapping} from '../../interfaces/mappings';
 import {versionHigherThan} from '../../helpers/versionChecker';
+import {mapGetters} from 'vuex';
 
 @Component({
 	components: {
@@ -188,6 +189,11 @@ import {versionHigherThan} from '../../helpers/versionChecker';
 		InterfacePorts,
 		ValidationObserver,
 		ValidationProvider,
+	},
+	computed: {
+		...mapGetters({
+			daemonVersion: 'daemonVersion',
+		}),
 	}
 })
 
@@ -278,6 +284,16 @@ export default class IqrfUart extends Vue {
 		const baudRates: Array<number> = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400];
 		return baudRates.map((baudRate: number) => ({value: baudRate, label: baudRate + ' Bd'}));
 	}
+
+	/**
+	 * Daemon version computed property watcher to re-render elements dependent on version
+	 */
+	@Watch('daemonVersion')
+	private updateForm(): void {
+		if (versionHigherThan('2.3.0')) {
+			this.daemonHigher230 = true;
+		}
+	}
 	
 	/**
 	 * Vue lifecycle hook created
@@ -291,14 +307,10 @@ export default class IqrfUart extends Vue {
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
-		if (versionHigherThan('2.3.0')) {
-			this.daemonHigher230 = true;
-		}
-
+		this.updateForm();
 		if (this.$store.getters['user/getRole'] === 'power') {
 			this.powerUser = true;
 		}
-
 		this.getConfig();
 	}
 

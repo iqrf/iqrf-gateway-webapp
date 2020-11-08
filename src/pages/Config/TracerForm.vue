@@ -159,7 +159,7 @@
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
+import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
@@ -170,6 +170,7 @@ import {IOption} from '../../interfaces/coreui';
 import {AxiosError, AxiosResponse} from 'axios';
 import {ITracerFile, IVerbosityLevel} from '../../interfaces/tracerFile';
 import {versionHigherThan} from '../../helpers/versionChecker';
+import {mapGetters} from 'vuex';
 
 @Component({
 	components: {
@@ -183,6 +184,11 @@ import {versionHigherThan} from '../../helpers/versionChecker';
 		CSelect,
 		ValidationObserver,
 		ValidationProvider,
+	},
+	computed: {
+		...mapGetters({
+			daemonVersion: 'daemonVersion',
+		}),
 	},
 	metaInfo(): MetaInfo {
 		return {
@@ -294,6 +300,16 @@ export default class TracerForm extends Vue {
 	}
 
 	/**
+	 * Daemon version computed property watcher to re-render elements dependent on version
+	 */
+	@Watch('daemonVersion')
+	private updateForm(): void {
+		if (versionHigherThan('2.3.0')) {
+			this.daemonHigher230 = true;
+		}
+	}
+
+	/**
 	 * Vue lifecycle hook created
 	 */
 	created(): void {
@@ -306,14 +322,10 @@ export default class TracerForm extends Vue {
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
-		if (versionHigherThan('2.3.0')) {
-			this.daemonHigher230 = true;
-		}
-		
+		this.updateForm();		
 		if (this.$store.getters['user/getRole'] === 'power') {
 			this.powerUser = true;
 		}
-
 		this.getInstance();
 	}
 

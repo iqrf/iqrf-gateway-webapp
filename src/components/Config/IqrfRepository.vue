@@ -61,7 +61,7 @@
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Component, Vue, Watch} from 'vue-property-decorator';
 import {AxiosError, AxiosResponse} from 'axios';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
@@ -70,6 +70,7 @@ import FormErrorHandler from '../../helpers/FormErrorHandler';
 import DaemonConfigurationService	from '../../services/DaemonConfigurationService';
 import {IIqrfRepository} from '../../interfaces/iqrfRepository';
 import {versionHigherThan} from '../../helpers/versionChecker';
+import {mapGetters} from 'vuex';
 
 @Component({
 	components: {
@@ -82,6 +83,11 @@ import {versionHigherThan} from '../../helpers/versionChecker';
 		CInputCheckbox,
 		ValidationObserver,
 		ValidationProvider,
+	},
+	computed: {
+		...mapGetters({
+			daemonVersion: 'daemonVersion',
+		}),
 	}
 })
 
@@ -92,7 +98,7 @@ export default class IqrfRepository extends Vue {
 	/**
 	 * @var {number} checkPeriodInMinutes Check period in minutes
 	 */
-	private checkPeriodInMinutes = 1
+	private checkPeriodInMinutes = 0
 
 	/**
 	 * @constant {string} component IQRF Repository component name
@@ -135,6 +141,16 @@ export default class IqrfRepository extends Vue {
 	private urlRepo = ''
 
 	/**
+	 * Daemon version computed property watcher to re-render elements dependent on version
+	 */
+	@Watch('daemonVersion')
+	private updateForm(): void {
+		if (versionHigherThan('2.3.0')) {
+			this.daemonHigher230 = true;
+		}
+	}
+
+	/**
 	 * Vue lifecycle hook created
 	 */
 	created(): void {
@@ -147,14 +163,10 @@ export default class IqrfRepository extends Vue {
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
-		if (versionHigherThan('2.3.0')) {
-			this.daemonHigher230 = true;
-		}
-
+		this.updateForm();
 		if (this.$store.getters['user/getRole'] === 'power') {
 			this.powerUser = true;
 		}
-
 		this.getConfig();
 	}
 

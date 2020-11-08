@@ -71,7 +71,7 @@
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
+import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
@@ -82,6 +82,8 @@ import {MetaInfo} from 'vue-meta';
 import {AxiosError, AxiosResponse} from 'axios';
 import {IOption} from '../../interfaces/coreui';
 import {versionHigherThan} from '../../helpers/versionChecker';
+import {mapGetters} from 'vuex';
+
 
 @Component({
 	components: {
@@ -95,6 +97,11 @@ import {versionHigherThan} from '../../helpers/versionChecker';
 		CSelect,
 		ValidationObserver,
 		ValidationProvider,
+	},
+	computed: {
+		...mapGetters({
+			daemonVersion: 'daemonVersion',
+		}),
 	},
 	metaInfo(): MetaInfo {
 		return {
@@ -181,17 +188,10 @@ export default class WebsocketInterfaceForm extends Vue {
 	}
 
 	/**
-	 * Vue lifecycle hook created
+	 * Daemon version computed property watcher to re-render elements dependent on version
 	 */
-	created(): void {
-		extend('integer', integer);
-		extend('required', required);
-	}
-
-	/**
-	 * Vue lifecycle hook mounted
-	 */
-	mounted(): void {
+	@Watch('daemonVersion')
+	private updateForm(): void {
 		if (versionHigherThan('2.3.0')) {
 			this.daemonHigher230 = true;
 			this.tlsModeOptions = [
@@ -209,7 +209,21 @@ export default class WebsocketInterfaceForm extends Vue {
 				}
 			];
 		}
+	}
 
+	/**
+	 * Vue lifecycle hook created
+	 */
+	created(): void {
+		extend('integer', integer);
+		extend('required', required);
+	}
+
+	/**
+	 * Vue lifecycle hook mounted
+	 */
+	mounted(): void {
+		this.updateForm();
 		if (this.instance !== '') {
 			this.getConfig();
 		}
