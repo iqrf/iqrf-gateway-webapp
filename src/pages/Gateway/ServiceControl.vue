@@ -64,10 +64,11 @@
 <script lang='ts'>
 import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
 import {CButton, CCard} from '@coreui/vue/src';
+import AptitudeService from '../../services/AptitudeService';
 import ServiceService from '../../services/ServiceService';
 import {AxiosError} from 'axios';
-import { NavigationGuardNext, Route } from 'vue-router';
-import { MetaInfo } from 'vue-meta';
+import {NavigationGuardNext, Route} from 'vue-router';
+import {MetaInfo} from 'vue-meta';
 
 const whitelisted = [
 	'iqrf-gateway-controller',
@@ -180,13 +181,25 @@ export default class ServiceControl extends Vue {
 		this.getStatus();
 	}
 
+	private setUnattendedUpgrades(enabled: boolean, action: string): void {
+		AptitudeService.setUnattendedUpgrades(enabled)
+			.then(() => this.handleSuccess(action))
+			.catch(this.handleError);
+	}
+
 	/**
 	 * Attempts to enable the service
 	 */
 	private enable(): void {
 		this.$store.commit('spinner/SHOW');
 		ServiceService.enable(this.serviceName)
-			.then(() => (this.handleSuccess('enable')))
+			.then(() => {
+				if (this.serviceName === 'unattended-upgrades') {
+					this.setUnattendedUpgrades(true, 'enable');
+				} else {
+					this.handleSuccess('enable');
+				}
+			})
 			.catch(this.handleError);
 	}
 
@@ -196,7 +209,13 @@ export default class ServiceControl extends Vue {
 	private disable(): void {
 		this.$store.commit('spinner/SHOW');
 		ServiceService.disable(this.serviceName)
-			.then(() => (this.handleSuccess('disable')))
+			.then(() => {
+				if (this.serviceName === 'unattended-upgrades') {
+					this.setUnattendedUpgrades(false, 'disable');
+				} else {
+					this.handleSuccess('disable');
+				}
+			})
 			.catch(this.handleError);
 	}
 
