@@ -1,15 +1,11 @@
 <template>
 	<div>
-		<CCard>
-			<CCardHeader>
-				<div class='float-left'>
-					{{ $t('config.udp.title') }}
-				</div>
+		<CCard class='border-0'>
+			<CCardHeader class='border-0'>
 				<CButton
-					v-if='instances.length < 1'
 					color='success'
-					to='/config/daemon/udp/add'
 					size='sm'
+					to='/config/daemon/tracer/add'
 					class='float-right'
 				>
 					<CIcon :content='icons.add' size='sm' />
@@ -18,8 +14,8 @@
 			</CCardHeader>
 			<CCardBody>
 				<CDataTable
-					:items='instances'
 					:fields='fields'
+					:items='instances'
 					:column-filter='true'
 					:items-per-page='20'
 					:pagination='true'
@@ -33,15 +29,15 @@
 						<td class='col-actions'>
 							<CButton
 								color='info'
-								:to='"/config/daemon/udp/edit/" + item.instance'
 								size='sm'
+								:to='"/config/daemon/tracer/edit/" + item.instance'
 							>
 								<CIcon :content='icons.edit' size='sm' />
 								{{ $t('table.actions.edit') }}
 							</CButton> <CButton
 								color='danger'
 								size='sm'
-								@click='confirmDelete(item)'
+								@click='deleteInstance = item.instance'
 							>
 								<CIcon :content='icons.delete' size='sm' />
 								{{ $t('table.actions.delete') }}
@@ -57,25 +53,19 @@
 		>
 			<template #header>
 				<h5 class='modal-title'>
-					{{ $t('config.udp.messages.delete.confirmTitle') }}
+					{{ $t('config.tracer.messages.removeTitle') }}
 				</h5>
-				<CButtonClose
-					class='text-white'
-					@click='deleteInstance = ""'
-				/>
 			</template>
-			<span v-if='deleteInstance !== ""'>
-				{{ $t('config.udp.messages.delete.confirm', {instance: deleteInstance}) }}
-			</span>
+			{{ $t('config.tracer.messages.removeItem', {instance: deleteInstance}) }}
 			<template #footer>
-				<CButton 
-					color='danger' 
+				<CButton
+					color='danger'
 					@click='deleteInstance = ""'
 				>
 					{{ $t('forms.no') }}
 				</CButton> <CButton
 					color='success'
-					@click='performDelete'
+					@click='removeInstance'
 				>
 					{{ $t('forms.yes') }}
 				</CButton>
@@ -86,29 +76,17 @@
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {
-	CButton,
-	CButtonClose,
-	CCard,
-	CCardBody,
-	CCardHeader,
-	CDataTable,
-	CIcon,
-	CModal
-} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CDataTable, CIcon, CModal} from '@coreui/vue/src';
 import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
-import DaemonConfigurationService
-	from '../../services/DaemonConfigurationService';
-import { IField } from '../../interfaces/coreui';
-import { Dictionary } from 'vue-router/types/router';
-import { AxiosError, AxiosResponse } from 'axios';
-import { UdpInstance } from '../../interfaces/messagingInterfaces';
+import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
+import {IField} from '../../interfaces/coreui';
+import { AxiosError, AxiosResponse } from 'axios';
+import { Dictionary } from 'vue-router/types/router';
 
 @Component({
 	components: {
 		CButton,
-		CButtonClose,
 		CCard,
 		CCardBody,
 		CCardHeader,
@@ -119,40 +97,35 @@ import FormErrorHandler from '../../helpers/FormErrorHandler';
 })
 
 /**
- * List of Daemon UDP messaging component instances
+ * List of Daemon logging service component instances
  */
-export default class UdpMessagingTable extends Vue {
+export default class TracerList extends Vue {
 	/**
-	 * @constant {string} componentName UDP messaging component name
+	 * @constant {string} componentName Logging service component name
 	 */
-	private componentName = 'iqrf::UdpMessaging'
+	private componentName = 'shape::TraceFileService'
 
-	/**
-	 * @var {string} deleteInstance UDP messaging instance name used in remove modal
-	 */
-	private deleteInstance = ''
-	
 	/**
 	 * @constant {Array<IField>} fields Array of CoreUI data table columns
 	 */
 	private fields: Array<IField> = [
 		{
 			key: 'instance',
-			label: this.$t('config.udp.form.instance'),
+			label: this.$t('config.tracer.form.instance')
 		},
 		{
-			key: 'RemotePort',
-			label: this.$t('config.udp.form.RemotePort'),
+			key: 'path',
+			label: this.$t('config.tracer.form.path')
 		},
 		{
-			key: 'LocalPort',
-			label: this.$t('config.udp.form.LocalPort'),
+			key: 'filename',
+			label: this.$t('config.tracer.form.filename')
 		},
 		{
 			key: 'actions',
 			label: this.$t('table.actions.title'),
-			sorter: false,
 			filter: false,
+			sorter: false,
 		},
 	]
 
@@ -166,37 +139,27 @@ export default class UdpMessagingTable extends Vue {
 	}
 
 	/**
-	 * @var {Array<UdpInstance>} instances Array of UDP messaging component instances
+	 * @var {Array<unknown>} instances Array of logging service component instances
 	 */
-	private instances: Array<UdpInstance> = []
+	private instances: Array<unknown> = []
+
+	/**
+	 * @var {string} deleteInstance Name of logging service component instance used in remove modal
+	 */
+	private deleteInstance = ''
 
 	/**
 	 * Vue lifecycle hook created
 	 */
-	created(): void {
-		this.$store.commit('spinner/SHOW');
-	}
-
-	/**
-	 * Vue lifecycle hook mounted
-	 */
 	mounted(): void {
-		this.getInstances();
+		this.getConfig();
 	}
 
 	/**
-	 * Assigns name of UDP messaging instances selected to remove to the remove modal
-	 * @param {UdpInstance} instance UDP messaging instance
+	 * Retrieves configuration of logging service component
 	 */
-	private confirmDelete(instance: UdpInstance): void {
-		this.deleteInstance = instance.instance;
-	}
-
-	/**
-	 * Retrieves instances of UDP messaging component
-	 * @returns {Promise<void>} Empty promise for response chaining
-	 */
-	private getInstances(): Promise<void> {
+	private getConfig(): Promise<void> {
+		this.$store.commit('spinner/SHOW');
 		return DaemonConfigurationService.getComponent(this.componentName)
 			.then((response: AxiosResponse) => {
 				this.$store.commit('spinner/HIDE');
@@ -204,19 +167,19 @@ export default class UdpMessagingTable extends Vue {
 			})
 			.catch((error: AxiosError) => FormErrorHandler.configError(error));
 	}
-
+	
 	/**
-	 * Removes instance of UDP messaging component
+	 * Removes instance of logging service component
 	 */
-	private performDelete(): void {
+	private removeInstance(): void {
 		this.$store.commit('spinner/SHOW');
 		const instance = this.deleteInstance;
 		this.deleteInstance = '';
 		DaemonConfigurationService.deleteInstance(this.componentName, instance)
 			.then(() => {
-				this.getInstances().then(() => {
+				this.getConfig().then(() => {
 					this.$toast.success(
-						this.$t('config.udp.messages.delete.success', {instance: instance})
+						this.$t('config.tracer.messages.removeSuccess', {instance: instance})
 							.toString()
 					);
 				});
@@ -225,3 +188,11 @@ export default class UdpMessagingTable extends Vue {
 	}
 }
 </script>
+
+<style scoped>
+
+.card-header {
+	padding-bottom: 0;
+}
+
+</style>

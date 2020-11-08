@@ -32,16 +32,15 @@
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
 import {CCard, CCardBody, CCardHeader, CTab, CTabs} from '@coreui/vue/src';
-import JsonRawApi from '../../pages/Config/JsonRawApi.vue';
-import JsonMngMetaDataApi from '../../pages/Config/JsonMngMetaDataApi.vue';
-import JsonSplitter from '../../pages/Config/JsonSplitter.vue';
-import JsonApi from '../../pages/Config/JsonApi.vue';
-import SchedulerList from '../../pages/Config/SchedulerList.vue';
-import TracerList from '../../pages/Config/TracerList.vue';
-import MonitorList from '../../pages/Config/MonitorList.vue';
-import IqrfRepository from '../../pages/Config/IqrfRepository.vue';
-import IqrfInfo from '../../pages/Config/IqrfInfo.vue';
-import IqmeshServices from '../../pages/Config/IqmeshServices.vue';
+import JsonRawApi from '../../components/Config/JsonRawApi.vue';
+import JsonMngMetaDataApi from '../../components/Config/JsonMngMetaDataApi.vue';
+import JsonSplitter from '../../components/Config/JsonSplitter.vue';
+import JsonApi from '../../components/Config/JsonApi.vue';
+import TracerList from '../../components/Config/TracerList.vue';
+import MonitorList from '../../components/Config/MonitorList.vue';
+import IqrfRepository from '../../components/Config/IqrfRepository.vue';
+import IqrfInfo from '../../components/Config/IqrfInfo.vue';
+import IqmeshServices from '../../components/Config/IqmeshServices.vue';
 
 @Component({
 	components: {
@@ -58,7 +57,6 @@ import IqmeshServices from '../../pages/Config/IqmeshServices.vue';
 		JsonRawApi,
 		JsonSplitter,
 		MonitorList,
-		SchedulerList,
 		TracerList
 	},
 	metaInfo: {

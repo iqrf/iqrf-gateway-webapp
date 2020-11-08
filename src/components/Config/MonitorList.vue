@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<CCard class='border-0'>
-			<CCardHeader>
+			<CCardHeader class='border-0'>
 				<CButton
 					color='success'
 					size='sm'
@@ -303,3 +303,11 @@ export default class MonitorList extends Vue {
 	}
 }
 </script>
+
+<style scoped>
+
+.card-header {
+	padding-bottom: 0;
+}
+
+</style>

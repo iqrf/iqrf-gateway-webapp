@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<CCard>
-			<CCardHeader>
+			<CCardHeader class='border-0'>
 				<div class='float-left'>
 					{{ $t('config.websocket.service.title') }}
 				</div>
@@ -288,3 +288,11 @@ export default class WebsocketServiceList extends Vue {
 	}
 }
 </script>
+
+<style scoped>
+
+.card-header {
+	padding-bottom: 0;
+}
+
+</style>

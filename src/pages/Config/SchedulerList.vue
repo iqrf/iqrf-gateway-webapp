@@ -4,7 +4,7 @@
 			{{ $t('config.scheduler.title') }}
 		</h1>
 		<CCard>
-			<CCardHeader>
+			<CCardHeader class='border-0'>
 				<div class='float-right'>
 					<CButton
 						color='success'
@@ -595,3 +595,11 @@ export default class SchedulerList extends Vue {
 	}
 }
 </script>
+
+<style scoped>
+
+.card-header {
+	padding-bottom: 0;
+}
+
+</style>

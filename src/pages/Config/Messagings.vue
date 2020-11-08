@@ -18,10 +18,10 @@
 <script lang='ts'>
 import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
 import {CCard, CSelect} from '@coreui/vue/src';
-import MqttMessagingTable from '../../pages/Config/MqttMessagingTable.vue';
+import MqttMessagingTable from '../../components/Config/MqttMessagingTable.vue';
 import WebsocketList from '../../pages/Config/WebsocketList.vue';
-import MqMessagingTable from '../../pages/Config/MqMessagingTable.vue';
-import UdpMessagingTable from '../../pages/Config/UdpMessagingTable.vue';
+import MqMessagingTable from '../../components/Config/MqMessagingTable.vue';
+import UdpMessagingTable from '../../components/Config/UdpMessagingTable.vue';
 import {IOption} from '../../interfaces/coreui';
 
 @Component({

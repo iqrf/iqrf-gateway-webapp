@@ -23,10 +23,10 @@
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {CCard, CCardBody, CCardHeader, CSelect} from '@coreui/vue/src';
-import IqrfSpi from '../../pages/Config/IqrfSpi.vue';
-import IqrfCdc from '../../pages/Config/IqrfCdc.vue';
-import IqrfUart from '../../pages/Config/IqrfUart.vue';
-import IqrfDpa from '../../pages/Config/IqrfDpa.vue';
+import IqrfSpi from '../../components/Config/IqrfSpi.vue';
+import IqrfCdc from '../../components/Config/IqrfCdc.vue';
+import IqrfUart from '../../components/Config/IqrfUart.vue';
+import IqrfDpa from '../../components/Config/IqrfDpa.vue';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import {AxiosError, AxiosResponse} from 'axios';
