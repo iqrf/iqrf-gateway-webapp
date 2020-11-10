@@ -1,91 +1,209 @@
 /**
- * Controller configuration autonetwork api call stop conditions interface
+ * IQRF GW Controller configuration interface
  */
-export interface ControllerAutoNetworkStopConditions {
+export interface IController {
+	/**
+	 * Daemon API configuration
+	 */
+	daemonApi: IControllerDaemonApi
+
+	/**
+	 * Factory reset configuration
+	 */
+	factoryReset: IControllerFactoryReset
+
+	/**
+	 * Logger configuration
+	 */
+	logger: IControllerLogger
+
+	/**
+	 * Reset button configuration
+	 */
+	resetButton: IControllerResetButton
+
+	/**
+	 * Status LED configuraiton
+	 */
+	statusLed: IControllerStatusLed
+
+	/**
+	 * WebSocket servers configuraiton
+	 */
+	wsServers: IControllerWsServers
+}
+
+/**
+ * Controller AutoNetwork API call stop conditions configuration interface
+ */
+interface IControllerAutoNetworkStopConditions {
+	/**
+	 * Abort AutoNetwork if too many nodes were found
+	 */
 	abortOnTooManyNodesFound: boolean
+
+	/**
+	 * Maximum number of empty consecutive waves
+	 */
 	emptyWaves: number
+
+	/**
+	 * Maximum number of waves
+	 */
 	waves: number
 }
 
 /**
- * Controller configuration autonetwork api call base interface
+ * Controller AutoNetwork API call configuration interface
  */
-export interface ControllerAutoNetwork {
+interface IControllerAutoNetwork {
+	/**
+	 * Number of retry transactions
+	 */
 	actionRetries: number
+
+	/**
+	 * Run discovery before AutoNetwork starts
+	 */
 	discoveryBeforeStart: boolean
+
+	/**
+	 * Discovery TX power
+	 */
 	discoveryTxPower: number
+
+	/**
+	 * Verbose response
+	 */
 	returnVerbose: boolean
+
+	/**
+	 * Skip discovery each AutoNetwork wave
+	 */
 	skipDiscoveryEachWave: boolean
-	stopConditions: ControllerAutoNetworkStopConditions
+
+	/**
+	 * AutoNetwork stop conditions configuration
+	 */
+	stopConditions: IControllerAutoNetworkStopConditions
 }
 
 /**
- * Controller configuration discovery api call interface
+ * Controller Discovery API call configuration interface
  */
-export interface ControllerDiscovery {
+interface IControllerDiscovery {
+	/**
+	 * Maximum address included in discovery process
+	 */
 	maxAddr: number
+
+	/**
+	 * Verbose response
+	 */
 	returnVerbose: boolean
+
+	/**
+	 * TX power
+	 */
 	txPower: number
 }
 
 /**
- * Controller configuration daemon api interface
+ * Controller Daemon API call configuration interface
  */
-export interface ControllerDaemonApi {
-	autoNetwork: ControllerAutoNetwork
-	discovery: ControllerDiscovery
+interface IControllerDaemonApi {
+	/**
+	 * AutoNetwork API call configuration
+	 */
+	autoNetwork: IControllerAutoNetwork
+
+	/**
+	 * Discovery API call configuration
+	 */
+	discovery: IControllerDiscovery
 }
 
 /**
- * Controller configuration factory reset interface
+ * Controller factory reset configuration interface
  */
-export interface ControllerFactoryReset {
+interface IControllerFactoryReset {
+	/**
+	 * Reset coordinator
+	 */
 	coordinator: boolean
+
+	/**
+	 * Reset IQRF GW Daemon
+	 */
 	daemon: boolean
+
+	/**
+	 * Reset network
+	 */
 	network: boolean
+
+	/**
+	 * Reset IQRF GW Webapp
+	 */
 	webapp: boolean
 }
 
 /**
- * Controller configuration logger interface
+ * Controller logger configuration interface
  */
-export interface ControllerLogger {
+interface IControllerLogger {
+	/**
+	 * Path to logging file
+	 */
 	filePath: string
+
+	/**
+	 * Logging severity level
+	 */
 	severity: string
 }
 
 /**
- * Controller configuration reset button interface
+ * Controller reset button configuration interface
  */
-export interface ControllerResetButton {
+interface IControllerResetButton {
+	/**
+	 * Daemon API call to be executed
+	 */
 	api: string
+	
+	/**
+	 * Reset button GPIO pin number
+	 */
 	button: number
 }
 
 /**
  * Controller configuration status led interface
  */
-export interface ControllerStatusLed {
+interface IControllerStatusLed {
+	/**
+	 * Green LED GPIO pin number
+	 */
 	greenLed: number
+
+	/**
+	 * Red LED GPIO pin number
+	 */
 	redLed: number
 }
 
 /**
  * Controller configuration websocket servers interface
  */
-export interface ControllerWsServers {
+interface IControllerWsServers {
+	/**
+	 * Daemon API WebSocket server address
+	 */
 	api: string
-	monitor: string
-}
 
-/**
- * Controller configuration base interface
- */
-export interface ControllerBase {
-	daemonApi: ControllerDaemonApi
-	factoryReset: ControllerFactoryReset
-	logger: ControllerLogger
-	resetButton: ControllerResetButton
-	statusLed: ControllerStatusLed
-	wsServers: ControllerWsServers
+	/**
+	 * Daemon monitor WebSocket server address
+	 */
+	monitor: string
 }

@@ -266,7 +266,7 @@ import {between, integer, required} from 'vee-validate/dist/rules';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import FeatureConfigService from '../../services/FeatureConfigService';
 import {NavigationGuardNext, Route} from 'vue-router/types/router';
-import {ControllerBase} from '../../interfaces/controller';
+import {IController} from '../../interfaces/controller';
 import {IOption} from '../../interfaces/coreui';
 
 @Component({
@@ -351,9 +351,9 @@ export default class ControllerConfig extends Vue {
 	]
 
 	/**
-	 * @var {ControllerBase|null} config IQRF Gateway Controller configuration
+	 * @var {IController|null} config IQRF Gateway Controller configuration
 	 */
-	private config: ControllerBase|null = null
+	private config: IController|null = null
 
 	/**
 	 * Vue lifecycle hook created
