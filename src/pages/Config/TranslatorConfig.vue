@@ -174,26 +174,7 @@ import FeatureConfigService from '../../services/FeatureConfigService';
 import { NavigationGuardNext, Route } from 'vue-router';
 import { Dictionary } from 'vue-router/types/router';
 import { AxiosError, AxiosResponse } from 'axios';
-
-interface TranslatorMqtt {
-	addr: string
-	cid: string
-	port: number
-	pw: string
-	topic: string
-	user: string
-}
-
-interface TranslatorRest {
-	addr: string
-	api_key: string
-	port: number
-}
-
-interface Translator {
-	mqtt: TranslatorMqtt
-	rest: TranslatorRest
-}
+import {ITranslator} from '../../interfaces/translator';
 
 @Component({
 	components: {
@@ -237,9 +218,9 @@ export default class TranslatorConfig extends Vue {
 	private visibility = 'password'
 
 	/**
-	 * @var {Translator|null} config IQRF Gateway Translator service configuration
+	 * @var {ITranslator|null} config IQRF Gateway Translator service configuration
 	 */
-	private config: Translator|null = null
+	private config: ITranslator|null = null
 
 	/**
 	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI Icons
