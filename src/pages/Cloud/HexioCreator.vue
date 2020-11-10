@@ -73,7 +73,16 @@
 								:label='$t("cloud.hexio.form.password")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
-							/>
+								:type='visibility'
+							>
+								<template #append-content>
+									<span @click='changeVisibility'>
+										<CIcon
+											:content='(visibility === "password" ? icons.hidden : icons.shown)'
+										/>
+									</span>
+								</template>
+							</CInput>
 						</ValidationProvider>
 						<CButton
 							color='primary'
@@ -99,20 +108,14 @@
 import {Component, Vue} from 'vue-property-decorator';
 import {AxiosError} from 'axios';
 import {CButton, CCard, CCardBody, CForm, CInput} from '@coreui/vue/src';
+import {cilLockLocked, cilLockUnlocked} from '@coreui/icons';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import CloudService from '../../services/CloudService';
 import ServiceService from '../../services/ServiceService';
-
-interface HexioConfig {
-	broker: string
-	clientId: string|null
-	topicRequest: string
-	topicResponse: string
-	username: string|null
-	password: string|null
-}
+import {Dictionary} from 'vue-router/types/router';
+import {IHexioCloud} from '../../interfaces/clouds';
 
 @Component({
 	components: {
@@ -139,16 +142,29 @@ export default class HexioCreator extends Vue {
 	private serviceName = 'hexio'
 
 	/**
-	 * @var {HexioConfig} config Hexio cloud mqtt connection configuration
+	 * @var {IHexioCloud} config Hexio cloud mqtt connection configuration
 	 */
-	private config: HexioConfig = {
+	private config: IHexioCloud = {
 		broker: 'connect.hexio.cloud',
-		clientId: null,
+		clientId: '',
 		topicRequest: 'Iqrf/DpaRequest',
 		topicResponse: 'Iqrf/DpaResponse',
-		username: null,
-		password: null
+		username: '',
+		password: ''
 	}
+
+	/**
+	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI icons
+	 */
+	private icons: Dictionary<Array<string>> = {
+		hidden: cilLockLocked,
+		shown: cilLockUnlocked
+	}
+
+	/**
+	 * @var {string} visibility Form password field visibility type
+	 */
+	private visibility = 'password'
 	
 	/**
 	 * Vue lifecycle hook created
@@ -194,6 +210,13 @@ export default class HexioCreator extends Vue {
 					});
 			})
 			.catch(() => {return;});
+	}
+
+	/**
+	 * Changes password input field visibility
+	 */
+	private changeVisibility(): void {
+		this.visibility = this.visibility === 'password' ? 'text': 'password';
 	}
 }
 </script>

@@ -110,9 +110,9 @@ import ServiceService from '../../services/ServiceService';
  */
 export default class AwsCreator extends Vue {
 	/**
-	 * @var {string|null} endpoint Aws cloud endpoint
+	 * @var {string} endpoint Aws cloud endpoint
 	 */
-	private endpoint: string|null = null
+	private endpoint = ''
 
 	/**
 	 * @var {boolean} certEmpty Indicates whether the form certificate file input is empty
@@ -147,7 +147,7 @@ export default class AwsCreator extends Vue {
 	 */
 	private buildRequest(): FormData {
 		const formData = new FormData();
-		formData.append('endpoint', this.endpoint ?? '');
+		formData.append('endpoint', this.endpoint);
 		formData.append('certificate', this.getCertFiles()[0]);
 		formData.append('privateKey', this.getKeyFiles()[0]);
 		return formData;

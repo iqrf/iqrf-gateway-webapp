@@ -11,7 +11,16 @@
 				<CInput
 					v-model='password'
 					:label='$t("iqrfnet.trConfiguration.security.form.password")'
-				/>
+					:type='visibility'
+				>
+					<template #append-content>
+						<span @click='changeVisibility'>
+							<CIcon
+								:content='(visibility === "password" ? icons.hidden : icons.shown)'
+							/>
+						</span>
+					</template>
+				</CInput>
 				<CButton
 					color='primary'
 					@click='save(true)'
@@ -32,9 +41,11 @@
 import {Component, Prop, Vue} from 'vue-property-decorator';
 import {MutationPayload} from 'vuex';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CSelect} from '@coreui/vue/src';
+import {cilLockLocked, cilLockUnlocked} from '@coreui/icons';
 import SecurityService from '../../services/SecurityService';
 import {SecurityFormat} from '../../iqrfNet/securityFormat';
-import { IOption } from '../../interfaces/coreui';
+import {IOption} from '../../interfaces/coreui';
+import {Dictionary} from 'vue-router/types/router';
 
 @Component({
 	components: {
@@ -56,6 +67,15 @@ export default class SecurityForm extends Vue {
 	 * @var {SecurityFormat} format Format of password or user key
 	 */
 	private format: SecurityFormat = SecurityFormat.ASCII.valueOf()
+
+	/**
+	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI icons
+	 */
+	private icons: Dictionary<Array<string>> = {
+		hidden: cilLockLocked,
+		shown: cilLockUnlocked
+	}
+
 
 	/**
 	 * @var {string|null} msgId Daemon api message id
@@ -80,6 +100,11 @@ export default class SecurityForm extends Vue {
 			label: this.$t('iqrfnet.trConfiguration.security.form.hex').toString(),
 		}
 	]
+
+	/**
+	 * @var {string} visibility Form password field visibility type
+	 */
+	private visibility = 'password'
 
 	/**
 	 * Component unsubscribe function
@@ -139,6 +164,13 @@ export default class SecurityForm extends Vue {
 		const type = password ? 0 : 1;
 		SecurityService.setSecurity(this.address, this.password, this.format, type, 15000, 'iqrfnet.trConfiguration.security.messages.failure', () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
+	}
+
+	/**
+	 * Changes password input field visibility
+	 */
+	private changeVisibility(): void {
+		this.visibility = this.visibility === 'password' ? 'text': 'password';
 	}
 }
 </script>

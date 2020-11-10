@@ -119,14 +119,7 @@ import {required} from 'vee-validate/dist/rules';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import CloudService from '../../services/CloudService';
 import ServiceService from '../../services/ServiceService';
-
-interface IbmConfig {
-	organizationId: string|null
-	deviceType: string|null
-	deviceId: string|null
-	token: string|null
-	eventId: string
-}
+import {IIbmCloud} from '../../interfaces/clouds';
 
 @Component({
 	components: {
@@ -154,13 +147,13 @@ export default class IbmCreator extends Vue {
 	private serviceName = 'ibmCloud'
 
 	/**
-	 * @var {IbmConfig} config Ibm cloud connection configuration
+	 * @var {IIbmCloud} config Ibm cloud connection configuration
 	 */
-	private config: IbmConfig = {
-		organizationId: null,
-		deviceType: null,
-		deviceId: null,
-		token: null,
+	private config: IIbmCloud = {
+		organizationId: '',
+		deviceType: '',
+		deviceId: '',
+		token: '',
 		eventId: 'iqrf'
 	}
 

@@ -85,9 +85,9 @@ import ServiceService from '../../services/ServiceService';
  */
 export default class AzureCreator extends Vue {
 	/**
-	 * @var {string|null} connectionString Azure cloud connection string
+	 * @var {string} connectionString Azure cloud connection string
 	 */
-	private connectionString: string|null = null
+	private connectionString = ''
 
 	/**
 	 * @constant {string} serviceName Azure cloud service name

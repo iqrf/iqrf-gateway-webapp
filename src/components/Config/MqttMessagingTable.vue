@@ -204,7 +204,7 @@ export default class MqttMessagingTable extends Vue {
 	]
 
 	/**
-	 * @constant {Dictionary<Array<string>>} icons Array of CoreUI icons
+	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI Icons
 	 */
 	private icons: Dictionary<Array<string>> = {
 		add: cilPlus,

@@ -64,7 +64,16 @@
 								:label='$t("cloud.intelimentsInteliGlue.form.password")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
-							/>
+								:type='visibility'
+							>
+								<template #append-content>
+									<span @click='changeVisibility'>
+										<CIcon
+											:content='(visibility === "password" ? icons.hidden : icons.shown)'
+										/>
+									</span>
+								</template>
+							</CInput>
 						</ValidationProvider>
 						<CButton
 							color='primary'
@@ -90,18 +99,14 @@
 import {Component, Vue} from 'vue-property-decorator';
 import {AxiosError} from 'axios';
 import {CButton, CCard, CCardBody, CForm, CInput} from '@coreui/vue/src';
+import {cilLockLocked, cilLockUnlocked} from '@coreui/icons';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import CloudService from '../../services/CloudService';
 import ServiceService from '../../services/ServiceService';
-
-interface InteliGlueConfig {
-	rootTopic: string|null
-	assignedPort: number|null
-	clientId: string|null
-	password: string|null
-}
+import {Dictionary} from 'vue-router/types/router';
+import {IInteliGlueCloud} from '../../interfaces/clouds';
 
 @Component({
 	components: {
@@ -130,12 +135,25 @@ export default class InteliGlueCreator extends Vue {
 	/**
 	 * @var {InteliGlueConfig} config InteliGlue cloud connection configuration
 	 */
-	private config: InteliGlueConfig = {
-		rootTopic: null,
-		assignedPort: null,
-		clientId: null,
-		password: null
+	private config: IInteliGlueCloud = {
+		rootTopic: '',
+		assignedPort: 1234,
+		clientId: '',
+		password: ''
 	}
+
+	/**
+	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI icons
+	 */
+	private icons: Dictionary<Array<string>> = {
+		hidden: cilLockLocked,
+		shown: cilLockUnlocked
+	}
+
+	/**
+	 * @var {string} visibility Form password field visibility type
+	 */
+	private visibility = 'password'
 
 	/**
 	 * Vue lifecycle hook created
@@ -185,5 +203,11 @@ export default class InteliGlueCreator extends Vue {
 			.catch(() => {return;});
 	}
 
+	/**
+	 * Changes password input field visibility
+	 */
+	private changeVisibility(): void {
+		this.visibility = this.visibility === 'password' ? 'text': 'password';
+	}
 }
 </script>

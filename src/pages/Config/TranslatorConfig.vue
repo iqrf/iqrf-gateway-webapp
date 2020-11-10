@@ -242,7 +242,7 @@ export default class TranslatorConfig extends Vue {
 	private config: Translator|null = null
 
 	/**
-	 * @constant {Dictionary<Array<string>>} icons Array of CoreUI icons
+	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI Icons
 	 */
 	private icons: Dictionary<Array<string>> = {
 		hidden: cilLockLocked,
@@ -308,7 +308,7 @@ export default class TranslatorConfig extends Vue {
 	}
 
 	/**
-	 * Changes input visibility type in response to user action
+	 * Changes password input field visibility
 	 */
 	private changeVisibility(): void {
 		this.visibility = this.visibility === 'password' ? 'text' : 'password';

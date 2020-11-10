@@ -45,7 +45,7 @@ import {Dictionary} from 'vue-router/types/router';
  */
 export default class PowerControl extends Vue {
 	/**
-	 * @constant {Dictionary<Array<string>>} icons Array of CoreUI icons
+	 * @constant {Dictionary<Array<string>>} icons Dictionary of CoreUI Icons
 	 */
 	private icons: Dictionary<Array<string>> = {
 		off: cilPowerStandby,
