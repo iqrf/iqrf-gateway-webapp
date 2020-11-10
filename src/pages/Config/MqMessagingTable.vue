@@ -1,13 +1,13 @@
 <template>
 	<div>
+		<h1>
+			{{ $t('config.mq.title') }}
+		</h1>
 		<CCard>
 			<CCardHeader class='border-0'>
-				<div class='float-left'>
-					{{ $t('config.mqtt.title') }}
-				</div>
 				<CButton
 					color='success'
-					to='/config/daemon/mqtt/add'
+					to='/config/daemon/mq/add'
 					size='sm'
 					class='float-right'
 				>
@@ -27,23 +27,6 @@
 				>
 					<template #no-items-view='{}'>
 						{{ $t('table.messages.noRecords') }}
-					</template>
-					<template #EnabledSSL='{item}'>
-						<td>
-							<CDropdown
-								:color='item.EnabledSSL ? "success" : "danger"'
-								:toggler-text='$t("table.enabled." + item.EnabledSSL)'
-								placement='top-start'
-								size='sm'
-							>
-								<CDropdownItem @click='changeEnabledSSL(item, true)'>
-									{{ $t('table.enabled.true') }}
-								</CDropdownItem>
-								<CDropdownItem @click='changeEnabledSSL(item, false)'>
-									{{ $t('table.enabled.false') }}
-								</CDropdownItem>
-							</CDropdown>
-						</td>
 					</template>
 					<template #acceptAsyncMsg='{item}'>
 						<td>
@@ -66,12 +49,12 @@
 						<td class='col-actions'>
 							<CButton
 								color='info'
-								:to='"/config/daemon/mqtt/edit/" + item.instance'
+								:to='"/config/daemon/mq/edit/" + item.instance'
 								size='sm'
 							>
 								<CIcon :content='icons.edit' size='sm' />
 								{{ $t('table.actions.edit') }}
-							</CButton> <CButton 
+							</CButton> <CButton
 								color='danger'
 								size='sm'
 								@click='confirmDelete(item)'
@@ -90,18 +73,23 @@
 		>
 			<template #header>
 				<h5 class='modal-title'>
-					{{ $t('config.mqtt.messages.delete.confirmTitle') }}
+					{{ $t('config.mq.messages.delete.confirmTitle') }}
 				</h5>
 				<CButtonClose class='text-white' @click='deleteInstance = ""' />
 			</template>
 			<span v-if='deleteInstance !== ""'>
-				{{ $t('config.mqtt.messages.delete.confirm', {instance: deleteInstance}) }}
+				{{ $t('config.mq.messages.delete.confirm', {instance: deleteInstance}) }}
 			</span>
 			<template #footer>
-				<CButton color='danger' @click='deleteInstance = ""'>
+				<CButton 
+					color='danger'
+					@click='deleteInstance = ""'
+				>
 					{{ $t('forms.no') }}
-				</CButton>
-				<CButton color='success' @click='performDelete'>
+				</CButton> <CButton
+					color='success'
+					@click='performDelete'
+				>
 					{{ $t('forms.yes') }}
 				</CButton>
 			</template>
@@ -124,13 +112,12 @@ import {
 	CModal
 } from '@coreui/vue/src';
 import {cilPencil, cilPlus, cilTrash} from '@coreui/icons';
-import DaemonConfigurationService
-	from '../../services/DaemonConfigurationService';
+import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import { Dictionary } from 'vue-router/types/router';
 import { IField } from '../../interfaces/coreui';
-import { MqttInstance } from '../../interfaces/messagingInterfaces';
-import { AxiosError, AxiosResponse } from 'axios';
-import FormErrorHandler from '../../helpers/FormErrorHandler';
+import { MqInstance } from '../../interfaces/messagingInterfaces';
+import { AxiosResponse } from 'axios';
+
 
 @Component({
 	components: {
@@ -148,16 +135,16 @@ import FormErrorHandler from '../../helpers/FormErrorHandler';
 })
 
 /**
- * List of Daemon MQTT messaging component instances
+ * List of Daemon MQ messaging component instances
  */
-export default class MqttMessagingTable extends Vue {
+export default class MqMessagingTable extends Vue {
 	/**
-	 * @constant {string} componentName MQTT messaging component name
+	 * @constant {string} componentName MQ messaging component name
 	 */
-	private componentName = 'iqrf::MqttMessaging'
+	private componentName = 'iqrf::MqMessaging'
 
 	/**
-	 * @var {string} deleteInstance MQTT messaging instance name used in remove modal
+	 * @var {string} deleteInstance MQ messaging instance name used in remove modal
 	 */
 	private deleteInstance = ''
 
@@ -167,32 +154,19 @@ export default class MqttMessagingTable extends Vue {
 	private fields: Array<IField> = [
 		{
 			key: 'instance',
-			label: this.$t('config.mqtt.form.instance'),
+			label: this.$t('config.mq.form.instance'),
 		},
 		{
-			key: 'BrokerAddr',
-			label: this.$t('config.mqtt.form.BrokerAddr'),
+			key: 'LocalMqName',
+			label: this.$t('config.mq.form.LocalMqName'),
 		},
 		{
-			key: 'ClientId',
-			label: this.$t('config.mqtt.form.ClientId'),
-		},
-		{
-			key: 'TopicRequest',
-			label: this.$t('config.mqtt.form.TopicRequest'),
-		},
-		{
-			key: 'TopicResponse',
-			label: this.$t('config.mqtt.form.TopicResponse'),
-		},
-		{
-			key: 'EnabledSSL',
-			label: this.$t('config.mqtt.form.EnabledSSL'),
-			filter: false,
+			key: 'RemoteMqName',
+			label: this.$t('config.mq.form.RemoteMqName'),
 		},
 		{
 			key: 'acceptAsyncMsg',
-			label: this.$t('config.mqtt.form.acceptAsyncMsg'),
+			label: this.$t('config.mq.form.acceptAsyncMsg'),
 			filter: false,
 		},
 		{
@@ -213,9 +187,9 @@ export default class MqttMessagingTable extends Vue {
 	}
 
 	/**
-	 * @var {Array<MqttInstance>} instances Array of MQTT messaging component instances
+	 * @var {Array<MqInstance>} instances Array of MQ messaging component instances
 	 */
-	private instances: Array<MqttInstance> = []
+	private instances: Array<MqInstance> = []
 
 	/**
 	 * Vue lifecycle hook mounted
@@ -224,64 +198,39 @@ export default class MqttMessagingTable extends Vue {
 		this.$store.commit('spinner/SHOW');
 		this.getInstances();
 	}
-
+	
 	/**
-	 * Assigns name of MQTT messaging instance selected to remove to the remove modal
-	 * @param {MqttInstance} instance MQTT messaging instance
+	 * Assigns name of MQ messaging instance selected to remove to the remove modal
+	 * @param {MqInstance} instance MQ messaging instance
 	 */
-	private confirmDelete(instance: MqttInstance): void {
+	private confirmDelete(instance: MqInstance): void {
 		this.deleteInstance = instance.instance;
 	}
 
 	/**
-	 * Updates message accepting configuration of MQTT messaging component instance
-	 * @param {MqttInstance} instance MQTT messaging instance
+	 * Updates configuration of MQ messaging component instance
+	 * @param {MqInstance} instance MQ messaging instance
 	 * @param {boolean} acceptAsyncMsg Message accepting policy setting
 	 */
-	private changeAcceptAsyncMsg(instance: MqttInstance, acceptAsyncMsg: boolean): void {
+	private changeAcceptAsyncMsg(instance: MqInstance, acceptAsyncMsg: boolean): void {
 		if (instance.acceptAsyncMsg === acceptAsyncMsg) {
 			return;
 		}
-		this.edit(instance, {acceptAsyncMsg: acceptAsyncMsg});
-	}
-
-	/**
-	 * Updates SSL configuratin of MQTT messaging component instance
-	 * @param {MqttInstance} instance MQTT messaging instance
-	 * @param {boolean} enabledSsl SSL setting
-	 */
-	private changeEnabledSSL(instance: MqttInstance, enabledSsl: boolean) : void{
-		if (instance.EnabledSSL === enabledSsl) {
-			return;
-		}
-		this.edit(instance, {EnabledSSL: enabledSsl});
-	}
-
-	/**
-	 * Saves changes in MQTT messaging instance configuration
-	 * @param {MqttInstance} instance MQTT messaging instance
-	 * @param {Dictionary<boolean>} newSettings Settings to update instance with
-	 */
-	private edit(instance: MqttInstance, newSettings: Dictionary<boolean>): void {
 		this.$store.commit('spinner/SHOW');
-		let settings = {
-			...instance,
-			...newSettings,
-		};
-		DaemonConfigurationService.updateInstance(this.componentName, settings.instance, settings)
+		instance.acceptAsyncMsg = acceptAsyncMsg;
+		DaemonConfigurationService.updateInstance(this.componentName, instance.instance, instance)
 			.then(() => {
 				this.getInstances().then(() => {
 					this.$toast.success(
-						this.$t('config.mqtt.messages.edit.success', {instance: settings.instance})
+						this.$t('config.mq.messages.edit.success', {instance: instance.instance})
 							.toString()
 					);
 				});
-			})
-			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+			});
 	}
 
 	/**
-	 * Retrieves instances of MQTT messaging component
+	 * Retrieves instances of MQ messaging component
 	 * @returns {Promise<void>} Empty promise for request chaining
 	 */
 	private getInstances(): Promise<void> {
@@ -290,11 +239,11 @@ export default class MqttMessagingTable extends Vue {
 				this.$store.commit('spinner/HIDE');
 				this.instances = response.data.instances;
 			})
-			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+			.catch(() => this.$store.commit('spinner/HIDE'));
 	}
 
 	/**
-	 * Removes instance of MQTT messaging component
+	 * Removes instance of MQ messaging component
 	 */
 	private performDelete(): void {
 		this.$store.commit('spinner/SHOW');
@@ -304,13 +253,13 @@ export default class MqttMessagingTable extends Vue {
 			.then(() => {
 				this.getInstances().then(() => {
 					this.$toast.success(
-						this.$t('config.mqtt.messages.delete.success', {instance: instance})
+						this.$t('config.mq.messages.delete.success', {instance: instance})
 							.toString()
 					);
 				});
 			})
-			.catch((error: AxiosError) => FormErrorHandler.configError(error));
-	}
+			.catch(() => this.$store.commit('spinner/HIDE'));
+	}	
 }
 </script>
 

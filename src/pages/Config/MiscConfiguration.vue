@@ -2,7 +2,7 @@
 	<div>
 		<h1>{{ $t('config.daemon.misc.title') }}</h1>
 		<CCard>
-			<CTabs variant='tabs' :active-tab='activeTab' @update:activeTab='updateRouter'>
+			<CTabs variant='tabs' :active-tab='activeTab'>
 				<CTab :title='$t("config.jsonApi.title")'>
 					<JsonApi v-if='!powerUser' />
 					<JsonMngMetaDataApi v-if='powerUser' />
@@ -30,7 +30,7 @@
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
+import {Component, Vue} from 'vue-property-decorator';
 import {CCard, CCardBody, CCardHeader, CTab, CTabs} from '@coreui/vue/src';
 import JsonRawApi from '../../components/Config/JsonRawApi.vue';
 import JsonMngMetaDataApi from '../../components/Config/JsonMngMetaDataApi.vue';
@@ -77,7 +77,7 @@ export default class MiscConfiguration extends Vue {
 	 * @var {Array<string>} endpoints Array of misc tab endpoints
 	 */
 	private endpoints: Array<string> = [
-		'json-api',
+		'json',
 		'repository',
 		'db',
 		'monitor',
@@ -88,18 +88,6 @@ export default class MiscConfiguration extends Vue {
 	 * @var {boolean} powerUser Indicates whether user profile is power user
 	 */
 	private powerUser = false;
-
-	/**
-	 * Updates URL to match the config tab
-	 */
-	private updateRouter(index: number): void {
-		this.$router.replace('/config/daemon/misc/' + this.endpoints[index]);
-	}
-
-	/**
-	 * @property {number} tabIndex Index of tab to load when accessing page
-	 */
-	@Prop({required: false, default: 'json-api'}) tabName!: string
 
 	/**
 	 * Vue lifecycle hook created
@@ -117,7 +105,9 @@ export default class MiscConfiguration extends Vue {
 		if (this.powerUser) {
 			this.endpoints.splice(3, 0, 'iqmesh');
 		}
-		this.activeTab = this.endpoints.indexOf(this.tabName);
+		if (this.$attrs.tabName !== undefined) {
+			this.activeTab = this.endpoints.indexOf(this.$attrs.tabName);
+		}
 	}
 }
 </script>

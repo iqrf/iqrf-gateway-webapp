@@ -182,33 +182,63 @@ export default class TheSidebar extends Vue {
 								to: '/config/daemon/',
 								route: '/config/daemon/',
 								roles: ['power', 'normal'],
-								items: [
+								_children: [
 									{
+										_name: 'CSidebarNavItem',
 										name: this.$t('config.main.title'),
 										to: '/config/daemon/main/',
 										roles: ['power'],
+										_attrs: {class: 'menu-level-2'},
 									},
 									{
+										_name: 'CSidebarNavItem',
 										name: this.$t('config.components.title'),
 										to: '/config/daemon/component/',
 										roles: ['power'],
 									},
 									{
+										_name: 'CSidebarNavItem',
 										name: this.$t('config.daemon.interfaces.title'),
 										to: '/config/daemon/interfaces/',
 										roles: ['power', 'normal'],
 									},
 									{
+										_name: 'CSidebarNavDropdown',
 										name: this.$t('config.daemon.messagings.title'),
 										to: '/config/daemon/messagings/',
+										route: '/config/daemon/messagings/',
 										roles: ['power', 'normal'],
+										items: [
+											{
+												name: 'MQTT',
+												to: '/config/daemon/messagings/mqtt/',
+												roles: ['power', 'normal'],
+											},
+											{
+												name: 'WebSocket',
+												to: '/config/daemon/messagings/websocket/',
+												roles: ['power', 'normal'],
+											},
+											{
+												name: 'MQ',
+												to: '/config/daemon/messagings/mq/',
+												roles: ['power', 'normal'],
+											},
+											{
+												name: 'UDP',
+												to: '/config/daemon/messagings/UDP/',
+												roles: ['power', 'normal'],
+											}
+										]
 									},
 									{
+										_name: 'CSidebarNavItem',
 										name: this.$t('config.scheduler.title'),
 										to: '/config/daemon/scheduler/',
 										roles: ['power', 'normal'],
 									},
 									{
+										_name: 'CSidebarNavItem',
 										name: this.$t('config.daemon.misc.title'),
 										to: '/config/daemon/misc/',
 										roles: ['power', 'normal'],
@@ -418,27 +448,34 @@ export default class TheSidebar extends Vue {
 					element.items = this.filterItems(element.items);
 				}
 				if (element._children !== undefined) {
-					let children: Array<NavMember> = [];
-					element._children.forEach((item: NavMember) => {
-						if (item.roles !== undefined &&
-							!item.roles.includes(this.$store.getters['user/getRole'])) {
-							return null;
-						}
-						if (item.feature !== undefined &&
-							!this.$store.getters['features/isEnabled'](item.feature)) {
-							return;
-						}
-						if (item.items !== undefined) {
-							item.items = this.filterItems(item.items);
-						}
-						children.push(item);
-					});
-					element._children = children;
+					element._children = this.filterChildren(element._children);
 				}
 				return element;
 			});
 			return element;
 		});
+	}
+
+	private filterChildren(children: Array<NavMember>): Array<NavMember> {
+		let filteredChildren: Array<NavMember> = [];
+		children.forEach((child: NavMember) => {
+			if (child.roles !== undefined &&
+				!child.roles.includes(this.$store.getters['user/getRole'])) {
+				return null;
+			}
+			if (child.feature !== undefined &&
+				!this.$store.getters['features/isEnabled'](child.feature)) {
+				return null;
+			}
+			if (child.items !== undefined) {
+				child.items = this.filterItems(child.items);
+			}
+			if (child._children !== undefined) {
+				child._children = this.filterChildren(child._children);
+			}
+			filteredChildren.push(child);
+		});
+		return filteredChildren;
 	}
 
 	private filterItems(items: Array<NavMemberItem>): Array<NavMemberItem> {
@@ -458,11 +495,4 @@ export default class TheSidebar extends Vue {
 	}
 
 }
-
 </script>
-
-<style>
-.c-sidebar .c-sidebar-nav-link.c-active {
-	font-weight: bold;
-}
-</style>

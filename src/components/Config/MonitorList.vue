@@ -227,7 +227,6 @@ export default class MonitorList extends Vue {
 	 * @returns {Promise<void>} Empty promise for request chaining
 	 */
 	private getConfig(): Promise<void> {
-		this.instances = [];
 		return Promise.all([
 			DaemonConfigurationService.getComponent(this.componentNames.monitor),
 			DaemonConfigurationService.getComponent(this.componentNames.webSocket),

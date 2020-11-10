@@ -1,10 +1,10 @@
 <template>
 	<div>
+		<h1>
+			{{ $t('config.websocket.service.title') }}
+		</h1>
 		<CCard>
 			<CCardHeader class='border-0'>
-				<div class='float-left'>
-					{{ $t('config.websocket.service.title') }}
-				</div>
 				<CButton
 					color='success'
 					size='sm'

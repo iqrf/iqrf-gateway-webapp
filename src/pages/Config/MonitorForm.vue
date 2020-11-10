@@ -350,7 +350,12 @@ export default class MonitorForm extends Vue {
 					.toString()
 			);
 		}
-		this.$router.push('/config/daemon/misc/monitor');
+		this.$router.push({
+			name: 'misc',
+			params: {
+				tabName: 'monitor'
+			}
+		});
 	}
 }
 </script>

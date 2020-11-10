@@ -45,20 +45,24 @@ const MissingMigration = () => import(/* webpackChunkName: "install" */ '@/pages
 const ConfigDisambiguation = () => import(/* webpackChunkName: "config" */ '@/pages/Config/ConfigDisambiguation.vue');
 const DaemonDisambiguation = () => import(/* WebpackChunkName: "config" */ '@/pages/Config/DaemonDisambiguation.vue');
 const Interfaces = () => import(/* WebpackChunkName: "config" */ '@/pages/Config/Interfaces.vue');
-const Messagings = () => import (/* WebpackChunkName: "config" */ '@/pages/Config/Messagings.vue');
 const MiscConfiguration = () => import (/* WebpackChunkName: "config" */ '@/pages/Config/MiscConfiguration.vue');
 const ConfigMigration = () => import(/* webpackChunkName: "config" */ '@/pages/Config/ConfigMigration.vue');
 const TranslatorConfig = () => import(/* webpackChunkName: "config" */ '@/pages/Config/TranslatorConfig.vue');
 const ControllerConfig = () => import(/* webpackChunkName: "config" */ '@/pages/Config/ControllerConfig.vue');
 const MenderConfig = () => import(/* webpackChunkName: "config" */ '@/pages/Config/MenderConfig.vue');
 const MonitorForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/MonitorForm.vue');
+const MessagingDisambiguation = () => import(/* webpackChunkName: "config" */ '@/pages/Config/MessagingDisambiguation.vue');
+const MqMessagingTable = () => import(/* webpackChunkName: "config" */ '@/pages/Config/MqMessagingTable.vue');
 const MqMessagingForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/MqMessagingForm.vue');
+const MqttMessagingTable = () => import(/* webpackChunkName: "config" */ '@/pages/Config/MqttMessagingTable.vue');
 const MqttMessagingForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/MqttMessagingForm.vue');
+const UdpMessagingTable = () => import(/* webpackChunkName: "config" */ '@/pages/Config/UdpMessagingTable.vue');
 const UdpMessagingForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/UdpMessagingForm.vue');
 const TracerForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/TracerForm.vue');
 const MainConfiguration = () => import(/* webpackChunkName: "config" */ '@/pages/Config/MainConfiguration.vue');
 const ComponentList = () => import(/* webpackChunkName: "config" */ '@/pages/Config/ComponentList.vue');
 const ComponentForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/ComponentForm.vue');
+const WebsocketList = () => import(/* webpackChunkName: "config" */ '@/pages/Config/WebsocketList.vue');
 const WebsocketInterfaceForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/WebsocketInterfaceForm.vue');
 const WebsocketMessagingForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/WebsocketMessagingForm.vue');
 const WebsocketServiceForm = () => import(/* webpackChunkName: "config" */ '@/pages/Config/WebsocketServiceForm.vue');
@@ -189,27 +193,39 @@ const routes: Array<RouteConfig> = [
 					},
 					{
 						path: 'iqrf-info',
-						redirect: 'daemon/misc/db',
+						redirect: {
+							name: 'misc'
+						},
 					},
 					{
 						path: 'iqrf-repository',
-						redirect: 'daemon/misc/repository',
+						redirect: {
+							name: 'misc'
+						},
 					},
 					{
 						path: 'json-raw-api',
-						redirect: 'daemon/misc/json-api',
+						redirect: {
+							name: 'misc'
+						},
 					},
 					{
 						path: 'json-mng-meta-data-api',
-						redirect: 'daemon/misc/json-api',
+						redirect: {
+							name: 'misc'
+						},
 					},
 					{
 						path: 'json-splitter',
-						redirect: 'daemon/misc/json-api',
+						redirect: {
+							name: 'misc'
+						},
 					},
 					{
 						path: 'monitor',
-						redirect: 'daemon/misc/monitor',
+						redirect: {
+							name: 'misc'
+						},
 					},
 					{
 						path: 'monitor/add',
@@ -297,7 +313,9 @@ const routes: Array<RouteConfig> = [
 					},
 					{
 						path: 'tracer',
-						redirect: 'daemon/misc/tracer',
+						redirect: {
+							name: 'misc'
+						}
 					},
 					{
 						path: 'tracer/add',
@@ -352,12 +370,33 @@ const routes: Array<RouteConfig> = [
 							},
 							{
 								path: 'messagings',
-								redirect: 'messagings/mqtt'
-							},
-							{
-								component: Messagings,
-								path: 'messagings/:messaging',
-								props: true,
+								component: {
+									render(c) {
+										return c('router-view');
+									}
+								},
+								children: [
+									{
+										component: MessagingDisambiguation,
+										path: '',
+									},
+									{
+										component: MqttMessagingTable,
+										path: 'mqtt',
+									},
+									{
+										component: WebsocketList,
+										path: 'websocket',
+									},
+									{
+										component: MqMessagingTable,
+										path: 'mq',
+									},
+									{
+										component: UdpMessagingTable,
+										path: 'udp',
+									},
+								],
 							},
 							{
 								path: 'scheduler',
@@ -389,13 +428,28 @@ const routes: Array<RouteConfig> = [
 								]
 							},
 							{
-								path: 'misc',
-								redirect: 'misc/json-api'
-							},
-							{
 								component: MiscConfiguration,
-								path: 'misc/:tabName',
-								props: true,
+								name: 'misc',
+								path: 'misc',
+								props: (route) => {
+									if (route.params.tabName !== undefined) {
+										return {tabName: route.params.tabName};
+									}
+									if (route.redirectedFrom === undefined) {
+										return {tabName: 'json'};
+									}
+									const redirect = (route.redirectedFrom.endsWith('/') ? route.redirectedFrom.slice(0, -1): route.redirectedFrom);
+									if (redirect.endsWith('json-mng-meta-data-api') || redirect.endsWith('json-raw-api') || redirect.endsWith('json-splitter')) {
+										return {tabName: 'json'};
+									}
+									if (redirect.endsWith('iqrf-repository')) {
+										return {tabName: 'repository'};
+									}
+									if (redirect.endsWith('iqrf-info')) {
+										return {tabName: 'db'};
+									}
+									return {tabName: redirect.split('/').pop()};
+								}
 							},
 							{
 								path: 'monitor',

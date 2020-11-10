@@ -34,6 +34,24 @@ $theme-colors: (
 	}
 }
 
+.c-sidebar {
+	.c-sidebar-nav-link.c-active {
+		font-weight: bold;
+	}
+	.c-sidebar-nav-dropdown {
+		.c-sidebar-nav-dropdown {
+			.c-sidebar-nav-dropdown {
+				.c-sidebar-nav-dropdown-items {
+					text-indent: 0.6rem;
+				}
+			}
+			.c-sidebar-nav-dropdown-items {
+				text-indent: 0.3rem;
+			}
+		}
+	}
+}
+
 .dropdown-item {
 	padding: 0.25rem 1.25rem;
 }

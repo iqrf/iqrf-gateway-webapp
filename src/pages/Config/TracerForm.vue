@@ -443,7 +443,12 @@ export default class TracerForm extends Vue {
 					.toString()
 			);
 		}
-		this.$router.push('/config/daemon/misc/' + (this.powerUser ? 5 : 4));
+		this.$router.push({
+			name: 'misc',
+			params: {
+				tabName: 'tracer'
+			}
+		});
 	}
 
 }

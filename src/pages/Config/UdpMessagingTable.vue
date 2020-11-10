@@ -1,10 +1,10 @@
 <template>
 	<div>
+		<h1>
+			{{ $t('config.udp.title') }}
+		</h1>
 		<CCard>
 			<CCardHeader class='border-0'>
-				<div class='float-left'>
-					{{ $t('config.udp.title') }}
-				</div>
 				<CButton
 					v-if='instances.length < 1'
 					color='success'
