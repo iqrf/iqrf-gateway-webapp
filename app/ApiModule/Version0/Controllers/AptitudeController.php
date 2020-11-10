@@ -28,8 +28,10 @@ use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\ConfigModule\Exceptions\AptErrorException;
 use App\ConfigModule\Exceptions\AptNotFoundException;
 use App\ConfigModule\Models\AptitudeManager;
+use Nette\IOException;
 
 /**
  * Aptitude controller
@@ -78,6 +80,8 @@ class AptitudeController extends BaseConfigController {
 			return $response->writeJsonBody(['enabled' => $result]);
 		} catch (AptNotFoundException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
+		} catch (AptErrorException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -111,8 +115,12 @@ class AptitudeController extends BaseConfigController {
 	public function changeEnableUnattendedUpgrades(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->validator->validateRequest('unattendedUpgrades', $request);
 		$setting = $request->getJsonBody();
-		$result = $this->aptManager->setEnable($setting['enabled']);
-		return $response->writeJsonBody(['enabled' => $result]);
+		try {
+			$result = $this->aptManager->setEnable($setting['enabled']);
+			return $response->writeJsonBody(['enabled' => $result]);
+		} catch (IOException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
+		}
 	}
 
 }

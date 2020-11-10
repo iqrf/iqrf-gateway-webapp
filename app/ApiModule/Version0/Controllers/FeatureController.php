@@ -146,8 +146,11 @@ class FeatureController extends BaseController {
 	 */
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$name = urldecode($request->getParameter('feature'));
+		if (!$this->manager->existsDefault($name)) {
+			throw new ClientErrorException('Feature not found', ApiResponse::S404_NOT_FOUND);
+		}
+		$this->validator->validateRequest('features/' . $name, $request);
 		try {
-			$this->validator->validateRequest('features/' . $name, $request);
 			$this->manager->edit($name, $request->getJsonBody());
 			return $response->writeBody('Workaround');
 		} catch (FeatureNotFoundException $e) {
