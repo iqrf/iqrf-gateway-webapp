@@ -12,6 +12,7 @@ services:
 	- App\ConsoleModule\Commands\MappingEditCommand
 	- App\ConsoleModule\Commands\MappingListCommand
 	- App\ConsoleModule\Commands\MappingRemoveCommand
+	- App\ConsoleModule\Commands\OpenApiSpecificationCommand
 	- App\ConsoleModule\Commands\UserAddCommand
 	- App\ConsoleModule\Commands\UserEditCommand
 	- App\ConsoleModule\Commands\UserListCommand

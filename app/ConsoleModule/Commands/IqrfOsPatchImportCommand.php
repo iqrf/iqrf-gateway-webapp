@@ -59,7 +59,7 @@ class IqrfOsPatchImportCommand extends Command {
 	}
 
 	/**
-	 * Configures the user list command
+	 * Configures the IQRF OS patch import command
 	 */
 	protected function configure(): void {
 		$this->setDescription('Imports IQRF OS patches');
@@ -67,7 +67,7 @@ class IqrfOsPatchImportCommand extends Command {
 
 
 	/**
-	 * Executes the database create command
+	 * Executes the IQRF OS patch import command
 	 * @param InputInterface $input Command input
 	 * @param OutputInterface $output Command output
 	 * @return int Exit code
