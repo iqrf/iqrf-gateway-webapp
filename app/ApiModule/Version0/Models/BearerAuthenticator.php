@@ -119,11 +119,11 @@ class BearerAuthenticator implements IAuthenticator {
 		$signer = $this->configuration->getSigner();
 		$verificationKey = $this->configuration->getVerificationKey();
 		$signedWith = new SignedWith($signer, $verificationKey);
-		return $validator->validate($token, $signedWith) ||
-			!$token->isExpired($now) ||
-			$token->claims()->has('uid') ||
-			$token->hasBeenIssuedBefore($now) ||
-			($hostname !== false && $token->hasBeenIssuedBy($hostname) &&
+		return $validator->validate($token, $signedWith) &&
+			!$token->isExpired($now) &&
+			$token->claims()->has('uid') &&
+			$token->hasBeenIssuedBefore($now) &&
+			($hostname === false || $token->hasBeenIssuedBy($hostname) &&
 				$token->isIdentifiedBy($hostname));
 	}
 
