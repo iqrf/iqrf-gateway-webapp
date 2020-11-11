@@ -12,7 +12,7 @@
 				<EthernetConnections
 					:connections='connections'
 					:interface-name='iface.name'
-					@updateConnection='getConnections'
+					@update-connection='getConnections'
 				/>
 			</CCardBody>
 		</CCard>
@@ -25,8 +25,8 @@ import {CBadge, CCard, CCardBody, CCardHeader} from '@coreui/vue/src';
 import NetworkConnectionService, {ConnectionType} from '../../services/NetworkConnectionService';
 import NetworkInterfaceService, {InterfaceState, InterfaceType} from '../../services/NetworkInterfaceService';
 import EthernetConnections from '../../components/Network/EthernetConnections.vue';
-import { AxiosResponse } from 'axios';
-import { NetworkConnection, NetworkInterface } from '../../interfaces/network';
+import {AxiosResponse} from 'axios';
+import {NetworkConnection, NetworkInterface} from '../../interfaces/network';
 
 @Component({
 	components: {
