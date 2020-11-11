@@ -56,6 +56,10 @@ class FeatureEnableCommand extends FeatureCommand {
 		$style = new SymfonyStyle($input, $output);
 		$style->title('Enable features');
 		$names = $input->getArgument('names');
+		if (count($names) === 0) {
+			$style->error('No feature specified.');
+			return 1;
+		}
 		try {
 			$this->manager->setEnabled($names, true);
 		} catch (IOException | NeonException $e) {
