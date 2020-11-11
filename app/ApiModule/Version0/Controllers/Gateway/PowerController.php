@@ -18,64 +18,72 @@
  */
 declare(strict_types = 1);
 
-namespace App\ApiModule\Version0\Controllers;
+namespace App\ApiModule\Version0\Controllers\Gateway;
 
-use Apitte\Core\Adjuster\FileResponseAdjuster;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
-use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
+use App\ApiModule\Version0\Controllers\GatewayController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
-use App\GatewayModule\Models\DiagnosticsManager;
-use Nette\Utils\FileSystem;
+use App\GatewayModule\Models\PowerManager;
 
 /**
- * Diagnostics controller
- * @Path("/diagnostics")
- * @Tag("Gateway manager")
+ * Gateway power controller
+ * @Path("/")
  */
-class DiagnosticsController extends BaseController {
+class PowerController extends GatewayController {
 
 	/**
-	 * @var DiagnosticsManager Diagnostics manager
+	 * @var PowerManager Gateway power manager
 	 */
 	private $manager;
 
 	/**
 	 * Constructor
-	 * @param DiagnosticsManager $manager Diagnostics manager
+	 * @param PowerManager $manager Gateway power manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(DiagnosticsManager $manager, RestApiSchemaValidator $validator) {
+	public function __construct(PowerManager $manager, RestApiSchemaValidator $validator) {
 		$this->manager = $manager;
 		parent::__construct($validator);
 	}
 
 	/**
-	 * @Path("/")
-	 * @Method("GET")
+	 * @Path("/poweroff")
+	 * @Method("POST")
 	 * @OpenApi("
-	 *   summary: Returns archive with diagnostics
-	 *   responses:
-	 *     '200':
-	 *       description: 'Success'
-	 *       content:
-	 *         application/zip:
-	 *           schema:
-	 *             type: string
-	 *             format: binary
+	 *  summary: Powers off the gateway
+	 *  responses:
+	 *      '200':
+	 *          description: Success
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
-	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$path = $this->manager->createArchive();
-		$fileName = basename($path);
-		$response->writeBody(FileSystem::read($path));
-		return FileResponseAdjuster::adjust($response, $response->getBody(), $fileName, 'application/zip');
+	public function powerOff(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->manager->powerOff();
+		return $response->writeBody('Workaround');
+	}
+
+	/**
+	 * @Path("/reboot")
+	 * @Method("POST")
+	 * @OpenApi("
+	 *  summary: Reboots the gateway
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 * ")
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function reboot(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->manager->reboot();
+		return $response->writeBody('Workaround');
 	}
 
 }

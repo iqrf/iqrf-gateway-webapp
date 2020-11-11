@@ -140,18 +140,18 @@ export default class TheSidebar extends Vue {
 							},
 							{
 								name: this.$t('service.iqrf-gateway-daemon.title'),
-								to: '/service/iqrf-gateway-daemon/',
+								to: '/gateway/service/iqrf-gateway-daemon/',
 								roles: ['power', 'normal'],
 							},
 							{
 								name: this.$t('service.ssh.title'),
-								to: '/service/ssh/',
+								to: '/gateway/service/ssh/',
 								feature: 'ssh',
 								roles: ['power', 'normal'],
 							},
 							{
 								name: this.$t('service.unattended-upgrades.title'),
-								to: '/service/unattended-upgrades/',
+								to: '/gateway/service/unattended-upgrades/',
 								feature: 'unattendedUpgrades',
 								roles: ['power', 'normal'],
 							},
@@ -160,7 +160,7 @@ export default class TheSidebar extends Vue {
 								to: '/gateway/updater/',
 								feature: 'updater',
 								roles: ['power', 'normal'],
-							},*/ 
+							},*/
 							{
 								name: this.$t('gateway.power.title'),
 								to: '/gateway/power/',

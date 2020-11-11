@@ -18,37 +18,34 @@
  */
 declare(strict_types = 1);
 
-namespace App\ApiModule\Version0\Controllers;
+namespace App\ApiModule\Version0\Controllers\Iqrf;
 
-use Apitte\Core\Adjuster\FileResponseAdjuster;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
-use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
+use App\ApiModule\Version0\Controllers\IqrfController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
-use App\GatewayModule\Models\DiagnosticsManager;
-use Nette\Utils\FileSystem;
+use App\ConfigModule\Models\IqrfManager;
 
 /**
- * Diagnostics controller
- * @Path("/diagnostics")
- * @Tag("Gateway manager")
+ * IQRF physical interface controller
+ * @Path("/interfaces")
  */
-class DiagnosticsController extends BaseController {
+class InterfacesController extends IqrfController {
 
 	/**
-	 * @var DiagnosticsManager Diagnostics manager
+	 * @var IqrfManager IQRF interfaces manager
 	 */
 	private $manager;
 
 	/**
 	 * Constructor
-	 * @param DiagnosticsManager $manager Diagnostics manager
+	 * @param IqrfManager $manager IQRF interfaces manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(DiagnosticsManager $manager, RestApiSchemaValidator $validator) {
+	public function __construct(IqrfManager $manager, RestApiSchemaValidator $validator) {
 		$this->manager = $manager;
 		parent::__construct($validator);
 	}
@@ -57,25 +54,26 @@ class DiagnosticsController extends BaseController {
 	 * @Path("/")
 	 * @Method("GET")
 	 * @OpenApi("
-	 *   summary: Returns archive with diagnostics
-	 *   responses:
-	 *     '200':
-	 *       description: 'Success'
-	 *       content:
-	 *         application/zip:
-	 *           schema:
-	 *             type: string
-	 *             format: binary
+	 *  summary: Returns IQRF interfaces
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *          content:
+	 *              application/json:
+	 *                  schema:
+	 *                      $ref: '#/components/schemas/IqrfInterfaces'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
-	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$path = $this->manager->createArchive();
-		$fileName = basename($path);
-		$response->writeBody(FileSystem::read($path));
-		return FileResponseAdjuster::adjust($response, $response->getBody(), $fileName, 'application/zip');
+	public function list(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$interfaces = [
+			'cdc' => $this->manager->getCdcInterfaces(),
+			'spi' => $this->manager->getSpiInterfaces(),
+			'uart' => $this->manager->getUartInterfaces(),
+		];
+		return $response->writeJsonBody($interfaces);
 	}
 
 }

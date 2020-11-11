@@ -85,38 +85,54 @@
 		},
 		"task": {
 			"$id": "#/properties/task",
+			"type": "array",
 			"title": "Task(s)",
-			"oneOf": [
+			"items": {
+				"$id": "#/properties/task/items",
+				"$ref": "#/definitions/task"
+			},
+			"example": [
 				{
-					"$ref": "#/definitions/task"
-				},
-				{
-					"type": "array",
-					"items": {
-						"$id": "#/properties/task/items",
-						"$ref": "#/definitions/task"
+					"messaging": "MqttMessaging",
+					"message": {
+						"mType": "iqrfEmbedLedr_Pulse",
+						"data": {
+							"msgId": "testEmbedLedr",
+							"req": {
+								"nAdr": 2,
+								"param": {}
+							},
+							"returnVerbose": true
+						}
 					}
 				}
-			],
-			"example": {
-				"messaging": "MqttMessaging",
-				"message": {
-					"mType": "iqrfEmbedLedr_Pulse",
-					"data": {
-						"msgId": "testEmbedLedr",
-						"req": {
-							"nAdr": 2,
-							"param": {}
-						},
-						"returnVerbose": true
-					}
-				}
-			}
+			]
 		}
 	},
 	"definitions": {
 		"task": {
 			"$id": "#/definitions/task",
+			"type": "object",
+			"required": [
+				"messaging",
+				"message"
+			],
+			"properties": {
+				"messaging": {
+					"$id": "#/definitions/task/messaging",
+					"type": "string",
+					"title": "Task messaging type",
+					"example": "MqttMessaging"
+				},
+				"message": {
+					"$id": "#/definitions/task/message",
+					"$ref": "#/definitions/message"
+				}
+			},
+			"additionalProperties": false
+		},
+		"message": {
+			"$id": "#/definitions/message",
 			"oneOf": [
 				{
 					"$ref": "https://apidocs.iqrf.org/iqrf-gateway-daemon-schemas/api/infoDaemon_Enumeration-request-1-0-0.json"

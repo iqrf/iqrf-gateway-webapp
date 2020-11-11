@@ -18,16 +18,28 @@
  */
 declare(strict_types = 1);
 
-namespace App\ApiModule\Version0\Controllers;
+namespace App\IqrfNetModule\Enums;
 
-use Apitte\Core\Annotation\Controller\Path;
-use Apitte\Core\Annotation\Controller\Tag;
+use Grifart\Enum\AutoInstances;
+use Grifart\Enum\Enum;
 
 /**
- * IQRF network manager
- * @Path("/iqrf")
- * @Tag("IQRF network")
+ * DPA communication interface enum
+ * @method static DpaInterfaces SPI();
+ * @method static DpaInterfaces UART();
  */
-abstract class IqrfController extends BaseController {
+final class DpaInterfaces extends Enum {
+
+	use AutoInstances;
+
+	/**
+	 * SPI interface
+	 */
+	private const SPI = 'SPI';
+
+	/**
+	 * UART interface
+	 */
+	private const UART = 'UART';
 
 }

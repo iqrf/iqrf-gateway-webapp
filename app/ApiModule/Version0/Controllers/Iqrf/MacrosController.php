@@ -18,38 +18,35 @@
  */
 declare(strict_types = 1);
 
-namespace App\ApiModule\Version0\Controllers;
+namespace App\ApiModule\Version0\Controllers\Iqrf;
 
-use Apitte\Core\Adjuster\FileResponseAdjuster;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
-use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
+use App\ApiModule\Version0\Controllers\IqrfController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
-use App\GatewayModule\Models\DiagnosticsManager;
-use Nette\Utils\FileSystem;
+use Iqrf\IdeMacros\MacroFileParser;
 
 /**
- * Diagnostics controller
- * @Path("/diagnostics")
- * @Tag("Gateway manager")
+ * IQRF IDE Macros controller
+ * @Path("/macros")
  */
-class DiagnosticsController extends BaseController {
+class MacrosController extends IqrfController {
 
 	/**
-	 * @var DiagnosticsManager Diagnostics manager
+	 * @var MacroFileParser IQRF IDE Macros parser
 	 */
-	private $manager;
+	private $macroParser;
 
 	/**
 	 * Constructor
-	 * @param DiagnosticsManager $manager Diagnostics manager
+	 * @param MacroFileParser $macroParser IQRF IDE Macros parser
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(DiagnosticsManager $manager, RestApiSchemaValidator $validator) {
-		$this->manager = $manager;
+	public function __construct(MacroFileParser $macroParser, RestApiSchemaValidator $validator) {
+		$this->macroParser = $macroParser;
 		parent::__construct($validator);
 	}
 
@@ -57,25 +54,21 @@ class DiagnosticsController extends BaseController {
 	 * @Path("/")
 	 * @Method("GET")
 	 * @OpenApi("
-	 *   summary: Returns archive with diagnostics
-	 *   responses:
-	 *     '200':
-	 *       description: 'Success'
-	 *       content:
-	 *         application/zip:
-	 *           schema:
-	 *             type: string
-	 *             format: binary
+	 *  summary: Returns IQRF IDE macros
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *          content:
+	 *              application/json:
+	 *                  schema:
+	 *                      $ref: '#/components/schemas/IqrfIdeMacros'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
-	public function get(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$path = $this->manager->createArchive();
-		$fileName = basename($path);
-		$response->writeBody(FileSystem::read($path));
-		return FileResponseAdjuster::adjust($response, $response->getBody(), $fileName, 'application/zip');
+	public function macros(ApiRequest $request, ApiResponse $response): ApiResponse {
+		return $response->writeJsonBody($this->macroParser->read());
 	}
 
 }

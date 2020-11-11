@@ -23,17 +23,16 @@ namespace App\ApiModule\Version0\Controllers\Cloud;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
-use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Controllers\CloudsController;
+use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\CloudModule\Exceptions\CannotCreateCertificateDirectoryException;
 use App\CloudModule\Models\HexioManager;
 use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use GuzzleHttp\Exception\GuzzleException;
 use Nette\IOException;
-use Nette\Utils\JsonException;
 
 /**
  * Hexio IoT Platform connection controller
@@ -49,9 +48,11 @@ class HexioController extends CloudsController {
 	/**
 	 * Constructor
 	 * @param HexioManager $manager Hexio IoT Platform connection manager
+	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(HexioManager $manager) {
+	public function __construct(HexioManager $manager, RestApiSchemaValidator $validator) {
 		$this->manager = $manager;
+		parent::__construct($validator);
 	}
 
 	/**
@@ -79,6 +80,7 @@ class HexioController extends CloudsController {
 	 * @return ApiResponse API response
 	 */
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validator->validateRequest('cloudHexio', $request);
 		try {
 			$this->manager->createMqttInterface($request->getJsonBody());
 			return $response->withStatus(ApiResponse::S201_CREATED)
@@ -91,8 +93,6 @@ class HexioController extends CloudsController {
 			throw new ServerErrorException('Download failure', ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		} catch (CannotCreateCertificateDirectoryException $e) {
 			throw new ServerErrorException('Certificate directory creation failure', ApiResponse::S500_INTERNAL_SERVER_ERROR);
-		} catch (JsonException $e) {
-			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
 		}
 	}
 

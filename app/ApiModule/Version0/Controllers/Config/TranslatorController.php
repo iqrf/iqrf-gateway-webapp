@@ -18,52 +18,55 @@
  */
 declare(strict_types = 1);
 
-namespace App\ApiModule\Version0\Controllers;
+namespace App\ApiModule\Version0\Controllers\Config;
 
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\Tag;
-use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
-use App\ConfigModule\Models\ControllerConfigManager;
+use App\ApiModule\Version0\Controllers\BaseConfigController;
+use App\ApiModule\Version0\Models\RestApiSchemaValidator;
+use App\ConfigModule\Models\TranslatorConfigManager;
 use Nette\IOException;
 use Nette\Utils\JsonException;
 
 /**
- * IQRF Gateway Controller configuration controller
- * @Path("/controller")
+ * IQRF Gateway Translator configuration controller
+ * @Path("/translator")
  * @Tag("Config manager")
  */
-class ControllerConfigController extends BaseConfigController {
+class TranslatorController extends BaseConfigController {
 
 	/**
-	 * @var ControllerConfigManager $manager IQRF Gateway Controller configuration manager
+	 * @var TranslatorConfigManager $manager IQRF Gateway Translator configuration manager
 	 */
 	private $manager;
 
 	/**
 	 * Constructor
-	 * @param ControllerConfigManager $manager IQRF Gateway Controller configuration manager
+	 * @param TranslatorConfigManager $manager IQRF Gateway Translator configuration manager
+	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(ControllerConfigManager $manager) {
+	public function __construct(TranslatorConfigManager $manager, RestApiSchemaValidator $validator) {
 		$this->manager = $manager;
+		parent::__construct($validator);
 	}
 
 	/**
 	 * @Path("/")
 	 * @Method("GET")
 	 * @OpenApi("
-	 *  summary: Returns current configuration of IQRF Gateway Controller
+	 *  summary: Returns current configuration of IQRF Gateway Translator
 	 *  responses:
 	 *      '200':
 	 *          description: Success
 	 *          content:
 	 *              application/json:
 	 *                  schema:
-	 *                      $ref: '#/components/schemas/ControllerConfig'
+	 *                      $ref: '#/components/schemas/TranslatorConfig'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -86,13 +89,13 @@ class ControllerConfigController extends BaseConfigController {
 	 * @Path("/")
 	 * @Method("PUT")
 	 * @OpenApi("
-	 *  summary: Saves new configuration of IQRF Gateway Controller
+	 *  summary: Saves new configuration of IQRF Gateway Translator
 	 *  requestBody:
 	 *      required: true
 	 *      content:
 	 *          application/json:
 	 *              schema:
-	 *                  $ref: '#/components/schemas/ControllerConfig'
+	 *                  $ref: '#/components/schemas/TranslatorConfig'
 	 *  responses:
 	 *      '200':
 	 *          description: Success
@@ -106,11 +109,10 @@ class ControllerConfigController extends BaseConfigController {
 	 * @return ApiResponse API response
 	 */
 	public function setConfig(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validator->validateRequest('translatorConfig', $request);
 		try {
 			$this->manager->saveConfig($request->getJsonBody());
 			return $response->writeBody('Workaround');
-		} catch (JsonException $e) {
-			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
 		} catch (IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}

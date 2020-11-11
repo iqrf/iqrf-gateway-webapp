@@ -18,7 +18,7 @@
  */
 declare(strict_types = 1);
 
-namespace App\ApiModule\Version0\Controllers;
+namespace App\ApiModule\Version0\Controllers\Config;
 
 use Apitte\Core\Adjuster\FileResponseAdjuster;
 use Apitte\Core\Annotation\Controller\Method;
@@ -29,6 +29,8 @@ use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
+use App\ApiModule\Version0\Controllers\BaseConfigController;
+use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\ApiModule\Version0\Utils\ContentTypeUtil;
 use App\ConfigModule\Exceptions\IncompleteConfigurationException;
 use App\ConfigModule\Exceptions\NotDaemonConfigurationException;
@@ -42,7 +44,7 @@ use Nette\Utils\JsonException;
  * @Path("/daemon/migration")
  * @Tag("Config manager")
  */
-class ConfigMigrationController extends BaseConfigController {
+class MigrationController extends BaseConfigController {
 
 	/**
 	 * @var MigrationManager Configuration migration manager
@@ -52,9 +54,11 @@ class ConfigMigrationController extends BaseConfigController {
 	/**
 	 * Constructor
 	 * @param MigrationManager $manager Configuration migration manager
+	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(MigrationManager $manager) {
+	public function __construct(MigrationManager $manager, RestApiSchemaValidator $validator) {
 		$this->manager = $manager;
+		parent::__construct($validator);
 	}
 
 	/**

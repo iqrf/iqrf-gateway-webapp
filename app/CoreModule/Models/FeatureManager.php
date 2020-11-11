@@ -97,6 +97,15 @@ class FeatureManager {
 	}
 
 	/**
+	 * Checks if feature exists
+	 * @param string $name Feature name
+	 * @return bool True if feature exists, false otherwise
+	 */
+	public function existsDefault(string $name): bool {
+		return array_key_exists($name, self::DEFAULTS);
+	}
+
+	/**
 	 * Reads features configuration
 	 * @return array<string, array<string, bool|int|string>> Features configuration
 	 */

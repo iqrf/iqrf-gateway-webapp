@@ -1734,6 +1734,10 @@
 				"connected": "Connected"
 			},
 			"messages": {
+				"edit": {
+					"failure": "An error occurred while saving the network connection settings.",
+					"success": "Network connection {connection} has been edited."
+				},
 				"connect": {
 					"success": "Network connection {connection} has been connected at network interface {interface}."
 				},

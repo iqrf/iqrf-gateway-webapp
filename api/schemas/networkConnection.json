@@ -9,6 +9,7 @@
 		"uuid",
 		"type",
 		"interface",
+		"autoConnect",
 		"ipv4",
 		"ipv6"
 	],
@@ -51,6 +52,42 @@
 			"type": "string",
 			"title": "Interface name",
 			"example": "eth0"
+		},
+		"autoConnect": {
+			"$id": "#/properties/autoConnect",
+			"type": "object",
+			"title": "Automatic connecting",
+			"example": {
+				"enabled": true,
+				"priority": 0,
+				"retries": -1
+			},
+			"additionalProperties": false,
+			"required": [
+				"enabled",
+				"priority",
+				"retries"
+			],
+			"properties": {
+				"enabled": {
+					"$id": "#/properties/autoConnect/properties/enabled",
+					"type": "boolean",
+					"title": "Automatic connecting enablement",
+					"example": true
+				},
+				"priority": {
+					"$id": "#/properties/autoConnect/properties/priority",
+					"type": "integer",
+					"title": "Connection priority",
+					"example": 0
+				},
+				"retries": {
+					"$id": "#/properties/autoConnect/properties/retries",
+					"type": "integer",
+					"title": "Connection retries",
+					"example": -1
+				}
+			}
 		},
 		"ipv4": {
 			"$id": "#/properties/ipv4",

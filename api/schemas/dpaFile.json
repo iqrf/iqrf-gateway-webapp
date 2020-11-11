@@ -50,5 +50,6 @@
 			],
 			"example": "STD"
 		}
-	}
+	},
+	"additionalProperties": false
 }

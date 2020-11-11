@@ -18,16 +18,13 @@
  */
 declare(strict_types = 1);
 
-namespace App\ApiModule\Version0\Controllers;
+namespace App\ConfigModule\Exceptions;
 
-use Apitte\Core\Annotation\Controller\Path;
-use Apitte\Core\Annotation\Controller\Tag;
+use Exception;
 
 /**
- * IQRF network manager
- * @Path("/iqrf")
- * @Tag("IQRF network")
+ * The exception that indicates an incomplete configuration
  */
-abstract class IqrfController extends BaseController {
+class AptErrorException extends Exception {
 
 }

@@ -30,11 +30,9 @@ use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
-use App\CoreModule\Exceptions\InvalidJsonException;
 use App\Models\Database\Entities\Mapping;
 use App\Models\Database\EntityManager;
 use App\Models\Database\Repositories\MappingRepository;
-use Nette\Utils\JsonException;
 use function assert;
 
 /**
@@ -55,11 +53,6 @@ class MappingController extends BaseController {
 	private $repository;
 
 	/**
-	 * @var RestApiSchemaValidator REST API JSON schem validator
-	 */
-	private $validator;
-
-	/**
 	 * Constructor
 	 * @param EntityManager $entityManager Entity manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
@@ -67,7 +60,7 @@ class MappingController extends BaseController {
 	public function __construct(EntityManager $entityManager, RestApiSchemaValidator $validator) {
 		$this->entityManager = $entityManager;
 		$this->repository = $this->entityManager->getMappingRepository();
-		$this->validator = $validator;
+		parent::__construct($validator);
 	}
 
 	/**
@@ -111,7 +104,12 @@ class MappingController extends BaseController {
 	 *          content:
 	 *              application/json:
 	 *                  schema:
-	 *                      $ref: '#/components/schemas/Mapping'
+	 *                      $ref: '#/components/schemas/MappingDetail'
+	 *          headers:
+	 *              Location:
+	 *                  description: Location of information about the created mapping
+	 *                  schema:
+	 *                      type: string
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
 	 * ")
@@ -120,14 +118,8 @@ class MappingController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
-		try {
-			$json = $request->getJsonBody(false);
-			$this->validator->validateRequest('mapping', $request);
-		} catch (JsonException $e) {
-			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
-		} catch (InvalidJsonException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
-		}
+		$this->validator->validateRequest('mapping', $request);
+		$json = $request->getJsonBody(false);
 		if ($json->type === Mapping::TYPE_UART) {
 			$mapping = new Mapping($json->type, $json->name, $json->IqrfInterface, $json->busEnableGpioPin, $json->pgmSwitchGpioPin, $json->powerEnableGpioPin, $json->baudRate);
 		} else {
@@ -145,6 +137,7 @@ class MappingController extends BaseController {
 		$this->entityManager->persist($mapping);
 		$this->entityManager->flush();
 		return $response->writeJsonObject($mapping)
+			->withHeader('Location', '/api/v0/mappings/' . $mapping->getId())
 			->withStatus(ApiResponse::S201_CREATED);
 	}
 
@@ -242,14 +235,8 @@ class MappingController extends BaseController {
 			throw new ClientErrorException('Mapping not found', ApiResponse::S404_NOT_FOUND);
 		}
 		assert($mapping instanceof Mapping);
-		try {
-			$this->validator->validateRequest('mapping', $request);
-			$json = $request->getJsonBody(false);
-		} catch (JsonException $e) {
-			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
-		} catch (InvalidJsonException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
-		}
+		$this->validator->validateRequest('mapping', $request);
+		$json = $request->getJsonBody(false);
 		$mapping->setName($json->name);
 		$mapping->setInterface($json->IqrfInterface);
 		$mapping->setBusPin($json->busEnableGpioPin);
@@ -261,12 +248,18 @@ class MappingController extends BaseController {
 		}
 		if (property_exists($json, 'i2cEnableGpioPin')) {
 			$mapping->setI2cPin($json->i2cEnableGpioPin);
+		} else {
+			$mapping->setI2cPin();
 		}
 		if (property_exists($json, 'spiEnableGpioPin')) {
 			$mapping->setSpiPin($json->spiEnableGpioPin);
+		} else {
+			$mapping->setSpiPin();
 		}
 		if (property_exists($json, 'uartEnableGpioPin')) {
 			$mapping->setUartPin($json->uartEnableGpioPin);
+		} else {
+			$mapping->setUartPin();
 		}
 		$this->entityManager->persist($mapping);
 		$this->entityManager->flush();

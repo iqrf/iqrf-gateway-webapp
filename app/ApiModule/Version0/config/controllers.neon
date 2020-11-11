@@ -8,21 +8,28 @@ services:
 	- App\ApiModule\Version0\Controllers\Cloud\IbmCloudController
 	- App\ApiModule\Version0\Controllers\Cloud\InteliGlueController
 	- App\ApiModule\Version0\Controllers\ConfigController
-	- App\ApiModule\Version0\Controllers\ConfigMigrationController
-	- App\ApiModule\Version0\Controllers\ControllerConfigController
+	- App\ApiModule\Version0\Controllers\Config\ControllerController
+	- App\ApiModule\Version0\Controllers\Config\MenderController
+	- App\ApiModule\Version0\Controllers\Config\MigrationController
+	- App\ApiModule\Version0\Controllers\Config\TranslatorController
 	- App\ApiModule\Version0\Controllers\DiagnosticsController
 	- App\ApiModule\Version0\Controllers\FeatureController
-	- App\ApiModule\Version0\Controllers\GatewayController
+	- App\ApiModule\Version0\Controllers\Gateway\InfoController
+	- App\ApiModule\Version0\Controllers\Gateway\LogController
+	- App\ApiModule\Version0\Controllers\Gateway\PowerController
 	- App\ApiModule\Version0\Controllers\InstallationController
-	- App\ApiModule\Version0\Controllers\IqrfController
 	- App\ApiModule\Version0\Controllers\MappingController
-	- App\ApiModule\Version0\Controllers\MenderConfigController
-	- App\ApiModule\Version0\Controllers\NetworkController
+	- App\ApiModule\Version0\Controllers\Iqrf\InterfacesController
+	- App\ApiModule\Version0\Controllers\Iqrf\MacrosController
+	- App\ApiModule\Version0\Controllers\Iqrf\UploadController
+	- App\ApiModule\Version0\Controllers\Network\ConnectionsController
+	- App\ApiModule\Version0\Controllers\Network\ConnectivityController
+	- App\ApiModule\Version0\Controllers\Network\InterfacesController
+	- App\ApiModule\Version0\Controllers\Network\WifiController
 	- App\ApiModule\Version0\Controllers\OpenApiController
 	- App\ApiModule\Version0\Controllers\PixlaController
 	- App\ApiModule\Version0\Controllers\SchedulerController
 	- App\ApiModule\Version0\Controllers\ServicesController
-	- App\ApiModule\Version0\Controllers\TranslatorConfigController
 	- App\ApiModule\Version0\Controllers\UserController
 	- App\ApiModule\Version0\Controllers\UsersController
 	- App\ApiModule\Version0\Controllers\VersionController

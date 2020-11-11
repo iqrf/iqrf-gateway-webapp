@@ -2,7 +2,7 @@
 	<div>
 		<h1>{{ $t('core.user.title') }}</h1>
 		<CCard>
-			<CCardHeader>
+			<CCardHeader class='border-0'>
 				<CButton
 					color='success'
 					to='/user/add/'
@@ -338,3 +338,11 @@ export default class UserList extends Vue {
 	}
 }
 </script>
+
+<style scoped>
+
+.card-header {
+	padding-bottom: 0;
+}
+
+</style>

@@ -20,6 +20,7 @@ declare(strict_types = 1);
 
 namespace App\ConfigModule\Models;
 
+use App\ConfigModule\Exceptions\AptErrorException;
 use App\ConfigModule\Exceptions\AptNotFoundException;
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FileManager;
@@ -104,7 +105,11 @@ class AptitudeManager {
 		if (!$this->commandManager->commandExist('apt-config')) {
 			throw new AptNotFoundException('Aptitude package not installed.');
 		}
-		$array = explode("\n", $this->commandManager->run('apt-config dump | grep ' . self::APT_SETTING, false)->getStdout());
+		$conf = $this->commandManager->run('apt-config dump | grep ' . self::APT_SETTING, false);
+		if ($conf->getExitCode() !== 0) {
+			throw new AptErrorException('An error has occured while retrieving aptitude configuration');
+		}
+		$array = explode("\n", $conf->getStdout());
 		return $array;
 	}
 

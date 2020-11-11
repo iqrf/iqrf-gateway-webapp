@@ -20,19 +20,26 @@ declare(strict_types = 1);
 
 namespace App\IqrfNetModule\Enums;
 
+use Grifart\Enum\AutoInstances;
+use Grifart\Enum\Enum;
+
 /**
- * Data formats enumeration
+ * RF modes
+ * @method static RfModes LP();
+ * @method static RfModes STD();
  */
-class DataFormat {
+final class RfModes extends Enum {
+
+	use AutoInstances;
 
 	/**
-	 * ASCII data format
+	 * Low power RF mode
 	 */
-	public const ASCII = 'ASCII';
+	private const LP = 'LP';
 
 	/**
-	 * HEX data format
+	 * Standard RF mode
 	 */
-	public const HEX = 'HEX';
+	private const STD = 'STD';
 
 }

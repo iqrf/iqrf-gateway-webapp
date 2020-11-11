@@ -30,11 +30,9 @@ use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
-use App\CoreModule\Exceptions\InvalidJsonException;
 use App\Models\Database\Entities\ApiKey;
 use App\Models\Database\EntityManager;
 use App\Models\Database\Repositories\ApiKeyRepository;
-use Nette\Utils\JsonException;
 use Throwable;
 use function assert;
 
@@ -56,11 +54,6 @@ class ApiKeyController extends BaseController {
 	private $repository;
 
 	/**
-	 * @var RestApiSchemaValidator REST API JSON schema validator
-	 */
-	private $validator;
-
-	/**
 	 * Constructor
 	 * @param EntityManager $entityManager Entity manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
@@ -68,7 +61,7 @@ class ApiKeyController extends BaseController {
 	public function __construct(EntityManager $entityManager, RestApiSchemaValidator $validator) {
 		$this->entityManager = $entityManager;
 		$this->repository = $entityManager->getApiKeyRepository();
-		$this->validator = $validator;
+		parent::__construct($validator);
 	}
 
 	/**
@@ -126,14 +119,8 @@ class ApiKeyController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
-		try {
-			$json = $request->getJsonBody(false);
-			$this->validator->validateRequest('apiKeyModify', $request);
-		} catch (JsonException $e) {
-			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
-		} catch (InvalidJsonException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
-		}
+		$this->validator->validateRequest('apiKeyModify', $request);
+		$json = $request->getJsonBody(false);
 		$apiKey = new ApiKey($json->description, null);
 		try {
 			$apiKey->setExpirationFromString($json->expiration);
@@ -241,14 +228,8 @@ class ApiKeyController extends BaseController {
 			throw new ClientErrorException('API key not found', ApiResponse::S404_NOT_FOUND);
 		}
 		assert($apiKey instanceof ApiKey);
-		try {
-			$this->validator->validateRequest('apiKeyModify', $request);
-			$json = $request->getJsonBody(false);
-		} catch (JsonException $e) {
-			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
-		} catch (InvalidJsonException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
-		}
+		$this->validator->validateRequest('apiKeyModify', $request);
+		$json = $request->getJsonBody(false);
 		$apiKey->setDescription($json->description);
 		try {
 			$apiKey->setExpirationFromString($json->expiration);

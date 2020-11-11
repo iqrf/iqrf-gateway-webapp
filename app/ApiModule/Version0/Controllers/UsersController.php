@@ -30,13 +30,11 @@ use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
-use App\CoreModule\Exceptions\InvalidJsonException;
 use App\Exceptions\InvalidUserLanguageException;
 use App\Exceptions\InvalidUserRoleException;
 use App\Models\Database\Entities\User;
 use App\Models\Database\EntityManager;
 use App\Models\Database\Repositories\UserRepository;
-use Nette\Utils\JsonException;
 
 /**
  * User manager API controller
@@ -56,11 +54,6 @@ class UsersController extends BaseController {
 	private $repository;
 
 	/**
-	 * @var RestApiSchemaValidator REST API JSON schema validator
-	 */
-	private $validator;
-
-	/**
 	 * Constructor
 	 * @param EntityManager $entityManager Entity manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
@@ -68,7 +61,7 @@ class UsersController extends BaseController {
 	public function __construct(EntityManager $entityManager, RestApiSchemaValidator $validator) {
 		$this->entityManager = $entityManager;
 		$this->repository = $entityManager->getUserRepository();
-		$this->validator = $validator;
+		parent::__construct($validator);
 	}
 
 	/**
@@ -124,14 +117,8 @@ class UsersController extends BaseController {
 	 * @return ApiResponse API response
 	 */
 	public function create(ApiRequest $request, ApiResponse $response): ApiResponse {
-		try {
-			$json = $request->getJsonBody();
-			$this->validator->validateRequest('userCreate', $request);
-		} catch (JsonException $e) {
-			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
-		} catch (InvalidJsonException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
-		}
+		$this->validator->validateRequest('userCreate', $request);
+		$json = $request->getJsonBody();
 		try {
 			$user = $this->repository->findOneByUserName($json['username']);
 			if ($user !== null) {
@@ -242,18 +229,12 @@ class UsersController extends BaseController {
 	 */
 	public function edit(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$id = (int) $request->getParameter('id');
-		try {
-			$json = $request->getJsonBody();
-			$this->validator->validateRequest('userEdit', $request);
-		} catch (JsonException $e) {
-			throw new ClientErrorException('Invalid JSON syntax', ApiResponse::S400_BAD_REQUEST);
-		} catch (InvalidJsonException $e) {
-			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
-		}
 		$user = $this->repository->find($id);
 		if ($user === null) {
 			throw new ClientErrorException('User not found', ApiResponse::S404_NOT_FOUND);
 		}
+		$this->validator->validateRequest('userEdit', $request);
+		$json = $request->getJsonBody();
 		assert($user instanceof User);
 		if (array_key_exists('username', $json)) {
 			$userWithName = $this->repository->findOneByUserName($json['username']);
