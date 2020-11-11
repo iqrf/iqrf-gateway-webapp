@@ -1,4 +1,4 @@
-.TH IQRF-GATEWAY-WEBAPP-MANAGER 8 2020-11-08 "IQRF Gateway Webapp v2.2.0" "IQRF GW Manual"
+.TH IQRF-GATEWAY-WEBAPP-MANAGER 8 2020-11-11 "IQRF Gateway Webapp v2.2.0-alpha" "IQRF GW Manual"
 .SH NAME
 iqrf-gateway-webapp-manager \- manage IQRF Gateway Webapp from CLI
 .SH DESCRIPTION
@@ -13,6 +13,9 @@ iqrf-gateway-webapp-manager [command] [options]
 .BR list\fP
 Lists all available commands
 .TP
+.BR api\-key:list\fP
+Lists all existing API keys
+.TP
 .BR api\-key:add\fP " [\-d DESCRIPTION] [\-e EXPIRATION]"
 Creates a new API key
 .TP
@@ -22,8 +25,20 @@ Removes an existing API key
 .BR api\-key:edit\fP " [\-i ID] [\-d DESCRIPTION] [\-e EXPIRATION]"
 Edits an existing API key
 .TP
-.BR api\-key:list\fP
-Lists all existing API keys
+.BR database:create\fP
+Creates database for webapp
+.TP
+.BR feature:list\fP
+Lists all available features
+.TP
+.BR feature:enable\fP " [\<names\>...]"
+Enables specified feature(s)
+.TP
+.BR feature:disable\fP " [\<names\>...]"
+Disables specified features(s)
+.TP
+.BR mapping:list\fP
+Lists all existing board mappings
 .TP
 .BR mapping:add\fP " [\-t TYPE] [\-N NAME] [\-I INTERFACE] [\-b BUS_PIN] [\-p PGM_PIN] [\-P POWER_PIN] [\-r BAUD_RATE]"
 Adds a new board mapping
@@ -31,20 +46,23 @@ Adds a new board mapping
 .BR mapping:edit\fP " [\-i ID] [\-t TYPE] [\-N NAME] [\-I INTERFACE] [\-b BUS_PIN] [\-p PGM_PIN] [\-P POWER_PIN] [\-r BAUD_RATE]"
 Edits an existing board mapping
 .TP
-.BR mapping:list\fP
-Lists all existing board mappings
-.TP
 .BR mapping:remove\fP " [\-i ID]
 Removes an existing board mapping
+.TP
+.BR migrations:migrate\fP
+Executes database migration to the latest version
+.TP
+.BR nette:cache:purge\fP
+Clears webapp cache
+.TP
+.BR user:list\fP
+Lists all users
 .TP
 .BR user:add\fP " [\-u USERNAME] [\-p PASSWORD] [\-r ROLE] [\-l LANGUAGE]"
 Adds a new user
 .TP
 .BR user:edit\fP " [\-u USERNAME] [\-r ROLE] [\-l LANGUAGE]"
 Edits an existing user
-.TP
-.BR user:list\fP
-Lists all users
 .TP
 .BR user:password\fP " [\-u USERNAME] [\-p PASSWORD]"
 Changes a user's password
@@ -54,6 +72,29 @@ Removes an existing user
 .fi
 .SH OPTIONS
 .nf
+.TP
+.BR "General options"
+.TQ
+.BR \-h ", " \-\-help
+Display this help message
+.TP
+.BR \-q ", " \-\-quiet
+Do not output any message
+.TP
+.BR \-V ", " \-\-version
+Display version of this application
+.TP
+.BR \-\-ansi
+Force ANSI output
+.TP
+.BR \-\-no\-ansi
+Disable ANSI output
+.TP
+.BR \-n ", " \-\-no\-interaction
+Do not ask any interactive questions
+.TP
+.BR \-v|vv|vvv ", " \-\-verbose
+Increase the verbosity of messages: -v for normal output, -vv for more verbose output, -vvv for debug output
 .TP
 .BR "API key commands:"
 .TQ
@@ -108,10 +149,12 @@ User's language
 .fi
 .SH LICENCE
 This program is licensed under Apache License version 2.0.
-.SH AUTHOR
+.SH AUTHORS
+.nf
 Roman Ondráček <\fIroman.ondracek@iqrf.com\fP>
+Karel Hanák <\fIkarel.hanak@microrisc.com\fP>
 .SH COPYRIGHT
 .nf
 Copyright 2017 MICRORISC s.r.o.
-Copyright 2017\-2019 IQRF Tech s.r.o.
+Copyright 2017\-2020 IQRF Tech s.r.o.
 .fi
