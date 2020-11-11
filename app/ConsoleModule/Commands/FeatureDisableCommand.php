@@ -60,8 +60,10 @@ class FeatureDisableCommand extends FeatureCommand {
 			$this->manager->setEnabled($names, false);
 		} catch (IOException | NeonException $e) {
 			$style->error('An error occurred while disabling features.');
+			return 1;
 		} catch (FeatureNotFoundException $e) {
 			$style->error('Unknown feature ' . $e->getMessage() . '.');
+			return 1;
 		}
 		if (count($names) === 1) {
 			$message = sprintf('Feature %s has been successfully disabled.', $names[0]);

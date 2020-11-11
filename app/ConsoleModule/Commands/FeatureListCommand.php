@@ -57,6 +57,7 @@ class FeatureListCommand extends FeatureCommand {
 			$style->table($header, $features);
 		} catch (Exception $e) {
 			$style->error('An error occurred while reading configuration file.');
+			return 1;
 		}
 		return 0;
 	}
