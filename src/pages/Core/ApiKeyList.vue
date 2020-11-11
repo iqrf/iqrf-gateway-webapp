@@ -2,7 +2,7 @@
 	<div>
 		<h1>{{ $t('core.apiKey.title') }}</h1>
 		<CCard>
-			<CCardHeader>
+			<CCardHeader class='border-0'>
 				<CButton
 					color='success'
 					size='sm'
@@ -223,3 +223,11 @@ export default class ApiKeyList extends Vue {
 
 }
 </script>
+
+<style scoped>
+
+.card-header {
+	padding-bottom: 0;
+}
+
+</style>

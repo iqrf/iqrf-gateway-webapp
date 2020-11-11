@@ -124,7 +124,7 @@ export default class Backup extends Vue {
 	/**
 	 * @var {string} webappVersion IQRF GW Webapp version
 	 */
-	private webappVersion = 'unspec'
+	private webappVersion = 'unknown'
 
 	/**
 	 * Component unsubscribe function
