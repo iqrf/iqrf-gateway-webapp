@@ -106,6 +106,10 @@ const routes: Array<RouteConfig> = [
 		]
 	},
 	{
+		path: '/service/:serviceName',
+		redirect: '/gateway/service/:serviceName',
+	},
+	{
 		path: '/',
 		component: TheDashboard,
 		children: [
@@ -631,13 +635,13 @@ const routes: Array<RouteConfig> = [
 						component: PowerControl,
 						path: 'power',
 					},
+					{
+						component: ServiceControl,
+						name: 'serviceControl',
+						path: 'service/:serviceName',
+						props: true,
+					},
 				]
-			},
-			{
-				component: ServiceControl,
-				name: 'serviceControl',
-				path: '/service/:serviceName',
-				props: true,
 			},
 			{
 				path: '/iqrfnet',
