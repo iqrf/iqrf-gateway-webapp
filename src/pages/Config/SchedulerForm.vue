@@ -156,7 +156,7 @@
 </template>
 
 <script lang='ts'>
-import {Component, Prop, Vue} from 'vue-property-decorator';
+import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
 import {CBadge, CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CSelect, CTextarea} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {integer, required} from 'vee-validate/dist/rules';
@@ -166,14 +166,16 @@ import {TextareaAutogrowDirective} from 'vue-textarea-autogrow-directive/src/Vue
 import cronstrue from 'cronstrue';
 import {Datetime} from 'vue-datetime';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
-import { WebSocketOptions } from '../../store/modules/webSocketClient.module';
-import { Dictionary } from 'vue-router/types/router';
-import { IOption } from '../../interfaces/coreui';
-import { MetaInfo } from 'vue-meta';
-import { AxiosError, AxiosResponse } from 'axios';
-import { WsMessaging } from '../../interfaces/messagingInterfaces';
-import { TaskTimeSpec } from '../../interfaces/scheduler';
-import { MutationPayload } from 'vuex';
+import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
+import {Dictionary} from 'vue-router/types/router';
+import {IOption} from '../../interfaces/coreui';
+import {MetaInfo} from 'vue-meta';
+import {AxiosError, AxiosResponse} from 'axios';
+import {WsMessaging} from '../../interfaces/messagingInterfaces';
+import {TaskTimeSpec} from '../../interfaces/scheduler';
+import {MutationPayload} from 'vuex';
+import {mapGetters} from 'vuex';
+import {versionHigherThan} from '../../helpers/versionChecker';
 
 interface LocalTask {
 	message: string
@@ -198,6 +200,11 @@ interface LocalTask {
 	},
 	directives: {
 		'autogrow': TextareaAutogrowDirective
+	},
+	computed: {
+		...mapGetters({
+			daemonVersion: 'daemonVersion',
+		}),
 	},
 	metaInfo(): MetaInfo {
 		return {
@@ -228,6 +235,11 @@ export default class SchedulerForm extends Vue {
 	 * @var {string|null} cronMessage Converted message from time setting in cron format
 	 */
 	private cronMessage: string|null = null
+
+	/**
+	 * @var {boolean} daemonHigher230 Indicates whether Daemon version is 2.3.0 or higher
+	 */
+	private daemonHigher230 = false
 	
 	/**
 	 * @constant {Dictionary<string|boolean>} dateFormat Date formatting options
@@ -299,14 +311,6 @@ export default class SchedulerForm extends Vue {
 	 */
 	created(): void {
 		this.$store.commit('spinner/SHOW');
-		setTimeout(() => {
-			if (this.$store.state.webSocketClient.socket.isConnected) {
-				this.useRest = false;
-			}
-			if (this.id && this.untouched) {
-				this.getTask(this.id);
-			}
-		}, 1000);
 		extend('integer', integer);
 		extend('required', required);
 		extend('json', (json) => {
@@ -393,6 +397,28 @@ export default class SchedulerForm extends Vue {
 	}
 
 	/**
+	 * Daemon version computed property watcher to re-render elements dependent on version
+	 */
+	@Watch('daemonVersion')
+	private updateDaemonVersion(): void {
+		if (versionHigherThan('2.3.0')) {
+			this.daemonHigher230 = true;
+		}
+	}
+
+	mounted(): void {
+		this.updateDaemonVersion();
+		setTimeout(() => {
+			if (this.$store.state.webSocketClient.socket.isConnected) {
+				this.useRest = false;
+			}
+			if (this.id && this.untouched) {
+				this.getTask(this.id);
+			}
+		}, 1000);
+	}
+
+	/**
 	 * Vue lifecycle hook beforeDestroy
 	 */
 	beforeDestroy(): void {
@@ -451,7 +477,7 @@ export default class SchedulerForm extends Vue {
 	private getTask(taskId: number): void {
 		this.untouched = false;
 		this.$store.commit('spinner/SHOW');
-		if (this.useRest) {
+		if (this.useRest || !this.daemonHigher230) {
 			SchedulerService.getTaskREST(taskId)
 				.then((response: AxiosResponse) => {
 					this.$store.commit('spinner/HIDE');
@@ -564,7 +590,7 @@ export default class SchedulerForm extends Vue {
 					.catch((error: AxiosError) => FormErrorHandler.schedulerError(error));
 			} else {
 				SchedulerService.addTask(this.taskId, this.clientId, this.task, timeSpec, new WebSocketOptions(
-					null, 30000, 'config.scheduler.messagess.processError'))
+					null, 30000, 'config.scheduler.messages.processError'))
 					.then((msgId: string) => this.storeId(msgId));
 			}
 		} else {
@@ -576,7 +602,7 @@ export default class SchedulerForm extends Vue {
 				SchedulerService.removeTask(this.taskId, new WebSocketOptions(null, 30000, 'config.scheduler.messages.deleteFail'))
 					.then((msgId: string) => this.storeId(msgId));
 				SchedulerService.addTask(this.taskId, this.clientId, this.task, timeSpec, new WebSocketOptions(
-					null, 30000, 'config.scheduler.messagess.processError'))
+					null, 30000, 'config.scheduler.messages.processError'))
 					.then((msgId: string) => this.storeId(msgId));
 			}
 		}
@@ -604,10 +630,18 @@ export default class SchedulerForm extends Vue {
 	 * Handles successful REST API response
 	 */
 	private successfulSave(): void {
+		this.$store.commit('spinner/HIDE');
+		if (this.$route.path === '/config/daemon/scheduler/add') {
+			this.$toast.success(
+				this.$t('config.scheduler.messages.addSuccess').toString()
+			);
+		} else {
+			this.$toast.success(
+				this.$t('config.scheduler.messages.editSuccess', {task: this.id}).toString()
+			);
+		}
 		this.$router.push('/config/daemon/scheduler/');
-		this.$toast.success(
-			this.$t('config.scheduler.messages.addSuccess').toString()
-		);
+		
 	}
 }
 </script>

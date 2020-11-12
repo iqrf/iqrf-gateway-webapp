@@ -101,11 +101,6 @@ export default class IqrfRepository extends Vue {
 	private checkPeriodInMinutes = 0
 
 	/**
-	 * @constant {string} component IQRF Repository component name
-	 */
-	private component = 'iqrf::JsCache'
-
-	/**
 	 * @var {string} componentInstance IQRF Repository component instance name
 	 */
 	private componentInstance = ''
@@ -190,14 +185,14 @@ export default class IqrfRepository extends Vue {
 	 * @param {IIqrfRepository} response Configuration from REST API response
 	 */
 	private parseConfiguration(response: IIqrfRepository): void {
-		this.component = response.component;
 		this.instance = this.componentInstance = response.instance;
 		this.urlRepo = response.urlRepo;
 		this.checkPeriodInMinutes = response.checkPeriodInMinutes;
-		if (this.daemonHigher230) {
-			if (response.downloadIfRepoCacheEmpty !== undefined) {
-				this.downloadIfRepoCacheEmpty = response.downloadIfRepoCacheEmpty;
-			}
+		if (!this.daemonHigher230) {
+			return;
+		}
+		if (response.downloadIfRepoCacheEmpty !== undefined) {
+			this.downloadIfRepoCacheEmpty = response.downloadIfRepoCacheEmpty;
 		}
 	}
 
@@ -206,7 +201,7 @@ export default class IqrfRepository extends Vue {
 	 */
 	private buildConfiguration(): IIqrfRepository {
 		let configuration: IIqrfRepository = {
-			component: this.component,
+			component: this.componentName,
 			instance: this.componentInstance,
 			urlRepo: this.urlRepo,
 			checkPeriodInMinutes: this.checkPeriodInMinutes,

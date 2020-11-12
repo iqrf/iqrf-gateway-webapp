@@ -266,7 +266,7 @@ export default class MonitorList extends Vue {
 	}
 
 	/**
-	 * Updates configuration of the websocket service
+	 * Updates websocket service message accepting setting
 	 * @param service WebSocket service instance
 	 * @param {boolean} setting Message accepting setting
 	 */
@@ -274,8 +274,29 @@ export default class MonitorList extends Vue {
 		if (service.acceptOnlyLocalhost === setting) {
 			return;
 		}
-		this.$store.commit('spinner/SHOW');
 		service.acceptOnlyLocalhost = setting;
+		this.changeServiceSetting(service);
+	}
+
+	/**
+	 * Updates websocket service TLS setting
+	 * @param service WebSocket service instance
+	 * @param {boolean} setting TLS setting
+	 */
+	private changeTls(service, setting: boolean): void {
+		if (service.tlsEnabled === setting) {
+			return;
+		}
+		service.tlsEnabled = setting;
+		this.changeServiceSetting(service);
+	}
+
+	/**
+	 * Updates configuration of websocket service
+	 * @param service WebSocket service instance
+	 */
+	private changeServiceSetting(service): void {
+		this.$store.commit('spinner/SHOW');
 		DaemonConfigurationService.updateInstance(this.componentNames.webSocket, service.instance, service)
 			.then(() => {
 				this.getConfig().then(() => {

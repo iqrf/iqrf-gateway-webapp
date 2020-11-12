@@ -152,7 +152,7 @@
 </template>
 
 <script lang='ts'>
-import {Component, Vue} from 'vue-property-decorator';
+import {Component, Vue, Watch} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CIcon, CInputFile, CModal} from '@coreui/vue/src';
 import {cilPencil, cilPlus, cilTrash, cilArrowTop, cilArrowBottom} from '@coreui/icons';
 import {fileDownloader} from '../../helpers/fileDownloader';
@@ -161,12 +161,14 @@ import SchedulerService from '../../services/SchedulerService';
 import ServiceService from '../../services/ServiceService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import {DateTime, Duration} from 'luxon';
-import { WebSocketOptions } from '../../store/modules/webSocketClient.module';
-import { Dictionary } from 'vue-router/types/router';
-import { IField } from '../../interfaces/coreui';
-import { AxiosError, AxiosResponse } from 'axios';
+import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
+import {Dictionary} from 'vue-router/types/router';
+import {IField} from '../../interfaces/coreui';
+import {AxiosError, AxiosResponse} from 'axios';
 import {Task, TaskTimeSpec} from '../../interfaces/scheduler';
-import { MutationPayload } from 'vuex';
+import {MutationPayload} from 'vuex';
+import {mapGetters} from 'vuex';
+import {versionHigherThan} from '../../helpers/versionChecker';
 
 @Component({
 	components: {
@@ -178,6 +180,11 @@ import { MutationPayload } from 'vuex';
 		CIcon,
 		CInputFile,
 		CModal,
+	},
+	computed: {
+		...mapGetters({
+			daemonVersion: 'daemonVersion',
+		}),
 	},
 	directives: {
 		'autogrow': TextareaAutogrowDirective
@@ -191,6 +198,11 @@ import { MutationPayload } from 'vuex';
  * List of Daemon scheduler tasks
  */
 export default class SchedulerList extends Vue {
+	/**
+	 * @var {boolean} daemonHigher230 Indicates that Daemon is version 2.3.0 or higher
+	 */
+	private daemonHigher230 = false
+
 	/**
 	 * @constant {Diction<string|boolean>} dateFormat Date formatting options
 	 */
@@ -299,14 +311,6 @@ export default class SchedulerList extends Vue {
 	 */
 	created(): void {
 		this.$store.commit('spinner/SHOW');
-		setTimeout(() => {
-			if (this.$store.state.webSocketClient.socket.isConnected) {
-				this.useRest = false;
-			}
-			if (this.untouched) {
-				this.getTasks();
-			}
-		}, 1000);
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type === 'SOCKET_ONOPEN') { // websocket connection with daemon established
 				this.useRest = false; 
@@ -370,12 +374,37 @@ export default class SchedulerList extends Vue {
 						);
 					} else {
 						this.$toast.error(
-							this.$t('config.scheduler.messagess.processError').toString()
+							this.$t('config.scheduler.messages.processError').toString()
 						);
 					}
 				}
 			}
 		});
+	}
+
+	/**
+	 * Daemon version computed property watcher to re-render elements dependent on version
+	 */
+	@Watch('daemonVersion')
+	private updateDaemonVersion(): void {
+		if (versionHigherThan('2.3.0')) {
+			this.daemonHigher230 = true;
+		}
+	}
+
+	/**
+	 * Vue lifecycle hook mounted
+	 */
+	mounted(): void {
+		this.updateDaemonVersion();
+		setTimeout(() => {
+			if (this.$store.state.webSocketClient.socket.isConnected) {
+				this.useRest = false;
+			}
+			if (this.untouched) {
+				this.getTasks();
+			}
+		}, 1000);
 	}
 
 	/**
@@ -424,7 +453,7 @@ export default class SchedulerList extends Vue {
 	private getTasks(): void {
 		this.untouched = false;
 		this.$store.commit('spinner/SHOW');
-		if (this.useRest) {
+		if (this.useRest || !this.daemonHigher230) {
 			SchedulerService.listTasksREST()
 				.then((response: AxiosResponse) => {
 					this.$store.commit('spinner/HIDE');

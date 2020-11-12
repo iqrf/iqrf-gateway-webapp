@@ -625,6 +625,7 @@
 				"getFail": "Could not retrieve task {task}.",
 				"listFailed": "Failed to retrieve list of scheduler tasks",
 				"addSuccess": "Scheduler task has been successfully added.",
+				"editSuccess": "Scheduler task {task} has been successfully edited.",
 				"processError": "An error has occurred while processing Daemon API request.",
 				"rest": {
 					"invalidTask": "Task configuration is not valid.",

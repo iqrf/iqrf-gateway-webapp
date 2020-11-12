@@ -89,11 +89,11 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import {integer, required} from 'vee-validate/dist/rules';
-import { MetaInfo } from 'vue-meta';
-import { RequiredInterface } from '../../interfaces/requiredInterfaces';
-import { AxiosError, AxiosResponse } from 'axios';
+import {MetaInfo} from 'vue-meta';
+import {RequiredInterface} from '../../interfaces/requiredInterfaces';
+import {AxiosError, AxiosResponse} from 'axios';
 import {versionHigherThan} from '../../helpers/versionChecker';
-import { IOption } from '../../interfaces/coreui';
+import {IOption} from '../../interfaces/coreui';
 import {mapGetters} from 'vuex';
 
 interface MonitorComponents {
