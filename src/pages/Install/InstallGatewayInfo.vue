@@ -176,7 +176,11 @@ export default class InstallGatewayInfo extends Vue {
 		this.$store.commit('spinner/SHOW');
 		GatewayService.getInfo().then(
 			(response: AxiosResponse) => {
-				const file = fileDownloader(response, 'application/json', 'iqrf-gateway-info.json');
+				let fileName = 'iqrf-gateway-info';
+				if (this.info?.gwId) {
+					fileName += '_' + this.info.gwId.toLowerCase();
+				}
+				const file = fileDownloader(response, 'application/json', fileName + '.json');
 				this.$store.commit('spinner/HIDE');
 				file.click();
 			}
