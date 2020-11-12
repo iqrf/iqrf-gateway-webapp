@@ -21,6 +21,7 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Models;
 
 use App\CoreModule\Models\CommandManager;
+use Symfony\Component\Process\Process;
 
 /**
  * Tool for powering off and rebooting IQRF Gateway
@@ -44,14 +45,14 @@ class PowerManager {
 	 * Powers off IQRF Gateway
 	 */
 	public function powerOff(): void {
-		$this->commandManager->run('sleep 5 && poweroff', true);
+		$this->commandManager->run('poweroff', true);
 	}
 
 	/**
 	 * Reboots IQRF Gateway
 	 */
 	public function reboot(): void {
-		$this->commandManager->run('sleep 5 && reboot', true);
+		$this->commandManager->run('reboot', true);
 	}
 
 }

@@ -56,24 +56,20 @@ export default class PowerControl extends Vue {
 	 * Performs power off
 	 */
 	private powerOff(): void {
-		GatewayService.performPowerOff()
-			.then(() => {
-				this.$toast.success(
-					this.$t('gateway.power.powerOff.success').toString()
-				);
-			});
+		GatewayService.performPowerOff();
+		this.$toast.success(
+			this.$t('gateway.power.powerOff.success').toString()
+		);
 	}
 
 	/**
 	 * Performs reboot
 	 */
 	private reboot(): void {
-		GatewayService.performReboot()
-			.then(() => {
-				this.$toast.success(
-					this.$t('gateway.power.reboot.success').toString()
-				);
-			});
+		GatewayService.performReboot();
+		this.$toast.success(
+			this.$t('gateway.power.reboot.success').toString()
+		);
 	}
 }
 </script>

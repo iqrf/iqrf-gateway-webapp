@@ -1037,7 +1037,7 @@
 				"title": "Reboot",
 				"description": "Reboots the operating system of your device.",
 				"button": "Perform reboot",
-				"success": "Your device has been restarted successfully."
+				"success": "Rebooting device, this may take tens of seconds."
 			}
 		},
 		"updater": {
