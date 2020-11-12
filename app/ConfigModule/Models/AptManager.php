@@ -25,20 +25,20 @@ use App\ConfigModule\Exceptions\AptNotFoundException;
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FileManager;
 
-class AptitudeManager {
+class AptManager {
 
 	/**
-	 * Path to aptitude configuration directory
+	 * Path to APT configuration directory
 	 */
 	private const PATH = '/etc/apt/apt.conf.d/';
 
 	/**
-	 * Aptitude configuration file name
+	 * APT configuration file name
 	 */
 	private const FILE_NAME = '99iqrf-gateway-webapp';
 
 	/**
-	 * Aptitude unattended upgrades tree path
+	 * APT unattended upgrades tree path
 	 */
 	private const APT_SETTING = 'APT::Periodic::Enable';
 
@@ -98,16 +98,16 @@ class AptitudeManager {
 	}
 
 	/**
-	 * Returns list of aptitude configuration
-	 * @return array<string> Aptitude configuration
+	 * Returns list of apt configuration
+	 * @return array<string> Apt configuration
 	 */
 	public function listAptConf(): array {
 		if (!$this->commandManager->commandExist('apt-config')) {
-			throw new AptNotFoundException('Aptitude package not installed.');
+			throw new AptNotFoundException('APT package not installed.');
 		}
 		$conf = $this->commandManager->run('apt-config dump | grep ' . self::APT_SETTING, false);
 		if ($conf->getExitCode() !== 0) {
-			throw new AptErrorException('An error has occured while retrieving aptitude configuration');
+			throw new AptErrorException('An error has occured while retrieving APT configuration');
 		}
 		$array = explode("\n", $conf->getStdout());
 		return $array;

@@ -406,6 +406,9 @@ export default class SchedulerForm extends Vue {
 		}
 	}
 
+	/**
+	 * Vue lifecycle hook mounted
+	 */
 	mounted(): void {
 		this.updateDaemonVersion();
 		setTimeout(() => {

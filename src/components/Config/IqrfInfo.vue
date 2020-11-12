@@ -191,6 +191,10 @@ export default class IqrfInfo extends Vue {
 		}
 	}
 
+	/**
+	 * Creates IQRF Info configuration object for REST API request
+	 * @returns {IIqrfInfo} IQRF Info configuration
+	 */
 	private buildConfiguration(): IIqrfInfo {
 		let configuration: IIqrfInfo = {
 			component: this.componentName,

@@ -30,27 +30,27 @@ use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\ConfigModule\Exceptions\AptErrorException;
 use App\ConfigModule\Exceptions\AptNotFoundException;
-use App\ConfigModule\Models\AptitudeManager;
+use App\ConfigModule\Models\AptManager;
 use Nette\IOException;
 
 /**
- * Aptitude controller
+ * APT controller
  * @Path("/apt")
  * @Tag("Config manager")
  */
-class AptitudeController extends BaseConfigController {
+class AptController extends BaseConfigController {
 
 	/**
-	 * @var AptitudeManager Aptitude manager
+	 * @var AptManager APT manager
 	 */
 	private $aptManager;
 
 	/**
 	 * Constructor
-	 * @param AptitudeManager $aptManager Aptitude manager
+	 * @param AptManager $aptManager APT manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(AptitudeManager $aptManager, RestApiSchemaValidator $validator) {
+	public function __construct(AptManager $aptManager, RestApiSchemaValidator $validator) {
 		$this->aptManager = $aptManager;
 		parent::__construct($validator);
 	}
@@ -99,10 +99,6 @@ class AptitudeController extends BaseConfigController {
 	 *  responses:
 	 *      '200':
 	 *          description: Success
-	 *          content:
-	 *              application/json:
-	 *                  schema:
-	 *                      $ref: '#/components/schemas/UnattendedUpgrades'
 	 *      '400':
 	 *          $ref: '#/components/responses/BadRequest'
 	 *      '500':
@@ -117,7 +113,7 @@ class AptitudeController extends BaseConfigController {
 		$setting = $request->getJsonBody();
 		try {
 			$result = $this->aptManager->setEnable($setting['enabled']);
-			return $response->writeJsonBody(['enabled' => $result]);
+			return $response->writeBody('Workaround');
 		} catch (IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}

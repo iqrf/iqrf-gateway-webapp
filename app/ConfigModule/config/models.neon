@@ -1,5 +1,5 @@
 services:
-	- App\ConfigModule\Models\AptitudeManager
+	- App\ConfigModule\Models\AptManager
 	- App\ConfigModule\Models\ComponentManager
 	controller.fileManager:
 		factory: App\CoreModule\Models\JsonFileManager('/etc/iqrf-gateway-controller')
