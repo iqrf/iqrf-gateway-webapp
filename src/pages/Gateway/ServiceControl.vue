@@ -64,7 +64,7 @@
 <script lang='ts'>
 import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
 import {CButton, CCard} from '@coreui/vue/src';
-import AptitudeService from '../../services/AptitudeService';
+import AptService, {AptConfiguration} from '../../services/AptService';
 import ServiceService from '../../services/ServiceService';
 import {AxiosError} from 'axios';
 import {NavigationGuardNext, Route} from 'vue-router';
@@ -119,6 +119,7 @@ interface IService {
  * Gateway service control component
  */
 export default class ServiceControl extends Vue {
+
 	/**
 	 * @var {boolean} missing Indicates that a service is missing
 	 */
@@ -127,7 +128,7 @@ export default class ServiceControl extends Vue {
 	/**
 	 * @var {boolean} unknown Indicates that status of a service could not be retrieved
 	 */
-	private unknown =  false;
+	private unknown = false;
 
 	/**
 	 * @var {boolean} unsupported Indicates that a service is not supported by the gateway
@@ -181,8 +182,14 @@ export default class ServiceControl extends Vue {
 		this.getStatus();
 	}
 
-	private setUnattendedUpgrades(enabled: boolean, action: string): void {
-		AptitudeService.setUnattendedUpgrades(enabled)
+	/**
+	 * Write APT configuration
+	 */
+	private setUnattendedUpgrades(action: string): void {
+		const config: AptConfiguration = {
+			'APT::Periodic::Enable': action === 'enable' ? '1' : '0',
+		};
+		AptService.write(config)
 			.then(() => this.handleSuccess(action))
 			.catch(this.handleError);
 	}
@@ -195,7 +202,7 @@ export default class ServiceControl extends Vue {
 		ServiceService.enable(this.serviceName)
 			.then(() => {
 				if (this.serviceName === 'unattended-upgrades') {
-					this.setUnattendedUpgrades(true, 'enable');
+					this.setUnattendedUpgrades('enable');
 				} else {
 					this.handleSuccess('enable');
 				}
@@ -211,7 +218,7 @@ export default class ServiceControl extends Vue {
 		ServiceService.disable(this.serviceName)
 			.then(() => {
 				if (this.serviceName === 'unattended-upgrades') {
-					this.setUnattendedUpgrades(false, 'disable');
+					this.setUnattendedUpgrades('disable');
 				} else {
 					this.handleSuccess('disable');
 				}
@@ -234,6 +241,8 @@ export default class ServiceControl extends Vue {
 		ServiceService.getStatus(this.serviceName)
 			.then((status) => {
 				this.service = status;
+				this.missing = false;
+				this.unknown = false;
 				this.unsupported = false;
 				this.$store.commit('spinner/HIDE');
 			})

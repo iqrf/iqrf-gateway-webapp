@@ -45,6 +45,8 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/apiKeyDetail.json
 		ApiKeyModify:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/apiKeyModify.json
+		AptConfiguration:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/aptConfiguration.json
 		CertificateDetail:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/certificate.json
 		CloudAws:

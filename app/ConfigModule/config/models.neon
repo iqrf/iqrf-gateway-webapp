@@ -1,5 +1,8 @@
 services:
-	- App\ConfigModule\Models\AptManager
+	apt.fileManager:
+		factory: App\CoreModule\Models\PrivilegedFileManager('/etc/apt/apt.conf.d')
+		autowired: false
+	- App\ConfigModule\Models\AptManager(@apt.fileManager)
 	- App\ConfigModule\Models\ComponentManager
 	controller.fileManager:
 		factory: App\CoreModule\Models\JsonFileManager('/etc/iqrf-gateway-controller')

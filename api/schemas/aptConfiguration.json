@@ -1,0 +1,18 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/aptConfiguration.json",
+	"type": "object",
+	"title": "APT configuration",
+	"required": [
+		"APT::Periodic::Enable"
+	],
+	"properties": {
+		"APT::Periodic::Enable": {
+			"$id": "#/properties/APT%3A%3APeriodic%3A%3AEnable",
+			"type": "string",
+			"title": "The APT::Periodic::Enable",
+			"example": "0"
+		}
+	},
+	"additionalProperties": true
+}

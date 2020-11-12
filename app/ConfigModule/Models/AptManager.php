@@ -23,24 +23,21 @@ namespace App\ConfigModule\Models;
 use App\ConfigModule\Exceptions\AptErrorException;
 use App\ConfigModule\Exceptions\AptNotFoundException;
 use App\CoreModule\Models\CommandManager;
-use App\CoreModule\Models\FileManager;
+use App\CoreModule\Models\IFileManager;
 
 class AptManager {
 
 	/**
-	 * Path to APT configuration directory
+	 * Default values
 	 */
-	private const PATH = '/etc/apt/apt.conf.d/';
+	private const DEFAULTS = [
+		'APT::Periodic::Enable' => '0'
+	];
 
 	/**
-	 * APT configuration file name
+	 * Apt configuration file name
 	 */
 	private const FILE_NAME = '99iqrf-gateway-webapp';
-
-	/**
-	 * APT unattended upgrades tree path
-	 */
-	private const APT_SETTING = 'APT::Periodic::Enable';
 
 	/**
 	 * @var CommandManager Command manager
@@ -48,69 +45,63 @@ class AptManager {
 	private $commandManager;
 
 	/**
-	 * @var FileManager File manager
+	 * @var IFileManager File manager
 	 */
 	private $fileManager;
 
 	/**
 	 * Constructor
+	 * @param IFileManager $fileManager Privileged file manager
 	 * @param CommandManager $commandManager Command manager
 	 */
-	public function __construct(CommandManager $commandManager) {
+	public function __construct(IFileManager $fileManager, CommandManager $commandManager) {
+		$this->fileManager = $fileManager;
 		$this->commandManager = $commandManager;
-		$this->fileManager = new FileManager(self::PATH, $commandManager);
 	}
 
 	/**
-	 * Retrieves enabled status of unattended upgrades service
+	 * Reads APT configuration
+	 * @return array<string, string> APT configuration
+	 * @throws AptErrorException
+	 * @throws AptNotFoundException
 	 */
-	public function getEnable(): bool {
-		$config = $this->listAptConf();
-		foreach ($config as $entry) {
-			if (substr($entry, 0, strlen(self::APT_SETTING)) === self::APT_SETTING) {
-				$value = explode(' ', $entry)[1][1];
-				return $value === '1';
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * Sets enabled status of unattended upgrades service
-	 * @param bool $enable New settings
-	 * @return bool updated setting
-	 */
-	public function setEnable(bool $enable): bool {
-		$setting = $enable ? '"1";' : '"0";';
-		if (!file_exists(self::PATH . self::FILE_NAME)) {
-			$this->createConfFile();
-		}
-		$this->fileManager->write(self::FILE_NAME, self::APT_SETTING . ' ' . $setting . "\n");
-		return $enable;
-	}
-
-	/**
-	 * Creates apt configuration file and sets permission for webapp
-	 */
-	public function createConfFile(): void {
-		$this->commandManager->run('touch ' . self::PATH . self::FILE_NAME, true);
-		$this->commandManager->run('chmod 666 ' . self::PATH . self::FILE_NAME, true);
-	}
-
-	/**
-	 * Returns list of apt configuration
-	 * @return array<string> Apt configuration
-	 */
-	public function listAptConf(): array {
+	public function read(): array {
 		if (!$this->commandManager->commandExist('apt-config')) {
-			throw new AptNotFoundException('APT package not installed.');
+			throw new AptNotFoundException('Apt package not installed.');
 		}
-		$conf = $this->commandManager->run('apt-config dump | grep ' . self::APT_SETTING, false);
-		if ($conf->getExitCode() !== 0) {
-			throw new AptErrorException('An error has occured while retrieving APT configuration');
+		$command = $this->commandManager->run('apt-config dump', false);
+		if ($command->getExitCode() !== 0) {
+			throw new AptErrorException('An error has occurred while retrieving apt configuration');
 		}
-		$array = explode("\n", $conf->getStdout());
-		return $array;
+		$config = [];
+		$rows = explode(PHP_EOL, $command->getStdout());
+		foreach ($rows as $row) {
+			[$key, $value] = explode(' ',  rtrim($row, ';'), 2);
+			if (!array_key_exists($key, self::DEFAULTS)) {
+				continue;
+			}
+			$config[$key] = trim($value, '"');
+		}
+		return array_merge(self::DEFAULTS, $config);
+	}
+
+	/**
+	 * Writes APT configuration
+	 * @param array<string, string> $config APT configuration to write
+	 * @throws AptNotFoundException
+	 */
+	public function write(array $config): void {
+		if (!$this->commandManager->commandExist('apt-config')) {
+			throw new AptNotFoundException('Apt package not installed.');
+		}
+		$content = '';
+		foreach ($config as $key => $value) {
+			if (!array_key_exists($key, self::DEFAULTS)) {
+				continue;
+			}
+			$content .= sprintf('%s "%s";', $key, $value);
+		}
+		$this->fileManager->write(self::FILE_NAME, $content);
 	}
 
 }

@@ -34,7 +34,7 @@ use App\ConfigModule\Models\AptManager;
 use Nette\IOException;
 
 /**
- * APT controller
+ * APT configuration controller
  * @Path("/apt")
  * @Tag("Config manager")
  */
@@ -43,15 +43,15 @@ class AptController extends BaseConfigController {
 	/**
 	 * @var AptManager APT manager
 	 */
-	private $aptManager;
+	private $manager;
 
 	/**
 	 * Constructor
-	 * @param AptManager $aptManager APT manager
+	 * @param AptManager $manager APT manager
 	 * @param RestApiSchemaValidator $validator REST API JSON schema validator
 	 */
-	public function __construct(AptManager $aptManager, RestApiSchemaValidator $validator) {
-		$this->aptManager = $aptManager;
+	public function __construct(AptManager $manager, RestApiSchemaValidator $validator) {
+		$this->manager = $manager;
 		parent::__construct($validator);
 	}
 
@@ -59,14 +59,14 @@ class AptController extends BaseConfigController {
 	 * @Path("/")
 	 * @Method("GET")
 	 * @OpenApi("
-	 *  summary: Retrieves enabled status of unattended upgrades
+	 *  summary: Retrieves APT configuration
 	 *  responses:
 	 *      '200':
 	 *          description: Success
 	 *          content:
 	 *              application/json:
 	 *                  schema:
-	 *                      $ref: '#/components/schemas/UnattendedUpgrades'
+	 *                      $ref: '#/components/schemas/AptConfiguration'
 	 *      '500':
 	 *          $ref: '#/components/responses/ServerError'
 	 * ")
@@ -74,28 +74,25 @@ class AptController extends BaseConfigController {
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
-	public function getUnattendedUpgrades(ApiRequest $request, ApiResponse $response): ApiResponse {
+	public function read(ApiRequest $request, ApiResponse $response): ApiResponse {
 		try {
-			$result = $this->aptManager->getEnable();
-			return $response->writeJsonBody(['enabled' => $result]);
-		} catch (AptNotFoundException $e) {
-			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
-		} catch (AptErrorException $e) {
+			return $response->writeJsonBody($this->manager->read());
+		} catch (AptErrorException | AptNotFoundException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
 	}
 
 	/**
 	 * @Path("/")
-	 * @Method("POST")
+	 * @Method("PUT")
 	 * @OpenApi("
-	 *  summary: Changes enabled status of unattended upgrades
+	 *  summary: Updates APT configuration
 	 *  requestBody:
 	 *      required: true
 	 *      content:
 	 *          application/json:
 	 *              schema:
-	 *                  $ref: '#/components/schemas/UnattendedUpgrades'
+	 *                  $ref: '#/components/schemas/AptConfiguration'
 	 *  responses:
 	 *      '200':
 	 *          description: Success
@@ -109,12 +106,11 @@ class AptController extends BaseConfigController {
 	 * @return ApiResponse API response
 	 */
 	public function changeEnableUnattendedUpgrades(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validator->validateRequest('unattendedUpgrades', $request);
-		$setting = $request->getJsonBody();
+		$this->validator->validateRequest('aptConfiguration', $request);
 		try {
-			$result = $this->aptManager->setEnable($setting['enabled']);
+			$this->manager->write($request->getJsonBody());
 			return $response->writeBody('Workaround');
-		} catch (IOException $e) {
+		} catch (AptErrorException | AptNotFoundException | IOException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
 	}
