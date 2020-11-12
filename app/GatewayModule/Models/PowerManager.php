@@ -21,7 +21,6 @@ declare(strict_types = 1);
 namespace App\GatewayModule\Models;
 
 use App\CoreModule\Models\CommandManager;
-use Symfony\Component\Process\Process;
 
 /**
  * Tool for powering off and rebooting IQRF Gateway
