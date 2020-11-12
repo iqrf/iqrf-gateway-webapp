@@ -112,7 +112,7 @@ export default class JsonSplitter extends Vue {
 	 */
 	private saveConfig(): void {
 		this.$store.commit('spinner/SHOW');
-		if (this.instance !== null) {
+		if (this.instance !== '') {
 			DaemonConfigurationService.updateInstance(this.componentName, this.instance, this.configuration)
 				.then(() => this.successfulSave())
 				.catch((error: AxiosError) => FormErrorHandler.configError(error));

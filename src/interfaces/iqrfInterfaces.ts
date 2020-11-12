@@ -2,78 +2,98 @@
  * IQRF communication interface base interface
  */
 interface IIqrfBase {
-    /**
-     * Component name
-     */
-    component: string
-    
-    /**
-     * Instance name
-     */
-    instance: string
+	/**
+	 * Component name
+	 */
+	component: string
+	
+	/**
+	 * Instance name
+	 */
+	instance: string
 
-    /**
-     * Device name
-     */
-    IqrfInterface: string
+	/**
+	 * Device name
+	 */
+	IqrfInterface: string
 
-    /**
-     * Power enable GPIO pin
-     */
-    powerEnableGpioPin: number
-    
-    /**
-     * Programming mode switch GPIO pin
-     */
-    pgmSwitchGpioPin?: number
-    
-    /**
-     * Bus enable GPIO pin
-     */
-    busEnableGpioPin: number
+	/**
+	 * Power enable GPIO pin
+	 */
+	powerEnableGpioPin: number
+	
+	/**
+	 * Programming mode switch GPIO pin
+	 */
+	pgmSwitchGpioPin?: number
+	
+	/**
+	 * Bus enable GPIO pin
+	 */
+	busEnableGpioPin: number
 
-    /**
-     * I2C interface enable GPIO pin
-     */
-    i2cEnableGpioPin?: number
+	/**
+	 * I2C interface enable GPIO pin
+	 */
+	i2cEnableGpioPin?: number
 
-    /**
-     * SPI interface enable GPIO pin
-     */
-    spiEnableGpioPin?: number
+	/**
+	 * SPI interface enable GPIO pin
+	 */
+	spiEnableGpioPin?: number
 
-    /**
-     * UART interface enable GPIO pin
-     */
-    uartEnableGpioPin?: number
+	/**
+	 * UART interface enable GPIO pin
+	 */
+	uartEnableGpioPin?: number
 }
 
 /**
  * IQRF SPI component instance interface
  */
 export interface IIqrfSpi extends IIqrfBase {
-    /**
-     * Programming mode switch GPIO pin
-     */
-    pgmSwitchGpioPin: number
+	/**
+	 * Programming mode switch GPIO pin
+	 */
+	pgmSwitchGpioPin: number
 
-    /**
-     * Should SPI component instance reset?
-     */
-    spiReset: boolean
+	/**
+	 * Should SPI component instance reset?
+	 */
+	spiReset: boolean
 }
 
 /**
  * IQRF UART component instance interface
  */
 export interface IIqrfUart extends IIqrfBase {
-    /**
-     * Serial port baud rate
-     */
-    baudRate: number
-    
-    /**
-     * Should UART component instance reset?
-     */
-    uartReset?: boolean
+	/**
+	 * Serial port baud rate
+	 */
+	baudRate: number
+	
+	/**
+	 * Should UART component instance reset?
+	 */
+	uartReset?: boolean
+}
+
+/**
+ * IQRF DPA component instance interface
+ */
+export interface IIqrfDpa {
+	/**
+	 * Component name
+	 */
+	component: string
+
+	/**
+	 * Component instance name
+	 */
+	instance: string
+
+	/**
+	 * DPA response and confirmation timeout in milliseconds
+	 */
+	DpaHandlerTimeout: number
 }

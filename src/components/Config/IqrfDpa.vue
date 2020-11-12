@@ -54,11 +54,7 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {integer, min_value, required} from 'vee-validate/dist/rules';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
-
-interface IqrfDpaConfig {
-	instance: string|null
-	DpaHandlerTimeout: number
-}
+import {IIqrfDpa} from '../../interfaces/iqrfInterfaces';
 
 @Component({
 	components: {
@@ -83,17 +79,18 @@ export default class IqrfDpa extends Vue {
 	private componentName = 'iqrf::IqrfDpa'
 
 	/**
-	 * @var {IqrfDpaConfig} configuration IQRF DPA component instance configuration
+	 * @var {IIqrfDpa} configuration IQRF DPA component instance configuration
 	 */
-	private configuration: IqrfDpaConfig = {
-		instance: null,
+	private configuration: IIqrfDpa = {
+		component: '',
+		instance: '',
 		DpaHandlerTimeout: 500,
 	}
 
 	/**
-	 * @var {string|null} instance IQRF DPA component instance name
+	 * @var {string} instance IQRF DPA component instance name
 	 */
-	private instance: string|null = null
+	private instance = ''
 
 	/**
 	 * @var {boolean} powerUser Indicates whether user role is power user
@@ -140,7 +137,7 @@ export default class IqrfDpa extends Vue {
 	 */
 	private saveConfig(): void {
 		this.$store.commit('spinner/SHOW');
-		if (this.instance !== null) {
+		if (this.instance !== '') {
 			DaemonConfigurationService.updateInstance(this.componentName, this.instance, this.configuration)
 				.then(() => this.successfulSave())
 				.catch((error: AxiosError) => FormErrorHandler.configError(error));

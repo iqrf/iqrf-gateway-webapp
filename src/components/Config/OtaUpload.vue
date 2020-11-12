@@ -39,12 +39,7 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
-
-interface OtaUploadConfig {
-	instance: string|null
-	uploadPath: string|null
-	uploadPathSuffix: string|null
-}
+import {IOtaUpload} from '../../interfaces/iqmeshServices';
 
 @Component({
 	components: {
@@ -71,15 +66,16 @@ export default class OtaUpload extends Vue {
 	/**
 	 * @var {string} instance name of daemon componenent instance
 	 */
-	private instance: string|null = null
+	private instance = ''
 
 	/**
-	 * @var {OtaUploadConfig} configuration OtaUpload instance configuration
+	 * @var {IOtaUpload} configuration OtaUpload instance configuration
 	 */
-	private configuration: OtaUploadConfig = {
-		instance: null,
-		uploadPath: null,
-		uploadPathSuffix: null,
+	private configuration: IOtaUpload = {
+		component: '',
+		instance: '',
+		uploadPath: '',
+		uploadPathSuffix: '',
 	}
 
 	/**
@@ -117,7 +113,7 @@ export default class OtaUpload extends Vue {
 	 */
 	private saveInstance(): void {
 		this.$store.commit('spinner/SHOW');
-		if (this.instance !== null) {
+		if (this.instance !== '') {
 			DaemonConfigurationService.updateInstance(this.componentName, this.instance, this.configuration)
 				.then(() => this.successfulSave())
 				.catch((error: AxiosError) => FormErrorHandler.configError(error));
