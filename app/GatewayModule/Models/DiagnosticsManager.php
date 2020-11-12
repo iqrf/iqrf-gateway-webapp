@@ -23,6 +23,7 @@ namespace App\GatewayModule\Models;
 use App\ConfigModule\Models\MainManager;
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\ZipArchiveManager;
+use App\GatewayModule\Models\Utils\GatewayInfoUtil;
 use App\IqrfNetModule\Exceptions\DpaErrorException;
 use App\IqrfNetModule\Exceptions\EmptyResponseException;
 use DateTime;
@@ -39,6 +40,11 @@ class DiagnosticsManager {
 	 * @var CommandManager Command manager
 	 */
 	private $commandManager;
+
+	/**
+	 * @var GatewayInfoUtil Gateway info manager
+	 */
+	private $gwInfo;
 
 	/**
 	 * @var InfoManager Gateway info manager
@@ -73,12 +79,13 @@ class DiagnosticsManager {
 	 * @param InfoManager $infoManager Gateway Info manager
 	 * @param MainManager $mainManager Main configuration manager
 	 */
-	public function __construct(string $confDir, string $logDir, CommandManager $commandManager, InfoManager $infoManager, MainManager $mainManager) {
+	public function __construct(string $confDir, string $logDir, CommandManager $commandManager, InfoManager $infoManager, MainManager $mainManager, GatewayInfoUtil $gwInfo) {
 		$this->commandManager = $commandManager;
 		$this->infoManager = $infoManager;
 		$this->cacheDir = $mainManager->getCacheDir();
 		$this->confDir = $confDir;
 		$this->logDir = $logDir;
+		$this->gwInfo = $gwInfo;
 	}
 
 	/**
@@ -88,7 +95,9 @@ class DiagnosticsManager {
 	public function createArchive(): string {
 		try {
 			$now = new DateTime();
-			$path = '/tmp/iqrf-gateway-diagnostics_' . $now->format('c') . '.zip';
+			$gwId = $this->gwInfo->getProperty('gwId');
+			$gwId = $gwId === null ? '' : strtolower($gwId) . '_';
+			$path = '/tmp/iqrf-gateway-diagnostics_' . $gwId . $now->format('c') . '.zip';
 		} catch (Throwable $e) {
 			$path = '/tmp/iqrf-gateway-diagnostics.zip';
 		}

@@ -11,4 +11,5 @@ services:
 	- App\GatewayModule\Models\NetworkManager
 	- App\GatewayModule\Models\PowerManager
 	- App\GatewayModule\Models\UpdaterManager
+	- App\GatewayModule\Models\Utils\GatewayInfoUtil
 	- App\GatewayModule\Models\VersionManager

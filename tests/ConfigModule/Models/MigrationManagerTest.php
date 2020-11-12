@@ -16,6 +16,7 @@ use App\CoreModule\Entities\CommandStack;
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\FileManager;
 use App\CoreModule\Models\ZipArchiveManager;
+use App\GatewayModule\Models\Utils\GatewayInfoUtil;
 use App\ServiceModule\Models\ServiceManager;
 use Mockery;
 use Nette\Utils\FileSystem;
@@ -161,8 +162,11 @@ final class MigrationManagerTest extends TestCase {
 		$commandManagerMock = Mockery::mock(CommandManager::class, [false, $commandStack])->makePartial();
 		$serviceManager = Mockery::mock(ServiceManager::class);
 		$serviceManager->shouldReceive('restart');
-		$this->manager = new MigrationManager(self::CONFIG_TEMP_PATH, self::CONFIG_TEMP_PATH_CONTROLLER, self::CONFIG_TEMP_PATH_TRANSLATOR, $commandManagerMock, $schemaManager, $serviceManager);
-		$this->managerCorrupted = new MigrationManager(self::CONFIG_TEMP_PATH, self::CONFIG_TEMP_PATH_CONTROLLER, self::CONFIG_TEMP_PATH_TRANSLATOR, $commandManagerMock, $schemaManagerCorrupted, $serviceManager);
+		$commandStack = new CommandStack();
+		$commandManager = new CommandManager(false, $commandStack);
+		$gwInfo = new GatewayInfoUtil($commandManager);
+		$this->manager = new MigrationManager(self::CONFIG_TEMP_PATH, self::CONFIG_TEMP_PATH_CONTROLLER, self::CONFIG_TEMP_PATH_TRANSLATOR, $commandManagerMock, $schemaManager, $serviceManager, $gwInfo);
+		$this->managerCorrupted = new MigrationManager(self::CONFIG_TEMP_PATH, self::CONFIG_TEMP_PATH_CONTROLLER, self::CONFIG_TEMP_PATH_TRANSLATOR, $commandManagerMock, $schemaManagerCorrupted, $serviceManager, $gwInfo);
 	}
 
 	/**

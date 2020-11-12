@@ -26,6 +26,7 @@ use App\CoreModule\Exceptions\InvalidJsonException;
 use App\CoreModule\Exceptions\NonexistentJsonSchemaException;
 use App\CoreModule\Models\CommandManager;
 use App\CoreModule\Models\ZipArchiveManager;
+use App\GatewayModule\Models\Utils\GatewayInfoUtil;
 use App\ServiceModule\Exceptions\UnsupportedInitSystemException;
 use App\ServiceModule\Models\ServiceManager;
 use DateTime;
@@ -44,6 +45,11 @@ class MigrationManager {
 	 * @var CommandManager Command manager
 	 */
 	private $commandManager;
+
+	/**
+	 * @var GatewayInfoUtil Gateway info manager
+	 */
+	private $gwInfo;
 
 	/**
 	 * @var ComponentSchemaManager JSON schema manager
@@ -79,13 +85,14 @@ class MigrationManager {
 	 * @param ComponentSchemaManager $schemaManager JSON schema manager
 	 * @param ServiceManager $serviceManager Service manager
 	 */
-	public function __construct(string $configDirectory, string $controllerConfigDirectory, string $translatorConfigDirectory, CommandManager $commandManager, ComponentSchemaManager $schemaManager, ServiceManager $serviceManager) {
+	public function __construct(string $configDirectory, string $controllerConfigDirectory, string $translatorConfigDirectory, CommandManager $commandManager, ComponentSchemaManager $schemaManager, ServiceManager $serviceManager, GatewayInfoUtil $gwInfo) {
 		$this->configDirectory = $configDirectory;
 		$this->controllerConfigDirectory = $controllerConfigDirectory;
 		$this->translatorConfigDirectory = $translatorConfigDirectory;
 		$this->commandManager = $commandManager;
 		$this->schemaManager = $schemaManager;
 		$this->serviceManager = $serviceManager;
+		$this->gwInfo = $gwInfo;
 	}
 
 	/**
@@ -95,7 +102,9 @@ class MigrationManager {
 	public function createArchive(): string {
 		try {
 			$now = new DateTime();
-			$path = '/tmp/iqrf-gateway-configuration_' . $now->format('c') . '.zip';
+			$gwId = $this->gwInfo->getProperty('gwId');
+			$gwId = $gwId === null ? '' : strtolower($gwId) . '_';
+			$path = '/tmp/iqrf-gateway-configuration_' . $gwId . $now->format('c') . '.zip';
 		} catch (Throwable $e) {
 			$path = '/tmp/iqrf-gateway-configuration.zip';
 		}
