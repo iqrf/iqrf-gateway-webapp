@@ -38,7 +38,7 @@ final class PowerManagerTest extends CommandTestCase {
 	 * Tests the function to power off IQRF Gateway
 	 */
 	public function testPowerOff(): void {
-		$this->receiveCommand('poweroff', true);
+		$this->receiveCommand('shutdown -P `date --date "now + 60 seconds" "+%H:%M"`', true);
 		Assert::noError(function (): void {
 			$this->manager->powerOff();
 		});
@@ -48,7 +48,7 @@ final class PowerManagerTest extends CommandTestCase {
 	 * Tests the function to reboot IQRF Gateway
 	 */
 	public function testReboot(): void {
-		$this->receiveCommand('reboot', true);
+		$this->receiveCommand('shutdown -r `date --date "now + 60 seconds" "+%H:%M"`', true);
 		Assert::noError(function (): void {
 			$this->manager->reboot();
 		});
