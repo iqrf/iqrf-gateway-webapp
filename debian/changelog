@@ -1,10 +1,182 @@
-iqrf-gateway-webapp (2.2.0~alpha~1.gbpca7d4c) UNRELEASED; urgency=medium
+iqrf-gateway-webapp (2.2.0~rc1) testing; urgency=medium
 
-  ** SNAPSHOT build @ca7d4c545e34b7d7a53791b868e88a0ba80f45be **
+  [ Roman Ondráček ]
+  * Prepare for version v2.2.0-alpha
 
-  * UNRELEASED
+  [ Karel Hanák ]
+  * Gateway typescript components, address changer and autonetwork typescript
+  * IqrfNet components: typescript rework
+  * use typescript in main components, service control fix, Component list and form typescript
+  * Config: typescript rework of page components, added interfaces for components
+  * Sidebar: fix NavMember interface and feature filtering
+  * ApiKey, DaemonMode and Gateway component typescript rework
+  * Config: Scheduler components typescript rework, scheduler interfaces
+  * Core: components typescript rework, no action performed if values are not changed
+  * Core: UserList add missing types, InstallGatewayInfo typescript rework
+  * IqrfNet: components typescript rework
+  * add missing types
 
- -- Roman Ondráček <roman@romanondracek.cz>  Sun, 25 Oct 2020 23:25:00 +0100
+  [ Roman Ondráček ]
+  * IQRF net: refactor request and response cards at Send DPA packet and Send JSON request pages
+
+  [ Karel Hanák ]
+  * AutoNetwork: missing translations
+  * Iqrfnet: fetch files for DpaUpdater based on interface type
+  * Cloud and config component docs
+  * Config: button spacing, colors and wrap
+  * Config: prevent REST request if select value is unchanged
+  * Network: typescript component rework, fix typescript weak warnings
+  * IqrfNet: component docs, message error handling fix
+  * features: default configuration
+  * IqrfNet components and Network component docs
+  * Cloud and Config: page component docs
+  * Gateway: page component docs
+  * Core: page component docs
+  * IqrfNet page components docs
+  * Install and Network component docs
+  * ConfigMigration: include controller and translator, validate for invalid zip contents
+  * MigrationManager: remove helper log
+  * Config: TracerForm component support for daemon 2.3.0 properties
+
+  [ Roman Ondráček ]
+  * API: move OpenAPI schema builder into own class
+  * Config: partially refactor migration manager
+  * Cloud: refactor API controllers
+  * Cloud: fix IBM Cloud controller
+
+  [ Karel Hanák ]
+  * Config: IqrfUart support for new properties, WebSocket: fetch Daemon version
+  * Config: add support for new properties in WebsocketService, Iqrfuart, IqrfRepository and TraceFile
+  * Config: update daemon version docs
+  * IqrfNet: Add packet sections to SendDpaPacket component
+  * Config: fetch scheduler tasks after importing tasks
+
+  [ Roman Ondráček ]
+  * API: add JSON schema validator
+
+  [ Karel Hanák ]
+  * IqrfNet: added auto repeat feature to SendDpaPacket component
+  * SendDpaPacket: reduced NADR to single byte, split messages into separate cards, fix pdata up automatically
+  * Config: UI iteration
+  * Siderbar: highlight selected nav item
+  * Config: minor ui fixes
+  * Config: refactor interface rendering, added messaging props, updated config disambiguation, controller config and daemon mode ui update
+  * Config: TLS support in monitor list and form, update version dependent elements, clean up router
+  * Config: hide component instance names for normal user
+
+  [ Roman Ondráček ]
+  * API: add missing Location header in API key and user creation endpoints
+  * Debian packaging: enable IQRF Gateway Controller feature in tha package for IQD-GW-01
+  * IQRF net: fix STD and LP network checkbox at TR configuration page
+
+  [ Karel Hanák ]
+  * ConsoleModule: user mapping
+  * ConsoleModule: Mapping list, edit, remove commands, ApiKey docstring fix
+  * Database: added mapping entity tests
+  * Database: added default records to mapping database
+  * ConsoleModule: refactor edit and remove commands, ApiModule: Mapping controller
+  * ApiModule: fix PHPDoc in Mapping controller
+  * Config: Mapping form and service, update api schemas, controller and tests
+  * Config: reset mapping name when modal is hidden
+  * Config: change mapping form modal header color
+  * ConsoleModule: fix mapping option select, better desc
+  * ConsoleModule: fix mapping codestyle and prompt
+  * Mappings: Add default mappning configurations for gateway, remove edit option for normal user
+  * Mappings: added support for Gateway only params, update config
+  * Config: update URL when messaging select and misc tab values change
+  * networkManager: backup tab
+  * NetworkManager: Restore ts component, form
+  * NetworkManager: Backup file format generation
+  * IqrfNet: Backup typescript component and localization, Restore file input, read and error handling
+  * IqrfNet: IQMESH Restore
+  * IqrfNet: backup and restore minor changes
+  * IqrfNet: backup file IDE compatible date format
+  * IqrfNet: backup error handling
+  * Iqrfnet: backup update docs
+  * IqrfNet: Restore error handling, Backup missing messageError handling
+  * IqrfNet: NetworkManager fix imports for typescript, remove unused packages
+  * ConsoleModule: update mapping commands
+  * Config: enable mapping editing, remove old mapping, update interface change toast message
+  * Config: add redirects for old paths, misc configuration tab index to endpoint mapping
+  * API: fix mapping detail reference
+  * API: aptitude controller, ConfigModule: aptitude manager for unattended upgrades
+  * API: update unattended upgrades schema
+  * IqrfNet: add webapp version to generated backup file
+  * IqrfNet: unify design of network manager tabs
+  * Debian package: update man page
+  * Debian package: update man page date
+  * API: fix endpoint category for api docs
+  * Gateway: update apt configuration when managing unattended upgrades service
+  * Config: reorganize components, update card headers in composition components
+  * Config: fixed conditional rendering of elements
+  * Cloud: added interfaces and option to hide password, option to hide password in TrConfig security form
+  * refactor router filtering, routes and redirects with params
+  * Config: translator config interface
+  * Config: controller config interface
+
+  [ Roman Ondráček ]
+  * API: add REST API JSON schema validator to all API controllers
+  * IQRF net: refactor API endpoints
+  * IQRF net: refactor API endpoints
+  * Network: fix basic Ethernet configuration form
+
+  [ Karel Hanák ]
+  * ApiModule: json schema validation and mapping refactor
+  * Api: update jsonschemas
+  * ApiModule: fixed component instance api endpoints
+  * ApiModule and ConfigModule: update aptitude request processing, fixed nonexistant feature handling
+
+  [ Roman Ondráček ]
+  * API: change JWT expiration to 90 minutes
+
+  [ Karel Hanák ]
+  * Network manager: fix connection table update
+  * default backup webapp version, api key and user header border
+
+  [ Roman Ondráček ]
+  * API: fix JWT validator
+  * API: fix OpenAPI schema builder
+
+  [ Karel Hanák ]
+  * fixed gateway sidebar and routes
+
+  [ Roman Ondráček ]
+  * Console: fix error handling at commands for features
+
+  [ Karel Hanák ]
+  * Debian package: update man page for CLI tool
+  * ConsoleModule: no feature selected handling
+  * GatewayModule: added delay before gateway is rebooted or powered off
+  * GatewayModule: update power manager tests
+  * ConsoleModule: added OpenApi specification dump command
+  * GatewayModule: use sleep instead of wait
+  * added gateway id to config migration and diagnostic archives
+  * added gateway id to gateway information json file name
+  * GatewayModule reboot test
+  * GatewayModule: reboot handling fix
+  * fixed power manager tests
+  * Config: support for new params in IqrfInfo, workaround for daemon API get task, fix monitor list tls update
+  * Config: update apt manager, use default response in POST request
+  * Config: fix deciding logic when creating or updating configuration component instance
+
+  [ Roman Ondráček ]
+  * Config: refactor APT configuration
+
+  [ Karel Hanák ]
+  * ConfigModule: fix apt manager coding style
+  * Power control revert
+  * StandardManager: no device bonded error handling
+
+  [ Roman Ondráček ]
+  * Console: disable command for Latte template warmup
+
+  [ Karel Hanák ]
+  * IqrfNet: insufficient daemon version alert component
+  * GatewayModule: use shutdown command with scheduled time
+  * fix phpdoc and power manager tests
+  * ApiModule: update OpenApi specification, add schema for power controller
+
+ -- Karel Hanák <karel.hanak@microrisc.com>  Fri, 13 Nov 2020 18:50:54 +0100
 
 iqrf-gateway-webapp (2.1.0) stable; urgency=medium
 
