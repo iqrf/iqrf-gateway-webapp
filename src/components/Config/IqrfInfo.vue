@@ -19,7 +19,7 @@
 					<ValidationProvider
 						v-if='daemonHigher230'
 						v-slot='{ errors, touched, valid }'
-						:rules='configuration.enumAtStartUp ? "integer|min:0|required": ""'
+						:rules='enumAtStartUp ? "integer|min:0|required": ""'
 						:custom-messages='{
 							required: "config.iqrfInfo.messages.enumPeriod",
 							min: "config.iqrfInfo.messages.enumPeriod",

@@ -1,11 +1,6 @@
 <template>
 	<CCard class='border-0'>
-		<CCardBody v-if='daemonVersion == null'>
-			<CAlert color='danger'>
-				{{ $t('iqrfnet.networkManager.messages.autoNetwork.versionMissing') }}
-			</CAlert>
-		</CCardBody>
-		<CCardBody v-else-if='daemonVersion !== null && versionValid'>
+		<CCardBody>
 			<ValidationObserver v-slot='{ invalid }'>
 				<CForm>
 					<ValidationProvider
@@ -243,28 +238,19 @@
 				</CForm>
 			</ValidationObserver>
 		</CCardBody>
-		<CCardBody v-else>
-			<CAlert color='danger'>
-				{{ invalidVersionBody }}<br>
-				<span v-if='daemonVersion !== null'>
-					{{ $t('iqrfnet.networkManager.messages.autoNetwork.versionCurrent') }} {{ daemonVersion }}
-				</span>
-			</CAlert>
-		</CCardBody>
 	</CCard>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CAlert, CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import compareVersions from 'compare-versions';
 import {between, integer, required} from 'vee-validate/dist/rules';
 import IqrfNetService from '../../services/IqrfNetService';
-import VersionService from '../../services/VersionService';
 import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 import {AutoNetworkBase, AutoNetworkOverlappingNetworks, AutoNetworkStopConditions} from '../../interfaces/autonetwork';
-import { MutationPayload } from 'vuex';
+import {MutationPayload} from 'vuex';
+
 
 interface NodeMessages {
 	nodesNew: string
@@ -273,7 +259,6 @@ interface NodeMessages {
 
 @Component({
 	components: {
-		CAlert,
 		CButton,
 		CCard,
 		CCardBody,
@@ -303,11 +288,6 @@ export default class AutoNetwork extends Vue {
 		discoveryTxPower: 7,
 		skipDiscoveryEachWave: false
 	}
-
-	/**
-	 * @var {string|null} daemonVersion IQRF Gateway Daemon version
-	 */
-	private daemonVersion: string|null = null
 
 	/**
 	 * @var {string} hwpidFiltering String of HWPIDs to filter nodes by
@@ -382,33 +362,6 @@ export default class AutoNetwork extends Vue {
 	private unwatch: CallableFunction = () => {return;}
 
 	/**
-	 * Computes error message if Daemon version cannot be retrieved or is not valid
-	 * @returns {string} string containing translated message
-	 */
-	get invalidVersionBody(): string {
-		if (this.daemonVersion === null) {
-			return this.$t('iqrfnet.networkManager.messages.autoNetwork.versionMissing').toString();
-		} else {
-			return this.$t('iqrfnet.networkManager.messages.autoNetwork.versionInvalid').toString();
-		}
-	}
-
-	/**
-	 * Computes validity of Daemon version
-	 * @returns {boolean} true if Daemon version is valid, false otherwise
-	 */
-	get versionValid(): boolean {
-		if (this.daemonVersion === null) {
-			return false;
-		} else {
-			if (compareVersions.compare(this.daemonVersion, '2.3.0', '>=')) {
-				return true;
-			}
-			return false;
-		}
-	}
-
-	/**
 	 * Vue lifecycle hook created
 	 */
 	created(): void {
@@ -438,7 +391,7 @@ export default class AutoNetwork extends Vue {
 							);
 							break;
 						case 0:
-							this.$store.commit('spinner/UPDATE_TEXT', this.autoNetworkProgress(mutation.payload.data)); // update spinner text with progress message
+							this.$store.commit('spinner/UPDATE_TEXT', this.autoNetworkProgress(mutation.payload.data));
 							if (mutation.payload.data.rsp.lastWave) {
 								this.$store.commit('spinner/HIDE');
 								this.$store.dispatch('removeMessage', this.msgId);
@@ -465,15 +418,6 @@ export default class AutoNetwork extends Vue {
 						this.$t('iqrfnet.networkManager.messages.submit.invalidMessage')
 							.toString()
 					);
-				} else if (mutation.payload.mType === 'mngDaemon_Version' &&
-							mutation.payload.data.msgId === this.msgId) { // daemon version response handler
-					this.$store.dispatch('spinner/hide');
-					this.$store.dispatch('removeMessage', this.msgId);
-					if (mutation.payload.data.status === 0 ) {
-						this.daemonVersion = mutation.payload.data.rsp.version.substring(0, 6);
-					} else {
-						this.$toast.error(this.$t('iqrfnet.networkManager.messages.autoNetwork.versionFailure').toString());
-					}
 				}
 			}
 		});
@@ -486,15 +430,6 @@ export default class AutoNetwork extends Vue {
 		this.$store.dispatch('removeMessage', this.msgId);
 		this.unwatch();
 		this.unsubscribe();
-	}
-
-	/**
-	 * Attempts to retrieve IQRF Gateway Daemon version
-	 */
-	public getVersion(): void {
-		this.$store.dispatch('spinner/show', {timeout: 10000});
-		VersionService.getDaemonVersion(new WebSocketOptions(null, 10000, 'iqrfnet.networkManager.messages.autoNetwork.versionFailure', () => this.msgId = null))
-			.then((msgId: string) => this.msgId = msgId);
 	}
 
 	/**
