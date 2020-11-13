@@ -31,7 +31,7 @@ class AptManager {
 	 * Default values
 	 */
 	private const DEFAULTS = [
-		'APT::Periodic::Enable' => '0'
+		'APT::Periodic::Enable' => '0',
 	];
 
 	/**
@@ -76,7 +76,7 @@ class AptManager {
 		$config = [];
 		$rows = explode(PHP_EOL, $command->getStdout());
 		foreach ($rows as $row) {
-			[$key, $value] = explode(' ',  rtrim($row, ';'), 2);
+			[$key, $value] = explode(' ', rtrim($row, ';'), 2);
 			if (!array_key_exists($key, self::DEFAULTS)) {
 				continue;
 			}

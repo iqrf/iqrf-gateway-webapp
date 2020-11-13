@@ -55,11 +55,7 @@ import {required} from 'vee-validate/dist/rules';
 import InterfacePorts from '../../components/Config/InterfacePorts.vue';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
-
-interface IqrfCdcConfig {
-	instance: string
-	IqrfInterface: string
-}
+import {IIqrfCdc} from '../../interfaces/iqrfInterfaces';
 
 @Component({
 	components: {
@@ -85,9 +81,10 @@ export default class IqrfCdc extends Vue {
 	private componentName = 'iqrf::IqrfCdc'
 
 	/**
-	 * @var {IqrfCdcConfig} configuration IQRF CDC interface instance configuration
+	 * @var {IIqrfCdc} configuration IQRF CDC interface instance configuration
 	 */
-	private configuration: IqrfCdcConfig = {
+	private configuration: IIqrfCdc = {
+		component: '',
 		instance: '',
 		IqrfInterface: '',
 	}

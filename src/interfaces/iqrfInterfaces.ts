@@ -1,5 +1,5 @@
 /**
- * IQRF communication interface base interface
+ * IQRF interface base interface
  */
 interface IIqrfBase {
 	/**
@@ -11,7 +11,12 @@ interface IIqrfBase {
 	 * Instance name
 	 */
 	instance: string
+}
 
+/**
+ * IQRF communication interface base interface
+ */
+interface IIqrfComBase extends IIqrfBase {
 	/**
 	 * Device name
 	 */
@@ -51,7 +56,7 @@ interface IIqrfBase {
 /**
  * IQRF SPI component instance interface
  */
-export interface IIqrfSpi extends IIqrfBase {
+export interface IIqrfSpi extends IIqrfComBase {
 	/**
 	 * Programming mode switch GPIO pin
 	 */
@@ -66,7 +71,7 @@ export interface IIqrfSpi extends IIqrfBase {
 /**
  * IQRF UART component instance interface
  */
-export interface IIqrfUart extends IIqrfBase {
+export interface IIqrfUart extends IIqrfComBase {
 	/**
 	 * Serial port baud rate
 	 */
@@ -76,6 +81,16 @@ export interface IIqrfUart extends IIqrfBase {
 	 * Should UART component instance reset?
 	 */
 	uartReset?: boolean
+}
+
+/**
+ * IQRF CDC component instance interface
+ */
+export interface IIqrfCdc extends IIqrfBase {
+	/**
+	 * Device name
+	 */
+	IqrfInterface: string
 }
 
 /**
