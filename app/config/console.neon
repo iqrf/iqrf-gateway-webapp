@@ -18,11 +18,7 @@ console.extra:
 			- %tempDir%/cache
 	caching: false
 	di: false
-	latte:
-		warmup:
-			- %appDir%
-		purge:
-			- %tempDir%/cache/latte
+	latte: false
 	router: false
 	security: false
 	utils: false
