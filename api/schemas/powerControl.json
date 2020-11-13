@@ -1,0 +1,18 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/powerControl.json",
+	"type": "object",
+	"title": "Power control timestamp",
+	"additionalProperties": false,
+	"required": [
+		"timestamp"
+	],
+	"properties": {
+		"timestamp": {
+			"$id": "#/properties/token",
+			"type": "integer",
+			"title": "Timestamp",
+			"example": 1605287580
+		}
+	}
+}

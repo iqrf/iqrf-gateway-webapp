@@ -58,6 +58,10 @@ class PowerController extends GatewayController {
 	 *  responses:
 	 *      '200':
 	 *          description: Success
+	 *          content:
+	 *              application/json:
+	 *                  schema:
+	 *                      $ref: '#/components/schemas/PowerControl'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -76,6 +80,10 @@ class PowerController extends GatewayController {
 	 *  responses:
 	 *      '200':
 	 *          description: Success
+	 *          content:
+	 *              application/json:
+	 *                  schema:
+	 *                      $ref: '#/components/schemas/PowerControl'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response

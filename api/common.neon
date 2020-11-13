@@ -107,6 +107,8 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/passwordChange.json
 		PixlaToken:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/pixlaToken.json
+		PowerControl:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/powerControl.json
 		ServiceList:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/serviceList.json
 		ServiceStatus:
@@ -117,8 +119,6 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/taskList.json
 		TranslatorConfig:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/translatorConfig.json
-		UnattendedUpgrades:
-			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/unattendedUpgrades.json
 		UserCreate:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/userCreate.json
 		UserDetail:
