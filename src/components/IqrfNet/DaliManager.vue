@@ -174,6 +174,11 @@ export default class DaliManager extends Vue {
 								this.$t('iqrfnet.standard.dali.messages.pnum').toString()
 							);
 							break;
+						case 8:
+							this.$toast.error(
+								this.$t('iqrfnet.standard.messages.noDevice', {address: this.address}).toString()
+							);
+							break;
 						default:
 							this.$toast.error(
 								this.$t('iqrfnet.standard.dali.messages.failure').toString()

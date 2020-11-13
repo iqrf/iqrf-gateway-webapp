@@ -1424,7 +1424,7 @@
 					}
 				},
 				"messages": {
-					"timeout": "Binary output request timed out.",
+					"timeout": "Binary output request timed out. The device may be offline.",
 					"success": "Binary output request has been sent successfully.",
 					"failure": "An error occurred during the Binary output request.",
 					"pnum": "Device does not support the Binary Output standard."
@@ -1445,7 +1445,7 @@
 					}
 				},
 				"messages": {
-					"timeout": "DALI request timed out.",
+					"timeout": "DALI request timed out. The device may be offline",
 					"success": "DALI request has been sent successfully.",
 					"failure": "An error occurred during the DALI request.",
 					"pnum": "Device does not support the DALI standard."
@@ -1471,7 +1471,7 @@
 					}
 				},
 				"messages": {
-					"timeout": "Light request timed out.",
+					"timeout": "Light request timed out. The device may be offline.",
 					"success": "Light request has been sent successfully.",
 					"failure": "An error occurred during the Light request.",
 					"pnum": "Device does not support the Light standard."
@@ -1486,11 +1486,14 @@
 				"readAll": "Read all",
 				"enum": "Sensor enumeration",
 				"messages": {
-					"timeout": "Sensor request timed out.",
+					"timeout": "Sensor request timed out. The device may be offline.",
 					"success": "Sensor request has been sent successfully.",
 					"failure": "An error occurred during the Sensor request.",
 					"pnum": "Device does not support the Sensor standard."
 				}
+			},
+			"messages": {
+				"noDevice": "No device is bonded at address {address}."
 			}
 		},
 		"trConfiguration": {

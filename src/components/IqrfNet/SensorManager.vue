@@ -187,6 +187,11 @@ export default class SensorManager extends Vue {
 							this.$t('iqrfnet.standard.sensor.messages.pnum').toString()
 						);
 						break;
+					case 8:
+						this.$toast.error(
+							this.$t('iqrfnet.standard.messages.noDevice', {address: this.address}).toString()
+						);
+						break;
 					default:
 						this.$toast.error(
 							this.$t('iqrfnet.standard.sensor.messages.failure').toString()

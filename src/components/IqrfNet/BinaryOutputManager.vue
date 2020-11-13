@@ -263,6 +263,15 @@ export default class BinaryOutputManager extends Vue {
 								.toString()
 						);
 						break;
+					case 8:
+						this.$toast.error(
+							this.$t('iqrfnet.standard.messages.noDevice', {address: this.address}).toString()
+						);
+						break;
+					default:
+						this.$toast.error(
+							this.$t('iqrfnet.standard.binaryOutput.messages.failure').toString()
+						);
 				}
 
 			}
