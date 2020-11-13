@@ -26,6 +26,7 @@ import {cilPowerStandby, cilReload} from '@coreui/icons';
 import GatewayService from '../../services/GatewayService';
 import { MetaInfo } from 'vue-meta';
 import {Dictionary} from 'vue-router/types/router';
+import { AxiosResponse } from 'axios';
 
 @Component({
 	components: {
@@ -57,9 +58,9 @@ export default class PowerControl extends Vue {
 	 */
 	private powerOff(): void {
 		GatewayService.performPowerOff()
-			.then(() =>
-				this.$toast.success(
-					this.$t('gateway.power.powerOff.success').toString()
+			.then((response: AxiosResponse) =>
+				this.$toast.info(
+					this.$t('gateway.power.powerOff.success', {time: this.parseActionTime(response.data.timestamp)}).toString()
 				)
 			);
 	}
@@ -69,11 +70,18 @@ export default class PowerControl extends Vue {
 	 */
 	private reboot(): void {
 		GatewayService.performReboot()
-			.then(() => 
-				this.$toast.success(
-					this.$t('gateway.power.reboot.success').toString()
+			.then((response: AxiosResponse) => 
+				this.$toast.info(
+					this.$t('gateway.power.reboot.success', {time: this.parseActionTime(response.data.timestamp)}).toString()
 				)
 			);
+	}
+
+	/**
+	 * Converts timestamp to time string
+	 */
+	private parseActionTime(timestamp: number): string {
+		return new Date(timestamp * 1000).toLocaleTimeString();
 	}
 }
 </script>

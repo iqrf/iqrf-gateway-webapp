@@ -65,7 +65,7 @@ class PowerController extends GatewayController {
 	 */
 	public function powerOff(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->manager->powerOff();
-		return $response->writeBody('Workaround');
+		return $response->writeJsonBody($this->calculateNextMinute());
 	}
 
 	/**
@@ -83,7 +83,16 @@ class PowerController extends GatewayController {
 	 */
 	public function reboot(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$this->manager->reboot();
-		return $response->writeBody('Workaround');
+		return $response->writeJsonBody($this->calculateNextMinute());
+	}
+
+	/**
+	 * Calculates timestamp for the next whole minute
+	 * @return int Timestamp
+	 */
+	private function calculateNextMinute(): array {
+		$timestamp = intval(ceil(time()/60) * 60);
+		return ['timestamp' => $timestamp];
 	}
 
 }

@@ -1032,13 +1032,13 @@
 				"title": "Power off",
 				"description": "Powers off the operating system of your device.",
 				"button": "Perform power off",
-				"success": "Your device has been powered off successfully."
+				"success": "Your device will be powered off at {time}."
 			},
 			"reboot": {
 				"title": "Reboot",
 				"description": "Reboots the operating system of your device.",
 				"button": "Perform reboot",
-				"success": "Rebooting device, this may take tens of seconds."
+				"success": "Your device will be rebooted at {time}, the reboot may take tens of seconds."
 			}
 		},
 		"updater": {
