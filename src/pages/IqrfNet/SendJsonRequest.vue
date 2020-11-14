@@ -72,7 +72,8 @@ import {TextareaAutogrowDirective} from 'vue-textarea-autogrow-directive/src/Vue
 import {StatusMessages} from '../../iqrfNet/sendJson';
 import IqrfNetService from '../../services/IqrfNetService';
 import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
-import Ajv, {AdditionalPropertiesParams, ErrorObject, TypeParams, ValidateFunction} from 'ajv';
+import {AdditionalPropertiesParams, ErrorObject} from 'ajv';
+import validate from '../../helpers/validate_daemonRequest';
 
 @Component({
 	components: {
@@ -135,9 +136,9 @@ export default class SendJsonRequest extends Vue {
 	private response = ''
 
 	/**
-	 * @var {ValidateFunction|null} validator JSON schema validator function
+	 * @var validator JSON schema validator function
 	 */
-	private validator: ValidateFunction|null = null 
+	private validator: any = null 
 
 	/**
 	 * @var {string} validatorErrors String containing JSON schema violations
@@ -153,8 +154,7 @@ export default class SendJsonRequest extends Vue {
 	 * Vue lifecycle hook created
 	 */
 	created(): void {
-		let ajv = new Ajv({allErrors: true, verbose: true, messages: true});
-		this.validator = ajv.compile(this.requestSchema);
+		this.validator = validate;
 		extend('json', (json) => {
 			try {
 				JSON.parse(json);
@@ -255,12 +255,10 @@ export default class SendJsonRequest extends Vue {
 		this.response = '';
 		this.validatorErrors = '';
 		const json = JSON.parse(this.json);
-		if(this.validator(json)) {
+		if (this.validator(json)) {
 			this.sendRequest(json);
 		} else {
-			if (this.validator.errors) {
-				this.buildViolationString(this.validator.errors);
-			}
+			this.buildViolationString(this.validator.errors);
 		}
 	}
 
