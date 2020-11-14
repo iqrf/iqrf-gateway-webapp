@@ -13,6 +13,10 @@
 				</CButton>
 			</CCardHeader>
 			<CCardBody v-if='daemonAvailable'>
+				<CAlert v-if='validatorErrors !== ""' color='danger'>
+					{{ $t('iqrfnet.sendJson.form.messages.error.validatorErrors') }}<br>
+					<span class='validation-errors'>{{ validatorErrors }}</span>
+				</CAlert>
 				<ValidationObserver v-slot='{ invalid }'>
 					<CForm @submit.prevent='processSubmit'>
 						<ValidationProvider
@@ -64,11 +68,11 @@ import {CAlert, CButton, CCard, CCardBody, CCardHeader, CForm, CTextarea} from '
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 import JsonMessage from '../../components/IqrfNet/JsonMessage.vue';
-
 import {TextareaAutogrowDirective} from 'vue-textarea-autogrow-directive/src/VueTextareaAutogrowDirective';
 import {StatusMessages} from '../../iqrfNet/sendJson';
 import IqrfNetService from '../../services/IqrfNetService';
-import { WebSocketOptions } from '../../store/modules/webSocketClient.module';
+import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
+import Ajv, {AdditionalPropertiesParams, ErrorObject, TypeParams, ValidateFunction} from 'ajv';
 
 @Component({
 	components: {
@@ -121,9 +125,24 @@ export default class SendJsonRequest extends Vue {
 	private request = ''
 
 	/**
+	 * @constant {string} requestSchema Daemon API request JSON schema for validator
+	 */
+	private requestSchema = require('../../schemas/genericDaemonRequest.json')
+
+	/**
 	 * @var {string} response Daemon api response message, used in message card
 	 */
 	private response = ''
+
+	/**
+	 * @var {ValidateFunction|null} validator JSON schema validator function
+	 */
+	private validator: ValidateFunction|null = null 
+
+	/**
+	 * @var {string} validatorErrors String containing JSON schema violations
+	 */
+	private validatorErrors = ''
 
 	/**
 	 * Component unsubscribe function
@@ -134,6 +153,8 @@ export default class SendJsonRequest extends Vue {
 	 * Vue lifecycle hook created
 	 */
 	created(): void {
+		let ajv = new Ajv({allErrors: true, verbose: true, messages: true});
+		this.validator = ajv.compile(this.requestSchema);
 		extend('json', (json) => {
 			try {
 				JSON.parse(json);
@@ -227,13 +248,53 @@ export default class SendJsonRequest extends Vue {
 		if (this.json === null) {
 			return;
 		}
+		if (this.validator === null) {
+			return;
+		}
+		this.request = '';
+		this.response = '';
+		this.validatorErrors = '';
 		const json = JSON.parse(this.json);
-		let options = new WebSocketOptions(json);
-		if ({}.hasOwnProperty.call(json.data.req, 'nAdr') && json.data.req.nAdr === 255) { // if a message is broadcasted, do not wait for proper response
+		if(this.validator(json)) {
+			this.sendRequest(json);
+		} else {
+			if (this.validator.errors) {
+				this.buildViolationString(this.validator.errors);
+			}
+		}
+	}
+
+	/**
+	 * Creates a JSON schema violation string message
+	 * @param {Array<ErrorObject>} errors Array of violations
+	 */
+	private buildViolationString(errors: Array<ErrorObject>): void {
+		let message = '';
+		for (let error of errors) {
+			if (error.keyword === 'type') {
+				message += 'Type violation: Property "' + error.dataPath + '" (' + error.schemaPath + ') ' + error.message + ', current value: ' + error.data + ' (' + typeof error.data + ')\n';
+			} else if (error.keyword === 'additionalProperties') {
+				message += 'Additional property violation: Property "' + error.dataPath + '" (' + error.schemaPath + ') ' + error.message + ', additional property: ' + (error.params as AdditionalPropertiesParams).additionalProperty + '\n';
+			} else if (error.keyword === 'required') {
+				message += 'Required property violation: Property "' + error.dataPath + '" (' + error.schemaPath + ') ' + error.message + '\n';
+			} else if (error.keyword === 'minimum' || error.keyword === 'maximum') {
+				message += 'Value range violation: Property "' + error.dataPath + '" (' + error.schemaPath + ') ' + error.message + ', current value: ' + error.data + '\n';
+			}
+		}
+		this.validatorErrors = message.trimRight();
+	}
+
+	/**
+	 * Sets request options and sends Daemon API request
+	 * @param request Daemon API request
+	 */
+	private sendRequest(request): void {
+		let options = new WebSocketOptions(request);
+		if ({}.hasOwnProperty.call(request.data.req, 'nAdr') && request.data.req.nAdr === 255) { // if a message is broadcasted, do not wait for proper response
 			options.timeout = 1000;
-		} else if (json.mType === 'iqrfEmbedOs_Batch' || json.mType === 'iqrfEmbedOs_SelectiveBatch') { // batch and selective batch requests do not have proper responses, do not wait
+		} else if (request.mType === 'iqrfEmbedOs_Batch' || request.mType === 'iqrfEmbedOs_SelectiveBatch') { // batch and selective batch requests do not have proper responses, do not wait
 			options.timeout = 1000;
-		} else if (json.mType === 'iqmeshNetwork_AutoNetwork') { // autonetwork request has multiple responses, do not timeout
+		} else if (request.mType === 'iqmeshNetwork_AutoNetwork') { // autonetwork request has multiple responses, do not timeout
 			this.$toast.info(
 				this.$t('iqrfnet.sendJson.form.messages.autoNetworkStart').toString()
 			);
@@ -243,10 +304,16 @@ export default class SendJsonRequest extends Vue {
 			this.$store.commit('spinner/SHOW');
 		}
 		options.callback = () => this.msgId = null;
-		this.request = JSON.stringify(json, null, 4);
+		this.request = JSON.stringify(request, null, 4);
 		this.response = '';
 		IqrfNetService.sendJson(options)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 }
 </script>
+
+<style scoped>
+.validation-errors {
+	white-space: pre-wrap;
+}
+</style>

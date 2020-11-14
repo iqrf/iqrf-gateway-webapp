@@ -1,0 +1,65 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "genericDaemonRequest.json",
+	"type": "object",
+	"title": "Generic Daemon API request schema",
+	"required": [
+		"mType",
+		"data"
+	],
+	"properties": {
+		"mType": {
+			"$id": "#/properties/mType",
+			"type": "string",
+			"title": "Request type",
+			"example": "iqrfRaw"
+		},
+		"data": {
+			"$id": "#/properties/data",
+			"type": "object",
+			"title": "Request data",
+			"required": [
+				"msgId",
+				"req",
+				"returnVerbose"
+			],
+			"properties": {
+				"msgId": {
+					"$id": "#/properties/data/msgId",
+					"type": "string",
+					"title": "Request message ID",
+					"example": "testMessageId"
+				},
+				"req": {
+					"$id": "#/properties/data/req",
+					"type": "object",
+					"title": "Request values",
+					"properties": {
+						"nAdr": {
+							"$id": "#/properties/data/req/nAdr",
+							"type": "integer",
+							"title": "Device address",
+							"minimum": 0,
+							"maximum": 239,
+							"example": 0
+						}
+					}
+				},
+				"returnVerbose": {
+					"$id": "#/properties/data/returnVerbose",
+					"type": "boolean",
+					"title": "Verbose response",
+					"example": true
+				},
+				"timeout": {
+					"$id": "#/properties/data/timeout",
+					"type": "integer",
+					"title": "Request timeout in milliseconds",
+					"example": 1000
+				}
+			},
+			"additionalProperties": false
+		}
+	},
+	"additionalProperties": false
+}
