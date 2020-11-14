@@ -272,13 +272,13 @@ export default class SendJsonRequest extends Vue {
 		let message = '';
 		for (let error of errors) {
 			if (error.keyword === 'type') {
-				message += 'Type violation: Property "' + error.dataPath + '" (' + error.schemaPath + ') ' + error.message + ', current value: ' + error.data + ' (' + typeof error.data + ')\n';
+				message += 'Type violation: Property "' + error.dataPath + '" ' + error.message + '. Current value: ' + error.data + ' (' + typeof error.data + '). [' + error.schemaPath + ']\n';
 			} else if (error.keyword === 'additionalProperties') {
-				message += 'Additional property violation: Property "' + error.dataPath + '" (' + error.schemaPath + ') ' + error.message + ', additional property: ' + (error.params as AdditionalPropertiesParams).additionalProperty + '\n';
+				message += 'Additional property violation: Property "' + error.dataPath + '" ' + error.message + '. Additional property: ' + (error.params as AdditionalPropertiesParams).additionalProperty + '. [' + error.schemaPath + ']\n';
 			} else if (error.keyword === 'required') {
-				message += 'Required property violation: Property "' + error.dataPath + '" (' + error.schemaPath + ') ' + error.message + '\n';
+				message += 'Required property violation: Property "' + error.dataPath + '" ' + error.message!.replace(/'/g, '"') + '. [' + error.schemaPath + ']\n';
 			} else if (error.keyword === 'minimum' || error.keyword === 'maximum') {
-				message += 'Value range violation: Property "' + error.dataPath + '" (' + error.schemaPath + ') ' + error.message + ', current value: ' + error.data + '\n';
+				message += 'Value range violation: Property "' + error.dataPath + '" ' + error.message + '. Current value: ' + error.data + '. [' + error.schemaPath + ']\n';
 			}
 		}
 		this.validatorErrors = message.trimRight();
