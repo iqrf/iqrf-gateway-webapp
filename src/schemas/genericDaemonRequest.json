@@ -20,8 +20,7 @@
 			"title": "Request data",
 			"required": [
 				"msgId",
-				"req",
-				"returnVerbose"
+				"req"
 			],
 			"properties": {
 				"msgId": {
@@ -56,6 +55,12 @@
 					"type": "integer",
 					"title": "Request timeout in milliseconds",
 					"example": 1000
+				},
+				"repeat": {
+					"$id": "#/properties/data/repeat",
+					"type": "integer",
+					"title": "Repeat request",
+					"example": 1
 				}
 			},
 			"additionalProperties": false
