@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<h1>
-			{{ $t('config.websocket.interface.title') }}
+			{{ $t('config.daemon.messagings.websocket.interface.title') }}
 		</h1>
 		<CCard>
 			<CCardHeader class='border-0'>
@@ -104,11 +104,11 @@
 		>
 			<template #header>
 				<h5 class='modal-title'>
-					{{ $t('config.websocket.messages.delete.confirmTitle') }}
+					{{ $t('config.daemon.messagings.websocket.messages.deleteTitle') }}
 				</h5>
 			</template>
 			<div v-if='deleteInstance !== null'>
-				{{ $t('config.websocket.messages.delete.confirm', {instance: deleteInstance.messaging}) }}
+				{{ $t('config.daemon.messagings.websocket.messages.deletePrompt', {instance: deleteInstance.messaging}) }}
 			</div>
 			<template #footer>
 				<CButton
@@ -187,20 +187,20 @@ export default class WebsocketInterfaceList extends Vue {
 	private fields: Array<IField> = [
 		{
 			key: 'instanceMessaging',
-			label: this.$t('config.websocket.form.instance'),
+			label: this.$t('config.daemon.messagings.websocket.form.instance'),
 		},
 		{
 			key: 'port',
-			label: this.$t('config.websocket.form.WebsocketPort'),
+			label: this.$t('config.daemon.messagings.websocket.form.WebsocketPort'),
 		},
 		{
 			key: 'acceptAsyncMsg',
-			label: this.$t('config.websocket.form.acceptAsyncMsg'),
+			label: this.$t('config.daemon.messagings.websocket.form.acceptAsyncMsg'),
 			filter: false,
 		},
 		{
 			key: 'acceptOnlyLocalhost',
-			label: this.$t('config.websocket.form.acceptOnlyLocalhost'),
+			label: this.$t('config.daemon.messagings.websocket.form.acceptOnlyLocalhost'),
 			filter: false,
 		},
 		{
@@ -233,7 +233,7 @@ export default class WebsocketInterfaceList extends Vue {
 		if (versionHigherThan('2.3.0')) {
 			this.fields.splice(4, 0, {
 				key: 'tlsEnabled',
-				label: this.$t('config.websocket.form.tlsEnabled'),
+				label: this.$t('config.daemon.messagings.websocket.form.tlsEnabled'),
 				filter: false
 			});
 		}
@@ -329,7 +329,7 @@ export default class WebsocketInterfaceList extends Vue {
 			.then(() => {
 				this.getConfig().then(() => {
 					this.$toast.success(
-						this.$t('config.websocket.service.messages.editSuccess', {service: settings.instance})
+						this.$t('config.daemon.messagings.websocket.service.messages.editSuccess', {service: settings.instance})
 							.toString()
 					);
 				});
@@ -352,7 +352,7 @@ export default class WebsocketInterfaceList extends Vue {
 			.then(() => {
 				this.getConfig().then(() => {
 					this.$toast.success(
-						this.$t('config.websocket.messaging.messages.editSuccess', {messaging: instance.instance})
+						this.$t('config.daemon.messagings.websocket.messaging.messages.editSuccess', {messaging: instance.instance})
 							.toString()
 					);
 				});
@@ -373,10 +373,12 @@ export default class WebsocketInterfaceList extends Vue {
 			DaemonConfigurationService.deleteInstance(this.componentNames.service, this.deleteInstance.service),
 		])
 			.then(() => {
-				this.$toast.success(
-					this.$t('config.websocket.messages.delete.success', {instance: this.deleteInstance?.messaging})
-						.toString()
-				);
+				this.getConfig().then(() => {
+					this.$toast.success(
+						this.$t('config.daemon.messagings.websocket.messages.deleteSuccess', {instance: this.deleteInstance?.messaging})
+							.toString()
+					);
+				});
 				this.deleteInstance = null;
 			})
 			.catch((error: AxiosError) => FormErrorHandler.configError(error));

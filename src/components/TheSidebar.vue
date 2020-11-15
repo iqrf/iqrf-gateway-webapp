@@ -247,7 +247,7 @@ export default class TheSidebar extends Vue {
 							},
 							{	
 								_name: 'CSidebarNavItem',
-								name: this.$t('translatorConfig.title'),
+								name: this.$t('config.translator.title'),
 								to: '/config/translator/',
 								feature: 'iqrfGatewayTranslator',
 								roles: ['power', 'normal'],

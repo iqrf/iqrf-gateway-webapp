@@ -17,10 +17,10 @@
 						to='/network/'
 					>
 						<header class='list-group-item-heading'>
-							{{ $t('translatorConfig.title') }}
+							{{ $t('config.translator.title') }}
 						</header>
 						<p class='list-group-item-text'>
-							{{ $t('translatorConfig.description') }}
+							{{ $t('config.translator.description') }}
 						</p>
 					</CListGroupItem>
 					<CListGroupItem
