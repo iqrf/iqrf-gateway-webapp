@@ -53,10 +53,10 @@
 		>
 			<template #header>
 				<h5 class='modal-title'>
-					{{ $t('config.tracer.messages.removeTitle') }}
+					{{ $t('config.daemon.misc.tracer.messages.removeTitle') }}
 				</h5>
 			</template>
-			{{ $t('config.tracer.messages.removeItem', {instance: deleteInstance}) }}
+			{{ $t('config.daemon.misc.tracer.messages.removeItem', {instance: deleteInstance}) }}
 			<template #footer>
 				<CButton
 					color='danger'
@@ -111,15 +111,15 @@ export default class TracerList extends Vue {
 	private fields: Array<IField> = [
 		{
 			key: 'instance',
-			label: this.$t('config.tracer.form.instance')
+			label: this.$t('config.daemon.misc.tracer.form.instance')
 		},
 		{
 			key: 'path',
-			label: this.$t('config.tracer.form.path')
+			label: this.$t('config.daemon.misc.tracer.form.path')
 		},
 		{
 			key: 'filename',
-			label: this.$t('config.tracer.form.filename')
+			label: this.$t('config.daemon.misc.tracer.form.filename')
 		},
 		{
 			key: 'actions',
@@ -179,7 +179,7 @@ export default class TracerList extends Vue {
 			.then(() => {
 				this.getConfig().then(() => {
 					this.$toast.success(
-						this.$t('config.tracer.messages.removeSuccess', {instance: instance})
+						this.$t('config.daemon.misc.tracer.messages.removeSuccess', {instance: instance})
 							.toString()
 					);
 				});

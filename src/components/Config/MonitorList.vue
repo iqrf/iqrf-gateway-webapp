@@ -85,11 +85,11 @@
 		>
 			<template #header>
 				<h5 class='modal-title'>
-					{{ $t('config.monitor.messages.delete.confirmTitle') }}
+					{{ $t('config.daemon.misc.monitor.messages.deleteTitle') }}
 				</h5>
 			</template>
 			<div v-if='deleteInstance !== null'>
-				{{ $t('config.monitor.messages.delete.confirm', {instance: deleteInstance.monitor}) }}
+				{{ $t('config.daemon.misc.monitor.messages.deletePrompt', {instance: deleteInstance.monitor}) }}
 			</div>
 			<template #footer>
 				<CButton 
@@ -162,19 +162,19 @@ export default class MonitorList extends Vue {
 	private fields: Array<IField> =  [
 		{
 			key: 'instance',
-			label: this.$t('config.monitor.form.instance'),
+			label: this.$t('config.daemon.misc.monitor.form.instance'),
 		},
 		{
 			key: 'reportPeriod',
-			label: this.$t('config.monitor.form.reportPeriod'),
+			label: this.$t('config.daemon.misc.monitor.form.reportPeriod'),
 		},
 		{
 			key: 'port',
-			label: this.$t('config.monitor.form.WebsocketPort'),
+			label: this.$t('config.daemon.misc.monitor.form.WebsocketPort'),
 		},
 		{
 			key: 'acceptOnlyLocalhost',
-			label: this.$t('config.monitor.form.acceptOnlyLocalhost'),
+			label: this.$t('config.daemon.misc.monitor.form.acceptOnlyLocalhost'),
 			filter: false,
 		},
 		{
@@ -301,7 +301,7 @@ export default class MonitorList extends Vue {
 			.then(() => {
 				this.getConfig().then(() => {
 					this.$toast.success(
-						this.$t('config.monitor.messages.edit.success', {instance: service.instance})
+						this.$t('config.daemon.misc.monitor.messages.editSuccess', {instance: service.instance})
 							.toString()
 					);
 				});
@@ -329,7 +329,7 @@ export default class MonitorList extends Vue {
 				this.deleteInstance = null;
 				this.getConfig()
 					.then(() => this.$toast.success(
-						this.$t('config.monitor.messages.delete.success', {instance: deleteInstance.monitor})
+						this.$t('config.daemon.misc.monitor.messages.deleteSuccess', {instance: deleteInstance.monitor})
 							.toString())
 					);
 			})

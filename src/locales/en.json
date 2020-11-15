@@ -417,119 +417,162 @@
 			},
 			"misc": {
 				"title": "Misc",
-				"description": "Configuration of miscellaneous Daemon components"
-			}
-		},
-		"iqmesh": {
-			"title": "IQMESH services",
-			"description": "Manage IQMESH services.",
-			"otaUpload": {
-				"title": "IQRF OTA upload service",
-				"form": {
-					"instance": "Name of instance",
-					"uploadPath": "Path to a directory with files to upload",
+				"description": "Configuration of miscellaneous Daemon components",
+				"jsonApi": {
+					"title": "JSON API",
 					"messages": {
-						"instance": "Please enter name of OTA upload service instance.",
-						"uploadPath": "Please enter path to a directory with files to upload."
+						"success": "JSON API configuration has been successfully updated.",
+						"noChanges": "No configuration changes detected."
 					}
-				}
-			}
-		},
-		"iqrfInfo": {
-			"title": "LiteDB",
-			"description": "IQRF Info database settings.",
-			"form": {
-				"instance": "Name of instance",
-				"enumAtStartUp": "Initialize network full enumeration just after startup",
-				"enumPeriod": "Enumeration check period in minutes",
-				"enumUniformDpaVer": "Obtain only HWPID and HWPID version from nodes"
-			},
-			"messages": {
-				"instance": "Please enter name of IQRF Info instance.",
-				"enumPeriod": "Period must be greater or equal to 0."
-			}
-		},
-		"iqrfRepository": {
-			"title": "IQRF Repository",
-			"description": "Manage IQRF Repository's settings.",
-			"form": {
-				"instance": "Name of instance",
-				"urlRepo": "IQRF Repository URL",
-				"checkPeriod": "Check period in minutes",
-				"downloadIfEmpty": "Download if repository cache is empty",
-				"messages": {
-					"instance": "Please enter name of IQRF Repository instance.",
-					"urlRepo": "Please enter IQRF Repository URL.",
-					"checkPeriod": "Please enter an integer greater or equal to 0."
-				}
-			}
-		},
-		"jsonApi": {
-			"title": "JSON API",
-			"messages": {
-				"success": "JSON API configuration has been successfully updated.",
-				"noChanges": "No configuration changes detected."
-			}
-		},
-		"jsonMngMetaDataApi": {
-			"title": "JSON Metadata API",
-			"description": "JSON Metadata API settings.",
-			"form": {
-				"instance": "Name of instance",
-				"metaDataToMessages": "Add metadata into the messages",
-				"messages": {
-					"instance": "Please enter name of JSON Metadata API instance."
-				}
-			}
-		},
-		"jsonRawApi": {
-			"title": "JSON Raw API",
-			"description": "JSON Raw API settings.",
-			"form": {
-				"instance": "Name of instance",
-				"asyncDpaMessage": "Async DPA message",
-				"messages": {
-					"instance": "Please enter name of JSON Raw API instance."
-				}
-			}
-		},
-		"jsonSplitter": {
-			"title": "JSON Splitter",
-			"description": "JSON Splitter settings.",
-			"form": {
-				"instance": "Name of instance",
-				"validateJsonResponse": "Validate JSON response",
-				"messages": {
-					"instance": "Please enter name of JSON Splitter instance."
-				}
-			}
-		},
-		"monitor": {
-			"title": "Monitoring service",
-			"description": "Monitoring service configuration.",
-			"add": "Add a new monitoring service",
-			"edit": "Edit the monitoring service",
-			"form": {
-				"instance": "Name of instance",
-				"reportPeriod": "Reporting period in seconds",
-				"WebsocketPort": "WebSocket server port",
-				"acceptOnlyLocalhost": "Accept only connection from localhost",
-				"messages": {
-					"reportPeriod": "Please enter the reporting period in seconds.",
-					"WebsocketPort": "Please enter the port of monitoring WebSocket server."
-				}
-			},
-			"messages": {
-				"add": {
-					"success": "Monitoring service instance {instance} has been added."
 				},
-				"delete": {
-					"confirm": "Do you really want to delete Monitoring service instance {instance}?",
-					"confirmTitle": "Delete Monitoring service instance",
-					"success": "Monitoring service instance {instance} has been deleted."
+				"jsonMngMetaDataApi": {
+					"title": "JSON Metadata API",
+					"description": "JSON Metadata API settings.",
+					"form": {
+						"instance": "Name of instance",
+						"metaDataToMessages": "Add metadata into the messages"
+					},
+					"errors": {
+						"instance": "Please enter name of JSON Metadata API instance."
+					}
 				},
-				"edit": {
-					"success": "Monitoring service instance {instance} has been edited."
+				"jsonRawApi": {
+					"title": "JSON Raw API",
+					"description": "JSON Raw API settings.",
+					"form": {
+						"instance": "Name of instance",
+						"asyncDpaMessage": "Async DPA message"
+					},
+					"errors": {
+						"instance": "Please enter name of JSON Raw API instance."
+					}
+				},
+				"jsonSplitter": {
+					"title": "JSON Splitter",
+					"description": "JSON Splitter settings.",
+					"form": {
+						"instance": "Name of instance",
+						"validateJsonResponse": "Validate JSON response"
+					},
+					"errors": {
+						"instance": "Please enter name of JSON Splitter instance."
+					}
+				},
+				"iqrfRepository": {
+					"title": "IQRF Repository",
+					"description": "Manage IQRF Repository's settings.",
+					"form": {
+						"instance": "Name of instance",
+						"urlRepo": "IQRF Repository URL",
+						"checkPeriod": "Check period in minutes",
+						"downloadIfEmpty": "Download if repository cache is empty"
+					},
+					"errors": {
+						"instance": "Please enter name of IQRF Repository instance.",
+						"urlRepo": "Please enter IQRF Repository URL.",
+						"checkPeriod": "Please enter an integer greater or equal to 0."
+					}
+				},
+				"iqrfInfo": {
+					"title": "LiteDB",
+					"description": "IQRF Info database settings.",
+					"form": {
+						"instance": "Name of instance",
+						"enumAtStartUp": "Initialize network full enumeration just after startup",
+						"enumPeriod": "Enumeration check period in minutes",
+						"enumUniformDpaVer": "Obtain only HWPID and HWPID version from nodes"
+					},
+					"errors": {
+						"instance": "Please enter name of IQRF Info instance.",
+						"enumPeriod": "Period must be greater or equal to 0."
+					}
+				},
+				"iqmesh": {
+					"title": "IQMESH services",
+					"description": "Manage IQMESH services.",
+					"otaUpload": {
+						"title": "IQRF OTA upload service",
+						"form": {
+							"instance": "Name of instance",
+							"uploadPath": "Path to a directory with files to upload"
+						},
+						"errors": {
+							"instance": "Please enter name of OTA upload service instance.",
+							"uploadPath": "Please enter path to a directory with files to upload."
+						}
+					}
+				},
+				"monitor": {
+					"title": "Monitoring service",
+					"description": "Monitoring service configuration.",
+					"add": "Add a new monitoring service",
+					"edit": "Edit the monitoring service",
+					"form": {
+						"instance": "Name of instance",
+						"reportPeriod": "Reporting period in seconds",
+						"WebsocketPort": "WebSocket server port",
+						"acceptOnlyLocalhost": "Accept only connection from localhost"
+					},
+					"messages": {
+						"addEuccess": "Monitoring service instance {instance} has been added.",
+						"deletePrompt": "Do you really want to delete Monitoring service instance {instance}?",
+						"deleteTitle": "Delete Monitoring service instance",
+						"deleteSuccess": "Monitoring service instance {instance} has been deleted.",
+						"editSuccess": "Monitoring service instance {instance} has been edited."
+					},
+					"errors": {
+						"instance": "Please enter name of monitor instance.",
+						"reportPeriod": "Please enter the reporting period in seconds.",
+						"WebsocketPort": "Please enter the port of monitoring WebSocket server."
+					}
+				},
+				"tracer": {
+					"title": "Logging service",
+					"description": "Logging service settings.",
+					"add": "Add logging service configuration",
+					"edit": "Edit logging service configuration",
+					"form": {
+						"instance": "Instance name",
+						"path": "Path to directory with logs",
+						"filename": "File name",
+						"maxSize": "Maximum size in bytes",
+						"maxAgeMinutes": "Maximum lifespan of timestamped files in minutes",
+						"maxNumber": "Maximum number of timestamped files",
+						"timestampFiles": "Enable timestamp files",
+						"verbosityLevels": {
+							"title": "Verbosity levels",
+							"add": "Add verbosity level",
+							"remove": "Remove verbosity level"
+						},
+						"channel": "Verbosity channel",
+						"level": "Verbosity level",
+						"levels": {
+							"error": "Error",
+							"warning": "Warning",
+							"info": "Info",
+							"debug": "Debug"
+						}
+					},
+					"messages": {
+						"zeroValues": "Disabled if value is set to 0.",
+						"removeItem": "Do you really want to delete Tracer file instance {instance}?",
+						"removeTitle": "Delete Tracer file instance",
+						"removeSuccess": "Tracer file instance {instance} has been removed.",
+						"addSuccess": "Tracer file instance {instance} has been added.",
+						"editSuccess": "Tracer file instance {instance} has been edited.",
+						"versionFail": "Failed to retrieve version of IQRF Gateway Daemon."
+					},
+					"errors": {
+						"instance": "Please enter name of logging service interface.",
+						"filename": "Please enter logging service file name.",
+						"maxSizeMb": "Please enter maximum size in MB greater or equal to 1.",
+						"maxAgeMinutes": "Please enter maximum lifespan of timestamped files in minutes, greater or requal to 0.",
+						"maxNumber": "Please enter maximum number of timestamped files, greated or equal than 0.",
+						"verbosityLevels": {
+							"channel": "Please enter the verbosity channel.",
+							"level": "Please select the verbosity level."
+						}
+					}
 				}
 			}
 		},
@@ -622,54 +665,6 @@
 		"selectedComponents": {
 			"title": "Selected components",
 			"description": "Manage selected components."
-		},
-		"tracer": {
-			"title": "Logging service",
-			"description": "Logging service settings.",
-			"add": "Add logging service configuration",
-			"edit": "Edit logging service configuration",
-			"form": {
-				"instance": "Instance name",
-				"path": "Path to directory with logs",
-				"filename": "File name",
-				"maxSize": "Maximum size in bytes",
-				"maxAgeMinutes": "Maximum lifespan of timestamped files in minutes",
-				"maxNumber": "Maximum number of timestamped files",
-				"timestampFiles": "Enable timestamp files",
-				"verbosityLevels": {
-					"title": "Verbosity levels",
-					"add": "Add verbosity level",
-					"remove": "Remove verbosity level"
-				},
-				"channel": "Verbosity channel",
-				"level": "Verbosity level",
-				"levels": {
-					"error": "Error",
-					"warning": "Warning",
-					"info": "Info",
-					"debug": "Debug"
-				},
-				"messages": {
-					"instance": "Please enter name of logging service interface.",
-					"filename": "Please enter logging service file name.",
-					"maxSizeMb": "Please enter maximum size in MB greater or equal to 1.",
-					"maxAgeMinutes": "Please enter maximum lifespan of timestamped files in minutes, greater or requal to 0.",
-					"maxNumber": "Please enter maximum number of timestamped files, greated or equal than 0.",
-					"verbosityLevels": {
-						"channel": "Please enter the verbosity channel.",
-						"level": "Please select the verbosity level."
-					},
-					"zeroValues": "Disabled if value is set to 0."
-				}
-			},
-			"messages": {
-				"removeItem": "Do you really want to delete Tracer file instance {instance}?",
-				"removeTitle": "Delete Tracer file instance",
-				"removeSuccess": "Tracer file instance {instance} has been removed.",
-				"addSuccess": "Tracer file instance {instance} has been added.",
-				"editSuccess": "Tracer file instance {instance} has been edited.",
-				"versionFail": "Failed to retrieve version of IQRF Gateway Daemon."
-			}
 		},
 		"udp": {
 			"title": "UDP interface",
