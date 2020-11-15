@@ -185,14 +185,14 @@ export default class TheSidebar extends Vue {
 								_children: [
 									{
 										_name: 'CSidebarNavItem',
-										name: this.$t('config.main.title'),
+										name: this.$t('config.daemon.main.title'),
 										to: '/config/daemon/main/',
 										roles: ['power'],
 										_attrs: {class: 'menu-level-2'},
 									},
 									{
 										_name: 'CSidebarNavItem',
-										name: this.$t('config.components.title'),
+										name: this.$t('config.daemon.components.title'),
 										to: '/config/daemon/component/',
 										roles: ['power'],
 									},
@@ -233,7 +233,7 @@ export default class TheSidebar extends Vue {
 									},
 									{
 										_name: 'CSidebarNavItem',
-										name: this.$t('config.scheduler.title'),
+										name: this.$t('config.daemon.scheduler.title'),
 										to: '/config/daemon/scheduler/',
 										roles: ['power', 'normal'],
 									},

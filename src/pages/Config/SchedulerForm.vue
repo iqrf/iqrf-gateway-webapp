@@ -1,10 +1,10 @@
 <template>
 	<div>
 		<h1 v-if='$route.path === "/config/daemon/scheduler/add"'>
-			{{ $t('config.scheduler.add') }}
+			{{ $t('config.daemon.scheduler.add') }}
 		</h1>
 		<h1 v-else>
-			{{ $t('config.scheduler.edit') }}
+			{{ $t('config.daemon.scheduler.edit') }}
 		</h1>
 		<CCard>
 			<CCardBody>
@@ -14,14 +14,14 @@
 							v-slot='{ errors, touched, valid }'
 							rules='integer|required'
 							:custom-messages='{
-								required: "config.scheduler.form.messages.nums",
-								integer: "config.scheduler.form.messages.nums"
+								required: "config.daemon.scheduler.errors.nums",
+								integer: "config.daemon.scheduler.errors.nums"
 							}'
 						>
 							<CInput
 								v-model.number='taskId'
 								type='number'
-								:label='$t("config.scheduler.form.task.taskId")'
+								:label='$t("config.daemon.scheduler.form.task.taskId")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
@@ -29,11 +29,11 @@
 						<ValidationProvider
 							v-slot='{ errors, touched, valid}'
 							rules='required'
-							:custom-messages='{required: "config.scheduler.form.messages.service"}'
+							:custom-messages='{required: "config.daemon.scheduler.errors.service"}'
 						>
 							<CSelect
 								:value.sync='clientId'
-								:label='$t("config.scheduler.table.service")'
+								:label='$t("config.daemon.scheduler.table.service")'
 								:options='[
 									{value: "SchedulerMessaging", label: "SchedulerMessaging"}
 								]'
@@ -44,7 +44,7 @@
 						</ValidationProvider>
 						<div class='form-group'>
 							<label for='cronTime'>
-								{{ $t("config.scheduler.form.task.cronTime") }}
+								{{ $t("config.daemon.scheduler.form.task.cronTime") }}
 							</label>
 							<CBadge v-if='cronMessage !== null' color='info'>
 								{{ cronMessage }}
@@ -58,27 +58,27 @@
 						</div>
 						<CInputCheckbox
 							:checked.sync='timeSpec.exactTime'
-							:label='$t("config.scheduler.form.task.exactTime")'
+							:label='$t("config.daemon.scheduler.form.task.exactTime")'
 							:disabled='timeSpec.periodic'
 						/>
 						<CInputCheckbox
 							:checked.sync='timeSpec.periodic'
-							:label='$t("config.scheduler.form.task.periodic")'
+							:label='$t("config.daemon.scheduler.form.task.periodic")'
 							:disabled='timeSpec.exactTime'
 						/>
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
 							rules='integer|required'
 							:custom-messages='{
-								required: "config.scheduler.form.messages.nums",
-								integer: "config.scheduler.form.messages.nums"
+								required: "config.daemon.scheduler.errors.nums",
+								integer: "config.daemon.scheduler.errors.nums"
 							}'
 						>
 							<CInput
 								v-model.number='timeSpec.period'
 								type='number'
 								min='0'
-								:label='$t("config.scheduler.form.task.period")'
+								:label='$t("config.daemon.scheduler.form.task.period")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 								:disabled='!timeSpec.periodic || timeSpec.exactTime'
@@ -86,7 +86,7 @@
 						</ValidationProvider>
 						<div class='form-group'>
 							<label for='exactTime'>
-								{{ $t("config.scheduler.form.task.startTime") }}
+								{{ $t("config.daemon.scheduler.form.task.startTime") }}
 							</label>
 							<Datetime
 								id='exactTime'
@@ -98,16 +98,16 @@
 								:disabled='!timeSpec.exactTime || timeSpec.periodic'
 							/>
 						</div>
-						<h3>{{ $t('config.scheduler.form.message.title') }}</h3><hr>
+						<h3>{{ $t('config.daemon.scheduler.form.message.title') }}</h3><hr>
 						<div v-for='i of task.length' :key='i' class='form-group'>
 							<ValidationProvider
 								v-slot='{ errors, touched, valid}'
 								rules='required'
-								:custom-messages='{required: "config.scheduler.form.messages.service"}'
+								:custom-messages='{required: "config.daemon.scheduler.errors.service"}'
 							>
 								<CSelect
 									:value.sync='task[i-1].messaging'
-									:placeholder='$t("config.scheduler.form.message.messagePlaceholder")'
+									:placeholder='$t("config.daemon.scheduler.form.message.messagePlaceholder")'
 									:options='messagings'
 									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
@@ -117,7 +117,7 @@
 								v-slot='{ errors, touched, valid }'
 								rules='required|json|mType'
 								:custom-messages='{
-									required: "config.scheduler.form.messages.message",
+									required: "config.daemon.scheduler.errors.message",
 									json: "iqrfnet.sendJson.form.messages.invalid",
 									mType: "iqrfnet.sendJson.form.messages.mType"
 								}'
@@ -125,7 +125,7 @@
 								<CTextarea
 									v-model='task[i-1].message'
 									v-autogrow
-									:label='$t("config.scheduler.form.message.label")'
+									:label='$t("config.daemon.scheduler.form.message.label")'
 									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
 								/>
@@ -135,14 +135,14 @@
 								color='danger'
 								@click='removeMessage(i-1)'
 							>
-								{{ $t('config.scheduler.buttons.remove') }}
+								{{ $t('config.daemon.scheduler.form.message.remove') }}
 							</CButton>
 							<CButton
 								v-if='i === task.length'
 								color='success'
 								@click='addMessage'
 							>
-								{{ $t('config.scheduler.buttons.add') }}
+								{{ $t('config.daemon.scheduler.form.message.add') }}
 							</CButton>
 						</div>
 						<CButton type='submit' color='primary' :disabled='invalid'>
@@ -367,7 +367,7 @@ export default class SchedulerForm extends Vue {
 					} else {
 						this.$router.push('/config/daemon/scheduler/');
 						this.$toast.error(
-							this.$t('config.scheduler.messages.getFail', {task: this.id})
+							this.$t('config.daemon.scheduler.messages.getFail', {task: this.id})
 								.toString()
 						);
 					}
@@ -379,7 +379,7 @@ export default class SchedulerForm extends Vue {
 						this.successfulSave();
 					} else {
 						this.$toast.error(
-							this.$t('config.scheduler.messagess.processError').toString()
+							this.$t('config.daemon.scheduler.messagess.processError').toString()
 						);
 					}
 				} else if (mutation.payload.mType === 'mngScheduler_RemoveTask' &&
@@ -388,7 +388,7 @@ export default class SchedulerForm extends Vue {
 				} else if (mutation.payload.mType === 'messageError') {
 					this.$store.commit('spinner/HIDE');
 					this.$toast.error(
-						this.$t('config.scheduler.messagess.processError').toString()
+						this.$t('config.daemon.scheduler.messagess.processError').toString()
 					);
 				}
 			}
@@ -435,7 +435,7 @@ export default class SchedulerForm extends Vue {
 	 */
 	get pageTitle(): string {
 		return this.$route.path === '/config/daemon/scheduler/add' ?
-			this.$t('config.scheduler.add').toString() : this.$t('config.scheduler.edit').toString();
+			this.$t('config.daemon.scheduler.add').toString() : this.$t('config.daemon.scheduler.edit').toString();
 	}
 
 	/**
@@ -496,7 +496,7 @@ export default class SchedulerForm extends Vue {
 				.catch(() => {
 					this.$router.push('/config/daemon/scheduler/');
 					this.$toast.error(
-						this.$t('config.scheduler.messages.getFail', {task: this.id})
+						this.$t('config.daemon.scheduler.messages.getFail', {task: this.id})
 							.toString()
 					);
 				});
@@ -545,7 +545,7 @@ export default class SchedulerForm extends Vue {
 				this.$store.commit('spinner/HIDE');
 				this.$router.push('/config/daemon/scheduler/');
 				this.$toast.error(
-					this.$t('config.scheduler.messages.rest.messagingFail').toString()
+					this.$t('config.daemon.scheduler.messages.rest.messagingFail').toString()
 				);
 			});
 	}
@@ -593,7 +593,7 @@ export default class SchedulerForm extends Vue {
 					.catch((error: AxiosError) => FormErrorHandler.schedulerError(error));
 			} else {
 				SchedulerService.addTask(this.taskId, this.clientId, this.task, timeSpec, new WebSocketOptions(
-					null, 30000, 'config.scheduler.messages.processError'))
+					null, 30000, 'config.daemon.scheduler.messages.processError'))
 					.then((msgId: string) => this.storeId(msgId));
 			}
 		} else {
@@ -602,10 +602,10 @@ export default class SchedulerForm extends Vue {
 					.then(() => this.successfulSave())
 					.catch((error: AxiosError) => FormErrorHandler.schedulerError(error));
 			} else {
-				SchedulerService.removeTask(this.taskId, new WebSocketOptions(null, 30000, 'config.scheduler.messages.deleteFail'))
+				SchedulerService.removeTask(this.taskId, new WebSocketOptions(null, 30000, 'config.daemon.scheduler.messages.deleteFail'))
 					.then((msgId: string) => this.storeId(msgId));
 				SchedulerService.addTask(this.taskId, this.clientId, this.task, timeSpec, new WebSocketOptions(
-					null, 30000, 'config.scheduler.messages.processError'))
+					null, 30000, 'config.daemon.scheduler.messages.processError'))
 					.then((msgId: string) => this.storeId(msgId));
 			}
 		}
@@ -636,11 +636,11 @@ export default class SchedulerForm extends Vue {
 		this.$store.commit('spinner/HIDE');
 		if (this.$route.path === '/config/daemon/scheduler/add') {
 			this.$toast.success(
-				this.$t('config.scheduler.messages.addSuccess').toString()
+				this.$t('config.daemon.scheduler.messages.addSuccess').toString()
 			);
 		} else {
 			this.$toast.success(
-				this.$t('config.scheduler.messages.editSuccess', {task: this.id}).toString()
+				this.$t('config.daemon.scheduler.messages.editSuccess', {task: this.id}).toString()
 			);
 		}
 		this.$router.push('/config/daemon/scheduler/');

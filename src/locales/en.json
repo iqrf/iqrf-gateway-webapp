@@ -128,6 +128,8 @@
 		}
 	},
 	"forms": {
+		"import": "Import",
+		"export": "Export",
 		"start": "Start",
 		"ok": "OK",
 		"add": "Add",
@@ -181,107 +183,241 @@
 				"readConfig": "Cannot read zip archive with a configuration."
 			}
 		},
-		"components": {
-			"title": "Components",
-			"description": "Manage components.",
-			"add": "Add component",
-			"edit": "Edit component",
-			"form": {
-				"name": "Name",
-				"libraryPath": "Library path",
-				"libraryName": "Library name",
-				"enabled": "Enabled",
-				"disabled": "Disabled",
-				"startLevel": "Start level",
+		"daemon": {
+			"title": "IQRF GW daemon",
+			"description": "IQRF Daemon configuration",
+			"main": {
+				"title": "Main configuration",
+				"description": "Main configuration of IQRF Gateway Daemon.",
+				"form": {
+					"applicationName": "Application name",
+					"resourceDir": "Resource directory",
+					"dataDir": "Data directory",
+					"cacheDir": "Cache directory",
+					"userDir": "User directory",
+					"configurationDir": "Configuration directory",
+					"deploymentDir": "Deployment directory"
+				}
+			},
+			"components": {
+				"title": "Components",
+				"description": "Manage components.",
+				"add": "Add component",
+				"edit": "Edit component",
+				"form": {
+					"name": "Name",
+					"libraryPath": "Library path",
+					"libraryName": "Library name",
+					"enabled": "Enabled",
+					"disabled": "Disabled",
+					"startLevel": "Start level"
+				},
 				"messages": {
-					"name": "Please enter name of component.",
-					"libraryPath": "Please enter path to component's library directory.",
-					"libraryName": "Please enter name of component's library file.",
-					"startLevel": "Please enter component's start level.",
 					"deletePrompt": "Do you really want to delete component {component}?",
 					"deleteTitle": "Delete component",
 					"deleteSuccess": "Configuration of component {component} has been successfully deleted.",
 					"addSuccess": "Configuration of component {component} has been successfully added.",
 					"editSuccess": "Configuration of component {component} has been successfully updated.",
 					"multipleInterfaces": "Only one IQRF interface can be enabled at a time."
+				},
+				"errors": {
+					"name": "Please enter name of component.",
+					"libraryPath": "Please enter path to component's library directory.",
+					"libraryName": "Please enter name of component's library file.",
+					"startLevel": "Please enter component's start level."
 				}
-			}
-		},
-		"daemon": {
-			"title": "IQRF GW daemon",
-			"description": "IQRF Daemon configuration",
+			},
 			"interfaces": {
 				"title": "Interfaces",
 				"description": "Configuration of IQRF communication interfaces.",
-				"noInterface": "All IQRF communication interfaces are disabled.",
-				"selectInterface": "Select active interface",
-				"placeholder": "Please select communication interface.",
+				"messages": {
+					"noInterface": "All IQRF communication interfaces are disabled.",
+					"updateSuccess": "Interface {interface} has been successfully enabled. Restart IQRF Gateway Daemon for changes to take effect.",
+					"updateFailed": "An error occured while updating interface settings."
+				},
+				"form": {
+					"interface": "Select active interface",
+					"placeholder": "Please select communication interface."
+				},
 				"types": {
 					"cdc": "CDC",
 					"spi": "SPI",
 					"uart": "UART"
 				},
-				"updateFailed": "An error occured while updating interface settings.",
-				"updateSuccess": "Interface {interface} has been successfully enabled. Restart IQRF Gateway Daemon for changes to take effect."
+				"iqrfCdc": {
+					"title": "IQRF CDC interface",
+					"description": "IQRF CDC interface settings.",
+					"form": {
+						"instance": "Name of instance",
+						"interface": "IQRF CDC interface"
+					},
+					"errors": {
+						"instance": "Please enter name of IQRF CDC instance.",
+						"iqrfInterface": "Please enter IQRF CDC interface."
+					},
+					"mappings": "Available CDC mappings"
+				},
+				"iqrfSpi": {
+					"title": "IQRF SPI interface",
+					"description": "IQRF SPI interface settings.",
+					"form": {
+						"instance": "Name of instance",
+						"iqrfInterface": "IQRF SPI interface",
+						"spiReset": "Enable SPI reset"
+					},
+					"errors": {
+						"instance": "Please enter name of IQRF SPI instance.",
+						"iqrfInterface": "Please enter IQRF SPI interface."
+					},
+					"mappings": "Available SPI mappings"
+				},
+				"iqrfUart": {
+					"title": "IQRF UART interface",
+					"description": "IQRF UART interface settings.",
+					"form": {
+						"instance": "Name of instance",
+						"iqrfInterface": "IQRF UART interface",
+						"baudRate": "UART baud rate",
+						"uartReset": "UART reset"
+					},
+					"errors": {
+						"instance": "Please enter name of IQRF UART instance.",
+						"iqrfInterface": "Please enter IQRF UART interface.",
+						"baudRate": "Please select UART baud rate."
+					},
+					"mappings": "Available UART mappings"
+				},
+				"iqrfDpa":{
+					"title": "IQRF DPA interface",
+					"description": "IQRF DPA interface settings.",
+					"form": {
+						"instance": "Name of instance",
+						"DpaHandlerTimeout": "DPA Confirmation/Response timeout in milliseconds"
+					},
+					"errors": {
+						"instance": "Please enter name of IQRF DPA instance.",
+						"DpaHandlerTimeout": "Please enter default DPA Confirmation/Response timeout greater or equal to 0."
+					}
+				},
+				"interfaceMapping": {
+					"boards": "Boards",
+					"interfaces": "Interfaces",
+					"addMapping": "Add mapping",
+					"setMapping": "Set mapping",
+					"editMapping": "Edit mapping",
+					"removeMapping": "Remove mapping",
+					"removeTitle": "Remove mapping",
+					"form": {
+						"addTitle": "Add mapping",
+						"editTitle": "Edit mapping",
+						"type": "Mapping type",
+						"types": {
+							"spi": "SPI",
+							"uart": "UART"
+						},
+						"name": "Mapping name",
+						"interface": "Mapping device name",
+						"powerPin": "Power enable GPIO pin",
+						"busPin": "Bus enable GPIO pin",
+						"pgmPin": "Programming mode switch GPIO pin",
+						"baudRate": "UART baud rate",
+						"gateway": "IQRF Gateway mapping",
+						"i2cPin": "I2C interface enable GPIO pin *",
+						"spiPin": "SPI interface enable GPIO pin *",
+						"uartPin": "UART interface enable GPIO pin *",
+						"gwOnly": "* IQRF Gateway only"
+					},
+					"errors": {
+						"typeSelect": "Please select mapping type.",
+						"name": "Please enter mapping name.",
+						"interface": "Please enter device name.",
+						"busPin": "Please enter bus enable GPIO pin number.",
+						"pgmPin": "Please enter programming mode switch GPIO pin number.",
+						"powerPin": "Please enter power enable GPIO pin number.",
+						"i2cPin": "Please enter I2C interface enable GPIO pin number.",
+						"spiPin": "Please enter SPI interface enable GPIO pin number.",
+						"uartPin": "Please enter UART interface enable GPIO pin number."
+					},
+					"messages": {
+						"invalid": "Invalid mapping content.",
+						"notFound": "Mapping not found.",
+						"removePrompt": "Do you really want to remove mapping {mapping}?",
+						"removeSuccess": "Mapping {mapping} has been successfully removed.",
+						"addSuccess": "Mapping {mapping} has been succesfully created.",
+						"editSuccess": "Mapping {mapping} has been successfully edited."
+					}
+				}
 			},
 			"messagings": {
 				"title": "Messagings",
 				"description": "Configuration of messagings."
 			},
+			"scheduler": {
+				"title": "Scheduler",
+				"description": "Scheduler settings.",
+				"add": "Add task",
+				"edit": "Edit task",
+				"table": {
+					"id": "ID",
+					"time": "Time",
+					"service": "Service",
+					"mType": "Message types"
+				},
+				"form": {
+					"task": {
+						"taskId": "Task ID",
+						"cronTime": "Time in cron format",
+						"exactTime": "Exact time",
+						"periodic": "Periodic",
+						"period": "Period in seconds",
+						"startTime": "Start time"
+					},
+					"message": {
+						"title": "Messages",
+						"label": "Message (JSON request)",
+						"messagePlaceholder": "Select message",
+						"add": "Add another message",
+						"remove": "Remove message"
+					}
+				},
+				"errors": {
+					"nums": "Please enter a valid integer",
+					"service": "Please select service.",
+					"messaging": "Please select messaging.",
+					"message": "Please enter a message."
+				},
+				"import": {
+					"title": "Import task(s)",
+					"file": "JSON task file or ZIP archive with tasks",
+					"errors": {
+						"fileEmpty": "Please select file to import."
+					}
+				},
+				"messages": {
+					"importSuccess": "The tasks has been imported successfully.",
+					"importInvalidFormat": "The uploaded file is not JSON file or ZIP archive.",
+					"importInvalidFile": "The uploaded file is invalid.",
+					"deleteTitle": "Delete scheduler task",
+					"deletePrompt": "Do you really want to delete scheduler task {task}?",
+					"deleteSuccess": "Scheduler task has been successfully deleted.",
+					"deleteFail": "An error occurred while removing task.",
+					"getFail": "Could not retrieve task {task}.",
+					"listFailed": "Failed to retrieve list of scheduler tasks",
+					"addSuccess": "Scheduler task has been successfully added.",
+					"editSuccess": "Scheduler task {task} has been successfully edited.",
+					"processError": "An error has occurred while processing Daemon API request.",
+					"rest": {
+						"invalidTask": "Task configuration is not valid.",
+						"invalidFile": "Imported scheduler configuration is not valid.",
+						"notFound": "Task does not exist.",
+						"exists": "Task with this ID already exists.",
+						"messagingFail": "Failed to retrieve messaging services."
+					}
+				}
+			},
 			"misc": {
 				"title": "Misc",
 				"description": "Configuration of miscellaneous Daemon components"
-			},
-			"form": {
-				"interface": "Select interface",
-				"messaging": "Select messaging"
-			}
-		},
-		"interfaceMapping": {
-			"boards": "Boards",
-			"interfaces": "Interfaces",
-			"addMapping": "Add mapping",
-			"setMapping": "Set mapping",
-			"editMapping": "Edit mapping",
-			"removeMapping": "Remove mapping",
-			"removeTitle": "Remove mapping",
-			"form": {
-				"addTitle": "Add mapping",
-				"editTitle": "Edit mapping",
-				"type": "Mapping type",
-				"types": {
-					"spi": "SPI",
-					"uart": "UART"
-				},
-				"name": "Mapping name",
-				"interface": "Mapping device name",
-				"powerPin": "Power enable GPIO pin",
-				"busPin": "Bus enable GPIO pin",
-				"pgmPin": "Programming mode switch GPIO pin",
-				"baudRate": "UART baud rate",
-				"gateway": "IQRF Gateway mapping",
-				"i2cPin": "I2C interface enable GPIO pin",
-				"spiPin": "SPI interface enable GPIO pin",
-				"uartPin": "UART interface enable GPIO pin",
-				"messages": {
-					"typeSelect": "Please select mapping type.",
-					"name": "Please enter mapping name.",
-					"interface": "Please enter device name.",
-					"busPin": "Please enter bus enable pin number.",
-					"pgmPin": "Please enter programming mode switch pin number.",
-					"powerPin": "Please enter power enable pin number.",
-					"i2cPin": "Please enter I2C interface enable pin number.",
-					"spiPin": "Please enter SPI interface enable pin number.",
-					"uartPin": "Please enter UART interface enable pin number."
-				}
-			},
-			"messages": {
-				"invalid": "Invalid mapping content.",
-				"notFound": "Mapping not found.",
-				"removePrompt": "Do you really want to remove mapping {mapping}?",
-				"removeSuccess": "Mapping {mapping} has been successfully removed.",
-				"addSuccess": "Mapping {mapping} has been succesfully created.",
-				"editSuccess": "Mapping {mapping} has been successfully edited."
 			}
 		},
 		"iqmesh": {
@@ -296,31 +432,6 @@
 						"instance": "Please enter name of OTA upload service instance.",
 						"uploadPath": "Please enter path to a directory with files to upload."
 					}
-				}
-			}
-		},
-		"iqrfCdc": {
-			"title": "IQRF CDC interface",
-			"description": "IQRF CDC interface settings.",
-			"form": {
-				"instance": "Name of instance",
-				"interface": "IQRF CDC interface",
-				"messages": {
-					"instance": "Please enter name of IQRF CDC instance.",
-					"IqrfInterface": "Please enter IQRF CDC interface."
-				}
-			},
-			"mappings": "Available CDC mappings"
-		},
-		"iqrfDpa":{
-			"title": "IQRF DPA interface",
-			"description": "IQRF DPA interface settings.",
-			"form": {
-				"instance": "Name of instance",
-				"DpaHandlerTimeout": "DPA Confirmation/Response timeout in milliseconds",
-				"messages": {
-					"instance": "Please enter name of IQRF DPA instance.",
-					"DpaHandlerTimeout": "Please enter default DPA Confirmation/Response timeout greater or equal to 0."
 				}
 			}
 		},
@@ -352,52 +463,6 @@
 					"checkPeriod": "Please enter an integer greater or equal to 0."
 				}
 			}
-		},
-		"iqrfSpi": {
-			"title": "IQRF SPI interface",
-			"description": "IQRF SPI interface settings.",
-			"form": {
-				"instance": "Name of instance",
-				"IqrfInterface": "IQRF SPI interface",
-				"powerEnableGpioPin": "Power enable GPIO pin",
-				"busEnableGpioPin": "SPI bus enable GPIO pin",
-				"pgmSwitchGpioPin": "Programming mode switch GPIO pin",
-				"spiReset": "Enable SPI reset",
-				"messages": {
-					"instance": "Please enter name of IQRF SPI instance.",
-					"IqrfInterface": "Please enter IQRF SPI interface.",
-					"powerEnableGpioPin": "Please enter power enable GPIO pin.",
-					"busEnableGpioPin": "Please enter SPI bus enable GPIO pin.",
-					"pgmSwitchGpioPin": "Please enter programming mode switch GPIO pin."
-				}
-			},
-			"mappings": "Available SPI mappings"
-		},
-		"iqrfUart": {
-			"title": "IQRF UART interface",
-			"description": "IQRF UART interface settings.",
-			"form": {
-				"instance": "Name of instance",
-				"IqrfInterface": "IQRF UART interface",
-				"baudRate": "UART baud rate",
-				"powerEnableGpioPin": "Power enable GPIO pin",
-				"pgmSwitchGpioPin": "Programming mode switch GPIO pin",
-				"busEnableGpioPin": "Bus enable GPIO pin",
-				"i2cEnableGpioPin": "I2C interface enable GPIO pin *",
-				"spiEnableGpioPin": "SPI interface enable GPIO pin *",
-				"uartEnableGpioPin": "UART interface enable GPIO pin *",
-				"gwOnly": "* IQRF Gateway only",
-				"uartReset": "UART reset",
-				"messages": {
-					"instance": "Please enter name of IQRF UART instance.",
-					"IqrfInterface": "Please enter IQRF UART interface.",
-					"baudRate": "Please select UART baud rate.",
-					"powerEnableGpioPin": "Please enter power enable GPIO pin number.",
-					"pgmSwitchGpioPin": "Please enter programming mode switch GPIO pin number.",
-					"busEnableGpioPin": "Please enter SPI bus enable GPIO pin number."
-				}
-			},
-			"mappings": "Available UART mappings"
 		},
 		"jsonApi": {
 			"title": "JSON API",
@@ -437,19 +502,6 @@
 				"messages": {
 					"instance": "Please enter name of JSON Splitter instance."
 				}
-			}
-		},
-		"main": {
-			"title": "Main configuration",
-			"description": "Main configuration of IQRF Gateway Daemon.",
-			"form": {
-				"applicationName": "Application name",
-				"resourceDir": "Resource directory",
-				"dataDir": "Data directory",
-				"cacheDir": "Cache directory",
-				"userDir": "User directory",
-				"configurationDir": "Configuration directory",
-				"deploymentDir": "Deployment directory"
 			}
 		},
 		"monitor": {
@@ -570,71 +622,6 @@
 		"selectedComponents": {
 			"title": "Selected components",
 			"description": "Manage selected components."
-		},
-		"scheduler": {
-			"title": "Scheduler",
-			"description": "Scheduler settings.",
-			"add": "Add task",
-			"edit": "Edit task",
-			"table": {
-				"id": "ID",
-				"time": "Time",
-				"service": "Service",
-				"mType": "Message types"
-			},
-			"form": {
-				"task": {
-					"taskId": "Task ID",
-					"cronTime": "Time in cron format",
-					"exactTime": "Exact time",
-					"periodic": "Periodic",
-					"period": "Period in seconds",
-					"startTime": "Start time"
-				},
-				"message": {
-					"title": "Messages",
-					"label": "Message (JSON request)",
-					"messagePlaceholder": "Select message"
-				},
-				"import": {
-					"title": "Import task(s)",
-					"file": "JSON task file or ZIP archive with tasks",
-					"fileEmpty": "Please select file to import."
-				},
-				"messages": {
-					"nums": "Please enter a valid integer",
-					"service": "Please select service.",
-					"messaging": "Please select messaging.",
-					"message": "Please enter a message."
-				}
-			},
-			"buttons": {
-				"import": "Import",
-				"export": "Export",
-				"add": "Add another message",
-				"remove": "Remove message"
-			},
-			"messages": {
-				"importSuccess": "The tasks has been imported successfully.",
-				"importInvalidFormat": "The uploaded file is not JSON file or ZIP archive.",
-				"importInvalidFile": "The uploaded file is invalid.",
-				"deleteTitle": "Delete scheduler task",
-				"deletePrompt": "Do you really want to delete scheduler task {task}?",
-				"deleteSuccess": "Scheduler task has been successfully deleted.",
-				"deleteFail": "An error occurred while removing task.",
-				"getFail": "Could not retrieve task {task}.",
-				"listFailed": "Failed to retrieve list of scheduler tasks",
-				"addSuccess": "Scheduler task has been successfully added.",
-				"editSuccess": "Scheduler task {task} has been successfully edited.",
-				"processError": "An error has occurred while processing Daemon API request.",
-				"rest": {
-					"invalidTask": "Task configuration is not valid.",
-					"invalidFile": "Imported scheduler configuration is not valid.",
-					"notFound": "Task does not exist.",
-					"exists": "Task with this ID already exists.",
-					"messagingFail": "Failed to retrieve messaging services."
-				}
-			}
 		},
 		"tracer": {
 			"title": "Logging service",

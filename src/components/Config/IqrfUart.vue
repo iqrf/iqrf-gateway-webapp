@@ -1,7 +1,7 @@
 <template>
 	<CCard>
 		<CCardHeader>
-			{{ $t('config.iqrfUart.title') }}
+			{{ $t('config.daemon.interfaces.iqrfUart.title') }}
 		</CCardHeader>
 		<CCardBody>
 			<ValidationObserver v-slot='{ invalid }'>
@@ -10,11 +10,11 @@
 						v-if='powerUser'
 						v-slot='{ errors, touched, valid }'
 						rules='required'
-						:custom-messages='{required: "config.iqrfUart.form.messages.instance"}'
+						:custom-messages='{required: "config.daemon.interfaces.iqrfUart.errors.instance"}'
 					>
 						<CInput
 							v-model='componentInstance'
-							:label='$t("config.iqrfUart.form.instance")'
+							:label='$t("config.daemon.interfaces.iqrfUart.form.instance")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
@@ -22,11 +22,11 @@
 					<ValidationProvider
 						v-slot='{ errors, touched, valid }'
 						rules='required'
-						:custom-messages='{required: "config.iqrfUart.form.messages.IqrfInterface"}'
+						:custom-messages='{required: "config.daemon.interfaces.iqrfUart.errors.iqrfInterface"}'
 					>
 						<CInput
 							v-model='IqrfInterface'
-							:label='$t("config.iqrfUart.form.IqrfInterface")'
+							:label='$t("config.daemon.interfaces.iqrfUart.form.iqrfInterface")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
@@ -35,15 +35,15 @@
 						v-slot='{ valid, touched, errors }'
 						rules='required'
 						:custom-messages='{
-							required: "config.iqrfUart.form.messages.baudRate",
+							required: "config.daemon.interfaces.iqrfUart.errors.baudRate",
 						}'
 					>
 						<CSelect
 							:value.sync='baudRate'
-							:label='$t("config.iqrfUart.form.baudRate")'
+							:label='$t("config.daemon.interfaces.iqrfUart.form.baudRate")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
-							:placeholder='$t("config.iqrfUart.form.messages.baudRate")'
+							:placeholder='$t("config.daemon.interfaces.iqrfUart.errors.baudRate")'
 							:options='baudRates'
 						/>
 					</ValidationProvider>
@@ -51,14 +51,14 @@
 						v-slot='{ errors, touched, valid }'
 						rules='required|integer'
 						:custom-messages='{
-							integer: "config.iqrfUart.form.messages.powerEnableGpioPin",
-							required: "config.iqrfUart.form.messages.powerEnableGpioPin",
+							integer: "config.daemon.interfaces.interfaceMapping.errors.powerPin",
+							required: "config.daemon.interfaces.interfaceMapping.errors.powerPin",
 						}'
 					>
 						<CInput
 							v-model.number='powerEnableGpioPin'
 							type='number'
-							:label='$t("config.iqrfUart.form.powerEnableGpioPin")'
+							:label='$t("config.daemon.interfaces.interfaceMapping.form.powerPin")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
@@ -68,14 +68,14 @@
 						v-slot='{ errors, touched, valid }'
 						rules='required|integer'
 						:custom-messages='{
-							integer: "config.iqrfUart.form.messages.pgmSwitchGpioPin",
-							required: "config.iqrfUart.form.messages.pgmSwitchGpioPin",
+							integer: "config.daemon.interfaces.interfaceMapping.errors.pgmPin",
+							required: "cconfig.daemon.interfaces.interfaceMapping.errors.pgmPin",
 						}'
 					>
 						<CInput
 							v-model.number='pgmSwitchGpioPin'
 							type='number'
-							:label='$t("config.iqrfUart.form.pgmSwitchGpioPin")'
+							:label='$t("config.daemon.interfaces.interfaceMapping.form.pgmPin")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
@@ -84,45 +84,45 @@
 						v-slot='{ errors, touched, valid }'
 						rules='required|integer'
 						:custom-messages='{
-							integer: "config.iqrfUart.form.messages.busEnableGpioPin",
-							required: "config.iqrfUart.form.messages.busEnableGpioPin",
+							integer: "config.daemon.interfaces.interfaceMapping.errors.busPin",
+							required: "config.daemon.interfaces.interfaceMapping.errors.busPin",
 						}'
 					>
 						<CInput
 							v-model.number='busEnableGpioPin'
 							type='number'
-							:label='$t("config.iqrfUart.form.busEnableGpioPin")'
+							:label='$t("config.daemon.interfaces.interfaceMapping.form.busPin")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
 					</ValidationProvider>
 					<CInputCheckbox
 						:checked.sync='uartReset'
-						:label='$t("config.iqrfUart.form.uartReset")'
+						:label='$t("config.daemon.interfaces.iqrfUart.form.uartReset")'
 					/>
 					<CInput
 						v-if='i2cEnableGpioPin !== null'
 						v-model.number='i2cEnableGpioPin'
 						type='number'
-						:label='$t("config.iqrfUart.form.i2cEnableGpioPin")'
+						:label='$t("config.daemon.interfaces.interfaceMapping.form.i2cPin")'
 						:disabled='true'
 					/>
 					<CInput
 						v-if='spiEnableGpioPin !== null'
 						v-model.number='spiEnableGpioPin'
 						type='number'
-						:label='$t("config.iqrfUart.form.spiEnableGpioPin")'
+						:label='$t("config.daemon.interfaces.interfaceMapping.form.spiPin")'
 						:disabled='true'
 					/>
 					<CInput
 						v-if='uartEnableGpioPin !== null'
 						v-model.number='uartEnableGpioPin'
 						type='number'
-						:label='$t("config.iqrfUart.form.uartEnableGpioPin")'
+						:label='$t("config.daemon.interfaces.interfaceMapping.form.uartPin")'
 						:disabled='true'
 					/>
 					<div v-if='i2cEnableGpioPin !== null || spiEnableGpioPin !== null || uartEnableGpioPin !== null'>
-						<i>{{ $t('config.iqrfUart.form.gwOnly') }}</i>
+						<i>{{ $t('config.daemon.interfaces.interfaceMapping.form.gwOnly') }}</i>
 					</div><br v-if='i2cEnableGpioPin !== null || spiEnableGpioPin !== null || uartEnableGpioPin !== null'>
 					<CButton type='submit' color='primary' :disabled='invalid'>
 						{{ $t('forms.save') }}
@@ -131,7 +131,7 @@
 			</ValidationObserver>
 		</CCardBody>
 		<CCardFooter>
-			<h4>{{ $t('config.iqrfUart.mappings' ) }}</h4><hr>
+			<h4>{{ $t('config.daemon.interfaces.iqrfUart.mappings' ) }}</h4><hr>
 			<CRow>
 				<CCol lg='6'>
 					<InterfaceMappings interface-type='uart' @update-mapping='updateMapping' />

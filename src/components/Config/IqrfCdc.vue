@@ -2,7 +2,7 @@
 	<div>
 		<CCard>
 			<CCardHeader>
-				{{ $t('config.iqrfCdc.title') }}
+				{{ $t('config.daemon.interfaces.iqrfCdc.title') }}
 			</CCardHeader>
 			<CCardBody>
 				<ValidationObserver v-slot='{ invalid }'>
@@ -11,11 +11,11 @@
 							v-if='powerUser'
 							v-slot='{ errors, touched, valid }'
 							rules='required'
-							:custom-messages='{required: "config.iqrfCdc.form.messages.instance"}'
+							:custom-messages='{required: "config.daemon.interfaces.iqrfCdc.errors.instance"}'
 						>
 							<CInput
 								v-model='configuration.instance'
-								:label='$t("config.iqrfCdc.form.instance")'
+								:label='$t("config.daemon.interfaces.iqrfCdc.form.instance")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
@@ -23,11 +23,11 @@
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
 							rules='required'
-							:custom-messages='{required: "config.iqrfCdc.form.messages.IqrfInterface"}'
+							:custom-messages='{required: "config.daemon.interfaces.iqrfCdc.errors.iqrfInterface"}'
 						>
 							<CInput
 								v-model='configuration.IqrfInterface'
-								:label='$t("config.iqrfCdc.form.interface")'
+								:label='$t("config.daemon.interfaces.iqrfCdc.form.interface")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
@@ -39,7 +39,7 @@
 				</ValidationObserver>
 			</CCardBody>
 			<CCardFooter>
-				<h4>{{ $t('config.iqrfCdc.mappings' ) }}</h4><hr>
+				<h4>{{ $t('config.daemon.interfaces.iqrfCdc.mappings' ) }}</h4><hr>
 				<InterfacePorts interface-type='cdc' @update-port='updatePort' />
 			</CCardFooter>
 		</CCard>

@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<h4>{{ $t('config.interfaceMapping.boards') }}</h4>
+		<h4>{{ $t('config.daemon.interfaces.interfaceMapping.boards') }}</h4>
 		<CButtonGroup class='flex-wrap'>
 			<CButton
 				color='success'
@@ -20,21 +20,21 @@
 					@click='setMapping(i)'
 				>
 					<CIcon :content='icons.set' />
-					{{ $t('config.interfaceMapping.setMapping') }}
+					{{ $t('config.daemon.interfaces.interfaceMapping.setMapping') }}
 				</CDropdownItem>
 				<CDropdownItem
 					v-if='!mapping.name.startsWith("IQD-GW-")'
 					@click='invokeMappingForm(mapping.id)'
 				>
 					<CIcon :content='icons.edit' />
-					{{ $t('config.interfaceMapping.editMapping') }}
+					{{ $t('config.daemon.interfaces.interfaceMapping.editMapping') }}
 				</CDropdownItem>
 				<CDropdownItem
 					v-if='!mapping.name.startsWith("IQD-GW-")'
 					@click='showRemoveModal(i)'
 				>
 					<CIcon :content='icons.remove' />
-					{{ $t('config.interfaceMapping.removeMapping') }}
+					{{ $t('config.daemon.interfaces.interfaceMapping.removeMapping') }}
 				</CDropdownItem>
 			</CDropdown>
 		</CButtonGroup>
@@ -44,10 +44,10 @@
 		>
 			<template #header>
 				<h5 class='modal-title'>
-					{{ $t('config.interfaceMapping.removeTitle') }}
+					{{ $t('config.daemon.interfaces.interfaceMapping.removeTitle') }}
 				</h5>
 			</template>
-			{{ $t('config.interfaceMapping.messages.removePrompt', {mapping: modalMapping}) }}
+			{{ $t('config.daemon.interfaces.interfaceMapping.messages.removePrompt', {mapping: modalMapping}) }}
 			<template #footer>
 				<CButton color='danger' @click='hideRemoveModal'>
 					{{ $t('forms.no') }}
@@ -197,7 +197,7 @@ export default class InterfaceMappings extends Vue {
 			.then(() => {
 				this.getMappings().then(() => {
 					this.$toast.success(
-						this.$t('config.interfaceMapping.messages.removeSuccess', {mapping: this.modalMapping}).toString()
+						this.$t('config.daemon.interfaces.interfaceMapping.messages.removeSuccess', {mapping: this.modalMapping}).toString()
 					);
 				});
 			})

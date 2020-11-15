@@ -1,7 +1,7 @@
 <template>
 	<CCard>
 		<CCardHeader>
-			{{ $t('config.iqrfSpi.title') }}
+			{{ $t('config.daemon.interfaces.iqrfSpi.title') }}
 		</CCardHeader>
 		<CCardBody>
 			<ValidationObserver v-slot='{ invalid }'>
@@ -10,11 +10,11 @@
 						v-if='powerUser'
 						v-slot='{ errors, touched, valid }'
 						rules='required'
-						:custom-messages='{required: "config.iqrfSpi.form.messages.instance"}'
+						:custom-messages='{required: "config.daemon.interfaces.iqrfSpi.errors.instance"}'
 					>
 						<CInput
 							v-model='componentInstance'
-							:label='$t("config.iqrfSpi.form.instance")'
+							:label='$t("config.daemon.interfaces.iqrfSpi.form.instance")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
@@ -22,11 +22,11 @@
 					<ValidationProvider
 						v-slot='{ errors, touched, valid }'
 						rules='required'
-						:custom-messages='{required: "config.iqrfSpi.form.messages.IqrfInterface"}'
+						:custom-messages='{required: "config.daemon.interfaces.iqrfSpi.errors.iqrfInterface"}'
 					>
 						<CInput
 							v-model='IqrfInterface'
-							:label='$t("config.iqrfSpi.form.IqrfInterface")'
+							:label='$t("config.daemon.interfaces.iqrfSpi.form.iqrfInterface")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
@@ -35,13 +35,13 @@
 						v-slot='{ errors, touched, valid }'
 						rules='required|integer'
 						:custom-messages='{
-							integer: "config.iqrfSpi.form.messages.powerEnableGpioPin",
-							required: "config.iqrfSpi.form.messages.powerEnableGpioPin",
+							integer: "config.daemon.interfaces.interfaceMapping.errors.powerPin",
+							required: "config.daemon.interfaces.interfaceMapping.errors.powerPin",
 						}'
 					>
 						<CInput
 							v-model='powerEnableGpioPin'
-							:label='$t("config.iqrfSpi.form.powerEnableGpioPin")'
+							:label='$t("config.daemon.interfaces.interfaceMapping.form.powerPin")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
@@ -50,13 +50,13 @@
 						v-slot='{ errors, touched, valid }'
 						rules='required|integer'
 						:custom-messages='{
-							integer: "config.iqrfSpi.form.messages.busEnableGpioPin",
-							required: "config.iqrfSpi.form.messages.busEnableGpioPin",
+							integer: "config.daemon.interfaces.interfaceMapping.errors.busPin",
+							required: "config.daemon.interfaces.interfaceMapping.errors.busPin",
 						}'
 					>
 						<CInput
 							v-model='busEnableGpioPin'
-							:label='$t("config.iqrfSpi.form.busEnableGpioPin")'
+							:label='$t("config.daemon.interfaces.interfaceMapping.form.busPin")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
@@ -65,44 +65,44 @@
 						v-slot='{ errors, touched, valid }'
 						rules='required|integer'
 						:custom-messages='{
-							integer: "config.iqrfSpi.form.messages.pgmSwitchGpioPin",
-							required: "config.iqrfSpi.form.messages.pgmSwitchGpioPin",
+							integer: "config.daemon.interfaces.interfaceMapping.errors.pgmPin",
+							required: "config.daemon.interfaces.interfaceMapping.errors.pgmPin",
 						}'
 					>
 						<CInput
 							v-model='pgmSwitchGpioPin'
-							:label='$t("config.iqrfSpi.form.pgmSwitchGpioPin")'
+							:label='$t("config.daemon.interfaces.interfaceMapping.form.pgmPin")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
 					</ValidationProvider>
 					<CInputCheckbox
 						:checked.sync='spiReset'
-						:label='$t("config.iqrfSpi.form.spiReset")'
+						:label='$t("config.daemon.interfaces.iqrfSpi.form.spiReset")'
 					/>
 					<CInput
 						v-if='i2cEnableGpioPin !== null'
 						v-model.number='i2cEnableGpioPin'
 						type='number'
-						:label='$t("config.iqrfUart.form.i2cEnableGpioPin")'
+						:label='$t("config.daemon.interfaces.interfaceMapping.form.i2cPin")'
 						:disabled='true'
 					/>
 					<CInput
 						v-if='spiEnableGpioPin !== null'
 						v-model.number='spiEnableGpioPin'
 						type='number'
-						:label='$t("config.iqrfUart.form.spiEnableGpioPin")'
+						:label='$t("config.daemon.interfaces.interfaceMapping.form.spiPin")'
 						:disabled='true'
 					/>
 					<CInput
 						v-if='uartEnableGpioPin !== null'
 						v-model.number='uartEnableGpioPin'
 						type='number'
-						:label='$t("config.iqrfUart.form.uartEnableGpioPin")'
+						:label='$t("config.daemon.interfaces.interfaceMapping.form.uartPin")'
 						:disabled='true'
 					/>
 					<div v-if='i2cEnableGpioPin !== null || spiEnableGpioPin !== null || uartEnableGpioPin !== null'>
-						<i>{{ $t('config.iqrfUart.form.gwOnly') }}</i>
+						<i>{{ $t('config.daemon.interfaces.interfaceMapping.form.gwOnly') }}</i>
 					</div><br v-if='i2cEnableGpioPin !== null || spiEnableGpioPin !== null || uartEnableGpioPin !== null'>
 					<CButton type='submit' color='primary' :disabled='invalid'>
 						{{ $t('forms.save') }}
@@ -111,7 +111,7 @@
 			</ValidationObserver>
 		</CCardBody>
 		<CCardFooter>
-			<h4>{{ $t('config.iqrfSpi.mappings' ) }}</h4><hr>
+			<h4>{{ $t('config.daemon.interfaces.iqrfSpi.mappings' ) }}</h4><hr>
 			<CRow>
 				<CCol lg='6'>
 					<InterfaceMappings interface-type='spi' @update-mapping='updateMapping' />
