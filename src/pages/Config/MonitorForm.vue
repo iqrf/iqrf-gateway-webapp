@@ -61,16 +61,16 @@
 						<div v-if='daemonHigher230'>
 							<CInputCheckbox
 								:checked.sync='webSocket.tlsEnabled'
-								:label='$t("config.websocket.form.tlsEnabled")'
+								:label='$t("config.daemon.messagings.websocket.form.tlsEnabled")'
 							/>
 							<CSelect
 								:value.sync='webSocket.tlsMode'
-								:label='$t("config.websocket.form.tlsMode")'
+								:label='$t("config.daemon.messagings.websocket.form.tlsMode")'
 								:options='tlsModeOptions'
-								:placeholder='$t("config.websocket.form.messages.tlsMode")'
+								:placeholder='$t("config.daemon.messagings.websocket.form.messages.tlsMode")'
 								:disabled='!webSocket.tlsEnabled'
 							/>
-							<span v-if='webSocket.tlsMode !== ""'>{{ $t('config.websocket.form.tlsModes.descriptions.' + webSocket.tlsMode) }}</span>
+							<span v-if='webSocket.tlsMode !== ""'>{{ $t('config.daemon.messagings.websocket.form.tlsModes.descriptions.' + webSocket.tlsMode) }}</span>
 						</div><br v-if='daemonHigher230'>
 						<CButton type='submit' color='primary' :disabled='invalid'>
 							{{ submitButton }}
@@ -235,15 +235,15 @@ export default class MonitorForm extends Vue {
 			this.tlsModeOptions = [
 				{
 					value: 'intermediate',
-					label: this.$t('config.websocket.form.tlsModes.intermediate').toString()
+					label: this.$t('config.daemon.messagings.websocket.form.tlsModes.intermediate').toString()
 				},
 				{
 					value: 'modern',
-					label: this.$t('config.websocket.form.tlsModes.modern').toString()
+					label: this.$t('config.daemon.messagings.websocket.form.tlsModes.modern').toString()
 				},
 				{
 					value: 'old',
-					label: this.$t('config.websocket.form.tlsModes.old').toString()
+					label: this.$t('config.daemon.messagings.websocket.form.tlsModes.old').toString()
 				},
 			];
 		}

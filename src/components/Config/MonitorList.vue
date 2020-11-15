@@ -207,7 +207,7 @@ export default class MonitorList extends Vue {
 		if (versionHigherThan('2.3.0')) {
 			this.fields.splice(4, 0, {
 				key: 'tlsEnabled',
-				label: this.$t('config.websocket.form.tlsEnabled'),
+				label: this.$t('config.daemon.messagings.websocket.form.tlsEnabled'),
 				filter: false,
 			});
 		}

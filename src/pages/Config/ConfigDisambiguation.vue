@@ -13,8 +13,8 @@
 						</p>
 					</CListGroupItem>
 					<CListGroupItem
-						v-if='$store.getters["features/isEnabled"]("networkManager")'
-						to='/network/'
+						v-if='$store.getters["features/isEnabled"]("iqrfGatewayTranslator")'
+						to='/config/translator/'
 					>
 						<header class='list-group-item-heading'>
 							{{ $t('config.translator.title') }}
@@ -28,10 +28,10 @@
 						to='/config/controller/'
 					>
 						<header class='list-group-item-heading'>
-							{{ $t('controllerConfig.title') }}
+							{{ $t('config.controller.title') }}
 						</header>
 						<p class='list-group-item-text'>
-							{{ $t('controllerConfig.description') }}
+							{{ $t('config.controller.description') }}
 						</p>
 					</CListGroupItem>
 					<CListGroupItem

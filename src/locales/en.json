@@ -795,6 +795,75 @@
 				}
 			}
 		},
+		"controller": {
+			"title": "IQRF GW controller",
+			"description": "Controller configuration",
+			"form": {
+				"daemonApi": {
+					"autoNetwork": {
+						"title": "AutoNetwork API call configuration",
+						"stopConditions": {
+							"title": "AutoNetwork stop conditions"
+						},
+						"verbose": "Verbose mode"
+					},
+					"discovery": {
+						"title": "Discovery API call configuration",
+						"verbose": "Verbose mode"
+					}
+				},
+				"factoryReset": {
+					"title": "Factory reset configuration",
+					"coordinator": "Coordinator",
+					"daemon": "Daemon",
+					"network": "Network",
+					"webapp": "Web application"
+				},
+				"resetButton": {
+					"title": "Button configuration",
+					"api": "Daemon API call",
+					"calls": {
+						"autonetwork": "AutoNetwork",
+						"discovery": "Discovery",
+						"noCall": "No API call"
+					}
+				},
+				"logger": {
+					"title": "Logger configuration",
+					"filePath": "Path to log file",
+					"severity": "Severity level",
+					"levels": {
+						"trace": "Trace",
+						"debug": "Debug",
+						"info": "Info",
+						"warning": "Warning",
+						"error": "Error"
+					}
+				},
+				"wsServers": {
+					"title": "Websocket configuration",
+					"api": "Daemon API server",
+					"monitor": "Monitor server"
+				}
+			},
+			"errors": {
+				"disabled": "IQRF Gateway Controller service is disabled.",
+				"integer": "This parameter should be an integer.",
+				"daEwaves": "Please enter an integer between 1 and 127 for empty waves stop condition.",
+				"daWaves": "Please enter an integer between 1 and 127 for maximum waves stop condition.",
+				"ddMaxAddr": "Please enter an integer between 0 and 239 for Discovery process.",
+				"invalid": {
+					"ws_format": "Invalid websocket server address format. Example: ws://example:1883."
+				},
+				"missing": {
+					"ws_api": "Please enter the Daemon API websocket server address.",
+					"ws_monitor": "Please enter the Monitor websocket server address",
+					"l_file": "Please enter path to log file.",
+					"l_severity": "Please select log severity level.",
+					"rb_custom": "Please enter API call identifier."
+				}
+			}
+		},
 		"selectedComponents": {
 			"title": "Selected components",
 			"description": "Manage selected components."
@@ -807,18 +876,22 @@
 				"retryPollInterval": "Communication retry interval (seconds)",
 				"server": "Server address",
 				"tenantToken": "Tenant token",
-				"updatePollInterval": "Update check interval (seconds)",
-				"messages": {
-					"inventoryPollInterval": "Please enter an integer greater or equal to 0 for for inventory update interval.",
-					"retryPollInterval": "Please enter an integer greater or equal to 0 for communication retry interval.",
-					"updatePollInterval": "Please enter an integer greater or equal to 0 for update check interval",
-					"missing": {
-						"server": "Please enter the server address.",
-						"tenantToken": "Please enter the tenant token."
-					},
-					"invalid": {
-						"server": "Server address should contain the HTTP protocol."
-					}
+				"updatePollInterval": "Update check interval (seconds)"
+
+			},
+			"messages": {
+				"disabled": "Mender service is disabled."
+			},
+			"errors": {
+				"inventoryPollInterval": "Please enter an integer greater or equal to 0 for for inventory update interval.",
+				"retryPollInterval": "Please enter an integer greater or equal to 0 for communication retry interval.",
+				"updatePollInterval": "Please enter an integer greater or equal to 0 for update check interval",
+				"missing": {
+					"server": "Please enter the server address.",
+					"tenantToken": "Please enter the tenant token."
+				},
+				"invalid": {
+					"server": "Server address should contain the HTTP protocol."
 				}
 			}
 		}
@@ -1833,76 +1906,6 @@
 			"processTimeout": "Service manager process timed out.",
 			"missingService": "Requested service not found",
 			"unsupportedService": "Unsupported service"
-		}
-	},
-	"controllerConfig": {
-		"title": "IQRF GW controller",
-		"description": "Controller configuration",
-		"form": {
-			"daemonApi": {
-				"autoNetwork": {
-					"title": "AutoNetwork API call configuration",
-					"stopConditions": {
-						"title": "AutoNetwork stop conditions"
-
-					},
-					"verbose": "Verbose mode"
-				},
-				"discovery": {
-					"title": "Discovery API call configuration",
-					"verbose": "Verbose mode"
-				}
-			},
-			"factoryReset": {
-				"title": "Factory reset configuration",
-				"coordinator": "Coordinator",
-				"daemon": "Daemon",
-				"network": "Network",
-				"webapp": "Web application"
-			},
-			"resetButton": {
-				"title": "Button configuration",
-				"api": "Daemon API call",
-				"calls": {
-					"autonetwork": "AutoNetwork",
-					"discovery": "Discovery",
-					"noCall": "No API call"
-				}
-			},
-			"logger": {
-				"title": "Logger configuration",
-				"filePath": "Path to log file",
-				"severity": "Severity level",
-				"levels": {
-					"trace": "Trace",
-					"debug": "Debug",
-					"info": "Info",
-					"warning": "Warning",
-					"error": "Error"
-				}
-			},
-			"wsServers": {
-				"title": "Websocket configuration",
-				"api": "Daemon API server",
-				"monitor": "Monitor server"
-			},
-			"messages": {
-				"disabled": "IQRF Gateway Controller service is disabled.",
-				"integer": "This parameter should be an integer.",
-				"daEwaves": "Please enter an integer between 1 and 127 for empty waves stop condition.",
-				"daWaves": "Please enter an integer between 1 and 127 for maximum waves stop condition.",
-				"ddMaxAddr": "Please enter an integer between 0 and 239 for Discovery process.",
-				"invalid": {
-					"ws_format": "Invalid websocket server address format. Example: ws://example:1883."
-				},
-				"missing": {
-					"ws_api": "Please enter the Daemon API websocket server address.",
-					"ws_monitor": "Please enter the Monitor websocket server address",
-					"l_file": "Please enter path to log file.",
-					"l_severity": "Please select log severity level.",
-					"rb_custom": "Please enter API call identifier."
-				}
-			}
 		}
 	},
 	"table": {

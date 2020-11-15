@@ -1,24 +1,24 @@
 <template>
 	<div>
-		<h1>{{ $t('controllerConfig.title') }}</h1>
+		<h1>{{ $t('config.controller.title') }}</h1>
 		<CCard>
 			<CCardBody>
 				<ValidationObserver v-if='config !== null' v-slot='{ invalid }'>
 					<CForm @submit.prevent='processSubmit'>
 						<CRow>
 							<CCol md='6'>
-								<h3>{{ $t("controllerConfig.form.wsServers.title") }}</h3>
+								<h3>{{ $t("config.controller.form.wsServers.title") }}</h3>
 								<ValidationProvider
 									v-slot='{ errors, touched, valid }'
 									rules='required|ws_addr'
 									:custom-messages='{
-										required: "controllerConfig.form.messages.missing.ws_api",
-										ws_addr: "controllerConfig.form.messages.invalid.ws_format"
+										required: "config.controller.errors.missing.ws_api",
+										ws_addr: "config.controller.errors.invalid.ws_format"
 									}'
 								>
 									<CInput
 										v-model='config.wsServers.api'
-										:label='$t("controllerConfig.form.wsServers.api")'
+										:label='$t("config.controller.form.wsServers.api")'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'
 									/>
@@ -27,28 +27,28 @@
 									v-slot='{ errors, touched, valid }'
 									rules='required|ws_addr'
 									:custom-messages='{
-										required: "controllerConfig.form.messages.missing.ws_monitor",
-										ws_addr: "controllerConfig.form.messages.invalid.ws_format"
+										required: "config.controller.errors.missing.ws_monitor",
+										ws_addr: "config.controller.errors.invalid.ws_format"
 									}'
 								>
 									<CInput
 										v-model='config.wsServers.monitor'
-										:label='$t("controllerConfig.form.wsServers.monitor")'
+										:label='$t("config.controller.form.wsServers.monitor")'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'
 									/>
 								</ValidationProvider>
 							</CCol>
 							<CCol md='6'>
-								<h3>{{ $t("controllerConfig.form.logger.title") }}</h3>
+								<h3>{{ $t("config.controller.form.logger.title") }}</h3>
 								<ValidationProvider
 									v-slot='{ errors, touched, valid }'
 									rules='required'
-									:custom-messages='{required: "controllerConfig.form.messages.missing.l_file"}'
+									:custom-messages='{required: "config.controller.errors.missing.l_file"}'
 								>
 									<CInput
 										v-model='config.logger.filePath'
-										:label='$t("controllerConfig.form.logger.filePath")'
+										:label='$t("config.controller.form.logger.filePath")'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'
 									/>
@@ -57,31 +57,31 @@
 									v-slot='{ valid, touched, errors }'
 									rules='required'
 									:custom-messages='{
-										required: "controllerConfig.form.messages.missing.l_severity",
+										required: "config.controller.errors.missing.l_severity",
 									}'
 								>
 									<CSelect
 										:value.sync='config.logger.severity'
 										:options='severityOptions'
-										:label='$t("controllerConfig.form.logger.severity")'
+										:label='$t("config.controller.form.logger.severity")'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'
-										:placeholder='$t("controllerConfig.form.messages.missing.l_severity")'
+										:placeholder='$t("config.controller.errors.missing.l_severity")'
 									/>
 								</ValidationProvider>
 							</CCol>
 						</CRow><hr>
 						<CRow>
 							<CCol md='6'>
-								<h3>{{ $t("controllerConfig.form.resetButton.title") }}</h3>
+								<h3>{{ $t("config.controller.form.resetButton.title") }}</h3>
 								<CSelect
 									:value.sync='config.resetButton.api'
 									:options='apiCallOptions'
-									:label='$t("controllerConfig.form.resetButton.api")'
+									:label='$t("config.controller.form.resetButton.api")'
 								/>
 								<div v-if='config.resetButton.api === "autoNetwork"'>
 									<h3>
-										{{ $t("controllerConfig.form.daemonApi.autoNetwork.title") }}
+										{{ $t("config.controller.form.daemonApi.autoNetwork.title") }}
 									</h3>
 									<ValidationProvider
 										v-slot='{ errors, touched, valid }'
@@ -176,12 +176,12 @@
 									</ValidationProvider><hr>
 									<CInputCheckbox
 										:checked.sync='config.daemonApi.autoNetwork.returnVerbose'
-										:label='$t("controllerConfig.form.daemonApi.autoNetwork.verbose")'
+										:label='$t("config.controller.form.daemonApi.autoNetwork.verbose")'
 									/>
 								</div>
 								<div v-else-if='config.resetButton.api === "discovery"'>
 									<h3>
-										{{ $t("controllerConfig.form.daemonApi.discovery.title") }}
+										{{ $t("config.controller.form.daemonApi.discovery.title") }}
 									</h3>
 									<ValidationProvider
 										v-slot='{ errors, touched, valid }'
@@ -223,27 +223,27 @@
 									</ValidationProvider>
 									<CInputCheckbox
 										:checked.sync='config.daemonApi.discovery.returnVerbose'
-										:label='$t("controllerConfig.form.daemonApi.discovery.verbose")'
+										:label='$t("config.controller.form.daemonApi.discovery.verbose")'
 									/>
 								</div>
 							</CCol>
 							<CCol md='6'>
-								<h3>{{ $t("controllerConfig.form.factoryReset.title") }}</h3>
+								<h3>{{ $t("config.controller.form.factoryReset.title") }}</h3>
 								<CInputCheckbox
 									:checked.sync='config.factoryReset.coordinator'
-									:label='$t("controllerConfig.form.factoryReset.coordinator")'
+									:label='$t("config.controller.form.factoryReset.coordinator")'
 								/>
 								<CInputCheckbox
 									:checked.sync='config.factoryReset.daemon'
-									:label='$t("controllerConfig.form.factoryReset.daemon")'
+									:label='$t("config.controller.form.factoryReset.daemon")'
 								/>
 								<CInputCheckbox
 									:checked.sync='config.factoryReset.network'
-									:label='$t("controllerConfig.form.factoryReset.network")'
+									:label='$t("config.controller.form.factoryReset.network")'
 								/>
 								<CInputCheckbox
 									:checked.sync='config.factoryReset.webapp'
-									:label='$t("controllerConfig.form.factoryReset.webapp")'
+									:label='$t("config.controller.form.factoryReset.webapp")'
 								/>
 							</CCol>
 						</CRow>
@@ -286,14 +286,14 @@ import {IOption} from '../../interfaces/coreui';
 		next((vm: Vue) => {
 			if (!vm.$store.getters['features/isEnabled']('iqrfGatewayController')) {
 				vm.$toast.error(
-					vm.$t('controllerConfig.form.messages.disabled').toString()
+					vm.$t('config.controller.errors.disabled').toString()
 				);
 				vm.$router.push(from.path);
 			}
 		});
 	},
 	metaInfo: {
-		title: 'controllerConfig.description',
+		title: 'config.controller.description',
 	},
 })
 
@@ -307,15 +307,15 @@ export default class ControllerConfig extends Vue {
 	private apiCallOptions: Array<IOption> = [
 		{
 			value: '',
-			label: this.$t('controllerConfig.form.resetButton.calls.noCall').toString()
+			label: this.$t('config.controller.form.resetButton.calls.noCall').toString()
 		},
 		{
 			value: 'autoNetwork',
-			label: this.$t('controllerConfig.form.resetButton.calls.autonetwork').toString()
+			label: this.$t('config.controller.form.resetButton.calls.autonetwork').toString()
 		},
 		{
 			value: 'discovery',
-			label: this.$t('controllerConfig.form.resetButton.calls.discovery').toString()
+			label: this.$t('config.controller.form.resetButton.calls.discovery').toString()
 		}
 	]
 
@@ -330,23 +330,23 @@ export default class ControllerConfig extends Vue {
 	private severityOptions: Array<IOption> = [
 		{
 			value: 'trace',
-			label: this.$t('controllerConfig.form.logger.levels.trace').toString()
+			label: this.$t('config.controller.form.logger.levels.trace').toString()
 		},
 		{
 			value: 'debug',
-			label: this.$t('controllerConfig.form.logger.levels.debug').toString()
+			label: this.$t('config.controller.form.logger.levels.debug').toString()
 		},
 		{
 			value: 'info',
-			label: this.$t('controllerConfig.form.logger.levels.info').toString()
+			label: this.$t('config.controller.form.logger.levels.info').toString()
 		},
 		{
 			value: 'warning',
-			label: this.$t('controllerConfig.form.logger.levels.warning').toString()
+			label: this.$t('config.controller.form.logger.levels.warning').toString()
 		},
 		{
 			value: 'error',
-			label: this.$t('controllerConfig.form.logger.levels.error').toString()
+			label: this.$t('config.controller.form.logger.levels.error').toString()
 		}
 	]
 
