@@ -1,3 +1,17 @@
+iqrf-gateway-webapp (2.2.0) stable; urgency=medium
+
+  [ Karel Hanák ]
+  * Prepare for version v2.2.0-rc3
+  * Localization refactor: config main, components, interfaces, scheduler
+  * Localization refactor: config misc, fix verbosity levels rendering in trace form
+  * localization update: config messagings, translator, fix ws service creation and fetching, misc redirect
+  * localization update: controller, mender, config disambiguation; fix monitor list and form tls localization
+  * Localization update: mapping form
+  * Database: remove extra mapping
+  * Config: add missing title metainfo
+
+ -- Karel Hanák <karel.hanak@microrisc.com>  Mon, 16 Nov 2020 09:34:40 +0100
+
 iqrf-gateway-webapp (2.2.0~rc2) testing; urgency=medium
 
   [ Karel Hanák ]
