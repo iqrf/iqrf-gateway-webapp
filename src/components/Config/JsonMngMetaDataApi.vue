@@ -1,7 +1,7 @@
 <template>
 	<CCard class='border-0'>
 		<CCardHeader>
-			{{ $t('config.jsonMngMetaDataApi.title') }}
+			{{ $t('config.daemon.misc.jsonMngMetaDataApi.title') }}
 		</CCardHeader>
 		<CCardBody>
 			<ValidationObserver v-slot='{ invalid }'>
@@ -9,18 +9,18 @@
 					<ValidationProvider
 						v-slot='{ errors, touched, valid }'
 						rules='required'
-						:custom-messages='{required: "config.jsonMngMetaDataApi.form.messages.instance"}'
+						:custom-messages='{required: "config.daemon.misc.jsonMngMetaDataApi.errors.instance"}'
 					>
 						<CInput
 							v-model='configuration.instance'
-							:label='$t("config.jsonMngMetaDataApi.form.instance")'
+							:label='$t("config.daemon.misc.jsonMngMetaDataApi.form.instance")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
 					</ValidationProvider>
 					<CInputCheckbox
 						:checked.sync='configuration.metaDataToMessages'
-						:label='$t("config.jsonMngMetaDataApi.form.metaDataToMessages")'
+						:label='$t("config.daemon.misc.jsonMngMetaDataApi.form.metaDataToMessages")'
 					/>
 					<CButton type='submit' color='primary' :disabled='invalid'>
 						{{ $t('forms.save') }}

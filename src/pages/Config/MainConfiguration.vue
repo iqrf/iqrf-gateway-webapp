@@ -1,35 +1,35 @@
 <template>
 	<div>
-		<h1>{{ $t('config.main.title') }}</h1>
+		<h1>{{ $t('config.daemon.main.title') }}</h1>
 		<CCard body-wrapper>
 			<CForm @submit.prevent='saveConfig'>
 				<CInput
 					v-model='configuration.applicationName'
-					:label='$t("config.main.form.applicationName")'
+					:label='$t("config.daemon.main.form.applicationName")'
 				/>
 				<CInput
 					v-model='configuration.resourceDir'
-					:label='$t("config.main.form.resourceDir")'
+					:label='$t("config.daemon.main.form.resourceDir")'
 				/>
 				<CInput
 					v-model='configuration.dataDir'
-					:label='$t("config.main.form.dataDir")'
+					:label='$t("config.daemon.main.form.dataDir")'
 				/>
 				<CInput
 					v-model='configuration.cacheDir'
-					:label='$t("config.main.form.cacheDir")'
+					:label='$t("config.daemon.main.form.cacheDir")'
 				/>
 				<CInput
 					v-model='configuration.userDir'
-					:label='$t("config.main.form.userDir")'
+					:label='$t("config.daemon.main.form.userDir")'
 				/>
 				<CInput
 					v-model='configuration.configurationDir'
-					:label='$t("config.main.form.configurationDir")'
+					:label='$t("config.daemon.main.form.configurationDir")'
 				/>
 				<CInput
 					v-model='configuration.deploymentDir'
-					:label='$t("config.main.form.deploymentDir")'
+					:label='$t("config.daemon.main.form.deploymentDir")'
 				/>
 				<CButton type='submit' color='primary'>
 					{{ $t('forms.save') }}

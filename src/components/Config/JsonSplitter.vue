@@ -1,7 +1,7 @@
 <template>
 	<CCard class='border-0'>
 		<CCardHeader>
-			{{ $t('config.jsonSplitter.title') }}
+			{{ $t('config.daemon.misc.jsonSplitter.title') }}
 		</CCardHeader>
 		<CCardBody>
 			<ValidationObserver v-slot='{ invalid }'>
@@ -9,18 +9,18 @@
 					<ValidationProvider
 						v-slot='{ errors, touched, valid }'
 						rules='required'
-						:custom-messages='{required: "config.jsonSplitter.form.messages.instance"}'
+						:custom-messages='{required: "config.daemon.misc.jsonSplitter.errors.instance"}'
 					>
 						<CInput
 							v-model='configuration.instance'
-							:label='$t("config.jsonSplitter.form.instance")'
+							:label='$t("config.daemon.misc.jsonSplitter.form.instance")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
 					</ValidationProvider>
 					<CInputCheckbox
 						:checked.sync='configuration.validateJsonResponse'
-						:label='$t("config.jsonSplitter.form.validateJsonResponse")'
+						:label='$t("config.daemon.misc.jsonSplitter.form.validateJsonResponse")'
 					/>
 					<CButton type='submit' color='primary' :disabled='invalid'>
 						{{ $t('forms.save') }}

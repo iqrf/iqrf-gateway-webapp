@@ -4,14 +4,14 @@
 		<CCard body-wrapper>
 			<CSelect
 				:value.sync='iqrfInterface'
-				:label='$t("config.daemon.interfaces.selectInterface")'
+				:label='$t("config.daemon.interfaces.form.interface")'
 				:options='interfaceSelect'
-				:placeholder='$t("config.daemon.interfaces.placeholder")'
+				:placeholder='$t("config.daemon.interfaces.form.placeholder")'
 				@change='changeInterface'
 			/>
 		</CCard>
 		<CCard v-if='iqrfInterface === "noInterface"' body-wrapper>
-			{{ $t('config.daemon.interfaces.noInterface') }}
+			{{ $t('config.daemon.interfaces.messages.noInterface') }}
 		</CCard>
 		<IqrfSpi v-if='iqrfInterface === "iqrf::IqrfSpi"' />
 		<IqrfCdc v-if='iqrfInterface === "iqrf::IqrfCdc"' />
@@ -143,6 +143,7 @@ export default class Interfaces extends Vue {
 				return;
 			}
 		}
+		this.iqrfInterface = 'noInterface';
 	}
 
 	/**
@@ -161,12 +162,12 @@ export default class Interfaces extends Vue {
 		}
 		Promise.all(requests)
 			.then(() => this.getConfig().then(() => this.$toast.success(
-				this.$t('config.daemon.interfaces.updateSuccess', {interface: this.interfaceCode(this.iqrfInterface)}).toString()	
+				this.$t('config.daemon.interfaces.messages.updateSuccess', {interface: this.interfaceCode(this.iqrfInterface)}).toString()	
 			)))
 			.catch((error: AxiosError) => {
 				console.error(error);
 				this.$toast.error(
-					this.$t('config.daemon.interfaces.updateFailed').toString()
+					this.$t('config.daemon.interfaces.messages.updateFailed').toString()
 				);
 			});
 	}

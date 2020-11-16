@@ -1,10 +1,10 @@
 <template>
 	<div>
 		<h1 v-if='$route.path === "/config/daemon/mqtt/add"'>
-			{{ $t('config.mqtt.add') }}
+			{{ $t('config.daemon.messagings.mqtt.add') }}
 		</h1>
 		<h1 v-else>
-			{{ $t('config.mqtt.edit') }}
+			{{ $t('config.daemon.messagings.mqtt.edit') }}
 		</h1>
 		<CCard>
 			<CCardBody>
@@ -13,11 +13,11 @@
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
 							rules='required'
-							:custom-messages='{required: "config.mqtt.form.messages.instance"}'
+							:custom-messages='{required: "config.daemon.messagings.mqtt.errors.instance"}'
 						>
 							<CInput
 								v-model='configuration.instance'
-								:label='$t("config.mqtt.form.instance")'
+								:label='$t("config.daemon.messagings.mqtt.form.instance")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
@@ -25,11 +25,11 @@
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
 							rules='required'
-							:custom-messages='{required: "config.mqtt.form.messages.BrokerAddr"}'
+							:custom-messages='{required: "config.daemon.messagings.mqtt.errors.BrokerAddr"}'
 						>
 							<CInput
 								v-model='configuration.BrokerAddr'
-								:label='$t("config.mqtt.form.BrokerAddr")'
+								:label='$t("config.daemon.messagings.mqtt.form.BrokerAddr")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
@@ -37,11 +37,11 @@
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
 							rules='required'
-							:custom-messages='{required: "config.mqtt.form.messages.ClientId"}'
+							:custom-messages='{required: "config.daemon.messagings.mqtt.errors.ClientId"}'
 						>
 							<CInput
 								v-model='configuration.ClientId'
-								:label='$t("config.mqtt.form.ClientId")'
+								:label='$t("config.daemon.messagings.mqtt.form.ClientId")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
@@ -50,13 +50,13 @@
 							v-slot='{ errors, touched, valid }'
 							rules='integer|required'
 							:custom-messages='{
-								integer: "config.mqtt.form.messages.Persistence",
-								required: "config.mqtt.form.messages.Persistence",
+								integer: "config.daemon.messagings.mqtt.errors.Persistence",
+								required: "config.daemon.messagings.mqtt.errors.Persistence",
 							}'
 						>
 							<CInput
 								v-model.number='configuration.Persistence'
-								:label='$t("config.mqtt.form.Persistence")'
+								:label='$t("config.daemon.messagings.mqtt.form.Persistence")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 								type='number'
@@ -66,7 +66,7 @@
 							v-slot='{ valid, touched, errors }'
 							rules='required'
 							:custom-messages='{
-								required: "config.mqtt.form.messages.QoS",
+								required: "config.daemon.messagings.mqtt.errors.QoS",
 							}'
 						>
 							<CSelect
@@ -74,18 +74,18 @@
 								:label='$t("config.mqtt.form.QoS")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
-								:placeholder='$t("config.mqtt.form.messages.QoS")'
+								:placeholder='$t("config.daemon.messagings.mqtt.form.messages.QoS")'
 								:options='qosOptions'
 							/>
 						</ValidationProvider>
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
 							rules='required'
-							:custom-messages='{required: "config.mqtt.form.messages.TopicRequest"}'
+							:custom-messages='{required: "config.daemon.messagings.mqtt.errors.TopicRequest"}'
 						>
 							<CInput
 								v-model='configuration.TopicRequest'
-								:label='$t("config.mqtt.form.TopicRequest")'
+								:label='$t("config.daemon.messagings.mqtt.form.TopicRequest")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
@@ -93,38 +93,38 @@
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
 							rules='required'
-							:custom-messages='{required: "config.mqtt.form.messages.TopicResponse"}'
+							:custom-messages='{required: "config.daemon.messagings.mqtt.errors.TopicResponse"}'
 						>
 							<CInput
 								v-model='configuration.TopicResponse'
-								:label='$t("config.mqtt.form.TopicResponse")'
+								:label='$t("config.daemon.messagings.mqtt.form.TopicResponse")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
 						</ValidationProvider>
 						<CInput
 							v-model='configuration.User'
-							:label='$t("config.mqtt.form.User")'
+							:label='$t("config.daemon.messagings.mqtt.form.User")'
 						/>
 						<CInput
 							v-model='configuration.Password'
-							:label='$t("config.mqtt.form.Password")'
+							:label='$t("config.daemon.messagings.mqtt.form.Password")'
 						/>
 						<CInputCheckbox
 							:checked.sync='configuration.EnabledSSL'
-							:label='$t("config.mqtt.form.EnabledSSL")'
+							:label='$t("config.daemon.messagings.mqtt.form.EnabledSSL")'
 						/>
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
 							rules='integer|min:0'
 							:custom-messages='{
-								integer: "config.mqtt.form.messages.KeepAliveInterval",
-								min: "config.mqtt.form.messages.KeepAliveInterval",
+								integer: "config.daemon.messagings.mqtt.errors.KeepAliveInterval",
+								min: "config.daemon.messagings.mqtt.errors.KeepAliveInterval",
 							}'
 						>
 							<CInput
 								v-model.number='configuration.KeepAliveInterval'
-								:label='$t("config.mqtt.form.KeepAliveInterval")'
+								:label='$t("config.daemon.messagings.mqtt.form.KeepAliveInterval")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 								type='number'
@@ -135,13 +135,13 @@
 							v-slot='{ errors, touched, valid }'
 							rules='integer|min:0'
 							:custom-messages='{
-								integer: "config.mqtt.form.messages.ConnectTimeout",
-								min: "config.mqtt.form.messages.ConnectTimeout",
+								integer: "config.daemon.messagings.mqtt.errors.ConnectTimeout",
+								min: "config.daemon.messagings.mqtt.errors.ConnectTimeout",
 							}'
 						>
 							<CInput
 								v-model.number='configuration.ConnectTimeout'
-								:label='$t("config.mqtt.form.ConnectTimeout")'
+								:label='$t("config.daemon.messagings.mqtt.form.ConnectTimeout")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 								type='number'
@@ -152,13 +152,13 @@
 							v-slot='{ errors, touched, valid }'
 							:rules='"integer|between:0," + configuration.MaxReconnect'
 							:custom-messages='{
-								between: "config.mqtt.form.messages.MinReconnect",
-								integer: "config.mqtt.form.messages.MinReconnect",
+								between: "config.daemon.messagings.mqtt.errors.MinReconnect",
+								integer: "config.daemon.messagings.mqtt.errors.MinReconnect",
 							}'
 						>
 							<CInput
 								v-model.number='configuration.MinReconnect'
-								:label='$t("config.mqtt.form.MinReconnect")'
+								:label='$t("config.daemon.messagings.mqtt.form.MinReconnect")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 								type='number'
@@ -170,13 +170,13 @@
 							v-slot='{ errors, touched, valid }'
 							:rules='"integer|min:" + configuration.MinReconnect'
 							:custom-messages='{
-								integer: "config.mqtt.form.messages.MaxReconnect",
-								min: "config.mqtt.form.messages.MaxReconnect",
+								integer: "config.daemon.messagings.mqtt.errors.MaxReconnect",
+								min: "config.daemon.messagings.mqtt.errors.MaxReconnect",
 							}'
 						>
 							<CInput
 								v-model.number='configuration.MaxReconnect'
-								:label='$t("config.mqtt.form.MaxReconnect")'
+								:label='$t("config.daemon.messagings.mqtt.form.MaxReconnect")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 								type='number'
@@ -185,31 +185,31 @@
 						</ValidationProvider>
 						<CInput
 							v-model='configuration.TrustStore'
-							:label='$t("config.mqtt.form.TrustStore")'
+							:label='$t("config.daemon.messagings.mqtt.form.TrustStore")'
 						/>
 						<CInput
 							v-model='configuration.KeyStore'
-							:label='$t("config.mqtt.form.KeyStore")'
+							:label='$t("config.daemon.messagings.mqtt.form.KeyStore")'
 						/>
 						<CInput
 							v-model='configuration.PrivateKey'
-							:label='$t("config.mqtt.form.PrivateKey")'
+							:label='$t("config.daemon.messagings.mqtt.form.PrivateKey")'
 						/>
 						<CInput
 							v-model='configuration.PrivateKeyPassword'
-							:label='$t("config.mqtt.form.PrivateKeyPassword")'
+							:label='$t("config.daemon.messagings.mqtt.form.PrivateKeyPassword")'
 						/>
 						<CInput
 							v-model='configuration.EnabledCipherSuites'
-							:label='$t("config.mqtt.form.EnabledCipherSuites")'
+							:label='$t("config.daemon.messagings.mqtt.form.EnabledCipherSuites")'
 						/>
 						<CInputCheckbox
 							:checked.sync='configuration.EnableServerCertAuth'
-							:label='$t("config.mqtt.form.EnableServerCertAuth")'
+							:label='$t("config.daemon.messagings.mqtt.form.EnableServerCertAuth")'
 						/>
 						<CInputCheckbox
 							:checked.sync='configuration.acceptAsyncMsg'
-							:label='$t("config.mqtt.form.acceptAsyncMsg")'
+							:label='$t("config.daemon.messagings.mqtt.form.acceptAsyncMsg")'
 						/>
 						<CButton type='submit' color='primary' :disabled='invalid'>
 							{{ submitButton }}
@@ -300,7 +300,7 @@ export default class MqttMessagingForm extends Vue {
 	 */
 	get pageTitle(): string {
 		return this.$route.path === '/config/daemon/mqtt/add' ?
-			this.$t('config.mqtt.add').toString() : this.$t('config.mqtt.edit').toString();
+			this.$t('config.daemon.messagings.mqtt.add').toString() : this.$t('config.daemon.messagings.mqtt.edit').toString();
 	}
 
 	/**
@@ -312,7 +312,7 @@ export default class MqttMessagingForm extends Vue {
 		return options.map((option) => {
 			return {
 				value: option,
-				label: this.$t('config.mqtt.form.QoSes.' + option).toString(),
+				label: this.$t('config.daemon.messagings.mqtt.form.QoSes.' + option).toString(),
 			};
 		});
 	}
@@ -385,12 +385,12 @@ export default class MqttMessagingForm extends Vue {
 		this.$store.commit('spinner/HIDE');
 		if (this.$route.path === '/config/daemon/mqtt/add') {
 			this.$toast.success(
-				this.$t('config.mqtt.messages.add.success', {instance: this.configuration.instance})
+				this.$t('config.daemon.messagings.mqtt.messages.addSuccess', {instance: this.configuration.instance})
 					.toString()
 			);
 		} else {
 			this.$toast.success(
-				this.$t('config.mqtt.messages.edit.success', {instance: this.configuration.instance})
+				this.$t('config.daemon.messagings.mqtt.messages.editSuccess', {instance: this.configuration.instance})
 					.toString()
 			);
 		}

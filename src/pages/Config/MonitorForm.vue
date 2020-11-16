@@ -1,10 +1,10 @@
 <template>
 	<div>
 		<h1 v-if='$route.path === "/config/daemon/monitor/add"'>
-			{{ $t('config.monitor.add') }}
+			{{ $t('config.daemon.misc.monitor.add') }}
 		</h1>
 		<h1 v-else>
-			{{ $t('config.monitor.edit') }}
+			{{ $t('config.daemon.misc.monitor.edit') }}
 		</h1>
 		<CCard>
 			<CCardBody>
@@ -13,11 +13,11 @@
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
 							rules='required'
-							:custom-messages='{required: "config.mq.form.messages.instance"}'
+							:custom-messages='{required: "config.daemon.misc.monitor.errors.instance"}'
 						>
 							<CInput
 								v-model='monitor.instance'
-								:label='$t("config.monitor.form.instance")'
+								:label='$t("config.daemon.misc.monitor.form.instance")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
@@ -26,14 +26,14 @@
 							v-slot='{ errors, touched, valid }'
 							rules='integer|required'
 							:custom-messages='{
-								required: "config.monitor.form.messages.reportPeriod",
+								required: "config.daemon.misc.monitor.errors.reportPeriod",
 								integer: "forms.messages.integer"
 							}'
 						>
 							<CInput
 								v-model.number='monitor.reportPeriod'
 								type='number'
-								:label='$t("config.monitor.form.reportPeriod")'
+								:label='$t("config.daemon.misc.monitor.form.reportPeriod")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
@@ -42,35 +42,35 @@
 							v-slot='{ errors, touched, valid }'
 							rules='integer|required'
 							:custom-messages='{
-								required: "config.monitor.form.messages.WebsocketPort",
+								required: "config.daemon.misc.monitor.errors.WebsocketPort",
 								integer: "forms.messages.integer"
 							}'
 						>
 							<CInput
 								v-model.number='webSocket.WebsocketPort'
 								type='number'
-								:label='$t("config.monitor.form.WebsocketPort")'
+								:label='$t("config.daemon.misc.monitor.form.WebsocketPort")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
 						</ValidationProvider>
 						<CInputCheckbox
 							:checked.sync='webSocket.acceptOnlyLocalhost'
-							:label='$t("config.monitor.form.acceptOnlyLocalhost")'
+							:label='$t("config.daemon.misc.monitor.form.acceptOnlyLocalhost")'
 						/>
 						<div v-if='daemonHigher230'>
 							<CInputCheckbox
 								:checked.sync='webSocket.tlsEnabled'
-								:label='$t("config.websocket.form.tlsEnabled")'
+								:label='$t("config.daemon.messagings.websocket.form.tlsEnabled")'
 							/>
 							<CSelect
 								:value.sync='webSocket.tlsMode'
-								:label='$t("config.websocket.form.tlsMode")'
+								:label='$t("config.daemon.messagings.websocket.form.tlsMode")'
 								:options='tlsModeOptions'
-								:placeholder='$t("config.websocket.form.messages.tlsMode")'
+								:placeholder='$t("config.daemon.messagings.websocket.form.messages.tlsMode")'
 								:disabled='!webSocket.tlsEnabled'
 							/>
-							<span v-if='webSocket.tlsMode !== ""'>{{ $t('config.websocket.form.tlsModes.descriptions.' + webSocket.tlsMode) }}</span>
+							<span v-if='webSocket.tlsMode !== ""'>{{ $t('config.daemon.messagings.websocket.form.tlsModes.descriptions.' + webSocket.tlsMode) }}</span>
 						</div><br v-if='daemonHigher230'>
 						<CButton type='submit' color='primary' :disabled='invalid'>
 							{{ submitButton }}
@@ -211,8 +211,8 @@ export default class MonitorForm extends Vue {
 	 */
 	get pageTitle(): string {
 		return this.$route.path === '/config/daemon/monitor/add' ?
-			this.$t('config.monitor.add').toString() :
-			this.$t('config.monitor.edit').toString();
+			this.$t('config.daemon.misc.monitor.add').toString() :
+			this.$t('config.daemon.misc.monitor.edit').toString();
 	}
 	
 	/**
@@ -235,15 +235,15 @@ export default class MonitorForm extends Vue {
 			this.tlsModeOptions = [
 				{
 					value: 'intermediate',
-					label: this.$t('config.websocket.form.tlsModes.intermediate').toString()
+					label: this.$t('config.daemon.messagings.websocket.form.tlsModes.intermediate').toString()
 				},
 				{
 					value: 'modern',
-					label: this.$t('config.websocket.form.tlsModes.modern').toString()
+					label: this.$t('config.daemon.messagings.websocket.form.tlsModes.modern').toString()
 				},
 				{
 					value: 'old',
-					label: this.$t('config.websocket.form.tlsModes.old').toString()
+					label: this.$t('config.daemon.messagings.websocket.form.tlsModes.old').toString()
 				},
 			];
 		}
@@ -341,12 +341,12 @@ export default class MonitorForm extends Vue {
 		this.$store.commit('spinner/HIDE');
 		if (this.$route.path === '/config/daemon/monitor/add') {
 			this.$toast.success(
-				this.$t('config.monitor.messages.add.success', {instance: this.monitor.instance})
+				this.$t('config.daemon.misc.monitor.messages.addSuccess', {instance: this.monitor.instance})
 					.toString()
 			);
 		} else {
 			this.$toast.success(
-				this.$t('config.monitor.messages.edit.success', {instance: this.monitor.instance})
+				this.$t('config.daemon.misc.monitor.messages.editSuccess', {instance: this.monitor.instance})
 					.toString()
 			);
 		}

@@ -185,14 +185,14 @@ export default class TheSidebar extends Vue {
 								_children: [
 									{
 										_name: 'CSidebarNavItem',
-										name: this.$t('config.main.title'),
+										name: this.$t('config.daemon.main.title'),
 										to: '/config/daemon/main/',
 										roles: ['power'],
 										_attrs: {class: 'menu-level-2'},
 									},
 									{
 										_name: 'CSidebarNavItem',
-										name: this.$t('config.components.title'),
+										name: this.$t('config.daemon.components.title'),
 										to: '/config/daemon/component/',
 										roles: ['power'],
 									},
@@ -233,7 +233,7 @@ export default class TheSidebar extends Vue {
 									},
 									{
 										_name: 'CSidebarNavItem',
-										name: this.$t('config.scheduler.title'),
+										name: this.$t('config.daemon.scheduler.title'),
 										to: '/config/daemon/scheduler/',
 										roles: ['power', 'normal'],
 									},
@@ -247,14 +247,14 @@ export default class TheSidebar extends Vue {
 							},
 							{	
 								_name: 'CSidebarNavItem',
-								name: this.$t('translatorConfig.title'),
+								name: this.$t('config.translator.title'),
 								to: '/config/translator/',
 								feature: 'iqrfGatewayTranslator',
 								roles: ['power', 'normal'],
 							},
 							{	
 								_name: 'CSidebarNavItem',
-								name: this.$t('controllerConfig.title'),
+								name: this.$t('config.controller.title'),
 								to: '/config/controller/',
 								feature: 'iqrfGatewayController',
 								roles: ['power', 'normal'],

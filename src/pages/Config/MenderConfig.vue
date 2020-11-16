@@ -9,8 +9,8 @@
 							v-slot='{ errors, touched, valid }'
 							rules='addr|required'
 							:custom-messages='{
-								addr: "config.mender.form.messages.invalid.server",
-								required: "config.mender.form.messages.missing.server"
+								addr: "config.mender.errors.invalid.server",
+								required: "config.mender.errors.missing.server"
 							}'
 						>
 							<CInput
@@ -24,7 +24,7 @@
 							v-slot='{ errors, touched, valid }'
 							rules='required'
 							:custom-messages='{
-								required: "config.mender.form.messages.missing.tenantToken"
+								required: "config.mender.errors.missing.tenantToken"
 							}'
 						>
 							<CInput
@@ -39,8 +39,8 @@
 							rules='min:0|required|integer'
 							:custom-messages='{
 								integer: "forms.messages.integer",
-								min: "config.mender.form.messages.inventoryPollInterval",
-								required: "config.mender.form.messages.inventoryPollInterval"
+								min: "config.mender.errors.inventoryPollInterval",
+								required: "config.mender.errors.inventoryPollInterval"
 							}'
 						>
 							<CInput
@@ -57,8 +57,8 @@
 							rules='min:0|required|integer'
 							:custom-messages='{
 								integer: "forms.messages.integer",
-								min: "config.mender.form.messages.retryPollInterval",
-								required: "config.mender.form.messages.retryPollInterval"
+								min: "config.mender.errors.retryPollInterval",
+								required: "config.mender.errors.retryPollInterval"
 							}'
 						>
 							<CInput
@@ -75,8 +75,8 @@
 							rules='min:0|required|integer'
 							:custom-messages='{
 								integer: "forms.messages.integer",
-								min: "config.mender.form.messages.updatePollInterval",
-								required: "config.mender.form.messages.updatePollInterval"
+								min: "config.mender.errors.updatePollInterval",
+								required: "config.mender.errors.updatePollInterval"
 							}'
 						>
 							<CInput

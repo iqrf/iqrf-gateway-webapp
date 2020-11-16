@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<h1>
-			{{ $t('config.websocket.service.title') }}
+			{{ $t('config.daemon.messagings.websocket.service.title') }}
 		</h1>
 		<CCard>
 			<CCardHeader class='border-0'>
@@ -88,10 +88,10 @@
 		>
 			<template #header>
 				<h5 class='modal-title'>
-					{{ $t('config.websocket.service.messages.deleteTitle') }}
+					{{ $t('config.daemon.messagings.websocket.service.messages.deleteTitle') }}
 				</h5>
 			</template>
-			{{ $t('config.websocket.service.messages.deletePrompt', {service: deleteService}) }}
+			{{ $t('config.daemon.messagings.websocket.service.messages.deletePrompt', {service: deleteService}) }}
 			<template #footer>
 				<CButton
 					color='danger'
@@ -161,15 +161,15 @@ export default class WebsocketServiceList extends Vue {
 	private fields: Array<IField> = [
 		{
 			key: 'instance',
-			label: this.$t('config.websocket.form.instance'),
+			label: this.$t('config.daemon.messagings.websocket.form.instance'),
 		},
 		{
 			key: 'WebsocketPort',
-			label: this.$t('config.websocket.form.WebsocketPort'),
+			label: this.$t('config.daemon.messagings.websocket.form.WebsocketPort'),
 		},
 		{
 			key: 'acceptOnlyLocalhost',
-			label: this.$t('config.websocket.form.acceptOnlyLocalhost'),
+			label: this.$t('config.daemon.messagings.websocket.form.acceptOnlyLocalhost'),
 		},
 		{
 			key: 'actions',
@@ -201,7 +201,7 @@ export default class WebsocketServiceList extends Vue {
 		if (versionHigherThan('2.3.0')) {
 			this.fields.splice(3, 0, {
 				key: 'tlsEnabled',
-				label: this.$t('config.websocket.form.tlsEnabled')
+				label: this.$t('config.daemon.messagings.websocket.form.tlsEnabled')
 			});
 		}
 	}
@@ -266,7 +266,7 @@ export default class WebsocketServiceList extends Vue {
 			.then(() => {
 				this.getConfig().then(() => {
 					this.$toast.success(
-						this.$t('config.websocket.service.messages.editSuccess', {service: settings.instance})
+						this.$t('config.daemon.messagings.websocket.service.messages.editSuccess', {service: settings.instance})
 							.toString()
 					);
 				});
@@ -288,7 +288,7 @@ export default class WebsocketServiceList extends Vue {
 			.then(() => {
 				this.getConfig().then(() => {
 					this.$toast.success(
-						this.$t('config.websocket.service.messages.deleteSuccess', {service: service})
+						this.$t('config.daemon.messagings.websocket.service.messages.deleteSuccess', {service: service})
 							.toString()
 					);
 				});

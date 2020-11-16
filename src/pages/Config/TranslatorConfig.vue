@@ -1,21 +1,21 @@
 <template>
 	<div>
-		<h1>{{ $t('translatorConfig.title') }}</h1>
+		<h1>{{ $t('config.translator.title') }}</h1>
 		<CCard>
 			<CCardBody>
 				<ValidationObserver v-if='config !== null' v-slot='{ invalid }'>
 					<CForm @submit.prevent='processSubmit'>
 						<CRow>
 							<CCol md='6'>
-								<h3>{{ $t("translatorConfig.form.mqtt.title") }}</h3>
+								<h3>{{ $t("config.translator.form.mqtt.title") }}</h3>
 								<ValidationProvider 
 									v-slot='{ errors, touched, valid }' 
 									rules='required'
-									:custom-messages='{required: "translatorConfig.form.messages.missing.maddr"}'
+									:custom-messages='{required: "config.translator.errors.missing.maddr"}'
 								>
 									<CInput
 										v-model='config.mqtt.addr'
-										:label='$t("translatorConfig.form.mqtt.addr")'
+										:label='$t("config.translator.form.mqtt.addr")'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'
 									/>
@@ -24,9 +24,9 @@
 									v-slot='{ errors, touched, valid }' 
 									rules='required|integer|between:1,49151'
 									:custom-messages='{
-										integer: "translatorConfig.form.messages.integer",
-										required: "translatorConfig.form.messages.port",
-										between: "translatorConfig.form.messages.port"
+										integer: "config.translator.errors.integer",
+										required: "config.translator.errors.port",
+										between: "config.translator.errors.port"
 									}'
 								>
 									<CInput
@@ -34,7 +34,7 @@
 										type='number'
 										min='1'
 										max='49151'
-										:label='$t("translatorConfig.form.mqtt.port")'
+										:label='$t("config.translator.form.mqtt.port")'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'
 									/>
@@ -43,13 +43,13 @@
 									v-slot='{ errors, touched, valid }' 
 									rules='required|client_id'
 									:custom-messages='{
-										required: "translatorConfig.form.messages.missing.mcid",
-										client_id: "translatorConfig.form.messages.invalid.mcid",
+										required: "config.translator.errors.missing.mcid",
+										client_id: "config.translator.errors.invalid.mcid",
 									}'
 								>
 									<CInput
 										v-model='config.mqtt.cid'
-										:label='$t("translatorConfig.form.mqtt.cid")'
+										:label='$t("config.translator.form.mqtt.cid")'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'								
 									/>
@@ -58,13 +58,13 @@
 									v-slot='{ errors, touched, valid }' 
 									rules='topic|required'
 									:custom-messages='{
-										required: "translatorConfig.form.messages.missing.mtopic",
-										topic: "translatorConfig.form.messages.invalid.mtopic",
+										required: "config.translator.errors.missing.mtopic",
+										topic: "config.translator.errors.invalid.mtopic",
 									}'
 								>
 									<CInput
 										v-model='config.mqtt.topic'
-										:label='$t("translatorConfig.form.mqtt.topic")'
+										:label='$t("config.translator.form.mqtt.topic")'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'
 									/>
@@ -75,7 +75,7 @@
 									<CInput
 										v-model='config.mqtt.user'
 										autocomplete='off'
-										:label='$t("translatorConfig.form.mqtt.user")'
+										:label='$t("config.translator.form.mqtt.user")'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'
 									/>
@@ -86,7 +86,7 @@
 									<CInput
 										v-model='config.mqtt.pw'
 										autocomplete='off'
-										:label='$t("translatorConfig.form.mqtt.pw")'
+										:label='$t("config.translator.form.mqtt.pw")'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'
 										:type='visibility'
@@ -104,15 +104,15 @@
 								</ValidationProvider>
 							</CCol>
 							<CCol md='6'>
-								<h3>{{ $t("translatorConfig.form.rest.title") }}</h3>
+								<h3>{{ $t("config.translator.form.rest.title") }}</h3>
 								<ValidationProvider
 									v-slot='{ errors, touched, valid }'
 									rules='required'
-									:custom-messages='{required: "translatorConfig.form.messages.missing.raddr"}'
+									:custom-messages='{required: "config.translator.errors.missing.raddr"}'
 								>
 									<CInput
 										v-model='config.rest.addr' 
-										:label='$t("translatorConfig.form.rest.addr")' 
+										:label='$t("config.translator.form.rest.addr")' 
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'
 									/>
@@ -121,9 +121,9 @@
 									v-slot='{ errors, touched, valid }'
 									rules='required|integer|between:1,49151'
 									:custom-messages='{
-										integer: "translatorConfig.form.messages.integer",
-										required: "translatorConfig.form.messages.port",
-										between: "translatorConfig.form.messages.port"
+										integer: "config.translator.errors.integer",
+										required: "config.translator.errors.port",
+										between: "config.translator.errors.port"
 									}'
 								>
 									<CInput
@@ -131,7 +131,7 @@
 										type='number'
 										min='1'
 										max='49151'
-										:label='$t("translatorConfig.form.rest.port")' 
+										:label='$t("config.translator.form.rest.port")' 
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'
 									/>
@@ -140,13 +140,13 @@
 									v-slot='{ errors, touched, valid }' 
 									rules='api_key_r|required'
 									:custom-messages='{
-										required: "translatorConfig.form.messages.missing.rapi_key",
-										api_key_r: "translatorConfig.form.messages.invalid.api_key"
+										required: "config.translator.errors.missing.rapi_key",
+										api_key_r: "config.translator.errors.invalid.api_key"
 									}'
 								>
 									<CInput
 										v-model='config.rest.api_key' 
-										:label='$t("translatorConfig.form.rest.api_key")'
+										:label='$t("config.translator.form.rest.api_key")'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'
 									/>
@@ -192,14 +192,14 @@ import {ITranslator} from '../../interfaces/translator';
 		next((vm: Vue) => {
 			if (!vm.$store.getters['features/isEnabled']('iqrfGatewayTranslator')) {
 				vm.$toast.error(
-					vm.$t('translatorConfig.messages.disabled').toString()
+					vm.$t('config.translator.messages.disabled').toString()
 				);
 				vm.$router.push(from.path);
 			}
 		});
 	},
 	metaInfo: {
-		title: 'translatorConfig.description',
+		title: 'config.translator.description',
 	},
 })
 
@@ -242,11 +242,11 @@ export default class TranslatorConfig extends Vue {
 			return regex.test(key);
 		});
 		extend('client_id', (id) => {
-			const regex = RegExp('^[A-F0-9]{16}$');
+			const regex = RegExp('^[A-Fa-f0-9]{16}$');
 			return regex.test(id);
 		});
 		extend('topic', (topic) => {
-			const regex = RegExp('^gateway\\/[A-F0-9]{16}\\/rest\\/requests\\/\\+\\/#$');
+			const regex = RegExp('^gateway\\/[A-Fa-f0-9]{16}\\/rest\\/requests\\/\\+\\/#$');
 			return regex.test(topic);
 		});
 	}

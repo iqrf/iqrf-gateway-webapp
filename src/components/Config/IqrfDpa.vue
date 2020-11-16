@@ -1,7 +1,7 @@
 <template>
 	<CCard>
 		<CCardHeader>
-			{{ $t('config.iqrfDpa.title') }}
+			{{ $t('config.daemon.interfaces.iqrfDpa.title') }}
 		</CCardHeader>
 		<CCardBody>
 			<ValidationObserver v-slot='{ invalid }'>
@@ -10,11 +10,11 @@
 						v-if='powerUser'
 						v-slot='{ errors, touched, valid }'
 						rules='required'
-						:custom-messages='{required: "config.iqrfDpa.form.messages.instance"}'
+						:custom-messages='{required: "config.daemon.interfaces.iqrfDpa.errors.instance"}'
 					>
 						<CInput
 							v-model='configuration.instance'
-							:label='$t("config.iqrfDpa.form.instance")'
+							:label='$t("config.daemon.interfaces.iqrfDpa.form.instance")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
@@ -24,15 +24,15 @@
 						rules='integer|required|min:0'
 						:custom-messages='{
 							integer: "forms.messages.integer",
-							min: "config.iqrfDpa.form.messages.DpaHandlerTimeout",
-							required: "config.iqrfDpa.form.messages.DpaHandlerTimeout"
+							min: "config.daemon.interfaces.iqrfDpa.errors.DpaHandlerTimeout",
+							required: "config.daemon.interfaces.iqrfDpa.errors.DpaHandlerTimeout"
 						}'
 					>
 						<CInput
 							v-model.number='configuration.DpaHandlerTimeout'
 							type='number'
 							min='0'
-							:label='$t("config.iqrfDpa.form.DpaHandlerTimeout")'
+							:label='$t("config.daemon.interfaces.iqrfDpa.form.DpaHandlerTimeout")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>

@@ -128,6 +128,8 @@
 		}
 	},
 	"forms": {
+		"import": "Import",
+		"export": "Export",
 		"start": "Start",
 		"ok": "OK",
 		"add": "Add",
@@ -181,618 +183,690 @@
 				"readConfig": "Cannot read zip archive with a configuration."
 			}
 		},
-		"components": {
-			"title": "Components",
-			"description": "Manage components.",
-			"add": "Add component",
-			"edit": "Edit component",
-			"form": {
-				"name": "Name",
-				"libraryPath": "Library path",
-				"libraryName": "Library name",
-				"enabled": "Enabled",
-				"disabled": "Disabled",
-				"startLevel": "Start level",
+		"daemon": {
+			"title": "IQRF GW daemon",
+			"description": "IQRF Daemon configuration",
+			"main": {
+				"title": "Main configuration",
+				"description": "Main configuration of IQRF Gateway Daemon.",
+				"form": {
+					"applicationName": "Application name",
+					"resourceDir": "Resource directory",
+					"dataDir": "Data directory",
+					"cacheDir": "Cache directory",
+					"userDir": "User directory",
+					"configurationDir": "Configuration directory",
+					"deploymentDir": "Deployment directory"
+				}
+			},
+			"components": {
+				"title": "Components",
+				"description": "Manage components.",
+				"add": "Add component",
+				"edit": "Edit component",
+				"form": {
+					"name": "Name",
+					"libraryPath": "Library path",
+					"libraryName": "Library name",
+					"enabled": "Enabled",
+					"disabled": "Disabled",
+					"startLevel": "Start level"
+				},
 				"messages": {
-					"name": "Please enter name of component.",
-					"libraryPath": "Please enter path to component's library directory.",
-					"libraryName": "Please enter name of component's library file.",
-					"startLevel": "Please enter component's start level.",
 					"deletePrompt": "Do you really want to delete component {component}?",
 					"deleteTitle": "Delete component",
 					"deleteSuccess": "Configuration of component {component} has been successfully deleted.",
 					"addSuccess": "Configuration of component {component} has been successfully added.",
 					"editSuccess": "Configuration of component {component} has been successfully updated.",
 					"multipleInterfaces": "Only one IQRF interface can be enabled at a time."
+				},
+				"errors": {
+					"name": "Please enter name of component.",
+					"libraryPath": "Please enter path to component's library directory.",
+					"libraryName": "Please enter name of component's library file.",
+					"startLevel": "Please enter component's start level."
 				}
-			}
-		},
-		"daemon": {
-			"title": "IQRF GW daemon",
-			"description": "IQRF Daemon configuration",
+			},
 			"interfaces": {
 				"title": "Interfaces",
 				"description": "Configuration of IQRF communication interfaces.",
-				"noInterface": "All IQRF communication interfaces are disabled.",
-				"selectInterface": "Select active interface",
-				"placeholder": "Please select communication interface.",
+				"messages": {
+					"noInterface": "All IQRF communication interfaces are disabled.",
+					"updateSuccess": "Interface {interface} has been successfully enabled. Restart IQRF Gateway Daemon for changes to take effect.",
+					"updateFailed": "An error occured while updating interface settings."
+				},
+				"form": {
+					"interface": "Select active interface",
+					"placeholder": "Please select communication interface."
+				},
 				"types": {
 					"cdc": "CDC",
 					"spi": "SPI",
 					"uart": "UART"
 				},
-				"updateFailed": "An error occured while updating interface settings.",
-				"updateSuccess": "Interface {interface} has been successfully enabled. Restart IQRF Gateway Daemon for changes to take effect."
+				"iqrfCdc": {
+					"title": "IQRF CDC interface",
+					"description": "IQRF CDC interface settings.",
+					"form": {
+						"instance": "Name of instance",
+						"interface": "IQRF CDC interface"
+					},
+					"errors": {
+						"instance": "Please enter name of IQRF CDC instance.",
+						"iqrfInterface": "Please enter IQRF CDC interface."
+					},
+					"mappings": "Available CDC mappings"
+				},
+				"iqrfSpi": {
+					"title": "IQRF SPI interface",
+					"description": "IQRF SPI interface settings.",
+					"form": {
+						"instance": "Name of instance",
+						"iqrfInterface": "IQRF SPI interface",
+						"spiReset": "Enable SPI reset"
+					},
+					"errors": {
+						"instance": "Please enter name of IQRF SPI instance.",
+						"iqrfInterface": "Please enter IQRF SPI interface."
+					},
+					"mappings": "Available SPI mappings"
+				},
+				"iqrfUart": {
+					"title": "IQRF UART interface",
+					"description": "IQRF UART interface settings.",
+					"form": {
+						"instance": "Name of instance",
+						"iqrfInterface": "IQRF UART interface",
+						"baudRate": "UART baud rate",
+						"uartReset": "UART reset"
+					},
+					"errors": {
+						"instance": "Please enter name of IQRF UART instance.",
+						"iqrfInterface": "Please enter IQRF UART interface.",
+						"baudRate": "Please select UART baud rate."
+					},
+					"mappings": "Available UART mappings"
+				},
+				"iqrfDpa":{
+					"title": "IQRF DPA interface",
+					"description": "IQRF DPA interface settings.",
+					"form": {
+						"instance": "Name of instance",
+						"DpaHandlerTimeout": "DPA Confirmation/Response timeout in milliseconds"
+					},
+					"errors": {
+						"instance": "Please enter name of IQRF DPA instance.",
+						"DpaHandlerTimeout": "Please enter default DPA Confirmation/Response timeout greater or equal to 0."
+					}
+				},
+				"interfaceMapping": {
+					"boards": "Boards",
+					"interfaces": "Interfaces",
+					"addMapping": "Add mapping",
+					"setMapping": "Set mapping",
+					"editMapping": "Edit mapping",
+					"removeMapping": "Remove mapping",
+					"removeTitle": "Remove mapping",
+					"form": {
+						"addTitle": "Add mapping",
+						"editTitle": "Edit mapping",
+						"type": "Mapping type",
+						"types": {
+							"spi": "SPI",
+							"uart": "UART"
+						},
+						"name": "Mapping name",
+						"interface": "Mapping device name",
+						"powerPin": "Power enable GPIO pin",
+						"busPin": "Bus enable GPIO pin",
+						"pgmPin": "Programming mode switch GPIO pin",
+						"baudRate": "UART baud rate",
+						"gateway": "IQRF Gateway mapping",
+						"i2cPin": "I2C interface enable GPIO pin *",
+						"spiPin": "SPI interface enable GPIO pin *",
+						"uartPin": "UART interface enable GPIO pin *",
+						"gwOnly": "* IQRF Gateway only"
+					},
+					"errors": {
+						"typeSelect": "Please select mapping type.",
+						"name": "Please enter mapping name.",
+						"interface": "Please enter device name.",
+						"busPin": "Please enter bus enable GPIO pin number.",
+						"pgmPin": "Please enter programming mode switch GPIO pin number.",
+						"powerPin": "Please enter power enable GPIO pin number.",
+						"i2cPin": "Please enter I2C interface enable GPIO pin number.",
+						"spiPin": "Please enter SPI interface enable GPIO pin number.",
+						"uartPin": "Please enter UART interface enable GPIO pin number."
+					},
+					"messages": {
+						"invalid": "Invalid mapping content.",
+						"notFound": "Mapping not found.",
+						"removePrompt": "Do you really want to remove mapping {mapping}?",
+						"removeSuccess": "Mapping {mapping} has been successfully removed.",
+						"addSuccess": "Mapping {mapping} has been succesfully created.",
+						"editSuccess": "Mapping {mapping} has been successfully edited."
+					}
+				}
 			},
 			"messagings": {
 				"title": "Messagings",
-				"description": "Configuration of messagings."
+				"description": "Configuration of messagings.",
+				"mqtt": {
+					"title": "MQTT interface",
+					"description": "MQTT interface settings.",
+					"add": "Add MQTT interface",
+					"edit": "Edit MQTT interface",
+					"form": {
+						"instance": "Name of instance",
+						"BrokerAddr": "Broker address",
+						"ClientId": "Client ID",
+						"Persistence": "Persistence",
+						"QoS": "QoS",
+						"QoSes": {
+							"0": "QoS 0 - At most once",
+							"1": "QoS 1 - At least once",
+							"2": "QoS 2 - Exactly once"
+						},
+						"TopicRequest": "Topic for requests",
+						"TopicResponse": "Topic for responses",
+						"User": "User",
+						"Password": "Password",
+						"EnabledSSL": "Enabled TLS",
+						"KeepAliveInterval": "Keep alive interval",
+						"ConnectTimeout": "Connection timeout",
+						"MinReconnect": "Minimal count of reconnects",
+						"MaxReconnect": "Maximal count of reconnects",
+						"TrustStore": "CA certificate",
+						"KeyStore": "Certificate",
+						"PrivateKey": "Private key",
+						"PrivateKeyPassword": "Private key password",
+						"EnabledCipherSuites": "Enabled cipher suites",
+						"EnableServerCertAuth": "Enable server certificate authentication",
+						"acceptAsyncMsg": "Accept asynchronous messages"
+					},
+					"messages": {
+						"addSuccess": "MQTT interface instance {instance} has been added.",
+						"deletePrompt": "Do you really want to delete MQTT interface instance {instance}?",
+						"deleteTitle": "Delete MQTT interface instance",
+						"deleteSuccess": "MQTT interface instance {instance} has been deleted.",
+						"editSuccess": "MQTT interface instance {instance} has been edited."
+					},
+					"errors": {
+						"instance": "Please enter name of MQTT instance.",
+						"BrokerAddr": "Please enter address of MQTT broker.",
+						"Persistence": "Please enter persistence.",
+						"ClientId": "Please enter client ID.",
+						"QoS": "Please select QoS.",
+						"TopicRequest": "Please enter topic for requests.",
+						"TopicResponse": "Please enter topic for responses.",
+						"KeepAliveInterval": "Please enter keep alive interval greater or equal to 0 (disabled).",
+						"ConnectTimeout": "Please enter connection timeout greater or equal to 0 (disabled).",
+						"MinReconnect": "Please enter minimum number of reconnects greater or equal to 0 (disabled) and less or equal to maximum number of reconnects.",
+						"MaxReconnect": "Please enter maximum number of reconnects greater or equal to minimum number of reconnects."
+					}
+				},
+				"websocket": {
+					"title": "WebSocket interface",
+					"description": "IQRF WebSocket interface settings.",
+					"form": {
+						"instance": "Name of instance",
+						"acceptAsyncMsg": "Accept asynchronous messages",
+						"WebsocketPort": "WebSocket port",
+						"acceptOnlyLocalhost": "Accept only connection from localhost",
+						"tlsEnabled": "Enable TLS",
+						"tlsMode": "TLS mode",
+						"tlsModes": {
+							"intermediate": "Intermediate",
+							"modern": "Modern",
+							"old": "Old",
+							"descriptions": {
+								"intermediate": "General-purpose servers with a variety of clients, recommended for almost all systems. Supports Firefox 27, Android 4.4.2, Chrome 31, Edge, IE 11 on Windows 7, Java 8u31, OpenSSL 1.0.1, Opera 20, and Safari 9.",
+								"modern": "Services with clients that support TLS 1.3 and don't need backward compatibility. Supports Firefox 63, Android 10.0, Chrome 70, Edge 75, Java 11, OpenSSL 1.1.1, Opera 57, and Safari 12.1.",
+								"old": "Compatible with a number of very old clients, and should be used only as a last resort. Supports Firefox 1, Android 2.3, Chrome 1, Edge 12, IE8 on Windows XP, Java 6, OpenSSL 0.9.8, Opera 5, and Safari 1."
+							}
+						},
+						"certificate": "Certificate",
+						"privateKey": "Private key",
+						"requiredInterfaces": "Required interfaces",
+						"requiredInterface": {
+							"add": "Add another interface",
+							"remove": "Remove this interface",
+							"name": "Required interface name",
+							"instance": "Required WebSocket service"
+						}
+					},
+					"interface": {
+						"title": "Websocket interfaces",
+						"add": "Add WebSocket interface",
+						"edit": "Edit WebSocket interface"
+					},
+					"messaging": {
+						"title": "WebSocket messagings",
+						"add": "Add WebSocket messaging",
+						"edit": "Edit WebSocket messaging",
+						"messages": {
+							"deleteTitle": "Delete WebSocket messaging",
+							"deletePrompt": "Do you really want to delete WebSocket messaging {messaging}?",
+							"deleteSuccess": "Configuration of WebSocket messaging {messaging} has been successfully deleted.",
+							"addSuccess": "Configuration of WebSocket messaging {messaging} has been successfully added.",
+							"editSuccess": "Configuration of WebSocket messaging {messaging} has been successfully edited."
+						}
+					},
+					"service": {
+						"title": "WebSocket services",
+						"add": "Add WebSocket service",
+						"edit": "Edit WebSocket service",
+						"messages": {
+							"deleteTitle": "Delete WebSocket service",
+							"deletePrompt": "Do you really want to delete WebSocket service {service}?",
+							"deleteSuccess": "Configuration of WebSocket service {service} has been successfully deleted.",
+							"addSuccess": "Configuration of WebSocket service {service} has been successfully added.",
+							"editSuccess": "Configuration of WebSocket service {service} has been successfully edited."
+						}
+					},
+					"messages": {
+						"addSuccess": "WebSocket interface instance {instance} has been added.",
+						"deletePrompt": "Do you really want to delete WebSocket interface instance {instance}?",
+						"deleteTitle": "Delete WebSocket interface instance",
+						"deleteSuccess": "WebSocket interface instance {instance} has been deleted.",
+						"editSuccess": "WebSocket interface instance {instance} has been edited."
+					},
+					"errors": {
+						"instance": "Please enter name of WebSocket interface.",
+						"messagingInstance": "Please enter name of WebSocket messaging.",
+						"serviceInstance": "Please enter name of WebSocket service.",
+						"WebsocketPort": "Please enter WebSocket port number.",
+						"interfaceName": "Please select the name of required interface.",
+						"interfaceInstance": "Please select the required WebSocket service instance.",
+						"tlsMode": "Please select TLS mode."
+					}
+				},
+				"mq": {
+					"title": "MQ interface",
+					"description": "MQ interface settings.",
+					"add": "Add MQ interface",
+					"edit": "Edit MQ interface",
+					"form": {
+						"instance": "Name of instance",
+						"LocalMqName": "Local MQ name",
+						"RemoteMqName": "Remote MQ name",
+						"acceptAsyncMsg": "Accept Async messages"
+					},
+					"messages": {
+						"addSuccess": "MQ interface instance {instance} has been added.",
+						"deletePrompt": "Do you really want to delete MQ interface instance {instance}?",
+						"deleteTitle": "Delete MQ interface instance",
+						"deleteSuccess": "MQ interface instance {instance} has been deleted.",
+						"editSuccess": "MQ interface instance {instance} has been edited."
+					},
+					"errors": {
+						"instance": "Please enter name of MQ instance.",
+						"LocalMqName": "Please enter local MQ name.",
+						"RemoteMqName": "Please enter remote MQ name."
+					}
+				},
+				"udp": {
+					"title": "UDP interface",
+					"description": "IQRF UDP interface settings.",
+					"add": "Add UDP interface",
+					"edit": "Edit UDP interface",
+					"form": {
+						"instance": "Name of instance",
+						"RemotePort": "Remote port",
+						"LocalPort": "Local port"
+					},
+					"messages": {
+						"addSuccess": "UDP interface instance {instance} has been added.",
+						"deletePrompt": "Do you really want to delete UDP interface instance {instance}?",
+						"deleteTitle": "Delete UDP interface instance",
+						"deleteSuccess": "UDP interface instance {instance} has been deleted.",
+						"editSuccess": "UDP interface instance {instance} has been edited."
+					},
+					"errors": {
+						"instance": "Please enter name of UDP interface.",
+						"RemotePort": "Please enter remote port - integer between 1 and 49151.",
+						"LocalPort": "Please enter local port - integer between 1 and 49151."
+					}
+				}
+			},
+			"scheduler": {
+				"title": "Scheduler",
+				"description": "Scheduler settings.",
+				"add": "Add task",
+				"edit": "Edit task",
+				"table": {
+					"id": "ID",
+					"time": "Time",
+					"service": "Service",
+					"mType": "Message types"
+				},
+				"form": {
+					"task": {
+						"taskId": "Task ID",
+						"cronTime": "Time in cron format",
+						"exactTime": "Exact time",
+						"periodic": "Periodic",
+						"period": "Period in seconds",
+						"startTime": "Start time"
+					},
+					"message": {
+						"title": "Messages",
+						"label": "Message (JSON request)",
+						"messagePlaceholder": "Select message",
+						"add": "Add another message",
+						"remove": "Remove message"
+					}
+				},
+				"errors": {
+					"nums": "Please enter a valid integer",
+					"service": "Please select service.",
+					"messaging": "Please select messaging.",
+					"message": "Please enter a message."
+				},
+				"import": {
+					"title": "Import task(s)",
+					"file": "JSON task file or ZIP archive with tasks",
+					"errors": {
+						"fileEmpty": "Please select file to import."
+					}
+				},
+				"messages": {
+					"importSuccess": "The tasks has been imported successfully.",
+					"importInvalidFormat": "The uploaded file is not JSON file or ZIP archive.",
+					"importInvalidFile": "The uploaded file is invalid.",
+					"deleteTitle": "Delete scheduler task",
+					"deletePrompt": "Do you really want to delete scheduler task {task}?",
+					"deleteSuccess": "Scheduler task has been successfully deleted.",
+					"deleteFail": "An error occurred while removing task.",
+					"getFail": "Could not retrieve task {task}.",
+					"listFailed": "Failed to retrieve list of scheduler tasks",
+					"addSuccess": "Scheduler task has been successfully added.",
+					"editSuccess": "Scheduler task {task} has been successfully edited.",
+					"processError": "An error has occurred while processing Daemon API request.",
+					"rest": {
+						"invalidTask": "Task configuration is not valid.",
+						"invalidFile": "Imported scheduler configuration is not valid.",
+						"notFound": "Task does not exist.",
+						"exists": "Task with this ID already exists.",
+						"messagingFail": "Failed to retrieve messaging services."
+					}
+				}
 			},
 			"misc": {
 				"title": "Misc",
-				"description": "Configuration of miscellaneous Daemon components"
-			},
-			"form": {
-				"interface": "Select interface",
-				"messaging": "Select messaging"
-			}
-		},
-		"interfaceMapping": {
-			"boards": "Boards",
-			"interfaces": "Interfaces",
-			"addMapping": "Add mapping",
-			"setMapping": "Set mapping",
-			"editMapping": "Edit mapping",
-			"removeMapping": "Remove mapping",
-			"removeTitle": "Remove mapping",
-			"form": {
-				"addTitle": "Add mapping",
-				"editTitle": "Edit mapping",
-				"type": "Mapping type",
-				"types": {
-					"spi": "SPI",
-					"uart": "UART"
-				},
-				"name": "Mapping name",
-				"interface": "Mapping device name",
-				"powerPin": "Power enable GPIO pin",
-				"busPin": "Bus enable GPIO pin",
-				"pgmPin": "Programming mode switch GPIO pin",
-				"baudRate": "UART baud rate",
-				"gateway": "IQRF Gateway mapping",
-				"i2cPin": "I2C interface enable GPIO pin",
-				"spiPin": "SPI interface enable GPIO pin",
-				"uartPin": "UART interface enable GPIO pin",
-				"messages": {
-					"typeSelect": "Please select mapping type.",
-					"name": "Please enter mapping name.",
-					"interface": "Please enter device name.",
-					"busPin": "Please enter bus enable pin number.",
-					"pgmPin": "Please enter programming mode switch pin number.",
-					"powerPin": "Please enter power enable pin number.",
-					"i2cPin": "Please enter I2C interface enable pin number.",
-					"spiPin": "Please enter SPI interface enable pin number.",
-					"uartPin": "Please enter UART interface enable pin number."
-				}
-			},
-			"messages": {
-				"invalid": "Invalid mapping content.",
-				"notFound": "Mapping not found.",
-				"removePrompt": "Do you really want to remove mapping {mapping}?",
-				"removeSuccess": "Mapping {mapping} has been successfully removed.",
-				"addSuccess": "Mapping {mapping} has been succesfully created.",
-				"editSuccess": "Mapping {mapping} has been successfully edited."
-			}
-		},
-		"iqmesh": {
-			"title": "IQMESH services",
-			"description": "Manage IQMESH services.",
-			"otaUpload": {
-				"title": "IQRF OTA upload service",
-				"form": {
-					"instance": "Name of instance",
-					"uploadPath": "Path to a directory with files to upload",
+				"description": "Configuration of miscellaneous Daemon components",
+				"jsonApi": {
+					"title": "JSON API",
 					"messages": {
-						"instance": "Please enter name of OTA upload service instance.",
-						"uploadPath": "Please enter path to a directory with files to upload."
+						"success": "JSON API configuration has been successfully updated.",
+						"noChanges": "No configuration changes detected."
+					}
+				},
+				"jsonMngMetaDataApi": {
+					"title": "JSON Metadata API",
+					"description": "JSON Metadata API settings.",
+					"form": {
+						"instance": "Name of instance",
+						"metaDataToMessages": "Add metadata into the messages"
+					},
+					"errors": {
+						"instance": "Please enter name of JSON Metadata API instance."
+					}
+				},
+				"jsonRawApi": {
+					"title": "JSON Raw API",
+					"description": "JSON Raw API settings.",
+					"form": {
+						"instance": "Name of instance",
+						"asyncDpaMessage": "Async DPA message"
+					},
+					"errors": {
+						"instance": "Please enter name of JSON Raw API instance."
+					}
+				},
+				"jsonSplitter": {
+					"title": "JSON Splitter",
+					"description": "JSON Splitter settings.",
+					"form": {
+						"instance": "Name of instance",
+						"validateJsonResponse": "Validate JSON response"
+					},
+					"errors": {
+						"instance": "Please enter name of JSON Splitter instance."
+					}
+				},
+				"iqrfRepository": {
+					"title": "IQRF Repository",
+					"description": "Manage IQRF Repository's settings.",
+					"form": {
+						"instance": "Name of instance",
+						"urlRepo": "IQRF Repository URL",
+						"checkPeriod": "Check period in minutes",
+						"downloadIfEmpty": "Download if repository cache is empty"
+					},
+					"errors": {
+						"instance": "Please enter name of IQRF Repository instance.",
+						"urlRepo": "Please enter IQRF Repository URL.",
+						"checkPeriod": "Please enter an integer greater or equal to 0."
+					}
+				},
+				"iqrfInfo": {
+					"title": "LiteDB",
+					"description": "IQRF Info database settings.",
+					"form": {
+						"instance": "Name of instance",
+						"enumAtStartUp": "Initialize network full enumeration just after startup",
+						"enumPeriod": "Enumeration check period in minutes",
+						"enumUniformDpaVer": "Obtain only HWPID and HWPID version from nodes"
+					},
+					"errors": {
+						"instance": "Please enter name of IQRF Info instance.",
+						"enumPeriod": "Period must be greater or equal to 0."
+					}
+				},
+				"iqmesh": {
+					"title": "IQMESH services",
+					"description": "Manage IQMESH services.",
+					"otaUpload": {
+						"title": "IQRF OTA upload service",
+						"form": {
+							"instance": "Name of instance",
+							"uploadPath": "Path to a directory with files to upload"
+						},
+						"errors": {
+							"instance": "Please enter name of OTA upload service instance.",
+							"uploadPath": "Please enter path to a directory with files to upload."
+						}
+					}
+				},
+				"monitor": {
+					"title": "Monitoring service",
+					"description": "Monitoring service configuration.",
+					"add": "Add a new monitoring service",
+					"edit": "Edit the monitoring service",
+					"form": {
+						"instance": "Name of instance",
+						"reportPeriod": "Reporting period in seconds",
+						"WebsocketPort": "WebSocket server port",
+						"acceptOnlyLocalhost": "Accept only connection from localhost"
+					},
+					"messages": {
+						"addEuccess": "Monitoring service instance {instance} has been added.",
+						"deletePrompt": "Do you really want to delete Monitoring service instance {instance}?",
+						"deleteTitle": "Delete Monitoring service instance",
+						"deleteSuccess": "Monitoring service instance {instance} has been deleted.",
+						"editSuccess": "Monitoring service instance {instance} has been edited."
+					},
+					"errors": {
+						"instance": "Please enter name of monitor instance.",
+						"reportPeriod": "Please enter the reporting period in seconds.",
+						"WebsocketPort": "Please enter the port of monitoring WebSocket server."
+					}
+				},
+				"tracer": {
+					"title": "Logging service",
+					"description": "Logging service settings.",
+					"add": "Add logging service configuration",
+					"edit": "Edit logging service configuration",
+					"form": {
+						"instance": "Instance name",
+						"path": "Path to directory with logs",
+						"filename": "File name",
+						"maxSize": "Maximum size in bytes",
+						"maxAgeMinutes": "Maximum lifespan of timestamped files in minutes",
+						"maxNumber": "Maximum number of timestamped files",
+						"timestampFiles": "Enable timestamp files",
+						"verbosityLevels": {
+							"title": "Verbosity levels",
+							"add": "Add verbosity level",
+							"remove": "Remove verbosity level"
+						},
+						"channel": "Verbosity channel",
+						"level": "Verbosity level",
+						"levels": {
+							"error": "Error",
+							"warning": "Warning",
+							"info": "Info",
+							"debug": "Debug"
+						}
+					},
+					"messages": {
+						"zeroValues": "Disabled if value is set to 0.",
+						"removeItem": "Do you really want to delete Tracer file instance {instance}?",
+						"removeTitle": "Delete Tracer file instance",
+						"removeSuccess": "Tracer file instance {instance} has been removed.",
+						"addSuccess": "Tracer file instance {instance} has been added.",
+						"editSuccess": "Tracer file instance {instance} has been edited.",
+						"versionFail": "Failed to retrieve version of IQRF Gateway Daemon."
+					},
+					"errors": {
+						"instance": "Please enter name of logging service interface.",
+						"filename": "Please enter logging service file name.",
+						"maxSizeMb": "Please enter maximum size in MB greater or equal to 1.",
+						"maxAgeMinutes": "Please enter maximum lifespan of timestamped files in minutes, greater or requal to 0.",
+						"maxNumber": "Please enter maximum number of timestamped files, greated or equal than 0.",
+						"verbosityLevels": {
+							"channel": "Please enter the verbosity channel.",
+							"level": "Please select the verbosity level."
+						}
 					}
 				}
 			}
 		},
-		"iqrfCdc": {
-			"title": "IQRF CDC interface",
-			"description": "IQRF CDC interface settings.",
+		"translator": {
+			"title": "IQRF GW translator",
+			"description": "Translator configuration",
 			"form": {
-				"instance": "Name of instance",
-				"interface": "IQRF CDC interface",
-				"messages": {
-					"instance": "Please enter name of IQRF CDC instance.",
-					"IqrfInterface": "Please enter IQRF CDC interface."
-				}
-			},
-			"mappings": "Available CDC mappings"
-		},
-		"iqrfDpa":{
-			"title": "IQRF DPA interface",
-			"description": "IQRF DPA interface settings.",
-			"form": {
-				"instance": "Name of instance",
-				"DpaHandlerTimeout": "DPA Confirmation/Response timeout in milliseconds",
-				"messages": {
-					"instance": "Please enter name of IQRF DPA instance.",
-					"DpaHandlerTimeout": "Please enter default DPA Confirmation/Response timeout greater or equal to 0."
-				}
-			}
-		},
-		"iqrfInfo": {
-			"title": "LiteDB",
-			"description": "IQRF Info database settings.",
-			"form": {
-				"instance": "Name of instance",
-				"enumAtStartUp": "Initialize network full enumeration just after startup",
-				"enumPeriod": "Enumeration check period in minutes",
-				"enumUniformDpaVer": "Obtain only HWPID and HWPID version from nodes"
-			},
-			"messages": {
-				"instance": "Please enter name of IQRF Info instance.",
-				"enumPeriod": "Period must be greater or equal to 0."
-			}
-		},
-		"iqrfRepository": {
-			"title": "IQRF Repository",
-			"description": "Manage IQRF Repository's settings.",
-			"form": {
-				"instance": "Name of instance",
-				"urlRepo": "IQRF Repository URL",
-				"checkPeriod": "Check period in minutes",
-				"downloadIfEmpty": "Download if repository cache is empty",
-				"messages": {
-					"instance": "Please enter name of IQRF Repository instance.",
-					"urlRepo": "Please enter IQRF Repository URL.",
-					"checkPeriod": "Please enter an integer greater or equal to 0."
-				}
-			}
-		},
-		"iqrfSpi": {
-			"title": "IQRF SPI interface",
-			"description": "IQRF SPI interface settings.",
-			"form": {
-				"instance": "Name of instance",
-				"IqrfInterface": "IQRF SPI interface",
-				"powerEnableGpioPin": "Power enable GPIO pin",
-				"busEnableGpioPin": "SPI bus enable GPIO pin",
-				"pgmSwitchGpioPin": "Programming mode switch GPIO pin",
-				"spiReset": "Enable SPI reset",
-				"messages": {
-					"instance": "Please enter name of IQRF SPI instance.",
-					"IqrfInterface": "Please enter IQRF SPI interface.",
-					"powerEnableGpioPin": "Please enter power enable GPIO pin.",
-					"busEnableGpioPin": "Please enter SPI bus enable GPIO pin.",
-					"pgmSwitchGpioPin": "Please enter programming mode switch GPIO pin."
-				}
-			},
-			"mappings": "Available SPI mappings"
-		},
-		"iqrfUart": {
-			"title": "IQRF UART interface",
-			"description": "IQRF UART interface settings.",
-			"form": {
-				"instance": "Name of instance",
-				"IqrfInterface": "IQRF UART interface",
-				"baudRate": "UART baud rate",
-				"powerEnableGpioPin": "Power enable GPIO pin",
-				"pgmSwitchGpioPin": "Programming mode switch GPIO pin",
-				"busEnableGpioPin": "Bus enable GPIO pin",
-				"i2cEnableGpioPin": "I2C interface enable GPIO pin *",
-				"spiEnableGpioPin": "SPI interface enable GPIO pin *",
-				"uartEnableGpioPin": "UART interface enable GPIO pin *",
-				"gwOnly": "* IQRF Gateway only",
-				"uartReset": "UART reset",
-				"messages": {
-					"instance": "Please enter name of IQRF UART instance.",
-					"IqrfInterface": "Please enter IQRF UART interface.",
-					"baudRate": "Please select UART baud rate.",
-					"powerEnableGpioPin": "Please enter power enable GPIO pin number.",
-					"pgmSwitchGpioPin": "Please enter programming mode switch GPIO pin number.",
-					"busEnableGpioPin": "Please enter SPI bus enable GPIO pin number."
-				}
-			},
-			"mappings": "Available UART mappings"
-		},
-		"jsonApi": {
-			"title": "JSON API",
-			"messages": {
-				"success": "JSON API configuration has been successfully updated.",
-				"noChanges": "No configuration changes detected."
-			}
-		},
-		"jsonMngMetaDataApi": {
-			"title": "JSON Metadata API",
-			"description": "JSON Metadata API settings.",
-			"form": {
-				"instance": "Name of instance",
-				"metaDataToMessages": "Add metadata into the messages",
-				"messages": {
-					"instance": "Please enter name of JSON Metadata API instance."
-				}
-			}
-		},
-		"jsonRawApi": {
-			"title": "JSON Raw API",
-			"description": "JSON Raw API settings.",
-			"form": {
-				"instance": "Name of instance",
-				"asyncDpaMessage": "Async DPA message",
-				"messages": {
-					"instance": "Please enter name of JSON Raw API instance."
-				}
-			}
-		},
-		"jsonSplitter": {
-			"title": "JSON Splitter",
-			"description": "JSON Splitter settings.",
-			"form": {
-				"instance": "Name of instance",
-				"validateJsonResponse": "Validate JSON response",
-				"messages": {
-					"instance": "Please enter name of JSON Splitter instance."
-				}
-			}
-		},
-		"main": {
-			"title": "Main configuration",
-			"description": "Main configuration of IQRF Gateway Daemon.",
-			"form": {
-				"applicationName": "Application name",
-				"resourceDir": "Resource directory",
-				"dataDir": "Data directory",
-				"cacheDir": "Cache directory",
-				"userDir": "User directory",
-				"configurationDir": "Configuration directory",
-				"deploymentDir": "Deployment directory"
-			}
-		},
-		"monitor": {
-			"title": "Monitoring service",
-			"description": "Monitoring service configuration.",
-			"add": "Add a new monitoring service",
-			"edit": "Edit the monitoring service",
-			"form": {
-				"instance": "Name of instance",
-				"reportPeriod": "Reporting period in seconds",
-				"WebsocketPort": "WebSocket server port",
-				"acceptOnlyLocalhost": "Accept only connection from localhost",
-				"messages": {
-					"reportPeriod": "Please enter the reporting period in seconds.",
-					"WebsocketPort": "Please enter the port of monitoring WebSocket server."
+				"rest": {
+					"title": "REST API client configuration",
+					"addr": "Address",
+					"port": "Port",
+					"api_key": "API key"
+				},
+				"mqtt": {
+					"title": "MQTT client configuration",
+					"cid": "Client ID",
+					"addr": "Broker address",
+					"port": "Broker port",
+					"topic": "Request topic",
+					"user": "Username",
+					"pw": "Password"
 				}
 			},
 			"messages": {
-				"add": {
-					"success": "Monitoring service instance {instance} has been added."
+				"disabled": "IQRF Gateway Translator service is disabled."
+			},
+			"errors": {
+				"integer": "This parameter should be an integer.",
+				"port": "Please enter an integer between 1 and 49151 for port number.",
+				"invalid": {
+					"api_key": "Invalid REST API key format. The API key format should match [./A-Za-z0-9]{22}\\.[A-Za-z0-9+/=]{44}.",
+					"mtopic": "Invalid MQTT requests topic format. The request topic format should be: gateway/{GWID}/rest/requests/+/# (GWID is 16 hexadecimal digits).",
+					"mcid": "Invalid MQTT client ID. The client ID should be the GWID (16 hexadecimal digits)."
 				},
-				"delete": {
-					"confirm": "Do you really want to delete Monitoring service instance {instance}?",
-					"confirmTitle": "Delete Monitoring service instance",
-					"success": "Monitoring service instance {instance} has been deleted."
-				},
-				"edit": {
-					"success": "Monitoring service instance {instance} has been edited."
+				"missing": {
+					"maddr": "Please enter the MQTT broker address.",
+					"mcid": "Please enter the MQTT client ID.",
+					"mtopic": "Please enter the MQTT requests topic.",
+					"muser": "Please enter the MQTT client username.",
+					"mpw": "Please enter the MQTT client password.",
+					"raddr": "Please enter the REST API address.",
+					"rapi_key": "Please enter the REST API client key."
 				}
 			}
 		},
-		"mq": {
-			"title": "MQ interface",
-			"description": "MQ interface settings.",
-			"add": "Add MQ interface",
-			"edit": "Edit MQ interface",
+		"controller": {
+			"title": "IQRF GW controller",
+			"description": "Controller configuration",
 			"form": {
-				"instance": "Name of instance",
-				"LocalMqName": "Local MQ name",
-				"RemoteMqName": "Remote MQ name",
-				"acceptAsyncMsg": "Accept Async messages",
-				"messages": {
-					"instance": "Please enter name of MQ instance.",
-					"LocalMqName": "Please enter local MQ name.",
-					"RemoteMqName": "Please enter remote MQ name."
+				"daemonApi": {
+					"autoNetwork": {
+						"title": "AutoNetwork API call configuration",
+						"stopConditions": {
+							"title": "AutoNetwork stop conditions"
+						},
+						"verbose": "Verbose mode"
+					},
+					"discovery": {
+						"title": "Discovery API call configuration",
+						"verbose": "Verbose mode"
+					}
+				},
+				"factoryReset": {
+					"title": "Factory reset configuration",
+					"coordinator": "Coordinator",
+					"daemon": "Daemon",
+					"network": "Network",
+					"webapp": "Web application"
+				},
+				"resetButton": {
+					"title": "Button configuration",
+					"api": "Daemon API call",
+					"calls": {
+						"autonetwork": "AutoNetwork",
+						"discovery": "Discovery",
+						"noCall": "No API call"
+					}
+				},
+				"logger": {
+					"title": "Logger configuration",
+					"filePath": "Path to log file",
+					"severity": "Severity level",
+					"levels": {
+						"trace": "Trace",
+						"debug": "Debug",
+						"info": "Info",
+						"warning": "Warning",
+						"error": "Error"
+					}
+				},
+				"wsServers": {
+					"title": "Websocket configuration",
+					"api": "Daemon API server",
+					"monitor": "Monitor server"
 				}
 			},
-			"messages": {
-				"add": {
-					"success": "MQ interface instance {instance} has been added."
+			"errors": {
+				"disabled": "IQRF Gateway Controller service is disabled.",
+				"integer": "This parameter should be an integer.",
+				"daEwaves": "Please enter an integer between 1 and 127 for empty waves stop condition.",
+				"daWaves": "Please enter an integer between 1 and 127 for maximum waves stop condition.",
+				"ddMaxAddr": "Please enter an integer between 0 and 239 for Discovery process.",
+				"invalid": {
+					"ws_format": "Invalid websocket server address format. Example: ws://example:1883."
 				},
-				"delete": {
-					"confirm": "Do you really want to delete MQ interface instance {instance}?",
-					"confirmTitle": "Delete MQ interface instance",
-					"success": "MQ interface instance {instance} has been deleted."
-				},
-				"edit": {
-					"success": "MQ interface instance {instance} has been edited."
-				}
-			}
-		},
-		"mqtt": {
-			"title": "MQTT interface",
-			"description": "MQTT interface settings.",
-			"add": "Add MQTT interface",
-			"edit": "Edit MQTT interface",
-			"form": {
-				"instance": "Name of instance",
-				"BrokerAddr": "Broker address",
-				"ClientId": "Client ID",
-				"Persistence": "Persistence",
-				"QoS": "QoS",
-				"QoSes": {
-					"0": "QoS 0 - At most once",
-					"1": "QoS 1 - At least once",
-					"2": "QoS 2 - Exactly once"
-				},
-				"TopicRequest": "Topic for requests",
-				"TopicResponse": "Topic for responses",
-				"User": "User",
-				"Password": "Password",
-				"EnabledSSL": "Enabled TLS",
-				"KeepAliveInterval": "Keep alive interval",
-				"ConnectTimeout": "Connection timeout",
-				"MinReconnect": "Minimal count of reconnects",
-				"MaxReconnect": "Maximal count of reconnects",
-				"TrustStore": "CA certificate",
-				"KeyStore": "Certificate",
-				"PrivateKey": "Private key",
-				"PrivateKeyPassword": "Private key password",
-				"EnabledCipherSuites": "Enabled cipher suites",
-				"EnableServerCertAuth": "Enable server certificate authentication",
-				"acceptAsyncMsg": "Accept asynchronous messages",
-				"messages": {
-					"instance": "Please enter name of MQTT instance.",
-					"BrokerAddr": "Please enter address of MQTT broker.",
-					"Persistence": "Please enter persistence.",
-					"ClientId": "Please enter client ID.",
-					"QoS": "Please select QoS.",
-					"TopicRequest": "Please enter topic for requests.",
-					"TopicResponse": "Please enter topic for responses."
-				}
-			},
-			"messages": {
-				"add": {
-					"success": "MQTT interface instance {instance} has been added."
-				},
-				"delete": {
-					"confirm": "Do you really want to delete MQTT interface instance {instance}?",
-					"confirmTitle": "Delete MQTT interface instance",
-					"success": "MQTT interface instance {instance} has been deleted."
-				},
-				"edit": {
-					"success": "MQTT interface instance {instance} has been edited."
+				"missing": {
+					"ws_api": "Please enter the Daemon API websocket server address.",
+					"ws_monitor": "Please enter the Monitor websocket server address",
+					"l_file": "Please enter path to log file.",
+					"l_severity": "Please select log severity level.",
+					"rb_custom": "Please enter API call identifier."
 				}
 			}
 		},
 		"selectedComponents": {
 			"title": "Selected components",
 			"description": "Manage selected components."
-		},
-		"scheduler": {
-			"title": "Scheduler",
-			"description": "Scheduler settings.",
-			"add": "Add task",
-			"edit": "Edit task",
-			"table": {
-				"id": "ID",
-				"time": "Time",
-				"service": "Service",
-				"mType": "Message types"
-			},
-			"form": {
-				"task": {
-					"taskId": "Task ID",
-					"cronTime": "Time in cron format",
-					"exactTime": "Exact time",
-					"periodic": "Periodic",
-					"period": "Period in seconds",
-					"startTime": "Start time"
-				},
-				"message": {
-					"title": "Messages",
-					"label": "Message (JSON request)",
-					"messagePlaceholder": "Select message"
-				},
-				"import": {
-					"title": "Import task(s)",
-					"file": "JSON task file or ZIP archive with tasks",
-					"fileEmpty": "Please select file to import."
-				},
-				"messages": {
-					"nums": "Please enter a valid integer",
-					"service": "Please select service.",
-					"messaging": "Please select messaging.",
-					"message": "Please enter a message."
-				}
-			},
-			"buttons": {
-				"import": "Import",
-				"export": "Export",
-				"add": "Add another message",
-				"remove": "Remove message"
-			},
-			"messages": {
-				"importSuccess": "The tasks has been imported successfully.",
-				"importInvalidFormat": "The uploaded file is not JSON file or ZIP archive.",
-				"importInvalidFile": "The uploaded file is invalid.",
-				"deleteTitle": "Delete scheduler task",
-				"deletePrompt": "Do you really want to delete scheduler task {task}?",
-				"deleteSuccess": "Scheduler task has been successfully deleted.",
-				"deleteFail": "An error occurred while removing task.",
-				"getFail": "Could not retrieve task {task}.",
-				"listFailed": "Failed to retrieve list of scheduler tasks",
-				"addSuccess": "Scheduler task has been successfully added.",
-				"editSuccess": "Scheduler task {task} has been successfully edited.",
-				"processError": "An error has occurred while processing Daemon API request.",
-				"rest": {
-					"invalidTask": "Task configuration is not valid.",
-					"invalidFile": "Imported scheduler configuration is not valid.",
-					"notFound": "Task does not exist.",
-					"exists": "Task with this ID already exists.",
-					"messagingFail": "Failed to retrieve messaging services."
-				}
-			}
-		},
-		"tracer": {
-			"title": "Logging service",
-			"description": "Logging service settings.",
-			"add": "Add logging service configuration",
-			"edit": "Edit logging service configuration",
-			"form": {
-				"instance": "Instance name",
-				"path": "Path to directory with logs",
-				"filename": "File name",
-				"maxSize": "Maximum size in bytes",
-				"maxAgeMinutes": "Maximum lifespan of timestamped files in minutes",
-				"maxNumber": "Maximum number of timestamped files",
-				"timestampFiles": "Enable timestamp files",
-				"verbosityLevels": {
-					"title": "Verbosity levels",
-					"add": "Add verbosity level",
-					"remove": "Remove verbosity level"
-				},
-				"channel": "Verbosity channel",
-				"level": "Verbosity level",
-				"levels": {
-					"error": "Error",
-					"warning": "Warning",
-					"info": "Info",
-					"debug": "Debug"
-				},
-				"messages": {
-					"instance": "Please enter name of logging service interface.",
-					"filename": "Please enter logging service file name.",
-					"maxSizeMb": "Please enter maximum size in MB greater or equal to 1.",
-					"maxAgeMinutes": "Please enter maximum lifespan of timestamped files in minutes, greater or requal to 0.",
-					"maxNumber": "Please enter maximum number of timestamped files, greated or equal than 0.",
-					"verbosityLevels": {
-						"channel": "Please enter the verbosity channel.",
-						"level": "Please select the verbosity level."
-					},
-					"zeroValues": "Disabled if value is set to 0."
-				}
-			},
-			"messages": {
-				"removeItem": "Do you really want to delete Tracer file instance {instance}?",
-				"removeTitle": "Delete Tracer file instance",
-				"removeSuccess": "Tracer file instance {instance} has been removed.",
-				"addSuccess": "Tracer file instance {instance} has been added.",
-				"editSuccess": "Tracer file instance {instance} has been edited.",
-				"versionFail": "Failed to retrieve version of IQRF Gateway Daemon."
-			}
-		},
-		"udp": {
-			"title": "UDP interface",
-			"description": "IQRF UDP interface settings.",
-			"add": "Add UDP interface",
-			"edit": "Edit UDP interface",
-			"form": {
-				"instance": "Name of instance",
-				"RemotePort": "Remote port",
-				"LocalPort": "Local port",
-				"messages": {
-					"instance": "Please enter name of UDP interface.",
-					"RemotePort": "Please enter remote port - integer between 1 and 49151.",
-					"LocalPort": "Please enter local port - integer between 1 and 49151."
-				}
-			},
-			"messages": {
-				"add": {
-					"success": "UDP interface instance {instance} has been added."
-				},
-				"delete": {
-					"confirm": "Do you really want to delete UDP interface instance {instance}?",
-					"confirmTitle": "Delete UDP interface instance",
-					"success": "UDP interface instance {instance} has been deleted."
-				},
-				"edit": {
-					"success": "UDP interface instance {instance} has been edited."
-				}
-			}
-		},
-		"websocket": {
-			"title": "WebSocket interface",
-			"description": "IQRF WebSocket interface settings.",
-			"form": {
-				"instance": "Name of instance",
-				"acceptAsyncMsg": "Accept asynchronous messages",
-				"WebsocketPort": "WebSocket port",
-				"acceptOnlyLocalhost": "Accept only connection from localhost",
-				"tlsEnabled": "Enable TLS",
-				"tlsMode": "TLS mode",
-				"tlsModes": {
-					"intermediate": "Intermediate",
-					"modern": "Modern",
-					"old": "Old",
-					"descriptions": {
-						"intermediate": "General-purpose servers with a variety of clients, recommended for almost all systems. Supports Firefox 27, Android 4.4.2, Chrome 31, Edge, IE 11 on Windows 7, Java 8u31, OpenSSL 1.0.1, Opera 20, and Safari 9.",
-						"modern": "Services with clients that support TLS 1.3 and don't need backward compatibility. Supports Firefox 63, Android 10.0, Chrome 70, Edge 75, Java 11, OpenSSL 1.1.1, Opera 57, and Safari 12.1.",
-						"old": "Compatible with a number of very old clients, and should be used only as a last resort. Supports Firefox 1, Android 2.3, Chrome 1, Edge 12, IE8 on Windows XP, Java 6, OpenSSL 0.9.8, Opera 5, and Safari 1."
-					}
-				},
-				"certificate": "Certificate",
-				"privateKey": "Private key",
-				"requiredInterfaces": "Required interfaces",
-				"requiredInterface": {
-					"add": "Add another interface",
-					"remove": "Remove this interface",
-					"name": "Required interface name",
-					"instance": "Required WebSocket service"
-				},
-				"messages": {
-					"messagingInstance": "Please enter name of WebSocket messaging.",
-					"serviceInstance": "Please enter name of WebSocket service.",
-					"WebsocketPort": "Please enter WebSocket port number.",
-					"interfaceName": "Please select the name of required interface.",
-					"interfaceInstance": "Please select the required WebSocket service instance.",
-					"tlsMode": "Please select TLS mode."
-				}
-			},
-			"interface": {
-				"title": "Websocket interfaces",
-				"add": "Add WebSocket interface",
-				"edit": "Edit WebSocket interface"
-			},
-			"messaging": {
-				"title": "WebSocket messagings",
-				"add": "Add WebSocket messaging",
-				"edit": "Edit WebSocket messaging",
-				"messages": {
-					"deleteTitle": "Delete WebSocket messaging",
-					"deletePrompt": "Do you really want to delete WebSocket messaging {messaging}?",
-					"deleteSuccess": "Configuration of WebSocket messaging {messaging} has been successfully deleted.",
-					"addSuccess": "Configuration of WebSocket messaging {messaging} has been successfully added.",
-					"editSuccess": "Configuration of WebSocket messaging {messaging} has been successfully edited."
-				}
-			},
-			"service": {
-				"title": "WebSocket services",
-				"add": "Add WebSocket service",
-				"edit": "Edit WebSocket service",
-				"messages": {
-					"deleteTitle": "Delete WebSocket service",
-					"deletePrompt": "Do you really want to delete WebSocket service {service}?",
-					"deleteSuccess": "Configuration of WebSocket service {service} has been successfully deleted.",
-					"addSuccess": "Configuration of WebSocket service {service} has been successfully added.",
-					"editSuccess": "Configuration of WebSocket service {service} has been successfully edited."
-				}
-			},
-			"messages": {
-				"add": {
-					"success": "WebSocket interface instance {instance} has been added."
-				},
-				"delete": {
-					"confirm": "Do you really want to delete WebSocket interface instance {instance}?",
-					"confirmTitle": "Delete WebSocket interface instance",
-					"success": "WebSocket interface instance {instance} has been deleted."
-				},
-				"edit": {
-					"success": "WebSocket interface instance {instance} has been edited."
-				}
-			}
 		},
 		"mender": {
 			"title": "Mender",
@@ -802,18 +876,22 @@
 				"retryPollInterval": "Communication retry interval (seconds)",
 				"server": "Server address",
 				"tenantToken": "Tenant token",
-				"updatePollInterval": "Update check interval (seconds)",
-				"messages": {
-					"inventoryPollInterval": "Please enter an integer greater or equal to 0 for for inventory update interval.",
-					"retryPollInterval": "Please enter an integer greater or equal to 0 for communication retry interval.",
-					"updatePollInterval": "Please enter an integer greater or equal to 0 for update check interval",
-					"missing": {
-						"server": "Please enter the server address.",
-						"tenantToken": "Please enter the tenant token."
-					},
-					"invalid": {
-						"server": "Server address should contain the HTTP protocol."
-					}
+				"updatePollInterval": "Update check interval (seconds)"
+
+			},
+			"messages": {
+				"disabled": "Mender service is disabled."
+			},
+			"errors": {
+				"inventoryPollInterval": "Please enter an integer greater or equal to 0 for for inventory update interval.",
+				"retryPollInterval": "Please enter an integer greater or equal to 0 for communication retry interval.",
+				"updatePollInterval": "Please enter an integer greater or equal to 0 for update check interval",
+				"missing": {
+					"server": "Please enter the server address.",
+					"tenantToken": "Please enter the tenant token."
+				},
+				"invalid": {
+					"server": "Server address should contain the HTTP protocol."
 				}
 			}
 		}
@@ -1828,115 +1906,6 @@
 			"processTimeout": "Service manager process timed out.",
 			"missingService": "Requested service not found",
 			"unsupportedService": "Unsupported service"
-		}
-	},
-	"translatorConfig": {
-		"title": "IQRF GW translator",
-		"description": "Translator configuration",
-		"form": {
-			"rest": {
-				"title": "REST API client configuration",
-				"addr": "Address",
-				"port": "Port",
-				"api_key": "API key"
-			},
-			"mqtt": {
-				"title": "MQTT client configuration",
-				"cid": "Client ID",
-				"addr": "Broker address",
-				"port": "Broker port",
-				"topic": "Request topic",
-				"user": "Username",
-				"pw": "Password"
-			},
-			"messages": {
-				"integer": "This parameter should be an integer.",
-				"port": "Please enter an integer between 1 and 49151 for port number.",
-				"invalid": {
-					"api_key": "Invalid REST API key format. The API key format should match [./A-Za-z0-9]{22}\\.[A-Za-z0-9+/=]{44}.",
-					"mtopic": "Invalid MQTT requests topic format. The request topic format should be: gateway/{GWID}/rest/requests/+/# (GWID is 16 hexadecimal digits).",
-					"mcid": "Invalid MQTT client ID. The client ID should be the GWID (16 hexadecimal digits)."
-				},
-				"missing": {
-					"maddr": "Please enter the MQTT broker address.",
-					"mcid": "Please enter the MQTT client ID.",
-					"mtopic": "Please enter the MQTT requests topic.",
-					"muser": "Please enter the MQTT client username.",
-					"mpw": "Please enter the MQTT client password.",
-					"raddr": "Please enter the REST API address.",
-					"rapi_key": "Please enter the REST API client key."
-				}
-			}
-		}
-	},
-	"controllerConfig": {
-		"title": "IQRF GW controller",
-		"description": "Controller configuration",
-		"form": {
-			"daemonApi": {
-				"autoNetwork": {
-					"title": "AutoNetwork API call configuration",
-					"stopConditions": {
-						"title": "AutoNetwork stop conditions"
-
-					},
-					"verbose": "Verbose mode"
-				},
-				"discovery": {
-					"title": "Discovery API call configuration",
-					"verbose": "Verbose mode"
-				}
-			},
-			"factoryReset": {
-				"title": "Factory reset configuration",
-				"coordinator": "Coordinator",
-				"daemon": "Daemon",
-				"network": "Network",
-				"webapp": "Web application"
-			},
-			"resetButton": {
-				"title": "Button configuration",
-				"api": "Daemon API call",
-				"calls": {
-					"autonetwork": "AutoNetwork",
-					"discovery": "Discovery",
-					"noCall": "No API call"
-				}
-			},
-			"logger": {
-				"title": "Logger configuration",
-				"filePath": "Path to log file",
-				"severity": "Severity level",
-				"levels": {
-					"trace": "Trace",
-					"debug": "Debug",
-					"info": "Info",
-					"warning": "Warning",
-					"error": "Error"
-				}
-			},
-			"wsServers": {
-				"title": "Websocket configuration",
-				"api": "Daemon API server",
-				"monitor": "Monitor server"
-			},
-			"messages": {
-				"disabled": "IQRF Gateway Controller service is disabled.",
-				"integer": "This parameter should be an integer.",
-				"daEwaves": "Please enter an integer between 1 and 127 for empty waves stop condition.",
-				"daWaves": "Please enter an integer between 1 and 127 for maximum waves stop condition.",
-				"ddMaxAddr": "Please enter an integer between 0 and 239 for Discovery process.",
-				"invalid": {
-					"ws_format": "Invalid websocket server address format. Example: ws://example:1883."
-				},
-				"missing": {
-					"ws_api": "Please enter the Daemon API websocket server address.",
-					"ws_monitor": "Please enter the Monitor websocket server address",
-					"l_file": "Please enter path to log file.",
-					"l_severity": "Please select log severity level.",
-					"rb_custom": "Please enter API call identifier."
-				}
-			}
 		}
 	},
 	"table": {

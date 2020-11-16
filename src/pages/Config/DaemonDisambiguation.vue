@@ -9,10 +9,10 @@
 						to='/config/daemon/main/'
 					>
 						<header class='list-group-item-heading'>
-							{{ $t('config.main.title') }}
+							{{ $t('config.daemon.main.title') }}
 						</header>
 						<p class='list-group-item-text'>
-							{{ $t('config.main.description') }}
+							{{ $t('config.daemon.main.description') }}
 						</p>
 					</CListGroupItem>
 					<CListGroupItem
@@ -20,10 +20,10 @@
 						to='/config/daemon/component/'
 					>
 						<header class='list-group-item-heading'>
-							{{ $t('config.components.title') }}
+							{{ $t('config.daemon.components.title') }}
 						</header>
 						<p class='list-group-item-text'>
-							{{ $t('config.components.description') }}
+							{{ $t('config.daemon.components.description') }}
 						</p>
 					</CListGroupItem>
 					<CListGroupItem to='/config/daemon/interfaces/'>
@@ -44,13 +44,13 @@
 					</CListGroupItem>
 					<CListGroupItem to='/config/daemon/scheduler/'>
 						<header class='list-group-item-heading'>
-							{{ $t('config.scheduler.title') }}
+							{{ $t('config.daemon.scheduler.title') }}
 						</header>
 						<p class='list-group-item-text'>
-							{{ $t('config.scheduler.description') }}
+							{{ $t('config.daemon.scheduler.description') }}
 						</p>
 					</CListGroupItem>
-					<CListGroupItem to='/config/daemon/other/'>
+					<CListGroupItem to='/config/daemon/misc/'>
 						<header class='list-group-item-heading'>
 							{{ $t('config.daemon.misc.title') }}
 						</header>

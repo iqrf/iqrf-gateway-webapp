@@ -1,11 +1,11 @@
 <template>
 	<CCard>
 		<CCardHeader>
-			<h3 v-if='$route.path === "/config/tracer/add"'>
-				{{ $t('config.tracer.add') }}
+			<h3 v-if='$route.path === "/config/daemon/tracer/add"'>
+				{{ $t('config.daemon.misc.tracer.add') }}
 			</h3>
 			<h3 v-else>
-				{{ $t('config.tracer.edit') }}
+				{{ $t('config.daemon.misc.tracer.edit') }}
 			</h3>
 		</CCardHeader>
 		<CCardBody>
@@ -14,27 +14,27 @@
 					<ValidationProvider
 						v-slot='{ errors, touched, valid }'
 						rules='required'
-						:custom-messages='{required: "config.tracer.form.messages.instance"}'
+						:custom-messages='{required: "config.daemon.misc.tracer.errors.instance"}'
 					>
 						<CInput
 							v-model='componentInstance'
-							:label='$t("config.tracer.form.instance")'
+							:label='$t("config.daemon.misc.tracer.form.instance")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
 					</ValidationProvider>
 					<CInput
 						v-model='path'
-						:label='$t("config.tracer.form.path")'
+						:label='$t("config.daemon.misc.tracer.form.path")'
 					/>
 					<ValidationProvider
 						v-slot='{ errors, touched, valid }'
 						rules='required'
-						:custom-messages='{required: "config.tracer.form.messages.filename"}'
+						:custom-messages='{required: "config.daemon.misc.tracer.errors.filename"}'
 					>
 						<CInput
 							v-model='filename'
-							:label='$t("config.tracer.form.filename")'
+							:label='$t("config.daemon.misc.tracer.form.filename")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
@@ -43,15 +43,15 @@
 						v-slot='{ errors, touched, valid }'
 						rules='integer|required|min:1'
 						:custom-messages='{
-							required: "config.tracer.form.messages.maxSizeMb",
-							min: "config.tracer.form.messages.maxSizeMb",
+							required: "config.daemon.misc.tracer.errors.maxSizeMb",
+							min: "config.daemon.misc.tracer.errors.maxSizeMb",
 							integer: "forms.messages.integer"
 						}'
 					>
 						<CInput
 							v-model.number='maxSize'
 							type='number'
-							:label='$t("config.tracer.form.maxSize")'
+							:label='$t("config.daemon.misc.tracer.form.maxSize")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
@@ -62,14 +62,14 @@
 							rules='integer|min:0'
 							:custom-messages='{
 								integer: "forms.messages.integer",
-								min: "config.tracer.form.messages.maxAgeMinutes"
+								min: "config.daemon.misc.tracer.errors.maxAgeMinutes"
 							}'
 						>
 							<CInput
 								v-model.number='maxAgeMinutes'
 								type='number'
 								min='0'
-								:label='$t("config.tracer.form.maxAgeMinutes") + " *"'
+								:label='$t("config.daemon.misc.tracer.form.maxAgeMinutes") + " *"'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
@@ -79,25 +79,25 @@
 							rules='integer|min:0'
 							:custom-messages='{
 								integer: "forms.messages.integer",
-								min: "config.tracer.form.messages.maxNumber"
+								min: "config.daemon.misc.tracer.errors.maxNumber"
 							}'
 						>
 							<CInput
 								v-model.number='maxNumber'
 								type='number'
 								min='0'
-								:label='$t("config.tracer.form.maxNumber") + " *"'
+								:label='$t("config.daemon.misc.tracer.form.maxNumber") + " *"'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
 						</ValidationProvider>
-						<i>* {{ $t('config.tracer.form.messages.zeroValues') }}</i>
+						<i>* {{ $t('config.daemon.misc.tracer.messages.zeroValues') }}</i>
 					</div><br v-if='daemonHigher230'>
 					<CInputCheckbox
 						:checked.sync='timestampFiles'
-						:label='$t("config.tracer.form.timestampFiles")'
+						:label='$t("config.daemon.misc.tracer.form.timestampFiles")'
 					/>
-					<h4>{{ $t("config.tracer.form.verbosityLevels.title") }}</h4>
+					<h4>{{ $t("config.daemon.misc.tracer.form.verbosityLevels.title") }}</h4>
 					<div
 						v-for='(level, i) of VerbosityLevels'
 						:key='i'
@@ -108,13 +108,13 @@
 							rules='integer|required'
 							:custom-messages='{
 								integer: "forms.messages.integer",
-								required: "config.tracer.form.messages.verbosityLevels.channel"
+								required: "config.daemon.misc.tracer.errors.verbosityLevels.channel"
 							}'
 						>
 							<CInput
 								v-model.number='level.channel'
 								type='number'
-								:label='$t("config.tracer.form.channel")'
+								:label='$t("config.daemon.misc.tracer.form.channel")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
@@ -122,12 +122,12 @@
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
 							rules='required'
-							:custom-messages='{required: "config.tracer.form.messages.verbosityLevels.level"}'
+							:custom-messages='{required: "config.daemon.misc.tracer.errors.verbosityLevels.level"}'
 						>
 							<CSelect
 								:value.sync='level.level'
-								:label='$t("config.tracer.form.level")'
-								:placeholder='$t("config.tracer.form.messages.verbosityLevels.level")'
+								:label='$t("config.daemon.misc.tracer.form.level")'
+								:placeholder='$t("config.daemon.misc.tracer.errors.verbosityLevels.level")'
 								:options='selectOptions'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
@@ -138,7 +138,7 @@
 							color='danger'
 							@click='removeLevel(i)'
 						>
-							{{ $t('config.tracer.form.verbosityLevels.remove') }}
+							{{ $t('config.daemon.misc.tracer.form.verbosityLevels.remove') }}
 						</CButton>
 						<CButton
 							v-if='i === (VerbosityLevels.length - 1)'
@@ -146,7 +146,7 @@
 							:disabled='level.channel === undefined || level.level === undefined'
 							@click='addLevel'
 						>
-							{{ $t('config.tracer.form.verbosityLevels.add') }}
+							{{ $t('config.daemon.misc.tracer.form.verbosityLevels.add') }}
 						</CButton>
 					</div>
 					<CButton type='submit' color='primary' :disabled='invalid'>
@@ -270,10 +270,10 @@ export default class TracerForm extends Vue {
 	 * @constant {Array<IOption>} selectOptions Array of CoreUI logging severity select options
 	 */
 	private selectOptions: Array<IOption> = [
-		{value: 'ERR', label: this.$t('config.tracer.form.levels.error')},
-		{value: 'WAR', label: this.$t('config.tracer.form.levels.warning')},
-		{value: 'INF', label: this.$t('config.tracer.form.levels.info')},
-		{value: 'DBG', label: this.$t('config.tracer.form.levels.debug')}
+		{value: 'ERR', label: this.$t('config.daemon.misc.tracer.form.levels.error')},
+		{value: 'WAR', label: this.$t('config.daemon.misc.tracer.form.levels.warning')},
+		{value: 'INF', label: this.$t('config.daemon.misc.tracer.form.levels.info')},
+		{value: 'DBG', label: this.$t('config.daemon.misc.tracer.form.levels.debug')}
 	]
 
 	/**
@@ -287,7 +287,7 @@ export default class TracerForm extends Vue {
 	 */
 	get pageTitle(): string {
 		return this.$route.path === '/config/daemon/tracer/add' ?
-			this.$t('config.tracer.add').toString() : this.$t('config.tracer.edit').toString();
+			this.$t('config.daemon.misc.tracer.add').toString() : this.$t('config.daemon.misc.tracer.edit').toString();
 	}
 
 	/**
@@ -326,7 +326,9 @@ export default class TracerForm extends Vue {
 		if (this.$store.getters['user/getRole'] === 'power') {
 			this.powerUser = true;
 		}
-		this.getInstance();
+		if (this.instance !== '') {
+			this.getInstance();
+		}
 	}
 
 	/**
@@ -434,12 +436,12 @@ export default class TracerForm extends Vue {
 		this.$store.commit('spinner/HIDE');
 		if (this.$route.path === '/config/daemon/tracer/add') {
 			this.$toast.success(
-				this.$t('config.tracer.messages.addSuccess', {instance: this.componentInstance})
+				this.$t('config.daemon.misc.tracer.messages.addSuccess', {instance: this.componentInstance})
 					.toString()
 			);
 		} else {
 			this.$toast.success(
-				this.$t('config.tracer.messages.editSuccess', {instance: this.instance})
+				this.$t('config.daemon.misc.tracer.messages.editSuccess', {instance: this.instance})
 					.toString()
 			);
 		}

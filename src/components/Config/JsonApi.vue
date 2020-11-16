@@ -3,15 +3,15 @@
 		<CForm @submit.prevent='saveConfig'>
 			<CInputCheckbox
 				:checked.sync='metaDataToMessages'
-				:label='$t("config.jsonMngMetaDataApi.form.metaDataToMessages").toString()'
+				:label='$t("config.daemon.misc.jsonMngMetaDataApi.form.metaDataToMessages").toString()'
 			/>
 			<CInputCheckbox
 				:checked.sync='asyncDpaMessage'
-				:label='$t("config.jsonRawApi.form.asyncDpaMessage").toString()'
+				:label='$t("config.daemon.misc.jsonRawApi.form.asyncDpaMessage").toString()'
 			/>
 			<CInputCheckbox
 				:checked.sync='validateJsonResponse'
-				:label='$t("config.jsonSplitter.form.validateJsonResponse").toString()'
+				:label='$t("config.daemon.misc.jsonSplitter.form.validateJsonResponse").toString()'
 			/>
 			<CButton
 				type='submit'
@@ -140,7 +140,7 @@ export default class JsonApi extends Vue {
 		}
 		if (requests.length === 0) {
 			this.$toast.info(
-				this.$t('config.jsonApi.messages.noChanges').toString()
+				this.$t('config.daemon.misc.jsonApi.messages.noChanges').toString()
 			);
 			return;
 		}
@@ -149,7 +149,7 @@ export default class JsonApi extends Vue {
 			.then(() => {
 				this.getConfig().then(() => {
 					this.$toast.success(
-						this.$t('config.jsonApi.messages.success').toString()
+						this.$t('config.daemon.misc.jsonApi.messages.success').toString()
 					);
 				});
 			})

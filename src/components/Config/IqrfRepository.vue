@@ -7,11 +7,11 @@
 						v-if='powerUser'
 						v-slot='{ errors, touched, valid }'
 						rules='required'
-						:custom-messages='{required: "config.iqrfRepository.form.messages.instance"}'
+						:custom-messages='{required: "config.daemon.misc.iqrfRepository.errors.instance"}'
 					>
 						<CInput
 							v-model='componentInstance'
-							:label='$t("config.iqrfRepository.form.instance")'
+							:label='$t("config.daemon.misc.iqrfRepository.form.instance")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
@@ -19,11 +19,11 @@
 					<ValidationProvider
 						v-slot='{ errors, touched, valid }'
 						rules='required'
-						:custom-messages='{required: "config.iqrfRepository.form.messages.urlRepo"}'
+						:custom-messages='{required: "config.daemon.misc.iqrfRepository.errors.urlRepo"}'
 					>
 						<CInput
 							v-model='urlRepo'
-							:label='$t("config.iqrfRepository.form.urlRepo")'
+							:label='$t("config.daemon.misc.iqrfRepository.form.urlRepo")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
@@ -33,15 +33,15 @@
 						rules='integer|required|min:0'
 						:custom-messages='{
 							integer: "forms.messages.integer",
-							required: "config.iqrfRepository.form.messages.checkPeriod",
-							min: "config.iqrfRepository.form.messages.checkPeriod"
+							required: "config.daemon.misc.iqrfRepository.errors.checkPeriod",
+							min: "config.daemon.misc.iqrfRepository.errors.checkPeriod"
 						}'
 					>
 						<CInput
 							v-model.number='checkPeriodInMinutes'
 							type='number'
 							min='0'
-							:label='$t("config.iqrfRepository.form.checkPeriod")'
+							:label='$t("config.daemon.misc.iqrfRepository.form.checkPeriod")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
@@ -49,7 +49,7 @@
 					<CInputCheckbox
 						v-if='daemonHigher230'
 						:checked.sync='downloadIfRepoCacheEmpty'
-						:label='$t("config.iqrfRepository.form.downloadIfEmpty")'
+						:label='$t("config.daemon.misc.iqrfRepository.form.downloadIfEmpty")'
 					/>
 					<CButton type='submit' color='primary' :disabled='invalid'>
 						{{ $t('forms.save') }}

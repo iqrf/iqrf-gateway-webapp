@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<h1>
-			{{ $t('config.udp.title') }}
+			{{ $t('config.daemon.messagings.udp.title') }}
 		</h1>
 		<CCard>
 			<CCardHeader class='border-0'>
@@ -57,7 +57,7 @@
 		>
 			<template #header>
 				<h5 class='modal-title'>
-					{{ $t('config.udp.messages.delete.confirmTitle') }}
+					{{ $t('config.daemon.messagings.udp.messages.deleteTitle') }}
 				</h5>
 				<CButtonClose
 					class='text-white'
@@ -65,7 +65,7 @@
 				/>
 			</template>
 			<span v-if='deleteInstance !== ""'>
-				{{ $t('config.udp.messages.delete.confirm', {instance: deleteInstance}) }}
+				{{ $t('config.daemon.messagings.udp.messages.deletePrompt', {instance: deleteInstance}) }}
 			</span>
 			<template #footer>
 				<CButton 
@@ -138,15 +138,15 @@ export default class UdpMessagingTable extends Vue {
 	private fields: Array<IField> = [
 		{
 			key: 'instance',
-			label: this.$t('config.udp.form.instance'),
+			label: this.$t('config.daemon.messagings.udp.form.instance'),
 		},
 		{
 			key: 'RemotePort',
-			label: this.$t('config.udp.form.RemotePort'),
+			label: this.$t('config.daemon.messagings.udp.form.RemotePort'),
 		},
 		{
 			key: 'LocalPort',
-			label: this.$t('config.udp.form.LocalPort'),
+			label: this.$t('config.daemon.messagings.udp.form.LocalPort'),
 		},
 		{
 			key: 'actions',
@@ -216,7 +216,7 @@ export default class UdpMessagingTable extends Vue {
 			.then(() => {
 				this.getInstances().then(() => {
 					this.$toast.success(
-						this.$t('config.udp.messages.delete.success', {instance: instance})
+						this.$t('config.daemon.messagings.udp.messages.deleteSuccess', {instance: instance})
 							.toString()
 					);
 				});

@@ -3,25 +3,25 @@
 		<h1>{{ $t('config.daemon.misc.title') }}</h1>
 		<CCard>
 			<CTabs variant='tabs' :active-tab='activeTab'>
-				<CTab :title='$t("config.jsonApi.title")'>
+				<CTab :title='$t("config.daemon.misc.jsonApi.title")'>
 					<JsonApi v-if='!powerUser' />
 					<JsonMngMetaDataApi v-if='powerUser' />
 					<JsonRawApi v-if='powerUser' />
 					<JsonSplitter v-if='powerUser' />
 				</CTab>
-				<CTab :title='$t("config.iqrfRepository.title")'>
+				<CTab :title='$t("config.daemon.misc.iqrfRepository.title")'>
 					<IqrfRepository />
 				</CTab>
-				<CTab :title='$t("config.iqrfInfo.title")'>
+				<CTab :title='$t("config.daemon.misc.iqrfInfo.title")'>
 					<IqrfInfo />
 				</CTab>
-				<CTab v-if='powerUser' :title='$t("config.iqmesh.title")'>
+				<CTab v-if='powerUser' :title='$t("config.daemon.misc.iqmesh.title")'>
 					<IqmeshServices />
 				</CTab>
-				<CTab :title='$t("config.monitor.title")'>
+				<CTab :title='$t("config.daemon.misc.monitor.title")'>
 					<MonitorList />
 				</CTab>
-				<CTab :title='$t("config.tracer.title")'>
+				<CTab :title='$t("config.daemon.misc.tracer.title")'>
 					<TracerList />
 				</CTab>
 			</CTabs>
