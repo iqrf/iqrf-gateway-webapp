@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<h1>
-			{{ $t('config.scheduler.title') }}
+			{{ $t('config.daemon.scheduler.title') }}
 		</h1>
 		<CCard>
 			<CCardHeader class='border-0'>
@@ -19,14 +19,14 @@
 						@click='importConfig.modal = true'
 					>
 						<CIcon :content='icons.import' size='sm' />
-						{{ $t('config.scheduler.buttons.import') }}
+						{{ $t('forms.import') }}
 					</CButton> <CButton
 						color='secondary'
 						size='sm'
 						@click='exportScheduler'
 					>
 						<CIcon :content='icons.export' size='sm' />
-						{{ $t('config.scheduler.buttons.export') }}
+						{{ $t('forms.export') }}
 					</CButton>
 				</div>
 			</CCardHeader>
@@ -94,7 +94,7 @@
 		>
 			<template #header>
 				<h5 class='modal-title'>
-					{{ $t('config.scheduler.form.import.title') }}
+					{{ $t('config.daemon.scheduler.import.title') }}
 				</h5>
 			</template>
 			<CForm>
@@ -102,12 +102,12 @@
 					<CInputFile
 						ref='schedulerImport'
 						accept='application/json,.zip'
-						:label='$t("config.scheduler.form.import.file")'
+						:label='$t("config.daemon.scheduler.import.file")'
 						@input='isEmpty'
 						@click='isEmpty'
 					/>
 					<p v-if='importConfig.empty && !importConfig.first' style='color: red'>
-						{{ $t('config.scheduler.form.import.fileEmpty') }}
+						{{ $t('config.daemon.scheduler.import.errors.fileEmpty') }}
 					</p>
 				</div>
 			</CForm>
@@ -120,7 +120,7 @@
 					:disabled='importConfig.empty'
 					@click='importScheduler'
 				>
-					{{ $t('config.scheduler.buttons.import') }}
+					{{ $t('forms.import') }}
 				</CButton>
 			</template>
 		</CModal>
@@ -130,10 +130,10 @@
 		>
 			<template #header>
 				<h5 class='modal-title'>
-					{{ $t('config.scheduler.messages.deleteTitle') }}
+					{{ $t('config.daemon.scheduler.messages.deleteTitle') }}
 				</h5>
 			</template>
-			{{ $t('config.scheduler.messages.deletePrompt', {task: deleteTask}) }}
+			{{ $t('config.daemon.scheduler.messages.deletePrompt', {task: deleteTask}) }}
 			<template #footer>
 				<CButton
 					color='danger'
@@ -227,21 +227,21 @@ export default class SchedulerList extends Vue {
 	private fields: Array<IField> = [
 		{
 			key: 'taskId',
-			label: this.$t('config.scheduler.table.id'),
+			label: this.$t('config.daemon.scheduler.table.id'),
 		},
 		{
 			key: 'timeSpec',
-			label: this.$t('config.scheduler.table.time'),
+			label: this.$t('config.daemon.scheduler.table.time'),
 			filter: false,
 			sorter: false,
 		},
 		{
 			key: 'clientId',
-			label: this.$t('config.scheduler.table.service'),
+			label: this.$t('config.daemon.scheduler.table.service'),
 		},
 		{
 			key: 'task',
-			label: this.$t('config.scheduler.table.mType'),
+			label: this.$t('config.daemon.scheduler.table.mType'),
 		},
 		{
 			key: 'actions',
@@ -340,7 +340,7 @@ export default class SchedulerList extends Vue {
 						this.retrieved = 'daemon';
 					} else {
 						this.$toast.error(
-							this.$t('config.scheduler.messages.listFailed').toString()
+							this.$t('config.daemon.scheduler.messages.listFailed').toString()
 						);
 					}
 				} else if (mutation.payload.mType === 'mngScheduler_GetTask' &&
@@ -358,23 +358,23 @@ export default class SchedulerList extends Vue {
 					this.$store.dispatch('removeMessage', mutation.payload.data.msgId);
 					if (mutation.payload.data.status === 0) {
 						this.$toast.success(
-							this.$t('config.scheduler.messages.deleteSuccess').toString()
+							this.$t('config.daemon.scheduler.messages.deleteSuccess').toString()
 						);
 						this.getTasks();
 					} else {
 						this.$toast.error(
-							this.$t('config.scheduler.messages.deleteFail').toString()
+							this.$t('config.daemon.scheduler.messages.deleteFail').toString()
 						);
 					}
 				} else if (mutation.payload.mType === 'messageError') {
 					this.$store.commit('spinner/HIDE');
 					if (mutation.payload.data.rsp.errorStr.includes('daemon overload')) {
 						this.$toast.error(
-							this.$t('iqrfnet.sendJson.form.messages.error.messageQueueFull').toString()
+							this.$t('iqrfnet.daemon.sendJson.form.messages.error.messageQueueFull').toString()
 						);
 					} else {
 						this.$toast.error(
-							this.$t('config.scheduler.messages.processError').toString()
+							this.$t('config.daemon.scheduler.messages.processError').toString()
 						);
 					}
 				}
@@ -462,7 +462,7 @@ export default class SchedulerList extends Vue {
 				})
 				.catch((error: AxiosError) => FormErrorHandler.schedulerError(error));
 		} else {
-			SchedulerService.listTasks(new WebSocketOptions(null, 30000, 'config.scheduler.messages.listFailed'))
+			SchedulerService.listTasks(new WebSocketOptions(null, 30000, 'config.daemon.scheduler.messages.listFailed'))
 				.then((msgId: string) => this.storeId(msgId));
 		}
 	}
@@ -491,13 +491,13 @@ export default class SchedulerList extends Vue {
 				.then(() => {
 					this.$store.commit('spinner/HIDE');
 					this.$toast.success(
-						this.$t('config.scheduler.messages.deleteSuccess').toString()
+						this.$t('config.daemon.scheduler.messages.deleteSuccess').toString()
 					);
 					this.getTasks();
 				})
 				.catch((error: AxiosError) => FormErrorHandler.schedulerError(error));
 		} else {
-			SchedulerService.removeTask(task, new WebSocketOptions(null, 30000, 'config.scheduler.messages.deleteFail'))
+			SchedulerService.removeTask(task, new WebSocketOptions(null, 30000, 'config.daemon.scheduler.messages.deleteFail'))
 				.then((msgId: string) => this.storeId(msgId));
 		}
 	}
@@ -541,7 +541,7 @@ export default class SchedulerList extends Vue {
 					.then(() => {
 						this.$store.commit('spinner/HIDE');
 						this.$toast.success(
-							this.$t('config.scheduler.messages.importSuccess').toString()
+							this.$t('config.daemon.scheduler.messages.importSuccess').toString()
 						);
 						this.$toast.info(
 							this.$t('service.iqrf-gateway-daemon.messages.restart')
@@ -558,11 +558,11 @@ export default class SchedulerList extends Vue {
 				}
 				if (error.response.status === 400) {
 					this.$toast.error(
-						this.$t('config.scheduler.messages.importInvalidFile').toString()
+						this.$t('config.daemon.scheduler.messages.importInvalidFile').toString()
 					);
 				} else if (error.response.status === 415) {
 					this.$toast.error(
-						this.$t('config.scheduler.messages.importInvalidFormat')
+						this.$t('config.daemon.scheduler.messages.importInvalidFormat')
 							.toString()
 					);
 				}

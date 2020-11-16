@@ -1,10 +1,10 @@
 <template>
 	<div>
 		<h1 v-if='$route.path === "/config/daemon/websocket/add-messaging"'>
-			{{ $t('config.websocket.messaging.add') }}
+			{{ $t('config.daemon.messagings.websocket.messaging.add') }}
 		</h1>
 		<h1 v-else>
-			{{ $t('config.websocket.messaging.edit') }}
+			{{ $t('config.daemon.messagings.websocket.messaging.edit') }}
 		</h1>
 		<CCard>
 			<CCardBody>
@@ -13,20 +13,20 @@
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
 							rules='required'
-							:custom-messages='{required: "config.websocket.form.messages.messagingInstance"}'
+							:custom-messages='{required: "config.daemon.messagings.websocket.errors.messagingInstance"}'
 						>
 							<CInput
 								v-model='configuration.instance'
-								:label='$t("config.websocket.form.instance")'
+								:label='$t("config.daemon.messagings.websocket.form.instance")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
 						</ValidationProvider>
 						<CInputCheckbox
 							:checked.sync='configuration.acceptAsyncMsg'
-							:label='$t("config.websocket.form.acceptAsyncMsg")'
+							:label='$t("config.daemon.messagings.websocket.form.acceptAsyncMsg")'
 						/>
-						<h4>{{ $t('config.websocket.form.requiredInterfaces') }}</h4>
+						<h4>{{ $t('config.daemon.messagings.websocket.form.requiredInterfaces') }}</h4>
 						<div
 							v-for='(iface, i) of configuration.RequiredInterfaces'
 							:key='i'
@@ -35,12 +35,12 @@
 							<ValidationProvider
 								v-slot='{ errors, touched, valid }'
 								rules='required'
-								:custom-messages='{required: "config.websocket.form.messages.interfaceName"}'
+								:custom-messages='{required: "config.daemon.messagings.websocket.errors.interfaceName"}'
 							>
 								<CSelect
 									:value.sync='iface.name'
-									:label='$t("config.websocket.form.requiredInterface.name")'
-									:placeholder='$t("config.websocket.form.messages.interfaceName")'
+									:label='$t("config.daemon.messagings.websocket.form.requiredInterface.name")'
+									:placeholder='$t("config.daemon.messagings.websocket.errors.interfaceName")'
 									:options='[
 										{value: "shape::IWebsocketService", label: "shape::IWebsocketService"}
 									]'
@@ -51,12 +51,12 @@
 							<ValidationProvider
 								v-slot='{ errors, touched, valid }'
 								rules='required'
-								:custom-messages='{required: "config.websocket.form.messages.interfaceName"}'
+								:custom-messages='{required: "config.daemon.messagings.websocket.errors.interfaceName"}'
 							>
 								<CSelect
 									:value.sync='iface.instance'
-									:label='$t("config.websocket.form.requiredInterface.instance")'
-									:placeholder='$t("config.websocket.form.messages.interfaceInstance")'
+									:label='$t("config.daemon.messagings.websocket.form.requiredInterface.instance")'
+									:placeholder='$t("config.daemon.messagings.websocket.errors.interfaceInstance")'
 									:options='services'
 									:is-valid='touched ? valid : null'
 									:invalid-feedback='$t(errors[0])'
@@ -67,7 +67,7 @@
 								color='danger'
 								@click='removeInterface(i-1)'
 							>
-								{{ $t('config.websocket.form.requiredInterface.remove') }}
+								{{ $t('config.daemon.messagings.websocket.form.requiredInterface.remove') }}
 							</CButton>
 							<CButton
 								v-if='i === (configuration.RequiredInterfaces.length - 1)'
@@ -75,7 +75,7 @@
 								:disabled='!iface.name || !iface.instance'
 								@click='addInterface'
 							>
-								{{ $t('config.websocket.form.requiredInterface.add') }}
+								{{ $t('config.daemon.messagings.websocket.form.requiredInterface.add') }}
 							</CButton>
 						</div>
 						<CButton type='submit' color='primary' :disabled='invalid'>
@@ -175,7 +175,7 @@ export default class WebsocketMessagingForm extends Vue {
 	 */
 	get pageTitle(): string {
 		return this.$route.path === '/config/daemon/websocket/add-messaging' ?
-			this.$t('config.websocket.messaging.add').toString() : this.$t('config.websocket.messaging.edit').toString();
+			this.$t('config.daemon.messagings.websocket.messaging.add').toString() : this.$t('config.daemon.messagings.websocket.messaging.edit').toString();
 	}
 
 	/**
@@ -292,12 +292,12 @@ export default class WebsocketMessagingForm extends Vue {
 		this.$store.commit('spinner/HIDE');
 		if (this.$route.path === '/config/daemon/websocket/add-messaging') {
 			this.$toast.success(
-				this.$t('config.websocket.messaging.messages.addSuccess', {messaging: this.configuration.instance})
+				this.$t('config.daemon.messagings.websocket.messaging.messages.addSuccess', {messaging: this.configuration.instance})
 					.toString()
 			);
 		} else {
 			this.$toast.success(
-				this.$t('config.websocket.messaging.messages.editSuccess', {messaging: this.instance})
+				this.$t('config.daemon.messagings.websocket.messaging.messages.editSuccess', {messaging: this.instance})
 					.toString()
 			);
 		}

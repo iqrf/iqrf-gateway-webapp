@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<h1>
-			{{ $t('config.mq.title') }}
+			{{ $t('config.daemon.messagings.mq.title') }}
 		</h1>
 		<CCard>
 			<CCardHeader class='border-0'>
@@ -73,12 +73,12 @@
 		>
 			<template #header>
 				<h5 class='modal-title'>
-					{{ $t('config.mq.messages.delete.confirmTitle') }}
+					{{ $t('config.daemon.messagings.mq.messages.deleteTitle') }}
 				</h5>
 				<CButtonClose class='text-white' @click='deleteInstance = ""' />
 			</template>
 			<span v-if='deleteInstance !== ""'>
-				{{ $t('config.mq.messages.delete.confirm', {instance: deleteInstance}) }}
+				{{ $t('config.daemon.messagings.mq.messages.deletePrompt', {instance: deleteInstance}) }}
 			</span>
 			<template #footer>
 				<CButton 
@@ -154,19 +154,19 @@ export default class MqMessagingTable extends Vue {
 	private fields: Array<IField> = [
 		{
 			key: 'instance',
-			label: this.$t('config.mq.form.instance'),
+			label: this.$t('config.daemon.messagings.mq.form.instance'),
 		},
 		{
 			key: 'LocalMqName',
-			label: this.$t('config.mq.form.LocalMqName'),
+			label: this.$t('config.daemon.messagings.mq.form.LocalMqName'),
 		},
 		{
 			key: 'RemoteMqName',
-			label: this.$t('config.mq.form.RemoteMqName'),
+			label: this.$t('config.daemon.messagings.mq.form.RemoteMqName'),
 		},
 		{
 			key: 'acceptAsyncMsg',
-			label: this.$t('config.mq.form.acceptAsyncMsg'),
+			label: this.$t('config.daemon.messagings.mq.form.acceptAsyncMsg'),
 			filter: false,
 		},
 		{
@@ -222,7 +222,7 @@ export default class MqMessagingTable extends Vue {
 			.then(() => {
 				this.getInstances().then(() => {
 					this.$toast.success(
-						this.$t('config.mq.messages.edit.success', {instance: instance.instance})
+						this.$t('config.daemon.messagings.mq.messages.editSuccess', {instance: instance.instance})
 							.toString()
 					);
 				});
@@ -253,7 +253,7 @@ export default class MqMessagingTable extends Vue {
 			.then(() => {
 				this.getInstances().then(() => {
 					this.$toast.success(
-						this.$t('config.mq.messages.delete.success', {instance: instance})
+						this.$t('config.daemon.messagings.mq.messages.deleteSuccess', {instance: instance})
 							.toString()
 					);
 				});

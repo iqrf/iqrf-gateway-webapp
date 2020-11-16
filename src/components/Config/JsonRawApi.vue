@@ -1,7 +1,7 @@
 <template>
 	<CCard class='border-0'>
 		<CCardHeader>
-			{{ $t('config.jsonRawApi.title') }}
+			{{ $t('config.daemon.misc.jsonRawApi.title') }}
 		</CCardHeader>
 		<CCardBody>
 			<ValidationObserver v-slot='{ invalid }'>
@@ -9,18 +9,18 @@
 					<ValidationProvider
 						v-slot='{ errors, touched, valid }'
 						rules='required'
-						:custom-messages='{required: "config.jsonRawApi.form.messages.instance"}'
+						:custom-messages='{required: "config.daemon.misc.jsonRawApi.errors.instance"}'
 					>
 						<CInput
 							v-model='configuration.instance'
-							:label='$t("config.jsonRawApi.form.instance")'
+							:label='$t("config.daemon.misc.jsonRawApi.form.instance")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
 					</ValidationProvider>
 					<CInputCheckbox
 						:checked.sync='configuration.asyncDpaMessage'
-						:label='$t("config.jsonRawApi.form.asyncDpaMessage")'
+						:label='$t("config.daemon.misc.jsonRawApi.form.asyncDpaMessage")'
 					/>
 					<CButton type='submit' color='primary' :disabled='invalid'>
 						{{ $t('forms.save') }}

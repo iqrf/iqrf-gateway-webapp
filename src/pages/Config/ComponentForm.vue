@@ -1,10 +1,10 @@
 <template>
 	<div>
 		<h1 v-if='$route.path === "/config/daemon/component/add"'>
-			{{ $t('config.components.add') }}
+			{{ $t('config.daemon.components.add') }}
 		</h1>
 		<h1 v-else>
-			{{ $t('config.components.edit') }}
+			{{ $t('config.daemon.components.edit') }}
 		</h1>
 		<CCard>
 			<CCardBody>
@@ -13,47 +13,47 @@
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
 							rules='required'
-							:custom-messages='{required: "config.components.form.messages.name"}'
+							:custom-messages='{required: "config.daemon.components.errors.name"}'
 						>
 							<CInput
 								v-model='configuration.name'
-								:label='$t("config.components.form.name")'
+								:label='$t("config.daemon.components.form.name")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
 						</ValidationProvider>
 						<CInput
 							v-model='configuration.libraryPath'
-							:label='$t("config.components.form.libraryPath")'
+							:label='$t("config.daemon.components.form.libraryPath")'
 						/>
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
 							rules='required'
-							:custom-messages='{required: "config.components.form.messages.libraryName"}'
+							:custom-messages='{required: "config.daemon.components.errors.libraryName"}'
 						>
 							<CInput
 								v-model='configuration.libraryName'
-								:label='$t("config.components.form.libraryName")'
+								:label='$t("config.daemon.components.form.libraryName")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
 						</ValidationProvider>
 						<CInputCheckbox
 							:checked.sync='configuration.enabled'
-							:label='$t("config.components.form.enabled")'
+							:label='$t("config.daemon.components.form.enabled")'
 						/>
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
 							rules='integer|required'
 							:custom-messages='{
 								integer: "forms.messages.integer",
-								required: "config.components.form.messages.startLevel"
+								required: "config.daemon.components.errors.startLevel"
 							}'
 						>
 							<CInput
 								v-model.number='configuration.startlevel'
 								type='number'
-								:label='$t("config.components.form.startLevel")'
+								:label='$t("config.daemon.components.form.startLevel")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
@@ -131,7 +131,7 @@ export default class ComponentForm extends Vue {
 	 */
 	get pageTitle(): string {
 		return this.$route.path === '/config/daemon/component/add' ?
-			this.$t('config.components.add').toString() : this.$t('config.components.edit').toString();
+			this.$t('config.daemon.components.add').toString() : this.$t('config.daemon.components.edit').toString();
 	}
 
 	/**
@@ -199,12 +199,12 @@ export default class ComponentForm extends Vue {
 		this.$store.commit('spinner/HIDE');
 		if (this.$route.path === '/config/daemon/component/add') {
 			this.$toast.success(
-				this.$t('config.components.form.messages.addSuccess', {component: this.configuration.name})
+				this.$t('config.daemon.components.messages.addSuccess', {component: this.configuration.name})
 					.toString()
 			);
 		} else {
 			this.$toast.success(
-				this.$t('config.components.form.messages.editSuccess', {component: this.component})
+				this.$t('config.daemon.components.messages.editSuccess', {component: this.component})
 					.toString()
 			);
 		}

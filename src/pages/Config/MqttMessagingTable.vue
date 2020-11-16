@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<h1>
-			{{ $t('config.mqtt.title') }}
+			{{ $t('config.daemon.messagings.mqtt.title') }}
 		</h1>
 		<CCard>
 			<CCardHeader class='border-0'>
@@ -90,12 +90,12 @@
 		>
 			<template #header>
 				<h5 class='modal-title'>
-					{{ $t('config.mqtt.messages.delete.confirmTitle') }}
+					{{ $t('config.daemon.messagings.mqtt.messages.deleteTitle') }}
 				</h5>
 				<CButtonClose class='text-white' @click='deleteInstance = ""' />
 			</template>
 			<span v-if='deleteInstance !== ""'>
-				{{ $t('config.mqtt.messages.delete.confirm', {instance: deleteInstance}) }}
+				{{ $t('config.daemon.messagings.mqtt.messages.deletePrompt', {instance: deleteInstance}) }}
 			</span>
 			<template #footer>
 				<CButton color='danger' @click='deleteInstance = ""'>
@@ -167,32 +167,32 @@ export default class MqttMessagingTable extends Vue {
 	private fields: Array<IField> = [
 		{
 			key: 'instance',
-			label: this.$t('config.mqtt.form.instance'),
+			label: this.$t('config.daemon.messagings.mqtt.form.instance'),
 		},
 		{
 			key: 'BrokerAddr',
-			label: this.$t('config.mqtt.form.BrokerAddr'),
+			label: this.$t('config.daemon.messagings.mqtt.form.BrokerAddr'),
 		},
 		{
 			key: 'ClientId',
-			label: this.$t('config.mqtt.form.ClientId'),
+			label: this.$t('config.daemon.messagings.mqtt.form.ClientId'),
 		},
 		{
 			key: 'TopicRequest',
-			label: this.$t('config.mqtt.form.TopicRequest'),
+			label: this.$t('config.daemon.messagings.mqtt.form.TopicRequest'),
 		},
 		{
 			key: 'TopicResponse',
-			label: this.$t('config.mqtt.form.TopicResponse'),
+			label: this.$t('config.daemon.messagings.mqtt.form.TopicResponse'),
 		},
 		{
 			key: 'EnabledSSL',
-			label: this.$t('config.mqtt.form.EnabledSSL'),
+			label: this.$t('config.daemon.messagings.mqtt.form.EnabledSSL'),
 			filter: false,
 		},
 		{
 			key: 'acceptAsyncMsg',
-			label: this.$t('config.mqtt.form.acceptAsyncMsg'),
+			label: this.$t('config.daemon.messagings.mqtt.form.acceptAsyncMsg'),
 			filter: false,
 		},
 		{
@@ -272,7 +272,7 @@ export default class MqttMessagingTable extends Vue {
 			.then(() => {
 				this.getInstances().then(() => {
 					this.$toast.success(
-						this.$t('config.mqtt.messages.edit.success', {instance: settings.instance})
+						this.$t('config.daemon.messagings.mqtt.messages.editSuccess', {instance: settings.instance})
 							.toString()
 					);
 				});
@@ -304,7 +304,7 @@ export default class MqttMessagingTable extends Vue {
 			.then(() => {
 				this.getInstances().then(() => {
 					this.$toast.success(
-						this.$t('config.mqtt.messages.delete.success', {instance: instance})
+						this.$t('config.daemon.messagings.mqtt.messages.deleteSuccess', {instance: instance})
 							.toString()
 					);
 				});

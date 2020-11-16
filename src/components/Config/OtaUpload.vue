@@ -1,7 +1,7 @@
 <template>
 	<CCard class='border-0'>
 		<CCardHeader>
-			{{ $t("config.iqmesh.otaUpload.title") }}
+			{{ $t("config.daemon.misc.iqmesh.otaUpload.title") }}
 		</CCardHeader>
 		<CCardBody>
 			<ValidationObserver v-slot='{ invalid }'>
@@ -9,18 +9,18 @@
 					<ValidationProvider
 						v-slot='{ errors, touched, valid }'
 						rules='required'
-						:custom-messages='{required: "config.iqmesh.otaUpload.form.messages.instance"}'
+						:custom-messages='{required: "config.daemon.misc.iqmesh.otaUpload.errors.instance"}'
 					>					
 						<CInput
 							v-model='configuration.instance'
-							:label='$t("config.iqmesh.otaUpload.form.instance")'
+							:label='$t("config.daemon.misc.iqmesh.otaUpload.form.instance")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
 					</ValidationProvider>
 					<CInput
 						v-model='configuration.uploadPath'
-						:label='$t("config.iqmesh.otaUpload.form.uploadPath")'
+						:label='$t("config.daemon.misc.iqmesh.otaUpload.form.uploadPath")'
 					/>
 					<CButton type='submit' color='primary' :disabled='invalid'>
 						{{ $t('forms.save') }}

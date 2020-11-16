@@ -1,10 +1,10 @@
 <template>
 	<div>
 		<h1 v-if='$route.path === "/config/daemon/udp/add"'>
-			{{ $t('config.udp.add') }}
+			{{ $t('config.daemon.messagings.udp.add') }}
 		</h1>
 		<h1 v-else>
-			{{ $t('config.udp.edit') }}
+			{{ $t('config.daemon.messagings.udp.edit') }}
 		</h1>
 		<CCard>
 			<CCardBody>
@@ -13,11 +13,11 @@
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
 							rules='required'
-							:custom-messages='{required: "config.udp.form.messages.instance"}'
+							:custom-messages='{required: "config.daemon.messagings.udp.errors.instance"}'
 						>
 							<CInput
 								v-model='configuration.instance'
-								:label='$t("config.udp.form.instance")'
+								:label='$t("config.daemon.messagings.udp.form.instance")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
@@ -26,13 +26,13 @@
 							v-slot='{ errors, touched, valid }'
 							rules='required|between:1,65535'
 							:custom-messages='{
-								between: "config.udp.form.messages.RemotePort",
-								required: "config.udp.form.messages.RemotePort",
+								between: "config.daemon.messagings.udp.errors.RemotePort",
+								required: "config.daemon.messagings.udp.errors.RemotePort",
 							}'
 						>
 							<CInput
 								v-model.number='configuration.RemotePort'
-								:label='$t("config.udp.form.RemotePort")'
+								:label='$t("config.daemon.messagings.udp.form.RemotePort")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 								type='number'
@@ -44,13 +44,13 @@
 							v-slot='{ errors, touched, valid }'
 							rules='required|between:1,65535'
 							:custom-messages='{
-								between: "config.udp.form.messages.LocalPort",
-								required: "config.udp.form.messages.LocalPort",
+								between: "config.daemon.messagings.udp.errors.LocalPort",
+								required: "config.daemon.messagings.udp.errors.LocalPort",
 							}'
 						>
 							<CInput
 								v-model.number='configuration.LocalPort'
-								:label='$t("config.udp.form.LocalPort")'
+								:label='$t("config.daemon.messagings.udp.form.LocalPort")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 								type='number'
@@ -127,7 +127,7 @@ export default class UdpMessagingForm extends Vue {
 	 */
 	get pageTitle(): string {
 		return this.$route.path === '/config/daemon/udp/add' ?
-			this.$t('config.udp.add').toString() : this.$t('config.udp.edit').toString();
+			this.$t('config.daemon.messagings.udp.add').toString() : this.$t('config.daemon.messagings.udp.edit').toString();
 	}
 
 	/**
@@ -189,11 +189,11 @@ export default class UdpMessagingForm extends Vue {
 		this.$store.commit('spinner/HIDE');
 		if (this.$route.path === '/config/daemon/udp/add') {
 			this.$toast.success(
-				this.$t('config.udp.messages.add.success', {instance: this.configuration.instance})
+				this.$t('config.daemon.messagings.udp.messages.addSuccess', {instance: this.configuration.instance})
 					.toString());
 		} else {
 			this.$toast.success(
-				this.$t('config.udp.messages.edit.success', {instance: this.configuration.instance})
+				this.$t('config.daemon.messagings.udp.messages.editSuccess', {instance: this.configuration.instance})
 					.toString()
 			);
 		}

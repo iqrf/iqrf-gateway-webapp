@@ -1,10 +1,10 @@
 <template>
 	<div>
 		<h1 v-if='$route.path === "/config/daemon/mq/add"'>
-			{{ $t('config.mq.add') }}
+			{{ $t('config.daemon.messagings.mq.add') }}
 		</h1>
 		<h1 v-else>
-			{{ $t('config.mq.edit') }}
+			{{ $t('config.daemon.messagings.mq.edit') }}
 		</h1>
 		<CCard>
 			<CCardBody>
@@ -13,11 +13,11 @@
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
 							rules='required'
-							:custom-messages='{required: "config.mq.form.messages.instance"}'
+							:custom-messages='{required: "config.daemon.messagings.mq.errors.instance"}'
 						>
 							<CInput
 								v-model='configuration.instance'
-								:label='$t("config.mq.form.instance")'
+								:label='$t("config.daemon.messagings.mq.form.instance")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
@@ -25,11 +25,11 @@
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
 							rules='required'
-							:custom-messages='{required: "config.mq.form.messages.LocalMqName"}'
+							:custom-messages='{required: "config.daemon.messagings.mq.errors.LocalMqName"}'
 						>
 							<CInput
 								v-model='configuration.LocalMqName'
-								:label='$t("config.mq.form.LocalMqName")'
+								:label='$t("config.daemon.messagings.mq.form.LocalMqName")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
@@ -37,18 +37,18 @@
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
 							rules='required'
-							:custom-messages='{required: "config.mq.form.messages.RemoteMqName"}'
+							:custom-messages='{required: "config.daemon.messagings.mq.errors.RemoteMqName"}'
 						>
 							<CInput
 								v-model='configuration.RemoteMqName'
-								:label='$t("config.mq.form.RemoteMqName")'
+								:label='$t("config.daemon.messagings.mq.form.RemoteMqName")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
 						</ValidationProvider>
 						<CInputCheckbox
 							:checked.sync='configuration.acceptAsyncMsg'
-							:label='$t("config.mq.form.acceptAsyncMsg")'
+							:label='$t("config.daemon.messagings.mq.form.acceptAsyncMsg")'
 						/>
 						<CButton type='submit' color='primary' :disabled='invalid'>
 							{{ submitButton }}
@@ -121,7 +121,7 @@ export default class MqMessagingForm extends Vue {
 	 */
 	get pageTitle(): string {
 		return this.$route.path === '/config/daemon/mq/add' ?
-			this.$t('config.mq.add').toString() : this.$t('config.mq.edit').toString();
+			this.$t('config.daemon.messagings.mq.add').toString() : this.$t('config.daemon.messagings.mq.edit').toString();
 	}
 	
 	/**
@@ -188,12 +188,12 @@ export default class MqMessagingForm extends Vue {
 		this.$store.commit('spinner/HIDE');
 		if (this.$route.path === '/config/daemon/mq/add') {
 			this.$toast.success(
-				this.$t('config.mq.messages.add.success', {instance: this.configuration.instance})
+				this.$t('config.daemon.messagings.mq.messages.addSuccess', {instance: this.configuration.instance})
 					.toString()
 			);
 		} else {
 			this.$toast.success(
-				this.$t('config.mq.messages.edit.success', {instance: this.configuration.instance})
+				this.$t('config.daemon.messagings.mq.messages.editSuccess', {instance: this.configuration.instance})
 					.toString()
 			);
 		}

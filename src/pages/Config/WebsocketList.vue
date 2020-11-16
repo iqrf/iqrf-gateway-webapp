@@ -23,7 +23,7 @@ import WebsocketServiceList from '../../components/Config/WebsocketServiceList.v
 		WebsocketServiceList,
 	},
 	metaInfo: {
-		title: 'config.websocket.title'
+		title: 'config.daemon.messagings.websocket.title'
 	}
 })
 

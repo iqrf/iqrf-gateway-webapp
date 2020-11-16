@@ -1,10 +1,10 @@
 <template>
 	<div>
 		<h1 v-if='$route.path === "/config/daemon/websocket/add-service"'>
-			{{ $t('config.websocket.service.add') }}
+			{{ $t('config.daemon.messagings.websocket.service.add') }}
 		</h1>
 		<h1 v-else>
-			{{ $t('config.websocket.service.edit') }}
+			{{ $t('config.daemon.messagings.websocket.service.edit') }}
 		</h1>
 		<CCard>
 			<CCardBody>
@@ -13,11 +13,11 @@
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
 							rules='required'
-							:custom-messages='{required: "config.websocket.form.messages.serviceInstance"}'
+							:custom-messages='{required: "config.daemon.messagings.websocket.errors.serviceInstance"}'
 						>
 							<CInput
-								v-model='instance'
-								:label='$t("config.websocket.form.instance")'
+								v-model='componentInstance'
+								:label='$t("config.daemon.messagings.websocket.form.instance")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
@@ -26,44 +26,44 @@
 							v-slot='{ errors, touched, valid }'
 							rules='integer|required'
 							:custom-messages='{
-								required: "config.websocket.form.messages.WebsocketPort",
+								required: "config.daemon.messagings.websocket.errors.WebsocketPort",
 								integer: "forms.messages.integer"
 							}'
 						>
 							<CInput
 								v-model.number='WebsocketPort'
 								type='number'
-								:label='$t("config.websocket.form.WebsocketPort")'
+								:label='$t("config.daemon.messagings.websocket.form.WebsocketPort")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
 						</ValidationProvider>
 						<CInputCheckbox
 							:checked.sync='acceptOnlyLocalhost'
-							:label='$t("config.websocket.form.acceptOnlyLocalhost")'
+							:label='$t("config.daemon.messagings.websocket.form.acceptOnlyLocalhost")'
 						/>
 						<div v-if='daemonHigher230'>
 							<CInputCheckbox
 								:checked.sync='tlsEnabled'
-								:label='$t("config.websocket.form.tlsEnabled")'
+								:label='$t("config.daemon.messagings.websocket.form.tlsEnabled")'
 							/>
 							<div>
 								<CSelect
 									:value.sync='tlsMode'
 									:options='tlsModeOptions'
-									:placeholder='$t("config.websocket.form.messages.tlsMode")'
+									:placeholder='$t("config.daemon.messagings.websocket.errors.tlsMode")'
 									:disabled='!tlsEnabled'
 								/>
-								<span v-if='tlsMode !== ""'>{{ $t('config.websocket.form.tlsModes.descriptions.' + tlsMode) }}</span>
+								<span v-if='tlsMode !== ""'>{{ $t('config.daemon.messagings.websocket.form.tlsModes.descriptions.' + tlsMode) }}</span>
 							</div><br>
 							<CInput
 								v-model='certificate'
-								:label='$t("config.websocket.form.certificate")'
+								:label='$t("config.daemon.messagings.websocket.form.certificate")'
 								:disabled='!tlsEnabled'
 							/>
 							<CInput
 								v-model='privateKey'
-								:label='$t("config.websocket.form.privateKey")'
+								:label='$t("config.daemon.messagings.websocket.form.privateKey")'
 								:disabled='!tlsEnabled'
 							/>
 						</div>
@@ -186,7 +186,7 @@ export default class WebsocketServiceForm extends Vue {
 	 */
 	get pageTitle(): string {
 		return this.$route.path === '/config/daemon/websocket/add-service' ?
-			this.$t('config.websocket.service.add').toString() : this.$t('config.websocket.service.edit').toString();
+			this.$t('config.daemon.messagings.websocket.service.add').toString() : this.$t('config.daemon.messagings.websocket.service.edit').toString();
 	}
 
 	/**
@@ -208,15 +208,15 @@ export default class WebsocketServiceForm extends Vue {
 			this.tlsModeOptions = [
 				{
 					value: 'intermediate',
-					label: this.$t('config.websocket.form.tlsModes.intermediate').toString()
+					label: this.$t('config.daemon.messagings.websocket.form.tlsModes.intermediate').toString()
 				},
 				{
 					value: 'modern',
-					label: this.$t('config.websocket.form.tlsModes.modern').toString()
+					label: this.$t('config.daemon.messagings.websocket.form.tlsModes.modern').toString()
 				},
 				{
 					value: 'old',
-					label: this.$t('config.websocket.form.tlsModes.old').toString()
+					label: this.$t('config.daemon.messagings.websocket.form.tlsModes.old').toString()
 				}
 			];
 		}
@@ -321,12 +321,12 @@ export default class WebsocketServiceForm extends Vue {
 		this.$store.commit('spinner/HIDE');
 		if (this.$route.path === '/config/daemon/websocket/add-service') {
 			this.$toast.success(
-				this.$t('config.websocket.service.messages.addSuccess', {service: this.componentInstance})
+				this.$t('config.daemon.messagings.websocket.service.messages.addSuccess', {service: this.componentInstance})
 					.toString()
 			);
 		} else {
 			this.$toast.success(
-				this.$t('config.websocket.service.messages.editSuccess', {service: this.instance})
+				this.$t('config.daemon.messagings.websocket.service.messages.editSuccess', {service: this.instance})
 					.toString()
 			);
 		}

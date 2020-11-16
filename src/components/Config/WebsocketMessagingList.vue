@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<h1>
-			{{ $t('config.websocket.messaging.title') }}
+			{{ $t('config.daemon.messagings.websocket.messaging.title') }}
 		</h1>
 		<CCard>
 			<CCardHeader class='border-0'>
@@ -77,10 +77,10 @@
 		>
 			<template #header>
 				<h5 class='modal-title'>
-					{{ $t('config.websocket.messaging.messages.deleteTitle') }}
+					{{ $t('config.daemon.messagings.websocket.messaging.messages.deleteTitle') }}
 				</h5>
 			</template>
-			{{ $t('config.websocket.messaging.messages.deletePrompt', {messaging: deleteInstance}) }}
+			{{ $t('config.daemon.messagings.websocket.messaging.messages.deletePrompt', {messaging: deleteInstance}) }}
 			<template #footer>
 				<CButton
 					color='danger'
@@ -143,15 +143,15 @@ export default class WebsocketMessagingList extends Vue {
 	private fields: Array<IField> = [
 		{
 			key: 'instance',
-			label: this.$t('config.websocket.form.instance'),
+			label: this.$t('config.daemon.messagings.websocket.form.instance'),
 		},
 		{
 			key: 'acceptAsyncMsg',
-			label: this.$t('config.websocket.form.acceptAsyncMsg'),
+			label: this.$t('config.daemon.messagings.websocket.form.acceptAsyncMsg'),
 		},
 		{
 			key: 'RequiredInterfaces',
-			label: this.$t('config.websocket.form.requiredInterface.instance'),
+			label: this.$t('config.daemon.messagings.websocket.form.requiredInterface.instance'),
 		},
 		{
 			key: 'actions',
@@ -207,7 +207,7 @@ export default class WebsocketMessagingList extends Vue {
 				.then(() => {
 					this.getConfig().then(() => {
 						this.$toast.success(
-							this.$t('config.websocket.messaging.messages.editSuccess', {messaging: instance.instance})
+							this.$t('config.daemon.messagings.websocket.messaging.messages.editSuccess', {messaging: instance.instance})
 								.toString()
 						);
 					});
@@ -230,7 +230,7 @@ export default class WebsocketMessagingList extends Vue {
 			.then(() => {
 				this.getConfig().then(() => {
 					this.$toast.success(
-						this.$t('config.websocket.messaging.messages.deleteSuccess', {messaging: instance})
+						this.$t('config.daemon.messagings.websocket.messaging.messages.deleteSuccess', {messaging: instance})
 							.toString()
 					);
 				});	

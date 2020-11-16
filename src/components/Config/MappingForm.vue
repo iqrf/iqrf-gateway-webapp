@@ -13,20 +13,20 @@
 			<CForm>
 				<CSelect
 					:value.sync='type'
-					:label='$t("config.interfaceMapping.form.type")'
+					:label='$t("config.daemon.interfaces.interfaceMapping.form.type")'
 					:options='typeOptions'
-					:placeholder='$t("config.interfaceMapping.form.messages.typeSelect")'
+					:placeholder='$t("config.daemon.interfaces.interfaceMapping.errors.typeSelect")'
 				/>
 				<ValidationProvider
 					v-slot='{errors, touched, valid}'
 					rules='required'
 					:custom-messages='{
-						required: "config.interfaceMapping.form.messages.name"
+						required: "config.daemon.interfaces.interfaceMapping.errors.name"
 					}'
 				>
 					<CInput
 						v-model='name'
-						:label='$t("config.interfaceMapping.form.name")'
+						:label='$t("config.daemon.interfaces.interfaceMapping.form.name")'
 						:is-valid='touched ? valid : null'
 						:invalid-feedback='$t(errors[0])'
 					/>
@@ -35,12 +35,12 @@
 					v-slot='{errors, touched, valid}'
 					rules='required'
 					:custom-messages='{
-						required: "config.interfaceMapping.form.messages.interface"
+						required: "config.daemon.interfaces.interfaceMapping.errors.interface"
 					}'
 				>
 					<CInput
 						v-model='deviceName'
-						:label='$t("config.interfaceMapping.form.interface")'
+						:label='$t("config.daemon.interfaces.interfaceMapping.form.interface")'
 						:is-valid='touched ? valid : null'
 						:invalid-feedback='$t(errors[0])'
 					/>
@@ -50,13 +50,13 @@
 					rules='integer|required'
 					:custom-messages='{
 						integer: "forms.messages.integer",
-						required: "config.interfaceMapping.form.messages.powerPin"
+						required: "config.daemon.interfaces.interfaceMapping.errors.powerPin"
 					}'
 				>
 					<CInput
 						v-model.number='powerPin'
 						type='number'
-						:label='$t("config.interfaceMapping.form.powerPin")'
+						:label='$t("config.daemon.interfaces.interfaceMapping.form.powerPin")'
 						:is-valid='touched ? valid : null'
 						:invalid-feedback='$t(errors[0])'
 					/>
@@ -66,13 +66,13 @@
 					rules='integer|required'
 					:custom-messages='{
 						integer: "forms.messages.integer",
-						required: "config.interfaceMapping.form.messages.busPin"
+						required: "config.daemon.interfaces.interfaceMapping.errors.busPin"
 					}'
 				>
 					<CInput
 						v-model.number='busPin'
 						type='number'
-						:label='$t("config.interfaceMapping.form.busPin")'
+						:label='$t("config.daemon.interfaces.interfaceMapping.form.busPin")'
 						:is-valid='touched ? valid : null'
 						:invalid-feedback='$t(errors[0])'
 					/>
@@ -82,13 +82,13 @@
 					rules='integer|required'
 					:custom-messages='{
 						integer: "forms.messages.integer",
-						required: "config.interfaceMapping.form.messages.pgmPin"
+						required: "config.daemon.interfaces.interfaceMapping.errors.pgmPin"
 					}'
 				>
 					<CInput
 						v-model.number='pgmPin'
 						type='number'
-						:label='$t("config.interfaceMapping.form.pgmPin")'
+						:label='$t("config.daemon.interfaces.interfaceMapping.form.pgmPin")'
 						:is-valid='touched ? valid : null'
 						:invalid-feedback='$t(errors[0])'
 					/>
@@ -97,7 +97,7 @@
 					v-if='type === "uart"'
 					:value.sync='baudRate'
 					:options='baudRateOptions'
-					:label='$t("config.interfaceMapping.form.baudRate")'
+					:label='$t("config.daemon.interfaces.interfaceMapping.form.baudRate")'
 				/>
 			</CForm>
 			<template #footer>
@@ -216,11 +216,11 @@ export default class MappingForm extends Vue {
 	private typeOptions: Array<IOption> = [
 		{
 			value: 'spi',
-			label: this.$t('config.interfaceMapping.form.types.spi').toString()
+			label: this.$t('config.daemon.interfaces.interfaceMapping.form.types.spi').toString()
 		},
 		{
 			value: 'uart',
-			label: this.$t('config.interfaceMapping.form.types.uart').toString()
+			label: this.$t('config.daemon.interfaces.interfaceMapping.form.types.uart').toString()
 		}
 	]
 
@@ -230,7 +230,7 @@ export default class MappingForm extends Vue {
 	 */
 	get modalTitle(): string {
 		return this.mappingId === null ? 
-			this.$t('config.interfaceMapping.form.addTitle').toString(): this.$t('config.interfaceMapping.form.editTitle').toString() + ' ' +this.name;
+			this.$t('config.daemon.interfaces.interfaceMapping.form.addTitle').toString(): this.$t('config.daemon.interfaces.interfaceMapping.form.editTitle').toString() + ' ' +this.name;
 	}
 
 	/**
@@ -274,7 +274,7 @@ export default class MappingForm extends Vue {
 	 * Resets fields to default values
 	 */
 	private clearFields(): void {
-		this.type = '';
+		this.type = 'spi';
 		this.name = '';
 		this.deviceName = '';
 		this.busPin = 0;
@@ -378,11 +378,11 @@ export default class MappingForm extends Vue {
 		this.$store.commit('spinner/HIDE');
 		if (this.mappingId === null) {
 			this.$toast.success(
-				this.$t('config.interfaceMapping.messages.addSuccess', {mapping: this.name}).toString()
+				this.$t('config.daemon.interfaces.interfaceMapping.messages.addSuccess', {mapping: this.name}).toString()
 			);
 		} else {
 			this.$toast.success(
-				this.$t('config.interfaceMapping.messages.editSuccess', {mapping: this.name}).toString()
+				this.$t('config.daemon.interfaces.interfaceMapping.messages.editSuccess', {mapping: this.name}).toString()
 			);
 		}
 		this.hideModal();

@@ -7,11 +7,11 @@
 						v-if='powerUser'
 						v-slot='{ errors, touched, valid }'
 						rules='required'
-						:custom-messages='{required: "config.iqrfInfo.messages.instance"}'
+						:custom-messages='{required: "config.daemon.misc.iqrfInfo.errors.instance"}'
 					>
 						<CInput
 							v-model='componentInstance'
-							:label='$t("config.iqrfInfo.form.instance")'
+							:label='$t("config.daemon.misc.iqrfInfo.form.instance")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
@@ -21,8 +21,8 @@
 						v-slot='{ errors, touched, valid }'
 						:rules='enumAtStartUp ? "integer|min:0|required": ""'
 						:custom-messages='{
-							required: "config.iqrfInfo.messages.enumPeriod",
-							min: "config.iqrfInfo.messages.enumPeriod",
+							required: "config.daemon.misc.iqrfInfo.errors.enumPeriod",
+							min: "config.daemon.misc.iqrfInfo.errors.enumPeriod",
 							integer: "forms.messages.integer"
 						}'
 					>
@@ -30,19 +30,19 @@
 							v-model.number='enumPeriod'
 							type='number'
 							min='0'
-							:label='$t("config.iqrfInfo.form.enumPeriod")'
+							:label='$t("config.daemon.misc.iqrfInfo.form.enumPeriod")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
 					</ValidationProvider>
 					<CInputCheckbox
 						:checked.sync='enumAtStartUp'
-						:label='$t("config.iqrfInfo.form.enumAtStartUp")'
+						:label='$t("config.daemon.misc.iqrfInfo.form.enumAtStartUp")'
 					/>
 					<CInputCheckbox
 						v-if='daemonHigher230'
 						:checked.sync='enumUniformDpaVer'
-						:label='$t("config.iqrfInfo.form.enumUniformDpaVer")'
+						:label='$t("config.daemon.misc.iqrfInfo.form.enumUniformDpaVer")'
 					/>
 					<CButton type='submit' color='primary' :disabled='invalid'>
 						{{ $t('forms.save') }}

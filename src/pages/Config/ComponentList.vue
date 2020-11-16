@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<h1>
-			{{ $t('config.components.title') }}
+			{{ $t('config.daemon.components.title') }}
 		</h1>
 		<CCard>
 			<CCardHeader>
@@ -32,14 +32,14 @@
 						<td>
 							<CDropdown
 								:color='item.enabled ? "success" : "danger"'
-								:toggler-text='item.enabled ? $t("config.components.form.enabled") : $t("config.components.form.disabled")'
+								:toggler-text='$t("table.enabled." + item.enabled)'
 								size='sm'
 							>
 								<CDropdownItem @click='changeEnabled(item, true)'>
-									{{ $t('config.components.form.enabled') }}
+									{{ $t('table.enabled.true') }}
 								</CDropdownItem>
 								<CDropdownItem @click='changeEnabled(item, false)'>
-									{{ $t('config.components.form.disabled') }}
+									{{ $t('table.enabled.false') }}
 								</CDropdownItem>
 							</CDropdown>
 						</td>
@@ -72,10 +72,10 @@
 		>
 			<template #header>
 				<h5 class='modal-title'>
-					{{ $t('config.components.form.messages.deleteTitle') }}
+					{{ $t('config.components.messages.deleteTitle') }}
 				</h5>
 			</template>
-			{{ $t('config.components.form.messages.deletePrompt', {component: component}) }}
+			{{ $t('config.components.messages.deletePrompt', {component: component}) }}
 			<template #footer>
 				<CButton color='danger' @click='component = ""'>
 					{{ $t('forms.no') }}
@@ -139,23 +139,23 @@ export default class ComponentList extends Vue {
 	private fields: Array<IField> = [
 		{
 			key: 'name',
-			label: this.$t('config.components.form.name'),
+			label: this.$t('config.daemon.components.form.name'),
 		},
 		{
 			key: 'startlevel',
-			label: this.$t('config.components.form.startLevel'),
+			label: this.$t('config.daemon.components.form.startLevel'),
 		},
 		{
 			key: 'libraryPath',
-			label: this.$t('config.components.form.libraryPath'),
+			label: this.$t('config.daemon.components.form.libraryPath'),
 		},
 		{
 			key: 'libraryName',
-			label: this.$t('config.components.form.libraryName'),
+			label: this.$t('config.daemon.components.form.libraryName'),
 		},
 		{
 			key: 'enabled',
-			label: this.$t('config.components.form.enabled'),
+			label: this.$t('config.daemon.components.form.enabled'),
 			filter: false,
 		},
 		{
@@ -181,7 +181,7 @@ export default class ComponentList extends Vue {
 	 */
 	get pageTitle(): string {
 		return this.$store.getters['user/getRole'] === 'power' ? 
-			this.$t('config.components.title').toString() : this.$t('config.selectedComponents.title').toString();
+			this.$t('config.daemon.components.title').toString() : this.$t('config.selectedComponents.title').toString();
 	}
 
 	/**
@@ -227,7 +227,7 @@ export default class ComponentList extends Vue {
 		if (component.enabled !== enabled) {
 			if (!this.canEnable(component.name)) {
 				this.$toast.info(
-					this.$t('config.components.form.messages.multipleInterfaces').toString()
+					this.$t('config.daemon.components.messages.multipleInterfaces').toString()
 				);
 				return;
 			}
@@ -235,7 +235,7 @@ export default class ComponentList extends Vue {
 			DaemonConfigurationService.updateComponent(component.name, component)
 				.then(() => {
 					this.getConfig().then(() => {
-						this.$toast.success(this.$t('config.components.form.messages.editSuccess', {component: component.name}).toString());
+						this.$toast.success(this.$t('config.daemon.components.messages.editSuccess', {component: component.name}).toString());
 					});
 				})
 				.catch((error: AxiosError) => FormErrorHandler.configError(error));
@@ -252,6 +252,9 @@ export default class ComponentList extends Vue {
 			return;
 		}
 		const whitelist = ['iqrf::IqrfCdc', 'iqrf::IqrfSpi', 'iqrf::IqrfUart'];
+		if (!whitelist.includes(enabledComponent)) {
+			return true;
+		}
 		let enabled = 0;
 		this.components.forEach((component: IComponent) => {
 			if (whitelist.includes(component.name) && component.enabled && component.name !== enabledComponent) {
