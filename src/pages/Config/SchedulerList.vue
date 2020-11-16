@@ -190,7 +190,7 @@ import {versionHigherThan} from '../../helpers/versionChecker';
 		'autogrow': TextareaAutogrowDirective
 	},
 	metaInfo: {
-		title: 'config.scheduler.title',
+		title: 'config.daemon.scheduler.title',
 	}
 })
 

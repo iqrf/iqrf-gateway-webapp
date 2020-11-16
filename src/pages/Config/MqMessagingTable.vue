@@ -131,6 +131,9 @@ import { AxiosResponse } from 'axios';
 		CDropdownItem,
 		CIcon,
 		CModal,
+	},
+	metaInfo: {
+		title: 'config.daemon.messagings.mq.title'
 	}
 })
 

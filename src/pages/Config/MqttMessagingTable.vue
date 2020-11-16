@@ -144,6 +144,9 @@ import FormErrorHandler from '../../helpers/FormErrorHandler';
 		CDropdownItem,
 		CIcon,
 		CModal,
+	},
+	metaInfo: {
+		title: 'config.daemon.messagings.mqtt.title'
 	}
 })
 

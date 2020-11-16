@@ -115,6 +115,9 @@ import FormErrorHandler from '../../helpers/FormErrorHandler';
 		CDataTable,
 		CIcon,
 		CModal,
+	},
+	metaInfo: {
+		title: 'config.daemon.messagings.udp.title'
 	}
 })
 
