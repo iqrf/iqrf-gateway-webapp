@@ -29,7 +29,6 @@ final class Version20201030161758 extends AbstractMigration {
 		$this->addSql('INSERT INTO mappings VALUES (3, "spi", "UP Squared", "/dev/spidev1.0", 7, 22, 23, null, null, null, null)');
 		$this->addSql('INSERT INTO mappings VALUES (4, "spi", "IQD-GW-01A", "/dev/spidev1.0", 10, 3, 19, null, null, null, null)');
 		$this->addSql('INSERT INTO mappings VALUES (5, "spi", "IQD-GW-02A", "/dev/spidev1.0", -1, 3, 19, null, 7, 10, 6)');
-		$this->addSql('INSERT INTO mappings VALUES (6, "uart", "Raspberry Pi 1", "/dev/ttyAMA0", 7, 22, 23, 57600, null, null, null)');
 		$this->addSql('INSERT INTO mappings VALUES (7, "uart", "Raspberry Pi", "/dev/ttyS0", 7, 22, 23, 57600, null, null, null)');
 		$this->addSql('INSERT INTO mappings VALUES (8, "uart", "UniPi", "/dev/ttyS0", -1, -1, 18, 57600, null, null, null)');
 		$this->addSql('INSERT INTO mappings VALUES (9, "uart", "UP", "/dev/ttyS1", 7, 22, 23, 57600, null, null, null)');
