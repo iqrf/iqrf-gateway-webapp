@@ -1,3 +1,11 @@
+iqrf-gateway-webapp (2.3.0~alpha~1.gbp4eeed7) UNRELEASED; urgency=medium
+
+  ** SNAPSHOT build @4eeed730ec83c5d68d93dd5690304c92cbf7af1a **
+
+  * UNRELEASED
+
+ -- Karel Hanák <karel.hanak@microrisc.com>  Mon, 16 Nov 2020 09:42:14 +0100
+
 iqrf-gateway-webapp (2.2.0) stable; urgency=medium
 
   [ Karel Hanák ]
