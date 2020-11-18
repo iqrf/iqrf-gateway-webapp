@@ -74,6 +74,7 @@ import IqrfNetService from '../../services/IqrfNetService';
 import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 import {AdditionalPropertiesParams, ErrorObject} from 'ajv';
 import validate from '../../helpers/validate_daemonRequest';
+import {v4 as uuidv4} from 'uuid';
 
 @Component({
 	components: {
@@ -255,6 +256,9 @@ export default class SendJsonRequest extends Vue {
 		this.response = '';
 		this.validatorErrors = '';
 		const json = JSON.parse(this.json);
+		if (json.data.msgId === undefined) {
+			Object.assign(json.data, {msgId: uuidv4()});
+		}
 		if (this.validator(json)) {
 			this.sendRequest(json);
 		} else {

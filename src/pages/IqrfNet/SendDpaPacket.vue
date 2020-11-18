@@ -525,6 +525,8 @@ export default class SendDpaPacket extends Vue {
 		this.packetHwpid = this.joinBytes(newPacket.substr(12, 5));
 		if (newPacket.length > 17) {
 			this.packetPdata = newPacket.substr(18, newPacket.length - 1);
+		} else {
+			this.packetPdata = '';
 		}
 		this.setTimeout();
 	}
