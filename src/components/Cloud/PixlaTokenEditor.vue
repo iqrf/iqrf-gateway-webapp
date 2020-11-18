@@ -15,7 +15,7 @@
 					v-slot='{ errors, touched, valid }'
 					rules='required'
 					:custom-messages='{
-						required: "cloud.pixla.editModal.messages.token"
+						required: "cloud.pixla.errors.token"
 					}'
 				>
 					<CInput
@@ -95,12 +95,12 @@ export default class PixlaTokenEditor extends Vue {
 				this.$emit('update:show', false);
 				this.$emit('token-updated');
 				this.$toast.success(
-					this.$t('cloud.pixla.editModal.messages.success').toString()
+					this.$t('cloud.pixla.messages.success').toString()
 				);
 			})
 			.catch(() => {
 				this.$toast.error(
-					this.$t('cloud.pixla.editModal.messages.failure').toString()
+					this.$t('cloud.pixla.messages.failure').toString()
 				);
 			});
 	}

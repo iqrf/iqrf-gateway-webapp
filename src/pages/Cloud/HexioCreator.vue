@@ -9,7 +9,7 @@
 							v-slot='{ errors, touched, valid }'
 							rules='required'
 							:custom-messages='{
-								required: "cloud.hexio.form.messages.clientId"
+								required: "cloud.hexio.errors.clientId"
 							}'
 						>
 							<CInput
@@ -23,7 +23,7 @@
 							v-slot='{ errors, touched, valid }'
 							rules='required'
 							:custom-messages='{
-								required: "cloud.hexio.form.messages.topicRequest"
+								required: "cloud.hexio.errors.topicRequest"
 							}'
 						>
 							<CInput
@@ -37,7 +37,7 @@
 							v-slot='{ errors, touched, valid }'
 							rules='required'
 							:custom-messages='{
-								required: "cloud.hexio.form.messages.topicResponse"
+								required: "cloud.hexio.errors.topicResponse"
 							}'
 						>
 							<CInput
@@ -51,7 +51,7 @@
 							v-slot='{ errors, touched, valid }'
 							rules='required'
 							:custom-messages='{
-								required: "cloud.hexio.form.messages.username"
+								required: "cloud.hexio.errors.username"
 							}'
 						>
 							<CInput
@@ -65,7 +65,7 @@
 							v-slot='{ errors, touched, valid }'
 							rules='required'
 							:custom-messages='{
-								required: "cloud.hexio.form.messages.password"
+								required: "cloud.hexio.errors.password"
 							}'
 						>
 							<CInput

@@ -7,13 +7,13 @@
 				@click='powerOff()'
 			>
 				<CIcon :content='icons.off' />
-				{{ $t('gateway.power.powerOff.title') }}
+				{{ $t('gateway.power.powerOff') }}
 			</CButton> <CButton
 				color='primary'
 				@click='reboot()'
 			>
 				<CIcon :content='icons.reboot' />
-				{{ $t('gateway.power.reboot.title') }}
+				{{ $t('gateway.power.reboot') }}
 			</CButton>
 		</CCard>
 	</div>
@@ -60,7 +60,7 @@ export default class PowerControl extends Vue {
 		GatewayService.performPowerOff()
 			.then((response: AxiosResponse) =>
 				this.$toast.info(
-					this.$t('gateway.power.powerOff.success', {time: this.parseActionTime(response.data.timestamp)}).toString()
+					this.$t('gateway.power.powerOffSuccess', {time: this.parseActionTime(response.data.timestamp)}).toString()
 				)
 			);
 	}
@@ -72,7 +72,7 @@ export default class PowerControl extends Vue {
 		GatewayService.performReboot()
 			.then((response: AxiosResponse) => 
 				this.$toast.info(
-					this.$t('gateway.power.reboot.success', {time: this.parseActionTime(response.data.timestamp)}).toString()
+					this.$t('gateway.power.rebootSuccess', {time: this.parseActionTime(response.data.timestamp)}).toString()
 				)
 			);
 	}

@@ -15,15 +15,15 @@
 				"title": "Amazon AWS IoT MQTT connection wizard",
 				"endpoint": "Endpoint",
 				"certificate": "Certificate",
-				"key": "Private key",
-				"messages": {
-					"endpoint": "Please enter the endpoint.",
-					"certificate": "Please enter the certificate.",
-					"key": "Please enter the private key."
-				}
+				"key": "Private key"
 			},
 			"messages": {
 				"mismatchedCrtAndKey": "The private key does not correspond to the certificate."
+			},
+			"errors": {
+				"endpoint": "Please enter the endpoint.",
+				"certificate": "Please enter the certificate.",
+				"key": "Please enter the private key."
 			}
 		},
 		"hexio": {
@@ -35,14 +35,14 @@
 				"topicRequest": "Topic for requests",
 				"topicResponse": "Topic for responses",
 				"username": "Username",
-				"password": "Password",
-				"messages": {
-					"clientId": "Please enter client ID.",
-					"topicRequest": "Please enter topic for requests.",
-					"topicResponse": "Please enter topic for responses.",
-					"username": "Please enter the username.",
-					"password": "Please enter the password."
-				}
+				"password": "Password"
+			},
+			"errors": {
+				"clientId": "Please enter client ID.",
+				"topicRequest": "Please enter topic for requests.",
+				"topicResponse": "Please enter topic for responses.",
+				"username": "Please enter the username.",
+				"password": "Please enter the password."
 			}
 		},
 		"ibmCloud": {
@@ -54,14 +54,14 @@
 				"deviceType": "Device type",
 				"deviceId": "Device ID",
 				"token": "Authentication token",
-				"eventId": "Command and event ID",
-				"messages": {
-					"organizationId": "Please enter the organization ID.",
-					"deviceType": "Please enter the device type.",
-					"deviceId": "Please enter the device ID.",
-					"token": "Please enter the authentication token.",
-					"eventId": "Please enter command and event ID."
-				}
+				"eventId": "Command and event ID"
+			},
+			"errors": {
+				"organizationId": "Please enter the organization ID.",
+				"deviceType": "Please enter the device type.",
+				"deviceId": "Please enter the device ID.",
+				"token": "Please enter the authentication token.",
+				"eventId": "Please enter command and event ID."
 			}
 		},
 		"intelimentsInteliGlue": {
@@ -72,14 +72,14 @@
 				"rootTopic": "Root Topic",
 				"assignedPort": "Assigned Port",
 				"clientId": "Client ID",
-				"password": "Password",
-				"messages": {
-					"rootTopic": "Please enter the root topic.",
-					"assignedPort": "Please enter the assigned port.",
-					"assignedPortRange": "Port has to be an integer in range from 0 to 65535.",
-					"clientId": "Please enter the client ID.",
-					"password": "Please enter the password."
-				}
+				"password": "Password"
+			},
+			"errors": {
+				"rootTopic": "Please enter the root topic.",
+				"assignedPort": "Please enter the assigned port.",
+				"assignedPortRange": "Port has to be an integer in range from 0 to 65535.",
+				"clientId": "Please enter the client ID.",
+				"password": "Please enter the password."
 			}
 		},
 		"msAzure": {
@@ -87,13 +87,13 @@
 			"description": "Adds a new MQTT connection into Microsoft Azure IoT Hub.",
 			"form": {
 				"title": "Microsoft Azure IoT Hub MQTT connection wizard",
-				"connectionString": "IoT Hub Connection String for Device",
-				"messages": {
-					"connectionString": "Please enter IoT Hub Connection String for Device."
-				}
+				"connectionString": "IoT Hub Connection String for Device"
 			},
 			"messages": {
 				"invalidConnectionString": "Invalid MS Azure IoT Hub connection string for device."
+			},
+			"errors": {
+				"connectionString": "Please enter IoT Hub Connection String for Device."
 			}
 		},
 		"pixla": {
@@ -108,18 +108,18 @@
 			},
 			"editModal": {
 				"title": "Set new PIXLA platform token",
-				"token": "New PIXLA token",
-				"messages": {
-					"token": "Please enter PIXLA platform token.",
-					"failure": "An error occurred while saving the new PIXLA token.",
-					"success": "New PIXLA token has been successfully saved."
-				}
+				"token": "New PIXLA token"
 			},
 			"token": "Token",
 			"messages": {
 				"disabled": "PIXLA manager is disabled.",
 				"disable": "PIXLA client service has been disabled.",
-				"enable": "PIXLA client service has been enabled."
+				"enable": "PIXLA client service has been enabled.",
+				"failure": "An error occurred while saving the new PIXLA token.",
+				"success": "New PIXLA token has been successfully saved."
+			},
+			"errors": {
+				"token": "Please enter PIXLA platform token."
 			}
 		},
 		"guides": {
@@ -128,6 +128,10 @@
 		}
 	},
 	"forms": {
+		"fields": {
+			"username": "User name",
+			"password": "Password"
+		},
 		"import": "Import",
 		"export": "Export",
 		"start": "Start",
@@ -941,10 +945,7 @@
 			"form": {
 				"id": "ID",
 				"description": "Description",
-				"expiration": "Expiration",
-				"messages": {
-					"description": "Please enter API key description."
-				}
+				"expiration": "Expiration"
 			},
 			"messages": {
 				"invalid": "Invalid API key metadata.",
@@ -954,20 +955,17 @@
 				"deleteSuccess": "API key ID {key} has been successfully deleted.",
 				"editSuccess": "API key ID {key} metadata have been successfully changed.",
 				"addSuccess": "New API key has been successfully added."
+			},
+			"errors": {
+				"description": "Please enter API key description."
 			}
 		},
 		"user": {
 			"title": "User manager",
 			"description": "Manage users of this webapp.",
-			"add": {
-				"title": "Add a new user"
-			},
-			"edit": {
-				"title": "Edit an existing user"
-			},
+			"add": "Add a new user",
+			"edit": "Edit an existing user",
 			"id": "User ID",
-			"username": "User name",
-			"password": "Password",
 			"role": "User role",
 			"roles": {
 				"normal": "Normal user",
@@ -980,32 +978,22 @@
 			"oldPassword": "Old password (only if you want change password)",
 			"newPassword": "New password (only if you want change password)",
 			"messages": {
-				"conflict": {
-					"username": "Username is already used."
-				},
-				"invalid": {
-					"oldPassword": "The old password is mismatched."
-				},
-				"missing": {
-					"username": "Please enter the username.",
-					"password": "Please enter the password.",
-					"oldPassword": "Please enter the old password.",
-					"newPassword": "Please enter the new password.",
-					"language": "Please select the language.",
-					"role": "Please select the user role."
-				},
-				"add": {
-					"success": "User {username} has been added successfully."
-				},
-				"delete": {
-					"confirm": "Do you really want to delete user {username}?",
-					"confirmTitle": "Delete user",
-					"success": "User {username} has been deleted successfully."
-				},
-				"edit": {
-					"success": "User {username} has been edited successfully."
-				},
+				"usernameExists": "Username is already used.",
+				"oldPassMismatch": "The old password is incorrect.",
+				"addSuccess": "User {username} has been added successfully.",
+				"deletePrompt": "Do you really want to delete user {username}?",
+				"deleteTitle": "Delete user",
+				"deleteSuccess": "User {username} has been deleted successfully.",
+				"editSuccess": "User {username} has been edited successfully.",
 				"notFound": "User not found."
+			},
+			"errors": {
+				"username": "Please enter the username.",
+				"password": "Please enter the password.",
+				"oldPassword": "Please enter the old password.",
+				"newPassword": "Please enter the new password.",
+				"language": "Please select the language.",
+				"role": "Please select the user role."
 			}
 		},
 		"sign": {
@@ -1069,10 +1057,8 @@
 				"swap": "Swap usage",
 				"used": "Used"
 			},
-			"gwMode": "Gateway mode"
-		},
-		"diagnostics": {
-			"download": "Download diagnostics"
+			"gwMode": "Gateway mode",
+			"diagnostics": "Download diagnostics"
 		},
 		"log": {
 			"title": "Log file",
@@ -1094,10 +1080,8 @@
 				"unknown": "An error occurred while getting the current gateway mode."
 			},
 			"messages": {
-				"failures": {
-					"get": "An error occurred while getting the current gateway mode.",
-					"set": "An error occurred while setting a new gateway mode."
-				},
+				"getFailed": "An error occurred while getting the current gateway mode.",
+				"setFailed": "An error occurred while setting a new gateway mode.",
 				"forwarding": "IQRF Gateway Daemon's mode has been changed to forwarding mode.",
 				"operational": "IQRF Gateway Daemon's mode has been changed to operational mode.",
 				"service": "IQRF Gateway Daemon's mode has been changed to service mode."
@@ -1106,17 +1090,11 @@
 		"power": {
 			"title": "Power control",
 			"description": "Powers off or reboots this gateway.",
-			"powerOff": {
-				"title": "Power off",
-				"description": "Powers off the operating system of your device.",
-				"button": "Perform power off",
-				"success": "Your device will be powered off at {time}."
-			},
-			"reboot": {
-				"title": "Reboot",
-				"description": "Reboots the operating system of your device.",
-				"button": "Perform reboot",
-				"success": "Your device will be rebooted at {time}, the reboot may take tens of seconds."
+			"reboot": "Reboot",
+			"powerOff": "Power off",
+			"messages": {
+				"powerOffSuccess": "Your device will be powered off at {time}.",
+				"rebootSuccess": "Your device will be rebooted at {time}, the reboot may take tens of seconds."
 			}
 		},
 		"updater": {

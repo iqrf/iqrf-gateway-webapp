@@ -86,7 +86,7 @@
 				</table>
 			</div>
 			<CButton color='primary' @click='downloadDiagnostics()'>
-				{{ $t('gateway.diagnostics.download') }}
+				{{ $t('gateway.info.diagnostics') }}
 			</CButton>
 		</CCard>
 	</div>

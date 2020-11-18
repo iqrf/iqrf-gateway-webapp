@@ -9,7 +9,7 @@
 							v-slot='{ errors, touched, valid }'
 							rules='required'
 							:custom-messages='{
-								required: "cloud.intelimentsInteliGlue.form.messages.rootTopic"
+								required: "cloud.intelimentsInteliGlue.errors.rootTopic"
 							}'
 						>
 							<CInput
@@ -23,9 +23,9 @@
 							v-slot='{ errors, touched, valid }'
 							rules='required|integer|between:0,65535'
 							:custom-messages='{
-								between: "cloud.intelimentsInteliGlue.form.messages.assignedPortRange",
-								integer: "cloud.intelimentsInteliGlue.form.messages.assignedPortRange",
-								required: "cloud.intelimentsInteliGlue.form.messages.assignedPort"
+								between: "cloud.intelimentsInteliGlue.errors.assignedPortRange",
+								integer: "cloud.intelimentsInteliGlue.errors.assignedPortRange",
+								required: "cloud.intelimentsInteliGlue.errors.assignedPort"
 							}'
 						>
 							<CInput
@@ -42,7 +42,7 @@
 							v-slot='{ errors, touched, valid }'
 							rules='required'
 							:custom-messages='{
-								required: "cloud.intelimentsInteliGlue.form.messages.clientId"
+								required: "cloud.intelimentsInteliGlue.errors.clientId"
 							}'
 						>
 							<CInput
@@ -56,7 +56,7 @@
 							v-slot='{ errors, touched, valid }'
 							rules='required'
 							:custom-messages='{
-								required: "cloud.intelimentsInteliGlue.form.messages.password"
+								required: "cloud.intelimentsInteliGlue.errors.password"
 							}'
 						>
 							<CInput

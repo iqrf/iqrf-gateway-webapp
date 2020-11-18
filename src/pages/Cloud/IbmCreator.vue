@@ -24,7 +24,7 @@
 							v-slot='{ errors, touched, valid }'
 							rules='required'
 							:custom-messages='{
-								required: "cloud.ibmCloud.form.messages.organizationId"
+								required: "cloud.ibmCloud.errors.organizationId"
 							}'
 						>
 							<CInput
@@ -38,7 +38,7 @@
 							v-slot='{ errors, touched, valid }'
 							rules='required'
 							:custom-messages='{
-								required: "cloud.ibmCloud.form.messages.deviceType"
+								required: "cloud.ibmCloud.errors.deviceType"
 							}'
 						>
 							<CInput
@@ -52,7 +52,7 @@
 							v-slot='{ errors, touched, valid }'
 							rules='required'
 							:custom-messages='{
-								required: "cloud.ibmCloud.form.messages.deviceId"
+								required: "cloud.ibmCloud.errors.deviceId"
 							}'
 						>
 							<CInput
@@ -66,7 +66,7 @@
 							v-slot='{ errors, touched, valid }'
 							rules='required'
 							:custom-messages='{
-								required: "cloud.ibmCloud.form.messages.token"
+								required: "cloud.ibmCloud.errors.token"
 							}'
 						>
 							<CInput
@@ -80,7 +80,7 @@
 							v-slot='{ errors, touched, valid }'
 							rules='required'
 							:custom-messages='{
-								required: "cloud.ibmCloud.form.messages.eventId"
+								required: "cloud.ibmCloud.errors.eventId"
 							}'
 						>
 							<CInput

@@ -84,12 +84,12 @@
 		>
 			<template #header>
 				<h5 class='modal-title'>
-					{{ $t('core.user.messages.delete.confirmTitle') }}
+					{{ $t('core.user.messages.deleteTitle') }}
 				</h5>
 				<CButtonClose class='text-white' @click='deleteUser = null' />
 			</template>
 			<span v-if='deleteUser !== null'>
-				{{ $t('core.user.messages.delete.confirm', {username: deleteUser.username}) }}
+				{{ $t('core.user.messages.deletePrompt', {username: deleteUser.username}) }}
 			</span>
 			<template #footer>
 				<CButton
@@ -189,7 +189,7 @@ export default class UserList extends Vue {
 			this.fields = [
 				{
 					key: 'username',
-					label: this.$t('core.user.username'),
+					label: this.$t('forms.fields.username'),
 				},
 				{
 					key: 'actions',
@@ -206,7 +206,7 @@ export default class UserList extends Vue {
 				},
 				{
 					key: 'username',
-					label: this.$t('core.user.username'),
+					label: this.$t('forms.fields.username'),
 				},
 				{
 					key: 'role',
@@ -279,7 +279,7 @@ export default class UserList extends Vue {
 			.then(() => {
 				this.getUsers().then(() => {
 					this.$toast.success(
-						this.$t('core.user.messages.edit.success', {username: user.username})
+						this.$t('core.user.messages.editSuccess', {username: user.username})
 							.toString()
 					);
 				});
@@ -314,7 +314,7 @@ export default class UserList extends Vue {
 				if (user.id === this.$store.getters['user/getId']) {
 					this.$store.dispatch('user/signOut');
 					this.$toast.success(
-						this.$t('core.user.messages.delete.success', {username: user.username})
+						this.$t('core.user.messages.deleteSuccess', {username: user.username})
 							.toString()
 					);
 					this.$store.commit('spinner/HIDE');
@@ -327,7 +327,7 @@ export default class UserList extends Vue {
 				}
 				this.getUsers().then(() => {
 					this.$toast.success(
-						this.$t('core.user.messages.delete.success', {username: user.username})
+						this.$t('core.user.messages.deleteSuccess', {username: user.username})
 							.toString()
 					);
 				});

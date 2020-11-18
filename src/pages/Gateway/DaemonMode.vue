@@ -143,7 +143,7 @@ export default class DaemonMode extends Vue {
 		this.$store.commit('spinner/HIDE');
 		if (this.mode === DaemonModeEnum.unknown) {
 			this.$toast.error(
-				this.$t('gateway.mode.messages.' + this.loaded ? 'set' : 'get')
+				this.$t('gateway.mode.messages.' + (this.loaded ? 'set' : 'get') + 'failed')
 					.toString()
 			);
 		} else if (this.loaded) {
@@ -159,7 +159,7 @@ export default class DaemonMode extends Vue {
 	 * Retrieves Daemon mode
 	 */
 	private getMode(): void {
-		DaemonModeService.get(5000, 'gateway.mode.messages.failures.get', () => this.msgId = null)
+		DaemonModeService.get(5000, 'gateway.mode.messages.getFailed', () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
@@ -169,7 +169,7 @@ export default class DaemonMode extends Vue {
 	 */
 	private setMode(newMode: DaemonModeEnum): void {
 		this.$store.dispatch('spinner/hide');
-		DaemonModeService.set(newMode as DaemonModeEnum, 5000, 'gateway.mode.messages.failures.set', () => this.msgId = null)
+		DaemonModeService.set(newMode as DaemonModeEnum, 5000, 'gateway.mode.messages.setFailed', () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 }

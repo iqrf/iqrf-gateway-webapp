@@ -13,7 +13,7 @@
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
 							rules='required'
-							:custom-messages='{required: "core.apiKey.form.messages.description"}'
+							:custom-messages='{required: "core.apiKey.errors.description"}'
 						>
 							<CInput
 								v-model='metadata.description'

@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<h1>{{ $t('core.user.edit.title') }}</h1>
+		<h1>{{ $t('core.user.edit') }}</h1>
 		<CCard body-wrapper>
 			<ValidationObserver v-if='loaded' v-slot='{ invalid }'>
 				<CForm @submit.prevent='handleSubmit'>
@@ -8,12 +8,12 @@
 						v-slot='{ valid, touched, errors }'
 						rules='required'
 						:custom-messages='{
-							required: "core.user.messages.missing.username",
+							required: "core.user.errors.username",
 						}'
 					>
 						<CInput
 							v-model='username'
-							:label='$t("core.user.username")'
+							:label='$t("forms.fields.username")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
@@ -22,7 +22,7 @@
 						v-slot='{ valid, touched, errors }'
 						rules='required'
 						:custom-messages='{
-							required: "core.user.messages.missing.role",
+							required: "core.user.errors.role",
 						}'
 					>
 						<CSelect
@@ -31,7 +31,7 @@
 							:label='$t("core.user.role")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
-							:placeholder='$t("core.user.messages.missing.role")'
+							:placeholder='$t("core.user.errors.role")'
 							:options='[
 								{value: "normal", label: $t("core.user.roles.normal")},
 								{value: "power", label: $t("core.user.roles.power")},
@@ -42,7 +42,7 @@
 						v-slot='{ valid, touched, errors }'
 						rules='required'
 						:custom-messages='{
-							required: "core.user.messages.missing.language",
+							required: "core.user.errors.language",
 						}'
 					>
 						<CSelect
@@ -51,7 +51,7 @@
 							:label='$t("core.user.language")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
-							:placeholder='$t("core.user.messages.missing.language")'
+							:placeholder='$t("core.user.errors.language")'
 							:options='[
 								{value: "en", label: $t("core.user.languages.en")},
 							]'
@@ -62,7 +62,7 @@
 							v-slot='{ valid, touched, errors }'
 							:rules='newPassword !== null ? "required" : ""'
 							:custom-messages='{
-								required: "core.user.messages.missing.oldPassword",
+								required: "core.user.errors.oldPassword",
 							}'
 						>
 							<CInput
@@ -78,7 +78,7 @@
 							v-slot='{ valid, touched, errors }'
 							:rules='oldPassword !== null ? "required" : ""'
 							:custom-messages='{
-								required: "core.user.messages.missing.newPassword",
+								required: "core.user.errors.newPassword",
 							}'
 						>
 							<CInput
@@ -203,7 +203,7 @@ export default class UserEdit extends Vue {
 				})
 				.catch(() => {
 					this.$toast.error(
-						this.$t('core.user.messages.invalid.oldPassword').toString()
+						this.$t('core.user.messages.oldPassMismatch').toString()
 					);
 				});
 		} else {
@@ -227,7 +227,7 @@ export default class UserEdit extends Vue {
 			.then(() => {
 				this.$router.push('/user/');
 				this.$toast.success(
-					this.$t('core.user.messages.edit.success', {username: this.username})
+					this.$t('core.user.messages.editSuccess', {username: this.username})
 						.toString()
 				);
 			})
@@ -237,7 +237,7 @@ export default class UserEdit extends Vue {
 				}
 				if (error.response.status === 409) {
 					this.$toast.error(
-						this.$t('core.user.messages.conflict.username').toString()
+						this.$t('core.user.messages.usernameExists').toString()
 					);
 				}
 			});

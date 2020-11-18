@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<h1>{{ $t('core.user.add.title') }}</h1>
+		<h1>{{ $t('core.user.add') }}</h1>
 		<CCard body-wrapper>
 			<ValidationObserver v-slot='{ invalid }'>
 				<CForm @submit.prevent='handleSubmit'>
@@ -8,12 +8,12 @@
 						v-slot='{ valid, touched, errors }'
 						rules='required'
 						:custom-messages='{
-							required: "core.user.messages.missing.username",
+							required: "core.user.errors.username",
 						}'
 					>
 						<CInput
 							v-model='username'
-							:label='$t("core.user.username")'
+							:label='$t("forms.fields.username")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
@@ -22,12 +22,12 @@
 						v-slot='{ valid, touched, errors }'
 						rules='required'
 						:custom-messages='{
-							required: "core.user.messages.missing.password",
+							required: "core.user.errors.password",
 						}'
 					>
 						<CInput
 							v-model='password'
-							:label='$t("core.user.password")'
+							:label='$t("forms.fields.password")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 							type='password'
@@ -38,7 +38,7 @@
 						v-slot='{ valid, touched, errors }'
 						rules='required'
 						:custom-messages='{
-							required: "core.user.messages.missing.role",
+							required: "core.user.errors.role",
 						}'
 					>
 						<CSelect
@@ -46,7 +46,7 @@
 							:label='$t("core.user.role")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
-							:placeholder='$t("core.user.messages.missing.role")'
+							:placeholder='$t("core.user.errors.role")'
 							:options='[
 								{value: "normal", label: $t("core.user.roles.normal")},
 								{value: "power", label: $t("core.user.roles.power")},
@@ -58,7 +58,7 @@
 						v-slot='{ valid, touched, errors }'
 						rules='required'
 						:custom-messages='{
-							required: "core.user.messages.missing.language",
+							required: "core.user.errors.language",
 						}'
 					>
 						<CSelect
@@ -66,7 +66,7 @@
 							:label='$t("core.user.language")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
-							:placeholder='$t("core.user.messages.missing.language")'
+							:placeholder='$t("core.user.errors.language")'
 							:options='[
 								{value: "en", label: $t("core.user.languages.en")},
 							]'
@@ -100,7 +100,7 @@ import UserService from '../../services/UserService';
 		ValidationProvider,
 	},
 	metaInfo: {
-		title: 'core.user.add.title',
+		title: 'core.user.add',
 	}
 })
 
@@ -145,7 +145,7 @@ export default class UserAdd extends Vue {
 			.then(() => {
 				this.$router.push('/user/');
 				this.$toast.success(
-					this.$t('core.user.messages.add.success', {username: this.username})
+					this.$t('core.user.messages.addSuccess', {username: this.username})
 						.toString());
 			}).catch((error: AxiosError) => {
 				if (error.response === undefined) {
@@ -153,7 +153,7 @@ export default class UserAdd extends Vue {
 				}
 				if (error.response.status === 409) {
 					this.$toast.error(
-						this.$t('core.user.messages.conflict.username').toString()
+						this.$t('core.user.messages.usernameExists').toString()
 					);
 				}
 			});

@@ -24,7 +24,7 @@
 							v-slot='{ errors, touched, valid }'
 							rules='required'
 							:custom-messages='{
-								required: "cloud.amazonAws.form.messages.endpoint"
+								required: "cloud.amazonAws.errors.endpoint"
 							}'
 						>
 							<CInput
@@ -43,7 +43,7 @@
 								@click='isEmpty("cert")'
 							/>
 							<p v-if='certEmpty && !certUntouched' style='color:red'>
-								{{ $t('cloud.amazonAws.form.messages.certificate') }}
+								{{ $t('cloud.amazonAws.errors.certificate') }}
 							</p>
 						</div>
 						<div class='form-group'>
@@ -55,7 +55,7 @@
 								@click='isEmpty("key")'
 							/>
 							<p v-if='keyEmpty && !keyUntouched' style='color:red'>
-								{{ $t('cloud.amazonAws.form.messages.key') }}
+								{{ $t('cloud.amazonAws.errors.key') }}
 							</p>
 						</div>
 						<CButton

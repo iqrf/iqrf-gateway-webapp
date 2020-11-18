@@ -24,7 +24,7 @@
 							v-slot='{ errors, touched, valid }'
 							rules='required'
 							:custom-messages='{
-								required: "cloud.msAzure.form.messages.connectionString"
+								required: "cloud.msAzure.errors.connectionString"
 							}'
 						>
 							<CInput
