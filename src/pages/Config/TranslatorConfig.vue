@@ -49,7 +49,7 @@
 								>
 									<CInput
 										v-model='config.mqtt.cid'
-										:label='$t("config.translator.form.mqtt.cid")'
+										:label='$t("forms.fields.clientId")'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'								
 									/>
@@ -64,7 +64,7 @@
 								>
 									<CInput
 										v-model='config.mqtt.topic'
-										:label='$t("config.translator.form.mqtt.topic")'
+										:label='$t("forms.fields.requestTopic")'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'
 									/>
@@ -75,7 +75,7 @@
 									<CInput
 										v-model='config.mqtt.user'
 										autocomplete='off'
-										:label='$t("config.translator.form.mqtt.user")'
+										:label='$t("forms.fields.username")'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'
 									/>
@@ -86,7 +86,7 @@
 									<CInput
 										v-model='config.mqtt.pw'
 										autocomplete='off'
-										:label='$t("config.translator.form.mqtt.pw")'
+										:label='$t("forms.fields.password")'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'
 										:type='visibility'

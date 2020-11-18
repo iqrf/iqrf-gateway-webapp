@@ -58,12 +58,12 @@
 							</div><br>
 							<CInput
 								v-model='certificate'
-								:label='$t("config.daemon.messagings.websocket.form.certificate")'
+								:label='$t("forms.fields.certificate")'
 								:disabled='!tlsEnabled'
 							/>
 							<CInput
 								v-model='privateKey'
-								:label='$t("config.daemon.messagings.websocket.form.privateKey")'
+								:label='$t("forms.fields.privateKey")'
 								:disabled='!tlsEnabled'
 							/>
 						</div>

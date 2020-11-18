@@ -10,7 +10,7 @@
 				/>
 				<CInput
 					v-model='password'
-					:label='$t("iqrfnet.trConfiguration.security.form.password")'
+					:label='$t("forms.fields.password")'
 					:type='visibility'
 				>
 					<template #append-content>

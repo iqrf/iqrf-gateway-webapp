@@ -37,11 +37,11 @@
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
 							rules='required'
-							:custom-messages='{required: "config.daemon.messagings.mqtt.errors.ClientId"}'
+							:custom-messages='{required: "forms.errors.clientId"}'
 						>
 							<CInput
 								v-model='configuration.ClientId'
-								:label='$t("config.daemon.messagings.mqtt.form.ClientId")'
+								:label='$t("forms.fields.clientId")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
@@ -71,7 +71,7 @@
 						>
 							<CSelect
 								:value.sync='configuration.Qos'
-								:label='$t("config.mqtt.form.QoS")'
+								:label='$t("config.daemon.messagings.mqtt.form.QoS")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 								:placeholder='$t("config.daemon.messagings.mqtt.form.messages.QoS")'
@@ -81,11 +81,11 @@
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
 							rules='required'
-							:custom-messages='{required: "config.daemon.messagings.mqtt.errors.TopicRequest"}'
+							:custom-messages='{required: "forms.errors.requestTopic"}'
 						>
 							<CInput
 								v-model='configuration.TopicRequest'
-								:label='$t("config.daemon.messagings.mqtt.form.TopicRequest")'
+								:label='$t("forms.fields.requestTopic")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
@@ -93,11 +93,11 @@
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
 							rules='required'
-							:custom-messages='{required: "config.daemon.messagings.mqtt.errors.TopicResponse"}'
+							:custom-messages='{required: "forms.errors.responseTopic"}'
 						>
 							<CInput
 								v-model='configuration.TopicResponse'
-								:label='$t("config.daemon.messagings.mqtt.form.TopicResponse")'
+								:label='$t("forms.fields.responseTopic")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
@@ -108,7 +108,7 @@
 						/>
 						<CInput
 							v-model='configuration.Password'
-							:label='$t("config.daemon.messagings.mqtt.form.Password")'
+							:label='$t("forms.fields.password")'
 						/>
 						<CInputCheckbox
 							:checked.sync='configuration.EnabledSSL'
@@ -189,11 +189,11 @@
 						/>
 						<CInput
 							v-model='configuration.KeyStore'
-							:label='$t("config.daemon.messagings.mqtt.form.KeyStore")'
+							:label='$t("forms.fields.certificate")'
 						/>
 						<CInput
 							v-model='configuration.PrivateKey'
-							:label='$t("config.daemon.messagings.mqtt.form.PrivateKey")'
+							:label='$t("forms.fields.privateKey")'
 						/>
 						<CInput
 							v-model='configuration.PrivateKeyPassword'

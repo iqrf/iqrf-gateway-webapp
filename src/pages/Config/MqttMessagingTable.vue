@@ -178,15 +178,15 @@ export default class MqttMessagingTable extends Vue {
 		},
 		{
 			key: 'ClientId',
-			label: this.$t('config.daemon.messagings.mqtt.form.ClientId'),
+			label: this.$t('forms.fields.clientId'),
 		},
 		{
 			key: 'TopicRequest',
-			label: this.$t('config.daemon.messagings.mqtt.form.TopicRequest'),
+			label: this.$t('forms.fields.requestTopic'),
 		},
 		{
 			key: 'TopicResponse',
-			label: this.$t('config.daemon.messagings.mqtt.form.TopicResponse'),
+			label: this.$t('forms.fields.responseTopic'),
 		},
 		{
 			key: 'EnabledSSL',

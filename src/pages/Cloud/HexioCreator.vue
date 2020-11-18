@@ -9,12 +9,12 @@
 							v-slot='{ errors, touched, valid }'
 							rules='required'
 							:custom-messages='{
-								required: "cloud.hexio.errors.clientId"
+								required: "forms.errors.clientId"
 							}'
 						>
 							<CInput
 								v-model='config.clientId'
-								:label='$t("cloud.hexio.form.clientId")'
+								:label='$t("forms.fields.clientId")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
@@ -23,12 +23,12 @@
 							v-slot='{ errors, touched, valid }'
 							rules='required'
 							:custom-messages='{
-								required: "cloud.hexio.errors.topicRequest"
+								required: "forms.errors.requestTopic"
 							}'
 						>
 							<CInput
 								v-model='config.topicRequest'
-								:label='$t("cloud.hexio.form.topicRequest")'
+								:label='$t("forms.fields.requestTopic")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
@@ -37,12 +37,12 @@
 							v-slot='{ errors, touched, valid }'
 							rules='required'
 							:custom-messages='{
-								required: "cloud.hexio.errors.topicResponse"
+								required: "forms.errors.responseTopic"
 							}'
 						>
 							<CInput
 								v-model='config.topicResponse'
-								:label='$t("cloud.hexio.form.topicResponse")'
+								:label='$t("forms.fields.responseTopic")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
@@ -51,12 +51,12 @@
 							v-slot='{ errors, touched, valid }'
 							rules='required'
 							:custom-messages='{
-								required: "cloud.hexio.errors.username"
+								required: "forms.errors.username"
 							}'
 						>
 							<CInput
 								v-model='config.username'
-								:label='$t("cloud.hexio.form.username")'
+								:label='$t("forms.fields.username")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
@@ -65,12 +65,12 @@
 							v-slot='{ errors, touched, valid }'
 							rules='required'
 							:custom-messages='{
-								required: "cloud.hexio.errors.password"
+								required: "forms.errors.password"
 							}'
 						>
 							<CInput
 								v-model='config.password'
-								:label='$t("cloud.hexio.form.password")'
+								:label='$t("forms.fields.password")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 								:type='visibility'

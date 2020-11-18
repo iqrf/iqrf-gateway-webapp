@@ -20,8 +20,8 @@
 									>
 										<CInput
 											v-model='username'
-											:label='$t("core.sign.in.username")'
-											:placeholder='$t("core.sign.in.username")'
+											:label='$t("forms.fields.username")'
+											:placeholder='$t("forms.fields.password")'
 											autocomplete='username'
 											:is-valid='touched ? valid : null'
 											:invalid-feedback='$t(errors[0])'
@@ -38,8 +38,8 @@
 									>
 										<CInput
 											v-model='password'
-											:label='$t("core.sign.in.password")'
-											:placeholder='$t("core.sign.in.password")'
+											:label='$t("forms.fields.password")'
+											:placeholder='$t("forms.fields.password")'
 											type='password'
 											autocomplete='password'
 											:is-valid='touched ? valid : null'

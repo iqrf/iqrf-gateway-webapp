@@ -13,9 +13,7 @@
 			"description": "Adds a new MQTT connection into Amazon AWS IoT.",
 			"form": {
 				"title": "Amazon AWS IoT MQTT connection wizard",
-				"endpoint": "Endpoint",
-				"certificate": "Certificate",
-				"key": "Private key"
+				"endpoint": "Endpoint"
 			},
 			"messages": {
 				"mismatchedCrtAndKey": "The private key does not correspond to the certificate."
@@ -30,19 +28,7 @@
 			"title": "Hexio IoT Platform",
 			"description": "Adds a new MQTT connection into Hexio IoT Platform.",
 			"form": {
-				"title": "Hexio IoT Platform MQTT connection wizard",
-				"clientId": "Client ID",
-				"topicRequest": "Topic for requests",
-				"topicResponse": "Topic for responses",
-				"username": "Username",
-				"password": "Password"
-			},
-			"errors": {
-				"clientId": "Please enter client ID.",
-				"topicRequest": "Please enter topic for requests.",
-				"topicResponse": "Please enter topic for responses.",
-				"username": "Please enter the username.",
-				"password": "Please enter the password."
+				"title": "Hexio IoT Platform MQTT connection wizard"
 			}
 		},
 		"ibmCloud": {
@@ -70,16 +56,12 @@
 			"form": {
 				"title": "Inteliments InteliGlue MQTT connection wizard",
 				"rootTopic": "Root Topic",
-				"assignedPort": "Assigned Port",
-				"clientId": "Client ID",
-				"password": "Password"
+				"assignedPort": "Assigned Port"
 			},
 			"errors": {
 				"rootTopic": "Please enter the root topic.",
 				"assignedPort": "Please enter the assigned port.",
-				"assignedPortRange": "Port has to be an integer in range from 0 to 65535.",
-				"clientId": "Please enter the client ID.",
-				"password": "Please enter the password."
+				"assignedPortRange": "Port has to be an integer in range from 0 to 65535."
 			}
 		},
 		"msAzure": {
@@ -100,7 +82,6 @@
 			"title": "PIXLA device management",
 			"description": "Manages PIXLA client service.",
 			"dashboard": "Visit dashboard",
-			"status": "Service status",
 			"statuses": {
 				"enabled": "Enabled",
 				"disabled": "Disabled",
@@ -113,8 +94,6 @@
 			"token": "Token",
 			"messages": {
 				"disabled": "PIXLA manager is disabled.",
-				"disable": "PIXLA client service has been disabled.",
-				"enable": "PIXLA client service has been enabled.",
 				"failure": "An error occurred while saving the new PIXLA token.",
 				"success": "New PIXLA token has been successfully saved."
 			},
@@ -130,7 +109,19 @@
 	"forms": {
 		"fields": {
 			"username": "User name",
-			"password": "Password"
+			"password": "Password",
+			"certificate": "Certificate",
+			"privateKey": "Private Key",
+			"clientId":"Client ID",
+			"requestTopic": "Topic for requests",
+			"responseTopic": "Topic for responses"
+		},
+		"errors": {
+			"username": "Please enter the username.",
+			"password": "Please enter the password.",
+			"clientId": "Please enter the client ID.",
+			"requestTopic": "Please enter the topic for requests.",
+			"responseTopic": "Please enter the topic for responses."
 		},
 		"import": "Import",
 		"export": "Export",
@@ -363,7 +354,6 @@
 					"form": {
 						"instance": "Name of instance",
 						"BrokerAddr": "Broker address",
-						"ClientId": "Client ID",
 						"Persistence": "Persistence",
 						"QoS": "QoS",
 						"QoSes": {
@@ -371,18 +361,13 @@
 							"1": "QoS 1 - At least once",
 							"2": "QoS 2 - Exactly once"
 						},
-						"TopicRequest": "Topic for requests",
-						"TopicResponse": "Topic for responses",
 						"User": "User",
-						"Password": "Password",
 						"EnabledSSL": "Enabled TLS",
 						"KeepAliveInterval": "Keep alive interval",
 						"ConnectTimeout": "Connection timeout",
 						"MinReconnect": "Minimal count of reconnects",
 						"MaxReconnect": "Maximal count of reconnects",
 						"TrustStore": "CA certificate",
-						"KeyStore": "Certificate",
-						"PrivateKey": "Private key",
 						"PrivateKeyPassword": "Private key password",
 						"EnabledCipherSuites": "Enabled cipher suites",
 						"EnableServerCertAuth": "Enable server certificate authentication",
@@ -399,10 +384,7 @@
 						"instance": "Please enter name of MQTT instance.",
 						"BrokerAddr": "Please enter address of MQTT broker.",
 						"Persistence": "Please enter persistence.",
-						"ClientId": "Please enter client ID.",
 						"QoS": "Please select QoS.",
-						"TopicRequest": "Please enter topic for requests.",
-						"TopicResponse": "Please enter topic for responses.",
 						"KeepAliveInterval": "Please enter keep alive interval greater or equal to 0 (disabled).",
 						"ConnectTimeout": "Please enter connection timeout greater or equal to 0 (disabled).",
 						"MinReconnect": "Please enter minimum number of reconnects greater or equal to 0 (disabled) and less or equal to maximum number of reconnects.",
@@ -429,8 +411,6 @@
 								"old": "Compatible with a number of very old clients, and should be used only as a last resort. Supports Firefox 1, Android 2.3, Chrome 1, Edge 12, IE8 on Windows XP, Java 6, OpenSSL 0.9.8, Opera 5, and Safari 1."
 							}
 						},
-						"certificate": "Certificate",
-						"privateKey": "Private key",
 						"requiredInterfaces": "Required interfaces",
 						"requiredInterface": {
 							"add": "Add another interface",
@@ -769,12 +749,8 @@
 				},
 				"mqtt": {
 					"title": "MQTT client configuration",
-					"cid": "Client ID",
 					"addr": "Broker address",
-					"port": "Broker port",
-					"topic": "Request topic",
-					"user": "Username",
-					"pw": "Password"
+					"port": "Broker port"
 				}
 			},
 			"messages": {
@@ -988,8 +964,6 @@
 				"notFound": "User not found."
 			},
 			"errors": {
-				"username": "Please enter the username.",
-				"password": "Please enter the password.",
 				"oldPassword": "Please enter the old password.",
 				"newPassword": "Please enter the new password.",
 				"language": "Please select the language.",
@@ -999,8 +973,6 @@
 		"sign": {
 			"in": {
 				"title": "Sign in",
-				"username": "Username",
-				"password": "Password",
 				"remember": "Keep me signed in",
 				"send": "Sign in",
 				"messages": {
@@ -1562,7 +1534,6 @@
 					"ascii": "ASCII",
 					"hex": "HEX",
 					"format": "Input format",
-					"password": "Password",
 					"setPassword": "Set Access Password",
 					"setKey": "Set User Key"
 				},

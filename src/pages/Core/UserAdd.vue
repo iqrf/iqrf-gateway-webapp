@@ -8,7 +8,7 @@
 						v-slot='{ valid, touched, errors }'
 						rules='required'
 						:custom-messages='{
-							required: "core.user.errors.username",
+							required: "forms.errors.username",
 						}'
 					>
 						<CInput
@@ -22,7 +22,7 @@
 						v-slot='{ valid, touched, errors }'
 						rules='required'
 						:custom-messages='{
-							required: "core.user.errors.password",
+							required: "forms.errors.password",
 						}'
 					>
 						<CInput

@@ -8,7 +8,7 @@
 						v-slot='{ valid, touched, errors }'
 						rules='required'
 						:custom-messages='{
-							required: "core.user.errors.username",
+							required: "forms.errors.username",
 						}'
 					>
 						<CInput
@@ -119,7 +119,7 @@ import UserService from '../../services/UserService';
 		ValidationProvider,
 	},
 	metaInfo: {
-		title: 'core.user.edit.title',
+		title: 'core.user.edit',
 	}
 })
 

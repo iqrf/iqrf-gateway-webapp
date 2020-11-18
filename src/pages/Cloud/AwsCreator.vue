@@ -38,7 +38,7 @@
 							<CInputFile
 								ref='awsFormCert'
 								accept='.pem'
-								:label='$t("cloud.amazonAws.form.certificate")'
+								:label='$t("forms.fields.certificate")'
 								@input='isEmpty("cert")'
 								@click='isEmpty("cert")'
 							/>
@@ -50,7 +50,7 @@
 							<CInputFile
 								ref='awsFormKey'
 								accept='.pem,.key'
-								:label='$t("cloud.amazonAws.form.key")'
+								:label='$t("forms.fields.privateKey")'
 								@input='isEmpty("key")'
 								@click='isEmpty("key")'
 							/>

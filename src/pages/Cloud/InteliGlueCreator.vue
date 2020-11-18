@@ -42,12 +42,12 @@
 							v-slot='{ errors, touched, valid }'
 							rules='required'
 							:custom-messages='{
-								required: "cloud.intelimentsInteliGlue.errors.clientId"
+								required: "forms.errors.clientId"
 							}'
 						>
 							<CInput
 								v-model='config.clientId'
-								:label='$t("cloud.intelimentsInteliGlue.form.clientId")'
+								:label='$t("forms.fields.clientId")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
@@ -56,12 +56,12 @@
 							v-slot='{ errors, touched, valid }'
 							rules='required'
 							:custom-messages='{
-								required: "cloud.intelimentsInteliGlue.errors.password"
+								required: "forms.errors.password"
 							}'
 						>
 							<CInput
 								v-model='config.password'
-								:label='$t("cloud.intelimentsInteliGlue.form.password")'
+								:label='$t("forms.fields.password")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 								:type='visibility'
