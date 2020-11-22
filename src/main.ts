@@ -90,7 +90,7 @@ axios.interceptors.response.use(
 		if (error.response.status === 401) {
 			store.dispatch('user/signOut')
 				.then(() => {
-					router.push('/sign/in');
+					router.push({path: '/sign/in', query: {redirect: router.currentRoute.path}});
 				});
 		}
 		return Promise.reject(error);

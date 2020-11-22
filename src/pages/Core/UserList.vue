@@ -322,7 +322,7 @@ export default class UserList extends Vue {
 						this.$router.push('/install/');
 						return;
 					}
-					this.$router.push('/sign/in');
+					this.$router.push({path: '/sign/in', query: {redirect: this.$route.path}});
 					return;
 				}
 				this.getUsers().then(() => {
@@ -340,9 +340,7 @@ export default class UserList extends Vue {
 </script>
 
 <style scoped>
-
 .card-header {
 	padding-bottom: 0;
 }
-
 </style>

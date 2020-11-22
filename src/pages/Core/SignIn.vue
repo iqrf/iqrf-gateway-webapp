@@ -136,7 +136,7 @@ export default class SignIn extends Vue {
 			this.$store.dispatch('features/fetch'),
 		])
 			.then(() => {
-				this.$router.push('/');
+				this.$router.push(this.$route.query.redirect ?? '/');
 				this.$toast.success(
 					this.$t('core.sign.in.messages.success').toString()
 				);

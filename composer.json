@@ -38,7 +38,7 @@
 		"contributte/console-extra": "^0.5",
 		"contributte/guzzlette": "^3.1",
 		"contributte/monolog": "^0.4",
-		"contributte/translation": "^0.7",
+		"contributte/translation": "^0.8",
 		"darsyn/ip": "^4.0",
 		"grifart/enum": "^0.2",
 		"iqrf/iqrf-ide-macros-parser": "^1.2",

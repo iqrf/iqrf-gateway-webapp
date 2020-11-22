@@ -249,7 +249,7 @@ export default class UserEdit extends Vue {
 	private signOut(): void {
 		this.$store.dispatch('user/signOut')
 			.then(() => {
-				this.$router.push('/sign/in');
+				this.$router.push({path: '/sign/in', query: {redirect: this.$route.path}});
 			});
 	}
 }
