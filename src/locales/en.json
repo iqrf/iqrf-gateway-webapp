@@ -635,7 +635,7 @@
 					}
 				},
 				"iqrfInfo": {
-					"title": "LiteDB",
+					"title": "Lite DB",
 					"description": "IQRF Info database settings.",
 					"form": {
 						"instance": "Name of instance",
