@@ -100,6 +100,14 @@
 							{{ $t('core.user.description') }}
 						</p>
 					</CListGroupItem>
+					<CListGroupItem to='/api-key/'>
+						<header class='list-group-item-heading'>
+							{{ $t('core.apiKey.title') }}
+						</header>
+						<p class='list-group-item-text'>
+							{{ $t('core.apiKey.description') }}
+						</p>
+					</CListGroupItem>
 					<CListGroupItem
 						v-if='$store.getters["features/isEnabled"]("docs")'
 						:href='$store.getters["features/configuration"]("docs").url'

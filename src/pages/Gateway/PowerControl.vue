@@ -60,7 +60,7 @@ export default class PowerControl extends Vue {
 		GatewayService.performPowerOff()
 			.then((response: AxiosResponse) =>
 				this.$toast.info(
-					this.$t('gateway.power.powerOffSuccess', {time: this.parseActionTime(response.data.timestamp)}).toString()
+					this.$t('gateway.power.messages.powerOffSuccess', {time: this.parseActionTime(response.data.timestamp)}).toString()
 				)
 			);
 	}
@@ -72,7 +72,7 @@ export default class PowerControl extends Vue {
 		GatewayService.performReboot()
 			.then((response: AxiosResponse) => 
 				this.$toast.info(
-					this.$t('gateway.power.rebootSuccess', {time: this.parseActionTime(response.data.timestamp)}).toString()
+					this.$t('gateway.power.messages.rebootSuccess', {time: this.parseActionTime(response.data.timestamp)}).toString()
 				)
 			);
 	}
