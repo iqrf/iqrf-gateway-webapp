@@ -21,7 +21,7 @@
 										<CInput
 											v-model='username'
 											:label='$t("forms.fields.username")'
-											:placeholder='$t("forms.fields.password")'
+											:placeholder='$t("forms.fields.username")'
 											autocomplete='username'
 											:is-valid='touched ? valid : null'
 											:invalid-feedback='$t(errors[0])'
