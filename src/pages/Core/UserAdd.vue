@@ -139,8 +139,8 @@ export default class UserAdd extends Vue {
 	 * Creates a new user entry with default language and role if unspecified
 	 */
 	private handleSubmit(): void {
-		const language = this.language ?? 'en';
-		const role = this.role ?? 'normal';
+		const language = this.language === '' ? 'en' : this.language;
+		const role = this.role === '' ? 'normal' : this.role;
 		UserService.add(this.username, this.password, language, role)
 			.then(() => {
 				this.$router.push('/user/');

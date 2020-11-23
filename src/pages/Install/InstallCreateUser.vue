@@ -8,12 +8,12 @@
 						v-slot='{ valid, touched, errors }'
 						rules='required'
 						:custom-messages='{
-							required: "core.user.messages.missing.username",
+							required: "forms.errors.username",
 						}'
 					>
 						<CInput
 							v-model='username'
-							:label='$t("core.user.username")'
+							:label='$t("forms.fields.username")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
@@ -22,12 +22,12 @@
 						v-slot='{ valid, touched, errors }'
 						rules='required'
 						:custom-messages='{
-							required: "core.user.messages.missing.password",
+							required: "forms.errors.password",
 						}'
 					>
 						<CInput
 							v-model='password'
-							:label='$t("core.user.password")'
+							:label='$t("forms.fields.password")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 							type='password'
@@ -111,7 +111,7 @@ export default class InstallCreateUser extends Vue {
 					.then(() => {
 						this.$router.push('/');
 						this.$toast.success(
-							this.$t('core.user.messages.add.success', {username: this.username})
+							this.$t('core.user.messages.addSuccess', {username: this.username})
 								.toString());
 					});
 			}).catch((error: AxiosError) => {
