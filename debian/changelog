@@ -1,10 +1,20 @@
-iqrf-gateway-webapp (2.3.0~alpha~1.gbp4eeed7) UNRELEASED; urgency=medium
+iqrf-gateway-webapp (2.2.1) stable; urgency=medium
 
-  ** SNAPSHOT build @4eeed730ec83c5d68d93dd5690304c92cbf7af1a **
+  [ Karel Hanák ]
+  * IqrfNet: senddpa-clear pdata field if request macro has no pdata, sendjson-generate msgId before validating
+  * Localization update: cloud, api key, user and gateway
+  * Localization update: partial deduplication
+  * Localization: update iqrfinfo title
 
-  * UNRELEASED
+  [ Roman Ondráček ]
+  * Vue.js: add JWT expiration validation
+  * Vue.js: fix TypeScript errors
 
- -- Karel Hanák <karel.hanak@microrisc.com>  Mon, 16 Nov 2020 09:42:14 +0100
+  [ Karel Hanák ]
+  * fix install wizard localization, user add form
+  * fixed gateway power localization, added api key item to main disambiguation
+
+ -- Karel Hanák <karel.hanak@microrisc.com>  Mon, 23 Nov 2020 13:55:07 +0100
 
 iqrf-gateway-webapp (2.2.0) stable; urgency=medium
 
