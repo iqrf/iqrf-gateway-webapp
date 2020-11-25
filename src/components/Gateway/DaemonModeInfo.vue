@@ -56,13 +56,14 @@ export default class DaemonModeInfo extends Vue {
 	created(): void {
 		this.unsubscribe = this.$store.subscribe((mutation: MutationPayload) => {
 			if (mutation.type === 'SOCKET_ONMESSAGE') {
-				if (!this.allowedMTypes.includes(mutation.payload.mType)) {
+				const response = mutation.payload;
+				if (!this.allowedMTypes.includes(response.mType)) {
 					return;
 				}
 				this.requestRunning = false;
-				if (mutation.payload.data.msgId === this.msgId) {
+				if (response.data.msgId === this.msgId) {
 					this.$store.dispatch('removeMessage', this.msgId);
-					this.mode = DaemonModeService.parse(mutation.payload);
+					this.mode = DaemonModeService.parse(response);
 					this.$emit('notify-cinfo');
 				}
 			}

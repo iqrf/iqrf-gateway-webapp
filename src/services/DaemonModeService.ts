@@ -50,8 +50,12 @@ class DaemonModeService {
 	 * @return Daemon mode
 	 */
 	parse(response: any): DaemonModeEnum {
+		if (response.mType !== 'mngDaemon_Mode') {
+			return DaemonModeEnum.unknown;
+		}
 		try {
-			return response.data.rsp.operMode as DaemonModeEnum;
+			const mode = response.data.rsp.operMode;
+			return mode as DaemonModeEnum;
 		} catch (e) {
 			return DaemonModeEnum.unknown;
 		}
