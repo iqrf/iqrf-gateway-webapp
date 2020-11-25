@@ -171,7 +171,9 @@ export default class ServiceControl extends Vue {
 	@Watch('serviceName')
 	getServiceStatus(): void {
 		this.$store.commit('spinner/SHOW');
-		this.getStatus();
+		if (this.serviceSupported()) {
+			this.getStatus();
+		}
 	}
 
 	/**
@@ -179,7 +181,9 @@ export default class ServiceControl extends Vue {
 	 */
 	created(): void {
 		this.$store.commit('spinner/SHOW');
-		this.getStatus();
+		if (this.serviceSupported()) {
+			this.getStatus();
+		}
 	}
 
 	/**
@@ -227,18 +231,27 @@ export default class ServiceControl extends Vue {
 	}
 
 	/**
-	 * Attempts to retrieve status of the service
+	 * Checks if requested service on the whitelist
+	 * @returns {boolean} true if service is supported
+	 * @returns {boolean} false if service is not supported
 	 */
-	private getStatus(): void {
+	private serviceSupported(): boolean {
 		if (!whitelisted.includes(this.serviceName)) {
 			this.unsupported = true;
 			this.$store.commit('spinner/HIDE');
 			this.$toast.error(
 				this.$t('service.errors.unsupportedService').toString()
 			);
-			return;
+			return false;
 		}
-		ServiceService.getStatus(this.serviceName)
+		return true;
+	}
+
+	/**
+	 * Attempts to retrieve status of the service
+	 */
+	private getStatus(): Promise<void> {
+		return ServiceService.getStatus(this.serviceName)
 			.then((status) => {
 				this.service = status;
 				this.missing = false;
@@ -287,7 +300,8 @@ export default class ServiceControl extends Vue {
 	 */
 	private refreshStatus(): void {
 		this.$store.commit('spinner/SHOW');
-		this.getStatus();
+		this.getStatus()
+			.then(() => this.$toast.success(this.$t('service.messages.refreshSuccess').toString()));
 	}
 
 	/**

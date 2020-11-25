@@ -122,34 +122,62 @@ export default class TheSidebar extends Vue {
 						route: '/gateway/',
 						icon: {content: cilStorage},
 						roles: ['power', 'normal'],
-						items: [
+						_children: [
 							{
+								_name: 'CSidebarNavItem',
 								name: this.$t('gateway.info.title'),
 								to: '/gateway/info/',
 								roles: ['power', 'normal'],
 							},
 							{
+								_name: 'CSidebarNavItem',
 								name: this.$t('gateway.log.title'),
 								to: '/gateway/log/',
 								roles: ['power', 'normal'],
 							},
 							{
+								_name: 'CSidebarNavItem',
 								name: this.$t('gateway.mode.title'),
 								to: '/gateway/change-mode/',
 								roles: ['power', 'normal'],
 							},
 							{
-								name: this.$t('service.iqrf-gateway-daemon.title'),
-								to: '/gateway/service/iqrf-gateway-daemon/',
+								_name: 'CSidebarNavDropdown',
+								name: this.$t('service.iqrf.title'),
+								to: '/gateway/iqrf-services/',
 								roles: ['power', 'normal'],
+								_children: [
+									{
+										_name: 'CSidebarNavItem',
+										name: this.$t('service.iqrf-gateway-daemon.title'),
+										to: '/gateway/service/iqrf-gateway-daemon/',
+										roles: ['power', 'normal'],
+									},
+									{	
+										_name: 'CSidebarNavItem',
+										name: this.$t('service.iqrf-gateway-controller.title'),
+										to: '/gateway/service/iqrf-gateway-controller/',
+										feature: 'iqrfGatewayController',
+										roles: ['power', 'normal'],
+									},
+									{	
+										_name: 'CSidebarNavItem',
+										name: this.$t('service.iqrf-gateway-translator.title'),
+										to: '/gateway/service/iqrf-gateway-translator/',
+										feature: 'iqrfGatewayTranslator',
+										roles: ['power', 'normal'],
+									},
+								],
 							},
 							{
+								_name: 'CSidebarNavItem',
 								name: this.$t('service.ssh.title'),
 								to: '/gateway/service/ssh/',
 								feature: 'ssh',
 								roles: ['power', 'normal'],
 							},
 							{
+								_name: 'CSidebarNavItem',
 								name: this.$t('service.unattended-upgrades.title'),
 								to: '/gateway/service/unattended-upgrades/',
 								feature: 'unattendedUpgrades',
@@ -162,6 +190,7 @@ export default class TheSidebar extends Vue {
 								roles: ['power', 'normal'],
 							},*/
 							{
+								_name: 'CSidebarNavItem',
 								name: this.$t('gateway.power.title'),
 								to: '/gateway/power/',
 								roles: ['power', 'normal'],

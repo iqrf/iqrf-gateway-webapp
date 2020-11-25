@@ -27,12 +27,12 @@
 						{{ $t('gateway.mode.description') }}
 					</p>
 				</CListGroupItem>
-				<CListGroupItem to='/service/iqrf-gateway-daemon/'>
+				<CListGroupItem to='/gateway/iqrf-services/'>
 					<header class='list-group-item-heading'>
-						{{ $t('service.iqrf-gateway-daemon.title') }}
+						{{ $t('service.iqrf.title') }}
 					</header>
 					<p class='list-group-item-text'>
-						{{ $t('service.iqrf-gateway-daemon.description') }}
+						{{ $t('service.iqrf.description') }}
 					</p>
 				</CListGroupItem>
 				<CListGroupItem

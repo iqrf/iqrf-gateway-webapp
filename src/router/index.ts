@@ -17,6 +17,7 @@ const GatewayInfo = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gate
 const DaemonLogViewer = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/DaemonLogViewer.vue');
 const DaemonMode = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/DaemonMode.vue');
 const PowerControl = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/PowerControl.vue');
+const IqrfServiceDisambiguation = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/IqrfServiceDisambiguation.vue');
 const ServiceControl = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/ServiceControl.vue');
 
 const ApiKeyList = () => import(/* webpackChunkName: "core" */ '@/pages/Core/ApiKeyList.vue');
@@ -635,6 +636,10 @@ const routes: Array<RouteConfig> = [
 					{
 						component: PowerControl,
 						path: 'power',
+					},
+					{
+						component: IqrfServiceDisambiguation,
+						path: 'iqrf-services'
 					},
 					{
 						component: ServiceControl,

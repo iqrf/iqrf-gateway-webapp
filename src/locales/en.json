@@ -781,26 +781,26 @@
 			"form": {
 				"daemonApi": {
 					"autoNetwork": {
-						"title": "AutoNetwork API call configuration",
+						"title": "AutoNetwork API call",
 						"stopConditions": {
 							"title": "AutoNetwork stop conditions"
 						},
 						"verbose": "Verbose mode"
 					},
 					"discovery": {
-						"title": "Discovery API call configuration",
+						"title": "Discovery API call",
 						"verbose": "Verbose mode"
 					}
 				},
 				"factoryReset": {
-					"title": "Factory reset configuration",
+					"title": "Factory reset",
 					"coordinator": "Coordinator",
 					"daemon": "Daemon",
 					"network": "Network",
 					"webapp": "Web application"
 				},
 				"resetButton": {
-					"title": "Button configuration",
+					"title": "Button",
 					"api": "Daemon API call",
 					"calls": {
 						"autonetwork": "AutoNetwork",
@@ -809,7 +809,7 @@
 					}
 				},
 				"logger": {
-					"title": "Logger configuration",
+					"title": "Logger",
 					"filePath": "Path to log file",
 					"severity": "Severity level",
 					"levels": {
@@ -821,7 +821,7 @@
 					}
 				},
 				"wsServers": {
-					"title": "Websocket configuration",
+					"title": "Websocket",
 					"api": "Daemon API server",
 					"monitor": "Monitor server"
 				}
@@ -1802,8 +1802,23 @@
 			"unsupported": "Unsupported",
 			"unknown": "Unknown"
 		},
+		"iqrf": {
+			"title": "IQRF services",
+			"description": "Control IQRF Gateway's services."
+		},
+		"iqrf-gateway-controller": {
+			"title": "Controller",
+			"description": "Control IQRF Gateway Controller's service.",
+			"messages": {
+				"disable": "IQRF Gateway Controller has been disabled.",
+				"enable": "IQRF Gateway Controller has been enabled.",
+				"start": "IQRF Gateway Controller has been started.",
+				"stop": "IQRF Gateway Controller has been stopped.",
+				"restart": "IQRF Gateway Controller has been restarted."
+			}
+		},
 		"iqrf-gateway-daemon": {
-			"title": "IQRF service",
+			"title": "Daemon",
 			"description": "Control IQRF Gateway Daemon's service.",
 			"messages": {
 				"disable": "IQRF Gateway Daemon has been disabled.",
@@ -1811,6 +1826,17 @@
 				"start": "IQRF Gateway Daemon has been started.",
 				"stop": "IQRF Gateway Daemon has been stopped.",
 				"restart": "IQRF Gateway Daemon has been restarted. It takes tens of seconds before the system is ready."
+			}
+		},
+		"iqrf-gateway-translator": {
+			"title": "Translator",
+			"description": "Control IQRF Gateway Translator's service.",
+			"messages": {
+				"disable": "IQRF Gateway Translator has been disabled.",
+				"enable": "IQRF Gateway Translator has been enabled.",
+				"start": "IQRF Gateway Translator has been started.",
+				"stop": "IQRF Gateway Translator has been stopped.",
+				"restart": "IQRF Gateway Translator has been restarted."
 			}
 		},
 		"gwman-client": {
@@ -1855,6 +1881,9 @@
 			"processTimeout": "Service manager process timed out.",
 			"missingService": "Requested service not found",
 			"unsupportedService": "Unsupported service"
+		},
+		"messages": {
+			"refreshSuccess": "Service status successfully refreshed."
 		}
 	},
 	"table": {
