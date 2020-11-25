@@ -145,6 +145,7 @@ export default class TheSidebar extends Vue {
 								_name: 'CSidebarNavDropdown',
 								name: this.$t('service.iqrf.title'),
 								to: '/gateway/iqrf-services/',
+								route: '/gateway/iqrf-services/',
 								roles: ['power', 'normal'],
 								_children: [
 									{
