@@ -8,7 +8,7 @@
 				role='progressbar'
 				:style='{ width: usage.usage }'
 			>
-				{{ usage.used }} ({{ usage.usage }})
+				{{ usage.used }} ({{ usage.usage.replace('%', ' %') }})
 			</div>
 		</div>
 	</div>
@@ -30,3 +30,9 @@ export default class ResourceUsage extends Vue {
 	@Prop({ required: true }) usage!: Dictionary<string>
 }
 </script>
+
+<style lang='scss'>
+.table-striped tbody tr:nth-of-type(2n+1) .progress {
+	background-color: white;
+}
+</style>
