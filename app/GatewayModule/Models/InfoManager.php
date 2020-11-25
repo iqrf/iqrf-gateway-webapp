@@ -149,7 +149,7 @@ class InfoManager {
 	 * @return array<array<string>> Disk usages
 	 */
 	public function getDiskUsages(): array {
-		$command = 'df -l -B1 -x tmpfs -x devtmpfs -x squashfs -T -P | awk \'{if (NR!=1) {$6="";print}}\'';
+		$command = 'df -l -B1 -x tmpfs -x devtmpfs -x overlay -x squashfs -T -P | awk \'{if (NR!=1) {$6="";print}}\'';
 		$output = $this->commandManager->run($command)->getStdout();
 		$usages = [];
 		foreach (explode(PHP_EOL, $output) as $disk) {

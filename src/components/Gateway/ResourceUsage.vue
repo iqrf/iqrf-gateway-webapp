@@ -1,22 +1,42 @@
 <template>
 	<div class='d-inline'>
 		{{ $t('gateway.info.usages.used') }}
-		{{ usage.used }} / {{ usage.size }}
+		{{ usage.usage.replace('%', ' %') }}
+		({{ usage.used }} / {{ usage.size }})
 		<div class='progress'>
 			<div
-				class='progress-bar usage-progress-bar'
+				:class='className'
 				role='progressbar'
 				:style='{ width: usage.usage }'
-			>
-				{{ usage.used }} ({{ usage.usage.replace('%', ' %') }})
-			</div>
+			/>
 		</div>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import { Dictionary } from 'vue-router/types/router';
+
+/**
+ * Resource usage data
+ */
+export interface UsageData {
+
+	/**
+	 * Usage as percentage
+	 */
+	usage: string;
+
+	/**
+	 * Used size
+	 */
+	used: string;
+
+	/**
+	 * Total size
+	 */
+	size: string;
+
+}
 
 @Component({})
 
@@ -27,7 +47,22 @@ export default class ResourceUsage extends Vue {
 	/**
 	 * @property {Dictionary<string>} usage Dictionary of gateway device resource usage
 	 */
-	@Prop({ required: true }) usage!: Dictionary<string>
+	@Prop({ required: true }) usage!: UsageData
+
+	/**
+	 * Returns CSS classes for the progress bar
+	 */
+	get className(): string {
+		const usage = Number.parseFloat(this.usage.usage.replace('%', ''));
+		console.warn(usage);
+		let className = 'progress-bar usage-progress-bar';
+		if (usage >= 90) {
+			className += ' bg-danger';
+		} else if (usage >= 80) {
+			className += ' bg-warning';
+		}
+		return className;
+	}
 }
 </script>
 
