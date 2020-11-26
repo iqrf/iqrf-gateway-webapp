@@ -1108,8 +1108,12 @@
 		"dpaUpload": {
 			"title": "DPA plug-in",
 			"version": "DPA version",
-			"missing": {
+			"errors": {
 				"version": "Please select DPA version to upload."
+			},
+			"messages": {
+				"modalTitle": "DPA plug-in upload",
+				"modalPrompt": "The device already uses DPA version {version}, do you want to proceed with upload anyway?"
 			}
 		},
 		"enumeration": {
