@@ -155,7 +155,10 @@
 			"submitBadRequest": "Invalid JSON syntax.",
 			"submitServerError": "Internal server error has occurred.",
 			"componentNotFound": "Component or instance not found.",
-			"fetchFail": "Failed to retrieve component or instance configuration."
+			"fetchFail": "Failed to retrieve component or instance configuration.",
+			"deviceOffline": "Device at address {address} is offline.",
+			"noDevice": "No device is bonded at address {address}.",
+			"coordinatorOffline": "Coordinator device is offline."
 		}
 	},
 	"config": {
@@ -1182,9 +1185,7 @@
 					"statusInitPercentage": "Backup in progress [0 %]",
 					"statusRunningPercentage": "Backup in progress [{progress} %]",
 					"statusSuccess": "Backup of device {deviceAddr} completed.",
-					"statusFailed": "Backup of device {deviceAddr} failed. Device is offline.",
-					"invalidNadr": "No device is bonded at address {address}.",
-					"nodeOffline": "Device at address {address} is offline."
+					"statusFailed": "Backup of device {deviceAddr} failed. Device is offline."
 				}
 			},
 			"restore": {
@@ -1207,7 +1208,6 @@
 					"missingCoordinator": "Uploaded file does not contain coordinator device backup data entry.",
 					"missingNode": "Uploaded file does not contain backup data of node device at address {address}.",
 					"statusCoordinator": "Restoring coordinator device.",
-					"coordinatorOffline": "Coordinator device is offline.",
 					"invalidSize": "Invalid coordinator backup data size.",
 					"checksumMismatch": "Incorrect coordinator backup data checksum."
 				}
@@ -1272,7 +1272,6 @@
 						"confirmClear": "Do you really want to clear all bonds?",
 						"success": "Node at address {address} has been successfully removed.",
 						"successInC": "Node at address {address} has been successfully removed from Coordinator memory.",
-						"noBond": "No node is bonded at address {address}.",
 						"noBonds": "There are no bonded nodes in the network.",
 						"error_fail": "Failed to remove bond.",
 						"remove_error": "An error occurred while removing a device from the network.",
@@ -1520,9 +1519,6 @@
 					"failure": "An error occurred during the Sensor request.",
 					"pnum": "Device does not support the Sensor standard."
 				}
-			},
-			"messages": {
-				"noDevice": "No device is bonded at address {address}."
 			}
 		},
 		"trConfiguration": {

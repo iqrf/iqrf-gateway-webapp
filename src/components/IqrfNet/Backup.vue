@@ -233,7 +233,7 @@ export default class Backup extends Vue {
 			this.$store.commit('spinner/HIDE');
 			this.$store.dispatch('removeMessage', this.msgId);
 			this.$toast.error(
-				this.$t('iqrfnet.networkManager.backup.messages.nodeOffline', {address: 0}).toString()
+				this.$t('forms.messages.coordinatorOffline').toString()
 			);
 			return;
 		}
@@ -243,7 +243,7 @@ export default class Backup extends Vue {
 				this.$store.commit('spinner/HIDE');
 				this.$store.dispatch('removeMessage', this.msgId);
 				this.$toast.error(
-					this.$t('iqrfnet.networkManager.backup.messages.invalidNadr', {address: this.address}).toString()
+					this.$t('forms.messages.noDevice', {address: this.address}).toString()
 				);
 				return;
 			}
@@ -258,7 +258,7 @@ export default class Backup extends Vue {
 				this.$store.commit('spinner/HIDE');
 				this.$store.dispatch('removeMessage', this.msgId);
 				this.$toast.error(
-					this.$t('iqrfnet.networkManager.backup.messages.nodeOffline', {address: this.address}).toString()
+					this.$t('forms.messages.deviceOffline', {address: this.address}).toString()
 				);
 				return;
 			}

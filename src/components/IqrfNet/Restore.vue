@@ -167,7 +167,7 @@ export default class Restore extends Vue {
 		if (data.statusStr.includes('ERROR_TIMEOUT')) { // coordinator device is offline
 			this.requestRecovery();
 			this.$toast.error(
-				this.$t('iqrfnet.networkManager.restore.messages.coordinatorOffline').toString()
+				this.$t('forms.messages.coordinatorOffline').toString()
 			);
 			return;
 		}

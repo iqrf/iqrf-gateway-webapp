@@ -490,15 +490,27 @@ export default class TrConfiguration extends Vue {
 
 	/**
 	 * Handles Enumeration request response
+	 * @param response Daemon API response
 	 */
 	private handleEnumerationResponse(response): void {
-		if (response.data.status !== 0) {
-			this.$store.commit('spinner/HIDE');
+		if (response.data.status === 0) {
+			this.parseResponse(response);
+		} else if (response.data.status === 1001 && response.data.statusStr.includes('not bonded')) {
 			this.$toast.error(
-				this.$t('iqrfnet.trConfiguration.messages.read.failure').toString()
+				this.$t('forms.messages.noDevice', {address: this.address}).toString()
 			);
-			return;
+		} else if (response.data.status === 1005 && response.data.statusStr.includes('ERROR_TIMEOUT')) {
+			this.$toast.error(
+				this.$t('forms.messages.deviceOffline', {address: this.address}).toString()
+			);
 		}
+	}
+
+	/**
+	 * Parses device enumeration response
+	 * @param response Daemon API response
+	 */
+	private parseResponse(response: any): void {
 		let rsp = response.data.rsp;
 		this.config = rsp.trConfiguration;
 		this.dpaHandlerDetected = rsp.osRead.flags.dpaHandlerDetected;
