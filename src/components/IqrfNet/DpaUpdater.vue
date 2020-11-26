@@ -274,30 +274,31 @@ export default class DpaUpdater extends Vue {
 		this.currentDpa = this.convertVersion(result.dpaVer);
 		DpaService.getVersions(this.osBuild)
 			.then((versions) => {
+				let fetchedVersions: Array<DpaVersions> = [];
 				for (const version of versions) {
 					const dpaVer = Number.parseInt(version.getVersion(false));
 					if (dpaVer < 400) {
-						this.versions.push({
+						fetchedVersions.push({
 							value: version.getVersion(false) + '-' + RFMode.LP,
 							label: version.getVersion(true) + ', ' + RFMode.LP + ' RF mode'
 						});
-						this.versions.push({
+						fetchedVersions.push({
 							value: version.getVersion(false) + '-' + RFMode.STD,
 							label: version.getVersion(true) + ', ' + RFMode.STD + ' RF mode'
 						});
 					} else {
-						this.versions.push({
+						fetchedVersions.push({
 							value: version.getVersion(false),
 							label: version.getVersion(true),
 						});
 					}
 				}
-				this.versions.forEach(item => {
+				fetchedVersions.forEach(item => {
 					if (this.currentDpa === item.value) {
 						Object.assign(item, {label: item.label + ' (Current version)'});
 					}
 				});
-				this.versions.sort().reverse();
+				this.versions = fetchedVersions.sort().reverse();
 				this.getDeviceEnumeration();
 			})
 			.catch(() => {
