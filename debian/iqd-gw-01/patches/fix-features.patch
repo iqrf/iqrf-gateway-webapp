@@ -5,7 +5,7 @@
  docs:
  	enabled: true
 -	url: https://docs.iqrf.org/iqrf-gateway/
-+	url: https://docs.iqrf.org/iqd-gw-01/
++	url: https://docs.iqrf.org/iqube/
  grafana:
  	enabled: false
  	url: /grafana/
