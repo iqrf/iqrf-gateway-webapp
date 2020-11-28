@@ -176,6 +176,7 @@ export default class DpaUpdater extends Vue {
 					this.$toast.error(
 						this.$t('iqrfnet.trUpload.messages.osInfoFail').toString()
 					);
+					console.error(mutation.payload);
 				}
 			} else if (mutation.payload.mType === 'mngDaemon_Upload') {
 				if (mutation.payload.data.status === 0) {

@@ -1594,7 +1594,8 @@
 				"localFrcReception": "Local FRC",
 				"dpaPeerToPeer": "DPA Peer-to-Peer",
 				"neverSleep": "Stay awake when not bonded",
-				"uartBaudrate": "UART interface baud rate",
+				"uartBaudRateC": "UART interface baud rate",
+				"uartBaudRateN": "UART baud rate",
 				"uartBaudrates": {
 					"1200": "1200 Bd",
 					"2400": "2400 Bd",
@@ -1617,7 +1618,8 @@
 					},
 					"rxFilter": "RX filter have to be integer from 0 to 64.",
 					"txPower": "TX Power have to be integer from 0 to 7.",
-					"uartBaudrate": "Please select UART interface baud rate."
+					"uartBaudRateC": "Please select UART interface baud rate.",
+					"uartBaudRateN": "Please select UART baud rate."
 				}
 			},
 			"messages": {

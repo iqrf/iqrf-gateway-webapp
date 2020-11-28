@@ -2,7 +2,7 @@
 	<div>
 		<h1>{{ title }}</h1>
 		<CCard body-wrapper>
-			<div v-if='!missing && !unsupported'>
+			<div v-if='!missing && !unsupported && !unknown'>
 				<CButton
 					v-if='!service.enabled'
 					color='success'
@@ -259,7 +259,9 @@ export default class ServiceControl extends Vue {
 				this.unsupported = false;
 				this.$store.commit('spinner/HIDE');
 			})
-			.catch(this.handleError);
+			.catch((error: AxiosError) => {
+				this.handleError(error);
+			});
 	}
 
 	/**
@@ -270,6 +272,7 @@ export default class ServiceControl extends Vue {
 		const response = error.response;
 		if (response === undefined) {
 			this.unknown = true;
+			this.service.status = null;
 			this.$toast.error(this.$t('service.errors.processTimeout').toString());
 			return;
 		}
