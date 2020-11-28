@@ -180,10 +180,10 @@ export default class DpaUpdater extends Vue {
 				}
 			} else if (mutation.payload.mType === 'mngDaemon_Upload') {
 				if (mutation.payload.data.status === 0) {
-					this.getOsInfo();
 					this.$toast.success(
 						this.$t('iqrfnet.trUpload.messages.success').toString()
 					);
+					this.updateVersions();
 				} else {
 					this.$toast.error(
 						this.$t('iqrfnet.trUpload.messages.failure').toString()
@@ -307,6 +307,22 @@ export default class DpaUpdater extends Vue {
 					this.$t('iqrfnet.trUpload.messages.osBuildFail').toString()
 				);
 			});
+	}
+
+	/**
+	 * Updates list of DPA version to reflect changes made by upload
+	 */
+	private updateVersions(): void {
+		for (let item of this.versions) {
+			if (item.value === this.version) {
+				item.label += ' (Current version)';
+				continue;
+			}
+			if (item.label.endsWith('(Current version)')) {
+				item.label = item.label.slice(0, -18);
+				continue;
+			}
+		}
 	}
 
 	private compareUploadedVersion(): void {
