@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<h1 v-if='$route.path === "/config/daemon/monitor/add"'>
+		<h1 v-if='$route.path === "/config/daemon/misc/monitor/add"'>
 			{{ $t('config.daemon.misc.monitor.add') }}
 		</h1>
 		<h1 v-else>
@@ -67,7 +67,7 @@
 								:value.sync='webSocket.tlsMode'
 								:label='$t("config.daemon.messagings.websocket.form.tlsMode")'
 								:options='tlsModeOptions'
-								:placeholder='$t("config.daemon.messagings.websocket.form.messages.tlsMode")'
+								:placeholder='$t("config.daemon.messagings.websocket.errors.tlsMode")'
 								:disabled='!webSocket.tlsEnabled'
 							/>
 							<span v-if='webSocket.tlsMode !== ""'>{{ $t('config.daemon.messagings.websocket.form.tlsModes.descriptions.' + webSocket.tlsMode) }}</span>
@@ -210,7 +210,7 @@ export default class MonitorForm extends Vue {
 	 * @returns {string} Page title
 	 */
 	get pageTitle(): string {
-		return this.$route.path === '/config/daemon/monitor/add' ?
+		return this.$route.path === '/config/daemon/misc/monitor/add' ?
 			this.$t('config.daemon.misc.monitor.add').toString() :
 			this.$t('config.daemon.misc.monitor.edit').toString();
 	}
@@ -220,7 +220,7 @@ export default class MonitorForm extends Vue {
 	 * @returns {string} Button text
 	 */
 	get submitButton(): string {
-		return this.$route.path === '/config/daemon/monitor/add' ?
+		return this.$route.path === '/config/daemon/misc/monitor/add' ?
 			this.$t('forms.add').toString() :
 			this.$t('forms.save').toString();
 	}
@@ -290,8 +290,13 @@ export default class MonitorForm extends Vue {
 					});
 			})
 			.catch((error: AxiosError) => {
-				this.$router.push('/config/daemon/misc/monitor');
 				FormErrorHandler.configError(error);
+				this.$router.push({
+					name: 'misc',
+					params: {
+						tabName: 'monitor'
+					}
+				});
 			});
 	}
 
@@ -339,7 +344,7 @@ export default class MonitorForm extends Vue {
 	 */
 	private successfulSave() {
 		this.$store.commit('spinner/HIDE');
-		if (this.$route.path === '/config/daemon/monitor/add') {
+		if (this.$route.path === '/config/daemon/misc/monitor/add') {
 			this.$toast.success(
 				this.$t('config.daemon.misc.monitor.messages.addSuccess', {instance: this.monitor.instance})
 					.toString()

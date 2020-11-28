@@ -5,7 +5,7 @@
 				<CButton
 					color='success'
 					size='sm'
-					to='/config/daemon/tracer/add'
+					to='/config/daemon/misc/tracer/add'
 					class='float-right'
 				>
 					<CIcon :content='icons.add' size='sm' />
@@ -30,7 +30,7 @@
 							<CButton
 								color='info'
 								size='sm'
-								:to='"/config/daemon/tracer/edit/" + item.instance'
+								:to='"/config/daemon/misc/tracer/edit/" + item.instance'
 							>
 								<CIcon :content='icons.edit' size='sm' />
 								{{ $t('table.actions.edit') }}

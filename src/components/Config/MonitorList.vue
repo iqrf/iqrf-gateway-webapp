@@ -6,7 +6,7 @@
 					color='success'
 					size='sm'
 					class='float-right'
-					to='/config/daemon/monitor/add'
+					to='/config/daemon/misc/monitor/add'
 				>
 					<CIcon :content='icons.add' size='sm' />
 					{{ $t('table.actions.add') }}
@@ -62,7 +62,7 @@
 							<CButton
 								color='info'
 								size='sm'
-								:to='"/config/daemon/monitor/edit/" + item.monitor.instance'
+								:to='"/config/daemon/misc/monitor/edit/" + item.monitor.instance'
 							>
 								<CIcon :content='icons.edit' size='sm' />
 								{{ $t('table.actions.edit') }}

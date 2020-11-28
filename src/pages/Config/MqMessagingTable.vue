@@ -7,7 +7,7 @@
 			<CCardHeader class='border-0'>
 				<CButton
 					color='success'
-					to='/config/daemon/mq/add'
+					to='/config/daemon/messagings/mq/add'
 					size='sm'
 					class='float-right'
 				>
@@ -49,7 +49,7 @@
 						<td class='col-actions'>
 							<CButton
 								color='info'
-								:to='"/config/daemon/mq/edit/" + item.instance'
+								:to='"/config/daemon/messagings/mq/edit/" + item.instance'
 								size='sm'
 							>
 								<CIcon :content='icons.edit' size='sm' />

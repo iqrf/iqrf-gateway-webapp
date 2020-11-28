@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<h1 v-if='$route.path === "/config/daemon/websocket/add-service"'>
+		<h1 v-if='$route.path === "/config/daemon/messagings/websocket/add-service"'>
 			{{ $t('config.daemon.messagings.websocket.service.add') }}
 		</h1>
 		<h1 v-else>
@@ -185,7 +185,7 @@ export default class WebsocketServiceForm extends Vue {
 	 * @returns {string} Page title
 	 */
 	get pageTitle(): string {
-		return this.$route.path === '/config/daemon/websocket/add-service' ?
+		return this.$route.path === '/config/daemon/messagings/websocket/add-service' ?
 			this.$t('config.daemon.messagings.websocket.service.add').toString() : this.$t('config.daemon.messagings.websocket.service.edit').toString();
 	}
 
@@ -194,7 +194,7 @@ export default class WebsocketServiceForm extends Vue {
 	 * @returns {string} Button text
 	 */
 	get submitButton(): string {
-		return this.$route.path === '/config/daemon/websocket/add-service' ?
+		return this.$route.path === '/config/daemon/messagings/websocket/add-service' ?
 			this.$t('forms.add').toString() : this.$t('forms.edit').toString();
 	}
 
@@ -319,7 +319,7 @@ export default class WebsocketServiceForm extends Vue {
 	 */
 	private successfulSave(): void {
 		this.$store.commit('spinner/HIDE');
-		if (this.$route.path === '/config/daemon/websocket/add-service') {
+		if (this.$route.path === '/config/daemon/messagings/websocket/add-service') {
 			this.$toast.success(
 				this.$t('config.daemon.messagings.websocket.service.messages.addSuccess', {service: this.componentInstance})
 					.toString()

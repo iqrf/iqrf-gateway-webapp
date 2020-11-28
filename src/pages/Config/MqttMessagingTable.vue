@@ -7,7 +7,7 @@
 			<CCardHeader class='border-0'>
 				<CButton
 					color='success'
-					to='/config/daemon/mqtt/add'
+					to='/config/daemon/messagings/mqtt/add'
 					size='sm'
 					class='float-right'
 				>
@@ -66,7 +66,7 @@
 						<td class='col-actions'>
 							<CButton
 								color='info'
-								:to='"/config/daemon/mqtt/edit/" + item.instance'
+								:to='"/config/daemon/messagings/mqtt/edit/" + item.instance'
 								size='sm'
 							>
 								<CIcon :content='icons.edit' size='sm' />

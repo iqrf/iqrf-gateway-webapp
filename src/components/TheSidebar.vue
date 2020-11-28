@@ -256,7 +256,7 @@ export default class TheSidebar extends Vue {
 											},
 											{
 												name: 'UDP',
-												to: '/config/daemon/messagings/UDP/',
+												to: '/config/daemon/messagings/udp/',
 												roles: ['power', 'normal'],
 											}
 										]

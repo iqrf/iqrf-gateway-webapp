@@ -1,7 +1,7 @@
 <template>
 	<CCard>
 		<CCardHeader>
-			<h3 v-if='$route.path === "/config/daemon/tracer/add"'>
+			<h3 v-if='$route.path === "/config/daemon/misc/tracer/add"'>
 				{{ $t('config.daemon.misc.tracer.add') }}
 			</h3>
 			<h3 v-else>
@@ -150,7 +150,7 @@
 						</CButton>
 					</div>
 					<CButton type='submit' color='primary' :disabled='invalid'>
-						{{ $t('forms.save') }}
+						{{ submitButton }}
 					</CButton>
 				</CForm>
 			</ValidationObserver>
@@ -286,7 +286,7 @@ export default class TracerForm extends Vue {
 	 * @returns {string} Page title
 	 */
 	get pageTitle(): string {
-		return this.$route.path === '/config/daemon/tracer/add' ?
+		return this.$route.path === '/config/daemon/misc/tracer/add' ?
 			this.$t('config.daemon.misc.tracer.add').toString() : this.$t('config.daemon.misc.tracer.edit').toString();
 	}
 
@@ -295,7 +295,7 @@ export default class TracerForm extends Vue {
 	 * @returns {string} Button text
 	 */
 	get submitButton(): string {
-		return this.$route.path === '/config/daemon/tracer/add' ?
+		return this.$route.path === '/config/daemon/misc/tracer/add' ?
 			this.$t('forms.add').toString() : this.$t('forms.edit').toString();
 	}
 
@@ -357,8 +357,13 @@ export default class TracerForm extends Vue {
 				this.parseConfiguration(response);
 			})
 			.catch((error: AxiosError) => {
-				this.$router.push('/config/daemon/misc/');
 				FormErrorHandler.configError(error);
+				this.$router.push({
+					name: 'misc',
+					params: {
+						tabName: 'tracer'
+					}
+				});
 			});
 	}
 
@@ -434,7 +439,7 @@ export default class TracerForm extends Vue {
 	 */
 	private successfulSave(): void {
 		this.$store.commit('spinner/HIDE');
-		if (this.$route.path === '/config/daemon/tracer/add') {
+		if (this.$route.path === '/config/daemon/misc/tracer/add') {
 			this.$toast.success(
 				this.$t('config.daemon.misc.tracer.messages.addSuccess', {instance: this.componentInstance})
 					.toString()
