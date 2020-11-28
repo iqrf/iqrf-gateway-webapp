@@ -34,6 +34,8 @@ if (basename(__DIR__) === 'tests') {
 	@mkdir($tempDir . 'certificates/');
 	@mkdir($tempDir . 'configuration/');
 	@mkdir($tempDir . 'configuration/scheduler/');
+	@mkdir($tempDir . 'controller/');
+	@mkdir($tempDir . 'translator/');
 	@mkdir($tempDir . 'zip/');
 }
 date_default_timezone_set('Etc/GMT-2');

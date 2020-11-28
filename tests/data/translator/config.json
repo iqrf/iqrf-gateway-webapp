@@ -1,0 +1,15 @@
+{
+	"rest": {
+		"api_key": "",
+		"addr": "localhost",
+		"port": 80
+	},
+	"mqtt": {
+		"cid": "testClientId",
+		"addr": "localhost",
+		"port": 1883,
+		"topic": "testTopic",
+		"user": "",
+		"pw": ""
+	}
+}

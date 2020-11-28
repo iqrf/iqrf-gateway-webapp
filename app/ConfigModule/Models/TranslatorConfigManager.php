@@ -47,7 +47,7 @@ class TranslatorConfigManager {
 
 	/**
 	 * Read JSON configuration file and convert it to array
-	 * @return array<string, array<array<string, bool|int|string>>|string>
+	 * @return array<string, array<string, int|string>>
 	 */
 	public function getConfig(): array {
 		return $this->fileManager->read(self::FILE_NAME);
@@ -55,7 +55,7 @@ class TranslatorConfigManager {
 
 	/**
 	 * Saves the updated translator configuration
-	 * @param array<string, array<array<string, bool|int|string>>|string> $newConfig translator configuration
+	 * @param array<string, array<string, int|string>> $newConfig translator configuration
 	 */
 	public function saveConfig(array $newConfig): void {
 		$oldConfig = (array) $this->fileManager->read(self::FILE_NAME);
