@@ -323,6 +323,7 @@ export default class DpaUpdater extends Vue {
 				continue;
 			}
 		}
+		this.currentDpa = this.version;
 	}
 
 	private compareUploadedVersion(): void {
