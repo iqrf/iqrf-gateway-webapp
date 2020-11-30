@@ -313,16 +313,13 @@ export default class DpaUpdater extends Vue {
 	 * Updates list of DPA version to reflect changes made by upload
 	 */
 	private updateVersions(): void {
-		if (this.currentDpa === this.version) {
-			return;
-		}
 		for (let item of this.versions) {
-			if (item.value === this.version) {
-				item.label += ' (Current version)';
-				continue;
-			}
 			if (item.label.endsWith('(Current version)')) {
 				item.label = item.label.slice(0, -18);
+				continue;
+			}
+			if (item.value === this.version) {
+				item.label += ' (Current version)';
 				continue;
 			}
 		}
