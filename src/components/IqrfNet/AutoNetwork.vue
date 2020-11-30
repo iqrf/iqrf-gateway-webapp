@@ -339,7 +339,7 @@ export default class AutoNetwork extends Vue {
 	/**
 	 * @var {boolean} useNodes Use nodes found stop condition
 	 */
-	private useNodes = true
+	private useNodes = false
 
 	/**
 	 * @var {boolean} useOverlappingNetworks Use overlapping networks settings

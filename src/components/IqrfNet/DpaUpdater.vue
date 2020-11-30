@@ -1,37 +1,63 @@
 <template>
-	<CCard>
-		<CCardHeader>{{ $t('iqrfnet.dpaUpload.title') }}</CCardHeader>
-		<CCardBody>
-			<ValidationObserver v-slot='{ invalid }'>
-				<CForm @submit.prevent='upload'>
-					<ValidationProvider
-						v-slot='{ valid, touched, errors }'
-						rules='required'
-						:custom-messages='{
-							required: "iqrfnet.dpaUpload.missing.version",
-						}'
-					>
-						<CSelect
-							:value.sync='version'
-							:label='$t("iqrfnet.dpaUpload.version")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-							:placeholder='$t("iqrfnet.dpaUpload.missing.version")'
-							:options='versions'
-						/>
-					</ValidationProvider>
-					<CButton type='submit' color='primary' :disabled='invalid'>
-						{{ $t('forms.upload') }}
-					</CButton>
-				</CForm>
-			</ValidationObserver>
-		</CCardBody>
-	</CCard>
+	<div>
+		<CCard>
+			<CCardHeader>{{ $t('iqrfnet.dpaUpload.title') }}</CCardHeader>
+			<CCardBody>
+				<ValidationObserver v-slot='{ invalid }'>
+					<CForm @submit.prevent='compareUploadedVersion'>
+						<ValidationProvider
+							v-slot='{ valid, touched, errors }'
+							rules='required'
+							:custom-messages='{
+								required: "iqrfnet.dpaUpload.errors.version",
+							}'
+						>
+							<CSelect
+								:value.sync='version'
+								:label='$t("iqrfnet.dpaUpload.version")'
+								:is-valid='touched ? valid : null'
+								:invalid-feedback='$t(errors[0])'
+								:placeholder='$t("iqrfnet.dpaUpload.errors.version")'
+								:options='versions'
+							/>
+						</ValidationProvider>
+						<CButton type='submit' color='primary' :disabled='invalid'>
+							{{ $t('forms.upload') }}
+						</CButton>
+					</CForm>
+				</ValidationObserver>
+			</CCardBody>
+		</CCard>
+		<CModal
+			color='warning'
+			:show.sync='showModal'
+		>
+			<template #header>
+				<h5 class='modal-title'>
+					{{ $t('iqrfnet.dpaUpload.messages.modalTitle') }}
+				</h5>
+			</template>
+			{{ $t('iqrfnet.dpaUpload.messages.modalPrompt', {version: prettyVersion(currentDpa)}) }}
+			<template #footer>
+				<CButton
+					color='secondary'
+					@click='showModal = false'
+				>
+					{{ $t('forms.no') }}
+				</CButton> <CButton
+					color='warning'
+					@click='{{showModal = false; upload()}}'
+				>
+					{{ $t('forms.yes') }}
+				</CButton>
+			</template>
+		</CModal>
+	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CSelect} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CModal, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 import {FileFormat} from '../../iqrfNet/fileFormat';
@@ -55,6 +81,7 @@ interface DpaVersions {
 		CCardBody,
 		CCardHeader,
 		CForm,
+		CModal,
 		CSelect,
 		ValidationObserver,
 		ValidationProvider,
@@ -104,6 +131,11 @@ export default class DpaUpdater extends Vue {
 	private trType: number|null = null
 
 	/**
+	 * @var {boolean} showModal Controls whether DPA upload modal is shown
+	 */
+	private showModal = false
+
+	/**
 	 * @var {string|null} version Currently selected version of DPA
 	 */
 	private version: string|null = null
@@ -144,12 +176,14 @@ export default class DpaUpdater extends Vue {
 					this.$toast.error(
 						this.$t('iqrfnet.trUpload.messages.osInfoFail').toString()
 					);
+					console.error(mutation.payload);
 				}
 			} else if (mutation.payload.mType === 'mngDaemon_Upload') {
 				if (mutation.payload.data.status === 0) {
 					this.$toast.success(
 						this.$t('iqrfnet.trUpload.messages.success').toString()
 					);
+					this.updateVersions();
 				} else {
 					this.$toast.error(
 						this.$t('iqrfnet.trUpload.messages.failure').toString()
@@ -199,6 +233,21 @@ export default class DpaUpdater extends Vue {
 	}
 
 	/**
+	 * Converts DPA version string to pretty version
+	 * @param {string} version DPA version string
+	 * @returns {string} DPA version pretty string
+	 */
+	prettyVersion(version: string): string {
+		if (version === null) {
+			return 'unknown';
+		}
+		if (version.startsWith('0')) {
+			return version.charAt(1) + '.' + version.substr(2, 2);
+		}
+		return version.substr(0, 2) + '.' + version.substr(2, 2);
+	}
+
+	/**
 	 * Retrieves OS information (EmbedOs DPA request)
 	 */
 	private getOsInfo(): void {
@@ -226,31 +275,31 @@ export default class DpaUpdater extends Vue {
 		this.currentDpa = this.convertVersion(result.dpaVer);
 		DpaService.getVersions(this.osBuild)
 			.then((versions) => {
+				let fetchedVersions: Array<DpaVersions> = [];
 				for (const version of versions) {
 					const dpaVer = Number.parseInt(version.getVersion(false));
 					if (dpaVer < 400) {
-						this.versions.push({
+						fetchedVersions.push({
 							value: version.getVersion(false) + '-' + RFMode.LP,
 							label: version.getVersion(true) + ', ' + RFMode.LP + ' RF mode'
 						});
-						this.versions.push({
+						fetchedVersions.push({
 							value: version.getVersion(false) + '-' + RFMode.STD,
 							label: version.getVersion(true) + ', ' + RFMode.STD + ' RF mode'
 						});
 					} else {
-						this.versions.push({
+						fetchedVersions.push({
 							value: version.getVersion(false),
 							label: version.getVersion(true),
 						});
 					}
 				}
-				this.versions.forEach(item => {
+				fetchedVersions.forEach(item => {
 					if (this.currentDpa === item.value) {
-						Object.assign(item, {disabled: true});
 						Object.assign(item, {label: item.label + ' (Current version)'});
 					}
 				});
-				this.versions.sort().reverse();
+				this.versions = fetchedVersions.sort().reverse();
 				this.getDeviceEnumeration();
 			})
 			.catch(() => {
@@ -258,6 +307,33 @@ export default class DpaUpdater extends Vue {
 					this.$t('iqrfnet.trUpload.messages.osBuildFail').toString()
 				);
 			});
+	}
+
+	/**
+	 * Updates list of DPA version to reflect changes made by upload
+	 */
+	private updateVersions(): void {
+		for (let item of this.versions) {
+			if (item.label.endsWith('(Current version)')) {
+				item.label = item.label.slice(0, -18);
+			}
+			if (item.value === this.version) {
+				item.label += ' (Current version)';
+				continue;
+			}
+		}
+		this.currentDpa = this.version;
+	}
+
+	private compareUploadedVersion(): void {
+		if (this.version === null) {
+			return;
+		}
+		if (this.currentDpa === this.version) {
+			this.showModal = true;
+		} else {
+			this.upload();
+		}
 	}
 
 	/**

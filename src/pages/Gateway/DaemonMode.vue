@@ -143,7 +143,7 @@ export default class DaemonMode extends Vue {
 		this.$store.commit('spinner/HIDE');
 		if (this.mode === DaemonModeEnum.unknown) {
 			this.$toast.error(
-				this.$t('gateway.mode.messages.' + (this.loaded ? 'set' : 'get') + 'failed')
+				this.$t('gateway.mode.messages.' + (this.loaded ? 'set' : 'get') + 'Failed')
 					.toString()
 			);
 		} else if (this.loaded) {

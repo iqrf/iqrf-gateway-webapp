@@ -107,7 +107,8 @@ class NetworkManager {
 		$addresses = [];
 		foreach ($this->listsInterfaces() as $interface) {
 			$cmd = 'cat /sys/class/net/' . $interface . '/address';
-			$addresses[$interface] = $this->commandManager->run($cmd, true)->getStdout();
+			$output = $this->commandManager->run($cmd, true)->getStdout();
+			$addresses[$interface] = $output === '' ? null : $output;
 		}
 		return $addresses;
 	}

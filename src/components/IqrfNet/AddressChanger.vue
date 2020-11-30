@@ -67,6 +67,8 @@ export default class AddressChanger extends Vue {
 	 */
 	@Prop({required: true}) currentAddress!: number
 
+	@Prop({required: true}) loaded!: boolean 
+
 	/**
 	 * Vue lifecycle hook created
 	 */
@@ -81,6 +83,10 @@ export default class AddressChanger extends Vue {
 	 * Changes device address used to retrieve transciever configuration
 	 */
 	private changeAddress(): void {
+		if (!this.loaded && this.address === this.currentAddress) {
+			this.$emit('reload-configuration');
+			return;
+		}
 		this.$router.push('/iqrfnet/tr-config/' + this.address);
 	}
 }

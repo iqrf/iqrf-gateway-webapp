@@ -1,0 +1,43 @@
+{
+	"daemonApi": {
+		"autoNetwork": {
+			"actionRetries": 1,
+			"discoveryBeforeStart": true,
+			"discoveryTxPower": 6,
+			"skipDiscoveryEachWave": false,
+			"stopConditions": {
+				"abortOnTooManyNodesFound": false,
+				"emptyWaves": 2,
+				"waves": 2
+			},
+			"returnVerbose": false
+		},
+		"discovery": {
+			"maxAddr": 0,
+			"txPower": 6,
+			"returnVerbose": false
+		}
+	},
+	"factoryReset": {
+		"coordinator": false,
+		"daemon": true,
+		"network": false,
+		"webapp": true
+	},
+	"logger" : {
+		"filePath": "/var/log/iqrf-gateway-controller.log",
+		"severity": "info"
+	},
+	"resetButton": {
+		"api": "",
+		"button": 2
+	},
+	"statusLed": {
+		"greenLed": 0,
+		"redLed": 1
+	},
+	"wsServers": {
+		"api": "ws://localhost:1338",
+		"monitor": "ws://localhost:1438"
+	}
+}

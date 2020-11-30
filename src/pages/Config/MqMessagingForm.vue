@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<h1 v-if='$route.path === "/config/daemon/mq/add"'>
+		<h1 v-if='$route.path === "/config/daemon/messagings/mq/add"'>
 			{{ $t('config.daemon.messagings.mq.add') }}
 		</h1>
 		<h1 v-else>
@@ -120,7 +120,7 @@ export default class MqMessagingForm extends Vue {
 	 * @returns {string} Page title
 	 */
 	get pageTitle(): string {
-		return this.$route.path === '/config/daemon/mq/add' ?
+		return this.$route.path === '/config/daemon/messagings/mq/add' ?
 			this.$t('config.daemon.messagings.mq.add').toString() : this.$t('config.daemon.messagings.mq.edit').toString();
 	}
 	
@@ -129,8 +129,8 @@ export default class MqMessagingForm extends Vue {
 	 * @returns {string} Button text
 	 */
 	get submitButton(): string {
-		return this.$route.path === '/config/daemon/mq/add' ?
-			this.$t('forms.add').toString() : this.$t('forms.save').toString();
+		return this.$route.path === '/config/daemon/messagings/mq/add' ?
+			this.$t('forms.add').toString() : this.$t('forms.edit').toString();
 	}
 
 	/**
@@ -186,7 +186,7 @@ export default class MqMessagingForm extends Vue {
 	 */
 	private successfulSave(): void  {
 		this.$store.commit('spinner/HIDE');
-		if (this.$route.path === '/config/daemon/mq/add') {
+		if (this.$route.path === '/config/daemon/messagings/mq/add') {
 			this.$toast.success(
 				this.$t('config.daemon.messagings.mq.messages.addSuccess', {instance: this.configuration.instance})
 					.toString()
@@ -197,7 +197,7 @@ export default class MqMessagingForm extends Vue {
 					.toString()
 			);
 		}
-		this.$router.push('/config/daemon/messagings/mq');
+		this.$router.push('/config/daemon/messagings/mq/');
 	}
 }
 </script>

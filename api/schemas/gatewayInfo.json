@@ -130,7 +130,14 @@
 					},
 					"macAddress": {
 						"$id": "#/properties/interfaces/items/properties/macAddress",
-						"type": "string",
+						"oneOf": [
+							{
+								"type": "string"
+							},
+							{
+								"type": "null"
+							}
+						],
 						"title": "MAC address",
 						"example": "02:42:4d:2e:75:80"
 					},

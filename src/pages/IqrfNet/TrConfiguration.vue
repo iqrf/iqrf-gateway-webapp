@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<h1>{{ $t('iqrfnet.trConfiguration.title') }}</h1>
-		<AddressChanger :current-address='address' />
+		<AddressChanger :current-address='address' :loaded='loaded' @reload-configuration='enumerate' />
 		<CCard v-if='config !== null'>
 			<CCardHeader>{{ $t('iqrfnet.trConfiguration.title') }}</CCardHeader>
 			<CCardBody>
@@ -243,10 +243,10 @@
 								>
 									<CSelect
 										:value.sync='config.uartBaudrate'
-										:label='$t("iqrfnet.trConfiguration.form.uartBaudrate")'
+										:label='$t("iqrfnet.trConfiguration.form.uartBaudRate" + (address === 0 ? "C" : "N"))'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'
-										:placeholder='$t("iqrfnet.trConfiguration.form.messages.uartBaudrate")'
+										:placeholder='$t("iqrfnet.trConfiguration.form.messages.uartBaudrate" + (address === 0 ? "C" : "N"))'
 										:options='uartBaudRates'
 									/>
 								</ValidationProvider>
@@ -321,6 +321,8 @@ export default class TrConfiguration extends Vue {
 	 */
 	private dpaVersion: string|null = null
 
+	private loaded = false
+
 	/**
 	 * @var {string|null} msgId Daemon api message id
 	 */
@@ -360,6 +362,7 @@ export default class TrConfiguration extends Vue {
 	 */
 	@Watch('address')
 	getAddress(): void {
+		this.loaded = false;
 		this.config = null;
 		this.peripherals = [];
 		if (this.$store.getters.isSocketConnected) {
@@ -490,15 +493,27 @@ export default class TrConfiguration extends Vue {
 
 	/**
 	 * Handles Enumeration request response
+	 * @param response Daemon API response
 	 */
 	private handleEnumerationResponse(response): void {
-		if (response.data.status !== 0) {
-			this.$store.commit('spinner/HIDE');
+		if (response.data.status === 0) {
+			this.parseResponse(response);
+		} else if (response.data.status === 1001 && response.data.statusStr.includes('not bonded')) {
 			this.$toast.error(
-				this.$t('iqrfnet.trConfiguration.messages.read.failure').toString()
+				this.$t('forms.messages.noDevice', {address: this.address}).toString()
 			);
-			return;
+		} else if (response.data.status === 1005 && response.data.statusStr.includes('ERROR_TIMEOUT')) {
+			this.$toast.error(
+				this.$t('forms.messages.deviceOffline', {address: this.address}).toString()
+			);
 		}
+	}
+
+	/**
+	 * Parses device enumeration response
+	 * @param response Daemon API response
+	 */
+	private parseResponse(response: any): void {
 		let rsp = response.data.rsp;
 		this.config = rsp.trConfiguration;
 		this.dpaHandlerDetected = rsp.osRead.flags.dpaHandlerDetected;
@@ -510,6 +525,7 @@ export default class TrConfiguration extends Vue {
 				this.$t('iqrfnet.trConfiguration.messages.read.success').toString()
 			);
 		}
+		this.loaded = true;
 	}
 
 	/**

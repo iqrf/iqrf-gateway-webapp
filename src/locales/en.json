@@ -155,7 +155,10 @@
 			"submitBadRequest": "Invalid JSON syntax.",
 			"submitServerError": "Internal server error has occurred.",
 			"componentNotFound": "Component or instance not found.",
-			"fetchFail": "Failed to retrieve component or instance configuration."
+			"fetchFail": "Failed to retrieve component or instance configuration.",
+			"deviceOffline": "Device at address {address} is offline.",
+			"noDevice": "No device is bonded at address {address}.",
+			"coordinatorOffline": "Coordinator device is offline."
 		}
 	},
 	"config": {
@@ -781,26 +784,26 @@
 			"form": {
 				"daemonApi": {
 					"autoNetwork": {
-						"title": "AutoNetwork API call configuration",
+						"title": "AutoNetwork API call",
 						"stopConditions": {
 							"title": "AutoNetwork stop conditions"
 						},
 						"verbose": "Verbose mode"
 					},
 					"discovery": {
-						"title": "Discovery API call configuration",
+						"title": "Discovery API call",
 						"verbose": "Verbose mode"
 					}
 				},
 				"factoryReset": {
-					"title": "Factory reset configuration",
+					"title": "Factory reset",
 					"coordinator": "Coordinator",
 					"daemon": "Daemon",
 					"network": "Network",
 					"webapp": "Web application"
 				},
 				"resetButton": {
-					"title": "Button configuration",
+					"title": "Button",
 					"api": "Daemon API call",
 					"calls": {
 						"autonetwork": "AutoNetwork",
@@ -809,7 +812,7 @@
 					}
 				},
 				"logger": {
-					"title": "Logger configuration",
+					"title": "Logger",
 					"filePath": "Path to log file",
 					"severity": "Severity level",
 					"levels": {
@@ -821,7 +824,7 @@
 					}
 				},
 				"wsServers": {
-					"title": "Websocket configuration",
+					"title": "Websocket",
 					"api": "Daemon API server",
 					"monitor": "Monitor server"
 				}
@@ -1105,8 +1108,12 @@
 		"dpaUpload": {
 			"title": "DPA plug-in",
 			"version": "DPA version",
-			"missing": {
+			"errors": {
 				"version": "Please select DPA version to upload."
+			},
+			"messages": {
+				"modalTitle": "DPA plug-in upload",
+				"modalPrompt": "The device already uses DPA version {version}, do you want to proceed with upload anyway?"
 			}
 		},
 		"enumeration": {
@@ -1182,9 +1189,7 @@
 					"statusInitPercentage": "Backup in progress [0 %]",
 					"statusRunningPercentage": "Backup in progress [{progress} %]",
 					"statusSuccess": "Backup of device {deviceAddr} completed.",
-					"statusFailed": "Backup of device {deviceAddr} failed. Device is offline.",
-					"invalidNadr": "No device is bonded at address {address}.",
-					"nodeOffline": "Device at address {address} is offline."
+					"statusFailed": "Backup of device {deviceAddr} failed. Device is offline."
 				}
 			},
 			"restore": {
@@ -1207,7 +1212,6 @@
 					"missingCoordinator": "Uploaded file does not contain coordinator device backup data entry.",
 					"missingNode": "Uploaded file does not contain backup data of node device at address {address}.",
 					"statusCoordinator": "Restoring coordinator device.",
-					"coordinatorOffline": "Coordinator device is offline.",
 					"invalidSize": "Invalid coordinator backup data size.",
 					"checksumMismatch": "Incorrect coordinator backup data checksum."
 				}
@@ -1272,7 +1276,6 @@
 						"confirmClear": "Do you really want to clear all bonds?",
 						"success": "Node at address {address} has been successfully removed.",
 						"successInC": "Node at address {address} has been successfully removed from Coordinator memory.",
-						"noBond": "No node is bonded at address {address}.",
 						"noBonds": "There are no bonded nodes in the network.",
 						"error_fail": "Failed to remove bond.",
 						"remove_error": "An error occurred while removing a device from the network.",
@@ -1520,9 +1523,6 @@
 					"failure": "An error occurred during the Sensor request.",
 					"pnum": "Device does not support the Sensor standard."
 				}
-			},
-			"messages": {
-				"noDevice": "No device is bonded at address {address}."
 			}
 		},
 		"trConfiguration": {
@@ -1594,7 +1594,8 @@
 				"localFrcReception": "Local FRC",
 				"dpaPeerToPeer": "DPA Peer-to-Peer",
 				"neverSleep": "Stay awake when not bonded",
-				"uartBaudrate": "UART interface baud rate",
+				"uartBaudRateC": "UART interface baud rate",
+				"uartBaudRateN": "UART baud rate",
 				"uartBaudrates": {
 					"1200": "1200 Bd",
 					"2400": "2400 Bd",
@@ -1617,7 +1618,8 @@
 					},
 					"rxFilter": "RX filter have to be integer from 0 to 64.",
 					"txPower": "TX Power have to be integer from 0 to 7.",
-					"uartBaudrate": "Please select UART interface baud rate."
+					"uartBaudRateC": "Please select UART interface baud rate.",
+					"uartBaudRateN": "Please select UART baud rate."
 				}
 			},
 			"messages": {
@@ -1802,8 +1804,23 @@
 			"unsupported": "Unsupported",
 			"unknown": "Unknown"
 		},
+		"iqrf": {
+			"title": "IQRF services",
+			"description": "Control IQRF Gateway's services."
+		},
+		"iqrf-gateway-controller": {
+			"title": "Controller",
+			"description": "Control IQRF Gateway Controller's service.",
+			"messages": {
+				"disable": "IQRF Gateway Controller has been disabled.",
+				"enable": "IQRF Gateway Controller has been enabled.",
+				"start": "IQRF Gateway Controller has been started.",
+				"stop": "IQRF Gateway Controller has been stopped.",
+				"restart": "IQRF Gateway Controller has been restarted."
+			}
+		},
 		"iqrf-gateway-daemon": {
-			"title": "IQRF service",
+			"title": "Daemon",
 			"description": "Control IQRF Gateway Daemon's service.",
 			"messages": {
 				"disable": "IQRF Gateway Daemon has been disabled.",
@@ -1811,6 +1828,17 @@
 				"start": "IQRF Gateway Daemon has been started.",
 				"stop": "IQRF Gateway Daemon has been stopped.",
 				"restart": "IQRF Gateway Daemon has been restarted. It takes tens of seconds before the system is ready."
+			}
+		},
+		"iqrf-gateway-translator": {
+			"title": "Translator",
+			"description": "Control IQRF Gateway Translator's service.",
+			"messages": {
+				"disable": "IQRF Gateway Translator has been disabled.",
+				"enable": "IQRF Gateway Translator has been enabled.",
+				"start": "IQRF Gateway Translator has been started.",
+				"stop": "IQRF Gateway Translator has been stopped.",
+				"restart": "IQRF Gateway Translator has been restarted."
 			}
 		},
 		"gwman-client": {
@@ -1855,6 +1883,9 @@
 			"processTimeout": "Service manager process timed out.",
 			"missingService": "Requested service not found",
 			"unsupportedService": "Unsupported service"
+		},
+		"messages": {
+			"refreshSuccess": "Service status successfully refreshed."
 		}
 	},
 	"table": {

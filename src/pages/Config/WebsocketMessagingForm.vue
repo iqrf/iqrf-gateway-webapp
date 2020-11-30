@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<h1 v-if='$route.path === "/config/daemon/websocket/add-messaging"'>
+		<h1 v-if='$route.path === "/config/daemon/messagings/websocket/add-messaging"'>
 			{{ $t('config.daemon.messagings.websocket.messaging.add') }}
 		</h1>
 		<h1 v-else>
@@ -174,7 +174,7 @@ export default class WebsocketMessagingForm extends Vue {
 	 * @returns {string} Page title
 	 */
 	get pageTitle(): string {
-		return this.$route.path === '/config/daemon/websocket/add-messaging' ?
+		return this.$route.path === '/config/daemon/messagings/websocket/add-messaging' ?
 			this.$t('config.daemon.messagings.websocket.messaging.add').toString() : this.$t('config.daemon.messagings.websocket.messaging.edit').toString();
 	}
 
@@ -183,7 +183,7 @@ export default class WebsocketMessagingForm extends Vue {
 	 * @returns {string} Button text
 	 */
 	get submitButton(): string {
-		return this.$route.path === '/config/daemon/websocket/add-messaging' ?
+		return this.$route.path === '/config/daemon/messagings/websocket/add-messaging' ?
 			this.$t('forms.add').toString() : this.$t('forms.edit').toString();
 	}
 
@@ -290,7 +290,7 @@ export default class WebsocketMessagingForm extends Vue {
 	 */
 	private successfulSave(): void {
 		this.$store.commit('spinner/HIDE');
-		if (this.$route.path === '/config/daemon/websocket/add-messaging') {
+		if (this.$route.path === '/config/daemon/messagings/websocket/add-messaging') {
 			this.$toast.success(
 				this.$t('config.daemon.messagings.websocket.messaging.messages.addSuccess', {messaging: this.configuration.instance})
 					.toString()

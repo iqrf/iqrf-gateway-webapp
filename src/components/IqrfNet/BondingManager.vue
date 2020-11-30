@@ -352,14 +352,20 @@ export default class BondingManager extends Vue {
 		if (this.unbondCoordinatorOnly) {
 			if (response.statusStr === 'DPA error: ERROR_FAIL') {
 				this.$toast.error(
-					this.$t('iqrfnet.networkManager.messages.submit.removeBond.noBond', {address: this.address}).toString()
+					this.$t('forms.messages.noDevice', {address: this.address}).toString()
 				);
 				return;
 			}
 		}
+		if (response.statusStr === 'Transaction error: ERROR_TIMEOUT') {
+			this.$toast.error(
+				this.$t('forms.messages.deviceOffline', {address: this.address}).toString()
+			);
+			return;
+		}
 		if (response.statusStr === 'DPA error: ERROR_NADR') {
 			this.$toast.error(
-				this.$t('iqrfnet.networkManager.messages.submit.removeBond.noBond', {address: this.address}).toString()
+				this.$t('forms.messages.noDevice', {address: this.address}).toString()
 			);
 			return;
 		}

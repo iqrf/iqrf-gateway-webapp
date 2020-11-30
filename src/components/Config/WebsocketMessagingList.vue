@@ -9,7 +9,7 @@
 					color='success'
 					size='sm'
 					class='float-right'
-					to='/config/daemon/websocket/add-messaging'
+					to='/config/daemon/messagings/websocket/add-messaging'
 				>
 					<CIcon :content='icons.add' size='sm' />
 					{{ $t('table.actions.add') }}
@@ -54,7 +54,7 @@
 							<CButton
 								color='info'
 								size='sm'
-								:to='"/config/daemon/websocket/edit-messaging/" + item.instance'
+								:to='"/config/daemon/messagings/websocket/edit-messaging/" + item.instance'
 							>
 								<CIcon :content='icons.edit' size='sm' />
 								{{ $t('table.actions.edit') }}
