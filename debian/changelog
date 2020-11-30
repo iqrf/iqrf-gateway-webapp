@@ -1,3 +1,34 @@
+iqrf-gateway-webapp (2.2.2) stable; urgency=medium
+
+  [ Roman Ondráček ]
+  * Core: fix username placeholder at Sign in page
+
+  [ Karel Hanák ]
+  * Gateway: added IQRF services disambiguation, added Controller and Translator service sidebar entries and routes
+  * Gateway: fix sidebar route for IQRF services
+
+  [ Roman Ondráček ]
+  * Resource usage: fix background color and add space before %
+  * Gateway: fix empty MAC address handling
+  * Gateway: fix gateway mode failure messages
+  * Gateway: update resource usage bars, exclude overlays from disk usage
+
+  [ Karel Hanák ]
+  * IqrfNet: trconfig offline and unbonded device error handling, localization dedup
+  * IqrfNet: Coordinator upload - allow upload of current DPA version
+  * IqrfNet: Coordinator upload - refresh version options after upload
+  * Debian package: update docs link for gateway in patch
+  * Gateway: reset unknown service status, Iqrfnet: trconfig baudrate label, reload conf
+  * Config: fix messagings and misc form routes, unify form buttons
+  * Iqrfnet: update list of dpa versions after upload
+  * ConfigModule: test cases for controller and translator managers
+  * IqrfNet: DPAUpdater update current version for modal
+  * IqrfNet: update list only if version has changed
+  * IqrfNet: dpa version list update fix
+  * IqrfNet: dpa updater fix
+
+ -- Karel Hanák <karel.hanak@iqrf.org>  Mon, 30 Nov 2020 07:13:59 +0100
+
 iqrf-gateway-webapp (2.2.1) stable; urgency=medium
 
   [ Karel Hanák ]
