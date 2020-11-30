@@ -316,7 +316,6 @@ export default class DpaUpdater extends Vue {
 		for (let item of this.versions) {
 			if (item.label.endsWith('(Current version)')) {
 				item.label = item.label.slice(0, -18);
-				continue;
 			}
 			if (item.value === this.version) {
 				item.label += ' (Current version)';
