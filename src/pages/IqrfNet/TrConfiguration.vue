@@ -282,11 +282,12 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import AddressChanger from '../../components/IqrfNet/AddressChanger.vue';
 import SecurityForm from '../../components/IqrfNet/SecurityForm.vue';
 import IqrfNetService from '../../services/IqrfNetService';
-import { IOption } from '../../interfaces/coreui';
-import { WebSocketClientState } from '../../store/modules/webSocketClient.module';
-import { MutationPayload } from 'vuex';
-import { Dictionary } from 'vue-router/types/router';
-import { IEmbedPers, IEmbedPersEnabled, ITrConfiguration } from '../../interfaces/dpa';
+import ServiceService from '../../services/ServiceService';
+import {IOption} from '../../interfaces/coreui';
+import {WebSocketClientState} from '../../store/modules/webSocketClient.module';
+import {MutationPayload} from 'vuex';
+import {Dictionary} from 'vue-router/types/router';
+import {IEmbedPers, IEmbedPersEnabled, ITrConfiguration} from '../../interfaces/dpa';
 
 @Component({
 	components: {
@@ -545,9 +546,18 @@ export default class TrConfiguration extends Vue {
 	private handleWriteResponse(response): void {
 		this.$store.commit('spinner/HIDE');
 		if (response.data.status === 0) {
-			this.$toast.success(
-				this.$t('iqrfnet.trConfiguration.messages.write.success').toString()
-			);
+			if (response.data.rsp.restartNeeded) {
+				ServiceService.restart('iqrf-gateway-daemon')
+					.then(() => {
+						this.$toast.success(
+							this.$t('iqrfnet.trConfiguration.messages.write.successRestart').toString()
+						);
+					});
+			} else {
+				this.$toast.success(
+					this.$t('iqrfnet.trConfiguration.messages.write.success').toString()
+				);
+			}
 		} else {
 			this.$toast.error(
 				this.$t('iqrfnet.trConfiguration.messages.write.failure').toString()

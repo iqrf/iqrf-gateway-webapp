@@ -1538,7 +1538,7 @@
 					"setKey": "Set User Key"
 				},
 				"messages": {
-					"success": "IQMESH security has been successfully set.",
+					"success": "IQMESH security has been successfully set. IQRF Gateway Daemon has been restarted for changes to take effect.",
 					"failure": "IQMESH security setting has failed."
 				}
 			},
@@ -1629,7 +1629,8 @@
 				},
 				"write": {
 					"failure": "An error occurred while TR configuration saving.",
-					"success": "The TR configuration has been saved successfully."
+					"success": "The TR configuration has been saved successfully.",
+					"successRestart": "The TR configuration has been saved successfully. IQRF Gateway Daemon has been restarted for changes to take effect."
 				}
 			}
 		},

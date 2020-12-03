@@ -43,9 +43,11 @@ import {MutationPayload} from 'vuex';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CSelect} from '@coreui/vue/src';
 import {cilLockLocked, cilLockUnlocked} from '@coreui/icons';
 import SecurityService from '../../services/SecurityService';
+import ServiceService from '../../services/ServiceService';
 import {SecurityFormat} from '../../iqrfNet/securityFormat';
 import {IOption} from '../../interfaces/coreui';
 import {Dictionary} from 'vue-router/types/router';
+import {AxiosError} from 'axios';
 
 @Component({
 	components: {
@@ -128,7 +130,7 @@ export default class SecurityForm extends Vue {
 				this.$store.dispatch('spinner/hide');
 				this.$store.dispatch('removeMessage', this.msgId);
 				if (mutation.payload.data.status === 0) {
-					this.$toast.success(this.$t('iqrfnet.trConfiguration.security.messages.success').toString());
+					this.restartDaemon();
 				} else {
 					this.$toast.error(this.$t('iqrfnet.trConfiguration.security.messages.failure').toString());
 				}
@@ -164,6 +166,34 @@ export default class SecurityForm extends Vue {
 		const type = password ? 0 : 1;
 		SecurityService.setSecurity(this.address, this.password, this.format, type, 15000, 'iqrfnet.trConfiguration.security.messages.failure', () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
+	}
+
+	private restartDaemon(): void {
+		this.$store.commit('spinner/SHOW');
+		ServiceService.restart('iqrf-gateway-daemon')
+			.then(() => {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.success(this.$t('iqrfnet.trConfiguration.security.messages.success').toString());
+			})
+			.catch(this.handleError);
+	}
+
+	/**
+	 * Handles REST API error responses
+	 */
+	private handleError(error: AxiosError): void {
+		this.$store.commit('spinner/HIDE');
+		const response = error.response;
+		if (response === undefined) {
+			this.$toast.error(this.$t('service.errors.processTimeout').toString());
+			return;
+		}
+		if (response.status === 404) {
+			this.$toast.error(this.$t('service.errors.missingService').toString());
+		}
+		if (response.status === 500 && response.data.message === 'Unsupported init system') {
+			this.$toast.error(this.$t('service.errors.unsupportedInit').toString());
+		}
 	}
 
 	/**
