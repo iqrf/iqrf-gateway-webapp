@@ -43,7 +43,7 @@ import {MutationPayload} from 'vuex';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CSelect} from '@coreui/vue/src';
 import {cilLockLocked, cilLockUnlocked} from '@coreui/icons';
 import SecurityService from '../../services/SecurityService';
-import ServiceService from '../../services/ServiceService';
+import OsService from '../../services/DaemonApi/OsService';
 import {SecurityFormat} from '../../iqrfNet/securityFormat';
 import {IOption} from '../../interfaces/coreui';
 import {Dictionary} from 'vue-router/types/router';
@@ -126,14 +126,15 @@ export default class SecurityForm extends Vue {
 			if (mutation.type !== 'SOCKET_ONMESSAGE') {
 				return;
 			}
-			if (mutation.payload.data.msgId === this.msgId) {
-				this.$store.dispatch('spinner/hide');
-				this.$store.dispatch('removeMessage', this.msgId);
-				if (mutation.payload.data.status === 0) {
-					this.restartDaemon();
-				} else {
-					this.$toast.error(this.$t('iqrfnet.trConfiguration.security.messages.failure').toString());
-				}
+			if (mutation.payload.data.msgId !== this.msgId) {
+				return;
+			}
+			this.$store.dispatch('spinner/hide');
+			this.$store.dispatch('removeMessage', this.msgId);
+			if (mutation.payload.mType === 'iqrfEmbedOs_SetSecurity') {
+				this.handleSecurityResponse(mutation.payload);
+			} else if (mutation.payload.mType === 'iqrfEmbedOs_Reset') {
+				this.handleResetResponse(mutation.payload);
 			}
 		});
 	}
@@ -168,31 +169,40 @@ export default class SecurityForm extends Vue {
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
-	private restartDaemon(): void {
-		this.$store.commit('spinner/SHOW');
-		ServiceService.restart('iqrf-gateway-daemon')
-			.then(() => {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.success(this.$t('iqrfnet.trConfiguration.security.messages.success').toString());
-			})
-			.catch(this.handleError);
+	/**
+	 * Handles EmbedOs_SetSecurity request response
+	 */
+	private handleSecurityResponse(response): void {
+		if (response.data.status === 0) {
+			this.resetDevice();
+		} else {
+			this.$toast.error(
+				this.$t('iqrfnet.trConfiguration.security.messages.failure').toString()
+			);
+		}
 	}
 
 	/**
-	 * Handles REST API error responses
+	 * Performs device reset
 	 */
-	private handleError(error: AxiosError): void {
-		this.$store.commit('spinner/HIDE');
-		const response = error.response;
-		if (response === undefined) {
-			this.$toast.error(this.$t('service.errors.processTimeout').toString());
-			return;
-		}
-		if (response.status === 404) {
-			this.$toast.error(this.$t('service.errors.missingService').toString());
-		}
-		if (response.status === 500 && response.data.message === 'Unsupported init system') {
-			this.$toast.error(this.$t('service.errors.unsupportedInit').toString());
+	private resetDevice(): void {
+		this.$store.dispatch('spinner/show', {timeout: 30000});
+		OsService.reset(this.address, 30000, 'iqrfnet.trConfiguration.security.messages.resetFailure', () => this.msgId = null)
+			.then((msgId: string) => this.msgId = msgId);
+	}
+
+	/**
+	 * Handles EmbedOs_Reset request response
+	 */
+	private handleResetResponse(response): void {
+		if (response.data.status === 0) {
+			this.$toast.success(
+				this.$t('iqrfnet.trConfiguration.security.messages.success').toString()
+			);
+		} else {
+			this.$toast.error(
+				this.$t('iqrfnet.trConfiguration.security.messages.resetFailure').toString()
+			);
 		}
 	}
 

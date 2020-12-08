@@ -28,6 +28,29 @@ class OsService {
 		return store.dispatch('sendRequest', options);
 	}
 
+	/**
+	 * Sends OS Reset request
+	 * @param address Device address
+	 * @param timeout Request timeout in milliseconds
+	 * @param message Request timeout message
+	 * @param callback Request timeout callback
+	 * @return Request message ID
+	 */
+	reset(address: number, timeout: number, message: string|null = null, callback: CallableFunction = () => {return;}): Promise<string> {
+		const request = {
+			'mType': 'iqrfEmbedOs_Reset',
+			'data': {
+				'req': {
+					'nAdr': address,
+					'param': {},
+				},
+				'returnVerbose': true
+			},
+		};
+		const options = new WebSocketOptions(request, timeout, message, callback);
+		return store.dispatch('sendRequest', options);
+	}
+
 }
 
 export default new OsService();
