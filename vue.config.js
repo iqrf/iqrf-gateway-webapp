@@ -1,4 +1,7 @@
+const baseUrl = process.env.VUE_APP_BASE_URL;
+
 module.exports = {
+	publicPath: baseUrl,
 	runtimeCompiler: true,
 	outputDir: 'www/dist',
 	chainWebpack: (config) => {
