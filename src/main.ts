@@ -75,7 +75,7 @@ Vue.use(VueToast,{
 });
 Vue.use(Clipboard);
 
-axios.defaults.baseURL = '//' + hostname + (isDev ? ':8080' : port) + '/api/v0/';
+axios.defaults.baseURL = '//' + hostname + (isDev ? ':8080' : port) + process.env.VUE_APP_BASE_URL + 'api/v0/';
 axios.defaults.timeout = 30000; 
 
 axios.interceptors.response.use(
