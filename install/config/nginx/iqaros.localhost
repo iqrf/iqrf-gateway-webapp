@@ -19,13 +19,14 @@ server {
 
 	server_name _;
 
-	location / {
-		root /usr/share/iqrf-gateway-webapp/www/dist;
-		try_files $uri $uri/ /index.html;
+	location ~ ^/webapp/api/(.*)$ {
+		proxy_redirect ~^(.*)$ $scheme://$http_host/webapp$1;
+		try_files $uri $uri/ /index.php?$args;
 	}
 
-	location ~ ^/api/(.*)$ {
-		try_files $uri $uri/ /index.php?$args;
+	location /webapp {
+		alias /usr/share/iqrf-gateway-webapp/www/dist/;
+		try_files $uri $uri/ /webapp/index.html;
 	}
 
 	location /ws {
@@ -58,14 +59,15 @@ server {
 			return 404;
 		}
 
+		include fastcgi_params;
 		# Mitigate https://httpoxy.org/ vulnerabilities
 		fastcgi_param HTTP_PROXY "";
 
 		fastcgi_param REQUEST_METHOD $request_method;
+		fastcgi_param BASE_URI "/webapp/";
 		fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
 		fastcgi_pass backend;
 		fastcgi_index index.php;
-		include fastcgi_params;
 	}
 
 	add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: https://repository.iqrfalliance.org; connect-src 'self' ws: wss: https://apidocs.iqrf.org https://repository.iqrfalliance.org https://sentry.iqrf.org; media-src 'none'; object-src 'none'; prefetch-src 'self'; child-src 'none'; frame-src 'none'; worker-src 'none'; frame-ancestors 'none'; form-action 'self'; block-all-mixed-content; report-uri https://sentry.iqrf.org/api/2/security/?sentry_key=7cd0252aae6d491b98514b9486cd2771" always;
