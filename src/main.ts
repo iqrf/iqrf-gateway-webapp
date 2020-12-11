@@ -71,7 +71,7 @@ Vue.use(CoreuiVue);
 Vue.use(VueMeta);
 Vue.use(VueToast,{
 	position: 'top',
-	duration: 10000
+	duration: 5000
 });
 Vue.use(Clipboard);
 

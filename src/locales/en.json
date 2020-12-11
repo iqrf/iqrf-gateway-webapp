@@ -1216,7 +1216,7 @@
 					"checksumMismatch": "Incorrect coordinator backup data checksum."
 				}
 			},
-			"bonding": {
+			"bondingManager": {
 				"title": "Bonding",
 				"form": {
 					"address": "Address",
@@ -1227,6 +1227,27 @@
 					"bondingRetries": "Bonding test retries",
 					"smartConnect": "IQRF Smart Connect Code",
 					"unbondCoordinatorOnly": "Unbonds the Node only on Coordinator side"
+				},
+				"errors": {
+					"address": "Please enter an integer between 1 and 239 for new node address",
+					"bondingRetries": "Please enter an integer between 0 and 255 for number of bonding test retry requests.",
+					"scCodeMissing": "Please enter the IQRF Smart Connect code.",
+					"scCodeInvalid": "IQRF Smart Connect code should be a string of 34 alphanumeric characters."
+				},
+				"messages": {
+					"bondSuccess": "A new device has been successfully bonded to address {address}.",
+					"bondExists": "Another device is already bonded to address {address}.",
+					"timeout": "Request to bond a new device has timed out.",
+					"genericBondError": "An error has occured during the bonding process.",
+					"unbondPrompt": "Do you really want to remove device at address {address} from the network?",
+					"clearAllPrompt": "Do you really want to clear all bonds?",
+					"unbondSuccess": "Device at address {address} has been successfully removed.",
+					"unbondSuccessC": "Device at address {address} has been successfully removed from Coordinator memory.",
+					"noDevices": "There are no devices bonded in the network.",
+					"unbondFailure": "Failed to remove device at address {address} from network.",
+					"clearAllSuccess": "All bonds have been cleared successfully.",
+					"clearAllCSuccess": "All bonds have been successfully cleared from Coordinator memory.",
+					"clearAllPartialSuccess": "All online devices have been removed. Offline devices: {nodes}."
 				}
 			},
 			"devicesInfo": {
@@ -1263,7 +1284,7 @@
 					"maxAddr": "Please enter an integer between 0 and 239 for Discovery maximum node address."
 				},
 				"messages": {
-					"success": "The discovery has been finished successfully.",
+					"success": "The discovery process has finished successfully.",
 					"genericError": "An error has occured during the Discovery process.",
 					"spinnerNote": "Discovery is running, the process may take tens of minutes for large networks.",
 					"timeout": "The Discovery request has timed out."
@@ -1272,35 +1293,16 @@
 			"messages": {
 				"submit": {
 					"autoNetwork": {
-						"success": "The AutoNetwork process has been successful.",
+						"success": "The AutoNetwork process has finished successfully.",
 						"failure": "An error occurred during the AutoNetwork process."
 					},
 					"invalidMessage": "Invalid request.",
-					"timeout": "Request timed out.",
-					"bonding": {
-						"success": "A new device has been bonded successfully.",
-						"error_fail": "Failed to bond new node."
-					},
-					"removeBond": {
-						"confirmUnbond": "Do you really want to remove this node from the network?",
-						"confirmClear": "Do you really want to clear all bonds?",
-						"success": "Node at address {address} has been successfully removed.",
-						"successInC": "Node at address {address} has been successfully removed from Coordinator memory.",
-						"noBonds": "There are no bonded nodes in the network.",
-						"error_fail": "Failed to remove bond.",
-						"remove_error": "An error occurred while removing a device from the network.",
-						"clearAllSuccess": "All bonds have been cleared successfully.",
-						"clearAllInCSuccess": "All bonds have been successfully cleared from Coordinator memory.",
-						"clearAllPartialSuccess": "All online nodes have been removed. Offline nodes: {nodes}."
-					}
+					"timeout": "Request timed out."
 				},
 				"invalid": {
 					"integer": "This parameter should be an integer.",
 					"autoNetwork": {
 						"hwpidFilter": "HWPID filter should be a list of integers from between 0 and 65535 separated by a space."
-					},
-					"bonding": {
-						"scCode": "IQRF Smart Connect code should be a string of 34 alphanumeric characters."
 					}
 				},
 				"autoNetwork": {
@@ -1315,15 +1317,6 @@
 					"statusTotalNodes": "Total number of nodes in network: ",
 					"statusAddedNodes": "Number of nodes added in last wave: ",
 					"statusWave": "Wave "
-				},
-				"bonding": {
-					"address": "Please enter an integer between 1 and 239 for new node address",
-					"bondingRetries": "Please enter an integer between 0 and 255 for number of bonding test retry requests."
-				},
-				"missing": {
-					"bonding": {
-						"scCode": "Please enter the IQRF Smart Connect code."
-					}
 				},
 				"versionInvalid": "Please upgrade to IQRF Gateway Daemon version 2.3.0 or higher to use this service.",
 				"versionMissing": "Could not retrieve version of IQRF Gateway Daemon.",
