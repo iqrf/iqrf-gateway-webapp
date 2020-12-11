@@ -77,7 +77,7 @@
 							<CInput
 								v-model.number='timeSpec.period'
 								type='number'
-								min='0'
+								min='1'
 								:label='$t("config.daemon.scheduler.form.task.period")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
@@ -280,7 +280,7 @@ export default class SchedulerForm extends Vue {
 	private timeSpec: TaskTimeSpec = {
 		cronTime: '',
 		periodic: false,
-		period: 0,
+		period: 1,
 		exactTime: false,
 		startTime: ''
 	}
@@ -379,7 +379,7 @@ export default class SchedulerForm extends Vue {
 						this.successfulSave();
 					} else {
 						this.$toast.error(
-							this.$t('config.daemon.scheduler.messagess.processError').toString()
+							this.$t('config.daemon.scheduler.messages.processError').toString()
 						);
 					}
 				} else if (mutation.payload.mType === 'mngScheduler_RemoveTask' &&
