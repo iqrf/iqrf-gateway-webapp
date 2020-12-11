@@ -92,7 +92,10 @@ class Packet {
 		const hwpidLo = packetArray.shift()!;
 		const hwpidHi = packetArray.shift()!;
 		const hwpid = parseInt(hwpidHi + hwpidLo, 16);
-		const pdata = packetArray.map(hex => parseInt(hex, 16));
+		let pdata: Array<number> = [];
+		if (packetArray.length > 0 && packetArray[0] !== '') {
+			pdata = packetArray.map(hex => parseInt(hex, 16));
+		}
 		return new Packet(nadr, pnum, pcmd, hwpid, pdata);
 	}
 

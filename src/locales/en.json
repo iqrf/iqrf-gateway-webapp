@@ -1367,9 +1367,9 @@
 				"pdata": "PDATA",
 				"packet": "DPA packet",
 				"address": "Custom NADR",
-				"addressOverwrite": "Set own NADR",
+				"addressOverwrite": "Use custom NADR",
 				"timeout": "Custom DPA timeout (ms)",
-				"timeoutOverwrite": "Set own DPA timeout",
+				"timeoutOverwrite": "Use custom DPA timeout",
 				"autoRepeat": "Auto Repeat",
 				"autoRepeatInterval": "Repeat interval",
 				"autoRepeatTime": "x 100 ms",
@@ -1393,10 +1393,10 @@
 				}
 			},
 			"messages": {
-				"failure": "An error occurred while DPA packet sending.",
+				"failure": "An error occurred while DPA packet sending. The device may be offline.",
 				"success": "DPA packet has been sent successfully.",
 				"incorrect": {
-					"nadr": "Sent DPA packet contains incorrect NADR.",
+					"nadr": "No device is bonded at address {address}.",
 					"pcmd": "Sent DPA packet contains incorrect PCMD.",
 					"pnum": "Sent DPA packet contains incorrect PNUM.",
 					"hwpid": "Sent DPA packet contains incorrect HWPID.",
