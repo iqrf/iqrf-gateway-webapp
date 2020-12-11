@@ -1257,6 +1257,16 @@
 				"form": {
 					"txPower": "TX Power",
 					"maxAddr": "Max. Node address"
+				},
+				"errors": {
+					"txPower": "Please enter an integer between 0 and 7 for Discovery TX power.",
+					"maxAddr": "Please enter an integer between 0 and 239 for Discovery maximum node address."
+				},
+				"messages": {
+					"success": "The discovery has been finished successfully.",
+					"genericError": "An error has occured during the Discovery process.",
+					"spinnerNote": "Discovery is running, the process may take tens of minutes for large networks.",
+					"timeout": "The Discovery request has timed out."
 				}
 			},
 			"messages": {
@@ -1282,10 +1292,6 @@
 						"clearAllSuccess": "All bonds have been cleared successfully.",
 						"clearAllInCSuccess": "All bonds have been successfully cleared from Coordinator memory.",
 						"clearAllPartialSuccess": "All online nodes have been removed. Offline nodes: {nodes}."
-					},
-					"discovery": {
-						"success": "The discovery has been finished successfully.",
-						"error_fail": "An error occurred while running discovery."
 					}
 				},
 				"invalid": {
@@ -1313,10 +1319,6 @@
 				"bonding": {
 					"address": "Please enter an integer between 1 and 239 for new node address",
 					"bondingRetries": "Please enter an integer between 0 and 255 for number of bonding test retry requests."
-				},
-				"discovery": {
-					"txPower": "Please enter an integer between 0 and 7 for Discovery TX power.",
-					"maxAddr": "Please enter an integer between 0 and 239 for Discovery maximum node address."
 				},
 				"missing": {
 					"bonding": {
