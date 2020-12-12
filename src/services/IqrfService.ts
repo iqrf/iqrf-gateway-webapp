@@ -43,10 +43,10 @@ class IqrfService {
 
 	/**
 	 * Executes upload via IQRF Upload Utility
-	 * @param {Array<Dictionary<string>>} data API request body
+	 * @param {Dictionary<string>} data API request body
 	 */
-	utilUpload(data: Array<UploadUtilFile>): Promise<AxiosResponse> {
-		return axios.post('iqrf/utilUpload', {files: data}, {headers: authorizationHeader(), timeout: 30000 * data.length});
+	utilUpload(data: UploadUtilFile): Promise<AxiosResponse> {
+		return axios.post('iqrf/utilUpload', data, {headers: authorizationHeader(), timeout: 30000 * data.length});
 	}
 
 }

@@ -181,7 +181,7 @@ class IqrfOsController extends IqrfController {
 		$this->validator->validateRequest('uploadUtil', $request);
 		try {
 			$data = $request->getJsonBody(false);
-			$this->uploadUtilManager->executeUpload($data->files);
+			$this->uploadUtilManager->executeUpload($data->name, $data->type);
 			return $response->writeBody('Workaround');
 		} catch (UploadUtilFileException $e) {
 			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);

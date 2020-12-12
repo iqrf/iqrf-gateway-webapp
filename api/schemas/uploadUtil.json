@@ -5,41 +5,25 @@
 	"title": "Upload utility schema",
 	"additionalProperties": false,
 	"required": [
-		"files"
+		"name",
+		"type"
 	],
 	"properties": {
-		"files": {
-			"$id": "#/properties/file",
-			"type": "array",
-			"title": "Files to upload",
-			"items": {
-				"$id": "#/properties/file/items",
-				"type": "object",
-				"title": "File to upload",
-				"additionalProperties": false,
-				"required": [
-					"name",
-					"type"
-				],
-				"properties": {
-					"name": {
-						"$id": "#/properties/file/items/name",
-						"type": "string",
-						"title": "File name"
-					},
-					"type": {
-						"$id": "#/properties/file/items/type",
-						"type": "string",
-						"title": "File type",
-						"enum": [
-							"OS",
-							"DPA",
-							"HEX"
-						],
-						"example": "OS"
-					}
-				}
-			}
+		"name": {
+			"$id": "#/properties/name",
+			"type": "string",
+			"title": "File name"
+		},
+		"type": {
+			"$id": "#/properties/type",
+			"type": "string",
+			"title": "File type",
+			"enum": [
+				"OS",
+				"DPA",
+				"HEX"
+			],
+			"example": "OS"
 		}
 	}
 }

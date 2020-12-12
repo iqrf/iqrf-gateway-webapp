@@ -1647,7 +1647,8 @@
 				"messages": {
 					"newest": "Your device has the latest version of IQRF OS.",
 					"fetchFail": "Failed to retrieve current version of IQRF OS.",
-					"upgradeSuccess": "IQRF OS has been successfully upgraded."
+					"upgradeSuccess": "IQRF OS has been successfully upgraded.",
+					"fileUploaded": "File {file} has been successfully uploaded."
 				}
 			},
 			"messages": {

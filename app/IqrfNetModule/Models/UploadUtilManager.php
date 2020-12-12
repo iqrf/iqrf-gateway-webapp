@@ -25,7 +25,6 @@ use App\CoreModule\Models\CommandManager;
 use App\IqrfNetModule\Exceptions\UploadUtilFileException;
 use App\IqrfNetModule\Exceptions\UploadUtilMissingException;
 use App\IqrfNetModule\Exceptions\UploadUtilSpiException;
-use App\ServiceModule\Models\ServiceManager;
 
 /**
  * IQRF Upload utility manager
@@ -58,43 +57,33 @@ class UploadUtilManager {
 	private $commandManager;
 
 	/**
-	 * @var ServiceManager Service Manager
-	 */
-	private $serviceManager;
-
-	/**
 	 * Constructor
 	 * @param CommandManager $commandManager Command manager
-	 * @param ServiceManager $serviceManager Service Manager
 	 */
-	public function __construct(CommandManager $commandManager, ServiceManager $serviceManager) {
+	public function __construct(CommandManager $commandManager) {
 		$this->commandManager = $commandManager;
-		$this->serviceManager = $serviceManager;
 	}
 
 	/**
 	 * Uploads file content using the IQRF Upload Utility
-	 * @param array<int, mixed> $files Array of files to upload
+	 * @param string $name File name
+	 * @param string $type File type
 	 */
-	public function executeUpload(array $files): void {
+	public function executeUpload(string $name, string $type): void {
 		if (!$this->commandManager->commandExist(self::UPLOAD_UTIL)) {
 			throw new UploadUtilMissingException('IQRF Upload Utility is not installed.');
 		}
-		$this->serviceManager->stop(self::DAEMON);
-		foreach ($files as $file) {
-			if ($file->type === 'OS') {
-				$fileName = str_replace(['(', ')'], ['\(', '\)'], $file->name);
-				$result = $this->commandManager->run(self::UPLOAD_UTIL . ' ' . self::UPLOAD_UTIL_CONF . ' -I ' . $fileName, true);
-			} elseif ($file->type === 'DPA') {
-				$result = $this->commandManager->run(self::UPLOAD_UTIL . ' ' . self::UPLOAD_UTIL_CONF . ' -I ' . self::UPLOAD_DIR . $file->name, true);
-			} else {
-				$result = $this->commandManager->run(self::UPLOAD_UTIL . ' ' . self::UPLOAD_UTIL_CONF . ' -H ' . self::UPLOAD_DIR . $file->name, true);
-			}
-			if ($result->getExitCode() !== 0) {
-				$this->handleError($result);
-			}
+		if ($type === 'OS') {
+			$fileName = str_replace(['(', ')'], ['\(', '\)'], $name);
+			$result = $this->commandManager->run(self::UPLOAD_UTIL . ' ' . self::UPLOAD_UTIL_CONF . ' -I ' . $fileName, true);
+		} elseif ($type === 'DPA') {
+			$result = $this->commandManager->run(self::UPLOAD_UTIL . ' ' . self::UPLOAD_UTIL_CONF . ' -I ' . self::UPLOAD_DIR . $name, true);
+		} else {
+			$result = $this->commandManager->run(self::UPLOAD_UTIL . ' ' . self::UPLOAD_UTIL_CONF . ' -H ' . self::UPLOAD_DIR . $name, true);
 		}
-		$this->serviceManager->start(self::DAEMON);
+		if ($result->getExitCode() !== 0) {
+			$this->handleError($result);
+		}
 	}
 
 	/**
@@ -106,7 +95,6 @@ class UploadUtilManager {
 		$exitCode = $result->getExitCode();
 		$errorMsg = $result->getStderr();
 		if ($exitCode >= 1 && $exitCode <= 5) {
-			$this->serviceManager->start(self::DAEMON);
 			throw new UploadUtilFileException($errorMsg . ' Command executed: ' . $command);
 		}
 		throw new UploadUtilSpiException($errorMsg . ' Command executed: ' . $command);
