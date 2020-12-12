@@ -307,7 +307,7 @@ export default class DpaUpdater extends Vue {
 		this.$store.commit('spinner/SHOW');
 		DpaService.getDpaFile(request)
 			.then((response: AxiosResponse) => {
-				IqrfService.utilUpload([{name: response.data.fileName, type: 'DPA'}])
+				IqrfService.utilUpload({name: response.data.fileName, type: 'DPA'})
 					.then(() => {
 						this.updateVersions();
 						this.$store.commit('spinner/HIDE');
