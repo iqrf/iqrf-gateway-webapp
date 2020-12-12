@@ -282,7 +282,7 @@ build-package_iqaros:
 
 build-package_iqaros_release:
   stage: build-package
-  except:
+  only:
     - tags
   before_script:
     - git checkout -B "$CI_COMMIT_REF_NAME" "$CI_COMMIT_SHA"
