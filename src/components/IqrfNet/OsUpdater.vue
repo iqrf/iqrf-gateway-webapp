@@ -63,6 +63,7 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 import {IOption} from '../../interfaces/coreui';
 import IqrfService from '../../services/IqrfService';
+import ServiceService from '../../services/ServiceService';
 import {AxiosError, AxiosResponse} from 'axios';
 import {IqrfOsUpgrade, UploadUtilFile, IqrfOsUpgradeFiles} from '../../interfaces/trUpload';
 import {Dictionary} from 'vue-router/types/router';
@@ -211,7 +212,7 @@ export default class OsUpdater extends Vue {
 		this.$store.commit('spinner/SHOW');
 		IqrfService.getUpgradeFiles(data)
 			.then((response: AxiosResponse) => {
-				this.uploadFiles(response.data);
+				this.upload(response.data);
 			})
 			.catch((error: AxiosError) => FormErrorHandler.fileFetchError(error));
 	}
@@ -220,20 +221,38 @@ export default class OsUpdater extends Vue {
 	 * Creates REST API request body to upgrade IQRF OS and executes upgrade.
 	 * @param {IqrfOsUpgradeFiles} responseFiles Files needed to upgrade IQRF OS
 	 */
-	private uploadFiles(responseFiles: IqrfOsUpgradeFiles): void {
+	private upload(responseFiles: IqrfOsUpgradeFiles): void {
 		let files: Array<UploadUtilFile> = [];
 		for (let file of responseFiles.os) {
 			files.push({name: file, type: 'OS'});
 		}
 		files.push({name: responseFiles.dpa, type: 'DPA'});
-		IqrfService.utilUpload(files)
-			.then(() => {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.success(
-					this.$t('iqrfnet.trUpload.osUpload.messages.upgradeSuccess').toString()
-				);
-			})
+		this.stopDaemon().then(async () => {
+			for (let file of files) {
+				await this.uploadFile(file);
+			}
+			this.startDaemon();
+		});
+	}
+
+	private stopDaemon(): Promise<void> {
+		return ServiceService.stop('iqrf-gateway-daemon')
+			.then(() => this.$store.commit('spinner/UPDATE_TEXT', this.$t('service.iqrf-gateway-daemon.messages.stop').toString()))
+			.catch((error: AxiosError) => FormErrorHandler.serviceError(error));
+	}
+
+	private uploadFile(file: UploadUtilFile): void {
+		IqrfService.utilUpload(file)
+			.then(() => this.$store.commit('spinner/UPDATE_TEXT', this.$t('iqrfnet.trUpload.osUpload.messages.fileUploaded', {file: file.name}).toString()))
 			.catch((error: AxiosError) => FormErrorHandler.uploadUtilError(error));
+	}
+
+	private startDaemon(): void {
+		ServiceService.start('iqrf-gateway-daemon')
+			.then(() => this.$toast.success(
+				this.$t('iqrfnet.trUpload.osUpload.messages.upgradeSuccess').toString()
+			))
+			.catch((error: AxiosError) => FormErrorHandler.serviceError(error));
 	}
 }
 </script>
