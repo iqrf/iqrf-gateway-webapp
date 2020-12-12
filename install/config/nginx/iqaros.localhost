@@ -19,14 +19,14 @@ server {
 
 	server_name _;
 
-	location ~ ^/webapp/api/(.*)$ {
-		proxy_redirect ~^(.*)$ $scheme://$http_host/webapp$1;
+	location ~ ^/system/api/(.*)$ {
+		proxy_redirect ~^(.*)$ $scheme://$http_host/system$1;
 		try_files $uri $uri/ /index.php?$args;
 	}
 
-	location /webapp {
+	location /system {
 		alias /usr/share/iqrf-gateway-webapp/www/dist/;
-		try_files $uri $uri/ /webapp/index.html;
+		try_files $uri $uri/ /system/index.html;
 	}
 
 	location /ws {
@@ -64,7 +64,7 @@ server {
 		fastcgi_param HTTP_PROXY "";
 
 		fastcgi_param REQUEST_METHOD $request_method;
-		fastcgi_param BASE_URI "/webapp/";
+		fastcgi_param BASE_URI "/system/";
 		fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
 		fastcgi_pass backend;
 		fastcgi_index index.php;
