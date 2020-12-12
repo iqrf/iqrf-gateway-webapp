@@ -239,7 +239,11 @@ export default class OsUpdater extends Vue {
 				}
 				await IqrfService.utilUpload(file)
 					.then(() => {
-						this.$store.commit('spinner/UPDATE_TEXT', this.$t('iqrfnet.trUpload.osUpload.messages.fileUploaded', {file: file.name}).toString());
+						this.$store.commit(
+							'spinner/UPDATE_TEXT',
+							this.$t('iqrfnet.trUpload.osUpload.messages.fileUploaded',
+								{file: this.getFileName(file.name)}
+							).toString());
 					})
 					.catch((error: AxiosError) => {
 						FormErrorHandler.uploadUtilError(error);
@@ -252,12 +256,19 @@ export default class OsUpdater extends Vue {
 		});
 	}
 
+	/**
+	 * Stops the IQRF Daemon service before upgrading OS
+	 * @returns {Promise<void>} Empty promise for request chaining
+	 */
 	private stopDaemon(): Promise<void> {
 		return ServiceService.stop('iqrf-gateway-daemon')
 			.then(() => this.$store.commit('spinner/UPDATE_TEXT', this.$t('service.iqrf-gateway-daemon.messages.stop').toString()))
 			.catch((error: AxiosError) => FormErrorHandler.serviceError(error));
 	}
 
+	/**
+	 * Starts the IQRF Daemon service upon successful OS upgrade
+	 */
 	private startDaemon(): void {
 		ServiceService.start('iqrf-gateway-daemon')
 			.then(() => {
@@ -267,6 +278,15 @@ export default class OsUpdater extends Vue {
 				);
 			})
 			.catch((error: AxiosError) => FormErrorHandler.serviceError(error));
+	}
+
+	/**
+	 * Extracts name of file from full path
+	 * @param {string} filePath Path to uploaded file
+	 * @returns {string} File name separated from path
+	 */
+	private getFileName(filePath: string): string {
+		return filePath.replace(/^.*(\\|\/|:)/, '');
 	}
 }
 </script>
