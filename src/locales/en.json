@@ -799,7 +799,7 @@
 					"title": "Factory reset",
 					"coordinator": "Coordinator",
 					"daemon": "Daemon",
-					"network": "Network",
+					"network": "IP network",
 					"webapp": "Web application"
 				},
 				"resetButton": {

@@ -229,10 +229,10 @@
 							</CCol>
 							<CCol md='6'>
 								<h3>{{ $t("config.controller.form.factoryReset.title") }}</h3>
-								<CInputCheckbox
+								<!--<CInputCheckbox
 									:checked.sync='config.factoryReset.coordinator'
 									:label='$t("config.controller.form.factoryReset.coordinator")'
-								/>
+								/>-->
 								<CInputCheckbox
 									:checked.sync='config.factoryReset.daemon'
 									:label='$t("config.controller.form.factoryReset.daemon")'
