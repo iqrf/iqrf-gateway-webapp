@@ -122,6 +122,11 @@ export default class OsUpdater extends Vue {
 	 * @var {Array<IqrfOsUpgrade>} upgrades Array of possible IQRF OS upgrades
 	 */
 	private upgrades: Array<IqrfOsUpgrade> = []
+
+	/**
+	 * @var {boolean} uploadError Indicates whether an upload error has occured
+	 */
+	private uploadError = false;
 	
 	/**
 	 * Vue lifecycle hook created
@@ -229,9 +234,21 @@ export default class OsUpdater extends Vue {
 		files.push({name: responseFiles.dpa, type: 'DPA'});
 		this.stopDaemon().then(async () => {
 			for (let file of files) {
-				await this.uploadFile(file);
+				if (this.uploadError) {
+					break;
+				}
+				await IqrfService.utilUpload(file)
+					.then(() => {
+						this.$store.commit('spinner/UPDATE_TEXT', this.$t('iqrfnet.trUpload.osUpload.messages.fileUploaded', {file: file.name}).toString());
+					})
+					.catch((error: AxiosError) => {
+						FormErrorHandler.uploadUtilError(error);
+						this.uploadError = true;
+					});
 			}
-			this.startDaemon();
+			if (!this.uploadError) {
+				this.startDaemon();
+			}	
 		});
 	}
 
@@ -241,17 +258,14 @@ export default class OsUpdater extends Vue {
 			.catch((error: AxiosError) => FormErrorHandler.serviceError(error));
 	}
 
-	private uploadFile(file: UploadUtilFile): void {
-		IqrfService.utilUpload(file)
-			.then(() => this.$store.commit('spinner/UPDATE_TEXT', this.$t('iqrfnet.trUpload.osUpload.messages.fileUploaded', {file: file.name}).toString()))
-			.catch((error: AxiosError) => FormErrorHandler.uploadUtilError(error));
-	}
-
 	private startDaemon(): void {
 		ServiceService.start('iqrf-gateway-daemon')
-			.then(() => this.$toast.success(
-				this.$t('iqrfnet.trUpload.osUpload.messages.upgradeSuccess').toString()
-			))
+			.then(() => {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.success(
+					this.$t('iqrfnet.trUpload.osUpload.messages.upgradeSuccess').toString()
+				);
+			})
 			.catch((error: AxiosError) => FormErrorHandler.serviceError(error));
 	}
 }
