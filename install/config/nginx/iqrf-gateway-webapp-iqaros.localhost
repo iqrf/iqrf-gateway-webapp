@@ -21,6 +21,16 @@ server {
 
 	absolute_redirect off;
 
+	location ~ ^/system/api/(.*)$ {
+		proxy_redirect ~^(.*)$ $scheme://$http_host/system$1;
+		try_files $uri $uri/ /index.php?$args;
+	}
+
+	location /system {
+		alias /usr/share/iqrf-gateway-webapp/www/dist;
+		try_files $uri $uri/ /index.html;
+	}
+
 	location /ws {
 		proxy_pass http://localhost:1338;
 		proxy_set_header X-Real-IP $remote_addr;
@@ -41,18 +51,6 @@ server {
 		proxy_set_header Connection "upgrade";
 		proxy_set_header Host "localhost";
 		proxy_http_version 1.1;
-	}
-
-	location ^~ / {
-		rewrite ^/(.*) /ui/$1 break;
-		include /etc/nginx/proxy_params;
-		proxy_http_version 1.1;
-		proxy_pass http://127.0.0.1:1880/;
-		proxy_set_header Upgrade $http_upgrade;
-		proxy_set_header Connection "upgrade";
-		proxy_redirect ~^/(.*)$ $scheme://$http_host/$1;
-		sub_filter "http://$server_name/ui/" "$scheme://$http_host/";
-		sub_filter_once off;
 	}
 
 	location ^~ /node-red/ {
@@ -89,14 +87,16 @@ server {
 		sub_filter_once off;
 	}
 
-	location ~ ^/system/api/(.*)$ {
-		proxy_redirect ~^(.*)$ $scheme://$http_host/system$1;
-		try_files $uri $uri/ /index.php?$args;
-	}
-
-	location /system {
-		alias /usr/share/iqrf-gateway-webapp/www/dist;
-		try_files $uri $uri/ /index.html;
+	location ^~ / {
+		rewrite ^/(.*) /ui/$1 break;
+		include /etc/nginx/proxy_params;
+		proxy_http_version 1.1;
+		proxy_pass http://127.0.0.1:1880/;
+		proxy_set_header Upgrade $http_upgrade;
+		proxy_set_header Connection "upgrade";
+		proxy_redirect ~^/(.*)$ $scheme://$http_host/$1;
+		sub_filter "http://$server_name/ui/" "$scheme://$http_host/";
+		sub_filter_once off;
 	}
 
 	location ~ /\. {
