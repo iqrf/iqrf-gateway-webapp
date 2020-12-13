@@ -11,6 +11,14 @@
 						{{ $t('gateway.info.description') }}
 					</p>
 				</CListGroupItem>
+				<CListGroupItem to='/gateway/troubleshooter/'>
+					<header class='list-group-item-heading'>
+						{{ $t('gateway.troubleshooter.title') }}
+					</header>
+					<p class='list-group-item-text'>
+						{{ $t('gateway.troubleshooter.description') }}
+					</p>
+				</CListGroupItem>
 				<CListGroupItem to='/gateway/log/'>
 					<header class='list-group-item-heading'>
 						{{ $t('gateway.log.title') }}

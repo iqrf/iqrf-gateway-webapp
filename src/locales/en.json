@@ -1035,6 +1035,26 @@
 			"gwMode": "Gateway mode",
 			"diagnostics": "Download diagnostics"
 		},
+		"troubleshooter": {
+			"title": "Troubleshooter",
+			"description": "Detects gateway errors.",
+			"table": {
+				"headers": {
+					"item": "Diagnosed item",
+					"state": "Current state",
+					"action": "Suggested action"
+				},
+				"interface": "IQRF Interface"
+			},
+			"states": {
+				"noInterface": "No IQRF interface is enabled."
+			},
+			"actions": {
+				"noAction": "No action is necessary.",
+				"noInterface": "Enable CDC, SPI or UART interface in Daemon configuration.",
+				"multipleInterfaces": "Select an interface in Daemon configuration to disable the others."
+			}
+		},
 		"log": {
 			"title": "Log file",
 			"description": "Shows log of IQRF Gateway Daemon.",
