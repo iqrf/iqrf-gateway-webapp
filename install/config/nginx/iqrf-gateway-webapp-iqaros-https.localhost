@@ -87,7 +87,7 @@ server {
 		sub_filter_once off;
 	}
 
-	location ^~ / {
+	location / {
 		rewrite ^/(.*) /ui/$1 break;
 		include /etc/nginx/proxy_params;
 		proxy_http_version 1.1;
