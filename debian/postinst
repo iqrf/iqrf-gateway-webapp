@@ -8,7 +8,13 @@ nginx_virtualhost_install() {
 	if [ -e /etc/nginx/sites-available/iqrf-gateway-webapp.localhost ] ; then
 		rm /etc/nginx/sites-available/iqrf-gateway-webapp.localhost
 	fi
-	ln -s /etc/iqrf-gateway-webapp/nginx/iqrf-gateway-webapp.localhost /etc/nginx/sites-available/iqrf-gateway-webapp.localhost
+	hostname=$(hostname)
+	if [ "$hostname" = "iqaros" ] ; then
+		mv /etc/iqrf-gateway-webapp/nginx/iqrf-gateway-webapp-iqaros.localhost /etc/iqrf-gateway-webapp/nginx/iqrf-gateway-webapp.localhost
+		ln -s /etc/iqrf-gateway-webapp/nginx/iqrf-gateway-webapp-iqaros-https.localhost /etc/nginx/sites-available/iqrf-gateway-webapp.localhost
+	else
+		ln -s /etc/iqrf-gateway-webapp/nginx/iqrf-gateway-webapp.localhost /etc/nginx/sites-available/iqrf-gateway-webapp.localhost
+	fi
 	if [ ! -L /etc/nginx/sites-enabled/iqrf-gateway-webapp.localhost ] ; then
 		ln -s /etc/nginx/sites-available/iqrf-gateway-webapp.localhost /etc/nginx/sites-enabled/iqrf-gateway-webapp.localhost
 	fi
