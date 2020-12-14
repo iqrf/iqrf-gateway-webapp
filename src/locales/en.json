@@ -1044,15 +1044,25 @@
 					"state": "Current state",
 					"action": "Suggested action"
 				},
-				"interface": "IQRF Interface"
+				"interface": "IQRF Interface",
+				"repository": "IQRF Repository",
+				"repositoryDownload": "IQRF Repository download"
 			},
 			"states": {
-				"noInterface": "No IQRF interface is enabled."
+				"noInterface": "No IQRF interface is enabled.",
+				"cacheLoaded": "IQRF Repository loaded correctly.",
+				"cacheNotLoaded": "IQRF Repository not loaded correctly.",
+				"cacheDownloadDisabled": "IQRF Repository download is disabled.",
+				"cacheDownloadEnabled": "IQRF Repository download is enabled.",
+				"noCacheInstance": "No IQRF Repository component instance detected."
 			},
 			"actions": {
 				"noAction": "No action is necessary.",
 				"noInterface": "Enable CDC, SPI or UART interface in Daemon configuration.",
-				"multipleInterfaces": "Select an interface in Daemon configuration to disable the others."
+				"multipleInterfaces": "Select an interface in Daemon configuration to disable the others.",
+				"enableDownload": "Enable IQRF Repository download if cache is empty in Daemon configuration.",
+				"addCacheInstance": "Configure and save IQRF Repository instance in Daemon configuration.",
+				"fixCache": "Remove cache files and restart Daemon service."
 			}
 		},
 		"log": {
