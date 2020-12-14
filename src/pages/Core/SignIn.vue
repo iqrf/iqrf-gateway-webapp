@@ -72,6 +72,8 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import LogoBlue from '../../assets/logo-blue.svg';
 import {UserCredentials} from '../../services/AuthenticationService';
 import { Dictionary } from 'vue-router/types/router';
+import VueRouter from 'vue-router';
+const { isNavigationFailure, NavigationFailureType } = VueRouter;
 
 @Component({
 	components: {
@@ -136,7 +138,13 @@ export default class SignIn extends Vue {
 			this.$store.dispatch('features/fetch'),
 		])
 			.then(() => {
-				this.$router.push((this.$route.query.redirect as string|undefined) ?? '/');
+				this.$router.push((this.$route.query.redirect as string|undefined) ?? '/')
+					.catch(failure => {
+						if (isNavigationFailure(failure, NavigationFailureType.redirected)) {
+							console.error(failure.from.path);
+							console.error(failure.to.path);
+						}
+					});
 				this.$toast.success(
 					this.$t('core.sign.in.messages.success').toString()
 				);
