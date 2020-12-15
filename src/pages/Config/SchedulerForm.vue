@@ -68,10 +68,11 @@
 						/>
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
-							rules='integer|required'
+							rules='integer|required|min:1'
 							:custom-messages='{
-								required: "config.daemon.scheduler.errors.nums",
-								integer: "config.daemon.scheduler.errors.nums"
+								required: "config.daemon.scheduler.errors.period",
+								integer: "config.daemon.scheduler.errors.period",
+								min: "config.daemon.scheduler.errors.period"
 							}'
 						>
 							<CInput
@@ -159,7 +160,7 @@
 import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
 import {CBadge, CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CSelect, CTextarea} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
-import {integer, required} from 'vee-validate/dist/rules';
+import {integer, required, min_value} from 'vee-validate/dist/rules';
 import DaemonConfigurationService from '../../services/DaemonConfigurationService';
 import SchedulerService from '../../services/SchedulerService';
 import {TextareaAutogrowDirective} from 'vue-textarea-autogrow-directive/src/VueTextareaAutogrowDirective';
@@ -312,6 +313,7 @@ export default class SchedulerForm extends Vue {
 	created(): void {
 		this.$store.commit('spinner/SHOW');
 		extend('integer', integer);
+		extend('min', min_value);
 		extend('required', required);
 		extend('json', (json) => {
 			try {

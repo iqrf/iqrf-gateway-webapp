@@ -548,7 +548,8 @@
 					"nums": "Please enter a valid integer",
 					"service": "Please select service.",
 					"messaging": "Please select messaging.",
-					"message": "Please enter a message."
+					"message": "Please enter a message.",
+					"period": "Period should be an integer greater than 0."
 				},
 				"import": {
 					"title": "Import task(s)",
