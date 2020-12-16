@@ -127,6 +127,11 @@ export default class OsUpdater extends Vue {
 	 * @var {boolean} uploadError Indicates whether an upload error has occured
 	 */
 	private uploadError = false;
+
+	/**
+	 * @var {string} uploadeMessage Upload message for spinner
+	 */
+	private uploadMessage = ''
 	
 	/**
 	 * Vue lifecycle hook created
@@ -234,21 +239,27 @@ export default class OsUpdater extends Vue {
 		files.push({name: responseFiles.dpa, type: 'DPA'});
 		this.stopDaemon().then(async () => {
 			for (let file of files) {
-				if (this.uploadError) {
-					break;
-				}
+				this.uploadMessage += '\n' + this.$t(
+					'iqrfnet.trUpload.osUpload.messages.fileUploading', 
+					{file: this.getFileName(file.name)}
+				).toString();
+				this.$store.commit('spinner/UPDATE_TEXT', this.uploadMessage);
 				await IqrfService.utilUpload(file)
 					.then(() => {
-						this.$store.commit(
-							'spinner/UPDATE_TEXT',
-							this.$t('iqrfnet.trUpload.osUpload.messages.fileUploaded',
-								{file: this.getFileName(file.name)}
-							).toString());
+						this.uploadMessage += '\n' + this.$t(
+							'iqrfnet.trUpload.osUpload.messages.fileUploaded',
+							{file: this.getFileName(file.name)}
+						).toString();
+						this.$store.commit('spinner/UPDATE_TEXT', this.uploadMessage);
 					})
 					.catch((error: AxiosError) => {
 						FormErrorHandler.uploadUtilError(error);
 						this.uploadError = true;
 					});
+				if (this.uploadError) {
+					this.uploadMessage = '';
+					break;
+				}
 			}
 			if (!this.uploadError) {
 				this.startDaemon();
@@ -262,7 +273,10 @@ export default class OsUpdater extends Vue {
 	 */
 	private stopDaemon(): Promise<void> {
 		return ServiceService.stop('iqrf-gateway-daemon')
-			.then(() => this.$store.commit('spinner/UPDATE_TEXT', this.$t('service.iqrf-gateway-daemon.messages.stop').toString()))
+			.then(() => {
+				this.uploadMessage += this.$t('service.iqrf-gateway-daemon.messages.stop').toString();
+				this.$store.commit('spinner/UPDATE_TEXT', this.uploadMessage);
+			})
 			.catch((error: AxiosError) => FormErrorHandler.serviceError(error));
 	}
 
@@ -278,6 +292,7 @@ export default class OsUpdater extends Vue {
 				);
 			})
 			.catch((error: AxiosError) => FormErrorHandler.serviceError(error));
+		this.uploadMessage = '';
 	}
 
 	/**
