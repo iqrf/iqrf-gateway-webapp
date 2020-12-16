@@ -846,6 +846,9 @@
 					"l_severity": "Please select log severity level.",
 					"rb_custom": "Please enter API call identifier."
 				}
+			},
+			"messages": {
+				"successRestart": "IQRF controller configuration has been successfully saved. Controller service has been restarted."
 			}
 		},
 		"selectedComponents": {

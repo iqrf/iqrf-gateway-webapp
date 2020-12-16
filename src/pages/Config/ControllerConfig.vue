@@ -265,6 +265,7 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import FeatureConfigService from '../../services/FeatureConfigService';
+import ServiceService from '../../services/ServiceService';
 import {NavigationGuardNext, Route} from 'vue-router/types/router';
 import {IController} from '../../interfaces/controller';
 import {IOption} from '../../interfaces/coreui';
@@ -397,12 +398,23 @@ export default class ControllerConfig extends Vue {
 		this.$store.commit('spinner/SHOW');
 		FeatureConfigService.saveConfig(this.name, this.config)
 			.then(() => {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.success(this.$t('forms.messages.saveSuccess').toString());
+				this.restartController();	
 			})
 			.catch((error: AxiosError) => {
 				FormErrorHandler.configError(error);
 			});
 	}
+
+	/**
+	 * Restarts IQRF Controller service
+	 */
+	private restartController(): void {
+		ServiceService.restart('iqrf-gateway-controller')
+			.then(() => {
+				this.$toast.success(this.$t('config.controller.messages.successRestart').toString());
+			})
+			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+	}
+
 }
 </script>
