@@ -28,7 +28,7 @@ server {
 
 	location /system {
 		alias /usr/share/iqrf-gateway-webapp/www/dist;
-		try_files $uri $uri/ /index.html;
+		try_files $uri $uri/ /system/index.html;
 	}
 
 	location /ws {
