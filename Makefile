@@ -47,7 +47,7 @@ fix-cc: temp/code-checker
 	php temp/code-checker/code-checker -f -l --no-progress --strict-types -i "coverage.*" -i "docs/" -i "tests/temp/" -i "www/dist/"
 
 cs: deps
-	vendor/bin/codesniffer app bin tests
+	vendor/bin/codesniffer --runtime-set php_version 70300 app bin tests
 
 deb-package:
 	debuild -b -uc -us
