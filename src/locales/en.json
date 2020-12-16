@@ -1636,7 +1636,7 @@
 				}
 			},
 			"osUpload": {
-				"title": "IQRF OS update",
+				"title": "IQRF OS and DPA update",
 				"form": {
 					"current": "Current OS version:",
 					"version": "Target OS version"
@@ -1648,6 +1648,7 @@
 					"newest": "Your device has the latest version of IQRF OS.",
 					"fetchFail": "Failed to retrieve current version of IQRF OS.",
 					"upgradeSuccess": "IQRF OS has been successfully upgraded.",
+					"fileUploading": "Uploading file {file} ...",
 					"fileUploaded": "File {file} has been successfully uploaded."
 				}
 			},
