@@ -21,7 +21,7 @@ nginx_virtualhost_install() {
 	elif [ -e ${SITE_AVAILABLE_PATH} ] ; then
 		rm ${SITE_AVAILABLE_PATH}
 		nginx_default_site
-	elif [ ! -e ${SITE_AVAILABLE_PATH}]
+	elif [ ! -e ${SITE_AVAILABLE_PATH} ] ; then
 		nginx_default_site
 	fi
 	if [ ! -L /etc/nginx/sites-enabled/iqrf-gateway-webapp.localhost ] ; then
