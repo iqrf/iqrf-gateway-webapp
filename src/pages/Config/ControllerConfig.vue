@@ -411,6 +411,7 @@ export default class ControllerConfig extends Vue {
 	private restartController(): void {
 		ServiceService.restart('iqrf-gateway-controller')
 			.then(() => {
+				this.$store.commit('spinner/HIDE');
 				this.$toast.success(this.$t('config.controller.messages.successRestart').toString());
 			})
 			.catch((error: AxiosError) => FormErrorHandler.configError(error));
