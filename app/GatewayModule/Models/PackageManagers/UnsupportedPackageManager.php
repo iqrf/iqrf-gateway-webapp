@@ -50,6 +50,7 @@ class UnsupportedPackageManager implements IPackageManager {
 	 * Returns list of upgradable packages
 	 * @throws UnsupportedPackageManagerException
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingTraversableReturnTypeHintSpecification
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingTraversableTypeHintSpecification
 	 */
 	public function getUpgradable(): array {
 		throw new UnsupportedPackageManagerException();
