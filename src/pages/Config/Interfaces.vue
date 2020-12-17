@@ -175,7 +175,7 @@ export default class Interfaces extends Vue {
 						.then(() => {
 							this.$store.commit('spinner/HIDE');
 							this.getConfig().then(() => 
-								this.$toast.success(this.$t('config.daemon.interfaces.messages.updateSuccess').toString())
+								this.$toast.success(this.$t('config.daemon.interfaces.messages.updateSuccess', {interface: this.interfaceCode(this.iqrfInterface)}).toString())
 							);
 						})
 						.catch(() => {
@@ -183,11 +183,27 @@ export default class Interfaces extends Vue {
 							this.$toast.error(
 								this.$t('config.daemon.interfaces.messages.updateFailed').toString()
 							);
-							updateError = true;
 						});
 				}
 			}
 		}
 	}
+
+	/**
+	 * Returns interface abbreviation from component name
+	 * @param {string} iqrfInterface Iqrf interface component name
+	 * @returns {string} Interface abbreviation
+	 */
+	private interfaceCode(iqrfInterface: string): string {
+		if (iqrfInterface === 'iqrf::IqrfCdc') {
+			return 'CDC';
+		} else if (iqrfInterface === 'iqrf::IqrfSpi') {
+			return 'SPI';
+		} else if (iqrfInterface === 'iqrf::IqrfUart') {
+			return 'UART';
+		}
+		return '';
+	}
+
 }
 </script>
