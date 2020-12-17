@@ -150,47 +150,43 @@ export default class Interfaces extends Vue {
 	 * Disables all enabled communication interfaces and enables interface selected by user
 	 */
 	private async changeInterface(): Promise<void> {
-		let components: Array<IComponent> = [];
+		let updateError = false;
 		for (let component of this.iqrfInterfaces) {
 			if (component.name !== this.iqrfInterface && component.enabled) {
 				component.enabled = false;
-				components.push(component);
-			} else if (component.name === this.iqrfInterface && !component.enabled) {
-				component.enabled = true;
-				components.push(component);
+				await DaemonConfigurationService.updateComponent(component.name, component)
+					.catch(() => {
+						this.$store.commit('spinner/HIDE');
+						this.$toast.error(
+							this.$t('config.daemon.interfaces.messages.updateFailed').toString()
+						);
+						updateError = true;
+					});
 			}
-		}
-		this.$store.commit('spinner/SHOW');
-		let updateError = false;
-		for (const component of components) {
-			await DaemonConfigurationService.updateComponent(component.name, component)
-				.catch(() => {
-					this.$store.commit('spinner/HIDE');
-					this.$toast.error(
-						this.$t('config.daemon.interfaces.messages.updateFailed').toString()
-					);
-				});
 			if (updateError) {
 				break;
 			}
 		}
-		this.getConfig().then(() => this.$toast.success(
-			this.$t('config.daemon.interfaces.messages.updateSuccess', {interface: this.interfaceCode(this.iqrfInterface)}).toString()	
-		));
-	}
-
-	/**
-	 * Returns interface abbreviation from component name
-	 * @param {string} iqrfInterface Iqrf interface component name
-	 * @returns {string} Interface abbreviation
-	 */
-	private interfaceCode(iqrfInterface: string): string {
-		if (iqrfInterface === 'iqrf::IqrfCdc') {
-			return 'CDC';
-		} else if (iqrfInterface === 'iqrf::IqrfSpi') {
-			return 'SPI';
-		} else {
-			return 'UART';
+		if (!updateError) {
+			for (let component of this.iqrfInterfaces) {
+				if (component.name === this.iqrfInterface && !component.enabled) {
+					component.enabled = true;
+					await DaemonConfigurationService.updateComponent(component.name, component)
+						.then(() => {
+							this.$store.commit('spinner/HIDE');
+							this.getConfig().then(() => 
+								this.$toast.success(this.$t('config.daemon.interfaces.messages.updateSuccess').toString())
+							);
+						})
+						.catch(() => {
+							this.$store.commit('spinner/HIDE');
+							this.$toast.error(
+								this.$t('config.daemon.interfaces.messages.updateFailed').toString()
+							);
+							updateError = true;
+						});
+				}
+			}
 		}
 	}
 }
