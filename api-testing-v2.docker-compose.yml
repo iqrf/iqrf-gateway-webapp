@@ -1,0 +1,33 @@
+version: "3.3"
+services:
+  newman:
+    image: postman/newman
+    container_name: newman
+    command: run /tests/iqrf-gateway-webapp.postman_collection.json -e /tests/gitlab-ci.postman_environment.json
+    tty: true
+    depends_on:
+      - webapp
+    volumes:
+      - "./tests:/tests"
+    networks:
+      iqrf-gateway-webapp-api:
+        ipv4_address: 172.16.10.3
+  webapp:
+    image: iqrf-gateway-webapp-behat
+    container_name: webapp
+    build:
+      context: .
+      dockerfile: docker/behat/Dockerfile
+    expose:
+      - 8080
+    networks:
+      iqrf-gateway-webapp-api:
+        ipv4_address: 172.16.10.2
+
+networks:
+  iqrf-gateway-webapp-api:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.10.0/24

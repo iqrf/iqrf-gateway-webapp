@@ -43,9 +43,11 @@ import {MutationPayload} from 'vuex';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CSelect} from '@coreui/vue/src';
 import {cilLockLocked, cilLockUnlocked} from '@coreui/icons';
 import SecurityService from '../../services/SecurityService';
+import OsService from '../../services/DaemonApi/OsService';
 import {SecurityFormat} from '../../iqrfNet/securityFormat';
 import {IOption} from '../../interfaces/coreui';
 import {Dictionary} from 'vue-router/types/router';
+import {AxiosError} from 'axios';
 
 @Component({
 	components: {
@@ -124,14 +126,15 @@ export default class SecurityForm extends Vue {
 			if (mutation.type !== 'SOCKET_ONMESSAGE') {
 				return;
 			}
-			if (mutation.payload.data.msgId === this.msgId) {
-				this.$store.dispatch('spinner/hide');
-				this.$store.dispatch('removeMessage', this.msgId);
-				if (mutation.payload.data.status === 0) {
-					this.$toast.success(this.$t('iqrfnet.trConfiguration.security.messages.success').toString());
-				} else {
-					this.$toast.error(this.$t('iqrfnet.trConfiguration.security.messages.failure').toString());
-				}
+			if (mutation.payload.data.msgId !== this.msgId) {
+				return;
+			}
+			this.$store.dispatch('spinner/hide');
+			this.$store.dispatch('removeMessage', this.msgId);
+			if (mutation.payload.mType === 'iqrfEmbedOs_SetSecurity') {
+				this.handleSecurityResponse(mutation.payload);
+			} else if (mutation.payload.mType === 'iqrfEmbedOs_Reset') {
+				this.handleResetResponse(mutation.payload);
 			}
 		});
 	}
@@ -164,6 +167,43 @@ export default class SecurityForm extends Vue {
 		const type = password ? 0 : 1;
 		SecurityService.setSecurity(this.address, this.password, this.format, type, 15000, 'iqrfnet.trConfiguration.security.messages.failure', () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
+	}
+
+	/**
+	 * Handles EmbedOs_SetSecurity request response
+	 */
+	private handleSecurityResponse(response): void {
+		if (response.data.status === 0) {
+			this.resetDevice();
+		} else {
+			this.$toast.error(
+				this.$t('iqrfnet.trConfiguration.security.messages.failure').toString()
+			);
+		}
+	}
+
+	/**
+	 * Performs device reset
+	 */
+	private resetDevice(): void {
+		this.$store.dispatch('spinner/show', {timeout: 30000});
+		OsService.reset(this.address, 30000, 'iqrfnet.trConfiguration.security.messages.resetFailure', () => this.msgId = null)
+			.then((msgId: string) => this.msgId = msgId);
+	}
+
+	/**
+	 * Handles EmbedOs_Reset request response
+	 */
+	private handleResetResponse(response): void {
+		if (response.data.status === 0) {
+			this.$toast.success(
+				this.$t('iqrfnet.trConfiguration.security.messages.success').toString()
+			);
+		} else {
+			this.$toast.error(
+				this.$t('iqrfnet.trConfiguration.security.messages.resetFailure').toString()
+			);
+		}
 	}
 
 	/**

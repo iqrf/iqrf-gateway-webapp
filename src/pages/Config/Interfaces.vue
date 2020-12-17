@@ -149,27 +149,44 @@ export default class Interfaces extends Vue {
 	/**
 	 * Disables all enabled communication interfaces and enables interface selected by user
 	 */
-	private changeInterface(): void {
-		let requests: Array<Promise<AxiosResponse>> = [];
+	private async changeInterface(): Promise<void> {
+		let updateError = false;
 		for (let component of this.iqrfInterfaces) {
 			if (component.name !== this.iqrfInterface && component.enabled) {
 				component.enabled = false;
-				requests.push(DaemonConfigurationService.updateComponent(component.name, component));
-			} else if (component.name === this.iqrfInterface && !component.enabled) {
-				component.enabled = true;
-				requests.push(DaemonConfigurationService.updateComponent(component.name, component));
+				await DaemonConfigurationService.updateComponent(component.name, component)
+					.catch(() => {
+						this.$store.commit('spinner/HIDE');
+						this.$toast.error(
+							this.$t('config.daemon.interfaces.messages.updateFailed').toString()
+						);
+						updateError = true;
+					});
+			}
+			if (updateError) {
+				break;
 			}
 		}
-		Promise.all(requests)
-			.then(() => this.getConfig().then(() => this.$toast.success(
-				this.$t('config.daemon.interfaces.messages.updateSuccess', {interface: this.interfaceCode(this.iqrfInterface)}).toString()	
-			)))
-			.catch((error: AxiosError) => {
-				console.error(error);
-				this.$toast.error(
-					this.$t('config.daemon.interfaces.messages.updateFailed').toString()
-				);
-			});
+		if (!updateError) {
+			for (let component of this.iqrfInterfaces) {
+				if (component.name === this.iqrfInterface && !component.enabled) {
+					component.enabled = true;
+					await DaemonConfigurationService.updateComponent(component.name, component)
+						.then(() => {
+							this.$store.commit('spinner/HIDE');
+							this.getConfig().then(() => 
+								this.$toast.success(this.$t('config.daemon.interfaces.messages.updateSuccess', {interface: this.interfaceCode(this.iqrfInterface)}).toString())
+							);
+						})
+						.catch(() => {
+							this.$store.commit('spinner/HIDE');
+							this.$toast.error(
+								this.$t('config.daemon.interfaces.messages.updateFailed').toString()
+							);
+						});
+				}
+			}
+		}
 	}
 
 	/**
@@ -182,9 +199,11 @@ export default class Interfaces extends Vue {
 			return 'CDC';
 		} else if (iqrfInterface === 'iqrf::IqrfSpi') {
 			return 'SPI';
-		} else {
+		} else if (iqrfInterface === 'iqrf::IqrfUart') {
 			return 'UART';
 		}
+		return '';
 	}
+
 }
 </script>

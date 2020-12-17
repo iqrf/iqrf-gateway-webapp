@@ -72,6 +72,8 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import LogoBlue from '../../assets/logo-blue.svg';
 import {UserCredentials} from '../../services/AuthenticationService';
 import { Dictionary } from 'vue-router/types/router';
+import VueRouter from 'vue-router';
+const { isNavigationFailure, NavigationFailureType } = VueRouter;
 
 @Component({
 	components: {

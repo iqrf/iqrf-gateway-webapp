@@ -24,7 +24,6 @@ import VueMeta from 'vue-meta';
 import VueNativeSock from 'vue-native-websocket';
 import VueToast from 'vue-toast-notification';
 import Clipboard from 'v-clipboard';
-import InstallationService, {InstallationCheck} from './services/InstallationService';
 
 import store from './store';
 import router from './router';
@@ -71,12 +70,12 @@ Vue.use(CoreuiVue);
 Vue.use(VueMeta);
 Vue.use(VueToast,{
 	position: 'top',
-	duration: 10000
+	duration: 5000
 });
 Vue.use(Clipboard);
 
-axios.defaults.baseURL = '//' + hostname + (isDev ? ':8080' : port) + '/api/v0/';
-axios.defaults.timeout = 30000; 
+axios.defaults.baseURL = '//' + hostname + (isDev ? ':8080' : port) + process.env.VUE_APP_BASE_URL + 'api/v0/';
+axios.defaults.timeout = 30000;
 
 axios.interceptors.response.use(
 	(response: AxiosResponse) => {
@@ -96,22 +95,6 @@ axios.interceptors.response.use(
 		return Promise.reject(error);
 	}
 );
-
-InstallationService.check()
-	.then((check: InstallationCheck) => {
-		const installUrl: boolean = router.currentRoute.path.startsWith('/install/');
-		if (!check.allMigrationsExecuted) {
-			router.push('/install/error/missing-migration');
-			return;
-		}
-		if (!check.hasUsers && !installUrl) {
-			router.push('/install/');
-			return;
-		}
-		if (check.hasUsers && installUrl) {
-			router.push('/sign/in/');
-		}
-	});
 
 new Vue({
 	router,

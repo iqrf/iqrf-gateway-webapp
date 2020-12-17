@@ -477,32 +477,46 @@ export default class SendDpaPacket extends Vue {
 		} else {
 			this.responses = [JSON.stringify(response, null, 4)];
 		}
+		let message = '';
+		let error = true;
 		switch (response.data.status) {
 			case 0:
-				this.$toast.success(this.$t('iqrfnet.sendPacket.messages.success').toString());
+				message = this.$t('iqrfnet.sendPacket.messages.success').toString();
+				error = false;
 				break;
 			case 2:
-				this.$toast.error(this.$t('iqrfnet.sendPacket.messages.incorrect.pcmd').toString());
+				message = this.$t('iqrfnet.sendPacket.messages.incorrect.pcmd').toString();
 				break;
 			case 3:
-				this.$toast.error(this.$t('iqrfnet.sendPacket.messages.incorrect.pnum').toString());
+				message = this.$t('iqrfnet.sendPacket.messages.incorrect.pnum').toString();
 				break;
 			case 5:
-				this.$toast.error(this.$t('iqrfnet.sendPacket.messages.incorrect.dataLength').toString());
+				message = this.$t('iqrfnet.sendPacket.messages.incorrect.dataLength').toString();
 				break;
 			case 6:
-				this.$toast.error(this.$t('iqrfnet.sendPacket.messages.incorrect.data').toString());
+				message = this.$t('iqrfnet.sendPacket.messages.incorrect.data').toString();
 				break;
 			case 7:
-				this.$toast.error(this.$t('iqrfnet.sendPacket.messages.incorrect.hwpid').toString());
+				message = this.$t('iqrfnet.sendPacket.messages.incorrect.hwpid').toString();
 				break;
 			case 8:
-				this.$toast.error(this.$t('iqrfnet.sendPacket.messages.incorrect.nadr').toString());
+				message = this.$t('iqrfnet.sendPacket.messages.incorrect.nadr',
+					{
+						address: (this.addressOverwrite ? this.address : Number.parseInt(this.packetNadr, 16))
+					}).toString();
 				break;
 			default:
-				this.$toast.error(this.$t('iqrfnet.sendPacket.messages.failure').toString());
+				message = this.$t('iqrfnet.sendPacket.messages.failure').toString();
 				break;
 		}
+		this.$toast.open({
+			message: message,
+			type: (error ? 'error': 'success'),
+			position: 'top',
+			dismissible: true,
+			duration: (this.autoRepeat ? this.autoRepeatInterval * 100 : 5000),
+			pauseOnHover: true
+		});
 	}
 
 	/**

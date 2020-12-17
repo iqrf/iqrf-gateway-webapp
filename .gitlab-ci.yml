@@ -135,6 +135,20 @@ behat:
   tags:
     - linux, docker, amd64
 
+newman:
+  stage: test
+  allow_failure: true
+  image: docker:latest
+  needs: []
+  services:
+    - docker:dind
+  before_script:
+    - apk add  --no-cache docker-compose
+  script:
+    - docker-compose -f api-testing-v2.docker-compose.yml up --build --abort-on-container-exit
+  tags:
+    - linux, docker, amd64
+
 coverage:
   before_script:
     - update-alternatives --set php /usr/bin/php7.4
@@ -244,6 +258,49 @@ build-package_iqd-gw-01_release:
       - './*.changes'
     expire_in: 2 weeks
 
+build-package_iqaros:
+  stage: build-package
+  except:
+    - tags
+  before_script:
+    - git checkout -B "$CI_COMMIT_REF_NAME" "$CI_COMMIT_SHA"
+  script:
+    - mkdir -p debian/patches
+    - cp debian/iqd-gw-01/patches/* debian/patches/
+    - cp debian/iqaros/patches/* debian/patches/
+    - ls --format=single-column debian/iqd-gw-01/patches/ >> debian/patches/series
+    - ls --format=single-column debian/iqaros/patches/ >> debian/patches/series
+    - gbp dch -a -S --ignore-branch --snapshot-number="$CI_PIPELINE_ID"
+    - debuild -e CI_PIPELINE_ID -b -us -uc -tc
+    - mv ../*.deb .
+    - mv ../*.changes .
+  artifacts:
+    paths:
+      - './*.deb'
+      - './*.changes'
+    expire_in: 2 weeks
+
+build-package_iqaros_release:
+  stage: build-package
+  only:
+    - tags
+  before_script:
+    - git checkout -B "$CI_COMMIT_REF_NAME" "$CI_COMMIT_SHA"
+  script:
+    - mkdir -p debian/patches
+    - cp debian/iqd-gw-01/patches/* debian/patches/
+    - cp debian/iqaros/patches/* debian/patches/
+    - ls --format=single-column debian/iqd-gw-01/patches/ >> debian/patches/series
+    - ls --format=single-column debian/iqaros/patches/ >> debian/patches/series
+    - debuild -b -us -uc -tc
+    - mv ../*.deb .
+    - mv ../*.changes .
+  artifacts:
+    paths:
+      - './*.deb'
+      - './*.changes'
+    expire_in: 2 weeks
+
 deploy-package-devel:
   stage: deploy-package
   dependencies:
@@ -272,6 +329,20 @@ deploy-package-devel_iqd-gw-01:
     - rsync -hrvz --delete -e ssh iqrf-gateway-webapp_*all.deb www-deploy@iqrfsdk.org:/data/nginx/dl/iqrf-gateway-webapp/iqd-gw-01/devel
   <<: *ssh_template
 
+deploy-package-devel_iqaros:
+  stage: deploy-package
+  dependencies:
+    - build-package_iqaros
+  environment:
+    name: package-devel_iqaros
+    url: https://dl.iqrf.org/iqrf-gateway-webapp/iqaros/devel
+  only:
+    - master
+  script:
+    - ssh www-deploy@iqrfsdk.org "rm -f /data/nginx/dl/iqrf-gateway-webapp/iqaros/devel/*"
+    - rsync -hrvz --delete -e ssh iqrf-gateway-webapp_*all.deb www-deploy@iqrfsdk.org:/data/nginx/dl/iqrf-gateway-webapp/iqaros/devel
+  <<: *ssh_template
+
 deploy-package-stable:
   stage: deploy-package
   dependencies:
@@ -298,6 +369,20 @@ deploy-package-stable_iqd-gw-01:
   script:
     - ssh www-deploy@iqrfsdk.org "rm -f /data/nginx/dl/iqrf-gateway-webapp/iqd-gw-01/stable/*.changes"
     - rsync -hrvz --delete -e ssh iqrf-gateway-webapp_*all.deb www-deploy@iqrfsdk.org:/data/nginx/dl/iqrf-gateway-webapp/iqd-gw-01/stable
+  <<: *ssh_template
+
+deploy-package-stable_iqaros:
+  stage: deploy-package
+  dependencies:
+    - build-package_iqaros_release
+  environment:
+    name: package-stable_iqaros
+    url: https://dl.iqrf.org/iqrf-gateway-webapp/iqaros/stable
+  only:
+    - tags
+  script:
+    - ssh www-deploy@iqrfsdk.org "rm -f /data/nginx/dl/iqrf-gateway-webapp/iqaros/stable/*.changes"
+    - rsync -hrvz --delete -e ssh iqrf-gateway-webapp_*all.deb www-deploy@iqrfsdk.org:/data/nginx/dl/iqrf-gateway-webapp/iqaros/stable
   <<: *ssh_template
 
 include:

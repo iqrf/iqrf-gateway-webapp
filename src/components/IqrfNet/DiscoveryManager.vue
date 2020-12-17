@@ -3,14 +3,14 @@
 		<CCardBody>
 			<h4>{{ $t('iqrfnet.networkManager.discovery.title') }}</h4><br>
 			<ValidationObserver v-slot='{ invalid }'>
-				<CForm @submit.prevent='processSubmit'>
+				<CForm @submit.prevent='runDiscovery'>
 					<ValidationProvider
 						v-slot='{ errors, touched, valid }'
 						rules='integer|required|between:0,7'
 						:custom-messages='{
 							integer: "iqrfnet.networkManager.messages.invalid.integer",
-							required: "iqrfnet.networkManager.messages.discovery.txPower",
-							between: "iqrfnet.networkManager.messages.discovery.txPower"
+							required: "iqrfnet.networkManager.discovery.errors.txPower",
+							between: "iqrfnet.networkManager.discovery.errors.txPower"
 						}'
 					>
 						<CInput
@@ -28,8 +28,8 @@
 						rules='integer|required|between:0,239'
 						:custom-messages='{
 							integer: "iqrfnet.networkManager.messages.invalid.integer",
-							required: "iqrfnet.networkManager.messages.discovery.maxAddr",
-							between: "iqrfnet.networkManager.messages.discovery.maxAddr"
+							required: "iqrfnet.networkManager.discovery.errors.maxAddr",
+							between: "iqrfnet.networkManager.discovery.errors.maxAddr"
 						}'
 					>
 						<CInput
@@ -109,30 +109,9 @@ export default class DiscoveryManager extends Vue {
 				if (mutation.payload.data.msgId !== this.msgId) {
 					return;
 				}
-				this.$store.dispatch('spinner/hide');
+				this.$store.commit('spinner/HIDE');
 				this.$store.dispatch('removeMessage', this.msgId);
-				switch (mutation.payload.data.status) {
-					case -1:
-						this.$toast.error(
-							this.$t('iqrfnet.networkManager.messages.submit.timeout')
-								.toString()
-						);
-						break;
-					case 0:
-						this.$toast.success(
-							this.$t('iqrfnet.networkManager.messages.submit.discovery.success')
-								.toString()
-						);
-						this.$emit('update-devices');
-						break;
-					default:
-						this.$toast.success(
-							this.$t('iqrfnet.networkManager.messages.submit.discovery.error_fail')
-								.toString()
-						);
-						break;
-				}
-			
+				this.handleDiscoveryResponse(mutation.payload);
 			}
 		});
 	}
@@ -148,10 +127,31 @@ export default class DiscoveryManager extends Vue {
 	/**
 	 * Performs Discovery Daemon API call
 	 */
-	private processSubmit(): void {
-		this.$store.dispatch('spinner/show', {timeout: 30000});
-		IqrfNetService.discovery(this.txPower, this.maxAddr, new WebSocketOptions(null, 30000, 'iqrfnet.networkManager.messages.submit.timeout', () => this.msgId = null))
+	private runDiscovery(): void {
+		this.$store.commit('spinner/SHOW');
+		this.$store.commit('spinner/UPDATE_TEXT', this.$t('iqrfnet.networkManager.discovery.messages.spinnerNote').toString());
+		IqrfNetService.discovery(this.txPower, this.maxAddr, new WebSocketOptions(null))
 			.then((msgId: string) => this.msgId = msgId);
+	}
+
+	/**
+	 * Handles Discovery Daemon API call response
+	 */
+	private handleDiscoveryResponse(response): void {
+		if (response.data.status === 0) {
+			this.$toast.success(
+				this.$t('iqrfnet.networkManager.discovery.messages.success').toString()
+			);
+			this.$emit('update-devices');
+		} else if (response.data.status === -1) {
+			this.$toast.error(
+				this.$t('iqrfnet.networkManager.discovery.messages.timeout').toString()
+			);
+		} else {
+			this.$toast.error(
+				this.$t('iqrfnet.networkManager.discovery.mesages.genericError').toString()
+			);
+		}
 	}
 }
 </script>

@@ -137,7 +137,6 @@ class IqrfNetService {
 		options.request = {
 			'mType': 'iqrfEmbedCoordinator_Discovery',
 			'data': {
-				'repeat': 2,
 				'req': {
 					'nAdr': 0,
 					'param': {

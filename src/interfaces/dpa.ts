@@ -181,3 +181,87 @@ export interface IDeviceEnumeration {
 	standards: Array<string>
 	trConfiguration: ITrConfiguration
 }
+
+/**
+ * Daemon API response interface
+ */
+export interface IDpaResp {
+	/**
+	 * Message type
+	 */
+	mType: string
+	/**
+	 * Response data
+	 */
+	data: IDpaRespData
+}
+
+/**
+ * Daemon API response data interface
+ */
+export interface IDpaRespData {
+	/**
+	 * IQRF Daemon instance ID
+	 */
+	insId: string
+
+	/**
+	 * Message ID
+	 */
+	msgId: string
+
+	/**
+	 * Raw DPA response data
+	 */
+	raw: IDpaRespRaw
+
+	/**
+	 * Parsed, human readable response data
+	 */
+	rsp: any
+
+	/**
+	 * Execution status code
+	 */
+	status: number
+
+	/**
+	 * Execution status string, present if verbose mode is used
+	 */
+	statusStr?: string
+}
+
+/**
+ * Daemon API response raw interface
+ */
+export interface IDpaRespRaw {
+	/**
+	 * DPA request data
+	 */
+	request: string
+
+	/**
+	 * DPA request timestamp
+	 */
+	requestTs: string
+
+	/**
+	 * DPA confirmation data
+	 */
+	confirmation: string
+
+	/**
+	 * DPA confirmation timestamp
+	 */
+	confirmationTs: string
+
+	/**
+	 * DPA response data
+	 */
+	response: string
+
+	/**
+	 * DPA response timestamp
+	 */
+	responseTs: string
+}

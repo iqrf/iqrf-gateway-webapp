@@ -187,9 +187,9 @@
 										v-slot='{ errors, touched, valid }'
 										rules='integer|required|between:0,239'
 										:custom-messages='{
-											between: "iqrfnet.networkManager.messages.discovery.maxAddr",
 											integer: "iqrfnet.networkManager.messages.invalid.integer",
-											required: "iqrfnet.networkManager.messages.discovery.maxAddr"
+											required: "iqrfnet.networkManager.discovery.errors.maxAddr",
+											between: "iqrfnet.networkManager.discovery.errors.maxAddr"
 										}'
 									>
 										<CInput
@@ -207,8 +207,8 @@
 										rules='integer|required|between:0,7'
 										:custom-messages='{
 											integer: "iqrfnet.networkManager.messages.invalid.integer",
-											required: "iqrfnet.networkManager.messages.discovery.txPower",
-											between: "iqrfnet.networkManager.messages.discovery.txPower"
+											required: "iqrfnet.networkManager.discovery.errors.txPower",
+											between: "iqrfnet.networkManager.discovery.errors.txPower"
 										}'
 									>
 										<CInput
@@ -265,6 +265,7 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import FeatureConfigService from '../../services/FeatureConfigService';
+import ServiceService from '../../services/ServiceService';
 import {NavigationGuardNext, Route} from 'vue-router/types/router';
 import {IController} from '../../interfaces/controller';
 import {IOption} from '../../interfaces/coreui';
@@ -397,12 +398,24 @@ export default class ControllerConfig extends Vue {
 		this.$store.commit('spinner/SHOW');
 		FeatureConfigService.saveConfig(this.name, this.config)
 			.then(() => {
-				this.$store.commit('spinner/HIDE');
-				this.$toast.success(this.$t('forms.messages.saveSuccess').toString());
+				this.restartController();	
 			})
 			.catch((error: AxiosError) => {
 				FormErrorHandler.configError(error);
 			});
 	}
+
+	/**
+	 * Restarts IQRF Controller service
+	 */
+	private restartController(): void {
+		ServiceService.restart('iqrf-gateway-controller')
+			.then(() => {
+				this.$store.commit('spinner/HIDE');
+				this.$toast.success(this.$t('config.controller.messages.successRestart').toString());
+			})
+			.catch((error: AxiosError) => FormErrorHandler.configError(error));
+	}
+
 }
 </script>

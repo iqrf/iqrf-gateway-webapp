@@ -1,25 +1,22 @@
 <template>
 	<CCard class='border-top-0 border-left-0 border-right-0'>
 		<CCardBody>
-			<h4>{{ $t('iqrfnet.networkManager.bonding.title') }}</h4><br>
+			<h4>{{ $t('iqrfnet.networkManager.bondingManager.title') }}</h4><br>
 			<ValidationObserver v-slot='{ invalid }'>
 				<CForm>
 					<CSelect
 						:value.sync='bondMethod'
-						:label='$t("iqrfnet.networkManager.bonding.form.bondMethod")'
-						:options='[
-							{value: "local", label: $t("iqrfnet.networkManager.bonding.form.bondMethodLocal")},
-							{value: "smartConnect", label: $t("iqrfnet.networkManager.bonding.form.bondMethodSmart")},
-						]'
+						:label='$t("iqrfnet.networkManager.bondingManager.form.bondMethod")'
+						:options='bondMethodOptions'
 					/>
 					<ValidationProvider
 						v-if='bondMethod !== "autoNetwork"'
 						v-slot='{ errors, touched, valid }'
 						rules='integer|required|between:1,239'
 						:custom-messages='{
-							required: "iqrfnet.networkManager.messages.bonding.address",
 							integer: "iqrfnet.networkManager.messages.invalid.integer",
-							between: "iqrfnet.networkManager.messages.bonding.address"
+							required: "iqrfnet.networkManager.bondingManager.errors.address",
+							between: "iqrfnet.networkManager.bondingManager.errors.address"
 						}'
 					>
 						<CInput
@@ -27,7 +24,7 @@
 							type='number'
 							min='1'
 							max='239'
-							:label='$t("iqrfnet.networkManager.bonding.form.address")'
+							:label='$t("iqrfnet.networkManager.bondingManager.form.address")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 							:disabled='autoAddress'
@@ -35,15 +32,15 @@
 					</ValidationProvider>
 					<CInputCheckbox
 						:checked.sync='autoAddress'
-						:label='$t("iqrfnet.networkManager.bonding.form.autoAddress")'
+						:label='$t("iqrfnet.networkManager.bondingManager.form.autoAddress")'
 					/>
 					<ValidationProvider
 						v-slot='{ errors, touched, valid}'
 						rules='integer|required|between:0,255'
 						:custom-messages='{
 							integer: "iqrfnet.networkManager.messages.invalid.integer",
-							required: "iqrfnet.networkManager.messages.bonding.bondingRetries",
-							between: "iqrfnet.networkManager.messages.bonding.bondingRetries"
+							required: "iqrfnet.networkManager.bondingManager.errors.bondingRetries",
+							between: "iqrfnet.networkManager.bondingManager.errors.bondingRetries"
 						}'
 					>
 						<CInput
@@ -51,7 +48,7 @@
 							type='number'
 							min='0'
 							max='255'
-							:label='$t("iqrfnet.networkManager.bonding.form.bondingRetries")'
+							:label='$t("iqrfnet.networkManager.bondingManager.form.bondingRetries")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
@@ -61,20 +58,20 @@
 						v-slot='{ errors, valid }'
 						rules='required|scCode'
 						:custom-messages='{
-							required: "iqrfnet.networkManager.messages.missing.bonding.scCode",
-							scCode: "iqrfnet.networkManager.messages.invalid.bonding.scCode"
+							required: "iqrfnet.networkManager.bondingManager.errors.scCodeMissing",
+							scCode: "iqrfnet.networkManager.bondingManager.errors.scCodeInvalid"
 						}'
 					>
 						<CInput
 							v-model='scCode'
-							:label='$t("iqrfnet.networkManager.bonding.form.smartConnect")'
+							:label='$t("iqrfnet.networkManager.bondingManager.form.smartConnect")'
 							:is-valid='valid'
 							:invalid-feedback='$t(errors[0])'
 						/>
 					</ValidationProvider>
 					<CInputCheckbox
 						:checked.sync='unbondCoordinatorOnly'
-						:label='$t("iqrfnet.networkManager.bonding.form.unbondCoordinatorOnly")'
+						:label='$t("iqrfnet.networkManager.bondingManager.form.unbondCoordinatorOnly")'
 					/>
 					<CButton
 						color='primary' 
@@ -102,7 +99,7 @@
 						color='danger'
 						:show.sync='modalClear'
 					>
-						{{ $t('iqrfnet.networkManager.messages.submit.removeBond.confirmClear') }}
+						{{ $t('iqrfnet.networkManager.bondingManager.messages.clearAllPrompt') }}
 						<template #footer>
 							<CButton
 								color='danger'
@@ -122,7 +119,7 @@
 						color='danger'
 						:show.sync='modalUnbond'
 					>
-						{{ $t('iqrfnet.networkManager.messages.submit.removeBond.confirmUnbond') }}
+						{{ $t('iqrfnet.networkManager.bondingManager.messages.unbondPrompt', {address: address}) }}
 						<template #footer>
 							<CButton
 								color='danger'
@@ -151,6 +148,7 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';
 import IqrfNetService from '../../services/IqrfNetService';
 import { WebSocketOptions } from '../../store/modules/webSocketClient.module';
+import { IOption } from '../../interfaces/coreui';
 
 @Component({
 	components: {
@@ -185,6 +183,20 @@ export default class BondingManager extends Vue {
 	 * @var {string} bondMethod Bonding method
 	 */
 	private bondMethod = 'local'
+
+	/**
+	 * @constant {Array<IOption>} bondMethodOptions Bonding method options for CoreUI select
+	 */
+	private bondMethodOptions: Array<IOption> = [
+		{
+			value: 'local',
+			label: this.$t('iqrfnet.networkManager.bondingManager.form.bondMethodLocal')
+		},
+		{
+			value: 'smartConnect',
+			label: this.$t('iqrfnet.networkManager.bondingManager.form.bondMethodSmart')
+		}
+	]
 
 	/**
 	 * @var {number} bondingRetries Number of bonding attempts
@@ -241,27 +253,7 @@ export default class BondingManager extends Vue {
 					}
 					this.$store.dispatch('spinner/hide');
 					this.$store.dispatch('removeMessage', this.msgId);
-					switch(mutation.payload.data.status) {
-						case -1:
-							this.$toast.error(
-								this.$t('iqrfnet.networkManager.messages.submit.timeout')
-									.toString()
-							);
-							break;
-						case 0:
-							this.$toast.success(
-								this.$t('iqrfnet.networkManager.messages.submit.bonding.success')
-									.toString()
-							);
-							this.$emit('update-devices');
-							break;
-						default:
-							this.$toast.error(
-								this.$t('iqrfnet.networkManager.messages.submit.bonding.error_fail')
-									.toString()
-							);
-							break;
-					}
+					this.handleBondResponse(mutation.payload.data);
 				} else if (mutation.payload.mType === 'iqmeshNetwork_RemoveBondOnlyInC' ||
 							mutation.payload.mType === 'iqmeshNetwork_RemoveBond') {
 					if (mutation.payload.data.msgId !== this.msgId) {
@@ -317,31 +309,68 @@ export default class BondingManager extends Vue {
 		}
 	}
 
+	/**
+	 * Handles BondNodeLocal and SmartConnect Daemon API call responses
+	 */
+	private handleBondResponse(response): void {
+		if (response.status === 0) {
+			let bondAddr = this.address;
+			if (this.autoAddress) {
+				if (this.bondMethod === 'local') {
+					bondAddr = response.rsp.assignedAddr;
+				} else {
+					bondAddr = response.rsp.result.bondAddr;
+				}
+			}
+			this.$toast.success(
+				this.$t('iqrfnet.networkManager.bondingManager.messages.bondSuccess', {address: bondAddr}).toString()
+			);
+			this.$emit('update-devices');
+		} else if (response.status === -1) {
+			this.$toast.error(
+				this.$t('iqrfnet.networkManager.messages.submit.timeout').toString()
+			);
+		} else {
+			if (response.statusStr.includes('Dpa error')) {
+				this.$toast.error(
+					this.$t('iqrfnet.networkManager.bondingManager.messages.timeout').toString()
+				);
+				return;
+			}
+			this.$toast.error(
+				this.$t('iqrfnet.networkManager.bondingManager.messages.genericBondError').toString()
+			);
+		}
+	}
+
+	/**
+	 * Handles RemoveBond Daemon API call responses
+	 */
 	private handleRemoveResponse(response) {
 		if (response.status === 0) {
 			if (response.rsp.nodesNr === 0) { // all bonds cleared
 				if (this.unbondCoordinatorOnly) {
 					this.$toast.success(
-						this.$t('iqrfnet.networkManager.messages.submit.removeBond.clearAllInCSuccess').toString()
+						this.$t('iqrfnet.networkManager.bondingManager.messages.clearAllCSuccess').toString()
 					);
 				} else {
 					this.$toast.success(
-						this.$t('iqrfnet.networkManager.messages.submit.removeBond.clearAllSuccess').toString()
+						this.$t('iqrfnet.networkManager.bondingManager.messages.clearAllSuccess').toString()
 					);
 				}
 			} else { // select nodes
 				if (this.unbondCoordinatorOnly) {
 					this.$toast.success(
-						this.$t('iqrfnet.networkManager.messages.submit.removeBond.successInC', {address: this.address}).toString()
+						this.$t('iqrfnet.networkManager.bondingManager.messages.unbondSuccessC', {address: this.address}).toString()
 					);
 				} else {
 					if (response.rsp.removeBondFailedNodes) { //clear all, but some were offline
 						this.$toast.info(
-							this.$t('iqrfnet.networkManager.messages.submit.removeBond.clearAllPartialSuccess', {nodes: response.rsp.removeBondFailedNodes.join(', ')}).toString()
+							this.$t('iqrfnet.networkManager.bondingManager.messages.clearAllPartialSuccess', {nodes: response.rsp.removeBondFailedNodes.join(', ')}).toString()
 						);
 					} else {
 						this.$toast.success(
-							this.$t('iqrfnet.networkManager.messages.submit.removeBond.success', {address: this.address}).toString()
+							this.$t('iqrfnet.networkManager.bondingManager.messages.unbondSuccess', {address: this.address}).toString()
 						);
 					}
 				}
@@ -371,12 +400,12 @@ export default class BondingManager extends Vue {
 		}
 		if (response.statusStr === 'Bad FRC status: (int)status="255" ') {
 			this.$toast.error(
-				this.$t('iqrfnet.networkManager.messages.submit.removeBond.noBonds').toString()
+				this.$t('iqrfnet.networkManager.bondingManager.messages.noDevices').toString()
 			);
 			return;
 		}
 		this.$toast.error(
-			this.$t('iqrfnet.networkManager.messages.submit.removeBond.remove_error').toString()
+			this.$t('iqrfnet.networkManager.bondingManager.messages.unbondFailure', {address: this.address}).toString()
 		);
 	}
 

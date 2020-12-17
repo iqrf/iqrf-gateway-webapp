@@ -282,11 +282,12 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import AddressChanger from '../../components/IqrfNet/AddressChanger.vue';
 import SecurityForm from '../../components/IqrfNet/SecurityForm.vue';
 import IqrfNetService from '../../services/IqrfNetService';
-import { IOption } from '../../interfaces/coreui';
-import { WebSocketClientState } from '../../store/modules/webSocketClient.module';
-import { MutationPayload } from 'vuex';
-import { Dictionary } from 'vue-router/types/router';
-import { IEmbedPers, IEmbedPersEnabled, ITrConfiguration } from '../../interfaces/dpa';
+import OsService from '../../services/DaemonApi/OsService';
+import {IOption} from '../../interfaces/coreui';
+import {WebSocketClientState} from '../../store/modules/webSocketClient.module';
+import {MutationPayload} from 'vuex';
+import {Dictionary} from 'vue-router/types/router';
+import {IEmbedPers, IEmbedPersEnabled, ITrConfiguration} from '../../interfaces/dpa';
 
 @Component({
 	components: {
@@ -444,18 +445,17 @@ export default class TrConfiguration extends Vue {
 			if (mutation.type !== 'SOCKET_ONMESSAGE') {
 				return;
 			}
-			if (mutation.payload.mType === 'iqmeshNetwork_WriteTrConf' &&
-				mutation.payload.data.msgId === this.msgId) {
-				this.$store.dispatch('spinner/hide');
-				this.$store.dispatch('removeMessage', this.msgId);
-				this.handleWriteResponse(mutation.payload);
+			if (mutation.payload.data.msgId !== this.msgId) {
 				return;
 			}
-			if (mutation.payload.mType === 'iqmeshNetwork_EnumerateDevice' &&
-				mutation.payload.data.msgId === this.msgId) {
-				this.$store.dispatch('spinner/hide');
-				this.$store.dispatch('removeMessage', this.msgId);
+			this.$store.dispatch('spinner/hide');
+			this.$store.dispatch('removeMessage', this.msgId);
+			if (mutation.payload.mType === 'iqmeshNetwork_WriteTrConf') {
+				this.handleWriteResponse(mutation.payload);
+			} else if (mutation.payload.mType === 'iqmeshNetwork_EnumerateDevice') {
 				this.handleEnumerationResponse(mutation.payload);
+			} else if (mutation.payload.mType === 'iqrfEmbedOs_Reset') {
+				this.handleResetResponse(mutation.payload);
 			}
 		});
 		if (this.$store.getters.isSocketConnected) {
@@ -488,6 +488,15 @@ export default class TrConfiguration extends Vue {
 	private enumerate(): void {
 		this.$store.dispatch('spinner/show', {timeout: 30000});
 		IqrfNetService.enumerateDevice(this.address, 30000, 'iqrfnet.trConfiguration.messages.read.failure', () => this.msgId = null)
+			.then((msgId: string) => this.msgId = msgId);
+	}
+
+	/**
+	 * Performs device reset
+	 */
+	private resetDevice(): void {
+		this.$store.dispatch('spinner/show', {timeout: 30000});
+		OsService.reset(this.address, 30000, 'iqrfnet.trConfiguration.messages.write.restartFailure', () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
@@ -543,14 +552,32 @@ export default class TrConfiguration extends Vue {
 	 * Handles WriteTrConfiguration request response
 	 */
 	private handleWriteResponse(response): void {
-		this.$store.commit('spinner/HIDE');
 		if (response.data.status === 0) {
-			this.$toast.success(
-				this.$t('iqrfnet.trConfiguration.messages.write.success').toString()
-			);
+			if (response.data.rsp.restartNeeded) {
+				this.resetDevice();
+			} else {
+				this.$toast.success(
+					this.$t('iqrfnet.trConfiguration.messages.write.success').toString()
+				);
+			}
 		} else {
 			this.$toast.error(
 				this.$t('iqrfnet.trConfiguration.messages.write.failure').toString()
+			);
+		}
+	}
+
+	/**
+	 * Handles EmbedOs_Reset request response
+	 */
+	private handleResetResponse(response): void {
+		if (response.data.status === 0) {
+			this.$toast.success(
+				this.$t('iqrfnet.trConfiguration.messages.write.successRestart').toString()
+			);
+		} else {
+			this.$toast.error(
+				this.$t('iqrfnet.trConfiguration.messages.write.restartFailure').toString()
 			);
 		}
 	}

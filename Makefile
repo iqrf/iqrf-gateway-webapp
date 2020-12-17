@@ -41,13 +41,13 @@ coverage: deps
 	vendor/bin/tester -p phpdbg -c ./tests/php.ini --coverage ./coverage.html --coverage-src ./app ./tests
 
 cc: temp/code-checker
-	php temp/code-checker/code-checker -l --no-progress --strict-types -i "coverage.*" -i "docs/" -i "tests/temp/" -i "www/dist/" -i ".vscode/"
+	php temp/code-checker/code-checker -l --no-progress --strict-types -i "coverage.*" -i "docs/" -i "tests/temp/" -i "www/dist/" -i ".vscode/" -i "tests/iqrf-gateway-webapp.postman_collection.json"
 
 fix-cc: temp/code-checker
-	php temp/code-checker/code-checker -f -l --no-progress --strict-types -i "coverage.*" -i "docs/" -i "tests/temp/" -i "www/dist/"
+	php temp/code-checker/code-checker -f -l --no-progress --strict-types -i "coverage.*" -i "docs/" -i "tests/temp/" -i "www/dist/" -i "tests/iqrf-gateway-webapp.postman_collection.json"
 
 cs: deps
-	vendor/bin/codesniffer app bin tests
+	vendor/bin/codesniffer --runtime-set php_version 70300 app bin tests
 
 deb-package:
 	debuild -b -uc -us
