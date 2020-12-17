@@ -329,6 +329,20 @@ deploy-package-devel_iqd-gw-01:
     - rsync -hrvz --delete -e ssh iqrf-gateway-webapp_*all.deb www-deploy@iqrfsdk.org:/data/nginx/dl/iqrf-gateway-webapp/iqd-gw-01/devel
   <<: *ssh_template
 
+deploy-package-devel_iqaros:
+  stage: deploy-package
+  dependencies:
+    - build-package_iqaros
+  environment:
+    name: package-devel_iqaros
+    url: https://dl.iqrf.org/iqrf-gateway-webapp/iqaros/devel
+  only:
+    - master
+  script:
+    - ssh www-deploy@iqrfsdk.org "rm -f /data/nginx/dl/iqrf-gateway-webapp/iqaros/devel/*"
+    - rsync -hrvz --delete -e ssh iqrf-gateway-webapp_*all.deb www-deploy@iqrfsdk.org:/data/nginx/dl/iqrf-gateway-webapp/iqaros/devel
+  <<: *ssh_template
+
 deploy-package-stable:
   stage: deploy-package
   dependencies:
@@ -355,6 +369,20 @@ deploy-package-stable_iqd-gw-01:
   script:
     - ssh www-deploy@iqrfsdk.org "rm -f /data/nginx/dl/iqrf-gateway-webapp/iqd-gw-01/stable/*.changes"
     - rsync -hrvz --delete -e ssh iqrf-gateway-webapp_*all.deb www-deploy@iqrfsdk.org:/data/nginx/dl/iqrf-gateway-webapp/iqd-gw-01/stable
+  <<: *ssh_template
+
+deploy-package-stable_iqaros:
+  stage: deploy-package
+  dependencies:
+    - build-package_iqaros_release
+  environment:
+    name: package-stable_iqaros
+    url: https://dl.iqrf.org/iqrf-gateway-webapp/iqaros/stable
+  only:
+    - tags
+  script:
+    - ssh www-deploy@iqrfsdk.org "rm -f /data/nginx/dl/iqrf-gateway-webapp/iqaros/stable/*.changes"
+    - rsync -hrvz --delete -e ssh iqrf-gateway-webapp_*all.deb www-deploy@iqrfsdk.org:/data/nginx/dl/iqrf-gateway-webapp/iqaros/stable
   <<: *ssh_template
 
 include:
