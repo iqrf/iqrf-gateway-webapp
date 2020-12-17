@@ -35,7 +35,7 @@ extensions:
 
 iqrfMacros:
 	# path to IQRF IDE macros
-	path: '%appDir%/../iqrf/DPA-macros_190301_webapp.iqrfmcr'
+	path: '%appDir%/../iqrf/DPA-macros_201215.iqrfmcr'
 
 middleware:
 	debug: %debugMode%
