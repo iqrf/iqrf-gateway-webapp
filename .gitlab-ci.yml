@@ -145,7 +145,7 @@ newman:
   before_script:
     - apk add  --no-cache docker-compose
   script:
-    - sudo docker-compose -f api-testing-v2.docker-compose.yml up --build --abort-on-container-exit
+    - docker-compose -f api-testing-v2.docker-compose.yml up --build --abort-on-container-exit
   tags:
     - linux, docker, amd64
 
