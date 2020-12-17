@@ -1,3 +1,56 @@
+iqrf-gateway-webapp (2.2.3) stable; urgency=medium
+
+  [ Karel Hanák ]
+  * IqrfNet: restart daemon after writing trconf or setting security
+  * IqrfNet: reset OS upon trconf write or security setting
+  * composer: drop php7.2 support
+  * composer: bump required php version
+  * IqrfNet: removed Discovery timeout, updated localization
+  * IqrfNet: refactor bondingManager error handling and messages, updated localization
+  * IqrfNet: fixed packet parsing, toast message stacking and error handling in SendDpaPacket
+  * Config: fixed period field constraints and error message in SchedulerForm
+  * Config: Controller change network label, hide coordinator
+  * Interfaces: basic Daemon API response interface
+  * Config: add periodic field min value validation rule in SchedulerForm
+  * Config: controller re-enable coordinator reset checkbox
+  * Config: restart controller service on config change, update npm packages
+  * Config: restart controller service upon config update
+  * Config: interface change request sequence
+
+  [ Roman Ondráček ]
+  * COmposer: update dependencies
+  * GitLab CI: add base Postman API tests
+  * GitLab CI: fix configuration
+
+  [ Karel Hanák ]
+  * Config: fix clipboard content updating, disable interfaces, then enable
+  * Config: add interface code to success toast
+
+  [ Roman Ondráček ]
+  * IQRF net: update DPA macros
+
+  [ Karel Hanák ]
+  * Vue.js: custom base url
+  * add base url
+  * nginx: update configuration
+  * Debian package: iqaros patch and package
+  * CI: fix iqaros release package build
+  * Debian package: update nginx configuration for iqaros
+  * nginx: re-order system location
+  * nginx: update / location
+  * nginx: remove csp and x-frame header for iqaros
+  * Debian package: update iqaros postinst
+  * Core: signIn route error dump
+  * nginx: fix system location try_files
+  * nginx: add headers to frontend location
+  * Debian package: update postinst for iqaros
+  * nginx: update symlinks, move installation checker
+  * Debian package: fix syntax in postinst
+  * Debian package: remove default nginx enabled sites
+  * CI: iqaros package deployment stages
+
+ -- Karel Hanák <karel.hanak@iqrf.org>  Thu, 17 Dec 2020 17:13:05 +0100
+
 iqrf-gateway-webapp (2.2.2) stable; urgency=medium
 
   [ Roman Ondráček ]
