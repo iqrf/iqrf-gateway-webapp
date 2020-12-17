@@ -135,6 +135,20 @@ behat:
   tags:
     - linux, docker, amd64
 
+newman:
+  stage: test
+  allow_failure: true
+  image: docker:latest
+  needs: []
+  services:
+    - docker:dind
+  before_script:
+    - apk add  --no-cache docker-compose
+  script:
+    - sudo docker-compose -f api-testing-v2.docker-compose.yml up --build --abort-on-container-exit
+  tags:
+    - linux, docker, amd64
+
 coverage:
   before_script:
     - update-alternatives --set php /usr/bin/php7.4
