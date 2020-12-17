@@ -3,34 +3,39 @@
 
 set -e
 
-nginx_virtualhost_install() {
-	nginx_virtualhost_old_remove
-	if [ -e /etc/nginx/sites-available/iqrf-gateway-webapp.localhost ] ; then
-		rm /etc/nginx/sites-available/iqrf-gateway-webapp.localhost
+nginx_default_site() {
+	SITE_AVAILABLE_PATH=/etc/nginx/sites-available/iqrf-gateway-webapp.localhost
+	if [ "$hostname" = "iqaros" ] ; then
+		ln -s /etc/iqrf-gateway-webapp/nginx/iqrf-gateway-webapp-iqaros.localhost ${SITE_AVAILABLE_PATH}
+	else
+		ln -s /etc/iqrf-gateway-webapp/nginx/iqrf-gateway-webapp.localhost ${SITE_AVAILABLE_PATH}
 	fi
-	ln -s /etc/iqrf-gateway-webapp/nginx/iqrf-gateway-webapp.localhost /etc/nginx/sites-available/iqrf-gateway-webapp.localhost
+}
+
+nginx_virtualhost_install() {
+	if [ -e /etc/nginx/sites-enabled/default ] ; then
+		rm /etc/nginx/sites-enabled/default
+	fi
+	SITE_AVAILABLE_PATH=/etc/nginx/sites-available/iqrf-gateway-webapp.localhost
+	hostname=$(hostname)
+	if [ -L ${SITE_AVAILABLE_PATH} ] && [ ! -e ${SITE_AVAILABLE_PATH} ] ; then
+		rm ${SITE_AVAILABLE_PATH}
+		nginx_default_site
+	elif [ -e ${SITE_AVAILABLE_PATH} ] ; then
+		rm ${SITE_AVAILABLE_PATH}
+		nginx_default_site
+	elif [ ! -e ${SITE_AVAILABLE_PATH} ] ; then
+		nginx_default_site
+	fi
 	if [ ! -L /etc/nginx/sites-enabled/iqrf-gateway-webapp.localhost ] ; then
-		ln -s /etc/nginx/sites-available/iqrf-gateway-webapp.localhost /etc/nginx/sites-enabled/iqrf-gateway-webapp.localhost
+		ln -s ${SITE_AVAILABLE_PATH} /etc/nginx/sites-enabled/iqrf-gateway-webapp.localhost
 	fi
 	if deb-systemd-invoke is-enabled nginx.service ; then
 		deb-systemd-invoke reload nginx.service
 	fi
 }
 
-nginx_virtualhost_old_remove() {
-	if [ -e /etc/nginx/sites-enabled/default ] ; then
-		rm /etc/nginx/sites-enabled/default
-	fi
-	if [ -e /etc/nginx/sites-available/iqrf-daemon-webapp.localhost ] ; then
-		rm /etc/nginx/sites-available/iqrf-daemon-webapp.localhost
-	fi
-	if [ -e /etc/nginx/sites-enabled/iqrf-daemon-webapp.localhost ] ; then
-		rm /etc/nginx/sites-enabled/iqrf-daemon-webapp.localhost
-	fi
-	if [ -e /etc/nginx/sites-available/iqrf-gateway-webapp.localhost ] ; then
-		rm /etc/nginx/sites-available/iqrf-gateway-webapp.localhost
-	fi
-}
+
 
 openssl_create_ca() {
 	DAEMON_CERT_DIR=/etc/iqrf-gateway-daemon/certs/core

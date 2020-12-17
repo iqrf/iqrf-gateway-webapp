@@ -23,6 +23,9 @@ use Contributte\Middlewares\Application\IApplication;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
+$baseUri = $_SERVER['BASE_URI'] ?? '/';
+// Fix-up request URI
+$_SERVER['REQUEST_URI'] = '/' . substr($_SERVER['REQUEST_URI'], strlen($baseUri));
 // Creates DI container
 $container = Kernel::boot()->createContainer();
 // Gets application from DI container
