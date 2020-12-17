@@ -51,7 +51,7 @@ final class AptGetPackageManagerTest extends CommandTestCase {
 		$commandManager->shouldReceive('commandExist')
 			->withArgs(['apt-get'])->andReturn(false);
 		Assert::throws(function () use ($commandManager): void {
-			$manager = new AptGetPackageManager($commandManager);
+			new AptGetPackageManager($commandManager);
 		}, UnsupportedPackageManagerException::class);
 	}
 

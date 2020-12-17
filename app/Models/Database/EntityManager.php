@@ -36,6 +36,7 @@ class EntityManager extends EntityManagerDecorator {
 	 * @param string $entityName Entity name
 	 * @return ObjectRepository Object repository
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
+	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
 	 */
 	public function getRepository($entityName): ObjectRepository {
 		return parent::getRepository($entityName);

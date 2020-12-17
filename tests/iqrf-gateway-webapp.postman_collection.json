@@ -1,0 +1,1052 @@
+{
+	"info": {
+		"_postman_id": "3ed352f7-c571-4d0b-8150-7dd0710e0e57",
+		"name": "iqrf-gateway-webapp",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Installation",
+			"item": [
+				{
+					"name": "Installation checker",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e8915482-cb6c-457b-9431-4f389472fa2b",
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Content-Type is \\'application/json\\'', function () {",
+									"    pm.response.to.have.header('Content-Type');",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+									"});",
+									"pm.test('Are all database migration executed?', function () {",
+									"    let jsonData = pm.response.json();",
+									"    pm.expect(jsonData.allMigrationsExecuted).to.eql(true);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v0/installation",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"installation"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Sign in",
+					"item": [
+						{
+							"name": "Sign in",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "1fd54449-0f3f-4f41-b025-1c2f07b944cd",
+										"exec": [
+											"pm.test('Status code is 200', function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"pm.test('Content-Type is \\'application/json\\'', function () {",
+											"    pm.response.to.have.header('Content-Type');",
+											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+											"});",
+											"pm.test('Username is admin', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.username).to.eql('admin');",
+											"});",
+											"pm.test('User language is english', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.language).to.eql('en');",
+											"});",
+											"pm.collectionVariables.set('token', pm.response.json().token);",
+											"pm.collectionVariables.set('userId', pm.response.json().id);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"username\": \"admin\", \"password\": \"iqrf\"}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v0/user/signIn",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v0",
+										"user",
+										"signIn"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Sign in (invalid password)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "195109f6-25df-4f75-8999-9f06323a09be",
+										"exec": [
+											"pm.test('Status code is 400', function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"pm.test('Content-Type is \\'application/json\\'', function () {",
+											"    pm.response.to.have.header('Content-Type');",
+											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+											"});",
+											"pm.test('Error message is \\'Invalid credentials\\'', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.message).to.eql('Invalid credentials');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"username\": \"admin\", \"password\": \"password\"}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v0/user/signIn",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v0",
+										"user",
+										"signIn"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Sign in (invalid password type)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "fc1768fc-0bfe-4655-8be0-5362a05053db",
+										"exec": [
+											"pm.test('Status code is 400', function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"pm.test('Content-Type is \\'application/json\\'', function () {",
+											"    pm.response.to.have.header('Content-Type');",
+											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+											"});",
+											"pm.test('Error message is \\'JSON does not validate\\'', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: userSignIn Violations:\\n[password] Integer value found, but a string is required');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"username\": \"admin\", \"password\": 1234}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v0/user/signIn",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v0",
+										"user",
+										"signIn"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Sign in (invalid username)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "ce5ff74b-94f1-41d1-bb4b-6131f6645491",
+										"exec": [
+											"pm.test('Status code is 400', function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"pm.test('Content-Type is \\'application/json\\'', function () {",
+											"    pm.response.to.have.header('Content-Type');",
+											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+											"});",
+											"pm.test('Error message is \\'Invalid credentials\\'', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.message).to.eql('Invalid credentials');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"username\": \"username\", \"password\": \"password\"}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v0/user/signIn",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v0",
+										"user",
+										"signIn"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Sign in (invalid JSON syntax)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "e9701854-8109-453b-8340-6afccdcf7c4f",
+										"exec": [
+											"pm.test('Status code is 400', function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"pm.test('Content-Type is \\'application/json\\'', function () {",
+											"    pm.response.to.have.header('Content-Type');",
+											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+											"});",
+											"pm.test('Error message is \\'Invalid JSON syntax\\'', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.message).to.eql('Invalid JSON syntax');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"username\": \"username\", \"password\": \"password\",}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v0/user/signIn",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v0",
+										"user",
+										"signIn"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Sign in (extra JSON property)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "b5dfaf2e-c81f-4a91-a11f-5f435a9c59a8",
+										"exec": [
+											"pm.test('Status code is 400', function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"pm.test('Content-Type is \\'application/json\\'', function () {",
+											"    pm.response.to.have.header('Content-Type');",
+											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+											"});",
+											"pm.test('Error message is \\'JSON does not validate\\'', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: userSignIn Violations:\\n[] The property extra is not defined and the definition does not allow additional properties');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"username\": \"admin\", \"password\": \"iqrf\", \"extra\": true}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v0/user/signIn",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v0",
+										"user",
+										"signIn"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Create",
+					"item": [
+						{
+							"name": "Create a new user",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "3e986551-2bfe-48fc-a07c-8f234c17f6a4",
+										"exec": [
+											"pm.test('Status code is 201', function () {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"pm.test('Header \\'Location\\' is present', function () {",
+											"    pm.response.to.have.header('Location');",
+											"});",
+											"pm.collectionVariables.set('newUserName', JSON.parse(pm.request.body.raw).username);",
+											"pm.collectionVariables.set('newUserId', pm.response.headers.get('Location').substr(14));"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"username\": \"{{$randomUserName}}\",\n    \"password\": \"password\",\n    \"language\": \"en\",\n    \"role\": \"normal\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v0/users",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v0",
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create a new user without username",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "2766ec17-a006-42a1-a298-7d7bd6083fc2",
+										"exec": [
+											"pm.test('Status code is 400', function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"pm.test('Content-Type is \\'application/json\\'', function () {",
+											"    pm.response.to.have.header('Content-Type');",
+											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+											"});",
+											"pm.test('Error message is \\'JSON does not validate\\'', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: userCreate Violations:\\n[username] The property username is required');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"password\": \"password\",\n    \"language\": \"en\",\n    \"role\": \"normal\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v0/users",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v0",
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create a new user without password",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "aace69c2-6609-4d7d-be56-059a155ecdc0",
+										"exec": [
+											"pm.test('Status code is 400', function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"pm.test('Content-Type is \\'application/json\\'', function () {",
+											"    pm.response.to.have.header('Content-Type');",
+											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+											"});",
+											"pm.test('Error message is \\'JSON does not validate. ', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.message).to.eql('JSON does not validate. JSON schema: userCreate Violations:\\n[password] The property password is required');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"username\": \"admin\",\n    \"language\": \"en\",\n    \"role\": \"normal\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v0/users",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v0",
+										"users"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Get information",
+					"item": [
+						{
+							"name": "Get information about the current user",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "670dfbad-d29a-4af0-b16c-a3aeafeafa31",
+										"exec": [
+											"pm.test('Status code is 200', function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"pm.test('Content-Type is \\'application/json\\'', function () {",
+											"    pm.response.to.have.header('Content-Type');",
+											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+											"});",
+											"pm.test('Username is admin', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.username).to.eql('admin');",
+											"});",
+											"pm.test('User language is english', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.language).to.eql('en');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v0/user",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v0",
+										"user"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get information about the new user",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "8924c1e3-a465-48f7-be6f-9bcd2723b6de",
+										"exec": [
+											"pm.test('Status code is 200', function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"pm.test('Content-Type is \\'application/json\\'', function () {",
+											"    pm.response.to.have.header('Content-Type');",
+											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+											"});",
+											"let userId = Number.parseInt(pm.collectionVariables.get('newUserId'));",
+											"pm.test('User ID is ' + userId, function () {",
+											"    pm.expect(pm.response.json().id).to.eql(userId);",
+											"});",
+											"let username = pm.collectionVariables.get('newUserName');",
+											"pm.test('Username is ' + username, function () {",
+											"    pm.expect(pm.response.json().username).to.eql(username);",
+											"});",
+											"pm.test('User language is english', function () {",
+											"    pm.expect(pm.response.json().language).to.eql('en');",
+											"});",
+											"pm.test('User role is normal', function () {",
+											"    pm.expect(pm.response.json().role).to.eql('normal');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v0/users/{{newUserId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v0",
+										"users",
+										"{{newUserId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get information about user 'admin'",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "9012dfa4-5e23-4432-bacd-335fdf278d80",
+										"exec": [
+											"pm.test('Status code is 200', function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"pm.test('Content-Type is \\'application/json\\'', function () {",
+											"    pm.response.to.have.header('Content-Type');",
+											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+											"});",
+											"pm.test('Username is admin', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.username).to.eql('admin');",
+											"});",
+											"pm.test('User language is english', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.language).to.eql('en');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v0/users/{{userId}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v0",
+										"users",
+										"{{userId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get information about the current user (unauthorized)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "73957f0c-8caa-41a9-ba1e-ea34ee178799",
+										"exec": [
+											"pm.test('Status code is 401', function () {",
+											"    pm.response.to.have.status(401);",
+											"});",
+											"pm.test('Content-Type is \\'application/json\\'', function () {",
+											"    pm.response.to.have.header('Content-Type');",
+											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+											"});",
+											"pm.test('Error is \\'Client authentication failed\\'', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.error).to.eql('Client authentication failed');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v0/user",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v0",
+										"user"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get information about nonexistent user",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "5ca13257-b682-4ea2-afac-e6ed05a74166",
+										"exec": [
+											"pm.test('Status code is 404', function () {",
+											"    pm.response.to.have.status(404);",
+											"});",
+											"pm.test('Content-Type is \\'application/json\\'', function () {",
+											"    pm.response.to.have.header('Content-Type');",
+											"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+											"});",
+											"pm.test('Error message is \\'User not found\\'', function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.message).to.eql('User not found');",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v0/users/9999",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v0",
+										"users",
+										"9999"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Delete the new user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d1ab3f1a-099a-45e7-a9f2-7b3348fb7397",
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v0/users/{{newUserId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"users",
+								"{{newUserId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a nonexistent user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "3383d75b-f18d-40ae-90c0-a225595c2adf",
+								"exec": [
+									"pm.test('Status code is 404', function () {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"pm.test('Content-Type is \\'application/json\\'', function () {",
+									"    pm.response.to.have.header('Content-Type');",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+									"});",
+									"pm.test('Error message is \\'User not found\\'', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.message).to.eql('User not found');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v0/users/9999",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"users",
+								"9999"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Features",
+			"item": [],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Config",
+			"item": [
+				{
+					"name": "APT",
+					"item": [
+						{
+							"name": "Get APT configuration",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "8fb8dbe1-5cce-4c7e-82a0-c7f280f5e2fd",
+										"exec": [
+											"if (pm.environment.get('hasApt') === 'true') {",
+											"    pm.test('Status code is 200', function () {",
+											"        pm.response.to.have.status(200);",
+											"    });",
+											"    pm.test('Content-Type is \\'application/json\\'', function () {",
+											"        pm.response.to.have.header('Content-Type');",
+											"        pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+											"    });",
+											"    pm.test('Has APT::Periodic::Enable property', function () {",
+											"        var jsonData = pm.response.json();",
+											"        pm.expect(jsonData['APT::Periodic::Enable']).to.match(/[0-1]/);",
+											"    });",
+											"} else {",
+											"    pm.test('Status code is 500', function () {",
+											"        pm.response.to.have.status(500);",
+											"    });",
+											"    pm.test('Content-Type is \\'application/json\\'', function () {",
+											"        pm.response.to.have.header('Content-Type');",
+											"        pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+											"    });",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v0/config/apt",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v0",
+										"config",
+										"apt"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Services",
+			"item": [
+				{
+					"name": "Get supported services",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d69b8a0d-e01e-4bd2-916d-f19d357fe2d8",
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Content-Type is \\'application/json\\'', function () {",
+									"    pm.response.to.have.header('Content-Type');",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');",
+									"});",
+									"pm.test('Supported services', function () {",
+									"    var jsonData = pm.response.json();",
+									"    const services = [",
+									"        'gwman-client',",
+									"        'iqrf-gateway-controller',",
+									"        'iqrf-gateway-daemon',",
+									"        'iqrf-gateway-translator',",
+									"        'ssh',",
+									"        'unattended-upgrades'",
+									"    ];",
+									"    pm.expect(jsonData.services).to.eql(services);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v0/services/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v0",
+								"services",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "42195762-d97d-417c-b62c-7b6f2614403d",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "a8c5fe76-b65a-49d9-98a1-e0da6e2caa75",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "dc9f1ace-ecd0-4c66-990a-acbae05502b3",
+			"key": "token",
+			"value": null
+		},
+		{
+			"id": "c680d06b-de7a-4213-a040-9c3201218abf",
+			"key": "baseUrl",
+			"value": "localhost:8080"
+		},
+		{
+			"id": "ca2a35f2-9009-405f-9441-9cbc117ff3de",
+			"key": "userId",
+			"value": ""
+		},
+		{
+			"id": "34336e47-e14e-4ca3-a181-90603b1ecde5",
+			"key": "newUserName",
+			"value": ""
+		},
+		{
+			"id": "c1bad257-93b2-4cc8-bace-80c834ea9060",
+			"key": "newUserId",
+			"value": ""
+		}
+	],
+	"protocolProfileBehavior": {}
+}
