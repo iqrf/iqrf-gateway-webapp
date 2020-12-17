@@ -5,7 +5,7 @@
 				{{ $t('iqrfnet.jsonMessage.' + type) }}
 			</span>
 			<CButton
-				v-clipboard='message'
+				v-clipboard='updateMessage'
 				v-clipboard:success='successMessage'
 				color='primary'
 				size='sm'
@@ -61,6 +61,14 @@ export default class JsonMessage extends Vue {
 	 * @property {string} source Message source
 	 */
 	@Prop({required: true}) source!: string
+
+	/**
+	 * Updates message in clipboard
+	 * @returns {string} Message string
+	 */
+	private updateMessage(): string {
+		return this.message;
+	}
 
 	/**
 	 * Shows the success message
