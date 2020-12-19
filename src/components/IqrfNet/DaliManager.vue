@@ -9,7 +9,7 @@
 						rules='integer|required|between:1,239'
 						:custom-messages='{
 							between: "iqrfnet.standard.form.messages.address",
-							integer: "forms.messages.integer",
+							integer: "forms.errors.integer",
 							required: "iqrfnet.standard.form.messages.address"
 						}'
 					>
@@ -29,7 +29,7 @@
 							rules='integer|required|between:0,65535'
 							:custom-messages='{
 								between: "iqrfnet.standard.dali.form.messages.command",
-								integer: "forms.messages.integer",
+								integer: "forms.errors.integer",
 								required: "iqrfnet.standard.dali.form.messages.command"
 							}'
 						>

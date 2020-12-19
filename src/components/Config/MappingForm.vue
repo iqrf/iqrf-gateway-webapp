@@ -49,7 +49,7 @@
 					v-slot='{errors, touched, valid}'
 					rules='integer|required'
 					:custom-messages='{
-						integer: "forms.messages.integer",
+						integer: "forms.errors.integer",
 						required: "config.daemon.interfaces.interfaceMapping.errors.powerPin"
 					}'
 				>
@@ -65,7 +65,7 @@
 					v-slot='{errors, touched, valid}'
 					rules='integer|required'
 					:custom-messages='{
-						integer: "forms.messages.integer",
+						integer: "forms.errors.integer",
 						required: "config.daemon.interfaces.interfaceMapping.errors.busPin"
 					}'
 				>
@@ -81,7 +81,7 @@
 					v-slot='{errors, touched, valid}'
 					rules='integer|required'
 					:custom-messages='{
-						integer: "forms.messages.integer",
+						integer: "forms.errors.integer",
 						required: "config.daemon.interfaces.interfaceMapping.errors.pgmPin"
 					}'
 				>
@@ -216,11 +216,11 @@ export default class MappingForm extends Vue {
 	private typeOptions: Array<IOption> = [
 		{
 			value: 'spi',
-			label: this.$t('config.daemon.interfaces.interfaceMapping.form.types.spi').toString()
+			label: this.$t('config.daemon.interfaces.types.spi').toString()
 		},
 		{
 			value: 'uart',
-			label: this.$t('config.daemon.interfaces.interfaceMapping.form.types.uart').toString()
+			label: this.$t('config.daemon.interfaces.types.uart').toString()
 		}
 	]
 
@@ -230,7 +230,7 @@ export default class MappingForm extends Vue {
 	 */
 	get modalTitle(): string {
 		return this.mappingId === null ? 
-			this.$t('config.daemon.interfaces.interfaceMapping.form.addTitle').toString(): this.$t('config.daemon.interfaces.interfaceMapping.form.editTitle').toString() + ' ' +this.name;
+			this.$t('config.daemon.interfaces.interfaceMapping.add').toString(): this.$t('config.daemon.interfaces.interfaceMapping.edit').toString() + ' ' + this.name;
 	}
 
 	/**

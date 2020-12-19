@@ -7,7 +7,7 @@
 					{{ $t('gateway.info.gwMode') }}
 				</CCol>
 				<CCol>
-					{{ $t('gateway.mode.modes.' + mode) }}
+					{{ $t(mode !== 'unknown' ? 'gateway.mode.modes.' + mode: 'gateway.mode.messages.getFailed') }}
 				</CCol>
 			</CRow>
 			<div v-if='mode !== "unknown"'>

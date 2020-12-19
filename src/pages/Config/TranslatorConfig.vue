@@ -15,7 +15,7 @@
 								>
 									<CInput
 										v-model='config.mqtt.addr'
-										:label='$t("config.translator.form.mqtt.addr")'
+										:label='$t("config.daemon.messagings.mqtt.form.BrokerAddr")'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'
 									/>
@@ -112,7 +112,7 @@
 								>
 									<CInput
 										v-model='config.rest.addr' 
-										:label='$t("config.translator.form.rest.addr")' 
+										:label='$t("forms.fields.address")' 
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'
 									/>

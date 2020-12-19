@@ -141,7 +141,7 @@ export default class UdpMessagingTable extends Vue {
 	private fields: Array<IField> = [
 		{
 			key: 'instance',
-			label: this.$t('config.daemon.messagings.udp.form.instance'),
+			label: this.$t('forms.fields.instanceName'),
 		},
 		{
 			key: 'RemotePort',

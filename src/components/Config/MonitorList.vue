@@ -162,7 +162,7 @@ export default class MonitorList extends Vue {
 	private fields: Array<IField> =  [
 		{
 			key: 'instance',
-			label: this.$t('config.daemon.misc.monitor.form.instance'),
+			label: this.$t('forms.fields.instanceName'),
 		},
 		{
 			key: 'reportPeriod',

@@ -243,10 +243,10 @@
 								>
 									<CSelect
 										:value.sync='config.uartBaudrate'
-										:label='$t("iqrfnet.trConfiguration.form.uartBaudRate" + (address === 0 ? "C" : "N"))'
+										:label='$t(address === 0 ? "iqrfnet.trConfiguration.form.uartBaudRate" : "config.daemon.interfaces.iqrfUart.form.baudRate")'
 										:is-valid='touched ? valid : null'
 										:invalid-feedback='$t(errors[0])'
-										:placeholder='$t("iqrfnet.trConfiguration.form.messages.uartBaudrate" + (address === 0 ? "C" : "N"))'
+										:placeholder='$t(address === 0 ? "iqrfnet.trConfiguration.form.messages.uartBaudrate": "config.daemon.interfaces.iqrfUart.errors.baudRate")'
 										:options='uartBaudRates'
 									/>
 								</ValidationProvider>

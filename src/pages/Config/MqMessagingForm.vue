@@ -17,7 +17,7 @@
 						>
 							<CInput
 								v-model='configuration.instance'
-								:label='$t("config.daemon.messagings.mq.form.instance")'
+								:label='$t("forms.fields.instanceName")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
@@ -48,7 +48,7 @@
 						</ValidationProvider>
 						<CInputCheckbox
 							:checked.sync='configuration.acceptAsyncMsg'
-							:label='$t("config.daemon.messagings.mq.form.acceptAsyncMsg")'
+							:label='$t("config.daemon.messagings.acceptAsyncMsg")'
 						/>
 						<CButton type='submit' color='primary' :disabled='invalid'>
 							{{ submitButton }}

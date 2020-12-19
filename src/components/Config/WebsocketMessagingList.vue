@@ -32,14 +32,14 @@
 						<td>
 							<CDropdown
 								:color='item.acceptAsyncMsg ? "success": "danger"'
-								:toggler-text='$t("table.enabled." + item.acceptAsyncMsg)'
+								:toggler-text='$t("states." + (item.acceptAsyncMsg ? "enabled": "disabled"))'
 								size='sm'
 							>
 								<CDropdownItem @click='changeAccept(item, true)'>
-									{{ $t('table.enabled.true') }}
+									{{ $t('states.enabled') }}
 								</CDropdownItem>
 								<CDropdownItem @click='changeAccept(item, false)'>
-									{{ $t('table.enabled.false') }}
+									{{ $t('states.disabled') }}
 								</CDropdownItem>
 							</CDropdown>
 						</td>
@@ -143,11 +143,11 @@ export default class WebsocketMessagingList extends Vue {
 	private fields: Array<IField> = [
 		{
 			key: 'instance',
-			label: this.$t('config.daemon.messagings.websocket.form.instance'),
+			label: this.$t('forms.fields.instanceName'),
 		},
 		{
 			key: 'acceptAsyncMsg',
-			label: this.$t('config.daemon.messagings.websocket.form.acceptAsyncMsg'),
+			label: this.$t('config.daemon.messagings.acceptAsyncMsg'),
 		},
 		{
 			key: 'RequiredInterfaces',

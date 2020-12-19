@@ -40,13 +40,13 @@
 						</ValidationProvider>
 						<CInputCheckbox
 							:checked.sync='configuration.enabled'
-							:label='$t("config.daemon.components.form.enabled")'
+							:label='$t("states.enabled")'
 						/>
 						<ValidationProvider
 							v-slot='{ errors, touched, valid }'
 							rules='integer|required'
 							:custom-messages='{
-								integer: "forms.messages.integer",
+								integer: "forms.errors.integer",
 								required: "config.daemon.components.errors.startLevel"
 							}'
 						>

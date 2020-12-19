@@ -14,7 +14,7 @@
 					>
 						<CInput
 							v-model='configuration.instance'
-							:label='$t("config.daemon.interfaces.iqrfDpa.form.instance")'
+							:label='$t("forms.fields.instanceName")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
@@ -23,7 +23,7 @@
 						v-slot='{ errors, touched, valid }'
 						rules='integer|required|min:0'
 						:custom-messages='{
-							integer: "forms.messages.integer",
+							integer: "forms.errors.integer",
 							min: "config.daemon.interfaces.iqrfDpa.errors.DpaHandlerTimeout",
 							required: "config.daemon.interfaces.iqrfDpa.errors.DpaHandlerTimeout"
 						}'
