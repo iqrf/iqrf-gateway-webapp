@@ -7,7 +7,7 @@
 					<tr>
 						<td class='table-toprow'>
 							<CIcon class='text-info' :content='icons.coordinator' />
-							{{ $t('iqrfnet.networkManager.devicesInfo.icons.coordinator') }}
+							{{ $t('forms.fields.coordinator') }}
 						</td>
 						<td class='table-toprow'>
 							<CIcon class='text-danger' :content='icons.unbonded' />

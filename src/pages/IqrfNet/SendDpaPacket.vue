@@ -163,7 +163,7 @@
 								v-slot='{errors, touched, valid}'
 								rules='integer|required|between:1,36000'
 								:custom-messages='{
-									integer: "forms.messages.integer",
+									integer: "forms.errors.integer",
 									between: "iqrfnet.sendPacket.form.messages.invalid.autoRepeatInterval",
 									required: "iqrfnet.sendPacket.form.messages.invalid.autoRepeatInterval"
 								}'
@@ -500,7 +500,7 @@ export default class SendDpaPacket extends Vue {
 				message = this.$t('iqrfnet.sendPacket.messages.incorrect.hwpid').toString();
 				break;
 			case 8:
-				message = this.$t('iqrfnet.sendPacket.messages.incorrect.nadr',
+				message = this.$t('forms.messages.noDevice',
 					{
 						address: (this.addressOverwrite ? this.address : Number.parseInt(this.packetNadr, 16))
 					}).toString();

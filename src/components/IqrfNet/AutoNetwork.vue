@@ -7,7 +7,7 @@
 						v-slot='{ errors, touched, valid }'
 						rules='integer|required|between:0,7'
 						:custom-messages='{
-							integer: "iqrfnet.networkManager.messages.invalid.integer",
+							integer: "forms.errors.integer",
 							required: "iqrfnet.networkManager.messages.discovery.txPower",
 							between: "iqrfnet.networkManager.messages.discovery.txPower"
 						}'
@@ -35,7 +35,7 @@
 						v-slot='{ errors, touched, valid }'
 						rules='integer|required|between:0,3'
 						:custom-messages='{
-							integer: "iqrfnet.networkManager.messages.invalid.integer",
+							integer: "forms.errors.integer",
 							required: "iqrfnet.networkManager.messages.autoNetwork.actionRetries",
 							between: "iqrfnet.networkManager.messages.autoNetwork.actionRetries"
 						}'
@@ -61,7 +61,7 @@
 						v-slot='{ errors, touched, valid }'
 						rules='integer|required|between:1,50'
 						:custom-messages='{
-							integer: "iqrfnet.networkManager.messages.invalid.integer",
+							integer: "forms.errors.integer",
 							required: "iqrfnet.networkManager.messages.autoNetwork.networks",
 							between: "iqrfnet.networkManager.messages.autoNetwork.networks"
 						}'
@@ -81,7 +81,7 @@
 						v-slot='{ errors, touched, valid }'
 						rules='integer|required|between:1,50'
 						:custom-messages='{
-							integer: "iqrfnet.networkManager.messages.invalid.integer",
+							integer: "forms.errors.integer",
 							required: "iqrfnet.networkManager.messages.autoNetwork.network",
 							between: "iqrfnet.networkManager.messages.autoNetwork.network"
 						}'
@@ -131,7 +131,7 @@
 							v-slot='{ errors, touched, valid }'
 							rules='integer|required|between:1,127'
 							:custom-messages='{
-								integer: "iqrfnet.networkManager.messages.invalid.integer",
+								integer: "forms.errors.integer",
 								required: "iqrfnet.networkManager.messages.autoNetwork.waves",
 								between: "iqrfnet.networkManager.messages.autoNetwork.waves"
 							}'
@@ -151,7 +151,7 @@
 						v-slot='{ errors, touched, valid }'
 						rules='integer|required|between:1,127'
 						:custom-messages='{
-							integer: "iqrfnet.networkManager.messages.invalid.integer",
+							integer: "forms.errors.integer",
 							required: "iqrfnet.networkManager.messages.autoNetwork.emptyWaves",
 							between: "iqrfnet.networkManager.messages.autoNetwork.emptyWaves"
 						}'
@@ -184,7 +184,7 @@
 							v-slot='{ errors, touched, valid }'
 							rules='integer|required|between:1,239'
 							:custom-messages='{
-								integer: "iqrfnet.networkManager.messages.invalid.integer",
+								integer: "forms.errors.integer",
 								required: "iqrfnet.networkManager.messages.autoNetwork.totalNodes",
 								between: "iqrfnet.networkManager.messages.autoNetwork.totalNodes"
 							}'
@@ -205,7 +205,7 @@
 							v-slot='{ errors, touched, valid }'
 							rules='integer|required|between:1,239'
 							:custom-messages='{
-								integer: "iqrfnet.networkManager.messages.invalid.integer",
+								integer: "forms.errors.integer",
 								required: "iqrfnet.networkManager.messages.autoNetwork.newNodes",
 								between: "iqrfnet.networkManager.messages.autoNetwork.newNodes"
 							}'
@@ -233,7 +233,7 @@
 						:disabled='invalid'
 						@click='processSubmitAutoNetwork'
 					>
-						{{ $t('forms.start') }}
+						{{ $t('forms.runAutonetwork') }}
 					</CButton>
 				</CForm>
 			</ValidationObserver>

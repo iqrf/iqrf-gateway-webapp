@@ -87,7 +87,7 @@
 										v-slot='{ errors, touched, valid }'
 										rules='required|integer|between:0,3'
 										:custom-messages='{
-											integer: "iqrfnet.networkManager.messages.invalid.integer",
+											integer: "forms.errors.integer",
 											required: "iqrfnet.networkManager.messages.autoNetwork.actionRetries",
 											between: "iqrfnet.networkManager.messages.autoNetwork.actionRetries"
 										}'
@@ -110,7 +110,7 @@
 										v-slot='{ errors, touched, valid }'
 										rules='integer|required|between:0,7'
 										:custom-messages='{
-											integer: "iqrfnet.networkManager.messages.invalid.integer",
+											integer: "forms.errors.integer",
 											required: "iqrfnet.networkManager.messages.discovery.txPower",
 											between: "iqrfnet.networkManager.messages.discovery.txPower"
 										}'
@@ -140,7 +140,7 @@
 										v-slot='{ errors, touched, valid }'
 										rules='integer|required|between:1,127'
 										:custom-messages='{
-											integer: "iqrfnet.networkManager.messages.invalid.integer",
+											integer: "forms.errors.integer",
 											required: "iqrfnet.networkManager.messages.autoNetwork.emptyWaves",
 											between: "iqrfnet.networkManager.messages.autoNetwork.emptyWaves"
 										}'
@@ -159,7 +159,7 @@
 										v-slot='{ errors, touched, valid }'
 										rules='integer|required|between:1,127'
 										:custom-messages='{
-											integer: "iqrfnet.networkManager.messages.invalid.integer",
+											integer: "forms.errors.integer",
 											required: "iqrfnet.networkManager.messages.autoNetwork.waves",
 											between: "iqrfnet.networkManager.messages.autoNetwork.waves"
 										}'
@@ -176,7 +176,7 @@
 									</ValidationProvider><hr>
 									<CInputCheckbox
 										:checked.sync='config.daemonApi.autoNetwork.returnVerbose'
-										:label='$t("config.controller.form.daemonApi.autoNetwork.verbose")'
+										:label='$t("forms.fields.verbose")'
 									/>
 								</div>
 								<div v-else-if='config.resetButton.api === "discovery"'>
@@ -187,7 +187,7 @@
 										v-slot='{ errors, touched, valid }'
 										rules='integer|required|between:0,239'
 										:custom-messages='{
-											integer: "iqrfnet.networkManager.messages.invalid.integer",
+											integer: "forms.errors.integer",
 											required: "iqrfnet.networkManager.discovery.errors.maxAddr",
 											between: "iqrfnet.networkManager.discovery.errors.maxAddr"
 										}'
@@ -206,7 +206,7 @@
 										v-slot='{ errors, touched, valid }'
 										rules='integer|required|between:0,7'
 										:custom-messages='{
-											integer: "iqrfnet.networkManager.messages.invalid.integer",
+											integer: "forms.errors.integer",
 											required: "iqrfnet.networkManager.discovery.errors.txPower",
 											between: "iqrfnet.networkManager.discovery.errors.txPower"
 										}'
@@ -223,7 +223,7 @@
 									</ValidationProvider>
 									<CInputCheckbox
 										:checked.sync='config.daemonApi.discovery.returnVerbose'
-										:label='$t("config.controller.form.daemonApi.discovery.verbose")'
+										:label='$t("forms.fields.verbose")'
 									/>
 								</div>
 							</CCol>
@@ -231,7 +231,7 @@
 								<h3>{{ $t("config.controller.form.factoryReset.title") }}</h3>
 								<CInputCheckbox
 									:checked.sync='config.factoryReset.coordinator'
-									:label='$t("config.controller.form.factoryReset.coordinator")'
+									:label='$t("forms.fields.coordinator")'
 								/>
 								<CInputCheckbox
 									:checked.sync='config.factoryReset.daemon'
@@ -312,15 +312,15 @@ export default class ControllerConfig extends Vue {
 	private apiCallOptions: Array<IOption> = [
 		{
 			value: '',
-			label: this.$t('config.controller.form.resetButton.calls.noCall').toString()
+			label: this.$t('config.controller.form.resetButton.noCall').toString()
 		},
 		{
 			value: 'autoNetwork',
-			label: this.$t('config.controller.form.resetButton.calls.autonetwork').toString()
+			label: this.$t('iqrfnet.networkManager.autoNetwork.title').toString()
 		},
 		{
 			value: 'discovery',
-			label: this.$t('config.controller.form.resetButton.calls.discovery').toString()
+			label: this.$t('iqrfnet.networkManager.discovery.title').toString()
 		}
 	]
 
@@ -335,23 +335,23 @@ export default class ControllerConfig extends Vue {
 	private severityOptions: Array<IOption> = [
 		{
 			value: 'trace',
-			label: this.$t('config.controller.form.logger.levels.trace').toString()
+			label: this.$t('forms.fields.messageLevel.trace').toString()
 		},
 		{
 			value: 'debug',
-			label: this.$t('config.controller.form.logger.levels.debug').toString()
+			label: this.$t('forms.fields.messageLevel.debug').toString()
 		},
 		{
 			value: 'info',
-			label: this.$t('config.controller.form.logger.levels.info').toString()
+			label: this.$t('forms.fields.messageLevel.info').toString()
 		},
 		{
 			value: 'warning',
-			label: this.$t('config.controller.form.logger.levels.warning').toString()
+			label: this.$t('forms.fields.messageLevel.warning').toString()
 		},
 		{
 			value: 'error',
-			label: this.$t('config.controller.form.logger.levels.error').toString()
+			label: this.$t('forms.fields.messageLevel.error').toString()
 		}
 	]
 

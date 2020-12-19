@@ -32,14 +32,14 @@
 						<td>
 							<CDropdown
 								:color='item.enabled ? "success" : "danger"'
-								:toggler-text='$t("table.enabled." + item.enabled)'
+								:toggler-text='$t("states." + (item.enabled ? "enabled": "disabled"))'
 								size='sm'
 							>
 								<CDropdownItem @click='changeEnabled(item, true)'>
-									{{ $t('table.enabled.true') }}
+									{{ $t('states.enabled') }}
 								</CDropdownItem>
 								<CDropdownItem @click='changeEnabled(item, false)'>
-									{{ $t('table.enabled.false') }}
+									{{ $t('states.disabled') }}
 								</CDropdownItem>
 							</CDropdown>
 						</td>
@@ -155,7 +155,7 @@ export default class ComponentList extends Vue {
 		},
 		{
 			key: 'enabled',
-			label: this.$t('config.daemon.components.form.enabled'),
+			label: this.$t('states.enabled'),
 			filter: false,
 		},
 		{

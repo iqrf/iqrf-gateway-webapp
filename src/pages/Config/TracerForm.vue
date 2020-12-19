@@ -18,7 +18,7 @@
 					>
 						<CInput
 							v-model='componentInstance'
-							:label='$t("config.daemon.misc.tracer.form.instance")'
+							:label='$t("forms.fields.instanceName")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
@@ -45,7 +45,7 @@
 						:custom-messages='{
 							required: "config.daemon.misc.tracer.errors.maxSizeMb",
 							min: "config.daemon.misc.tracer.errors.maxSizeMb",
-							integer: "forms.messages.integer"
+							integer: "forms.errors.integer"
 						}'
 					>
 						<CInput
@@ -61,7 +61,7 @@
 							v-slot='{ errors, touched, valid }'
 							rules='integer|min:0'
 							:custom-messages='{
-								integer: "forms.messages.integer",
+								integer: "forms.errors.integer",
 								min: "config.daemon.misc.tracer.errors.maxAgeMinutes"
 							}'
 						>
@@ -78,7 +78,7 @@
 							v-slot='{ errors, touched, valid }'
 							rules='integer|min:0'
 							:custom-messages='{
-								integer: "forms.messages.integer",
+								integer: "forms.errors.integer",
 								min: "config.daemon.misc.tracer.errors.maxNumber"
 							}'
 						>
@@ -107,7 +107,7 @@
 							v-slot='{ errors, touched, valid }'
 							rules='integer|required'
 							:custom-messages='{
-								integer: "forms.messages.integer",
+								integer: "forms.errors.integer",
 								required: "config.daemon.misc.tracer.errors.verbosityLevels.channel"
 							}'
 						>
@@ -270,10 +270,22 @@ export default class TracerForm extends Vue {
 	 * @constant {Array<IOption>} selectOptions Array of CoreUI logging severity select options
 	 */
 	private selectOptions: Array<IOption> = [
-		{value: 'ERR', label: this.$t('config.daemon.misc.tracer.form.levels.error')},
-		{value: 'WAR', label: this.$t('config.daemon.misc.tracer.form.levels.warning')},
-		{value: 'INF', label: this.$t('config.daemon.misc.tracer.form.levels.info')},
-		{value: 'DBG', label: this.$t('config.daemon.misc.tracer.form.levels.debug')}
+		{
+			value: 'DBG',
+			label: this.$t('forms.fields.messageLevel.debug')
+		},
+		{
+			value: 'INF',
+			label: this.$t('forms.fields.messageLevel.info')
+		},
+		{
+			value: 'WAR',
+			label: this.$t('forms.fields.messageLevel.warning')
+		},
+		{
+			value: 'ERR',
+			label: this.$t('forms.fields.messageLevel.error')
+		},
 	]
 
 	/**

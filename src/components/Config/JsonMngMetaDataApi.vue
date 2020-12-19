@@ -13,7 +13,7 @@
 					>
 						<CInput
 							v-model='configuration.instance'
-							:label='$t("config.daemon.misc.jsonMngMetaDataApi.form.instance")'
+							:label='$t("forms.fields.instanceName")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>

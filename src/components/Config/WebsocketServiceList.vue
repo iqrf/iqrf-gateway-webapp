@@ -32,14 +32,14 @@
 						<td>
 							<CDropdown
 								:color='item.acceptOnlyLocalhost ? "success": "danger"'
-								:toggler-text='$t("table.enabled." + item.acceptOnlyLocalhost)'
+								:toggler-text='$t("states." + (item.acceptOnlyLocalhost ? "enabled": "disabled"))'
 								size='sm'
 							>
 								<CDropdownItem @click='changeAccept(item, true)'>
-									{{ $t('table.enabled.true') }}
+									{{ $t('states.enabled') }}
 								</CDropdownItem>
 								<CDropdownItem @click='changeAccept(item, false)'>
-									{{ $t('table.enabled.false') }}
+									{{ $t('states.disabled') }}
 								</CDropdownItem>
 							</CDropdown>
 						</td>
@@ -48,14 +48,14 @@
 						<td>
 							<CDropdown
 								:color='item.tlsEnabled ? "success": "danger"'
-								:toggler-text='$t("table.enabled." + item.tlsEnabled)'
+								:toggler-text='$t("states." + (item.tlsEnabled ? "enabled": "disabled"))'
 								size='sm'
 							>
 								<CDropdownItem @click='changeTLS(item, true)'>
-									{{ $t('table.enabled.true') }}
+									{{ $t('states.enabled') }}
 								</CDropdownItem>
 								<CDropdownItem @click='changeTLS(item, false)'>
-									{{ $t('table.enabled.false') }}
+									{{ $t('states.disabled') }}
 								</CDropdownItem>
 							</CDropdown>
 						</td>
@@ -161,7 +161,7 @@ export default class WebsocketServiceList extends Vue {
 	private fields: Array<IField> = [
 		{
 			key: 'instance',
-			label: this.$t('config.daemon.messagings.websocket.form.instance'),
+			label: this.$t('forms.fields.instanceName'),
 		},
 		{
 			key: 'WebsocketPort',

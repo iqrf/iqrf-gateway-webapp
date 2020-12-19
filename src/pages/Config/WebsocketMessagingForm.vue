@@ -17,14 +17,14 @@
 						>
 							<CInput
 								v-model='configuration.instance'
-								:label='$t("config.daemon.messagings.websocket.form.instance")'
+								:label='$t("forms.fields.instanceName")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
 						</ValidationProvider>
 						<CInputCheckbox
 							:checked.sync='configuration.acceptAsyncMsg'
-							:label='$t("config.daemon.messagings.websocket.form.acceptAsyncMsg")'
+							:label='$t("config.daemon.messagings.acceptAsyncMsg")'
 						/>
 						<h4>{{ $t('config.daemon.messagings.websocket.form.requiredInterfaces') }}</h4>
 						<div

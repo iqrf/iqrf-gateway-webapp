@@ -17,7 +17,7 @@
 						>
 							<CInput
 								v-model='configuration.instance'
-								:label='$t("config.daemon.messagings.mqtt.form.instance")'
+								:label='$t("forms.fields.instanceName")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
@@ -209,7 +209,7 @@
 						/>
 						<CInputCheckbox
 							:checked.sync='configuration.acceptAsyncMsg'
-							:label='$t("config.daemon.messagings.mqtt.form.acceptAsyncMsg")'
+							:label='$t("config.daemon.messagings.acceptAsyncMsg")'
 						/>
 						<CButton type='submit' color='primary' :disabled='invalid'>
 							{{ submitButton }}

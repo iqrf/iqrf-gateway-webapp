@@ -13,17 +13,6 @@
 						</p>
 					</CListGroupItem>
 					<CListGroupItem
-						v-if='$store.getters["features/isEnabled"]("iqrfGatewayTranslator")'
-						to='/config/translator/'
-					>
-						<header class='list-group-item-heading'>
-							{{ $t('config.translator.title') }}
-						</header>
-						<p class='list-group-item-text'>
-							{{ $t('config.translator.description') }}
-						</p>
-					</CListGroupItem>
-					<CListGroupItem
 						v-if='$store.getters["features/isEnabled"]("iqrfGatewayController")'
 						to='/config/controller/'
 					>
@@ -32,6 +21,17 @@
 						</header>
 						<p class='list-group-item-text'>
 							{{ $t('config.controller.description') }}
+						</p>
+					</CListGroupItem>
+					<CListGroupItem
+						v-if='$store.getters["features/isEnabled"]("iqrfGatewayTranslator")'
+						to='/config/translator/'
+					>
+						<header class='list-group-item-heading'>
+							{{ $t('config.translator.title') }}
+						</header>
+						<p class='list-group-item-text'>
+							{{ $t('config.translator.description') }}
 						</p>
 					</CListGroupItem>
 					<CListGroupItem

@@ -8,7 +8,7 @@
 						v-slot='{ errors, touched, valid }'
 						rules='integer|required|between:1,239'
 						:custom-messages='{
-							integer: "forms.messages.integer",
+							integer: "forms.errors.integer",
 							required: "iqrfnet.standard.form.messages.address",
 							between: "iqrfnet.standard.form.messages.address"
 						}'
@@ -27,7 +27,7 @@
 						v-slot='{ errors, touched, valid }'
 						rules='integer|required|between:0,31'
 						:custom-messages='{
-							integer: "forms.messages.integer",
+							integer: "forms.errors.integer",
 							required: "iqrfnet.standard.binaryOutput.form.messages.index",
 							between: "iqrfnet.standard.binaryOutput.form.messages.index"
 						}'

@@ -40,7 +40,7 @@
 							v-slot='{ errors, touched, valid }'
 							rules='min:0|required|integer'
 							:custom-messages='{
-								integer: "forms.messages.integer",
+								integer: "forms.errors.integer",
 								min: "config.mender.errors.inventoryPollInterval",
 								required: "config.mender.errors.inventoryPollInterval"
 							}'
@@ -58,7 +58,7 @@
 							v-slot='{ errors, touched, valid }'
 							rules='min:0|required|integer'
 							:custom-messages='{
-								integer: "forms.messages.integer",
+								integer: "forms.errors.integer",
 								min: "config.mender.errors.retryPollInterval",
 								required: "config.mender.errors.retryPollInterval"
 							}'
@@ -76,7 +76,7 @@
 							v-slot='{ errors, touched, valid}'
 							rules='min:0|required|integer'
 							:custom-messages='{
-								integer: "forms.messages.integer",
+								integer: "forms.errors.integer",
 								min: "config.mender.errors.updatePollInterval",
 								required: "config.mender.errors.updatePollInterval"
 							}'
