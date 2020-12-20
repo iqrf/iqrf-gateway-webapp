@@ -172,7 +172,7 @@ class IqrfOsPatch {
 	 * @return array<string, int|string> JSON serialized IQRF OS patch data
 	 */
 	public function jsonSerialize(): array {
-		$array = [
+		return [
 			'id' => $this->getId(),
 			'moduleType' => $this->getModuleType(),
 			'fromOsVersion' => $this->getFromVersion(),
@@ -183,7 +183,6 @@ class IqrfOsPatch {
 			'parts' => $this->getParts(),
 			'fileName' => $this->getFileName(),
 		];
-		return $array;
 	}
 
 }
