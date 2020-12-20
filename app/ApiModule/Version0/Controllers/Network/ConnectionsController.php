@@ -33,6 +33,7 @@ use App\ApiModule\Version0\Controllers\NetworkController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\NetworkModule\Enums\ConnectionTypes;
 use App\NetworkModule\Exceptions\NetworkManagerException;
+use App\NetworkModule\Exceptions\NonexistentConnectionException;
 use App\NetworkModule\Models\ConnectionManager;
 use Grifart\Enum\MissingValueDeclarationException;
 use Ramsey\Uuid\Exception\InvalidUuidStringException;
@@ -133,6 +134,8 @@ class ConnectionsController extends NetworkController {
 		try {
 			$uuid = $this->getUuid($request);
 			$this->manager->delete($uuid);
+		} catch (NonexistentConnectionException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
 		} catch (NetworkManagerException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
@@ -172,6 +175,8 @@ class ConnectionsController extends NetworkController {
 			$this->validator->validateRequest('networkConnection', $request);
 			$json = $request->getJsonBody(false);
 			$this->manager->edit($uuid, $json);
+		} catch (NonexistentConnectionException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
 		} catch (NetworkManagerException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
@@ -206,6 +211,8 @@ class ConnectionsController extends NetworkController {
 		try {
 			$uuid = $this->getUuid($request);
 			return $response->writeJsonObject($this->manager->get($uuid));
+		} catch (NonexistentConnectionException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
 		} catch (NetworkManagerException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
@@ -226,6 +233,10 @@ class ConnectionsController extends NetworkController {
 	 *  responses:
 	 *      '200':
 	 *          description: Success
+	 *      '400':
+	 *          $ref: '#/components/responses/BadRequest'
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
 	 * ")
 	 * @RequestParameters(
 	 *     @RequestParameter(name="uuid", type="string", description="Connection UUID")
@@ -240,6 +251,8 @@ class ConnectionsController extends NetworkController {
 			$uuid = $this->getUuid($request);
 			$this->manager->up($uuid, $interface);
 			return $response->writeBody('Workaround');
+		} catch (NonexistentConnectionException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
 		} catch (NetworkManagerException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
@@ -253,6 +266,10 @@ class ConnectionsController extends NetworkController {
 	 *  responses:
 	 *      '200':
 	 *          description: Success
+	 *      '400':
+	 *          $ref: '#/components/responses/BadRequest'
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
 	 * ")
 	 * @RequestParameters(
 	 *     @RequestParameter(name="uuid", type="string", description="Connection UUID")
@@ -266,6 +283,8 @@ class ConnectionsController extends NetworkController {
 			$uuid = $this->getUuid($request);
 			$this->manager->down($uuid);
 			return $response->writeBody('Workaround');
+		} catch (NonexistentConnectionException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S400_BAD_REQUEST);
 		} catch (NetworkManagerException $e) {
 			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
 		}
