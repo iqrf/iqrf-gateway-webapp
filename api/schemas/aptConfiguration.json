@@ -10,9 +10,34 @@
 		"APT::Periodic::Enable": {
 			"$id": "#/properties/APT%3A%3APeriodic%3A%3AEnable",
 			"type": "string",
-			"title": "The APT::Periodic::Enable",
+			"title": "Enable unattended upgrades",
+			"enum": ["0", "1"],
 			"example": "0"
+		},
+		"APT::Periodic::Update-Package-Lists": {
+			"$id": "#/properties/APT%3A%3APeriodic%3A%3AUpdate-Package-Lists",
+			"type": "string",
+			"title": "Package list update interval in days",
+			"example": "1"
+		},
+		"APT::Periodic::Unattended-Upgrade": {
+			"$id": "#/properties/APT%3A%3APeriodic%3A%3AUnattended-Upgrade",
+			"type": "string",
+			"title": "Package upgrade interval in days",
+			"example": "1"
+		},
+		"APT::Periodic::AutocleanInterval": {
+			"$id": "#/properties/APT%3A%3APeriodic%3A%3AAutocleanInterval",
+			"type": "string",
+			"title": "Unnecessary package removal interval",
+			"example": "21"
+		},
+		"Unattended-Upgrade::Automatic-Reboot": {
+			"$id": "Unattended-Upgrade%3A%3AAutomatic-Reboot",
+			"type": "string",
+			"title": "Reboot on kernel update",
+			"enum": ["false", "true"],
+			"example": "false"
 		}
-	},
-	"additionalProperties": true
+	}
 }

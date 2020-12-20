@@ -5,7 +5,32 @@ import { authorizationHeader } from '../helpers/authorizationHeader';
  * APT configuration
  */
 export interface AptConfiguration {
-	'APT::Periodic::Enable': string;
+	/**
+	 * Enable automatic upgrades
+	 */
+	'APT::Periodic::Enable': string
+}
+
+export interface AptConfigurationExtended extends AptConfiguration {
+		/**
+	 * Package list update interval
+	 */
+	'APT::Periodic::Update-Package-Lists': string
+
+	/**
+	 * Package upgrade interval
+	 */
+	'APT::Periodic::Unattended-Upgrade': string
+
+	/**
+	 * Unnecessary package removal interval
+	 */
+	'APT::Periodic::AutocleanInterval': string
+
+	/**
+	 * Reboot on kernel updates
+	 */
+	'Unattended-Upgrade::Automatic-Reboot': string
 }
 
 /**
@@ -24,7 +49,7 @@ class AptService {
 	 * Sets APT configuration
 	 * @param configuration APT configuration
 	 */
-	write(configuration: AptConfiguration): Promise<AxiosResponse> {
+	write(configuration: AptConfiguration|AptConfigurationExtended): Promise<AxiosResponse> {
 		return axios.put('/config/apt', configuration, {headers: authorizationHeader()});
 	}
 }

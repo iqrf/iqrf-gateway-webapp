@@ -5,7 +5,7 @@ import {ToastOptions} from 'vue-toast-notification';
 /**
  * Toast class that automatically clears existing toasts
  */
-class ClearToast {
+class ToastClear {
 	
 	/**
 	 * Error toast
@@ -67,4 +67,4 @@ class ClearToast {
 
 }
 
-export default new ClearToast();
+export default new ToastClear();
