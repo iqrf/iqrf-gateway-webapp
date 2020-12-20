@@ -13,6 +13,7 @@ namespace Tests\Unit\NetworkModule\Models;
 use App\NetworkModule\Entities\InterfaceStatus;
 use App\NetworkModule\Enums\InterfaceStates;
 use App\NetworkModule\Enums\InterfaceTypes;
+use App\NetworkModule\Exceptions\NonexistentDeviceException;
 use App\NetworkModule\Models\InterfaceManager;
 use Tester\Assert;
 use Tests\Toolkit\TestCases\CommandTestCase;
@@ -48,6 +49,18 @@ final class InterfaceManagerTest extends CommandTestCase {
 	}
 
 	/**
+	 * Tests the function to connect the network interface if it does not exist
+	 */
+	public function testConnectNonexistent(): void {
+		$command = 'nmcli -t device connect testDev';
+		$stderr = 'Error: Device \'testDev\' not found.';
+		$this->receiveCommand($command, true, '', $stderr, 10);
+		Assert::throws(function (): void {
+			$this->manager->connect('testDev');
+		}, NonexistentDeviceException::class, $stderr);
+	}
+
+	/**
 	 * Tests the function to disconnect the network interface
 	 */
 	public function testDisconnect(): void {
@@ -55,6 +68,18 @@ final class InterfaceManagerTest extends CommandTestCase {
 		Assert::noError(function (): void {
 			$this->manager->disconnect('eth0');
 		});
+	}
+
+	/**
+	 * Tests the function to connect the network interface if it does not exist
+	 */
+	public function testDisconnectNonexistent(): void {
+		$command = 'nmcli -t device disconnect testDev';
+		$stderr = 'Error: Device \'testDev\' not found.';
+		$this->receiveCommand($command, true, '', $stderr, 10);
+		Assert::throws(function (): void {
+			$this->manager->disconnect('testDev');
+		}, NonexistentDeviceException::class, $stderr);
 	}
 
 	/**

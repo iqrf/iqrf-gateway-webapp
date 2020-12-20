@@ -48,20 +48,6 @@ class ConnectionManager {
 	}
 
 	/**
-	 * Error handler function for NMCLI
-	 * @param int $code NMCLI exit code
-	 * @param string $error NMCLI stderr
-	 * @throws NetworkManagerException
-	 * @throws NonexistentConnectionException
-	 */
-	private function handleError(int $code, string $error): void {
-		if ($code === 10) {
-			throw new NonexistentConnectionException($error);
-		}
-		throw new NetworkManagerException($error);
-	}
-
-	/**
 	 * Deletes the network connection
 	 * @param UuidInterface $uuid Network connection UUID
 	 */
@@ -158,6 +144,20 @@ class ConnectionManager {
 		if ($exitCode !== 0) {
 			$this->handleError($exitCode, $output->getStderr());
 		}
+	}
+
+	/**
+	 * Error handler function for NMCLI
+	 * @param int $code NMCLI exit code
+	 * @param string $error NMCLI stderr
+	 * @throws NetworkManagerException
+	 * @throws NonexistentConnectionException
+	 */
+	private function handleError(int $code, string $error): void {
+		if ($code === 10) {
+			throw new NonexistentConnectionException($error);
+		}
+		throw new NetworkManagerException($error);
 	}
 
 }
