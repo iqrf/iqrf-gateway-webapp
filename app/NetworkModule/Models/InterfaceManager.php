@@ -23,6 +23,8 @@ namespace App\NetworkModule\Models;
 use App\CoreModule\Models\CommandManager;
 use App\NetworkModule\Entities\InterfaceStatus;
 use App\NetworkModule\Enums\InterfaceTypes;
+use App\NetworkModule\Exceptions\NetworkManagerException;
+use App\NetworkModule\Exceptions\NonexistentDeviceException;
 
 /**
  * Network interface manager
@@ -47,7 +49,11 @@ class InterfaceManager {
 	 * @param string $name Network interface name
 	 */
 	public function connect(string $name): void {
-		$this->commandManager->run('nmcli -t device connect ' . $name, true);
+		$output = $this->commandManager->run('nmcli -t device connect ' . $name, true);
+		$exitCode = $output->getExitCode();
+		if ($exitCode !== 0) {
+			$this->handleError($exitCode, $output->getStderr());
+		}
 	}
 
 	/**
@@ -55,7 +61,11 @@ class InterfaceManager {
 	 * @param string $name Network interface name
 	 */
 	public function disconnect(string $name): void {
-		$this->commandManager->run('nmcli -t device disconnect ' . $name, true);
+		$output = $this->commandManager->run('nmcli -t device disconnect ' . $name, true);
+		$exitCode = $output->getExitCode();
+		if ($exitCode !== 0) {
+			$this->handleError($exitCode, $output->getStderr());
+		}
 	}
 
 	/**
@@ -74,6 +84,20 @@ class InterfaceManager {
 			}
 		}
 		return $interfaces;
+	}
+
+	/**
+	 * Error handler function for NMCLI
+	 * @param int $code NMCLI exit code
+	 * @param string $error NMCLI stderr
+	 * @throws NetworkManagerException
+	 * @throws NonexistentDeviceException
+	 */
+	private function handleError(int $code, string $error): void {
+		if ($code === 10) {
+			throw new NonexistentDeviceException($error);
+		}
+		throw new NetworkManagerException($error);
 	}
 
 }

@@ -25,11 +25,15 @@ use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\RequestParameter;
 use Apitte\Core\Annotation\Controller\RequestParameters;
+use Apitte\Core\Exception\Api\ClientErrorException;
+use Apitte\Core\Exception\Api\ServerErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Controllers\NetworkController;
 use App\ApiModule\Version0\Models\RestApiSchemaValidator;
 use App\NetworkModule\Enums\InterfaceTypes;
+use App\NetworkModule\Exceptions\NetworkManagerException;
+use App\NetworkModule\Exceptions\NonexistentDeviceException;
 use App\NetworkModule\Models\InterfaceManager;
 use Grifart\Enum\MissingValueDeclarationException;
 
@@ -107,6 +111,10 @@ class InterfacesController extends NetworkController {
 	 *  responses:
 	 *      '200':
 	 *          description: Success
+	 *      '400':
+	 *          $ref: '#/components/responses/BadRequest'
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
 	 * ")
 	 * @RequestParameters(
 	 *     @RequestParameter(name="name", type="string", description="Network interface name")
@@ -116,8 +124,14 @@ class InterfacesController extends NetworkController {
 	 * @return ApiResponse API response
 	 */
 	public function connect(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->interfaceManager->connect($request->getParameter('name'));
-		return $response->writeBody('Workaround');
+		try {
+			$this->interfaceManager->connect($request->getParameter('name'));
+			return $response->writeBody('Workaround');
+		} catch (NonexistentDeviceException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND);
+		} catch (NetworkManagerException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	/**
@@ -128,6 +142,10 @@ class InterfacesController extends NetworkController {
 	 *  responses:
 	 *      '200':
 	 *          description: Success
+	 *      '400':
+	 *          $ref: '#/components/responses/BadRequest'
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
 	 * ")
 	 * @RequestParameters(
 	 *     @RequestParameter(name="name", type="string", description="Network interface name")
@@ -137,8 +155,14 @@ class InterfacesController extends NetworkController {
 	 * @return ApiResponse API response
 	 */
 	public function disconnect(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->interfaceManager->disconnect($request->getParameter('name'));
-		return $response->writeBody('Workaround');
+		try {
+			$this->interfaceManager->disconnect($request->getParameter('name'));
+			return $response->writeBody('Workaround');
+		} catch (NonexistentDeviceException $e) {
+			throw new ClientErrorException($e->getMessage(), ApiResponse::S404_NOT_FOUND);
+		} catch (NetworkManagerException $e) {
+			throw new ServerErrorException($e->getMessage(), ApiResponse::S500_INTERNAL_SERVER_ERROR);
+		}
 	}
 
 }
