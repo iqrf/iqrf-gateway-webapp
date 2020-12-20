@@ -1883,13 +1883,28 @@
 		"unattended-upgrades": {
 			"title": "Automatic upgrades",
 			"description": "Controls the automatic unattended upgrades service.",
+			"configuration": "Automatic upgrades configuration",
+			"form": {
+				"intervalNote": "* Interval in days, 0 = disabled",
+				"listUpdateInterval": "Package list update interval *",
+				"upgradeInterval": "Package upgrade interval *",
+				"removeInterval": "Unnecessary package removal interval *",
+				"rebootOnKernelUpdate": "Reboot after updating kernel"
+			},
+			"errors": {
+				"listUpdateInterval": "Please enter package list update interval greater or equal to 0.",
+				"upgradeInterval": "Please enter package upgrade interval greater or equal to 0.",
+				"removeInterval": "Please enter package removal interval greater or equal to 0."
+			},
 			"messages": {
 				"disabled": "Automatic upgrades are disabled.",
 				"disable": "Automatic upgrades service has been disabled.",
 				"enable": "Automatic upgrades service has been enabled.",
 				"start": "Automatic upgrades service has been started.",
 				"stop": "Automatic upgrades service has been stopped.",
-				"restart": "Automatic upgrades service has been restarted."
+				"restart": "Automatic upgrades service has been restarted.",
+				"success": "Automatic upgrades configuration has been successfully saved.",
+				"failure": "Unable to save automatic upgrades configuration."
 			}
 		},
 		"unsupported": {

@@ -32,6 +32,10 @@ class AptManager {
 	 */
 	private const DEFAULTS = [
 		'APT::Periodic::Enable' => '0',
+		'APT::Periodic::Update-Package-Lists' => '1',
+		'APT::Periodic::Unattended-Upgrade' => '1',
+		'APT::Periodic::AutocleanInterval' => '0',
+		'Unattended-Upgrade::Automatic-Reboot' => "false"
 	];
 
 	/**
@@ -94,6 +98,7 @@ class AptManager {
 		if (!$this->commandManager->commandExist('apt-config')) {
 			throw new AptNotFoundException('Apt package not installed.');
 		}
+		$extended = (count($config) > 1);
 		$content = '';
 		foreach ($config as $key => $value) {
 			if (!array_key_exists($key, self::DEFAULTS)) {
