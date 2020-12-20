@@ -58,6 +58,7 @@
 			<br><br>
 			<pre v-if='service.status !== null' class='log'>{{ service.status }}</pre>
 		</CCard>
+		<AptConfig v-if='serviceName === "unattended-upgrades"' />
 	</div>
 </template>
 
@@ -65,6 +66,7 @@
 import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
 import {CButton, CCard} from '@coreui/vue/src';
 import AptService, {AptConfiguration} from '../../services/AptService';
+import AptConfig from '../../components/Gateway/AptConfig.vue';
 import ServiceService from '../../services/ServiceService';
 import {AxiosError} from 'axios';
 import {NavigationGuardNext, Route} from 'vue-router';
@@ -93,6 +95,7 @@ interface IService {
 
 @Component({
 	components: {
+		AptConfig,
 		CButton,
 		CCard,
 	},
