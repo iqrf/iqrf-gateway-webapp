@@ -20,7 +20,7 @@ use App\NetworkModule\Entities\IPv6Connection;
 use App\NetworkModule\Enums\ConnectionTypes;
 use App\NetworkModule\Enums\IPv4Methods;
 use App\NetworkModule\Enums\IPv6Methods;
-use App\NetworkModule\Exceptions\NetworkManagerException;
+use App\NetworkModule\Exceptions\NonexistentConnectionException;
 use App\NetworkModule\Models\ConnectionManager;
 use Darsyn\IP\Version\IPv4;
 use Darsyn\IP\Version\IPv6;
@@ -117,7 +117,7 @@ final class ConnectionManagerTest extends CommandTestCase {
 		$this->receiveCommand($command, true, '', $stderr, 10);
 		Assert::throws(function (): void {
 			$this->manager->delete(Uuid::fromString(self::UUID));
-		}, NetworkManagerException::class, $stderr);
+		}, NonexistentConnectionException::class, $stderr);
 	}
 
 	/**
@@ -140,7 +140,7 @@ final class ConnectionManagerTest extends CommandTestCase {
 		$this->receiveCommand($command, true, '', $stderr, 10);
 		Assert::throws(function (): void {
 			$this->manager->get(Uuid::fromString(self::UUID));
-		}, NetworkManagerException::class, $stderr);
+		}, NonexistentConnectionException::class, $stderr);
 	}
 
 	/**
@@ -205,7 +205,7 @@ final class ConnectionManagerTest extends CommandTestCase {
 		$this->receiveCommand($command, true, '', $stderr, 10);
 		Assert::throws(function () use ($connection): void {
 			$this->manager->up($connection->getUuid());
-		}, NetworkManagerException::class, $stderr);
+		}, NonexistentConnectionException::class, $stderr);
 	}
 
 }
