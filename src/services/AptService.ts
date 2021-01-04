@@ -2,17 +2,22 @@ import axios, {AxiosResponse} from 'axios';
 import { authorizationHeader } from '../helpers/authorizationHeader';
 
 /**
- * APT configuration
+ * APT enable
  */
-export interface AptConfiguration {
+export interface AptEnable {
 	/**
 	 * Enable automatic upgrades
 	 */
 	'APT::Periodic::Enable': string
 }
 
-export interface AptConfigurationExtended extends AptConfiguration {
-		/**
+export interface AptConfiguration {
+	/**
+	 * Enable automatic upgrades
+	 */
+	'APT::Periodic::Enable'?: string
+
+	/**
 	 * Package list update interval
 	 */
 	'APT::Periodic::Update-Package-Lists': string
@@ -49,7 +54,7 @@ class AptService {
 	 * Sets APT configuration
 	 * @param configuration APT configuration
 	 */
-	write(configuration: AptConfiguration|AptConfigurationExtended): Promise<AxiosResponse> {
+	write(configuration: AptEnable|AptConfiguration): Promise<AxiosResponse> {
 		return axios.put('/config/apt', configuration, {headers: authorizationHeader()});
 	}
 }
