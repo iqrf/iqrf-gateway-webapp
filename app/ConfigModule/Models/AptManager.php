@@ -35,7 +35,7 @@ class AptManager {
 		'APT::Periodic::Update-Package-Lists' => '1',
 		'APT::Periodic::Unattended-Upgrade' => '1',
 		'APT::Periodic::AutocleanInterval' => '0',
-		'Unattended-Upgrade::Automatic-Reboot' => "false"
+		'Unattended-Upgrade::Automatic-Reboot' => 'false',
 	];
 
 	/**
@@ -91,19 +91,18 @@ class AptManager {
 
 	/**
 	 * Writes APT configuration
-	 * @param array<string, string> $config APT configuration to write
-	 * @throws AptNotFoundException
+	 * @param array<string, string> $newConfig APT configuration to write
 	 */
-	public function write(array $config): void {
-		if (!$this->commandManager->commandExist('apt-config')) {
-			throw new AptNotFoundException('Apt package not installed.');
-		}
-		$extended = (count($config) > 1);
+	public function write(array $newConfig): void {
+		$config = $this->read();
 		$content = '';
-		foreach ($config as $key => $value) {
+		foreach ($newConfig as $key => $value) {
 			if (!array_key_exists($key, self::DEFAULTS)) {
 				continue;
 			}
+			$config[$key] = $value;
+		}
+		foreach ($config as $key => $value) {
 			$content .= sprintf('%s "%s";', $key, $value);
 		}
 		$this->fileManager->write(self::FILE_NAME, $content);

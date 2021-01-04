@@ -65,7 +65,7 @@
 <script lang='ts'>
 import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
 import {CButton, CCard} from '@coreui/vue/src';
-import AptService, {AptConfiguration} from '../../services/AptService';
+import AptService, {AptEnable} from '../../services/AptService';
 import AptConfig from '../../components/Gateway/AptConfig.vue';
 import ServiceService from '../../services/ServiceService';
 import {AxiosError} from 'axios';
@@ -193,7 +193,7 @@ export default class ServiceControl extends Vue {
 	 * Write APT configuration
 	 */
 	private setUnattendedUpgrades(action: string): void {
-		const config: AptConfiguration = {
+		const config: AptEnable = {
 			'APT::Periodic::Enable': action === 'enable' ? '1' : '0',
 		};
 		AptService.write(config)

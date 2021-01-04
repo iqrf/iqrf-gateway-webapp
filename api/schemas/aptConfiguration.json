@@ -3,9 +3,6 @@
 	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/aptConfiguration.json",
 	"type": "object",
 	"title": "APT configuration",
-	"required": [
-		"APT::Periodic::Enable"
-	],
 	"properties": {
 		"APT::Periodic::Enable": {
 			"$id": "#/properties/APT%3A%3APeriodic%3A%3AEnable",
@@ -39,5 +36,6 @@
 			"enum": ["false", "true"],
 			"example": "false"
 		}
-	}
+	},
+	"additionalProperties": false
 }
