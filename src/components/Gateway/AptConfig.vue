@@ -81,7 +81,7 @@ import {Component, Vue} from 'vue-property-decorator';
 import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {integer, min_value, required} from 'vee-validate/dist/rules';
-import AptService, {AptConfigurationExtended} from '../../services/AptService';
+import AptService, {AptConfiguration} from '../../services/AptService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import ToastClear from '../../helpers/ToastClear';
 import {AxiosError, AxiosResponse} from 'axios';
@@ -104,11 +104,6 @@ import {AxiosError, AxiosResponse} from 'axios';
  * Gateway APT configuration component for service control 
  */
 export default class AptConfig extends Vue {
-
-	/**
-	 * @var {boolean} enabled Unattended upgrades enabled
-	 */
-	private enabled = false
 
 	/**
 	 * @var {number} listUpdateInterval Package list update interval in days
@@ -167,32 +162,37 @@ export default class AptConfig extends Vue {
 
 	/**
 	 * Parses unattended upgrades configuration and stores values
-	 * @param {AptConfigurationExtended} config Unattended upgrades configuration
+	 * @param {AptConfiguration} config Unattended upgrades configuration
 	 */
-	private parseConfig(config: AptConfigurationExtended): void {
+	private parseConfig(config: AptConfiguration): void {
 		this.listUpdateInterval = parseInt(config['APT::Periodic::Update-Package-Lists']);
 		this.upgradeInterval = parseInt(config['APT::Periodic::Unattended-Upgrade']);
 		this.removeInterval = parseInt(config['APT::Periodic::AutocleanInterval']);
 		this.rebootOnKernelUpdate = (config['Unattended-Upgrade::Automatic-Reboot'] === 'true');
-		this.enabled = (config['APT::Periodic::Enable'] === '1');
 	}
 
 	/**
 	 * Creates apt configuration object and saves configuration
 	 */
 	private updateConfig(): void {
-		const config: AptConfigurationExtended = {
-			'APT::Periodic::Enable': this.enabled ? '1' : '0',
+		const config: AptConfiguration = {
 			'APT::Periodic::Update-Package-Lists': this.listUpdateInterval.toString(),
 			'APT::Periodic::Unattended-Upgrade': this.upgradeInterval.toString(),
 			'APT::Periodic::AutocleanInterval': this.removeInterval.toString(),
 			'Unattended-Upgrade::Automatic-Reboot': this.rebootOnKernelUpdate ? 'true': 'false',
 		};
+		this.$store.commit('spinner/SHOW');
 		AptService.write(config)
 			.then(() => {
-				this.getConfig().then(() => ToastClear.success('service.unattended-upgrades.messages.success'));
+				this.getConfig().then(() => {
+					this.$store.commit('spinner/HIDE');
+					ToastClear.success('service.unattended-upgrades.messages.success');
+				});
 			})
-			.catch(() => ToastClear.error('service.unattended-upgrdes.messages.failure'));
+			.catch(() => {
+				this.$store.commit('spinner/HIDE');
+				ToastClear.error('service.unattended-upgrdes.messages.failure');
+			});
 	}
 
 }
