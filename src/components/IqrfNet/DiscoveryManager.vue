@@ -8,7 +8,7 @@
 						v-slot='{ errors, touched, valid }'
 						rules='integer|required|between:0,7'
 						:custom-messages='{
-							integer: "iqrfnet.networkManager.messages.invalid.integer",
+							integer: "forms.errors.integer",
 							required: "iqrfnet.networkManager.discovery.errors.txPower",
 							between: "iqrfnet.networkManager.discovery.errors.txPower"
 						}'
@@ -27,7 +27,7 @@
 						v-slot='{ errors, touched, valid }'
 						rules='integer|required|between:0,239'
 						:custom-messages='{
-							integer: "iqrfnet.networkManager.messages.invalid.integer",
+							integer: "forms.errors.integer",
 							required: "iqrfnet.networkManager.discovery.errors.maxAddr",
 							between: "iqrfnet.networkManager.discovery.errors.maxAddr"
 						}'
@@ -43,7 +43,7 @@
 						/>
 					</ValidationProvider>
 					<CButton color='primary' type='submit' :disabled='invalid'>
-						{{ $t("forms.discovery") }}
+						{{ $t("forms.runDiscovery") }}
 					</CButton>
 				</CForm>
 			</ValidationObserver>

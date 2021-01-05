@@ -20,7 +20,7 @@
 							type='number'
 							min='0'
 							max='239'
-							:label='$t("iqrfnet.addressChange.address")'
+							:label='$t("forms.fields.address")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>

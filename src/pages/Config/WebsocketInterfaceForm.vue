@@ -17,7 +17,7 @@
 						>
 							<CInput
 								v-model='messaging.instance'
-								:label='$t("config.daemon.messagings.websocket.form.instance")'
+								:label='$t("forms.fields.instanceName")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
@@ -27,7 +27,7 @@
 							rules='integer|required'
 							:custom-messages='{
 								required: "config.daemon.messagings.websocket.errors.WebsocketPort",
-								integer: "forms.messages.integer"
+								integer: "forms.errors.integer"
 							}'
 						>
 							<CInput
@@ -40,7 +40,7 @@
 						</ValidationProvider>
 						<CInputCheckbox
 							:checked.sync='messaging.acceptAsyncMsg'
-							:label='$t("config.daemon.messagings.websocket.form.acceptAsyncMsg")'
+							:label='$t("config.daemon.messagings.acceptAsyncMsg")'
 						/>
 						<CInputCheckbox
 							:checked.sync='service.acceptOnlyLocalhost'

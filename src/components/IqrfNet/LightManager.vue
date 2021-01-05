@@ -9,7 +9,7 @@
 						rules='required|integer|between:1,239'
 						:custom-messages='{
 							between: "iqrfnet.standard.form.messages.address",
-							integer: "forms.messages.integer",
+							integer: "forms.errors.integer",
 							required: "iqrfnet.standard.form.messages.address"
 						}'
 					>
@@ -28,7 +28,7 @@
 						rules='required|integer|between:0,31'
 						:custom-messages='{
 							between: "iqrfnet.standard.light.form.messages.index",
-							integer: "forms.messages.integer",
+							integer: "forms.errors.integer",
 							required: "iqrfnet.standard.light.form.messages.index"
 						}'
 					>
@@ -47,7 +47,7 @@
 						rules='required|integer|between:0,100'
 						:custom-messages='{
 							between: "iqrfnet.standard.light.form.messages.power",
-							integer: "forms.messages.integer",
+							integer: "forms.errors.integer",
 							required: "iqrfnet.standard.light.form.messages.power"
 						}'
 					>

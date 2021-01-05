@@ -20,21 +20,21 @@
 					@click='setMapping(i)'
 				>
 					<CIcon :content='icons.set' />
-					{{ $t('config.daemon.interfaces.interfaceMapping.setMapping') }}
+					{{ $t('config.daemon.interfaces.interfaceMapping.set') }}
 				</CDropdownItem>
 				<CDropdownItem
 					v-if='!mapping.name.startsWith("IQD-GW-")'
 					@click='invokeMappingForm(mapping.id)'
 				>
 					<CIcon :content='icons.edit' />
-					{{ $t('config.daemon.interfaces.interfaceMapping.editMapping') }}
+					{{ $t('config.daemon.interfaces.interfaceMapping.edit') }}
 				</CDropdownItem>
 				<CDropdownItem
 					v-if='!mapping.name.startsWith("IQD-GW-")'
 					@click='showRemoveModal(i)'
 				>
 					<CIcon :content='icons.remove' />
-					{{ $t('config.daemon.interfaces.interfaceMapping.removeMapping') }}
+					{{ $t('config.daemon.interfaces.interfaceMapping.remove') }}
 				</CDropdownItem>
 			</CDropdown>
 		</CButtonGroup>
@@ -44,7 +44,7 @@
 		>
 			<template #header>
 				<h5 class='modal-title'>
-					{{ $t('config.daemon.interfaces.interfaceMapping.removeTitle') }}
+					{{ $t('config.daemon.interfaces.interfaceMapping.remove') }}
 				</h5>
 			</template>
 			{{ $t('config.daemon.interfaces.interfaceMapping.messages.removePrompt', {mapping: modalMapping}) }}

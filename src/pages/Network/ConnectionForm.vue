@@ -331,13 +331,18 @@ export default class ConnectionForm extends Vue {
 	 * @returns {Array<IOption>} Configuration method options
 	 */
 	get ipv4Methods(): Array<IOption> {
-		const methods = ['auto', 'disabled', 'link-local', 'manual', 'shared'];
-		return methods.map(
-			(method) => ({
+		const methods = ['auto', 'link-local', 'manual', 'shared'];
+		let methodOptions: Array<IOption> = methods.map(
+			(method: string) => ({
 				value: method,
 				label: this.$t('network.connection.ipv4.methods.' + method).toString(),
 			})
 		);
+		methodOptions.push({
+			value: 'disabled',
+			label: this.$t('states.disabled').toString()
+		});
+		return methodOptions;
 	}
 
 	/**
@@ -345,15 +350,18 @@ export default class ConnectionForm extends Vue {
 	 * @returns {Array<IOption>} Configuration method options
 	 */
 	get ipv6Methods(): Array<IOption> {
-		const methods = [
-			'auto', 'disabled', 'dhcp', 'ignore', 'link-local', 'manual', 'shared',
-		];
-		return methods.map((method: string) =>
+		const methods = ['auto', 'dhcp', 'ignore', 'link-local', 'manual', 'shared'];
+		let methodOptions: Array<IOption> = methods.map((method: string) =>
 			({
 				value: method,
 				label: this.$t('network.connection.ipv6.methods.' + method).toString(),
 			})
 		);
+		methodOptions.push({
+			value: 'disabled',
+			label: this.$t('states.disabled').toString()
+		});
+		return methodOptions;
 	}
 
 	/**

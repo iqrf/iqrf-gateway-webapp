@@ -227,7 +227,7 @@ export default class SchedulerList extends Vue {
 	private fields: Array<IField> = [
 		{
 			key: 'taskId',
-			label: this.$t('config.daemon.scheduler.table.id'),
+			label: this.$t('config.daemon.scheduler.form.task.taskId'),
 		},
 		{
 			key: 'timeSpec',

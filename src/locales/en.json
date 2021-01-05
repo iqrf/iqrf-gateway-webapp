@@ -82,11 +82,6 @@
 			"title": "PIXLA device management",
 			"description": "Manages PIXLA client service.",
 			"dashboard": "Visit dashboard",
-			"statuses": {
-				"enabled": "Enabled",
-				"disabled": "Disabled",
-				"missing": "Missing"
-			},
 			"editModal": {
 				"title": "Set new PIXLA platform token",
 				"token": "New PIXLA token"
@@ -106,26 +101,42 @@
 			"video": "Video guide"
 		}
 	},
+	"states": {
+		"disabled": "Disabled",
+		"enabled": "Enabled"
+	},
 	"forms": {
 		"fields": {
+			"address": "Address",
+			"id": "ID",
 			"username": "User name",
 			"password": "Password",
 			"certificate": "Certificate",
 			"privateKey": "Private Key",
 			"clientId":"Client ID",
 			"requestTopic": "Topic for requests",
-			"responseTopic": "Topic for responses"
+			"responseTopic": "Topic for responses",
+			"instanceName": "Name of instance",
+			"messageLevel": {
+				"trace": "Trace",
+				"debug": "Debug",
+				"info": "Info",
+				"warning": "Warning",
+				"error": "Error"
+			},
+			"verbose": "Verbose mode",
+			"coordinator": "Coordinator"
 		},
 		"errors": {
 			"username": "Please enter the username.",
 			"password": "Please enter the password.",
 			"clientId": "Please enter the client ID.",
 			"requestTopic": "Please enter the topic for requests.",
-			"responseTopic": "Please enter the topic for responses."
+			"responseTopic": "Please enter the topic for responses.",
+			"integer": "This parameter should be an integer."
 		},
 		"import": "Import",
 		"export": "Export",
-		"start": "Start",
 		"ok": "OK",
 		"add": "Add",
 		"cancel": "Cancel",
@@ -138,7 +149,8 @@
 		"send": "Send",
 		"yes": "Yes",
 		"write": "Write",
-		"discovery": "Discovery",
+		"runAutonetwork": "Run AutoNetwork",
+		"runDiscovery": "Run Discovery",
 		"bond": "Bond Node",
 		"unbond": "Unbond Node",
 		"clearBonds": "Clear All Bonds",
@@ -150,7 +162,6 @@
 		"messages": {
 			"getConfTimeout": "The request to retrieve current configuration timed out.",
 			"saveConfTimeout": "The request to save new configuration timed out.",
-			"integer": "This parameter has to be an integer.",
 			"saveSuccess": "Configuration has been successfully saved.",
 			"submitBadRequest": "Invalid JSON syntax.",
 			"submitServerError": "Internal server error has occurred.",
@@ -203,11 +214,9 @@
 				"add": "Add component",
 				"edit": "Edit component",
 				"form": {
-					"name": "Name",
+					"name": "Component name",
 					"libraryPath": "Library path",
 					"libraryName": "Library name",
-					"enabled": "Enabled",
-					"disabled": "Disabled",
 					"startLevel": "Start level"
 				},
 				"messages": {
@@ -246,12 +255,11 @@
 					"title": "IQRF CDC interface",
 					"description": "IQRF CDC interface settings.",
 					"form": {
-						"instance": "Name of instance",
-						"interface": "IQRF CDC interface"
+						"interface": "CDC interface name"
 					},
 					"errors": {
-						"instance": "Please enter name of IQRF CDC instance.",
-						"iqrfInterface": "Please enter IQRF CDC interface."
+						"instance": "Please enter CDC interface instance name.",
+						"iqrfInterface": "Please enter CDC interface name."
 					},
 					"mappings": "Available CDC mappings"
 				},
@@ -259,13 +267,12 @@
 					"title": "IQRF SPI interface",
 					"description": "IQRF SPI interface settings.",
 					"form": {
-						"instance": "Name of instance",
-						"iqrfInterface": "IQRF SPI interface",
+						"iqrfInterface": "SPI interface name",
 						"spiReset": "Enable SPI reset"
 					},
 					"errors": {
-						"instance": "Please enter name of IQRF SPI instance.",
-						"iqrfInterface": "Please enter IQRF SPI interface."
+						"instance": "Please enter SPI interface instance name.",
+						"iqrfInterface": "Please enter SPI interface name."
 					},
 					"mappings": "Available SPI mappings"
 				},
@@ -273,14 +280,13 @@
 					"title": "IQRF UART interface",
 					"description": "IQRF UART interface settings.",
 					"form": {
-						"instance": "Name of instance",
-						"iqrfInterface": "IQRF UART interface",
+						"iqrfInterface": "UART interface name",
 						"baudRate": "UART baud rate",
 						"uartReset": "UART reset"
 					},
 					"errors": {
-						"instance": "Please enter name of IQRF UART instance.",
-						"iqrfInterface": "Please enter IQRF UART interface.",
+						"instance": "Please enter UART interface instance name.",
+						"iqrfInterface": "Please enter UART interface name.",
 						"baudRate": "Please select UART baud rate."
 					},
 					"mappings": "Available UART mappings"
@@ -289,7 +295,6 @@
 					"title": "IQRF DPA interface",
 					"description": "IQRF DPA interface settings.",
 					"form": {
-						"instance": "Name of instance",
 						"DpaHandlerTimeout": "DPA Confirmation/Response timeout in milliseconds"
 					},
 					"errors": {
@@ -300,25 +305,17 @@
 				"interfaceMapping": {
 					"boards": "Boards",
 					"interfaces": "Interfaces",
-					"addMapping": "Add mapping",
-					"setMapping": "Set mapping",
-					"editMapping": "Edit mapping",
-					"removeMapping": "Remove mapping",
-					"removeTitle": "Remove mapping",
+					"add": "Add mapping",
+					"edit": "Edit mapping",
+					"set": "Set mapping",
+					"remove": "Remove mapping",
 					"form": {
-						"addTitle": "Add mapping",
-						"editTitle": "Edit mapping",
 						"type": "Mapping type",
-						"types": {
-							"spi": "SPI",
-							"uart": "UART"
-						},
 						"name": "Mapping name",
 						"interface": "Mapping device name",
 						"powerPin": "Power enable GPIO pin",
 						"busPin": "Bus enable GPIO pin",
 						"pgmPin": "Programming mode switch GPIO pin",
-						"baudRate": "UART baud rate",
 						"gateway": "IQRF Gateway mapping",
 						"i2cPin": "I2C interface enable GPIO pin *",
 						"spiPin": "SPI interface enable GPIO pin *",
@@ -355,7 +352,6 @@
 					"add": "Add MQTT interface",
 					"edit": "Edit MQTT interface",
 					"form": {
-						"instance": "Name of instance",
 						"BrokerAddr": "Broker address",
 						"Persistence": "Persistence",
 						"QoS": "QoS",
@@ -373,8 +369,7 @@
 						"TrustStore": "CA certificate",
 						"PrivateKeyPassword": "Private key password",
 						"EnabledCipherSuites": "Enabled cipher suites",
-						"EnableServerCertAuth": "Enable server certificate authentication",
-						"acceptAsyncMsg": "Accept asynchronous messages"
+						"EnableServerCertAuth": "Enable server certificate authentication"
 					},
 					"messages": {
 						"addSuccess": "MQTT interface instance {instance} has been added.",
@@ -398,8 +393,6 @@
 					"title": "WebSocket interface",
 					"description": "IQRF WebSocket interface settings.",
 					"form": {
-						"instance": "Name of instance",
-						"acceptAsyncMsg": "Accept asynchronous messages",
 						"WebsocketPort": "WebSocket port",
 						"acceptOnlyLocalhost": "Accept only connection from localhost",
 						"tlsEnabled": "Enable TLS",
@@ -474,10 +467,8 @@
 					"add": "Add MQ interface",
 					"edit": "Edit MQ interface",
 					"form": {
-						"instance": "Name of instance",
 						"LocalMqName": "Local MQ name",
-						"RemoteMqName": "Remote MQ name",
-						"acceptAsyncMsg": "Accept Async messages"
+						"RemoteMqName": "Remote MQ name"
 					},
 					"messages": {
 						"addSuccess": "MQ interface instance {instance} has been added.",
@@ -498,7 +489,6 @@
 					"add": "Add UDP interface",
 					"edit": "Edit UDP interface",
 					"form": {
-						"instance": "Name of instance",
 						"RemotePort": "Remote port",
 						"LocalPort": "Local port"
 					},
@@ -514,7 +504,8 @@
 						"RemotePort": "Please enter remote port - integer between 1 and 49151.",
 						"LocalPort": "Please enter local port - integer between 1 and 49151."
 					}
-				}
+				},
+				"acceptAsyncMsg": "Accept asynchronous messages"
 			},
 			"scheduler": {
 				"title": "Scheduler",
@@ -522,7 +513,6 @@
 				"add": "Add task",
 				"edit": "Edit task",
 				"table": {
-					"id": "ID",
 					"time": "Time",
 					"service": "Service",
 					"mType": "Message types"
@@ -594,7 +584,6 @@
 					"title": "JSON Metadata API",
 					"description": "JSON Metadata API settings.",
 					"form": {
-						"instance": "Name of instance",
 						"metaDataToMessages": "Add metadata into the messages"
 					},
 					"errors": {
@@ -605,7 +594,6 @@
 					"title": "JSON Raw API",
 					"description": "JSON Raw API settings.",
 					"form": {
-						"instance": "Name of instance",
 						"asyncDpaMessage": "Async DPA message"
 					},
 					"errors": {
@@ -616,7 +604,6 @@
 					"title": "JSON Splitter",
 					"description": "JSON Splitter settings.",
 					"form": {
-						"instance": "Name of instance",
 						"validateJsonResponse": "Validate JSON response"
 					},
 					"errors": {
@@ -627,7 +614,6 @@
 					"title": "IQRF Repository",
 					"description": "Manage IQRF Repository's settings.",
 					"form": {
-						"instance": "Name of instance",
 						"urlRepo": "IQRF Repository URL",
 						"checkPeriod": "Check period in minutes",
 						"downloadIfEmpty": "Download if repository cache is empty"
@@ -642,7 +628,6 @@
 					"title": "Lite DB",
 					"description": "IQRF Info database settings.",
 					"form": {
-						"instance": "Name of instance",
 						"enumAtStartUp": "Initialize network full enumeration just after startup",
 						"enumPeriod": "Enumeration check period in minutes",
 						"enumUniformDpaVer": "Obtain only HWPID and HWPID version from nodes"
@@ -658,7 +643,6 @@
 					"otaUpload": {
 						"title": "IQRF OTA upload service",
 						"form": {
-							"instance": "Name of instance",
 							"uploadPath": "Path to a directory with files to upload"
 						},
 						"errors": {
@@ -673,7 +657,6 @@
 					"add": "Add a new monitoring service",
 					"edit": "Edit the monitoring service",
 					"form": {
-						"instance": "Name of instance",
 						"reportPeriod": "Reporting period in seconds",
 						"WebsocketPort": "WebSocket server port",
 						"acceptOnlyLocalhost": "Accept only connection from localhost"
@@ -697,7 +680,6 @@
 					"add": "Add logging service configuration",
 					"edit": "Edit logging service configuration",
 					"form": {
-						"instance": "Instance name",
 						"path": "Path to directory with logs",
 						"filename": "File name",
 						"maxSize": "Maximum size in bytes",
@@ -710,13 +692,7 @@
 							"remove": "Remove verbosity level"
 						},
 						"channel": "Verbosity channel",
-						"level": "Verbosity level",
-						"levels": {
-							"error": "Error",
-							"warning": "Warning",
-							"info": "Info",
-							"debug": "Debug"
-						}
+						"level": "Verbosity level"
 					},
 					"messages": {
 						"zeroValues": "Disabled if value is set to 0.",
@@ -724,8 +700,7 @@
 						"removeTitle": "Delete Tracer file instance",
 						"removeSuccess": "Tracer file instance {instance} has been removed.",
 						"addSuccess": "Tracer file instance {instance} has been added.",
-						"editSuccess": "Tracer file instance {instance} has been edited.",
-						"versionFail": "Failed to retrieve version of IQRF Gateway Daemon."
+						"editSuccess": "Tracer file instance {instance} has been edited."
 					},
 					"errors": {
 						"instance": "Please enter name of logging service interface.",
@@ -747,13 +722,11 @@
 			"form": {
 				"rest": {
 					"title": "REST API client configuration",
-					"addr": "Address",
 					"port": "Port",
 					"api_key": "API key"
 				},
 				"mqtt": {
 					"title": "MQTT client configuration",
-					"addr": "Broker address",
 					"port": "Broker port"
 				}
 			},
@@ -762,7 +735,6 @@
 				"loadFailed": "Failed to retrieve Translator configuration."
 			},
 			"errors": {
-				"integer": "This parameter should be an integer.",
 				"port": "Please enter an integer between 1 and 49151 for port number.",
 				"invalid": {
 					"api_key": "Invalid REST API key format. The API key format should match [./A-Za-z0-9]{22}\\.[A-Za-z0-9+/=]{44}.",
@@ -789,17 +761,14 @@
 						"title": "AutoNetwork API call",
 						"stopConditions": {
 							"title": "AutoNetwork stop conditions"
-						},
-						"verbose": "Verbose mode"
+						}
 					},
 					"discovery": {
-						"title": "Discovery API call",
-						"verbose": "Verbose mode"
+						"title": "Discovery API call"
 					}
 				},
 				"factoryReset": {
 					"title": "Factory reset",
-					"coordinator": "Coordinator",
 					"daemon": "Daemon",
 					"network": "IP network",
 					"webapp": "Web application"
@@ -807,23 +776,12 @@
 				"resetButton": {
 					"title": "Button",
 					"api": "Daemon API call",
-					"calls": {
-						"autonetwork": "AutoNetwork",
-						"discovery": "Discovery",
-						"noCall": "No API call"
-					}
+					"noCall": "No API call"
 				},
 				"logger": {
 					"title": "Logger",
 					"filePath": "Path to log file",
-					"severity": "Severity level",
-					"levels": {
-						"trace": "Trace",
-						"debug": "Debug",
-						"info": "Info",
-						"warning": "Warning",
-						"error": "Error"
-					}
+					"severity": "Severity level"
 				},
 				"wsServers": {
 					"title": "Websocket",
@@ -833,7 +791,6 @@
 			},
 			"errors": {
 				"disabled": "IQRF Gateway Controller service is disabled.",
-				"integer": "This parameter should be an integer.",
 				"daEwaves": "Please enter an integer between 1 and 127 for empty waves stop condition.",
 				"daWaves": "Please enter an integer between 1 and 127 for maximum waves stop condition.",
 				"ddMaxAddr": "Please enter an integer between 0 and 239 for Discovery process.",
@@ -1064,8 +1021,7 @@
 			"modes": {
 				"forwarding": "Forwarding mode",
 				"operational": "Operational mode",
-				"service": "Service mode",
-				"unknown": "An error occurred while getting the current gateway mode."
+				"service": "Service mode"
 			},
 			"messages": {
 				"getFailed": "An error occurred while getting the current gateway mode.",
@@ -1113,7 +1069,6 @@
 		"description": "Control IQRF network.",
 		"addressChange": {
 			"title": "Change network address",
-			"address": "Address",
 			"messages": {
 				"address": "Address has to be an integer from 0 to 239."
 			}
@@ -1178,16 +1133,13 @@
 					"nodes": "Node count conditions",
 					"numberOfTotalNodes": "Number of total nodes",
 					"numberOfNewNodes": "Number of new nodes",
-					"abortOnTooManyNodesFound": "Abort the AutoNetwork if too many nodes were found",
-					"verbose": "Verbose mode"
+					"abortOnTooManyNodesFound": "Abort the AutoNetwork if too many nodes were found"
 				}
 			},
 			"backup": {
 				"title": "Network backup",
 				"form": {
-					"coordinator": "Coordinator",
 					"node": "Node",
-					"address": "Node address",
 					"network": "Whole network",
 					"messages": {
 						"select": "Please select backup target.",
@@ -1208,7 +1160,6 @@
 			"restore": {
 				"title": "Coordinator restore",
 				"form": {
-					"address": "Node address",
 					"backupFile": "Backup file",
 					"restartOnRestore": "Restart Coordinator on restore",
 					"messages": {
@@ -1232,7 +1183,6 @@
 			"bondingManager": {
 				"title": "Bonding",
 				"form": {
-					"address": "Address",
 					"autoAddress": "Auto address",
 					"bondMethod": "Bonding method",
 					"bondMethodLocal": "Local bonding",
@@ -1266,7 +1216,6 @@
 			"devicesInfo": {
 				"title": "Devices Info",
 				"icons": {
-					"coordinator": "Coordinator",
 					"bonded": "Bonded device",
 					"bondedOnline": "Online bonded device",
 					"discovered": "Discovered device",
@@ -1313,7 +1262,6 @@
 					"timeout": "Request timed out."
 				},
 				"invalid": {
-					"integer": "This parameter should be an integer.",
 					"autoNetwork": {
 						"hwpidFilter": "HWPID filter should be a list of integers from between 0 and 65535 separated by a space."
 					}
@@ -1326,7 +1274,6 @@
 					"emptyWaves": "Please enter an integer between 1 and 127 for maximum number of consecutive empty waves.",
 					"totalNodes": "Please enter an integer between 1 and 239 for total number of nodes.",
 					"newNodes": "Please enter an integer between 1 and 239 for number of new nodes.",
-					"versionFailure": "Failed to retrieve version of IQRF Gateway Daemon.",
 					"statusTotalNodes": "Total number of nodes in network: ",
 					"statusAddedNodes": "Number of nodes added in last wave: ",
 					"statusWave": "Wave "
@@ -1409,7 +1356,6 @@
 				"failure": "An error occurred while DPA packet sending. The device may be offline.",
 				"success": "DPA packet has been sent successfully.",
 				"incorrect": {
-					"nadr": "No device is bonded at address {address}.",
 					"pcmd": "Sent DPA packet contains incorrect PCMD.",
 					"pnum": "Sent DPA packet contains incorrect PNUM.",
 					"hwpid": "Sent DPA packet contains incorrect HWPID.",
@@ -1603,8 +1549,7 @@
 				"localFrcReception": "Local FRC",
 				"dpaPeerToPeer": "DPA Peer-to-Peer",
 				"neverSleep": "Stay awake when not bonded",
-				"uartBaudRateC": "UART interface baud rate",
-				"uartBaudRateN": "UART baud rate",
+				"uartBaudRate": "UART interface baud rate",
 				"uartBaudrates": {
 					"1200": "1200 Bd",
 					"2400": "2400 Bd",
@@ -1627,8 +1572,7 @@
 					},
 					"rxFilter": "RX filter have to be integer from 0 to 64.",
 					"txPower": "TX Power have to be integer from 0 to 7.",
-					"uartBaudRateC": "Please select UART interface baud rate.",
-					"uartBaudRateN": "Please select UART baud rate."
+					"uartBaudRate": "Please select UART interface baud rate."
 				}
 			},
 			"messages": {
@@ -1709,7 +1653,6 @@
 				"methods": {
 					"null": "Please select IPv4 connection method",
 					"auto": "DHCP",
-					"disabled": "Disabled",
 					"manual": "Manual",
 					"link-local": "Link-local",
 					"shared": "Shared with other computers"
@@ -1742,7 +1685,6 @@
 				"methods": {
 					"null": "Please select IPv6 connection method",
 					"auto": "SLAAC",
-					"disabled": "Disabled",
 					"dhcp": "DHCPv6",
 					"ignore": "Ignore",
 					"link-local": "Link-local",
@@ -1809,8 +1751,6 @@
 		"states": {
 			"active": "active",
 			"inactive": "inactive",
-			"disabled": "Disabled",
-			"enabled": "Enabled",
 			"missing": "Missing",
 			"unsupported": "Unsupported",
 			"unknown": "Unknown"
@@ -1931,10 +1871,6 @@
 			"add": "Add",
 			"delete": "Delete",
 			"edit": "Edit"
-		},
-		"enabled": {
-			"true": "Enabled",
-			"false": "Disabled"
 		},
 		"messages": {
 			"noRecords": "No records have been found."

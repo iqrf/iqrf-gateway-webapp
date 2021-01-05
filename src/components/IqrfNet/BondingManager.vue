@@ -14,7 +14,7 @@
 						v-slot='{ errors, touched, valid }'
 						rules='integer|required|between:1,239'
 						:custom-messages='{
-							integer: "iqrfnet.networkManager.messages.invalid.integer",
+							integer: "forms.errors.integer",
 							required: "iqrfnet.networkManager.bondingManager.errors.address",
 							between: "iqrfnet.networkManager.bondingManager.errors.address"
 						}'
@@ -24,7 +24,7 @@
 							type='number'
 							min='1'
 							max='239'
-							:label='$t("iqrfnet.networkManager.bondingManager.form.address")'
+							:label='$t("forms.fields.address")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 							:disabled='autoAddress'
@@ -38,7 +38,7 @@
 						v-slot='{ errors, touched, valid}'
 						rules='integer|required|between:0,255'
 						:custom-messages='{
-							integer: "iqrfnet.networkManager.messages.invalid.integer",
+							integer: "forms.errors.integer",
 							required: "iqrfnet.networkManager.bondingManager.errors.bondingRetries",
 							between: "iqrfnet.networkManager.bondingManager.errors.bondingRetries"
 						}'

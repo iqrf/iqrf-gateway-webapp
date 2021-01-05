@@ -17,7 +17,7 @@
 						>
 							<CInput
 								v-model='monitor.instance'
-								:label='$t("config.daemon.misc.monitor.form.instance")'
+								:label='$t("forms.fields.instanceName")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
@@ -27,7 +27,7 @@
 							rules='integer|required'
 							:custom-messages='{
 								required: "config.daemon.misc.monitor.errors.reportPeriod",
-								integer: "forms.messages.integer"
+								integer: "forms.errors.integer"
 							}'
 						>
 							<CInput
@@ -43,7 +43,7 @@
 							rules='integer|required'
 							:custom-messages='{
 								required: "config.daemon.misc.monitor.errors.WebsocketPort",
-								integer: "forms.messages.integer"
+								integer: "forms.errors.integer"
 							}'
 						>
 							<CInput

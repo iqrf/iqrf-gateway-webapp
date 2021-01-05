@@ -32,14 +32,14 @@
 						<td>
 							<CDropdown
 								:color='item.acceptAsyncMsg ? "success": "danger"'
-								:toggler-text='$t("table.enabled." + item.acceptAsyncMsg)'
+								:toggler-text='$t("states." + (item.acceptAsyncMsg ? "enabled": "disabled"))'
 								size='sm'
 							>
 								<CDropdownItem @click='changeAcceptAsyncMsg(item.messaging, true)'>
-									{{ $t('table.enabled.true') }}
+									{{ $t('states.enabled') }}
 								</CDropdownItem>
 								<CDropdownItem @click='changeAcceptAsyncMsg(item.messaging, false)'>
-									{{ $t('table.enabled.false') }}
+									{{ $t('states.disabled') }}
 								</CDropdownItem>
 							</CDropdown>
 						</td>
@@ -48,14 +48,14 @@
 						<td>
 							<CDropdown
 								:color='item.acceptOnlyLocalhost ? "success": "danger"'
-								:toggler-text='$t("table.enabled." + item.acceptOnlyLocalhost)'
+								:toggler-text='$t("states." + (item.acceptOnlyLocalhost ? "enabled": "disabled"))'
 								size='sm'
 							>
 								<CDropdownItem @click='changeAcceptOnlyLocalhost(item.service, true)'>
-									{{ $t('table.enabled.true') }}
+									{{ $t('states.enabled') }}
 								</CDropdownItem>
 								<CDropdownItem @click='changeAcceptOnlyLocalhost(item.service, false)'>
-									{{ $t('table.enabled.false') }}
+									{{ $t('states.disabled') }}
 								</CDropdownItem>
 							</CDropdown>
 						</td>
@@ -64,14 +64,15 @@
 						<td>
 							<CDropdown
 								:color='item.service.tlsEnabled ? "success": "danger"'
-								:toggler-text='$t("table.enabled." + (item.service.tlsEnabled !== undefined ? item.service.tlsEnabled : false))'
+								:toggler-text='$t("states." + (item.service.tlsEnabled !== undefined ? 
+									(item.service.tlsEnabled ? "enabled": "disabled") : "disabled"))'
 								size='sm'
 							>
 								<CDropdownItem @click='changeTls(item.service, true)'>
-									{{ $t('table.enabled.true') }}
+									{{ $t('states.enabled') }}
 								</CDropdownItem>
 								<CDropdownItem @click='changeTls(item.service, false)'>
-									{{ $t('table.enabled.false') }}
+									{{ $t('states.disabled') }}
 								</CDropdownItem>
 							</CDropdown>
 						</td>
@@ -187,7 +188,7 @@ export default class WebsocketInterfaceList extends Vue {
 	private fields: Array<IField> = [
 		{
 			key: 'instanceMessaging',
-			label: this.$t('config.daemon.messagings.websocket.form.instance'),
+			label: this.$t('forms.fields.instanceName'),
 		},
 		{
 			key: 'port',
@@ -195,7 +196,7 @@ export default class WebsocketInterfaceList extends Vue {
 		},
 		{
 			key: 'acceptAsyncMsg',
-			label: this.$t('config.daemon.messagings.websocket.form.acceptAsyncMsg'),
+			label: this.$t('config.daemon.messagings.acceptAsyncMsg'),
 			filter: false,
 		},
 		{

@@ -111,7 +111,7 @@ export default class TracerList extends Vue {
 	private fields: Array<IField> = [
 		{
 			key: 'instance',
-			label: this.$t('config.daemon.misc.tracer.form.instance')
+			label: this.$t('forms.fields.instanceName')
 		},
 		{
 			key: 'path',

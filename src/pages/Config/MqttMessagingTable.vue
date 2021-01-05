@@ -32,15 +32,15 @@
 						<td>
 							<CDropdown
 								:color='item.EnabledSSL ? "success" : "danger"'
-								:toggler-text='$t("table.enabled." + item.EnabledSSL)'
+								:toggler-text='$t("states." + (item.EnabledSSL ? "enabled": "disabled"))'
 								placement='top-start'
 								size='sm'
 							>
 								<CDropdownItem @click='changeEnabledSSL(item, true)'>
-									{{ $t('table.enabled.true') }}
+									{{ $t('states.enabled') }}
 								</CDropdownItem>
 								<CDropdownItem @click='changeEnabledSSL(item, false)'>
-									{{ $t('table.enabled.false') }}
+									{{ $t('states.disabled') }}
 								</CDropdownItem>
 							</CDropdown>
 						</td>
@@ -49,15 +49,15 @@
 						<td>
 							<CDropdown
 								:color='item.acceptAsyncMsg ? "success" : "danger"'
-								:toggler-text='$t("table.enabled." + item.acceptAsyncMsg)'
+								:toggler-text='$t("states." + (item.acceptAsyncMsg ? "enabled": "disabled"))'
 								placement='top-start'
 								size='sm'
 							>
 								<CDropdownItem @click='changeAcceptAsyncMsg(item, true)'>
-									{{ $t('table.enabled.true') }}
+									{{ $t('states.enabled') }}
 								</CDropdownItem>
 								<CDropdownItem @click='changeAcceptAsyncMsg(item, false)'>
-									{{ $t('table.enabled.false') }}
+									{{ $t('states.disabled') }}
 								</CDropdownItem>
 							</CDropdown>
 						</td>
@@ -170,7 +170,7 @@ export default class MqttMessagingTable extends Vue {
 	private fields: Array<IField> = [
 		{
 			key: 'instance',
-			label: this.$t('config.daemon.messagings.mqtt.form.instance'),
+			label: this.$t('forms.fields.instanceName'),
 		},
 		{
 			key: 'BrokerAddr',
@@ -195,7 +195,7 @@ export default class MqttMessagingTable extends Vue {
 		},
 		{
 			key: 'acceptAsyncMsg',
-			label: this.$t('config.daemon.messagings.mqtt.form.acceptAsyncMsg'),
+			label: this.$t('config.daemon.messagings.acceptAsyncMsg'),
 			filter: false,
 		},
 		{

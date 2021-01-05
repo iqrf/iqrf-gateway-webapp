@@ -24,7 +24,7 @@
 							type='number'
 							min='1'
 							max='239'
-							:label='$t("iqrfnet.networkManager.backup.form.address")'
+							:label='$t("forms.fields.address")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
@@ -104,7 +104,7 @@ export default class Backup extends Vue {
 	private selectOptions: Array<unknown> = [
 		{
 			value: 'coordinator',
-			label: this.$t('iqrfnet.networkManager.backup.form.coordinator'),
+			label: this.$t('forms.fields.coordinator'),
 		},
 		{
 			value: 'node',

@@ -11,7 +11,7 @@
 					>
 						<CInput
 							v-model='componentInstance'
-							:label='$t("config.daemon.misc.iqrfRepository.form.instance")'
+							:label='$t("forms.fields.instanceName")'
 							:is-valid='touched ? valid : null'
 							:invalid-feedback='$t(errors[0])'
 						/>
@@ -32,7 +32,7 @@
 						v-slot='{ errors, touched, valid }'
 						rules='integer|required|min:0'
 						:custom-messages='{
-							integer: "forms.messages.integer",
+							integer: "forms.errors.integer",
 							required: "config.daemon.misc.iqrfRepository.errors.checkPeriod",
 							min: "config.daemon.misc.iqrfRepository.errors.checkPeriod"
 						}'
