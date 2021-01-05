@@ -856,7 +856,7 @@
 			"description": "Manage selected components."
 		},
 		"mender": {
-			"title": "Mender",
+			"title": "Mender client",
 			"description": "Mender client configuration",
 			"form": {
 				"inventoryPollInterval": "Inventory update interval (seconds)",
@@ -1851,6 +1851,17 @@
 				"start": "PIXLA client service has been started.",
 				"stop": "PIXLA client service has been stopped.",
 				"restart": "PIXLA client service has been restarted."
+			}
+		},
+		"mender-client": {
+			"title": "Mender service",
+			"description": "Control the Mender service.",
+			"messages": {
+				"disable": "Mender service has been disabled.",
+				"enable": "Mender service has been enabled.",
+				"start": "Mender service has been started.",
+				"stop": "Mender service has been stopped.",
+				"restart": "Mender service has been restarted."
 			}
 		},
 		"ssh": {
