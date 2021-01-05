@@ -16,6 +16,7 @@
 							<CInput
 								v-model='configuration.ServerURL'
 								:label='$t("config.mender.form.server")'
+								:placeholder='$t("config.mender.form.serverPlaceholder")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
@@ -30,6 +31,7 @@
 							<CInput
 								v-model='configuration.TenantToken'
 								:label='$t("config.mender.form.tenantToken")'
+								:placeholder='$t("config.mender.form.tenantTokenPlaceholder")'
 								:is-valid='touched ? valid : null'
 								:invalid-feedback='$t(errors[0])'
 							/>
@@ -150,11 +152,11 @@ export default class MenderConfig extends Vue {
 	 * @var {IMenderConfig} configuration Mender feature configuration
 	 */
 	private configuration: IMenderConfig = {
-		InventoryPollIntervalSeconds: 0,
-		RetryPollIntervalSeconds: 0,
-		ServerURL: '',
-		TenantToken: '',
-		UpdatePollIntervalSeconds: 0,
+		InventoryPollIntervalSeconds: 28800,
+		RetryPollIntervalSeconds: 300,
+		ServerURL: 'https://hosted.mender.io',
+		TenantToken: 'exampleToken',
+		UpdatePollIntervalSeconds: 1800,
 	}
 
 	/**

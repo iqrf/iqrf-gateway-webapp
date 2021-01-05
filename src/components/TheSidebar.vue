@@ -184,6 +184,13 @@ export default class TheSidebar extends Vue {
 								feature: 'unattendedUpgrades',
 								roles: ['power', 'normal'],
 							},
+							{
+								_name: 'CSidebarNavItem',
+								name: this.$t('service.mender-client.title'),
+								to: '/gateway/service/mender-client/',
+								feature: 'mender',
+								roles: ['power', 'normal'],
+							},
 							/*{
 								name: this.$t('gateway.updater.title'),
 								to: '/gateway/updater/',

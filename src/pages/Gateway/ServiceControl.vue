@@ -56,7 +56,7 @@
 				{{ $t('service.states.' + (service.active ? 'active' : 'inactive')) }}
 			</span>
 			<br><br>
-			<pre v-if='service.status !== null' class='log'>{{ service.status }}</pre>
+			<pre v-if='service.status !== null && !unsupported' class='log'>{{ service.status }}</pre>
 		</CCard>
 		<AptConfig v-if='serviceName === "unattended-upgrades"' />
 	</div>
@@ -78,6 +78,7 @@ const whitelisted = [
 	'iqrf-gateway-translator',
 	'ssh',
 	'unattended-upgrades',
+	'mender-client',
 ];
 
 const features = {
@@ -85,6 +86,7 @@ const features = {
 	'iqrf-gateway-translator': 'iqrfGatewayTranslator',
 	'ssh': 'ssh',
 	'unattended-upgrades': 'unattendedUpgrades',
+	'mender-client': 'mender',
 };
 
 interface IService {
