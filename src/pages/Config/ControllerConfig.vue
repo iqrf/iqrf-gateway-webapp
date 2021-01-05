@@ -252,6 +252,9 @@
 						</CButton>
 					</CForm>
 				</ValidationObserver>
+				<CAlert v-else color='danger'>
+					{{ $t('config.controller.messages.loadFailed') }}
+				</CAlert>
 			</CCardBody>
 		</CCard>
 	</div>
@@ -260,7 +263,7 @@
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {AxiosError, AxiosResponse} from 'axios';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue/src';
+import {CAlert, CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CInputCheckbox, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {between, integer, required} from 'vee-validate/dist/rules';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
@@ -272,6 +275,7 @@ import {IOption} from '../../interfaces/coreui';
 
 @Component({
 	components: {
+		CAlert,
 		CButton,
 		CCard,
 		CCardBody,

@@ -158,6 +158,9 @@
 						</CButton>
 					</CForm>
 				</ValidationObserver>
+				<CAlert v-else color='danger'>
+					{{ $t('config.translator.messages.loadFailed') }}
+				</CAlert>
 			</CCardBody>
 		</CCard>
 	</div>
@@ -165,19 +168,20 @@
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CIcon, CInput} from '@coreui/vue/src';
+import {CAlert, CButton, CCard, CCardBody, CCardHeader, CForm, CIcon, CInput} from '@coreui/vue/src';
 import {cilLockLocked, cilLockUnlocked} from '@coreui/icons';
 import {between, integer, required} from 'vee-validate/dist/rules';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 import FeatureConfigService from '../../services/FeatureConfigService';
-import { NavigationGuardNext, Route } from 'vue-router';
-import { Dictionary } from 'vue-router/types/router';
-import { AxiosError, AxiosResponse } from 'axios';
+import {NavigationGuardNext, Route} from 'vue-router';
+import {Dictionary} from 'vue-router/types/router';
+import {AxiosError, AxiosResponse} from 'axios';
 import {ITranslator} from '../../interfaces/translator';
 
 @Component({
 	components: {
+		CAlert,
 		CButton,
 		CCard,
 		CCardBody,
