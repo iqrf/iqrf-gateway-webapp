@@ -758,7 +758,8 @@
 				}
 			},
 			"messages": {
-				"disabled": "IQRF Gateway Translator service is disabled."
+				"disabled": "IQRF Gateway Translator service is disabled.",
+				"loadFailed": "Failed to retrieve Translator configuration."
 			},
 			"errors": {
 				"integer": "This parameter should be an integer.",
@@ -848,7 +849,8 @@
 				}
 			},
 			"messages": {
-				"successRestart": "IQRF controller configuration has been successfully saved. Controller service has been restarted."
+				"successRestart": "IQRF controller configuration has been successfully saved. Controller service has been restarted.",
+				"loadFailed": "Failed to retrieve Controller configuration."
 			}
 		},
 		"selectedComponents": {
@@ -863,11 +865,18 @@
 				"retryPollInterval": "Communication retry interval (seconds)",
 				"server": "Server address",
 				"tenantToken": "Tenant token",
-				"updatePollInterval": "Update check interval (seconds)"
-
+				"updatePollInterval": "Update check interval (seconds)",
+				"placeholders": {
+					"inventoryPollInterval": 28000,
+					"retryPollInterval": 300,
+					"server": "https://hosted.mender.io",
+					"tenantToken": "exampleToken",
+					"updatePollInterval": 1800
+				}
 			},
 			"messages": {
-				"disabled": "Mender service is disabled."
+				"disabled": "Mender service is disabled.",
+				"loadFailed": "Failed to retrieve Mender configuration."
 			},
 			"errors": {
 				"inventoryPollInterval": "Please enter an integer greater or equal to 0 for for inventory update interval.",

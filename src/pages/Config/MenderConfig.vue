@@ -95,6 +95,9 @@
 						</CButton>
 					</CForm>
 				</ValidationObserver>
+				<CAlert v-else color='danger'>
+					{{ $t('config.mender.messages.loadFailed') }}
+				</CAlert>
 			</CCardBody>
 		</CCard>
 	</div>
@@ -103,7 +106,7 @@
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
 import {AxiosError, AxiosResponse} from 'axios';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
+import {CAlert, CButton, CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
 import {integer, min_value, required} from 'vee-validate/dist/rules';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
@@ -120,6 +123,7 @@ interface IMenderConfig {
 
 @Component({
 	components: {
+		CAlert,
 		CButton,
 		CCard,
 		CCardBody,
@@ -151,13 +155,7 @@ export default class MenderConfig extends Vue {
 	/**
 	 * @var {IMenderConfig} configuration Mender feature configuration
 	 */
-	private configuration: IMenderConfig = {
-		InventoryPollIntervalSeconds: 28800,
-		RetryPollIntervalSeconds: 300,
-		ServerURL: 'https://hosted.mender.io',
-		TenantToken: 'exampleToken',
-		UpdatePollIntervalSeconds: 1800,
-	}
+	private configuration: IMenderConfig|null = null
 
 	/**
 	 * @constant {string} name Mender feature name
