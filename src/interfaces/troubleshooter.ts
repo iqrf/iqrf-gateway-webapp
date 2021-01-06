@@ -38,7 +38,12 @@ export interface IFeature {
  */
 export interface IFeatureData {
 	/**
-	 * Feature installed
+	 * Feature name
+	 */
+	name: string
+
+	/**
+	 * Is installed?
 	 */
 	installed: boolean
 

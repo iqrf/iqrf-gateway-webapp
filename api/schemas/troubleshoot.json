@@ -1,0 +1,86 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/troubleshoot.json",
+	"type": "object",
+	"title": "Troubleshooting data",
+	"required": [
+		"daemon",
+		"features"
+	],
+	"properties": {
+		"daemon": {
+			"$id": "#/properties/daemon",
+			"type": "object",
+			"title": "IQRF GW Daemon troubleshooting data",
+			"required": [
+				"interfaces"
+			],
+			"properties": {
+				"interfaces": {
+					"$id": "#/properties/daemon/properties/interfaces",
+					"type": "array",
+					"title": "Enabled IQRF interfaces",
+					"items": [
+						{
+							"type": "string",
+							"enum": [
+								"",
+								"iqrf::IqrfCdc",
+								"iqrf::IqrfSpi",
+								"iqrf::IqrfUart"
+							]
+						}
+					]
+				}
+			},
+			"additionalProperties": false
+		},
+		"features": {
+			"$id": "#/properties/features",
+			"type": "array",
+			"title": "Gateway features",
+			"items": [
+				{
+					"type": "object",
+					"required": [
+						"name",
+						"installed",
+						"config",
+						"permission"
+					],
+					"properties": {
+						"name": {
+							"$id": "#/properties/feature/properties/name",
+							"type": "string",
+							"title": "Feature name",
+							"example": "controller"
+						},
+						"installed": {
+							"$id": "#/properties/feature/properties/installed",
+							"type": "boolean",
+							"title": "Is feature installed?",
+							"enum": [true, false],
+							"example": false
+						},
+						"config": {
+							"$id": "#/properties/feature/properties/config",
+							"type": "boolean",
+							"title": "Configuration found",
+							"enum": [true, false],
+							"example": true
+						},
+						"permission": {
+							"$id": "#/properties/feature/properties/permission",
+							"type": "integer",
+							"title": "Configuration permission",
+							"description": "Octal permission code, if the value is -1, an error has occured while retrieving permissions",
+							"example": 644
+						}
+					},
+					"additionalProperties": false
+				}
+			]
+		}
+	},
+	"additionalProperties": false
+}

@@ -10,7 +10,10 @@ services:
 	mender.manager: App\GatewayModule\Models\MenderConfigManager(@mender.fileManager)
 	- App\GatewayModule\Models\NetworkManager
 	- App\GatewayModule\Models\PowerManager
-	- App\GatewayModule\Models\TroubleshootManager
+	troubleshoot.fileManager:
+		factory: App\CoreModule\Models\JsonFileManager(%daemon.configDir%)
+		autowired: false
+	troubleshoot.manager: App\GatewayModule\Models\TroubleshootManager(@troubleshoot.fileManager)
 	- App\GatewayModule\Models\UpdaterManager
 	- App\GatewayModule\Models\Utils\GatewayInfoUtil
 	- App\GatewayModule\Models\VersionManager

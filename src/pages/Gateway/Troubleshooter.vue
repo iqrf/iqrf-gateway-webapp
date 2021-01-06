@@ -53,7 +53,6 @@ import DaemonConfigurationService from '../../services/DaemonConfigurationServic
 import GatewayService from '../../services/GatewayService';
 import LedService from '../../services/DaemonApi/LedService';
 import {AxiosError, AxiosResponse} from 'axios';
-import {IComponent} from '../../interfaces/daemonComponent';
 import {Dictionary} from 'vue-router/types/router';
 import {MutationPayload} from 'vuex';
 import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
@@ -90,29 +89,11 @@ export default class Troubleshooter extends Vue {
 	 * @var features Features troubleshooting information
 	 */
 	private features: Array<IFeature> = []
-	
-	/**
-	 * @var {Dictionary<boolean>} interfaces Dictionary of IQRF interfaces
-	 */
-	private interfaces: Dictionary<boolean> = {
-		'iqrf::IqrfCdc': false,
-		'iqrf::IqrfSpi': false,
-		'iqrf::IqrfUart': false,
-	}
 
 	/**
 	 * @var {string|null} msgId Daemon API message ID
 	 */
 	private msgId: string|null = null
-
-	/**
-	 * @constant {Array<string>} whitelistedComponents Array of IQRF interface components for filtering
-	 */
-	private whitelistedComponents: Array<string> = [
-		'iqrf::IqrfCdc',
-		'iqrf::IqrfSpi',
-		'iqrf::IqrfUart',
-	]
 
 	/**
 	 * @constant {Array<number>} whitelistedPermissions Array of correct configuration file permissions
@@ -142,7 +123,6 @@ export default class Troubleshooter extends Vue {
 	 * Vue lifecycle hook mounted
 	 */
 	mounted(): void {
-		this.getInterfaces();
 		this.getCache();
 		this.troubleshoot();
 	}
@@ -157,24 +137,27 @@ export default class Troubleshooter extends Vue {
 
 	private troubleshoot(): void {
 		GatewayService.troubleshoot()
-			.then((response: AxiosResponse) => this.parseFeatures(response.data.features))
+			.then((response: AxiosResponse) => {
+				this.interfaceEntry(response.data.daemon.interfaces);
+				this.parseFeatures(response.data.features);
+			})
 			.catch((error: AxiosError) => console.error(error));
 	}
 
 	/**
 	 * Creates troubleshoot entries for features
 	 */
-	private parseFeatures(features: Dictionary<IFeatureData>): void {
+	private parseFeatures(features: Array<IFeatureData>): void {
 		let parsedFeatures: Array<IFeature> = [];
-		for (const key of Object.keys(features)) {
+		for (const item of features) {
 			let feature: IFeature = {
-				title: this.$t('gateway.troubleshooter.table.features.' + key).toString(),
+				title: this.$t('gateway.troubleshooter.table.features.' + item.name).toString(),
 				entries: []
 			};
 			let entryArray: Array<IEntry> = [];
-			entryArray.push(this.featureStatus(key, features[key]));
-			if (features[key].installed) {
-				entryArray.push(this.featureConfiguration(features[key]));
+			entryArray.push(this.featureStatus(item));
+			if (item.installed) {
+				entryArray.push(this.featureConfiguration(item));
 			}
 			feature.entries = entryArray;
 			parsedFeatures.push(feature);
@@ -188,7 +171,7 @@ export default class Troubleshooter extends Vue {
 	 * @param {IFeatureData} feature Feature data from REST API
 	 * @returns {IEntry} Feature status entry
 	 */
-	private featureStatus(name: string, feature: IFeatureData): IEntry {
+	private featureStatus(feature: IFeatureData): IEntry {
 		let status = {
 			item: this.$t('gateway.troubleshooter.table.features.status').toString(),
 			action: this.$t('gateway.troubleshooter.actions.noAction').toString(),
@@ -196,10 +179,10 @@ export default class Troubleshooter extends Vue {
 		};
 		if (feature.installed) {
 			status.state += this.$t('gateway.troubleshooter.states.installed').toString();
-			status.state += ', ' + this.$t('gateway.troubleshooter.states.' + (this.featureEnabled(name) ? 'enabled': 'notEnabled')).toString();
+			status.state += ', ' + this.$t('gateway.troubleshooter.states.' + (this.featureEnabled(feature.name) ? 'enabled': 'notEnabled')).toString();
 		} else {
 			status.state += this.$t('gateway.troubleshooter.states.notInstalled').toString();
-			if (this.featureEnabled(name)) {
+			if (this.featureEnabled(feature.name)) {
 				status.state += ', ' + this.$t('gateway.troubleshooter.states.enabled').toString();
 				status.action = this.$t('gateway.troubleshooter.actions.enabledNotInstalled').toString();
 			}
@@ -238,44 +221,24 @@ export default class Troubleshooter extends Vue {
 	}
 
 	/**
-	 * Retrieves active IQRF interfaces
-	 */
-	private getInterfaces(): void {
-		this.$store.commit('spinner/SHOW');
-		DaemonConfigurationService.getComponent('')
-			.then((response: AxiosResponse) => {
-				this.$store.commit('spinner/HIDE');
-				for (const component of response.data.components as Array<IComponent>) {
-					if (!this.whitelistedComponents.includes(component.name)) {
-						continue;
-					}
-					this.interfaces[component.name] = component.enabled;
-				}
-				this.interfaceEntry();
-			})
-			.catch((error: AxiosError) => FormErrorHandler.configError(error));
-	}
-
-	/**
 	 * Creates the interface entry with current state and suggested actions if an action is necessary
 	 */
-	private interfaceEntry(): void {
-		let messageTokens: Array<string> = [];
-		for (const [key, value] of Object.entries(this.interfaces)) {
-			if (value) {
-				messageTokens.push(key);
-			}
-		}
+	private interfaceEntry(interfaces: any): void {
 		let entry: IEntry = {
 			item: this.$t('gateway.troubleshooter.table.daemon.interface').toString(),
-			state: messageTokens.join(', '),
+			state: '',
 			action: this.$t('gateway.troubleshooter.actions.noAction').toString()
 		};
-		if (messageTokens.length === 0) {
-			entry.state = this.$t('gateway.troubleshooter.states.noInterface').toString(),
-			entry.action = this.$t('gateway.troubleshooter.actions.noInterface').toString();
-		} else if (messageTokens.length > 1) {
-			entry.action = this.$t('gateway.troubleshooter.actions.multipleInterfaces').toString();
+		if (interfaces.error !== undefined) {
+			entry.state = interfaces.error;
+		} else {
+			entry.state = interfaces.join(', ');
+			if (interfaces.length === 0) {
+				entry.state = this.$t('gateway.troubleshooter.states.noInterface').toString(),
+				entry.action = this.$t('gateway.troubleshooter.actions.noInterface').toString();
+			} else if (interfaces.length > 1) {
+				entry.action = this.$t('gateway.troubleshooter.actions.multipleInterfaces').toString();
+			}
 		}
 		this.daemon.push(entry);
 	}
