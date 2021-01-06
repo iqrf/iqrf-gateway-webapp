@@ -1044,9 +1044,19 @@
 					"state": "Current state",
 					"action": "Suggested action"
 				},
-				"interface": "IQRF Interface",
-				"repository": "IQRF Repository",
-				"repositoryDownload": "IQRF Repository download"
+				"daemon": {
+					"title": "IQRF Daemon",
+					"interface": "Interface",
+					"repository": "Repository",
+					"repositoryDownload": "Repository download"
+				},
+				"features": {
+					"controller": "IQRF Controller",
+					"translator": "IQRF Translator",
+					"mender": "Mender",
+					"status": "Feature status",
+					"config": "Configuration"
+				}
 			},
 			"states": {
 				"noInterface": "No IQRF interface is enabled.",
@@ -1054,7 +1064,14 @@
 				"cacheNotLoaded": "IQRF Repository not loaded correctly.",
 				"cacheDownloadDisabled": "IQRF Repository download is disabled.",
 				"cacheDownloadEnabled": "IQRF Repository download is enabled.",
-				"noCacheInstance": "No IQRF Repository component instance detected."
+				"noCacheInstance": "No IQRF Repository component instance detected.",
+				"installed": "Installed",
+				"notInstalled": "Not installed",
+				"enabled": "Enabled",
+				"notEnabled": "Not enabled",
+				"configCorrect": "Configuration exists and has correct permissions.",
+				"configMissing": "Configuration file missing.",
+				"configInvalidPermission": "Configuration file has incorrect permission: {permission}."
 			},
 			"actions": {
 				"noAction": "No action is necessary.",
@@ -1062,7 +1079,10 @@
 				"multipleInterfaces": "Select an interface in Daemon configuration to disable the others.",
 				"enableDownload": "Enable IQRF Repository download if cache is empty in Daemon configuration.",
 				"addCacheInstance": "Configure and save IQRF Repository instance in Daemon configuration.",
-				"fixCache": "Remove cache files and restart Daemon service."
+				"fixCache": "Remove cache files and restart Daemon service.",
+				"configMissing": "Create configuration file or reinstall service.",
+				"configFixPermission": "Set configuration file permission to 644 or 777.",
+				"enabledNotInstalled": "Disable the feature in Webapp or install the feature."
 			}
 		},
 		"log": {

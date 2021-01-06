@@ -46,6 +46,13 @@ class GatewayService {
 	performReboot(): Promise<AxiosResponse> {
 		return axios.post('gateway/reboot', null, {headers: authorizationHeader()});
 	}
+
+	/**
+	 * Troubleshoots gateway features and services
+	 */
+	troubleshoot(): Promise<AxiosResponse> {
+		return axios.get('gateway/troubleshoot', {headers: authorizationHeader()});
+	}
 }
 
 export default new GatewayService();
