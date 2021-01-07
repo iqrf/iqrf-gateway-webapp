@@ -41,6 +41,11 @@ class TroubleshootManager {
 	private const DAEMON = 'iqrf-gateway-daemon';
 
 	/**
+	 * IQRF GW Daemon config directory
+	 */
+	private const DAEMON_DIR = '/etc/iqrf-gateway-daemon/';
+
+	/**
 	 * IQRF GW Translator command
 	 */
 	private const TRANSLATOR = 'iqrf-gateway-translator';
@@ -77,6 +82,7 @@ class TroubleshootManager {
 		$array = [];
 		$array['daemon'] = [
 			'interfaces' => $this->getEnabledInterfaces(),
+			'config' => $this->getDaemonConfig(),
 		];
 		$array['features'] = [];
 		array_push($array['features'], array_merge(['name' => 'controller'], $this->getService(self::CONTROLLER, '/etc/' . self::CONTROLLER . '/config.json')));
@@ -109,6 +115,18 @@ class TroubleshootManager {
 		}
 	}
 
+	private function getDaemonConfig(): array {
+		$filePermissions = [];
+		$dirContent = scandir(self::DAEMON_DIR);
+		foreach ($dirContent as $item) {
+			if (is_dir(self::DAEMON_DIR . $item)) {
+				continue;
+			}
+			array_push($filePermissions, ['name' => $item, $this->checkPermission($item)]);
+		}
+		return $filePermissions;
+	}
+
 	/**
 	 * Retrieves information about a gateway feature.
 	 * @param string $service Name of service
@@ -137,7 +155,7 @@ class TroubleshootManager {
 	 * @return int Permission code or -1
 	 */
 	private function checkPermission(string $file): int {
-		$command = $this->commandManager->run('stat -c "%a" ' . $file, false);
+		$command = $this->commandManager->run('stat -c "%a" ' . self::DAEMON_DIR . $file, false);
 		if ($command->getExitCode() === 0) {
 			return intval($command->getStdout());
 		}
