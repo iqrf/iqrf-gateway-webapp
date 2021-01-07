@@ -14,7 +14,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "e8915482-cb6c-457b-9431-4f389472fa2b",
 								"exec": [
 									"pm.test('Status code is 200', function () {",
 									"    pm.response.to.have.status(200);",
@@ -49,8 +48,7 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "User",
@@ -64,7 +62,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "1fd54449-0f3f-4f41-b025-1c2f07b944cd",
 										"exec": [
 											"pm.test('Status code is 200', function () {",
 											"    pm.response.to.have.status(200);",
@@ -124,7 +121,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "195109f6-25df-4f75-8999-9f06323a09be",
 										"exec": [
 											"pm.test('Status code is 400', function () {",
 											"    pm.response.to.have.status(400);",
@@ -178,7 +174,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "fc1768fc-0bfe-4655-8be0-5362a05053db",
 										"exec": [
 											"pm.test('Status code is 400', function () {",
 											"    pm.response.to.have.status(400);",
@@ -232,7 +227,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "ce5ff74b-94f1-41d1-bb4b-6131f6645491",
 										"exec": [
 											"pm.test('Status code is 400', function () {",
 											"    pm.response.to.have.status(400);",
@@ -286,7 +280,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "e9701854-8109-453b-8340-6afccdcf7c4f",
 										"exec": [
 											"pm.test('Status code is 400', function () {",
 											"    pm.response.to.have.status(400);",
@@ -340,7 +333,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "b5dfaf2e-c81f-4a91-a11f-5f435a9c59a8",
 										"exec": [
 											"pm.test('Status code is 400', function () {",
 											"    pm.response.to.have.status(400);",
@@ -388,9 +380,7 @@
 							},
 							"response": []
 						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
+					]
 				},
 				{
 					"name": "Create",
@@ -401,7 +391,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "3e986551-2bfe-48fc-a07c-8f234c17f6a4",
 										"exec": [
 											"pm.test('Status code is 201', function () {",
 											"    pm.response.to.have.status(201);",
@@ -448,7 +437,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "2766ec17-a006-42a1-a298-7d7bd6083fc2",
 										"exec": [
 											"pm.test('Status code is 400', function () {",
 											"    pm.response.to.have.status(400);",
@@ -498,7 +486,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "aace69c2-6609-4d7d-be56-059a155ecdc0",
 										"exec": [
 											"pm.test('Status code is 400', function () {",
 											"    pm.response.to.have.status(400);",
@@ -542,9 +529,7 @@
 							},
 							"response": []
 						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
+					]
 				},
 				{
 					"name": "Get information",
@@ -555,7 +540,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "670dfbad-d29a-4af0-b16c-a3aeafeafa31",
 										"exec": [
 											"pm.test('Status code is 200', function () {",
 											"    pm.response.to.have.status(200);",
@@ -600,7 +584,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "8924c1e3-a465-48f7-be6f-9bcd2723b6de",
 										"exec": [
 											"pm.test('Status code is 200', function () {",
 											"    pm.response.to.have.status(200);",
@@ -652,7 +635,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "9012dfa4-5e23-4432-bacd-335fdf278d80",
 										"exec": [
 											"pm.test('Status code is 200', function () {",
 											"    pm.response.to.have.status(200);",
@@ -698,7 +680,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "73957f0c-8caa-41a9-ba1e-ea34ee178799",
 										"exec": [
 											"pm.test('Status code is 401', function () {",
 											"    pm.response.to.have.status(401);",
@@ -742,7 +723,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "5ca13257-b682-4ea2-afac-e6ed05a74166",
 										"exec": [
 											"pm.test('Status code is 404', function () {",
 											"    pm.response.to.have.status(404);",
@@ -778,9 +758,7 @@
 							},
 							"response": []
 						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
+					]
 				},
 				{
 					"name": "Delete the new user",
@@ -788,7 +766,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "d1ab3f1a-099a-45e7-a9f2-7b3348fb7397",
 								"exec": [
 									"pm.test('Status code is 200', function () {",
 									"    pm.response.to.have.status(200);",
@@ -823,7 +800,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "3383d75b-f18d-40ae-90c0-a225595c2adf",
 								"exec": [
 									"pm.test('Status code is 404', function () {",
 									"    pm.response.to.have.status(404);",
@@ -859,13 +835,11 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "Features",
-			"item": [],
-			"protocolProfileBehavior": {}
+			"item": []
 		},
 		{
 			"name": "Config",
@@ -879,7 +853,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"id": "8fb8dbe1-5cce-4c7e-82a0-c7f280f5e2fd",
 										"exec": [
 											"if (pm.environment.get('hasApt') === 'true') {",
 											"    pm.test('Status code is 200', function () {",
@@ -925,12 +898,9 @@
 							},
 							"response": []
 						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
+					]
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "Services",
@@ -941,7 +911,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "d69b8a0d-e01e-4bd2-916d-f19d357fe2d8",
 								"exec": [
 									"pm.test('Status code is 200', function () {",
 									"    pm.response.to.have.status(200);",
@@ -957,6 +926,7 @@
 									"        'iqrf-gateway-controller',",
 									"        'iqrf-gateway-daemon',",
 									"        'iqrf-gateway-translator',",
+									"        'mender-client',",
 									"        'ssh',",
 									"        'unattended-upgrades'",
 									"    ];",
@@ -985,8 +955,7 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		}
 	],
 	"auth": {
@@ -1003,7 +972,6 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "42195762-d97d-417c-b62c-7b6f2614403d",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -1013,7 +981,6 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "a8c5fe76-b65a-49d9-98a1-e0da6e2caa75",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -1023,30 +990,24 @@
 	],
 	"variable": [
 		{
-			"id": "dc9f1ace-ecd0-4c66-990a-acbae05502b3",
 			"key": "token",
 			"value": null
 		},
 		{
-			"id": "c680d06b-de7a-4213-a040-9c3201218abf",
 			"key": "baseUrl",
 			"value": "localhost:8080"
 		},
 		{
-			"id": "ca2a35f2-9009-405f-9441-9cbc117ff3de",
 			"key": "userId",
 			"value": ""
 		},
 		{
-			"id": "34336e47-e14e-4ca3-a181-90603b1ecde5",
 			"key": "newUserName",
 			"value": ""
 		},
 		{
-			"id": "c1bad257-93b2-4cc8-bace-80c834ea9060",
 			"key": "newUserId",
 			"value": ""
 		}
-	],
-	"protocolProfileBehavior": {}
+	]
 }
