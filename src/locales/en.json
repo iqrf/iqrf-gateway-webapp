@@ -1008,8 +1008,9 @@
 		"datetime": {
 			"title": "Date & Time",
 			"description": "Gateway date and time settings.",
+			"current": "Current date and time: {dateTime}.",
 			"form": {
-				"timezone": "Timezone",
+				"timezone": "Change timezone",
 				"timezonePlaceholder": "Select a timezone"
 			},
 			"errors": {
