@@ -43,6 +43,16 @@ class TimeManager {
 	}
 
 	/**
+	 * Retrieves current date, time and timezone
+	 * @return string Date, time and timezone
+	 */
+	public function dateTime(): string {
+		$dateTime = date('l d F Y, G:i:s');
+		$timezone = date('e (T, O)');
+		return ['dateTime' => $dateTime, 'timezone' => $timezone];
+	}
+
+	/**
 	 * Retrieves an array of available timezones
 	 * @return array<string> Array of available timezones
 	 */
@@ -56,11 +66,21 @@ class TimeManager {
 	}
 
 	/**
-	 * Retrieves offset of a timezone from GMT
+	 * Retrieves timezone abbreviation and offset
+	 * @param string $timezone Timezone name
+	 * @return string Timezone abbreviation and offset
 	 */
 	private function timezoneOffset(string $timezone): string {
 		$time = new DateTime('now', new DateTimeZone($timezone));
 		return $time->format('T, O');
+	}
+
+	/**
+	 * Sets specified timezone as system timezone
+	 * @param string $timezone Timezone name
+	 */
+	public function setTimezone(string $timezone): void {
+		$this->commandManager->run('timedatectl set-timezone' . $timezone, false);
 	}
 
 }

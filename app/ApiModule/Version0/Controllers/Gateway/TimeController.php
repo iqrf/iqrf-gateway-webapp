@@ -51,6 +51,28 @@ class TimeController extends GatewayController {
 	}
 
 	/**
+	 * @Path("/")
+	 * @Method("GET")
+	 * @OpenApi("
+	 *  summary: 'Returns current gateway date, time and timezone'
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *          content:
+	 *              application/json:
+	 *                  schema:
+	 *                      $ref: '#/components/schemas/DateTime'
+	 * ")
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse
+	 */
+	public function getTime(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$time = $this->manager->dateTime();
+		return $response->writeJsonBody($time);
+	}
+
+	/**
 	 * @Path("/timezones")
 	 * @Method("GET")
 	 * @OpenApi("

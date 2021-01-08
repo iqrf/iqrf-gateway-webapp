@@ -1,6 +1,9 @@
 <template>
 	<CCard>
 		<CCardBody>
+			<CAlert v-if='dateTime !==""' color='primary'>
+				{{ $t('gateway.datetime.current', {dateTime: dateTime}) }}
+			</CAlert>
 			<ValidationObserver v-slot='{invalid}'>
 				<CForm @submit.prevent='saveChanges'>
 					<ValidationProvider
@@ -57,15 +60,20 @@ import {AxiosError, AxiosResponse} from 'axios';
 export default class GatewayTime extends Vue {
 
 	/**
-	 * @var {Array<string>} timezoneOptions Array of available timezones at Gateway
+	 * @var {string} dateTime Current date, time and timezone
 	 */
-	private timezoneOptions: Array<string> = []
+	private dateTime = ''
 
 	/**
 	 * @var {string} timezone Currently selected timezone
 	 */
 	private timezone = ''
 
+	/**
+	 * @var {Array<string>} timezoneOptions Array of available timezones at Gateway
+	 */
+	private timezoneOptions: Array<string> = []
+	
 	/**
 	 * Initializes validation rules
 	 */
@@ -77,7 +85,23 @@ export default class GatewayTime extends Vue {
 	 * Retrieves gateway time and available timezones
 	 */
 	mounted(): void {
-		this.getTimezones();
+		this.getTime();
+	}
+
+	/**
+	 * Retrieves current gateway date, time and timezone
+	 */
+	private getTime(): void {
+		this.$store.commit('spinner/SHOW');
+		TimeService.getTime()
+			.then((response: AxiosResponse) => {
+				this.dateTime = response.data;
+				this.getTimezones();
+			})
+			.catch((error: AxiosError) => {
+				this.$store.commit('spinner/HIDE');
+				console.error(error);
+			});
 	}
 
 	/**
@@ -85,8 +109,14 @@ export default class GatewayTime extends Vue {
 	 */
 	private getTimezones(): void {
 		TimeService.getTimezones()
-			.then((response: AxiosResponse) => this.timezoneOptions = response.data.timezones)
-			.catch((error: AxiosError) => console.error(error));
+			.then((response: AxiosResponse) => {
+				this.$store.commit('spinner/HIDE');
+				this.timezoneOptions = response.data.timezones;
+			})
+			.catch((error: AxiosError) => {
+				this.$store.commit('spinner/HIDE');
+				console.error(error);
+			});
 	}
 }
 </script>
