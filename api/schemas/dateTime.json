@@ -7,19 +7,62 @@
 		"dateTime",
 		"timezone"
 	],
+	"additionalProperties": false,
 	"properties": {
 		"dateTime": {
 			"$id": "#/properties/dateTime",
-			"type": "string",
+			"type": "object",
 			"title": "Date and time",
-			"example": "Friday 08 January 2021, 14:50:38"
+			"requred": [
+				"date",
+				"time"
+			],
+			"additionalProperties": false,
+			"properties": {
+				"date": {
+					"$id": "#/properties/dateTime/properties/date",
+					"type": "string",
+					"title": "Date",
+					"example": "01 January 2021"
+				},
+				"time": {
+					"$id": "#/properties/dateTime/properties/time",
+					"type": "string",
+					"title": "Time",
+					"example": "12:00"
+				}
+			}
 		},
 		"timezone": {
 			"$id": "#/properties/timezone",
-			"type": "string",
+			"type": "object",
 			"title": "Timezone",
-			"example": "Europe/Prague (CET, +0100)"
+			"required": [
+				"name",
+				"code",
+				"offset"
+			],
+			"additionalProperties": false,
+			"properties": {
+				"name": {
+					"$id": "#/properties/timezone/properties/name",
+					"type": "string",
+					"title": "Timezone name",
+					"example": "Europe/Prague"
+				},
+				"code": {
+					"$id": "#/properties/timezone/properties/code",
+					"type": "string",
+					"title": "Timezone code",
+					"example": "CET"
+				},
+				"offset": {
+					"$id": "#/properties/timezone/properties/offset",
+					"type": "string",
+					"title": "Timezone offset",
+					"example": "+0100"
+				}
+			}
 		}
-	},
-	"additionalProperties": false
+	}
 }

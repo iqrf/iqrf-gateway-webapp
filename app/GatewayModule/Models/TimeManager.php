@@ -44,12 +44,22 @@ class TimeManager {
 
 	/**
 	 * Retrieves current date, time and timezone
-	 * @return string Date, time and timezone
+	 * @return array<string, array<string, string>> Date, time and timezone
 	 */
-	public function dateTime(): string {
-		$dateTime = date('l d F Y, G:i:s');
-		$timezone = date('e (T, O)');
-		return ['dateTime' => $dateTime, 'timezone' => $timezone];
+	public function dateTime(): array {
+		$array = [];
+		$dateTime = explode(',', date('d F Y,G:i'));
+		$array['dateTime'] = [
+			'date' => $dateTime[0],
+			'time' => $dateTime[1],
+		];
+		$timezone = explode(' ', date('e T O'));
+		$array['timezone'] = [
+			'name' => $timezone[0],
+			'code' => $timezone[1],
+			'offset' => $timezone[2],
+		];
+		return $array;
 	}
 
 	/**
@@ -80,7 +90,7 @@ class TimeManager {
 	 * @param string $timezone Timezone name
 	 */
 	public function setTimezone(string $timezone): void {
-		$this->commandManager->run('timedatectl set-timezone' . $timezone, false);
+		$this->commandManager->run('timedatectl set-timezone ' . $timezone, false);
 	}
 
 }
