@@ -117,6 +117,8 @@ components:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/task.json
 		TaskList:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/taskList.json
+		TimezoneList:
+			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/timezoneList.json
 		TranslatorConfig:
 			$ref: https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/translatorConfig.json
 		UserCreate:

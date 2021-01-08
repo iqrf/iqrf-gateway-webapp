@@ -131,6 +131,12 @@ export default class TheSidebar extends Vue {
 							},
 							{
 								_name: 'CSidebarNavItem',
+								name: this.$t('gateway.datetime.title'),
+								to: '/gateway/date-time/',
+								roles: ['power', 'normal'],
+							},
+							{
+								_name: 'CSidebarNavItem',
 								name: this.$t('gateway.log.title'),
 								to: '/gateway/log/',
 								roles: ['power', 'normal'],
