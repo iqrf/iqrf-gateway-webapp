@@ -14,6 +14,7 @@ const PixlaControl = () => import(/* webpackChunkName: "cloud" */ '@/pages/Cloud
 
 const GatewayDisambiguation = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/GatewayDisambiguation.vue');
 const GatewayInfo = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/GatewayInfo.vue');
+const GatewayTime = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/GatewayTime.vue');
 const DaemonLogViewer = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/DaemonLogViewer.vue');
 const DaemonMode = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/DaemonMode.vue');
 const PowerControl = () => import(/* webpackChunkName: "gateway" */ '@/pages/Gateway/PowerControl.vue');
@@ -634,6 +635,10 @@ const routes: Array<RouteConfig> = [
 					{
 						component: GatewayInfo,
 						path: 'info',
+					},
+					{
+						component: GatewayTime,
+						path: 'date-time',
 					},
 					{
 						component: DaemonLogViewer,

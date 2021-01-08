@@ -1005,6 +1005,17 @@
 			"gwMode": "Gateway mode",
 			"diagnostics": "Download diagnostics"
 		},
+		"datetime": {
+			"title": "Date & Time",
+			"description": "Gateway date and time settings.",
+			"form": {
+				"timezone": "Timezone",
+				"timezonePlaceholder": "Select a timezone"
+			},
+			"errors": {
+				"timezone": "Please select a timezone."
+			}
+		},
 		"log": {
 			"title": "Log file",
 			"description": "Shows log of IQRF Gateway Daemon.",
@@ -1192,7 +1203,7 @@
 					"unbondCoordinatorOnly": "Unbonds the Node only on Coordinator side"
 				},
 				"errors": {
-					"address": "Please enter an integer between 1 and 239 for new node address",
+					"address": "Please enter an integer between 1 and 239 for new node address.",
 					"bondingRetries": "Please enter an integer between 0 and 255 for number of bonding test retry requests.",
 					"scCodeMissing": "Please enter the IQRF Smart Connect code.",
 					"scCodeInvalid": "IQRF Smart Connect code should be a string of 34 alphanumeric characters."
