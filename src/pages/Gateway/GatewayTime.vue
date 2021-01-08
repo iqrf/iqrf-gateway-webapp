@@ -5,7 +5,7 @@
 				{{ $t('gateway.datetime.current', {dateTime: dateTime}) }}
 			</CAlert>
 			<ValidationObserver v-slot='{invalid}'>
-				<CForm @submit.prevent='saveChanges'>
+				<CForm @submit.prevent='setTimezone'>
 					<ValidationProvider
 						v-slot='{errors, touched, valid}'
 						rules='required'
@@ -38,6 +38,8 @@ import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 import TimeService from '../../services/TimeService';
 import {AxiosError, AxiosResponse} from 'axios';
+import {Datetime} from 'vue-datetime';
+import ToastClear from '../../helpers/ToastClear';
 
 @Component({
 	components: {
@@ -46,6 +48,7 @@ import {AxiosError, AxiosResponse} from 'axios';
 		CCardBody,
 		CForm,
 		CSelect,
+		Datetime,
 		ValidationObserver,
 		ValidationProvider,
 	},
@@ -117,6 +120,18 @@ export default class GatewayTime extends Vue {
 				this.$store.commit('spinner/HIDE');
 				console.error(error);
 			});
+	}
+
+	/**
+	 * Sets new gateway timezone
+	 */
+	private setTimezone(): void {
+		TimeService.setTimezone(this.timezone.split(' ')[0])
+			.then(() => {
+				this.$store.commit('spinner/HIDE');
+				ToastClear.success('gateway.datetime.messages.timezoneSuccess');
+			})
+			.catch((error: AxiosError) => console.error(error));
 	}
 }
 </script>

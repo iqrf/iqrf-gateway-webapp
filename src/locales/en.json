@@ -1015,6 +1015,9 @@
 			},
 			"errors": {
 				"timezone": "Please select a timezone."
+			},
+			"messages": {
+				"timezoneSuccess": "Timezone has been successfully changed."
 			}
 		},
 		"log": {

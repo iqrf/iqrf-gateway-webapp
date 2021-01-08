@@ -23,6 +23,8 @@ namespace App\ApiModule\Version0\Controllers\Gateway;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
+use Apitte\Core\Annotation\Controller\RequestParameter;
+use Apitte\Core\Annotation\Controller\RequestParameters;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Controllers\GatewayController;
@@ -65,7 +67,7 @@ class TimeController extends GatewayController {
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
-	 * @return ApiResponse
+	 * @return ApiResponse API response
 	 */
 	public function getTime(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$time = $this->manager->dateTime();
@@ -92,6 +94,28 @@ class TimeController extends GatewayController {
 	public function getTimezones(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$timezones = $this->manager->availableTimezones();
 		return $response->writeJsonBody(['timezones' => $timezones]);
+	}
+
+	/**
+	 * @Path("/timezone/{name}")
+	 * @Method("PUT")
+	 * @OpenApi("
+	 *  summary: Sets new gateway timezone
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 * ")
+	 * @RequestParameters({
+	 *      @RequestParameter(name="name", type="string", description="Timezone name")
+	 * })
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function setTimezone(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$timezone = urldecode($request->getParameter('name'));
+		$result = $this->manager->setTimezone($timezone);
+		return $response->writeBody('Workaround');
 	}
 
 }
