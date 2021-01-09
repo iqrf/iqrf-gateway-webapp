@@ -66,7 +66,7 @@ class TimeManager {
 
 	/**
 	 * Retrieves an array of available timezones
-	 * @return array<string> Array of available timezones
+	 * @return array<int, array<string, string>> Array of available timezones
 	 */
 	public function availableTimezones(): array {
 		$command = $this->commandManager->run('timedatectl list-timezones');
@@ -81,7 +81,7 @@ class TimeManager {
 	/**
 	 * Retrieves timezone information
 	 * @param string $timezone Timezone name
-	 * @return array<string> Timezone name, abbreviation and offset
+	 * @return array<string, string> Timezone name, abbreviation and offset
 	 */
 	private function timezoneInfo(string $timezone): array {
 		$time = new DateTime('now', new DateTimeZone($timezone));
