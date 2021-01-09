@@ -23,8 +23,6 @@ namespace App\ApiModule\Version0\Controllers\Gateway;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\OpenApi;
 use Apitte\Core\Annotation\Controller\Path;
-use Apitte\Core\Annotation\Controller\RequestParameter;
-use Apitte\Core\Annotation\Controller\RequestParameters;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\ApiModule\Version0\Controllers\GatewayController;
@@ -63,15 +61,39 @@ class TimeController extends GatewayController {
 	 *          content:
 	 *              application/json:
 	 *                  schema:
-	 *                      $ref: '#/components/schemas/DateTime'
+	 *                      $ref: '#/components/schemas/CurrentTime'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
 	public function getTime(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$time = $this->manager->dateTime();
+		$time = $this->manager->currentTime();
 		return $response->writeJsonBody($time);
+	}
+
+	/**
+	 * @Path("/")
+	 * @Method("PUT")
+	 * @OpenApi("
+	 *  summary: Sets new time from timestamp
+	 *  responses:
+	 *      '200':
+	 *          description: Success
+	 *          content:
+	 *              application/json:
+	 *                  schema:
+	 *                      $ref: '#/components/schemas/TimeSet'
+	 * ")
+	 * @param ApiRequest $request API request
+	 * @param ApiResponse $response API response
+	 * @return ApiResponse API response
+	 */
+	public function setTime(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validator->validateRequest('timeSet', $request);
+		$body = $request->getJsonBody();
+		$this->manager->setTime($body['timestamp']);
+		return $response->writeBody('Workaround');
 	}
 
 	/**
@@ -97,24 +119,26 @@ class TimeController extends GatewayController {
 	}
 
 	/**
-	 * @Path("/timezone/{name}")
+	 * @Path("/timezone")
 	 * @Method("PUT")
 	 * @OpenApi("
 	 *  summary: Sets new gateway timezone
 	 *  responses:
 	 *      '200':
 	 *          description: Success
+	 *          content:
+	 *              application/json:
+	 *                  schema:
+	 *                      $ref: '#/components/schemas/TimezoneSet'
 	 * ")
-	 * @RequestParameters({
-	 *      @RequestParameter(name="name", type="string", description="Timezone name")
-	 * })
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
 	public function setTimezone(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$timezone = urldecode($request->getParameter('name'));
-		$this->manager->setTimezone($timezone);
+		$this->validator->validateRequest('timezoneSet', $request);
+		$body = $request->getJsonBody();
+		$this->manager->setTimezone($body['timezone']);
 		return $response->writeBody('Workaround');
 	}
 

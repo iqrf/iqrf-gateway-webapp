@@ -12,17 +12,37 @@
 			"$id": "#/properties/timezones",
 			"type": "array",
 			"title": "Timezones",
-			"example": [
-				"America/Chicago",
-				"Australia/Melbourne",
-				"Europe/Prague"
-			],
 			"additionalItems": false,
 			"items": {
 				"$id": "#/properties/timezones/items",
-				"type": "string",
-				"title": "Timezone",
-				"example": "Europe/Prague"
+				"type": "object",
+				"title": "Timezone object",
+				"required": [
+					"name",
+					"code",
+					"offset"
+				],
+				"additionalProperties": false,
+				"properties": {
+					"name": {
+						"$id": "#/properties/timezones/items/name",
+						"type": "string",
+						"title": "Timezone name",
+						"example": "Europe/Prague"
+					},
+					"code": {
+						"$id": "#/properties/timezones/items/code",
+						"type": "string",
+						"title": "Timezone code",
+						"example": "CET"
+					},
+					"offset": {
+						"$id": "#/properties/timezones/items/offset",
+						"type": "string",
+						"title": "Timezone offset",
+						"example": "+0100"
+					}
+				}
 			}
 		}
 	}

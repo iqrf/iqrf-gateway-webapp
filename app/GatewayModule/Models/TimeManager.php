@@ -43,23 +43,25 @@ class TimeManager {
 	}
 
 	/**
-	 * Retrieves current date, time and timezone
-	 * @return array<string, array<string, string>> Date, time and timezone
+	 * Retrieves current time and timezone
+	 * @return array<string, array<string, string>> Time and timezone
 	 */
-	public function dateTime(): array {
+	public function currentTime(): array {
 		$array = [];
-		$dateTime = explode(',', date('d F Y,G:i'));
-		$array['dateTime'] = [
-			'date' => $dateTime[0],
-			'time' => $dateTime[1],
-		];
-		$timezone = explode(' ', date('e T O'));
-		$array['timezone'] = [
-			'name' => $timezone[0],
-			'code' => $timezone[1],
-			'offset' => $timezone[2],
-		];
+		$command = $this->commandManager->run('date +%s');
+		$timestamp = ['timestamp' => $command->getStdout()];
+		$command = $this->commandManager->run('cat /etc/timezone');
+		$timezone = $this->timezoneInfo($command->getStdout());
+		$array['time'] = array_merge($timestamp, $timezone);
 		return $array;
+	}
+
+	/**
+	 * Sets new gateway time
+	 * @param int $timestamp Unix timestamp
+	 */
+	public function setTime(int $timestamp): void {
+		//TODO: $this->commandManager->run('date +%s -s @' . strval($timestamp));
 	}
 
 	/**
@@ -67,30 +69,36 @@ class TimeManager {
 	 * @return array<string> Array of available timezones
 	 */
 	public function availableTimezones(): array {
-		$command = $this->commandManager->run('timedatectl list-timezones', false);
+		$command = $this->commandManager->run('timedatectl list-timezones');
 		$timezones = explode(PHP_EOL, $command->getStdout());
-		for ($i = 0; $i < count($timezones); ++$i) {
-			$timezones[$i] .= ' (' . $this->timezoneOffset($timezones[$i]) . ')';
+		$array = [];
+		foreach ($timezones as $timezone) {
+			array_push($array, $this->timezoneInfo($timezone));
 		}
-		return $timezones;
+		return $array;
 	}
 
 	/**
-	 * Retrieves timezone abbreviation and offset
+	 * Retrieves timezone information
 	 * @param string $timezone Timezone name
-	 * @return string Timezone abbreviation and offset
+	 * @return array<string> Timezone name, abbreviation and offset
 	 */
-	private function timezoneOffset(string $timezone): string {
+	private function timezoneInfo(string $timezone): array {
 		$time = new DateTime('now', new DateTimeZone($timezone));
-		return $time->format('T, O');
+		$timezoneInfo = explode(' ', $time->format('T O'));
+		return [
+			'name' => $timezone,
+			'code' => $timezoneInfo[0],
+			'offset' => $timezoneInfo[1],
+		];
 	}
 
 	/**
-	 * Sets specified timezone as system timezone
+	 * Sets new gateway timezone
 	 * @param string $timezone Timezone name
 	 */
 	public function setTimezone(string $timezone): void {
-		$this->commandManager->run('timedatectl set-timezone ' . $timezone, false);
+		$this->commandManager->run('timedatectl set-timezone ' . $timezone);
 	}
 
 }
