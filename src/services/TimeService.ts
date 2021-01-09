@@ -1,4 +1,5 @@
 import axios, {AxiosResponse} from 'axios';
+import { Dictionary } from 'vue-router/types/router';
 import {authorizationHeader} from '../helpers/authorizationHeader';
 
 /**
@@ -15,6 +16,15 @@ class TimeService {
 	}
 
 	/**
+	 * Sets new time
+	 * @param data Timestamp
+	 * @returns {Promise<AxiosResponse>} REST API response promise
+	 */
+	setTime(data: Dictionary<number>): Promise<AxiosResponse> {
+		return axios.put('gateway/time', data, {headers: authorizationHeader()});
+	}
+
+	/**
 	 * Retrieves available timezones
 	 * @returns {Promise<AxiosResponse>} REST API response promise
 	 */
@@ -24,11 +34,11 @@ class TimeService {
 
 	/**
 	 * Sets new timezone
-	 * @param timezone Timezone name
+	 * @param {Dictionary<string>} data Timezone name
 	 * @returns {Promise<AxiosResponse>} REST API response promise
 	 */
-	setTimezone(timezone: string): Promise<AxiosResponse> {
-		return axios.put('gateway/time/timezone/' + encodeURIComponent(timezone), null, {headers: authorizationHeader()});
+	setTimezone(data: Dictionary<string>): Promise<AxiosResponse> {
+		return axios.put('gateway/time/timezone/', data, {headers: authorizationHeader()});
 	}
 }
 

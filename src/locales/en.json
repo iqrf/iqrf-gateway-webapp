@@ -1008,8 +1008,10 @@
 		"datetime": {
 			"title": "Date & Time",
 			"description": "Gateway date and time settings.",
-			"current": "Current date and time: {dateTime}.",
+			"currentTime": "Current gateway time",
+			"currentTimezone": "Current gateway timezone",
 			"form": {
+				"time": "Change date and time",
 				"timezone": "Change timezone",
 				"timezonePlaceholder": "Select a timezone"
 			},
@@ -1017,7 +1019,10 @@
 				"timezone": "Please select a timezone."
 			},
 			"messages": {
-				"timezoneSuccess": "Timezone has been successfully changed."
+				"timeSuccess": "Gateway time has been successfully changed.",
+				"timeFailure": "An error has occured while changing gateway time",
+				"timezoneSuccess": "Gateway timezone has been successfully changed.",
+				"timezoneFailure": "An error has occured while changing gateway timezone."
 			}
 		},
 		"log": {

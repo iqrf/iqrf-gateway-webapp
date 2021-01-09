@@ -1,52 +1,103 @@
 <template>
-	<CCard>
-		<CCardBody>
-			<CAlert v-if='dateTime !==""' color='primary'>
-				{{ $t('gateway.datetime.current', {dateTime: dateTime}) }}
-			</CAlert>
-			<ValidationObserver v-slot='{invalid}'>
-				<CForm @submit.prevent='setTimezone'>
-					<ValidationProvider
-						v-slot='{errors, touched, valid}'
-						rules='required'
-						:custom-messages='{
-							required: "gateway.datetime.errors.timezone"
-						}'
-					>
-						<CSelect
-							:value.sync='timezone'
-							:options='timezoneOptions'
-							:label='$t("gateway.datetime.form.timezone")'
-							:placeholder='$t("gateway.datetime.form.timezonePlaceholder")'
-							:is-valid='touched ? valid : null'
-							:invalid-feedback='$t(errors[0])'
-						/>
-					</ValidationProvider>
-					<CButton color='primary' type='submit' :disabled='invalid'>
-						{{ $t('forms.save') }}
-					</CButton>
-				</CForm>
-			</ValidationObserver>
-		</CCardBody>
-	</CCard>
+	<CRow>
+		<CCol>
+			<CCard v-if='gatewayTime !== null'>
+				<CCardBody>
+					<p>
+						<b>
+							{{ $t('gateway.datetime.currentTime') }}
+						</b>
+					</p>
+					<p>
+						{{ timeDisplay }}
+					</p>
+					<CForm @submit.prevent='setTime'>
+						<div class='form-group'>
+							<label for='datePicker' style='font-weight:bold'>
+								{{ $t('gateway.datetime.form.time') }}
+							</label>
+							<Datetime
+								id='datePicker'
+								v-model='timeToSet'
+								type='datetime'
+								input-class='form-control'
+								:use12-hour='true'
+								format='dd/LL/yyyy, t ZZZZZ'
+								:value-zone='gatewayTime.name'
+								:zone='gatewayTime.name'
+							/>
+						</div>
+						<CButton
+							type='submit'
+							color='primary'
+							:disabled='timeToSet === ""'
+						>
+							{{ $t('forms.save') }}
+						</CButton>
+					</CForm>
+				</CCardBody>
+			</CCard>
+		</CCol>
+		<CCol>
+			<CCard v-if='gatewayTime !== null'>
+				<CCardBody>
+					<p>
+						<b>
+							{{ $t('gateway.datetime.currentTimezone') }}
+						</b>
+					</p>
+					<p>
+						{{ timezoneDisplay }}
+					</p>
+					<ValidationObserver v-slot='{invalid}'>
+						<CForm @submit.prevent='setTimezone'>
+							<ValidationProvider
+								v-slot='{errors, touched, valid}'
+								rules='required'
+								:custom-messages='{
+									required: "gateway.datetime.errors.timezone"
+								}'
+							>
+								<CSelect
+									:value.sync='timezone'
+									:options='timezoneOptions'
+									:label='$t("gateway.datetime.form.timezone")'
+									:placeholder='$t("gateway.datetime.form.timezonePlaceholder")'
+									:is-valid='touched ? valid : null'
+									:invalid-feedback='$t(errors[0])'
+								/>
+							</ValidationProvider>
+							<CButton color='primary' type='submit' :disabled='invalid'>
+								{{ $t('forms.save') }}
+							</CButton>
+						</CForm>
+					</ValidationObserver>
+				</CCardBody>
+			</CCard>
+		</CCol>
+	</CRow>
 </template>
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CForm, CSelect} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCol, CForm, CRow, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 import TimeService from '../../services/TimeService';
+import {ITime, ITimezone} from '../../interfaces/gatewayTime';
 import {AxiosError, AxiosResponse} from 'axios';
-import {Datetime} from 'vue-datetime';
 import ToastClear from '../../helpers/ToastClear';
+import {IOption} from '../../interfaces/coreui';
+import {Datetime} from 'vue-datetime';
 
 @Component({
 	components: {
 		CButton,
 		CCard,
 		CCardBody,
+		CCol,
 		CForm,
+		CRow,
 		CSelect,
 		Datetime,
 		ValidationObserver,
@@ -63,9 +114,14 @@ import ToastClear from '../../helpers/ToastClear';
 export default class GatewayTime extends Vue {
 
 	/**
-	 * @var {string} dateTime Current date, time and timezone
+	 * @var {ITime|null} gatewayTime Gateway timezone information
 	 */
-	private dateTime = ''
+	private gatewayTime: ITime|null = null
+
+	/**
+	 * 
+	 */
+	private timeToSet = ''
 
 	/**
 	 * @var {string} timezone Currently selected timezone
@@ -73,9 +129,11 @@ export default class GatewayTime extends Vue {
 	private timezone = ''
 
 	/**
-	 * @var {Array<string>} timezoneOptions Array of available timezones at Gateway
+	 * @var {Array<IOption>} timezoneOptions Array of available timezones at Gateway
 	 */
-	private timezoneOptions: Array<string> = []
+	private timezoneOptions: Array<IOption> = []
+
+	private timeRefreshInterval: ReturnType<typeof setInterval>|null = null; 
 	
 	/**
 	 * Initializes validation rules
@@ -91,6 +149,32 @@ export default class GatewayTime extends Vue {
 		this.getTime();
 	}
 
+	beforeDestroy(): void {
+		this.clearActiveInterval();
+	}
+
+	get timeDisplay(): string {
+		if (this.gatewayTime === null) {
+			return '';
+		}
+		return new Date(this.gatewayTime.timestamp * 1000).toLocaleString('en-GB', {
+			timeZone: this.gatewayTime.name,
+			timeZoneName: 'long',
+			hour12: true,
+		});
+	}
+
+	/**
+	 * Computes current timezone string
+	 * @returns {string} Gateway timezone string
+	 */
+	get timezoneDisplay(): string {
+		if (this.gatewayTime === null) {
+			return '';
+		}
+		return this.gatewayTime.name + ' (' + this.gatewayTime.code + ', ' + this.gatewayTime.offset + ')';
+	}
+
 	/**
 	 * Retrieves current gateway date, time and timezone
 	 */
@@ -98,7 +182,12 @@ export default class GatewayTime extends Vue {
 		this.$store.commit('spinner/SHOW');
 		TimeService.getTime()
 			.then((response: AxiosResponse) => {
-				this.dateTime = response.data;
+				this.gatewayTime = response.data.time;
+				this.timezone = this.gatewayTime!.name;
+				this.timeToSet = '';
+				this.timeRefreshInterval = setInterval(() => {
+					this.gatewayTime!.timestamp++;
+				}, 1000);
 				this.getTimezones();
 			})
 			.catch((error: AxiosError) => {
@@ -114,7 +203,41 @@ export default class GatewayTime extends Vue {
 		TimeService.getTimezones()
 			.then((response: AxiosResponse) => {
 				this.$store.commit('spinner/HIDE');
-				this.timezoneOptions = response.data.timezones;
+				this.readTimezones(response.data.timezones);
+			})
+			.catch((error: AxiosError) => {
+				this.$store.commit('spinner/HIDE');
+				console.error(error);
+			});
+	}
+
+	/**
+	 * Reads timezones information and creates select options
+	 * @param {Array<ITimezone>} timezones Array of timezones information from REST API
+	 */
+	private readTimezones(timezones: Array<ITimezone>): void {
+		let timezoneArray: Array<IOption> = [];
+		for (const timezone of timezones) {
+			timezoneArray.push({
+				value: timezone.name,
+				label: timezone.name + ' (' + timezone.code + ', ' + timezone.offset + ')', 
+			});
+		}
+		this.timezoneOptions = timezoneArray;
+	}
+
+	/**
+	 * Calculates new timestamp with seconds
+	 */
+	private setTime(): void {
+		const date = new Date(this.timeToSet);
+		date.setSeconds(this.gatewayTime!.timestamp % 60);
+		this.$store.commit('spinner/SHOW');
+		TimeService.setTime({timestamp: date.getTime()/1000})
+			.then(() => {
+				ToastClear.success('gateway.datetime.messages.timeSuccess');
+				this.clearActiveInterval();
+				this.getTime();
 			})
 			.catch((error: AxiosError) => {
 				this.$store.commit('spinner/HIDE');
@@ -126,12 +249,23 @@ export default class GatewayTime extends Vue {
 	 * Sets new gateway timezone
 	 */
 	private setTimezone(): void {
-		TimeService.setTimezone(this.timezone.split(' ')[0])
+		this.$store.commit('spinner/SHOW');
+		TimeService.setTimezone({timezone: this.timezone})
 			.then(() => {
-				this.$store.commit('spinner/HIDE');
 				ToastClear.success('gateway.datetime.messages.timezoneSuccess');
+				this.clearActiveInterval();
+				this.getTime();
 			})
-			.catch((error: AxiosError) => console.error(error));
+			.catch((error: AxiosError) => {
+				this.$store.commit('spinner/HIDE');
+				console.error(error);
+			});
+	}
+
+	private clearActiveInterval(): void {
+		if (this.timeRefreshInterval !== null) {
+			clearInterval(this.timeRefreshInterval);
+		}
 	}
 }
 </script>
