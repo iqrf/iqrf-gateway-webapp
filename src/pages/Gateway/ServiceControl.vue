@@ -52,7 +52,7 @@
 				{{ $t('service.states.unknown') }}
 			</span>
 			<span v-else>
-				{{ $t('service.states.' + (service.enabled ? 'enabled' : 'disabled')) }},
+				{{ $t('states.' + (service.enabled ? 'enabled' : 'disabled')) }},
 				{{ $t('service.states.' + (service.active ? 'active' : 'inactive')) }}
 			</span>
 			<br><br>
