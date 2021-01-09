@@ -265,12 +265,38 @@
 			</CCardBody>
 		</CCard>
 		<SecurityForm v-if='config !== null' :address='address' />
+		<CModal
+			:show.sync='dpaEnabledNotDetected'
+			color='warning'
+			size='lg'
+		>
+			<template #header>
+				<h5 class='modal-title'>
+					{{ $t('iqrfnet.trConfiguration.messages.modalTitle') }}
+				</h5>
+			</template>
+			{{ $t('iqrfnet.trConfiguration.messages.modalPrompt') }}
+			<template #footer>
+				<CButton
+					color='secondary'
+					@click='dpaEnabledNotDetected = false'
+				>
+					{{ $t('forms.cancel') }}
+				</CButton>
+				<CButton
+					color='warning'
+					@click='disableHandler'
+				>
+					{{ $t('service.actions.disable') }}
+				</CButton>
+			</template>
+		</CModal>
 	</div>
 </template>
 
 <script lang='ts'>
 import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
-import {CCard, CCardBody, CCardHeader, CForm, CInput} from '@coreui/vue/src';
+import {CButton, CCard, CCardBody, CCardHeader, CForm, CInput, CModal} from '@coreui/vue/src';
 import {
 	between,
 	integer,
@@ -292,11 +318,13 @@ import {IEmbedPers, IEmbedPersEnabled, ITrConfiguration} from '../../interfaces/
 @Component({
 	components: {
 		AddressChanger,
+		CButton,
 		CCard,
 		CCardBody,
 		CCardHeader,
 		CForm,
 		CInput,
+		CModal,
 		SecurityForm,
 		ValidationObserver,
 		ValidationProvider,
@@ -313,6 +341,11 @@ export default class TrConfiguration extends Vue {
 	private config: ITrConfiguration|null = null
 
 	/**
+	 * @var {boolean} dpaEnabledNotDetected Indicates whether custom DPA handler is enabled but not detected
+	 */
+	private dpaEnabledNotDetected = false
+
+	/**
 	 * @var {boolean} dpaHandlerDetected Indicates whether transciever has a custom dpa handler implemented
 	 */
 	private dpaHandlerDetected = false
@@ -322,6 +355,9 @@ export default class TrConfiguration extends Vue {
 	 */
 	private dpaVersion: string|null = null
 
+	/**
+	 * @var {boolean} loaded Indicates whether configuration has been loaded
+	 */
 	private loaded = false
 
 	/**
@@ -448,24 +484,32 @@ export default class TrConfiguration extends Vue {
 			if (mutation.payload.data.msgId !== this.msgId) {
 				return;
 			}
-			this.$store.dispatch('spinner/hide');
 			this.$store.dispatch('removeMessage', this.msgId);
 			if (mutation.payload.mType === 'iqmeshNetwork_WriteTrConf') {
+				this.$store.dispatch('spinner/hide');
 				this.handleWriteResponse(mutation.payload);
 			} else if (mutation.payload.mType === 'iqmeshNetwork_EnumerateDevice') {
 				this.handleEnumerationResponse(mutation.payload);
+			} else if (mutation.payload.mType === 'iqrfEmbedOs_Read') {
+				this.$store.dispatch('spinner/hide');
+				this.handleOsReadResponse(mutation.payload.data);
 			} else if (mutation.payload.mType === 'iqrfEmbedOs_Reset') {
+				this.$store.dispatch('spinner/hide');
 				this.handleResetResponse(mutation.payload);
+			} else if (mutation.payload.mType === 'iqrfEmbedOs_Restart') {
+				this.handleRestartResponse(mutation.payload.data);
+			} else if (mutation.payload.mType === 'iqrfEmbedOs_WriteCfgByte') {
+				this.handleWriteByteResponse(mutation.payload.data);
 			}
 		});
 		if (this.$store.getters.isSocketConnected) {
-			this.enumerate();
+			this.readOs();
 		} else {
 			this.unwatch = this.$store.watch(
 				(state: WebSocketClientState, getter: any) => getter.isSocketConnected,
 				(newVal: boolean, oldVal: boolean) => {
 					if (!oldVal && newVal) {
-						this.enumerate();
+						this.readOs();
 						this.unwatch();
 					}
 				}
@@ -483,20 +527,64 @@ export default class TrConfiguration extends Vue {
 	}
 
 	/**
-	 * Performs device enumeration
+	 * Retrieves OS information
 	 */
-	private enumerate(): void {
+	private readOs(): void {
 		this.$store.dispatch('spinner/show', {timeout: 30000});
-		IqrfNetService.enumerateDevice(this.address, 30000, 'iqrfnet.trConfiguration.messages.read.failure', () => this.msgId = null)
+		OsService.sendRead(this.address, 30000, 'iqrfnet.trConfiguration.messages.osReadFailure', () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
 	/**
-	 * Performs device reset
+	 * Handles OS read request response
+	 * @param response Daemon API response
 	 */
-	private resetDevice(): void {
+	private handleOsReadResponse(response): void {
+		if (response.status === 0) {
+			const flags = response.rsp.result.flags & 8;
+			if (flags === 8) {
+				this.dpaEnabledNotDetected = true;
+			} else {
+				this.enumerate();
+			}
+		} else {
+			this.$store.dispatch('spinner/hide');
+			this.$toast.error(
+				this.$t('iqrfnet.trConfiguration.messages.osReadFailure').toString()
+			);
+		}
+	}
+
+	/**
+	 * Disables Custom DPA handler in TR configuration
+	 */
+	private disableHandler(): void {
+		this.dpaEnabledNotDetected = false;
 		this.$store.dispatch('spinner/show', {timeout: 30000});
-		OsService.reset(this.address, 30000, 'iqrfnet.trConfiguration.messages.write.restartFailure', () => this.msgId = null)
+		OsService.disableHandler(this.address, 30000, 'iqrfnet.trConfiguration.messages.restartFailure', () => this.msgId = null)
+			.then((msgId: string) => this.msgId = msgId);
+	}
+
+	/**
+	 * Handles WriteCfgByte request response
+	 * @param response Daemon API response
+	 */
+	private handleWriteByteResponse(response): void {
+		if (response.status === 0) {
+			this.restartDevice();
+		} else {
+			this.$toast.error(
+				this.$t('iqrfnet.trConfiguration.messages.disableFailure').toString()
+			);
+		}
+	}
+
+	/**
+	 * Performs device enumeration
+	 */
+	private enumerate(): void {
+		this.$store.dispatch('spinner/show', {timeout: 30000});
+		IqrfNetService.enumerateDevice(this.address, 30000, 'iqrfnet.trConfiguration.messages.readFailure', () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
@@ -528,12 +616,10 @@ export default class TrConfiguration extends Vue {
 		this.dpaHandlerDetected = rsp.osRead.flags.dpaHandlerDetected;
 		this.dpaVersion = rsp.peripheralEnumeration.dpaVer;
 		this.setEmbeddedPeripherals();
-		this.$store.commit('spinner/HIDE');
-		if (this.$store.getters['user/getRole'] === 'normal') {
-			this.$toast.success(
-				this.$t('iqrfnet.trConfiguration.messages.read.success').toString()
-			);
-		}
+		this.$store.dispatch('spinner/hide');
+		this.$toast.success(
+			this.$t('iqrfnet.trConfiguration.messages.readSuccess').toString()
+		);
 		this.loaded = true;
 	}
 
@@ -544,7 +630,7 @@ export default class TrConfiguration extends Vue {
 		let config = JSON.parse(JSON.stringify(this.config));
 		config.embPers = this.getEmbeddedPeripherals();
 		this.$store.dispatch('spinner/show', {timeout: 60000});
-		IqrfNetService.writeTrConfiguration(this.address, config, 60000, 'iqrfnet.trConfiguration.messages.write.failure', () => this.msgId = null)
+		IqrfNetService.writeTrConfiguration(this.address, config, 60000, 'iqrfnet.trConfiguration.messages.writeFailure', () => this.msgId = null)
 			.then((msgId: string) => this.msgId = msgId);
 	}
 
@@ -557,14 +643,32 @@ export default class TrConfiguration extends Vue {
 				this.resetDevice();
 			} else {
 				this.$toast.success(
-					this.$t('iqrfnet.trConfiguration.messages.write.success').toString()
+					this.$t('iqrfnet.trConfiguration.messages.writeSuccess').toString()
 				);
 			}
 		} else {
 			this.$toast.error(
-				this.$t('iqrfnet.trConfiguration.messages.write.failure').toString()
+				this.$t('iqrfnet.trConfiguration.messages.writeFailure').toString()
 			);
 		}
+	}
+
+	/**
+	 * Performs device reset
+	 */
+	private resetDevice(): void {
+		this.$store.dispatch('spinner/show', {timeout: 30000});
+		OsService.reset(this.address, 30000, 'iqrfnet.trConfiguration.messages.restartFailure', () => this.msgId = null)
+			.then((msgId: string) => this.msgId = msgId);
+	}
+
+	/**
+	 * Performs device restart
+	 */
+	private restartDevice(): void {
+		this.$store.dispatch('spinner/show', {timeout: 30000});
+		OsService.restart(this.address, 30000, 'iqrfnet.trConfiguration.messages.restartFailure', () => this.msgId = null)
+			.then((msgId: string) => this.msgId = msgId);
 	}
 
 	/**
@@ -573,11 +677,24 @@ export default class TrConfiguration extends Vue {
 	private handleResetResponse(response): void {
 		if (response.data.status === 0) {
 			this.$toast.success(
-				this.$t('iqrfnet.trConfiguration.messages.write.successRestart').toString()
+				this.$t('iqrfnet.trConfiguration.messages.restartSuccess').toString()
 			);
 		} else {
 			this.$toast.error(
-				this.$t('iqrfnet.trConfiguration.messages.write.restartFailure').toString()
+				this.$t('iqrfnet.trConfiguration.messages.restartFailure').toString()
+			);
+		}
+	}
+
+	/**
+	 * Handles EmbedOs_Restart request response
+	 */
+	private handleRestartResponse(response): void {
+		if (response.status === 0) {
+			this.enumerate();
+		} else {
+			this.$toast.error(
+				this.$t('iqrfnet.trConfiguration.messages.restartFailure').toString()
 			);
 		}
 	}

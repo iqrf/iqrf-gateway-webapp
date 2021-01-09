@@ -114,7 +114,7 @@ class TimeController extends GatewayController {
 	 */
 	public function setTimezone(ApiRequest $request, ApiResponse $response): ApiResponse {
 		$timezone = urldecode($request->getParameter('name'));
-		$result = $this->manager->setTimezone($timezone);
+		$this->manager->setTimezone($timezone);
 		return $response->writeBody('Workaround');
 	}
 
