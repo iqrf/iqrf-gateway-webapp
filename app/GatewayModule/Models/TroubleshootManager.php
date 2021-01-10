@@ -117,7 +117,7 @@ class TroubleshootManager {
 
 	/**
 	 * Retrieves daemon configuration files
-	 * @return array<int, array<string
+	 * @return array<int, array<string, string|int|bool>> Array of configuration files metadata
 	 */
 	private function getDaemonConfig(): array {
 		$filePermissions = [];

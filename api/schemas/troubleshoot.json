@@ -13,9 +13,54 @@
 			"type": "object",
 			"title": "IQRF GW Daemon troubleshooting data",
 			"required": [
+				"config",
 				"interfaces"
 			],
 			"properties": {
+				"config": {
+					"$id": "#/properties/daemon/properties/config",
+					"type": "array",
+					"title": "Daemon configuration files",
+					"additionalItems": false,
+					"items": [
+						{
+							"$id": "#/properties/daemon/properties/config/items",
+							"type": "object",
+							"title": "Daemon configuration file",
+							"required": [
+								"name",
+								"permission",
+								"dir"
+							],
+							"example": {
+								"name": "config.json",
+								"permission": 666,
+								"dir": false
+							},
+							"additionalProperties": false,
+							"properties": {
+								"name": {
+									"$id": "#/properties/daemon/properties/config/items/name",
+									"type": "string",
+									"title": "File name",
+									"example": "config.json"
+								},
+								"permission": {
+									"$id": "#/properties/daemon/properties/config/items/permission",
+									"type": "integer",
+									"title": "File permission",
+									"example": 666
+								},
+								"dir": {
+									"$id": "#/properties/daemon/properties/config/items/dir",
+									"type": "boolean",
+									"title": "Is directory?",
+									"example": false
+								}
+							}
+						}
+					]
+				},
 				"interfaces": {
 					"$id": "#/properties/daemon/properties/interfaces",
 					"type": "array",
