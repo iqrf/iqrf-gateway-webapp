@@ -46,7 +46,7 @@
 					{{ $t('forms.no') }}
 				</CButton> <CButton
 					color='warning'
-					@click='{{showModal = false; upload()}}'
+					@click='{{showModal = false; stopDaemon()}}'
 				>
 					{{ $t('forms.yes') }}
 				</CButton>
@@ -65,6 +65,7 @@ import IqrfNetService from '../../services/IqrfNetService';
 import {MutationPayload} from 'vuex';
 import {AxiosError, AxiosResponse} from 'axios';
 import IqrfService from '../../services/IqrfService';
+import ServiceService from '../../services/ServiceService';
 import FormErrorHandler from '../../helpers/FormErrorHandler';
 
 interface DpaVersions {
@@ -278,7 +279,7 @@ export default class DpaUpdater extends Vue {
 		if (this.currentDpa === this.version) {
 			this.showModal = true;
 		} else {
-			this.upload();
+			this.stopDaemon();
 		}
 	}
 
@@ -309,15 +310,38 @@ export default class DpaUpdater extends Vue {
 			.then((response: AxiosResponse) => {
 				IqrfService.utilUpload({name: response.data.fileName, type: 'DPA'})
 					.then(() => {
-						this.updateVersions();
-						this.$store.commit('spinner/HIDE');
-						this.$toast.success(
-							this.$t('iqrfnet.trUpload.dpaUpload.messages.uploadSuccess').toString()
-						);
+						this.startDaemon();
 					})
 					.catch((error: AxiosError) => FormErrorHandler.uploadUtilError(error));
 			})
 			.catch((error: AxiosError) => FormErrorHandler.fileFetchError(error));
+	}
+
+	/**
+	 * Stops the IQRF Daemon service before upgrading OS
+	 * @returns {Promise<void>} Empty promise for request chaining
+	 */
+	private stopDaemon(): Promise<void> {
+		return ServiceService.stop('iqrf-gateway-daemon')
+			.then(() => {
+				this.upload();
+			})
+			.catch((error: AxiosError) => FormErrorHandler.serviceError(error));
+	}
+
+	/**
+	 * Starts the IQRF Daemon service upon successful OS upgrade
+	 */
+	private startDaemon(): void {
+		ServiceService.start('iqrf-gateway-daemon')
+			.then(() => {
+				this.$store.commit('spinner/HIDE');
+				this.updateVersions();
+				this.$toast.success(
+					this.$t('iqrfnet.trUpload.dpaUpload.messages.uploadSuccess').toString()
+				);
+			})
+			.catch((error: AxiosError) => FormErrorHandler.serviceError(error));
 	}
 }
 </script>
