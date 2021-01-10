@@ -1069,9 +1069,9 @@
 				"notInstalled": "Not installed",
 				"enabled": "Enabled",
 				"notEnabled": "Not enabled",
-				"configCorrect": "Configuration exists and has correct permissions.",
+				"configCorrect": "Configuration files have correct permissions.",
 				"configMissing": "Configuration file missing.",
-				"configInvalidPermission": "Configuration file has incorrect permission: {permission}."
+				"configInvalidPermission": "Incorrect permissions: "
 			},
 			"actions": {
 				"noAction": "No action is necessary.",
@@ -1081,7 +1081,7 @@
 				"addCacheInstance": "Configure and save IQRF Repository instance in Daemon configuration.",
 				"fixCache": "Remove cache files and restart Daemon service.",
 				"configMissing": "Create configuration file or reinstall service.",
-				"configFixPermission": "Set configuration file permission to 644 or 777.",
+				"configFixPermission": "Set configuration file permission to 666 and directory permission to 777.",
 				"enabledNotInstalled": "Disable the feature in Webapp or install the feature."
 			}
 		},

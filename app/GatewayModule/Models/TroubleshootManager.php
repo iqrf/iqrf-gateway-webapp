@@ -115,14 +115,26 @@ class TroubleshootManager {
 		}
 	}
 
+	/**
+	 * Retrieves daemon configuration files
+	 * @return array<int, array<string
+	 */
 	private function getDaemonConfig(): array {
 		$filePermissions = [];
 		$dirContent = scandir(self::DAEMON_DIR);
 		foreach ($dirContent as $item) {
+			$entry = [
+				'name' => $item,
+				'permission' => $this->checkPermission($item),
+				'dir' => false,
+			];
 			if (is_dir(self::DAEMON_DIR . $item)) {
-				continue;
+				if ($item === '.') {
+					$entry['name'] = self::DAEMON_DIR;
+				}
+				$entry['dir'] = true;
 			}
-			array_push($filePermissions, ['name' => $item, $this->checkPermission($item)]);
+			array_push($filePermissions, $entry);
 		}
 		return $filePermissions;
 	}

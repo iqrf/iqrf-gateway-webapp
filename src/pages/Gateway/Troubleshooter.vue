@@ -21,7 +21,7 @@
 						</tr>
 						<tr v-for='entry of daemon' :key='daemon.indexOf(entry)'>
 							<th>{{ entry.item }}</th>
-							<td>{{ entry.state }}</td>
+							<td style='white-space:pre'>{{ entry.state }}</td>
 							<td>{{ entry.action }}</td>
 						</tr>
 					</tbody>
@@ -53,11 +53,10 @@ import DaemonConfigurationService from '../../services/DaemonConfigurationServic
 import GatewayService from '../../services/GatewayService';
 import LedService from '../../services/DaemonApi/LedService';
 import {AxiosError, AxiosResponse} from 'axios';
-import {Dictionary} from 'vue-router/types/router';
 import {MutationPayload} from 'vuex';
 import {WebSocketOptions} from '../../store/modules/webSocketClient.module';
 import {IIqrfRepository} from '../../interfaces/iqrfRepository';
-import {IEntry, IFeature, IFeatureData} from '../../interfaces/troubleshooter';
+import {IEntry, IDaemonConfig, IFeature, IFeatureData} from '../../interfaces/troubleshooter';
 
 @Component({
 	components: {
@@ -98,9 +97,14 @@ export default class Troubleshooter extends Vue {
 	/**
 	 * @constant {Array<number>} whitelistedPermissions Array of correct configuration file permissions
 	 */
-	private whitelistedPermissions: Array<number> = [
-		644
+	private filePermissions: Array<number> = [
+		644, 666
 	]
+
+	/**
+	 * @constant {number} dirPermission Directory permission
+	 */
+	private dirPermission = 777
 
 	/**
 	 * Component unsubscribe function
@@ -139,13 +143,65 @@ export default class Troubleshooter extends Vue {
 		GatewayService.troubleshoot()
 			.then((response: AxiosResponse) => {
 				this.interfaceEntry(response.data.daemon.interfaces);
+				this.daemonConfigEntry(response.data.daemon.config);
 				this.parseFeatures(response.data.features);
 			})
 			.catch((error: AxiosError) => console.error(error));
 	}
 
 	/**
+	 * Creates the interface entry with current state and suggested actions if an action is necessary
+	 */
+	private interfaceEntry(interfaces: any): void {
+		let entry: IEntry = {
+			item: this.$t('gateway.troubleshooter.table.daemon.interface').toString(),
+			state: '',
+			action: this.$t('gateway.troubleshooter.actions.noAction').toString()
+		};
+		if (interfaces.error !== undefined) {
+			entry.state = interfaces.error;
+		} else {
+			entry.state = interfaces.join(', ');
+			if (interfaces.length === 0) {
+				entry.state = this.$t('gateway.troubleshooter.states.noInterface').toString(),
+				entry.action = this.$t('gateway.troubleshooter.actions.noInterface').toString();
+			} else if (interfaces.length > 1) {
+				entry.action = this.$t('gateway.troubleshooter.actions.multipleInterfaces').toString();
+			}
+		}
+		this.daemon.push(entry);
+	}
+
+	/**
+	 * Creates Daemon configuration files troubleshoot entry
+	 * @param {Array<IDaemonConfig>} files Array of daemon configuration file metadata
+	 */
+	private daemonConfigEntry(files: Array<IDaemonConfig>): void {
+		let entry: IEntry = {
+			item: this.$t('gateway.troubleshooter.table.features.config').toString(),
+			state: this.$t('gateway.troubleshooter.states.configCorrect').toString(),
+			action: this.$t('gateway.troubleshooter.actions.noAction').toString()
+		};
+		let wrongFiles: Array<string> = [];
+		for (const file of files) {
+			if (file.dir && file.permission !== this.dirPermission) {
+				wrongFiles.push('dir ' + file.name + ': ' + file.permission);
+			} else if (!file.dir && !this.filePermissions.includes(file.permission)) {
+				wrongFiles.push('file ' + file.name + ': ' + file.permission);
+			}
+		}
+		if (wrongFiles.length > 0) {
+			entry.state = this.$t(
+				'gateway.troubleshooter.states.configInvalidPermission'
+			).toString() + '\n' + wrongFiles.join('\n');
+			entry.action = this.$t('gateway.troubleshooter.actions.configFixPermission').toString();
+		}
+		this.daemon.push(entry);
+	}
+
+	/**
 	 * Creates troubleshoot entries for features
+	 * @param {Array<IFeatureData>} features Array of feature data
 	 */
 	private parseFeatures(features: Array<IFeatureData>): void {
 		let parsedFeatures: Array<IFeature> = [];
@@ -204,7 +260,7 @@ export default class Troubleshooter extends Vue {
 		if (!feature.config) {
 			configuration.state = this.$t('gateway.troubleshooter.states.configMissing').toString();
 			configuration.action = this.$t('gateway.troubleshooter.action.configMissing').toString();
-		} else if (!this.whitelistedPermissions.includes(feature.permission)) {
+		} else if (!this.filePermissions.includes(feature.permission)) {
 			configuration.state = this.$t('gateway.troubleshooter.states.configInvalidPermission', {permission: feature.permission}).toString();
 			configuration.action = this.$t('gateway.troubleshooter.actions.configFixPermission').toString();
 		}
@@ -218,29 +274,6 @@ export default class Troubleshooter extends Vue {
 	 */
 	private featureEnabled(name: string): boolean {
 		return this.$store.getters['features/isEnabled'](this.featureNames[name]);
-	}
-
-	/**
-	 * Creates the interface entry with current state and suggested actions if an action is necessary
-	 */
-	private interfaceEntry(interfaces: any): void {
-		let entry: IEntry = {
-			item: this.$t('gateway.troubleshooter.table.daemon.interface').toString(),
-			state: '',
-			action: this.$t('gateway.troubleshooter.actions.noAction').toString()
-		};
-		if (interfaces.error !== undefined) {
-			entry.state = interfaces.error;
-		} else {
-			entry.state = interfaces.join(', ');
-			if (interfaces.length === 0) {
-				entry.state = this.$t('gateway.troubleshooter.states.noInterface').toString(),
-				entry.action = this.$t('gateway.troubleshooter.actions.noInterface').toString();
-			} else if (interfaces.length > 1) {
-				entry.action = this.$t('gateway.troubleshooter.actions.multipleInterfaces').toString();
-			}
-		}
-		this.daemon.push(entry);
 	}
 
 	/**
@@ -302,7 +335,7 @@ export default class Troubleshooter extends Vue {
 		};
 		if (response.data.status === 0) {
 			entry.state = this.$t('gateway.troubleshooter.states.cacheLoaded').toString();
-		} else if (response.data.status === -1 && response.mType === 'messageError') {
+		} else if (response.data.status === -1 || response.mType === 'messageError') {
 			entry.state = this.$t('gateway.troubleshooter.states.cacheNotLoaded').toString();
 			entry.action = this.$t('gateway.troubleshooter.actions.fixCache').toString();
 		}

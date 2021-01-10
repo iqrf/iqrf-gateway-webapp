@@ -19,6 +19,26 @@ export interface IEntry {
 }
 
 /**
+ * Daemon configuration file interface
+ */
+export interface IDaemonConfig {
+	/**
+	 * File name
+	 */
+	name: string
+
+	/**
+	 * File permission
+	 */
+	permission: number
+
+	/**
+	 * Is directory?
+	 */
+	dir: boolean
+}
+
+/**
  * Troubleshoot feature interface
  */
 export interface IFeature {

@@ -61,7 +61,7 @@ class TroubleshootController extends GatewayController {
 	 *          content:
 	 *              application/json:
 	 *                  schema:
-	 *                      $ref: '#/components/schemas/PowerControl'
+	 *                      $ref: '#/components/schemas/Troubleshoot'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
