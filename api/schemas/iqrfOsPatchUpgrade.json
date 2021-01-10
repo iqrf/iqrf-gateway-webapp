@@ -9,21 +9,29 @@
 		"version",
 		"mcuType"
 	],
+	"example": {
+		"build": "08C8",
+		"version": "403",
+		"mcuType": 4
+	},
 	"properties": {
 		"build": {
 			"$id": "#/properties/build",
 			"type": "string",
-			"title": "IQRF OS build"
+			"title": "IQRF OS build",
+			"example": "08C8"
 		},
 		"version": {
 			"$id": "#/properties/version",
 			"type": "string",
-			"title": "IQRF OS version"
+			"title": "IQRF OS version",
+			"example": "403"
 		},
 		"mcuType": {
 			"$id": "#/properties/mcuType",
 			"type": "integer",
-			"title": "MCU type"
+			"title": "MCU type",
+			"example": 4
 		}
 	}
 }

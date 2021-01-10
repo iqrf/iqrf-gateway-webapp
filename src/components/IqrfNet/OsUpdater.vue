@@ -244,7 +244,7 @@ export default class OsUpdater extends Vue {
 					{file: this.getFileName(file.name)}
 				).toString();
 				this.$store.commit('spinner/UPDATE_TEXT', this.uploadMessage);
-				await IqrfService.utilUpload(file)
+				await IqrfService.uploader(file)
 					.then(() => {
 						this.uploadMessage += '\n' + this.$t(
 							'iqrfnet.trUpload.osUpload.messages.fileUploaded',

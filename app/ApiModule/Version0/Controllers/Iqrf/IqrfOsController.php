@@ -105,6 +105,10 @@ class IqrfOsController extends IqrfController {
 	 *  responses:
 	 *      '200':
 	 *          description: Success
+	 *          content:
+	 *              application:json:
+	 *                  schema:
+	 *                      $ref: '#/components/schemas/IqrfOsUpgradeList'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -131,6 +135,16 @@ class IqrfOsController extends IqrfController {
 	 *  responses:
 	 *      '200':
 	 *          description: Success
+	 *          content:
+	 *              application/json:
+	 *                  schema:
+	 *                      $ref: '#/components/schemas/IqrfOsUpgradeFiles'
+	 *      '400':
+	 *          $ref: '#/components/responses/BadRequest'
+	 *      '404':
+	 *          description: Not found
+	 *      '500':
+	 *          $ref: '#/components/responses/ServerError'
 	 * ")
 	 * @param ApiRequest $request API request
 	 * @param ApiResponse $response API response
@@ -153,16 +167,16 @@ class IqrfOsController extends IqrfController {
 	}
 
 	/**
-	 * @Path("/utilUpload")
+	 * @Path("/uploader")
 	 * @Method("POST")
 	 * @OpenApi("
-	 *  summary: Executes upload using the IQRF Upload Utility
+	 *  summary: Executes upload using the IQRF Gateway Uploader
 	 *  requestBody:
 	 *      required: true
 	 *      content:
 	 *          application/json:
 	 *              schema:
-	 *                  $ref: '#/components/schemas/UploadUtil'
+	 *                  $ref: '#/components/schemas/UploaderFile'
 	 *  responses:
 	 *      '200':
 	 *          description: Success
@@ -177,8 +191,8 @@ class IqrfOsController extends IqrfController {
 	 * @param ApiResponse $response API response
 	 * @return ApiResponse API response
 	 */
-	public function utilUpload(ApiRequest $request, ApiResponse $response): ApiResponse {
-		$this->validator->validateRequest('uploadUtil', $request);
+	public function uploader(ApiRequest $request, ApiResponse $response): ApiResponse {
+		$this->validator->validateRequest('uploaderFile', $request);
 		try {
 			$data = $request->getJsonBody(false);
 			$this->uploadUtilManager->executeUpload($data->name, $data->type);
