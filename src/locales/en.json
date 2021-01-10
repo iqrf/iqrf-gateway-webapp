@@ -1611,7 +1611,8 @@
 					"version": "Please select DPA version to upload."
 				},
 				"messages": {
-					"dpaFetchFail": "Failed to retrieve current DPA version or DPA upgrades.",
+					"dpaFileDownloaded": "DPA file {file} has been successfully downloaded to gateway.",
+					"dpaFetchFailure": "Failed to retrieve current DPA version or DPA upgrades.",
 					"uploadError": "An error has occured during upload: \n{error}",
 					"uploadSuccess": "DPA plug-in has been successfully changed.",
 					"downloadFailure": "The webapp has not been able to download the DPA file.",
@@ -1631,6 +1632,9 @@
 					"file": "Please select the file to upload."
 				},
 				"messages": {
+					"gatewayUpload": "Uploading file {file} to gateway ...",
+					"gatewayUploadFailure": "An error has occured during upload to gateway.",
+					"gatewayUploadSuccess": "File {file} has been successfully uploaded to gateway.",
 					"invalidFormat": "The uploaded file is not a .hex file.",
 					"uploadSuccess": "Custom DPA handler has been successfully uploaded."
 				}
@@ -1648,8 +1652,8 @@
 					"newest": "Your device has the latest version of IQRF OS.",
 					"fetchFail": "Failed to retrieve current version of IQRF OS.",
 					"upgradeSuccess": "IQRF OS has been successfully upgraded.",
-					"fileUploading": "Uploading file {file} ...",
-					"fileUploaded": "File {file} has been successfully uploaded."
+					"fileUploading": "Uploading file {file} to TR ...",
+					"fileUploaded": "File {file} has been successfully uploaded to TR."
 				}
 			},
 			"messages": {
