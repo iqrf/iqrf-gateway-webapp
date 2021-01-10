@@ -305,7 +305,6 @@ export default class DpaUpdater extends Vue {
 		} else {
 			Object.assign(request, {'dpa': this.version});
 		}
-		this.$store.commit('spinner/SHOW');
 		DpaService.getDpaFile(request)
 			.then((response: AxiosResponse) => {
 				IqrfService.utilUpload({name: response.data.fileName, type: 'DPA'})
@@ -322,6 +321,7 @@ export default class DpaUpdater extends Vue {
 	 * @returns {Promise<void>} Empty promise for request chaining
 	 */
 	private stopDaemon(): Promise<void> {
+		this.$store.commit('spinner/SHOW');
 		return ServiceService.stop('iqrf-gateway-daemon')
 			.then(() => {
 				this.upload();
@@ -335,8 +335,8 @@ export default class DpaUpdater extends Vue {
 	private startDaemon(): void {
 		ServiceService.start('iqrf-gateway-daemon')
 			.then(() => {
-				this.$store.commit('spinner/HIDE');
 				this.updateVersions();
+				this.$store.commit('spinner/HIDE');
 				this.$toast.success(
 					this.$t('iqrfnet.trUpload.dpaUpload.messages.uploadSuccess').toString()
 				);

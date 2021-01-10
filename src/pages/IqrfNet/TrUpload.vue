@@ -3,7 +3,7 @@
 		<h1>{{ $t('iqrfnet.trUpload.title') }}</h1>
 		<HexUpload />
 		<DpaUpdater ref='dpaUpdater' />
-		<OsUpdater ref='osUpdater' />
+		<OsUpdater ref='osUpdater' @update-os='getOsInfo' />
 	</div>
 </template>
 
