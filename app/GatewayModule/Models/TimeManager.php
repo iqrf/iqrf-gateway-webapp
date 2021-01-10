@@ -23,6 +23,7 @@ namespace App\GatewayModule\Models;
 use App\CoreModule\Models\CommandManager;
 use DateTime;
 use DateTimeZone;
+use Symfony\Component\Process\Process;
 
 /**
  * Time manager
@@ -61,7 +62,11 @@ class TimeManager {
 	 * @param int $timestamp Unix timestamp
 	 */
 	public function setTime(int $timestamp): void {
-		//TODO: $this->commandManager->run('date +%s -s @' . strval($timestamp));
+		//TODO disable NTP?
+		$command = ('sudo date +%s -s @' . strval($timestamp));
+		$env = ['LANG' => 'C.UTF-8'];
+		$process = Process::fromShellCommandline($command, null, $env, null, null);
+		$process->run();
 	}
 
 	/**
