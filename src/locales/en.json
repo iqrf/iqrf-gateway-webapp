@@ -1611,7 +1611,7 @@
 					"version": "Please select DPA version to upload."
 				},
 				"messages": {
-					"fileError": "Upload has not been executed: \n{error}",
+					"dpaFetchFail": "Failed to retrieve current DPA version or DPA upgrades.",
 					"uploadError": "An error has occured during upload: \n{error}",
 					"uploadSuccess": "DPA plug-in has been successfully changed.",
 					"downloadFailure": "The webapp has not been able to download the DPA file.",

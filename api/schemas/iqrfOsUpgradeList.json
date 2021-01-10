@@ -1,0 +1,60 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "https://apidocs.iqrf.org/iqrf-gateway-webapp-api/schemas/iqrfOsUpgradeList.json",
+	"type": "array",
+	"additionalItems": false,
+	"items": [
+		{
+			"$id": "#/items",
+			"type": "object",
+			"title": "OS Upgrade",
+			"required": [
+				"dpa",
+				"dpaRaw",
+				"osBuild",
+				"osVersion",
+				"notes",
+				"downloadPath"
+			],
+			"additionalProperties": false,
+			"properties": {
+				"dpa": {
+					"$id": "#/items/properties/dpa",
+					"type": "string",
+					"title": "DPA version",
+					"example": "4.15"
+				},
+				"dpaRaw": {
+					"$id": "#/items/properties/dpaRaw",
+					"type": "string",
+					"title": "DPA raw version",
+					"example": "0415"
+				},
+				"osBuild": {
+					"$id": "#/items/properties/osBuild",
+					"type": "string",
+					"title": "OS build",
+					"example": "08D5"
+				},
+				"osVersion": {
+					"$id": "#/items/properties/osVersion",
+					"type": "string",
+					"title": "OS version",
+					"example": "404"
+				},
+				"notes": {
+					"$id": "#/items/properties/notes",
+					"type": "string",
+					"title": "Upgrade notes",
+					"example": "IQRF OS 4.04D, DPA 4.15"
+				},
+				"downloadPath": {
+					"$id": "#/items/properties/downloadPath",
+					"type": "string",
+					"title": "Download URL",
+					"example": "downloadPath: https://repository.iqrfalliance.org/download/dpa/4.15"
+				}
+			}
+		}
+	]
+}

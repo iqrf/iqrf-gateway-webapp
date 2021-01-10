@@ -108,7 +108,7 @@ export default class HexUpload extends Vue {
 	 * @param {FileUpload} response REST API response containing uploaded file metadata
 	 */
 	private uploadFile(response: FileUpload): void {
-		IqrfService.utilUpload({name: response.fileName, type: 'HEX'})
+		IqrfService.uploader({name: response.fileName, type: 'HEX'})
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
 				this.$toast.success(this.$t('iqrfnet.trUpload.hexUpload.messages.uploadSuccess').toString());

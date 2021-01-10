@@ -3,7 +3,13 @@
 		<CCard>
 			<CCardHeader>{{ $t('iqrfnet.trUpload.dpaUpload.title') }}</CCardHeader>
 			<CCardBody>
-				<ValidationObserver v-slot='{ invalid }'>
+				<CAlert 
+					v-if='currentDpa === null || versions.length === 0'
+					color='danger'
+				>
+					{{ $t('iqrfnet.trUpload.dpaUpload.messages.dpaFetchFail') }}
+				</CAlert>
+				<ValidationObserver v-else v-slot='{ invalid }'>
 					<CForm @submit.prevent='compareUploadedVersion'>
 						<ValidationProvider
 							v-slot='{ valid, touched, errors }'
@@ -57,7 +63,7 @@
 
 <script lang='ts'>
 import {Component, Vue} from 'vue-property-decorator';
-import {CButton, CCard, CCardBody, CCardHeader, CForm, CModal, CSelect} from '@coreui/vue/src';
+import {CAlert, CButton, CCard, CCardBody, CCardHeader, CForm, CModal, CSelect} from '@coreui/vue/src';
 import {extend, ValidationObserver, ValidationProvider} from 'vee-validate';
 import {required} from 'vee-validate/dist/rules';
 import DpaService, {RFMode} from '../../services/IqrfRepository/DpaService';
@@ -75,6 +81,7 @@ interface DpaVersions {
 
 @Component({
 	components: {
+		CAlert,
 		CButton,
 		CCard,
 		CCardBody,
@@ -307,7 +314,7 @@ export default class DpaUpdater extends Vue {
 		}
 		DpaService.getDpaFile(request)
 			.then((response: AxiosResponse) => {
-				IqrfService.utilUpload({name: response.data.fileName, type: 'DPA'})
+				IqrfService.uploader({name: response.data.fileName, type: 'DPA'})
 					.then(() => {
 						this.startDaemon();
 					})
