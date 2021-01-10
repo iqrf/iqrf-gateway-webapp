@@ -7,7 +7,7 @@
 					v-if='currentDpa === null || versions.length === 0'
 					color='danger'
 				>
-					{{ $t('iqrfnet.trUpload.dpaUpload.messages.dpaFetchFail') }}
+					{{ $t('iqrfnet.trUpload.dpaUpload.messages.dpaFetchFailure') }}
 				</CAlert>
 				<ValidationObserver v-else v-slot='{ invalid }'>
 					<CForm @submit.prevent='compareUploadedVersion'>
@@ -132,6 +132,11 @@ export default class DpaUpdater extends Vue {
 	 * @var {boolean} showModal Controls whether DPA upload modal is shown
 	 */
 	private showModal = false
+
+	/**
+	 * 
+	 */
+	private uploadMessage = ''
 
 	/**
 	 * @var {string|null} version Currently selected version of DPA
@@ -298,6 +303,8 @@ export default class DpaUpdater extends Vue {
 		if (this.version === null) {
 			return;
 		}
+
+		// build dpa file fetch metadata
 		const request = {
 			'interfaceType': this.interfaceType,
 			'osBuild': this.osBuild,
@@ -312,10 +319,29 @@ export default class DpaUpdater extends Vue {
 		} else {
 			Object.assign(request, {'dpa': this.version});
 		}
+
+		// fetch dpa file
 		DpaService.getDpaFile(request)
 			.then((response: AxiosResponse) => {
+				// update spinner message
+				this.uploadMessage += '\n' + this.$t(
+					'iqrfnet.trUpload.dpaUpload.messages.dpaFileDownloaded',
+					{file: response.data.fileName}
+				).toString();
+				this.uploadMessage += '\n' + this.$t(
+					'iqrfnet.trUpload.osUpload.messages.fileUploading',
+					{file: response.data.fileName}
+				).toString();
+				this.$store.commit('spinner/UPDATE_TEXT', this.uploadMessage);
+				
+				// upload downloaded file to TR
 				IqrfService.uploader({name: response.data.fileName, type: 'DPA'})
 					.then(() => {
+						this.uploadMessage += '\n' + this.$t(
+							'iqrfnet.trUpload.osUpload.messages.fileUploaded',
+							{file: response.data.fileName}
+						).toString();
+						this.$store.commit('spinner/UPDATE_TEXT', this.uploadMessage);
 						this.startDaemon();
 					})
 					.catch((error: AxiosError) => FormErrorHandler.uploadUtilError(error));
@@ -328,9 +354,14 @@ export default class DpaUpdater extends Vue {
 	 * @returns {Promise<void>} Empty promise for request chaining
 	 */
 	private stopDaemon(): Promise<void> {
+		this.uploadMessage = '';
 		this.$store.commit('spinner/SHOW');
 		return ServiceService.stop('iqrf-gateway-daemon')
 			.then(() => {
+				this.uploadMessage = this.$t(
+					'service.iqrf-gateway-daemon.messages.stop'
+				).toString();
+				this.$store.commit('spinner/UPDATE_TEXT', this.uploadMessage);
 				this.upload();
 			})
 			.catch((error: AxiosError) => FormErrorHandler.serviceError(error));
