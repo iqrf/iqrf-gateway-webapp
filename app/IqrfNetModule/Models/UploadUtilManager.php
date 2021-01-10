@@ -27,7 +27,7 @@ use App\IqrfNetModule\Exceptions\UploadUtilMissingException;
 use App\IqrfNetModule\Exceptions\UploadUtilSpiException;
 
 /**
- * IQRF Upload utility manager
+ * IQRF Gateway Uploader manager
  */
 class UploadUtilManager {
 
@@ -42,9 +42,9 @@ class UploadUtilManager {
 	private const UPLOAD_DIR = '/var/cache/iqrf-gateway-daemon/upload/';
 
 	/**
-	 * IQRF Upload Utility command
+	 * IQRF Gateway Uploader command
 	 */
-	private const UPLOAD_UTIL = 'iqrf-upload-util';
+	private const UPLOAD_UTIL = 'iqrf-gateway-uploader';
 
 	/**
 	 * @var CommandManager Command manager
@@ -60,13 +60,13 @@ class UploadUtilManager {
 	}
 
 	/**
-	 * Uploads file content using the IQRF Upload Utility
+	 * Uploads file content using the IQRF Gateway Uploader
 	 * @param string $name File name
 	 * @param string $type File type
 	 */
 	public function executeUpload(string $name, string $type): void {
 		if (!$this->commandManager->commandExist(self::UPLOAD_UTIL)) {
-			throw new UploadUtilMissingException('IQRF Upload Utility is not installed.');
+			throw new UploadUtilMissingException('IQRF Gateway Uploader is not installed.');
 		}
 		if ($type === 'OS') {
 			$fileName = str_replace(['(', ')'], ['\(', '\)'], $name);
