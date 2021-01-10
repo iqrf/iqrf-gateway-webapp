@@ -287,6 +287,7 @@ export default class OsUpdater extends Vue {
 		ServiceService.start('iqrf-gateway-daemon')
 			.then(() => {
 				this.$store.commit('spinner/HIDE');
+				this.$emit('update-os');
 				this.$toast.success(
 					this.$t('iqrfnet.trUpload.osUpload.messages.upgradeSuccess').toString()
 				);
